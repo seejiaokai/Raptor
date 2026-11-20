@@ -42,7 +42,7 @@ describe('Sample 1 (D2203) — no right given between a move saved and its day o
   for (const level of ['view', 'admin'] as const) {
     it(`a ${level} of a third squadron given to Ranger on 15 Jul, his move to 149 saved for 16 Jul: none on 16 Jul`, () => {
       signInAs('ad', 'a')
-      const u150 = addUnit('150', 'p1')
+      const u150 = addUnit('150', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */)
       expect(u150.ok).toBe(true)
       expect(setHome('bane', 'u149').ok).toBe(true)
       setGrant('acus', u150.id!, level, 'bane')
@@ -53,7 +53,7 @@ describe('Sample 1 (D2203) — no right given between a move saved and its day o
   }
   it('(control) the same right given on 16 Jul, after the move, stands', () => {
     signInAs('ad', 'a')
-    const u150 = addUnit('150', 'p1')
+    const u150 = addUnit('150', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */)
     expect(setHome('bane', 'u149').ok).toBe(true)
     on(16)
     expect(setGrant('acus', u150.id!, 'view', 'bane').ok).toBe(true)
@@ -61,7 +61,7 @@ describe('Sample 1 (D2203) — no right given between a move saved and its day o
   })
   it('the gate holds it too: the right written straight, past setGrant, on 15 Jul with the move saved — refused', () => {
     signInAs('ad', 'a')
-    const u150 = addUnit('150', 'p1')
+    const u150 = addUnit('150', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */)
     expect(setHome('bane', 'u149').ok).toBe(true)
     const r = commitSettingsIntent('grant.set', null, () => { store.set(GRANT_PFX + 'gx1', { id: 'gx1', account: 'acus', unit: u150.id!, level: 'view', from: todayIso() }) }) as any
     expect(r.ok).toBe(false)
@@ -70,7 +70,7 @@ describe('Sample 1 (D2203) — no right given between a move saved and its day o
   })
   it('(control) the move undone the same day puts back the rights it dropped', () => {
     signInAs('ad', 'a')
-    const u150 = addUnit('150', 'p1')
+    const u150 = addUnit('150', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */)
     expect(setGrant('acus', u150.id!, 'view', 'bane').ok).toBe(true)
     expect(setHome('bane', 'u149').ok).toBe(true)
     unitsLoad()
@@ -87,7 +87,7 @@ describe('Sample 1 (D2203) — no right given between a move saved and its day o
 describe("Sample 2 (D2203) — whoever may move him may move him, his other rights going with the move", () => {
   it("Ranger holds View of 150; Hunter (142's admin, Plan of 149) moves him to 149: the move takes, the View goes", () => {
     signInAs('ad', 'a')
-    const u150 = addUnit('150', 'p1')
+    const u150 = addUnit('150', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */)
     expect(setGrant('acus', u150.id!, 'view', 'bane').ok).toBe(true)
     expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     signInAs('ad2', 'a2')

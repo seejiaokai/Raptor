@@ -41,7 +41,7 @@ const forgedMove = (to: string, from: string) => commitSettingsIntent('home.set'
 describe('R4 — no old right outlives a move', () => {
   it('(a, fable F3) Hunter forges a move dated 17 Jul (past tomorrow); Saber gives View of 150 on the 15th; on the 17th it is gone', () => {
     signInAs('ad', 'a')
-    const u150 = addUnit('150', 'p1').id!
+    const u150 = addUnit('150', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */).id!
     expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     signInAs('ad2', 'a2')
     const r = forgedMove('u149', '2026-07-17')
@@ -54,7 +54,7 @@ describe('R4 — no old right outlives a move', () => {
   })
   it('(b, security S17-3) master forges a move dated 20 Jul; View of 150 given on the 16th; on the 20th it is gone', () => {
     signInAs('ad', 'a')
-    const u150 = addUnit('150', 'p1').id!
+    const u150 = addUnit('150', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */).id!
     const r = forgedMove('u149', '2026-07-20')
     on(16)
     const g = setGrant('acus', u150, 'view', 'bane')
@@ -64,7 +64,7 @@ describe('R4 — no old right outlives a move', () => {
   })
   it('(c, astra 1) Hunter forges a tomorrow-dated move without dropping Ranger\'s View of 150: refused, or the View gone on the 16th', () => {
     signInAs('ad', 'a')
-    const u150 = addUnit('150', 'p1').id!
+    const u150 = addUnit('150', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */).id!
     expect(setGrant('acus', u150, 'view', 'bane').ok).toBe(true)
     expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     signInAs('ad2', 'a2')
@@ -75,7 +75,7 @@ describe('R4 — no old right outlives a move', () => {
   })
   it('(d, core astra) the master forges a tomorrow-dated move to a new squadron, Ranger\'s View of 149 left standing', () => {
     signInAs('ad', 'a')
-    const u777 = addUnit('777', 'p1').id!
+    const u777 = addUnit('777', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */).id!
     expect(setGrant('acus', 'u149', 'view', 'bane').ok).toBe(true)
     const r = forgedMove(u777, '2026-07-16')
     on(16)

@@ -144,10 +144,10 @@ describe('a new person gets his home inside the command that makes him (D2094)',
 describe('the master-only commands', () => {
   it('a member and a plain admin are refused unit.add and account.master', () => {
     signInAs('us', 'us')
-    expect(addUnit('150', 'p1').ok).toBe(false)
+    expect(addUnit('150', 'p1', 'acad9' /* a first admin named, so master-only is what refuses — §9.2 */).ok).toBe(false)
     expect(setMaster('acad', false).ok).toBe(false)
     plainAdmin()
-    expect(addUnit('150', 'p1').ok).toBe(false)
+    expect(addUnit('150', 'p1', 'acad9' /* a first admin named, so master-only is what refuses — §9.2 */).ok).toBe(false)
     expect(units().length).toBe(2)
     expect(setMaster(accountByName('pike@mail')!.id, true).ok).toBe(false)
     expect(isMasterAccount(accountByName('pike@mail')!.id)).toBe(false)

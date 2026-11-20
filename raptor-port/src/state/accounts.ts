@@ -71,8 +71,10 @@ import {
   postInProblem, type NewPerson,
 } from './roster-add'
 import { HOOKS } from '../engine/hooks'
-import { putNewHome, dropGrantsOfAccount, dropGrantRows, levelOfAccount, levelBefore, homeBefore, todayIso, homeOn, units, unitById, unitRows, grantOfOn } from './units'
+import { putNewHome, dropGrantsOfAccount, dropGrantRows, levelOfAccount, levelBefore, homeBefore, todayIso, homeOn, units, unitById, unitRows, grantOfOn, lockBreach, rowsDraft } from './units'
 import type { UnitRows } from './units-model'
+import type { LockBreach } from './lastadmin'
+import { noticeDay } from './notices'
 import type { UnitLevel, LevelAccount } from './units-model'
 import { validIso } from './flyplan-model'
 
@@ -336,19 +338,46 @@ const canSignInAsAdmin = (a: Account) => isAdminAccount(a) && a.on && personOk(a
    removing another admin"; the full check's reads, 18 Nov 26: the lock counted every squadron's admins as one, so 142's
    admin could switch 149's only admin off). `list` — the accounts a step would leave; a squadron that has an admin at
    home there who can sign in now must still have one after. An admin of it by a grant or the master mark is not
-   counted — he is not ITS admin (the agent's reading, put to him). The whole app's lock first, as before. `ok` — whether
-   a man is on the roster, for a restore asking over the roster it would leave. */
-function lockProblem(list: readonly any[], ok: (pid: string) => boolean = personOk): string | null {
-  const able = (x: any) => isAdminAccount(x) && x.on !== false && ok(x.pid)
-  if (!list.some(able)) return ADMIN_LOCK
-  for (const u of units()) {
-    const has = (l: readonly any[]) => l.some(x => able(x) && homeOn(x.pid) === u.id)
-    if (!has(ACCOUNTS_LIST) || has(list)) continue
-    const gone = ACCOUNTS_LIST.find(x => able(x) && homeOn(x.pid) === u.id && !list.some(y => y.id === x.id && able(y)))
-    const cs = gone ? accountCallsign(gone) : ''
-    return cs ? `${cs} is ${u.num}'s last admin. Make another admin of ${u.num} first.` : `At least one admin of ${u.num} must keep access`
-  }
-  return null
+   counted — he is not ITS admin (the agent's reading, put to him). The whole app's lock first, as before. `person` — the
+   roster a restore would leave; `rows` — the rows a step would leave (a re-link's or a demotion's dropped rights).
+   ONE BODY (the reshape plan §5.2, Piece C — B3): the rule, every date it can bite on and who counts are
+   state/lastadmin.ts's, the commit gate's own, so a door never lets through what the gate refuses as "That did not save";
+   the words are lockWords' below. */
+function lockProblem(list: readonly any[], person?: (pid: string) => any, rows?: UnitRows): string | null {
+  return lockProblemFor({ list, person, rows })
+}
+const livePerson = (pid: string): any => (PEOPLE as any)[pid]
+/* the lock over a step's draft — the accounts, the roster and the rows it would leave (each, when not given, as it
+   stands) — against what stands now, on every date (state/lastadmin.ts) */
+function lockOf(d: { list?: readonly any[]; person?: (pid: string) => any; rows?: UnitRows }): LockBreach | null {
+  const rowsB = unitRows()
+  return lockBreach({
+    rowsB, rowsA: d.rows ?? rowsB, acctB: ACCOUNTS_LIST, acctA: d.list ?? ACCOUNTS_LIST,
+    personB: livePerson, personA: d.person ?? livePerson, today: todayIso(),
+  })
+}
+export function lockProblemFor(d: { list?: readonly any[]; person?: (pid: string) => any; rows?: UnitRows }): string | null {
+  const b = lockOf(d)
+  return b ? lockWords(b, d.rows) : null
+}
+/* THE LOCK'S ONE WORDS TABLE (the reshape plan §5.2): today — "Kestrel is 149's last admin. Make another admin of 149
+   first." (D2184 Q10); a later date — the approved drawing's "Kestrel is 149's last admin from Fri 27 Nov, when Osprey
+   moves to 142. Make another admin of 149 first." (D2217 Q15, picture 9b); and to one who cannot make an admin of that
+   squadron — neither a master admin nor its admin at home or by Plan — "… Only a master admin or an admin of 150 can make
+   another." (his D2246). The whole app's: ADMIN_LOCK. */
+export function lockWords(b: LockBreach, rows?: UnitRows): string {
+  if (b === 'app') return ADMIN_LOCK
+  const numOf = (u: string | null) => (u ? String(unitById(u)?.num ?? (rows ? rows.units.find(x => x.id === u)?.num : undefined) ?? u) : '')
+  const num = numOf(b.unit)
+  const goneAcct = b.gone ? accountById(b.gone) : undefined
+  const cs = goneAcct ? accountCallsign(goneAcct) : ''
+  if (!cs) return `At least one admin of ${num} must keep access`
+  const mine = signedInAccount()
+  const can = !mine || mine.master === true || levelOfAccount(levelAcct(mine, 'admin'), b.unit) === 'admin'
+  const tail = can ? `Make another admin of ${num} first.` : `Only a master admin or an admin of ${num} can make another.`
+  const mover = b.cause && b.date > todayIso() ? (PEOPLE as any)[b.cause.pid]?.cs : ''
+  if (mover && b.cause!.to) return `${cs} is ${num}'s last admin from ${noticeDay(b.date)}, when ${mover} moves to ${numOf(b.cause!.to)}. ${tail}`
+  return `${cs} is ${num}'s last admin. ${tail}`
 }
 /* A MAN OF ANOTHER SQUADRON'S ACCOUNT (D2191 — a man of the other squadron is given View on Admin → Users, "nothing else of
    his row changeable"; the full check's reads, 18 Nov 26): the signed-in admin changes an account only as an admin of
@@ -555,7 +584,12 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
     : []
   if (plans.length && !signedInAccount()?.master) return 'This change could not be saved.'
   const list = ACCOUNTS_LIST.map(x => x.id === a.id ? next : x)
-  const locked = lockProblem(list)
+  /* the lock over what the step leaves — its dropped rights with it (a sign-in holding a squadron's only Plan, re-linked or
+     made a member, leaves it no admin — the reshape plan §5.2) */
+  const planIds = new Set(plans.map(g => g.id))
+  const rowsA = relink ? rowsDraft(unitRows(), { dropGrants: g => g.account === a.id })
+    : plans.length ? rowsDraft(unitRows(), { dropGrants: g => planIds.has(g.id) }) : undefined
+  const locked = lockProblem(list, undefined, rowsA)
   if (locked) return locked
   /* a sign-in name taken by a rename answers a request waiting under it, as adding an
      account does (Fable's scenario read, 26 Sep 26: the request stayed listed, could never
@@ -674,20 +708,9 @@ export function suspendForPosting(pid: string): 'done' | 'none' | 'lock' {
    never deleted, a placeholder or ARCHIVED) must still have one after, on today and on every saved home row's date from
    today on. The archived man's account itself stays as it is, loadable for his Restore — only "can sign in" leaves him
    out. 'app' for the whole app's last admin; else the squadron (and its date) left without one; null when none is. */
-const canSignIn = (pid: string): boolean => personOk(pid) && !(PEOPLE as any)[pid].archived
-function postingLock(list: readonly any[]): 'app' | { unit: string; date: string } | null {
-  const able = (x: any) => isAdminAccount(x) && x.on !== false && canSignIn(x.pid)
-  if (!list.some(able)) return 'app'
-  const today = todayIso()
-  const dates = new Set<string>([today])
-  for (const h of unitRows().homes) if (typeof h.from === 'string' && h.from > today) dates.add(h.from)
-  for (const d of [...dates].sort()) {
-    for (const u of units()) {
-      const has = (l: readonly any[]) => l.some(x => able(x) && homeOn(x.pid, d) === u.id)
-      if (has(ACCOUNTS_LIST) && !has(list)) return { unit: u.id, date: d }
-    }
-  }
-  return null
+/* (one body with every door and the gate since the reshape plan §5.2, Piece C — state/lastadmin.ts) */
+function postingLock(list: readonly any[]): LockBreach | null {
+  return lockOf({ list })
 }
 /* he is back (Restore, Undo post out) or the posting no longer suspends him today: enable the account the POSTING
    suspended — never one suspended by hand. True when it was enabled. */
@@ -753,12 +776,7 @@ export const accountSuspendedByPosting = (pid: string): boolean => { const a = a
    it is not a person acting, so "yourself" never applies there) */
 export function lastAdminIfGone(pid: string): string | null {
   const lock = postingLock(ACCOUNTS_LIST.filter(x => x.pid !== pid))
-  if (!lock) return null
-  if (lock === 'app') return ADMIN_LOCK
-  const num = String(unitById(lock.unit)?.num ?? lock.unit)
-  const gone = accountOfPid(pid)
-  const cs = gone ? accountCallsign(gone) : ''
-  return cs ? `${cs} is ${num}'s last admin. Make another admin of ${num} first.` : `At least one admin of ${num} must keep access`
+  return lock ? lockWords(lock) : null
 }
 /* WHICH LOCK HOLDS HIM — for the doors that word the lock their own way (a posting that waits, Archive): the squadron
    whose last admin he is, or 'app' for the whole app's last admin who can sign in, or null. Removing one man's account
@@ -773,16 +791,8 @@ export function lastAdminLock(pid: string): { num: string } | 'app' | null {
   return { num: String(unitById(lock.unit)?.num ?? lock.unit) }
 }
 /* THE LOCK FOR A MOVE OF SQUADRON (the second fix read — Astra 1, security H3: the master moving Kestrel, 149's only
-   admin, to 142 from tomorrow left 149 with none): his squadron's last admin who can sign in on the day the move counts
-   from is told so in the lock's own words (lockProblem's per-squadron sentence); the commit gate holds every date
-   (perms.ts lastAdminViolation, G3). null when the move leaves his squadron an admin. */
-export function homeMoveLockWords(pid: string, unit: string, iso: string): string | null {
-  const a = accountOfPid(pid)
-  if (!a || !isAdminAccount(a) || !a.on || !personOk(pid)) return null
-  if (ACCOUNTS_LIST.some(x => x.pid !== pid && isAdminAccount(x) && x.on && personOk(x.pid) && homeOn(x.pid, iso) === unit)) return null
-  const num = String(unitById(unit)?.num ?? unit)
-  return `${(PEOPLE as any)[pid].cs} is ${num}'s last admin. Make another admin of ${num} first.`
-}
+   admin, to 142 from tomorrow left 149 with none) — since the reshape plan §5.2 (Piece C) units.ts setHome hands its
+   draft rows to lockProblemFor above, the one body, every date judged. */
 /* A MASTER IS NEVER DELETED (the fix read, 18 Nov 26 — Opus 1): the master mark changes only by its own command (D2191;
    perms.ts unitRowViolation), so a delete that takes a master's account away is refused at the commit gate whatever
    door made it. Said first, in words, by every delete door — Admin → Users and a posting's Delete — so a posting's Delete
@@ -846,9 +856,9 @@ export const accountBefore = (id: string, image: any): any => image ?? (SEEDS_ON
    candidate (the stored images the restore would write, over the roster as it would then stand — `people`), before the
    view moves and again inside the restore itself (undo/timeline.ts applyRestore). A sentence, or null.
    `next` — the accounts list the restore would leave (null: unchanged); `reqs` — the access requests it would leave. */
-export function accountsRestoreProblem(next: any[] | null, reqs: any[] | null, people: Record<string, any>): string | null {
+/* (`rows` — the unit rows the restore would leave, when it changes any: the lock judges them, as the gate does) */
+export function accountsRestoreProblem(next: any[] | null, reqs: any[] | null, people: Record<string, any>, rows?: UnitRows): string | null {
   const list: any[] = next ?? ACCOUNTS_LIST
-  const ok = (pid: string) => !!people[pid] && !people[pid].special && !people[pid].deleted
   if (next) {
     const ids = new Set<string>(), names = new Set<string>(), pids = new Set<string>()
     for (const a of list) {
@@ -865,7 +875,7 @@ export function accountsRestoreProblem(next: any[] | null, reqs: any[] | null, p
       if (a.on !== false && p.archived && !p.deleted && !(live && live.on)) return `${p.cs} is archived — restore him on Admin → Users first`
     }
     /* at least one admin who can sign in (ADMIN_LOCK — the write path's own guard) */
-    const locked = lockProblem(list, ok)
+    const locked = lockProblem(list, pid => people[pid], rows)
     if (locked) return locked
     /* never the signed-in person's own account (the D166 guard — every field he would sign in with: Astra's red team 2) */
     const mine = ACCOUNTS_LIST.find(ownAccount)

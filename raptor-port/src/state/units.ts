@@ -16,11 +16,12 @@ import { isCommitting, type CommitResult } from '../command'
 import { commitSettingsIntent } from './people-settings-commit'
 import { setHomeResolver } from '../engine/roster'
 import { DEMO_149_PEOPLE } from './demoseed'
-/* the lock's words for a move of squadron (accounts.ts imports this file; the call is at run time, never at load) */
-import { homeMoveLockWords, accountById, masterChangeProblem, signedInAccount } from './accounts'
+/* the last-admin lock's words for a step's draft (accounts.ts imports this file; the call is at run time, never at load) */
+import { lockProblemFor, accountById, masterChangeProblem, signedInAccount } from './accounts'
+import { lastAdminBreach, type LockWorld, type LockBreach } from './lastadmin'
 import {
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES,
-  rowsFrom, placeIdOn, homeUnitOn, homeChangesIn, stintsIn, grantOn, grantHolds, datedRowsBreach, unitIn, placeIn, levelFrom, moveFrom,
+  rowsFrom, placeIdOn, homeUnitOn, homeChangesIn, stintsIn, grantOn, grantHolds, datedRowsBreach, unitIn, placeIn, levelFrom, moveFrom, isAdminRole,
   validUnitNum, validTz, MAX_PLACE_NAME,
   type UnitRows, type Unit, type Place, type Grant, type GrantLevel, type GrantHolder, type UnitLevel, type LevelAccount, type Stint,
   type DatedBreach,
@@ -121,6 +122,17 @@ export const grantRowHolds = (acct: GrantHolder, g: Pick<Grant, 'from'>, iso: st
 /* the one check for homes and places (units-model.ts datedRowsBreach), with this store's fallback home */
 export const datedBreach = (before: UnitRows, after: UnitRows, today: string, opts: Omit<Parameters<typeof datedRowsBreach>[3], 'fallback'>): DatedBreach | null =>
   datedRowsBreach(before, after, today, { ...opts, fallback: fallbackHome() })
+/* the one last-admin rule (state/lastadmin.ts — Piece C), with this store's fallback home */
+export const lockBreach = (w: Omit<LockWorld, 'fallback'>): LockBreach | null => lastAdminBreach({ ...w, fallback: fallbackHome() })
+/* a step's draft of the rows: these rows with some taken away and some laid on (a row of the same id replaced) — what a
+   door hands the lock, so it judges the rows the step would leave, as the gate does */
+export function rowsDraft(r: UnitRows, d: { units?: Unit[]; unitplaces?: UnitRows['unitplaces']; grants?: Grant[]; homes?: UnitRows['homes']; dropGrants?: (g: Grant) => boolean }): UnitRows {
+  const lay = <T extends { id: string }>(was: T[], add: T[] | undefined): T[] => (add?.length ? [...was.filter(x => !add.some(y => y.id === x.id)), ...add] : was)
+  return {
+    units: lay(r.units, d.units), places: r.places, unitplaces: lay(r.unitplaces, d.unitplaces),
+    grants: lay(d.dropGrants ? r.grants.filter(g => !d.dropGrants!(g)) : r.grants, d.grants), homes: lay(r.homes, d.homes),
+  }
+}
 /* an account by its id as the reading rule takes it (its man and its link day); a right naming an account that is gone
    has no man — it holds for nobody a person can use */
 const holderOf = (account: string): GrantHolder => { const a = accountById(account); return { id: account, pid: a ? String(a.pid) : '', pidFrom: a?.pidFrom } }
@@ -176,18 +188,25 @@ export function addUnit(numIn: string, placeId: string, firstAdmin?: string): Un
   if (!placeById(placeId)) return no('Pick the place the squadron is at')
   /* its first admin's Plan is a right given today (R5 — the reshape plan §4.4): said at the door in setGrant's own words,
      never the gate's reason — not between his move saved and its day, and only an admin's sign-in (PA2) */
-  if (firstAdmin) {
-    const fa = accountById(firstAdmin)
-    if (fa && homeOn(String(fa.pid), moveFrom(todayIso())) !== homeOn(String(fa.pid))) return no('He moves squadron tomorrow — give this after the move')
-    if (fa && fa.role !== 'admin') return no('This change could not be saved.')
-  }
+  /* NEVER A SQUADRON WITH NO ADMIN (B6 — D2191, D2184 Q10; the reshape plan §5.2): its first admin is required, and he must
+     be one who counts there on every day the lock judges (state/lastadmin.ts) — a master admin counts only at home, and
+     a first admin whose move away is saved for a later day leaves it none from then. Those two say the generic words
+     until "+ New squadron" has its screen, drawn for him (D1625). */
+  if (!firstAdmin) return no("Name the squadron's first admin.")
+  const fa = accountById(firstAdmin)
+  if (fa && homeOn(String(fa.pid), moveFrom(todayIso())) !== homeOn(String(fa.pid))) return no('He moves squadron tomorrow — give this after the move')
+  if (fa && !isAdminRole(fa)) return no('This change could not be saved.')
+  const id = newId('u'), up = newId('up'), g = newId('g')
+  const draft = rowsDraft(unitRows(), {
+    units: [{ id, num, kind: 'sqn' }], unitplaces: [{ id: up, unit: id, place: placeId, from: todayIso() }],
+    grants: [{ id: g, account: firstAdmin, unit: id, level: 'admin', from: todayIso() }],
+  })
+  if (lockProblemFor({ rows: draft })) return no('This change could not be saved.')
   return save('unit.add', null, () => {
-    const id = newId('u')
     put(UNIT_PFX + id, { id, num, kind: 'sqn' })
-    const up = newId('up')
     put(UNITPLACE_PFX + up, { id: up, unit: id, place: placeId, from: todayIso() })
     /* (dated the day it is given, as setGrant's: the commit gate refuses a new right not dated today — fix read 8, fault G) */
-    if (firstAdmin) { const g = newId('g'); put(GRANT_PFX + g, { id: g, account: firstAdmin, unit: id, level: 'admin', from: todayIso() }) }
+    put(GRANT_PFX + g, { id: g, account: firstAdmin, unit: id, level: 'admin', from: todayIso() })
     return id
   })
 }
@@ -234,13 +253,18 @@ export function setGrant(account: string, unit: string, level: GrantLevel, accou
   /* PLAN — given, raised or lowered — only by a master admin (PA1); and only to an admin (PA2 — D2201, D785: an admin is
      given Plan; its words wait for the first screen that gives a right, drawn then — §14 of the plan) */
   if ((level === 'admin' || had?.level === 'admin') && notMaster()) return no(PLAN_MASTER_ONLY)
-  if (level === 'admin' && acct && acct.role !== 'admin') return no('This change could not be saved.')
+  if (level === 'admin' && acct && !isAdminRole(acct)) return no('This change could not be saved.')
   /* NOT BETWEEN A MOVE SAVED AND ITS DAY (Fable's sample review, 1 — his D2203; the plan §4.3, Fable 4, Opus L3): a right
      ends at the start of his move day, so one given or raised in the rest of the day it is saved would last that day
      only. A lowering passes — whatever it leaves ends at midnight by the rule. Held at the gate too (perms.ts
      unitRowViolation) */
   const gives = !had || (had.level === 'view' && level === 'admin')
   if (gives && homeOn(accountPid, moveFrom(todayIso())) !== homeOn(accountPid)) return no('He moves squadron tomorrow — give this after the move')
+  /* a squadron's only Plan lowered to View leaves it no admin (B6 — the one last-admin rule, state/lastadmin.ts) */
+  if (had && had.level === 'admin' && level !== 'admin') {
+    const lock = lockProblemFor({ rows: rowsDraft(unitRows(), { grants: [{ id: had.id, account, unit, level, from: todayIso() }] }) })
+    if (lock) return no(lock)
+  }
   return save('grant.set', null, () => {
     const id = had ? had.id : newId('g')
     /* (its day — fault P: notices.ts adminThen counts it only from then, so a line his move retired stays retired) */
@@ -253,6 +277,11 @@ export function removeGrant(account: string, unit: string): UnitSave {
   const had = grantOn(unitRows(), holderOf(account), unit, todayIso(), fallbackHome())
   if (!had) return no('He has no right there to take away')
   if (had.level === 'admin' && notMaster()) return no(PLAN_MASTER_ONLY)
+  /* a squadron's only Plan taken away leaves it no admin (B6 — the one last-admin rule, state/lastadmin.ts) */
+  if (had.level === 'admin') {
+    const lock = lockProblemFor({ rows: rowsDraft(unitRows(), { dropGrants: x => x.id === had.id }) })
+    if (lock) return no(lock)
+  }
   return save('grant.remove', null, () => { put(GRANT_PFX + had.id, null) })
 }
 /* EVERY RIGHT OF AN ACCOUNT THAT IS GOING (fix read 11, fault E — SEC11-5): written INSIDE the person delete's own
@@ -288,11 +317,14 @@ export function setHome(pid: string, unit: string): UnitSave {
   const now = homeOn(pid)
   const from = now ? moveFrom(todayIso()) : todayIso()
   if (now && homeOn(pid, from) === unit) return no('That is already his squadron')
-  /* never his squadron's last admin moved out (Astra 1, security H3) — said in the lock's words, held at the gate too */
-  const prev = homeOn(pid, from)
-  const lock = prev && prev !== unit ? homeMoveLockWords(pid, prev, from) : null
-  if (lock) return no(lock)
   const same = mine.find(h => h.from === from)
+  /* never a squadron left with no admin (Astra 1, security H3) — the one last-admin rule (state/lastadmin.ts, Piece C) over
+     the rows the move leaves, on every date, said in the lock's words; held at the gate too. The ids are the draft's only:
+     a row of the same date is replaced, as the write below replaces it */
+  const draftHomes = [{ id: same ? same.id : '~move', pid, unit, from }]
+  if (now && !mine.length) draftHomes.unshift({ id: '~base', pid, unit: now, from: todayIso() })
+  const lock = lockProblemFor({ rows: rowsDraft(unitRows(), { homes: draftHomes }) })
+  if (lock) return no(lock)
   /* his D2203 (18 Nov 26): a man who moves to another squadron loses every View and Plan he held of others — no right is
      touched here: the reading rule (units-model.ts grantOn) ends each at the start of his move day (his D2243 — Q4), so
      the move writes his squadron rows only, and its Undo and Redo restore those alone (the reshape plan §4.3, R3) */

@@ -283,6 +283,10 @@ export function datedRowsBreach(before: UnitRows, after: UnitRows, today: string
   return null
 }
 
+/* an ACCOUNT RECORD whose role is admin — data, never the session's role in force (perms.ts keeps that); the one reading
+   for the files that judge an account record without the accounts list (units.ts, notices.ts, lastadmin.ts — D200 (3)) */
+export const isAdminRole = (a: { role?: unknown } | null | undefined): boolean => !!a && a.role === 'admin'
+
 /* AN ACCOUNT'S LEVEL IN A UNIT ON A DATE — the one answer (plan §3.4, refined): a master is admin everywhere; in his home
    unit an account's level is its own role ('admin', or 'member' for the account role 'main'); elsewhere the right that
    holds that day (grantOn); otherwise none. Plan is an admin's (the Plan audit's PA2 — D2201, D785): an `admin` right on

@@ -36,6 +36,7 @@ import { homeHandle } from '../engine/roster'
 import { hhmm } from '../engine/time'
 import { mayEditSched } from './perms'
 import { todayIso, homeOn, homeChangesOn, unitRows, levelOfAccount, grantOfOn } from './units'
+import { isAdminRole } from './units-model'
 /* (accounts.ts reaches this module through perms.ts; each side calls the other only at run time, never at load) */
 import { accountOfPid, isAdminAccount, levelAcct } from './accounts'
 import { activeEnvelope } from '../command'
@@ -293,7 +294,7 @@ function adminThen(acct: { id: string; pid: string; role: string; master?: true;
   const held = (own: string | undefined): boolean => { const from = later(own); return !from || from < iso || (now && from === iso) }
   if (acct.master && held(acct.masterFrom)) return true
   const g = grantOfOn({ id: acct.id, pid: String(acct.pid), pidFrom: acct.pidFrom }, u, iso)
-  return !!g && g.level === 'admin' && acct.role === 'admin' && held(g.from)
+  return !!g && g.level === 'admin' && isAdminRole(acct) && held(g.from)
 }
 /** THE SQUADRON OF AN INPUT THAT NAMES NOBODY (an ALL AVAIL or ALL one — fix read 6, fault A): its placeholder's filer
  *  first, else the input's own filer, his home on the input's own date (today where it has none). ONE body, asked by the

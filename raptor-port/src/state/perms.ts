@@ -32,7 +32,7 @@ import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
 import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, levelAcct, readAccounts, adminsOf, type Account } from './accounts'
-import { unitRowsBefore, unitRowsAfter, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach } from './units'
+import { unitRowsBefore, unitRowsAfter, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach, lockBreach } from './units'
 import { PEOPLE } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
 import { unitOf, isUnitId, split } from '../storage/unitid'
@@ -1776,6 +1776,14 @@ function worldsOf(env: CommitEnvelope): Worlds | null {
   const touches = people.length > 0 || env.changes.some(c => c.collection === 'settings'
     && (String(c.id).startsWith(ACCOUNT_ROW) || String(c.id).startsWith(HOME_PFX)))
   if (!touches) { WORLDS.set(env, null); return null }
+  const w = buildWorlds(env)
+  WORLDS.set(env, w)
+  return w
+}
+/* the two worlds, built for any command — worldsOf above builds them only for a command that changes a person, an
+   account or a home; the last-admin lock (G3) asks them for a command that changes a right or adds a squadron too */
+function buildWorlds(env: CommitEnvelope): Worlds {
+  const people = env.changes.filter(c => c.collection === 'people')
   const was = new Map<string, any>(), is = new Map<string, any>()
   for (const c of people) {
     if (!was.has(String(c.id))) was.set(String(c.id), c.before ?? null)
@@ -1792,15 +1800,13 @@ function worldsOf(env: CommitEnvelope): Worlds | null {
   const rawB = m.size ? new Map(m) : seeded()
   for (const c of mine) { if (c.after == null) m.delete(String(c.id)); else m.set(String(c.id), c.after) }
   const rawA = m.size ? m : seeded()
-  const w: Worlds = {
+  return {
     personB, personA,
     acctB: readAccounts([...rawB.values()], undefined, personB),
     acctA: readAccounts([...rawA.values()], undefined, personA),
     rawB, rawA,
     rowsB: unitRowsBefore(env.changes), rowsA: unitRowsAfter(env.changes),
   }
-  WORLDS.set(env, w)
-  return w
 }
 /* the store keys of a side's rows the loader would NOT keep (a row it drops, or one whose id is not its key) — a deleted
    man's account aside, which every reading drops on purpose */
@@ -2174,31 +2180,22 @@ function rightOutlivesAccount(env: CommitEnvelope, w: Worlds): string | null {
    pass too (fix read 3, Astra's 1: it was passed over here, and its preflight read today only and counted an archived
    admin, so an Overseas Sqn or Delete posting ran the day before another admin's saved move and left his squadron none).
    The pass holds such a posting whole first (leavewar/sync.ts poHeldReason, the same calculation — accounts.ts
-   postingLock); this is the backstop. The app's other commands (none writes an account or a home) stay outside it. */
+   postingLock); this is the backstop.
+   ONE BODY WITH THE DOORS (the reshape plan §5.2, Piece C — B3, B6): the rule, its dates (today and every home row's and
+   right's `from` from today on, either side), who counts and the squadron made or removed whole are state/lastadmin.ts's,
+   which every door asks too — so a door never lets through what this refuses. It now runs for a command that changes a
+   right or adds a squadron as well (a squadron's only Plan taken away, "+ New squadron" with no admin — B6). The app's
+   other commands (none writes an account, a home, a right or a squadron) stay outside it. */
 function lastAdminViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || (a.role === 'system' && env.type !== 'lw.postoutRun')) return null
-  const w = worldsOf(env)
+  const w = worldsOf(env) ?? (env.changes.some(c => c.collection === 'settings'
+    && (String(c.id).startsWith(GRANT_PFX) || String(c.id).startsWith(UNIT_PFX))) ? buildWorlds(env) : null)
   if (!w) return null
-  /* every date from today on that any home row, either side, starts — not only the rows this command changes: a move
-     already saved for tomorrow (another admin's) is the date a demotion, a Suspend or an Archive today first harms (job
-     2's reads: Astra 1, Opus F2, Fable F1) */
-  const today = todayIso()
-  const dates = new Set<string>([today])
-  for (const h of [...w.rowsB.homes, ...w.rowsA.homes]) if (typeof h.from === 'string' && h.from >= today) dates.add(h.from)
-  /* an archived man cannot sign in (accounts.ts refuses his session), so he is no admin who can (job 2, Astra 2) */
-  const onRoster = (p: any) => !!p && !p.special && !p.deleted && !p.archived
-  const able = (l: Account[], person: (pid: string) => any) => l.filter(x => x.role === 'admin' && x.on !== false && onRoster(person(x.pid)))
-  const ableB = able(w.acctB, w.personB), ableA = able(w.acctA, w.personA)
-  if (ableB.length && !ableA.length) return 'the last admin who can sign in switched off or removed'
-  for (const d of [...dates].sort()) {
-    const homesA = new Set(ableA.map(x => homeBefore(x.pid, d, w.rowsA)).filter(Boolean))
-    for (const x of ableB) {
-      const u = homeBefore(x.pid, d, w.rowsB)
-      if (u && !homesA.has(u)) return `a squadron (${u}) left with no admin of its own who can sign in (on ${d})`
-    }
-  }
-  return null
+  const b = lockBreach({ rowsB: w.rowsB, rowsA: w.rowsA, acctB: w.acctB, acctA: w.acctA, personB: w.personB, personA: w.personA, today: todayIso() })
+  if (!b) return null
+  if (b === 'app') return 'the last admin who can sign in switched off or removed'
+  return `a squadron (${b.unit}) left with no admin of its own who can sign in (on ${b.date})`
 }
 
 function unitRowViolation(env: CommitEnvelope): string | null {

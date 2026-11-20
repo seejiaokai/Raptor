@@ -36,7 +36,7 @@ afterAll(() => { storeBackend.impl = null })
 /* Saber (master) makes 150, gives Ranger View of 150, gives Hunter Plan of 149; then signs in as Hunter */
 const setup = () => {
   signInAs('ad', 'a')
-  const u150 = addUnit('150', 'p1')
+  const u150 = addUnit('150', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */)
   expect(u150.ok).toBe(true)
   expect(setGrant('acus', u150.id!, 'view', 'bane').ok).toBe(true)
   expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)

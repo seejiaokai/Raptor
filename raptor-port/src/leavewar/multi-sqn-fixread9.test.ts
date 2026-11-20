@@ -133,7 +133,7 @@ describe('fault A — an Undo or Redo that turns a right on dates it today (his 
      holds; "the line stays retired" kept. Until helper "undo & roles" wires the leave-out the press writes the recorded
      row, which holds nothing; the step's blocked words are that helper's test) */
   it('(a grant) Plan of 149 given and removed on 15 Jul, Hunter moves to a third squadron on 16 Jul, the Undo of the removal on 17 Jul: nothing of 149 holds, the line stays off', () => {
-    signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok, JSON.stringify(u150)).toBe(true)
+    signInAs('ad', 'a'); const u150 = addUnit('150', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */); expect(u150.ok, JSON.stringify(u150)).toBe(true)
     signInAs('ad', 'a'); expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     signInAs('ad2', 'a2'); fileFor('osp9', 'prowler')
     signInAs('ad', 'a'); rmk('changed by Saber on the 15th')

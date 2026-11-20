@@ -383,7 +383,7 @@ describe('fault E — a right taken off after a move and put back by its Undo or
      the same rulings: a line retires only on a move, and a move now ends the Plan (the agent's reading, chat 127 — named
      for the fix read)) */
   it('(F10-5) moved to 150 on 16 Jul; Plan of 149 from 17 Jul; on 18 Jul taken off and undone: the Plan back with its own day', () => {
-    on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok).toBe(true)
+    on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */); expect(u150.ok).toBe(true)
     homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']]); on(17)
     signInAs('ad', 'a'); expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     on(18); signInAs('ad', 'a')
@@ -395,7 +395,7 @@ describe('fault E — a right taken off after a move and put back by its Undo or
     expect(grantOfOn({ id: 'acad2', pid: 'prowler', pidFrom: undefined }, 'u149', '2026-07-18')?.from, 'with its own day').toBe('2026-07-17')
   })
   it('(Redo, no move since its Undo) Plan of 149 given 13 Jul, he moves 16 Jul; on 17 Jul its Undo and Redo: the Redo puts back 13 Jul', () => {
-    on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok).toBe(true)
+    on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */); expect(u150.ok).toBe(true)
     expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']]); on(17)
     const g = () => unitRows().grants.find(x => x.account === 'acad2' && x.unit === 'u149')
@@ -409,7 +409,7 @@ describe('fault E — a right taken off after a move and put back by its Undo or
      step's blocked words are that helper's test) */
   const plan149 = () => grantOfOn({ id: 'acad2', pid: 'prowler', pidFrom: undefined }, 'u149', '2026-07-17')
   it('(Redo, a move since its Undo) Plan of 149 given 13 Jul and undone 15 Jul; he moves 16 Jul; the Redo on 17 Jul: nothing of 149 holds', () => {
-    on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok).toBe(true)
+    on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */); expect(u150.ok).toBe(true)
     expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     on(15)
     const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
@@ -418,7 +418,7 @@ describe('fault E — a right taken off after a move and put back by its Undo or
     expect(plan149(), 'the Redo after his move').toBeUndefined()
   })
   it('(control — a move between) the Plan taken off 15 Jul, he moves 16 Jul, the Undo on 17 Jul: nothing of 149 holds', () => {
-    on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok).toBe(true)
+    on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */); expect(u150.ok).toBe(true)
     expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     on(15); signInAs('ad', 'a')
     expect(removeGrant('acad2', 'u149').ok).toBe(true)

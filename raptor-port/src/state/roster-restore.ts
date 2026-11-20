@@ -18,6 +18,7 @@ import { inputLines } from '../engine/inputs'
 import { stashEntries } from '../engine/weekstash'
 import { PLANPUCKS } from './plan'
 import { accountsRestoreProblem, accountsAfter, requestsAfter } from './accounts'
+import { unitRowsAfter } from './units'
 import { getState as lwState } from '../leavewar/state/store'
 
 // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- a restored record lands as saving stores it (keys set to undefined dropped), the same image a reload reads; structuredClone would keep them
@@ -92,7 +93,8 @@ export function rosterRestoreProblem(changes: any[], _dir: 'undo' | 'redo'): str
   }
   /* 2. the accounts — the write path's own guards, over the candidate (accounts.ts) */
   if (next || rq || people.length) {
-    const bad = accountsRestoreProblem(next, rq, roster)
+    /* (the unit rows the restore would leave — a re-link's dropped rights put back — judged by the lock, as the gate does) */
+    const bad = accountsRestoreProblem(next, rq, roster, unitRowsAfter(changes as any))
     if (bad) return bad
   }
   return null

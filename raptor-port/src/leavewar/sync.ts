@@ -3164,11 +3164,13 @@ export function archiveProblem(id: string): string | null {
   return null
 }
 /* the last-admin lock in Archive's words: per squadron where it is his squadron's — the lock's own sentence (accounts.ts
-   lockProblem; the fix read, 18 Nov 26 — Opus 5) — the whole app's otherwise, as before */
+   lockProblem; the fix read, 18 Nov 26 — Opus 5) — the whole app's otherwise, as before. The squadron's sentence is the
+   one words table's (accounts.ts lockWords — the reshape plan §5.2: its dated form, and his D2246's for one who cannot
+   make another admin there) */
 function archiveLockWords(id: string, cs: string): string | null {
   const lock = lastAdminLock(id)
   return !lock ? null : lock === 'app' ? `${cs} is the last admin who can sign in — he can't be archived until another admin can`
-    : `${cs} is ${lock.num}'s last admin. Make another admin of ${lock.num} first.`
+    : lastAdminIfGone(id)
 }
 export function archivePerson(id: string): { bad: string | null; said: string } {
   const bad = archiveProblem(id)

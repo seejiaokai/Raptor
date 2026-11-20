@@ -417,7 +417,7 @@ describe('fault E — a repeated Undo / Redo keeps the date an earlier restore s
      row, which holds nothing — whatever each press does, no right of 149 ever holds for him again; the step's blocked
      words are that helper's test) */
   it('(Plan / View) Plan of 149 13 Jul, View 15 Jul, he moves 16 Jul; Undo 17 Jul, Redo and Undo 18 Jul: nothing of 149 ever holds again', () => {
-    on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok).toBe(true)
+    on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */); expect(u150.ok).toBe(true)
     expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     on(15); signInAs('ad', 'a'); expect(setGrant('acad2', 'u149', 'view', 'prowler').ok).toBe(true)
     homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']])
