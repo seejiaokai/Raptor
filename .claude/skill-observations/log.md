@@ -927,3 +927,22 @@ join, a re-slice), look the record up again by its id before asserting on it; ne
 the action."
 **Principle:** an assertion on an object reference taken before an action proves nothing about a store that replaces
 records rather than editing them in place; re-read by identity after the action.
+
+### Observation 986: Fix-only re-reads converge on the fixes, not the code
+
+**Status:** OPEN
+**Date:** 20 Nov 26
+**Session context:** multi-squadron batch 1, chat 123 — fix read 16 beside Fable's sample review of the batch's own code (D2234)
+**Skill:** bug-check order (`raptor-port/docs/bug-check-order.md` §5, "A fix is new code")
+**Type:** open-source
+**Phase/Area:** the narrow read of each round's fixes, repeated round after round
+
+**Issue:** sixteen rounds of fix reads each read only the previous round's fix commits. One blind sample review of the
+batch's own core files (about 2,300 lines, ten minutes) found two confirmed faults in code no fix had touched — faults
+every fix read was structurally unable to see, because none was ever handed that code. The rounds' falling fault count
+(8, 5, 4, 3) measured the fixes converging, not the batch being clean.
+**Suggested improvement:** in §5's "A fix is new code", add: when fix rounds pass the cap (about three), or a batch's
+risk is roles, saved data or the published record, put one blind read of the batch's riskiest ORIGINAL files beside the
+next round — not in a reader's seat — and read a clean fix round as "the fixes are clean", never "the batch is clean".
+**Principle:** a review scoped to each round's diff can only converge on that diff; schedule a fresh read of the
+untouched high-risk code, or the fault count's fall says nothing about what was never read.
