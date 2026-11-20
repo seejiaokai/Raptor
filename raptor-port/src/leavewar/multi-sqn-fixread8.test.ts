@@ -138,14 +138,16 @@ describe('fault D — a right given ON the move day never brings the retired lin
       expect(shown('prowler', l.id), 'still off after the master mark set on his move day').toBe(false)
     })
   }
-  it('(control) the master mark set the day before his move keeps the line, and so does Plan held from then', () => {
+  /* (§4.5 of the reshape plan, rewrite 4 — the master-mark half kept: a master admin's reach is no right and is not ended
+     (D2203's reading); a Plan held before his move day ends with it — his D2203, D2243 (Q4) — so its line is retired) */
+  it('(control) the master mark set the day before his move keeps the line; Plan held from then ends with the move', () => {
     const l = hunterLine()
     signInAs('ad', 'a'); expect(setMaster('acad2', true).ok).toBe(true)
     hunterMovesOn16(); on(17)
     expect(shown('prowler', l.id), 'a master on his move day: still told').toBe(true)
     signInAs('ad', 'a'); on(17); expect(setMaster('acad2', false).ok).toBe(true)
     mem['sqn142_' + GRANT_PFX + 'gfr8d'] = JSON.stringify({ id: 'gfr8d', account: 'acad2', unit: 'u142', level: 'admin', from: '2026-07-15' }); unitsLoad()
-    expect(shown('prowler', l.id), 'Plan of 142 from the day before: still told').toBe(true)
+    expect(shown('prowler', l.id), 'Plan of 142 from the day before ended with his move: the line retired').toBe(false)
   })
 })
 
