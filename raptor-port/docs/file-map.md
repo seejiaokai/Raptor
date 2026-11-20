@@ -1469,6 +1469,13 @@ it is a named man's home on one of the input's days), `src/leavewar/multi-sqn-fi
 Item D (1) — `src/state/perms.ts` (`deletedPersonViolation`: a person row deleted before a command keeps its mark and its
 date and is never removed, for every actor). Item D (2) — `src/state/notices.ts` (`noticePass`: a remark changed on a
 war-approved leave inside a Leave War command, the drag window's, tells its filer too, as its own window does).
+Fix read 14's items A–D (20 Nov 26; each red first, its own commit; one test file for all): **New:**
+`src/leavewar/multi-sqn-fixread14.test.ts`. **Changed:** item A — `src/state/perms.ts` (`storedRowViolation`: a put judged
+against the saved row carries that row as its before-image too, memory's landing marks kept — `LANDING_ONLY`,
+`withLanding`; a put of a record never saved carries none). Item B — `src/state/notices.ts` (`filerUnits`: each image's own
+men on its own days, or its own squadron where it names nobody). Item C — `src/state/notices.ts` (`noticePass`: new words on
+a war-approved leave told whatever else the war command changed). Item D — `src/state/perms.ts` (`deletedPersonViolation`:
+`DELETE_MARKS` — the archive mark and who archived him held too).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

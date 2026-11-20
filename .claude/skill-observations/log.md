@@ -908,3 +908,22 @@ _13 Nov 26, chat 68 (the sim count fix and the two explanations): no observation
 **Suggested improvement:** drop the reworded-brief step from any guide that carries it; keep "keep each finding in your progress messages as you confirm it" in the Codex reader's prompt (it saved this round's findings); when the provider stops the reader, read its progress messages and reproduce each claim; put to the owner whether to accept the stops or seat another reader.
 **Principle:** a brief is worded for the job, never re-worded to steer past another provider's filter; design the run so a stop keeps what was found.
 
+
+### Observation 985: A test that holds an input object across a Leave War approval reads a stale copy
+
+**Status:** OPEN
+**Date:** 2026-11-20
+**Session context:** chat 122, fix read 14's item C control test (multi-squadron batch 1)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** writing the red test / reading the result
+
+**Issue:** A control test kept a reference to the war-approved leave, then approved the next day's bid. The approval joins
+the day onto the leave by building a NEW record and replacing the old one in the list, so the held reference still read
+the old end date and the test failed for a reason that had nothing to do with the fix. A debug print of the list showed
+the join had happened.
+**Suggested improvement:** in the red-first step, add: "after any action that may replace a record (a merge, a split, a
+join, a re-slice), look the record up again by its id before asserting on it; never assert on a reference taken before
+the action."
+**Principle:** an assertion on an object reference taken before an action proves nothing about a store that replaces
+records rather than editing them in place; re-read by identity after the action.
