@@ -106,7 +106,9 @@ export function inputSpanIso(r:any):[string,string]|null{if(!r)return null; cons
   const b=r.endDate?inputAtIso(r.endDate,r.yr):undefined; return [a,b&&b>a?b:a];}
 const filerOfPh=(r:any):string=>{const ph=placeholderOf(r); const by=ph&&ph.by!=null&&ph.by!==''?ph.by:r.by; return by==null?'':String(by);};
 const stampOf=(r:any):string|null=>r&&typeof r.u==='string'&&r.u?r.u:null;
-export function inputSquadrons(r:any,home:HomeHandle=homeHandle()):string[]{const sp=inputSpanIso(r); if(!sp)return []; const out=new Set<string>(); const named=namedOf(r);
+/* (`fb` — the day an input with no readable date is judged on: the gate hands in today, so a forged date judges nothing
+   away; a reader hands none, and such an input touches nothing) */
+export function inputSquadrons(r:any,home:HomeHandle=homeHandle(),fb?:string):string[]{const sp=inputSpanIso(r)??(r&&fb?[fb,fb] as [string,string]:null); if(!sp)return []; const out=new Set<string>(); const named=namedOf(r);
   if(named.length){for(const e of named){const p=String(e.p); const u0=home.on(p,sp[0]); if(u0)out.add(u0);
       for(const d of home.changesIn(p,sp[0],sp[1])){const u=home.on(p,d); if(u)out.add(u);}} return [...out];}
   const st=stampOf(r); if(st)return [st]; const u=home.on(filerOfPh(r),sp[0]); return u?[u]:[];}

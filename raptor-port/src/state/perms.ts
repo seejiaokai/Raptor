@@ -26,12 +26,13 @@
    replaced did (stated per question), so no headless test changes meaning. */
 import { SESSION, ME, setEffectiveRole } from './auth'
 import { store } from '../engine/hooks'
-import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld, placeOf, namedOf, placeholderOf, inputAtIso } from '../engine/inputs'
+import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld, placeOf, namedOf, placeholderOf, inputSpanIso, inputSquadrons } from '../engine/inputs'
+import { deriveActor } from '../command/actor'
 import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
 import { seedAccounts, ACCOUNTS_LIST, isAdminAccount, isMasterAccount, accountBefore, readAccounts, type Account } from './accounts'
-import { unitRowsBefore, levelBefore, homeBefore, todayIso, homeOn } from './units'
+import { unitRowsBefore, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn } from './units'
 import { PEOPLE } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
 import { unitOf, isUnitId, split } from '../storage/unitid'
@@ -43,7 +44,7 @@ import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim, filerTold, filerVia, foldedInto, joinFilerImgs, dayOfAt, changeFiler, inputUnit, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES } from './notices'
+import { noticeAboutHim, filerTold, filerVia, foldedInto, joinFilerImgs, dayOfAt, changeFiler, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES } from './notices'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 export type Role = 'admin' | 'member' | 'guest' | 'pending'
@@ -1321,6 +1322,65 @@ function levelInForce(a: NonNullable<CommitEnvelope['actor']>, u: string, today:
    placeholder, is his whatever its squadron (§11, "C R U D own" — Fable's F2: across a saved move he was refused his
    own input on either side of it). An input that spans a man's move is then changed only by a master or by the man
    himself — no screen can save a move yet; who else may, filed for the Transfer batch. */
+/* WHOM MAY HE FILE THIS INPUT FOR — 7c's who-rule as ONE BODY (the reshape plan §3.3 C6 — Astra 5, Opus M5 of round 2).
+   A day is not enough: Ranger is 142's on a draft's first day and 149's after it, so a first-day picker offered him to
+   Hunter, 142's plain admin, and the save was refused (this gate reads every day). The gate, the Inputs window's people
+   picker (a man is offered where the draft with him added passes), its save door (before the gate) and an existing
+   input's save all ask this one body, again whenever the draft's dates or people change.
+   `before` / `after` — the input as it stood and as it would stand (null: made, or deleted). Read over `rows` (the unit
+   rows the gate judges by — before the command; the doors' live rows). Returns null where it passes, else the first man
+   (null for an input naming nobody) and squadron that refuse it, with the actor's level there; `own` — his own input
+   (naming only him, no placeholder, before and after) that he is not an admin of every squadron of: the gate then judges
+   it by the member's own-input rules instead of refusing (fix read 4, claim 1), and a door offers it.
+   Today's exceptions kept: his own take-out of an input he is in (a member's, D755); his own input whatever its
+   squadron (F2, §11 "C R U D own" — an admin's as an admin only where he is an admin of all it touches, fix read 3, O1);
+   a member's filing for others (judged by the member section after this). D2221 as built, D2240's reading: a span across
+   a move is changed only by the man, or by an admin of every squadron it touches — at home there, by Plan of it, or a
+   master admin. */
+export interface InputWho { pid: string | null; unit: string; level: string | null; own?: true }
+export function inputWhoProblem(a: Actor, rows: UnitRows, before: any, after: any, today: string = todayIso()): InputWho | null {
+  if (!a || a.role === 'system') return null
+  const was = before ?? null, is = after ?? null
+  if (JSON.stringify(was) === JSON.stringify(is)) return null
+  const me = a.personId != null ? String(a.personId) : null
+  const named = (r: any): string[] => (r && typeof r === 'object' ? namedOf(r).map((e: any) => String(e.p)) : [])
+  /* the rows' own handle: each man's squadron on a day, and the days it changes — never the live rows */
+  const home = { on: (p: string, d: string) => homeBefore(p, d, rows), changesIn: (p: string, x: string, y: string) => homeChangesBefore(p, x, y, rows) }
+  /* every (man, squadron) the input touches — an input with no readable date is judged on today */
+  const touched = (r: any): Array<{ pid: string | null; unit: string }> => {
+    if (!r || typeof r !== 'object') return []
+    const sp = inputSpanIso(r) ?? [today, today]
+    const ids = named(r)
+    if (!ids.length) return inputSquadrons(r, home, today).map(unit => ({ pid: null, unit }))
+    const out: Array<{ pid: string | null; unit: string }> = []
+    for (const p of ids) {
+      const u0 = home.on(p, sp[0]); if (u0) out.push({ pid: p, unit: u0 })
+      for (const d of home.changesIn(p, sp[0], sp[1])) { const u = home.on(p, d); if (u) out.push({ pid: p, unit: u }) }
+    }
+    return out
+  }
+  /* (his own part only — the gate's `ownPart`: nothing but his entry differs, and the filer's handover with him. Forward,
+     only as a take-out; back in, only as his own verified replay, which the gate judges before asking this body) */
+  if (a.role !== 'admin' && was && is && me != null && ownPart(me, was, is) && holds(was, me) && !holds(is, me)) return null
+  const lvOf = (u: string) => levelInForce(a, u, today, rows)
+  const both = [...touched(was), ...touched(is)]
+  const onlyMe = (r: any) => r == null || (!placeholderOf(r) && named(r).length === 1 && named(r)[0] === me)
+  if (me != null && onlyMe(was) && onlyMe(is)) {
+    if (a.role !== 'admin') return null
+    const bad = both.find(t => lvOf(t.unit) !== 'admin')
+    return bad ? { pid: bad.pid, unit: bad.unit, level: lvOf(bad.unit), own: true } : null
+  }
+  for (const t of both) {
+    const lv = lvOf(t.unit)
+    const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
+    if (!ok) return { pid: t.pid, unit: t.unit, level: lv }
+  }
+  return null
+}
+/* the same question asked by a door, for the person signed in, over the live rows (the picker, the save door) */
+export const inputWhoProblemNow = (before: any, after: any): InputWho | null =>
+  inputWhoProblem(deriveActor(), unitRowsBefore([]), before, after)
+
 function inputUnitViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system') return null
@@ -1328,65 +1388,28 @@ function inputUnitViolation(env: CommitEnvelope): string | null {
   if (!ins.length) return null
   const today = todayIso()
   const before = unitRowsBefore(env.changes)
-  const named = (r: any): string[] => (r && typeof r === 'object' ? namedOf(r).map((e: any) => String(e.p)) : [])
-  /* the days a man's home is read on: the input's first day and every saved move inside its span */
-  const daysOf = (r: any): string[] => {
-    const a = inputAtIso(r.date, r.yr) || today
-    let b = r.endDate ? inputAtIso(r.endDate, r.yr) : undefined
-    if (b && b < a && r.yr != null) b = inputAtIso(r.endDate, Number(r.yr) + 1)
-    const out = new Set<string>([a])
-    if (b && b > a) for (const h of before.homes) if (h.from > a && h.from <= b) out.add(h.from)
-    return [...out]
-  }
-  const unitsOf = (r: any): string[] => {
-    if (!r || typeof r !== 'object') return []
-    const ids = named(r)
-    if (ids.length) return daysOf(r).flatMap(d => ids.map(p => homeBefore(p, d, before))).filter(Boolean) as string[]
-    /* (naming nobody: the input's own squadron — one body with the filer's test, state/notices.ts inputUnit, fix read 6) */
-    const u = inputUnit(r, (p, d) => homeBefore(p, d, before))
-    return u ? [u] : []
-  }
   for (const c of ins) {
     const was = c.before ?? null, is = c.op === 'delete' ? null : c.after ?? null
     if (JSON.stringify(was) === JSON.stringify(is)) continue
-    /* (his own part only — the gate's `ownPart`: nothing but his entry differs, and the filer's handover with him (Astra
-       3: the old test let him rewrite what was left for the other squadron's man in the same command). Forward, only as
-       a take-out; back in, only as his own verified replay — his Undo of the take-out, which the squadron test refused
-       before the replay check further down was reached.) */
+    /* back into an input he was taken out of — only as his own verified replay (his Undo of the take-out) */
     if (a.role !== 'admin' && was && is && a.personId != null && ownPart(String(a.personId), was, is)) {
       const me = String(a.personId)
-      if (holds(was, me) && !holds(is, me)) continue
       if (!holds(was, me) && holds(is, me) && env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) continue
     }
-    /* a man's own input — naming only him, before and after, no placeholder — is his whatever its squadron (F2). An
-       admin's too (fix read 3, O1): the role test held it to members, so a 142 admin moved to 149 from tomorrow could not
-       file his own leave for next week, nor change his own leave of a 142 day after the move, while a member in his
-       place could — §11's "C R U D own" is everyone's. The role test stays only on the take-out branch above, a member's. */
-    const onlyMe = (r: any) => r == null || (!placeholderOf(r) && named(r).length === 1 && named(r)[0] === String(a.personId))
-    if (a.personId != null && onlyMe(was) && onlyMe(is)) {
-      /* …BUT AS A MEMBER WHERE HE IS NOT ITS ADMIN (fix read 4, claim 1 — the Opus read's §1). For a member the own-input
-         rules still ran after this (the member section's inputBreach); for an admin nothing did, since that section
-         returns early for an admin — so Hunter, 142's admin moved to 149 from tomorrow, saved his own leave on 149's days
-         with the war's approved mark or a scheduler's cancel mark, and cleared the cancel 149's admin had put on it (and
-         the same after his move on 142's days). His own input passes as an admin's only where he is an admin of every
-         squadron it touches, before and after; anywhere else the member's own-input rules hold him, and any breach
-         refuses it. */
-      if (a.role !== 'admin') continue
-      const mine = new Set([...unitsOf(was), ...unitsOf(is)])
-      if ([...mine].every(u => levelInForce(a, u, today, before) === 'admin')) continue
+    const who = inputWhoProblem(a, before, was, is, today)
+    if (!who) continue
+    if (who.own) {
+      /* HIS OWN INPUT, AS A MEMBER WHERE HE IS NOT ITS ADMIN (fix read 4, claim 1 — the Opus read's §1): the member's
+         own-input rules hold him, and any breach refuses it — so Hunter, 142's admin moved to 149 from tomorrow, can no
+         longer save his own leave on 149's days with the war's approved mark or a scheduler's cancel mark */
       const replayed = env.origin === 'restore' && !!REPLAY && !!REPLAY(env)?.(c)
       const bad = inputBreach(env, c, String(a.personId), replayed)
       if (bad) return `${bad} (inputs/${c.id})`
-      /* (and the member's second own-input rule, who placed a leave on the war — fix read 5's security read, FR5-SEC-1:
-         without it he stamped himself as the placer of his own leave in 149's war, or rewrote 149's stamp) */
+      /* (and the member's second own-input rule, who placed a leave on the war — fix read 5's security read, FR5-SEC-1) */
       if (!replayed && warPlacerForged(env, c)) return `who placed a leave on the war (inputs/${c.id})`
       continue
     }
-    for (const u of new Set([...unitsOf(was), ...unitsOf(is)])) {
-      const lv = levelInForce(a, u, today, before)
-      const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
-      if (!ok) return `an input of another squadron (${u}) changed by one with ${lv ? `${lv} rights` : 'no rights'} there (inputs/${c.id})`
-    }
+    return `an input of another squadron (${who.unit}) changed by one with ${who.level ? `${who.level} rights` : 'no rights'} there (inputs/${c.id})`
   }
   return null
 }
