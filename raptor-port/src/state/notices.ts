@@ -202,15 +202,22 @@ const namedIn = (rs: readonly any[]): Set<string> => {
  *  the named man's home that day is it. A moved filer is still not told (D2223): his own home and rights are read on `iso`
  *  (today), in filerVia. The pass, the gate (state/perms.ts toldBy, filerMarkOk) and the line's mark (Notice.fu) read this
  *  one body, so the gate lets ride exactly the line the pass writes, marked with the same squadrons. An input whose dates
- *  cannot be read is judged on today, as before. */
+ *  cannot be read is judged on today, as before.
+ *  EACH IMAGE'S OWN MEN ON ITS OWN DAYS (fix read 14, item B — Astra A1; his D2223, D2228): it crossed every man named in
+ *  either image with the days of both, so a change moving Hunter's LL for Ranger on 23 Jul to Casper on 27 Jul counted
+ *  Ranger on the 27th — a pair no image ever had — and Ranger, 149's from 25 Jul, told Hunter (149's admin since his move)
+ *  through 149, though Ranger on the 23rd and Casper on the 27th are both 142's. Now each image counts as it would alone:
+ *  its own named men over its own days, or, naming nobody, its own squadron (inputUnit) — the change touches both. */
 export function filerUnits(rs: readonly any[], iso?: string): string[] {
   const named = namedIn(rs)
   const out = new Set<string>()
   if (named.size) {
     for (const r of rs) {
       if (!r) continue
+      const own = ids(r)
+      if (!own.length) { const u = inputUnit(r); if (u) out.add(u); continue }
       const span = inputSpan(r) ?? (() => { const t = iso ?? todayIso(); return [t, t] as const })()
-      for (const m of named) for (const u of homesOver(m, span[0], span[1])) out.add(u)
+      for (const m of own) for (const u of homesOver(m, span[0], span[1])) out.add(u)
     }
   } else for (const r of rs) { const u = r ? inputUnit(r) : null; if (u) out.add(u) }
   return [...out]

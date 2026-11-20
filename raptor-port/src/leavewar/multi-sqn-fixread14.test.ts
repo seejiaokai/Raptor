@@ -124,7 +124,25 @@ describe("Astra A1 — a moved filer, an admin of 149, is not told of a change w
     expect(writeInputsBatch(() => { const x: any = INPUTS.find((r: any) => r.iid === IID); x.person = 'casper'; x.date = 'Jul 27' })).toBe(true)
     expect(NOTICES.filter(n => n.to === 'prowler' && n.iid === IID).map(n => n.fu), "Ranger on the 23rd and Casper on the 27th are both 142's").toEqual([])
   })
+  /* (the fix, item B): each image counts as it would alone — an image naming nobody by its own squadron (inputUnit), no
+     longer by the other image's men over its days */
+  it("(the fix) an ALL AVAIL meeting Hunter filed on 23 Jul, changed to name Casper (149's from 16 Jul) on 27 Jul: 142 by the meeting, 149 by Casper", () => {
+    homes('casper', 'hk', [['u142', '2026-07-15'], ['u149', '2026-07-16']])
+    on(17)
+    const before = { iid: IID, person: 'allavail', people: [{ p: 'allavail', by: 'prowler', at: Date.now() }], type: 'Meeting', date: 'Jul 23', yr: 2026, by: 'prowler', at: Date.now() }
+    const after = { ...before, person: 'casper', people: undefined, date: 'Jul 27' }
+    expect(filerUnits([before]), 'the meeting alone').toEqual(['u142'])
+    expect(filerUnits([before, after]).sort()).toEqual(['u142', 'u149'])
+  })
+  it("(the fix) Ranger on 23 Jul before, Casper on 27 Jul after — Ranger 149's from 25 Jul: 142 only; Ranger himself moved to the 27th: 142 and 149", () => {
+    homes('bane', 'hr', [['u142', '2026-07-15'], ['u149', '2026-07-25']])
+    on(17)
+    const before = { iid: IID, person: 'bane', type: 'LL', date: 'Jul 23', yr: 2026, by: 'prowler', at: Date.now() }
+    expect(filerUnits([before, { ...before, person: 'casper', date: 'Jul 27' }])).toEqual(['u142'])
+    expect(filerUnits([before, { ...before, date: 'Jul 27' }]).sort()).toEqual(['u142', 'u149'])
+  })
 })
+import { filerUnits } from '../state/notices'
 
 /* Astra A2: the drag window's Approve — the words and the decision in one command — leaves the filer of an approved leave
    among the days untold */
