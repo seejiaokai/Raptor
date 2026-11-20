@@ -21,7 +21,7 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/skill-notes-review-0c3a78 -->
-### CHAT 121 (carrying on chat 120) — the skill-notes review of 20 Nov 26 (his "u can do the skills notes log review in a separate chat"), started from chat 118 — rewritten 20 Nov 26 by chat 121, waiting on his final approval — verify before use
+### CHAT 121 (carrying on chat 120) — the skill-notes review of 20 Nov 26 (his "u can do the skills notes log review in a separate chat"), started from chat 118 — rewritten 20 Nov 26 by chat 121: MERGED (pull request 815, on his "merge live", live on Vercel) — verify before use
 - **Branch / PR:** `claude/skill-notes-review-0c3a78`, no pull request yet; push only by `git push origin HEAD:refs/heads/claude/skill-notes-review-0c3a78` (no upstream). Never touches `claude/multi-sqn-b1-107` or pull requests 806 and 808.
 - **What:** 69 OPEN notes — `main`'s 57 and 12 held only on open branches (939–943 on `claude/rules-check-small-batch`, 975–981 on `claude/multi-sqn-b1-107`, copied to `_review/branch-notes.md`). Holding folder `.claude/skill-updates/2026-11-20/` (method: `.claude/skills/TASK-OBSERVER-VENDORED.md` §Reviews in this repo).
 - **Done:** four helpers sorted and drafted (tables `_review/dispositions-*.md`, reports `_review/report-*.md`; `_install/check-dispositions.mjs` OK: APPLY 54, FILED 9, MEMORY 2, REFLECTED 2, OPEN 2 — 120, 122 deferred, D73). His answers in `_review/answers.md`: all four rounds "yes", as recommended (D2230). The overnight draft's compaction figures moved to D2229's.
