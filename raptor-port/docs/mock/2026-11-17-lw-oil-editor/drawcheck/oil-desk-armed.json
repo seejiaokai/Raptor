@@ -1,0 +1,356 @@
+{
+ "state": "oil-desk-armed",
+ "drawing": {
+  "script": "docs/mock/2026-11-17-lw-oil-editor/oil.mjs",
+  "shot": "desk-o2-one-armed"
+ },
+ "recorded": "2026-11-17T05:44:01.380Z",
+ "drawnOn": "main at 3a51c06a3",
+ "checkout": "00ffaea76",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "editor": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 645,
+    "y": 515.2,
+    "w": 283,
+    "h": 100
+   },
+   "ink": {
+    "x": 662,
+    "y": 522,
+    "w": 213.5,
+    "h": 85.2
+   },
+   "text": "18 Apr 26 Save Cancel Really delete?",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.oil-edit.mock"
+  },
+  "amount": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 645,
+    "y": 517.2,
+    "w": 56,
+    "h": 26
+   },
+   "ink": {
+    "x": 654,
+    "y": 523,
+    "w": 6.5,
+    "h": 14.4
+   },
+   "text": "1 ",
+   "typed": true,
+   "marked": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 12px",
+    "spacing": "normal"
+   },
+   "tag": "input.oil-num"
+  },
+  "date": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 823,
+    "y": 523,
+    "w": 105,
+    "h": 14.3
+   },
+   "ink": {
+    "x": 829,
+    "y": 522,
+    "w": 46.5,
+    "h": 15
+   },
+   "text": "18 Apr 26",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.oil-dateread"
+  },
+  "reason": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 645,
+    "y": 551.2,
+    "w": 114,
+    "h": 26
+   },
+   "ink": {
+    "x": 654,
+    "y": 557,
+    "w": 20.3,
+    "h": 14.4
+   },
+   "text": "SIM ",
+   "typed": true,
+   "marked": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 12px",
+    "spacing": "normal"
+   },
+   "tag": "input.oil-text"
+  },
+  "given-by": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 765,
+    "y": 551.2,
+    "w": 163,
+    "h": 26
+   },
+   "ink": null,
+   "text": " ",
+   "typed": true,
+   "marked": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 12px",
+    "spacing": "normal"
+   },
+   "tag": "input.oil-text.given"
+  },
+  "save": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 645,
+    "y": 583.2,
+    "w": 63.2,
+    "h": 32
+   },
+   "ink": {
+    "x": 662,
+    "y": 591.2,
+    "w": 29.2,
+    "h": 16
+   },
+   "text": "Save",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(87, 201, 122, 0.16)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(87, 201, 122, 0.5)",
+     "1px solid rgba(87, 201, 122, 0.5)",
+     "1px solid rgba(87, 201, 122, 0.5)",
+     "1px solid rgba(87, 201, 122, 0.5)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(143, 224, 168)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 12.5px",
+    "spacing": "0.5px"
+   },
+   "tag": "button.dchip.approve"
+  },
+  "cancel": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 712.2,
+    "y": 583.2,
+    "w": 59.9,
+    "h": 32
+   },
+   "ink": {
+    "x": 724.2,
+    "y": 591.2,
+    "w": 35.9,
+    "h": 16
+   },
+   "text": "Cancel",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px dashed rgb(42, 49, 58)",
+     "1px dashed rgb(42, 49, 58)",
+     "1px dashed rgb(42, 49, 58)",
+     "1px dashed rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "normal"
+   },
+   "tag": "button.tchip.clear"
+  },
+  "delete": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 776,
+    "y": 583.2,
+    "w": 98.5,
+    "h": 32
+   },
+   "ink": {
+    "x": 788,
+    "y": 591.2,
+    "w": 74.5,
+    "h": 16
+   },
+   "text": "Really delete?",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(255, 92, 92, 0.6)",
+     "1px solid rgba(255, 92, 92, 0.6)",
+     "1px solid rgba(255, 92, 92, 0.6)",
+     "1px solid rgba(255, 92, 92, 0.6)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(255, 92, 92)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "normal"
+   },
+   "tag": "button.tchip.arm"
+  }
+ },
+ "approved": {
+  "picture": "desk-o2-one-armed.png",
+  "identical": true
+ }
+}

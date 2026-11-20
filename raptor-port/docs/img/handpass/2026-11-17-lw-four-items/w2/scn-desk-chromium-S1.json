@@ -1,0 +1,83 @@
+[
+ {
+  "id": "S1",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "opened the editor on the active (CNY, Ace) award (l4)",
+  "saw": "same layout as the first award (editor [283,100])",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S1-l4.png"
+ },
+ {
+  "id": "S1",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "opened the editor on the partly used (Weekend recovery, 0.5 left of 1) award (l9)",
+  "saw": "same layout as the first award (editor [283,100])",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S1-l9.png"
+ },
+ {
+  "id": "S1",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "opened the editor on the 2027 lane (Overseas exercise, Trident) award (dol-4)",
+  "saw": "same layout as the first award (editor [283,100])",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S1-dol-4.png"
+ },
+ {
+  "id": "S1",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "opened the editor on the AM half-day (SIM) award (dol-5)",
+  "saw": "same layout as the first award (editor [283,100])",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S1-dol-5.png"
+ },
+ {
+  "id": "S1",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "opened the correction (negative) (dol-3)",
+  "saw": "a different editor opens (the correction editor: amount, date picker, reason, Save, Cancel, Delete; no award editor, no AM/PM place) — a boundary, not the award editor of D2155",
+  "verdict": "RECORDED",
+  "pics": "w2-desk-chromium-S1-dol-3.png"
+ },
+ {
+  "id": "S1",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "tapped a carried-in opening figure box",
+  "saw": "an award editor opened: false",
+  "verdict": "RECORDED",
+  "pics": "w2-desk-chromium-S1-carried-in.png"
+ },
+ {
+  "id": "S1",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "gave Ranger a fresh 1-day award (ol-mwkaqciq11ium), took 1 day of OIL on Wed 2 Dec (\"OIL0\" pressed), opened the award",
+  "saw": "award box reads \"+117 NovW2S1 to be used up−1 2 Dec0 left\"; editor same layout",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S1-fully-used.png"
+ },
+ {
+  "id": "S1",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "set the tracker expiry to 30 days (settings), opened the old CNY award",
+  "saw": "award box reads \"+219 JanCNY workplanexpired 18 Feb\"; editor same layout",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S1-expired.png"
+ },
+ {
+  "id": "S1",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "pressed the archive mark again (the archive lane had been opened for the used-up award)",
+  "saw": "{\"rows\":50,\"archBtns\":50,\"ents\":15} (rows, archive marks, award boxes now drawn; see the picture)",
+  "verdict": "RECORDED",
+  "pics": "w2-desk-chromium-S1-archive-pressed.png"
+ }
+]

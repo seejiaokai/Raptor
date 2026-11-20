@@ -1,0 +1,4860 @@
+{
+ "spec": "Leave War OIL award editor, option 2",
+ "dist": "C:\\Users\\User\\AppData\\Local\\Temp\\claude\\37df10f156419f1e\\8632b059-2c58-4dda-b04c-9e3fccabc96a\\scratchpad\\walk-dist-356e2fc6a",
+ "all": false,
+ "report": [
+  {
+   "state": "oil-desk-half",
+   "title": "The award editor, a half day, desktop, admin",
+   "drawing": {
+    "script": "docs/mock/2026-11-17-lw-oil-editor/oil.mjs",
+    "shot": "desk-o2-half"
+   },
+   "approved": {
+    "picture": "desk-o2-half.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "editor",
+     "label": "the editor",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 515.2,
+        "w": 283,
+        "h": 100
+       },
+       "ink": {
+        "x": 662,
+        "y": 522,
+        "w": 213.5,
+        "h": 85.2
+       },
+       "text": "AM PM 18 Apr 26 Save Cancel Delete",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.oil-edit.mock"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 515.2,
+        "w": 283,
+        "h": 100
+       },
+       "ink": {
+        "x": 662,
+        "y": 522,
+        "w": 213.5,
+        "h": 85.2
+       },
+       "text": "AM PM 18 Apr 26 Save Cancel Delete",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.oil-edit.aw"
+      }
+     }
+    },
+    {
+     "part": "amount",
+     "label": "the amount box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 517.2,
+        "w": 56,
+        "h": 26
+       },
+       "ink": {
+        "x": 654,
+        "y": 523,
+        "w": 15.5,
+        "h": 14.4
+       },
+       "text": "0.5 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-num"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 517.2,
+        "w": 56,
+        "h": 26
+       },
+       "ink": {
+        "x": 654,
+        "y": 523,
+        "w": 15.5,
+        "h": 14.4
+       },
+       "text": "0.5 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-num"
+      }
+     }
+    },
+    {
+     "part": "am",
+     "label": "AM",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 707,
+        "y": 515.2,
+        "w": 52,
+        "h": 30
+       },
+       "ink": {
+        "x": 723.4,
+        "y": 522.2,
+        "w": 19.2,
+        "h": 16
+       },
+       "text": "AM",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.14)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(59, 198, 232, 0.55)",
+         "1px solid rgba(59, 198, 232, 0.55)",
+         "1px solid rgba(59, 198, 232, 0.55)",
+         "1px solid rgba(59, 198, 232, 0.55)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.half.on"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 707,
+        "y": 515.2,
+        "w": 52,
+        "h": 30
+       },
+       "ink": {
+        "x": 723.4,
+        "y": 522.2,
+        "w": 19.2,
+        "h": 16
+       },
+       "text": "AM",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.14)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(59, 198, 232, 0.55)",
+         "1px solid rgba(59, 198, 232, 0.55)",
+         "1px solid rgba(59, 198, 232, 0.55)",
+         "1px solid rgba(59, 198, 232, 0.55)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.half.on"
+      }
+     }
+    },
+    {
+     "part": "pm",
+     "label": "PM",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 765,
+        "y": 515.2,
+        "w": 52,
+        "h": 30
+       },
+       "ink": {
+        "x": 781.9,
+        "y": 522.2,
+        "w": 18.1,
+        "h": 16
+       },
+       "text": "PM",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.half"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 765,
+        "y": 515.2,
+        "w": 52,
+        "h": 30
+       },
+       "ink": {
+        "x": 781.9,
+        "y": 522.2,
+        "w": 18.1,
+        "h": 16
+       },
+       "text": "PM",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.half"
+      }
+     }
+    },
+    {
+     "part": "date",
+     "label": "the date",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 823,
+        "y": 523,
+        "w": 105,
+        "h": 14.3
+       },
+       "ink": {
+        "x": 829,
+        "y": 522,
+        "w": 46.5,
+        "h": 15
+       },
+       "text": "18 Apr 26",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.oil-dateread"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 823,
+        "y": 523,
+        "w": 105,
+        "h": 14.3
+       },
+       "ink": {
+        "x": 829,
+        "y": 522,
+        "w": 46.5,
+        "h": 15
+       },
+       "text": "18 Apr 26",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.oil-dateread"
+      }
+     }
+    },
+    {
+     "part": "reason",
+     "label": "the reason box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 551.2,
+        "w": 114,
+        "h": 26
+       },
+       "ink": {
+        "x": 654,
+        "y": 557,
+        "w": 20.3,
+        "h": 14.4
+       },
+       "text": "SIM ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 551.2,
+        "w": 114,
+        "h": 26
+       },
+       "ink": {
+        "x": 654,
+        "y": 557,
+        "w": 20.3,
+        "h": 14.4
+       },
+       "text": "SIM ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text"
+      }
+     }
+    },
+    {
+     "part": "given-by",
+     "label": "the given-by box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 765,
+        "y": 551.2,
+        "w": 163,
+        "h": 26
+       },
+       "ink": null,
+       "text": " ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text.given"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 765,
+        "y": 551.2,
+        "w": 163,
+        "h": 26
+       },
+       "ink": null,
+       "text": " ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text.given"
+      }
+     }
+    },
+    {
+     "part": "save",
+     "label": "Save",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 583.2,
+        "w": 63.2,
+        "h": 32
+       },
+       "ink": {
+        "x": 662,
+        "y": 591.2,
+        "w": 29.2,
+        "h": 16
+       },
+       "text": "Save",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(87, 201, 122, 0.16)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(87, 201, 122, 0.5)",
+         "1px solid rgba(87, 201, 122, 0.5)",
+         "1px solid rgba(87, 201, 122, 0.5)",
+         "1px solid rgba(87, 201, 122, 0.5)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(143, 224, 168)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "0.5px"
+       },
+       "tag": "button.dchip.approve"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 583.2,
+        "w": 63.2,
+        "h": 32
+       },
+       "ink": {
+        "x": 662,
+        "y": 591.2,
+        "w": 29.2,
+        "h": 16
+       },
+       "text": "Save",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(87, 201, 122, 0.16)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(87, 201, 122, 0.5)",
+         "1px solid rgba(87, 201, 122, 0.5)",
+         "1px solid rgba(87, 201, 122, 0.5)",
+         "1px solid rgba(87, 201, 122, 0.5)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(143, 224, 168)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "0.5px"
+       },
+       "tag": "button.dchip.approve"
+      }
+     }
+    },
+    {
+     "part": "cancel",
+     "label": "Cancel",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 712.2,
+        "y": 583.2,
+        "w": 59.9,
+        "h": 32
+       },
+       "ink": {
+        "x": 724.2,
+        "y": 591.2,
+        "w": 35.9,
+        "h": 16
+       },
+       "text": "Cancel",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.clear"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 712.2,
+        "y": 583.2,
+        "w": 59.9,
+        "h": 32
+       },
+       "ink": {
+        "x": 724.2,
+        "y": 591.2,
+        "w": 35.9,
+        "h": 16
+       },
+       "text": "Cancel",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.clear"
+      }
+     }
+    },
+    {
+     "part": "delete",
+     "label": "Delete",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 776,
+        "y": 583.2,
+        "w": 98.5,
+        "h": 32
+       },
+       "ink": {
+        "x": 807.7,
+        "y": 591.2,
+        "w": 35.1,
+        "h": 16
+       },
+       "text": "Delete",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.clear"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 776,
+        "y": 583.2,
+        "w": 98.5,
+        "h": 32
+       },
+       "ink": {
+        "x": 807.7,
+        "y": 591.2,
+        "w": 35.1,
+        "h": 16
+       },
+       "text": "Delete",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.oil-delb.clear"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "oil-desk-one",
+   "title": "The award editor, one day, desktop, admin",
+   "drawing": {
+    "script": "docs/mock/2026-11-17-lw-oil-editor/oil.mjs",
+    "shot": "desk-o2-one"
+   },
+   "approved": {
+    "picture": "desk-o2-one.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "editor",
+     "label": "the editor",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 515.2,
+        "w": 283,
+        "h": 100
+       },
+       "ink": {
+        "x": 662,
+        "y": 522,
+        "w": 213.5,
+        "h": 85.2
+       },
+       "text": "18 Apr 26 Save Cancel Delete",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.oil-edit.mock"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 515.2,
+        "w": 283,
+        "h": 100
+       },
+       "ink": {
+        "x": 662,
+        "y": 522,
+        "w": 213.5,
+        "h": 85.2
+       },
+       "text": "18 Apr 26 Save Cancel Delete",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.oil-edit.aw"
+      }
+     }
+    },
+    {
+     "part": "amount",
+     "label": "the amount box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 517.2,
+        "w": 56,
+        "h": 26
+       },
+       "ink": {
+        "x": 654,
+        "y": 523,
+        "w": 6.5,
+        "h": 14.4
+       },
+       "text": "1 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-num"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 517.2,
+        "w": 56,
+        "h": 26
+       },
+       "ink": {
+        "x": 654,
+        "y": 523,
+        "w": 6.5,
+        "h": 14.4
+       },
+       "text": "1 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-num"
+      }
+     }
+    },
+    {
+     "part": "date",
+     "label": "the date",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 823,
+        "y": 523,
+        "w": 105,
+        "h": 14.3
+       },
+       "ink": {
+        "x": 829,
+        "y": 522,
+        "w": 46.5,
+        "h": 15
+       },
+       "text": "18 Apr 26",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.oil-dateread"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 823,
+        "y": 523,
+        "w": 105,
+        "h": 14.3
+       },
+       "ink": {
+        "x": 829,
+        "y": 522,
+        "w": 46.5,
+        "h": 15
+       },
+       "text": "18 Apr 26",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.oil-dateread"
+      }
+     }
+    },
+    {
+     "part": "reason",
+     "label": "the reason box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 551.2,
+        "w": 114,
+        "h": 26
+       },
+       "ink": {
+        "x": 654,
+        "y": 557,
+        "w": 20.3,
+        "h": 14.4
+       },
+       "text": "SIM ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 551.2,
+        "w": 114,
+        "h": 26
+       },
+       "ink": {
+        "x": 654,
+        "y": 557,
+        "w": 20.3,
+        "h": 14.4
+       },
+       "text": "SIM ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text"
+      }
+     }
+    },
+    {
+     "part": "given-by",
+     "label": "the given-by box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 765,
+        "y": 551.2,
+        "w": 163,
+        "h": 26
+       },
+       "ink": null,
+       "text": " ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text.given"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 765,
+        "y": 551.2,
+        "w": 163,
+        "h": 26
+       },
+       "ink": null,
+       "text": " ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text.given"
+      }
+     }
+    },
+    {
+     "part": "save",
+     "label": "Save",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 583.2,
+        "w": 63.2,
+        "h": 32
+       },
+       "ink": {
+        "x": 662,
+        "y": 591.2,
+        "w": 29.2,
+        "h": 16
+       },
+       "text": "Save",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(87, 201, 122, 0.16)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(87, 201, 122, 0.5)",
+         "1px solid rgba(87, 201, 122, 0.5)",
+         "1px solid rgba(87, 201, 122, 0.5)",
+         "1px solid rgba(87, 201, 122, 0.5)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(143, 224, 168)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "0.5px"
+       },
+       "tag": "button.dchip.approve"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 583.2,
+        "w": 63.2,
+        "h": 32
+       },
+       "ink": {
+        "x": 662,
+        "y": 591.2,
+        "w": 29.2,
+        "h": 16
+       },
+       "text": "Save",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(87, 201, 122, 0.16)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(87, 201, 122, 0.5)",
+         "1px solid rgba(87, 201, 122, 0.5)",
+         "1px solid rgba(87, 201, 122, 0.5)",
+         "1px solid rgba(87, 201, 122, 0.5)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(143, 224, 168)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "0.5px"
+       },
+       "tag": "button.dchip.approve"
+      }
+     }
+    },
+    {
+     "part": "cancel",
+     "label": "Cancel",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 712.2,
+        "y": 583.2,
+        "w": 59.9,
+        "h": 32
+       },
+       "ink": {
+        "x": 724.2,
+        "y": 591.2,
+        "w": 35.9,
+        "h": 16
+       },
+       "text": "Cancel",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.clear"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 712.2,
+        "y": 583.2,
+        "w": 59.9,
+        "h": 32
+       },
+       "ink": {
+        "x": 724.2,
+        "y": 591.2,
+        "w": 35.9,
+        "h": 16
+       },
+       "text": "Cancel",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.clear"
+      }
+     }
+    },
+    {
+     "part": "delete",
+     "label": "Delete",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 776,
+        "y": 583.2,
+        "w": 98.5,
+        "h": 32
+       },
+       "ink": {
+        "x": 807.7,
+        "y": 591.2,
+        "w": 35.1,
+        "h": 16
+       },
+       "text": "Delete",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.clear"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 776,
+        "y": 583.2,
+        "w": 98.5,
+        "h": 32
+       },
+       "ink": {
+        "x": 807.7,
+        "y": 591.2,
+        "w": 35.1,
+        "h": 16
+       },
+       "text": "Delete",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.oil-delb.clear"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "oil-desk-armed",
+   "title": "The award editor, one day, Delete armed, desktop, admin",
+   "drawing": {
+    "script": "docs/mock/2026-11-17-lw-oil-editor/oil.mjs",
+    "shot": "desk-o2-one-armed"
+   },
+   "approved": {
+    "picture": "desk-o2-one-armed.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "editor",
+     "label": "the editor",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 515.2,
+        "w": 283,
+        "h": 100
+       },
+       "ink": {
+        "x": 662,
+        "y": 522,
+        "w": 213.5,
+        "h": 85.2
+       },
+       "text": "18 Apr 26 Save Cancel Really delete?",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.oil-edit.mock"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 515.2,
+        "w": 283,
+        "h": 100
+       },
+       "ink": {
+        "x": 662,
+        "y": 522,
+        "w": 213.5,
+        "h": 85.2
+       },
+       "text": "18 Apr 26 Save Cancel Really delete?",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.oil-edit.aw"
+      }
+     }
+    },
+    {
+     "part": "amount",
+     "label": "the amount box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 517.2,
+        "w": 56,
+        "h": 26
+       },
+       "ink": {
+        "x": 654,
+        "y": 523,
+        "w": 6.5,
+        "h": 14.4
+       },
+       "text": "1 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-num"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 517.2,
+        "w": 56,
+        "h": 26
+       },
+       "ink": {
+        "x": 654,
+        "y": 523,
+        "w": 6.5,
+        "h": 14.4
+       },
+       "text": "1 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-num"
+      }
+     }
+    },
+    {
+     "part": "date",
+     "label": "the date",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 823,
+        "y": 523,
+        "w": 105,
+        "h": 14.3
+       },
+       "ink": {
+        "x": 829,
+        "y": 522,
+        "w": 46.5,
+        "h": 15
+       },
+       "text": "18 Apr 26",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.oil-dateread"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 823,
+        "y": 523,
+        "w": 105,
+        "h": 14.3
+       },
+       "ink": {
+        "x": 829,
+        "y": 522,
+        "w": 46.5,
+        "h": 15
+       },
+       "text": "18 Apr 26",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.oil-dateread"
+      }
+     }
+    },
+    {
+     "part": "reason",
+     "label": "the reason box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 551.2,
+        "w": 114,
+        "h": 26
+       },
+       "ink": {
+        "x": 654,
+        "y": 557,
+        "w": 20.3,
+        "h": 14.4
+       },
+       "text": "SIM ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 551.2,
+        "w": 114,
+        "h": 26
+       },
+       "ink": {
+        "x": 654,
+        "y": 557,
+        "w": 20.3,
+        "h": 14.4
+       },
+       "text": "SIM ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text"
+      }
+     }
+    },
+    {
+     "part": "given-by",
+     "label": "the given-by box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 765,
+        "y": 551.2,
+        "w": 163,
+        "h": 26
+       },
+       "ink": null,
+       "text": " ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text.given"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 765,
+        "y": 551.2,
+        "w": 163,
+        "h": 26
+       },
+       "ink": null,
+       "text": " ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text.given"
+      }
+     }
+    },
+    {
+     "part": "save",
+     "label": "Save",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 583.2,
+        "w": 63.2,
+        "h": 32
+       },
+       "ink": {
+        "x": 662,
+        "y": 591.2,
+        "w": 29.2,
+        "h": 16
+       },
+       "text": "Save",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(87, 201, 122, 0.16)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(87, 201, 122, 0.5)",
+         "1px solid rgba(87, 201, 122, 0.5)",
+         "1px solid rgba(87, 201, 122, 0.5)",
+         "1px solid rgba(87, 201, 122, 0.5)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(143, 224, 168)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "0.5px"
+       },
+       "tag": "button.dchip.approve"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 645,
+        "y": 583.2,
+        "w": 63.2,
+        "h": 32
+       },
+       "ink": {
+        "x": 662,
+        "y": 591.2,
+        "w": 29.2,
+        "h": 16
+       },
+       "text": "Save",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(87, 201, 122, 0.16)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(87, 201, 122, 0.5)",
+         "1px solid rgba(87, 201, 122, 0.5)",
+         "1px solid rgba(87, 201, 122, 0.5)",
+         "1px solid rgba(87, 201, 122, 0.5)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(143, 224, 168)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "0.5px"
+       },
+       "tag": "button.dchip.approve"
+      }
+     }
+    },
+    {
+     "part": "cancel",
+     "label": "Cancel",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 712.2,
+        "y": 583.2,
+        "w": 59.9,
+        "h": 32
+       },
+       "ink": {
+        "x": 724.2,
+        "y": 591.2,
+        "w": 35.9,
+        "h": 16
+       },
+       "text": "Cancel",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.clear"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 712.2,
+        "y": 583.2,
+        "w": 59.9,
+        "h": 32
+       },
+       "ink": {
+        "x": 724.2,
+        "y": 591.2,
+        "w": 35.9,
+        "h": 16
+       },
+       "text": "Cancel",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.clear"
+      }
+     }
+    },
+    {
+     "part": "delete",
+     "label": "Delete",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 776,
+        "y": 583.2,
+        "w": 98.5,
+        "h": 32
+       },
+       "ink": {
+        "x": 788,
+        "y": 591.2,
+        "w": 74.5,
+        "h": 16
+       },
+       "text": "Really delete?",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(255, 92, 92, 0.6)",
+         "1px solid rgba(255, 92, 92, 0.6)",
+         "1px solid rgba(255, 92, 92, 0.6)",
+         "1px solid rgba(255, 92, 92, 0.6)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 92, 92)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.arm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 776,
+        "y": 583.2,
+        "w": 98.5,
+        "h": 32
+       },
+       "ink": {
+        "x": 788,
+        "y": 591.2,
+        "w": 74.5,
+        "h": 16
+       },
+       "text": "Really delete?",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(255, 92, 92, 0.6)",
+         "1px solid rgba(255, 92, 92, 0.6)",
+         "1px solid rgba(255, 92, 92, 0.6)",
+         "1px solid rgba(255, 92, 92, 0.6)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 92, 92)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.oil-delb.arm"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "oil-phone-half",
+   "title": "The award editor, a half day, iPhone, admin",
+   "drawing": {
+    "script": "docs/mock/2026-11-17-lw-oil-editor/oil.mjs",
+    "shot": "phone-o2-half"
+   },
+   "approved": {
+    "picture": "phone-o2-half.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 3",
+   "parts": [
+    {
+     "part": "editor",
+     "label": "the editor",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 424.7,
+        "w": 194.2,
+        "h": 80.8
+       },
+       "ink": {
+        "x": 198,
+        "y": 430.5,
+        "w": 170.6,
+        "h": 68.4
+       },
+       "text": "AM PM 18 Apr 26 Save Cancel Delete",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.oil-edit.mock"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 424.7,
+        "w": 194.2,
+        "h": 80.8
+       },
+       "ink": {
+        "x": 198,
+        "y": 430.5,
+        "w": 170.6,
+        "h": 68.4
+       },
+       "text": "AM PM 18 Apr 26 Save Cancel Delete",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.oil-edit.aw"
+      }
+     }
+    },
+    {
+     "part": "amount",
+     "label": "the amount box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 426.3,
+        "w": 44.8,
+        "h": 20.4
+       },
+       "ink": {
+        "x": 193.4,
+        "y": 429.3,
+        "w": 15.5,
+        "h": 14.4
+       },
+       "text": "0.5 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-num"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 426.3,
+        "w": 44.8,
+        "h": 20.4
+       },
+       "ink": {
+        "x": 193.4,
+        "y": 429.3,
+        "w": 15.5,
+        "h": 14.4
+       },
+       "text": "0.5 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-num"
+      }
+     }
+    },
+    {
+     "part": "am",
+     "label": "AM",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 233.8,
+        "y": 424.7,
+        "w": 41.6,
+        "h": 23.6
+       },
+       "ink": {
+        "x": 246.9,
+        "y": 430.5,
+        "w": 15.3,
+        "h": 12
+       },
+       "text": "AM",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.14)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgba(59, 198, 232, 0.55)",
+         "1.25px solid rgba(59, 198, 232, 0.55)",
+         "1.25px solid rgba(59, 198, 232, 0.55)",
+         "1.25px solid rgba(59, 198, 232, 0.55)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.half.on"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 233.8,
+        "y": 424.7,
+        "w": 41.6,
+        "h": 23.6
+       },
+       "ink": {
+        "x": 246.9,
+        "y": 430.5,
+        "w": 15.3,
+        "h": 12
+       },
+       "text": "AM",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.14)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgba(59, 198, 232, 0.55)",
+         "1.25px solid rgba(59, 198, 232, 0.55)",
+         "1.25px solid rgba(59, 198, 232, 0.55)",
+         "1.25px solid rgba(59, 198, 232, 0.55)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.half.on"
+      }
+     }
+    },
+    {
+     "part": "pm",
+     "label": "PM",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 280.1,
+        "y": 424.7,
+        "w": 41.6,
+        "h": 23.6
+       },
+       "ink": {
+        "x": 293.7,
+        "y": 430.5,
+        "w": 14.5,
+        "h": 12
+       },
+       "text": "PM",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.half"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 280.1,
+        "y": 424.7,
+        "w": 41.6,
+        "h": 23.6
+       },
+       "ink": {
+        "x": 293.7,
+        "y": 430.5,
+        "w": 14.5,
+        "h": 12
+       },
+       "text": "PM",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.half"
+      }
+     }
+    },
+    {
+     "part": "date",
+     "label": "the date",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 326.5,
+        "y": 430.8,
+        "w": 51.8,
+        "h": 11.4
+       },
+       "ink": {
+        "x": 331.3,
+        "y": 430.8,
+        "w": 37.3,
+        "h": 11
+       },
+       "text": "18 Apr 26",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.oil-dateread"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 326.5,
+        "y": 430.8,
+        "w": 51.8,
+        "h": 11.4
+       },
+       "ink": {
+        "x": 331.3,
+        "y": 430.8,
+        "w": 37.3,
+        "h": 11
+       },
+       "text": "18 Apr 26",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.oil-dateread"
+      }
+     }
+    },
+    {
+     "part": "reason",
+     "label": "the reason box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 453.1,
+        "w": 91.2,
+        "h": 20.4
+       },
+       "ink": {
+        "x": 193.4,
+        "y": 456.1,
+        "w": 20.3,
+        "h": 14.4
+       },
+       "text": "SIM ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 453.1,
+        "w": 91.2,
+        "h": 20.4
+       },
+       "ink": {
+        "x": 193.4,
+        "y": 456.1,
+        "w": 20.3,
+        "h": 14.4
+       },
+       "text": "SIM ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text"
+      }
+     }
+    },
+    {
+     "part": "given-by",
+     "label": "the given-by box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 280.1,
+        "y": 453.1,
+        "w": 98.2,
+        "h": 20.4
+       },
+       "ink": null,
+       "text": " ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text.given"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 280.1,
+        "y": 453.1,
+        "w": 98.2,
+        "h": 20.4
+       },
+       "ink": null,
+       "text": " ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text.given"
+      }
+     }
+    },
+    {
+     "part": "save",
+     "label": "Save",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 478.3,
+        "w": 50.9,
+        "h": 27.2
+       },
+       "ink": {
+        "x": 198,
+        "y": 484.9,
+        "w": 23.3,
+        "h": 14
+       },
+       "text": "Save",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(87, 201, 122, 0.16)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgba(87, 201, 122, 0.5)",
+         "1.25px solid rgba(87, 201, 122, 0.5)",
+         "1.25px solid rgba(87, 201, 122, 0.5)",
+         "1.25px solid rgba(87, 201, 122, 0.5)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(143, 224, 168)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "0.5px"
+       },
+       "tag": "button.dchip.approve"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 478.3,
+        "w": 50.9,
+        "h": 27.2
+       },
+       "ink": {
+        "x": 198,
+        "y": 484.9,
+        "w": 23.3,
+        "h": 14
+       },
+       "text": "Save",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(87, 201, 122, 0.16)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgba(87, 201, 122, 0.5)",
+         "1.25px solid rgba(87, 201, 122, 0.5)",
+         "1.25px solid rgba(87, 201, 122, 0.5)",
+         "1.25px solid rgba(87, 201, 122, 0.5)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(143, 224, 168)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "0.5px"
+       },
+       "tag": "button.dchip.approve"
+      }
+     }
+    },
+    {
+     "part": "cancel",
+     "label": "Cancel",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 238.3,
+        "y": 478.3,
+        "w": 48.3,
+        "h": 27.2
+       },
+       "ink": {
+        "x": 248.1,
+        "y": 485.9,
+        "w": 28.7,
+        "h": 12
+       },
+       "text": "Cancel",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.clear"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 238.3,
+        "y": 478.3,
+        "w": 48.3,
+        "h": 27.2
+       },
+       "ink": {
+        "x": 248.1,
+        "y": 485.9,
+        "w": 28.7,
+        "h": 12
+       },
+       "text": "Cancel",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.clear"
+      }
+     }
+    },
+    {
+     "part": "delete",
+     "label": "Delete",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "63.4",
+       "build": "79.2",
+       "by": "15.8px more",
+       "accepted": null,
+       "counts": true
+      },
+      {
+       "check": "words-x",
+       "what": "where its words start inside it",
+       "drawing": "17.6",
+       "build": "25.5",
+       "by": "7.9px further right",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "oil-phone-half--delete.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 289.8,
+        "y": 478.3,
+        "w": 63.4,
+        "h": 27.2
+       },
+       "ink": {
+        "x": 307.4,
+        "y": 485.9,
+        "w": 28.1,
+        "h": 12
+       },
+       "text": "Delete",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.clear"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 289.8,
+        "y": 478.3,
+        "w": 79.2,
+        "h": 27.2
+       },
+       "ink": {
+        "x": 315.3,
+        "y": 485.9,
+        "w": 28.1,
+        "h": 12
+       },
+       "text": "Delete",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.oil-delb.clear"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "oil-phone-one",
+   "title": "The award editor, one day, iPhone, admin",
+   "drawing": {
+    "script": "docs/mock/2026-11-17-lw-oil-editor/oil.mjs",
+    "shot": "phone-o2-one"
+   },
+   "approved": {
+    "picture": "phone-o2-one.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 3",
+   "parts": [
+    {
+     "part": "editor",
+     "label": "the editor",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 424.7,
+        "w": 194.2,
+        "h": 80.8
+       },
+       "ink": {
+        "x": 198,
+        "y": 430.8,
+        "w": 170.6,
+        "h": 68.1
+       },
+       "text": "18 Apr 26 Save Cancel Delete",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.oil-edit.mock"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 424.7,
+        "w": 194.2,
+        "h": 80.8
+       },
+       "ink": {
+        "x": 198,
+        "y": 430.8,
+        "w": 170.6,
+        "h": 68.1
+       },
+       "text": "18 Apr 26 Save Cancel Delete",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.oil-edit.aw"
+      }
+     }
+    },
+    {
+     "part": "amount",
+     "label": "the amount box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 426.3,
+        "w": 44.8,
+        "h": 20.4
+       },
+       "ink": {
+        "x": 193.4,
+        "y": 429.3,
+        "w": 6.5,
+        "h": 14.4
+       },
+       "text": "1 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-num"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 426.3,
+        "w": 44.8,
+        "h": 20.4
+       },
+       "ink": {
+        "x": 193.4,
+        "y": 429.3,
+        "w": 6.5,
+        "h": 14.4
+       },
+       "text": "1 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-num"
+      }
+     }
+    },
+    {
+     "part": "date",
+     "label": "the date",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 326.5,
+        "y": 430.8,
+        "w": 51.8,
+        "h": 11.4
+       },
+       "ink": {
+        "x": 331.3,
+        "y": 430.8,
+        "w": 37.3,
+        "h": 11
+       },
+       "text": "18 Apr 26",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.oil-dateread"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 326.5,
+        "y": 430.8,
+        "w": 51.8,
+        "h": 11.4
+       },
+       "ink": {
+        "x": 331.3,
+        "y": 430.8,
+        "w": 37.3,
+        "h": 11
+       },
+       "text": "18 Apr 26",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.oil-dateread"
+      }
+     }
+    },
+    {
+     "part": "reason",
+     "label": "the reason box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 453.1,
+        "w": 91.2,
+        "h": 20.4
+       },
+       "ink": {
+        "x": 193.4,
+        "y": 456.1,
+        "w": 20.3,
+        "h": 14.4
+       },
+       "text": "SIM ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 453.1,
+        "w": 91.2,
+        "h": 20.4
+       },
+       "ink": {
+        "x": 193.4,
+        "y": 456.1,
+        "w": 20.3,
+        "h": 14.4
+       },
+       "text": "SIM ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text"
+      }
+     }
+    },
+    {
+     "part": "given-by",
+     "label": "the given-by box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 280.1,
+        "y": 453.1,
+        "w": 98.2,
+        "h": 20.4
+       },
+       "ink": null,
+       "text": " ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text.given"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 280.1,
+        "y": 453.1,
+        "w": 98.2,
+        "h": 20.4
+       },
+       "ink": null,
+       "text": " ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text.given"
+      }
+     }
+    },
+    {
+     "part": "save",
+     "label": "Save",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 478.3,
+        "w": 50.9,
+        "h": 27.2
+       },
+       "ink": {
+        "x": 198,
+        "y": 484.9,
+        "w": 23.3,
+        "h": 14
+       },
+       "text": "Save",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(87, 201, 122, 0.16)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgba(87, 201, 122, 0.5)",
+         "1.25px solid rgba(87, 201, 122, 0.5)",
+         "1.25px solid rgba(87, 201, 122, 0.5)",
+         "1.25px solid rgba(87, 201, 122, 0.5)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(143, 224, 168)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "0.5px"
+       },
+       "tag": "button.dchip.approve"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 478.3,
+        "w": 50.9,
+        "h": 27.2
+       },
+       "ink": {
+        "x": 198,
+        "y": 484.9,
+        "w": 23.3,
+        "h": 14
+       },
+       "text": "Save",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(87, 201, 122, 0.16)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgba(87, 201, 122, 0.5)",
+         "1.25px solid rgba(87, 201, 122, 0.5)",
+         "1.25px solid rgba(87, 201, 122, 0.5)",
+         "1.25px solid rgba(87, 201, 122, 0.5)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(143, 224, 168)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "0.5px"
+       },
+       "tag": "button.dchip.approve"
+      }
+     }
+    },
+    {
+     "part": "cancel",
+     "label": "Cancel",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 238.3,
+        "y": 478.3,
+        "w": 48.3,
+        "h": 27.2
+       },
+       "ink": {
+        "x": 248.1,
+        "y": 485.9,
+        "w": 28.7,
+        "h": 12
+       },
+       "text": "Cancel",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.clear"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 238.3,
+        "y": 478.3,
+        "w": 48.3,
+        "h": 27.2
+       },
+       "ink": {
+        "x": 248.1,
+        "y": 485.9,
+        "w": 28.7,
+        "h": 12
+       },
+       "text": "Cancel",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.clear"
+      }
+     }
+    },
+    {
+     "part": "delete",
+     "label": "Delete",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "63.4",
+       "build": "79.2",
+       "by": "15.8px more",
+       "accepted": null,
+       "counts": true
+      },
+      {
+       "check": "words-x",
+       "what": "where its words start inside it",
+       "drawing": "17.6",
+       "build": "25.5",
+       "by": "7.9px further right",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "oil-phone-one--delete.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 289.8,
+        "y": 478.3,
+        "w": 63.4,
+        "h": 27.2
+       },
+       "ink": {
+        "x": 307.4,
+        "y": 485.9,
+        "w": 28.1,
+        "h": 12
+       },
+       "text": "Delete",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.clear"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 289.8,
+        "y": 478.3,
+        "w": 79.2,
+        "h": 27.2
+       },
+       "ink": {
+        "x": 315.3,
+        "y": 485.9,
+        "w": 28.1,
+        "h": 12
+       },
+       "text": "Delete",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.oil-delb.clear"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "oil-phone-armed",
+   "title": "The award editor, one day, Delete armed, iPhone, admin",
+   "drawing": {
+    "script": "docs/mock/2026-11-17-lw-oil-editor/oil.mjs",
+    "shot": "phone-o2-one-armed"
+   },
+   "approved": {
+    "picture": "phone-o2-one-armed.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 3",
+   "parts": [
+    {
+     "part": "editor",
+     "label": "the editor",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 424.7,
+        "w": 194.2,
+        "h": 80.8
+       },
+       "ink": {
+        "x": 198,
+        "y": 430.8,
+        "w": 170.6,
+        "h": 68.1
+       },
+       "text": "18 Apr 26 Save Cancel Really delete?",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.oil-edit.mock"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 424.7,
+        "w": 194.2,
+        "h": 80.8
+       },
+       "ink": {
+        "x": 198,
+        "y": 430.8,
+        "w": 170.6,
+        "h": 68.1
+       },
+       "text": "18 Apr 26 Save Cancel Really delete?",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.oil-edit.aw"
+      }
+     }
+    },
+    {
+     "part": "amount",
+     "label": "the amount box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 426.3,
+        "w": 44.8,
+        "h": 20.4
+       },
+       "ink": {
+        "x": 193.4,
+        "y": 429.3,
+        "w": 6.5,
+        "h": 14.4
+       },
+       "text": "1 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-num"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 426.3,
+        "w": 44.8,
+        "h": 20.4
+       },
+       "ink": {
+        "x": 193.4,
+        "y": 429.3,
+        "w": 6.5,
+        "h": 14.4
+       },
+       "text": "1 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-num"
+      }
+     }
+    },
+    {
+     "part": "date",
+     "label": "the date",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 326.5,
+        "y": 430.8,
+        "w": 51.8,
+        "h": 11.4
+       },
+       "ink": {
+        "x": 331.3,
+        "y": 430.8,
+        "w": 37.3,
+        "h": 11
+       },
+       "text": "18 Apr 26",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.oil-dateread"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 326.5,
+        "y": 430.8,
+        "w": 51.8,
+        "h": 11.4
+       },
+       "ink": {
+        "x": 331.3,
+        "y": 430.8,
+        "w": 37.3,
+        "h": 11
+       },
+       "text": "18 Apr 26",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.oil-dateread"
+      }
+     }
+    },
+    {
+     "part": "reason",
+     "label": "the reason box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 453.1,
+        "w": 91.2,
+        "h": 20.4
+       },
+       "ink": {
+        "x": 193.4,
+        "y": 456.1,
+        "w": 20.3,
+        "h": 14.4
+       },
+       "text": "SIM ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 453.1,
+        "w": 91.2,
+        "h": 20.4
+       },
+       "ink": {
+        "x": 193.4,
+        "y": 456.1,
+        "w": 20.3,
+        "h": 14.4
+       },
+       "text": "SIM ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text"
+      }
+     }
+    },
+    {
+     "part": "given-by",
+     "label": "the given-by box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 280.1,
+        "y": 453.1,
+        "w": 98.2,
+        "h": 20.4
+       },
+       "ink": null,
+       "text": " ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text.given"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 280.1,
+        "y": 453.1,
+        "w": 98.2,
+        "h": 20.4
+       },
+       "ink": null,
+       "text": " ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)",
+         "1.25px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "input.oil-text.given"
+      }
+     }
+    },
+    {
+     "part": "save",
+     "label": "Save",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 478.3,
+        "w": 50.9,
+        "h": 27.2
+       },
+       "ink": {
+        "x": 198,
+        "y": 484.9,
+        "w": 23.3,
+        "h": 14
+       },
+       "text": "Save",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(87, 201, 122, 0.16)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgba(87, 201, 122, 0.5)",
+         "1.25px solid rgba(87, 201, 122, 0.5)",
+         "1.25px solid rgba(87, 201, 122, 0.5)",
+         "1.25px solid rgba(87, 201, 122, 0.5)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(143, 224, 168)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "0.5px"
+       },
+       "tag": "button.dchip.approve"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184.2,
+        "y": 478.3,
+        "w": 50.9,
+        "h": 27.2
+       },
+       "ink": {
+        "x": 198,
+        "y": 484.9,
+        "w": 23.3,
+        "h": 14
+       },
+       "text": "Save",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(87, 201, 122, 0.16)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgba(87, 201, 122, 0.5)",
+         "1.25px solid rgba(87, 201, 122, 0.5)",
+         "1.25px solid rgba(87, 201, 122, 0.5)",
+         "1.25px solid rgba(87, 201, 122, 0.5)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(143, 224, 168)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "0.5px"
+       },
+       "tag": "button.dchip.approve"
+      }
+     }
+    },
+    {
+     "part": "cancel",
+     "label": "Cancel",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 238.3,
+        "y": 478.3,
+        "w": 48.3,
+        "h": 27.2
+       },
+       "ink": {
+        "x": 248.1,
+        "y": 485.9,
+        "w": 28.7,
+        "h": 12
+       },
+       "text": "Cancel",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.clear"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 238.3,
+        "y": 478.3,
+        "w": 48.3,
+        "h": 27.2
+       },
+       "ink": {
+        "x": 248.1,
+        "y": 485.9,
+        "w": 28.7,
+        "h": 12
+       },
+       "text": "Cancel",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)",
+         "1.25px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.clear"
+      }
+     }
+    },
+    {
+     "part": "delete",
+     "label": "Delete",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 289.8,
+        "y": 478.3,
+        "w": 79.2,
+        "h": 27.2
+       },
+       "ink": {
+        "x": 299.5,
+        "y": 485.9,
+        "w": 59.6,
+        "h": 12
+       },
+       "text": "Really delete?",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgba(255, 92, 92, 0.6)",
+         "1.25px solid rgba(255, 92, 92, 0.6)",
+         "1.25px solid rgba(255, 92, 92, 0.6)",
+         "1.25px solid rgba(255, 92, 92, 0.6)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 92, 92)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.arm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 289.8,
+        "y": 478.3,
+        "w": 79.2,
+        "h": 27.2
+       },
+       "ink": {
+        "x": 299.5,
+        "y": 485.9,
+        "w": 59.6,
+        "h": 12
+       },
+       "text": "Really delete?",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1.25px solid rgba(255, 92, 92, 0.6)",
+         "1.25px solid rgba(255, 92, 92, 0.6)",
+         "1.25px solid rgba(255, 92, 92, 0.6)",
+         "1.25px solid rgba(255, 92, 92, 0.6)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 92, 92)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.tchip.oil-delb.arm"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "errors": []
+}

@@ -1,5 +1,8 @@
 # Caps and ops limits — design, round 1 (17 Nov 26)
 
+**PAUSED 17 Nov 26 until he calls for it (D2186, chat 105):** the questions below were put to him once as short stories
+and not answered; they are not put again, and nothing is planned or built, until he says.
+
 `[CAPS-OPS-LIMITS]`, design only: nothing of the app is changed. Drawn on the night of 17 Nov 26 by a helper of the
 overnight run, unattended, so nothing here is ruled by this round; every choice below is a recommendation put to him.
 The old design start (`2026-10-05-caps-ops-limits.md`, D567) is cancelled history (D568) and is not built on.

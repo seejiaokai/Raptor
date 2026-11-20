@@ -123,6 +123,53 @@ describe('creating a leave war', () => {
     expect(screen.queryByTestId('war-sheet')).toBeNull()
   })
 
+  /* [LW-WAR-AUTONAME] (his D2158): the Name fills itself from the dates, in the periods' own form, and follows them; a name
+     he types is kept; a box he empties follows again at the dates' next change. */
+  describe('the name fills itself from the dates (D2158)', () => {
+    const nameBox = () => screen.getByTestId('war-name') as HTMLInputElement
+    it('is empty, with its grey hint, until the dates are picked; then reads the months and the year', () => {
+      setRole('admin')
+      render(<Topbar />)
+      chooseNewPeriod()
+      expect(nameBox().value).toBe('')
+      pickSpan('war', '2028-01-01', '2028-03-31')
+      expect(nameBox().value).toBe('JAN - MAR 28')
+    })
+    it('follows the dates whenever they change, and is the name the war is created with', () => {
+      setRole('admin')
+      render(<Topbar />)
+      chooseNewPeriod()
+      pickSpan('war', '2028-01-01', '2028-03-31')
+      pickSpan('war', '2028-07-15', '2028-07-20')
+      expect(nameBox().value).toBe('JUL 28')
+      pickSpan('war', '2028-12-01', '2029-02-28')
+      expect(nameBox().value).toBe('DEC 28 - FEB 29')
+      fireEvent.click(screen.getByTestId('war-create'))
+      expect(getState().wars.some(w => w.period.name === 'DEC 28 - FEB 29' && w.period.start === '2028-12-01')).toBe(true)
+    })
+    it('keeps a name he typed when the dates change afterwards', () => {
+      setRole('admin')
+      render(<Topbar />)
+      chooseNewPeriod()
+      pickSpan('war', '2028-01-01', '2028-03-31')
+      fireEvent.change(nameBox(), { target: { value: 'Q1 trial' } })
+      pickSpan('war', '2028-04-01', '2028-06-30')
+      expect(nameBox().value).toBe('Q1 trial')
+    })
+    it('a box he empties stays empty as he clears it, and follows the dates again at their next change', () => {
+      setRole('admin')
+      render(<Topbar />)
+      chooseNewPeriod()
+      pickSpan('war', '2028-01-01', '2028-03-31')
+      fireEvent.change(nameBox(), { target: { value: 'Q1 trial' } })
+      fireEvent.change(nameBox(), { target: { value: '' } })
+      expect(nameBox().value).toBe('')
+      expect((screen.getByTestId('war-create') as HTMLButtonElement).disabled).toBe(true)
+      pickSpan('war', '2028-04-01', '2028-06-30')
+      expect(nameBox().value).toBe('APR - JUN 28')
+    })
+  })
+
   // Refusing has to SAY why, or the button reads as broken.
   it('refuses dates that clash with a war that exists, and keeps the sheet open', () => {
     setRole('admin')

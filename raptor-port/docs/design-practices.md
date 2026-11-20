@@ -635,6 +635,10 @@ first, as a chat does for ruling numbers, and names it in its handoff block; whe
 the merge renumbers only the branch's own side, by script, and the closing report tells him the old and new numbers
 (D1417).*
 
+**Lesson 95 (17 Nov 26, D2121 — "10b if 142 hasnt approve the schedule, to the user, it looks like the schedule for the day is published").** A status shown inside a day never makes that day read as published while its own squadron has not signed it.
+
+**Lesson 94 (17 Nov 26, D2115 — "if we put the line at the bottom, the button will keep jumping down after every add, and the scheduler has to chase that button").** A button pressed again and again stays where it is, and each press shows plainly what it added. *(The agent's reading: this is the standing rule that a control tapped repeatedly must not move, which round 3's recommendation broke. Corrected 17 Nov 26 after its fresh read (D941): the first wording, "shown where it lands", went past his words.)*
+
 **Lesson 89 (5 Nov 26, D1699 — "shouldn't it show that it's striked out? Instead of faded which means it's read and the post out happened?").** A bell line for something taken back keeps its own words, struck through, with "taken back · <who>" after them — never only a new line in its place, and never shown only by fading, which reads as "read, and it happened"; the struck line still fades once read. *(The agent's reading: a strike is how the app says "did not happen", so the bell uses the same sign.)*
 
 **Lesson 82 (5 Nov 26, D1654, D1656 — "is it weird that the fade is abruptly stopped at the top half").** A fade is not cut off abruptly partway across the thing it tints; laid over the whole card as one surface and thinning out, he approved it — "My fade looks good". *(The agent's reading: the same holds for any tint or wash on a card, a band or a page.)*

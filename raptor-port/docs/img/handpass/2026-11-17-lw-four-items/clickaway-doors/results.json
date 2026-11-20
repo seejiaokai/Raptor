@@ -1,0 +1,86 @@
+[
+  {
+    "kind": "desktop",
+    "id": "approvals-1",
+    "pass": true,
+    "note": "over approvals: the editor opened on oil-entry-l4; after a press on the title: closed"
+  },
+  {
+    "kind": "desktop",
+    "id": "approvals-2",
+    "pass": true,
+    "note": "over approvals: a change, then a press outside: editor closed, the reason \"CNY workplan\""
+  },
+  {
+    "kind": "desktop",
+    "id": "approvals-3",
+    "pass": true,
+    "note": "Escape: tracker closed, approvals page in sight"
+  },
+  {
+    "kind": "desktop",
+    "id": "balances-1",
+    "pass": true,
+    "note": "over balances: the editor opened on oil-entry-l4; after a press on the title: closed"
+  },
+  {
+    "kind": "desktop",
+    "id": "balances-2",
+    "pass": true,
+    "note": "over balances: a change, then a press outside: editor closed, the reason \"CNY workplan\""
+  },
+  {
+    "kind": "desktop",
+    "id": "balances-3",
+    "pass": true,
+    "note": "Escape: tracker closed, balances page in sight"
+  },
+  {
+    "kind": "desktop",
+    "id": "ERR",
+    "pass": true,
+    "note": "page errors: none"
+  },
+  {
+    "kind": "phone",
+    "id": "approvals-1",
+    "pass": true,
+    "note": "over approvals: the editor opened on oil-entry-l4; after a press on the title: closed"
+  },
+  {
+    "kind": "phone",
+    "id": "approvals-2",
+    "pass": true,
+    "note": "over approvals: a change, then a press outside: editor closed, the reason \"CNY workplan\""
+  },
+  {
+    "kind": "phone",
+    "id": "approvals-3",
+    "pass": true,
+    "note": "Escape: tracker closed, approvals page in sight"
+  },
+  {
+    "kind": "phone",
+    "id": "balances-1",
+    "pass": true,
+    "note": "over balances: the editor opened on oil-entry-l4; after a press on the title: closed"
+  },
+  {
+    "kind": "phone",
+    "id": "balances-2",
+    "pass": true,
+    "note": "over balances: a change, then a press outside: editor closed, the reason \"CNY workplan\""
+  },
+  {
+    "kind": "phone",
+    "id": "balances-3",
+    "pass": true,
+    "note": "Escape: tracker closed, balances page in sight"
+  },
+  {
+    "kind": "phone",
+    "id": "ERR",
+    "pass": true,
+    "note": "page errors: none"
+  }
+]

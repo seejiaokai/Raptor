@@ -1,0 +1,74 @@
+[
+ {
+  "id": "S14",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "door: the OIL tab over the Grid (grid turned to MAR first); edited the CNY award; closed with the ✕",
+  "saw": "before {\"tab\":\"lw-tab-grid\",\"pw\":0,\"trk\":0,\"edit\":0}, tracker open {\"tab\":\"oil-tracker\",\"pw\":0,\"trk\":1,\"edit\":0}, after close {\"tab\":\"lw-tab-grid\",\"pw\":0,\"trk\":0,\"edit\":0}; MAR button mjump on|null|null; edited box reads \"+219 JanCNY via grid-tab2 left\"",
+  "verdict": "PASS",
+  "pics": "w2-S14-desk-chromium-grid-tab-2-after-close.png"
+ },
+ {
+  "id": "S14",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "door: the OIL tab over Balances with \"ran\" typed in the search; edited an award; closed with the ✕",
+  "saw": "before {\"tab\":\"lw-tab-balances\",\"pw\":0,\"trk\":0,\"edit\":0}, after close {\"tab\":\"lw-tab-balances\",\"pw\":0,\"trk\":0,\"edit\":0}; search box now reads \"ran\"",
+  "verdict": "PASS",
+  "pics": "w2-S14-desk-chromium-bal-tab-2-after-close.png"
+ },
+ {
+  "id": "S14",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "door: the OIL tab over Approvals; closed with Escape",
+  "saw": "before {\"tab\":\"lw-tab-approvals\",\"pw\":0,\"trk\":0,\"edit\":0}, after close {\"tab\":\"lw-tab-approvals\",\"pw\":0,\"trk\":0,\"edit\":0}",
+  "verdict": "PASS",
+  "pics": "w2-S14-desk-chromium-appr-tab-2-after-close.png"
+ },
+ {
+  "id": "S14",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "door: Ranger's OIL figure on Balances; edited an award; closed with the ✕",
+  "saw": "before {\"tab\":\"lw-tab-balances\",\"pw\":0,\"trk\":0,\"edit\":0}, tracker {\"tab\":\"oil-tracker\",\"pw\":0,\"trk\":1,\"edit\":0}, after close {\"tab\":\"lw-tab-balances\",\"pw\":0,\"trk\":0,\"edit\":0}",
+  "verdict": "PASS",
+  "pics": "w2-S14-desk-chromium-bal-figure-2-after-close.png"
+ },
+ {
+  "id": "S14",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "door: Balances name -> person window -> its OIL tile; closed the tracker with the ✕",
+  "saw": "before {\"tab\":\"lw-tab-balances\",\"pw\":1,\"trk\":0,\"edit\":0}, tracker {\"tab\":\"oil-tracker\",\"pw\":0,\"trk\":1,\"edit\":0}, after close {\"tab\":\"lw-tab-balances\",\"pw\":0,\"trk\":0,\"edit\":0}",
+  "verdict": "RECORDED",
+  "pics": "w2-S14-desk-chromium-bal-person-2-after-close.png"
+ },
+ {
+  "id": "S14",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "door: a grid name -> person window -> its OIL tile; closed with the ✕",
+  "saw": "before {\"tab\":\"lw-tab-grid\",\"pw\":1,\"trk\":0,\"edit\":0}, tracker {\"tab\":\"oil-tracker\",\"pw\":0,\"trk\":1,\"edit\":0}, after close {\"tab\":\"lw-tab-grid\",\"pw\":0,\"trk\":0,\"edit\":0}",
+  "verdict": "RECORDED",
+  "pics": "w2-S14-desk-chromium-grid-person-2-after-close.png"
+ },
+ {
+  "id": "S14",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "door: My leave -> own person window -> its OIL tile; closed with the ✕",
+  "saw": "before {\"tab\":\"lw-tab-grid\",\"pw\":1,\"trk\":0,\"edit\":0}, tracker {\"tab\":\"oil-tracker\",\"pw\":0,\"trk\":1,\"edit\":0}, after close {\"tab\":\"lw-tab-grid\",\"pw\":0,\"trk\":0,\"edit\":0}",
+  "verdict": "RECORDED",
+  "pics": "w2-S14-desk-chromium-my-leave-2-after-close.png"
+ },
+ {
+  "id": "S14",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "with the tracker open (from the Grid), pressed the Balances tab",
+  "saw": "tab reachable at its middle: {\"vis\":true,\"onTop\":false,\"topIs\":\"oil-tools\"}",
+  "verdict": "RECORDED",
+  "pics": "w2-S14-desk-chromium-tab-while-open-0.png"
+ }
+]

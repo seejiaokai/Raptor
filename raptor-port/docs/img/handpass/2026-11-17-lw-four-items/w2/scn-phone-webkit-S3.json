@@ -1,0 +1,56 @@
+[
+ {
+  "id": "S3",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "dragged-days Grant OIL",
+  "saw": "NOT WALKED on the phone: a touch drag across day cells is not drivable in this test browser (walk-scripts §4); the one-day route stands for the phone",
+  "verdict": "RECORDED",
+  "pics": ""
+ },
+ {
+  "id": "S3",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "several names at once",
+  "saw": "NOT WALKED on the phone: the hold-and-drag down the names is a touch drag, not drivable in this test browser",
+  "verdict": "RECORDED",
+  "pics": ""
+ },
+ {
+  "id": "S3",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "opened the award made by: tracker credit (one person)",
+  "saw": "editor same layout as the CNY award; in the row of stiff: 1; amount 1, date 17 Nov 26, reason \"S3 tracker route\" (expected a reason)",
+  "verdict": "PASS",
+  "pics": "w2-phone-webkit-S3-ol-mwkb32ri1.png"
+ },
+ {
+  "id": "S3",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "cleared the reason of tracker credit (one person), Save",
+  "saw": "refused: \"Give a reason\"",
+  "verdict": "PASS",
+  "pics": "w2-phone-webkit-S3-ol-mwkb32ri1.png"
+ },
+ {
+  "id": "S3",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "opened the award made by: one-day Grant OIL on the grid, no reason",
+  "saw": "editor same layout as the CNY award; in the row of nact: 1; amount 1, date 3 Dec 26, reason \"\" (expected none)",
+  "verdict": "PASS",
+  "pics": "w2-phone-webkit-S3-ol-mwkb39c92.png"
+ },
+ {
+  "id": "S3",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "no reason on one-day Grant OIL on the grid, no reason: amount 1.5, Save",
+  "saw": "saved without a reason",
+  "verdict": "PASS",
+  "pics": ""
+ }
+]

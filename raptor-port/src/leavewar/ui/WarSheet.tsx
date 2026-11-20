@@ -13,6 +13,7 @@ import { addDays, localToday } from '../engine'
 import { clashingWar, createWar, focusDay, getState, selectWar } from '../state/store'
 import { RangePicker, type Range } from './RangePicker'
 import { shortSpan } from './dates'
+import { warAutoName } from './warname'
 import './bidpicker.css'
 import { Sheet } from './Sheet'
 
@@ -41,10 +42,15 @@ export function WarSheet({ onClose, initial = null, raised = false }: {
   /** drawn above the scheduler's movable windows — set with `initial`, for the same ask (Sheet.tsx) */
   raised?: boolean
 }) {
-  const [name, setName] = useState('')
+  /* THE NAME FOLLOWS THE DATES (his D2158 — warname.ts): until he types one, the box holds the name the dates give, and
+     changes whenever they do. A name he types is his and is kept when the dates change afterwards; a box he empties stays
+     empty while he types, and follows the dates again at their next change (the agent's readings, told to him) — so
+     clearing it to type afresh never refills it under his fingers. `typed` null = following the dates. */
+  const [typed, setTyped] = useState<string | null>(null)
   const [range, setRange] = useState<Range | null>(initial)
   const start = range?.from ?? ''
   const end = range?.to ?? ''
+  const name = typed ?? warAutoName(start, end)
   // A refusal has to SAY why, or the button reads as broken. The store
   // returns the reason; this turns it into the sentence an admin needs.
   const [problem, setProblem] = useState('')
@@ -98,7 +104,7 @@ export function WarSheet({ onClose, initial = null, raised = false }: {
           aria-label="Name"
           placeholder="JUL - SEP 26"
           value={name}
-          onChange={e => { setName(e.target.value); setProblem('') }}
+          onChange={e => { setTyped(e.target.value); setProblem('') }}
         />
       </div>
 
@@ -114,7 +120,7 @@ export function WarSheet({ onClose, initial = null, raised = false }: {
           testid="war"
           anchor={nextFreeDay()}
           value={range}
-          onChange={r => { setRange(r); setProblem('') }}
+          onChange={r => { setRange(r); setProblem(''); if (typed !== null && !typed.trim()) setTyped(null) }}
         />
       </div>
 

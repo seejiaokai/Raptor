@@ -2762,3 +2762,160 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** applying 964's "a bubbling listener after" to read a list's place after a press read nothing: the page stopped the press from bubbling to the window (an outside-click guard), so the reading stayed empty and the check failed on correct code. Separately, a new test "dragged up one row" with a move to the list's middle minus 44px, but an earlier flick had left the mouse 132px up, so the move went DOWN two rows; the first failure looked like an app fault until every scroll and press was logged in the page.
 **Suggested improvement:** in 964's method, read "after" from a capture listener that schedules the read (two animation frames later, so one frame is drawn), never a bubbling listener on the window; in the walk-scripts guide, a line: a relative mouse move starts from where the last one left the mouse — write moves from the press point, and log presses and scrolls in the page before believing a wrong landing.
 **Principle:** a listener that depends on the page letting an event bubble is not a measurement; and a test's own pointer state is part of its setup.
+
+### Observation 966: A FULL bug check of a four-item batch does not fit the chat that builds it
+
+**Status:** OPEN
+**Date:** 2026-11-17
+**Session context:** chat 99, building four Leave War items on one branch with one FULL bug check (number taken past 965, the highest on any branch; the calendar chat holds unpushed notes too)
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** planning the handoff point at the start of a batch
+
+**Issue:** reading the rules, the drawings and four areas of code to build a four-item batch filled the chat to 85% before the bug check began, so the FULL check (walkers, two reads, re-walk) had to move to a fresh chat mid-job.
+**Suggested improvement:** when a batch of three or more items is sized FULL, plan the handoff at the start: one chat builds, pushes and opens the pull request; the next runs the whole check from the evidence sheet onward. Say so in the opening tier block.
+**Principle:** size the context a job needs before starting it, and put the planned handoff at a natural seam (build done, pushed) instead of where the context runs out.
+
+### Observation 967: A drawing made by injecting CSS into the live page does not prove the built rule matches
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 100, the four Leave War items' bug check (claude/lw-four-items)
+**Skill:** impeccable
+**Type:** open-source
+**Phase/Area:** mock-ups drawn on the running app by injected CSS; moving the drawing's rules into the source
+
+**Issue:** The grid's hover ring was drawn for approval by injecting a rule into the running build, where it worked. Moved over "whole" into a stylesheet that is wrapped in a page-scoping nesting block, its selector began with `body`, which the nesting turned into "a body inside the page" — it matched nothing, and the ring never drew. Unit tests (no CSS) and a code read passed; only a browser test asserting the computed style on the hovered element caught it.
+**Suggested improvement:** In the build step after a drawing approved as injected CSS: for every moved rule, a browser assertion of the computed style on the element it must paint, in the built app, before the job is called built; and a note that rules moved into a nested / scoped stylesheet must not start at `html`, `body` or `:root`.
+**Principle:** CSS proven by injection proves the look, not the selector's reach once it is placed in its real file; assert the computed style where it must paint.
+
+### Observation 969: A walker's brief should name each role's test records, or a role's different data reads as a missing one
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 103, closing the four Leave War items' FULL bug check (claude/lw-four-items); number taken past 968, held on another branch
+**Skill:** New skill candidate: bug-check walker briefs (the bug-check order's §4 "before a brief leaves")
+**Type:** open-source
+**Phase/Area:** writing a walker's brief that switches between an admin and a member
+
+**Issue:** A walker signed in as a member looked for the same award records it had seen as the admin and reported one "missing". The member's own page holds different people and awards by design; the host spent a reproduction to find the lead false.
+**Suggested improvement:** When a brief walks one surface under two roles, name for each role the records it should expect to find (or say plainly they differ and why), so a walker compares like with like.
+**Principle:** a walker given one role's expectations will read another role's legitimately different data as a fault; the brief carries the expected data per role.
+
+### Observation 972: A test's "if the thing is found" guard silently ran nothing
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 105, the Leave War row tint and the OIL editor's click-away (number past 971, the highest on another open branch)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** writing the assertions of a browser test
+
+**Issue:** Two browser tests checked "the signed-in person's own row keeps its highlight" inside `if (row found) { … }`. The suite runs with no row marked as anyone's own, so the check never ran in any run, on any machine, and both tests stayed green. A blind code reader spotted the pattern; the host confirmed it by turning the guard into an assertion, which failed at once.
+**Suggested improvement:** In the section on writing a test, add a rule: a check that only runs when its subject is found must assert the subject was found (or set the state up so it is), never skip quietly; a reader's brief asks for every conditional around an assertion.
+**Principle:** An assertion behind a condition is not a check unless the condition is itself asserted — a skipped check reads as a passed one.
+
+### Observation 961: A picture of a screen that does not name its owner leaves "whose view is this?" to the caption
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** round 4 of the two-squadron design pictures (chat 93)
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** Judging the Proposal / Showing It
+
+**Issue:** The owner could not tell whether a drawn board belonged to one party or the other: the screen itself (a full-screen board covering the app's top bar) names no owner, and only the caption said whose it was. The first round-4 drawing repeated it; a fresh reader caught it.
+**Suggested improvement:** Add to "Showing It": when a design involves several parties' views of one thing, every picture includes the part of the screen that names whose view it is; where the screen names nobody, say so on the page and offer a mark as part of the design.
+**Principle:** A picture must answer "whose view is this?" on its own; a caption is read after the picture has already been misread.
+
+### Observation 962: A mock-up part placed "under" a neighbour must be measured against it, not centred by a recipe
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 94, round 5 of the two-squadron design — redrawing the week's grey "142" tag under the mission
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** drawing a new part beside an existing one
+
+**Issue:** Round 4's badge recipe carried align-self:center, so on the phone the tag drawn "under the mission" sat about 10px in from the mission's first letter. Nobody checked the alignment; he noticed it on the page and asked whether it would be nicer lined up. The redraw found the cause only by measuring the tag's left edge against the mission's letters.
+**Suggested improvement:** In mockups-on-the-real-app.md, add a step: every drawn-in part that shares an edge with a neighbour (stacked under it, beside it) has that edge measured in the script — the gap to the neighbour's first letter (a text range, not its box) — and the script fails above about 0.5px unless the offset is on purpose and said in the caption.
+**Principle:** A reused style recipe brings its alignment with it; alignment in a mock-up is measured against the real neighbour, never assumed from where the element was inserted.
+
+### Observation 963: A scroll-dependent state may not exist on one device — assert it, then say so
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** Drawing a "3 new ↓" count beside a list's add button on the real app (round 5 of a design), including its countdown as the new rows are scrolled into view by hand.
+**Skill:** mockups-on-the-real-app (brainstorming)
+**Type:** open-source
+**Phase/Area:** The Method, step 1 (pictures at each size) and "Choose the state by what it shows"
+
+**Issue:** The countdown state was planned for both sizes. On the phone the group was taller than the screen, so the count (in the group's header) scrolled away before any new row came into view: the state could not occur there at all. The script's assertion ("1 of 3 in view") caught it; a looser script would have drawn a desktop-only behaviour onto a phone, or placed the header by hand where scrolling never puts it.
+**Suggested improvement:** In "Choose the state by what it shows", add: a state reached by scrolling (a counter that changes as content comes into view, a sticky header's moment) is asserted on each device by measuring both the control and the content in view at the same scroll; where no scroll shows both, the state is not drawn for that device, and the page says why — itself a finding about the design (the control works differently there).
+**Principle:** A behaviour defined by what is on screen together can be impossible on a smaller screen; measure co-visibility per device before drawing it, and report the impossibility as a design finding rather than forcing the picture.
+
+### Observation 968: A questions page grows by stacked "newest" blocks until he asks for it to be made readable
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 100, the squadrons design's round 6 page (numbered past 967, held on another branch)
+**Skill:** New skill candidate: questions-page
+**Type:** open-source
+**Phase/Area:** updating a decision page after each round of answers
+
+**Issue:** Over chats 97–100 each new input was added as one more "Newest" block at the top of the page, while answered and replaced questions stayed below. After four rounds the page held three top blocks, and several recommendations were superseded but still showed. He asked "make the mockup easy to read and be clear after all these inputs". The project's own rule (answered and replaced items leave the page) was in force the whole time.
+**Suggested improvement:** Whenever answers or a new reader's findings arrive, rebuild the page instead of prepending: corrections first, then every open call grouped by topic with its recommendation, then a short "settled since" list; keep the old version in the repo.
+**Principle:** A decision page is a view of what is open now, not a log; appending is cheap for the writer and expensive for the reader.
+
+
+### Observation 970: A recommendations page reversed an earlier ruling without naming it, and a blanket "all yes" carried it
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 101, recording his "all recommendations yes" to the multi-squadron round 6 page (number past 969, held on another branch)
+**Skill:** New skill candidate: decision-page writing (round pages put to the owner)
+**Type:** open-source
+**Phase/Area:** building a page of recommendations for the owner to accept
+
+**Issue:** An item in the page's "only if you disagree" list (R8, a reviewer's recommendation adopted wholesale) said "the stricter" crew rest for a man flying both units in a day — the exact option the owner had explicitly rejected days earlier (D2123). The page never named the reversal. He answered "all recommendations yes", so the clash surfaced only when the answer was recorded and a later checker ran; it had to be held back and asked again. Two more recommendations quietly narrowed earlier rulings (D2119, D2109) without naming them.
+**Suggested improvement:** Before a recommendations page goes out, run a clash pass: for each recommendation, search the rulings it touches and write on the item "changes D<n> (your <date> pick: …)" whenever it narrows or reverses one; never put a reversal of an explicit earlier choice in an "only if you disagree" list.
+**Principle:** A blanket acceptance is only as good as the page's disclosure; any recommendation that overturns a person's earlier explicit choice must say so on its face, or the acceptance does not cover it.
+
+### Observation 971: A reused drawing script carries words written before later rulings
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 102, round 7 of the multi-squadron mock-up, pictures drawn by four helpers to a word-for-word brief
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** "Reusing an older drawing or its script reuses its shortcuts"
+
+**Issue:** The brief gave exact words for every new line, but told a helper to keep an earlier variant's lines "as variant F draws them". Those lines predated two later rulings, so the picture said leave "goes to 149's Approvals" and only "149's admins are told" — both now wrong. The helper checked the brief's words, not the inherited ones; only the host's look against the rulings caught them.
+**Suggested improvement:** In the reference's "Reusing an older drawing" rule, add: every line of words the reused script draws is listed in the brief and checked against the rulings made since that drawing, the same as new words; "as the old script draws it" is never a spec for wording.
+**Principle:** Inherited content is unreviewed content: when a spec says "keep what the old one says", the old words skip the check the new ones get.
+
+### Observation 973: A questions page for a non-technical owner was written in the reviews' shorthand
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 103, round 7's page of the multi-squadron design (numbered past 972, which a parallel branch holds)
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** writing the page and the marks on its pictures
+
+**Issue:** The page put to the owner was written in the working notes' shorthand: review finding codes (H2, F16, M2), ruling numbers inside sentences, "narrows your F12", "card line 4", "Close greyed", and the same codes printed as tags on every picture. He could not follow it ("whats card line 4, narrows, close greyed … explain things simply for the whole mock up"). The plain-language check had been run on chat messages, not on the page, and the drawing brief told helpers to tag each mark with its finding code.
+**Suggested improvement:** In the reference, add a step before publishing any page for the owner: scan its text and its picture tags for codes (letters plus digits), ruling numbers and record words, and replace each with what a person sees and what happens; picture marks carry only "New" (pink) or no label (blue). Traceability lives in the design note, not on the page.
+**Principle:** Codes that make a review traceable for the builder make it unreadable for the decider; keep them in the working notes and give the reader examples and plain outcomes.
+
+### Observation 974: A drawing brief written from the plan carried the plan's wrong data shape
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 106 — batch 1's mock-up drawn by a helper while the batch plan was under red team
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** briefing a helper to draw a proposed screen
+
+**Issue:** The drawing brief asked for a line "Off day · 142: Sat · 149: Sun", copied from the plan's guess that an Off day is a weekday. The helper looked at the running app, found an Off day is a dated entry kept beside the public holidays, and drew a different line; one of the red-team readers found the same fault in the plan independently. Drawn as briefed, the picture would have put a wrong model in front of the owner for approval.
+**Suggested improvement:** In mockups-on-the-real-app.md, add: a brief names each new piece's purpose and leaves its exact words and values to be read from the running app; the helper reports any place where the app's real shape differs from the brief, and the host fixes the plan before the page goes out.
+**Principle:** A mock-up drawn on the real app is also a check of the plan's assumptions; brief the drawer to report where the app disagrees, rather than to paint the assumption.

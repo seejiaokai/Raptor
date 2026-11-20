@@ -1,0 +1,47 @@
+[
+ {
+  "id": "S13",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "armed Delete, Cancel, reopened",
+  "saw": "armed read \"Really delete?\"; the award still there: true; reopened Delete reads \"Delete\"",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S13-armed.png"
+ },
+ {
+  "id": "S13",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "armed Delete on the first, opened the second award, then the first again",
+  "saw": "first reads \"Delete\" (not armed expected); second reads \"Delete\"; first still there: true",
+  "verdict": "PASS",
+  "pics": ""
+ },
+ {
+  "id": "S13",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "armed Delete, closed the tracker, reopened it and the award",
+  "saw": "Delete reads \"Delete\" (not armed expected); award still there: true",
+  "verdict": "PASS",
+  "pics": ""
+ },
+ {
+  "id": "S13",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "pressed Delete twice (arm, then confirm)",
+  "saw": "first press read \"Really delete?\"; the award gone: true; the other award still there: true",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S13-deleted.png"
+ },
+ {
+  "id": "S13",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "Undo after the deletion",
+  "saw": "the deleted award is back: true; the other still there: true",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S13-undone.png"
+ }
+]

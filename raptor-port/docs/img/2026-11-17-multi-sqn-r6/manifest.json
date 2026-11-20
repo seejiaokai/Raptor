@@ -1,0 +1,26 @@
+{
+  "X1-d-today.png": {
+    "item": "X",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Today, real: Ranger's Post out sheet on the Leave War (Fri 3 Apr). Mark X1: \"Transfer to Sqn\" is drawn but greyed, \"Comes with the shared database\"; the lit default is Overseas Sqn (\"archived, account suspended\")."
+  },
+  "X2-d-proposed.png": {
+    "item": "X",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in on the real sheet. X2: \"Transfer to Sqn\" pressable and lit. X3: a \"To\" row, a clone of the Posting row, naming the squadron — every squadron made in Admin → Squadrons except his own (only 149 in the demo). X4: the sheet's one line, \"On 3 Apr: moves to 149, his leave, OIL, quals and inputs with him.\" X5: one line listing what the date touches, shown only when there is something: \"After 3 Apr: 2 lines on 142's schedule hold him (kept, as a 149 man borrowed); 1 leave approved by 142 goes to 149's Approvals.\" (the figures are made up for the picture). The button stays \"Post out\"."
+  },
+  "X1-p-today.png": {
+    "item": "X",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Today, real: Ranger's Post out sheet on the Leave War (Mon 3 Aug). Mark X1: \"Transfer to Sqn\" is drawn but greyed, \"Comes with the shared database\"; the lit default is Overseas Sqn (\"archived, account suspended\")."
+  },
+  "X2-p-proposed.png": {
+    "item": "X",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in on the real sheet. X2: \"Transfer to Sqn\" pressable and lit. X3: a \"To\" row, a clone of the Posting row, naming the squadron — every squadron made in Admin → Squadrons except his own (only 149 in the demo). X4: the sheet's one line, \"On 3 Aug: moves to 149, his leave, OIL, quals and inputs with him.\" X5: one line listing what the date touches, shown only when there is something: \"After 3 Aug: 2 lines on 142's schedule hold him (kept, as a 149 man borrowed); 1 leave approved by 142 goes to 149's Approvals.\" (the figures are made up for the picture). The button stays \"Post out\"."
+  }
+}

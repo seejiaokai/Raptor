@@ -1,0 +1,38 @@
+{
+  "R7F1-d-proposed.png": {
+    "item": "F1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's Inputs page → \"+ Input\", the app's own New input window: PERSON Saber (142's man, the demo's own Saber), TYPE the kind OD picked and re-lettered DET, as round 7's B1 draws it. Drawn, blue F1: the DETACHMENT choice open as a list — the app's own menu of choices (the plans selector's), its two rows re-lettered: \"Exercise North · 249 · 13–31 Jul\" in the menu's own picked look, with the small grey \"149\" badge after it (the other-squadron badge of C1–C6), and \"Red Sands · 242 · 3–14 Aug\", no badge (142's own). TITLE \"Exercise North\"; FROM 13 Jul, TO 31 Jul as whole days; no OIL question; no \"On 142's schedule in these dates\" box (he has nothing planned then). The window's \"Add\" re-lettered \"Save\", as B1."
+  },
+  "R7F2-d-proposed.png": {
+    "item": "F2",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Exercise North's schedule (249): Edit Schedule, Wed 15 Jul, the top bar's \"142\" re-lettered \"249\". The day's crew list, the app's own \"Available all day\" group (it read \"Available all day · 27\"), kept with seven of its own seats in the app's order: the six re-lettered Hawk, Spur, Talc, Vane, Crisp, Moss and the demo's own Saber, with the small grey \"142\" badge after his name (the other-squadron badge, E1's recipe) — in the list as one of the detachment's people, not in a foot group of the other squadron's free people; blue F2 on his row. Hidden: the day's sections between its head and the crew list, the list's wave groups, and the group's other seats; its count set to 7."
+  },
+  "R7D5a-d-proposed.png": {
+    "item": "D5",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Admin → Squadrons (round 4's page), Exercise North's row opened. Drawn in beside its Place (\"Exercise base\"): \"Time zone\", a select reading \"Dhaka · GMT+6\" — blue (Q8, ruled). 142's and 149's rows each carry their time zone in their grey sub-line: \"Home base · 61 people · Perth · GMT+8\", \"Northern base · 48 people · Perth · GMT+8\". Both fields are the Users editor's own, re-lettered. Redrawn by draw-r7f.mjs (chat 104) from draw-r7d.mjs's D5a, which had \"Hours from home\" \"+7\"; the city names are made up for the demo."
+  },
+  "R7F1-p-proposed.png": {
+    "item": "F1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's Inputs page → \"+ Input\", the app's own New input window: PERSON Saber (142's man, the demo's own Saber), TYPE the kind OD picked and re-lettered DET, as round 7's B1 draws it. Drawn, blue F1: the DETACHMENT choice open as a list — the app's own menu of choices (the plans selector's), its two rows re-lettered: \"Exercise North · 249 · 13–31 Jul\" in the menu's own picked look, with the small grey \"149\" badge after it (the other-squadron badge of C1–C6), and \"Red Sands · 242 · 3–14 Aug\", no badge (142's own). TITLE \"Exercise North\"; FROM 13 Jul, TO 31 Jul as whole days; no OIL question; no \"On 142's schedule in these dates\" box (he has nothing planned then). The window's \"Add\" re-lettered \"Save\", as B1."
+  },
+  "R7F2-p-proposed.png": {
+    "item": "F2",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Exercise North's schedule (249): Edit Schedule, Wed 15 Jul, the top bar's \"142\" re-lettered \"249\". The day's crew list, the app's own \"Available all day\" group (it read \"Available all day · 27\"), kept with seven of its own seats in the app's order: the six re-lettered Hawk, Spur, Talc, Vane, Crisp, Moss and the demo's own Saber, with the small grey \"142\" badge after his name (the other-squadron badge, E1's recipe) — in the list as one of the detachment's people, not in a foot group of the other squadron's free people; blue F2 on his row. Hidden: the day's sections between its head and the crew list, the list's wave groups, and the group's other seats; its count set to 7."
+  },
+  "R7D5a-p-proposed.png": {
+    "item": "D5",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Admin → Squadrons (round 4's page), Exercise North's row opened. Drawn in beside its Place (\"Exercise base\"): \"Time zone\", a select reading \"Dhaka · GMT+6\" — blue (Q8, ruled). 142's and 149's rows each carry their time zone in their grey sub-line: \"Home base · 61 people · Perth · GMT+8\", \"Northern base · 48 people · Perth · GMT+8\". Both fields are the Users editor's own, re-lettered. Redrawn by draw-r7f.mjs (chat 104) from draw-r7d.mjs's D5a, which had \"Hours from home\" \"+7\"; the city names are made up for the demo."
+  }
+}

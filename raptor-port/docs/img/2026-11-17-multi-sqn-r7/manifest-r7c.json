@@ -1,0 +1,98 @@
+{
+  "R7C1-d-proposed.png": {
+    "item": "C1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's schedule, Edit Schedule, Tue 14 Jul, published (day head ORIG, real: four signers). Saber's automatic row \"ACADEMICS · 149\" over the small \"Attach\" is the app's own (an Attach To 149 titled ACADEMICS, 14:00–16:00); drawn in: 149's grey badge beside \"ATTACH\", the times as 149 published them (blue F19), and under them, faint, \"15:00–17:00 · not yet published by 149\" (blue F19). 142's own Sim BOX 14:30–15:30 holds Saber (a real fill), so the app raises its real warning; its words re-lettered to \"Saber is still on 149's issued ACADEMICS 14:00 — it changes when 149 publishes.\" (pink New · H6; the app's words were \"Conflict with a request Saber — Conflict: Sim BOX 14:30–15:30 & ACADEMICS 14:00–16:00\"). Hidden between the head and these: the empty sign-off boxes, waiting for the next amendment · COMMON PROGRAMME ORDER · FLYING WAVES ⠿ WAVE 1  · DUTIES NAME START END  · GROUND PROGRAMME To ta · PERSONAL INPUTS 1 inpu · AVAILABLE CREW ⌃ 1ST W · SANS AVAIL Zulu O F/O/. The row's REJECT is hidden (Q4N). Comet re-lettered Saber. The screen is made 1180px tall at the same width so the frame fits one picture."
+  },
+  "R7C1-p-proposed.png": {
+    "item": "C1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's schedule, Edit Schedule, Tue 14 Jul, published (day head ORIG, real: four signers). Saber's automatic row \"ACADEMICS · 149\" over the small \"Attach\" is the app's own (an Attach To 149 titled ACADEMICS, 14:00–16:00); drawn in: 149's grey badge beside \"ATTACH\", the times as 149 published them (blue F19), and under them, faint, \"15:00–17:00 · not yet published by 149\" (blue F19). 142's own Sim BOX 14:30–15:30 holds Saber (a real fill), so the app raises its real warning; its words re-lettered to \"Saber is still on 149's issued ACADEMICS 14:00 — it changes when 149 publishes.\" (pink New · H6; the app's words were \"Conflict with a request Saber — Conflict: Sim BOX 14:30–15:30 & ACADEMICS 14:00–16:00\"). Hidden between the head and these: the empty sign-off boxes, waiting for the next amendment · COMMON PROGRAMME ORDER · FLYING WAVES ⠿ WAVE 1  · DUTIES NAME START PEOP · GROUND PROGRAMME To ta · PERSONAL INPUTS 1 inpu · AVAILABLE CREW ⌃ 1ST W · SANS AVAIL Zulu O F/O/. The row's REJECT is hidden (Q4N). Comet re-lettered Saber. The screen is made 1359px tall at the same width so the frame fits one picture."
+  },
+  "R7C2-d-proposed.png": {
+    "item": "C2",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "The input window opened by pressing \"ACADEMICS · 149\" on 142's published Tuesday (the app's own window, \"\", Comet re-lettered Saber). As Q4N drew it: \"Set by 149's plan\" above the fields, the fields shown but not changeable, no Save; the Delete re-lettered \"Take him off ACADEMICS\" (blue D2149) with under it \"His seat is left empty; 149 is told. Until 149 publishes, he stays on its issued ACADEMICS.\" — the second sentence new (pink New · H6). Fields shown: Person, Type, Title, To, Duration, Remarks; buttons left: Take him off ACADEMICS, Cancel."
+  },
+  "R7C2-p-proposed.png": {
+    "item": "C2",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "The input window opened by pressing \"ACADEMICS · 149\" on 142's published Tuesday (the app's own window, \"\", Comet re-lettered Saber). As Q4N drew it: \"Set by 149's plan\" above the fields, the fields shown but not changeable, no Save; the Delete re-lettered \"Take him off ACADEMICS\" (blue D2149) with under it \"His seat is left empty; 149 is told. Until 149 publishes, he stays on its issued ACADEMICS.\" — the second sentence new (pink New · H6). Fields shown: Person, Type, Title, To, Duration, Remarks; buttons left: Take him off ACADEMICS, Cancel."
+  },
+  "R7C3-p-proposed.png": {
+    "item": "C3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Saber's own schedule, View-only Sched, Mon 13 Jul, as a member sees it (the demo's member, Ranger, re-lettered Saber; 142 TALON Sync · slow in the top bar). 149's published line he is on: VL, the demo's 1st wave standing in for 149's (VL's take-off moved to 14:00 by a real edit before 142 published Monday), read only, wearing 149's grey badge (blue F20); Saber in its second jet, Hawk, Spur and Talc 149's (re-lettered). The wave's reporting note for VL, the app's own in-time line at the head of the wave, re-lettered \"In 13:00 · Brief room 2\" (pink New · L2; it read \"09:40H: FIRST WAVE VL IN TIME + WX/NOTAMS\"). Hidden between the day head and the wave: 16 issues · 6 warnings · COMMON PROGRAMME EP: E; the day's other waves hidden."
+  },
+  "R7C3b-p-proposed.png": {
+    "item": "C3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Saber's bell, open (pressed for real; the app's own list said: \"Nothing new\"). Drawn in, in the bell's own line markup, unread, the bell lit: \"149 planned you · Mon 13 Jul 14:00\" (blue F20)."
+  },
+  "R7C3-d-proposed.png": {
+    "item": "C3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Saber's own schedule, View-only Sched, Mon 13 Jul, as a member sees it (the demo's member, Ranger, re-lettered Saber; Insights Logout SABER · MEMBER in the top bar). 149's published line he is on: VL, the demo's 1st wave standing in for 149's (VL's take-off moved to 14:00 by a real edit before 142 published Monday), read only, wearing 149's grey badge (blue F20); Saber in its second jet, Hawk, Spur and Talc 149's (re-lettered). The wave's reporting note for VL, the app's own in-time line at the head of the wave, re-lettered \"In 13:00 · Brief room 2\" (pink New · L2; it read \"09:40H: FIRST WAVE VL IN TIME + WX/NOTAMS\"). Hidden between the day head and the wave: 16 issues · 6 warnings · COMMON PROGRAMME EP: E; the day's other waves hidden."
+  },
+  "R7C3b-d-proposed.png": {
+    "item": "C3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Saber's bell, open (pressed for real; the app's own list said: \"Nothing new\"). Drawn in, in the bell's own line markup, unread, the bell lit: \"149 planned you · Mon 13 Jul 14:00\" (blue F20)."
+  },
+  "R7C4-d-proposed.png": {
+    "item": "C4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's schedule, Edit Schedule, Mon 13 Jul, published by 142 (day head real). RU, 142's line, inside 149's wave (round 5's shared-wave look: the wave's title wears 149's grey badge; 149's VL and its in-time line hidden). 142 changed RU for real: Tally into the seat Viper had (the demo's Relay stands in for Viper); the app draws its own pending mark on the changed seat, the hollow dotted AL1 tag (blue F8). Under the wave's title the quiet grey line \"RU changed · goes out when 149 publishes\" (blue F8). Hidden between the day head and the wave: the empty sign-off boxes, waiting for the next amendment · 18 issues · 6 warnings · COMMON PROGRAMME EP: E."
+  },
+  "R7C4b-d-proposed.png": {
+    "item": "C4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "149's schedulers' bell, open (142's app stands in: its top bar re-lettered 149, its admin Ace; the list pressed open for real, 1 line(s) of the demo's own under it). Drawn in at the top, in the bell's own line markup, unread: \"142 changed RU on Mon 13 Jul · publish to send it\" (blue F8)."
+  },
+  "R7C4-p-proposed.png": {
+    "item": "C4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's schedule, Edit Schedule, Mon 13 Jul, published by 142 (day head real). RU, 142's line, inside 149's wave (round 5's shared-wave look: the wave's title wears 149's grey badge; 149's VL and its in-time line hidden). 142 changed RU for real: Tally into the seat Viper had (the demo's Relay stands in for Viper); the app draws its own pending mark on the changed seat, the hollow dotted AL1 tag (blue F8). Under the wave's title the quiet grey line \"RU changed · goes out when 149 publishes\" (blue F8). Hidden between the day head and the wave: the empty sign-off boxes, waiting for the next amendment · 18 issues · 6 warnings · COMMON PROGRAMME EP: E."
+  },
+  "R7C4b-p-proposed.png": {
+    "item": "C4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "149's schedulers' bell, open (142's app stands in: its top bar re-lettered 149, its admin Ace; the list pressed open for real, 1 line(s) of the demo's own under it). Drawn in at the top, in the bell's own line markup, unread: \"142 changed RU on Mon 13 Jul · publish to send it\" (blue F8)."
+  },
+  "R7C5-d-proposed.png": {
+    "item": "C5",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "149's schedule, Edit Schedule, Tue 14 Jul (142's Tuesday stands in; top bar re-lettered 149, its admin Ace). The four boxes signed for real, so \"Publish day\" is live. RU, 142's line in 149's wave, wears the grey \"142\" tag (round 5). Drawn in: under RU, the editing mark \"Saber (142) – editing Tue\" (blue R9), in the day head's own read-only chip, its pending-amber dashed look; and 149's Publish card hanging from \"Publish day\", in the app's own question card (.askcard), its warning line \"Saber (142) is editing RU.\" and \"Publish day\" still pressable (blue R9). Hidden between the day head and the wave: 4 issues · 2 warnings  · COMMON PROGRAMME ORDER."
+  },
+  "R7C5-p-proposed.png": {
+    "item": "C5",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "149's schedule, Edit Schedule, Tue 14 Jul (142's Tuesday stands in; top bar re-lettered 149, its admin Ace). The four boxes signed for real, so \"Publish day\" is live. RU, 142's line in 149's wave, wears the grey \"142\" tag (round 5). Drawn in: under RU, the editing mark \"Saber (142) – editing Tue\" (blue R9), in the day head's own read-only chip, its pending-amber dashed look; and 149's Publish card hanging from \"Publish day\", in the app's own question card (.askcard), its warning line \"Saber (142) is editing RU.\" and \"Publish day\" still pressable (blue R9). Hidden between the day head and the wave: 4 issues · 2 warnings  · COMMON PROGRAMME ORDER."
+  },
+  "R7C6-d-today.png": {
+    "item": "C6",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "The printed week as the app makes it today (\"Export as PDF (print)\" pressed on Edit Schedule; the print document caught before the print dialog and shown at the desktop's width, its @page margins drawn round it as on paper; its top and first day). On 149's schedule (142's app stands in) its heading reads \"142 — Flying Programme\" (pink New · M12), and its title — the PDF's name and the print dialog's header, which the page itself does not show — reads \"142 Flying Programme — Mon 13 Jul – Sun 19 Jul\". Both are fixed to 142 in the app. Desktop only: the print view is an A4 sheet with no phone layout."
+  },
+  "R7C6-d-proposed.png": {
+    "item": "C6",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "The same printed week, proposed: the heading reads \"149 — Flying Programme\" (pink New · M12) and the title \"149 Flying Programme — Mon 13 Jul – Sun 19 Jul\" — the schedule's own squadron. Desktop only: the print view is an A4 sheet with no phone layout."
+  }
+}

@@ -1,0 +1,269 @@
+<title>Two Squadrons · Fable's Read</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{--bg:#f4f6f8;--card:#ffffff;--fg:#14202b;--mute:#5b6b78;--line:#d6dee5;--acc:#0e7fa6;--rec:#0b7a4b;--mark:#d4157a;--warn:#a35a00;--tint:rgba(14,127,166,.07);
+--f-body:Inter,system-ui,'Segoe UI',sans-serif;--f-head:'Space Grotesk',Inter,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--warn:#f0a640;--tint:rgba(60,196,234,.08);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--warn:#f0a640;--tint:rgba(60,196,234,.08);color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-body);margin:0}
+.wrap{max-width:1100px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-head);text-wrap:balance;margin:0}
+h1{font-size:26px}h2{font-size:19px;margin-top:34px;padding-top:14px;border-top:1px solid var(--line)}h3{font-size:16px}
+.sub{color:var(--mute);margin:4px 0 0}
+.top{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:16px}
+.top ol{margin:6px 0 0;padding-left:0;list-style:none;display:grid;gap:7px}
+.top li{display:grid;grid-template-columns:44px 1fr;gap:8px}
+.top b.n{font-family:var(--f-head);color:var(--acc)}
+.top h3+ol{margin-top:6px}.top ol+h3{margin-top:14px}
+a{color:var(--acc)}
+.rec{color:var(--rec);font-weight:600}
+.weak{color:var(--warn);font-weight:600}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:14px}
+.q p,.q li{max-width:78ch}.q p{margin:8px 0}
+.q ul{margin:6px 0;padding-left:20px}.q li{margin:4px 0}
+.asked{color:var(--mute);font-style:italic}
+.ex{background:var(--tint);border-radius:8px;padding:8px 12px;color:var(--mute)}
+.ex b{color:var(--fg)}
+.pics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+figure{margin:0;min-width:0}
+figure img{display:block;width:100%;border-radius:6px;border:1px solid var(--line);cursor:zoom-in;background:#000}
+figcaption{font-size:12.5px;color:var(--mute);margin-top:4px}
+figcaption b{color:var(--fg)}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mute);margin-top:14px}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--mute)}
+.tag.p{color:var(--mark);border-color:var(--mark)}
+table{border-collapse:collapse;width:100%;margin-top:8px;font-size:14px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--f-head);font-size:13px;color:var(--mute);font-weight:600}
+.tw{overflow-x:auto}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20;overflow:auto}
+#zoom[hidden]{display:none}
+#zoom img{max-width:none;width:auto;max-height:none}
+@media (max-width:640px){.pics{grid-template-columns:1fr}.top li{grid-template-columns:36px 1fr}}
+</style>
+<div class="wrap">
+<h1>Two squadrons: Fable's read</h1>
+<p class="sub">Fable red-teamed the whole squadrons plan at your call, blind to Astra's and Opus's reports, then read chat 98's wording. 24 findings. Three fresh readers checked every claim against your rulings and the app's code, and I confirmed the deciding ones myself. Below: what needs your call, then each finding with an example. Pictures are the real app from earlier rounds, shown again for the place they are about; new drawings come in round 7. Round 6's page: <a href="https://claude.ai/artifact/VcdxV4u3iACCZKiW4ce9JL">here</a>.</p>
+
+<div class="top" style="border-color:var(--mark)">
+<h3>Corrections to what I told you</h3>
+<ol>
+<li><b class="n">X1</b><span><a href="#f18">C1 rested on a false reason.</a> I said the last issue's sign-off names "are always names the boxes offer". Not so: a signer may since have lost his Scheduler tick or been posted out, and then the app refuses to publish. C1's recommendation changes (F18).</span></li>
+<li><b class="n">X2</b><span><a href="#f15">C3 contradicts itself.</a> "Back on 149's schedule today" and "their DET ends today" cannot both hold: an input's last day still counts him away. C3's recommendation changes (F15).</span></li>
+<li><b class="n">X3</b><span>Viper is one of 149's six on the Close card, and a 142 man in Q3. One of the two is wrong; round 7 uses a different name on the Close card.</span></li>
+</ol>
+<h3>Look at now: one decision each</h3>
+<ol>
+<li><b class="n">F15</b><span><a href="#f15">The closing day of a detachment.</a> <span class="rec">Recommended:</span> it stays wholly the detachment's; the people are back on 149's schedule from the next day. Narrows your D2103.</span></li>
+<li><b class="n">F16</b><span><a href="#f16">What "Close" clears, and in what order.</a> <span class="rec">Recommended:</span> every row of each day goes; then each is published; then their DET ends.</span></li>
+<li><b class="n">F17</b><span><a href="#f17">The Close card names everything the press touches.</a> <span class="rec">Recommended:</span> a man due to join later, another unit's line, each man's real OIL, someone editing.</span></li>
+<li><b class="n">F18</b><span><a href="#f18">Whose four names go on Close's amendments.</a> <span class="rec">Recommended:</span> none; one line in their place, "Cleared when Exercise North was closed · Hawk · Thu 23 Jul".</span></li>
+<li><b class="n">F24</b><span><a href="#f24">Undo of Close.</a> <span class="rec">Recommended:</span> not on the Undo button; "Keep open" is the safety, and the way back is a new detachment.</span></li>
+<li><b class="n">F19</b><span><a href="#f19">Q3 again: does 149's publish make 142's published day pending?</a> <span class="rec">Recommended:</span> no; 149's row shows on 142's day with 149's badge, never in 142's signature, as a shared wave already is. Changes D2107.</span></li>
+<li><b class="n">F20</b><span><a href="#f20">The man who is picked is told.</a> <span class="rec">Recommended:</span> his own bell, and he sees the other squadron's published line he is on.</span></li>
+<li><b class="n">F8</b><span><a href="#f8">142 changes its line in 149's wave after both have published.</a> <span class="rec">Recommended:</span> a fourth sentence, "RU changed · goes out when 149 publishes", and 149's schedulers told.</span></li>
+<li><b class="n">F9</b><span><a href="#f9">149 publishes while 142 is mid-change on RU.</a> <span class="rec">Recommended:</span> a warning on 149's Publish naming who is editing; never a block (no lock, D1751).</span></li>
+<li><b class="n">F13</b><span><a href="#f13">The transfer read by date, and no past dates.</a> <span class="rec">Recommended:</span> whose man he is comes from his stints, day by day; a transfer date in the past is refused.</span></li>
+<li><b class="n">F21</b><span><a href="#f21">His quals and Tracker course on a transfer.</a> <span class="rec">Recommended:</span> a mark under a qual 149 does not list is kept, greyed; he stays on his course.</span></li>
+<li><b class="n">F22</b><span><a href="#f22">Leave 142 approved, after a transfer.</a> <span class="rec">Recommended:</span> it arrives approved; 149 can send it back from its day, as any approved leave.</span></li>
+<li><b class="n">F23</b><span><a href="#f23">A borrowed man's OIL on the other squadron's published day.</a> <span class="rec">Recommended:</span> the day keeps the values it went out with; a later change in the other squadron's Logic never reaches back.</span></li>
+<li><b class="n">F12</b><span><a href="#f12">Whose "today" for a detachment overseas.</a> <span class="rec">Recommended:</span> home's date for every date turn; the detachment's times typed in its own local time.</span></li>
+<li><b class="n">F1</b><span><a href="#f1">Public holidays, once for both squadrons.</a> <span class="rec">Recommended:</span> one holiday list for squadrons at one place; each squadron's own "Off day" stays its own.</span></li>
+<li><b class="n">F4</b><span><a href="#f4">May a home scheduler Reject a man's DET?</a> <span class="rec">Recommended:</span> no; the way off a detachment is its People list or the DET's dates.</span></li>
+</ol>
+<h3>Already on round 6: Fable agrees, no new call</h3>
+<ol><li><b class="n">=</b><span><a href="#same">11 findings</a> match round 6's Q1, Q4, Q5, R2, R4, R5, R7, R8, R9, R10 or your answers D2142 and D2146.</span></li></ol>
+<h3>Checked and dropped</h3>
+<ol><li><b class="n">✕</b><span><a href="#dropped">Four claims shown wrong</a>, listed so you can see what was checked.</span></li></ol>
+<h3>Later rounds</h3>
+<ol><li><b class="n">L</b><span><a href="#later">Fable's 15 open questions</a>, each with its recommendation. Nothing to answer now.</span></li></ol>
+</div>
+
+<h2 id="f15">F15 · The closing day of a detachment</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> 149's detachment 249 closes on Thu 23 Jul. Chat 98's card said "6 people back on 149's schedule today. Their DET ends today." But an input's last day still counts the man away at home, so on Thursday they are still away. To have them home on Thursday, their DET would have to end Wednesday; then 149's own published Thursday goes pending too, and the card did not say so. And with the "one man, one place" check switched off that day (C3), 149 could plan Anvil at home at 19:00 on the day he flew 249's 14:00 wave.</p>
+<p><span class="rec">Recommended:</span> the closing day stays wholly the detachment's. Their DET's last day is the closing day; they are on 149's home schedule from Fri 24 Jul. The card reads "6 people back on 149's schedule from Fri 24 Jul. Their DET ends today." Nothing is switched off. Your D2103 says "from that day"; this makes it "from the next day".</p>
+<p>Other choice: home the same day. Then their DET ends the day before, 149's published Thursday goes pending and is named on the card, and the place check stays on.</p>
+<p class="asked">Checked: an input covers its last day whole (the app's date test counts the end date in).</p>
+<div class="pics"><figure><img src="img/7-close-d-proposed.png" alt=""><figcaption><b>Round 3's picture, old words: 149's Admin → Squadrons, desktop.</b> Where the Close card hangs. Its words are redone in round 7.</figcaption></figure>
+<figure><img src="img/7-close-p-proposed.png" alt=""><figcaption><b>The same, phone.</b></figcaption></figure></div>
+</div>
+
+<h2 id="f16">F16 · What "Close" clears, and in what order</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> 249's published Sat 25 Jul holds two flying lines and an ALL AVAIL programme row. The card said "everyone taken off". A name can be taken off a seat, but an ALL AVAIL row names nobody: who stands behind it is fixed when the day is published. If the press publishes the new amendment while the six are still on the detachment, that amendment fixes all six behind the row again, and <b>each still earns Saturday's OIL</b>, though the card says it goes.</p>
+<p><span class="rec">Recommended:</span> the card says "cleared", meaning every row of the day goes: lines, waves, programme rows, duty desks, rows from inputs. The press works in this order: (1) clear each day; (2) publish each; (3) then end their DET and bring them home.</p>
+<p class="asked">Checked: an ALL AVAIL row's crowd is fixed at publication and earns for those it stands for. Today's sign-off boxes offer the squadron's schedulers whoever is on the day; whom a detachment's boxes offer is not designed yet, and F18 may make the question go.</p>
+</div>
+
+<h2 id="f17">F17 · The Close card names everything the press touches</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> The card counts "6 people", but the press reaches more:</p>
+<ul>
+<li>A seventh man filed his own DET for 249 from Mon 27 Jul. After Close his DET still names a closed detachment, so at home he shows away and cannot be planned, though nobody told him.</li>
+<li>Another unit at the same place may have a line or a man on 249's cleared Saturday. Clearing removes it without asking, which "✕ Wave" would ask about (D2113).</li>
+<li>"6 people, 1 day each" over two cleared days: each man's real loss depends on his hours, a half or a full day.</li>
+<li>Someone may be editing a cleared day at that moment.</li>
+</ul>
+<p><span class="rec">Recommended:</span> the card's lines come from what the press really touches, each only when it applies: "1 more was due from 27 Jul: his DET is removed and he is told" · "Sat 25 Jul holds a line of 242's: its schedulers are told" · "OIL taken back: Sat 25 Jul, 4 people 1 day, 2 people ½" · "Jolt is editing Sun 26 Jul". Close is also the first press that publishes several days at once; today publishing is one day at a time, on purpose, so this is a recorded exception.</p>
+<p class="asked">Corrected from Fable: removing another unit's line tells its schedulers but does not make their day pending (a shared wave never does, D2106). Only a borrowed man's home day goes pending. "242" and "Jolt" are made up.</p>
+</div>
+
+<h2 id="f18">F18 · Whose four names go on Close's amendments</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Chat 98 recommended the names on each day's last issue, "always names the boxes offer". Not always: if one of those signers has since lost his Scheduler tick on Quals, his name no longer counts and <b>the app refuses to publish</b>; if he was posted overseas, his name is no longer offered at all. And those four checked a day with flying on it; the record would show them signing an amendment that empties it, which none of them saw.</p>
+<p><span class="rec">Recommended:</span> the amendment Close makes carries no four names. In their place, one line: "Cleared when Exercise North was closed · Hawk · Thu 23 Jul". It is the only amendment in the app nobody planned or checked, and saying so is truer than either set of names. This needs one exception in the app: today nothing publishes without its four sign-offs.</p>
+<p>Other choices: (A) the last issue's names, with a rule for a name that no longer counts; (B) the admin who pressed Close in all four, though each box offers only the people its Quals ticks allow.</p>
+<p class="asked">Checked: publishing is refused until all four are signed, on a first issue and on an amendment.</p>
+<div class="pics"><figure><img src="img/7-b4-signoff-d-today.png" alt=""><figcaption><b>Round 2's picture, today: the four sign-offs on Edit Schedule, desktop.</b> On Close's amendments this row would read the one line instead.</figcaption></figure>
+<figure><img src="img/7-b4-signoff-p-today.png" alt=""><figcaption><b>The same, phone.</b></figcaption></figure></div>
+</div>
+
+<h2 id="f24">F24 · Undo of Close</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Undo could take back Close's amendments: the earlier version becomes current and its OIL pays again. But by then 149's scheduler may have planned and published the six at home for Fri 24 Jul. Undo would put them back on DET, and 149's published home days go pending again.</p>
+<p><span class="rec">Recommended:</span> Close is not a step of the Undo button, as a posting is not (D350). "Keep open" on the card is its safety; the way back is a new detachment.</p>
+<p>Other choice: Undo of Close works until anything at home has been planned on those days, then is greyed with the reason.</p>
+</div>
+
+<h2 id="f19">F19 · Q3 again: does 149's publish make 142's published day pending?</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> 142 has published Tuesday. 149 picks Viper (142) for 14:00 and publishes. Under Q3 as worded, 142's Tuesday goes "1 pending", its four sign-offs fall, and 142 must sign and publish an amendment that changes nothing 142 planned. On a week of shared flying, <b>142's ORIG is almost never its last word</b>, and 142's amendment numbers stop meaning "142 changed its plan". Your D2107 already costs this re-signing at the pick; Q3 only moves it to 149's publish.</p>
+<p>A second gap: Q3 has the row show 149's published state, but the clash check read 149's latest plan. If 149 takes Viper off but has not published, the row says he is taken and the check says he is free: two answers on one screen.</p>
+<p><span class="rec">Recommended:</span> 149's row is 149's published fact. It shows on 142's day the moment 149 publishes, with 149's grey badge, never pending on 142's day and never in 142's signature, exactly as 142's own line in 149's wave already works (D2106). 142's schedulers get a bell line each time. An unpublished change by 149 shows faint beside it, so row and check never disagree. This changes D2107 and settles Q3 and C5.</p>
+<p>Other choice: Q3 as worded, pending on 142's day each time 149 publishes a change to his time away.</p>
+<div class="pics"><figure><img src="img/8-d1-attach-pending-d-proposed.png" alt=""><figcaption><b>Round 2's picture: 142's Edit Schedule, desktop.</b> The row arriving as "1 pending" (D2107). Recommended: the same row with 149's badge, nothing pending.</figcaption></figure>
+<figure><img src="img/8-d1-attach-pending-p-proposed.png" alt=""><figcaption><b>The same, phone.</b></figcaption></figure></div>
+</div>
+
+<h2 id="f20">F20 · The man who is picked is told</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Sunday evening 149 picks Viper (142) for Monday 13:00 and publishes. The bell rings 142's schedulers only (D2091). Viper is a member with no access to 149's schedule. If 142 does not publish before Monday noon, <b>his only schedule says he is free at 13:00</b>.</p>
+<p><span class="rec">Recommended:</span> (1) a man always sees, read only, the other squadron's published line he is on, with no access given; (2) when the other squadron publishes a day that names him, or changes his line, his own bell gets a line: "149 planned you · Mon 13 Jul 13:00". With F19's recommendation the row is also on his own issued schedule at once.</p>
+<p class="asked">Round 1 recommended (1) but it was never put to you.</p>
+<div class="pics"><figure><img src="img/2-B-142vo-d-proposed.png" alt=""><figcaption><b>Round 4's picture: 142's View-only Sched, as a member sees it, desktop.</b> Viper's own view, where his line with 149 would show.</figcaption></figure>
+<figure><img src="img/2-B-142vo-p-proposed.png" alt=""><figcaption><b>The same, phone.</b></figcaption></figure></div>
+</div>
+
+<h2 id="f8">F8 · 142 changes its line in 149's wave after both have published</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Sunday night, both Mondays published. 142's scheduler swaps RU's pilot, Viper for Tally. The change waits on 149's day (D2106). 142's day still reads ORIG, nothing pending, and the grey line reads "Published by 149." 142's scheduler thinks it is out; only 149 can send it, and 149's scheduler has gone home. <b>Monday morning Tally is not told.</b> Your three sentences (D2124) cover three states; this is the fourth.</p>
+<p><span class="rec">Recommended:</span> a fourth sentence on both schedules, "RU changed · goes out when 149 publishes"; the changed cells wear the usual pending dots on 142's schedule; 149's schedulers' bell: "142 changed RU on Mon 13 Jul · publish to send it". 142 still cannot publish it alone (D2106).</p>
+<p>Other choice: 142 may publish an amendment holding only its own line in 149's wave.</p>
+<div class="pics"><figure><img src="img/G2-mine-d.png" alt=""><figcaption><b>Round 5's picture: 142's Edit Schedule, desktop.</b> The sentence under 149's wave; the fourth sentence would stand here.</figcaption></figure>
+<figure><img src="img/G2-mine-p.png" alt=""><figcaption><b>The same, phone.</b></figcaption></figure></div>
+</div>
+
+<h2 id="f9">F9 · 149 publishes while 142 is mid-change on RU</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> 142's scheduler is changing RU in 149's wave and has emptied a seat. 149's scheduler presses Publish. <b>RU goes out with an empty seat</b> under 149's four signatures.</p>
+<p><span class="rec">Recommended:</span> 149's Publish card warns "Saber (142) is editing RU", and publishing still goes ahead if 149 chooses. This goes with round 6's R9 as you checked it: no lock, the mark shown across both squadrons.</p>
+<p class="asked">Dropped from Fable: holding 149's Publish until 142 finishes. That is a lock, against D1751 and your R9 check.</p>
+</div>
+
+<h2 id="f13">F13 · The transfer read by date, and no past dates</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Rune transfers 142 → 149 on 1 Dec. If that is one setting that flips on 1 Dec, then every November day, published ones included, now reads him as 149's man: an "Attach · 142" row appears on 149's past days, and under Q1 his November OIL would be judged by 149's settings.</p>
+<p><span class="rec">Recommended:</span> whose man he is comes from his stints, as the Leave War already keeps them: 142 to 30 Nov, 149 from 1 Dec. Every screen asks "whose man was he on this day". A transfer date in the past is refused: it would re-read published days. What the date does to his lines and access still runs on the date (your D2147).</p>
+<p class="asked">Checked: every posting outcome takes a past date today; a transfer would be the first to refuse one. Corrected from Fable: his past lines would not change badge or count, since a line stays its own squadron's whoever flies it.</p>
+</div>
+
+<h2 id="f21">F21 · His quals and Tracker course on a transfer</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Rune carries a qual mark under a column 149 does not list. And he is on a 142 course on the Tracker, which other students share.</p>
+<p><span class="rec">Recommended:</span> a mark under a column 149 does not list is kept on his record, shown greyed, never deleted. He stays on his course; 149's instructors can open it. The sheet's line reads as chat 99 cut it, "with his sign-in, leave, OIL and inputs", plus a line only when it applies: "2 quals 149 does not list are kept on his record" · "He stays on the B-course; 149 can open it".</p>
+<p>Other choice for quals: both squadrons share one list of qual columns.</p>
+<p class="asked">Checked: today there is one list of qual columns; a list per squadron is my reading of your D2132 ("Quals stay on his own squadron"), not a ruling. "B-course" is made up.</p>
+<div class="pics"><figure><img src="img/TA-d-proposed.png" alt=""><figcaption><b>Round 6's picture: the transfer sheet, desktop.</b> Where those lines go; redrawn in round 7.</figcaption></figure>
+<figure><img src="img/TA-p-proposed.png" alt=""><figcaption><b>The same, phone.</b></figcaption></figure></div>
+</div>
+
+<h2 id="f22">F22 · Leave 142 approved, after a transfer</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Rune's leave 20–24 Apr was approved on 142's war. He transfers on 3 Apr.</p>
+<p><span class="rec">Recommended:</span> it arrives approved and stays counted in his balance (D1541). 149's admins see it marked "approved by 142 before he joined" and can send it back from its day, as with any approved leave. If 149 has no leave period yet for those dates, it waits on his record and lands when the period is made, never dropped.</p>
+<p>Other choice: it arrives as a request again, and the sheet tells him.</p>
+<p class="asked">Fable said 149 could refuse it only by stepping its whole war back. Wrong: an approved leave can be sent back from its day at any stage (since D1177).</p>
+</div>
+
+<h2 id="f23">F23 · A borrowed man's OIL on the other squadron's published day</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> After 3 Apr Rune (now 149's) stays on a 142 line on Sat 10 Apr; 142 publishes. Q1 judges his OIL by his own squadron's settings, so 142's published day keeps 149's full-day value for him. Later 149's admin changes 149's full-day line. Today a published day whose kept values differ reads "OIL on this day · Logic values changed", and its sign-offs fall. So <b>142's published Saturday would go pending for a change made in 149's Logic</b>, by someone with no rights on 142's schedule.</p>
+<p><span class="rec">Recommended:</span> the published day keeps the values it went out with for every man on it, borrowed men included. A later change in the other squadron's Logic applies from that day's next publication only and never makes it pending.</p>
+<p>Other choice: it reaches back and reads pending, as a change to the day's own Logic does today.</p>
+</div>
+
+<h2 id="f12">F12 · Whose "today" for a detachment overseas</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> 249 is overseas, some hours behind home. 149's admin presses Close at 07:00 home time on 22 Jul; at the detachment it is still the evening of 21 Jul, and their last wave is airborne. Close clears days "after today", their DET ends "today", a transfer runs "on the date": <b>the app takes today from each person's own phone</b>, so two people get two answers.</p>
+<p><span class="rec">Recommended:</span> every date turn in the app (Close, a planned end, a posting, the late mark) goes by home's date, whatever the phone says. A detachment's schedule is typed in its own local times, shown as typed.</p>
+<p>Other choice: each place has its own clock for everything. Truer, much more to build.</p>
+<p class="asked">Checked: the app reads today from the device everywhere; no ruling on time zones. Round 6's L list held this for later; Fable puts it now because Close depends on it.</p>
+</div>
+
+<h2 id="f1">F1 · Public holidays, once for both squadrons</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Whether a day earns OIL comes from the squadron's Leave War calendar. 142's admin has typed a public holiday; 149's has not yet. A 142 man on 149's line that day <b>earns nothing</b> for a day that is a holiday for him, and the reverse pays a man for an ordinary day.</p>
+<p><span class="rec">Recommended:</span> one holiday list for squadrons at one place, typed once by either squadron's admin. Each squadron's own "Off day" stays its own. A detachment uses home's holidays (OIL is his home entitlement).</p>
+<p>Other choice: each squadron keeps its own list, as today.</p>
+<p class="asked">The rest of F1 is round 6's Q1. Checked: today one pass works a day out from one published version only; pooling two schedules needs that changed when built.</p>
+</div>
+
+<h2 id="f4">F4 · May a home scheduler Reject a man's DET?</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Anvil is seated on 249's published 15–21 Jul. At home, 149's scheduler presses Reject on his DET row, as he may on an overseas duty today (D1393). Anvil is now free at home and <b>planned at two places</b>.</p>
+<p><span class="rec">Recommended:</span> Reject is not offered on a DET at home. The way off a detachment is its People list or the DET's dates, and either one that leaves him seated there shows round 6's R4 warning.</p>
+<p>Other choice: Reject stays, and shows R4's warning.</p>
+<div class="pics"><figure><img src="img/6-row-d-proposed.png" alt=""><figcaption><b>Round 4's picture: 149's Admin → Squadrons, desktop.</b> The detachment's People list, the way on and off.</figcaption></figure>
+<figure><img src="img/6-row-p-proposed.png" alt=""><figcaption><b>The same, phone.</b></figcaption></figure></div>
+</div>
+
+<h2 id="same">Already on round 6: Fable agrees</h2>
+<div class="q"><div class="tw"><table>
+<tr><th>Fable</th><th>Round 6</th><th>What Fable adds</th></tr>
+<tr><td>F1 OIL worked out twice on a shared day</td><td>Q1</td><td>Holidays (F1 above). Fable's own fix 3, the automatic row asks no OIL question, is your D2144.</td></tr>
+<tr><td>F2 OIL paid twice on a detachment</td><td>R2, settled by your DET (D2146)</td><td>A detachment uses home's weekends and holidays (F1 above).</td></tr>
+<tr><td>F3 Close leaves later published days</td><td>Q2, your "A" (D2142)</td><td>Nothing.</td></tr>
+<tr><td>F4 a man leaves the detachment while still seated there</td><td>R4</td><td>Reject at home (F4 above). Moving the detachment's "To" offering to move its DETs is already R3.</td></tr>
+<tr><td>F5 a squadron's place has no dates</td><td>R7</td><td>A move counts from the next day's start, so no day is split. Saving lists what it strands: "9 days after today hold lines shared with 142".</td></tr>
+<tr><td>F6 a transfer or "scheduler" access makes a man the other's admin</td><td>Q5, and T3 on the transfer sheet</td><td>Fable leans to "View" only for the other squadron.</td></tr>
+<tr><td>F7 "concerns both" read too widely</td><td>Q4</td><td>Nothing.</td></tr>
+<tr><td>F10 crew rest stops at the place boundary</td><td>R5</td><td>A travel day: his last DET day ends his day at 24:00, unless the detachment's schedule shows less.</td></tr>
+<tr><td>F11 which schedule judges crew rest</td><td>R8</td><td>If he flies on both schedules that day, the stricter.</td></tr>
+<tr><td>F9 two schedulers on one line</td><td>R9, as you checked it</td><td>The Publish warning (F9 above).</td></tr>
+<tr><td>F14 the Tracker link that does not exist</td><td>R10</td><td>Nothing.</td></tr>
+</table></div></div>
+
+<h2 id="dropped">Checked and dropped</h2>
+<div class="q"><ul>
+<li><b>F22:</b> refusing an approved leave on a published war means stepping the war back. Wrong since D1177; an approved leave can be sent back from its day at any stage.</li>
+<li><b>F13, in part:</b> after a transfer his past lines change badge and count. Wrong: a line stays its own squadron's whoever flies it.</li>
+<li><b>F21, in part:</b> "each squadron edits its own qual columns today". Wrong: today there is one list.</li>
+<li><b>F9, its fix:</b> hold 149's Publish while 142 edits. Dropped: it is a lock, against D1751.</li>
+</ul></div>
+
+<h2 id="later">Later rounds: Fable's open questions (nothing to answer now)</h2>
+<div class="q"><ul>
+<li>Which detachments a man's DET may name: both squadrons' open ones (Fable) or his own squadron's (round 6's L).</li>
+<li>Two DETs over the same days, or one outside its detachment's dates or closed: refused at save.</li>
+<li>A DET is whole days only, so "one place on any day" holds.</li>
+<li>A man on a detachment sees its schedule by himself, for its dates.</li>
+<li>A detachment's own Logic, areas, sims and duty desks start as a copy of its squadron's; its jets picked from the squadron's.</li>
+<li>Each squadron's ALL AVAIL counts its own people only (your D2097 was a lean): rule it.</li>
+<li>Whose late cut-off judges a borrowed man's input: his own squadron's.</li>
+<li>The other squadron's scheduler sees when a man is unavailable, not why (a security read when built).</li>
+<li>SANS men borrowed: answered yes by you (D2145). Still open: whose SANS cut-off; recommended his own squadron's.</li>
+<li>Print and export of 142's day show only what is issued.</li>
+<li>A detachment's number may not equal a squadron's or another open detachment's.</li>
+<li>The other squadron's lines take no line numbers of this schedule's own.</li>
+<li>Insights: a detachment's lines count in its squadron's totals, split by place.</li>
+<li>"✕ Wave" then Undo puts back the wave as it stood at the press.</li>
+<li>The master admin who makes a squadron is its first admin until he names one.</li>
+</ul></div>
+</div>
+<div id="zoom" hidden></div>
+<script>
+const z=document.getElementById('zoom')
+document.addEventListener('click',e=>{const i=e.target.closest('figure img');if(i){z.innerHTML='';const c=i.cloneNode();c.style.cursor='zoom-out';z.appendChild(c);z.hidden=false;return}if(!z.hidden&&z.contains(e.target))z.hidden=true})
+document.addEventListener('keydown',e=>{if(e.key==='Escape')z.hidden=true})
+</script>

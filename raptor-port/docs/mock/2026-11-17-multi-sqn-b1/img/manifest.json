@@ -1,0 +1,82 @@
+{
+  "b1-1-d.png": {
+    "item": "b1-1",
+    "size": "desktop",
+    "caption": "Round 3's approved \"Schedules\" button redrawn for batch 1, as Saber (142) sees it on Edit Schedule: the TALON mark's small number reads \"142 ▾\"; its menu lists only 142 (picked, ●) and 149 — no detachment line (detachments are batch 2)."
+  },
+  "b1-1-p.png": {
+    "item": "b1-1",
+    "size": "phone",
+    "caption": "Round 3's approved \"Schedules\" button redrawn for batch 1, as Saber (142) sees it on Edit Schedule: the TALON mark's small number reads \"142 ▾\"; its menu lists only 142 (picked, ●) and 149 — no detachment line (detachments are batch 2). On a phone the menu opens as a sheet from the top: the full width, hung from the top bar, the page under it dimmed."
+  },
+  "b1-2-d.png": {
+    "item": "b1-2",
+    "size": "desktop",
+    "caption": "Round 4's approved mark redrawn on 142's own Scheduler Board: a small grey \"142\" beside the day title in the board's own bar (nothing in the bar moves, measured). Nothing of a shared wave is drawn — that is batch 3."
+  },
+  "b1-2-p.png": {
+    "item": "b1-2",
+    "size": "phone",
+    "caption": "Round 4's approved mark redrawn on 142's own Scheduler Board: a small grey \"142\" beside the day title in the board's own bar (nothing in the bar moves, measured). Nothing of a shared wave is drawn — that is batch 3."
+  },
+  "b1-3-d.png": {
+    "item": "b1-3",
+    "size": "desktop",
+    "caption": "Admin → Squadrons, as a master admin sees it: the two squadrons, 142 and 149, both at Home base, \"Perth · GMT+8\" in each row's grey line (round 7's approved rows). No detachment sections — they come in batch 2 — so the category's grey line reads \"Places\". New (pink): \"+ New squadron\", the Users editor's own button re-lettered, shown only to a master admin."
+  },
+  "b1-3-p.png": {
+    "item": "b1-3",
+    "size": "phone",
+    "caption": "Admin → Squadrons, as a master admin sees it: the two squadrons, 142 and 149, both at Home base, \"Perth · GMT+8\" in each row's grey line (round 7's approved rows). No detachment sections — they come in batch 2 — so the category's grey line reads \"Places\". New (pink): \"+ New squadron\", the Users editor's own button re-lettered, shown only to a master admin."
+  },
+  "b1-4-d.png": {
+    "item": "b1-4",
+    "size": "desktop",
+    "caption": "The same page, 149's row opened on its place (round 4's approved place row): PLACE \"Home base\", and beside it round 7's approved TIME ZONE select, \"Perth · GMT+8\". The line under them reads \"Saved at once; counts from tomorrow.\" — the approved card's line without its promise that the squadrons can plan each other's people (that comes in batch 3). \"+ New squadron\" (pink) as on the picture before."
+  },
+  "b1-4-p.png": {
+    "item": "b1-4",
+    "size": "phone",
+    "caption": "The same page, 149's row opened on its place (round 4's approved place row): PLACE \"Home base\", and beside it round 7's approved TIME ZONE select, \"Perth · GMT+8\". The line under them reads \"Saved at once; counts from tomorrow.\" — the approved card's line without its promise that the squadrons can plan each other's people (that comes in batch 3). \"+ New squadron\" (pink) as on the picture before."
+  },
+  "b1-5-d.png": {
+    "item": "b1-5",
+    "size": "desktop",
+    "caption": "Round 2's approved \"Request access\" card: \"Squadron\" is its first choice, reading 142 (choices 142 and 149), the real CAT choice cloned. The request goes to that squadron's admins only."
+  },
+  "b1-5-p.png": {
+    "item": "b1-5",
+    "size": "phone",
+    "caption": "Round 2's approved \"Request access\" card: \"Squadron\" is its first choice, reading 142 (choices 142 and 149), the real CAT choice cloned. The request goes to that squadron's admins only."
+  },
+  "b1-6-d.png": {
+    "item": "b1-6",
+    "size": "desktop",
+    "caption": "Admin → Users, Saber's row opened (round 7's approved picture): \"Other squadrons\", its one choice \"149 · View\". New (pink): the line \"Home squadron · 142\" above it, in the row's own grey-line look — shown, not chosen here: a man's home squadron changes only by a transfer."
+  },
+  "b1-6-p.png": {
+    "item": "b1-6",
+    "size": "phone",
+    "caption": "Admin → Users, Saber's row opened (round 7's approved picture): \"Other squadrons\", its one choice \"149 · View\". New (pink): the line \"Home squadron · 142\" above it, in the row's own grey-line look — shown, not chosen here: a man's home squadron changes only by a transfer."
+  },
+  "b1-7-d.png": {
+    "item": "b1-7",
+    "size": "desktop",
+    "caption": "Admin → Users, the \"Add a person\" form at the foot of the list. New (pink): \"Home squadron\", a choice of 142 or 149, the admin's own squadron (142) picked to start; the form's own Pilot / WSO choice cloned. Everything else as built."
+  },
+  "b1-7-p.png": {
+    "item": "b1-7",
+    "size": "phone",
+    "caption": "Admin → Users, the \"Add a person\" form at the foot of the list. New (pink): \"Home squadron\", a choice of 142 or 149, the admin's own squadron (142) picked to start; the form's own Pilot / WSO choice cloned. Everything else as built."
+  },
+  "b1-8-d.png": {
+    "item": "b1-8",
+    "size": "desktop",
+    "caption": "Leave War → settings → Calendar → Holidays → \"+ Add\", as 149's admin (the top bar's \"142\" re-lettered \"149\"), Fri 7 Aug picked on the window's own calendar; round 7's approved amber warning before Save, naming both squadrons' published days. New (pink): a quiet line at the right of the KIND label, \"Off days stay each squadron's own\" — the two squadrons at one place share their public holidays (the warning above names both), each keeping its own Off days."
+  },
+  "b1-8-p.png": {
+    "item": "b1-8",
+    "size": "phone",
+    "caption": "Leave War → settings → Calendar → Holidays → \"+ Add\", as 149's admin (the top bar's \"142\" re-lettered \"149\"), Fri 7 Aug picked on the window's own calendar; round 7's approved amber warning before Save, naming both squadrons' published days. New (pink): a quiet line at the right of the KIND label, \"Off days stay each squadron's own\" — the two squadrons at one place share their public holidays (the warning above names both), each keeping its own Off days."
+  }
+}

@@ -56,8 +56,10 @@ describe('the war’s top row answers it', () => {
     expect(screen.getByTestId('war-selection').textContent).toMatch(/1 Apr/)
     expect(screen.getByTestId('war-selection').textContent).toMatch(/31 Dec/)
     expect(peekNewWarAsk()).toBeNull()
-    /* a name, and Create makes exactly that period */
-    expect((screen.getByTestId('war-create') as HTMLButtonElement).disabled).toBe(true)
+    /* the name fills itself from the picked dates (his D2158 — it used to wait, empty, with Create greyed); a name typed
+       over it is kept, and Create makes exactly that period */
+    expect((screen.getByTestId('war-name') as HTMLInputElement).value).toBe(`APR - DEC ${String(FREE).slice(2)}`)
+    expect((screen.getByTestId('war-create') as HTMLButtonElement).disabled).toBe(false)
     fireEvent.change(screen.getByTestId('war-name'), { target: { value: 'Rest of 31' } })
     fireEvent.click(screen.getByTestId('war-create'))
     expect(getState().wars.some(w => w.period.start === `${FREE}-04-01` && w.period.end === `${FREE}-12-31` && w.period.name === 'Rest of 31')).toBe(true)
