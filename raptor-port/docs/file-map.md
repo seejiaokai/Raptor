@@ -1482,6 +1482,15 @@ carried as a create; `foldedFor`, read in `toldBy` and `filerMarkOk`), `src/stat
 command folded into another; `noticePass` tells their words on the leave that stands), `src/leavewar/multi-sqn-fixread14.test.ts`
 (its honest control set 'g'). The code check's new findings: `src/leavewar/state/foreign.ts` (`deepClone`), `perms.ts`
 (two finds read by id), fix reads 10–13's test files (`structuredClone`).
+Fix read 16's and Fable's sample review's five (20 Nov 26, chat 123; each red first): **New:**
+`src/leavewar/multi-sqn-fixread16.test.ts`, `src/state/units-sqn-fixread16.test.ts`; the bridge walk
+`scripts/handpass/msq/msq-fr16-{lib,bridge}.mjs`. **Changed:** `src/state/notices.ts` (`foldedInto(a, removed, b)`: the
+same part of the day, only days the survivor grew over; `joinFilerImgs`: a folded leave's filer judged on its own days, for
+the pass and the gate), `src/state/perms.ts` (`foldedFor` passes the survivor's before-image; `toldBy` and `filerMarkOk`
+read the folded filer as the pass does; `stampForged`: a request's state is the decision; `unitRowViolation`: no right
+given between a move saved and its day, a move's own command drops his rights whatever their squadron),
+`src/state/units.ts` (`setGrant` refuses while a move is saved for tomorrow), `src/leavewar/opendates-store.test.ts` (four
+closed-day refusals accept the state's reason too).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and
