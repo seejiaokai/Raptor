@@ -93,7 +93,8 @@ did not.
    | `dispatching-parallel-agents` | shared vocabulary (one type per shared record, an owner per movable helper) decided before the fan-out; a helper that shares the checkout never moves it (no checkout, switch, stash or detach — it reads by `git show <commit>:<path>`) |
 
 8. **Local lessons from the skill review of 20 Nov 26** (his rounds approved, D2230; the drafts read by Astra and a
-   fresh, blind Opus reader, each blind to the other, D1761, D1770; the same rules as changes 3 to 7).
+   fresh, blind Opus reader, each blind to the other, D1761, D1770, and approved as fixed, D2231; the same rules as
+   changes 3 to 7).
 
    | Skill | What was added |
    |---|---|
