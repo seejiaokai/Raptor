@@ -1,0 +1,185 @@
+<title>Two Squadrons · Fix Plan Questions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* layout: one reading column; each question a card, its pictures desktop beside iPhone */
+:root{--bg:#f4f6f8;--card:#ffffff;--fg:#14202b;--mute:#5b6b78;--line:#d6dee5;--acc:#0e7fa6;--rec:#0b7a4b;--mark:#d4157a;--tint:rgba(14,127,166,.07);
+--f-body:Inter,system-ui,'Segoe UI',sans-serif;--f-head:'Space Grotesk',Inter,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--tint:rgba(60,196,234,.08);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--tint:rgba(60,196,234,.08);color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-body)}
+.wrap{max-width:1100px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-head);text-wrap:balance;margin:0}
+h1{font-size:26px}h2{font-size:21px;margin-top:38px;padding-top:14px;border-top:2px solid var(--line)}h3{font-size:16px;margin-top:18px}
+.sub{color:var(--mute);margin:4px 0 0;max-width:80ch}
+.top{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:16px}
+.top ol{margin:6px 0 0;padding-left:0;list-style:none;display:grid;gap:8px}
+.top li{display:grid;grid-template-columns:40px minmax(0,1fr);gap:8px}
+.top b.n{font-family:var(--f-head);color:var(--acc)}
+a{color:var(--acc)}
+.rec{color:var(--rec);font-weight:600}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:12px}
+.q p,.q li{max-width:80ch}.q p{margin:8px 0}
+.q ul{margin:6px 0;padding-left:20px}.q li{margin:4px 0}
+.ex{background:var(--tint);border-radius:8px;padding:8px 12px;color:var(--mute)}
+.ex b{color:var(--fg)}
+.pair{display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr);gap:10px;margin-top:10px;align-items:start}
+.pair.one{grid-template-columns:minmax(0,1fr)}
+figure{margin:0;min-width:0}
+figure img{display:block;width:100%;border-radius:6px;border:1px solid var(--line);cursor:zoom-in;background:#000}
+figcaption{font-size:12.5px;color:var(--mute);margin-top:4px}
+figcaption b{color:var(--fg)}
+.words{font-family:var(--f-head);background:var(--tint);border:1px dashed var(--mark);padding:6px 10px;margin:8px 0;border-radius:6px}
+.tag{display:inline-block;font:700 11px/16px system-ui,'Segoe UI',sans-serif;padding:0 6px;border-radius:8px;color:#fff;background:#ff2d95;vertical-align:1px}
+.note{border-left:4px solid var(--line);padding-left:10px;color:var(--mute)}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:flex-start;justify-content:center;padding:16px;z-index:20;overflow:auto}
+#zoom[hidden]{display:none}
+#zoom img{max-width:none;width:auto;cursor:zoom-out}
+@media (max-width:640px){.pair{grid-template-columns:minmax(0,1fr)}.top li{grid-template-columns:34px minmax(0,1fr)}}
+</style>
+
+<div class="wrap">
+<h1>Two squadrons: the fix plan's questions</h1>
+<p class="sub">The plan that fixes the 35 faults found in the two-squadron build has been read three times by three readers, blind to each other, and corrected after each read. These are the eight things it needs from you. Each picture is the real app; anything drawn in is outlined in pink and tagged <span class="tag">New</span>. Tap a picture to see it full size. Big picture: a desktop. Small picture: your iPhone. Nothing here is built yet.</p>
+
+<div class="top">
+<h3 style="margin-top:0">8 questions, each with my recommendation</h3>
+<ol>
+<li><b class="n">Q1</b><span>A squadron meeting stays on the squadron it was filed on when its filer moves. <span class="rec">Recommended: yes, it stays.</span> <a href="#q1">Pictures 1</a></span></li>
+<li><b class="n">Q2</b><span>Sign-off boxes offer that day's people, not today's. <span class="rec">Recommended: that day's.</span> <a href="#q2">Pictures 2</a></span></li>
+<li><b class="n">Q3</b><span>Nobody, the master included, can put a moved man's leave into his old squadron's Leave War for a day after his move. <span class="rec">Recommended: yes, nobody.</span> <a href="#q6">Pictures 6b and 6d</a></span></li>
+<li><b class="n">Q4</b><span>A moved man keeps his access to other squadrons until the day his move counts, not just until it is saved. <span class="rec">Recommended: until his move day.</span> <a href="#q4">Pictures 4</a></span></li>
+<li><b class="n">Q5</b><span>The guest switch: wait for the step where "Request access" asks the squadron. <span class="rec">Recommended: wait, no stop-gap.</span> <a href="#q5">Pictures 5</a></span></li>
+<li><b class="n">Q6</b><span>A moved man's row on both Leave Wars: striped from his move day on the old one, from before it on the new one. <span class="rec">Recommended: as drawn.</span> <a href="#q6">Pictures 6</a></span></li>
+<li><b class="n">Q7</b><span>The band shown at midnight over a window he was typing in when his move begins. <span class="rec">Recommended: as drawn, these words.</span> <a href="#q7">Pictures 7</a></span></li>
+<li><b class="n">Q8</b><span>What the leave window says when someone stretches leave across a man's move without the right to. <span class="rec">Recommended: as drawn, these words.</span> <a href="#q8">Pictures 8</a></span></li>
+</ol>
+<p class="sub">Answer by number. "All as recommended" is fine. Until you answer, each part keeps working as it does today, or waits, as its section says.</p>
+</div>
+
+<h2 id="q1">1 · A squadron meeting when its filer moves (Q1)</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Hunter, 142's admin, files a squadron meeting for all of 142 (ALL AVAIL) on Fri 24 Jul. Later Hunter moves to 149, counting from Thu 16 Jul. Today the meeting leaves 142's schedule and appears on 149's, because the app follows the man who filed it.</p>
+<p><span class="rec">Recommended: it stays on 142's schedule, where it was filed.</span> A squadron's meeting is that squadron's business. It also means a master who files a meeting while looking at another squadron's schedule files it there, not into his own.</p>
+<p class="note">Until you answer: as today.</p>
+</div>
+<div class="pair"><figure><img src="img/q1a-d.png" alt="142's Fri 24 Jul with the meeting"><figcaption><b>1a, today, before the move.</b> 142's Fri 24 Jul shows Hunter's meeting (1).</figcaption></figure>
+<figure><img src="img/q1a-p.png" alt="the same on the iPhone"><figcaption><b>1a, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/q1b-142-d.png" alt="142's Fri 24 Jul without the meeting"><figcaption><b>1b, today, after Hunter's move is saved.</b> The meeting has gone from 142's Fri 24 Jul (1). The move itself was written in for the picture, since no screen saves a move yet.</figcaption></figure>
+<figure><img src="img/q1b-142-p.png" alt="the same on the iPhone"><figcaption><b>1b, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/q1b-149-d.png" alt="149's Fri 24 Jul with 142's meeting"><figcaption><b>1c, today, the same moment on 149's schedule</b> (signed in as Kestrel, 149's admin): 142's meeting now shows here (1). The screen still says "142" over the logo; it does not name the squadron in view.</figcaption></figure>
+<figure><img src="img/q1b-149-p.png" alt="the same on the iPhone"><figcaption><b>1c, iPhone.</b></figcaption></figure></div>
+
+<h2 id="q2">2 · Sign-off boxes for a day after a man's move (Q2)</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> On Wed 15 Jul Hunter opens 142's week of Mon 20 Jul. Ranger moves to 149 from Thu 16 Jul. Today Mon 20 Jul's sign-off boxes still offer Ranger, while the crew list for the same day already leaves him out.</p>
+<p><span class="rec">Recommended: the boxes offer only that day's 142 people</span>, the same as the crew list beside them.</p>
+<p class="note">Until you answer: as today.</p>
+</div>
+<div class="pair"><figure><img src="img/q2a-d.png" alt="Mon 20 Jul sign-off list offering Ranger"><figcaption><b>2a, today.</b> Mon 20 Jul's sign-off box, its list open: Ranger is offered (2). The browser's own drop-down cannot be pictured, so the list is the box's own options shown open under it.</figcaption></figure>
+<figure><img src="img/q2a-p.png" alt="the same on the iPhone"><figcaption><b>2a, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/q2b-d.png" alt="Mon 20 Jul crew list without Ranger"><figcaption><b>2b, today.</b> The same day's crew list does not have Ranger.</figcaption></figure>
+<figure><img src="img/q2b-p.png" alt="the same on the iPhone"><figcaption><b>2b, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/q2c-d.png" alt="the sign-off list without Ranger"><figcaption><b>2c, recommended.</b> The same list without Ranger.</figcaption></figure>
+<figure><img src="img/q2c-p.png" alt="the same on the iPhone"><figcaption><b>2c, iPhone.</b></figcaption></figure></div>
+
+<h2 id="q4">4 · When a moved man loses his access to other squadrons (Q4)</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Ranger is 142's and holds Plan of 150: full admin of 150. On Wed 15 Jul at 10:00 Hunter saves Ranger's move to 149, counting from Thu 16 Jul.</p>
+<ul>
+<li><span class="rec">Recommended: his 150 access ends at the start of Thursday, the day his move counts.</span> For the rest of Wednesday he can still change 150's schedule, people and leave. A transfer saved months ahead works the same way: his access ends on the transfer's date, as the transfer sheet you approved says for his old squadron.</li>
+<li><b>The other way:</b> it ends at 10:00 on Wednesday, the moment the move is saved, while he is still 142's for the rest of the day; and a transfer saved months ahead would take his access away months early.</li>
+</ul>
+<p>Why I recommend it: it ends on the day the move counts, like everything else about a move. If a move is taken back the same day, his access simply stays, so I no longer need to ask you what should happen then. It also leaves fewer places for a fault.</p>
+<p class="note">Nobody can see either way today: no screen saves a move or gives View or Plan yet. If you have not answered when this part is built, it is built as recommended and changed if you choose the other.</p>
+</div>
+<div class="pair"><figure><img src="img/q4a-d.png" alt="Ranger's row, View 150 lit"><figcaption><b>4a, Wed 15 Jul 10:05, recommended.</b> Ranger's row on Admin → Users: "View 150" still lit. These buttons are the drawing you approved; they are not built yet. Squadron 150 and his View of it were written in for the picture.</figcaption></figure>
+<figure><img src="img/q4a-p.png" alt="the same on the iPhone"><figcaption><b>4a, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/q4b-d.png" alt="Ranger's row, None lit"><figcaption><b>4b, Thu 16 Jul 09:00.</b> "None" lit. Under the other way, this is what 4a would show at 10:05 on Wednesday.</figcaption></figure>
+<figure><img src="img/q4b-p.png" alt="the same on the iPhone"><figcaption><b>4b, iPhone.</b></figcaption></figure></div>
+
+<h2 id="q5">5 · The guest switch (Q5)</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Each squadron has its own "Guest view" switch on Admin. Kestrel, 149's admin, ticks 149's. Today that lets nobody in: a person waiting for access sees "Waiting for an admin". Only 142's switch works, and it always puts the person in 142's week.</p>
+<p><span class="rec">Recommended: wait for the step where "Request access" asks which squadron.</span> Then that squadron's switch decides, and the person lands in its week. A stop-gap now, one switch for the whole app or any squadron's switch letting him in, would let one squadron's admin let a guest into another squadron's week.</p>
+<p class="note">Until then: as today.</p>
+</div>
+<div class="pair"><figure><img src="img/q5a-d.png" alt="149's guest switch ticked"><figcaption><b>5a, today.</b> Kestrel ticks 149's Guest view (5).</figcaption></figure>
+<figure><img src="img/q5a-p.png" alt="the same on the iPhone"><figcaption><b>5a, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/q5b-d.png" alt="waiting for an admin"><figcaption><b>5b, today.</b> With only 149's switch on, the waiting person gets "Waiting for an admin" and no schedule.</figcaption></figure>
+<figure><img src="img/q5b-p.png" alt="the same on the iPhone"><figcaption><b>5b, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/q5c-d.png" alt="the guest in 142's week"><figcaption><b>5c, today.</b> Once Hunter ticks 142's switch, the same person lands in 142's week (5).</figcaption></figure>
+<figure><img src="img/q5c-p.png" alt="the same on the iPhone"><figcaption><b>5c, iPhone.</b></figcaption></figure></div>
+
+<h2 id="q6">6 · A moved man's row on both Leave Wars (Q6, and Q3)</h2>
+<div class="q">
+<p class="ex"><b>Today.</b> Ranger moves 142 → 149 from Thu 16 Jul. From that day his whole row leaves 142's Leave War, his months there before the move included, and 149's Leave War counts him for the whole year, 1 to 15 Jul as well (6a).</p>
+<p><span class="rec">Recommended (6b):</span> on 142's Leave War his row stays as it is up to Wed 15 Jul, then shows the striped "not here" look the Leave War already draws, with no "PO" in it, because no posting was set. On 149's his row starts on Thu 16 Jul, striped before it, as for a man posted in. Admin → Users shows no "posting out" tag on him (6c). The plain stripes with no "PO" are new: today the stripes carry "PO" after a posting, and are blank only before a man's first day.</p>
+<p><b>Leave already approved</b> in 142's Leave War for a day after his move, say Mon 20 Jul, stays stored there, out of sight under the stripes. 149's Leave War does not have it until the transfer step carries it across. The schedule still shows the leave itself.</p>
+<p><b>Q3.</b> Saber, the master, with 142 open, tries to put Ranger's leave on Fri 24 Jul into 142's Leave War (3 on 6b). <span class="rec">Recommended: refused for everyone, the master included.</span> That day belongs in 149's Leave War, where 149's admins and Ranger can put it now, and Saber can once he can pick 149 (a later step). Taking leave off is never refused. An Undo that would put leave back on such a day is refused with the words in 6d.</p>
+<p class="note">Until you answer: the Leave War keeps today's rows, and this part waits for your look.</p>
+</div>
+<div class="pair"><figure><img src="img/q6a-142-d.png" alt="142's Leave War without Ranger"><figcaption><b>6a, today, 142's Leave War on Thu 16 Jul.</b> Ranger's row is gone, January to 15 July included (6 marks where it stood).</figcaption></figure>
+<figure><img src="img/q6a-142-p.png" alt="the same on the iPhone"><figcaption><b>6a, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/q6a-149-d.png" alt="149's Leave War with Ranger all year"><figcaption><b>6a, today, 149's Leave War.</b> Ranger's row for the whole year, 1 to 15 Jul counted as 149's.</figcaption></figure>
+<figure><img src="img/q6a-149-p.png" alt="the same on the iPhone"><figcaption><b>6a, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/q6b-142-d.png" alt="142's Leave War, Ranger striped from 16 Jul"><figcaption><span class="tag">New</span> <b>6b, recommended, 142's Leave War.</b> His row up to Wed 15 Jul, striped from Thu 16 Jul. 3 marks Fri 24 Jul, the day nobody can put his leave on here (Q3). Below, Havoc, posted out through the Leave War's own Post out, shows today's striped look with "PO".</figcaption></figure>
+<figure><img src="img/q6b-142-p.png" alt="the same on the iPhone"><figcaption><span class="tag">New</span> <b>6b, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/q6b-149-d.png" alt="149's Leave War, Ranger from 16 Jul"><figcaption><span class="tag">New</span> <b>6b, recommended, 149's Leave War.</b> His row from Thu 16 Jul, striped before it. Beside him, Swift, added to 149 with a first day of Thu 16 Jul, shows today's blank stripes before a first day.</figcaption></figure>
+<figure><img src="img/q6b-149-p.png" alt="the same on the iPhone"><figcaption><span class="tag">New</span> <b>6b, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/q6c-d.png" alt="Ranger's Admin row, no posting tag"><figcaption><b>6c.</b> Ranger's row on Admin → Users: no "posting out" tag (6), because no posting was set.</figcaption></figure>
+<figure><img src="img/q6c-p.png" alt="the same on the iPhone"><figcaption><b>6c, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/q6d-d.png" alt="the refused Undo's note"><figcaption><span class="tag">New</span> <b>6d, recommended (Q3).</b> At 23:55 on Wed 15 Jul Saber put Ranger's leave on Fri 17 Jul in 142's Leave War, then removed it. After midnight he presses Undo: refused, with these words, in the look the app already uses for a refused Undo. Today this Undo goes through and puts the leave back into 142's Leave War, out of sight. The grid behind is today's, without Ranger's row.</figcaption></figure>
+<figure><img src="img/q6d-p.png" alt="the same on the iPhone"><figcaption><span class="tag">New</span> <b>6d, iPhone.</b></figcaption></figure></div>
+<p class="words">Ranger is 149's from Thu 16 Jul, so this can't go back into 142's Leave War.</p>
+
+<h2 id="q7">7 · The band at midnight (Q7)</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Ranger has a Leave War window open at 23:58 on Wed 15 Jul and has typed in it. His move to 149 counts from Thu 16 Jul. Today at midnight the window stays open and says nothing, while his row disappears from the grid under it (7b, today).</p>
+<p><span class="rec">Recommended: one band across the window's top, and one button, "Close", which opens 149's Leave War.</span> His typed words stay visible, so he can copy them; nothing is saved into either squadron, and nothing is dropped without a word. The same for a Tracker chart being edited at midnight.</p>
+<p class="words">You are 149's from today. This can't be saved in 142's Leave War.</p>
+<p class="words">You are 149's from today. This can't be saved in 142's Tracker.</p>
+<p class="note">On the iPhone the band takes two lines; on one line the words would be cut. Until you answer: the app waits for the window to close before moving him, without the band.</p>
+</div>
+<div class="pair"><figure><img src="img/q7a-d.png" alt="the window at 23:58"><figcaption><b>7a, today, 23:58.</b> Ranger's window for Fri 24 Jul with his words typed.</figcaption></figure>
+<figure><img src="img/q7a-p.png" alt="the same on the iPhone"><figcaption><b>7a, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/q7b0-d.png" alt="the window at midnight, nothing said"><figcaption><b>7b, today, just after midnight.</b> The window stays and says nothing.</figcaption></figure>
+<figure><img src="img/q7b0-p.png" alt="the same on the iPhone"><figcaption><b>7b, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/q7b-d.png" alt="the window with the band"><figcaption><span class="tag">New</span> <b>7c, recommended.</b> The band, in the look the app already uses for a save that failed, and "Close".</figcaption></figure>
+<figure><img src="img/q7b-p.png" alt="the same on the iPhone"><figcaption><span class="tag">New</span> <b>7c, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/q7c0-d.png" alt="the Tracker chart being edited"><figcaption><b>7d, today.</b> The Tracker's "Edit chart layout" stays open across midnight.</figcaption></figure>
+<figure><img src="img/q7c0-p.png" alt="the same on the iPhone"><figcaption><b>7d, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/q7c-d.png" alt="the Tracker with the band"><figcaption><span class="tag">New</span> <b>7e, recommended.</b> The Tracker's band.</figcaption></figure>
+<figure><img src="img/q7c-p.png" alt="the same on the iPhone"><figcaption><span class="tag">New</span> <b>7e, iPhone.</b></figcaption></figure></div>
+
+<h2 id="q8">8 · Leave stretched across a man's move (Q8)</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Ranger is 149's from Thu 16 Jul. Hunter, 142's admin, files leave for Ranger on Tue 14 Jul, then stretches it to Fri 17 Jul and taps Add. For now only a master or Ranger may change leave that runs across his move (until the transfer step lets each squadron's admin change its own days, as you have ruled). Today the app says only "Blocked: nothing was kept", without saying why (8a).</p>
+<p><span class="rec">Recommended: the window stays open and the note says why</span> (8b). The same words show when Kestrel, 149's admin, changes that leave from 149's Inputs list. These words last until the transfer step changes who may edit such leave.</p>
+<p class="words">Not saved: Ranger is 149's from Thu 16 Jul. Only a master or Ranger can change leave that runs across his move.</p>
+<p class="note">The app's note shows in bold everything before a colon, so I recommend starting it with "Not saved:". The drawing has the sentence without it, which is why it is all bold there. Until you answer: today's general words.</p>
+</div>
+<div class="pair"><figure><img src="img/q8a-d.png" alt="today's general refusal"><figcaption><b>8a, today.</b> Hunter's leave for Ranger, 14 to 17 Jul: "Blocked: nothing was kept" (8). The window stays open; nothing is kept.</figcaption></figure>
+<figure><img src="img/q8a-p.png" alt="the same on the iPhone"><figcaption><b>8a, iPhone.</b> The note sits at the top while the window is open.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/q8b-d.png" alt="the recommended note"><figcaption><span class="tag">New</span> <b>8b, recommended.</b> The same note, saying why.</figcaption></figure>
+<figure><img src="img/q8b-p.png" alt="the same on the iPhone"><figcaption><span class="tag">New</span> <b>8b, iPhone.</b></figcaption></figure></div>
+
+<h2 id="told">Told to you: no answer needed</h2>
+<div class="q">
+<ul>
+<li><b>Who counts as a squadron's last admin.</b> Where a squadron has admins of its own, only they count. Where it has none, someone from another squadron who holds Plan of it counts. So 150, run only by Hunter through Plan, keeps him as its admin.</li>
+<li><b>A posting that waits for another admin can sit where nobody there can fix it.</b> If Hunter (142) is 150's only admin through Plan and his own posting out is set, it waits until 150 has another admin. The waiting note shows on 142's Admin → Users, but only a master can make another admin of 150.</li>
+<li><b>Linking a sign-in to another person takes away its access to other squadrons.</b> If a sign-in is moved from Ranger to Viper, any View or Plan it held was Ranger's and does not go to Viper; Viper's squadron or a master gives him what he needs. Undoing that move gives the sign-in back to Ranger without the access. While the sign-in still has live access to another squadron, only a master may move it, as today. This came out of the readers' checks: letting the access follow the sign-in kept producing faults in every round. A warning on that screen, saying the access will go, is filed for when View and Plan are built.</li>
+<li><b>Undo never brings back access that ended with a man's move.</b> If an admin takes away Ranger's View of 150, Ranger then moves to 149, and the admin presses Undo, the View does not come back; 150's admins or a master give it again if he still needs it.</li>
+<li><b>Nothing on screen names the squadron in view.</b> "142" shows over the logo on 149's schedule and Leave War too (1c). The step that lets you pick a squadron is where this belongs; I will check its drawing covers it.</li>
+</ul>
+</div>
+</div>
+
+<div id="zoom" hidden><img alt=""></div>
+<script>
+(function(){var z=document.getElementById('zoom'),zi=z.querySelector('img');
+document.addEventListener('click',function(e){var t=e.target;
+if(t.matches&&t.matches('figure img')){zi.src=t.src;zi.alt=t.alt;z.hidden=false;return}
+if(!z.hidden&&(t===z||t===zi)){z.hidden=true}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')z.hidden=true});})();
+</script>

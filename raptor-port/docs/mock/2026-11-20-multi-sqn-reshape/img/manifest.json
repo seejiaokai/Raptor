@@ -1,0 +1,418 @@
+{
+ "q1a-d.png": {
+  "question": "Q1",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Wed 15 Jul, 10:00. Hunter (a 142 admin) filed, through the Inputs window (\"+ New\" on Inputs: Meeting, ALL AVAIL, \"Squadron meeting\", 09:00–10:00, Fri 24 Jul — the filled window is q1a-window-d.png), an ALL AVAIL squadron meeting. View-only Sched, week of 20 Jul, Friday: 142's Common Programme shows it (1).",
+  "asserted": "filled: {\"who\":\"ALL AVAIL\",\"type\":\"Meeting\",\"title\":\"Squadron meeting\",\"s\":\"09:00\",\"e\":\"10:00\",\"head\":\"New input · Jul 24\"}; on screen: \"SQUADRON MEETING MEETING 09:00 10:00 ALL AVAIL 44 LATE\""
+ },
+ "q1a-window-d.png": {
+  "question": "Q1",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none",
+  "caption": "The Inputs window as Hunter filled it, before he pressed Add.",
+  "asserted": "{\"who\":\"ALL AVAIL\",\"type\":\"Meeting\",\"title\":\"Squadron meeting\",\"s\":\"09:00\",\"e\":\"10:00\",\"head\":\"New input · Jul 24\"}"
+ },
+ "q1a-p.png": {
+  "question": "Q1",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Wed 15 Jul, 10:00. Hunter (a 142 admin) filed, through the Inputs window (\"+ New\" on Inputs: Meeting, ALL AVAIL, \"Squadron meeting\", 09:00–10:00, Fri 24 Jul — the filled window is q1a-window-p.png), an ALL AVAIL squadron meeting. View-only Sched, week of 20 Jul, Friday: 142's Common Programme shows it (1).",
+  "asserted": "filled: {\"who\":\"ALL AVAIL\",\"type\":\"Meeting\",\"title\":\"Squadron meeting\",\"s\":\"09:00\",\"e\":\"10:00\",\"head\":\"New input · Jul 24\"}; on screen: \"SQUADRON MEETING MEETING 09:00 10:00 ALL AVAIL 44 LATE\""
+ },
+ "q1a-window-p.png": {
+  "question": "Q1",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "none",
+  "caption": "The Inputs window as Hunter filled it, before he pressed Add.",
+  "asserted": "{\"who\":\"ALL AVAIL\",\"type\":\"Meeting\",\"title\":\"Squadron meeting\",\"s\":\"09:00\",\"e\":\"10:00\",\"head\":\"New input · Jul 24\"}"
+ },
+ "q2a-d.png": {
+  "question": "Q2",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "the box's own list drawn open in place (the box cloned as an open list under its pill: the browser draws its drop-down outside the page, an iPhone a wheel at the foot of the screen — neither can be pictured); Ranger's line lit pink",
+  "caption": "Setup: Ranger's move 142 → 149 from Thu 16 Jul, written into storage. Wed 15 Jul, 10:00: Hunter, Edit Schedule, week of 20 Jul. Monday 20 Jul's sign-off box \"SKED CK\" — its list still offers Ranger (2), though he is 149's from Thu 16 Jul.",
+  "asserted": "options read from the real box: — name —, Anvil, Basher, Bolt, Cinch, Drifter, Echo, Forge, Piston, Ranger, Reaper, Ridge, Saber, Sidewinder, Static, Trident, Warden"
+ },
+ "q2c-d.png": {
+  "question": "Q2",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "drawn",
+  "transform": "hide: Ranger's line of the same list hidden (display:none), nothing removed",
+  "caption": "The recommended look: Monday 20 Jul's \"SKED CK\" list offers only Monday's 142 people — Ranger's name is not in it (2).",
+  "asserted": "16 names shown of the box's 17"
+ },
+ "q2b-d.png": {
+  "question": "Q2",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "The same screen: Monday's name opens Monday 20 Jul's crew list (the aircrew panel) — it does not list Ranger (2); Hunter, still 142's, is on it.",
+  "asserted": "{\"day\":\"AIRCREW · ‹MONDAY› PLACEHOLDERS\",\"ranger\":false,\"hunter\":true,\"n\":134}"
+ },
+ "q2a-p.png": {
+  "question": "Q2",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "the box's own list drawn open in place (the box cloned as an open list under its pill: the browser draws its drop-down outside the page, an iPhone a wheel at the foot of the screen — neither can be pictured); Ranger's line lit pink",
+  "caption": "Setup: Ranger's move 142 → 149 from Thu 16 Jul, written into storage. Wed 15 Jul, 10:00: Hunter, Edit Schedule, week of 20 Jul. Monday 20 Jul's sign-off box \"SKED CK\" — its list still offers Ranger (2), though he is 149's from Thu 16 Jul.",
+  "asserted": "options read from the real box: — name —, Anvil, Basher, Bolt, Cinch, Drifter, Echo, Forge, Piston, Ranger, Reaper, Ridge, Saber, Sidewinder, Static, Trident, Warden"
+ },
+ "q2c-p.png": {
+  "question": "Q2",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "drawn",
+  "transform": "hide: Ranger's line of the same list hidden (display:none), nothing removed",
+  "caption": "The recommended look: Monday 20 Jul's \"SKED CK\" list offers only Monday's 142 people — Ranger's name is not in it (2).",
+  "asserted": "16 names shown of the box's 17"
+ },
+ "q2b-p.png": {
+  "question": "Q2",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "The same screen: Monday's name opens Monday 20 Jul's crew list (the aircrew panel) — it does not list Ranger (2); Hunter, still 142's, is on it.",
+  "asserted": "{\"day\":\"AIRCREW · ‹MONDAY› PLACEHOLDERS\",\"ranger\":false,\"hunter\":true,\"n\":134}"
+ },
+ "q6a-142-d.png": {
+  "question": "Q6",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Setup: Ranger's move 142 → 149 from Thu 16 Jul, written into storage. The clock on Thu 16 Jul, 10:00 (on Wed 15 Jul the war still reads him as 142's for the whole year). Saber, 142's Leave War, July: Ranger's row is gone from 142's war altogether — every month of his, January to 15 July included (6: where his row stood, between Piston and Saber).",
+  "asserted": "no cell of Ranger's on 142's war; group heading \"▾ SXO · 11\""
+ },
+ "q6a-149-d.png": {
+  "question": "Q6",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "The same world, Thu 16 Jul: Kestrel, 149's Leave War, July (the JUL button pressed): Ranger's row (6) is 149's for the whole year — 1 July to 15 July, before he came, counted as his days in 149 (no day greyed; 1 Jul outlined).",
+  "asserted": "Ranger's cells on 149's war: 365, none outside his time"
+ },
+ "q6b-142-d.png": {
+  "question": "Q6, Q3",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "drawn",
+  "transform": "the grid's own class for a day outside a man's time in the squadron (`gone`, matrix.css) put on Ranger's 169 cells from Thu 16 Jul; nothing else",
+  "caption": "Proposed, 142's Leave War (Saber, Wed 15 Jul): Ranger's row as now up to Wed 15 Jul, then from Thu 16 Jul (New) the war's own look for days outside a man's time — the grey hatch, with no \"PO\" in it, as no posting was set. Fri 24 Jul (3) is a day a master could no longer write Ranger's leave into here. Real, beside it: Havoc, posted out through the war's own Post out (\"PO from\" Thu 16 Jul, so his last day is Wed 15 Jul) — the same hatch, and \"PO\" in each day after.",
+  "asserted": "Havoc's Post out: date \"Thu 16 Jul 26\n▾\", line \"On 16 Jul: archived.\"; his 15 Jul \" act pofin bx-last\", 16 Jul \"gone act hasc\" reads \"PO\""
+ },
+ "q6c-ref-d.png": {
+  "question": "Q6",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none",
+  "caption": "For comparison, the same world: Havoc's row on Admin → Users after his Post out — the line under his callsign as the app draws it for a posting.",
+  "asserted": "{\"sub\":\"no sign-in · Pilot · CAT IP\\nPOSTING OUT 16 JUL · OVERSEAS SQN\",\"tag\":\"POSTING OUT 16 JUL · OVERSEAS SQN\",\"held\":\"\"}"
+ },
+ "q6c-d.png": {
+  "question": "Q6",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Admin → Users (Saber, Wed 15 Jul), Ranger's row after the move to 149 was written: the line under his callsign carries no posting tag (6) — the move is not a posting.",
+  "asserted": "{\"sub\":\"us\\n· Pilot · CAT IP\",\"tag\":false}"
+ },
+ "q6b-149-d.png": {
+  "question": "Q6",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "drawn",
+  "transform": "the grid's own class for a day outside a man's time (`gone`) put on Ranger's 196 cells from 1 Jan to Wed 15 Jul; nothing else",
+  "caption": "Proposed, 149's Leave War (Kestrel, Thu 16 Jul, the JUL button pressed): Ranger's row from Thu 16 Jul; before it (New) the war's own look for days before a man arrives — the hatch, blank. Real, beside it: Swift, added on 149's Admin → Users with a post-in date of Thu 16 Jul — the same blank hatch before his first day.",
+  "asserted": "Swift added (post-in box \"Thu 16 Jul 26\n▾\"); his 15 Jul \"gone act\" reads \"\", 16 Jul \" act\""
+ },
+ "q6a-142-p.png": {
+  "question": "Q6",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Setup: Ranger's move 142 → 149 from Thu 16 Jul, written into storage. The clock on Thu 16 Jul, 10:00 (on Wed 15 Jul the war still reads him as 142's for the whole year). Saber, 142's Leave War, July: Ranger's row is gone from 142's war altogether — every month of his, January to 15 July included (6: where his row stood, between Piston and Saber).",
+  "asserted": "no cell of Ranger's on 142's war; group heading \"▾ SXO · 11\""
+ },
+ "q6a-149-p.png": {
+  "question": "Q6",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "The same world, Thu 16 Jul: Kestrel, 149's Leave War, July (the JUL button pressed): Ranger's row (6) is 149's for the whole year — 1 July to 15 July, before he came, counted as his days in 149 (no day greyed; 1 Jul outlined).",
+  "asserted": "Ranger's cells on 149's war: 153, none outside his time"
+ },
+ "q6b-142-p.png": {
+  "question": "Q6, Q3",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "drawn",
+  "transform": "the grid's own class for a day outside a man's time in the squadron (`gone`, matrix.css) put on Ranger's 108 cells from Thu 16 Jul; nothing else",
+  "caption": "Proposed, 142's Leave War (Saber, Wed 15 Jul): Ranger's row as now up to Wed 15 Jul, then from Thu 16 Jul (New) the war's own look for days outside a man's time — the grey hatch, with no \"PO\" in it, as no posting was set. Fri 24 Jul (3) is a day a master could no longer write Ranger's leave into here. Real, beside it: Havoc, posted out through the war's own Post out (\"PO from\" Thu 16 Jul, so his last day is Wed 15 Jul) — the same hatch, and \"PO\" in each day after.",
+  "asserted": "Havoc's Post out: date \"Thu 16 Jul 26\n▾\", line \"On 16 Jul: archived.\"; his 15 Jul \" act pofin bx-last\", 16 Jul \"gone act hasc\" reads \"PO\""
+ },
+ "q6c-ref-p.png": {
+  "question": "Q6",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "none",
+  "caption": "For comparison, the same world: Havoc's row on Admin → Users after his Post out — the line under his callsign as the app draws it for a posting.",
+  "asserted": "{\"sub\":\"no sign-in · Pilot · CAT IP\\nPOSTING OUT 16 JUL · OVERSEAS SQN\",\"tag\":\"POSTING OUT 16 JUL · OVERSEAS SQN\",\"held\":\"\"}"
+ },
+ "q6c-p.png": {
+  "question": "Q6",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Admin → Users (Saber, Wed 15 Jul), Ranger's row after the move to 149 was written: the line under his callsign carries no posting tag (6) — the move is not a posting.",
+  "asserted": "{\"sub\":\"us\\n· Member\\n· Pilot · CAT IP\",\"tag\":false}"
+ },
+ "q6b-149-p.png": {
+  "question": "Q6",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "drawn",
+  "transform": "the grid's own class for a day outside a man's time (`gone`) put on Ranger's 45 cells from 1 Jan to Wed 15 Jul; nothing else",
+  "caption": "Proposed, 149's Leave War (Kestrel, Thu 16 Jul, the JUL button pressed): Ranger's row from Thu 16 Jul; before it (New) the war's own look for days before a man arrives — the hatch, blank. Real, beside it: Swift, added on 149's Admin → Users with a post-in date of Thu 16 Jul — the same blank hatch before his first day.",
+  "asserted": "Swift added (post-in box \"Thu 16 Jul 26\n▾\"); his 15 Jul \"gone act\" reads \"\", 16 Jul \" act\""
+ },
+ "q4a-d.png": {
+  "question": "Q4",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "drawn",
+  "transform": "the approved ladder (round of 19 Nov, picture p1) built by its own drawing function under Sign-in and Role on Ranger's open row — rungs lettered for 150; no line under it",
+  "caption": "Wed 15 Jul, 10:05 — five minutes after Hunter saved Ranger's move to 149 (counting from Thu 16 Jul) at 10:00. Saber, the master admin, has opened Ranger's row on Admin → Users. New: the \"Other squadrons\" ladder (not built yet) — \"View 150\" still lit: his view of 150 lasts the rest of Wednesday, the day he is still 142's (the recommendation). Setup: 150 (a third squadron, at the same place) and Ranger's View of it written into storage — no screen makes a squadron or gives a right yet, and no screen shows either.",
+  "asserted": "rows read back: home:hmrlftn8va={\"id\":\"hmrlftn8va\",\"pid\":\"bane\",\"unit\":\"u142\",\"from\":\"2026-01-01\"}; home:hmrlftn8wb={\"id\":\"hmrlftn8wb\",\"pid\":\"bane\",\"unit\":\"u149\",\"from\":\"2026-07-16\"}; unit:u150={\"id\":\"u150\",\"num\":\"150\",\"kind\":\"sqn\"}; unitplace:up150={\"id\":\"up150\",\"unit\":\"u150\",\"place\":\"p1\",\"from\":\"2000-01-01\"}; grant:g150r={\"id\":\"g150r\",\"account\":\"acus\",\"unit\":\"u150\",\"level\":\"view\",\"from\":\"2026-07-01\"}; ladder 584px wide in a 584px editor, 1 row(s)"
+ },
+ "q4b-d.png": {
+  "question": "Q4",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "drawn",
+  "transform": "the approved ladder (round of 19 Nov, picture p1) built by its own drawing function under Sign-in and Role on Ranger's open row — rungs lettered for 150; no line under it",
+  "caption": "Thu 16 Jul, 09:00 — the first day his move counts. Saber, the master admin, has opened Ranger's row on Admin → Users. New: the \"Other squadrons\" ladder (not built yet) — \"None\" lit: from Thursday his view of 150 is gone. Setup: 150 (a third squadron, at the same place) and Ranger's View of it written into storage — no screen makes a squadron or gives a right yet, and no screen shows either.",
+  "asserted": "rows read back: home:hmrmsxwnka={\"id\":\"hmrmsxwnka\",\"pid\":\"bane\",\"unit\":\"u142\",\"from\":\"2026-01-01\"}; home:hmrmsxwnlb={\"id\":\"hmrmsxwnlb\",\"pid\":\"bane\",\"unit\":\"u149\",\"from\":\"2026-07-16\"}; unit:u150={\"id\":\"u150\",\"num\":\"150\",\"kind\":\"sqn\"}; unitplace:up150={\"id\":\"up150\",\"unit\":\"u150\",\"place\":\"p1\",\"from\":\"2000-01-01\"}; grant:g150r={\"id\":\"g150r\",\"account\":\"acus\",\"unit\":\"u150\",\"level\":\"view\",\"from\":\"2026-07-01\"}; ladder 584px wide in a 584px editor, 1 row(s)"
+ },
+ "q4a-p.png": {
+  "question": "Q4",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "drawn",
+  "transform": "the approved ladder (round of 19 Nov, picture p1) built by its own drawing function under Sign-in and Role on Ranger's open row — rungs lettered for 150; no line under it",
+  "caption": "Wed 15 Jul, 10:05 — five minutes after Hunter saved Ranger's move to 149 (counting from Thu 16 Jul) at 10:00. Saber, the master admin, has opened Ranger's row on Admin → Users. New: the \"Other squadrons\" ladder (not built yet) — \"View 150\" still lit: his view of 150 lasts the rest of Wednesday, the day he is still 142's (the recommendation). Setup: 150 (a third squadron, at the same place) and Ranger's View of it written into storage — no screen makes a squadron or gives a right yet, and no screen shows either.",
+  "asserted": "rows read back: home:hmrlftnjha={\"id\":\"hmrlftnjha\",\"pid\":\"bane\",\"unit\":\"u142\",\"from\":\"2026-01-01\"}; home:hmrlftnjib={\"id\":\"hmrlftnjib\",\"pid\":\"bane\",\"unit\":\"u149\",\"from\":\"2026-07-16\"}; unit:u150={\"id\":\"u150\",\"num\":\"150\",\"kind\":\"sqn\"}; unitplace:up150={\"id\":\"up150\",\"unit\":\"u150\",\"place\":\"p1\",\"from\":\"2000-01-01\"}; grant:g150r={\"id\":\"g150r\",\"account\":\"acus\",\"unit\":\"u150\",\"level\":\"view\",\"from\":\"2026-07-01\"}; ladder 328px wide in a 328px editor, 2 row(s)"
+ },
+ "q4b-p.png": {
+  "question": "Q4",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "drawn",
+  "transform": "the approved ladder (round of 19 Nov, picture p1) built by its own drawing function under Sign-in and Role on Ranger's open row — rungs lettered for 150; no line under it",
+  "caption": "Thu 16 Jul, 09:00 — the first day his move counts. Saber, the master admin, has opened Ranger's row on Admin → Users. New: the \"Other squadrons\" ladder (not built yet) — \"None\" lit: from Thursday his view of 150 is gone. Setup: 150 (a third squadron, at the same place) and Ranger's View of it written into storage — no screen makes a squadron or gives a right yet, and no screen shows either.",
+  "asserted": "rows read back: home:hmrmsxwxwa={\"id\":\"hmrmsxwxwa\",\"pid\":\"bane\",\"unit\":\"u142\",\"from\":\"2026-01-01\"}; home:hmrmsxwxxb={\"id\":\"hmrmsxwxxb\",\"pid\":\"bane\",\"unit\":\"u149\",\"from\":\"2026-07-16\"}; unit:u150={\"id\":\"u150\",\"num\":\"150\",\"kind\":\"sqn\"}; unitplace:up150={\"id\":\"up150\",\"unit\":\"u150\",\"place\":\"p1\",\"from\":\"2000-01-01\"}; grant:g150r={\"id\":\"g150r\",\"account\":\"acus\",\"unit\":\"u150\",\"level\":\"view\",\"from\":\"2026-07-01\"}; ladder 328px wide in a 328px editor, 2 row(s)"
+ },
+ "q5a-d.png": {
+  "question": "Q5",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Wed 15 Jul. Kestrel (149's admin) on Admin → Users, at its foot: \"Guest view\" — he ticks it (5). It is 149's own switch (each squadron has its own).",
+  "asserted": "{\"before\":false,\"after\":true}"
+ },
+ "q5b-d.png": {
+  "question": "Q5",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "A person waiting for access (\"swift\", whose request is with the admins) signs in with only 149's switch on: he is not let in to view any schedule — 149's switch does nothing for him (5).",
+  "asserted": "TALON Waiting for an admin SWIFT INITIALS SW SEAT Pilot CAT OCU Request sent An admin approves You're on the schedule Sign out Signed in as swift"
+ },
+ "q5c-d.png": {
+  "question": "Q5",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Hunter (142's admin) ticks 142's own switch; the same person signs in again and lands, as a guest, in 142's week (5: the \"142\" over TALON — the only place on screen that names a squadron, and it reads \"142\" on every screen, 149's included).",
+  "asserted": "{\"mark\":\"1425\",\"week\":\"13/07/2026\"}; 142 TALON Waiting for access — view only Sign out Jul 06 Jul 13 Jul 20 Jul 27 Monday Jul 13 · Today DRAFT 4 X 4 COMMON PROGRAMME EP: ENGINE FIRE ON TAKE OFF ORDERS: FLYING ORDERS SECTION 2 NAME START "
+ },
+ "q5a-p.png": {
+  "question": "Q5",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Wed 15 Jul. Kestrel (149's admin) on Admin → Users, at its foot: \"Guest view\" — he ticks it (5). It is 149's own switch (each squadron has its own).",
+  "asserted": "{\"before\":false,\"after\":true}"
+ },
+ "q5b-p.png": {
+  "question": "Q5",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "A person waiting for access (\"swift\", whose request is with the admins) signs in with only 149's switch on: he is not let in to view any schedule — 149's switch does nothing for him (5).",
+  "asserted": "TALON Waiting for an admin SWIFT INITIALS SW SEAT Pilot CAT OCU Request sent An admin approves You're on the schedule Sign out Signed in as swift"
+ },
+ "q5c-p.png": {
+  "question": "Q5",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Hunter (142's admin) ticks 142's own switch; the same person signs in again and lands, as a guest, in 142's week (5: the \"142\" over TALON — the only place on screen that names a squadron, and it reads \"142\" on every screen, 149's included).",
+  "asserted": "{\"mark\":\"142\",\"week\":\"13/07/2026\"}; 142 TALON Waiting for access — view only Sign out Monday Jul 13 · Today DRAFT 4 X 4 COMMON PROGRAMME EP: ENGINE FIRE ON TAKE OFF ORDERS: FLYING ORDERS SECTION 2 NAME START PEOPLE RMKS SODB 07:45 08:15"
+ },
+ "q7a-d.png": {
+  "question": "Q7",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none",
+  "caption": "The clock at 23:58 on Wed 15 Jul. Setup: Ranger's move 142 → 149 from Thu 16 Jul written into storage; Saber opened July for bidding (the war's own \"Bidding closed\" → JUL). Ranger, signed in, has 142's Leave War open and his window for Fri 24 Jul up, words typed in its remarks.",
+  "asserted": "Wed Jul 15 2026 23:58:01; {\"head\":\"Ranger Fri 24 Jul ✕\",\"val\":\"Family wedding in Perth, back Sunday\",\"bid\":\"Open for bidding 15 Jul – 31 Jul\"}"
+ },
+ "q7b0-d.png": {
+  "question": "Q7",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none",
+  "caption": "Today, just after midnight (00:00, Thu 16 Jul — his first day as 149's): the window stays up with his words, and nothing says anything. Under it the page is still 142's Leave War, and his own row has already gone from it.",
+  "asserted": "Thu Jul 16 2026 00:00:31; {\"win\":true,\"val\":\"Family wedding in Perth, back Sunday\",\"rangerRow\":0,\"kestrelRow\":0}"
+ },
+ "q7b-d.png": {
+  "question": "Q7",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "drawn",
+  "transform": "clone: the app's own warning band (the failed-save band's classes — its sign, bold lead, quieter rest) put across the window's top under its title bar, bled to the window's edges as the board's band is; \"Close\" a copy of the window's own \"Pick a range\" button, its look copied",
+  "caption": "Proposed: just after midnight the window stays, with one band across its top — \"You are 149's from today. This can't be saved in 142's Leave War.\" — and one button, \"Close\" (New). His typed words stay under it.",
+  "asserted": "{\"w\":558,\"h\":36,\"wrapped\":false,\"cut\":false,\"btn\":[53,30],\"src\":[90,30,\"Pick a range\"]}"
+ },
+ "q7c0-d.png": {
+  "question": "Q7",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none",
+  "caption": "The Tracker at 00:00 Thu 16 Jul. Setup: Ranger's move written into storage. Ranger (a member) pressed the syllabus pencil → \"Edit chart layout\" at 23:56 Wed 15 Jul; its tool row and the hint \"Move: drag a ball…\" stay as they were across midnight — nothing says anything.",
+  "asserted": "Thu Jul 16 2026 00:00:31; {\"hint\":\"Move: drag a ball (snap-aligns to others). Drag empty space to pan.\",\"tools\":[\"Move\",\"Select\",\"Connect\",\"Delete\",\"Merge\",\"Reset layout\",\"Edit events\"],\"src\":true}"
+ },
+ "q7c-d.png": {
+  "question": "Q7",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "drawn",
+  "transform": "clone: the same band (the failed-save band's classes) put across the chart's top, above the editing hint line; \"Close\" a copy of the editing row's own \"Merge\" button, its look copied",
+  "caption": "Proposed: the Tracker's chart layout being edited at the same midnight — one band across the chart's top, \"You are 149's from today. This can't be saved in 142's Tracker.\", and \"Close\" (New). The editing tools stay under it.",
+  "asserted": "{\"w\":1536,\"h\":36,\"wrapped\":false,\"cut\":false,\"btn\":[52,28],\"src\":[55,28,\"Merge\"]}"
+ },
+ "q7a-p.png": {
+  "question": "Q7",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "none",
+  "caption": "The clock at 23:58 on Wed 15 Jul. Setup: Ranger's move 142 → 149 from Thu 16 Jul written into storage; Saber opened July for bidding (the war's own \"Bidding closed\" → JUL). Ranger, signed in, has 142's Leave War open and his window for Fri 24 Jul up, words typed in its remarks (set through the box's own input event, not typed — an emulated phone zooms to a typed box).",
+  "asserted": "Wed Jul 15 2026 23:58:01; {\"head\":\"Ranger Fri 24 Jul ✕\",\"val\":\"Family wedding in Perth, back Sunday\"}"
+ },
+ "q7b0-p.png": {
+  "question": "Q7",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "none",
+  "caption": "Today, just after midnight (00:00, Thu 16 Jul — his first day as 149's): the window stays up with his words, and nothing says anything. Under it the page is still 142's Leave War, and his own row has already gone from it.",
+  "asserted": "Thu Jul 16 2026 00:00:31; {\"win\":true,\"val\":\"Family wedding in Perth, back Sunday\",\"rangerRow\":0,\"kestrelRow\":0}"
+ },
+ "q7b-p.png": {
+  "question": "Q7",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "drawn",
+  "transform": "clone: the app's own warning band (the failed-save band's classes — its sign, bold lead, quieter rest) put across the window's top under its title bar, bled to the window's edges as the board's band is; \"Close\" a copy of the window's own \"Pick a range\" button, its look copied; the band let wrap to a second line, as one line would cut its words here",
+  "caption": "Proposed: just after midnight the window stays, with one band across its top — \"You are 149's from today. This can't be saved in 142's Leave War.\" — and one button, \"Close\" (New). His typed words stay under it.",
+  "asserted": "{\"w\":376,\"h\":47,\"wrapped\":true,\"cut\":false,\"btn\":[57,28],\"src\":[95,28,\"Pick a range\"]}"
+ },
+ "q7c0-p.png": {
+  "question": "Q7",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "none",
+  "caption": "The Tracker at 00:00 Thu 16 Jul. Setup: Ranger's move written into storage. Ranger (a member) pressed the syllabus pencil → \"Edit chart layout\" at 23:56 Wed 15 Jul; its tool row and the hint \"Move: drag a ball…\" stay as they were across midnight — nothing says anything.",
+  "asserted": "Thu Jul 16 2026 00:00:31; {\"hint\":\"Move: drag a ball (snap-aligns to others). Drag empty space to pan.\",\"tools\":[\"Move\",\"Select\",\"Connect\",\"Delete\",\"Merge\",\"Reset layout\",\"Edit events\"],\"src\":true}"
+ },
+ "q7c-p.png": {
+  "question": "Q7",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "drawn",
+  "transform": "clone: the same band (the failed-save band's classes) put across the chart's top, above the editing hint line; \"Close\" a copy of the editing row's own \"Merge\" button, its look copied; the band let wrap to a second line, as one line would cut its words here",
+  "caption": "Proposed: the Tracker's chart layout being edited at the same midnight — one band across the chart's top, \"You are 149's from today. This can't be saved in 142's Tracker.\", and \"Close\" (New). The editing tools stay under it.",
+  "asserted": "{\"w\":402,\"h\":53,\"wrapped\":true,\"cut\":false,\"btn\":[52,28],\"src\":[55,28,\"Merge\"]}"
+ },
+ "q1b-142-d.png": {
+  "question": "Q1",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Setup: Hunter's own move 142 → 149, counting from Thu 16 Jul, written into storage (no screen saves a move yet). Hunter signs in again on Wed 15 Jul (still 142's that day): 142's Fri 24 Jul — the meeting has left 142's Common Programme (1).",
+  "asserted": "rows: home:hmrlfnir8a={\"id\":\"hmrlfnir8a\",\"pid\":\"prowler\",\"unit\":\"u142\",\"from\":\"2026-01-01\"}; home:hmrlfnir9b={\"id\":\"hmrlfnir9b\",\"pid\":\"prowler\",\"unit\":\"u149\",\"from\":\"2026-07-16\"}; on screen Friday: \"Friday Jul 24\", no \"SQUADRON MEETING\""
+ },
+ "q1b-149-d.png": {
+  "question": "Q1",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "The same world: Kestrel (149's admin) signs in. 149's Fri 24 Jul now shows 142's meeting (1). The top bar's mark still reads \"142\" on Kestrel's 149 schedule — the screen names no squadron; this is 149's week.",
+  "asserted": "on screen: \"SQUADRON MEETING MEETING 09:00 10:00 ALL AVAIL 11 LATE\""
+ },
+ "q1b-142-p.png": {
+  "question": "Q1",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Setup: Hunter's own move 142 → 149, counting from Thu 16 Jul, written into storage (no screen saves a move yet). Hunter signs in again on Wed 15 Jul (still 142's that day): 142's Fri 24 Jul — the meeting has left 142's Common Programme (1).",
+  "asserted": "rows: home:hmrlfnm7la={\"id\":\"hmrlfnm7la\",\"pid\":\"prowler\",\"unit\":\"u142\",\"from\":\"2026-01-01\"}; home:hmrlfnm7mb={\"id\":\"hmrlfnm7mb\",\"pid\":\"prowler\",\"unit\":\"u149\",\"from\":\"2026-07-16\"}; on screen Friday: \"Friday Jul 24\", no \"SQUADRON MEETING\""
+ },
+ "q1b-149-p.png": {
+  "question": "Q1",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "The same world: Kestrel (149's admin) signs in. 149's Fri 24 Jul now shows 142's meeting (1). The top bar's mark still reads \"142\" on Kestrel's 149 schedule — the screen names no squadron; this is 149's week.",
+  "asserted": "on screen: \"SQUADRON MEETING MEETING 09:00 10:00 ALL AVAIL 11 LATE\""
+ },
+ "q8a-d.png": {
+  "question": "Q8",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Wed 15 Jul, 10:00. Setup: Ranger's move 142 → 149 from Thu 16 Jul, written into storage. Hunter (142's admin) files LL for Ranger through Inputs → + New: the draft started on Tue 14 Jul alone, Ranger picked (the list offers him), then its end stretched to Fri 17 Jul (\"New input · Jul 14 → Jul 17\"); Add pressed, then \"No document\" in the document question. Today: the general refusal, \"Blocked: nothing was kept\", in the passing note at the foot of the screen (8); the window stays open and nothing is kept.",
+  "asserted": "{\"draft\":{\"head\":\"New input · Jul 14 → Jul 17\",\"who\":\"Ranger\",\"type\":\"LL\",\"offered\":true},\"note\":{\"text\":\"Blocked: nothing was kept\",\"op\":\"1\",\"face\":\"blocked\",\"color\":\"var(--ink)\",\"border\":\"var(--edge-2)\",\"at\":\"foot\",\"w\":205,\"h\":38},\"windowOpen\":true,\"documentQuestion\":true,\"rangerLL\":\"Jan 19→,Jan 26→\"}"
+ },
+ "q8b-d.png": {
+  "question": "Q8",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "drawn",
+  "transform": "the passing note's words changed, nothing else: the same note the refusal raised, its \"blocked\" face drawn as the app's own blockedFace would draw these words (no colon in them, so all of them are its bold lead); the note held up for the picture",
+  "caption": "Proposed: the same moment — the window still open with the draft — and the same passing note reading \"Ranger is 149's from Thu 16 Jul. Only a master or Ranger can change leave that runs across his move.\" (New).",
+  "asserted": "{\"w\":641,\"h\":38,\"lines\":null,\"text\":\"Ranger is 149's from Thu 16 Jul. Only a master or Ranger can change leave that runs across his move. New\"}"
+ },
+ "q8a-p.png": {
+  "question": "Q8",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Wed 15 Jul, 10:00. Setup: Ranger's move 142 → 149 from Thu 16 Jul, written into storage. Hunter (142's admin) files LL for Ranger through Inputs → + New: the draft started on Tue 14 Jul alone, Ranger picked (the list offers him), then its end stretched to Fri 17 Jul (\"New input · Jul 14 → Jul 17\"); Add pressed, then \"No document\" in the document question. Today: the general refusal, \"Blocked: nothing was kept\", in the passing note at the top of the screen (8); the window stays open and nothing is kept.",
+  "asserted": "{\"draft\":{\"head\":\"New input · Jul 14 → Jul 17\",\"who\":\"Ranger\",\"type\":\"LL\",\"offered\":true},\"note\":{\"text\":\"Blocked: nothing was kept\",\"op\":\"1\",\"face\":\"blocked\",\"color\":\"var(--ink)\",\"border\":\"var(--edge-2)\",\"at\":\"top\",\"w\":378,\"h\":37},\"windowOpen\":true,\"documentQuestion\":true,\"rangerLL\":\"Jan 19→,Jan 26→\"}"
+ },
+ "q8b-p.png": {
+  "question": "Q8",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "drawn",
+  "transform": "the passing note's words changed, nothing else: the same note the refusal raised, its \"blocked\" face drawn as the app's own blockedFace would draw these words (no colon in them, so all of them are its bold lead); the note held up for the picture",
+  "caption": "Proposed: the same moment — the window still open with the draft — and the same passing note reading \"Ranger is 149's from Thu 16 Jul. Only a master or Ranger can change leave that runs across his move.\" (New).",
+  "asserted": "{\"w\":378,\"h\":50,\"lines\":null,\"text\":\"Ranger is 149's from Thu 16 Jul. Only a master or Ranger can change leave that runs across his move. New\"}"
+ },
+ "q6d-d.png": {
+  "question": "Q6 (A7)",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "drawn",
+  "transform": "the passing note this Undo raised (today's words \"Undid: removing Ranger’s LL\", plain face) redrawn as the app's own note draws a REFUSED Undo — toast(words, 'warn'): amber border and words, the words as given; nothing else; the note held up for the picture",
+  "caption": "A7 reached for real, by the war's own controls: at 23:55 Wed 15 Jul (Ranger still 142's that day; his move to 149 written into storage, counting from Thu 16 Jul) Saber put approved LL on Ranger's Fri 17 Jul in 142's Leave War and deleted it. At 00:00 Thu 16 Jul he pressed Undo (\"Undo — removing Ranger’s LL\"), which would put the leave back. Today it is NOT refused: the note says \"Undid: removing Ranger’s LL\" and the leave goes back into 142's war, out of sight (his row has already left it). Proposed (New): the Undo refused, the note in the refused-Undo look reading \"Ranger is 149's from Thu 16 Jul, so this can't go back into 142's Leave War.\". Under it, 142's war as it stands now.",
+  "asserted": "{\"realNote\":{\"text\":\"Undid: removing Ranger’s LL\",\"op\":\"1\",\"face\":\"\",\"color\":\"var(--ink)\",\"border\":\"var(--edge-2)\",\"at\":\"foot\",\"w\":190,\"h\":38},\"drawn\":{\"w\":439,\"h\":38,\"lines\":null,\"text\":\"Ranger is 149's from Thu 16 Jul, so this can't go back into 142's Leave War. New\"},\"undoBefore\":\"Undo — removing Ranger’s LL\",\"undoTitle\":\"Undo — removing Ranger’s LL\",\"rangerCellsNow\":0,\"cellAfterUndo\":\"(no row)\",\"clock\":\"Thu Jul 16 2026 00:00:31\"}"
+ },
+ "q6d-p.png": {
+  "question": "Q6 (A7)",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "drawn",
+  "transform": "the passing note this Undo raised (today's words \"Undid: removing Ranger’s LL\", plain face) redrawn as the app's own note draws a REFUSED Undo — toast(words, 'warn'): amber border and words, the words as given; nothing else; the note held up for the picture",
+  "caption": "A7 reached for real, by the war's own controls: at 23:55 Wed 15 Jul (Ranger still 142's that day; his move to 149 written into storage, counting from Thu 16 Jul) Saber put approved LL on Ranger's Fri 17 Jul in 142's Leave War and deleted it. At 00:00 Thu 16 Jul he pressed Undo (\"Undo — removing Ranger’s LL\"), which would put the leave back. Today it is NOT refused: the note says \"Undid: removing Ranger’s LL\" and the leave goes back into 142's war, out of sight (his row has already left it). Proposed (New): the Undo refused, the note in the refused-Undo look reading \"Ranger is 149's from Thu 16 Jul, so this can't go back into 142's Leave War.\". Under it, 142's war as it stands now.",
+  "asserted": "{\"realNote\":{\"text\":\"Undid: removing Ranger’s LL\",\"op\":\"1\",\"face\":\"\",\"color\":\"var(--ink)\",\"border\":\"var(--edge-2)\",\"at\":\"foot\",\"w\":378,\"h\":36},\"drawn\":{\"w\":378,\"h\":50,\"lines\":null,\"text\":\"Ranger is 149's from Thu 16 Jul, so this can't go back into 142's Leave War.New\"},\"undoBefore\":\"Undo — removing Ranger’s LL\",\"undoTitle\":\"Undo — removing Ranger’s LL\",\"rangerCellsNow\":0,\"cellAfterUndo\":\"(no row)\",\"clock\":\"Thu Jul 16 2026 00:00:31\"}"
+ }
+}

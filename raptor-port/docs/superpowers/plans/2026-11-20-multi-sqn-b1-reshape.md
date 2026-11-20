@@ -4,13 +4,15 @@
   reshaping where their families come from — one which-squadron-on-a-day answer, the day always given; homes, places and
   rights as dated rows under one check; one last-admin rule; passes over every squadron — then the rest one by one.
   Astra, a fresh Opus reader and Fable read this plan, blind, before anything of it is built.
-- **Status:** a plan only, **revised after round 2 (chat 125); for round 3's narrow read.** Nothing here is built. Written
-  on `claude/multi-sqn-b1-107`; round 1's text is `cbdccbd71`'s, round 2's `f70594194`'s. Every round-1 finding and what
-  was done with it: §16; every round-2 finding: §17.
+- **Status:** a plan only, **revised after round 3 (chat 125); the plan's red team is closed — next, his answers and the
+  build.** Nothing here is built. Written on `claude/multi-sqn-b1-107`; round 1's text is `cbdccbd71`'s, round 2's
+  `f70594194`'s, round 3's `de5de891d`'s. Every round-1 finding and what was done with it: §16; round 2's: §17; round 3's,
+  with the host's two guardrails: §18.
 - **Inputs read:** the fault table, evidence sheet `docs/handpass/2026-11-18-multi-sqn-b1.md` §Fix read 17; the 40 proofs
   `docs/superpowers/briefs/2026-11-20-multi-sqn-b1-repro/`; the readers' reports `…-full-review-{fable,opus}-{a,b,c}.md`,
   `…-core-read-{astra,opus,security}.md`, `…-fixread17-{astra,opus,fable,security}.md`; round 1's reports
-  `…-reshape-read-{fable,astra,opus}.md` and round 2's `…-reshape-read2-{fable,astra,opus}.md`; the batch plan
+  `…-reshape-read-{fable,astra,opus}.md`, round 2's `…-reshape-read2-{fable,astra,opus}.md` and round 3's
+  `…-reshape-read3-{astra,fable,opus}.md`; the batch plan
   `plans/2026-11-17-multi-sqn-build-batches.md` §3.1, §3.4;
   `plans/2026-11-19-multi-sqn-b1-rest-files.md`; the transfer design `specs/2026-11-16-multi-sqn-detachment-design.md`
   §The transfer sheet and the round 6 and 7 drawings `docs/mock/2026-11-17-multi-sqn-r{6,7}/`; `docs/data-model.md` §11;
@@ -50,8 +52,8 @@
   `rosterOf(UNIT)` lines in `publish.ts signPeople` and `snap.ros`, which the project added; `editlog.ts`'s home read
   (l.449, the project's). The original's 728 must stay 728/0 (`node reference/tfin.js`). With no resolver installed, every
   person is the boot unit's, so a required day changes nothing there.
-- **Every existing test stays green (about 11,500)**, except the seven named in §4.5, which Piece B's cut rewrites to the
-  ruling's outcome (§9.3). Each fault's proof is copied into its area's real test file and run red on the code before
+- **Every existing test stays green (about 11,500)**, except the fourteen named in §4.5, which Piece B's cut and its two
+  guardrails rewrite to the ruling's outcome (§9.3). Each fault's proof is copied into its area's real test file and run red on the code before
   its fix, then green. Where a proof calls a signature the reshape renames, the copy keeps the proof's assertion word for
   word and changes only the call; R3's copy also names the move day in its two reads of his right (§4.4). The host reruns
   both runs and checks the two read the same.
@@ -197,7 +199,16 @@ the same. C9 is fixed first so the enumeration guards count truly while some 50 
   record (l.333), **routes** it instead: the squadron loaded → the loaded calendar (`PLANPUCKS`, `DAYRMK`), as now; any
   other → that squadron's stored calendar through `state/plan-foreign.ts` (§6.2), for its before-image and its write
   alike. So capture, revisions, conflict checks, storage and restore see one record whichever calendar holds it, and a
-  note edited while 149 is picked and undone after 142 is loaded writes the loaded calendar and the screen. No second
+  note edited while 149 is picked and undone after 142 is loaded writes the loaded calendar and the screen. **Through
+  Undo, in both directions** (Fable 3, Opus 4 of round 3): the timeline maps a record to its store by collection alone
+  (`undo/timeline.ts` l.125–127) and enlists only that store (l.807–812, l.849), and the `plan` case above is the schedule
+  store's write — so a restore routed from inside it would change the stored half un-enlisted (the whole-world guard
+  throws, `command/commit.ts` guardCheck) with no before-image. So **the timeline picks the store per record**: a `plan`
+  record of a squadron not loaded goes to the stored half directly, enlisted as its own store. The stored half, asked to
+  join a command or a restore, **first loads that squadron's stored rows for the ids it will write**, so its before-image
+  is the note as stored — an edit is a change, never "created", and its Undo never deletes the note — and a refused
+  restore rolls back whole, stored and cached copies untouched. Helper "undo & roles" builds the per-record choice after
+  helper "session" commits the stored half (§10). No second
   collection: the member rule's `case 'plan'`, `person-delete.ts` l.454, `changelines.ts`, `undo-wire.ts`, `describe.ts`
   and the registry read it unchanged. Section 7 judges the writer as an admin of the squadron in the id (members never
   write the planning calendar). Today nothing changes (own = pick); a member or plain admin with View of 149 who picks
@@ -283,23 +294,48 @@ Astra 2 of round 1; Astra 3, Fable 5 of round 2; D148).**
   hand (`closedAtStep`, from `perms.ts lwClosedKeys` l.820) are qualified by the timeline with the step's stamp. **The
   second store's posting row** (`lwx.profile/<unit>@<pid>`, written by A5's foreign pass and Admin → Users' doors) has
   the key of that war's own posting record, `lw.postouts/<unit>@<pid>` (`foreign.ts` l.15 names them the same record), so
-  a posting the foreign pass ran is a later change to the step that set it (found while checking Astra 3). Stored keys,
-  the ids the stores and the gate read, and saved data do not change.
+  a posting the foreign pass ran is a later change to the step that set it (found while checking Astra 3). **So do the
+  second store's other two rows** (Opus 5 of round 3; `foreign.ts` l.16–17, `leavewar/state/rows.ts` l.123–133):
+  `lwx.ledger/<unit>@<id>` is the war's own ledger row, keyed `lw.ledger/<unit>@<id>`; `lwx.rec/<unit>@<warId>:<recId>`
+  is one row inside a war cell, keyed as that cell, `lw.cell/<unit>@<warId>:<pid>:<date>`, its man and day read from the
+  row's image. So the master who picks 149 and clears Viper's OIL award, picks 142 and deletes Viper from Admin → Users,
+  then picks 149 and presses Undo is refused, in today's words, as a later change — the award is never written back for
+  a deleted man. Stored keys, the ids the stores and the gate read, and saved data do not change.
+- **The two other places Undo compares records by key** (Opus 6 of round 3): `verifiedWarRestore` (`timeline.ts`
+  l.613–628 — `closed.has(recordKey(c))`) and `carrySeen` (l.233–246) compare through the same qualified key, the
+  `closedAt` keys qualified with the step's stamp as above. Their tests — D1263's member Undo of his own bid on a closed
+  day, and a seen mark carried into an older step's images — run in the two-squadron world as well as without a world
+  door: with no door the stamp is empty (`perms.ts lwUnitNow`, l.1457), so the old tests never reach the qualified path.
 - **Eligibility.** `inUnitView` keeps today's rule for the squadrons a step's ids name — none, or the one in view; a step
   naming two is eligible in either — and adds: each stamped world it wrote holds now the squadron it was written in. The
   restore asks again just before it writes. "In view" is the page's squadron: the pick on schedule pages,
   `pageUnit('own')` on own pages (equal today).
 - **A step left in a squadron he can no longer enter** (Fable 5) is passed over silently, as a step in another squadron
-  is today — no new words; it never blocks a step in his new squadron, since their keys differ.
+  is today — no new words. **It can still share a key with a step he can reach** (Fable 4 of round 3): a war door writes
+  an input and a war record in one step (`leavewar/sync.ts doorMoveApproved` re-files the moved leave), inputs keep
+  unstamped keys, and `undoConflictOf`/`redoConflictOf` (`timeline.ts` l.726–780) judge every later step sharing a key,
+  whatever its squadron. Osprey files leave for Viper on Inputs at 23:30 and moves it in 142's Leave War at 23:50; his move
+  to 149 counts at midnight; in 149 every Undo press would say "A later change touches the same thing — undo that first"
+  about a step he can never reach. So, in both functions, a step sharing a key whose stamped world he can no longer enter
+  — not his own page's squadron now, and he neither a master nor holding Plan of it today, so no pick reaches it — is
+  **blocked for good**: today's sticky words, passed over by the next press, which names the step it takes (`sayBlocked`) —
+  Undo "A later change touches the same thing and can’t be undone."; Redo "An earlier undone change touches the same
+  thing and can’t be redone." (and "A later change touches the same thing — it can’t be redone over.", made sticky in this
+  case only). A master, or a Plan holder, who can go back keeps today's "undo that first". No new words.
 - A step with no stamp (made before this build) is judged as today (D56: the stored history is demo data).
 - **Files:** helper "undo & roles" — `state/undo-wire.ts`, `undo/timeline.ts`, `undo/derive.ts` and `command/commit.ts`'s
-  key hook (no other job touches it).
+  key hook (no other job touches it); with them, the timeline's per-record store choice for the planning record (A-ii).
 - **Tests:** the master changes 142's war settings, then 149's, returns to 142 and presses Undo: 142's step is taken;
   a background change in 149's war does not bar it; a later change in 142's war still does. Identical record names in
   both worlds for a war step, a Tracker step and an Inputs-calendar note, with later changes, background changes, Undo
   and Redo, across the midnight swap and a `switchUnit`, and with the pick different from his own squadron. His 142 war
-  step after his move: passed over, blocking nothing in 149. His leave input filed at 23:50: undone after midnight. A 149
-  posting run by the foreign pass, then Kestrel's Undo of setting it: refused as a later change.
+  step after his move: passed over, blocking nothing in 149. His leave input filed at 23:50: undone after midnight.
+  Fable 4's case (round 3): Osprey's 23:30 filing and 23:50 war move, his move at midnight — in 149 the filing's Undo is
+  blocked for good, said once, and the next press takes the step before it; the same steps for a master: "undo that
+  first". A 149 posting changed through an Admin → Users door (the second store, which exists today), then Kestrel's Undo
+  of setting it: refused as a later change (Opus 7 of round 3 — the foreign pass's own version is the host's at merge,
+  §10). Opus 5's ledger sequence, and a cell row through `lwx.rec`: refused as a later change. D1263's closed-day Undo and
+  a seen mark, in the two-squadron world (above).
 
 ### 3.3 Faults it closes
 - **Closes 7 outright:** A2 (with A-v), B4, C1, C2, C4, C6, C11. The C3 and C5 slots are built here; their outcome waits
@@ -335,7 +371,10 @@ Astra 2 of round 1; Astra 3, Fable 5 of round 2; D148).**
   Inputs list is refused at the door; the picker and the save agree for every row of a table of actor × span × move.
 - The planning calendar's one identity (Astra 2): a note edited on 142's calendar while 149 is picked, then 142 loaded,
   then a newer edit, then Undo — refused as a later change; edit, load, Undo, Redo, reload — the stored copy, the loaded
-  calendar and the screen agree.
+  calendar and the screen agree. **The other direction** (Fable 3, Opus 4 of round 3): a 142 plain admin with View of
+  149 picks 149, edits an existing note on his own (142's, not loaded) Inputs calendar — saved as a change, its
+  before-image the stored note — and presses Undo: the note as it was, stored and cached; Redo; a restore refused part-way
+  leaves the stored and cached copies untouched. Written by helper "undo & roles" at its per-record store's commit (§10).
 - `pageUnit`: a member with View of 149 who picks 149 keeps his own Inputs, its calendar's notes and their edits; a
   master's pick moves them (`switchUnit` in the test, as B4/B5 do); a Plan holder likewise.
 - `enterSquadron`: fired by the clock alone; his home at entry, not the pick; a master's pick of 149 stays at his own
@@ -375,7 +414,9 @@ Astra 2 of round 1; Astra 3, Fable 5 of round 2; D148).**
   routing, A-ii), `tracker/storage.js`, `tracker/TrackerPage.tsx`, whatever Tracker load files step 0 names; in phase 3,
   `state/typing-hold.ts` (new), `leavewar/ui/Sheet.tsx`, `tracker/components/Pop.jsx` and `Modals.jsx` (A-iv).
 - **Helper "undo & roles":** `state/undo-wire.ts`, `undo/timeline.ts`, `undo/derive.ts`, `command/commit.ts`'s key hook
-  (A-v), then K4 + B5 (§7), then Piece B's restore line (§4.3).
+  (A-v, with the blocked-for-good rule for a world he can no longer enter), then K4 + B5 (§7), then the per-record store
+  for the planning record (A-ii, after helper "session"'s stored half), then Piece B's restore lines (§4.3: the
+  leave-out, the step's recorded holders, a step the leave-out empties, a re-link's standing right).
 
 ## 4. Piece B — homes, places and rights as dated rows, under one check
 
@@ -411,14 +452,14 @@ right for a man with a move ahead.
 | R2 | his answer | closes by construction | refused; its proof's second case stays red (he stays 149's) |
 | The grant readers (round 1's 17 sites and `perms.ts` ~1243) | every one decides whether an ended row counts | 9 change to "holds on a day", 1 goes, the rest (the row loader and the readers that only name an account) unchanged; 7 hand-built accounts pass `pidFrom` | none |
 | Round-1 findings it removes by construction | none; 7 to answer | 8: Astra 1, Opus H2, M1, M2, L5, Fable F6, F11's rules 4 and 5 | 7; Fable F6/Opus M2 stays |
-| Fix reads 7–12's bell tests | green | 7 existing tests rewritten (§4.5): each holds a right across a move, which D2203 forbids, or reads it on the save day | green |
-| A new risk of its own | — | a re-link, or a restore re-dated to today, could restart a right a move ended — closed by "an ended right never comes back" below | — |
+| Fix reads 7–12's bell tests | green | 14 existing tests rewritten (§4.5): each holds a right across a move, which D2203 forbids, reads it on the save day, or pins a right carried by a re-link or put back after a move — the two guardrails below | green |
+| A new risk of its own | — | a re-link, or a restore re-dated to today, could restart a right a move ended — closed by the two guardrails below: a sign-in linked to another person carries no right; no restore puts back a right whose man has moved since its start | — |
 
 **Recommended: (ii).** It is the only cut whose timing matches the rulings that set one (the move day, the transfer's
 date), it leaves batch 4 nothing to rebuild, its Undo has nothing to vouch for, and it removes the most findings without
 answering them. **Its costs:** the moment a moved man's rights end shifts from the save to the move day's start — no
 screen saves a move or gives a right yet, so nobody sees it today, but it is a change of built timing, so it is his
-question (§12 Q4); seven existing tests are rewritten (§4.5); each "holds" reader needs a day and his squadron rows
+question (§12 Q4); fourteen existing tests are rewritten (§4.5); each "holds" reader needs a day and his squadron rows
 (cheap with A-i's index); ended rows stay stored, naming their account, until a re-link or the account's delete drops
 them.
 
@@ -449,39 +490,100 @@ right on its `from`, not its link day, and refuses every save of a man whose mov
   this cut the rights stand until midnight, so Saber lowering a Plan he gave in error, or undoing and redoing a giving,
   the day Ranger's move is saved, is honest — whatever it leaves ends at midnight by the rule.
 - `removeGrant`: the row holding today.
-- **A re-link** (`accounts.ts updateAccount` linking an account to another person). **Who:** an admin of the man's own
-  squadron, as now, where the account holds no right **today** in a squadron he is no admin of — else only a master. The
-  door (`relinkRightsProblem`), the gate's G4 (l.1852) and the drop judge alike, all reading only rights that hold today
-  on the rows before (Fable 2, Astra 7, Opus M2): an ended row is no right, so Kestrel, 149's plain admin, may re-link
-  the sign-in of Ranger, now 149's, though Ranger's ended View of 150 is still stored. **The drop:** in its own command it
-  removes every right of that account that holds nothing on the re-link day, whoever re-links. Without it, a right
-  Ranger's move had ended would start again for the next man linked to his sign-in, since its start becomes the link day.
-  The rights that still hold follow the account from the link day, as built (fix read 10, fault D). Dropping an ended
-  row takes no bell line a move has not already taken today: today's move deletes the row on save.
+- **A re-link** (`accounts.ts updateAccount` linking an account to another person). **Guardrail 1 — the host's decision
+  after round 3, in place of a fourth patch: a sign-in linked to another person carries no access to other squadrons.**
+  It replaces "the rights that still hold follow the account from the link day" — a build choice of fix read 10, fault D,
+  which no ruling names (checked: no row of `.claude/decisions-full/` or the rulings pages speaks of a re-link carrying a
+  right). Every round found a new way for a carried right to outlive a move through the re-link's Undo or Redo (round 3:
+  Astra 2, Fable 1, Opus 1); carrying none closes the family by construction.
+  - **The drop:** in its own command the re-link removes **every** right of that account, holding or ended, whoever
+    re-links. The man now on the sign-in is given what he needs anew, by whoever may give it — an admin of that squadron
+    or a master (Plan, a master's to give — D2199). Dropping an ended row takes no bell line a move has not already taken
+    today: today's move deletes the row on save.
+  - **Who may re-link — kept as it stands, for a new reason** (the host's question, decided): an admin of the man's own
+    squadron, where the account holds no right **today** in a squadron he is no admin of — else only a master. Nothing is
+    carried any more, so the line no longer guards a right handed to another man; it guards the drop. Dropping a right
+    that holds is a removal in its squadron, which only that squadron's admins or a master make (D2191, D2192); without
+    the line, a 149 admin could strip a 150 right from his own man's sign-in by re-linking it away and back. A right that
+    holds nothing gives nothing, so dropping one is no act for its squadron, and the man's own admin may (§14 item 6). The
+    door (`relinkRightsProblem`), the gate's G4 (l.1852) and the drop judge alike, all reading only rights that hold today
+    on the rows before (Fable 2, Astra 7, Opus M2): Kestrel, 149's plain admin, may re-link the sign-in of Ranger, now
+    149's, though Ranger's ended View of 150 is still stored. **The door's words still read true** (`accounts.ts` l.343,
+    "This sign-in holds a right in 150. Only a master admin can link it to another person."): they name only a right that
+    holds, and are shown only to one who is neither a master nor an admin of 150.
+  - **At the gate (section 6, new — the re-link line):** a command that changes an account's man — G4's own test: a row
+    whose person changes, or a new row under an id a right still names (`rightNamesNew`) — leaves no grant row naming that
+    account stored after it, whoever makes it, a master and a restore included. Placed after G4, so G4's words come first
+    for one who may not re-link at all.
+  - **Undo and Redo of a re-link restore the link only** — the account row, its days dated by `restoreRedated` as today —
+    and **never put a right back**: the restore leaves out every grant row the step's images hold (below). A right
+    standing on that account when Undo or Redo is pressed was given since, to the man then on the sign-in; the restore
+    would carry it to the other man, so the gate's line would refuse it. The timeline says so first: the step is **blocked
+    for good** in that direction (`sayBlocked`, as a sticky barrier is), in today's words for a change someone made after
+    the action, naming who wrote that right where the timeline knows (`outOfBandWords`, `timeline.ts` l.697: "‹callsign›
+    changed this after your action — it can’t be undone now.", "You changed this somewhere else after this action — it
+    can’t be undone now.", or "Something else changed this after your action — it can’t be undone now."). D148's own
+    rule: a later change by another to the same thing refuses, and says who. His own giving since is a newer step of his,
+    undone first. (The body that finds the standing right is core's, in `perms.ts`; the block, the timeline's.)
+  - **The cost, said plainly:** an Undo of a mistaken re-link gives the sign-in back **without its other-squadron
+    access**. Saber links Ranger's sign-in, which holds View of 150, to Viper by mistake and presses Undo at once: the
+    sign-in is Ranger's again, with no View of 150, until 150's admins or a master give it again. Nobody sees this today —
+    no screen gives View or Plan, and only tests hold one (§11).
 - `dropGrantsOfAccount` (the person delete): every row of the account, ended ones too, as now.
 
-**An ended right never comes back** (one rule — Fable 1, Astra 1, Opus M3). A row that holds nothing on today is dead for
-good: the move that ended it is on a day already begun, which rule 1 below never lets change. The only ways back would be
-its start moving later — a re-link, or a restore re-dating the link or the row to today — and both are closed:
-- **At the gate, before against after** (Opus M3), replacing the plan's earlier backstop ("a re-link leaves no right
-  that holds nothing", which refused the master's honest Undo of a re-link): for each account and squadron, a right
-  that holds nothing on today before the command — none stored, or stored and ended — holds after it only where the
-  command puts it **dated today**, judged as a giving by the who-rule; or where a verified
-  restore puts back, with its recorded day, a right that in the restored world held on the day its step took it off,
-  its man not moved since (`grantBackHolds`, with that one addition). This catches a forged re-link that keeps ended
-  rows, and any restore that would revive one.
+**An ended right never comes back, and no restore puts back a right whose man has moved** (Fable 1, Astra 1, Opus M3
+of round 2; Astra 1, Fable 7 of round 3). A row that holds nothing on today is dead for good: the move that ended it is
+on a day already begun, which rule 1 below never lets change. The only ways back would be its start moving later — a
+re-link, or a restore re-dating the link or the row to today. Guardrail 1 closes the first (a re-link carries no right).
+**Guardrail 2 — the host's second decision after round 3: no restore ever puts back a right whose man has changed
+squadron since that right's own start.** Round 2's rule (leave out a row that held nothing when its step took it off)
+still let an Undo after a move put a right back re-dated today, so a removal → move → Undo → Redo → Undo run dropped a
+right its own Redo had taken (Astra 1), and an Undo of a lowering after the move re-dated the stored row (Fable 7).
 - **At the restore** (`perms.ts restoreLeavesOut`, core; wired into the timeline's `leaveOut` hook, which already leaves
-  out a bell line put back to no one, D2218 — helper "undo & roles", after the core's Piece B is committed): an Undo or
-  Redo never puts back a grant row that held nothing at the moment its step took it off (`offAt`: an Undo's step
-  moment, a Redo's Undo moment), read with the account as it stood then — for an Undo of a step that changed the
-  account (the re-link), the step's own before-image of it; otherwise as stored — and the row's recorded `from`. Nor does it remove a grant row not stored. The rest of the
-  step goes through. An ended row lost from storage loses nothing a person can use. The timeline's hook is handed the
-  restore's other changes, so it sees the account row the same restore puts back.
-- **What a person sees:** Saber re-links Ranger's sign-in to Viper by mistake on 18 Jul and presses Undo — at once,
-  after Ranger moves again, after Viper moves, or after both: the sign-in is Ranger's again; neither man holds anything
-  of 150; Redo re-links, dated today (fix read 10's F10-4), and removes nothing. Kestrel's re-link and its Undo and Redo
-  pass the same way. Saber removes Ranger's View of 150 on 12 Jul by mistake and undoes it on 18 Jul, after Ranger's
-  move: it was holding when removed, so it comes back dated today (fix read 9's rule) — a giving the who-rule judges.
+  out a bell line put back to no one, D2218 — helper "undo & roles", after the core's Piece B is committed). In an Undo
+  or a Redo:
+  1. **a step that changed an account's man** (a re-link, its Undo, its Redo) puts back **no** grant row — the link only
+     (guardrail 1);
+  2. **any other grant row is put back only where** its account still names the man it named when the step was made, and
+     that man's squadron has not changed (`changesIn`) between the row's start and today — the row judged **as it stood
+     when it was taken off**: its `from` as the step's image has it or, after an earlier restore, as the row that
+     restore's reverse took away (`stoodBefore`, which the timeline already keeps), and the account's link day as it stood
+     at the step (guardrail 2). So an Undo of a removal or a lowering after his move puts nothing back, in every order of
+     Undo and Redo: the move is on a day already begun and never changes, so the answer never changes either. (The two
+     readings of "its start" — the step's image, or a day an earlier restore gave it — cannot disagree about a move: a
+     restore that re-dated a row was itself left out had a move fallen between.)
+  3. it never removes a grant row not stored.
+
+  The man and the link day of each grant row's account a step touches are **recorded on the step as it is recorded** — a
+  hook the timeline asks once and
+  keeps on the entry, as it keeps `closedAt` (`timeline.ts` l.326–348; the hook's body core's, its wiring "undo &
+  roles"'s). Without them, a removal, then a re-link of the sign-in to Viper the same day, then the removal's Undo would
+  put Ranger's right back on Viper's sign-in: the link day alone cannot tell two acts of one day apart. The hook is handed
+  the restore's other changes (to see a re-link in the same step) and `stoodBefore`. The rest of the step goes through.
+  An ended row lost from storage loses nothing a person can use.
+- **A step the leave-out empties.** Where it takes out a grant row and nothing of the step is left to write — an Undo of
+  a removal or a lowering after his move (`removeGrant` and `setGrant` each write one row) — nothing is committed and the
+  step is **blocked for good** in that direction (`sayBlocked`; the next press names the step it takes), in today's
+  words: "Something else changed this after your action — it can’t be undone now." (`timeline.ts` l.696). No new words;
+  nobody sees it today (§11).
+- **At the gate, before against after** (Opus M3 of round 2), kept as the backstop: for each account and squadron, a
+  right that holds nothing on today before the command — none stored, or stored and ended — holds after it only where the
+  command puts it **dated today**, judged as a giving by the who-rule; or where a verified restore puts it back with its
+  recorded day and the one body above (`restoreLeavesOut`) lets it through — asked by the gate through the timeline's
+  probe, as it asks `restoreOffAt` and `restoreDir` today. And a verified restore that puts back a row the body leaves out
+  is refused outright, so "never" holds at the gate as well as at the restore. With the re-link line above, this catches
+  a forged re-link that keeps a right, and any restore that would revive one.
+- **The cost, said plainly:** Saber removes Ranger's View of 150 on 12 Jul by mistake; Ranger moves to 149 from 16 Jul;
+  Saber presses Undo on 18 Jul: nothing comes back, and Undo says "Something else changed this after your action — it
+  can’t be undone now." That is the world the move would have left anyway — D2203 ends every View and Plan at his move,
+  so the View, never removed, would have ended on 16 Jul. Wanted after the move, it is given anew, by an admin of 150 or a
+  master. The same for a lowering (Fable 7). On the day the move is saved, before it counts, the Undo puts the right back
+  as before; it ends at midnight by the rule. **The master mark is no right** (§4.5's reading of D2203): its Undo and Redo
+  keep today's re-dating (`markBackHolds`), untouched.
+- **What a person sees of the re-link:** Saber re-links Ranger's sign-in to Viper by mistake on 18 Jul and presses Undo —
+  at once, after Ranger moves again, after Viper moves, or after both: the sign-in is Ranger's again, holding nothing of
+  150 or of any squadron but his own; Redo re-links, dated today (fix read 10's F10-4), and removes nothing (the rows are
+  gone). Kestrel's re-link of a sign-in holding only ended rows, and its Undo and Redo, pass the same way.
 
 **One check for homes and places.** A pure function in `units-model.ts`: `datedRowsBreach(before, after, today, who) →
 { code, …facts } | null`. The gate calls it once in place of §6's date parts and §8's home loop. The doors (`setHome`,
@@ -510,9 +612,11 @@ and is judged with the giving, not with any squadron row.
   today on the rows before. "A unit removed while still named" (l.1999) → counts only rights holding today (Fable 6):
   an ended row names nothing a person can use, and no door can remove one, so it must never block the Undo of
   "+ New squadron".
-- **New:** "an ended right never comes back" (above). And the drop's who: the removal of a grant row that holds nothing
-  on today in the before-image passes, whoever makes the command, where the same command changes that account's person;
-  a bare removal stays an admin's of that squadron.
+- **New:** "an ended right never comes back" and the restore's guardrail 2 (above); the re-link line (guardrail 1,
+  above). And the drop's who: the removal of a grant row that holds nothing on today in the before-image passes, whoever
+  makes the command, where the same command changes that account's person; the removal of one that holds is an ordinary
+  removal — an admin of its squadron or a master — which G4 already demands of whoever re-links such a sign-in; a bare
+  removal stays an admin's of that squadron.
 - **Kept unchanged:** a right in his own home unit; a new or changed right is dated today, a kept one keeps its day; a
   verified replay's exemption; a person delete's drop (`personDeletedHere`).
 - **Round 1's rule 2 ("one change per command") is dropped:** it existed to refuse R2's forged one-day move. Under this
@@ -524,9 +628,11 @@ and is judged with the giving, not with any squadron row.
 began" (`from < iso`, its start the later of `from` and `pidFrom`, as now). A right ended by his move is not counted from
 the move day; after an Undo of the move it holds again from its own day, as the restore re-dating does today. **The
 re-dating hooks stay** (`restoreRedated`, `grantBackHolds`, `stoodGrant`, `masterFrom`, `pidFrom`, the timeline's
-`undoneOn`/`redoneOn`/`stoodBefore`), with the two additions above: the restore leaves an ended row out, and
-`grantBackHolds`' kept day needs the right to have held when its step took it off. They now serve only a right removed
-and then undone, and the master mark. Their retirement is filed, not done here (§15).
+`undoneOn`/`redoneOn`/`stoodBefore`), with the restore's leave-out above in front of them: a grant row reaches
+`restoreRedated` only where its man has not moved since its start, so for a grant the "dated today because of a move"
+branch is no longer reached — it stays for the master mark and the link's own day. They now serve a right removed and
+then undone with no move since, a level put back (an Undo of a raising still dates the View today, as built), the link
+day and the master mark. Their retirement is filed, not done here (§15).
 
 **Every reader of grant rows, by its choice** (the 17 and `perms.ts` ~1243, Opus M6 of round 1):
 - **Holds on a day → `grantOn` (9):** `units-model.ts grantIn` and `levelFrom` (l.146–157); `units.ts setGrant`'s and
@@ -535,8 +641,9 @@ and then undone, and the master mark. Their retirement is filed, not done here (
 - **Goes (1):** `units.ts setHome`'s drop (l.234).
 - **Names an account or only loads rows — unchanged:** `units-model.ts rowsFrom` (l.113, 119, 122); `units.ts
   grantsOf` (l.89, read by tests only) and `dropGrantsOfAccount` (l.210); `perms.ts` the posting pass's grant rows of a
-  gone account (~1243), `rightNamesNew` (l.1756), G5 (l.1870, l.1875). An ended row still names its account: G5 reads
-  it, and the person delete and the re-link drop it.
+  gone account (~1243), `rightNamesNew` (l.1756), G5 (l.1870, l.1875), and the new re-link line (every row naming the
+  account, holding or ended). An ended row still names its account: G5 reads it, and the person delete and the re-link
+  drop it.
 - **Hands an account to a level reader — passes `pidFrom`:** the seven hand-built sites above.
 The builder lists each site with this choice, and the fix read checks every one.
 
@@ -557,20 +664,36 @@ The builder lists each site with this choice, and the fix read checks every one.
   - A new squadron's first admin moved into it (Fable F6, Opus M2): allowed; 150 has an admin on every day.
   - Undo and Redo of "+ New squadron", on its day and on a later day (Fable F7, Opus M3), and with an ended row naming
     150 (Fable 6).
-  - **The re-link** (Fable 1–3, Astra 1, 7, Opus M2, M3): Saber's re-link after Ranger's move drops the ended row; its
-    Undo at once, after Ranger moves again, after Viper moves, and after both, each then Redo: the sign-in back on
-    Ranger, nothing of 150 held by either man, the Redo removing nothing; the same by Kestrel, 149's plain admin — door
-    and gate agree; a forged re-link keeping an ended row, and a forged restore putting one back re-dated: refused.
+  - **The re-link** (Fable 1–3, Astra 1, 7, Opus M2, M3 of round 2; guardrail 1 — Astra 2, Fable 1, Opus 1 of round
+    3): by the master, a sign-in holding a right that **still holds** (Plan of 149) and one that has ended (View of 150):
+    both dropped in the re-link's own command. Its Undo at once, after Ranger moves, after Viper moves, and after both,
+    each then Redo: the sign-in back on Ranger, no right of that account stored, the Redo removing nothing; nothing
+    refused. The same by Kestrel, 149's plain admin, for a sign-in holding only ended rows — door and gate agree; for one
+    holding a right of 150 that holds: refused at the door in its words, and at G4. **A right given since:** 150's admin
+    gives Viper's sign-in View of 150 after Saber's re-link; Saber's Undo is blocked for good in today's words naming that
+    admin ("‹callsign› changed this after your action — it can’t be undone now."), the next press naming the step it
+    takes; the same right given and then ended by Viper's move: the same; Saber's own giving since: undone first, then the
+    re-link's Undo passes. **The gate:** a
+    forged re-link keeping any right — holding or ended — refused, a master's too; a new row under an id a right names,
+    likewise, unless the same command removes the right; a forged restore putting a right back: refused.
+  - **Guardrail 2** (Astra 1, Fable 7 of round 3): Saber removes Ranger's View of 150; Ranger moves; Undo — nothing back,
+    the step blocked in today's words; removal → Undo → move → Redo → Undo, and removal → move → Undo, repeated at once
+    and on later days: no right ever put back after the move, no step left half done, a right truly ended still out; the
+    same for a lowering (Plan to View) and a raising undone; removal → re-link to Viper **the same day** → the removal's
+    Undo: nothing put on Viper's sign-in (the step's recorded man); removal → re-link away and back to Ranger → Undo:
+    the View back on Ranger, who has not moved; on the day his move is saved, an Undo of a removal still puts it back,
+    and it ends at midnight. Written by helper "undo & roles" at the commit that wires the leave-out (§10); the core's
+    phase-2 commit carries `restoreLeavesOut`'s own table, as a pure function.
   - **"Moves tomorrow"** (Fable 4, Opus L3): on the day his move is saved, a lowering of Plan to View passes; a giving
     and a raising are refused at the door and the gate; an Undo then Redo of a giving, and an Undo of a removal, pass.
   - A right given after a move is a new row and does not bring back a bell line the move retired (fix read 7–12's cases).
   - `levelIn` on the move day and the day after; the account delete with ended rows.
   - **The regression net:** `state/units-sqn-fixread*.test.ts` and `leavewar/multi-sqn-fixread9–12.test.ts` all green,
-    but for §4.5's seven.
+    but for §4.5's fourteen.
 
 ### 4.5 Existing tests this cut rewrites (§9.3) — named, none deleted
-Each holds a right across a move — its squadron rows written straight into the store, past `setHome`, which would have
-deleted the right — or reads the right on the save day. D2203 forbids the first; Q4 moves the second:
+Tests 1–7 each hold a right across a move — its squadron rows written straight into the store, past `setHome`, which
+would have deleted the right — or read the right on the save day. D2203 forbids the first; Q4 moves the second:
 1. `state/units-sqn-fixread16.test.ts`, "(control) the move undone the same day puts back the rights it dropped": "dropped
    by the move" is read on the move day instead of the save day.
 2. `leavewar/multi-sqn-fixread13.test.ts`, O9-2: "his Plan went with his move" reads "no right of his holds on the 17th"
@@ -585,8 +708,36 @@ deleted the right — or reads the right on the save day. D2203 forbids the firs
 
 Tests 3–4 keep their master-mark halves (a master's reach is no right and is not ended — D2203's reading) and pin that a
 right held before the move day ends with it. Tests 5–6 keep what they test — an Undo of a right's removal or level change
-brings its line back with its own day — with the Plan given after the move, in his new squadron. The host checks each
-against its fix read's fault; the fix read reads each.
+brings its line back with its own day — with the Plan given after the move, in his new squadron.
+
+**Added in round 3, under the two guardrails** (checked one by one in the code, 20 Nov 26). Each pins a right an Undo or
+Redo puts back after its man's move, dated today, or a right a re-link leaves standing — a build choice of fix reads 9–12,
+never a ruling: D2218 and D2223, which those reads served, are about bell lines, and each test keeps its line half. The
+Undo or Redo now puts nothing back and is refused in today's words, "Something else changed this after your action — it
+can’t be undone now." (§4.3):
+
+8. `leavewar/multi-sqn-fixread9.test.ts` l.132, "(a grant) Plan of 149 given and removed on 15 Jul, Hunter moves … the
+   Undo of the removal on 17 Jul: dated the 17th": the Undo puts nothing back; "the line stays retired" kept.
+9. `leavewar/multi-sqn-fixread10.test.ts` l.392, "(Redo, no move since its Undo) Plan of 149 given 13 Jul, he moves 16
+   Jul; on 17 Jul its Undo and Redo: the Redo puts back 13 Jul": it holds a right across a move, so it was already red
+   under round 2's rule and missed by round 2's list (found while checking). Rewritten as tests 5–6 are: the Plan given on
+   17 Jul, after the move, its Undo and Redo on 18 Jul — the Redo puts back 17 Jul.
+10. the same file l.402, "(Redo, a move since its Undo) … the Redo on 17 Jul: a right given today": the Redo puts nothing
+    back.
+11. the same file l.411, "(control — a move between) the Plan taken off 15 Jul, he moves 16 Jul, the Undo on 17 Jul: a
+    right given today": the Undo puts nothing back.
+12. `leavewar/multi-sqn-fixread11.test.ts` l.631, "(Fable F11-5b, a move between) Plan set to View on 15 Jul, he moves 16
+    Jul, the Undo on 17 Jul: a right given today": the Undo puts nothing back; the stored View stays, ended (Fable 7).
+13. `leavewar/multi-sqn-fixread12.test.ts` l.407, "(Plan / View) … Undo 17 Jul (17 Jul); 18 Jul Redo then Undo: still 17
+    Jul": the Undo on 17 Jul puts nothing back, so there is no Redo; the repeated-restore rule it pinned (fix read 12,
+    fault E) keeps its master-mark tests in the same block (l.379–405, l.418), unchanged.
+14. `leavewar/multi-sqn-fixread11.test.ts` l.465, "(the gate) a new account row whose id a standing right names is a
+    re-link: Kestrel refused; Saber only dated today": Kestrel's half unchanged (G4's words come first); Saber's reads
+    "dated today, refused while the right stands; allowed with that right removed in the same command" (guardrail 1).
+
+Checked and left green: fix read 10's F10-4 (l.321) and fix read 11's F11-4 (l.564) re-link a sign-in holding Plan and
+undo it, but assert only the link, its day and the line — all unchanged; O10-4 and O10-4b (l.292, l.308) are still
+refused, in the same words. The host checks each of the fourteen against its fix read's fault; the fix read reads each.
 
 ### 4.6 What could break, and what the readers must look at
 - **This is the highest-risk piece:** permissions, saved data, and the bell's retired-line machinery that fix reads 7–12
@@ -596,15 +747,22 @@ against its fix read's fault; the fix read reads each.
     account, and a right with no `from`;
   - a route that restarts an ended right (a re-link, a Redo, a restore re-dated to today) — the gate's before/after rule
     and the restore's leave-out, each on its own;
+  - guardrail 1: any right left on a sign-in a command or a restore has linked to another man — the drop, the re-link
+    line, the restore's "link only", and a right given since (blocked, never carried);
+  - guardrail 2: any restore putting back a right whose man has moved since its start, in any order of Undo and Redo;
+    the man recorded on the step; a step the leave-out empties, blocked and never committed half;
   - any honest Undo or Redo now refused; the re-link's door, drop and G4 judging alike;
   - each reader's choice, and every hand-built account carrying `pidFrom`;
   - a retired bell line coming back after a move is undone or a right re-given;
-  - §4.5's seven rewrites, each against its fault.
+  - §4.5's fourteen rewrites, each against its fault.
 - **Walks:** Admin → Users — every account change, the re-link, Archive, Restore, Delete and their Undos — for the four
   seeded sign-ins, desktop and iPhone. Nothing he sees should change.
-- **Files:** core — `state/units-model.ts`, `state/units.ts`, `state/perms.ts` (§6, §8, G4, `restoreLeavesOut`),
-  `state/notices.ts` (`adminThen`), `state/accounts.ts` (the re-link's who, drop and words); helper "undo & roles" wires
-  the leave-out (`state/undo-wire.ts`, `undo/timeline.ts`'s hook) once the core's Piece B is committed.
+- **Files:** core — `state/units-model.ts`, `state/units.ts`, `state/perms.ts` (§6, §8, G4, the re-link line,
+  `restoreLeavesOut` and the bodies of the step's recorded holders and of a re-link's standing right), `state/notices.ts`
+  (`adminThen`), `state/accounts.ts` (the re-link's who, its drop of every right, and words); helper "undo & roles" wires
+  them (`state/undo-wire.ts`; `undo/timeline.ts`: the leave-out's inputs, the holders kept on the step, the probe the gate
+  asks, a step the leave-out empties and a re-link's standing right, each blocked for good) once the core's Piece B is
+  committed.
 
 ### 4.7 If he picks another cut
 - **"End them the moment the move is saved"** (his Q4 answered the other way): round 1's stored end comes back — `to`
@@ -613,7 +771,9 @@ against its fix read's fault; the fix read reads each.
   is the row this command adds, removes or turns back; account, squadron, level and `from` unchanged; a reopen restores
   exactly the right that move ended); Opus M1's take-back rule (it applies only where no move is left); Fable F6/Opus M2
   (a right in the squadron he joins ends on the move day); Opus L4 and L5; and R2's question back to him (refuse a
-  same-day take-back, or give the rights back). §4.5's rewrites drop to two (O9-2 and test 7, which read "no row stored"). Batch 4's transfer then writes its
+  same-day take-back, or give the rights back). §4.5's first seven rewrites drop to two (O9-2 and test 7, which read "no
+  row stored"); 8–14 stay, since the two guardrails stand under this cut too — a re-link carries no right, and no
+  restore puts back a right a move has ended (here, by its stored end). Batch 4's transfer then writes its
   end on its date. About a day more of core work and one more round of reading.
 - **"No dated rights"** (the Opus reader's cut): not recommended — R2's proof cannot go green, batch 4's transfers would
   lose a man's rights months early and bar any new one meanwhile, and Fable F6/Opus M2 then needs a fix of its own in
@@ -654,6 +814,9 @@ against its fix read's fault; the fix read reads each.
   - `perms.ts lastAdminViolation` calls it, and now runs for commands that change grants or add a unit as well;
   - `units.ts addUnit` (the first admin required — "Name the squadron's first admin"), `removeGrant` and `setGrant`
     (lowering admin to View) ask it at the door;
+  - `accounts.ts updateAccount`'s re-link asks it with its drop of every right in the draft (guardrail 1, §4.3): a
+    sign-in holding 150's only Plan, re-linked by the master, would leave 150 with no admin — refused in the table's
+    words, as a removal of that Plan is. (Today its `lockProblem`, l.508, reads the accounts list alone.)
   - `poHeldReason` keeps reading `lastAdminLock` unchanged.
 - **One words table:**
   - today → "Kestrel is 149's last admin. Make another admin of 149 first." (D2184 Q10);
@@ -675,7 +838,8 @@ against its fix read's fault; the fix read reads each.
   archived admin × a first admin moving into his new squadron × a new squadron whose first admin has a move saved for a
   later date (refused) × a Plan sign-in re-linked to a member at home there (not counted).
 - The door's words equal the gate's code for every door: Suspend, Demote, Archive, Delete, Undo of an account step,
-  `removeGrant`, `setGrant` lowering, `addUnit`, `setHome`, and a posting.
+  `removeGrant`, `setGrant` lowering, `addUnit`, `setHome`, the re-link (its drop taking a squadron's only Plan), and a
+  posting.
 - Undo and Redo of "+ New squadron" and of `addUnit`'s first-admin right.
 - **Setup-only test changes** (a ruling now refuses what they set up), §9.2: 15 `addUnit('150','p1')` calls in six test
   files, and the R2, R3 and R4 proofs. Each names a bystander first admin. The host checks that no assertion moved.
@@ -730,7 +894,11 @@ against its fix read's fault; the fix read reads each.
   passes only where it removes and changes nothing else — a delete, or a list whose every surviving entry is unchanged.
   Any addition or change there is refused. So a 142 admin's Undo of his own earlier entry on a day now 149's still works,
   from a two-entry cell or of its last entry (Opus L3 of round 1; D148); an Undo that would put leave back on such a day
-  is refused, in words drawn with A1 (§11);
+  is refused, in words drawn with A1 (§11). **Their owner** (Opus 7 of round 3): helper "war" writes the sentence beside
+  its day probe in `leavewar/sync.ts`, which knows the man and his move day; the timeline says it before the apply
+  through its existing `restoreRefusal` hook, one line wired in `state/undo-wire.ts` by helper "undo & roles" once
+  war's change is committed. Until his answer to Q6 the sentence is not written, and the gate's refusal reads as today,
+  "That couldn’t be completed just now.";
 - `sync.ts` gives the gate a probe that reads `(pid, iso)` off a war change; the core writes the gate's half with a probe
   setter in phase 1 — it judges nothing until the probe is installed — and helper "war" installs it with A1, as one
   tested change. So A7 waits on A1's drawing with it (Opus L8). The master question is §12 Q3.
@@ -739,6 +907,17 @@ against its fix read's fault; the fix read reads each.
 1. `runPoOutcomes` first runs the loaded war as now.
 2. Then, for each other squadron, it reads that squadron's stored `profile:` rows only, through `readForeign`, and runs
    each due posting through the pure halves already lifted (`stintClosed`, `personCut`, `keepsWindow`).
+   - **One posting per command** (Opus 2 of round 3): each due foreign posting runs in a command of its own, so one that
+     is refused never rolls back another squadron's. A refused one is **not tried again this session**, as the loaded
+     pass's `PO_REFUSED` does today (`sync.ts` l.2680–2686, l.2883–2893: one retry, then one at a time, then given up
+     for the session); it runs on the next boot, once what refused it is put right. A held one (its reason,
+     `poHeldReason`, still stands) is no refusal: it commits nothing and is tried again by step 5.
+   - **A posting whose man is not at home in that squadron today is skipped by both passes** — the loaded one through
+     today's `atWarHome` (l.1467), the foreign one by his home in the squadron whose war holds it. The gate (step 7) would
+     refuse it; skipped, it is neither run, nor marked done, nor tried again on every command, and nothing is said — as
+     today, where the loaded pass's refusal of such a posting is silent. It runs if he comes back; what a posting set
+     before a move means is the Transfer batch's (batch 4). A1's stints make such postings possible ("a saved posting
+     dated past the move").
 3. **Both halves, as the loaded pass runs them** (Opus H1). The Raptor half runs as now — Overseas: archive and suspend;
    SANS; Delete: `state/person-delete.ts applyDelete`, the Raptor half of a delete (it marks him deleted, drops his
    account, cuts his inputs and, with B1, strips every calendar naming him), as `runPoOutcomes` calls it today
@@ -746,21 +925,45 @@ against its fix read's fault; the fix read reads each.
    `deletePersonOnWar` → `deleteOnForeign` — never the loaded war's `forgetPersonFrom`. Its done mark, `poDone`, goes in
    that squadron's stored profile, in the same command. When that war later loads, its own pass skips the posting: run
    once, never twice.
+   - **It says nothing on screen** (Fable 2, Opus 3 of round 3). The loaded pass tells a held posting by a passing note
+     to whoever is signed in (`tellOnce` → `HOOKS.toast`, `sync.ts` l.2674, l.2770); run from the foreign half, a 142
+     member would read "Kestrel is 149's last admin. The posting waits until 149 has another admin." So the foreign half
+     writes no passing note: a held foreign posting shows only as Admin → Users' held note on that man's row (A6, below),
+     which only that squadron's admins and a master see. One exception, today's words for the man himself: a Delete that
+     removes the signed-in person says "You have been deleted by your posting out — please sign out" (l.2845) — dormant
+     while every own page is his home's.
+   - **Its command type is the loaded pass's own, `lw.postoutRun`** (Fable 6 of round 3). The timeline keeps a posting
+     run out of every person's step by that type alone (`timeline.ts` l.193), and the gate lets the app's own posting
+     run write with no maker by it (`notices.ts APP_ACTS`, l.326); phase 1's gate chain (step 7) admits the second
+     store's rows under the same type. A new type would fold the run into the step that woke it — the master's "make
+     another 149 admin" — and his Undo would carry the archive.
 4. **Only in its own command, and never lost** (Astra 4; D306 — "it runs by itself once the reason goes"). The foreign
    half never runs inside another command; one that would (a Post out, a member's save — `sync.ts` ~2785) leaves it
-   **owed**. Owed work is kept until a foreign run completes; a refused or stopped run leaves it owed.
+   **owed**. Owed work is kept until a foreign run completes; a stopped run leaves it owed; a refused posting is given up
+   for the session (step 2), never retried after every later command.
 5. **When it runs:** at boot; on the midnight wake; and once, coalesced, after any committed command that changes
    accounts, people, homes or rights — what a held posting's reason reads (`poHeldReason` → `lastAdminLock`) — or a
    squadron's stored postings, or leaves work owed. So 149's posting, held at midnight as its last admin's, runs by
    itself the moment the master makes another 149 admin, with 142 loaded and no posting touched. Not on every notify
    (Opus M4 of round 1); it reads other squadrons' stored `profile:` rows only. C10's measure includes it.
-6. **One audience** (Opus M6; D2194, D2214): a posting's bell lines go to `accounts.ts adminsOf(unit, iso)` (core,
-   phase 1) — admin role, switched on, his man at home in that squadron on that day: the set the loaded pass tells today
-   (`ownSchedulerIds`). Both passes call it, so the master and a Plan holder of 149 are told the same whichever pass runs.
+6. **One audience** (Opus M6 of round 2; Astra 3, Fable 5, Opus 8 of round 3; D2194, D2214, D2202, D2198): a posting's
+   bell lines go to `accounts.ts adminsOf(unit, today)` (core, phase 1). **Who:** the accounts that count under §5.2's
+   one rule — admin role, switched on, the man on the roster — that are (a) at home in that squadron today, or (b) not a
+   master and holding Plan of it today by a right (`levelFrom`): D2202 — "while an admin holds Plan of another squadron,
+   his bell carries that squadron's admin lines, on by default", and no switch to turn them off is built yet. A master
+   counts through his home only (D2198: his other squadrons' lines are off by default); a View holder never. Today the
+   loaded pass tells (a) alone (`ownSchedulerIds`, `sync.ts` l.1462), so a squadron whose one admin is a Plan holder at
+   home elsewhere (§5.2 allows it) heard nothing of its postings. **"That day" is the run's day — today — read after the
+   outcomes,** as the loaded pass reads it (l.2853–2859: an admin archived by his own posting is not told). Both passes
+   and the gate call it with the same day, so a pass run late is never refused for reading the posting's date.
+   `ownSchedulerIds`' two other readers — the "off the manpower" line each admin's bell works out (`postedLines`,
+   l.1624) and a posting's take-back lines (l.3317) — are posting lines too and read the same set. D2202's mark of which
+   squadron a line is from is not built (its row: "Not built: filed under [MULTI-SQN-DESIGN]"); nobody holds Plan today,
+   so no bell shows such a line before it is (§11, §14).
 7. **The gate (core, phase 1, before the caller is built):** `postingPassViolation` takes each `lwx.profile` change as a
    posting record too: it must match that squadron's stored posting (a probe reading the stored world of the squadron
    named in the id), the man's home before the pass must be that squadron, and each bell line's reader must be in
-   `adminsOf` for that squadron and day. The loaded war's postings keep today's checks, their readers read the same
+   `adminsOf` for that squadron and **today**. The loaded war's postings keep today's checks, their readers read the same
    way (Fable F3, Astra 4 of round 1).
 
 **The held note (A6):** `postingHeldNote(id)` and `poHeldReason` read the man's own squadron's posting — the loaded war
@@ -768,11 +971,14 @@ when it is his squadron's, else `readForeign` of his home unit.
 
 **A delete reaches every squadron's planning calendar (B1).**
 - **The writer:** the one `plan` record, routed (A-ii — Astra 2, Opus M1). `state/plan-foreign.ts` (new) is its stored
-  half: for a squadron not loaded it reads that squadron's stored calendar fresh for the record's before-image, is
-  enlisted in the command layer so a refused command rolls it back whole, writes on commit to that squadron's stored rows
-  and drops `PLAN_MEM`'s copy, so the next read sees it; a page showing that squadron's calendar re-reads on the
-  commit's notify. No collection of its own, and nothing in `state/persist.ts` (Opus L7 of round 1). Shared with the
-  Inputs calendar of a squadron that is not the pick (A-ii).
+  half: for a squadron not loaded it reads that squadron's stored calendar fresh for the record's before-image — asked to
+  join a command or a restore, it first loads the stored rows of the ids it will write (Opus 4 of round 3), as
+  `foreign.ts`'s `load(pid)` does for its doors — is enlisted in the command layer so a refused command rolls it back
+  whole, writes on commit to that squadron's stored rows and drops `PLAN_MEM`'s copy, so the next read sees it; a page
+  showing that squadron's calendar re-reads on the commit's notify. An Undo or Redo reaches it through the timeline's
+  per-record store (A-ii, helper "undo & roles"), never through the schedule store's write. No collection of its own,
+  and nothing in `state/persist.ts` (Opus L7 of round 1). Shared with the Inputs calendar of a squadron that is not the
+  pick (A-ii).
 - **The strip:** `state/plan.ts stripGoneFrom(unit, pid, cutoff)`, run inside the delete's own command, for his home
   squadron's calendar and any squadron's calendar that names him.
 - **The gate line (core, phase 1):** section 7 lets a delete change another squadron's planning row it holds no admin
@@ -798,10 +1004,17 @@ archive, suspend, delete. Astra found no failure in this choice.
 - A7: on a day now the other squadron's — removing one entry of a two-entry cell, and the last entry, each by a verified
   Undo, allowed; adding or changing an entry, and an Undo putting one back, refused.
 - A5: loaded and foreign postings in one run; the foreign war loading later (run once); repeated runs; a pass joined to
-  another command (the foreign half owed, then run after it); a refused foreign write rolled back whole, the work still
-  owed; a held 149 posting run by itself when the master makes another 149 admin, no posting touched and 149's war never
-  loaded; the bell to `adminsOf` only, the same set from either pass; a foreign Delete: the man marked deleted, his
-  account gone, his war half through the foreign war, and the done mark written only with both.
+  another command (the foreign half owed, then run after it); a refused foreign write rolled back whole; a held 149
+  posting run by itself when the master makes another 149 admin, no posting touched and 149's war never loaded; a
+  foreign Delete: the man marked deleted, his account gone, his war half through the foreign war, and the done mark
+  written only with both. **Round 3:** two squadrons' due postings with one bad one (Viper's 149 posting, Viper moved to
+  142): the others run, each in its own command; the bad one skipped by both passes, never retried after later commands
+  (Opus 2); a refused foreign posting not tried again this session, run on the next boot; a held foreign posting — a 142
+  member sees no passing note, the master's Admin → Users shows the held note (Fable 2, Opus 3); the run's type is
+  `lw.postoutRun`, so the master's Undo after the held posting ran takes back only his "make another admin" (Fable 6);
+  the audience — a home admin, a non-master Plan holder (told), a View holder, an unrelated admin and a master at home
+  elsewhere (not told), from either pass and at the gate, with a pass run days after its posting's date (Astra 3,
+  Fable 5, Opus 8).
 - B1: the master's case; an ordinary admin's case (Ranger moved 149 → 142, still on a future 149 note, deleted by 142's
   admin); a refused delete leaves the other calendar untouched, stored and cached; a reload; editing the cleaned note
   afterwards; a forged delete that changes anything else of the row refused.
@@ -814,8 +1027,10 @@ archive, suspend, delete. Astra found no failure in this choice.
   - a 149 posting on a day only Saber signs in;
   - the master's Admin → Users held note, then another 149 admin made: the posting runs with no other step;
   - a delete with the other squadron's calendar naming him.
-- **Readers:** run-once, both halves of a foreign Delete, owed work never lost, rollback, the audience of each line, the
-  pass's gate chain, the planning gate line, the war line's contents rule, and that no stint reaches a saved row.
+- **Readers:** run-once, both halves of a foreign Delete, owed work never lost, one posting per command and a refused
+  one given up, a moved man's posting skipped by both passes, nothing said by the foreign half, the run's type, rollback,
+  the audience of each line and its day, the pass's gate chain, the planning gate line and the stored half's load before
+  it joins, the war line's contents rule, and that no stint reaches a saved row.
 
 ### 6.6 Files
 - **Helper "war":** `leavewar/sync.ts`, `leavewar/state/store.ts`, `leavewar/state/raptorRoster.ts`,
@@ -891,8 +1106,9 @@ measures, not gates.
 - `holidays-by-place.test.ts`: the one assertion rewrite under a ruling he gave (§7, A4, D2195).
 
 ### 9.3 Existing tests rewritten to a ruling's outcome
-- **§4.5's seven**, under Piece B's cut: each sets up a right standing across a move (D2203 forbids it) or reads the right
-  on the save day (his Q4). Named there, with what each keeps.
+- **§4.5's fourteen**, under Piece B's cut and its two guardrails: each sets up a right standing across a move (D2203
+  forbids it), reads the right on the save day (his Q4), or pins a right put back after its man's move or left standing
+  by a re-link (a build choice no ruling names). Named there, with what each keeps.
 - **Anything else that turns red** is understood before it is touched. A test that pins only a way of doing something
   no ruling requires is rewritten to pin the ruling's outcome. Each such test is named in the report and read by the fix
   read. None is deleted.
@@ -923,14 +1139,14 @@ in phase 2 and for Q8's words in phase 3.
 | Phase | Who | What | Files |
 |---|---|---|---|
 | 0 | core | Piece 0: shared world with its midnight helper, C9, behaviour guard (green rows) | `test-support/msq-world.ts`, `testing/enumguard.ts`, guard tests, `state/msq-move-readers.test.ts` |
-| 1 | core | **Piece A's bodies (expand):** home handle with `changesIn` and the per-person index, `stintsIn`; `inputSpanIso`, `inputSquadrons`, `inputOnDay`, `inputTouches`, `inputsListed`; `pageUnit`, `unitSetting`; `membersFileOn` (B4); 7c, `filerUnits`, `inputUnit`, `movedSince`/`homesOver`/`noticeLeftBell`/`restoredDayHolds` on the one body; `inputsFor` kept as a thin alias, defaults kept. **The halves later jobs build on:** the pass's gate chain for another squadron's postings and `adminsOf`; the planning gate line; 7b's war-day contents line with its probe setter; `inputWhoProblem`, 7c's who-rule lifted (C6) | `units-model.ts`, `units.ts`, `engine/roster.ts`, `engine/inputs.ts`, `engine/hooks.ts`, `perms.ts`, `notices.ts`, `accounts.ts` |
-| 2 | core | **Piece B** (after his Q4, or as recommended if it has not come — §12): the reading rule with `pidFrom` required and every hand-built account; the re-link's who and drop; "an ended right never comes back" at the gate and `restoreLeavesOut`; "moves tomorrow" for gives and raises; G4 and l.1999 on holding rights. **Then Piece C** (C's counting reads B's rule), a new squadron judged on every date | `units-model.ts`, `units.ts`, `perms.ts`, `notices.ts`, `accounts.ts`, `lastadmin.ts` (new) |
+| 1 | core | **Piece A's bodies (expand):** home handle with `changesIn` and the per-person index, `stintsIn`; `inputSpanIso`, `inputSquadrons`, `inputOnDay`, `inputTouches`, `inputsListed`; `pageUnit`, `unitSetting`; `membersFileOn` (B4); 7c, `filerUnits`, `inputUnit`, `movedSince`/`homesOver`/`noticeLeftBell`/`restoredDayHolds` on the one body; `inputsFor` kept as a thin alias, defaults kept. **The halves later jobs build on:** the pass's gate chain for another squadron's postings and `adminsOf` (home admins and non-master Plan holders, today — §6.2 step 6); the planning gate line; 7b's war-day contents line with its probe setter; `inputWhoProblem`, 7c's who-rule lifted (C6) | `units-model.ts`, `units.ts`, `engine/roster.ts`, `engine/inputs.ts`, `engine/hooks.ts`, `perms.ts`, `notices.ts`, `accounts.ts` |
+| 2 | core | **Piece B** (after his Q4, or as recommended if it has not come — §12): the reading rule with `pidFrom` required and every hand-built account; **guardrail 1:** the re-link's who, its drop of every right, the re-link line at the gate, the body that finds a right standing on a re-linked sign-in; **guardrail 2:** `restoreLeavesOut` (with the step's recorded holders and the row as it stood when taken off) and the gate's before/after rule asking it, with `restoreLeavesOut`'s own table tests; "moves tomorrow" for gives and raises; G4 and l.1999 on holding rights. **Then Piece C** (C's counting reads B's rule), a new squadron judged on every date, the re-link's door asking it with its drop | `units-model.ts`, `units.ts`, `perms.ts`, `notices.ts`, `accounts.ts`, `lastadmin.ts` (new) |
 | 2, at once | helper "schedule" | A-i callers on the schedule side, C4, C6's whole-draft picker and save door (on phase 1's `inputWhoProblem`), C5's slot, C8, the landing callers renamed (first day), `editlog.ts` | §3.6's list |
-| 2, at once | helper "own pages" | the own-page setting inventory first (read only; each line to its file's owner — A-ii), A-ii callers, C2, C11, the setting reads and writes in its files; **last**, once "session"'s routed planning writer is committed, the Inputs calendar's notes, titles and edits by the page's squadron | §3.6's list |
-| 2, at once | helper "war" | A1 (stints apart from postings) with A7's probe, one tested change; A5's caller (on phase 1's gate chain): both halves of a foreign Delete, owed work, the coalesced run after accounts, people, homes or rights change, `adminsOf` for both passes; A6; `oilOpenOn` by day and the named today readers; the flying plan's calls the inventory names | `leavewar/sync.ts`, `leavewar/state/store.ts`, `raptorRoster.ts`, `foreign.ts` |
-| 2, at once | helper "session" | the Tracker's load path read first; the routed `plan` writer (`sched-commit.ts`'s `plan` case and its stored half), then B1's strip; `store.ts`'s input callers (first day, F4); `enterSquadron` with its band slot, the pick rule and the Tracker rebind, **the midnight trigger off**, its hold answering "none" | `boot.ts`, `state/store.ts`, `state/sched-commit.ts`, `tracker/storage.js`, `tracker/TrackerPage.tsx`, Tracker load files, `state/plan.ts`, `state/plan-foreign.ts` (new), `state/person-delete.ts` |
-| 2, at once | helper "undo & roles" | **A-v first** (the stamp, the squadron-qualified key in `commit.ts` and the timeline, eligibility), then K4 + B5, then — once the core's Piece B is committed — the leave-out wired into the timeline's hook | `state/undo-wire.ts`, `undo/timeline.ts`, `undo/derive.ts`, `command/commit.ts`, §7's K4 files (`state/persist.ts`, `state/changelines.ts` among them) |
-| 3 | core | **Contract:** remove the defaults (with `levelIn`, `levelOfAccount`) and `inputsFor`'s no-day form; the date check in development (A-i); the compiler lists stragglers (each in a helper's file goes back to it, by then finished). R6. A4. The answers as they come. Docs: `data-model.md` §11 (`UnitGrant`'s rule: holds while its man stays in his squadron, one holding per account, squadron and day, an ended one never back; `home.set` writes no right — Fable F11; the re-link's who), `data-schema.md` (an input's `u` if C3 is answered so; no grant field changes), `file-map.md` (new files), `feature-impact.md` (the new seams: `enterSquadron`, `pageUnit`, the stamp and the squadron-qualified key on Undo, the routed planning record, `inputWhoProblem`), `notifications-register.md` (A5's lines to the man's own squadron's admins) | core files, `leavewar/sync.ts`, `leavewar/state/store.ts` and `ui/oilday.ts` (A4), docs |
+| 2, at once | helper "own pages" | the own-page setting inventory first (read only; each line to its file's owner — A-ii), A-ii callers, C2, C11, the setting reads and writes in its files; **last**, once "session"'s routed planning writer and "undo & roles"' per-record store are committed, the Inputs calendar's notes, titles and edits by the page's squadron | §3.6's list |
+| 2, at once | helper "war" | A1 (stints apart from postings) with A7's probe, one tested change; A5's caller (on phase 1's gate chain): both halves of a foreign Delete, owed work, the coalesced run after accounts, people, homes or rights change, one posting per command and a refused one given up for the session, a moved man's posting skipped by both passes, no passing note from the foreign half, the run typed `lw.postoutRun`, `adminsOf` with today for both passes and `ownSchedulerIds`' other readers; A7's Undo sentence beside its probe, once Q6 is answered; A6; `oilOpenOn` by day and the named today readers; the flying plan's calls the inventory names | `leavewar/sync.ts`, `leavewar/state/store.ts`, `raptorRoster.ts`, `foreign.ts` |
+| 2, at once | helper "session" | the Tracker's load path read first; the routed `plan` writer (`sched-commit.ts`'s `plan` case and its stored half, which loads the ids it will write before it joins), then B1's strip; `store.ts`'s input callers (first day, F4); `enterSquadron` with its band slot, the pick rule and the Tracker rebind, **the midnight trigger off**, its hold answering "none" | `boot.ts`, `state/store.ts`, `state/sched-commit.ts`, `tracker/storage.js`, `tracker/TrackerPage.tsx`, Tracker load files, `state/plan.ts`, `state/plan-foreign.ts` (new), `state/person-delete.ts` |
+| 2, at once | helper "undo & roles" | **A-v first** (the stamp, the squadron-qualified key in `commit.ts` and the timeline — `lwx.profile`, `lwx.ledger` and `lwx.rec` keyed as the war's own records — `verifiedWarRestore` and `carrySeen` on it, eligibility, a step in a world he can no longer enter blocked for good), then K4 + B5; then — once "session" commits the stored half — the timeline's per-record store for the planning record, with its two-direction tests; then — once the core's Piece B is committed — the leave-out wired into the timeline's hook, the holders recorded on each step, the gate's probe, a step the leave-out empties and a re-link's standing right, each blocked for good, with §4.4's re-link and guardrail-2 tests through the real timeline; then — once "war" commits A7's sentence — its one `restoreRefusal` line | `state/undo-wire.ts`, `undo/timeline.ts`, `undo/derive.ts`, `command/commit.ts`, §7's K4 files (`state/persist.ts`, `state/changelines.ts` among them) |
+| 3 | core | **Contract:** remove the defaults (with `levelIn`, `levelOfAccount`) and `inputsFor`'s no-day form; the date check in development (A-i); the compiler lists stragglers (each in a helper's file goes back to it, by then finished). R6. A4. The answers as they come. Docs: `data-model.md` §11 (`UnitGrant`'s rule: holds while its man stays in his squadron, one holding per account, squadron and day, an ended one never back, none put back by a restore after its man's move; `home.set` writes no right — Fable F11; the re-link's who, and its drop of every right — guardrail 1), `data-schema.md` (an input's `u` if C3 is answered so; no grant field changes), `file-map.md` (new files), `feature-impact.md` (the new seams: `enterSquadron`, `pageUnit`, the stamp and the squadron-qualified key on Undo, the routed planning record, `inputWhoProblem`), `notifications-register.md` (A5's lines to the man's own squadron's admins and its Plan holders, D2202; the foreign half's held posting said only by Admin → Users' note) | core files, `leavewar/sync.ts`, `leavewar/state/store.ts` and `ui/oilday.ts` (A4), docs |
 | 3 | helper "session" | **the midnight swap switched on**, once "undo & roles" has merged: A2's proof and the Undo-across-the-swap tests red first; the hold on an open window; the band built once his Q7 is answered | `state/store.ts`, `state/typing-hold.ts` (new), `leavewar/ui/Sheet.tsx`, `tracker/components/Pop.jsx`, `Modals.jsx` |
 | 3 | helper "schedule" | Q8's sentence, once he has answered | `ui/InputWindow.tsx`, `ui/inputedit.tsx` |
 | 4 | host | Whole gate run; the combined four-reader fix read, blind; fixes red first; re-walk what the fixes touched; evidence sheet; his look | — |
@@ -938,16 +1154,36 @@ in phase 2 and for Q8's words in phase 3.
 - **No two jobs built at once share a file.** Phase 2's helpers start only once phase 1 is committed, because they call
   its bodies and gate halves. The core builder's phase 2 runs beside them.
 - **Ordered inside phase 2:** "own pages" wires the Inputs calendar only after "session" commits the routed planning
-  writer; "undo & roles" builds A-v before K4 + B5, and wires the leave-out only after the core commits Piece B; "war"
-  builds A5's caller on phase 1's gate chain, and A1 with A7's probe as one tested change (Astra's order note of round
-  1). No phase-3 job shares a file with another: the core's A4 files, session's band files and schedule's window files
-  are disjoint.
+  writer and "undo & roles" its per-record store; "undo & roles" builds A-v before K4 + B5, its per-record store only
+  after "session" commits the stored half, its Piece B lines only after the core commits Piece B, and A7's
+  `restoreRefusal` line only after "war" commits the sentence; "war" builds A5's caller on phase 1's gate chain, and A1
+  with A7's probe as one tested change (Astra's order note of round 1). No phase-3 job shares a file with another: the
+  core's A4 files, session's band files and schedule's window files are disjoint.
+- **Tests that rest on two jobs — who writes each, and when** (Fable 8, Opus 7 of round 3). A test is committed green by
+  the job that makes it pass, never red by one waiting on another:
+  - §4.4's re-link and guardrail-2 tests through the real Undo (core's Piece B + the leave-out's wiring): helper "undo &
+    roles", at the commit that wires the leave-out; the core's phase-2 commit carries only the pure body's table and the
+    gate's own tests, which need no wiring.
+  - §3.4's planning-calendar Undo in both directions (session's stored half + undo & roles' per-record store): helper
+    "undo & roles", at the per-record store's commit; the same through the Inputs calendar's page, helper "own pages" at
+    its last commit.
+  - A-v's "a 149 posting, then Kestrel's Undo of setting it: refused as a later change": helper "undo & roles", through
+    an Admin → Users door, which exists today (Opus 7); the same with the foreign pass running the posting (undo & roles
+    + war's A5): the host, at merge.
+  - A5's "a foreign Delete strips every calendar naming him" (war's foreign Delete + session's B1 strip): the host, at
+    merge, after both.
+  - A7's Undo sentence through the top bar's Undo (war's sentence + undo & roles' wiring): helper "undo & roles", at
+    its wiring commit.
+  - The midnight swap's Undo tests (session's switch + undo & roles' A-v): helper "session" in phase 3, as now.
+  The host's merge tests are written and run on the branch that holds every phase-2 job, before phase 4's fix read, and
+  named in the evidence sheet.
 - **Merge order:** the core first, then each helper in turn, each bringing the core in before its own tests run.
 - **Unsure, found out at the start:**
   - Whether helpers can each work in a worktree of their own (the Agent tool's worktree), given the "one checkout per
     session" guard. A trial write settles it.
   - If not, the helpers run one after another in the one checkout, still on disjoint files, the host committing between
-    them, in this order: undo & roles, session, war, schedule, own pages.
+    them, in this order: undo & roles (A-v, K4 + B5), session, war, undo & roles again (the per-record store, Piece B's
+    lines, A7's line), schedule, own pages.
 - The gate lock (D228) holds for every full suite, multi-file browser run or fanned walk.
 
 ## 11. What a person sees — none of it new, except where named
@@ -958,11 +1194,13 @@ in phase 2 and for Q8's words in phase 3.
 | A7 | On 142's Leave War, Ranger's days from Thu 16 Jul take no new leave: they read as a posted-out man's days do today (the "away" look, no bids, a range skipping them) — no new words there. New: Prowler's Undo that would put Ranger's leave back on Fri 17 Jul in 142's war is refused, proposed "Ranger is 149's from Thu 16 Jul, so this can't go back into 142's Leave War." | Drawn with A1's drawing (§12 Q6); built with A1, so it waits with it. Until then Undo's existing "That couldn't be completed just now." |
 | A2's band | Ranger has a Leave War window open at 23:58 on Wed 15 Jul; his move to 149 counts from Thu 16 Jul. At midnight the window stays, with one band across its top — proposed "You are 149's from today. This can't be saved in 142's Leave War." — and one button, "Close", which opens 149's Leave War. A Tracker pop-up open: the same, "…in 142's Tracker." | **A drawing first (D1625)**, desktop and iPhone; the words his, §12 Q7. Until then the page waits for the window to close, without the band |
 | C6, C1 across a move | Ranger is 149's from Thu 16 Jul. Prowler, 142's admin, files leave for him on Tue 14 Jul, then stretches it to Fri 17 Jul and taps Save: the window stays open and the app's passing note says, proposed, "Ranger is 149's from Thu 16 Jul. Only a master or Ranger can change leave that runs across his move." The same when Kestrel, 149's admin, saves a change to that leave from 149's Inputs list (C1 now shows it there). The picker already leaves Ranger out of a 14–17 Jul draft of Prowler's | **A drawing first (D1625)**, desktop and iPhone; §12 Q8. Until then the save door refuses with today's generic words |
-| A2 | A page left open across midnight of his own move shows his new squadron's schedule, war and Tracker | No new element. Named so he knows |
+| A2 | A page left open across midnight of his own move shows his new squadron's schedule, war and Tracker. If a step he can still undo shares a record with one left in his old squadron's war (Osprey's leave filed at 23:30, then moved in 142's Leave War at 23:50), his Undo says once today's "A later change touches the same thing and can’t be undone." and the next press takes the step before it — never "undo that first" again and again | No new element; today's words (Fable 4 of round 3). Named so he knows |
 | B3 | Suspend, Demote, Archive or Delete of a last admin with a move saved: the approved sentence where "That did not save" stood | Built to picture 9b (D2217 Q15); drawing check (D1494) |
 | A4 | 149 stops showing 142's holidays (the fault going away); the warning names only its own days, in the words he gave | The words are his, verbatim (D2207). The agent's reading: no drawing, as nothing new is drawn — the readers may disagree |
-| C1, C2, C4, C6, C11, B1, A5, A6 | Lists and counts correct themselves; a 149 posting runs on its day, and a held one runs by itself once 149 has another admin; a held note shows for a 149 man on the master's Admin → Users (the existing look) | Faults going away |
+| C1, C2, C4, C6, C11, B1, A5, A6 | Lists and counts correct themselves; a 149 posting runs on its day, and a held one runs by itself once 149 has another admin; a held note shows for a 149 man on the master's Admin → Users (the existing look). No passing note about another squadron's held posting reaches anyone — a 142 member never reads that 149's admin is its last (Fable 2, Opus 3 of round 3) | Faults going away |
 | R2–R5, K1, B6, B4, K4/B5, C8, C9, R6, A-v, the Inputs calendar's squadron, the re-link's who | Nothing today — no screen saves a move, a place, a right or a squadron yet, and no screen picks another squadron. A step left in a squadron he can no longer enter is passed over by Undo, as a step in another squadron is today | — |
+| The two guardrails (§4.3) | Nothing today: no screen gives or takes View or Plan, and outside the tests nobody holds one, so a re-link on Admin → Users has nothing to drop. Once one can: a re-link takes the sign-in's View and Plan away, and its Undo gives the sign-in back without them; an Undo of a right's removal or lowering after its man's move puts nothing back and says "Something else changed this after your action — it can’t be undone now."; an Undo of a re-link while a right given since stands says "‹callsign› changed this after your action — it can’t be undone now." | Today's words, no new element. Whether Admin → Users' re-link should say first what it takes away is a new thing on screen — drawn when a screen first gives a right, not here (§14) |
+| A5's audience (§6.2 step 6) | Nothing today: nobody holds Plan. Once one can, a Plan holder's bell carries that squadron's posting lines, as D2202 rules | D2202's mark of which squadron a line is from is drawn and built before any screen gives Plan (its row, [MULTI-SQN-DESIGN]) |
 
 ## 12. His questions — where each answer plugs in, and what happens until then
 
@@ -1057,7 +1295,8 @@ Q8 are drawings shown before their part is built.
   - Admin → Users with its locks and the re-link — by the master and by a plain admin, each then Undo and Redo.
 - **Midnight:** the clock moved to 23:58 the day before his move, then past midnight with (a) nothing open, (b) a Leave
   War window open, (c) a Tracker pop-up open; then Undo pressed (his old squadron's step is passed over, his leave filed
-  at 23:50 is taken). Desktop and iPhone.
+  at 23:50 is taken; a leave filed at 23:30 and moved in the old Leave War at 23:50 is said blocked once, in today's
+  words, and the next press goes on — Fable 4 of round 3). Desktop and iPhone.
 - **R1's owed walk:** a member's refused bid shows no Move (evidence sheet §Fix read 17).
 - **Each piece's own walks:** §3.5, §4.6, §5.5, §6.5.
 - **Sizing:** by `walk-ledger.md` at build time; FULL tier.
@@ -1077,7 +1316,18 @@ Q8 are drawings shown before their part is built.
    first-day answer; no reader found a fault in it.
 6. **Who may re-link a sign-in that holds only ended rights** (§4.3): the agent's reading of D2191, D2192 and D2199 — an
    ended right gives nothing in its squadron, so dropping it is no act for that squadron, and the man's own admin may
-   re-link. Told to him with item 1.
+   re-link. One that holds a right in a squadron he is no admin of stays a master's: under guardrail 1 the re-link drops
+   it, a removal in that squadron. Told to him with item 1.
+7. **The two guardrails' cost** (§4.3, the host's decisions after round 3 — technical, nobody can see either today):
+   an Undo of a mistaken re-link gives the sign-in back without its View and Plan of other squadrons; an Undo of a
+   right's removal or lowering after its man's move puts nothing back — what D2203 would have left anyway. In each, the
+   right is given again by whoever may give it. Told to him with item 1, in those words.
+8. **The master mark is outside guardrail 1** — the agent's reading: it is no right (§4.5's reading of D2203), and a
+   master's account is changed only by a master (D2205), who may make another master; a re-link of a master's account
+   keeps today's rule (the mark moves, dated that day — fix read 10's F10-3, unchanged). Told to him with item 1.
+9. **What a person sees once a screen gives View or Plan** — not built here, each a later job's: whether Admin →
+   Users' re-link says first that it takes the sign-in's View and Plan away (a new thing on screen, drawn first, D1625),
+   and D2202's mark of which squadron a bell line is from, which a Plan holder's posting lines need (§11).
 
 ## 15. What this plan does not take from the readers' "shape" sections, and why
 
@@ -1085,8 +1335,9 @@ Q8 are drawings shown before their part is built.
   saved-data reading" for the database step, which replaces it. `foreign.ts` stays the one way to reach a war that is
   not loaded, and the posting pass goes through it.
 - **Bell lines settled when written, and the re-dating hooks retired** (Fable B 5, Opus B 3, core Opus 3): not in the
-  35. Under Piece B's cut the hooks serve only a right removed and undone, and the master mark; they still carry fix
-  reads 7–12's pinned cases. Filed as a follow-up to propose after the fix read, not done inside it.
+  35. Under Piece B's cut and its two guardrails the hooks serve only a right removed and undone with no move since, a
+  level put back, the link's day and the master mark; they still carry fix reads 7–12's pinned cases. Filed as a
+  follow-up to propose after the fix read, not done inside it.
 - **The gate reading only the saved copy** (security core shape 1): that is K2/K3, held for the database step.
 - **Every change carrying its squadron as a required field** (security core shape 2): K4 does it for the blue/red
   answers, the one collection among the 35 that lacked it; A-v stamps the Leave War's and the Tracker's steps and keys
@@ -1166,3 +1417,32 @@ it was folded in; the line it rests on is named. Nothing was left out.
 | Opus L7 | A4 omits `leavewar/state/store.ts`; B4's inventory reaches other helpers' files | **Taken** — §7 A4's files; A-ii: the inventory read only, each line to its file's owner, a changed reader keeping its old form until the contract |
 | Opus L8 | A7 missing from §11; its timing is A1's, not Q3's alone | **Taken** — §11 row; §1 and §6.2 say it waits with A1 |
 | Opus L9 | Rights' start dates keep their own check | **Taken** — §4.3 "A deliberate split, said plainly" |
+
+## 18. Round 3's findings and what the plan did
+
+Readers: Astra (1–3), Fable (1–8), the fresh Opus reader (1–8), each blind, on the copy at `de5de891d`. Round 3 was the
+last plan read (D70's cap of about three); the build's combined four-reader fix read takes what is left. Each claim was
+checked in the code before it was folded in; the line it rests on is named. The re-link and the Undo of a right had drawn
+findings in every round, so in place of a fourth patch the host made two technical decisions — the two guardrails, §4.3
+— which close the first two rows by construction. Nothing was left out.
+
+| Reader, id | Found | What the plan did |
+|---|---|---|
+| Astra 1, Fable 7 | Removal → move → Undo (the right back, dated today) → Redo → Undo: the omission reads the row's first start, so the last Undo drops a right its Redo took; and an Undo of a lowering after the move re-dates the stored row as a giving (`grantBackHolds` false → today, `perms.ts` l.1719) | **Taken another way — guardrail 2** (§4.3): no restore puts back a right whose man has changed squadron since its start, judged from the row as it stood when taken off (`stoodBefore` after an earlier restore), with the account's man and link day recorded on the step. An Undo or Redo after the move puts nothing back, in every order — so no "legitimately restored" right exists to drop. A step the leave-out empties is blocked for good in today's words, "Something else changed this after your action — it can’t be undone now." The cost said plainly: what D2203 would have left anyway. Astra's "pass the actual prior image" is kept as the "as it stood" reading; tests §4.4; existing tests 8–13 of §4.5 |
+| Astra 2, Fable 1, Opus 1 | A right that still held at the re-link followed the account; a later move of either man then makes its Undo or Redo revive it (`restoreRedated` re-dates the link, l.1734) or the gate refuse it — the step never wrote that grant row | **Taken another way — guardrail 1** (§4.3): a sign-in linked to another person carries no access to other squadrons — the re-link drops every right, holding or ended; a new gate line refuses any command (a restore too) that changes an account's man and leaves a right of that account stored; Undo and Redo restore the link only. With no right ever carried, all three readers' sequences have nothing to revive. "Rights that still hold follow the account" was fix read 10's build choice (fault D), checked: no ruling names it. Astra's and Fable's "run the drop again inside the restore" not taken: the only rows a restore could meet are rights given **since** the re-link, by someone; removing them would undo another's change (D148), so the step is blocked for good in D148's own words naming who. The cost said plainly: the sign-in comes back without its other-squadron access. **Who may re-link** (the host's question): kept as it stands — the drop of a holding right is a removal in its squadron (D2191, D2192), and without the line a re-link away and back would strip it; the door's words still read true |
+| Astra 3 | A squadron whose only admin is a Plan holder at home elsewhere (§5.2 allows it) is told nothing of its postings: the audience was home admins only | **Taken** — §6.2 step 6: `adminsOf` = §5.2's who-counts, at home today or a non-master Plan holder today (D2202, checked in its full row: "his bell carries that squadron's admin lines, on by default"); a master through his home only (D2198); View holders never; both passes and the gate; a test of each kind. D2202's squadron mark is not built (§11, §14 item 9) |
+| Fable 2, Opus 3 | A held foreign posting's passing note (`tellOnce` → `HOOKS.toast`, `sync.ts` l.2674, l.2770) would tell a 142 member about 149's last admin | **Taken** — §6.2 step 3: the foreign half says nothing; Admin → Users' held note (A6) alone; the signed-in man's own deletion line kept; a test; §11 |
+| Fable 3, Opus 4 | The routed planning record has no safe path through Undo when its squadron is not loaded: the timeline maps a collection to one store (`timeline.ts` l.125–127) and enlists only it (l.807–812, l.849); the stored half changes un-enlisted (`commit.ts` guardCheck throws) with no before-image — an edit saved as "created", its Undo deleting the note | **Taken** — §3.2 A-ii, §6.2 B1: the timeline picks the store per record; the stored half loads the ids it will write before it joins a command or a restore; helper "undo & roles" after "session"; tests in both directions, a refused restore leaving stored and cached copies untouched (§3.4) |
+| Fable 4 | A-v's "it never blocks a step in his new squadron" is false: a war door writes an input and a war record in one step (`doorMoveApproved`), and `undoConflictOf`/`redoConflictOf` (l.726–780) judge every later step sharing a key whatever its squadron — "undo that first" about a step he can never reach, on every press | **Taken** — §3.2 A-v: a step sharing a key whose world he can no longer enter makes the other blocked for good, in today's sticky words; a master or Plan holder who can go back keeps "undo that first"; a test; §11 A2's row; §13's midnight walk |
+| Fable 5, Opus 8 | "That day" in `adminsOf` unnamed: a gate reading the posting's date and a pass reading today would refuse a late pass for good | **Taken** — §6.2 steps 6–7: the run's day, today, read after the outcomes (as `sync.ts` l.2853–2859), in both passes and the gate; a test with a pass run days late |
+| Fable 6 | The foreign run's command type unnamed; the timeline keeps a posting run out of a person's step only by `lw.postoutRun` (`timeline.ts` l.193) | **Taken** — §6.2 step 3: it is `lw.postoutRun`; a test of the master's Undo after the held posting ran |
+| Fable 8, Opus 7 | §10's tests resting on two jobs built at once have no writer (Piece B's Undo tests need the leave-out's wiring; A5's foreign Delete strip needs B1; A-v's foreign-pass test needs A5); A7's refusal words have no file owner | **Taken** — §10 "Tests that rest on two jobs": each named with its writer and commit, the two that need war and session or war and undo & roles written by the host at merge; A-v's test through an Admin → Users door, which exists today (Opus's own fix). A7's sentence: helper "war" beside its probe, said through the timeline's existing `restoreRefusal` hook by helper "undo & roles" (§6.2) |
+| Opus 2 | One bad foreign posting (its man moved out of that squadron) refuses the whole foreign run and is retried after every later command; the loaded pass guards itself today (`PO_RETRIED`, `PO_REFUSED`, `sync.ts` l.2680–2686, l.2883–2893) | **Taken** — §6.2 step 2: one posting per command; a refused one given up for the session; a posting whose man is not at home in that squadron skipped by both passes (the loaded one through `atWarHome`, l.1467), silently, as today's refusal is; tests |
+| Opus 5 | `lwx.ledger/<u>@<id>` and `lwx.rec` are the loaded war's ledger and cell rows under another identity (`foreign.ts` l.16–17; `rows.ts` l.123–133): the master's Undo of clearing Viper's award after deleting Viper writes the award back | **Taken** — §3.2 A-v: both keyed as the war's own records (a `lwx.rec` row as the cell holding it, its man and day from its image); the sequence tested |
+| Opus 6 | `verifiedWarRestore` (l.613–628) and `carrySeen` (l.233–246) compare by the Undo key; the stamp is empty with no world door (`perms.ts lwUnitNow`, l.1457), so old tests never reach the qualified path | **Taken** — §3.2 A-v: both named, on the qualified key; D1263's closed-day Undo and the seen mark tested in the two-squadron world |
+| Found while checking (guardrail 2) | A removal, a re-link of that sign-in the same day, then the removal's Undo: the link day alone cannot tell the two acts apart, so the right would land on the new man's sign-in | **Taken** — §4.3: the step records its rows' account's man and link day as it is recorded, as `closedAt` is kept (`timeline.ts` l.326–348); a test |
+| Found while checking (guardrail 1) | The re-link's drop can take a squadron's only Plan holder; the re-link door's `lockProblem` (`accounts.ts` l.508) reads the accounts list alone | **Taken** — §5.2: the re-link's door asks the one last-admin body with its drop in the draft; §5.4's words row |
+| Found while checking (guardrail 2) | A restore the leave-out empties would commit nothing and still say "Undid: …" (`describe.ts bubbleText`) | **Taken** — §4.3: blocked for good, in today's words; nothing committed |
+| Found while checking (§4.5) | `multi-sqn-fixread10.test.ts` l.392 holds Plan across a move and expects its Redo to put back 13 Jul — already red under round 2's rule, missed by round 2's list | **Taken** — §4.5 test 9, rewritten as tests 5–6 are; with tests 8, 10–14 (the guardrails), §4.5 now names fourteen |
+| Found while checking (step 6) | `ownSchedulerIds` has two other readers, both posting lines (`sync.ts` l.1624, l.3317) | **Taken** — §6.2 step 6: they read the same set |
+| Found while checking (§14) | The master mark rides a re-link today (fix read 10's F10-3) | **Not changed** — the agent's reading, §14 item 8: no right (D2203's reading), a master's alone (D2205); told to him |
