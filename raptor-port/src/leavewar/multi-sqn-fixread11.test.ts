@@ -15,7 +15,7 @@ import { deriveActor } from '../command/actor'
 import { memoryBackend } from '../leavewar/state/storage'
 import { projectPeople } from '../leavewar/state/raptorRoster'
 import { wireLeaveWarSync, setWarWorldDoor, postOut, undoPostOut } from '../leavewar/sync'
-import { unitsLoad, setGrant, removeGrant, addUnit, homeOn, unitRows } from '../state/units'
+import { unitsLoad, setGrant, removeGrant, addUnit, homeOn, unitRows, grantOfOn } from '../state/units'
 import { HOME_PFX } from '../state/units-model'
 import { INPUTS, onlyNamed } from '../engine/inputs'
 import { NOTICES, noticesFor, noticeLeftBell, noticeHoliday, noticeWar, noticePosting, noticeAboutHim, type Notice } from '../state/notices'
@@ -624,22 +624,21 @@ describe('fault G — three Undo cases keep the line the man kept (F11-5a, F11-5
     const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
     expect(hunterAcct().masterFrom).toBe('2026-07-15')
   })
-  it('(Fable F11-5b) Plan of 149 from 13 Jul, told as filer 15 Jul, moved to 150 on 16 Jul; on 17 Jul Plan set to View and undone: the line comes back', () => {
+  /* (§4.5 of the reshape plan, rewrite 6 — as rewrite 5 in fix read 10: what it tests kept, an Undo of a right's lowering
+     with no move since it began puts it back at its level with its OWN day; the Plan given after the move, in his new
+     squadron; the old line half spent by D2203/D2243 — a line retires only on a move, and a move now ends the Plan (the
+     agent's reading, chat 127 — named for the fix read)) */
+  it('(Fable F11-5b) moved to 150 on 16 Jul; Plan of 149 from 17 Jul; on 18 Jul set to View and undone: Plan back with its own day', () => {
     on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok).toBe(true)
-    expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
-    on(15)
-    signInAs('ad2', 'a2'); fileFor('osp9', 'prowler')
-    signInAs('ad', 'a'); rmk('changed by Saber on the 15th')
-    const l = lineTo('prowler')!
-    expect(l?.fu).toEqual(['u149'])
     homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']]); on(17)
-    expect(shown('prowler', l.id), 'kept through his move by Plan of 149').toBe(true)
-    signInAs('ad', 'a')
+    signInAs('ad', 'a'); expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
+    on(18); signInAs('ad', 'a')
     expect(setGrant('acad2', 'u149', 'view', 'prowler').ok).toBe(true)
-    expect(shown('prowler', l.id), 'gone with the Plan').toBe(false)
+    expect(levelIn('acad2', 'u149'), 'lowered').toBe('view')
     const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
-    const g = unitRows().grants.find(x => x.account === 'acad2' && x.unit === 'u149')
-    expect({ level: g?.level, from: g?.from, shown: shown('prowler', l.id) }).toEqual({ level: 'admin', from: '2026-07-13', shown: true })
+    unitsLoad()
+    const g = grantOfOn({ id: 'acad2', pid: 'prowler', pidFrom: undefined }, 'u149', '2026-07-18')
+    expect({ level: g?.level, from: g?.from }).toEqual({ level: 'admin', from: '2026-07-17' })
   })
   /* (§4.5 of the reshape plan, rewrite 12 — guardrail 2: no restore puts back a right whose man has moved since its start;
      the Undo puts nothing back, and nothing of 149 holds for him again — Fable 7. Until helper "undo & roles" wires the
