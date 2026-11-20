@@ -178,7 +178,10 @@ the same. C9 is fixed first so the enumeration guards count truly while some 50 
   - `'schedule'` (Edit Schedule, View-only Sched, the Board, Logic) → `UNIT`, the pick.
   - `'own'` (Inputs and its calendar, Medical, the SANS calendar and day, Quals, the OIL answer list, the Leave War, the
     Tracker, Admin → Users) → `UNIT` for a master admin, or for an admin who holds Plan of `UNIT` (D2197, D2201). Anyone else
-    → his home on `iso`. Nobody signed in, or a guest → `BOOT_UNIT`, as today (B2/B7 decide the guest later).
+    → his home on `iso`. Nobody signed in → `BOOT_UNIT`, as today (the guest view is removed — D2239, §8).
+  - **A Plan holder is read on the day** (the Plan audit, D2242): `UNIT` is his only while his Plan of it holds on `iso`
+    (Piece B's `grantOn`); a View holder is never let in by this branch (D2191 — View follows the pick on the schedule
+    pages and Logic only).
 - Today the pick equals everyone's home (`switchUnit` has one caller, sign-in), so `pageUnit` answers exactly what each
   call site answers now. The difference becomes live with step 5's menu (P3): that change is then one place.
 - **Own-page settings (B4):** `engine/hooks.ts unitSetting(unit, name, fallback)` reads `qualify(unit, name)` directly,
@@ -253,7 +256,11 @@ the same. C9 is fixed first so the enumeration guards count truly while some 50 
   the page is shown or focused on a new day, so the swap needs no click (Fable F8, Opus L2). It does **not** reset the
   page or clear the Undo list: his steps in the old squadron wait there, by their stamp (A-v). **The pick at midnight**
   (Fable 9): it moves to his new home only where it stood on his old home; a pick of another squadron stays — a
-  master admin's always — and the own pages follow `pageUnit('own')`. Dormant until step 5's menu.
+  master admin's always — and the own pages follow `pageUnit('own')`. **A pick of a squadron reached by View or Plan
+  stays only where that right still holds on the new day** (the Plan audit, D2242): his own move ends every View and Plan
+  he held (D2203, at the start of his move day — D2243 Q4), so Hunter, 142's admin holding Plan of 149 with 149 picked,
+  whose move to 150 counts at midnight, is moved to 150 — never left on 149's pages with no right there; `pageUnit` reads
+  his Plan on the day, so his own pages go home the same moment. Dormant until step 5's menu.
 - **Switched on only after A-v.** Until every step carries its squadron, an Undo after the swap could write a 142 war or
   Tracker step into 149 (Fable F2, Astra 2). `enterSquadron` is built in phase 2 with the midnight trigger off and
   switched on in phase 3 (§10).
@@ -331,8 +338,8 @@ Astra 2 of round 1; Astra 3, Fable 5 of round 2; D148).**
   and Redo, across the midnight swap and a `switchUnit`, and with the pick different from his own squadron. His 142 war
   step after his move: passed over, blocking nothing in 149. His leave input filed at 23:50: undone after midnight.
   Fable 4's case (round 3): Osprey's 23:30 filing and 23:50 war move, his move at midnight — in 149 the filing's Undo is
-  blocked for good, said once, and the next press takes the step before it; the same steps for a master admin: "undo that
-  first". A 149 posting changed through an Admin → Users door (the second store, which exists today), then Kestrel's Undo
+  blocked for good, said once, and the next press takes the step before it; the same steps for a master admin, or for an admin
+  with Plan of 142: "undo that first". A 149 posting changed through an Admin → Users door (the second store, which exists today), then Kestrel's Undo
   of setting it: refused as a later change (Opus 7 of round 3 — the foreign pass's own version is the host's at merge,
   §10). Opus 5's ledger sequence, and a cell row through `lwx.rec`: refused as a later change. D1263's closed-day Undo and
   a seen mark, in the two-squadron world (above).
@@ -346,7 +353,8 @@ Astra 2 of round 1; Astra 3, Fable 5 of round 2; D148).**
   142's on a draft's first day and 149's after it, so a first-day picker offers him to Prowler, 142's plain admin, and the
   save refuses (gate 7c reads every day). So 7c's who-rule is lifted into one pure body in `perms.ts` (core, phase 1),
   `inputWhoProblem(actor, rows, before, after)` → null or `{ pid, unit }`, with today's exceptions kept (his own input,
-  his own take-out, a member's filing for others) and D2221 as built (a span across a move: only a master admin or the man).
+  his own take-out, a member's filing for others) and D2221 as built (a span across a move: only the man, or an admin of every squadron it touches — at home there, by
+  Plan of it, or a master admin; D2240's correction).
   7c calls it; so do the picker (a man is offered where the draft with him added passes), the save door (before the
   gate), and an existing input's save (Kestrel changing, from 149's Inputs list, leave that C1 now shows him). It is
   asked again whenever the draft's dates or people change. `rosterOptions(unit, iso)`, `archivedOptions(unit, iso)`,
@@ -378,7 +386,7 @@ Astra 2 of round 1; Astra 3, Fable 5 of round 2; D148).**
 - `pageUnit`: a member with View of 149 who picks 149 keeps his own Inputs, its calendar's notes and their edits; a
   master admin's pick moves them (`switchUnit` in the test, as B4/B5 do); a Plan holder likewise.
 - `enterSquadron`: fired by the clock alone; his home at entry, not the pick; a master admin's pick of 149 stays at his own
-  midnight move; a save waiting; a war window and a Tracker pop-up open at midnight (the swap waits; nothing saved into
+  midnight move, and a Plan holder's pick moves to his new home, his Plan ended by the move (D2203, D2243 Q4); a save waiting; a war window and a Tracker pop-up open at midnight (the swap waits; nothing saved into
   149); the swap's passes not on his Undo list.
 - A-v's tests (above); the unit-setting guard (A-ii, reads and writes); both enumeration guards, re-counted; the date
   check in development builds (A-i).
@@ -497,20 +505,24 @@ right on its `from`, not its link day, and refuses every save of a man whose mov
   right). Every round found a new way for a carried right to outlive a move through the re-link's Undo or Redo (round 3:
   Astra 2, Fable 1, Opus 1); carrying none closes the family by construction.
   - **The drop:** in its own command the re-link removes **every** right of that account, holding or ended, whoever
-    re-links. The man now on the sign-in is given what he needs anew, by whoever may give it — an admin of that squadron
-    or a master admin (Plan, a master admin's to give — D2199). Dropping an ended row takes no bell line a move has not already taken
+    re-links. The man now on the sign-in is given what he needs anew, by whoever may give it — an admin of that squadron,
+    at home there or by Plan of it, or a master admin (Plan itself, a master admin's alone to give — D2199, D2211). Dropping an ended row takes no bell line a move has not already taken
     today: today's move deletes the row on save.
   - **Who may re-link — kept as it stands, for a new reason** (the host's question, decided): an admin of the man's own
-    squadron, where the account holds no right **today** in a squadron he is no admin of — else only a master admin. Nothing is
+    squadron, where the account holds no right **today** in a squadron he is no admin of — at home there or by Plan of it
+    (D2201, D2241) — else only a master admin. Nothing is
     carried any more, so the line no longer guards a right handed to another man; it guards the drop. Dropping a right
-    that holds is a removal in its squadron, which only that squadron's admins or a master admin make (D2191, D2192); without
+    that holds is a removal in its squadron, which only that squadron's admins — at home or by Plan — or a master admin make (D2191, D2192, D2201); without
     the line, a 149 admin could strip a 150 right from his own man's sign-in by re-linking it away and back. A right that
     holds nothing gives nothing, so dropping one is no act for its squadron, and the man's own admin may (§14 item 6). The
     door (`relinkRightsProblem`), the gate's G4 (l.1852) and the drop judge alike, all reading only rights that hold today
     on the rows before (Fable 2, Astra 7, Opus M2): Kestrel, 149's plain admin, may re-link the sign-in of Ranger, now
     149's, though Ranger's ended View of 150 is still stored. **The door's words still read true** (`accounts.ts` l.343,
     "This sign-in holds a right in 150. Only a master admin can link it to another person."): they name only a right that
-    holds, and are shown only to one who is neither a master admin nor an admin of 150.
+    holds, and are shown only to one who is neither a master admin nor an admin of 150. **Their words change (D2241,
+    found by the Plan audit):** they name only the master admin, where an admin of 150 — at home or by Plan — may link it
+    too; they become "This sign-in holds a right in 150. Only a master admin or an admin of 150 can link it to another
+    person.", in Q8's approved pattern, shown to him with the build's look (§11).
   - **At the gate (section 6, new — the re-link line):** a command that changes an account's man — G4's own test: a row
     whose person changes, or a new row under an id a right still names (`rightNamesNew`) — leaves no grant row naming that
     account stored after it, whoever makes it, a master admin and a restore included. Placed after G4, so G4's words come first
@@ -527,7 +539,7 @@ right on its `from`, not its link day, and refuses every save of a man whose mov
     undone first. (The body that finds the standing right is core's, in `perms.ts`; the block, the timeline's.)
   - **The cost, said plainly:** an Undo of a mistaken re-link gives the sign-in back **without its other-squadron
     access**. Saber links Ranger's sign-in, which holds View of 150, to Viper by mistake and presses Undo at once: the
-    sign-in is Ranger's again, with no View of 150, until 150's admins or a master admin give it again. Nobody sees this today —
+    sign-in is Ranger's again, with no View of 150, until 150's admins — at home or by Plan — or a master admin give it again. Nobody sees this today —
     no screen gives View or Plan, and only tests hold one (§11).
 - `dropGrantsOfAccount` (the person delete): every row of the account, ended ones too, as now.
 
@@ -615,7 +627,7 @@ and is judged with the giving, not with any squadron row.
 - **New:** "an ended right never comes back" and the restore's guardrail 2 (above); the re-link line (guardrail 1,
   above). And the drop's who: the removal of a grant row that holds nothing on today in the before-image passes, whoever
   makes the command, where the same command changes that account's person; the removal of one that holds is an ordinary
-  removal — an admin of its squadron or a master admin — which G4 already demands of whoever re-links such a sign-in; a bare
+  removal — an admin of its squadron, at home or by Plan, or a master admin — which G4 already demands of whoever re-links such a sign-in; a bare
   removal stays an admin's of that squadron.
 - **Kept unchanged:** a right in his own home unit; a new or changed right is dated today, a kept one keeps its day; a
   verified replay's exemption; a person delete's drop (`personDeletedHere`).
@@ -929,7 +941,7 @@ refused, in the same words. The host checks each of the fourteen against its fix
      to whoever is signed in (`tellOnce` → `HOOKS.toast`, `sync.ts` l.2674, l.2770); run from the foreign half, a 142
      member would read "Kestrel is 149's last admin. The posting waits until 149 has another admin." So the foreign half
      writes no passing note: a held foreign posting shows only as Admin → Users' held note on that man's row (A6, below),
-     which only that squadron's admins and a master admin see. One exception, today's words for the man himself: a Delete that
+     which only that squadron's admins — at home or by Plan — and a master admin see. One exception, today's words for the man himself: a Delete that
      removes the signed-in person says "You have been deleted by your posting out — please sign out" (l.2845) — dormant
      while every own page is his home's.
    - **Its command type is the loaded pass's own, `lw.postoutRun`** (Fable 6 of round 3). The timeline keeps a posting
@@ -1213,15 +1225,21 @@ in phase 2 and for Q8's words in phase 3.
 Each is put to him with its picture where it has one (D853). Q4 is asked before Piece B starts (phase 2); Q6, Q7 and
 Q8 are drawings shown before their part is built.
 
+**ALL EIGHT ANSWERED, 20 Nov 26** (marked by chat 126): Q5 by D2239 (remove the guest view); Q8 by D2240 and D2241
+(the words name "an admin of both 142 and 149", never "master" alone); Q1–Q4, Q6 and Q7 by D2243 (*"The rest of the
+questions as recommended"*). The drawings on the questions page are the approved looks (D1478;
+`raptor-port/docs/mock/2026-11-20-multi-sqn-reshape/`). No "until then" stands: each part below is built as answered.
+
 - **Q1 (C3) — does an ALL AVAIL meeting stay on the squadron it was filed on, or follow its filer's move?**
   - *Example:* Hunter files a 142 squadron meeting (ALL AVAIL) for Fri 24 Jul. His move to 149 counts from Thu 16 Jul.
     Today, from the 16th the meeting leaves 142's schedule and shows on 149's. Recommended: it stays on 142's.
-  - *Recommended: stays* — a squadron's meeting is its own business (D2194), and a master admin who files one from the other
+  - *Recommended: stays* — a squadron's meeting is its own business (D2194), and a master admin or an admin with Plan of it who files one from the other
     squadron's schedule (D2197) does not file it into his own.
   - *Plugs into:* `inputSquadrons`' placeholder branch reads `r.u`. If "stays", filing stamps `u` — `InputWindow`'s
     save, and the demo seed's placeholder inputs.
-  - *Until then:* the reader honours a stamp, but nothing writes one, so today's behaviour stands and proof C3 stays
-    red, named.
+  - ~~*Until then:* the reader honours a stamp, but nothing writes one, so today's behaviour stands and proof C3 stays
+    red, named.~~ **ANSWERED 20 Nov 26 by D2243: it stays on the squadron it was filed on.** Filing stamps `u` on a
+    placeholder-only input (`InputWindow`'s save and the demo seed's placeholder inputs); proof C3 goes green.
 - **Q2 (C5) — sign-off boxes: the day's people, or today's?**
   - *Example:* on Wed 15 Jul Hunter opens 142's week of Mon 20 Jul. Ranger is 149's from Thu 16 Jul. Today the sign-off
     boxes for Mon 20 Jul still offer Ranger. Recommended: they offer only Mon 20 Jul's 142 people — not Ranger — as the
@@ -1230,17 +1248,20 @@ Q8 are drawings shown before their part is built.
     own squadron").
   - *Plugs into:* `signPeople(schedOnly, keep, di)` reads `rosterOf(UNIT, dayIso(CURWEEK, di))` or `todayIso()`; one
     line.
-  - *Until then:* today's, as now; proof C5 stays red.
+  - ~~*Until then:* today's, as now; proof C5 stays red.~~ **ANSWERED 20 Nov 26 by D2243: the day's people,** as the
+    crew list beside them; proof C5 goes green.
 - **Q3 (A7) — may the master admin still write a man's leave into his old squadron's war for a day that is now the new
   squadron's?**
   - *Example:* Ranger is 149's from Thu 16 Jul. Saber, the master admin, has 142 open and tries to put Ranger's leave on
     Fri 24 Jul into 142's Leave War. Recommended: refused, for Saber too — he picks 149 in Schedules and writes it there,
     as 149's admins and Ranger can now.
-  - *Recommended: refused for everyone.* The day belongs in 149's war. D2221's reading ("only a master admin or the man") was
+  - *Recommended: refused for everyone.* The day belongs in 149's war. D2221's reading ("only the man, or an admin of both" — D2240's correction) was
     about who may change leave across a move, not which war holds it.
   - *Plugs into:* one flag in the war-day rule (7b's backstop, and the war's own door on the master admin's row). A change that
     only removes is never refused by it; an Undo that would put leave back on such a day is (§11, words with Q6).
-  - *Until then:* refused for everyone, as the proof expects.
+  - ~~*Until then:* refused for everyone, as the proof expects.~~ **ANSWERED 20 Nov 26 by D2243: refused for
+    everyone,** master admins and Plan holders included; a removal is never refused; an Undo that would put leave back on
+    such a day is refused with "Ranger is 149's from Thu 16 Jul, so this can't go back into 142's Leave War."
 - **Q4 (Piece B's timing) — when a man moves squadron, do his View and Plan of other squadrons end at the start of his
   move day, or the moment the move is saved?**
   - *Example:* Ranger is 142's and holds Plan of 150 — full admin of 150. On Wed 15 Jul at 10:00 Hunter saves Ranger's
@@ -1253,8 +1274,10 @@ Q8 are drawings shown before their part is built.
     on its date, not months early; a move taken back the same day needs no rule (R2 closes without asking him); and an
     Undo of a move touches nothing but the move (§4.2).
   - *Plugs into:* Piece B's reading rule (§4.3). The other answer means round 1's stored end and its extra checks (§4.7).
-  - *Until then:* nobody can see either way — no screen saves a move or gives View or Plan yet. If his answer has not come
-    when Piece B starts, it is built as recommended and changed if he picks the other.
+  - ~~*Until then:* nobody can see either way — no screen saves a move or gives View or Plan yet. If his answer has not come
+    when Piece B starts, it is built as recommended and changed if he picks the other.~~ **ANSWERED 20 Nov 26 by D2243:
+    the start of his move day** — Piece B's reading rule (§4.3) as written; a transfer set ahead ends them on its date;
+    §4.7's other cut is not built.
 - **Q5 (B2) — the guest switch: wait for "Request access" to ask the squadron (step 5), or a stop-gap now?**
   - *Example:* Kestrel, 149's admin, turns on 149's guest switch. Today a guest still lands in 142's week, and only 142's
     switch lets him in. Either stop-gap — one switch for the whole app, or any squadron's switch letting him in — means
@@ -1266,11 +1289,15 @@ Q8 are drawings shown before their part is built.
   *Recommended:* his old squadron's row ends in the war's existing "away" look, with no posting tag, because no posting
   was set. *What he will see of leave already approved* (Fable 10): Ranger's leave approved in 142's war for Mon 20 Jul,
   before his move, stays stored in 142's war but out of sight in the "away" stretch; 149's war does not have it until
-  the Transfer batch carries it across. The schedule still shows the leave itself (the input stands). *Until then:* A1's
-  fix, and A7 with it, waits on his look; the war keeps today's rows.
+  the Transfer batch carries it across. The schedule still shows the leave itself (the input stands). ~~*Until then:*
+  A1's fix, and A7 with it, waits on his look; the war keeps today's rows.~~ **ANSWERED 20 Nov 26 by D2243: as drawn** —
+  the old war's row striped from the move day, the new war's before it, without "PO" and with no posting tag; the drawing
+  is the approved look (D1478), built to it and checked beside it (D1494).
 - **Q7 (the midnight band's words):** the drawing §11 names, words proposed there. *Recommended:* the band and "Close"
-  as drawn — typing is never saved into the new squadron, and never dropped without a word. *Until then:* the page waits
-  for an open window to close, without the band.
+  as drawn — typing is never saved into the new squadron, and never dropped without a word. ~~*Until then:* the page waits
+  for an open window to close, without the band.~~ **ANSWERED 20 Nov 26 by D2243: as drawn** — "You are 149's from
+  today. This can't be saved in 142's Leave War." (or "…in 142's Tracker.") with "Close"; the typed words stay visible;
+  nothing is saved into either squadron. The drawing is the approved look (D1478).
 - **Q8 (C6 and C1's sentence) — leave that runs across a man's move, saved by someone who may not change it.**
   - *Example:* Ranger is 149's from Thu 16 Jul. Prowler, 142's admin, files leave for Ranger on Tue 14 Jul, then
     stretches it to Fri 17 Jul and taps Save. For now only Ranger or an admin of both squadrons (a master admin, or an admin holding Plan of the other) may change leave across his move (D2221, as
@@ -1279,8 +1306,10 @@ Q8 are drawings shown before their part is built.
     Inputs list. (The picker already leaves Ranger out of a 14–17 Jul draft of Prowler's, so this shows only when the
     dates change after he is picked, or on an existing leave.)
   - *Plugs into:* the save door's words for the one whole-draft rule (§3.3 C6); one sentence.
-  - *Until then:* the door refuses with today's general words; the fault itself — the picker offering whom Save refuses
-    — is closed. Named in the walk.
+  - ~~*Until then:* the door refuses with today's general words; the fault itself — the picker offering whom Save refuses
+    — is closed. Named in the walk.~~ **ANSWERED 20 Nov 26 by D2240 and D2241:** "Not saved: Ranger is 149's from Thu 16
+    Jul. Only Ranger or an admin of both 142 and 149 can change leave that runs across his move." — never "master" alone;
+    an admin of both by Plan or as a master admin. Named in the walk.
 
 ## 13. The walks (Sonnet walkers, the host opening every picture that decides something; desktop 1536×864 and iPhone 402)
 
@@ -1312,7 +1341,8 @@ Q8 are drawings shown before their part is built.
    and D2184 Q10, to be told to him with the report.
 2. **A squadron whose only admin is a Plan holder from another squadron** (Fable F11): when 142's Hunter, 150's only Plan
    holder, has an Overseas posting set, it is held with 150's words on 142's Admin → Users, where 142's admins cannot fix
-   it — only a master admin can make another admin of 150. Told to him with item 1.
+   it — only a master admin, or Hunter himself while his Plan of 150 holds (D2201: he may make a 150 man an admin of
+   150), can make another admin of 150. Told to him with item 1.
 3. **The Tracker's re-entry in place** (A-iv). Its load path is read before any change. If it cannot be re-read in place
    cleanly, A2's Tracker part is left as a named one-by-one: the war and the schedule still move, and the Tracker moves
    at the next sign-in.
@@ -1321,7 +1351,7 @@ Q8 are drawings shown before their part is built.
    first-day answer; no reader found a fault in it.
 6. **Who may re-link a sign-in that holds only ended rights** (§4.3): the agent's reading of D2191, D2192 and D2199 — an
    ended right gives nothing in its squadron, so dropping it is no act for that squadron, and the man's own admin may
-   re-link. One that holds a right in a squadron he is no admin of stays a master admin's: under guardrail 1 the re-link drops
+   re-link. One that holds a right in a squadron he is no admin of — at home or by Plan — stays a master admin's: under guardrail 1 the re-link drops
    it, a removal in that squadron. Told to him with item 1.
 7. **The two guardrails' cost** (§4.3, the host's decisions after round 3 — technical, nobody can see either today):
    an Undo of a mistaken re-link gives the sign-in back without its View and Plan of other squadrons; an Undo of a
