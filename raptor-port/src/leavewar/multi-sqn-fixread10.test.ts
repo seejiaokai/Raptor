@@ -8,7 +8,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vites
 import { storeBackend, HOOKS, store as settingsStore } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputsBatch } from '../state/store'
-import { accountsLoad, signIn, sessionFor, setMaster, updateAccount, ACCOUNTS_LIST, accountOfPid } from '../state/accounts'
+import { accountsLoad, signIn, sessionFor, setMaster, updateAccount, ACCOUNTS_LIST, accountOfPid, levelIn } from '../state/accounts'
 import { initStore as lwInitStore, setPeople, setCell, setBidState, getState, openDates, worldUnit, holidayAdd } from './state/store'
 import { commitInput, draftOf } from '../ui/inputedit'
 import { ownershipViolation } from '../state/perms'
@@ -377,21 +377,22 @@ describe('fault E — a right taken off after a move and put back by its Undo or
     expect(hunterAcct().master).toBe(true)
     expect({ from: hunterAcct().masterFrom, shown: shown('prowler', l.id) }).toEqual({ from: '2026-07-10', shown: true })
   })
-  it('(F10-5) Plan of 149 from 13 Jul, told as filer 15 Jul, moved to 150 on 16 Jul; on 17 Jul the Plan taken off and undone: the line comes back', () => {
+  /* (§4.5 of the reshape plan, rewrite 5 — what it tests kept: an Undo of a right's removal, with no move since the right
+     began, puts it back with its OWN day. The Plan is given after the move, in his new squadron, since his D2203/D2243 end
+     every right held before it. Its old line half — a line his move retired, kept through the move by Plan — is spent by
+     the same rulings: a line retires only on a move, and a move now ends the Plan (the agent's reading, chat 127 — named
+     for the fix read)) */
+  it('(F10-5) moved to 150 on 16 Jul; Plan of 149 from 17 Jul; on 18 Jul taken off and undone: the Plan back with its own day', () => {
     on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok).toBe(true)
-    expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
-    on(15)
-    signInAs('ad2', 'a2'); fileFor('osp9', 'prowler')
-    signInAs('ad', 'a'); rmk('changed by Saber on the 15th')
-    const l = lineTo('prowler')!
-    expect(l?.fu).toEqual(['u149'])
     homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']]); on(17)
-    expect(shown('prowler', l.id), 'kept through his move by Plan of 149').toBe(true)
-    signInAs('ad', 'a')
+    signInAs('ad', 'a'); expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
+    on(18); signInAs('ad', 'a')
     expect(removeGrant('acad2', 'u149').ok).toBe(true)
-    expect(shown('prowler', l.id), 'gone with the Plan').toBe(false)
+    expect(levelIn('acad2', 'u149'), 'gone with its removal').toBeNull()
     const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
-    expect(shown('prowler', l.id), 'the Undo put the Plan back as it was').toBe(true)
+    unitsLoad()
+    expect(levelIn('acad2', 'u149'), 'the Undo put the Plan back').toBe('admin')
+    expect(grantOfOn({ id: 'acad2', pid: 'prowler', pidFrom: undefined }, 'u149', '2026-07-18')?.from, 'with its own day').toBe('2026-07-17')
   })
   it('(Redo, no move since its Undo) Plan of 149 given 13 Jul, he moves 16 Jul; on 17 Jul its Undo and Redo: the Redo puts back 13 Jul', () => {
     on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok).toBe(true)
