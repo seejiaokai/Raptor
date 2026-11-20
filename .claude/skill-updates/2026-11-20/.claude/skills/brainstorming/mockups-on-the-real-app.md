@@ -46,12 +46,12 @@ his iPhone's wider letters wrapped a bar the PC drew on two rows).
    real neighbour and marked as new; an edge a new part shares with a neighbour
    (stacked under it, beside it) is measured in the script against the
    neighbour's first letter (a text range, not its box), failing above about
-   0.5px unless the offset is on purpose and captioned — a reused recipe brings
-   its own alignment (17 Nov 26: a tag "under the mission" sat 10px in). Any
+   0.5px unless the offset is on purpose and captioned (17 Nov 26: a tag "under the mission" sat 10px in). Any
    style the app does not already have is a design decision to tell the owner.
    A mark that shows him the place — a ring, a number — is drawn ON the
    element (an outline, which takes no room, and a tag in its own `::before`),
-   always, never as a box laid over the page at measured coordinates: on a
+   never as a box laid over the page at measured coordinates (the one
+   exception, a tag on a still screen, is below): on a
    phone, and on a layer that scrolls or glides by itself, the laid-over box
    drifts off its text with no error (16 and 20 Oct 26). A mark must not change
    the element's position, display, size or overflow; use a child tag for a
@@ -79,9 +79,10 @@ his iPhone's wider letters wrapped a bar the PC drew on two rows).
    notes-only pull request not notes-only (16 Nov 26) — so the set can be shot
    again and the build starts from it — drawn with the drawing check's
    recorder beside it, so its measures are kept as it is drawn
-   (`raptor-port/docs/walk-scripts.md` §10). A pure-style proposal is drawn by
-   injecting the exact rule to be built and recorded then, on the unchanged
-   build — once built, the "before" is gone; after the build the same script
+   (`raptor-port/docs/walk-scripts.md` §10). A pure-style proposal is drawn with
+   the exact rule to be built, in the place it will take — an existing rule
+   corrected in place (Traps), a new one injected — and recorded then, on the
+   unchanged build — once built, the "before" is gone; after the build the same script
    checks with nothing injected (16 Nov 26). The picture the owner picks — or the
    script that drew it, with its exact values — is committed too, and the
    record of the decision names it: words describing a picture are a summary,

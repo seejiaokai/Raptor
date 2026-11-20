@@ -54,7 +54,8 @@ This is D14's substance, and it applies to every doc, every commit message and e
   reason that could change a future decision survives a trim. When in doubt, MOVE the text whole to where it is
   read less often (an area file, an archive) rather than reword it; a condensed version is checked against the
   original for meaning by a model that did not write it, before it replaces it.
-- **Before a rewrite goes to its readers, the writer makes three checks of its own** (the guides' tightening, 10 Nov
+- **Before a rewrite's list goes to him, and before the rewrite goes to its readers, the writer makes three checks of
+  its own** (the guides' tightening, 10 Nov
   26): every sentence cut or reworded keeps its qualifying words (where, only, unless, except, narrows) and its pointers
   into a passage that is leaving — condensing drops the short clause first, and "as built" never becomes a requirement;
   every rule corrected brings with it the lines that RELY on it — the steps that carry it out, the checklist that checks

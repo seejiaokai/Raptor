@@ -69,8 +69,9 @@ does the whole recipe now written in `raptor-port/docs/codex-guide.md` §Reading
 the pictures left out by pathspec (`':(exclude,glob)**/*.png'` and the jpg, gif, mp4 and webm alike — seconds, where
 the whole tree ran past five minutes); the branch's `HANDOFF.md` block and the round's builder brief, reports and
 evidence sheet replaced in the copy by one line each, so the reader's start-up reads find nothing to anchor on (twice,
-19 Nov 26: the Codex reader read the builder's summary before the brief's "do not read"); `git -c core.longpaths=true
-add -A` and `git -c core.hooksPath=/dev/null commit`, refusing to finish unless `git log --oneline -1` prints the commit
+19 Nov 26: the Codex reader read the builder's summary before the brief's "do not read"); every git command run with
+`-C <copy>`, never in the checkout — `git -c core.longpaths=true add -A` and `git -c core.hooksPath=/dev/null commit` —
+refusing to finish unless the copy's `rev-parse --show-toplevel` names it and its `git log --oneline -1` prints the commit
 (an `add` inside a loop failed silently on a long name, and every copy had no commit; Codex refuses a folder that is not
 a repo); and, when asked to start the reader, `codex exec` with the model named (`-m gpt-6-astra`, D2210) and
 `< /dev/null`, then a check after about 90 seconds that the log has grown (a backgrounded run waited 80 minutes on its
@@ -89,11 +90,12 @@ wait written as "nothing still running" printed "ready" on a failed run). (z) **
 committed files and stay as they are), and prints the changed files it read when asked (928, 11 Nov 26: a new test file
 not yet staged was not read, and its finding was met only on GitHub; `docs/gates-and-deploy.md` carries the guide's line).
 
-## 2. `[RULE-FILE-LESSONS]` — append after its **What:** paragraph, before its **To do:** line; and in its heading, "(skill notes 733, 734, 859, 860; 28 Oct – 8 Nov 26)" becomes "(skill notes 733, 734, 859, 860, 938, 951; 28 Oct – 15 Nov 26)"
+## 2. `[RULE-FILE-LESSONS]` — append after its **What:** paragraph, before its **To do:** line; and in its heading, "(skill notes 733, 734, 859, 860; 28 Oct – 8 Nov 26)" becomes "(skill notes 733, 734, 859, 860, 938, 951; 28 Oct – 15 Nov 26)" and "Four lessons" becomes "Six lessons"; its priority-list line becomes `- [RULE-FILE-LESSONS] — six lessons for the rule files and the steps for recording a ruling — his word.`
 
 **Added 20 Nov 26 (the skill-notes review, group D-reads-records) — two more for `DECISIONS.md`'s steps:** (e) **A batch
 of rulings is planned before its rows are written:** read each target page's free room against its hard limit (its
-`PAGE_LIMITS` row in `raptor-port/scripts/docsize.mjs`) and choose the area by room as well as by subject; decide for
+`PAGE_LIMITS` row in `raptor-port/scripts/docsize.mjs`) — the area chosen by the subject it governs (D137), then its
+room checked, a page's limit raised where a new feature's rulings need it (D2148); decide for
 each row whether it truly changes or answers an older ruling — if so, its mark and the citations on every page line
 stating that ruling go in the same script; if not, it is not worded as one (938, 13 Nov 26: three refusals in one batch
 of seventeen — a page 11 bytes from its limit, another under 230, and a row saying it "answers" an older ruling, which

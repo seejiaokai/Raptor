@@ -29,14 +29,18 @@ head or the branch already holds another reader's report (7 Nov 26). A handoff o
 never a shortened copy (16 Nov 26: a copy made without step 3 refused to start). Until `[CHECK-TOOLS-HARDEN]` (g)'s
 script is built, in Git Bash:
 
-1. **Export without the pictures**, into a short scratch path: `git archive <commit> -- . ':(exclude,glob)**/*.png'
-   ':(exclude,glob)**/*.jpg' ':(exclude,glob)**/*.gif' ':(exclude,glob)**/*.mp4' ':(exclude,glob)**/*.webm' | tar -x -C
-   <copy>` — seconds; the whole tree ran past five minutes (19 Nov 26).
+1. **Export without the pictures**, from the repo root, into a new, empty folder at a short absolute path outside the
+   checkout — `<copy>` names it in every step below; stop if it already holds files: `mkdir -p <copy> && git archive
+   <commit> -- . ':(exclude,glob)**/*.png' ':(exclude,glob)**/*.jpg' ':(exclude,glob)**/*.gif'
+   ':(exclude,glob)**/*.mp4' ':(exclude,glob)**/*.webm' | tar -x -C <copy>` — seconds; the whole tree ran past five
+   minutes (19 Nov 26).
 2. **Take out what the reader must not see:** the branch's `HANDOFF.md` block, and any builder brief, report or
    evidence sheet of this round, each replaced in the copy by one line saying so — the start-up reads (`AGENTS.md`:
    the handoff first) reach them before the brief's "do not read" (19 Nov 26, twice); the brief's first line says so.
-3. **Make it a repo:** `git init -q`, `git -c core.longpaths=true add -A`, `git -c core.hooksPath=/dev/null commit -qm
-   copy`, then `git log --oneline -1` must print that commit — Codex refuses a folder that is not a repo, and the `add`
+3. **Make the copy a repo** — every git command here names the copy, never the checkout: `git -C <copy> init -q`,
+   `git -C <copy> -c core.longpaths=true add -A`, `git -C <copy> -c core.hooksPath=/dev/null commit -qm copy`, each
+   only if the one before succeeded; then `git -C <copy> rev-parse --show-toplevel` must name the copy and
+   `git -C <copy> log --oneline -1` print its new commit — Codex refuses a folder that is not a repo, and the `add`
    failed silently on a long leftover name (19 Nov 26). To run the repo's scripts there, junction `node_modules` with
    PowerShell (`gates-and-deploy.md`, the four traps met running the checks by hand).
 4. **Start it with the model named and its input closed:** `codex exec -m gpt-6-astra -c model_reasoning_effort=high

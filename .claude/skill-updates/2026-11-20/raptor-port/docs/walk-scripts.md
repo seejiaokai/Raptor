@@ -141,7 +141,7 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   a check of a clip, a pin or a hide reads both sides — what must not show AND what must — and a pinch step asserts that
   its zoom changed (31 Oct 26: "names never drawn over the corner" passed a names column left blank mid-pinch, and "no
   frozen row off its columns" passed a frozen row that was missing). **And the read itself is calibrated:** every
-  pass/fail line a new script prints is run once on a screen known to be clean and once on one known to be changed
+  pass/fail line a script prints for the first time — a new script's, or a new line in an old one — is run once on a screen known to be clean and once on one known to be changed
   (tap an ordinary puck and see the same read report "picked"), and the step names that control; a read that gives the
   same value in both states fails the step — and it reads the one element that carries the answer, never the page's
   whole text (13 Nov 26: a search for the word that marks a waiting change matched the change history's count label, and failed a

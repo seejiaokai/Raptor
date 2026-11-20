@@ -243,8 +243,9 @@ shorter. Removing a note or folding it is §1's own decision, put to him as such
    cost, where do I put it right, and can any part be read two ways? — then restates every claim of the note in their
    own words, each named thing and number included. The writer sets those answers beside the original's, claim by
    claim; one that differs, or a second reading, is a lost fact and the wording goes back — except a second reading
-   that the line above it or the word list settles, which is recorded beside the wording (15 Nov 26: OIL and
-   "pending" read two ways by a reader given neither).
+   that the screen settles beyond what the reader was given (where the note sits, a control beside it), which is
+   recorded beside the wording with what settles it (15 Nov 26: OIL and "pending" read two ways by a reader given
+   neither); one the reader names with the word list's line and the line above in hand is a lost fact like any other.
 10. **"Left whole" is a proper result.** A note that cannot lose a word without losing a fact is left as it is (D825) —
     and, where it is still hard to read, the same words split into two sentences or a headline with its detail under
     it, no word lost, is offered to him as a change of its own, with its picture (D541). Never done unasked.

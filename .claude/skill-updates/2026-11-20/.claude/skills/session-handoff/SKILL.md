@@ -87,16 +87,17 @@ itself puts the new chat on its branch, then "Read `HANDOFF.md` — the `claude/
   - **A branch that has just merged:** never named.
 - **Every opening line the agent writes — at a handoff or in any reply that opens a chat beside this one — carries this
   sentence whole, its condition and its write test with it, never the fallback alone as an order:** "First list the
-  live chats (`ListAgents`) and say where you are: `git branch --show-current`,
-  `git status --short --untracked-files=no`, level with `origin/main` or not. If that shows changes you did not make,
+  live chats (`ListAgents`; where this chat has no such tool, say whose the folder is cannot be checked, and take the
+  worktree below) and say where you are: `git branch --show-current`,
+  `git status --short --untracked-files=no`, level with `origin/main` or not. If a live chat already holds this job —
+  the block's writer, or one opened with this same line — message it before any heavy read. If that shows changes you did not make,
   or another live chat works in this folder, do not switch branches here: a new job runs
   `git worktree add --no-track -b claude/<new-name> C:/Users/User/projects/Raptor-<short> origin/main`, a continuing
   one `git worktree add C:/Users/User/projects/Raptor-<short> claude/<name>` (the branch itself, never detached, so
   its commits land on it), and works only there; make one write there first, and if the file tools refuse it (a chat
   started in a worktree may not write into another), stop and tell him." The path is absolute: `../` from a worktree
   under `.claude/worktrees/` lands inside it. The walks' untracked pictures are not another chat's changes. Two chats
-  switching one folder put one chat's commit on the other's branch (3 and 10 Nov 26, the second from a line written
-  by hand in a reply).
+  switching one folder put one chat's commit on the other's branch.
 - **A design or question job:** the line says why the job is due now and what he will get from it (pictures and
   questions; nothing in the app changes).
 - **A "recommend the next jobs" line:** the new chat names each open pull request first (`gh pr list --state open`),
@@ -293,9 +294,10 @@ Same structure every time. Write "none" rather than dropping a line — stable s
   reads owed are his to call or drop (D761).
 - Work that spans chats: "Pick up here" names the next slice by its parts and its clean stop, sized against what a
   fresh chat has left after its start-up load, measured — one build to a slice where its scripts must be read whole.
-  A build sized FULL — a batch of three or more items above all — is split into chats from the start, as the
-  bug-check checklist's step 3 names them, and its reading of the code is written to a plan file and committed before
-  the first fix (13 and 17 Nov 26: the reading and the build alone filled 76% and 85%).
+  A build sized FULL has its reading of the code written to a plan file and committed before the first fix, and is
+  split into chats from the start when the bug-check checklist's step 3 finds too little room — a batch of three or
+  more items is presumed to (13 and 17 Nov 26: the reading and the build alone filled 76% and 85%). An unattended run
+  stays in one chat, saving its state at clean points and carrying on through compaction (D667, D867).
 - How a job ships is decided by the files it will change, checked against `.claude/rules/shipping.md`'s "only notes"
   list — a size-tripwire raise changes a script and waits for "merge live".
 - A step that removed a field, a mark or a rule ran its area's whole suite (or searched the tests for the removed

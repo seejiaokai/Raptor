@@ -386,8 +386,8 @@ whole suite.
 - Each finding is stated as the case, the wrong result and the RIGHT result in
   the user's terms, with the test that must go red first; a mechanism, if
   given, is marked a suggestion to check against that right result — a
-  prescribed mechanism is built even when it is wrong (11 Nov 26: "land on the
-  first row whose place differs" landed on a neighbour that had only shifted).
+  prescribed mechanism is built even when it is wrong ("land on the first row
+  whose place differs" landed on a neighbour that had only shifted).
 - Minor findings never TRIGGER a round, but when a round is open anyway, send
   that task's ledgered minors with it under a separate "optional, not
   blocking" heading; the re-review verdicts them ADDRESSED or DEFERRED without

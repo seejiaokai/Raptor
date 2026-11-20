@@ -135,9 +135,10 @@ and checked, so a short night leaves that pull request as its checked jobs.
   helper's write of a file it calls a report — and is saved into the repo, its brief's folder or the evidence sheet,
   the moment it arrives, before anything is done about it — except that each reader's report and every copy or summary
   stay in a scratch folder outside the checkout until all required blind readers of that job have reported, including
-  readers not yet started (the bug-check order §4). A report recovered from the transcript is found by a one-off token
-  the brief asked it to open with — never a phrase the brief itself contains, which is found first — and the saved
-  file's size is read before it is cited. Before it is accepted, each reader the
+  readers not yet started (the bug-check order §4). A report recovered from the transcript is taken from the named
+  helper's final reply, never from a request or a tool message — a token the brief asked it to open with is checked
+  inside that reply, for a token alone is found in the brief first — and the saved file's size is read before it is
+  cited. Before it is accepted, each reader the
   night's block names for that job is ticked against it; a missing one is run then, or the job goes on
   `[NO-ASTRA-LIST]` in the same change. A notice that a helper stopped with background work of its own still
   running is no report: stop it or wait for the real one before the checkout is switched or written, then read its

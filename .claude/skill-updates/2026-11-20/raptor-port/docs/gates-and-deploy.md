@@ -55,7 +55,11 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
     report and goes red ("could not compare", exit 2) unless the report says it compared — mode "baseline", not marked degraded, no check skipped, no file its linter dropped ("lint:partial"); never run the check by its bare
     command and believe its exit code.
   - **Trap — a new file not yet staged is not read:** by hand, run `npm run lint:changed -- --include-untracked` and
-    match its "N changed files" to `git status` (11 Nov 26: a new test file's finding was met only on GitHub).
+    check the intended new files were read — its "N changed files" counts against its base, normally `origin/main`,
+    not the working folder `git status` shows (11 Nov 26: a new test file's finding was met only on GitHub).
+  - **A change to what the week's builder draws** (`src/ui/html.ts`) also runs `src/ui/html.test.ts`, which compares
+    the whole week word for word and holds none of the changed words; a deliberate difference is added to its list in
+    the same change (11 Nov 26).
   - **The GitHub job** (pull requests only; on GitHub's machines whether the repo is public or private, like the Docs guard
     — a private repo bills about two minutes a pull request): the pull request's merge commit with its two parents, `main`
     taken as the first parent — exactly what the pull request lands on — the pictures, zips and pdfs under
@@ -302,8 +306,9 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   (an item it archived, a ruling it filed). Check with `DOCSGUARD_BASE=$(git rev-parse origin/main) node scripts/docsize.mjs`
   (from `raptor-port/`); green there, commit the merge and run plain `docsize` again — it then measures from `main`.
   One such "did not arrive" can be real all the same (14 Nov 26): compare the branch's copy of each item `main` archived
-  with `main`'s archived block — `main`'s longer line is the newer, but a line only the branch has (his answers, added
-  on the branch) is carried into the archived block, or it is dropped without a word.
+  with `main`'s archived block — which wording is newer is read from the history and the rulings, never from its
+  length — and a line only the branch has (his answers, added on the branch) is carried into the archived block, or it
+  is dropped without a word.
 
 ## How the gates lie — moved whole from `HANDOFF.md` §Gate status (24 Sep 26)
 
