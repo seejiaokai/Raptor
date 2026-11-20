@@ -151,7 +151,7 @@ describe('fault A — a war line only as the war\'s own change owes it (SEC10-1,
     outlawReal(); signInAs('outlaw', 'x')
     expect(writeInputsBatch(() => { INPUTS.push({ person: 'prowler', date: 'Jul 15', yr: 2026, allday: true, type: 'LL', remarks: 'x', by: 'casper', at: Date.now(), iid: IID, ord: 99981 } as any) })).toBe(true)
     on(15, 10)
-    const b = JSON.parse(JSON.stringify(INPUTS.find((x: any) => x.iid === IID)))
+    const b = structuredClone(INPUTS.find((x: any) => x.iid === IID))
     const n: any = { id: 'nf10-w', to: 'prowler', by: 'casper', at: Date.now(), iid: IID, name: 'Your leave', day: '2026-12-01', what: [{ k: 'lw', c: 'OL', a: '2026-12-01', b: '2026-12-31', d: 'refused' }] }
     expect(ownershipViolation(asOutlaw([{ collection: 'inputs', id: IID, op: 'put', before: b, after: { ...b, remarks: 'y' } }, put(n)])) ?? 'allowed').not.toBe('allowed')
   })

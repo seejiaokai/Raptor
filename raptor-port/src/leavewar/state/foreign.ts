@@ -30,6 +30,7 @@ import type { Person } from '../engine'
 import type { StorageBackend } from './storage'
 import { REC, LEDGER, profileKey, profileJSON, parseRecKey } from './rows'
 import { split } from '../../storage/unitid'
+import { deepClone } from '../../command/util'
 
 export const FX_PROFILE = 'lwx.profile'
 export const FX_REC = 'lwx.rec'
@@ -90,8 +91,8 @@ function makeStore(unit: string): ForeignWar {
   const store: ForeignWar = {
     key: `lw-foreign:${unit}`,
     unit,
-    capture: () => JSON.parse(JSON.stringify(slots)),
-    restore: snap => { slots = JSON.parse(JSON.stringify(snap)) },
+    capture: () => deepClone(slots),
+    restore: snap => { slots = deepClone(snap as Record<string, Slot>) },
     records: () => {
       const m = new Map<string, RecordEntry>()
       for (const pid of Object.keys(slots)) {

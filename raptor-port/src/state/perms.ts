@@ -1618,9 +1618,12 @@ function worldsOf(env: CommitEnvelope): Worlds | null {
    man's account aside, which every reading drops on purpose */
 function droppedKeys(raw: Map<string, any>, kept: Account[], person: (pid: string) => any): Set<string> {
   const out = new Set<string>()
+  /* (each kept account by its id, the first of an id as `find` read it) */
+  const byId = new Map<string, Account>()
+  for (const y of kept) if (!byId.has(y.id)) byId.set(y.id, y)
   for (const [k, x] of raw) {
     if (x && typeof x.pid === 'string' && person(x.pid) && person(x.pid).deleted) continue
-    const a = x && kept.find(y => y.id === x.id)
+    const a = x && byId.get(x.id)
     if (!a || a.pid !== x.pid || a.name !== String(x.name ?? '').trim().toLowerCase() || k !== ACCOUNT_ROW + String(x.id)) out.add(k)
   }
   return out
@@ -1818,8 +1821,10 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
   const droppedB = droppedKeys(w.rawB, w.acctB, w.personB)
   for (const k of droppedKeys(w.rawA, w.acctA, w.personA)) if (!droppedB.has(k)) return `an account row the app would not load (${k})`
   const actorMaster = a.role === 'admin' && w.acctB.some(x => x.id === a.id && x.master === true)
+  const afterById = new Map<string, Account>()
+  for (const x of w.acctA) if (!afterById.has(x.id)) afterById.set(x.id, x)
   for (const m of w.acctB.filter(x => x.master === true)) {
-    const now = w.acctA.find(x => x.id === m.id)
+    const now = afterById.get(m.id)
     const pb = w.personB(m.pid), pa = w.personA(m.pid)
     if (pb && !pb.deleted && pa && pa.deleted) return `a master admin's person deleted (people/${m.pid})`
     if (sameJson(m, now) && ACCOUNT_LIKE(pb) === ACCOUNT_LIKE(pa)) continue

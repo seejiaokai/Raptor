@@ -119,7 +119,7 @@ describe('item A — a record made up in memory, removed as if saved, never reac
     const real = NOTICES.find(n => n.to === 'bane' && n.iid === IID)!
     expect(real).toBeDefined()
     signInAs('ad2', 'a2')
-    NOTICES.push({ ...JSON.parse(JSON.stringify(real)), id: 'nfab13', at: new Date(2099, 0, 1).getTime(), by: 'prowler' } as any)
+    NOTICES.push({ ...structuredClone(real), id: 'nfab13', at: new Date(2099, 0, 1).getTime(), by: 'prowler' } as any)
     const ok = writeInputsBatch(() => { const ix = INPUTS.findIndex((r: any) => r.iid === IID); INPUTS.splice(ix, 1); const j = NOTICES.findIndex(n => n.id === 'nfab13'); if (j >= 0) NOTICES.splice(j, 1) })
     if (ok) globalUndo()
     expect({ del: ok, saved: stored('notices', 'nfab13') }).toEqual({ del: false, saved: null })
@@ -202,7 +202,7 @@ describe('item B — a posting made up in memory is never carried out by the pos
   const forgePosting = (pid: string, to: string) => {
     const st: any = getState()
     const body = st.people.find((p: any) => p.id === pid) ?? (st.postOuts && st.postOuts[pid])
-    st.postOuts[pid] = { ...JSON.parse(JSON.stringify(body)), to, poOutcome: 'delete' }   // outside every command
+    st.postOuts[pid] = { ...structuredClone(body), to, poOutcome: 'delete' }   // outside every command
   }
   const state = (pid: string, aid: string) => {
     accountsLoad(); unitsLoad()
@@ -367,7 +367,7 @@ describe('item D (1) — a deleted person is never brought back by a command', (
   it("(Astra) Kestrel deletes a 149 man, then a person command clears his delete mark: refused, he stays deleted", () => {
     signInAs('ad9', 'a9')
     const pid = Object.keys(PEOPLE).find(p => homeOn(p) === 'u149' && !accountOfPid(p) && !(PEOPLE as any)[p].special && !(PEOPLE as any)[p].archived && !(PEOPLE as any)[p].deleted)!
-    const was = JSON.parse(JSON.stringify((PEOPLE as any)[pid]))
+    const was = structuredClone((PEOPLE as any)[pid])
     expect(deletePerson(pid), 'Kestrel deletes him').toBeNull()
     expect((PEOPLE as any)[pid].deleted).toBe(true)
     const r: any = forgeRestore(pid, was)
@@ -375,7 +375,7 @@ describe('item D (1) — a deleted person is never brought back by a command', (
   })
   it('(the master too) Saber deletes a 142 man and clears the mark by a command: refused', () => {
     signInAs('ad', 'a')
-    const was = JSON.parse(JSON.stringify((PEOPLE as any).casper))
+    const was = structuredClone((PEOPLE as any).casper)
     expect(deletePerson('casper')).toBeNull()
     const r: any = forgeRestore('casper', was)
     expect({ ok: r.ok, deleted: !!(PEOPLE as any).casper.deleted }).toEqual({ ok: false, deleted: true })

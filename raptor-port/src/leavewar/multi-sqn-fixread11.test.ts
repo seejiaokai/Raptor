@@ -274,7 +274,7 @@ describe('fault B — no command is passed over for its label (F11-3, SEC11-3)',
     const real = NOTICES.find(n => n.to === 'bane' && n.iid === 'ipd-sec11b' && n.by === 'stiff')!
     expect(real, 'Saber told Ranger').toBeDefined()
     outlawReal(); signInAs('outlaw', 'x')
-    const b = JSON.parse(JSON.stringify(INPUTS.find((r: any) => r.iid === 'ipd-sec11b')))
+    const b = structuredClone(INPUTS.find((r: any) => r.iid === 'ipd-sec11b'))
     const forged = { ...real, by: 'casper', at: Date.now(), what: [{ k: 'rmk' }] }
     const env = (type: string): any => ({ type, origin: 'user', actor: deriveActor(), changes: [
       { collection: 'inputs', id: 'ipd-sec11b', op: 'put', before: b, after: { ...b, remarks: 'Outlaw words' } },

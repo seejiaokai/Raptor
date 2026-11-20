@@ -315,7 +315,7 @@ describe('fault D — a record made up in memory, then changed, is judged as new
     const real = NOTICES.find(n => n.to === 'bane' && n.iid === IID)!
     expect(real, 'a real line to Ranger').toBeDefined()
     signInAs('ad2', 'a2')
-    const fake: any = { ...JSON.parse(JSON.stringify(real)), id: 'nfab12', at: new Date(2099, 0, 1).getTime(), by: 'prowler' }
+    const fake: any = { ...structuredClone(real), id: 'nfab12', at: new Date(2099, 0, 1).getTime(), by: 'prowler' }
     NOTICES.push(fake)                                                                             // outside every command
     const ok = writeInputsBatch(() => { (INPUTS.find((r: any) => r.iid === IID) as any).remarks = 'Hunter again'; fake.name = String(fake.name) + ' ' })
     expect({ ok, stored: stored('notices', 'nfab12') }).toEqual({ ok: false, stored: null })
