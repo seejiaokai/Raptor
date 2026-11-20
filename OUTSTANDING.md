@@ -302,22 +302,10 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ## Items
 
 ### [MSQ-FIXREAD17-OPEN] Fix read 17's, the core read's and the full review's faults, all reproduced red, not yet fixed (20 Nov 26, chat 124) — OPEN
-**What it is:** 35 faults in seven cause families, each run red by the host; the table, families and readers are in the
-evidence sheet `raptor-port/docs/handpass/2026-11-18-multi-sqn-b1.md` §Fix read 17, the proofs (as text) in
-`raptor-port/docs/superpowers/briefs/2026-11-20-multi-sqn-b1-repro/`. **The job:** his answer to the shape question
-first (fix fault by fault, or reshape the few bodies the families name first — nothing rebuilt without his word); then
-each fix red first, a repeat of a fault an earlier fix meant to close Fable's (D2233), a new one Opus's; one combined fix
-read (all four readers, D2236). **Held out of the fixes, the host's calls:** K2, K3 (the gate trusting the page's own
-memory — anyone who can alter it can skip the gate itself) → the database step, where the saved copy is the one source;
-A3 (people made on a shared store before its first boot belong to no squadron) → the database step's first boot; B7
-("Request access" names no squadron — batch 1's step 5, unbuilt) → built with step 5; C7 (sign-out's reload can sign
-out the next person) → with D2205's M2; C10 (measured 1.9× per edit at 4 × 40, not a fault at batch size) → a measure,
-kept. **Questions for him with the fixes:** C3 (an ALL AVAIL meeting follows its filer's move — no ruling); C5 (sign-off
-boxes: the day's people or today's — no ruling); R2 (a move taken back the same day: refuse it and require Undo, or give
-the rights back); A7's master case (D2221's reading — only a master or the man may change leave across a move).
-**Where:** `state/{perms,units,notices,accounts,store,persist,person-delete}.ts`, `engine/{roster,inputs,faceattrs,
-publish,weekstash}.ts`, `leavewar/{sync.ts,state/store.ts,state/raptorRoster.ts}`, `ui/{inputedit.tsx,InputsPage.tsx,
-logout.ts}`, `undo/timeline.ts`, `testing/enumguard.ts`, `boot.ts`.
+**What it is:** 35 faults in seven cause families, each run red by the host; the table, families and readers are in the evidence sheet `raptor-port/docs/handpass/2026-11-18-multi-sqn-b1.md` §Fix read 17, the proofs (as text) in `raptor-port/docs/superpowers/briefs/2026-11-20-multi-sqn-b1-repro/`. **The job — his D2238 (20 Nov 26, "reshape and fable"):** first a plan reshaping where the families come from (one which-squadron-on-a-day answer, the day always given; homes, places and rights as dated rows under one check; one last-admin rule; passes over every squadron), read by Astra, a fresh Opus reader and Fable, blind, before anything of it is built; R1 fixed now beside the plan; then each fix red first, a repeat of a fault an earlier fix meant to close Fable's (D2233), a new one Opus's; one combined fix read (all four readers, D2236).
+**Held out of the fixes, the host's calls:** K2, K3 (the gate trusting the page's own memory — anyone who can alter it can skip the gate itself) → the database step, where the saved copy is the one source; A3 (people made on a shared store before its first boot belong to no squadron) → the database step's first boot; B7 ("Request access" names no squadron — batch 1's step 5, unbuilt) → built with step 5; C7 (sign-out's reload can sign out the next person) → with D2205's M2; C10 (measured 1.9× per edit at 4 × 40, not a fault at batch size) → a measure, kept.
+**Questions for him with the fixes:** C3 (an ALL AVAIL meeting follows its filer's move — no ruling); C5 (sign-off boxes: the day's people or today's — no ruling); R2 (a move taken back the same day: refuse it and require Undo, or give the rights back); A7's master case (D2221's reading — only a master or the man may change leave across a move).
+**Where:** `state/{perms,units,notices,accounts,store,persist,person-delete}.ts`, `engine/{roster,inputs,faceattrs,publish,weekstash}.ts`, `leavewar/{sync.ts,state/store.ts,state/raptorRoster.ts}`, `ui/{inputedit.tsx,InputsPage.tsx,logout.ts}`, `undo/timeline.ts`, `testing/enumguard.ts`, `boot.ts`.
 
 ### [MSQ-FIXREAD10-LEFT] What fix read 10 left on the multi-squadron fixes (20 Nov 26, chat 118) — OPEN
 **What it is:** (1) fault F of `…/briefs/2026-11-20-multi-sqn-b1-fixread10-fixes-brief.md` (Opus O10-3): a filer line
