@@ -589,7 +589,7 @@ export function elogGroups(di?: any): ELogGroup[] {
   const src = (di == null) ? ELOG.rows : ELOG.rows.filter(r => onDay(r, +di))
   const by = new Map<string, ELogGroup>()
   src.forEach((r, i) => {
-    const id = r.key || ` act${i}`
+    const id = r.key || `\u0000act${i}`
     let g = by.get(id)
     if (!g) { g = { key: r.key, lbl: r.lbl, di: r.di, rows: [], last: 0, lastIx: -1 }; by.set(id, g) }
     g.rows.push(r)
