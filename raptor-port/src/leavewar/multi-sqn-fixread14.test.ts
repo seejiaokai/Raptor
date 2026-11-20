@@ -105,16 +105,19 @@ describe('SEC14-1 — a member never puts a scheduler\'s or the war\'s mark on h
     if (ok) globalUndo()
     expect(stored(IID)?.lw, 'the saved row').toBeUndefined()
   })
-  it('(honest, the fix) a landing mark memory holds and the saved row does not: an edit then Undo keeps it in memory, the remark back', () => {
+  /* (fix read 15 — SEC15-1, O15-1, Fable's 1: this control used 'u', which no landing writes, and so pinned the too-wide
+     carry; a landing writes 'g' alone. A restore strips the derived 'g' and the day's reconcile works it out again —
+     sched-commit.ts — so after the Undo no filing is saved) */
+  it("(honest, the fix) a week load's 'g' landing memory holds and the saved row does not: an edit then Undo — the remark back, no filing saved", () => {
     signInAs('us', 'us')
     const IID = 'ipd-sec14-acc'
     expect(writeInputsBatch(() => { INPUTS.push({ person: 'bane', date: 'Jul 27', yr: 2026, allday: true, type: 'LL', remarks: 'mine', by: 'bane', at: Date.now(), iid: IID, ord: 99959 } as any) })).toBe(true)
     const x: any = INPUTS.find((r: any) => r.iid === IID)
-    x.acc = 'u'                                                             // as a week load's landing writes it
+    x.acc = 'g'                                                             // as a week load's landing writes it
     expect(writeInputsBatch(() => { x.remarks = 'mine, changed' })).toBe(true)
     expect(globalUndo().ok).toBe(true)
     const y: any = INPUTS.find((r: any) => r.iid === IID)
-    expect({ remarks: y.remarks, acc: y.acc, saved: stored(IID)?.remarks }).toEqual({ remarks: 'mine', acc: 'u', saved: 'mine' })
+    expect({ remarks: y.remarks, saved: stored(IID)?.remarks, savedAcc: stored(IID)?.acc }).toEqual({ remarks: 'mine', saved: 'mine', savedAcc: undefined })
   })
   for (const [field, val] of [['lw', 'y2026'], ['lwMoved', { '2026-07-27': '2026-07-20' }], ['lateOff', true]] as const) {
     it(`${field}: set in memory, an edit of his remark, then Undo — the saved row never carries it`, () => {

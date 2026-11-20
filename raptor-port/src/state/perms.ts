@@ -2596,10 +2596,10 @@ function storedRowViolation(env: CommitEnvelope): string | Change[] | null {
      …AND A PUT'S TOO (fix read 14, item A — the security read's SEC14-1): only a removal's was carried, so a put kept
      memory's before-image, the Undo step recorded it and its restore put it back unasked — Ranger set `lw` on his own saved
      leave in memory, saved an honest edit that dropped it (a member may drop `lw`) and pressed Undo: the saved row read
-     "approved on the war". A put now carries the saved row too, keeping from memory only the fields a week load's landing
-     writes there and never saves (LANDING_ONLY — engine/drafts.ts filingRestorePlan, slots.ts), so the timeline's line
-     reads no landing as a change of its own; a put of a record never saved carries no before-image, so its Undo takes the
-     record away rather than putting back the made-up one. */
+     "approved on the war". A put now carries the saved row too, keeping from memory only what a week load's landing
+     writes there and never saves (withLanding, below — the filing mark 'g' alone), so the timeline's line reads no
+     landing as a change of its own; a put of a record never saved carries no before-image, so its Undo takes the record
+     away rather than putting back the made-up one. A bell line's put carries the saved row whole. */
   if (env.origin === 'restore') return null
   const carry = env.changes.map((c, i) => {
     const j = changes[i]!
@@ -2608,14 +2608,21 @@ function storedRowViolation(env: CommitEnvelope): string | Change[] | null {
   })
   return carry.some((c, i) => c !== env.changes[i]) ? carry : null
 }
-/* the fields a week load's landing writes in memory and never saves — its filing mark and an overseas duty's Ground
-   Programme mark (engine/drafts.ts, the load's filingRestorePlan; engine/slots.ts) — taken from memory's image onto the
-   saved one, present or absent as memory has them */
-const LANDING_ONLY = ['acc', 'odGround'] as const
+/* what a week load's landing writes in memory and never saves — the filing mark 'g' alone (engine/holderbase.ts and the
+   day's reconcile write 'g' or nothing, skipping 'u' and 'r'; `said` above and sched-commit.ts's restore strip read it the
+   same way) — taken from memory's image onto the saved one, present or absent as memory has it.
+   ONLY 'g' (fix read 15 — the security reader's SEC15-1, the fresh Opus reader's O15-1, Fable's 1): fix read 14 took
+   memory's `acc` and `odGround` whatever their values, but 'u' (filed under Unavailable) and 'r' (Remove — the
+   scheduler's, D1388) are saved filings, and `odGround` is written only inside a command. So Ranger cleared the Remove on
+   his own leave in memory, saved an honest edit putting it back with new words, and Undo saved the leave with no Remove.
+   Now a filing that is 'u' or 'r' on either side is the saved row's, and `odGround` always is. */
 function withLanding(saved: unknown, mem: unknown): unknown {
   if (!saved || typeof saved !== 'object' || !mem || typeof mem !== 'object') return saved
+  const s = (saved as any).acc, m = (mem as any).acc
+  const landing = (v: unknown) => v === 'g' || v == null
+  if (!landing(s) || !landing(m) || s === m) return saved
   const out: any = { ...(saved as any) }
-  for (const k of LANDING_ONLY) { if (k in (mem as any)) out[k] = (mem as any)[k]; else delete out[k] }
+  if (m === 'g') out.acc = 'g'; else delete out.acc
   return out
 }
 
