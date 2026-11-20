@@ -8,7 +8,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } 
 import { storeBackend, HOOKS, store as settingsStore } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
-import { accountsLoad, signIn, sessionFor, updateAccount, ACCOUNTS_LIST, accountOfPid, addAccount, dropAccountOfPid } from '../state/accounts'
+import { accountsLoad, signIn, sessionFor, updateAccount, ACCOUNTS_LIST, accountOfPid, addAccount, dropAccountOfPid, levelIn } from '../state/accounts'
 import { initStore as lwInitStore, setPeople, getState } from '../leavewar/state/store'
 import { ownershipViolation } from '../state/perms'
 import { memoryBackend } from '../leavewar/state/storage'
@@ -73,10 +73,17 @@ const saveAccounts = () => {
   expect(Object.keys(mem).some(k => k.endsWith('account:acus') && mem[k] !== 'null'), 'his sign-in row is saved').toBe(true)
 }
 const rowSaved = (aid: string) => { const k = Object.keys(mem).find(x => x.endsWith('account:' + aid)); return !!(k && mem[k] && mem[k] !== 'null') }
-/* Kestrel (149's admin) gives Ranger a right in 149 */
+/* Kestrel (149's admin) gives Ranger a right in 149 — View; Plan (an admin's, given by a master admin — the Plan audit's
+   PA1, PA2; §9.2 of the reshape plan, setup only): Saber makes Ranger's sign-in an admin's and gives it */
 const rangerRight = (level: 'view' | 'admin') => {
-  signInAs('ad9', 'a9')
-  expect(setGrant('acus', 'u149', level, 'bane').ok, 'Kestrel gives Ranger ' + level + ' of 149').toBe(true)
+  if (level === 'admin') {
+    signInAs('ad', 'a')
+    expect(updateAccount('acus', { role: 'admin' }), 'Saber makes Ranger\'s sign-in an admin\'s').toBeNull()
+    expect(setGrant('acus', 'u149', level, 'bane').ok, 'Saber gives Ranger Plan of 149').toBe(true)
+  } else {
+    signInAs('ad9', 'a9')
+    expect(setGrant('acus', 'u149', level, 'bane').ok, 'Kestrel gives Ranger ' + level + ' of 149').toBe(true)
+  }
   unitsLoad()
   expect(grantsOf('acus').length).toBe(1)
 }
@@ -189,11 +196,12 @@ describe('fault A — the posting pass\'s Delete of a man whose sign-in holds a 
 })
 
 describe('fault B — a command labelled "person.delete" that deletes nobody (O12-1, F12-2, SEC12-1)', () => {
-  /* a 149 man with a sign-in Kestrel made, given Plan of 142 by Saber */
+  /* a 149 man with a sign-in Kestrel made, given Plan of 142 by Saber (an admin's sign-in, since Plan is an admin's — the
+     Plan audit's PA2; §9.2 of the reshape plan, setup only: it was a member's) */
   const planned = () => {
     const p1 = free('u149', ['osp9'])[0]!
     signInAs('ad9', 'a9')
-    expect(addAccount('spare1@mail', p1, 'main')).toBeNull()
+    expect(addAccount('spare1@mail', p1, 'admin')).toBeNull()
     const id = accountOfPid(p1)!.id
     signInAs('ad', 'a'); expect(setGrant(id, 'u142', 'admin', p1).ok).toBe(true)
     on(18); signInAs('ad9', 'a9')
@@ -404,16 +412,21 @@ describe('fault E — a repeated Undo / Redo keeps the date an earlier restore s
     on(14); ok(globalRedo())
     expect({ master: hunter().master, from: hunter().masterFrom }).toEqual({ master: true, from: '2026-07-13' })
   })
-  it('(Plan / View) Plan of 149 13 Jul, View 15 Jul, he moves 16 Jul, Undo 17 Jul (17 Jul); 18 Jul Redo then Undo: still 17 Jul, never 13 Jul', () => {
+  /* (§4.5 of the reshape plan, rewrite 13 — guardrail 2: no restore puts back a right whose man has moved since its start;
+     the Undo on 17 Jul puts nothing back. Until helper "undo & roles" wires the leave-out, the press writes the recorded
+     row, which holds nothing — whatever each press does, no right of 149 ever holds for him again; the step's blocked
+     words are that helper's test) */
+  it('(Plan / View) Plan of 149 13 Jul, View 15 Jul, he moves 16 Jul; Undo 17 Jul, Redo and Undo 18 Jul: nothing of 149 ever holds again', () => {
     on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok).toBe(true)
     expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     on(15); signInAs('ad', 'a'); expect(setGrant('acad2', 'u149', 'view', 'prowler').ok).toBe(true)
     homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']])
-    on(17); ok(globalUndo())
-    expect({ level: plan()?.level, from: plan()?.from }).toEqual({ level: 'admin', from: '2026-07-17' })
-    on(18); ok(globalRedo()); expect(plan()?.level).toBe('view')
-    ok(globalUndo())
-    expect({ level: plan()?.level, from: plan()?.from }).toEqual({ level: 'admin', from: '2026-07-17' })
+    on(17); globalUndo(); unitsLoad()
+    expect(levelIn('acad2', 'u149'), '17 Jul, after the Undo').toBeNull()
+    on(18); globalRedo(); unitsLoad()
+    expect(levelIn('acad2', 'u149'), '18 Jul, after a Redo').toBeNull()
+    globalUndo(); unitsLoad()
+    expect(levelIn('acad2', 'u149'), '18 Jul, after the Undo again').toBeNull()
   })
   it('(re-link) master since 10 Jul; 15 Jul linked to Newby, he moves 16 Jul, Undo 17 Jul (17 Jul); 18 Jul Redo (today) then Undo: 17 Jul, never his old days', () => {
     on(10); signInAs('ad', 'a'); expect(setMaster('acad2', true).ok).toBe(true)

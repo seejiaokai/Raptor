@@ -1866,6 +1866,13 @@ function restoredDayHolds(pid: unknown, offAt: number | undefined, homes = unitR
   return !homeChangesBefore(String(pid), off, today, { units: [], places: [], unitplaces: [], grants: [], homes }).length
 }
 const pidOfAccount = (id: unknown): string | undefined => ACCOUNTS_LIST.find(x => x.id === String(id))?.pid
+/* GUARDRAIL 2's question (the reshape plan §4.3): has this account's man changed squadron since a right of his started on
+   `from` (the later of it and the account's link day) — over the rows as they stand */
+function movedSinceStart(account: unknown, from: unknown, rows: UnitRows = unitRowsBefore([])): boolean {
+  const a: any = ACCOUNTS_LIST.find(x => x.id === String(account))
+  if (!a || a.pid == null) return false
+  return homeChangesBefore(String(a.pid), grantStart({ from: typeof from === 'string' ? from : undefined }, a.pidFrom), todayIso(), rows).length > 0
+}
 /* the master mark put back on the same person's account, off since `offAt`, with no move of his since */
 const markBackHolds = (was: any, is: any, offAt: number | undefined, homes?: Parameters<typeof restoredDayHolds>[2]): boolean =>
   !!was && was.master !== true && !!is && is.master === true && String(was.pid) === String(is.pid) && restoredDayHolds(is.pid, offAt, homes)
@@ -1905,9 +1912,7 @@ export function restoreRedated(c: Change, offAt?: number, dir?: 'undo' | 'redo',
     /* GUARDRAIL 2 (the reshape plan §4.3): a right whose man has moved since it went off is never re-dated today — that
        would restart a right his move ended. It keeps its recorded day, so it holds nothing (units-model.ts grantOn); the
        leave-out (restoreLeavesOut, wired by helper "undo & roles") takes it out of the restore and blocks the step. */
-    const pid = pidOfAccount(n.account)
-    const moved = offAt != null && !!pid && homeChangesBefore(pid, dayOfAt(offAt), today, unitRowsBefore([])).length > 0
-    const from = grantKept(b, n) ? b.from : grantBackHolds(b, n, offAt) || moved ? recorded : today
+    const from = grantKept(b, n) ? b.from : grantBackHolds(b, n, offAt) || movedSinceStart(n.account, recorded) ? recorded : today
     return n.from === from ? c : { ...c, after: { ...n, from } }
   }
   if (id.startsWith(ACCOUNT_ROW)) {
@@ -2277,9 +2282,7 @@ function unitRowViolation(env: CommitEnvelope): string | null {
         /* (fix read 11, fault G — F11-5b): or put back from below admin to admin, the same account in the same squadron */
         /* (guardrail 2 — the reshape plan §4.3): or put back after its man's move with its recorded day, which holds nothing
            (restoreRedated writes it so) */
-        const offAt = OFFAT?.(env), mp = pidOfAccount(n.account)
-        const back = grantBackHolds(b, n, offAt, before.homes)
-          || (offAt != null && !!mp && homeChangesBefore(mp, dayOfAt(offAt), today, before).length > 0)
+        const back = grantBackHolds(b, n, OFFAT?.(env), before.homes) || movedSinceStart(n.account, n.from, before)
         /* NOT BETWEEN A MOVE SAVED AND ITS DAY (Fable's sample review, 1 — his D2203; the reshape plan §4.3, Fable 4, Opus
            L3): a right ends at the start of his move day, so one GIVEN or RAISED in the rest of the day the move is saved
            would last that day only. A lowering passes, and a verified replay — whatever either leaves ends at midnight by
