@@ -1,0 +1,41 @@
+// @vitest-environment jsdom
+/* A3 (Fable F3): on a shared store, a person IT already made (beside the first admin) gets no Home row, so he is on no
+   squadron's roster — off the Leave War, the Tracker's + Add, OIL. Correct per D2087 ("each person has one primary
+   squadron"): after the first boot every stored person has a squadron. Harness: src/boot.test.ts's real boot. */
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { PEOPLE } from '../engine/people'
+import { homeOn } from '../state/units'
+import { MemoryBackend } from '../storage/memory'
+import { FOLD_FORMAT } from '../storage/fold'
+import { bootApp } from '../boot'
+import type { BootPolicy } from '../bootpolicy'
+import { projectPeople } from '../leavewar/state/raptorRoster'
+
+const stamp = (initialized: boolean, format = FOLD_FORMAT) =>
+  JSON.stringify({ stage: 1, dataFormatVersion: format, initialized, appliedAt: 'x', minClient: format })
+async function boot(be: MemoryBackend, policy: BootPolicy) {
+  const p = bootApp(be, policy)
+  const settled = p.then(() => null, (e: unknown) => e)
+  await vi.advanceTimersByTimeAsync(be.latency + 1)
+  const err = await settled
+  if (err) throw err
+  const { postman } = await p
+  await postman.flush()
+}
+
+beforeEach(() => { vi.useFakeTimers() })
+afterEach(async () => { vi.useRealTimers() })
+
+describe('A3 — a shared store’s pre-made people each have a squadron', () => {
+  it('IT made Chief (the first admin) and Dart; after the first boot Dart is on 142’s roster too', async () => {
+    const be = new MemoryBackend()
+    const chief = JSON.stringify({ cs: 'Chief', initials: 'CF', seat: 'RCP', q: 'IWSO', flight: '-', ord: 1024 })
+    const dart = JSON.stringify({ cs: 'Dart', initials: 'DT', seat: 'FCP', q: 'A', flight: '-', ord: 1025 })
+    be.seed({ settings: { schema: stamp(false) }, people: { pit1: chief, pit2: dart } })
+    await boot(be, { seedDemo: false, bootstrap: { principal: 'chief@unit.example', personId: 'pit1' } })
+    expect(PEOPLE.pit2, 'sanity: Dart was loaded').toBeTruthy()
+    expect(homeOn('pit1'), 'sanity: the first admin has his home').toBe('u142')
+    expect(homeOn('pit2'), 'Dart has a primary squadron').toBe('u142')
+    expect(projectPeople(true, 'u142').map(p => p.id), 'Dart is on 142’s Leave War').toContain('pit2')
+  })
+})

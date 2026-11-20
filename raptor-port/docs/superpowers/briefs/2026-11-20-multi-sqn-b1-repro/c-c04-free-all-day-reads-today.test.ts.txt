@@ -1,0 +1,38 @@
+// @vitest-environment jsdom
+/* C4 (Opus F1 = Fable F3a): the day panel's "free all day" (availByWave -> rosterShown -> rosterIds) and the roster a
+   published day freezes (publish.ts freezeWarn snap.ros = rosterIds()) read the squadron on TODAY, not on the day drawn.
+   Correct: a day's people are the unit's on that day (rosterOf(unit, iso); D327 the crowd read by stints; D2119 a move
+   counts from the next day) — the same list as the crew palette beside it. */
+import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { DAYS } from '../engine/data'
+import { availByWave } from '../engine/avail'
+import { rosterIds } from '../engine/faceattrs'
+import { rosterOf } from '../engine/roster'
+import { UNIT } from '../engine/unitview'
+import { setHome, homeOn } from '../state/units'
+import { before, after, done, at, boot, signInAs } from './harness'
+
+beforeEach(before); afterEach(after); afterAll(done)
+
+describe('C4 — free all day on a day after a move', () => {
+  it("142's Friday 17 Jul does not count a man who is 149's from 15 Jul", () => {
+    at('2026-07-14'); boot()
+    signInAs('ad', 'a')
+    expect(UNIT).toBe('u142')
+    const fri = DAYS[4] as any
+    const free0 = availByWave(fri).anyWave as string[]
+    const x = free0.find(id => id !== 'all' && id !== 'allavail')
+    expect(x, 'someone free all day on Friday before the move').toBeTruthy()
+    expect(setHome(x!, 'u149').ok).toBe(true)
+    expect(homeOn(x!, '2026-07-17')).toBe('u149')
+    expect(rosterOf('u142', '2026-07-17'), 'control: the crew list of Friday leaves him out').not.toContain(x)
+    expect(availByWave(fri).anyWave, "Friday's free all day leaves him out too").not.toContain(x)
+  })
+  it("the roster a 142 day published now freezes (snap.ros = rosterIds()) leaves out a man who is 149's on that day", () => {
+    at('2026-07-14'); boot()
+    signInAs('ad', 'a')
+    expect(setHome('bane', 'u149').ok).toBe(true)            // 149's from 15 Jul
+    expect(rosterOf('u142', '2026-07-17')).not.toContain('bane')
+    expect(rosterIds(), "Friday's frozen roster").not.toContain('bane')
+  })
+})

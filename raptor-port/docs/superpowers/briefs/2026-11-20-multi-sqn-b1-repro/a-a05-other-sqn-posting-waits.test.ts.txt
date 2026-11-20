@@ -1,0 +1,72 @@
+// @vitest-environment jsdom
+/* A5 (Opus F2): a squadron's postings run on their date only if one of that squadron's own people opens the app.
+   Correct per D1105 ("on <date> the app deletes him automatically"), D2136 (on the posting date), D1546/D1547 (runs on its
+   date, the admins told — nobody gone silently): Osprey's Overseas Sqn posting set by Kestrel for 16 Jul runs on 16 Jul
+   when only Saber (142's world loaded) opens the app. Harness: leavewar/multi-sqn-fixread3-postlock.test.ts. */
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { storeBackend, HOOKS } from '../engine/hooks'
+import { PEOPLE, indexCallsigns } from '../engine/people'
+import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
+import { accountsLoad, signIn, sessionFor, ACCOUNTS_LIST } from '../state/accounts'
+import { initStore as lwInitStore, setPeople, worldUnit } from '../leavewar/state/store'
+import { memoryBackend } from '../leavewar/state/storage'
+import { projectPeople } from '../leavewar/state/raptorRoster'
+import { wireLeaveWarSync, setWarWorldDoor, postOut, runPoOutcomes } from '../leavewar/sync'
+import { unitsLoad } from '../state/units'
+import { INPUTS } from '../engine/inputs'
+
+const mem: Record<string, string> = {}
+let PEOPLE0 = ''
+const signInAs = (name: string, pass = 'x') => { resetSession(sessionFor(signIn(name, pass))); raptorNotify() }
+let worlds: Record<string, any> = {}
+
+beforeAll(() => {
+  vi.useFakeTimers({ toFake: ['Date'] })
+  vi.setSystemTime(new Date(2026, 6, 15, 9, 0, 0))
+  PEOPLE0 = JSON.stringify(PEOPLE)
+})
+afterAll(() => { vi.useRealTimers(); storeBackend.impl = null; setWarWorldDoor(null) })
+beforeEach(() => {
+  vi.setSystemTime(new Date(2026, 6, 15, 9, 0, 0))
+  Object.keys(mem).forEach(k => delete mem[k])
+  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v }, keys: () => Object.keys(mem) } as any
+  const p0 = JSON.parse(PEOPLE0)
+  for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
+  Object.assign(PEOPLE, p0); indexCallsigns()
+  for (let i = INPUTS.length - 1; i >= 0; i--) if (String((INPUTS as any)[i].iid || '').startsWith('ipd')) INPUTS.splice(i, 1)
+  worlds = { u142: memoryBackend(), u149: memoryBackend() }
+  setWarWorldDoor(null)
+  lwInitStore(worlds.u142)
+  raptorInitStore()
+  accountsLoad()
+  setPeople(projectPeople())
+  wireLeaveWarSync()
+  setWarWorldDoor((u: string) => ({ backend: worlds[u] ?? (worlds[u] = memoryBackend()) }))
+  vi.spyOn(HOOKS, 'toast').mockImplementation(() => {})
+})
+const acct = (id: string) => ACCOUNTS_LIST.find(a => a.id === id)
+const setPosting = () => {
+  signInAs('ad9', 'a9')
+  expect(worldUnit()).toBe('u149')
+  expect(postOut('osp9', '2026-07-16', 'overseas')).toBe(true)
+  signInAs('ad', 'a')                                   // sign-out reloads: the boot's world (142's) is the one loaded
+  expect(worldUnit()).toBe('u142')
+}
+
+describe('A5 — 149’s posting runs on its date whoever opens the app', () => {
+  it('only Saber (142) uses the app on 16 Jul: Osprey is archived and his account suspended', () => {
+    setPosting()
+    vi.setSystemTime(new Date(2026, 6, 16, 9, 0, 0)); unitsLoad()
+    signInAs('ad', 'a')
+    runPoOutcomes()
+    expect((PEOPLE as any).osp9.archived, 'posted out on his date').toBe(true)
+    expect(acct('acus9')?.on, 'his account suspended').toBe(false)
+  })
+  it('(control) Kestrel (149) opens the app on 16 Jul: the posting runs', () => {
+    setPosting()
+    vi.setSystemTime(new Date(2026, 6, 16, 9, 0, 0)); unitsLoad()
+    signInAs('ad9', 'a9')
+    runPoOutcomes()
+    expect((PEOPLE as any).osp9.archived).toBe(true)
+  })
+})

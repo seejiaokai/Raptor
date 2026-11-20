@@ -1,0 +1,24 @@
+// @vitest-environment jsdom
+/* C5 (Fable F3b, Opus F1 step 5): the sign-off boxes (publish.ts signPeople) offer the squadron's people on TODAY, not on
+   the day being signed. The claim's "correct": a man who is 149's on Friday is not offered to sign 142's Friday, and 149's
+   Friday offers him. NOTE: no ruling says whether a signer is judged on the day signed or on the day of signing (D2184
+   speaks of a detachment's boxes: "anyone of its own squadron"). */
+import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { signPeople } from '../engine/publish'
+import { UNIT } from '../engine/unitview'
+import { setHome } from '../state/units'
+import { before, after, done, at, boot, signInAs } from './harness'
+
+beforeEach(before); afterEach(after); afterAll(done)
+
+describe('C5 — sign-off boxes across a move', () => {
+  it("142's Friday 17 Jul does not offer a man who is 149's from 15 Jul", () => {
+    at('2026-07-14'); boot()
+    signInAs('ad', 'a')
+    expect(UNIT).toBe('u142')
+    expect(signPeople(false), 'control: offered before the move').toContain('bane')
+    expect(setHome('bane', 'u149').ok).toBe(true)
+    /* signPeople takes no day: the boxes of every 142 day this week read this one list */
+    expect(signPeople(false), "Friday's boxes").not.toContain('bane')
+  })
+})

@@ -1,0 +1,46 @@
+// @vitest-environment jsdom
+/* A7 (Fable F1's aside, the gate's — not reviewed by Fable): after Ranger's move to 149 from 16 Jul, Saber on 16 Jul could
+   still write Ranger's leave for 11 Aug into 142's Leave War. Correct per D2194 / D2221 ("his leave across a move is
+   changed by each squadron's admin for its own days"; each squadron's war holds only its own people): a day after his
+   move belongs to 149's war, so 142's war refuses it. */
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { setCell, worldUnit } from '../leavewar/state/store'
+import { setHome, homeOn } from '../state/units'
+import { hBeforeAll, hAfterAll, hBeforeEach, hAfterEach, saber, on, signInAs } from './_harness'
+
+beforeAll(hBeforeAll); afterAll(hAfterAll); beforeEach(hBeforeEach); afterEach(hAfterEach)
+
+describe('A7 — 142’s war takes no leave of Ranger’s after his move to 149', () => {
+  it('Saber on 16 Jul: Ranger’s 11 Aug leave on 142’s war is refused', () => {
+    saber()
+    expect(setHome('bane', 'u149').ok).toBe(true)
+    on(16)
+    saber()
+    expect(worldUnit()).toBe('u142')
+    expect(homeOn('bane', '2026-08-11')).toBe('u149')
+    expect(setCell('bane', '2026-08-11', 'LL'), '142’s war refuses a day that is 149’s').toBe(false)
+  })
+  it('Hunter (142’s plain admin, no right in 149) on 16 Jul: the same write is refused', () => {
+    saber()
+    expect(setHome('bane', 'u149').ok).toBe(true)
+    on(16)
+    signInAs('ad2', 'a2')
+    expect(worldUnit()).toBe('u142')
+    expect(setCell('bane', '2026-08-11', 'LL'), '142’s war refuses a day that is 149’s').toBe(false)
+  })
+  it('(control) before the move, the same write on 142’s war goes through', () => {
+    saber()
+    expect(setCell('bane', '2026-08-11', 'LL')).toBe(true)
+  })
+  it("(probe, not a reviewer's claim) Hunter writing Osprey (149 always, never 142's) on 142’s war", () => {
+    on(16)
+    signInAs('ad2', 'a2')
+    expect(setCell('osp9', '2026-08-11', 'LL')).toBe(false)
+  })
+  it('(probe) Hunter on 15 Jul, the move saved for 16 Jul: Ranger’s 11 Aug leave on 142’s war', () => {
+    saber()
+    expect(setHome('bane', 'u149').ok).toBe(true)
+    signInAs('ad2', 'a2')
+    expect(setCell('bane', '2026-08-11', 'LL'), 'a day that will be 149’s').toBe(false)
+  })
+})

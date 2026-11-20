@@ -1,0 +1,35 @@
+// @vitest-environment jsdom
+/* B2 (Fable 2, Opus B1): 149's guest switch does nothing — the setting is a unit's (keyowner UNIT_SETTINGS), read by
+   plain name, so for a person waiting (no home) it is the boot unit's ("u142") switch that decides. Before the batch
+   the one switch decided for everyone (D221: a person waiting goes straight into the guest view when the admin's guest
+   switch is on). 149's admin is shown it on; nobody waiting gets in. */
+import { describe, expect, it } from 'vitest'
+import { useWorld, signInAs, signOut, mem } from './_harness'
+import { signIn, requestAccess, setGuestView, GUESTVIEW } from '../state/accounts'
+
+useWorld()
+
+function newbieAsks() {
+  expect(signInAs('newbie@x', 'p').kind).toBe('new')
+  expect(requestAccess({ cs: 'Newbie', ini: 'NB', seat: 'FCP', cat: 'C' })).toBeNull()
+  signOut()
+}
+
+describe("B2 — an admin's guest switch, once on, lets the person waiting in", () => {
+  it("Kestrel (149's only admin) turns it on: the person waiting signs in as a guest", () => {
+    newbieAsks()
+    signInAs('ad9', 'a9')
+    expect(setGuestView(true), 'the screen says done').toBeNull()
+    expect(GUESTVIEW, 'and shows it on').toBe(true)
+    signOut()
+    expect(Object.keys(mem).filter(k => k.includes('guestview')), 'stored under 149').toEqual(expect.arrayContaining([expect.stringContaining('u149@guestview')]))
+    expect(signIn('newbie@x', 'p').kind).toBe('guest')
+  })
+  it("(control) Hunter (142's admin) turns it on: the person waiting is a guest", () => {
+    newbieAsks()
+    signInAs('ad2', 'a2')
+    expect(setGuestView(true)).toBeNull()
+    signOut()
+    expect(signIn('newbie@x', 'p').kind).toBe('guest')
+  })
+})
