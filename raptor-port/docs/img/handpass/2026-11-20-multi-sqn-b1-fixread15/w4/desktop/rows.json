@@ -1,0 +1,65 @@
+[
+ [
+  "W4-0",
+  "desktop",
+  "before: Quals page (Hunter)",
+  "Outlaw is on Quals (premise: he exists before the delete)",
+  "{\"exact\":1,\"any\":[\"Outlaw\"]}",
+  "PASS",
+  "s0-desktop-quals-before.png"
+ ],
+ [
+  "W4-1",
+  "desktop",
+  "Hunter deletes Outlaw (Casper) on Admin > Users",
+  "the person is deleted (his row gone)",
+  "rows for casper now 0; buttons seen [\"accEdDel|Tap again to delete Outlaw\",\"accEdCancel|Cancel\"]",
+  "PASS",
+  "s1-desktop-after-delete.png"
+ ],
+ [
+  "W4-s2",
+  "desktop",
+  "s2: Quals page",
+  "Outlaw on no list of Quals",
+  "{\"exact\":0,\"any\":[]}",
+  "PASS",
+  "s2-desktop-quals.png"
+ ],
+ [
+  "W4-s2b",
+  "desktop",
+  "s2: Admin > Users lists, search \"Outlaw\", all lists, and the Archived list",
+  "Outlaw nowhere",
+  "search rows []; mentions in the whole page []; archived list open: no Archived control",
+  "BLOCKED",
+  "s2-desktop-admin-archived.png"
+ ],
+ [
+  "W4-s3",
+  "desktop",
+  "s3: Quals page",
+  "Outlaw on no list of Quals",
+  "{\"exact\":0,\"any\":[]}",
+  "PASS",
+  "s3-desktop-quals.png"
+ ],
+ [
+  "W4-s3b",
+  "desktop",
+  "s3: Admin > Users lists, search \"Outlaw\", all lists, and the Archived list",
+  "Outlaw nowhere",
+  "search rows []; mentions in the whole page []; archived list open: no Archived control",
+  "BLOCKED",
+  "s3-desktop-admin-archived.png"
+ ],
+ [
+  "W4-4",
+  "desktop",
+  "extra look (not in the brief): Leave War grid after the delete",
+  "RECORD",
+  "Outlaw mentions in the Leave War page [\"Outlaw\"]; Outlaw's cells 1",
+  "RECORD",
+  "s4-desktop-leavewar-after-delete.png"
+ ]
+]

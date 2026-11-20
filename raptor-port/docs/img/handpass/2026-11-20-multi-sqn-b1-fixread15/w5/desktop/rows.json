@@ -1,0 +1,83 @@
+[
+ [
+  "W5-s1",
+  "desktop",
+  "ad2: open the bell, read lines, press each line",
+  "every line opens its place; nothing breaks",
+  "dot before block; bell opened 1; lines [\"NEW LLThu 23 Jul Remark changed · Kestrel now\"]; 0: page inputs, windows 2, bell open 0",
+  "PASS",
+  "s1-desktop-ad2-open.png"
+ ],
+ [
+  "W5-s1m",
+  "desktop",
+  "ad2: Mark all read",
+  "all lines read; badge dot gone after closing",
+  "mark-all controls 0; lines after [\"read LLThu 23 Jul Remark changed · Kestrel now\"]",
+  "BLOCKED",
+  "s1-desktop-ad2-markall-settled.png"
+ ],
+ [
+  "W5-s1c",
+  "desktop",
+  "ad2: close the bell with its button, badge after",
+  "bell closed; dot gone if all read",
+  "closed true; dot before block after none",
+  "PASS",
+  "s1-desktop-ad2-badge-after.png"
+ ],
+ [
+  "W5-s2",
+  "desktop",
+  "us: open the bell, read lines, press each line",
+  "every line opens its place; nothing breaks",
+  "dot before block; bell opened 1; lines [\"NEW LLThu 23 Jul Remark changed · Kestrel now\",\"NEW LLThu 23 Jul You were added · Hunter now\"]; 0: page inputs, windows 2, bell open 0 ; 1: page inputs, windows 2, bell open 0",
+  "PASS",
+  "s2-desktop-us-open.png"
+ ],
+ [
+  "W5-s2m",
+  "desktop",
+  "us: Mark all read",
+  "all lines read; badge dot gone after closing",
+  "mark-all controls 1; lines after [\"read LLThu 23 Jul Remark changed · Kestrel now\",\"read LLThu 23 Jul You were added · Hunter now\"]",
+  "PASS",
+  "s2-desktop-us-markall-settled.png"
+ ],
+ [
+  "W5-s2c",
+  "desktop",
+  "us: close the bell with its button, badge after",
+  "bell closed; dot gone if all read",
+  "closed true; dot before block after none",
+  "PASS",
+  "s2-desktop-us-badge-after.png"
+ ],
+ [
+  "W5-s3",
+  "desktop",
+  "ad: open the bell, read lines, press each line",
+  "every line opens its place; nothing breaks",
+  "dot before none; bell opened 1; lines []; ",
+  "PASS",
+  "s3-desktop-ad-open.png"
+ ],
+ [
+  "W5-s3m",
+  "desktop",
+  "ad: Mark all read",
+  "all lines read; badge dot gone after closing",
+  "mark-all controls 0; lines after []",
+  "BLOCKED",
+  "s3-desktop-ad-markall-settled.png"
+ ],
+ [
+  "W5-s3c",
+  "desktop",
+  "ad: close the bell with its button, badge after",
+  "bell closed; dot gone if all read",
+  "closed true; dot before none after none",
+  "PASS",
+  "s3-desktop-ad-badge-after.png"
+ ]
+]

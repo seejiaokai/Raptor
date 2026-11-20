@@ -1,0 +1,80 @@
+msq-fr15-w4 v1 desktop
+ROW PASS | W4-0 | desktop | before: Quals page (Hunter) | saw: {"exact":14,"any":["Outlaw","Outlaw","Outlaw","Outlaw","Outlaw","Outlaw"]}
+buttons ["accEdDel|Tap again to delete Outlaw","accEdCancel|Cancel"]
+confirm text none
+ROW FAIL | W4-1 | desktop | Hunter deletes Outlaw (Casper) on Admin > Users | saw: rows for casper now 1; buttons seen ["accEdDel|Tap again to delete Outlaw","accEdCancel|Cancel"]
+ROW FAIL | W4-s2 | desktop | s2: Quals page | saw: {"exact":14,"any":["Outlaw","Outlaw","Outlaw","Outlaw","Outlaw","Outlaw"]}
+s2 admin: rows for the search ["Outlaw outlaw · Pilot · CAT C MEMBER"] mentions with no search ["Outlaw","Outlaw","Outlaw","Outlaw","Outlaw","Outlaw"]
+ROW FAIL | W4-s2b | desktop | s2: Admin > Users lists, search "Outlaw", all lists, and the Archived list | saw: search rows ["Outlaw outlaw · Pilot · CAT C MEMBER"]; mentions in the whole page ["Outlaw","Outlaw","Outlaw","Outlaw","Outlaw","Outlaw"]; archived list open: no Archived control
+ROW FAIL | W4-s3 | desktop | s3: Quals page | saw: {"exact":14,"any":["Outlaw","Outlaw","Outlaw","Outlaw","Outlaw","Outlaw"]}
+s3 admin: rows for the search ["Outlaw outlaw · Pilot · CAT C MEMBER"] mentions with no search ["Outlaw","Outlaw","Outlaw","Outlaw","Outlaw","Outlaw"]
+ROW FAIL | W4-s3b | desktop | s3: Admin > Users lists, search "Outlaw", all lists, and the Archived list | saw: search rows ["Outlaw outlaw · Pilot · CAT C MEMBER"]; mentions in the whole page ["Outlaw","Outlaw","Outlaw","Outlaw","Outlaw","Outlaw"]; archived list open: no Archived control
+errors []
+DONE 1 PASS 5 FAIL 0 OTHER of 6
+msq-fr15-w4 v1 desktop
+ROW PASS | W4-0 | desktop | before: Quals page (Hunter) | saw: {"exact":14,"any":["Outlaw","Outlaw","Outlaw","Outlaw","Outlaw","Outlaw"]}
+buttons ["accEdDel|Tap again to delete Outlaw","accEdCancel|Cancel"]
+second press text Tap again to delete Outlaw
+buttons after []
+ROW PASS | W4-1 | desktop | Hunter deletes Outlaw (Casper) on Admin > Users | saw: rows for casper now 0; buttons seen ["accEdDel|Tap again to delete Outlaw","accEdCancel|Cancel"]
+ROW FAIL | W4-s2 | desktop | s2: Quals page | saw: {"exact":13,"any":["Outlaw","Outlaw","Outlaw","Outlaw","Outlaw","Outlaw"]}
+s2 admin: rows for the search [] mentions with no search ["Outlaw","Outlaw","Outlaw","Outlaw","Outlaw","Outlaw"]
+ROW FAIL | W4-s2b | desktop | s2: Admin > Users lists, search "Outlaw", all lists, and the Archived list | saw: search rows []; mentions in the whole page ["Outlaw","Outlaw","Outlaw","Outlaw","Outlaw","Outlaw"]; archived list open: no Archived control
+ROW FAIL | W4-s3 | desktop | s3: Quals page | saw: {"exact":3,"any":["Outlaw","Outlaw","Outlaw"]}
+s3 admin: rows for the search [] mentions with no search ["Outlaw","Outlaw","Outlaw"]
+ROW FAIL | W4-s3b | desktop | s3: Admin > Users lists, search "Outlaw", all lists, and the Archived list | saw: search rows []; mentions in the whole page ["Outlaw","Outlaw","Outlaw"]; archived list open: no Archived control
+errors []
+DONE 2 PASS 4 FAIL 0 OTHER of 6
+msq-fr15-w4 v1 desktop
+ROW PASS | W4-0 | desktop | before: Quals page (Hunter) | saw: {"exact":1,"any":["Outlaw"]}
+buttons ["accEdDel|Tap again to delete Outlaw","accEdCancel|Cancel"]
+second press text Tap again to delete Outlaw
+buttons after []
+ROW PASS | W4-1 | desktop | Hunter deletes Outlaw (Casper) on Admin > Users | saw: rows for casper now 0; buttons seen ["accEdDel|Tap again to delete Outlaw","accEdCancel|Cancel"]
+ROW PASS | W4-s2 | desktop | s2: Quals page | saw: {"exact":0,"any":[]}
+s2 admin controls ["Users\nSign-in and roster","Squadron config\nDuty, da","Data\nStorage & cleanup","Ace\nno sign-in · Pilot ·","Anvil\nno sign-in · Pilot","Basher\nno sign-in · WSO ","Blade\nno sign-in · Pilot","Bolt\nno sign-in · Pilot ","Cinch\nno sign-in · Pilot","Cinder\nno sign-in · WSO ","Cobra\nno sign-in · Pilot","Comet\nno sign-in · Pilot","Condor\nno sign-in · Pilo","Cotter\nno sign-in · Pers","Cutter\nno sign-in · WSO ","Dash\nno sign-in · WSO · ","Diesel\nno sign-in · Pilo","Drifter\nno sign-in · Pil","Echo\nno sign-in · WSO · ","Fable\nno sign-in · WSO ·","Falcon\nno sign-in · WSO ","Forge\nno sign-in · Pilot","Gambit\nno sign-in · Pilo","Gannet\nno sign-in · WSO ","Ghost\nno sign-in · WSO ·","Grit\nno sign-in · WSO · ","Harrier\nno sign-in · Pil","Havoc\nno sign-in · Pilot","Heron\nno sign-in · WSO ·","Hex\nhex\n· WSO · CAT C","Hunter\nad2\n· Pilot · CAT","Jester\nno sign-in · Pilo","Kestrel\nad9\n· Pilot · CA","Kraken\nno sign-in · Pilo","Ledger\nno sign-in · WSO ","Marlin\nno sign-in · WSO ","Merlin\nno sign-in · Pilo","Nomad\nno sign-in · Pilot","Osprey\nus9\n· Pilot · CAT","Otter\nno sign-in · WSO ·"]
+s2 admin: rows for the search [] mentions with no search []
+ROW BLOCKED | W4-s2b | desktop | s2: Admin > Users lists, search "Outlaw", all lists, and the Archived list | saw: search rows []; mentions in the whole page []; archived list open: no Archived control
+ROW PASS | W4-s3 | desktop | s3: Quals page | saw: {"exact":0,"any":[]}
+s3 admin controls ["Users\nSign-in and roster","Squadron config\nDuty, da","Data\nStorage & cleanup","Ace\nno sign-in · Pilot ·","Anvil\nno sign-in · Pilot","Basher\nno sign-in · WSO ","Blade\nno sign-in · Pilot","Bolt\nno sign-in · Pilot ","Cinch\nno sign-in · Pilot","Cinder\nno sign-in · WSO ","Cobra\nno sign-in · Pilot","Comet\nno sign-in · Pilot","Condor\nno sign-in · Pilo","Cotter\nno sign-in · Pers","Cutter\nno sign-in · WSO ","Dash\nno sign-in · WSO · ","Diesel\nno sign-in · Pilo","Drifter\nno sign-in · Pil","Echo\nno sign-in · WSO · ","Fable\nno sign-in · WSO ·","Falcon\nno sign-in · WSO ","Forge\nno sign-in · Pilot","Gambit\nno sign-in · Pilo","Gannet\nno sign-in · WSO ","Ghost\nno sign-in · WSO ·","Grit\nno sign-in · WSO · ","Harrier\nno sign-in · Pil","Havoc\nno sign-in · Pilot","Heron\nno sign-in · WSO ·","Hex\nhex\n· WSO · CAT C","Hunter\nad2\n· Pilot · CAT","Jester\nno sign-in · Pilo","Kestrel\nad9\n· Pilot · CA","Kraken\nno sign-in · Pilo","Ledger\nno sign-in · WSO ","Marlin\nno sign-in · WSO ","Merlin\nno sign-in · Pilo","Nomad\nno sign-in · Pilot","Osprey\nus9\n· Pilot · CAT","Otter\nno sign-in · WSO ·"]
+s3 admin: rows for the search [] mentions with no search []
+ROW BLOCKED | W4-s3b | desktop | s3: Admin > Users lists, search "Outlaw", all lists, and the Archived list | saw: search rows []; mentions in the whole page []; archived list open: no Archived control
+errors []
+DONE 4 PASS 0 FAIL 2 OTHER of 6
+msq-fr15-w4 v1 desktop
+ROW PASS | W4-0 | desktop | before: Quals page (Hunter) | saw: {"exact":1,"any":["Outlaw"]}
+buttons ["accEdDel|Tap again to delete Outlaw","accEdCancel|Cancel"]
+second press text Tap again to delete Outlaw
+buttons after []
+ROW PASS | W4-1 | desktop | Hunter deletes Outlaw (Casper) on Admin > Users | saw: rows for casper now 0; buttons seen ["accEdDel|Tap again to delete Outlaw","accEdCancel|Cancel"]
+ROW PASS | W4-s2 | desktop | s2: Quals page | saw: {"exact":0,"any":[]}
+s2 admin controls ["Users\nSign-in and roster","Squadron config\nDuty, da","Data\nStorage & cleanup","Ace\nno sign-in · Pilot ·","Anvil\nno sign-in · Pilot","Basher\nno sign-in · WSO ","Blade\nno sign-in · Pilot","Bolt\nno sign-in · Pilot ","Cinch\nno sign-in · Pilot","Cinder\nno sign-in · WSO ","Cobra\nno sign-in · Pilot","Comet\nno sign-in · Pilot","Condor\nno sign-in · Pilo","Cotter\nno sign-in · Pers","Cutter\nno sign-in · WSO ","Dash\nno sign-in · WSO · ","Diesel\nno sign-in · Pilo","Drifter\nno sign-in · Pil","Echo\nno sign-in · WSO · ","Fable\nno sign-in · WSO ·","Falcon\nno sign-in · WSO ","Forge\nno sign-in · Pilot","Gambit\nno sign-in · Pilo","Gannet\nno sign-in · WSO ","Ghost\nno sign-in · WSO ·","Grit\nno sign-in · WSO · ","Harrier\nno sign-in · Pil","Havoc\nno sign-in · Pilot","Heron\nno sign-in · WSO ·","Hex\nhex\n· WSO · CAT C","Hunter\nad2\n· Pilot · CAT","Jester\nno sign-in · Pilo","Kestrel\nad9\n· Pilot · CA","Kraken\nno sign-in · Pilo","Ledger\nno sign-in · WSO ","Marlin\nno sign-in · WSO ","Merlin\nno sign-in · Pilo","Nomad\nno sign-in · Pilot","Osprey\nus9\n· Pilot · CAT","Otter\nno sign-in · WSO ·"]
+s2 admin: rows for the search [] mentions with no search []
+s2 archive-ish text []
+ROW BLOCKED | W4-s2b | desktop | s2: Admin > Users lists, search "Outlaw", all lists, and the Archived list | saw: search rows []; mentions in the whole page []; archived list open: no Archived control
+ROW PASS | W4-s3 | desktop | s3: Quals page | saw: {"exact":0,"any":[]}
+s3 admin controls ["Users\nSign-in and roster","Squadron config\nDuty, da","Data\nStorage & cleanup","Ace\nno sign-in · Pilot ·","Anvil\nno sign-in · Pilot","Basher\nno sign-in · WSO ","Blade\nno sign-in · Pilot","Bolt\nno sign-in · Pilot ","Cinch\nno sign-in · Pilot","Cinder\nno sign-in · WSO ","Cobra\nno sign-in · Pilot","Comet\nno sign-in · Pilot","Condor\nno sign-in · Pilo","Cotter\nno sign-in · Pers","Cutter\nno sign-in · WSO ","Dash\nno sign-in · WSO · ","Diesel\nno sign-in · Pilo","Drifter\nno sign-in · Pil","Echo\nno sign-in · WSO · ","Fable\nno sign-in · WSO ·","Falcon\nno sign-in · WSO ","Forge\nno sign-in · Pilot","Gambit\nno sign-in · Pilo","Gannet\nno sign-in · WSO ","Ghost\nno sign-in · WSO ·","Grit\nno sign-in · WSO · ","Harrier\nno sign-in · Pil","Havoc\nno sign-in · Pilot","Heron\nno sign-in · WSO ·","Hex\nhex\n· WSO · CAT C","Hunter\nad2\n· Pilot · CAT","Jester\nno sign-in · Pilo","Kestrel\nad9\n· Pilot · CA","Kraken\nno sign-in · Pilo","Ledger\nno sign-in · WSO ","Marlin\nno sign-in · WSO ","Merlin\nno sign-in · Pilo","Nomad\nno sign-in · Pilot","Osprey\nus9\n· Pilot · CAT","Otter\nno sign-in · WSO ·"]
+s3 admin: rows for the search [] mentions with no search []
+s3 archive-ish text []
+ROW BLOCKED | W4-s3b | desktop | s3: Admin > Users lists, search "Outlaw", all lists, and the Archived list | saw: search rows []; mentions in the whole page []; archived list open: no Archived control
+errors []
+DONE 4 PASS 0 FAIL 2 OTHER of 6
+msq-fr15-w4 v1 desktop
+ROW PASS | W4-0 | desktop | before: Quals page (Hunter) | saw: {"exact":1,"any":["Outlaw"]}
+buttons ["accEdDel|Tap again to delete Outlaw","accEdCancel|Cancel"]
+second press text Tap again to delete Outlaw
+buttons after []
+ROW PASS | W4-1 | desktop | Hunter deletes Outlaw (Casper) on Admin > Users | saw: rows for casper now 0; buttons seen ["accEdDel|Tap again to delete Outlaw","accEdCancel|Cancel"]
+ROW PASS | W4-s2 | desktop | s2: Quals page | saw: {"exact":0,"any":[]}
+s2 admin controls ["Users\nSign-in and roster","Squadron config\nDuty, da","Data\nStorage & cleanup","Ace\nno sign-in · Pilot ·","Anvil\nno sign-in · Pilot","Basher\nno sign-in · WSO ","Blade\nno sign-in · Pilot","Bolt\nno sign-in · Pilot ","Cinch\nno sign-in · Pilot","Cinder\nno sign-in · WSO ","Cobra\nno sign-in · Pilot","Comet\nno sign-in · Pilot","Condor\nno sign-in · Pilo","Cotter\nno sign-in · Pers","Cutter\nno sign-in · WSO ","Dash\nno sign-in · WSO · ","Diesel\nno sign-in · Pilo","Drifter\nno sign-in · Pil","Echo\nno sign-in · WSO · ","Fable\nno sign-in · WSO ·","Falcon\nno sign-in · WSO ","Forge\nno sign-in · Pilot","Gambit\nno sign-in · Pilo","Gannet\nno sign-in · WSO ","Ghost\nno sign-in · WSO ·","Grit\nno sign-in · WSO · ","Harrier\nno sign-in · Pil","Havoc\nno sign-in · Pilot","Heron\nno sign-in · WSO ·","Hex\nhex\n· WSO · CAT C","Hunter\nad2\n· Pilot · CAT","Jester\nno sign-in · Pilo","Kestrel\nad9\n· Pilot · CA","Kraken\nno sign-in · Pilo","Ledger\nno sign-in · WSO ","Marlin\nno sign-in · WSO ","Merlin\nno sign-in · Pilo","Nomad\nno sign-in · Pilot","Osprey\nus9\n· Pilot · CAT","Otter\nno sign-in · WSO ·"]
+s2 admin: rows for the search [] mentions with no search []
+s2 archive-ish text []
+ROW BLOCKED | W4-s2b | desktop | s2: Admin > Users lists, search "Outlaw", all lists, and the Archived list | saw: search rows []; mentions in the whole page []; archived list open: no Archived control
+ROW PASS | W4-s3 | desktop | s3: Quals page | saw: {"exact":0,"any":[]}
+s3 admin controls ["Users\nSign-in and roster","Squadron config\nDuty, da","Data\nStorage & cleanup","Ace\nno sign-in · Pilot ·","Anvil\nno sign-in · Pilot","Basher\nno sign-in · WSO ","Blade\nno sign-in · Pilot","Bolt\nno sign-in · Pilot ","Cinch\nno sign-in · Pilot","Cinder\nno sign-in · WSO ","Cobra\nno sign-in · Pilot","Comet\nno sign-in · Pilot","Condor\nno sign-in · Pilo","Cotter\nno sign-in · Pers","Cutter\nno sign-in · WSO ","Dash\nno sign-in · WSO · ","Diesel\nno sign-in · Pilo","Drifter\nno sign-in · Pil","Echo\nno sign-in · WSO · ","Fable\nno sign-in · WSO ·","Falcon\nno sign-in · WSO ","Forge\nno sign-in · Pilot","Gambit\nno sign-in · Pilo","Gannet\nno sign-in · WSO ","Ghost\nno sign-in · WSO ·","Grit\nno sign-in · WSO · ","Harrier\nno sign-in · Pil","Havoc\nno sign-in · Pilot","Heron\nno sign-in · WSO ·","Hex\nhex\n· WSO · CAT C","Hunter\nad2\n· Pilot · CAT","Jester\nno sign-in · Pilo","Kestrel\nad9\n· Pilot · CA","Kraken\nno sign-in · Pilo","Ledger\nno sign-in · WSO ","Marlin\nno sign-in · WSO ","Merlin\nno sign-in · Pilo","Nomad\nno sign-in · Pilot","Osprey\nus9\n· Pilot · CAT","Otter\nno sign-in · WSO ·"]
+s3 admin: rows for the search [] mentions with no search []
+s3 archive-ish text []
+ROW BLOCKED | W4-s3b | desktop | s3: Admin > Users lists, search "Outlaw", all lists, and the Archived list | saw: search rows []; mentions in the whole page []; archived list open: no Archived control
+ROW RECORD | W4-4 | desktop | extra look (not in the brief): Leave War grid after the delete | saw: Outlaw mentions in the Leave War page ["Outlaw"]; Outlaw's cells 1
+errors []
+DONE 4 PASS 0 FAIL 3 OTHER of 7

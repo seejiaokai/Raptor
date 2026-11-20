@@ -1,0 +1,65 @@
+[
+ [
+  "W4-0",
+  "iPhone",
+  "before: Quals page (Hunter)",
+  "Outlaw is on Quals (premise: he exists before the delete)",
+  "{\"exact\":1,\"any\":[\"Outlaw\"]}",
+  "PASS",
+  "s0-phone-quals-before.png"
+ ],
+ [
+  "W4-1",
+  "iPhone",
+  "Hunter deletes Outlaw (Casper) on Admin > Users",
+  "the person is deleted (his row gone)",
+  "rows for casper now 0; buttons seen [\"accEdDel|Tap again to delete Outlaw\",\"accEdCancel|Cancel\"]",
+  "PASS",
+  "s1-phone-after-delete.png"
+ ],
+ [
+  "W4-s2",
+  "iPhone",
+  "s2: Quals page",
+  "Outlaw on no list of Quals",
+  "{\"exact\":0,\"any\":[]}",
+  "PASS",
+  "s2-phone-quals.png"
+ ],
+ [
+  "W4-s2b",
+  "iPhone",
+  "s2: Admin > Users lists, search \"Outlaw\", all lists, and the Archived list",
+  "Outlaw nowhere",
+  "search rows []; mentions in the whole page []; archived list open: no Archived control",
+  "BLOCKED",
+  "s2-phone-admin-archived.png"
+ ],
+ [
+  "W4-s3",
+  "iPhone",
+  "s3: Quals page",
+  "Outlaw on no list of Quals",
+  "{\"exact\":0,\"any\":[]}",
+  "PASS",
+  "s3-phone-quals.png"
+ ],
+ [
+  "W4-s3b",
+  "iPhone",
+  "s3: Admin > Users lists, search \"Outlaw\", all lists, and the Archived list",
+  "Outlaw nowhere",
+  "search rows []; mentions in the whole page []; archived list open: no Archived control",
+  "BLOCKED",
+  "s3-phone-admin-archived.png"
+ ],
+ [
+  "W4-4",
+  "iPhone",
+  "extra look (not in the brief): Leave War grid after the delete",
+  "RECORD",
+  "Outlaw mentions in the Leave War page [\"Outlaw\",\"Outlaw\"]; Outlaw's cells 1",
+  "RECORD",
+  "s4-phone-leavewar-after-delete.png"
+ ]
+]

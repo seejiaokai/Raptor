@@ -1476,6 +1476,12 @@ against the saved row carries that row as its before-image too, memory's landing
 men on its own days, or its own squadron where it names nobody). Item C — `src/state/notices.ts` (`noticePass`: new words on
 a war-approved leave told whatever else the war command changed). Item D — `src/state/perms.ts` (`deletedPersonViolation`:
 `DELETE_MARKS` — the archive mark and who archived him held too).
+Fix read 15's three (20 Nov 26, chat 122; each red first): **New:** `src/leavewar/multi-sqn-fixread15.test.ts`.
+**Changed:** `src/state/perms.ts` (`withLanding`: only the week load's 'g' landing taken from memory; a never-saved put
+carried as a create; `foldedFor`, read in `toldBy` and `filerMarkOk`), `src/state/notices.ts` (`foldedInto`: the leaves a
+command folded into another; `noticePass` tells their words on the leave that stands), `src/leavewar/multi-sqn-fixread14.test.ts`
+(its honest control set 'g'). The code check's new findings: `src/leavewar/state/foreign.ts` (`deepClone`), `perms.ts`
+(two finds read by id), fix reads 10–13's test files (`structuredClone`).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and
