@@ -149,10 +149,10 @@ and checked, so a short night leaves that pull request as its checked jobs.
   **No record is written into the repo while a gate run is going** — draft it in the scratch folder (the document check
   is the run's last gate, and an edit during the run fails it).
 - **Compact smartly, by how full the chat is (D766, D867, D868).** Not at a fixed point: from the first note — 75% of the app's room, about
-  300,000 of 400,000 (D878, D1671; D868's "about 80%") — the agent chooses the moment itself, without asking him: the
+  450,000 of 600,000 (D878, D1671, D2229; D868's "about 80%") — the agent chooses the moment itself, without asking him: the
   next clean point, so a big job does not compact twice; on a night it never stops to offer a handoff (D871 — he is
   away). The project's compaction set-up (D870) runs with its guard OFF at night (D872 — step 9): the app's own
-  compaction comes at about 96% of the app's room (about 384,000) whenever it gets there — nothing holds it, because a compaction refused by mistake at night would end the run;
+  compaction comes at about 96% of the app's room (about 576,000) whenever it gets there — nothing holds it, because a compaction refused by mistake at night would end the run;
   after it, the chat's saved block is handed back. Any piece of that may not run — then the app compacts by itself
   near full — so the agent keeps every compaction harmless and the work accurate:
   - keep the chat lean: heavy reading, walking and code reads go to helpers that return conclusions, never file dumps;
