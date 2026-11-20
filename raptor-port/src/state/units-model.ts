@@ -140,9 +140,65 @@ export const unitIn = (r: UnitRows, id: string): Unit | undefined => r.units.fin
 export const placeIn = (r: UnitRows, id: string): Place | undefined => r.places.find(p => p.id === id)
 /* the place a unit is at on a date (its place's id), or null for a unit never placed */
 export const placeIdOn = (r: UnitRows, unit: string, iso: string): string | null => atOn(r.unitplaces.filter(x => x.unit === unit), iso)?.place ?? null
+
+/* HOMES INDEXED BY PERSON, ONCE PER SET OF ROWS (the reshape plan §3.2 A-i; C10's measured cost): every read of a man's
+   squadron used to filter every home row; a list over a year of days (the Leave War's rosters, Piece D) and a right read
+   on a day (Piece B's grantOn) ask it hundreds of times. Kept beside the rows it was built from — rebuilt when a
+   different homes list, or the same list grown or shrunk, is handed in (the rows are read, never changed in place). */
+const HOMES_BY = new WeakMap<Home[], { n: number; by: Map<string, Home[]> }>()
+function homesOf(r: UnitRows, pid: string): Home[] {
+  let ix = HOMES_BY.get(r.homes)
+  if (!ix || ix.n !== r.homes.length) {
+    const by = new Map<string, Home[]>()
+    for (const h of r.homes) { const l = by.get(h.pid); if (l) l.push(h); else by.set(h.pid, [h]) }
+    for (const l of by.values()) l.sort((a, b) => (a.from < b.from ? -1 : a.from > b.from ? 1 : a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+    ix = { n: r.homes.length, by }
+    HOMES_BY.set(r.homes, ix)
+  }
+  return ix.by.get(pid) ?? []
+}
 /* a person's home unit on a date; `fallback` for a person with no home row — the demo's 142, a shared store's null */
 export const homeUnitOn = (r: UnitRows, pid: string, iso: string, fallback: string | null): string | null =>
-  atOn(r.homes.filter(x => x.pid === pid), iso)?.unit ?? fallback
+  atOn(homesOf(r, pid), iso)?.unit ?? fallback
+
+/* THE DAYS HIS SQUADRON CHANGES (the reshape plan §3.2 A-i — Fable 7): every day `d` with `a < d <= b` on which his
+   squadron, as `homeUnitOn` resolves it, differs from the day before. Never a row's date as such: the baseline row
+   units.ts setHome writes for a man with none (his squadron of today, from today), a second row of the same squadron, a
+   same-day take-back and a first placing are no change — his first row reaches back over every day before it, so the day
+   before it already reads that row. Only a row's own date can start a change, so only those dates are looked at. */
+export function homeChangesIn(r: UnitRows, pid: string, a: string, b: string, fallback: string | null): string[] {
+  const out: string[] = []
+  const days = [...new Set(homesOf(r, pid).map(h => h.from))].filter(d => d > a && d <= b).sort()
+  for (const d of days) if (homeUnitOn(r, pid, d, fallback) !== homeUnitOn(r, pid, addDays(d, -1), fallback)) out.push(d)
+  return out
+}
+
+/* HIS STINTS IN A UNIT (the reshape plan §3.2 A-i, for the Leave War's year-long rosters — A1): the runs of days his
+   squadron is `unit`, oldest first. `from` null — the run reaches back over every day before his first row (atOn's
+   rule); `to` null — it runs on with no end; else `to` is the day before the change that ends it. A man with no row is
+   the fallback's for ever. */
+export interface Stint { from: string | null; to: string | null }
+export function stintsIn(r: UnitRows, pid: string, unit: string, fallback: string | null): Stint[] {
+  const mine = homesOf(r, pid)
+  if (!mine.length) return fallback === unit ? [{ from: null, to: null }] : []
+  /* the squadron each date starts (rows of one date: the later id wins, as atOn — the list is sorted that way) */
+  const starts: Array<{ from: string; unit: string }> = []
+  for (const h of mine) {
+    const last = starts[starts.length - 1]
+    if (last && last.from === h.from) last.unit = h.unit
+    else starts.push({ from: h.from, unit: h.unit })
+  }
+  const out: Stint[] = []
+  for (let i = 0; i < starts.length; i++) {
+    if (starts[i]!.unit !== unit) continue
+    if (i > 0 && starts[i - 1]!.unit === unit) continue   // the same run, carried on
+    let j = i
+    while (j + 1 < starts.length && starts[j + 1]!.unit === unit) j++
+    const next = starts[j + 1]
+    out.push({ from: i === 0 ? null : starts[i]!.from, to: next ? addDays(next.from, -1) : null })
+  }
+  return out
+}
 export const grantIn = (r: UnitRows, account: string, unit: string): Grant | undefined =>
   r.grants.find(g => g.account === account && g.unit === unit)
 

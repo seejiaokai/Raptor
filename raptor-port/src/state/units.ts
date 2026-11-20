@@ -20,9 +20,9 @@ import { DEMO_149_PEOPLE } from './demoseed'
 import { homeMoveLockWords, accountOfPid } from './accounts'
 import {
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES,
-  rowsFrom, placeIdOn, homeUnitOn, grantIn, unitIn, placeIn, levelFrom, moveFrom,
+  rowsFrom, placeIdOn, homeUnitOn, homeChangesIn, stintsIn, grantIn, unitIn, placeIn, levelFrom, moveFrom,
   validUnitNum, validTz, MAX_PLACE_NAME,
-  type UnitRows, type Unit, type Place, type Grant, type GrantLevel, type UnitLevel, type LevelAccount,
+  type UnitRows, type Unit, type Place, type Grant, type GrantLevel, type UnitLevel, type LevelAccount, type Stint,
 } from './units-model'
 
 export interface UnitSave { ok: boolean; message?: string; id?: string; pending?: Promise<UnitSave> }
@@ -82,9 +82,16 @@ export const placeById = (id: string): Place | undefined => placeIn(unitRows(), 
 export const placeOfOn = (unit: string, iso: string): Place | null => { const id = placeIdOn(unitRows(), unit, iso); return id ? placeIn(unitRows(), id) ?? null : null }
 /* a person's home unit on a date (the demo's 142 when he has no row; null on a shared store) */
 export const homeOn = (pid: string, iso: string = todayIso()): string | null => homeUnitOn(unitRows(), pid, iso, fallbackHome())
+/* the days in a..b (a excluded, b included) on which his squadron changes (units-model.ts homeChangesIn — never a row's
+   date as such) — and the same over the rows before a command (the commit gate) */
+export const homeChangesOn = (pid: string, a: string, b: string): string[] => homeChangesIn(unitRows(), pid, a, b, fallbackHome())
+export const homeChangesBefore = (pid: string, a: string, b: string, rows: UnitRows): string[] => homeChangesIn(rows, pid, a, b, fallbackHome())
+/* his runs of days in a unit (units-model.ts stintsIn — the Leave War's rosters by date, A1) */
+export const stintsOf = (pid: string, unit: string): Stint[] => stintsIn(unitRows(), pid, unit, fallbackHome())
 /* …and the engine's rosters ask the same (engine/roster.ts rosterOf, engine/inputs.ts inputsFor — multi-squadron step 3):
-   the engine does not import state/, so the answer is handed to it here, once, as this module loads */
-setHomeResolver((pid, iso) => homeOn(pid, iso))
+   the engine does not import state/, so the answer is handed to it here, once, as this module loads — both questions
+   of the home handle (the reshape plan §3.2 A-i) */
+setHomeResolver({ on: (pid, iso) => homeOn(pid, iso), changesIn: (pid, a, b) => homeChangesOn(pid, a, b) })
 /* the rights an account holds in OTHER units */
 export const grantsOf = (accountId: string): Grant[] => unitRows().grants.filter(g => g.account === accountId)
 /* an account's level in a unit on a date — the one answer (units-model.ts levelFrom); the caller hands in the account */

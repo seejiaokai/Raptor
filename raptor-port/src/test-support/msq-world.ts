@@ -27,7 +27,7 @@ import { storeBackend, HOOKS } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { INPUTS } from '../engine/inputs'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
-import { accountsLoad, signIn, sessionFor, ACCOUNTS_LIST } from '../state/accounts'
+import { accountsLoad, signIn, sessionFor, ACCOUNTS_LIST, isAdminAccount } from '../state/accounts'
 import { setSession, SESSION } from '../state/auth'
 import { installGlobalUndo } from '../state/undo-wire'
 import { _resetTimeline } from '../undo/timeline'
@@ -112,7 +112,7 @@ export function acrossMove(pid: string, from: string, to: string): { before: str
 /* a seeded admin (not a master — a master counts at home only, never as another squadron's admin, the plan §5.2) whose
    account is not in `exclude`: the first admin a setup-only change names (§9.2), so no assertion reads him */
 export function bystanderAdminOf(unit: string, exclude: readonly string[] = []): string {
-  const a = ACCOUNTS_LIST.find(x => x.role === 'admin' && !x.master && x.on && !exclude.includes(x.id))
+  const a = ACCOUNTS_LIST.find(x => isAdminAccount(x) && !x.master && x.on && !exclude.includes(x.id))
   if (!a) throw new Error(`no seeded admin is free to stand by for ${unit} — every one plays a part in this scenario`)
   return a.id
 }

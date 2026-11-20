@@ -5,7 +5,7 @@ import { newId } from './newid'
 import { mintOrd } from '../command/ord'
 import { PEOPLE, isSpecial } from './people'
 import { UNIT } from './unitview'
-import { homeUnitOf } from './roster'
+import { homeUnitOf, homeHandle, type HomeHandle } from './roster'
 /* A STABLE ADDRESS FOR ONE INPUT (owner, 10 Aug 26 — editing an input's times
    and remarks in place, on the week and on the board).
    Every other editable row in this app is addressed by its position in the
@@ -89,16 +89,46 @@ export function inputsOn(dt:any):any[]{
    is; every enumeration outside inputsFor is on engine/roster-readers.test.ts's allow-list with its reason. */
 const isoOfOrd=(o:number):string=>`${Math.floor(o/10000)}-${pad2(Math.floor(o/100)%100)}-${pad2(o%100)}`;
 export function inputAtIso(at:any,yr?:any):string|undefined{if(at==null||at==='')return undefined; const s=String(at); if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s; const o=dateOrd(s,yr); return o==null?undefined:isoOfOrd(o);}
-export function inputBelongs(r:any,unit:any,at?:any):boolean{if(!r)return false;
-  const iso=inputAtIso(at)||inputAtIso(r.date,r.yr); const named=namedOf(r);
+/* AN INPUT'S SQUADRONS — ONE BODY (the reshape plan §3.2 A-iii). Before it, the gate (7c's daysOf/unitsOf), the bell's
+   filer test (notices.ts filerUnits, inputSpan) and the lists each worked out an input's days and squadrons their own
+   way, and the year-wrap case already disagreed. Now:
+   - inputSpanIso: its first and last day as dates. The app writes an input over the year's end with its end carrying its
+     year ('Dec 30' → 'Jan 2 2027', engine/crossyear.test.ts). An end before its start (never written by the app) is
+     its first day alone — never no day, never a year later — so its first day's squadrons are always judged (Opus L6).
+   - inputSquadrons: every squadron it touches — each named man's on its first day and on every day of it where his
+     squadron changes (the home handle's changesIn); a placeholder-only input (ALL AVAIL / ALL): its stamped squadron
+     `u` when it carries one (C3), else its filer's on its first day. The gate hands in its "rows before" handle.
+   - inputOnDay: a day reader's question (the crew list, the day's counts) — today's inputBelongs with its day.
+   - inputTouches / inputsTouching: a list reader's (a squadron's Inputs list shows an input on every squadron whose days
+     it touches — C1). A body that WRITES never iterates "touches" (Fable F4): one input across a move is two squadrons',
+     and a writer run over it from each squadron's load would undo the other's — it asks inputOnDay on the first day. */
+export function inputSpanIso(r:any):[string,string]|null{if(!r)return null; const a=inputAtIso(r.date,r.yr); if(!a)return null;
+  const b=r.endDate?inputAtIso(r.endDate,r.yr):undefined; return [a,b&&b>a?b:a];}
+const filerOfPh=(r:any):string=>{const ph=placeholderOf(r); const by=ph&&ph.by!=null&&ph.by!==''?ph.by:r.by; return by==null?'':String(by);};
+const stampOf=(r:any):string|null=>r&&typeof r.u==='string'&&r.u?r.u:null;
+export function inputSquadrons(r:any,home:HomeHandle=homeHandle()):string[]{const sp=inputSpanIso(r); if(!sp)return []; const out=new Set<string>(); const named=namedOf(r);
+  if(named.length){for(const e of named){const p=String(e.p); const u0=home.on(p,sp[0]); if(u0)out.add(u0);
+      for(const d of home.changesIn(p,sp[0],sp[1])){const u=home.on(p,d); if(u)out.add(u);}} return [...out];}
+  const st=stampOf(r); if(st)return [st]; const u=home.on(filerOfPh(r),sp[0]); return u?[u]:[];}
+export function inputOnDay(r:any,unit:any,iso:any):boolean{if(!r)return false; const named=namedOf(r);
   if(named.length)return named.some((e:any)=>homeUnitOf(e.p,iso)===unit);
-  const ph=placeholderOf(r); const by=ph&&ph.by!=null&&ph.by!==''?ph.by:r.by;
-  return homeUnitOf(by==null?'':by,iso)===unit;}
+  const st=stampOf(r); if(st)return st===unit;
+  return homeUnitOf(filerOfPh(r),iso)===unit;}
+export function inputTouches(r:any,unit:any):boolean{return !!r&&inputSquadrons(r).includes(unit);}
+export function inputBelongs(r:any,unit:any,at?:any):boolean{if(!r)return false;
+  return inputOnDay(r,unit,inputAtIso(at)||inputAtIso(r.date,r.yr));}
+/* a squadron's inputs on one day (a day reader), and every input touching it (a list reader) */
+export function inputsOnDay(unit:any,iso:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputOnDay(r,unit,iso));}
+export function inputsTouching(unit:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputTouches(r,unit));}
+/* his own Inputs page: every input touching his squadron, and every input naming him wherever it sits (C2) */
+export function inputsListed(unit:any,pid:any,list?:any):any[]{const p=String(pid??''); return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&(inputTouches(r,unit)||(p!==''&&holds(r,p))));}
+/* (kept while the callers move — the reshape plan §10 phase 1, "expand"; the contract in phase 3 removes it) */
 export function inputsFor(unit:any,at?:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputBelongs(r,unit,at));}
-/* the one unit a saved input is read as (its first named man's, else its filer's) — whose people its window offers */
-export function inputUnitOf(r:any):string|null{if(!r)return null; const iso=inputAtIso(r.date,r.yr); const named=namedOf(r);
+/* the one unit a saved input is read as — whose people its window offers: the squadron of its first day, through the
+   same body (its first named man's, else its stamp, else its filer's) */
+export function inputUnitOf(r:any):string|null{if(!r)return null; const sp=inputSpanIso(r); const iso=sp?sp[0]:undefined; const named=namedOf(r);
   if(named.length)return homeUnitOf(named[0].p,iso);
-  const ph=placeholderOf(r); const by=ph&&ph.by!=null&&ph.by!==''?ph.by:r.by; return homeUnitOf(by==null?'':by,iso);}
+  const st=stampOf(r); if(st)return st; return homeUnitOf(filerOfPh(r),iso);}
 /* one input by id, as the document for date `dt` holds it — the frozen copy on a frozen date (null when that version
    never held it), else the live record */
 export function inputOn(iid:any,dt:any):any{

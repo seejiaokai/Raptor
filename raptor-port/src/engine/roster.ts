@@ -18,10 +18,26 @@
 import { PEOPLE } from './people'
 import { BOOT_UNIT } from './unitview'
 
+/* THE HOME HANDLE (the reshape plan §3.2 A-i): two questions, both answered by state/units.ts over the Home rows —
+   `on`, his squadron on a day; `changesIn`, the days `d` with `a < d <= b` on which it differs from the day before
+   (units-model.ts homeChangesIn: never a row's date as such). An input's squadrons (engine/inputs.ts inputSquadrons) and
+   a right's end (Piece B) read the second. A bare function is still taken (the first question alone — no change ever). */
+export interface HomeHandle {
+  on(pid: string, iso: string): string | null
+  changesIn(pid: string, a: string, b: string): string[]
+}
 type HomeOf = (pid: string, iso: string) => string | null
-let HOME_OF: HomeOf | null = null
-/** installed by state/units.ts (homeOn); null puts the headless answer back (every person the boot unit's) */
-export function setHomeResolver(fn: HomeOf | null): void { HOME_OF = fn }
+let HOME: HomeHandle | null = null
+/** installed by state/units.ts (homeOn, homeChangesOn); null puts the headless answer back (every person the boot
+    unit's, never moving) */
+export function setHomeResolver(h: HomeHandle | HomeOf | null): void {
+  HOME = h == null ? null : typeof h === 'function' ? { on: h, changesIn: () => [] } : h
+}
+/** the handle as installed — or the headless one (every person the boot unit's, never moving) */
+export const homeHandle = (): HomeHandle => HOME ?? HEADLESS
+const HEADLESS: HomeHandle = { on: () => BOOT_UNIT, changesIn: () => [] }
+/** the days in a..b (a excluded, b included) on which a person's squadron changes */
+export const homeChangesOf = (pid: unknown, a: string, b: string): string[] => (HOME ? HOME.changesIn(String(pid ?? ''), a, b) : [])
 
 /* today as the viewer's own date (yyyy-mm-dd) — the date a list with no day of its own is read on (a picker, a page) */
 export const rosterToday = (): string => {
@@ -31,7 +47,7 @@ export const rosterToday = (): string => {
 
 /** a person's home unit on a date (null: nowhere — a shared store's person with no home row) */
 export const homeUnitOf = (pid: unknown, iso: string = rosterToday()): string | null =>
-  HOME_OF ? HOME_OF(String(pid ?? ''), iso) : BOOT_UNIT
+  HOME ? HOME.on(String(pid ?? ''), iso) : BOOT_UNIT
 
 /** a placeholder body (ALL AVAIL, ALL) — on every unit's roster */
 export const isSentinel = (id: unknown): boolean => {

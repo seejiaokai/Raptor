@@ -123,7 +123,9 @@ const RECORD_READS = /\bINPUTS\b|\binputsOn\(|\binpById\(|\binputOn\(|\bwarInput
 function files(dir: string, out: string[] = []): string[] {
   for (const f of readdirSync(dir)) {
     const p = join(dir, f)
-    if (statSync(p).isDirectory()) { if (f !== 'testing') files(p, out) }
+    /* (test-support/ holds test worlds — never imported by the app, test-support/no-app-import.test.ts — so a world
+       putting the inputs list back between tests is not one of the app's readers or writers) */
+    if (statSync(p).isDirectory()) { if (f !== 'testing' && f !== 'test-support') files(p, out) }
     else if (/\.(ts|tsx|js|jsx)$/.test(f) && !/\.test\.|\.spec\.|test-setup|testkit/.test(f)) out.push(p)
   }
   return out
