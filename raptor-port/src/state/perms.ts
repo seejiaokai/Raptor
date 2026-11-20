@@ -1751,14 +1751,19 @@ const rightNamesNew = (w: Worlds, c: Change, was: any): boolean => {
    (Restore refuses him, the Undo button skips his delete), but nothing in the gate held it: 149's admin who deleted a
    149 man, or any admin of his squadron, a master too, raised a person command that cleared the mark, and the man was
    back on the roster, free to be given a new sign-in. So a person row deleted before the command keeps its mark and its
-   date after it, and is never removed — for every actor, the app's own pass included. */
+   date after it, and is never removed — for every actor, the app's own pass included.
+   (fix read 14, item D — Astra A3): the delete writes four marks (person-delete.ts deletePerson: `deleted`, `deletedFrom`,
+   `archived`, `archivedBy: 'del'`), and every roster filter that hides him — Quals among them (ui/QualsPage.tsx lists every
+   man not archived) — reads `archived`, not `deleted`. Holding only the first two let a people edit clear his archive mark
+   and put him back on Quals. So all four stand as they were before the command. */
+const DELETE_MARKS = ['deletedFrom', 'archived', 'archivedBy'] as const
 function deletedPersonViolation(env: CommitEnvelope): string | null {
   for (const c of env.changes) {
     if (c.collection !== 'people') continue
     const b: any = c.before
     if (!b || typeof b !== 'object' || b.deleted !== true) continue
     const f: any = c.op === 'delete' ? null : c.after
-    if (!f || typeof f !== 'object' || f.deleted !== true || JSON.stringify(f.deletedFrom ?? null) !== JSON.stringify(b.deletedFrom ?? null)) return `a deleted person brought back (people/${c.id})`
+    if (!f || typeof f !== 'object' || f.deleted !== true || DELETE_MARKS.some(k => JSON.stringify(f[k] ?? null) !== JSON.stringify(b[k] ?? null))) return `a deleted person brought back (people/${c.id})`
   }
   return null
 }
