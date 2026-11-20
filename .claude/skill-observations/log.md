@@ -2919,3 +2919,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The drawing brief asked for a line "Off day · 142: Sat · 149: Sun", copied from the plan's guess that an Off day is a weekday. The helper looked at the running app, found an Off day is a dated entry kept beside the public holidays, and drew a different line; one of the red-team readers found the same fault in the plan independently. Drawn as briefed, the picture would have put a wrong model in front of the owner for approval.
 **Suggested improvement:** In mockups-on-the-real-app.md, add: a brief names each new piece's purpose and leaves its exact words and values to be read from the running app; the helper reports any place where the app's real shape differs from the brief, and the host fixes the plan before the page goes out.
 **Principle:** A mock-up drawn on the real app is also a check of the plan's assumptions; brief the drawer to report where the app disagrees, rather than to paint the assumption.
+
+### Observation 982: A review's sorting helpers ran side by side once each owned its own files — four groups in ten minutes
+
+**Status:** OPEN
+**Date:** 20 Nov 26
+**Session context:** chat 120, the skill-notes review of 69 notes (numbered past 981, the highest on any branch — 975–981 sit on `claude/multi-sqn-b1-107`)
+**Skill:** task-observer (`references/weekly-review.md`, Steps 3–5) / the project's way of running a review (`.claude/skills/TASK-OBSERVER-VENDORED.md` §Reviews in this repo)
+**Type:** open-source
+**Phase/Area:** sorting and drafting the notes with helpers
+
+**Issue:** The 10 Nov 26 review ran its five sorting helpers one after another, because two helpers drafting one file would clash. This review gave each of four helpers a list of files it alone may draft; a lesson whose home was another helper's file went into its report as "For another file", placed afterwards by the coordinator; each helper wrote its additions to files named for its group. All four ran at once and finished in about ten minutes each, with no clash; the coordinator then placed six such texts and lettered three groups' additions to one backlog item. The coordinator's own chat stayed small (its context read the reports, not the drafting).
+**Suggested improvement:** In the review's procedure (the project's §Reviews in this repo): sort the notes into groups by the files their lessons land in; give each helper the files it owns and the rule that anything else is reported, not drafted; additions files per group; run them side by side; the coordinator places the cross-file texts and letters shared items before the reads.
+**Principle:** Parallel writers are safe when ownership is by file, decided before they start; whatever crosses a boundary is handed back as text for one owner to place.
