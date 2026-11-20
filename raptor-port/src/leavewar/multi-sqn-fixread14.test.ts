@@ -95,7 +95,28 @@ describe('SEC14-1 — a member never puts a scheduler\'s or the war\'s mark on h
   const stored = (id: string): any => { const v = WB.get('inputs', id); return v ? JSON.parse(v) : null }
   beforeEach(() => { WB = new Whiteboard(); wireRows(WB); writeSeedRows(WB) })
   afterEach(() => { setStoredRowProbe(null); setStoredRowsWhole(false) })
-  for (const [field, val] of [['lw', 'y2026'], ['lateOff', true]] as const) {
+  /* (the fix, item A: `lwMoved` beside `lw`, as the brief asks — the war's mark of a day it moved) */
+  it('(the fix, a record never saved) his own leave made up in memory with lw, an honest edit that drops it, then Undo: nothing saved', () => {
+    signInAs('us', 'us')
+    const IID = 'ipd-sec14-new'
+    INPUTS.push({ person: 'bane', date: 'Jul 27', yr: 2026, allday: true, type: 'LL', remarks: 'mine', by: 'bane', at: Date.now(), iid: IID, ord: 99960, lw: 'y2026' } as any)   // outside every command
+    const x: any = INPUTS.find((r: any) => r.iid === IID)
+    const ok = writeInputsBatch(() => { delete x.lw; x.remarks = 'mine, changed' })
+    if (ok) globalUndo()
+    expect(stored(IID)?.lw, 'the saved row').toBeUndefined()
+  })
+  it('(honest, the fix) a landing mark memory holds and the saved row does not: an edit then Undo keeps it in memory, the remark back', () => {
+    signInAs('us', 'us')
+    const IID = 'ipd-sec14-acc'
+    expect(writeInputsBatch(() => { INPUTS.push({ person: 'bane', date: 'Jul 27', yr: 2026, allday: true, type: 'LL', remarks: 'mine', by: 'bane', at: Date.now(), iid: IID, ord: 99959 } as any) })).toBe(true)
+    const x: any = INPUTS.find((r: any) => r.iid === IID)
+    x.acc = 'u'                                                             // as a week load's landing writes it
+    expect(writeInputsBatch(() => { x.remarks = 'mine, changed' })).toBe(true)
+    expect(globalUndo().ok).toBe(true)
+    const y: any = INPUTS.find((r: any) => r.iid === IID)
+    expect({ remarks: y.remarks, acc: y.acc, saved: stored(IID)?.remarks }).toEqual({ remarks: 'mine', acc: 'u', saved: 'mine' })
+  })
+  for (const [field, val] of [['lw', 'y2026'], ['lwMoved', { '2026-07-27': '2026-07-20' }], ['lateOff', true]] as const) {
     it(`${field}: set in memory, an edit of his remark, then Undo — the saved row never carries it`, () => {
       signInAs('us', 'us')
       const IID = 'ipd-sec14-' + field

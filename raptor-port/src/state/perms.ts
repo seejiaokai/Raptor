@@ -2592,12 +2592,31 @@ function storedRowViolation(env: CommitEnvelope): string | Change[] | null {
     const why = ownershipViolation(copy)
     if (why) return moved ? `a saved record changed outside the app's doors (${moved}): ${why}` : `a record never saved, changed as if it were (${unsaved}): ${why}`
   } finally { SECOND_PASS = false }
-  /* (b) only a removal's image is carried: a put records its after-image too, and the timeline's line for it reads the two
-     images, so a field memory holds and the saved row does not (a week load's landing mark) would read as a change of its
-     own; a removal's after is nothing, so its Undo puts back exactly what is carried here */
+  /* (b) a removal's image is carried whole: its after is nothing, so its Undo puts back exactly what is carried here.
+     …AND A PUT'S TOO (fix read 14, item A — the security read's SEC14-1): only a removal's was carried, so a put kept
+     memory's before-image, the Undo step recorded it and its restore put it back unasked — Ranger set `lw` on his own saved
+     leave in memory, saved an honest edit that dropped it (a member may drop `lw`) and pressed Undo: the saved row read
+     "approved on the war". A put now carries the saved row too, keeping from memory only the fields a week load's landing
+     writes there and never saves (LANDING_ONLY — engine/drafts.ts filingRestorePlan, slots.ts), so the timeline's line
+     reads no landing as a change of its own; a put of a record never saved carries no before-image, so its Undo takes the
+     record away rather than putting back the made-up one. */
   if (env.origin === 'restore') return null
-  const carry = env.changes.map((c, i) => (c.op === 'delete' || c.after == null ? changes[i]! : c))
+  const carry = env.changes.map((c, i) => {
+    const j = changes[i]!
+    if (j === c || c.op === 'delete' || c.after == null || j.before == null || c.collection !== 'inputs') return j
+    return { ...j, before: withLanding(j.before, c.before) }
+  })
   return carry.some((c, i) => c !== env.changes[i]) ? carry : null
+}
+/* the fields a week load's landing writes in memory and never saves — its filing mark and an overseas duty's Ground
+   Programme mark (engine/drafts.ts, the load's filingRestorePlan; engine/slots.ts) — taken from memory's image onto the
+   saved one, present or absent as memory has them */
+const LANDING_ONLY = ['acc', 'odGround'] as const
+function withLanding(saved: unknown, mem: unknown): unknown {
+  if (!saved || typeof saved !== 'object' || !mem || typeof mem !== 'object') return saved
+  const out: any = { ...(saved as any) }
+  for (const k of LANDING_ONLY) { if (k in (mem as any)) out[k] = (mem as any)[k]; else delete out[k] }
+  return out
 }
 
 /* A LABEL NO DOOR WEARS IS REFUSED (fix read 11, fault B — Fable's F11-3, the security read's SEC11-3): the week load's
