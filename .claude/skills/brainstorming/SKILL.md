@@ -98,7 +98,7 @@ digraph brainstorming {
 
 **Working in existing codebases:**
 
-- Explore the current structure before proposing changes. Follow existing patterns.
+- Explore the current structure before proposing changes. Follow existing patterns. Before recommending a new record, list or screen, find how the product already enters the same fact and say so in the answer ("today this is done by …"); a new mechanism needs the reason the existing one cannot carry it.
 - Where existing code has problems that affect the work (e.g., a file that's grown too large, unclear boundaries, tangled responsibilities), include targeted improvements as part of the design - the way a good developer improves code they're working in.
 - Don't propose unrelated refactoring. Stay focused on what serves the current goal.
 - **Reuse is where hidden bugs live — hunt the traps before designing.** When the design reuses an existing interaction or engine core on a new surface, or applies one look or behaviour to many existing places, add a trap-hunt exploration: every trap, each with the existing defence (and where it is) or "must build". For one recipe worn by many hosts, list per host what already owns the same property or slot, where any inherited value comes from and WHEN it is present, which passes repaint after the change and in what order, and where two input paths (mouse and touch) build things differently. The list goes into the spec as build constraints.

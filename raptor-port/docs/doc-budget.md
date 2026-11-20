@@ -54,6 +54,13 @@ This is D14's substance, and it applies to every doc, every commit message and e
   reason that could change a future decision survives a trim. When in doubt, MOVE the text whole to where it is
   read less often (an area file, an archive) rather than reword it; a condensed version is checked against the
   original for meaning by a model that did not write it, before it replaces it.
+- **Before a rewrite's list goes to him, and before the rewrite goes to its readers, the writer makes three checks of
+  its own** (the guides' tightening, 10 Nov
+  26): every sentence cut or reworded keeps its qualifying words (where, only, unless, except, narrows) and its pointers
+  into a passage that is leaving — condensing drops the short clause first, and "as built" never becomes a requirement;
+  every rule corrected brings with it the lines that RELY on it — the steps that carry it out, the checklist that checks
+  it, the brief that hands it on — found by what they do, not by its words; and a saving quoted to him is measured, the
+  listed passages summed by a script and called a ceiling, any rewording's share labelled a guess.
 - **The whole repo reads by relevance and keeps itself tidy** (owner, D140, 24 Sep 26 — *"read only what’s applicable for the job automatically and knows how to navigate … new info going into the repo will follow this structure automatically"*). A small general layer is read every session; each area’s context loads by itself; everything else is found through the map in `raptor-port/CLAUDE.md` §Where things live. Where each new fact goes, and when it leaves: `.claude/rules/doc-structure.md` (always loaded). It is woven into his workflow — the handoff between chats, parallel worktrees, the Claudex loop (D140 point 5).
 - **No line targets — is it needed HERE, organised and clear?** (owner, D141, 24 Sep 26 — *"no hard line, more of like is this info needed etc and optimised"*). A block that the sessions reading this file do not need moves, whole, to where it is read less often (D138); a file is also judged on whether a reader can find things in it. The old fixed targets (500 / 400 / 600) are withdrawn.
 - **Chat context saved into the repo is SUMMARISED, never dumped** (owner, D69, 23 Sep 26). When a

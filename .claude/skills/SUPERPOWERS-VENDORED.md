@@ -92,11 +92,21 @@ did not.
    | `receiving-code-review` | two reviewers agreeing on a finding but not its fix — the fix settled before the fixer starts; a "decided from one source" finding treated as a family, a case per sibling state, a name filter for a long suite |
    | `dispatching-parallel-agents` | shared vocabulary (one type per shared record, an owner per movable helper) decided before the fan-out; a helper that shares the checkout never moves it (no checkout, switch, stash or detach — it reads by `git show <commit>:<path>`) |
 
+8. **Local lessons from the skill review of 20 Nov 26** (his rounds approved, D2230; the drafts read by Astra and a
+   fresh, blind Opus reader, each blind to the other, D1761, D1770, and approved as fixed, D2231; the same rules as
+   changes 3 to 7).
+
+   | Skill | What was added |
+   |---|---|
+   | `brainstorming` | "Working in existing codebases": before a new record, list or screen, how the product enters the same fact today. `mockups-on-the-real-app.md`: the phone at his iPhone's size, never typed by hand; a shared edge measured against the neighbour's first letter; a tag laid on the page where the element cannot hold one; a tag shows a number he answers by or "New"; a drawing brief gives purpose and ruled words, shape read from the app; a drawing script's one home; a pure-style proposal drawn with the exact rule in the place it will take; a moved rule asserted painted in the build; an older drawing's words checked against later rulings; a scroll-reached state checked per device; a check's output row staged and read back; several parties' views keep whose view |
+   | `test-driven-development` | Verify RED "Read the red": a premise asserted, never behind an `if`; a fixture read back through the app's own loader; a failing control sends you to the fixture first, then to the code. GREEN "Which other tests?": the whole-output tests of a builder whose output changed. Verify GREEN: a new or changed test file passes the pipeline's own type check, confirmed to include it, or is named not type-checked |
+   | `subagent-driven-development` | "What rides along": each finding stated as the case, the wrong and the right result, a mechanism only a suggestion |
+
 ## Updating
 
 There is no auto-update. Re-clone upstream, copy `skills/` over, and re-apply
-change 1 — then changes 3, 4 and 5: `cp -a` overwrites every edited file (and keeps
-the added reference files), so diff each skill in the tables of changes 3, 4 and 5
+change 1 — then changes 3 to 8: `cp -a` overwrites every edited file (and keeps
+the added reference files), so diff each skill in the tables of changes 3 to 8
 against the pre-refresh commit and carry the local lines forward:
 
 ```sh

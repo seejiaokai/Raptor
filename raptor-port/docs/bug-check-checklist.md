@@ -42,8 +42,9 @@ next. Never from memory — the order changes.
    them a floating surface, a wording or one writer of a record, a navigating action (one row per opener), a changed
    quantity, a removed or replaced control, form, event or way out (its list sizes the check), a removed, renamed or
    moved selector (what scrolls among them), a writer's "nothing happened", a listener above its own component, a
-   component's second home, a storage writer, a skipped call, a dry-run save, a new kind of record, who counts as away,
-   a part drawn in several copies, a part drawn inside another surface by a different owner.
+   component's second home, a storage writer, a skipped call, a dry-run save, a new kind of record, every reader of a
+   changed input or setting (who counts as away, the settings a day keeps), a part drawn in several copies, a part
+   drawn inside another surface by a different owner.
 9. **The door check** (a new gesture or mode): every action the data allows → the control that does it, in every state
    and order (§3, §2a).
 10. **Size the walk** — open **§7.0**, **§2a** whole (its table: what must be covered for each kind of work this change
@@ -52,7 +53,7 @@ next. Never from memory — the order changes.
     into the sheet; a WALK or FULL never has no walk; a screen with an approved drawing gets the drawing check; a test
     carries only repeated cases of a route already walked; resize when the evidence changes. **Go through every lesson
     below**, in the sizing lines and in each walker's brief: for each, the scenario or named test that covers it, or
-    why it cannot apply — opening its full text in **§7.11** (two lessons there are numbered 23) for each that applies.
+    why it cannot apply — opening its full text in **§7.11** for each that applies.
 11. **The plain-user round** (**§7.0a**): the area's everyday tasks start to finish, every control that opens or closes
     something pressed, every other place that shows the result looked at.
 12. **The fixture** — the day that has everything on it, in the demo seed (**§7.1**), made through the app's own controls
@@ -126,8 +127,10 @@ script already pictures re-runs that one step into a new folder (§5; `docs/walk
 22. What a person is meant to see is checked by what is drawn — pixels in its box — first frames included.
 23. Before asserting what a tap opens: what the rulings say a tap on that kind of entry opens on an ordinary day, walked
     side by side — the ruled window is the expected one, never the build's.
-23. (the second 23) Every screen a walk pictures is checked for the standing layout lessons — each pair of side-by-side
+
+23b. (a second 23 until 20 Nov 26) Every screen a walk pictures is checked for the standing layout lessons — each pair of side-by-side
     boxes measured one height and one line, at a phone's width with an iPhone's letters as well as a desktop's.
+
 24. Anything placed against the top bar, or measured on a scroll or a screen-size change: flicked to the page's very
     foot and back on a phone; a test stands the bar out of place for a moment and sends the screen-size change; what
     the PC cannot show (the bounce, the folding toolbar) named as a look for his iPhone.
