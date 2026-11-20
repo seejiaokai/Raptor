@@ -1701,7 +1701,10 @@ export function setRestoreDir(fn: DirProbe | null): void { RDIR = fn }
 function restoredDayHolds(pid: unknown, offAt: number | undefined, homes = unitRowsBefore([]).homes): boolean {
   if (offAt == null || pid == null || pid === '') return false
   const off = dayOfAt(offAt), today = todayIso()
-  return !homes.some(h => h.pid === String(pid) && h.from > off && h.from <= today)
+  /* no move of his since it was taken off — the home handle's second question (the reshape plan §3.2 A-i): a change is
+     his resolved squadron differing from the day before, never a row's date as such (the baseline row setHome writes for
+     a demo man with none is no move) */
+  return !homeChangesBefore(String(pid), off, today, { units: [], places: [], unitplaces: [], grants: [], homes }).length
 }
 const pidOfAccount = (id: unknown): string | undefined => ACCOUNTS_LIST.find(x => x.id === String(id))?.pid
 /* the master mark put back on the same person's account, off since `offAt`, with no move of his since */

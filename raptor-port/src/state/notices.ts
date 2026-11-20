@@ -31,10 +31,11 @@
    (state/noticeseen.ts): were reading to write to the notice, the maker's Undo of his change would be refused —
    "Ranger changed this after your action" — by the read of the very person it told. */
 import { PEOPLE } from '../engine/people'
-import { odOut, isOD, dateOrd, inpLabel, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned, inputAtIso } from '../engine/inputs'
+import { odOut, isOD, dateOrd, inpLabel, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned, inputSpanIso, inputSquadrons } from '../engine/inputs'
+import { homeHandle } from '../engine/roster'
 import { hhmm } from '../engine/time'
 import { mayEditSched } from './perms'
-import { todayIso, homeOn, unitRows, levelOfAccount } from './units'
+import { todayIso, homeOn, homeChangesOn, unitRows, levelOfAccount } from './units'
 /* (accounts.ts reaches this module through perms.ts; each side calls the other only at run time, never at load) */
 import { accountOfPid, isAdminAccount } from './accounts'
 import { activeEnvelope } from '../command'
@@ -184,8 +185,9 @@ function filedDay(rs: readonly any[]): string | null {
    count from: no (as before fault R) */
 function movedSince(pid: string, from: string | null, to: string): boolean {
   if (from == null) return false
-  const was = homeOn(pid, from)
-  return unitRows().homes.some(h => h.pid === pid && h.from > from && h.from <= to && homeOn(pid, h.from) !== was)
+  /* (the home handle's second question — the one body, the reshape plan §3.2 A-i: a change is his resolved squadron
+     differing from the day before, never a row's date as such) */
+  return homeChangesOn(pid, from, to).length > 0
 }
 const namedIn = (rs: readonly any[]): Set<string> => {
   const named = new Set<string>()
@@ -216,20 +218,16 @@ export function filerUnits(rs: readonly any[], iso?: string): string[] {
       if (!r) continue
       const own = ids(r)
       if (!own.length) { const u = inputUnit(r); if (u) out.add(u); continue }
-      const span = inputSpan(r) ?? (() => { const t = iso ?? todayIso(); return [t, t] as const })()
-      for (const m of own) for (const u of homesOver(m, span[0], span[1])) out.add(u)
+      /* (the one body — engine/inputs.ts inputSquadrons, the reshape plan §3.2 A-iii: each named man's squadron on the
+         first day and on each day it changes; an input whose dates cannot be read is judged on today) */
+      for (const u of inputSquadrons(r, homeHandle(), iso ?? todayIso())) out.add(u)
     }
   } else for (const r of rs) { const u = r ? inputUnit(r) : null; if (u) out.add(u) }
   return [...out]
 }
 /* an input's first and last day (ISO), from its own date and end date; null where its date cannot be read. An end before
    its start (never written by the app) counts as the start alone, as inputCoversDate covers no day past it. */
-function inputSpan(r: any): readonly [string, string] | null {
-  const a = inputAtIso(r.date, r.yr)
-  if (!a) return null
-  const b = r.endDate != null && r.endDate !== '' ? inputAtIso(r.endDate, r.yr) : a
-  return [a, b && b >= a ? b : a]
-}
+const inputSpan = (r: any): readonly [string, string] | null => inputSpanIso(r)
 /** THE LEAVES A COMMAND FOLDED INTO ANOTHER (fix read 15 — Astra 1): a Leave War approval that bridges two war-approved
  *  leaves keeps the one before and removes the one after (leavewar/sync.ts, "approving next to leave already approved …
  *  EXTENDS that Input"), so the words typed over the leave after were told to nobody — its record has no image after.
@@ -269,15 +267,8 @@ export function joinFilerImgs(f: string, b: any, a: any, folded: readonly any[],
   }
   return null
 }
-/* every squadron a man's home is on some day from `a` to `b`: his home on `a`, and each home he has from a later day in
-   that span (his home rows — state/units.ts setHome — change only on their `from` day) */
-function homesOver(pid: string, a: string, b: string): string[] {
-  const out = new Set<string>()
-  const first = homeOn(pid, a)
-  if (first) out.add(first)
-  for (const h of unitRows().homes) if (h.pid === pid && h.from > a && h.from <= b) { const u = homeOn(pid, h.from); if (u) out.add(u) }
-  return [...out]
-}
+/* (homesOver — every squadron a man's home is on over a span — is the one body's now: engine/inputs.ts inputSquadrons,
+   on the home handle's changesIn, the reshape plan §3.2 A-i) */
 /* AN ADMIN OF IT ON THAT DAY (fix read 7, fault P — Astra's A2, Fable's 2): asked of a past day (noticeLeftBell, a move
    day), the master mark and an admin grant held TODAY answered it, so Plan of 142 (or the master mark) given to Hunter
    after his move to 149 brought back, read or unread, the line his move had retired (D2218, D2223). A grant counts from
@@ -309,8 +300,11 @@ export function inputUnit(r: any, home: (pid: string, iso: string) => string | n
   if (!r || typeof r !== 'object') return null
   const ph = placeholderOf(r)
   const by = ph && ph.by != null && ph.by !== '' ? ph.by : r.by
-  if (by == null || by === '') return null
-  return home(String(by), inputAtIso(r.date, r.yr) || todayIso())
+  /* (a squadron stamped on it — the C3 slot — answers whatever its filer; else no filer, no squadron, as before) */
+  if ((by == null || by === '') && !(typeof r.u === 'string' && r.u)) return null
+  /* the one body (engine/inputs.ts inputSquadrons, the reshape plan §3.2 A-iii): its stamp, else its filer's squadron on
+     its first day — today where its date cannot be read */
+  return inputSquadrons(r, { on: home, changesIn: () => [] }, todayIso())[0] ?? null
 }
 /** WHO IS TOLD OF A CHANGE AS ITS INPUT'S FILER (fix read 6, fault A — the security read's SEC6-A (2)): the filer as the
  *  input stood BEFORE the change — the after-image's `by` is whatever the command writes, so a forger who sets it to a
@@ -686,7 +680,6 @@ export function noticeLeftBell(n: Pick<Notice, 'to' | 'at' | 'iid' | 'what' | 'f
     if (!n.fu.some(u => u === home || (!!acct && adminThen(acct, u, today, true)))) wrote = BEFORE_ALL
   }
   if (!(wrote < today)) return false
-  const was = homeOn(to, wrote)
   /* A LINE HE WAS TOLD ONLY AS THE INPUT'S FILER (his D2223 — fix read 6, fault C): judged on the day his home changed,
      against the squadrons the line was written under (Notice.fu) — not told on that day (no longer at home in one, nor an
      admin of one: filerTold's own test, filerVia), it is off his bell for good, read or unread, whatever happens after: the
@@ -698,18 +691,13 @@ export function noticeLeftBell(n: Pick<Notice, 'to' | 'at' | 'iid' | 'what' | 'f
   if (n.iid && Array.isArray(n.fu)) {
     const fu = n.fu
     const acct = accountOfPid(to)
-    const days = [...new Set(unitRows().homes.filter(h => h.pid === to && h.from > wrote && h.from <= today).map(h => h.from))].sort()
-    let prev = was
-    for (const d of days) {
-      const h = homeOn(to, d)
-      if (h === prev) continue
-      prev = h
+    /* (each day his squadron changes — the home handle's second question, the reshape plan §3.2 A-i) */
+    for (const d of homeChangesOn(to, wrote, today)) {
       if (fu.length && !(acct && fu.some(u => adminThen(acct, u, d)))) return true
     }
     return false
   }
-  let moved = false
-  for (const h of unitRows().homes) if (h.pid === to && h.from > wrote && h.from <= today && homeOn(to, h.from) !== was) { moved = true; break }
+  const moved = homeChangesOn(to, wrote, today).length > 0
   /* (the move first: it is the cheap question, and asks no input — read for every line each time a bell is drawn) */
   return moved && !noticeAboutHim(n)
 }
