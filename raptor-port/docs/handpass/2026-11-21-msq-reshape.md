@@ -66,12 +66,22 @@ clear). Pictures: `docs/img/handpass/2026-11-21-msq-reshape/`.
 | A7's gate half — a war's change to a man's day not its squadron's only removes (D2243) | `state/war-day-not-its-squadron-gate.test.ts` (6; both refusal cases red, the allowed green on both) | `81092264c` | `f12c09d56` |
 | Piece B: R2, R3 (its two reads name the move day, §4.4), R4 (a–d), R5, K1 — copied whole from the repro brief | `state/reshape-r2-move-back`, `-r3-undo-move`, `-r4-no-old-right`, `-r5-first-admin-moving`, `-k1-place-day` `.test.ts` (15; 10 red, 5 controls green on both) | `9288f0593` (core files before Piece B) | the night's Piece B commit |
 | Piece B: PA1 (a–e), PA2 (a, b), PA3 (a) — the Plan audit; R1 (O1 a, b) — the blind read | `state/reshape-plan-audit.test.ts`, `state/reshape-plan-audit-read.test.ts` (13; 10 red, 3 controls/guard green on both; O2 and O4 left for P3 and phase 3) | `9288f0593` | the night's Piece B commit |
+| Piece B's tables — the reading rule, the one check for homes and places, guardrail 2's leave-out, R7, moves-tomorrow | `state/piece-b-tables.test.ts` (21) | new behaviour — not fault proofs | `6a3ca222d` |
+| Piece C: B3 (the door judged today, the gate every date — a correct refusal reached the screen as "That did not save"), B6 (a squadron made, or left, with no admin) — copied whole from the repro brief | `state/reshape-b3-lock-door-vs-gate.test.ts`, `state/reshape-b6-squadron-without-admin.test.ts` (7; 5 red, 2 green on both — the Archive control, and Hunter taking his own Plan away, refused by PA1 already) | `6a3ca222d` (core files before Piece C) | `be0dc7e13` |
+| Piece C's lock table (§5.4 — dates × admins at home × a Plan-only squadron × a master at home only × an archived admin × the first admin moving in × a new squadron's first admin moving away later × a Plan sign-in that is a member there × a squadron removed whole × the whole app) and every door in the one words table (D2184 Q10, D2217 Q15, D2246), the gate past the door for a right and a squadron, the Undo and Redo of "+ New squadron" | `state/lastadmin.test.ts` (22), `state/reshape-piece-c-doors.test.ts` (20) | new behaviour — not fault proofs | `be0dc7e13` |
 
 ## The pictures
 
 ## The break tests
 
 ## Errors seen
+
+- **The source scan left red by Piece B, found by Piece C's wide run (21 Nov 26):** `state/perms-scan.test.ts` (D200 (3) —
+  authority decided in one place) failed on three account-role reads Piece B put outside the allowed files
+  (`notices.ts adminThen`, `units.ts addUnit` and `setGrant`) and Piece C's own in `lastadmin.ts`. Not a behaviour fault —
+  each read an account record's role, which is data — but the guard is what keeps a second gate from growing: all four
+  now read `units-model.ts isAdminRole`. Piece B's own runs had covered only the multi-squadron and gate files; from
+  Piece C on, a core commit runs the whole unit suite (15,308 passed, 1 failed — F11-4, owed and fail-closed).
 
 ## What was NOT walked, and why
 
