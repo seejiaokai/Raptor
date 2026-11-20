@@ -507,13 +507,14 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
          on the leave that stands; nobody is told twice, the one who typed them never. */
       if (a && b.lw && a.lw) {
         const named = ids(a)
+        const namedSet = new Set(named)
         const sent = new Set<string>()
         for (const src of imgs.filter(x => x !== a)) {
           const rmk = common(src, a, '').filter(x => x.k === 'rmk')
           if (!rmk.length) continue
           for (const p of named) if (!sent.has(p)) { sent.add(p); tell(p, a, rmk) }
           const f = changeFiler(src, src === b ? a : null, by)
-          if (f && !named.includes(f) && !sent.has(f) && filerTold(f, imgs)) { sent.add(f); tell(f, a, rmk, filerVia(f, imgs) ?? undefined) }
+          if (f && !namedSet.has(f) && !sent.has(f) && filerTold(f, imgs)) { sent.add(f); tell(f, a, rmk, filerVia(f, imgs) ?? undefined) }
         }
       }
       continue
