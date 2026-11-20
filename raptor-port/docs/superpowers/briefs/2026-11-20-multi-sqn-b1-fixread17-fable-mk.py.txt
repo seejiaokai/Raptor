@@ -1,0 +1,7 @@
+import sys
+root = sys.argv[1]
+src, marker, body, out = sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]
+s = open(root + '/' + src, encoding='utf-8', newline='').read()
+i = s.index(marker)
+b = open(body, encoding='utf-8', newline='').read()
+open(root + '/' + out, 'w', encoding='utf-8', newline='').write(s[:i] + b)

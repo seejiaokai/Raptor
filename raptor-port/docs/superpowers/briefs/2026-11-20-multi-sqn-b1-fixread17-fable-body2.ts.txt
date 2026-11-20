@@ -1,0 +1,90 @@
+
+import { updateAccount } from '../state/accounts'
+import { addUnit, places } from '../state/units'
+import { setLwDayOpenProbe, ownershipViolation as ov2 } from '../state/perms'
+
+describe('FR17 probe 2', () => {
+  it('gate reason: a member move of his own refused bid', () => {
+    setLwDayOpenProbe(() => true)
+    const T = Date.now()
+    const refused = { id: 'rq1', kind: 'request', code: 'LL', state: 'refused', placedBy: 'bane', placedAt: T - 3600_000, decidedBy: 'prowler', decidedAt: T - 60_000 }
+    const landed = { id: 'rq1', kind: 'request', code: 'LL', state: 'pending', placedBy: 'bane', placedAt: T - 3600_000 }
+    const env: any = {
+      seq: 0, at: '', type: 'lw.move', origin: 'user', scope: { module: 'lw', warId: 'y2026' },
+      actor: { id: 'acus', role: 'member', personId: 'bane', session: {} },
+      changes: [
+        { op: 'put', collection: 'lw.cell', id: 'y2026:bane:2026-07-28', before: [refused], after: [] },
+        { op: 'put', collection: 'lw.cell', id: 'y2026:bane:2026-07-29', before: [], after: [landed] },
+      ],
+    }
+    const r = ov2(env)
+    console.log('MOVE-REASON', r)
+    setLwDayOpenProbe(null)
+    expect(r).toBeNull()
+  })
+
+  it('one man filed both leaves, moved between, a member now: the bridge takes', () => {
+    signInAs('ad2', 'a2')
+    expect(placeApproved([{ personId: 'bane', date: '2026-07-27' }], 'LL', { remarks: 'left' }).approved).toBe(1)
+    signInAs('ad', 'a')
+    const m1 = setHome('prowler', 'u149'); expect(m1.ok, JSON.stringify(m1)).toBe(true)
+    on(16)
+    const m2 = setHome('prowler', 'u142'); expect(m2.ok, JSON.stringify(m2)).toBe(true)
+    on(17)
+    expect(homeOn('prowler')).toBe('u142')
+    signInAs('ad2', 'a2')
+    expect(placeApproved([{ personId: 'bane', date: '2026-07-29' }], 'LL', { remarks: 'right' }).approved).toBe(1)
+    signInAs('ad', 'a')
+    const acct = ACCOUNTS_LIST.find(x => x.pid === 'prowler')!
+    const d = updateAccount(acct.id, { role: 'main' as any })
+    console.log('demote', d, JSON.stringify(ACCOUNTS_LIST.find(x => x.pid === 'prowler')))
+    expect(setCell('bane', '2026-07-28', 'LL')).toBe(true)
+    const ids = new Set(NOTICES.map(n => n.id))
+    const cells = [27, 28, 29].map(dd => ({ personId: 'bane', date: `2026-07-${dd}` }))
+    inOneWarCommand('lw.decide', () => {
+      inOneWarCommand('lw.reqmeta', () => {
+        setRemarksOn(cells, { remarks: 'joined' })
+        for (const dd of ['2026-07-27', '2026-07-29']) for (const r of leaveInputsAt('bane', dd)) if ((r as any).lw) setLeaveRemarks(r, 'joined', 'bane')
+      })
+      setBidStates(cells, 'approved')
+    })
+    const rows = INPUTS.filter((r: any) => r.lw && ids && String(r.who ?? r.p ?? '').length >= 0).map((r: any) => `${r.date}-${r.endDate ?? ''}:${r.remarks}`)
+    console.log('ROWS', JSON.stringify(rows))
+    const fresh = NOTICES.filter(n => !ids.has(n.id))
+    console.log('FRESH', JSON.stringify(fresh.map(n => ({ to: n.to, what: n.what, fu: (n as any).fu }))))
+    expect(INPUTS.filter((r: any) => r.lw && r.date === 'Jul 27' && r.endDate === 'Jul 29').length, 'the join took').toBe(1)
+    expect('show').toBe('logs')
+  })
+
+  it('(control) the same, Hunter still an admin: the bridge takes', () => {
+    signInAs('ad2', 'a2')
+    expect(placeApproved([{ personId: 'bane', date: '2026-07-27' }], 'LL', { remarks: 'left' }).approved).toBe(1)
+    signInAs('ad', 'a')
+    expect(setHome('prowler', 'u149').ok).toBe(true)
+    on(16)
+    expect(setHome('prowler', 'u142').ok).toBe(true)
+    on(17)
+    signInAs('ad2', 'a2')
+    expect(placeApproved([{ personId: 'bane', date: '2026-07-29' }], 'LL', { remarks: 'right' }).approved).toBe(1)
+    signInAs('ad', 'a')
+    expect(setCell('bane', '2026-07-28', 'LL')).toBe(true)
+    const cells = [27, 28, 29].map(dd => ({ personId: 'bane', date: `2026-07-${dd}` }))
+    inOneWarCommand('lw.decide', () => {
+      inOneWarCommand('lw.reqmeta', () => {
+        setRemarksOn(cells, { remarks: 'joined' })
+        for (const dd of ['2026-07-27', '2026-07-29']) for (const r of leaveInputsAt('bane', dd)) if ((r as any).lw) setLeaveRemarks(r, 'joined', 'bane')
+      })
+      setBidStates(cells, 'approved')
+    })
+    expect(INPUTS.filter((r: any) => r.lw && r.date === 'Jul 27' && r.endDate === 'Jul 29').length, 'the join took').toBe(1)
+  })
+
+  it('a new squadron made with a first admin whose move is saved for tomorrow', () => {
+    signInAs('ad', 'a')
+    const mv = setHome('prowler', 'u149'); expect(mv.ok, JSON.stringify(mv)).toBe(true)
+    const acct = ACCOUNTS_LIST.find(x => x.pid === 'prowler')!
+    const r = addUnit('160', places()[0]!.id, acct.id)
+    console.log('ADDUNIT', JSON.stringify(r))
+    expect(r.ok).toBe(true)
+  })
+})
