@@ -23,7 +23,11 @@ his iPhone's wider letters wrapped a bar the PC drew on two rows).
 
 1. Drive a local or preview build — throwaway data, the clock held still where
    the date colours the screen — to the "today" state through the app's own
-   controls, and picture it at each size the app ships. The "today" premise is
+   controls, and picture it at each size the app ships — the phone at his
+   iPhone's own 402 x 874 (WebKit, touch, 3x), never a near size typed by hand
+   (16 Nov 26: at 390 a row wrapped that at 402 ran under a tab, and the
+   drawing check passed it); another phone width only beside it, never
+   instead. The "today" premise is
    checked as strictly as the proposal: each staged record is asserted ON
    SCREEN before anything is drawn (31 Oct 26: an entry staged under the wrong
    type name never reached the grid, and the empty day passed), and "today" is
@@ -39,27 +43,47 @@ his iPhone's wider letters wrapped a bar the PC drew on two rows).
    its look and its markup. Reuse those; never restyle them.
 3. Apply ONE named transform on the page: it moves, hides or clones existing
    nodes, never removes one the app drew (Traps). New parts are cloned from a
-   real neighbour and marked as new. Any
+   real neighbour and marked as new; an edge a new part shares with a neighbour
+   (stacked under it, beside it) is measured in the script against the
+   neighbour's first letter (a text range, not its box), failing above about
+   0.5px unless the offset is on purpose and captioned (17 Nov 26: a tag "under the mission" sat 10px in). Any
    style the app does not already have is a design decision to tell the owner.
    A mark that shows him the place — a ring, a number — is drawn ON the
    element (an outline, which takes no room, and a tag in its own `::before`),
-   always, never as a box laid over the page at measured coordinates: on a
+   never as a box laid over the page at measured coordinates (the one
+   exception, a tag on a still screen, is below): on a
    phone, and on a layer that scrolls or glides by itself, the laid-over box
    drifts off its text with no error (16 and 20 Oct 26). A mark must not change
    the element's position, display, size or overflow; use a child tag for a
    static element. Assert that marking leaves its box unchanged and keeps every
-   tag inside all clipping ancestors.
+   tag inside all clipping ancestors. Where the element cannot hold a tag — a
+   text box draws no child, a panel that clips cuts one — and the screen is
+   still, the tag alone goes on the page (fixed, placed from the element's box
+   just before the picture, above everything), the outline staying on the
+   element and inside it where a list clips, and the crop takes in every tag
+   (17 Nov 26). A tag says a number he answers by, or "New" — never a review
+   code or a ruling number (D2164: round 7's tags printed the findings' codes).
 4. Picture the same frames again at the same sizes. Lay them out
    today-beside-proposed, numbered, so the owner answers by number, and say on
    the page which pictures are real and which are drawn in.
 5. Write down everything the transform had to touch that the design note did
    not name — four places printing one count, a list that was not grouped
    after all. That list goes into the plan: each item is a requirement nobody
-   had written down.
-6. Commit the injection script beside the pictures, so the set can be shot
+   had written down. A helper's drawing brief gives each new part's purpose
+   and the words he ruled; what it shows and in what shape is read from the
+   running app, never copied from the plan, and the helper reports every place
+   the app differs from the brief — the plan is fixed before the page goes out
+   (17 Nov 26: an Off day briefed as a weekday is a dated entry).
+6. Commit the injection script beside the pictures, in
+   `raptor-port/docs/mock/<date>-<name>/` — never under `scripts/`, which makes a
+   notes-only pull request not notes-only (16 Nov 26) — so the set can be shot
    again and the build starts from it — drawn with the drawing check's
    recorder beside it, so its measures are kept as it is drawn
-   (`raptor-port/docs/walk-scripts.md` §10). The picture the owner picks — or the
+   (`raptor-port/docs/walk-scripts.md` §10). A pure-style proposal is drawn with
+   the exact rule to be built, in the place it will take — an existing rule
+   corrected in place (Traps), a new one injected — and recorded then, on the
+   unchanged build — once built, the "before" is gone; after the build the same script
+   checks with nothing injected (16 Nov 26). The picture the owner picks — or the
    script that drew it, with its exact values — is committed too, and the
    record of the decision names it: words describing a picture are a summary,
    not the spec. **From the picture to the build:** keep the drawing's
@@ -68,7 +92,10 @@ his iPhone's wider letters wrapped a bar the PC drew on two rows).
    wave's margin reached a new span, 46px tall for 30; 27 Oct 26: a mock row's
    `.r` stretched the real puck's rear seat) — and the built screen's first
    check re-measures the figures the drawing printed (heights, edges), not only
-   its words. A place the script
+   its words. A rule moved from an injected drawing into its stylesheet is
+   asserted painted in the built app (its computed style on the element) — a
+   page-scoped file turns a rule begun at `body` into one that matches nothing
+   (17 Nov 26, met twice; the guard: `[CSS-SCOPE-GUARD]`). A place the script
    computes from the live page (the scroll, a neighbour's box) is a means of
    drawing, not the spec: the note says in words where the part stands ("under
    the top bar, whatever the scroll"), and the builder takes the picture's
@@ -169,7 +196,10 @@ his iPhone's wider letters wrapped a bar the PC drew on two rows).
   carries against them for one doing the same job: a duplicate is put to him,
   never carried over because the old drawing had it (28 Oct 26: two year
   pickers on one screen — a side-by-side with the old drawing proves sameness,
-  not fitness).
+  not fitness). Every line of words it draws is listed in the brief and checked
+  against the rulings made since, as new words are; "as the old script draws
+  it" is never a spec for wording (17 Nov 26: two kept lines predated two
+  rulings).
 - **Include one BUSY state by default** — the fullest realistic mix of what
   the change touches (every mark colour, every ring kind, issued and pending
   together, a plain case) — and take the fix's scope from what the rule being
@@ -181,7 +211,12 @@ his iPhone's wider letters wrapped a bar the PC drew on two rows).
   first (a new default), picture the proposal in that future state too, and
   in each state that changes the answer, with the measure that shows the
   difference (15 Oct 26). Have the script count the exact element the change
-  touches, not a looser selector other rows also match.
+  touches, not a looser selector other rows also match. A state reached by
+  scrolling (a count that falls as rows come into view, a sticky heading's
+  moment) is asserted per device by measuring the control and the content in
+  view at the same scroll; where no scroll shows both, it is not drawn there,
+  and the page says why — a finding about the design (17 Nov 26: on the phone
+  the "3 new ↓" count scrolled away before any new row showed).
 - **Options compared share one data set** — one set in the script covering
   the hard cases he named (the most a day holds, spans, a name-only item, a
   kind with its own colour), every option drawn from it, an option drawn in
@@ -215,7 +250,11 @@ his iPhone's wider letters wrapped a bar the PC drew on two rows).
   A drawing of what an event produces (a bell line, a mark) asserts for every
   case drawn that the event fires in the running app, never clones the result
   by hand; a case where it does not is a design question (5 Nov 26: one of four
-  posting outcomes runs nothing on its date, so its line had no moment).
+  posting outcomes runs nothing on its date, so its line had no moment). A row
+  standing for a check's output (a warning's words) is staged and read back,
+  or its example values are checked against what the check compares — never a
+  template filled by guess (15 Nov 26: clash rows paired places the check never
+  compares, and he asked why they would clash).
 - **A LAYOUT question over a range of content** (long and short text, optional
   parts) is not answered by a re-lettered screenshot — that shows one
   instance. Build working markup in the app's own style values: the same
@@ -250,6 +289,11 @@ his iPhone's wider letters wrapped a bar the PC drew on two rows).
   user's call, not the finder's.
 - When the answer to a choice is a question ("show me what he will see
   exactly"), it is a request for the picture, not for more words.
+- **A design that shows several parties' views of one thing:** every picture
+  keeps the part of the screen that names whose view it is; where the screen
+  names nobody, the page says so and offers a mark as part of the design — a
+  caption is read after the picture is misread (17 Nov 26: a full-screen board
+  covering the top bar).
 - Republishing a page of pictures is a sync of the whole set against what is
   live: list the published files, compare each with the local copy, and send
   every one that differs, whoever changed it. Each approved state's picture is

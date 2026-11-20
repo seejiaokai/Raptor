@@ -6,7 +6,7 @@ The method is `docs/bug-check-order.md` (§4 the fan-out, §5 the re-walk, §7 t
 size is `docs/walk-ledger.md`. This file is the HOW. Every line is here because a walk, a re-walk or a break test once
 reported something untrue — a fault that was the script's own, or a pass that proved nothing. The drivers are in
 `raptor-port/scripts/handpass/` (`lib.mjs`, `trk-lib.mjs`; the break runners `breaks.mjs` and `breaks-browser.mjs`); the
-traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26 from the skill notes of 24 Sep – 13 Oct 26; extended 27 Oct 26 from those of 13–26 Oct 26, and 10 Nov 26 from those of 27 Oct – 9 Nov 26.
+traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26 from the skill notes of 24 Sep – 13 Oct 26; extended 27 Oct 26 from those of 13–26 Oct 26, 10 Nov 26 from those of 27 Oct – 9 Nov 26, and 20 Nov 26 from those of 10–19 Nov 26.
 
 ## 1. Before the walkers start
 
@@ -72,6 +72,11 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   its record and the failure is blamed on the app.
 - **What an action created is named by the difference** between the ids before and after it, never by position: one
   door puts a new record at the top of a list, another at the bottom.
+- **Two people acting in turn share one tab** — sign out and in between them — or the acting tab is reloaded after the
+  other's step. Each tab reads the stored records only when it opens, so two live tabs are two devices that never
+  sync: a two-tab step tests just that (the order's §6, a storage writer), never two people on one store. A FAIL from
+  two live tabs is reproduced in one tab before it is filed (19 Nov 26: B's "read" mark, saved in tab 2, was unknown
+  to A's Undo in tab 1; an hour went on proving the FAIL the walk's own).
 - **A fault seen only with a fixture planted straight into the data is checked through the real door before it is
   filed.** A planted record can have a shape no door writes (17 Oct 26: an end date without its year; a backlog item,
   its place and an engine change were built on it, and every real door writes the year). If the real door cannot
@@ -112,7 +117,9 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
 - **A drag is aimed at the TARGET's measured box, never by a distance from the grip** (15 Oct 26: 1.6 rows below the
   grip landed in the next formation on a desktop and back in place on a phone). Record the order before and after, so
   a drop that landed in place is told from an app that failed; a mark painted after the redraw is waited for, never
-  looked for once.
+  looked for once. **Every mouse move is written from a measured point** (the press point, a box's middle): the test's
+  mouse stays where the last move left it, so a move written as "the list's middle minus 44" after a flick went down
+  two rows, not up one (17 Nov 26). Before blaming the app for a wrong landing, log the page's own presses and scrolls.
 - **Two taps at one point closer than about half a second are a double tap** in Chromium's touch emulation, which
   selects the word under the finger (19 Oct 26: the typed digit replaced only "00"). Wait about 600ms between taps on
   the same box unless the step is about a second tap, and print the box's selection when a typing step fails.
@@ -127,14 +134,18 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   correct refusal from a press that landed off the screen.
 - **A clean-up step is a claim too.** A step that cancels a gesture asserts that nothing changed (the store, the changes
   count), or ends it by a move that cannot change anything (back onto the man's own seat) — never assumes a key cancels
-  it (31 Oct 26: nothing listens for Escape during a drag, so each "cancel" dropped the man where the mouse was).
+  it (31 Oct 26: nothing listens for Escape during a drag, so each "cancel" dropped the man where the mouse was). A change
+  is taken back by the app's own Undo button (`#undoBtn`; on the board `#sbUndo`, §7), never the keyboard's undo keys,
+  which did nothing in the driven browser (13 Nov 26: the "put back" picture still showed the change).
 - **A negative assertion first asserts that its subject exists:** "not greyed" passes on a row that was never drawn. So
   a check of a clip, a pin or a hide reads both sides — what must not show AND what must — and a pinch step asserts that
   its zoom changed (31 Oct 26: "names never drawn over the corner" passed a names column left blank mid-pinch, and "no
-  frozen row off its columns" passed a frozen row that was missing). **And the read itself is calibrated:** an
-  assertion that something did NOT happen is run once on a state where it did (tap an ordinary puck and see the same
-  read report "picked"), and the step names that control; a read that gives the same value in both states fails the
-  step. A check that something appeared reads whether it is SHOWN (its size, the property that hides it), never whether
+  frozen row off its columns" passed a frozen row that was missing). **And the read itself is calibrated:** every
+  pass/fail line a script prints for the first time — a new script's, or a new line in an old one — is run once on a screen known to be clean and once on one known to be changed
+  (tap an ordinary puck and see the same read report "picked"), and the step names that control; a read that gives the
+  same value in both states fails the step — and it reads the one element that carries the answer, never the page's
+  whole text (13 Nov 26: a search for the word that marks a waiting change matched the change history's count label, and failed a
+  clean screen). A check that something appeared reads whether it is SHOWN (its size, the property that hides it), never whether
   it exists, and a press by screen position first brings its target into view (8 Nov 26, three times in one job: a
   global the built app never sets, a window frame always on the page but hidden, a press on a switch scrolled off).
 - **An absence is judged after the slowest route to presence.** Name what would have moved and wait out the slowest way
@@ -145,7 +156,11 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   slide in 28px over 240ms when turned, so a date measured straight after ‹ or › is read mid-slide and a press sent there
   later lands on the date beside it (2 Nov 26, [INPCAL-HOLD-FLAKE]: one test in five pressed the 19th for the 20th, once
   November made it turn back to October). Wait on the motion itself — `e2e/app.ts monthStill` for those two months — or
-  measure again just before the press.
+  measure again just before the press. **What moves by itself AT the press (a glide, a fling) is measured inside the
+  page, never by two round trips from the test runner:** a capture listener on the window records the value before the
+  event, and another capture listener schedules the "after" read two animation frames on — never a bubbling listener,
+  which a page that stops the event never reaches (17 Nov 26: a glide read in one step and pressed in the next passed
+  twice on the PC and failed on GitHub's slower machine; the bubbling "after" then read nothing on correct code).
 - **A check over a list asserts the list's size first, and the premise that fills it** — `every(…)` over an empty list
   passes (21 Oct 26: a fault dropped the picked seat, the list emptied, and "0 of 0" passed).
 - **Every scroll step asserts that the scroll position moved** — of the scroller the step means to move, not the window
@@ -155,6 +170,9 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
 - **`elementFromPoint` proves a surface that takes presses** (a window, a calendar, a button). It skips one that takes
   none (`pointer-events: none` — a passing note, a mark) and returns what lies beneath: prove that one by its box inside
   the screen and its computed visibility and opacity, and open the picture (20 Oct 26: eleven false FAILs on the note).
+  So "nothing stands over it" passes under such a cover: also compare the box with the box of every note, banner or
+  overlay showing at that moment, and take the settled picture while it still shows (11 Nov 26: 95 scenarios passed a
+  box the note hid; the host saw it in the pictures).
 - **A gesture meant only to LOOK** — a tap or a hover that reads — on a surface that can also be edited counts the
   writes before and after (history lines, the stored record) and requires none: the tap that reads can be the tap
   that saves.

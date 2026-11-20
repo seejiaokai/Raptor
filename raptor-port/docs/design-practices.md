@@ -234,10 +234,18 @@ shorter. Removing a note or folding it is §1's own decision, put to him as such
    the word or mark that replaced it, each word ADDED with how it is known to be true (§1b's "no fact is added"). A
    cut that fits no kind is not made.
 9. **Read it cold — by someone else.** Each new wording is given ALONE to a fresh reader — a helper started for it,
-   never the chat that wrote it, who knows what was meant and cannot see a second reading. The reader writes down: what happened, why, what does it
+   never the chat that wrote it, who knows what was meant and cannot see a second reading. Alone means without the
+   writer's reasons, not without what anyone at the screen has: the word list's line (`word-list.md`) for each of the
+   app's own words it uses, and the line above it where it sits under one. Each item is a whole line exactly as a
+   person will see it, a real value in every slot — never a variant ("… / …"), a continuation or a placeholder cut
+   from a table; the writer reads the list through before sending it (15 Nov 26: most of eleven "unclear" verdicts
+   were about fragments). The reader writes down: what happened, why, what does it
    cost, where do I put it right, and can any part be read two ways? — then restates every claim of the note in their
    own words, each named thing and number included. The writer sets those answers beside the original's, claim by
-   claim; one that differs, or a second reading, is a lost fact and the wording goes back.
+   claim; one that differs, or a second reading, is a lost fact and the wording goes back — except a second reading
+   that the screen settles beyond what the reader was given (where the note sits, a control beside it), which is
+   recorded beside the wording with what settles it (15 Nov 26: OIL and "pending" read two ways by a reader given
+   neither); one the reader names with the word list's line and the line above in hand is a lost fact like any other.
 10. **"Left whole" is a proper result.** A note that cannot lose a word without losing a fact is left as it is (D825) —
     and, where it is still hard to read, the same words split into two sentences or a headline with its detail under
     it, no word lost, is offered to him as a change of its own, with its picture (D541). Never done unasked.
