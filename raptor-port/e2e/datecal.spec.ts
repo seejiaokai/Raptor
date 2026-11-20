@@ -623,10 +623,11 @@ test('a desktop: a glide caught, held still, then dragged, moves on from the yea
   /* 28 years on by the keys: near the edge of the window of years the list holds, so the glide below carries the
      choice past it and the list would re-centre on a new window */
   const y0 = await yearOf(page)
-  await page.locator(Y).first().focus()
-  for (let i = 0; i < 28; i++) await page.keyboard.press('ArrowDown')
+  /* the list scrolled 28 rows on at once, then left to settle — not 28 arrow presses, which GitHub's slower machine
+     did not always carry the whole way (it reached 2028 and 2046 of 2054 on 17 Nov 26) */
+  await page.locator(Y).first().evaluate(e => { e.scrollTop += 44 * 28 })
   await atRest(page, Y)
-  expect(await yearOf(page)).toBe(y0 + 28)
+  await expect.poll(() => yearOf(page)).toBe(y0 + 28)
   const r = await rect(page, Y), x = r.l + r.w / 2, y = r.t + r.h / 2
   await flickGliding(page, Y, x, y)
   await page.waitForTimeout(60)
