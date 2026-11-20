@@ -15,7 +15,7 @@ import { globalUndo } from '../undo'
 import { setSession } from './auth'
 import {
   units, unitById, places, placeOfOn, homeOn, grantsOf, unitsLoad, setUnitSeeds, addUnit, moveUnit, setPlace, setGrant,
-  removeGrant, setHome, todayIso,
+  removeGrant, setHome, todayIso, PLAN_MASTER_ONLY,
 } from './units'
 import { gmtLabel, validTz, moveFrom } from './units-model'
 
@@ -154,11 +154,13 @@ describe('the master-only commands', () => {
   })
   it('the master adds a unit at a place, naming its first admin', () => {
     signInAs('ad', 'a')
-    const r = addUnit('150', 'p1', 'acus')
+    /* (§9.2 of the reshape plan — setup only: the first admin is an admin's sign-in, Hunter's, since Plan is an admin's —
+       the Plan audit's PA2, D2201; it named Ranger's, a member's) */
+    const r = addUnit('150', 'p1', 'acad2')
     expect(r.ok).toBe(true)
     expect(unitById(r.id!)).toMatchObject({ num: '150', kind: 'sqn' })
     expect(placeOfOn(r.id!, todayIso())?.id).toBe('p1')
-    expect(levelIn('acus', r.id!)).toBe('admin')
+    expect(levelIn('acad2', r.id!)).toBe('admin')
     expect(addUnit('150', 'p1').ok).toBe(false)   // one squadron per number
   })
   it('a master cannot drop his own mark, and one master is always left', () => {
@@ -214,8 +216,10 @@ describe('a right in a unit is given only by an admin OF that unit (read from th
     expect(self.ok).toBe(false)                         // never by the right the command itself gives
     expect(setGrant('acus9', 'u142', 'view', 'osp9').ok).toBe(true)
     expect(levelIn('acus9', 'u142')).toBe('view')
-    expect(setGrant('acus9', 'u142', 'admin', 'osp9').ok).toBe(true)
-    expect(levelIn('acus9', 'u142')).toBe('admin')
+    /* (§9.3 of the reshape plan — rewritten to the ruling: Plan is a master admin's to give, D2199, D2211 — the Plan
+       audit's PA1; this pinned a plain admin giving it, written a day before D2199) */
+    expect(setGrant('acus9', 'u142', 'admin', 'osp9')).toMatchObject({ ok: false, message: PLAN_MASTER_ONLY })
+    expect(levelIn('acus9', 'u142')).toBe('view')
     expect(removeGrant('acus9', 'u142').ok).toBe(true)
     expect(levelIn('acus9', 'u142')).toBe(null)
   })

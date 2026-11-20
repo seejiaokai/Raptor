@@ -74,11 +74,13 @@ describe('Sample 1 (D2203) — no right given between a move saved and its day o
     expect(setGrant('acus', u150.id!, 'view', 'bane').ok).toBe(true)
     expect(setHome('bane', 'u149').ok).toBe(true)
     unitsLoad()
-    expect(levelIn('acus', u150.id!), 'dropped by the move').toBeNull()
+    /* (§4.5 of the reshape plan, rewrite 1 — his D2243, Q4: a right ends at the start of the move day, not when the move
+       is saved; so "dropped by the move" is read on the move day, Thu 16 Jul) */
+    expect(levelIn('acus', u150.id!, '2026-07-16'), 'dropped by the move').toBeNull()
     expect(globalUndo()).toBeTruthy()
     unitsLoad()
     expect(homeOn('bane', '2026-07-16')).toBe('u142')
-    expect(levelIn('acus', u150.id!), 'back with the Undo').toBe('view')
+    expect(levelIn('acus', u150.id!, '2026-07-16'), 'back with the Undo').toBe('view')
   })
 })
 

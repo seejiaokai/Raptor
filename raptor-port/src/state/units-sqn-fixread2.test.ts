@@ -14,14 +14,14 @@ import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vites
 import { storeBackend, store } from '../engine/hooks'
 import { initStore, resetSession, notify, writeInputsBatch } from './store'
 import { INPUTS, leadOf } from '../engine/inputs'
-import { signIn, sessionFor, updateAccount, accountById, accountsLoad, seedAccounts, deleteAccountProblem, otherSquadronPersonProblem } from './accounts'
+import { signIn, sessionFor, updateAccount, accountById, accountsLoad, seedAccounts, deleteAccountProblem, otherSquadronPersonProblem, levelIn } from './accounts'
 import { setSession, setEffectiveRole } from './auth'
 import { installGlobalUndo } from './undo-wire'
 import { _resetTimeline, globalUndo, globalRedo } from '../undo/timeline'
 import { elogFlush, logAction } from '../engine/editlog'
 import { PEOPLE } from '../engine/people'
 import { updatePersonField } from './quals-write'
-import { setUnitSeeds, setHome, setGrant, homeOn, todayIso, unitsLoad, unitRows } from './units'
+import { setUnitSeeds, setHome, setGrant, homeOn, todayIso, unitsLoad, unitRows, grantOfOn } from './units'
 import { moveFrom } from './units-model'
 import { addDays } from './flyplan-model'
 import { commitSettingsIntent, commitPeopleIntent, commitPeopleEdit } from './people-settings-commit'
@@ -361,10 +361,16 @@ describe('still open 5, his D2203 — a man who moves squadron loses every right
     expect(grantsOf('acus').length).toBe(1)
     expect(setHome('bane', 'u149').ok).toBe(true)
     unitsLoad()
-    expect(grantsOf('acus')).toEqual([])
+    /* (§4.5 of the reshape plan, rewrite 7 — Opus L2; his D2243, Q4: no row is deleted by the move now, the reading rule
+       ends it — "no right of his is left" reads that his View of 149 holds nothing from the move day, and after the Undo
+       that it holds on the move day again) */
+    const moveDay = moveFrom(todayIso())   // (this file runs on the real clock: the move counts from tomorrow)
+    const view = () => grantOfOn({ id: 'acus', pid: 'bane', pidFrom: accountById('acus')?.pidFrom }, 'u149', moveDay)
+    expect(view(), 'his View of 149 holds nothing from the move day').toBeUndefined()
     expect(globalUndo()).toMatchObject({ ok: true })
     unitsLoad()
-    expect(grantsOf('acus').map(g => g.unit)).toEqual(['u149'])
+    expect(view()?.level, 'it holds on the move day again').toBe('view')
+    expect(levelIn('acus', 'u149', moveDay)).toBe('view')
   })
   it("a man with no right elsewhere moves as before; another man's right is left alone", () => {
     signInAs('ad', 'a')
