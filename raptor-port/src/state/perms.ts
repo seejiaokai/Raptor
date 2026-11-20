@@ -1608,6 +1608,33 @@ export function setLwPostingProbe(fn: LwPostingSaved | null): void { LW_POSTING 
 type LwxPostingSaved = (unit: string, pid: string, p: unknown) => boolean
 let LWX_POSTING: LwxPostingSaved | null = null
 export function setLwxPostingProbe(fn: LwxPostingSaved | null): void { LWX_POSTING = fn }
+/* A7 — A WAR TAKES A MAN'S DAY ONLY WHERE THAT DAY IS ITS SQUADRON'S (the reshape plan §6.2 A7; his D2243: refused for
+   everyone, master admins and Plan holders included; a removal never refused). The war's own door refuses such a day
+   (helper "war", with A1); this is the gate's backstop, judging a record's CONTENTS before and after: a war cell holds a
+   list (`lw.cell`, id `<period>:<pid>:<date>`), so taking one entry of two off is a put of the shorter list. A change
+   about man P on day d where d is not this war's squadron's (his home on d, over the rows before the command) passes only
+   where it removes and changes nothing else — a delete, or a list whose every entry left is one that stood, unchanged, in
+   the same order. Any addition or change there is refused. So a 142 admin's Undo of his own earlier entry on a day now
+   149's still works (Opus L3 of round 1; D148), and an Undo that would put leave back on such a day is refused (its words,
+   "Ranger is 149's from Thu 16 Jul, so this can't go back into 142's Leave War.", are helper "war"'s, wired by "undo &
+   roles"; until then the refusal reads as today's). THE PROBE: leavewar/sync.ts reads `(pid, iso)` off a war change — the
+   war's own records, which only it knows; installed by helper "war" with A1, as one tested change. Until it is, this line
+   judges nothing. The app itself is not asked, as nowhere else in 7b. */
+export type LwManDay = (c: Change) => { pid: string; iso: string } | null
+let LW_MAN_DAY: LwManDay | null = null
+export function setLwManDayProbe(fn: LwManDay | null): void { LW_MAN_DAY = fn }
+function removesOnly(c: Change): boolean {
+  const b: any = c.before ?? null, f: any = c.op === 'delete' ? null : c.after ?? null
+  if (f == null || deepEqual(b, f)) return true
+  if (!Array.isArray(b) || !Array.isArray(f)) return false
+  let i = 0
+  for (const x of f) {
+    while (i < b.length && !deepEqual(b[i], x)) i++
+    if (i === b.length) return false
+    i++
+  }
+  return true
+}
 /* Admin → Users' doors, the only commands that write the second store (leavewar/sync.ts foreignOf's callers: Archive,
    Restore and Restore as — one type — and Delete) */
 const LWX_DOORS = new Set(['person.archive', 'person.restore', 'person.delete'])
@@ -1628,9 +1655,19 @@ function warUnitViolation(env: CommitEnvelope): string | null {
   const lw = env.changes.filter(c => String(c.collection).startsWith('lw.') && c.collection !== 'lw.current')
   if (!lw.length && !fx.length) return null
   if (u && lw.length) {
-    const lv = levelInForce(a, u, todayIso(), unitRowsBefore(env.changes))
+    const rows = unitRowsBefore(env.changes)
+    const lv = levelInForce(a, u, todayIso(), rows)
     const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
     if (!ok) return `a change to another squadron's Leave War (${u}) by one with ${lv ? `${lv} rights` : 'no rights'} there`
+    /* A7 — a man's day that is not this war's squadron's only loses entries here (below) */
+    if (LW_MAN_DAY) {
+      for (const c of lw) {
+        const at = LW_MAN_DAY(c)
+        if (!at) continue
+        const h = homeBefore(at.pid, at.iso, rows)
+        if (h && h !== u && !removesOnly(c)) return `${at.pid}'s ${at.iso} is ${h}'s, not ${u}'s: its Leave War there only loses entries (${c.collection}/${c.id})`
+      }
+    }
   }
   const w = worldsOf(env)
   const before = w ? w.acctB : ACCOUNTS_LIST
