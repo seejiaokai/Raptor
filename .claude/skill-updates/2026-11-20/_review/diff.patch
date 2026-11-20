@@ -1,13 +1,14 @@
 diff --git a/.claude/skills/SUPERPOWERS-VENDORED.md b/.claude/skill-updates/2026-11-20/.claude/skills/SUPERPOWERS-VENDORED.md
-index 5d6571642..93a05b000 100644
+index 5d6571642..d3023fad7 100644
 --- a/.claude/skills/SUPERPOWERS-VENDORED.md
 +++ b/.claude/skill-updates/2026-11-20/.claude/skills/SUPERPOWERS-VENDORED.md
-@@ -92,11 +92,20 @@ did not.
+@@ -92,11 +92,21 @@ did not.
     | `receiving-code-review` | two reviewers agreeing on a finding but not its fix — the fix settled before the fixer starts; a "decided from one source" finding treated as a family, a case per sibling state, a name filter for a long suite |
     | `dispatching-parallel-agents` | shared vocabulary (one type per shared record, an owner per movable helper) decided before the fan-out; a helper that shares the checkout never moves it (no checkout, switch, stash or detach — it reads by `git show <commit>:<path>`) |
  
 +8. **Local lessons from the skill review of 20 Nov 26** (his rounds approved, D2230; the drafts read by Astra and a
-+   fresh, blind Opus reader, each blind to the other, D1761, D1770; the same rules as changes 3 to 7).
++   fresh, blind Opus reader, each blind to the other, D1761, D1770, and approved as fixed, D2231; the same rules as
++   changes 3 to 7).
 +
 +   | Skill | What was added |
 +   |---|---|
