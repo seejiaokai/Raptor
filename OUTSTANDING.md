@@ -178,7 +178,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
-- [MSQ-FIXREAD10-LEFT] — what fix read 10 left: F (a bell line dated minutes ahead hidden for those minutes once a right is removed — for the database step, the server's clock), a war line's content field not checked, the GitHub browser-test flakes (the date calendar's glide; the Leave War phone's pinned dates row) (20 Nov 26).
+- [MSQ-FIXREAD10-LEFT] — what fix read 10 left: F (a bell line dated minutes ahead hidden for those minutes once a right is removed — for the database step, the server's clock), a war line's content field not checked, the GitHub browser-test flakes (the date calendar's glide; the Leave War phone's pinned dates row), a bell walk owed after fix read 13 (20 Nov 26).
 - [SEED-UNDO-DROPS-ACCOUNT] — with the demo's seeded people, an Undo of a seeded account's first saved change can take the account's own row with it (seen by fix read 9's builder, outside its brief; to reproduce first, 20 Nov 26).
 - [LW-PINCH-FROZEN-WEBKIT-OFF] — Leave War, Safari's engine only: mid-pinch in with the dates frozen, the frozen date row read about 360 px off its columns (older — origin/main the same; found 31 Oct 26; maybe a reading, not a fault — a look first).
 - [QUALS-PINNED-X-DEAD] — in Edit quals, scrolled down, the ✕ inside a pinned heading does nothing; the table's own ✕ removes the column (older; found by the walk of 11 Nov 26; small, with the next Quals job).
@@ -308,9 +308,10 @@ checked by the gate (the builder's note). (3) GitHub's browser tests failed once
 `e2e/datecal.spec.ts` "a glide caught, held still, then dragged…" and `e2e/leavewar.spec.ts` (phone) "the pinned dates
 row follows…" (D1870) — both twice in one run (with its retry), passing on the other run and 3/3 on his PC: steady them
 (D87). (4) His D2228 (20 Nov 26, the night's Q1 answered "as recommended"): a filer who moved and is again an admin of
-the man's squadron is told — not built; the next builder's brief on this branch, fix read 9's three proofs (Opus O9-3,
-Fable 3) going green, `state/notices.ts filerVia`, `state/perms.ts`, `data-model.md` (`filerUnits`, §11) and
-`data-schema.md` rewritten with it. **Where:** `state/notices.ts noticeLeftBell`, `state/perms.ts`, the two browser test files.
+the man's squadron is told — built 20 Nov 26 (`16a566d88`, `aa96a9a0f`; fix read 9's three proofs green), its read
+owed to fix read 14. (5) A walk owed to the batch's next walk: the bell after fix read 13's C and D2 — a moved filer, an
+admin of the man's squadron again, told of a change; a remark changed in the Leave War's drag window on a war-approved
+leave telling its filer (evidence sheet §Fix read 13). **Where:** `state/notices.ts noticeLeftBell`, `state/perms.ts`, the two browser test files.
 
 ### [SEED-UNDO-DROPS-ACCOUNT] An Undo of a seeded account's first saved change may take the account's row (20 Nov 26, chat 118) — OPEN
 **What it is:** fix read 9's builder (night of 19–20 Nov 26), writing its tests, saw that in the demo's seeded state an
