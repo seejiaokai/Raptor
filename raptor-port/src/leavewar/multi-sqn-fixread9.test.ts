@@ -16,7 +16,7 @@ import { deriveActor } from '../command/actor'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync, setWarWorldDoor, postOut, undoPostOut } from './sync'
-import { unitsLoad, setGrant, removeGrant, addUnit, unitRows } from '../state/units'
+import { unitsLoad, setGrant, removeGrant, addUnit, unitRows, grantOfOn } from '../state/units'
 import { HOME_PFX, GRANT_PFX } from '../state/units-model'
 import { INPUTS } from '../engine/inputs'
 import { NOTICES, noticesFor, noticeLeftBell, noticeHoliday, type Notice } from '../state/notices'
@@ -129,7 +129,10 @@ describe('fault A — an Undo or Redo that turns a right on dates it today (his 
     expect(hunterAcct().masterFrom).toBe('2026-07-18')
     expect(shown('prowler', l.id), 'he held no mark on his move day — the line stays retired (fault D)').toBe(false)
   })
-  it('(a grant) Plan of 149 given and removed on 15 Jul, Hunter moves to a third squadron on 16 Jul, the Undo of the removal on 17 Jul: dated the 17th, the line stays off', () => {
+  /* (§4.5 of the reshape plan, rewrite 8 — guardrail 2: the Undo of the removal after his move puts nothing back that
+     holds; "the line stays retired" kept. Until helper "undo & roles" wires the leave-out the press writes the recorded
+     row, which holds nothing; the step's blocked words are that helper's test) */
+  it('(a grant) Plan of 149 given and removed on 15 Jul, Hunter moves to a third squadron on 16 Jul, the Undo of the removal on 17 Jul: nothing of 149 holds, the line stays off', () => {
     signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok, JSON.stringify(u150)).toBe(true)
     signInAs('ad', 'a'); expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     signInAs('ad2', 'a2'); fileFor('osp9', 'prowler')
@@ -139,8 +142,8 @@ describe('fault A — an Undo or Redo that turns a right on dates it today (his 
     expect(removeGrant('acad2', 'u149').ok).toBe(true)
     homes('prowler', 'hc', [['u142', '2026-07-15'], [String((u150 as any).id), '2026-07-16']]); on(17)
     expect(shown('prowler', l.id), 'retired by his move: no Plan of 149 on the 16th').toBe(false)
-    const r = globalUndo(); expect(r.ok, 'Undo of the removal: ' + JSON.stringify(r)).toBe(true)
-    expect(unitRows().grants.find(g => g.account === 'acad2' && g.unit === 'u149')?.from, 'the right given back today is dated today').toBe('2026-07-17')
+    globalUndo(); unitsLoad()
+    expect(grantOfOn({ id: 'acad2', pid: 'prowler', pidFrom: undefined }, 'u149', '2026-07-17'), 'nothing of 149 holds for him after his move').toBeUndefined()
     expect(shown('prowler', l.id), 'the line stays retired').toBe(false)
   })
   it('(control) an Undo that leaves the mark on keeps its day', () => {
