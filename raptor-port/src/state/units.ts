@@ -174,6 +174,13 @@ export function addUnit(numIn: string, placeId: string, firstAdmin?: string): Un
   if (!validUnitNum(num)) return no('Type the squadron number — letters and digits, at most 12')
   if (units().some(u => u.num === num)) return no(`Squadron ${num} is already set up`)
   if (!placeById(placeId)) return no('Pick the place the squadron is at')
+  /* its first admin's Plan is a right given today (R5 — the reshape plan §4.4): said at the door in setGrant's own words,
+     never the gate's reason — not between his move saved and its day, and only an admin's sign-in (PA2) */
+  if (firstAdmin) {
+    const fa = accountById(firstAdmin)
+    if (fa && homeOn(String(fa.pid), moveFrom(todayIso())) !== homeOn(String(fa.pid))) return no('He moves squadron tomorrow — give this after the move')
+    if (fa && fa.role !== 'admin') return no('This change could not be saved.')
+  }
   return save('unit.add', null, () => {
     const id = newId('u')
     put(UNIT_PFX + id, { id, num, kind: 'sqn' })
