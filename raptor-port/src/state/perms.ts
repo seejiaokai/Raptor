@@ -43,7 +43,7 @@ import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim, filerTold, filerVia, foldedInto, dayOfAt, changeFiler, inputUnit, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES } from './notices'
+import { noticeAboutHim, filerTold, filerVia, foldedInto, joinFilerImgs, dayOfAt, changeFiler, inputUnit, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES } from './notices'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 export type Role = 'admin' | 'member' | 'guest' | 'pending'
@@ -905,6 +905,12 @@ function stampForged(env: CommitEnvelope, c: Change, after: unknown, pid: string
     }
     if ((r.decidedBy !== undefined || r.decidedAt !== undefined)
       && (!same || `${same.decidedBy ?? ''}|${same.decidedAt ?? ''}` !== `${r.decidedBy ?? ''}|${r.decidedAt ?? ''}`)) return `who decided a request`
+    /* …AND ITS STATE (fix read 16 — the security reader's S16-2): the decision fields alone were compared, so his refused
+       bid put back to pending with both deleted read as "no decision written" — the refusal gone, the bid back in
+       Approvals with its first place in the queue. The state is the decision: the same record keeps it, the bid it was
+       re-typed from gives it, a new bid is pending (his own Undo / Redo is a verified replay, skipped before this) */
+    const st = (x: any) => String(x?.state ?? 'pending')
+    if (st(r) !== (same ? st(same) : first ? st(first) : 'pending')) return `who decided a request`
   }
   return null
 }
@@ -2171,21 +2177,24 @@ function toldBy(env: CommitEnvelope, iid: unknown): Set<string> | null {
     const f = changeFiler(c.before ?? null, c.op === 'delete' ? null : c.after ?? null, self)
     if (f && filerTold(f, imgs)) out!.add(f)
   }
-  for (const x of folded) { const f = changeFiler(x, null, self); if (f && filerTold(f, imgs)) out!.add(f) }
+  /* (a folded leave's filer judged on its own days alone — fix read 16, Fable's 2: notices.ts noticePass, the same) */
+  for (const x of folded) { const f = changeFiler(x, null, self); if (f && filerTold(f, [x])) out!.add(f) }
   return out
 }
 /* the before-images of the leaves this command removed that it folded into input `id` as it stands after the command
-   (state/notices.ts foldedInto — fix read 15, Astra 1) */
+   (state/notices.ts foldedInto — fix read 15, Astra 1; the survivor's own before-image too — fix read 16, all four readers:
+   only days it grew over in this command) */
 function foldedFor(env: CommitEnvelope, id: string): any[] {
   let after: any = null
-  for (const c of env.changes) if (c.collection === 'inputs' && String(c.id) === id) after = c.op === 'delete' ? null : c.after ?? null
-  if (!after) return []
+  let before: any = null
+  for (const c of env.changes) if (c.collection === 'inputs' && String(c.id) === id) { after = c.op === 'delete' ? null : c.after ?? null; if (before == null) before = c.before ?? null }
+  if (!after || !before) return []
   const removed: any[] = []
   for (const c of env.changes) {
     if (c.collection !== 'inputs' || String(c.id) === id || c.before == null || (c.op !== 'delete' && c.after != null)) continue
     removed.push(c.before)
   }
-  return foldedInto(after, removed)
+  return foldedInto(after, removed, before)
 }
 /* A FILER-ONLY LINE CARRIES ITS MARK (fix read 6, fault C — the fresh Opus read's F2 and F3, Astra's 2): the line a
    change writes to someone it tells only as the input's filer — named in it neither before nor after — says so
@@ -2208,13 +2217,21 @@ function filerMarkOk(env: CommitEnvelope, c: Change, n: any): boolean {
     }
   }
   /* (and the leaves folded into it — fix read 15, Astra 1: the pass's images, toldBy's) */
-  for (const x of foldedFor(env, id)) { imgs.push(x); for (const e of namedOf(x)) named.add(String((e as any).p)) }
+  const folded = foldedFor(env, id)
+  for (const x of folded) { imgs.push(x); for (const e of namedOf(x)) named.add(String((e as any).p)) }
   const fu = n.fu
   if (named.has(String(n.to))) return fu === undefined
   if (env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) return true
   if (!Array.isArray(fu) || !fu.every((u: unknown) => typeof u === 'string')) return false
-  /* (the squadrons the pass marks it with: those he was told THROUGH — fix read 8, fault R, notices.ts filerVia) */
-  const want = filerVia(String(n.to), imgs)
+  /* (the squadrons the pass marks it with: those he was told THROUGH — fix read 8, fault R, notices.ts filerVia; over
+     the images the pass judged him by — a folded leave's filer over its own alone, fix read 16, Fable's 2) */
+  let own: any[] = imgs
+  if (folded.length) {
+    const self = env.actor && env.actor.personId != null ? String(env.actor.personId) : null
+    const ch = env.changes.find(x => x.collection === 'inputs' && String(x.id) === id)
+    own = joinFilerImgs(String(n.to), ch?.before ?? null, ch && ch.op !== 'delete' ? ch.after ?? null : null, folded, self) ?? imgs
+  }
+  const want = filerVia(String(n.to), own)
   if (!want) return false
   const have = new Set<string>(fu)
   return fu.length === want.length && have.size === want.length && want.every(u => have.has(u))
