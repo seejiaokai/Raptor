@@ -423,7 +423,8 @@ describe('fault E — a right goes with its account, and a new account row under
     const [p1, p2] = spares()
     expect(p2, 'two 149 men with no sign-in').toBeDefined()
     signInAs('ad9', 'a9')
-    expect(addAccount('spare1@mail', p1!, 'main')).toBeNull()
+    /* (an admin's sign-in: Plan is an admin's — the Plan audit's PA2; §9.2 of the reshape plan, setup only) */
+    expect(addAccount('spare1@mail', p1!, 'admin')).toBeNull()
     const id = accountOfPid(p1!)!.id
     signInAs('ad', 'a'); expect(setGrant(id, 'u142', 'admin', p1!).ok).toBe(true)
     return { p1: p1!, p2: p2!, id }
@@ -458,7 +459,8 @@ describe('fault E — a right goes with its account, and a new account row under
   it('(control) Kestrel deletes his own man who holds nothing elsewhere', () => {
     const [p1] = spares()
     signInAs('ad9', 'a9')
-    expect(addAccount('spare1@mail', p1!, 'main')).toBeNull()
+    /* (an admin's sign-in: Plan is an admin's — the Plan audit's PA2; §9.2 of the reshape plan, setup only) */
+    expect(addAccount('spare1@mail', p1!, 'admin')).toBeNull()
     expect(deletePerson(p1!)).toBeNull()
     expect(!!(PEOPLE as any)[p1!].deleted).toBe(true)
   })
@@ -471,7 +473,14 @@ describe('fault E — a right goes with its account, and a new account row under
     expect(ownershipViolation(e({ ...row, pidFrom: '2026-07-18' })) ?? 'allowed', 'Kestrel, even dated today').toMatch(/re-linked by one who is not a master/)
     signInAs('ad', 'a')
     expect(ownershipViolation(e(row)) ?? 'allowed', 'Saber, undated').toMatch(/link to its person not dated today/)
-    expect(ownershipViolation(e({ ...row, pidFrom: '2026-07-18' })) ?? 'allowed', 'Saber, dated today').toBe('allowed')
+    /* (§4.5 of the reshape plan, rewrite 14 — guardrail 1: a sign-in linked to another person carries no right; Saber's
+       half reads "dated today, refused while the right stands; allowed with that right removed in the same command") */
+    expect(ownershipViolation(e({ ...row, pidFrom: '2026-07-18' })) ?? 'allowed', 'Saber, dated today, the right standing').toMatch(/linked to another person while a right still names it/)
+    unitsLoad()
+    const g = unitRows().grants.find(x => x.account === id)!
+    const withDrop: any = { ...e({ ...row, pidFrom: '2026-07-18' }) }
+    withDrop.changes = [...withDrop.changes, { collection: 'settings', id: 'grant:' + g.id, op: 'delete', before: g, after: null }]
+    expect(ownershipViolation(withDrop) ?? 'allowed', 'Saber, dated today, the right removed in the same command').toBe('allowed')
   })
   it('(the gate) an account row taken away while a right still names it: refused, even for a master', () => {
     const { id } = planned()
@@ -483,7 +492,8 @@ describe('fault E — a right goes with its account, and a new account row under
   it('(control — Add account) Kestrel gives a 149 man a sign-in: saved, its link dated as built', () => {
     const [p1] = spares()
     signInAs('ad9', 'a9')
-    expect(addAccount('spare1@mail', p1!, 'main')).toBeNull()
+    /* (an admin's sign-in: Plan is an admin's — the Plan audit's PA2; §9.2 of the reshape plan, setup only) */
+    expect(addAccount('spare1@mail', p1!, 'admin')).toBeNull()
     expect(accountOfPid(p1!)?.pid).toBe(p1)
   })
 })
@@ -494,7 +504,8 @@ describe('fault H — a person delete is never refused for a right he holds in a
     const [p1, p2] = spares()
     expect(p2, 'two 149 men with no sign-in').toBeDefined()
     signInAs('ad9', 'a9')
-    expect(addAccount('spare1@mail', p1!, 'main')).toBeNull()
+    /* (an admin's sign-in: Plan is an admin's — the Plan audit's PA2; §9.2 of the reshape plan, setup only) */
+    expect(addAccount('spare1@mail', p1!, 'admin')).toBeNull()
     const id = accountOfPid(p1!)!.id
     signInAs('ad', 'a'); expect(setGrant(id, 'u142', 'admin', p1!).ok).toBe(true)
     return { p1: p1!, p2: p2!, id }
@@ -539,10 +550,12 @@ describe('fault H — a person delete is never refused for a right he holds in a
     const e = (type: string): any => ({ type, origin: 'user', actor: deriveActor(), changes: [
       { collection: 'settings', id: 'grant:' + g.id, op: 'put', before: gb, after: null },
       { collection: 'settings', id: 'account:' + id, op: 'put', before: a, after: null }] })
-    expect(ownershipViolation(e('account.update')) ?? 'allowed').toMatch(/not an admin of u142/)
+    /* (refused; since the Plan audit's PA1 — D2199 — a Plan taken by one who is not a master admin is refused first, in
+       its own words: §9.3 of the reshape plan, rewritten to the ruling's outcome) */
+    expect(ownershipViolation(e('account.update')) ?? 'allowed').toMatch(/not an admin of u142|Plan given, changed or taken by one who is not a master admin/)
     /* and a person delete whose command removes the grant but keeps the account row: refused the same */
     const kept: any = { type: 'person.delete', origin: 'user', actor: deriveActor(), changes: [{ collection: 'settings', id: 'grant:' + g.id, op: 'put', before: gb, after: null }] }
-    expect(ownershipViolation(kept) ?? 'allowed').toMatch(/not an admin of u142/)
+    expect(ownershipViolation(kept) ?? 'allowed').toMatch(/not an admin of u142|Plan given, changed or taken by one who is not a master admin/)
   })
   it('(control) Saber (master, 142 admin) deletes a 149 man holding Plan of 142: still works, the grant gone with him', () => {
     const { p1, id } = planned()

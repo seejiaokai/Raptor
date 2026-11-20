@@ -32,7 +32,7 @@ import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
 import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, levelAcct, readAccounts, adminsOf, type Account } from './accounts'
-import { unitRowsBefore, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach } from './units'
+import { unitRowsBefore, unitRowsAfter, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach } from './units'
 import { PEOPLE } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
 import { unitOf, isUnitId, split } from '../storage/unitid'
@@ -1797,7 +1797,7 @@ function worldsOf(env: CommitEnvelope): Worlds | null {
     acctB: readAccounts([...rawB.values()], undefined, personB),
     acctA: readAccounts([...rawA.values()], undefined, personA),
     rawB, rawA,
-    rowsB: unitRowsBefore(env.changes), rowsA: unitRowsBefore([]),
+    rowsB: unitRowsBefore(env.changes), rowsA: unitRowsAfter(env.changes),
   }
   WORLDS.set(env, w)
   return w

@@ -75,6 +75,16 @@ export function unitRowsBefore(changes: readonly { collection: string; id: strin
   }
   return rowsFrom(m.entries(), SEEDS_ON ? SEED : null)
 }
+/* …and AFTER it: the store now with each of its changed rows' after-images laid on — the same as the live rows for a
+   command already applied, and the command's own outcome for one judged before it is (a hand-built envelope) */
+export function unitRowsAfter(changes: readonly { collection: string; id: string; op?: string; after?: unknown }[]): UnitRows {
+  const m = new Map<string, unknown>(storedEntries())
+  for (const c of changes) {
+    if (c.collection !== 'settings' || !UNIT_ROW_PREFIXES.some(p => c.id.startsWith(p))) continue
+    if (c.op === 'delete' || c.after == null) m.delete(c.id); else m.set(c.id, c.after)
+  }
+  return rowsFrom(m.entries(), SEEDS_ON ? SEED : null)
+}
 export const units = (): Unit[] => unitRows().units
 export const unitById = (id: string): Unit | undefined => unitIn(unitRows(), id)
 export const places = (): Place[] => unitRows().places
