@@ -1180,7 +1180,14 @@ in phase 2 and for Q8's words in phase 3.
   `adminsOf`), PD1 (`putNewHome` by the page's squadron), PE1's core half (`mayEditSched` and the page's admin
   question); phase 2, core with Piece B — PA1, PA2, PA3, PH1; phase 2, helper "war" — PB1, PB2 (on phase 1's `adminsOf`
   and PC1); phase 3, core with A4 — PB3, PB4, PB5. Each proof copied from `…/briefs/2026-11-20-msq-plan-audit-repro/`
-  red first (§9.1). PF1, PG1, PK1 are not this build's (filed with step 5, P2 and P1).
+  red first (§9.1). PF1, PG1, PK1 are not this build's (filed with step 5, P2 and P1). **The blind read's items (§19b):**
+  phase 1, core — R5 (PE1 rewritten, O3 in its tests); phase 2, core with Piece B — R1, R7; phase 2, helper "session" —
+  R6 (dormant); phase 3, core with A4 — R3, R4; phase 3, documents — R13. R2, R9, R10 filed with P3/P4; R8 and R12
+  wait on him; R11 is K4 + B5.
+- **Who builds and reads (his D2244, 20 Nov 26):** Opus, high thinking, builds — the chat started in Opus, not Fable;
+  **Fable reads the core's rights change — Piece B with Piece C, phase 2's core commit — blind, on an exported copy,
+  before any helper builds on it**, every claim reproduced red before it counts; Sonnet walks; the four-reader fix read
+  of phase 4 stands (D2236).
 - **No two jobs built at once share a file.** Phase 2's helpers start only once phase 1 is committed, because they call
   its bodies and gate halves. The core builder's phase 2 runs beside them.
 - **Ordered inside phase 2:** "own pages" wires the Inputs calendar only after "session" commits the routed planning
@@ -1527,3 +1534,25 @@ squadron has admins at home (§5.2).
 **Questions found, not ruled — for him with P4 and P1, not before:** whether a squadron's bell lines leave a Plan holder's
 bell when his Plan is taken away without a move (D2218 rules it for a move); whether a man archived, posted Overseas or
 suspended keeps his View and Plan for his return (D2203 ends them on a move only — kept as built).
+
+### 19b. The blind read's findings (Astra and a fresh Opus reader, blind to each other, on `a5271a17c`)
+
+Reports: `…/briefs/2026-11-20-msq-plan-audit-read-{astra,opus}.md` (brief beside them). The Opus reader's proofs, run red by
+the host: `…/2026-11-20-msq-plan-audit-repro/o-opus-plan-audit-read.*` (O1 a, b, O2, O4 red; its control and the O3 guard
+green). Where both readers found one thing it is one row.
+
+| Id | Found (by) | Where it goes |
+|---|---|---|
+| R1 | **A Plan holder moves himself, or the master admin, to another squadron** — `units.ts setHome` asks neither; the gate's §8 and §6 pass, G1 never compares a master admin's homes (Opus F1; proved O1 a, b — real today through the door) | **Core, phase 2, with Piece B:** `setHome` asks `masterChangeProblem` first (D2205: a master admin's account is a master admin's alone); moving the signed-in person himself is refused (the agent's reading, as Archive and Delete refuse "yourself" — told to him), its words drawn first (D1625); §8 refuses a squadron change of the actor's own person; G1 compares each master admin's homes before and after |
+| R2 | **Approvals' "New" marks kept once per person, not per squadron** — `state/apprseen.ts` (Opus F5; proved O2, through a pick) | **With P3 (step 5's menu)** — the page follows the pick only then; one time per squadron. Filed under [MULTI-SQN-DESIGN] |
+| R3 | **The OIL list saves only the reader's home squadron's answers** — `ui/oilday.ts saveOilDay` l.30–31 and `sync.ts tellHoliday` l.1482 read `myUnit()` (Astra F6, Opus F3; proved O4) | **PB4 widened, core, phase 3 with A4:** the list's squadron on `OILLIST`, through `Body` to `saveOilDay`; Save's door asks "admin of that squadron" with the role in force; the window's identity carries it; `tellHoliday` reads the line's squadron |
+| R4 | **A holiday line's span, name, duplicate check and footer read the loaded war** — `noticeSpan`/`HOL_SPAN`, `holidaySpan` l.1446, `holidayOwnName` l.1456, `holidayLineOn`/`Any` (Astra F5, Opus F4) | **PB4/PB5 widened, core, phase 3:** every one reads the line's own squadron (its stored war when not loaded, `nonWorkingFor(unit, d)`); a line supersedes only lines of the same squadron; PB5 compares the line's squadron with the list's, not the reader's rights |
+| R5 | **PE1 as written breaks the bell, the OIL list and the member view** — `mayEditSched` has ~160 readers beyond the schedule pages, and `levelIn` reads the stored role, not the role in force (Astra F4, Opus F2; O3 the guard) | **PE1 rewritten (core, phase 1):** `mayEditSched` keeps its body for its other readers; a new schedule-edit question is the role in force AND `levelIn(pick) === 'admin'`; bell lines and the OIL list ask about the line's squadron (R3, R4); `pageUnit('own')` answers his home in the member view (A-ii); O3 goes into phase 1's tests. Call sites move with P3 |
+| R6 | **A right lowered, removed or raised mid-day leaves the loaded war, Tracker and pick behind** — A-iv re-enters only on his own move (Astra F7, Opus F6) | **A-iv widened, helper "session", dormant until P1/P3:** `notify()` re-enters when `pageUnit('own')` differs from the loaded war's or Tracker's squadron, or the pick has no readable right behind it; the hold on an open window as at midnight |
+| R7 | **PA2's drop lets a non-master end a Plan** — making a Plan holder a member, by whoever may make him a member, takes his Plan; PA3 says taking Plan is a master admin's (Opus F7) | **PA2 refined (core, phase 2):** making a member of an account holding a Plan in force needs a master admin (D2199, D2211); its refusal's words drawn first (D1625). The backstop reads the role in force (Opus's challenge to the doors' row 41) |
+| R8 | **The sign-off boxes never offer a Plan holder** — `engine/publish.ts signPeople` (Opus F8): D2201, D2211 ("its schedule and publishing") against D2184 Q13 and D2243 Q2 ("that day's people") | **A question for him** (the rulings clash — D90, D201): offer a Plan holder (and a master admin) carrying the Scheduler tick after the squadron's own day's people? Recommended yes. Until answered, C5 is built as D2243 rules (that day's people) |
+| R9 | **A bell line's tap does not enter its squadron** — posting lines to Admin → Users, Leave War lines search the loaded war (Astra F8, Opus F9) | **With P3 and P4:** each line kind resolves its squadron, the page enters it, then lands; D1691's deleted man opens nothing. Filed under [MULTI-SQN-DESIGN] (with PF1) |
+| R10 | **A Plan holder's lines leave his bell when he moves into that squadron** — `noticeLeftBell` judges by the reader's home on the line's day (Opus F10) | **With P4**, once a line carries its squadron: judged by it |
+| R11 | **The mission-role answers: the gate roll-call's row 25 marked HAS IT** — the record's id names no squadron, so §7 sees none; a View holder passes the door (Astra F2) | **Already K4 + B5 (§7);** row 25's verdict is WRONG, not HAS IT — corrected here. K4's tests add Hunter with View and with Plan |
+| R12 | **The last-admin words send a 142 admin to a fix he cannot make** — "Make another admin of 150 first." where only a master admin or an admin of 150 can (Opus F12) | **Put to him with Piece C's look** — a change to approved words (D2184 Q10, D1478), drawn first; built as approved until then |
+| R13 | **Documents and drawings** — the rest-pieces map's P3 and P4 name only the master admin; the questions page's re-link note (wrong after PA3); the pieces page's bare "master" (l.80, l.103) and its View line; `data-model.md` l.1845 and its bare "master"s; the register's B12 against D2202; the batch plan's stale l.77–91 and l.123; the People & accounts page's l.139; this plan's §0, §1 A7 row, l.253, l.284, tests naming only the master admin, and §13's "four" sign-ins with no Plan holder's round (Astra F1, F3, F9; Opus F11) | **Core, phase 3's documents step** (D2240, D2241); §13's walk gains a round as Hunter with Plan of 149 (five seeded sign-ins). The questions page's correction is told to him in chat 126's report |
