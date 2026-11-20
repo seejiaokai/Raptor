@@ -199,18 +199,103 @@ export function stintsIn(r: UnitRows, pid: string, unit: string, fallback: strin
   }
   return out
 }
-export const grantIn = (r: UnitRows, account: string, unit: string): Grant | undefined =>
-  r.grants.find(g => g.account === account && g.unit === unit)
+/* every row of an account in a unit, holding or ended — the row loader's and the drops' view (a reader asking whether a
+   right HOLDS asks grantOn below) */
+export const grantsIn = (r: UnitRows, account: string, unit: string): Grant[] =>
+  r.grants.filter(g => g.account === account && g.unit === unit)
+
+/* A RIGHT'S START — the later of its own day and the day its account was linked to its man (`pidFrom`); a right with no
+   day counts from always (D56), a link with no day likewise. '' — from always. */
+export const grantStart = (g: Pick<Grant, 'from'>, pidFrom: string | undefined): string => {
+  const a = typeof g.from === 'string' ? g.from : '', b = typeof pidFrom === 'string' ? pidFrom : ''
+  return a > b ? a : b
+}
+/* THE READING RULE (the reshape plan §4.3, Piece B; his D2203, D2243 — Q4 answered "the start of his move day"): the right
+   of an account in a unit HOLDING on `iso`, or none. A right holds on `iso` when its start (grantStart) is on or before
+   `iso`, and its account's man's squadron does not change on any day after its start up to `iso` (homeChangesIn — a
+   change is his resolved squadron differing from the day before, never a row's date as such). So a right ends at the start
+   of the day his squadron changes — whether he leaves for another squadron or joins the right's own — and never holds
+   again: no end is stored, and none is needed. Where two rows hold at once (a gate refuses it; two writers at one moment
+   could store it) the later start wins, then the later id. `acct` — the account as the caller has it, its link day
+   included (the type requires the key, so every account built by hand says what it carries). */
+export interface GrantHolder { id: string; pid: string; pidFrom: string | undefined }
+/* does this one row hold on `iso` for that account (the rule above, one row) */
+export function grantHolds(r: UnitRows, acct: GrantHolder, g: Pick<Grant, 'from'>, iso: string, fallback: string | null): boolean {
+  const s = grantStart(g, acct.pidFrom)
+  return !(s && s > iso) && !homeChangesIn(r, acct.pid, s, iso, fallback).length
+}
+export function grantOn(r: UnitRows, acct: GrantHolder, unit: string, iso: string, fallback: string | null): Grant | undefined {
+  let best: Grant | undefined, bestStart = ''
+  for (const g of grantsIn(r, acct.id, unit)) {
+    if (!grantHolds(r, acct, g, iso, fallback)) continue
+    const s = grantStart(g, acct.pidFrom)
+    if (!best || s > bestStart || (s === bestStart && g.id > best.id)) { best = g; bestStart = s }
+  }
+  return best
+}
+
+/* ONE CHECK FOR HOMES AND PLACES (the reshape plan §4.3, Piece B — D2238's "dated rows under one check"; R4 a, b; K1). A
+   command's rows before against after, on today and every row's `from` in either image — a man's squadron, or a
+   squadron's place, changes only on those (a first row reaches back over every day before it, atOn):
+   1. NEVER A DAY ALREADY BEGUN — a difference on a day before tomorrow is refused (D2119; D2160 R7 for a place), save a
+      first placing from today (a man, or a squadron, with none at all on that day before). A squadron made or removed
+      whole by the command is not judged here (the master-only rule and "a unit removed while still named" judge it —
+      "+ New squadron", its Undo and its Redo; Fable F7, Opus M3); nor a man the command itself makes (his first home is
+      the squadron rows' own check).
+   2. WHO — a man's squadron changing on a day: an admin, on today, of the squadron he LEAVES that day (`adminOn`); the
+      squadron he joins is the row's own check (an admin of the unit each home row names). A place row's squadron:
+      likewise its row's own check.
+   3. NOBODY MOVES HIMSELF (the blind read's R1 — the agent's reading, as Archive and Delete refuse "yourself"): `self`, the
+      actor's own person, never has his squadron changed by his own command.
+   Pure: the gate (perms.ts) calls it once for the command; the doors may call it on their draft. Its code is turned into
+   words by the caller; the gate's reason is never shown on screen. */
+export type DatedBreach =
+  | { code: 'begun'; kind: 'home' | 'place'; who: string; date: string }
+  | { code: 'first-past'; kind: 'home' | 'place'; who: string; date: string }
+  | { code: 'leaves'; who: string; unit: string; date: string }
+  | { code: 'self'; who: string; date: string }
+export function datedRowsBreach(before: UnitRows, after: UnitRows, today: string, opts: {
+  pids: Iterable<string>; units: Iterable<string>; made?: ReadonlySet<string>; self?: string | null
+  adminOn?: (unit: string) => boolean; fallback: string | null
+}): DatedBreach | null {
+  const tomorrow = moveFrom(today)
+  const datesOf = (rows: Array<{ from: string }>) => [...new Set([today, ...rows.map(x => x.from).filter(d => typeof d === 'string')])].sort()
+  for (const pid of new Set(opts.pids)) {
+    if (opts.made?.has(pid)) continue
+    for (const d of datesOf([...homesOf(before, pid), ...homesOf(after, pid)])) {
+      const was = homeUnitOn(before, pid, d, opts.fallback), now = homeUnitOn(after, pid, d, opts.fallback)
+      if (was === now) continue
+      if (was == null) { if (d < today) return { code: 'first-past', kind: 'home', who: pid, date: d }; continue }
+      if (d < tomorrow) return { code: 'begun', kind: 'home', who: pid, date: d }
+      if (opts.self != null && pid === opts.self) return { code: 'self', who: pid, date: d }
+      if (opts.adminOn && !opts.adminOn(was)) return { code: 'leaves', who: pid, unit: was, date: d }
+    }
+  }
+  for (const u of new Set(opts.units)) {
+    if (!unitIn(before, u) || !unitIn(after, u)) continue
+    for (const d of datesOf([...before.unitplaces, ...after.unitplaces].filter(x => x.unit === u))) {
+      const was = placeIdOn(before, u, d), now = placeIdOn(after, u, d)
+      if (was === now) continue
+      if (was == null) { if (d < today) return { code: 'first-past', kind: 'place', who: u, date: d }; continue }
+      if (d < tomorrow) return { code: 'begun', kind: 'place', who: u, date: d }
+    }
+  }
+  return null
+}
 
 /* AN ACCOUNT'S LEVEL IN A UNIT ON A DATE — the one answer (plan §3.4, refined): a master is admin everywhere; in his home
-   unit an account's level is its own role ('admin', or 'member' for the account role 'main'); elsewhere his grant's;
-   otherwise none. `acct` — the account as the caller has it (the live list, or the image before a command). */
-export interface LevelAccount { id: string; pid: string; role: string; master?: boolean }
+   unit an account's level is its own role ('admin', or 'member' for the account role 'main'); elsewhere the right that
+   holds that day (grantOn); otherwise none. Plan is an admin's (the Plan audit's PA2 — D2201, D785): an `admin` right on
+   an account whose role is not admin reads as no right. `acct` — the account as the caller has it (the live list, or
+   the image before a command), its `role` the role the caller reads (the role in force at the gate — R7). */
+export interface LevelAccount extends GrantHolder { role: string; master?: boolean }
 export function levelFrom(acct: LevelAccount | null | undefined, unit: string, iso: string, r: UnitRows, fallback: string | null): UnitLevel | null {
   if (!acct) return null
   if (acct.master) return 'admin'
   if (homeUnitOn(r, acct.pid, iso, fallback) === unit) return acct.role === 'admin' ? 'admin' : 'member'
-  return grantIn(r, acct.id, unit)?.level ?? null
+  const g = grantOn(r, acct, unit, iso, fallback)
+  if (!g || (g.level === 'admin' && acct.role !== 'admin')) return null
+  return g.level
 }
 
 /* the date a move counts from: the next day's start (D2119) — a move typed today never rewrites today */

@@ -31,14 +31,14 @@ import { deriveActor } from '../command/actor'
 import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
-import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, readAccounts, adminsOf, type Account } from './accounts'
-import { unitRowsBefore, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit } from './units'
+import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, levelAcct, readAccounts, adminsOf, type Account } from './accounts'
+import { unitRowsBefore, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach } from './units'
 import { PEOPLE } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
 import { unitOf, isUnitId, split } from '../storage/unitid'
 import {
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES, validUnit, validPlace, validUnitPlace, validGrant,
-  validHome, unitIn, placeIn, placeIdOn, moveFrom, type UnitRows,
+  validHome, unitIn, placeIn, placeIdOn, moveFrom, grantStart, type UnitRows, type LevelAccount, type GrantHolder,
 } from './units-model'
 import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
@@ -267,7 +267,7 @@ export function pageUnit(kind: 'schedule' | 'own', iso: string = todayIso()): st
   const m = me()
   if (!SESSION || !m || roleOf() !== 'admin') return myUnit(iso)
   const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
-  if (acct && UNIT !== homeOn(m, iso) && (acct.master === true || levelOfAccount({ id: acct.id, pid: String(acct.pid), role: String(acct.role) }, UNIT, iso) === 'admin')) return UNIT
+  if (acct && UNIT !== homeOn(m, iso) && (acct.master === true || levelOfAccount(levelAcct(acct), UNIT, iso) === 'admin')) return UNIT
   return myUnit(iso)
 }
 /* AN ADMIN OF THE PAGE'S SQUADRON (the Plan audit's PE1 as the blind read's R5 rewrote it): the role in force is admin AND
@@ -278,7 +278,7 @@ export function adminOfPage(kind: 'schedule' | 'own', iso: string = todayIso()):
   if (!SESSION || roleOf() !== 'admin') return false
   const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
   if (!acct) return pageUnit(kind, iso) === UNIT
-  return levelOfAccount({ id: acct.id, pid: String(acct.pid), role: String(acct.role), master: acct.master === true }, pageUnit(kind, iso), iso) === 'admin'
+  return levelOfAccount(levelAcct(acct), pageUnit(kind, iso), iso) === 'admin'
 }
 export const maySchedEditPage = (iso?: string): boolean => mayEditSched() && adminOfPage('schedule', iso)
 /* PD1 (the Plan audit — dormant until step 5): a person added by the signed-in admin is made the page's squadron's
@@ -435,7 +435,7 @@ function ofMySquadron(pid: any): boolean {
   const u = homeOn(String(pid))
   const row: any = SESSION ? ACCOUNTS_LIST.find(x => x.id === SESSION!.user) : null
   if (!u || !row) return true
-  return levelBefore({ id: row.id, pid: String(row.pid), role: 'admin', master: row.master === true }, u, todayIso(), unitRowsBefore([])) === 'admin'
+  return levelBefore(levelAcct(row, 'admin'), u, todayIso(), unitRowsBefore([])) === 'admin'
 }
 /* the callsign on his row is the admin's to change (D218, narrowing D149); no session → true */
 export const mayRenameCallsign = (): boolean => roleOf() === null || isAdmin()
@@ -1415,7 +1415,7 @@ function deleteStripsOnly(env: CommitEnvelope, a: Actor, u: string, today: strin
 function levelInForce(a: NonNullable<CommitEnvelope['actor']>, u: string, today: string, rows: UnitRows): string | null {
   const row: any = ACCOUNTS_LIST.find(x => x.id === a.id)
   return row
-    ? levelBefore({ id: row.id, pid: String(row.pid), role: String(a.role), master: row.master === true }, u, today, rows)
+    ? levelBefore(levelAcct(row, String(a.role)), u, today, rows)
     : (u === UNIT ? (a.role === 'admin' ? 'admin' : 'member') : null)
 }
 
@@ -1901,7 +1901,13 @@ export function restoreRedated(c: Change, offAt?: number, dir?: 'undo' | 'redo',
   const id = String(c.id), n: any = c.after, today = todayIso()
   if (id.startsWith(GRANT_PFX)) {
     const b: any = store.get(id, null)
-    const from = grantKept(b, n) ? b.from : grantBackHolds(b, n, offAt) ? (stoodGrant(stood, n)?.from ?? n.from) : today
+    const recorded = stoodGrant(stood, n)?.from ?? n.from
+    /* GUARDRAIL 2 (the reshape plan §4.3): a right whose man has moved since it went off is never re-dated today — that
+       would restart a right his move ended. It keeps its recorded day, so it holds nothing (units-model.ts grantOn); the
+       leave-out (restoreLeavesOut, wired by helper "undo & roles") takes it out of the restore and blocks the step. */
+    const pid = pidOfAccount(n.account)
+    const moved = offAt != null && !!pid && homeChangesBefore(pid, dayOfAt(offAt), today, unitRowsBefore([])).length > 0
+    const from = grantKept(b, n) ? b.from : grantBackHolds(b, n, offAt) || moved ? recorded : today
     return n.from === from ? c : { ...c, after: { ...n, from } }
   }
   if (id.startsWith(ACCOUNT_ROW)) {
@@ -1932,6 +1938,63 @@ export function restoreRedated(c: Change, offAt?: number, dir?: 'undo' | 'redo',
     return out === n ? c : { ...c, after: out }
   }
   return c
+}
+/* AN ACCOUNT AS THE READING RULE TAKES IT, BEFORE OR AFTER A COMMAND (the reshape plan §4.3): its row as this command
+   changed it — before-image or after-image, read as the loader reads them — else the stored list; its man and its link
+   day. An account that is gone has no man: a right naming it holds for nobody a person can use. */
+function accountHolder(env: CommitEnvelope, id: string, side: 'b' | 'a'): GrantHolder {
+  const c = env.changes.find(x => x.collection === 'settings' && String(x.id) === ACCOUNT_ROW + id)
+  const x: any = c ? (side === 'b' ? accountBefore(id, c.before) : accountAfter(id, c)) : accountImagesNow().find(y => y && y.id === id)
+  return { id, pid: x && x.pid != null ? String(x.pid) : '', pidFrom: x?.pidFrom }
+}
+/* DOES THIS COMMAND CHANGE THAT ACCOUNT'S MAN — G4's own test (fix read 10, fault D; fix read 11, fault E): its row there
+   before and after naming another person, or a new row under an id a right standing before still names */
+function accountRelinked(env: CommitEnvelope, id: string): boolean {
+  const c = env.changes.find(x => x.collection === 'settings' && String(x.id) === ACCOUNT_ROW + id)
+  if (!c) return false
+  const was: any = accountBefore(id, c.before), is: any = accountAfter(id, c)
+  if (!is) return false
+  return was ? String(was.pid) !== String(is.pid) : unitRowsBefore(env.changes).grants.some(g => g.account === id)
+}
+/* GUARDRAIL 2 — NO RESTORE EVER PUTS BACK A RIGHT WHOSE MAN HAS MOVED SINCE ITS START, AND A RE-LINK PUTS BACK NO RIGHT
+   (the reshape plan §4.3 — the host's decisions after round 3; Fable 1, Astra 1, Opus M3 of round 2; Astra 1, Fable 7 of
+   round 3). ONE BODY, asked by the restore (the timeline's `leaveOut` hook — wired by helper "undo & roles", which keeps on
+   each step the man and the link day of each grant row's account as it was recorded) and by the gate of the restore it
+   judges. True: leave this change OUT of the restore. In an Undo or a Redo:
+   1. a step that changed an account's man (a re-link, its Undo, its Redo) puts back NO grant row — the link only
+      (guardrail 1);
+   2. any other grant row is put back only where its account still names the man it named when the step was made
+      (`holder`, recorded on the step), and that man's squadron has not changed since the row's START — the row judged as
+      it stood when it was taken off (`stood`, the timeline's stoodBefore, else the step's image) and the account's link day
+      as it stood at the step. A move is on a day already begun and never changes, so the answer never changes either, in
+      any order of Undo and Redo;
+   3. it never removes a grant row not stored.
+   Not a grant row: never left out here. `stored` — whether the row is stored now (the caller's; read from the store when
+   not handed in). */
+export interface RestoreGrantCtx { relink: boolean; holder?: GrantHolder; stood?: unknown; stored?: boolean }
+export function restoreLeavesOut(c: Change, ctx: RestoreGrantCtx, rows: UnitRows = unitRowsBefore([]), today: string = todayIso()): boolean {
+  if (c.collection !== 'settings' || !String(c.id).startsWith(GRANT_PFX)) return false
+  if (!(c.op === 'put' && c.after != null)) return !(ctx.stored ?? store.get(String(c.id), null) != null)
+  if (ctx.relink) return true
+  const n: any = c.after
+  const s: any = stoodGrant(ctx.stood, n) ?? n
+  const now: any = accountImagesNow().find(y => y && y.id === String(n.account))
+  const h = ctx.holder ?? (now ? { id: String(n.account), pid: String(now.pid), pidFrom: now.pidFrom } : undefined)
+  if (!h || !now || String(now.pid) !== h.pid) return true
+  return homeChangesBefore(h.pid, grantStart(s, h.pidFrom), today, rows).length > 0
+}
+/* WHAT THE GATE KNOWS OF A RESTORE'S STEP (helper "undo & roles" installs it with the leave-out's wiring: the step's
+   recorded holders and the row as it stood). Until then the gate reads the restore alone — whether it changes the
+   account's man, and the account as it stands — and the row's start as the restore writes it (restoreRedated keeps the
+   recorded day for a right whose man has moved, so a move since its start is seen). */
+type RestoreCtxProbe = (env: CommitEnvelope, c: Change) => RestoreGrantCtx | null
+let RESTORE_CTX: RestoreCtxProbe | null = null
+export function setRestoreGrantCtx(fn: RestoreCtxProbe | null): void { RESTORE_CTX = fn }
+function restoreGrantCtx(env: CommitEnvelope, c: Change): RestoreGrantCtx {
+  const got = RESTORE_CTX ? RESTORE_CTX(env, c) : null
+  if (got) return got
+  const acc = String((c.after as any)?.account ?? (c.before as any)?.account ?? '')
+  return { relink: !!acc && accountRelinked(env, acc), stored: true }
 }
 /* a NEW account row (none stood under its id) whose id a right standing before the command still names (fix read 11,
    fault E — SEC11-5) */
@@ -2018,7 +2081,10 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
     const now = afterById.get(m.id)
     const pb = w.personB(m.pid), pa = w.personA(m.pid)
     if (pb && !pb.deleted && pa && pa.deleted) return `a master admin's person deleted (people/${m.pid})`
-    if (sameJson(m, now) && ACCOUNT_LIKE(pb) === ACCOUNT_LIKE(pa)) continue
+    /* (the blind read's R1 — D2205): a master admin's squadron is his account's too — his home rows compared, before and
+       after */
+    const homesOfM = (r: UnitRows) => JSON.stringify(r.homes.filter(h => String(h.pid) === String(m.pid)).map(h => [h.id, h.unit, h.from]).sort())
+    if (sameJson(m, now) && ACCOUNT_LIKE(pb) === ACCOUNT_LIKE(pa) && homesOfM(w.rowsB) === homesOfM(w.rowsA)) continue
     if (!actorMaster) return `a master admin's account changed by one who is not a master (${ACCOUNT_ROW}${m.id})`
   }
   /* G4 — A RIGHT IN ANOTHER SQUADRON CHANGES HANDS ONLY BY A MASTER (fix read 10, fault D — the agent's reading of D2094 /
@@ -2026,6 +2092,10 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
      grant in a squadron the actor is no admin of hands that right to another person, so only a master does it (Kestrel,
      149's admin, re-linking Osprey's account holding Plan of 142 to Hunter made Hunter 142's admin). accounts.ts
      relinkRightsProblem says the same at the door. */
+  /* (the reshape plan §4.3, guardrail 1, refined by the Plan audit's PA3 — D2199, D2201, D2241): only rights HOLDING today
+     on the rows before decide; a sign-in holding a Plan is re-linked only by a master admin (the drop takes it, and taking
+     Plan is a master admin's alone); one holding a View, by an admin of that squadron — at home or by Plan — or a master
+     admin. accounts.ts relinkRightsProblem says the same at the door. */
   if (!actorMaster) {
     for (const c of env.changes) {
       if (c.collection !== 'settings' || !String(c.id).startsWith(ACCOUNT_ROW) || c.after == null) continue
@@ -2034,10 +2104,37 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
       /* (fix read 11, fault E): only the same person kept is no re-link — a new row under an id a right still names is
          one (Kestrel deleting his man who held Plan of 142, then a new account under that id for another 149 man) */
       if (was ? String(was.pid) === String((c.after as any).pid) : !rightNamesNew(w, c, was)) continue
+      const holder = accountHolder(env, id, 'b')
       for (const g of w.rowsB.grants) {
-        if (g.account === id && levelInForce(a, g.unit, today, w.rowsB) !== 'admin') return `a sign-in holding a right in another squadron re-linked by one who is not a master (${c.id})`
+        if (g.account !== id || !grantRowHolds(holder, g, today, w.rowsB)) continue
+        if (g.level === 'admin' || levelInForce(a, g.unit, today, w.rowsB) !== 'admin') return `a sign-in holding a right in another squadron re-linked by one who is not a master (${c.id})`
       }
     }
+  }
+  /* THE RE-LINK LINE — A SIGN-IN LINKED TO ANOTHER PERSON CARRIES NO RIGHT (guardrail 1, the reshape plan §4.3 — the host's
+     decision after round 3): a command that changes an account's man (G4's own test) leaves no grant row naming that
+     account stored after it, whoever makes it, a master admin included. The man now on the sign-in is given what he needs
+     anew. A restore is held to it once the leave-out is wired (RESTORE_CTX — helper "undo & roles": an Undo or Redo of a
+     re-link puts back the link only); until then a restore keeps the rules before Piece B. */
+  if (!(env.origin === 'restore' && !RESTORE_CTX)) {
+    for (const c of env.changes) {
+      if (c.collection !== 'settings' || !String(c.id).startsWith(ACCOUNT_ROW)) continue
+      const id = String(c.id).slice(ACCOUNT_ROW.length)
+      if (accountRelinked(env, id) && w.rowsA.grants.some(g => g.account === id)) return `a sign-in linked to another person while a right still names it (${c.id})`
+    }
+  }
+  /* PLAN IS AN ADMIN'S — MAKING A PLAN HOLDER A MEMBER (the Plan audit's PA2, refined by the blind read's R7 — D2199,
+     D2211): an account holding a Plan in force (today, on the rows before) is made a member only by a master admin, and
+     only with his Plan rows dropped in the same command — no Plan holds on a member's account after it. Read on the
+     loader's own reading of both lists. */
+  for (const x of w.acctB) {
+    if (x.role !== 'admin') continue
+    const y = w.acctA.find(z => z.id === x.id)
+    if (!y || y.role === 'admin' || String(y.pid) !== String(x.pid)) continue
+    const hb = { id: x.id, pid: String(x.pid), pidFrom: x.pidFrom }, ha = { id: y.id, pid: String(y.pid), pidFrom: y.pidFrom }
+    const planB = w.rowsB.grants.some(g => g.account === x.id && g.level === 'admin' && grantRowHolds(hb, g, today, w.rowsB))
+    if (planB && !actorMaster) return `a Plan holder made a member by one who is not a master admin (${ACCOUNT_ROW}${x.id})`
+    if (w.rowsA.grants.some(g => g.account === y.id && g.level === 'admin' && grantRowHolds(ha, g, today, w.rowsA))) return `Plan left on an account made a member (${ACCOUNT_ROW}${y.id})`
   }
   /* G5 — NO RIGHT LEFT NAMING A SIGN-IN THAT IS GONE (fix read 11, fault E — SEC11-5): a right outliving its account
      passed to whoever got a new account under that id next. An account row is taken away only with every right naming
@@ -2125,13 +2222,15 @@ function unitRowViolation(env: CommitEnvelope): string | null {
   const today = todayIso()
   const before = unitRowsBefore(env.changes)
   const after = unitRowsBefore([])
+  /* each account as the reading rule takes it, before and after the command (accountHolder) */
+  const holderB = (id: string) => accountHolder(env, id, 'b'), holderA = (id: string) => accountHolder(env, id, 'a')
   /* the actor's account before the command — the row this command changed, put back; else the live list */
-  let acct: { id: string; pid: string; role: string; master?: boolean } | null = null
+  let acct: LevelAccount | null = null
   if (!sys) {
     const mine = env.changes.find(c => c.collection === 'settings' && c.id === ACCOUNT_ROW + a.id)
     const was: any = mine ? accountBefore(a.id, mine.before) : ACCOUNTS_LIST.find(x => x.id === a.id)
-    acct = was ? { id: was.id, pid: String(was.pid), role: String(was.role), master: was.master === true }
-      : { id: a.id, pid: String(a.personId ?? ''), role: a.role === 'admin' ? 'admin' : 'main' }
+    acct = was ? levelAcct(was, String(was.role))
+      : { id: a.id, pid: String(a.personId ?? ''), pidFrom: undefined, role: a.role === 'admin' ? 'admin' : 'main' }
   }
   /* an admin of a unit: the role IN FORCE is an admin's (an admin viewing as a member holds nothing), and his level
      there before the command is admin */
@@ -2154,7 +2253,11 @@ function unitRowViolation(env: CommitEnvelope): string | null {
         const who = accountImagesNow().find(x => x && x.id === n.account)
         if (!who || !exists(after, n.unit)) return `a right naming what is not there (${id})`
         if (homeBefore(String(who.pid), today, after) === n.unit) return `a right in his own home unit (${id})`
-        if (after.grants.filter(g => g.account === n.account && g.unit === n.unit).length > 1) return `two rights for one account in one unit (${id})`
+        /* (the reshape plan §4.3: an ended row stays stored beside a new one, so "two rights" is two HOLDING on one day) */
+        const hA = holderA(String(n.account))
+        if (after.grants.filter(g => g.account === n.account && g.unit === n.unit && grantRowHolds(hA, g, today, after)).length > 1) return `two rights holding for one account in one unit (${id})`
+        /* PLAN IS AN ADMIN'S (the Plan audit's PA2 — D2201, D785): never on an account whose role is not admin */
+        if (n.level === 'admin' && String(who.role) !== 'admin') return `Plan on an account that is not an admin's (${id})`
         /* ITS DAY IS THE DAY IT WAS GIVEN (fix read 8, fault G — Fable's 1, the security read's SEC8-3, the fresh Opus
            read's 3): the bell's move-day test counts a grant from its `from` (notices.ts adminThen, his D2218, D2223),
            and a grant with no day, or back-dated, put by a plain admin brought back a line a man's move had retired. A
@@ -2170,18 +2273,29 @@ function unitRowViolation(env: CommitEnvelope): string | null {
         /* (fix read 10, fault E): …and for a right put back where none stands whose man has not moved since it went off
            — the restore keeps its recorded day then (restoreRedated), and the gate asks the same of the same moment */
         /* (fix read 11, fault G — F11-5b): or put back from below admin to admin, the same account in the same squadron */
-        const back = grantBackHolds(b, n, OFFAT?.(env), before.homes)
-        /* NOT BETWEEN A MOVE SAVED AND ITS DAY (Fable's sample review, 1 — his D2203): the move drops every right of his
-           when it is saved, though it counts from tomorrow; a right given, raised or put back by an Undo in the rest of
-           that day outlived the move. A right standing unchanged is no giving (units.ts setGrant says the same) */
-        if (!kept && homeBefore(String(who.pid), moveFrom(today), after) !== homeBefore(String(who.pid), today, after)) return `a right given the day before his move (${id})`
-        if (!((kept || back) && env.origin === 'restore' && REPLAY && REPLAY(env)?.(c))) {
+        /* (guardrail 2 — the reshape plan §4.3): or put back after its man's move with its recorded day, which holds nothing
+           (restoreRedated writes it so) */
+        const offAt = OFFAT?.(env), mp = pidOfAccount(n.account)
+        const back = grantBackHolds(b, n, offAt, before.homes)
+          || (offAt != null && !!mp && homeChangesBefore(mp, dayOfAt(offAt), today, before).length > 0)
+        /* NOT BETWEEN A MOVE SAVED AND ITS DAY (Fable's sample review, 1 — his D2203; the reshape plan §4.3, Fable 4, Opus
+           L3): a right ends at the start of his move day, so one GIVEN or RAISED in the rest of the day the move is saved
+           would last that day only. A lowering passes, and a verified replay — whatever either leaves ends at midnight by
+           the rule (units.ts setGrant says the same) */
+        const replay = env.origin === 'restore' && !!REPLAY && !!REPLAY(env)?.(c)
+        const hb = grantBefore(holderB(String(n.account)), String(n.unit), today, before)
+        const gives = !kept && (!hb || (hb.level !== 'admin' && n.level === 'admin'))
+        if (gives && !replay && homeBefore(String(who.pid), moveFrom(today), after) !== homeBefore(String(who.pid), today, after)) return `a right given the day before his move (${id})`
+        if (!((kept || back) && replay)) {
           const want = kept ? b.from : today
           if (n.from !== want) return `a right not dated today (${id})`
         }
       }
     } else if (id.startsWith(UNIT_PFX) && !id.startsWith(UNITPLACE_PFX)) {
-      if (after.unitplaces.some(x => x.unit === key) || after.homes.some(x => x.unit === key) || after.grants.some(x => x.unit === key)) return `a unit removed while still named (${id})`
+      /* (the reshape plan §4.3 — Fable 6: a right that holds nothing on today names nothing a person can use, and no door
+         removes one, so it never blocks the Undo of "+ New squadron") */
+      if (after.unitplaces.some(x => x.unit === key) || after.homes.some(x => x.unit === key)
+        || after.grants.some(x => x.unit === key && grantRowHolds(holderA(x.account), x, today, after))) return `a unit removed while still named (${id})`
     } else if (id.startsWith(PLACE_PFX)) {
       if (after.unitplaces.some(x => x.place === key)) return `a place removed while a unit is there (${id})`
     }
@@ -2201,22 +2315,81 @@ function unitRowViolation(env: CommitEnvelope): string | null {
          they: the label "person.delete" on a command that deleted nobody stripped 142's Plan from a 149 man who stays */
       if (id.startsWith(GRANT_PFX) && b && n == null && accountGoesHere(env, String(b.account))
         && personDeletedHere(env, accountPidBefore(env, String(b.account)), adminOf, before)) continue
-      /* …AND A MOVE TAKES THEM THE SAME WAY (Fable's sample review, 2 — his D2203, "whoever moves him", as fault H read it
-         for a delete): the move drops every right of his inside its own command (units.ts setHome), and each dropped right
-         was judged by its own squadron, so 142's admin could not move his man to 149 once a third squadron had given him
-         View — the move refused whole, in the gate's own words. A right's removal passes here only where the same command
-         changes that man's squadron from tomorrow; the home rows that make the move are judged as any (an admin of each
-         squadron they name). A bare removal stays an admin's of that squadron. */
-      if (id.startsWith(GRANT_PFX) && b && n == null) {
-        const mp = accountPidBefore(env, String(b.account))
-        const tm = moveFrom(today)
-        if (mp && homeBefore(mp, tm, after) !== homeBefore(mp, tm, before) && homeBefore(mp, tm, after) !== homeBefore(mp, today, after)) continue
+      /* (the "a move takes them" exemption is gone with Piece B — the reshape plan §4.3: a move writes no right, so a right
+         removed beside a move is an ordinary removal, an admin of its squadron's) */
+      /* THE RE-LINK'S DROP (guardrail 1, §4.3): a right that holds nothing on today, in the rows before, gives nothing, so
+         its removal is no act for its squadron — it passes whoever makes the command, where the same command changes that
+         account's person (G4 and the re-link line below judge the re-link itself). A right that holds is an ordinary
+         removal: an admin of its squadron — at home or by Plan — or a master admin. */
+      if (id.startsWith(GRANT_PFX) && b && n == null && accountRelinked(env, String(b.account))
+        && !grantRowHolds(holderB(String(b.account)), b, today, before)) continue
+      /* PLAN IS A MASTER ADMIN'S TO GIVE, RAISE, LOWER OR TAKE (the Plan audit's PA1 — D2199, D2211): a grant row whose
+         level is `admin` on either side — and that holds there (a row holding nothing is no Plan a person can use) — needs a
+         master admin; a person delete's drop (above) and a verified replay excepted */
+      if (id.startsWith(GRANT_PFX) && !master && !(env.origin === 'restore' && REPLAY && REPLAY(env)?.(c))) {
+        const planB = !!b && b.level === 'admin' && grantRowHolds(holderB(String(b.account)), b, today, before)
+        const planA = !!n && n.level === 'admin' && grantRowHolds(holderA(String(n.account)), n, today, after)
+        if (planB || planA) return `Plan given, changed or taken by one who is not a master admin (${id})`
       }
       for (const img of [b, n]) if (img && !adminOf(String(img.unit))) return `not an admin of ${img.unit} (${id})`
     } else if (id.startsWith(UNIT_PFX)) {
       if (!master) return `only a master admin makes or changes a unit (${id})`
     } else if (id.startsWith(PLACE_PFX) && b != null && !master) {
       if (!before.units.some(u => placeIdOn(before, u.id, today) === key && adminOf(u.id))) return `not an admin of a unit at that place (${id})`
+    }
+  }
+
+  /* AN ENDED RIGHT NEVER COMES BACK (the reshape plan §4.3 — Opus M3 of round 2; guardrail 2 — Astra 1, Fable 7 of round
+     3), judged before against after, the backstop: for each account and squadron a grant row of this command names, a
+     right that holds nothing on today before it — none stored, or stored and ended — holds after it only where the command
+     puts it DATED TODAY (a giving, judged above by the who-rule), or where a verified restore puts it back with its recorded
+     day and the one body (restoreLeavesOut) lets it through. A verified restore that puts back a row the body leaves out is
+     refused outright, so "never" holds here as well as at the restore. */
+  const pairs = new Map<string, [string, string]>()
+  for (const c of unitCh) {
+    if (!String(c.id).startsWith(GRANT_PFX)) continue
+    for (const g of [c.before as any, c.after as any]) if (g && g.account != null && g.unit != null) pairs.set(`${g.account}\u0000${g.unit}`, [String(g.account), String(g.unit)])
+  }
+  for (const [acc, u] of pairs.values()) {
+    if (grantBefore(holderB(acc), u, today, before)) continue
+    const now = grantBefore(holderA(acc), u, today, after)
+    if (!now) continue
+    const c = unitCh.find(x => String(x.id) === GRANT_PFX + now.id)
+    if (c && env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) continue
+    if (!c || now.from !== today) return `an ended right brought back (${GRANT_PFX}${now.id})`
+  }
+  /* …and a verified restore's grant row the one body leaves out, refused outright — once the step's record is wired
+     (RESTORE_CTX: helper "undo & roles" installs it with the leave-out itself, so an honest restore never brings one
+     here). Until then a restore is judged as before Piece B, and restoreRedated keeps the recorded day of a right whose
+     man has moved since it went off, so it holds nothing (the reading rule) — nothing comes back. */
+  if (RESTORE_CTX && env.origin === 'restore' && REPLAY) {
+    const replayed = REPLAY(env)
+    for (const c of unitCh) {
+      if (!String(c.id).startsWith(GRANT_PFX) || !replayed?.(c)) continue
+      if (restoreLeavesOut(c, restoreGrantCtx(env, c), after, today)) return `a right put back that its man's move or a re-link has ended (${c.id})`
+    }
+  }
+
+  /* HOMES AND PLACES BY ONE CHECK (the reshape plan §4.3 — units-model.ts datedRowsBreach, in place of section 8's home
+     loop and with a squadron's place row's day, K1): never a day already begun; a man moved out only by an admin of the
+     squadron he leaves; nobody moves himself (R1). The squadron each row names is judged above (an admin of it). */
+  if (!sys) {
+    const made = new Set(env.changes.filter(c => c.collection === 'people' && c.before == null).map(c => String(c.id)))
+    const pids: string[] = [], unitsTouched: string[] = []
+    for (const c of unitCh) {
+      const id = String(c.id)
+      for (const r of [c.before as any, c.after as any]) {
+        if (!r) continue
+        if (id.startsWith(HOME_PFX) && r.pid != null) pids.push(String(r.pid))
+        else if (id.startsWith(UNITPLACE_PFX) && r.unit != null) unitsTouched.push(String(r.unit))
+      }
+    }
+    const br = datedBreach(before, after, today, { pids, units: unitsTouched, made, self: a.personId != null ? String(a.personId) : null, adminOn: adminOf })
+    if (br) {
+      if (br.code === 'begun') return br.kind === 'home' ? `a home changed for a day already begun (home of ${br.who} on ${br.date})` : `a squadron's place changed for a day already begun (${br.who} on ${br.date})`
+      if (br.code === 'first-past') return br.kind === 'home' ? `a first home dated before today (home of ${br.who} from ${br.date})` : `a squadron's first place dated before today (${br.who} from ${br.date})`
+      if (br.code === 'self') return `his own squadron changed by himself (home of ${br.who} from ${br.date})`
+      return `a man moved out of a squadron (${br.unit}) by one who is not its admin (home of ${br.who} from ${br.date})`
     }
   }
 
@@ -2255,9 +2428,9 @@ function homeUnitViolation(env: CommitEnvelope): string | null {
   const before = unitRowsBefore(env.changes)
   const after = unitRowsBefore([])
   const row: any = ACCOUNTS_LIST.find(x => x.id === a.id)
-  const acct = row
-    ? { id: row.id, pid: String(row.pid), role: String(a.role), master: row.master === true }
-    : { id: a.id, pid: String(a.personId ?? ''), role: 'admin' }
+  const acct: LevelAccount = row
+    ? levelAcct(row, String(a.role))
+    : { id: a.id, pid: String(a.personId ?? ''), pidFrom: undefined, role: 'admin' }
   /* a man this command makes: his people row is new here */
   const made = new Set(people.filter(c => c.before == null).map(c => String(c.id)))
   const unitOfMan = (pid: string) => homeBefore(pid, today, made.has(pid) ? after : before)
@@ -2298,32 +2471,10 @@ function homeUnitViolation(env: CommitEnvelope): string | null {
     /* NEVER A SQUADRON LEFT WITH NO ADMIN OF ITS OWN — lastAdminViolation (G3), run for every command that changes a
        person, an account or a home, on every date it can change (D2184 Q10) */
   }
-  /* A HOME IS JUDGED BY WHAT IT DOES, DAY BY DAY (the fix read, 18 Nov 26 — Astra 5, Opus 2 and 6): his squadron before
-     the command against after it, on every date it could differ — today and every row's `from` in either image (a man's
-     squadron changes only on those; his first row reaches back over every day before it, units-model.ts homeUnitOn).
-     Judging a row only against TODAY let a forged row dated in the past take back days 149 had already lived, one dated
-     the day after a move hand him back before 149's admin was asked, one of the same date win the tie, and a first row
-     dated tomorrow move him today. Where his squadron differs on a date: never on a day already begun (D2119 — a man with
-     no squadron yet may be placed from today: nothing of his is rewritten), and only by an admin of the squadron he
-     leaves; the squadron he joins is section 6's. A row that only writes down the squadron he is in (units.ts setHome's
-     baseline) changes no date and asks nothing. */
-  const tomorrow = moveFrom(today)
-  const moved = new Set<string>()
-  for (const c of homes) for (const h of [c.before as any, c.after as any]) if (h && h.pid != null) moved.add(String(h.pid))
-  for (const pid of moved) {
-    if (made.has(pid)) continue   // a new man's first home — its unit is section 6's
-    const dates = new Set<string>([today])
-    for (const h of [...before.homes, ...after.homes]) if (String(h.pid) === pid && typeof h.from === 'string') dates.add(h.from)
-    for (const d of [...dates].sort()) {
-      const was = homeBefore(pid, d, before), now = homeBefore(pid, d, after)
-      if (was === now) continue
-      /* a man with no squadron is given one from TODAY, never from a day already gone (the second fix read, 18 Nov 26 —
-         Opus F3: a forged first row dated last week passed on a shared store, where no man falls back to the demo's 142) */
-      if (was == null) { if (d < today) return `a first home dated before today (home of ${pid} from ${d})`; continue }
-      if (d < tomorrow) return `a home changed for a day already begun (home of ${pid} on ${d})`
-      if (levelBefore(acct, was, today, before) !== 'admin') return `a man moved out of a squadron (${was}) by one who is not its admin (home of ${pid} from ${d})`
-    }
-  }
+  /* A HOME IS JUDGED BY WHAT IT DOES, DAY BY DAY (the fix read, 18 Nov 26 — Astra 5, Opus 2 and 6): moved whole into the one
+     check for homes and places, units-model.ts datedRowsBreach, called by section 6 (unitRowViolation) — the reshape plan
+     §4.3, Piece B. Its rules there: never a day already begun (a man with no squadron yet placed from today), only by an
+     admin of the squadron he leaves, nobody moving himself (R1). */
   return null
 }
 

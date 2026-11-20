@@ -35,9 +35,9 @@ import { odOut, isOD, dateOrd, inpLabel, isUnavail, namedOf, placeholderOf, rema
 import { homeHandle } from '../engine/roster'
 import { hhmm } from '../engine/time'
 import { mayEditSched } from './perms'
-import { todayIso, homeOn, homeChangesOn, unitRows, levelOfAccount } from './units'
+import { todayIso, homeOn, homeChangesOn, unitRows, levelOfAccount, grantOfOn } from './units'
 /* (accounts.ts reaches this module through perms.ts; each side calls the other only at run time, never at load) */
-import { accountOfPid, isAdminAccount } from './accounts'
+import { accountOfPid, isAdminAccount, levelAcct } from './accounts'
 import { activeEnvelope } from '../command'
 
 export type NoticePart =
@@ -284,13 +284,16 @@ export function joinFilerImgs(f: string, b: any, a: any, folded: readonly any[],
 /* HIS FROM THE DAY THE ACCOUNT BECAME HIS (fix read 10, fault D — O10-4, F10-4): a right held through an account is the
    person's only from the later of its own day and the day the account was linked to him (accounts.ts Account.pidFrom),
    so a grant or the mark moved to a moved man by re-linking the account that holds it is a right given that day. */
+/* THE RIGHT THAT HOLDS ON THAT DAY (the reshape plan §4.3, Piece B — the bell): the grant read with the reading rule
+   (units.ts grantOfOn — ended at the start of the day his squadron changes, D2203, D2243), and still held before that day
+   began; Plan is an admin's (PA2 — an `admin` right on an account that is not an admin's is none). */
 function adminThen(acct: { id: string; pid: string; role: string; master?: true; masterFrom?: string; pidFrom?: string }, u: string, iso?: string, now = false): boolean {
-  if (iso == null) return levelOfAccount(acct, u) === 'admin'
+  if (iso == null) return levelOfAccount(levelAcct(acct), u) === 'admin'
   const later = (from: string | undefined): string | undefined => (!from ? acct.pidFrom : !acct.pidFrom || from > acct.pidFrom ? from : acct.pidFrom)
   const held = (own: string | undefined): boolean => { const from = later(own); return !from || from < iso || (now && from === iso) }
   if (acct.master && held(acct.masterFrom)) return true
-  const g = unitRows().grants.find(x => x.account === acct.id && x.unit === u)
-  return !!g && g.level === 'admin' && held(g.from)
+  const g = grantOfOn({ id: acct.id, pid: String(acct.pid), pidFrom: acct.pidFrom }, u, iso)
+  return !!g && g.level === 'admin' && acct.role === 'admin' && held(g.from)
 }
 /** THE SQUADRON OF AN INPUT THAT NAMES NOBODY (an ALL AVAIL or ALL one — fix read 6, fault A): its placeholder's filer
  *  first, else the input's own filer, his home on the input's own date (today where it has none). ONE body, asked by the

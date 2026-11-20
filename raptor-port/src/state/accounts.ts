@@ -71,9 +71,9 @@ import {
   postInProblem, type NewPerson,
 } from './roster-add'
 import { HOOKS } from '../engine/hooks'
-import { putNewHome, dropGrantsOfAccount, levelOfAccount, levelBefore, homeBefore, todayIso, homeOn, units, unitById, unitRows } from './units'
+import { putNewHome, dropGrantsOfAccount, dropGrantRows, levelOfAccount, levelBefore, homeBefore, todayIso, homeOn, units, unitById, unitRows, grantOfOn } from './units'
 import type { UnitRows } from './units-model'
-import type { UnitLevel } from './units-model'
+import type { UnitLevel, LevelAccount } from './units-model'
 import { validIso } from './flyplan-model'
 
 export type AccountRole = 'admin' | 'main'
@@ -305,7 +305,7 @@ export function adminsOf(unit: string, iso: string = todayIso(), rows?: UnitRows
   const out: string[] = []
   for (const a of ACCOUNTS_LIST) {
     if (!isAdminAccount(a) || !a.on || !a.pid || !personOk(a.pid) || (PEOPLE as any)[a.pid].archived) continue
-    const acct = { id: a.id, pid: a.pid, role: a.role }
+    const acct = levelAcct(a)
     const home = (rows ? homeBefore(a.pid, iso, rows) : homeOn(a.pid, iso)) === unit
     const plan = !home && !a.master && (rows ? levelBefore(acct, unit, iso, rows) : levelOfAccount(acct, unit, iso)) === 'admin'
     if (home || plan) out.push(String(a.pid))
@@ -316,9 +316,20 @@ export function adminsOf(unit: string, iso: string = todayIso(), rows?: UnitRows
    makes a unit or another master. The mark lives on the account row (the database's User.master) and changes only by
    its own command, setMaster below — the commit gate (perms.ts unitRowViolation) refuses a change of it in any other. */
 export const isMasterAccount = (id: any): boolean => !!accountById(id)?.master
-/* an account's level in a unit on a date — its own role in its home unit, its grant elsewhere, admin everywhere for a
-   master, otherwise null (state/units-model.ts levelFrom — the one answer) */
-export const levelIn = (accountId: any, unit: string, iso: string = todayIso()): UnitLevel | null => levelOfAccount(accountById(accountId), unit, iso)
+/* the signed-in person's own account (none signed in, or a session with no account behind it — none) */
+export const signedInAccount = (): Account | undefined => (SESSION ? accountById(SESSION.user) : undefined)
+/* AN ACCOUNT AS THE LEVEL READER TAKES IT (the reshape plan §4.3 — Fable 3, Opus L1): its id, its man, the day it was
+   linked to him (a right counts from the later of its own day and the link's — units-model.ts grantStart), its role (or
+   the role the caller reads — the role in force), its master mark. One body, so no account reaches the reader without
+   its link day. */
+export const levelAcct = (a: { id: string; pid: unknown; pidFrom?: string; role: string; master?: boolean }, role: string = a.role): LevelAccount =>
+  ({ id: a.id, pid: String(a.pid), pidFrom: a.pidFrom, role, master: a.master === true })
+/* an account's level in a unit on a date — its own role in its home unit, the right that holds that day elsewhere, admin
+   everywhere for a master, otherwise null (state/units-model.ts levelFrom — the one answer) */
+export const levelIn = (accountId: any, unit: string, iso: string = todayIso()): UnitLevel | null => {
+  const a = accountById(accountId)
+  return levelOfAccount(a ? levelAcct(a) : null, unit, iso)
+}
 const canSignInAsAdmin = (a: Account) => isAdminAccount(a) && a.on && personOk(a.pid)
 
 /* NEVER A SQUADRON LEFT WITH NO ADMIN OF ITS OWN (D2184 Q10 — "and so is any later step that would cause it, such as
@@ -347,22 +358,29 @@ function otherSquadronProblem(pid: string): string | null {
   const mine = SESSION ? accountById(SESSION.user) : undefined
   const u = homeOn(pid)
   if (!mine || !u) return null
-  if (levelOfAccount({ id: mine.id, pid: mine.pid, role: 'admin', master: !!mine.master }, u) === 'admin') return null
+  if (levelOfAccount(levelAcct(mine, 'admin'), u) === 'admin') return null
   const num = unitById(u)?.num ?? u
   /* two sentences, as the last-admin lock's words beside it: a dash does not join two thoughts (the guide's §1b) */
   return `He is ${num}'s. Only an admin of ${num} can change his account.`
 }
-/* a sign-in that holds a right — a grant — in a squadron the signed-in admin is no admin of is linked to another person
-   only by a master (fix read 10, fault D; the gate holds the same — perms.ts accountShapeAndMasterViolation). A master's
-   own account is a master's alone already (masterChangeProblem). */
+/* WHO MAY LINK A SIGN-IN TO ANOTHER PERSON (fix read 10, fault D; the reshape plan §4.3 guardrail 1, refined by the Plan
+   audit's PA3 — D2199, D2201, D2241). The re-link drops every right of the sign-in in its own command (updateAccount), so
+   the line guards the drop: a sign-in holding a Plan that HOLDS today is re-linked only by a master admin (taking Plan is
+   a master admin's alone — D2199); one holding a View that holds today, by an admin of that squadron — at home or by Plan
+   — or a master admin. Ended rows decide nothing: a right that holds nothing gives nothing, so dropping one is no act for
+   its squadron (§14 item 6). The gate holds the same (perms.ts G4). A master's own account is a master's alone already
+   (masterChangeProblem). The words: a View's, D2241's; a Plan's, the master admin's alone (PH1). */
 function relinkRightsProblem(a: Account): string | null {
   const mine = SESSION ? accountById(SESSION.user) : undefined
   if (mine?.master) return null
-  for (const g of unitRows().grants) {
-    if (g.account !== a.id) continue
-    if (mine && levelOfAccount({ id: mine.id, pid: mine.pid, role: 'admin', master: false }, g.unit) === 'admin') continue
-    const num = unitById(g.unit)?.num ?? g.unit
-    return `This sign-in holds a right in ${num}. Only a master admin can link it to another person.`
+  const today = todayIso()
+  for (const u of new Set(unitRows().grants.filter(g => g.account === a.id).map(g => g.unit))) {
+    const g = grantOfOn(levelAcct(a), u, today)
+    if (!g) continue
+    const num = unitById(u)?.num ?? u
+    if (g.level === 'admin') return `This sign-in holds a right in ${num}. Only a master admin can link it to another person.`
+    if (mine && levelOfAccount(levelAcct(mine, 'admin'), u) === 'admin') continue
+    return `This sign-in holds a right in ${num}. Only a master admin or an admin of ${num} can link it to another person.`
   }
   return null
 }
@@ -378,7 +396,7 @@ export function otherSquadronPersonProblem(pid: string): string | null {
   if (!mine || roleOf() !== 'admin') return null
   const u = homeOn(pid)
   if (!u) return null
-  if (levelOfAccount({ id: mine.id, pid: mine.pid, role: 'admin', master: !!mine.master }, u) === 'admin') return null
+  if (levelOfAccount(levelAcct(mine, 'admin'), u) === 'admin') return null
   const num = unitById(u)?.num ?? u
   return `He is ${num}'s. Only an admin of ${num} can change him.`
 }
@@ -526,6 +544,16 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
     if (p && p.archived && !p.deleted) return `${p.cs} is archived — restore him on Admin → Users`
   }
   if (patch.on !== undefined) { next.on = !!patch.on; delete next.offBy }   // a hand Suspend / Enable is the admin's own
+  /* A RE-LINK CARRIES NO RIGHT (the reshape plan §4.3, guardrail 1): every right of the sign-in, holding or ended, goes in
+     the re-link's own command, whoever re-links (who may, relinkRightsProblem above); the man now on the sign-in is given
+     what he needs anew. MAKING A PLAN HOLDER A MEMBER (the Plan audit's PA2, refined by R7 — D2199, D2211): only a master
+     admin, and his Plan rows that hold today go in the same command (its own words are drawn for him first — D1625 — until
+     then the generic one). The commit gate holds both (perms.ts, the re-link line and R7). */
+  const relink = next.pid !== a.pid
+  const plans = !relink && a.role === 'admin' && next.role !== 'admin'
+    ? unitRows().grants.filter(g => g.account === a.id && g.level === 'admin' && !!grantOfOn(levelAcct(a), g.unit) && grantOfOn(levelAcct(a), g.unit)!.id === g.id)
+    : []
+  if (plans.length && !signedInAccount()?.master) return 'This change could not be saved.'
   const list = ACCOUNTS_LIST.map(x => x.id === a.id ? next : x)
   const locked = lockProblem(list)
   if (locked) return locked
@@ -535,6 +563,8 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   const answered = next.name !== a.name && !!requestByName(next.name)
   return commitIntent('account.update', null, () => {
     writeAccounts(list)
+    if (relink) dropGrantsOfAccount(a.id)
+    else if (plans.length) dropGrantRows(plans.map(g => g.id))
     if (answered) writeReqs(ACCESS_REQS.filter(r => r.name !== next.name))
   })
 }
