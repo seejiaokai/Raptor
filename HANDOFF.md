@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/skill-notes-review-0c3a78 -->
+### CHAT 120 — the skill-notes review of 20 Nov 26 (his "u can do the skills notes log review in a separate chat", 20 Nov 26), started from chat 118 — written 20 Nov 26, in progress — verify before use
+- **Branch / PR:** `claude/skill-notes-review-0c3a78`, cut level with `main`; push only by `git push origin HEAD:refs/heads/claude/skill-notes-review-0c3a78` (no upstream). Never touches `claude/multi-sqn-b1-107` or pull requests 806 and 808.
+- **What:** 69 OPEN notes — `main`'s 57 (120, 122, 915–938, 944–974) and 12 held only on open branches (939–943 on `claude/rules-check-small-batch`, 975–981 on `claude/multi-sqn-b1-107`, copied to `.claude/skill-updates/2026-11-20/_review/branch-notes.md`). Holding folder `.claude/skill-updates/2026-11-20/` (method: `.claude/skills/TASK-OBSERVER-VENDORED.md` §Reviews in this repo); four helpers sort and draft (groups `_review/groups.json`, brief `_review/helper-brief.md`); 120 and 122 stay deferred (D73).
+- **Pick up here:** the helpers' tables → `check-dispositions` → his rounds in plain words → the agreed drafts read by Astra and a fresh, blind Opus reader (D1761, D1770) → install on his approval → log statuses, review date → draft pull request; live only on his "merge live".
+- **Rulings:** none yet · **Next chat number:** 121 (119 is held by chat 118's next chat).
+<!-- /now -->
+
 <!-- now:claude/multi-sqn-batch-plan-106 -->
 ### CHAT 106 — the multi-squadron build's batch plan, red-teamed; batch 1's page put to him; written 17 Nov 26 — verify before use
 - **Branch / PR:** `claude/multi-sqn-batch-plan-106`, notes only (the plan, two red-team reports and their brief, batch 1's page and pictures, the backlog, this file) — merges by itself once green, after `npm run rulecheck` and the document-reading unit tests on his PC (`shipping.md`).
