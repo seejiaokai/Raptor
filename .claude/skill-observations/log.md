@@ -985,3 +985,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** an edit script that replaced an anchor with "anchor + new text" checked only that the anchor occurred once. Re-run later by mistake (its path reused in a command meant only to search), it matched the same anchor again and appended the new text a second time, doubling two backlog lines. Caught by `git diff --stat` and undone with a checkout of the file; nothing was committed.
 **Suggested improvement:** every replacement in an edit script refuses when its NEW text is already present (an idempotence guard), not only when its anchor is missing or doubled; and a script's run and an unrelated search never share one command line.
 **Principle:** an edit that keeps its anchor in its output must check for its own output before writing, or a second run silently duplicates it.
+
+### Observation 990: the code check ran only on GitHub — a pushed build turned the whole run red for one finding
+
+**Status:** OPEN
+**Date:** 2026-11-21
+**Session context:** chat 127, the multi-squadron reshape build (phase 0 and 1)
+**Skill:** New skill candidate: pre-push local checks (the build loop in `raptor-port/CLAUDE.md` §Coding conventions, `shipping.md` §The loop)
+**Type:** open-source
+**Phase/Area:** the push step of the build loop
+
+**Issue:** The project's rule says that before a push the changed-files code check reports no new finding. The builder ran the touched unit tests and the type check but not that check, pushed, and the whole remote run went red on a single style finding in a new test-only file; the fix then had a second finding of the same kind. A new test-world folder also broke three separate source-walking guard tests, which each keep their own list of folders to skip.
+**Suggested improvement:** Make the changed-files code check part of the same pre-push step as the type check (a script the push guard runs, or one command `prepush` that runs type check + changed-files lint + touched tests), so it cannot be skipped by memory. And give the source-walking guards one shared list of folders that are not the app, so a new test-support folder is added once.
+**Principle:** A check that the rules require before a push, but that only a remote run enforces, will be skipped under pressure; fold every required pre-push check into one local command, and keep any list several guards share in one place.
