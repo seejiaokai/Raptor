@@ -64,6 +64,8 @@ clear). Pictures: `docs/img/handpass/2026-11-21-msq-reshape/`.
 | A5 step 7 — another squadron's posting through the second store; the bell lines' audience | `state/posting-pass-every-squadron-gate.test.ts` (12; 8 red, 4 refusals already refused) | `0f9d98ef7` | `7ada453ba` |
 | B1's gate line — a delete takes its man off another squadron's planning notes, and only that | `state/delete-strips-other-calendar-gate.test.ts` (9; the 4 allowed cases red, the 5 refusals green on both) | `7ada453ba` | `81092264c` |
 | A7's gate half — a war's change to a man's day not its squadron's only removes (D2243) | `state/war-day-not-its-squadron-gate.test.ts` (6; both refusal cases red, the allowed green on both) | `81092264c` | `f12c09d56` |
+| Piece B: R2, R3 (its two reads name the move day, §4.4), R4 (a–d), R5, K1 — copied whole from the repro brief | `state/reshape-r2-move-back`, `-r3-undo-move`, `-r4-no-old-right`, `-r5-first-admin-moving`, `-k1-place-day` `.test.ts` (15; 10 red, 5 controls green on both) | `9288f0593` (core files before Piece B) | the night's Piece B commit |
+| Piece B: PA1 (a–e), PA2 (a, b), PA3 (a) — the Plan audit; R1 (O1 a, b) — the blind read | `state/reshape-plan-audit.test.ts`, `state/reshape-plan-audit-read.test.ts` (13; 10 red, 3 controls/guard green on both; O2 and O4 left for P3 and phase 3) | `9288f0593` | the night's Piece B commit |
 
 ## The pictures
 
