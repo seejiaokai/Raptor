@@ -137,7 +137,9 @@ export function useMsqWorld(): void {
     const p0 = JSON.parse(PEOPLE0)
     for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
     Object.assign(PEOPLE, p0); indexCallsigns()
-    INPUTS.length = 0; JSON.parse(INPUTS0).forEach((r: any) => INPUTS.push(r))
+    const i0: unknown = JSON.parse(INPUTS0)
+    INPUTS.length = 0
+    if (Array.isArray(i0)) for (const r of i0) INPUTS.push(r)
     setUnitSeeds(true)
     worlds = { u142: memoryBackend(), u149: memoryBackend() }
     setWarWorldDoor(null)

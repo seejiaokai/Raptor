@@ -2446,7 +2446,11 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
        D2202): a squadron's admin lines go to its admins at home AND its non-master Plan holders (accounts.ts adminsOf), so
        Kestrel's 149 posting line to Hunter, 142's admin holding Plan of 149, is his to write. Read over the rows before
        the command, on today, as the passes read it. */
-    return rows!.units.some(x => x.id !== u && levelInForce(a, x.id, today!, rows!) === 'admin' && adminsOf(x.id, today!, rows!).includes(pid))
+    for (const x of rows!.units) {
+      if (x.id === u || levelInForce(a, x.id, today!, rows!) !== 'admin') continue
+      if (new Set(adminsOf(x.id, today!, rows!)).has(pid)) return true
+    }
+    return false
   }
   const changedInputs = new Set(env.changes.filter(c => c.collection === 'inputs').map(c => String(c.id)))
   let replayed: ((c: Change) => boolean) | null | undefined
