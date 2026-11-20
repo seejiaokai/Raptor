@@ -71,7 +71,8 @@ import {
   postInProblem, type NewPerson,
 } from './roster-add'
 import { HOOKS } from '../engine/hooks'
-import { putNewHome, dropGrantsOfAccount, levelOfAccount, todayIso, homeOn, units, unitById, unitRows } from './units'
+import { putNewHome, dropGrantsOfAccount, levelOfAccount, levelBefore, homeBefore, todayIso, homeOn, units, unitById, unitRows } from './units'
+import type { UnitRows } from './units-model'
 import type { UnitLevel } from './units-model'
 import { validIso } from './flyplan-model'
 
@@ -290,6 +291,27 @@ export function linkablePeople(keep?: string): string[] {
   }).sort((a, b) => String((PEOPLE as any)[a].cs).localeCompare(String((PEOPLE as any)[b].cs)))
 }
 export const isAdminAccount = (a: Account | undefined) => !!a && a.role === 'admin'
+/* A SQUADRON'S ADMINS ON A DAY — ONE AUDIENCE (the reshape plan §6.2 step 6 — Opus M6 of round 2; Astra 3, Fable 5,
+   Opus 8 of round 3; D2194, D2202, D2198): the people a squadron's admin lines go to (a posting's, its take-back's, the
+   "off the manpower" line), asked by the war's two posting passes and by the commit gate alike, with the same day — the
+   run's day, today, read after the outcomes. Who: an account that can sign in as an admin (admin role, switched on, its
+   man on the roster — not archived, deleted or a placeholder) that is (a) at home in that squadron that day, or (b) not
+   a master admin and holding Plan of it that day by a right (D2202: "while an admin holds Plan of another squadron, his
+   bell carries that squadron's admin lines, on by default"). A master admin counts through his home only (D2198: his
+   other squadrons' lines are off by default); a View holder never. Person ids, as a bell line is addressed. */
+/* (`rows` — the unit rows to read: the commit gate hands in the rows as they stood before the command, so a command can
+   never widen the audience it writes to; the passes read the live rows) */
+export function adminsOf(unit: string, iso: string = todayIso(), rows?: UnitRows): string[] {
+  const out: string[] = []
+  for (const a of ACCOUNTS_LIST) {
+    if (!isAdminAccount(a) || !a.on || !a.pid || !personOk(a.pid) || (PEOPLE as any)[a.pid].archived) continue
+    const acct = { id: a.id, pid: a.pid, role: a.role }
+    const home = (rows ? homeBefore(a.pid, iso, rows) : homeOn(a.pid, iso)) === unit
+    const plan = !home && !a.master && (rows ? levelBefore(acct, unit, iso, rows) : levelOfAccount(acct, unit, iso)) === 'admin'
+    if (home || plan) out.push(String(a.pid))
+  }
+  return out
+}
 /* THE MASTER MARK (multi-squadron batch 1, step 1 — D2191): a master is an admin of every unit and the only one who
    makes a unit or another master. The mark lives on the account row (the database's User.master) and changes only by
    its own command, setMaster below — the commit gate (perms.ts unitRowViolation) refuses a change of it in any other. */

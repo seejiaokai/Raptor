@@ -31,7 +31,7 @@ import { deriveActor } from '../command/actor'
 import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
-import { seedAccounts, ACCOUNTS_LIST, isAdminAccount, isMasterAccount, accountBefore, readAccounts, type Account } from './accounts'
+import { seedAccounts, ACCOUNTS_LIST, isAdminAccount, isMasterAccount, accountBefore, readAccounts, adminsOf, type Account } from './accounts'
 import { unitRowsBefore, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn } from './units'
 import { PEOPLE } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
@@ -2441,7 +2441,12 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
   const ownsHim = (pid: string): boolean => {
     if (today == null) { today = todayIso(); rows = unitRowsBefore(env.changes) }
     const u = homeBefore(pid, today, rows!) ?? BOOT_UNIT
-    return levelInForce(a, u, today, rows!) === 'admin'
+    if (levelInForce(a, u, today, rows!) === 'admin') return true
+    /* …OR ONE OF A SQUADRON'S ADMINS OF WHICH HE IS AN ADMIN (the Plan audit's PC1 — the reshape plan §19, §6.2 step 6;
+       D2202): a squadron's admin lines go to its admins at home AND its non-master Plan holders (accounts.ts adminsOf), so
+       Kestrel's 149 posting line to Hunter, 142's admin holding Plan of 149, is his to write. Read over the rows before
+       the command, on today, as the passes read it. */
+    return rows!.units.some(x => x.id !== u && levelInForce(a, x.id, today!, rows!) === 'admin' && adminsOf(x.id, today!, rows!).includes(pid))
   }
   const changedInputs = new Set(env.changes.filter(c => c.collection === 'inputs').map(c => String(c.id)))
   let replayed: ((c: Change) => boolean) | null | undefined
