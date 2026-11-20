@@ -2127,9 +2127,11 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
      D2211): an account holding a Plan in force (today, on the rows before) is made a member only by a master admin, and
      only with his Plan rows dropped in the same command — no Plan holds on a member's account after it. Read on the
      loader's own reading of both lists. */
+  const acctAById = new Map<string, Account>()
+  for (const z of w.acctA) if (!acctAById.has(z.id)) acctAById.set(z.id, z)
   for (const x of w.acctB) {
     if (x.role !== 'admin') continue
-    const y = w.acctA.find(z => z.id === x.id)
+    const y = acctAById.get(x.id)
     if (!y || y.role === 'admin' || String(y.pid) !== String(x.pid)) continue
     const hb = { id: x.id, pid: String(x.pid), pidFrom: x.pidFrom }, ha = { id: y.id, pid: String(y.pid), pidFrom: y.pidFrom }
     const planB = w.rowsB.grants.some(g => g.account === x.id && g.level === 'admin' && grantRowHolds(hb, g, today, w.rowsB))
