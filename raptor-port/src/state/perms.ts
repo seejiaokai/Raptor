@@ -1364,9 +1364,47 @@ function unitRecordViolation(env: CommitEnvelope): string | null {
   for (const u of units) {
     const lv = levelInForce(a, u, today, rows)
     const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
-    if (!ok) return `a change to another unit's records (${u}) by one with ${lv ? `${lv} rights` : 'no rights'} there`
+    if (!ok && !(a.role === 'admin' && deleteStripsOnly(env, a, u, today, rows))) return `a change to another unit's records (${u}) by one with ${lv ? `${lv} rights` : 'no rights'} there`
   }
   return null
+}
+/* A DELETE REACHES EVERY SQUADRON'S PLANNING CALENDAR (the reshape plan §6.2 B1 — the gate line, core, phase 1; the
+   writer is state/plan-foreign.ts, helper "session"). A man deleted goes off every calendar note naming him from his
+   cutoff, whichever squadron's calendar it is — so his delete may change a planning row of a squadron its admin holds no
+   right in, and only so: (a) this same command deletes that man (personDeletedHere — the admin an admin of HIS
+   squadron); (b) every change of that squadron's records is a note or pucks row (`pp:`) that stood before, dated on or
+   after his cutoff, its after-image its before-image with his id blanked (the first place it stands) and the trailing
+   blanks trimmed — or the row removed where that leaves it neither words nor people (person-delete.ts step 3c's own
+   rule). Nothing else of any row may change: its words, its day, its order, another man (fix read 12's fault B). */
+function deleteStripsOnly(env: CommitEnvelope, a: Actor, u: string, today: string, rows: UnitRows): boolean {
+  const adminOfHome = (h: string) => levelInForce(a, h, today, rows) === 'admin'
+  const men: [string, string][] = []
+  for (const c of env.changes) {
+    if (c.collection !== 'people') continue
+    const f: any = c.op === 'delete' ? null : c.after
+    if (f && typeof f.deletedFrom === 'string' && ISO_DAY.test(f.deletedFrom) && personDeletedHere(env, String(c.id), adminOfHome, rows)) men.push([String(c.id), f.deletedFrom])
+  }
+  if (!men.length) return false
+  for (const c of env.changes) {
+    if (unitOf(String(c.id)) !== u) continue
+    if (c.collection !== 'plan' || !split(String(c.id)).local.startsWith('pp:')) return false
+    const b: any = c.before, f: any = c.op === 'delete' ? null : c.after ?? null
+    if (!b || typeof b !== 'object' || typeof b.date !== 'string' || !Array.isArray(b.ids)) return false
+    const ids = [...b.ids]
+    let hit = false
+    for (const [pid, cut] of men) {
+      if (b.date < cut) continue
+      const ix = ids.indexOf(pid)
+      if (ix < 0) continue
+      ids[ix] = ''
+      while (ids.length && !ids[ids.length - 1]) ids.pop()
+      hit = true
+    }
+    if (!hit) return false
+    const gone = !ids.length && !String(b.text == null ? '' : b.text).trim()
+    if (gone ? f != null : !f || !deepEqual(f, { ...b, ids })) return false
+  }
+  return true
 }
 /* an actor's level in a unit, as section 7 reads it. The level in his HOME unit is the role IN FORCE (the session's), as
    every other check of this gate reads it — not the stored account's: the two agree on a sign-in, and where they part
