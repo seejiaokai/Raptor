@@ -54,5 +54,5 @@ D2223, D2225, D2218, D350, D290/D297, D148, D1693/D1699; the "not a finding" lis
 ## After the fixes
 The whole unit suite under the checks lock, `npm run build`, `node reference/tfin.js`, `npm run rulecheck`,
 `npm run docsize`; then fix read 15 of these commits by four blind readers (as fix read 14 — its brief and copy script are
-the pattern; Astra on the shared brief unchanged, skill notes 980 and 984). The bell walk owed (`[MSQ-FIXREAD10-LEFT]` (5)) is still
+the pattern; Astra on the shared brief unchanged, skill notes 980 and 984; if its service stops it, the stop is accepted — his D2232: its saved findings reproduced, no reader in its seat, the read partial on the reads-owed list). The bell walk owed (`[MSQ-FIXREAD10-LEFT]` (5)) is still
 owed. Pull request 806 does not merge before a fix read comes back clear.
