@@ -978,7 +978,11 @@ function sayBlocked(entry: UndoEntry, dir: 'undo' | 'redo', text: string): strin
    leaving everything older out of reach. Any other failure in the apply keeps refusing as before. */
 function refusedFor(entry: UndoEntry, dir: 'undo' | 'redo', reason?: string): string {
   const text = plainRestoreReason(reason, entry)
-  return reason && /war day not open for bidding/.test(reason) ? sayBlocked(entry, dir, text) : text
+  if (reason && /war day not open for bidding/.test(reason)) return sayBlocked(entry, dir, text)
+  /* a move or a place change whose day has begun can never be undone (D2119): blocked for good, in today's words, so the
+     next press takes the step before it (Fable's blind read, 4 — it jammed his whole Undo list) */
+  if (reason && /changed for a day already begun/.test(reason)) return sayBlocked(entry, dir, OUT_OF_BAND)
+  return text
 }
 
 export function globalUndo(): UndoResult {

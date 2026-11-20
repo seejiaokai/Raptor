@@ -90,3 +90,20 @@ clear). Pictures: `docs/img/handpass/2026-11-21-msq-reshape/`.
 ## What the walk found, and each disposition
 
 ## The reads (phase 2: Fable's blind read of the core's rights change; phase 4: the four-reader fix read)
+
+### Phase 2 — Fable's blind read of the core's rights change (his D2244), 21 Nov 26
+
+On an exported copy of `6c0908481` (the code, no records), brief and report word for word in
+`docs/superpowers/briefs/2026-11-21-msq-reshape-fable-read-brief.md` and `…-fable-read-report.md`. Four findings, each
+reproduced red in this checkout before it counted (10 red, 3 controls green), each fixed as Fable specified and green
+after; the whole unit suite run after the fixes. No right found holding where it should not.
+
+| # | Finding | Severity | Fix | Proof (red on `6c0908481`, green after) |
+|---|---|---|---|---|
+| 1 | The first admin's move into his new squadron could never be taken back or undone — the lock read his date as home-only | HIGH | `lastadmin.ts`: a home admin of that date who still counts there by his own Plan after the step keeps the squadron | `state/fable-first-admin-takeback.test.ts` |
+| 2 | Making a squadron's only Plan admin a master admin: the door let through what the gate refused ("That did not save") | MED | `accounts.ts setMaster` asks the lock at the door | `state/fable-master-mark-lock.test.ts` |
+| 3 | Six squadron doors (move, take in, View given or taken, a place moved, "+ New squadron" by a non-master) showed the gate's raw reason | MED | `units.ts said()`: a refusal raised inside a command keeps its words, everything else the generic words (as `saidOf`) | `state/fable-unit-doors-raw-reason.test.ts` (6) |
+| 4 | A move's Undo after its day began jammed his whole Undo list ("just now" on every press) | MED | `undo/timeline.ts refusedFor`: "changed for a day already begun" is blocked for good, in today's words | `state/fable-move-undo-after-midnight.test.ts` |
+
+Fable's "one thing for the owner" (not a fault — the plan's §5.3 reading): once a squadron has an admin at home, a Plan
+holder no longer counts for it — put to him (the block's questions).

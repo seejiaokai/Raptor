@@ -37,6 +37,7 @@ export function lastAdminBreach(w: LockWorld): LockBreach | null {
     l.filter(x => isAdminRole(x) && x.on !== false && x.pid != null && onRoster(person(String(x.pid))))
   const ableB = able(w.acctB, w.personB), ableA = able(w.acctA, w.personA)
   if (ableB.length && !ableA.length) return 'app'
+  const ableAById = new Map(ableA.map(y => [y.id, y] as const))
   const home = (x: LockAccount, u: string, d: string, r: UnitRows) => homeUnitOn(r, String(x.pid), d, w.fallback) === u
   const plan = (x: LockAccount, u: string, d: string, r: UnitRows) =>
     x.master !== true && !home(x, u, d, r) && levelFrom(asLevel(x), u, d, r, w.fallback) === 'admin'
@@ -56,16 +57,19 @@ export function lastAdminBreach(w: LockWorld): LockBreach | null {
       const homeA = ableA.filter(x => home(x, u.id, d, w.rowsA))
       if (homeA.length) continue
       if (!homeB.length && ableA.some(x => plan(x, u.id, d, w.rowsA))) continue
+      /* a home admin of that date who still counts there by his own Plan after the step: his move in, not yet begun, taken
+         back or undone — the squadron keeps him (Fable's blind read, 1 — the first admin's move in could never be undone) */
+      if (homeB.length && homeB.some(x => { const y = ableAById.get(x.id); return !!y && plan(y, u.id, d, w.rowsA) })) continue
       /* left with none on `d`: who it was (one the step took), and — on a later date — whose move makes it that day */
       const counted = homeB.length ? homeB : planB
-      const kept = (x: LockAccount) => ableA.some(y => y.id === x.id && (homeB.length ? home(y, u.id, d, w.rowsA) : home(y, u.id, d, w.rowsA) || plan(y, u.id, d, w.rowsA)))
+      const kept = (x: LockAccount) => { const y = ableAById.get(x.id); return !!y && (homeB.length ? home(y, u.id, d, w.rowsA) : home(y, u.id, d, w.rowsA) || plan(y, u.id, d, w.rowsA)) }
       const gone = counted.find(x => !kept(x)) ?? null
       let cause: LockHit['cause'] = null
       if (i > 0) {
         const prev = days[i - 1]!
         const was = (y: LockAccount) => home(y, u.id, prev, w.rowsA) || (!homeB.length && plan(y, u.id, prev, w.rowsA))
         const mover = ableA.find(y => y.id !== gone?.id && String(y.pid) !== String(gone?.pid) && was(y)
-          && homeChangesIn(w.rowsA, String(y.pid), prev, d, w.fallback).includes(d))
+          && homeChangesIn(w.rowsA, String(y.pid), prev, d, w.fallback).at(-1) === d)   // (its days come sorted: a change on `d` is the last)
         if (mover) cause = { pid: String(mover.pid), to: homeUnitOn(w.rowsA, String(mover.pid), d, w.fallback) }
       }
       return { unit: u.id, date: d, gone: gone ? gone.id : null, cause }

@@ -143,9 +143,11 @@ export const PLAN_MASTER_ONLY = 'Only a master admin gives Plan or makes a maste
 const notMaster = (): boolean => { const me = signedInAccount(); return !!me && me.master !== true }
 
 /* ---- the writes ---- */
+/* (a refusal raised inside a command keeps its own words; the gate's reason never reaches the screen — the generic words
+   until these doors are drawn, D1625; as roster-add.ts saidOf — Fable's blind read, 3) */
 function said(r: CommitResult): UnitSave {
   if ('queued' in r) return { ok: false, pending: r.done.then(said) }
-  return { ok: r.ok, ...(!r.ok ? { message: r.message || 'This change could not be saved.' } : {}) }
+  return { ok: r.ok, ...(!r.ok ? { message: (r.reason === 'refused' && r.message) || 'This change could not be saved.' } : {}) }
 }
 /* one row written and read back — a write the store did not keep fails the whole command */
 function put(k: string, v: unknown): void {

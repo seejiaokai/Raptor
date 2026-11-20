@@ -617,6 +617,10 @@ export function setMaster(id: string, on: boolean): { ok: boolean; message?: str
   if (on) { next.master = true; next.masterFrom = todayIso() } else { delete next.master; delete next.masterFrom }
   const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? next : x))
   if (!list.some(x => x.master)) return { ok: false, message: 'At least one master admin must be left' }
+  /* a master admin counts only at home (Piece C): marking a squadron's only Plan admin a master leaves it none — said in
+     the lock's words, as every other door says it (Fable's blind read, 2) */
+  const locked = lockProblem(list)
+  if (locked) return { ok: false, message: locked }
   const bad = commitIntent('account.master', null, () => writeAccounts(list))
   return bad ? { ok: false, message: bad } : { ok: true }
 }
