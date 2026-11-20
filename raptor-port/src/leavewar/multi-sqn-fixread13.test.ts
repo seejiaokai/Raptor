@@ -13,7 +13,7 @@ import { initStore as lwInitStore, setPeople, getState } from '../leavewar/state
 import { memoryBackend } from '../leavewar/state/storage'
 import { projectPeople } from '../leavewar/state/raptorRoster'
 import { wireLeaveWarSync, setWarWorldDoor, postOut, runPoOutcomes, undoPostOut } from '../leavewar/sync'
-import { unitsLoad, setGrant, setHome, unitRows, homeOn } from '../state/units'
+import { unitsLoad, setGrant, setHome, unitRows, homeOn, grantOfOn } from '../state/units'
 import { HOME_PFX } from '../state/units-model'
 import { accountOfPid } from '../state/accounts'
 import { commit } from '../command'
@@ -321,7 +321,9 @@ describe("item C — D2228: a moved filer who is again an admin of the named man
     expect(filerVia('prowler', [inp]), 'told through Plan of 149 before his move').toEqual(['u149'])
     signInAs('ad', 'a'); const mv = setHome('prowler', 'u149'); expect(mv.ok, JSON.stringify(mv)).toBe(true)
     on(17)
-    expect(grantsOf('acad2'), 'his Plan went with his move (D2203)').toEqual([])
+    /* (§4.5 of the reshape plan, rewrite 2 — his D2243, Q4: the move deletes no row now; "his Plan went with his move"
+       reads that no right of his holds on the 17th) */
+    expect(grantsOf('acad2').filter(g => grantOfOn({ id: 'acad2', pid: 'prowler', pidFrom: undefined }, g.unit, '2026-07-17')?.id === g.id), 'his Plan went with his move (D2203)').toEqual([])
     expect(filerVia('prowler', [inp]), "now 149's own admin — still Osprey's admin").toEqual(['u149'])
   })
   it("(control, D2223) Hunter moves to 149 alone, Ranger stays 142's: no admin of Ranger's squadron, not told", () => {
