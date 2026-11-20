@@ -16,7 +16,7 @@ import { deriveActor } from '../command/actor'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync, setWarWorldDoor, postOut, undoPostOut } from './sync'
-import { unitsLoad, setGrant, removeGrant, addUnit, homeOn, unitRows } from '../state/units'
+import { unitsLoad, setGrant, removeGrant, addUnit, homeOn, unitRows, grantOfOn } from '../state/units'
 import { HOME_PFX } from '../state/units-model'
 import { INPUTS } from '../engine/inputs'
 import { NOTICES, noticesFor, noticeLeftBell, noticeHoliday, noticeWar, noticePosting, noticeAboutHim, type Notice } from '../state/notices'
@@ -403,22 +403,26 @@ describe('fault E — a right taken off after a move and put back by its Undo or
     const r = globalRedo(); expect(r.ok, JSON.stringify(r)).toBe(true)
     expect(g()?.from, 'off only since this morning\'s Undo, no move since').toBe('2026-07-13')
   })
-  it('(Redo, a move since its Undo) Plan of 149 given 13 Jul and undone 15 Jul; he moves 16 Jul; the Redo on 17 Jul: a right given today', () => {
+  /* (§4.5 of the reshape plan, rewrites 10 and 11 — guardrail 2: a Redo or an Undo after his move puts nothing back that
+     holds. Until helper "undo & roles" wires the leave-out the press writes the recorded row, which holds nothing; the
+     step's blocked words are that helper's test) */
+  const plan149 = () => grantOfOn({ id: 'acad2', pid: 'prowler', pidFrom: undefined }, 'u149', '2026-07-17')
+  it('(Redo, a move since its Undo) Plan of 149 given 13 Jul and undone 15 Jul; he moves 16 Jul; the Redo on 17 Jul: nothing of 149 holds', () => {
     on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok).toBe(true)
     expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     on(15)
     const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
     homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']]); on(17)
-    const r = globalRedo(); expect(r.ok, JSON.stringify(r)).toBe(true)
-    expect(unitRows().grants.find(x => x.account === 'acad2' && x.unit === 'u149')?.from).toBe('2026-07-17')
+    globalRedo(); unitsLoad()
+    expect(plan149(), 'the Redo after his move').toBeUndefined()
   })
-  it('(control — a move between) the Plan taken off 15 Jul, he moves 16 Jul, the Undo on 17 Jul: a right given today', () => {
+  it('(control — a move between) the Plan taken off 15 Jul, he moves 16 Jul, the Undo on 17 Jul: nothing of 149 holds', () => {
     on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok).toBe(true)
     expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     on(15); signInAs('ad', 'a')
     expect(removeGrant('acad2', 'u149').ok).toBe(true)
     homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']]); on(17)
-    const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
-    expect(unitRows().grants.find(x => x.account === 'acad2' && x.unit === 'u149')?.from).toBe('2026-07-17')
+    globalUndo(); unitsLoad()
+    expect(plan149(), 'the Undo after his move').toBeUndefined()
   })
 })
