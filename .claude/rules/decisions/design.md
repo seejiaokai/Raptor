@@ -101,4 +101,4 @@ Loads by itself with any file of screen work (the `paths:` above). Each line is 
 - The Inputs pages' (notes, ✕, pencil, gear, drags): D851, D854, D1622, D919, D1134, D635, D1702, D1708, D893, D897, D900.
 - The Leave War's (scroll, undo, leaks, pinch, glows, icon): D892, D670, D672, D1519, D1789, D1282, D1285, D1286, D881, D882, D1221, D1172.
 - The Tracker's (icons, pencils, marks, ✕, magnifier — D1900 built): D1132, D1135, D1705, D1134, D1860, D1791, D1935, D1900, D1127.
-- People & accounts' (guest switch, ring): D221, D204, D1694.
+- People & accounts' (no guest, ring): D2239, D204, D1694.

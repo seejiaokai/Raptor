@@ -7102,6 +7102,11 @@ one mark. Its gap was measured to the letters' ink, the T's upright standing 8px
 
 ## The access screens and the guest view (`[ACCOUNTS]`, D204, 26 Sep 26)
 
+> **To be removed — his D2239, 20 Nov 26:** the guest view, its Admin switch (`#admGuestView`) and the waiting screen's
+> "View the schedule" button go; a person waiting sees only the waiting screen until an admin of his squadron approves
+> him. What follows describes the app as built until that removal (the reshape plan's §8, B2; filed as
+> [MSQ-FIXREAD17-OPEN]).
+
 **No "Sign up" button on the sign-in page (D293, 27 Sep 26):** whoever signs in and is on no list lands on Request access
 by itself; held in reserve only, if new people are confused once live — one line under the button, "New here? Sign in
 with your defence mail to ask for access."

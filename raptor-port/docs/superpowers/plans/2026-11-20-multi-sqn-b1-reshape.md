@@ -83,7 +83,7 @@
 | A6 | Piece D | The "posting could not run" note reads the man's own squadron's posting. |
 | A7 | Piece D + Piece A + **his answer** | A war takes a man's day only where that day is its squadron's; a change that only removes passes. Whether the master is an exception is his question (§12 Q3). Built with A1, so it waits on A1's drawing too (§11). |
 | B1 | Piece D | A delete takes the man off every squadron's planning calendar, inside its own command, rolled back whole on a refusal. |
-| B2 | **held with B7** + his question | The guest switch needs the request's squadron, which step 5 builds; a stop-gap meanwhile is his call (§12 Q5). |
+| B2 | one-by-one (his D2239, 20 Nov 26) | The guest view is removed: no switch, no button into it (§8). Was held with B7. |
 | B3 | Piece C | One lock over every date. The door gives the approved words (D2217 Q15) where it now says "That did not save". |
 | B4 | Piece A (the page's squadron) | Own-squadron pages read and write their own squadron's settings, never the pick's. |
 | B5 | one-by-one (with K4) | Same fix as K4. |
@@ -1083,6 +1083,12 @@ archive, suspend, delete. Astra found no failure in this choice.
     him in" (Fable). Either would let one squadron's admin decide for another's guests.
   So the right fix is B7's: the request names its squadron, the guest session starts there, and that squadron's switch
   decides. The proofs B2 and B2b stay red and named until then. Whether he wants a stop-gap meanwhile is §12 Q5.
+  **— Changed 20 Nov 26 by his D2239: the guest view is removed, so B2 is no longer held.** A one-by-one job (core
+  builder, phase 3, after the helpers): the Admin "Guest view" switch, the waiting screen's "View the schedule" button,
+  the guest session and its app (`ui/GuestApp.tsx`), the guest role's cells in `perms.ts` and `data-model.md` §11, and
+  their tests — each test that pins the guest view rewritten to pin its absence, named in the report; B2's and B2b's
+  proofs rewritten to "no squadron's switch exists" and green. B7 (the request names its squadron) stays with step 5.
+  The documents' pointers (`ui-contracts.md` §The access screens and the guest view) are then rewritten to the app.
 
 ## 9. Tests, overall
 
@@ -1254,8 +1260,8 @@ Q8 are drawings shown before their part is built.
     switch lets him in. Either stop-gap — one switch for the whole app, or any squadron's switch letting him in — means
     Kestrel's switch would let a guest into 142's week, a choice that is 142's admins' to make.
   - *Recommended: wait for step 5,* where the request names its squadron and that squadron's switch decides (§8).
-  - *Until then:* as today — 142's switch alone; proofs B2 and B2b stay red, named. A stop-gap, if he wants one, moves B2
-    to one-by-one.
+  - **ANSWERED 20 Nov 26 by his D2239: remove the guest view.** No switch, no button into it, no guest session: a person
+    waiting sees only the waiting screen until an admin of his squadron approves him. B2 moves to one-by-one (§7, §8).
 - **Q6 (A1's look) — a moved man's row on both Leave Wars:** the drawing §11 names, with A7's Undo sentence beside it.
   *Recommended:* his old squadron's row ends in the war's existing "away" look, with no posting tag, because no posting
   was set. *What he will see of leave already approved* (Fable 10): Ranger's leave approved in 142's war for Mon 20 Jul,
