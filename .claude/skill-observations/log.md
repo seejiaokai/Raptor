@@ -882,98 +882,29 @@ _13 Nov 26, chat 68 (the sim count fix and the two explanations): no observation
 **Suggested improvement:** every backgrounded `codex exec` gets `< /dev/null`; the guide's recipe line shows it; and a short check 90 seconds after the start (the log has grown past one line) before the host waits on it.
 **Principle:** a command meant to run unattended has its input closed explicitly, and its start is confirmed before a long wait begins.
 
-### Observation 983: Regex backslashes lost inside a template literal in an edit script
-
-**Status:** OPEN
-**Date:** 19 Nov 26
-**Session context:** chat 109's overnight run, multi-squadron batch 1, the A3 build (a store per unloaded squadron)
-**Skill:** New skill candidate: edit-script safety (or the project's editing traps in raptor-port/CLAUDE.md)
-**Type:** open-source
-**Phase/Area:** editing source files by a generated script
-
-**Issue:** The builder wrote a source change through a Node edit script whose new text sat inside a template literal; the regex in it lost its backslashes on the way, which silently broke the post-in date check and every post-in. Only the unit tests caught it.
-**Suggested improvement:** Add to the editing traps: never put regex backslashes inside a template literal in an edit script; write such lines with the Edit tool, or read the new text from a file written by the Write tool.
-**Principle:** A generated edit passes text through one more layer of escaping; any line holding backslashes is safest written by a tool that keeps every character as typed, and checked by a test before it is trusted.
-
-### Observation 984: A walk that reads a second person's screen in a second live tab tests stale state, not the app
-
-**Status:** OPEN
-**Date:** 19 Nov 26
-**Session context:** chat 113, fix read 5's walk F4 (a posting taken back after another admin read its bell line)
-**Skill:** New skill candidate: walk-scripts (raptor-port/docs/walk-scripts.md)
-**Type:** open-source
-**Phase/Area:** writing a walk script where two people act in turn
-
-**Issue:** The walker kept person A signed in in tab 1 and read person B's bell in tab 2 of the same browser. B's "read" mark was saved by tab 2, but tab 1 loads read records only at start-up, so A's undo in tab 1 thought B had never read the line and wrote no "taken back" line. The walk reported a FAIL; one world in a unit test was green. An hour of builder time went on proving it an artifact.
-**Suggested improvement:** walk-scripts.md: when two people act in turn, either one tab with sign-out / sign-in between them, or reload the acting tab after the other person's step; a two-live-tab FAIL is reproduced in one world before it is filed.
-**Principle:** In an app that keeps per-tab in-memory state over shared browser storage, two live tabs are two devices that never sync; a walk must not use them as one shared backend.
-
-### Observation 985: Reader copies are exported without pictures; the package link is made in PowerShell
-
-**Status:** OPEN
-**Date:** 19 Nov 26
-**Session context:** chat 114, fix read 6 of multi-squadron batch 1 (three blind readers, each on its own exported copy)
-**Skill:** New skill candidate: blind-reader-copies (the codex-guide recipe for exported copies)
-**Type:** open-source
-**Phase/Area:** making the readers' copies
-
-**Issue:** `git archive <commit> | tar -x` of the whole repo ran past 5 minutes for one copy (thousands of walk pictures) and was stopped; the package link made with `cmd //c mklink /J` from Git Bash failed ("Invalid switch") because Git Bash rewrites the `/J`.
-**Suggested improvement:** in the recipe: export with pathspec excludes (`git archive <c> -- . ':(exclude,glob)**/*.png' ':(exclude,glob)**/*.jpg' ':(exclude,glob)**/*.mp4' ':(exclude,glob)**/*.gif' ':(exclude,glob)**/*.webm'`) — three copies then take seconds; make the node_modules junction with PowerShell's `New-Item -ItemType Junction`.
-**Principle:** a reviewer's copy needs the code and documents, not the evidence pictures — export only what the reader reads; make Windows links with the Windows shell.
-- met again 19 Nov 26 (chat 116, fix read 7's four copies): the excludes worked (four copies in seconds), but the copy's own `git add -A` failed silently inside a loop — "Filename too long" on a browser-test leftover under `docs/handpass/` — so every copy had no commit; fixed with `git -c core.longpaths=true add -A` and `-c core.hooksPath=/dev/null` on the commit. Guard: put both in the recipe, and check `git log --oneline -1` in each copy before starting a reader.
-
-### Observation 986: A Codex reader's start-up reads defeat the blind read
-
-**Status:** OPEN
-**Date:** 19 Nov 26
-**Session context:** chat 116, fix read 7 of multi-squadron batch 1 (four blind readers on exported copies)
-**Skill:** claudex-loop (the reviewer's copy and brief); also the codex-guide recipe for exported copies
-**Type:** open-source
-**Phase/Area:** making a blind reviewer's copy
-
-**Issue:** Twice running (fix reads 6 and 7) the Codex reader said its read was not fully blind: the repo's agent instructions tell it to read the handoff file first, and the exported copy carried the branch's handoff block with the builder's own summary of the fixes, which it read before reaching the brief's "do not read" line. The brief's exclusion came too late to help.
-**Suggested improvement:** when exporting a reader's copy, replace the branch's handoff block (and any builder brief or evidence sheet for the round) in the copy with a one-line pointer, so the start-up reads find nothing to anchor on; say so in the brief's first line.
-**Principle:** a reader is only blind if the material it must not see is absent from its copy — an instruction not to look loses to an instruction to read it first.
-
-### Observation 987: a red test was red because its own setup was silently dropped
-
-**Status:** OPEN
-**Date:** 2026-11-19
-**Session context:** Fix read 7, fault Q (chat 117's builder): writing the red-first test for a filer told after a named man's move
-**Skill:** test-driven-development
-**Type:** open-source
-**Phase/Area:** RED — verify the test fails for the right reason
-
-**Issue:** The new test seeded a man's move through a helper that writes stored rows; the row id it was given did not match the store's id rule, so the loader dropped the row without a word. The test still went red, and on first read the failure looked like the fault itself; only a printout of the stored state showed the move had never happened (the input's line carried the old squadron alone). A control that should have passed also failed, which was the clue.
-**Suggested improvement:** In the RED step, add: before trusting a red, assert the setup took effect (read back the state the fixture was meant to create, e.g. the man's squadron on the day), and treat a failing control as a sign the fixture, not the fix, is wrong.
-**Principle:** a red test proves the fault only if its own setup is known to have happened; fixtures that validate and silently discard bad input make a wrong red look right.
-
-
-### Observation 988: A security-scoped paragraph in a shared brief gets the Codex reader stopped; cutting it afterwards is refused
-
-**Status:** OPEN
-**Date:** 19 Nov 26
-**Session context:** chat 117, fix read 8 of multi-squadron batch 1 (four blind readers sharing one brief)
-**Skill:** claudex-loop (the reviewer's brief); also the codex-guide recipe for blind reader copies
-**Type:** open-source
-**Phase/Area:** writing one brief for several readers, one of them a Codex model
-
-**Issue:** The shared brief ended with a paragraph scoping the security reader ("looks only for holes … what one person can take from another"). The Codex reader worked for ~250k tokens and was then stopped twice by its provider as a "cybersecurity risk", returning no report (the same happened in fix read 5). Re-running it on a copy with that paragraph cut was refused by the host's own permission check as rewording to get past a provider's filter, so the standing reviewer's read was lost for the round. Its progress notes still held one finding no other reader made; a second reader sent to chase that one claim proved it.
-**Suggested improvement:** give the security reader its scope in its own prompt (or its own short brief), never in the brief the Codex reader receives — decided when the brief is written, not after a refusal; and when a reader's run dies, read its progress notes for claims and send another reader to chase any claim no one else made.
-**Principle:** keep each reader's brief to its own job from the start — wording meant for one reader can stop another, and changing it after a refusal reads as evasion; a stopped reader's partial notes are evidence worth chasing.
-- Met again 19 Nov 26 (chat 118, fix read 9): the new brief again carried the security paragraph (chat 117's handoff said "never cut its security paragraph" — read as keeping it, against this note's improvement); Sol 6.1 was stopped the same way after ~232k tokens with no report. Guard proposed: the brief-writing step of the bug-check order §4 ("Before a brief leaves") asks "does any paragraph here belong to one reader only?" and moves it into that reader's own prompt.
-- Met again 20 Nov 26 (chat 118, fix reads 10, 11 and 13): even with the security paragraph moved to the security reader's own prompt, Astra was stopped three more times (it finished only in fix read 12) — the shared brief's own wording (findings framed as "holes", "forged", "bypass") is enough. Guard proposed: Astra gets a brief of its own worded as a rules-enforcement check, and writes each finding to its report as it goes, so a stop keeps what was found.
-- Met again 20 Nov 26 (chat 119, fix read 14): that guard is not available — writing Astra a brief of its own with the "holes / forged / bypass" words changed was refused by the host's own permission check as rewording to get past a provider's filter (Undermining Oversight). Astra got the shared brief unchanged, plus only a line to save findings as it goes. The open question is his: accept that Astra may be stopped, or name another standing reader for these rounds — never a reworded brief.
-
-### Observation 989: A backgrounded `codex exec` waits for keyboard input and never starts
+### Observation 983: Settling a merge clash by taking one side's whole file drops that file's other changes
 
 **Status:** OPEN
 **Date:** 20 Nov 26
-**Session context:** fix read 9, two Codex readers started from background shell commands
-**Skill:** New skill candidate: running a Codex reader from Claude Code (now in `raptor-port/docs/codex-guide.md` §Reading a commit that is not the branch head)
+**Session context:** chat 119, bringing `main` into a long-lived feature branch before a fix read (numbered past 982, held on another branch)
+**Skill:** New skill candidate: bringing main into a branch (today the shipping rule's step 2 and `records-merge.mjs`)
 **Type:** open-source
-**Phase/Area:** starting the reader
+**Phase/Area:** settling a clash in a code file during a merge
 
-**Issue:** One of two `codex exec … "<prompt>" > log 2> err` commands run in the background printed only "Reading additional input from stdin..." and sat idle for 80 minutes until noticed; the other, started two seconds later, ran. With stdin left open, `codex exec` may wait to read more prompt from it.
-**Suggested improvement:** every backgrounded `codex exec` gets `< /dev/null`; the guide's recipe line shows it; and a short check 90 seconds after the start (the log has grown past one line) before the host waits on it.
-**Principle:** a command meant to run unattended has its input closed explicitly, and its start is confirmed before a long wait begins.
+**Issue:** One app file clashed on a single line (both sides had the same code, one with a comment). It was settled with `git checkout --theirs <file>`, which takes the other side's WHOLE file, not just the clashing hunk — the branch's own earlier changes elsewhere in that file vanished. Three unit tests went red on GitHub's run; the four blind readers' copies had already been made from the bad commit and had to be patched on disk mid-read.
+**Suggested improvement:** settle a clash in a code file by editing the hunk (keep one side's lines between the markers, nothing else), never `--ours`/`--theirs` on the file; then check `git diff <branch's pre-merge head> HEAD -- <file>` equals the other side's own change to that file (`git diff <merge-base> <other side> -- <file>`); and run the tests of every settled file before the commit that readers' copies are cut from.
+**Principle:** a whole-file pick settles a clash by discarding everything else that side changed in the file; settle the hunk, then prove the result holds both sides' changes.
+
+### Observation 984: The reworded-brief guard for a Codex reader (note 980) is refused by the host's own permission check
+
+**Status:** OPEN
+**Date:** 20 Nov 26
+**Session context:** chat 119, fix read 14 of multi-squadron batch 1 (four blind readers)
+**Skill:** the bug-check order §4 "Before a brief leaves" (as actioned for note 980); `raptor-port/docs/codex-guide.md`
+**Type:** open-source
+**Phase/Area:** writing the brief a Codex reader receives
+
+**Issue:** Note 980's last met-again proposed giving the Codex reader a brief of its own worded as a rules-enforcement check, without "holes / forged / bypass". Writing that copy was refused by the host's own permission check as rewording to get past a provider's filter. The reader got the shared brief unchanged plus one line to keep its findings in its progress messages; its provider stopped it again after ~268k tokens, and three confirmed findings survived only in those progress messages (all three reproduced red by the host).
+**Suggested improvement:** drop the reworded-brief step from any guide that carries it; keep "keep each finding in your progress messages as you confirm it" in the Codex reader's prompt (it saved this round's findings); when the provider stops the reader, read its progress messages and reproduce each claim; put to the owner whether to accept the stops or seat another reader.
+**Principle:** a brief is worded for the job, never re-worded to steer past another provider's filter; design the run so a stop keeps what was found.
+
