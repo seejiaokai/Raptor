@@ -293,7 +293,8 @@ compaction is not read, and is named in its report — the start hook pastes the
 compacts (`[READER-COMPACT-HANDOFF]`); the host sizes a read to finish before the reader would compact. Blindness is
 what a reader can reach, not what its brief tells it not to open: when the version under review is not the branch head,
 or the branch already holds another reader's report or a revision built from it, the reader runs in an exported copy of
-that commit (the recipe: `docs/codex-guide.md`, "Reading a commit that is not the branch head"), and the saved report's
+that commit, from which the branch's handoff block and the round's builder briefs, reports and evidence sheet are taken
+out (the recipe's step 2; the recipe: `docs/codex-guide.md`, "Reading a commit that is not the branch head"), and the saved report's
 head says so (7 Nov 26; the ready script is `[CHECK-TOOLS-HARDEN]` (g)).
 
 **Before a brief leaves** — a brief is the one place a wrong sentence is multiplied by every reader of it:
@@ -306,9 +307,20 @@ head says so (7 Nov 26; the ready script is `[CHECK-TOOLS-HARDEN]` (g)).
   changes list) — and one with none, or one the host cannot settle (a
   COUNT, a REFUSAL or a PUBLISHED-DAY state above all), is rewritten "RECORD exactly what it says". An expectation that
   differs by surface (a window that blocks or not, a role, a size) is read from its own roll-call column, set row by
-  row before the script is written. (13 Oct 26: four of one walk's five FAILs, and about twelve on the job before, were
+  row before the script is written; a surface walked under two roles names, for each, the records it should find — or
+  says they differ, and why (17 Nov 26: a member's page holds other people's awards by design, and one "missing"
+  award cost a reproduction). (13 Oct 26: four of one walk's five FAILs, and about twelve on the job before, were
   the host's own expected line contradicting an older ruling; 2 and 8 Nov 26: three more, each an expectation with no
   source.)
+- Each reader's brief holds only its own job, decided when the brief is written: a paragraph meant for one reader (the
+  security reader's scope, D1411, above all) goes in that reader's own prompt, never in the brief the code readers share
+  (the same brief, D790) — wording meant for one reader can stop another's run. The shared brief asks for the code
+  checked against the rulings and contracts it names, and for each finding to be stated in the run's output the moment
+  it is confirmed — a Codex read runs read-only and its `-o` file holds only its last message, so the run's log is the
+  only copy until it ends — so a stopped run keeps what it found. A stopped run is never re-run on a brief reworded
+  after the stop: its log is read for claims, another reader is sent to chase any claim no other reader made, and the
+  lost read goes on the reads-owed list (19 and 20 Nov 26: readers stopped by their provider in fix reads 5, 8, 9, 10,
+  11 and 13; a re-run on a cut brief was refused).
 - A code reader's brief says where its proof tests go — its own scratch folder, never a test name under the app's
   source (staging while helpers work: the dispatching guide's "Stage by explicit path") (8 Nov 26: a reader's
   deliberately failing test was swept into the builder's commit).
@@ -635,11 +647,12 @@ inside the puck, over exactly the strip the mark occupies (column 3).
   every place that draws that text or writes that record. The fix is STRUCTURAL (one shared constant or one
   shared body), with a test that renders or drives each place. The "grep for the old wording" rule already
   existed both times this failed. Search for each exact old phrase on its own, and each old WORD alone, ignoring case
-  and with no assertion's shape around it, across the app and every test folder, unit and browser — a test holds words
-  in a pattern or a list as well as in a string — and list FILES, with no cap: a capped or cut-short list is no list
+  and with no assertion's shape around it, across the app, every test folder, unit and browser, and every script that
+  writes words a person reads (`scripts/` — a guide, a deck, an export) — a test holds words in a pattern or a list as
+  well as in a string — and list FILES, with no cap: a capped or cut-short list is no list
   (15 Oct 26: a common phrase searched beside it filled `head -40`, and two tests that read the old words failed only
   in the full run, fifteen minutes later; 30 Oct 26: two browser tests, the words in a pattern and in a list, escaped a
-  search for the literal strings).
+  search for the literal strings; 15 Nov 26: two renamed check names still stood in the IT flow guide's generator).
 
 **And more rows, each from a fault a roll-call missed (24 Sep – 12 Oct 26):**
 
@@ -692,10 +705,13 @@ inside the puck, over exactly the strip the mark occupies (column 3).
   place the code branches on the kind (`=== '…'`, `!== '…'`, a switch), each marked "falls through rightly" or "needs
   this change"; a read-only helper can make the list beside the build. The type checker flags none of them (24 Oct 26:
   about 120 lines in 28 files, ten wrong — one would have reset the whole war on reload).
-- **A change to where an input is filed, or to who counts as away,** carries one row per reader of availability — Edit
-  Schedule's crew list (nothing picked, and a seat picked), the board's crew column, the day panel's counts, the
-  free-crew strip, ALL AVAIL, the Leave War's count — not only the screens that draw the input (25 Oct 26: a course
-  moved under Unavailable was drawn free on all four).
+- **A change to where an input is filed, to who counts as away, or to which settings a day reads** (a published day
+  keeping its own, D2005) carries one row per READER of that input or setting, not only per screen that shows its
+  result — the warnings, counts, notes and marks worked out each time a screen is drawn among them. For availability:
+  Edit Schedule's crew list (nothing picked, and a seat picked), the board's crew column, the day panel's counts, the
+  free-crew strip, ALL AVAIL, the Leave War's count (25 Oct 26: a course moved under Unavailable was drawn free on all
+  four; 13 Nov 26: a published day's red "no usable times" line, worked out live, still read today's settings — only
+  the blind code read found it).
 
 **And from the walks and reads of 27 Oct – 9 Nov 26:**
 
@@ -720,8 +736,11 @@ the type of change, what only a walk could find here, what the ledger says about
 chosen, and its row added afterwards — and the choice is told to him in the tier block (§0a, step 3).
 
 - **What can be chosen:** who walks — the host, one helper, or several (a long pass is fanned out, §4, D16); how
-  many scenarios; which sizes are useful BEYOND the required ones (phone and desktop width always, and §7.2's short
-  screen where it applies); and which repeated cases are driven and which are carried by a test.
+  many scenarios; which sizes are useful BEYOND the required ones (phone and desktop width always, §7.2's short screen
+  where it applies, and — for a layout change to a page that fits the screen or scrolls inside itself — the narrowest
+  desktop width just above the phone split and a mid width, its sideways scroll walked at the narrow one: 13 Nov 26,
+  two faults only a narrower desktop window shows were found by the code readers, not the walk); and which repeated
+  cases are driven and which are carried by a test.
 - **The floor.** A WALK or FULL change cannot have no walk. The host or the assigned helpers drive the required
   real controls on the exact build and open the pictures; the host checks a helper's evidence and reproduces every
   finding (§4, D588); the `Walk:` line is written (§9; D5). Every roll-call row still gets its mark by being SEEN
@@ -1096,13 +1115,16 @@ the reader's instructions or model change, it is run on every case and a change 
    **Lesson:** before a walk asserts what a tap opens, search the rulings for what a tap on that kind of entry opens on an
    ordinary day, and walk the two side by side — the ruled window is the expected one, never the build's; and the sizing
    lines name, lesson by lesson, what covers this list (`scripts/handpass/lw-d1720-walk.mjs` step B, re-walked; his D1722).
-23. **A fault in the picture, looked past because it was not the thing under test (his iPhone picture, Admin → Users' "Add a
-   person", 5 Nov 26).** The posting-out bell walk pictured Admin → Users on a phone at every landing; in those very pictures
-   "PILOT, WSO OR PERSONNEL" broke onto two lines and its box stood lower than CAT's, a text box shorter than the pick-list
+
+23b. **A fault in the picture, looked past because it was not the thing under test (his iPhone picture, Admin → Users' "Add a
+   person", 5 Nov 26; numbered a second 23 until 20 Nov 26 — older sheets and briefs cite it as "lesson 23").** The
+   posting-out bell walk pictured Admin → Users on a phone at every landing; in those very pictures "PILOT, WSO OR
+   PERSONNEL" broke onto two lines and its box stood lower than CAT's, a text box shorter than the pick-list
    beside it — against his lesson 43 since 23 Oct 26. The walk checked the ringed row and nothing else on the screen.
    **Lesson:** every screen a walk pictures is also checked for the standing layout lessons — each pair of side-by-side boxes
    measured one height and one line (lesson 43), at a phone's width with an iPhone's letters as well as a desktop's — not only
    the part the change made (`scripts/handpass/adm-pairs-measure.mjs` is the pattern).
+
 24. **A walk that never flicked to the page's foot on a phone (his iPhone recording, the Leave War, 8 Nov 26, 14:31).**
    Every walk of the pinned dates row scrolled to set places and flicked in the middle of the page. On his iPhone a hard
    flick to the page's foot bounced it, Safari folded its toolbar, and for a moment the bounce carried the top bar off
@@ -1202,10 +1224,12 @@ and a seventh kind left out as doubtful, in `docs/superpowers/briefs/2026-11-10-
    decides nothing (`docs/walk-scripts.md` §Break tests). **A test builds its own precondition and asserts it:** a skip
    when the precondition did not happen reads green and proves nothing on that run — it is a finding; and the break
    turns the test red at the assertion that matters, not at the set-up (9 Nov 26: a test that "hoped" its box landed
-   low on the screen skipped whenever the demo data moved it).
+   low on the screen skipped whenever the demo data moved it; 17 Nov 26: two browser tests kept their check inside
+   "if the row is found", no row was ever found, and they stayed green on every machine).
 5. **The other model designs the scenarios.** The builder's tests encode the builder's picture of
    the feature and share its blind spots.
-6. **Reviewers are handed the roll-call and asked for absences**, not only for errors.
+6. **Reviewers are handed the roll-call and asked for absences**, not only for errors — and, of the tests, for every
+   condition or early return around an assertion (point 4).
 7. **A ruling's "left as it is today" half is a requirement too** (23 Sep 26). Before building the changed half,
    pin the unchanged half with a test against today's behaviour, so the new half cannot absorb it. (Last Flown
    worked out from the flights marked done would have overwritten a day typed by hand the moment any OLDER

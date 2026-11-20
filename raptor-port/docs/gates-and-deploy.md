@@ -54,6 +54,12 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
     own pass/fail OFF — the run passes whatever it holds (read in its source, 31 Oct 26). So the script reads its JSON
     report and goes red ("could not compare", exit 2) unless the report says it compared — mode "baseline", not marked degraded, no check skipped, no file its linter dropped ("lint:partial"); never run the check by its bare
     command and believe its exit code.
+  - **Trap — a new file not yet staged is not read:** by hand, run `npm run lint:changed -- --include-untracked` and
+    check the intended new files were read — its "N changed files" counts against its base, normally `origin/main`,
+    not the working folder `git status` shows (11 Nov 26: a new test file's finding was met only on GitHub).
+  - **A change to what the week's builder draws** (`src/ui/html.ts`) also runs `src/ui/html.test.ts`, which compares
+    the whole week word for word and holds none of the changed words; a deliberate difference is added to its list in
+    the same change (11 Nov 26).
   - **The GitHub job** (pull requests only; on GitHub's machines whether the repo is public or private, like the Docs guard
     — a private repo bills about two minutes a pull request): the pull request's merge commit with its two parents, `main`
     taken as the first parent — exactly what the pull request lands on — the pictures, zips and pdfs under
@@ -175,7 +181,7 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   (long picture names) — to serve the build before a change, `git archive <commit> raptor-port/src …` into a short path
   and junction `node_modules` (PowerShell's `New-Item -ItemType Junction -Path <copy>\node_modules -Target <checkout>\node_modules`;
   `cmd //c mklink //J` was refused in helpers' shells, 31 Oct 26); `codex exec` started in the background waits on its input for ever — end the command with
-  `< /dev/null`.
+  `< /dev/null` (the reader's whole recipe: `docs/codex-guide.md`, "Reading a commit that is not the branch head").
 - **Six more, from the skill notes of 26 Sep – 9 Oct 26:**
   **(1) Read only a results folder THIS run made.** A shared scratch folder still held another chat's summary from that
   morning, and its "failed" lines were told to him as this run's. Name the folder for the branch and the time, and quote
@@ -234,7 +240,11 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   withdrawn before anything published): the publish job is off, and every Pages trap below is history. The app is seen on VERCEL: a preview per branch (his surface — the agent's is the local `vite preview`) and the
   live app from `main`. **"Done" after "merge live" means live on Vercel** (D143): merge → `main`'s run green (on
   GitHub's machines while the repo is public, on his PC once it is private — D1086, D1530) → the Production deployment for that commit READY (`gh api repos/<owner>/<repo>/deployments?environment=Production`,
-  then its statuses) → one notification with the link. The whole loop: `.claude/rules/shipping.md`.
+  then its statuses) → one notification with the link. The whole loop: `.claude/rules/shipping.md`. **A wait waits for
+  success, never for quiet:** "nothing queued or running" is true of a FAILED run too — wait until every run of the merge
+  commit concluded `success` or `skipped`, and read a failure's step before calling it the code's (11 Nov 26: nine
+  browser jobs failed downloading the test browser, and a wait script printed "ready"; the committed script:
+  `[CHECK-TOOLS-HARDEN]` (y)).
 - **VERCEL CAN MISS A MERGE — check that a Production deployment actually STARTED** (met 6 Oct 26, PR #482, the crew-rest
   fix). The merge to `main` was green everywhere and Vercel started NO Production deployment for it, while every branch
   push that day had made its preview within a minute and the previous merge had gone live in about two.
@@ -295,6 +305,10 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   `docsize` measure against the branch's OLD fork point, so they list "hand work" that is only `main`'s own newer records
   (an item it archived, a ruling it filed). Check with `DOCSGUARD_BASE=$(git rev-parse origin/main) node scripts/docsize.mjs`
   (from `raptor-port/`); green there, commit the merge and run plain `docsize` again — it then measures from `main`.
+  One such "did not arrive" can be real all the same (14 Nov 26): compare the branch's copy of each item `main` archived
+  with `main`'s archived block — which wording is newer is read from the history and the rulings, never from its
+  length — and a line only the branch has (his answers, added on the branch) is carried into the archived block, or it
+  is dropped without a word.
 
 ## How the gates lie — moved whole from `HANDOFF.md` §Gate status (24 Sep 26)
 

@@ -29,10 +29,6 @@ his word all the same, D1737). So most sessions
 end on "pushed, PR open, awaiting merge live": hand him the Vercel preview link and say so in chat. **That is the
 NORMAL end state, not an Unfinished item.**
 
-**Look before the push** (`shipping.md`; D151, D870) — any push cancels a run in progress:
-`gh run list --branch <branch> --limit 6 --json status,workflowName,headSha`, and push the handoff only when no run of
-the branch's last pushed commit is `queued` or `in_progress`.
-
 "Unfinished" means any of: work not yet pushed or not yet handed to the owner, a gate that is red or was never run, a
 half-applied edit, a question the owner never answered, a half-finished piece of work THIS session deliberately
 stopped on, or a PR left under `subscribe_pr_activity` watch.
@@ -89,16 +85,24 @@ itself puts the new chat on its branch, then "Read `HANDOFF.md` — the `claude/
     stop and tell him which folder holds it and why it was left alone." The `-u` line matters: git's `push.default`
     here is `upstream`, so a branch left tracking `origin/main` pushes to main.
   - **A branch that has just merged:** never named.
-- **Every opening line says:** "if `git status --short --untracked-files=no` shows changes you did not make, or
-  another chat works in this folder, do not switch branches here: a new job runs
-  `git worktree add --no-track -b claude/<new-name> ../Raptor-<short> origin/main`, a continuing one
-  `git worktree add ../Raptor-<short> claude/<name>` (the branch itself, never detached, so its commits land on it) —
-  a short path, never under a temp or scratchpad folder — and works only there; make one write there first, and if the
-  file tools refuse it (a chat started in a worktree may not write into another), stop and tell him." The walks'
-  untracked pictures are not another chat's changes. Two chats switching one folder put one chat's commit on the
-  other's branch.
+- **Every opening line the agent writes — at a handoff or in any reply that opens a chat beside this one — carries this
+  sentence whole, its condition and its write test with it, never the fallback alone as an order:** "First list the
+  live chats (`ListAgents`; where this chat has no such tool, say whose the folder is cannot be checked, and take the
+  worktree below) and say where you are: `git branch --show-current`,
+  `git status --short --untracked-files=no`, level with `origin/main` or not. If a live chat already holds this job —
+  the block's writer, or one opened with this same line — message it before any heavy read. If that shows changes you did not make,
+  or another live chat works in this folder, do not switch branches here: a new job runs
+  `git worktree add --no-track -b claude/<new-name> C:/Users/User/projects/Raptor-<short> origin/main`, a continuing
+  one `git worktree add C:/Users/User/projects/Raptor-<short> claude/<name>` (the branch itself, never detached, so
+  its commits land on it), and works only there; make one write there first, and if the file tools refuse it (a chat
+  started in a worktree may not write into another), stop and tell him." The path is absolute: `../` from a worktree
+  under `.claude/worktrees/` lands inside it. The walks' untracked pictures are not another chat's changes. Two chats
+  switching one folder put one chat's commit on the other's branch.
 - **A design or question job:** the line says why the job is due now and what he will get from it (pictures and
   questions; nothing in the app changes).
+- **A "recommend the next jobs" line:** the new chat names each open pull request first (`gh pr list --state open`),
+  then opens each candidate's full item — its "to do" and "put to him" lines — before calling it free of his answers,
+  and says which parts wait on him: a priority-list line says what an item is, not what it needs.
 - **A chat number in it is a hint:** "the next free number in `main`'s `HANDOFF.md` when you start (was N at <time>)",
   checked there before use.
 - **Ready to paste means it goes out UNCHANGED:** never put a choice inside it as a `<a / b>` slot — he will send it
@@ -118,7 +122,9 @@ committed after it.
 - A notes-only pull request this chat merges by itself (D1407) is merged first, once its run is green: the release
   comes after that merge — and, if `main` had to be brought in, after that push.
 - If he gives this chat more work afterwards, switch back first (`git switch claude/<name>`); if git refuses because a
-  new chat now holds the branch, that work belongs to the new chat — tell him so.
+  new chat now holds the branch, that work belongs to the new chat — tell him so. Work the block gave a fresh chat as
+  a new job has no branch to refuse: before taking it back (after a compaction too), push one line in the block —
+  "taken back by chat <n> — do not start" — or message the chats opened since.
 - When this chat stays open by design (it hands a side session the work), the opening line instead keeps the new chat
   on its own branch: `git fetch origin`, `git merge --ff-only origin/claude/<name>`,
   `git branch -u origin/claude/<name>` (check `branch.<b>.merge` never names `main`), pushes by
@@ -181,7 +187,8 @@ running the script by hand.
 **Merged between chats — sweep for it, whoever merged.** He merges on his own word, often after the chat that built
 the thing has ended. For every `## Now` block and every line of `OUTSTANDING.md`'s priority list that says "waiting
 for … merge", read the named pull request's state now (`gh pr view <n> --json state`): one that has merged is retired
-or rewritten in the same change, or named to him if its residue is unclear.
+or rewritten in the same change, or named to him if its residue is unclear. A line saying nothing is waiting is read
+against `gh pr list --state open` the same way: it goes stale silently (14 Nov 26: seven pull requests sat under one).
 
 For each path the diff reports, confirm — by reading the live record that holds it (`HANDOFF.md`, `OUTSTANDING.md` or
 `raptor-port/docs/file-map.md`), not from memory:
@@ -192,7 +199,8 @@ For each path the diff reports, confirm — by reading the live record that hold
   `node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>` — never left in place as a "RESOLVED" note:
   1. Before it leaves, walk EVERY deliverable the item ever named — its oldest blocks included — and mark each done,
      filed as its own item, or dropped by a ruling: a status line's "the only thing left is X" is a summary, not a
-     check.
+     check. Mark by adding a line after the item's last, never by editing its own lines (two moves were refused that
+     way, 10 Nov 26); a piece still open becomes a new item pointing at the archived one.
   2. Search the full rulings rows (`.claude/decisions-full/`) for the item's id named as a HOME, too: point each at
      `OUTSTANDING-ARCHIVE.md` first, or the gate refuses the move.
   3. The script leaves the item's line in the priority list, and the document check passes it: remove that line by
@@ -248,7 +256,8 @@ Same structure every time. Write "none" rather than dropping a line — stable s
 - **Shipped:** <change> — PR #<n>, open/merged when written; checks green/red/not run
 - **Unfinished:** <item> — <state, what is left> (or "none"); open residue → `[ITEM-ID]` in OUTSTANDING.md
 - **Branch:** `claude/<name>`; its PR <#n or none>; released here (`git switch --detach`) — or why not. If it has MERGED, the next chat starts as a new job — its own
-  fresh branch, level with `origin/main` — and never switches to this one.
+  fresh branch, level with `origin/main` — and never switches to this one. A commit that may not go live before a date
+  (its own commit, always): named, with the date and the choice — wait, or merge without it and redo it on the day.
 - **Gates:** GitHub's run on the last pushed commit — <green / red / in progress / none, and why>; on his PC —
   <each check run: the run that made it and its count — "the whole Leave War project, 227 files / 4,037 tests" or "only the
   touched files: a, b" — or red / not run; never a bare "green">; `npm run probes:adapted` · `npm run perf` — <the same>
@@ -257,8 +266,8 @@ Same structure every time. Write "none" rather than dropping a line — stable s
 - **Open questions for him:** <question> — <context needed to answer it> (or "none")
 - **Running when written:** <helper / served build / lock / background run — who receives its report, who releases it> (or "none")
 - **Pick up here:** <1-2 sentences: the single most likely next action; a plan file that drove the session first>
-- **Opening line:** <the exact line he was given for the fresh chat — the next chat compares its first message with it>
-- **Rulings:** <the numbers recorded this chat, or "none"> · **Walk:** <the closing report's line, or "none", and why> · **Reads owed:** <each read a job went without, or "none"> · **Next chat number:** <the next free number, checked against `main`'s `HANDOFF.md` and every open block when this block is written> (D1744)
+- **Opening line:** <the exact line he was given for the fresh chat — the next chat compares its first message with it, and the model it runs on with **Model**, naming any difference in its first report>
+- **Rulings:** <the numbers recorded this chat, or "none"> · **Walk:** <the closing report's line, or "none", and why> · **Reads owed:** <each read a job went without, or "none"> · **Next chat number:** <the next free number, checked against `main`'s `HANDOFF.md` and every open block when this block is written> (D1744) · **Model:** <the model and thinking level recommended to him for the next chat>
 <!-- /now -->
 ```
 
@@ -280,9 +289,15 @@ Same structure every time. Write "none" rather than dropping a line — stable s
 - Name any document-size marker carried over (`docsize: OVER by <n>, deferred`): the next documents-only change must
   settle it.
 - A next step that names a numbered piece of a plan (a merge, a phase, a batch) is checked against the plan and its
-  ruling's full row — it exists and is not done; when the plan is finished, say so.
+  ruling's full row — it exists and is not done; when the plan is finished, say so. A step that closes, drops,
+  archives or decides something names the ruling that lets the agent do it alone, or is written "put to him" — the
+  reads owed are his to call or drop (D761).
 - Work that spans chats: "Pick up here" names the next slice by its parts and its clean stop, sized against what a
   fresh chat has left after its start-up load, measured — one build to a slice where its scripts must be read whole.
+  A build sized FULL has its reading of the code written to a plan file and committed before the first fix, and is
+  split into chats from the start when the bug-check checklist's step 3 finds too little room — a batch of three or
+  more items is presumed to (13 and 17 Nov 26: the reading and the build alone filled 76% and 85%). An unattended run
+  stays in one chat, saving its state at clean points and carrying on through compaction (D667, D867).
 - How a job ships is decided by the files it will change, checked against `.claude/rules/shipping.md`'s "only notes"
   list — a size-tripwire raise changes a script and waits for "merge live".
 - A step that removed a field, a mark or a rule ran its area's whole suite (or searched the tests for the removed
@@ -304,7 +319,8 @@ Same structure every time. Write "none" rather than dropping a line — stable s
    (`date`) or the commit or file it names, in the step that writes it — never estimated or carried from a compaction
    summary; a progress line may name its commit instead.
 3. Paths must be repo-relative from the repo root, or absolute. Never relative to a working directory the next
-   session may not share.
+   session may not share. A number carries its kind — a ruling `D742`, a skill note "skill note 742" — never bare, in
+   a block, a backlog item or a brief.
 4. No retrospective, no "what went well", no emojis, no recommendations beyond the single "Pick up here" line. The
    next session decides.
 5. Do not restate what `CLAUDE.md`, `HANDOFF.md` or `docs/` already say. The handoff covers only what those cannot

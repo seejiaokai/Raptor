@@ -198,7 +198,11 @@ const FILES = [
      chat archived the one item it found finished ([WARN-WORDS-STANDALONE], pull request 784 live) and filed two open ones -
      [STANDBY-NO-TIMES-SEAT] and [LEGEND-TAB-STRIP] (his D2081); none is finished. The file was not scanned again for
      finished items here; an open item is never trimmed to fit (D141, D29). About 60 lines above what it holds, as before. */
-  ['OUTSTANDING.md',                     1, 2660],
+  /* 2660 -> 2830, 20 Nov 26 (chat 121, the skill-notes review's install, his D2230 and D2231): 2,764 lines. The review
+     filed two open items ([CSS-SCOPE-GUARD], [ASK-PAGE-CHECK]) and added open points to [CHECK-TOOLS-HARDEN],
+     [RULE-FILE-LESSONS] and [START-CONTEXT-AUDIT]; none is finished. An open item is never trimmed to fit (D141, D29).
+     About 60 lines above what it holds, as before. */
+  ['OUTSTANDING.md',                     1, 2830],
   /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
      and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
      (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only

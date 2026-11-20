@@ -103,7 +103,9 @@ taken (the agent's reading).
    about five minutes, and the night stops with it.
 
 **Branches.** A new job: its own branch cut from `main`. A job that needs unmerged work: cut from that branch, and the
-block says so. Never a pull request based on another branch — it runs none of the real checks.
+block says so. Never a pull request based on another branch — it runs none of the real checks. A later job that joins
+a pull request whose jobs are already checked is built on a branch cut from it and fast-forwarded in only once built
+and checked, so a short night leaves that pull request as its checked jobs.
 
 ## Part 2 — through the night
 
@@ -112,7 +114,10 @@ block says so. Never a pull request based on another branch — it runs none of 
   reason for a smaller check; if the night runs short, the LAST job is left, not a check.
 - **Each job is handed to one fresh helper** (the Agent tool, in the background), one job at a time — never two builders
   in this one checkout; Medium means more walkers or a scenario designer inside a job, not two jobs at once — with a
-  complete brief: its branch, its items, its check, the helper limit Low or Medium sets, push by explicit refspec, a
+  complete brief: its branch, its items, its check (the touched tests, and the two that scan source text whenever a
+  source file is added or edited — `raptor-port/docs/gates-and-deploy.md`), the helper limit Low or Medium sets, push
+  by explicit refspec, raw captures and dumps kept outside the checkout (the commit holds a short summary and the
+  pictures, its `git show --stat` read before the first push — a pushed blob cannot be taken back), a
   stop once the job is built so its pull request can open, no edits to `HANDOFF.md`, its own Sonnet walker and fresh, blind Opus reader beside Astra's read (D1770); under Low the read's fixes and the re-walk go back to
   the same helper while its copy is warm (D1104). The helper stops once the job is built, before its walk; the
   coordinator then commits and pushes the block, opens the pull request (D1086), and sends the same helper on to the
@@ -126,12 +131,14 @@ block says so. Never a pull request based on another branch — it runs none of 
   cache goes cold. A session per
   job is used only when he types the night's message in the desktop app, all of them started together, each brief
   naming the branch that carries the night's block — a block not yet on `main` is not on a branch cut from it (D1416).
-- **A helper's report** (reader, walker, scenario designer). A helper returns its report as its final reply. Save it
-  at once. The tool refuses a background helper's write of a file it calls a report, so the report
-  is saved into the repo — its brief's folder or the evidence sheet — the moment it arrives, before anything is done
-  about it — except that each reader's report and every copy or summary stay in a scratch folder outside the checkout
-  until all required blind readers of that job have reported, including readers not yet started (the bug-check order §4). Before it
-  is accepted, each reader the
+- **A helper's report** (reader, walker, scenario designer) is its final reply — the tool refuses a background
+  helper's write of a file it calls a report — and is saved into the repo, its brief's folder or the evidence sheet,
+  the moment it arrives, before anything is done about it — except that each reader's report and every copy or summary
+  stay in a scratch folder outside the checkout until all required blind readers of that job have reported, including
+  readers not yet started (the bug-check order §4). A report recovered from the transcript is taken from the named
+  helper's final reply, never from a request or a tool message — a token the brief asked it to open with is checked
+  inside that reply, for a token alone is found in the brief first — and the saved file's size is read before it is
+  cited. Before it is accepted, each reader the
   night's block names for that job is ticked against it; a missing one is run then, or the job goes on
   `[NO-ASTRA-LIST]` in the same change. A notice that a helper stopped with background work of its own still
   running is no report: stop it or wait for the real one before the checkout is switched or written, then read its
@@ -143,10 +150,10 @@ block says so. Never a pull request based on another branch — it runs none of 
   **No record is written into the repo while a gate run is going** — draft it in the scratch folder (the document check
   is the run's last gate, and an edit during the run fails it).
 - **Compact smartly, by how full the chat is (D766, D867, D868).** Not at a fixed point: from the first note — 75% of the app's room, about
-  300,000 of 400,000 (D878, D1671; D868's "about 80%") — the agent chooses the moment itself, without asking him: the
+  450,000 of 600,000 (D878, D1671, D2229; D868's "about 80%") — the agent chooses the moment itself, without asking him: the
   next clean point, so a big job does not compact twice; on a night it never stops to offer a handoff (D871 — he is
   away). The project's compaction set-up (D870) runs with its guard OFF at night (D872 — step 9): the app's own
-  compaction comes at about 96% of the app's room (about 384,000) whenever it gets there — nothing holds it, because a compaction refused by mistake at night would end the run;
+  compaction comes at about 96% of the app's room (about 576,000) whenever it gets there — nothing holds it, because a compaction refused by mistake at night would end the run;
   after it, the chat's saved block is handed back. Any piece of that may not run — then the app compacts by itself
   near full — so the agent keeps every compaction harmless and the work accurate:
   - keep the chat lean: heavy reading, walking and code reads go to helpers that return conclusions, never file dumps;
@@ -168,7 +175,8 @@ block says so. Never a pull request based on another branch — it runs none of 
   which "as built" fails the ruling's own words; if that case is real, it is a finding to fix, not a question.
 - **Pull requests:** a job cut from `main` gets its pull request as soon as it is built, so GitHub's run goes while the
   app is walked (D1086); stop watching it at once. Write, commit and push the block BEFORE opening it (the block names the pull request "to
-  be opened"), then open it and push nothing more until step 1's command shows no run of the last pushed commit going.
+  be opened"), then open it and push nothing more until step 1's command shows no run of the last pushed commit going
+  — read it again a few minutes after a push: GitHub has listed a push's runs five minutes late.
   A job cut from another unmerged branch gets none at night: the morning report
   offers him one pull request carrying the related work (D822).
 - **Stop starting new jobs** when the time he gave is nearly up (keep the last hour for the report), or when his
