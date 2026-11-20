@@ -69,7 +69,7 @@ test('the guard never holds a recovery, a helper, an idle chat or a smaller mode
   assert.equal(decide({ trigger: 'auto', agentId: 'a1', fill: fillAt(92), ready: null }), 'allow'); // inside a helper
   assert.equal(decide({ trigger: 'auto', fill: fillAt(19.5), ready: null }), 'allow'); // a 200k model's room, or idle
   assert.equal(decide({ trigger: 'auto', fill: fillAt(HOLD_FROM - 0.1), ready: null }), 'allow');
-  assert.equal(decide({ trigger: 'auto', fill: fillAt(79.5), ready: null }), 'allow'); // 79.5% of the room (318,000 of 400,000): not the app's own attempt (the fresh read's finding 1)
+  assert.equal(decide({ trigger: 'auto', fill: fillAt(79.5), ready: null }), 'allow'); // 79.5% of the room (477,000 of 600,000 since D2229): not the app's own attempt (the fresh read's finding 1)
 });
 
 test('the guard is off while he is away — an /overnight run or his word (D872)', () => {
@@ -77,7 +77,7 @@ test('the guard is off while he is away — an /overnight run or his word (D872)
   const here = fileURLToPath(new URL('.', import.meta.url));
   const cmd = (arg) => spawnSync(process.execPath, [join(here, 'compact-ready.mjs'), arg], { encoding: 'utf8', cwd: gdir });
   const guard = () => spawnSync(process.execPath, [join(here, 'compact-guard.mjs')], {
-    input: JSON.stringify({ session_id: `away-${process.pid}-${Date.now()}`, trigger: 'auto', transcript_path: transcript('away.jsonl', [asst(0, 0, 390000)]), cwd: gdir }), encoding: 'utf8',
+    input: JSON.stringify({ session_id: `away-${process.pid}-${Date.now()}`, trigger: 'auto', transcript_path: transcript('away.jsonl', [asst(0, 0, Math.round(WINDOW * 0.975))]), cwd: gdir }), encoding: 'utf8',
   }).stdout;
   try {
     assert.match(cmd('--away').stdout, /guard is off/);
@@ -155,14 +155,14 @@ test('each hook, run as the app runs it, exits 0, fails open on rubbish, and sta
   const run = (f, input) => spawnSync(process.execPath, [join(here, f)], { input: typeof input === 'string' ? input : JSON.stringify(input), encoding: 'utf8' });
   for (const f of ['compact-watch.mjs', 'compact-guard.mjs', 'compact-resume.mjs', 'statusline.mjs']) assert.equal(run(f, 'not json').status, 0, f);
   const sid = `test-${process.pid}-${Date.now()}`;
-  const t86 = transcript('d.jsonl', [asst(0, 0, 390000)]);
+  const t86 = transcript('d.jsonl', [asst(0, 0, Math.round(WINDOW * 0.975))]); // 97.5% of the room: past the app's own point, short of the backstop (D2229 made it room-relative)
   const held = run('compact-guard.mjs', { session_id: sid, trigger: 'auto', transcript_path: t86, cwd: gdir });
   assert.equal(held.status, 0);
   assert.equal(JSON.parse(held.stdout).decision, 'block');
   assert.equal(run('compact-guard.mjs', { session_id: sid, trigger: 'auto', transcript_path: t86, cwd: gdir }).stdout, ''); // same request: goes
   assert.equal(run('compact-watch.mjs', { session_id: sid, agent_id: 'helper', transcript_path: t86 }).stdout, ''); // a helper hears nothing
   const told = JSON.parse(run('compact-watch.mjs', { session_id: sid, transcript_path: t86 }).stdout).hookSpecificOutput.additionalContext;
-  assert.match(told, new RegExp(`${Math.round((390000 / WINDOW) * 100)}% full`));
+  assert.match(told, new RegExp(`${Math.round(97.5)}% full`));
   assert.match(told, /compaction is waiting/);
 });
 
@@ -181,27 +181,27 @@ test('the room is the app\'s own: the setting where one is set, else the whole 1
 });
 
 test('this checkout counts against its own setting, and the first note leaves room before the app compacts (D878, D1671)', () => {
-  assert.equal(WINDOW, 400000); // .claude/settings.json's autoCompactWindow — 400,000 since his D1671 (880,000 before)
+  assert.equal(WINDOW, 600000); // .claude/settings.json's autoCompactWindow — 600,000 since his D2229, a trial (400,000 from D1671; 880,000 before)
   const firstNote = (BANDS[0] / 100) * WINDOW, appCompacts = 0.96 * WINDOW;
-  assert.equal(firstNote, 300000);
+  assert.equal(firstNote, 450000);
   assert.ok(appCompacts - firstNote >= 80000, `only ${appCompacts - firstNote} tokens between the first note and the compaction`);
   assert.ok(HOLD_FROM > BANDS[0] && HOLD_FROM < 96, String(HOLD_FROM)); // told first; and just below the app's own attempt
-  assert.equal(HOLD_FROM, 90); // 360,000 of 400,000 (the fresh read's finding 1; 792,000 of 880,000 before D1671)
-  assert.equal(NEVER_HOLD_TOKENS, 408000); // the backstop just past the app's own point: 102% of the room (D1671; 900,000 at most)
+  assert.equal(HOLD_FROM, 90); // 540,000 of 600,000 since D2229; 360,000 of 400,000 (the fresh read's finding 1; 792,000 of 880,000 before D1671)
+  assert.equal(NEVER_HOLD_TOKENS, 612000); // the backstop just past the app's own point: 102% of the room (D1671, D2229; 900,000 at most)
   assert.ok(NEVER_HOLD_AT > 96, String(NEVER_HOLD_AT)); // the guard can hold the app's own attempt at about 96%
-  assert.ok(NEVER_HOLD_TOKENS - appCompacts <= 30000, String(NEVER_HOLD_TOKENS - appCompacts)); // a held chat runs at most a little past the app's point
+  assert.ok(NEVER_HOLD_TOKENS - appCompacts <= 0.07 * WINDOW, String(NEVER_HOLD_TOKENS - appCompacts)); // a held chat runs at most a little past the app's point (6% of the room: 36,000 at 600,000)
 });
 
-test('the four hooks, run as the app runs them with the room this checkout sets: the note at 300,000 of 400,000 (D878, D1671)', () => {
+test('the four hooks, run as the app runs them with the room this checkout sets: the note at 450,000 of 600,000 (D878, D1671, D2229)', () => {
   const here = fileURLToPath(new URL('.', import.meta.url));
   const run = (f, input) => spawnSync(process.execPath, [join(here, f)], { input: JSON.stringify(input), encoding: 'utf8', env: { ...process.env, CLAUDE_CONTEXT_WINDOW: '' } });
   const sid = `room-${process.pid}-${Date.now()}`;
-  assert.equal(run('compact-watch.mjs', { session_id: sid, transcript_path: transcript('r1.jsonl', [asst(0, 0, 296000)]) }).stdout, ''); // 74%: silent
-  const at = JSON.parse(run('compact-watch.mjs', { session_id: sid, transcript_path: transcript('r2.jsonl', [asst(0, 0, 304000)]) }).stdout).hookSpecificOutput.additionalContext;
-  assert.match(at, /^This chat is 76% full \(about 304k of the app's 400k; it compacts by itself at about 96%\)/);
-  const g = run('compact-guard.mjs', { session_id: `${sid}-g`, trigger: 'auto', transcript_path: transcript('r3.jsonl', [asst(0, 0, 385000)]), cwd: gdir });
+  assert.equal(run('compact-watch.mjs', { session_id: sid, transcript_path: transcript('r1.jsonl', [asst(0, 0, 444000)]) }).stdout, ''); // 74%: silent
+  const at = JSON.parse(run('compact-watch.mjs', { session_id: sid, transcript_path: transcript('r2.jsonl', [asst(0, 0, 456000)]) }).stdout).hookSpecificOutput.additionalContext;
+  assert.match(at, /^This chat is 76% full \(about 456k of the app's 600k; it compacts by itself at about 96%\)/);
+  const g = run('compact-guard.mjs', { session_id: `${sid}-g`, trigger: 'auto', transcript_path: transcript('r3.jsonl', [asst(0, 0, 577000)]), cwd: gdir });
   assert.equal(JSON.parse(g.stdout).decision, 'block'); // the app's own attempt at ~96% is held for a clean point
-  assert.equal(run('compact-guard.mjs', { session_id: `${sid}-i`, trigger: 'auto', transcript_path: transcript('r6.jsonl', [asst(0, 0, 340000)]), cwd: gdir }).stdout, ''); // 340,000 (85%): let through
-  assert.equal(run('compact-guard.mjs', { session_id: `${sid}-h`, trigger: 'auto', transcript_path: transcript('r4.jsonl', [asst(0, 0, 420000)]), cwd: gdir }).stdout, ''); // past the backstop (408,000 at a room of 400,000 — D1671): never held
-  assert.equal(spawnSync(process.execPath, [join(here, 'statusline.mjs')], { input: JSON.stringify({ transcript_path: transcript('r5.jsonl', [asst(0, 0, 304000)]) }), encoding: 'utf8', env: { ...process.env, CLAUDE_CONTEXT_WINDOW: '' } }).stdout, 'Chat 76% full · compact at the next clean point');
+  assert.equal(run('compact-guard.mjs', { session_id: `${sid}-i`, trigger: 'auto', transcript_path: transcript('r6.jsonl', [asst(0, 0, 510000)]), cwd: gdir }).stdout, ''); // 510,000 (85%): let through
+  assert.equal(run('compact-guard.mjs', { session_id: `${sid}-h`, trigger: 'auto', transcript_path: transcript('r4.jsonl', [asst(0, 0, 620000)]), cwd: gdir }).stdout, ''); // past the backstop (612,000 at a room of 600,000 — D2229): never held
+  assert.equal(spawnSync(process.execPath, [join(here, 'statusline.mjs')], { input: JSON.stringify({ transcript_path: transcript('r5.jsonl', [asst(0, 0, 456000)]) }), encoding: 'utf8', env: { ...process.env, CLAUDE_CONTEXT_WINDOW: '' } }).stdout, 'Chat 76% full · compact at the next clean point');
 });
