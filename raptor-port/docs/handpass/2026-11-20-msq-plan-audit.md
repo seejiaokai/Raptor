@@ -43,6 +43,23 @@ right (guardrail 1), the held note (A6), the guest switch (B2), rights dropped o
 (a)–(e), PA2 (a)–(b), PA3 (a) — 8 failed, the control passed.
 
 ## The five sizing lines (§7.0)
+1. **Type:** H — who may do or see something — on code as built (nothing changed by the audit); with R's question, a
+   look for faults of one family across the app.
+2. **What only a walk could find here:** whether the screen OFFERS and COMPLETES each Admin → Users door to a Plan
+   holder on another squadron's man (the code says the doors let him in; only the running app shows the controls work
+   and what each refusal says), what his bell shows of 149's lines, and whose people his own pages show. Today a Plan
+   holder reaches 149 only through Admin → Users and the bell — no screen picks another squadron or gives Plan (the
+   right is stored as setup).
+3. **The ledger:** two walks of type H, both found faults — five in all.
+4. **The walk chosen:** one Sonnet walker (A), one script family (`msq-pa-a-*`), desktop 1536 and iPhone 402; six
+   scenarios — S1 (Suspend, role, Archive and Restore, Delete of a 149 member, with Undo and Redo), S2 (the control:
+   no Plan), S3 (the last admin, kept out on purpose), S4 (a master admin's account, kept out on purpose), S5 (the
+   bell, recorded), S6 (his own pages, recorded) — and the plain-user round. Brief:
+   `docs/superpowers/briefs/2026-11-20-msq-plan-audit-walk-brief.md`; the route driven first by the host
+   (`scripts/handpass/msq/msq-pa-host.mjs`, both sizes, pictures `docs/img/handpass/2026-11-20-msq-plan-audit/host/`).
+   Carried by a test, not walked: PA1–PA3 (no screen gives, takes or re-links a right yet — the proofs call the doors and
+   the gate directly, so they prove the rule, never a screen's route).
+5. **The row:** added to `docs/walk-ledger.md` after the walk.
 
 ## The orders walked
 
