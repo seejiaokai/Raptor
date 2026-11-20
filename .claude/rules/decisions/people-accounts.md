@@ -147,6 +147,7 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - A community is the squadrons flying one aircraft type (F-15, F-16): callsigns unique within a community, not across the app; a guest flyer from another community is always marked — an orange corner on his puck (option A) [D288, D289, D296].
 
 - A dedicated check of all built and planned so far for an admin with Plan left out or let in wrongly, its faults fixed before the reshape build [D2242].
+- On a man's move: an ALL AVAIL meeting stays where filed; sign-off boxes offer the day's people; no one puts his leave in his old war after it; his View and Plan end at his move day's start; his old war's row striped from then, the new one's before; an open window gets the drawn band at midnight [D2243].
 
 ## Settled — leave as they are
 - Designs of record, in `raptor-port/docs/mock/`: `one-door.html` for `[ONE-DOOR]` [D322, D309, D310]; `post-out.html` for `[POST-OUT-OUTCOMES]` and for the guest mark when `[XFER]` is built [D299, D300, D981, D1105, D296].
