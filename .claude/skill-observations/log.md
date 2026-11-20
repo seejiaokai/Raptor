@@ -946,3 +946,16 @@ risk is roles, saved data or the published record, put one blind read of the bat
 next round — not in a reader's seat — and read a clean fix round as "the fixes are clean", never "the batch is clean".
 **Principle:** a review scoped to each round's diff can only converge on that diff; schedule a fresh read of the
 untouched high-risk code, or the fault count's fall says nothing about what was never read.
+
+### Observation 987: A walk script committed before it ever ran to the end costs the next chat its first walk
+
+**Status:** OPEN
+**Date:** 20 Nov 26
+**Session context:** multi-squadron batch 1, fix read 17's half-day walk (chat 124), whose script chat 123 committed when its run was stopped
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** what a handoff says of a script or test left unverified
+
+**Issue:** The previous chat committed a scripted browser walk that had never completed a run, marked "unverified" in the handoff. On its first full run it failed at three separate points (a wrong box for the second half's words that silently changed the first half's words, wrong button names, no sign-in after a reload); each needed a picture opened and a fix before the walk proved anything — four runs instead of one.
+**Suggested improvement:** In the handoff skill's "what is left" step: a script or test committed without a completed run is named with the exact step it last reached and the pictures of that step, and the next chat's pick-up runs it once on one size and opens the first failing step's picture before the full matrix.
+**Principle:** Unverified automation handed over is a draft, not a tool — hand over where it stopped and what it saw, and have the receiver prove it on the smallest run before trusting a full one.
