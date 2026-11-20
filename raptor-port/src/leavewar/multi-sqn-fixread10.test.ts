@@ -291,7 +291,9 @@ const newby = () => {
 describe('fault D — a right that changes hands through the account row is a right given that day (O10-4, F10-3, F10-4)', () => {
   it('(O10-4) Kestrel (149) swaps the persons of Osprey\'s account (Plan of 142 from 15 Jul) and Hunter\'s on 18 Jul: refused, his retired line stays off', () => {
     const l = hunterLine()
-    signInAs('ad', 'a'); expect(setGrant('acus9', 'u142', 'admin', 'osp9').ok).toBe(true)
+    /* (Osprey's sign-in made an admin's first: Plan is an admin's — the Plan audit's PA2; §9.2 of the reshape plan, setup only) */
+    signInAs('ad', 'a'); expect(updateAccount('acus9', { role: 'admin' })).toBeNull()
+    expect(setGrant('acus9', 'u142', 'admin', 'osp9').ok).toBe(true)
     outlawReal()
     hunterMovesOn16(); on(18)
     expect(shown('prowler', l.id), 'retired by his move').toBe(false)
@@ -307,7 +309,9 @@ describe('fault D — a right that changes hands through the account row is a ri
   })
   it('(O10-4b) the same through Admin → Users (updateAccount): Kestrel may re-link Hunter\'s sign-in, never Osprey\'s holding Plan of 142', () => {
     const l = hunterLine()
-    signInAs('ad', 'a'); expect(setGrant('acus9', 'u142', 'admin', 'osp9').ok).toBe(true)
+    /* (Osprey's sign-in made an admin's first: Plan is an admin's — the Plan audit's PA2; §9.2 of the reshape plan, setup only) */
+    signInAs('ad', 'a'); expect(updateAccount('acus9', { role: 'admin' })).toBeNull()
+    expect(setGrant('acus9', 'u142', 'admin', 'osp9').ok).toBe(true)
     hunterMovesOn16(); on(18)
     const spare = Object.keys(PEOPLE).find(p => homeOn(p) === 'u149' && !accountOfPid(p) && !(PEOPLE as any)[p].deleted && !(PEOPLE as any)[p].archived && !(PEOPLE as any)[p].special)
     expect(spare, 'a 149 man with no sign-in').toBeDefined()
