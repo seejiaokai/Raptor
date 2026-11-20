@@ -32,7 +32,7 @@ import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
 import { seedAccounts, ACCOUNTS_LIST, isAdminAccount, isMasterAccount, accountBefore, readAccounts, adminsOf, type Account } from './accounts'
-import { unitRowsBefore, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn } from './units'
+import { unitRowsBefore, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit } from './units'
 import { PEOPLE } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
 import { unitOf, isUnitId, split } from '../storage/unitid'
@@ -253,6 +253,38 @@ export function myUnit(iso: string = todayIso()): string {
   const h = m ? homeOn(m, iso) : null
   return h && isUnitId(h) ? h : BOOT_UNIT
 }
+
+/* THE PAGE'S SQUADRON (the reshape plan §3.2 A-ii; the Plan audit, D2242). 'schedule' — Edit Schedule, View-only Sched,
+   the Board, Logic: the squadron picked (engine/unitview.ts UNIT). 'own' — Inputs and its calendar, Medical, the SANS
+   calendar and day, Quals, the OIL answer list, the Leave War, the Tracker, Admin → Users: the pick for an admin in force
+   who is a master admin, or who holds Plan of the pick ON THAT DAY (D2197, D2201) — never a View holder (D2191: View
+   follows the pick on the schedule pages and Logic only) and never in the member view (R5: an admin switched to the
+   member view is a member — D292); anyone else his own squadron that day; nobody signed in the boot unit. Today the pick
+   is everyone's home (switchUnit has one caller, sign-in), so this answers what each page answers now; it goes live with
+   step 5's menu (P3). */
+export function pageUnit(kind: 'schedule' | 'own', iso: string = todayIso()): string {
+  if (kind === 'schedule') return UNIT
+  const m = me()
+  if (!SESSION || !m || roleOf() !== 'admin') return myUnit(iso)
+  const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
+  if (acct && UNIT !== homeOn(m, iso) && (acct.master === true || levelOfAccount({ id: acct.id, pid: String(acct.pid), role: String(acct.role) }, UNIT, iso) === 'admin')) return UNIT
+  return myUnit(iso)
+}
+/* AN ADMIN OF THE PAGE'S SQUADRON (the Plan audit's PE1 as the blind read's R5 rewrote it): the role in force is admin AND
+   his level in the page's squadron that day is admin — so a View holder picking another squadron is never offered its
+   edit controls, and the member view is never an admin's (O3). mayEditSched keeps its body for its ~160 other readers;
+   the schedule pages' call sites move onto this with step 5's menu (P3). Today the same answer as mayEditSched. */
+export function adminOfPage(kind: 'schedule' | 'own', iso: string = todayIso()): boolean {
+  if (!SESSION || roleOf() !== 'admin') return false
+  const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
+  if (!acct) return pageUnit(kind, iso) === UNIT
+  return levelOfAccount({ id: acct.id, pid: String(acct.pid), role: String(acct.role), master: acct.master === true }, pageUnit(kind, iso), iso) === 'admin'
+}
+export const maySchedEditPage = (iso?: string): boolean => mayEditSched() && adminOfPage('schedule', iso)
+/* PD1 (the Plan audit — dormant until step 5): a person added by the signed-in admin is made the page's squadron's
+   (Admin → Users follows the pick for a master admin or a Plan holder), else his own — handed to units.ts putNewHome,
+   which imports nothing of this file */
+setNewHomeUnit((adderPid) => (adderPid != null && adderPid === me() ? pageUnit('own') : null))
 
 /* the schedule: edit mode, the board, the week's writes. No session → false, as
    canEditSched always answered (its callers are render and edit-mode gates). */
