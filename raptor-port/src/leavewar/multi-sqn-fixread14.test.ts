@@ -166,6 +166,23 @@ describe("Astra A2 — the drag window's Approve with new words tells the filer 
     expect(row.remarks).toBe('changed')
     const toHunter = NOTICES.filter(n => !ids.has(n.id) && n.iid === row.iid && n.to === 'prowler')
     expect(toHunter.length, "Hunter, its filer, told of the new words").toBe(1)
+    expect(toHunter[0]!.what.some((x: any) => x.k === 'rmk'), 'a line of the words').toBe(true)
+  })
+  it("(control, the fix) the same Approve with the words left as the leave reads ('before' over both): the 28th joins the leave, no line of words to anyone", () => {
+    signInAs('ad2', 'a2')
+    const old = new Set(INPUTS.map((r: any) => r.iid))
+    expect(placeApproved([{ personId: 'bane', date: '2026-07-27' }], 'LL', { remarks: 'before' }).approved).toBe(1)
+    const row: any = INPUTS.find((r: any) => !old.has(r.iid) && r.lw)
+    expect(setCell('bane', '2026-07-28', 'LL')).toBe(true)
+    signInAs('ad', 'a')
+    const ids = new Set(NOTICES.map(n => n.id))
+    const cells = [{ personId: 'bane', date: '2026-07-27' }, { personId: 'bane', date: '2026-07-28' }]
+    inOneWarCommand('lw.decide', () => {
+      inOneWarCommand('lw.reqmeta', () => { setRemarksOn(cells, { remarks: 'before' }) })
+      setBidStates(cells, 'approved')
+    })
+    expect((INPUTS.find((r: any) => r.iid === row.iid) as any)?.endDate, 'the 28th joined the leave').toBe('Jul 28')
+    expect(NOTICES.filter(n => !ids.has(n.id) && n.iid === row.iid && n.what.some((x: any) => x.k === 'rmk')).length).toBe(0)
   })
 })
 

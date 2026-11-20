@@ -470,10 +470,16 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
          changed on a war-approved leave from a war window (the drag window's Remarks, D1341) is told here, once, as it was
          before M4 (the scenario designer's ★7) — to the men in it and to its filer, as the leave's own window tells them
          (fix read 13, item D (2) — Astra's lead: the drag window told the men only, never the admin who filed it; its
-         filer only while he is still told of it, the line carrying the squadron he is told through, as below) */
+         filer only while he is still told of it, the line carrying the squadron he is told through, as below)
+         …WHATEVER ELSE THE WAR COMMAND DOES (fix read 14, item C — Astra A2): it fired only on a remark-only change, so the
+         drag window's Approve with new words — the words and the decision in one war command (leavewar/ui/SelectSheet.tsx
+         decide) — told nobody of the words wherever the decision also changed the leave: approving Ranger's pending bid
+         on 28 Jul beside the war-approved LL Hunter filed for him on 27 Jul joins it to that leave (27–28 Jul), so the
+         change was a remark AND a date, and Hunter heard nothing of the words. Now the words are told, once, whatever
+         else changed with them; the rest stays the war's own line. */
       if (a && b.lw && a.lw) {
         const rmk = common(b, a, '').filter(x => x.k === 'rmk')
-        if (rmk.length && common(b, a, '').length === rmk.length) {
+        if (rmk.length) {
           const named = ids(a)
           for (const p of named) tell(p, a, rmk)
           const f = changeFiler(b, a, by)
