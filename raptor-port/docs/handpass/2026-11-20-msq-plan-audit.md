@@ -62,16 +62,50 @@ right (guardrail 1), the held note (A6), the guest switch (B2), rights dropped o
 5. **The row:** added to `docs/walk-ledger.md` after the walk.
 
 ## The orders walked
+Walker A (Sonnet), on the frozen build of `a5271a17c` (`index-a7kr8dHR.js`), desktop 1536 and iPhone 402; report
+`docs/handpass/parts/2026-11-20-msq-plan-audit/walker-a.md` (105 steps: 28 PASS, 3 FAIL, 41 RECORDED, the rest
+exploratory lines).
+- **S1 — Hunter, holding Plan of 149, on Osprey (149's member):** Suspend → dot red; Enable → green; Undo / Redo
+  follow; role to Admin saved, Undo back to Member; Archive (no question) → the Archived list; Restore works; Delete asks
+  "Tap again to delete Osprey" with its "Goes: …" words, the second tap deletes ("Osprey deleted"). **No refusal anywhere
+  — HAS IT, as the roll-call said** (the host opened `a/phone/s1d-2-delete-tap2.png`).
+- **S2 — Hunter without Plan (the control):** Suspend refused "He is 149's. Only an admin of 149 can change his
+  account."; Archive refused "He is 149's. Only an admin of 149 can change him." PASS.
+- **S3 — the last admin (kept out on purpose):** Kestrel's Suspend refused "Kestrel is 149's last admin. Make another
+  admin of 149 first." (host opened `a/phone/s3-1-kestrel-suspend.png`: the band, his dot green); Osprey made admin, then
+  Kestrel's Suspend allowed. PASS.
+- **S4 — Saber, a master admin (kept out on purpose):** Suspend and a role change refused "Only a master admin can do
+  that"; the badge stays Admin. PASS.
+- **S5 — the bell (recorded):** every bell read "Nothing new" — Kestrel's after Osprey filed his own LL, Hunter's, and
+  Kestrel's after the archive and the restore. No action in this build writes a 149 admin line the walk could raise on
+  demand, so a Plan holder's bell audience was not seen on screen; it is carried by the code reading (§19 PB1–PB3, the
+  roll-call's bell rows, checked in the code) and the build's tests.
+- **S6 — Hunter's own pages (recorded):** the Leave War and Quals show 142's people only (as expected — no screen picks
+  another squadron). The iPhone Inputs list opened on an empty window, so its names were not checked there.
+- **The plain-user round:** a row opened and closed by its header and by Cancel; Escape and a tap outside leave it open
+  (an inline row, not a window — recorded, not a fault); the search box cleared by its ✕ (rows 1 → 71); Undo / Redo after
+  S1; Kestrel's Leave War after the archive shows Osprey "PO" from the walk's day with his later LL still drawn (as D1720
+  rules).
 
 ## Cases carried by a test
+PA1–PA3 (the proofs, `docs/superpowers/briefs/2026-11-20-msq-plan-audit-repro/`): they call `setGrant`, `removeGrant`,
+`updateAccount` and the commit gate directly — they prove the rule, never a screen's route (no screen gives, takes or
+re-links a right yet).
 
 ## The pictures
+`docs/img/handpass/2026-11-20-msq-plan-audit/host/{desktop,phone}/` (the host's route) and `…/a/{desktop,phone}/` (walker A).
 
 ## Break tests
+None for the audit itself — it changes no app code; each fault's red-first test is the build's (plan §9.1).
 
 ## Errors seen
+None in the console on any run (walker A and the host's route).
 
 ## What was NOT walked, and why
+- The 149 pages under a 149 pick (no screen picks another squadron — step 5); a bell line of 149 reaching a Plan holder
+  (no line the walk could raise; carried by the code reading); giving, taking or re-linking a right on screen (no screen
+  does it — P1). The walker reached S5, S6 and the round's other pages by the library's page routing, not the nav tabs
+  (recorded only).
 
 ## Gate counts
 
