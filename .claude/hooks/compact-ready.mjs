@@ -15,7 +15,7 @@ if (process.argv.includes('--away')) {
   const p = awayPath(cwd);
   if (!p) { console.log('Not inside a git checkout — no mark written.'); process.exit(1); }
   writeFileSync(p, JSON.stringify({ at: Date.now() }));
-  /* the figures read from the app's room (the setting — 400,000 since his D1671), never written in */
+  /* the figures read from the app's room (the setting — 600,000 since his D2229; 400,000 under D1671), never written in */
   const k = n => Math.round(n / 1000).toLocaleString('en-GB') + ',000';
   console.log(`Away: the guard is off — the app compacts by itself at about ${k(WINDOW * 0.96)} tokens (96% of its ${k(WINDOW)} room) (until --back, or 16 hours).`);
 } else if (process.argv.includes('--back')) {
