@@ -31,7 +31,7 @@ import { deriveActor } from '../command/actor'
 import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
-import { seedAccounts, ACCOUNTS_LIST, isAdminAccount, isMasterAccount, accountBefore, readAccounts, adminsOf, type Account } from './accounts'
+import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, readAccounts, adminsOf, type Account } from './accounts'
 import { unitRowsBefore, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit } from './units'
 import { PEOPLE } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
@@ -1148,31 +1148,65 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
      a Delete of a man who never arrived, his record removed (store.ts forgetPersonFrom) on a date already come */
   const posted = new Map<string, string>()
   const postedOn = new Map<string, string>()   // each posted man's posting date (the bell lines' check, below)
+  const postedIn = new Map<string, string>()   // each man posted through the second store → the squadron whose war holds it
   const refuse = (c: Change) => `the posting pass may change only the men it posts out, and only as their posting does (${c.collection}/${c.id})`
+  const warU = lwUnitNow()
   /* A POSTING THE PASS CARRIES OUT IS ONE THAT WAS SAVED (fix read 13, item B — SEC13-1): its record's change starts from a
      before-image — never from none — and that image is the war's SAVED posting row (the probe), its date (`to`) and
      outcome the same after; a Delete of a man who never arrived removes a record that is the saved one. A posting made up
-     or rewritten in memory outside every command, by whoever's browser runs the pass, is refused here, whatever its date */
+     or rewritten in memory outside every command, by whoever's browser runs the pass, is refused here, whatever its date.
+     THE PASS OVER EVERY SQUADRON (the reshape plan §6.2 A5, step 7): another squadron's posting, run through the second
+     store (`lwx.profile/<unit>@<pid>` — leavewar/state/foreign.ts), is judged the same way against THAT squadron's saved
+     row (its own probe, above), never for the war loaded (that one is `lw.postouts`), one posting a man a pass. */
   for (const c of env.changes) {
-    if (c.collection !== 'lw.postouts') continue
+    if (c.collection !== 'lw.postouts' && c.collection !== 'lwx.profile') continue
+    const fx = c.collection === 'lwx.profile'
+    const at = fx ? split(String(c.id)) : null
+    const pid = at ? at.local : String(c.id)
     const b: any = c.before, f: any = c.op === 'delete' ? null : c.after
-    if (!b || typeof b !== 'object' || (LW_POSTING && STORED && !LW_POSTING(String(c.id), b))) return refuse(c)
+    if (!b || typeof b !== 'object') return refuse(c)
+    if (at) {
+      if (!at.unit || !pid || at.unit === warU) return refuse(c)
+      if (STORED && !(LWX_POSTING && LWX_POSTING(at.unit, pid, b))) return refuse(c)
+    } else if (LW_POSTING && STORED && !LW_POSTING(pid, b)) return refuse(c)
     if (f ? f.to !== b.to || passOutcomeOf(f) !== passOutcomeOf(b) : passOutcomeOf(b) !== 'delete') return refuse(c)
     let date: string | null = null, outcome: string | undefined
     if (f && typeof f.to === 'string' && ISO_DAY.test(f.to) && f.poDone === isoAddDay(f.to) && b.poDone !== f.poDone) { date = f.poDone; outcome = passOutcomeOf(f) }
     else if (!f && typeof b.to === 'string' && ISO_DAY.test(b.to)) { date = isoAddDay(b.to); outcome = 'delete' }
-    if (date && date <= today && outcome) { posted.set(String(c.id), outcome); postedOn.set(String(c.id), date) }
+    if (date && date <= today && outcome) {
+      if (posted.has(pid)) return refuse(c)
+      posted.set(pid, outcome); postedOn.set(pid, date)
+      if (at) postedIn.set(pid, at.unit!)
+    } else if (at) return refuse(c)   // (a second store's posting row changes in a pass only as its done mark)
   }
   /* …and only the men of the squadron whose Leave War it runs on (the second fix read — the security read's H2): a posting
      for another squadron's man in this war was never set by one of its admins (section 7b), so the pass does not carry it
-     out. Judged by his home before the pass, where one is known (a shared store before its rows are made knows none). */
-  const warU = lwUnitNow()
-  if (warU && posted.size) {
-    const rows = unitRowsBefore(env.changes)
-    for (const pid of posted.keys()) {
-      const h = homeBefore(pid, today, rows)
-      if (h && h !== warU) return `the posting pass ran on ${warU}'s Leave War for another squadron's man (lw.postouts/${pid})`
-    }
+     out. Judged by his home before the pass, where one is known (a shared store before its rows are made knows none). A
+     posting run through the second store is that squadron's man's, his home before the pass that squadron — always known
+     there (step 7). */
+  const rows = unitRowsBefore(env.changes)
+  for (const pid of posted.keys()) {
+    const h = homeBefore(pid, today, rows), fu = postedIn.get(pid)
+    if (fu ? h !== fu : warU && h && h !== warU) return `the posting pass ran on ${fu ?? warU}'s Leave War for another squadron's man (${fu ? 'lwx.profile' : 'lw.postouts'}/${pid})`
+  }
+  /* THE SQUADRON EACH POSTING IS OF — the bell lines' audience (step 6): the second store's, the war loaded's, or (one war
+     on the page, no world door) his home's */
+  const postUnit = (pid: string): string => postedIn.get(pid) ?? warU ?? homeBefore(pid, today, rows) ?? UNIT
+  /* THE REST OF THE SECOND STORE IN A PASS — a Delete's war half on that squadron's stored war (sync.ts deleteOnForeign):
+     his war records and ledger entries from his cutoff (his person's `deletedFrom` in this pass), removed, nothing else */
+  const cutOf = (pid: string): string | null => {
+    const pc = env.changes.find(x => x.collection === 'people' && String(x.id) === pid)
+    const pf: any = pc && pc.op !== 'delete' ? pc.after : null
+    return pf && typeof pf.deletedFrom === 'string' ? pf.deletedFrom : null
+  }
+  for (const c of env.changes) {
+    if (c.collection !== 'lwx.rec' && c.collection !== 'lwx.ledger') continue
+    const { unit } = split(String(c.id)), b: any = c.before
+    const who = b && typeof b === 'object' ? String(c.collection === 'lwx.rec' ? b.pid : b.personId) : ''
+    const cut = who ? cutOf(who) : null
+    const ok = !!unit && (c.op === 'delete' || c.after == null) && posted.get(who) === 'delete' && postedIn.get(who) === unit
+      && !!cut && typeof b.date === 'string' && b.date >= cut
+    if (!ok) return refuse(c)
   }
   const accounts = new Map<string, any>()   // account id → its row before, for each posted man's account the pass changes
   /* THE FIRST WRITE OF THE ACCOUNTS STORES THE WHOLE LIST (state/accounts.ts writeAccounts — a store that has never written
@@ -1234,11 +1268,20 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
   /* THE PASS'S BELL LINES ([POSTOUT-RUN-NOTICE] — D1547; tightened by the build's security read, 5 Nov 26): only NEW
      lines, the app's own (nobody named as their maker), never one rewritten or taken away. A posting's line (`po`) is a
      line of that one part, about a man this very pass posts out, saying the outcome that ran (`acct` only for an Overseas
-     Sqn), dated his posting date, about no input, addressed to an admin who can sign in and never to the man himself —
+     Sqn), dated his posting date, about no input, addressed to one of that posting's squadron's admins (step 7, below) and never to the man himself —
      one an admin a man. Any other line the pass makes is a Delete's: the lines its inputs owe the others in them
      (state/sched-commit.ts tellPass — the app's act, with no name, R12), each about an input this changeset changes and
      none of the war's or a posting's kinds. At the database step the pass's service account writes exactly these. */
-  const admins = new Set(ACCOUNTS_LIST.filter(x => isAdminAccount(x) && x.on && x.pid != null).map(x => String(x.pid)))
+  /* …addressed to one of that posting's squadron's admins on the run's day, read after the outcomes (the reshape plan §6.2
+     step 6 — accounts.ts adminsOf: at home there, or a plain admin holding Plan of it; a master through his home only; an
+     admin archived by this very pass not told), whichever war holds the posting (step 7) */
+  const audience = new Map<string, Set<string>>()
+  const adminOfPosting = (who: string, to: string): boolean => {
+    const u = postUnit(who)
+    let s = audience.get(u)
+    if (!s) { s = new Set(adminsOf(u, today)); audience.set(u, s) }
+    return s.has(to)
+  }
   const told = new Set<string>()
   const deletes = [...posted.values()].includes('delete')
   const inputsChanged = new Set(env.changes.filter(c => c.collection === 'inputs').map(c => String(c.id)))
@@ -1251,7 +1294,7 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
       const p = parts[0], who = String(p.who)
       const ok = parts.length === 1 && p.k === 'po' && posted.has(who) && p.o === posted.get(who)
         && (p.acct === undefined || (p.acct === true && p.o === 'overseas'))
-        && n.iid === '' && n.day === postedOn.get(who) && String(n.to) !== who && admins.has(String(n.to))
+        && n.iid === '' && n.day === postedOn.get(who) && String(n.to) !== who && adminOfPosting(who, String(n.to))
         && !told.has(`${n.to}|${who}`)
       if (!ok) return refuse(c)
       told.add(`${n.to}|${who}`)
@@ -1520,6 +1563,13 @@ export const lwUnitNow = (): string | null => (LW_UNIT ? LW_UNIT() : null)
 type LwPostingSaved = (pid: string, p: unknown) => boolean
 let LW_POSTING: LwPostingSaved | null = null
 export function setLwPostingProbe(fn: LwPostingSaved | null): void { LW_POSTING = fn }
+/* …AND IN ANOTHER SQUADRON'S STORED WAR (the reshape plan §6.2 A5, step 7 — core, phase 1): is this posting record his
+   posting exactly as THAT squadron's stored profile row holds it? Installed by leavewar/sync.ts with the pass over every
+   squadron (helper "war"). On a built site (the saved copy wired) a posting run through the second store is refused
+   until it is installed: the gate never takes a posting it cannot check against the squadron that saved it. */
+type LwxPostingSaved = (unit: string, pid: string, p: unknown) => boolean
+let LWX_POSTING: LwxPostingSaved | null = null
+export function setLwxPostingProbe(fn: LwxPostingSaved | null): void { LWX_POSTING = fn }
 /* Admin → Users' doors, the only commands that write the second store (leavewar/sync.ts foreignOf's callers: Archive,
    Restore and Restore as — one type — and Delete) */
 const LWX_DOORS = new Set(['person.archive', 'person.restore', 'person.delete'])
