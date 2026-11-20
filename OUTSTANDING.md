@@ -178,6 +178,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
+- [MSQ-FIXREAD17-OPEN] — fix read 17's, the core read's and the full review's 35 faults, all reproduced red, in seven cause families; his shape question first, then the fixes and one combined fix read (20 Nov 26).
 - [MSQ-FIXREAD10-LEFT] — what fix read 10 left: F (a bell line dated minutes ahead hidden for those minutes once a right is removed — for the database step, the server's clock), a war line's content field not checked, the GitHub browser-test flakes (the date calendar's glide; the Leave War phone's pinned dates row), a bell walk owed after fix read 13 (20 Nov 26); the code check cannot compare against main until pull request 817 merges (cause found 20 Nov 26); a remote-edit Undo note for the database step.
 - [SEED-UNDO-DROPS-ACCOUNT] — with the demo's seeded people, an Undo of a seeded account's first saved change can take the account's own row with it (seen by fix read 9's builder, outside its brief; to reproduce first, 20 Nov 26).
 - [LW-PINCH-FROZEN-WEBKIT-OFF] — Leave War, Safari's engine only: mid-pinch in with the dates frozen, the frozen date row read about 360 px off its columns (older — origin/main the same; found 31 Oct 26; maybe a reading, not a fault — a look first).
@@ -299,6 +300,24 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [MSQ-FIXREAD17-OPEN] Fix read 17's, the core read's and the full review's faults, all reproduced red, not yet fixed (20 Nov 26, chat 124) — OPEN
+**What it is:** 35 faults in seven cause families, each run red by the host; the table, families and readers are in the
+evidence sheet `raptor-port/docs/handpass/2026-11-18-multi-sqn-b1.md` §Fix read 17, the proofs (as text) in
+`raptor-port/docs/superpowers/briefs/2026-11-20-multi-sqn-b1-repro/`. **The job:** his answer to the shape question
+first (fix fault by fault, or reshape the few bodies the families name first — nothing rebuilt without his word); then
+each fix red first, a repeat of a fault an earlier fix meant to close Fable's (D2233), a new one Opus's; one combined fix
+read (all four readers, D2236). **Held out of the fixes, the host's calls:** K2, K3 (the gate trusting the page's own
+memory — anyone who can alter it can skip the gate itself) → the database step, where the saved copy is the one source;
+A3 (people made on a shared store before its first boot belong to no squadron) → the database step's first boot; B7
+("Request access" names no squadron — batch 1's step 5, unbuilt) → built with step 5; C7 (sign-out's reload can sign
+out the next person) → with D2205's M2; C10 (measured 1.9× per edit at 4 × 40, not a fault at batch size) → a measure,
+kept. **Questions for him with the fixes:** C3 (an ALL AVAIL meeting follows its filer's move — no ruling); C5 (sign-off
+boxes: the day's people or today's — no ruling); R2 (a move taken back the same day: refuse it and require Undo, or give
+the rights back); A7's master case (D2221's reading — only a master or the man may change leave across a move).
+**Where:** `state/{perms,units,notices,accounts,store,persist,person-delete}.ts`, `engine/{roster,inputs,faceattrs,
+publish,weekstash}.ts`, `leavewar/{sync.ts,state/store.ts,state/raptorRoster.ts}`, `ui/{inputedit.tsx,InputsPage.tsx,
+logout.ts}`, `undo/timeline.ts`, `testing/enumguard.ts`, `boot.ts`.
 
 ### [MSQ-FIXREAD10-LEFT] What fix read 10 left on the multi-squadron fixes (20 Nov 26, chat 118) — OPEN
 **What it is:** (1) fault F of `…/briefs/2026-11-20-multi-sqn-b1-fixread10-fixes-brief.md` (Opus O10-3): a filer line
@@ -2601,6 +2620,7 @@ design short form, each whole. Then options for which of them stop loading there
 | The night of 6 Nov 26, job 3 (`claude/people-quals-1106`): the three Quals touch faults, React Doctor on People, Quals, Holidays and sign-in | a fresh, blind Opus read; a security read if sign-in is touched (D790, D1411) | Astra and Sol 6.1 |
 | [LW-PIN-LAST-FRAME]'s last fix (D1870; `claude/lw-pin-last-frame`, pull request 694 — the pinned dates row held shown when the grid is shown again from a tab or another page), made after Astra's read of the job | a fresh, blind Opus read (D790), its one inferred case probed and not reproduced | Astra |
 | Multi-squadron batch 1, fix read 14 (`claude/multi-sqn-b1-107`, pull request 806, 20 Nov 26) — Astra stopped by its service after ~268k tokens; its three saved findings reproduced red; his D2232 accepts such stops for the build's fix reads (partial reads listed here) | a fresh, blind Opus reader, Fable (D2224) and the security reader (D1411) whole; Astra partial (D2232) | Astra's full report |
+| Multi-squadron batch 1, the core read (his D2237; `state/{perms,notices,units}.ts` whole at `7dbc13fd0`, 20 Nov 26, chat 124) — Astra stopped by its service after one stated finding (reproduced red, R4); fix read 17 beside it had all four whole | the fresh, blind Opus reader and the security reader (D1411) whole; Astra partial (D2232) | Astra's full report |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.
