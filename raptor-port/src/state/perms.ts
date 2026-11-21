@@ -270,6 +270,19 @@ export function pageUnit(kind: 'schedule' | 'own', iso: string = todayIso()): st
   if (acct && UNIT !== homeOn(m, iso) && (acct.master === true || levelOfAccount(levelAcct(acct), UNIT, iso) === 'admin')) return UNIT
   return myUnit(iso)
 }
+/* DOES THE PICK STILL STAND ON `iso` (the blind read's R6, its pick half — the reshape plan §19b; A-iv widened, dormant
+   until P1/P3): the squadron picked (engine/unitview.ts UNIT) is one the signed-in person can read that day — his home
+   there, a View or Plan of it that holds that day (units-model.ts levelFrom, the reading rule), or a master admin's
+   anywhere. Nobody signed in: the boot unit only. state/store.ts notify() re-enters his own squadron when it does not. */
+export function pickStandsOn(iso: string): boolean {
+  if (!SESSION) return UNIT === BOOT_UNIT
+  const m = me()
+  if (!m) return UNIT === BOOT_UNIT
+  if (homeOn(m, iso) === UNIT) return true
+  const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
+  if (!acct) return false
+  return acct.master === true || levelOfAccount(levelAcct(acct), UNIT, iso) != null
+}
 /* AN ADMIN OF THE PAGE'S SQUADRON (the Plan audit's PE1 as the blind read's R5 rewrote it): the role in force is admin AND
    his level in the page's squadron that day is admin — so a View holder picking another squadron is never offered its
    edit controls, and the member view is never an admin's (O3). mayEditSched keeps its body for its ~160 other readers;
@@ -938,8 +951,12 @@ function stampForged(env: CommitEnvelope, c: Change, after: unknown, pid: string
       const age = typeof r.placedAt === 'number' ? Date.now() - r.placedAt : NaN
       if (String(r.placedBy) !== pid || !(age <= STAMP_SKEW_MS && age >= -STAMP_AHEAD_MS)) return `who placed a request`
     }
-    if ((r.decidedBy !== undefined || r.decidedAt !== undefined)
-      && (!same || `${same.decidedBy ?? ''}|${same.decidedAt ?? ''}` !== `${r.decidedBy ?? ''}|${r.decidedAt ?? ''}`)) return `who decided a request`
+    /* (IN BOTH DIRECTIONS — the reshape plan §7 R6, Astra 4: the decision was compared only where the image after carried
+       one, so his refused bid kept refused with BOTH its maker and its time deleted read as "no decision written" — who
+       refused it and when gone. The same record keeps exactly the stamps it had; a re-typed or new bid carries none. A
+       verified replay is skipped before this, and a lawful move keeps the same record, stamps and all.) */
+    const decision = (x: any) => `${x?.decidedBy ?? ''}|${x?.decidedAt ?? ''}`
+    if (same ? decision(same) !== decision(r) : (r.decidedBy !== undefined || r.decidedAt !== undefined)) return `who decided a request`
     /* …AND ITS STATE (fix read 16 — the security reader's S16-2): the decision fields alone were compared, so his refused
        bid put back to pending with both deleted read as "no decision written" — the refusal gone, the bid back in
        Approvals with its first place in the queue. The state is the decision: the same record keeps it, the bid it was
