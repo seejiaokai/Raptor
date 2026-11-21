@@ -102,3 +102,33 @@ wherever it is registered, their tests. NOT yours: `state/store.ts` (helper "ses
    cells): list in your report every passage that names the guest view, file and heading, for the host to rewrite.
 Nothing new on screen: the waiting screen loses a button; say in your report what the screen shows without it, and
 whether anything moves up into its place (a roll-call row: a removed control).
+
+## Left by helper "guest" (merged `218184770`, chat 130) — for the host's documents step and phase 4
+- **Kept on purpose:** `perms.ts PERMS`'s Guest column, the mirror of `data-model.md` §11 until §11 is rewritten (no role
+  reads it; `PermCol` says so). When §11's guest cells go: in `perms.ts` delete `PermCol`, `PermRow.guest`, `row()`'s third
+  parameter and its argument in the rows Person, MissionRoleAnswer, ScheduleWeek, Amendment, ChangeBatch, Input, Unit
+  (AccessRequest passes `NONE` there); in `perms.test.ts` `ROLES` without guest, the head without 'Guest', the gaps column
+  `c[5]` → `c[4]`.
+- **For the readers:** `perms.ts actorRole` now answers `'off'` for a role it does not know, where it answered `null` — read
+  as the app itself and let through (a fail-open for a hand-made actor, closed).
+- **Stale guest notes in other helpers' files:** `leavewar/sync.ts` about l.3824, `ui/pops.ts` l.140, `ui/inputedit.tsx`
+  l.1019.
+- **Drawing-check specs that now fail when run (not gates):** `scripts/drawcheck/specs/save-band.mjs` l.38 presses
+  `#admGuestView` to force a refused save (needs another Admin save); `scripts/drawcheck/specs/access-wait.mjs` l.43 turns
+  the switch on, its parts `read-only` and `view` measure the removed line and button, l.31 lists `#guestOut`.
+- **A departure from an approved drawing, to name to him with its picture (D1424, D1426):** the waiting screen against
+  `docs/mock/2026-11-05-access-wait/img/C-diag-phone.png` (drawn with the switch on) — "Meanwhile you can look at the
+  schedule, read only." and "View the schedule" gone, Sign out and "Signed in as …" moved up, the card shorter; the
+  reason his D2239. Admin → Users loses its last block (the "Guest view" heading and switch); nothing moves up.
+- **Passages naming the guest view (the documents step):** `docs/ui-contracts.md` §The access screens and the guest view
+  (l.7103–7134), §Admin → Users — one door (l.6992), §The failed-save warning has a band of its own (l.11956–11957), §The
+  one changes window (l.1177, 1207), §The top bar carries the bell… (l.5201), §Week Insights: work hours (l.6011);
+  `docs/data-model.md` §11 Security roles (l.1679, 1690, 1695, 1700, 1708, 1719, 1858), ### AccessRequest (l.1012–1013),
+  ### The day lock (l.1628); `docs/data-schema.md` §Whose is each record (l.91, 98), ### Accounts and session (l.577),
+  ### Settings and templates (l.619); `docs/engine-rules.md` ## Auth / roles (l.4183), ### What a member may do (l.4213),
+  ### A member's own inputs… (l.4328, 4400), ### Reading the log (l.4631); `docs/feature-impact.md` head (l.38), ####
+  Who may write — the Leave War's guards (l.922); `docs/file-map.md` the `accounts.ts` row (l.824) and the
+  `AccessScreen.tsx / GuestApp.tsx / UsersPanel.tsx` row (l.890, `GuestApp.tsx` deleted); `docs/guide-full.md` §What
+  actually persists (l.632); `docs/handover-dataverse.md` §What we need from you (l.106), §Constraints that are not
+  negotiable (l.139); `docs/word-list.md` §People & accounts (l.216); `docs/architecture-direction.md` §Parked direction
+  (l.233–234); the rulings pages `design.md` l.59, l.78, `people-accounts.md` l.63 (now built), `scheduler.md` l.501.
