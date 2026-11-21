@@ -803,10 +803,11 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
  *  Inputs page's, exactly as one filed there. The Inputs door's own rules run (a course or an OD never replaces a bid). */
 /** THE PASSING NOTE OF A DUTY FILED WITH A DAY LEFT OUT — "1 day filed. 12 Feb already holds an OD — left as it is." (the bid
  *  window's course, overseas duty, Other and Attach buttons — ui/BidPicker.tsx fileDuty): the count, then the first reason
- *  the door gave, else that the days were not his to change. */
+ *  the door gave, else that the days were not his to change. ONE FULL STOP (the second re-walk's I3): the door's reasons
+ *  carry none, but the app's generic words do — "1 day filed. This change could not be saved.." */
 export function dutyFiledNote(r: { done: number; skipped: number; why: readonly string[] }): string {
   const why = r.why[0] ?? `${r.skipped} day${r.skipped === 1 ? ' was' : 's were'} not yours to change`
-  return `${r.done} day${r.done === 1 ? '' : 's'} filed. ${why}.`
+  return `${r.done} day${r.done === 1 ? '' : 's'} filed. ${why}${why.endsWith('.') ? '' : '.'}`
 }
 function doorFile(items: Array<{ personId: string; date: string }>, code: string, words?: ReqWords): { done: number; skipped: number; why: string[] } {
   const why: string[] = []
