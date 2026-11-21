@@ -1451,7 +1451,7 @@ function holidaySpan(a: string, b: string, unit: string): { a: string; b: string
   return lo && hi ? { a: lo, b: hi, name: holidayOwnNameOf(u, lo) } : null
 }
 /* (a squadron's holiday's own name on a date — holidayOwnName below, for any squadron's list) */
-function holidayOwnNameOf(unit: string, iso: string): string { const n = unitDayFacts(unit, iso).name; return n && n !== holidayWord('ph') ? n : '' }
+export function holidayOwnNameOf(unit: string, iso: string): string { const n = unitDayFacts(unit, iso).name; return n && n !== holidayWord('ph') ? n : '' }
 /* a holiday's NAME — only one of its own. A holiday made with no name (the Event sheet's "PH" button; the Holidays
    list's empty name box) is saved under the preset's own word (holidayWord), and that word is not a name: the list
    then said "PH is now a public holiday." under "Public holiday · PH" (the check's walk, E1 — 13 Oct 26). Read as '',

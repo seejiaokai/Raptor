@@ -18,7 +18,7 @@ import { UNIT } from '../engine/unitview'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { dayIso } from '../engine/verid'
-import { oilOpenOn, dayFacts, holidayOwnName } from '../leavewar/sync'
+import { oilOpenOn, unitDayFacts, holidayOwnNameOf } from '../leavewar/sync'
 import { unfmt } from './inputedit'
 import { setOilList } from './pops'
 
@@ -43,7 +43,7 @@ export function oilPutBackWatch(di: number): () => number {
     if (a < lo) lo = a
     if (b > hi) hi = b
   }
-  const openNow = () => new Map(oilOpenOn(lo, hi).map(o => [o.iid, o.days] as const))
+  const openNow = () => new Map(oilOpenOn(lo, hi, UNIT).map(o => [o.iid, o.days] as const))
   const openWas = openNow()
   const stood = new Set(mine.filter((x: any) => stands(x) && openWas.has(String(inpId(x)))).map((x: any) => String(inpId(x))))
   return () => {
@@ -55,9 +55,9 @@ export function oilPutBackWatch(di: number): () => number {
        what the holiday's own save and the bell read it through) — and on a plain weekend says nothing of a holiday. */
     if (back.length) {
       const days = [...new Set(back.flatMap((x: any) => open.get(String(inpId(x))) || []))].sort()
-      const allPh = days.length > 0 && days.every(d => dayFacts(d).kind === 'ph')
-      const names = allPh ? [...new Set(days.map(d => holidayOwnName(d)))] : []
-      setOilList({ from: days[0] || iso, to: days[days.length - 1] || iso, name: names.length === 1 ? names[0]! : '', fresh: false, plain: !allPh })
+      const allPh = days.length > 0 && days.every(d => unitDayFacts(UNIT, d).kind === 'ph')
+      const names = allPh ? [...new Set(days.map(d => holidayOwnNameOf(UNIT, d)))] : []
+      setOilList({ from: days[0] || iso, to: days[days.length - 1] || iso, name: names.length === 1 ? names[0]! : '', fresh: false, plain: !allPh, unit: UNIT })
     }
     return back.length
   }

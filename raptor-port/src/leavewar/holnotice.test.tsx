@@ -287,7 +287,7 @@ describe('the holiday tells the schedulers — never silent (D780), one notice a
     for (let i = 0; i < 2 && !onProg(); i++) press(b => { b.dataset.restore = String(FRI_DI); b.dataset.rver = ver })
     expect(onProg(), 'the load put its row back').toBe(true)
     expect(SAID.join(' | '), 'the tail, in his words').toContain(' 1 input needs an OIL answer.')
-    expect(pops.OILLIST, 'the one list of that day, named for the holiday — and not marked plain').toEqual({ from: FRI, to: FRI, name: 'National Day', fresh: false })
+    expect(pops.OILLIST, 'the one list of that day, named for the holiday — and not marked plain').toEqual({ from: FRI, to: FRI, name: 'National Day', fresh: false, unit: 'u142' })
     ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
     const host = document.createElement('div'); document.body.appendChild(host)
     const root = createRoot(host)
@@ -341,7 +341,7 @@ describe('the holiday tells the schedulers — never silent (D780), one notice a
     /* (on the Thursday: the published days of this file's world outlive a test, and Friday is the test above's) */
     const id = file('Range brief', 'Training', ['bane'], { date: 'Jul 16' })
     await loadedBack(THU, id, { name: '' }, tid => {
-      expect(pops.OILLIST, 'named by nothing').toEqual({ from: THU, to: THU, name: '', fresh: false })
+      expect(pops.OILLIST, 'named by nothing').toEqual({ from: THU, to: THU, name: '', fresh: false, unit: 'u142' })
       expect(tid('win-oilday')!.textContent).toContain('Public holiday')
       expect(tid('win-oilday')!.textContent).not.toContain('Public holiday ·')
       expect(tid(`odl-yes-${id}`)).toBeTruthy()
@@ -354,7 +354,7 @@ describe('the holiday tells the schedulers — never silent (D780), one notice a
     const id = String((INPUTS.find((x: any) => x.title === 'Saturday brief') as any).iid)
     expect(rec(id).oil, 'the premise: no answer').toBeUndefined()
     await loadedBack(SAT, id, null, tid => {
-      expect(pops.OILLIST).toEqual({ from: SAT, to: SAT, name: '', fresh: false, plain: true })
+      expect(pops.OILLIST).toEqual({ from: SAT, to: SAT, name: '', fresh: false, plain: true, unit: 'u142' })
       expect(tid(`odl-yes-${id}`), 'the input it put back is on the list').toBeTruthy()
       expect(tid('win-oilday')!.textContent).not.toContain('Public holiday')
       expect(tid('odl-left')!.textContent, 'nothing is promised').toBe('')
@@ -511,7 +511,7 @@ describe('the bell (D769 as it stands, D782, D783 (6)) (ON16)', () => {
     const n = line('nact')[0]!
     pops.setBellList(true)
     openNotice(n)
-    expect(pops.OILLIST).toEqual({ from: FRI, to: FRI, name: 'National Day', fresh: false })
+    expect(pops.OILLIST).toEqual({ from: FRI, to: FRI, name: 'National Day', fresh: false, unit: 'u142' })
     expect(pops.BELLLIST).toBe(false)
     expect(unreadFor('nact')).toBe(0)
     expect(SAID.join(' | '), 'never "That input is gone"').not.toMatch(/gone/)

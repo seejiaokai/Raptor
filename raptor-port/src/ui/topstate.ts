@@ -95,7 +95,7 @@ export function openNotice(n: Notice): void {
     /* (for the days that are a holiday NOW — a holiday shortened since its notice was made opens the list for what is
        left of it: state/notices.ts noticeSpan) */
     const span = noticeSpan(n) || { a: String(hol.a), b: String(hol.b || hol.a) }
-    setOilList({ from: span.a, to: span.b, name: span.name != null ? span.name : n.name, fresh: false })
+    setOilList({ from: span.a, to: span.b, name: span.name != null ? span.name : n.name, fresh: false, unit: span.u })
     notify(); return
   }
   /* A POSTING'S LINE ([POSTOUT-RUN-NOTICE] — D1547, D1691): Admin → Users at his row, ringed, the Archived fold opened

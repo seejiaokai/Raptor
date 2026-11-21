@@ -735,6 +735,9 @@ export type NoticePartRec = {
   /** when: its first and last day NOW, ISO, where the days moved — screen. */
   a?: string
   b?: string
+  /** oilhol: the squadron the line was written for (the reshape plan §19 PB4 — its count, dates, name and the list it
+   *  opens are that squadron's) — store. A line saved before it reads as its reader's home squadron (D56). */
+  u?: string
   /** when: its hours NOW ("10:00–11:00", "all day"), where they moved — screen. */
   t?: string
   /** add / rem: who — PEOPLE ids, a placeholder among them — screen. */
