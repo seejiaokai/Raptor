@@ -6,7 +6,9 @@ import { describe, it, expect } from 'vitest'
 import { act, render } from '@testing-library/react'
 import { useMsqWorld, signInAs, PID, ACCT, moveMan, on, pastMidnight } from '../test-support/msq-world'
 import { App } from '../ui/App'
-import { switchRoleView } from './store'
+import { switchRoleView, notify } from './store'
+import { setPage, CURPAGE } from './view'
+import { INPEDIT, setInpEdit } from '../ui/pops'
 import { SESSION } from './auth'
 import { commitNewInput } from '../ui/inputedit'
 import { INPUTS } from '../engine/inputs'
@@ -49,6 +51,29 @@ describe('fix read 2 — a moving admin, his page open across midnight', () => {
       expect(u3.ok).toBe(false)
       expect(u3.reason, 'never "switch back to the admin view" — he has none').toBe('Something else changed this after your action — it can’t be undone now.')
     } finally { page.unmount() }
+  })
+})
+
+describe('fix read 2 — the schedule-side re-walk’s W3-06: his open Input window at his midnight access change', () => {
+  it('the page stays on Inputs and the window stays open under its band — his words are not dropped without a word (D2243 Q7)', async () => {
+    signInAs('saber')
+    expect(moveMan(PID.hunter, 'u149').ok).toBe(true)
+    signInAs('hunter')
+    on(15, 23, 52)
+    expect(commitNewInput({ person: PID.hunter, type: 'LL', allday: true, half: '', start: '2026-08-20', end: '2026-08-21', sTime: '', eTime: '', remarks: '', sans: null, docIds: [] })).toBe(true)
+    const iid = _timelineEntries().at(-1)!.forward.find(c => c.collection === 'inputs')!.id
+    const rec = INPUTS.find((r: any) => r.iid === iid)
+    expect(rec, 'setup: his leave').toBeTruthy()
+    const page = render(<App />)
+    try {
+      await act(async () => { setPage('inputs'); setInpEdit(rec); notify() })
+      expect(page.queryByTestId('inped-moveband')).toBeNull()
+      await act(async () => { pastMidnight() })
+      expect(SESSION?.acct, 'a member of 149 from today').toBe('main')
+      expect(CURPAGE, 'the page is not jumped').toBe('inputs')
+      expect(INPEDIT, 'the window is not closed').toBeTruthy()
+      expect(page.queryByTestId('inped-moveband'), 'the band, over his words').not.toBeNull()
+    } finally { page.unmount(); setInpEdit(null) }
   })
 })
 
