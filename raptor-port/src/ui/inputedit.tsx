@@ -134,8 +134,13 @@ export function whoDoorRefusal(before: any | null, after: any | null): string | 
 function acrossMoveWords(pid: string | null, before: any, after: any): string | null {
   if (pid == null || !isLeave((after || before || {}).type)) return null
   const numOf = (u: string | null) => (u ? String(unitById(u)?.num ?? u) : '')
-  for (const img of [after, before]) {
-    const sp = img ? inputSpanIso(img) : null
+  /* the leave as the save would leave it, as it stands — and THE CHANGE ITSELF, from the earlier first day to the later
+     last one (the schedule-side re-walk of 22 Nov 26, item (c)): a one-day leave on Tue 14 moved to Thu 16 runs across
+     his move in neither image, yet the move of it does — the calendar's drag and the window's Save said the gate's bare
+     words for it */
+  const spA = after ? inputSpanIso(after) : null, spB = before ? inputSpanIso(before) : null
+  const both: [string, string] | null = spA && spB ? [spA[0] < spB[0] ? spA[0] : spB[0], spA[1] > spB[1] ? spA[1] : spB[1]] : null
+  for (const sp of [spA, spB, both]) {
     if (!sp) continue
     const d = homeChangesOn(pid, sp[0], sp[1])[0]
     if (!d) continue
