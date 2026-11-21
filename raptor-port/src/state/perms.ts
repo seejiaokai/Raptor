@@ -1986,14 +1986,19 @@ function accountMadeMember(env: CommitEnvelope, id: string): boolean {
       it stood when it was taken off (`stood`, the timeline's stoodBefore, else the step's image) and the account's link day
       as it stood at the step. A move is on a day already begun and never changes, so the answer never changes either, in
       any order of Undo and Redo;
-   3. it never removes a grant row not stored.
+   3. it never removes a grant row not stored;
+   4. a Plan row (level `admin`) is put back only by a master admin's restore (`master` — the restore's maker, asked by the
+      gate and the timeline's hook; not asked, as before): only a master admin gives Plan (D2199, PA1), and a step of
+      anyone else's drops one only beside making its account a member (his D2250), so that step's Undo gives back the
+      role only (chat 129, the agent's reading — told him).
    Not a grant row: never left out here. `stored` — whether the row is stored now (the caller's; read from the store when
    not handed in). */
-export interface RestoreGrantCtx { relink: boolean; holder?: GrantHolder; stood?: unknown; stored?: boolean }
+export interface RestoreGrantCtx { relink: boolean; holder?: GrantHolder; stood?: unknown; stored?: boolean; master?: boolean }
 export function restoreLeavesOut(c: Change, ctx: RestoreGrantCtx, rows: UnitRows = unitRowsBefore([]), today: string = todayIso()): boolean {
   if (c.collection !== 'settings' || !String(c.id).startsWith(GRANT_PFX)) return false
   if (!(c.op === 'put' && c.after != null)) return !(ctx.stored ?? store.get(String(c.id), null) != null)
   if (ctx.relink) return true
+  if (ctx.master === false && (c.after as any).level === 'admin') return true
   const n: any = c.after
   const s: any = stoodGrant(ctx.stood, n) ?? n
   const now: any = accountImagesNow().find(y => y && y.id === String(n.account))
@@ -2379,7 +2384,7 @@ function unitRowViolation(env: CommitEnvelope): string | null {
     const replayed = REPLAY(env)
     for (const c of unitCh) {
       if (!String(c.id).startsWith(GRANT_PFX) || !replayed?.(c)) continue
-      if (restoreLeavesOut(c, restoreGrantCtx(env, c), after, today)) return `a right put back that its man's move or a re-link has ended (${c.id})`
+      if (restoreLeavesOut(c, { ...restoreGrantCtx(env, c), master: sys ? undefined : master }, after, today)) return `a right put back that its man's move or a re-link has ended, or a Plan only a master admin gives (${c.id})`
     }
   }
 

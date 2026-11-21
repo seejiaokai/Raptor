@@ -133,6 +133,14 @@ describe('in the shared world', () => {
       expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: hunter })).toBe(true)
       expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: hunter, stood: { ...plan, from: '2026-07-17' } }), 'a row dated after his move').toBe(false)
     })
+    /* (his D2250 — chat 129): only a master admin gives Plan (D2199, PA1), so a restore made by one who is not a master
+       admin never puts a Plan row back — the Undo of an admin's making a Plan holder a member gives back the role only */
+    it('4. a Plan row put back by one who is not a master admin: left out; by a master admin, or a View row: as before', () => {
+      expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: hunter, master: false }), 'not a master').toBe(true)
+      expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: hunter, master: true }), 'a master').toBe(false)
+      expect(restoreLeavesOut(grantChange({ ...plan, level: 'view' }), { relink: false, holder: hunter, master: false }), 'a View').toBe(false)
+      expect(restoreLeavesOut(grantChange(plan), { relink: false, holder: hunter }), 'not asked: as before').toBe(false)
+    })
   })
 
   /* his D2250 (21 Nov 26, "Yes let the admin downgrade") replaced D2248's "only a master admin": an admin of the man's own
