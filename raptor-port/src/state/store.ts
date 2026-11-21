@@ -1184,8 +1184,9 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
      the never-booting parity harness stays blind to them. */
   secDefaultLoad()
   waveDefaultLoad()
-  /* [ACCOUNTS] (26 Sep 26): the accounts, the access requests and the guest switch
-     (three durable settings keys) load here like every other setting. The loader sat
+  /* [ACCOUNTS] (26 Sep 26): the accounts and the access requests (durable settings rows —
+     the guest switch, once the third, went with the guest view, D2239) load here like
+     every other setting. The loader sat
      only in the settings rollback list, so a built site forgot every account the admin
      added at the next reload — found by the walk, not by any test (every test ran in
      one page life). After hydrate(): the lock-out check reads the stored roster. */

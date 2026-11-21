@@ -3807,8 +3807,8 @@ export function wireLeaveWarSync(): void {
      lights the viewer's row and the counter picker answers with their
      numbers). Since [ACCOUNTS] (D166 (4), 26 Sep 26) it is the SIGNED-IN person —
      "View as" is retired — read through state/perms.ts viewerId(): his person, or ''
-     (matches NO row) for a guest, a pending person or an account switched off, and
-     null only with no session. Pushing it here — once at boot, again on every Raptor
+     (matches NO row) for a pending person or an account switched off (there is no guest any
+     more: the guest view is removed, D2239), and null only with no session. Pushing it here — once at boot, again on every Raptor
      notify below — keeps the mirror converged without a new seam; setViewer no-ops on
      a same value. */
   setViewer(mirroredViewer()); mirrorCallsign()

@@ -137,7 +137,8 @@ export type { AvailWin, AvailBox } from '../state/view'
 /* ---- EVERY WINDOW CLOSES AT A SIGN-IN AND A SIGN-OUT ([ACCOUNTS], 26 Sep 26) ------
    With personal accounts the next person on a browser must never inherit the last
    one's open input editor, document, history list or template sheet (Astra R1-3) —
-   above all a guest, who may read nothing but the published week. POPS_RESET is the one
+   above all a person waiting for access or switched off, who is shown no page of the app
+   (the guest, who read the published week, went with the guest view — D2239). POPS_RESET is the one
    list of every flag above, each with how it closes; it is registered into state/view.ts
    VIEW_RESET under 'session', so resetSession (the ONE session-change path) closes
    them all with no import from state into ui. pops.test.ts fails when an `export let`

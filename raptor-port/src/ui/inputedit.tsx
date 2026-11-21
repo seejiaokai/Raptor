@@ -1016,7 +1016,8 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
      aircrew check judges the person actually being written. */
   if (!canEditSched()) {
     /* [ACCOUNTS]: filed for the SIGNED-IN person (perms.ts me()); someone signed in
-       without access (a guest) is nobody's person and files nothing */
+       without access (waiting for it, or switched off — there is no guest since D2239) is
+       nobody's person and files nothing */
     const mine = me()
     if (mine == null) { HOOKS.toast('Sign in with your own account to file an input', 'warn'); return false }
     /* A MEMBER'S DRAFT FOR ANOTHER MAN IS ASKED, NEVER RE-POINTED AT HIMSELF IN SILENCE (the group input — owner D654,
