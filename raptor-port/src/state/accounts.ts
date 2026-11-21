@@ -451,7 +451,10 @@ function relinkRightsProblem(a: Account): string | null {
    another squadron's man is told whose he is, as Suspend and Delete tell him, never the commit gate's own words, "You can
    only edit your own row" or "That did not save" (the fix read of multi-squadron batch 1's full check, 18 Nov 26 — Opus
    4). An admin's question only: a member stays "your own row only", which is his rule. */
-export function otherSquadronPersonProblem(pid: string): string | null {
+/* (`account` — the door asks for the account's sentence, "…can change his account.", the one his rulings carry; the
+   sign-in re-walk of 22 Nov 26 found Archive saying "…can change him." beside Member, Suspend and Delete's. Its door,
+   leavewar/sync.ts archivePerson, passes it when the host wires it; every other caller keeps its words.) */
+export function otherSquadronPersonProblem(pid: string, account = false): string | null {
   const mine = SESSION ? accountById(SESSION.user) : undefined
   /* an admin is the role IN FORCE, as the commit gate reads it — the developer bridge's raised role included (the second
      fix read, 18 Nov 26 — Astra 7: a member raised to admin heard "You can only edit your own row"); the account's own
@@ -461,7 +464,7 @@ export function otherSquadronPersonProblem(pid: string): string | null {
   if (!u) return null
   if (levelOfAccount(levelAcct(mine, 'admin'), u, todayIso()) === 'admin') return null
   const num = unitById(u)?.num ?? u
-  return `He is ${num}'s. Only an admin of ${num} can change him.`
+  return account ? `He is ${num}'s. Only an admin of ${num} can change his account.` : `He is ${num}'s. Only an admin of ${num} can change him.`
 }
 
 /* ---- SIGNING IN: what the sign-in card turns into (D204) ---- */
