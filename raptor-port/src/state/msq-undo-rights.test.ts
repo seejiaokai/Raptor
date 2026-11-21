@@ -170,7 +170,7 @@ describe('guardrail 1 — a re-link puts back no right, and its Undo is blocked 
     expect([accountById(ACCT.hunter)!.pid, rowsOf(ACCT.hunter)]).toEqual([PID.hunter, []])
     const r = globalRedo(); expect(r.ok, JSON.stringify(r.reason)).toBe(true)
     expect([accountById(ACCT.hunter)!.pid, rowsOf(ACCT.hunter)], 'the Redo removes nothing').toEqual([vp, []])
-    homes(PID.hunter, 'hh', [['u142', '2026-07-01'], ['u149', '2026-07-16']])
+    homes(PID.hunter, 'hh', [['u142', '2026-07-01'], [U150, '2026-07-16']])
     day(17)
     const u2 = globalUndo(); expect(u2.ok, JSON.stringify(u2.reason)).toBe(true)
     expect([accountById(ACCT.hunter)!.pid, rowsOf(ACCT.hunter)]).toEqual([PID.hunter, []])

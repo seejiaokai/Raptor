@@ -73,6 +73,10 @@ export interface UndoEntry {
      children's added): its Leave War and Tracker records are keyed by it (derive.ts recordKey), and it is eligible only
      while each of those worlds holds that squadron again. Absent: no world door, or a step that wrote neither world. */
   stamp?: Record<string, string>
+  /* Piece B (the reshape plan §4.3 "At the restore") — the man and the link day of each grant row's account the step
+     touched, by account id, as they stood when the step was recorded (the `holdersAtStep` hook, asked once, as
+     `closedAt` is). The restore's leave-out reads them: a right put back only on the man it named then. */
+  holders?: Record<string, { id: string; pid: string; pidFrom: string | undefined }>
 }
 
 export type { Actor, Boundary, Change, Scope, Module }

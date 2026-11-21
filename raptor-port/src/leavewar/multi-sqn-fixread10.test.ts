@@ -394,15 +394,19 @@ describe('fault E — a right taken off after a move and put back by its Undo or
     expect(levelIn('acad2', 'u149'), 'the Undo put the Plan back').toBe('admin')
     expect(grantOfOn({ id: 'acad2', pid: 'prowler', pidFrom: undefined }, 'u149', '2026-07-18')?.from, 'with its own day').toBe('2026-07-17')
   })
-  it('(Redo, no move since its Undo) Plan of 149 given 13 Jul, he moves 16 Jul; on 17 Jul its Undo and Redo: the Redo puts back 13 Jul', () => {
+  /* (the reshape plan §4.5, rewrite 9 — guardrail 2: as given, Plan of 149 from 13 Jul across his 16 Jul move, it held a right
+     across a move, which D2203 ends at the move; rewritten as rewrites 5–6 are: the Plan given after the move, in his new
+     squadron, its Undo and Redo the next day — written at the commit that wires the leave-out, helper "undo & roles") */
+  it('(Redo, no move since its Undo) he moves 16 Jul; Plan of 149 given 17 Jul; on 18 Jul its Undo and Redo: the Redo puts back 17 Jul', () => {
     on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */); expect(u150.ok).toBe(true)
-    expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']]); on(17)
+    expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
+    on(18)
     const g = () => unitRows().grants.find(x => x.account === 'acad2' && x.unit === 'u149')
     const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
     expect(g(), 'undone: off').toBeFalsy()
     const r = globalRedo(); expect(r.ok, JSON.stringify(r)).toBe(true)
-    expect(g()?.from, 'off only since this morning\'s Undo, no move since').toBe('2026-07-13')
+    expect(g()?.from, 'off only since this morning\'s Undo, no move since').toBe('2026-07-17')
   })
   /* (§4.5 of the reshape plan, rewrites 10 and 11 — guardrail 2: a Redo or an Undo after his move puts nothing back that
      holds. Until helper "undo & roles" wires the leave-out the press writes the recorded row, which holds nothing; the
