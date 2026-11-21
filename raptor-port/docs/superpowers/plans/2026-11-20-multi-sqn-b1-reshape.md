@@ -850,7 +850,7 @@ refused, in the same words. The host checks each of the fourteen against its fix
   morning he becomes 150's, so 150 is never without an admin. Round 1's cut refused that move.
 - **The agent's reading, to be told to him (§14):** a Plan holder counts as a squadron's admin only where it has none at
   home. D2201 gives Plan "full access as its own admins". Today's lock already counts only home admins where there are
-  some.
+  some. **ANSWERED 21 Nov 26 by his D2247, "As recommended": built as it stands.**
 
 ### 5.4 Tests
 - The proofs B3 (Suspend, Demote, Archive, Delete) and B6, red first.
@@ -1358,7 +1358,7 @@ questions as recommended"*). The drawings on the questions page are the approved
 ## 14. What the plan could not settle, and how each will be found out
 
 1. **A Plan holder counts as a squadron's admin only where it has none at home** (Piece C). The agent's reading of D2201
-   and D2184 Q10, to be told to him with the report.
+   and D2184 Q10, to be told to him with the report. **ANSWERED 21 Nov 26 by his D2247, "As recommended".**
 2. **A squadron whose only admin is a Plan holder from another squadron** (Fable F11): when 142's Hunter, 150's only Plan
    holder, has an Overseas posting set, it is held with 150's words on 142's Admin → Users, where 142's admins cannot fix
    it — only a master admin, or Hunter himself while his Plan of 150 holds (D2201: he may make a 150 man an admin of
