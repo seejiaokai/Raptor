@@ -769,6 +769,15 @@ function freezeWarn(snap:any,di:number){ if(!HOOKS.issuedWarn||!snap)return; con
    window lists them as pucks, split by seat: Astra's second read #1); and the man of every input it froze (the Unavailable
    block's pucks, Astra's code read #2) */
 const PERSON_SLOTS=new Set(['p','w','pax','id','who','more']);
+/* the people a day's own content NAMES — a person id in one of those slots, never free text and never the men behind a
+   crowd puck (`oilev`), the placeholders left out. The save check asks it of a day's record before and after a change
+   (state/perms.ts schedDayNamesViolation: a day never newly names a man who is another squadron's that day). */
+export function dayNamedIds(d:any):string[]{const out=new Set<string>();
+  const walk=(v:any,k:string)=>{ if(k==='oilev')return;
+    if(typeof v==='string'){ const p=PERSON_SLOTS.has(k)?(PEOPLE as any)[v]:null; if(p&&!p.special)out.add(v); return; }
+    if(Array.isArray(v)){ v.forEach((x:any)=>walk(x,k)); return; }
+    if(v&&typeof v==='object')Object.keys(v).forEach((kk:any)=>walk(v[kk],kk)); };
+  walk(d,''); return [...out]; }
 const attrsOf=(p:any)=>p?{q:p.q??null,seat:p.seat??null,pers:!!p.pers,san:!!p.san,sxo:!!p.sxo,archived:!!p.archived}:null;
 /* A MAN WHO IS THERE ONLY AS ONE OF A CROWD KEEPS NO "POSTED OUT" (owner, D327, 28 Sep 26: "an archived man stays in the
    ALL AVAIL crowd on every day before his archive — the crowd on a day already published stays as it went out, and
