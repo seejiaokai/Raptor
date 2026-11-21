@@ -36,7 +36,8 @@ import { useVersion, useUndoVersion } from './useStore'
 import { ViewWeek } from './ViewWeek'
 import { legendHTML } from './html'
 import { routeClick, routeOpenKey, routeMenuKey } from './interactions'
-import { routeFocusOut, routeFocusIn, routeKeyDown, routeReportingInput } from './textedit'
+import { routeFocusOut, routeFocusIn, routeKeyDown, routeReportingInput, enteredOnAnother } from './textedit'
+import { SCHED_MOVE_WORDS } from '../state/typing-hold'
 import { DayPop, InsightsModal, AirPop } from './Modals'
 import { WeekCal } from './WeekCal'
 import { setInsights, setDrawer, setWeekCal } from './pops'
@@ -203,6 +204,9 @@ export function Shell() {
       }
       const sel = (e.target as HTMLElement).closest('select[data-sign]') as HTMLSelectElement | null
       if (!sel) return
+      /* a sign-off list opened on another squadron's schedule — his own move took effect while it was open: the pick is
+         not written, and the note says so (state/typing-hold.ts "the schedule side"; ui/textedit.ts enteredOnAnother) */
+      if (enteredOnAnother(sel)) { HOOKS.toast(SCHED_MOVE_WORDS, 'warn'); notify(); return }
       const di = +sel.dataset.signday!
       const wasSigned = daySigned(di)             // capture BEFORE, so the note fires only on COMPLETING the set (kept OUTSIDE the command, R2-11)
       /* [ARCH-STACK] follow-up #1 (row D): route the sign write through a

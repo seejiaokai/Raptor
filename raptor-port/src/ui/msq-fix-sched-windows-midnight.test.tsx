@@ -22,7 +22,7 @@ import { DAYS } from '../engine/data'
 import { UNIT } from '../engine/unitview'
 import { HOOKS } from '../engine/hooks'
 import { stashDays } from '../engine/weekstash'
-import { routeFocusIn, routeFocusOut } from './textedit'
+import { routeFocusIn, routeFocusOut, enteredOnAnother } from './textedit'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 useMsqWorld()
@@ -66,8 +66,10 @@ describe('W3-F3 — the input window open on Inputs across Hunter\'s midnight', 
     const band = $('[data-testid="inped-moveband"]')
     expect(band, 'the band').toBeTruthy()
     expect(band!.textContent).toContain(GENERIC)
-    expect(options(), 'the list he was choosing from stays').toContain('glass')
+    /* (a man who moves arrives a member — K3, D2160 — so the list narrows to what a member may file: himself) */
+    expect(options(), 'himself, still offered').toContain(PID.hunter)
     expect(options(), 'never 149\'s people under his typing').not.toContain('kes9')
+    expect(($('#inpEditRmk') as HTMLInputElement).value, 'his typed words stay visible').toBe('W3MIDB')
     await add()
     expect(INPUTS.length, 'nothing saved').toBe(n)
     expect(INPUTS.some((x: any) => x.remarks === 'W3MIDB')).toBe(false)
@@ -127,6 +129,18 @@ describe('W3-F2 — text typed into an Edit Schedule box across midnight', () =>
     hunterMovesTonight()
     typeAcross('ap:3.1.prog', 'HQ ENGAGEMENT')
     expect(said()).toEqual([])
+  })
+  it('a sign-off list entered on 142\'s schedule and still open after midnight is known as another page\'s (ui/Shell.tsx refuses its pick)', () => {
+    hunterMovesTonight()
+    setPage('editsched')
+    box = document.createElement('select'); box.dataset.sign = 'plan'; box.dataset.signday = '3'
+    document.body.append(box)
+    routeFocusIn({ target: box } as any)
+    expect(enteredOnAnother(box), 'before midnight').toBeNull()
+    routeFocusIn({ target: box } as any)
+    pastMidnight()
+    expect(enteredOnAnother(box)).toBeTruthy()
+    expect(enteredOnAnother(box), 'asked once').toBeNull()
   })
   it('(control) with no move, words typed across midnight are saved', () => {
     on(15, 23, 57); signInAs('hunter')
