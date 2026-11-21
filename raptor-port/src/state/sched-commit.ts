@@ -52,6 +52,7 @@ import { HIST, histSnap, histRestore, setSchedResync } from './history'
 import { setSchedEpilogueHook, HOOKS } from '../engine/hooks'
 import { issuedDisclosed, discloseIssued } from './disclosure'
 import { PLANPUCKS, DAYRMK } from './plan'
+import { storedPlanJoined } from './plan-foreign'
 import { NOTICES, noticePass, replacedBidsOf, APP_ACTS, notePassMade } from './notices'
 import { WARNOFF, DPREV, prunePreviews } from './view'
 import { canEditSched } from './auth'
@@ -327,10 +328,20 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
       case 'plan': {
         /* a note or pucks row (`pp:<id>`) or a day title (`dm:<iso>`) — one record each since phase 2 */
         const v = cw(e.value) as any   // [GLOBAL-UNDO] GU2-009 — clone-on-write
-        /* the planning calendar is the unit in view's (PLANPUCKS, DAYRMK): another unit's record is refused, never put on
-           this one's calendar (multi-squadron step 2) */
+        /* THE ONE PLANNING RECORD, ROUTED (the reshape plan §3.2 A-ii — Astra 2, Opus M1 of round 2). The calendar in memory
+           (PLANPUCKS, DAYRMK) is the unit in view's; a record of another squadron is never put on it (multi-squadron
+           step 2). It goes instead to THAT squadron's stored calendar — its stored half, state/plan-foreign.ts — which
+           must already be joined to this command, having loaded the stored rows it will write before it joined (Opus 4 of
+           round 3): never enlisted from here, half-way through the schedule store's write, with no before-image. Not
+           joined, the write is refused, as before. (An Undo or Redo of such a record goes to the stored half directly —
+           the timeline's per-record store, helper "undo & roles".) */
         const pl = split(e.id)
-        if (pl.unit !== UNIT) throw new CmdRefused(`scheduler write: another unit's planning record ${e.id}`)
+        if (pl.unit !== UNIT) {
+          const stored = pl.unit ? storedPlanJoined(pl.unit) : null
+          if (!stored) throw new CmdRefused(`scheduler write: another unit's planning record ${e.id}`)
+          stored.write([e], opts)
+          break
+        }
         if (pl.local.startsWith('dm:')) {
           const iso = pl.local.slice(3)
           if (e.op === 'delete' || v == null) delete DAYRMK[iso]; else DAYRMK[iso] = v

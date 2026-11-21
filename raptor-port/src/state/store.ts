@@ -65,6 +65,7 @@ import { resyncPeopleBaseline, mintPeopleOrd, reloadUnitSettings, setElogWriteGu
 import { registerPeopleSettingsCommandLayer } from './people-settings-wire'
 import { mintOrd } from '../command/ord'
 import { PLANPUCKS, DAYRMK } from './plan'
+import { keepPlan, keptPlan, forgetKeptPlans, dropStoredPlan, setPlanStoreDoor } from './plan-foreign'
 import { accountsLoad, setAccountSeeds } from './accounts'
 
 let VERSION = 0
@@ -823,18 +824,18 @@ function enterWeek(v: any): void {
    week load it is navigation: no command, nothing saved, every record of each unit already saved by the command that
    made it. Undo is NOT cleared by it: there is one change stream, and a person's Undo on a schedule steps back his own
    changes in the unit in view (undo/timeline.ts, D148).
-   The planning calendar of a unit left is kept in memory (PLAN_MEM) as the stash keeps its weeks, so coming back shows
+   The planning calendar of a unit left is kept in memory (state/plan-foreign.ts keepPlan — kept there since the reshape's
+   routed planning record, §3.2 A-ii, so the stored half reads and updates it) as the stash keeps its weeks, so coming back shows
    it as it was; a unit never shown this session reads its rows from the whiteboard (state/persist.ts hydratePlan), and
    headless — no whiteboard — starts empty. Who may look at a unit is the "▾" menu's question (step 5), not this one's:
    this function only changes what is held in memory. */
-const PLAN_MEM = new Map<string, { pucks: any[]; titles: Record<string, string> }>()
 export function switchUnit(unit: string): void {
   if (!isUnitId(unit)) throw new Error(`switchUnit: not a unit id: ${unit}`)
   if (unit === UNIT) return
   leaveWeek()
   // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the unit left keeps its planning calendar as saving stores it (keys set to undefined dropped), the same image a reload of that unit reads; structuredClone would keep them
   const keptPucks = JSON.parse(JSON.stringify(PLANPUCKS))
-  PLAN_MEM.set(UNIT, { pucks: keptPucks, titles: { ...DAYRMK } })
+  keepPlan(UNIT, { pucks: keptPucks, titles: { ...DAYRMK } })
   /* the change history in memory is the unit in view's (engine/editlog.ts elogLoad): the lines held for the unit left
      are kept first, then the list is read again for the unit entered (the full check, 18 Nov 26) */
   elogFlush()
@@ -843,7 +844,7 @@ export function switchUnit(unit: string): void {
   reloadUnitSettings()
   /* the blue/red answers held in memory are the unit in view's (state/persist.ts hydrateRolesFor) */
   { const wb = persistWb(); if (wb) hydrateRolesFor(wb, unit) }
-  const kept = PLAN_MEM.get(unit)
+  const kept = keptPlan(unit)
   if (kept) {
     PLANPUCKS.length = 0; kept.pucks.forEach(p => PLANPUCKS.push(p))
     for (const k of Object.keys(DAYRMK)) delete DAYRMK[k]
@@ -853,6 +854,8 @@ export function switchUnit(unit: string): void {
     if (wb) hydratePlan(wb, unit, true)
     else { PLANPUCKS.length = 0; for (const k of Object.keys(DAYRMK)) delete DAYRMK[k] }
   }
+  /* the squadron entered is the loaded calendar now: its stored half holds nothing of it (state/plan-foreign.ts) */
+  dropStoredPlan(unit)
   enterWeek(CURWEEK)
 }
 /* the unit a session starts in: the signed-in person's home today (state/units.ts homeOn — D2094), else the boot unit
@@ -866,7 +869,11 @@ function sessionUnit(pid: string | null | undefined): string {
   return h && isUnitId(h) ? h : BOOT_UNIT
 }
 /** the planning calendars kept for units left this session — cleared with the session (tests and sign-out) */
-export function forgetUnitPlans(): void { PLAN_MEM.clear() }
+export function forgetUnitPlans(): void { forgetKeptPlans() }
+/* the stored half of another squadron's planning calendar reads its rows from the whiteboard this app saves to (none
+   headless) — handed over here, since state/plan-foreign.ts may not import state/persist.ts (which imports the schedule
+   store that imports it) */
+setPlanStoreDoor(() => persistWb())
 
 /* ---- wiring ---- */
 let ELOG_ADOPT_WIRED = false
