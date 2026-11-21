@@ -1,0 +1,17 @@
+Drawing check (D1494), helper "war", A1: the approved drawing script's q6b (142 and 149) and q6c, replayed on this branch's
+build (commit 3788e7e50) at a desktop (d) and his iPhone's size (p); each picture compared pixel for pixel with the
+approved picture of the same name in docs/mock/2026-11-20-multi-sqn-reshape/img/ (tolerance 24 a channel).
+
+q6b-142-d  same      q6b-142-p  same
+q6b-149-d  DIFFERS   q6b-149-p  same
+q6c-d      same      q6c-p      same
+q6c-ref-d  same      q6c-ref-p  same
+
+The one difference, q6b-149-d (0.4% of the picture): 149's Leave War, the Available P row, Wed 1 - Wed 15 Jul reads 5 on
+the build and 6 on the drawing. Ranger is 149's only from Thu 16 Jul; both pictures hatch his row before it, but the
+drawing still counted him in 149's Available P on those days. The build counts him only inside his 149 stint, which is
+what A1 asks ("each war counts a man only inside his squadron stints"), so the build is right and the drawing's figure
+was a slip of the drawing. Every other pixel matches. The phone picture of the same screen shows no Available row in
+view, so it matches.
+
+q6a (the old real row) and q6d (A7's refused-Undo note, wired by helper "undo & roles") were not replayed.

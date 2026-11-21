@@ -1651,6 +1651,7 @@ function postedLines(pid: string): Notice[] {
   const here = worldUnit()
   const out: Notice[] = []
   for (const u of WORLD_DOOR ? unitList().map(x => x.id) : [here]) {
+    // eslint-disable-next-line react-doctor/js-set-map-lookups -- each pass reads a different squadron's admin list, built fresh and looked in once: a Set would cost more than the one lookup
     if (!postingAdmins(u).includes(pid)) continue
     out.push(...postedLinesOf(pid, u === here ? getState().postOuts : storedPostings(u)))
   }
