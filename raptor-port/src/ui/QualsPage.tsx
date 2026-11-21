@@ -74,6 +74,14 @@ import { exportCSV } from './export'
    page's `cols` state is mirrored into the engine's `qualCols()` registry on
    every change (the effect below), and Raptor's `notify` then carries it to
    Leave War's projection. */
+/* THE PAGE'S SQUADRON AND ITS COLUMN LIST — one place the page and its tests read (the reshape plan §3.2 A-ii) */
+// eslint-disable-next-line react-doctor/only-export-components -- the page's squadron, read by the page and its proofs
+export const qualsPageUnit = (): string => myUnit()
+// eslint-disable-next-line react-doctor/only-export-components -- the page's column list, read by the page and its proofs
+export const qualsPageCols = (): readonly any[] => qualCols()
+/* true when the list really changed (the caller notifies only then) */
+// eslint-disable-next-line react-doctor/only-export-components -- the column list's one writer on this page, read by its proofs
+export const setQualsPageCols = (next: readonly any[]): boolean => setQualCols(next as any)
 const WIRED: any = {
   sched: 'the sign-off drop-downs — SKED CK, PLANNED BY and APPROVED BY',
   scDay: 'the SC shift rules', scNight: 'the SC shift rules',
@@ -128,7 +136,7 @@ const cmp = (a: any, b: any) => (a < b ? -1 : a > b ? 1 : 0)
 /* which people the table is showing: the seat view, then the filter box */
 function qualsIds(qSeatView: string, qSort: any, qSearch: string) {
   /* the signed-in person's own squadron's people — Quals stays on his own (D2132; multi-squadron step 3) */
-  let ids = rosterOf(myUnit()).filter(id =>
+  let ids = rosterOf(qualsPageUnit()).filter(id =>
     (qSeatView === 'ALL' || PEOPLE[id].seat === qSeatView) && !PEOPLE[id].archived)
   if (qSearch) { const s = qSearch.toLowerCase(); ids = ids.filter(id => PEOPLE[id].cs.toLowerCase().includes(s) || (PEOPLE[id].initials || '').toLowerCase().includes(s) || (PEOPLE[id].name || '').toLowerCase().includes(s)) }
   const key = sortKeyFor(qSort.key)
@@ -300,8 +308,8 @@ export function QualsPage() {
      its own copy, seeded once and written back from an effect, so an Undo that put the list back underneath it never
      showed here, and the next column edit wrote the stale copy over the undo. Now the registry IS the page's list; the
      page writes it only from its own edit handlers below (setQualCols — one settings command, one Undo step). */
-  const cols: any[] = qualCols() as any[]
-  const setCols = (fn: (cs: any[]) => any[]) => { if (setQualCols(fn([...qualCols()]))) notify() }
+  const cols: any[] = qualsPageCols() as any[]
+  const setCols = (fn: (cs: any[]) => any[]) => { if (setQualsPageCols(fn([...qualsPageCols()]))) notify() }
   const [qualsEdit, setQualsEdit] = useState(false)
   const [newQual, setNewQual] = useState('')
   /* the column whose ✕ has been pressed once — see WIRED above */
