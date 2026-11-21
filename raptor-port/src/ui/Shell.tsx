@@ -9,7 +9,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
-import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon, TalonMark } from './icons'
+import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon } from './icons'
 import { isAdmin, me, mayViewAsMember } from '../state/perms'
 import { toggleChanges } from './changesopen'
 import { weekNew } from './changesmodel'
@@ -42,7 +42,7 @@ import { WeekCal } from './WeekCal'
 import { setInsights, setDrawer, setWeekCal } from './pops'
 import { Drawer } from './Drawer'
 import { ScheduleInsightsMenu } from './ScheduleInsightsMenu'
-import { exportCSV, schedRows, publishedDays } from './export'
+import { exportCSV, schedRows, publishedDays, schedCsvName } from './export'
 import { printSchedPDF } from './printpdf'
 import { InputsPage } from './InputsPage'
 import { LogicPage } from './LogicPage'
@@ -74,7 +74,7 @@ import { pageDownload } from './pagedownload'
 import { SaveStatus, useBandUp } from './SaveStatus'
 import { OilBar, useOilBarTop } from './OilWaitSheet'
 import { bugAlert } from '../state/reports'
-import { UndoPair, SyncChip, BellButton, BellList } from './topbits'
+import { UndoPair, SyncChip, BellButton, BellList, SqnMark } from './topbits'
 import { globalUndoEngine, trackerUndoEngine, useTrackerUndoVersion, fastSync } from './topstate'
 
 /* THE WEEK BANNER IS GONE (owner, 15 Sep 26 — item 2). First the week-STATUS
@@ -380,7 +380,7 @@ export function Shell() {
          at a glance — both widths; View-only keeps the neutral dark. */
       <div ref={topbarRef} className={'topbar' + (page === 'editsched' ? ' editing' : '') + (pairOn ? ' has-undo' : '') + (saveFailed ? ' save-failed' : '') + (oilTop ? ' oil-waiting' : '') + (navFold ? ' nav-fold' : '')}>
         <button className="burger" id="burger" aria-label="Menu" onClick={() => { setDrawer(true); notify() }}><span></span><span></span><span></span></button>
-        <TalonMark />
+        <SqnMark />
         <nav className="nav" id="topnav">
           {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab drawn by the bar's own rule for links (`.nav a`), which a <button> would not take without restyling every tab; every test and walk finds the tabs as #topnav a[data-page] */}
           <a data-page="editsched" data-admin="" hidden={!admin} role="button" tabIndex={0} className={page === 'editsched' ? 'on' : ''} onClick={() => nav('editsched')} onKeyDown={navKey('editsched')}>Edit Schedule</a>
@@ -623,7 +623,7 @@ export function Shell() {
                 on desktop, so this page needs no separate control. */}
             <button className="abtn" id="exportSched" title="Export to Excel (CSV)" aria-label="Export to Excel (CSV)"
               onClick={() => {
-                exportCSV('142-schedule.csv', schedRows(publishedDays()))   /* the PUBLISHED version ([FLAG-EXPORT]) */
+                exportCSV(schedCsvName(), schedRows(publishedDays()))   /* the PUBLISHED version ([FLAG-EXPORT]) */
                 /* same reason as the Inputs page's export: a phone shows nothing
                    when a download lands, so the tap otherwise reads as dead */
                 HOOKS.toast('CSV downloaded', 'ok')

@@ -7,7 +7,7 @@
 import { describe, it, expect, afterEach } from 'vitest'
 import { render, cleanup, act } from '@testing-library/react'
 import { useMsqWorld, signInAs, moveMan, pastMidnight, PID } from '../test-support/msq-world'
-import { TalonMark } from './icons'
+import { SqnMark as TalonMark } from './topbits'
 import * as exp from './export'
 import { schedPrintHTML } from './printpdf'
 
