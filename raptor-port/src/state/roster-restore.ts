@@ -19,6 +19,7 @@ import { stashEntries } from '../engine/weekstash'
 import { PLANPUCKS } from './plan'
 import { accountsRestoreProblem, accountsAfter, requestsAfter } from './accounts'
 import { unitRowsAfter } from './units'
+import { UNIT_ROW_PREFIXES } from './units-model'
 import { getState as lwState } from '../leavewar/state/store'
 
 // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- a restored record lands as saving stores it (keys set to undefined dropped), the same image a reload reads; structuredClone would keep them
@@ -75,7 +76,10 @@ export function rosterRestoreProblem(changes: any[], _dir: 'undo' | 'redo'): str
      now with this step's rows put back (accounts.ts accountsAfter — the seeded list when no account row would be left) */
   const next = accountsAfter(changes)
   const rq = requestsAfter(changes)
-  if (!people.length && !next && !rq) return null
+  /* a step that writes only squadron rows — a move, a right given, lowered or taken away — still asks the lock (fix
+     read 2: it returned here, and the gate's refusal reached him as the generic words, never the last-admin words) */
+  const unitRowsChange = (changes || []).some(ch => ch && ch.collection === 'settings' && UNIT_ROW_PREFIXES.some(p => String(ch.id).startsWith(p)))
+  if (!people.length && !next && !rq && !unitRowsChange) return null
   const roster = candidatePeople(changes)
   /* 1. one callsign on the roster (D286, D295): a man whose callsign changes, or who comes back onto the roster */
   for (const ch of people) {
@@ -92,9 +96,9 @@ export function rosterRestoreProblem(changes: any[], _dir: 'undo' | 'redo'): str
     if (live && stillNamed(ch.id)) return `${live.cs} is on the schedule, an input or the Leave War — take him off first.`
   }
   /* 2. the accounts — the write path's own guards, over the candidate (accounts.ts) */
-  if (next || rq || people.length) {
+  if (next || rq || people.length || unitRowsChange) {
     /* (the unit rows the restore would leave — a re-link's dropped rights put back — judged by the lock, as the gate does) */
-    const bad = accountsRestoreProblem(next, rq, roster, unitRowsAfter(changes as any))
+    const bad = accountsRestoreProblem(next, rq, roster, unitRowsAfter(changes as any), unitRowsChange)
     if (bad) return bad
   }
   return null

@@ -902,8 +902,16 @@ export const accountBefore = (id: string, image: any): any => image ?? (SEEDS_ON
    view moves and again inside the restore itself (undo/timeline.ts applyRestore). A sentence, or null.
    `next` — the accounts list the restore would leave (null: unchanged); `reqs` — the access requests it would leave. */
 /* (`rows` — the unit rows the restore would leave, when it changes any: the lock judges them, as the gate does) */
-export function accountsRestoreProblem(next: any[] | null, reqs: any[] | null, people: Record<string, any>, rows?: UnitRows): string | null {
+export function accountsRestoreProblem(next: any[] | null, reqs: any[] | null, people: Record<string, any>, rows?: UnitRows, rowsChange = false): string | null {
   const list: any[] = next ?? ACCOUNTS_LIST
+  /* at least one admin who can sign in, and one of each squadron (ADMIN_LOCK — the write path's own guard). Asked when
+     the restore changes an account OR a squadron row (`rowsChange` — a move, a right given, lowered or taken away: fix
+     read 2 — such a step changes no account, so the lock was never asked and the gate's refusal reached him as the
+     generic words, D2184 Q10). Asked first, as the doors ask it. */
+  if (next || rowsChange) {
+    const locked = lockProblem(list, pid => people[pid], rows)
+    if (locked) return locked
+  }
   if (next) {
     const ids = new Set<string>(), names = new Set<string>(), pids = new Set<string>()
     for (const a of list) {
@@ -919,9 +927,6 @@ export function accountsRestoreProblem(next: any[] | null, reqs: any[] | null, p
       const p = people[a.pid]
       if (a.on !== false && p.archived && !p.deleted && !(live && live.on)) return `${p.cs} is archived — restore him on Admin → Users first`
     }
-    /* at least one admin who can sign in (ADMIN_LOCK — the write path's own guard) */
-    const locked = lockProblem(list, pid => people[pid], rows)
-    if (locked) return locked
     /* never the signed-in person's own account (the D166 guard — every field he would sign in with: Astra's red team 2) */
     const mine = ACCOUNTS_LIST.find(ownAccount)
     if (mine) {
