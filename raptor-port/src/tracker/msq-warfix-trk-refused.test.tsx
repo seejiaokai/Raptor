@@ -59,7 +59,7 @@ describe('W3-F4 — a Tracker save the gate refuses', () => {
     expect(await said(), 'the refusal is said').toBe(NOT_SAVED)
     await p
     expect(gradeOf(flight()), 'the grade did not land').toBe(0)
-    expect(C.saveWords().text, 'the corner never says saved').not.toMatch(/saved$/)
+    expect(C.saveWords().text, 'the corner never says "● saved"').toBe('● ' + NOT_SAVED)
     expect(C.saveWords().cls).toBe('err')
     expect(C.saveWords().title).toContain(NOT_SAVED)
     expect(C.dlg, 'said once').toBeNull()
@@ -67,6 +67,8 @@ describe('W3-F4 — a Tracker save the gate refuses', () => {
   it('✓ Save changes of a chart edit there: the box says it, the corner never reads "saved", the edit stays unsaved', async () => {
     /* a chart edit as the editor makes one (a draft, not yet saved) */
     C.toggleArrange()
+    const ev = C.SYL[0], was = ev.name
+    ev.name = String(was || '') + ' x'
     ;(window as any).__markDirtyForTests()
     expect(C.sylDirty).toBe(true)
     setTrkUnitProbe(() => 'u149')
@@ -74,14 +76,20 @@ describe('W3-F4 — a Tracker save the gate refuses', () => {
     expect(await said()).toBe(NOT_SAVED)
     await p
     expect(C.sylDirty, 'the edit still waits to be saved').toBe(true)
-    expect(C.saveStat.text, 'never "saved"').not.toMatch(/saved/)
+    expect(C.SYL[0].name, 'the edit itself is still on the chart').toBe(String(was || '') + ' x')
+    expect(C.saveStat.text, 'never "… saved"').toBe('● ' + NOT_SAVED)
     expect(C.saveStat.cls).toBe('err')
     /* back in his own squadron's Tracker the same press saves */
     setTrkUnitProbe(null)
     await C.saveChangesClick()
     expect(C.sylDirty).toBe(false)
-    expect(C.saveStat.text).toMatch(/saved/)
+    expect(C.saveStat.text).toMatch(/ saved( \(.*\))?$/)
+    expect(C.saveStat.cls).toBe('ok')
     expect(C.dlg).toBeNull()
+    /* (the chart put back as it was, for the cases after this one) */
+    C.SYL[0].name = was
+    ;(window as any).__markDirtyForTests()
+    await C.saveChangesClick()
     if (C.arrangeMode) C.toggleArrange()
   })
   it('an Undo there is refused in the same words, and the step stays on the list', async () => {
