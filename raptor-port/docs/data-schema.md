@@ -150,16 +150,17 @@ stores every key under one unit — `leavewar/u149@war:2026`, `tracker/u142@v3:m
 leavewarAdapter(wb, unit)`, `trackerTarget(wb, unit)`, the same codec as the weeks). A door lists, reads, writes and
 removes only its own unit's keys, so two squadrons' worlds never meet; a key with no unit (a browser's records from
 before step 4) is no unit's and is never read (D22 — cleared at step 6). The Leave War loaded is the signed-in
-person's home unit's (`leavewar/sync.ts swapWarWorld`, at every sign-in), its roster that unit's people alone; the
+person's home unit's (`leavewar/sync.ts swapWarWorld`, at every sign-in — and, since the reshape of 21 Nov 26, again at
+midnight of his own move, through the page's one entry `state/store.ts enterSquadron`), its roster that unit's people alone; the
 other squadrons' worlds are read from their own doors where a reader needs them (their public holidays, below). The
 Tracker binds the signed-in person's home unit when it first loads (`tracker/storage.js markStorageLoaded`) and refuses a
 bind to another unit after that — so, until signing out reloads the app (plan §3.4, O8 — not built in step 4), a second
 person of the other squadron signing in on the same tab is still shown the first one's Tracker. Nothing changes in the
-records' shape. *[To change — his D2195, 18 Nov 26: no holiday list is shared; each squadron owns its own, and a
-holiday never reaches another squadron's war. The by-place reading below is as built on the night of 17–18 Nov 26, filed
-for chat 109.]* **Public holidays by place and date:** a public holiday is still stored in the one squadron's war it was
-entered in; every other squadron at the same place on that date reads it laid onto its own war, never stored there
-(`leavewar/sync.ts placeHolidaysFor`), so a later move of either squadron changes nothing already charged before it. An
+records' shape. **Public holidays — each squadron's own (his D2195, 18 Nov 26; built 21 Nov 26, the reshape's A4):** a
+public holiday is stored in the one squadron's war it was entered in and is that squadron's alone — no other squadron
+reads it, even at the same place (`leavewar/sync.ts nonWorkingFor(unit, iso)` answers from that squadron's own list: the
+loaded war for its own squadron, another's from its door). *(Replaced: as built on the night of 17–18 Nov 26 every other
+squadron at the same place on that date read it laid onto its own war — `placeHolidaysFor`, removed.)* An
 Off day stays its own squadron's. **The demo (step 4):** 149's people (`state/demoseed.ts DEMO_149_PEOPLE` — their own
 ids and callsigns, each with a seeded home row in 149), their own two inputs, their own week on the same dates as 142's
 (`engine/week149.ts`), their own Leave War world (the seed's periods and holidays, nobody's records) and one Tracker

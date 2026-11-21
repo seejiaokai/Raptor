@@ -75,10 +75,14 @@ bar for anyone who may see more than one schedule; Admin → Squadrons; each pla
 - Each person has one home squadron, set with his account; an admin adding a person picks it, his own by default
   [D1695, D2087, D2094]. He files inputs and leave only in his home squadron [D2087].
 - "Request access" asks the squadron first, as drawn; the request goes to that squadron's admins only, the bell telling
-  them [D2094, D2111, D1695, D216].
+  them [D2094, D2111, D1695, D216]. *[21 Nov 26, the blind read's R13: "that squadron's admins" are its admins of the
+  day — a plain admin holding Plan of it among them (D2202; `state/accounts.ts adminsOf`).]*
 - Access to another squadron is View only, never as a scheduler, given on Admin → Users by that squadron's admins (or
   an admin of both), never asked at sign-up [D2094, D2160 Q5]; an admin of a squadron is made only by its own admins or
-  a master admin [D2160, D2184].
+  a master admin [D2160, D2184]. *[Changed 18 Nov 26 by his D2192, D2199, D2201, marked here 21 Nov 26 (the blind read's
+  R13): another squadron is View only UNLESS a master admin gives an admin "Plan" of it — full access, as its own admins
+  have; Plan is a master admin's alone to give or take; an admin holding Plan of a squadron may make its admins too
+  (D2241).]*
 - Admin gains "Squadrons", as drawn [D2110]: each squadron with its place; each place, home included, set by a time
   zone picked by name and shown as GMT+X [D2165]; a place change saved at once, no "From", counting from the next day's
   start; a place keeps its history [D2119, D2160 R7, D2184]. *(Its detachment rows are batch 2.)* *[Added 18 Nov 26 by
@@ -88,7 +92,9 @@ bar for anyone who may see more than one schedule; Admin → Squadrons; each pla
   his own squadron; the board's bar shows the squadron number beside its day title, small and grey [D2132]. Someone
   who may see one schedule sees no ▾ [D2132]. *[Narrowed 18 Nov 26 by his D2197: for a master admin every page
   follows the pick — Inputs, Quals, the Leave War, the Tracker and Admin → Users too — each his to edit; and by his
-  D2198: his bell carries his primary squadron's lines by default, the others' off until he switches them on.]*
+  D2198: his bell carries his primary squadron's lines by default, the others' off until he switches them on.]* *[And an
+  admin holding Plan of the squadron picked, the same — every page follows his pick of it, each his to edit (D2201,
+  D2241); his bell carries that squadron's admin lines, on by default (D2202) — the blind read's R13, 21 Nov 26.]*
 - Each squadron its own schedule and its own Logic settings, crew rest included, edited by its own admin [D2109,
   D2122]. Each squadron its own Tracker [D2167].
 - *[SET ASIDE 18 Nov 26 by his D2195: no holiday list is shared — each squadron owns its own; the form names only its
@@ -121,6 +127,9 @@ is not shown until then.
   142 admin and a 149 admin are seeded so a plain admin's view can be seen.
 - **O3 — whose people an admin sees on Admin → Users:** his own squadron's people only; a man of the other squadron is
   given View of this squadron from here by search (the row shows his squadron), the rest of his row read only.
+  *[21 Nov 26, the blind read's R13: for a master admin, or an admin holding Plan of the squadron picked, Admin → Users
+  is that squadron's — its people, his to edit as its own admins do (D2197, D2201, D2211, D2241); built with the
+  Schedules menu, step 5.]*
 - **O4 — what a View-only person sees of the other squadron:** its schedule pages as View-only Sched shows them to a
   member, and its Logic read only; the other squadron's bell does not reach him (he is told only of his own squadron's
   things) — until borrowing, when a pick of him rings his own bell (batch 3).

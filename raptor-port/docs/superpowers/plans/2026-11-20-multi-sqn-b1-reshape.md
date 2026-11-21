@@ -45,7 +45,8 @@
   (D148). A move counts from the next day's start (D2119), and a transfer ends his access on its date (D2160, the
   transfer sheet). A move ends every View and Plan he holds of other squadrons (D2203). Each squadron's admins act only for
   their own squadron (D2191, D2192). Plan is a master admin's to give (D2199) and gives full access as its own admins have
-  (D2201). A master admin's every page follows his pick (D2197). Each squadron owns its holiday list (D2195). The plan
+  (D2201). A master admin's every page follows his pick (D2197) — and, for a squadron he holds Plan of, an admin's (D2201,
+  D2241; R13 of §19b). Each squadron owns its holiday list (D2195). The plan
   recommends the right design, not the easiest (D754).
 - **`src/engine/` bodies are verbatim ports.** Only lines the multi-squadron work added there change: `inputBelongs`,
   `inputsFor`, `inputUnitOf` (step 3); `faceattrs.ts` (a project file); the `rosterShown()` call in `avail.ts` and the
@@ -81,7 +82,7 @@
 | A4 | one-by-one (= rest-file P5, D2195) | Each squadron's holidays only. The warning uses the words he ruled (D2207). |
 | A5 | Piece D | The posting pass runs every squadron's due postings, whichever war is open, its whole chain checked. |
 | A6 | Piece D | The "posting could not run" note reads the man's own squadron's posting. |
-| A7 | Piece D + Piece A + **his answer** | A war takes a man's day only where that day is its squadron's; a change that only removes passes. Whether the master admin is an exception is his question (§12 Q3). Built with A1, so it waits on A1's drawing too (§11). |
+| A7 | Piece D + Piece A + **his answer** | A war takes a man's day only where that day is its squadron's; a change that only removes passes. Whether the master admin is an exception is his question (§12 Q3) — **answered 20 Nov 26 by D2243: refused for everyone, a master admin and a Plan holder included** (R13 of §19b). Built with A1, so it waits on A1's drawing too (§11) — **drawn and approved the same day (D2243 Q6); built in phase 2 by helper "war"**. |
 | B1 | Piece D | A delete takes the man off every squadron's planning calendar, inside its own command, rolled back whole on a refusal. |
 | B2 | one-by-one (his D2239, 20 Nov 26) | The guest view is removed: no switch, no button into it (§8). Was held with B7. |
 | B3 | Piece C | One lock over every date. The door gives the approved words (D2217 Q15) where it now says "That did not save". |
@@ -250,7 +251,8 @@ the same. C9 is fixed first so the enumeration guards count truly while some 50 
   2. `swapWarWorld(pageUnit('own'))`;
   3. the Tracker's rebind to `pageUnit('own')` (below).
 - `resetSession` calls it at sign-in, as it calls the first two now, and records **his home at entry** — never the pick
-  (Opus L2), so step 5's master admin pick is never pulled back to his home.
+  (Opus L2), so step 5's master admin pick — a Plan holder's pick likewise (D2201, D2241; R13 of §19b) — is never pulled
+  back to his home.
 - `notify()` calls it when the signed-in person's home today differs from his home at entry (A2, his move at midnight).
   The existing midnight wake (`leavewar/sync.ts installPostingClock`) already calls `notify()` at 00:00:01 and whenever
   the page is shown or focused on a new day, so the swap needs no click (Fable F8, Opus L2). It does **not** reset the
@@ -281,7 +283,7 @@ the same. C9 is fixed first so the enumeration guards count truly while some 50 
   door, and remount the Tracker page so it reads afresh (a key on `TrackerPage` naming the bound unit). It waits only
   while the band is up — never for the Tracker to be "clean", which 7f makes impossible after midnight (Fable F9).
   **Unsure:** whether the Tracker holds module-level caches beyond its React tree. It is found out by reading its load
-  path before any change (§14). Step 5's master admin pick (D2197) needs the same swap, so it is built once here.
+  path before any change (§14). Step 5's master admin pick (D2197) — and a Plan holder's (D2201, D2241; R13) — needs the same swap, so it is built once here.
 
 **A-v. Every Undo step carries its squadron, through every part of Undo (a prerequisite of A-iv's switch — Fable F2,
 Astra 2 of round 1; Astra 3, Fable 5 of round 2; D148).**
@@ -921,7 +923,8 @@ refused, in the same words. The host checks each of the fourteen against its fix
   "That couldn’t be completed just now.";
 - `sync.ts` gives the gate a probe that reads `(pid, iso)` off a war change; the core writes the gate's half with a probe
   setter in phase 1 — it judges nothing until the probe is installed — and helper "war" installs it with A1, as one
-  tested change. So A7 waits on A1's drawing with it (Opus L8). The master admin question is §12 Q3.
+  tested change. So A7 waits on A1's drawing with it (Opus L8). The master admin question is §12 Q3 (answered by D2243:
+  refused for everyone — R13).
 
 **The posting pass over every squadron (A5) — its whole chain.**
 1. `runPoOutcomes` first runs the loaded war as now.
@@ -1013,7 +1016,8 @@ which runs both every time it loads (`swapWarWorld`). The posting pass is the on
 archive, suspend, delete. Astra found no failure in this choice.
 
 ### 6.3 Faults it closes
-- **Closes:** A1, A5, A6, B1, and A7 with Piece A, less his answer on the master admin.
+- **Closes:** A1, A5, A6, B1, and A7 with Piece A, less his answer on the master admin (since given — D2243, §12 Q3: refused
+  for everyone; R13).
 - **Left one-by-one:** A4 (§7).
 
 ### 6.4 Tests
@@ -1109,6 +1113,9 @@ archive, suspend, delete. Astra found no failure in this choice.
   their tests — each test that pins the guest view rewritten to pin its absence, named in the report; B2's and B2b's
   proofs rewritten to "no squadron's switch exists" and green. B7 (the request names its squadron) stays with step 5.
   The documents' pointers (`ui-contracts.md` §The access screens and the guest view) are then rewritten to the app.
+  **Built 21 Nov 26:** the removal by helper "guest" (merged `218184770`; the store's label `0ea1b4342`), B2's and B2b's
+  proofs green; the documents rewritten by helper "docs" (that section is now `ui-contracts.md` §The access screens —
+  the guest view removed); `data-model.md` §11's guest cells by another helper, with `perms.ts`'s Guest column.
 
 ## 9. Tests, overall
 
@@ -1172,9 +1179,9 @@ in phase 2 and for Q8's words in phase 3.
 | 2, at once | helper "war" | A1 (stints apart from postings) with A7's probe, one tested change; A5's caller (on phase 1's gate chain): both halves of a foreign Delete, owed work, the coalesced run after accounts, people, homes or rights change, one posting per command and a refused one given up for the session, a moved man's posting skipped by both passes, no passing note from the foreign half, the run typed `lw.postoutRun`, `adminsOf` with today for both passes and `ownSchedulerIds`' other readers; A7's Undo sentence beside its probe, once Q6 is answered; A6; `oilOpenOn` by day and the named today readers; the flying plan's calls the inventory names | `leavewar/sync.ts`, `leavewar/state/store.ts`, `raptorRoster.ts`, `foreign.ts` |
 | 2, at once | helper "session" | the Tracker's load path read first; the routed `plan` writer (`sched-commit.ts`'s `plan` case and its stored half, which loads the ids it will write before it joins), then B1's strip; `store.ts`'s input callers (first day, F4); `enterSquadron` with its band slot, the pick rule and the Tracker rebind, **the midnight trigger off**, its hold answering "none" | `boot.ts`, `state/store.ts`, `state/sched-commit.ts`, `tracker/storage.js`, `tracker/TrackerPage.tsx`, Tracker load files, `state/plan.ts`, `state/plan-foreign.ts` (new), `state/person-delete.ts` |
 | 2, at once | helper "undo & roles" | **A-v first** (the stamp, the squadron-qualified key in `commit.ts` and the timeline — `lwx.profile`, `lwx.ledger` and `lwx.rec` keyed as the war's own records — `verifiedWarRestore` and `carrySeen` on it, eligibility, a step in a world he can no longer enter blocked for good), then K4 + B5; then — once "session" commits the stored half — the timeline's per-record store for the planning record, with its two-direction tests; then — once the core's Piece B is committed — the leave-out wired into the timeline's hook, the holders recorded on each step, the gate's probe, a step the leave-out empties and a re-link's standing right, each blocked for good, with §4.4's re-link and guardrail-2 tests through the real timeline; then — once "war" commits A7's sentence — its one `restoreRefusal` line | `state/undo-wire.ts`, `undo/timeline.ts`, `undo/derive.ts`, `command/commit.ts`, §7's K4 files (`state/persist.ts`, `state/changelines.ts` among them) |
-| 3 | core | **Contract:** remove the defaults (with `levelIn`, `levelOfAccount`) and `inputsFor`'s no-day form; the date check in development (A-i); the compiler lists stragglers (each in a helper's file goes back to it, by then finished). R6. A4. The answers as they come. Docs: `data-model.md` §11 (`UnitGrant`'s rule: holds while its man stays in his squadron, one holding per account, squadron and day, an ended one never back, none put back by a restore after its man's move; `home.set` writes no right — Fable F11; the re-link's who, and its drop of every right — guardrail 1), `data-schema.md` (an input's `u` if C3 is answered so; no grant field changes), `file-map.md` (new files), `feature-impact.md` (the new seams: `enterSquadron`, `pageUnit`, the stamp and the squadron-qualified key on Undo, the routed planning record, `inputWhoProblem`), `notifications-register.md` (A5's lines to the man's own squadron's admins and its Plan holders, D2202; the foreign half's held posting said only by Admin → Users' note) | core files, `leavewar/sync.ts`, `leavewar/state/store.ts` and `ui/oilday.ts` (A4), docs |
-| 3 | helper "session" | **the midnight swap switched on**, once "undo & roles" has merged: A2's proof and the Undo-across-the-swap tests red first; the hold on an open window; the band built once his Q7 is answered | `state/store.ts`, `state/typing-hold.ts` (new), `leavewar/ui/Sheet.tsx`, `tracker/components/Pop.jsx`, `Modals.jsx` |
-| 3 | helper "schedule" | Q8's sentence, once he has answered | `ui/InputWindow.tsx`, `ui/inputedit.tsx` |
+| 3 | core | **Contract:** remove the defaults (with `levelIn`, `levelOfAccount`) and `inputsFor`'s no-day form; the date check in development (A-i); the compiler lists stragglers (each in a helper's file goes back to it, by then finished). R6. A4. The answers as they come. Docs: `data-model.md` §11 (`UnitGrant`'s rule: holds while its man stays in his squadron, one holding per account, squadron and day, an ended one never back, none put back by a restore after its man's move; `home.set` writes no right — Fable F11; the re-link's who, and its drop of every right — guardrail 1), `data-schema.md` (an input's `u` if C3 is answered so; no grant field changes), `file-map.md` (new files), `feature-impact.md` (the new seams: `enterSquadron`, `pageUnit`, the stamp and the squadron-qualified key on Undo, the routed planning record, `inputWhoProblem`), `notifications-register.md` (A5's lines to the man's own squadron's admins and its Plan holders, D2202; the foreign half's held posting said only by Admin → Users' note). **Built 21 Nov 26 (chats 130–131):** the contract `ea7fa94cf`; R6 (the stamps of a refused bid; `pickStandsOn`) `c0a856d83`; an input's late mark by its own squadron's cut-off (owed by phase 2's "own pages") `7b5a53fea`; A4 with PB3, PB4, PB5, R3, R4 and the flying plan's holidays by helper "holidays" — merged `6adfca111`, its follow-ups `cc77b061f`; B2, the guest view removed (§8, D2239), by helper "guest" — merged `218184770`, the store's label `0ea1b4342`; the documents by helper "docs" on `claude/msq-b1-docs` (`data-model.md` §11 by another helper) | core files, `leavewar/sync.ts`, `leavewar/state/store.ts` and `ui/oilday.ts` (A4), docs |
+| 3 | helper "session" | **the midnight swap switched on**, once "undo & roles" has merged: A2's proof and the Undo-across-the-swap tests red first; the hold on an open window; the band built once his Q7 is answered. **Built 21 Nov 26 (chat 130):** merged `9dbdfe9f3` — the swap on, the hold and the band as drawn (D2243 Q7), R6 of the blind read (§19b); his typed words kept in the bid window at midnight `0a98f2ae1`; the drawing check's records `65e70dad1` (to be run again on the fixed build at phase 4). As built, the band's Tracker half is drawn by `tracker/TrackerPage.tsx` on the chart editor, not by `Pop.jsx` / `Modals.jsx`: the Tracker cannot be re-read in place once loaded (§14 item 3), so it holds no swap and keeps its squadron until the next sign-in | `state/store.ts`, `state/typing-hold.ts` (new), `leavewar/ui/Sheet.tsx`, `tracker/components/Pop.jsx`, `Modals.jsx` |
+| 3 | helper "schedule" | Q8's sentence, once he has answered. **Built 21 Nov 26, in phase 2 (chat 128), his answer having come first (D2240, D2241):** with C6's door `b7e0cf8af`, its opening word "Blocked:" `76c6d4c91` (§12 Q8) | `ui/InputWindow.tsx`, `ui/inputedit.tsx` |
 | 4 | host | Whole gate run; the combined four-reader fix read, blind; fixes red first; re-walk what the fixes touched; evidence sheet; his look | — |
 
 - **The Plan audit's items (§19), each by its file's owner:** phase 1, core — PC1 (§7e passes a line to a reader in
@@ -1341,7 +1348,8 @@ questions as recommended"*). The drawings on the questions page are the approved
   control checked is pressed on screen (the order's §7.0). The browser clock is moved to the day before, the move day
   and the day after. Whether the walk scripts can move the clock is found out from the existing
   `scripts/handpass/msq/` scripts first.
-- **The plain-user round (D1557), for each of the four seeded sign-ins:**
+- **The plain-user round (D1557), for each of the five seeded sign-ins — a round as Hunter, 142's admin holding Plan of
+  149, among them (R13 of §19b; the plan first said four):**
   - Inputs: list, calendar (its notes and day titles), filter, his own input, filing for others — a leave picked for a
     man, then stretched across his move (Q8's sentence, or today's words until answered), and 149's admin saving a
     change to it;
@@ -1560,4 +1568,4 @@ green). Where both readers found one thing it is one row.
 | R10 | **A Plan holder's lines leave his bell when he moves into that squadron** — `noticeLeftBell` judges by the reader's home on the line's day (Opus F10) | **With P4**, once a line carries its squadron: judged by it |
 | R11 | **The mission-role answers: the gate roll-call's row 25 marked HAS IT** — the record's id names no squadron, so §7 sees none; a View holder passes the door (Astra F2) | **Already K4 + B5 (§7);** row 25's verdict is WRONG, not HAS IT — corrected here. K4's tests add Hunter with View and with Plan |
 | R12 | **The last-admin words send a 142 admin to a fix he cannot make** — "Make another admin of 150 first." where only a master admin or an admin of 150 can (Opus F12) | **ANSWERED 21 Nov 26 by D2246:** to one who cannot make an admin of that squadron, "Hunter is 150's last admin. Only a master admin or an admin of 150 can make another." (and its dated form); a master admin or an admin of it — at home or by Plan — keeps the approved words. §5.2's words table carries both |
-| R13 | **Documents and drawings** — the rest-pieces map's P3 and P4 name only the master admin; the questions page's re-link note (wrong after PA3); the pieces page's bare "master" (l.80, l.103) and its View line; `data-model.md` l.1845 and its bare "master"s; the register's B12 against D2202; the batch plan's stale l.77–91 and l.123; the People & accounts page's l.139; this plan's §0, §1 A7 row, l.253, l.284, tests naming only the master admin, and §13's "four" sign-ins with no Plan holder's round (Astra F1, F3, F9; Opus F11) | **Core, phase 3's documents step** (D2240, D2241); §13's walk gains a round as Hunter with Plan of 149 (five seeded sign-ins). The questions page's correction is told to him in chat 126's report |
+| R13 | **Documents and drawings** — the rest-pieces map's P3 and P4 name only the master admin; the questions page's re-link note (wrong after PA3); the pieces page's bare "master" (l.80, l.103) and its View line; `data-model.md` l.1845 and its bare "master"s; the register's B12 against D2202; the batch plan's stale l.77–91 and l.123; the People & accounts page's l.139; this plan's §0, §1 A7 row, l.253, l.284, tests naming only the master admin, and §13's "four" sign-ins with no Plan holder's round (Astra F1, F3, F9; Opus F11) | **Core, phase 3's documents step** (D2240, D2241); §13's walk gains a round as Hunter with Plan of 149 (five seeded sign-ins). The questions page's correction is told to him in chat 126's report. **Phase 3's documents step, 21 Nov 26 (helper "docs", `claude/msq-b1-docs`):** done of this row — the register's B12 (and B10) to D2202's audience; the rest-pieces map's P3 and P4 (the Plan holder named, P1's and P5's built parts marked); the batch plan's l.77–91 and its O3, each with a dated note; this plan's §0, §1 A7 row, the two "step 5's master admin pick" lines, the two lines waiting on Q3, and §13's round, now five sign-ins with Hunter's. Not done, left to their owners and named in that helper's report: `data-model.md` l.1845 and its bare "master"s (another helper has that file), the People & accounts page's l.139 (the host's), the tests' names (source), and the pieces page and the questions page under `docs/mock/` — approved pages, not corrected in place (D1478) |
