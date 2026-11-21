@@ -46,7 +46,7 @@ export function PlaceholderGroup({ type, current, all, value }: { type?: any; cu
 }
 
 // eslint-disable-next-line react-doctor/no-high-complexity-react-function -- one picker in its two modes (one person, several), the placeholders and the finger's drag across the pucks share one set of props and refs; split, the drag's reading of what is picked and the lists it lights could drift apart, in the window every input is filed through
-export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly, more, moreIds, phWhy, unit, onChange }: {
+export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly, more, moreIds, phWhy, unit, iso, offers, onChange }: {
   people: string[]
   several: boolean
   type: any
@@ -71,9 +71,14 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
   /** whose people it offers — one squadron's (multi-squadron step 3): the window passes the signed-in person's own on the
    *  Inputs page, the schedule in view's on the schedule; unset, the schedule in view's */
   unit?: string
+  /** …on the draft's first day (the reshape plan §3.3 C6); unset, today */
+  iso?: string
+  /** whom the draft with him added would let be saved — the window's one whole-draft answer (ui/inputedit.ts offersFor);
+   *  unset, everyone listed */
+  offers?: (id: string) => boolean
   onChange: (people: string[], several: boolean) => void
 }) {
-  const roster = pickRoster(sansOnly, unit)
+  const roster = pickRoster(sansOnly, unit, iso, offers)
   const first = people[0]
   const others = !lockOne && mayPickOthers(type)
   /* the two placeholders: where he may pick another "person" for this kind, never on the SANS calendar */
