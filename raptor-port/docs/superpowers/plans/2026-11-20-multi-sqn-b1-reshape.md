@@ -1193,6 +1193,9 @@ in phase 2 and for Q8's words in phase 3.
   piece; Astra and the fresh Opus reader stay the readers of another model. **The walkers (his D2256, 21 Nov 26):**
   Opus walks in place of Sonnet until he says to change back. **The rest (his D2257, 21 Nov 26):** until he says to
   change back Fable does everything besides the walk, and designs the walk's scenarios too, beside Astra's design.
+  **Narrowed the same day (his D2258):** the agent picks each task's model by its risk — high: Fable with other readers
+  beside it (the core, a fault that came back, scenario design, the final read, judging a finding); medium: Opus
+  (pages on the core's answers, tests, briefs, merges, the walk); low: Sonnet (checks, document chores).
 - **No two jobs built at once share a file.** Phase 2's helpers start only once phase 1 is committed, because they call
   its bodies and gate halves. The core builder's phase 2 runs beside them.
 - **Ordered inside phase 2:** "own pages" wires the Inputs calendar only after "session" commits the routed planning
