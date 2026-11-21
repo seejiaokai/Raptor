@@ -4180,8 +4180,8 @@ for access and waits, giving what the admin's New person form asks (`[ACCOUNTS-N
 displayed callsign/name (D222; at most 14 letters, said when over, never cut — D226), initials (asked, never required —
 D225), pilot / WSO / personnel (D220), CAT (none for personnel); an admin approves — linking a puck he picks, or
 **New person**: his Quals row made from what he gave, with the admin's corrections, together with his account in one
-step — or declines; an admin switch, OFF by default, lets people waiting read the schedule as a GUEST — what a member
-reads on View-only Sched, read only (D215); a **suspended** account sees only "Your access is suspended — Ask an admin
+step — or declines; a person waiting sees only the waiting screen until an admin approves him — the admin switch that
+let people waiting read the schedule as a GUEST is removed, the guest view with it (D2239, 20 Nov 26, replacing D215); a **suspended** account sees only "Your access is suspended — Ask an admin
 to enable it when you're back." (D204; the words D285, D300). **Admin → Users' account editor: "Suspend" / "Enable" and
 "Delete account" (D285).** A delete — for a man who leaves flying for good — takes his account AND his person (D287), asks
 twice and names what goes, never oneself, never the last admin who can sign in; it cannot be undone
@@ -4210,7 +4210,7 @@ the squadron's programme*, not read vs write:
 | Inputs — add / edit / delete | **yes** | yes |
 | Inputs — choosing WHO an input is for | no — always the signed-in person (his own account's callsign — D166) | yes |
 | Quals — `Enable editing`: tick a qualification, edit initials / flight / CAT / callsign / remarks | **yes — his OWN row only, every column of it incl. SXO and SCHEDULER but NOT the callsign, which is an admin's to change, nor the Management tick nor the SCHEDULER tick, an admin's to tick (D149, 24 Sep 26; D218, 26 Sep 26; D1510, 29 Oct 26 — his own Management cell reads only; D1651, 5 Nov 26 — his own Scheduler cell too; BUILT by `[ACCOUNTS]`, 26 Sep 26: `state/quals-write.ts updatePersonField`, checked before anything moves; other rows read as text for him)** | yes, any row |
-| Admin → Users — accounts, requests, the guest switch | no | yes (never his own account; at least one admin always keeps access) |
+| Admin → Users — accounts, requests (the guest switch went with the guest view — D2239) | no | yes (never his own account; at least one admin always keeps access) |
 | Quals — `Edit quals` (which columns the LoX carries) | no | yes |
 | Admin → Users — add a person (alone, or with his account), or approve a request with New person (D217, 26 Sep 26 — was Quals' `Add person`, now a button there) | no | yes |
 | Quals — archive a person (the row's ✕) / Restore from the Archived drawer / Rename an archived man there (D295) | no | yes |
@@ -4321,11 +4321,11 @@ page a member LANDS on their own inputs (the person filter defaults to `ME`
 for a member, `all` for a scheduler) with "Everyone" one pick away; on every
 other person's row the ✎ and ✕ are not rendered, but the document paperclip
 stays (anyone may VIEW any attachment — owner, same day; re-confirmed 26 Sep 26 by D211 for every member, a medical
-input's type, remarks and documents included; and by D213 the same day a waiting guest sees a medical input on the
-published schedule too — he has no door to a document). The write-path
+input's type, remarks and documents included; D213's waiting guest, who read a medical input on the published schedule
+too, went with the guest view — D2239: an admin and a member are the only readers, `perms.ts MEDICAL_DETAIL`). The write-path
 backstop behind the hidden controls is in `commitInputEdit` / `removeInput`,
 gated on the one permissions rule (`perms.ts mayEditInput` / `mayDeleteInput`, which take the RECORD since 8 Oct 26 —
-a member his own, an admin any, a guest none) — the render gate asks the same module.
+a member his own, an admin any, a person signed in without access none) — the render gate asks the same module.
 **AMENDED 7 Oct 26 by his D654, D655, D658 and D660 (the write path and the screens built 8 Oct 26 —
 `ui-contracts.md` "One input filed for several people"): "own" has a second meaning for a member.** While the squadron's members' switch is on (the setting
 `memberfile`, on by default; an admin turns it off) a member may FILE an input for another person — one, or several
@@ -4397,7 +4397,8 @@ is the scheduler's (`interactions.ts`, `canEditSched()`).
 user account they can only input their own self. Which is whoever they are
 viewing as"; since `[ACCOUNTS]` "whoever they are" is the signed-in person — D166).** An admin picks anyone, on the
 Inputs page's form and the month calendar alike; a member's input always lands on the signed-in person
-(`perms.ts me()`), read live at commit; a guest files nothing. The Person control is therefore a scheduler's
+(`perms.ts me()`), read live at commit; a person signed in without access files nothing (he is nobody's person; the guest
+went with the guest view — D2239). The Person control is therefore a scheduler's
 on every editor — the page's add form and row editor print a member's *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
 person as a plain value, the shared dialog hides the field
 (`inputedit.tsx`, `canEditSched()`-gated) — and the write paths repeat the
@@ -4628,7 +4629,7 @@ having.
 
 **`who` arrives through `HOOKS.whoami()`**, wired in `wireStore()` from
 `SESSION`/`ACCOUNTS`. **CORRECTED 28 Sep 26 — since `[ACCOUNTS]` (26 Sep 26, D166 (5)) it reads the
-signed-in CALLSIGN ("Guest" for a guest), the person's id kept beside it (`HOOKS.whoamiId`); the next
+signed-in CALLSIGN (his sign-in name for a session with no person; the "Guest" label went with the guest view — D2239), the person's id kept beside it (`HOOKS.whoamiId`); the next
 sentence is history:** Accounts are hard-coded, so today it only ever reads
 `Admin` or `Squadron member`. That hook is the one seam a real server has to
 fill; nothing else changes when it does.

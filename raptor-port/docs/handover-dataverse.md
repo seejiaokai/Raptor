@@ -102,8 +102,8 @@ Tracker's work the app is first put on his own M365 with no database — a hosti
      account, in one step (D214, D217); a person on no list asks for access giving the same (callsign/name,
      initials, seat, CAT) and the admin approves — linking a puck, or making the new `Person` from what he gave
      together with the `User` — sets member or admin, or declines (D204); each admin's bell lights for a new
-     request until he has seen the list (D216, D227 — a Teams message at the database step); an admin switch,
-     off by default, lets people waiting read the published week as a guest; the app keeps no password. The `User` and `AccessRequest` tables, and the
+     request until he has seen the list (D216, D227 — a Teams message at the database step); a person waiting
+     sees only a waiting screen until an admin approves him — nobody without access is shown the schedule (D2239, 20 Nov 26: the guest view is removed); the app keeps no password. The `User` and `AccessRequest` tables, and the
      permissions table the app mirrors (drift-tested), are `data-model.md` §3 and §11. Who may enter the app at
      all (the security group / environment roles) is set in your environment, not by the app;
   4. how long the edit log is kept and who may read it; **(owner, D1752, 8 Nov 26 — replacing D351): at the database step
@@ -136,8 +136,8 @@ Tracker's work the app is first put on his own M365 with no database — a hosti
 - **Medical information — AMENDED 26 Sep 26 by the owner (D211, "Keep as today").** Every member of the
   squadron may read a medical absence, its remarks and any attached document, as the app does today (his
   27 Aug 26 rule, re-confirmed knowing it departs from what this line first said: "readable by the person and
-  admins only"). Someone signed in but not yet given access (a guest, D204) sees it too on the published schedule he
-  is shown (D213, the same day), and nobody outside the squadron's own accounts reads it at all.
+  admins only"). Someone signed in but not yet given access is shown no schedule at all, so he reads none of it (D2239,
+  20 Nov 26 — the guest view, where D213 let him see it, is removed), and nobody outside the squadron's own accounts reads it at all.
 - **No real names in the public repository.** Demo data only; anything with
   a real person in it stays in the tenant.
 - **A change to someone's access takes effect on his very next request** (added 26 Sep 26, from Astra's read
