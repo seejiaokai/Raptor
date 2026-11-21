@@ -12,7 +12,7 @@
    tapping another date re-points this same window, and a commitment saved behind it shows in it at once.
 
    IT WORKS NOTHING OUT. The working is the ONE resolver's answer (leavewar/sync.ts flyAnswer → state/flyplan-model.ts
-   planFor) with the two figures it was worked from (dayFacts — who is available; sansCommittedOn — the SANS committed);
+   planFor) with the two figures it was worked from (ownDayFacts — who is available; sansCommittedOn — the SANS committed);
    the list is ui/sanscal-model.ts sansDayGroups. It repaints on the scheduler's signal (a commitment, a plan row) and
    on the war's (`useWarFacts` — a bid decided, a holiday declared, a count row re-defined).
 
@@ -28,7 +28,7 @@ import { isAdmin, pageUnit } from '../state/perms'
 import { openWinFor } from '../state/cutoff'
 import { notify } from '../state/store'
 import { sansCommittedOn } from '../state/flyplan'
-import { dayFacts, flyAnswer, useWarFacts } from '../leavewar/sync'
+import { flyAnswer, ownDayFacts, useWarFacts } from '../leavewar/sync'
 import { todayIso } from '../engine/editlog'
 import { FloatWin } from './FloatWindow'
 import { bringForward, openBeside } from './winorder'
@@ -41,12 +41,15 @@ import { useVersion } from './useStore'
 /* the flying plan of the page's own squadron today (the reshape plan §3.2 A-ii — the SANS calendar is an own page, as
    its month is: ui/SansCal.tsx sansCalUnit), never the war loaded's */
 const flyOwn = (iso: string) => flyAnswer(iso, pageUnit('own', todayIso()))
+/* …and the facts it was worked from, the same squadron's (leavewar/sync.ts ownDayFacts): its holiday's name, and who is
+   available — not known where its war is not the loaded one, never the loaded war's figure */
+const factsOwn = (iso: string) => ownDayFacts(pageUnit('own', todayIso()), iso)
 
 /** what kind of day it is, in words — the window's second line */
 function kindWord(iso: string): string {
   const a = flyOwn(iso)
   if (a.kind) {
-    const name = dayFacts(iso).name
+    const name = factsOwn(iso).name
     const word = a.kind === 'ph' ? 'Public holiday' : 'Off day'
     /* its own name where it has one that says more than the kind does ("National Day") */
     return name && !/^(ph|off day|off)$/i.test(name.trim()) ? `${word} · ${name}` : word
@@ -66,7 +69,7 @@ export function SansDay({ iso, hi, onClose }: {
   useWarFacts()
   /* which late commitment's note is showing (its input id) */
   const [lateOpen, setLateOpen] = useState<string | null>(null)
-  const a = flyOwn(iso), facts = dayFacts(iso), u = pageUnit('own', iso), com = sansCommittedOn(iso, undefined, unitPeople(u, iso)), g = sansDayGroups(iso, inputsOnDay(u, iso), unitPeople(u, iso))
+  const a = flyOwn(iso), facts = factsOwn(iso), u =pageUnit('own', iso), com = sansCommittedOn(iso, undefined, unitPeople(u, iso)), g = sansDayGroups(iso, inputsOnDay(u, iso), unitPeople(u, iso))
   const canAdd = maySansAdd()
   const avail = { p: facts.availP, w: facts.availW }
 
@@ -135,7 +138,9 @@ export function SansDay({ iso, hi, onClose }: {
             ))}</tr>
           </tbody>
         </table>
-        {!facts.covered && <p className="sd-note" data-testid="sd-nocover">No leave period covers this date, so who is available is not known.</p>}
+        {/* (not where the squadron's war is not the loaded one: its own war may well cover the date — the figures are
+            "–" and nothing is said) */}
+        {!facts.covered && !facts.otherWar && <p className="sd-note" data-testid="sd-nocover">No leave period covers this date, so who is available is not known.</p>}
         <div className="sd-acts">
           <button type="button" className="abtn primary sd-add" data-testid="sd-add" disabled={!canAdd} onClick={() => { openSansAdd(iso) }}>+ Commitment</button>
           {isAdmin() && (

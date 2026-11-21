@@ -13,7 +13,8 @@
    title, a note) that live in component state.
 
    THE MONTH WORKS NOTHING OUT. Which bar sits on which line of which week is ui/inputscal-model.ts (pure); a date's
-   class and tag are the ONE resolver's answer (leavewar/sync.ts flyMonth) with the Leave War's short form (dayFacts).
+   class and tag are the ONE resolver's answer (leavewar/sync.ts flyMonth) with the Leave War's short form — the page's
+   own squadron's war (unitDayFacts), never the loaded war's when that is another squadron's.
    It hears both stores, so a holiday declared on the war is on the month at once.
 
    A WEEK IS THREE LAYERS, because a bar lies ACROSS dates and so can sit inside none of them:
@@ -32,7 +33,7 @@
    own close cross, its failed-save band, and an Escape that left the calendar "back to the list". */
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
 import { INPUTS, inputsListed, inputCoversDate, isSansAvail, sansLetters, idsOf, leadOf, isPlaceholderInput, typeMatches } from '../engine/inputs'
-import { dayFacts, flyAnswer, flyMonth, useWarFacts } from '../leavewar/sync'
+import { flyAnswer, flyMonth, unitDayFacts, useWarFacts } from '../leavewar/sync'
 import { PEOPLE, QCOLOR, byCrew } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { puck } from './html'
@@ -657,6 +658,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
   /* ---- the bars: every input the filters let through, as entries; each week lays out its own ---------------------- */
   const items = monthItems(calRows(), { fPerson, fType, fSearch })
   const answers = flyMonth(cur.y, cur.m, calUnit())   // the page's own squadron's flying plan, never the war loaded's
+  const shortOn = (iso: string) => unitDayFacts(calUnit(), iso).short   // …and its holidays' tags, as their kind is
 
   /* ---- ON A PHONE THE MONTH TAKES THE FULL SCREEN (D653, D664): the week rows share the height from the month's top
      to the foot of the screen — measured from what the browser really shows, and measured again when that changes (its
@@ -939,8 +941,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     if (revealed) list.unshift(...monthItems([saved], { fPerson: 'all', fType: 'all', fSearch: '' }))
     /* nothing listed, yet the day HAS inputs when no filter is asked: the filters hide them all (D731 (2), below) */
     const hidden = !list.length && (fPerson !== 'all' || fType !== 'all' || !!fSearch) && itemsOn(iso, monthItems(calRows(), { fPerson: 'all', fType: 'all', fSearch: '' })).length > 0
-    const kind = dayTag(answers[iso] || flyAnswer(iso, calUnit()), dayFacts(iso).short)
-    const name = dayFacts(iso).name
+    const own = unitDayFacts(calUnit(), iso)   // the page's squadron's holiday name and tag, as its kind is
+    const kind = dayTag(answers[iso] || flyAnswer(iso, calUnit()), own.short)
+    const name = own.name
     const kindWord = !kind ? undefined
       : kind.kind === 'nf' ? 'No fly'
         : (kind.kind === 'ph' ? 'Public holiday' : 'Off day') + (name && !/^(ph|off day|off)$/i.test(name.trim()) ? ' · ' + name : '')
@@ -1373,8 +1376,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
               <div className="ib-cells">
                 {week.map((iso, ci) => {
                   if (!iso) return <div key={'x' + ci} className="ib-x" />
-                  const tag = dayTag(answers[iso], dayFacts(iso).short)
-                  const n = itemsOn(iso, items).length
+                  const tag = dayTag(answers[iso], shortOn(iso))
+                  const n =itemsOn(iso, items).length
                   const picked = !!run && iso >= run.a && iso <= run.b
                   const cls = 'ib-day' + (ci >= 5 ? ' is-we' : '') + (iso === todayIso ? ' is-today' : '') + (tag ? ' k-' + tag.kind : '') +
                     (picked ? ' is-picked' : '') + (iso === popIso ? ' is-open' : '')
@@ -1391,7 +1394,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
               <div className="ib-heads">
                 {week.map((iso, ci) => {
                   if (!iso) return <div key={'x' + ci} />
-                  const tag = dayTag(answers[iso], dayFacts(iso).short)
+                  const tag = dayTag(answers[iso], shortOn(iso))
                   const rmk = cal.titles[iso]
                   const pucks = cal.pucks.filter((p: any) => p.date === iso)
                   return (

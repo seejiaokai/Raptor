@@ -4339,18 +4339,27 @@ export function openNewPeriod(from: string, to: string): void {
 /* (the SANS men committed are the WAR'S OWN squadron's on that date — multi-squadron step 4: a 149 SANS man's offer to
    fly never lowers 142's need, and a man's squadron is read on the day, engine/roster.ts unitPeople) */
 /* (every part of an answer is ONE squadron's — the plan, its SANS colours and its SANS men — the war's unless the caller
-   names another, never the pick by default: helper "war", second pass. Who is available is the loaded war's, dayFacts,
-   whichever squadron is named; the day's holiday kind is the named squadron's own — factsOf, below.) */
+   names another, never the pick by default: helper "war", second pass. The day's facts are the named squadron's own —
+   ownDayFacts, below.) */
 const sansFlyOf = (unit: string) => (iso: string) => sansFly(iso, undefined, unitPeople(unit, iso))
-/* (THE DAY'S KIND IS THE NAMED SQUADRON'S OWN — a public holiday or an Off day from its own list, D2195 — the reshape plan
-   §7, A4's flying-plan reader: a 149 page's answer read 142's holidays whenever 142's war was loaded, and 142's read 149's.
-   Its own war's when loaded, else its saved war (unitDayFacts). Who is available stays the loaded war's, as before.) */
-const factsOf = (unit: string) => (iso: string): DayFacts => {
+/** WHAT A DAY IS FOR A NAMED SQUADRON — what an own page reads (the SANS calendar and its day, the Inputs calendar, the
+ *  Calendar window), never `dayFacts` itself, which is the LOADED war's.
+ *  - Its holiday kind, name and short tag are the named squadron's own — a public holiday or an Off day from its own
+ *    list (D2195; the reshape plan §7, A4's flying-plan reader: a 149 page read 142's holidays whenever 142's war was
+ *    loaded) — its own war's when loaded, else its saved war (unitDayFacts).
+ *  - WHO IS AVAILABLE is known only from a loaded war: for a squadron whose war is not the loaded one it is NOT KNOWN —
+ *    `availP` / `availW` null, so its "still needed" is "–" with no colour, as on a date no period covers — never the
+ *    loaded war's figure (helper "left2", 21 Nov 26: 149's need once read 142's availability — 11 / 22 where its own war
+ *    said 35 / 35 — and a 142 pilot's leave moved it; reachable when his own move takes effect at midnight while a Leave
+ *    War window holds the old war). `otherWar` says so, so a page does not say "No leave period covers this date" there:
+ *    a period may cover it in that squadron's own war. */
+export function ownDayFacts(unit: string, iso: string): WarDayFacts & { otherWar: boolean } {
   const f = dayFacts(iso)
-  if (!unit || unit === worldUnit()) return f
-  const kind = unitDayFacts(unit, iso).kind
-  return kind === f.kind ? f : { ...f, kind }
+  if (!unit || unit === worldUnit()) return { ...f, otherWar: false }
+  const own = unitDayFacts(unit, iso)
+  return { covered: false, kind: own.kind, name: own.name, short: own.short, weekend: f.weekend, availP: null, availW: null, otherWar: true }
 }
+const factsOf = (unit: string) => (iso: string): DayFacts => !unit || unit === worldUnit() ? dayFacts(iso) : ownDayFacts(unit, iso)
 export function flyAnswer(iso: string, unit: string = warUnit()): DayAnswer {
   return planFor(iso, planOfUnit(unit), factsOf(unit)(iso), sansFlyOf(unit)(iso), tonesOfUnit(unit))
 }
