@@ -1188,7 +1188,9 @@ in phase 2 and for Q8's words in phase 3.
 - **Who builds and reads (his D2244, 20 Nov 26):** Opus, high thinking, builds — the chat started in Opus, not Fable;
   **Fable reads the core's rights change — Piece B with Piece C, phase 2's core commit — blind, on an exported copy,
   before any helper builds on it**, every claim reproduced red before it counts; Sonnet walks; the four-reader fix read
-  of phase 4 stands (D2236).
+  of phase 4 stands (D2236). **From 21 Nov 26 (his D2255, chat 131):** Fable is used fully — the chat runs on Fable
+  and builds, Fable helpers build and read; a Fable reader is a fresh, blind helper, never the chat that wrote the
+  piece; Astra and the fresh Opus reader stay the readers of another model; Sonnet still walks.
 - **No two jobs built at once share a file.** Phase 2's helpers start only once phase 1 is committed, because they call
   its bodies and gate halves. The core builder's phase 2 runs beside them.
 - **Ordered inside phase 2:** "own pages" wires the Inputs calendar only after "session" commits the routed planning
