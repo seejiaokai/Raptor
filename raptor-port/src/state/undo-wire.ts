@@ -385,6 +385,18 @@ const worldNow = (w: 'lw' | 'trk'): string | null => (w === 'lw' ? lwUnitNow() :
 /* the own pages: their squadron is the page's own (perms.ts pageUnit — A-ii), the schedule pages and Logic the pick */
 const OWN_PAGES = new Set(['inputs', 'quals', 'leavewar', 'tracker', 'admin'])
 const unitInView = (): string => pageUnit(OWN_PAGES.has(CURPAGE) ? 'own' : 'schedule')
+/* A RECORD OF AN OWN PAGE (the reshape plan §3.2 A-ii, its list of own pages and their settings): the Inputs calendar's notes
+   and day titles; Quals' columns; the flying plan and the SANS calendar's colours (the war's need figures, the SANS
+   calendar); the members' filing switch (the Inputs page); the guest switch (Admin → Users). Every other record a squadron
+   names — its weeks, its Logic rules, its templates, a blue/red answer — is a schedule page's. */
+const OWN_SETTINGS = new Set(['qualcols', 'sanscalendar', 'memberfile', 'guestview'])
+const OWN_SETTING_PFX = ['flyday:', 'flyrule:', 'flyrun:']
+const ownPageRecord = (c: Change): boolean => {
+  if (c.collection === 'plan') return true
+  if (c.collection !== 'settings') return false
+  const k = localOf(String(c.id))
+  return OWN_SETTINGS.has(k) || OWN_SETTING_PFX.some(p => k.startsWith(p))
+}
 /* a squadron he can still reach: his own page's squadron now, or — an admin in force — one he is an admin of today (a
    master admin's every squadron, a Plan holder's — units-model.ts levelFrom); a View holder never reaches a war */
 const canReach = (u: string): boolean => {
@@ -543,6 +555,9 @@ export function installGlobalUndo(): void {
     /* A-v: which squadron each world holds now, the squadron in view, and the squadrons he can still reach */
     worldNow,
     unitInView,
+    /* …and an own-page step of his own page's squadron is his wherever he presses (A-v "Eligibility") */
+    ownUnit: () => pageUnit('own'),
+    ownPageRecord,
     canReach,
     /* the planning record's per-record store (the reshape plan §3.2 A-ii, "Through Undo, in both directions"): a note or
        a day title of a squadron NOT loaded as the restore is applied goes to that squadron's stored calendar

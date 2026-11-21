@@ -136,6 +136,11 @@ export interface UndoHooks {
   /* the squadron "in view" for a step whose ids name one: the pick on the schedule pages, the page's own squadron on the
      own pages (state/perms.ts pageUnit — equal today). None installed: the schedule in view (engine/unitview.ts UNIT). */
   unitInView?(): string
+  /* the squadron of his own pages (perms.ts pageUnit('own')), and whether a record is an own page's (Quals' columns, the
+     Inputs calendar, the flying plan…) rather than a schedule page's: an own-page step of that squadron is in view
+     wherever he presses (A-v "Eligibility"). None installed: only the squadron in view. */
+  ownUnit?(): string
+  ownPageRecord?(c: Change): boolean
   /* CAN HE STILL REACH THIS SQUADRON — his own page's squadron now, or one a pick of his reaches (a master admin's, or one he
      holds Plan of today)? A step sharing a record with a step left in a world he can never enter again is blocked for good
      (Fable 4 of round 3). None installed: always. */
@@ -587,7 +592,20 @@ function stampHolds(e: UndoEntry): boolean {
   return true
 }
 function unitInView(): string { return hooks.unitInView ? hooks.unitInView() : UNIT }
-function inUnitView(e: UndoEntry): boolean { const us = unitsOf(e); return (us.size === 0 || us.has(unitInView())) && stampHolds(e) }
+/* …AND AN OWN-PAGE STEP OF HIS OWN PAGE'S SQUADRON IS HIS WHEREVER HE PRESSES (the reshape plan §3.2 A-v "Eligibility": "in
+   view" is the pick on the schedule pages, the page's own squadron on the own pages). Undo is the top bar's, on every page:
+   a 142 admin with View of 149 who picked 149 and changed 142's Quals columns found it passed over from a schedule page,
+   though his own pages are still 142's. A step whose every record of that squadron is an own page's is taken; a schedule
+   step of it still waits for its pick. */
+function ownStepInView(e: UndoEntry, us: Set<string>): boolean {
+  const own = hooks.ownUnit ? hooks.ownUnit() : null
+  if (!own || !us.has(own) || !hooks.ownPageRecord) return false
+  return e.forward.every(c => unitOf(String(c.id)) !== own || hooks.ownPageRecord!(c))
+}
+function inUnitView(e: UndoEntry): boolean {
+  const us = unitsOf(e)
+  return (us.size === 0 || us.has(unitInView()) || ownStepInView(e, us)) && stampHolds(e)
+}
 /* A STEP LEFT IN A WORLD HE CAN NEVER ENTER AGAIN (Fable 4 of round 3): its stamp names a squadron that is not his own
    page's now, and no pick of his reaches it (he is no master admin and holds no Plan of it today). It can never be taken,
    so a step that shares a record with it — an input filed at 23:30 and moved in 142's Leave War at 23:50, his move to 149
