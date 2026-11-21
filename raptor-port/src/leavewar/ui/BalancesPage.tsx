@@ -27,7 +27,7 @@ import { assignGroup, FIGURES, groupLabel, OTHER_ID, OTHER_LABEL, type Person } 
 import { BAL_KINDS, daysTaken, DAYS_TAKEN_COLS, type BalKind, type DaysTakenCol } from '../engine/leaveyear'
 import {
   balanceProblem, balancesLocked, displayRoster, figureCtxOf, getState, gradeDaysNow, gradeOf, groupPriorityIds,
-  groupsInOrder, leaveFiguresOf, leaveWorldOf, liveGrades, setBalanceLock, setPersonGrade,
+  groupsInOrder, leaveFiguresOf, leaveWorldOf, liveGrades, setBalanceLock, setPersonGrade, worldUnit,
 } from '../state/store'
 import { puckHtml } from '../sync'
 import { wirePinch } from '../../ui/pinchzoom'
@@ -72,6 +72,8 @@ function Chev() {
 
 /** an emptied box's words, in the store's refusals' voice (balanceProblem) */
 const EMPTY_WORDS = 'Type a figure'
+/* the app's generic refusal — a figure typed while another squadron's war was on the page (FigBox, below) */
+const NOT_SAVED = 'This change could not be saved.'
 /** the person window's box: four figures' room ("16.5", "−2.5", "100") — longer ones are drawn smaller (fitFigure) */
 const FIT_CH = 4
 /** the smallest letters a long figure is drawn in. (the M5a browser tests, 29 Oct 26) 9 left "−998.5" — as long as the
@@ -161,10 +163,17 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
      taken when the box takes the keyboard, so whatever takes it next — another name, Days taken, Lock, Grades…, the top
      bar's Undo — the save is his, never the row's under the pointer. What is typed is kept beside it, so a box taken off the
      screen with words still in it (Days taken redraws the row without it) saves them as it goes. */
-  const held = useRef<{ save: typeof save; value: number; shown: string } | null>(null)
+  /* …AND TO THE WAR IT WAS TYPED IN (the fix read of the reshape — fable-3 F3; his D2243 Q7: "typed words kept visible,
+     nothing saved into either squadron"). This page is no window, so nothing holds the war's swap at the midnight of his
+     own move: a figure typed while 142's war was on the page was saved, on leaving the box, into 149's. The box remembers
+     the war's squadron as it takes the keyboard; a figure typed under another is not saved — the app's generic words (no
+     ruling gives others), his figure left in the box until he types again. */
+  const held = useRef<{ save: typeof save; value: number; shown: string; unit: string } | null>(null)
   const typed = useRef<string | null>(null)
+  const swapped = useRef(false)
   const commitText = (t: string | null) => {
-    const h = held.current ?? { save, value, shown }
+    const h = held.current ?? { save, value, shown, unit: worldUnit() }
+    if (t !== null && t !== h.shown && h.unit !== worldUnit()) { swapped.current = true; return NOT_SAVED }
     typed.current = null
     if (t === null || t === h.shown) return null
     /* AN EMPTIED BOX SAYS SO (the M5a walk's A-F1, 29 Oct 26): Enter, or leaving it, put the old figure back with nothing
@@ -178,7 +187,14 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
   /* nothing typed since the last save leaves the words where they are (the fresh read of the fixes, finding 7): leaving the
      box after Enter ran this again with nothing typed, and its "nothing to say" cleared the refusal Enter had just put up.
      Typing, Escape and `lw-revert` clear the words themselves */
-  const commit = () => { const t = text; if (t === null) return; setText(null); setErr(commitText(t)) }
+  const commit = () => {
+    const t = text
+    /* (a figure the swap refused stays in the box and is not offered again by Enter or by leaving it: only typing anew is) */
+    if (t === null || swapped.current) return
+    const why = commitText(t)
+    if (swapped.current) { typed.current = null; return setErr(why) }
+    setText(null); setErr(why)
+  }
   /* the box leaving the screen with an unsaved figure in it saves it — the browser raises no blur for a box removed */
   /* — and a refusal there (the lock landed while he typed, which takes his boxes away) is said in the app's passing note, the
      box being gone (D850: a refusal out of sight is told) */
@@ -190,7 +206,7 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
     const why = commitText(typed.current)
     /* the grey refusal note, "Blocked:" first (owner D1667, D1668 — R3c-figbox-gone-r2grey-*.png: "Blocked: Dice LVE App
        bal. Locked by admin.") */
-    if (why) HOOKS.toast(why === BLOCKED ? `${BLOCKED}: ${labelNow.current}.` : `${BLOCKED}: ${labelNow.current}. ${why}.`, 'blocked')
+    if (why) HOOKS.toast(why === BLOCKED ? `${BLOCKED}: ${labelNow.current}.` : `${BLOCKED}: ${labelNow.current}. ${why.endsWith('.') ? why : `${why}.`}`, 'blocked')
     // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once, as the box leaves the screen: what it saves comes from the refs set as he types (held, typed), never from this render's figures
   }, [])
   /* Escape inside a window (the Grades window — a Sheet, whose Escape closes it) puts the old figure back FIRST: the window
@@ -199,7 +215,7 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
   useEffect(() => {
     const el = boxRef.current
     if (!el) return
-    const revert = () => { typed.current = null; held.current = null; skip.current = false; setText(null); setErr(null) }
+    const revert = () => { typed.current = null; held.current = null; skip.current = false; swapped.current = false; setText(null); setErr(null) }
     el.addEventListener('lw-revert', revert)
     return () => el.removeEventListener('lw-revert', revert)
   }, [])
@@ -222,6 +238,7 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
       e.preventDefault(); e.stopPropagation()
       skip.current = true
       typed.current = null
+      swapped.current = false
       setText(null); setErr(null)
     }
   }
@@ -243,16 +260,16 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
         aria-label={label}
         aria-invalid={err ? true : undefined}
         value={text ?? shown}
-        onFocus={() => { skip.current = false; held.current = { save, value, shown } }}
+        onFocus={() => { skip.current = false; held.current = { save, value, shown, unit: worldUnit() } }}
         /* typing again after an Escape is a new figure to save: the Escape's "leave without saving" mark goes with it (the
            re-walk's r1d, 29 Oct 26 — 22, Escape, 23, another box: the 23 was dropped with nothing said) */
-        onChange={e => { skip.current = false; held.current = held.current ?? { save, value, shown }; setText(e.target.value); typed.current = e.target.value; if (err) setErr(null) }}
+        onChange={e => { skip.current = false; if (swapped.current) { swapped.current = false; held.current = null } held.current = held.current ?? { save, value, shown, unit: worldUnit() }; setText(e.target.value); typed.current = e.target.value; if (err) setErr(null) }}
         /* ANY TYPING CLEARS THE WORDS, the same figure typed over itself too (his iPhone, 29 Oct 26 — "it says type a figure
            even tho I've typed 0"): one tap selects the 0, and a 0 typed over it leaves the box's text as it was, so React
            raises no onChange and the words stayed. The browser's own input event still comes, and it is enough to clear them */
         onInput={() => { if (err) setErr(null) }}
         onKeyDown={key}
-        onBlur={() => { held.current = held.current ?? { save, value, shown }; if (skip.current) { skip.current = false; typed.current = null; setText(null); return } commit(); held.current = null }}
+        onBlur={() => { held.current = held.current ?? { save, value, shown, unit: worldUnit() }; if (skip.current) { skip.current = false; typed.current = null; setText(null); return } commit(); held.current = null }}
       />
       {err && <span className={errCls(err)} ref={errRef} role="alert" data-testid={testid ? `${testid}-err` : undefined}><ErrWords err={err} /></span>}
     </span>

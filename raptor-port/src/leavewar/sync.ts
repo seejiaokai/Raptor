@@ -28,7 +28,7 @@ import { rosterOf, homeUnitOf, unitPeople } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
 import { qualify } from '../storage/unitid'
 import { balancesLocked, setHiddenIdentityLookup, snapshotNow, setWarHomeProbe, readStoredPost, samePosting } from './state/store'
-import { setLwManDayProbe, setLwxPostingProbe } from '../state/perms'
+import { setLwManDayProbe, setLwLeaveAddsProbe, setLwxPostingProbe } from '../state/perms'
 import { PROFILE } from './state/rows'
 import { UNIT_ROW_PREFIXES } from '../state/units-model'
 import { onCommit as cmdOnCommit } from '../command'
@@ -345,6 +345,8 @@ export function installAbsenceDoor(): void {
      (`lw.cell`, id `<war>:<pid>:<date>`, read from the right — a war id may carry a colon — as applyLwRecord reads it) */
   setWarHomeProbe((pid, iso) => (WORLD_DOOR ? homeOn(pid, iso) : null))
   setLwManDayProbe(warCellDay)
+  /* …and the days a command adds to a war's approved leave, which is an Input (the fix read of the reshape — `warLeaveAdds`) */
+  setLwLeaveAddsProbe(warLeaveAdds)
   /* …AND HOLDS A MAN'S ABSENCE ONLY WHERE IT IS ITS OWN (the reshape walk's W2-F2; D2243 Q6, A1 — state/merge.ts) */
   setAbsenceOwner({ token: absenceOwnerToken, of: absenceOwnerOf })
   /* A5 — ANOTHER SQUADRON'S POSTING AS THAT SQUADRON SAVED IT (perms.ts setLwxPostingProbe, step 7), installed with the pass
@@ -517,6 +519,8 @@ function placerOf(recs: ReadonlyArray<{ placedBy?: string; placedAt?: number }>)
   const first = recs.filter(r => typeof r.placedAt === 'number').sort((a, b) => a.placedAt! - b.placedAt!)[0]
   return first ? { ...(first.placedBy ? { lwBy: first.placedBy } : {}), lwAt: first.placedAt } : {}
 }
+/* the app's generic refusal, for a change a day now another squadron's refuses that no ruling gives words for (store.ts) */
+const NOT_SAVED = 'This change could not be saved.'
 function doorWrite(fn: () => void): boolean {
   DOOR++
   try { return writeInputsBatch(fn) } finally { DOOR-- }
@@ -653,6 +657,11 @@ export function postingRestoreWhy(personId: string, dir: 'undo' | 'redo'): strin
 function decideApprovedWhy(it: { personId: string; date: string; iid: string }, prot: Set<string> = lockedDates()): string | null {
   const row = warLeaveRow(it)
   if (!row) return 'No longer there'
+  /* A DAY NOW ANOTHER SQUADRON'S (the fix read of the reshape — opus-3 F3; A7, his D2243 Q3): sending approved leave back
+     to a request there writes a new request into this war, which its door refuses — after the leave had been cut from its
+     Input, so the leave went and no bid came. Refused before anything is cut, in the app's generic words (no ruling gives
+     others; store.ts decideWhy says the same of its own doors). Delete is the way out, and is never refused. */
+  if (warDayWhy(it.personId, it.date)) return NOT_SAVED
   if (prot.has(it.date) || inputProtected(row)) return `${shortDate(it.date)} is on a locked week — not changed`
   const contrib = absencesAt(it.personId, it.date).find(c => c.id === it.iid)
   if (!contrib || !warHolding(rawState().wars, it.date)) return 'No longer there'
@@ -795,10 +804,15 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
 function doorFile(items: Array<{ personId: string; date: string }>, code: string, words?: ReqWords): { done: number; skipped: number; why: string[] } {
   const why: string[] = []
   const prot = new Set(protectedDates().map(d => labelToISO(d)).filter(Boolean) as string[])
-  let skipped = 0
+  let skipped = 0, awaySaid = false
   const picks: Array<{ personId: string; date: string }> = []
   for (const it of items) {
     if (prot.has(it.date)) { skipped++; why.push(`${shortDate(it.date)} is on a locked week — not filed`); continue }
+    /* A DAY NOW ANOTHER SQUADRON'S IS LEFT OUT (the fix read of the reshape — fable-3 F2 (c); A7, his D2243 Q3: this war
+       takes nothing new of his there): a duty dragged across his move files its days still this squadron's — the run is
+       split at the move — where the commit gate used to refuse the whole filing and the window closed as filed. Said in
+       the app's generic words, once (no ruling gives others). */
+    if (warDayWhy(it.personId, it.date)) { skipped++; if (!awaySaid) { awaySaid = true; why.push(NOT_SAVED) } continue }
     /* A DAY THAT ALREADY HOLDS THE SAME KIND FOR HIM is left as it is (round 2's FULL check — the scenario designer's G2): a
        range or a drag over an OD filed earlier made a second OD on that day, two inputs of one kind over one day. The days
        around it are filed; a run is split there, so nothing overlaps. */
@@ -1010,7 +1024,7 @@ function doorRemoveApproved(items: Array<{ personId: string; date: string; iid: 
    the SAME move. At the preview they still stand on their old days, so a leave landing on the day a moving bid is leaving
    was refused though the result fits; leaving them out of the landing check makes the preview the move's own picture. The
    commit passes none: by then the requests have already left and landed, so the door judges the day as it will be. */
-function doorMoveApproved(items: Array<{ personId: string; date: string; iid: string }>, delta: number, tracked: boolean, check: boolean, skip?: ReadonlySet<string>): { reason: 'occupied' | 'window' | 'nothing'; at?: string } | null {
+function doorMoveApproved(items: Array<{ personId: string; date: string; iid: string }>, delta: number, tracked: boolean, check: boolean, skip?: ReadonlySet<string>): { reason: 'occupied' | 'window' | 'nothing' | 'away'; at?: string } | null {
   const leaving = new Set(items.map(i => `${i.iid}|${i.date}`))
   const prot = new Set(protectedDates().map(d => labelToISO(d)).filter(Boolean) as string[])
   for (const it of items) {
@@ -1018,6 +1032,10 @@ function doorMoveApproved(items: Array<{ personId: string; date: string; iid: st
     if (!row) return { reason: 'nothing', at: it.date }
     const to = addDays(it.date, delta)
     if (!warHolding(rawState().wars, to)) return { reason: 'window', at: to }
+    /* A LANDING DAY NOW ANOTHER SQUADRON'S (the fix read of the reshape — opus-3 F2, fable-3 F2, astra-3 F2; his D2243 Q3:
+       nobody puts his leave into his old squadron's war for a day after his move): asked at the preview and at the commit,
+       as Approve asks it (`approveWhy`) */
+    if (warDayWhy(it.personId, to)) return { reason: 'away', at: to }
     /* a locked week at either end refuses before anything moves (AS4-R2-001) */
     if (prot.has(it.date) || prot.has(to) || inputProtected(row)) return { reason: 'window', at: prot.has(to) ? to : it.date }
     const contrib = absencesAt(it.personId, it.date).find(c => c.id === it.iid)
@@ -2804,7 +2822,11 @@ export function poHeldReason(id: string, outcome: PostOutcome, poDate: string = 
    "posting in 19 Oct"; or null */
 export function postingPendingTag(id: string): string | null {
   /* the RECORD's dates first — Show SANS lays no window on the displayed row of a man whose SANS posting has run */
-  const w = getState().postOuts[id] || getState().people.find(p => p.id === id)
+  /* HIS OWN SQUADRON'S POSTING (the fix read of the reshape — fable-3 F6; A6's neighbour, as `postingHeldNote` below): the
+     war loaded's where he is its squadron's today, else his home's stored war — the master with 142 loaded read a 149
+     man's row in 142's war, found no posting and showed no tag */
+  const fu = foreignHome(id)
+  const w = fu ? storedPostings(fu)[id] : getState().postOuts[id] || getState().people.find(p => p.id === id)
   if (w && !w.gone && w.from && w.from > effectiveToday()) return `posting in ${dayMon(w.from)}`
   if (!w || !w.to || w.gone) return null
   const poDate = addDays(w.to, 1)
@@ -3407,7 +3429,16 @@ const dayMon = (iso: string) => `${Number(iso.slice(8, 10))} ${MON[Number(iso.sl
 /* A7 — THE WAR DAY A CHANGE IS ABOUT (perms.ts setLwManDayProbe; the reshape plan §6.2): a war cell's change names its man
    and day in its id, `<war>:<pid>:<date>`, read from the right (a war id may carry a colon), as applyLwRecord reads it.
    Any other war record is no man's day. */
+/* …AND AN OIL AWARD OR ANY OTHER LEDGER ENTRY (the fix read of the reshape — opus-3 F5, fable-3 F5): `putList`'s rule says
+   "no bid, no award, no absence, no credit", and an award is a ledger entry (`lw.ledger`, one record an entry, its man and
+   its day inside it) — read from the image the change leaves, or the one it takes away. The gate's 7b and the Undo's
+   sentence then judge it as they judge a cell: taking it away passes, giving or changing it does not. */
 export function warCellDay(c: Change): { pid: string; iso: string } | null {
+  if (c.collection === 'lw.ledger') {
+    const e = (c.op === 'delete' ? c.before : c.after ?? c.before) as { personId?: unknown; date?: unknown } | null | undefined
+    const pid = e && typeof e.personId === 'string' ? e.personId : '', iso = e && typeof e.date === 'string' ? e.date : ''
+    return pid && /^\d{4}-\d{2}-\d{2}$/.test(iso) ? { pid, iso } : null
+  }
   if (c.collection !== 'lw.cell') return null
   const id = String(c.id)
   const iDate = id.lastIndexOf(':')
@@ -3450,7 +3481,35 @@ export function warDayRefusal(changes: readonly Change[]): string | null {
     if (!h || h === u || cellRemovesOnly(c)) continue
     return warDaySentence(at.pid, at.iso, h, u)
   }
+  /* …and leave a war approved, which is an Input (opus-3 F4: deleting such leave and pressing Undo put it back) */
+  for (const x of warLeaveAdds(changes)) {
+    const h = homeOn(x.pid, x.iso), w = x.unit ?? u
+    if (h && h !== w) return warDaySentence(x.pid, x.iso, h, w)
+  }
   return null
+}
+/** THE DAYS OF A MAN'S THAT A COMMAND ADDS TO A WAR'S APPROVED LEAVE (the fix read of the reshape — opus-3 F2, F4; astra-3 F2;
+ *  A7, his D2243 Q3). Leave a war approved is an Input carrying `lw` (and `lwU`, the squadron whose war approved it), so the
+ *  war's cell rule never saw it: slid onto a day now another squadron's, or put back there by Undo, it stood in the old war.
+ *  Read over the WHOLE command, never record by record — a medical cutting a leave makes a new record of days the leave
+ *  already held, and a slide cuts one record and files another: what counts is each (man, day, war's squadron) such leave
+ *  covers after that it did not cover before. `unit` null: leave of before the stamp — the war loaded's. The gate's 7b
+ *  (perms.ts setLwLeaveAddsProbe) and the Undo's sentence (`warDayRefusal`) both ask this one body. */
+export function warLeaveAdds(changes: readonly Change[]): Array<{ pid: string; iso: string; unit: string | null; id: string }> {
+  const held = new Set<string>()
+  const days = (x: unknown): Array<{ pid: string; iso: string; unit: string | null }> => {
+    if (!x || typeof x !== 'object' || Array.isArray(x) || !(x as WarInput).lw) return []
+    const row = x as WarInput, unit = typeof row.lwU === 'string' && row.lwU ? row.lwU : null
+    return idsOf(row).flatMap(p => inputDates(row).map(iso => ({ pid: String(p), iso, unit })))
+  }
+  const ins = changes.filter(c => c.collection === 'inputs')
+  for (const c of ins) for (const d of days(c.before)) held.add(`${d.pid}|${d.iso}|${d.unit ?? ''}`)
+  const out: Array<{ pid: string; iso: string; unit: string | null; id: string }> = []
+  for (const c of ins) {
+    if (c.op === 'delete') continue
+    for (const d of days(c.after)) if (!held.has(`${d.pid}|${d.iso}|${d.unit ?? ''}`)) out.push({ ...d, id: String(c.id) })
+  }
+  return out
 }
 /** WHY THIS WAR TAKES NO LEAVE OF HIS ON THAT DAY — the sentence, where the day is another squadron's (his home that day is
  *  not the war loaded's); null where it is this war's, or while one war serves the page. The live doors' form of

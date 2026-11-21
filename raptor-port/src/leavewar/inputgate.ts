@@ -337,7 +337,8 @@ export function replaceClashingBids(claims: readonly BidClaim[], byWho: string, 
     }
     if (drop.length) edits.push({ personId: p, date: d, drop, add })
   }
-  if (edits.length) lwEditLists(edits)
+  /* (lenient: a day the war refuses — another squadron's now, A7 — keeps its bid as it was, and the filing still goes) */
+  if (edits.length) lwEditLists(edits, true)
   return said
 }
 

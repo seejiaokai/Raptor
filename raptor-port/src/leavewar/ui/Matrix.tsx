@@ -98,6 +98,8 @@ function moveReason(r: Exclude<MoveResult, 'moved'>): string {
     case 'window': return 'That lands outside what you can edit — pick another day.'
     /* a member's landing on a day closed for him (M3 §4 (4) — the agent's words, shown at his look, his to change) */
     case 'closed': return 'That day is closed for bidding. Pick an open day.'
+    /* a landing day that is another squadron's now (A7, his D2243 Q3) — the app's generic words: no ruling gives others */
+    case 'away': return 'This change could not be saved.'
     default: return 'Nothing to move.'
   }
 }

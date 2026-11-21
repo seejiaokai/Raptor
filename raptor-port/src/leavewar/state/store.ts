@@ -2988,7 +2988,7 @@ export interface AbsenceDoor {
   /** delete approved leave days (`lw.removeApproved`) */
   removeApproved(items: Array<{ personId: string; date: string; iid: string }>): { done: number; skipped: number; why: string[] }
   /** slide approved leave days by `delta` (`lw.moveApproved`); null = clear, else the refusal */
-  moveApproved(items: Array<{ personId: string; date: string; iid: string }>, delta: number, tracked: boolean, check: boolean, skip?: ReadonlySet<string>): { reason: 'occupied' | 'window' | 'nothing'; at?: string } | null
+  moveApproved(items: Array<{ personId: string; date: string; iid: string }>, delta: number, tracked: boolean, check: boolean, skip?: ReadonlySet<string>): { reason: 'occupied' | 'window' | 'nothing' | 'away'; at?: string } | null
   /** file a course, an overseas duty or the unforeseen absence straight as Inputs (`lw.file` — round 2, D1318): one
    *  input a man a run of days, no bid, no approval */
   file(items: Array<{ personId: string; date: string }>, code: string, words?: ReqWords): { done: number; skipped: number; why: string[] }
@@ -3377,14 +3377,22 @@ function putList(personId: string, date: string, list: readonly WarRec[]): boole
 /** The absence door's edit of the war's own records (sync.ts): per address,
  *  drop records by id and add new ones, as ONE write inside the caller's
  *  gesture. Not a user entry point — the door has already checked the rules. */
-export function lwEditLists(edits: Array<{ personId: string; date: string; drop: string[]; add: WarRec[] }>): void {
+/* A WRITE THE WAR REFUSES STOPS THE WHOLE COMMAND (the fix read of the reshape — opus-3 F3): the door has already cut the
+   leave from its Input when it comes here, so a list the war then refused (a day now another squadron's, A7) left the leave
+   gone and no bid in its place. The door's edit now throws on a refused write — the caller's command rolls back whole, as
+   a move's does (`MoveRefusedAtCommit`). `lenient` — the Inputs page's own filing over a bid (inputgate.ts
+   replaceClashingBids), which is not a war gesture and keeps what it did before: the bid there stays as it was. */
+class WarWriteRefused extends Error {
+  constructor(personId: string, date: string) { super(`lw: the war refused a write at ${personId} ${date}`) }
+}
+export function lwEditLists(edits: Array<{ personId: string; date: string; drop: string[]; add: WarRec[] }>, lenient = false): void {
   if (!edits.length) return
   const wasQuiet = quiet
   quiet = true
   try {
     for (const e of edits) {
       const list = listAt(e.personId, e.date).filter(r => !e.drop.includes(r.id))
-      putList(e.personId, e.date, [...list, ...e.add])
+      if (!putList(e.personId, e.date, [...list, ...e.add]) && !lenient) throw new WarWriteRefused(e.personId, e.date)
     }
   } finally { quiet = wasQuiet }
   if (!quiet) persistNotify()
@@ -4019,10 +4027,20 @@ export function fileStraight(cells: { personId: string; date: string }[], code: 
   const ok = cells.filter(c => !!warHolding(state.wars, c.date) && canEditRow(state.role, state.viewer, c.personId))
   let out = { done: 0, skipped: cells.length - ok.length, why: [] as string[] }
   if (!ok.length || !DOOR) return { ...out, skipped: cells.length }
+  /* WHAT THE STORE HOLDS AFTER THE COMMAND (the fix read of the reshape — fable-3 F2 (c); `setRequestWords`' way): a filing
+     the commit gate refused rolled back, and the door's own count still said "filed" — the window closed on nothing. The
+     days that hold the kind now and did not before are what was filed; fewer than the door counted is a refusal. */
+  const bare = filed.replace(/\*/g, ''), half = filed.startsWith('*') ? 'am' : filed.endsWith('*') ? 'pm' : 'full'
+  const holds = (c: { personId: string; date: string }) => absencesAt(c.personId, c.date)
+    .some(o => o.code === bare && (half === 'full' || (half === 'am' ? o.win[0] <= 720 : o.win[1] >= 721)))
+  const keyOf = (c: { personId: string; date: string }) => `${c.personId}|${c.date}`
+  const had = new Set(ok.filter(holds).map(keyOf))
   gesture('lw.file', () => {
     const r = DOOR!.file(ok, filed, words)
     out = { done: r.done, skipped: out.skipped + r.skipped, why: r.why }
   })
+  const landed = new Set(ok.filter(c => !had.has(keyOf(c)) && holds(c)).map(keyOf)).size
+  if (landed < out.done) out = { done: landed, skipped: cells.length - landed, why: out.why }
   if (out.done > 0) lastFiled = { kind: clean as 'CSE' | 'OD' | 'OTH' | 'ATCH', at: actSeq }
   return out
 }
@@ -5296,6 +5314,9 @@ export function grantTo(personIds: string[], counter: CounterName, amount: numbe
   if (!ids.length) return 'Pick at least one person'
   const problem = ledgerProblem(counter, amount, date, reason, givenBy)
   if (problem) return problem
+  /* A7 (the fix read of the reshape, opus-3 F5 / fable-3 F5; his D2243 Q3): a day that is another squadron's takes no award
+     and no credit here (`putList`'s rule, said of the ledger) — the app's generic words, nothing written for anyone */
+  if (ids.some(id => notThisWarsDay(id, date))) return NOT_SAVED
   const approvedBy = approverName()
   const by = givenBy.trim()
   const who = entered()
@@ -5356,6 +5377,8 @@ export function updateLedgerEntry(id: string, patch: { amount?: number; date?: s
     ? pickedHalf(patch.half) ?? (cur.amount === 0.5 ? cur.half : defaultAwardHalf(cur.personId, date, cur.id))
     : undefined
   if (amount === cur.amount && date === cur.date && reason.trim() === cur.reason && givenBy === (cur.givenBy ?? '') && half === cur.half) return null
+  /* A7: an entry on a day now another squadron's is not changed here, nor moved onto one (taking it away still goes) */
+  if (notThisWarsDay(cur.personId, date) || notThisWarsDay(cur.personId, cur.date)) return NOT_SAVED
   gesture(ledgerType(cur.counter, cur.amount), () => {
     state = withCurrent({
       ...state,
@@ -5974,6 +5997,8 @@ export function setDayAward(personId: string, date: string, days: number, opts: 
   if (days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
   const note = (opts.note ?? '').trim()
   const givenBy = (opts.givenBy ?? '').trim()
+  /* A7 (opus-3 F5 / fable-3 F5): no award on a day that is another squadron's — the generic words */
+  if (notThisWarsDay(personId, date)) return NOT_SAVED
   const here = awardsOnDay(personId, date)
   if (here.length > 1) return `This day holds ${here.length} OIL awards — change them from the day’s list`
   const half = pickedHalf(opts.half)
@@ -6014,6 +6039,8 @@ export function grantOilDays(cells: readonly { personId: string; date: string }[
     if (!warHolding(state.wars, c.date)) return 'A day picked is in no war'
     const problem = ledgerProblem('oil', days, c.date, note, givenBy, false)
     if (problem) return problem
+    /* A7 (opus-3 F5 / fable-3 F5): a day picked that is another squadron's refuses the grant whole — nothing half-given */
+    if (notThisWarsDay(c.personId, c.date)) return NOT_SAVED
   }
   const approvedBy = approverName(), who = entered()
   const entries: LedgerEntry[] = todo.map(c => ({
@@ -6191,7 +6218,10 @@ export function stayingIn(
 
 /* 'closed' (M3 §4 (4) — M1's code read): a landing day in the war but closed for this person — his own words, apart from a
    landing outside the war's dates ('window') */
-export type MoveResult = 'moved' | { reason: 'nothing' | 'raptor' | 'occupied' | 'window' | 'closed'; at?: string }
+/* 'away' (the fix read of the reshape — opus-3 F1, F2; fable-3 F1, F2; astra-3 F1, F2; his D2243 Q3): a landing day that is
+   another squadron's now takes nothing new in this war — a bid or approved leave — whoever moves it; said in the app's
+   generic words (no ruling gives others) */
+export type MoveResult = 'moved' | { reason: 'nothing' | 'raptor' | 'occupied' | 'window' | 'closed' | 'away'; at?: string }
 
 /** The validation half of `moveRecords`, held apart so the grid's landing preview asks the SAME rule the commit
  *  applies. Null when clear. Each record is asked again here (the store's own gate, not the caller's word). */
@@ -6216,6 +6246,9 @@ export function moveRecordsProblem(recs: readonly MoveRec[], dayDelta: number): 
   for (const r of reqs) {
     const to = addDays(r.date, dayDelta)
     if (!held(to)) return { reason: 'window', at: to }
+    /* A7: the landing is asked whose day it is BEFORE anything leaves its own day (the source was taken off and the
+       landing refused in silence — the bid was lost) */
+    if (notThisWarsDay(r.personId, to)) return { reason: 'away', at: to }
     if (!dayWritable(to)) return { reason: 'closed', at: to }
     const landing = listAt(r.personId, to).filter(x => !moving.has(x as RequestRec))
     const c: Contrib = { id: r.rec.id, kind: 'request', code: parseCell(r.rec.code)!.type, win: requestWin(r.rec.code), state: 'pending' }
@@ -6237,6 +6270,8 @@ export function moveRecordsProblem(recs: readonly MoveRec[], dayDelta: number): 
     for (const a of abs) {
       const to = addDays(a.date, dayDelta)
       if (!held(to) || warHolding(state.wars, to) !== warHolding(state.wars, a.date)) return { reason: 'window', at: to }
+      /* A7: approved leave lands on no day that is another squadron's either (the door asks the same at the commit) */
+      if (notThisWarsDay(a.personId, to)) return { reason: 'away', at: to }
     }
     /* the moving requests still stand on their old days now — the door leaves them out (Fable 3, Astra 1) */
     const skip = new Set(reqs.map(r => r.rec.id))
@@ -6273,7 +6308,14 @@ export function moveRecords(recs: readonly MoveRec[], dayDelta: number): MoveRes
     try {
       // every source out before any landing, so a block sliding over itself
       // never deletes a day it has just filled
-      for (const r of reqs) putList(r.personId, r.from, listAt(r.personId, r.from).filter(x => x !== r.rec))
+      /* A WRITE THE WAR REFUSES ROLLS THE WHOLE MOVE BACK (the fix read of the reshape — all three readers' F1): both
+         answers were thrown away, so a landing refused after its source had gone committed half a move */
+      const put = (pid: string, date: string, list: readonly WarRec[], why: 'nothing' | 'away') => {
+        if (putList(pid, date, list)) return
+        refused = { reason: why, at: date }
+        throw new MoveRefusedAtCommit(why)
+      }
+      for (const r of reqs) put(r.personId, r.from, listAt(r.personId, r.from).filter(x => x !== r.rec), 'nothing')
       for (const r of reqs) {
         const landed: RequestRec = {
           id: r.rec.id, kind: 'request', code: r.rec.code, state: 'pending',
@@ -6283,7 +6325,7 @@ export function moveRecords(recs: readonly MoveRec[], dayDelta: number): MoveRes
           /* who placed it stays with it (M4 8.6); it lands pending, so who decided it does not */
           ...requestStamps(r.rec, false),
         }
-        putList(r.personId, r.to, [...listAt(r.personId, r.to), landed])
+        put(r.personId, r.to, [...listAt(r.personId, r.to), landed], notThisWarsDay(r.personId, r.to) ? 'away' : 'nothing')
       }
     } finally { quiet = wasQuiet }
     if (reqs.length && !quiet) persistNotify()
@@ -6298,7 +6340,13 @@ export function moveRecords(recs: readonly MoveRec[], dayDelta: number): MoveRes
      refused rolls back, and the gesture says nothing; "moved" is said only when every moved request stands on its landing
      day — as `setRequestWords` reads the store after its own command. */
   for (const m of recs) {
-    if (m.kind !== 'request') continue
+    /* …and every moved leave has left its day (fable-3 F2 (b)): the commit gate refused a plain admin's slide onto a day
+       another squadron's and the door still said "moved". A moved day is cut from its Input and filed again under a new
+       id, so the old id still standing on the old day is a move that did not happen. */
+    if (m.kind === 'absence') {
+      if (absencesAt(m.personId, m.date).some(c => c.id === m.id)) return { reason: 'nothing', at: m.date }
+      continue
+    }
     const to = addDays(m.date, dayDelta)
     if (!listAt(m.personId, to).some(r => r.kind === 'request' && r.id === m.id)) return { reason: 'nothing', at: m.date }
   }

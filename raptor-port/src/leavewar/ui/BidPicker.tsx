@@ -499,6 +499,11 @@ export function BidPicker({
   const onWords = (next: ReqDraft, how: 'type' | 'commit') => {
     if (!held) return setDraft(next)
     if (how === 'type') return setHeldEdit(next)
+    /* UNDER THE MIDNIGHT BAND THE WORDS ARE KEPT AND SAVED NOWHERE (the fix read of the reshape — astra-3 F4; his D2243 Q7:
+       "typed words kept visible, nothing saved into either squadron"): leaving the box saved them into the old squadron's
+       war for a man whose rights there still let the save through (a master admin on his own move day). As `write` and
+       `fileDuty` below (W3-F5); Delete is not held — a removal is never refused (Q3). */
+    if (warBand()) return setHeldEdit(next)
     const patch = patchOf(draftOf(held.rec), next)
     /* WORDS WHOSE SAVE IS REFUSED STAY IN THE BOX (the reshape walk's W3-F1; his D2243 Q7 — "typed words kept visible"): in a
        window held across midnight of his move the old squadron refuses the save, and the box fell back to the bid's stored
@@ -542,7 +547,9 @@ export function BidPicker({
   const heldSave = useRef<(() => boolean) | null>(null)
   /* kept current once each render has committed (read only by a press and by the window's leaving, both after it) */
   useLayoutEffect(() => {
-    heldSave.current = held && heldEdit ? () => { const p = patchOf(draftOf(held.rec), heldEdit); return !p || setRequestWords(personId, date, held.rec.id, p) } : null
+    /* (under the midnight band nothing is saved by any road — an action's flush, the window's leaving: astra-3 F4, as
+       `onWords` above; "not saved" leaves his words in the box) */
+    heldSave.current = held && heldEdit ? () => { if (warBand()) return false; const p = patchOf(draftOf(held.rec), heldEdit); return !p || setRequestWords(personId, date, held.rec.id, p) } : null
   })
   useEffect(() => () => { heldSave.current?.() }, [])
   const flushWords = () => {
