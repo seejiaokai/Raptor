@@ -39,7 +39,8 @@ import { rosterOf } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
 import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
-import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff, filedWhole, byAfterLeaving, mayMovePlace } from '../state/perms'
+import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff, filedWhole, byAfterLeaving, mayMovePlace, pageUnit } from '../state/perms'
+import { isUnitId } from '../storage/unitid'
 import { INPEDIT, setInpEdit, setOilAsk, setMedMove } from './pops'
 import { OILWAIT, type OilWaitKind } from '../state/view'
 import { holdForOil } from './oilwait'
@@ -929,6 +930,8 @@ export function fileForOtherRefusal(type: any): string {
   return `You can file ${what} only for yourself`
 }
 
+/* the squadron a new input is filed on (C3, D2243 Q1): the one its window was opened among, else the page's own */
+const filedOn = (draft: any): string => (isUnitId(draft && draft.u) ? String(draft.u) : pageUnit('own', todayIso()))
 export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, entryEnd?: any, onAdded?: (row:any)=>void): boolean {
   if (!draft) return false
   /* write-path role backstop (owner, 22 Aug 26 — a member files inputs only
@@ -990,6 +993,12 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
        certificate left behind by a switch to leave relied on — the row now shows it, and its ✕ takes it off). */
     ...docFields(rowDocIds(draft)),
   }
+  /* AN INPUT OF ALL AVAIL / ALL ALONE STAYS ON THE SQUADRON IT WAS FILED ON (the reshape plan §12 Q1 — his D2243): its
+     filer may move squadron later, and a squadron's own meeting is its own business (D2194), so the filing stamps the
+     squadron it is filed on — the window's (`draft.u`: the schedule in view's from a schedule, the page's own on the
+     Inputs page), else the page's own — and the reader (engine/inputs.ts inputSquadrons, inputOnDay) honours it. An input
+     naming anyone carries none: whose it is follows its people. */
+  if (isSpecial(draft.person)) row.u = filedOn(draft)
   /* the row's own address, minted before the write so the snapshot this add
      pushes already carries it — the Inputs page add's own withId precedent */
   inpId(row)
@@ -2062,6 +2071,9 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
       if (!r) {
         if (!commitNewInput({ ...draft, person: next[0] }, false, undefined, undefined, x => { r = x }) || !r) stop()
         for (const p of next.slice(1)) r.people.push({ p, ...(r.by != null ? { by: r.by } : {}), ...(r.at != null ? { at: r.at } : {}) })
+        /* the squadron stamp is a placeholder-only input's (C3): one naming people beside ALL AVAIL follows them */
+        if (namedOf(r).length) delete r.u
+        else if (isPlaceholderInput(r) && r.u == null) r.u = filedOn(draft)
         /* an Other its filer sent under Unavailable, filed with ALL AVAIL / ALL among its people, lands on the programme
            instead — a placeholder is never under Unavailable (placeholderProblem; the scenario designer's G3: it was
            refused whole, after the window had offered "Goes to") */

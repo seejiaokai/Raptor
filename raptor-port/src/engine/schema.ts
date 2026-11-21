@@ -227,6 +227,10 @@ export type Input = {
   mod: string
   /** Landing state — engine (slots.ts acceptInput / unacceptInput). */
   acc?: InputAcc
+  /** The squadron an input of ALL AVAIL / ALL alone was filed on (`u142`) — it stays there when its filer moves (the
+   *  reshape plan §12 Q1, D2243). Stamped at filing (ui/inputedit.tsx commitNewInput, commitInput; the demo seed); read by
+   *  engine/inputs.ts inputSquadrons / inputOnDay. Absent on an input naming anyone, and on one filed before the stamp. */
+  u?: string
   /** The Leave War's loop-breaker: the id of the war this leave came from (never a boolean) — screen (src/leavewar/sync.ts). */
   lw?: string
   /** Attachment id — screen (state/docs.ts). */

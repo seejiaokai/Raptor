@@ -24,7 +24,8 @@ import { HOOKS } from '../engine/hooks'
 import { stampChanged } from '../state/inputstamp'
 import { notify } from '../state/store'
 import { canEditSched } from '../state/auth'
-import { me, isMe, mayEditInput, mayMovePlace, myUnit } from '../state/perms'
+import { me, isMe, mayEditInput, mayMovePlace, pageUnit } from '../state/perms'
+import { todayIso } from '../engine/editlog'
 import { UNIT } from '../engine/unitview'
 import { INPEDIT, INPEDIT_REFOUND, setInpEdit, OILASK, OILOWN, setOilAsk, setDocView } from './pops'
 import { CURPAGE, INPVIEW, revealInput, revealMedInput } from '../state/view'
@@ -531,7 +532,7 @@ export function InputEditor() {
         if (WIN_FIELDS.every(f => fieldSame(f, draft, saved)) && String(draft.to ?? '') === String(saved.to ?? '')
           && (!('goes' in draft) || draft.goes === saved.goes) && ppl.length === inIt.size && ppl.every(id => inIt.has(String(id)))) { close(); return }
       }
-      if (commitInput(rec, draft, ppl, oilDec ? { oil: oilDec } : undefined)) {
+      if (commitInput(rec, isNew ? { ...draft, u: pickUnit } : draft, ppl, oilDec ? { oil: oilDec } : undefined)) {
         const row = (rec && INPUTS.indexOf(rec) >= 0 ? rec : null) || INPUTS.find((x: any) => !had.has(x.iid))
         saidSaved(row, show(row, true), isNew ? (ppl.length > 1 ? `Input added for ${howMany(ppl)}` : 'Input added') : 'Input updated'); close()
       } else stay()
@@ -540,7 +541,8 @@ export function InputEditor() {
     if (isNew) {
       let savedRow:any=null
       const ok = saveBatch(() => {
-        const ok = commitNewInput(draft, ctx === 'g', undefined, undefined, row=>{savedRow=row})
+        /* (the squadron it is filed on rides with it: an input of ALL AVAIL / ALL alone is stamped with it — C3, D2243 Q1) */
+        const ok = commitNewInput({ ...draft, u: pickUnit }, ctx === 'g', undefined, undefined, row=>{savedRow=row})
         /* the OIL answers land on the just-unshifted row, inside the same
            batch, so the add and its acknowledgment are ONE undo step */
         if (ok && oilDec) savedRow.oil = oilDec
@@ -795,7 +797,9 @@ export function InputEditor() {
   /* WHOSE PEOPLE THE PICKERS OFFER (multi-squadron step 3): a new input on the Inputs page or its calendars (`_calendar`)
      is filed among the signed-in person's own squadron (D2132 — those pages stay on his own); one added from a schedule's
      panel among the schedule in view's; a saved input among its own unit's (engine/inputs.ts inputUnitOf) */
-  const pickUnit = isNew ? ((r._calendar || ctx === 'i' || ctx === 'up') ? myUnit() : UNIT) : (inputUnitOf(r) ?? UNIT)
+  /* (the Inputs page's own squadron is the page's — state/perms.ts pageUnit('own'), the reshape plan §3.2 A-ii: his home, or
+     the pick for a master admin or an admin holding Plan of it; equal to his home until the Schedules menu exists) */
+  const pickUnit = isNew ? ((r._calendar || ctx === 'i' || ctx === 'up') ? pageUnit('own', todayIso()) : UNIT) : (inputUnitOf(r) ?? UNIT)
   const archivedHere = win && (!isNew || ctx === 'i') && canEditSched() && ctx !== 's' && !(draft && isSansAvail(draft.type)) ? archivedOptions(pickUnit) : []
   /* the first day whose OIL question nobody has answered, for the line that says so (below); '' where there is none */
   /* …asked of the input's ONE record, which carries everyone in it (the one-rule build, D756). Before it, of EVERY record
