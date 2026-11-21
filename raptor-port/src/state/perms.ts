@@ -2982,19 +2982,38 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
   if (!a || a.role !== 'admin') return null
   const self = a.personId == null ? null : String(a.personId)
   let today: string | null = null, rows: UnitRows | null = null
-  const ownsHim = (pid: string): boolean => {
+  /* HIS OWN SQUADRON'S MAN: an admin of the person's home today, over the rows before the command. The read records
+     (`seen:`, `noticeseen:`, `apprseen:`, `reqseen:`) and every bell line ask this alone — but for the one audience line
+     below (fix read 2 — the security read's 3: the audience half was asked of every line and all four read records, so
+     once Hunter, 142's admin, held Plan of 149, 149's admin rewrote his read records and took 142's lines off his bell). */
+  const ownsHome = (pid: string): boolean => {
     if (today == null) { today = todayIso(); rows = unitRowsBefore(env.changes) }
     const u = homeBefore(pid, today, rows!) ?? BOOT_UNIT
-    if (levelInForce(a, u, today, rows!) === 'admin') return true
-    /* …OR ONE OF A SQUADRON'S ADMINS OF WHICH HE IS AN ADMIN (the Plan audit's PC1 — the reshape plan §19, §6.2 step 6;
-       D2202): a squadron's admin lines go to its admins at home AND its non-master Plan holders (accounts.ts adminsOf), so
-       Kestrel's 149 posting line to Hunter, 142's admin holding Plan of 149, is his to write. Read over the rows before
-       the command, on today, as the passes read it. */
-    for (const x of rows!.units) {
-      if (x.id === u || levelInForce(a, x.id, today!, rows!) !== 'admin') continue
-      if (new Set(adminsOf(x.id, today!, rows!)).has(pid)) return true
+    return levelInForce(a, u, today, rows!) === 'admin'
+  }
+  /* …OR, FOR A SQUADRON'S OWN ADMIN LINE, ONE OF ITS ADMINS (the Plan audit's PC1 — the reshape plan §19, §6.2 step 6;
+     D2202): a squadron's admin lines go to its admins at home AND its non-master Plan holders (accounts.ts adminsOf), so
+     Kestrel's 149 posting line to Hunter, 142's admin holding Plan of 149, is his to write. Only for a line whose EVERY
+     part is a war kind of that one squadron — a holiday's (`oilhol`, its `u`), a posting's or its take-back's (`po`,
+     `poback`: the squadron of the man posted, his home today) — of which the actor is an admin and the reader one of its
+     admins. Read over the rows before the command, on today, as the passes read it. */
+  const lineSquadron = (n: any): string | null => {
+    const parts: any[] = Array.isArray(n?.what) ? n.what : []
+    if (!parts.length) return null
+    let x: string | null = null
+    for (const p of parts) {
+      const k = String(p?.k)
+      const u = k === 'oilhol' ? (typeof p.u === 'string' && p.u ? p.u : null)
+        : (k === 'po' || k === 'poback') && p.who != null ? homeBefore(String(p.who), today!, rows!) : null
+      if (!u || (x != null && x !== u)) return null
+      x = u
     }
-    return false
+    return x
+  }
+  const ownsLine = (n: any, pid: string): boolean => {
+    if (ownsHome(pid)) return true
+    const x = lineSquadron(n)
+    return !!x && levelInForce(a, x, today!, rows!) === 'admin' && adminsOf(x, today!, rows!).includes(pid)
   }
   const changedInputs = new Set(env.changes.filter(c => c.collection === 'inputs').map(c => String(c.id)))
   let replayed: ((c: Change) => boolean) | null | undefined
@@ -3061,7 +3080,7 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
             if (ref && !followed.has(ref)) { followed.add(ref); continue }
           }
         }
-        if (to !== self && !ownsHim(to)) return `a bell line of another squadron's man (${where})`
+        if (to !== self && !ownsLine(n, to)) return `a bell line of another squadron's man (${where})`
         /* (fault M: the own-man fallback no longer lets through an input line the pass would not write) */
         if (n === c.after && inputLineUnlike(env, c, changedInputs, replayed ?? null)) return `a bell line not as the pass writes it (${where})`
         /* A WAR LINE ONLY FROM THE WAR'S OWN WRITERS (fix read 9, fault D — the security read's SEC9-2; docs/data-model.md
@@ -3121,7 +3140,7 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
     if (!pfx) continue
     const pid = pfx === 'reqseen:' ? String(ACCOUNTS_LIST.find(x => x.id === id.slice(pfx.length))?.pid ?? '') : id.slice(pfx.length)
     if (!pid) continue                                  // (an account with no person names no squadron to judge by)
-    if (pid !== self && !ownsHim(pid)) return `another squadron's man's read record (${where})`
+    if (pid !== self && !ownsHome(pid)) return `another squadron's man's read record (${where})`
   }
   return null
 }
