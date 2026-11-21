@@ -106,7 +106,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - On a phone the list's day headings and cards take the screen's full width less the margin the filters and search box above them have [D1293].
 - On a phone the Inputs page's tab row (Inputs · SANS · Medical) sits 4px under the app's top bar, as the Leave War's does, so the tabs stand in the same place on both pages [D1280].
 - The "OIL?" sign: a small outlined "OIL?" tag on an input card's top line, left of the hours, where nobody has answered its OIL question — a day opened on the calendar and the list on a phone; the desktop list's "OIL?" button shows for an input of several people too; the month's bars get nothing [D777].
-- Undo and Redo name what they take back by person and kind — "Undid: Drifter's ISR brief", "Undo — Ranger's OL" — and several at once by count, "Undid: 3 inputs", never "a personal input" [D1582].
+- Undo and Redo name what they take back by person and kind — "Undid: Drifter's ISR brief", "Undo — Ranger's OL" — and several at once by count, "Undid: 3 inputs", never "a personal input" [D1582]; a late cut-off's by its window's heading, "Undid: the late cut-off for inputs" (or "…for SANS commitments") [D2267].
 
 ### The Inputs and SANS calendars' month
 - Three tabs across the top — Inputs, SANS, Medical — less tall, one place reaching all three, each calendar opening on its calendar; Inputs keeps its List; SANS availability is filed on the SANS calendar only, which has no list; the rest of the first mock-ups' drawings stand as drawn [D620, D626, D630, D576].

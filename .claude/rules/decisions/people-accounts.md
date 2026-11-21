@@ -80,6 +80,7 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - An archived row opens his callsign box — a rename, "Restore as …" when a roster man holds his callsign — a Post in date opening on today, Restore and Delete [D322, D295, D310, D308].
 - His row shows a posting waiting and "posted out <date>" once a posting out has run and left him on the roster [D326, D322].
 - An archived row says how and when, one line [D329].
+- No control moves a sign-in to another person, for now [D2266].
 - Quals keeps quals, CAT, flight and initials; its ✕ archive, Archived list, Restore, Restore as and the rename moved to Admin → Users (an archived man renamed by an admin on his archived row, no longer on Quals); Quals' "+ Add person" is a button to Admin → Users; renaming a roster man stays on Quals [D310, D322, D224, D295, D286].
 
 ## Quals
@@ -155,7 +156,8 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - A community is the squadrons flying one aircraft type (F-15, F-16): callsigns unique within a community, not across the app; a guest flyer from another community is always marked — an orange corner on his puck (option A) [D288, D289, D296].
 
 - A dedicated check of all built and planned so far for an admin with Plan left out or let in wrongly, its faults fixed before the reshape build [D2242].
-- On a man's move: an ALL AVAIL meeting stays where filed; sign-off boxes offer the day's people, and after them, in SKED CK, PLANNED BY and APPROVED BY, a Plan holder of the squadron and a master admin who carry the Scheduler tick [D2245]; no one puts his leave in his old war after it; his View and Plan end at his move day's start; his old war's row striped from then, the new one's before; an open window gets the drawn band at midnight [D2243].
+- At a move, built at the Transfer step, new words drawn first: held schedule windows say his sentence naming the page; a course, medical or Delete across it its own sentence; 149's war starts him empty and 142's keeps counting his hidden leave until his leave is carried; the mover may take it back before its day; a meeting naming him stays where filed; a group OIL credit gives the lawful ones, naming who was left; Balances gets the band [D2265].
+- On a man's move: an ALL AVAIL meeting stays where filed, as does one naming him [D2265]; sign-off boxes offer the day's people, and after them, in SKED CK, PLANNED BY and APPROVED BY, a Plan holder of the squadron and a master admin who carry the Scheduler tick [D2245]; no one puts his leave in his old war after it; his View and Plan end at his move day's start; his old war's row striped from then, the new one's before; an open window gets the drawn band at midnight [D2243].
 
 ## Settled — leave as they are
 - Designs of record, in `raptor-port/docs/mock/`: `one-door.html` for `[ONE-DOOR]` [D322, D309, D310]; `post-out.html` for `[POST-OUT-OUTCOMES]` and for the guest mark when `[XFER]` is built [D299, D300, D981, D1105, D296].
