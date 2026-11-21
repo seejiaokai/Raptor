@@ -802,12 +802,15 @@ as the community's. Pinned by `storage/unitid.test.ts` and `state/units-switch.t
 #### Which unit is this input, this person? (the multi-squadron build, batch 1, step 3, 18 Nov 26)
 `PEOPLE` and `INPUTS` stay ONE list each for every squadron; whose a person or an input is, is asked, never stored
 twice: a person's is his home on the date (`state/units.ts homeOn`, reached from the engine through
-`engine/roster.ts homeUnitOf`), an input's its person's home on its date (`engine/inputs.ts inputBelongs`). Every
+`engine/roster.ts homeUnitOf`), an input's its person's home on its date (`engine/inputs.ts inputBelongs`; one naming
+nobody but ALL AVAIL / ALL, its stamped squadron `u` — D2243, `data-schema.md` §Inputs). Every
 surface that lists ONE squadron's people asks `engine/roster.ts rosterOf(unit, iso)` (or `unitPeople`, its record form);
-every reader of ONE squadron's inputs asks `engine/inputs.ts inputsFor(unit, at?)`. Which unit: the schedule's surfaces
+every reader of ONE squadron's inputs asks `engine/inputs.ts inputsFor(unit, at)` or one of its named forms
+(`inputsOnDay`, a day reader's; `inputsTouching` / `inputsListed`, a list's; `inputsOnFirstDay`, a body that writes) —
+the day required since the reshape's contract step (§Which squadron is the open page in, seam 6, below). Which unit: the schedule's surfaces
 (a day's landing, a published day's frozen copies and filing, the OIL evidence, the crew lists) the unit in view,
-`UNIT`; the Inputs pages, the Medical tab, the SANS calendar and day, and the Leave War's OIL pass the signed-in
-person's own, `state/perms.ts myUnit()` (D2132) — so the OIL pass never reads the schedule in view, and its reverse
+`UNIT`; the Inputs pages, the Medical tab, the SANS calendar and day, and the Leave War's OIL pass the page's own
+squadron, `state/perms.ts pageUnit('own')` — his own, D2132 (seam 2 below) — so the OIL pass never reads the schedule in view, and its reverse
 sweep clears only credits of men whose home that day is its unit. The seam: a NEW whole-list walk of either list would
 take the other squadron's men or requests (149's leave on 142's Unavailable list). Two guard tests count every such
 walk, file by file, against an allow-list with its reasons — `engine/roster-readers.test.ts` and
@@ -824,21 +827,31 @@ the signed-in person's home unit's — `leavewar/sync.ts swapWarWorld` at every 
 re-projecting its roster, absences and OIL for that unit; the Tracker binds his unit at its first load
 (`tracker/storage.js markStorageLoaded`) and its + Add offers that unit's people only (`tracker/peoplewire.ts`). The
 seams: (1) a reader that needs ANOTHER squadron's war reads it from that unit's door (`sync.ts storedWorld`), never from
-the store, which holds one world; (2) *[to change — his D2195, 18 Nov 26: each squadron owns its own holiday list,
-never laid onto another; seams (2) and (3) as built, filed for chat 109]* a public holiday is laid onto every squadron at the same place on that date at
-READ (`placeHolidaysFor` → `leavewar/state/store.ts setPlaceHolidays`), never copied into another squadron's war —
-`dayFacts`, the grid, `HOOKS.oilEarningDay` and `nonWorkingFor(unit, iso)` all see it, an Off day stays its own
-squadron's; a new reader of "is this day a holiday" must ask through them, or 149's holiday is a working day for 142;
-(3) a new holiday names, before it is saved, each squadron's published days it puts out of date
-(`sync.ts holidayOutOfDate` → `ui/oilday.ts outOfDateSaid`, shown by `ui/HolidaysPanel.tsx`, D2184 R32), and the OIL bell line reaches each
-squadron's schedulers for its own inputs only; (4) a Leave War bell line about a posting goes to the war's own squadron's
-admins (`ownSchedulerIds`). Signing out reloads the app (`ui/logout.ts`); while a save waits it does not, and the
+the store, which holds one world; (2) *[BUILT 21 Nov 26 — the reshape's A4, his D2195: each squadron owns its own
+holiday list; step 4's overlay that laid a place's holidays onto every squadron there at read (`placeHolidaysFor`,
+`setPlaceHolidays`) is removed]* a public holiday is its own squadron's alone, never another's even at the same place:
+`nonWorkingFor(unit, iso)` answers from that squadron's own list — the loaded war for its own squadron, another's from
+its door (`sync.ts storedWorld`) — while `dayFacts`, the grid and `HOOKS.oilEarningDay` read the loaded war's own; a new
+reader of "is this day a holiday" for a squadron that may not be the loaded war's must ask `nonWorkingFor(unit, iso)`, or
+142's holiday becomes 149's (the flying plan's own-page answers did, and an input's OIL question — both now by the
+squadron asked for);
+(3) a new holiday names, before it is saved, its OWN squadron's published days it puts out of date
+(`sync.ts holidayOutOfDate` → `ui/oilday.ts outOfDateSaid`, his words with no squadron number — D2207; shown by
+`ui/HolidaysPanel.tsx`), and the OIL bell line goes to that squadron's admins of today, a plain admin holding Plan of it
+among them (`sync.ts holidayTodo` → `state/accounts.ts adminsOf`; D2195, D2202 — PB3); each line carries its squadron
+(`u`, `data-schema.md` §The bell's notices), and its count, its dates and name, the list it opens, that list's Save and
+which older line it replaces are read by that squadron, never the reader's home (`state/notices.ts holOf`, `noticeSpan`,
+`holidayLineAny`; `ui/oilday.ts saveOilDay`, `adminOfList` — PB4, PB5, R3, R4): a new reader of a holiday line that asks
+the reader's home shows a Plan holder a count of 0 and hides his line; (4) a Leave War bell line about a posting goes to
+the war's own squadron's admins of today, a plain admin holding Plan of it among them (`sync.ts postingAdmins` →
+`adminsOf`; `ownSchedulerIds` is the loaded war's). Signing out reloads the app (`ui/logout.ts`); while a save waits it does not, and the
 reload is owed, made the moment the save lands if nobody has signed in since (the full check, 18 Nov 26). Still open:
 someone of the other squadron signing in on that tab BEFORE the save lands keeps the first one's Tracker (a question
 for him — the evidence sheet's §Questions). (5) The change history is the unit in view's: each line carries its unit
 (`engine/editlog.ts`, `u`), only the unit in view's lines are in `ELOG.rows`, re-read at `state/store.ts switchUnit` —
 a new reader of the history reads `ELOG.rows` and so gets one squadron's; whatever must see every squadron's lines reads
 the stored rows. Pinned by `engine/editlog-unit.test.ts`, `ui/logout.test.ts`, `leavewar/holidays-by-place.test.ts`,
+`leavewar/msq-holidays-own-sqn.test.tsx` (seams 2 and 3 as built),
 `tracker/trk-per-unit.test.ts`, `state/multi-sqn-step4.test.ts`, `leavewar/postout-notice.test.ts`.
 (6) *(A3, 19 Nov 26 — Fable's design A)* **the war is written for a squadron whose war is NOT loaded only by Admin →
 Users' four doors** — the master's Archive, Restore, Restore as and Delete of that squadron's man (`sync.ts archivePerson`,
@@ -849,6 +862,88 @@ on the same pure stint rules as the war loaded (`store.ts stintClosed`, `stintOp
 route the same way, or the master's change lands on the wrong squadron's war. No war pass runs for that squadron then:
 they run at its next load (`store.ts initStore` keeps stored profiles even in a world never opened). Pinned by
 `leavewar/multi-sqn-a3-foreign.test.ts`.
+
+#### Which squadron is the open page in? — the seams the reshape made (the multi-squadron reshape, 20–21 Nov 26; plan `docs/superpowers/plans/2026-11-20-multi-sqn-b1-reshape.md`)
+Six seams, each ONE body with many readers; touch the body and check its readers, add a reader and ask the body.
+(1) **Entering a squadron — `state/store.ts enterSquadron`.** Three things say which squadron the open page holds: the
+schedule in view (`UNIT`, `switchUnit`), the Leave War's world (`sync.ts swapWarWorld`) and the Tracker's door
+(`tracker/storage.js rebindStorageUnit`). They move together only here, in that order — the schedule first, then the war
+and the Tracker to the page's own squadron (seam 2). Callers: sign-in (`resetSession`) and the check `notify()` runs
+(`maybeReenter` / `entryDue`): his own move taking effect — the midnight swap, switched on in phase 3, raised by the
+posting clock's wake at 00:00:01 and whenever the page is shown or focused on a new day (A2) — and, dormant until a
+screen gives or takes a right, a pick with no readable right behind it (`perms.ts pickStandsOn`) or a war or Tracker
+that is not the page's own squadron's (R6). It never resets the page or clears the Undo list (seam 3 keeps his old
+steps apart). **The hold and the band** (`state/typing-hold.ts`, his D2243 Q7): an open Leave War window
+(`leavewar/ui/Sheet.tsx` counts them) holds the WAR'S step only, so nothing typed is saved into the new squadron; while
+the war or Tracker loaded is not the page's own squadron, the window or the Tracker's chart editor carries one band in
+the failed-save band's look (`ui/MoveBand.tsx`) — "You are 149's from today. This can't be saved in 142's Leave War."
+(or "…in 142's Tracker."), one button "Close" — and closing the window lets the swap run. The Tracker, once loaded, is
+kept until the next sign-in (its records sit in module caches that cannot be re-read in place); the gate refuses his
+changes to it meanwhile. What a change can break: a new thing that says "which squadron is this page" set outside
+`enterSquadron` drifts from the other three at midnight; a new window of typed work on an own page that does not hold
+the swap is saved into the wrong squadron or lost without a word; a war loaded afresh starts with a member's role, so
+the role in force is set on it again (found switching the swap on: an admin was a member in his new squadron's war); a
+swap run inside a command loads a week and a war that are no one's command (`maybeReenter` never runs while committing).
+Pinned by `state/enter-squadron.test.ts`, `state/reshape-a02-midnight.test.ts`, `state/midnight-swap-undo.test.ts`,
+`state/typing-hold.test.tsx`, `state/typing-hold-grid.test.tsx`, `state/reshape-r6-reenter.test.tsx`,
+`state/pick-stands.test.ts`; the band's look by the drawing check `scripts/drawcheck/specs/msq-midnight-band.mjs`.
+(2) **A page's own squadron — `state/perms.ts pageUnit(kind, iso)`, and its settings — `engine/hooks.ts unitSetting`.**
+`'schedule'` (Edit Schedule, View-only Sched, the Board, Logic) is the squadron picked; `'own'` (Inputs and its
+calendars, Medical, the SANS calendar and day, Quals, the OIL answer list, the Leave War, the Tracker, Admin → Users) is
+his own squadron that day — or the pick for an admin in force who is a master admin or holds Plan of it that day
+(D2197, D2201), never a View holder (D2191) and never in the member view (D292). Today the pick is everyone's home, so
+both answer alike; they part with the Schedules menu (step 5). A squadron's setting named plainly (`store.get('qualcols')`)
+is the PICK's (`hooks.ts storedKey`), right only on the schedule pages; an own page reads and writes
+`unitSetting(unit, name, …)` / `unitSettingKey(unit, name)` with its own squadron. What a change can break: a new own
+page, list or setting that reads `UNIT`, `myUnit` or a plain setting name shows — and saves — the picked squadron's on a
+man who only views it (fault B4); a new schedule-page reader that asks `'own'` stops following the pick. Guarded by
+`state/unit-setting-guard.test.ts` (a plain unit-setting name outside the schedule pages' files turns it red — a name
+reached through a variable is beyond it) and pinned by `state/page-unit.test.ts`, `ui/reshape-b04-own-pages.test.ts`,
+`state/flyplan-own-unit.test.ts`, `state/own-setting-first-write.test.ts`, `ui/msq-inputscal-own-calendar.test.tsx`.
+(3) **Every Undo step carries its squadron — the stamp and the squadron-qualified key** (`state/undo-wire.ts`,
+`undo/derive.ts stampOf` / `recordKeyIn`, `command/commit.ts setRecordKeyHook`, `undo/timeline.ts stampHolds` /
+`unreachable`). A Leave War or Tracker record names no squadron in its id, so each command that writes one is stamped
+with the squadron that world holds (the gate's probes `perms.ts lwUnitNow`, `trkUnitNow`), and every record is keyed
+`<collection>/<unit>@<id>` — in the command layer's revision counter as in the timeline; the second store's `lwx.*` rows
+are keyed as the war's own record they are. A step is taken only while each world it wrote holds that squadron again
+(asked at selection and again before the restore writes); otherwise it waits, passed over silently. A step left in a
+squadron he can no longer enter (not his own page's now, and no Plan or master mark reaches it — `canReach`) can never
+be taken, so a step sharing a record with it is blocked for good, in today's words ("A later change touches the same
+thing and can’t be undone."), never "undo that first" on every press. An own-page step of his own page's squadron is
+his wherever he presses. What a change can break: a new collection of the war's or the Tracker's that `derive.ts
+worldOfColl` does not know is unstamped, and its Undo after a swap writes one squadron's step into the other's; a
+comparison of two records by `collection/id` instead of `recordKeyIn` reads 142's and 149's record as one; a new
+own-page record missing from `undo-wire.ts ownPageRecord` is passed over from a schedule page. Pinned by
+`state/msq-undo-worlds.test.ts`, `state/midnight-swap-undo.test.ts`, `state/msq-undo-own-page.test.ts`,
+`state/msq-undo-rights.test.ts`.
+(4) **The one planning record, routed** (`state/sched-commit.ts`'s `plan` case, `state/plan-foreign.ts`). The page holds
+one squadron's planning calendar in memory (`PLANPUCKS`, `DAYRMK`); a note or a day title is ONE record whichever
+calendar holds it (`plan/<unit>@pp:<id>`, `plan/<unit>@dm:<iso>`). The schedule store's `plan` case writes the loaded
+squadron's to the calendar in memory and ROUTES any other to that squadron's stored calendar (`storedPlan(unit)`), which
+must have joined the command first, having loaded the stored rows it will write — so its before-image is the record as
+stored; not joined, the write is refused. Readers: a delete's strip of the man from every squadron's calendar
+(`state/person-delete.ts`, B1), the Inputs calendar under another pick (`ui/owncal.ts`), and Undo, whose restore goes to
+the stored half directly (`undo-wire.ts storeFor`). What a change can break: a writer that puts another squadron's
+record on the calendar in memory shows 149's note on 142's page; one that writes the stored half without loading first
+records an edit as "created", and its Undo deletes the note; a new kind of planning record needs its local prefix in
+both halves. Pinned by `state/plan-foreign.test.ts`, `state/msq-b1-delete-calendars.test.ts`,
+`state/msq-b1-delete-calendars-stored.test.ts`, `state/msq-undo-plan-store.test.ts`,
+`leavewar/msq-merge-foreign-delete-calendars.test.ts`.
+(5) **Whom may he file this input for — `state/perms.ts inputWhoProblem`.** The commit gate's who-rule as one body: the
+input as it stood and as it would stand is judged by every squadron it touches — each named man's on its first day and
+on every saved move inside its span; one naming nobody, its own squadron. An admin in force must be an admin of each (at
+home, by Plan, or a master admin), a member at home in each; his own input and a member's own take-out stay his. Four
+askers, the same answer: the gate (`inputUnitViolation`), the Inputs window's people picker (`ui/inputedit.tsx
+offersFor` — a man is offered only where the whole draft with him added passes), its save door (`whoDoorRefusal`, which
+says leave across a man's move in his words, D2240, D2241, opening "Blocked:" — D1667) and an existing input's save.
+What a change can break: a new picker or door that asks a first day alone offers a man the save then refuses (fault
+C6); a door with its own copy of the rule drifts from the gate. Pinned by `state/input-who.test.ts`,
+`ui/reshape-c6-pickers.test.ts`, `ui/reshape-c6-window.test.tsx`.
+(6) **The day is always named** (`engine/roster.ts needDay` — the reshape's contract step). The "whose is he on a day"
+readers — `homeOn`, `homeUnitOf`, `onRosterOf`, `rosterOf`, `unitPeople`, `myUnit`, `levelIn`, `levelOfAccount`, and
+`inputsFor`'s day — take no default; in tests and development builds a missing or malformed day throws, naming the
+reader (a production build reads it as before). A new caller writes the day it means — today on purpose, or the day it
+draws; a caller that hands none would be answered with his first-ever squadron.
 
 #### Does this standby row fly? ([STANDBY-FLIES], D1042–D1046, D1061, D1062, 19 Oct 26)
 One body answers it — `engine/waves.ts saFlies` (a shift with its B or R typed, or the row's hand tick; never a cancelled
