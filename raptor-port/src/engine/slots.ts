@@ -3,15 +3,13 @@ import { PEOPLE, whoId, isSpecial, callsignTakenBy, indexCallsigns } from './peo
 import { SCHED, markEdit, markDeletion, deletionWasIssued, markStructuralAdd, dayApproved, dropRowMarks, protectedWeek, dayCurVer, daySnapOf } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
 import { UNIT } from './unitview'
-import { isOD, goesOnProg, INPUTS, inputsOnDay, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx, holds, leadOf, isPlaceholderInput } from './inputs'
+import { isOD, goesOnProg, INPUTS, inputsOnFirstDay, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx, holds, leadOf, isPlaceholderInput } from './inputs'
 import { shiftKeys, seatRow, iuParts } from './keys'
 import { inputProtected } from './quarantine'
 import { VCONF } from './rules'
 import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
 import { ridWriteKey } from './rowids'
-import { CURWEEK } from './waves'
-import { dayIso } from './verid'
 import { rowElsewhere } from './weekstash'
 import { requestRowFields, srcvOf, standsOn, standingRow, requestOfBox, REQ_BOX, placeRequestRow, asIssuedOrder, landedRid } from './overlay'
 export function whoArr(r:any){return Array.isArray(r.who)?r.who.slice():(r.who?[r.who]:[]);}
@@ -659,7 +657,12 @@ export function acceptedDay(inp:any){
    recovery that keeps the row), and a multi-day 'g' still landed on another day. */
 export function reconcileDayFiling(di:any){
   const dt=(DAYS[+di]||{}).dt; if(dt==null)return;
-  inputsOnDay(UNIT,dayIso(String(CURWEEK),+di)).forEach((inp:any)=>{   // the schedule in view's own, on this day (multi-squadron step 3; the reshape §3.2 A-i)
+  /* THE FILING AXIS IS THE LANDING SQUADRON'S (the fix round of 22 Nov 26, Fable's read F1 — the plan's F4 rule): the
+     requests that LAND on the schedule in view — its own by their FIRST day (inputsOnFirstDay, the list state/store.ts
+     landingInputs walks) — never the day's own list. Ranger's Training 14–17 Jul, 142's by its first day, is 149's on
+     Thu 16: walked from 149's Thursday it has no row in 149's week, so 149's Undo, plan switch, template apply or
+     version load deleted 142's accepted mark — or was refused whole by the gate. */
+  inputsOnFirstDay(UNIT).forEach((inp:any)=>{
     if(!inputCoversDate(inp,dt)||inputProtected(inp))return;
     /* 'u' (a global filing DECISION with no ground row) and 'r' (dormant) are not
        per-week ground landings — untouched. */
