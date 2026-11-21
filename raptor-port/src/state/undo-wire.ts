@@ -19,15 +19,15 @@ import { roleStore, invalidateRoleTargets } from './mission-roles'
 import { decodeRoleId } from '../engine/mission-role'
 import { peopleStore, settingsStore } from './people-settings-commit'
 import { rosterRestoreProblem } from './roster-restore'
-import { seedAccounts, levelIn, accountById, isMasterAccount, ACCOUNT_PFX } from './accounts'
-import { unitRows } from './units'
+import { seedAccounts, levelIn, accountById, isMasterAccount, ACCOUNT_PFX, signedInAccount, adminNow } from './accounts'
+import { unitRows, homeOn } from './units'
 import { store } from '../engine/hooks'
 import { deletedRestoreProblem, postingRestoreProblem } from './person-delete'
 import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks, setDescribeNames,
 } from '../undo'
 import { verifiedReplay, verifiedWarRestore, restoreOffAt, restoreDir, applyingRestore } from '../undo/timeline'
-import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, restoreStood, setRestoreOffAt, setRestoreDir, lwUnitNow, trkUnitNow, pageUnit, isAdmin, restoreLeavesOut, setRestoreGrantCtx, type RestoreGrantCtx } from './perms'
+import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, restoreStood, setRestoreOffAt, setRestoreDir, lwUnitNow, trkUnitNow, pageUnit, isAdmin, restoreLeavesOut, setRestoreGrantCtx, madeAsAdmin, type RestoreGrantCtx } from './perms'
 import type { RecordCtx, UndoEntry } from '../undo/types'
 import type { Change } from '../command'
 import { setRecordKeyHook } from '../command/commit'
@@ -49,7 +49,7 @@ import { lwStore, LW_COLLS, selectWar, focusDay, bumpLwHistEpoch, restoreBlocker
 import { restoreAbsencesOf, warNoticesReversed, warDayRefusal } from '../leavewar/sync'
 import { warCounts } from '../leavewar/absences'
 import { DATES, inputCoversDate, isSansAvail } from '../engine/inputs'
-import { UNIT_ROW_PREFIXES, GRANT_PFX } from './units-model'
+import { UNIT_ROW_PREFIXES, GRANT_PFX, UNIT_PFX, UNITPLACE_PFX } from './units-model'
 import { noticeLeftBell, type Notice } from './notices'
 import { UNIT } from '../engine/unitview'
 import { split, localOf, qualify } from '../storage/unitid'
@@ -476,6 +476,68 @@ function standingRightKey(changes: Change[]): string | null {
   return null
 }
 
+/* ---- A STEP HE CAN NO LONGER REACH (fix read 2 — Opus 2's F1, Fable 2's F2; his D148) --------------------------------
+   A person's row, an account's row and a right's row name no squadron in their ids and carry no stamp (A-v stamps only the
+   war's and the Tracker's), so the timeline reads them as in view wherever he presses — and the commit gate then refused
+   the restore on every press in the generic words, with every older step of his out of reach until he signed out. Asked
+   BEFORE anything else of a press, of what the restore would write: a step that can never go through is blocked for
+   good in today's words, the next press named, as the move's begun day and A-v's steps already are. A REACH CHECK, never
+   the gate's English reason (the readers' tidiness note): the gate still judges every restore that is let through.
+   Stuck, each read off the account as it stands today, whatever view he is in:
+   - an admin's step, and his account gives him no admin role today (his own move's day come — K3 — or made a member): a
+     member never reverses an admin's step (timeline.ts mayReverse), and he has no admin view to switch back to;
+   - a person's row, or an account's, of a man at home today in a squadron he is not an admin of (the gate's section 8) —
+     never his own row, which the member rules hold; a row the restore leaves as it reads now asks nothing (the account
+     list's first write stores every seeded row);
+   - a right's row of a squadron he is not an admin of today (section 6's who-rule) — where the step changes no account
+     and no person (a delete's, a re-link's and a demotion's drops are the gate's to judge);
+   - a squadron taken away again (the Undo of "+ New squadron") while a man's home in it has begun: a begun home row
+     never changes (D2119), so the squadron is named for good.
+   A master admin reaches every squadron, so only the last can hold him. No account behind the session (the localhost
+   bridge, a headless test): never. */
+const sameImage = (x: unknown, y: unknown): boolean => JSON.stringify(x ?? null) === JSON.stringify(y ?? null)
+function stepStuck(changes: Change[], entry: UndoEntry): boolean {
+  const acct = signedInAccount()
+  if (!acct) return false
+  const today = todayIso()
+  const rows = unitRows()
+  for (const c of changes) {
+    if (c.collection !== 'settings') continue
+    const id = String(c.id)
+    if (!id.startsWith(UNIT_PFX) || id.startsWith(UNITPLACE_PFX) || !(c.op === 'delete' || c.after == null)) continue
+    const key = id.slice(UNIT_PFX.length)
+    if (rows.homes.some(h => h.unit === key && String(h.from) <= today)) return true
+  }
+  if (!madeAsAdmin(entry.actor)) return false
+  /* (the session as it was made again from his account — ui/App.tsx, accounts.ts sessionNow: `acct` is the role the
+     account gave then; a session with none, the developer bridge's, is never judged) */
+  if (SESSION.acct && SESSION.acct !== 'admin' && !adminNow(acct)) return true
+  if (acct.master) return false
+  const mine = String(acct.pid)
+  const adminOf = (u: string): boolean => levelIn(acct.id, u, today) === 'admin'
+  const strangers = (pid: unknown): boolean => {
+    if (pid == null || String(pid) === mine) return false
+    const p = (PEOPLE as any)[String(pid)]
+    if (!p || p.special) return false
+    const h = homeOn(String(pid), today)
+    return !!h && !adminOf(h)
+  }
+  const bare = !changes.some(c => c.collection === 'people' || isAccountRow(c))
+  for (const c of changes) {
+    const after = c.op === 'delete' ? null : c.after
+    if (c.collection === 'people') {
+      if (!sameImage(c.before, after) && strangers(c.id)) return true
+    } else if (isAccountRow(c)) {
+      const aid = String(c.id).slice(ACCOUNT_PFX.length)
+      const was = accountImage(aid, c.before), is = accountImage(aid, after)
+      if (!sameImage(was, is) && (strangers(was?.pid) || strangers(is?.pid))) return true
+    } else if (bare && isGrantRow(c)) {
+      for (const img of [c.before as any, after as any]) if (img && img.unit != null && !adminOf(String(img.unit))) return true
+    }
+  }
+  return false
+}
+
 /** tests only — the landing, driven with a made-up entry */
 export const _snapView = (e: UndoEntry, d: 'undo' | 'redo'): void => snapView(e, d)
 
@@ -559,6 +621,8 @@ export function installGlobalUndo(): void {
     ownUnit: () => pageUnit('own'),
     ownPageRecord,
     canReach,
+    /* fix read 2: a step he can no longer reach is blocked for good, never refused on every press */
+    stuck: (changes, _dir, entry) => stepStuck(changes, entry),
     /* the planning record's per-record store (the reshape plan §3.2 A-ii, "Through Undo, in both directions"): a note or
        a day title of a squadron NOT loaded as the restore is applied goes to that squadron's stored calendar
        (state/plan-foreign.ts), which loads the records it will write before it enlists — so the note is put back as it

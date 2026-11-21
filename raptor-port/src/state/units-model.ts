@@ -317,7 +317,8 @@ export interface LevelAccount extends GrantHolder { role: string; master?: boole
 export function adminRoleHolds(acct: LevelAccount, unit: string, iso: string, r: UnitRows, fallback: string | null): boolean {
   const given = acct.adminOf ?? homeUnitOn(r, acct.pid, '', fallback)
   const from = acct.adminOf != null && typeof acct.adminFrom === 'string' ? acct.adminFrom : ''
-  if (given === unit && !homeChangesIn(r, acct.pid, from, iso, fallback).length) return true
+  /* (never before the day it was given — fix read 2, Fable 2's F3: a record dated ahead held on every day before it) */
+  if (given === unit && from <= iso && !homeChangesIn(r, acct.pid, from, iso, fallback).length) return true
   /* the first admin, arrived: the day his squadron last changed, and his `first` Plan of it holding the day before */
   const arrived = homeChangesIn(r, acct.pid, '', iso, fallback).at(-1)
   if (!arrived) return false
@@ -335,7 +336,8 @@ export function schedTickHolds(p: { schedOf?: unknown; schedFrom?: unknown } | n
   const rec = typeof p?.schedOf === 'string' && p.schedOf ? p.schedOf : null
   const given = rec ?? homeUnitOn(r, pid, '', fallback)
   const from = rec != null && typeof p?.schedFrom === 'string' ? p.schedFrom : ''
-  return given === unit && !homeChangesIn(r, pid, from, iso, fallback).length
+  /* (never before the day it was given — fix read 2, Fable 2's F3) */
+  return given === unit && from <= iso && !homeChangesIn(r, pid, from, iso, fallback).length
 }
 /* (K1 — his D2253: a master admin in the member view is "a member of his own squadron holding View of the squadrons he
    could edit" — the mark answers admin only for a role that is admin, the role in force at the gate; View writes nothing) */

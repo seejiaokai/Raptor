@@ -37,7 +37,9 @@ function passes(type: string, change: { collection: string; id: string; before?:
 const osprey = () => ({ ...(PEOPLE as any)[PID.osprey] })
 const CHANGES: Record<string, () => boolean> = {
   /* a mark on 149's Tracker (the Tracker says whose is open) */
-  tracker: () => { setTrkUnitProbe(() => 'u149'); try { return passes('trk.marks', { collection: 'trk.marks', id: 'v3:c1:s1:marks', after: { x: 1 } }) } finally { setTrkUnitProbe(null) } },
+  /* (setup only — fix read 2, 22 Nov 26: 149's Tracker is open because 149 is picked, as the app binds it; the page's own
+     squadron is then 149 for a master admin and a Plan holder, his own for everyone else — the afterEach puts the pick back) */
+  tracker: () => { setTrkUnitProbe(() => 'u149'); switchUnit('u149'); try { return passes('trk.marks', { collection: 'trk.marks', id: 'v3:c1:s1:marks', after: { x: 1 } }) } finally { setTrkUnitProbe(null) } },
   /* 149's Logic settings */
   logic: () => passes('settings.rules', { collection: 'settings', id: 'u149@rules', after: { crewRest: 13 } }),
   /* a 149 man's Quals row, naming no owner as a forged command would (his own row through the real door is the cells

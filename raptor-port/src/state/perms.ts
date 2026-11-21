@@ -1532,12 +1532,14 @@ function levelInForce(a: NonNullable<CommitEnvelope['actor']>, u: string, today:
    a move is changed only by the man, or by an admin of every squadron it touches — at home there, by Plan of it, or a
    master admin. */
 export interface InputWho { pid: string | null; unit: string; level: string | null; own?: true }
-export function inputWhoProblem(a: Actor, rows: UnitRows, before: any, after: any, today: string = todayIso()): InputWho | null {
+export function inputWhoProblem(a: Actor, rows: UnitRows, before: any, after: any, today: string = todayIso(), replayed = false): InputWho | null {
   if (!a || a.role === 'system') return null
   const was = before ?? null, is = after ?? null
   if (JSON.stringify(was) === JSON.stringify(is)) return null
   const me = a.personId != null ? String(a.personId) : null
   const named = (r: any): string[] => (r && typeof r === 'object' ? namedOf(r).map((e: any) => String(e.p)) : [])
+  /* an input's squadron stamp, as engine/inputs.ts reads it: a non-empty string, else none */
+  const stampOf = (r: any): string | null => (r && typeof r === 'object' && typeof r.u === 'string' && r.u ? r.u : null)
   /* the rows' own handle: each man's squadron on a day, and the days it changes — never the live rows */
   const home = { on: (p: string, d: string) => homeBefore(p, d, rows), changesIn: (p: string, x: string, y: string) => homeChangesBefore(p, x, y, rows) }
   /* every (man, squadron) the input touches — an input with no readable date is judged on today */
@@ -1547,19 +1549,67 @@ export function inputWhoProblem(a: Actor, rows: UnitRows, before: any, after: an
     const ids = named(r)
     if (!ids.length) return inputSquadrons(r, home, today).map(unit => ({ pid: null, unit }))
     const out: Array<{ pid: string | null; unit: string }> = []
+    /* A SQUADRON STAMP IS JUDGED WHILE MEN ARE NAMED TOO (fix read 2 — Opus 1's F2, the security read's 1): an input's
+       squadrons are read off its named men first, so a stamp written onto one was never judged — and once its last man
+       took himself out the meeting was that stamp's squadron's. A placeholder meeting keeps its stamp while men are named
+       (D2243 Q1 — engine/inputs.ts settleStamp), so the stamp is not refused: it is one more squadron the actor must hold
+       the input's rights in, before and after. */
+    const st = stampOf(r)
+    if (st) out.push({ pid: null, unit: st })
     for (const p of ids) {
       const u0 = home.on(p, sp[0]); if (u0) out.push({ pid: p, unit: u0 })
       for (const d of home.changesIn(p, sp[0], sp[1])) { const u = home.on(p, d); if (u) out.push({ pid: p, unit: u }) }
     }
     return out
   }
+  /* WHO FILED IT IS NOT REWRITTEN ONTO ANOTHER SQUADRON'S MAN (fix read 2 — the security read's 1, route C): an input left
+     naming nobody with no stamp is read by its filer's squadron (the placeholder entry's `by`, else the record's), so a
+     filer written onto it — 149's Kestrel on 142's meeting — then a bare take-out, landed it on 149's schedule. A changed
+     `by`, or placeholder's `by`, on an input that stood before is one more squadron the actor must hold rights in: the
+     new filer's, on the input's first day. Not judged: the actor himself; the handover the take-out door writes when its
+     filer leaves (byAfterLeaving — the one body); a restore's verified replay, which puts back what its step recorded. */
+  const newFilerUnits = (): Array<{ pid: string | null; unit: string }> => {
+    if (!was || !is || typeof was !== 'object' || typeof is !== 'object' || replayed) return []
+    const d0 = (inputSpanIso(is) ?? [today, today])[0]
+    const str = (x: any): string => (x == null ? '' : String(x))
+    const stays = new Set(idsOf(is).map(String))
+    const gone = idsOf(was).map(String).filter(p => !stays.has(p))
+    const handed = new Set(gone.map(p => str(byAfterLeaving(was, p))))
+    const out: Array<{ pid: string | null; unit: string }> = []
+    const judge = (by: string, free: boolean) => {
+      if (!by || by === me || free) return
+      const u = home.on(by, d0)
+      if (u) out.push({ pid: null, unit: u })
+    }
+    if (str(is.by) !== str(was.by)) judge(str(is.by), handed.has(str(is.by)))
+    const pb = str(placeholderOf(is)?.by), pw = str(placeholderOf(was)?.by)
+    if (pb !== pw) judge(pb, false)
+    return out
+  }
   /* (his own part only — the gate's `ownPart`: nothing but his entry differs, and the filer's handover with him. Forward,
      only as a take-out; back in, only as his own verified replay, which the gate judges before asking this body) */
-  if (a.role !== 'admin' && was && is && me != null && ownPart(me, was, is) && holds(was, me) && !holds(is, me)) return null
   const lvOf = (u: string) => levelInForce(a, u, today, rows)
-  const both = [...touched(was), ...touched(is)]
+  const mayIn = (u: string): boolean => { const lv = lvOf(u); return a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin' }
+  if (a.role !== 'admin' && was && is && me != null && ownPart(me, was, is) && holds(was, me) && !holds(is, me)) {
+    /* …AND HIS TAKE-OUT LEAVES THE INPUT ON THE SQUADRON IT STOOD ON (fix read 2 — the security read's 1; his D2243 Q1): the
+       exemption judged nothing of what it left, so a stamp forged while he was named, or an input left naming nobody and
+       read by its filer's squadron, rode his "Take me out" onto another squadron's schedule. The stamp after is the stamp
+       before — or, where there was none, the squadron it stood on with him in it (its first named man's that day, over
+       the rows before: what the door's settleStamp writes); and an input left naming nobody is read as that squadron's,
+       by its stamp or by its filer. Else the take-out is judged as any other change, below. */
+    const d0 = (inputSpanIso(was) ?? [today, today])[0]
+    const stoodOn = stampOf(was) ?? (named(was)[0] != null ? home.on(named(was)[0]!, d0) : null)
+    const stampKept = stampOf(is) === stampOf(was) || (stampOf(was) == null && stampOf(is) === stoodOn)
+    const left = named(is).length ? null : inputSquadrons(is, home, today)
+    if (stampKept && (!left || left.every(u => u === stoodOn))) return null
+  }
+  /* (a squadron stamp is judged too, on an input that names people as on one that names nobody — touched, above) */
+  const both = [...touched(was), ...touched(is), ...newFilerUnits()]
   const onlyMe = (r: any) => r == null || (!placeholderOf(r) && named(r).length === 1 && named(r)[0] === me)
   if (me != null && onlyMe(was) && onlyMe(is)) {
+    /* (his own input carries no stamp; one written onto it is judged as any stamp is) */
+    const st = stampOf(is)
+    if (st && st !== stampOf(was) && !mayIn(st)) return { pid: null, unit: st, level: lvOf(st) }
     if (a.role !== 'admin') return null
     const bad = both.find(t => lvOf(t.unit) !== 'admin')
     return bad ? { pid: bad.pid, unit: bad.unit, level: lvOf(bad.unit), own: true } : null
@@ -1590,7 +1640,7 @@ function inputUnitViolation(env: CommitEnvelope): string | null {
       const me = String(a.personId)
       if (!holds(was, me) && holds(is, me) && env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) continue
     }
-    const who = inputWhoProblem(a, before, was, is, today)
+    const who = inputWhoProblem(a, before, was, is, today, env.origin === 'restore' && !!REPLAY && !!REPLAY(env)?.(c))
     if (!who) continue
     if (who.own) {
       /* HIS OWN INPUT, AS A MEMBER WHERE HE IS NOT ITS ADMIN (fix read 4, claim 1 — the Opus read's §1): the member's
@@ -1807,6 +1857,8 @@ function warUnitViolation(env: CommitEnvelope): string | null {
 let TRK_UNIT: LwUnit | null = null
 export function setTrkUnitProbe(fn: LwUnit | null): void { TRK_UNIT = fn }
 export const trkUnitNow = (): string | null => (TRK_UNIT ? TRK_UNIT() : null)
+/* was a recorded step made in the admin's role (state/undo-wire.ts stepStuck asks — a role is read here, D200 (3)) */
+export const madeAsAdmin = (actor: { role?: unknown } | null | undefined): boolean => !!actor && actor.role === 'admin'
 function trkUnitViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || (a.role !== 'admin' && a.role !== 'member')) return null
@@ -1815,7 +1867,18 @@ function trkUnitViolation(env: CommitEnvelope): string | null {
   if (!u) return null
   const lv = levelInForce(a, u, todayIso(), unitRowsBefore(env.changes))
   const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
-  return ok ? null : `a change to another squadron's Tracker (${u}) by one with ${lv ? `${lv} rights` : 'no rights'} there`
+  if (!ok) return `a change to another squadron's Tracker (${u}) by one with ${lv ? `${lv} rights` : 'no rights'} there`
+  /* THE TRACKER KEPT FROM BEFORE HIS MOVE TAKES NOTHING (fix read 2 — Astra 3's F3; his D2243 Q7, "nothing typed saved into
+     either squadron"): a Tracker once loaded keeps its squadron until the next sign-in (state/typing-hold.ts), and its band
+     says "This can't be saved in 142's Tracker" — but a moved MASTER admin is an admin of 142 still, so the line above let
+     his changes into it under that band. A change by the person signed in on this page is refused while the Tracker bound
+     is not the page's own squadron today (pageUnit('own') — the very test the band is drawn by, store.ts publishBands),
+     master admins included. A Tracker he opened on purpose is the page's own squadron (the pick of a master admin or a
+     Plan holder — D2197; enterSquadron binds it), so his ordinary editing there passes. Another session's change arriving
+     here is not this page's and is not asked. */
+  if (SESSION && a.id === SESSION.user && env.origin !== 'remote' && u !== pageUnit('own', todayIso()))
+    return `a change to a Tracker (${u}) that is not the page's own squadron today (${pageUnit('own', todayIso())})`
+  return null
 }
 /* the stored accounts after the command, as the loader would read them — none stored is the seeded list */
 function accountImagesNow(): any[] {
@@ -2154,6 +2217,37 @@ function deletedPersonViolation(env: CommitEnvelope): string | null {
     if (!b || typeof b !== 'object' || b.deleted !== true) continue
     const f: any = c.op === 'delete' ? null : c.after
     if (!f || typeof f !== 'object' || f.deleted !== true || DELETE_MARKS.some(k => JSON.stringify(f[k] ?? null) !== JSON.stringify(b[k] ?? null))) return `a deleted person brought back (people/${c.id})`
+  }
+  return null
+}
+/* WHERE A SCHEDULER TICK WAS GIVEN IS WRITTEN ONLY AS IT IS (fix read 2 — Opus 2's F2, Fable 2's F3, the security read's 2;
+   his D2160: the tick ends in the old squadron on the move's date, and the squadron joined ticks him anew). The record
+   (`schedOf`, `schedFrom` — units-model.ts schedTickHolds) was held only against a member's own row, so 142's admin
+   moved his man to 149 from tomorrow and wrote his tick as "given in 149, from the move day": he arrived carrying 149's
+   Scheduler tick that no admin of 149 gave. Held as K3 holds the admin role's record, for every actor but the app: the
+   record is a ticked person's alone; it stands unchanged, or is absent (the plain reading: his first squadron, while he
+   has never moved), or names the squadron he is in TODAY, from today (state/quals-write.ts writes it so). The Undo of an
+   untick puts back the record its step took away: the timeline's own restore of his own step (REPLAY answers only then —
+   it vouches for no person's row image by image) may write an earlier day, never a later one, with the squadron he was
+   in on that day — a record of a squadron he has left since holds nothing by the reading rule. */
+function schedRecordViolation(env: CommitEnvelope): string | null {
+  const a = env.actor
+  if (!a || a.role === 'system') return null
+  const today = todayIso()
+  const takeBack = env.origin === 'restore' && !!REPLAY && REPLAY(env) != null
+  const rec = (x: any) => JSON.stringify([x?.schedOf ?? null, x?.schedFrom ?? null])
+  for (const c of env.changes) {
+    if (c.collection !== 'people' || c.op === 'delete' || c.after == null || typeof c.after !== 'object') continue
+    const was: any = c.before, is: any = c.after
+    if (is.schedOf == null && is.schedFrom == null) continue
+    if (was && typeof was === 'object' && rec(was) === rec(is) && !!was.quals?.sched === !!is.quals?.sched) continue
+    if (!is.quals?.sched) return `where a Scheduler tick was given, on a person with no tick (people/${c.id})`
+    if (is.schedOf == null) return `a Scheduler tick's day with no squadron (people/${c.id})`
+    const from = is.schedFrom
+    const dayOk = typeof from === 'string' && ISO_DAY.test(from) && (takeBack ? from <= today : from === today)
+    /* (a man this command makes is read over the rows it leaves, as K3 reads him) */
+    const rows = unitRowsBefore(was == null ? [] : env.changes)
+    if (!dayOk || is.schedOf !== homeBefore(String(c.id), from, rows)) return `a Scheduler tick recorded as given in a squadron he is not in today, or on another day (people/${c.id})`
   }
   return null
 }
@@ -2913,19 +3007,38 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
   if (!a || a.role !== 'admin') return null
   const self = a.personId == null ? null : String(a.personId)
   let today: string | null = null, rows: UnitRows | null = null
-  const ownsHim = (pid: string): boolean => {
+  /* HIS OWN SQUADRON'S MAN: an admin of the person's home today, over the rows before the command. The read records
+     (`seen:`, `noticeseen:`, `apprseen:`, `reqseen:`) and every bell line ask this alone — but for the one audience line
+     below (fix read 2 — the security read's 3: the audience half was asked of every line and all four read records, so
+     once Hunter, 142's admin, held Plan of 149, 149's admin rewrote his read records and took 142's lines off his bell). */
+  const ownsHome = (pid: string): boolean => {
     if (today == null) { today = todayIso(); rows = unitRowsBefore(env.changes) }
     const u = homeBefore(pid, today, rows!) ?? BOOT_UNIT
-    if (levelInForce(a, u, today, rows!) === 'admin') return true
-    /* …OR ONE OF A SQUADRON'S ADMINS OF WHICH HE IS AN ADMIN (the Plan audit's PC1 — the reshape plan §19, §6.2 step 6;
-       D2202): a squadron's admin lines go to its admins at home AND its non-master Plan holders (accounts.ts adminsOf), so
-       Kestrel's 149 posting line to Hunter, 142's admin holding Plan of 149, is his to write. Read over the rows before
-       the command, on today, as the passes read it. */
-    for (const x of rows!.units) {
-      if (x.id === u || levelInForce(a, x.id, today!, rows!) !== 'admin') continue
-      if (new Set(adminsOf(x.id, today!, rows!)).has(pid)) return true
+    return levelInForce(a, u, today, rows!) === 'admin'
+  }
+  /* …OR, FOR A SQUADRON'S OWN ADMIN LINE, ONE OF ITS ADMINS (the Plan audit's PC1 — the reshape plan §19, §6.2 step 6;
+     D2202): a squadron's admin lines go to its admins at home AND its non-master Plan holders (accounts.ts adminsOf), so
+     Kestrel's 149 posting line to Hunter, 142's admin holding Plan of 149, is his to write. Only for a line whose EVERY
+     part is a war kind of that one squadron — a holiday's (`oilhol`, its `u`), a posting's or its take-back's (`po`,
+     `poback`: the squadron of the man posted, his home today) — of which the actor is an admin and the reader one of its
+     admins. Read over the rows before the command, on today, as the passes read it. */
+  const lineSquadron = (n: any): string | null => {
+    const parts: any[] = Array.isArray(n?.what) ? n.what : []
+    if (!parts.length) return null
+    let x: string | null = null
+    for (const p of parts) {
+      const k = String(p?.k)
+      const u = k === 'oilhol' ? (typeof p.u === 'string' && p.u ? p.u : null)
+        : (k === 'po' || k === 'poback') && p.who != null ? homeBefore(String(p.who), today!, rows!) : null
+      if (!u || (x != null && x !== u)) return null
+      x = u
     }
-    return false
+    return x
+  }
+  const ownsLine = (n: any, pid: string): boolean => {
+    if (ownsHome(pid)) return true
+    const x = lineSquadron(n)
+    return !!x && levelInForce(a, x, today!, rows!) === 'admin' && adminsOf(x, today!, rows!).includes(pid)
   }
   const changedInputs = new Set(env.changes.filter(c => c.collection === 'inputs').map(c => String(c.id)))
   let replayed: ((c: Change) => boolean) | null | undefined
@@ -2992,7 +3105,7 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
             if (ref && !followed.has(ref)) { followed.add(ref); continue }
           }
         }
-        if (to !== self && !ownsHim(to)) return `a bell line of another squadron's man (${where})`
+        if (to !== self && !ownsLine(n, to)) return `a bell line of another squadron's man (${where})`
         /* (fault M: the own-man fallback no longer lets through an input line the pass would not write) */
         if (n === c.after && inputLineUnlike(env, c, changedInputs, replayed ?? null)) return `a bell line not as the pass writes it (${where})`
         /* A WAR LINE ONLY FROM THE WAR'S OWN WRITERS (fix read 9, fault D — the security read's SEC9-2; docs/data-model.md
@@ -3052,7 +3165,7 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
     if (!pfx) continue
     const pid = pfx === 'reqseen:' ? String(ACCOUNTS_LIST.find(x => x.id === id.slice(pfx.length))?.pid ?? '') : id.slice(pfx.length)
     if (!pid) continue                                  // (an account with no person names no squadron to judge by)
-    if (pid !== self && !ownsHim(pid)) return `another squadron's man's read record (${where})`
+    if (pid !== self && !ownsHome(pid)) return `another squadron's man's read record (${where})`
   }
   return null
 }
@@ -3220,6 +3333,9 @@ function ownershipChecks(env: CommitEnvelope): string | null {
      G0 and G1 here, G2 in homeUnitViolation, G3 the lock) */
   const shapeBad = accountShapeAndMasterViolation(env)
   if (shapeBad) return shapeBad
+  /* (and where a Scheduler tick was given — fix read 2, beside K3) */
+  const tickBad = schedRecordViolation(env)
+  if (tickBad) return tickBad
   /* (a delete is final — item D (1), above) */
   const revived = deletedPersonViolation(env)
   if (revived) return revived

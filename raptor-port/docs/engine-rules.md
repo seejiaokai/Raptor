@@ -4158,7 +4158,10 @@ POSTING's archive) keeps its meaning: the same stint continues, only the posting
 **No Enable on an archived man** (D322): `accounts.ts updateAccount` refuses it. **A session that lapses** — his account
 suspended or deleted, or his person archived or deleted, after he signed in — is turned off on the next repaint (the
 suspended screen); one whose account another admin gave a different role or person is made again from the account as it
-now stands (`ui/App.tsx`, `accounts.ts sessionNow`; the final code read, Astra 1). An Archive, and a delete, read a man's
+now stands (`ui/App.tsx`, `accounts.ts sessionNow`; the final code read, Astra 1) — and where it is the same account on
+the same person, only its role changed (another admin's change, or his own move's day come, K3), his Undo list, his page
+and his open windows stay (`state/store.ts refreshAccess`; fix read 2, D148 — an admin page alone goes back to View-only
+Sched). An Archive, and a delete, read a man's
 dates from his stored posting record, never from how Show SANS happens to draw him; a posting that has not RUN (its date
 come or not) is replaced by an Archive and named in its message (the final code read, Fable F1, F5). **A new person's post-in date** (D308): Add a person and Give access →
 New person write his first stint on the war inside the add's own command (`HOOKS.warPostIn`). Quals keeps quals, CAT,
@@ -4385,7 +4388,9 @@ closes the Logic editor). *(The 26 Sep 26 text, for the record: "Every account i
 had nothing left to preview; the badge is an inert label …, and `resetSession` is the ONE production writer of the Leave
 War's role.")* Its absence is pinned in `ui/accounts-ui.test.tsx` (which replaced `roletoggle.test.tsx`);
 the localhost probe bridge keeps a role switch for the e2e suite and the walk. **Undo is per sign-in:** `resetSession`
-empties the one undo list on every sign-in and sign-out (`undo/timeline.ts endUndoSession` — the 13 Sep 26 rule, D148).
+empties the one undo list on every sign-in and sign-out (`undo/timeline.ts endUndoSession` — the 13 Sep 26 rule, D148);
+a change of the same person's role while he is signed in is no sign-out and keeps it (`refreshAccess`, fix read 2), and
+a step he can then no longer reach is blocked for good, said once (`state/undo-wire.ts stepStuck`).
 
 Inputs opened because they are the crews' OWN leave, downchits and
 detachments — the reference's `View only — ask a scheduler` gate made the

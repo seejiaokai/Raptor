@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { SESSION } from '../state/auth'
 import { sessionNow } from '../state/accounts'
-import { notify, resetSession } from '../state/store'
+import { notify, resetSession, refreshAccess } from '../state/store'
 import { roleOf } from '../state/perms'
 import { useVersion } from './useStore'
 import { Login } from './Login'
@@ -37,7 +37,12 @@ export function App() {
   useEffect(() => {
     const next = sessionNow()
     if (next === undefined) return
-    resetSession(next)
+    /* (fix read 2 — Astra 2: the same account and the same person, only what his account gives has changed — his own
+       move's day come, or another admin changed his role — is no sign-out, so his Undo list stays, D148; a suspension, a
+       deleted account and an account put on another person keep the full reset) */
+    const samePerson = !!SESSION.acct && !!next && !!next.acct && next.user === SESSION.user && next.pid === SESSION.pid
+    if (samePerson) refreshAccess(next)
+    else resetSession(next)
     notify()
   })
   /* WHO IS SIGNED IN DECIDES THE WHOLE TREE ([ACCOUNTS], D204, 26 Sep 26): nobody —

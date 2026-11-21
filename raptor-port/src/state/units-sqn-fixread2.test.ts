@@ -12,7 +12,7 @@
    - Astra 5: an Undo's history line filed with the change it takes back, across a midnight move. */
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { storeBackend, store } from '../engine/hooks'
-import { initStore, resetSession, notify, writeInputsBatch } from './store'
+import { initStore, resetSession, notify, writeInputsBatch, switchUnit } from './store'
 import { INPUTS, leadOf } from '../engine/inputs'
 import { signIn, sessionFor, updateAccount, accountById, accountsLoad, seedAccounts, deleteAccountProblem, otherSquadronPersonProblem, levelIn } from './accounts'
 import { setSession, setEffectiveRole } from './auth'
@@ -418,7 +418,11 @@ describe("still open 3 — a squadron's Tracker is changed only by its own peopl
     setTrkUnitProbe(() => 'u149')
     signInAs('ad9', 'a9'); expect(ownershipViolation(env())).toBeNull()
     signInAs('us9', 'us9'); expect(ownershipViolation(env())).toBeNull()
-    signInAs('ad', 'a'); expect(ownershipViolation(env())).toBeNull()
+    /* (setup only — fix read 2, Astra 3's F3: the master's Tracker of 149 is one he opened on purpose, 149 picked — the
+       page's own squadron then, D2197; a Tracker bound to a squadron that is not his page's is refused him too) */
+    signInAs('ad', 'a')
+    expect(ownershipViolation(env())).toMatch(/not the page's own squadron today/)
+    switchUnit('u149'); expect(ownershipViolation(env())).toBeNull()
     setTrkUnitProbe(() => 'u142')
     signInAs('ad2', 'a2'); expect(ownershipViolation(env())).toBeNull()
     signInAs('us', 'us'); expect(ownershipViolation(env())).toBeNull()

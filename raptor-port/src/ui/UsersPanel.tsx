@@ -301,14 +301,20 @@ function PersonRow(p: { pid: string; open: boolean; ringed?: boolean; onToggle: 
 function PersonEditor(p: { pid: string; a: Account | undefined; callsign: string; onClose: () => void }) {
   const { a, callsign } = p
   const [name, setName] = useState(a ? a.name : '')
-  const [role, setRole] = useState<AccountRole>(a ? a.role : 'main')
+  /* THE ROLE HIS ACCOUNT GIVES TODAY, as his row's badge reads it (roleWordOf — accounts.ts adminNow), never the stored
+     role alone (the sign-in re-walk, 22 Nov 26): an admin who moved squadron is a member of the one he joined (K3, D2160)
+     while his account still stores "admin", so the box opened on Admin beside a row reading MEMBER, and saving Admin
+     changed nothing and said nothing. Picking Admin and saving now sends the role, and the account door records it for
+     the squadron he is in today (accounts.ts updateAccount, adminRecFor). */
+  const roleNow: AccountRole = a && isAdminAccount(a) ? 'admin' : 'main'
+  const [role, setRole] = useState<AccountRole>(roleNow)
   /* the delete's first tap arms it; Cancel, closing the editor or another row disarms it (the editor unmounts) */
   const [armDel, setArmDel] = useState(false)
   const save = () => {
     if (!a) return
     const patch: any = {}
     if (name !== a.name) patch.name = name
-    if (role !== a.role) patch.role = role
+    if (role !== roleNow) patch.role = role
     if (!Object.keys(patch).length) return p.onClose()
     if (done(updateAccount(a.id, patch), 'Saved')) p.onClose()
   }

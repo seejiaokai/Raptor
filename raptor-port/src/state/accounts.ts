@@ -451,7 +451,10 @@ function relinkRightsProblem(a: Account): string | null {
    another squadron's man is told whose he is, as Suspend and Delete tell him, never the commit gate's own words, "You can
    only edit your own row" or "That did not save" (the fix read of multi-squadron batch 1's full check, 18 Nov 26 — Opus
    4). An admin's question only: a member stays "your own row only", which is his rule. */
-export function otherSquadronPersonProblem(pid: string): string | null {
+/* (`account` — the door asks for the account's sentence, "…can change his account.", the one his rulings carry; the
+   sign-in re-walk of 22 Nov 26 found Archive saying "…can change him." beside Member, Suspend and Delete's. Its door,
+   leavewar/sync.ts archivePerson, passes it when the host wires it; every other caller keeps its words.) */
+export function otherSquadronPersonProblem(pid: string, account = false): string | null {
   const mine = SESSION ? accountById(SESSION.user) : undefined
   /* an admin is the role IN FORCE, as the commit gate reads it — the developer bridge's raised role included (the second
      fix read, 18 Nov 26 — Astra 7: a member raised to admin heard "You can only edit your own row"); the account's own
@@ -461,7 +464,7 @@ export function otherSquadronPersonProblem(pid: string): string | null {
   if (!u) return null
   if (levelOfAccount(levelAcct(mine, 'admin'), u, todayIso()) === 'admin') return null
   const num = unitById(u)?.num ?? u
-  return `He is ${num}'s. Only an admin of ${num} can change him.`
+  return account ? `He is ${num}'s. Only an admin of ${num} can change his account.` : `He is ${num}'s. Only an admin of ${num} can change him.`
 }
 
 /* ---- SIGNING IN: what the sign-in card turns into (D204) ---- */
@@ -902,8 +905,16 @@ export const accountBefore = (id: string, image: any): any => image ?? (SEEDS_ON
    view moves and again inside the restore itself (undo/timeline.ts applyRestore). A sentence, or null.
    `next` — the accounts list the restore would leave (null: unchanged); `reqs` — the access requests it would leave. */
 /* (`rows` — the unit rows the restore would leave, when it changes any: the lock judges them, as the gate does) */
-export function accountsRestoreProblem(next: any[] | null, reqs: any[] | null, people: Record<string, any>, rows?: UnitRows): string | null {
+export function accountsRestoreProblem(next: any[] | null, reqs: any[] | null, people: Record<string, any>, rows?: UnitRows, rowsChange = false): string | null {
   const list: any[] = next ?? ACCOUNTS_LIST
+  /* at least one admin who can sign in, and one of each squadron (ADMIN_LOCK — the write path's own guard). Asked when
+     the restore changes an account OR a squadron row (`rowsChange` — a move, a right given, lowered or taken away: fix
+     read 2 — such a step changes no account, so the lock was never asked and the gate's refusal reached him as the
+     generic words, D2184 Q10). Asked first, as the doors ask it. */
+  if (next || rowsChange) {
+    const locked = lockProblem(list, pid => people[pid], rows)
+    if (locked) return locked
+  }
   if (next) {
     const ids = new Set<string>(), names = new Set<string>(), pids = new Set<string>()
     for (const a of list) {
@@ -919,9 +930,6 @@ export function accountsRestoreProblem(next: any[] | null, reqs: any[] | null, p
       const p = people[a.pid]
       if (a.on !== false && p.archived && !p.deleted && !(live && live.on)) return `${p.cs} is archived — restore him on Admin → Users first`
     }
-    /* at least one admin who can sign in (ADMIN_LOCK — the write path's own guard) */
-    const locked = lockProblem(list, pid => people[pid], rows)
-    if (locked) return locked
     /* never the signed-in person's own account (the D166 guard — every field he would sign in with: Astra's red team 2) */
     const mine = ACCOUNTS_LIST.find(ownAccount)
     if (mine) {
