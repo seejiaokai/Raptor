@@ -158,6 +158,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - Every chat's title starts with its number — 1 the M365 package chat, 2 the rules diet's step 4, then counting on — and each chat says its number when it reports to him; the handoff file keeps the next free number [D1744].
 
 ## Names and privacy
+- His personal instructions file and the agent's working notes about him never go into the public project; a copy for a move is one private file on his PC [D2254].
 - The bare squadron number only; never the squadron or service abbreviation [D58]; "a fighter squadron", the bare "F-15", the Tracker's event-box hint reading the bare type [D63, D64]; the Tracker's syllabus data is outside every privacy sweep [D62]; the commander briefing deck is his and stays — never propose wiping it [D57].
 
 ## App-wide product rules (to move to their area pages)
