@@ -1190,7 +1190,8 @@ in phase 2 and for Q8's words in phase 3.
   before any helper builds on it**, every claim reproduced red before it counts; Sonnet walks; the four-reader fix read
   of phase 4 stands (D2236). **From 21 Nov 26 (his D2255, chat 131):** Fable is used fully — the chat runs on Fable
   and builds, Fable helpers build and read; a Fable reader is a fresh, blind helper, never the chat that wrote the
-  piece; Astra and the fresh Opus reader stay the readers of another model; Sonnet still walks.
+  piece; Astra and the fresh Opus reader stay the readers of another model. **The walkers (his D2256, 21 Nov 26):**
+  Opus walks in place of Sonnet until he says to change back.
 - **No two jobs built at once share a file.** Phase 2's helpers start only once phase 1 is committed, because they call
   its bodies and gate halves. The core builder's phase 2 runs beside them.
 - **Ordered inside phase 2:** "own pages" wires the Inputs calendar only after "session" commits the routed planning
@@ -1335,7 +1336,7 @@ questions as recommended"*). The drawings on the questions page are the approved
     (chat 128, 21 Nov 26): his D1667 — a refused change opens with "Blocked:", never "Not saved", the failed-save band's
     alone; D2240/D2241 ruled the sentence's role words, not its opening, and the drawing had none — told to him.**
 
-## 13. The walks (Sonnet walkers, the host opening every picture that decides something; desktop 1536×864 and iPhone 402)
+## 13. The walks (Sonnet walkers — Opus from 21 Nov 26 until he says to change back, D2256 — the host opening every picture that decides something; desktop 1536×864 and iPhone 402)
 
 - **Setup:** a move is saved through the developer bridge, since no screen saves one yet. That is setup only; every
   control checked is pressed on screen (the order's §7.0). The browser clock is moved to the day before, the move day
