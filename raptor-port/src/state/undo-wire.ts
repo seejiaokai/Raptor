@@ -51,6 +51,7 @@ import { UNIT_ROW_PREFIXES } from './units-model'
 import { noticeLeftBell, type Notice } from './notices'
 import { UNIT } from '../engine/unitview'
 import { split, localOf, qualify } from '../storage/unitid'
+import { storedPlan } from './plan-foreign'
 
 /* the 8 collections schedStore owns (the scheduler week + inputs + plan). NOT
    `weekstash` — that is the separate weekstashStore's one collection, registered
@@ -461,6 +462,18 @@ export function installGlobalUndo(): void {
     worldNow,
     unitInView,
     canReach,
+    /* the planning record's per-record store (the reshape plan §3.2 A-ii, "Through Undo, in both directions"): a note or
+       a day title of a squadron NOT loaded as the restore is applied goes to that squadron's stored calendar
+       (state/plan-foreign.ts), which loads the records it will write before it enlists — so the note is put back as it
+       was, stored and in the page's kept copy, and a refused restore rolls it back whole; the squadron loaded keeps the
+       schedule's store, as before */
+    storeFor: (c) => {
+      if (c.collection !== 'plan') return null
+      const u = split(String(c.id)).unit
+      if (!u || u === UNIT) return null
+      const s = storedPlan(u)
+      return { store: s, join: (txn, cs) => s.join(txn, cs.map(x => split(String(x.id)).local)) }
+    },
     // currentActor OMITTED — the timeline defaults to deriveActor().
   })
   /* …and the commit gate trusts a restore only where the timeline vouches for it, record by record (perms.ts) */

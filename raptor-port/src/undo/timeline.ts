@@ -22,7 +22,7 @@ import {
 import { commitAs, CmdRefused } from '../command/commit'
 import { deepEqual } from '../command/util'
 import type {
-  Actor, Change, CommitEnvelope, EnlistableStore, Module, RecordEntry, Scope,
+  Actor, Change, CommitEnvelope, EnlistableStore, Module, RecordEntry, Scope, Txn,
 } from '../command'
 import type { RecordCtx, RecordOwner, UndoEntry } from './types'
 import {
@@ -129,6 +129,12 @@ export interface UndoHooks {
      holds Plan of today)? A step sharing a record with a step left in a world he can never enter again is blocked for good
      (Fable 4 of round 3). None installed: always. */
   canReach?(unit: string): boolean
+  /* THE STORE OF ONE RECORD, WHEN IT IS NOT ITS COLLECTION'S (the reshape plan §3.2 A-ii, "Through Undo, in both
+     directions" — Fable 3, Opus 4 of round 3): a planning record of a squadron not loaded is written by that squadron's
+     stored calendar (state/plan-foreign.ts), never the schedule's store, which refuses another squadron's planning record.
+     Asked as the restore is applied — the squadron loaded then decides — with how the store joins: it loads the records it
+     will write before it enlists, so its before-image is the record as stored. None installed, or null: the collection's. */
+  storeFor?(c: Change): { store: EnlistableStore; join(txn: Txn, changes: Change[]): void } | null
 }
 let hooks: UndoHooks = {}
 export function setUndoHooks(h: UndoHooks): void { hooks = h }
@@ -860,13 +866,18 @@ function applyRestore(entry: UndoEntry, changesIn: Change[], dir: 'undo' | 'redo
   const changes = redate ? kept.map(c => redate(c, dir, offAt, other?.[key(c)])) : kept
   // group the write entries by their owning store
   const byStore = new Map<EnlistableStore, RecordEntry[]>()
+  /* (A-ii: the store a record goes to, chosen per record — a planning record of a squadron not loaded to its stored
+     calendar, which joins with the records it will write) */
+  const joins = new Map<EnlistableStore, { join(txn: Txn, changes: Change[]): void; changes: Change[] }>()
   const missing: string[] = []
   for (const ch of changes) {
-    const store = storeOf.get(ch.collection)
+    const alt = hooks.storeFor ? hooks.storeFor(ch) : null
+    const store = alt ? alt.store : storeOf.get(ch.collection)
     if (!store) { missing.push(ch.collection); continue }
     let list = byStore.get(store)
     if (!list) { list = []; byStore.set(store, list) }
     list.push(toRecordEntry(ch))
+    if (alt) { const j = joins.get(store); if (j) j.changes.push(ch); else joins.set(store, { join: alt.join, changes: [ch] }) }
   }
   if (missing.length) return { ok: false, reason: `no restore target for ${missing.join(', ')}` }
   // pin the expected revisions of every written record (§4.2 atomic net)
@@ -880,14 +891,15 @@ function applyRestore(entry: UndoEntry, changesIn: Change[], dir: 'undo' | 'redo
   /* this restore, named for the commit gate's question (verifiedReplay) — for exactly as long as it is being applied */
   APPLYING = { entry, changes, dir }
   let r: ReturnType<typeof commitAs>
-  try { r = restoreCommit(entry, changes, dir, byStore, expectedRevs, cur, pulledBack) } finally { APPLYING = null }
+  try { r = restoreCommit(entry, changes, dir, byStore, expectedRevs, cur, pulledBack, joins) } finally { APPLYING = null }
   /* a DELIBERATE refusal raised inside (CmdRefused — a restore rule's second check, B5 §11.3) keeps its own sentence */
   if ((r as any).ok === false) return { ok: false, reason: (r as any).reason === 'refused' && (r as any).message ? `REFUSE: ${(r as any).message}` : ((r as any).message || 'conflict') }
   entry.stoodBefore = { ...entry.stoodBefore, [dir]: stood }
   return { ok: true, seq: (r as any).seq }
 }
 function restoreCommit(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo', byStore: Map<EnlistableStore, RecordEntry[]>,
-  expectedRevs: Record<string, number>, cur: Actor, pulledBack: Array<{ weekId: string; di: number }>): ReturnType<typeof commitAs> {
+  expectedRevs: Record<string, number>, cur: Actor, pulledBack: Array<{ weekId: string; di: number }>,
+  joins: Map<EnlistableStore, { join(txn: Txn, changes: Change[]): void; changes: Change[] }> = new Map()): ReturnType<typeof commitAs> {
   return commitAs(
     {
       type: 'undo.restore',
@@ -907,7 +919,8 @@ function restoreCommit(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo'
         try {
           // C5 — enlist EVERY store in the closure FIRST, so a later store's refusal
           // rolls back every earlier store's snapshot (publish closures are multi-store).
-          for (const [store] of byStore) txn.enlist(store)
+          /* (a store chosen per record joins its own way — it loads what it will write, then enlists: A-ii) */
+          for (const [store] of byStore) { const j = joins.get(store); if (j) j.join(txn, j.changes); else txn.enlist(store) }
           for (const [store, list] of byStore) store.write!(list, { allowIssued: true, restore: true })
           if (hooks.postRestore) hooks.postRestore(entry, dir, pulledBack)
           /* the change history's Undo / Redo line, INSIDE the restore ([DB-READINESS] group A, phase 4.1 — F2-03): it is
