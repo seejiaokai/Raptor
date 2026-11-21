@@ -460,7 +460,7 @@ export function resetSession(s: any) {
   resyncSchedBaseline()
   /* THE SIGNED-IN PERSON ([ACCOUNTS], D166 (3), 26 Sep 26): signing in makes you that
      callsign — `s.pid` is the account's person (null for someone signed in without
-     access: pending, a guest, an account switched off). It is what every own-row rule
+     access: pending, an account switched off — the guest view is removed, D2239). It is what every own-row rule
      asks (state/perms.ts), and what the Leave War's own-row rule reads (the sync mirrors
      it into the war's `viewer`). "View as" is retired, so nothing else sets it in
      production. A logout, or a headless call with no `pid` (the unit tests' bare
@@ -1047,10 +1047,9 @@ export function wireStore() {
      the drawer open. Guarded for jsdom, which has no matchMedia. */
   /* the name the edit log (and a bug report, and the Tracker's mark stamps) records:
      since [ACCOUNTS] (D166 (5), 26 Sep 26) the signed-in CALLSIGN — replacing D104's
-     shared "Admin" / "Squadron member". A guest reads "Guest". */
+     shared "Admin" / "Squadron member". (The guest view is removed — D2239.) */
   HOOKS.whoami = () => {
     if (!SESSION) return 'Unknown'
-    if (roleOf() === 'guest') return 'Guest'
     const pid = me()
     const p = pid ? (PEOPLE as any)[pid] : null
     return p ? String(p.cs) : String(SESSION.name || SESSION.user)
