@@ -27,7 +27,7 @@ import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks, setDescribeNames,
 } from '../undo'
 import { verifiedReplay, verifiedWarRestore, restoreOffAt, restoreDir, applyingRestore } from '../undo/timeline'
-import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, restoreStood, setRestoreOffAt, setRestoreDir, lwUnitNow, trkUnitNow, pageUnit, isAdmin, restoreLeavesOut, setRestoreGrantCtx, type RestoreGrantCtx } from './perms'
+import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, restoreStood, setRestoreOffAt, setRestoreDir, lwUnitNow, trkUnitNow, pageUnit, isAdmin, restoreLeavesOut, setRestoreGrantCtx, madeAsAdmin, type RestoreGrantCtx } from './perms'
 import type { RecordCtx, UndoEntry } from '../undo/types'
 import type { Change } from '../command'
 import { setRecordKeyHook } from '../command/commit'
@@ -508,7 +508,7 @@ function stepStuck(changes: Change[], entry: UndoEntry): boolean {
     const key = id.slice(UNIT_PFX.length)
     if (rows.homes.some(h => h.unit === key && String(h.from) <= today)) return true
   }
-  if (entry.actor.role !== 'admin') return false
+  if (!madeAsAdmin(entry.actor)) return false
   /* (the session as it was made again from his account — ui/App.tsx, accounts.ts sessionNow: `acct` is the role the
      account gave then; a session with none, the developer bridge's, is never judged) */
   if (SESSION.acct && SESSION.acct !== 'admin' && !adminNow(acct)) return true

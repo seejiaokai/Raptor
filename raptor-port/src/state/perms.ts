@@ -1834,6 +1834,8 @@ function warUnitViolation(env: CommitEnvelope): string | null {
 let TRK_UNIT: LwUnit | null = null
 export function setTrkUnitProbe(fn: LwUnit | null): void { TRK_UNIT = fn }
 export const trkUnitNow = (): string | null => (TRK_UNIT ? TRK_UNIT() : null)
+/* was a recorded step made in the admin's role (state/undo-wire.ts stepStuck asks — a role is read here, D200 (3)) */
+export const madeAsAdmin = (actor: { role?: unknown } | null | undefined): boolean => !!actor && actor.role === 'admin'
 function trkUnitViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || (a.role !== 'admin' && a.role !== 'member')) return null

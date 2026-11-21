@@ -7000,7 +7000,9 @@ set (every Restore sets it) — "**Welcome back, <cs>** — check your quals and
 suspended, his account deleted, or his person archived or deleted, after he signed in) is turned off on the next repaint —
 the "Your access is suspended" screen; one whose account another admin gave a different role or person is made again
 from the account as it now stands, still signed in (`ui/App.tsx`, `accounts.ts sessionNow`; round 1 — Fable F8 / Astra 4;
-the final code read — Astra 1).
+the final code read — Astra 1). Where only the role changed — the same account, the same person — the page he is on and
+his open windows stay, an admin-only page alone going back to View-only Sched, and his Undo list is kept
+(`state/store.ts refreshAccess`; fix read 2, 22 Nov 26 — D148, D2243 Q7).
 
 **The Leave War after the one door** also carries an archived man's rename (Save name) onto his kept row — a deleted man
 keeps the name he flew under (D297) — and a post-in moved to the day after his earlier stint closed joins the two into one
