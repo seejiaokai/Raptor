@@ -69,6 +69,10 @@ export interface UndoEntry {
   /* D1263 — the record keys this step changed on a Leave War day already closed for its maker when he made it (the
      `closedAtStep` hook, asked as the step was recorded). Only an Undo of such a step may put a bid back there. */
   closedAt?: string[]
+  /* A-v (the reshape plan §3.2) — the squadron each world it wrote held when it was made (the envelope's stamp, its folded
+     children's added): its Leave War and Tracker records are keyed by it (derive.ts recordKey), and it is eligible only
+     while each of those worlds holds that squadron again. Absent: no world door, or a step that wrote neither world. */
+  stamp?: Record<string, string>
 }
 
 export type { Actor, Boundary, Change, Scope, Module }

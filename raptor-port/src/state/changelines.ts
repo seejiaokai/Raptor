@@ -40,7 +40,7 @@ import type { RoleIdentity } from '../engine/mission-role'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
-import { homeUnitOf } from '../engine/roster'
+import { homeUnitOf, rosterToday } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
 import { isOD, dateOrd, INPUTS, inpLabel, inpKindTag, isFly, isLeave, titleOf, toOf, isSansAvail, sansLetters, idsOf, leadOf, namedOf, placeholderOf, remarksTyped, tillShown, tillTurned } from '../engine/inputs'
 import { parseVerId, dayIso } from '../engine/verid'
@@ -630,9 +630,11 @@ function roleFormationName(role: RoleIdentity): string {
 }
 /* the squadron a change to men of the roster is filed with: each man's own, read on the day it is asked — one squadron
    only, and only a change made of the roster alone; '' otherwise (the squadron in view) */
-function peopleLineUnit(forward: readonly Change[]): string {
+/* (the reshape plan §3.2 A-i: each man's squadron on the DAY THE CHANGE IS FILED, named — today as it is made; for a step
+   made before this page life kept its line, the day the step was made, else today) */
+function peopleLineUnit(forward: readonly Change[], iso: string): string {
   const homes = new Set<string>()
-  for (const c of forward) if (c.collection === 'people' && (PEOPLE as any)[String(c.id)]) homes.add(homeUnitOf(String(c.id)) ?? UNIT)
+  for (const c of forward) if (c.collection === 'people' && (PEOPLE as any)[String(c.id)]) homes.add(homeUnitOf(String(c.id), iso) ?? UNIT)
   return homes.size === 1 && forward.length > 0 && forward.every(c => c.collection === 'people') ? [...homes][0]! : ''
 }
 /* a user's change to men of the roster: the squadron its line was filed with as it was made, by the command's sequence
@@ -641,12 +643,14 @@ const LINE_UNIT = new Map<number, string>()
 const LINE_UNIT_CAP = 500
 function keepLineUnit(env: CommitEnvelope): void {
   if (typeof env.seq !== 'number') return
-  const u = peopleLineUnit(env.changes)
+  const u = peopleLineUnit(env.changes, rosterToday())
   if (!u) return
   LINE_UNIT.set(env.seq, u)
   if (LINE_UNIT.size > LINE_UNIT_CAP) LINE_UNIT.delete(LINE_UNIT.keys().next().value as number)
 }
-export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 'undo' | 'redo'): void {
+/* the local day of a moment (the step's `madeAt`) */
+const dayOfMs = (ms: number): string => { const d = new Date(ms); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` }
+export function logReversed(entry: { label?: string; forward?: Change[]; madeAt?: number }, dir: 'undo' | 'redo'): void {
   const days = new Set<string>()
   const addSpan = (s: Span | null) => { if (!s) return; for (let d = s.date; d <= s.end; d = nextIso(d)) days.add(d) }
   for (const c of entry.forward || []) {
@@ -674,7 +678,7 @@ export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 
      the Undo, a man moved to another squadron at midnight in between took his Undo there (the second fix read, 18 Nov
      26 — Astra 5). A step made before this page life kept it (none now) reads the squadron now, as before. */
   const seq = (entry as any).seq
-  const unit = (typeof seq === 'number' && LINE_UNIT.has(seq) ? LINE_UNIT.get(seq) : peopleLineUnit(entry.forward || [])) || undefined
+  const unit = (typeof seq === 'number' && LINE_UNIT.has(seq) ? LINE_UNIT.get(seq) : peopleLineUnit(entry.forward || [], typeof entry.madeAt === 'number' ? dayOfMs(entry.madeAt) : rosterToday())) || undefined
   const say = (text: string, at: LineAt) => logAction(null, text, unit ? { ...at, unit } : at)
   if (!sorted.length) {
     /* an Undo line only where its change wrote a line of its own (the change-recording plan §11.9, walker A2-F5): the

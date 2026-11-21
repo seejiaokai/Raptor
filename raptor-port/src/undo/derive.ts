@@ -9,10 +9,71 @@ import type { Change, LogicalCollection } from '../command'
 import type { RecordCtx, RecordOwner, Module } from './types'
 import { decodeRoleId } from '../engine/mission-role'
 import { onlyNamed, idsOf } from '../engine/inputs'
-import { localOf } from '../storage/unitid'
+import { localOf, split } from '../storage/unitid'
 
-export function recordKey(c: { collection: string; id: string }): string {
+/* EVERY UNDO STEP CARRIES ITS SQUADRON (the reshape plan §3.2 A-v — Fable F2, Astra 2 of round 1; Astra 3, Fable 5 of
+   round 2; Opus 5, Opus 6 of round 3). Each squadron has a Leave War and a Tracker of its own, but their record ids name
+   none (the storage door adds it), so 142's and 149's `lw.config/all` were one record to Undo. A step's envelope is
+   stamped with the squadron each world held (CommitEnvelope.stamp — `{ lw: 'u142', trk: 'u149' }`), and every place Undo
+   compares records reads this ONE key: `<collection>/<unit>@<id>` for a Leave War (`lw.*`) or Tracker (`trk.*`) record
+   whose world is stamped; every other record `<collection>/<id>` as before — the schedule's, the planning calendar's and a
+   unit's settings name their squadron in their ids already, and inputs, notices, people, accounts and requests are no
+   squadron's world (an input filed at 23:50 is still his to undo after his move).
+   THE SECOND STORE'S ROWS ARE THE WAR'S OWN RECORDS (leavewar/state/foreign.ts — Admin → Users' doors writing another
+   squadron's stored war): `lwx.profile/<u>@<pid>` is that war's posting record `lw.postouts/<u>@<pid>`, `lwx.ledger/<u>@<id>`
+   its ledger entry `lw.ledger/<u>@<id>`, and `lwx.rec/<u>@<warId>:<recId>` one row inside a war cell — keyed as that cell,
+   `lw.cell/<u>@<warId>:<pid>:<date>`, its man and day read from the row's image. So a door's change is a later change to
+   the war step it meets, and its Undo is refused, never written back over a deleted man's records. Stored keys, the ids
+   the stores and the gate read, and saved data do not change: only Undo's comparisons. */
+export type WorldStamp = Readonly<Record<string, string>>
+/** the world a collection belongs to, for the stamp: the Leave War's (`lw.*`) and the Tracker's (`trk.*`), or null */
+export function worldOfColl(collection: string): 'lw' | 'trk' | null {
+  if (collection.startsWith('lw.')) return 'lw'
+  if (collection.startsWith('trk.')) return 'trk'
+  return null
+}
+function foreignKey(c: { collection: string; id: string; before?: unknown; after?: unknown }): string | null {
+  const { unit, local } = split(String(c.id))
+  if (!unit) return null
+  if (c.collection === 'lwx.profile') return `lw.postouts/${unit}@${local}`
+  if (c.collection === 'lwx.ledger') return `lw.ledger/${unit}@${local}`
+  if (c.collection === 'lwx.rec') {
+    const img: any = c.after ?? c.before
+    const cut = local.lastIndexOf(':')
+    if (cut <= 0 || !img || typeof img !== 'object' || typeof img.pid !== 'string' || typeof img.date !== 'string') return null
+    return `lw.cell/${unit}@${local.slice(0, cut)}:${img.pid}:${img.date}`
+  }
+  return null
+}
+/** a record's key under a step's (or an envelope's) stamp — the one key everywhere Undo compares records */
+export function recordKeyIn(c: { collection: string; id: string; before?: unknown; after?: unknown }, stamp: WorldStamp | null | undefined): string {
+  const w = worldOfColl(c.collection)
+  const u = w && stamp ? stamp[w] : undefined
+  if (u) return `${c.collection}/${u}@${c.id}`
+  if (c.collection.startsWith('lwx.')) { const k = foreignKey(c); if (k) return k }
   return `${c.collection}/${c.id}`
+}
+/** a record's key with no stamp (a record of no squadron's world, or none to read it by) — one argument, so it maps */
+export function recordKey(c: { collection: string; id: string; before?: unknown; after?: unknown }): string {
+  return recordKeyIn(c, undefined)
+}
+/** a key written `<collection>/<id>` (a hook's — perms.ts lwClosedKeys) under the step's stamp */
+export function stampKey(key: string, stamp?: WorldStamp | null): string {
+  const slash = key.indexOf('/')
+  return slash < 0 ? key : recordKeyIn({ collection: key.slice(0, slash), id: key.slice(slash + 1) }, stamp)
+}
+/** the stamp of the worlds `changes` wrote, each read through `now` (the gate's probes) — undefined when none answers */
+export function stampOf(changes: readonly { collection: string }[], now: (w: 'lw' | 'trk') => string | null): Record<string, string> | undefined {
+  let out: Record<string, string> | undefined
+  const seen = new Set<string>()
+  for (const c of changes) {
+    const w = worldOfColl(c.collection)
+    if (!w || seen.has(w)) continue
+    seen.add(w)
+    const u = now(w)
+    if (u) { if (!out) out = {}; out[w] = u }
+  }
+  return out
 }
 
 /* ---- context derivation (§8.1) ------------------------------------------- */
@@ -25,7 +86,8 @@ const WEEK_COLLS = new Set<string>([
    `<wk>#<di>` or `<wk>:<rest>`, so the week is the head before the first ':' or
    '#'. */
 export function weekOf(collection: string, id: string): string | null {
-  if (collection === 'insights.role') return decodeRoleId(id)?.weekKey ?? null
+  /* (K4: an answer's id names its squadron — `u149@<id>` — and so does its week, as every other week record's) */
+  if (collection === 'insights.role') { const wk = decodeRoleId(id)?.weekKey; if (!wk) return null; const u = split(id).unit; return u ? `${u}@${wk}` : wk }
   return WEEK_COLLS.has(collection) ? id.split(/[:#]/)[0] : null
 }
 

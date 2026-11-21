@@ -26,7 +26,7 @@ import type {
 } from '../command'
 import type { RecordCtx, RecordOwner, UndoEntry } from './types'
 import {
-  deriveContexts, deriveOwners, invertClosure, recordKey, sharesKeys, weekOf, dayKeyOf } from './derive'
+  deriveContexts, deriveOwners, invertClosure, recordKeyIn, sharesKeys, weekOf, dayKeyOf, stampKey } from './derive'
 import { describeEntry, bubbleText } from './describe'
 import { UNIT } from '../engine/unitview'
 import { unitOf } from '../storage/unitid'
@@ -117,6 +117,18 @@ export interface UndoHooks {
   /* the record a restore is about to write, as it stands now (only the rights and links the redate hook dates); none
      installed: nothing kept */
   stoodNow?(change: Change): unknown
+  /* A-v (the reshape plan §3.2) — WHICH SQUADRON A WORLD HOLDS NOW: the Leave War's (`lw`) or the Tracker's (`trk`) — the
+     gate's own probes (state/perms.ts lwUnitNow, trkUnitNow). A step stamped with a world's squadron is eligible only
+     while that world holds it again, asked at selection and again just before the restore writes. None installed: every
+     stamp holds (no world door, one war). */
+  worldNow?(world: 'lw' | 'trk'): string | null
+  /* the squadron "in view" for a step whose ids name one: the pick on the schedule pages, the page's own squadron on the
+     own pages (state/perms.ts pageUnit — equal today). None installed: the schedule in view (engine/unitview.ts UNIT). */
+  unitInView?(): string
+  /* CAN HE STILL REACH THIS SQUADRON — his own page's squadron now, or one a pick of his reaches (a master admin's, or one he
+     holds Plan of today)? A step sharing a record with a step left in a world he can never enter again is blocked for good
+     (Fable 4 of round 3). None installed: always. */
+  canReach?(unit: string): boolean
 }
 let hooks: UndoHooks = {}
 export function setUndoHooks(h: UndoHooks): void { hooks = h }
@@ -234,10 +246,10 @@ function carrySeen(env: CommitEnvelope): void {
   const over = hooks.seenOverlay
   if (!over) return
   for (const sc of env.changes) {
-    const k = recordKey(sc)
+    const k = recordKeyIn(sc, env.stamp)   // (A-v: each record as its own squadron's — a 149 "OK, seen" is never 142's)
     for (const e of entries) for (const list of [e.inverse, e.forward]) for (let i = 0; i < list.length; i++) {
       const c = list[i]
-      if (recordKey(c) !== k) continue
+      if (recordKeyIn(c,e.stamp) !== k) continue
       const before = c.before == null ? c.before : over(env.type, sc, c.before)
       const after = c.after == null ? c.after : over(env.type, sc, c.after)
       if (before !== c.before || after !== c.after) list[i] = { ...c, before, after }
@@ -323,9 +335,18 @@ function advanceExpectedNoBarrier(env: CommitEnvelope): void {
 
 /* D1263 — the step's records on a day already closed for its maker, read NOW, as the step lands (the day may open or
    close later; what counts is how it stood when he acted) */
-function closedAtOf(forward: Change[], actor: Actor): { closedAt?: string[] } {
+/* (A-v, Opus 6 of round 3: the hook names each record `<collection>/<id>`; it is kept under the step's stamp, so
+   verifiedWarRestore compares the one key — a 149 cell is never mistaken for 142's) */
+function closedAtOf(forward: Change[], actor: Actor, stamp?: Record<string, string>): { closedAt?: string[] } {
   const keys = hooks.closedAtStep ? hooks.closedAtStep(forward, actor) : []
-  return keys.length ? { closedAt: keys } : {}
+  return keys.length ? { closedAt: keys.map(k => stampKey(k, stamp)) } : {}
+}
+/* the stamps of a step and of a child folded into it: a world the step had not written yet takes the child's squadron */
+function mergeStamp(into: Record<string, string> | undefined, add: Record<string, string> | undefined): Record<string, string> | undefined {
+  if (!add) return into
+  const out = { ...(into || {}) }
+  for (const w of Object.keys(add)) if (!(w in out)) out[w] = add[w]!
+  return out
 }
 
 /* record a fresh user action as a new entry (its projection children fold in as
@@ -345,7 +366,8 @@ function recordEntry(env: CommitEnvelope): void {
     revs: { ...(env.revs || {}) },
     boundary: env.boundary,
     ...(env.detail ? { detail: env.detail } : {}),
-    ...closedAtOf(forward, env.actor),
+    ...(env.stamp ? { stamp: { ...env.stamp } } : {}),
+    ...closedAtOf(forward, env.actor, env.stamp),
     eligible: false,      // recomputed lazily (modules may cut over after record)
     undone: false,
     madeAt: Date.now(),   // (fault E of fix read 10: the day a right an Undo puts back went off)
@@ -389,6 +411,9 @@ function foldProjection(rootSeq: number, env: CommitEnvelope): void {
   const entry = bySeq.get(rootSeq)
   if (!entry) return
   rootOfSeq.set(env.seq, rootSeq)
+  /* (A-v) the child's worlds join the step's stamp — before its records are keyed by it below */
+  const st = mergeStamp(entry.stamp, env.stamp)
+  if (st) entry.stamp = st
   entry.forward.push(...env.changes)
   // recompute the closure-derived fields (contexts/owners/inverse) over the whole
   // forward list; NEVER coalesce a doubly-touched record (R2-14 — invertClosure
@@ -480,8 +505,10 @@ function isEligible(entry: UndoEntry): boolean {
   if (touchesDeferred(entry)) return false
   return true
 }
+/* (A-v) each record under the step's stamp — so `sharesKeys`, the barrier, `expected`, `writerOf`, `liveRevision` and the
+   forks all tell 142's war record from 149's (derive.ts recordKey) */
 function keySet(entry: UndoEntry): Set<string> {
-  return new Set(entry.forward.map(recordKey))
+  return new Set(entry.forward.map(c => recordKeyIn(c,entry.stamp)))
 }
 
 /* ---- authorization: mayReverse (§5) -------------------------------------- */
@@ -520,7 +547,29 @@ function unitsOf(e: UndoEntry): Set<string> {
   if (!s) { s = new Set(); for (const ch of e.forward) { const u = unitOf(String(ch.id)); if (u) s.add(u) } UNITS_OF.set(e, s) }
   return s
 }
-function inUnitView(e: UndoEntry): boolean { const us = unitsOf(e); return us.size === 0 || us.has(UNIT) }
+/* …AND EACH WORLD IT WROTE HOLDS NOW THE SQUADRON IT WAS WRITTEN IN (the reshape plan §3.2 A-v — Fable F2, Astra 2 of
+   round 1). A Leave War or Tracker step names no squadron in its ids, so it passed here in any squadron: after the midnight
+   swap (or a master admin's pick) an Undo would have written 142's war step into 149's war. Its stamp says which squadron
+   each world held; while the world holds another, the step waits — passed over silently, as a step in another squadron
+   is (Fable 5: no new words). "In view" is the page's squadron (the hook; equal to the pick today). A step with no stamp
+   (made with no world door, or before this build) is judged as before (D56). */
+function stampHolds(e: UndoEntry): boolean {
+  const st = e.stamp, now = hooks.worldNow
+  if (!st || !now) return true
+  for (const w of Object.keys(st)) if (now(w as 'lw' | 'trk') !== st[w]) return false
+  return true
+}
+function unitInView(): string { return hooks.unitInView ? hooks.unitInView() : UNIT }
+function inUnitView(e: UndoEntry): boolean { const us = unitsOf(e); return (us.size === 0 || us.has(unitInView())) && stampHolds(e) }
+/* A STEP LEFT IN A WORLD HE CAN NEVER ENTER AGAIN (Fable 4 of round 3): its stamp names a squadron that is not his own
+   page's now, and no pick of his reaches it (he is no master admin and holds no Plan of it today). It can never be taken,
+   so a step that shares a record with it — an input filed at 23:30 and moved in 142's Leave War at 23:50, his move to 149
+   counting at midnight — can never pass either: blocked for good, in today's sticky words, instead of "undo that first"
+   on every press. One he can still go back to keeps "undo that first". */
+function unreachable(o: UndoEntry): boolean {
+  if (!o.stamp || stampHolds(o) || !hooks.canReach) return false
+  return Object.values(o.stamp).some(u => !hooks.canReach!(u))
+}
 /* AN INPUT HE FILED FOR ANOTHER MAN (the group input — owner D654, D655; the build plan §3.13, both readers' finding
    G3). A member's step may hold records whose person is not him: a Meeting he filed for another man, an entry he
    filed for six. "Every record his own person's" would stop him undoing his own filing — so for each input in the
@@ -619,7 +668,8 @@ export function verifiedWarRestore(env: { origin: string; type: string; causedBy
   const want = new Map<string, Change>()
   for (const ch of a.changes) if (ch.collection === 'lw.cell') want.set(ch.id, ch)
   return (c: Change): boolean => {
-    if (c.collection !== 'lw.cell' || !closed.has(recordKey(c))) return false
+    /* (A-v, Opus 6 of round 3: under the step's stamp, as `closedAt` was kept) */
+    if (c.collection !== 'lw.cell' || !closed.has(recordKeyIn(c,a.entry.stamp))) return false
     const w = want.get(c.id)
     if (!w) return false
     if (w.op === 'delete') return c.op === 'delete'
@@ -748,6 +798,8 @@ function undoConflictOf(entry: UndoEntry): Conflict | null {
       /* the newer step is BLOCKED for good (refusedFor — D1263's code read): no press will ever take it, so this one can
          never pass either — passed over the same way, naming the step the next press takes */
       if ((o as any)[BLOCKED_U]) return { text: 'A later change touches the same thing and can’t be undone.', sticky: true }
+      /* …and so is one left in a world he can never enter again (A-v, Fable 4 of round 3): today's sticky words */
+      if (unreachable(o)) return { text: 'A later change touches the same thing and can’t be undone.', sticky: true }
       if (isEligible(o) && !deadFor(o, 'undo')) return { text: 'A later change touches the same thing — undo that first.', sticky: false }
       /* the newer step is one Undo never takes (D350): say which act, and that the way back is by hand (plan B3; Fable's
          final read, F3 — the generic sentence left a suspension behind an added person with no way forward) */
@@ -770,10 +822,13 @@ function redoConflictOf(entry: UndoEntry): Conflict | null {
       /* the earlier step is BLOCKED for good (refusedFor — the narrow read of D1263's fix, R1): no press will redo it, so
          this one never passes either — passed over, naming the step the next press takes */
       if ((o as any)[BLOCKED_R]) return { text: 'An earlier undone change touches the same thing and can’t be redone.', sticky: true }
+      /* (A-v, Fable 4 of round 3: an earlier step left in a world he can never enter again is never redone) */
+      if (unreachable(o)) return { text: 'An earlier undone change touches the same thing and can’t be redone.', sticky: true }
       return { text: 'An earlier undone change touches the same thing — redo that first.', sticky: false }
     }
     if (!o.undone && o.seq > entry.seq && sharesKeys(keySet(o), keys)) {
-      return { text: 'A later change touches the same thing — it can’t be redone over.', sticky: false }
+      /* (…and a later one there is never undone: sticky in this case only) */
+      return { text: 'A later change touches the same thing — it can’t be redone over.', sticky: unreachable(o) }
     }
   }
   return null
@@ -799,8 +854,10 @@ function applyRestore(entry: UndoEntry, changesIn: Change[], dir: 'undo' | 'redo
   const other = entry.stoodBefore?.[dir === 'undo' ? 'redo' : 'undo']
   const stoodNow = hooks.stoodNow
   const stood: Record<string, unknown> = {}
-  if (stoodNow) for (const c of kept) { const v = stoodNow(c); if (v !== undefined) stood[recordKey(c)] = v }
-  const changes = redate ? kept.map(c => redate(c, dir, offAt, other?.[recordKey(c)])) : kept
+  /* (every key here under the step's stamp — A-v: the one key everywhere Undo compares records) */
+  const key = (c: Change) => recordKeyIn(c,entry.stamp)
+  if (stoodNow) for (const c of kept) { const v = stoodNow(c); if (v !== undefined) stood[key(c)] = v }
+  const changes = redate ? kept.map(c => redate(c, dir, offAt, other?.[key(c)])) : kept
   // group the write entries by their owning store
   const byStore = new Map<EnlistableStore, RecordEntry[]>()
   const missing: string[] = []
@@ -815,7 +872,7 @@ function applyRestore(entry: UndoEntry, changesIn: Change[], dir: 'undo' | 'redo
   // pin the expected revisions of every written record (§4.2 atomic net)
   const expectedRevs: Record<string, number> = {}
   for (const ch of changes) {
-    const k = recordKey(ch)
+    const k = key(ch)
     if (expected.has(k)) expectedRevs[k] = expected.get(k)!
   }
   const cur = currentActor()
@@ -842,6 +899,10 @@ function restoreCommit(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo'
            moved. A refusal now rolls back nothing, because nothing was written — and keeps its own words. */
         const again = (hooks.deadRefusal && hooks.deadRefusal(changes, dir, entry)) || (hooks.restoreRefusal && hooks.restoreRefusal(changes, dir, entry))
         if (again) throw new CmdRefused(again)
+        /* A-v (the reshape plan §3.2): the step's worlds are asked again just before it writes — each must still hold the
+           squadron it was made in, or the restore would write one squadron's war or Tracker into another's. Nothing has
+           been written yet; today's words, as for any restore that could not go through */
+        if (!stampHolds(entry)) throw new CmdRefused('That couldn’t be completed just now.')
         const relock = hooks.reinstallLocks ? hooks.reinstallLocks() : undefined
         try {
           // C5 — enlist EVERY store in the closure FIRST, so a later store's refusal
