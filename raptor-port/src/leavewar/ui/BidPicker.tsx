@@ -44,6 +44,7 @@ import { DayLine } from './DayLine'
 import { dayLineCode } from './daylinecode'
 import { DutyButtons, GrantOilButton, LeaveButtons } from './LeaveButtons'
 import { bidHeldWhy, openInputDocs, sayOnWar } from '../sync'
+import { warBand } from '../../state/typing-hold'
 import { PlacedLine } from './PlacedLine'
 
 /** minutes of the day as `08:00` — the worked hours on an automatic credit */
@@ -499,7 +500,10 @@ export function BidPicker({
     if (!held) return setDraft(next)
     if (how === 'type') return setHeldEdit(next)
     const patch = patchOf(draftOf(held.rec), next)
-    if (patch) setRequestWords(personId, date, held.rec.id, patch)
+    /* WORDS WHOSE SAVE IS REFUSED STAY IN THE BOX (the reshape walk's W3-F1; his D2243 Q7 — "typed words kept visible"): in a
+       window held across midnight of his move the old squadron refuses the save, and the box fell back to the bid's stored
+       words — what he had typed gone, nothing said. The band over the window names the refusal; the words stay to copy. */
+    if (patch && !setRequestWords(personId, date, held.rec.id, patch)) return setHeldEdit(next)
     setHeldEdit(null)
   }
   /* the words a new bid is written with: the window's own on a new bid; on a held one its own carry over by themselves
@@ -511,6 +515,7 @@ export function BidPicker({
      day or the picked range — no bid, nothing to approve — with the words typed for something new (never a held bid's own,
      which its box speaks for); the window closes on it, as a leave placed does. Where nothing could be filed it says why. */
   const fileDuty = (code: string) => {
+    if (warBand()) return   // (under the midnight band nothing is filed — as `write` below, W3-F5)
     flushWords()
     /* an Other and an Attach take the window's Duration (his D1365, D1380 — whole day, AM or PM); a course and an overseas
        duty whole days */
@@ -534,14 +539,15 @@ export function BidPicker({
   const leaveFlush = useRef<(() => void) | null>(null)
   /* …and as the window leaves the screen by ANY road — the ⋯'s panels close it themselves (Give FO, Remove, Post out's and
      Post in's confirm): the fresh read's R7. Kept in a ref, saved once: a save already made clears it. */
-  const heldSave = useRef<(() => void) | null>(null)
+  const heldSave = useRef<(() => boolean) | null>(null)
   /* kept current once each render has committed (read only by a press and by the window's leaving, both after it) */
   useLayoutEffect(() => {
-    heldSave.current = held && heldEdit ? () => { const p = patchOf(draftOf(held.rec), heldEdit); if (p) setRequestWords(personId, date, held.rec.id, p) } : null
+    heldSave.current = held && heldEdit ? () => { const p = patchOf(draftOf(held.rec), heldEdit); return !p || setRequestWords(personId, date, held.rec.id, p) } : null
   })
   useEffect(() => () => { heldSave.current?.() }, [])
   const flushWords = () => {
-    if (heldSave.current) { heldSave.current(); heldSave.current = null; setHeldEdit(null) }
+    /* (a save the store refuses leaves his words in the box — W3-F1, as `onWords` above) */
+    if (heldSave.current) { const saved = heldSave.current(); heldSave.current = null; if (saved) setHeldEdit(null) }
     leaveFlush.current?.()
   }
   const closeKeeping = () => {
@@ -584,6 +590,11 @@ export function BidPicker({
   }, [markDates, personId])
 
   const write = (code: string) => {
+    /* UNDER THE MIDNIGHT BAND A LEAVE PRESS DOES NOTHING (the reshape walk's W3-F5; his D2243 Q7): the war under this window
+       is no longer his page's squadron's, so the write would be refused — and the window used to close on it with no word,
+       an admin's typed remarks gone. The band across the window is the refusal: nothing is written, nothing asked, the
+       window and his words stay until he closes it. (Delete is not held: a removal is never refused, Q3.) */
+    if (code && warBand()) return
     flushWords()   // words still in a box ride with the write (round 3's FULL check)
     /* the held half lit (or Whole day, which it greys): no leave is placed over leave the war approved — say which half to pick */
     if (code && heldHalf && portion !== (heldHalf === 'am' ? 'pm' : 'am')) {
