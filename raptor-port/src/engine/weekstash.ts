@@ -190,7 +190,10 @@ export function stashDays(v:any){
        week holds him on a day to come — person-delete.ts stashPreflight) */
     if(!isPreservedWeek(v)){
       const sc={dayOK:parsed.ok||{},cur:parsed.cv||{},als:parsed.a||[],orig:parsed.o||{},drafts:parsed.dr||{},amV:parsed.am};
-      const w=wkOf(v);
+      /* the week BY ITS SQUADRON (the reshape plan §7 C8): a week named by its qualified key ('u149@27/07/2026') is worked
+         out as that squadron's — its requests land, never the unit in view's; a bare key is the unit in view's (qk). The
+         bare date is for weekBundle's dates alone (above). */
+      const w=qk(v);
       viewOfWeek(w,days,{loaded:false,issued:(di:number)=>{
         if(!sc.dayOK[di])return null;
         const ver=dayCurVerIn(sc,di,w);
