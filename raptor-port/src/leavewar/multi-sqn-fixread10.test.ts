@@ -9,13 +9,13 @@ import { storeBackend, HOOKS, store as settingsStore } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputsBatch } from '../state/store'
 import { accountsLoad, signIn, sessionFor, setMaster, updateAccount, ACCOUNTS_LIST, accountOfPid, levelIn } from '../state/accounts'
-import { initStore as lwInitStore, setPeople, setCell, setBidState, getState, openDates, worldUnit, holidayAdd } from './state/store'
+import { initStore as lwInitStore, setPeople, setCell, setBidState, getState, openDates, worldUnit, holidayAdd, setRole } from './state/store'
 import { commitInput, draftOf } from '../ui/inputedit'
 import { ownershipViolation } from '../state/perms'
 import { deriveActor } from '../command/actor'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
-import { wireLeaveWarSync, setWarWorldDoor, postOut, undoPostOut } from './sync'
+import { wireLeaveWarSync, setWarWorldDoor, postOut, undoPostOut, swapWarWorld } from './sync'
 import { unitsLoad, setGrant, removeGrant, addUnit, homeOn, unitRows, grantOfOn } from '../state/units'
 import { HOME_PFX } from '../state/units-model'
 import { INPUTS } from '../engine/inputs'
@@ -85,7 +85,10 @@ const outlawReal = () => { signInAs('ad2', 'a2'); expect(updateAccount('acoutlaw
 const put = (n: any) => ({ collection: 'notices', id: n.id, op: 'put', before: null, after: n })
 /* A REAL HOLIDAY (fix read 11, fault C — the same as that file's): an input needing an OIL answer in each squadron on the
    working Friday 17 Jul, then that day made a holiday by the Holidays list's own door, whose line tells the schedulers */
-const realHoliday = (by: [string, string], name = 'National Day') => {
+/* (`war` — the squadron whose war is loaded to make it, 142's unless named: since the reshape plan's A4, his D2195, a
+   holiday is its own squadron's, so a line on 149's admin's bell comes only from 149's own holiday, made in 149's war by
+   its admin — the setup the cases that need such a line now use, §9.2) */
+const realHoliday = (by: [string, string], name = 'National Day', war?: string) => {
   const fileOn = (pid: string, filer: [string, string], title: string) => {
     signInAs(filer[0], filer[1])
     expect(commitInput(null, draftOf({ person: pid, type: 'Training', title, date: 'Jul 17', yr: 2026, allday: false, s: 540, e: 720, remarks: '' } as any), [pid]), 'filed: ' + title).toBe(true)
@@ -93,6 +96,7 @@ const realHoliday = (by: [string, string], name = 'National Day') => {
   fileOn('osp9', ['ad9', 'a9'], 'Range 149')
   fileOn('bane', ['ad2', 'a2'], 'Range 142')
   signInAs(by[0], by[1])
+  if (war) { swapWarWorld(war); setRole('admin'); expect(worldUnit()).toBe(war) }
   expect(holidayAdd({ kind: 'ph', name, from: '2026-07-17', to: '2026-07-17' }).ok).toBe(true)
 }
 /* Hunter files for Ranger; Saber's change on 15 Jul tells him (filer only, marked 142) */
@@ -220,11 +224,14 @@ describe('fault B — a new holiday line passes as the holiday\'s own only where
   })
   /* (made by the Holidays list's own door since fix read 11, fault C: a bare noticeHoliday in an input command no longer
      passes as the holiday's own — only the command that makes the holiday owes its line) */
-  it('(control) a real holiday made by Saber tells the schedulers, and its Undo and Redo go through', () => {
+  /* REWRITTEN TO D2195 in the reshape (the plan §7, A4; §9.3): it asserted that Saber's 142 holiday told 149's scheduler
+     too (kes9) — a holiday now tells its own squadron's schedulers only */
+  it('(control) a real holiday made by Saber tells his own squadron\'s schedulers, and its Undo and Redo go through', () => {
     realHoliday(['ad', 'a'])
     const told = () => NOTICES.filter(x => x.name === 'National Day').map(x => x.to).sort()
     const was = told()
-    expect(was).toEqual(expect.arrayContaining(['kes9', 'prowler']))
+    expect(was).toEqual(expect.arrayContaining(['prowler']))
+    expect(was, '149’s scheduler is not told of 142’s holiday (D2195)').not.toContain('kes9')
     expect(globalUndo().ok).toBe(true)
     expect(told()).toEqual([])
     const r = globalRedo(); expect(r.ok, JSON.stringify(r)).toBe(true)
@@ -263,8 +270,9 @@ describe('fault C — a record dropped from memory, then "new" under the same id
     expect({ ok, stored: storedLine(real.id)?.by }).toEqual({ ok: false, stored: 'stiff' })
   })
   it('(SEC10-2, SEC10-2b) another squadron\'s holiday line dropped, then re-added rewritten or re-addressed: refused', () => {
-    /* (the line made by the holiday's own door — fix read 11, fault C) */
-    realHoliday(['ad', 'a'])
+    /* (the line made by the holiday's own door — fix read 11, fault C; since D2195 Kestrel's line is 149's own holiday's,
+       made by him in 149's war — the reshape plan §9.2, setup only) */
+    realHoliday(['ad9', 'a9'], 'National Day', 'u149')
     const real = NOTICES.find(x => x.to === 'kes9' && x.name === 'National Day')!
     expect(real, 'Kestrel told of the holiday').toBeDefined()
     outlawReal(); signInAs('outlaw', 'x')

@@ -66,7 +66,6 @@ import {
   GROUP_ORDER,
   orderedPeople,
   readEventDefs,
-  holidayAt,
   DEFAULT_OIL_POLICY,
   readOilPolicy,
   type OilPolicy,
@@ -1296,47 +1295,16 @@ function syncAwardIndex(ledger: Ledger): void {
   LAST_AWD_VER = awardVersion()
 }
 
-/* ---- PUBLIC HOLIDAYS BELONG TO A PLACE (multi-squadron batch 1, step 4 — D2160, D2165, D2184: "squadrons at one place
-   share one public-holiday list, each its own Off day") -----------------------------------------------------------------
-   A public holiday is still written into the war of the squadron whose admin typed it (the Holidays list, D638) — but a
-   squadron at the same PLACE on that date keeps it too. So the war a person opens is read with every public holiday the
-   other squadrons at its place hold on their dates laid onto its days: the day reads as a public holiday everywhere a
-   day is read — the grid's Event row, leave charging (engine/charge.ts), the OIL earning day, the calendars' tag and the
-   Holidays list. Laid on at READ only, never stored: a write reads the raw state (rawState), so nothing of another
-   squadron's is ever saved into this one's war. Which holidays to lay on is the sync's to say (leavewar/sync.ts
-   placeHolidaysFor — it reads the other squadrons' stored wars and the places by date); by date, so a later move of a
-   squadron never rewrites a past day's leave charge. An Off day is never laid on: it stays its own squadron's.
-   A day that already reads as a public holiday here is left as it is; otherwise the holiday takes the first Event row
-   free on that day, worded as the squadron that holds it wrote it. */
-export type PlaceHoliday = { name: string; short: string }
-let PLACE_PH: (() => ReadonlyMap<string, PlaceHoliday> | null) | null = null
-let PLACE_VER = 0
-const OVERLAID = new WeakMap<LeaveWar, { ver: number; defs: EventDef[]; war: LeaveWar }>()
-/** the sync hands over where the other squadrons' public holidays at this squadron's place come from (null: none) */
-export function setPlaceHolidays(fn: (() => ReadonlyMap<string, PlaceHoliday> | null) | null): void { PLACE_PH = fn; placeHolidaysMoved() }
-/** what they read from has moved (another squadron's world loaded, a place changed) — every war is laid again */
-export function placeHolidaysMoved(): void { PLACE_VER++; MERGED = null; notify() }
-function withPlaceHolidays(w: LeaveWar, map: ReadonlyMap<string, PlaceHoliday> | null): LeaveWar {
-  if (!map || !map.size) return w
-  const hit = OVERLAID.get(w)
-  if (hit && hit.ver === PLACE_VER && hit.defs === state.eventDefs) return hit.war
-  let changed = false
-  const days = w.period.days.map(d => {
-    const h = map.get(d.date)
-    if (!h || d.ph || holidayAt(state.eventDefs, d, w.period.bands)?.kind === 'off') return d
-    let line = 0
-    while (line < Math.max(state.eventRows, 1) && (d.events[line] || w.period.bands.some(b => b.line === line && b.from <= d.date && d.date <= b.to))) line++
-    changed = true
-    return { ...writeDayEvent(d, line, h.name, 'off', h.short || null), ph: true }
-  })
-  const out = changed ? { ...w, period: { ...w.period, days } } : w
-  OVERLAID.set(w, { ver: PLACE_VER, defs: state.eventDefs, war: out })
-  return out
-}
+/* ---- EACH SQUADRON'S PUBLIC HOLIDAYS ARE ITS OWN (his D2195, 18 Nov 26: "The holiday list shouldn't be shared.
+   Individual sqns will own it" — the reshape plan §7, A4). Step 4 of batch 1 laid the other squadrons' public holidays at
+   this squadron's place onto the war a person opened (D2160's shared list); D2195 narrowed that away, so that overlay is
+   gone: the war a person opens reads only the holidays written into it — its own squadron's Holidays list (D638). A
+   holiday one squadron adds never touches another squadron's days, OIL or bell. */
 
 /** the wars another squadron keeps behind its own door, read as the boot reads them (readWar) — its periods (days,
- *  bands, events) and its event types — for the sync's place-holiday and OIL-day reads (leavewar/sync.ts). Records are
- *  not read: nothing outside a squadron's own war reads another's leave. */
+ *  bands, events) and its event types — for the sync's reads of that squadron's own days off and holidays
+ *  (leavewar/sync.ts nonWorkingFor, unitDayFacts). Records are not read: nothing outside a squadron's own war reads
+ *  another's leave. */
 export function readStoredPeriods(b: StorageBackend): { periods: Period[]; eventDefs: EventDef[] | null } {
   const periods: Period[] = []
   const parse = (k: string): unknown => { try { return JSON.parse(b.read(k) ?? 'null') } catch { return undefined } }
@@ -1351,21 +1319,20 @@ export function readStoredPeriods(b: StorageBackend): { periods: Period[]; event
 
 /* the merged read, cached on the raw state ref, the absence index version and
    the award index version, so a view-only render pays nothing (design §4.2/§4.3) */
-let MERGED: { raw: State; ver: number; awd: number; ph: number; out: MergedState } | null = null
+let MERGED: { raw: State; ver: number; awd: number; out: MergedState } | null = null
 export function getState(): MergedState {
   syncAwardIndex(state.ledger)
   const ver = absenceVersion()
   const awd = awardVersion()
-  if (MERGED && MERGED.raw === state && MERGED.ver === ver && MERGED.awd === awd && MERGED.ph === PLACE_VER) return MERGED.out
-  const phMap = PLACE_PH ? PLACE_PH() : null
-  const wars = state.wars.map(w => mergeWar(withPlaceHolidays(w, phMap)))
+  if (MERGED && MERGED.raw === state && MERGED.ver === ver && MERGED.awd === awd) return MERGED.out
+  const wars = state.wars.map(w => mergeWar(w))
   const cur = wars.find(w => w.period.id === state.currentId) ?? wars[0]
   /* no war at all (phase 5 — withCurrent): nothing on any person's any day */
   const out: MergedState = cur
-    /* the top-level period is the current war's as read — with its place's public holidays laid on (above) */
+    /* the top-level period is the current war's as read */
     ? { ...state, wars, period: cur.period, grid: cur.grid, states: cur.states, views: cur.views, spans: cur.spans }
     : { ...state, wars, grid: {}, states: {}, views: {}, spans: new Map() }
-  MERGED = { raw: state, ver, awd, ph: PLACE_VER, out }
+  MERGED = { raw: state, ver, awd, out }
   return out
 }
 

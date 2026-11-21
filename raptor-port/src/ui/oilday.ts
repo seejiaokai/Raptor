@@ -19,7 +19,6 @@ import { canEditSched } from '../state/auth'
 import { pageUnit } from '../state/perms'
 import { stampChanged } from '../state/inputstamp'
 import { oilOpenOn } from '../leavewar/sync'
-import { units } from '../state/units'
 import { saveBatchX } from './inputedit'
 import { sayDate } from './daysfmt'
 
@@ -48,19 +47,19 @@ export function saveOilDay(from: string, to: string, picks: Readonly<Record<stri
   return n
 }
 
-/** WHAT A NEW PUBLIC HOLIDAY PUTS OUT OF DATE, said before it is saved (multi-squadron batch 1, step 4 — D2184 R32): every
- *  squadron at the place keeps the holiday, so each one's published days on its dates were published as working days
- *  and must be published again before their OIL is earned (the day's own amber line says so after, D2003). Every fact
- *  first — whose days and which — then what to do (here, not in HolidaysPanel.tsx, so that file exports its window
- *  only — the code check's one-component-file rule): "This puts a published day out of date: 142's Mon 20 Jul. Publish
- *  it again so OIL is earned." '' where nothing is. */
+/** WHAT A NEW PUBLIC HOLIDAY PUTS OUT OF DATE, said before it is saved (multi-squadron batch 1, step 4 — D2184 R32): the
+ *  form's own squadron's published days on its dates were published as working days and must be published again before
+ *  their OIL is earned (the day's own amber line says so after, D2003). In his words, D2207 — no squadron's number, since
+ *  the holiday is only its own squadron's (D2195): "Already published as working days: Wed 15 Jul and Thu 16 Jul.
+ *  Publish them again so the crew on them earn OIL for the holiday." (one day: "Already published as a working day: Wed
+ *  15 Jul. Publish it again so the crew on it earn OIL for the holiday."). Here, not in HolidaysPanel.tsx, so that file
+ *  exports its window only (the code check's one-component-file rule). '' where nothing is. */
 export function outOfDateSaid(list: { unit: string; days: string[] }[]): string {
-  const n = list.reduce((s, x) => s + x.days.length, 0)
-  if (!n) return ''
-  const num = (u: string) => units().find(x => x.id === u)?.num ?? u
+  const days = [...new Set(list.flatMap(x => x.days))].sort()
+  if (!days.length) return ''
   const and = (xs: string[]) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`)
-  const parts = list.map(x => `${num(x.unit)}'s ${and(x.days.map(sayDate))}`).join('; ')
-  return n === 1
-    ? `This puts a published day out of date: ${parts}. Publish it again so OIL is earned.`
-    : `This puts published days out of date: ${parts}. Publish them again so OIL is earned.`
+  const said = and(days.map(sayDate))
+  return days.length === 1
+    ? `Already published as a working day: ${said}. Publish it again so the crew on it earn OIL for the holiday.`
+    : `Already published as working days: ${said}. Publish them again so the crew on them earn OIL for the holiday.`
 }
