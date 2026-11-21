@@ -19,7 +19,7 @@
 
 import { useSyncExternalStore } from 'react'
 import { toPeople, pieceOf } from '../engine/inputown'
-import { inputBelongs, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, remarksTyped, tillShown, tillDefault, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent, filingOf } from '../engine/inputs'
+import { inputOnDay, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, remarksTyped, tillShown, tillDefault, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent, filingOf } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
@@ -27,8 +27,11 @@ import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBa
 import { rosterOf, homeUnitOf, unitPeople } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
 import { qualify } from '../storage/unitid'
-import { balancesLocked, setHiddenIdentityLookup, snapshotNow, setWarHomeProbe } from './state/store'
-import { setLwManDayProbe } from '../state/perms'
+import { balancesLocked, setHiddenIdentityLookup, snapshotNow, setWarHomeProbe, readStoredPost, samePosting } from './state/store'
+import { setLwManDayProbe, setLwxPostingProbe } from '../state/perms'
+import { PROFILE } from './state/rows'
+import { UNIT_ROW_PREFIXES } from '../state/units-model'
+import { onCommit as cmdOnCommit } from '../command'
 import type { Change } from '../command/types'
 import { isBalKind, readTypedBalShape, sameSnapshot, type SnapEntry } from './engine/leaveyear'
 import { SESSION, canEditSched } from '../state/auth'
@@ -165,7 +168,7 @@ import type { StorageBackend } from './state/storage'
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused, isInReducer, isCommitting as cmdIsCommitting, activeEnvelope, isQueued, isOk, type CommitResult, type Txn } from '../command'
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
-import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, masterChangeProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount } from '../state/accounts'
+import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, masterChangeProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount, adminsOf } from '../state/accounts'
 import { markBack, clearBack, CURPAGE, setPage } from '../state/view'
 import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
@@ -310,6 +313,10 @@ export function installAbsenceDoor(): void {
      (`lw.cell`, id `<war>:<pid>:<date>`, read from the right — a war id may carry a colon — as applyLwRecord reads it) */
   setWarHomeProbe((pid, iso) => (WORLD_DOOR ? homeOn(pid, iso) : null))
   setLwManDayProbe(warCellDay)
+  /* A5 — ANOTHER SQUADRON'S POSTING AS THAT SQUADRON SAVED IT (perms.ts setLwxPostingProbe, step 7), installed with the pass
+     over every squadron, and the pass's wake-up wiring */
+  setLwxPostingProbe(foreignPostingSaved)
+  hookForeignRun()
   /* WHAT A RESTORE'S FOLLOW-UP LINES MAY SAY (perms.ts setFollowUpsProbe — fix read 6, fault B): the one body that writes
      them, so the gate compares a "taken back" or "again" line with what this restore owes, field for field */
   setFollowUpsProbe((moved, dir, notices) => followUpsOwed(moved, dir, notices, hasRead))
@@ -1421,11 +1428,13 @@ export function oilOpenOn(from: string, to?: string | null, unit?: string | null
     /* ONE SQUADRON'S (multi-squadron batch 1, step 4 — D2184 R32): a holiday at a place two squadrons share is answered
        by each squadron's own schedulers for its own inputs, never the other's; `unit` names whose. Omitted: every
        squadron's (the holiday's own notice asks which squadrons have anything to answer). */
-    if (unit && !inputBelongs(row, unit)) continue
+    /* …BY DAY (the reshape plan §3.2 A-i — Fable F10, Opus M6): each asked day is the squadron's whose its people are ON
+       THAT DAY (engine/inputs.ts inputOnDay) — a duty 14–17 Jul across Ranger's 16 Jul move puts the 16th and 17th on
+       149's list, the 14th and 15th on 142's; never the input's first day for every day */
     const plan = oilAskPlan(row)
     if (!plan.length) continue
     const answered = (row.oil ?? {}) as Record<string, number>
-    const days = plan.filter(p => p.iso >= from && p.iso <= hi && answered[p.iso] == null && !isoProt(p.iso)).map(p => p.iso)
+    const days = plan.filter(p => p.iso >= from && p.iso <= hi && answered[p.iso] == null && !isoProt(p.iso) && (!unit || inputOnDay(row, unit, p.iso))).map(p => p.iso)
     if (!days.length) continue
     const start = labelToISO(row.date, row.yr) ?? days[0]!
     const end = row.endDate ? labelToISO(row.endDate, row.yr) ?? start : start
@@ -1442,7 +1451,8 @@ let LEFT: { v: number; wf: number; n: number; m: Map<string, number> } = { v: -1
 function holidayLeft(a: string, b: string, pid?: string | null): number {
   const v = raptorVersion(), wf = warFactsVersion(), n = warInputs().length
   if (LEFT.v !== v || LEFT.wf !== wf || LEFT.n !== n) LEFT = { v, wf, n, m: new Map() }
-  const unit = pid ? homeUnitOf(pid) : null
+  /* (the reader's home TODAY, on purpose — the reshape plan §3.2 A-i: his line counts what his squadron has left now) */
+  const unit = pid ? homeUnitOf(pid, effectiveToday()) : null
   const key = `${a}|${b}|${unit ?? ''}`
   let c = LEFT.m.get(key)
   if (c == null) { c = oilOpenOn(a, b, unit).length; LEFT.m.set(key, c) }
@@ -1467,12 +1477,18 @@ const schedulerIds = (): string[] => ACCOUNTS_LIST.filter(a => isAdminAccount(a)
 /* …of the Leave War's OWN squadron (multi-squadron batch 1, step 4): a posting is a fact of the world it was set in, so
    its bell lines go to that squadron's admins only, never the other squadron's (each admin's Admin → Users lists his own
    squadron, D2191); the posted man's squadron is the war's, since each squadron's Leave War holds only its own people */
-const ownSchedulerIds = (): string[] => { const u = worldUnit(); return schedulerIds().filter(pid => homeUnitOf(pid) === u) }
+/* ONE AUDIENCE (the reshape plan §6.2 A5, step 6; D2202, D2198; PB1, PB2): a posting's lines go to the squadron's admins
+   of TODAY (accounts.ts adminsOf — at home there, or a plain admin holding Plan of it; a master through his home only),
+   the same set the gate checks every posting line against (perms.ts postingPassViolation). The pass reads it after its
+   outcomes, so an admin archived by his own posting is not told. */
+const postingAdmins = (unit: string): string[] => adminsOf(unit, effectiveToday())
+const ownSchedulerIds = (): string[] => postingAdmins(worldUnit())
 /* …and a man the war tells of its bidding or of a decision is one at home in the war's own squadron today (job 2, 19 Nov
    26 — the Opus read's F1; D2194): a man posted out of it stays a row of its war while his posting window runs (state/
    store.ts setPeople), and once moved to another squadron he is that squadron's — the gate refuses an admin's line to him
    (state/perms.ts 7e), which refused the whole command that wrote it, Open for bidding among them */
-const atWarHome = (pid: string): boolean => homeUnitOf(pid) === worldUnit()
+/* (TODAY on purpose — who is at home now — the reshape plan §3.2 A-i) */
+const atWarHome = (pid: string): boolean => homeUnitOf(pid, effectiveToday()) === worldUnit()
 /* A WORKING DAY WAS MADE A HOLIDAY — called by the war's store INSIDE the command that did it (state/store.ts
    tellHolidays), with the runs of dates. For each run with an input that now needs an OIL answer:
      · ONE notice a scheduler (state/notices.ts noticeHoliday — "never silent", D780), the one who made the holiday
@@ -1628,12 +1644,23 @@ function endedLines(pid: string): Notice[] {
    line, dated the posting's own midnight. Old news is not listed: a posting whose date passed more than fourteen days ago
    (ENDED_DAYS, the ended stretch's rule), so the postings of months gone do not arrive as a pile of new lines. At the
    database step a scheduled flow may write it instead, beside the pass (noted for the IT side). */
+/* PB2 (the Plan audit, §19): a reader is given the line of EVERY squadron he is one of today's admins of (postingAdmins —
+   at home there, or a plain admin holding Plan of it, D2202): the loaded war's from its postings, another squadron's from
+   its stored postings (storedPostings — the foreign pass's own read) */
 function postedLines(pid: string): Notice[] {
-  if (!ownSchedulerIds().includes(pid)) return []
+  const here = worldUnit()
+  const out: Notice[] = []
+  for (const u of WORLD_DOOR ? unitList().map(x => x.id) : [here]) {
+    if (!postingAdmins(u).includes(pid)) continue
+    out.push(...postedLinesOf(pid, u === here ? getState().postOuts : storedPostings(u)))
+  }
+  return out
+}
+function postedLinesOf(pid: string, posts: Readonly<Record<string, Person>>): Notice[] {
   /* (an admin is never told of his own posting — as the pass's lines, above) */
   const today = effectiveToday(), since = addDays(today, -ENDED_DAYS)
   const out: Notice[] = []
-  for (const [id, rec] of Object.entries(getState().postOuts)) {
+  for (const [id, rec] of Object.entries(posts)) {
     if (!rec || !rec.to || rec.gone) continue
     const o = outcomeOf(rec)
     if (o && o !== 'none') continue
@@ -2129,10 +2156,10 @@ let WORLD_DOOR: WarWorldDoor | null = null
 /* the cached answer of placeHolidaysFor is dropped with the stored worlds: it is keyed by the loaded war's raw state,
    and a squadron's answer read while it is loaded (raw null) would otherwise outlive a holiday the other one added */
 export function setWarWorldDoor(d: WarWorldDoor | null): void {
-  WORLD_DOOR = d; STORED.clear(); PLACE_CACHE = null; placeHolidaysMoved()
+  WORLD_DOOR = d; STORED.clear(); PLACE_CACHE = null; placeHolidaysMoved(); fxMoved()
   /* the same doors write another squadron's stored war for Admin → Users' four doors (A3 — state/foreign.ts); a write
      there drops the stored worlds read here, so the next read sees it */
-  setForeignDoor(d ? (u => d(u).backend) : null, () => { STORED.clear(); PLACE_CACHE = null; placeHolidaysMoved() })
+  setForeignDoor(d ? (u => d(u).backend) : null, () => { STORED.clear(); PLACE_CACHE = null; placeHolidaysMoved(); fxMoved() })
 }
 /** load `unit`'s Leave War in place of the one loaded — false where it already is, or no door was handed over */
 export function swapWarWorld(unit: string): boolean {
@@ -2140,7 +2167,7 @@ export function swapWarWorld(unit: string): boolean {
   const d = WORLD_DOOR(unit)
   lwInitStore(d.backend, { started: d.started, seedDemo: d.seedDemo ?? true, unit, demoRecords: false, keepListeners: true })
   /* the world that WAS loaded is now read from its door like any other squadron's, and the one loaded no longer is */
-  STORED.clear(); PLACE_CACHE = null; placeHolidaysMoved()
+  STORED.clear(); PLACE_CACHE = null; placeHolidaysMoved(); fxMoved()
   setPeople(projectPeople(getState().showSans))
   setViewer(mirroredViewer()); mirrorCallsign()
   runPoArchive()
@@ -2699,7 +2726,10 @@ type PoDue = { id: string; poDate: string; outcome: PostOutcome; key: string }
 /* is this man's posting due to run TODAY — the one test, read by the scan and again by the command when it runs (a
    queued command may run after the posting was changed or taken back) */
 function poDueNow(id: string, today: string): PoDue | null {
-  const rec = getState().postOuts[id]
+  return poDueOf(id, getState().postOuts[id], today)
+}
+/* …the same test of any posting record — the loaded war's, or another squadron's as its stored war holds it (A5, A6) */
+function poDueOf(id: string, rec: Person | null | undefined, today: string): PoDue | null {
   if (!rec || rec.to === null) return null
   const outcome = outcomeOf(rec)
   if (!outcome || outcome === 'none') return null
@@ -2756,15 +2786,34 @@ export function postingPendingTag(id: string): string | null {
   if (o === 'sans') return `posted out ${dayMon(poDate)} · SANS`
   return null
 }
-/* for Admin → Users' account row: his posting has come and is waiting — why, or null */
+/* for Admin → Users' account row: his posting has come and is waiting — why, or null. A6 (the reshape plan §6.2): HIS OWN
+   SQUADRON'S posting — the war loaded's where he is its squadron's today, else his home's stored war (A3's second store
+   reads it the same way), so the master with 142 loaded sees a 149 man's held posting on his row */
 export function postingHeldNote(id: string): string | null {
-  const d = poDueNow(id, effectiveToday())
+  const u = foreignHome(id)
+  const d = poDueOf(id, u ? storedPostings(u)[id] : getState().postOuts[id], effectiveToday())
   return d ? poHeldReason(id, d.outcome, d.poDate) : null
 }
 /* would a posting dated `poDate` run NOW — on the pass's own clock (poDueNow: today on or after the date)? The Post out
    sheet asks before it saves a Delete's date that answers yes (D1102 — [PO-MOVE-DATE-DELETE-ASK]) */
 export function postingRunsBy(poDate: string): boolean { return poDate <= effectiveToday() }
+/* THE POSTING PASS OVER EVERY SQUADRON (the reshape plan §6.2 A5, step 1): the loaded war's postings as ever, then — a
+   whole pass only, never one posting's retry — every other squadron's, from its stored war (runForeignPostings, below) */
 export function runPoOutcomes(only?: string): void {
+  runLoadedPostings(only)
+  if (only === undefined) runForeignPostings()
+}
+/* A POSTING WHOSE MAN IS NOT AT HOME IN ITS SQUADRON TODAY IS SKIPPED BY BOTH PASSES (§6.2 A5, step 2): the gate would
+   refuse it (perms.ts postingPassViolation: his home before the pass must be the war's); skipped, it is neither run, nor
+   marked done, nor tried again on every command, and nothing is said. It runs if he comes back; what a posting set before
+   a move means is the Transfer batch's (batch 4). Only while each squadron has a world of its own, and never for a man
+   whose squadron is not known (a shared store before its rows — the gate's rule) */
+function awayFrom(id: string, unit: string, today: string): boolean {
+  if (!WORLD_DOOR) return false
+  const h = homeOn(id, today)
+  return !!h && h !== unit
+}
+function runLoadedPostings(only?: string): void {
   if (SYNCING) return
   /* THE POSTINGS AS SAVED (fix read 13, item B — SEC13-1): a posting made up or rewritten in memory outside every command
      (a browser's console, a member's too) is put back to the saved one before the pass reads which are due — as the
@@ -2777,6 +2826,7 @@ export function runPoOutcomes(only?: string): void {
   for (const id of Object.keys(getState().postOuts)) {
     const d = poDueNow(id, today)
     if (!d || PO_INFLIGHT.has(d.key) || PO_REFUSED.has(d.key) || (typeof only === 'string' && d.key !== only)) continue
+    if (awayFrom(id, worldUnit(), today)) continue
     const held = poHeldReason(id, d.outcome, d.poDate)
     if (held) { tellOnce(d.key, held); continue }
     due.push(d)
@@ -2794,7 +2844,7 @@ export function runPoOutcomes(only?: string): void {
      unsaved change: nothing is put back then. A command the app itself runs (a projection) is the one parent the gate
      would not judge, so under one the pass waits and runs as its own command straight after it. */
   const parent = isInReducer() ? activeEnvelope() : null
-  if (parent && parent.origin === 'projection' && cmdDeferEffect(() => runPoOutcomes(only))) return
+  if (parent && parent.origin === 'projection' && cmdDeferEffect(() => runLoadedPostings(only))) return
   const own = !parent
   const needsDays = due.some(d => d.outcome === 'delete')
   for (const d of due) PO_INFLIGHT.add(d.key)
@@ -2831,7 +2881,7 @@ export function runPoOutcomes(only?: string): void {
           const ran: Array<{ id: string; poDate: string; outcome: PoOutcome; acct: boolean }> = []
           for (const d0 of due) {
             const d = poDueNow(d0.id, effectiveToday())
-            if (!d || d.key !== d0.key) continue
+            if (!d || d.key !== d0.key || awayFrom(d.id, worldUnit(), effectiveToday())) continue
             /* asked again when the command runs (it may run later, queued): held → nothing changes, not marked done */
             const held = poHeldReason(d.id, d.outcome, d.poDate)
             if (held) { told.push([d.key, held]); continue }
@@ -2897,12 +2947,183 @@ export function runPoOutcomes(only?: string): void {
   function refused(): void {
     const fresh = due.some(d => !PO_RETRIED.has(d.key))
     for (const d of due) PO_RETRIED.add(d.key)
-    if (fresh) { runPoOutcomes(only); return }
+    if (fresh) { runLoadedPostings(only); return }
     for (const d of due) PO_REFUSED.add(d.key)
     if (due.length < 2) return
-    for (const d of due) { PO_REFUSED.delete(d.key); runPoOutcomes(d.key) }
+    for (const d of due) { PO_REFUSED.delete(d.key); runLoadedPostings(d.key) }
   }
 }
+/* ---- THE PASS OVER EVERY OTHER SQUADRON (the reshape plan §6.2 A5, steps 2–6) -------------------------------------
+   The loaded pass reads only the war on the page, so a 149 posting ran only when a 149 man opened the app. This reads every
+   other squadron's stored `profile:` rows (never its whole war) and runs each due posting through the same outcomes:
+   - ONE POSTING PER COMMAND (Opus 2 of round 3), so a refused one never rolls back another squadron's; a refused one is
+     tried once more, then given up for the session (as the loaded pass's PO_REFUSED) — it runs on the next boot, once
+     what refused it is put right. A HELD one (poHeldReason) is no refusal: it commits nothing and is tried again on the
+     next run;
+   - a man not at home in that squadron today is skipped, unsaid (awayFrom — step 2);
+   - BOTH HALVES as the loaded pass runs them (Opus H1): the Raptor half as ever (Overseas Sqn: archive and suspend; SANS;
+     Delete: person-delete.ts applyDelete), the war half on that squadron's stored war through the second store
+     (state/foreign.ts — a Delete's records through deleteOnForeign), its done mark `poDone` in that stored profile, in the
+     same command: when that war later loads, its own pass finds the posting done — run once, never twice;
+   - IT SAYS NOTHING ON SCREEN (Fable 2, Opus 3 of round 3): no passing note — a held foreign posting shows only as Admin →
+     Users' held note on that man's row (A6, postingHeldNote). The one exception is today's words for the man himself, a
+     Delete that removes the signed-in person (dormant while every own page is his home's);
+   - its command type is the loaded pass's own, `lw.postoutRun` (Fable 6), so the timeline keeps it out of every step and
+     the gate judges it as the app's own posting run (perms.ts postingPassViolation, `lwx.profile` — step 7);
+   - ONLY IN ITS OWN COMMAND, NEVER LOST (Astra 4; D306): raised inside another command it leaves the work OWED and runs
+     straight after it; owed work stays owed until a run completes;
+   - WHEN (step 5): at boot (wireLeaveWarSync), on a new day (the midnight wake), and once, coalesced, after a committed
+     command that changes accounts, people, homes or rights — what a held posting's reason reads — or any squadron's
+     postings; never on an ordinary notify (FX_DIRTY);
+   - ONE AUDIENCE (step 6): the bell lines go to that squadron's admins of today (postingAdmins — accounts.ts adminsOf). */
+let FX_DIRTY = true
+let FX_OWED = false
+let FX_RUNNING = false
+let FX_DAY = ''
+let FX_HOOKED = false
+const FX_REFUSED = new Set<string>()
+const FX_RETRIED = new Set<string>()
+/* a run QUEUED behind the command whose release woke it (the loaded pass's PO_INFLIGHT, for the same reason): until it
+   runs, the stored row still reads "due", and queueing it again on every notify ran it twice */
+const FX_INFLIGHT = new Set<string>()
+/* each squadron's postings as its stored war holds them (the profile rows' windows only), read once until something could
+   have moved them — dropped with the stored worlds and after every command that writes a posting */
+const FX_POSTS = new Map<string, Record<string, Person>>()
+function storedPostings(unit: string): Record<string, Person> {
+  let m = FX_POSTS.get(unit)
+  if (m) return m
+  m = {}
+  if (WORLD_DOOR) {
+    const b = WORLD_DOOR(unit).backend
+    for (const k of b.keys()) {
+      if (!k.startsWith(PROFILE)) continue
+      const pid = k.slice(PROFILE.length)
+      let raw: unknown = null
+      try { raw = JSON.parse(b.read(k) ?? 'null') } catch { raw = null }
+      const post = raw && typeof raw === 'object' && 'post' in raw ? readStoredPost(pid, (raw as { post: unknown }).post) : null
+      if (post) m[pid] = post
+    }
+  }
+  FX_POSTS.set(unit, m)
+  return m
+}
+/* the stored worlds were dropped, or a command wrote something a posting run reads */
+function fxMoved(): void { FX_POSTS.clear(); FX_DIRTY = true }
+/* WHAT WAKES THE RUN (step 5): accounts, people, homes and rights, and any squadron's postings */
+const fxWakes = (c: { collection: string; id: string }): boolean =>
+  c.collection === 'people' || c.collection === 'lw.postouts' || c.collection.startsWith('lwx.')
+  || (c.collection === 'settings' && (String(c.id).startsWith('account:') || UNIT_ROW_PREFIXES.some(p => String(c.id).startsWith(p))))
+type FxDue = PoDue & { unit: string; fxKey: string }
+export function runForeignPostings(): void {
+  if (!WORLD_DOOR || SYNCING || FX_RUNNING) return
+  const today = effectiveToday()
+  if (today !== FX_DAY) { FX_DAY = today; FX_DIRTY = true }
+  if (!FX_DIRTY && !FX_OWED) return
+  /* never inside another command: owed, and run straight after it (a command the app runs, or the person's own) */
+  if (isInReducer() || cmdIsCommitting()) {
+    FX_OWED = true
+    if (isInReducer()) cmdDeferEffect(() => runForeignPostings())
+    return
+  }
+  FX_DIRTY = false
+  FX_RUNNING = true
+  try {
+    const here = worldUnit()
+    const due: FxDue[] = []
+    for (const u of unitList()) {
+      if (u.id === here) continue
+      const posts = storedPostings(u.id)
+      for (const id of Object.keys(posts)) {
+        const d = poDueOf(id, posts[id], today)
+        if (!d) continue
+        const fxKey = `${u.id}:${d.key}`
+        if (FX_REFUSED.has(fxKey) || FX_INFLIGHT.has(fxKey) || awayFrom(id, u.id, today)) continue
+        if (poHeldReason(id, d.outcome, d.poDate)) continue          // held: nothing now, nothing said (A6's note says it)
+        due.push({ ...d, unit: u.id, fxKey })
+      }
+    }
+    for (const d of due) runForeignPosting(d)
+    FX_OWED = false
+  } finally {
+    FX_RUNNING = false
+  }
+}
+function runForeignPosting(d: FxDue): void {
+  const fw = foreignWar(d.unit)
+  fw.load(d.id)                                   // his stored profile and records, read fresh before the command
+  let gone = false
+  let res: CommitResult | undefined
+  FX_INFLIGHT.add(d.fxKey)
+  SYNCING = true
+  try {
+    res = cmdCommitProjection({
+      type: 'lw.postoutRun', scope: { module: 'people' },
+      apply: (txn: Txn) => {
+        revertUnsavedPeople()                     // the roster as saved: nothing but this posting rides in (the loaded pass's rule)
+        resyncBeforeEnlist()
+        txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(schedStore); txn.enlist(fw)
+        /* asked again as the command runs: still due, still his squadron's, not held */
+        const now = poDueOf(d.id, fw.post(d.id), effectiveToday())
+        const body = rosterBody(d.id)
+        if (now && now.key === d.key && body && !awayFrom(d.id, d.unit, effectiveToday()) && !poHeldReason(d.id, now.outcome, now.poDate)) {
+          const acct = !!accountOfPid(d.id)
+          if (now.outcome === 'overseas') {
+            if (!body.archived) { body.archived = true; body.archivedBy = 'po'; body.archivedOn = now.poDate }
+            suspendForPosting(d.id)
+          } else if (now.outcome === 'sans') {
+            if (!body.san) {
+              body.san = true
+              body.quals = body.quals || {}
+              body.quals.san = true
+              body.sanQ = body.sanQ || { flown: 0, carry: 0, missedQtrs: 0 }
+              body.sanBy = 'po'
+            }
+          } else if (now.outcome === 'delete') {
+            const cut = deleteCutoff(now.poDate)
+            applyDelete(d.id, cut)
+            deleteOnForeign(txn, fw, d.id, cut, null)
+            if (me() != null && d.id === me()) gone = true
+          }
+          /* the done mark, in that squadron's stored profile, with the outcome (a Delete whose man never arrived there has
+             his window removed by deleteOnForeign: nothing left to mark, and he is deleted, so never due again) */
+          const after = fw.post(d.id)
+          if (after) fw.setPost(d.id, { ...after, poDone: now.poDate })
+          noticePosting(postingAdmins(d.unit).filter(t => t !== d.id), d.id, now.outcome as PoOutcome, now.poDate, acct, Date.now())
+          if (now.outcome === 'delete') cmdDeferEffect(() => { HOOKS.reflow(); HOOKS.histPush() })
+        }
+        validate()
+        finishPeopleWrite()
+        schedApplyEnd()
+      },
+    })
+  } finally {
+    SYNCING = false
+  }
+  const refusedNow = (): void => {
+    if (!FX_RETRIED.has(d.fxKey)) { FX_RETRIED.add(d.fxKey); FX_DIRTY = true; return }   // tried once more on the next run
+    FX_REFUSED.add(d.fxKey)                                                            // then given up for the session
+  }
+  const landed = (): void => { FX_INFLIGHT.delete(d.fxKey); FX_POSTS.delete(d.unit) }
+  if (res && isQueued(res)) { res.done.then(r => { landed(); if (!isOk(r)) refusedNow() }, () => { landed(); refusedNow() }); return }
+  landed()
+  if (res && !isOk(res)) { refusedNow(); return }
+  if (gone) { const t = 'You have been deleted by your posting out — please sign out'; if (!cmdDeferEffect(() => tellOnce(d.fxKey, t))) tellOnce(d.fxKey, t) }
+  raptorNotify()
+}
+/* the run's wake-up wiring, once a page (wireLeaveWarSync) */
+function hookForeignRun(): void {
+  FX_REFUSED.clear(); FX_RETRIED.clear(); fxMoved()
+  if (FX_HOOKED) return
+  FX_HOOKED = true
+  cmdOnCommit(env => { if (env.changes.some(fxWakes)) fxMoved() })
+}
+/* THE GATE'S PROBE (perms.ts setLwxPostingProbe — §6.2 A5, step 7): is this posting record his posting exactly as THAT
+   squadron's stored profile row holds it? */
+function foreignPostingSaved(unit: string, pid: string, p: unknown): boolean {
+  if (!WORLD_DOOR) return false
+  return samePosting(pid, p, readForeign(WORLD_DOOR(unit).backend, pid).post)
+}
+
 /* a DELETE's war half, for the admin's own delete (state/person-delete.ts deletePerson — Admin → Users): the war's
    store enlisted in that command, his records from the cutoff gone, his window closed the day before, `gone` set. The
    ONE place a Raptor command reaches the war's store — here, at the seam. */
@@ -2919,7 +3140,7 @@ export function deletePersonOnWar(txn: Txn, id: string, cutoff: string, frozen: 
    command. null on a page with one war (no world door) or for a man with no squadron known: the war loaded, as before. */
 function foreignHome(id: string): string | null {
   if (!WORLD_DOOR) return null
-  const u = homeOn(id)
+  const u = homeOn(id, effectiveToday())
   return u && u !== worldUnit() ? u : null
 }
 /* …loaded fresh for him, just before the command (or, for the delete, inside it before it is enlisted) */
@@ -3382,7 +3603,12 @@ function postingLinesOf(id: string): Notice[] {
      left his bell on his first move day for good (D2218, noticeLeftBell). The newest run is still found from EVERY stored
      line of this posting (`last`, above) — only then is each retired line left out: neither deleted nor told. The worked-out
      "off the manpower" line the same, by its posting date. */
-  const stored = mine.filter(n => n.at === last && atWarHome(n.to) && !noticeLeftBell(n))
+  /* PB1 (the Plan audit, §19 — with §6.2 step 6): "whoever would be told of it today" is the squadron's admins of today
+     (postingAdmins — a plain admin holding Plan of it among them, D2202), never the reader's home alone */
+  /* (…and a man at home here today as before: a suspended admin, whom adminsOf leaves out, still has his line taken back
+     — the fixes' read 1 below) */
+  const told = new Set(postingAdmins(worldUnit()))
+  const stored = mine.filter(n => n.at === last && (told.has(String(n.to)) || atWarHome(n.to) || noticeAboutHim(n)) && !noticeLeftBell(n))
   const derived = ownSchedulerIds().flatMap(pid => postedLines(pid)).filter(n => { const p = n.what[0]; return p?.k === 'po' && p.who === id && !noticeLeftBell(n) })
   return [...stored, ...derived]
 }
@@ -3396,9 +3622,11 @@ function retractPostingLines(lines: readonly Notice[]): string[] {
   const at = Date.now()
   const admins = new Set(ACCOUNTS_LIST.filter(a => isAdminAccount(a) && !!a.pid).map(a => String(a.pid)))
   const forget: string[] = []
+  /* PB1: the squadron's admins of today, as postingLinesOf reads them — a Plan holder's line struck too */
+  const told = new Set(postingAdmins(worldUnit()))
   for (const n of lines) {
     /* (a line held by a man since moved to another squadron is neither removed nor told — above, D2218) */
-    if (!atWarHome(n.to) || noticeLeftBell(n)) continue
+    if (!(told.has(String(n.to)) || atWarHome(n.to) || noticeAboutHim(n)) || noticeLeftBell(n)) continue
     const ix = NOTICES.findIndex(x => x.id === n.id)
     if (ix >= 0) NOTICES.splice(ix, 1)
     if (n.to === by) { if (by && hasRead(by, n)) forget.push(n.id); continue }

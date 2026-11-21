@@ -1392,6 +1392,17 @@ const postNorm = (pid: string, p: unknown): string => {
   const s = JSON.stringify(p)
   return JSON.stringify(readPostOuts({ [pid]: JSON.parse(s) })?.[pid] ?? { unreadable: s })
 }
+/** a stored profile row's posting window as the boot reader takes it (null: none) — another squadron's stored war read by
+ *  the posting pass over every squadron (sync.ts storedPostings — the reshape plan §6.2 A5), the same reader as the war's own */
+export function readStoredPost(pid: string, raw: unknown): Person | null {
+  if (raw == null) return null
+  return readPostOuts({ [pid]: raw })?.[pid] ?? null
+}
+/** are two posting records (or none) the same posting, as a reload would read them — the gate's probe for another
+ *  squadron's stored posting (sync.ts foreignPostingSaved) */
+export function samePosting(pid: string, a: unknown, b: unknown): boolean {
+  return postNorm(pid, a) === postNorm(pid, b)
+}
 /** is `p` (a posting record, or null for none) the man's posting exactly as saved? */
 export function postOutIsSaved(pid: string, p: unknown): boolean {
   return postNorm(pid, p) === postNorm(pid, savedPostOut(pid))
