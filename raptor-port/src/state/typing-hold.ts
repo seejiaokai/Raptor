@@ -26,6 +26,23 @@
    people bridge is — tracker/people.js), and written by state/store.ts on every notify. */
 
 export type MoveBand = { lead: string; rest: string } | null
+
+/* ---- THE SCHEDULE SIDE (the walk of 21 Nov 26 — W3-F2, W3-F3; D2243 Q7's rule, the plan's "never saved into the new
+   squadron, never dropped without a word") ----
+   The schedule side's pages hold nothing to swap late: the schedule in view moves at midnight with him, and Inputs, Quals
+   and the rest read his squadron by the day. So a window or a box of theirs left open across the change is held where it
+   stands instead — each remembers the squadron its page showed when it opened:
+   - THE INPUT'S WINDOW (ui/InputWindow.tsx) stays open, his words in it, its Person list still read from the squadron
+     it opened on (never the new squadron's people), with the band across its top and "Close";
+     Add, Save, Delete and "Take me out" do nothing under the band — nothing is saved into either squadron.
+   - A TEXT BOX OF THE SCHEDULE (ui/textedit.ts), which has no window to carry a band: words typed in it across the change
+     are not written anywhere, and leaving the box says so in the app's refusal note.
+   - A SIGN-OFF LIST left open across the change (ui/Shell.tsx): the pick is not written, and the same note says so.
+   THE WORDS: the approved drawing gives the band's sentence for the Leave War and the Tracker only ("…can't be saved in
+   142's Leave War." / "…Tracker."), and neither it nor the plan gives one for the schedule's pages — so these read the
+   app's generic "This change could not be saved." (the fix brief's rule; named in the helper's report for his word). */
+export const SCHED_MOVE_WORDS = 'This change could not be saved.'
+export const schedMoveBand = (): NonNullable<MoveBand> => ({ lead: SCHED_MOVE_WORDS, rest: '' })
 export type HoldKind = 'none' | 'war' | 'tracker'
 
 /* ---- what holds: the Leave War's open windows (leavewar/ui/Sheet.tsx registers its count) ---- */

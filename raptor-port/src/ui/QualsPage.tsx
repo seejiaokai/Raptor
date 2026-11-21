@@ -30,7 +30,7 @@ import { boxOf, frameLift, frameLand } from './lift'
 import { edgeAutoScroll } from './edgescroll'
 /* this page used to carry its own copy of exportCSV — which is how it missed
    the UTF-8 BOM the shared one now writes. One exporter, one encoding. */
-import { exportCSV } from './export'
+import { exportCSV, loxCsvName } from './export'
 /* the sync seam is the ONE sanctioned crossing into Leave War (CLAUDE.md's
    four-seams rule). Restoring an
    archived body has to clear their Leave War posting-out too, or the very
@@ -1139,7 +1139,7 @@ export function QualsPage() {
            Personnel hold no qualifications, so every qual column is blank. */
         ...cols.map(c => p.pers ? '' : qualNA(p, c) ? '–' : p.quals[c.k] === 'I' ? 'I' : p.quals[c.k] ? 'Y' : '')])
     })
-    exportCSV(`142-LoX-${qSeatView}.csv`, rows)
+    exportCSV(loxCsvName(qSeatView), rows)
     /* same reason as the Inputs page's export: a phone shows nothing when a
        download lands, so the tap otherwise reads as dead */
     HOOKS.toast('CSV downloaded', 'ok')

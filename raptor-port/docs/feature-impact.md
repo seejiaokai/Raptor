@@ -879,7 +879,15 @@ the war or Tracker loaded is not the page's own squadron, the window or the Trac
 the failed-save band's look (`ui/MoveBand.tsx`) — "You are 149's from today. This can't be saved in 142's Leave War."
 (or "…in 142's Tracker."), one button "Close" — and closing the window lets the swap run. The Tracker, once loaded, is
 kept until the next sign-in (its records sit in module caches that cannot be re-read in place); the gate refuses his
-changes to it meanwhile. What a change can break: a new thing that says "which squadron is this page" set outside
+changes to it meanwhile. **The schedule side** (the walk of 21 Nov 26 — W3-F2, W3-F3; `state/typing-hold.ts` "the
+schedule side") holds no swap: each window or box remembers the squadron its page showed when it opened. The input's
+window (`ui/InputWindow.tsx`) stays with the same band and "Close", its Person list read from the squadron it opened on,
+and its Add, Save, Delete and "Take me out" do nothing; words typed in a schedule text box across the change, and a pick
+from a sign-off list left open across it, are not written and the refusal note says so (`ui/textedit.ts`
+`enteredOnAnother`, `ui/Shell.tsx`). Their words are the generic "This change could not be saved." — the drawing gives
+the sentence for the Leave War and the Tracker only. A drag never places a man on a day he is not the squadron's
+(`ui/drag.ts applyDrop`, D2243 Q2), in the same words. Pinned by `ui/msq-fix-sched-windows-midnight.test.tsx`,
+`ui/msq-fix-w4f2-drag-day.test.tsx`. What a change can break: a new thing that says "which squadron is this page" set outside
 `enterSquadron` drifts from the other three at midnight; a new window of typed work on an own page that does not hold
 the swap is saved into the wrong squadron or lost without a word; a war loaded afresh starts with a member's role, so
 the role in force is set on it again (found switching the swap on: an admin was a member in his new squadron's war); a

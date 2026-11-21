@@ -19,6 +19,9 @@ import * as view from '../state/view'
 import { notify } from '../state/store'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { canEditSched } from '../state/auth'
+import { UNIT } from '../engine/unitview'
+import { HOOKS } from '../engine/hooks'
+import { SCHED_MOVE_WORDS } from '../state/typing-hold'
 import { fmtTxt, intimeLineHTML, areaText, atimeText, boxText, reportNote } from './html'
 import { fmtHM } from '../engine/time'
 import { routeScheduleTab } from './schedule-tab'
@@ -139,9 +142,35 @@ if (typeof document !== 'undefined') {
   }, true)
 }
 
+/* THE SQUADRON A BOX WAS ENTERED ON (state/typing-hold.ts "the schedule side" — the walk of 21 Nov 26, W3-F2; D2243 Q7's
+   rule). The schedule in view moves with a man at midnight of his own move; a box he was typing in then belongs to a page
+   that is no longer shown. What he typed is never written into the squadron now in view — where its week has a box at the
+   same place the words would land there, where it has none they were dropped without a word — and leaving the box says
+   so. A box merely held, nothing typed, says nothing. The box is put back to what the page now reads. */
+let ENTERED: { el: Element; unit: string; text: string } | null = null
+/** was this box (or list) entered while another squadron's schedule was in view? Asked once: it forgets the box. */
+export function enteredOnAnother(el: Element | null): { typed: boolean } | null {
+  const en = ENTERED
+  if (!el || !en || en.el !== el || en.unit === UNIT) return null
+  ENTERED = null
+  return { typed: String(el.textContent ?? '') !== en.text }
+}
+
 export function routeFocusOut(e: FocusEvent) {
   const rt = e.relatedTarget as HTMLElement | null
   ARRIVING = textBoxOf(rt) ? rt : (ARRIVING && rt == null && PRESSING ? ARRIVING : null)
+  {
+    const t0 = e.target as HTMLElement | null
+    const box0 = t0 && t0.closest ? t0.closest(ARRIVALS) as HTMLElement | null : null
+    const moved = enteredOnAnother(box0)
+    if (box0 && moved) {
+      if (moved.typed) HOOKS.toast(SCHED_MOVE_WORDS, 'warn')
+      const p0 = box0.dataset.txt
+      if (p0 != null) { const v = txtGet(p0); heal(box0, TIME_TXT.test(p0) ? fmtTxt(v) : String(v == null ? '' : v)) }
+      notify()
+      return
+    }
+  }
   /* editMode() (store.ts) drives whether html.ts renders contenteditable="true"
      at all, but a field already focused when a session changes underneath it
      (logout while mid-edit) still fires this handler on blur. Every text
@@ -396,10 +425,12 @@ function refreshTextDestination(el: HTMLElement) {
 const ARRIVALS = '[data-txt],[data-bfld],[data-inp],[data-ifld],[data-itline],[data-bombs],[data-area],[data-atime]'
 export function routeFocusIn(e: FocusEvent) {
   ARRIVING = null
-  if (!canEditSched() || view.CURPAGE !== 'editsched') return
   const t = e.target as HTMLElement
   const el = t && t.closest ? t.closest(ARRIVALS) as HTMLElement | null : null
-  if (el && !el.closest('[data-role-ui],.pv-frozen')) refreshTextDestination(el)
+  /* the squadron whose schedule is in view as the box (or a sign-off list) takes the caret — enteredOnAnother, above */
+  ENTERED = t ? { el: el ?? t, unit: UNIT, text: '' } : null
+  if (canEditSched() && view.CURPAGE === 'editsched' && el && !el.closest('[data-role-ui],.pv-frozen')) refreshTextDestination(el)
+  if (ENTERED) ENTERED.text = String(ENTERED.el.textContent ?? '')
 }
 
 export function routeKeyDown(e: KeyboardEvent) {

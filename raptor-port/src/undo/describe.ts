@@ -116,6 +116,13 @@ const SETTING_PHRASE: Record<string, string> = {
   sanscalendar: 'the SANS calendar’s day colours',
 }
 
+/* each calendar's late cut-off, as the four Logic values that hold it (state/cutoff.ts KEYS — not imported: state is above
+   undo's describe) */
+const CUT_KEYS: Record<'inputs' | 'sans', Set<string>> = {
+  inputs: new Set(['inputLead', 'inputCutMode', 'inputCutWd', 'inputCutWeeks']),
+  sans: new Set(['sansLead', 'sansCutMode', 'sansCutWd', 'sansCutWeeks']),
+}
+
 /* a safe generic label from the entry's module, used when the type is unknown. */
 function genericLabel(entry: UndoEntry): string {
   switch (entry.scope && entry.scope.module) {
@@ -503,6 +510,23 @@ export function describeEntry(entry: UndoEntry): string {
     if (k === 'memberfile') {
       const ch = entry.forward.find(c => c.collection === 'settings' && localOf(c.id) === 'memberfile')
       return `members filing for other people — ${ch && ch.op !== 'delete' && ch.after === false ? 'off' : 'on'}`
+    }
+    /* A LATE CUT-OFF IS NAMED AS ITS OWN WINDOW HEADS IT (the walk of 21 Nov 26, W1-05): it is one setting with two ways
+       in (D639 — behind each calendar's gear, and on the Logic page) saved as the `rules` record either way
+       (state/cutoff.ts), so a cut-off changed on Inputs read "Undid: a rule on the Logic page". Where the step changed
+       only one calendar's cut-off values the note names that setting, by its settings window's own heading
+       (ui/InputsSettings.tsx "Late cut-off for inputs", ui/SansSettings.tsx "Late cut-off for SANS commitments") — true
+       whichever page it was changed on; any other rule, or several at once, keeps the Logic page. */
+    if (k === 'rules') {
+      const ch = entry.forward.find(c => c.collection === 'settings' && localOf(c.id) === 'rules')
+      const half = (x: any): Record<string, unknown> => (x && typeof x === 'object' && x.v && typeof x.v === 'object' ? x.v : {})
+      const b = half(ch && (ch as any).before), a = half(ch && ch.op !== 'delete' ? (ch as any).after : null)
+      const sb = (ch && (ch as any).before && (ch as any).before.s) || {}, sa = (ch && ch.op !== 'delete' && (ch as any).after && (ch as any).after.s) || {}
+      const moved = [...new Set([...Object.keys(b), ...Object.keys(a)])].filter(x => JSON.stringify(b[x]) !== JSON.stringify(a[x]))
+      if (ch && moved.length && JSON.stringify(sb) === JSON.stringify(sa)) {
+        if (moved.every(x => CUT_KEYS.inputs.has(x))) return 'the late cut-off for inputs'
+        if (moved.every(x => CUT_KEYS.sans.has(x))) return 'the late cut-off for SANS commitments'
+      }
     }
     return SETTING_PHRASE[k] || 'a settings change'
   }

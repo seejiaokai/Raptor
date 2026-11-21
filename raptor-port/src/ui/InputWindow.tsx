@@ -27,6 +27,8 @@ import { canEditSched } from '../state/auth'
 import { me, isMe, mayEditInput, mayMovePlace, pageUnit } from '../state/perms'
 import { todayIso } from '../engine/editlog'
 import { UNIT } from '../engine/unitview'
+import { schedMoveBand } from '../state/typing-hold'
+import { MoveBandView } from './MoveBand'
 import { INPEDIT, INPEDIT_REFOUND, setInpEdit, OILASK, OILOWN, setOilAsk, setDocView } from './pops'
 import { CURPAGE, INPVIEW, revealInput, revealMedInput } from '../state/view'
 import { toastHeld } from './toast'
@@ -172,6 +174,18 @@ export function InputEditor() {
      a field he has not touched takes the live value silently, and a field changed BOTH ways is put to him (`clash`).
      `shown` is the record the window holds, for the one-editor-at-a-time question (`swap`). */
   const win = open && CURPAGE === 'inputs'
+  /* HELD WHEN ITS PAGE'S SQUADRON CHANGES UNDER IT (state/typing-hold.ts "the schedule side" — the walk of 21 Nov 26, W3-F3;
+     his D2243 Q7: a window open across the change is held, the band says so, nothing saved into the new squadron). The
+     window remembers the squadron its page showed when it opened — his own pages' (Inputs and its calendars, an upchit's
+     own window) or the schedule in view's; once that page shows another (his own move taking effect at midnight) the
+     window stays as it stood, its Person list still the squadron it opened on, with the band across its top and "Close",
+     and its Add, Save, Delete and "Take me out" do nothing. */
+  const ownPage = !!r && (isNew ? !!(r._calendar || ctx === 'i' || ctx === 'up') : win)
+  const pageSqn = open ? (ownPage ? pageUnit('own', todayIso()) : UNIT) : ''
+  const [openedOn, setOpenedOn] = useState<{ r: any; unit: string } | null>(null)
+  if (open ? (!openedOn || openedOn.r !== r) : !!openedOn) setOpenedOn(open ? { r, unit: pageSqn } : null)
+  const openedSqn = open && openedOn && openedOn.r === r ? openedOn.unit : pageSqn
+  const held = open && openedSqn !== pageSqn
   /* OPENED FROM THE SCHEDULE IT TAKES AND KEEPS THE KEYBOARD ([WINDOWS-KEEP-KEYS], reader D2's second pass, 6 Oct 26): Tab
      used to walk on into the schedule behind the dialog, where a box saved on leaving. On the Inputs page it is a window
      the page behind still works with (D641), so it holds nothing there. Its question sheets stack on top (ui/sheetfocus.ts). */
@@ -518,7 +532,7 @@ export function InputEditor() {
   }
   const doSave = (removals: any[], oilDec?: Record<string, number>) => HOOKS.toastBatch(() => saveNow(removals, oilDec))
   const saveNow = (removals: any[], oilDec?: Record<string, number>) => {
-    if (undecided()) return
+    if (held || undecided()) return
     if (medPlanProtected(removals.map(row => ({ row })))) return medicalLocked()
     /* FOR SEVERAL PEOPLE, OR AN INPUT THAT HOLDS SEVERAL: one command for the one record (commitInput) — the OIL
        answer, asked once, is the input's ONE answer for everyone in it (D762; first D660) */
@@ -626,7 +640,8 @@ export function InputEditor() {
      [SYNC-INTEG]); a plain click/Enter must pass FALSE, never React's event
      object — see the bindings below (SYNC-002). */
   const save = (skipDoc = false) => {
-    if (undecided()) return
+    /* held across his squadron change: the band over the window says why, and nothing is saved (above) */
+    if (held || undecided()) return
     /* A NEW INPUT WITH NO DATE PICKED IS REFUSED FIRST, in the List's own old sentence (D729 — V1: the List's "+ Input"
        opens this window with no date). Before every question: the OIL and the medical questions below would otherwise
        be asked about a day nobody chose (a blank date reads as the loaded week's Monday — engine fmt). */
@@ -739,6 +754,7 @@ export function InputEditor() {
   }
   /* a shared input is deleted for everyone only after it is asked (the day's own question — the plan §3.13) */
   const del = () => {
+    if (held) return
     if (recPpl.length > 1) { setDelAll(true); return }
     /* an upchit whose delete gives a downchit its days back says so first (D1022); any other delete goes at once (D792) */
     const back = upchitDeleteAsk(r)
@@ -750,6 +766,7 @@ export function InputEditor() {
      18 Oct 26, finding 1 — D1022) */
   const delNow = () => HOOKS.toastBatch(() => { if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } else stay() })
   const delEntry = () => {
+    if (held) return
     const n = howMany(recPpl)
     setDelAll(false)
     if (removeInput(r)) { HOOKS.toast(`Input deleted for ${n}`, 'ok'); close() } else stay()
@@ -774,7 +791,8 @@ export function InputEditor() {
      whoever may change it; no man gives an answer of his own — owner D762, D755 (3).) */
   const mineRow = recPpl.length > 1 && !canAll && recPpl.some(p => isMe(p)) ? r : null
   const takeMeOut = () => {
-    const live = mineRow && INPUTS.indexOf(mineRow) >= 0 ? mineRow : null
+    if (held) return
+    const live =mineRow && INPUTS.indexOf(mineRow) >= 0 ? mineRow : null
     setTakeOut(false)
     if (live && commitInput(live, draftOf(live), idsOf(live).map(String).filter(p => !isMe(p)))) { HOOKS.toast('You are out of this input', 'ok'); close() } else stay()
   }
@@ -809,7 +827,8 @@ export function InputEditor() {
      panel among the schedule in view's; a saved input among its own unit's (engine/inputs.ts inputUnitOf) */
   /* (the Inputs page's own squadron is the page's — state/perms.ts pageUnit('own'), the reshape plan §3.2 A-ii: his home, or
      the pick for a master admin or an admin holding Plan of it; equal to his home until the Schedules menu exists) */
-  const pickUnit = isNew ? ((r._calendar || ctx === 'i' || ctx === 'up') ? pageUnit('own', todayIso()) : UNIT) : (inputUnitOf(r) ?? UNIT)
+  /* (…as the page stood when the window opened: a window held across his own move keeps the list it opened with — above) */
+  const pickUnit = isNew ? openedSqn : (inputUnitOf(r) ?? UNIT)
   /* …ON THE DRAFT'S FIRST DAY, and only the men the whole draft with him added lets be saved (the reshape plan §3.3 C6 —
      ui/inputedit.ts offersFor, the gate's own who-rule): Ranger, 149's from Thu 16 Jul, is offered to Hunter for 14 Jul
      and not once the draft runs to 17 Jul. Asked on every draw, so again whenever the draft's dates or people change. A
@@ -1290,10 +1309,14 @@ export function InputEditor() {
   /* the control the swap's question hangs from gone with its window (the opened day closed under it): the question goes
      too — never left standing where nobody can see it, to take the next Escape ("adjust state while rendering") */
   if (swap && swapAt.current && !swapAt.current.isConnected) setSwap(null)
+  /* the band of a window held across his squadron change (above) — the Leave War windows' own band and look
+     (ui/MoveBand.tsx); "Close" closes the window, nothing saved */
+  const moveBand = held ? <MoveBandView band={schedMoveBand()} onClose={close} testid="inped-moveband" closeClass="abtn" /> : null
   if (win) return (<>
     <FloatWin id="inputedit" title={(isNew ? 'New input' : who) + (when ? ' · ' + when : '')} testid="win-inputedit" className="inpedwin" onClose={askClose}
       mark={cxMark || undefined}>
       <div id="inpEditPop" className="inpedbox inped-win" ref={box}>
+        {moveBand}
         {/* ONE EDITOR AT A TIME: another input was asked for while this one holds unsaved changes */}
         {swap && (
           /* it hangs from what was pressed on the page behind, over every window (portal): on a phone the opened day stands
@@ -1360,6 +1383,7 @@ export function InputEditor() {
           {cxMark}
           <button className="x" id="inpEditClose" aria-label="Close" onClick={close}>✕</button>
         </div>
+        {moveBand}
         {inner}
       </div>
       {sheets}

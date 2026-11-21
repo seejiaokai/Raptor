@@ -20,7 +20,7 @@
    so it is unit-testable on its own and reusable by anything that ever wants
    to redate a chip without a drag (a keyboard move, say).
    --------------------------------------------------------------------------- */
-import { draftOf, commitInputEdit, commitInput, fmtDay, oilFirst, oilGate, medAskFor, sharedRefusal, inputWho } from './inputedit'
+import { draftOf, commitInputEdit, commitInput, fmtDay, oilFirst, oilGate, medAskFor, sharedRefusal, inputWho, whoDoorRefusal, draftImage } from './inputedit'
 import { oilWaitThen } from './oilwait'
 import { OILWAIT } from '../state/view'
 import { movePlanPuck, planMoveBlock } from '../state/plan'
@@ -133,6 +133,15 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
      that could forget to check it, so the span's length (including "no end
      at all") can never drift across a move */
   if (d.end) d.end = shiftIso(d.end, days)
+
+  /* THE WHO-RULE'S REFUSAL IS SAID HERE, BEFORE ANYTHING IS TRIED (the walk of 21 Nov 26, W1-01: Ranger's 14–17 Jul leave,
+     which runs across his move, dragged by Hunter snapped back with no word). The input's own window asks the same
+     question at its Save (ui/InputWindow.tsx) and says it in his approved sentence for leave across a move (D2240, D2241
+     — ui/inputedit.tsx whoDoorRefusal, "Blocked: Ranger is 149's from Thu 16 Jul. …"); this door went on to the commit,
+     whose refusal by the gate could go unsaid (the OIL question's tried-and-thrown-away save hears no words). The same
+     sentence, in the same look, and nothing moved. */
+  { const why = whoDoorRefusal(r, draftImage(r, d, idsOf(r)))
+    if (why) { HOOKS.toast(why, 'blocked'); return false } }
 
   /* A MEDICAL MOVE IS ASKED ABOUT FIRST (the absence-record re-test, AB4, 26 Sep 26 — Fable F4 and Astra A). Onto a
      different-type medical, or an upchit anywhere, the edit window puts the question to the filer before anything is

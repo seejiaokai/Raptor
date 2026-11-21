@@ -155,7 +155,12 @@ function readStoredWeek(rows: WeekRows, wk: string): { json: string; preserved: 
   if (head && typeof head === 'object' && Array.isArray(head.d)) return { json: rows[''], preserved: true }
   try {
     const date = localOf(wk)   // a unit's week: its date part (storage/unitid.ts)
-    const b = joinWeek(rows, date)
+    /* joined under the week's OWN key, squadron and all: a day with no row reads as that squadron's untouched day
+       (state/weekrows.ts rowsToParts → engine/weeks-data.ts weekBundle). Handed the bare date, the untouched days were
+       the squadron in view's at the boot — 142's, before anyone signs in — so a 149 week saved with one day edited
+       came back with 142's Mon–Thu (the walk of 21 Nov 26, W4-F1). The saved-week writer joins the same way
+       (state/store.ts weekstashStore). */
+    const b = joinWeek(rows, wk)
     const json = JSON.stringify(b)
     return { json, preserved: amFormatOf({ amV: b.am, als: b.a, orig: b.o, cur: b.cv }, date) === 'unsupported' }
   } catch (e) {
