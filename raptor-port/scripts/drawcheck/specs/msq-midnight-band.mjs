@@ -80,7 +80,11 @@ async function reachWar(page, { origin, phone }) {
   const x = page.locator('.bidsheet .x:visible').first(); if (await x.count()) { await tap(phone, x); await page.waitForTimeout(600) }
   await signOut(page, phone); await login(page, 'us')
   await nav(page, phone, 'leavewar')
-  const c = page.locator('[data-testid="cell-bane-2026-07-24"]').first()
+  /* the drawing's window was on Fri 24 Jul; since the reshape (his Q6, D2243) Ranger's row in 142's war ends at his move,
+     so 24 Jul is outside his time there ("gone") and opens nothing: his window that night is on Wed 15 Jul, the one day
+     still his in 142's war that bidding has open — the same window, its title's date the one difference (named in the
+     report) */
+  const c = page.locator('[data-testid="cell-bane-2026-07-15"]').first()
   await c.scrollIntoViewIfNeeded(); await page.waitForTimeout(300); await tap(phone, c); await page.waitForTimeout(1300)
   const WORDS = 'Family wedding in Perth, back Sunday'
   if (phone) await page.evaluate(v => { const el = document.querySelector('#bid-remarks'); Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })) }, WORDS)
@@ -90,7 +94,9 @@ async function reachWar(page, { origin, phone }) {
   await clockTo(page, '2026-07-16T00:00:30')
   try { await page.locator('.bidsheet .saveband.moveband').first().waitFor({ state: 'visible', timeout: 8000 }) } catch { return 'no band across the window after midnight' }
   const st = await page.evaluate(() => ({ val: document.querySelector('#bid-remarks')?.value, head: document.querySelector('.bidsheet-hd')?.innerText.replace(/\s+/g, ' ') }))
-  if (st.val !== WORDS || !/Ranger/i.test(st.head || '')) return 'premise: the window or his words are gone ' + JSON.stringify(st)
+  /* the window must still be his; his words are a part measured below (`remarks`), so their loss shows as a difference
+     with its picture rather than stopping the check */
+  if (!/Ranger/i.test(st.head || '')) return 'premise: the window is gone ' + JSON.stringify(st)
   if (!phone) await page.mouse.move(1, 1)
   await page.evaluate(() => { const a = document.activeElement; if (a && a.blur && a !== document.body) a.blur() })
 }

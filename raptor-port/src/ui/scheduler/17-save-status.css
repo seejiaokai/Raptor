@@ -142,7 +142,7 @@
    surface's own button (the war window's chip, the Tracker's tool button), as drawn. Where the words do not fit on one
    line — his iPhone — the band takes two, the lead on the first and the rest under it, never cut (the drawing let it
    wrap; one line would cut its words). On one line it keeps the band's height. */
-.saveband.moveband{height:auto;min-height:var(--save-band);padding:4px 20px;white-space:normal}
+.saveband.moveband{height:auto;min-height:var(--save-band);white-space:normal}
 .saveband.moveband > button{flex:0 0 auto;margin:0}
 .saveband.moveband .sv-msg{flex-wrap:wrap;row-gap:2px;white-space:normal;overflow:visible}
 .saveband.moveband .sv-rest{white-space:normal;overflow:visible;text-overflow:clip}
