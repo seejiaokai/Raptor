@@ -90,12 +90,39 @@ async function walk(kind: 'mouse' | 'touch') {
   await tick()
   expect(C.sylDirty, 'no "✓ Save changes" after the Undo').toBe(false)
   expect(storedLayout()).toBe(stored)
-  /* and were "✓ Save changes" pressed now, the corner never reads "saved" for a chart nobody changed */
-  await C.saveChangesClick(); await tick()
-  expect(C.saveWords().text, 'the corner never reads "saved"').not.toMatch(/ saved$/)
+  /* "✓ Save changes" is on screen only while the chart has unsaved edits (Header.jsx), and every other road to that save
+     (Log out, Duplicate, Export) asks only then — so with none, nothing can claim "saved"; the corner keeps the refusal */
+  expect(C.saveWords().text, 'the corner keeps the refusal, never "saved"').toBe('● ' + NOT_SAVED)
 }
 
 describe('TRKSAVE — a refused chart move leaves no step behind, and "✓ Save changes" never says saved for nothing', () => {
   it('by mouse (desktop)', async () => { await walk('mouse') })
   it('by finger (phone)', async () => { await walk('touch') })
+  it('a refused chart edit that lights ✓ Save changes (the Font box) leaves neither the step nor the button', async () => {
+    if (!C.arrangeMode) C.toggleArrange()
+    C.renderBoard(); await tick()
+    expect(C.sylDirty).toBe(false)
+    const stored = storedLayout(), canUndo0 = C.canUndo()
+    setTrkUnitProbe(() => 'u149')
+    const p = C.setFont(11)
+    expect(await said()).toBe(NOT_SAVED)
+    await p; await tick()
+    expect(storedLayout(), 'nothing stored').toBe(stored)
+    expect(C.sylDirty, 'no ✓ Save changes').toBe(false)
+    expect(C.canUndo(), 'no step left for it').toBe(canUndo0)
+  })
+  it('(control) an unsaved edit made before stays to be saved, and its step stays, when a later move is refused', async () => {
+    if (!C.arrangeMode) C.toggleArrange()
+    C.setTool('move'); C.renderBoard(); await tick()
+    C.setFont(10.5); await tick()
+    expect(C.dlg).toBeNull()
+    expect(C.sylDirty, 'his own edit waits for ✓ Save changes').toBe(true)
+    setTrkUnitProbe(() => 'u149')
+    const id = C.SYL.filter((e: any) => ball(e.id))[6].id
+    drag(id, 40, 'mouse', 3)
+    expect(await said()).toBe(NOT_SAVED)
+    await tick()
+    expect(C.sylDirty, 'the earlier edit still waits to be saved').toBe(true)
+    expect(C.canUndo(), 'its step is still there').toBe(true)
+  })
 })
