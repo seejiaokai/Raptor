@@ -510,8 +510,13 @@ function stepStuck(changes: Change[], entry: UndoEntry): boolean {
   }
   if (!madeAsAdmin(entry.actor)) return false
   /* (the session as it was made again from his account — ui/App.tsx, accounts.ts sessionNow: `acct` is the role the
-     account gave then; a session with none, the developer bridge's, is never judged) */
-  if (SESSION.acct && SESSION.acct !== 'admin' && !adminNow(acct)) return true
+     account gave then; a session with none, the developer bridge's, is never judged — nor one whose role in force is
+     still an admin's: no real session holds an admin's role over a member's account (perms.ts switchRoleInForce lets
+     only an admin account switch, and the midnight refresh sets role and `acct` together), so that is the localhost
+     bridge's raptorRole over a member's sign-in — the browser tests' admin — who has an admin view, and whose restore
+     the gate still judges. Read without this, every Undo of the Leave War's browser tests was blocked for good,
+     22 Nov 26) */
+  if (SESSION.acct && SESSION.acct !== 'admin' && !isAdmin() && !adminNow(acct)) return true
   if (acct.master) return false
   const mine = String(acct.pid)
   const adminOf = (u: string): boolean => levelIn(acct.id, u, today) === 'admin'
