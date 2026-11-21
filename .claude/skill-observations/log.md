@@ -1063,3 +1063,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The band's proof passed while the real app lost the man's typed words: at midnight the real grid re-judged the open day as closed and replaced the bid window with a different one. Only the drawing check, in a real browser, caught it. A jsdom test through the real grid reproduced it once the page was drawn again after the clock moved.
 **Suggested improvement:** In a helper's brief, a proof about what a person sees after an event must drive the real component that draws it (not a stand-in), and must re-draw after the event the way the app does (a re-render after the clock or a notify), so a parent that re-judges its children is in the test.
 **Principle:** A stand-in proves the piece, not the page: whatever decides which child is shown sits above the stand-in, and a test that leaves it out cannot see it swap.
+
+### Observation 996: A handoff named the cause of a red check it had not re-run
+
+**Status:** OPEN
+**Date:** 21 Nov 26
+**Session context:** Chat 131 picking up the multi-squadron reshape's phase 3 from chat 130's handoff block
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** The block's "Pick up here" — what is said about a check left red
+
+**Issue:** The handoff told the next chat to re-run a drawing check and stated, as fact, that its recorded differences "came from" a fault since fixed. The re-run on the fixed build showed the same six differences: they come from the fixture's day (the drawing's window was on a later day than the one the check can open now), not from that fault. The next chat would have closed the item on the handoff's word had it not opened the marked pictures.
+**Suggested improvement:** In the handoff skill's rules for the "Pick up here" line: a check left red is written as "red: <what it shows>; cause not confirmed — <the writer's guess>, re-run and open the pictures", never as a cause, unless the writer re-ran it after the fix. One line in the skill's checklist: "any stated cause of a red or differing check: did a run after the fix confirm it? If not, mark it a guess."
+**Principle:** A handoff carries what was observed, and marks every explanation that no run has confirmed as a guess; the next reader trusts a stated cause and stops looking.
