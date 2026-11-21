@@ -603,11 +603,17 @@ to decide.
 - **The Tracker cannot be re-read in place** (the plan's §14 item 3): after his own move it moves at his next sign-in.
   Not a finding that it does not move at midnight; what happens meanwhile is share 3's item 9.
 - **Owed by the host, known:** Admin → Data's "clear the period" clears only the loaded calendar (dormant until step
-  5); the flying plan for another squadron reads who is available from the loaded war; `perms.ts ownPart` does not yet
-  accept a `u` stamp on a member's own take-out; stale notes naming the guest view in three files and
-  `storage/keyowner.ts`'s `lookahead` note; the documents not yet rewritten (blind-read R13; the guest view's removal;
-  a holiday line's `u`); the looks beside their approved drawings, which are the drawing check's; the walk of the whole
-  reshape, which follows this read.
+  5); the flying plan for another squadron reads who is available from the loaded war; stale notes naming the guest
+  view in three files and `storage/keyowner.ts`'s `lookahead` note; the documents not yet rewritten (blind-read R13;
+  the guest view's removal; a holiday line's `u`); the looks beside their approved drawings, which are the drawing
+  check's.
+- **Known and left after the night's fixes (22 Nov 26, the host):** the Quals page still shows a moved-in man's old
+  Scheduler tick ticked (his new squadron's admin unticks and ticks it to give it anew); a signature already stored
+  still counts by the bare tick (`signRoleOk`); a master admin's hand-made Plan grant to a moved member would pass the
+  gate's "Plan is an admin's" line (no door makes it); bringing out a saved plan or a week copy carrying a man who is
+  another squadron's that day is refused whole with that door's generic words; the browser tab's static title "142
+  Flying Programme". The walk of the whole reshape ran before this read (five walkers, 21–22 Nov); its fixes are in
+  the lists of §11 — a finding about them counts like any other.
 
 ## 10. Your report
 
@@ -632,7 +638,10 @@ name (Astra, Opus, Fable) and whether you ran tests or ran nothing. Then:
 Every file the reshape changed under `raptor-port/src` is in exactly one share (paths from `raptor-port/src/`; app
 files, then tests). The copies script reads these three lists to cut `SHARE.patch`, and stops if a changed file is in
 none or in two.
-Share 1: 45 app files, 40 test files. Share 2: 38 app files, 51 test files. Share 3: 25 app files, 30 test files.
+Share 1: 51 app files, 48 test files. Share 2: 39 app files, 59 test files. Share 3: 30 app files, 37 test files.
+Added by the host on 22 Nov 26, after the brief was written: the night's fixes of the walk's findings and of the kinds
+of sign-in table (helpers "kinds", "schedfix", "warfix", "corelines" and the ALL AVAIL meeting fix) — the last line of
+each list below; their commits' messages are in `RESHAPE-LOG.txt`. They are read like every other change in the share.
 
 **Share 1**
 
@@ -660,6 +669,7 @@ state/units-sqn-fixread.test.ts state/units-sqn-guard.test.ts test-support/msq-w
 ui/cutwin-own-unit.test.tsx ui/msq-inputscal-own-calendar.test.tsx ui/msq-own-flyplan.test.tsx
 ui/peoplepick.test.tsx ui/reshape-b04-own-pages.test.ts ui/reshape-c6-pickers.test.ts ui/reshape-c6-window.test.tsx
 ui/reshape-inputs-own-lists.test.ts
+ui/Shell.tsx ui/drag.ts ui/export.ts ui/printpdf.ts ui/textedit.ts ui/topbits.tsx engine/corelines-sign-tick.test.ts ui/msq-fix-sched-windows-midnight.test.tsx ui/msq-fix-sqn-number.test.tsx ui/msq-fix-w1-caldrag-words.test.tsx ui/msq-fix-w4f2-drag-day.test.tsx ui/msq-clear.test.tsx state/msq-meeting-stays.test.ts state/msq-meeting-stays-delete.test.ts
 <!-- /share-1-files -->
 
 **Share 2**
@@ -691,6 +701,7 @@ state/units-model-dated.test.ts state/units-sqn-fixread16.test.ts state/units-sq
 state/units.test.ts ui/accounts-ui.test.tsx ui/bellnotices-scenarios.test.tsx ui/insights-mix.test.tsx
 ui/memberview.test.tsx ui/reshape-b2-no-guest-switch.test.tsx ui/schedule-insights-menu.test.tsx
 ui/topbar-css.test.ts
+state/quals-write.ts state/corelines-lwu.test.ts state/corelines-sched-day.test.ts state/signin-kinds-cells.test.ts state/signin-kinds-gate.test.ts state/signin-kinds-proof.test.ts state/signin-kinds-fixes.test.ts state/msq-fix-w4f1-week-reload.test.ts undo/msq-fix-cutoff-note.test.ts
 <!-- /share-2-files -->
 
 **Share 3**
@@ -712,4 +723,5 @@ state/pick-stands.test.ts state/plan-foreign.test.ts state/posting-pass-every-sq
 state/reshape-a02-midnight.test.ts state/reshape-r6-reenter.test.tsx state/reshape-r6-refusal-stamps.test.ts
 state/typing-hold-grid.test.tsx state/typing-hold.test.tsx state/units-switch.test.ts
 state/war-day-not-its-squadron-gate.test.ts tracker/trk-per-unit.test.ts ui/oilwait.test.tsx
+leavewar/absences.ts leavewar/engine/dayview.ts leavewar/schedrecs.ts leavewar/state/merge.ts leavewar/ui/BidPicker.tsx leavewar/msq-warfix-f2-leave-one-war.test.ts leavewar/msq-warfix-f3-pending-other-day.test.tsx leavewar/msq-warfix-held-window-words.test.tsx leavewar/msq-warfix-row-tap.test.tsx tracker/msq-warfix-trk-refused.test.tsx ui/msq-own-facts.test.tsx state/corelines-bell-moved-admin.test.ts
 <!-- /share-3-files -->
