@@ -8,7 +8,7 @@ import { describe, it, expect, beforeAll, beforeEach, afterEach } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import {
-  PERMS, T, MEDICAL_DETAIL, COMMAND_OPS, allows, cmdAuthorize, roleOf, type Act, type Cell, type PermCol,
+  PERMS, T, MEDICAL_DETAIL, COMMAND_OPS, allows, cmdAuthorize, roleOf, type Act, type Cell, type Role,
   memberFilesForOthers, mayFileInputFor, mayFileGroup, mayEditInput, mayDeleteInput, filedForOther, INPUT_FILER_NOTE,
 } from './perms'
 import { registeredTypes } from '../command'
@@ -27,9 +27,9 @@ const read = (p: string) => readFileSync(join(ROOT, p), 'utf8')
    Reads the letters C R U D in each cell; "own" makes the letters of its clause the
    own-row rule; words in parentheses are notes; "gap: [ITEM-ID]" in the notes column
    names a rule the app does not obey yet. */
-/* §11's columns as the document still reads them: the Guest column stays in the table, and in PERMS, until the host's
-   rewrite of §11's guest cells (D2239 — the guest role itself is gone: perms.ts Role, below) */
-const ROLES: PermCol[] = ['admin', 'member', 'guest', 'pending']
+/* §11's columns are the roles a session holds: the Guest column left the document and PERMS together (the reshape's
+   phase 3 — D2239, the guest view removed) */
+const ROLES: Role[] = ['admin', 'member', 'pending']
 function parseCell(raw: string): Cell {
   let t = raw.replace(/\*\*/g, '').replace(/`/g, '').trim()
   while (/\([^()]*\)/.test(t)) t = t.replace(/\([^()]*\)/g, ' ')
@@ -43,7 +43,7 @@ function parseCell(raw: string): Cell {
   }
   return out
 }
-function section11(): { head: string[]; rows: Record<string, { cells: Record<PermCol, Cell>; gaps: string[] }> } {
+function section11(): { head: string[]; rows: Record<string, { cells: Record<Role, Cell>; gaps: string[] }> } {
   const md = read('docs/data-model.md')
   const a = md.indexOf('## 11. Security roles'), b = md.indexOf('## 12.')
   expect(a, '§11 exists').toBeGreaterThan(0)
@@ -54,9 +54,9 @@ function section11(): { head: string[]; rows: Record<string, { cells: Record<Per
   for (const l of lines.slice(2)) {
     const c = split(l)
     const key = c[0].replace(/`/g, '').trim()
-    const cells = {} as Record<PermCol, Cell>
+    const cells = {} as Record<Role, Cell>
     ROLES.forEach((r, i) => { cells[r] = parseCell(c[i + 1]) })
-    const gaps = [...c[5].matchAll(/gap:\s*`?\[([A-Z0-9-]+)\]/g)].map(m => m[1])
+    const gaps = [...c[4].matchAll(/gap:\s*`?\[([A-Z0-9-]+)\]/g)].map(m => m[1])
     rows[key] = { cells, gaps }
   }
   return { head, rows }
@@ -67,7 +67,7 @@ describe('D200 (3): the permissions matrix IS data-model.md §11', () => {
   const { head, rows } = section11()
 
   it('§11 has the columns the matrix has', () => {
-    expect(head).toEqual(['Table', 'Admin', 'Member', 'Guest', 'Pending', 'Own-row rule and notes'])
+    expect(head).toEqual(['Table', 'Admin', 'Member', 'Pending', 'Own-row rule and notes'])
   })
   it('every §11 row is in PERMS and every PERMS row is in §11', () => {
     expect(Object.keys(rows).sort()).toEqual(Object.keys(PERMS).sort())
@@ -83,8 +83,8 @@ describe('D200 (3): the permissions matrix IS data-model.md §11', () => {
     })
   }
   /* rewritten to his D2239 (20 Nov 26), which replaces D213: the guest who read a medical input in full is gone with the
-     guest view, so the rule is D211's alone — every admin and member, nobody else (the test tied it to §11's Guest cell,
-     which no role reads any more) */
+     guest view, so the rule is D211's alone — every admin and member, nobody else (the test was tied to §11's Guest cell,
+     gone with its column) */
   it('D211 + D2239: every admin and member reads a medical input in full, and nobody else — there is no guest', () => {
     expect([...MEDICAL_DETAIL].sort()).toEqual(['admin', 'member'])
     expect(MEDICAL_DETAIL as string[]).not.toContain('guest')

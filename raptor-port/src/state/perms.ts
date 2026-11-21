@@ -50,21 +50,18 @@ export type Act = 'C' | 'R' | 'U' | 'D'
 /* THE ROLES A SESSION HOLDS. The guest role is gone (his D2239, 20 Nov 26: the guest view is removed — a person who asked
    sees only the waiting screen until an admin of his squadron approves him). */
 export type Role = 'admin' | 'member' | 'pending'
-/* §11'S COLUMNS. The table still carries a Guest column because docs/data-model.md §11 still does, and perms.test.ts
-   holds the two as one table: no session reads it (`allows` answers only a Role). It goes in the one change that
-   rewrites §11's guest cells (the host's, at the reshape's merge), the `guest` field here and `row()`'s third
-   argument with it. */
-export type PermCol = Role | 'guest'
+/* §11'S COLUMNS ARE THE ROLES: the table's Guest column went with §11's own (docs/data-model.md, the reshape's phase 3 —
+   D2239), the two changed in one commit as perms.test.ts holds them one table. */
 export interface Cell { all: Act[]; own: Act[] }
-export interface PermRow { admin: Cell; member: Cell; guest: Cell; pending: Cell; gaps: string[] }
+export interface PermRow { admin: Cell; member: Cell; pending: Cell; gaps: string[] }
 
 const cell = (all: string, own = ''): Cell => ({
   all: all.split(' ').filter(Boolean) as Act[],
   own: own.split(' ').filter(Boolean) as Act[],
 })
 const NONE = cell('')
-const row = (admin: Cell, member: Cell, guest: Cell = NONE, pending: Cell = NONE, gaps: string[] = []): PermRow =>
-  ({ admin, member, guest, pending, gaps })
+const row = (admin: Cell, member: Cell, pending: Cell = NONE, gaps: string[] = []): PermRow =>
+  ({ admin, member, pending, gaps })
 
 /* the §11 table names, exactly as its first column reads with the backticks taken off */
 export const T = {
@@ -114,19 +111,19 @@ export const T = {
 
 /* 1. THE MATRIX — data-model.md §11, row for row. */
 export const PERMS: Record<string, PermRow> = {
-  [T.person]: row(cell('C R U D'), cell('R', 'U'), cell('R')),
+  [T.person]: row(cell('C R U D'), cell('R', 'U')),
   [T.qualification]: row(cell('C R U D'), cell('R')),
   [T.qualmark]: row(cell('C R U D'), cell('R', 'C U D')),
   [T.setting]: row(cell('C R U D'), cell('R')),
-  [T.missionrole]: row(cell('C R U D'), cell('R'), cell('R')),
+  [T.missionrole]: row(cell('C R U D'), cell('R')),
   [T.user]: row(cell('C R U D'), cell('', 'R')),
-  [T.accessreq]: row(cell('R D'), NONE, NONE, cell('', 'C')),
+  [T.accessreq]: row(cell('R D'), NONE, cell('', 'C')),
   [T.reqseen]: row(cell('', 'C R U'), NONE),
-  [T.sched]: row(cell('C R U D'), cell('R'), cell('R')),
-  [T.amendment]: row(cell('C R'), cell('R'), cell('R')),
+  [T.sched]: row(cell('C R U D'), cell('R')),
+  [T.amendment]: row(cell('C R'), cell('R')),
   /* a history line is written by whoever made the change, in its changeset (group A, phase 4.3; the final read's F1) */
   [T.editlog]: row(cell('C R D'), cell('C R')),
-  [T.changebatch]: row(cell('C R'), cell('C R'), cell('R'), cell('C')),
+  [T.changebatch]: row(cell('C R'), cell('C R'), cell('C')),
   [T.seen]: row(cell('', 'C R U'), cell('', 'C R U')),
   /* a notice is written by whoever made the change, inside it, and read by the person it is addressed to; nobody
      rewrites one, and it is removed only by its maker's own Undo of that change */
@@ -136,7 +133,7 @@ export const PERMS: Record<string, PermRow> = {
   [T.noticeseen]: row(cell('R', 'C R U'), cell('', 'C R U')),
   /* an admin's own row; a member has no Approvals (D1254) */
   [T.apprseen]: row(cell('', 'C R U'), NONE),
-  [T.input]: row(cell('C R U D'), cell('R', 'C R U D'), cell('R')),
+  [T.input]: row(cell('C R U D'), cell('R', 'C R U D')),
   [T.attachment]: row(cell('R'), cell('R', 'C R')),
   [T.war]: row(cell('C R U D'), cell('R')),
   [T.bid]: row(cell('C R U D'), cell('R', 'C U D')),
@@ -158,7 +155,7 @@ export const PERMS: Record<string, PermRow> = {
   /* the units (step 1): every signed-in person reads the units — a pending person's view names theirs; only
      a MASTER makes one (MASTER_ONLY_COMMANDS below — §11 notes it in the cell); the place, a unit's place and a home are
      an admin's OF that unit (the commit gate reads the row's unit — unitRowViolation); a member reads his own rights */
-  [T.unit]: row(cell('C R U D'), cell('R'), cell('R'), cell('R')),
+  [T.unit]: row(cell('C R U D'), cell('R'), cell('R')),
   [T.place]: row(cell('C R U D'), cell('R')),
   [T.unitplace]: row(cell('C R U D'), cell('R')),
   [T.grant]: row(cell('C R U D'), cell('', 'R')),
@@ -206,8 +203,8 @@ function identityOf(who: Who, s: any = SESSION): string | null {
 /* the one rule under every question: does `who` hold `act` on `table`, for a record
    owned by `owner`? */
 export function allows(who: Who, table: string, act: Act, owner?: string | null, identity?: string | null): boolean {
-  /* only a session's role holds anything — never §11's Guest column, which no role reads any more (D2239), whatever a
-     hand-made call passes */
+  /* only a session's role holds anything — the retired guest role holds nothing (D2239), whatever a hand-made call
+     passes */
   if (who !== 'admin' && who !== 'member' && who !== 'pending') return false
   const r = PERMS[table]
   if (!r) throw new Error(`perms: no row "${table}" in the permissions matrix`)
