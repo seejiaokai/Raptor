@@ -1,0 +1,224 @@
+[
+ {
+  "sz": "d",
+  "approvedBox": {
+   "x": 448,
+   "y": 800,
+   "w": 640.5,
+   "h": 38
+  },
+  "rebuiltBox": {
+   "x": 448,
+   "y": 800,
+   "w": 640.5,
+   "h": 38
+  },
+  "drawnDom": {
+   "face": "blocked",
+   "at": "foot",
+   "note": {
+    "x": 447.5,
+    "y": 800,
+    "w": 641,
+    "h": 38
+   },
+   "bg": "rgb(26, 31, 38)",
+   "border": "rgb(57, 66, 77) 1px",
+   "radius": "10px",
+   "sign": {
+    "x": 464.5,
+    "y": 812,
+    "w": 14,
+    "h": 14
+   },
+   "lead": {
+    "x": 485.5,
+    "y": 811,
+    "w": 586,
+    "h": 16,
+    "text": "Ranger is 149's from Thu 16 Jul. Only a master or Ranger can change leave that runs across his move.",
+    "color": "rgb(241, 244, 247)",
+    "weight": "700",
+    "size": "12.5px",
+    "family": "\"Inter Tight\", system-ui, sans-serif"
+   },
+   "rest": null
+  },
+  "built": {
+   "face": "blocked",
+   "at": "foot",
+   "note": {
+    "x": 384,
+    "y": 784,
+    "w": 768,
+    "h": 54
+   },
+   "bg": "rgb(26, 31, 38)",
+   "border": "rgb(57, 66, 77) 1px",
+   "radius": "10px",
+   "sign": {
+    "x": 401,
+    "y": 796,
+    "w": 14,
+    "h": 14
+   },
+   "lead": {
+    "x": 422,
+    "y": 795,
+    "w": 62,
+    "h": 16,
+    "text": "Not saved:",
+    "color": "rgb(241, 244, 247)",
+    "weight": "700",
+    "size": "12.5px",
+    "family": "\"Inter Tight\", system-ui, sans-serif"
+   },
+   "rest": {
+    "x": 422,
+    "y": 795,
+    "w": 707.8,
+    "h": 32,
+    "text": " Ranger is 149's from Thu 16 Jul. Only Ranger or an admin of both 142 and 149 can change leave that runs across his move.",
+    "color": "rgb(182, 192, 203)",
+    "weight": "500",
+    "size": "12.5px",
+    "family": "\"Inter Tight\", system-ui, sans-serif"
+   }
+  },
+  "noteBuiltVsApproved": {
+   "dx": -64,
+   "dy": -16,
+   "dw": 127.5,
+   "dh": 16
+  },
+  "drawnDomVsPink": {
+   "dx": -0.5,
+   "dy": 0,
+   "dw": 0.5,
+   "dh": 0
+  },
+  "signBuiltVsDrawn": {
+   "dx": -63.5,
+   "dy": -16,
+   "dw": 0,
+   "dh": 0
+  },
+  "leadBuiltVsDrawn": {
+   "dx": -63.5,
+   "dy": -16,
+   "dw": -524,
+   "dh": 0
+  }
+ },
+ {
+  "sz": "p",
+  "approvedBox": {
+   "x": 12,
+   "y": 10,
+   "w": 378,
+   "h": 50
+  },
+  "rebuiltBox": {
+   "x": 12,
+   "y": 10,
+   "w": 378,
+   "h": 50
+  },
+  "drawnDom": {
+   "face": "blocked",
+   "at": "top",
+   "note": {
+    "x": 12,
+    "y": 10,
+    "w": 378,
+    "h": 50
+   },
+   "bg": "rgb(26, 31, 38)",
+   "border": "rgb(57, 66, 77) 1px",
+   "radius": "10px",
+   "sign": {
+    "x": 29,
+    "y": 22,
+    "w": 14,
+    "h": 14
+   },
+   "lead": {
+    "x": 50,
+    "y": 21,
+    "w": 308.7,
+    "h": 28,
+    "text": "Ranger is 149's from Thu 16 Jul. Only a master or Ranger can change leave that runs across his move.",
+    "color": "rgb(241, 244, 247)",
+    "weight": "700",
+    "size": "12.5px",
+    "family": "Inter Tight, system-ui, sans-serif"
+   },
+   "rest": null
+  },
+  "built": {
+   "face": "blocked",
+   "at": "top",
+   "note": {
+    "x": 12,
+    "y": 10,
+    "w": 378,
+    "h": 64
+   },
+   "bg": "rgb(26, 31, 38)",
+   "border": "rgb(57, 66, 77) 1px",
+   "radius": "10px",
+   "sign": {
+    "x": 29,
+    "y": 22,
+    "w": 14,
+    "h": 14
+   },
+   "lead": {
+    "x": 50,
+    "y": 21,
+    "w": 63.3,
+    "h": 14,
+    "text": "Not saved:",
+    "color": "rgb(241, 244, 247)",
+    "weight": "700",
+    "size": "12.5px",
+    "family": "Inter Tight, system-ui, sans-serif"
+   },
+   "rest": {
+    "x": 50,
+    "y": 21,
+    "w": 317.7,
+    "h": 42,
+    "text": " Ranger is 149's from Thu 16 Jul. Only Ranger or an admin of both 142 and 149 can change leave that runs across his move.",
+    "color": "rgb(182, 192, 203)",
+    "weight": "500",
+    "size": "12.5px",
+    "family": "Inter Tight, system-ui, sans-serif"
+   }
+  },
+  "noteBuiltVsApproved": {
+   "dx": 0,
+   "dy": 0,
+   "dw": 0,
+   "dh": 14
+  },
+  "drawnDomVsPink": {
+   "dx": 0,
+   "dy": 0,
+   "dw": 0,
+   "dh": 0
+  },
+  "signBuiltVsDrawn": {
+   "dx": 0,
+   "dy": 0,
+   "dw": 0,
+   "dh": 0
+  },
+  "leadBuiltVsDrawn": {
+   "dx": 0,
+   "dy": 0,
+   "dw": -245.4,
+   "dh": -14
+  }
+ }
+]

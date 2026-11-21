@@ -28,6 +28,8 @@ import { esc, escMsg, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWOR
 import { shownWarns } from '../engine/warnhide'
 import { canEditSched } from '../state/auth'
 import { isGuest, mayReadMedicalOf, isMember } from '../state/perms'
+/* who else the scheduler's sign-off boxes offer — a Plan holder and a master admin (R8, D2245): handed to the engine as it loads */
+import '../state/sign-more'
 import { chgDayCounts } from './changesmodel'
 import { HOOKS } from '../engine/hooks'
 import { oilBarOf, oilItemOfKey, inputItemKey, oilSentinelSummary, oilFromWords } from './oilmode'
@@ -2514,7 +2516,7 @@ export function signoffHTML(di:any,full:any){
   const why=(l:any)=>stale.includes(l)?`${l} needs an appointed scheduler`:l;
   return `<span class="so-h">Sign-off</span>`
     +SIGN_ROLES.map(([k,lbl,sch]:any)=>{
-      const v=g[k], ids=signPeople(sch,v);
+      const v=g[k], ids=signPeople(sch,v,di);
       /* the select is stretched invisibly over the whole pill (iPhone Safari
          will not open a select from a tap on its wrapping label, so the label
          text used to be dead space on the phone). The .v span is the visible

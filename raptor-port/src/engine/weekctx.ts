@@ -30,7 +30,7 @@
 import { weekBundle, shiftWeekKey } from './weeks-data'
 import { buildDay } from './events'
 import { UNIT } from './unitview'
-import { goesOnProg, INPUTS, inputsFor, inputLinesOn, frozenInputDiffs, inputCoversDate, isPersonal, inputDormant, inputSilent, baseYear, inpId, stableJson } from './inputs'
+import { goesOnProg, INPUTS, inputsOnDay, inputAtIso, inputLinesOn, frozenInputDiffs, inputCoversDate, isPersonal, inputDormant, inputSilent, baseYear, inpId, stableJson } from './inputs'
 import { PEOPLE, isSpecial } from './people'
 import { stashDays, stashSched, stashGet } from './weekstash'
 import { getWorld, filingActive, filingHas } from './world'
@@ -334,7 +334,7 @@ export function nextMondaySeed(curWeek:any){
 function liveFilingAt(dt:any){
   const f:any={};
   /* the week's own squadron's filing (multi-squadron step 3): the neighbour weeks read are the schedule in view's */
-  inputsFor(UNIT,dt).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))f[inpId(inp)]=inp.acc||''; });
+  inputsOnDay(UNIT,inputAtIso(dt)).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))f[inpId(inp)]=inp.acc||''; });
   return f;
 }
 /* a filing divergence between a frozen fingerprint and the live filing for its date.

@@ -42,6 +42,7 @@
    this seed added its first two half-day rows. Writing the real shape the
    UI itself produces is the fix, not a test workaround. */
 import { INPUTS, leadOf } from '../engine/inputs'
+import { BOOT_UNIT } from '../engine/unitview'
 import { PEOPLE, deriveQuals, indexCallsigns, isOcu, isInstr } from '../engine/people'
 
 const DEMO_SANS: any[] = [
@@ -260,7 +261,9 @@ export function seedDemoPlaceholders() {
      store seeded before it carries the old shape, which the test below reads too */
   for (const { ph, ...rec } of recs) {
     if (INPUTS.some((r: any) => r && String(leadOf(r)) === ph && r.type === rec.type && r.date === rec.date)) continue
-    INPUTS.push({ ...rec, people: [{ p: ph, by: admin, at }], mod: '2026-06-26', by: admin, at, modBy: admin, modAt: at })
+    /* …stamped with the squadron it was filed on, as the app's filing stamps it (the reshape plan §12 Q1, D2243 — ui/inputedit.ts
+       commitNewInput): Saber filed both in his own 142 */
+    INPUTS.push({ ...rec, people: [{ p: ph, by: admin, at }], u: BOOT_UNIT, mod: '2026-06-26', by: admin, at, modBy: admin, modAt: at })
   }
 }
 

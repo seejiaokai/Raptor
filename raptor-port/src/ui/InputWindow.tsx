@@ -24,7 +24,8 @@ import { HOOKS } from '../engine/hooks'
 import { stampChanged } from '../state/inputstamp'
 import { notify } from '../state/store'
 import { canEditSched } from '../state/auth'
-import { me, isMe, mayEditInput, mayMovePlace, myUnit } from '../state/perms'
+import { me, isMe, mayEditInput, mayMovePlace, pageUnit } from '../state/perms'
+import { todayIso } from '../engine/editlog'
 import { UNIT } from '../engine/unitview'
 import { INPEDIT, INPEDIT_REFOUND, setInpEdit, OILASK, OILOWN, setOilAsk, setDocView } from './pops'
 import { CURPAGE, INPVIEW, revealInput, revealMedInput } from '../state/view'
@@ -38,7 +39,7 @@ import { clickedOutside } from './outside'
 import { useSheetFocus, topSheet } from './sheetfocus'
 import { AskCard } from './AskCard'
 import { lastPressed } from './lastpress'
-import { rosterOptions, archivedOptions, fmt, fmtDay, unfmt, hasHalf, spanOf, spanFields, SPANS, SANS_ROWS, sansRefusal, isoOrd, ordISO, applyMedPlan, medKeptSegments, mintMedSegments, typeOptions, draftOf, normalizeInputDraft, docGate, oilGate, oilAnswered, oilUnansweredDay, oilSummary, oilDayLabel, TYPE_ALLOW, protectedInput, medPlanProtected, medicalLocked, medSegmentsProtected, placeholderRefused, placeholderWhy, commitNewInput, commitInputEdit, medAskFor, saveBatchX, saveBatch, giveBackCuts, askOilIfPending, removeInput, upchitDeleteAsk, sharedRefusal, inputWho, howMany, commitInput, WIN_FIELDS, fieldSame, fieldPart, fieldSay, progOf } from './inputedit'
+import { rosterOptions, archivedOptions, fmt, fmtDay, unfmt, hasHalf, spanOf, spanFields, SPANS, SANS_ROWS, sansRefusal, isoOrd, ordISO, applyMedPlan, medKeptSegments, mintMedSegments, typeOptions, draftOf, normalizeInputDraft, docGate, oilGate, oilAnswered, oilUnansweredDay, oilSummary, oilDayLabel, TYPE_ALLOW, protectedInput, medPlanProtected, medicalLocked, medSegmentsProtected, placeholderRefused, placeholderWhy, commitNewInput, commitInputEdit, medAskFor, saveBatchX, saveBatch, giveBackCuts, askOilIfPending, removeInput, upchitDeleteAsk, sharedRefusal, inputWho, howMany, commitInput, WIN_FIELDS, fieldSame, fieldPart, fieldSay, progOf, offersFor, whoDoorRefusal, draftImage } from './inputedit'
 import type { Span } from './inputedit'
 
 export function SpanPicker({ id, span, onPick }: { id: string, span: Span, onPick: (m: Span) => void }) {
@@ -531,7 +532,7 @@ export function InputEditor() {
         if (WIN_FIELDS.every(f => fieldSame(f, draft, saved)) && String(draft.to ?? '') === String(saved.to ?? '')
           && (!('goes' in draft) || draft.goes === saved.goes) && ppl.length === inIt.size && ppl.every(id => inIt.has(String(id)))) { close(); return }
       }
-      if (commitInput(rec, draft, ppl, oilDec ? { oil: oilDec } : undefined)) {
+      if (commitInput(rec, isNew ? { ...draft, u: pickUnit } : draft, ppl, oilDec ? { oil: oilDec } : undefined)) {
         const row = (rec && INPUTS.indexOf(rec) >= 0 ? rec : null) || INPUTS.find((x: any) => !had.has(x.iid))
         saidSaved(row, show(row, true), isNew ? (ppl.length > 1 ? `Input added for ${howMany(ppl)}` : 'Input added') : 'Input updated'); close()
       } else stay()
@@ -540,7 +541,8 @@ export function InputEditor() {
     if (isNew) {
       let savedRow:any=null
       const ok = saveBatch(() => {
-        const ok = commitNewInput(draft, ctx === 'g', undefined, undefined, row=>{savedRow=row})
+        /* (the squadron it is filed on rides with it: an input of ALL AVAIL / ALL alone is stamped with it — C3, D2243 Q1) */
+        const ok = commitNewInput({ ...draft, u: pickUnit }, ctx === 'g', undefined, undefined, row=>{savedRow=row})
         /* the OIL answers land on the just-unshifted row, inside the same
            batch, so the add and its acknowledgment are ONE undo step */
         if (ok && oilDec) savedRow.oil = oilDec
@@ -637,6 +639,16 @@ export function InputEditor() {
          picker's own sentence */
       const pb = pickProblem(ppl, several, draft.type, phWhy)
       if (pb) { HOOKS.toast(pb.why, 'warn'); return }
+    }
+    /* WHOM MAY HE FILE THIS DRAFT FOR, ASKED BEFORE THE GATE (the reshape plan §3.3 C6; D2221 as D2240 and D2241 read it):
+       the commit gate's own who-rule, of the record as this save would leave it — a new input and an existing one's save
+       alike, so Kestrel saving a change to Ranger's leave across his move from 149's list is told why here, the window
+       staying open, instead of the gate's bare "Blocked: nothing was kept". Not where nothing would change (the save
+       just closes, below). His approved words for leave across a move (ui/inputedit.ts whoDoorRefusal), in the grey
+       refusal note as drawn (docs/mock/2026-11-20-multi-sqn-reshape/ 8b). */
+    if (draft && !unchangedSave()) {
+      const why = whoDoorRefusal(isNew ? null : r, draftImage(isNew ? null : r, draft, whoFor()))
+      if (why) { HOOKS.toast(why, 'blocked'); return }
     }
     if (grouped && draft) {
       /* ONE QUESTION FOR THE ENTRY (D660): the days and the hours are every man's alike, so the amounts are. A man
@@ -795,8 +807,26 @@ export function InputEditor() {
   /* WHOSE PEOPLE THE PICKERS OFFER (multi-squadron step 3): a new input on the Inputs page or its calendars (`_calendar`)
      is filed among the signed-in person's own squadron (D2132 — those pages stay on his own); one added from a schedule's
      panel among the schedule in view's; a saved input among its own unit's (engine/inputs.ts inputUnitOf) */
-  const pickUnit = isNew ? ((r._calendar || ctx === 'i' || ctx === 'up') ? myUnit() : UNIT) : (inputUnitOf(r) ?? UNIT)
-  const archivedHere = win && (!isNew || ctx === 'i') && canEditSched() && ctx !== 's' && !(draft && isSansAvail(draft.type)) ? archivedOptions(pickUnit) : []
+  /* (the Inputs page's own squadron is the page's — state/perms.ts pageUnit('own'), the reshape plan §3.2 A-ii: his home, or
+     the pick for a master admin or an admin holding Plan of it; equal to his home until the Schedules menu exists) */
+  const pickUnit = isNew ? ((r._calendar || ctx === 'i' || ctx === 'up') ? pageUnit('own', todayIso()) : UNIT) : (inputUnitOf(r) ?? UNIT)
+  /* …ON THE DRAFT'S FIRST DAY, and only the men the whole draft with him added lets be saved (the reshape plan §3.3 C6 —
+     ui/inputedit.ts offersFor, the gate's own who-rule): Ranger, 149's from Thu 16 Jul, is offered to Hunter for 14 Jul
+     and not once the draft runs to 17 Jul. Asked on every draw, so again whenever the draft's dates or people change. A
+     man already picked stays (nothing is substituted for what he picked). */
+  /* (a draft naming nobody is its filer's own — commitNewInput files it so) */
+  const whoFor = (): string[] => (picker ? ppl : draft ? [draft.person != null && draft.person !== '' ? draft.person : me()] : [])
+    .filter(p => p != null && p !== '').map(String)
+  const firstDay = (draft && draft.start) || todayIso()
+  const offers = draft && !readOnly ? offersFor(isNew ? null : r, draft, whoFor(), picker && several) : undefined
+  /* a save that would change nothing just closes (saveNow, below) — so the door above asks nothing of it */
+  const unchangedSave = (): boolean => {
+    if (isNew || !r || !draft) return false
+    const saved = draftOf(r), inIt = new Set(idsOf(r).map(String)), who = whoFor()
+    return WIN_FIELDS.every(f => fieldSame(f, draft, saved)) && String(draft.to ?? '') === String(saved.to ?? '')
+      && (!('goes' in draft) || draft.goes === saved.goes) && who.length === inIt.size && who.every(id => inIt.has(id))
+  }
+  const archivedHere = win && (!isNew || ctx === 'i') && canEditSched() && ctx !== 's' && !(draft && isSansAvail(draft.type)) ? archivedOptions(pickUnit, firstDay).filter(id => !offers || offers(id)) : []
   /* the first day whose OIL question nobody has answered, for the line that says so (below); '' where there is none */
   /* …asked of the input's ONE record, which carries everyone in it (the one-rule build, D756). Before it, of EVERY record
      of the entry, not of the one the window happened to be opened on (walker C's find, 10 Oct 26 — Astra's scenario 69:
@@ -825,7 +855,7 @@ export function InputEditor() {
   const span = draft ? spanOf(draft.allday, draft.half) : 'all'
   /* the roster a context-bound add offers — SANS Availability is refused for
      anyone else at commit (sansRefusal), so the list should not offer them */
-  const peopleFor = () => ctx === 's' ? rosterOptions(pickUnit).filter(id => PEOPLE[id].san) : rosterOptions(pickUnit)
+  const peopleFor = () => rosterOptions(pickUnit, firstDay).filter(id => (ctx !== 's' || PEOPLE[id].san) && (!offers || offers(id)))
 
   /* the form itself — the same fields, checks and buttons whichever chrome it stands in */
   const inner = (<>
@@ -846,7 +876,7 @@ export function InputEditor() {
             </div>
             : picker
             /* ON THE INPUTS PAGE: the people picker — one person from the list, or several as pucks (D656) */
-            ? <PeoplePick people={ppl} several={several} type={draft.type} sansOnly={ctx === 's' || isSansAvail(draft.type)} unit={pickUnit}
+            ? <PeoplePick people={ppl} several={several} type={draft.type} sansOnly={ctx === 's' || isSansAvail(draft.type)} unit={pickUnit} iso={firstDay} offers={offers}
               lockOne={!isNew && !canEditSched()} readOnly={readOnly}
               /* THE POSTED-OUT / ARCHIVED PEOPLE, for an admin changing a SAVED input ([INPUT-LIST-AS-DAY-CARD], 10 Oct 26 —
                  Astra's scenario 57). The List's pencil offered them in its own Person list (clearing leave is filed
