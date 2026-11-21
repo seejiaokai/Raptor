@@ -23,7 +23,7 @@ import { ownDays } from '../approvals'
 import { addDays, memberToday, parseCell } from '../engine'
 import { portionOf, type Contrib } from '../engine/dayview'
 import type { RequestRec } from '../engine/warrecs'
-import { dayRecsOf, getState, rawState, reqRunKey } from '../state/store'
+import { dayRecsOf, getState, notThisWarsDay, rawState, reqRunKey } from '../state/store'
 
 /** the kinds his window lists (reading 6) */
 export const LIST_KINDS: ReadonlySet<string> = new Set(['LL', 'OL', 'OIL', 'CCL', 'FCL', 'PL', 'EL', 'CL'])
@@ -133,6 +133,11 @@ export function personLeave(pid: string, since: number | null): PwLine[] {
   /* his approved leave: the Inputs on every date (the absence index is war-agnostic), one Input one line */
   const byInput = new Map<string, { code: string; days: Array<{ date: string; part: 'am' | 'pm' | 'full' }> }>()
   for (const [date, list] of dayRecsOf(pid)) {
+    /* HIS LEAVE FROM HIS MOVE DAY IS OUT OF SIGHT IN HIS OLD SQUADRON'S WAR (his D2243 Q6 — "kept out of sight in the old
+       war until the Transfer batch carries it"; the re-walk of the fix read, F2-16): the grid hides it under the stripe,
+       and this list still read "LL Mon 20 Jul 1 Approved". A day that is another squadron's (the war's own door's
+       question) lists no approved leave here; a leave running across the move shows its days before it. */
+    if (notThisWarsDay(pid, date)) continue
     for (const c of list as readonly Contrib[]) {
       if (c.kind !== 'absence' || c.spill || !LIST_KINDS.has(c.code)) continue
       const g = byInput.get(c.id) ?? { code: c.code, days: [] }

@@ -1702,6 +1702,18 @@ export function setLwxPostingProbe(fn: LwxPostingSaved | null): void { LWX_POSTI
 export type LwManDay = (c: Change) => { pid: string; iso: string } | null
 let LW_MAN_DAY: LwManDay | null = null
 export function setLwManDayProbe(fn: LwManDay | null): void { LW_MAN_DAY = fn }
+/* …AND THE LEAVE A WAR APPROVED, WHICH IS AN INPUT (the fix read of the reshape — opus-3 F2, F4; fable-3 F2; astra-3 F2;
+   helper "warA7"). Leave approved on the war is stored as an Input carrying `lw` (and `lwU`, the squadron whose war approved
+   it), so the line below, which reads war records, never judged it: approved leave slid onto a day now another squadron's,
+   or put back there by an Undo, stood in the old war for anyone the Inputs rules let write it. THE PROBE: leavewar/sync.ts
+   warLeaveAdds answers, over the WHOLE command, each (man, day) such leave covers after that it did not before — a medical
+   splitting a leave, or a day taken off it, adds none — with the squadron stamped on it (`unit`; null, of before the stamp:
+   the war loaded's). A day added whose squadron (his home on it, over the rows before the command) is not that war's is
+   refused, whoever writes it, an Undo or Redo included — as the line below refuses a war cell's (D2243 Q3). Until the probe
+   is installed this judges nothing. The app itself is not asked, as nowhere else in 7b. */
+export type LwLeaveAdds = (changes: readonly Change[]) => ReadonlyArray<{ pid: string; iso: string; unit: string | null; id: string }>
+let LW_LEAVE_ADDS: LwLeaveAdds | null = null
+export function setLwLeaveAddsProbe(fn: LwLeaveAdds | null): void { LW_LEAVE_ADDS = fn }
 function removesOnly(c: Change): boolean {
   const b: any = c.before ?? null, f: any = c.op === 'delete' ? null : c.after ?? null
   if (f == null || deepEqual(b, f)) return true
@@ -1731,6 +1743,14 @@ function warUnitViolation(env: CommitEnvelope): string | null {
     if (!LWX_DOORS.has(env.type)) return `another squadron's stored war written outside Admin → Users' doors, through the second store (${c.collection}/${c.id})`
     if (u && unitOf(String(c.id)) === u) return `the war loaded written through the second store (${c.collection}/${c.id})`
   }
+  /* A7 — leave a war approved goes onto no day that is not that war's squadron's (the probe above) */
+  if (u && LW_LEAVE_ADDS && env.changes.some(c => c.collection === 'inputs')) {
+    const rows = unitRowsBefore(env.changes)
+    for (const x of LW_LEAVE_ADDS(env.changes)) {
+      const h = homeBefore(x.pid, x.iso, rows), w = x.unit ?? u
+      if (h && h !== w) return `${x.pid}'s ${x.iso} is ${h}'s, not ${w}'s: its Leave War takes no leave there (inputs/${x.id})`
+    }
+  }
   const lw = env.changes.filter(c => String(c.collection).startsWith('lw.') && c.collection !== 'lw.current')
   if (!lw.length && !fx.length) return null
   if (u && lw.length) {
@@ -1747,7 +1767,9 @@ function warUnitViolation(env: CommitEnvelope): string | null {
       const id = String(c.id), bpid = id.slice(0, id.lastIndexOf(':'))
       if (homeBefore(bpid, todayIso(), rows) && !everOfBefore(bpid, u, rows)) return `a balance typed for a man who is not this war's squadron's (${c.collection}/${c.id})`
     }
-    /* A7 — a man's day that is not this war's squadron's only loses entries here (below) */
+    /* A7 — a man's day that is not this war's squadron's only loses entries here (below) — a war cell's, and since the fix
+       read of the reshape an OIL award's or any other ledger entry's (`lw.ledger`, read by the same probe: taking one away
+       passes, giving or changing one does not — opus-3 F5, fable-3 F5) */
     if (LW_MAN_DAY) {
       for (const c of lw) {
         const at = LW_MAN_DAY(c)
