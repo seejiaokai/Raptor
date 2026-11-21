@@ -90,7 +90,7 @@ export function whoamiForTracker(): string {
 /* The signed-in PERSON's id, for the Tracker's per-person place (D376). Nobody ('')
    whenever there is no session: after a logout Raptor's person id falls back to the
    headless default — a real member's id — and a pick written then must never land
-   under his name (the plan's red team, Fable F6). A guest or a pending account has
+   under his name (the plan's red team, Fable F6). A pending account has
    no person. */
 export function whoamiIdForTracker(): string {
   if (HOOKS.whoami() === 'Unknown') return ''

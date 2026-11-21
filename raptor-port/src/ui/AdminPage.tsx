@@ -263,8 +263,8 @@ export function AdminPage() {
           </div>
           <div className="adm-pane-body">
             {/* ---- Users — the accounts ([ACCOUNTS], D166 (1), D204, 26 Sep 26): who can
-                sign in, as which callsign, admin or member; the requests waiting; the
-                guest switch. Replaces the reference's Manage-users list, which drove
+                sign in, as which callsign, admin or member; the requests waiting (the
+                guest switch went with the guest view, D2239). Replaces the reference's Manage-users list, which drove
                 nothing. ---- */}
             <section className={'adm-panel' + (cat === 'users' ? ' on' : '')} id="admUsers">
               {/* `shown`: the waiting list is on his screen — Users chosen, and on a phone

@@ -536,10 +536,11 @@ describe('the list (D769; the plan §4.10 "the bell", §10 step 7 item 8)', () =
     expect(store.get('noticeseen:' + HEX, null)).toBeNull()
     expect(unreadFor(HEX)).toBe(1)
   })
-  it('a person with no person behind the sign-in (a guest): the bell is dark, a tap says "Nothing new", and nothing breaks', async () => {
+  /* the guest (gone with the guest view, D2239) stood here as a sign-in with no person behind it: a person waiting takes his place */
+  it('a person with no person behind the sign-in (a person waiting): the bell is dark, a tap says "Nothing new", and nothing breaks', async () => {
     await boot()
     file([RANGER, HEX])
-    setSession({ user: 'guest', role: 'guest', name: 'guest' }); setMe(null)
+    setSession({ user: 'principal:w@mail', role: 'pending', name: 'w@mail' }); setMe(null)
     expect(bellOn()).toBe(false)
     await draw(); await tap($('#notifyBell'))
     expect($('[data-testid="bell-empty"]')!.textContent).toBe('Nothing new')

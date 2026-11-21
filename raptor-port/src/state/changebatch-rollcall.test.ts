@@ -234,11 +234,11 @@ describe('the roll-call: every save after boot carries its batch', () => {
   })
 
   /* …AND THE BATCH DOES NOT NAME HIM BY HIS SIGN-IN NAME (the member / guest check's security read, F1 — 5 Nov 26). A batch
-     is read by every member and guest (§11: ChangeBatch member C R, guest R); a waiting person has no account, so his
+     is read by every member (§11: ChangeBatch member C R; a guest too until the guest view went, D2239); a waiting person has no account, so his
      session's id is `principal:<sign-in name>` — his defence mail at the database step — which §11 shows to admins only
      (AccessRequest: admin R D, nobody else). Written into the batch's `actorId`, every member would read who is asking for
      access. The batch says only that a waiting person acted; the request row names him, for the admins. */
-  it('a waiting person’s batch names his role, never his sign-in name — members and guests read every batch (§11)', async () => {
+  it('a waiting person’s batch names his role, never his sign-in name — members read every batch (§11)', async () => {
     resetSession(sessionFor(signIn('kite@mail', 'x') as any))
     const from = groups.length
     expect(requestAccess({ cs: 'Kite', ini: '', seat: 'GND', cat: '' } as any)).toBeNull()

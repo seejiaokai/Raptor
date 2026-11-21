@@ -3,7 +3,8 @@
    24 Sep 26: "member can only edit their own row and SXO and scheduler also does no harm. so
    they can edit anything in their own row"). One test per column, through the ONE Quals write
    (state/quals-write.ts updatePersonField), for an admin, a member on his own row, a member on
-   another's, a guest, a pending person and no session. Register line AC8. */
+   another's, a person waiting for access, a pending person and no session. Register line AC8. (A guest stood
+   among them until the guest view went, D2239: a person waiting takes his place.) */
 import { beforeEach, afterEach, describe, expect, it } from 'vitest'
 import { PEOPLE, ID_BY_CS } from '../engine/people'
 import { setSession, setMe } from './auth'
@@ -60,9 +61,9 @@ describe('D149 — a member edits his own Quals row, every column; never another
       expect(updatePersonField('bane', op('bane'))).toBe(null)
       expect(JSON.stringify(read('bane'))).not.toBe(before)
     })
-    it(`${col}: a guest, a pending person — refused`, () => {
-      for (const role of ['guest', 'pending']) {
-        resetSession({ user: 'principal:x', role, pid: null, name: 'x@mail' })
+    it(`${col}: a person waiting, a pending person — refused`, () => {
+      for (const user of ['principal:w@mail', 'principal:x']) {
+        resetSession({ user, role: 'pending', pid: null, name: user.slice(10) })
         const before = JSON.stringify(read('bane'))
         expect(updatePersonField('bane', op('bane'))).toBe(OWN_ROW_ONLY)
         expect(JSON.stringify(read('bane'))).toBe(before)
@@ -170,13 +171,13 @@ describe('D1651 — on Quals only an admin ticks Scheduler; a member keeps every
     expect(updatePersonField('bane', { tick: 'sched' })).toBe(null)
     expect(sched('bane')).toBe(before)
   })
-  it("a member on ANOTHER's row, a guest, a pending person — refused, nothing changes", () => {
+  it("a member on ANOTHER's row, a person waiting, a pending person — refused, nothing changes", () => {
     asMember('bane')
     const before = sched('stiff')
     expect(updatePersonField('stiff', { tick: 'sched' })).toBe(OWN_ROW_ONLY)
     expect(sched('stiff')).toBe(before)
-    for (const role of ['guest', 'pending']) {
-      resetSession({ user: 'principal:x', role, pid: null, name: 'x@mail' })
+    for (const user of ['principal:w@mail', 'principal:x']) {
+      resetSession({ user, role: 'pending', pid: null, name: user.slice(10) })
       expect(updatePersonField('bane', { tick: 'sched' })).toBe(OWN_ROW_ONLY)
     }
   })

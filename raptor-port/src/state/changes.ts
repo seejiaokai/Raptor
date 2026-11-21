@@ -19,7 +19,7 @@
    Written by ONE command, `changes.seen` — the `access.seen` precedent (the admins' bell, D216/D227) — which may write
    only the signed-in person's OWN row: perms.ts (`EditLogSeen`, own row) and data-model.md §11, together.
    A line is never new to its own author, never new when no person made it (a boot or reconciler line), and nothing is
-   new to someone signed in without a person (a guest, a request waiting, nobody).
+   new to someone signed in without a person (a request waiting, an account switched off, nobody).
 
    ONE CURSOR PER SQUADRON (the fix read of multi-squadron batch 1's full check, 18 Nov 26 — Astra 6): each squadron's
    history is loaded alone (engine/editlog.ts elogLoad), so one cursor for all of them, folded over 142's lines, stepped

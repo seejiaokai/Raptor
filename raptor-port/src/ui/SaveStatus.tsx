@@ -41,8 +41,9 @@ const cover = (d: 1 | -1) => { covering += d; for (const f of [...coverSubs]) f(
 export function useSaveFailed(): boolean {
   return useSyncExternalStore(subscribe, readFailed, readFailed)
 }
-/** Is a band up — a failed save's "Not saved", or a browser's "Not kept" (D1901)? Shell and the guest page ask, to make
-    room for it in their bar; the sign-in and the access screens, to move the screen down under it (D1657). */
+/** Is a band up — a failed save's "Not saved", or a browser's "Not kept" (D1901)? Shell asks, to make room for it in its
+    bar (the guest page asked too, until the guest view went — D2239); the sign-in and the access screens, to move the
+    screen down under it (D1657). */
 export function useBandUp(): boolean {
   return useSyncExternalStore(subscribe, readBandUp, readBandUp)
 }

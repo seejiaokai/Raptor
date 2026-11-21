@@ -40,9 +40,8 @@ const ALLOWED: Record<string, string> = {
   'engine/reorder.ts': SCHEDULE + ' — the house wave order',
   'engine/stores.ts': SCHEDULE + ' — the stores list',
   'engine/insights-config.ts': SCHEDULE + ' — Logic\'s "Track blue/red sorties"',
-  /* not a schedule page: Admin → Users' guest switch, the core's file — the guest view is removed in the reshape's
-     phase 3 (D2239, the plan §8), and with it this read and write */
-  'state/accounts.ts': 'the guest switch (guestview), the core\'s file: removed with the guest view in phase 3 (D2239), not moved to a squadron',
+  /* (state/accounts.ts — Admin → Users' guest switch — stood here until the guest view was removed in the reshape's
+     phase 3, D2239, the plan §8, and with it its read and write) */
 }
 
 function hits(): Record<string, number> {

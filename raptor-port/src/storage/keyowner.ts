@@ -5,7 +5,7 @@
    Two squadrons share one app from batch 1 (D1695, D2087). Every stored record is either
    - a UNIT's: it belongs to one squadron (a detachment from batch 2) and each unit keeps its own copy — the schedule's
      weeks, days and issued versions, saved plans, the planning calendar, Logic, the day / wave / duty templates, the
-     flying plan, the change history, the guest and members' switches, the whole Leave War, the whole Tracker; or
+     flying plan, the change history, the members' switch, the whole Leave War, the whole Tracker; or
    - the COMMUNITY's: one record for everyone, whatever squadron is in view — people, accounts, access requests,
      inputs (one authoritative record each, asked for by unit through `inputsFor` from step 3), the bell's notices,
      every "seen" record, the store's own stamp and its change log.
@@ -45,7 +45,8 @@ export const UNIT_SETTINGS: readonly string[] = [
   'qualcols',     // the LoX column list on Quals (a person's ticks stay on his own record)
   'insights',     // "Track blue/red sorties" — a squadron's switch (D524)
   'sanscalendar', // the SANS calendar's three day colours, with the flying plan
-  'guestview',    // the admin's switch letting people waiting for access read the published week
+  /* (`guestview` — the admin's switch letting people waiting for access read the published week — went with the guest
+     view, D2239: nothing writes it, and a value an older build stored is read by nothing, D56) */
   'memberfile',   // "members may file duties and commitments for other people" (D654)
 ]
 export const UNIT_SETTING_PREFIXES: readonly string[] = [
@@ -105,7 +106,6 @@ export const UNIT_SINGLETONS: ReadonlyArray<{ name: string; module: string }> = 
   { name: 'STORE_CFG', module: 'engine/stores' },
   { name: 'LOOK_CFG', module: 'engine/lookahead' },
   { name: 'ELOG', module: 'engine/editlog' },
-  { name: 'GUESTVIEW', module: 'state/accounts' },
   { name: 'WARN', module: 'engine/validate' },
   { name: 'REST', module: 'engine/validate' },
   { name: 'EVD', module: 'engine/validate' },

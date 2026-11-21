@@ -11,10 +11,11 @@ import { initStore, resetSession, notify, writeInputs } from './store'
 import { commitSettingsIntent } from './people-settings-commit'
 import {
   accountsLoad, signIn, sessionFor, addAccount, updateAccount, approveRequest, declineRequest,
-  requestAccess, setGuestView, ACCOUNTS_LIST, ACCESS_REQS, GUESTVIEW, accountByName, accountById,
+  requestAccess, ACCOUNTS_LIST, ACCESS_REQS, accountByName, accountById,
   addPersonAndAccount, approveRequestNew, requestByName, requestSummary, accessAlert, unseenRequests,
   markRequestsSeen, currentAdminAccountId,
 } from './accounts'
+import * as accountsModule from './accounts'
 import { commandStream } from '../command'
 import { peopleStore, commitPeopleSettingsIntent } from './people-settings-commit'
 import { putNewPerson } from './roster-add'
@@ -101,8 +102,8 @@ describe('AC2 — signing in makes you that callsign (D166 (3)); every "who" nam
        mirror itself is walked on the running app (the unit store does not wire the sync) */
     signInAs('hex'); expect(viewerId()).toBe('rocky')
     signInAs('nobody@mail'); expect(viewerId()).toBe('')                // pending: matches no row
-    signInAs('ad', 'a'); setGuestView(true); signInAs('nobody@mail')
-    signInAs('ad', 'a'); setGuestView(false)
+    /* (a guest stood here — the guest view went with D2239): a person who asked and is waiting matches no row either */
+    ask('Nobody'); signInAs('nobody@mail'); expect(viewerId()).toBe('')
   })
 })
 
@@ -154,17 +155,22 @@ describe('AC3 — a new user joins either way (D204)', () => {
        its missing parts blank, for the admin to pick when he approves */
     expect(ACCESS_REQS[0]).toMatchObject({ cs: 'K', ini: '', seat: '', cat: '', seenBy: [] })
   })
-  it('the guest switch is off by default; on, a waiting person signs in as a guest', () => {
-    expect(GUESTVIEW).toBe(false)
+  /* rewritten to his D2239 (20 Nov 26), which replaces D221 and D215: it pinned the guest switch and a waiting person let
+     in as a guest; the guest view is removed, so it pins its absence — no switch, and a person waiting signs in waiting
+     whatever an older build stored (D56: left where it lies, read by nothing) */
+  it('there is no guest switch: a waiting person signs in waiting, whatever was stored (D2239)', () => {
+    expect((accountsModule as any).GUESTVIEW, 'no switch is held').toBeUndefined()
+    expect((accountsModule as any).setGuestView, 'and no door sets one').toBeUndefined()
     signInAs('viper@mail'); ask('Viper')
-    signInAs('ad', 'a'); expect(setGuestView(true)).toBe(null)
-    expect(signInAs('viper@mail')).toEqual({ kind: 'guest', name: 'viper@mail' })
-    expect(roleOf()).toBe('guest'); expect(me()).toBe(null); expect(HOOKS.whoami()).toBe('Guest')
+    for (const k of ['guestview', 'u142@guestview']) mem['sqn142_' + k] = 'true'
+    accountsLoad()
+    expect(signInAs('viper@mail')).toEqual({ kind: 'waiting', name: 'viper@mail' })
+    expect(roleOf()).toBe('pending'); expect(me()).toBe(null); expect(HOOKS.whoami()).toBe('viper@mail')
   })
   it('a person on no list cannot do an admin\'s work, nor ask for someone else', () => {
     signInAs('viper@mail')
     expect(addAccount('x@mail', 'pike', 'main')).toMatch(/Only an admin/)
-    expect(setGuestView(true)).toMatch(/Only an admin/)
+    /* (the guest switch, once refused him here too, is gone for everyone — D2239; the test above pins its absence) */
     /* the gate itself refuses a request that names someone else (perms.ts COMMAND_OPS) */
     const r: any = commitSettingsIntent('access.request', { owner: 'someone@else' }, () => store.set('accessreq:x', { id: 'x', name: 'someone@else', cs: 'X', ini: '', seat: 'FCP', cat: 'C', at: 1 }))
     expect(r.ok).toBe(false)
@@ -279,10 +285,10 @@ describe('AC6 — an account change is one command; its keys roll back together 
 })
 
 describe('AC7 — a member\'s command changes only his own records (perms.ts ownershipViolation)', () => {
-  it('a guest files nothing; a member files only for himself', () => {
+  /* the guest (gone with the guest view, D2239) stood here as someone not a member: a person waiting takes his place */
+  it('a person waiting files nothing; a member files only for himself', () => {
     signInAs('viper@mail'); ask('V')
-    signInAs('ad', 'a'); setGuestView(true)
-    signInAs('viper@mail')
+    expect(signInAs('viper@mail').kind).toBe('waiting')
     const n = INPUTS.length
     writeInputs(() => { INPUTS.unshift({ iid: 'zzguest', person: 'bane', type: 'LL', date: '14/07/2026', remarks: '' } as any) })
     expect(INPUTS.length).toBe(n)

@@ -140,8 +140,8 @@ function loadContext(ctx: RecordCtx, entry: UndoEntry): void {
    consequence folded into it (Astra's final read, F2: a weekend publish carries the Leave War's OIL credit and landed on
    the war, leaving the board on the wrong day): a schedule step to Edit Schedule, for someone who has it; a war's to the
    Leave War; an input to Inputs, the planning calendar to Inputs on its calendar (Fable's final read, F2), the inputs'
-   look-ahead to Inputs; a roster record to Quals, on his row; the accounts, the requests and the guest switch to Admin →
-   Users; a rule to Logic; the LoX columns to Quals; the templates and the default arrangement to Admin. The stores and the
+   look-ahead to Inputs; a roster record to Quals, on his row; the accounts and the requests to Admin →
+   Users (the guest switch went with the guest view, D2239); a rule to Logic; the LoX columns to Quals; the templates and the default arrangement to Admin. The stores and the
    cancel reasons are edited on the board and the week, so they stay. `also` = the pages an undo may stay on because the
    change shows there too — only an input's: the loaded week it lands on (walk S16) and, for an absence, the Leave War
    (step4-leavewar's ATT C cut). null = stay where you are. */
@@ -217,7 +217,7 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
     const ids = fwd.filter(c => c.collection === 'settings').map(c => localOf(c.id))
     /* …and the squadrons' rows (multi-squadron batch 1, step 1 — units, places, homes, rights: Admin's, where step 3
        draws them; until then Admin → Users, where every account change already lands) */
-    if (ids.some(k => k.startsWith('account:') || k.startsWith('accessreq:') || k === 'guestview' || UNIT_ROW_PREFIXES.some(p => k.startsWith(p)))) { primary = 'admin'; then = () => requestAdminUsers(false) }
+    if (ids.some(k => k.startsWith('account:') || k.startsWith('accessreq:') || UNIT_ROW_PREFIXES.some(p => k.startsWith(p)))) { primary = 'admin'; then = () => requestAdminUsers(false) }
     else if (ids.includes('rules') || ids.includes('insights')) {
       primary = 'logic'
       /* A LATE CUT-OFF IS SET BEHIND A CALENDAR'S OWN GEAR TOO (D639 — one setting, two ways in), so the Inputs page
@@ -387,9 +387,9 @@ const OWN_PAGES = new Set(['inputs', 'quals', 'leavewar', 'tracker', 'admin'])
 const unitInView = (): string => pageUnit(OWN_PAGES.has(CURPAGE) ? 'own' : 'schedule')
 /* A RECORD OF AN OWN PAGE (the reshape plan §3.2 A-ii, its list of own pages and their settings): the Inputs calendar's notes
    and day titles; Quals' columns; the flying plan and the SANS calendar's colours (the war's need figures, the SANS
-   calendar); the members' filing switch (the Inputs page); the guest switch (Admin → Users). Every other record a squadron
+   calendar); the members' filing switch (the Inputs page) — the guest switch (Admin → Users) gone with the guest view, D2239. Every other record a squadron
    names — its weeks, its Logic rules, its templates, a blue/red answer — is a schedule page's. */
-const OWN_SETTINGS = new Set(['qualcols', 'sanscalendar', 'memberfile', 'guestview'])
+const OWN_SETTINGS = new Set(['qualcols', 'sanscalendar', 'memberfile'])
 const OWN_SETTING_PFX = ['flyday:', 'flyrule:', 'flyrun:']
 const ownPageRecord = (c: Change): boolean => {
   if (c.collection === 'plan') return true
