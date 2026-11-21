@@ -23,7 +23,7 @@ import { inputOnDay, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, in
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
-import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, setLwPostingProbe, setFollowUpsProbe, setWarLinesOwed, setHolidayLinesOwed, myUnit } from '../state/perms'
+import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, setLwPostingProbe, setFollowUpsProbe, setWarLinesOwed, setHolidayLinesOwed } from '../state/perms'
 import { rosterOf, homeUnitOf, unitPeople } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
 import { qualify } from '../storage/unitid'
@@ -156,13 +156,10 @@ import {
   lwHistInit,
   worldUnit,
   readStoredPeriods,
-  setPlaceHolidays,
-  placeHolidaysMoved,
   postOutIsSaved,
   revertUnsavedPostOuts,
-  type PlaceHoliday,
 } from './state/store'
-import { units as unitList, placeOfOn, unitRows, homeOn, todayIso } from '../state/units'
+import { units as unitList, homeOn, todayIso } from '../state/units'
 import { foreignWar, setForeignDoor, readForeign, type ForeignWar } from './state/foreign'
 import type { StorageBackend } from './state/storage'
 import { HOOKS } from '../engine/hooks'
@@ -370,8 +367,6 @@ export function installAbsenceDoor(): void {
        war's own answer whenever the two are one squadron, as they are for everyone until step 5's schedules menu) */
     return !!iso && nonWorkingFor(UNIT, iso)
   }
-  /* the war a person opens reads its place's public holidays (the other squadrons' at its place — above) */
-  setPlaceHolidays(() => placeHolidaysFor(worldUnit()))
   /* the other two facts the OIL evidence block needs from out here: the day's
      real date, and who an ALL / ALL AVAIL puck stands for ([ALL-AVAIL-REDEF]).
      Same seam, same reason — the engine cannot ask a war anything. */
@@ -1203,71 +1198,46 @@ function publishClashes(): void {
    filed one. EXPORTED since 28 Aug 26 — the input ask-flow (oilAskPlan
    below, the OilConfirm sheet, the bell's pending scan) all read the SAME
    answer, so "is this day applicable" can never fork. */
-/* ---- PUBLIC HOLIDAYS BY PLACE AND DATE; OFF DAYS BY SQUADRON (multi-squadron batch 1, step 4 — D2160, D2165, D2184) --
-   A public holiday belongs to a PLACE: every squadron at that place on that date keeps it, whichever squadron's admin
-   typed it (it is written into his own squadron's war — the Holidays list, D638). An Off day stays its own squadron's.
-   Two readers are built on this:
-   - the war a person opens has the other squadrons' public holidays at its place laid onto its days (state/store.ts
-     setPlaceHolidays — wired below), so its grid, its leave charging, its calendars' tags and its Holidays list read the
-     place's list; and
-   - `nonWorkingFor(unit, iso)` — THE one answer to "is this a day off for this squadron" (a weekend, a public holiday at
-     its place on that date, or its own war's public-holiday mark): the OIL earning day of the schedule in view
-     (HOOKS.oilEarningDay, wired below) asks it for the unit in view, which is the loaded war's squadron for everyone
-     but a viewer of another squadron's schedule (step 5).
-   BY DATE: the place each squadron is at ON THAT DATE (state/units.ts placeOfOn), so a squadron that moves later never
-   rewrites a past day's leave charge or OIL. Another squadron's war is read through its own door (setWarWorldDoor's,
-   the boot's) — its periods only, never its records — and kept until a world is swapped (only the loaded world is ever
-   written in a page's life: signing out reloads the app). */
+/* ---- EACH SQUADRON'S DAYS OFF ARE ITS OWN (his D2195, 18 Nov 26: "The holiday list shouldn't be shared. Individual sqns
+   will own it" — the reshape plan §7, A4; it narrows D2160's shared list, which step 4 of batch 1 had built) -----------
+   A public holiday, like an Off day, is its own squadron's: written into that squadron's war (the Holidays list, D638)
+   and read from it alone, never laid onto another squadron's days, OIL or bell — even at one place. So:
+   - the war a person opens reads only its own holidays (state/store.ts — the overlay that laid the place's on is gone);
+   - `nonWorkingFor(unit, iso)` — THE one answer to "is this a day off for this squadron" (a weekend, or its own war's
+     public holiday): the OIL earning day of the schedule in view (HOOKS.oilEarningDay, wired below) asks it for the
+     unit in view, and every input's OIL question asks it for the squadron the input sits in that day (oilAskPlan);
+   - `unitDayFacts(unit, iso)` — what that squadron's own war says the day is (public holiday, Off day, its name): the
+     flying plan's answer for a squadron's page (flyAnswer) and the holiday line's span and name read it.
+   Another squadron's war is read through its own door (setWarWorldDoor's, the boot's) — its periods only, never its
+   records — and kept until a world is swapped or written (storedMoved). */
 const STORED = new Map<string, { periods: Period[]; eventDefs: EventDef[] }>()
+/* (how many times what is kept here has been dropped — a cached answer read from another squadron's war, such as how
+   many inputs a holiday line still counts (holidayLeft), is keyed on it) */
+let STORED_VER = 0
+function storedMoved(): void { STORED.clear(); STORED_VER++; fxMoved() }
 function storedWorld(unit: string): { periods: Period[]; eventDefs: EventDef[] } {
   const hit = STORED.get(unit)
   if (hit) return hit
-  /* the RAW event types, never getState's: getState lays the place's holidays on through this very read, so asking it
-     here would go round in a circle */
   let out: { periods: Period[]; eventDefs: EventDef[] } = { periods: [], eventDefs: rawState().eventDefs }
   if (WORLD_DOOR) {
     try {
       const r = readStoredPeriods(WORLD_DOOR(unit).backend)
       out = { periods: r.periods, eventDefs: r.eventDefs ?? rawState().eventDefs }
-    } catch { /* a door that will not read: nothing of that squadron's is laid on — never a guess */ }
+    } catch { /* a door that will not read: no day of that squadron's reads as off but a weekend — never a guess */ }
   }
   STORED.set(unit, out)
   return out
 }
-/* a squadron's own public holidays, date by date — the loaded war's from its raw state (never with another's laid on),
-   any other's from its door */
-function ownPublicHolidays(unit: string): Map<string, PlaceHoliday> {
-  const out = new Map<string, PlaceHoliday>()
-  const w = unit === worldUnit() ? { periods: rawState().wars.map(x => x.period), eventDefs: rawState().eventDefs } : storedWorld(unit)
-  for (const p of w.periods) {
-    for (const d of p.days) {
-      if (out.has(d.date)) continue
-      const h = holidayAt(w.eventDefs, d, p.bands)
-      if (h && h.kind === 'off') out.set(d.date, { name: h.name, short: shortOf(w.eventDefs, h.name, h.short) })
-      else if (d.ph) out.set(d.date, { name: 'PH', short: 'PH' })
-    }
-  }
-  return out
-}
-/** the public holidays the OTHER squadrons at `unit`'s place hold, on each date where both are at that place */
-let PLACE_CACHE: { unit: string; rows: unknown; raw: unknown; map: Map<string, PlaceHoliday> } | null = null
-export function placeHolidaysFor(unit: string): Map<string, PlaceHoliday> {
-  const rows = unitRows()
-  /* the loaded war's own holidays count for the others' answers, so its raw state is part of what the answer is read
-     from — but never for its own (it already holds them) */
-  const raw = unit === worldUnit() ? null : rawState()
-  if (PLACE_CACHE && PLACE_CACHE.unit === unit && PLACE_CACHE.rows === rows && PLACE_CACHE.raw === raw) return PLACE_CACHE.map
-  const map = new Map<string, PlaceHoliday>()
-  for (const u of unitList()) {
-    if (u.id === unit) continue
-    for (const [iso, h] of ownPublicHolidays(u.id)) {
-      if (map.has(iso)) continue
-      const here = placeOfOn(unit, iso), there = placeOfOn(u.id, iso)
-      if (here && there && here.id === there.id) map.set(iso, h)
-    }
-  }
-  PLACE_CACHE = { unit, rows, raw, map }
-  return map
+/** WHAT A SQUADRON'S OWN WAR SAYS A DAY IS — a public holiday or an Off day, and its name and short form as that war
+ *  writes them; nothing for a working day or a date no period of it holds. The loaded war answers for its own squadron
+ *  (dayFacts); another squadron's is read from its door. */
+export function unitDayFacts(unit: string, iso: string): { kind: 'ph' | 'off' | null; name: string; short: string } {
+  if (!unit || unit === worldUnit()) { const f = dayFacts(iso); return { kind: f.kind, name: f.name, short: f.short } }
+  const own = storedWorld(unit)
+  const p = own.periods.find(x => x.start <= iso && iso <= x.end)
+  const day = p ? dayIn(p, iso) : undefined
+  const h = p && day ? holidayAt(own.eventDefs, day, p.bands) : null
+  return { kind: h ? holidayKind(h.kind) : null, name: h ? h.name : '', short: h ? shortOf(own.eventDefs, h.name, h.short) : '' }
 }
 /** THE PUBLISHED DAYS OF A SQUADRON ON A RUN OF DATES — the loaded week's (when it is that squadron's schedule in view)
  *  and every stashed week of that squadron's (the OIL pass's own two sources, desiredOilCells), each a day whose
@@ -1292,30 +1262,21 @@ export function publishedDaysOf(unit: string, from: string, to: string): string[
   }
   return [...out].sort()
 }
-/** WHAT A NEW PUBLIC HOLIDAY WOULD PUT OUT OF DATE, BEFORE IT IS SAVED (multi-squadron batch 1, step 4 — D2184 R32):
- *  each squadron's published days on `from`..`to` that are working days for it now and would become a public holiday —
- *  the loaded war's squadron (whose list it is written into) on every date, any other squadron only on a date it is at
- *  the same place (the holiday reaches it then — placeHolidaysFor). Such a day was published as a working day, so it
- *  must be published again before its OIL is earned (the day's own amber line, D2003). Squadrons with none are left out. */
+/** WHAT A NEW PUBLIC HOLIDAY WOULD PUT OUT OF DATE, BEFORE IT IS SAVED (multi-squadron batch 1, step 4 — D2184 R32; his
+ *  D2195 narrowed it to its own squadron, the reshape plan §7, A4): the published days on `from`..`to` of the loaded war's
+ *  squadron — whose list the holiday is written into, and whose days alone it touches — that are working days for it now
+ *  and would become a public holiday. Such a day was published as a working day, so it must be published again before
+ *  its OIL is earned (the day's own amber line, D2003). None: an empty list. */
 export function holidayOutOfDate(from: string, to: string): { unit: string; days: string[] }[] {
   if (!validIso(from) || !validIso(to) || to < from) return []
   const home = worldUnit()
-  const out: { unit: string; days: string[] }[] = []
-  for (const u of unitList()) {
-    const days = publishedDaysOf(u.id, from, to).filter(iso => {
-      if (isWeekend(iso) || nonWorkingFor(u.id, iso)) return false
-      if (u.id === home) return true
-      const here = placeOfOn(home, iso), there = placeOfOn(u.id, iso)
-      return !!(here && there && here.id === there.id)
-    })
-    if (days.length) out.push({ unit: u.id, days })
-  }
-  return out
+  const days = publishedDaysOf(home, from, to).filter(iso => !isWeekend(iso) && !nonWorkingFor(home, iso))
+  return days.length ? [{ unit: home, days }] : []
 }
 
-/** IS `iso` A DAY OFF FOR `unit` — a weekend, a public holiday at its place on that date, or its own war's public holiday
- *  (an Off day is the squadron's own, and earns no OIL by itself, as before). The loaded war answers for its own squadron
- *  (the place's holidays are laid on it); another squadron's is read from its door. */
+/** IS `iso` A DAY OFF FOR `unit` — a weekend, or a public holiday in its own war (D2195: never another squadron's, even
+ *  at one place); an Off day is the squadron's own, and earns no OIL by itself, as before. The loaded war answers for its
+ *  own squadron; another squadron's is read from its door. */
 export function nonWorkingFor(unit: string, iso: string): boolean {
   if (!unit || unit === worldUnit()) return isNonWorkingISO(iso)
   if (!validIso(iso)) return false
@@ -1323,8 +1284,7 @@ export function nonWorkingFor(unit: string, iso: string): boolean {
   const own = storedWorld(unit)
   const war = own.periods.find(p => p.start <= iso && iso <= p.end)
   const day = war?.days.find(d => d.date === iso)
-  if (isNonWorkingDay(iso, day, own.eventDefs, war?.bands ?? [])) return true
-  return placeHolidaysFor(unit).has(iso)
+  return isNonWorkingDay(iso, day, own.eventDefs, war?.bands ?? [])
 }
 
 export function isNonWorkingISO(date: string): boolean {
@@ -1355,9 +1315,22 @@ export function oilAskPlan(row: { person?: unknown; date: string; endDate?: stri
   if (end < start) end = start
   let n = 0
   for (let d = start; d <= end && n < 400; d = addDays(d, 1), n++) {
-    if (isNonWorkingISO(d)) out.push({ iso: d, amt })
+    if (inputDayOff(row, d)) out.push({ iso: d, amt })
   }
   return out
+}
+/* WHOSE LIST JUDGES AN INPUT'S DAY (his D2195 — "a holiday one squadron adds never touches another squadron's days, OIL
+   or bell"; D2206 — "a man's holiday OIL follows his own squadron's list"; the reshape plan §7, A4: oilOpenOn →
+   oilAskPlan → isNonWorkingISO judged every squadron's input by the LOADED war's holidays, so 142's holiday asked 149's
+   inputs the OIL question and told 149's admins). A weekend is everyone's. Otherwise the day is off where it is off for
+   a squadron the input sits in that day — its named people's homes that day, else its stamp, else its filer's
+   (engine/inputs.ts inputOnDay, the one body the lists ask) — each by its own war (nonWorkingFor). An input that sits in
+   no squadron (a draft before anyone is in it) is judged by the loaded war, as every input was before. */
+function inputDayOff(row: object, iso: string): boolean {
+  if (isWeekend(iso)) return true
+  const us = unitList().map(u => u.id).filter(u => inputOnDay(row, u, iso))
+  if (!us.length) return isNonWorkingISO(iso)
+  return us.some(u => nonWorkingFor(u, iso))
 }
 
 /* THE BELL'S PENDING SCAN (owner, 28 Aug 26 — "it will notify the applicable
@@ -1434,10 +1407,13 @@ export function oilOpenOn(from: string, to?: string | null, unit?: string | null
     /* …BY DAY (the reshape plan §3.2 A-i — Fable F10, Opus M6): each asked day is the squadron's whose its people are ON
        THAT DAY (engine/inputs.ts inputOnDay) — a duty 14–17 Jul across Ranger's 16 Jul move puts the 16th and 17th on
        149's list, the 14th and 15th on 142's; never the input's first day for every day */
+    /* …AND A DAY OFF FOR THAT SQUADRON (his D2195 — the reshape plan §7, A4): an input with people of two squadrons on one
+       day is asked where either squadron's list makes it off (oilAskPlan), but it stands on a squadron's list only for a
+       day off by that squadron's own list — 149's holiday never puts a shared input on 142's list */
     const plan = oilAskPlan(row)
     if (!plan.length) continue
     const answered = (row.oil ?? {}) as Record<string, number>
-    const days = plan.filter(p => p.iso >= from && p.iso <= hi && answered[p.iso] == null && !isoProt(p.iso) && (!unit || inputOnDay(row, unit, p.iso))).map(p => p.iso)
+    const days = plan.filter(p => p.iso >= from && p.iso <= hi && answered[p.iso] == null && !isoProt(p.iso) && (!unit || (inputOnDay(row, unit, p.iso) && nonWorkingFor(unit, p.iso)))).map(p => p.iso)
     if (!days.length) continue
     const start = labelToISO(row.date, row.yr) ?? days[0]!
     const end = row.endDate ? labelToISO(row.endDate, row.yr) ?? start : start
@@ -1448,36 +1424,40 @@ export function oilOpenOn(from: string, to?: string | null, unit?: string | null
 /* how many are left on a run — the bell's holiday line asks at every draw of both bells, so the answer is kept until
    something it was read from has moved: the scheduler's store (every change there ends in a notify), the war's facts,
    the list's own length (Fable's read of the plan, A9) */
-let LEFT: { v: number; wf: number; n: number; m: Map<string, number> } = { v: -1, wf: -1, n: -1, m: new Map() }
-/* (counted for the line's READER's own squadron — D2184 R32: each admin answers for his own squadron only, so his line
-   counts his squadron's inputs, and goes when they are answered, whatever the other squadron has left) */
-function holidayLeft(a: string, b: string, pid?: string | null): number {
-  const v = raptorVersion(), wf = warFactsVersion(), n = warInputs().length
-  if (LEFT.v !== v || LEFT.wf !== wf || LEFT.n !== n) LEFT = { v, wf, n, m: new Map() }
-  /* (the reader's home TODAY, on purpose — the reshape plan §3.2 A-i: his line counts what his squadron has left now) */
-  const unit = pid ? homeUnitOf(pid, effectiveToday()) : null
-  const key = `${a}|${b}|${unit ?? ''}`
+let LEFT: { v: number; wf: number; n: number; sv: number; m: Map<string, number> } = { v: -1, wf: -1, n: -1, sv: -1, m: new Map() }
+/* (counted for the squadron the LINE was written for — the Plan audit's PB4, the reshape plan §19: a holiday is its own
+   squadron's (D2195), so its line counts that squadron's inputs, whoever reads it; it counted the reader's home, so a 149
+   line on the bell of Hunter, 142's admin holding Plan of 149, read 0 and was hidden. Another squadron's days are read
+   from its door, so what is kept is dropped with the stored worlds too — STORED_VER) */
+function holidayLeft(a: string, b: string, unit: string): number {
+  const v = raptorVersion(), wf = warFactsVersion(), n = warInputs().length, sv = STORED_VER
+  if (LEFT.v !== v || LEFT.wf !== wf || LEFT.n !== n || LEFT.sv !== sv) LEFT = { v, wf, n, sv, m: new Map() }
+  const key = `${a}|${b}|${unit}`
   let c = LEFT.m.get(key)
-  if (c == null) { c = oilOpenOn(a, b, unit).length; LEFT.m.set(key, c) }
+  if (c == null) { c = oilOpenOn(a, b, unit || null).length; LEFT.m.set(key, c) }
   return c
 }
 /* the days of a run of dates that are a holiday NOW — its first and last weekday that does not work (a weekend inside it
    is part of it; a weekend alone is no holiday); null where none is left. The bell's line reads its dates, its count,
    the day it covers and the list it opens through this (state/notices.ts noticeSpan). */
-function holidaySpan(a: string, b: string): { a: string; b: string; name: string } | null {
+/* (THE LINE'S OWN SQUADRON — the blind read's R4, the reshape plan §19b; D2195: `unit` is the squadron the line was written
+   for, and its days and name are read from that squadron's own list — its stored war when another is loaded — never the
+   loaded war's: Hunter's line of 149's holiday, read with 142's war loaded, had no day left and was hidden) */
+function holidaySpan(a: string, b: string, unit: string): { a: string; b: string; name: string } | null {
   if (!validIso(a) || !validIso(b) || b < a) return null
+  const u = unit || worldUnit()
   let lo: string | null = null, hi: string | null = null
-  for (let d = a, n = 0; d <= b && n < 400; d = addDays(d, 1), n++) if (isNonWorkingISO(d) && !isWeekend(d)) { if (!lo) lo = d; hi = d }
-  return lo && hi ? { a: lo, b: hi, name: holidayOwnName(lo) } : null
+  for (let d = a, n = 0; d <= b && n < 400; d = addDays(d, 1), n++) if (!isWeekend(d) && nonWorkingFor(u, d)) { if (!lo) lo = d; hi = d }
+  return lo && hi ? { a: lo, b: hi, name: holidayOwnNameOf(u, lo) } : null
 }
+/* (a squadron's holiday's own name on a date — holidayOwnName below, for any squadron's list) */
+function holidayOwnNameOf(unit: string, iso: string): string { const n = unitDayFacts(unit, iso).name; return n && n !== holidayWord('ph') ? n : '' }
 /* a holiday's NAME — only one of its own. A holiday made with no name (the Event sheet's "PH" button; the Holidays
    list's empty name box) is saved under the preset's own word (holidayWord), and that word is not a name: the list
    then said "PH is now a public holiday." under "Public holiday · PH" (the check's walk, E1 — 13 Oct 26). Read as '',
    and each reader says it its own way: the list names the day, the bell's line says "Public holiday". */
 export function holidayOwnName(iso: string): string { const n = dayFacts(iso).name; return n && n !== holidayWord('ph') ? n : '' }
-/* the schedulers — every account that is an admin, switched on and tied to a person (state/accounts.ts) */
-const schedulerIds = (): string[] => ACCOUNTS_LIST.filter(a => isAdminAccount(a) && a.on && !!a.pid).map(a => String(a.pid))
-/* …of the Leave War's OWN squadron (multi-squadron batch 1, step 4): a posting is a fact of the world it was set in, so
+/* THE SCHEDULERS of the Leave War's OWN squadron (multi-squadron batch 1, step 4): a posting is a fact of the world it was set in, so
    its bell lines go to that squadron's admins only, never the other squadron's (each admin's Admin → Users lists his own
    squadron, D2191); the posted man's squadron is the war's, since each squadron's Leave War holds only its own people */
 /* ONE AUDIENCE (the reshape plan §6.2 A5, step 6; D2202, D2198; PB1, PB2): a posting's lines go to the squadron's admins
@@ -1504,16 +1484,17 @@ function tellHoliday(runs: HolidayRun[]): void {
   const todo = holidayTodo(runs)
   if (!todo.length) return
   const by = me()
-  commitInputs(SCHED_TYPES.inputsWrite, () => { for (const h of todo) noticeHoliday(h.told, by != null ? String(by) : null, h.name, h.from, h.to) })
-  /* the list opens by itself on the first run with something HIS squadron answers — never on the other's alone */
-  const mine = myUnit(todayIso())
-  const first = todo.find(h => oilOpenOn(h.from, h.to, mine).length > 0)
-  if (!first) return
-  cmdDeferEffect(() => { setOilList({ from: first.from, to: first.to, name: first.name, fresh: true }); raptorNotify() })
+  commitInputs(SCHED_TYPES.inputsWrite, () => { for (const h of todo) noticeHoliday(h.told, by != null ? String(by) : null, h.name, h.from, h.to, h.unit) })
+  /* THE LIST OPENS BY ITSELF ON THE LINE'S OWN SQUADRON (the blind read's R3 — the reshape plan §19b): the holiday is its
+     squadron's alone, and every run here has something of that squadron's to answer, so the first run's list opens on it,
+     carried on the list (ui/pops.ts OILLIST) to what it lists and what its Save answers — never the reader's home, which
+     for an admin holding Plan of it is another squadron (it read myUnit) */
+  const first = todo[0]!
+  cmdDeferEffect(() => { setOilList({ from: first.from, to: first.to, name: first.name, fresh: true, unit: first.unit }); raptorNotify() })
 }
 /* (each holiday the runs make, as its line names it, and whom it tells — tellHoliday's own working, shared with the gate's
    question of which lines a command owes, holidayLinesOwed below, so the two can never disagree) */
-function holidayTodo(runs: readonly HolidayRun[]): (HolidayRun & { name: string; told: string[] })[] {
+function holidayTodo(runs: readonly HolidayRun[]): (HolidayRun & { name: string; told: string[]; unit: string })[] {
   const own = holidayOwnName
   /* ONE NOTICE A HOLIDAY — FOR THE WHOLE OF IT AS IT NOW STANDS, not only the dates that have just become non-working
      (the two code reads of the finished code, 13 Oct 26 — Fable F1, the Opus read F3). A holiday lengthened by a day
@@ -1522,6 +1503,10 @@ function holidayTodo(runs: readonly HolidayRun[]): (HolidayRun & { name: string;
      to the holiday that holds its ends, as the war's own list has it (holidaysIn — a band, a repeated word, a seeded
      flag), and two runs of one holiday are one. */
   const lineOn = (iso: string) => holidaysIn(iso.slice(0, 4)).find(h => h.kind === 'ph' && h.from <= iso && iso <= h.to) || null
+  /* THE HOLIDAY'S OWN SQUADRON (his D2195 — the reshape plan §7, A4): a holiday is written into the loaded war, its
+     squadron's alone, so only that squadron's inputs can need an answer on it (oilOpenOn, by the input's own squadron's
+     list) — "the squadron whose input asks" */
+  const unit = worldUnit()
   const seen = new Set<string>()
   const todo: (HolidayRun & { name: string })[] = []
   for (const r of runs) {
@@ -1529,15 +1514,17 @@ function holidayTodo(runs: readonly HolidayRun[]): (HolidayRun & { name: string;
     const from = h1 && h1.from < r.from ? h1.from : r.from, to = h2 && h2.to > r.to ? h2.to : r.to
     if (seen.has(`${from}|${to}`)) continue
     seen.add(`${from}|${to}`)
-    if (oilOpenOn(from, to).length > 0) todo.push({ from, to, name: own(r.from) })
+    if (oilOpenOn(from, to, unit).length > 0) todo.push({ from, to, name: own(r.from) })
   }
-  /* EVERY SQUADRON AT THE PLACE IS TOLD, EACH FOR ITS OWN (multi-squadron batch 1, step 4 — D2184 R32, narrowing D781):
-     the holiday reaches every squadron at this place on its dates (placeHolidaysFor, above), so each one's schedulers
-     get the line — but only a scheduler whose own squadron has an input to answer on it, and his line counts and opens
-     only those (holidayLeft, OilDayList). The one who made it is told as before when his own squadron has any. */
-  const all = schedulerIds()
-  const toFor = (h: { from: string; to: string }) => all.filter(pid => { const u = homeUnitOf(pid, h.from); return !!u && oilOpenOn(h.from, h.to, u).length > 0 })
-  return todo.map(h => ({ ...h, told: toFor(h) }))
+  /* ITS ADMINS OF TODAY ARE TOLD — AND ONLY THEM (his D2195: "the 'Inputs need an OIL answer' line goes to its own
+     squadron's schedulers only"; D2202: while an admin holds Plan of another squadron his bell carries that squadron's
+     admin lines — the Plan audit's PB3, which found Hunter, holding Plan of 149, never told of 149's holiday; it replaces
+     step 4's "every squadron at the place, each for its own", D2184 R32). accounts.ts adminsOf — at home there, or a
+     plain admin holding Plan of it; a master admin through his home only (D2198) — the one audience the posting lines
+     use and the gate checks an admin's line against (perms.ts 7e, PC1). The one who made it is among them. */
+  const told = adminsOf(unit, effectiveToday())
+  /* (and each line carries that squadron — notices.ts noticeHoliday's `u`, PB4) */
+  return todo.map(h => ({ ...h, told, unit }))
 }
 /** THE HOLIDAY LINES A COMMAND OWES, FROM ITS OWN CHANGES (fix read 11, fault C — Fable's F11-1, the security read's
  *  SEC11-4): the gate (state/perms.ts, through setHolidayLinesOwed) let a new holiday line through wherever noticeHoliday
@@ -1545,17 +1532,18 @@ function holidayTodo(runs: readonly HolidayRun[]): (HolidayRun & { name: string;
  *  142's admin called it inside his own input command and put "149: all leave cancelled, report 0600 Sat", signed by
  *  himself, on 149's admin's and a 149 member's bells, with no holiday made at all. A holiday line is owed only by this
  *  command's own change of the war that makes a working day a holiday (state/store.ts holidayRunsOfChanges — the same
- *  test tellHolidays runs), for exactly the holiday it makes, under its own name, to the schedulers tellHoliday tells. */
-export type OwedHolidayLine = { a: string; b: string; name: string; to: ReadonlySet<string> }
+ *  test tellHolidays runs), for exactly the holiday it makes, under its own name, to the schedulers tellHoliday tells —
+ *  and for its own squadron (PB4: the line's `u`, so no command writes a holiday line counting another squadron's). */
+export type OwedHolidayLine = { a: string; b: string; name: string; to: ReadonlySet<string>; u: string }
 export function holidayLinesOwed(changes: ReadonlyArray<{ collection: string; id: string; op: string; before?: unknown; after?: unknown }>): OwedHolidayLine[] {
   const runs = holidayRunsOfChanges(changes)
-  return runs.length ? holidayTodo(runs).map(h => ({ a: h.from, b: h.to, name: h.name, to: new Set(h.told) })) : []
+  return runs.length ? holidayTodo(runs).map(h => ({ a: h.from, b: h.to, name: h.name, to: new Set(h.told), u: h.unit })) : []
 }
-/** does this owed line cover that line? — its run, its name, its day and its reader, as noticeHoliday writes them */
+/** does this owed line cover that line? — its run, its name, its day, its reader and its squadron, as noticeHoliday writes them */
 export function holidayLineCovered(owed: readonly OwedHolidayLine[], n: { to?: unknown; name?: unknown; day?: unknown; what?: unknown }): boolean {
   const w = Array.isArray(n.what) && n.what.length === 1 ? looseRec(n.what[0]) : null
   if (!w || w.k !== 'oilhol') return false
-  return owed.some(o => String(w.a) === o.a && String(w.b ?? w.a) === o.b && n.name === o.name && n.day === o.a && o.to.has(String(n.to)))
+  return owed.some(o => String(w.a) === o.a && String(w.b ?? w.a) === o.b && n.name === o.name && n.day === o.a && o.to.has(String(n.to)) && w.u === o.u)
 }
 
 /* ---- THE BELL'S LEAVE WAR LINES (the overhaul's M4, batch 9 — D1142, D1214, D1422) ----------------------------
@@ -2157,13 +2145,11 @@ export const warUnit = (): string => worldUnit()
    No door (a unit test that boots the war alone) — nothing to swap. */
 export type WarWorldDoor = (unit: string) => { backend: StorageBackend; started?: boolean; seedDemo?: boolean }
 let WORLD_DOOR: WarWorldDoor | null = null
-/* the cached answer of placeHolidaysFor is dropped with the stored worlds: it is keyed by the loaded war's raw state,
-   and a squadron's answer read while it is loaded (raw null) would otherwise outlive a holiday the other one added */
 export function setWarWorldDoor(d: WarWorldDoor | null): void {
-  WORLD_DOOR = d; STORED.clear(); PLACE_CACHE = null; placeHolidaysMoved(); fxMoved()
+  WORLD_DOOR = d; storedMoved()
   /* the same doors write another squadron's stored war for Admin → Users' four doors (A3 — state/foreign.ts); a write
      there drops the stored worlds read here, so the next read sees it */
-  setForeignDoor(d ? (u => d(u).backend) : null, () => { STORED.clear(); PLACE_CACHE = null; placeHolidaysMoved(); fxMoved() })
+  setForeignDoor(d ? (u => d(u).backend) : null, storedMoved)
 }
 /** load `unit`'s Leave War in place of the one loaded — false where it already is, or no door was handed over */
 export function swapWarWorld(unit: string): boolean {
@@ -2171,7 +2157,7 @@ export function swapWarWorld(unit: string): boolean {
   const d = WORLD_DOOR(unit)
   lwInitStore(d.backend, { started: d.started, seedDemo: d.seedDemo ?? true, unit, demoRecords: false, keepListeners: true })
   /* the world that WAS loaded is now read from its door like any other squadron's, and the one loaded no longer is */
-  STORED.clear(); PLACE_CACHE = null; placeHolidaysMoved(); fxMoved()
+  storedMoved()
   setPeople(projectPeople(getState().showSans))
   setViewer(mirroredViewer()); mirrorCallsign()
   runPoArchive()
@@ -4353,16 +4339,25 @@ export function openNewPeriod(from: string, to: string): void {
 /* (the SANS men committed are the WAR'S OWN squadron's on that date — multi-squadron step 4: a 149 SANS man's offer to
    fly never lowers 142's need, and a man's squadron is read on the day, engine/roster.ts unitPeople) */
 /* (every part of an answer is ONE squadron's — the plan, its SANS colours and its SANS men — the war's unless the caller
-   names another, never the pick by default: helper "war", second pass. The war's facts — holidays, who is available —
-   are the loaded war's, dayFacts, whichever squadron is named.) */
+   names another, never the pick by default: helper "war", second pass. Who is available is the loaded war's, dayFacts,
+   whichever squadron is named; the day's holiday kind is the named squadron's own — factsOf, below.) */
 const sansFlyOf = (unit: string) => (iso: string) => sansFly(iso, undefined, unitPeople(unit, iso))
+/* (THE DAY'S KIND IS THE NAMED SQUADRON'S OWN — a public holiday or an Off day from its own list, D2195 — the reshape plan
+   §7, A4's flying-plan reader: a 149 page's answer read 142's holidays whenever 142's war was loaded, and 142's read 149's.
+   Its own war's when loaded, else its saved war (unitDayFacts). Who is available stays the loaded war's, as before.) */
+const factsOf = (unit: string) => (iso: string): DayFacts => {
+  const f = dayFacts(iso)
+  if (!unit || unit === worldUnit()) return f
+  const kind = unitDayFacts(unit, iso).kind
+  return kind === f.kind ? f : { ...f, kind }
+}
 export function flyAnswer(iso: string, unit: string = warUnit()): DayAnswer {
-  return planFor(iso, planOfUnit(unit), dayFacts(iso), sansFlyOf(unit)(iso), tonesOfUnit(unit))
+  return planFor(iso, planOfUnit(unit), factsOf(unit)(iso), sansFlyOf(unit)(iso), tonesOfUnit(unit))
 }
 /** a month of answers (1-based month) — what a drawn month is painted from, and what its repaint is keyed on: a figure
  *  or a weekday rule that began months earlier moves these, so a memo built from them cannot miss it */
 export function flyMonth(y: number, m: number, unit: string = warUnit()): Record<string, DayAnswer> {
-  return monthAnswers(y, m, planOfUnit(unit), dayFacts, sansFlyOf(unit), tonesOfUnit(unit))
+  return monthAnswers(y, m, planOfUnit(unit), factsOf(unit), sansFlyOf(unit), tonesOfUnit(unit))
 }
 
 /* A LEAVE REQUEST'S DOCUMENT AND REMARKS (M3 5.9, 5.10 — D1159, D1226): the bid windows draw the app's one Document

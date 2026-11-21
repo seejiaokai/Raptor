@@ -300,7 +300,9 @@ describe('fault E — another squadron’s holiday line is not deleted or rewrit
   })
   /* (through the Holidays list's own door since fix read 11, fault C: a bare noticeHoliday in an input command no longer
      passes as the holiday's own — only the command that makes the holiday owes its line) */
-  it('(control) the app\'s own holiday line to both squadrons, written by Outlaw\'s real command: his Undo takes both away, his Redo puts them back', () => {
+  /* REWRITTEN TO D2195 in the reshape (the plan §7, A4; §9.3): it asserted "the app's own holiday line to both squadrons"
+     (kes9 among those told) — a 142 holiday now tells 142's own schedulers only, never 149's */
+  it('(control) the app\'s own holiday line to his own squadron\'s schedulers, written by Outlaw\'s real command: his Undo takes them away, his Redo puts them back', () => {
     outlawReal()
     const fileOn = (pid: string, filer: [string, string], title: string) => {
       signInAs(filer[0], filer[1])
@@ -312,7 +314,8 @@ describe('fault E — another squadron’s holiday line is not deleted or rewrit
     expect(holidayAdd({ kind: 'ph', name: 'National Day', from: '2026-07-17', to: '2026-07-17' }).ok).toBe(true)
     const mine = () => NOTICES.filter(x => x.name === 'National Day' && x.by === 'casper').map(x => x.to).sort()
     const told = mine()
-    expect(told).toEqual(expect.arrayContaining(['kes9', 'prowler']))
+    expect(told).toEqual(expect.arrayContaining(['prowler']))
+    expect(told, '149’s scheduler is not told of 142’s holiday (D2195)').not.toContain('kes9')
     const u = globalUndo(); expect(u.ok, 'Undo: ' + JSON.stringify(u)).toBe(true)
     expect(mine()).toEqual([])
     const r = globalRedo(); expect(r.ok, 'Redo: ' + JSON.stringify(r)).toBe(true)

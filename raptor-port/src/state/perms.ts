@@ -2534,9 +2534,12 @@ function homeUnitViolation(env: CommitEnvelope): string | null {
    plain admin could write a bell line to a 149 man, take one of his away, or mark his history or his bell read. Now an
    admin's change to a notice (before or after) addressed to anyone but himself, or to another person's read record,
    needs him an admin of that person's squadron (his home today, as the rows stood before) — a master, or one given Plan
-   of it, is. Kept crossing, as ruled: the holiday line (`oilhol`), which reaches every squadron at the place (D2184 R32 —
-   until his D2195, holidays per own squadron, is built). `accessreq:` rows carry no squadron yet (Request access asking
-   the squadron, D2111, is not built), so there is nothing to judge them by — filed.
+   of it, is. THE HOLIDAY LINE (`oilhol`) CROSSES NO MORE (his D2195 — a holiday is its own squadron's, its line to its own
+   squadron's schedulers only; the reshape plan §7, A4, with the Plan audit's PB3): it was kept crossing while a holiday
+   reached every squadron at the place (D2184 R32), skipping these checks; it now takes them as any admin line does — to his
+   own squadron's people, or to a reader in adminsOf of a squadron he is an admin of (PC1, below) — and the war-line check
+   below asks it is the holiday's own. `accessreq:` rows carry no squadron yet (Request access asking the squadron, D2111,
+   is not built), so there is nothing to judge them by — filed.
    ONE LINE IS NOT JUDGED BY ITS READER'S SQUADRON: the telling of an input this very command changed (state/sched-commit.ts
    tellPass — whoever is in it and whoever filed it is told). That input is judged by its own people's squadrons
    (7c above), and its filer may be of another squadron (a master who filed for a 149 man, who is then told when 149's
@@ -2684,8 +2687,8 @@ function inputLineUnlike(env: CommitEnvelope, c: Change, changed: ReadonlySet<st
   if (passMade(env)?.has(String(n.id)) && (!iid || changed.has(iid))) return false
   return !!iid && !(changed.has(iid) && filerMarkOk(env, c, n))
 }
-/* a line made wholly of holiday parts — the only kind kept crossing (one holiday part beside another part is no holiday
-   line: SEC-2) */
+/* a line made wholly of holiday parts — the holiday's own line, judged by the war-line check below (one holiday part beside
+   another part is no holiday line: SEC-2) */
 const holidayLine = (n: any): boolean => Array.isArray(n?.what) && n.what.length > 0 && n.what.every((p: any) => p && p.k === 'oilhol')
 /* (fix read 3's A2 exception — the posting command reaching a posting line on the bell of an admin since moved to
    another squadron — is GONE, by his D2218 (19 Nov 26): "On the day a person moves squadron the old squadron's bell lines
@@ -2828,26 +2831,13 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
       }
       for (const n of [c.before as any, c.op === 'delete' ? null : (c.after as any)]) {
         if (!n || typeof n !== 'object' || n.to == null) continue
-        /* (only as noticeHoliday writes it: naming no input and carrying no filer's mark — fix read 8, fault H, the security
-           read's SEC8-2: a line of only holiday parts naming an input, or marked, skipped fault M's checks below, and with an
-           input it outlived the man's move (D2218); any other goes through the ordinary checks) */
-        /* (…and only a NEW line in that shape, or the verified replay of the actor's own step — fix read 9, fault E, the
-           security read's SEC9-3: the skip let a 142 admin delete or rewrite the holiday line on 149's admin's bell, its
-           words, its parts or its maker; every other delete or rewrite of a holiday line goes through the owner check below) */
-        /* (…and a new line only where noticeHoliday itself minted it in this command — fix read 10, fault B, the fresh Opus
-           read's O10-2, the security read's SEC10-3: any new line of holiday parts skipped every check, so a 142 admin put
-           a made-up "holiday" line on 149's admin's bell signed as him; notices.ts holMade, written only by noticeHoliday.
-           Any other new holiday line takes the ordinary checks below.) */
-        if (holidayLine(n) && !n.iid && n.fu === undefined) {
-          /* (signed by the admin himself, as tellHoliday writes it — noticeHoliday is a plain function, so its registry alone
-             would vouch for a line it was called to sign as 149's admin) */
-          /* (…and owed by this command's own holiday — fix read 11, fault C: HOL_OWED — by one who is an admin of the
-             war's squadron, where the war tells which is loaded) */
-          if (n === c.after && c.op === 'put' && c.before == null && holMade(env)?.has(String(n.id)) && self != null && String(n.by ?? '') === self
-            && !!HOL_OWED && HOL_OWED(env.changes, n) && holidayMakerAdmin(env)) continue
-          if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
-          if (replayed && replayed(c)) continue
-        }
+        /* (THE HOLIDAY LINE'S CROSSING SKIP IS GONE — his D2195, the reshape plan §7, A4 with PB3: a new line of holiday
+           parts minted and owed here, or the verified replay of one, skipped every check below, so it could reach any
+           squadron's bell. A holiday is now its own squadron's, its line to that squadron's admins (leavewar/sync.ts
+           holidayTodo — accounts.ts adminsOf), so it takes the ordinary checks: the squadron door just below, then the
+           war-line check, which keeps fix reads 8 to 11's holiday rules — no input named, no filer's mark, minted by
+           noticeHoliday in this command, signed by the actor, owed by this command's own holiday, by an admin where it is
+           made.) */
         const to = String(n.to)
         /* (…written as the pass writes it: by the actor himself, or with no maker in the app's own acts — fix read 6, fault
            A: the security read's SEC6-A (3), a line riding the change signed `kes9`, posing as 149's admin. The member
@@ -2909,7 +2899,17 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
            it owes (restoreFollowUpOwed). */
         if (n === c.after && warPart(n)) {
           if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
-          if (!(replayed && replayed(c))) {
+          if (!(replayed && replayed(c)) && holidayLine(n)) {
+            /* THE HOLIDAY'S OWN LINE (its rules moved here whole from the crossing skip, his D2195): only as noticeHoliday
+               writes it — naming no input and carrying no filer's mark (fix read 8, fault H: a marked or input-naming one
+               outlived a man's move, D2218) — and only as it minted it in this command (fix read 10, fault B: holMade,
+               written only by noticeHoliday); signed by the admin himself, as tellHoliday writes it (noticeHoliday is a
+               plain function, so its registry alone would vouch for a line it was called to sign as another); and owed by
+               this command's own holiday, by one who is an admin of the war's squadron (fix read 11, fault C: HOL_OWED) */
+            if (n.iid || n.fu !== undefined || !holMade(env)?.has(String(n.id))) return `a war line no war command wrote (${where})`
+            if (self == null || String(n.by ?? '') !== self) return `a war line not signed as its writer signs it (${where})`
+            if (!(HOL_OWED && HOL_OWED(env.changes, n)) || !holidayMakerAdmin(env)) return `a war line no change of the war owes (${where})`
+          } else if (!(replayed && replayed(c))) {
             if (!warMade(env)?.has(String(n.id))) return `a war line no war command wrote (${where})`
             /* (…in its writer's own hand — fix read 11, fault D, Fable's F11-2: noticeWar signs with whatever it is given, so
                142's admin's line on his man's bell read "refused · Saber". The war's writers sign as the war's doors do: a

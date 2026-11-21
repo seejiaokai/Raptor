@@ -9,12 +9,12 @@ import { storeBackend, HOOKS, store as settingsStore } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputsBatch } from '../state/store'
 import { accountsLoad, signIn, sessionFor, setMaster, updateAccount, ACCOUNTS_LIST, accountOfPid, levelIn } from '../state/accounts'
-import { initStore as lwInitStore, setPeople, setCell, setBidState, getState, openDates, worldUnit } from '../leavewar/state/store'
+import { initStore as lwInitStore, setPeople, setCell, setBidState, getState, openDates, worldUnit, setRole } from '../leavewar/state/store'
 import { ownershipViolation } from '../state/perms'
 import { deriveActor } from '../command/actor'
 import { memoryBackend } from '../leavewar/state/storage'
 import { projectPeople } from '../leavewar/state/raptorRoster'
-import { wireLeaveWarSync, setWarWorldDoor, postOut, undoPostOut } from '../leavewar/sync'
+import { wireLeaveWarSync, setWarWorldDoor, postOut, undoPostOut, swapWarWorld } from '../leavewar/sync'
 import { unitsLoad, setGrant, removeGrant, addUnit, homeOn, unitRows, grantOfOn } from '../state/units'
 import { HOME_PFX } from '../state/units-model'
 import { INPUTS, onlyNamed } from '../engine/inputs'
@@ -119,10 +119,14 @@ const fileOnFri = (pid: string, filer: [string, string], title: string) => {
   signInAs(filer[0], filer[1])
   expect(commitInput(null, draftOf({ person: pid, type: 'Training', title, date: 'Jul 17', yr: 2026, allday: false, s: 540, e: 720, remarks: '' } as any), [pid]), 'filed: ' + title).toBe(true)
 }
-const realHoliday = (by: [string, string], name = 'National Day') => {
+/* (`war` — the squadron whose war is loaded to make it, 142's unless named: since the reshape plan's A4, his D2195, a
+   holiday is its own squadron's, so a line on 149's admin's bell comes only from 149's own holiday, made in 149's war by
+   its admin — the setup the cases that need such a line now use, §9.2) */
+const realHoliday = (by: [string, string], name = 'National Day', war?: string) => {
   fileOnFri('osp9', ['ad9', 'a9'], 'Range 149')
   fileOnFri('bane', ['ad2', 'a2'], 'Range 142')
   signInAs(by[0], by[1])
+  if (war) { swapWarWorld(war); setRole('admin'); expect(worldUnit()).toBe(war) }
   expect(holidayAdd({ kind: 'ph', name, from: FRI, to: FRI }).ok).toBe(true)
 }
 const holTo = (name = 'National Day') => NOTICES.filter(n => n.name === name && kind(n) === 'oilhol').map(n => n.to).sort()
@@ -169,7 +173,8 @@ describe('fault A — a saved request or bell line rewritten in memory, then cha
     expect({ ok, stored: stored('inputs', 'ipd-o11d')?.person }).toEqual({ ok: false, stored: 'osp9' })
   })
   it('(Opus O11-1) …and a holiday line on 149\'s admin\'s bell, re-addressed in memory to Outlaw, then deleted by a command: the stored line stands', () => {
-    realHoliday(['ad', 'a'])
+    /* (since D2195 Kestrel's line is 149's own holiday's, made by him in 149's war — the reshape plan §9.2, setup only) */
+    realHoliday(['ad9', 'a9'], 'National Day', 'u149')
     const real = NOTICES.find(x => x.to === 'kes9' && x.name === 'National Day')!
     expect(real, 'Kestrel told of the holiday').toBeDefined()
     outlawReal(); signInAs('outlaw', 'x')
@@ -241,11 +246,14 @@ describe('fault A, controls — Fable\'s honest paths with the saved copy wired,
     expect(postOut('bane', '2026-07-15', 'sans')).toBe(true)
     expect(undoPostOut('bane')).toBe(true)
   })
+  /* (REWRITTEN TO D2195 in the reshape — the plan §7, A4; §9.3: it asserted Saber's 142 holiday told 149's Kestrel; a
+     holiday's lines are its own squadron's schedulers', so the honest path is read on Hunter's, 142's admin) */
   it('a holiday made by the Holidays list (its lines), Undo, Redo, Undo, Redo', () => {
     realHoliday(['ad', 'a'])
-    expect(holTo()).toContain('kes9')
+    expect(holTo()).toContain('prowler')
+    expect(holTo(), 'never 149’s (D2195)').not.toContain('kes9')
     step('undo', globalUndo()); expect(holTo()).toEqual([])
-    step('redo', globalRedo()); expect(holTo()).toContain('kes9')
+    step('redo', globalRedo()); expect(holTo()).toContain('prowler')
     step('undo2', globalUndo()); step('redo2', globalRedo())
   })
 })
@@ -325,21 +333,25 @@ describe('fault C — a holiday line only as the command\'s own holiday owes it 
     const ok = writeInputsBatch(() => { noticeHoliday(['kes9'], 'casper', 'National Day', FRI, FRI) })
     expect({ ok, byOutlaw: NOTICES.filter(n => n.name === 'National Day' && n.by === 'casper').length }).toEqual({ ok: false, byOutlaw: 0 })
   })
-  it('(control) Saber makes the holiday: each squadron\'s schedulers with an input to answer are told, and its Undo and Redo go through', () => {
+  /* (this case and the next REWRITTEN TO D2195 in the reshape — the plan §7, A4; §9.3: they asserted a 142 holiday's lines
+     reached both squadrons' schedulers; they reach the holiday's own squadron's only) */
+  it('(control) Saber makes the holiday: his own squadron\'s schedulers with an input to answer are told, and its Undo and Redo go through', () => {
     realHoliday(['ad', 'a'])
     const told = holTo()
-    expect(told).toEqual(expect.arrayContaining(['kes9', 'prowler']))
+    expect(told).toEqual(expect.arrayContaining(['prowler']))
+    expect(told, 'never 149’s (D2195)').not.toContain('kes9')
     expect(globalUndo().ok).toBe(true)
     expect(holTo()).toEqual([])
     const r = globalRedo(); expect(r.ok, JSON.stringify(r)).toBe(true)
     expect(holTo()).toEqual(told)
   })
-  it('(control) Outlaw, a plain 142 admin, makes it: his lines reach both squadrons\' schedulers, and his Undo and Redo go through', () => {
+  it('(control) Outlaw, a plain 142 admin, makes it: his lines reach his own squadron\'s schedulers, and his Undo and Redo go through', () => {
     outlawReal()
     realHoliday(['outlaw', 'x'])
     const mine = () => NOTICES.filter(x => x.name === 'National Day' && x.by === 'casper').map(x => x.to).sort()
     const told = mine()
-    expect(told).toEqual(expect.arrayContaining(['kes9', 'prowler']))
+    expect(told).toEqual(expect.arrayContaining(['prowler']))
+    expect(told, 'never 149’s (D2195)').not.toContain('kes9')
     const u = globalUndo(); expect(u.ok, 'Undo: ' + JSON.stringify(u)).toBe(true)
     expect(mine()).toEqual([])
     const r = globalRedo(); expect(r.ok, 'Redo: ' + JSON.stringify(r)).toBe(true)

@@ -64,8 +64,12 @@ export type NoticePart =
      counting only what is left unanswered, a tap opening the list"). ITS OWN KIND OF NOTICE: it is about no one input
      (`iid` is ''), `name` is the holiday's and `day` its first day; `a`..`b` is the run of dates that became non-working.
      IT STORES NO COUNT — how many inputs still need an answer is read live when the bell draws (noticeWords), so what
-     an admin answers tells nobody (D781), and a line with nothing left is not listed at all (noticeLive). */
-  | { k: 'oilhol'; a: string; b: string }
+     an admin answers tells nobody (D781), and a line with nothing left is not listed at all (noticeLive).
+     `u` — THE SQUADRON IT WAS WRITTEN FOR (the Plan audit's PB4, the blind read's R3 and R4 — the reshape plan §19, §19b;
+     his D2195, D2202): a holiday is its own squadron's, and its line may sit on the bell of an admin of it who is at home in
+     another (one holding Plan of it), so what the line counts, the dates it covers, its name and the list it opens are that
+     squadron's, never its reader's home's. A line stored before it was carried (D56: demo data) reads its reader's home. */
+  | { k: 'oilhol'; a: string; b: string; u?: string }
   /* THE LEAVE WAR'S OWN LINES (the overhaul's M4, batch 9 — owner D1142, D1214, D1216, D1422; the build spec §2). About no
      input (`iid` is ''): `name` is "Your leave" or "Leave War", `day` the first day. Written by the war's own command, so
      its Undo takes them with it (leavewar/state/store.ts tellDecisions / tellOpenings, through leavewar/sync.ts).
@@ -577,14 +581,15 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
 /* ---- a day made a holiday ([OIL-ASK-NOTIFY]) ------------------------------------------------------------------- */
 /** THE HOLIDAY'S NOTICES — one a scheduler, pushed INSIDE the command that made the day a holiday (leavewar/sync.ts
  *  tellHoliday, through the scheduler store's own input command), so that command's Undo takes them away and its Redo
- *  puts them back. `to` — every scheduler, the one who made the holiday too: what he leaves for "Later" is on his own
- *  bell as well. Answers how many were made. */
-export function noticeHoliday(to: readonly string[], by: string | null, name: string, a: string, b: string, at: number = Date.now()): number {
+ *  puts them back. `to` — the holiday's own squadron's admins, the one who made the holiday too: what he leaves for
+ *  "Later" is on his own bell as well. `unit` — that squadron, carried on the line (PB4, R3, R4). Answers how many were
+ *  made. */
+export function noticeHoliday(to: readonly string[], by: string | null, name: string, a: string, b: string, unit?: string | null, at: number = Date.now()): number {
   let made = 0
   for (const p of new Set(to.map(String))) {
     if (!here(p)) continue
     const id = mint(at)
-    NOTICES.push({ id, to: p, by, at, iid: '', name, day: a, what: [{ k: 'oilhol', a, b }] })
+    NOTICES.push({ id, to: p, by, at, iid: '', name, day: a, what: [{ k: 'oilhol', a, b, ...(unit ? { u: unit } : {}) }] })
     noteHolMade(id)
     made++
   }
@@ -593,23 +598,38 @@ export function noticeHoliday(to: readonly string[], by: string | null, name: st
 /* how many inputs on a run of dates still need an OIL answer — the Leave War's to say (leavewar/sync.ts oilOpenOn),
    handed over by the sync's wiring so state/ never imports the war (the inputgate-hook way). No reader installed (a
    scheduler-only test): nothing is left. */
-/* (`pid` — whose line it is: each admin counts his own squadron's inputs, multi-squadron step 4, D2184 R32) */
-let HOL_LEFT: ((a: string, b: string, pid?: string | null) => number) | null = null
-export function setHolidayLeft(fn: ((a: string, b: string, pid?: string | null) => number) | null): void { HOL_LEFT = fn }
-const holOf = (n: Notice): { a: string; b: string } | null => { const p: any = (n.what || [])[0]; return p && p.k === 'oilhol' ? { a: String(p.a), b: String(p.b || p.a) } : null }
+/* (`unit` — the squadron the line was written for: its inputs are what it counts — the Plan audit's PB4; before, each
+   admin counted his own home's, so Hunter's line of 149's holiday read 0 and was hidden) */
+let HOL_LEFT: ((a: string, b: string, unit: string) => number) | null = null
+export function setHolidayLeft(fn: ((a: string, b: string, unit: string) => number) | null): void { HOL_LEFT = fn }
+/* a holiday line's dates and squadron as stored — its `u` (PB4); a line stored before it was carried (D56) reads its
+   reader's home today, the squadron such a line was always counted for */
+const holOf = (n: Notice): { a: string; b: string; u: string } | null => {
+  const p: any = (n.what || [])[0]
+  if (!p || p.k !== 'oilhol') return null
+  return { a: String(p.a), b: String(p.b || p.a), u: typeof p.u === 'string' && p.u ? p.u : homeOn(String(n.to), todayIso()) ?? '' }
+}
 /* THE DAYS OF A NOTICE'S RUN THAT ARE STILL A HOLIDAY — read from the war as it stands, the same way as the count (the
    two code reads of the finished code, 13 Oct 26 — Fable F1, the Opus read F3). A notice keeps the dates as they were
    when it was made; a holiday is then shortened, lengthened, or taken away and made again over other dates, and a line
    that printed its STORED dates named days that were working days again, or stood beside a second line for the same
    holiday. So the stored run is only where to look: what the line says, what it counts, which day it covers and which
    list it opens are all its days that are a holiday NOW. No reader installed: the run as stored. */
-export type HolidaySpan = { a: string; b: string; /** the holiday's own name NOW ('' — none of its own); absent where no reader is installed */ name?: string }
-let HOL_SPAN: ((a: string, b: string) => HolidaySpan | null) | null = null
-export function setHolidaySpan(fn: ((a: string, b: string) => HolidaySpan | null) | null): void { HOL_SPAN = fn }
-/** a holiday notice's dates — and its name — as the holiday stands now; null for any other notice, and where no day of it is a holiday any more */
-export function noticeSpan(n: Notice): HolidaySpan | null { const h = holOf(n); return !h ? null : HOL_SPAN ? HOL_SPAN(h.a, h.b) : h }
-/** how many inputs a holiday's notice still counts (0 for any other notice) */
-export function noticeLeft(n: Notice): number { const s = noticeSpan(n); return s && HOL_LEFT ? HOL_LEFT(s.a, s.b, n.to) : 0 }
+/* (`u` — the squadron the line was written for, whose holiday it is: its dates, name, count and list are that squadron's —
+   PB4, R4; the reader is handed it, never the loaded war's squadron) */
+export type HolidaySpan = { a: string; b: string; /** the holiday's own name NOW ('' — none of its own); absent where no reader is installed */ name?: string; /** the squadron the line was written for — always given by noticeSpan */ u?: string }
+let HOL_SPAN: ((a: string, b: string, unit: string) => Omit<HolidaySpan, 'u'> | null) | null = null
+export function setHolidaySpan(fn: ((a: string, b: string, unit: string) => Omit<HolidaySpan, 'u'> | null) | null): void { HOL_SPAN = fn }
+/** a holiday notice's dates — and its name — as the holiday stands now in its own squadron's war, with that squadron; null for any other notice, and where no day of it is a holiday any more */
+export function noticeSpan(n: Notice): HolidaySpan | null {
+  const h = holOf(n)
+  if (!h) return null
+  if (!HOL_SPAN) return h
+  const s = HOL_SPAN(h.a, h.b, h.u)
+  return s ? { ...s, u: h.u } : null
+}
+/** how many inputs a holiday's notice still counts — its own squadron's (0 for any other notice) */
+export function noticeLeft(n: Notice): number { const s = noticeSpan(n); return s && HOL_LEFT ? HOL_LEFT(s.a, s.b, s.u ?? '') : 0 }
 
 /* ---- a man who moves squadron leaves his old squadron's lines behind (his D2218) ----------------------------------- */
 /* the date a moment falls on, as the app's today is read (state/units.ts todayIso — the viewer's own calendar); the commit
@@ -756,11 +776,13 @@ export function noticeLive(n: Notice): boolean {
   /* ONE LINE A HOLIDAY: a NEWER notice of his whose days, as the holiday stands, hold all of this one's has taken its
      place — the same dates made a holiday twice (A7), a holiday lengthened (the newer one covers more), one taken
      away and made again over fewer days (this one's live days have shrunk to the newer one's). Never on mere overlap:
-     days only the older one covers would lose their line. */
+     days only the older one covers would lose their line. And only a line of the SAME squadron (the blind read's R4;
+     D2195, D2202): an admin holding Plan of 149 has 149's line and his own 142's, and 142's holiday on the same day is
+     another squadron's holiday, never a newer copy of 149's. */
   for (const x of NOTICES) {
     if (x === n || x.to !== n.to || !(x.at > n.at || (x.at === n.at && x.id > n.id))) continue
     const o = noticeSpan(x)
-    if (o && o.a <= s.a && s.b <= o.b) return false
+    if (o && o.u === s.u && o.a <= s.a && s.b <= o.b) return false
   }
   return true
 }
@@ -771,11 +793,13 @@ export function holidayLineOn(pid: string | null | undefined, iso: string): Noti
   return null
 }
 
-/** is a holiday line live on this date for ANY scheduler — "the schedulers' bells" (ui/OilDayList.tsx's foot). A
- *  scheduler with no line of his own (his sign-in was off when the holiday was made, or his account is newer) is still
- *  told the truth about the others' (the narrow read of 14 Oct 26, L2). */
-export function holidayLineAny(iso: string): boolean {
-  for (const n of NOTICES) { const s = noticeSpan(n); if (s && s.a <= iso && iso <= s.b && noticeLive(n)) return true }
+/** is a holiday line OF THIS SQUADRON live on this date for ANY scheduler — "the schedulers' bells" (ui/OilDayList.tsx's
+ *  foot). A scheduler with no line of his own (his sign-in was off when the holiday was made, or his account is newer) is
+ *  still told the truth about the others' (the narrow read of 14 Oct 26, L2). Only the list's own squadron's lines count
+ *  (the Plan audit's PB5, the blind read's R4; D2195): a 149 line never promises that what is left of 142's list goes to
+ *  a bell — asked of the line's squadron, never of whose rights the reader holds. */
+export function holidayLineAny(iso: string, unit: string): boolean {
+  for (const n of NOTICES) { const s = noticeSpan(n); if (s && s.u === unit && s.a <= iso && iso <= s.b && noticeLive(n)) return true }
   return false
 }
 
