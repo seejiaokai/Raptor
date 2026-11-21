@@ -15,7 +15,8 @@
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import './bidpicker.css'
-import { setWarWindowsProbe, warWindowGone, subscribeBands, warBand, type MoveBand } from '../../state/typing-hold'
+import { setWarWindowsProbe, warWindowGone, subscribeBands, warBand } from '../../state/typing-hold'
+import { MoveBandView } from '../../ui/MoveBand'
 import { followVisible } from '../../ui/vvfollow'
 import { holdPageScroll } from '../../ui/floatwin'
 import { screenBox } from '../../ui/kbscroll'
@@ -77,18 +78,7 @@ function useMoveBand(panelRef: { current: HTMLDivElement | null }, onClose: () =
     return () => { el.remove(); setSlot(null) }
   }, [panelRef, up])
   if (!band || !slot) return null
-  return createPortal(<MoveBandView band={band} onClose={onClose} />, slot)
-}
-function MoveBandView({ band, onClose }: { band: NonNullable<MoveBand>; onClose: () => void }) {
-  return (
-    <div className="saveband moveband" role="status" data-testid="move-band">
-      <span className="sv-msg">
-        <span className="sv-sign" aria-hidden="true" /><b>{band.lead}</b>
-        {band.rest ? <><span className="sv-sep"> </span><span className="sv-rest">{band.rest}</span></> : null}
-      </span>
-      <button type="button" className="pchip" onClick={onClose}>Close</button>
-    </div>
-  )
+  return createPortal(<MoveBandView band={band} onClose={onClose} testid="move-band" closeClass="pchip" />, slot)
 }
 
 /** How much of the visual viewport must be gone before it counts as a KEYBOARD

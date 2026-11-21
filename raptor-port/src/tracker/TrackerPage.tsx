@@ -27,6 +27,7 @@ import { wireTrackerPeople } from './peoplewire'
 import * as core from './app/core.js'
 import { seedDemoNow } from '../state/seeds'
 import { subscribeBands, trackerBand } from '../state/typing-hold'
+import { MoveBandView } from '../ui/MoveBand'
 import './tracker.css'
 
 /* The render firewall (LeaveWarPage.tsx has the measured why): every Raptor
@@ -83,13 +84,7 @@ const TrkMoveBand = memo(function TrkMoveBand() {
   }, [up])
   if (!band || !up || !slot) return null
   return createPortal(
-    <div className="saveband moveband" role="status" data-testid="trk-move-band">
-      <span className="sv-msg">
-        <span className="sv-sign" aria-hidden="true" /><b>{band.lead}</b>
-        {band.rest ? <><span className="sv-sep"> </span><span className="sv-rest">{band.rest}</span></> : null}
-      </span>
-      <button type="button" onClick={() => { if (core.arrangeMode) core.toggleArrange() }}>Close</button>
-    </div>,
+    <MoveBandView band={band} testid="trk-move-band" onClose={() => { if (core.arrangeMode) core.toggleArrange() }} />,
     slot,
   )
 })
