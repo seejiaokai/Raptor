@@ -78,4 +78,22 @@ describe('each squadron keeps a Tracker of its own (step 4)', () => {
     expect(st.bindStorageUnit('u149')).toBe(false)
     expect(st.storageUnit()).toBe('u142')
   })
+
+  /* enterSquadron's Tracker step (the reshape plan §3.2 A-iv, §14.3 — state/store.ts): it follows the page's squadron
+     only where the Tracker has not loaded; once loaded its records are in module caches, so it keeps its squadron */
+  it('the rebind follows before the first load, and keeps the squadron once loaded', async () => {
+    vi.resetModules()
+    const st: any = await import('./storage.js')
+    st.setStorageMaker((u: string) => trackerTarget(wb, u), () => 'u142')
+    expect(st.rebindStorageUnit('u149'), 'nothing bound yet: the first load binds the page\'s squadron itself').toBe('later')
+    expect(st.storageUnit()).toBeNull()
+    expect(st.bindStorageUnit('u142')).toBe(true)
+    expect(st.rebindStorageUnit('u142')).toBe('same')
+    expect(st.rebindStorageUnit('u149'), 'bound but not loaded: re-bound').toBe('bound')
+    expect(st.storageUnit()).toBe('u149')
+    st.markStorageLoaded()
+    expect(st.rebindStorageUnit('u142'), 'loaded: kept').toBe('kept')
+    expect(st.storageUnit()).toBe('u149')
+    expect(st.rebindStorageUnit(''), 'no unit').toBe('none')
+  })
 })
