@@ -1076,3 +1076,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The handoff told the next chat to re-run a drawing check and stated, as fact, that its recorded differences "came from" a fault since fixed. The re-run on the fixed build showed the same six differences: they come from the fixture's day (the drawing's window was on a later day than the one the check can open now), not from that fault. The next chat would have closed the item on the handoff's word had it not opened the marked pictures.
 **Suggested improvement:** In the handoff skill's rules for the "Pick up here" line: a check left red is written as "red: <what it shows>; cause not confirmed — <the writer's guess>, re-run and open the pictures", never as a cause, unless the writer re-ran it after the fix. One line in the skill's checklist: "any stated cause of a red or differing check: did a run after the fix confirm it? If not, mark it a guess."
 **Principle:** A handoff carries what was observed, and marks every explanation that no run has confirmed as a guess; the next reader trusts a stated cause and stops looking.
+
+### Observation 997: Sort an unattended run's questions by whether anyone can hit them today
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** Chat 132, putting the night's 16 questions on a page with pictures
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** the morning report's list of questions for the owner
+
+**Issue:** The morning list put 16 questions to the owner as equals. Checking them showed 13 could only happen after an action no screen offers yet (the walk set that state up behind the scenes), so they could wait for the feature that adds it; only 3 were live. Two recommendations also changed once each was checked against the rulings.
+**Suggested improvement:** In the morning report step, mark each parked question "reachable today" or "only once <feature> exists" (checked against how the walk set it up), and lead with the reachable ones. Check each recommendation against the rulings before it goes in the list.
+**Principle:** A question about a state users cannot reach yet is cheaper to settle when the feature that reaches it is designed; sorting by reachability shrinks what the owner must decide now.
