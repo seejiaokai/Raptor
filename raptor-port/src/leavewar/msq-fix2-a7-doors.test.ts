@@ -15,6 +15,7 @@ import { ownershipViolation } from '../state/perms'
 import { deriveActor } from '../command'
 import { globalUndo } from '../undo/timeline'
 import { INPUTS, idsOf } from '../engine/inputs'
+import { NOTICES } from '../state/notices'
 import { useMsqWorld, signInAs } from '../test-support/msq-world'
 
 useMsqWorld()
@@ -45,6 +46,16 @@ describe('the move door says why, before anything leaves its day', () => {
     /* …and a landing still 142's goes as ever */
     expect(moveCells([{ personId: 'bane', date: TUE }], 1)).toBe('moved')
     expect(recordsAt('bane', WED).filter(x => x.kind === 'request')).toHaveLength(1)
+  })
+  it('Hunter moving Ranger’s bid onto Mon 20 Jul (the re-walk): refused, the bid kept, and no bell line written or dropped', () => {
+    signInAs('saber')
+    expect(setCell('bane', WED, 'LL')).toBe(true)
+    move()
+    signInAs('hunter')
+    const before = JSON.stringify(NOTICES)
+    expect(moveCells([{ personId: 'bane', date: WED }], 5)).toEqual({ reason: 'away', at: '2026-07-20' })
+    expect(recordsAt('bane', WED).filter(x => x.kind === 'request')).toHaveLength(1)
+    expect(JSON.stringify(NOTICES)).toBe(before)
   })
   it('approved leave: refused the same way, the leave where it stood; a plain admin is never told "moved"', () => {
     signInAs('saber')
