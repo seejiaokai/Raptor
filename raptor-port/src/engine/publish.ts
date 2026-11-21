@@ -16,7 +16,7 @@ import { isPreservedWeek, rowElsewhere } from './weekstash'
 import { standsOn } from './overlay'   // functions only both ways
 import { inputProtected, weekLockReason, anyUnreadableWeek } from './quarantine'   // functions only both ways, so the import loop is safe
 import { rosterIds, dayRuleVals } from './faceattrs'
-import { rosterOf, rosterToday } from './roster'
+import { rosterOf, rosterToday, homeUnitOf } from './roster'
 import { UNIT } from './unitview'
 import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly, oilRuleShift, oilShiftKey, oilKeptVals, oilValsSame } from './oilev'
 import { oilRuleValsNow } from './oil'
@@ -1735,12 +1735,19 @@ export function signNames(di:any){const g=signAt(di),o:any={};SIGN_ROLES.forEach
    squadron that day and a master admin; handed in by state/sign-more.ts, the engine reading no accounts; unset, none) */
 let SIGN_MORE:((unit:string,iso:string)=>string[])|null=null;
 export function setSignMore(fn:((unit:string,iso:string)=>string[])|null){SIGN_MORE=fn;}
+/* (core line 4, 22 Nov 26 — his D2160, the transfer: "his … Scheduler tick in the old squadron end[s] on the date". The
+   tick rides the person, so the squadron he joined offered a moved-in man carrying it. Whether a man's tick counts in a
+   squadron on a day — the squadron it was given in, until the start of his move day — is handed in by state/units.ts
+   (units-model.ts schedTickHolds), the engine reading no squadron rows; unset, the bare tick, as before) */
+let SCHED_AT:((id:string,unit:string,iso:string)=>boolean)|null=null;
+export function setSchedTickAt(fn:((id:string,unit:string,iso:string)=>boolean)|null){SCHED_AT=fn;}
+const tickAt=(id:any,unit:any,iso:string):boolean=>isScheduler(id)&&(!SCHED_AT||unit==null||SCHED_AT(String(id),String(unit),iso));
 export function signPeople(schedOnly:any,keep?:any,di?:any){
   /* the schedule in view's own people ON THE DAY SIGNED sign it (multi-squadron step 3 — engine/roster.ts; the reshape plan
      §12 Q2, D2243: the day's people, as the crew list beside them — a man 149's from Thu 16 Jul signs no 142 Friday) */
   const iso=di==null||di===''?rosterToday():dayIso(CURWEEK,+di);
   const ids=rosterOf(UNIT,iso).filter((id:any)=>!PEOPLE[id].special&&!PEOPLE[id].archived
-      &&(!schedOnly||isScheduler(id)));
+      &&(!schedOnly||tickAt(id,UNIT,iso)));
   /* a name already signed stays offered even if the appointment was since
      withdrawn, so an existing signature never silently blanks itself */
   if(keep&&PEOPLE[keep]&&!ids.includes(keep))ids.push(keep);
@@ -1749,7 +1756,8 @@ export function signPeople(schedOnly:any,keep?:any,di?:any){
   /* …then, in the three boxes needing the Scheduler tick, a Plan holder of the squadron while his Plan holds that day and
      a master admin, each carrying the tick (D2245) — after the day's own, never in CUR CK */
   if(schedOnly&&SIGN_MORE){const own=new Set(ids);
-    ids.push(...SIGN_MORE(UNIT,iso).filter((id:any)=>!own.has(id)&&PEOPLE[id]&&!PEOPLE[id].special&&!PEOPLE[id].archived&&!PEOPLE[id].deleted&&isScheduler(id))
+    /* (each carrying the tick where it was given — his own squadron of that day) */
+    ids.push(...SIGN_MORE(UNIT,iso).filter((id:any)=>!own.has(id)&&PEOPLE[id]&&!PEOPLE[id].special&&!PEOPLE[id].archived&&!PEOPLE[id].deleted&&tickAt(id,homeUnitOf(id,iso),iso))
       .filter((id:any,i:number,a:any[])=>a.indexOf(id)===i).sort(byCs));}
   return ids;
 }

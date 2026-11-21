@@ -480,6 +480,8 @@ const OWN_ROW_ADMIN_ONLY: [string, (p: any) => any][] = [
   ['his callsign', p => JSON.stringify(p?.cs ?? null)],
   ['his Management tick', p => !!p?.quals?.mgmt],
   ['his Scheduler tick', p => !!p?.quals?.sched],   // D1651 — truthy, as isScheduler reads it
+  /* (…and the squadron and day it was given in — core line 4, D2160: units-model.ts schedTickHolds reads them) */
+  ['where his Scheduler tick was given', p => JSON.stringify([p?.schedOf ?? null, p?.schedFrom ?? null])],
   ['his archive mark', p => !!p?.archived],
   ['who archived him', p => JSON.stringify([p?.archivedBy ?? null, p?.archivedOn ?? null, p?.archivedWho ?? null])],
   ['his delete mark', p => JSON.stringify([!!p?.deleted, p?.deletedFrom ?? null])],

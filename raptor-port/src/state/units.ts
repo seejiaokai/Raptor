@@ -15,13 +15,15 @@ import { newId } from '../engine/newid'
 import { isCommitting, type CommitResult } from '../command'
 import { commitSettingsIntent } from './people-settings-commit'
 import { setHomeResolver, needDay } from '../engine/roster'
+import { setSchedTickAt } from '../engine/publish'
+import { PEOPLE } from '../engine/people'
 import { DEMO_149_PEOPLE } from './demoseed'
 /* the last-admin lock's words for a step's draft (accounts.ts imports this file; the call is at run time, never at load) */
 import { lockProblemFor, accountById, masterChangeProblem, signedInAccount, otherSquadronPersonProblem, adminNow } from './accounts'
 import { lastAdminBreach, type LockWorld, type LockBreach } from './lastadmin'
 import {
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES,
-  rowsFrom, placeIdOn, homeUnitOn, homeChangesIn, stintsIn, grantOn, grantHolds, datedRowsBreach, unitIn, placeIn, levelFrom, moveFrom,
+  rowsFrom, placeIdOn, homeUnitOn, homeChangesIn, stintsIn, grantOn, grantHolds, datedRowsBreach, unitIn, placeIn, levelFrom, moveFrom, schedTickHolds,
   validUnitNum, validTz, MAX_PLACE_NAME,
   type UnitRows, type Unit, type Place, type Grant, type GrantLevel, type GrantHolder, type UnitLevel, type LevelAccount, type Stint,
   type DatedBreach,
@@ -110,6 +112,11 @@ export const everOfBefore = (pid: string, unit: string, rows: UnitRows): boolean
    the engine does not import state/, so the answer is handed to it here, once, as this module loads — both questions
    of the home handle (the reshape plan §3.2 A-i) */
 setHomeResolver({ on: (pid, iso) => homeUnitOn(unitRows(), pid, iso, fallbackHome()), changesIn: (pid, a, b) => homeChangesOn(pid, a, b) })
+/* …and whether a man's Scheduler tick counts in a squadron on a day (units-model.ts schedTickHolds — core line 4, D2160),
+   handed to the sign-off boxes the same way */
+export const schedTickIn = (pid: string, unit: string, iso: string): boolean =>
+  schedTickHolds((PEOPLE as any)[pid], pid, unit, iso, unitRows(), fallbackHome())
+setSchedTickAt(schedTickIn)
 /* the rights an account holds in OTHER units */
 export const grantsOf = (accountId: string): Grant[] => unitRows().grants.filter(g => g.account === accountId)
 /* an account's level in a unit on a date — the one answer (units-model.ts levelFrom); the caller hands in the account */
