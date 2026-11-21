@@ -2167,8 +2167,11 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
         /* a person a member adds is a change of the input: it takes a scheduler's LATE drop off (owner D1620) */
         if (added.length && !scheduler && !schedSide(opts)) delete r.lateOff
         for (const p of added) putPerson(r, p, st)
-        /* (left with ALL AVAIL / ALL alone it stays on the squadron it stood on; a man added, it follows its people — C3) */
-        settleStamp(r, unitWas)
+        /* (left with ALL AVAIL / ALL alone it stays on the squadron it stood on; a man added, it follows its people — C3).
+           Not on a member's own take-out: the commit gate lets him change nothing but his own entry (state/perms.ts
+           ownPart, D770 — onerecord-write OR29), so the stamp waits; unstamped, the input reads its filer's squadron */
+        const ownTakeOut = !scheduler && mine != null && !added.length && gone.length === 1 && gone[0] === String(mine)
+        if (!ownTakeOut) settleStamp(r, unitWas)
         /* …and an input filed for ALL AVAIL / ALL is never under Unavailable — it goes back onto the programme (the
            same rule the one-person save keeps, commitInputEdit; found by the re-expressed tests, 12 Oct 26) — a
            scheduler's move, marked (his D1388; the code read's F2: unmarked, its filer could send it back) */
