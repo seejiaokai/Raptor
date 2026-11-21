@@ -58,7 +58,20 @@ import { bubbleParts, bubbleWords, worsenedRows, type BubbleFlags, type FiledKin
 import { warInputs, type WarInput } from '../absences'
 import { ReorderIcon } from '../../ui/icons'
 import { landingScroll, leftTheLanding, reanchorPlan } from './reanchor'
+import { warBand } from '../../state/typing-hold'
 import './matrix.css'
+
+/* THE BID WINDOW HELD UNDER THE MIDNIGHT BAND (his D2243 Q7: "His typed words stay visible"; the reshape plan §3.2 A-iv).
+   At midnight of his own move the day he is bidding on can close to him (it is no longer his in this war), and the grid
+   would swap his open bid window for the closed note — his words gone, though the band holds the war for the window. So
+   the cell whose bid window was open when the band went up stays a bid window while the band is up; its save is the old
+   squadron's to refuse, which the band names. Read at every draw while no band is up; the band's Close lets the swap run. */
+let BID_AT_BAND: string | null = null
+const bidOpenOn = (id: string, date: string): boolean => {
+  const live = canBidOn(id, date), key = `${id}|${date}`
+  if (!warBand()) { BID_AT_BAND = live ? key : null; return live }
+  return live || BID_AT_BAND === key
+}
 
 /** the year of a 'yyyy-mm-dd' date, as the grid's corner writes it (D1561) */
 const yearAt = (iso: string) => iso.slice(0, 4)
@@ -3696,7 +3709,7 @@ export function Matrix() {
      he chose to place leave or OIL there (the narrow read's N3 — the bid window's own condition, below). It comes before the
      day's list, the member's remarks window and the read-only note, each of which it replaces on such a day — but never on a
      day outside his time in the squadron, where the day's list shows every record on its own line (owner answer C, below). */
-  const openHeld = open && openView && (placing || !(role === 'admin' && (openPostedOut || openNotYetArrived))) && canBidOn(open.id, open.date)
+  const openHeld = open && openView && (placing || !(role === 'admin' && (openPostedOut || openNotYetArrived))) && bidOpenOn(open.id, open.date)
     /* (only LEAVE there — the day's list's own rule, `listOpen` below: a course, a medical or an OD outside his time still opens
        the window, as a course's day did before — the fresh code read's F3) */
     && !(role !== 'admin' && openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null)
@@ -3704,7 +3717,7 @@ export function Matrix() {
   /* A COMMITMENT UNDER UNAVAILABLE (D1356) opens the day's list, its remarks read there by everyone — except beside the
      half he may still bid on, where the free half's window comes first and names it in one line (D1353, D1371) */
   const commitHeld = !!openView && openView.all.some(c => c.kind === 'absence' && isCommitCode(c.code))
-    && !(open && canBidOn(open.id, open.date) && freeHalfBeside(openView))
+    && !(open && bidOpenOn(open.id, open.date) && freeHalfBeside(openView))
   const listOpen = !!open && !!openView && !openHeld && (openView.mark !== '' || commitHeld ||
     /* leave dated outside his time opens the list on HIS OWN tap (owner answer C); an admin's tap there opens what the day
        opens on any other day (D1722, D1725 — `openGoneHolds` above) */
@@ -3715,7 +3728,7 @@ export function Matrix() {
      half he may still bid on. Its remarks are reached from the Inputs page then. */
   /* …and his own leave on a day filled from the Inputs page opens the bid window, its Remarks and Document there (D1552) */
   const canRemark = !listOpen && !!remarkRow && !openHeld
-    && !(open && canBidOn(open.id, open.date) && freeHalfBeside(openView))
+    && !(open && bidOpenOn(open.id, open.date) && freeHalfBeside(openView))
   /* THE FREE HALF BESIDE INPUTS-FILED LEAVE (CURRENT-STATE item D). When the
      cell is locked to the Inputs page but only HALF of it is actually spoken
      for, the tap opens the bid picker on the free half instead of the
@@ -3761,7 +3774,7 @@ export function Matrix() {
     ? (() => { const h = openHeld.held.find(x => x.portion !== 'full' && (isLeaveCode(x.c.code) || isSickCode(x.c.code))); return h ? { half: h.portion as 'am' | 'pm', code: h.c.code } : null })()
     : null
   const openFreeHalf = open && lockedOnWar(openView)
-    && canBidOn(open.id, open.date)
+    && bidOpenOn(open.id, open.date)
     ? freeHalfBeside(openView)
     : null
 
@@ -4447,7 +4460,7 @@ export function Matrix() {
       {/* HIS OWN OIL AWARD, READ ONLY (owner, D261, 27 Sep 26), wherever the bid sheet will not open for him — a day not
           open for him. Where it does open its foot reads the award back already, so this stands aside. */}
       {open && !listOpen && !canRemark && openCredit && ownAwardAlone(openView, viewer, open.id)
-        && !canBidOn(open.id, open.date) && (
+        && !bidOpenOn(open.id, open.date) && (
         <AwardSheet
           callsign={open.callsign}
           date={open.date}
@@ -4460,7 +4473,7 @@ export function Matrix() {
           refuses. Last in line: his remarks, a leave filed on the Inputs page, his own award and the day's list each
           answer first, as before. The posting days (before he joined, after he left) are his too. */}
       {open && !listOpen && !canRemark && role !== 'admin' && canEditRow(role, viewer, open.id)
-        && !canBidOn(open.id, open.date)
+        && !bidOpenOn(open.id, open.date)
         && !lockedOnWar(openView)
         && !(openCredit && ownAwardAlone(openView, viewer, open.id)) && (
         <ClosedNoteSheet
@@ -4777,7 +4790,7 @@ export function Matrix() {
       {/* a member may bid CLEARING leave after their own posting-out (owner
           answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
       {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!lockedOnWar(openView) || !!openFreeHalf || openWorkOnly || !!openHeld)
-        && canBidOn(open.id, open.date) && (
+        && bidOpenOn(open.id, open.date) && (
         <BidPicker
           key={`${open.id}-${open.date}`}
           /* the approved leave's Remarks and Document, shown at once (his D1307 — "Note" went) */
