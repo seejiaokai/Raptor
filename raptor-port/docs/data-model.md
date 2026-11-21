@@ -1875,7 +1875,8 @@ squadron are judged by whose they are:
   `LeaveBid` and `LeaveLedger` rows, never the war loaded — each a record whose id names that squadron
   (`lwx.profile` / `lwx.rec` / `lwx.ledger`, `<unit>@<local>`), so the unit rule above asks for an admin of it; a member
   writes none of them (`src/state/perms.ts`, the member's admin-only records; `src/leavewar/state/foreign.ts`). Those four
-  doors are the only writers of a war that is not loaded; the war's passes for it run when it is next opened. The gate
+  doors are a person's only writers of a war that is not loaded — the app's own posting pass is the other (below, the
+  reshape's A5); the war's other passes for it run when it is next opened. The gate
   holds them to that (job 2's security read, SEC-5, 19 Nov 26): an admin's `lwx` row is refused in any other command,
   refused for the war loaded, and its posting window obeys the master admin's posting rule as the war's own `lw.postouts`
   does — a Delete posting for a master admin never, an Overseas Sqn posting for one only by a master admin.
@@ -1895,7 +1896,11 @@ phase 4.1, 30 Sep 26); so has `AccessRequestSeen` (phase 4.4).
 
 **The posting pass — the app's own change to a `Person` (`[SYSTEM-PASS-SAVES-ROSTER]`, D1510's security read, built
 31 Oct 26; tightened the same night by the security read of the fix).** A posting out runs by itself on its date (D229) as
-the app, not as a person. In one changeset it may change only: each posted man's posting record (`LeavePersonProfile`) —
+the app, not as a person. **It runs over every squadron (the reshape's A5, 21 Nov 26 — `src/leavewar/sync.ts`
+runForeignPostings):** the loaded war's postings as ever, then each other squadron's due postings read from its stored
+war, one posting a command, the war half written through the second store (`lwx.profile/<unit>@<pid>`) and judged
+against THAT squadron's saved posting, for a man at home in that squadron today — so a 149 posting no longer waits for a
+149 man to open the app. In one changeset it may change only: each posted man's posting record (`LeavePersonProfile`) —
 its done mark set to that posting's own date (the day after his last day in), a date already come, or, for a Delete of a man
 who never arrived, the record removed — and only a posting that was SAVED (fix read 13, item B, 20 Nov 26 — SEC13-1): each
 change of a posting record starts from a before-image, never none, that image the stored `LeavePersonProfile` posting as it
