@@ -132,9 +132,20 @@
 .savestat .sv-rest, .saveband .sv-rest{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .sv-sign{width:16px;height:16px;flex:0 0 16px;background:var(--band-sign)}
 .sv-sep{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
-.topbar > .savestat.failed button, .saveband button{flex:0 0 auto;margin:0;padding:4px 14px;border-radius:9px;border:1px solid #E5C24A;
+.topbar > .savestat.failed button, .saveband:not(.moveband) button{flex:0 0 auto;margin:0;padding:4px 14px;border-radius:9px;border:1px solid #E5C24A;
   background:#E5C24A;color:#1F1803;font:inherit;font-weight:700;cursor:pointer}
 .topbar > .savestat.failed button:focus-visible, .saveband button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* THE BAND AT THE SWAP (his D2243 Q7, "as drawn" — docs/mock/2026-11-20-multi-sqn-reshape/page.html §7, pictures q7b and
+   q7c; state/typing-hold.ts): when his squadron changes under an open Leave War window, or under the Tracker's chart
+   editor, one band across its top in this band's own look — the sign, "You are 149's from today." in bold amber, "This
+   can't be saved in 142's Leave War." quieter — and one button, "Close", which is NOT the amber Retry: it is the
+   surface's own button (the war window's chip, the Tracker's tool button), as drawn. Where the words do not fit on one
+   line — his iPhone — the band takes two, the lead on the first and the rest under it, never cut (the drawing let it
+   wrap; one line would cut its words). On one line it keeps the band's height. */
+.saveband.moveband{height:auto;min-height:var(--save-band);padding:4px 20px;white-space:normal}
+.saveband.moveband > button{flex:0 0 auto;margin:0}
+.saveband.moveband .sv-msg{flex-wrap:wrap;row-gap:2px;white-space:normal;overflow:visible}
+.saveband.moveband .sv-rest{white-space:normal;overflow:visible;text-overflow:clip}
 /* on the board the band is the LAST line of the board's own bar (inside .sb-top, so --sb-topH follows it), let out to
    the bar's edges past its padding; in the Medical view opened full (its column is `.inpcal` — no screen opens it so
    today) and the Leave War's OIL tracker it is a line of the column, between the head and the body */
@@ -172,6 +183,7 @@
   .topbar.save-failed{padding-bottom:calc(8px + var(--save-band))}   /* the phone bar's own 8px */
   .topbar > .savestat.failed, .topbar > .savestat.nokeep, .saveband{padding:0 14px;justify-content:space-between}
   .sb-top > .saveband{width:calc(100% + 16px);margin:2px -8px -6px}   /* the phone board bar's 6px 8px */
+  .saveband.moveband{padding:7px 14px}   /* the drawing's two lines on his iPhone, 7px above and below them */
   /* THE OIL BAND ON A PHONE: its words at the left, its two buttons at the right, ONE line (D840) — the words never
      shrink, the gap between them and the buttons is what gives first, then the letters (--oil-fit) */
   .topbar.oil-waiting{padding-bottom:calc(8px + var(--save-band))}

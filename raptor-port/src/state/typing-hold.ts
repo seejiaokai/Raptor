@@ -20,10 +20,10 @@
      squadron, and it holds no swap. Its chart editor ("Edit chart layout", the one Tracker editing state the drawing
      drew) carries the same band — "…in 142's Tracker." — while the Tracker loaded is not the page's own squadron; Close
      leaves the editor (its edits stay unsaved, as "Done editing chart" leaves them, never saved by the band) —
-     tracker/components/MoveBand.jsx, which reads the Tracker's own editing state itself.
+     drawn by the Tracker's page seam, tracker/TrackerPage.tsx, which reads the Tracker's own editing state itself.
 
-   No imports: read by the Leave War's window frame and by the Tracker (a no-import module, as the Tracker's people bridge
-   is — tracker/people.js), and written by state/store.ts on every notify. */
+   No imports: read by the Leave War's window frame and by the Tracker's page seam (a no-import module, as the Tracker's
+   people bridge is — tracker/people.js), and written by state/store.ts on every notify. */
 
 export type MoveBand = { lead: string; rest: string } | null
 export type HoldKind = 'none' | 'war' | 'tracker'
