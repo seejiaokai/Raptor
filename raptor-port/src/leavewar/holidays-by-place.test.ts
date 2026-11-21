@@ -102,6 +102,22 @@ describe('a public holiday is the place\'s, an Off day the squadron\'s', () => {
   })
 })
 
+/* A4 (the reshape plan §7 — the review's proof a-a04-holiday-reaches-other-sqn, word for word, in the harness it names):
+   one squadron's public holiday still reached the other squadron at the same place. Correct per D2195 ("a holiday one
+   squadron adds never touches another squadron's days, OIL or bell") and D2207. */
+describe('A4 — a holiday 142 adds stays 142’s (D2195)', () => {
+  it('149 asked from its own door: Wed 15 Jul stays a working day', () => {
+    expect(holidayAdd(one(WED))).toEqual({ ok: true })
+    expect(nonWorkingFor('u149', WED), '149’s day is untouched').toBe(false)
+  })
+  it('149’s own Leave War loaded: Wed 15 Jul is not a public holiday, and earns no OIL', () => {
+    expect(holidayAdd(one(WED))).toEqual({ ok: true })
+    as149()
+    expect(dayFacts(WED).kind, '149’s war').not.toBe('ph')
+    expect(HOOKS.oilEarningDay(WED_DI), '149 earns no OIL on 142’s holiday').toBe(false)
+  })
+})
+
 describe('R32 (D2184): a new public holiday names, before it is saved, each squadron\'s published days it puts out of date', () => {
   it('142\'s published Wednesday is named; an unpublished day, or a day already a holiday, is not', () => {
     publish(WED_DI)
