@@ -100,8 +100,25 @@ describe('a Plan-only squadron — 150 has no admin at home, Hunter holds its Pl
     expect(lastAdminBreach(world(b, { rows: rows(['u142', 'u149', 'u150'], homes, [g('acus9', 'u150')]) }))).toMatchObject({ unit: 'u150', gone: 'acad2' })
   })
   it('Hunter, its first admin, moves into 150 on Thu 16 Jul: never without an admin (his Plan holds until his move day, then he is at home) — no lock', () => {
+    /* (setup only, 22 Nov 26 — K3, his D2160: an admin's role counts at home only in the squadron it was given in, so the
+       first admin's Plan carries the mark "+ New squadron" writes on it, `first` — units-model.ts adminRoleHolds; the
+       rule now reads the level at home itself, where state/units.ts lockRows used to stand in for it) */
+    const first: Grant = { ...g('acad2', 'u150'), first: true }
+    const b = { rows: rows(['u142', 'u149', 'u150'], HOMES, [first]), accts: ACCTS }
+    const after = rows(['u142', 'u149', 'u150'], [...HOMES, h('prowler', 'u150', '2026-07-16')], [first])
+    expect(lastAdminBreach(world(b, { rows: after }))).toBeNull()
+  })
+  it('a plain Plan holder who moves into 150 arrives a member (K3 — D2160): 150 is left with no admin on his move day', () => {
     const after = rows(['u142', 'u149', 'u150'], [...HOMES, h('prowler', 'u150', '2026-07-16')], [g('acad2', 'u150')])
-    expect(lastAdminBreach(world(before, { rows: after }))).toBeNull()
+    expect(lastAdminBreach(world(before, { rows: after }))).toMatchObject({ unit: 'u150', date: '2026-07-16', gone: 'acad2' })
+  })
+  it('an admin who moved squadron is not counted at home in the one he joined: Kestrel, 149\'s only admin, may not be switched off once Hunter has arrived', () => {
+    const homes = [...HOMES, h('prowler', 'u149', '2026-07-10')]
+    const b = { rows: rows(['u142', 'u149'], homes), accts: ACCTS }
+    expect(lastAdminBreach(world(b, { accts: off(ACCTS, 'acad9') }))).toEqual({ unit: 'u149', date: TODAY, gone: 'acad9', cause: null })
+    /* …and made an admin of 149 (the record written anew — `adminOf`, `adminFrom`), Hunter counts there */
+    const made = ACCTS.map(x => (x.id === 'acad2' ? { ...x, adminOf: 'u149', adminFrom: '2026-07-12' } : x))
+    expect(lastAdminBreach(world({ rows: b.rows, accts: made }, { accts: off(made, 'acad9') }))).toBeNull()
   })
   it("once Hunter is at home in 150, its rule is the home rule: a Plan holder alone does not keep it", () => {
     const homes = [...HOMES.filter(x => x.pid !== 'prowler'), h('prowler', 'u150')]
