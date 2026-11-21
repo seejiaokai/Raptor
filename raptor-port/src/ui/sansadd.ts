@@ -16,6 +16,7 @@ import { isAdmin, me, pageUnit } from '../state/perms'
 import { rosterOf } from '../engine/roster'
 import { notify } from '../state/store'
 import { flyAnswer } from '../leavewar/sync'
+import { todayIso } from '../engine/editlog'
 import { fmt } from './inputedit'
 import { setInpEdit } from './pops'
 
@@ -36,7 +37,8 @@ export function openSansAdd(from: string, until?: string): boolean {
     _new: true, _calendar: true, _ctx: 's', person: who, type: TYPE,
     date: fmt(iso), endDate: single ? undefined : fmt(end),
     allday: defaultAllday(TYPE), s: 360, e: 1080,
-    sans: single && flyAnswer(iso).cls === 'nf' ? {} : { f: true },
+    /* (the page's own squadron's flying plan — the SANS calendar is an own page — never the war loaded's) */
+    sans: single && flyAnswer(iso, pageUnit('own', todayIso())).cls === 'nf' ? {} : { f: true },
   })
   notify()
   return true

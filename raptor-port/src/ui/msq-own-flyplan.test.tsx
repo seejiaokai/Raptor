@@ -47,7 +47,9 @@ afterEach(async () => {
 /* the two plans, set by Saber (a master admin); then Hunter, with View of 149, picks 149 — and 149's war is loaded */
 function setup(): void {
   signInAs('saber')
-  expect(setFlyDays([{ iso: NF, cls: 'nf' }, { iso: ONLY142, cls: 'day' }], 'u142')).toMatchObject({ ok: true })
+  expect(setFlyDays([{ iso: NF, cls: 'nf' }, { iso: ONLY142, cls: 'night' }], 'u142')).toMatchObject({ ok: true })
+  expect(flyAnswer(ONLY142, 'u142').clsFrom, "142's date set").toBe('date')
+  expect(flyAnswer(ONLY142, 'u149').clsFrom, "149's not").not.toBe('date')
   expect(setFlyDays([{ iso: NF, cls: 'night' }], 'u149')).toMatchObject({ ok: true })
   expect(flyAnswer(NF, 'u142').cls).toBe('nf')
   expect(flyAnswer(NF, 'u149').cls).toBe('night')

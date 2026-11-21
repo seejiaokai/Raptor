@@ -38,7 +38,7 @@ import { hhmm } from '../engine/time'
 import { puck } from './html'
 import { setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck, addPuckPeople, togglePuckPerson, movePuckPerson, movePlanSection } from '../state/plan'
 import { notify } from '../state/store'
-import { calNow, writeCal } from './owncal'
+import { calNow, calUnit, writeCal } from './owncal'
 import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL, clearInpReveal, PLANREVEAL, clearPlanReveal } from '../state/view'
 import { HL_GROUPS } from './hlchips-model'
 import { canEditSched } from '../state/auth'
@@ -656,7 +656,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
 
   /* ---- the bars: every input the filters let through, as entries; each week lays out its own ---------------------- */
   const items = monthItems(calRows(), { fPerson, fType, fSearch })
-  const answers = flyMonth(cur.y, cur.m)
+  const answers = flyMonth(cur.y, cur.m, calUnit())   // the page's own squadron's flying plan, never the war loaded's
 
   /* ---- ON A PHONE THE MONTH TAKES THE FULL SCREEN (D653, D664): the week rows share the height from the month's top
      to the foot of the screen — measured from what the browser really shows, and measured again when that changes (its
@@ -939,7 +939,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     if (revealed) list.unshift(...monthItems([saved], { fPerson: 'all', fType: 'all', fSearch: '' }))
     /* nothing listed, yet the day HAS inputs when no filter is asked: the filters hide them all (D731 (2), below) */
     const hidden = !list.length && (fPerson !== 'all' || fType !== 'all' || !!fSearch) && itemsOn(iso, monthItems(calRows(), { fPerson: 'all', fType: 'all', fSearch: '' })).length > 0
-    const kind = dayTag(answers[iso] || flyAnswer(iso), dayFacts(iso).short)
+    const kind = dayTag(answers[iso] || flyAnswer(iso, calUnit()), dayFacts(iso).short)
     const name = dayFacts(iso).name
     const kindWord = !kind ? undefined
       : kind.kind === 'nf' ? 'No fly'

@@ -29,6 +29,7 @@ import { openWinFor } from '../state/cutoff'
 import { notify } from '../state/store'
 import { sansCommittedOn } from '../state/flyplan'
 import { dayFacts, flyAnswer, useWarFacts } from '../leavewar/sync'
+import { todayIso } from '../engine/editlog'
 import { FloatWin } from './FloatWindow'
 import { bringForward, openBeside } from './winorder'
 import { puck } from './html'
@@ -37,9 +38,13 @@ import { maySansAdd, openSansAdd } from './sansadd'
 import { dayWord, sansDayGroups, type SansEntry } from './sanscal-model'
 import { useVersion } from './useStore'
 
+/* the flying plan of the page's own squadron today (the reshape plan §3.2 A-ii — the SANS calendar is an own page, as
+   its month is: ui/SansCal.tsx sansCalUnit), never the war loaded's */
+const flyOwn = (iso: string) => flyAnswer(iso, pageUnit('own', todayIso()))
+
 /** what kind of day it is, in words — the window's second line */
 function kindWord(iso: string): string {
-  const a = flyAnswer(iso)
+  const a = flyOwn(iso)
   if (a.kind) {
     const name = dayFacts(iso).name
     const word = a.kind === 'ph' ? 'Public holiday' : 'Off day'
@@ -61,7 +66,7 @@ export function SansDay({ iso, hi, onClose }: {
   useWarFacts()
   /* which late commitment's note is showing (its input id) */
   const [lateOpen, setLateOpen] = useState<string | null>(null)
-  const a = flyAnswer(iso), facts = dayFacts(iso), u = pageUnit('own', iso), com = sansCommittedOn(iso, undefined, unitPeople(u, iso)), g = sansDayGroups(iso, inputsOnDay(u, iso), unitPeople(u, iso))
+  const a = flyOwn(iso), facts = dayFacts(iso), u = pageUnit('own', iso), com = sansCommittedOn(iso, undefined, unitPeople(u, iso)), g = sansDayGroups(iso, inputsOnDay(u, iso), unitPeople(u, iso))
   const canAdd = maySansAdd()
   const avail = { p: facts.availP, w: facts.availW }
 
