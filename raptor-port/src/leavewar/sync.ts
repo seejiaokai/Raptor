@@ -1451,9 +1451,7 @@ function holidaySpan(a: string, b: string): { a: string; b: string; name: string
    then said "PH is now a public holiday." under "Public holiday · PH" (the check's walk, E1 — 13 Oct 26). Read as '',
    and each reader says it its own way: the list names the day, the bell's line says "Public holiday". */
 export function holidayOwnName(iso: string): string { const n = dayFacts(iso).name; return n && n !== holidayWord('ph') ? n : '' }
-/* the schedulers — every account that is an admin, switched on and tied to a person (state/accounts.ts) */
-const schedulerIds = (): string[] => ACCOUNTS_LIST.filter(a => isAdminAccount(a) && a.on && !!a.pid).map(a => String(a.pid))
-/* …of the Leave War's OWN squadron (multi-squadron batch 1, step 4): a posting is a fact of the world it was set in, so
+/* THE SCHEDULERS of the Leave War's OWN squadron (multi-squadron batch 1, step 4): a posting is a fact of the world it was set in, so
    its bell lines go to that squadron's admins only, never the other squadron's (each admin's Admin → Users lists his own
    squadron, D2191); the posted man's squadron is the war's, since each squadron's Leave War holds only its own people */
 /* ONE AUDIENCE (the reshape plan §6.2 A5, step 6; D2202, D2198; PB1, PB2): a posting's lines go to the squadron's admins
@@ -1498,6 +1496,10 @@ function holidayTodo(runs: readonly HolidayRun[]): (HolidayRun & { name: string;
      to the holiday that holds its ends, as the war's own list has it (holidaysIn — a band, a repeated word, a seeded
      flag), and two runs of one holiday are one. */
   const lineOn = (iso: string) => holidaysIn(iso.slice(0, 4)).find(h => h.kind === 'ph' && h.from <= iso && iso <= h.to) || null
+  /* THE HOLIDAY'S OWN SQUADRON (his D2195 — the reshape plan §7, A4): a holiday is written into the loaded war, its
+     squadron's alone, so only that squadron's inputs can need an answer on it (oilOpenOn, by the input's own squadron's
+     list) — "the squadron whose input asks" */
+  const unit = worldUnit()
   const seen = new Set<string>()
   const todo: (HolidayRun & { name: string })[] = []
   for (const r of runs) {
@@ -1505,15 +1507,16 @@ function holidayTodo(runs: readonly HolidayRun[]): (HolidayRun & { name: string;
     const from = h1 && h1.from < r.from ? h1.from : r.from, to = h2 && h2.to > r.to ? h2.to : r.to
     if (seen.has(`${from}|${to}`)) continue
     seen.add(`${from}|${to}`)
-    if (oilOpenOn(from, to).length > 0) todo.push({ from, to, name: own(r.from) })
+    if (oilOpenOn(from, to, unit).length > 0) todo.push({ from, to, name: own(r.from) })
   }
-  /* EVERY SQUADRON AT THE PLACE IS TOLD, EACH FOR ITS OWN (multi-squadron batch 1, step 4 — D2184 R32, narrowing D781):
-     the holiday reaches every squadron at this place on its dates (placeHolidaysFor, above), so each one's schedulers
-     get the line — but only a scheduler whose own squadron has an input to answer on it, and his line counts and opens
-     only those (holidayLeft, OilDayList). The one who made it is told as before when his own squadron has any. */
-  const all = schedulerIds()
-  const toFor = (h: { from: string; to: string }) => all.filter(pid => { const u = homeUnitOf(pid, h.from); return !!u && oilOpenOn(h.from, h.to, u).length > 0 })
-  return todo.map(h => ({ ...h, told: toFor(h) }))
+  /* ITS ADMINS OF TODAY ARE TOLD — AND ONLY THEM (his D2195: "the 'Inputs need an OIL answer' line goes to its own
+     squadron's schedulers only"; D2202: while an admin holds Plan of another squadron his bell carries that squadron's
+     admin lines — the Plan audit's PB3, which found Hunter, holding Plan of 149, never told of 149's holiday; it replaces
+     step 4's "every squadron at the place, each for its own", D2184 R32). accounts.ts adminsOf — at home there, or a
+     plain admin holding Plan of it; a master admin through his home only (D2198) — the one audience the posting lines
+     use and the gate checks an admin's line against (perms.ts 7e, PC1). The one who made it is among them. */
+  const told = adminsOf(unit, effectiveToday())
+  return todo.map(h => ({ ...h, told }))
 }
 /** THE HOLIDAY LINES A COMMAND OWES, FROM ITS OWN CHANGES (fix read 11, fault C — Fable's F11-1, the security read's
  *  SEC11-4): the gate (state/perms.ts, through setHolidayLinesOwed) let a new holiday line through wherever noticeHoliday
