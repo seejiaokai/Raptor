@@ -1,0 +1,127 @@
+<title>Two Squadrons · Open Questions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* layout: one reading column; each question a card, its pictures desktop beside iPhone */
+:root{--bg:#f4f6f8;--card:#ffffff;--fg:#14202b;--mute:#5b6b78;--line:#d6dee5;--acc:#0e7fa6;--rec:#0b7a4b;--mark:#d4157a;--tint:rgba(14,127,166,.07);
+--f-body:Inter,system-ui,'Segoe UI',sans-serif;--f-head:'Space Grotesk',Inter,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--tint:rgba(60,196,234,.08);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--tint:rgba(60,196,234,.08);color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-body)}
+.wrap{max-width:1100px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-head);text-wrap:balance;margin:0}
+h1{font-size:26px}h2{font-size:21px;margin-top:38px;padding-top:14px;border-top:2px solid var(--line)}h3{font-size:16px;margin-top:18px}
+.sub{color:var(--mute);margin:4px 0 0;max-width:80ch}
+.top{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:16px}
+.top ol{margin:6px 0 0;padding-left:0;list-style:none;display:grid;gap:8px}
+.top li{display:grid;grid-template-columns:40px minmax(0,1fr);gap:8px}
+.top b.n{font-family:var(--f-head);color:var(--acc)}
+a{color:var(--acc)}
+.rec{color:var(--rec);font-weight:600}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:12px}
+.q p,.q li{max-width:80ch}.q p{margin:8px 0}
+.q ul{margin:6px 0;padding-left:20px}.q li{margin:4px 0}
+.ex{background:var(--tint);border-radius:8px;padding:8px 12px;color:var(--mute)}
+.ex b{color:var(--fg)}
+.pair{display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr);gap:10px;margin-top:10px;align-items:start}
+.pair.one{grid-template-columns:minmax(0,1fr)}
+figure{margin:0;min-width:0}
+figure img{display:block;width:100%;border-radius:6px;border:1px solid var(--line);cursor:zoom-in;background:#000}
+figcaption{font-size:12.5px;color:var(--mute);margin-top:4px}
+figcaption b{color:var(--fg)}
+.words{font-family:var(--f-head);background:var(--tint);border:1px dashed var(--mark);padding:6px 10px;margin:8px 0;border-radius:6px}
+.tag{display:inline-block;font:700 11px/16px system-ui,'Segoe UI',sans-serif;padding:0 6px;border-radius:8px;color:#fff;background:#ff2d95;vertical-align:1px}
+.note{border-left:4px solid var(--line);padding-left:10px;color:var(--mute)}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:flex-start;justify-content:center;padding:16px;z-index:20;overflow:auto}
+#zoom[hidden]{display:none}
+#zoom img{max-width:none;width:auto;cursor:zoom-out}
+@media (max-width:640px){.pair{grid-template-columns:minmax(0,1fr)}.top li{grid-template-columns:34px minmax(0,1fr)}}
+</style>
+
+<div class="wrap">
+<h1>Two squadrons: what is left for you</h1>
+<p class="sub">The night's checks of the two-squadron work are finished and the tests are green. These are the questions it left. Each picture is the real app; the place is outlined in pink. Tap a picture to see it full size. Nothing here is live: the work waits for your look and your "merge live".</p>
+
+<div class="top">
+<h3 style="margin-top:0">Decide now: 3 questions</h3>
+<ol>
+<li><b class="n">1</b><span>After an admin undoes a change to the late cut-off, the note at the bottom says "Undid: the late cut-off for inputs". <span class="rec">Recommended: keep these words.</span> <a href="#a1">Picture 1</a></span></li>
+<li><b class="n">2</b><span>If a sign-in is put on the wrong person, there is no way on Admin → Users to move it to the right one. <span class="rec">Recommended: no such control for now.</span> <a href="#a2">Picture 2</a></span></li>
+<li><b class="n">3</b><span>Fable's extra reads found faults that are probably in the live app today. One can take OIL away from a man, and two lose what a person has just saved while the window says it was saved. <span class="rec">Recommended: fix them now, as a job of their own apart from this work, the OIL one first.</span> <a href="#a3">Details 3</a></span></li>
+</ol>
+<h3>Later: 13 questions that only matter once a man can be moved to another squadron</h3>
+<p class="sub" style="margin-top:6px">No screen in the app moves a man to another squadron yet. The night's checks set the moves up behind the scenes. Moving a man arrives with the Transfer step, later in the build plan. Until then, nobody can hit any of these. <span class="rec">Recommended: settle them when the Transfer step is designed, each drawn with its screen.</span> If you would rather settle them now, "Later: all as recommended" takes the recommendation in each line <a href="#b">below</a>.</p>
+<p class="sub">Answer by number, for example "1, 2 as recommended; 3 yes; Later: at the Transfer step".</p>
+</div>
+
+<h2 id="a1">1 · The note after undoing the late cut-off</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Kestrel changes 149's late cut-off for inputs from 14 days to 10, then presses Undo. The note at the bottom now says "Undid: the late cut-off for inputs". Before tonight it said "Undid: a rule on the Logic page", which was wrong: the late cut-off lives on the Inputs page. On the SANS page the note says "Undid: the late cut-off for SANS commitments".</p>
+<p><span class="rec">Recommended: keep these words.</span> They use the window's own heading, so the note names what was undone.</p>
+</div>
+<div class="pair one"><figure><img src="img/a1-undo-note.png" alt="the Undo note on the Inputs page"><figcaption><b>1.</b> Inputs page, after Undo: "Undid: the late cut-off for inputs" (1).</figcaption></figure></div>
+
+<h2 id="a2">2 · Moving a sign-in to another person</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Hunter adds Nomad and, by mistake, types Nomad's sign-in into Static's row. The app keeps the sign-in safe behind the scenes if it is ever moved: the rights it held do not follow it to the other person. But no button on Admin → Users moves a sign-in from one person to another.</p>
+<p><span class="rec">Recommended: no such control for now.</span> It should be rare, and a "move this sign-in" button is one more door to protect.</p>
+</div>
+<div class="pair one"><figure><img src="img/a2-signin.png" alt="a person's sign-in box on Admin → Users"><figcaption><b>2.</b> Admin → Users, a person opened: his sign-in box (2). The only way to change a sign-in.</figcaption></figure></div>
+
+<h2 id="a3">3 · Faults Fable found in parts it had never read</h2>
+<div class="q">
+<p>On your word, Fable read three parts of the app it had never read in full: the Leave War, Inputs and OIL outside the Leave War. It read the night's copy, which carries everything live today, so these faults are very probably live now. Each was proved with a failing test. None is fixed yet.</p>
+<ul>
+<li><b>Can take OIL away (the worst).</b> Mon 13 Jul is a public holiday with a squadron event for all; Rocky works it and is given a full day of OIL. On Wed 15 Jul he is posted out as SANS. The published Monday now shows him gone from the crowd. The next amendment of that Monday, even one that only changes a remark, takes his OIL day away.</li>
+<li><b>Says "saved" but keeps nothing (two).</b> Saber attaches a document to a meeting of two men and presses Save: the window says "Input updated", but the document is never kept. And on an "Other" input, a change to "Goes to" made in the same save as answering the OIL question is thrown away.</li>
+<li><b>The LATE mark (two).</b> An input changed after the cut-off can read LATE for some of its people but on time for a man added to it earlier. And a LATE mark on a man added late to a shared input cannot be taken off, though the tap says it was.</li>
+<li><b>Smaller (three).</b> OIL leave filed on dates no leave period covers yet (2028, say) is not taken off his OIL. A weekend whose only work is an input with an unanswered OIL question publishes without a word about it. And the Leave War can write leave for a person who no longer exists, which no screen can reach today.</li>
+</ul>
+<p><span class="rec">Recommended: fix them now, as a job of their own on its own branch, so they can go live without waiting for the two-squadron work. The OIL one first.</span> Fable fixes the OIL one and the two that lose a save, because they touch OIL and saved data. Opus fixes the rest. Then the usual check: a walk of each, a test for each first, and the reads. Roughly half a day; a guess. Each fix comes to you for your look and "merge live" as usual.</p>
+</div>
+
+<h2 id="b">Later: the 13 that wait for the Transfer step</h2>
+<div class="q">
+<p>Each happens only after a man has been moved between squadrons, and no screen can do that yet. In every example, Ranger moves from 142 to 149, counting from Thu 16 Jul. Hunter is 142's admin and Kestrel is 149's. The number on each line matches its picture.</p>
+<ul>
+<li><b>B2 · The band on a schedule-side window at midnight.</b> Hunter's input window, open at his move's midnight, says "This change could not be saved." with Close. Your approved sentence ("You are 149's from today…") is the Leave War's and the Tracker's. <span class="rec">Recommended: keep the plain words here.</span> <a href="#p2">Picture</a></li>
+<li><b>B4 · "Blocked: nothing was kept".</b> A course, a medical or a Delete that runs across Ranger's move is refused with these general words. Your approved sentence covers leave only. <span class="rec">Recommended: a sentence of its own, drawn first.</span> <a href="#p4">Picture</a></li>
+<li><b>B5 · The manning line at midnight.</b> In a Leave War window open on Wed 15 Jul, the line "No manning row turns amber or red" disappears at midnight, because Wednesday is now in the past. Your drawing of the band kept that line. It goes for Osprey too, who did not move, so it is the Leave War's ordinary rule for a past day. <span class="rec">Recommended: keep as built.</span> <a href="#p5">Pictures</a></li>
+<li><b>B7 · 149's Leave War starts him empty.</b> In 149's Leave War, Ranger shows no leave and LVE 0 until Kestrel types his figure. His 142 leave stays in 142's Leave War. <span class="rec">Recommended: keep. The Transfer step carries his leave across.</span> <a href="#p7">Picture</a></li>
+<li><b>B8 · 142 still counts his hidden leave.</b> Ranger's leave on Mon 20 and Fri 24 Jul, approved in 142 before his move, is hidden from 142's list after it, as you ruled, but 142's balance still counts it: War bal 10.5. Without it the figure would read 12.5. <span class="rec">My recommendation: keep counting it until the Transfer step carries it.</span> The leave still happens and the schedule still shows it, so dropping it would leave his balance 2 days too high everywhere. The night's notes leaned the other way. <a href="#p8">Picture</a></li>
+<li><b>B9 · Hidden leave cannot be taken off.</b> If Ranger cancels Fri 17 Jul, no one can take it off: it is gone from 142's grid, day list and Approvals, and 149's Leave War never had it. Your ruling says taking leave off is never refused, but here there is no button to press. <span class="rec">Recommended: settle it with the Transfer step.</span> <a href="#p9">Picture</a></li>
+<li><b>B10 · The ✕ on 142's Tuesday.</b> Ranger's request for 14–17 Jul sits on 142's Tue 14. After his move, Hunter's ✕ there says "Couldn't save that — try again". <span class="rec">Recommended: Hunter may take it off his own squadron's day</span>, because your 20 Nov answer says taking leave off is never refused.</li>
+<li><b>B11 · 149's holiday OIL list.</b> Kestrel makes Fri 17 Jul a 149 holiday. The OIL question lists Ranger's training of 15–17 Jul, which ran across his move, and Kestrel's Yes can never be saved. The line stays for good, and "Yes to all" is refused for everyone. <span class="rec">Recommended: an OIL answer alone goes through for the admin of the squadron the input is in that day.</span></li>
+<li><b>B12 · Taking back a move before its day.</b> Hunter moves Ranger to 149 from tomorrow, then changes his mind: refused. Putting him back counts as moving him out of 149, which Hunter is not an admin of, so today only someone who is also an admin of 149, such as a master admin, can do it. <span class="rec">Recommended: let the admin who made the move take it back before its day.</span></li>
+<li><b>B13 · A meeting with a moved man in it.</b> A 149 meeting for all, with Osprey added. Osprey moves to 142 from Thu 16 Jul, and until he takes himself out the meeting reads as 142's. <span class="rec">Recommended: it stays on the squadron it was filed on</span>, as you answered on 20 Nov for squadron meetings.</li>
+<li><b>B14 · Settings windows at midnight.</b> The Inputs, SANS and Calendar settings windows, open when a man's squadron changes at midnight, close without a word. Nothing was saved, so nothing is lost but what he typed. Your earlier answer was that the Calendar window closes only with its own ✕ or Escape. <span class="rec">Recommended: keep as built.</span> The other choice is a band like the Leave War's, drawn first. <a href="#p14">Picture</a></li>
+<li><b>B15 · OIL given to several people at once.</b> Hunter gives +1 OIL on 17 Jul to Piston, Ranger and Saber together: "This change could not be saved." and none of them get it, because Ranger is 149's that day. Grant OIL over Wed 15–Fri 17 gives Wed 15 only, with no word. <span class="rec">Recommended: give it to those who can have it and name who was left out.</span> <a href="#p15">Picture</a></li>
+<li><b>B16 · The Balances page at midnight.</b> Ranger types 33 into his balance at 23:58. At midnight the page becomes 149's Balances, with his 33 sitting in 149's row and no band. Nothing is saved. <span class="rec">Recommended: the band, as the windows have.</span> <a href="#p16">Picture</a></li>
+</ul>
+<p class="note">No picture yet for B10–B13: none was kept from the night's checks. They come with the Transfer step's drawings.</p>
+</div>
+<div class="pair one" id="p2"><figure><img src="img/b2-band.png" alt="the input window's band"><figcaption><b>B2.</b> Hunter's input window at 00:01: "This change could not be saved." and Close (2). His words stay in the box.</figcaption></figure></div>
+<div class="pair one" id="p4"><figure><img src="img/b4-blocked.png" alt="Blocked: nothing was kept"><figcaption><b>B4.</b> Hunter adds a course for Ranger, 14–17 Jul: "Blocked: nothing was kept" (4).</figcaption></figure></div>
+<div class="pair" id="p5"><figure><img src="img/b5-before.png" alt="the window at 23:58"><figcaption><b>B5, 23:58.</b> The manning line (5).</figcaption></figure>
+<figure><img src="img/b5-after.png" alt="the window at 00:00:30"><figcaption><b>B5, 00:00:30.</b> The band, and the manning line gone (5).</figcaption></figure></div>
+<div class="pair one"><figure><img src="img/b5-osprey.png" alt="Osprey's window at 00:00:30"><figcaption><b>B5, Osprey, who did not move, at 00:00:30.</b> His Wednesday is past, so his window shows "Bidding is closed…" in its place.</figcaption></figure></div>
+<div class="pair one" id="p7"><figure><img src="img/b7-149war.png" alt="149's person window for Ranger"><figcaption><b>B7.</b> 149's Leave War, Ranger's window: every balance 0 and "No leave in 2026 and ahead." (7).</figcaption></figure></div>
+<div class="pair one" id="p8"><figure><img src="img/b8-142person.png" alt="142's person window for Ranger"><figcaption><b>B8.</b> 142's Leave War on Thu 16, Ranger's window: War bal 10.5 still counts Mon 20 and Fri 24 Jul, which are no longer in his list (8).</figcaption></figure></div>
+<div class="pair one" id="p9"><figure><img src="img/b9-daylist.png" alt="142's day list for Fri 17"><figcaption><b>B9.</b> 142's Leave War: Fri 17's list "AWAY · 2" without Ranger, and his row striped from Thu 16 (9). His approved Fri 17 has no button anywhere.</figcaption></figure></div>
+<div class="pair one" id="p14"><figure><img src="img/b14-window.png" alt="the Inputs calendar settings window"><figcaption><b>B14.</b> The Inputs settings window (14). Open at 23:57, gone at 00:01 with no word.</figcaption></figure></div>
+<div class="pair one" id="p15"><figure><img src="img/b15-oil.png" alt="the OIL tracker"><figcaption><b>B15.</b> The OIL tracker: Piston, Ranger and Saber picked (15), and at the bottom "This change could not be saved." (15). None of them got it.</figcaption></figure></div>
+<div class="pair one" id="p16"><figure><img src="img/b16-balances.png" alt="149's Balances page with 33 typed"><figcaption><b>B16.</b> At 00:00:30: the page is now 149's (16), with his 33 in 149's Ranger row (16) and no band.</figcaption></figure></div>
+
+<h2>To tell you: one change from your drawing</h2>
+<div class="q">
+<p>The waiting screen no longer has "Meanwhile you can look at the schedule, read only." or the "View the schedule" button. This follows from your 20 Nov answer removing the guest view: a person waiting for access sees only this screen until an admin approves him. No answer is needed unless you want it otherwise.</p>
+</div>
+<div class="pair"><figure><img src="img/t1-drawing-p.png" alt="the approved drawing"><figcaption><b>Your approved drawing</b>, iPhone.</figcaption></figure>
+<figure><img src="img/t1-built-p.png" alt="as built"><figcaption><b>As built</b>, iPhone.</figcaption></figure></div>
+</div>
+
+<div id="zoom" hidden><img alt=""></div>
+<script>
+const z=document.getElementById('zoom'),zi=z.querySelector('img');
+document.querySelectorAll('figure img').forEach(i=>i.addEventListener('click',()=>{zi.src=i.src;z.hidden=false}));
+z.addEventListener('click',()=>{z.hidden=true});
+</script>
