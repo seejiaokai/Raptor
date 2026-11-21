@@ -8,20 +8,29 @@ the host line by line — each session re-checks its own piece's files before it
 1. **P1 — the access row on Admin → Users** (None · View 149 · Plan 149 · Master admin; "· also plans 149") —
    D2192, D2199, D2201, D2217 Q1–Q3. Partly built: the 'admin' grant level exists with full rights
    (`state/units-model.ts levelFrom`); gaps — `setGrant` and the gate (`perms.ts` §6) let any admin give it, where
-   D2199 says a master only, and only to someone an admin at home; `ui/UsersPanel.tsx` has no squadron row or list by
+   D2199 says a master admin only, and only to someone an admin at home *[that gap closed 21 Nov 26 by the reshape's
+   Piece B (PA1, PA2): Plan is given, raised, lowered or removed only by a master admin, and held only by an admin —
+   `state/units.ts setGrant`, the gate alike]*; `ui/UsersPanel.tsx` has no squadron row or list by
    squadron. Drawn (pictures 1a–1c, 2a–2b).
-2. **P2 — Admin → Squadrons, "+ New squadron" with its place, a shared place's time zone for a master only** —
+2. **P2 — Admin → Squadrons, "+ New squadron" with its place, a shared place's time zone for a master admin only** —
    D2196, D2217 Q12. Commands exist (`state/units.ts addUnit`, `setPlace`); no page; the gate still lets an admin of
    a unit at the place change the time zone. Drawn (picture 7).
-3. **P3 — the "149 ▾" Schedules menu, every page following a master's pick** — D2197 (base D2132). Not built:
+3. **P3 — the "149 ▾" Schedules menu, every page following the pick of a master admin, or of an admin holding Plan of
+   the squadron picked** — D2197 (base D2132), D2201, D2241 *(the blind read's R13, 21 Nov 26: this named the master
+   admin alone)*. Not built:
    `switchUnit` (`state/store.ts`) is called by nothing on screen; the Leave War and the Tracker hold one squadron
-   per sign-in (`leavewar/sync.ts swapWarWorld`, `tracker/storage.js`). Drawn (round 3).
-4. **P4 — the master's bell: Show 142 / 149, primary on by default, a grey squadron badge** — D2198, D2202, D2217
-   Q4/Q5. Not built: a bell line carries no squadron (`state/notices.ts`); the per-squadron switch is a new saved
-   setting. Drawn (pictures 3a–3c).
+   per sign-in (`leavewar/sync.ts swapWarWorld`, `tracker/storage.js`) *[since the reshape, 21 Nov 26, the page's one
+   entry `state/store.ts enterSquadron` moves the schedule, the war and — where it has not loaded — the Tracker
+   together, at sign-in and at midnight of his own move; the menu will call it, and `state/perms.ts pageUnit` already
+   answers each page's squadron for the pick]*. Drawn (round 3).
+4. **P4 — the master admin's bell, and a Plan holder's: Show 142 / 149, a grey squadron badge; a master admin's other
+   squadrons off by default (D2198), a Plan holder's squadron on by default, his to switch off (D2202 — picture 3c)** —
+   D2198, D2202, D2217 Q4/Q5 *(the blind read's R13, 21 Nov 26: this named the master's bell alone)*. Not built: a bell
+   line carries no squadron (`state/notices.ts`) *[since the reshape the holiday's line alone carries one, `u`]*; the
+   per-squadron switch is a new saved setting. Drawn (pictures 3a–3c).
 5. **P5 — each squadron's own public-holiday list** — D2195, D2207 (no "142's" in the warning), D2206 H1 (holiday
    OIL by one's own list). Step 4 lays one squadron's list on every squadron at a place and `tellHoliday` tells
-   them all — both to undo. The detachment's "Copy 149's list" (D2204, Q6) waits for batch 2 (no detachments yet).
+   them all — both to undo *[BUILT 21 Nov 26 — the reshape's A4 with PB3: both undone, the warning in D2207's words]*. The detachment's "Copy 149's list" (D2204, Q6) waits for batch 2 (no detachments yet).
 6. **P6 — sign-in held while the last person's save waits** — D2205 M2, Q7. Not built (`ui/logout.ts` already holds
    the reload; the sign-in side has nothing). Drawn (picture 5).
 7. **P7 — a move clears every View and Plan** (D2203) — already built (`state/units.ts setHome`, pinned by
