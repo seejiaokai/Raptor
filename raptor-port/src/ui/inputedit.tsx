@@ -99,8 +99,8 @@ export function draftImage(rec: any | null, draft: any, people: readonly any[]):
 function ownTakeOutOf(rec: any, next: readonly string[]): boolean {
   const mine = me()
   if (canEditSched() || mine == null || !rec) return false
-  const have = idsOf(rec).map(String)
-  return next.every(p => have.includes(p)) && have.filter(p => !next.includes(p)).join() === String(mine)
+  const have = idsOf(rec).map(String), haveSet = new Set(have), nextSet = new Set(next)
+  return next.every(p => haveSet.has(p)) && have.filter(p => !nextSet.has(p)).join() === String(mine)
 }
 /** whom the picker offers for this draft: a man where the draft with him added passes (with him in place of the one
  *  person, or beside those picked, `several`); a man already picked always stays — nothing is substituted for what he
@@ -1020,8 +1020,9 @@ export function fileForOtherRefusal(type: any): string {
 const filedOn = (draft: any): string => (isUnitId(draft && draft.u) ? String(draft.u) : pageUnit('own', todayIso()))
 /* …and the stamp follows who is in it as a save changes them, so his two routes end the same (D755 reading (a) —
    ui/phmember.test.tsx T1): filed for ALL AVAIL, or filed for Ranger, ALL AVAIL dropped on and Ranger taken off — both
-   stamped with the squadron the input stood on. ALL AVAIL / ALL alone keeps a stamp it has, else takes `was` (the
-   squadron the input was before the save — its people's, or its own stamp), else the page's own; anyone named, none. */
+   stamped with the squadron the input stood on. An input holding ALL AVAIL / ALL keeps a stamp it has — men named in
+   it or not, since the fix round of 22 Nov 26 — else takes `was` (the squadron the input was before the save — its
+   people's, or its own stamp), else the page's own; one holding neither, none. */
 /* (one body with a man's delete since the sign-in kinds night, 21 Nov 26 — engine/inputs.ts settleStamp) */
 const settleStamp = (r: any, was: string | null): void => settleStampOf(r, isUnitId(was) ? String(was) : null, () => pageUnit('own', todayIso()))
 export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, entryEnd?: any, onAdded?: (row:any)=>void): boolean {

@@ -107,7 +107,8 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
      Ranger — picked for Tue 14 Jul, 149's from Thu 16 — dropped off it when the draft moved to Fri 17: still in the
      draft ("2 picked"), no puck to press to take him out, and the save refused. He is drawn in his group, lit, after
      the day's own people. */
-  const shown = several ? [...roster, ...people.filter(p => !isSpecial(p) && !!PEOPLE[p] && !roster.includes(p))] : roster
+  const onRoster = new Set(roster)
+  const shown = several ? [...roster, ...people.filter(p => !isSpecial(p) && !!PEOPLE[p] && !onRoster.has(p))] : roster
   const groups = GROUPS.map(g => ({ ...g, ids: shown.filter(id => g.has(PEOPLE[id])) })).filter(g => g.ids.length)
   /* A DRAG PICKS EVERY PUCK IT PASSES (owner D685, 9 Oct 26 — from his iPhone: "I should be able to drag to select
      multiple pucks"). The drag does what its FIRST puck does: begun on a man not picked it picks all it passes; begun
