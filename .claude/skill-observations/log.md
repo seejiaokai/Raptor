@@ -1050,3 +1050,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** the push guard refuses a whole command, so the commit before the push never ran; only a `git status` afterwards showed the file still uncommitted. The helpers' brief already says "push alone in its own command"; the host's own rules do not.
 **Suggested improvement:** `shipping.md` §The loop: "commit and push in separate calls — a refused push takes everything in its command with it".
 **Principle:** never chain a step that must happen to one a guard may refuse.
+
+### Observation 995: A helper's proof drove a stand-in for the real surface, so the real one's own swap went unseen
+
+**Status:** OPEN
+**Date:** 21 Nov 26
+**Session context:** chat 130, the multi-squadron reshape's phase 3 — helper "session" built the midnight band; its unit proof rendered a hand-made window inside the real window frame, not the war's own grid
+**Skill:** New skill candidate: helper-brief (the phase helpers' common brief) — and the bug-check order's §8 (tests find rather than confirm)
+**Type:** open-source
+**Phase/Area:** writing a red-first proof for "what the person sees keeps X"
+
+**Issue:** The band's proof passed while the real app lost the man's typed words: at midnight the real grid re-judged the open day as closed and replaced the bid window with a different one. Only the drawing check, in a real browser, caught it. A jsdom test through the real grid reproduced it once the page was drawn again after the clock moved.
+**Suggested improvement:** In a helper's brief, a proof about what a person sees after an event must drive the real component that draws it (not a stand-in), and must re-draw after the event the way the app does (a re-render after the clock or a notify), so a parent that re-judges its children is in the test.
+**Principle:** A stand-in proves the piece, not the page: whatever decides which child is shown sits above the stand-in, and a test that leaves it out cannot see it swap.
