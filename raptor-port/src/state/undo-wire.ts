@@ -20,16 +20,17 @@ import { decodeRoleId } from '../engine/mission-role'
 import { peopleStore, settingsStore } from './people-settings-commit'
 import { rosterRestoreProblem } from './roster-restore'
 import { seedAccounts, levelIn, accountById, isMasterAccount, ACCOUNT_PFX, signedInAccount, adminNow } from './accounts'
-import { unitRows, homeOn } from './units'
+import { unitRows, homeOn, unitRowsBefore } from './units'
 import { store } from '../engine/hooks'
 import { deletedRestoreProblem, postingRestoreProblem } from './person-delete'
 import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks, setDescribeNames,
 } from '../undo'
 import { verifiedReplay, verifiedWarRestore, restoreOffAt, restoreDir, applyingRestore } from '../undo/timeline'
-import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, restoreStood, setRestoreOffAt, setRestoreDir, lwUnitNow, trkUnitNow, pageUnit, isAdmin, restoreLeavesOut, setRestoreGrantCtx, madeAsAdmin, type RestoreGrantCtx } from './perms'
+import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, restoreStood, setRestoreOffAt, setRestoreDir, lwUnitNow, trkUnitNow, pageUnit, isAdmin, restoreLeavesOut, setRestoreGrantCtx, madeAsAdmin, inputWhoProblem, type RestoreGrantCtx } from './perms'
 import type { RecordCtx, UndoEntry } from '../undo/types'
 import type { Change } from '../command'
+import { deriveActor } from '../command'
 import { setRecordKeyHook } from '../command/commit'
 import { weekOf, dayKeyOf, recordKeyIn, stampOf } from '../undo/derive'
 import { todayIso } from './units'
@@ -493,8 +494,9 @@ function standingRightKey(changes: Change[]): string | null {
      and no person (a delete's, a re-link's and a demotion's drops are the gate's to judge);
    - a squadron taken away again (the Undo of "+ New squadron") while a man's home in it has begun: a begun home row
      never changes (D2119), so the squadron is named for good.
-   A master admin reaches every squadron, so only the last can hold him. No account behind the session (the localhost
-   bridge, a headless test): never. */
+   - an input of squadrons he is no longer an admin of today (the gate's 7c — `inputStuck`, below).
+   A master admin reaches every squadron, so only the squadron taken away can hold him. No account behind the session (the
+   localhost bridge, a headless test): never. */
 const sameImage = (x: unknown, y: unknown): boolean => JSON.stringify(x ?? null) === JSON.stringify(y ?? null)
 function stepStuck(changes: Change[], entry: UndoEntry): boolean {
   const acct = signedInAccount()
@@ -539,6 +541,30 @@ function stepStuck(changes: Change[], entry: UndoEntry): boolean {
     } else if (bare && isGrantRow(c)) {
       for (const img of [c.before as any, after as any]) if (img && img.unit != null && !adminOf(String(img.unit))) return true
     }
+  }
+  return inputStuck(changes, acct, today)
+}
+/* …AND AN INPUT'S STEP (Astra's read of round 2, F1 — the limit fix read 2 left: "an input whose man moved … can still
+   refuse each press"). Hunter, holding Plan of 149, files Osprey a Meeting; his Plan is taken away; the gate's 7c refused
+   the Meeting's Undo on every press, his older steps out of reach behind it. Asked of THE GATE'S OWN BODY (perms.ts
+   inputWhoProblem), never a second copy of its rule — over the rows as the gate reads them, of the admin his account (or
+   the role in force — the localhost bridge's admin over a member's sign-in) makes him today, whatever view he is in: so
+   his own input, his own take-out, and an input of squadrons he is still an admin of are answered as the gate answers
+   them. Asked at its most lenient — as a verified replay, which is what an honest Undo is — so no restore the gate would
+   pass is ever held: the two cases the gate judges by other rules are left to it (`own` — his own input, held by the
+   member's own-input rules; his own part of an input he shares, in or out). What is left is a restore 7c refuses for as
+   long as his rights stand as they do: blocked once, in today's words, the next press named. */
+function inputStuck(changes: Change[], acct: NonNullable<ReturnType<typeof signedInAccount>>, today: string): boolean {
+  const ins = changes.filter(c => c.collection === 'inputs' && String(c.id) !== '__order')
+  if (!ins.length || !(adminNow(acct) || isAdmin())) return false
+  const mine = String(acct.pid)
+  const actor = { ...deriveActor(), role: 'admin' as const, personId: mine }
+  const rows = unitRowsBefore(changes)
+  for (const c of ins) {
+    const was = c.before ?? null, is = c.op === 'delete' ? null : c.after ?? null
+    if (sameImage(was, is) || ownPart(mine, was, is)) continue
+    const who = inputWhoProblem(actor, rows, was, is, today, true)
+    if (who && !who.own) return true
   }
   return false
 }

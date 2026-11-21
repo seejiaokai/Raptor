@@ -192,7 +192,7 @@ import { codeWorth } from './engine/credit'
 import { cs, dm, installInputGate } from './inputgate'
 import { projectPeople, qualCatalogue, homeStintsFor, laidHome } from './state/raptorRoster'
 import {
-  labelToISO, warVisible, warCounts, absenceSignature, buildAbsenceIndex, inputDates, inputRowFor, isoToInputDate, warInputs, warLines, rosterBody,
+  labelToISO, warVisible, warCounts, absenceSignature, buildAbsenceIndex, inputDates, inputWindow, inputRowFor, isoToInputDate, warInputs, warLines, rosterBody,
   type AbsenceIndex, type WarInput, type InputRead,
 } from './absences'
 
@@ -3494,20 +3494,42 @@ export function warDayRefusal(changes: readonly Change[]): string | null {
  *  Read over the WHOLE command, never record by record — a medical cutting a leave makes a new record of days the leave
  *  already held, and a slide cuts one record and files another: what counts is each (man, day, war's squadron) such leave
  *  covers after that it did not cover before. `unit` null: leave of before the stamp — the war loaded's. The gate's 7b
- *  (perms.ts setLwLeaveAddsProbe) and the Undo's sentence (`warDayRefusal`) both ask this one body. */
+ *  (perms.ts setLwLeaveAddsProbe) and the Undo's sentence (`warDayRefusal`) both ask this one body.
+ *  THE PART OF THE DAY COUNTS TOO (Astra's read of round 2, F2): whole-day leave cut to its morning, then put back whole by
+ *  Undo, covered the same (man, day, squadron) before and after — and the afternoon went back into the old war. So each
+ *  day is read with the part of it the leave takes (absences.ts inputWindow — the whole day, a half, or its typed hours):
+ *  a day is added where the leave covers, after, any part of it that the command's before-images together did not. A
+ *  shorter leave, and a day split into its two halves (the morning ends at 12:00, the afternoon starts at 12:01), add none. */
 export function warLeaveAdds(changes: readonly Change[]): Array<{ pid: string; iso: string; unit: string | null; id: string }> {
-  const held = new Set<string>()
-  const days = (x: unknown): Array<{ pid: string; iso: string; unit: string | null }> => {
+  const held = new Map<string, Array<[number, number]>>()
+  const days = (x: unknown): Array<{ pid: string; iso: string; unit: string | null; win: readonly [number, number] }> => {
     if (!x || typeof x !== 'object' || Array.isArray(x) || !(x as WarInput).lw) return []
     const row = x as WarInput, unit = typeof row.lwU === 'string' && row.lwU ? row.lwU : null
-    return idsOf(row).flatMap(p => inputDates(row).map(iso => ({ pid: String(p), iso, unit })))
+    const win = inputWindow(row).win
+    return idsOf(row).flatMap(p => inputDates(row).map(iso => ({ pid: String(p), iso, unit, win })))
   }
+  const keyOf = (d: { pid: string; iso: string; unit: string | null }) => `${d.pid}|${d.iso}|${d.unit ?? ''}`
   const ins = changes.filter(c => c.collection === 'inputs')
-  for (const c of ins) for (const d of days(c.before)) held.add(`${d.pid}|${d.iso}|${d.unit ?? ''}`)
+  for (const c of ins) for (const d of days(c.before)) {
+    const k = keyOf(d), list = held.get(k)
+    if (list) list.push([d.win[0], d.win[1]]); else held.set(k, [[d.win[0], d.win[1]]])
+  }
+  /* is the stretch [s, e] wholly inside what was held — the held stretches joined where one ends the minute before the next starts */
+  const covered = (k: string, s: number, e: number): boolean => {
+    const list = held.get(k)
+    if (!list) return false
+    let at = s
+    for (const w of [...list].sort((a, b) => a[0] - b[0])) {
+      if (w[0] > at) break
+      if (w[1] >= e) return true
+      if (w[1] + 1 > at) at = w[1] + 1
+    }
+    return at > e
+  }
   const out: Array<{ pid: string; iso: string; unit: string | null; id: string }> = []
   for (const c of ins) {
     if (c.op === 'delete') continue
-    for (const d of days(c.after)) if (!held.has(`${d.pid}|${d.iso}|${d.unit ?? ''}`)) out.push({ ...d, id: String(c.id) })
+    for (const d of days(c.after)) if (!covered(keyOf(d), d.win[0], d.win[1])) out.push({ pid: d.pid, iso: d.iso, unit: d.unit, id: String(c.id) })
   }
   return out
 }

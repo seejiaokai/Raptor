@@ -23,6 +23,7 @@
 import { memo, useCallback, useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
 import { flushSync } from 'react-dom'
 import { HOOKS } from '../../engine/hooks'
+import { warBand } from '../../state/typing-hold'
 import { assignGroup, FIGURES, groupLabel, OTHER_ID, OTHER_LABEL, type Person } from '../engine'
 import { BAL_KINDS, daysTaken, DAYS_TAKEN_COLS, type BalKind, type DaysTakenCol } from '../engine/leaveyear'
 import {
@@ -168,12 +169,16 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
      own move: a figure typed while 142's war was on the page was saved, on leaving the box, into 149's. The box remembers
      the war's squadron as it takes the keyboard; a figure typed under another is not saved — the app's generic words (no
      ruling gives others), his figure left in the box until he types again. */
-  const held = useRef<{ save: typeof save; value: number; shown: string; unit: string } | null>(null)
+  /* …AND NEVER UNDER THE MIDNIGHT BAND (Astra's read of round 2, F3): a window — the person window — holds the war's swap,
+     so the squadron has not changed and the check above passed: a balance typed in 142's person window across the midnight
+     of his own move was saved there, under the band that says it can't be. The band up is refused the same way — leaving
+     the box, Enter and the box leaving the screen all come through `commitText`. */
+  const held =useRef<{ save: typeof save; value: number; shown: string; unit: string } | null>(null)
   const typed = useRef<string | null>(null)
   const swapped = useRef(false)
   const commitText = (t: string | null) => {
     const h = held.current ?? { save, value, shown, unit: worldUnit() }
-    if (t !== null && t !== h.shown && h.unit !== worldUnit()) { swapped.current = true; return NOT_SAVED }
+    if (t !== null && t !== h.shown && (h.unit !== worldUnit() || warBand())) { swapped.current = true; return NOT_SAVED }
     typed.current = null
     if (t === null || t === h.shown) return null
     /* AN EMPTIED BOX SAYS SO (the M5a walk's A-F1, 29 Oct 26): Enter, or leaving it, put the old figure back with nothing
