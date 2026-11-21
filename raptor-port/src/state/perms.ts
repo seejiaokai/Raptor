@@ -1572,7 +1572,8 @@ export function inputWhoProblem(a: Actor, rows: UnitRows, before: any, after: an
     if (!was || !is || typeof was !== 'object' || typeof is !== 'object' || replayed) return []
     const d0 = (inputSpanIso(is) ?? [today, today])[0]
     const str = (x: any): string => (x == null ? '' : String(x))
-    const gone = idsOf(was).map(String).filter(p => !idsOf(is).map(String).includes(p))
+    const stays = new Set(idsOf(is).map(String))
+    const gone = idsOf(was).map(String).filter(p => !stays.has(p))
     const handed = new Set(gone.map(p => str(byAfterLeaving(was, p))))
     const out: Array<{ pid: string | null; unit: string }> = []
     const judge = (by: string, free: boolean) => {

@@ -94,7 +94,9 @@ describe('fault A — the security read’s three proofs (a plain 142 admin, a f
     asOutlawAdmin()
     const r = INPUTS.find((x: any) => x.iid === IID) as any
     const e = env([{ collection: 'inputs', id: IID, op: 'put', before: { ...r }, after: { ...r, by: 'osp9', remarks: 'by Outlaw' } }, { collection: 'notices', id: 'nf6a2', op: 'put', before: null, after: line('nf6a2', 'osp9', 'casper') }])
-    expect(ownershipViolation(e) ?? 'allowed').toMatch(/bell line of another squadron/)
+    /* (fix read 2, 22 Nov 26: the filer written onto 149's man is now refused in itself, before the line is judged —
+       perms.ts inputWhoProblem; refused either way) */
+    expect(ownershipViolation(e) ?? 'allowed').toMatch(/bell line of another squadron|an input of another squadron \(u149\)/)
   })
   it('3: a line signed by another man (`by: kes9`, posing as 149’s admin) — refused, though its reader is one the change may tell', () => {
     /* the master, Saber, filed a 142 ALL AVAIL input and has since moved to 149: he is still told (an admin everywhere),
@@ -108,7 +110,7 @@ describe('fault A — the security read’s three proofs (a plain 142 admin, a f
     expect(ownershipViolation(env([ch, { collection: 'notices', id: 'nf6a3', op: 'put', before: null, after: line('nf6a3', 'stiff', 'kes9') }])) ?? 'allowed').toMatch(/bell line of another squadron/)
     /* (the forged-filer line of proof 2, signed kes9, likewise) */
     const ch2 = { ...ch, after: { ...r, by: 'osp9', remarks: 'by Outlaw' } }
-    expect(ownershipViolation(env([ch2, { collection: 'notices', id: 'nf6a4', op: 'put', before: null, after: line('nf6a4', 'osp9', 'kes9') }])) ?? 'allowed').toMatch(/bell line of another squadron/)
+    expect(ownershipViolation(env([ch2, { collection: 'notices', id: 'nf6a4', op: 'put', before: null, after: line('nf6a4', 'osp9', 'kes9') }])) ?? 'allowed').toMatch(/bell line of another squadron|an input of another squadron \(u149\)/)
     /* control: the same line to Saber signed by Outlaw himself rides as the pass writes it — told only as its filer, so
        marked with the input's squadron, 142 (fault C, Notice.fu) */
     expect(ownershipViolation(env([ch, { collection: 'notices', id: 'nf6a5', op: 'put', before: null, after: { ...line('nf6a5', 'stiff', 'casper'), fu: ['u142'] } }]))).toBeNull()
