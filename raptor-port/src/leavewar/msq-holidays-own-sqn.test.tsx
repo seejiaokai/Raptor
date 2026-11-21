@@ -103,6 +103,18 @@ describe('PB4 + R3 + R4 — the line carries its squadron: its count, its span, 
       expect(rec?.oil, '149’s input answered').toEqual({ [FRI]: 0.5 })
     } finally { await act(async () => { root.unmount() }); host.remove(); setOilList(null) }
   })
+  it('the list the bell’s tap opens (its dates only — ui/topstate.ts openNotice) finds the line’s squadron: 149’s input', async () => {
+    huntPlans149()
+    kestrelsHoliday()
+    signInAs('hunter'); warOf('u142')
+    const host = document.createElement('div'); document.body.appendChild(host)
+    const root = createRoot(host)
+    try {
+      await act(async () => { setOilList({ from: FRI, to: FRI, name: 'National Day', fresh: false } as any); root.render(<OilDayList />) })
+      const tid = (t: string) => document.querySelector(`[data-testid="${t}"]`) as HTMLElement | null
+      expect({ y149: !!tid(`odl-yes-${iidOf('Range 149')}`), y142: !!tid(`odl-yes-${iidOf('Range 142')}`) }).toEqual({ y149: true, y142: false })
+    } finally { await act(async () => { root.unmount() }); host.remove(); setOilList(null) }
+  })
   it('(R4) a 142 holiday on the same day does not take the place of Hunter’s 149 line: one line each squadron', () => {
     huntPlans149()
     kestrelsHoliday()

@@ -1440,12 +1440,18 @@ function holidayLeft(a: string, b: string, unit: string): number {
 /* the days of a run of dates that are a holiday NOW — its first and last weekday that does not work (a weekend inside it
    is part of it; a weekend alone is no holiday); null where none is left. The bell's line reads its dates, its count,
    the day it covers and the list it opens through this (state/notices.ts noticeSpan). */
-function holidaySpan(a: string, b: string): { a: string; b: string; name: string } | null {
+/* (THE LINE'S OWN SQUADRON — the blind read's R4, the reshape plan §19b; D2195: `unit` is the squadron the line was written
+   for, and its days and name are read from that squadron's own list — its stored war when another is loaded — never the
+   loaded war's: Hunter's line of 149's holiday, read with 142's war loaded, had no day left and was hidden) */
+function holidaySpan(a: string, b: string, unit: string): { a: string; b: string; name: string } | null {
   if (!validIso(a) || !validIso(b) || b < a) return null
+  const u = unit || worldUnit()
   let lo: string | null = null, hi: string | null = null
-  for (let d = a, n = 0; d <= b && n < 400; d = addDays(d, 1), n++) if (isNonWorkingISO(d) && !isWeekend(d)) { if (!lo) lo = d; hi = d }
-  return lo && hi ? { a: lo, b: hi, name: holidayOwnName(lo) } : null
+  for (let d = a, n = 0; d <= b && n < 400; d = addDays(d, 1), n++) if (!isWeekend(d) && nonWorkingFor(u, d)) { if (!lo) lo = d; hi = d }
+  return lo && hi ? { a: lo, b: hi, name: holidayOwnNameOf(u, lo) } : null
 }
+/* (a squadron's holiday's own name on a date — holidayOwnName below, for any squadron's list) */
+function holidayOwnNameOf(unit: string, iso: string): string { const n = unitDayFacts(unit, iso).name; return n && n !== holidayWord('ph') ? n : '' }
 /* a holiday's NAME — only one of its own. A holiday made with no name (the Event sheet's "PH" button; the Holidays
    list's empty name box) is saved under the preset's own word (holidayWord), and that word is not a name: the list
    then said "PH is now a public holiday." under "Public holiday · PH" (the check's walk, E1 — 13 Oct 26). Read as '',

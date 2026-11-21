@@ -776,11 +776,13 @@ export function noticeLive(n: Notice): boolean {
   /* ONE LINE A HOLIDAY: a NEWER notice of his whose days, as the holiday stands, hold all of this one's has taken its
      place — the same dates made a holiday twice (A7), a holiday lengthened (the newer one covers more), one taken
      away and made again over fewer days (this one's live days have shrunk to the newer one's). Never on mere overlap:
-     days only the older one covers would lose their line. */
+     days only the older one covers would lose their line. And only a line of the SAME squadron (the blind read's R4;
+     D2195, D2202): an admin holding Plan of 149 has 149's line and his own 142's, and 142's holiday on the same day is
+     another squadron's holiday, never a newer copy of 149's. */
   for (const x of NOTICES) {
     if (x === n || x.to !== n.to || !(x.at > n.at || (x.at === n.at && x.id > n.id))) continue
     const o = noticeSpan(x)
-    if (o && o.a <= s.a && s.b <= o.b) return false
+    if (o && o.u === s.u && o.a <= s.a && s.b <= o.b) return false
   }
   return true
 }
@@ -791,11 +793,13 @@ export function holidayLineOn(pid: string | null | undefined, iso: string): Noti
   return null
 }
 
-/** is a holiday line live on this date for ANY scheduler — "the schedulers' bells" (ui/OilDayList.tsx's foot). A
- *  scheduler with no line of his own (his sign-in was off when the holiday was made, or his account is newer) is still
- *  told the truth about the others' (the narrow read of 14 Oct 26, L2). */
-export function holidayLineAny(iso: string): boolean {
-  for (const n of NOTICES) { const s = noticeSpan(n); if (s && s.a <= iso && iso <= s.b && noticeLive(n)) return true }
+/** is a holiday line OF THIS SQUADRON live on this date for ANY scheduler — "the schedulers' bells" (ui/OilDayList.tsx's
+ *  foot). A scheduler with no line of his own (his sign-in was off when the holiday was made, or his account is newer) is
+ *  still told the truth about the others' (the narrow read of 14 Oct 26, L2). Only the list's own squadron's lines count
+ *  (the Plan audit's PB5, the blind read's R4; D2195): a 149 line never promises that what is left of 142's list goes to
+ *  a bell — asked of the line's squadron, never of whose rights the reader holds. */
+export function holidayLineAny(iso: string, unit: string): boolean {
+  for (const n of NOTICES) { const s = noticeSpan(n); if (s && s.u === unit && s.a <= iso && iso <= s.b && noticeLive(n)) return true }
   return false
 }
 

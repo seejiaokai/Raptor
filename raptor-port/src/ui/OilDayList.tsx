@@ -78,7 +78,8 @@ function Body({ from, to, unit, name, fresh, plain }: { from: string; to: string
      promised. Asked of the rows still UNPICKED (what is left), and of any scheduler's line, not only the reader's own
      (the narrow read of the fix, L1 and L2): with the told holiday's input picked and only a plain Saturday's left,
      nothing is promised; and a scheduler with no line of his own still reads what is true of the others' bells. */
-  const belled = rows.some(x => !picks[x.o.iid] && x.o.days.some(d => holidayLineAny(d)))
+  /* (the list's own squadron's lines only — PB5: another squadron's line on the same day goes to no bell of this list's) */
+  const belled = rows.some(x => !picks[x.o.iid] && x.o.days.some(d => holidayLineAny(d, unit)))
   const close = () => { setOilList(null); notify() }
   const pick = (iid: string, v: OilPick) => setPicks(p => ({ ...p, [iid]: p[iid] === v ? undefined : v }))
   const all = (v: OilPick) => setPicks(Object.fromEntries(rows.map(x => [x.o.iid, v])))
