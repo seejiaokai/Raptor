@@ -237,7 +237,9 @@ describe('the holiday tells the schedulers — never silent (D780), one notice a
     const n = oilOpenOn(FRI, FRI).length
     expect(n).toBeGreaterThanOrEqual(Object.keys(m).length)
     expect(noticeWords(line('nact')[0]!), 'the line counts what is left — it stores no number').toEqual({ name: 'National Day', day: 'Fri 17 Jul', what: `${n} inputs need an OIL answer`, who: cs('stiff') })
-    expect(pops.OILLIST, 'the list opens by itself, saying the day is now a holiday').toEqual({ from: FRI, to: FRI, name: 'National Day', fresh: true })
+    /* (…on its own squadron, 142's — the list carries the squadron it lists since the reshape's R3, its shape rewritten to
+       it, the plan §9.3) */
+    expect(pops.OILLIST, 'the list opens by itself, saying the day is now a holiday').toEqual({ from: FRI, to: FRI, name: 'National Day', fresh: true, unit: 'u142' })
   })
   /* THE WALK'S E1 (13 Oct 26). A holiday made with the Leave War's "PH" button carries no name of its own — it is saved
      under the preset's own word — and the list said "PH is now a public holiday." under "Public holiday · PH". A
@@ -245,7 +247,7 @@ describe('the holiday tells the schedulers — never silent (D780), one notice a
   it('a holiday with no name of its own: the list says "Fri 17 Jul is now a public holiday." and the bell’s line "Public holiday" — never "PH is now a public holiday."', async () => {
     three()
     expect(holidayAdd({ kind: 'ph', name: '', from: FRI, to: FRI }).ok).toBe(true)
-    expect(pops.OILLIST, 'opened with no name').toEqual({ from: FRI, to: FRI, name: '', fresh: true })
+    expect(pops.OILLIST, 'opened with no name').toEqual({ from: FRI, to: FRI, name: '', fresh: true, unit: 'u142' })
     expect(hol('nact')[0]!.name, 'the notice keeps no name that is only the preset’s word').toBe('')
     expect(noticeWords(line('nact')[0]!).name, 'the bell’s line').toBe('Public holiday')
     ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -424,7 +426,8 @@ describe('the holiday tells the schedulers — never silent (D780), one notice a
     file('Mon brief', 'Training', ['pike'], { date: 'Jul 20' }); file('Tue brief', 'Training', ['pike'], { date: 'Jul 21' })
     expect(addEventBand(1, '2026-07-20', '2026-07-21', 'Stand down', 'off')).toBe('set')
     expect(hol('nact'), 'ONE notice for the run — one line a holiday (D783 (6))').toHaveLength(1)
-    expect(hol('nact')[0]!.what).toEqual([{ k: 'oilhol', a: '2026-07-20', b: '2026-07-21' }])
+    /* (the line carries its squadron since the reshape's PB4 — its shape rewritten to it, the plan §9.3) */
+    expect(hol('nact')[0]!.what).toEqual([{ k: 'oilhol', a: '2026-07-20', b: '2026-07-21', u: 'u142' }])
     expect(noticeRun('2026-07-20', '2026-07-21')).toBe('Mon 20 – Tue 21 Jul')
     /* (3) an event TYPE made a holiday: every day wearing its word becomes one */
     NOTICES.length = 0; pops.setOilList(null)

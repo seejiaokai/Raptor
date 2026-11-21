@@ -19,34 +19,51 @@
    schedulers' bells. Save writes the picks as one command (ui/oilday.ts) and closes. */
 import { useEffect, useState } from 'react'
 import { INPUTS } from '../engine/inputs'
-import { canEditSched } from '../state/auth'
-import { pageUnit } from '../state/perms'
-import { noticeRun, holidayLineAny } from '../state/notices'
+import { me, pageUnit } from '../state/perms'
+import { NOTICES, noticeRun, noticeSpan, noticeLive, holidayLineAny } from '../state/notices'
 import { notify, setPage } from '../state/store'
+import { todayIso } from '../state/units'
 import { oilOpenOn, useWarFacts } from '../leavewar/sync'
 import { FloatWin } from './FloatWindow'
 import { InputCard } from './InputCard'
 import { cardOf, cardWhen } from './inputcard-model'
 import { monthItems } from './inputscal-model'
-import { saveOilDay, type OilPick } from './oilday'
+import { adminOfList, saveOilDay, type OilPick } from './oilday'
 import { OILLIST, setInpEdit, setOilList } from './pops'
 import { useVersion } from './useStore'
+
+/* THE SQUADRON THE LIST IS FOR (the Plan audit's PB4, the blind read's R3 — the reshape plan §19, §19b): as it was opened
+   (a holiday just saved names its own squadron — leavewar/sync.ts tellHoliday); else the reader's own live holiday line for
+   exactly these dates, whose squadron it carries (the bell's tap — ui/topstate.ts openNotice hands over only the dates);
+   else the page's own squadron, as before (a published version loaded back, a put-back) */
+function listUnit(o: { from: string; to: string; unit?: string }): string {
+  if (o.unit) return o.unit
+  const m = me()
+  for (const n of NOTICES) {
+    const s = m != null && n.to === m ? noticeSpan(n) : null
+    if (s && s.u && s.a === o.from && s.b === o.to && noticeLive(n)) return s.u
+  }
+  return pageUnit('own', todayIso())
+}
 
 export function OilDayList() {
   useVersion()
   const o = OILLIST
-  const refused = !!o && !canEditSched()
+  const unit = o ? listUnit(o) : ''
+  /* (the window is the gate: an admin of the squadron it lists — at home, by Plan, or a master admin — PB4) */
+  const refused = !!o && !adminOfList(unit)
   useEffect(() => { if (refused) setOilList(null) }, [refused])
   if (!o || refused) return null
-  /* a list opened for another run of dates is another list: its picks start empty */
-  return <Body key={`${o.from}|${o.to}`} from={o.from} to={o.to} name={o.name} fresh={!!o.fresh} plain={!!o.plain} />
+  /* a list opened for another run of dates, or another squadron, is another list: its picks start empty */
+  return <Body key={`${unit}|${o.from}|${o.to}`} from={o.from} to={o.to} unit={unit} name={o.name} fresh={!!o.fresh} plain={!!o.plain} />
 }
 
-function Body({ from, to, name, fresh, plain }: { from: string; to: string; name: string; fresh: boolean; plain: boolean }) {
+function Body({ from, to, unit, name, fresh, plain }: { from: string; to: string; unit: string; name: string; fresh: boolean; plain: boolean }) {
   useWarFacts()                                        // a holiday taken away, a period changed: the list is read again
   const [picks, setPicks] = useState<Record<string, OilPick | undefined>>({})
-  /* his own squadron's inputs only (multi-squadron step 4 — D2184 R32): the other squadron's schedulers answer theirs */
-  const open = oilOpenOn(from, to, pageUnit('own'))
+  /* the squadron it lists' inputs only (D2195 — each squadron answers for its own; PB4: the line's squadron, never the
+     reader's home) */
+  const open = oilOpenOn(from, to, unit)
   /* IN THE DAY'S OWN ORDER — the order the opened day lists the same inputs in (ui/inputscal-model.ts monthItems:
      absences first, all-day before timed, then by start), so the list and the day behind it read alike, as drawn */
   const found = open.map(o => ({ o, r: INPUTS.find((x: any) => String(x.iid) === o.iid) as any })).filter(x => x.r)
@@ -65,7 +82,7 @@ function Body({ from, to, name, fresh, plain }: { from: string; to: string; name
   const close = () => { setOilList(null); notify() }
   const pick = (iid: string, v: OilPick) => setPicks(p => ({ ...p, [iid]: p[iid] === v ? undefined : v }))
   const all = (v: OilPick) => setPicks(Object.fromEntries(rows.map(x => [x.o.iid, v])))
-  const save = () => { if (saveOilDay(from, to, picks) >= 0) close() }
+  const save = () => { if (saveOilDay(from, to, picks, unit) >= 0) close() }
   /* the input's own window, where everything else about it is (the day's cards open it the same way) */
   const openInput = (r: any) => { setInpEdit(r); setPage('inputs'); notify() }
   return (

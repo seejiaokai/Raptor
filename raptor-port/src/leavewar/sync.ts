@@ -23,7 +23,7 @@ import { inputOnDay, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, in
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
-import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, setLwPostingProbe, setFollowUpsProbe, setWarLinesOwed, setHolidayLinesOwed, myUnit } from '../state/perms'
+import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, setLwPostingProbe, setFollowUpsProbe, setWarLinesOwed, setHolidayLinesOwed } from '../state/perms'
 import { rosterOf, homeUnitOf, unitPeople } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
 import { qualify } from '../storage/unitid'
@@ -1424,17 +1424,17 @@ export function oilOpenOn(from: string, to?: string | null, unit?: string | null
 /* how many are left on a run — the bell's holiday line asks at every draw of both bells, so the answer is kept until
    something it was read from has moved: the scheduler's store (every change there ends in a notify), the war's facts,
    the list's own length (Fable's read of the plan, A9) */
-let LEFT: { v: number; wf: number; n: number; m: Map<string, number> } = { v: -1, wf: -1, n: -1, m: new Map() }
-/* (counted for the line's READER's own squadron — D2184 R32: each admin answers for his own squadron only, so his line
-   counts his squadron's inputs, and goes when they are answered, whatever the other squadron has left) */
-function holidayLeft(a: string, b: string, pid?: string | null): number {
-  const v = raptorVersion(), wf = warFactsVersion(), n = warInputs().length
-  if (LEFT.v !== v || LEFT.wf !== wf || LEFT.n !== n) LEFT = { v, wf, n, m: new Map() }
-  /* (the reader's home TODAY, on purpose — the reshape plan §3.2 A-i: his line counts what his squadron has left now) */
-  const unit = pid ? homeUnitOf(pid, effectiveToday()) : null
-  const key = `${a}|${b}|${unit ?? ''}`
+let LEFT: { v: number; wf: number; n: number; sv: number; m: Map<string, number> } = { v: -1, wf: -1, n: -1, sv: -1, m: new Map() }
+/* (counted for the squadron the LINE was written for — the Plan audit's PB4, the reshape plan §19: a holiday is its own
+   squadron's (D2195), so its line counts that squadron's inputs, whoever reads it; it counted the reader's home, so a 149
+   line on the bell of Hunter, 142's admin holding Plan of 149, read 0 and was hidden. Another squadron's days are read
+   from its door, so what is kept is dropped with the stored worlds too — STORED_VER) */
+function holidayLeft(a: string, b: string, unit: string): number {
+  const v = raptorVersion(), wf = warFactsVersion(), n = warInputs().length, sv = STORED_VER
+  if (LEFT.v !== v || LEFT.wf !== wf || LEFT.n !== n || LEFT.sv !== sv) LEFT = { v, wf, n, sv, m: new Map() }
+  const key = `${a}|${b}|${unit}`
   let c = LEFT.m.get(key)
-  if (c == null) { c = oilOpenOn(a, b, unit).length; LEFT.m.set(key, c) }
+  if (c == null) { c = oilOpenOn(a, b, unit || null).length; LEFT.m.set(key, c) }
   return c
 }
 /* the days of a run of dates that are a holiday NOW — its first and last weekday that does not work (a weekend inside it
@@ -1478,16 +1478,17 @@ function tellHoliday(runs: HolidayRun[]): void {
   const todo = holidayTodo(runs)
   if (!todo.length) return
   const by = me()
-  commitInputs(SCHED_TYPES.inputsWrite, () => { for (const h of todo) noticeHoliday(h.told, by != null ? String(by) : null, h.name, h.from, h.to) })
-  /* the list opens by itself on the first run with something HIS squadron answers — never on the other's alone */
-  const mine = myUnit(todayIso())
-  const first = todo.find(h => oilOpenOn(h.from, h.to, mine).length > 0)
-  if (!first) return
-  cmdDeferEffect(() => { setOilList({ from: first.from, to: first.to, name: first.name, fresh: true }); raptorNotify() })
+  commitInputs(SCHED_TYPES.inputsWrite, () => { for (const h of todo) noticeHoliday(h.told, by != null ? String(by) : null, h.name, h.from, h.to, h.unit) })
+  /* THE LIST OPENS BY ITSELF ON THE LINE'S OWN SQUADRON (the blind read's R3 — the reshape plan §19b): the holiday is its
+     squadron's alone, and every run here has something of that squadron's to answer, so the first run's list opens on it,
+     carried on the list (ui/pops.ts OILLIST) to what it lists and what its Save answers — never the reader's home, which
+     for an admin holding Plan of it is another squadron (it read myUnit) */
+  const first = todo[0]!
+  cmdDeferEffect(() => { setOilList({ from: first.from, to: first.to, name: first.name, fresh: true, unit: first.unit }); raptorNotify() })
 }
 /* (each holiday the runs make, as its line names it, and whom it tells — tellHoliday's own working, shared with the gate's
    question of which lines a command owes, holidayLinesOwed below, so the two can never disagree) */
-function holidayTodo(runs: readonly HolidayRun[]): (HolidayRun & { name: string; told: string[] })[] {
+function holidayTodo(runs: readonly HolidayRun[]): (HolidayRun & { name: string; told: string[]; unit: string })[] {
   const own = holidayOwnName
   /* ONE NOTICE A HOLIDAY — FOR THE WHOLE OF IT AS IT NOW STANDS, not only the dates that have just become non-working
      (the two code reads of the finished code, 13 Oct 26 — Fable F1, the Opus read F3). A holiday lengthened by a day
@@ -1516,7 +1517,8 @@ function holidayTodo(runs: readonly HolidayRun[]): (HolidayRun & { name: string;
      plain admin holding Plan of it; a master admin through his home only (D2198) — the one audience the posting lines
      use and the gate checks an admin's line against (perms.ts 7e, PC1). The one who made it is among them. */
   const told = adminsOf(unit, effectiveToday())
-  return todo.map(h => ({ ...h, told }))
+  /* (and each line carries that squadron — notices.ts noticeHoliday's `u`, PB4) */
+  return todo.map(h => ({ ...h, told, unit }))
 }
 /** THE HOLIDAY LINES A COMMAND OWES, FROM ITS OWN CHANGES (fix read 11, fault C — Fable's F11-1, the security read's
  *  SEC11-4): the gate (state/perms.ts, through setHolidayLinesOwed) let a new holiday line through wherever noticeHoliday
@@ -1524,17 +1526,18 @@ function holidayTodo(runs: readonly HolidayRun[]): (HolidayRun & { name: string;
  *  142's admin called it inside his own input command and put "149: all leave cancelled, report 0600 Sat", signed by
  *  himself, on 149's admin's and a 149 member's bells, with no holiday made at all. A holiday line is owed only by this
  *  command's own change of the war that makes a working day a holiday (state/store.ts holidayRunsOfChanges — the same
- *  test tellHolidays runs), for exactly the holiday it makes, under its own name, to the schedulers tellHoliday tells. */
-export type OwedHolidayLine = { a: string; b: string; name: string; to: ReadonlySet<string> }
+ *  test tellHolidays runs), for exactly the holiday it makes, under its own name, to the schedulers tellHoliday tells —
+ *  and for its own squadron (PB4: the line's `u`, so no command writes a holiday line counting another squadron's). */
+export type OwedHolidayLine = { a: string; b: string; name: string; to: ReadonlySet<string>; u: string }
 export function holidayLinesOwed(changes: ReadonlyArray<{ collection: string; id: string; op: string; before?: unknown; after?: unknown }>): OwedHolidayLine[] {
   const runs = holidayRunsOfChanges(changes)
-  return runs.length ? holidayTodo(runs).map(h => ({ a: h.from, b: h.to, name: h.name, to: new Set(h.told) })) : []
+  return runs.length ? holidayTodo(runs).map(h => ({ a: h.from, b: h.to, name: h.name, to: new Set(h.told), u: h.unit })) : []
 }
-/** does this owed line cover that line? — its run, its name, its day and its reader, as noticeHoliday writes them */
+/** does this owed line cover that line? — its run, its name, its day, its reader and its squadron, as noticeHoliday writes them */
 export function holidayLineCovered(owed: readonly OwedHolidayLine[], n: { to?: unknown; name?: unknown; day?: unknown; what?: unknown }): boolean {
   const w = Array.isArray(n.what) && n.what.length === 1 ? looseRec(n.what[0]) : null
   if (!w || w.k !== 'oilhol') return false
-  return owed.some(o => String(w.a) === o.a && String(w.b ?? w.a) === o.b && n.name === o.name && n.day === o.a && o.to.has(String(n.to)))
+  return owed.some(o => String(w.a) === o.a && String(w.b ?? w.a) === o.b && n.name === o.name && n.day === o.a && o.to.has(String(n.to)) && w.u === o.u)
 }
 
 /* ---- THE BELL'S LEAVE WAR LINES (the overhaul's M4, batch 9 — D1142, D1214, D1422) ----------------------------

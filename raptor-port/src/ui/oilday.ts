@@ -17,6 +17,8 @@ import { HOOKS } from '../engine/hooks'
 import { INPUTS } from '../engine/inputs'
 import { canEditSched } from '../state/auth'
 import { pageUnit } from '../state/perms'
+import { levelIn, signedInAccount } from '../state/accounts'
+import { todayIso } from '../state/units'
 import { stampChanged } from '../state/inputstamp'
 import { oilOpenOn } from '../leavewar/sync'
 import { saveBatchX } from './inputedit'
@@ -24,10 +26,25 @@ import { sayDate } from './daysfmt'
 
 export type OilPick = 'y' | 'n'
 
-/** Save the picked answers. Answers how many inputs were answered; -1 where the save was refused (it said why). */
-export function saveOilDay(from: string, to: string, picks: Readonly<Record<string, OilPick | undefined>>): number {
-  if (!canEditSched()) { HOOKS.toast('Only a scheduler answers from this list', 'warn'); return -1 }
-  const todo = oilOpenOn(from, to, pageUnit('own')).filter(o => picks[o.iid] === 'y' || picks[o.iid] === 'n')
+/** AN ADMIN OF THE LIST'S SQUADRON (the blind read's R3 — the reshape plan §19b; D2201, D2241): the role in force is admin
+ *  (canEditSched — the member view is a member, D292) and his level in that squadron today is admin — at home there, by
+ *  Plan of it, or a master admin (accounts.ts levelIn, the one reader). The list's window and its Save both ask it. A
+ *  session with no account behind it (a hand-made test session) answers for the page's own squadron only, as
+ *  perms.ts adminOfPage does. */
+export function adminOfList(unit: string): boolean {
+  if (!canEditSched()) return false
+  const today = todayIso()
+  const a = signedInAccount()
+  return a ? levelIn(a.id, unit, today) === 'admin' : unit === pageUnit('own', today)
+}
+
+/** Save the picked answers for the squadron the list lists (`unit` — its own page's squadron where not handed one).
+ *  Answers how many inputs were answered; -1 where the save was refused (it said why). */
+export function saveOilDay(from: string, to: string, picks: Readonly<Record<string, OilPick | undefined>>, unit: string = pageUnit('own', todayIso())): number {
+  /* (THE LIST'S OWN SQUADRON — R3: it saved only the reader's home squadron's answers, so the master admin answering 149's
+     list from his 142 page wrote nothing; its door now asks "an admin of that squadron", the role in force) */
+  if (!adminOfList(unit)) { HOOKS.toast('Only a scheduler answers from this list', 'warn'); return -1 }
+  const todo = oilOpenOn(from, to, unit).filter(o => picks[o.iid] === 'y' || picks[o.iid] === 'n')
   if (!todo.length) return 0
   let n = 0
   const out = saveBatchX(() => {

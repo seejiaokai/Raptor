@@ -171,8 +171,12 @@ export function setBellList(open: boolean, at = '') { BELLLIST = open; BELLAT = 
    is read live, never held here. One of the windows that do NOT block the page (D641), so not in windowOverSchedule. */
 /* `plain` — the day is NOT a public holiday (a weekend): the list was opened by a published version loaded back (owner
    D818), which can land on any non-working day, and its heading must not call a Saturday a public holiday */
-export let OILLIST: null | { from: string; to: string; name: string; fresh: boolean; plain?: boolean } = null
-export function setOilList(v: null | { from: string; to: string; name: string; fresh?: boolean; plain?: boolean }) { OILLIST = v ? { from: v.from, to: v.to || v.from, name: v.name || '', fresh: !!v.fresh, ...(v.plain ? { plain: true } : {}) } : null }
+/* `unit` — THE SQUADRON IT LISTS (the blind read's R3, the Plan audit's PB4 — the reshape plan §19, §19b): a holiday is its
+   own squadron's, and its line may be tapped by an admin of it whose own page is another squadron's (one holding Plan of
+   it, a master admin), so the list it opens lists, and its Save answers, that squadron's inputs; left out, the list works
+   it out (ui/OilDayList.tsx) */
+export let OILLIST: null | { from: string; to: string; name: string; fresh: boolean; plain?: boolean; unit?: string } = null
+export function setOilList(v: null | { from: string; to: string; name: string; fresh?: boolean; plain?: boolean; unit?: string }) { OILLIST = v ? { from: v.from, to: v.to || v.from, name: v.name || '', fresh: !!v.fresh, ...(v.plain ? { plain: true } : {}), ...(v.unit ? { unit: v.unit } : {}) } : null }
 export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DAYPOP', reset: () => setDayPop(null) },
   { name: 'INSIGHTS', reset: () => setInsights(false) },
