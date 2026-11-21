@@ -413,7 +413,13 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
            an ADMIN's tap manages the POSTING (the post-out sheet after, the
            post-in sheet before), and the person's OWN tap places LEAVE. */
         /* (A1/A7: a day outside his squadron stints opens nothing — it is another squadron's day, its war the one to write) */
-        const actionable = !homeAway && (
+        /* …BUT A BID OF THIS WAR'S OWN LEFT THERE STILL OPENS (the reshape walk's W2-F3; his D2243 Q3 — "a removal is never
+           refused"): a bid placed before his move was saved stays in this war, listed in its Approvals, and its day opened
+           nothing — so nothing could remove it. For an admin and for the man himself such a day opens the day's list
+           (Matrix.tsx openAwayBid): Delete works there, Approve is greyed with the ruled sentence. The stripe still draws
+           nothing (D2243 Q6). */
+        const awayBid = homeAway && (role === 'admin' || viewer === p.id) && !!recs?.[d.date]?.some(r => r.kind === 'request')
+        const actionable = awayBid || !homeAway && (
           (here && cellOpenable(states, role, viewer, deciding, grid, p.id, d.date, view)) || (role === 'admin' && !here) ||
           // a marked day always opens its list; leave dated outside the
           // squadron window opens for an admin and for the person themself

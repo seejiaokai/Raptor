@@ -557,6 +557,11 @@ function approveWhy(it: { personId: string; date: string; recId: string }, prot:
   const war = warHolding(rawState().wars, it.date)
   const rec = war ? recsAt(war.recs, it.personId, it.date).find((r): r is RequestRec => r.kind === 'request' && r.id === it.recId) : undefined
   if (!war || !rec) return 'No longer there'
+  /* A DAY NOW ANOTHER SQUADRON'S (the reshape walk's W2-F3; his D2243 Q3 — nobody puts his leave into his old squadron's
+     war for a day after his move): a bid left there from before the move was saved is not approved, in every door that asks
+     this — Approvals, Approve all, the day's list, the bid windows, Auto-approve — in the ruled sentence */
+  const other = warDayWhy(it.personId, it.date)
+  if (other) return other
   /* A DELETED MAN (the host's decision, 28 Oct 26 — the fixes' round 3, R3-6): D1436 speaks only of posting out, so the
      refusal the code had before M4 for a man deleted from the squadron stands, pending his word: a pending bid left from
      before his delete is not approved, in every door, with the words it had.
@@ -586,7 +591,8 @@ function heldWhy(personId: string, date: string, rec: RequestRec): string | null
 export function bidHeldWhy(personId: string, date: string, recId: string): string | null {
   const war = warHolding(rawState().wars, date)
   const rec = war ? recsAt(war.recs, personId, date).find((r): r is RequestRec => r.kind === 'request' && r.id === recId) : undefined
-  return rec ? heldWhy(personId, date, rec) : null
+  /* (…and a day now another squadron's, in the ruled sentence — W2-F3: the day's list greys its Approve with it) */
+  return rec ? warDayWhy(personId, date) ?? heldWhy(personId, date, rec) : null
 }
 /* REPLACED 31 Oct 26 BY HIS D1541 (see `postingOutWhy` below): the posting date now refuses no leave, but a Delete posting's,
    so read what follows as the history of the date rule that a Delete posting still keeps.
@@ -3445,6 +3451,14 @@ export function warDayRefusal(changes: readonly Change[]): string | null {
     return warDaySentence(at.pid, at.iso, h, u)
   }
   return null
+}
+/** WHY THIS WAR TAKES NO LEAVE OF HIS ON THAT DAY — the sentence, where the day is another squadron's (his home that day is
+ *  not the war loaded's); null where it is this war's, or while one war serves the page. The live doors' form of
+ *  `warDayRefusal` (W2-F3: an Approve of a bid left there from before his move was saved). */
+export function warDayWhy(pid: string, iso: string): string | null {
+  if (!WORLD_DOOR) return null
+  const h = homeOn(pid, iso), u = worldUnit()
+  return h && h !== u ? warDaySentence(pid, iso, h, u) : null
 }
 /* the sentence itself, for man `pid`, whose day `iso` is unit `h`'s, refused in unit `u`'s war */
 export function warDaySentence(pid: string, iso: string, h: string, u: string): string {

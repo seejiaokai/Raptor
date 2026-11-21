@@ -2,7 +2,7 @@ import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRe
 import { dayLabel, shortDate, shortSpan } from './dates'
 import { isCommitCode, isLeaveCode, isSickCode, type Contrib, type DayView } from '../engine/dayview'
 import { INPUTS, remarksShown, remarksTyped } from '../../engine/inputs'
-import { addDays, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, dayName, isWeekend, monthsIn, parseCell, lockedOnWar, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
+import { addDays, awayFromHome, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, dayName, isWeekend, monthsIn, parseCell, lockedOnWar, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
 import { actCount, filedSince, awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, oilOnDay, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet, type HeldLine } from './BidPicker'
 import { PersonWindow } from './PersonWindow'
@@ -3709,7 +3709,10 @@ export function Matrix() {
      he chose to place leave or OIL there (the narrow read's N3 — the bid window's own condition, below). It comes before the
      day's list, the member's remarks window and the read-only note, each of which it replaces on such a day — but never on a
      day outside his time in the squadron, where the day's list shows every record on its own line (owner answer C, below). */
-  const openHeld = open && openView && (placing || !(role === 'admin' && (openPostedOut || openNotYetArrived))) && bidOpenOn(open.id, open.date)
+  /* A BID OF THIS WAR'S OWN ON A DAY NOW ANOTHER SQUADRON'S (the reshape walk's W2-F3 — MatrixRows.tsx awayBid): the day's
+     list, every record on its own line with its own actions — the window that offers Delete beside a greyed Approve */
+  const openAwayBid = !!open && !!openPerson && awayFromHome(openPerson, open.date) && !!openView?.all.some(c => c.kind === 'request')
+  const openHeld = open && openView && !openAwayBid && (placing || !(role === 'admin' && (openPostedOut || openNotYetArrived))) && bidOpenOn(open.id, open.date)
     /* (only LEAVE there — the day's list's own rule, `listOpen` below: a course, a medical or an OD outside his time still opens
        the window, as a course's day did before — the fresh code read's F3) */
     && !(role !== 'admin' && openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null)
@@ -3718,7 +3721,7 @@ export function Matrix() {
      half he may still bid on, where the free half's window comes first and names it in one line (D1353, D1371) */
   const commitHeld = !!openView && openView.all.some(c => c.kind === 'absence' && isCommitCode(c.code))
     && !(open && bidOpenOn(open.id, open.date) && freeHalfBeside(openView))
-  const listOpen = !!open && !!openView && !openHeld && (openView.mark !== '' || commitHeld ||
+  const listOpen = !!open && !!openView && !openHeld && (openView.mark !== '' || commitHeld || openAwayBid ||
     /* leave dated outside his time opens the list on HIS OWN tap (owner answer C); an admin's tap there opens what the day
        opens on any other day (D1722, D1725 — `openGoneHolds` above) */
     (role !== 'admin' && !!openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null))
