@@ -7,7 +7,7 @@
 import { describe, it, expect } from 'vitest'
 import { useMsqWorld, acrossMove, signInAs, PID } from '../test-support/msq-world'
 import { commitChipMove } from './caldrag'
-import { commitInput } from './inputedit'
+import { commitInput, NOT_SAVED } from './inputedit'
 import { INPUTS } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { setPage, setInpView } from '../state/view'
@@ -30,10 +30,12 @@ function filed(start: string, end: string): any {
 }
 
 describe('W1 (3) — a calendar drag of leave across Ranger\'s move is refused in words', () => {
-  it('(control) the one-day bar on Tue 14 dragged to Thu 16: the ruled sentence', () => {
+  /* (the walker's "14→16: ruled note" was the bar's STRETCH, another door; a whole move of the one-day bar onto a 149 day
+     no longer runs across his move, so it is the who-rule's plain refusal, as the input's own window says it) */
+  it('the one-day bar on Tue 14 moved whole to Thu 16, a 149 day: refused in the who-rule\'s plain words', () => {
     const rec = filed('2026-07-14', '2026-07-14')
     expect(commitChipMove({ kind: 'input', iid: rec.iid }, '2026-07-14', '2026-07-16')).toBe(false)
-    expect(said()).toEqual([WORDS])
+    expect(said()).toEqual([NOT_SAVED])
     expect(INPUTS.find((x: any) => x.iid === rec.iid)?.date).toBe('Jul 14')
   })
   it('the 14–17 Jul bar dragged a day on: the same sentence, never silence', () => {
@@ -46,5 +48,14 @@ describe('W1 (3) — a calendar drag of leave across Ranger\'s move is refused i
     const rec = filed('2026-07-14', '2026-07-17')
     expect(commitChipMove({ kind: 'input', iid: rec.iid }, '2026-07-14', '2026-07-11')).toBe(false)
     expect(said()).toEqual([WORDS])
+  })
+  it('(control) Hunter moves Saber\'s own one-day leave a day on: it moves, "Moved to …"', () => {
+    signInAs('saber')
+    expect(commitInput(null, { type: 'LL', start: '2026-07-14', end: '2026-07-14', allday: true, remarks: 'w1 ctl' }, [PID.saber])).toBe(true)
+    const rec = INPUTS.find((x: any) => x.remarks === 'w1 ctl')
+    signInAs('hunter'); setPage('inputs'); setInpView('cal')
+    ;(HOOKS.toast as any).mockClear()
+    expect(commitChipMove({ kind: 'input', iid: rec.iid }, '2026-07-14', '2026-07-15')).toBe(true)
+    expect(said().some((s: string) => s.startsWith('Moved to '))).toBe(true)
   })
 })
