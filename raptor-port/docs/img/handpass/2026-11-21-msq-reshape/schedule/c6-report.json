@@ -65,9 +65,9 @@
    "lead": {
     "x": 422,
     "y": 795,
-    "w": 62,
+    "w": 49.4,
     "h": 16,
-    "text": "Not saved:",
+    "text": "Blocked:",
     "color": "rgb(241, 244, 247)",
     "weight": "700",
     "size": "12.5px",
@@ -76,7 +76,7 @@
    "rest": {
     "x": 422,
     "y": 795,
-    "w": 707.8,
+    "w": 695.3,
     "h": 32,
     "text": " Ranger is 149's from Thu 16 Jul. Only Ranger or an admin of both 142 and 149 can change leave that runs across his move.",
     "color": "rgb(182, 192, 203)",
@@ -106,7 +106,7 @@
   "leadBuiltVsDrawn": {
    "dx": -63.5,
    "dy": -16,
-   "dw": -524,
+   "dw": -536.6,
    "dh": 0
   }
  },
@@ -176,9 +176,9 @@
    "lead": {
     "x": 50,
     "y": 21,
-    "w": 63.3,
+    "w": 52.3,
     "h": 14,
-    "text": "Not saved:",
+    "text": "Blocked:",
     "color": "rgb(241, 244, 247)",
     "weight": "700",
     "size": "12.5px",
@@ -187,7 +187,7 @@
    "rest": {
     "x": 50,
     "y": 21,
-    "w": 317.7,
+    "w": 321.1,
     "h": 42,
     "text": " Ranger is 149's from Thu 16 Jul. Only Ranger or an admin of both 142 and 149 can change leave that runs across his move.",
     "color": "rgb(182, 192, 203)",
@@ -217,7 +217,7 @@
   "leadBuiltVsDrawn": {
    "dx": 0,
    "dy": 0,
-   "dw": -245.4,
+   "dw": -256.4,
    "dh": -14
   }
  }

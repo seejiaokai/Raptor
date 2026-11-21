@@ -14,7 +14,7 @@ s = s.replace("const OUT = resolve(HERE, 'img')", () => "const OUT = resolve(pro
 const RUN = '// ===================== run ====================='
 must(RUN)
 const piece = String.raw`
-const C6_WORDS = "Not saved: Ranger is 149's from Thu 16 Jul. Only Ranger or an admin of both 142 and 149 can change leave that runs across his move."
+const C6_WORDS = "Blocked: Ranger is 149's from Thu 16 Jul. Only Ranger or an admin of both 142 and 149 can change leave that runs across his move."
 const measureNote = p => p.evaluate(() => {
   const t = document.getElementById('toastEl'), R = e => { if (!e) return null; const r = e.getBoundingClientRect(); return { x: +r.left.toFixed(1), y: +r.top.toFixed(1), w: +r.width.toFixed(1), h: +r.height.toFixed(1) } }
   const cs = e => { if (!e) return null; const c = getComputedStyle(e); return { color: c.color, weight: c.fontWeight, size: c.fontSize, family: c.fontFamily.slice(0, 40) } }
