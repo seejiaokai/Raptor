@@ -118,9 +118,9 @@ const SETTING_PHRASE: Record<string, string> = {
 
 /* each calendar's late cut-off, as the four Logic values that hold it (state/cutoff.ts KEYS — not imported: state is above
    undo's describe) */
-const CUT_KEYS: Record<'inputs' | 'sans', string[]> = {
-  inputs: ['inputLead', 'inputCutMode', 'inputCutWd', 'inputCutWeeks'],
-  sans: ['sansLead', 'sansCutMode', 'sansCutWd', 'sansCutWeeks'],
+const CUT_KEYS: Record<'inputs' | 'sans', Set<string>> = {
+  inputs: new Set(['inputLead', 'inputCutMode', 'inputCutWd', 'inputCutWeeks']),
+  sans: new Set(['sansLead', 'sansCutMode', 'sansCutWd', 'sansCutWeeks']),
 }
 
 /* a safe generic label from the entry's module, used when the type is unknown. */
@@ -524,8 +524,8 @@ export function describeEntry(entry: UndoEntry): string {
       const sb = (ch && (ch as any).before && (ch as any).before.s) || {}, sa = (ch && ch.op !== 'delete' && (ch as any).after && (ch as any).after.s) || {}
       const moved = [...new Set([...Object.keys(b), ...Object.keys(a)])].filter(x => JSON.stringify(b[x]) !== JSON.stringify(a[x]))
       if (ch && moved.length && JSON.stringify(sb) === JSON.stringify(sa)) {
-        if (moved.every(x => CUT_KEYS.inputs.includes(x))) return 'the late cut-off for inputs'
-        if (moved.every(x => CUT_KEYS.sans.includes(x))) return 'the late cut-off for SANS commitments'
+        if (moved.every(x => CUT_KEYS.inputs.has(x))) return 'the late cut-off for inputs'
+        if (moved.every(x => CUT_KEYS.sans.has(x))) return 'the late cut-off for SANS commitments'
       }
     }
     return SETTING_PHRASE[k] || 'a settings change'
