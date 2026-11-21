@@ -44,7 +44,7 @@ import { homeUnitOf, rosterToday } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
 import { isOD, dateOrd, INPUTS, inpLabel, inpKindTag, isFly, isLeave, titleOf, toOf, isSansAvail, sansLetters, idsOf, leadOf, namedOf, placeholderOf, remarksTyped, tillShown, tillTurned } from '../engine/inputs'
 import { parseVerId, dayIso } from '../engine/verid'
-import { qualCols } from '../engine/qualcols'
+import { qualColsOf } from '../engine/qualcols'
 import { actorIsAdmin } from './perms'
 import { rowDocIds } from './docs'
 import { localOf, split } from '../storage/unitid'
@@ -590,7 +590,9 @@ function personLines(c: Change, env?: CommitEnvelope): void {
   }
   /* a qualification tick lives in the person's `quals` (Quals' own columns, named by their heading); a tick that is
      also a flag on the person (SANS, SXO) is said once */
-  for (const q of qualCols()) {
+  /* (the reshape plan §3.2 A-ii — Quals is an own page: a tick is named by the MAN'S OWN squadron's columns, on the day the
+     line is filed, never the pick's — a master admin who picked 149 read a 142 man's tick under 149's heading) */
+  for (const q of qualColsOf(homeUnitOf(pid, localToday()) ?? UNIT)) {
     const x = b.quals && b.quals[q.k], y = a.quals && a.quals[q.k]
     if (same(norm(x), norm(y)) || seen.has(q.h) || byPosting(q.k)) continue
     seen.set(q.h, { from: qv(x), to: qv(y), fld: q.k })
