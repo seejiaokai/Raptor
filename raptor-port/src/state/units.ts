@@ -306,12 +306,12 @@ export function dropGrantRows(ids: readonly string[]): void {
 export function setHome(pid: string, unit: string): UnitSave {
   if (!unitById(unit)) return no('That squadron is gone')
   /* R1 (the blind read's Opus F1): a master admin's squadron is a master admin's to change (D2205 — masterChangeProblem
-     first), and nobody moves himself (the agent's reading, as Archive and Delete refuse "yourself"; its own words are drawn
-     for him first — D1625 — until then this one). Held at the gate too (perms.ts §8, G1). */
+     first, "Only a master admin can do that"), and nobody moves himself — his D2249, in his words. Held at the gate too
+     (perms.ts §8, G1). */
   const master = masterChangeProblem(pid)
   if (master) return no(master)
   const me = signedInAccount()
-  if (me && String(me.pid) === pid && homeOn(pid)) return no('This change could not be saved.')
+  if (me && String(me.pid) === pid && homeOn(pid)) return no("You can't move yourself to another squadron — ask another admin")
   const mine = unitRows().homes.filter(h => h.pid === pid)
   /* a man who has a squadron today — by a row, or the demo's 142 for a man with none — moves from tomorrow (D2119);
      only a man with no squadron at all is placed from today. Reading the rows alone placed the demo's 142 men (no row)
