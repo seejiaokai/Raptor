@@ -184,8 +184,11 @@ import { callsignProblem, saidOf } from '../state/roster-add'
 import { setPublishGate, setOilPlan } from '../state/inputgate-hook'
 import { stampPlaced, stampChanged, stampWho } from '../state/inputstamp'
 import { absencesAt, setAbsenceRows, type MergedWar } from './state/merge'
-import { validIso, planFor, monthAnswers, type DayFacts, type DayAnswer } from '../state/flyplan-model'
-import { getFlyPlan, getTones, sansFly } from '../state/flyplan'
+import { validIso, planFor, monthAnswers, type DayFacts, type DayAnswer, type FlyPlan, type FlyRun, type Tones } from '../state/flyplan-model'
+import {
+  getFlyPlan as planOfUnit, getTones as tonesOfUnit, sansFly, setFlyDays as setFlyDaysOf, setFlyRun as setFlyRunOf,
+  dropFlyRun as dropFlyRunOf, type FlyDayPatch, type FlySave,
+} from '../state/flyplan'
 import { MAX_CARRIED_REMARK, MAX_REQ_DOCS } from './engine/warrecs'
 import { docFields, rowDocIds } from '../state/docs'
 import { codeWorth } from './engine/credit'
@@ -4128,10 +4131,18 @@ export function holidayShortHint(kind: 'ph' | 'off', name: string): string {
    figures or how many more are needed asks here: the war's rows, the SANS calendar, the Inputs calendar's tags, Days.
    A screen that puts the halves together itself is a defect (the plan's risk 1) — two screens would then be free to
    show two answers for one day. */
-export {
-  getFlyPlan, getTones, sansFly, sansCommittedOn, setFlyDays, setFlyRun, dropFlyRun,
-  type FlyDayPatch, type FlySave, type SansCommitted, type SeatIds,
-} from '../state/flyplan'
+/* EVERY PART READS ONE SQUADRON — THE WAR'S (the reshape plan §3.2 A-ii, "Own-page settings"; helper "war", second
+   pass). The scheduler's plan, its SANS colours and its writers default to the squadron PICKED ("149 ▾"); the war is its
+   own squadron's (warUnit) whatever is picked, so the reads and the writers the war reaches here name the war's squadron
+   unless a caller names another — never the pick by default. (sansFly and sansCommittedOn take their people from the
+   caller, sansFlyOwn below for the war.) */
+export { sansFly, sansCommittedOn, type FlyDayPatch, type FlySave, type SansCommitted, type SeatIds } from '../state/flyplan'
+export const getFlyPlan = (unit: string = warUnit()): FlyPlan => planOfUnit(unit)
+export const getTones = (unit: string = warUnit()): Tones => tonesOfUnit(unit)
+export const setFlyDays = (patches: FlyDayPatch[], unit: string = warUnit()): FlySave => setFlyDaysOf(patches, unit)
+export const setFlyRun = (iso: string, patch: FlyRun, opts?: { clearDay?: boolean; clear?: readonly string[] }, unit: string = warUnit()): FlySave =>
+  setFlyRunOf(iso, patch, opts, unit)
+export const dropFlyRun = (iso: string, seats: Array<'p' | 'w'>, unit: string = warUnit()): FlySave => dropFlyRunOf(iso, seats, unit)
 export type { DayAnswer, FlyCls, Tone } from '../state/flyplan-model'
 
 /** THE PLAN'S OWN CHANGE SIGNAL, for a component of the war (the plan §3.3 "Repaint"): the scheduler's version, which
@@ -4341,14 +4352,17 @@ export function openNewPeriod(from: string, to: string): void {
 
 /* (the SANS men committed are the WAR'S OWN squadron's on that date — multi-squadron step 4: a 149 SANS man's offer to
    fly never lowers 142's need, and a man's squadron is read on the day, engine/roster.ts unitPeople) */
-const sansFlyOwn = (iso: string) => sansFly(iso, undefined, unitPeople(warUnit(), iso))
-export function flyAnswer(iso: string): DayAnswer {
-  return planFor(iso, getFlyPlan(), dayFacts(iso), sansFlyOwn(iso), getTones())
+/* (every part of an answer is ONE squadron's — the plan, its SANS colours and its SANS men — the war's unless the caller
+   names another, never the pick by default: helper "war", second pass. The war's facts — holidays, who is available —
+   are the loaded war's, dayFacts, whichever squadron is named.) */
+const sansFlyOf = (unit: string) => (iso: string) => sansFly(iso, undefined, unitPeople(unit, iso))
+export function flyAnswer(iso: string, unit: string = warUnit()): DayAnswer {
+  return planFor(iso, planOfUnit(unit), dayFacts(iso), sansFlyOf(unit)(iso), tonesOfUnit(unit))
 }
 /** a month of answers (1-based month) — what a drawn month is painted from, and what its repaint is keyed on: a figure
  *  or a weekday rule that began months earlier moves these, so a memo built from them cannot miss it */
-export function flyMonth(y: number, m: number): Record<string, DayAnswer> {
-  return monthAnswers(y, m, getFlyPlan(), dayFacts, sansFlyOwn, getTones())
+export function flyMonth(y: number, m: number, unit: string = warUnit()): Record<string, DayAnswer> {
+  return monthAnswers(y, m, planOfUnit(unit), dayFacts, sansFlyOf(unit), tonesOfUnit(unit))
 }
 
 /* A LEAVE REQUEST'S DOCUMENT AND REMARKS (M3 5.9, 5.10 — D1159, D1226): the bid windows draw the app's one Document
