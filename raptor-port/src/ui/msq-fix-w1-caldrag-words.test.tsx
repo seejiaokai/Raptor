@@ -7,7 +7,7 @@
 import { describe, it, expect } from 'vitest'
 import { useMsqWorld, acrossMove, signInAs, PID } from '../test-support/msq-world'
 import { commitChipMove } from './caldrag'
-import { commitInput, NOT_SAVED } from './inputedit'
+import { commitInput } from './inputedit'
 import { INPUTS } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { setPage, setInpView } from '../state/view'
@@ -30,12 +30,13 @@ function filed(start: string, end: string): any {
 }
 
 describe('W1 (3) — a calendar drag of leave across Ranger\'s move is refused in words', () => {
-  /* (the walker's "14→16: ruled note" was the bar's STRETCH, another door; a whole move of the one-day bar onto a 149 day
-     no longer runs across his move, so it is the who-rule's plain refusal, as the input's own window says it) */
-  it('the one-day bar on Tue 14 moved whole to Thu 16, a 149 day: refused in the who-rule\'s plain words', () => {
+  /* (the schedule-side re-walk of 22 Nov 26, item (c) — the host's word: the whole move of the one-day bar from a 142 day
+     onto a 149 day is leave changed ACROSS his move, and says the ruled sentence as the build before said it; this test
+     had pinned the who-rule's plain "Blocked: nothing was kept" for it) */
+  it('the one-day bar on Tue 14 moved whole to Thu 16, a 149 day: refused in the ruled sentence', () => {
     const rec = filed('2026-07-14', '2026-07-14')
     expect(commitChipMove({ kind: 'input', iid: rec.iid }, '2026-07-14', '2026-07-16')).toBe(false)
-    expect(said()).toEqual([NOT_SAVED])
+    expect(said()).toEqual([WORDS])
     expect(INPUTS.find((x: any) => x.iid === rec.iid)?.date).toBe('Jul 14')
   })
   it('the 14–17 Jul bar dragged a day on: the same sentence, never silence', () => {
