@@ -1793,7 +1793,18 @@ function trkUnitViolation(env: CommitEnvelope): string | null {
   if (!u) return null
   const lv = levelInForce(a, u, todayIso(), unitRowsBefore(env.changes))
   const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
-  return ok ? null : `a change to another squadron's Tracker (${u}) by one with ${lv ? `${lv} rights` : 'no rights'} there`
+  if (!ok) return `a change to another squadron's Tracker (${u}) by one with ${lv ? `${lv} rights` : 'no rights'} there`
+  /* THE TRACKER KEPT FROM BEFORE HIS MOVE TAKES NOTHING (fix read 2 — Astra 3's F3; his D2243 Q7, "nothing typed saved into
+     either squadron"): a Tracker once loaded keeps its squadron until the next sign-in (state/typing-hold.ts), and its band
+     says "This can't be saved in 142's Tracker" — but a moved MASTER admin is an admin of 142 still, so the line above let
+     his changes into it under that band. A change by the person signed in on this page is refused while the Tracker bound
+     is not the page's own squadron today (pageUnit('own') — the very test the band is drawn by, store.ts publishBands),
+     master admins included. A Tracker he opened on purpose is the page's own squadron (the pick of a master admin or a
+     Plan holder — D2197; enterSquadron binds it), so his ordinary editing there passes. Another session's change arriving
+     here is not this page's and is not asked. */
+  if (SESSION && a.id === SESSION.user && env.origin !== 'remote' && u !== pageUnit('own', todayIso()))
+    return `a change to a Tracker (${u}) that is not the page's own squadron today (${pageUnit('own', todayIso())})`
+  return null
 }
 /* the stored accounts after the command, as the loader would read them — none stored is the seeded list */
 function accountImagesNow(): any[] {
