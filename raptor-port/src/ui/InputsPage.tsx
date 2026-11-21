@@ -264,8 +264,8 @@ export function InputsPage() {
   /* The admin's default-window editor (owner, 28 Aug 26). Draft values while
      open, so a half-typed number never becomes the squadron's setting. */
   const [lookEdit, setLookEdit] = useState(false)
-  const [lookWeeks, setLookWeeks] = useState(String(inputsLookahead().weeks))
-  const [lookSun, setLookSun] = useState(inputsLookahead().toSunday)
+  const [lookWeeks, setLookWeeks] = useState(() => String(inputsLookahead().weeks))
+  const [lookSun, setLookSun] = useState(() => inputsLookahead().toSunday)
   const [calOpen, setCalOpen] = useState(false)
   const [sort, setSort] = useState({ key: 'start', dir: 1 })
   /* Rows just added, newest first, and rows still flashing — each held by its input's ID, never its index (adding,
