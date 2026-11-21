@@ -1011,3 +1011,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** each helper reported its proofs "red on the base, green after"; the plan asks the host to rerun both runs. A second worktree per check is slow and a guard refuses writes into other checkouts. What worked in seconds: in the host's own checkout, after the merge, `git checkout <before-commit> -- <the helper's changed non-test source files>`, run the proof files, then `git checkout HEAD -- <same files>` and confirm a clean status; the failure reasons are then grouped (assertion vs "is not a function") so a red that is only a missing function is told apart from a red that shows the fault.
 **Suggested improvement:** in the overnight guide's "check each result" step (and the bug-check order's red-first protocol), add the recipe: restore only the changed source files to the commit before the change (`--diff-filter=M`, tests excluded), run the proofs, restore, check `git status`, and count failure kinds — at least one assertion-kind failure per proof, not only missing functions.
 **Principle:** to confirm a "failing first" claim, put back only the code under test, never the tests, and judge the red by why it fails, not that it fails.
+
+### Observation 992: A queued "push, then release the branch" ran while the owner gave the chat more work
+
+**Status:** OPEN
+**Date:** 21 Nov 26
+**Session context:** chat 128 — the handoff's last push had to wait for a check run, so a background script waited, pushed and released the branch; the owner then answered a question and the chat committed again
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** Step 1, "Release the branch as your LAST step"
+
+**Issue:** the background script pushed and detached the checkout between the chat's stop request and its next commit; the new commit landed on a detached head and had to be moved back by hand (switch to the branch, fast-forward to the stray commit).
+**Suggested improvement:** in "Release the branch", when the push must wait: the waiting script pushes only if the branch tip is still the commit it was started for, and never detaches by itself — the chat releases in the foreground once it has the push result; and after any new message from the owner, check `git branch --show-current` before committing.
+**Principle:** an irreversible last step queued in the background must check that nothing moved since it was queued, or be left for the foreground.
