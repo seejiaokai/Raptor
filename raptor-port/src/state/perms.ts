@@ -1038,11 +1038,13 @@ const isInputChange = (c: Change): boolean => c.collection === 'inputs' && c.id 
 function warPlacerForged(env: CommitEnvelope, c: Change): boolean {
   if (c.op !== 'put' || !c.after) return false
   const f: any = c.after
-  if (f.lwBy === undefined && f.lwAt === undefined) return false
+  if (f.lwBy === undefined && f.lwAt === undefined && f.lwU === undefined) return false
   /* (a piece cut from a leave — a medical splitting it — is a new record carrying its parent's stamp: any before-image
-     of this command's own vouches for it) */
-  const stamp = `${f.lwBy ?? ''}|${f.lwAt ?? ''}`
-  return !env.changes.some(x => x.collection === 'inputs' && x.before && `${(x.before as any).lwBy ?? ''}|${(x.before as any).lwAt ?? ''}` === stamp)
+     of this command's own vouches for it)
+     (`lwU` — the squadron whose war approved it, leavewar/sync.ts doorApprove — is part of the stamp: each war holds only
+     its own leave, so a person's own command never writes or changes it either — core line 1, 22 Nov 26) */
+  const stamp = `${f.lwBy ?? ''}|${f.lwAt ?? ''}|${f.lwU ?? ''}`
+  return !env.changes.some(x => x.collection === 'inputs' && x.before && `${(x.before as any).lwBy ?? ''}|${(x.before as any).lwAt ?? ''}|${(x.before as any).lwU ?? ''}` === stamp)
 }
 function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: boolean): string | null {
   const b: any = c.before ?? null, f: any = c.op === 'delete' ? null : (c.after ?? null)
