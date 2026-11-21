@@ -10,8 +10,11 @@ import { describe, expect, it } from 'vitest'
 import { grantOn, levelFrom, datedRowsBreach, type UnitRows, type Grant, type Home } from './units-model'
 import { useMsqWorld, PID, ACCT, signInAs, moveMan, at } from '../test-support/msq-world'
 import { setGrant, removeGrant, unitsLoad, unitRows, grantOfOn } from './units'
-import { updateAccount, levelIn, accountById } from './accounts'
+import { updateAccount, levelIn, accountById, ACCOUNT_PFX } from './accounts'
 import { restoreLeavesOut } from './perms'
+import { GRANT_PFX } from './units-model'
+import { store } from '../engine/hooks'
+import { commitSettingsIntent } from './people-settings-commit'
 import type { Change } from '../command/types'
 
 const U = (id: string) => ({ id, num: id.slice(1), kind: 'sqn' as const })
@@ -132,21 +135,65 @@ describe('in the shared world', () => {
     })
   })
 
-  describe('R7 — a Plan holder made a member only by a master admin, his Plan going in that command (D2199, D2211)', () => {
+  /* his D2250 (21 Nov 26, "Yes let the admin downgrade") replaced D2248's "only a master admin": an admin of the man's own
+     squadron — at home there, by Plan of it, or a master admin — may make him a member; his Plan goes in the same command,
+     the last-admin check still guarding the squadron he held it of (D2247) */
+  describe('R7 — a Plan holder made a member by an admin of his own squadron, his Plan going in that command (D2250, D2199)', () => {
     const planOfHunter = () => grantOfOn({ id: ACCT.hunter, pid: PID.hunter, pidFrom: accountById(ACCT.hunter)?.pidFrom }, 'u149')
-    it('Ranger, made a plain admin of 142, may not make Hunter (Plan of 149) a member; Saber may, and the Plan goes with it', () => {
+    const givePlan = () => {
       signInAs('saber')
       expect(setGrant(ACCT.hunter, 'u149', 'admin', PID.hunter).ok).toBe(true)
       expect(updateAccount(ACCT.ranger, { role: 'admin' })).toBeNull()
+    }
+    it('Ranger, made a plain admin of 142, makes Hunter (Plan of 149) a member: allowed, and the Plan goes with it', () => {
+      givePlan()
       signInAs('ranger')
-      expect(updateAccount(ACCT.hunter, { role: 'main' }), 'a plain admin refused').not.toBeNull()
+      expect(updateAccount(ACCT.hunter, { role: 'main' }), "his own squadron's admin may").toBeNull()
       unitsLoad()
-      expect(planOfHunter()?.level, 'his Plan stands').toBe('admin')
-      signInAs('saber')
-      expect(updateAccount(ACCT.hunter, { role: 'main' })).toBeNull()
-      unitsLoad()
+      expect(accountById(ACCT.hunter)?.role).toBe('main')
       expect(planOfHunter(), 'his Plan went in the same command').toBeUndefined()
       expect(unitRows().grants.some(g => g.account === ACCT.hunter && g.level === 'admin')).toBe(false)
+    })
+    it("Kestrel, 149's admin, may not — Hunter is not of his squadron; the Plan stands", () => {
+      givePlan()
+      signInAs('kestrel')
+      expect(updateAccount(ACCT.hunter, { role: 'main' })).toBe("He is 142's. Only an admin of 142 can change his account.")
+      unitsLoad()
+      expect(accountById(ACCT.hunter)?.role).toBe('admin')
+      expect(planOfHunter()?.level, 'his Plan stands').toBe('admin')
+    })
+    it('(control) Saber, the master admin, makes him a member: the Plan goes with it', () => {
+      givePlan()
+      expect(updateAccount(ACCT.hunter, { role: 'main' })).toBeNull()
+      unitsLoad()
+      expect(planOfHunter()).toBeUndefined()
+    })
+    /* past the door, as a forged command would (the gate the backstop — perms.ts, the member's drop): it passes a Plan
+       row only, and only beside the same account made a member in that command */
+    const forged = (fn: () => void) => commitSettingsIntent('account.update', null, fn) as any
+    it('past the door: his View of 149 dropped beside his making a member is refused; his Plan dropped alone is refused', () => {
+      signInAs('saber')
+      expect(setGrant(ACCT.hunter, 'u149', 'view', PID.hunter).ok).toBe(true)
+      expect(updateAccount(ACCT.ranger, { role: 'admin' })).toBeNull()
+      unitsLoad()
+      const view = planOfHunter()!
+      expect(view.level).toBe('view')
+      signInAs('ranger')
+      const row = store.get(ACCOUNT_PFX + ACCT.hunter, null)
+      expect(row?.role).toBe('admin')
+      const r1 = forged(() => { store.set(ACCOUNT_PFX + ACCT.hunter, { ...row, role: 'main' }); store.set(GRANT_PFX + view.id, null) })
+      unitsLoad()
+      expect(r1.ok, 'a View is not the member\'s drop').toBe(false)
+      expect(planOfHunter()?.level).toBe('view')
+      givePlan()
+      unitsLoad()
+      const plan = planOfHunter()!
+      expect(plan.level).toBe('admin')
+      signInAs('ranger')
+      const r2 = forged(() => { store.set(GRANT_PFX + plan.id, null) })
+      unitsLoad()
+      expect(r2.ok, 'his Plan taken with his account kept an admin').toBe(false)
+      expect(planOfHunter()?.level).toBe('admin')
     })
   })
 

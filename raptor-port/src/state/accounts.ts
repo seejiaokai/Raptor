@@ -575,18 +575,15 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   if (patch.on !== undefined) { next.on = !!patch.on; delete next.offBy }   // a hand Suspend / Enable is the admin's own
   /* A RE-LINK CARRIES NO RIGHT (the reshape plan §4.3, guardrail 1): every right of the sign-in, holding or ended, goes in
      the re-link's own command, whoever re-links (who may, relinkRightsProblem above); the man now on the sign-in is given
-     what he needs anew. MAKING A PLAN HOLDER A MEMBER (the Plan audit's PA2, refined by R7 — D2199, D2211): only a master
-     admin, and his Plan rows that hold today go in the same command; anyone else is told so in his words (D2248). The
-     commit gate holds both (perms.ts, the re-link line and R7). */
+     what he needs anew. MAKING A PLAN HOLDER A MEMBER (the Plan audit's PA2; his D2250, replacing R7's D2248): any admin
+     who may change his account — an admin of his own squadron, at home there, by Plan of it, or a master admin
+     (otherSquadronProblem above) — and his Plan rows that hold today go in the same command, as only an admin holds Plan;
+     the last-admin lock below still guards the squadron he held it of (D2247). The commit gate holds both (perms.ts, the
+     re-link line and the Plan line). */
   const relink = next.pid !== a.pid
   const plans = !relink && a.role === 'admin' && next.role !== 'admin'
     ? unitRows().grants.filter(g => g.account === a.id && g.level === 'admin' && !!grantOfOn(levelAcct(a), g.unit) && grantOfOn(levelAcct(a), g.unit)!.id === g.id)
     : []
-  if (plans.length && !signedInAccount()?.master) {
-    const cs = PEOPLE[a.pid] ? String(PEOPLE[a.pid].cs) : 'He'
-    const nums = [...new Set(plans.map(g => String(unitById(g.unit)?.num ?? g.unit)))].join(' and ')
-    return `${cs} holds Plan of ${nums}. Only a master admin can make him a member.`
-  }
   const list = ACCOUNTS_LIST.map(x => x.id === a.id ? next : x)
   /* the lock over what the step leaves — its dropped rights with it (a sign-in holding a squadron's only Plan, re-linked or
      made a member, leaves it no admin — the reshape plan §5.2) */

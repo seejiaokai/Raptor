@@ -1967,6 +1967,13 @@ function accountRelinked(env: CommitEnvelope, id: string): boolean {
   if (!is) return false
   return was ? String(was.pid) !== String(is.pid) : unitRowsBefore(env.changes).grants.some(g => g.account === id)
 }
+/* the command makes an admin's account a member's, the same man kept (his D2250 — the member's drop, unitRowViolation) */
+function accountMadeMember(env: CommitEnvelope, id: string): boolean {
+  const c = env.changes.find(x => x.collection === 'settings' && String(x.id) === ACCOUNT_ROW + id)
+  if (!c) return false
+  const was: any = accountBefore(id, c.before), is: any = accountAfter(id, c)
+  return !!was && !!is && String(was.pid) === String(is.pid) && was.role === 'admin' && is.role !== 'admin'
+}
 /* GUARDRAIL 2 — NO RESTORE EVER PUTS BACK A RIGHT WHOSE MAN HAS MOVED SINCE ITS START, AND A RE-LINK PUTS BACK NO RIGHT
    (the reshape plan §4.3 — the host's decisions after round 3; Fable 1, Astra 1, Opus M3 of round 2; Astra 1, Fable 7 of
    round 3). ONE BODY, asked by the restore (the timeline's `leaveOut` hook — wired by helper "undo & roles", which keeps on
@@ -2134,19 +2141,17 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
       if (accountRelinked(env, id) && w.rowsA.grants.some(g => g.account === id)) return `a sign-in linked to another person while a right still names it (${c.id})`
     }
   }
-  /* PLAN IS AN ADMIN'S — MAKING A PLAN HOLDER A MEMBER (the Plan audit's PA2, refined by the blind read's R7 — D2199,
-     D2211): an account holding a Plan in force (today, on the rows before) is made a member only by a master admin, and
-     only with his Plan rows dropped in the same command — no Plan holds on a member's account after it. Read on the
-     loader's own reading of both lists. */
+  /* PLAN IS AN ADMIN'S — MAKING A PLAN HOLDER A MEMBER (the Plan audit's PA2; his D2250, replacing the blind read's R7 and
+     its D2248 — whoever may change his account may make him a member, his own squadron's admin or a master admin, the
+     account-row line below holding who): no Plan in force holds on a member's account after it — his Plan rows go in the
+     same command. Read on the loader's own reading of both lists. */
   const acctAById = new Map<string, Account>()
   for (const z of w.acctA) if (!acctAById.has(z.id)) acctAById.set(z.id, z)
   for (const x of w.acctB) {
     if (x.role !== 'admin') continue
     const y = acctAById.get(x.id)
     if (!y || y.role === 'admin' || String(y.pid) !== String(x.pid)) continue
-    const hb = { id: x.id, pid: String(x.pid), pidFrom: x.pidFrom }, ha = { id: y.id, pid: String(y.pid), pidFrom: y.pidFrom }
-    const planB = w.rowsB.grants.some(g => g.account === x.id && g.level === 'admin' && grantRowHolds(hb, g, today, w.rowsB))
-    if (planB && !actorMaster) return `a Plan holder made a member by one who is not a master admin (${ACCOUNT_ROW}${x.id})`
+    const ha = { id: y.id, pid: String(y.pid), pidFrom: y.pidFrom }
     if (w.rowsA.grants.some(g => g.account === y.id && g.level === 'admin' && grantRowHolds(ha, g, today, w.rowsA))) return `Plan left on an account made a member (${ACCOUNT_ROW}${y.id})`
   }
   /* G5 — NO RIGHT LEFT NAMING A SIGN-IN THAT IS GONE (fix read 11, fault E — SEC11-5): a right outliving its account
@@ -2325,6 +2330,12 @@ function unitRowViolation(env: CommitEnvelope): string | null {
          removal: an admin of its squadron — at home or by Plan — or a master admin. */
       if (id.startsWith(GRANT_PFX) && b && n == null && accountRelinked(env, String(b.account))
         && !grantRowHolds(holderB(String(b.account)), b, today, before)) continue
+      /* THE MEMBER'S DROP (his D2250, replacing R7's D2248 — "Yes let the admin downgrade"): making a Plan holder a member
+         takes his Plan in the same command (accounts.ts updateAccount), as only an admin holds Plan — a removal that passes
+         whoever makes it, where the same command makes that account, the same man kept, no admin; section 8 judges who may
+         change the account itself (an admin of his own squadron, at home or by Plan, or a master admin), the last-admin
+         lock the squadron he held it of (D2247) */
+      if (id.startsWith(GRANT_PFX) && b && n == null && b.level === 'admin' && accountMadeMember(env, String(b.account))) continue
       /* PLAN IS A MASTER ADMIN'S TO GIVE, RAISE, LOWER OR TAKE (the Plan audit's PA1 — D2199, D2211): a grant row whose
          level is `admin` on either side — and that holds there (a row holding nothing is no Plan a person can use) — needs a
          master admin; a person delete's drop (above) and a verified replay excepted */
