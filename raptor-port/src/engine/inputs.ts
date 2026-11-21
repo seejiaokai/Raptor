@@ -1202,6 +1202,12 @@ function cutBackDays(set:any){
   const k=CUT_KEYS[set==='sans'?'sans':'inputs'];
   return cutBackOf(VCONF[k[1]],VCONF[k[0]],VCONF[k[2]],VCONF[k[3]]);
 }
+/* BY THE INPUT'S OWN SQUADRON (the reshape's phase 3): each squadron keeps its own Logic, its cut-offs among it (D2109,
+   D2122). The loaded squadron's is VCONF, as always; another's is its own stored rules, which state/cutoff.ts reads
+   (getCut) and installs here at its load — the engine does not import state/. Unset: VCONF for every squadron. */
+let CUT_OF:((unit:string,set:any)=>number)|null=null;
+export function setCutOfUnit(fn:((unit:string,set:any)=>number)|null){CUT_OF=fn;}
+function cutBackFor(unit:any,set:any){return unit&&unit!==UNIT&&CUT_OF?CUT_OF(String(unit),set):cutBackDays(set);}
 /* the rule in words, as each calendar's "How this works" states it — from the set in force, so it changes when the
    setting does (D628, D646: the rule only; the date an entry missed is said by its LATE tag) */
 const CUT_WD=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
@@ -1217,9 +1223,9 @@ export function cutRuleText(set:any){
 }
 /* a week-start ISO date → that week's input deadline (its Monday minus the
    lead), '' in for '' out so unknown stays unknown */
-function dueOfWeekISO(ws:any,set?:any){
+function dueOfWeekISO(ws:any,set?:any,unit?:any){
   if(!ws)return '';
-  const n=cutBackDays(set);
+  const n=cutBackFor(unit,set);
   const t=Date.UTC(+ws.slice(0,4),+ws.slice(5,7)-1,+ws.slice(8,10))-n*86400000;
   const d=new Date(t);
   return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`;
@@ -1241,8 +1247,9 @@ export function inputWeekStartISO(inp:any){
   return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`;
 }
 /* the running deadline: the last day THIS input may be touched and still
-   count as on time, wherever the viewer happens to be */
-export function inputOwnDueISO(inp:any){ return dueOfWeekISO(inputWeekStartISO(inp),cutSetOf(inp)); }
+   count as on time, wherever the viewer happens to be — by its own squadron's
+   cut-off (the squadron of its first day, inputUnitOf) */
+export function inputOwnDueISO(inp:any){ return dueOfWeekISO(inputWeekStartISO(inp),cutSetOf(inp),inputUnitOf(inp)); }
 /* TODAY as an ISO 'yyyy-mm-dd' stamp — what every input WRITE path records as
    `mod`, FROZEN at the moment of the edit (ARCH-STACK 1b). The literal 'now'
    used to be stored instead and re-resolved to whatever "today" was at read

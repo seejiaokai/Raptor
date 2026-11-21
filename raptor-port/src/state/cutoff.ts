@@ -12,7 +12,7 @@
 
    Only the values of the mode chosen are written: choosing "a weekday" leaves the day count as it was, so going back
    to "days before" finds the squadron's old figure, not a nought. */
-import { cutBackOf } from '../engine/inputs'
+import { cutBackOf, setCutOfUnit } from '../engine/inputs'
 import { RULE_SPEC, RULE_STD, VCONF, rulesSave } from '../engine/rules'
 import { store, unitSetting, unitSettingKey } from '../engine/hooks'
 import { UNIT } from '../engine/unitview'
@@ -41,6 +41,13 @@ export function getCut(set: CutSet, unit: string = UNIT): CutRule {
   const k = KEYS[set], V = unit === UNIT ? VCONF : rulesOf(unit)
   return { mode: V[k.mode] === 1 ? 1 : 0, lead: +V[k.lead] || 0, wd: +V[k.wd] || 0, weeks: +V[k.weeks] || 1 }
 }
+/* …and an input's late mark asks the same of its own squadron (engine/inputs.ts inputOwnDueISO — the reshape's phase 3):
+   another squadron's days back, by the very sum the loaded squadron's go through (engine/inputs.ts cutBackOf over the
+   stored values, as cutBackDays reads VCONF's) */
+setCutOfUnit((unit, set) => {
+  const k = KEYS[set === 'sans' ? 'sans' : 'inputs'], V = rulesOf(unit)
+  return cutBackOf(V[k.mode], V[k.lead], V[k.wd], V[k.weeks])
+})
 /* a squadron's stored `rules` record as its two halves — the values it overrides and the hard kinds — each a copy */
 function storedRules(unit: string): { v: Record<string, unknown>; s: Record<string, unknown> } {
   const r: any = unitSetting(unit, 'rules', null)
