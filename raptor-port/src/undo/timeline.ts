@@ -145,6 +145,12 @@ export interface UndoHooks {
      holds Plan of today)? A step sharing a record with a step left in a world he can never enter again is blocked for good
      (Fable 4 of round 3). None installed: always. */
   canReach?(unit: string): boolean
+  /* A STEP HE CAN NO LONGER REACH (fix read 2 — Opus 2's F1, Fable 2's F2): what its restore would write can never go
+     through for the person pressing — a man's or an account's row of a squadron he is no longer an admin of, a right of
+     one, an admin's step once his account gives no admin role, a squadron that can never be taken away again
+     (state/undo-wire.ts stepStuck). Asked first of every press: blocked for good in today's words, the next press named,
+     never refused on every press with his older steps out of reach. None installed: never. */
+  stuck?(changes: Change[], dir: 'undo' | 'redo', entry: UndoEntry): boolean
   /* THE STORE OF ONE RECORD, WHEN IT IS NOT ITS COLLECTION'S (the reshape plan §3.2 A-ii, "Through Undo, in both
      directions" — Fable 3, Opus 4 of round 3): a planning record of a squadron not loaded is written by that squadron's
      stored calendar (state/plan-foreign.ts), never the schedule's store, which refuses another squadron's planning record.
@@ -1138,6 +1144,9 @@ export function globalUndo(): UndoResult {
   if (!entry) return { ok: false, reason: nothingToUndoWhy() || 'Nothing to undo.' }
   /* the newest own step of the kind not undone here, if Undo is about to go past it (A2-F3) — read before the apply */
   const passedInelig = LAST_INELIG && LAST_INELIG.seq > entry.seq ? LAST_INELIG : null
+  /* a step he can no longer reach (fix read 2): blocked for good, before any other answer — "switch back to the admin
+     view" is no answer to a man whose account gives none */
+  if (hooks.stuck && hooks.stuck(keptOf(entry, entry.inverse, 'undo'), 'undo', entry)) return { ok: false, reason: sayBlocked(entry, 'undo', OUT_OF_BAND) }
   if (!mayReverse(entry, currentActor())) return { ok: false, reason: reverseRefusal(entry, 'undo') }
   const conflict = undoConflictOf(entry)
   if (conflict) return { ok: false, reason: conflict.sticky ? sayBlocked(entry, 'undo', conflict.text) : conflict.text }
@@ -1170,6 +1179,7 @@ export function globalUndo(): UndoResult {
 export function globalRedo(): UndoResult {
   const entry = mostRecentlyUndone()
   if (!entry) return { ok: false, reason: LAST_BLOCKED || LAST_DEAD || 'Nothing to redo.' }
+  if (hooks.stuck && hooks.stuck(keptOf(entry, entry.forward, 'redo'), 'redo', entry)) return { ok: false, reason: sayBlocked(entry, 'redo', OUT_OF_BAND) }
   if (!mayReverse(entry, currentActor())) return { ok: false, reason: reverseRefusal(entry, 'redo') }
   const conflict = redoConflictOf(entry)
   if (conflict) return { ok: false, reason: conflict.sticky ? sayBlocked(entry, 'redo', conflict.text) : conflict.text }

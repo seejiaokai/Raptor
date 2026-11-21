@@ -534,6 +534,25 @@ export function resetSession(s: any) {
    the same person looking through the other role's eyes. It is not a logout either, so the
    Tracker's session and its unsaved-edits question are untouched (D129). This file never
    reads the session's role itself (the perms scan): it asks perms.ts. */
+/* ---- THE SAME PERSON, WITH WHAT HIS ACCOUNT NOW GIVES (fix read 2 — Astra 2's finding 1) ----
+   accounts.ts sessionNow makes a session again when the role its account gives has changed while he is signed in: his own
+   move's day come (K3 — an admin joins as a member), or another admin made him an admin or a member. That is no sign-out:
+   the same account, the same person — so his Undo list stays (D148: "the list clears when they sign out"; no ruling
+   clears it on a change of role), and so do the week, the selection and the open windows, as for the admin's own member
+   view above. The full reset stays for a sign-in, a sign-out, a suspension and an account put on another person
+   (ui/App.tsx chooses). What moves is the role in force; the same three pieces of state as the member view are walked
+   when he is no longer an admin. His squadron is entered by the midnight check (enterSquadron, below), which keeps the
+   typing hold; a step of his he can no longer reach is blocked for good by the timeline (undo-wire.ts stepStuck). */
+export function refreshAccess(s: any) {
+  authSetSession(s)
+  view.bumpNav()
+  if (!isAdmin()) {
+    if (view.CURPAGE === 'editsched' || view.CURPAGE === 'admin') view.setPage('viewsched')
+    view.armDrop()
+    view.clearAdminOpen()
+  }
+  lwSetRole(isAdmin() ? 'admin' : 'member')
+}
 export function switchRoleView() {
   if (!mayViewAsMember()) return
   const toMember = isAdmin()
