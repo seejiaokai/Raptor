@@ -494,7 +494,7 @@ function standingRightKey(changes: Change[]): string | null {
      and no person (a delete's, a re-link's and a demotion's drops are the gate's to judge);
    - a squadron taken away again (the Undo of "+ New squadron") while a man's home in it has begun: a begun home row
      never changes (D2119), so the squadron is named for good.
-   - an input of squadrons he is no longer an admin of today (the gate's 7c — `inputStuck`, below).
+   - (an input of squadrons he is no longer an admin of today — the gate's 7c — is `inputStuck`'s, below, asked later.)
    A master admin reaches every squadron, so only the squadron taken away can hold him. No account behind the session (the
    localhost bridge, a headless test): never. */
 const sameImage = (x: unknown, y: unknown): boolean => JSON.stringify(x ?? null) === JSON.stringify(y ?? null)
@@ -542,7 +542,7 @@ function stepStuck(changes: Change[], entry: UndoEntry): boolean {
       for (const img of [c.before as any, after as any]) if (img && img.unit != null && !adminOf(String(img.unit))) return true
     }
   }
-  return inputStuck(changes, acct, today)
+  return false
 }
 /* …AND AN INPUT'S STEP (Astra's read of round 2, F1 — the limit fix read 2 left: "an input whose man moved … can still
    refuse each press"). Hunter, holding Plan of 149, files Osprey a Meeting; his Plan is taken away; the gate's 7c refused
@@ -553,8 +553,14 @@ function stepStuck(changes: Change[], entry: UndoEntry): boolean {
    them. Asked at its most lenient — as a verified replay, which is what an honest Undo is — so no restore the gate would
    pass is ever held: the two cases the gate judges by other rules are left to it (`own` — his own input, held by the
    member's own-input rules; his own part of an input he shares, in or out). What is left is a restore 7c refuses for as
-   long as his rights stand as they do: blocked once, in today's words, the next press named. */
-function inputStuck(changes: Change[], acct: NonNullable<ReturnType<typeof signedInAccount>>, today: string): boolean {
+   long as his rights stand as they do: blocked once, in today's words, the next press named.
+   ASKED LATE (the timeline's `stuckLate`), after what a press already answers — a later change to the same thing among
+   them, whose words stay as they were (state/msq-undo-worlds.test.ts, Fable 4). An admin's step only, as above; a master
+   admin reaches every squadron; no account behind the session: never. */
+function inputStuck(changes: Change[], entry: UndoEntry): boolean {
+  const acct = signedInAccount()
+  if (!acct || acct.master || !madeAsAdmin(entry.actor)) return false
+  const today = todayIso()
   const ins = changes.filter(c => c.collection === 'inputs' && String(c.id) !== '__order')
   if (!ins.length || !(adminNow(acct) || isAdmin())) return false
   const mine = String(acct.pid)
@@ -654,6 +660,8 @@ export function installGlobalUndo(): void {
     canReach,
     /* fix read 2: a step he can no longer reach is blocked for good, never refused on every press */
     stuck: (changes, _dir, entry) => stepStuck(changes, entry),
+    /* …and an input's step out of his reach, asked after the answers a press already gives (Astra's read of round 2, F1) */
+    stuckLate: (changes, _dir, entry) => inputStuck(changes, entry),
     /* the planning record's per-record store (the reshape plan §3.2 A-ii, "Through Undo, in both directions"): a note or
        a day title of a squadron NOT loaded as the restore is applied goes to that squadron's stored calendar
        (state/plan-foreign.ts), which loads the records it will write before it enlists — so the note is put back as it
