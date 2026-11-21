@@ -1964,6 +1964,11 @@ export function removeInput(r: any) {
   /* AN UPCHIT DELETED GIVES THE DOWNCHIT IT CUT ITS DAYS BACK (owner D1022, 18 Oct 26 — as a moved one does, D999), in the
      same command: one Undo step puts back the upchit and the cut together. Every door that deletes one says so first
      (upchitDeleteAsk, below); this is the write, whoever asked. A give-back onto a locked day is refused whole. */
+  /* THE WHO-RULE, ASKED BEFORE THE GATE AS THE SAVE ASKS IT (the fix round of 22 Nov 26, Fable's read F4 (a)): Hunter,
+     142's admin, deleting Ranger's leave that runs across his move was told the gate's bare "Blocked: nothing was kept"
+     — the Delete now says his approved words (D2240, whoDoorRefusal), and any other refusal by the rule as before. */
+  const whoWhy = whoDoorRefusal(r, null)
+  if (whoWhy) { HOOKS.toast(whoWhy, 'blocked'); return false }
   const back = upchitDeletePlan(r).map((p: any) => ({ ...p, why: 'given back by a deleted upchit' }))
   if (back.length && medPlanProtected(back)) { medicalLocked(); return false }
   return saveBatch(() => { if (back.length) applyMedPlan(back); dropInputRow(r) })
