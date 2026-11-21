@@ -6,14 +6,14 @@
    Tracker's + Add dialog shows and files, and re-projects on every Raptor
    notify; the bridge's own signature guard makes an unrelated notify free. */
 import { HOOKS } from '../engine/hooks'
-import { inputsFor, isDownchit, isUpchit, inpType, leadOf } from '../engine/inputs'
+import { inputsTouching, isDownchit, isUpchit, inpType, leadOf } from '../engine/inputs'
 import { unitPeople } from '../engine/roster'
 import { storageUnit } from './storage.js'
 import { medStartOrd, medEndOrd, firstEndOrd, firstEndIso, ordShift } from '../engine/medical'
 import { subscribe } from '../state/store'
 import { setPeople, setWhoami, setWhoamiId, setGonePeople, setMedInputs } from './people.js'
 import { setTrackerAdmin } from './role.js'
-import { roleOf, myUnit } from '../state/perms'
+import { roleOf, pageUnit } from '../state/perms'
 
 export type TrackerPerson = { id: string; cs: string; seat: string; q: string; sxo: boolean }
 
@@ -117,10 +117,12 @@ export function wireTrackerPeople(): void {
     /* ONE SQUADRON'S PEOPLE (multi-squadron batch 1, step 4): the Tracker is a world per squadron — the one its doorway
        is bound to (tracker/storage.js), else the signed-in person's own (it binds that one at its first load) — so its
        + Add offers that squadron's roster alone, and its down days and gone men are that squadron's (engine/roster.ts
-       unitPeople, engine/inputs.ts inputsFor). A 149 man is never offered on 142's course. */
-    const unit = storageUnit() || myUnit()
+       unitPeople, engine/inputs.ts inputsTouching — every medical touching that squadron, a list reader). A 149 man is
+       never offered on 142's course. Unbound, the page's own squadron (state/perms.ts pageUnit — the reshape plan §3.2
+       A-ii): his own, a master admin's or Plan holder's following his pick (D2197). */
+    const unit = storageUnit() || pageUnit('own')
     const people = unitPeople(unit)
-    setPeople(projectForTracker(people)); setGonePeople(deletedForTracker(people)); setMedInputs(medForTracker(inputsFor(unit)))
+    setPeople(projectForTracker(people)); setGonePeople(deletedForTracker(people)); setMedInputs(medForTracker(inputsTouching(unit)))
   }
   subscribe(push)
   push()

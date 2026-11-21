@@ -34,7 +34,8 @@ import { addDays, type Tones } from '../state/flyplan-model'
 import { notify } from '../state/store'
 import { CALMONTH, INPREVEAL, SANSHL, clearInpReveal, setCalMonth, setSansHl } from '../state/view'
 import { dayFacts, flyMonth, useWarFacts } from '../leavewar/sync'
-import { isAdmin, myUnit } from '../state/perms'
+import { isAdmin, pageUnit } from '../state/perms'
+import { openWinFor } from '../state/cutoff'
 import { unitPeople } from '../engine/roster'
 import { setSansSet } from './pops'
 import { initCalPick } from './calpick'
@@ -53,11 +54,14 @@ import { useVersion } from './useStore'
 import { KEYBOARD_MIN, screenBox } from './kbscroll'
 import { frontWin } from './floatwin'
 
-/* THE PAGE'S SQUADRON AND ITS COLOURS — one place the page and its tests read (the reshape plan §3.2 A-ii) */
+/* THE PAGE'S SQUADRON AND ITS COLOURS — one place the page and its tests read (the reshape plan §3.2 A-ii): the SANS
+   calendar is an own page — his own squadron's whatever schedule he picks (D2132), a master admin's or a Plan holder's
+   following his pick (D2197, D2201). (Its month's day class and need still come through the Leave War's join,
+   leavewar/sync.ts flyMonth, helper "war"'s to move onto the flying plan's squadron-taking forms.) */
 // eslint-disable-next-line react-doctor/only-export-components -- the page's squadron, read by the page and its proofs
-export const sansCalUnit = (): string => myUnit()
+export const sansCalUnit = (): string => pageUnit('own')
 // eslint-disable-next-line react-doctor/only-export-components -- the three day colours the page draws, read by the page and its proofs
-export const sansCalTones = (): Tones => getTones()
+export const sansCalTones = (): Tones => getTones(sansCalUnit())
 
 /** "1–2", "3–4", "5+" — the three colours' ranges, from the figures as set */
 const span = (from: number, below?: number): string => below === undefined ? `${from}+` : below - 1 <= from ? String(from) : `${from}–${below - 1}`
@@ -297,7 +301,7 @@ export function SansCal({ lead }: { lead?: ReactNode } = {}) {
               read as the day-flying sun beside it. Admins only; everyone has the line below. */}
           {isAdmin() && (
             <button type="button" className="abtn sc-gear" data-testid="sc-gear" title="SANS calendar settings — day colours, the late cut-off, the Calendar"
-              aria-label="SANS calendar settings" onClick={() => { setSansSet(true); notify() }}><GearIcon /></button>
+              aria-label="SANS calendar settings" onClick={() => { openWinFor('sans', sansCalUnit()); setSansSet(true); notify() }}><GearIcon /></button>
           )}
         </div>
         <div className="sc-sub">

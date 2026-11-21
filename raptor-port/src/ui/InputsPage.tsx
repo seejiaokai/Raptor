@@ -12,14 +12,15 @@
 import { MONTHS } from './daysfmt'
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { bringRowOnScreen, rowOnScreen } from './onscreen'
-import { INPUTS, inputLines, inputsFor, inpLabel, inpKindTag, isLateInput, lateNote, isSansAvail, sansLetters, baseYear, dateOrd, nowStamp, idsOf, facesOf, remarksShown, typeMatches, typeFilterLabel, typeGroup } from '../engine/inputs'
+import { INPUTS, inputLines, inputsListed, inpLabel, inpKindTag, isLateInput, lateNote, isSansAvail, sansLetters, baseYear, dateOrd, nowStamp, idsOf, facesOf, remarksShown, typeMatches, typeFilterLabel, typeGroup } from '../engine/inputs'
 import { OilConfirm } from './OilConfirm'
 import { PEOPLE } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
-import { LOOK_CFG, LOOK_MAX, LOOK_MIN, lookaheadLabel, lookaheadRange, setLookahead, type Lookahead } from '../engine/lookahead'
+import { LOOK_MAX, LOOK_MIN, lookaheadLabel, lookaheadRange, lookaheadOf, setLookaheadFor, type Lookahead } from '../engine/lookahead'
 import { canEditSched } from '../state/auth'
-import { me, isAdmin, mayEditInput, myUnit } from '../state/perms'
+import { me, isAdmin, mayEditInput, pageUnit } from '../state/perms'
+import { openWinFor } from '../state/cutoff'
 import { rosterOf, onRosterOf } from '../engine/roster'
 import { notify } from '../state/store'
 import { INPVIEW, setInpView, INPMODE, setInpMode, INPREVEAL, clearInpReveal } from '../state/view'
@@ -52,17 +53,21 @@ import { useMedia } from './usemedia'
    sorted by start date, today at the top, the next two months below it. */
 
 /* THE PAGE'S SQUADRON AND WHAT IT LISTS — one place the page and its tests read (the reshape plan
-   docs/superpowers/plans/2026-11-20-multi-sqn-b1-reshape.md §3.2 A-ii, §3.3 C2 and C11) */
+   docs/superpowers/plans/2026-11-20-multi-sqn-b1-reshape.md §3.2 A-ii, §3.3 C2 and C11). The Inputs page is an own page:
+   it stays on his own squadron whatever schedule he picks (D2132) — a master admin's, or a Plan holder's, follows his pick
+   (D2197, D2201) — and its filter, rows, groups and look-ahead all read that one squadron (state/perms.ts pageUnit). Its
+   rows are every input touching that squadron on any of its days (a leave across a move is on both squadrons' lists —
+   C1) and every input naming him, wherever it sits (his own input after his move — C2): a list reader, never a writer. */
 // eslint-disable-next-line react-doctor/only-export-components -- the page's squadron, read by the page and its proofs
-export const inputsPageUnit = (): string => myUnit()
+export const inputsPageUnit = (): string => pageUnit('own')
 // eslint-disable-next-line react-doctor/only-export-components -- the page's rows before its filters, read by the page and its proofs
-export const inputsPageRows = (): any[] => inputsFor(inputsPageUnit())
+export const inputsPageRows = (): any[] => inputsListed(inputsPageUnit(), me())
 // eslint-disable-next-line react-doctor/only-export-components -- the Person filter's people, read by the page and its proofs
-export const inputsFilterPeople = (): string[] => people()
+export const inputsFilterPeople = (): string[] => people(inputsPageUnit())
 // eslint-disable-next-line react-doctor/only-export-components -- the look-ahead the page opens on, read by the page and its proofs
-export const inputsLookahead = (): Lookahead => LOOK_CFG
+export const inputsLookahead = (): Lookahead => lookaheadOf(inputsPageUnit())
 // eslint-disable-next-line react-doctor/only-export-components -- the look-ahead's one writer on this page, read by its proofs
-export const setInputsLookahead = (weeks: number | string, toSunday: boolean): boolean => setLookahead(weeks, toSunday)
+export const setInputsLookahead = (weeks: number | string, toSunday: boolean): boolean => setLookaheadFor(inputsPageUnit(), weeks, toSunday)
 
 /* SANS availability is filed on the SANS calendar and nowhere else (D620): no type list on this page offers it */
 const notSans = (t: string) => !isSansAvail(t)
@@ -661,7 +666,7 @@ export function InputsPage() {
         "Calendar…" (ui/InputsSettings.tsx); the Logic page's rows open the same window. */}
     {isAdmin() && (
       <button type="button" className="abtn inputs-gear" id="inGear" data-testid="in-gear" title="Inputs calendar settings — the late cut-off, who may file for other people, the Calendar"
-        aria-label="Inputs calendar settings" onClick={() => { setInpSet(true); notify() }}><GearIcon /></button>
+        aria-label="Inputs calendar settings" onClick={() => { openWinFor('inputs', inputsPageUnit()); setInpSet(true); notify() }}><GearIcon /></button>
     )}
     </div>
   </>)

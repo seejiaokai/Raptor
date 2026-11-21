@@ -16,7 +16,7 @@
 import { HOOKS } from '../engine/hooks'
 import { INPUTS } from '../engine/inputs'
 import { canEditSched } from '../state/auth'
-import { myUnit } from '../state/perms'
+import { pageUnit } from '../state/perms'
 import { stampChanged } from '../state/inputstamp'
 import { oilOpenOn } from '../leavewar/sync'
 import { units } from '../state/units'
@@ -28,7 +28,7 @@ export type OilPick = 'y' | 'n'
 /** Save the picked answers. Answers how many inputs were answered; -1 where the save was refused (it said why). */
 export function saveOilDay(from: string, to: string, picks: Readonly<Record<string, OilPick | undefined>>): number {
   if (!canEditSched()) { HOOKS.toast('Only a scheduler answers from this list', 'warn'); return -1 }
-  const todo = oilOpenOn(from, to, myUnit()).filter(o => picks[o.iid] === 'y' || picks[o.iid] === 'n')
+  const todo = oilOpenOn(from, to, pageUnit('own')).filter(o => picks[o.iid] === 'y' || picks[o.iid] === 'n')
   if (!todo.length) return 0
   let n = 0
   const out = saveBatchX(() => {

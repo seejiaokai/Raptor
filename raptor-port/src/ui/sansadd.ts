@@ -12,7 +12,7 @@
    it. */
 import { defaultAllday } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
-import { isAdmin, me, myUnit } from '../state/perms'
+import { isAdmin, me, pageUnit } from '../state/perms'
 import { rosterOf } from '../engine/roster'
 import { notify } from '../state/store'
 import { flyAnswer } from '../leavewar/sync'
@@ -29,8 +29,8 @@ export function openSansAdd(from: string, until?: string): boolean {
   const [iso, end] = until && until < from ? [until, from] : [from, until]
   const mine = me()
   const who = isSans(mine) ? mine
-    /* (a SANS man of the signed-in person's own squadron — the SANS calendar stays on his own, D2132; step 3) */
-    : rosterOf(myUnit()).find(id => PEOPLE[id].san && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special)
+    /* (a SANS man of the page's own squadron — the SANS calendar stays on his own, D2132; the reshape plan §3.2 A-ii) */
+    : rosterOf(pageUnit('own')).find(id => PEOPLE[id].san && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special)
   const single = !end || end === iso
   setInpEdit({
     _new: true, _calendar: true, _ctx: 's', person: who, type: TYPE,

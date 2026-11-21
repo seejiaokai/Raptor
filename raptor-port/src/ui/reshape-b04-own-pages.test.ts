@@ -90,4 +90,18 @@ describe("B4, own pages — a 142 man's own pages stay 142's whatever schedule h
     expect(keys(), "149's columns").toEqual(all.slice(1))
     expect(inputsLookahead().weeks, "149's look-ahead").toBe(5)
   })
+
+  it("control — a Plan holder's pick moves them too (D2201): Hunter, admin of 149 by Plan, picks 149 and reads and edits 149's", () => {
+    signInAs('ad', 'a')
+    expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
+    signInAs('ad9', 'a9')
+    const all = keys()
+    expect(setQualsPageCols(qualsPageCols().slice(1))).toBe(true)
+    signInAs('ad2', 'a2')
+    switchUnit('u149')
+    expect(keys(), "149's columns").toEqual(all.slice(1))
+    expect(setQualsPageCols(qualsPageCols().slice(1))).toBe(true)
+    expect(storedKeys('u149'), "his edit is 149's").toEqual(all.slice(2))
+    expect(storedKeys('u142'), "142's untouched").toBeNull()
+  })
 })

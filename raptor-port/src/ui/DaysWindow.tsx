@@ -40,6 +40,7 @@ import { DAYSWIN, setDaysWin } from './pops'
 import { useVersion } from './useStore'
 import { notify } from '../state/store'
 import { isAdmin } from '../state/perms'
+import { forgetWin, winUnit } from '../state/cutoff'
 import { setFlyDays, type FlySave } from '../state/flyplan'
 import { monthDates, nextCls, weekdayOf, type DayAnswer, type FlyCls } from '../state/flyplan-model'
 import { dayFacts, flyMonth, useWarFacts } from '../leavewar/sync'
@@ -95,19 +96,27 @@ function holidayTitle(iso: string, kind: 'ph' | 'off'): string {
   return name && name.toLowerCase() !== (kind === 'ph' ? 'ph' : 'off day') ? `${name} - ${word}` : kind === 'ph' ? 'Public holiday' : 'Off day'
 }
 
-export function DaysWindow() {
+export function DaysWindow({ unit }: { unit?: string } = {}) {
   useVersion()
   /* the page is the gate, as Admin's is: a member has no door to this window, and one asked for anyway draws nothing —
      and is not left asked for, or an admin who looks at the member view (D292) would find it back up on his return */
   const refused = !!DAYSWIN && !isAdmin()
   useEffect(() => { if (refused) setDaysWin(null) }, [refused])
+  /* THE SQUADRON IT EDITS (the reshape plan §3.2 A-ii; the host's ruling of 21 Nov 26): the page it was opened from —
+     `unit` when handed in, else what its door named (state/cutoff.ts openWinFor: a calendar's gear its own squadron),
+     else the pick (the Logic page's doors name none). It forgets the door's squadron once closed, so the next opening that
+     names none is the pick's again; keyed by it, so a draft never carries over to another squadron. */
+  useEffect(() => { if (!DAYSWIN) forgetWin('days') })
   if (!DAYSWIN || refused) return null
+  /* (its month and its tags still come through the Leave War's join, leavewar/sync.ts flyMonth — the pick's plan until
+     helper "war" moves that onto the flying plan's squadron-taking forms; what it writes is this squadron's) */
+  const u = unit ?? winUnit('days')
   /* keyed by the date it was asked for, so asking again for another month (the Leave War's settings, on the month the
      war is showing) opens on that month */
-  return <DaysBody key={DAYSWIN} at={DAYSWIN} />
+  return <DaysBody key={DAYSWIN + '|' + u} at={DAYSWIN} unit={u} />
 }
 
-function DaysBody({ at }: { at: string }) {
+function DaysBody({ at, unit }: { at: string; unit: string }) {
   useVersion()
   useWarFacts()
   const narrow = useMedia(NARROW)
@@ -129,7 +138,7 @@ function DaysBody({ at }: { at: string }) {
     return { y: Math.floor(n / 12), m: (n % 12) + 1 }
   })
   const set = (iso: string, cls: FlyCls) => {
-    const r = setFlyDays([{ iso, cls }])
+    const r = setFlyDays([{ iso, cls }], unit)
     const done = (x: FlySave) => setErr(x.ok ? '' : x.message || 'This change could not be saved.')
     if (r.pending) void r.pending.then(done); else done(r)
   }
@@ -272,7 +281,7 @@ function DaysBody({ at }: { at: string }) {
       </div>
     </FloatWin>
     {/* keyed by the weekday, so another heading starts a fresh form */}
-    {every !== null && <EveryWeekday key={every} wd={every} from={everyFrom(every)} onClose={() => setSide(null)} />}
+    {every !== null && <EveryWeekday key={every} wd={every} from={everyFrom(every)} unit={unit} onClose={() => setSide(null)} />}
     {side && side.k === 'hol' && <HolidayForm key={side.n} line={side.line} year={holYear} onClose={() => setSide(null)} />}
     </>
   )
