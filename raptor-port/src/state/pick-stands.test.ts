@@ -4,10 +4,14 @@
 import { describe, it, expect } from 'vitest'
 import { useMsqWorld, signInAs, signOut, PID, ACCT, on } from '../test-support/msq-world'
 import { pickStandsOn } from './perms'
-import { switchUnit } from './store'
+import { switchUnit, setEntryTrigger } from './store'
 import { setGrant, todayIso } from './units'
 
 useMsqWorld()
+/* SETUP ONLY (the reshape plan §9.2), phase 3: with the midnight swap switched on, the very next notify re-enters his own
+   squadron when the pick has no right behind it (state/store.ts — R6's pick half, which reads this function), so a pick
+   with none would be gone before it is read. The reader is tested here with the page held where it is picked. */
+setEntryTrigger(false)
 
 describe('pickStandsOn', () => {
   it('his own squadron stands; another squadron with no right behind it does not', () => {

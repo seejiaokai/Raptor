@@ -47,7 +47,7 @@ import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit, histSnap, histRestore, schedFields } from './history'
 import { setSession as authSetSession, canEditSched, SESSION, setMe, DEFAULT_ME, setLgEdit } from './auth'
-import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUnitNow, trkUnitNow } from './perms'
+import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUnitNow, trkUnitNow, pickStandsOn } from './perms'
 import { holdNow, setBands, setHoldRelease, type MoveBand, type HoldKind } from './typing-hold'
 import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
@@ -953,8 +953,13 @@ function pickAfterMove(pick: string, oldHome: string, newHome: string, iso: stri
 
 /* THE CHECK notify() RUNS while the trigger is on: the squadron to enter now, or null.
    - his own move (A2): his home today is not his home at entry → the pick by the rule above;
-   - the blind read's R6 (dormant, the war's half): the page's own squadron is not the Leave War's loaded one — a right
-     lowered, removed or raised mid-day, or a war held by a window that has since gone — → the same pick, entered again. */
+   - the blind read's R6 (the plan §19b; dormant until P1/P3 — nothing in the app makes these cases yet), three halves:
+     the pick has no readable right behind it today (perms.ts pickStandsOn — a View or Plan taken away or ended while he
+     is on that squadron's pages) → his home, entered again; the page's own squadron is not the Leave War's loaded one —
+     a right lowered, removed or raised mid-day, or a war held by a window that has since gone — → the same pick, entered
+     again; or not the Tracker's bound one → the same pick, entered again, the Tracker moving only where it has not yet
+     loaded (tracker/storage.js rebindStorageUnit: a loaded one is kept until the next sign-in, its band saying so, and the
+     key in maybeReenter stops a second try). */
 function entryDue(): string | null {
   const m = me()
   if (!m || HOME_AT_ENTRY == null) return null
@@ -962,9 +967,12 @@ function entryDue(): string | null {
   const home = homeOn(m, iso)
   if (!home || !isUnitId(home)) return null
   if (home !== HOME_AT_ENTRY) return pickAfterMove(UNIT, HOME_AT_ENTRY, home, iso)
+  if (!pickStandsOn(iso)) return home
   const own = pageUnit('own', iso)
   const war = lwUnitNow()
   if (war && war !== own) return UNIT
+  const trk = trkUnitNow()
+  if (trk && trk !== own) return UNIT
   return null
 }
 /* run from realNotify — never inside a command (a swap loads a week and a war, which are no one's command), never while

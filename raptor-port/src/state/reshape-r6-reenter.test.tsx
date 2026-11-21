@@ -37,10 +37,10 @@ function fromAnotherDevice(f: () => unknown): unknown {
 describe('the pick half: a squadron picked with no readable right behind it', () => {
   it('Ranger, with no right in 149, on 149’s pages: the next notify brings him home to 142', () => {
     signInAs('ranger')
-    switchUnit('u149')
-    expect(pickStandsOn(todayIso()), 'premise: nothing of his stands behind 149').toBe(false)
-    notify()
+    /* nothing of his stands behind 149 (pick-stands.test.ts); the notify the pick itself raises is the next one */
+    switchUnit('u149'); notify()
     expect(UNIT).toBe('u142')
+    expect(pickStandsOn(todayIso())).toBe(true)
     expect(worldUnit()).toBe('u142')
   })
   it('Hunter’s Plan of 149 taken away while he is on 149’s pages: the next notify brings him home to 142', () => {

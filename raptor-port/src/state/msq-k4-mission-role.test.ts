@@ -14,7 +14,7 @@ import { CURWEEK } from '../engine/waves'
 import { storesReset } from '../engine/stores'
 import { encodeRoleId } from '../engine/mission-role'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
-import { initStore, weekStashSnap, weekDirty, loadWeek, resetSession, switchUnit, forgetUnitPlans, notify } from '../state/store'
+import { initStore, weekStashSnap, weekDirty, loadWeek, resetSession, switchUnit, forgetUnitPlans, notify, setEntryTrigger } from '../state/store'
 import { setSession } from '../state/auth'
 import { signIn, sessionFor } from '../state/accounts'
 import { hydrate, wirePersist } from '../state/persist'
@@ -54,6 +54,10 @@ async function boot(be: MemoryBackend) {
   wirePersist(wb, { weekSnap: weekStashSnap, weekDirty })
   return { wb, postman }
 }
+/* SETUP ONLY (the reshape plan §9.2), phase 3: with the midnight swap switched on, the next notify re-enters his own
+   squadron when the pick has no right behind it (state/store.ts, the blind read's R6), so Hunter's pick of 149 with no
+   right there would not stand; the gate is tested here with the page held where it is picked, as before. */
+setEntryTrigger(false)
 beforeEach(() => { vi.useFakeTimers(); resetWorld(); _resetTimeline(); installGlobalUndo() })
 afterEach(() => { vi.useRealTimers(); setSession(null); resetWorld(); _resetTimeline(); storeBackend.impl = null })
 
