@@ -105,12 +105,27 @@ function ownTakeOutOf(rec: any, next: readonly string[]): boolean {
 /** whom the picker offers for this draft: a man where the draft with him added passes (with him in place of the one
  *  person, or beside those picked, `several`); a man already picked always stays — nothing is substituted for what he
  *  picked (ui/PeoplePick.tsx). His own input as a member is the gate's own-input rules' (`own`), so it is offered. */
+/*  A REFUSAL THE MEN ALREADY PICKED BRING IS THEIRS, NOT THE NEXT MAN'S (the second re-walk of 22 Nov 26, item 9b): in
+    "Several people" a man was asked of the draft with him added to ALL those picked, so one picked man the draft may not
+    hold refused it for everyone. Hunter picked Ranger alone for Tue 14 Jul and moved the draft to Fri 17, when Ranger is
+    149's: the picker emptied of every 142 name, Ranger could not be let go (never the last man), and only Cancel or the
+    date got him out. Each picked man the who-rule names as the one refused is set aside and the draft asked again, so a
+    man is offered where adding him brings no refusal of his own; the save door still refuses the draft while that
+    picked man stays in it, and he keeps his puck to be taken out (ui/PeoplePick.tsx). */
 export function offersFor(rec: any | null, draft: any, picked: readonly any[], several = false): (id: string) => boolean {
   const have = picked.map(String)
   return (id: string) => {
-    if (have.includes(String(id))) return true
-    const who = inputWhoProblemNow(rec, draftImage(rec, draft, several ? [...have, String(id)] : [String(id)]))
-    return !who || !!who.own
+    const me0 = String(id)
+    if (have.includes(me0)) return true
+    const ppl = new Set(several ? [...have, me0] : [me0])
+    for (;;) {
+      const who = inputWhoProblemNow(rec, draftImage(rec, draft, [...ppl]))
+      if (!who || who.own) return true
+      /* refused by the man himself, or by no one man of the draft (a squadron stamp, a filer, a man the saved input had):
+         not offered */
+      if (who.pid == null || who.pid === me0 || !ppl.has(who.pid)) return false
+      ppl.delete(who.pid)
+    }
   }
 }
 /** THE SAVE DOOR'S QUESTION, before the gate: null where the save may go on, else the words it is refused in. Leave that

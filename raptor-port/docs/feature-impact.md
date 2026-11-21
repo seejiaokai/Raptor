@@ -942,11 +942,13 @@ input as it stood and as it would stand is judged by every squadron it touches �
 on every saved move inside its span; one naming nobody, its own squadron. An admin in force must be an admin of each (at
 home, by Plan, or a master admin), a member at home in each; his own input and a member's own take-out stay his. Four
 askers, the same answer: the gate (`inputUnitViolation`), the Inputs window's people picker (`ui/inputedit.tsx
-offersFor` — a man is offered only where the whole draft with him added passes), its save door (`whoDoorRefusal`, which
+offersFor` — a man is offered only where the whole draft with him added passes, a refusal a man already picked
+brings set aside: one picked man the draft may not hold never empties the picker, re-walk 9b), its save door (`whoDoorRefusal`, which
 says leave across a man's move in his words, D2240, D2241, opening "Blocked:" — D1667) and an existing input's save.
 What a change can break: a new picker or door that asks a first day alone offers a man the save then refuses (fault
 C6); a door with its own copy of the rule drifts from the gate. Pinned by `state/input-who.test.ts`,
-`ui/reshape-c6-pickers.test.ts`, `ui/reshape-c6-window.test.tsx`.
+`ui/reshape-c6-pickers.test.ts`, `ui/reshape-c6-window.test.tsx`,
+`ui/msq-fix2-picker-keeps-own-squadron.test.tsx`.
 (6) **The day is always named** (`engine/roster.ts needDay` — the reshape's contract step). The "whose is he on a day"
 readers — `homeOn`, `homeUnitOf`, `onRosterOf`, `rosterOf`, `unitPeople`, `myUnit`, `levelIn`, `levelOfAccount`, and
 `inputsFor`'s day — take no default; in tests and development builds a missing or malformed day throws, naming the

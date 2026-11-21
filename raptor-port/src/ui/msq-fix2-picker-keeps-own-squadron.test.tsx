@@ -36,7 +36,7 @@ const day = (iso: string) => `#inpEdCal [data-iso="${iso}"]`
 const own142 = (iso: string) => rosterOptions('u142', iso).filter(id => !PEOPLE[id]!.special)
 
 beforeEach(async () => {
-  setPage('inputs'); setInpView('list')
+  setPage('inputs'); setInpView('table')
   host = document.createElement('div'); document.body.append(host); root = createRoot(host)
   await act(async () => { root.render(<InputEditor />) })
 })
@@ -49,7 +49,7 @@ afterEach(async () => {
 async function rangerAloneOn14() {
   acrossMove(R, 'u142', 'u149')
   signInAs('hunter')
-  setPage('inputs'); setInpView('list')
+  setPage('inputs'); setInpView('table')
   await act(async () => { setInpEdit({ _new: true, _calendar: true, _ctx: 'i', person: H, type: 'Training', date: 'Jul 14', allday: false, s: 360, e: 1080 }); notify() })
   await click('[data-testid="pp-several"]')
   await click(`[data-pp="${R}"]`)
