@@ -8,7 +8,7 @@
    2a01b1454 the answers read the pick's plan and tones and the catalogue the pick's columns. */
 import { afterEach, describe, expect, it } from 'vitest'
 import { useMsqWorld, signInAs } from '../test-support/msq-world'
-import { switchUnit, forgetUnitPlans } from '../state/store'
+import { switchUnit, forgetUnitPlans, setEntryTrigger } from '../state/store'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
 import { setFlyDays as setFlyDaysOf, saveTones, getFlyPlan as getFlyPlanOf } from '../state/flyplan'
 import { DEFAULT_TONES } from '../state/flyplan-model'
@@ -19,6 +19,10 @@ import { qualCatalogue } from './state/raptorRoster'
 import { flyAnswer, flyMonth, getTones, getFlyPlan, setFlyDays } from './sync'
 
 useMsqWorld()
+/* SETUP ONLY (the reshape plan §9.2), phase 3: with the midnight swap switched on, the next notify loads the war of the
+   page's own squadron — for a master admin, his pick (D2197; state/store.ts, the blind read's R6) — so "Saber picks 149
+   with 142's war loaded" would not stand to be read. The war's readers are tested here with the page held as it is set. */
+setEntryTrigger(false)
 afterEach(() => { if (UNIT !== BOOT_UNIT) switchUnit(BOOT_UNIT); forgetUnitPlans() })
 
 const DAY = '2026-07-20'                                     // Mon 20 Jul 26

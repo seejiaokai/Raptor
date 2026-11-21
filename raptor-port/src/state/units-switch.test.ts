@@ -21,7 +21,7 @@ import { noteText, mkNote } from '../engine/note'
 import { schedWrite, SCHED_TYPES } from './sched-commit'
 import { afterSchedMutate } from './view'
 import { PLANPUCKS, DAYRMK, addPlanPuck } from './plan'
-import { initStore, writeInputs, weekStashSnap, weekDirty, loadWeek, resetSession, switchUnit, forgetUnitPlans, notify } from './store'
+import { initStore, writeInputs, weekStashSnap, weekDirty, loadWeek, resetSession, switchUnit, forgetUnitPlans, notify, setEntryTrigger } from './store'
 import { setSession, setEffectiveRole } from './auth'
 import { signIn, sessionFor, addAccount } from './accounts'
 import { hydrate, wirePersist } from './persist'
@@ -77,6 +77,10 @@ async function reload(be: MemoryBackend) {
   return r
 }
 
+/* SETUP ONLY (the reshape plan §9.2), phase 3: with the midnight swap switched on, the next notify re-enters his own
+   squadron when the pick has no right behind it (state/store.ts, the blind read's R6), so a 142 plain admin's pick of 149
+   would not stand; the gate is tested here with the page held where it is picked, as before. */
+setEntryTrigger(false)
 beforeEach(() => { vi.useFakeTimers(); resetWorld(); _resetTimeline(); installGlobalUndo() })
 afterEach(() => { vi.useRealTimers(); setSession(null); resetWorld(); _resetTimeline(); storeBackend.impl = null })
 
