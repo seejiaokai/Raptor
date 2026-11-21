@@ -1128,11 +1128,12 @@ export function wireStore() {
   /* …except the Admin → Data history sweep, which is the admin's own act: it runs as HIM (origin `projection`, so it is
      no Undo step), and its change-log batch names who cleared the history (the group-A final read, Fable F1 step 4,
      30 Sep 26). Its authority is perms.ts COMMAND_OPS — a delete on EditLog, an admin's alone. */
+  /* (it answers whether the save went through: a refused sweep is then said as not saved, never as "Cleared") */
   setElogDoor((type, fn) => {
     const cmd = { type, scope: { module: 'settings' }, apply: () => { fn() } } as any
     const actor = deriveActor()
-    if (type === 'elog.sweep' && actor.role !== 'system') { commitAs(cmd, { actor, origin: 'projection' }); return }
-    commitProjection(cmd)
+    if (type === 'elog.sweep' && actor.role !== 'system') return (commitAs(cmd, { actor, origin: 'projection' }) as any).ok !== false
+    return (commitProjection(cmd) as any).ok !== false
   })
   definePermission('elog.sweep', anyone)
   /* …and a line given just BEFORE its command opens (the board's in-place edits, a text box) joins that command's group

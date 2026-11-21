@@ -2305,13 +2305,15 @@ export function clearHistoryData(mode: ClearMode, a: string, b?: string, dry?: b
      No input is deleted, no balance moves, no stashed week is dropped and the
      loaded week is untouched, so there is nothing to preflight or persist beyond
      what the batch already does. */
-  /* its history line INSIDE the batch ([DB-READINESS] group A, phase 4.1): one saved group, one change-log batch */
-  writeInputsBatch(() => {
+  /* its history line INSIDE the batch ([DB-READINESS] group A, phase 4.1): one saved group, one change-log batch.
+     A save the gate refuses answers -1, never its count — the form then says it could not be saved (helper "left2",
+     21 Nov 26: a refused save once read "Cleared 3 items"). */
+  const ok = writeInputsBatch(() => {
     oldPucks.forEach((s: any) => { const ix = PLANPUCKS.indexOf(s); if (ix >= 0) PLANPUCKS.splice(ix, 1) })
     oldRmk.forEach(k => { delete DAYRMK[k] })
     logAction(null, `Cleared ${n} item${n === 1 ? '' : 's'} of old clutter ${w.said}`, { date: todayIso(), sect: 'day' })
   })
-  return n
+  return ok ? n : -1
 }
 
 /* kept as the one-argument spelling of the 'before' mode — the original
@@ -2333,7 +2335,7 @@ export function clearEditHistory(mode: ClearMode, a: string, b?: string, dry?: b
   }
   /* ONE named command (`elog.sweep` — engine/editlog.ts): the exact lines it clears, and its own line — dated today
      (Fable F3): a line with no day is in no week's window, and the record that history was cleared, and by whom, must
-     be seen — in one saved group ([DB-READINESS] group A, phase 4.3) */
+     be seen — in one saved group ([DB-READINESS] group A, phase 4.3); a refused save answers -1, as the clutter sweep's */
   return elogSweep(ms(w.lo), ms(w.hi), dry, k => `Edit history cleared — ${k} entr${k === 1 ? 'y' : 'ies'} ${w.said}`)
 }
 

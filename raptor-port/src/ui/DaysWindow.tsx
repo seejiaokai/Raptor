@@ -43,7 +43,7 @@ import { isAdmin } from '../state/perms'
 import { forgetWin, winUnit } from '../state/cutoff'
 import { setFlyDays, type FlySave } from '../state/flyplan'
 import { monthDates, nextCls, weekdayOf, type DayAnswer, type FlyCls } from '../state/flyplan-model'
-import { dayFacts, flyMonth, useWarFacts } from '../leavewar/sync'
+import { flyMonth, unitDayFacts, useWarFacts } from '../leavewar/sync'
 import { type HolidayLine } from '../leavewar/sync'
 import { EveryWeekday } from './EveryWeekday'
 import { HolidayForm, HolidaysPanel } from './HolidaysPanel'
@@ -87,12 +87,13 @@ function Face({ cls }: { cls: FlyCls }) {
 
 /* A HOLIDAY'S TAG IS ITS SHORT FORM, in the kind's colour - "PH", "OFF", or the squadron's own "ND" (the build plan
    section 3.12; D645, D652): the word the Leave War's Event row prints and the SANS and Inputs months print, from the ONE
-   answer (leavewar/sync.ts dayFacts). This month once printed the fixed words "PH" / "OFF", so a National Day read "ND"
+   answer (leavewar/sync.ts unitDayFacts — the squadron it edits, as its kind is; never the loaded war's when that is
+   another squadron's). This month once printed the fixed words "PH" / "OFF", so a National Day read "ND"
    on the other three and "PH" here (the calendar job's bug check, roll-call row A5 - 8 Oct 26). The title carries the
    full name, as an opened day does on the calendars. */
-function holidayTitle(iso: string, kind: 'ph' | 'off'): string {
+function holidayTitle(unit: string, iso: string, kind: 'ph' | 'off'): string {
   const word = kind === 'ph' ? 'public holiday' : 'Off day'
-  const name = dayFacts(iso).name
+  const name = unitDayFacts(unit, iso).name
   return name && name.toLowerCase() !== (kind === 'ph' ? 'ph' : 'off day') ? `${name} - ${word}` : kind === 'ph' ? 'Public holiday' : 'Off day'
 }
 
@@ -240,8 +241,8 @@ function DaysBody({ at, unit }: { at: string; unit: string }) {
                 {a.clsFrom === 'date' && <span className="days-dot" data-testid={`days-dot-${iso}`} title="Set for this date" aria-label="Set for this date" />}
               </div>
               {a.kind ? (
-                <span className={'days-tag t-' + a.kind} data-testid={`days-tag-${iso}`} title={holidayTitle(iso, a.kind)}>
-                  {dayFacts(iso).short || (a.kind === 'ph' ? 'PH' : 'OFF')}
+                <span className={'days-tag t-' + a.kind} data-testid={`days-tag-${iso}`} title={holidayTitle(unit, iso, a.kind)}>
+                  {unitDayFacts(unit, iso).short ||(a.kind === 'ph' ? 'PH' : 'OFF')}
                 </span>
               ) : narrow ? (
                 <button

@@ -96,5 +96,18 @@ export default {
        difference of design (the drawing check, 5 Nov 26) */
     { state: 'pass-desk', part: 'sign-out', check: 'edge', why: 'the drawing state: Sign out under the resting pointer (its hover look), not a design difference' },
     { state: 'pass-desk', part: 'sign-out', check: 'colour', why: 'the drawing state: Sign out under the resting pointer (its hover look), not a design difference' },
+    /* what moved because the read-only line and "View the schedule" went (his D2239): the card 88px shorter, Sign out and
+       "Signed in as …" 88px higher in it, and on the desktop the centred card 44px lower — each kept at the value built
+       (21 Nov 26, helper "left2"), so any further move is new */
+    ...[
+      ['pass-phone', 'card', 'height', '347.4'],
+      ['pass-phone', 'sign-out', 'place', '263.4'],
+      ['pass-phone', 'signed-in-as', 'place', '312.4'],
+      ['pass-desk', 'card', 'place', '287.3'],
+      ['pass-desk', 'card', 'height', '357.4'],
+      ['pass-desk', 'sign-out', 'place', '271.4'],
+      ['pass-desk', 'signed-in-as', 'place', '320.4'],
+    ].map(([state, part, check, build]) => ({ state, part, check, build,
+      why: 'his D2239 (20 Nov 26): the guest view removed — the read-only line and "View the schedule" are gone, so the card is shorter and what was under them sits higher' })),
   ],
 }

@@ -218,9 +218,11 @@ export function setElogDefer(fn: ((fn: () => void) => boolean) | null) { DEFER =
    storage as a saved group of its own, with its change-log batch — never a bare write ([DB-READINESS] group A, phase
    4.1/4.3). The state layer installs the door: `(type, fn)` runs `fn` inside a command of that type (state/store.ts
    wireStore); headless, `fn` just runs. `elog.sweep` uses the same door. */
-let DOOR: ((type: string, fn: () => void) => void) | null = null
-export function setElogDoor(fn: ((type: string, fn: () => void) => void) | null) { DOOR = fn }
-function throughDoor(type: string, fn: () => void) { if (DOOR) DOOR(type, fn); else fn() }
+/* (the door answers false when its command was refused — the sweep then answers -1, never its count; anything else it
+   answers, nothing included, is a save that went through) */
+let DOOR: ((type: string, fn: () => void) => boolean | void) | null = null
+export function setElogDoor(fn: ((type: string, fn: () => void) => boolean | void) | null) { DOOR = fn }
+function throughDoor(type: string, fn: () => void): boolean { if (DOOR) return DOOR(type, fn) !== false; fn(); return true }
 /* A LINE GIVEN WITH NO COMMAND RUNNING IS HELD for the rest of the turn ([DB-READINESS] group A, the group-wide walk's
    finding H2, 30 Sep 26). The board's in-place edits and a text box make their change first and open the command that
    saves it right after, so their line used to go out through the door as a SECOND saved group, before the edit's own.
@@ -262,13 +264,16 @@ export function elogAdoptHeld(): void {
    Admin panel's wording promises.
    ONE NAMED COMMAND ([DB-READINESS] group A, phase 4.3 — Astra R2-06): `elog.sweep` deletes EXACTLY the lines it
    swept, each its row, and `said` — the caller's line recording that history was cleared, and by whom — is kept in
-   the same saved group, with one change-log batch. The lines to delete are chosen before anything is removed. */
+   the same saved group, with one change-log batch. The lines to delete are chosen before anything is removed.
+   A SWEEP THE GATE REFUSES answers -1 and leaves the list in memory as it was (helper "left2", 21 Nov 26: a refused
+   sweep once answered its count, and Admin → Data said "Cleared 1 entry"). */
 export function elogSweep(lo: number | null, hi: number | null, dry?: boolean, said?: (n: number) => string | null): number {
   const hit = (r: ELogRow) => (lo == null || r.t >= lo) && (hi == null || r.t < hi)
   const gone = ELOG.rows.filter(hit)
   const n = gone.length
   if (dry || !n) return n
-  throughDoor('elog.sweep', () => {
+  const was = ELOG.rows.slice(), wasNext = ELOG.next
+  const ok = throughDoor('elog.sweep', () => {
     const drop = new Set(gone.map(r => r.lineId))
     const keep = ELOG.rows.filter(r => !drop.has(r.lineId))
     ELOG.rows.length = 0
@@ -277,7 +282,11 @@ export function elogSweep(lo: number | null, hi: number | null, dry?: boolean, s
     const text = said ? said(n) : null
     if (text) logAction(null, text, { date: todayIso(), sect: 'day' })
   })
-  return n
+  if (ok) return n
+  ELOG.rows.length = 0
+  was.forEach(r => ELOG.rows.push(r))
+  ELOG.next = wasNext
+  return -1
 }
 
 /* THE LOG'S ADDRESSES MOVE WITH THE KEY SPACE (audit, 12 Aug 26). A delete
