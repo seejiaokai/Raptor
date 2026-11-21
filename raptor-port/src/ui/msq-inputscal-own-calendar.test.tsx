@@ -21,8 +21,11 @@ import { setGrant } from '../state/units'
 import { setPage, setInpView, setCalMonth } from '../state/view'
 import { Whiteboard } from '../storage/whiteboard'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
-import { globalUndo, globalRedo, _timelineEntries } from '../undo/timeline'
+import { _timelineEntries } from '../undo/timeline'
+import { globalUndoEngine } from './topstate'
+import { HOOKS } from '../engine/hooks'
 import { InputsCal } from './InputsCal'
+import { commitChipMove } from './caldrag'
 import { _resetFloatWins } from './winorder'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -89,6 +92,14 @@ function noteOnLoaded(text: string, iso = DAY): string {
   expect(writeInputs(() => addPlanPuck(iso, text, []))).toBe(true)
   return PLANPUCKS.find((p: any) => p.text === text)!.id
 }
+/* the top bar's own Undo and Redo (ui/topstate.ts — the press repaints the page); a refusal would be said in a warning */
+const warned = () => (HOOKS.toast as any).mock.calls.filter((c: any[]) => c[1] === 'warn').map((c: any[]) => String(c[0]))
+async function press(dir: 'undo' | 'redo'): Promise<{ ok: boolean; reason: string[] }> {
+  const n = warned().length
+  await act(async () => { const e = globalUndoEngine(); expect(dir === 'undo' ? e.canUndo : e.canRedo, `${dir} offered`).toBe(true); if (dir === 'undo') e.undo(); else e.redo() })
+  const said = warned().slice(n)
+  return { ok: said.length === 0, reason: said }
+}
 const lastEntry = () => { const es = _timelineEntries(); return es[es.length - 1]! }
 const savedRow = (unit: string, local: string): any => { const v = persistWb()!.get('plan', `${unit}@${local}`); return v ? JSON.parse(v) : null }
 const kept = (unit: string, id: string): any => keptPlan(unit)?.pucks.find((p: any) => String(p.id) === id) ?? null
@@ -138,11 +149,11 @@ describe('a 142 plain admin with View of 149 picks 149 — his Inputs calendar s
     expect(loaded(id), "149's calendar never holds it").toBeNull()
     expect(notesShown(), 'the screen shows the edit').toEqual(['Range day — moved'])
 
-    const u = await act(async () => globalUndo())
+    const u = await press('undo')
     expect(u.ok, JSON.stringify(u.reason)).toBe(true)
     expect([kept('u142', id)?.text, savedRow('u142', `pp:${id}`)?.text], 'the note as it was, stored and cached — never deleted').toEqual(['Range day', 'Range day'])
     expect(notesShown(), 'and on the screen').toEqual(['Range day'])
-    const r = await act(async () => globalRedo())
+    const r = await press('redo')
     expect(r.ok, JSON.stringify(r.reason)).toBe(true)
     expect([kept('u142', id)?.text, savedRow('u142', `pp:${id}`)?.text]).toEqual(['Range day — moved', 'Range day — moved'])
     expect(notesShown()).toEqual(['Range day — moved'])
@@ -160,7 +171,7 @@ describe('a 142 plain admin with View of 149 picks 149 — his Inputs calendar s
     expect(c).toMatchObject({ op: 'put', id: `u142@dm:${DAY}`, before: 'Exercise', after: 'Exercise — day 2' })
     expect([keptPlan('u142')?.titles[DAY], savedRow('u142', `dm:${DAY}`)]).toEqual(['Exercise — day 2', 'Exercise — day 2'])
     expect(DAYRMK[DAY], "149's titles untouched").toBeUndefined()
-    const u = await act(async () => globalUndo())
+    const u = await press('undo')
     expect(u.ok, JSON.stringify(u.reason)).toBe(true)
     expect([keptPlan('u142')?.titles[DAY], savedRow('u142', `dm:${DAY}`)]).toEqual(['Exercise', 'Exercise'])
   })
@@ -181,9 +192,20 @@ describe('a 142 plain admin with View of 149 picks 149 — his Inputs calendar s
     expect(keptPlan('u142')!.pucks.filter((p: any) => p.date === DAY).map((p: any) => p.text).sort()).toEqual(['Range day', 'Sim block'])
     expect(PLANPUCKS.length, "nothing on 149's calendar").toBe(0)
     expect(notesShown().sort()).toEqual(['Range day', 'Sim block'])
-    const u = await act(async () => globalUndo())
+    const u = await press('undo')
     expect(u.ok, JSON.stringify(u.reason)).toBe(true)
     expect(notesShown()).toEqual(['Range day'])
+  })
+})
+
+describe('the same View holder drags his note to another day', () => {
+  it('the month’s drop moves 142’s note (ui/caldrag.ts commitChipMove, the drag machine’s one write)', async () => {
+    const id = hunterViewOn149()
+    await show()
+    expect(await act(async () => commitChipMove({ kind: 'puck', pid: id }, DAY, '2026-07-21'))).toBe(true)
+    expect(lastEntry().forward.find(x => x.collection === 'plan')).toMatchObject({ op: 'put', id: `u142@pp:${id}` })
+    expect([kept('u142', id)?.date, savedRow('u142', `pp:${id}`)?.date]).toEqual(['2026-07-21', '2026-07-21'])
+    expect(PLANPUCKS.length, "nothing on 149's calendar").toBe(0)
   })
 })
 

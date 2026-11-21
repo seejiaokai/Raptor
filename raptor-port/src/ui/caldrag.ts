@@ -24,7 +24,8 @@ import { draftOf, commitInputEdit, commitInput, fmtDay, oilFirst, oilGate, medAs
 import { oilWaitThen } from './oilwait'
 import { OILWAIT } from '../state/view'
 import { movePlanPuck, planMoveBlock } from '../state/plan'
-import { writeInputs, notify } from '../state/store'
+import { notify } from '../state/store'
+import { readCal, writeCal } from './owncal'
 import { setMedMove } from './pops'
 import { canEditSched } from '../state/auth'
 import { mayEditInput } from '../state/perms'
@@ -79,15 +80,16 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
        kind of section since D684 (9 Oct 26) — a note, with words, people or
        both — so the toast, the move's one visible word, says "Note". */
     /* a note holding a DELETED man does not move to a day on or after his delete (D299; state/plan.ts planMoveBlock) —
-       refused whole, saying who and what to do; before that day it moves as any note */
-    const gone = canEditSched() ? planMoveBlock(entry.pid, toIso) : null
+       refused whole, saying who and what to do; before that day it moves as any note. The note is the Inputs calendar's
+       own squadron's (ui/owncal.ts — the reshape plan §3.2 A-ii), read and written there. */
+    const gone = canEditSched() ? readCal(() => planMoveBlock(entry.pid, toIso)) : null
     if (gone) {
       const p: any = (PEOPLE as any)[gone], d = String(p.deletedFrom || ''), MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
       HOOKS.toast(`Not moved: ${p.cs} was deleted from ${+d.slice(8, 10)} ${MON[+d.slice(5, 7) - 1]} — take him off the note first`, 'warn')
       return false
     }
     let did = false
-    writeInputs(() => { did = movePlanPuck(entry.pid, toIso) })
+    writeCal(() => { did = movePlanPuck(entry.pid, toIso) })
     if (did) HOOKS.toast('Note moved', 'ok')
     else if (!canEditSched()) HOOKS.toast('Only a scheduler can move planning sections', 'warn')
     return did
