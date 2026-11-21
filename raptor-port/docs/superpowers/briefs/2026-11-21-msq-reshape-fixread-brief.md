@@ -29,16 +29,17 @@ one reader a copy; a security reader reads the whole with a prompt of its own.
   path, its whole body, the assertion you expect to fail and the words it fails with. The host runs it as written before
   the finding counts. Say plainly that you ran nothing.
 - **State each finding in your output the moment you have confirmed it** — a run can be stopped by its service, and what
-  was said before the stop is kept. Then return the whole report as your final message (§8).
+  was said before the stop is kept. Then return the whole report as your final message (§10).
 
 ## 2. Where you are
 
-An exported copy of the branch `claude/multi-sqn-b1-107` at `@@HEAD@@`, without pictures. At its root:
+An exported copy of the branch `claude/multi-sqn-b1-107` at `@@HEAD@@` — the code, the tests, the rulings and the
+written records; no pictures, drawings, walk scripts or evidence archives (no unit test reads them). At its root:
 
 - `BRIEF.md` — this brief.
 - `RESHAPE.patch` — the whole reshape: `git diff @@BASE@@ @@HEAD@@ -- raptor-port/src`, code and tests. `@@BASE@@` is the
   code fix read 17's four readers read; everything after it is in this patch — R1's fix, then the plan's phases 0–3.
-- `SHARE.patch` — the same diff, your share's files only. `SHARE-FILES.txt` — their names (also §9 here).
+- `SHARE.patch` — the same diff, your share's files only. `SHARE-FILES.txt` — their names (also §11 here).
 - `RESHAPE-LOG.txt` — every commit message of the patch, oldest first: each names its fault, cause, fix and test.
 - `RESHAPE-stat.txt` — changed lines per file.
 
@@ -287,8 +288,8 @@ The late mark — `engine/late-own-cutoff.test.ts`.
 9. **`ui/owncal.ts` lends the stored calendar into the loaded one inside a command and puts the loaded one back as it
    stood** (`ui/caldrag.ts`' note drag goes through it too). Does every exit put it back — a refused save, a thrown
    error, a nested call? Do the stored copy, the loaded calendar and the screen agree after edit, Undo, Redo and reload?
-10. **The SANS day's flying answer is the page's squadron's, today's rules; the Calendar window shows the squadron it
-    edits** (own pages' readings).
+10. **The SANS day's flying answer is asked for the page's squadron as it is today, not as on the day shown; the
+    Calendar window shows the squadron it edits** (own pages' readings).
 11. **The late mark by the input's own squadron's cut-off** (the host's reading — no ruling names it).
 12. **`src/engine/` bodies are verbatim ports** (the plan's §0): only the multi-squadron lines may have changed. Name
     any ported body the patch changed beyond them.
@@ -322,8 +323,8 @@ back only what its owner may still reach.
   — A-v: every Leave War and Tracker step carries the squadron its world held (`command/commit.ts setRecordKeyHook`,
   `undo/derive.ts stampOf`, `recordKeyIn`, `stampKey`; `undo/timeline.ts stampHolds`, `unreachable`, `inUnitView`,
   `ownStepInView`); K4 + B5 (blind-read R11): a blue/red answer's change id carries its squadron
-  (`state/mission-roles.ts roleRecordId`, `state/persist.ts`, `engine/mission-role.ts`); Piece B's restore lines wired into the real Undo and Redo
-  (`state/undo-wire.ts grantCtx`, `grantLeftOut`, `holdersOf`, `standingRightKey`; `undo/timeline.ts keptOf`,
+  (`state/mission-roles.ts roleRecordId`, `state/persist.ts`, `engine/mission-role.ts`); Piece B's restore lines wired
+  into the real Undo and Redo (`state/undo-wire.ts grantCtx`, `grantLeftOut`, `holdersOf`, `standingRightKey`; `undo/timeline.ts keptOf`,
   `emptiedBy`, `standingConflict`, `refusedFor`); a Quals change's line by the man's own squadron's columns
   (`state/changelines.ts`); an own-page step undone while another squadron is picked.
 - **B2** (`f031c157f`, `0ea1b4342`) — the guest view removed, whole: the guest app's own file deleted, the Admin
@@ -469,8 +470,8 @@ his own move enters his new squadron without saving anything typed into either.
 
 **Bodies in another share's file that carry this promise:** in `state/perms.ts` — `stampForged`, the posting pass's
 gate chain, `deleteStripsOnly`, the war-day line, `pickStandsOn`, section 7e's bell-line rules and 7f (the Tracker);
-`state/accounts.ts adminsOf`; `undo/timeline.ts` (the per-record store for a planning note; `restoreRefusal` saying A7's sentence);
-`state/flyplan.ts`. **Your file, another share's subject:** `state/notices.ts`' input readers (share 1) and `adminThen`
+`state/accounts.ts adminsOf`; `undo/timeline.ts` (the per-record store for a planning note; `restoreRefusal` saying
+A7's sentence); `state/flyplan.ts`. **Your file, another share's subject:** `state/notices.ts`' input readers (share 1) and `adminThen`
 (share 2); `state/store.ts`' input readers (share 1).
 
 **The tests that carry each fault:** R1 — `leavewar/multi-sqn-fixread17.test.ts`. R6 —
