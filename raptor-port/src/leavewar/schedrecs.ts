@@ -23,6 +23,10 @@ export type WarInput = Omit<Input, 'type' | 'mod' | 'allday'> & {
   lwMoved?: Record<string, string>
   lwBy?: string
   lwAt?: number
+  /** the squadron whose Leave War approved it (the reshape walk's W2-F2; his D2243 Q6): written by the approval where each
+   *  squadron has a war of its own, so a man's leave approved before his move stays his old war's — out of sight there,
+   *  never the new war's */
+  lwU?: string
   odGround?: boolean
 }
 /** WHAT THE READERS BELOW ASK OF A ROW — any of an Input's fields, each of any kind: they read rows of every age (a seed

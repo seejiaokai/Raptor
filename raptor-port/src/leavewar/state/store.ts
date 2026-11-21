@@ -172,7 +172,7 @@ import {
   type AvailPoints,
   type ReqNames,
 } from '../engine'
-import { mergeWar, absencesAt, absenceRows, absenceVersion, awardsAt, awardRows, awardVersion, setAwardRows, type AwardRows, type MergedWar, type RecordSpans, type Views } from './merge'
+import { mergeWar, absencesAt, ownAbsenceRows, absenceVersion, awardsAt, awardRows, awardVersion, setAwardRows, type AwardRows, type MergedWar, type RecordSpans, type Views } from './merge'
 import { counterLabel } from '../engine/counters'
 import {
   BAL_KINDS, FIG_MAX, isBalKind, KIND_COUNTER, personFigures, readTypedBalShape, snapshotOf, START_GRADES, startYear,
@@ -5387,7 +5387,8 @@ export function setHiddenIdentityLookup(fn: ((id: string) => Person | null) | nu
  *  requests on him. */
 export function dayRecsOf(pid: string): DayRecs {
   const out = new Map<string, Contrib[]>()
-  const abs = absenceRows().get(pid)
+  /* …that are THIS war's (W2-F2 — merge.ts AbsenceOwner): a man who moved has his old squadron's leave in its war alone */
+  const abs = ownAbsenceRows(pid)
   if (abs) for (const [d, list] of abs) out.set(d, [...list])
   for (const w of getState().wars) {
     const row = w.views[pid]

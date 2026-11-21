@@ -7,7 +7,7 @@
    and charged in BOTH wars — and his leave of January (142's days) charged in 149's too ("LVE −6").
    The world: test-support/msq-world.ts. Every write goes through the war's own doors. */
 import { describe, expect, it } from 'vitest'
-import { getState, setCell, worldUnit, openDates, decideRequests, rawState, figureCtxOf } from './state/store'
+import { getState, setCell, worldUnit, openDates, decideRequests, rawState, figureCtxOf, leaveFiguresOf, dayRecsOf } from './state/store'
 import { setHome, unitsLoad } from '../state/units'
 import { useMsqWorld, signInAs, on } from '../test-support/msq-world'
 import { INPUTS, inpId } from '../engine/inputs'
@@ -59,6 +59,19 @@ describe('W2-F2 — leave approved in 142’s war before his move is not in 149�
     signInAs('hunter')
     expect(drawn('bane'), '142 keeps it').toBe(2)
   })
+  it('the figure beside his name, My leave and the person window (one engine): 149’s reads none of 142’s leave', () => {
+    approvedThenMoved(['2026-01-08', '2026-01-09', '2026-07-20'])
+    on(21); unitsLoad()
+    signInAs('kestrel')
+    const his = () => [...dayRecsOf('bane').keys()].filter(d => d === '2026-07-20' || d.startsWith('2026-01')).sort()
+    const lve149 = leaveFiguresOf('bane').kinds.LVE
+    expect(his(), '149’s figures read none of them').toEqual([])
+    signInAs('hunter')
+    expect(his(), '142’s read all three').toEqual(['2026-01-08', '2026-01-09', '2026-07-20'])
+    /* (the same figure of a 149 man who took no leave: nothing of 142's comes off Ranger's in 149's war) */
+    signInAs('kestrel')
+    expect(JSON.stringify(lve149)).toBe(JSON.stringify(leaveFiguresOf('osp9').kinds.LVE))
+  })
   it('149’s Available count on Mon 20 does not lose him to leave 149’s war does not have', () => {
     approvedThenMoved(['2026-07-20'])
     signInAs('kestrel')
@@ -98,8 +111,8 @@ describe('W2-F2 — leave approved in 142’s war before his move is not in 149�
   })
   it('an absence filed on the Inputs page (no war approved it) is the war’s whose day it is — each day in one war', () => {
     approvedThenMoved([])
-    /* a medical 14–17 Jul across the move, as the Medical page files it (pushed as a test's own row, then re-read) */
-    const mc: any = { date: 'Jul 14', endDate: 'Jul 17', yr: 2026, type: 'MC', remarks: '', allday: true, mod: '2026-07-14', people: [{ p: 'bane' }] }
+    /* leave 14–17 Jul across the move, as the Inputs page files it — no war's approval on it (a test's own row, re-read) */
+    const mc: any = { date: 'Jul 14', endDate: 'Jul 17', yr: 2026, type: 'LL', remarks: '', allday: true, mod: '2026-07-14', people: [{ p: 'bane' }] }
     inpId(mc); INPUTS.push(mc); syncAbsences()
     signInAs('hunter'); syncAbsences()
     expect(viewOn('bane', '2026-07-15')?.code, '142’s day in 142’s war').toBeTruthy()
