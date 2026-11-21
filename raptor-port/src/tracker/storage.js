@@ -63,6 +63,26 @@ export function bindStorageUnit(unit) {
   target = maker(unit); boundUnit = unit
   return true
 }
+/* THE TRACKER FOLLOWS THE PAGE'S SQUADRON WHERE IT CAN (the reshape plan §3.2 A-iv — state/store.ts enterSquadron's third
+   step; §14.3). Before the Tracker has loaded, nothing of any squadron's Tracker is in memory, so the doorway simply
+   follows: a unit already bound is re-bound to `unit` ('bound'), and with none bound the first load binds the page's
+   squadron itself through the whose reader (markStorageLoaded — 'later'). ONCE LOADED IT KEEPS ITS SQUADRON ('kept'):
+   the read of its load path (the reshape's step 0, 21 Nov 26) found the Tracker's records held in module-level caches of
+   app/core.js beyond its React tree — the mirror of every stored record (`mem`, `memGen`), the course, chart and student
+   lists (COURSES, SYLS, SYL, roster, marks, dates, plan, pace, lulls), the flex settings, its own Undo stacks, its command
+   store's registration, and a one-shot init that draws the flow board imperatively into #board — so a remount cannot
+   re-read it in place cleanly, and writing those records through another squadron's door would copy one squadron's
+   Tracker into the other's. So, as §14.3 provides, the Tracker moves at the next sign-in (signing out reloads the app);
+   the war and the schedule still move. Its writes after a move are refused by the gate's 7f, as today. 'none' — no maker
+   (a unit test that plugs one target in itself) or no unit. */
+export function rebindStorageUnit(unit) {
+  if (!maker || !unit) return 'none'
+  if (boundUnit === unit) return 'same'
+  if (loaded) return 'kept'
+  if (boundUnit == null) return 'later'
+  target = maker(unit); boundUnit = unit
+  return 'bound'
+}
 /** the unit whose Tracker the doorway reads (null — none bound: the target handed in whole) */
 export const storageUnit = () => boundUnit
 /** core.init calls this before its first read: the signed-in person's own squadron is bound now (unless one already

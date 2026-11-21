@@ -36,7 +36,7 @@ import { firstAdminRow, storedAccountNamed, normName, MAX_SIGNIN } from './state
 import { UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, HOME_PFX, validUnitNum, validTz, MAX_PLACE_NAME } from './state/units-model'
 import { todayIso, units } from './state/units'
 import { installGlobalUndo } from './state/undo-wire'
-import { myUnit, setTrkUnitProbe } from './state/perms'
+import { pageUnit, setTrkUnitProbe } from './state/perms'
 import type { Backend } from './storage/backend'
 import type { Whiteboard } from './storage/whiteboard'
 import type { Postman } from './storage/postman'
@@ -85,9 +85,12 @@ function bootBody(wb: Whiteboard, policy: BootPolicy): void {
   storeBackend.impl = settingsAdapter(wb)
   /* THE TRACKER IS ONE WORLD PER SQUADRON (multi-squadron batch 1, step 4): the doorway is handed a maker of each unit's
      door and a way to ask whose squadron is signed in, and binds the signed-in person's own (his home — D2132) at the
-     moment the Tracker first loads (tracker/storage.js markStorageLoaded); the boot unit's until then */
+     moment the Tracker first loads (tracker/storage.js markStorageLoaded); the boot unit's until then. WHOSE is the page's
+     own squadron on the day it loads (the reshape plan §3.2 A-ii — state/perms.ts pageUnit('own'): his home, or the pick
+     for a master admin or a Plan holder of it that day — the same as his home today, as nothing picks yet), so the
+     Tracker binds what enterSquadron would bind it to (state/store.ts) */
   setStorageImpl(trackerTarget(wb, BOOT_UNIT))
-  setStorageMaker((u: string) => trackerTarget(wb, u), () => myUnit())
+  setStorageMaker((u: string) => trackerTarget(wb, u), () => pageUnit('own', todayIso()))
   /* …and the commit gate is told which squadron's Tracker the doorway is bound to, so a change to it is judged by that
      squadron (state/perms.ts 7f — the second fix read, Fable's plan still open 3); none bound yet, nothing is asked */
   setTrkUnitProbe(() => storageUnit())

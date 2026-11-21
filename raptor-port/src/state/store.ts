@@ -47,12 +47,13 @@ import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit, histSnap, histRestore, schedFields } from './history'
 import { setSession as authSetSession, canEditSched, SESSION, setMe, DEFAULT_ME, setLgEdit } from './auth'
-import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce } from './perms'
+import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUnitNow } from './perms'
 import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { endTrackerSession } from '../tracker/role.js'
+import { rebindStorageUnit } from '../tracker/storage.js'
 import { isHydrated, hydratePlan, hydrateRolesFor, persistWb } from './persist'
-import { deferEffect, CmdRefused, setPermissionResolver, commitProjection, onPipelineBegin, deriveActor, definePermission, anyone, activeEnvelope } from '../command'
+import { deferEffect, CmdRefused, setPermissionResolver, commitProjection, onPipelineBegin, deriveActor, definePermission, anyone, activeEnvelope, isCommitting } from '../command'
 /* internal wiring may raise a command as a named person (command/index.ts — commitAs stays off the public surface) */
 import { commitAs } from '../command/commit'
 import { defineInvariant } from '../command/harness'
@@ -81,7 +82,7 @@ export function getVersion() { return VERSION }
    the gate (loadWeek, initStore, toggleRole, …) — deferEffect returns false and
    notify runs inline exactly as before, so behaviour is unchanged. */
 export function notify() { if (deferEffect(realNotify)) return; realNotify() }
-function realNotify() { VERSION++; listeners.forEach(f => f()) }
+function realNotify() { maybeReenter(); VERSION++; listeners.forEach(f => f()) }
 /* Day-to-day board navigation is view-only. Give the board a narrow repaint
    lane so a swipe does not wake every mounted store consumer (most notably
    EditWeek's seven large dayHTML calculations) while ordinary mutations still
@@ -467,14 +468,18 @@ export function resetSession(s: any) {
   setMe(s && Object.prototype.hasOwnProperty.call(s, 'pid') ? s.pid : DEFAULT_ME)
   /* THE UNIT IN VIEW STARTS AS HIS HOME (multi-squadron batch 1, step 2): the signed-in person's home unit today
      (state/units.ts homeOn), the boot unit for a logout, a headless call or someone with no home. Already there — every
-     sign-in on the demo today — it moves nothing. */
-  switchUnit(sessionUnit(s && s.pid))
-  /* …AND HIS OWN SQUADRON'S LEAVE WAR (multi-squadron batch 1, step 4 — D2132: the Leave War stays on his own squadron
+     sign-in on the demo today — it moves nothing.
+     …AND HIS OWN SQUADRON'S LEAVE WAR (multi-squadron batch 1, step 4 — D2132: the Leave War stays on his own squadron
      whatever schedule is in view). The war is a world per squadron and the boot loaded the boot unit's before anyone
      signed in; the sync loads his own in its place (leavewar/sync.ts swapWarWorld — installed by its wiring, so this
      file never imports the war's sync). Before the Undo list is cleared below, so the swap's own passes are no step
-     of his. Nothing when it is already loaded — every 142 sign-in on the demo. */
-  SESSION_WORLD?.(sessionUnit(s && s.pid))
+     of his. Nothing when it is already loaded — every 142 sign-in on the demo.
+     Both — and the Tracker — through the ONE entry for the open page, enterSquadron (the reshape plan §3.2 A-iv, below),
+     which records HIS HOME AT ENTRY, never the pick (Opus L2), so step 5's master admin pick is never pulled back to his
+     home by the midnight check. */
+  HOME_AT_ENTRY = s && s.pid ? sessionUnit(s.pid) : null
+  ENTRY_TRIED = ''
+  enterSquadron(sessionUnit(s && s.pid))
   /* the undo list is per sign-in (13 Sep 26; D148 — "the list clears when they sign
      out"): the global undo never cleared it, so an admin signing in after a member
      could reverse the member's change (Fable R1-7, Astra R1-10) */
@@ -878,6 +883,92 @@ export function setSessionWorldHook(fn: ((unit: string) => void) | null): void {
 function sessionUnit(pid: string | null | undefined): string {
   const h = pid ? homeOn(String(pid), todayIso()) : null
   return h && isUnitId(h) ? h : BOOT_UNIT
+}
+
+/* ---- ENTERING A SQUADRON — ONE ENTRY FOR THE OPEN PAGE (the reshape plan §3.2 A-iv) ----
+   Three things say which squadron the open page holds, each set once at sign-in until now: the schedule in view (UNIT —
+   switchUnit), the Leave War's world (the sync's swapWarWorld) and the Tracker's door (tracker/storage.js). They move
+   together here, in a fixed order: the schedule in view first, then the war and the Tracker to the page's own squadron
+   (state/perms.ts pageUnit('own') — his home, or the pick for a master admin or a Plan holder of it that day; equal to
+   his home today, as nothing picks yet). resetSession enters at sign-in; the midnight check below enters again when his
+   own move takes effect (A2) — it does NOT reset the page or clear the Undo list: his steps in the old squadron wait
+   there, by their stamp (A-v).
+   THE TRACKER moves only where it has not loaded (tracker/storage.js rebindStorageUnit — §14.3: once loaded its records
+   sit in module caches that cannot be re-read in place, so it keeps its squadron until the next sign-in). The answer is
+   handed back, so a caller can tell. */
+export type TrackerEntry = 'none' | 'same' | 'later' | 'bound' | 'kept'
+export interface Entered { unit: string; own: string; tracker: TrackerEntry }
+let ENTERING = false
+export function enterSquadron(scheduleUnit: string): Entered {
+  if (ENTERING) return { unit: UNIT, own: pageUnit('own', todayIso()), tracker: 'none' }
+  ENTERING = true
+  try {
+    switchUnit(scheduleUnit)
+    const own = pageUnit('own', todayIso())
+    SESSION_WORLD?.(own)
+    return { unit: UNIT, own, tracker: rebindStorageUnit(own) as TrackerEntry }
+  } finally { ENTERING = false }
+}
+
+/* HIS HOME AT ENTRY — recorded by resetSession, never the pick (Opus L2); null nobody signed in (or a sign-in with no
+   person). The midnight check compares his home today with it. */
+let HOME_AT_ENTRY: string | null = null
+export const homeAtEntry = (): string | null => HOME_AT_ENTRY
+/* THE MIDNIGHT TRIGGER — OFF IN PHASE 2 (the reshape plan §3.2 A-iv "Switched on only after A-v", §10): until every Undo
+   step carries its squadron, an Undo after the swap could write a 142 war or Tracker step into 149 (Fable F2, Astra 2).
+   Phase 3 switches it on, once helper "undo & roles" has merged; its tests switch it on for themselves. */
+let ENTRY_TRIGGER = false
+export function setEntryTrigger(on: boolean): void { ENTRY_TRIGGER = !!on }
+/* THE HOLD — the band's slot (phase 3: state/typing-hold.ts, an open Leave War window or Tracker pop-up holds the swap of
+   its page, whatever is typed in it — Astra 7, Fable F9). Until it is built it answers "none": nothing holds the swap. */
+export type EntryHold = 'none' | 'war' | 'tracker'
+let ENTRY_HOLD: () => EntryHold = () => 'none'
+export function setEntryHold(fn: (() => EntryHold) | null): void { ENTRY_HOLD = fn || (() => 'none') }
+/* one try per day and squadron pair, so a war that will not load is not tried again on every notify */
+let ENTRY_TRIED = ''
+
+/* WHERE THE PICK GOES WHEN HIS OWN MOVE TAKES EFFECT (Fable 9; the Plan audit, D2242): it moves to his new home only where
+   it stood on his old home; a pick of another squadron stays where a right still reaches it on the new day — a master
+   admin's always — else it moves home. His own move ends every View and Plan he held (D2203, from the start of his move
+   day — D2243 Q4), so for his own move pageUnit('own') on the new day answers it: the pick is his own page's squadron
+   only for a master admin or a Plan holder whose Plan still holds (Hunter, 142's admin with Plan of 149, 149 picked,
+   moved to 150 at midnight, goes to 150). Dormant until step 5's menu: today the pick is always his home. */
+function pickAfterMove(pick: string, oldHome: string, newHome: string, iso: string): string {
+  if (pick === oldHome) return newHome
+  return pageUnit('own', iso) === pick ? pick : newHome
+}
+
+/* THE CHECK notify() RUNS while the trigger is on: the squadron to enter now, or null.
+   - his own move (A2): his home today is not his home at entry → the pick by the rule above;
+   - the blind read's R6 (dormant, the war's half): the page's own squadron is not the Leave War's loaded one — a right
+     lowered, removed or raised mid-day — → the same pick, entered again. (R6's other half, "the pick has no readable
+     right behind it", needs the core's question of whether a right reaches the pick that day, View included — owed.)
+   The Tracker is not asked: once loaded it cannot move (above), so it would be due for ever. */
+function entryDue(): string | null {
+  const m = me()
+  if (!m || HOME_AT_ENTRY == null) return null
+  const iso = todayIso()
+  const home = homeOn(m, iso)
+  if (!home || !isUnitId(home)) return null
+  if (home !== HOME_AT_ENTRY) return pickAfterMove(UNIT, HOME_AT_ENTRY, home, iso)
+  const war = lwUnitNow()
+  if (war && war !== pageUnit('own', iso)) return UNIT
+  return null
+}
+/* run from realNotify — never inside a command (a swap loads a week and a war, which are no one's command), never while
+   entering, never while the hold holds; the midnight wake (leavewar/sync.ts installPostingClock) calls notify() at
+   00:00:01 and whenever the page is shown or focused on a new day, so the swap needs no click (Fable F8, Opus L2) */
+function maybeReenter(): void {
+  if (!ENTRY_TRIGGER || ENTERING || isCommitting()) return
+  const to = entryDue()
+  if (to == null) return
+  if (ENTRY_HOLD() !== 'none') return
+  const key = `${todayIso()}|${to}|${lwUnitNow() ?? ''}|${me() ?? ''}`
+  if (key === ENTRY_TRIED) return
+  ENTRY_TRIED = key
+  const m = me()
+  enterSquadron(to)
+  if (m) HOME_AT_ENTRY = sessionUnit(m)
 }
 /** the planning calendars kept for units left this session — cleared with the session (tests and sign-out) */
 export function forgetUnitPlans(): void { forgetKeptPlans() }
