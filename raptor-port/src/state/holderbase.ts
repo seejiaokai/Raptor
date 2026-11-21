@@ -21,13 +21,13 @@
    The week's copy in memory written on the way out (store.ts weekStashSnap) is this base, so a return to the week, and
    every cross-week read of it, starts from what its holder committed — as a reload does. */
 import { DAYS } from '../engine/data'
-import { INPUTS, inputsFor, goesOnProg } from '../engine/inputs'
+import { INPUTS, goesOnProg } from '../engine/inputs'
 import { UNIT } from '../engine/unitview'
 import { CURWEEK } from '../engine/waves'
 import { SCHED, dayApproved, dayCurVer, daySnapOf, protectedWeek } from '../engine/publish'
 import { keyDay } from '../engine/keys'
 import { posKey, ensureRowIds, rowsOf } from '../engine/rowids'
-import { viewOfWeek, standingRow, standsOn, requestRowFields } from '../engine/overlay'
+import { viewOfWeek, standingRow, standsOn, requestRowFields, landingRequests } from '../engine/overlay'
 import { rebaseDayPending } from '../engine/drafts'
 import { inputProtected } from '../engine/quarantine'
 import { isPreservedWeek } from '../engine/weekstash'
@@ -206,7 +206,7 @@ export function rederive(opts: { absorb?: Iterable<number>; live?: boolean } = {
      week on screen — what every load has always derived (store.ts applyWeekModel) */
   /* (the week on screen is the schedule in view's: only its own requests' filing is derived from it — another squadron's
      stays as its own weeks left it; multi-squadron step 3) */
-  for (const r of inputsFor(UNIT) as any[]) {
+  for (const r of landingRequests(UNIT)) {
     if (!r || inputProtected(r) || r.acc === 'r' || r.acc === 'u') continue
     const id = String(r.iid || '')
     const on = !!id && DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g && String(g.src || '') === id && standingRow(g, r, d.dt)))

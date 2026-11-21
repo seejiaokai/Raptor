@@ -42,7 +42,7 @@
    ===================================================================== */
 import { DAYS } from './data'
 import { UNIT } from './unitview'
-import { INPUTS, inputsFor, inpId, inpWin, oilAsks, dateOrd, dateIx, inputReadPass, idsOf, namedOf, placeholderOf, entryOf, leadOf } from './inputs'
+import { INPUTS, inputsOnDay, inpId, inpWin, oilAsks, dateOrd, dateIx, inputReadPass, idsOf, namedOf, placeholderOf, entryOf, leadOf } from './inputs'
 import { weekKeyOfOrd } from './weeks-data'
 import { CURWEEK } from './waves'
 import { stashHas, standingRowIn } from './weekstash'
@@ -446,7 +446,7 @@ export function projectOilInputs(iso: string): OilInputEv[] {
   const ord = +String(iso).replace(/-/g, '')
   const out: OilInputEv[] = []
   /* the schedule in view's own claims — the day being frozen is its (multi-squadron step 3) */
-  for (const row of inputsFor(UNIT, iso) as any[]) {
+  for (const row of inputsOnDay(UNIT, iso) as any[]) {
     if (!row || !idsOf(row).length || !oilAsks(row.type)) continue
     const a = dateOrd(row.date, row.yr)
     if (a == null) continue
@@ -624,7 +624,7 @@ function oilEvidenceNow(di: any, day?: any): OilEvidence {
      taken off, cancelled or information only (its own marks — D760), and its own window measures something. Nobody
      NAMED in it is in its crowd. `r.iid`, never `inpId`: a read must not mint an id. */
   { const ord = +String(iso).replace(/-/g, '')
-    for (const r of inputsFor(UNIT, iso) as any[]) {
+    for (const r of inputsOnDay(UNIT, iso) as any[]) {
       if (!r || !r.iid || oilAsks(r.type) || !placeholderOf(r) || String(r.acc || '') === 'r' || r.cx || r.info) continue
       const item = inputItemKey(String(r.iid))
       if (Object.prototype.hasOwnProperty.call(sent, item)) continue

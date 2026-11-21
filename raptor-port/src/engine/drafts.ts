@@ -1,7 +1,7 @@
 import { DAYS } from './data'
 import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey, protectedWeek, filingRestorePlan, rowsLeftOut, leaveRowsOut, dayPendingItems } from './publish'
 import { inputProtected } from './quarantine'
-import { isOD, INPUTS, inputsFor, inputCoversDate, inpId, inpLabel, goneRequestName, idsOf } from './inputs'
+import { isOD, INPUTS, inputsOnDay, inputCoversDate, inpId, inpLabel, goneRequestName, idsOf } from './inputs'
 import { UNIT } from './unitview'
 import { PEOPLE } from './people'
 import { dayKeys } from './restore'
@@ -14,6 +14,7 @@ import { ridKey, posKey, rowsOf, ensureRowIds } from './rowids'
 import { isoDayWords } from './weekstash'
 import { rowMayStand, viewOfWeek, standsOn } from './overlay'
 import { CURWEEK } from './waves'
+import { dayIso } from './verid'
 
 /* PER-DAY ALTERNATE DRAFTS (owner ask, 15 Aug 26 — "allow me to duplicate the
    current day's schedule and edit over it… if one variable change, they can
@@ -696,7 +697,7 @@ export function loadVersionToWorkingCopy(di: any, ver: any) {
      the other day it covers then reads that too. That is the truth, not a slip; it must not be silent. */
   const dt0 = (DAYS[di] || {}).dt
   /* (the schedule in view's own requests — multi-squadron step 3, engine/inputs.ts inputsFor) */
-  const multi = inputsFor(UNIT, dt0).filter((inp: any) => inputCoversDate(inp, dt0) && DAYS.some((d: any, dj: number) => dj !== di && d && inputCoversDate(inp, d.dt)))
+  const multi = inputsOnDay(UNIT, dayIso(String(CURWEEK), di)).filter((inp: any) => inputCoversDate(inp, dt0) && DAYS.some((d: any, dj: number) => dj !== di && d && inputCoversDate(inp, d.dt)))
     .map((inp: any) => ({ inp, was: inp.acc || '' }))
   const nd = liveDay(snap.d)
   /* ONE REQUEST, ONE ROW (D175): the version's row for a request that now stands on another day stays out — putting it
@@ -706,7 +707,7 @@ export function loadVersionToWorkingCopy(di: any, ver: any) {
   DAYS[di] = nd
   /* an overseas duty on the Ground Programme whose row the loaded version does not hold (D1393 — the narrow read's N1):
      the reconcile below drops its 'g'; its mark must go too, or the after-command landing puts the row straight back */
-  const odOn = inputsFor(UNIT, dt0).filter((r: any) => r && isOD(r.type) && r.acc === 'g' && inputCoversDate(r, DAYS[di] && DAYS[di].dt))
+  const odOn = inputsOnDay(UNIT, dayIso(String(CURWEEK), di)).filter((r: any) => r && isOD(r.type) && r.acc === 'g' && inputCoversDate(r, DAYS[di] && DAYS[di].dt))
   reconcileDayFiling(di)   // every replacement, approved or not (P2-QREV-07)
   for (const r of odOn) if (!r.acc && String(((snap.fil || {})[inpId(r)]) || '') !== 'g') delete r.odGround
   /* …AND PUT BACK WHAT THAT VERSION HAD FILED (owner, D98, 25 Sep 26): a request the scheduler had taken off (or

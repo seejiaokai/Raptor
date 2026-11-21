@@ -446,7 +446,8 @@ function push(row: Omit<ELogRow, 'seq' | 'lineId'>, unit?: string) {
      whose line it is says so — an Undo or Redo of one man's change, filed with the change it takes back) */
   /* (the second fix read, security H5: a squadron other than the unit in view only where the person giving the line may
      file there — HOOKS.elogUnitOk; else the unit in view's, as every other line) */
-  const u0 = unit || (row.sub && !row.key && (PEOPLE as any)[row.sub] ? (homeUnitOf(row.sub, isoOk(row.date) ? row.date! : undefined) ?? UNIT) : UNIT)
+  /* (the reshape plan §3.2 A-i — the day always given: the line's own date, today when it has none) */
+  const u0 = unit || (row.sub && !row.key && (PEOPLE as any)[row.sub] ? (homeUnitOf(row.sub, isoOk(row.date) ? row.date! : todayIso()) ?? UNIT) : UNIT)
   /* (job 2 — Astra's 5: the unit in view is asked as well; a line its giver may file in neither is not kept — a View
      right writes nothing there, and none of his commands there goes through) */
   /* (job 2's fix read, 1: a line naming nobody — an Undo's or a Redo's own line — that its giver may not file in the

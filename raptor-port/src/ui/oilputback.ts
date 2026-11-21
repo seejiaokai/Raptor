@@ -13,7 +13,7 @@
 
    Use: `const after = oilPutBackWatch(di)` BEFORE the replacement; `const n = after()` once it is made (and the day
    re-checked) — it opens the list where n > 0; the note's tail is `oilNeedSaid(n)`. */
-import { inputsFor, inpId, inputCoversDate } from '../engine/inputs'
+import { inputsOnDay, inpId, inputCoversDate } from '../engine/inputs'
 import { UNIT } from '../engine/unitview'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
@@ -36,7 +36,7 @@ export function oilPutBackWatch(di: number): () => number {
      The day's date does not change with its content, so the same inputs cover it before and after. */
   let lo = iso, hi = iso
   /* (the replaced day is the schedule in view's: only its own requests stand on it — multi-squadron step 3) */
-  const mine = DAYS[di] ? inputsFor(UNIT, DAYS[di].dt) as any[] : []
+  const mine = DAYS[di] ? inputsOnDay(UNIT, dayIso(String(CURWEEK), di)) as any[] : []
   for (const x of mine) {
     if (!x || !DAYS[di] || !inputCoversDate(x, DAYS[di].dt)) continue
     const a = unfmt(x.date, x.yr) || iso, b = x.endDate ? (unfmt(x.endDate, x.yr) || a) : a
@@ -48,7 +48,7 @@ export function oilPutBackWatch(di: number): () => number {
   const stood = new Set(mine.filter((x: any) => stands(x) && openWas.has(String(inpId(x)))).map((x: any) => String(inpId(x))))
   return () => {
     const open = openNow()
-    const back = (DAYS[di] ? inputsFor(UNIT, DAYS[di].dt) as any[] : []).filter((x: any) => stands(x) && !stood.has(String(inpId(x))) && open.has(String(inpId(x))))
+    const back = (DAYS[di] ? inputsOnDay(UNIT, dayIso(String(CURWEEK), di)) as any[] : []).filter((x: any) => stands(x) && !stood.has(String(inpId(x))) && open.has(String(inpId(x))))
     /* THE LIST OPENS FOR THE DAYS THOSE INPUTS NEED AN ANSWER FOR — the replaced day, almost always; another day of a
        several-day input where that is the one unanswered (F1, D862). It names the holiday where every such day is one —
        by the holiday's OWN name, never the preset's word ("Public holiday · PH": the read's F2; sync.ts holidayOwnName is
