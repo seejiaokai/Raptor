@@ -84,7 +84,23 @@ export function draftImage(rec: any | null, draft: any, people: readonly any[]):
   const out: any = { ...(rec || {}), type: draft ? draft.type : rec && rec.type, date: start, people: people.map(p => ({ p: String(p) })) }
   delete out.person
   if (end) out.endDate = end; else delete out.endDate
+  /* …WITH WHO FILES IT AND THE SQUADRON STAMP THE SAVE WILL WRITE (the fix round of 22 Nov 26 — the three readers' find;
+     his D2243 Q1): the image carried neither, so a draft of ALL AVAIL / ALL alone was read by the home of nobody — the
+     demo's fallback squadron. 149's admin and members were refused their own squadron's ALL AVAIL meeting at this door,
+     and never offered ALL AVAIL in the Person list, while 142's people passed for any squadron; the gate itself judged
+     the saved record rightly. A new draft's stamp is the squadron its window files on (`draft.u`, else the page's own —
+     filedOn, the save's own answer); an existing input's is settled as its save settles it (commitInput). */
+  if (!rec) { const mine = me(); if (mine != null && out.by == null) out.by = String(mine); settleStamp(out, filedOn(draft)) }
+  else if (!ownTakeOutOf(rec, people.map(String))) settleStamp(out, inputUnitOf(rec))
   return out
+}
+/* a member's own "Take me out": he alone leaves, nobody joins — the save writes nothing but his own entry, the stamp
+   included (commitInput), so the image writes none either */
+function ownTakeOutOf(rec: any, next: readonly string[]): boolean {
+  const mine = me()
+  if (canEditSched() || mine == null || !rec) return false
+  const have = idsOf(rec).map(String)
+  return next.every(p => have.includes(p)) && have.filter(p => !next.includes(p)).join() === String(mine)
 }
 /** whom the picker offers for this draft: a man where the draft with him added passes (with him in place of the one
  *  person, or beside those picked, `several`); a man already picked always stays — nothing is substituted for what he
@@ -2167,14 +2183,13 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
         /* a person a member adds is a change of the input: it takes a scheduler's LATE drop off (owner D1620) */
         if (added.length && !scheduler && !schedSide(opts)) delete r.lateOff
         for (const p of added) putPerson(r, p, st)
-        /* (left with ALL AVAIL / ALL alone it stays on the squadron it stood on; a man added, it follows its people — C3).
-           On a member's own take-out too (his D2243 Q1): unstamped, the input read its filer's squadron — the master
-           admin's 149 meeting moved to 142's schedule when the 149 man he had added took himself out. The commit gate
-           lets him change nothing but his own entry (state/perms.ts ownPart, D770 — onerecord-write OR29) and, with it,
-           this one stamp: the squadron the input stood on with him in it. Where that is not known the stamp waits —
-           the page's own squadron is not his to write there, and the gate would refuse his whole take-out */
+        /* (an input holding ALL AVAIL / ALL keeps the squadron it was filed on, men named in it or not — C3, his D2243 Q1,
+           engine/inputs.ts settleStamp; while a man is named it is read by its people).
+           A member's own take-out writes NO stamp (the fix round of 22 Nov 26): the stamp is carried from the filing on,
+           so his take-out leaves it exactly as it was — the commit gate lets him change nothing but his own entry
+           (state/perms.ts ownPart, D770 — onerecord-write OR29), and a stamp differing before and after is refused. */
         const ownTakeOut = !scheduler && mine != null && !added.length && gone.length === 1 && gone[0] === String(mine)
-        if (!ownTakeOut || isUnitId(unitWas)) settleStamp(r, unitWas)
+        if (!ownTakeOut) settleStamp(r, unitWas)
         /* …and an input filed for ALL AVAIL / ALL is never under Unavailable — it goes back onto the programme (the
            same rule the one-person save keeps, commitInputEdit; found by the re-expressed tests, 12 Oct 26) — a
            scheduler's move, marked (his D1388; the code read's F2: unmarked, its filer could send it back) */

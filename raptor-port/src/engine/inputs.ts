@@ -803,12 +803,17 @@ export function isPlaceholderInput(inp:any){return !!inp&&!!placeholderOf(inp);}
 /* THE SQUADRON STAMP FOLLOWS WHO IS IN THE INPUT (C3, his D2243 Q1 — an ALL AVAIL meeting stays on the squadron it was
    filed on), ONE BODY for every door that changes who an input names: the input's own window (ui/inputedit.tsx) and a
    man's delete (state/person-delete.ts applyDelete — the sign-in kinds night, 21 Nov 26: Osprey deleted out of a 149
-   meeting left it naming nobody with no stamp, read by its filer's home, 142). Anyone named: no stamp — he places it.
-   ALL AVAIL / ALL alone: it keeps a stamp it has, else takes `was` (the squadron the input was before the change —
-   inputUnitOf, asked BEFORE the man is taken out), else `page`'s answer where the door has a page (the window's own). */
+   meeting left it naming nobody with no stamp, read by its filer's home, 142).
+   AN INPUT HOLDING ALL AVAIL / ALL KEEPS ITS STAMP WHILE MEN ARE NAMED IN IT TOO (the fix round of 22 Nov 26, Opus's read
+   F3 — his D2243 Q1). The stamp used to be dropped the moment anyone was named, and found again from the man taken out:
+   Kestrel's 149 meeting, Osprey added, Osprey moved to 142, Osprey taking himself out — stamped 142, on 142's schedule.
+   Now: no ALL AVAIL / ALL in it — no stamp, its people place it. One in it — it keeps a stamp it has, else takes `was`
+   (the squadron the input was before the change — inputUnitOf, asked BEFORE the change), else `page`'s answer where
+   the door has a page (the window's own). The READERS stay named-first (inputSquadrons, inputOnDay, inputUnitOf):
+   while a man is named the stamp is only carried, read again once ALL AVAIL / ALL stands alone. */
 export function settleStamp(r:any,was:string|null,page?:()=>string|null):void{
-  if(namedOf(r).length){delete r.u;return;}
-  if(isPlaceholderInput(r)&&r.u==null){const u=was||(page?page():null); if(u)r.u=u;}}
+  if(!isPlaceholderInput(r)){delete r.u;return;}
+  if(r.u==null){const u=was||(page?page():null); if(u)r.u=u;}}
 export function placeholderProblem(inp:any):string{
   if(!isPlaceholderInput(inp))return '';
   const ph=placeholderOf(inp).p;

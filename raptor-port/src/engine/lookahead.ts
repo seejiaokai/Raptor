@@ -86,8 +86,11 @@ export function setLookaheadFor(unit: string, weeks: number | string, toSunday: 
   const n = lookaheadParse(weeks)
   if (n === null) return false
   const std = n === LOOK_STD.weeks && !!toSunday === LOOK_STD.toSunday
-  store.set(unitSettingKey(unit, 'lookahead'), std ? null : { w: n, s: !!toSunday })
-  return true
+  /* READ BACK, never taken as saved (the fix round of 22 Nov 26, Opus's read F5): the write is judged as an admin of THAT
+     squadron, and a refused one stores nothing and throws nothing here — it used to be reported saved */
+  try { store.set(unitSettingKey(unit, 'lookahead'), std ? null : { w: n, s: !!toSunday }) } catch { return false }
+  const now = storedLookahead(unitSetting(unit, 'lookahead', null))
+  return now.weeks === n && now.toSunday === !!toSunday
 }
 
 const pad = (n: number) => String(n).padStart(2, '0')

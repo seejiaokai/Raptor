@@ -14,8 +14,9 @@ import {
   openWinFor, forgetWin,
 } from '../state/cutoff'
 import {
-  setInpSet, setInpEdit, setDaysWin,
+  setInpSet, setInpEdit, setDaysWin, DAYSWIN,
 } from './pops'
+import { setMembersFile } from '../state/memberfile'
 import { _resetFloatWins } from './winorder'
 import { InputsSettings } from './InputsSettings'
 import { InputEditor } from './InputWindow'
@@ -54,7 +55,13 @@ it('1: retained Inputs settings change only their captured squadron', () => {
     switchUnit('u149')
     notify()
   })
-  fireEvent.click(t('iset-save'))
+  /* RE-SHAPED by the fix helper (22 Nov 26): the window is not retained across the pick — it closes with its page's
+     squadron (state/cutoff.ts winStale), so there is no Save to press, and neither squadron's switch moved */
+  expect(screen.queryByTestId('iset-save')).toBeNull()
+  expect(unitSetting('u142', 'memberfile', null)).toBeNull()
+  expect(unitSetting('u149', 'memberfile', null)).toBeNull()
+  /* …and the switch written for a NAMED squadron is that squadron's, whatever the page shows (149 here) */
+  expect(setMembersFile(false, 'u142')).toMatchObject({ ok: true })
   expect(unitSetting('u142', 'memberfile', null)).toBe(false)
   expect(unitSetting('u149', 'memberfile', null)).toBeNull()
 })
@@ -100,9 +107,11 @@ it('3: retained Calendar holidays remain the captured squadron’s', () => {
     setRole('admin')
     notify()
   })
-  const tab = screen.queryByTestId('days-tab-holidays')
-  if (tab) fireEvent.click(tab)
-  expect(t('hol-list').textContent).toContain('Astra 149 holiday')
+  /* RE-SHAPED by the fix helper (22 Nov 26): the Holidays half is the loaded war's (leavewar/ — another helper's files),
+     so the window is not retained across the pick: it closes with its page's squadron, and 142's holidays are never
+     shown in a window opened for 149 */
+  expect(screen.queryByTestId('hol-list')).toBeNull()
+  expect(DAYSWIN).toBeNull()
 })
 
 it('4: Ranger’s future SANS day still lists today’s page squadron', () => {
