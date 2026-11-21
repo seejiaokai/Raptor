@@ -292,6 +292,11 @@ export function joinFilerImgs(f: string, b: any, a: any, folded: readonly any[],
 /* THE RIGHT THAT HOLDS ON THAT DAY (the reshape plan §4.3, Piece B — the bell): the grant read with the reading rule
    (units.ts grantOfOn — ended at the start of the day his squadron changes, D2203, D2243), and still held before that day
    began; Plan is an admin's (PA2 — an `admin` right on an account that is not an admin's is none). */
+/* (K3 audited, core line 5, 22 Nov 26 — his D2160: the Plan branch reads the account's bare role, not his level at home.
+   No door leaves the two apart: Plan is given only to one who is an admin at home that day (units.ts setGrant —
+   accounts.ts adminNow), a Plan held before a move ends at the start of the move day (grantOfOn, D2203), and a moved
+   admin is a member until made an admin anew. filerVia's home branch asks isAdminAccount, his level at home today.
+   Pinned: state/corelines-bell-moved-admin.test.ts.) */
 function adminThen(acct: { id: string; pid: string; role: string; master?: true; masterFrom?: string; pidFrom?: string }, u: string, iso?: string, now = false): boolean {
   if (iso == null) return levelOfAccount(levelAcct(acct), u, todayIso()) === 'admin'
   const later = (from: string | undefined): string | undefined => (!from ? acct.pidFrom : !acct.pidFrom || from > acct.pidFrom ? from : acct.pidFrom)

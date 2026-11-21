@@ -67,8 +67,8 @@ describe('the save check refuses a schedule day that newly names a man who is an
   })
   it('a hand-made command naming him on Fri 17 is refused — for 142\'s admin and for a master admin alike', () => {
     hunterAfterTheMove()
-    const before = JSON.parse(JSON.stringify(DAYS[FRI]))
-    const after = JSON.parse(JSON.stringify(before))
+    const before: any = structuredClone(DAYS[FRI])
+    const after: any = structuredClone(before)
     after.allhands.find((r: any) => !r.who).who = R
     expect(forged(FRI, before, after)).toMatch(/another squadron's that day/)
     expect(forged(FRI, null, after), 'a day record written as new').toMatch(/another squadron's that day/)
