@@ -99,8 +99,9 @@ export function offersFor(rec: any | null, draft: any, picked: readonly any[], s
 }
 /** THE SAVE DOOR'S QUESTION, before the gate: null where the save may go on, else the words it is refused in. Leave that
  *  runs across a man's move, saved by someone who may not change it, is said in his approved words (D2240, D2241 — the
- *  drawing docs/mock/2026-11-20-multi-sqn-reshape/ 8b): "Not saved: Ranger is 149's from Thu 16 Jul. Only Ranger or an
- *  admin of both 142 and 149 can change leave that runs across his move." Any other refusal by the who-rule has no words
+ *  drawing docs/mock/2026-11-20-multi-sqn-reshape/ 8b): "Blocked: Ranger is 149's from Thu 16 Jul. Only Ranger or an
+ *  admin of both 142 and 149 can change leave that runs across his move." It opens "Blocked:", his standing rule for a
+ *  refused change (D1667: never "Not saved", the failed-save band's alone; the drawing had no opening word). Any other refusal by the who-rule has no words
  *  of its own yet: the gate's own refusal, as it is said today (NOT_SAVED). */
 export function whoDoorRefusal(before: any | null, after: any | null): string | null {
   /* A SAVE IS A CHANGE: the window closes before this where nothing differs, so the record is judged as changed even where
@@ -125,7 +126,7 @@ function acrossMoveWords(pid: string | null, before: any, after: any): string | 
     const from = homeOn(pid, sp[0]), to = homeOn(pid, d)
     if (!from || !to || from === to) continue
     const cs = PEOPLE[pid] ? String(PEOPLE[pid].cs) : pid
-    return `Not saved: ${cs} is ${numOf(to)}'s from ${noticeDay(d)}. Only ${cs} or an admin of both ${numOf(from)} and ${numOf(to)} can change leave that runs across his move.`
+    return `Blocked: ${cs} is ${numOf(to)}'s from ${noticeDay(d)}. Only ${cs} or an admin of both ${numOf(from)} and ${numOf(to)} can change leave that runs across his move.`
   }
   return null
 }

@@ -20,7 +20,7 @@ import { HOOKS } from '../engine/hooks'
 useMsqWorld()
 
 const R = PID.ranger
-const WORDS = "Not saved: Ranger is 149's from Thu 16 Jul. Only Ranger or an admin of both 142 and 149 can change leave that runs across his move."
+const WORDS = "Blocked: Ranger is 149's from Thu 16 Jul. Only Ranger or an admin of both 142 and 149 can change leave that runs across his move."
 let host: HTMLDivElement, root: Root
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement | null
 const said = () => (HOOKS.toast as any).mock.calls.map((c: any[]) => [String(c[0]), c[1]])

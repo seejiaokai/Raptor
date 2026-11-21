@@ -1329,7 +1329,9 @@ questions as recommended"*). The drawings on the questions page are the approved
   - ~~*Until then:* the door refuses with today's general words; the fault itself — the picker offering whom Save refuses
     — is closed. Named in the walk.~~ **ANSWERED 20 Nov 26 by D2240 and D2241:** "Not saved: Ranger is 149's from Thu 16
     Jul. Only Ranger or an admin of both 142 and 149 can change leave that runs across his move." — never "master" alone;
-    an admin of both by Plan or as a master admin. Named in the walk.
+    an admin of both by Plan or as a master admin. Named in the walk. **Its opening word is "Blocked:", not "Not saved:"
+    (chat 128, 21 Nov 26): his D1667 — a refused change opens with "Blocked:", never "Not saved", the failed-save band's
+    alone; D2240/D2241 ruled the sentence's role words, not its opening, and the drawing had none — told to him.**
 
 ## 13. The walks (Sonnet walkers, the host opening every picture that decides something; desktop 1536×864 and iPhone 402)
 

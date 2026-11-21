@@ -11,7 +11,7 @@
 
    Then the reshape's own (§3.3 C6, §3.4; D2221 as D2240 and D2241 read it): the whole-draft answer — a man is offered
    where the draft with him added passes (state/perms.ts inputWhoProblem); the save door asks before the gate, and an
-   existing input's save too; its refusal in his approved words (D2240, D2241): "Not saved: Ranger is 149's from Thu 16
+   existing input's save too; its refusal in his approved words (D2240, D2241): "Blocked: Ranger is 149's from Thu 16
    Jul. Only Ranger or an admin of both 142 and 149 can change leave that runs across his move."; and the table of actor
    × span × move, where the picker never offers whom the save refuses, and offers whom it accepts on the page of his
    squadron on the draft's first day. */
@@ -49,7 +49,7 @@ describe('C6 — the pickers and a move of squadron', () => {
 })
 
 const R = PID.ranger
-const WORDS = "Not saved: Ranger is 149's from Thu 16 Jul. Only Ranger or an admin of both 142 and 149 can change leave that runs across his move."
+const WORDS = "Blocked: Ranger is 149's from Thu 16 Jul. Only Ranger or an admin of both 142 and 149 can change leave that runs across his move."
 const draft = (start: string, end?: string) => ({ type: 'LL', start, end: end ?? '', allday: true, remarks: '' })
 /* the gate's own answer: the leave filed for real, then taken off again so the next row starts clean */
 const saves = (start: string, end?: string): boolean => {
