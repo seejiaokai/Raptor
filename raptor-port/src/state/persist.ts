@@ -433,7 +433,11 @@ export function wireRows(wb: Whiteboard): void {
   registerMapper('notices', rowOf('notices'))
   /* (the unit in view's: an answer is only ever given, or taken back, on the schedule in view — the schedules menu that
      could change the unit between an answer and its Undo is step 5's) */
-  registerMapper('insights.role', c=>[{collection:'settings',id:qualify(UNIT, ROLE_PFX+c.id),value:c.op==='delete'?null:JSON.stringify(c.after)}])
+  /* (K4 + B5, the reshape plan §7: the change's id names the squadron the answer was given in — `u149@<id>`,
+     state/mission-roles.ts — and the row is written there, never under whatever unit is in view when the command lands;
+     the stored key is the same `u149@missionrole:<id>`, so no saved data moves. An id naming none — none is made now —
+     is the unit in view's, as before) */
+  registerMapper('insights.role', c=>{ const s=split(String(c.id)); return [{collection:'settings',id:qualify(s.unit ?? UNIT, ROLE_PFX+s.local),value:c.op==='delete'?null:JSON.stringify(c.after)}] })
   unwireRows?.()
   unwireRows = wireRowConsumer(wb)
   /* the commit gate asks the SAVED copy whether a "new" request or bell line is one already written (fix read 10, fault C

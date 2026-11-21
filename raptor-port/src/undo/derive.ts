@@ -86,7 +86,8 @@ const WEEK_COLLS = new Set<string>([
    `<wk>#<di>` or `<wk>:<rest>`, so the week is the head before the first ':' or
    '#'. */
 export function weekOf(collection: string, id: string): string | null {
-  if (collection === 'insights.role') return decodeRoleId(id)?.weekKey ?? null
+  /* (K4: an answer's id names its squadron — `u149@<id>` — and so does its week, as every other week record's) */
+  if (collection === 'insights.role') { const wk = decodeRoleId(id)?.weekKey; if (!wk) return null; const u = split(id).unit; return u ? `${u}@${wk}` : wk }
   return WEEK_COLLS.has(collection) ? id.split(/[:#]/)[0] : null
 }
 
