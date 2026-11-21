@@ -1,0 +1,203 @@
+#!/bin/bash
+# The multi-squadron reshape's combined fix read (the plan's phase 4, 21 Nov 26): one exported copy of the branch at
+# <head> per run — astra, opus and fable, each on shares 1, 2 and 3, and security: ten copies. Each is the tree without
+# pictures and without the walks' bulk (about 95 MB and 4,700 files; the whole tree is 364 MB, and ten of those filled
+# his disk in this script's first test); this round's builder briefs, helper reports, mid-build read and evidence sheet
+# each replaced by one line; the branch's HANDOFF block blanked; the reshape's diff, log and stat and the share's own
+# diff at its root; BRIEF.md with its head, base and share filled in (the security copy: SECURITY.md too); Astra's
+# copies made a repo of their own (Codex refuses a folder that is not one); a node_modules junction to the main
+# folder's; and a last line that reads one line of every path the brief names. The recipe behind it:
+# docs/codex-guide.md, "Reading a commit that is not the branch head".
+#
+#   Usage (Git Bash):   bash mkcopies.sh <head> <scratch-folder>
+#   Cleaning up:        bash mkcopies.sh --clean <scratch-folder> [copy ...]      (no copy named: all ten)
+#   One copy again:     RUNS="astra-2" bash mkcopies.sh <head> <scratch-folder>   (after cleaning that copy)
+#
+# <scratch-folder> is a new or empty folder at a short path OUTSIDE every checkout (the session's scratchpad). A copy
+# that already exists stops the run: nothing is ever deleted here except by --clean, which takes each junction off
+# first — a recursive delete through a junction deletes the real packages.
+# SRC and NMSRC may be given in the environment (a test run from another checkout), and JOBS - how many copies are
+# made at once (4; each writes some 13,000 files). Each copy's own lines are printed when its batch ends.
+set -e
+set -o pipefail
+
+SRC="${SRC:-/c/Users/User/projects/Raptor-msq}"
+NMSRC="${NMSRC:-/c/Users/User/projects/Raptor-msq/raptor-port/node_modules}"
+BASE=7a1166124          # the code fix read 17's four readers read; R1's fix and the plan's phases 0-3 come after it
+BRANCH=claude/multi-sqn-b1-107
+B=raptor-port/docs/superpowers/briefs
+ROUND=2026-11-21-msq-reshape
+BRIEF=$B/$ROUND-fixread-brief.md
+SECURITY=$B/$ROUND-fixread-security-prompt.md
+BLANK=$B/$ROUND-fixread-blank-block.mjs.txt
+OUTLINE="(taken out of this copy for the blind read - the multi-squadron reshape's fix read, 21 Nov 26)"
+
+# ---- cleaning up: every junction off first, then the copies ----
+if [ "$1" = "--clean" ]; then
+  OUT="$2"
+  [ -n "$OUT" ] && [ -d "$OUT" ] || { echo "usage: mkcopies.sh --clean <scratch-folder> [copy ...]"; exit 2; }
+  shift 2
+  ONLY="${*:-astra-1 astra-2 astra-3 opus-1 opus-2 opus-3 fable-1 fable-2 fable-3 security}"
+  for run in $ONLY; do
+    D="$OUT/$run"
+    [ -d "$D" ] || continue
+    J="$D/raptor-port/node_modules"
+    if [ -e "$J" ] || [ -L "$J" ]; then
+      MSYS_NO_PATHCONV=1 cmd /c rmdir "$(cygpath -w "$J")"
+      if [ -e "$J" ] || [ -L "$J" ]; then echo "STOP: the junction $J is still there - $D not deleted"; exit 1; fi
+    fi
+    rm -rf "$D"
+    echo "deleted $D"
+  done
+  [ -n "$*" ] || rm -rf "$OUT/_common" "$OUT/blank-block.mjs"
+  exit 0
+fi
+
+OUT="$2"
+[ -n "$1" ] && [ -n "$OUT" ] || { echo "usage: mkcopies.sh <head> <scratch-folder>"; exit 2; }
+HEAD=$(git -C "$SRC" rev-parse --short=9 "$1^{commit}") || { echo "STOP: $1 is not a commit of $SRC"; exit 1; }
+git -C "$SRC" cat-file -e "$BASE^{commit}" || { echo "STOP: the base $BASE is not in $SRC"; exit 1; }
+[ -d "$NMSRC" ] || { echo "STOP: no packages folder at $NMSRC"; exit 1; }
+mkdir -p "$OUT/_common"
+C="$OUT/_common"
+
+# ---- once: the reshape's diff, log and stat, and the three shares' file lists out of the brief ----
+git -C "$SRC" diff "$BASE" "$HEAD" -- raptor-port/src > "$C/RESHAPE.patch"
+git -C "$SRC" log --no-merges --reverse --format='==== %h %s%n%n%b' "$BASE..$HEAD" -- raptor-port/src > "$C/RESHAPE-LOG.txt"
+git -C "$SRC" diff --stat=200 "$BASE" "$HEAD" -- raptor-port/src > "$C/RESHAPE-stat.txt"
+git -C "$SRC" diff --name-only "$BASE" "$HEAD" -- raptor-port/src | sort > "$C/changed.txt"
+git -C "$SRC" archive "$HEAD" -- "$BRIEF" "$SECURITY" "$BLANK" | tar -x -C "$C"
+cp "$C/$BLANK" "$OUT/blank-block.mjs"
+for n in 1 2 3; do
+  awk -v a="<!-- share-$n-files -->" -v b="<!-- /share-$n-files -->" 'index($0,b){on=0} on{print} index($0,a){on=1}' "$C/$BRIEF" \
+    | tr ' ' '\n' | grep . | sed 's#^#raptor-port/src/#' | sort > "$C/share-$n.txt"
+  [ -s "$C/share-$n.txt" ] || { echo "STOP: the brief holds no file list for share $n"; exit 1; }
+done
+cat "$C/share-1.txt" "$C/share-2.txt" "$C/share-3.txt" | sort > "$C/listed.txt"
+TWICE=$(uniq -d "$C/listed.txt")
+ODD=$(comm -3 "$C/changed.txt" <(uniq "$C/listed.txt"))
+if [ -n "$TWICE" ] || [ -n "$ODD" ]; then
+  echo "STOP: the brief's three lists do not hold every changed file exactly once (the head moved since they were made?)."
+  [ -n "$TWICE" ] && { echo "  in two shares:"; echo "$TWICE" | sed 's/^/    /'; }
+  [ -n "$ODD" ] && { echo "  changed but in no share (left column), or listed but not changed (right column):"; echo "$ODD" | sed 's/^/    /'; }
+  echo "  Put each in one share's list in $BRIEF, commit, and run again."
+  exit 1
+fi
+for n in 1 2 3; do
+  git -C "$SRC" diff "$BASE" "$HEAD" -- $(cat "$C/share-$n.txt") > "$C/SHARE-$n.patch"
+  echo "share $n: $(wc -l < "$C/share-$n.txt") files, $(wc -l < "$C/SHARE-$n.patch") patch lines"
+done
+echo "the whole reshape: $(wc -l < "$C/changed.txt") files, $(wc -l < "$C/RESHAPE.patch") patch lines ($BASE..$HEAD)"
+
+# ---- one line read of every path the brief names (its three file lists aside - the share's patch covers those) ----
+probe() {
+  local D="$1" F="$2" p f base n=0 miss=0
+  while read -r p; do
+    n=$((n + 1)); f=""
+    for base in "" raptor-port/ raptor-port/src/ raptor-port/docs/; do
+      if [ -f "$D/$base$p" ]; then f="$D/$base$p"; break; fi
+    done
+    if [ -z "$f" ] || ! head -n 1 "$f" > /dev/null; then miss=$((miss + 1)); echo "  NOT READABLE in $(basename "$D"): $p (named by $F)"; fi
+  done < <(awk '/<!-- share-[123]-files -->/{skip=1} !skip{print} /<!-- [/]share-[123]-files -->/{skip=0}' "$D/$F" \
+    | grep -o '`[^`]*`' | tr -d '`' | tr ' ' '\n' | sed 's/[,;:.]*$//' \
+    | grep -E '^[A-Za-z0-9_.@-]+(/[A-Za-z0-9_.@-]+)+[.](ts|tsx|js|jsx|md|mjs|css|txt|patch)$|^[A-Z-]+[.](md|patch|txt)$' | sort -u)
+  echo "  probe of $F: $n paths named, $miss not readable"
+  [ "$miss" -eq 0 ]
+}
+
+# ---- one copy (run in a subshell of its own: a STOP ends that copy, and the run reports it) ----
+make_copy() {
+  local run="$1" D share took f LEFT is_repo want_repo
+  D="$OUT/$run"
+  share="${run##*-}"
+  mkdir -p "$D"
+  # 1. the tree a code reader needs: no pictures, and none of the walks' bulk - their picture folders' records, their
+  #    scripts, the evidence zips and measure files, the drawings, the IT guide's deck (no unit test reads any of them;
+  #    checked 21 Nov 26). The whole tree without pictures is 364 MB and 13,000 files a copy: ten filled his disk.
+  git -C "$SRC" archive "$HEAD" -- . ':(exclude,glob)**/*.png' ':(exclude,glob)**/*.jpg' ':(exclude,glob)**/*.gif' \
+    ':(exclude,glob)**/*.mp4' ':(exclude,glob)**/*.webm' ':(exclude,glob)**/*.zip' ':(exclude,glob)**/*.pptx' \
+    ':(exclude,glob)**/*.pdf' ':(exclude)raptor-port/docs/img' ':(exclude)raptor-port/docs/mock' \
+    ':(exclude)raptor-port/docs/it-flow-guide' ':(exclude)raptor-port/scripts/handpass' \
+    ':(exclude,glob)raptor-port/docs/handpass/**/*.json' | tar -x -C "$D"
+  # 2. what a blind reader must not reach, each replaced by one line: this round's briefs, helper reports and reads (this
+  #    brief and the security prompt among them - BRIEF.md and SECURITY.md at the root are the reader's copies), the
+  #    evidence sheet, the drawing-check records, any scenario list of the day
+  took=0
+  while read -r f; do
+    [ -f "$f" ] || continue
+    echo "$OUTLINE" > "$f"; took=$((took + 1))
+  done < <(
+    find "$D/$B" -path "*/$ROUND-*" -type f
+    find "$D/raptor-port/docs/handpass" -maxdepth 1 -name "$ROUND*" -type f
+    [ -d "$D/raptor-port/docs/img/handpass/$ROUND" ] && find "$D/raptor-port/docs/img/handpass/$ROUND" -type f
+    find "$D/raptor-port" -name '*2026-11-21*scenario*' -type f
+  )
+  node "$OUT/blank-block.mjs" "$D/HANDOFF.md" "$BRANCH" > /dev/null
+  # 3. the brief, filled; the diffs, the log and the stat
+  if [ "$run" = security ]; then
+    sed "s/@@HEAD@@/$HEAD/g; s/@@BASE@@/$BASE/g; s/@@SHARE@@/ALL/g" "$C/$BRIEF" > "$D/BRIEF.md"
+    sed "s/@@HEAD@@/$HEAD/g; s/@@BASE@@/$BASE/g" "$C/$SECURITY" > "$D/SECURITY.md"
+    cp "$C/RESHAPE.patch" "$D/SHARE.patch"
+    cp "$C/changed.txt" "$D/SHARE-FILES.txt"
+  else
+    sed "s/@@HEAD@@/$HEAD/g; s/@@BASE@@/$BASE/g; s/@@SHARE@@/$share/g" "$C/$BRIEF" > "$D/BRIEF.md"
+    cp "$C/SHARE-$share.patch" "$D/SHARE.patch"
+    cp "$C/share-$share.txt" "$D/SHARE-FILES.txt"
+  fi
+  cp "$C/RESHAPE.patch" "$C/RESHAPE-LOG.txt" "$C/RESHAPE-stat.txt" "$D/"
+  if grep -q '@@[A-Z]*@@' "$D/BRIEF.md"; then echo "STOP: a placeholder is left unfilled in $D/BRIEF.md"; exit 1; fi
+  # 4. Astra's copies (REPO_ALL=1: every copy) are made a repo of their own, before the junction exists - Codex refuses
+  #    a folder that is not one. Every git command names the copy, never a checkout.
+  is_repo="no repo"
+  case "$run" in astra-*) want_repo=1 ;; *) want_repo="${REPO_ALL:-}" ;; esac
+  if [ -n "$want_repo" ]; then
+    git -C "$D" init -q
+    git -C "$D" -c core.longpaths=true -c core.autocrlf=false add -A
+    git -C "$D" -c core.hooksPath=/dev/null -c user.name=copy -c user.email=copy@local commit -qm "copy of $HEAD for $run"
+    [ "$(cd "$D" && pwd -P)" = "$(cd "$(git -C "$D" rev-parse --show-toplevel)" && pwd -P)" ] || { echo "STOP: $D is not its own repo"; exit 1; }
+    is_repo="a repo, its commit $(git -C "$D" log --oneline -1 | cut -c1-7)"
+  fi
+  # 5. the packages, linked (never installed, never deleted with the copy)
+  MSYS_NO_PATHCONV=1 cmd /c mklink /J "$(cygpath -w "$D/raptor-port/node_modules")" "$(cygpath -w "$NMSRC")" > /dev/null
+  [ -d "$D/raptor-port/node_modules/vitest" ] || { echo "STOP: the packages link of $D does not reach vitest"; exit 1; }
+  # 6. the checks: the block blanked, nothing of the round readable, every path the brief names readable
+  grep -q "blanked in a blind reader" "$D/HANDOFF.md" || { echo "STOP: $D/HANDOFF.md still holds the branch's block"; exit 1; }
+  LEFT=$(find "$D/$B" "$D/raptor-port/docs/handpass" -path "*/$ROUND*" -type f -exec grep -L -F "$OUTLINE" {} + || true)
+  [ -z "$LEFT" ] || { echo "STOP: this round's records are still readable in $D:"; echo "$LEFT"; exit 1; }
+  echo "$run ready: $D ($took records taken out; $is_repo)"
+  probe "$D" BRIEF.md
+  if [ "$run" = security ]; then probe "$D" SECURITY.md; fi
+}
+
+# ---- the ten copies, JOBS at a time. RUNS in the environment makes only the copies it names (a reader stopped and
+#      started again: clean that one copy first, "--clean <scratch-folder> <copy>"). ----
+ALLRUNS="astra-1 astra-2 astra-3 opus-1 opus-2 opus-3 fable-1 fable-2 fable-3 security"
+RUNS="${RUNS:-$ALLRUNS}"
+for run in $RUNS; do
+  case " $ALLRUNS " in *" $run "*) ;; *) echo "STOP: $run is not one of: $ALLRUNS"; exit 1 ;; esac
+done
+JOBS="${JOBS:-4}"
+# his disk had under 6 GB free on 21 Nov 26, and a test of ten whole-tree copies filled it: stop under 3 GB
+FREE_KB=$(df -Pk "$OUT" | awk 'NR==2{print $4}')
+if [ "${FREE_KB:-0}" -lt 3000000 ]; then echo "STOP: under 3 GB free where $OUT sits ($((FREE_KB / 1024)) MB) - free some space first"; exit 1; fi
+for run in $RUNS; do
+  if [ -e "$OUT/$run" ]; then echo "STOP: $OUT/$run already exists - clean up first (mkcopies.sh --clean), never by hand through its junction"; exit 1; fi
+done
+failed=""
+pids=(); names=()
+gather() {
+  local i
+  for i in "${!pids[@]}"; do
+    if wait "${pids[$i]}"; then cat "$C/${names[$i]}.log"; else cat "$C/${names[$i]}.log"; echo "FAILED: ${names[$i]}"; failed="$failed ${names[$i]}"; fi
+  done
+  pids=(); names=()
+}
+for run in $RUNS; do
+  ( make_copy "$run" ) > "$C/$run.log" 2>&1 &
+  pids+=("$!"); names+=("$run")
+  if [ "${#pids[@]}" -ge "$JOBS" ]; then gather; fi
+done
+gather
+if [ -n "$failed" ]; then echo "STOP: not every copy is ready -$failed. Clean up (mkcopies.sh --clean $OUT) and run again once the cause is fixed."; exit 1; fi
+echo "Ready under $OUT: $RUNS. Start each reader in its own copy; Astra as docs/codex-guide.md says (the model named, input closed)."
+echo "Afterwards: bash mkcopies.sh --clean $OUT"

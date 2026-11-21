@@ -1,0 +1,30 @@
+// Blank one branch's block of HANDOFF.md in a blind reader's exported copy (the reshape's fix read, 21 Nov 26).
+// Kept as text beside its brief; the copies script copies it to <scratch>/blank-block.mjs and runs it:
+//   node blank-block.mjs <copy>/HANDOFF.md claude/multi-sqn-b1-107
+// It rewrites only the text between `<!-- now:<branch> -->` and the next `<!-- /now -->`, leaves the two anchors (the
+// document check reads them), and fails — changing nothing — when the block is not there: a copy whose block was not
+// blanked is not a blind copy. Never run it on a checkout's own HANDOFF.md.
+import fs from 'node:fs';
+
+const [file, branch] = process.argv.slice(2);
+if (!file || !branch) { console.error('usage: node blank-block.mjs <HANDOFF.md> <branch>'); process.exit(2); }
+const open = `<!-- now:${branch} -->`;
+const close = '<!-- /now -->';
+const said = '(this block is blanked in a blind reader\'s copy — the multi-squadron reshape\'s fix read, 21 Nov 26)';
+
+let s = fs.readFileSync(file, 'utf8');
+let from = 0, blanked = 0, took = 0;
+for (;;) {
+  const a = s.indexOf(open, from);
+  if (a < 0) break;
+  const b = s.indexOf(close, a);
+  if (b < 0) { console.error(`blank-block: "${open}" has no "${close}" after it in ${file} — nothing changed`); process.exit(1); }
+  const fresh = `${open}\n${said}\n`;
+  took += b - (a + open.length);
+  s = s.slice(0, a) + fresh + s.slice(b);
+  from = a + fresh.length + close.length;
+  blanked++;
+}
+if (!blanked) { console.error(`blank-block: no "${open}" block in ${file} — nothing changed`); process.exit(1); }
+fs.writeFileSync(file, s);
+console.log(`blank-block: ${blanked} block of ${branch} blanked (${took} characters taken out)`);
