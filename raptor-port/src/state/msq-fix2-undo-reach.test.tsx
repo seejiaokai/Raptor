@@ -9,7 +9,7 @@ import { App } from '../ui/App'
 import { switchRoleView, notify } from './store'
 import { setPage, CURPAGE } from './view'
 import { INPEDIT, setInpEdit } from '../ui/pops'
-import { SESSION } from './auth'
+import { SESSION, setEffectiveRole } from './auth'
 import { commitNewInput } from '../ui/inputedit'
 import { INPUTS } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
@@ -96,5 +96,18 @@ describe('fix read 2 — the reach check blocks nothing he can still reach', () 
     const u = globalUndo()
     expect(u.ok, u.reason).toBe(true)
     expect(JSON.stringify((PEOPLE as any)[PID.ranger].quals)).toBe(was)
+  })
+  /* the Leave War's browser tests sign in as a member and take the admin's role by the localhost bridge (e2e/app.ts
+     lwRole → probe-bridge.ts raptorRole → auth.ts setEffectiveRole): the reach check read that session as "an admin's
+     step, his account gives no admin role" and blocked every Undo for good (GitHub's run of 22 Nov 26) */
+  it('a member’s sign-in holding the admin’s role by the localhost bridge: his step is undone, never blocked for good', () => {
+    signInAs('ranger')
+    expect(SESSION?.acct).toBe('main')
+    setEffectiveRole('admin')
+    expect(commitNewInput({ person: PID.ranger, type: 'LL', allday: true, half: '', start: '2026-08-20', end: '2026-08-21', sTime: '', eTime: '', remarks: '', sans: null, docIds: [] })).toBe(true)
+    const iid = _timelineEntries().at(-1)!.forward.find(c => c.collection === 'inputs')!.id
+    const u = globalUndo()
+    expect(u.ok, u.reason).toBe(true)
+    expect(INPUTS.some((r: any) => r.iid === iid)).toBe(false)
   })
 })
