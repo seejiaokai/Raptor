@@ -1,5 +1,8 @@
 # The combined fix read of the multi-squadron reshape — one brief, blind readers — YOUR SHARE: @@SHARE@@ (21 Nov 26, chat 131)
 
+**You are in an exported copy made for a blind read:** this round's builder records are each replaced by one line and
+the branch's `HANDOFF.md` block is blanked. If you can read any of them, stop and say so before anything else.
+
 The reshape plan's phase 4 (`raptor-port/docs/superpowers/plans/2026-11-20-multi-sqn-b1-reshape.md` §10; his D2236,
 D2238). The reshape answers the 35 faults of fix read 17, the core read and the full review, the Plan audit's findings
 and its blind read's. Its source change is 229 files — too much for one reader — so it is cut into three shares by

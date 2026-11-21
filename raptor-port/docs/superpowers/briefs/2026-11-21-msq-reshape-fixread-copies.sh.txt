@@ -14,7 +14,8 @@
 # <scratch-folder> is a new or empty folder at a short path OUTSIDE every checkout (the session's scratchpad). A copy
 # that already exists stops the run: nothing is ever deleted here except by --clean, which takes each junction off
 # first — a recursive delete through a junction deletes the real packages.
-# SRC and NMSRC may be given in the environment (a test run from another checkout).
+# SRC and NMSRC may be given in the environment (a test run from another checkout), and JOBS - how many copies are
+# made at once (4; each writes some 13,000 files). Each copy's own lines are printed when its batch ends.
 set -e
 set -o pipefail
 
@@ -99,11 +100,11 @@ probe() {
   [ "$miss" -eq 0 ]
 }
 
-# ---- the ten copies ----
-for run in astra-1 astra-2 astra-3 opus-1 opus-2 opus-3 fable-1 fable-2 fable-3 security; do
+# ---- one copy (run in a subshell of its own: a STOP ends that copy, and the run reports it) ----
+make_copy() {
+  local run="$1" D share took f LEFT
   D="$OUT/$run"
   share="${run##*-}"
-  if [ -e "$D" ]; then echo "STOP: $D already exists - clean up first (mkcopies.sh --clean), never by hand through its junction"; exit 1; fi
   mkdir -p "$D"
   # 1. the tree without pictures
   git -C "$SRC" archive "$HEAD" -- . ':(exclude,glob)**/*.png' ':(exclude,glob)**/*.jpg' ':(exclude,glob)**/*.gif' \
@@ -150,6 +151,29 @@ for run in astra-1 astra-2 astra-3 opus-1 opus-2 opus-3 fable-1 fable-2 fable-3 
   echo "$run ready: $D ($took records taken out, $(git -C "$D" log --oneline -1 | cut -c1-7) its commit)"
   probe "$D" BRIEF.md
   if [ "$run" = security ]; then probe "$D" SECURITY.md; fi
+}
+
+# ---- the ten copies, JOBS at a time (each writes some 13,000 files: about two minutes alone on his PC) ----
+RUNS="astra-1 astra-2 astra-3 opus-1 opus-2 opus-3 fable-1 fable-2 fable-3 security"
+JOBS="${JOBS:-4}"
+for run in $RUNS; do
+  if [ -e "$OUT/$run" ]; then echo "STOP: $OUT/$run already exists - clean up first (mkcopies.sh --clean), never by hand through its junction"; exit 1; fi
 done
+failed=""
+pids=(); names=()
+gather() {
+  local i
+  for i in "${!pids[@]}"; do
+    if wait "${pids[$i]}"; then cat "$C/${names[$i]}.log"; else cat "$C/${names[$i]}.log"; echo "FAILED: ${names[$i]}"; failed="$failed ${names[$i]}"; fi
+  done
+  pids=(); names=()
+}
+for run in $RUNS; do
+  ( make_copy "$run" ) > "$C/$run.log" 2>&1 &
+  pids+=("$!"); names+=("$run")
+  if [ "${#pids[@]}" -ge "$JOBS" ]; then gather; fi
+done
+gather
+if [ -n "$failed" ]; then echo "STOP: not every copy is ready -$failed. Clean up (mkcopies.sh --clean $OUT) and run again once the cause is fixed."; exit 1; fi
 echo "All ten ready under $OUT. Start each reader in its own copy; Astra as docs/codex-guide.md says (the model named, input closed)."
 echo "Afterwards: bash mkcopies.sh --clean $OUT"

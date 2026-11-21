@@ -1,5 +1,8 @@
 # The security read of the multi-squadron reshape — the security reader's own prompt (21 Nov 26, chat 131)
 
+**You are in an exported copy made for a blind read:** this round's builder records are each replaced by one line and
+the branch's `HANDOFF.md` block is blanked. If you can read any of them, stop and say so before anything else.
+
 You are the security reader (his D1411: "an extra fresh reader looking only for holes") of the reshape of the
 multi-squadron build — the plan's phase 4, beside three code readers of each of its three shares. You read **the whole
 reshape, not one share**, and you look **only for holes**: ways a person gets to do, see or keep what the rulings do
