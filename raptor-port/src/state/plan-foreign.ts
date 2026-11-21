@@ -192,7 +192,7 @@ function wire(): void {
         touched.add(unit)
       }
     }
-    for (const u of touched) sortByOrd(KEPT.get(u)!.pucks, puckIdOf)
+    for (const u of touched) { const kept = KEPT.get(u); if (kept) sortByOrd(kept.pucks, puckIdOf) }
   })
 }
 

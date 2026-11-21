@@ -56,11 +56,13 @@ import { ordShift, ordLabel } from '../engine/medical'
 import { stashEntries, stashGet, stashWeekState, isPreservedWeek } from '../engine/weekstash'
 import { UNIT } from '../engine/unitview'
 import { qualify, localOf } from '../storage/unitid'
-import { stripPersonFromDay, trimTail, hisLanded } from '../engine/overlay'
+import { stripPersonFromDay, hisLanded } from '../engine/overlay'
 import { validate } from '../engine/validate'
 import { localToday } from '../leavewar/engine/period'
-import { PLANPUCKS } from './plan'
-import { commit, CmdRefused, isCommitting } from '../command'
+import { PLANPUCKS, stripGoneFrom } from './plan'
+import { storedCalendar, storedPlan } from './plan-foreign'
+import { units } from './units'
+import { commit, CmdRefused, isCommitting, isInReducer } from '../command'
 import { peopleStore, settingsStore, finishPeopleWrite } from './people-settings-commit'
 import { schedStore, schedApplyEnd, resyncBeforeEnlist } from './sched-commit'
 import { mayDeletePerson, byAfterLeaving } from './perms'
@@ -267,19 +269,42 @@ export function applyDelete(id: string, cutoff: string): void {
   }
   /* 3b. every saved week — NOT rewritten since phase 6 (d): each reads without him from his cutoff when its days come
      into memory (engine/overlay.ts). */
-  /* 3c. the planning calendar's pucks — a gap, never a splice (the surviving pucks keep their places) */
-  for (const e of [...PLANPUCKS]) {
-    /* the row's day is its `date` (state/plan.ts) — this read `iso`, a field no calendar row carries, so a delete never took
-       him off one ([DB-READINESS] group A, phase 2: found moving the calendar to one row each) */
-    /* a NOTE's people too, whatever `kind` it was saved with (D684: one kind of section since 9 Oct 26) */
-    if (!e || !Array.isArray(e.ids) || String(e.date || '') < cutoff) continue
-    const ix = e.ids.indexOf(id)
-    if (ix < 0) continue
-    e.ids[ix] = ''; trimTail(e.ids)
-    /* a note left with neither words nor people is not kept (D695's reading; state/plan.ts togglePuckPerson) */
-    if (!e.ids.length && !String(e.text == null ? '' : e.text).trim()) PLANPUCKS.splice(PLANPUCKS.indexOf(e), 1)
-  }
+  /* 3c. the planning calendar's pucks — a gap, never a splice (the surviving pucks keep their places). The row's day is
+     its `date` (state/plan.ts) — this once read `iso`, a field no calendar row carries, so a delete never took him off one
+     ([DB-READINESS] group A, phase 2: found moving the calendar to one row each); a NOTE's people too, whatever `kind` it
+     was saved with (D684: one kind of section since 9 Oct 26); a note left with neither words nor people is not kept
+     (D695's reading). The one strip body, state/plan.ts stripGoneFrom, shared with 3d. */
+  for (const e of stripGoneFrom([...PLANPUCKS], id, cutoff).empty) PLANPUCKS.splice(PLANPUCKS.indexOf(e), 1)
+  /* 3d. …AND EVERY OTHER SQUADRON'S CALENDAR THAT NAMES HIM (the reshape plan §6.2 B1 — Fable 1 of the full review; D299:
+     a delete takes him out of every day still to come). Step 3c reaches only the calendar loaded — the schedule in view's
+     — so a master admin deleting a 149 man with 142 in view, or 142's admin deleting a man moved 149 → 142 still on a
+     future 149 note, left him there. Each squadron's calendar not loaded is read as stored; where it names him on or after
+     his cutoff its stored half joins THIS command (loading those notes first, so each before-image is the note as stored)
+     and the same strip is written through it — saved with the delete, rolled back whole with it (state/plan-foreign.ts).
+     The commit gate lets the delete change those notes, and only so, though its admin holds no right in that squadron
+     (perms.ts section 7, deleteStripsOnly). Both doors reach here: the admin's Delete and a posting's (leavewar/sync.ts). */
+  stripOtherCalendars(id, cutoff)
   validate()
+}
+
+/* 3d's body: every squadron's calendar but the one loaded, read as stored; only one that names him from his cutoff joins */
+function stripOtherCalendars(id: string, cutoff: string): void {
+  for (const u of units()) {
+    if (!u || u.id === UNIT) continue
+    const naming = storedCalendar(u.id).pucks.filter((p: any) => p && p.id != null && Array.isArray(p.ids) && String(p.date || '') >= cutoff && p.ids.includes(id))
+    if (!naming.length) continue
+    const stored = storedPlan(u.id)
+    const locals = naming.map((p: any) => `pp:${p.id}`)
+    /* JOINED TO THE DELETE'S OWN COMMAND: applyDelete is handed no transaction (the posting pass calls it too), and a
+       command raised inside a running reducer joins it — one envelope, one rollback, no second authorization — so the
+       stored half loads his notes and enlists through that join (command/commit.ts dispatch) */
+    if (!isInReducer()) throw new Error('applyDelete strips another squadron\'s calendar only inside a command')
+    commit({ type: 'person.delete', scope: { module: 'people' }, meta: null, apply: (txn: any) => stored.join(txn, locals) })
+    const notes = locals.map(l => stored.get(l)).filter(Boolean)
+    const { hit, empty } = stripGoneFrom(notes, id, cutoff)
+    const gone = new Set(empty)
+    for (const n of hit) { if (gone.has(n)) stored.drop(`pp:${n.id}`); else stored.put(`pp:${n.id}`, n) }
+  }
 }
 
 /* ---- UNDO AND REDO NEVER PUT HIM BACK (the plan's Round 1 and 2 — Fable F2, Astra A1 / round-2 2) ----
