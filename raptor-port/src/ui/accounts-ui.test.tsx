@@ -337,7 +337,7 @@ describe('PO3 — Suspend / Enable, "suspended", the sign-in (D285, D300)', () =
 
 /* D1657 (5 Nov 26, "the rest as recommended" — [GUEST-SAVE-WARNING], answering the member / guest check's finding): when a
    save has failed, the "Not saved — keep this page open · Retry" band shows on the sign-in screen, the screen after asking
-   for access and the guest page too, the page moved down under it so nothing is covered — so a stranger whose request
+   for access (and, until the guest view went with D2239, the guest page too), the page moved down under it so nothing is covered — so a stranger whose request
    was not saved is never told it was sent. Its Retry saves, and the band goes. */
 describe('D1657 — the failed-save band on the sign-in and the access screens (the guest page gone, D2239)', () => {
   const be = new MemoryBackend(), wb = new Whiteboard(), pm = new Postman(be)

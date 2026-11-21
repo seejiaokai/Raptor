@@ -40,7 +40,8 @@ export const UNIT_SETTINGS: readonly string[] = [
   'daytpl', 'dutytpl', 'wavetpl', 'wavehide', 'wavedefault', // the day / duty / wave templates and the house wave order
   'cxreasons',    // the cancel-reason list the scheduler picks from
   'stores',       // the stores list a jet's stores box offers
-  'lookahead',    // how many weeks ahead the schedule pages reach
+  'lookahead',    // how many weeks ahead the Inputs page opens on, and its quick "Next N weeks" button offers — the
+                  // page's own squadron's (engine/lookahead.ts lookaheadOf; ui/InputsPage.tsx inputsLookahead)
   'secdefault',   // the house order of a day's sections
   'qualcols',     // the LoX column list on Quals (a person's ticks stay on his own record)
   'insights',     // "Track blue/red sorties" — a squadron's switch (D524)
@@ -104,6 +105,9 @@ export const UNIT_SINGLETONS: ReadonlyArray<{ name: string; module: string }> = 
   { name: 'WAVETPL_CFG', module: 'engine/wavetpl' },
   { name: 'WAVEHIDE', module: 'engine/wavetpl' },
   { name: 'STORE_CFG', module: 'engine/stores' },
+  /* LOOK_CFG holds the loaded squadron's look-ahead only. The Inputs page is an own page, so it asks by squadron
+     (`lookaheadOf(pageUnit('own'))`): the loaded squadron's answer is this singleton, another's is read from its own
+     stored setting each time and written straight back to it, never through here (the reshape plan §3.2 A-ii). */
   { name: 'LOOK_CFG', module: 'engine/lookahead' },
   { name: 'ELOG', module: 'engine/editlog' },
   { name: 'WARN', module: 'engine/validate' },
