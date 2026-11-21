@@ -122,3 +122,59 @@ row files A1's drawing needs (name them in your report). The core's last change 
    each proof yourself, red first.
 5. **`oilOpenOn` by day, and the today readers §6.2 names; the flying plan's calls the inventory names.**
 NOT yours: A4 (phase 3, core).
+
+## ITEMS — helper "schedule" (branch `schedule`) — drafted by chat 128
+Your files (§10, §3.6): `engine/faceattrs.ts`, `engine/avail.ts` (one call), `engine/publish.ts` (`snap.ros`, `signPeople`),
+`engine/validate.ts` (`issuedRoster`), `engine/overlay.ts` (renamed calls, first day), `engine/weekstash.ts` (C8),
+`engine/editlog.ts` (l.449), `state/holderbase.ts` (renamed, first day), `ui/html.ts`, `ui/palette-html.ts`,
+`ui/interactions.ts`, `ui/inputedit.tsx`, `ui/PeoplePick.tsx`, `ui/peoplepick-model.ts`, `ui/InputWindow.tsx`,
+`engine/drafts.ts`, `engine/oilev.ts`, `engine/slots.ts`, `engine/weekctx.ts`, `ui/oilputback.ts` (renamed calls only), and
+the demo seed's placeholder inputs (name the seed file in your report). `src/engine/` bodies are verbatim ports: change only
+the multi-squadron lines §0 names. The original's 728 stay 728/0 (`node reference/tfin.js`).
+1. **A-i's callers on the schedule side** (§3.2 A-i, A-iii): each call to `inputsFor`/`inputBelongs` in your files moved to
+   `inputsOnDay`/`inputOnDay` with the day it means; the landing and accepted-mark writers keep the first day (F4 — a
+   writer never iterates "touches"); `engine/editlog.ts` l.449 the line's own date, today when it has none.
+2. **C4** (§3.3): `rosterIds(iso)`, `rosterShown(iso)`; `avail.ts availByWave` passes its day; `publish.ts` freezes
+   `snap.ros = rosterIds(dayIso(CURWEEK, di))`; `validate.ts issuedRoster` reads each unpublished day's own list. Proof
+   `c-c04-free-all-day-reads-today`, red first.
+3. **C5 with R8** (§12 Q2 — D2243; §19b R8 — D2245): `signPeople` offers the day's own people
+   (`rosterOf(UNIT, dayIso(CURWEEK, di))`); SKED CK, PLANNED BY and APPROVED BY then offer, after them, an admin holding
+   Plan of the squadron while his Plan holds that day, and a master admin, each carrying the Scheduler tick; CUR CK stays
+   the day's own people. Proof `c-c05-sign-boxes-read-today`, red first; R8's cases written by you, red first.
+4. **C3** (§12 Q1 — D2243): filing stamps `u` on a placeholder-only input (ALL AVAIL / ALL) — `InputWindow`'s save and the
+   demo seed's placeholder inputs; the reader (`inputSquadrons`' placeholder branch, core, built) honours it. Proof
+   `c-c03-allavail-follows-filer`, red first.
+5. **C6** (§3.3; §11's C6 row; §12 Q8 — D2240, D2241): the picker and the save door on phase 1's `inputWhoProblem`
+   (`perms.ts`, built — with `inputWhoProblemNow` for the doors): a man is offered where the draft with him added passes;
+   the save door asks before the gate, and an existing input's save too; asked again when the draft's dates or people
+   change; `rosterOptions(unit, iso)`, `archivedOptions(unit, iso)`, `pickRoster` and `PeoplePick` take the draft's first
+   day; the board's reassign pool (`interactions.ts` l.1343) passes its day. The refusal's words, approved: "Not saved:
+   Ranger is 149's from Thu 16 Jul. Only Ranger or an admin of both 142 and 149 can change leave that runs across his
+   move." — built to the approved drawing in `docs/mock/2026-11-20-multi-sqn-reshape/` and checked beside it (D1494) at
+   his iPhone's and a desktop's size; report each difference over about 2px. Proof `c-c06-pickers-read-today`, red first;
+   §3.4's table of actor × span × move.
+6. **C8** (§7): `weekstash.ts stashDays` passes `qk(v)` to `viewOfWeek`; the bare week only for `weekBundle`'s dates.
+   Proof `c-c08-stash-qualified-key`, red first.
+
+## ITEMS — helper "own pages" (branch `ownpages`) — drafted by chat 128
+Your files (§10, §3.6): `ui/InputsPage.tsx`, `ui/InputsCal.tsx` (its calendar part LAST — see 4), `ui/QualsPage.tsx`,
+`ui/MedicalView.tsx`, `ui/SansCal.tsx`, `ui/SansDay.tsx`, `ui/sansadd.ts`, `ui/oilday.ts`, `ui/OilDayList.tsx`,
+`tracker/peoplewire.ts`, `state/flyplan.ts`, `state/flyplan-model.ts`, `engine/qualcols.ts`.
+1. **The own-page setting inventory, read only, FIRST** (§3.2 A-ii, "Own-page settings"): every reader and writer of a
+   unit setting (`storage/keyowner.ts UNIT_SETTINGS` and its prefixes) outside the schedule pages' files — file, line, the
+   setting, read or write, and its owner by §10 (yours; helper "war"'s for the flying plan's calls in `leavewar/sync.ts`;
+   the core's or helper "undo & roles"' for `perms.ts`/`undo-wire.ts`). **Stop after the inventory and report it,
+   starting with `HELPER-ownpages-INVENTORY:`** — the host checks it before anything moves and continues you.
+2. **A-ii's callers in your files** (§3.2 A-ii): each own page reads `pageUnit('own', today)` where it read `myUnit()`, and
+   reads AND writes its settings through `unitSetting(pageUnit('own'), name, …)` (B4 — `engine/hooks.ts`, built). A
+   reader that gains a squadron argument keeps its old form beside the new until phase 3. The guard test: a plain-name
+   read or write of a unit setting outside the schedule pages' files fails. Proof `b-b04-own-pages-follow-pick` (its
+   own-page half — the core's `membersFileOn` half is built, `state/memberfile-own-unit.test.ts`), red first.
+3. **C2 and C11** (§3.3): his own Inputs page lists `inputsListed(unit, pid)` (C2); the Inputs page's filter, rows,
+   deleted and archived groups read `pageUnit('own')` and `inputsTouching` (C11, C1's list half — never a writer). Proofs
+   `c-c01-leave-across-move-lists` (its list half), `c-c02-own-input-after-move-vanishes`,
+   `c-c11-inputs-filter-other-squadron`, red first; §3.4's `pageUnit` rows for the own pages.
+4. **LAST, only once helper "session"'s routed planning writer and helper "undo & roles"' per-record store are merged
+   into the branch** (§3.2 A-ii, "The Inputs calendar"; §10): the Inputs calendar's notes, day titles, their edits,
+   change capture and Undo by `pageUnit('own')`; §3.4's planning-calendar test through the Inputs calendar's page.
+NOT yours: `ui/oilday.ts`'s A4 lines (core, phase 3) — leave its holiday code as it is.
