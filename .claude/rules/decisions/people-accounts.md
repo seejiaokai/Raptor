@@ -71,6 +71,7 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - One place in the app answers "may this person do this?", mirroring the data model's permissions table (§11), which matches every ruling, a test failing when the two disagree; built with `[ACCOUNTS]`, a test per column [D200, D149, D218, D1510, D1651, D1589].
 - The database's security roles are the agent's to design at the database step, not before — each table's permissions per role, row ownership set by the app, the protected columns, what stands in for a rule a role cannot hold; IT enters them, a member-only account tests them; IT's 8 Nov 26 answers (database rights theirs, who may do what the app's roles) are put to him, `[DB-SECURITY-ROLES]` [D1653].
 - Three levels: a few master admins (developers, into the database directly), admins, members; both admin levels create accounts and set rights, not IT [D1971].
+- A master admin is never made a member while he holds the mark: refused, "Saber is a master admin — take that off first" [D2260].
 - Always "master admin", on screen and to him, never "master" alone; where a master admin may act for a squadron, so may an admin with Plan of it, both named [D2240, D2241, D2201].
 
 ## Admin → Users — the one door
