@@ -8,7 +8,7 @@
 import { PEOPLE, isInstr } from '../../engine/people'
 import { homeHandle, isSentinel } from '../../engine/roster'
 import { worldUnit, getState } from './store'
-import { qualCols } from '../../engine/qualcols'
+import { qualColsOf } from '../../engine/qualcols'
 import type { HomeStint, Person, QualDef } from '../engine'
 import type { Person as RaptorPerson } from '../../engine/schema'
 
@@ -155,7 +155,8 @@ function warsSince(unit: string): string {
  * rather than being pruned out from under them.
  */
 export function qualCatalogue(): QualDef[] {
-  const out: QualDef[] = qualCols().map(c => ({ k: c.k, label: c.h }))
+  /* the war's own squadron's columns, never the pick's (the reshape plan §3.2 A-ii — helper "war", second pass) */
+  const out: QualDef[] = qualColsOf(worldUnit()).map(c => ({ k: c.k, label: c.h }))
   const listed = new Set(out.map(q => q.k))
   const held = new Set<string>()
   for (const p of Object.values(raptorPeople())) {
