@@ -269,7 +269,7 @@ export function SansCal({ lead }: { lead?: ReactNode } = {}) {
 
   /* the man picked in Highlight — only while he is still SANS and on the roster; one who has left it is let go */
   /* (his own squadron's SANS men — the SANS calendar stays on his own, D2132; multi-squadron step 3) */
-  const roster = sansRoster(unitPeople(sansCalUnit()))
+  const roster = sansRoster(unitPeople(sansCalUnit(), isoToday()))
   const hi = SANSHL && roster.includes(SANSHL) ? SANSHL : null
   const stale = !!SANSHL && !hi
   useEffect(() => { if (stale) { setSansHl(null); notify() } }, [stale])

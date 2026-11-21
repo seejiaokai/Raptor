@@ -25,6 +25,7 @@ import { NOTICES, noticesFor, type Notice } from '../state/notices'
 import { unreadFor, noticeSeenLoad } from '../state/noticeseen'
 import { installGlobalUndo } from '../state/undo-wire'
 import { _resetTimeline } from '../undo/timeline'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -99,14 +100,14 @@ describe('fault C — a retired filer line stays retired', () => {
       const l = hunterLine(); if (read) readIt('prowler', l)
       homes('prowler', 'hc', [['u142', '2026-07-15'], ['u149', '2026-07-16'], ['u142', '2026-07-17']])
       on(16); signInAs('ad2', 'a2'); expect(shown('prowler', l.id), 'off on his move day').toBe(false)
-      on(17); expect(homeOn('prowler')).toBe('u142')
+      on(17); expect(homeOn('prowler', rosterToday())).toBe('u142')
       expect(shown('prowler', l.id), 'still off, back home').toBe(false)
       expect(unreadFor('prowler')).toBe(0)
     })
     it(`(Astra, ${rd}) two round trips: the line stays off`, () => {
       const l = hunterLine(); if (read) readIt('prowler', l)
       homes('prowler', 'hc', [['u142', '2026-07-15'], ['u149', '2026-07-16'], ['u142', '2026-07-17'], ['u149', '2026-07-18'], ['u142', '2026-07-19']])
-      on(19); signInAs('ad2', 'a2'); expect(homeOn('prowler')).toBe('u142')
+      on(19); signInAs('ad2', 'a2'); expect(homeOn('prowler', rosterToday())).toBe('u142')
       expect(shown('prowler', l.id)).toBe(false)
       expect(unreadFor('prowler')).toBe(0)
     })
@@ -114,7 +115,7 @@ describe('fault C — a retired filer line stays retired', () => {
       const l = hunterLine(); if (read) readIt('prowler', l)
       homes('prowler', 'hc', [['u142', '2026-07-15'], ['u149', '2026-07-16']])
       homes('bane', 'hb', [['u142', '2026-07-15'], ['u149', '2026-07-17']])
-      on(17); signInAs('ad2', 'a2'); expect(homeOn('bane')).toBe('u149')
+      on(17); signInAs('ad2', 'a2'); expect(homeOn('bane', rosterToday())).toBe('u149')
       expect(shown('prowler', l.id)).toBe(false)
       expect(unreadFor('prowler')).toBe(0)
     })

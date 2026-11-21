@@ -10,11 +10,12 @@ import { describe, expect, it } from 'vitest'
 import { useMsqWorld as useWorld, signInAs } from '../test-support/msq-world'
 import { addUnit, removeGrant, unitRows } from '../state/units'
 import { ACCOUNTS_LIST, levelIn, isMasterAccount } from '../state/accounts'
+import { rosterToday } from '../engine/roster'
 
 useWorld()
 
 /* the non-master accounts that are an admin of the unit today, however (home role or a grant) */
-const adminsOf = (unit: string) => ACCOUNTS_LIST.filter(a => !isMasterAccount(a.id) && a.on && levelIn(a.id, unit) === 'admin').map(a => a.id)
+const adminsOf = (unit: string) => ACCOUNTS_LIST.filter(a => !isMasterAccount(a.id) && a.on && levelIn(a.id, unit, rosterToday()) === 'admin').map(a => a.id)
 
 describe('B6 — a squadron is never left with no admin', () => {
   it('"+ New squadron" with no first admin is refused', () => {

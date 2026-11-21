@@ -162,7 +162,7 @@ import {
   revertUnsavedPostOuts,
   type PlaceHoliday,
 } from './state/store'
-import { units as unitList, placeOfOn, unitRows, homeOn } from '../state/units'
+import { units as unitList, placeOfOn, unitRows, homeOn, todayIso } from '../state/units'
 import { foreignWar, setForeignDoor, readForeign, type ForeignWar } from './state/foreign'
 import type { StorageBackend } from './state/storage'
 import { HOOKS } from '../engine/hooks'
@@ -1506,7 +1506,7 @@ function tellHoliday(runs: HolidayRun[]): void {
   const by = me()
   commitInputs(SCHED_TYPES.inputsWrite, () => { for (const h of todo) noticeHoliday(h.told, by != null ? String(by) : null, h.name, h.from, h.to) })
   /* the list opens by itself on the first run with something HIS squadron answers — never on the other's alone */
-  const mine = myUnit()
+  const mine = myUnit(todayIso())
   const first = todo.find(h => oilOpenOn(h.from, h.to, mine).length > 0)
   if (!first) return
   cmdDeferEffect(() => { setOilList({ from: first.from, to: first.to, name: first.name, fresh: true }); raptorNotify() })

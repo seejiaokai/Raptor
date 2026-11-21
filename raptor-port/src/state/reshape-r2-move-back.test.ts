@@ -13,6 +13,7 @@ import { _resetTimeline } from '../undo/timeline'
 import { setUnitSeeds, setHome, setGrant, removeGrant, homeOn, unitsLoad, addUnit, todayIso, unitRows } from '../state/units'
 import { GRANT_PFX, HOME_PFX } from '../state/units-model'
 import { commitSettingsIntent } from '../state/people-settings-commit'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 const fake = {
@@ -50,7 +51,7 @@ describe('R2 — a man who never moves keeps a third squadron\'s right', () => {
     const u150 = setup()
     expect(removeGrant('acus', u150).ok).toBe(false)
     unitsLoad()
-    expect(levelIn('acus', u150)).toBe('view')
+    expect(levelIn('acus', u150, rosterToday())).toBe('view')
   })
   it('Hunter saves a move to 149 then moves him back to 142 the same day: on 16 Jul he is 142\'s and still holds View of 150', () => {
     const u150 = setup()
@@ -58,8 +59,8 @@ describe('R2 — a man who never moves keeps a third squadron\'s right', () => {
     unitsLoad()
     setHome('bane', 'u142')
     on(16)
-    expect(homeOn('bane'), 'he never moved').toBe('u142')
-    expect(levelIn('acus', u150), "150's right taken by a 142/149 admin with no move").toBe('view')
+    expect(homeOn('bane', rosterToday()), 'he never moved').toBe('u142')
+    expect(levelIn('acus', u150, rosterToday()), "150's right taken by a 142/149 admin with no move").toBe('view')
   })
   it('one forged command: 149 for one day (16th), 142 again from the 17th, the 150 View deleted — refused or the View stands (arguable: a one-day move is a move)', () => {
     const u150 = setup()
@@ -71,6 +72,6 @@ describe('R2 — a man who never moves keeps a third squadron\'s right', () => {
       store.set(GRANT_PFX + g.id, null)
     }) as any
     unitsLoad()
-    expect({ ok: r.ok, view: levelIn('acus', u150) }).not.toEqual({ ok: true, view: null })
+    expect({ ok: r.ok, view: levelIn('acus', u150, rosterToday()) }).not.toEqual({ ok: true, view: null })
   })
 })

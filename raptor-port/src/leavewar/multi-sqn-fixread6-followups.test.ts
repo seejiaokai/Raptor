@@ -22,6 +22,7 @@ import { noticeSeenLoad } from '../state/noticeseen'
 import { installGlobalUndo } from '../state/undo-wire'
 import { _resetTimeline, globalRedo } from '../undo/timeline'
 import { globalUndo } from '../undo'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -73,7 +74,7 @@ const decided = (d: 'approved' | 'refused'): Notice => {
   expect(l, 'Osprey told').toBeDefined()
   readIt(l)
   moveOsprey(); nextDay()
-  expect(homeOn('osp9')).toBe('u142')
+  expect(homeOn('osp9', rosterToday())).toBe('u142')
   return l
 }
 /* RIDE THE REAL FOLLOW-UP (the security read's (b)): while the Undo or Redo writes its follow-up, every line it pushes

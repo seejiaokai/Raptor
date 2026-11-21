@@ -328,7 +328,7 @@ export const levelAcct = (a: { id: string; pid: unknown; pidFrom?: string; role:
   ({ id: a.id, pid: String(a.pid), pidFrom: a.pidFrom, role, master: a.master === true })
 /* an account's level in a unit on a date — its own role in its home unit, the right that holds that day elsewhere, admin
    everywhere for a master, otherwise null (state/units-model.ts levelFrom — the one answer) */
-export const levelIn = (accountId: any, unit: string, iso: string = todayIso()): UnitLevel | null => {
+export const levelIn = (accountId: any, unit: string, iso: string): UnitLevel | null => {
   const a = accountById(accountId)
   return levelOfAccount(a ? levelAcct(a) : null, unit, iso)
 }
@@ -373,7 +373,7 @@ export function lockWords(b: LockBreach, rows?: UnitRows): string {
   const cs = goneAcct ? accountCallsign(goneAcct) : ''
   if (!cs) return `At least one admin of ${num} must keep access`
   const mine = signedInAccount()
-  const can = !mine || mine.master === true || levelOfAccount(levelAcct(mine, 'admin'), b.unit) === 'admin'
+  const can = !mine || mine.master === true || levelOfAccount(levelAcct(mine, 'admin'), b.unit, todayIso()) === 'admin'
   const tail = can ? `Make another admin of ${num} first.` : `Only a master admin or an admin of ${num} can make another.`
   const mover = b.cause && b.date > todayIso() ? (PEOPLE as any)[b.cause.pid]?.cs : ''
   if (mover && b.cause!.to) return `${cs} is ${num}'s last admin from ${noticeDay(b.date)}, when ${mover} moves to ${numOf(b.cause!.to)}. ${tail}`
@@ -385,9 +385,9 @@ export function lockWords(b: LockBreach, rows?: UnitRows): string {
    same (perms.ts homeUnitViolation), whatever door wrote the row; this says it in words first. */
 function otherSquadronProblem(pid: string): string | null {
   const mine = SESSION ? accountById(SESSION.user) : undefined
-  const u = homeOn(pid)
+  const u = homeOn(pid, todayIso())
   if (!mine || !u) return null
-  if (levelOfAccount(levelAcct(mine, 'admin'), u) === 'admin') return null
+  if (levelOfAccount(levelAcct(mine, 'admin'), u, todayIso()) === 'admin') return null
   const num = unitById(u)?.num ?? u
   /* two sentences, as the last-admin lock's words beside it: a dash does not join two thoughts (the guide's §1b) */
   return `He is ${num}'s. Only an admin of ${num} can change his account.`
@@ -408,7 +408,7 @@ function relinkRightsProblem(a: Account): string | null {
     if (!g) continue
     const num = unitById(u)?.num ?? u
     if (g.level === 'admin') return `This sign-in holds a right in ${num}. Only a master admin can link it to another person.`
-    if (mine && levelOfAccount(levelAcct(mine, 'admin'), u) === 'admin') continue
+    if (mine && levelOfAccount(levelAcct(mine, 'admin'), u, todayIso()) === 'admin') continue
     return `This sign-in holds a right in ${num}. Only a master admin or an admin of ${num} can link it to another person.`
   }
   return null
@@ -423,9 +423,9 @@ export function otherSquadronPersonProblem(pid: string): string | null {
      fix read, 18 Nov 26 — Astra 7: a member raised to admin heard "You can only edit your own row"); the account's own
      identity, home and master mark still decide where he is an admin */
   if (!mine || roleOf() !== 'admin') return null
-  const u = homeOn(pid)
+  const u = homeOn(pid, todayIso())
   if (!u) return null
-  if (levelOfAccount(levelAcct(mine, 'admin'), u) === 'admin') return null
+  if (levelOfAccount(levelAcct(mine, 'admin'), u, todayIso()) === 'admin') return null
   const num = unitById(u)?.num ?? u
   return `He is ${num}'s. Only an admin of ${num} can change him.`
 }

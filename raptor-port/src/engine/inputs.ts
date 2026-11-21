@@ -5,7 +5,7 @@ import { newId } from './newid'
 import { mintOrd } from '../command/ord'
 import { PEOPLE, isSpecial } from './people'
 import { UNIT } from './unitview'
-import { homeUnitOf, homeHandle, type HomeHandle } from './roster'
+import { homeUnitOf, homeHandle, needDay, rosterToday, type HomeHandle } from './roster'
 /* A STABLE ADDRESS FOR ONE INPUT (owner, 10 Aug 26 — editing an input's times
    and remarks in place, on the week and on the board).
    Every other editable row in this app is addressed by its position in the
@@ -112,23 +112,27 @@ export function inputSquadrons(r:any,home:HomeHandle=homeHandle(),fb?:string):st
   if(named.length){for(const e of named){const p=String(e.p); const u0=home.on(p,sp[0]); if(u0)out.add(u0);
       for(const d of home.changesIn(p,sp[0],sp[1])){const u=home.on(p,d); if(u)out.add(u);}} return [...out];}
   const st=stampOf(r); if(st)return [st]; const u=home.on(filerOfPh(r),sp[0]); return u?[u]:[];}
-export function inputOnDay(r:any,unit:any,iso:any):boolean{if(!r)return false; const named=namedOf(r);
+export function inputOnDay(r:any,unit:any,iso:any):boolean{needDay(iso,'inputOnDay'); if(!r)return false; const named=namedOf(r);
   if(named.length)return named.some((e:any)=>homeUnitOf(e.p,iso)===unit);
   const st=stampOf(r); if(st)return st===unit;
   return homeUnitOf(filerOfPh(r),iso)===unit;}
 export function inputTouches(r:any,unit:any):boolean{return !!r&&inputSquadrons(r).includes(unit);}
+/* (an input with no readable first day, and no day asked: judged today — the answer the readers' old default gave) */
 export function inputBelongs(r:any,unit:any,at?:any):boolean{if(!r)return false;
-  return inputOnDay(r,unit,inputAtIso(at)||inputAtIso(r.date,r.yr));}
+  return inputOnDay(r,unit,inputAtIso(at)||inputAtIso(r.date,r.yr)||rosterToday());}
 /* a squadron's inputs on one day (a day reader), and every input touching it (a list reader) */
 export function inputsOnDay(unit:any,iso:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputOnDay(r,unit,iso));}
 export function inputsTouching(unit:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputTouches(r,unit));}
 /* his own Inputs page: every input touching his squadron, and every input naming him wherever it sits (C2) */
 export function inputsListed(unit:any,pid:any,list?:any):any[]{const p=String(pid??''); return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&(inputTouches(r,unit)||(p!==''&&holds(r,p))));}
-/* (kept while the callers move — the reshape plan §10 phase 1, "expand"; the contract in phase 3 removes it) */
-export function inputsFor(unit:any,at?:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputBelongs(r,unit,at));}
+/* a squadron's inputs by the day each LANDS — its own first day (the reshape plan §3.2 A-iii, Fable F4: a body that writes
+   an input's accepted mark or lands it asks the first day, never "touches"; state/store.ts landingInputs). The contract
+   step (phase 3) took inputsFor's no-day form: a day reader names its day (inputsFor(unit, at) / inputsOnDay). */
+export function inputsOnFirstDay(unit:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputBelongs(r,unit));}
+export function inputsFor(unit:any,at:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputBelongs(r,unit,at));}
 /* the one unit a saved input is read as — whose people its window offers: the squadron of its first day, through the
    same body (its first named man's, else its stamp, else its filer's) */
-export function inputUnitOf(r:any):string|null{if(!r)return null; const sp=inputSpanIso(r); const iso=sp?sp[0]:undefined; const named=namedOf(r);
+export function inputUnitOf(r:any):string|null{if(!r)return null; const sp=inputSpanIso(r); const iso=sp?sp[0]:rosterToday(); const named=namedOf(r);
   if(named.length)return homeUnitOf(named[0].p,iso);
   const st=stampOf(r); if(st)return st; return homeUnitOf(filerOfPh(r),iso);}
 /* one input by id, as the document for date `dt` holds it — the frozen copy on a frozen date (null when that version

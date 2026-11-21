@@ -248,7 +248,7 @@ export function isMe(pid: any): boolean { const m = me(); return m != null && pi
    named). The pages that stay on his own squadron whatever schedule is in view — the Inputs page and its calendars,
    Quals — list its people (engine/roster.ts rosterOf) and its inputs (engine/inputs.ts inputsFor). Nobody signed in, a
    guest, or a person with no home: the boot unit, as the unit in view starts (state/store.ts sessionUnit). */
-export function myUnit(iso: string = todayIso()): string {
+export function myUnit(iso: string): string {
   const m = me()
   const h = m ? homeOn(m, iso) : null
   return h && isUnitId(h) ? h : BOOT_UNIT
@@ -432,7 +432,7 @@ export const mayEditQualsOf = (pid: any): boolean => may(T.person, 'U', pid, tru
    A member is held to his own row by the table above; no session, or a man with no squadron at all → true */
 function ofMySquadron(pid: any): boolean {
   if (!isAdmin() || pid == null) return true
-  const u = homeOn(String(pid))
+  const u = homeOn(String(pid), todayIso())
   const row: any = SESSION ? ACCOUNTS_LIST.find(x => x.id === SESSION!.user) : null
   if (!u || !row) return true
   return levelBefore(levelAcct(row, 'admin'), u, todayIso(), unitRowsBefore([])) === 'admin'
@@ -1563,7 +1563,7 @@ export function elogUnitAllowed(a: Actor | null | undefined, u: string): boolean
    member's own home today; nobody else has one (job 2's fix read, 1 — editlog.ts push, HOOKS.elogOwnUnit) */
 export function elogOwnUnit(a: Actor | null | undefined): string | null {
   if (!a || (a.role !== 'admin' && a.role !== 'member') || a.personId == null) return null
-  return homeOn(String(a.personId))
+  return homeOn(String(a.personId), todayIso())
 }
 export function elogWriteProblem(a: Actor | null | undefined, key: string, v: unknown): string | null {
   if (!a || a.role === 'system') return null

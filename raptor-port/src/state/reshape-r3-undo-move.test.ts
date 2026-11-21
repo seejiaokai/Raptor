@@ -11,6 +11,7 @@ import { setSession } from '../state/auth'
 import { installGlobalUndo } from '../state/undo-wire'
 import { _resetTimeline, globalUndo } from '../undo/timeline'
 import { setUnitSeeds, setHome, setGrant, homeOn, unitsLoad, addUnit } from '../state/units'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 const fake = {
@@ -72,6 +73,6 @@ describe('R3 — Hunter undoes his own move of Ranger', () => {
     const u = globalUndo() as any
     unitsLoad()
     expect(u?.ok, JSON.stringify(u)).toBe(true)
-    expect(levelIn('acus', u150)).toBe('view')
+    expect(levelIn('acus', u150, rosterToday())).toBe('view')
   })
 })

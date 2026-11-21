@@ -13,6 +13,7 @@ import { wireLeaveWarSync, setWarWorldDoor, postOut, undoPostOut } from './sync'
 import { setHome, homeOn, unitsLoad } from '../state/units'
 import { INPUTS } from '../engine/inputs'
 import { NOTICES } from '../state/notices'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -55,7 +56,7 @@ function setup(move: boolean) {
   unitsLoad()
   signInAs('outlaw')
   expect(worldUnit()).toBe('u142')
-  if (move) expect(homeOn('prowler')).toBe('u149')
+  if (move) expect(homeOn('prowler', rosterToday())).toBe('u149')
 }
 
 describe("Undo post out with an admin who got the posting's line since moved to 149", () => {

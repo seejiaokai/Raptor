@@ -13,6 +13,7 @@ import { _resetTimeline } from '../undo/timeline'
 import { setUnitSeeds, setGrant, homeOn, unitsLoad, addUnit, todayIso } from '../state/units'
 import { HOME_PFX } from '../state/units-model'
 import { commitSettingsIntent } from '../state/people-settings-commit'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 const fake = {
@@ -49,8 +50,8 @@ describe('R4 — no old right outlives a move', () => {
     signInAs('ad', 'a')
     const g = setGrant('acus', u150, 'view', 'bane')
     on(17)
-    const kept = r.ok && g.ok && homeOn('bane') === 'u149' && levelIn('acus', u150) != null
-    expect(kept, `forged ${JSON.stringify(r)}, grant ${JSON.stringify(g)}, view on 17th ${levelIn('acus', u150)}`).toBe(false)
+    const kept = r.ok && g.ok && homeOn('bane', rosterToday()) === 'u149' && levelIn('acus', u150, rosterToday()) != null
+    expect(kept, `forged ${JSON.stringify(r)}, grant ${JSON.stringify(g)}, view on 17th ${levelIn('acus', u150, rosterToday())}`).toBe(false)
   })
   it('(b, security S17-3) master forges a move dated 20 Jul; View of 150 given on the 16th; on the 20th it is gone', () => {
     signInAs('ad', 'a')
@@ -59,8 +60,8 @@ describe('R4 — no old right outlives a move', () => {
     on(16)
     const g = setGrant('acus', u150, 'view', 'bane')
     on(20)
-    const kept = r.ok && g.ok && homeOn('bane') === 'u149' && levelIn('acus', u150) != null
-    expect(kept, `forged ${JSON.stringify(r)}, grant ${JSON.stringify(g)}, view on 20th ${levelIn('acus', u150)}`).toBe(false)
+    const kept = r.ok && g.ok && homeOn('bane', rosterToday()) === 'u149' && levelIn('acus', u150, rosterToday()) != null
+    expect(kept, `forged ${JSON.stringify(r)}, grant ${JSON.stringify(g)}, view on 20th ${levelIn('acus', u150, rosterToday())}`).toBe(false)
   })
   it('(c, astra 1) Hunter forges a tomorrow-dated move without dropping Ranger\'s View of 150: refused, or the View gone on the 16th', () => {
     signInAs('ad', 'a')
@@ -70,8 +71,8 @@ describe('R4 — no old right outlives a move', () => {
     signInAs('ad2', 'a2')
     const r = forgedMove('u149', '2026-07-16')
     on(16)
-    const kept = r.ok && homeOn('bane') === 'u149' && levelIn('acus', u150) != null
-    expect(kept, `forged ${JSON.stringify(r)}, view on 16th ${levelIn('acus', u150)}`).toBe(false)
+    const kept = r.ok && homeOn('bane', rosterToday()) === 'u149' && levelIn('acus', u150, rosterToday()) != null
+    expect(kept, `forged ${JSON.stringify(r)}, view on 16th ${levelIn('acus', u150, rosterToday())}`).toBe(false)
   })
   it('(d, core astra) the master forges a tomorrow-dated move to a new squadron, Ranger\'s View of 149 left standing', () => {
     signInAs('ad', 'a')
@@ -79,7 +80,7 @@ describe('R4 — no old right outlives a move', () => {
     expect(setGrant('acus', 'u149', 'view', 'bane').ok).toBe(true)
     const r = forgedMove(u777, '2026-07-16')
     on(16)
-    const kept = r.ok && homeOn('bane') === u777 && levelIn('acus', 'u149') != null
-    expect(kept, `forged ${JSON.stringify(r)}, view of 149 on 16th ${levelIn('acus', 'u149')}`).toBe(false)
+    const kept = r.ok && homeOn('bane', rosterToday()) === u777 && levelIn('acus', 'u149', rosterToday()) != null
+    expect(kept, `forged ${JSON.stringify(r)}, view of 149 on 16th ${levelIn('acus', 'u149', rosterToday())}`).toBe(false)
   })
 })

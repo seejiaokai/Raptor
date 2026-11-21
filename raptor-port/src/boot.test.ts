@@ -30,6 +30,7 @@ import { readSchema, StoreAheadError } from './storage/schema'
 import type { Snapshot } from './storage/backend'
 import { bootApp, BootConfigError } from './boot'
 import { bootPolicyFrom, readBootstrap, DEMO_POLICY, type BootPolicy, type BootstrapAdmin } from './bootpolicy'
+import { rosterToday } from './engine/roster'
 
 const ADMIN: BootstrapAdmin = { principal: 'Boss@Unit.Example', person: { cs: 'Boss', ini: 'BS', seat: 'FCP', cat: 'A' } }
 const blank = (bootstrap: BootPolicy['bootstrap'] = ADMIN): BootPolicy => ({ seedDemo: false, bootstrap })
@@ -122,8 +123,8 @@ describe("a shared store's first boot: nothing demo, and the first admin", () =>
     /* the store's master, admin of his unit, at home there, the unit at its place (step 1) — and no demo unit */
     expect(isMasterAccount(ACCOUNTS_LIST[0].id)).toBe(true)
     expect(units().map(u => u.id)).toEqual(['u142'])
-    expect(homeOn(people[0])).toBe('u142')
-    expect(levelIn(ACCOUNTS_LIST[0].id, 'u142')).toBe('admin')
+    expect(homeOn(people[0], rosterToday())).toBe('u142')
+    expect(levelIn(ACCOUNTS_LIST[0].id, 'u142', rosterToday())).toBe('admin')
     expect(placeOfOn('u142', todayIso())).toMatchObject({ name: 'Home base', tz: 'Australia/Perth' })
     /* no demo account signs in */
     expect(signIn('ad', 'a')).toMatchObject({ kind: 'new' })

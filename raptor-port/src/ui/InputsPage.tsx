@@ -93,7 +93,7 @@ function ArchivedGroup() {
 function DeletedGroup() {
   /* one line a named person of each of his own squadron's inputs (engine/inputs.ts) — read once, not once a man */
   const lines = inputLines(inputsPageRows())
-  const ids = rosterOf(inputsPageUnit()).filter(id => PEOPLE[id].deleted && lines.some((r: any) => r && r.person === id))
+  const ids = rosterOf(inputsPageUnit(), todayIso()).filter(id => PEOPLE[id].deleted && lines.some((r: any) => r && r.person === id))
   if (!ids.length) return null
   return <optgroup label="Deleted">{ids.map(id => <option key={id} value={id}>{PEOPLE[id].cs} (deleted)</option>)}</optgroup>
 }
@@ -564,8 +564,8 @@ export function InputsPage() {
      can never lag the table. */
   const medIso = keyToIso(TODAY)
   const medOrd = +medIso.slice(0, 4) * 10000 + +medIso.slice(5, 7) * 100 + +medIso.slice(8, 10)
-  const medDownN = medDownAsOf(medOrd).filter((e: any) => onRosterOf(e.person, inputsPageUnit())).length
-  const medPendN = pendingUpchits(medOrd).filter((e: any) => onRosterOf(e.person, inputsPageUnit())).length
+  const medDownN = medDownAsOf(medOrd).filter((e: any) => onRosterOf(e.person, inputsPageUnit(), medIso)).length
+  const medPendN = pendingUpchits(medOrd).filter((e: any) => onRosterOf(e.person, inputsPageUnit(), medIso)).length
   /* THE SANS TAB IS THE SANS CALENDAR AND NOTHING ELSE (owner D620, 7 Oct 26: SANS availability "leaves the List and is
      filed on the SANS calendar only, which has no list of its own"; the plan §3.5: "the SANS tab has no filters" — the
      Highlight does that job, and the counts ignore filters by ruling, D581). So in that mode the Calendar | List pair,

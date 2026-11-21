@@ -104,6 +104,7 @@ import { levelOfAccount } from '../state/units'
 import { loadWeek } from '../state/store'
 import { commitInput, draftOf } from '../ui/inputedit'
 import { warLinesOwed } from '../leavewar/sync'
+import { rosterToday } from '../engine/roster'
 
 /* the saved copy: the app's whiteboard with its row writer wired (persist.ts wireRows), as on a built site */
 let WB: Whiteboard
@@ -417,7 +418,7 @@ describe('fault D — a war line only in its writer\'s own hand, owed only where
 })
 
 describe('fault E — a right goes with its account, and a new account row under its id is a re-link (SEC11-5)', () => {
-  const spares = () => Object.keys(PEOPLE).filter(p => homeOn(p) === 'u149' && p !== 'osp9' && !accountOfPid(p) && !(PEOPLE as any)[p].deleted && !(PEOPLE as any)[p].archived && !(PEOPLE as any)[p].special)
+  const spares = () => Object.keys(PEOPLE).filter(p => homeOn(p, rosterToday()) === 'u149' && p !== 'osp9' && !accountOfPid(p) && !(PEOPLE as any)[p].deleted && !(PEOPLE as any)[p].archived && !(PEOPLE as any)[p].special)
   /* a spare 149 man given a sign-in by Kestrel on 15 Jul, and Plan of 142 on it by Saber */
   const planned = () => {
     const [p1, p2] = spares()
@@ -441,7 +442,7 @@ describe('fault E — a right goes with its account, and a new account row under
     commitSettingsIntent('account.add', null, () => { settingsStore.set('account:' + id, row) })
     accountsLoad(); unitsLoad()
     const acct = ACCOUNTS_LIST.find(a => a.id === id)
-    expect({ newManHolds142: !!acct && acct.pid === p2 && levelOfAccount(acct as any, 'u142') === 'admin' }).toEqual({ newManHolds142: false })
+    expect({ newManHolds142: !!acct && acct.pid === p2 && levelOfAccount(acct as any, 'u142', rosterToday()) === 'admin' }).toEqual({ newManHolds142: false })
   })
   /* (the delete's refusal once pinned here — "Kestrel's delete of that man is refused while his sign-in holds Plan of
      142" — is turned round by fault H below: the host's decision, his D2203 read for a delete) */
@@ -499,7 +500,7 @@ describe('fault E — a right goes with its account, and a new account row under
 })
 
 describe('fault H — a person delete is never refused for a right he holds in another squadron (the host, D2203 read for a delete)', () => {
-  const spares = () => Object.keys(PEOPLE).filter(p => homeOn(p) === 'u149' && p !== 'osp9' && !accountOfPid(p) && !(PEOPLE as any)[p].deleted && !(PEOPLE as any)[p].archived && !(PEOPLE as any)[p].special)
+  const spares = () => Object.keys(PEOPLE).filter(p => homeOn(p, rosterToday()) === 'u149' && p !== 'osp9' && !accountOfPid(p) && !(PEOPLE as any)[p].deleted && !(PEOPLE as any)[p].archived && !(PEOPLE as any)[p].special)
   const planned = () => {
     const [p1, p2] = spares()
     expect(p2, 'two 149 men with no sign-in').toBeDefined()
@@ -531,7 +532,7 @@ describe('fault H — a person delete is never refused for a right he holds in a
     commitSettingsIntent('account.add', null, () => { settingsStore.set('account:' + id, row) })
     accountsLoad(); unitsLoad()
     const acct = ACCOUNTS_LIST.find(a => a.id === id)
-    expect({ saved: acct?.pid === p2, holds142: !!acct && levelOfAccount(acct as any, 'u142') === 'admin', grants: grantsOf(id).length })
+    expect({ saved: acct?.pid === p2, holds142: !!acct && levelOfAccount(acct as any, 'u142', rosterToday()) === 'admin', grants: grantsOf(id).length })
       .toEqual({ saved: true, holds142: false, grants: 0 })
   })
   it('(control) Kestrel removing that 142 grant by itself — no delete — stays refused', () => {
@@ -634,7 +635,7 @@ describe('fault G — three Undo cases keep the line the man kept (F11-5a, F11-5
     signInAs('ad', 'a'); expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     on(18); signInAs('ad', 'a')
     expect(setGrant('acad2', 'u149', 'view', 'prowler').ok).toBe(true)
-    expect(levelIn('acad2', 'u149'), 'lowered').toBe('view')
+    expect(levelIn('acad2', 'u149', rosterToday()), 'lowered').toBe('view')
     const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
     unitsLoad()
     const g = grantOfOn({ id: 'acad2', pid: 'prowler', pidFrom: undefined }, 'u149', '2026-07-18')
@@ -650,7 +651,7 @@ describe('fault G — three Undo cases keep the line the man kept (F11-5a, F11-5
     expect(setGrant('acad2', 'u149', 'view', 'prowler').ok).toBe(true)
     homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']]); on(17)
     globalUndo(); unitsLoad()
-    expect(levelIn('acad2', 'u149'), '17 Jul, after the Undo').toBeNull()
+    expect(levelIn('acad2', 'u149', rosterToday()), '17 Jul, after the Undo').toBeNull()
   })
   it('(Fable F11-6) Hunter master since 10 Jul, moved 12 Jul; on 15 Jul Saber links his sign-in to Newby by mistake and presses Undo: his mark day and his line come back', () => {
     on(10)
@@ -676,7 +677,7 @@ describe('fault G — three Undo cases keep the line the man kept (F11-5a, F11-5
     expect({ pid: hunterAcct().pid, from: hunterAcct().masterFrom, link: hunterAcct().pidFrom }).toEqual({ pid: 'prowler', from: '2026-07-17', link: '2026-07-17' })
   })
   it('(control — Fable F11-D2) a 149 admin links a 149 admin\'s sign-in to a 142 man: refused', () => {
-    const man = Object.keys(PEOPLE).find(p => homeOn(p) === 'u142' && !accountOfPid(p) && !(PEOPLE as any)[p].deleted && !(PEOPLE as any)[p].archived && !(PEOPLE as any)[p].special)!
+    const man = Object.keys(PEOPLE).find(p => homeOn(p, rosterToday()) === 'u142' && !accountOfPid(p) && !(PEOPLE as any)[p].deleted && !(PEOPLE as any)[p].archived && !(PEOPLE as any)[p].special)!
     expect(man).toBeDefined()
     signInAs('ad9', 'a9')
     const r0 = updateAccount('acus9', { role: 'admin' })

@@ -25,6 +25,7 @@ import { NOTICES, noticesFor } from '../state/notices'
 import { noticeSeenLoad } from '../state/noticeseen'
 import { installGlobalUndo } from '../state/undo-wire'
 import { _resetTimeline } from '../undo/timeline'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -100,7 +101,7 @@ describe('fault A — the security read’s three proofs (a plain 142 admin, a f
        so a line to him rides Outlaw's change — but only as Outlaw's own line, never signed by 149's admin */
     signInAs('ad', 'a'); fileAA('stiff')
     move('stiff', 'hfr6s'); day17()
-    expect(homeOn('stiff')).toBe('u149')
+    expect(homeOn('stiff', rosterToday())).toBe('u149')
     asOutlawAdmin()
     const r = INPUTS.find((x: any) => x.iid === IID) as any
     const ch = { collection: 'inputs', id: IID, op: 'put', before: { ...r }, after: { ...r, remarks: 'by Outlaw' } }
@@ -124,7 +125,7 @@ describe('fault A — the honest flow: Hunter files ALL AVAIL on 15 Jul, moves t
   it('17 Jul, Outlaw (a plain 142 admin) changes it: no line to Hunter, and a forged one is refused', () => {
     signInAs('ad2', 'a2'); fileAA('prowler')
     move('prowler', 'hfr6h'); day17()
-    expect(homeOn('prowler')).toBe('u149')
+    expect(homeOn('prowler', rosterToday())).toBe('u149')
     asOutlawAdmin(); rmk('changed by Outlaw')
     expect(toWho('prowler').length, 'no 142 line about a 142 input to the moved filer').toBe(0)
     const r = INPUTS.find((x: any) => x.iid === IID) as any
@@ -151,7 +152,7 @@ describe('fault A — controls: still told', () => {
   it('a master filer: Saber files ALL AVAIL, moves to 149, Hunter changes it — Saber told', () => {
     signInAs('ad', 'a'); fileAA('stiff')
     move('stiff', 'hfr6s'); day17()
-    expect(homeOn('stiff')).toBe('u149')
+    expect(homeOn('stiff', rosterToday())).toBe('u149')
     signInAs('ad2', 'a2'); rmk('changed by Hunter')
     expect(toWho('stiff').length).toBe(1)
   })

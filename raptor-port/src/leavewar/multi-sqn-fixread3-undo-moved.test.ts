@@ -22,6 +22,7 @@ import { _resetTimeline } from '../undo/timeline'
 import { globalUndo } from '../undo'
 import { invariants } from '../command/harness'
 import { ownershipViolation } from '../state/perms'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -70,7 +71,7 @@ function run(move: boolean) {
   }
   vi.setSystemTime(new Date(2026, 6, 16, 9, 0, 0))
   unitsLoad()
-  if (move) expect(homeOn('osp9')).toBe('u142')
+  if (move) expect(homeOn('osp9', rosterToday())).toBe('u142')
   SEEN.length = 0
   const r = globalUndo()
   return { ...r, why: [...SEEN] }
@@ -103,7 +104,7 @@ describe('the top bar Undo of Open for bidding, a told man since moved to the ot
     mem['sqn142_' + HOME_PFX + 'hfr3'] = JSON.stringify({ id: 'hfr3', pid: 'osp9', unit: 'u142', from: '2026-07-16' })
     vi.setSystemTime(new Date(2026, 6, 16, 9, 0, 0))
     unitsLoad()
-    expect(homeOn('osp9')).toBe('u142')
+    expect(homeOn('osp9', rosterToday())).toBe('u142')
     const env: any = { type: 'undo.restore', origin: 'restore', actor: { id: 'acad9', role: 'admin', personId: 'kes9', session: null },
       changes: [{ collection: 'notices', id: line.id, op: 'delete', before: { ...line }, after: null }] }
     expect(ownershipViolation(env)).toMatch(/bell line of another squadron/)

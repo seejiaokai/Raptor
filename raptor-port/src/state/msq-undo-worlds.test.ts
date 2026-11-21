@@ -24,6 +24,7 @@ import type { EnlistableStore, RecordEntry } from '../command'
 import { globalUndo, globalRedo, _timelineEntries, _undoConflict, _barrier } from '../undo/timeline'
 import { commitNewInput, commitInputEdit, draftOf } from '../ui/inputedit'
 import { INPUTS } from '../engine/inputs'
+import { rosterToday } from '../engine/roster'
 
 useMsqWorld()
 afterEach(() => { setTrkUnitProbe(null); setMemberTodayForTests('2000-01-01') })
@@ -134,7 +135,7 @@ describe('A-v — across his move (the swap made by hand, as enterSquadron makes
     const s142 = getState().showSans
     expect(setShowSans(!s142)).toBe(true)                                            // his 142 war step
     pastMidnight()
-    expect(homeOn(PID.hunter)).toBe('u149')
+    expect(homeOn(PID.hunter, rosterToday())).toBe('u149')
     enter('u149')
     const s149 = getState().showSans
     expect(setShowSans(!s149)).toBe(true)                                            // his 149 war step

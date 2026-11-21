@@ -11,7 +11,7 @@ import { initStore, resetSession, notify } from './store'
 import { setSession } from './auth'
 import { accountsLoad, signIn, sessionFor } from './accounts'
 import { myUnit } from './perms'
-import { homeUnitOf, rosterOf } from '../engine/roster'
+import { homeUnitOf, rosterOf, rosterToday } from '../engine/roster'
 import { PEOPLE } from '../engine/people'
 import { hydrateRolesFor } from './persist'
 import { roleStore } from './mission-roles'
@@ -24,10 +24,10 @@ afterEach(() => { setSession(null); resetSession(null) })
 
 describe('the 149 seed', () => {
   it('149\'s people are 149\'s, never on 142\'s roster, and each squadron has its own', () => {
-    expect(homeUnitOf('kes9'), '149\'s admin').toBe('u149')
-    expect(homeUnitOf('osp9'), '149\'s member').toBe('u149')
-    expect(homeUnitOf('prowler'), 'the second 142 admin').toBe('u142')
-    const r142 = rosterOf('u142'), r149 = rosterOf('u149')
+    expect(homeUnitOf('kes9', rosterToday()), '149\'s admin').toBe('u149')
+    expect(homeUnitOf('osp9', rosterToday()), '149\'s member').toBe('u149')
+    expect(homeUnitOf('prowler', rosterToday()), 'the second 142 admin').toBe('u142')
+    const r142 = rosterOf('u142', rosterToday()), r149 = rosterOf('u149', rosterToday())
     expect(r142.length).toBeGreaterThan(0)
     expect(r149.length).toBeGreaterThan(0)
     /* the two placeholder pucks (ALL / ALL AVAIL) are every squadron's — they stand for whoever is free there */
@@ -40,7 +40,7 @@ describe('the 149 seed', () => {
     for (const [name, pass, unit, admin] of [['ad9', 'a9', 'u149', true], ['us9', 'us9', 'u149', false], ['ad2', 'a2', 'u142', true]] as const) {
       const r = signInAs(name, pass)
       expect((r as any).ok ?? !!r, name + ' signs in').toBeTruthy()
-      expect(myUnit(), name + '\'s squadron').toBe(unit)
+      expect(myUnit(rosterToday()), name + '\'s squadron').toBe(unit)
       const s = sessionFor(r) as any
       expect(s?.role === 'admin', name + (admin ? ' is an admin' : ' is a member')).toBe(admin)
     }

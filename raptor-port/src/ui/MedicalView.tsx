@@ -190,7 +190,7 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
     : String(a.person).localeCompare(String(b.person))
   /* the page's own squadron's men (the Medical tab stays on his own, D2132 — a master admin's or Plan holder's following
      his pick, D2197; the reshape plan §3.2 A-ii) */
-  const mine = (e: any) => onRosterOf(e.person, pageUnit('own'))
+  const mine = (e: any) => onRosterOf(e.person, pageUnit('own'), asOf)
   const down = medDownAsOf(ord).filter(mine).sort(crew)
   const pend = pendingUpchits(ord).filter(mine).sort(crew)
   const done = upchitsWithin(ord, 30).filter(mine)          // newest first, its own order

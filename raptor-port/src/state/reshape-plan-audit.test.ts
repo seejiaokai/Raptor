@@ -14,6 +14,7 @@ import { _resetTimeline } from '../undo/timeline'
 import { setUnitSeeds, setGrant, removeGrant, unitsLoad, grantsOf, homeOn } from '../state/units'
 import { GRANT_PFX } from '../state/units-model'
 import { commitSettingsIntent } from '../state/people-settings-commit'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 const fake = {
@@ -41,7 +42,7 @@ describe('PA1 — Plan is given and taken by a master admin only (D2199, D2211)'
     signInAs('ad9', 'a9')
     const r = setGrant('acad2', 'u149', 'admin', 'prowler')
     expect(r.ok, JSON.stringify(r)).toBe(false)
-    expect(levelIn('acad2', 'u149')).not.toBe('admin')
+    expect(levelIn('acad2', 'u149', rosterToday())).not.toBe('admin')
   })
   it('(b) the same as a forged command, past the door: refused at the gate', () => {
     signInAs('ad9', 'a9')
@@ -55,7 +56,7 @@ describe('PA1 — Plan is given and taken by a master admin only (D2199, D2211)'
     signInAs('ad9', 'a9')
     const r = removeGrant('acad2', 'u149')
     expect(r.ok, JSON.stringify(r)).toBe(false)
-    expect(levelIn('acad2', 'u149')).toBe('admin')
+    expect(levelIn('acad2', 'u149', rosterToday())).toBe('admin')
   })
   it('(d) Saber gives Hunter Plan of 149; Kestrel lowers it to View: refused', () => {
     signInAs('ad', 'a')
@@ -63,7 +64,7 @@ describe('PA1 — Plan is given and taken by a master admin only (D2199, D2211)'
     signInAs('ad9', 'a9')
     const r = setGrant('acad2', 'u149', 'view', 'prowler')
     expect(r.ok, JSON.stringify(r)).toBe(false)
-    expect(levelIn('acad2', 'u149')).toBe('admin')
+    expect(levelIn('acad2', 'u149', rosterToday())).toBe('admin')
   })
   it('(e) Hunter, holding Plan of 149, passes Plan of 149 to Ranger: refused', () => {
     signInAs('ad', 'a')
@@ -90,11 +91,11 @@ describe('PA3 — a sign-in holding Plan is re-linked only by a master admin: th
     signInAs('ad', 'a')
     expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     expect(setGrant('acad9', 'u142', 'admin', 'kes9').ok).toBe(true)
-    const other = linkablePeople().find(p => homeOn(p) === 'u142')!
+    const other = linkablePeople().find(p => homeOn(p, rosterToday()) === 'u142')!
     expect(other, 'a 142 man with no sign-in').toBeTruthy()
     signInAs('ad9', 'a9')
     const r = updateAccount('acad2', { pid: other })
-    const planMoved = levelIn('acad2', 'u149')
+    const planMoved = levelIn('acad2', 'u149', rosterToday())
     expect(r !== null || planMoved !== 'admin', `re-link ${JSON.stringify(r)}, the sign-in's level in 149 after: ${planMoved}`).toBe(true)
     expect(r, 'refused at the door').not.toBe(null)
   })
@@ -105,13 +106,13 @@ describe('PA2 — Plan is an admin\'s: a member\'s account holds no admin right 
     signInAs('ad', 'a')
     const r = setGrant('acus', 'u149', 'admin', 'bane')
     expect(r.ok, JSON.stringify(r)).toBe(false)
-    expect(levelIn('acus', 'u149')).not.toBe('admin')
+    expect(levelIn('acus', 'u149', rosterToday())).not.toBe('admin')
   })
   it('(b) Saber gives Hunter Plan of 149, then makes Hunter a member: he is no admin of 149', () => {
     signInAs('ad', 'a')
     expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     expect(updateAccount('acad2', { role: 'main' })).toBe(null)
-    expect(levelIn('acad2', 'u142')).toBe('member')
-    expect(levelIn('acad2', 'u149')).not.toBe('admin')
+    expect(levelIn('acad2', 'u142', rosterToday())).toBe('member')
+    expect(levelIn('acad2', 'u149', rosterToday())).not.toBe('admin')
   })
 })

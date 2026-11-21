@@ -11,7 +11,7 @@ import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME } from '../engine/people'
 import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 import { isAdmin, mayEditQualsOf, mayManageRoster, mayRenameCallsign, mayTickManagement, mayTickScheduler, pageUnit } from '../state/perms'
-import { rosterOf } from '../engine/roster'
+import { rosterOf, rosterToday } from '../engine/roster'
 import { catsFor, CALLSIGN_LABEL } from '../state/roster-add'
 import './postout.css'
 import { openAdminUsers } from './adminopen'
@@ -139,7 +139,7 @@ const cmp = (a: any, b: any) => (a < b ? -1 : a > b ? 1 : 0)
 /* which people the table is showing: the seat view, then the filter box */
 function qualsIds(qSeatView: string, qSort: any, qSearch: string) {
   /* the signed-in person's own squadron's people — Quals stays on his own (D2132; multi-squadron step 3) */
-  let ids = rosterOf(qualsPageUnit()).filter(id =>
+  let ids = rosterOf(qualsPageUnit(), rosterToday()).filter(id =>
     (qSeatView === 'ALL' || PEOPLE[id].seat === qSeatView) && !PEOPLE[id].archived)
   if (qSearch) { const s = qSearch.toLowerCase(); ids = ids.filter(id => PEOPLE[id].cs.toLowerCase().includes(s) || (PEOPLE[id].initials || '').toLowerCase().includes(s) || (PEOPLE[id].name || '').toLowerCase().includes(s)) }
   const key = sortKeyFor(qSort.key)

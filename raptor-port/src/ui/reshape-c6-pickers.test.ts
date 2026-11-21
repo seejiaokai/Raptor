@@ -23,6 +23,7 @@ import { setHome, homeOn } from '../state/units'
 import { myUnit, me } from '../state/perms'
 import { pickRoster } from '../ui/peoplepick-model'
 import { offersFor, whoDoorRefusal, draftImage, rosterOptions } from '../ui/inputedit'
+import { rosterToday } from '../engine/roster'
 
 useMsqWorld()
 
@@ -32,19 +33,19 @@ describe('C6 — the pickers and a move of squadron', () => {
     signInAs('ad', 'a')
     expect(setHome('bane', 'u149').ok).toBe(true)            // 149's from 13 Jul
     signInAs('ad9', 'a9')
-    expect(myUnit()).toBe('u149')
+    expect(myUnit(rosterToday())).toBe('u149')
     /* the save itself accepts it (as job 2's third test) */
     expect(writeInputsBatch(() => { INPUTS.push({ person: 'bane', date: 'Jul 14', endDate: 'Jul 16', yr: 2026, allday: true, type: 'LL', remarks: '149', by: 'kes9', at: Date.now(), iid: 'c06a', ord: 99906 } as any) })).toBeTruthy()
-    expect(pickRoster(false, myUnit(), '2026-07-14'), "149's picker offers him").toContain('bane')
+    expect(pickRoster(false, myUnit(rosterToday()), '2026-07-14'), "149's picker offers him").toContain('bane')
   })
   it("142's admin, filing for 20 Jul (a 149 day), is not offered bane — the save refuses it", () => {
     at('2026-07-15')
     signInAs('ad', 'a')
     expect(setHome('bane', 'u149').ok).toBe(true)            // 149's from 16 Jul
     signInAs('ad2', 'a2')
-    expect(myUnit()).toBe('u142')
+    expect(myUnit(rosterToday())).toBe('u142')
     expect(writeInputsBatch(() => { INPUTS.push({ person: 'bane', date: 'Jul 20', endDate: 'Jul 21', yr: 2026, allday: true, type: 'LL', remarks: '142', by: 'prowler', at: Date.now(), iid: 'c06b', ord: 99907 } as any) }), 'refused').toBe(false)
-    expect(pickRoster(false, myUnit(), '2026-07-20'), "142's picker for a 149 day does not offer him").not.toContain('bane')
+    expect(pickRoster(false, myUnit(rosterToday()), '2026-07-20'), "142's picker for a 149 day does not offer him").not.toContain('bane')
   })
 })
 
@@ -98,7 +99,7 @@ describe('C6 — one whole-draft answer (Ranger 142 → 149 from Thu 16 Jul)', (
       for (const [a, b] of spans) {
         signInAs(who)
         /* the page he files from: his own squadron's Inputs page, or — a master admin — the squadron of Ranger's first day */
-        const page = who === 'saber' ? homeOn(R, a)! : myUnit()
+        const page = who === 'saber' ? homeOn(R, a)! : myUnit(rosterToday())
         if (who === 'saber') switchUnit(page)
         const roster = who === 'ranger' ? [R] : rosterOptions(page, a)
         const offered = roster.includes(R) && offersFor(null, draft(a, b), [])(R)

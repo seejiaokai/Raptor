@@ -22,6 +22,7 @@ import { memoryBackend } from '../leavewar/state/storage'
 import { projectPeople } from '../leavewar/state/raptorRoster'
 import { wireLeaveWarSync, oilOpenOn } from '../leavewar/sync'
 import { saveOilDay } from '../ui/oilday'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 const fake = {
@@ -78,6 +79,6 @@ describe('O3 (GUARD — green today; keep it green through PE1) — the member v
     expect(mayEditSched()).toBe(true)
     switchRoleView()
     expect(mayEditSched(), "Hunter's member view (Plan of 149 held)").toBe(false)
-    expect(levelIn('acad2', 'u149'), 'his Plan is still there underneath').toBe('admin')
+    expect(levelIn('acad2', 'u149', rosterToday()), 'his Plan is still there underneath').toBe('admin')
   })
 })

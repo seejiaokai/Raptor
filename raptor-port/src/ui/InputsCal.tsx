@@ -1214,7 +1214,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
      target row are shown ticked-and-locked so a re-pick can't double them. */
   const renderPicker = () => {
     /* the signed-in person's own squadron's people (multi-squadron step 3 — the Inputs page stays on his own, D2132) */
-    const roster = rosterOf(pageUnit('own')).filter(id => !PEOPLE[id].archived && !PEOPLE[id].special)
+    const roster = rosterOf(pageUnit('own'), isoToday()).filter(id => !PEOPLE[id].archived && !PEOPLE[id].special)
     const seated = new Set<string>(pickFor ? (((calNow().pucks.find((p: any) => p.id === pickFor)?.ids) || []).filter(Boolean)) : [])
     const toggle = (id: string) => setPickSel(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
     /* HIGHLIGHT = a visual fade, never a selection (owner, 24 Aug 26). Toggling

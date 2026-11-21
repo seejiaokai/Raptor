@@ -29,6 +29,7 @@ import { unreadFor, noticeSeenLoad, hasRead } from '../state/noticeseen'
 import { installGlobalUndo } from '../state/undo-wire'
 import { _resetTimeline, globalRedo } from '../undo/timeline'
 import { globalUndo } from '../undo'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -97,7 +98,7 @@ describe("D2218 — a moved man's old squadron's war lines", () => {
     const line = open()
     moveOsprey()
     nextDay()
-    expect(homeOn('osp9')).toBe('u142')
+    expect(homeOn('osp9', rosterToday())).toBe('u142')
     expect(globalUndo().ok).toBe(true)
     expect(NOTICES.some(n => n.id === line.id)).toBe(false)
     const r = globalRedo()
@@ -146,7 +147,7 @@ describe("D2218 — a moved man's old squadron's war lines", () => {
     /* …and does not come back should he return to 149 */
     mem['sqn142_' + HOME_PFX + 'hfr4b'] = JSON.stringify({ id: 'hfr4b', pid: 'osp9', unit: 'u149', from: '2026-07-17' })
     vi.setSystemTime(new Date(2026, 6, 17, 9, 0, 0)); unitsLoad()
-    expect(homeOn('osp9')).toBe('u149')
+    expect(homeOn('osp9', rosterToday())).toBe('u149')
     expect(noticesFor('osp9').some(openLine)).toBe(false)
   })
 })
@@ -190,7 +191,7 @@ describe("D2222 — a line about a moved man's own leave follows him", () => {
         const l = decide(d)
         if (read) { mem['sqn142_noticeseen:osp9'] = JSON.stringify({ upto: 0, ids: [l.id] }); noticeSeenLoad() }
         moveOsprey(); nextDay()
-        expect(homeOn('osp9')).toBe('u142')
+        expect(homeOn('osp9', rosterToday())).toBe('u142')
         expect(noticesFor('osp9').some(n => n.id === l.id), 'about himself: still on his bell').toBe(true)
         const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
         expect(NOTICES.some(n => n.id === l.id)).toBe(false)
@@ -240,7 +241,7 @@ describe("fix read 5, Astra 3 — the war's squadron lines of a man who moved aw
     it(`${read ? 'read' : 'unread'}, away to 142 and back: the Undo tells him nothing`, () => {
       const line = open(); if (read) readIt(line)
       moveOsprey(); back149(); day17()
-      expect(homeOn('osp9')).toBe('u149')
+      expect(homeOn('osp9', rosterToday())).toBe('u149')
       expect(noticesFor('osp9').some(n => n.id === line.id), 'off his bell since his move day, even back home').toBe(false)
       const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
       expect(isOpen()).toBe(false)
@@ -286,7 +287,7 @@ describe('D2223 — input lines after a move', () => {
     signInAs('ad2', 'a2'); fileFor('bane', 'prowler')
     moveHunter()
     vi.setSystemTime(new Date(2026, 6, 17, 9, 0, 0)); unitsLoad()
-    expect(homeOn('prowler')).toBe('u149')
+    expect(homeOn('prowler', rosterToday())).toBe('u149')
     signInAs('ad', 'a'); rmk('changed by Saber')
     expect(toHunter().length, 'no 142 line about a 142 man to the moved admin').toBe(0)
     expect(NOTICES.filter(n => n.to === 'bane' && n.iid === IID && n.what[0]?.k === 'rmk').length, 'Ranger, named in it, is told as ever').toBe(1)
@@ -310,7 +311,7 @@ describe('D2223 — input lines after a move', () => {
     signInAs('ad', 'a'); fileFor('bane', 'stiff')
     move('stiff', 'hfr5s')
     vi.setSystemTime(new Date(2026, 6, 17, 9, 0, 0)); unitsLoad()
-    expect(homeOn('stiff')).toBe('u149')
+    expect(homeOn('stiff', rosterToday())).toBe('u149')
     signInAs('ad2', 'a2'); rmk('changed by Hunter')
     expect(NOTICES.filter(n => n.to === 'stiff' && n.iid === IID).length).toBe(1)
   })

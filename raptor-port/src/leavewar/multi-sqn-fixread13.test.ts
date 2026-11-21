@@ -34,6 +34,7 @@ import { commitInputsWith } from '../state/sched-commit'
 import { Whiteboard } from '../storage/whiteboard'
 import { wireRows, writeSeedRows } from '../state/persist'
 import { setStoredRowProbe, setStoredRowsWhole, ownershipViolation } from '../state/perms'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -368,7 +369,7 @@ describe('item D (1) — a deleted person is never brought back by a command', (
   } as any)
   it("(Astra) Kestrel deletes a 149 man, then a person command clears his delete mark: refused, he stays deleted", () => {
     signInAs('ad9', 'a9')
-    const pid = Object.keys(PEOPLE).find(p => homeOn(p) === 'u149' && !accountOfPid(p) && !(PEOPLE as any)[p].special && !(PEOPLE as any)[p].archived && !(PEOPLE as any)[p].deleted)!
+    const pid = Object.keys(PEOPLE).find(p => homeOn(p, rosterToday()) === 'u149' && !accountOfPid(p) && !(PEOPLE as any)[p].special && !(PEOPLE as any)[p].archived && !(PEOPLE as any)[p].deleted)!
     const was = structuredClone((PEOPLE as any)[pid])
     expect(deletePerson(pid), 'Kestrel deletes him').toBeNull()
     expect((PEOPLE as any)[pid].deleted).toBe(true)

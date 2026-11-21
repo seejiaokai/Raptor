@@ -24,7 +24,7 @@ import { UNIT, BOOT_UNIT, setUnitInView, inView } from '../engine/unitview'
 import { isUnitId } from '../storage/unitid'
 import { insightsLoad } from '../engine/insights-config'
 import { registerMissionRoles } from './mission-roles'
-import { mintInpIds, INPUTS, inputsFor, inputsOnDay, inputAtIso, DATES, baseYear, dateIx, inputCoversDate, inpId, shapeProblem, tillSettle } from '../engine/inputs'
+import { mintInpIds, INPUTS, inputsOnFirstDay, inputsOnDay, inputAtIso, DATES, baseYear, dateIx, inputCoversDate, inpId, shapeProblem, tillSettle } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, migrateLegacyIds } from '../engine/rowids'
@@ -160,10 +160,10 @@ export function writeDelete(fn: () => void, di?: number, kind: any = 'programme'
    Fable F4): a body that rewrites an input's accepted mark never iterates the inputs a squadron's list "touches" — one
    input across a move is two squadrons', and a writer run over it from each squadron's load would undo the other's.
    So the week load and the boot clear the landing of exactly the inputs that are the schedule in view's on their first
-   day — today's answer (engine/inputs.ts inputsFor with no day IS inputOnDay(r, unit, its first day)). Kept on that
-   alias until the core gives the first-day list its own name (inputsOnFirstDay — phase 3's contract removes the
-   no-day form); then this one line moves. */
-const landingInputs = (): any[] => inputsFor(UNIT)
+   day — today's answer (engine/inputs.ts inputsOnFirstDay IS inputOnDay(r, unit, its first day)); the alias it stood on
+   until the core gave the first-day list its own name went with phase 3's contract, which took inputsFor's
+   no-day form. */
+const landingInputs = (): any[] => inputsOnFirstDay(UNIT)
 function protectedTouched(before: any, prot: string[]): boolean {
   /* the LOADED week is itself protected and its schedule was mutated (an input
      auto-landing a ground row onto a frozen day). Only fires when protectedWeek()

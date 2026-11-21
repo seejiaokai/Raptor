@@ -14,7 +14,7 @@ import { store } from '../engine/hooks'
 import { newId } from '../engine/newid'
 import { isCommitting, type CommitResult } from '../command'
 import { commitSettingsIntent } from './people-settings-commit'
-import { setHomeResolver } from '../engine/roster'
+import { setHomeResolver, needDay } from '../engine/roster'
 import { DEMO_149_PEOPLE } from './demoseed'
 /* the last-admin lock's words for a step's draft (accounts.ts imports this file; the call is at run time, never at load) */
 import { lockProblemFor, accountById, masterChangeProblem, signedInAccount } from './accounts'
@@ -92,8 +92,12 @@ export const places = (): Place[] => unitRows().places
 export const placeById = (id: string): Place | undefined => placeIn(unitRows(), id)
 /* the place a unit is at on a date */
 export const placeOfOn = (unit: string, iso: string): Place | null => { const id = placeIdOn(unitRows(), unit, iso); return id ? placeIn(unitRows(), id) ?? null : null }
-/* a person's home unit on a date (the demo's 142 when he has no row; null on a shared store) */
-export const homeOn = (pid: string, iso: string = todayIso()): string | null => homeUnitOn(unitRows(), pid, iso, fallbackHome())
+/* a person's home unit on a date (the demo's 142 when he has no row; null on a shared store) — the day required, and
+   checked in tests and development builds (the reshape plan §3.2 A-i's contract, engine/roster.ts needDay) */
+export const homeOn = (pid: string, iso: string): string | null => {
+  needDay(iso, 'homeOn')
+  return homeUnitOn(unitRows(), pid, iso, fallbackHome())
+}
 /* the days in a..b (a excluded, b included) on which his squadron changes (units-model.ts homeChangesIn — never a row's
    date as such) — and the same over the rows before a command (the commit gate) */
 export const homeChangesOn = (pid: string, a: string, b: string): string[] => homeChangesIn(unitRows(), pid, a, b, fallbackHome())
@@ -103,11 +107,11 @@ export const stintsOf = (pid: string, unit: string): Stint[] => stintsIn(unitRow
 /* …and the engine's rosters ask the same (engine/roster.ts rosterOf, engine/inputs.ts inputsFor — multi-squadron step 3):
    the engine does not import state/, so the answer is handed to it here, once, as this module loads — both questions
    of the home handle (the reshape plan §3.2 A-i) */
-setHomeResolver({ on: (pid, iso) => homeOn(pid, iso), changesIn: (pid, a, b) => homeChangesOn(pid, a, b) })
+setHomeResolver({ on: (pid, iso) => homeUnitOn(unitRows(), pid, iso, fallbackHome()), changesIn: (pid, a, b) => homeChangesOn(pid, a, b) })
 /* the rights an account holds in OTHER units */
 export const grantsOf = (accountId: string): Grant[] => unitRows().grants.filter(g => g.account === accountId)
 /* an account's level in a unit on a date — the one answer (units-model.ts levelFrom); the caller hands in the account */
-export const levelOfAccount = (acct: LevelAccount | null | undefined, unit: string, iso: string = todayIso()): UnitLevel | null =>
+export const levelOfAccount = (acct: LevelAccount | null | undefined, unit: string, iso: string): UnitLevel | null =>
   levelFrom(acct, unit, iso, unitRows(), fallbackHome())
 /* the same over the rows before a command (the commit gate) */
 export const levelBefore = (acct: LevelAccount | null | undefined, unit: string, iso: string, rows: UnitRows): UnitLevel | null =>
@@ -171,7 +175,7 @@ let NEW_HOME_UNIT: ((adderPid: string | null) => string | null) | null = null
 export function setNewHomeUnit(fn: ((adderPid: string | null) => string | null) | null): void { NEW_HOME_UNIT = fn }
 export function putNewHome(pid: string, adderPid: string | null): void {
   if (!isCommitting()) throw new Error('A home is written only inside the command that makes the person')
-  const unit = (NEW_HOME_UNIT && NEW_HOME_UNIT(adderPid)) || (adderPid ? homeOn(adderPid) : fallbackHome())
+  const unit = (NEW_HOME_UNIT && NEW_HOME_UNIT(adderPid)) || (adderPid ? homeOn(adderPid, todayIso()) : fallbackHome())
   if (!unit) return
   const id = newId('h')
   /* written as the accounts write theirs — no read-back: this row rides inside ANOTHER module's command, and a world
@@ -196,7 +200,7 @@ export function addUnit(numIn: string, placeId: string, firstAdmin?: string): Un
      until "+ New squadron" has its screen, drawn for him (D1625). */
   if (!firstAdmin) return no("Name the squadron's first admin.")
   const fa = accountById(firstAdmin)
-  if (fa && homeOn(String(fa.pid), moveFrom(todayIso())) !== homeOn(String(fa.pid))) return no('He moves squadron tomorrow — give this after the move')
+  if (fa && homeOn(String(fa.pid), moveFrom(todayIso())) !== homeOn(String(fa.pid), todayIso())) return no('He moves squadron tomorrow — give this after the move')
   if (fa && !isAdminRole(fa)) return no('This change could not be saved.')
   const id = newId('u'), up = newId('up'), g = newId('g')
   const draft = rowsDraft(unitRows(), {
@@ -248,7 +252,7 @@ export function setPlace(p: { id?: string; name: string; tz: string }): UnitSave
 export function setGrant(account: string, unit: string, level: GrantLevel, accountPid: string): UnitSave {
   if (level !== 'admin' && level !== 'view') return no('Pick admin or view')
   if (!unitById(unit)) return no('That squadron is gone')
-  if (homeOn(accountPid) === unit) return no('That is his own squadron — his role there is set on his account')
+  if (homeOn(accountPid, todayIso()) === unit) return no('That is his own squadron — his role there is set on his account')
   const acct = accountById(account)
   const had = grantOn(unitRows(), { id: account, pid: accountPid, pidFrom: acct?.pidFrom }, unit, todayIso(), fallbackHome())
   if (had && had.level === level) return no('He already has that')
@@ -261,7 +265,7 @@ export function setGrant(account: string, unit: string, level: GrantLevel, accou
      only. A lowering passes — whatever it leaves ends at midnight by the rule. Held at the gate too (perms.ts
      unitRowViolation) */
   const gives = !had || (had.level === 'view' && level === 'admin')
-  if (gives && homeOn(accountPid, moveFrom(todayIso())) !== homeOn(accountPid)) return no('He moves squadron tomorrow — give this after the move')
+  if (gives && homeOn(accountPid, moveFrom(todayIso())) !== homeOn(accountPid, todayIso())) return no('He moves squadron tomorrow — give this after the move')
   /* a squadron's only Plan lowered to View leaves it no admin (B6 — the one last-admin rule, state/lastadmin.ts) */
   if (had && had.level === 'admin' && level !== 'admin') {
     const lock = lockProblemFor({ rows: rowsDraft(unitRows(), { grants: [{ id: had.id, account, unit, level, from: todayIso() }] }) })
@@ -311,12 +315,12 @@ export function setHome(pid: string, unit: string): UnitSave {
   const master = masterChangeProblem(pid)
   if (master) return no(master)
   const me = signedInAccount()
-  if (me && String(me.pid) === pid && homeOn(pid)) return no("You can't move yourself to another squadron — ask another admin")
+  if (me && String(me.pid) === pid && homeOn(pid, todayIso())) return no("You can't move yourself to another squadron — ask another admin")
   const mine = unitRows().homes.filter(h => h.pid === pid)
   /* a man who has a squadron today — by a row, or the demo's 142 for a man with none — moves from tomorrow (D2119);
      only a man with no squadron at all is placed from today. Reading the rows alone placed the demo's 142 men (no row)
      from today, rewriting a day already begun (the full check's Opus read, 18 Nov 26) — the commit gate refuses that */
-  const now = homeOn(pid)
+  const now = homeOn(pid, todayIso())
   const from = now ? moveFrom(todayIso()) : todayIso()
   if (now && homeOn(pid, from) === unit) return no('That is already his squadron')
   const same = mine.find(h => h.from === from)

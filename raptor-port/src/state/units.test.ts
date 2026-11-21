@@ -18,6 +18,7 @@ import {
   removeGrant, setHome, todayIso, PLAN_MASTER_ONLY,
 } from './units'
 import { gmtLabel, validTz, moveFrom } from './units-model'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 const fake = {
@@ -72,9 +73,9 @@ describe('the seeds — read with no rows, never written at load', () => {
     expect(unitKeys()).toEqual([])
   })
   it('on the demo a person with no home row is at 142; on a shared store, nowhere', () => {
-    expect(homeOn('bane')).toBe('u142')
+    expect(homeOn('bane', rosterToday())).toBe('u142')
     setUnitSeeds(false)
-    expect(homeOn('bane')).toBe(null)
+    expect(homeOn('bane', rosterToday())).toBe(null)
     expect(units()).toEqual([])
   })
   it('a stored row of the same id wins over the seed', () => {
@@ -95,18 +96,18 @@ describe('the seeds — read with no rows, never written at load', () => {
 describe('levelIn — master, home, grant, none', () => {
   it('the master is admin in every unit', () => {
     expect(isMasterAccount('acad')).toBe(true)
-    expect(levelIn('acad', 'u142')).toBe('admin')
-    expect(levelIn('acad', 'u149')).toBe('admin')
+    expect(levelIn('acad', 'u142', rosterToday())).toBe('admin')
+    expect(levelIn('acad', 'u149', rosterToday())).toBe('admin')
   })
   it('in his home unit an account is its own role; elsewhere its grant; otherwise none', () => {
     expect(isMasterAccount('acus')).toBe(false)
-    expect(levelIn('acus', 'u142')).toBe('member')
-    expect(levelIn('acus', 'u149')).toBe(null)
+    expect(levelIn('acus', 'u142', rosterToday())).toBe('member')
+    expect(levelIn('acus', 'u149', rosterToday())).toBe(null)
     signInAs('ad', 'a')
     expect(setGrant('acus', 'u149', 'view', 'bane').ok).toBe(true)
     expect(grantsOf('acus')).toMatchObject([{ account: 'acus', unit: 'u149', level: 'view' }])
-    expect(levelIn('acus', 'u149')).toBe('view')
-    expect(levelIn('nobody', 'u142')).toBe(null)
+    expect(levelIn('acus', 'u149', rosterToday())).toBe('view')
+    expect(levelIn('nobody', 'u142', rosterToday())).toBe(null)
   })
   it('a grant is never in the account\'s own home unit — his role there is on his account', () => {
     signInAs('ad', 'a')
@@ -128,16 +129,16 @@ describe('a new person gets his home inside the command that makes him (D2094)',
     signInAs('ad', 'a')
     expect(addPersonAndAccount('blaze@mail', { cs: 'Blaze', ini: 'rtk', seat: 'RCP', cat: 'D' }, 'main')).toBe(null)
     const pid = csOf('Blaze')!
-    expect(homeOn(pid)).toBe('u142')
+    expect(homeOn(pid, rosterToday())).toBe('u142')
     expect(unitKeys().filter(k => k.includes('_home:')).map(k => JSON.parse(mem[k]!))).toMatchObject([{ pid, unit: 'u142' }])
-    expect(levelIn(accountByName('blaze@mail')!.id, 'u142')).toBe('member')
+    expect(levelIn(accountByName('blaze@mail')!.id, 'u142', rosterToday())).toBe('member')
   })
   it('an adder whose home is 149 puts the new man in 149', () => {
     /* Kestrel, 149's admin (a move of Saber's own home counts from tomorrow since the full check of 18 Nov 26 — D2119 —
        so it no longer makes him 149's today) */
     signInAs('ad9', 'a9')
     expect(addRosterPerson({ cs: 'Gecko', ini: '', seat: 'FCP', cat: 'OCU' })).toBe(null)
-    expect(homeOn(csOf('Gecko')!)).toBe('u149')
+    expect(homeOn(csOf('Gecko')!, rosterToday())).toBe('u149')
   })
 })
 
@@ -160,7 +161,7 @@ describe('the master-only commands', () => {
     expect(r.ok).toBe(true)
     expect(unitById(r.id!)).toMatchObject({ num: '150', kind: 'sqn' })
     expect(placeOfOn(r.id!, todayIso())?.id).toBe('p1')
-    expect(levelIn('acad2', r.id!)).toBe('admin')
+    expect(levelIn('acad2', r.id!, rosterToday())).toBe('admin')
     expect(addUnit('150', 'p1').ok).toBe(false)   // one squadron per number
   })
   it('a master cannot drop his own mark, and one master is always left', () => {
@@ -215,13 +216,13 @@ describe('a right in a unit is given only by an admin OF that unit (read from th
     const self = setGrant(accountByName('pike@mail')!.id, 'u149', 'admin', 'pike')
     expect(self.ok).toBe(false)                         // never by the right the command itself gives
     expect(setGrant('acus9', 'u142', 'view', 'osp9').ok).toBe(true)
-    expect(levelIn('acus9', 'u142')).toBe('view')
+    expect(levelIn('acus9', 'u142', rosterToday())).toBe('view')
     /* (§9.3 of the reshape plan — rewritten to the ruling: Plan is a master admin's to give, D2199, D2211 — the Plan
        audit's PA1; this pinned a plain admin giving it, written a day before D2199) */
     expect(setGrant('acus9', 'u142', 'admin', 'osp9')).toMatchObject({ ok: false, message: PLAN_MASTER_ONLY })
-    expect(levelIn('acus9', 'u142')).toBe('view')
+    expect(levelIn('acus9', 'u142', rosterToday())).toBe('view')
     expect(removeGrant('acus9', 'u142').ok).toBe(true)
-    expect(levelIn('acus9', 'u142')).toBe(null)
+    expect(levelIn('acus9', 'u142', rosterToday())).toBe(null)
   })
   it('a member gives no right and moves no unit', () => {
     signInAs('us', 'us')
@@ -252,9 +253,9 @@ describe('the rows are written only by their commands', () => {
   it('Undo of a grant puts it back as it was', () => {
     signInAs('ad', 'a')
     expect(setGrant('acus', 'u149', 'view', 'bane').ok).toBe(true)
-    expect(levelIn('acus', 'u149')).toBe('view')
+    expect(levelIn('acus', 'u149', rosterToday())).toBe('view')
     expect(globalUndo().ok).toBe(true)
-    expect(levelIn('acus', 'u149')).toBe(null)
+    expect(levelIn('acus', 'u149', rosterToday())).toBe(null)
     expect(grantsOf('acus')).toEqual([])
   })
 })

@@ -9,6 +9,7 @@ import { useMsqWorld, signInAs, PID, ACCT, on } from '../test-support/msq-world'
 import { levelIn } from './accounts'
 import { setGrant, setHome, unitsLoad } from './units'
 import { globalUndo } from '../undo/timeline'
+import { rosterToday } from '../engine/roster'
 
 useMsqWorld()
 describe('F4 — the Undo of a move after its day has begun', () => {
@@ -24,7 +25,7 @@ describe('F4 — the Undo of a move after its day has begun', () => {
     const second = globalUndo() as any
     unitsLoad()
     expect(second.ok, JSON.stringify({ ok: second.ok, reason: second.reason })).toBe(true)
-    expect(levelIn(ACCT.kestrel, 'u142'), 'step 1 undone: the View of 142 Kestrel held is gone').toBeNull()
+    expect(levelIn(ACCT.kestrel, 'u142', rosterToday()), 'step 1 undone: the View of 142 Kestrel held is gone').toBeNull()
   })
   it('(control) the same day, Undo takes the move back', () => {
     signInAs('saber')

@@ -289,7 +289,7 @@ export function joinFilerImgs(f: string, b: any, a: any, folded: readonly any[],
    (units.ts grantOfOn — ended at the start of the day his squadron changes, D2203, D2243), and still held before that day
    began; Plan is an admin's (PA2 — an `admin` right on an account that is not an admin's is none). */
 function adminThen(acct: { id: string; pid: string; role: string; master?: true; masterFrom?: string; pidFrom?: string }, u: string, iso?: string, now = false): boolean {
-  if (iso == null) return levelOfAccount(levelAcct(acct), u) === 'admin'
+  if (iso == null) return levelOfAccount(levelAcct(acct), u, todayIso()) === 'admin'
   const later = (from: string | undefined): string | undefined => (!from ? acct.pidFrom : !acct.pidFrom || from > acct.pidFrom ? from : acct.pidFrom)
   const held = (own: string | undefined): boolean => { const from = later(own); return !from || from < iso || (now && from === iso) }
   if (acct.master && held(acct.masterFrom)) return true

@@ -22,6 +22,7 @@ import { INPUTS } from '../engine/inputs'
 import { NOTICES, noticesFor, allNoticesFor, type Notice } from '../state/notices'
 import { markNoticeRead, unreadFor, noticeSeenLoad } from '../state/noticeseen'
 import { ownershipViolation } from '../state/perms'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -68,7 +69,7 @@ function setup(read: boolean): Notice {
   expect(setHome('prowler', 'u149').ok).toBe(true)
   vi.setSystemTime(new Date(2026, 6, 17, 9, 0, 0))
   unitsLoad()
-  expect(homeOn('prowler')).toBe('u149')
+  expect(homeOn('prowler', rosterToday())).toBe('u149')
   signInAs('outlaw')
   expect(worldUnit()).toBe('u142')
   return old
@@ -211,10 +212,10 @@ describe('fix read 5, Astra 3 — a posting taken back after its admin moved awa
     for (let t = 0; t < trips; t++) {
       expect(setHome('prowler', 'u149').ok).toBe(true)
       vi.setSystemTime(new Date(2026, 6, ++d, 9, 0, 0)); unitsLoad()
-      expect(homeOn('prowler')).toBe('u149')
+      expect(homeOn('prowler', rosterToday())).toBe('u149')
       expect(setHome('prowler', 'u142').ok).toBe(true)
       vi.setSystemTime(new Date(2026, 6, ++d, 9, 0, 0)); unitsLoad()
-      expect(homeOn('prowler')).toBe('u142')
+      expect(homeOn('prowler', rosterToday())).toBe('u142')
     }
     signInAs('outlaw')
     expect(worldUnit()).toBe('u142')

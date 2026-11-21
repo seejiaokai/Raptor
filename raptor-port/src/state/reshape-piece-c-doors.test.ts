@@ -14,6 +14,7 @@ import { commitSettingsIntent } from './people-settings-commit'
 import { store } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
 import { globalUndo, globalRedo } from '../undo/timeline'
+import { rosterToday } from '../engine/roster'
 
 useMsqWorld()
 
@@ -42,7 +43,7 @@ describe('the words table', () => {
     plan150()
     expect(updateAccount(ACCT.ranger, { role: 'admin' })).toBeNull()
     signInAs('ranger')
-    expect(levelIn(ACCT.ranger, unitRows().units.find(u => u.num === '150')!.id), 'Ranger is no admin of 150').toBeNull()
+    expect(levelIn(ACCT.ranger, unitRows().units.find(u => u.num === '150')!.id, rosterToday()), 'Ranger is no admin of 150').toBeNull()
     expect(updateAccount(ACCT.hunter, { on: false })).toBe("Hunter is 150's last admin. Only a master admin or an admin of 150 can make another.")
     expect(ACCOUNTS_LIST.find(a => a.id === ACCT.hunter)!.on, 'nothing saved').toBe(true)
   })
@@ -56,12 +57,12 @@ describe('every door says the lock — Hunter, the only admin of 150 (his Plan o
   it('his Plan taken away', () => {
     const u = plan150()
     expect(removeGrant(ACCT.hunter, u)).toEqual({ ok: false, message: HUNTER_150 })
-    expect(levelIn(ACCT.hunter, u)).toBe('admin')
+    expect(levelIn(ACCT.hunter, u, rosterToday())).toBe('admin')
   })
   it('his Plan lowered to View', () => {
     const u = plan150()
     expect(setGrant(ACCT.hunter, u, 'view', PID.hunter)).toEqual({ ok: false, message: HUNTER_150 })
-    expect(levelIn(ACCT.hunter, u)).toBe('admin')
+    expect(levelIn(ACCT.hunter, u, rosterToday())).toBe('admin')
   })
   it('his sign-in re-linked to another man (every right dropped with the link — guardrail 1)', () => {
     plan150()
@@ -112,7 +113,7 @@ describe('the Undo and Redo of "+ New squadron" and its first admin\'s right (§
     expect(red.ok, JSON.stringify(red)).toBe(true)
     unitsLoad()
     expect(unitRows().units.some(x => x.id === u), 'the squadron back').toBe(true)
-    expect(levelIn(ACCT.hunter, u), 'its first admin back').toBe('admin')
+    expect(levelIn(ACCT.hunter, u, rosterToday()), 'its first admin back').toBe('admin')
   })
 })
 
@@ -123,7 +124,7 @@ describe('the gate holds it past the door — the commands it now judges', () =>
     const r = commitSettingsIntent('grant.remove', null, () => { store.set(GRANT_PFX + g.id, null) }) as any
     expect(r.ok).toBe(false)
     unitsLoad()
-    expect(levelIn(ACCT.hunter, u)).toBe('admin')
+    expect(levelIn(ACCT.hunter, u, rosterToday())).toBe('admin')
   })
   it("150's only Plan lowered to View past setGrant: refused", () => {
     const u = plan150()
@@ -131,7 +132,7 @@ describe('the gate holds it past the door — the commands it now judges', () =>
     const r = commitSettingsIntent('grant.set', null, () => { store.set(GRANT_PFX + g.id, { ...g, level: 'view', from: todayIso() }) }) as any
     expect(r.ok).toBe(false)
     unitsLoad()
-    expect(levelIn(ACCT.hunter, u)).toBe('admin')
+    expect(levelIn(ACCT.hunter, u, rosterToday())).toBe('admin')
   })
   it('a squadron made with no admin, past addUnit: refused', () => {
     signInAs('saber')

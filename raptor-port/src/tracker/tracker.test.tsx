@@ -26,7 +26,7 @@ import SidePanel from './components/SidePanel.jsx'
 import { DlgModal } from './components/Modals.jsx'
 import { initStore, notify as raptorNotify, resetSession } from '../state/store'
 import { PEOPLE } from '../engine/people'
-import { homeUnitOf, unitPeople } from '../engine/roster'
+import { homeUnitOf, unitPeople, rosterToday } from '../engine/roster'
 import { storageUnit } from './storage.js'
 import { myUnit } from '../state/perms'
 import { readFileSync, readdirSync } from 'node:fs'
@@ -1388,10 +1388,10 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     const first = getPeople()
     /* one squadron's people since multi-squadron step 4 — the squadron the Tracker's doorway is bound to (else the
        signed-in person's): its + Add never offers another squadron's man */
-    const unit = storageUnit() || myUnit()
-    expect(first).toEqual(projectForTracker(unitPeople(unit)))
-    expect(Object.keys(PEOPLE).some(id => homeUnitOf(id) !== unit), 'the roster holds another squadron\'s men').toBe(true)
-    expect(first.every((p: any) => homeUnitOf(p.id) === unit), 'none of them offered here').toBe(true)
+    const unit = storageUnit() || myUnit(rosterToday())
+    expect(first).toEqual(projectForTracker(unitPeople(unit, rosterToday())))
+    expect(Object.keys(PEOPLE).some(id => homeUnitOf(id, rosterToday()) !== unit), 'the roster holds another squadron\'s men').toBe(true)
+    expect(first.every((p: any) => homeUnitOf(p.id, rosterToday()) === unit), 'none of them offered here').toBe(true)
     let n = 0
     const off = C.subscribe(() => { n++ })
     raptorNotify()

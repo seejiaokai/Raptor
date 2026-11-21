@@ -63,7 +63,7 @@ beforeEach(() => {
 
 const on = (d: number, h = 9, m = 0) => { vi.setSystemTime(new Date(2026, 6, d, h, m, 0)); unitsLoad() }
 const grantsOf = (id: string) => unitRows().grants.filter(g => g.account === id)
-const free = (unit: string, not: string[] = []) => Object.keys(PEOPLE).filter(p => homeOn(p) === unit && !not.includes(p) && !accountOfPid(p)
+const free = (unit: string, not: string[] = []) => Object.keys(PEOPLE).filter(p => homeOn(p, rosterToday()) === unit && !not.includes(p) && !accountOfPid(p)
   && !(PEOPLE as any)[p].deleted && !(PEOPLE as any)[p].archived && !(PEOPLE as any)[p].special)
 /* the accounts saved as rows (as after the database step): the first write stores the whole list */
 const saveAccounts = () => {
@@ -370,6 +370,7 @@ import { setMaster } from '../state/accounts'
 import { addUnit } from '../state/units'
 import { HOME_PFX } from '../state/units-model'
 import { addRosterPerson } from '../state/roster-add'
+import { rosterToday } from '../engine/roster'
 
 describe('fault E — a repeated Undo / Redo keeps the date an earlier restore set (Astra 2)', () => {
   const homes = (pid: string, key: string, rows: [string, string][]) => {
@@ -422,11 +423,11 @@ describe('fault E — a repeated Undo / Redo keeps the date an earlier restore s
     on(15); signInAs('ad', 'a'); expect(setGrant('acad2', 'u149', 'view', 'prowler').ok).toBe(true)
     homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']])
     on(17); globalUndo(); unitsLoad()
-    expect(levelIn('acad2', 'u149'), '17 Jul, after the Undo').toBeNull()
+    expect(levelIn('acad2', 'u149', rosterToday()), '17 Jul, after the Undo').toBeNull()
     on(18); globalRedo(); unitsLoad()
-    expect(levelIn('acad2', 'u149'), '18 Jul, after a Redo').toBeNull()
+    expect(levelIn('acad2', 'u149', rosterToday()), '18 Jul, after a Redo').toBeNull()
     globalUndo(); unitsLoad()
-    expect(levelIn('acad2', 'u149'), '18 Jul, after the Undo again').toBeNull()
+    expect(levelIn('acad2', 'u149', rosterToday()), '18 Jul, after the Undo again').toBeNull()
   })
   it('(re-link) master since 10 Jul; 15 Jul linked to Newby, he moves 16 Jul, Undo 17 Jul (17 Jul); 18 Jul Redo (today) then Undo: 17 Jul, never his old days', () => {
     on(10); signInAs('ad', 'a'); expect(setMaster('acad2', true).ok).toBe(true)

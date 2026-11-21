@@ -22,6 +22,7 @@ import { addDays } from './flyplan-model'
 import { commitSettingsIntent } from './people-settings-commit'
 import { isNewToMe, markSeen, changesLoad } from './changes'
 import { switchUnit } from './store'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 const fake = {
@@ -117,7 +118,7 @@ describe('Astra 5, Opus 2 and 6 — a home row is judged day by day, against the
     for (const x of seeded.unitplaces) mem['sqn142_unitplace:' + x.id] = JSON.stringify(x)
     for (const h of seeded.homes) mem['sqn142_home:' + h.id] = JSON.stringify(h)
     setUnitSeeds(false); unitsLoad()
-    expect(homeOn('rocky')).toBe(null)
+    expect(homeOn('rocky', rosterToday())).toBe(null)
     signInAs('ad', 'a')
     expect(setHome('rocky', 'u142')).toMatchObject({ ok: true })
     expect(homeOn('rocky', todayIso())).toBe('u142')

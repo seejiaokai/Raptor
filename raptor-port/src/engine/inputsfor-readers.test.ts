@@ -27,7 +27,7 @@ const READ = new RegExp(String.raw`\bINPUTS\b` + NOT_A_WALK + String.raw`|\bwarI
 const BY_ID = (line: string) => /\.(?:find|findIndex|some)\(/.test(line) && /\biid\b|\binpId\(/.test(line)
 
 const ALLOWED: Record<string, { n: number; why: string }> = {
-  'engine/inputs.ts': { n: 11, why: 'the home of the list: its declaration, ids, the seed snapshot, the per-person view of all of it, and inputsFor / inputsOn themselves — with the reshape\'s one body (inputsOnDay for a day reader, inputsTouching and inputsListed for a list reader, the plan §3.2 A-iii)' },
+  'engine/inputs.ts': { n: 12, why: 'the home of the list: its declaration, ids, the seed snapshot, the per-person view of all of it, and inputsFor / inputsOn themselves — with the reshape\'s one body (inputsOnDay for a day reader, inputsTouching and inputsListed for a list reader, the plan §3.2 A-iii; inputsOnFirstDay for the landing, phase 3\'s contract)' },
   'engine/overlay.ts': { n: 3, why: 'an index of every input by its id (a look-up table), the stored weeks\' memo signature (requestsSig) — a cache key over every record, never a list shown — and landingRequests, a squadron\'s requests as they land, each judged on its own first day by the one body (inputOnDay — the reshape plan §3.2 A-iii, Fable F4: a writer never iterates "touches")' },
   'engine/medical.ts': { n: 2, why: 'one man\'s medical rows (a man\'s own, whatever squadron) — and, with no man named, the Medical tab\'s three lists, which ui/MedicalView.tsx and ui/InputsPage.tsx narrow to the signed-in person\'s own squadron' },
   'state/person-delete.ts': { n: 1, why: 'a deleted man\'s own inputs — his, whatever squadron' },

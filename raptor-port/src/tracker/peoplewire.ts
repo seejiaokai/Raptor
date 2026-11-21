@@ -7,7 +7,7 @@
    notify; the bridge's own signature guard makes an unrelated notify free. */
 import { HOOKS } from '../engine/hooks'
 import { inputsTouching, isDownchit, isUpchit, inpType, leadOf } from '../engine/inputs'
-import { unitPeople } from '../engine/roster'
+import { unitPeople, rosterToday } from '../engine/roster'
 import { storageUnit } from './storage.js'
 import { medStartOrd, medEndOrd, firstEndOrd, firstEndIso, ordShift } from '../engine/medical'
 import { subscribe } from '../state/store'
@@ -121,7 +121,7 @@ export function wireTrackerPeople(): void {
        never offered on 142's course. Unbound, the page's own squadron (state/perms.ts pageUnit — the reshape plan §3.2
        A-ii): his own, a master admin's or Plan holder's following his pick (D2197). */
     const unit = storageUnit() || pageUnit('own')
-    const people = unitPeople(unit)
+    const people = unitPeople(unit, rosterToday())
     setPeople(projectForTracker(people)); setGonePeople(deletedForTracker(people)); setMedInputs(medForTracker(inputsTouching(unit)))
   }
   subscribe(push)

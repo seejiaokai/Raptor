@@ -45,9 +45,25 @@ export const rosterToday = (): string => {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
+/* THE DAY IS REQUIRED (the reshape plan §3.2 A-i, its contract step — Opus M6). The readers of "whose is he on a day"
+   take no default: each caller writes the day it means — rosterToday() / todayIso() on purpose, or the day it draws.
+   Engine files read `any`, so a caller handing an empty or malformed day still compiles, and the resolver would then
+   answer his first-ever squadron — so in tests and development builds such a day throws, naming the reader; a
+   production build reads it as before. */
+const CHECK_DAYS: boolean = !!(import.meta as any).env?.DEV
+const DAY_RE = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/
+export function needDay(iso: unknown, reader: string): void {
+  if (!CHECK_DAYS) return
+  if (typeof iso === 'string' && DAY_RE.test(iso)) return
+  throw new Error(`${reader}: a day (yyyy-mm-dd) is required, got ${JSON.stringify(iso)}`)
+}
+const homeOnDay = (pid: unknown, iso: string): string | null => (HOME ? HOME.on(String(pid ?? ''), iso) : BOOT_UNIT)
+
 /** a person's home unit on a date (null: nowhere — a shared store's person with no home row) */
-export const homeUnitOf = (pid: unknown, iso: string = rosterToday()): string | null =>
-  HOME ? HOME.on(String(pid ?? ''), iso) : BOOT_UNIT
+export const homeUnitOf = (pid: unknown, iso: string): string | null => {
+  needDay(iso, 'homeUnitOf')
+  return homeOnDay(pid, iso)
+}
 
 /** a placeholder body (ALL AVAIL, ALL) — on every unit's roster */
 export const isSentinel = (id: unknown): boolean => {
@@ -56,18 +72,21 @@ export const isSentinel = (id: unknown): boolean => {
 }
 
 /** is `id` on unit `unit`'s roster on `iso` */
-export const onRosterOf = (id: unknown, unit: string, iso: string = rosterToday()): boolean =>
-  isSentinel(id) || homeUnitOf(id, iso) === unit
+export const onRosterOf = (id: unknown, unit: string, iso: string): boolean => {
+  needDay(iso, 'onRosterOf')
+  return isSentinel(id) || homeOnDay(id, iso) === unit
+}
 
 /** THE ONE ENUMERATION: every person (archived, deleted and the placeholders included — each caller filters as it did)
     whose home unit on `iso` is `unit`, in the list's own order */
-export function rosterOf(unit: string, iso: string = rosterToday()): string[] {
-  return Object.keys(PEOPLE).filter(id => onRosterOf(id, unit, iso))
+export function rosterOf(unit: string, iso: string): string[] {
+  needDay(iso, 'rosterOf')
+  return Object.keys(PEOPLE).filter(id => isSentinel(id) || homeOnDay(id, iso) === unit)
 }
 
 /** the same roster as a people record (id → the person, the very objects PEOPLE holds) — for a model that takes a
     record to read (ui/sanscal-model.ts sansRoster, sansDayGroups) */
-export function unitPeople(unit: string, iso: string = rosterToday()): Record<string, any> {
+export function unitPeople(unit: string, iso: string): Record<string, any> {
   const out: Record<string, any> = {}
   for (const id of rosterOf(unit, iso)) out[id] = (PEOPLE as any)[id]
   return out

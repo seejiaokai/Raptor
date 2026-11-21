@@ -31,6 +31,7 @@ import { afterEach } from 'vitest'
 import { Whiteboard } from '../storage/whiteboard'
 import { wireRows } from '../state/persist'
 import { setStoredRowProbe } from '../state/perms'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -313,7 +314,7 @@ describe('fault D — a right that changes hands through the account row is a ri
     signInAs('ad', 'a'); expect(updateAccount('acus9', { role: 'admin' })).toBeNull()
     expect(setGrant('acus9', 'u142', 'admin', 'osp9').ok).toBe(true)
     hunterMovesOn16(); on(18)
-    const spare = Object.keys(PEOPLE).find(p => homeOn(p) === 'u149' && !accountOfPid(p) && !(PEOPLE as any)[p].deleted && !(PEOPLE as any)[p].archived && !(PEOPLE as any)[p].special)
+    const spare = Object.keys(PEOPLE).find(p => homeOn(p, rosterToday()) === 'u149' && !accountOfPid(p) && !(PEOPLE as any)[p].deleted && !(PEOPLE as any)[p].archived && !(PEOPLE as any)[p].special)
     expect(spare, 'a 149 man with no sign-in').toBeDefined()
     signInAs('ad9', 'a9')
     const r1 = updateAccount('acad2', { pid: spare! })
@@ -388,10 +389,10 @@ describe('fault E — a right taken off after a move and put back by its Undo or
     signInAs('ad', 'a'); expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     on(18); signInAs('ad', 'a')
     expect(removeGrant('acad2', 'u149').ok).toBe(true)
-    expect(levelIn('acad2', 'u149'), 'gone with its removal').toBeNull()
+    expect(levelIn('acad2', 'u149', rosterToday()), 'gone with its removal').toBeNull()
     const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
     unitsLoad()
-    expect(levelIn('acad2', 'u149'), 'the Undo put the Plan back').toBe('admin')
+    expect(levelIn('acad2', 'u149', rosterToday()), 'the Undo put the Plan back').toBe('admin')
     expect(grantOfOn({ id: 'acad2', pid: 'prowler', pidFrom: undefined }, 'u149', '2026-07-18')?.from, 'with its own day').toBe('2026-07-17')
   })
   /* (the reshape plan §4.5, rewrite 9 — guardrail 2: as given, Plan of 149 from 13 Jul across his 16 Jul move, it held a right

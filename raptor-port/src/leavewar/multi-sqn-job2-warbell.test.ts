@@ -17,6 +17,7 @@ import { wireLeaveWarSync, setWarWorldDoor, postOut } from './sync'
 import { setHome, homeOn, unitsLoad } from '../state/units'
 import { INPUTS } from '../engine/inputs'
 import { NOTICES } from '../state/notices'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -63,7 +64,7 @@ function setup(move: boolean) {
   signInAs('ad9', 'a9')
   expect(worldUnit()).toBe('u149')
   if (move) {
-    expect(homeOn('osp9')).toBe('u142')
+    expect(homeOn('osp9', rosterToday())).toBe('u142')
     expect(getState().people.some(p => p.id === 'osp9'), 'Osprey is still a row of 149’s war (his posting window keeps him)').toBe(true)
   }
 }

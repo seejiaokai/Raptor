@@ -23,6 +23,7 @@ import { updatePersonField } from './quals-write'
 import { deletePerson } from './person-delete'
 import { mayEditQualsOf } from './perms'
 import { commitSettingsIntent } from './people-settings-commit'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 const fake = {
@@ -53,7 +54,7 @@ describe("another squadron's accounts — refused, with the reason", () => {
     expect(updateAccount('acad9', { on: false })).toMatch(/149/)
     expect(updateAccount('acus9', { role: 'admin' })).toMatch(/149/)
     expect(accountById('acad9')).toMatchObject({ role: 'admin', on: true })
-    expect(levelIn('acus9', 'u149')).toBe('member')
+    expect(levelIn('acus9', 'u149', rosterToday())).toBe('member')
   })
   it("…nor add an account for a 149 man", () => {
     signInAs('ad2', 'a2')
@@ -67,7 +68,7 @@ describe("another squadron's accounts — refused, with the reason", () => {
   })
   it("a forged write of a 142 admin's OWN account onto a 149 man is refused (the fix's blind read, F1)", () => {
     signInAs('ad2', 'a2')
-    expect(levelIn('acad2', 'u149')).toBe(null)
+    expect(levelIn('acad2', 'u149', rosterToday())).toBe(null)
     expect(updateAccount('acus', { name: 'us2' })).toBe(null)   // the list stored first, an ordinary 142 change
     const was = JSON.stringify(accountById('acad2'))
     const r = commitSettingsIntent('account.update', null, () => {
@@ -75,7 +76,7 @@ describe("another squadron's accounts — refused, with the reason", () => {
     })
     accountsLoad()
     expect(r).toMatchObject({ ok: false })
-    expect(levelIn('acad2', 'u149')).toBe(null)
+    expect(levelIn('acad2', 'u149', rosterToday())).toBe(null)
   })
   it('the master is an admin of every squadron: Saber changes a 149 account', () => {
     signInAs('ad', 'a')
@@ -138,7 +139,7 @@ describe('home.set — the squadron he leaves, and never today', () => {
   })
   it("149's plain admin cannot take a 142 man into 149", () => {
     signInAs('ad9', 'a9')
-    expect(homeOn('prowler')).toBe('u142')
+    expect(homeOn('prowler', rosterToday())).toBe('u142')
     expect(setHome('prowler', 'u149').ok).toBe(false)
     expect(homeOn('prowler', tomorrow())).toBe('u142')
   })

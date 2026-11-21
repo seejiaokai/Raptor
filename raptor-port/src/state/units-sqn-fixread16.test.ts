@@ -13,6 +13,7 @@ import { _resetTimeline, globalUndo } from '../undo/timeline'
 import { setUnitSeeds, setHome, setGrant, homeOn, unitsLoad, addUnit, todayIso } from './units'
 import { GRANT_PFX } from './units-model'
 import { commitSettingsIntent } from './people-settings-commit'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 const fake = {
@@ -47,8 +48,8 @@ describe('Sample 1 (D2203) — no right given between a move saved and its day o
       expect(setHome('bane', 'u149').ok).toBe(true)
       setGrant('acus', u150.id!, level, 'bane')
       on(16)
-      expect(homeOn('bane')).toBe('u149')
-      expect(levelIn('acus', u150.id!), 'his right ends with the move').toBeNull()
+      expect(homeOn('bane', rosterToday())).toBe('u149')
+      expect(levelIn('acus', u150.id!, rosterToday()), 'his right ends with the move').toBeNull()
     })
   }
   it('(control) the same right given on 16 Jul, after the move, stands', () => {
@@ -57,7 +58,7 @@ describe('Sample 1 (D2203) — no right given between a move saved and its day o
     expect(setHome('bane', 'u149').ok).toBe(true)
     on(16)
     expect(setGrant('acus', u150.id!, 'view', 'bane').ok).toBe(true)
-    expect(levelIn('acus', u150.id!)).toBe('view')
+    expect(levelIn('acus', u150.id!, rosterToday())).toBe('view')
   })
   it('the gate holds it too: the right written straight, past setGrant, on 15 Jul with the move saved — refused', () => {
     signInAs('ad', 'a')
@@ -66,7 +67,7 @@ describe('Sample 1 (D2203) — no right given between a move saved and its day o
     const r = commitSettingsIntent('grant.set', null, () => { store.set(GRANT_PFX + 'gx1', { id: 'gx1', account: 'acus', unit: u150.id!, level: 'view', from: todayIso() }) }) as any
     expect(r.ok).toBe(false)
     unitsLoad()
-    expect(levelIn('acus', u150.id!)).toBeNull()
+    expect(levelIn('acus', u150.id!, rosterToday())).toBeNull()
   })
   it('(control) the move undone the same day puts back the rights it dropped', () => {
     signInAs('ad', 'a')
@@ -95,8 +96,8 @@ describe("Sample 2 (D2203) — whoever may move him may move him, his other righ
     expect(r.message ?? '', 'no words from inside the gate').not.toMatch(/member-writes-own|grant:/)
     expect(r.ok).toBe(true)
     on(16)
-    expect(homeOn('bane')).toBe('u149')
-    expect(levelIn('acus', u150.id!)).toBeNull()
+    expect(homeOn('bane', rosterToday())).toBe('u149')
+    expect(levelIn('acus', u150.id!, rosterToday())).toBeNull()
   })
   it('(control) the same move with no third-squadron right takes', () => {
     signInAs('ad', 'a')

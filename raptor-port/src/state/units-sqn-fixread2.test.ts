@@ -27,6 +27,7 @@ import { addDays } from './flyplan-model'
 import { commitSettingsIntent, commitPeopleIntent, commitPeopleEdit } from './people-settings-commit'
 import { ownershipViolation, setTrkUnitProbe } from './perms'
 import { deriveActor } from '../command'
+import { rosterToday } from '../engine/roster'
 
 const mem: Record<string, string> = {}
 const fake = {
@@ -215,12 +216,12 @@ describe('Opus F3 — a man with no squadron is given one from today, never from
     for (const x of seeded.unitplaces) mem['sqn142_unitplace:' + x.id] = JSON.stringify(x)
     for (const h of seeded.homes) mem['sqn142_home:' + h.id] = JSON.stringify(h)
     setUnitSeeds(false); unitsLoad()
-    expect(homeOn('rocky')).toBe(null)
+    expect(homeOn('rocky', rosterToday())).toBe(null)
     signInAs('ad', 'a')
     const r = commitSettingsIntent('home.set', null, () => { store.set('home:hzrocky', { id: 'hzrocky', pid: 'rocky', unit: 'u142', from: addDays(todayIso(), -7) }) }) as any
     unitsLoad()
     expect(r.ok).toBe(false)
-    expect(homeOn('rocky')).toBe(null)
+    expect(homeOn('rocky', rosterToday())).toBe(null)
   })
 })
 
@@ -243,7 +244,7 @@ describe("Opus 7 — a man's inputs are his own squadron's", () => {
     signInAs('ad', 'a')
     expect(writeInputsBatch(() => { her9().remarks = 'by the master' })).toBeTruthy()
     signInAs('ad2', 'a2')
-    const own = INPUTS.find((x: any) => homeOn(String(leadOf(x))) === 'u142') as any
+    const own = INPUTS.find((x: any) => homeOn(String(leadOf(x)), rosterToday()) === 'u142') as any
     expect(own, 'a 142 input').toBeTruthy()
     expect(writeInputsBatch(() => { own.remarks = 'by 142' })).toBeTruthy()
   })
@@ -341,7 +342,7 @@ describe("Astra 5 — an Undo's line is filed with the change it takes back, acr
     expect(updatePersonField('osp9', { cat: 'OCU' })).toBe(null)       // made while he is 149's
     elogFlush()
     vi.setSystemTime(new Date(2026, 10, 19, 9, 0, 0))
-    expect(homeOn('osp9')).toBe('u142')
+    expect(homeOn('osp9', rosterToday())).toBe('u142')
     expect(globalUndo()).toMatchObject({ ok: true })
     elogFlush()
     expect(globalRedo()).toMatchObject({ ok: true })
