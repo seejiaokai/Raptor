@@ -50,7 +50,7 @@ async function rangerAloneOn14() {
   acrossMove(R, 'u142', 'u149')
   signInAs('hunter')
   setPage('inputs'); setInpView('list')
-  await act(async () => { setInpEdit({ _new: true, _calendar: true, _ctx: 'i', person: H, type: 'Training', date: 'Jul 14', allday: false }); notify() })
+  await act(async () => { setInpEdit({ _new: true, _calendar: true, _ctx: 'i', person: H, type: 'Training', date: 'Jul 14', allday: false, s: 360, e: 1080 }); notify() })
   await click('[data-testid="pp-several"]')
   await click(`[data-pp="${R}"]`)
   await click(`[data-pp="${H}"]`)
@@ -86,7 +86,7 @@ describe('9b — the picker on a day the only man picked is another squadron\'s'
     expect(count()).toBe('2 picked')
     await click(`[data-pp="${R}"]`)
     expect(count(), 'Ranger let go').toBe('1 picked')
-    expect(lit(R)).toBe('false')
+    expect(pucks(), 'let go, he is not on 142\'s Friday and leaves the picker').not.toContain(R)
     const n = INPUTS.length
     await click('#inpEditSave')
     expect(INPUTS.length, `Hunter's own Training on Fri 17 is kept — ${JSON.stringify(said())}`).toBe(n + 1)
