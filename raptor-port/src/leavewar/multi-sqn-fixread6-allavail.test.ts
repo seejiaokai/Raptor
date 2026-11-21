@@ -159,7 +159,7 @@ describe('fault A — controls: still told', () => {
   it('a Plan holder: Hunter files ALL AVAIL, moves to 149, is given Plan of 142 — Outlaw’s change tells him', () => {
     signInAs('ad2', 'a2'); fileAA('prowler')
     move('prowler', 'hfr6h'); day17()
-    signInAs('ad', 'a'); expect(setGrant('acad2', 'u142', 'admin', 'prowler').ok).toBe(true)
+    signInAs('ad', 'a'); expect(updateAccount('acad2', { role: 'admin' }), 'setup (K3, D2160): he joined as a member — made an admin of his new squadron first').toBeNull(); expect(setGrant('acad2', 'u142', 'admin', 'prowler').ok).toBe(true)
     asOutlawAdmin(); rmk('changed by Outlaw')
     expect(toWho('prowler').length).toBe(1)
   })

@@ -50,7 +50,7 @@ import { CURWEEK } from '../engine/waves'
 import { dayIso } from '../engine/verid'
 import { slotVal, whoArr } from '../engine/slots'
 import { logEdit } from '../engine/editlog'
-import { INPUTS, dateOrd, remarksTyped, tillSettle, nowStamp, holds as inInput, idsOf } from '../engine/inputs'
+import { INPUTS, dateOrd, remarksTyped, tillSettle, nowStamp, holds as inInput, idsOf, inputUnitOf, settleStamp } from '../engine/inputs'
 import { ownInputOf, takePerson } from '../engine/inputown'
 import { ordShift, ordLabel } from '../engine/medical'
 import { stashEntries, stashGet, stashWeekState, isPreservedWeek } from '../engine/weekstash'
@@ -252,9 +252,12 @@ export function applyDelete(id: string, cutoff: string): void {
     if (by != null) r.by = by
   }
   /* out of every input he shared from his cutoff on: the others keep it, and its row is re-made without him */
-  for (const r of left) { passBy(r); takePerson(r, id); stampChanged(r) }
+  /* (left naming nobody — ALL AVAIL / ALL alone — it stays on the squadron it stood on: the stamp is settled as the
+     input's own window settles it, engine/inputs.ts settleStamp — his D2243 Q1; read by its filer's home it moved to
+     another squadron's schedule, and its own squadron's admin was refused the delete) */
+  for (const r of left) { passBy(r); const unitWas = inputUnitOf(r); takePerson(r, id); settleStamp(r, unitWas); stampChanged(r) }
   /* …and one that spans his cutoff: his own part of it, which ends the day before like any input of his */
-  for (const r of split) { const own = ownInputOf(r, id); if (own) { passBy(r); stampChanged(r); ended.push(own) } }
+  for (const r of split) { const unitWas = inputUnitOf(r); const own = ownInputOf(r, id); if (own) { passBy(r); settleStamp(r, unitWas); stampChanged(r); ended.push(own) } }
   for (const r of ended) {
     const a = dateOrd(r.date, r.yr) as number
     const end = ordShift(cut, -1) as number

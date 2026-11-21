@@ -76,7 +76,7 @@ import { putNewHome, dropGrantsOfAccount, dropGrantRows, levelOfAccount, levelBe
 import type { UnitRows } from './units-model'
 import type { LockBreach } from './lastadmin'
 import { noticeDay } from './notices'
-import type { UnitLevel, LevelAccount } from './units-model'
+import { isUnitId, type UnitLevel, type LevelAccount } from './units-model'
 import { validIso } from './flyplan-model'
 
 export type AccountRole = 'admin' | 'main'
@@ -97,9 +97,18 @@ export type AccountRole = 'admin' | 'main'
    (units-model.ts Grant.from) or the master mark — is his only from then (state/notices.ts adminThen), so a right moved to
    a moved man by re-linking the account that holds it never brings back a line his move retired. Absent on a row linked
    before it was kept (D56): counts from always. */
-export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po'; seenFrom?: LinePos; createdAt?: number; master?: true; masterFrom?: string; pidFrom?: string }
-/* the master mark as a row keeps it — the mark, and its day where it has one; and the day of the link, where it has one */
-const masterOf = (x: { master?: true; masterFrom?: string; pidFrom?: string }) => ({ ...(x.master ? { master: true as const, ...(x.masterFrom ? { masterFrom: x.masterFrom } : {}) } : {}), ...(x.pidFrom ? { pidFrom: x.pidFrom } : {}) })
+/* `adminOf`, `adminFrom` (the sign-in kinds review's K3 — his D2160, the transfer: "he joins as a member"): the squadron
+   an admin role was given in and the day it was given — units-model.ts adminRoleHolds reads them: the role counts at
+   home only there, only while his squadron has not changed since. Written only where the plain reading (no record: the
+   squadron of his first home row, from always) would not make him an admin of the squadron he is in — a man made an admin
+   after a move (adminRecFor below). Only on an admin's row; they go when the role does. */
+export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po'; seenFrom?: LinePos; createdAt?: number; master?: true; masterFrom?: string; pidFrom?: string; adminOf?: string; adminFrom?: string }
+/* the master mark as a row keeps it — the mark, and its day where it has one; and the day of the link, where it has one;
+   and where the admin role was given, where that is recorded */
+const masterOf = (x: { master?: true; masterFrom?: string; pidFrom?: string; role?: string; adminOf?: string; adminFrom?: string }) => ({
+  ...(x.master ? { master: true as const, ...(x.masterFrom ? { masterFrom: x.masterFrom } : {}) } : {}), ...(x.pidFrom ? { pidFrom: x.pidFrom } : {}),
+  ...(x.role === 'admin' && x.adminOf ? { adminOf: x.adminOf, ...(x.adminFrom ? { adminFrom: x.adminFrom } : {}) } : {}),
+})
 /* `seat` 'FCP' | 'RCP' | 'GND' (never '' on a request made now — the card refuses it; an
    old stored one reads '' and the admin picks at approval); `cat` '' for personnel */
 export interface AccessRequest { id: string; name: string; cs: string; ini: string; seat: string; cat: string; at: number; seenBy: string[] }
@@ -207,6 +216,7 @@ export function readAccounts(images: any[], why?: (text: string) => void, person
       ...(Number.isFinite(x.createdAt) ? { createdAt: +x.createdAt } : {}),
       ...(x.master === true ? masterOf({ master: true, ...(validIso(x.masterFrom) ? { masterFrom: String(x.masterFrom) } : {}) }) : {}),
       ...(validIso(x.pidFrom) ? { pidFrom: String(x.pidFrom) } : {}),
+      ...(x.role === 'admin' && isUnitId(x.adminOf) ? { adminOf: String(x.adminOf), ...(validIso(x.adminFrom) ? { adminFrom: String(x.adminFrom) } : {}) } : {}),
     })
   }
   return out
@@ -292,7 +302,17 @@ export function linkablePeople(keep?: string): string[] {
     return p && !p.special && (id === keep || (!p.archived && !accountOfPid(id)))
   }).sort((a, b) => String((PEOPLE as any)[a].cs).localeCompare(String((PEOPLE as any)[b].cs)))
 }
-export const isAdminAccount = (a: Account | undefined) => !!a && a.role === 'admin'
+/* AN ADMIN, AS HIS ACCOUNT STANDS ON A DAY (K3 — D2160): the admin role, counting in the squadron he is at home in that
+   day (units-model.ts adminRoleHolds — an admin who moved squadron is a member there until made an admin again); a master
+   admin always; a man with no squadron at all (a shared store before its rows) by his role alone. The sign-in's role
+   (sessionFor), Admin → Users' "Admin" badge and every list of admins read this one body. */
+export const adminNow = (a: Account | undefined, iso: string = todayIso()): boolean => {
+  if (!a || a.role !== 'admin') return false
+  if (a.master) return true
+  const h = homeOn(a.pid, iso)
+  return !h || levelOfAccount(levelAcct(a), h, iso) === 'admin'
+}
+export const isAdminAccount = (a: Account | undefined) => adminNow(a)
 /* A SQUADRON'S ADMINS ON A DAY — ONE AUDIENCE (the reshape plan §6.2 step 6 — Opus M6 of round 2; Astra 3, Fable 5,
    Opus 8 of round 3; D2194, D2202, D2198): the people a squadron's admin lines go to (a posting's, its take-back's, the
    "off the manpower" line), asked by the war's two posting passes and by the commit gate alike, with the same day — the
@@ -306,9 +326,11 @@ export const isAdminAccount = (a: Account | undefined) => !!a && a.role === 'adm
 export function adminsOf(unit: string, iso: string = todayIso(), rows?: UnitRows): string[] {
   const out: string[] = []
   for (const a of ACCOUNTS_LIST) {
-    if (!isAdminAccount(a) || !a.on || !a.pid || !personOk(a.pid) || (PEOPLE as any)[a.pid].archived) continue
+    if (a.role !== 'admin' || !a.on || !a.pid || !personOk(a.pid) || (PEOPLE as any)[a.pid].archived) continue
     const acct = levelAcct(a)
+    /* (at home there AS ITS ADMIN that day — K3: an admin moved in is a member there, and is told nothing as an admin) */
     const home = (rows ? homeBefore(a.pid, iso, rows) : homeOn(a.pid, iso)) === unit
+      && (rows ? levelBefore(acct, unit, iso, rows) : levelOfAccount(acct, unit, iso)) === 'admin'
     const plan = !home && !a.master && (rows ? levelBefore(acct, unit, iso, rows) : levelOfAccount(acct, unit, iso)) === 'admin'
     if (home || plan) out.push(String(a.pid))
   }
@@ -324,8 +346,20 @@ export const signedInAccount = (): Account | undefined => (SESSION ? accountById
    linked to him (a right counts from the later of its own day and the link's — units-model.ts grantStart), its role (or
    the role the caller reads — the role in force), its master mark. One body, so no account reaches the reader without
    its link day. */
-export const levelAcct = (a: { id: string; pid: unknown; pidFrom?: string; role: string; master?: boolean }, role: string = a.role): LevelAccount =>
-  ({ id: a.id, pid: String(a.pid), pidFrom: a.pidFrom, role, master: a.master === true })
+export const levelAcct = (a: { id: string; pid: unknown; pidFrom?: string; role: string; master?: boolean; adminOf?: string; adminFrom?: string }, role: string = a.role): LevelAccount =>
+  ({ id: a.id, pid: String(a.pid), pidFrom: a.pidFrom, role, master: a.master === true, ...(a.role === 'admin' && a.adminOf ? { adminOf: a.adminOf, adminFrom: a.adminFrom } : {}) })
+/* WHERE AN ADMIN ROLE IS RECORDED AS GIVEN (K3): nothing where the plain reading already makes him an admin of the
+   squadron he is in today (a man who has not moved since his first home row — every seeded admin, every new account);
+   else his squadron of today, from today — an admin made after his move. `a` — the row as it will be saved. */
+const adminRecFor = (a: Account): Account => {
+  const { adminOf: _o, adminFrom: _f, ...bare } = a
+  if (a.role !== 'admin') return bare
+  const today = todayIso(), h = homeOn(a.pid, today)
+  if (!h) return bare
+  if (levelOfAccount(levelAcct(a), h, today) === 'admin') return a
+  if (levelOfAccount(levelAcct(bare), h, today) === 'admin') return bare
+  return { ...bare, adminOf: h, adminFrom: today }
+}
 /* an account's level in a unit on a date — its own role in its home unit, the right that holds that day elsewhere, admin
    everywhere for a master, otherwise null (state/units-model.ts levelFrom — the one answer) */
 export const levelIn = (accountId: any, unit: string, iso: string): UnitLevel | null => {
@@ -458,7 +492,9 @@ export function sessionFor(r: SignIn): any {
     /* `acct` — the ACCOUNT's role, kept apart from `role` (the role in force): an admin may switch himself to the
        member view and back (D292, 27 Sep 26), and `acct` is what says the way back exists — never changed by the
        switch, so a member can never climb (state/perms.ts mayViewAsMember) */
-    case 'ok': return { user: r.account.id, role: r.account.role, pid: r.account.pid, name: r.account.name, acct: r.account.role }
+    /* (K3 — D2160: the role his account gives TODAY — an admin who moved squadron signs in as a member of the squadron he
+       joined until made an admin there, adminNow) */
+    case 'ok': { const role: AccountRole = adminNow(r.account) ? 'admin' : 'main'; return { user: r.account.id, role, pid: r.account.pid, name: r.account.name, acct: role } }
     case 'off': return { user: `principal:${r.name}`, role: 'off', pid: null, name: r.name }
     case 'new': case 'waiting': return { user: `principal:${r.name}`, role: 'pending', pid: null, name: r.name }
     default: return null
@@ -528,7 +564,7 @@ export function addAccount(nameIn: any, pid: string, role: AccountRole): string 
   const bad = nameProblem(name) || pidProblem(pid) || otherSquadronProblem(pid) || (isAccountRole(role) ? null : 'Pick member or admin')
   if (bad) return bad
   return commitIntent('account.add', null, () => {
-    writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name, role, pid, on: true, ...newAccountStamp() }])
+    writeAccounts([...ACCOUNTS_LIST, adminRecFor({ id: newAccountId(), name, role, pid, on: true, ...newAccountStamp() })])
     if (requestByName(name)) writeReqs(ACCESS_REQS.filter(r => r.name !== name))
   })
 }
@@ -542,6 +578,11 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   /* a master's account is a master's alone (D2205) — said before the other squadron's words, as a master's delete is */
   const masterOnly = masterChangeProblem(a.pid) || (patch.pid !== undefined ? masterChangeProblem(patch.pid) : null)
   if (masterOnly) return masterOnly
+  /* A MASTER ADMIN IS NEVER MADE A MEMBER WHILE HE HOLDS THE MARK (his D2260, 21 Nov 26 — the sign-in kinds review's K2:
+     Kestrel, made a master admin, made Saber a member, and Saber was left a member carrying the mark): refused, in his
+     words, so the mark is only ever taken off on purpose, by a master admin (setMaster). The gate holds the same
+     (perms.ts accountShapeAndMasterViolation) */
+  if (a.master && patch.role !== undefined && patch.role !== 'admin' && isAccountRole(patch.role)) return `${accountCallsign(a)} is a master admin — take that off first`
   const other = otherSquadronProblem(a.pid) || (patch.pid !== undefined ? otherSquadronProblem(patch.pid) : null)
   if (other) return other
   const next: Account = { ...a }
@@ -559,6 +600,9 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
     if (next.master) next.masterFrom = todayIso()
   }
   if (patch.role !== undefined) { if (!isAccountRole(patch.role)) return 'Pick member or admin'; next.role = patch.role }
+  /* where his admin role is given (K3 — D2160): made an admin, or an admin's sign-in linked to another man, it is recorded
+     for the squadron he is in today where the plain reading would not have it; made a member, the record goes. Any other
+     change leaves it as it is — a rename never makes a moved man an admin */
   /* [ONE-DOOR] (D322 — "no Enable on an archived row"): an archived man is never let sign in while archived — Restore
      brings his sign-in back with him (the write path refuses what the screen no longer offers) */
   if (patch.on === true && !a.on) {
@@ -566,6 +610,7 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
     if (p && p.archived && !p.deleted) return `${p.cs} is archived — restore him on Admin → Users`
   }
   if (patch.on !== undefined) { next.on = !!patch.on; delete next.offBy }   // a hand Suspend / Enable is the admin's own
+  const next0 = next.role !== 'admin' || patch.role === 'admin' || next.pid !== a.pid ? adminRecFor(next) : next
   /* A RE-LINK CARRIES NO RIGHT (the reshape plan §4.3, guardrail 1): every right of the sign-in, holding or ended, goes in
      the re-link's own command, whoever re-links (who may, relinkRightsProblem above); the man now on the sign-in is given
      what he needs anew. MAKING A PLAN HOLDER A MEMBER (the Plan audit's PA2; his D2250, replacing R7's D2248): any admin
@@ -577,7 +622,7 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   const plans = !relink && a.role === 'admin' && next.role !== 'admin'
     ? unitRows().grants.filter(g => g.account === a.id && g.level === 'admin' && !!grantOfOn(levelAcct(a), g.unit) && grantOfOn(levelAcct(a), g.unit)!.id === g.id)
     : []
-  const list = ACCOUNTS_LIST.map(x => x.id === a.id ? next : x)
+  const list = ACCOUNTS_LIST.map(x => x.id === a.id ? next0 : x)
   /* the lock over what the step leaves — its dropped rights with it (a sign-in holding a squadron's only Plan, re-linked or
      made a member, leaves it no admin — the reshape plan §5.2) */
   const planIds = new Set(plans.map(g => g.id))
@@ -606,11 +651,15 @@ export function setMaster(id: string, on: boolean): { ok: boolean; message?: str
   if (!a) return { ok: false, message: 'That account is gone' }
   if (ownAccount(a)) return { ok: false, message: "You can't change your own account — ask another master admin" }
   if (!!a.master === on) return { ok: false, message: on ? 'He is a master admin already' : 'He is not a master admin' }
+  /* only an admin is a master admin (D2260's reading: the gate refuses the mark on an account whose role is not admin) —
+     the generic words until the door that makes a second master admin is drawn (D1625) */
+  if (on && a.role !== 'admin') return { ok: false, message: 'This change could not be saved.' }
   const next: Account = { ...a }
   /* (its day with it — fault P: a line his move retired stays retired however the mark comes later) */
   if (on) { next.master = true; next.masterFrom = todayIso() } else { delete next.master; delete next.masterFrom }
   const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? next : x))
-  if (!list.some(x => x.master)) return { ok: false, message: 'At least one master admin must be left' }
+  /* (only an admin's account counts as a master admin left — D2260) */
+  if (!list.some(x => x.master && x.role === 'admin')) return { ok: false, message: 'At least one master admin must be left' }
   /* a master admin counts only at home (Piece C): marking a squadron's only Plan admin a master leaves it none — said in
      the lock's words, as every other door says it (Fable's blind read, 2) */
   const locked = lockProblem(list)
@@ -630,7 +679,7 @@ export function approveRequest(reqId: string, pid: string, role: AccountRole): s
      the man linked into the approving admin's squadron from today (the full check, 18 Nov 26). A NEW man's home is
      written by approveRequestNew below, where it belongs. */
   return commitIntent('access.approve', null, () => {
-    writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name: rq.name, role, pid, on: true, ...newAccountStamp() }])
+    writeAccounts([...ACCOUNTS_LIST, adminRecFor({ id: newAccountId(), name: rq.name, role, pid, on: true, ...newAccountStamp() })])
     writeReqs(ACCESS_REQS.filter(r => r.id !== reqId))
   })
 }
@@ -763,7 +812,8 @@ export function sessionNow(): any {
   if (!a) return SESSION.acct ? off() : undefined
   const p = (PEOPLE as any)[a.pid]
   if (!a.on || !p || p.archived || p.deleted) return off()
-  if (SESSION.acct && (a.role !== SESSION.acct || a.pid !== SESSION.pid)) return sessionFor({ kind: 'ok', account: a } as any)
+  /* (the role his account gives today — K3: his move day come, an admin's session is made again as a member's) */
+  if (SESSION.acct && ((adminNow(a) ? 'admin' : 'main') !== SESSION.acct || a.pid !== SESSION.pid)) return sessionFor({ kind: 'ok', account: a } as any)
   return undefined
 }
 export const accountSuspendedByPosting = (pid: string): boolean => { const a = accountOfPid(pid); return !!a && !a.on && a.offBy === 'po' }

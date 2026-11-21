@@ -17,11 +17,12 @@ import { commitSettingsIntent } from './people-settings-commit'
 import { setHomeResolver, needDay } from '../engine/roster'
 import { DEMO_149_PEOPLE } from './demoseed'
 /* the last-admin lock's words for a step's draft (accounts.ts imports this file; the call is at run time, never at load) */
-import { lockProblemFor, accountById, masterChangeProblem, signedInAccount } from './accounts'
+import { lockProblemFor, accountById, masterChangeProblem, signedInAccount, otherSquadronPersonProblem, adminNow } from './accounts'
 import { lastAdminBreach, type LockWorld, type LockBreach } from './lastadmin'
 import {
+  adminRoleHolds, isAdminRole,
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES,
-  rowsFrom, placeIdOn, homeUnitOn, homeChangesIn, stintsIn, grantOn, grantHolds, datedRowsBreach, unitIn, placeIn, levelFrom, moveFrom, isAdminRole,
+  rowsFrom, placeIdOn, homeUnitOn, homeChangesIn, stintsIn, grantOn, grantHolds, datedRowsBreach, unitIn, placeIn, levelFrom, moveFrom,
   validUnitNum, validTz, MAX_PLACE_NAME,
   type UnitRows, type Unit, type Place, type Grant, type GrantLevel, type GrantHolder, type UnitLevel, type LevelAccount, type Stint,
   type DatedBreach,
@@ -104,6 +105,8 @@ export const homeChangesOn = (pid: string, a: string, b: string): string[] => ho
 export const homeChangesBefore = (pid: string, a: string, b: string, rows: UnitRows): string[] => homeChangesIn(rows, pid, a, b, fallbackHome())
 /* his runs of days in a unit (units-model.ts stintsIn — the Leave War's rosters by date, A1) */
 export const stintsOf = (pid: string, unit: string): Stint[] => stintsIn(unitRows(), pid, unit, fallbackHome())
+/* was he ever, or will he be, that squadron's — over the rows a command was judged by (the gate's K5 line) */
+export const everOfBefore = (pid: string, unit: string, rows: UnitRows): boolean => stintsIn(rows, pid, unit, fallbackHome()).length > 0
 /* …and the engine's rosters ask the same (engine/roster.ts rosterOf, engine/inputs.ts inputsFor — multi-squadron step 3):
    the engine does not import state/, so the answer is handed to it here, once, as this module loads — both questions
    of the home handle (the reshape plan §3.2 A-i) */
@@ -127,7 +130,41 @@ export const grantRowHolds = (acct: GrantHolder, g: Pick<Grant, 'from'>, iso: st
 export const datedBreach = (before: UnitRows, after: UnitRows, today: string, opts: Omit<Parameters<typeof datedRowsBreach>[3], 'fallback'>): DatedBreach | null =>
   datedRowsBreach(before, after, today, { ...opts, fallback: fallbackHome() })
 /* the one last-admin rule (state/lastadmin.ts — Piece C), with this store's fallback home */
-export const lockBreach = (w: Omit<LockWorld, 'fallback'>): LockBreach | null => lastAdminBreach({ ...w, fallback: fallbackHome() })
+/* (K3 — his D2160: an admin who moved squadron is a MEMBER of the squadron he joined, so the lock must not count him as
+   its admin at home — Kestrel, 149's only admin, was let be suspended once Hunter had arrived. lastadmin.ts counts an
+   admin-role account at home wherever his rows put him, so the rows it is handed read such a man — on every stint from
+   today on in which his admin role does not hold (units-model.ts adminRoleHolds) — as at home in no squadron; the mover
+   it names is then given his true squadron back. Simpler, and the same answer: lastadmin.ts's own `home` asking levelFrom
+   — that file is not this job's; the line is in helper "kinds"'s report.) */
+const NO_SQUADRON = '~member'
+function lockRows(r: UnitRows, accts: LockWorld['acctB'], today: string): UnitRows {
+  const fb = fallbackHome()
+  let homes: UnitRows['homes'] | null = null
+  for (const x of accts) {
+    if (!isAdminRole(x) || x.master === true || x.pid == null) continue
+    const pid = String(x.pid)
+    const acct: LevelAccount = { id: x.id, pid, pidFrom: x.pidFrom, role: x.role, adminOf: (x as any).adminOf, adminFrom: (x as any).adminFrom }
+    const mine = r.homes.filter(h => h.pid === pid).sort((p, q) => (p.from < q.from ? -1 : p.from > q.from ? 1 : p.id < q.id ? -1 : p.id > q.id ? 1 : 0))
+    /* a man with no row is the fallback's for ever: one row from today says so where his role does not hold there */
+    if (!mine.length) { if (fb && !adminRoleHolds(acct, fb, today, r, fb)) (homes ??= [...r.homes]).push({ id: '~' + pid, pid, unit: NO_SQUADRON, from: today }); continue }
+    /* the row that holds on today, and on each later day a row starts (units-model.ts atOn's own rule) */
+    for (const on of new Set([today, ...mine.map(h => h.from).filter(d => d > today)])) {
+      let h = mine[0]!
+      for (const y of mine) if (y.from <= on) h = y
+      if (h.unit === NO_SQUADRON || adminRoleHolds(acct, h.unit, on, r, fb)) continue
+      homes ??= [...r.homes]
+      const ix = homes.indexOf(h)
+      if (ix >= 0) homes[ix] = { ...h, unit: NO_SQUADRON }
+    }
+  }
+  return homes ? { ...r, homes } : r
+}
+export const lockBreach = (w: Omit<LockWorld, 'fallback'>): LockBreach | null => {
+  const fb = fallbackHome()
+  const b = lastAdminBreach({ ...w, rowsB: lockRows(w.rowsB, w.acctB, w.today), rowsA: lockRows(w.rowsA, w.acctA, w.today), fallback: fb })
+  if (b && b !== 'app' && b.cause && b.cause.to === NO_SQUADRON) return { ...b, cause: { ...b.cause, to: homeUnitOn(w.rowsA, b.cause.pid, b.date, fb) } }
+  return b
+}
 /* a step's draft of the rows: these rows with some taken away and some laid on (a row of the same id replaced) — what a
    door hands the lock, so it judges the rows the step would leave, as the gate does */
 export function rowsDraft(r: UnitRows, d: { units?: Unit[]; unitplaces?: UnitRows['unitplaces']; grants?: Grant[]; homes?: UnitRows['homes']; dropGrants?: (g: Grant) => boolean }): UnitRows {
@@ -201,18 +238,20 @@ export function addUnit(numIn: string, placeId: string, firstAdmin?: string): Un
   if (!firstAdmin) return no("Name the squadron's first admin.")
   const fa = accountById(firstAdmin)
   if (fa && homeOn(String(fa.pid), moveFrom(todayIso())) !== homeOn(String(fa.pid), todayIso())) return no('He moves squadron tomorrow — give this after the move')
-  if (fa && !isAdminRole(fa)) return no('This change could not be saved.')
+  if (fa && !adminNow(fa)) return no('This change could not be saved.')
   const id = newId('u'), up = newId('up'), g = newId('g')
   const draft = rowsDraft(unitRows(), {
     units: [{ id, num, kind: 'sqn' }], unitplaces: [{ id: up, unit: id, place: placeId, from: todayIso() }],
-    grants: [{ id: g, account: firstAdmin, unit: id, level: 'admin', from: todayIso() }],
+    grants: [{ id: g, account: firstAdmin, unit: id, level: 'admin', from: todayIso(), first: true }],
   })
   if (lockProblemFor({ rows: draft })) return no('This change could not be saved.')
   return save('unit.add', null, () => {
     put(UNIT_PFX + id, { id, num, kind: 'sqn' })
     put(UNITPLACE_PFX + up, { id: up, unit: id, place: placeId, from: todayIso() })
     /* (dated the day it is given, as setGrant's: the commit gate refuses a new right not dated today — fix read 8, fault G) */
-    put(GRANT_PFX + g, { id: g, account: firstAdmin, unit: id, level: 'admin', from: todayIso() })
+    /* (`first` — K3: the squadron's named first admin moves into it as its admin, units-model.ts adminRoleHolds; every
+       other man who moves squadron joins as a member, D2160) */
+    put(GRANT_PFX + g, { id: g, account: firstAdmin, unit: id, level: 'admin', from: todayIso(), first: true })
     return id
   })
 }
@@ -259,7 +298,7 @@ export function setGrant(account: string, unit: string, level: GrantLevel, accou
   /* PLAN — given, raised or lowered — only by a master admin (PA1); and only to an admin (PA2 — D2201, D785: an admin is
      given Plan; its words wait for the first screen that gives a right, drawn then — §14 of the plan) */
   if ((level === 'admin' || had?.level === 'admin') && notMaster()) return no(PLAN_MASTER_ONLY)
-  if (level === 'admin' && acct && !isAdminRole(acct)) return no('This change could not be saved.')
+  if (level === 'admin' && acct && !adminNow(acct)) return no('This change could not be saved.')
   /* NOT BETWEEN A MOVE SAVED AND ITS DAY (Fable's sample review, 1 — his D2203; the plan §4.3, Fable 4, Opus L3): a right
      ends at the start of his move day, so one given or raised in the rest of the day it is saved would last that day
      only. A lowering passes — whatever it leaves ends at midnight by the rule. Held at the gate too (perms.ts
@@ -321,6 +360,10 @@ export function setHome(pid: string, unit: string): UnitSave {
      only a man with no squadron at all is placed from today. Reading the rows alone placed the demo's 142 men (no row)
      from today, rewriting a day already begun (the full check's Opus read, 18 Nov 26) — the commit gate refuses that */
   const now = homeOn(pid, todayIso())
+  /* K4 — a man is moved by an admin of the squadron he is in (his D2160: "the new one never asked"; the gate, perms.ts
+     unitRowViolation, asks the squadron he leaves): anyone else is told whose he is, in Admin → Users' own words
+     (accounts.ts otherSquadronPersonProblem), never the gate's refusal */
+  if (now) { const other = otherSquadronPersonProblem(pid); if (other) return no(other) }
   const from = now ? moveFrom(todayIso()) : todayIso()
   if (now && homeOn(pid, from) === unit) return no('That is already his squadron')
   const same = mine.find(h => h.from === from)

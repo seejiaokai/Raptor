@@ -644,7 +644,7 @@ describe('fault G — three Undo cases keep the line the man kept (F11-5a, F11-5
   it('(Fable F11-5b) moved to 150 on 16 Jul; Plan of 149 from 17 Jul; on 18 Jul set to View and undone: Plan back with its own day', () => {
     on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */); expect(u150.ok).toBe(true)
     homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']]); on(17)
-    signInAs('ad', 'a'); expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
+    signInAs('ad', 'a'); expect(updateAccount('acad2', { role: 'admin' }), 'setup (K3, D2160): he joined as a member — made an admin of his new squadron first').toBeNull(); expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     on(18); signInAs('ad', 'a')
     expect(setGrant('acad2', 'u149', 'view', 'prowler').ok).toBe(true)
     expect(levelIn('acad2', 'u149', rosterToday()), 'lowered').toBe('view')

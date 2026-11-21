@@ -157,7 +157,7 @@ describe('fault A — an Undo or Redo that turns a right on dates it today (his 
   it('(control) a fresh setMaster and setGrant are dated today, as before', () => {
     hunterMovesOn16(); on(18)
     signInAs('ad', 'a')
-    expect(setGrant('acad2', 'u142', 'admin', 'prowler').ok).toBe(true)
+    expect(updateAccount('acad2', { role: 'admin' }), 'setup (K3, D2160): he joined as a member — made an admin of his new squadron first').toBeNull(); expect(setGrant('acad2', 'u142', 'admin', 'prowler').ok).toBe(true)
     expect(unitRows().grants.find(g => g.account === 'acad2')?.from).toBe('2026-07-18')
     expect(setMaster('acad2', true).ok).toBe(true)
     expect(hunterAcct().masterFrom).toBe('2026-07-18')

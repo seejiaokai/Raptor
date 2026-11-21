@@ -5477,7 +5477,13 @@ export function balanceProblem(pid: string, kind: string, amount: number, cf?: n
     if (!state.viewer || pid !== state.viewer) return 'You can change only your own figures'
     if (state.balLock) return 'Locked by admin'
   }
-  if (!state.people.some(p => p.id === pid) && !(HIDDEN_IDENTITY && HIDDEN_IDENTITY(pid))) return 'That person is not on the Leave War'
+  /* A FIGURE IS TYPED ONLY FOR A MAN OF THE WAR LOADED (the sign-in kinds review's K5 — D1695, D2197: his own leave figures
+     stay in his own squadron): on its roster, or in its posting records; a man it has no row of only where today is this
+     war's squadron's for him (a SANS man while SANS is off — the spec §4). The hidden-identity lookup alone also answered
+     for a man of ANOTHER squadron (sync.ts hiddenIdentity, for a delete's war half), so Hunter, 142's admin holding Plan
+     of 149, typed his own balance into 149's war. The gate holds the same (perms.ts warUnitViolation). */
+  if (!state.people.some(p => p.id === pid) && !state.postOuts[pid]
+    && (!(HIDDEN_IDENTITY && HIDDEN_IDENTITY(pid)) || notThisWarsDay(pid, memberToday()))) return 'That person is not on the Leave War'
   return null
 }
 
