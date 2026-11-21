@@ -121,6 +121,11 @@ export interface CommitEnvelope {
   /* per-logical-record revisions AFTER this commit (design §3.3), keyed
      `${collection}/${id}`. Undo (Step 3) pins the causal result's revisions. */
   revs?: Record<string, number>
+  /* WHICH SQUADRON EACH WORLD HELD when the command was made (the reshape plan §3.2 A-v): `{ lw: 'u142' }` for a command
+     that wrote the Leave War loaded then, `trk` for the Tracker's. Their record ids name no squadron (the storage door adds
+     it), so Undo reads the squadron here — its record keys (`<collection>/<unit>@<id>`, in `revs` too) and whether the
+     step's world still holds that squadron. Set by the record-key hook (setRecordKeyHook); absent with no world door. */
+  stamp?: Record<string, string>
   /* remote changes apply silently — the fold/persistence subscriber does not
      echo them (design §3.3). Annotated now; consumed at Step 5. */
   emit?: boolean

@@ -19,21 +19,23 @@ import { roleStore, invalidateRoleTargets } from './mission-roles'
 import { decodeRoleId } from '../engine/mission-role'
 import { peopleStore, settingsStore } from './people-settings-commit'
 import { rosterRestoreProblem } from './roster-restore'
-import { seedAccounts } from './accounts'
+import { seedAccounts, levelIn } from './accounts'
 import { deletedRestoreProblem, postingRestoreProblem } from './person-delete'
 import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks, setDescribeNames,
 } from '../undo'
 import { verifiedReplay, verifiedWarRestore, restoreOffAt, restoreDir } from '../undo/timeline'
-import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, restoreStood, setRestoreOffAt, setRestoreDir } from './perms'
+import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, restoreStood, setRestoreOffAt, setRestoreDir, lwUnitNow, trkUnitNow, pageUnit, isAdmin } from './perms'
 import type { RecordCtx, UndoEntry } from '../undo/types'
 import type { Change } from '../command'
-import { weekOf, dayKeyOf } from '../undo/derive'
+import { setRecordKeyHook } from '../command/commit'
+import { weekOf, dayKeyOf, recordKeyIn, stampOf } from '../undo/derive'
+import { todayIso } from './units'
 import { schedStore, schedPostRestore } from './sched-commit'
 import { weekstashStore, loadWeek } from './store'
 import { HIST } from './history'
 import { armDrop, prunePreviews, SBDAY, CURPAGE, setPage, setBoardDay, focusQualsRow, requestAdminUsers, setSecDefOffer, setInpView, setInpMode, setCalMonth, INPVIEW, CALMONTH, clearInpReveal, requestInpReveal, requestPlanReveal } from './view'
-import { canEditSched } from './auth'
+import { canEditSched, SESSION } from './auth'
 import { bringDayIntoView } from '../ui/highlights'
 import { boardTab } from '../ui/board'
 import { boardLandKeys, bringBoardChangeOnScreen } from '../ui/boardland'
@@ -371,11 +373,29 @@ function seenOverlay(type: string, seen: Change, image: unknown): unknown {
   return image
 }
 
+/* ---- A-v: every Undo step carries its squadron (the reshape plan §3.2) --------------------------------------------
+   The Leave War's and the Tracker's records name no squadron in their ids, so each command that writes one is stamped
+   with the squadron that world holds — through the gate's own probes (perms.ts lwUnitNow, trkUnitNow; none answers with
+   no world door, and nothing is stamped) — and every record is keyed by undo/derive.ts recordKey, in the revision counter
+   (command/commit.ts) as in the timeline. */
+const worldNow = (w: 'lw' | 'trk'): string | null => (w === 'lw' ? lwUnitNow() : trkUnitNow())
+/* the own pages: their squadron is the page's own (perms.ts pageUnit — A-ii), the schedule pages and Logic the pick */
+const OWN_PAGES = new Set(['inputs', 'quals', 'leavewar', 'tracker', 'admin'])
+const unitInView = (): string => pageUnit(OWN_PAGES.has(CURPAGE) ? 'own' : 'schedule')
+/* a squadron he can still reach: his own page's squadron now, or — an admin in force — one he is an admin of today (a
+   master admin's every squadron, a Plan holder's — units-model.ts levelFrom); a View holder never reaches a war */
+const canReach = (u: string): boolean => {
+  if (u === pageUnit('own')) return true
+  return !!SESSION && isAdmin() && levelIn(SESSION.user, u, todayIso()) === 'admin'
+}
+
 /** tests only — the landing, driven with a made-up entry */
 export const _snapView = (e: UndoEntry, d: 'undo' | 'redo'): void => snapView(e, d)
 
 export function installGlobalUndo(): void {
   installUndo()
+  /* A-v — the stamp and the one record key, in the command layer's revision counter */
+  setRecordKeyHook({ stamp: (changes) => stampOf(changes, worldNow), key: (c, stamp) => recordKeyIn(c, stamp) })
   /* the words name a man by his callsign (describe.ts — the Leave War's records carry his id) */
   setDescribeNames((pid) => ((PEOPLE as any)[pid] ? String((PEOPLE as any)[pid].cs) : null), (k) => (k === 'accounts' ? seedAccounts() : null))
   registerUndoStore(schedStore, SCHED_COLLS)
@@ -437,6 +457,10 @@ export function installGlobalUndo(): void {
        repeated Undo / Redo puts back the day an earlier restore gave it, never the step's older one */
     redate: (c, dir, offAt, stood) => restoreRedated(c, offAt, dir, stood),
     stoodNow: (c) => restoreStood(c),
+    /* A-v: which squadron each world holds now, the squadron in view, and the squadrons he can still reach */
+    worldNow,
+    unitInView,
+    canReach,
     // currentActor OMITTED — the timeline defaults to deriveActor().
   })
   /* …and the commit gate trusts a restore only where the timeline vouches for it, record by record (perms.ts) */
