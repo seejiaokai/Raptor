@@ -2135,6 +2135,37 @@ function deletedPersonViolation(env: CommitEnvelope): string | null {
   }
   return null
 }
+/* WHERE A SCHEDULER TICK WAS GIVEN IS WRITTEN ONLY AS IT IS (fix read 2 — Opus 2's F2, Fable 2's F3, the security read's 2;
+   his D2160: the tick ends in the old squadron on the move's date, and the squadron joined ticks him anew). The record
+   (`schedOf`, `schedFrom` — units-model.ts schedTickHolds) was held only against a member's own row, so 142's admin
+   moved his man to 149 from tomorrow and wrote his tick as "given in 149, from the move day": he arrived carrying 149's
+   Scheduler tick that no admin of 149 gave. Held as K3 holds the admin role's record, for every actor but the app: the
+   record is a ticked person's alone; it stands unchanged, or is absent (the plain reading: his first squadron, while he
+   has never moved), or names the squadron he is in TODAY, from today (state/quals-write.ts writes it so). The Undo of an
+   untick puts back the record its step took away: the timeline's own restore of his own step (REPLAY answers only then —
+   it vouches for no person's row image by image) may write an earlier day, never a later one, with the squadron he was
+   in on that day — a record of a squadron he has left since holds nothing by the reading rule. */
+function schedRecordViolation(env: CommitEnvelope): string | null {
+  const a = env.actor
+  if (!a || a.role === 'system') return null
+  const today = todayIso()
+  const takeBack = env.origin === 'restore' && !!REPLAY && REPLAY(env) != null
+  const rec = (x: any) => JSON.stringify([x?.schedOf ?? null, x?.schedFrom ?? null])
+  for (const c of env.changes) {
+    if (c.collection !== 'people' || c.op === 'delete' || c.after == null || typeof c.after !== 'object') continue
+    const was: any = c.before, is: any = c.after
+    if (is.schedOf == null && is.schedFrom == null) continue
+    if (was && typeof was === 'object' && rec(was) === rec(is) && !!was.quals?.sched === !!is.quals?.sched) continue
+    if (!is.quals?.sched) return `where a Scheduler tick was given, on a person with no tick (people/${c.id})`
+    if (is.schedOf == null) return `a Scheduler tick's day with no squadron (people/${c.id})`
+    const from = is.schedFrom
+    const dayOk = typeof from === 'string' && ISO_DAY.test(from) && (takeBack ? from <= today : from === today)
+    /* (a man this command makes is read over the rows it leaves, as K3 reads him) */
+    const rows = unitRowsBefore(was == null ? [] : env.changes)
+    if (!dayOk || is.schedOf !== homeBefore(String(c.id), from, rows)) return `a Scheduler tick recorded as given in a squadron he is not in today, or on another day (people/${c.id})`
+  }
+  return null
+}
 function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system') return null
@@ -3198,6 +3229,9 @@ function ownershipChecks(env: CommitEnvelope): string | null {
      G0 and G1 here, G2 in homeUnitViolation, G3 the lock) */
   const shapeBad = accountShapeAndMasterViolation(env)
   if (shapeBad) return shapeBad
+  /* (and where a Scheduler tick was given — fix read 2, beside K3) */
+  const tickBad = schedRecordViolation(env)
+  if (tickBad) return tickBad
   /* (a delete is final — item D (1), above) */
   const revived = deletedPersonViolation(env)
   if (revived) return revived
