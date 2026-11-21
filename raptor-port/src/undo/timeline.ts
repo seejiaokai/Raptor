@@ -22,7 +22,7 @@ import {
 import { commitAs, CmdRefused } from '../command/commit'
 import { deepEqual } from '../command/util'
 import type {
-  Actor, Change, CommitEnvelope, EnlistableStore, Module, RecordEntry, Scope,
+  Actor, Change, CommitEnvelope, EnlistableStore, Module, RecordEntry, Scope, Txn,
 } from '../command'
 import type { RecordCtx, RecordOwner, UndoEntry } from './types'
 import {
@@ -103,7 +103,18 @@ export interface UndoHooks {
      step wrote for a man who has since moved squadron has left his bell for good, so an Undo or Redo putting it back
      would write to another squadron's bell what no one there may write, and show nobody anything. Such a record is left
      out of the restore, the rest of the step going through without it. None installed: nothing left out. */
-  leaveOut?(change: Change, dir: 'undo' | 'redo'): boolean
+  /* (Piece B — the reshape plan §4.3 "At the restore": a right whose man has moved since its start, one on another man's
+     sign-in, any right of a step that changed an account's man, a Plan by one who is not a master admin, a removal of a
+     right not stored. The hook is handed the step — the holders it recorded, `stoodBefore` — and the restore's other
+     changes, to see a re-link in it. A step this leaves nothing to write commits nothing and is blocked for good.) */
+  leaveOut?(change: Change, dir: 'undo' | 'redo', entry?: UndoEntry, changes?: Change[]): boolean
+  /* Piece B — the man and the link day of each grant row's account a step touches, asked once as the step is recorded and
+     kept on it (`holders`). None installed: none kept. */
+  holdersAtStep?(changes: Change[]): UndoEntry['holders'] | undefined
+  /* Piece B, guardrail 1 — a restore that changes an account's man while a right given since stands on that sign-in would
+     carry it to the other man: the record key of that right (`collection/id`), so the step is blocked for good, naming who
+     wrote it. None installed, or null: none. */
+  standingKey?(changes: Change[], dir: 'undo' | 'redo', entry: UndoEntry): string | null
   /* A RIGHT AN UNDO OR REDO TURNS ON IS DATED TODAY (fix read 9, fault A — Fable 1, the fresh Opus read's O9-2; his
      D2218, D2223): a grant or the master mark put back with the day its step recorded, after the man moved squadron,
      brought back a line his move had retired. The image is re-dated BEFORE the restore is named for verifiedReplay, so
@@ -125,10 +136,21 @@ export interface UndoHooks {
   /* the squadron "in view" for a step whose ids name one: the pick on the schedule pages, the page's own squadron on the
      own pages (state/perms.ts pageUnit — equal today). None installed: the schedule in view (engine/unitview.ts UNIT). */
   unitInView?(): string
+  /* the squadron of his own pages (perms.ts pageUnit('own')), and whether a record is an own page's (Quals' columns, the
+     Inputs calendar, the flying plan…) rather than a schedule page's: an own-page step of that squadron is in view
+     wherever he presses (A-v "Eligibility"). None installed: only the squadron in view. */
+  ownUnit?(): string
+  ownPageRecord?(c: Change): boolean
   /* CAN HE STILL REACH THIS SQUADRON — his own page's squadron now, or one a pick of his reaches (a master admin's, or one he
      holds Plan of today)? A step sharing a record with a step left in a world he can never enter again is blocked for good
      (Fable 4 of round 3). None installed: always. */
   canReach?(unit: string): boolean
+  /* THE STORE OF ONE RECORD, WHEN IT IS NOT ITS COLLECTION'S (the reshape plan §3.2 A-ii, "Through Undo, in both
+     directions" — Fable 3, Opus 4 of round 3): a planning record of a squadron not loaded is written by that squadron's
+     stored calendar (state/plan-foreign.ts), never the schedule's store, which refuses another squadron's planning record.
+     Asked as the restore is applied — the squadron loaded then decides — with how the store joins: it loads the records it
+     will write before it enlists, so its before-image is the record as stored. None installed, or null: the collection's. */
+  storeFor?(c: Change): { store: EnlistableStore; join(txn: Txn, changes: Change[]): void } | null
 }
 let hooks: UndoHooks = {}
 export function setUndoHooks(h: UndoHooks): void { hooks = h }
@@ -341,6 +363,14 @@ function closedAtOf(forward: Change[], actor: Actor, stamp?: Record<string, stri
   const keys = hooks.closedAtStep ? hooks.closedAtStep(forward, actor) : []
   return keys.length ? { closedAt: keys.map(k => stampKey(k, stamp)) } : {}
 }
+/* Piece B (the reshape plan §4.3) — the man and the link day of each grant row's account, read NOW, as the step lands, and
+   kept on it: a removal, then the sign-in re-linked to another man the same day, then the removal's Undo — the link day
+   alone could not tell the two acts apart */
+function holdersOf(forward: Change[], into?: UndoEntry['holders']): { holders?: UndoEntry['holders'] } {
+  const got = hooks.holdersAtStep ? hooks.holdersAtStep(forward) : undefined
+  if (!got || !Object.keys(got).length) return into ? { holders: into } : {}
+  return { holders: { ...got, ...(into || {}) } }   // (a child folded in later never re-reads an account the step had)
+}
 /* the stamps of a step and of a child folded into it: a world the step had not written yet takes the child's squadron */
 function mergeStamp(into: Record<string, string> | undefined, add: Record<string, string> | undefined): Record<string, string> | undefined {
   if (!add) return into
@@ -368,6 +398,7 @@ function recordEntry(env: CommitEnvelope): void {
     ...(env.detail ? { detail: env.detail } : {}),
     ...(env.stamp ? { stamp: { ...env.stamp } } : {}),
     ...closedAtOf(forward, env.actor, env.stamp),
+    ...holdersOf(forward),
     eligible: false,      // recomputed lazily (modules may cut over after record)
     undone: false,
     madeAt: Date.now(),   // (fault E of fix read 10: the day a right an Undo puts back went off)
@@ -414,6 +445,7 @@ function foldProjection(rootSeq: number, env: CommitEnvelope): void {
   /* (A-v) the child's worlds join the step's stamp — before its records are keyed by it below */
   const st = mergeStamp(entry.stamp, env.stamp)
   if (st) entry.stamp = st
+  { const h = holdersOf(env.changes, entry.holders).holders; if (h) entry.holders = h }
   entry.forward.push(...env.changes)
   // recompute the closure-derived fields (contexts/owners/inverse) over the whole
   // forward list; NEVER coalesce a doubly-touched record (R2-14 — invertClosure
@@ -560,7 +592,20 @@ function stampHolds(e: UndoEntry): boolean {
   return true
 }
 function unitInView(): string { return hooks.unitInView ? hooks.unitInView() : UNIT }
-function inUnitView(e: UndoEntry): boolean { const us = unitsOf(e); return (us.size === 0 || us.has(unitInView())) && stampHolds(e) }
+/* …AND AN OWN-PAGE STEP OF HIS OWN PAGE'S SQUADRON IS HIS WHEREVER HE PRESSES (the reshape plan §3.2 A-v "Eligibility": "in
+   view" is the pick on the schedule pages, the page's own squadron on the own pages). Undo is the top bar's, on every page:
+   a 142 admin with View of 149 who picked 149 and changed 142's Quals columns found it passed over from a schedule page,
+   though his own pages are still 142's. A step whose every record of that squadron is an own page's is taken; a schedule
+   step of it still waits for its pick. */
+function ownStepInView(e: UndoEntry, us: Set<string>): boolean {
+  const own = hooks.ownUnit ? hooks.ownUnit() : null
+  if (!own || !us.has(own) || !hooks.ownPageRecord) return false
+  return e.forward.every(c => unitOf(String(c.id)) !== own || hooks.ownPageRecord!(c))
+}
+function inUnitView(e: UndoEntry): boolean {
+  const us = unitsOf(e)
+  return (us.size === 0 || us.has(unitInView()) || ownStepInView(e, us)) && stampHolds(e)
+}
 /* A STEP LEFT IN A WORLD HE CAN NEVER ENTER AGAIN (Fable 4 of round 3): its stamp names a squadron that is not his own
    page's now, and no pick of his reaches it (he is no master admin and holds no Plan of it today). It can never be taken,
    so a step that shares a record with it — an input filed at 23:30 and moved in 142's Leave War at 23:50, his move to 149
@@ -619,6 +664,14 @@ export function restoreDir(env: { origin: string; type: string; causedBy?: numbe
   const a = APPLYING
   if (!a || env.origin !== 'restore' || env.type !== 'undo.restore' || env.causedBy !== a.entry.seq) return undefined
   return a.dir
+}
+/* (Piece B — the reshape plan §4.3 "At the gate"): the step whose restore the gate is judging, the way it runs and what it
+   writes — so the gate's probe (state/perms.ts setRestoreGrantCtx, installed by state/undo-wire.ts) reads the holders the
+   step recorded and the row as it stood, as the restore's own leave-out did */
+export function applyingRestore(env: { origin: string; type: string; causedBy?: number }): { entry: UndoEntry; dir: 'undo' | 'redo'; changes: Change[] } | null {
+  const a = APPLYING
+  if (!a || env.origin !== 'restore' || env.type !== 'undo.restore' || env.causedBy !== a.entry.seq) return null
+  return { entry: a.entry, dir: a.dir, changes: a.changes }
 }
 const landed = (x: unknown): unknown => {
   const o: any = inputOf(x)
@@ -841,10 +894,36 @@ function toRecordEntry(ch: Change): RecordEntry {
     ? { collection: ch.collection, id: ch.id, op: 'delete' }
     : { collection: ch.collection, id: ch.id, value: ch.after, op: 'put' }
 }
+/* what a restore writes: its changes less what the leave-out hook leaves out (a bell line put back to no one, D2218; a right
+   Piece B's guardrails never put back — the reshape plan §4.3) */
+function keptOf(entry: UndoEntry, changesIn: Change[], dir: 'undo' | 'redo'): Change[] {
+  const leave = hooks.leaveOut
+  return leave ? changesIn.filter(c => !leave(c, dir, entry, changesIn)) : changesIn
+}
+const LEFT_EMPTY = 'left out whole'
+/* A STEP THE LEAVE-OUT EMPTIES (the reshape plan §4.3): an Undo of a right's removal or lowering after its man's move —
+   one row, left out — has nothing left to write. Nothing is committed and the step is blocked for good in that direction,
+   in today's words, the next press naming the step it takes. Asked before the view moves. */
+function emptiedBy(entry: UndoEntry, changesIn: Change[], dir: 'undo' | 'redo'): boolean {
+  return changesIn.length > 0 && keptOf(entry, changesIn, dir).length === 0
+}
+/* GUARDRAIL 1 (§4.3): an Undo or Redo of a re-link while a right given since stands on that sign-in would carry the right to
+   the other man (the gate's re-link line refuses it). Said first: blocked for good, naming who gave it (D148 — a later
+   change by another to the same thing refuses, and says who); his own giving since, a newer step of his still standing, is
+   undone first. */
+function standingConflict(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo'): Conflict | null {
+  const key = hooks.standingKey ? hooks.standingKey(changes, dir, entry) : null
+  if (!key) return null
+  const cur = currentActor()
+  if (entries.some(o => o !== entry && !o.undone && o.seq > entry.seq && isOwn(o, cur) && keySet(o).has(key)))
+    return { text: 'A later change touches the same thing — undo that first.', sticky: false }
+  return { text: outOfBandWords(key), sticky: true }
+}
 function applyRestore(entry: UndoEntry, changesIn: Change[], dir: 'undo' | 'redo'): { ok: boolean; reason?: string; seq?: number } {
   /* (what the restore leaves out — the leaveOut hook above: a bell line put back on a man it has left, D2218) */
-  const leave = hooks.leaveOut
-  const kept = leave ? changesIn.filter(c => !leave(c, dir)) : changesIn
+  const kept = keptOf(entry, changesIn, dir)
+  /* (Piece B: a step the leave-out empties commits nothing — blocked for good by refusedFor) */
+  if (kept.length === 0 && changesIn.length > 0) return { ok: false, reason: LEFT_EMPTY }
   /* (and a right it turns on, dated today — the redate hook above; fix read 9, fault A) */
   const redate = hooks.redate
   const offAt = offAtOf(entry, dir)
@@ -860,13 +939,18 @@ function applyRestore(entry: UndoEntry, changesIn: Change[], dir: 'undo' | 'redo
   const changes = redate ? kept.map(c => redate(c, dir, offAt, other?.[key(c)])) : kept
   // group the write entries by their owning store
   const byStore = new Map<EnlistableStore, RecordEntry[]>()
+  /* (A-ii: the store a record goes to, chosen per record — a planning record of a squadron not loaded to its stored
+     calendar, which joins with the records it will write) */
+  const joins = new Map<EnlistableStore, { join(txn: Txn, changes: Change[]): void; changes: Change[] }>()
   const missing: string[] = []
   for (const ch of changes) {
-    const store = storeOf.get(ch.collection)
+    const alt = hooks.storeFor ? hooks.storeFor(ch) : null
+    const store = alt ? alt.store : storeOf.get(ch.collection)
     if (!store) { missing.push(ch.collection); continue }
     let list = byStore.get(store)
     if (!list) { list = []; byStore.set(store, list) }
     list.push(toRecordEntry(ch))
+    if (alt) { const j = joins.get(store); if (j) j.changes.push(ch); else joins.set(store, { join: alt.join, changes: [ch] }) }
   }
   if (missing.length) return { ok: false, reason: `no restore target for ${missing.join(', ')}` }
   // pin the expected revisions of every written record (§4.2 atomic net)
@@ -880,14 +964,15 @@ function applyRestore(entry: UndoEntry, changesIn: Change[], dir: 'undo' | 'redo
   /* this restore, named for the commit gate's question (verifiedReplay) — for exactly as long as it is being applied */
   APPLYING = { entry, changes, dir }
   let r: ReturnType<typeof commitAs>
-  try { r = restoreCommit(entry, changes, dir, byStore, expectedRevs, cur, pulledBack) } finally { APPLYING = null }
+  try { r = restoreCommit(entry, changes, dir, byStore, expectedRevs, cur, pulledBack, joins) } finally { APPLYING = null }
   /* a DELIBERATE refusal raised inside (CmdRefused — a restore rule's second check, B5 §11.3) keeps its own sentence */
   if ((r as any).ok === false) return { ok: false, reason: (r as any).reason === 'refused' && (r as any).message ? `REFUSE: ${(r as any).message}` : ((r as any).message || 'conflict') }
   entry.stoodBefore = { ...entry.stoodBefore, [dir]: stood }
   return { ok: true, seq: (r as any).seq }
 }
 function restoreCommit(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo', byStore: Map<EnlistableStore, RecordEntry[]>,
-  expectedRevs: Record<string, number>, cur: Actor, pulledBack: Array<{ weekId: string; di: number }>): ReturnType<typeof commitAs> {
+  expectedRevs: Record<string, number>, cur: Actor, pulledBack: Array<{ weekId: string; di: number }>,
+  joins: Map<EnlistableStore, { join(txn: Txn, changes: Change[]): void; changes: Change[] }> = new Map()): ReturnType<typeof commitAs> {
   return commitAs(
     {
       type: 'undo.restore',
@@ -907,7 +992,8 @@ function restoreCommit(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo'
         try {
           // C5 — enlist EVERY store in the closure FIRST, so a later store's refusal
           // rolls back every earlier store's snapshot (publish closures are multi-store).
-          for (const [store] of byStore) txn.enlist(store)
+          /* (a store chosen per record joins its own way — it loads what it will write, then enlists: A-ii) */
+          for (const [store] of byStore) { const j = joins.get(store); if (j) j.join(txn, j.changes); else txn.enlist(store) }
           for (const [store, list] of byStore) store.write!(list, { allowIssued: true, restore: true })
           if (hooks.postRestore) hooks.postRestore(entry, dir, pulledBack)
           /* the change history's Undo / Redo line, INSIDE the restore ([DB-READINESS] group A, phase 4.1 — F2-03): it is
@@ -1037,12 +1123,13 @@ function sayBlocked(entry: UndoEntry, dir: 'undo' | 'redo', text: string): strin
    closed by time never reopens, and his step's images will not change — so, like every other step that can never pass,
    it is BLOCKED (passed over by the next press, which names the step it will take) instead of refusing every press and
    leaving everything older out of reach. Any other failure in the apply keeps refusing as before. */
-function refusedFor(entry: UndoEntry, dir: 'undo' | 'redo', reason?: string): string {
-  const text = plainRestoreReason(reason, entry)
+function refusedFor(entry: UndoEntry, dir: 'undo' | 'redo', reason?: string): string {  const text = plainRestoreReason(reason, entry)
   if (reason && /war day not open for bidding/.test(reason)) return sayBlocked(entry, dir, text)
   /* a move or a place change whose day has begun can never be undone (D2119): blocked for good, in today's words, so the
      next press takes the step before it (Fable's blind read, 4 — it jammed his whole Undo list) */
   if (reason && /changed for a day already begun/.test(reason)) return sayBlocked(entry, dir, OUT_OF_BAND)
+  /* a step the leave-out empties (Piece B — the reshape plan §4.3): blocked for good, in today's words */
+  if (reason === LEFT_EMPTY) return sayBlocked(entry, dir, OUT_OF_BAND)
   return text
 }
 
@@ -1054,6 +1141,10 @@ export function globalUndo(): UndoResult {
   if (!mayReverse(entry, currentActor())) return { ok: false, reason: reverseRefusal(entry, 'undo') }
   const conflict = undoConflictOf(entry)
   if (conflict) return { ok: false, reason: conflict.sticky ? sayBlocked(entry, 'undo', conflict.text) : conflict.text }
+  /* Piece B (the reshape plan §4.3): a right given since standing on a re-linked sign-in; a step the leave-out empties */
+  const standU = standingConflict(entry, entry.inverse, 'undo')
+  if (standU) return { ok: false, reason: standU.sticky ? sayBlocked(entry, 'undo', standU.text) : standU.text }
+  if (emptiedBy(entry, entry.inverse, 'undo')) return { ok: false, reason: sayBlocked(entry, 'undo', OUT_OF_BAND) }
   const ruleU = hooks.restoreRefusal ? hooks.restoreRefusal(entry.inverse, 'undo', entry) : null   // W3-F8
   if (ruleU) return { ok: false, reason: ruleU }
   // C7(b) — refuse an unrestorable closure BEFORE the view-snap moves anything.
@@ -1082,6 +1173,9 @@ export function globalRedo(): UndoResult {
   if (!mayReverse(entry, currentActor())) return { ok: false, reason: reverseRefusal(entry, 'redo') }
   const conflict = redoConflictOf(entry)
   if (conflict) return { ok: false, reason: conflict.sticky ? sayBlocked(entry, 'redo', conflict.text) : conflict.text }
+  const standR = standingConflict(entry, entry.forward, 'redo')
+  if (standR) return { ok: false, reason: standR.sticky ? sayBlocked(entry, 'redo', standR.text) : standR.text }
+  if (emptiedBy(entry, entry.forward, 'redo')) return { ok: false, reason: sayBlocked(entry, 'redo', OUT_OF_BAND) }
   const ruleR = hooks.restoreRefusal ? hooks.restoreRefusal(entry.forward, 'redo', entry) : null   // W3-F8
   if (ruleR) return { ok: false, reason: ruleR }
   if (missingStores(entry.forward).length) return { ok: false, reason: plainRestoreReason() }

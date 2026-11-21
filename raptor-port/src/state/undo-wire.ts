@@ -19,13 +19,15 @@ import { roleStore, invalidateRoleTargets } from './mission-roles'
 import { decodeRoleId } from '../engine/mission-role'
 import { peopleStore, settingsStore } from './people-settings-commit'
 import { rosterRestoreProblem } from './roster-restore'
-import { seedAccounts, levelIn } from './accounts'
+import { seedAccounts, levelIn, accountById, isMasterAccount, ACCOUNT_PFX } from './accounts'
+import { unitRows } from './units'
+import { store } from '../engine/hooks'
 import { deletedRestoreProblem, postingRestoreProblem } from './person-delete'
 import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks, setDescribeNames,
 } from '../undo'
-import { verifiedReplay, verifiedWarRestore, restoreOffAt, restoreDir } from '../undo/timeline'
-import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, restoreStood, setRestoreOffAt, setRestoreDir, lwUnitNow, trkUnitNow, pageUnit, isAdmin } from './perms'
+import { verifiedReplay, verifiedWarRestore, restoreOffAt, restoreDir, applyingRestore } from '../undo/timeline'
+import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, restoreStood, setRestoreOffAt, setRestoreDir, lwUnitNow, trkUnitNow, pageUnit, isAdmin, restoreLeavesOut, setRestoreGrantCtx, type RestoreGrantCtx } from './perms'
 import type { RecordCtx, UndoEntry } from '../undo/types'
 import type { Change } from '../command'
 import { setRecordKeyHook } from '../command/commit'
@@ -44,13 +46,14 @@ import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
 import { parseVerId, dayIso } from '../engine/verid'
 import { lwStore, LW_COLLS, selectWar, focusDay, bumpLwHistEpoch, restoreBlocker } from '../leavewar/state/store'
-import { restoreAbsencesOf, warNoticesReversed } from '../leavewar/sync'
+import { restoreAbsencesOf, warNoticesReversed, warDayRefusal } from '../leavewar/sync'
 import { warCounts } from '../leavewar/absences'
 import { DATES, inputCoversDate, isSansAvail } from '../engine/inputs'
-import { UNIT_ROW_PREFIXES } from './units-model'
+import { UNIT_ROW_PREFIXES, GRANT_PFX } from './units-model'
 import { noticeLeftBell, type Notice } from './notices'
 import { UNIT } from '../engine/unitview'
 import { split, localOf, qualify } from '../storage/unitid'
+import { storedPlan } from './plan-foreign'
 
 /* the 8 collections schedStore owns (the scheduler week + inputs + plan). NOT
    `weekstash` — that is the separate weekstashStore's one collection, registered
@@ -382,11 +385,95 @@ const worldNow = (w: 'lw' | 'trk'): string | null => (w === 'lw' ? lwUnitNow() :
 /* the own pages: their squadron is the page's own (perms.ts pageUnit — A-ii), the schedule pages and Logic the pick */
 const OWN_PAGES = new Set(['inputs', 'quals', 'leavewar', 'tracker', 'admin'])
 const unitInView = (): string => pageUnit(OWN_PAGES.has(CURPAGE) ? 'own' : 'schedule')
+/* A RECORD OF AN OWN PAGE (the reshape plan §3.2 A-ii, its list of own pages and their settings): the Inputs calendar's notes
+   and day titles; Quals' columns; the flying plan and the SANS calendar's colours (the war's need figures, the SANS
+   calendar); the members' filing switch (the Inputs page); the guest switch (Admin → Users). Every other record a squadron
+   names — its weeks, its Logic rules, its templates, a blue/red answer — is a schedule page's. */
+const OWN_SETTINGS = new Set(['qualcols', 'sanscalendar', 'memberfile', 'guestview'])
+const OWN_SETTING_PFX = ['flyday:', 'flyrule:', 'flyrun:']
+const ownPageRecord = (c: Change): boolean => {
+  if (c.collection === 'plan') return true
+  if (c.collection !== 'settings') return false
+  const k = localOf(String(c.id))
+  return OWN_SETTINGS.has(k) || OWN_SETTING_PFX.some(p => k.startsWith(p))
+}
 /* a squadron he can still reach: his own page's squadron now, or — an admin in force — one he is an admin of today (a
    master admin's every squadron, a Plan holder's — units-model.ts levelFrom); a View holder never reaches a war */
 const canReach = (u: string): boolean => {
   if (u === pageUnit('own')) return true
   return !!SESSION && isAdmin() && levelIn(SESSION.user, u, todayIso()) === 'admin'
+}
+
+/* ---- Piece B: the restore lines (the reshape plan §4.3 "At the restore", "A step the leave-out empties", "At the gate") --
+   The core's one body (perms.ts restoreLeavesOut) decides; this file hands it what the step recorded. */
+const isGrantRow = (c: Change) => c.collection === 'settings' && String(c.id).startsWith(GRANT_PFX)
+const isAccountRow = (c: Change) => c.collection === 'settings' && String(c.id).startsWith(ACCOUNT_PFX)
+/* an account row's image on one side of a change, read as the account list reads it: a row never stored is its seed */
+function accountImage(id: string, v: unknown): any {
+  if (v && typeof v === 'object') return v
+  return seedAccounts().find(a => a.id === id) ?? null
+}
+/* does this change put the account on another man — a re-link, its Undo, its Redo (guardrail 1). A row the restore takes
+   away is the account gone — unless the restore takes away every stored account row, when the list reads its seeds again
+   (the Undo of the list's very first stored write; the gate reads it so too — perms.ts accountAfter) */
+function relinks(c: Change, acct: string, changes: Change[]): boolean {
+  if (!isAccountRow(c) || String(c.id) !== ACCOUNT_PFX + acct) return false
+  const was = accountImage(acct, c.before)
+  let is: any = c.after && typeof c.after === 'object' ? c.after : null
+  if (!is) {
+    const goes = new Set(changes.filter(x => isAccountRow(x) && x.after == null).map(x => String(x.id)))
+    if (store.keys(ACCOUNT_PFX).filter(k => store.get(k, null) != null).every(k => goes.has(k))) is = accountImage(acct, null)
+  }
+  return !!was && !!is && String(was.pid) !== String(is.pid)
+}
+/* the man and the link day of each grant row's account the step touches, as they stand as it lands (kept on the step) */
+function holdersOf(changes: Change[]): Record<string, { id: string; pid: string; pidFrom: string | undefined }> | undefined {
+  let out: Record<string, { id: string; pid: string; pidFrom: string | undefined }> | undefined
+  for (const c of changes) {
+    if (!isGrantRow(c)) continue
+    const acc = String(((c.after ?? c.before) as any)?.account ?? '')
+    if (!acc || (out && out[acc])) continue
+    const a = accountById(acc)
+    if (!a) continue
+    ;(out ??= {})[acc] = { id: acc, pid: String(a.pid), pidFrom: a.pidFrom }
+  }
+  return out
+}
+/* is the person pressing Undo or Redo a master admin (rule 4 — his D2250: a Plan is put back only by a master admin's
+   restore); the gate reads its own actor the same way */
+const pressedByMaster = (): boolean => isAdmin() && !!SESSION && isMasterAccount(SESSION.user)
+/* what the one body is asked about one grant row of a restore: whether the restore re-links its account, the man the step
+   recorded, the row as it stood before the restore the other way took it, and who presses */
+function grantCtx(c: Change, dir: 'undo' | 'redo', entry: UndoEntry, changes: Change[], stored?: boolean): RestoreGrantCtx | null {
+  if (!isGrantRow(c)) return null
+  const acc = String(((c.after ?? c.before) as any)?.account ?? '')
+  const holder = acc ? entry.holders?.[acc] : undefined
+  const stood = entry.stoodBefore?.[dir === 'undo' ? 'redo' : 'undo']?.[recordKeyIn(c, entry.stamp)]
+  return {
+    relink: !!acc && changes.some(x => relinks(x, acc, changes)),
+    ...(holder ? { holder } : {}),
+    ...(stood !== undefined ? { stood } : {}),
+    ...(stored !== undefined ? { stored } : {}),
+    master: pressedByMaster(),
+  }
+}
+function grantLeftOut(c: Change, dir: 'undo' | 'redo', entry: UndoEntry, changes: Change[]): boolean {
+  const ctx = grantCtx(c, dir, entry, changes)
+  return !!ctx && restoreLeavesOut(c, ctx)
+}
+/* GUARDRAIL 1 (§4.3): a restore that puts an account on another man while a right stands on that sign-in — given since, to
+   the man then on it — would carry the right to the other man: the record key of that right (any row naming the account
+   that the restore itself does not take away), so the timeline blocks the step naming who wrote it */
+function standingRightKey(changes: Change[]): string | null {
+  for (const c of changes) {
+    if (!isAccountRow(c)) continue
+    const acc = String(c.id).slice(ACCOUNT_PFX.length)
+    if (!relinks(c, acc, changes)) continue
+    const goes = new Set(changes.filter(x => isGrantRow(x) && (x.op === 'delete' || x.after == null)).map(x => String(x.id)))
+    const g = unitRows().grants.find(r => r.account === acc && !goes.has(GRANT_PFX + r.id))
+    if (g) return `settings/${GRANT_PFX}${g.id}`
+  }
+  return null
 }
 
 /** tests only — the landing, driven with a made-up entry */
@@ -429,8 +516,10 @@ export function installGlobalUndo(): void {
     /* …and [LW-DELETE-POSTING-RESTORE]: an approval of his leave from the date of a Delete posting not yet run, refused live
        (D1545) — asked fresh each time, since a posting moves, is taken back or changes its outcome (person-delete.ts
        postingRestoreProblem) */
+    /* …and A7 (the reshape plan §6.2): an entry put back on a man's day now another squadron's says war's sentence before
+       anything is written — a removal, of one entry of two or of the last, still passes (leavewar/sync.ts warDayRefusal) */
     restoreRefusal: (changes, dir, entry) => restoreBlocker(changes as any, dir, restoreAbsencesOf(changes as any)) || rosterRestoreProblem(changes as any, dir)
-      || postingRestoreProblem(changes as any, dir, entry?.scope?.module),
+      || postingRestoreProblem(changes as any, dir, entry?.scope?.module) || warDayRefusal(changes as any),
     /* [POST-OUT-OUTCOMES]: a step that would put a deleted man back is passed over, never taken (person-delete.ts) */
     /* the direction and the step's module: a war step's Redo is judged by the leave it adds (person-delete.ts) */
     deadRefusal: (changes, dir, entry) => deletedRestoreProblem(changes as any, dir, entry?.scope?.module),
@@ -447,7 +536,13 @@ export function installGlobalUndo(): void {
     /* fix read 4, claim 2 (the Opus read's §2; his D2218): an Undo or Redo never puts a bell line back on a man it has
        left — a line of his old squadron's, once he has moved (state/notices.ts noticeLeftBell). The Redo of Kestrel's
        Open for bidding goes through without Osprey's line, now 142's; taking a line AWAY still rides the restore */
-    leaveOut: (c) => c.collection === 'notices' && c.op === 'put' && !!c.after && noticeLeftBell(c.after as Notice),
+    /* …and PIECE B's guardrails (the reshape plan §4.3 "At the restore" — the core's one body, perms.ts restoreLeavesOut):
+       a right put back only on the man the step recorded, never after his move since its start, never by a re-link's Undo
+       or Redo, a Plan only by a master admin's restore (his D2250), and no removal of a right not stored */
+    leaveOut: (c, dir, entry, changes) => (c.collection === 'notices' && c.op === 'put' && !!c.after && noticeLeftBell(c.after as Notice))
+      || (!!entry && grantLeftOut(c, dir, entry, changes ?? [])),
+    holdersAtStep: (changes) => holdersOf(changes),
+    standingKey: (changes) => standingRightKey(changes),
     /* fix read 9, fault A (Fable 1, the fresh Opus read's O9-2; his D2218, D2223): a grant or the master mark an Undo or
        Redo turns on is dated today, as a command dates it — the recorded day, pressed after a move, brought a retired
        line back. The gate asks the same rule (state/perms.ts restoreRedated, grantKept, masterKept) */
@@ -460,7 +555,22 @@ export function installGlobalUndo(): void {
     /* A-v: which squadron each world holds now, the squadron in view, and the squadrons he can still reach */
     worldNow,
     unitInView,
+    /* …and an own-page step of his own page's squadron is his wherever he presses (A-v "Eligibility") */
+    ownUnit: () => pageUnit('own'),
+    ownPageRecord,
     canReach,
+    /* the planning record's per-record store (the reshape plan §3.2 A-ii, "Through Undo, in both directions"): a note or
+       a day title of a squadron NOT loaded as the restore is applied goes to that squadron's stored calendar
+       (state/plan-foreign.ts), which loads the records it will write before it enlists — so the note is put back as it
+       was, stored and in the page's kept copy, and a refused restore rolls it back whole; the squadron loaded keeps the
+       schedule's store, as before */
+    storeFor: (c) => {
+      if (c.collection !== 'plan') return null
+      const u = split(String(c.id)).unit
+      if (!u || u === UNIT) return null
+      const s = storedPlan(u)
+      return { store: s, join: (txn, cs) => s.join(txn, cs.map(x => split(String(x.id)).local)) }
+    },
     // currentActor OMITTED — the timeline defaults to deriveActor().
   })
   /* …and the commit gate trusts a restore only where the timeline vouches for it, record by record (perms.ts) */
@@ -470,4 +580,10 @@ export function installGlobalUndo(): void {
   setRestoreDir(restoreDir)
   /* …and a member's restore onto a Leave War day closed for him only where it is his Undo of a closed-day step (D1263) */
   setLwRestoreCheck(verifiedWarRestore)
+  /* …and Piece B's backstop reads what the restore's step recorded, as the leave-out did (perms.ts restoreGrantCtx) — its
+     row as the gate sees it was stored before the restore wherever the restore had a before-image of it */
+  setRestoreGrantCtx((env, c) => {
+    const a = applyingRestore(env)
+    return a ? grantCtx(c, a.dir, a.entry, a.changes, c.before != null) : null
+  })
 }
