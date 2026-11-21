@@ -23,8 +23,12 @@ const REFUSER = () => {
   Storage.prototype.setItem = function (k, v) { if (w.__lsRefuse) throw new DOMException('The quota has been exceeded (walk: forced)', 'QuotaExceededError'); return set.call(this, k, v) }
   Storage.prototype.removeItem = function (k) { if (w.__lsRefuse) throw new DOMException('The quota has been exceeded (walk: forced)', 'QuotaExceededError'); return rem.call(this, k) }
 }
-// the drawing's own way there (sb1105-mock.mjs): the admin signs in, opens Admin → Users, the browser refuses to save,
-// the guest switch is changed, then Edit Schedule is opened with the band up
+// the way there: the admin signs in, opens Admin, the browser refuses to save, one Admin setting is changed, then Edit
+// Schedule is opened with the band up. The drawing (sb1105-mock.mjs) changed the "Guest view" switch on Admin → Users;
+// that switch went with the guest view (his D2239, 20 Nov 26), so the build's side now presses one ▼ of Admin →
+// Squadron config's "Flying-wave order" instead — like the switch, one press that saves one squadron setting at once
+// (ui/AdminPage.tsx ArrangeDefaults → waveDefaultSave), which the browser refuses in the same way. It was chosen because
+// it draws nothing on Edit Schedule (it only places waves added later), so the bar and the band measured are unchanged.
 async function reachBand(page, { origin }) {
   await page.addInitScript(REFUSER)
   await page.goto(origin + '/')
@@ -33,9 +37,11 @@ async function reachBand(page, { origin }) {
   await page.fill('#luser', 'ad'); await page.fill('#lpass', 'a')
   await page.click('#loginForm button[type=submit]'); await page.waitForTimeout(900)
   await page.evaluate(() => window.go('admin')); await page.waitForTimeout(500)
-  await page.locator('.adm-cat').filter({ hasText: 'Users' }).first().click(); await page.waitForTimeout(400)
+  await page.locator('.adm-cat').filter({ hasText: 'Squadron config' }).first().click(); await page.waitForTimeout(400)
+  const nudge = page.locator('#admWaveDefault .tnudge:not([disabled])').first()
+  if (!(await nudge.count())) return 'Admin → Squadron config showed no "Flying-wave order" arrow to press'
   await page.evaluate(() => { window.__lsRefuse = true })
-  await page.locator('#admGuestView').click(); await page.waitForTimeout(1500)
+  await nudge.click(); await page.waitForTimeout(1500)
   await page.evaluate(() => window.go('editsched')); await page.waitForTimeout(1200)
   if (!(await page.locator('.topbar > .savestat.failed').isVisible().catch(() => false))) return 'the "Not saved" band did not show in Edit Schedule\'s top bar after a refused save'
 }
