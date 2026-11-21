@@ -6,7 +6,8 @@
    is on no list, and asks, giving only his callsign and name (the sign-in already gives
    the defence mail, which cannot be faked); the admin is notified (a badge on the Admin
    tab), approves, sets member or admin and links him to a puck. While waiting he sees
-   the waiting screen.
+   the waiting screen, and only it — the guest view option is removed (his D2239,
+   20 Nov 26: no switch, no button into it).
 
    Three screens, chosen from the session (state/auth.ts — every state after a
    successful sign-in is a session, never the system actor, Astra R1-4):
@@ -15,17 +16,18 @@
      over — D226), initials (asked, never required — D225), pilot / WSO / personnel (D220),
      CAT — then "Request access";
    - role 'pending', request waiting → WAITING: since D1650 / D1656 (5 Nov 26) a pass with what he asked — his
-     callsign large, his initials, seat and CAT, "Waiting for an admin" — and under its tear line the three steps, the
-     read-only line and its two buttons, "Signed in as …" small at the foot;
+     callsign large, his initials, seat and CAT, "Waiting for an admin" — and under its tear line the three steps,
+     Sign out, "Signed in as …" small at the foot (the read-only line and its "View the schedule" button went with the
+     guest view, D2239);
    - role 'off'                      → SWITCHED OFF: "Ask an admin".
    Every one has Sign out, through the ONE logout (ui/logout.ts). The words read as
    the database-era app will (25 Aug 26: production copy, no demo caveats). */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { SESSION } from '../state/auth'
 import { roleOf } from '../state/perms'
-import { requestAccess, requestByName, guestEntry, sessionFor } from '../state/accounts'
+import { requestAccess, requestByName } from '../state/accounts'
 import { SEATS, catsFor, seatLabel, MAX_CS, MAX_INITIALS, SIGNUP_CALLSIGN_LABEL, CS_TOO_LONG } from '../state/roster-add'
-import { notify, resetSession } from '../state/store'
+import { notify } from '../state/store'
 import { logOut } from './logout'
 import { useVersion } from './useStore'
 import { SaveBand, useBandUp, useSaveFailed } from './SaveStatus'
@@ -103,11 +105,8 @@ function WaitingPass({ req, failed, name, signOut }: { req: any, failed: boolean
             : <li className="now" aria-current="step"><span className="pass-dot" />An admin approves</li>}
           <li><span className="pass-dot" />You're on the schedule</li>
         </ol>
-        {/* D221 — with the admin's guest switch on, straight into the guest view */}
-        {guestEntry() && <>
-          <p className="acc-p">Meanwhile you can look at the schedule, read only.</p>
-          <button type="button" className="go" id="accGuest" onClick={() => { const g = guestEntry(); if (g) { resetSession(sessionFor(g)); notify() } }}>View the schedule</button>
-        </>}
+        {/* (D2239: no "View the schedule" button here any more — the guest view it opened is removed; Sign out follows the
+            steps, as it always did with the admins' switch off) */}
         {signOut}
         <p className="pass-who">Signed in as <b id="accName">{name}</b></p>
       </div>

@@ -3,9 +3,10 @@
    The account id and its role from SESSION (`main` / `member` -> `member`); the
    person from ME, which since [ACCOUNTS] is the SIGNED-IN person (resetSession sets
    it from the account; "View as" is retired — D166), so ownership is real.
-   A person signed in without access is a session too (`guest`, `pending`, `off` —
-   D204), never the system actor: the command gate refuses every forward command
-   from them except a pending person's own access request (Astra R1-4).
+   A person signed in without access is a session too (`pending`, `off` — D204), never
+   the system actor: the command gate refuses every forward command from them except a
+   pending person's own access request (Astra R1-4). (`guest` went with the guest view,
+   his D2239: a session still carrying it is an actor switched off, never a member.)
 
    The system/headless actor (session:null) is used only for seed/projection/
    loadWeek and — under the SESSION=null parity harness — to keep tfin.js 728/0;
@@ -27,7 +28,8 @@ export function deriveActor(): Actor {
   if (!SESSION) return systemActor()
   const r = SESSION.role
   const role: Actor['role'] = r === 'admin' ? 'admin'
-    : r === 'guest' || r === 'pending' || r === 'off' ? r
+    : r === 'pending' || r === 'off' ? r
+    : r === 'guest' ? 'off'
     : 'member'
   return {
     id: SESSION.user,

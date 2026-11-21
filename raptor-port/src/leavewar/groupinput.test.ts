@@ -230,8 +230,9 @@ describe('a member files for another man — a duty or a commitment, and nothing
     expect(chg(id, r => { r.people = [{ p: 'bane', by: 'bane', at: t2 }] }), 'by a hand-made call alike — onto himself too').toBe(true)
     expect(idsOf(byId(id))).toEqual(['bane'])
   })
-  it('a guest, a pending person and an account switched off change nothing', () => {
-    for (const s of [{ user: 'principal:g', role: 'guest', pid: null, name: 'g' }, { user: 'principal:p', role: 'pending', pid: null, name: 'p' }, { user: 'principal:o', role: 'off', pid: null, name: 'o' }]) {
+  /* the guest (gone with the guest view, D2239) stood first here as a person without access: a person waiting takes his place */
+  it('a person waiting, a pending person and an account switched off change nothing', () => {
+    for (const s of [{ user: 'principal:w@mail', role: 'pending', pid: null, name: 'w@mail' }, { user: 'principal:p', role: 'pending', pid: null, name: 'p' }, { user: 'principal:o', role: 'off', pid: null, name: 'o' }]) {
       resetSession(s as any)
       const r = rec('rocky', { by: 'bane' })
       expect(raw(() => { INPUTS.unshift(r) }), s.role).toBe(false)

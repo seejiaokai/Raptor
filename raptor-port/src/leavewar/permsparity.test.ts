@@ -2,8 +2,8 @@
    The war is a second app with its own store (its architecture rule), so its writers keep
    their own role / row checks (`state.role`, canEditRow, canDecide); its role and viewer are
    written ONLY by Raptor's resetSession. This test drives its public writers as an admin, a
-   member on his own row, a member on another's, and a guest (role member, viewer '' — which
-   matches no row), and holds each outcome to state/perms.ts `allows` for the data-model §11
+   member on his own row, a member on another's, and a person waiting for access (role member, viewer '' — which
+   matches no row; a guest stood here until the guest view went, D2239), and holds each outcome to state/perms.ts `allows` for the data-model §11
    row it belongs to (LeaveWar, LeaveBid, the hand-typed award, LeaveLedger / LeaveOpening,
    LeavePersonProfile). A war writer that grows a door the table refuses fails here.
    Register line AC9. */
@@ -22,10 +22,10 @@ type Who = { role: Role; label: string; viewer: string | null }
 const WHO: Who[] = [
   { role: 'admin', label: 'admin', viewer: 'ramp' },
   { role: 'member', label: 'member (own row = ramp)', viewer: 'ramp' },
-  { role: 'guest', label: 'guest (viewer "")', viewer: '' },
+  { role: 'pending', label: 'a person waiting (viewer "")', viewer: '' },
 ]
 const act = (w: Who) => { setRole(w.role === 'admin' ? 'admin' : 'member'); setViewer(w.viewer) }
-const identity = (w: Who) => (w.role === 'guest' ? null : w.viewer)
+const identity = (w: Who) => (w.role === 'pending' ? null : w.viewer)
 
 /* the seed's 25 Dec, as the Holidays list reads it */
 const XMAS = { warId: 'y2026', src: 'day', line: 0, from: '2026-12-25', to: '2026-12-25', kind: 'ph', name: 'PH' } as const
@@ -87,7 +87,7 @@ describe('D200 (3): the Leave War\'s writers agree with the permissions matrix (
     expect(COMMAND_OPS['lw.open']).toMatchObject({ table: T.war, act: 'U' })
     expect(COMMAND_OPS['lw.stage']).toBeUndefined()
     for (const w of WHO) {
-      const actor = { id: w.viewer || 'guest', role: w.role, personId: identity(w), session: {} } as any
+      const actor = { id: w.viewer || 'waiting', role: w.role, personId: identity(w), session: {} } as any
       expect(cmdAuthorize('lw.open', actor), w.label).toBe(allows(w.role, T.war, 'U', null, identity(w)))
     }
   })
@@ -97,7 +97,7 @@ describe('D200 (3): the Leave War\'s writers agree with the permissions matrix (
     for (const t of ['lw.availrow', 'lw.reqname']) {
       expect(COMMAND_OPS[t], t).toMatchObject({ table: T.setting, act: 'U' })
       for (const w of WHO) {
-        const actor = { id: w.viewer || 'guest', role: w.role, personId: identity(w), session: {} } as any
+        const actor = { id: w.viewer || 'waiting', role: w.role, personId: identity(w), session: {} } as any
         expect(cmdAuthorize(t, actor), `${t} — ${w.label}`).toBe(allows(w.role, T.setting, 'U', null, identity(w)))
       }
     }

@@ -7,8 +7,8 @@
    to their defence mail. D204 (26 Sep 26): a new user joins either way — the admin adds
    him first, or he signs in, finds he is on no list and asks; the admin approves, sets
    member or admin and links him to a puck (a typed callsign never claims one); while
-   waiting he sees a waiting screen, and an admin switch (off by default) lets people
-   waiting see the programme read-only as a guest.
+   waiting he sees a waiting screen, and only it — D2239 (20 Nov 26) removed the admin
+   switch that let people waiting see the programme read-only as a guest.
 
    THE RECORDS (the Shell's `User`, `AccessRequest` and `AccessRequestSeen`, and one `Setting` —
    data-model §3, §11), durable settings rows written ONLY here, through intent commands
@@ -38,7 +38,8 @@
                   screen (the bell — D216, D227); his own row, removed with his account. In
                   memory each request still carries `seenBy` (every admin who has seen it), read
                   from these rows at load — never stored on the request (design corrected, R3-04).
-   - `guestview`  boolean — the guest switch, OFF by default.
+   (`guestview`, the guest switch's boolean, went with the guest view — D2239: a value an older build stored is left
+   where it lies and read by nothing, D56.)
 
    PASSWORDS — NONE STORED (data-model §3: "no password is ever stored in this model";
    Astra R1-7). At the database step Microsoft checks the password and the authenticator
@@ -104,7 +105,8 @@ const masterOf = (x: { master?: true; masterFrom?: string; pidFrom?: string }) =
 export interface AccessRequest { id: string; name: string; cs: string; ini: string; seat: string; cat: string; at: number; seenBy: string[] }
 
 /* the intent commands (perms.ts COMMAND_OPS decides who may run each) */
-export const ACCOUNT_TYPES = ['access.request', 'access.decline', 'access.approve', 'account.add', 'account.update', 'guestview.set',
+/* (`guestview.set`, the guest switch's command, went with the guest view — D2239) */
+export const ACCOUNT_TYPES = ['access.request', 'access.decline', 'access.approve', 'account.add', 'account.update',
   /* [ACCOUNTS-NEW-PERSON]: a person alone, a person and his account, approving with a new
      person, and the admins' bell's "seen" */
   'person.add', 'account.addNew', 'access.approveNew', 'access.seen',
@@ -148,7 +150,6 @@ export let ACCOUNTS_LIST: Account[] = SEED.map(a => ({ ...a }))
    none at all on a shared store */
 export const seedAccounts = (): Account[] => SEEDS_ON ? SEED.map(a => ({ ...a })) : []
 export let ACCESS_REQS: AccessRequest[] = []
-export let GUESTVIEW = false
 
 export const MAX_SIGNIN = 80
 export { MAX_CS, MAX_INITIALS }
@@ -261,7 +262,6 @@ export function accountsLoad(): void {
     })
   }
   ACCESS_REQS = reqs
-  GUESTVIEW = store.get('guestview', null) === true
 }
 
 /* ---- reads ---- */
@@ -437,7 +437,8 @@ export type SignIn =
   | { kind: 'off'; name: string }
   | { kind: 'new'; name: string }
   | { kind: 'waiting'; name: string }
-  | { kind: 'guest'; name: string }
+/* a person who asked signs in `waiting`, always — never as a guest: the guest view and its switch are removed (his
+   D2239, 20 Nov 26), and a switch an older build stored is read by nothing (D56) */
 export function signIn(nameIn: any, pass: any): SignIn {
   const name = normName(nameIn)
   if (!name || name.length > MAX_SIGNIN || typeof pass !== 'string' || !pass) return { kind: 'bad' }
@@ -447,17 +448,10 @@ export function signIn(nameIn: any, pass: any): SignIn {
     if (!a.on) return { kind: 'off', name }
     return { kind: 'ok', account: a }
   }
-  if (requestByName(name)) return GUESTVIEW ? { kind: 'guest', name } : { kind: 'waiting', name }
+  if (requestByName(name)) return { kind: 'waiting', name }
   return { kind: 'new', name }
 }
-/* D221 (26 Sep 26): a person on the waiting screen goes straight into the guest view when the
-   admin's guest switch is on — the same answer a fresh sign-in would give him (signIn → 'guest'),
-   so no sign-out and in. Null when the switch is off or he is not a person waiting. */
-export function guestEntry(): SignIn | null {
-  if (roleOf() !== 'pending' || !GUESTVIEW) return null
-  const name = normName(SESSION && SESSION.name)
-  return name && requestByName(name) ? { kind: 'guest', name } : null
-}
+/* (the waiting screen's way into the guest view, D221, went with it — D2239) */
 /* the session a sign-in result starts (state/store.ts resetSession is the one writer) */
 export function sessionFor(r: SignIn): any {
   switch (r.kind) {
@@ -466,7 +460,6 @@ export function sessionFor(r: SignIn): any {
        switch, so a member can never climb (state/perms.ts mayViewAsMember) */
     case 'ok': return { user: r.account.id, role: r.account.role, pid: r.account.pid, name: r.account.name, acct: r.account.role }
     case 'off': return { user: `principal:${r.name}`, role: 'off', pid: null, name: r.name }
-    case 'guest': return { user: `principal:${r.name}`, role: 'guest', pid: null, name: r.name }
     case 'new': case 'waiting': return { user: `principal:${r.name}`, role: 'pending', pid: null, name: r.name }
     default: return null
   }
@@ -646,10 +639,7 @@ export function declineRequest(reqId: string): string | null {
   if (!ACCESS_REQS.some(r => r.id === reqId)) return 'That request is gone'
   return commitIntent('access.decline', null, () => writeReqs(ACCESS_REQS.filter(r => r.id !== reqId)))
 }
-export function setGuestView(on: boolean): string | null {
-  if (!mayManageAccounts()) return 'Only an admin can change this'
-  return commitIntent('guestview.set', null, () => { store.set('guestview', on ? true : null); GUESTVIEW = !!on })
-}
+/* (setGuestView — the Admin "Guest view" switch's door — went with the guest view, D2239) */
 
 /* a person signed in but on no list asks for access (D204) — ONCE, as himself: the
    sign-in name comes from the session, never from a typed box. He gives what the admin's

@@ -67,9 +67,9 @@ import { UNIT_TYPES, UNIT_ROW_PREFIXES } from './units-model'
 export const SETTINGS_KEYS = [
   'rules', 'stores', 'cxreasons', 'daytpl', 'dutytpl', 'wavetpl', 'wavehide',
   'qualcols', 'lookahead', 'secdefault', 'wavedefault',
-  /* [ACCOUNTS] (D166, D204, 26 Sep 26): the guest switch — one `Setting` (data-model §3, §11). Written ONLY by
-     state/accounts.ts, through its intent commands. */
-  'guestview', 'insights', 'sanscalendar',
+  /* (`guestview` — [ACCOUNTS]' guest switch, D204 — stood here until the guest view was removed, his D2239 of 20 Nov 26:
+     no command writes it, and a value an older build stored is no settings record any more, read by nothing — D56) */
+  'insights', 'sanscalendar',
   /* (`flynames` — a saved name for each of the Leave War's Required rows — stood here from step 1 of the Inputs / SANS
      redesign until 8 Oct 26: D668, the Required rows keep their names.) */
   /* the members' switch — "members may file duties and commitments for other people" (D654, D655; the plan §3.13).

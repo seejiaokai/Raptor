@@ -7,9 +7,11 @@
    the sign-in resolves one (or a person on no list — D204) into a session:
      { user, role, pid, name }
    `role` is the account's: 'admin' or 'main' (a member); or, for someone signed in
-   without access, 'pending' (on no list), 'guest' (asked, and the admin's guest switch
-   is on) or 'off' (his account is switched off). `pid` is his person (null for the last
-   three). `name` is the sign-in name (the defence mail address it stands for).
+   without access, 'pending' (on no list, or asked and waiting) or 'off' (his account
+   is switched off). `pid` is his person (null for the last two). `name` is the sign-in
+   name (the defence mail address it stands for). ('guest' — asked, with the admin's
+   guest switch on — went with the guest view, his D2239 of 20 Nov 26; state/perms.ts
+   roleOf reads a session still carrying it as switched off.)
    The "View as" person picker is GONE (D166 (3)). The admin's switch to the member view
    is BACK in a new form (D292, 27 Sep 26 — replacing D166 (3)'s "no preview as a member"):
    the session also keeps `acct`, the account's own role, which the switch never changes

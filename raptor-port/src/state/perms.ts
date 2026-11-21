@@ -14,8 +14,8 @@
       to a row of PERMS; state/store.ts installs cmdAuthorize as the command layer's
       resolver at boot, so the command layer's authority IS this table. A type with no
       row is refused.
-   4. The medical-detail rule (D211): every member reads a medical input in full; a
-      guest (not a member) never does.
+   4. The medical-detail rule (D211): every member reads a medical input in full; nobody
+      else is shown the schedule (the guest role went with the guest view, D2239).
 
    The browser MIRRORS; the server will ENFORCE (data-model §11, "The server enforces,
    the browser mirrors"). These checks give the right answer on screen and refuse a
@@ -47,7 +47,14 @@ import { deepEqual } from '../command/util'
 import { noticeAboutHim, filerTold, filerVia, foldedInto, joinFilerImgs, dayOfAt, changeFiler, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES } from './notices'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
-export type Role = 'admin' | 'member' | 'guest' | 'pending'
+/* THE ROLES A SESSION HOLDS. The guest role is gone (his D2239, 20 Nov 26: the guest view is removed — a person who asked
+   sees only the waiting screen until an admin of his squadron approves him). */
+export type Role = 'admin' | 'member' | 'pending'
+/* §11'S COLUMNS. The table still carries a Guest column because docs/data-model.md §11 still does, and perms.test.ts
+   holds the two as one table: no session reads it (`allows` answers only a Role). It goes in the one change that
+   rewrites §11's guest cells (the host's, at the reshape's merge), the `guest` field here and `row()`'s third
+   argument with it. */
+export type PermCol = Role | 'guest'
 export interface Cell { all: Act[]; own: Act[] }
 export interface PermRow { admin: Cell; member: Cell; guest: Cell; pending: Cell; gaps: string[] }
 
@@ -148,7 +155,7 @@ export const PERMS: Record<string, PermRow> = {
   [T.lwseen]: row(cell('', 'C R U'), cell('', 'C R U')),
   [T.profile]: row(cell('C R U D'), cell('R')),
   [T.tracker]: row(cell('C R U D'), cell('C R U D')),
-  /* the units (step 1): every signed-in person reads the units — a guest's and a pending person's view names theirs; only
+  /* the units (step 1): every signed-in person reads the units — a pending person's view names theirs; only
      a MASTER makes one (MASTER_ONLY_COMMANDS below — §11 notes it in the cell); the place, a unit's place and a home are
      an admin's OF that unit (the commit gate reads the row's unit — unitRowViolation); a member reads his own rights */
   [T.unit]: row(cell('C R U D'), cell('R'), cell('R'), cell('R')),
@@ -158,12 +165,11 @@ export const PERMS: Record<string, PermRow> = {
   [T.home]: row(cell('C R U D'), cell('R')),
 }
 
-/* 4. WHO READS A MEDICAL INPUT IN FULL (D211, 26 Sep 26 — "Keep as today": every member;
-   D213, the same day — "a guest should also see medical inputs": a guest too, on the
-   published schedule he is shown). §11's Input row carries it in the Guest cell — a note
-   "(no medical detail)" there would mean a guest is left out; perms.test.ts ties the two
-   together. The question stays one place, so a later ruling moves one line. */
-export const MEDICAL_DETAIL: Role[] = ['admin', 'member', 'guest']
+/* 4. WHO READS A MEDICAL INPUT IN FULL (D211, 26 Sep 26 — "Keep as today": every member).
+   D213's guest, who read it too, went with the guest view (D2239 replaces D213): an admin
+   and a member are the only readers the schedule is shown to. The question stays one
+   place, so a later ruling moves one line. */
+export const MEDICAL_DETAIL: Role[] = ['admin', 'member']
 
 /* ---- who is signed in ------------------------------------------------------ */
 export type Who = Role | 'off' | null
@@ -173,18 +179,24 @@ export function roleOf(s: any = SESSION): Who {
   if (!s) return null
   const r = s.role
   if (r === 'admin') return 'admin'
-  if (r === 'guest' || r === 'pending' || r === 'off') return r
+  if (r === 'pending' || r === 'off') return r
+  /* no sign-in gives the guest role since D2239 (the guest view removed); a session still carrying it — hand-made, it
+     cannot be signed into — holds nothing: an account switched off, never a member */
+  if (r === 'guest') return 'off'
   return 'member'
 }
+/* an actor's role as the gate reads it: null is the system actor alone; a role no actor is given — the guest role since
+   D2239 among them, on a hand-made actor (command/actor.ts gives a session still carrying it 'off') — holds nothing,
+   never read as the system actor (which the gate lets through) */
 const actorRole = (a: Actor): Who =>
-  a.role === 'system' ? null : a.role === 'admin' || a.role === 'member' || a.role === 'guest' || a.role === 'pending' || a.role === 'off' ? a.role : null
+  a.role === 'system' ? null : a.role === 'admin' || a.role === 'member' || a.role === 'pending' || a.role === 'off' ? a.role : 'off'
 /* was a committed change made by an admin? — the change history's Leave War lines say a request DELETED only when an
    admin took it away ([DRAFT-PENDING]; a member's own bid coming off is not a decision) */
 export const actorIsAdmin = (a: Actor | null | undefined): boolean => !!a && actorRole(a) === 'admin'
 
 /* whose own-row rule applies: a person's id for an admin or a member; a pending
-   principal's sign-in name for his own access request; nobody for a guest or an
-   account switched off */
+   principal's sign-in name for his own access request; nobody for an account switched
+   off */
 function identityOf(who: Who, s: any = SESSION): string | null {
   if (who === 'admin' || who === 'member') return ME == null || ME === '' ? null : String(ME)
   if (who === 'pending') return s && s.name ? String(s.name) : null
@@ -194,7 +206,9 @@ function identityOf(who: Who, s: any = SESSION): string | null {
 /* the one rule under every question: does `who` hold `act` on `table`, for a record
    owned by `owner`? */
 export function allows(who: Who, table: string, act: Act, owner?: string | null, identity?: string | null): boolean {
-  if (who === 'off' || who === null) return false
+  /* only a session's role holds anything — never §11's Guest column, which no role reads any more (D2239), whatever a
+     hand-made call passes */
+  if (who !== 'admin' && who !== 'member' && who !== 'pending') return false
   const r = PERMS[table]
   if (!r) throw new Error(`perms: no row "${table}" in the permissions matrix`)
   const c = r[who]
@@ -215,7 +229,7 @@ function may(table: string, act: Act, owner: string | null | undefined, headless
    every question below, the command actor (command/actor.ts) and the ownership check read it, so the switch reaches all
    of them with no second switch. Who may switch is the session's ACCOUNT role (`acct`, set at sign-in by
    accounts.ts sessionFor and never changed by the switch — Astra's plan read A6): only a real admin, only between admin
-   and member, never another person. A pending person, a guest, an account suspended, a member — no switch, and a
+   and member, never another person. A pending person, an account suspended, a member — no switch, and a
    hand-made call changes nothing. */
 export function mayViewAsMember(): boolean {
   const w = roleOf()
@@ -232,9 +246,9 @@ export function switchRoleInForce(next: any): boolean {
 export const isAdmin = (): boolean => roleOf() === 'admin'
 /* a signed-in admin or member — someone with access to the app's pages */
 export const isMember = (): boolean => { const w = roleOf(); return w === 'admin' || w === 'member' }
-export const isGuest = (): boolean => roleOf() === 'guest'
-/* the signed-in person (an admin or a member), or null — a guest, a pending person
-   and an account switched off are nobody's person. Headless (no session) it is the
+/* (isGuest went with the guest view, D2239 — its readers, the view page's guest branches, with it) */
+/* the signed-in person (an admin or a member), or null — a pending person and an
+   account switched off are nobody's person. Headless (no session) it is the
    headless default person (auth.ts DEFAULT_ME), exactly as the ME every gate read
    before [ACCOUNTS] — so no sessionless unit test changes meaning. */
 export function me(): string | null {
@@ -247,7 +261,7 @@ export function isMe(pid: any): boolean { const m = me(); return m != null && pi
 /* HIS OWN SQUADRON (multi-squadron step 3 — plan §3.4, D2132): the signed-in person's home unit on `iso` (today unless
    named). The pages that stay on his own squadron whatever schedule is in view — the Inputs page and its calendars,
    Quals — list its people (engine/roster.ts rosterOf) and its inputs (engine/inputs.ts inputsFor). Nobody signed in, a
-   guest, or a person with no home: the boot unit, as the unit in view starts (state/store.ts sessionUnit). */
+   person waiting, or a person with no home: the boot unit, as the unit in view starts (state/store.ts sessionUnit). */
 export function myUnit(iso: string): string {
   const m = me()
   const h = m ? homeOn(m, iso) : null
@@ -302,8 +316,8 @@ setNewHomeUnit((adderPid) => (adderPid != null && adderPid === me() ? pageUnit('
 /* the schedule: edit mode, the board, the week's writes. No session → false, as
    canEditSched always answered (its callers are render and edit-mode gates). */
 export const mayEditSched = (): boolean => !!SESSION && may(T.sched, 'U', null, false)
-/* the Leave War's person as the sync mirrors it: the signed-in person; for a guest,
-   a pending person or an account switched off '' — which matches NO row (the war's
+/* the Leave War's person as the sync mirrors it: the signed-in person; for a pending
+   person or an account switched off '' — which matches NO row (the war's
    canEditRow reads null as "unscoped", so it must never be null for a session). No
    session → the headless default person, exactly as the ME the sync mirrored before
    [ACCOUNTS] (nothing is drawn before sign-in; the headless tests keep their scope). */
@@ -414,7 +428,7 @@ export const mayMovePlace = (row: any): boolean => roleOf() === null || mayEditS
    who FILED a shared input was told "Only Ranger — who filed it — or an admin can change this" — and he is Ranger. This
    answers one thing: is the signed-in member this input's filer, kept from it by the switch alone? It grants and
    refuses NOTHING — `mayEditInput` / `mayDeleteInput` above are the rule, asked first by every door; a door that has
-   already been refused asks this to choose its sentence. An admin, a guest and a headless context: never. */
+   already been refused asks this to choose its sentence. An admin, a person without access and a headless context: never. */
 export function filerSwitchedOff(rows: readonly any[]): boolean {
   const pid = roleOf() === 'member' ? me() : null
   if (pid == null || membersFileOn() || !rows || !rows.length) return false
@@ -430,7 +444,7 @@ export const INPUT_FILER_NOTE = 'or — while the squadron\'s members-file-for-o
 /* (B4 — the reshape plan §3.2 A-ii: his own squadron's switch, read on the page's squadron, never the pick's — a member
    with View of 149 who picks 149 still files as 142's rule says; state/memberfile.ts writes the same key) */
 export const membersFileOn = (): boolean => unitSetting(pageUnit('own'), 'memberfile', null) !== false
-/* a medical input's type, remarks and documents (D211; a guest too, D213 — he has no door to a document) */
+/* a medical input's type, remarks and documents (D211 — every admin and member; D213's guest went with D2239) */
 export function mayReadMedicalOf(_pid?: any): boolean {
   const who = roleOf()
   if (who === null) return true
@@ -515,7 +529,8 @@ const op = (table: string, act: Act, own: OwnRule = 'never', more?: [string, Act
   (more ? { table, act, own, more } : { table, act, own })
 
 const SETTINGS_KEYS_ALL = ['rules', 'stores', 'cxreasons', 'daytpl', 'dutytpl', 'wavetpl', 'wavehide',
-  'qualcols', 'lookahead', 'secdefault', 'wavedefault', 'guestview', 'insights', 'sanscalendar', 'memberfile'] as const
+  'qualcols', 'lookahead', 'secdefault', 'wavedefault', 'insights', 'sanscalendar', 'memberfile'] as const
+/* (`guestview`, the guest switch, left this list with the guest view — D2239; its `settings.guestview` command with it) */
 
 export const COMMAND_OPS: Record<string, CommandOp> = {
   /* the flying plan (state/flyplan.ts — the Inputs / SANS redesign, plan §3.2): a day's class and required figures,
@@ -630,7 +645,7 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'access.approve': op(T.accessreq, 'D', 'never', [[T.user, 'C']]),
   'account.add': op(T.user, 'C', 'never', [[T.accessreq, 'D']]),
   'account.update': op(T.user, 'U', 'never', [[T.accessreq, 'D']]),
-  'guestview.set': op(T.setting, 'U'),
+  /* (`guestview.set`, the guest switch's command, went with the guest view — D2239: no row, so the gate refuses it) */
   /* a new person ([ACCOUNTS-NEW-PERSON], D214, D217) — made only on Admin → Users: alone (a
      blank sign-in), with his account, or by approving his sign-up; and the admins' bell's
      "seen" (D216, D227) */
@@ -747,7 +762,7 @@ function opAllows(who: Role, table: string, act: Act, own: OwnRule, actor: Actor
                 after his command, on read (state/holderbase.ts), and is nobody's change — the one exception §11
                 carried, "until phase 6 (c)", is gone (D450: a day is saved only by the scheduler holding it);
    - the Tracker — everyone's (D121).
-   A guest, a pending person and an account switched off change NOTHING, except a
+   A pending person and an account switched off change NOTHING, except a
    pending person's own access request — ONE new `accessreq:<id>` row under his own sign-in name
    ([DB-READINESS] group A, phase 4.4: the requests are one row each, so his command may add his and touch no other). */
 const INPUT_ORDER = '__order'
@@ -1710,7 +1725,7 @@ function warUnitViolation(env: CommitEnvelope): string | null {
    is open (setTrkUnitProbe, installed by boot.ts from the doorway's own bound unit; none bound, nothing asked); every
    Tracker change then needs, there, admin from an admin in force and home or rights from a member — the same reading of
    the role in force as section 7. Everyone does everything inside his own Tracker (D121); the flex settings stay an
-   admin's (below). Not asked of the app itself, nor of a guest or a pending person (refused everything below). */
+   admin's (below). Not asked of the app itself, nor of a pending person (refused everything below). */
 let TRK_UNIT: LwUnit | null = null
 export function setTrkUnitProbe(fn: LwUnit | null): void { TRK_UNIT = fn }
 export const trkUnitNow = (): string | null => (TRK_UNIT ? TRK_UNIT() : null)

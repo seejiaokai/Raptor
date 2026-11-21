@@ -71,7 +71,6 @@ const TYPE_PHRASE: Record<string, string> = {
   'account.add': 'giving a sign-in',
   'access.approve': 'giving access',
   'access.decline': 'refusing a request for access',
-  'guestview.set': 'the guest switch',
   /* the squadrons (multi-squadron batch 1, step 1 — state/units.ts; the master mark, accounts.ts setMaster) */
   'unit.add': 'adding a squadron',
   'unit.place': 'moving a squadron',
@@ -114,7 +113,6 @@ const SETTING_PHRASE: Record<string, string> = {
   lookahead: 'the Inputs look-ahead',
   stores: 'the stores list',
   cxreasons: 'the cancel reasons',
-  guestview: 'the guest switch',
   sanscalendar: 'the SANS calendar’s day colours',
 }
 
