@@ -4339,16 +4339,25 @@ export function openNewPeriod(from: string, to: string): void {
 /* (the SANS men committed are the WAR'S OWN squadron's on that date — multi-squadron step 4: a 149 SANS man's offer to
    fly never lowers 142's need, and a man's squadron is read on the day, engine/roster.ts unitPeople) */
 /* (every part of an answer is ONE squadron's — the plan, its SANS colours and its SANS men — the war's unless the caller
-   names another, never the pick by default: helper "war", second pass. The war's facts — holidays, who is available —
-   are the loaded war's, dayFacts, whichever squadron is named.) */
+   names another, never the pick by default: helper "war", second pass. Who is available is the loaded war's, dayFacts,
+   whichever squadron is named; the day's holiday kind is the named squadron's own — factsOf, below.) */
 const sansFlyOf = (unit: string) => (iso: string) => sansFly(iso, undefined, unitPeople(unit, iso))
+/* (THE DAY'S KIND IS THE NAMED SQUADRON'S OWN — a public holiday or an Off day from its own list, D2195 — the reshape plan
+   §7, A4's flying-plan reader: a 149 page's answer read 142's holidays whenever 142's war was loaded, and 142's read 149's.
+   Its own war's when loaded, else its saved war (unitDayFacts). Who is available stays the loaded war's, as before.) */
+const factsOf = (unit: string) => (iso: string): DayFacts => {
+  const f = dayFacts(iso)
+  if (!unit || unit === worldUnit()) return f
+  const kind = unitDayFacts(unit, iso).kind
+  return kind === f.kind ? f : { ...f, kind }
+}
 export function flyAnswer(iso: string, unit: string = warUnit()): DayAnswer {
-  return planFor(iso, planOfUnit(unit), dayFacts(iso), sansFlyOf(unit)(iso), tonesOfUnit(unit))
+  return planFor(iso, planOfUnit(unit), factsOf(unit)(iso), sansFlyOf(unit)(iso), tonesOfUnit(unit))
 }
 /** a month of answers (1-based month) — what a drawn month is painted from, and what its repaint is keyed on: a figure
  *  or a weekday rule that began months earlier moves these, so a memo built from them cannot miss it */
 export function flyMonth(y: number, m: number, unit: string = warUnit()): Record<string, DayAnswer> {
-  return monthAnswers(y, m, planOfUnit(unit), dayFacts, sansFlyOf(unit), tonesOfUnit(unit))
+  return monthAnswers(y, m, planOfUnit(unit), factsOf(unit), sansFlyOf(unit), tonesOfUnit(unit))
 }
 
 /* A LEAVE REQUEST'S DOCUMENT AND REMARKS (M3 5.9, 5.10 — D1159, D1226): the bid windows draw the app's one Document
