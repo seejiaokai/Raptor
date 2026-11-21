@@ -256,7 +256,7 @@ or new finding's and a few high-consequence FIXED ones; `rw-1-` is round 1 (`e57
 | `rw-1-RL-F2-16-ad9-person-d.png` | 149's war on Thu 16 (Kestrel): Ranger's person window "No leave in 2026 and ahead.", LVE 0 (W2-F2 FIXED — each war its own leave) |
 | `rw-1-RL-F3-16-02-approve-press-d.png` | 142's Approvals on Thu 16: Ranger's pending Fri 24 — "Ranger is 149's from Thu 16 Jul, so this can't go back into 142's Leave War." (W2-F3 FIXED) |
 | `rw-2-R2L-I1-02-target-press-d.png` | Ranger's ⇄Move onto Fri 17: "This change could not be saved." and Cancel, the LL still on Wed 15 (FIXED) |
-| `rw-2-R2L-I3-OD-02-pressed-d.png` | Hunter's OD 15–17 Jul for Ranger: Wed 15 filed, Thu–Fri striped and empty; the note "1 day filed. This change could not be saved.." (words, being fixed — "r2close") |
+| `rw-2-R2L-I3-OD-02-pressed-d.png` | Hunter's OD 15–17 Jul for Ranger: Wed 15 filed, Thu–Fri striped and empty; the note "1 day filed. This change could not be saved.." (words, fixed — "r2close" (merged `ac7072def`; its tests 10 red on `1c49ba3c5`, 3 controls green; 33 of 33 green after)) |
 | `rw-2-R2L-I6A-02-000030-d.png` | Ranger at 00:00:30 of his move: the page now 149's Balances, his typed "33" in 149's Ranger row, no band (question 15) |
 | `rw-2-R2L-I4-01-daylist-d.png` | 142's war on Thu 16: Fri 17's day list "AWAY · 2" without Ranger, his row striped — no door to his hidden approved leave (question 13) |
 | `rw-2-R2L-I5-b-drag-save-press-d.png` | the OIL tracker: a +1 credit on 17 Jul for Piston, Ranger and Saber — "This change could not be saved.", none given (question 14) |
@@ -316,6 +316,10 @@ or new finding's and a few high-consequence FIXED ones; `rw-1-` is round 1 (`e57
   just after the change; "Export as PDF (print)" of a published 142 day on his iPhone.
 
 ## The gate counts
+
+- Whole unit suite at `24f44b903` (round 2's fixes in), on his PC through the lock: 15,830 passed, 1 failed (the known double-tap timing test, `leavewar/ui/doubletap-windows.test.tsx`, 32 of 32 green alone), 1 expected fail, 20 skipped.
+- "r2close"'s whole suite on its branch: 15,844 passed, 1 failed (the same timing test, green alone).
+- GitHub's full run: green at `e57cb6c3a`; RED at `24f44b903` (the Leave War's browser tests — one cause, fixed by "e2efix"); green at `1c49ba3c5`. The last push's run: in the closing report.
 
 ## What the walk found, and each disposition
 
@@ -472,7 +476,7 @@ sentence; a picked man's puck kept; Kestrel's edit, Undo and "+ Alt Plan" on 149
 
 | What the re-walk saw | Walker | Disposition |
 |---|---|---|
-| A duty filed across his move: the note "1 day filed. This change could not be saved.." — two full stops, and it does not say two days were skipped or why (words) | R2L item 3 | being fixed — "r2close" item 4 (one body for the note) |
+| A duty filed across his move: the note "1 day filed. This change could not be saved.." — two full stops, and it does not say two days were skipped or why (words) | R2L item 3 | fixed — "r2close" (merged `ac7072def`; its tests 10 red on `1c49ba3c5`, 3 controls green; 33 of 33 green after) item 4 (one body for the note) |
 | "Several people" Training redated from Tue 14 to Fri 17 with Ranger the only one picked: no 142 name offered, Ranger cannot be un-picked, Add → "Blocked: nothing was kept", the window stays (control: on Tue 14 the last puck cannot be un-picked either, every name stays offered) | R2S item 9b | new, to settle (the host) — `rw-2-R2S-I9s-05-add-press-d.png` |
 | The settings windows closing at midnight with no word; 142's LVE counting hidden leave; a hidden leave with no removal door; a drag pick refused whole; the Balances page swapped under his typing | R2S item 7; R2L items 7, 4, 5, 6A | questions 11–15 |
 
@@ -647,9 +651,9 @@ neighbours; no new hole, no other contradiction. Report `D:\raptor-work\reads\re
 
 | # | Finding | Severity | Red | Disposition |
 |---|---|---|---|---|
-| F1 | Undo still jams on an input step after the actor loses Plan — Hunter's Meeting for Osprey refuses every press, his earlier View change never reached (neighbour of Opus-2 F1, Fable-2 F2) | MED | yes, on the tip | being fixed — "r2close" (the reach check asks the gate's own input rule) |
-| F2 | The Undo of shortening approved leave to a morning puts the afternoon back into 142's war on a day now 149's (neighbour of Astra-3 F2, Fable-3 F2, Opus-3 F2 and F4) | HIGH | its test failed in its setup; re-written through the real path (the row lookup only), then red for the finding's reason | being fixed — "r2close" (the part of the day compared, not only the day) |
-| F3 | A figure typed in a master admin's person window in 142's war across midnight saves under the band (neighbour of Fable-3 F3, Astra-3 F4) | HIGH | yes, on the tip (33 saved) | being fixed — "r2close" (the box also checks the band) |
+| F1 | Undo still jams on an input step after the actor loses Plan — Hunter's Meeting for Osprey refuses every press, his earlier View change never reached (neighbour of Opus-2 F1, Fable-2 F2) | MED | yes, on the tip | fixed — "r2close" (merged `ac7072def`; its tests 10 red on `1c49ba3c5`, 3 controls green; 33 of 33 green after) (the reach check asks the gate's own input rule) |
+| F2 | The Undo of shortening approved leave to a morning puts the afternoon back into 142's war on a day now 149's (neighbour of Astra-3 F2, Fable-3 F2, Opus-3 F2 and F4) | HIGH | its test failed in its setup; re-written through the real path (the row lookup only), then red for the finding's reason | fixed — "r2close" (merged `ac7072def`; its tests 10 red on `1c49ba3c5`, 3 controls green; 33 of 33 green after) (the part of the day compared, not only the day) |
+| F3 | A figure typed in a master admin's person window in 142's war across midnight saves under the band (neighbour of Fable-3 F3, Astra-3 F4) | HIGH | yes, on the tip (33 saved) | fixed — "r2close" (merged `ac7072def`; its tests 10 red on `1c49ba3c5`, 3 controls green; 33 of 33 green after) (the box also checks the band) |
 
 "r2close" also carries the re-walk's two full stops in a filed duty's note (its item 4).
 
