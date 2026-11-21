@@ -22,10 +22,10 @@
    he had filed for others goes with it (the man and an admin still change those) — state/perms.ts reads the switch
    live at every question. */
 import { useEffect, useState } from 'react'
-import { isAdmin, membersFileOn } from '../state/perms'
+import { isAdmin } from '../state/perms'
 import { notify } from '../state/store'
-import { cutProblem, forgetWin, getCut, openWinFor, saveCut, winUnit } from '../state/cutoff'
-import { setMembersFile, type SwitchSave } from '../state/memberfile'
+import { cutProblem, forgetWin, getCut, openWinFor, saveCut, winStale, winUnit } from '../state/cutoff'
+import { membersFileOf, setMembersFile, type SwitchSave } from '../state/memberfile'
 import { CALMONTH } from '../state/view'
 import { CutFields } from './CutFields'
 import { cutDraftOf, cutRuleOf } from './cutdraft'
@@ -36,7 +36,9 @@ import { useVersion } from './useStore'
 
 export function InputsSettings({ unit }: { unit?: string } = {}) {
   useVersion()
-  const refused = INPSET && !isAdmin()
+  /* …and it goes with its page's squadron (state/cutoff.ts winStale — the fix round of 22 Nov 26): opened from 142's gear,
+     it closes once the page is another squadron's (his move at midnight, a master admin's pick), nothing saved */
+  const refused = INPSET && (!isAdmin() || (unit === undefined && winStale('inputs')))
   useEffect(() => { if (refused) setInpSet(false) }, [refused])
   /* THE SQUADRON IT EDITS (the reshape plan §3.2 A-ii; the host's ruling of 21 Nov 26): the page it was opened from —
      `unit` when handed in, else what its door named (state/cutoff.ts openWinFor: a calendar's gear its own squadron),
@@ -50,7 +52,8 @@ export function InputsSettings({ unit }: { unit?: string } = {}) {
 
 function Body({ unit }: { unit: string }) {
   const [cut, setCut] = useState(() => cutDraftOf(getCut('inputs', unit)))
-  const [was] = useState(membersFileOn)
+  /* the window's own squadron's switch, as its cut-off is (the fix round of 22 Nov 26 — state/memberfile.ts membersFileOf) */
+  const [was] = useState(() => membersFileOf(unit))
   const [members, setMembers] = useState(was)
   const [err, setErr] = useState('')
 
@@ -65,7 +68,7 @@ function Body({ unit }: { unit: string }) {
       if (!r.ok) return setErr(r.message || 'The setting could not be saved. Try again.')
       close()
     }
-    const r: SwitchSave = members === was ? { ok: true } : setMembersFile(members)
+    const r: SwitchSave = members === was ? { ok: true } : setMembersFile(members, unit)
     if (r.pending) void r.pending.then(done); else done(r)
   }
   const openDays = () => {

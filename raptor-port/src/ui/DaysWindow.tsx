@@ -40,7 +40,7 @@ import { DAYSWIN, setDaysWin } from './pops'
 import { useVersion } from './useStore'
 import { notify } from '../state/store'
 import { isAdmin } from '../state/perms'
-import { forgetWin, winUnit } from '../state/cutoff'
+import { forgetWin, winStale, winUnit } from '../state/cutoff'
 import { setFlyDays, type FlySave } from '../state/flyplan'
 import { monthDates, nextCls, weekdayOf, type DayAnswer, type FlyCls } from '../state/flyplan-model'
 import { flyMonth, unitDayFacts, useWarFacts } from '../leavewar/sync'
@@ -101,7 +101,11 @@ export function DaysWindow({ unit }: { unit?: string } = {}) {
   useVersion()
   /* the page is the gate, as Admin's is: a member has no door to this window, and one asked for anyway draws nothing —
      and is not left asked for, or an admin who looks at the member view (D292) would find it back up on his return */
-  const refused = !!DAYSWIN && !isAdmin()
+  /* …and it goes with its page's squadron (state/cutoff.ts winStale — the fix round of 22 Nov 26, Astra's read F3): its
+     Holidays half reads and writes the LOADED war's list (leavewar/ — not this window's to re-point), so a window a
+     page's door opened for 149 showed 142's holidays once 142 was picked behind it. Closed with the squadron change, the
+     two halves are always one squadron's. */
+  const refused = !!DAYSWIN && (!isAdmin() || (unit === undefined && winStale('days')))
   useEffect(() => { if (refused) setDaysWin(null) }, [refused])
   /* THE SQUADRON IT EDITS (the reshape plan §3.2 A-ii; the host's ruling of 21 Nov 26): the page it was opened from —
      `unit` when handed in, else what its door named (state/cutoff.ts openWinFor: a calendar's gear its own squadron),

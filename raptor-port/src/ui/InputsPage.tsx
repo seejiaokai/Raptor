@@ -17,7 +17,7 @@ import { OilConfirm } from './OilConfirm'
 import { PEOPLE } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
-import { LOOK_MAX, LOOK_MIN, lookaheadLabel, lookaheadRange, lookaheadOf, setLookaheadFor, type Lookahead } from '../engine/lookahead'
+import { LOOK_MAX, LOOK_MIN, lookaheadParse, lookaheadLabel, lookaheadRange, lookaheadOf, setLookaheadFor, type Lookahead } from '../engine/lookahead'
 import { canEditSched } from '../state/auth'
 import { me, isAdmin, mayEditInput, pageUnit } from '../state/perms'
 import { todayIso } from '../engine/editlog'
@@ -736,7 +736,9 @@ export function InputsPage() {
                       // a refused value goes back to the live one on screen,
                       // never left looking saved
                       setLookWeeks(String(inputsLookahead().weeks))
-                      HOOKS.toast(`Give a number of weeks between ${LOOK_MIN} and ${LOOK_MAX}`)
+                      /* a good figure whose save was refused (the write read back — engine/lookahead.ts, the fix round of
+                         22 Nov 26) says so in the generic words: no ruling gives it its own */
+                      HOOKS.toast(lookaheadParse(lookWeeks) === null ? `Give a number of weeks between ${LOOK_MIN} and ${LOOK_MAX}` : 'This change could not be saved.', lookaheadParse(lookWeeks) === null ? undefined : 'blocked')
                       return
                     }
                     setLookEdit(false)

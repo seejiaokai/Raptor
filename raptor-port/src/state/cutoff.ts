@@ -17,7 +17,8 @@ import { RULE_SPEC, RULE_STD, VCONF, rulesSave } from '../engine/rules'
 import { store, unitSetting, unitSettingKey } from '../engine/hooks'
 import { UNIT } from '../engine/unitview'
 import { validate } from '../engine/validate'
-import { isAdmin } from './perms'
+import { isAdmin, pageUnit } from './perms'
+import { todayIso } from '../engine/editlog'
 import { notify } from './store'
 
 export type CutSet = 'inputs' | 'sans'
@@ -76,6 +77,14 @@ const WIN_UNIT: Record<CutWin, string | null> = { inputs: null, sans: null, days
 export function openWinFor(win: CutWin, unit: string | null): void { WIN_UNIT[win] = unit }
 export function winUnit(win: CutWin): string { return WIN_UNIT[win] ?? UNIT }
 export function forgetWin(win: CutWin): void { WIN_UNIT[win] = null }
+/* A WINDOW A PAGE'S DOOR OPENED IS THAT PAGE'S SQUADRON'S — AND GOES WITH IT (the fix round of 22 Nov 26, Opus's read F5,
+   Astra's F1 and F3): once the page shows another squadron — his own move taking effect at midnight, a master admin's
+   pick — the window was still bound to the old one, its Save written there (or refused and read as saved), and the
+   Calendar window's Holidays half showed and wrote the loaded squadron's. Each window closes itself when this says so
+   (no words of a held window are approved for these three — his D2243 Q7 gives the band for the Leave War's and the
+   Tracker's — so it is closed, never held). A window the Logic page's doors opened names no squadron and follows the
+   pick, as it always did. */
+export function winStale(win: CutWin): boolean { const u = WIN_UNIT[win]; return u != null && u !== pageUnit('own', todayIso()) }
 
 const whole = (v: unknown, lo: number, hi: number): v is number => typeof v === 'number' && Number.isInteger(v) && v >= lo && v <= hi
 /** why a rule cannot be saved — '' when it can. The ranges are the engine's own (RULE_SPEC), so the Logic page and this
@@ -128,7 +137,14 @@ function saveCutOf(unit: string, next: Record<string, number>): CutSave {
   if (!keys.length) return { ok: true, changed: false }
   const rec = storedRules(unit)
   for (const key of keys) { if (next[key] === RULE_STD.v[key]) delete rec.v[key]; else rec.v[key] = next[key] }
-  store.set(unitSettingKey(unit, 'rules'), Object.keys(rec.v).length || Object.keys(rec.s).length ? { v: rec.v, s: rec.s } : null)
+  /* READ BACK, never taken as saved (the fix round of 22 Nov 26, Opus's read F5): the gate refuses this write for one who
+     is not an admin of that squadron — Hunter, saving 142's window after the midnight he became 149's — storing nothing
+     and throwing nothing here, and the window closed as if saved. No ruling gives this refusal words of its own: the
+     generic ones. */
+  let threw = false
+  try { store.set(unitSettingKey(unit, 'rules'), Object.keys(rec.v).length || Object.keys(rec.s).length ? { v: rec.v, s: rec.s } : null) } catch { threw = true }
   notify()
+  const now = rulesOf(unit)
+  if (threw || Object.keys(next).some(key => now[key] !== next[key])) return { ok: false, message: 'This change could not be saved.' }
   return { ok: true, changed: true }
 }

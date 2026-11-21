@@ -84,7 +84,23 @@ export function draftImage(rec: any | null, draft: any, people: readonly any[]):
   const out: any = { ...(rec || {}), type: draft ? draft.type : rec && rec.type, date: start, people: people.map(p => ({ p: String(p) })) }
   delete out.person
   if (end) out.endDate = end; else delete out.endDate
+  /* …WITH WHO FILES IT AND THE SQUADRON STAMP THE SAVE WILL WRITE (the fix round of 22 Nov 26 — the three readers' find;
+     his D2243 Q1): the image carried neither, so a draft of ALL AVAIL / ALL alone was read by the home of nobody — the
+     demo's fallback squadron. 149's admin and members were refused their own squadron's ALL AVAIL meeting at this door,
+     and never offered ALL AVAIL in the Person list, while 142's people passed for any squadron; the gate itself judged
+     the saved record rightly. A new draft's stamp is the squadron its window files on (`draft.u`, else the page's own —
+     filedOn, the save's own answer); an existing input's is settled as its save settles it (commitInput). */
+  if (!rec) { const mine = me(); if (mine != null && out.by == null) out.by = String(mine); settleStamp(out, filedOn(draft)) }
+  else if (!ownTakeOutOf(rec, people.map(String))) settleStamp(out, inputUnitOf(rec))
   return out
+}
+/* a member's own "Take me out": he alone leaves, nobody joins — the save writes nothing but his own entry, the stamp
+   included (commitInput), so the image writes none either */
+function ownTakeOutOf(rec: any, next: readonly string[]): boolean {
+  const mine = me()
+  if (canEditSched() || mine == null || !rec) return false
+  const have = idsOf(rec).map(String), haveSet = new Set(have), nextSet = new Set(next)
+  return next.every(p => haveSet.has(p)) && have.filter(p => !nextSet.has(p)).join() === String(mine)
 }
 /** whom the picker offers for this draft: a man where the draft with him added passes (with him in place of the one
  *  person, or beside those picked, `several`); a man already picked always stays — nothing is substituted for what he
@@ -118,8 +134,13 @@ export function whoDoorRefusal(before: any | null, after: any | null): string | 
 function acrossMoveWords(pid: string | null, before: any, after: any): string | null {
   if (pid == null || !isLeave((after || before || {}).type)) return null
   const numOf = (u: string | null) => (u ? String(unitById(u)?.num ?? u) : '')
-  for (const img of [after, before]) {
-    const sp = img ? inputSpanIso(img) : null
+  /* the leave as the save would leave it, as it stands — and THE CHANGE ITSELF, from the earlier first day to the later
+     last one (the schedule-side re-walk of 22 Nov 26, item (c)): a one-day leave on Tue 14 moved to Thu 16 runs across
+     his move in neither image, yet the move of it does — the calendar's drag and the window's Save said the gate's bare
+     words for it */
+  const spA = after ? inputSpanIso(after) : null, spB = before ? inputSpanIso(before) : null
+  const both: [string, string] | null = spA && spB ? [spA[0] < spB[0] ? spA[0] : spB[0], spA[1] > spB[1] ? spA[1] : spB[1]] : null
+  for (const sp of [spA, spB, both]) {
     if (!sp) continue
     const d = homeChangesOn(pid, sp[0], sp[1])[0]
     if (!d) continue
@@ -999,8 +1020,9 @@ export function fileForOtherRefusal(type: any): string {
 const filedOn = (draft: any): string => (isUnitId(draft && draft.u) ? String(draft.u) : pageUnit('own', todayIso()))
 /* …and the stamp follows who is in it as a save changes them, so his two routes end the same (D755 reading (a) —
    ui/phmember.test.tsx T1): filed for ALL AVAIL, or filed for Ranger, ALL AVAIL dropped on and Ranger taken off — both
-   stamped with the squadron the input stood on. ALL AVAIL / ALL alone keeps a stamp it has, else takes `was` (the
-   squadron the input was before the save — its people's, or its own stamp), else the page's own; anyone named, none. */
+   stamped with the squadron the input stood on. An input holding ALL AVAIL / ALL keeps a stamp it has — men named in
+   it or not, since the fix round of 22 Nov 26 — else takes `was` (the squadron the input was before the save — its
+   people's, or its own stamp), else the page's own; one holding neither, none. */
 /* (one body with a man's delete since the sign-in kinds night, 21 Nov 26 — engine/inputs.ts settleStamp) */
 const settleStamp = (r: any, was: string | null): void => settleStampOf(r, isUnitId(was) ? String(was) : null, () => pageUnit('own', todayIso()))
 export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, entryEnd?: any, onAdded?: (row:any)=>void): boolean {
@@ -1948,6 +1970,11 @@ export function removeInput(r: any) {
   /* AN UPCHIT DELETED GIVES THE DOWNCHIT IT CUT ITS DAYS BACK (owner D1022, 18 Oct 26 — as a moved one does, D999), in the
      same command: one Undo step puts back the upchit and the cut together. Every door that deletes one says so first
      (upchitDeleteAsk, below); this is the write, whoever asked. A give-back onto a locked day is refused whole. */
+  /* THE WHO-RULE, ASKED BEFORE THE GATE AS THE SAVE ASKS IT (the fix round of 22 Nov 26, Fable's read F4 (a)): Hunter,
+     142's admin, deleting Ranger's leave that runs across his move was told the gate's bare "Blocked: nothing was kept"
+     — the Delete now says his approved words (D2240, whoDoorRefusal), and any other refusal by the rule as before. */
+  const whoWhy = whoDoorRefusal(r, null)
+  if (whoWhy) { HOOKS.toast(whoWhy, 'blocked'); return false }
   const back = upchitDeletePlan(r).map((p: any) => ({ ...p, why: 'given back by a deleted upchit' }))
   if (back.length && medPlanProtected(back)) { medicalLocked(); return false }
   return saveBatch(() => { if (back.length) applyMedPlan(back); dropInputRow(r) })
@@ -2167,14 +2194,13 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
         /* a person a member adds is a change of the input: it takes a scheduler's LATE drop off (owner D1620) */
         if (added.length && !scheduler && !schedSide(opts)) delete r.lateOff
         for (const p of added) putPerson(r, p, st)
-        /* (left with ALL AVAIL / ALL alone it stays on the squadron it stood on; a man added, it follows its people — C3).
-           On a member's own take-out too (his D2243 Q1): unstamped, the input read its filer's squadron — the master
-           admin's 149 meeting moved to 142's schedule when the 149 man he had added took himself out. The commit gate
-           lets him change nothing but his own entry (state/perms.ts ownPart, D770 — onerecord-write OR29) and, with it,
-           this one stamp: the squadron the input stood on with him in it. Where that is not known the stamp waits —
-           the page's own squadron is not his to write there, and the gate would refuse his whole take-out */
+        /* (an input holding ALL AVAIL / ALL keeps the squadron it was filed on, men named in it or not — C3, his D2243 Q1,
+           engine/inputs.ts settleStamp; while a man is named it is read by its people).
+           A member's own take-out writes NO stamp (the fix round of 22 Nov 26): the stamp is carried from the filing on,
+           so his take-out leaves it exactly as it was — the commit gate lets him change nothing but his own entry
+           (state/perms.ts ownPart, D770 — onerecord-write OR29), and a stamp differing before and after is refused. */
         const ownTakeOut = !scheduler && mine != null && !added.length && gone.length === 1 && gone[0] === String(mine)
-        if (!ownTakeOut || isUnitId(unitWas)) settleStamp(r, unitWas)
+        if (!ownTakeOut) settleStamp(r, unitWas)
         /* …and an input filed for ALL AVAIL / ALL is never under Unavailable — it goes back onto the programme (the
            same rule the one-person save keeps, commitInputEdit; found by the re-expressed tests, 12 Oct 26) — a
            scheduler's move, marked (his D1388; the code read's F2: unmarked, its filer could send it back) */

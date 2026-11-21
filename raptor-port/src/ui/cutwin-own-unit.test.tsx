@@ -7,7 +7,8 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { useMsqWorld as useWorld, signInAs } from '../test-support/msq-world'
 import { setGrant } from '../state/units'
-import { notify } from '../state/store'
+import { notify, switchUnit } from '../state/store'
+import { pageUnit } from '../state/perms'
 import { UNIT } from '../engine/unitview'
 import { VCONF } from '../engine/rules'
 import { unitSetting } from '../engine/hooks'
@@ -64,6 +65,10 @@ describe('the cut-off by squadron', () => {
 describe('the settings windows by squadron', () => {
   it("the SANS calendar's window opened for 149 shows and saves 149's cut-off; opened again with no squadron named, the pick's", () => {
     setup()
+    /* (setup only, the fix round of 22 Nov 26: a window a page's door names closes once the page is another squadron's
+       — state/cutoff.ts winStale — so the gear is pressed on the page it belongs to: 149 picked, his own pages 149's) */
+    act(() => { switchUnit('u149') })
+    expect(pageUnit('own')).toBe('u149')
     render(<SansSettings />)
     act(() => { openWinFor('sans', 'u149'); setSansSet(true); notify() })
     expect((t('sset-lead') as HTMLInputElement).value, "149's").toBe('10')
@@ -71,19 +76,21 @@ describe('the settings windows by squadron', () => {
     fireEvent.click(t('sset-save'))
     expect(SANSSET, 'saved and closed').toBe(false)
     expect(getCut('sans', 'u149').lead).toBe(12)
-    expect(getCut('sans').lead, "142's untouched").toBe(14)
+    expect(getCut('sans', 'u142').lead, "142's untouched").toBe(14)
+    act(() => { switchUnit('u142') })
     act(() => { setSansSet(true); notify() })                    // the Logic page's door: no squadron named
     expect(t('sset-mode-wd').getAttribute('aria-pressed'), "the pick's — 142's standard, a weekday weeks before").toBe('true')
   })
 
   it("the Inputs calendar's window opened for 149 saves 149's inputs cut-off, the pick's left", () => {
     setup()
+    act(() => { switchUnit('u149') })                            // (setup only, as above: the gear of 149's own page)
     render(<InputsSettings />)
     act(() => { openWinFor('inputs', 'u149'); setInpSet(true); notify() })
     fireEvent.change(t('iset-lead'), { target: { value: '20' } })
     fireEvent.click(t('iset-save'))
     expect(INPSET).toBe(false)
     expect(getCut('inputs', 'u149').lead).toBe(20)
-    expect(getCut('inputs').lead).toBe(14)
+    expect(getCut('inputs', 'u142').lead).toBe(14)
   })
 })

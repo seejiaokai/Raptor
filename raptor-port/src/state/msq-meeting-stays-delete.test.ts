@@ -40,7 +40,8 @@ describe("a 149 ALL AVAIL meeting the master admin filed, a 149 man added, and t
     const iid = file('u149', '149 brief delete', ['allavail'])
     expect(byIid(iid).u, 'control: stamped where it was filed').toBe('u149')
     expect(setPeople(iid, ['allavail', PID.osprey]), 'Saber adds Osprey').toBe(true)
-    expect(byIid(iid), 'control: a man named, the stamp is dropped (he places it)').not.toHaveProperty('u')
+    /* (to the ruling, the fix round of 22 Nov 26 — his D2243 Q1: the stamp is carried while a man is named) */
+    expect(byIid(iid).u, 'control: a man named, the stamp is carried').toBe('u149')
     sits(iid, 'u149', 'u142', 'with Osprey in it')
     expect(deletePerson(PID.osprey), 'Saber deletes Osprey').toBeNull()
     expect(holds(byIid(iid), PID.osprey), 'he is out of it').toBe(false)
@@ -65,13 +66,13 @@ describe('controls — the same on both sides of the fix', () => {
     expect(holds(byIid(iid), PID.ranger)).toBe(false)
     sits(iid, 'u142', 'u149', 'after Ranger was deleted')
   })
-  it('Osprey deleted from an input that still names another 149 man: no stamp is written', () => {
+  it('Osprey deleted from an input that still names another 149 man: the stamp stays as it was', () => {
     const iid = file('u149', '149 several delete', ['allavail', PID.osprey, PID.kestrel])
     expect(deletePerson(PID.osprey)).toBeNull()
     const r = byIid(iid)
     expect(holds(r, PID.osprey)).toBe(false)
     expect(holds(r, PID.kestrel)).toBe(true)
-    expect(r).not.toHaveProperty('u')
+    expect(r.u).toBe('u149')
     sits(iid, 'u149', 'u142', 'Kestrel still in it')
   })
 })

@@ -24,7 +24,7 @@ import { isAdmin } from '../state/perms'
 import { notify } from '../state/store'
 import { getTones, saveTones, type FlySave } from '../state/flyplan'
 import { validTones } from '../state/flyplan-model'
-import { cutProblem, forgetWin, getCut, openWinFor, saveCut, winUnit, type CutRule } from '../state/cutoff'
+import { cutProblem, forgetWin, getCut, openWinFor, saveCut, winStale, winUnit, type CutRule } from '../state/cutoff'
 import { CALMONTH } from '../state/view'
 import { FloatWin } from './FloatWindow'
 import { bringForward, openBeside } from './winorder'
@@ -35,7 +35,8 @@ import { useVersion } from './useStore'
 
 export function SansSettings({ unit }: { unit?: string } = {}) {
   useVersion()
-  const refused = SANSSET && !isAdmin()
+  /* …and it goes with its page's squadron (state/cutoff.ts winStale — the fix round of 22 Nov 26) */
+  const refused = SANSSET && (!isAdmin() || (unit === undefined && winStale('sans')))
   useEffect(() => { if (refused) setSansSet(false) }, [refused])
   /* THE SQUADRON IT EDITS (the reshape plan §3.2 A-ii; the host's ruling of 21 Nov 26): the page it was opened from —
      `unit` when handed in, else what its door named (state/cutoff.ts openWinFor: a calendar's gear its own squadron),

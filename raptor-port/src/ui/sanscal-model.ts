@@ -15,8 +15,9 @@
      group's head-count is people, and equals the figure the date shows. A commitment of a man the count leaves out
      (no longer SANS, archived, not aircrew) is listed apart with the reason: the SANS calendar has no List (D620), so
      this window is the only place such a record can be reached and removed. */
-import { INPUTS, inputCoversDate, isSansAvail, isLateInput, inputOwnDueISO, cutRuleText, namedOf } from '../engine/inputs'
+import { INPUTS, inputCoversDate, isSansAvail, isLateInput, inputOwnDueISO, cutRuleWords, namedOf } from '../engine/inputs'
 import { getCut } from '../state/cutoff'
+import { pageUnit } from '../state/perms'
 import { PEOPLE } from '../engine/people'
 import { hhmm } from '../engine/time'
 import type { DayAnswer, Tone } from '../state/flyplan-model'
@@ -79,11 +80,14 @@ export function cutSentence(set: 'sans' | 'inputs' = 'sans', verb = 'Commit'): s
  *  late input date which is in this case Wednesday two weeks etc"): `cut` is the one thing a man must remember - "the
  *  end of the Wednesday two weeks before", "at least 3 days before" - and changes with the setting, as the sentence
  *  does (D628). One body, so the sentence a screen reads and the words it marks cannot drift apart. */
-export function cutParts(set: 'sans' | 'inputs' = 'sans', verb = 'Commit'): { before: string; cut: string; after: string } {
-  const c = getCut(set)
-  if (c.mode === 1) return { before: `${verb} by `, cut: `the end of ${cutRuleText(set)}`, after: `${c.weeks > 1 ? ' the week' : ''}.` }
+/*  OF THE PAGE'S OWN SQUADRON (the fix round of 22 Nov 26, Fable's read F6): both calendars are own pages, and their late
+ *  marks and settings windows already read the page's squadron's rule — this sentence read the PICK's, so Hunter, 142's
+ *  admin with View of 149 and 149 picked, was told 149's cut-off on his own SANS calendar. */
+export function cutParts(set: 'sans' | 'inputs' = 'sans', verb = 'Commit', unit: string = pageUnit('own')): { before: string; cut: string; after: string } {
+  const c = getCut(set, unit), words = cutRuleWords(c.mode, c.lead, c.wd, c.weeks)
+  if (c.mode === 1) return { before: `${verb} by `, cut: `the end of ${words}`, after: `${c.weeks > 1 ? ' the week' : ''}.` }
   if (c.lead > 0) return { before: `${verb} `, cut: `at least ${c.lead} day${c.lead === 1 ? '' : 's'} before`, after: ' the week starts.' }
-  return { before: `${verb} by `, cut: `the end of ${cutRuleText(set)}`, after: '.' }
+  return { before: `${verb} by `, cut: `the end of ${words}`, after: '.' }
 }
 
 /** a commitment's hours, as the opened day prints them (D572: "show their available hours") */

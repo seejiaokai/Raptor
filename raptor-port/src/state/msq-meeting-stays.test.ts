@@ -47,7 +47,9 @@ describe("a 149 ALL AVAIL meeting the master admin filed, a 149 man added and ta
     expect(byIid(iid).u, 'control: stamped where it was filed').toBe('u149')
     sits(iid, 'u149', 'u142', 'filed')
     expect(setPeople(iid, ['allavail', PID.osprey]), 'Saber adds Osprey').toBe(true)
-    expect(byIid(iid), 'control: a man named, the stamp is dropped (he places it)').not.toHaveProperty('u')
+    /* (to the ruling, the fix round of 22 Nov 26 — his D2243 Q1, Opus's read F3: the stamp is KEPT while a man is named;
+       the readers stay named-first, so he still places it) */
+    expect(byIid(iid).u, 'control: a man named, the stamp is carried').toBe('u149')
     sits(iid, 'u149', 'u142', 'with Osprey in it')
     signInAs('osprey')
     expect(takeMeOut(iid, PID.osprey), 'his own take-out is saved').toBe(true)
@@ -64,7 +66,7 @@ describe("a 149 ALL AVAIL meeting the master admin filed, a 149 man added and ta
     const u = globalUndo()
     expect(u.ok, JSON.stringify(u.reason)).toBe(true)
     expect(holds(byIid(iid), PID.osprey), 'back in').toBe(true)
-    expect(byIid(iid), 'a man named again: no stamp').not.toHaveProperty('u')
+    expect(byIid(iid).u, 'a man named again: the stamp as it was').toBe('u149')
     sits(iid, 'u149', 'u142', 'after his Undo')
   })
 })
@@ -79,14 +81,14 @@ describe('controls — the same on both sides of the fix', () => {
     sits(iid, 'u142', 'u149', 'after Ranger took himself out')
   })
 
-  it('Osprey takes himself out of an input that still names another man: no stamp is written', () => {
+  it('Osprey takes himself out of an input that still names another man: the stamp is left exactly as it was', () => {
     const iid = file('u149', '149 several', ['allavail', PID.osprey, PID.kestrel])
     signInAs('osprey')
     expect(takeMeOut(iid, PID.osprey)).toBe(true)
     const r = byIid(iid)
     expect(holds(r, PID.osprey)).toBe(false)
     expect(holds(r, PID.kestrel)).toBe(true)
-    expect(r).not.toHaveProperty('u')
+    expect(r.u).toBe('u149')
     sits(iid, 'u149', 'u142', 'Kestrel still in it')
   })
 
@@ -97,7 +99,7 @@ describe('controls — the same on both sides of the fix', () => {
     const out = (r: any) => { r.people = r.people.filter((e: any) => String(e.p) !== PID.osprey) }
     expect(writeInputsBatch(() => { const r = byIid(iid); out(r); r.u = 'u142' }), 'forged stamp refused').toBe(false)
     expect(holds(byIid(iid), PID.osprey), 'rolled back: he is still in it').toBe(true)
-    expect(byIid(iid)).not.toHaveProperty('u')
+    expect(byIid(iid).u, 'the stamp it was filed with').toBe('u149')
     sits(iid, 'u149', 'u142', 'after the refused forgery')
     /* a squadron that is not one at all, and his take-out with something else changed beside it */
     expect(writeInputsBatch(() => { const r = byIid(iid); out(r); r.u = 'u999' }), 'a made-up squadron refused').toBe(false)
@@ -110,10 +112,12 @@ describe('controls — the same on both sides of the fix', () => {
     const iid = file('u149', '149 stay', ['allavail'])
     expect(setPeople(iid, ['allavail', PID.osprey, PID.kestrel])).toBe(true)
     signInAs('osprey')
-    expect(writeInputsBatch(() => { byIid(iid).u = 'u149' }), 'a stamp with nobody leaving').toBe(false)
-    expect(writeInputsBatch(() => { const r = byIid(iid); r.people = r.people.filter((e: any) => String(e.p) !== PID.osprey); r.u = 'u149' }),
-      'a stamp on an input Kestrel is still named in').toBe(false)
-    expect(byIid(iid)).not.toHaveProperty('u')
+    /* (the stamp is carried while men are named — the fix round of 22 Nov 26, his D2243 Q1 — so the stamp he may not
+       write is ANOTHER one) */
+    expect(writeInputsBatch(() => { byIid(iid).u = 'u142' }), 'another stamp with nobody leaving').toBe(false)
+    expect(writeInputsBatch(() => { const r = byIid(iid); r.people = r.people.filter((e: any) => String(e.p) !== PID.osprey); r.u = 'u142' }),
+      'another stamp on an input Kestrel is still named in').toBe(false)
+    expect(byIid(iid).u, 'the stamp it was filed with').toBe('u149')
   })
 
   it("a member takes himself out of his own squadron's input of several people: saved, nothing else changed", () => {

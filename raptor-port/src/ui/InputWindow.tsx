@@ -662,7 +662,7 @@ export function InputEditor() {
        just closes, below). His approved words for leave across a move (ui/inputedit.ts whoDoorRefusal), in the grey
        refusal note as drawn (docs/mock/2026-11-20-multi-sqn-reshape/ 8b). */
     if (draft && !unchangedSave()) {
-      const why = whoDoorRefusal(isNew ? null : r, draftImage(isNew ? null : r, draft, whoFor()))
+      const why = whoDoorRefusal(isNew ? null : r, draftImage(isNew ? null : r, doorDraft(), whoFor()))
       if (why) { HOOKS.toast(why, 'blocked'); return }
     }
     if (grouped && draft) {
@@ -837,7 +837,10 @@ export function InputEditor() {
   const whoFor = (): string[] => (picker ? ppl : draft ? [draft.person != null && draft.person !== '' ? draft.person : me()] : [])
     .filter(p => p != null && p !== '').map(String)
   const firstDay = (draft && draft.start) || todayIso()
-  const offers = draft && !readOnly ? offersFor(isNew ? null : r, draft, whoFor(), picker && several) : undefined
+  /* the draft as the save hands it on — a new one with the squadron its window files on (saveNow) — so the Person list,
+     the save door and the save judge one image (ui/inputedit.tsx draftImage; the fix round of 22 Nov 26) */
+  const doorDraft = () => (isNew && draft ? { ...draft, u: pickUnit } : draft)
+  const offers = draft && !readOnly ? offersFor(isNew ? null : r, doorDraft(), whoFor(), picker && several) : undefined
   /* a save that would change nothing just closes (saveNow, below) — so the door above asks nothing of it */
   const unchangedSave = (): boolean => {
     if (isNew || !r || !draft) return false

@@ -47,11 +47,13 @@ describe('C3 — the stamp at each filing door', () => {
     expect(mine.find((x: any) => x.remarks === 'c3 one')?.u).toBe('u142')
     expect(mine.find((x: any) => x.remarks === 'c3 named')).not.toHaveProperty('u')
   })
-  it('a save of several naming a man beside ALL AVAIL is not placeholder-only, so it carries no stamp', () => {
+  /* (to the ruling, the fix round of 22 Nov 26 — his D2243 Q1, Opus's read F3: an input holding ALL AVAIL carries the
+     squadron it was filed on while men are named in it too; it is still READ by its people until they leave) */
+  it('a save of several naming a man beside ALL AVAIL carries the stamp it was filed with', () => {
     signInAs('saber')
     const had = new Set(INPUTS.map((x: any) => x.iid))
     expect(commitInput(null, { type: 'Meeting', start: '2026-07-21', allday: true, remarks: 'c3 both', u: 'u142' }, ['allavail', 'bane'])).toBe(true)
-    expect(INPUTS.find((x: any) => !had.has(x.iid))).not.toHaveProperty('u')
+    expect(INPUTS.find((x: any) => !had.has(x.iid)).u).toBe('u142')
   })
   it('with no squadron handed in, the save stamps the page\'s own squadron', () => {
     signInAs('saber')

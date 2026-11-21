@@ -803,12 +803,17 @@ export function isPlaceholderInput(inp:any){return !!inp&&!!placeholderOf(inp);}
 /* THE SQUADRON STAMP FOLLOWS WHO IS IN THE INPUT (C3, his D2243 Q1 — an ALL AVAIL meeting stays on the squadron it was
    filed on), ONE BODY for every door that changes who an input names: the input's own window (ui/inputedit.tsx) and a
    man's delete (state/person-delete.ts applyDelete — the sign-in kinds night, 21 Nov 26: Osprey deleted out of a 149
-   meeting left it naming nobody with no stamp, read by its filer's home, 142). Anyone named: no stamp — he places it.
-   ALL AVAIL / ALL alone: it keeps a stamp it has, else takes `was` (the squadron the input was before the change —
-   inputUnitOf, asked BEFORE the man is taken out), else `page`'s answer where the door has a page (the window's own). */
+   meeting left it naming nobody with no stamp, read by its filer's home, 142).
+   AN INPUT HOLDING ALL AVAIL / ALL KEEPS ITS STAMP WHILE MEN ARE NAMED IN IT TOO (the fix round of 22 Nov 26, Opus's read
+   F3 — his D2243 Q1). The stamp used to be dropped the moment anyone was named, and found again from the man taken out:
+   Kestrel's 149 meeting, Osprey added, Osprey moved to 142, Osprey taking himself out — stamped 142, on 142's schedule.
+   Now: no ALL AVAIL / ALL in it — no stamp, its people place it. One in it — it keeps a stamp it has, else takes `was`
+   (the squadron the input was before the change — inputUnitOf, asked BEFORE the change), else `page`'s answer where
+   the door has a page (the window's own). The READERS stay named-first (inputSquadrons, inputOnDay, inputUnitOf):
+   while a man is named the stamp is only carried, read again once ALL AVAIL / ALL stands alone. */
 export function settleStamp(r:any,was:string|null,page?:()=>string|null):void{
-  if(namedOf(r).length){delete r.u;return;}
-  if(isPlaceholderInput(r)&&r.u==null){const u=was||(page?page():null); if(u)r.u=u;}}
+  if(!isPlaceholderInput(r)){delete r.u;return;}
+  if(r.u==null){const u=was||(page?page():null); if(u)r.u=u;}}
 export function placeholderProblem(inp:any):string{
   if(!isPlaceholderInput(inp))return '';
   const ph=placeholderOf(inp).p;
@@ -1223,11 +1228,16 @@ const CUT_WD=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sun
 const CUT_N=['','one','two','three','four','five','six','seven','eight'];
 export function cutRuleText(set:any){
   const k=CUT_KEYS[set==='sans'?'sans':'inputs'];
-  if(VCONF[k[1]]===1){
-    const wk=Math.min(8,Math.max(1,Math.floor(+VCONF[k[3]])||1)), wd=Math.min(6,Math.max(0,Math.floor(+VCONF[k[2]])||0));
+  return cutRuleWords(VCONF[k[1]],VCONF[k[0]],VCONF[k[2]],VCONF[k[3]]);
+}
+/* …the same words from a rule's four values, whichever squadron's they are (the fix round of 22 Nov 26, Fable's read F6:
+   an own calendar states its OWN squadron's rule, which is not VCONF when another squadron is picked — ui/sanscal-model.ts) */
+export function cutRuleWords(mode:any,lead:any,wdIn:any,weeks:any){
+  if(mode===1){
+    const wk=Math.min(8,Math.max(1,Math.floor(+weeks)||1)), wd=Math.min(6,Math.max(0,Math.floor(+wdIn)||0));
     return wk===1?`the ${CUT_WD[wd]} of the week before`:`the ${CUT_WD[wd]} ${CUT_N[wk]} weeks before`;
   }
-  const n=cutBackDays(set);
+  const n=cutBackOf(mode,lead,wdIn,weeks);
   return n===0?'the Monday the week starts':`${n} day${n===1?'':'s'} before the week starts`;
 }
 /* a week-start ISO date → that week's input deadline (its Monday minus the
