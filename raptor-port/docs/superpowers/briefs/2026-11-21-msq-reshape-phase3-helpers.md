@@ -76,3 +76,29 @@ drawing `raptor-port/docs/mock/2026-11-20-multi-sqn-reshape/page.html` §7 with 
 3. **R6 of the blind read** (dormant until P1/P3): `notify()` re-enters when `pageUnit('own', today)` differs from the
    loaded war's or Tracker's squadron, or the pick has no readable right behind it (`perms.ts pickStandsOn(iso)`, the
    host's), with the hold as at midnight. Its tests drive `switchUnit` and a right's end directly.
+
+## ITEMS — helper "guest" (branch `guest`) — B2: the guest view removed (his D2239, the plan §8)
+Read: the plan §8 (B2's paragraph and its change of 20 Nov 26), §1 B2; D2239's full row (it replaces D221, D215, D213 and
+narrows D204 — joining both ways stands, its guest-view option goes; a "guest from another community" (D289, D296) is a
+borrowed flyer, NOT this view, and is untouched); the People & accounts page §How a person joins. Your files:
+`ui/GuestApp.tsx` (removed), `ui/App.tsx`, `ui/AccessScreen.tsx` (the waiting screen's "View the schedule" button),
+`ui/UsersPanel.tsx` (the Admin "Guest view" switch only), `ui/html.ts` (its guest branches), `ui/icons.tsx` and
+`ui/topbarvar.ts` (their notes naming GuestApp), `state/accounts.ts` (`GUESTVIEW`, `setGuestView`, the sign-in's `guest`
+answer and the waiting screen's way into it), `state/auth.ts` (its note), `state/perms.ts` (the guest role's cells ONLY —
+`Role`, `MEDICAL_DETAIL`, `roleOf`'s and the account-role reader's `guest`, `isGuest` and its readers; helper "holidays"
+writes 7e of the same file at the same time — do not touch any other part), `command/actor.ts`, `command/types.ts`,
+`state/changebatch.ts`, `storage/keyowner.ts` (the `guestview` setting, if it is named there), the `guestview.set` intent
+wherever it is registered, their tests. NOT yours: `state/store.ts` (helper "session"'s) — its one `'Guest'` label
+(about l.1053): give the exact line to delete in your report, and the host deletes it at merge.
+1. **Remove it, whole:** a person who asked for access sees only the waiting screen until an admin of his squadron
+   approves him (sign-in answers `waiting`, never `guest`); no Admin switch; no button on the waiting screen; no guest
+   session, app or role. A stored `guestview` value is left where it lies and read by nothing (D56). Every test that pins
+   the guest view is rewritten to pin its absence — each named in your report, none deleted (§9.3); a test that only
+   uses a guest as a stand-in for "not signed in as a member" is moved onto a waiting person, its assertion kept.
+2. **B2's proofs:** `b-b02-guest-switch-149` and `b-b02b-guest-switch-shared-store` rewritten to "no squadron's switch
+   exists" — the switch is gone from Admin, `signIn` of a person waiting answers `waiting` whatever was stored — red on
+   BASECOMMIT, green after.
+3. **The documents are the host's** (`ui-contracts.md` §The access screens and the guest view, `data-model.md` §11's guest
+   cells): list in your report every passage that names the guest view, file and heading, for the host to rewrite.
+Nothing new on screen: the waiting screen loses a button; say in your report what the screen shows without it, and
+whether anything moves up into its place (a roll-call row: a removed control).
