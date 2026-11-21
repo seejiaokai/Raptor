@@ -1040,7 +1040,10 @@ function loadLineDefaults() {
 async function saveLayout() {
   saveEdgeMeta();
   if (firstFinger && !TRK_RESTORING && !TRK_IN_RESTORE) { firstFinger.save = true; return; }
-  await sSet(kLayout(), JSON.stringify(layout));
+  const refusedBefore = TRK_REFUSED_N;
+  const p = sSet(kLayout(), JSON.stringify(layout));
+  if (TRK_REFUSED_N !== refusedBefore) dropRefusedStep();
+  await p;
 }
 
 const kSyls = c => SYL_NS + ':syls';                       /* syllabus definitions: global */
@@ -3080,7 +3083,24 @@ export let tool = 'move'; let connectSrc = null, undoStack = [], pan = null;
    every student ticked, is ONE step — a GROUP entry { group: [steps], what } —
    that takes them all back together and leaves the picker where it is. */
 function trimUndo() { if (undoStack.length > 60) undoStack.shift(); }
-function pushUndo() { undoStack.push({ syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }); trimUndo(); redoStack = []; notify(); }
+function pushUndo() { pushChartStep({ syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }); }
+/* A CHART EDIT WHOSE SAVE IS REFUSED LEAVES NO STEP BEHIND (the reshape walk RS, item (b), 22 Nov 26). A chart edit puts
+   its Undo step on the list (and may light ✓ Save changes) BEFORE its save; a refused save (trkRefused — after a man's
+   squadron move, say) put the chart back from the store, but the step and the button stayed: the step took back
+   nothing, its Undo passed the gate for want of any change, lit ✓ Save changes, and that press read "● saved" with
+   nothing stored. `lastPush` is the step a chart edit last put on the list, with the Redo list and ✓ Save changes as they
+   were before it; a refused save whose chart is back where that step began removes the step and puts those back. */
+let lastPush = null;
+function pushChartStep(entry) {
+  lastPush = { entry, redo: redoStack, dirty: sylDirty };
+  undoStack.push(entry); trimUndo(); redoStack = []; notify();
+}
+function chartStepIsNoop(u) { return !!u && !u.group && u.who == null && u.syl === JSON.stringify(SYL) && u.lay === JSON.stringify(layout); }
+function dropRefusedStep() {
+  const lp = lastPush; lastPush = null;
+  if (!lp || undoStack[undoStack.length - 1] !== lp.entry || !chartStepIsNoop(lp.entry)) return;
+  undoStack.pop(); redoStack = lp.redo; sylDirty = lp.dirty; notify();
+}
 /* A snapshot also notes which of the four records were STORED when it was taken ([TRK-UNDO-WRITES-DEFAULTS], 17 Oct 26):
    a student's pace, lull periods and dates are filled with their defaults in memory the moment his chart opens, stored
    or not, so the first ↶ of a mark wrote a pace, an empty lull list and a dates record nobody had made, and left his
@@ -4319,7 +4339,7 @@ function moveGroup(ev) {
   if (!groupDrag) return; const p = svgPt(ev); let dx = p.x - groupDrag.px, dy = p.y - groupDrag.py;
   /* the group stops as a whole where its first ball would pass the chart's start (onChart) — it keeps its shape */
   for (const bid of selBalls) { const st = groupDrag.start[bid]; if (!st) continue; dx = Math.max(dx, BALL_HALF - st.x); dy = Math.max(dy, BALL_HALF - st.y); }
-  if (!groupDrag.moved && !groupDrag.pushed) { undoStack.push(groupDrag.snap); trimUndo(); redoStack = []; groupDrag.pushed = true; notify(); }
+  if (!groupDrag.moved && !groupDrag.pushed) { pushChartStep(groupDrag.snap); groupDrag.pushed = true; }
   groupDrag.moved = true;
   selBalls.forEach(bid => {
     const st = groupDrag.start[bid]; const nx = st.x + dx, ny = st.y + dy; layout[bid] = { x: nx, y: ny };
@@ -4345,7 +4365,7 @@ function startDrag(ev) {
 function onDrag(ev) { if (drag) drag.fe.point(ev); moveBall(ev); }
 function moveBall(ev) {
   if (!drag) return; const p = svgPt(ev); let nx = p.x - drag.dx, ny = p.y - drag.dy;
-  if (!drag.moved && !drag.pushed) { undoStack.push(drag.snap); trimUndo(); redoStack = []; drag.pushed = true; notify(); }
+  if (!drag.moved && !drag.pushed) { pushChartStep(drag.snap); drag.pushed = true; }
   /* smart-align: snap to any other ball's x or y within threshold */
   const TH = 6; alignGuides = []; let gx = null, gy = null;
   SYL.forEach(e => {
