@@ -152,11 +152,16 @@ describe("Fable 2 — a folded leave's filer is told only for his own leave's da
     const joined = INPUTS.filter((r: any) => r.lw && r.date === 'Jul 27' && r.endDate === 'Jul 29').length
     return { joined, fresh: NOTICES.filter(n => !ids.has(n.id)) }
   }
+  /* REWRITTEN TO A RULING'S OUTCOME (the reshape plan §9.3 — helper "war", A7, 21 Nov 26): his D2243 (Q3) — a war's change
+     to a man's day not its squadron's only removes, for everyone — so 142's war no longer approves Ranger's 28th and 29th
+     (149's days) and the bridge cannot join them: the join this pinned is gone. What the test is for stands: Hunter, who
+     never moved, is not told; Ranger is told of each of his two leaves' new remarks, the 27th's and the 29th's (both
+     Inputs, outside any war), once each. */
   it("Ranger 149's from 28 Jul; the bridge joins Hunter's 29th (a 149 day) into Saber's 27th: Hunter, who never moved, is not told", () => {
     const { joined, fresh } = bridgeAcross(true)
-    expect(joined, 'the join took').toBe(1)
+    expect(joined, "the 28th and 29th are 149's: 142's war joins nothing there (D2243 Q3)").toBe(0)
     expect(fresh.filter(n => n.to === 'prowler' && n.what.some((x: any) => x.k === 'rmk')).length).toBe(0)
-    expect(fresh.filter(n => n.to === 'bane' && n.what.some((x: any) => x.k === 'rmk')).length, 'Ranger told once').toBe(1)
+    expect(fresh.filter(n => n.to === 'bane' && n.what.some((x: any) => x.k === 'rmk')).length, 'Ranger told once a leave').toBe(2)
   })
   it('(control) the same bridge with no move: Hunter told once, the line with its squadron mark', () => {
     const { joined, fresh } = bridgeAcross(false)

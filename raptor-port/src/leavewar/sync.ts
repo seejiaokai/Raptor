@@ -27,7 +27,9 @@ import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBa
 import { rosterOf, homeUnitOf, unitPeople } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
 import { qualify } from '../storage/unitid'
-import { balancesLocked, setHiddenIdentityLookup, snapshotNow } from './state/store'
+import { balancesLocked, setHiddenIdentityLookup, snapshotNow, setWarHomeProbe } from './state/store'
+import { setLwManDayProbe } from '../state/perms'
+import type { Change } from '../command/types'
 import { isBalKind, readTypedBalShape, sameSnapshot, type SnapEntry } from './engine/leaveyear'
 import { SESSION, canEditSched } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
@@ -185,7 +187,7 @@ import { MAX_CARRIED_REMARK, MAX_REQ_DOCS } from './engine/warrecs'
 import { docFields, rowDocIds } from '../state/docs'
 import { codeWorth } from './engine/credit'
 import { cs, dm, installInputGate } from './inputgate'
-import { projectPeople, qualCatalogue } from './state/raptorRoster'
+import { projectPeople, qualCatalogue, homeStintsFor, laidHome } from './state/raptorRoster'
 import {
   labelToISO, warVisible, warCounts, absenceSignature, buildAbsenceIndex, inputDates, inputRowFor, isoToInputDate, warInputs, warLines, rosterBody,
   type AbsenceIndex, type WarInput, type InputRead,
@@ -302,6 +304,12 @@ export function installAbsenceDoor(): void {
   /* WHAT A POSTING IS AS SAVED (perms.ts setLwPostingProbe — fix read 13, item B): the posting pass is judged against the
      war's stored profile row, never memory's copy, which a change outside every command rewrites in place */
   setLwPostingProbe(postOutIsSaved)
+  /* A7 — A WAR TAKES A MAN'S DAY ONLY WHERE IT IS ITS SQUADRON'S (the reshape plan §6.2; his D2243 Q3), installed with A1 as
+     one change: the war's own door asks his home on the day (store.ts notThisWarsDay — only while each squadron has a world
+     of its own, as the unit probe above), and the gate's 7b backstop reads `(pid, day)` off a war cell's change
+     (`lw.cell`, id `<war>:<pid>:<date>`, read from the right — a war id may carry a colon — as applyLwRecord reads it) */
+  setWarHomeProbe((pid, iso) => (WORLD_DOOR ? homeOn(pid, iso) : null))
+  setLwManDayProbe(warCellDay)
   /* WHAT A RESTORE'S FOLLOW-UP LINES MAY SAY (perms.ts setFollowUpsProbe — fix read 6, fault B): the one body that writes
      them, so the gate compares a "taken back" or "again" line with what this restore owes, field for field */
   setFollowUpsProbe((moved, dir, notices) => followUpsOwed(moved, dir, notices, hasRead))
@@ -2595,7 +2603,10 @@ function reprojectRoster(): void {
   for (const p of st.people) {
     if (nextIds.has(p.id)) continue
     const rec = st.postOuts[p.id]
-    const kept: Person = rec ? { ...p, ...windowFor(rec, false) } : p
+    /* (A1: his squadron stints read fresh, as the projection lays them — a kept row never carries old ones) */
+    const fresh = laidHome(homeStintsFor(p.id, worldUnit()))
+    const { home: _old, ...bare } = p
+    const kept: Person = rec ? { ...bare, ...windowFor(rec, false), ...fresh } : { ...bare, ...fresh }
     if (kept.to === null) continue
     if (rosterBody(p.id)?.deleted) kept.gone = true
     /* the final code reads (Fable F4, Astra 2 — both, 27 Sep 26): an ARCHIVED man renamed on Admin → Users (Save name)
@@ -2620,7 +2631,7 @@ function reprojectRoster(): void {
   if (JSON.stringify(catalog) !== JSON.stringify(st.qualCatalog)) setQualCatalog(catalog)
   // xq is sorted at projection, so an unchanged qual set compares equal here.
   const sig = (p: Person) =>
-    `${p.callsign}|${p.seat}|${p.band}|${p.sxo ? 1 : 0}|${p.q || ''}|${p.scd ? 1 : 0}|${p.scn ? 1 : 0}|${p.pers ? 1 : 0}|${p.label || ''}|${p.from || ''}|${p.to || ''}|${p.poArchive === undefined ? '' : p.poArchive ? 1 : 0}|${p.poOutcome || ''}|${p.poDone || ''}|${(p.past || []).map(x => `${x.from || ''}~${x.to}`).join(',')}|${p.gone ? 1 : 0}|${p.san ? 1 : 0}|${(p.xq || []).join(',')}`
+    `${p.callsign}|${p.seat}|${p.band}|${p.sxo ? 1 : 0}|${p.q || ''}|${p.scd ? 1 : 0}|${p.scn ? 1 : 0}|${p.pers ? 1 : 0}|${p.label || ''}|${p.from || ''}|${p.to || ''}|${p.poArchive === undefined ? '' : p.poArchive ? 1 : 0}|${p.poOutcome || ''}|${p.poDone || ''}|${(p.past || []).map(x => `${x.from || ''}~${x.to}`).join(',')}|${p.gone ? 1 : 0}|${p.san ? 1 : 0}|${(p.xq || []).join(',')}|${(p.home || []).map(x => `${x.from || ''}~${x.to || ''}`).join(',')}`
   const before = new Map(st.people.map(p => [p.id, sig(p)]))
   const unchanged = before.size === next.length && next.every(p => before.get(p.id) === sig(p))
   if (unchanged) return
@@ -3135,6 +3146,62 @@ export function restoreArchivedAs(id: string, cs: string, postIn?: string): stri
 const OUTCOME_WORD: Record<string, string> = { overseas: 'Overseas Sqn', delete: 'Delete', sans: 'SANS' }
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const dayMon = (iso: string) => `${Number(iso.slice(8, 10))} ${MON[Number(iso.slice(5, 7)) - 1]}`
+
+/* A7 — THE WAR DAY A CHANGE IS ABOUT (perms.ts setLwManDayProbe; the reshape plan §6.2): a war cell's change names its man
+   and day in its id, `<war>:<pid>:<date>`, read from the right (a war id may carry a colon), as applyLwRecord reads it.
+   Any other war record is no man's day. */
+export function warCellDay(c: Change): { pid: string; iso: string } | null {
+  if (c.collection !== 'lw.cell') return null
+  const id = String(c.id)
+  const iDate = id.lastIndexOf(':')
+  const rest = id.slice(0, iDate), iPid = rest.lastIndexOf(':')
+  if (iDate < 0 || iPid < 0) return null
+  const pid = rest.slice(iPid + 1), iso = id.slice(iDate + 1)
+  return pid && /^\d{4}-\d{2}-\d{2}$/.test(iso) ? { pid, iso } : null
+}
+const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+/* the day written as the approved sentence writes it — "Thu 16 Jul" */
+const dowDayMon = (iso: string) => `${DOW[weekday(iso)]} ${dayMon(iso)}`
+/* only removes: every entry left stood before, unchanged, in the same order (perms.ts removesOnly — the gate's rule) */
+function cellRemovesOnly(c: Change): boolean {
+  const b: unknown = c.before ?? null, f: unknown = c.op === 'delete' ? null : c.after ?? null
+  if (f == null || JSON.stringify(b) === JSON.stringify(f)) return true
+  if (!Array.isArray(b) || !Array.isArray(f)) return false
+  let i = 0
+  for (const x of f) {
+    while (i < b.length && JSON.stringify(b[i]) !== JSON.stringify(x)) i++
+    if (i === b.length) return false
+    i++
+  }
+  return true
+}
+/* THE WORDS OF AN UNDO THAT WOULD PUT LEAVE BACK ON A DAY NOW ANOTHER SQUADRON'S (A7's sentence — the reshape plan §11's A7
+   row; approved with the drawing by his D2243, Q3 and Q6): "Ranger is 149's from Thu 16 Jul, so this can't go back into
+   142's Leave War." Said by the timeline before the apply, through its `restoreRefusal` hook (one line wired in
+   state/undo-wire.ts by helper "undo & roles"); the gate's 7b refuses the same restore as a backstop. Judged as the gate
+   judges it: a war cell's change about man P on day d whose squadron on d (his home over the rows now) is not the war
+   loaded's, that adds or changes anything — a removal is never refused (D148: his own earlier entry can still be undone).
+   "from" names the first day of his run in that squadron which holds d. Only while each squadron has a world of its own
+   (the unit probe's rule); null otherwise. */
+export function warDayRefusal(changes: readonly Change[]): string | null {
+  if (!WORLD_DOOR) return null
+  const u = worldUnit()
+  for (const c of changes) {
+    const at = warCellDay(c)
+    if (!at) continue
+    const h = homeOn(at.pid, at.iso)
+    if (!h || h === u || cellRemovesOnly(c)) continue
+    return warDaySentence(at.pid, at.iso, h, u)
+  }
+  return null
+}
+/* the sentence itself, for man `pid`, whose day `iso` is unit `h`'s, refused in unit `u`'s war */
+export function warDaySentence(pid: string, iso: string, h: string, u: string): string {
+  const num = (id: string) => unitList().find(x => x.id === id)?.num ?? id
+  const run = homeStintsFor(pid, h).find(s => (s.from === null || s.from <= iso) && (s.to === null || s.to >= iso))
+  const cs = String((PEOPLE as Record<string, { cs?: unknown }>)[pid]?.cs ?? pid)
+  return `${cs} is ${num(h)}'s from ${dowDayMon(run?.from ?? iso)}, so this can't go back into ${num(u)}'s Leave War.`
+}
 /* D329 (28 Sep 26 — "those on archived should also have a history on how they ended up there and when"; his pick, one
    line): an archived man's row says how and when — "Archived 27 Sep 26 by Saber" (Admin → Users; the admin read by his
    id, so a later rename follows) or "Archived 14 Oct 26 by his posting (Overseas Sqn)". null for a man on the roster,

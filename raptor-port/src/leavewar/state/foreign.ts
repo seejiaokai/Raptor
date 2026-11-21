@@ -105,7 +105,8 @@ function makeStore(unit: string): ForeignWar {
     },
     load: pid => { if (DOOR) slots = { ...slots, [pid]: readForeign(DOOR(unit), pid) } },
     post: pid => slots[pid]?.post ?? null,
-    setPost: (pid, next) => { slot(pid).post = next },
+    /* (a squadron stint is never a posting — the reshape's A1: a row's `home`, laid by the projection, is never saved) */
+    setPost: (pid, next) => { slot(pid).post = next && 'home' in next ? (({ home: _h, ...rest }) => rest)(next) : next },
     recs: pid => slots[pid]?.recs ?? {},
     dropRec: (pid, key) => { delete slot(pid).recs[key] },
     ledger: pid => slots[pid]?.ledger ?? {},

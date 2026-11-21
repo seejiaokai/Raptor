@@ -35,6 +35,7 @@ import {
   MGMT_KEY,
   type GroupDef,
   inSquadron,
+  awayFromHome,
   isBiddable,
   isDuty,
   isMedical,
@@ -2434,10 +2435,18 @@ export const keepsWindow = (p: Person): boolean => p.from !== null || p.to !== n
    now, kept while EITHER end is set — or he has a closed earlier stint (D320) —
    and dropped once all are clear. One body so the ends cannot disagree about
    when the record goes. */
+/* A SQUADRON STINT IS NEVER A POSTING (the multi-squadron reshape, A1 — plan §6.2): the projection lays his stints in this
+   war's squadron on his row (`home`, raptorRoster.ts), fresh on every projection; a posting record saved from that row
+   never carries them, so no move ever reaches a saved posting, the posting tag or Admin → Users */
+export function stripHome(p: Person): Person {
+  if (!('home' in p)) return p
+  const { home: _drop, ...rest } = p
+  return rest
+}
 function windowRecord(people: Person[], id: string): Record<string, Person> {
   const next = { ...state.postOuts }
   const p = people.find(x => x.id === id)!
-  if (keepsWindow(p)) next[id] = p
+  if (keepsWindow(p)) next[id] = stripHome(p)
   else delete next[id]
   return next
 }
@@ -2465,6 +2474,7 @@ export function setPeople(people: Person[]): void {
     return w ? { ...p, ...windowFor(w, state.showSans) } : { ...p }
   })
   const ids = new Set(next.map(p => p.id))
+  /* (a frozen record put back below is a saved posting: it carries no squadron stints — stripHome) */
   /* `.to`, not merely a record (22 Sep 26). The comment above says what this is
      for and says the other half out loud: a body archived WITHOUT a posting-out
      window leaves at once, because that ✕ meant "should never have been here".
@@ -2478,7 +2488,7 @@ export function setPeople(people: Person[]): void {
      back anyway. It lasted a session before, because the boot reader discarded
      a record with no leaving date; now that the reader keeps one (a joining date
      is an official date too), it would have lasted for good. */
-  for (const id of Object.keys(po)) if (!ids.has(id) && po[id].to) next.push(po[id])
+  for (const id of Object.keys(po)) if (!ids.has(id) && po[id].to) next.push(stripHome(po[id]))
   /* AND A WINDOW THAT ARRIVES WITH THE PROJECTION IS RECORDED (the walk's F1 and
      F2, 22 Sep 26 — two reported defects, one cause).
      This body laid the stored record ON but never took one OFF, and the one
@@ -2499,7 +2509,8 @@ export function setPeople(people: Person[]): void {
      this never fires for it; an admin who CLEARS a window leaves no window to
      catch, so a cleared one is never resurrected. */
   const caught: Record<string, Person> = {}
-  for (const p of next) if (!po[p.id] && (p.from != null || p.to != null || (p.past && p.past.length))) caught[p.id] = p
+  /* (A1: the row's squadron stints are never part of what is caught — stripHome) */
+  for (const p of next) if (!po[p.id] && (p.from != null || p.to != null || (p.past && p.past.length))) caught[p.id] = stripHome(p)
   const got = Object.keys(caught).length > 0
   state = withCurrent({ ...state, people: next, ...(got ? { postOuts: { ...po, ...caught } } : {}) })
   /* A CAPTURE IS A PROJECTION, NEVER AN EDIT (the independent code read, F6).
@@ -3351,9 +3362,34 @@ function listAt(personId: string, date: string): readonly WarRec[] {
   return war ? recsAt(war.recs, personId, date) : []
 }
 /** Replace the list at one address, in the war holding the date. */
+/* A WAR TAKES A MAN'S DAY ONLY WHERE THAT DAY IS ITS SQUADRON'S (the multi-squadron reshape, A7 — plan §6.2; his D2243 Q3:
+   for everyone, master admins and Plan holders included). The war's own door: a day his squadron on it is another's (his
+   home that day, asked of the home rows through sync.ts's probe, as the commit gate's 7b backstop asks them) takes
+   nothing new — no bid, no award, no absence, no credit — and keeps only removals: a list whose every entry left stood
+   there unchanged, in the same order (perms.ts removesOnly, the gate's own rule). Unwired (one war on the page), each
+   row's own stints answer, and a man the war has no row of is never refused here. */
+let WAR_HOME: ((pid: string, iso: string) => string | null) | null = null
+export function setWarHomeProbe(fn: ((pid: string, iso: string) => string | null) | null): void { WAR_HOME = fn }
+export function notThisWarsDay(personId: string, date: string): boolean {
+  if (WAR_HOME) { const h = WAR_HOME(personId, date); return !!h && h !== WORLD_UNIT }
+  // eslint-disable-next-line react-doctor/js-index-maps -- one look a write, never a loop over the roster
+  const p = state.people.find(x => x.id === personId)
+  return !!p && awayFromHome(p, date)
+}
+const sameRec = (a: WarRec, b: WarRec): boolean => a === b || JSON.stringify(a) === JSON.stringify(b)
+function removesOnly(before: readonly WarRec[], after: readonly WarRec[]): boolean {
+  let i = 0
+  for (const x of after) {
+    while (i < before.length && !sameRec(before[i]!, x)) i++
+    if (i === before.length) return false
+    i++
+  }
+  return true
+}
 function putList(personId: string, date: string, list: readonly WarRec[]): boolean {
   const war = warHolding(state.wars, date)
   if (!war) return false
+  if (notThisWarsDay(personId, date) && !removesOnly(listAt(personId, date), list)) return false
   updateWar(war.period.id, w => ({ ...w, recs: withList(w.recs, personId, date, list) }))
   return true
 }
@@ -3531,6 +3567,8 @@ function mainAt(personId: string, date: string): Contrib | null {
 export function setCell(personId: string, date: string, code: string, words?: ReqWords): boolean {
   if (!canEditRow(state.role, state.viewer, personId)) return false
   const clean = code.trim().toUpperCase()
+  /* A7: a day that is another squadron's takes no bid here (a clear still goes — it only removes) */
+  if (clean && notThisWarsDay(personId, date)) return false
   if (!clean && !dayWritable(date)) {
     /* a day closed for him: only his own pending bids go (D1225) — never an award, a refused bid or anything else */
     const pend = ownPendingOnClosedDay(personId, date)

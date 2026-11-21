@@ -8,7 +8,7 @@
    Their non-component helpers moved on, whole, to ui/matrixrowparts.ts on 31 Oct 26 (React Doctor, D1534). */
 import { memo, useMemo, type MutableRefObject, type PointerEvent as ReactPointerEvent, type RefCallback } from 'react'
 import { shortDate } from './dates'
-import { addDays, boxText, inSquadron, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, isWeekend, parseCell, legacyViews, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureLines } from '../engine'
+import { addDays, boxText, inSquadron, awayFromHome, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, isWeekend, parseCell, legacyViews, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureLines } from '../engine'
 import type { WarRec } from '../engine/warrecs'
 import { FigureCell } from './FigureCell'
 import { figWords } from './figwords'
@@ -284,7 +284,11 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
         // `to`" direction is a genuine PO.
         /* D320 ([ONE-DOOR], 27 Sep 26): only a day before his FIRST stint is "not yet arrived"; a day in the gap
            between two stints he was here and left — it reads as away, PO with the hatch */
-        const notYetArrived = !here && beforeFirstStint(p, d.date)
+        /* A1 (the multi-squadron reshape §6.2; his D2243 Q6, as drawn): a day outside his squadron stints — before his move
+           here, or after his move away — is the war's "away" hatch with nothing in it: no "PO" (no posting was set), no
+           posting sheet, and anything stored there out of sight (it stays stored; the Transfer batch carries leave across) */
+        const homeAway = awayFromHome(p, d.date)
+        const notYetArrived = !here && (homeAway || beforeFirstStint(p, d.date))
         /* [ARCH-STACK] step 4 — owner answer C (20 Sep 26): leave may be dated
            before someone posts in and after they post out (clearing leave). It
            SHOWS as the leave code — blank-looking before posting-in, with the
@@ -299,7 +303,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
            an Other dragged over his gone days was filed whole but drew a bare "PO", as if two days were skipped. Every filed
            entry now shows as leave does — its box over the hatch, striped (no PO tag since his D1728), counting nobody; an empty gone
            day stays "PO". */
-        const outLeave = !here && !!code && !!view?.main
+        const outLeave = !here && !homeAway && !!code && !!view?.main
         const mark = view?.mark ?? ''
         const cls = [
           here ? '' : 'gone',
@@ -379,7 +383,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
              the posting's hatch round it says the rest; a gone day with nothing filed keeps its bare "PO";
            - `bx-last`: his last day in carries a thin yellow line down its right edge — the `.polast` tile itself, drawn as
              a line (matrix.css) — and its boxes step left of it. */
-        const mkShown = !!mk && (here || outLeave || notYetArrived)
+        const mkShown = !!mk && !homeAway && (here || outLeave || notYetArrived)
         const amber = !!view?.amber
         const alarm = mkShown && live && amber
         const pile = mkShown && live && !amber && !two
@@ -408,14 +412,15 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
            leave may be bid there. So the split is now the same at both ends —
            an ADMIN's tap manages the POSTING (the post-out sheet after, the
            post-in sheet before), and the person's OWN tap places LEAVE. */
-        const actionable =
+        /* (A1/A7: a day outside his squadron stints opens nothing — it is another squadron's day, its war the one to write) */
+        const actionable = !homeAway && (
           (here && cellOpenable(states, role, viewer, deciding, grid, p.id, d.date, view)) || (role === 'admin' && !here) ||
           // a marked day always opens its list; leave dated outside the
           // squadron window opens for an admin and for the person themself
           (!!mark && (here || outLeave)) || (outLeave && (role === 'admin' || viewer === p.id)) ||
           // …and the person may bid clearing leave after posting out, or leave dated before they post in — on an open day;
           // any other such day of his gives the closed note (D1176)
-          (!here && role !== 'admin' && viewer === p.id)
+          (!here && role !== 'admin' && viewer === p.id))
         // (Since his D1728, 6 Nov 26, the tile below is drawn as a yellow line down the day's right edge, never the word.)
         // Their LAST day in the squadron wears a small PO tag (owner, 19 Aug
         // 26 — chosen over nothing after the edge case was put to him):
