@@ -24,7 +24,7 @@ import { UNIT, BOOT_UNIT, setUnitInView, inView } from '../engine/unitview'
 import { isUnitId } from '../storage/unitid'
 import { insightsLoad } from '../engine/insights-config'
 import { registerMissionRoles } from './mission-roles'
-import { mintInpIds, INPUTS, inputsFor, DATES, baseYear, dateIx, inputCoversDate, inpId, shapeProblem, tillSettle } from '../engine/inputs'
+import { mintInpIds, INPUTS, inputsFor, inputsOnDay, inputAtIso, DATES, baseYear, dateIx, inputCoversDate, inpId, shapeProblem, tillSettle } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, migrateLegacyIds } from '../engine/rowids'
@@ -155,6 +155,14 @@ export function writeDelete(fn: () => void, di?: number, kind: any = 'programme'
    refuses. When nothing is quarantined — the overwhelmingly common case — it is
    a no-op fast path, byte-identical to the pre-redesign funnel, so ordinary
    weeks (and the never-quarantined parity harness) are untouched. */
+/* THE REQUESTS THE LOADED WEEK LANDS — each read on its FIRST day, the day a request lands (the reshape plan §3.2 A-iii;
+   Fable F4): a body that rewrites an input's accepted mark never iterates the inputs a squadron's list "touches" — one
+   input across a move is two squadrons', and a writer run over it from each squadron's load would undo the other's.
+   So the week load and the boot clear the landing of exactly the inputs that are the schedule in view's on their first
+   day — today's answer (engine/inputs.ts inputsFor with no day IS inputOnDay(r, unit, its first day)). Kept on that
+   alias until the core gives the first-day list its own name (inputsOnFirstDay — phase 3's contract removes the
+   no-day form); then this one line moves. */
+const landingInputs = (): any[] => inputsFor(UNIT)
 function protectedTouched(before: any, prot: string[]): boolean {
   /* the LOADED week is itself protected and its schedule was mutated (an input
      auto-landing a ground row onto a frozen day). Only fires when protectedWeek()
@@ -163,13 +171,16 @@ function protectedTouched(before: any, prot: string[]): boolean {
   /* the sorted multiset of inputs covering a protected date must be unchanged.
      A row added onto, removed from, edited on, or MOVED off a protected date all
      change this set; a pure reorder of unrelated rows (unshift) does not. */
-  const cover = (rows: any[]) => {
-    const sig: string[] = []
-    for (const r of rows || []) if (r && prot.some(dt => inputCoversDate(r, dt))) sig.push(JSON.stringify(r))
-    return sig.sort()
+  /* the protected days are the loaded week's: only the schedule in view's requests can change them (multi-squadron step 3)
+     — and an input is the schedule in view's ON EACH protected day it covers, read on that day (the reshape plan §3.2
+     A-iii — the protected days' signature asks inputOnDay per protected date): a leave across a man's move is 142's on
+     its days before the move and 149's after, so a protected 149 day is guarded against it, a protected 142 day too */
+  const cover = (list?: any[]) => {
+    const on = new Set<any>()
+    for (const dt of prot) for (const r of inputsOnDay(UNIT, inputAtIso(dt) ?? todayIso(), list)) if (inputCoversDate(r, dt)) on.add(r)
+    return [...on].map(r => JSON.stringify(r)).sort()
   }
-  /* the protected days are the loaded week's: only the schedule in view's requests can change them (multi-squadron step 3) */
-  const a = cover(inputsFor(UNIT, undefined, before.i || [])), b = cover(inputsFor(UNIT))
+  const a = cover(before.i || []), b = cover()
   if (a.length !== b.length) return true
   for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return true
   return false
@@ -684,7 +695,7 @@ function applyWeekModel(v: any, opts?: { landLater?: boolean }): any {
      A protected-spanning row keeps its filing even when this week has no landing. */
   /* (the week loaded is the schedule in view's: only ITS requests' landings are re-derived — another squadron's 'g'
      belongs to that squadron's rows; multi-squadron step 3) */
-  inputsFor(UNIT).forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
+  landingInputs().forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
   mintInpIds()
   /* [ARCH-STACK] f/u#1 (F-01): the command-layer baseline advanced to the freshly-swapped week at once, so nothing that
      runs before the caller's own re-baseline diffs the OLD week against the new one */
@@ -1118,7 +1129,7 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
        commitments). applyWeekModel already does this clear for a stashed week
        (its INPUTS acc-clear above reconcileLandedAcc); mirror it here so the
        no-stash boot re-lands too. 'r'/'u' are deliberate decisions, kept. */
-    inputsFor(UNIT).forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
+    landingInputs().forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
   }
   /* stable row ids (engine/rowids.ts) BEFORE the baseline: the walk mutates
      DAYS, and a mint after the yardstick would make the pristine seed week
