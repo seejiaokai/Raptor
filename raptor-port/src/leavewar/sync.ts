@@ -159,7 +159,7 @@ import {
   postOutIsSaved,
   revertUnsavedPostOuts,
 } from './state/store'
-import { units as unitList, homeOn, todayIso } from '../state/units'
+import { units as unitList, homeOn, todayIso, unitRows } from '../state/units'
 import { foreignWar, setForeignDoor, readForeign, type ForeignWar } from './state/foreign'
 import type { StorageBackend } from './state/storage'
 import { HOOKS } from '../engine/hooks'
@@ -180,7 +180,7 @@ import { ELOG } from '../engine/editlog'
 import { callsignProblem, saidOf } from '../state/roster-add'
 import { setPublishGate, setOilPlan } from '../state/inputgate-hook'
 import { stampPlaced, stampChanged, stampWho } from '../state/inputstamp'
-import { absencesAt, setAbsenceRows, type MergedWar } from './state/merge'
+import { absencesAt, setAbsenceRows, setAbsenceOwner, type MergedWar } from './state/merge'
 import { validIso, planFor, monthAnswers, type DayFacts, type DayAnswer, type FlyPlan, type FlyRun, type Tones } from '../state/flyplan-model'
 import {
   getFlyPlan as planOfUnit, getTones as tonesOfUnit, sansFly, setFlyDays as setFlyDaysOf, setFlyRun as setFlyRunOf,
@@ -293,6 +293,38 @@ export function restoreAbsencesOf(changes: ReadonlyArray<{ collection: string; i
   return (personId, date) => ix.get(personId)?.get(date) ?? []
 }
 
+/* WHICH WAR AN ABSENCE IS IN (the reshape walk's W2-F2, 22 Nov 26 — his D2243 Q6; the plan's A1; state/merge.ts AbsenceOwner).
+   Only while each squadron has a war of its own (the world door): leave a war approved is that squadron's war's alone (the
+   Input's `lwU`, written by `doorApprove`), so leave approved in 142's war before a man's move is not in 149's "until the
+   Transfer batch carries it"; any other absence is in the war whose squadron he is on that day — his home that day, as the
+   war's own door asks it (store.ts notThisWarsDay): a man with no squadron that day is never taken out. The token moves
+   whenever the squadron rows are read afresh or another war is loaded. */
+let OWN_ROWS: unknown = null, OWN_UNIT = '', OWN_N = 0
+function absenceOwnerToken(): number {
+  const rows = WORLD_DOOR ? unitRows() : null, unit = WORLD_DOOR ? worldUnit() : ''
+  if (rows !== OWN_ROWS || unit !== OWN_UNIT) { OWN_ROWS = rows; OWN_UNIT = unit; OWN_N++ }
+  return OWN_N
+}
+function absenceOwnerOf(pid: string): ((date: string, lwU: string | undefined) => boolean) | null {
+  if (!WORLD_DOOR) return null
+  const unit = worldUnit()
+  const stints = homeStintsFor(pid, unit)
+  const always = stints.length === 1 && stints[0]!.from === null && stints[0]!.to === null
+  return (date, lwU) => {
+    if (lwU) return lwU === unit
+    if (always) return true
+    const h = homeOn(pid, date)
+    return !h || h === unit
+  }
+}
+/* the squadron an approved leave of before the stamp is counted to — his home on every day of it, where that is one */
+function unstampedUnit(x: WarInput): string | null {
+  const who = String(leadOf(x) ?? '')
+  const us = new Set(inputDates(x).map(d => homeOn(who, d)))
+  const [one] = [...us]
+  return us.size === 1 && one ? one : null
+}
+
 /** Install the absence door (wireLeaveWarSync does; tests call it alone). */
 export function installAbsenceDoor(): void {
   setAbsenceDoor({ approve: doorApprove, decideApproved: doorDecideApproved, removeApproved: doorRemoveApproved, moveApproved: doorMoveApproved, file: doorFile, approveWhy, decideApprovedWhy, approvedBy })
@@ -313,6 +345,8 @@ export function installAbsenceDoor(): void {
      (`lw.cell`, id `<war>:<pid>:<date>`, read from the right — a war id may carry a colon — as applyLwRecord reads it) */
   setWarHomeProbe((pid, iso) => (WORLD_DOOR ? homeOn(pid, iso) : null))
   setLwManDayProbe(warCellDay)
+  /* …AND HOLDS A MAN'S ABSENCE ONLY WHERE IT IS ITS OWN (the reshape walk's W2-F2; D2243 Q6, A1 — state/merge.ts) */
+  setAbsenceOwner({ token: absenceOwnerToken, of: absenceOwnerOf })
   /* A5 — ANOTHER SQUADRON'S POSTING AS THAT SQUADRON SAVED IT (perms.ts setLwxPostingProbe, step 7), installed with the pass
      over every squadron, and the pass's wake-up wiring */
   setLwxPostingProbe(foreignPostingSaved)
@@ -523,6 +557,11 @@ function approveWhy(it: { personId: string; date: string; recId: string }, prot:
   const war = warHolding(rawState().wars, it.date)
   const rec = war ? recsAt(war.recs, it.personId, it.date).find((r): r is RequestRec => r.kind === 'request' && r.id === it.recId) : undefined
   if (!war || !rec) return 'No longer there'
+  /* A DAY NOW ANOTHER SQUADRON'S (the reshape walk's W2-F3; his D2243 Q3 — nobody puts his leave into his old squadron's
+     war for a day after his move): a bid left there from before the move was saved is not approved, in every door that asks
+     this — Approvals, Approve all, the day's list, the bid windows, Auto-approve — in the ruled sentence */
+  const other = warDayWhy(it.personId, it.date)
+  if (other) return other
   /* A DELETED MAN (the host's decision, 28 Oct 26 — the fixes' round 3, R3-6): D1436 speaks only of posting out, so the
      refusal the code had before M4 for a man deleted from the squadron stands, pending his word: a pending bid left from
      before his delete is not approved, in every door, with the words it had.
@@ -552,7 +591,8 @@ function heldWhy(personId: string, date: string, rec: RequestRec): string | null
 export function bidHeldWhy(personId: string, date: string, recId: string): string | null {
   const war = warHolding(rawState().wars, date)
   const rec = war ? recsAt(war.recs, personId, date).find((r): r is RequestRec => r.kind === 'request' && r.id === recId) : undefined
-  return rec ? heldWhy(personId, date, rec) : null
+  /* (…and a day now another squadron's, in the ruled sentence — W2-F3: the day's list greys its Approve with it) */
+  return rec ? warDayWhy(personId, date) ?? heldWhy(personId, date, rec) : null
 }
 /* REPLACED 31 Oct 26 BY HIS D1541 (see `postingOutWhy` below): the posting date now refuses no leave, but a Delete posting's,
    so read what follows as the history of the date rule that a Delete posting still keeps.
@@ -685,6 +725,9 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
     /* WHO PLACED THE REQUEST, KEPT ON THE LEAVE (M4 8.6): the Input's own `by` / `at` name the APPROVER (below), so the
        request's placer rides beside them — the earliest of the run's — and a put-back gives them back to the request */
     Object.assign(row, placerOf(run.map(p => p.rec)))
+    /* WHOSE WAR APPROVED IT (W2-F2 — his D2243 Q6): kept on the leave where each squadron has a war of its own, so it
+       stays this war's after he moves (absenceOwnerOf, above) */
+    if (WORLD_DOOR) row.lwU = worldUnit()
     inpId(row)
     /* placed by whoever approved it, now (D629 — state/inputstamp.ts) */
     stampPlaced(row)
@@ -704,6 +747,8 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
       const body = (x: WarInput) => remarksTyped(x.remarks, x)
       const same = (x: WarInput) => x !== r && idsOf(x).length === 1 && String(leadOf(x)) === String(leadOf(r)) && x.lw === r.lw && x.type === r.type &&
         !!x.allday === !!r.allday && (x.half ?? '') === (r.half ?? '') && body(x) === body(r) &&
+        /* …and only leave of the SAME squadron's war (W2-F2): 149's approval never joins leave 142's war approved */
+        (!r.lwU || (x.lwU ?? unstampedUnit(x)) === r.lwU) &&
         /* a request that carries its own till choice (M3 7.2) joins only a leave that shows the same; one with none takes
            its neighbour's, as before (D953) */
         (typeof r.till !== 'boolean' || tillShown(x) === r.till)
@@ -719,6 +764,7 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
       const keep = (before ?? after)!   // (one of the two is there: neither was handled just above)
       const merged = sliceInput({ ...keep, lwMoved: { ...(before?.lwMoved ?? {}), ...(r.lwMoved ?? {}), ...(after?.lwMoved ?? {}) } }, from, to, true)
       merged.remarks = remarksTyped(keep.remarks, keep)
+      if (r.lwU) merged.lwU = r.lwU
       /* …the papers of every piece it joins (M3 7.2): none is lost to a join */
       const papers = [...new Set([...rowDocIds(keep), ...rowDocIds(r), ...(before && after ? rowDocIds(after) : [])])]
       delete merged.docId; delete merged.docIds
@@ -3405,6 +3451,14 @@ export function warDayRefusal(changes: readonly Change[]): string | null {
     return warDaySentence(at.pid, at.iso, h, u)
   }
   return null
+}
+/** WHY THIS WAR TAKES NO LEAVE OF HIS ON THAT DAY — the sentence, where the day is another squadron's (his home that day is
+ *  not the war loaded's); null where it is this war's, or while one war serves the page. The live doors' form of
+ *  `warDayRefusal` (W2-F3: an Approve of a bid left there from before his move was saved). */
+export function warDayWhy(pid: string, iso: string): string | null {
+  if (!WORLD_DOOR) return null
+  const h = homeOn(pid, iso), u = worldUnit()
+  return h && h !== u ? warDaySentence(pid, iso, h, u) : null
 }
 /* the sentence itself, for man `pid`, whose day `iso` is unit `h`'s, refused in unit `u`'s war */
 export function warDaySentence(pid: string, iso: string, h: string, u: string): string {

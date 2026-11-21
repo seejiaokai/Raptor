@@ -172,7 +172,7 @@ import {
   type AvailPoints,
   type ReqNames,
 } from '../engine'
-import { mergeWar, absencesAt, absenceRows, absenceVersion, awardsAt, awardRows, awardVersion, setAwardRows, type AwardRows, type MergedWar, type RecordSpans, type Views } from './merge'
+import { mergeWar, absencesAt, ownAbsenceRows, absenceVersion, awardsAt, awardRows, awardVersion, setAwardRows, type AwardRows, type MergedWar, type RecordSpans, type Views } from './merge'
 import { counterLabel } from '../engine/counters'
 import {
   BAL_KINDS, FIG_MAX, isBalKind, KIND_COUNTER, personFigures, readTypedBalShape, snapshotOf, START_GRADES, startYear,
@@ -3354,6 +3354,8 @@ export function notThisWarsDay(personId: string, date: string): boolean {
   const p = state.people.find(x => x.id === personId)
   return !!p && awayFromHome(p, date)
 }
+/* the app's generic refusal, for a change such a day refuses that no ruling gives words for */
+const NOT_SAVED = 'This change could not be saved.'
 const sameRec = (a: WarRec, b: WarRec): boolean => a === b || JSON.stringify(a) === JSON.stringify(b)
 function removesOnly(before: readonly WarRec[], after: readonly WarRec[]): boolean {
   let i = 0
@@ -4101,6 +4103,8 @@ export function decideRequestById(personId: string, date: string, recId: string,
       return r.done > 0 ? true : (r.why[0] ?? false)
     })
   }
+  /* (a day now another squadron's takes only removals — said, as `decideWhy` says it: W2-F3) */
+  if (notThisWarsDay(personId, date)) return NOT_SAVED
   return gesture('lw.decide', () => decideRequest(personId, date, recId, bid))
 }
 
@@ -4333,6 +4337,10 @@ function decideWhy(line: DecideLine): string | null {
       if (why) return why
       continue
     }
+    /* A DAY NOW ANOTHER SQUADRON'S TAKES ONLY REMOVALS (A7 — `notThisWarsDay`; his D2243 Q3): a Refuse, or a decision sent
+       back to waiting, changes the record and is refused there — said in the app's generic words (no ruling gives others),
+       never as a locked week (the reshape walk's W2-F3). Delete is the way out, and is never refused. */
+    if (notThisWarsDay(personId, p.date)) return NOT_SAVED
     if (p.state === 'approved') {
       const why = DOOR?.decideApprovedWhy?.({ personId, date: p.date, iid: p.iid! })
       if (why) return why
@@ -5387,7 +5395,8 @@ export function setHiddenIdentityLookup(fn: ((id: string) => Person | null) | nu
  *  requests on him. */
 export function dayRecsOf(pid: string): DayRecs {
   const out = new Map<string, Contrib[]>()
-  const abs = absenceRows().get(pid)
+  /* …that are THIS war's (W2-F2 — merge.ts AbsenceOwner): a man who moved has his old squadron's leave in its war alone */
+  const abs = ownAbsenceRows(pid)
   if (abs) for (const [d, list] of abs) out.set(d, [...list])
   for (const w of getState().wars) {
     const row = w.views[pid]

@@ -457,6 +457,36 @@ function trkCollectionOf(k) {
   // out through metaWrite (below), in a saved group of their own.
   return null;
 }
+/* A SAVE THE COMMAND GATE REFUSES SAYS SO (the reshape walk's W3-F4, 22 Nov 26). After a man's squadron move the Tracker
+   keeps the squadron it loaded until his next sign-in (storage.js rebindStorageUnit), and the gate refuses his changes to
+   it (state/perms.ts 7f). Every write here threw the command's answer away: a grade in an event's pop-up was refused
+   with no word, a refused Undo likewise, and "✓ Save changes" went on to clear the edit and read "● syllabus … saved"
+   with nothing stored. Now every command of this page goes through `trkCommit`, and a refused one:
+   - says "This change could not be saved." in the Tracker's own box — the app's generic words (the midnight band's own
+     generic form, state/store.ts bandWords; no ruling gives others), said once however many writes a press makes;
+   - turns the corner red with the same words, and the corner says nothing of saving until a command next goes through;
+   - is counted, so a caller that would go on to claim a save (persistSyl) can see it and stop.
+   The command layer has already put the records and the live lists back (trkStore.restore). A writer with words of its
+   own for a refusal (the flex settings' window) asks for no box (`trkQuietly`). */
+export const NOT_SAVED = 'This change could not be saved.';
+let TRK_REFUSED_N = 0;
+let refusedLatch = false, refusedBox = false, refusedQuiet = 0;
+function trkRefused() {
+  TRK_REFUSED_N++; refusedLatch = true;
+  saveStat = { text: '● ' + NOT_SAVED, cls: 'err' };
+  if (!refusedBox && !refusedQuiet) {
+    refusedBox = true;
+    const done = () => { refusedBox = false; };
+    uiAlert(NOT_SAVED).then(done, done);
+  }
+  notify();
+}
+function trkCommit(cmd) {
+  const r = cmdCommit(cmd);
+  if (r && r.ok === false) trkRefused(); else refusedLatch = false;
+  return r;
+}
+async function trkQuietly(fn) { refusedQuiet++; try { return await fn(); } finally { refusedQuiet--; } }
 /* A COURSE CONVERSION'S OWN RECORDS — its flags, its in-progress name → id map, the old links record ([DB-READINESS]
    group A, the group-wide walk — Astra's finding A, W5 finding 1, 30 Sep 26). They stay raw writes (not records of any
    command: a conversion is bookkeeping, never an undo step), and at the first mount they are the named exempt writer.
@@ -710,7 +740,7 @@ function trkWriteRecords(entries) {
 function trkWrite(k, v) {
   const col = (TRK_COMMANDS && !TRK_RESTORING) ? trkCollectionOf(k) : null;
   if (col && !cmdIsCommitting()) {
-    cmdCommit({
+    trkCommit({
       type: col,
       scope: { module: 'trk', courseId: course, sylId: curSylId() },
       apply: (txn) => { txn.enlist(trkStore); mem[k] = v; bumpMemGen(k); TRK_SIG++; },
@@ -763,7 +793,7 @@ function trkGesture(fn, type) {
   const pending = new Map();
   TRK_GESTURE_PENDING = pending;
   try {
-    cmdCommit({
+    trkCommit({
       type: type || 'trk.gesture',
       scope: { module: 'trk', courseId: course, sylId: curSylId() },
       apply: (txn) => { txn.enlist(trkStore); fn(); cmdDeferEffect(() => flushGesture(pending)); },
@@ -3169,7 +3199,8 @@ function step(from, to, dir) {
        writes its record as it always did */
     trkRestoring(apply);
   }
-  if (!ok) { notify(); return false; }
+  /* refused: every list and record is back as it was (trkStore.restore), and it is said (trkRefused — W3-F4) */
+  if (!ok) { trkRefused(); return false; }
   if (u.group) renderSide();
   /* keep the view: the person is looking at the ball they are taking back, as grading keeps it (R62) — a plain redraw
      threw the chart back to its top ([HUMAN-RETEST] W2-F6) */
@@ -4511,7 +4542,7 @@ export async function setFlexSetting(next) {
   if (bad) return { ok: false, message: bad };
   if (want.on === FLEX.on && want.from.every((v, i) => v === FLEX.from[i])) return { ok: true };
   const json = JSON.stringify(want);
-  await sSet(kFlex(), json);
+  await trkQuietly(() => sSet(kFlex(), json));   /* (its refusal is said in the window's own words, just below) */
   if (memGet(kFlex()) !== json) { flexFromMem(); notify(); return { ok: false, message: 'The flex settings could not be saved. Try again.' }; }
   FLEX = flexOf(want);
   renderSide(); notify();
@@ -5679,7 +5710,7 @@ function trkDelete(k) {
      delete of a stored-but-unwritten-this-session key must still route through a
      command so it emits a delete change with a real before-image. */
   if (col && !cmdIsCommitting()) {
-    cmdCommit({
+    trkCommit({
       type: col,
       scope: { module: 'trk', courseId: course, sylId: curSylId() },
       apply: (txn) => { txn.enlist(trkStore); delete mem[k]; bumpMemGen(k); TRK_SIG++; },
@@ -5993,11 +6024,15 @@ export async function persistSyl() {
   // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- this copy becomes the saved chart: the ball editor clears a name or number by setting it undefined, and JSON drops those keys as the stored chart does
   const def = JSON.parse(JSON.stringify(SYL));
   /* the chart itself saved INSIDE the sweep's gesture: its marks and the chart they went with, one saved group */
+  const refusedBefore = TRK_REFUSED_N;
   await sweepChart(id, new Set(gone), saved, SYL, () => {
     if (shipped && sameDef(def, shipped)) delete customDefs[id];
     else customDefs[id] = def;
     sSet(kSyls(course), JSON.stringify(customDefs));
   });
+  /* THE SAVE WAS REFUSED (W3-F4): the edit stays as it is, still to be saved — never cleared, never "saved". The command
+     layer put the chart's records back; the draft on screen and its Undo list are the ones he had (trkStore.restore). */
+  if (TRK_REFUSED_N !== refusedBefore) { sylDirty = true; notify(); return false; }
   clearDirty(); refreshSyl(); renderBoard(); renderSide();
   setSaveStatus('syllabus “' + sylName(id) + '” saved' + (isBuiltinSylId(id) && sylHasOwnDef(id) ? ' (overrides the built-in)' : ''), 'ok');
   return true;
@@ -6574,6 +6609,9 @@ export function saveWords() {
 let saveFailed = saveHealth() === 'failed';
 onSaveHealth(() => { const f = saveHealth() === 'failed'; if (f !== saveFailed) { saveFailed = f; notify(); } });
 function setSaveStatus(msg, cls) {
+  /* a refused save keeps the corner until a command next goes through (trkRefused — W3-F4): nothing after it in the same
+     press may say "saving" or "saved" */
+  if (refusedLatch && cls !== 'err') return;
   saveStat = {
     text: (cls === 'saving' ? (msg ? '● ' + msg : '● saving…')
       : cls === 'ok' ? (msg ? '● ' + msg : '● saved')

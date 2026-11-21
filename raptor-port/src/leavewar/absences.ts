@@ -228,9 +228,12 @@ export function contribsOfInput(row: InputRead | null | undefined): Array<[strin
        half in `win` still drives the box, manning and the medical total. */
     if (real) c.wins = [real]
     if (row.lw) c.lw = true
+    /* whose war approved it (W2-F2): the merge keeps it in that squadron's war alone */
+    const lwU = row.lw && typeof row.lwU === 'string' && row.lwU ? row.lwU : undefined
+    if (lwU) c.lwU = lwU
     if (moved[d]) c.movedFrom = moved[d]
     out.push([d, c])
-    if (tail) out.push([addDays(d, 1), { id: String(row.iid), kind: 'absence', code, win: tail, spill: true }])
+    if (tail) out.push([addDays(d, 1), { id: String(row.iid), kind: 'absence', code, win: tail, spill: true, ...(lwU ? { lwU } : {}) }])
   }
   return out
 }
@@ -270,7 +273,7 @@ export function absenceSignature(row: InputRead | null | undefined): string {
   if (!row || !warCounts(row)) return ''
   /* where a commitment is filed (`acc`) is in the signature: under Unavailable it is on the war, taken out it is not */
   return [row.iid, row.type, row.date, row.endDate ?? '', row.yr ?? '', row.allday ? 1 : 0,
-    row.half ?? '', row.s ?? '', row.e ?? '', row.lw ? 1 : 0, JSON.stringify(row.lwMoved ?? null), row.acc ?? ''].join('|')
+    row.half ?? '', row.s ?? '', row.e ?? '', row.lw ? 1 : 0, JSON.stringify(row.lwMoved ?? null), row.acc ?? '', row.lwU ?? ''].join('|')
 }
 
 /* ---- the other direction: a war leave → the one Input ------------------- */
