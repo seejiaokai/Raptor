@@ -998,3 +998,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The project's rule says that before a push the changed-files code check reports no new finding. The builder ran the touched unit tests and the type check but not that check, pushed, and the whole remote run went red on a single style finding in a new test-only file; the fix then had a second finding of the same kind. A new test-world folder also broke three separate source-walking guard tests, which each keep their own list of folders to skip.
 **Suggested improvement:** Make the changed-files code check part of the same pre-push step as the type check (a script the push guard runs, or one command `prepush` that runs type check + changed-files lint + touched tests), so it cannot be skipped by memory. And give the source-walking guards one shared list of folders that are not the app, so a new test-support folder is added once.
 **Principle:** A check that the rules require before a push, but that only a remote run enforces, will be skipped under pressure; fold every required pre-push check into one local command, and keep any list several guards share in one place.
+
+### Observation 991: The host re-runs a helper's "red first" in its own checkout by restoring only the changed source files
+
+**Status:** OPEN
+**Date:** 21 Nov 26
+**Session context:** chat 128 — merging phase 2's parallel helpers of the multi-squadron reshape, each built in a worktree of its own
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** checking each helper's result before it counts (the host's check of a helper's proofs)
+
+**Issue:** each helper reported its proofs "red on the base, green after"; the plan asks the host to rerun both runs. A second worktree per check is slow and a guard refuses writes into other checkouts. What worked in seconds: in the host's own checkout, after the merge, `git checkout <before-commit> -- <the helper's changed non-test source files>`, run the proof files, then `git checkout HEAD -- <same files>` and confirm a clean status; the failure reasons are then grouped (assertion vs "is not a function") so a red that is only a missing function is told apart from a red that shows the fault.
+**Suggested improvement:** in the overnight guide's "check each result" step (and the bug-check order's red-first protocol), add the recipe: restore only the changed source files to the commit before the change (`--diff-filter=M`, tests excluded), run the proofs, restore, check `git status`, and count failure kinds — at least one assertion-kind failure per proof, not only missing functions.
+**Principle:** to confirm a "failing first" claim, put back only the code under test, never the tests, and judge the red by why it fails, not that it fails.
