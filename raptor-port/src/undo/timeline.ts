@@ -151,6 +151,12 @@ export interface UndoHooks {
      (state/undo-wire.ts stepStuck). Asked first of every press: blocked for good in today's words, the next press named,
      never refused on every press with his older steps out of reach. None installed: never. */
   stuck?(changes: Change[], dir: 'undo' | 'redo', entry: UndoEntry): boolean
+  /* …AND AN INPUT'S STEP OUT OF HIS REACH (Astra's read of round 2, F1 — state/undo-wire.ts inputStuck): an input of
+     squadrons he is no longer an admin of. Asked AFTER the answers a press already gives — the view he is in, a later
+     change to the same thing, a right standing on a re-linked sign-in, a step the leave-out empties — so each of those
+     reads as it did; where none speaks, the step is blocked for good in today's words instead of the gate refusing its
+     restore on every press. None installed: never. */
+  stuckLate?(changes: Change[], dir: 'undo' | 'redo', entry: UndoEntry): boolean
   /* THE STORE OF ONE RECORD, WHEN IT IS NOT ITS COLLECTION'S (the reshape plan §3.2 A-ii, "Through Undo, in both
      directions" — Fable 3, Opus 4 of round 3): a planning record of a squadron not loaded is written by that squadron's
      stored calendar (state/plan-foreign.ts), never the schedule's store, which refuses another squadron's planning record.
@@ -1154,6 +1160,7 @@ export function globalUndo(): UndoResult {
   const standU = standingConflict(entry, entry.inverse, 'undo')
   if (standU) return { ok: false, reason: standU.sticky ? sayBlocked(entry, 'undo', standU.text) : standU.text }
   if (emptiedBy(entry, entry.inverse, 'undo')) return { ok: false, reason: sayBlocked(entry, 'undo', OUT_OF_BAND) }
+  if (hooks.stuckLate && hooks.stuckLate(keptOf(entry, entry.inverse, 'undo'), 'undo', entry)) return { ok: false, reason: sayBlocked(entry, 'undo', OUT_OF_BAND) }
   const ruleU = hooks.restoreRefusal ? hooks.restoreRefusal(entry.inverse, 'undo', entry) : null   // W3-F8
   if (ruleU) return { ok: false, reason: ruleU }
   // C7(b) — refuse an unrestorable closure BEFORE the view-snap moves anything.
@@ -1186,6 +1193,7 @@ export function globalRedo(): UndoResult {
   const standR = standingConflict(entry, entry.forward, 'redo')
   if (standR) return { ok: false, reason: standR.sticky ? sayBlocked(entry, 'redo', standR.text) : standR.text }
   if (emptiedBy(entry, entry.forward, 'redo')) return { ok: false, reason: sayBlocked(entry, 'redo', OUT_OF_BAND) }
+  if (hooks.stuckLate && hooks.stuckLate(keptOf(entry, entry.forward, 'redo'), 'redo', entry)) return { ok: false, reason: sayBlocked(entry, 'redo', OUT_OF_BAND) }
   const ruleR = hooks.restoreRefusal ? hooks.restoreRefusal(entry.forward, 'redo', entry) : null   // W3-F8
   if (ruleR) return { ok: false, reason: ruleR }
   if (missingStores(entry.forward).length) return { ok: false, reason: plainRestoreReason() }
