@@ -46,7 +46,7 @@ import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
 import { parseVerId, dayIso } from '../engine/verid'
 import { lwStore, LW_COLLS, selectWar, focusDay, bumpLwHistEpoch, restoreBlocker } from '../leavewar/state/store'
-import { restoreAbsencesOf, warNoticesReversed } from '../leavewar/sync'
+import { restoreAbsencesOf, warNoticesReversed, warDayRefusal } from '../leavewar/sync'
 import { warCounts } from '../leavewar/absences'
 import { DATES, inputCoversDate, isSansAvail } from '../engine/inputs'
 import { UNIT_ROW_PREFIXES, GRANT_PFX } from './units-model'
@@ -504,8 +504,10 @@ export function installGlobalUndo(): void {
     /* …and [LW-DELETE-POSTING-RESTORE]: an approval of his leave from the date of a Delete posting not yet run, refused live
        (D1545) — asked fresh each time, since a posting moves, is taken back or changes its outcome (person-delete.ts
        postingRestoreProblem) */
+    /* …and A7 (the reshape plan §6.2): an entry put back on a man's day now another squadron's says war's sentence before
+       anything is written — a removal, of one entry of two or of the last, still passes (leavewar/sync.ts warDayRefusal) */
     restoreRefusal: (changes, dir, entry) => restoreBlocker(changes as any, dir, restoreAbsencesOf(changes as any)) || rosterRestoreProblem(changes as any, dir)
-      || postingRestoreProblem(changes as any, dir, entry?.scope?.module),
+      || postingRestoreProblem(changes as any, dir, entry?.scope?.module) || warDayRefusal(changes as any),
     /* [POST-OUT-OUTCOMES]: a step that would put a deleted man back is passed over, never taken (person-delete.ts) */
     /* the direction and the step's module: a war step's Redo is judged by the leave it adds (person-delete.ts) */
     deadRefusal: (changes, dir, entry) => deletedRestoreProblem(changes as any, dir, entry?.scope?.module),
