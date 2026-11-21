@@ -118,7 +118,7 @@ describe('controls — the same on both sides of the fix', () => {
 
   it("a member takes himself out of his own squadron's input of several people: saved, nothing else changed", () => {
     const iid = file('u142', '142 several', [PID.ranger, PID.hunter])
-    const was = JSON.parse(JSON.stringify(byIid(iid)))
+    const was = structuredClone(byIid(iid))
     signInAs('ranger')
     expect(takeMeOut(iid, PID.ranger)).toBe(true)
     const r = byIid(iid)

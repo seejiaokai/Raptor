@@ -26,7 +26,7 @@
    replaced did (stated per question), so no headless test changes meaning. */
 import { SESSION, ME, setEffectiveRole } from './auth'
 import { store, unitSetting } from '../engine/hooks'
-import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld, placeOf, namedOf, placeholderOf, inputSpanIso, inputSquadrons } from '../engine/inputs'
+import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld, placeOf, namedOf, placeholderOf, inputSpanIso, inputSquadrons, inputUnitOf } from '../engine/inputs'
 import { deriveActor } from '../command/actor'
 import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
@@ -782,8 +782,9 @@ const NOT_SAID = new Set(['people', 'modBy', 'modAt', 'hand', 'leftAt'])
    real filings ('u' under Unavailable, 'r' off the programme) are still said. `undo/timeline.ts landed` reads the mark
    the same way. */
 const said = (x: any, k: string): unknown => (k === 'acc' && x[k] === 'g' ? null : (x[k] ?? null))
-const saysSame = (a: any, b: any, skip?: string): boolean => {
-  const ks = new Set([...Object.keys(a), ...Object.keys(b)].filter(k => !NOT_SAID.has(k) && k !== skip))
+const saysSame = (a: any, b: any, ...skip: string[]): boolean => {
+  const left = new Set(skip)
+  const ks = new Set([...Object.keys(a), ...Object.keys(b)].filter(k => !NOT_SAID.has(k) && !left.has(k)))
   for (const k of ks) if (JSON.stringify(said(a, k)) !== JSON.stringify(said(b, k))) return false
   return true
 }
@@ -799,8 +800,17 @@ export function ownPart(pid: string, before: any, after: any): boolean {
   if (rest.length !== less.length || JSON.stringify(rest) !== JSON.stringify(less)) return false
   /* who filed it may have passed on with him (byAfterLeaving): that, and nothing else, may differ */
   const withHim = a.length > b.length ? before : after, without = withHim === before ? after : before
-  if ((without.by ?? null) === (byAfterLeaving(withHim, pid) ?? null)) return saysSame(before, after, 'by')
-  return saysSame(before, after)
+  const skip: string[] = []
+  if ((without.by ?? null) === (byAfterLeaving(withHim, pid) ?? null)) skip.push('by')
+  /* …and THE SQUADRON STAMP OF AN INPUT LEFT NAMING NOBODY (C3, his D2243 Q1 — an ALL AVAIL meeting stays on the squadron
+     it was filed on). With him in it the input was placed by the man it names and carried no stamp; left with ALL AVAIL /
+     ALL alone it carries the squadron it stood on with him in it (ui/inputedit.tsx commitInput's settleStamp) — or it
+     would be read by its filer's home and change schedule: the master admin's 149 meeting landed on 142's when a 149 man
+     took himself out. That one stamp passes, in his take-out and in his Undo of it: only where the side without him
+     names nobody, the side with him carries none, and it is exactly the squadron the input is read as with him in it
+     (engine/inputs.ts inputUnitOf — the body the save asks). Any other stamp is a difference like any other: refused. */
+  if (without.u != null && withHim.u == null && !namedOf(without).length && without.u === inputUnitOf(withHim)) skip.push('u')
+  return saysSame(before, after, ...skip)
 }
 /* THE SCHEDULE'S OWN RECORDS. A member changes none of them, by any command ([DB-READINESS] group A, phase 6 (c), 1 Oct 26 —
    data-model.md §11; D450: a day is saved only by the scheduler holding it). They were his to change as the landing of his
