@@ -20,7 +20,7 @@ import { UNIT, BOOT_UNIT } from '../engine/unitview'
 
 useMsqWorld()
 afterEach(() => {
-  setEntryTrigger(false); setEntryHold(null)
+  setEntryTrigger(true); setEntryHold(null)                // the app's own: the trigger on, its own hold
   if (UNIT !== BOOT_UNIT) switchUnit(BOOT_UNIT)
   forgetUnitPlans(); PLANPUCKS.length = 0
 })
@@ -48,17 +48,27 @@ describe('at sign-in', () => {
   })
 })
 
-describe('the midnight trigger is OFF in phase 2', () => {
-  it("Ranger's move to 149 takes effect at midnight: the page stays on 142 until phase 3 switches the trigger on", () => {
-    signInAs('ranger')
+/* REWRITTEN IN PHASE 3 to the plan's outcome (§10: "the midnight swap switched on"; §9.3 — it pinned phase 2's trigger
+   being off, a step of the build, not a ruling): the trigger is on in the app now, so the same steps move the page */
+describe('the midnight trigger is ON since phase 3', () => {
+  it("Ranger's move to 149 takes effect at midnight: the page moves to 149 by itself, nothing switched on by the test", () => {
+    signInAs('saber')                        // (phase 2's case moved him as Ranger himself, whose own move is refused)
     moveMan(PID.ranger, 'u149')
     signInAs('ranger')
+    pastMidnight()
+    expect([UNIT, worldUnit(), homeAtEntry()]).toEqual(['u149', 'u149', 'u149'])
+  })
+  it('a test that needs the page held where it is switches the trigger off for itself', () => {
+    signInAs('saber')
+    moveMan(PID.ranger, 'u149')
+    signInAs('ranger')
+    setEntryTrigger(false)
     pastMidnight()
     expect([UNIT, worldUnit(), homeAtEntry()]).toEqual(['u142', 'u142', 'u142'])
   })
 })
 
-describe('with the trigger on (as phase 3 will have it)', () => {
+describe('with the trigger on (as phase 3 has it)', () => {
   it('fired by the clock alone: past his move day\'s midnight the schedule and the war are 149\'s, his home at entry with them', () => {
     signInAs('saber'); moveMan(PID.ranger, 'u149')
     signInAs('ranger')
@@ -74,14 +84,18 @@ describe('with the trigger on (as phase 3 will have it)', () => {
     notify()
     expect([UNIT, worldUnit()]).toEqual(['u142', 'u142'])
   })
-  it('the hold: while it answers anything but "none" the page waits; once it lets go, the next notify enters', () => {
+  /* REWRITTEN IN PHASE 3 (§9.3): phase 2's slot held the whole entry; the plan's rule is that an open war window "holds
+     the swap of that page" (§3.2 A-iv) — the Leave War's — so the schedule in view moves and only the war waits (a war
+     window left open behind another tab must never leave him on the old squadron's schedule). The war still waits for
+     the window, and goes the moment it lets go. */
+  it('the hold: while a war window holds, the war waits and the schedule moves; once it lets go, the next notify enters the war', () => {
     signInAs('saber'); moveMan(PID.ranger, 'u149')
     signInAs('ranger')
     setEntryTrigger(true)
     let held: 'none' | 'war' = 'war'
     setEntryHold(() => held)
     pastMidnight()
-    expect([UNIT, worldUnit()], 'an open window holds the swap').toEqual(['u142', 'u142'])
+    expect([UNIT, worldUnit()], 'an open window holds the war\'s swap').toEqual(['u149', 'u142'])
     held = 'none'
     notify()
     expect([UNIT, worldUnit()]).toEqual(['u149', 'u149'])

@@ -19,7 +19,7 @@ import { validate } from '../engine/validate'
 import { lookaheadLoad } from '../engine/lookahead'
 import { rulesLoad } from '../engine/rules'
 import { flyplanLoad } from './flyplan'
-import { unitsLoad, setUnitSeeds, homeOn, todayIso } from './units'
+import { unitsLoad, setUnitSeeds, homeOn, todayIso, unitById } from './units'
 import { UNIT, BOOT_UNIT, setUnitInView, inView } from '../engine/unitview'
 import { isUnitId } from '../storage/unitid'
 import { insightsLoad } from '../engine/insights-config'
@@ -47,7 +47,8 @@ import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit, histSnap, histRestore, schedFields } from './history'
 import { setSession as authSetSession, canEditSched, SESSION, setMe, DEFAULT_ME, setLgEdit } from './auth'
-import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUnitNow } from './perms'
+import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUnitNow, trkUnitNow } from './perms'
+import { holdNow, setBands, setHoldRelease, type MoveBand, type HoldKind } from './typing-hold'
 import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { endTrackerSession } from '../tracker/role.js'
@@ -82,7 +83,7 @@ export function getVersion() { return VERSION }
    the gate (loadWeek, initStore, toggleRole, …) — deferEffect returns false and
    notify runs inline exactly as before, so behaviour is unchanged. */
 export function notify() { if (deferEffect(realNotify)) return; realNotify() }
-function realNotify() { maybeReenter(); VERSION++; listeners.forEach(f => f()) }
+function realNotify() { maybeReenter(); publishBands(); VERSION++; listeners.forEach(f => f()) }
 /* Day-to-day board navigation is view-only. Give the board a narrow repaint
    lane so a swipe does not wake every mounted store consumer (most notably
    EditWeek's seven large dayHTML calculations) while ordinary mutations still
@@ -899,13 +900,23 @@ function sessionUnit(pid: string | null | undefined): string {
 export type TrackerEntry = 'none' | 'same' | 'later' | 'bound' | 'kept'
 export interface Entered { unit: string; own: string; tracker: TrackerEntry }
 let ENTERING = false
-export function enterSquadron(scheduleUnit: string): Entered {
+/* `holdWar` (phase 3 — the plan §3.2 A-iv "Typed work at the swap"; state/typing-hold.ts): an open Leave War window holds
+   the WAR'S step only, so nothing typed in it is ever saved into the new squadron; the schedule in view and the Tracker
+   still move. The war is entered once the window goes (the check below finds the war not the page's own squadron). */
+export function enterSquadron(scheduleUnit: string, holdWar = false): Entered {
   if (ENTERING) return { unit: UNIT, own: pageUnit('own', todayIso()), tracker: 'none' }
   ENTERING = true
   try {
     switchUnit(scheduleUnit)
     const own = pageUnit('own', todayIso())
-    SESSION_WORLD?.(own)
+    if (!holdWar) {
+      const before = lwUnitNow()
+      SESSION_WORLD?.(own)
+      /* A WAR LOADED AFRESH STARTS WITH A MEMBER'S ROLE (leavewar/state/store.ts initStore): the role in force is set on it
+         again, as a sign-in and the member-view switch set it — found switching the midnight swap on: Hunter, an admin,
+         was a member in his new squadron's war after midnight and every admin change there was refused */
+      if (lwUnitNow() !== before) lwSetRole(isAdmin() ? 'admin' : 'member')
+    }
     return { unit: UNIT, own, tracker: rebindStorageUnit(own) as TrackerEntry }
   } finally { ENTERING = false }
 }
@@ -914,17 +925,19 @@ export function enterSquadron(scheduleUnit: string): Entered {
    person). The midnight check compares his home today with it. */
 let HOME_AT_ENTRY: string | null = null
 export const homeAtEntry = (): string | null => HOME_AT_ENTRY
-/* THE MIDNIGHT TRIGGER — OFF IN PHASE 2 (the reshape plan §3.2 A-iv "Switched on only after A-v", §10): until every Undo
-   step carries its squadron, an Undo after the swap could write a 142 war or Tracker step into 149 (Fable F2, Astra 2).
-   Phase 3 switches it on, once helper "undo & roles" has merged; its tests switch it on for themselves. */
-let ENTRY_TRIGGER = false
+/* THE MIDNIGHT TRIGGER — ON SINCE PHASE 3 (the reshape plan §3.2 A-iv "Switched on only after A-v", §10): helper "undo &
+   roles" has merged A-v — every Leave War and Tracker step carries its squadron, so an Undo after the swap never writes a
+   142 step into 149 (Fable F2, Astra 2). A test that needs the page held where it is switches it off for itself. */
+let ENTRY_TRIGGER = true
 export function setEntryTrigger(on: boolean): void { ENTRY_TRIGGER = !!on }
-/* THE HOLD — the band's slot (phase 3: state/typing-hold.ts, an open Leave War window or Tracker pop-up holds the swap of
-   its page, whatever is typed in it — Astra 7, Fable F9). Until it is built it answers "none": nothing holds the swap. */
-export type EntryHold = 'none' | 'war' | 'tracker'
-let ENTRY_HOLD: () => EntryHold = () => 'none'
-export function setEntryHold(fn: (() => EntryHold) | null): void { ENTRY_HOLD = fn || (() => 'none') }
-/* one try per day and squadron pair, so a war that will not load is not tried again on every notify */
+/* THE HOLD (state/typing-hold.ts): an open Leave War window holds the war's swap, whatever is typed in it (Astra 7,
+   Fable F9). A test may hand its own; `null` puts the app's own back. 'tracker' holds nothing of its own: the Tracker
+   cannot be re-read in place once loaded (§14.3), so it never moves under an open editor. */
+export type EntryHold = HoldKind
+let ENTRY_HOLD: () => EntryHold = holdNow
+export function setEntryHold(fn: (() => EntryHold) | null): void { ENTRY_HOLD = fn || holdNow }
+/* one try per day, squadron pair and hold, so a war that will not load is not tried again on every notify — and a war
+   held by a window is tried again the moment the window goes */
 let ENTRY_TRIED = ''
 
 /* WHERE THE PICK GOES WHEN HIS OWN MOVE TAKES EFFECT (Fable 9; the Plan audit, D2242): it moves to his new home only where
@@ -941,9 +954,7 @@ function pickAfterMove(pick: string, oldHome: string, newHome: string, iso: stri
 /* THE CHECK notify() RUNS while the trigger is on: the squadron to enter now, or null.
    - his own move (A2): his home today is not his home at entry → the pick by the rule above;
    - the blind read's R6 (dormant, the war's half): the page's own squadron is not the Leave War's loaded one — a right
-     lowered, removed or raised mid-day — → the same pick, entered again. (R6's other half, "the pick has no readable
-     right behind it", needs the core's question of whether a right reaches the pick that day, View included — owed.)
-   The Tracker is not asked: once loaded it cannot move (above), so it would be due for ever. */
+     lowered, removed or raised mid-day, or a war held by a window that has since gone — → the same pick, entered again. */
 function entryDue(): string | null {
   const m = me()
   if (!m || HOME_AT_ENTRY == null) return null
@@ -951,25 +962,60 @@ function entryDue(): string | null {
   const home = homeOn(m, iso)
   if (!home || !isUnitId(home)) return null
   if (home !== HOME_AT_ENTRY) return pickAfterMove(UNIT, HOME_AT_ENTRY, home, iso)
+  const own = pageUnit('own', iso)
   const war = lwUnitNow()
-  if (war && war !== pageUnit('own', iso)) return UNIT
+  if (war && war !== own) return UNIT
   return null
 }
 /* run from realNotify — never inside a command (a swap loads a week and a war, which are no one's command), never while
-   entering, never while the hold holds; the midnight wake (leavewar/sync.ts installPostingClock) calls notify() at
-   00:00:01 and whenever the page is shown or focused on a new day, so the swap needs no click (Fable F8, Opus L2) */
+   entering; an open war window holds the war's step (above). The midnight wake (leavewar/sync.ts installPostingClock)
+   calls notify() at 00:00:01 and whenever the page is shown or focused on a new day, so the swap needs no click (Fable
+   F8, Opus L2) */
 function maybeReenter(): void {
   if (!ENTRY_TRIGGER || ENTERING || isCommitting()) return
   const to = entryDue()
   if (to == null) return
-  if (ENTRY_HOLD() !== 'none') return
-  const key = `${todayIso()}|${to}|${lwUnitNow() ?? ''}|${me() ?? ''}`
+  const held = ENTRY_HOLD() === 'war'
+  const key = `${todayIso()}|${to}|${lwUnitNow() ?? ''}|${trkUnitNow() ?? ''}|${me() ?? ''}|${held ? 'held' : ''}`
   if (key === ENTRY_TRIED) return
   ENTRY_TRIED = key
   const m = me()
-  enterSquadron(to)
+  enterSquadron(to, held)
   if (m) HOME_AT_ENTRY = sessionUnit(m)
 }
+
+/* THE BAND (state/typing-hold.ts; D2243 Q7 — the approved drawing's words, D1478): while the world a page holds is not
+   the page's own squadron — the war under a window that held its swap, or the Tracker, which keeps the squadron it loaded
+   until the next sign-in (§14.3) — its open window or chart editor says so. Written after every check, so a surface reads
+   the band of the page as it stands. */
+const isoDayBefore = (iso: string): string => {
+  const [y, m, d] = iso.split('-').map(Number)
+  const t = new Date(y!, m! - 1, d! - 1)
+  return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`
+}
+const unitNum = (u: string): string => unitById(u)?.num ?? u
+/* His own move taking effect today, out of the squadron the world belongs to: the drawing's words — "You are 149's from
+   today. This can't be saved in 142's Leave War." (or "…in 142's Tracker."). Any other way the world stopped being his
+   page's own (R6: a right ended mid-day — dormant) has no approved words, so it reads the app's generic "This change could
+   not be saved." (the phase-2 helpers' brief, named in the report). */
+function bandWords(world: string, page: 'Leave War' | 'Tracker', pid: string, iso: string): MoveBand {
+  const home = homeOn(pid, iso)
+  const was = homeOn(pid, isoDayBefore(iso))
+  if (home && was && home !== was && world === was) {
+    return { lead: `You are ${unitNum(home)}'s from today.`, rest: `This can't be saved in ${unitNum(world)}'s ${page}.` }
+  }
+  return { lead: 'This change could not be saved.', rest: '' }
+}
+function publishBands(): void {
+  const m = me()
+  if (!ENTRY_TRIGGER || !m || HOME_AT_ENTRY == null) { setBands(null, null); return }
+  const iso = todayIso()
+  const own = pageUnit('own', iso)
+  const war = lwUnitNow(), trk = trkUnitNow()
+  setBands(war && war !== own ? bandWords(war, 'Leave War', m, iso) : null, trk && trk !== own ? bandWords(trk, 'Tracker', m, iso) : null)
+}
+/* a window that held the war's swap goes: the check runs again at once (typing-hold.ts warWindowGone) */
+setHoldRelease(() => notify())
 /** the planning calendars kept for units left this session — cleared with the session (tests and sign-out) */
 export function forgetUnitPlans(): void { forgetKeptPlans() }
 /* the stored half of another squadron's planning calendar reads its rows from the whiteboard this app saves to (none
