@@ -21,10 +21,11 @@
    it stands on is the button. */
 import { placedShort } from './placedline'
 import { useState } from 'react'
-import { idsOf, inputsFor } from '../engine/inputs'
+import { idsOf, inputsOnDay } from '../engine/inputs'
 import { unitPeople } from '../engine/roster'
 import { PEOPLE } from '../engine/people'
-import { isAdmin, myUnit } from '../state/perms'
+import { isAdmin, pageUnit } from '../state/perms'
+import { openWinFor } from '../state/cutoff'
 import { notify } from '../state/store'
 import { sansCommittedOn } from '../state/flyplan'
 import { dayFacts, flyAnswer, useWarFacts } from '../leavewar/sync'
@@ -60,7 +61,7 @@ export function SansDay({ iso, hi, onClose }: {
   useWarFacts()
   /* which late commitment's note is showing (its input id) */
   const [lateOpen, setLateOpen] = useState<string | null>(null)
-  const a = flyAnswer(iso), facts = dayFacts(iso), com = sansCommittedOn(iso, undefined, unitPeople(myUnit(), iso)), g = sansDayGroups(iso, inputsFor(myUnit(), iso), unitPeople(myUnit(), iso))
+  const a = flyAnswer(iso), facts = dayFacts(iso), u = pageUnit('own', iso), com = sansCommittedOn(iso, undefined, unitPeople(u, iso)), g = sansDayGroups(iso, inputsOnDay(u, iso), unitPeople(u, iso))
   const canAdd = maySansAdd()
   const avail = { p: facts.availP, w: facts.availW }
 
@@ -134,7 +135,7 @@ export function SansDay({ iso, hi, onClose }: {
           <button type="button" className="abtn primary sd-add" data-testid="sd-add" disabled={!canAdd} onClick={() => { openSansAdd(iso) }}>+ Commitment</button>
           {isAdmin() && (
             <button type="button" className="abtn sd-days" data-testid="sd-days" title="Set this month’s day, night and no-fly days, and the year’s holidays"
-              onClick={() => { openBeside('days', 'sansday'); setDaysWin(iso); notify(); bringForward('days') }}>Calendar…</button>
+              onClick={() => { openWinFor('days', pageUnit('own')); openBeside('days', 'sansday'); setDaysWin(iso); notify(); bringForward('days') }}>Calendar…</button>
           )}
         </div>
         {!canAdd && <p className="sd-note" data-testid="sd-addwhy">SANS aircrew add their availability here.</p>}

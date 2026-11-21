@@ -10,7 +10,7 @@ import { rowOnScreen } from './onscreen'
 import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME } from '../engine/people'
 import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
-import { isAdmin, mayEditQualsOf, mayManageRoster, mayRenameCallsign, mayTickManagement, mayTickScheduler, myUnit } from '../state/perms'
+import { isAdmin, mayEditQualsOf, mayManageRoster, mayRenameCallsign, mayTickManagement, mayTickScheduler, pageUnit } from '../state/perms'
 import { rosterOf } from '../engine/roster'
 import { catsFor, CALLSIGN_LABEL } from '../state/roster-add'
 import './postout.css'
@@ -21,7 +21,7 @@ import { notify } from '../state/store'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (a roster write now
    emits a people/<personId> change). Same behaviour + the change stream. */
 import { persistPeople } from '../state/people-settings-commit'
-import { DEFAULT_QUAL_COLS, MGMT_KEY, SCHED_KEY, qualCols, setQualCols } from '../engine/qualcols'
+import { DEFAULT_QUAL_COLS, MGMT_KEY, SCHED_KEY, qualColsOf, setQualColsOf } from '../engine/qualcols'
 import { useVersion } from './useStore'
 /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26) — the shared drag decoration every
    surface in the app wears. A column is a COMPOSITE thing (a heading and a
@@ -74,6 +74,17 @@ import { exportCSV } from './export'
    page's `cols` state is mirrored into the engine's `qualCols()` registry on
    every change (the effect below), and Raptor's `notify` then carries it to
    Leave War's projection. */
+/* THE PAGE'S SQUADRON AND ITS COLUMN LIST — one place the page and its tests read (the reshape plan §3.2 A-ii). Quals
+   is an own page: it stays on his own squadron whatever schedule he picks (D2132) — a master admin's, or a Plan
+   holder's, follows his pick (D2197, D2201) — and its people and its column list, read and written, are that squadron's
+   (state/perms.ts pageUnit). */
+// eslint-disable-next-line react-doctor/only-export-components -- the page's squadron, read by the page and its proofs
+export const qualsPageUnit = (): string => pageUnit('own')
+// eslint-disable-next-line react-doctor/only-export-components -- the page's column list, read by the page and its proofs
+export const qualsPageCols = (): readonly any[] => qualColsOf(qualsPageUnit())
+/* true when the list really changed (the caller notifies only then) */
+// eslint-disable-next-line react-doctor/only-export-components -- the column list's one writer on this page, read by its proofs
+export const setQualsPageCols = (next: readonly any[]): boolean => setQualColsOf(qualsPageUnit(), next as any)
 const WIRED: any = {
   sched: 'the sign-off drop-downs — SKED CK, PLANNED BY and APPROVED BY',
   scDay: 'the SC shift rules', scNight: 'the SC shift rules',
@@ -128,7 +139,7 @@ const cmp = (a: any, b: any) => (a < b ? -1 : a > b ? 1 : 0)
 /* which people the table is showing: the seat view, then the filter box */
 function qualsIds(qSeatView: string, qSort: any, qSearch: string) {
   /* the signed-in person's own squadron's people — Quals stays on his own (D2132; multi-squadron step 3) */
-  let ids = rosterOf(myUnit()).filter(id =>
+  let ids = rosterOf(qualsPageUnit()).filter(id =>
     (qSeatView === 'ALL' || PEOPLE[id].seat === qSeatView) && !PEOPLE[id].archived)
   if (qSearch) { const s = qSearch.toLowerCase(); ids = ids.filter(id => PEOPLE[id].cs.toLowerCase().includes(s) || (PEOPLE[id].initials || '').toLowerCase().includes(s) || (PEOPLE[id].name || '').toLowerCase().includes(s)) }
   const key = sortKeyFor(qSort.key)
@@ -300,8 +311,8 @@ export function QualsPage() {
      its own copy, seeded once and written back from an effect, so an Undo that put the list back underneath it never
      showed here, and the next column edit wrote the stale copy over the undo. Now the registry IS the page's list; the
      page writes it only from its own edit handlers below (setQualCols — one settings command, one Undo step). */
-  const cols: any[] = qualCols() as any[]
-  const setCols = (fn: (cs: any[]) => any[]) => { if (setQualCols(fn([...qualCols()]))) notify() }
+  const cols: any[] = qualsPageCols() as any[]
+  const setCols = (fn: (cs: any[]) => any[]) => { if (setQualsPageCols(fn([...qualsPageCols()]))) notify() }
   const [qualsEdit, setQualsEdit] = useState(false)
   const [newQual, setNewQual] = useState('')
   /* the column whose ✕ has been pressed once — see WIRED above */

@@ -24,7 +24,7 @@
 import { useEffect, useState } from 'react'
 import { isAdmin, membersFileOn } from '../state/perms'
 import { notify } from '../state/store'
-import { cutProblem, getCut, saveCut } from '../state/cutoff'
+import { cutProblem, forgetWin, getCut, openWinFor, saveCut, winUnit } from '../state/cutoff'
 import { setMembersFile, type SwitchSave } from '../state/memberfile'
 import { CALMONTH } from '../state/view'
 import { CutFields } from './CutFields'
@@ -34,16 +34,22 @@ import { bringForward, openBeside } from './winorder'
 import { INPSET, setDaysWin, setInpSet } from './pops'
 import { useVersion } from './useStore'
 
-export function InputsSettings() {
+export function InputsSettings({ unit }: { unit?: string } = {}) {
   useVersion()
   const refused = INPSET && !isAdmin()
   useEffect(() => { if (refused) setInpSet(false) }, [refused])
+  /* THE SQUADRON IT EDITS (the reshape plan §3.2 A-ii; the host's ruling of 21 Nov 26): the page it was opened from —
+     `unit` when handed in, else what its door named (state/cutoff.ts openWinFor: a calendar's gear its own squadron),
+     else the pick (the Logic page's doors name none). It forgets the door's squadron once closed, so the next opening that
+     names none is the pick's again; keyed by it, so a draft never carries over to another squadron. */
+  useEffect(() => { if (!INPSET) forgetWin('inputs') })
   if (!INPSET || refused) return null
-  return <Body />
+  const u = unit ?? winUnit('inputs')
+  return <Body key={u} unit={u} />
 }
 
-function Body() {
-  const [cut, setCut] = useState(() => cutDraftOf(getCut('inputs')))
+function Body({ unit }: { unit: string }) {
+  const [cut, setCut] = useState(() => cutDraftOf(getCut('inputs', unit)))
   const [was] = useState(membersFileOn)
   const [members, setMembers] = useState(was)
   const [err, setErr] = useState('')
@@ -53,7 +59,7 @@ function Body() {
     const rule = cutRuleOf(cut)
     const bad = cutProblem('inputs', rule)
     if (bad) return setErr(bad)
-    const c = saveCut('inputs', rule)
+    const c = saveCut('inputs', rule, unit)
     if (!c.ok) return setErr(c.message || 'The cut-off could not be saved. Try again.')
     const done = (r: SwitchSave) => {
       if (!r.ok) return setErr(r.message || 'The setting could not be saved. Try again.')
@@ -66,6 +72,7 @@ function Body() {
     const now = new Date(), m = CALMONTH || { y: now.getFullYear(), m: now.getMonth() + 1 }
     /* beside this window, never over it (F9's rule, met at every Calendar door — the bug check of 3 Nov 26, W1 S21.3f) */
     openBeside('days', 'inputsset')
+    openWinFor('days', unit)
     setDaysWin(`${m.y}-${String(m.m).padStart(2, '0')}-01`); notify(); bringForward('days')
   }
 

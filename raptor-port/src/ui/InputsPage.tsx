@@ -12,14 +12,15 @@
 import { MONTHS } from './daysfmt'
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { bringRowOnScreen, rowOnScreen } from './onscreen'
-import { INPUTS, inputLines, inputsFor, inpLabel, inpKindTag, isLateInput, lateNote, isSansAvail, sansLetters, baseYear, dateOrd, nowStamp, idsOf, facesOf, remarksShown, typeMatches, typeFilterLabel, typeGroup } from '../engine/inputs'
+import { INPUTS, inputLines, inputsListed, inpLabel, inpKindTag, isLateInput, lateNote, isSansAvail, sansLetters, baseYear, dateOrd, nowStamp, idsOf, facesOf, remarksShown, typeMatches, typeFilterLabel, typeGroup } from '../engine/inputs'
 import { OilConfirm } from './OilConfirm'
 import { PEOPLE } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
-import { LOOK_CFG, LOOK_MAX, LOOK_MIN, lookaheadLabel, lookaheadRange, setLookahead } from '../engine/lookahead'
+import { LOOK_MAX, LOOK_MIN, lookaheadLabel, lookaheadRange, lookaheadOf, setLookaheadFor, type Lookahead } from '../engine/lookahead'
 import { canEditSched } from '../state/auth'
-import { me, isAdmin, mayEditInput, myUnit } from '../state/perms'
+import { me, isAdmin, mayEditInput, pageUnit } from '../state/perms'
+import { openWinFor } from '../state/cutoff'
 import { rosterOf, onRosterOf } from '../engine/roster'
 import { notify } from '../state/store'
 import { INPVIEW, setInpView, INPMODE, setInpMode, INPREVEAL, clearInpReveal } from '../state/view'
@@ -51,6 +52,23 @@ import { useMedia } from './usemedia'
    (owner, Aug 5). The list is a planning tool, so it opens on what is COMING:
    sorted by start date, today at the top, the next two months below it. */
 
+/* THE PAGE'S SQUADRON AND WHAT IT LISTS — one place the page and its tests read (the reshape plan
+   docs/superpowers/plans/2026-11-20-multi-sqn-b1-reshape.md §3.2 A-ii, §3.3 C2 and C11). The Inputs page is an own page:
+   it stays on his own squadron whatever schedule he picks (D2132) — a master admin's, or a Plan holder's, follows his pick
+   (D2197, D2201) — and its filter, rows, groups and look-ahead all read that one squadron (state/perms.ts pageUnit). Its
+   rows are every input touching that squadron on any of its days (a leave across a move is on both squadrons' lists —
+   C1) and every input naming him, wherever it sits (his own input after his move — C2): a list reader, never a writer. */
+// eslint-disable-next-line react-doctor/only-export-components -- the page's squadron, read by the page and its proofs
+export const inputsPageUnit = (): string => pageUnit('own')
+// eslint-disable-next-line react-doctor/only-export-components -- the page's rows before its filters, read by the page and its proofs
+export const inputsPageRows = (): any[] => inputsListed(inputsPageUnit(), me())
+// eslint-disable-next-line react-doctor/only-export-components -- the Person filter's people, read by the page and its proofs
+export const inputsFilterPeople = (): string[] => people(inputsPageUnit())
+// eslint-disable-next-line react-doctor/only-export-components -- the look-ahead the page opens on, read by the page and its proofs
+export const inputsLookahead = (): Lookahead => lookaheadOf(inputsPageUnit())
+// eslint-disable-next-line react-doctor/only-export-components -- the look-ahead's one writer on this page, read by its proofs
+export const setInputsLookahead = (weeks: number | string, toSunday: boolean): boolean => setLookaheadFor(inputsPageUnit(), weeks, toSunday)
+
 /* SANS availability is filed on the SANS calendar and nowhere else (D620): no type list on this page offers it */
 const notSans = (t: string) => !isSansAvail(t)
 const pad = (n: number) => String(n).padStart(2, '0')
@@ -63,7 +81,7 @@ const plusMonths = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(
    picker ([ARCH-STACK] step 4, H5 — clearing leave is filed for them). */
 function ArchivedGroup() {
   /* (the signed-in person's own squadron's — the Inputs page stays on his own, D2132; multi-squadron step 3) */
-  const ids = archivedOptions(myUnit())
+  const ids = archivedOptions(inputsPageUnit())
   if (!ids.length) return null
   return <optgroup label="Posted out / archived">{ids.map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}</optgroup>
 }
@@ -73,8 +91,8 @@ function ArchivedGroup() {
    10 Oct 26; the input's window keeps it the same way.) */
 function DeletedGroup() {
   /* one line a named person of each of his own squadron's inputs (engine/inputs.ts) — read once, not once a man */
-  const lines = inputLines(inputsFor(myUnit()))
-  const ids = rosterOf(myUnit()).filter(id => PEOPLE[id].deleted && lines.some((r: any) => r && r.person === id))
+  const lines = inputLines(inputsPageRows())
+  const ids = rosterOf(inputsPageUnit()).filter(id => PEOPLE[id].deleted && lines.some((r: any) => r && r.person === id))
   if (!ids.length) return null
   return <optgroup label="Deleted">{ids.map(id => <option key={id} value={id}>{PEOPLE[id].cs} (deleted)</option>)}</optgroup>
 }
@@ -85,7 +103,7 @@ export const DEFAULT_SPAN_MONTHS = 2
    what the page opens on and what this button offers cannot disagree.
    `plusMonths` and DEFAULT_SPAN_MONTHS are kept: the month arithmetic is still
    the reference's, and the constant is exported and read elsewhere. */
-const defaultRange = (now = new Date()) => lookaheadRange(now)
+const defaultRange = (now = new Date()) => lookaheadRange(now, inputsLookahead())
 
 /* THE TABLE OPENS ON TODAY → TWO WEEKS, AND ONLY ON THAT (owner, 12 Aug 26 —
    "it is ok to show any inputs from the today's date to 2 weeks down the
@@ -111,7 +129,7 @@ const plusDays = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(),
    on to that week's Sunday. */
 // eslint-disable-next-line react-doctor/only-export-components -- the List's first window, the page's own rule kept beside the page that opens on it; the tests of that window import it from here
 export function initialRange(now = new Date()) {
-  return lookaheadRange(now)
+  return lookaheadRange(now, inputsLookahead())
 }
 
 /* The sort key per column. Dates sort on the ISO date the label implies, with
@@ -246,8 +264,8 @@ export function InputsPage() {
   /* The admin's default-window editor (owner, 28 Aug 26). Draft values while
      open, so a half-typed number never becomes the squadron's setting. */
   const [lookEdit, setLookEdit] = useState(false)
-  const [lookWeeks, setLookWeeks] = useState(String(LOOK_CFG.weeks))
-  const [lookSun, setLookSun] = useState(LOOK_CFG.toSunday)
+  const [lookWeeks, setLookWeeks] = useState(() => String(inputsLookahead().weeks))
+  const [lookSun, setLookSun] = useState(() => inputsLookahead().toSunday)
   const [calOpen, setCalOpen] = useState(false)
   const [sort, setSort] = useState({ key: 'start', dir: 1 })
   /* Rows just added, newest first, and rows still flashing — each held by its input's ID, never its index (adding,
@@ -432,7 +450,7 @@ export function InputsPage() {
 
   let pinCount = 0
   /* (the signed-in person's own squadron's — the Inputs page stays on his own, D2132; multi-squadron step 3) */
-  let rows = inputsInMode(inputsFor(myUnit()), INPMODE)
+  let rows = inputsInMode(inputsPageRows(), INPMODE)
   /* A SHARED INPUT IS ONE LINE (owner D655 — "shown and edited as one thing"; the plan §3.13) — and since the one-rule
      build it IS one record with the list of its people (owner D756, 11 Oct 26; the plan
      docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.5): a row a record, the Name naming EVERYONE in it, A to Z,
@@ -545,8 +563,8 @@ export function InputsPage() {
      can never lag the table. */
   const medIso = keyToIso(TODAY)
   const medOrd = +medIso.slice(0, 4) * 10000 + +medIso.slice(5, 7) * 100 + +medIso.slice(8, 10)
-  const medDownN = medDownAsOf(medOrd).filter((e: any) => onRosterOf(e.person, myUnit())).length
-  const medPendN = pendingUpchits(medOrd).filter((e: any) => onRosterOf(e.person, myUnit())).length
+  const medDownN = medDownAsOf(medOrd).filter((e: any) => onRosterOf(e.person, inputsPageUnit())).length
+  const medPendN = pendingUpchits(medOrd).filter((e: any) => onRosterOf(e.person, inputsPageUnit())).length
   /* THE SANS TAB IS THE SANS CALENDAR AND NOTHING ELSE (owner D620, 7 Oct 26: SANS availability "leaves the List and is
      filed on the SANS calendar only, which has no list of its own"; the plan §3.5: "the SANS tab has no filters" — the
      Highlight does that job, and the counts ignore filters by ruling, D581). So in that mode the Calendar | List pair,
@@ -634,7 +652,7 @@ export function InputsPage() {
         <option value={EVERYONE}>Everyone</option>
         {/* the inputs filed for ALL AVAIL / ALL, each on its own — never "Everyone" ([INPUT-ALL-AVAIL]) */}
         <PlaceholderGroup all value={personFilterValue} />
-        {people().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
+        {inputsFilterPeople().map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}
         <ArchivedGroup /><DeletedGroup />
       </select></label>
       <label><select id="inFType" aria-label="Type" value={fType} onChange={e => { unpin(); setFType(e.target.value); notify() }}>
@@ -648,7 +666,7 @@ export function InputsPage() {
         "Calendar…" (ui/InputsSettings.tsx); the Logic page's rows open the same window. */}
     {isAdmin() && (
       <button type="button" className="abtn inputs-gear" id="inGear" data-testid="in-gear" title="Inputs calendar settings — the late cut-off, who may file for other people, the Calendar"
-        aria-label="Inputs calendar settings" onClick={() => { setInpSet(true); notify() }}><GearIcon /></button>
+        aria-label="Inputs calendar settings" onClick={() => { openWinFor('inputs', inputsPageUnit()); setInpSet(true); notify() }}><GearIcon /></button>
     )}
     </div>
   </>)
@@ -689,7 +707,7 @@ export function InputsPage() {
             {/* The quick button SAYS the squadron's setting and applies it
                 — everyone gets the same default, an admin decides what it
                 is (owner, 28 Aug 26). */}
-            <button className="abtn" id="inRangeDef" onClick={() => { unpin(); setRange(defaultRange()); setCalOpen(false) }}>{lookaheadLabel()}</button>
+            <button className="abtn" id="inRangeDef" onClick={() => { unpin(); setRange(defaultRange()); setCalOpen(false) }}>{lookaheadLabel(inputsLookahead())}</button>
             <button className="abtn" id="inRangeAll" onClick={() => { unpin(); setRange({ from: '', to: '' }); setCalOpen(false) }}>{RANGE_ALL}</button>
           </div>
           {/* The admin's pencil: how far ahead the page looks by default.
@@ -698,7 +716,7 @@ export function InputsPage() {
           {isAdmin() && (
             <div className="inrange-cfg" id="inRangeCfg">
               {!lookEdit && (
-                <button className="abtn ghost" id="inRangeEdit" onClick={() => { setLookWeeks(String(LOOK_CFG.weeks)); setLookSun(LOOK_CFG.toSunday); setLookEdit(true) }}>
+                <button className="abtn ghost" id="inRangeEdit" onClick={() => { const la = inputsLookahead(); setLookWeeks(String(la.weeks)); setLookSun(la.toSunday); setLookEdit(true) }}>
                   <PenIcon />Default window
                 </button>
               )}
@@ -713,16 +731,16 @@ export function InputsPage() {
                   </label>
                   <button className="abtn primary" id="inLookSave" onClick={() => {
                     if (!isAdmin()) return
-                    if (!setLookahead(lookWeeks, lookSun)) {
+                    if (!setInputsLookahead(lookWeeks, lookSun)) {
                       // a refused value goes back to the live one on screen,
                       // never left looking saved
-                      setLookWeeks(String(LOOK_CFG.weeks))
+                      setLookWeeks(String(inputsLookahead().weeks))
                       HOOKS.toast(`Give a number of weeks between ${LOOK_MIN} and ${LOOK_MAX}`)
                       return
                     }
                     setLookEdit(false)
                     setRange(defaultRange())
-                    HOOKS.toast(`Everyone now opens on ${lookaheadLabel().toLowerCase()}`, 'ok')
+                    HOOKS.toast(`Everyone now opens on ${lookaheadLabel(inputsLookahead()).toLowerCase()}`, 'ok')
                     notify()
                   }}>Save</button>
                   <button className="abtn ghost" id="inLookCancel" onClick={() => setLookEdit(false)}>Cancel</button>

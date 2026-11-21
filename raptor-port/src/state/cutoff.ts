@@ -13,7 +13,9 @@
    Only the values of the mode chosen are written: choosing "a weekday" leaves the day count as it was, so going back
    to "days before" finds the squadron's old figure, not a nought. */
 import { cutBackOf } from '../engine/inputs'
-import { RULE_SPEC, VCONF, rulesSave } from '../engine/rules'
+import { RULE_SPEC, RULE_STD, VCONF, rulesSave } from '../engine/rules'
+import { store, unitSetting, unitSettingKey } from '../engine/hooks'
+import { UNIT } from '../engine/unitview'
 import { validate } from '../engine/validate'
 import { isAdmin } from './perms'
 import { notify } from './store'
@@ -31,10 +33,42 @@ const KEYS: Record<CutSet, { lead: string; mode: string; wd: string; weeks: stri
   inputs: { lead: 'inputLead', mode: 'inputCutMode', wd: 'inputCutWd', weeks: 'inputCutWeeks' },
   sans: { lead: 'sansLead', mode: 'sansCutMode', wd: 'sansCutWd', weeks: 'sansCutWeeks' },
 }
-export function getCut(set: CutSet): CutRule {
-  const k = KEYS[set]
-  return { mode: VCONF[k.mode] === 1 ? 1 : 0, lead: +VCONF[k.lead] || 0, wd: +VCONF[k.wd] || 0, weeks: +VCONF[k.weeks] || 1 }
+/* BY SQUADRON (the reshape plan §3.2 A-ii; the host's ruling of 21 Nov 26 for phase 2): a calendar's settings window edits
+   the squadron of the page it was opened from — the Logic page's door the pick, a calendar's gear its own squadron. The
+   loaded squadron's values are VCONF, as always; another's are read from its own stored `rules` record, the standard
+   under what it overrides (each checked as engine/rules.ts rulesLoad checks it), never put into VCONF. */
+export function getCut(set: CutSet, unit: string = UNIT): CutRule {
+  const k = KEYS[set], V = unit === UNIT ? VCONF : rulesOf(unit)
+  return { mode: V[k.mode] === 1 ? 1 : 0, lead: +V[k.lead] || 0, wd: +V[k.wd] || 0, weeks: +V[k.weeks] || 1 }
 }
+/* a squadron's stored `rules` record as its two halves — the values it overrides and the hard kinds — each a copy */
+function storedRules(unit: string): { v: Record<string, unknown>; s: Record<string, unknown> } {
+  const r: any = unitSetting(unit, 'rules', null)
+  const half = (x: unknown) => (x && typeof x === 'object' && !Array.isArray(x) ? { ...(x as Record<string, unknown>) } : {})
+  return { v: half(r && r.v), s: half(r && r.s) }
+}
+/* a squadron's number values: the standard, then each stored override inside its range */
+function rulesOf(unit: string): Record<string, any> {
+  const out: Record<string, any> = { ...RULE_STD.v }
+  const { v } = storedRules(unit)
+  for (const key of Object.keys(v)) {
+    if (!Object.prototype.hasOwnProperty.call(RULE_SPEC, key)) continue
+    const sp = RULE_SPEC[key], n = v[key]
+    if (sp.kind !== 'text' && typeof n === 'number' && isFinite(n) && n >= sp.lo && n <= sp.hi) out[key] = n
+  }
+  return out
+}
+
+/* THE SQUADRON EACH SETTINGS WINDOW EDITS — the Inputs calendar's, the SANS calendar's and the Calendar window. Each
+   window is mounted once (ui/App.tsx) and opened by a flag (ui/pops.ts), so the door that opens it says whose it is
+   here, first: a calendar's gear and the SANS day's "Calendar…" name their own page's squadron; the Logic page's doors
+   name none, so the window edits the pick, as it always did. A window forgets its squadron when it closes (each window
+   calls forgetWin), so the next opening that names none is the pick's again. */
+export type CutWin = 'inputs' | 'sans' | 'days'
+const WIN_UNIT: Record<CutWin, string | null> = { inputs: null, sans: null, days: null }
+export function openWinFor(win: CutWin, unit: string | null): void { WIN_UNIT[win] = unit }
+export function winUnit(win: CutWin): string { return WIN_UNIT[win] ?? UNIT }
+export function forgetWin(win: CutWin): void { WIN_UNIT[win] = null }
 
 const whole = (v: unknown, lo: number, hi: number): v is number => typeof v === 'number' && Number.isInteger(v) && v >= lo && v <= hi
 /** why a rule cannot be saved — '' when it can. The ranges are the engine's own (RULE_SPEC), so the Logic page and this
@@ -63,16 +97,31 @@ export function cutExample(r: CutRule, todayIso: string): { week: string; due: s
 }
 
 export interface CutSave { ok: boolean; message?: string; changed?: boolean }
-export function saveCut(set: CutSet, r: CutRule): CutSave {
+export function saveCut(set: CutSet, r: CutRule, unit: string = UNIT): CutSave {
   if (!isAdmin()) return { ok: false, message: 'Only an admin can change the late cut-off.' }
   const bad = cutProblem(set, r)
   if (bad) return { ok: false, message: bad }
   const k = KEYS[set]
   const next: Record<string, number> = r.mode === 0 ? { [k.mode]: 0, [k.lead]: r.lead } : { [k.mode]: 1, [k.wd]: r.wd, [k.weeks]: r.weeks }
+  if (unit !== UNIT) return saveCutOf(unit, next)
   const keys = Object.keys(next).filter(key => VCONF[key] !== next[key])
   if (!keys.length) return { ok: true, changed: false }
   for (const key of keys) VCONF[key] = next[key]
   /* the Logic page's own three: write and persist, re-run the checks, repaint */
   rulesSave(); validate(); notify()
+  return { ok: true, changed: true }
+}
+/* ANOTHER SQUADRON'S CUT-OFF: one write of THAT squadron's whole `rules` record — every other value and hard kind it holds
+   kept as stored, a value back at the standard taken out of it, as rulesSave stores only what differs — so it is one
+   `settings.rules` command and one Undo step, judged as an admin of that squadron by the gate. VCONF and the checks are
+   the loaded squadron's and are left alone. */
+function saveCutOf(unit: string, next: Record<string, number>): CutSave {
+  const cur = rulesOf(unit)
+  const keys = Object.keys(next).filter(key => cur[key] !== next[key])
+  if (!keys.length) return { ok: true, changed: false }
+  const rec = storedRules(unit)
+  for (const key of keys) { if (next[key] === RULE_STD.v[key]) delete rec.v[key]; else rec.v[key] = next[key] }
+  store.set(unitSettingKey(unit, 'rules'), Object.keys(rec.v).length || Object.keys(rec.s).length ? { v: rec.v, s: rec.s } : null)
+  notify()
   return { ok: true, changed: true }
 }
