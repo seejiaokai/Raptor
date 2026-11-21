@@ -108,8 +108,8 @@ export function DaysWindow({ unit }: { unit?: string } = {}) {
      names none is the pick's again; keyed by it, so a draft never carries over to another squadron. */
   useEffect(() => { if (!DAYSWIN) forgetWin('days') })
   if (!DAYSWIN || refused) return null
-  /* (its month and its tags still come through the Leave War's join, leavewar/sync.ts flyMonth — the pick's plan until
-     helper "war" moves that onto the flying plan's squadron-taking forms; what it writes is this squadron's) */
+  /* (its month and its tags come through the Leave War's join, leavewar/sync.ts flyMonth, asked for this squadron's
+     plan — the one it writes) */
   const u = unit ?? winUnit('days')
   /* keyed by the date it was asked for, so asking again for another month (the Leave War's settings, on the month the
      war is showing) opens on that month */
@@ -129,7 +129,7 @@ function DaysBody({ at, unit }: { at: string; unit: string }) {
   const [side, setSide] = useState<Side>(null)
   const every = side && side.k === 'every' ? side.wd : null
   const dates = monthDates(ym.y, ym.m)
-  const answers = flyMonth(ym.y, ym.m)
+  const answers = flyMonth(ym.y, ym.m, unit)   // the squadron it edits — its plan, never the war loaded's
   const today = isoToday()
 
   const close = () => { setDaysWin(null); notify() }

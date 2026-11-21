@@ -75,6 +75,7 @@ const RECORDS: Record<string, string> = {
   'ui/html.ts': 'draws the day\'s inputs on the week; how many SANS men have offered reads lines through sansAvailOn',
   'ui/inputscal-model.ts': 'the Inputs calendar\'s bars',
   'ui/InputsCal.tsx': 'the Inputs calendar',
+  'ui/owncal.ts': 'the Inputs calendar\'s notes and day titles, through the Inputs page\'s door (writeInputs) — it writes planning records only, never an input',
   'ui/InputsSettings.tsx': 'the late cut-off\'s count of inputs',
   'ui/interactions.ts': 'the schedule\'s hands on an input',
   'ui/oilputback.ts': 'what a whole-day replacement (a load, a plan switch) put back that still needs an OIL answer — reads the records (D865)',

@@ -56,8 +56,8 @@ import { frontWin } from './floatwin'
 
 /* THE PAGE'S SQUADRON AND ITS COLOURS — one place the page and its tests read (the reshape plan §3.2 A-ii): the SANS
    calendar is an own page — his own squadron's whatever schedule he picks (D2132), a master admin's or a Plan holder's
-   following his pick (D2197, D2201). (Its month's day class and need still come through the Leave War's join,
-   leavewar/sync.ts flyMonth, helper "war"'s to move onto the flying plan's squadron-taking forms.) */
+   following his pick (D2197, D2201). Its month's day class and need come through the Leave War's join,
+   leavewar/sync.ts flyMonth, asked for this squadron's flying plan — never the war loaded's. */
 // eslint-disable-next-line react-doctor/only-export-components -- the page's squadron, read by the page and its proofs
 export const sansCalUnit = (): string => pageUnit('own')
 // eslint-disable-next-line react-doctor/only-export-components -- the three day colours the page draws, read by the page and its proofs
@@ -273,7 +273,7 @@ export function SansCal({ lead }: { lead?: ReactNode } = {}) {
   const hi = SANSHL && roster.includes(SANSHL) ? SANSHL : null
   const stale = !!SANSHL && !hi
   useEffect(() => { if (stale) { setSansHl(null); notify() } }, [stale])
-  const answers = flyMonth(cur.y, cur.m)
+  const answers = flyMonth(cur.y, cur.m, sansCalUnit())   // the page's own squadron's plan, never the war loaded's
   const tones = sansCalTones()
   const cells = monthCells(cur.y, cur.m)
   const weeks: (string | null)[][] = []

@@ -20,6 +20,7 @@ import { HOOKS } from '../engine/hooks'
 import { LOOK_MAX, LOOK_MIN, lookaheadLabel, lookaheadRange, lookaheadOf, setLookaheadFor, type Lookahead } from '../engine/lookahead'
 import { canEditSched } from '../state/auth'
 import { me, isAdmin, mayEditInput, pageUnit } from '../state/perms'
+import { todayIso } from '../engine/editlog'
 import { openWinFor } from '../state/cutoff'
 import { rosterOf, onRosterOf } from '../engine/roster'
 import { notify } from '../state/store'
@@ -81,7 +82,7 @@ const plusMonths = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(
    picker ([ARCH-STACK] step 4, H5 — clearing leave is filed for them). */
 function ArchivedGroup() {
   /* (the signed-in person's own squadron's — the Inputs page stays on his own, D2132; multi-squadron step 3) */
-  const ids = archivedOptions(inputsPageUnit())
+  const ids = archivedOptions(inputsPageUnit(), todayIso())   // the day given (the reshape plan §3.2 A-i): the page's today
   if (!ids.length) return null
   return <optgroup label="Posted out / archived">{ids.map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}</optgroup>
 }

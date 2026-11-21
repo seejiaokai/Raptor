@@ -36,8 +36,9 @@ import { dayFacts, flyAnswer, flyMonth, useWarFacts } from '../leavewar/sync'
 import { PEOPLE, QCOLOR, byCrew } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { puck } from './html'
-import { PLANPUCKS, DAYRMK, setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck, addPuckPeople, togglePuckPerson, movePuckPerson, movePlanSection } from '../state/plan'
-import { notify, writeInputs } from '../state/store'
+import { setDayRemark, addPlanPuck, editPlanPuck, removePlanPuck, addPuckPeople, togglePuckPerson, movePuckPerson, movePlanSection } from '../state/plan'
+import { notify } from '../state/store'
+import { calNow, calUnit, writeCal } from './owncal'
 import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL, clearInpReveal, PLANREVEAL, clearPlanReveal } from '../state/view'
 import { HL_GROUPS } from './hlchips-model'
 import { canEditSched } from '../state/auth'
@@ -124,7 +125,7 @@ export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSe
     const csA = namesOf(a)[0] || '', csB = namesOf(b)[0] || ''
     return csA.localeCompare(csB)
   })
-  const pucks = PLANPUCKS.filter((p: any) => p.date === iso)
+  const pucks = calNow().pucks.filter((p: any) => p.date === iso)
   return { inputs, pucks }
 }
 
@@ -380,7 +381,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
      render" rule inputedit.tsx's own draft follows (draftOf re-seeds on `r`
      changing). Re-seeding on every render would stomp what is being typed
      the moment any unrelated store write repaints the page underneath it. */
-  useEffect(() => { setRmkDraft(popIso ? (DAYRMK[popIso] || '') : '') }, [popIso])
+  useEffect(() => { setRmkDraft(popIso ? (calNow().titles[popIso] || '') : '') }, [popIso])
 
   /* CALMONTH starts null (state/view.ts) — nobody has opened the calendar
      yet — so the FIRST open derives a month from whatever window the table
@@ -445,7 +446,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     const back = pickOpener.current; pickOpener.current = null
     if (back && back.isConnected) setTimeout(() => { if (back.isConnected) back.focus() }, 0)
   }
-  const finishNewNote = (ids: string[]) => { if (pickWords || ids.length) writeInputs(() => addPlanPuck(pickIso, pickWords, ids)) }
+  const finishNewNote = (ids: string[]) => { if (pickWords || ids.length) writeCal(() => addPlanPuck(pickIso, pickWords, ids)) }
   const cancelPick = () => { if (pickFor === '') finishNewNote([]); shutPick() }
   /* written after each commit, never during a render React may throw away; declared BEFORE the undo reveal's layout
      effect below, which may close the day through showDay() and so read it in the same commit */
@@ -481,7 +482,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
   const confirmPick = () => {
     const ids = [...pickSel]
     if (pickFor === '') finishNewNote(ids)
-    else if (ids.length && pickFor) writeInputs(() => addPuckPeople(pickFor, ids))
+    else if (ids.length && pickFor) writeCal(() => addPuckPeople(pickFor, ids))
     shutPick()
   }
 
@@ -512,7 +513,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     showDay(entry.fromIso)
     /* a note with WORDS opens already in its own edit box; one that holds people and no words has none to edit, so
        its tap just opens the day (its people are changed on the note there) */
-    const sec = PLANPUCKS.find((p: any) => p.id === entry.pid)
+    const sec = calNow().pucks.find((p: any) => p.id === entry.pid)
     if (sec && !String(sec.text || '').trim()) { setPopPuckEdit(null) }
     else { setPopPuckEdit(entry.pid); setPuckDraft(sec?.text || '') }
   }
@@ -655,7 +656,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
 
   /* ---- the bars: every input the filters let through, as entries; each week lays out its own ---------------------- */
   const items = monthItems(calRows(), { fPerson, fType, fSearch })
-  const answers = flyMonth(cur.y, cur.m)
+  const answers = flyMonth(cur.y, cur.m, calUnit())   // the page's own squadron's flying plan, never the war loaded's
 
   /* ---- ON A PHONE THE MONTH TAKES THE FULL SCREEN (D653, D664): the week rows share the height from the month's top
      to the foot of the screen — measured from what the browser really shows, and measured again when that changes (its
@@ -720,7 +721,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     const entries = dayEntries(iso, { fPerson, fType, fSearch }, mode)
     const saved=INPUTS.find((r:any)=>r.iid===savedId&&inputsInMode([r],mode).length&&inputCoversDate(r,fmt(iso)))
     const revealed=!!saved&&!itemsOn(iso,items).some(it=>it.rows.includes(saved))
-    const hasRmk = !!DAYRMK[iso]
+    const titles = calNow().titles
+    const hasRmk = !!titles[iso]
     const sched = canEditSched()
     /* Enter commits by handing off to the SAME blur handler that already
        commits (rather than a second copy of the write), so there is exactly
@@ -738,7 +740,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
       if (e.key !== 'Escape') { blurOnEnter(e); return }
       e.preventDefault(); e.stopPropagation()
       titleGone.current = true
-      setRmkDraft(DAYRMK[iso] || '')
+      setRmkDraft(titles[iso] || '')
       ;(e.target as HTMLElement).blur()
     }
     /* SECTION DRAG (admin) — the Matrix roster drag's shape scaled down: the
@@ -815,7 +817,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
            popover, and movePlanSection may still refuse it as a no-op — either
            way the section is there to flash when the layout effect runs. */
         markLand(landSel)
-        writeInputs(() => movePlanSection(id, beforeId))
+        writeCal(() => movePlanSection(id, beforeId))
       }
       const up = () => end(true)
       const cancel = () => end(false)
@@ -899,7 +901,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
         document.body.classList.remove('ic-dragging')
         if (!dragging || !ev) return                        // a tap, not a drag — leave the puck seated
         const { inRow, ix } = slotAt(ev)
-        if (!inRow) writeInputs(() => togglePuckPerson(rowId, personId))                          // off the row → drop
+        if (!inRow) writeCal(() => togglePuckPerson(rowId, personId))                          // off the row → drop
         /* Released back on its OWN slot: a committed drop with a target, so it
            flashes where it ended up — in place (7 Sep 26; the owner's "show
            where the new item ended up"). Straight onto the chip, no mark: there
@@ -913,7 +915,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
            place, so it marks nothing. */
         else if (ix >= 0) {
           markLand(`[data-secpucks="${rowId}"] .ic-secpk[data-pkidx="${ix}"]`)
-          writeInputs(() => movePuckPerson(rowId, fromIx, ix))
+          writeCal(() => movePuckPerson(rowId, fromIx, ix))
         }
         // inRow but between cells (ix -1) → a cancel, leave it seated, no flash
       }
@@ -937,7 +939,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     if (revealed) list.unshift(...monthItems([saved], { fPerson: 'all', fType: 'all', fSearch: '' }))
     /* nothing listed, yet the day HAS inputs when no filter is asked: the filters hide them all (D731 (2), below) */
     const hidden = !list.length && (fPerson !== 'all' || fType !== 'all' || !!fSearch) && itemsOn(iso, monthItems(calRows(), { fPerson: 'all', fType: 'all', fSearch: '' })).length > 0
-    const kind = dayTag(answers[iso] || flyAnswer(iso), dayFacts(iso).short)
+    const kind = dayTag(answers[iso] || flyAnswer(iso, calUnit()), dayFacts(iso).short)
     const name = dayFacts(iso).name
     const kindWord = !kind ? undefined
       : kind.kind === 'nf' ? 'No fly'
@@ -1033,11 +1035,11 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
               onChange={e => { titleGone.current = false; setRmkDraft(e.target.value) }}
               onBlur={() => {
                 if (titleGone.current) { titleGone.current = false; return }      // Escape put the title back: nothing is written
-                writeInputs(() => setDayRemark(iso, rmkDraft))
+                writeCal(() => setDayRemark(iso, rmkDraft))
               }}
               onKeyDown={titleKey} />
           ) : hasRmk ? (
-            <span className="ic-title-ro">{DAYRMK[iso]}</span>
+            <span className="ic-title-ro">{titles[iso]}</span>
           ) : null}
           {/* everyone may add — the reach a member already has on the List's own add form */}
           <div className="sd-acts">
@@ -1069,7 +1071,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
                     <button type="button" data-ppedit={p.id} aria-label={words ? 'Edit note' : 'Add words to this note'} title={words ? 'Edit' : 'Add words'}
                       onClick={() => { setPopPuckEdit(p.id); setPuckDraft(words) }}><PenIcon solo /></button>
                     <button type="button" data-ppdel={p.id} aria-label="Delete note" title="Delete this note"
-                      onClick={() => writeInputs(() => removePlanPuck(p.id))}>✕</button>
+                      onClick={() => writeCal(() => removePlanPuck(p.id))}>✕</button>
                   </>
                   return (
                     <div key={p.id} className={'ic-sec' + dragCls} data-sec={p.id}>
@@ -1088,7 +1090,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
                               if (noteGone.current) return                     // Escape put the box away: nothing is written
                               /* emptied, a note WITH people loses its words and stays (D695); one without is left as it was */
                               const t = puckDraft.trim()
-                              if (t !== words && (t || ppl)) writeInputs(() => editPlanPuck(p.id, t))
+                              if (t !== words && (t || ppl)) writeCal(() => editPlanPuck(p.id, t))
                               setPopPuckEdit(null)
                             }}
                             onKeyDown={noteKey} />
@@ -1110,7 +1112,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
                                    touchAction:none so the drag doesn't scroll the window under the finger. */
                                 <span key={id} className="ic-secpk" data-pkidx={i} style={sched ? { touchAction: 'none' } : undefined}
                                   onPointerDown={sched ? (e => startPkDrag(e, p.id, id, i)) : undefined}
-                                  onContextMenu={sched ? (e => { e.preventDefault(); writeInputs(() => togglePuckPerson(p.id, id)) }) : undefined}
+                                  onContextMenu={sched ? (e => { e.preventDefault(); writeCal(() => togglePuckPerson(p.id, id)) }) : undefined}
                                   title={sched ? `${PEOPLE[id] ? PEOPLE[id].cs : id} — drag to swap, off the note to remove` : (PEOPLE[id] ? PEOPLE[id].cs : id)}>
                                   <span className="seat" dangerouslySetInnerHTML={{ __html: puck(id, 0, true, '') }} />
                                 </span>
@@ -1138,7 +1140,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
                 if (noteGone.current) return                                   // Escape put the box away: nothing is written
                 if (pickingNew.current || (to && to.closest && to.closest('.ic-newnote'))) return
                 const t = puckDraft.trim()
-                if (t) writeInputs(() => addPlanPuck(iso, t))
+                if (t) writeCal(() => addPlanPuck(iso, t))
                 setPopPuckEdit(null); setPuckDraft('')
               }
               return (
@@ -1213,7 +1215,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
   const renderPicker = () => {
     /* the signed-in person's own squadron's people (multi-squadron step 3 — the Inputs page stays on his own, D2132) */
     const roster = rosterOf(pageUnit('own')).filter(id => !PEOPLE[id].archived && !PEOPLE[id].special)
-    const seated = new Set<string>(pickFor ? (((PLANPUCKS.find((p: any) => p.id === pickFor)?.ids) || []).filter(Boolean)) : [])
+    const seated = new Set<string>(pickFor ? (((calNow().pucks.find((p: any) => p.id === pickFor)?.ids) || []).filter(Boolean)) : [])
     const toggle = (id: string) => setPickSel(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
     /* HIGHLIGHT = a visual fade, never a selection (owner, 24 Aug 26). Toggling
        a chip lights/darkens its key in pickHi; a puck stays bright when it
@@ -1312,6 +1314,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     )
   }
 
+  /* the page's own squadron's planning calendar, read once a draw (ui/owncal.ts — the reshape plan §3.2 A-ii) */
+  const cal = calNow()
   return (
     <div className={'inpcal ib' + (popIso ? ' ic-with-day' : '')} id="inpCal">
       <div className="ib-top" ref={topRef}>
@@ -1388,8 +1392,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
                 {week.map((iso, ci) => {
                   if (!iso) return <div key={'x' + ci} />
                   const tag = dayTag(answers[iso], dayFacts(iso).short)
-                  const rmk = DAYRMK[iso]
-                  const pucks = PLANPUCKS.filter((p: any) => p.date === iso)
+                  const rmk = cal.titles[iso]
+                  const pucks = cal.pucks.filter((p: any) => p.date === iso)
                   return (
                     <div key={iso} className={'ib-head' + (ci >= 5 ? ' is-we' : '') + (iso === todayIso ? ' is-today' : '')} data-ichead={iso}>
                       <div className="ib-date">
