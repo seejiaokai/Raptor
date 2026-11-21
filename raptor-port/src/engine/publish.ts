@@ -16,7 +16,7 @@ import { isPreservedWeek, rowElsewhere } from './weekstash'
 import { standsOn } from './overlay'   // functions only both ways
 import { inputProtected, weekLockReason, anyUnreadableWeek } from './quarantine'   // functions only both ways, so the import loop is safe
 import { rosterIds, dayRuleVals } from './faceattrs'
-import { rosterOf } from './roster'
+import { rosterOf, rosterToday } from './roster'
 import { UNIT } from './unitview'
 import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly, oilRuleShift, oilShiftKey, oilKeptVals, oilValsSame } from './oilev'
 import { oilRuleValsNow } from './oil'
@@ -761,7 +761,7 @@ function freezeWarn(snap:any,di:number){ if(!HOOKS.issuedWarn||!snap)return; con
      for a count on a panel; nothing on the published face moves either way. */
   /* …and EVERY LOGIC SETTING its checks read (owner D2005, 12 Nov 26): the day is judged by them until its next amendment
      (faceattrs.ts dayRuleVals / withDayRules). Only the brief lead it prints is compared (warnDelta, below — D186). */
-  snap.pa=dayPeopleAttrs(snap.d,snap.inp); snap.rv=dayRuleVals(); snap.ros=rosterIds(); }
+  snap.pa=dayPeopleAttrs(snap.d,snap.inp); snap.rv=dayRuleVals(); snap.ros=rosterIds(dayIso(CURWEEK,di)); }
 /* every man an issued face draws, with what his puck draws from the roster: a person id in a PERSON SLOT of its content —
    a flying seat (p, w), a sim seat or passenger (p, w, pax), a desk's holder (id), a ground or Common Programme name
    (who), the extras beside a row (more) — never free text that happens to spell an id (a programme called "bane" is not
@@ -1722,14 +1722,27 @@ export function verSigners(di:any,ver:any):any{di=+di;
   const g=rec&&rec.sign&&rec.sign[di];
   return g&&SIGN_ROLES.some((r:any)=>g[r[0]])?g:null;}
 export function signNames(di:any){const g=signAt(di),o:any={};SIGN_ROLES.forEach((r:any)=>{const p=PEOPLE[g[r[0]]];o[r[0]]=p?p.cs:'';});return o;}
-export function signPeople(schedOnly:any,keep?:any){
-  /* the schedule in view's own people sign its days (multi-squadron step 3 — engine/roster.ts) */
-  const ids=rosterOf(UNIT).filter((id:any)=>!PEOPLE[id].special&&!PEOPLE[id].archived
+/* (the reshape plan §19b R8 — D2245: who else a scheduler's box offers, after the day's own people — a Plan holder of the
+   squadron that day and a master admin; handed in by state/sign-more.ts, the engine reading no accounts; unset, none) */
+let SIGN_MORE:((unit:string,iso:string)=>string[])|null=null;
+export function setSignMore(fn:((unit:string,iso:string)=>string[])|null){SIGN_MORE=fn;}
+export function signPeople(schedOnly:any,keep?:any,di?:any){
+  /* the schedule in view's own people ON THE DAY SIGNED sign it (multi-squadron step 3 — engine/roster.ts; the reshape plan
+     §12 Q2, D2243: the day's people, as the crew list beside them — a man 149's from Thu 16 Jul signs no 142 Friday) */
+  const iso=di==null||di===''?rosterToday():dayIso(CURWEEK,+di);
+  const ids=rosterOf(UNIT,iso).filter((id:any)=>!PEOPLE[id].special&&!PEOPLE[id].archived
       &&(!schedOnly||isScheduler(id)));
   /* a name already signed stays offered even if the appointment was since
      withdrawn, so an existing signature never silently blanks itself */
   if(keep&&PEOPLE[keep]&&!ids.includes(keep))ids.push(keep);
-  return ids.sort((a:any,b:any)=>PEOPLE[a].cs.localeCompare(PEOPLE[b].cs));
+  const byCs=(a:any,b:any)=>PEOPLE[a].cs.localeCompare(PEOPLE[b].cs);
+  ids.sort(byCs);
+  /* …then, in the three boxes needing the Scheduler tick, a Plan holder of the squadron while his Plan holds that day and
+     a master admin, each carrying the tick (D2245) — after the day's own, never in CUR CK */
+  if(schedOnly&&SIGN_MORE){const own=new Set(ids);
+    ids.push(...SIGN_MORE(UNIT,iso).filter((id:any)=>!own.has(id)&&PEOPLE[id]&&!PEOPLE[id].special&&!PEOPLE[id].archived&&!PEOPLE[id].deleted&&isScheduler(id))
+      .filter((id:any,i:number,a:any[])=>a.indexOf(id)===i).sort(byCs));}
+  return ids;
 }
 /* the next per-day sequence for a day: highest issued seq for THIS day + 1
    (Original is seq 0, so a day's first amendment is AL1). Per-day, so Monday's
