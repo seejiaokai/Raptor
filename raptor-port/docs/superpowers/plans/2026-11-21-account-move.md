@@ -32,6 +32,15 @@ same Windows user. His notes stay private (his D2254); nothing personal is in th
 6. What the work account allows — checked before relying on it: the models (Opus 5.5 builds, his D2244; Fable for the
    reads he calls), Remote Control from his phone, published pages, a public GitHub project. A limit there is told to
    him at once (D1551).
-7. Skills that came with the current account (the staff-writing one) — added again only if he wants them.
+7. **Skills, by where each comes from:**
+   - **In the project — travel with it, nothing to do:** the design skill (Impeccable), the Superpowers set (planning,
+     test-first, debugging, code review, worktrees, finishing a branch), the skill notes (task-observer), the handoff,
+     the overnight run, find-skills and writing-skills (`.claude/skills/`).
+   - **Installed on this PC — stay:** the Codex (Astra) bridge `claudex-loop` and `hyperframes`; checked on in step 4.
+   - **Synced from the current account — replaced by the work account's at sign-in:** Anthropic's own (Word, PDF,
+     PowerPoint, Excel, deep research, the browser and computer-use guides, skill-creator, docs, morning) normally come
+     with any account; **the staff-writing skill is his own upload** — its copy is in the private backup
+     (`account-skills\…\staff-writing\SKILL.md`), uploaded again on the work account if he wants it (claude.ai → Settings
+     → Capabilities → Skills). The plugins from the account's catalog (staff-writing, plugin management) likewise.
 8. The pages from step 1 above that are still open for his answers, published again; their new links put in the
    project where the old ones are named.
