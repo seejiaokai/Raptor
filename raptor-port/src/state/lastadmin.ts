@@ -8,7 +8,9 @@
    - THE DATES: today, and every home row's and every right's `from` from today on, either side — a right ends only on a
      home change (units-model.ts grantOn), so no other day can change who counts.
    - WHO COUNTS: an account that can sign in — admin role, switched on, its man on the roster (never deleted, archived or a
-     placeholder). A master admin counts as an admin AT HOME in his own squadron, never as a Plan holder (Opus L1).
+     placeholder). A master admin counts as an admin AT HOME in his own squadron, never as a Plan holder (Opus L1). An
+     admin counts AT HOME only where his role holds — the squadron it was given in (levelFrom, K3 — D2160): moved to
+     another squadron he is its member, and counts there for nothing.
    - THE RULE, per squadron and date: where the squadron has an admin at home before, it keeps one at home after; where it
      has none at home but a (non-master) Plan holder, it keeps an admin at home or a Plan holder (Opus L4 — the first admin
      moving into his new squadron passes). A Plan holder is one whose LEVEL there that day is admin by a right — read
@@ -17,7 +19,7 @@
      Undo of "+ New squadron" — Fable F7, Opus M3); 'app' when the whole app is left with no admin who can sign in. */
 import { homeUnitOn, homeChangesIn, levelFrom, unitIn, isAdminRole, type UnitRows, type LevelAccount } from './units-model'
 
-export interface LockAccount { id: string; pid: unknown; pidFrom?: string; role: string; on?: boolean; master?: boolean }
+export interface LockAccount { id: string; pid: unknown; pidFrom?: string; role: string; on?: boolean; master?: boolean; adminOf?: string; adminFrom?: string }
 export interface LockWorld {
   rowsB: UnitRows; rowsA: UnitRows
   acctB: readonly LockAccount[]; acctA: readonly LockAccount[]
@@ -30,7 +32,8 @@ export interface LockHit { unit: string; date: string; gone: string | null; caus
 export type LockBreach = 'app' | LockHit
 
 const onRoster = (p: any): boolean => !!p && !p.special && !p.deleted && !p.archived
-const asLevel = (x: LockAccount): LevelAccount => ({ id: x.id, pid: String(x.pid), pidFrom: x.pidFrom, role: x.role, master: x.master === true })
+/* (the squadron his admin role was given in rides along — `adminOf` / `adminFrom`, units-model.ts adminRoleHolds) */
+const asLevel = (x: LockAccount): LevelAccount => ({ id: x.id, pid: String(x.pid), pidFrom: x.pidFrom, role: x.role, master: x.master === true, adminOf: x.adminOf, adminFrom: x.adminFrom })
 
 export function lastAdminBreach(w: LockWorld): LockBreach | null {
   const able = (l: readonly LockAccount[], person: (pid: string) => any) =>
@@ -38,9 +41,14 @@ export function lastAdminBreach(w: LockWorld): LockBreach | null {
   const ableB = able(w.acctB, w.personB), ableA = able(w.acctA, w.personA)
   if (ableB.length && !ableA.length) return 'app'
   const ableAById = new Map(ableA.map(y => [y.id, y] as const))
-  const home = (x: LockAccount, u: string, d: string, r: UnitRows) => homeUnitOn(r, String(x.pid), d, w.fallback) === u
+  /* AN ADMIN AT HOME is one whose LEVEL there that day is admin (K3 — his D2160: an admin's role counts at home only in
+     the squadron it was given in, so an admin who moved squadron is a member of the one he joined and is not counted as
+     its admin — Kestrel, 149's only admin, was let be suspended once Hunter had arrived from 142). A master admin's level
+     is admin wherever he is at home. */
+  const atHome = (x: LockAccount, u: string, d: string, r: UnitRows) => homeUnitOn(r, String(x.pid), d, w.fallback) === u
+  const home = (x: LockAccount, u: string, d: string, r: UnitRows) => atHome(x, u, d, r) && levelFrom(asLevel(x), u, d, r, w.fallback) === 'admin'
   const plan = (x: LockAccount, u: string, d: string, r: UnitRows) =>
-    x.master !== true && !home(x, u, d, r) && levelFrom(asLevel(x), u, d, r, w.fallback) === 'admin'
+    x.master !== true && !atHome(x, u, d, r) && levelFrom(asLevel(x), u, d, r, w.fallback) === 'admin'
   const dates = new Set<string>([w.today])
   for (const r of [w.rowsB, w.rowsA]) {
     for (const h of r.homes) if (typeof h.from === 'string' && h.from > w.today) dates.add(h.from)

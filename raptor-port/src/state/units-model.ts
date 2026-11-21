@@ -324,6 +324,19 @@ export function adminRoleHolds(acct: LevelAccount, unit: string, iso: string, r:
   const eve = addDays(arrived, -1)
   return r.grants.some(g => g.account === acct.id && g.unit === unit && g.level === 'admin' && g.first === true && grantHolds(r, acct, g, eve, fallback))
 }
+/* THE SQUADRON A SCHEDULER TICK WAS GIVEN IN (core line 4, 22 Nov 26 — the same ruling, D2160: his "Scheduler tick in the
+   old squadron end[s] on the date"). The tick rides the person (`quals.sched`), so the squadron he joined read it as its
+   own. It is read as the admin role above: it counts in the squadron it was given in (the person's `schedOf`), from the
+   day it was given (`schedFrom`), while his squadron has not changed since — ending at the start of his move day, no end
+   stored. A person with no record (every seeded one; a tick stored before the record was kept — D56): the squadron of
+   his first home row, from always. In the squadron he joins he carries none until one of its admins ticks him there
+   (state/quals-write.ts writes the record anew). Asked by the sign-off boxes (engine/publish.ts signPeople). */
+export function schedTickHolds(p: { schedOf?: unknown; schedFrom?: unknown } | null | undefined, pid: string, unit: string, iso: string, r: UnitRows, fallback: string | null): boolean {
+  const rec = typeof p?.schedOf === 'string' && p.schedOf ? p.schedOf : null
+  const given = rec ?? homeUnitOn(r, pid, '', fallback)
+  const from = rec != null && typeof p?.schedFrom === 'string' ? p.schedFrom : ''
+  return given === unit && !homeChangesIn(r, pid, from, iso, fallback).length
+}
 /* (K1 — his D2253: a master admin in the member view is "a member of his own squadron holding View of the squadrons he
    could edit" — the mark answers admin only for a role that is admin, the role in force at the gate; View writes nothing) */
 export function levelFrom(acct: LevelAccount | null | undefined, unit: string, iso: string, r: UnitRows, fallback: string | null): UnitLevel | null {

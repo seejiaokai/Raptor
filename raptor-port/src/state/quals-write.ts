@@ -27,6 +27,7 @@ import { mayEditQualsOf, mayRenameCallsign, mayTickManagement, mayTickScheduler 
 import { MGMT_KEY, SCHED_KEY } from '../engine/qualcols'
 import { commitPeopleEdit } from './people-settings-commit'
 import { otherSquadronPersonProblem, masterChangeProblem } from './accounts'
+import { homeOn, todayIso } from './units'
 
 export type QualsOp =
   | { tick: string }
@@ -80,6 +81,13 @@ export function updatePersonField(pid: string, op: QualsOp): string | null {
          posting ever undoes it ([POST-OUT-OUTCOMES], the plan's Round 1, Astra A5 — found missing by Fable's scenarios) */
       if (k === 'san') { p.san = !!next; delete p.sanBy; if (next) p.sanQ = p.sanQ || { flown: 0, carry: 0, missedQtrs: 0 } }
       if (k === 'sxo') p.sxo = !!next
+      /* the Scheduler tick is kept with the squadron and day it was given in (core line 4, 22 Nov 26 — his D2160: the
+         tick ends in the old squadron on a move's date, so the squadron he joins ticks him anew —
+         units-model.ts schedTickHolds reads the record; unticked, it goes) */
+      if (k === SCHED_KEY) {
+        const today = todayIso(), home = next ? homeOn(pid, today) : null
+        if (home) { p.schedOf = home; p.schedFrom = today } else { delete p.schedOf; delete p.schedFrom }
+      }
       if (k === 'daar' && !next && p.quals.naar) { p.quals.naar = false; HOOKS.toast(`${p.cs} — NAAR removed too, it cannot stand without DAAR`) }
       if (k === 'daar' && next === true && p.quals.naar === 'I') { p.quals.naar = true; HOOKS.toast(`${p.cs} — NAAR instructor mark removed too, it cannot stand without DAAR's`) }
       if (k === 'scDay' && !next && p.quals.scNight) { p.quals.scNight = false; HOOKS.toast(`${p.cs} — SC NIGHT removed too, it cannot stand without SC DAY`) }

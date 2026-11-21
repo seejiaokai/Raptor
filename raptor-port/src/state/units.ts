@@ -15,14 +15,15 @@ import { newId } from '../engine/newid'
 import { isCommitting, type CommitResult } from '../command'
 import { commitSettingsIntent } from './people-settings-commit'
 import { setHomeResolver, needDay } from '../engine/roster'
+import { setSchedTickAt } from '../engine/publish'
+import { PEOPLE } from '../engine/people'
 import { DEMO_149_PEOPLE } from './demoseed'
 /* the last-admin lock's words for a step's draft (accounts.ts imports this file; the call is at run time, never at load) */
 import { lockProblemFor, accountById, masterChangeProblem, signedInAccount, otherSquadronPersonProblem, adminNow } from './accounts'
 import { lastAdminBreach, type LockWorld, type LockBreach } from './lastadmin'
 import {
-  adminRoleHolds, isAdminRole,
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES,
-  rowsFrom, placeIdOn, homeUnitOn, homeChangesIn, stintsIn, grantOn, grantHolds, datedRowsBreach, unitIn, placeIn, levelFrom, moveFrom,
+  rowsFrom, placeIdOn, homeUnitOn, homeChangesIn, stintsIn, grantOn, grantHolds, datedRowsBreach, unitIn, placeIn, levelFrom, moveFrom, schedTickHolds,
   validUnitNum, validTz, MAX_PLACE_NAME,
   type UnitRows, type Unit, type Place, type Grant, type GrantLevel, type GrantHolder, type UnitLevel, type LevelAccount, type Stint,
   type DatedBreach,
@@ -111,6 +112,11 @@ export const everOfBefore = (pid: string, unit: string, rows: UnitRows): boolean
    the engine does not import state/, so the answer is handed to it here, once, as this module loads — both questions
    of the home handle (the reshape plan §3.2 A-i) */
 setHomeResolver({ on: (pid, iso) => homeUnitOn(unitRows(), pid, iso, fallbackHome()), changesIn: (pid, a, b) => homeChangesOn(pid, a, b) })
+/* …and whether a man's Scheduler tick counts in a squadron on a day (units-model.ts schedTickHolds — core line 4, D2160),
+   handed to the sign-off boxes the same way */
+export const schedTickIn = (pid: string, unit: string, iso: string): boolean =>
+  schedTickHolds((PEOPLE as any)[pid], pid, unit, iso, unitRows(), fallbackHome())
+setSchedTickAt(schedTickIn)
 /* the rights an account holds in OTHER units */
 export const grantsOf = (accountId: string): Grant[] => unitRows().grants.filter(g => g.account === accountId)
 /* an account's level in a unit on a date — the one answer (units-model.ts levelFrom); the caller hands in the account */
@@ -130,41 +136,10 @@ export const grantRowHolds = (acct: GrantHolder, g: Pick<Grant, 'from'>, iso: st
 export const datedBreach = (before: UnitRows, after: UnitRows, today: string, opts: Omit<Parameters<typeof datedRowsBreach>[3], 'fallback'>): DatedBreach | null =>
   datedRowsBreach(before, after, today, { ...opts, fallback: fallbackHome() })
 /* the one last-admin rule (state/lastadmin.ts — Piece C), with this store's fallback home */
-/* (K3 — his D2160: an admin who moved squadron is a MEMBER of the squadron he joined, so the lock must not count him as
-   its admin at home — Kestrel, 149's only admin, was let be suspended once Hunter had arrived. lastadmin.ts counts an
-   admin-role account at home wherever his rows put him, so the rows it is handed read such a man — on every stint from
-   today on in which his admin role does not hold (units-model.ts adminRoleHolds) — as at home in no squadron; the mover
-   it names is then given his true squadron back. Simpler, and the same answer: lastadmin.ts's own `home` asking levelFrom
-   — that file is not this job's; the line is in helper "kinds"'s report.) */
-const NO_SQUADRON = '~member'
-function lockRows(r: UnitRows, accts: LockWorld['acctB'], today: string): UnitRows {
-  const fb = fallbackHome()
-  let homes: UnitRows['homes'] | null = null
-  for (const x of accts) {
-    if (!isAdminRole(x) || x.master === true || x.pid == null) continue
-    const pid = String(x.pid)
-    const acct: LevelAccount = { id: x.id, pid, pidFrom: x.pidFrom, role: x.role, adminOf: (x as any).adminOf, adminFrom: (x as any).adminFrom }
-    const mine = r.homes.filter(h => h.pid === pid).sort((p, q) => (p.from < q.from ? -1 : p.from > q.from ? 1 : p.id < q.id ? -1 : p.id > q.id ? 1 : 0))
-    /* a man with no row is the fallback's for ever: one row from today says so where his role does not hold there */
-    if (!mine.length) { if (fb && !adminRoleHolds(acct, fb, today, r, fb)) (homes ??= [...r.homes]).push({ id: '~' + pid, pid, unit: NO_SQUADRON, from: today }); continue }
-    /* the row that holds on today, and on each later day a row starts (units-model.ts atOn's own rule) */
-    for (const on of new Set([today, ...mine.map(h => h.from).filter(d => d > today)])) {
-      let h = mine[0]!
-      for (const y of mine) if (y.from <= on) h = y
-      if (h.unit === NO_SQUADRON || adminRoleHolds(acct, h.unit, on, r, fb)) continue
-      homes ??= [...r.homes]
-      const ix = homes.indexOf(h)
-      if (ix >= 0) homes[ix] = { ...h, unit: NO_SQUADRON }
-    }
-  }
-  return homes ? { ...r, homes } : r
-}
-export const lockBreach = (w: Omit<LockWorld, 'fallback'>): LockBreach | null => {
-  const fb = fallbackHome()
-  const b = lastAdminBreach({ ...w, rowsB: lockRows(w.rowsB, w.acctB, w.today), rowsA: lockRows(w.rowsA, w.acctA, w.today), fallback: fb })
-  if (b && b !== 'app' && b.cause && b.cause.to === NO_SQUADRON) return { ...b, cause: { ...b.cause, to: homeUnitOn(w.rowsA, b.cause.pid, b.date, fb) } }
-  return b
-}
+/* (K3 — his D2160: an admin who moved squadron is a MEMBER of the squadron he joined, and the lock does not count him as
+   its admin at home; lastadmin.ts's own `home` asks levelFrom for it, the accounts handed in whole, their `adminOf` /
+   `adminFrom` with them) */
+export const lockBreach = (w: Omit<LockWorld, 'fallback'>): LockBreach | null => lastAdminBreach({ ...w, fallback: fallbackHome() })
 /* a step's draft of the rows: these rows with some taken away and some laid on (a row of the same id replaced) — what a
    door hands the lock, so it judges the rows the step would leave, as the gate does */
 export function rowsDraft(r: UnitRows, d: { units?: Unit[]; unitplaces?: UnitRows['unitplaces']; grants?: Grant[]; homes?: UnitRows['homes']; dropGrants?: (g: Grant) => boolean }): UnitRows {

@@ -89,7 +89,11 @@ describe('R8 — a Plan holder and a master admin in the scheduler boxes (D2245)
     switchUnit('u149')
     for (let di = 0; di < 7; di++) expect(signPeople(true, undefined, di), `day ${di}`).not.toContain(PID.hunter)
   })
-  it('his Plan ended by his own move (D2203): offered on 149\'s days before his move day, his own from it — never twice', () => {
+  /* (rewritten to a ruling, 22 Nov 26 — core line 4, his D2160: "on the date he joins as a member, his access, admin
+     rights and Scheduler tick in the old squadron end". This test read him as offered in 149's scheduler boxes from his
+     move day as one of its own, carrying 142's tick; from that day he is one of the day's people — CUR CK — and signs no
+     scheduler's box until a 149 admin ticks him there: engine/corelines-sign-tick.test.ts) */
+  it('his Plan ended by his own move (D2203): offered on 149\'s days before his move day; from it he is 149\'s own, without 142\'s tick — never twice', () => {
     signInAs('saber')
     expect(setGrant(ACCT.hunter, 'u149', 'admin', PID.hunter).ok).toBe(true)
     ;(PEOPLE as any)[PID.hunter].quals.sched = true
@@ -101,9 +105,10 @@ describe('R8 — a Plan holder and a master admin in the scheduler boxes (D2245)
       expect(list.filter(id => id === PID.hunter).length, `day ${di}`).toBeLessThanOrEqual(1)
       const ownDay = rosterOf('u149', isos[di]!).includes(PID.hunter)
       const plan = levelIn(ACCT.hunter, 'u149', isos[di]!) === 'admin'
-      expect(list.includes(PID.hunter), `day ${di}: offered exactly while his Plan holds or he is 149's own`).toBe(ownDay || plan)
+      expect(list.includes(PID.hunter), `day ${di}: offered exactly while his Plan holds`).toBe(plan)
+      expect(signPeople(false, undefined, di).includes(PID.hunter), `day ${di}: CUR CK exactly while he is 149's own`).toBe(ownDay)
     }
-    expect(signPeople(true, undefined, 4), "149's Friday: his own").toContain(PID.hunter)
+    expect(signPeople(true, undefined, 4), "149's Friday: his own, 142's tick ended").not.toContain(PID.hunter)
     expect(signPeople(false, undefined, 4), "149's Friday, CUR CK: his own").toContain(PID.hunter)
   })
 })

@@ -27,6 +27,8 @@
 import { SESSION, ME, setEffectiveRole } from './auth'
 import { store, unitSetting } from '../engine/hooks'
 import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld, placeOf, namedOf, placeholderOf, inputSpanIso, inputSquadrons, inputUnitOf } from '../engine/inputs'
+import { dayNamedIds } from '../engine/publish'
+import { dayIso } from '../engine/verid'
 import { deriveActor } from '../command/actor'
 import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
@@ -478,6 +480,8 @@ const OWN_ROW_ADMIN_ONLY: [string, (p: any) => any][] = [
   ['his callsign', p => JSON.stringify(p?.cs ?? null)],
   ['his Management tick', p => !!p?.quals?.mgmt],
   ['his Scheduler tick', p => !!p?.quals?.sched],   // D1651 — truthy, as isScheduler reads it
+  /* (…and the squadron and day it was given in — core line 4, D2160: units-model.ts schedTickHolds reads them) */
+  ['where his Scheduler tick was given', p => JSON.stringify([p?.schedOf ?? null, p?.schedFrom ?? null])],
   ['his archive mark', p => !!p?.archived],
   ['who archived him', p => JSON.stringify([p?.archivedBy ?? null, p?.archivedOn ?? null, p?.archivedWho ?? null])],
   ['his delete mark', p => JSON.stringify([!!p?.deleted, p?.deletedFrom ?? null])],
@@ -1038,11 +1042,13 @@ const isInputChange = (c: Change): boolean => c.collection === 'inputs' && c.id 
 function warPlacerForged(env: CommitEnvelope, c: Change): boolean {
   if (c.op !== 'put' || !c.after) return false
   const f: any = c.after
-  if (f.lwBy === undefined && f.lwAt === undefined) return false
+  if (f.lwBy === undefined && f.lwAt === undefined && f.lwU === undefined) return false
   /* (a piece cut from a leave — a medical splitting it — is a new record carrying its parent's stamp: any before-image
-     of this command's own vouches for it) */
-  const stamp = `${f.lwBy ?? ''}|${f.lwAt ?? ''}`
-  return !env.changes.some(x => x.collection === 'inputs' && x.before && `${(x.before as any).lwBy ?? ''}|${(x.before as any).lwAt ?? ''}` === stamp)
+     of this command's own vouches for it)
+     (`lwU` — the squadron whose war approved it, leavewar/sync.ts doorApprove — is part of the stamp: each war holds only
+     its own leave, so a person's own command never writes or changes it either — core line 1, 22 Nov 26) */
+  const stamp = `${f.lwBy ?? ''}|${f.lwAt ?? ''}|${f.lwU ?? ''}`
+  return !env.changes.some(x => x.collection === 'inputs' && x.before && `${(x.before as any).lwBy ?? ''}|${(x.before as any).lwAt ?? ''}|${(x.before as any).lwU ?? ''}` === stamp)
 }
 function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: boolean): string | null {
   const b: any = c.before ?? null, f: any = c.op === 'delete' ? null : (c.after ?? null)
@@ -1404,6 +1410,40 @@ function unitRecordViolation(env: CommitEnvelope): string | null {
     const lv = levelInForce(a, u, today, rows)
     const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
     if (!ok && !(a.role === 'admin' && deleteStripsOnly(env, a, u, today, rows))) return `a change to another unit's records (${u}) by one with ${lv ? `${lv} rights` : 'no rights'} there`
+  }
+  return null
+}
+/* 7a. A SCHEDULE DAY NEVER NEWLY NAMES A MAN WHO IS ANOTHER SQUADRON'S THAT DAY (core line 2, 22 Nov 26 — the reshape
+   walk's W4-F2 at the save check; his D2243 Q2: on a day he is not the squadron's he is not offered). The door was closed
+   by ui/drag.ts applyDrop; this is the same question asked of the write itself, whatever door or hand-made command made
+   it: of each day's record (`days/<unit>@<week>#<day>`), every person its content names after the change and did not
+   name before (engine/publish.ts dayNamedIds — the person slots, never free text, the placeholders left out) must not be
+   another squadron's on that day, his home read over the rows as they stood before the command. For everyone but the app
+   itself — a master admin and a Plan holder too: the rule is about the man, not the actor's rights.
+   What it leaves alone: a line that named him before (a move set ahead keeps the old squadron's lines naming him — the
+   transfer's "its lines keep him", D2160, D2147), changed around him, his re-seating within such a day, his taking off;
+   a man with no squadron that day. Picking another squadron's man on purpose — borrowing (D2091, D2098) — is design
+   only: when it is built its own writer is let through here by name.
+   An Undo or Redo that would put him back on such a day is judged as any other change (the timeline vouches for no day
+   record — undo/timeline.ts verifiedReplay), as the Undo of leave onto such a day is refused (D2243 Q3). */
+function schedDayNamesViolation(env: CommitEnvelope): string | null {
+  const a = env.actor
+  if (!a || a.role === 'system') return null
+  let rows: UnitRows | null = null
+  for (const c of env.changes) {
+    if (c.collection !== 'days' || c.op !== 'put' || !c.after) continue
+    const { unit, local } = split(String(c.id))
+    if (!unit) continue
+    const at = local.lastIndexOf('#'), di = +local.slice(at + 1)
+    if (at < 0 || !Number.isInteger(di) || di < 0 || di > 6) continue
+    const iso = dayIso(local.slice(0, at), di)
+    if (!ISO_DAY.test(iso)) continue
+    const was = new Set(c.before ? dayNamedIds(c.before) : [])
+    for (const pid of dayNamedIds(c.after)) {
+      if (was.has(pid)) continue
+      const home = homeBefore(pid, iso, rows ??= unitRowsBefore(env.changes))
+      if (home && home !== unit) return `a schedule day newly naming a man who is another squadron's that day (${pid}, ${home}'s on ${iso} — days/${c.id})`
+    }
   }
   return null
 }
@@ -3165,6 +3205,8 @@ function ownershipChecks(env: CommitEnvelope): string | null {
   if (lockBad) return lockBad
   const unitRec = unitRecordViolation(env)
   if (unitRec) return unitRec
+  const dayBad = schedDayNamesViolation(env)
+  if (dayBad) return dayBad
   const homeBad = homeUnitViolation(env)
   if (homeBad) return homeBad
   const inputBad = inputUnitViolation(env)

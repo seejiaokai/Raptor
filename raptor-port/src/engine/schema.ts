@@ -126,6 +126,11 @@ export type Person = {
   /** His SANS tick was made by a SANS posting on its date (D283) — the tick the posting's Undo, or Archive, takes back;
    *  absent = ticked by hand — screen (`leavewar/sync.ts`). */
   sanBy?: 'po'
+  /** The squadron his Scheduler tick was given in, and the day (ISO) — state (`state/quals-write.ts` writes them with
+   *  the tick; `state/units-model.ts schedTickHolds` reads them: the tick counts there until the start of his move day,
+   *  D2160). Absent on a ticked man: the squadron of his first home row, from always. */
+  schedOf?: string
+  schedFrom?: string
   /** Restored and not yet told: his own "Welcome back — check your quals and CAT" note shows on his next sign-in until
    *  he answers it (D305, [ONE-DOOR]) — screen (`leavewar/sync.ts restoreBody`, cleared by `person.backSeen`). */
   back?: boolean
