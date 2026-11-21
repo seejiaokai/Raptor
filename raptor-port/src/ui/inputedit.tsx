@@ -11,7 +11,7 @@
    What is NOT here is the Inputs page's own furniture — the calendar, the
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
-import { isOD, INPUTS, INPUT_TYPES, TYPE_GROUPS, TYPE_FAMILY_LABEL, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel, filingOf, landsUnavail, isOther, isFly, toOf, placeOf } from '../engine/inputs'
+import { isOD, INPUTS, INPUT_TYPES, TYPE_GROUPS, TYPE_FAMILY_LABEL, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel, filingOf, landsUnavail, isOther, isFly, toOf, placeOf, inputSpanIso, inputUnitOf } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, upchitDeletePlan, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel, firstEndIso, firstEndOrd } from '../engine/medical'
 import { OilConfirm } from './OilConfirm'
 import { DocConfirm } from './DocConfirm'
@@ -35,9 +35,14 @@ import { voidedOil, repricedOil } from '../engine/oil'
 import { CmdRefused } from '../command'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { CURWEEK } from '../engine/waves'
+import { rosterOf, rosterToday } from '../engine/roster'
+import { UNIT } from '../engine/unitview'
 import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
-import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff, filedWhole, byAfterLeaving, mayMovePlace } from '../state/perms'
+import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff, filedWhole, byAfterLeaving, mayMovePlace, pageUnit, inputWhoProblemNow } from '../state/perms'
+import { unitById, homeOn, homeChangesOn } from '../state/units'
+import { noticeDay } from '../state/notices'
+import { isUnitId } from '../storage/unitid'
 import { INPEDIT, setInpEdit, setOilAsk, setMedMove } from './pops'
 import { OILWAIT, type OilWaitKind } from '../state/view'
 import { holdForOil } from './oilwait'
@@ -50,7 +55,12 @@ import { RangeCal } from './RangeCal'
    editor and this dialog's new Person field must never disagree on who is
    offered or in what order, so all three call this rather than each sorting
    PEOPLE their own way. */
-export const rosterOptions = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)
+/* …of ONE squadron (multi-squadron step 3 — engine/roster.ts): the schedule in view's by default (the board, the palette,
+   reassign); the Inputs page and its calendars pass the signed-in person's own (state/perms.ts myUnit — D2132) */
+/* …ON A DAY (the reshape plan §3.3 C6): the draft's first day for whose roster a picker lists, the day acted on for the
+   board's reassign pool — never today's by default (`iso` left out: today, kept only while the Inputs page's own caller
+   moves, the reshape's phase 3 contract) */
+export const rosterOptions = (unit: string = UNIT, iso: string = rosterToday()) => rosterOf(unit, iso).filter(id => !PEOPLE[id].archived)
   .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
 /* [ARCH-STACK] step 4 (clash check H5, owner answer C, 20 Sep 26): an admin
    can still FILE leave for someone who has posted out (clearing leave) or has
@@ -58,8 +68,68 @@ export const rosterOptions = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].
    archived bodies too, in their own group below the roster. Every OTHER roster
    surface (the board, the palette, reassign) keeps rosterOptions(). */
 /* never a DELETED man — he is on no list ([POST-OUT-OUTCOMES], D287, D299) */
-export const archivedOptions = () => Object.keys(PEOPLE).filter(id => PEOPLE[id].archived && !PEOPLE[id].special && !PEOPLE[id].deleted)
+export const archivedOptions = (unit: string = UNIT, iso: string = rosterToday()) => rosterOf(unit, iso).filter(id => PEOPLE[id].archived && !PEOPLE[id].special && !PEOPLE[id].deleted)
   .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
+
+/* ---- WHOM MAY HE FILE THIS DRAFT FOR — ONE WHOLE-DRAFT ANSWER AT THE WINDOW (the reshape plan §3.3 C6 — Astra 5, Opus M5;
+   D2221 as D2240 and D2241 read it). A first day is not enough: Ranger is 142's on a draft's first day and 149's after it,
+   so a first-day picker offered him to Hunter, 142's plain admin, and the save was refused. The picker, the save door and
+   an existing input's save ask the commit gate's own who-rule (state/perms.ts inputWhoProblem, over the live rows), of the
+   record as the save would leave it — asked again on every draw, so whenever the draft's dates or people change. ------ */
+/** the record a save of this draft would leave: the draft's kind, its days as dates and its people, over the record as it
+ *  stands (`rec`, null for a new input) — what the who-rule is asked of. A draft with no date yet is judged on today. */
+export function draftImage(rec: any | null, draft: any, people: readonly any[]): any {
+  const start = draft && draft.start ? String(draft.start) : ''
+  const end = draft && draft.end && draft.end !== draft.start ? String(draft.end) : ''
+  const out: any = { ...(rec || {}), type: draft ? draft.type : rec && rec.type, date: start, people: people.map(p => ({ p: String(p) })) }
+  delete out.person
+  if (end) out.endDate = end; else delete out.endDate
+  return out
+}
+/** whom the picker offers for this draft: a man where the draft with him added passes (with him in place of the one
+ *  person, or beside those picked, `several`); a man already picked always stays — nothing is substituted for what he
+ *  picked (ui/PeoplePick.tsx). His own input as a member is the gate's own-input rules' (`own`), so it is offered. */
+export function offersFor(rec: any | null, draft: any, picked: readonly any[], several = false): (id: string) => boolean {
+  const have = picked.map(String)
+  return (id: string) => {
+    if (have.includes(String(id))) return true
+    const who = inputWhoProblemNow(rec, draftImage(rec, draft, several ? [...have, String(id)] : [String(id)]))
+    return !who || !!who.own
+  }
+}
+/** THE SAVE DOOR'S QUESTION, before the gate: null where the save may go on, else the words it is refused in. Leave that
+ *  runs across a man's move, saved by someone who may not change it, is said in his approved words (D2240, D2241 — the
+ *  drawing docs/mock/2026-11-20-multi-sqn-reshape/ 8b): "Blocked: Ranger is 149's from Thu 16 Jul. Only Ranger or an
+ *  admin of both 142 and 149 can change leave that runs across his move." It opens "Blocked:", his standing rule for a
+ *  refused change (D1667: never "Not saved", the failed-save band's alone; the drawing had no opening word). Any other refusal by the who-rule has no words
+ *  of its own yet: the gate's own refusal, as it is said today (NOT_SAVED). */
+export function whoDoorRefusal(before: any | null, after: any | null): string | null {
+  /* A SAVE IS A CHANGE: the window closes before this where nothing differs, so the record is judged as changed even where
+     what changed is not in the image (a remark, a time) — Kestrel's remarks on Ranger's leave are refused here as the gate
+     refuses them. Except his own take-out as a member (D755 — the gate's own exception, perms.ts inputWhoProblem): asked
+     unmarked, as the gate asks it. */
+  const mine = me()
+  const takeOut = !canEditSched() && mine != null && before && after && holds(before, mine) && !holds(after, mine)
+    && idsOf(after).every((p: any) => holds(before, p))
+  const who = inputWhoProblemNow(before, after && !takeOut ? { ...after, _save: 1 } : after)
+  if (!who || who.own) return null
+  return acrossMoveWords(who.pid, before, after) ?? NOT_SAVED
+}
+function acrossMoveWords(pid: string | null, before: any, after: any): string | null {
+  if (pid == null || !isLeave((after || before || {}).type)) return null
+  const numOf = (u: string | null) => (u ? String(unitById(u)?.num ?? u) : '')
+  for (const img of [after, before]) {
+    const sp = img ? inputSpanIso(img) : null
+    if (!sp) continue
+    const d = homeChangesOn(pid, sp[0], sp[1])[0]
+    if (!d) continue
+    const from = homeOn(pid, sp[0]), to = homeOn(pid, d)
+    if (!from || !to || from === to) continue
+    const cs = PEOPLE[pid] ? String(PEOPLE[pid].cs) : pid
+    return `Blocked: ${cs} is ${numOf(to)}'s from ${noticeDay(d)}. Only ${cs} or an admin of both ${numOf(from)} and ${numOf(to)} can change leave that runs across his move.`
+  }
+  return null
+}
 
 const MON = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 /* yyyy-mm-dd → the stored label ('2026-07-14' → 'Jul 14'). The loaded week's
@@ -925,6 +995,16 @@ export function fileForOtherRefusal(type: any): string {
   return `You can file ${what} only for yourself`
 }
 
+/* the squadron a new input is filed on (C3, D2243 Q1): the one its window was opened among, else the page's own */
+const filedOn = (draft: any): string => (isUnitId(draft && draft.u) ? String(draft.u) : pageUnit('own', todayIso()))
+/* …and the stamp follows who is in it as a save changes them, so his two routes end the same (D755 reading (a) —
+   ui/phmember.test.tsx T1): filed for ALL AVAIL, or filed for Ranger, ALL AVAIL dropped on and Ranger taken off — both
+   stamped with the squadron the input stood on. ALL AVAIL / ALL alone keeps a stamp it has, else takes `was` (the
+   squadron the input was before the save — its people's, or its own stamp), else the page's own; anyone named, none. */
+function settleStamp(r: any, was: string | null): void {
+  if (namedOf(r).length) { delete r.u; return }
+  if (isPlaceholderInput(r) && r.u == null) r.u = isUnitId(was) ? String(was) : pageUnit('own', todayIso())
+}
 export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, entryEnd?: any, onAdded?: (row:any)=>void): boolean {
   if (!draft) return false
   /* write-path role backstop (owner, 22 Aug 26 — a member files inputs only
@@ -936,7 +1016,8 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
      aircrew check judges the person actually being written. */
   if (!canEditSched()) {
     /* [ACCOUNTS]: filed for the SIGNED-IN person (perms.ts me()); someone signed in
-       without access (a guest) is nobody's person and files nothing */
+       without access (waiting for it, or switched off — there is no guest since D2239) is
+       nobody's person and files nothing */
     const mine = me()
     if (mine == null) { HOOKS.toast('Sign in with your own account to file an input', 'warn'); return false }
     /* A MEMBER'S DRAFT FOR ANOTHER MAN IS ASKED, NEVER RE-POINTED AT HIMSELF IN SILENCE (the group input — owner D654,
@@ -986,6 +1067,12 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
        certificate left behind by a switch to leave relied on — the row now shows it, and its ✕ takes it off). */
     ...docFields(rowDocIds(draft)),
   }
+  /* AN INPUT OF ALL AVAIL / ALL ALONE STAYS ON THE SQUADRON IT WAS FILED ON (the reshape plan §12 Q1 — his D2243): its
+     filer may move squadron later, and a squadron's own meeting is its own business (D2194), so the filing stamps the
+     squadron it is filed on — the window's (`draft.u`: the schedule in view's from a schedule, the page's own on the
+     Inputs page), else the page's own — and the reader (engine/inputs.ts inputSquadrons, inputOnDay) honours it. An input
+     naming anyone carries none: whose it is follows its people. */
+  if (isSpecial(draft.person)) row.u = filedOn(draft)
   /* the row's own address, minted before the write so the snapshot this add
      pushes already carries it — the Inputs page add's own withId precedent */
   inpId(row)
@@ -1196,7 +1283,10 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        (engine/inputown.ts swapPerson: the entry replaced, the holding moved on); one in the old shape, in `person`, as
        always. An input of SEVERAL is never re-pointed here: who is in it is changed by commitInput, below. */
     const handed = draft.person !== wasPerson && idsOf(r).length <= 1
+    const unitWas = inputUnitOf(r)
     if (handed) { if (Array.isArray(r.people)) swapPerson(r, wasPerson, draft.person, stampOf()); else r.person = draft.person }
+    /* (handed to ALL AVAIL / ALL alone, it stays on the squadron it was — C3; handed to a man, it follows him) */
+    settleStamp(r, unitWas)
     r.type = draft.type; r.allday = draft.allday
     /* THE REMARK HOLDS ONLY WHAT WAS TYPED (owner D948, 16 Oct 26): its "till <last day>" is printed from the dates on
        every screen (engine/inputs.ts remarksShown), so a moved or stretched input's date follows by itself — the one save
@@ -2058,11 +2148,14 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
       if (!r) {
         if (!commitNewInput({ ...draft, person: next[0] }, false, undefined, undefined, x => { r = x }) || !r) stop()
         for (const p of next.slice(1)) r.people.push({ p, ...(r.by != null ? { by: r.by } : {}), ...(r.at != null ? { at: r.at } : {}) })
+        /* the squadron stamp is a placeholder-only input's (C3): one naming people beside ALL AVAIL follows them */
+        settleStamp(r, filedOn(draft))
         /* an Other its filer sent under Unavailable, filed with ALL AVAIL / ALL among its people, lands on the programme
            instead — a placeholder is never under Unavailable (placeholderProblem; the scenario designer's G3: it was
            refused whole, after the window had offered "Goes to") */
         if (r.acc === 'u' && isPlaceholderInput(r)) delete r.acc
       } else {
+        const unitWas = inputUnitOf(r)
         if (says && !commitInputEdit(r, { ...draft, person: leadOf(r), docIds: rowDocIds(r) }, undefined, undefined, opts)) stop()
         /* who filed it passes on with its filer (state/perms.ts byAfterLeaving — Fable F13): to the scheduler who takes
            him out (D759 reading 7); to whoever put in the newest entry not his own, when he takes himself out */
@@ -2076,6 +2169,14 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
         /* a person a member adds is a change of the input: it takes a scheduler's LATE drop off (owner D1620) */
         if (added.length && !scheduler && !schedSide(opts)) delete r.lateOff
         for (const p of added) putPerson(r, p, st)
+        /* (left with ALL AVAIL / ALL alone it stays on the squadron it stood on; a man added, it follows its people — C3).
+           On a member's own take-out too (his D2243 Q1): unstamped, the input read its filer's squadron — the master
+           admin's 149 meeting moved to 142's schedule when the 149 man he had added took himself out. The commit gate
+           lets him change nothing but his own entry (state/perms.ts ownPart, D770 — onerecord-write OR29) and, with it,
+           this one stamp: the squadron the input stood on with him in it. Where that is not known the stamp waits —
+           the page's own squadron is not his to write there, and the gate would refuse his whole take-out */
+        const ownTakeOut = !scheduler && mine != null && !added.length && gone.length === 1 && gone[0] === String(mine)
+        if (!ownTakeOut || isUnitId(unitWas)) settleStamp(r, unitWas)
         /* …and an input filed for ALL AVAIL / ALL is never under Unavailable — it goes back onto the programme (the
            same rule the one-person save keeps, commitInputEdit; found by the re-expressed tests, 12 Oct 26) — a
            scheduler's move, marked (his D1388; the code read's F2: unmarked, its filer could send it back) */
@@ -2207,13 +2308,15 @@ export function clearHistoryData(mode: ClearMode, a: string, b?: string, dry?: b
      No input is deleted, no balance moves, no stashed week is dropped and the
      loaded week is untouched, so there is nothing to preflight or persist beyond
      what the batch already does. */
-  /* its history line INSIDE the batch ([DB-READINESS] group A, phase 4.1): one saved group, one change-log batch */
-  writeInputsBatch(() => {
+  /* its history line INSIDE the batch ([DB-READINESS] group A, phase 4.1): one saved group, one change-log batch.
+     A save the gate refuses answers -1, never its count — the form then says it could not be saved (helper "left2",
+     21 Nov 26: a refused save once read "Cleared 3 items"). */
+  const ok = writeInputsBatch(() => {
     oldPucks.forEach((s: any) => { const ix = PLANPUCKS.indexOf(s); if (ix >= 0) PLANPUCKS.splice(ix, 1) })
     oldRmk.forEach(k => { delete DAYRMK[k] })
     logAction(null, `Cleared ${n} item${n === 1 ? '' : 's'} of old clutter ${w.said}`, { date: todayIso(), sect: 'day' })
   })
-  return n
+  return ok ? n : -1
 }
 
 /* kept as the one-argument spelling of the 'before' mode — the original
@@ -2235,7 +2338,7 @@ export function clearEditHistory(mode: ClearMode, a: string, b?: string, dry?: b
   }
   /* ONE named command (`elog.sweep` — engine/editlog.ts): the exact lines it clears, and its own line — dated today
      (Fable F3): a line with no day is in no week's window, and the record that history was cleared, and by whom, must
-     be seen — in one saved group ([DB-READINESS] group A, phase 4.3) */
+     be seen — in one saved group ([DB-READINESS] group A, phase 4.3); a refused save answers -1, as the clutter sweep's */
   return elogSweep(ms(w.lo), ms(w.hi), dry, k => `Edit history cleared — ${k} entr${k === 1 ? 'y' : 'ies'} ${w.said}`)
 }
 

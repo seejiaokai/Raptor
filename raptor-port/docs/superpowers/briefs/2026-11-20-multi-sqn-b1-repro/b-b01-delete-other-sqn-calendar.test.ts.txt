@@ -1,0 +1,38 @@
+// @vitest-environment jsdom
+/* B1 (Fable 1): a delete made with another squadron in view leaves the man on his own squadron's planning calendar.
+   person-delete.ts applyDelete step 3c strips only PLANPUCKS — the calendar of the squadron IN VIEW; 149's calendar is
+   held in store.ts PLAN_MEM (or its plan/u149@pp: rows) and nothing visits it. D299: a delete takes him out of every day
+   still to come; D710: the delete's list names each planning note he was taken off. Today the master deletes a 149 man
+   on Admin → Users with 142 in view — the only view he has. */
+import { afterEach, describe, expect, it } from 'vitest'
+import { useWorld, signInAs } from './_harness'
+import { switchUnit, forgetUnitPlans } from '../state/store'
+import { PLANPUCKS, addPlanPuck } from '../state/plan'
+import { deletePerson } from '../state/person-delete'
+import { UNIT, BOOT_UNIT } from '../engine/unitview'
+
+useWorld()
+afterEach(() => { if (UNIT !== BOOT_UNIT) switchUnit(BOOT_UNIT); forgetUnitPlans(); PLANPUCKS.length = 0 })
+
+const names = (pid: string) => PLANPUCKS.some((p: any) => p.date >= '2026-07-15' && (p.ids || []).includes(pid))
+
+describe("B1 — a deleted 149 man leaves 149's calendar, whichever schedule is in view", () => {
+  it('Saber deletes Osprey with 142 in view: his note on 20 Jul in 149 no longer names him', () => {
+    signInAs('ad', 'a')
+    expect(UNIT).toBe('u142')
+    switchUnit('u149')
+    expect(addPlanPuck('2026-07-20', 'Range day', ['osp9', 'mer9'])).toBe(true)
+    expect(names('osp9')).toBe(true)
+    switchUnit('u142')
+    expect(deletePerson('osp9'), 'the delete said done').toBeNull()
+    switchUnit('u149')
+    expect(names('osp9'), "149's calendar still names the deleted man").toBe(false)
+  })
+  it('(control) the same delete with 149 in view takes him off', () => {
+    signInAs('ad', 'a')
+    switchUnit('u149')
+    expect(addPlanPuck('2026-07-20', 'Range day', ['osp9', 'mer9'])).toBe(true)
+    expect(deletePerson('osp9')).toBeNull()
+    expect(names('osp9')).toBe(false)
+  })
+})

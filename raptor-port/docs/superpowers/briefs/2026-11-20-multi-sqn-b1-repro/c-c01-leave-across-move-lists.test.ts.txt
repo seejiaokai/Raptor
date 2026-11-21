@@ -1,0 +1,29 @@
+// @vitest-environment jsdom
+/* C1 (Fable F1 = Opus F2's control half): a leave that runs across a move of squadron is on no Inputs list of the
+   squadron it now governs. Correct (D2221: "a man's leave across a move may be changed by each squadron's admin for the
+   days that are his squadron's" — so the new squadron's admins must be able to find it on their Inputs page). */
+import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { INPUTS, inputsFor, inputBelongs } from '../engine/inputs'
+import { setHome, homeOn } from '../state/units'
+import { myUnit } from '../state/perms'
+import { before, after, done, at, boot, signInAs } from './harness'
+
+beforeEach(before); afterEach(after); afterAll(done)
+
+describe('C1 — a leave across a move', () => {
+  it("is on the Inputs list of the squadron it governs after the move (149's admin can find it)", () => {
+    at('2026-07-12'); boot()
+    signInAs('ad', 'a')
+    expect(setHome('bane', 'u149').ok).toBe(true)
+    expect(homeOn('bane', '2026-07-12')).toBe('u142')
+    expect(homeOn('bane', '2026-07-14')).toBe('u149')
+    const rec: any = { person: 'bane', date: 'Jul 10', endDate: 'Jul 20', yr: 2026, allday: true, type: 'LL', remarks: 'across', by: 'bane', at: Date.now(), iid: 'c01', ord: 99901 }
+    INPUTS.push(rec)
+    signInAs('ad9', 'a9')
+    expect(myUnit()).toBe('u149')
+    /* control: 149's schedule day reads it */
+    expect(inputBelongs(rec, 'u149', '2026-07-14'), "149's Tuesday shows him away").toBe(true)
+    /* the Inputs page's rows, its month and its Deleted group all read inputsFor(myUnit()) with no date */
+    expect(inputsFor(myUnit()).some((r: any) => r.iid === 'c01'), "149's Inputs list shows the leave").toBe(true)
+  })
+})

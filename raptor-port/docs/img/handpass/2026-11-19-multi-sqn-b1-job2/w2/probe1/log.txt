@@ -1,0 +1,8 @@
+msq-j2-w2-probe v1
+Osprey {"pid":"osp9","opened":true} ["BUTTON#:Ospreyus9 · Member · Pilot · CAT A","INPUT#accEdName:us9","SELECT#accEdRole:Member or admin","BUTTON#accEdSave:Save","BUTTON#accEdOnOff:Suspend","BUTTON#accEdArchive:Archive","BUTTON#accEdDel:Delete","BUTTON#accEdCancel:Cancel"]
+Merlin {"pid":"mer9","opened":true} ["BUTTON#:Merlinno sign-in · Pilot · CAT B","INPUT#accGiveName:","SELECT#accGiveRole:Member or admin","BUTTON#accGive:Give sign-in","BUTTON#accEdArchive:Archive","BUTTON#accEdDel:Delete","BUTTON#accEdCancel:Cancel"]
+Saber {"pid":"stiff","opened":true} ["BUTTON#:Saberad · Admin · Pilot · CAT IP","INPUT#accEdName:ad","SELECT#accEdRole:Member or admin","BUTTON#accEdSave:Save","BUTTON#accEdOnOff:Suspend","BUTTON#accEdArchive:Archive","BUTTON#accEdDel:Delete","BUTTON#accEdCancel:Cancel"]
+Ace {"pid":"dj","opened":true} ["BUTTON#:Aceno sign-in · Pilot · CAT A","INPUT#accGiveName:","SELECT#accGiveRole:Member or admin","BUTTON#accGive:Give sign-in","BUTTON#accEdArchive:Archive","BUTTON#accEdDel:Delete","BUTTON#accEdCancel:Cancel"]
+add form ["DIV#accAddBlock:Add a personCallsign/NameIniti","INPUT#accAddCs:","INPUT#accAddIni:","SELECT#accAddSeat:Pick…PilotWSOPersonnel (ground","SELECT#accAddCat:Pick…","INPUT#accAddName:","BUTTON#accAddPostIn:Thu 19 Nov 26▾","BUTTON#accAdd:Add person","P#accAddNote:Makes his Quals row, and his s"]
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

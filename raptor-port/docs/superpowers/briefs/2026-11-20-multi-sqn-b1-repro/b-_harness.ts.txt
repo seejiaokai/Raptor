@@ -1,0 +1,43 @@
+/* shared set-up copied from state/units-sqn-fixread16.test.ts (the repro of area B's full-review claims) */
+import { afterAll, afterEach, beforeEach, vi } from 'vitest'
+import { storeBackend } from '../engine/hooks'
+import { initStore, resetSession, notify } from '../state/store'
+import { signIn, sessionFor, accountsLoad } from '../state/accounts'
+import { setSession } from '../state/auth'
+import { installGlobalUndo } from '../state/undo-wire'
+import { _resetTimeline } from '../undo/timeline'
+import { setUnitSeeds, unitsLoad } from '../state/units'
+
+import { PEOPLE, indexCallsigns } from '../engine/people'
+
+const PEOPLE0 = JSON.stringify(PEOPLE)
+export const mem: Record<string, string> = {}
+const fake = {
+  getItem: (k: string) => (k in mem ? mem[k]! : null),
+  setItem: (k: string, v: string) => { if (v === 'null') delete mem[k]; else mem[k] = v },
+  keys: () => Object.keys(mem),
+}
+export const signInAs = (name: string, pass: string) => { const r = signIn(name, pass); resetSession(sessionFor(r)); notify(); return r }
+export const signOut = () => { setSession(null); resetSession(null); notify() }
+export const on = (d: number) => { vi.setSystemTime(new Date(2026, 6, d, 9, 0, 0)); unitsLoad() }
+
+export function useWorld() {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date(2026, 6, 15, 9, 0, 0))
+    Object.keys(mem).forEach(k => delete mem[k])
+    /* the roster put back between tests (a delete marks a man deleted in memory) — as multi-sqn-fixread14's harness */
+    const p0 = JSON.parse(PEOPLE0)
+    for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
+    Object.assign(PEOPLE, p0); indexCallsigns()
+    storeBackend.impl = fake
+    setUnitSeeds(true)
+    initStore()
+    accountsLoad()
+    resetSession(null)
+    _resetTimeline()
+    installGlobalUndo()
+  })
+  afterEach(() => { setSession(null); resetSession(null); _resetTimeline(); vi.useRealTimers() })
+  afterAll(() => { storeBackend.impl = null })
+}

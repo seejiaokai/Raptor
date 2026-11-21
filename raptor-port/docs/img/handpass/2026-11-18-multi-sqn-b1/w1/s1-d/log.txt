@@ -1,0 +1,13 @@
+msq-w1-s1 v1 desktop
+DAY KEYS dow,dt,wc,notes,allhands,waves,sims,dutywaves,ground
+ground add W149 GROUND Kestrel kes9 ok ["W149 GROUND"]
+ROW PASS | S1 | desktop | ad9 adds ground row "W149 GROUND" with Kestrel on Wed 15 Jul, closes board | saw: week shows W149 GROUND: true; seat: ok
+signout {"reloaded":true}
+ROW PASS | S1 | desktop | ad (142) looks at Wed 15 Jul on the week and on the board | saw: week: false; board: false; ground rows on 142 day: ["MAINT CONF @ ENG WING","NAV-SYS TRIAL PREP"]
+ground add W142 GROUND Saber stiff ok ["MEDICAL APPT","DENTAL APPT","APPOINTMENT","W142 GROUND"]
+ROW PASS | S1 | desktop | ad adds ground row "W142 GROUND" with Saber on Thu 16 Jul | saw: week shows W142 GROUND: true; seat: ok
+signout {"reloaded":true}
+ROW PASS | S1 | desktop | ad9 signs in again, looks at the week | saw: W149: true; W142: false
+ROW PASS | S1 | desktop | ad9 opens Wed 15 board | saw: true
+errors []
+DONE 5 PASS 0 FAIL 0 OTHER of 5

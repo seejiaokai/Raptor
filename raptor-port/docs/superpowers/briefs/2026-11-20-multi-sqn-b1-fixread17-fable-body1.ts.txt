@@ -1,0 +1,41 @@
+
+import { openDates, moveRecords } from '../leavewar/state/store'
+const dayRecs = (d: string): any[] => {
+  const out: any[] = []
+  const walk = (o: any) => {
+    if (!o || typeof o !== 'object') return
+    for (const [k, v] of Object.entries(o)) {
+      if (k === d && Array.isArray(v)) out.push(...(v as any[]))
+      else if (typeof v === 'object') walk(v)
+    }
+  }
+  walk((getState() as any).wars)
+  return out.filter(r => r && r.kind === 'request')
+}
+describe('FR17 probe — member moves own refused bid', () => {
+  it('refused bid moved one day by its member', () => {
+    signInAs('ad', 'a')
+    console.log('open', JSON.stringify(openDates('2026-07-20', '2026-08-10')))
+    signInAs('us', 'us')
+    expect(setCell('bane', '2026-07-28', 'LL')).toBe(true)
+    signInAs('ad', 'a')
+    setBidStates([{ personId: 'bane', date: '2026-07-28' }], 'refused')
+    signInAs('us', 'us')
+    const before = dayRecs('2026-07-28')
+    console.log('before', JSON.stringify(before))
+    const res = moveRecords([{ personId: 'bane', date: '2026-07-28', id: before[0].id, kind: 'request' }], 1)
+    console.log('res', JSON.stringify(res), 'd28', JSON.stringify(dayRecs('2026-07-28')), 'd29', JSON.stringify(dayRecs('2026-07-29')))
+    console.log('toasts', JSON.stringify((HOOKS.toast as any).mock.calls))
+    expect(dayRecs('2026-07-29')[0]?.state).toBe('pending')
+  })
+  it('(control) a pending bid moved one day by its member', () => {
+    signInAs('ad', 'a')
+    openDates('2026-07-20', '2026-08-10')
+    signInAs('us', 'us')
+    expect(setCell('bane', '2026-07-28', 'LL')).toBe(true)
+    const before = dayRecs('2026-07-28')
+    const res = moveRecords([{ personId: 'bane', date: '2026-07-28', id: before[0].id, kind: 'request' }], 1)
+    console.log('ctl res', JSON.stringify(res))
+    expect(dayRecs('2026-07-29')[0]?.state).toBe('pending')
+  })
+})

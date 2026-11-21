@@ -47,6 +47,19 @@ export interface UndoEntry {
   /* the seq of the restore that undid it — Redo's out-of-band barrier counts from here (D148; the change-recording plan
      B6.4: a change someone else made while the step stood undone refuses its redo, naming who) */
   undoneSeq?: number
+  /* WHEN, by the clock (fix read 10, fault E — O10-1, Fable F10-5): `madeAt` the moment the step was made, `undoneOn` the
+     moment its Undo went through. A right an Undo puts back went off on the step's own day; one a Redo puts back went off
+     on the day of the Undo that took it off — the redate hook keeps the right's recorded day only when its man has not
+     moved squadron since then (state/perms.ts restoreRedated) */
+  madeAt?: number
+  undoneOn?: number
+  /* (fix read 11, fault G — F11-5a): the moment its latest Redo went through — the step made again, so a right that
+     Redo took off went off THEN, and an Undo after it reads this before `madeAt` */
+  redoneOn?: number
+  /* (fix read 12, fault E — Astra 2): each record as it STOOD just before the latest restore in that direction wrote it
+     (key `collection/id`) — a right or a link that restore took away kept the day an earlier restore had given it, and
+     the restore that reverses it puts that day back, never its step's older recorded one (state/perms.ts restoreRedated) */
+  stoodBefore?: { undo?: Record<string, unknown>; redo?: Record<string, unknown> }
   /* the text box a `sched.text` wrote (the envelope's `detail`) — Undo's words read it (describe.ts; B8) */
   detail?: string
   /* an undone entry a later NEW change forked away from (§4.3: "any newer entry committed after
@@ -56,6 +69,14 @@ export interface UndoEntry {
   /* D1263 — the record keys this step changed on a Leave War day already closed for its maker when he made it (the
      `closedAtStep` hook, asked as the step was recorded). Only an Undo of such a step may put a bid back there. */
   closedAt?: string[]
+  /* A-v (the reshape plan §3.2) — the squadron each world it wrote held when it was made (the envelope's stamp, its folded
+     children's added): its Leave War and Tracker records are keyed by it (derive.ts recordKey), and it is eligible only
+     while each of those worlds holds that squadron again. Absent: no world door, or a step that wrote neither world. */
+  stamp?: Record<string, string>
+  /* Piece B (the reshape plan §4.3 "At the restore") — the man and the link day of each grant row's account the step
+     touched, by account id, as they stood when the step was recorded (the `holdersAtStep` hook, asked once, as
+     `closedAt` is). The restore's leave-out reads them: a right put back only on the man it named then. */
+  holders?: Record<string, { id: string; pid: string; pidFrom: string | undefined }>
 }
 
 export type { Actor, Boundary, Change, Scope, Module }

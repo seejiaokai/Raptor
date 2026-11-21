@@ -7,6 +7,9 @@
    defaults to a no-op so the engine runs headless. The app (phase 3/4)
    assigns real implementations.
    --------------------------------------------------------------------------- */
+import { UNIT } from './unitview'
+import { qualify, split, localOf } from '../storage/unitid'
+import { UNIT_SETTINGS, UNIT_SETTING_PREFIXES } from '../storage/keyowner'
 export const HOOKS = {
   captureMissionRoleSeeds: (_di:number,_blob:unknown): unknown => undefined,
   applyMissionRoleSeeds: (_di:number,_seeds:unknown): void => {},
@@ -132,6 +135,14 @@ export const HOOKS = {
      nothing, a reused callsign inherits nothing (the one-identity rule). Headless and
      for someone without access: null. */
   whoamiId: (): string | null => null,
+  /* may the person signed in file a change-history line under this squadron (the second fix read, security H5): a line
+     about one man, or one an Undo files with the change it takes back, names a squadron; the state layer answers from
+     his rights there (state/perms.ts elogUnitAllowed). Headless: yes. */
+  elogUnitOk: (_unit: string): boolean => true,
+  /* the squadron of the person giving a history line — an admin's or a member's own home today (the state layer answers,
+     state/store.ts): a line naming no man and no squadron (an Undo's or a Redo's own line) that its giver may not file in
+     the squadron in view goes to his own squadron, never lost (job 2's fix read, 1). Headless and for nobody: null. */
+  elogOwnUnit: (): string | null => null,
   /* THE OG TAG ([DRAFT-PENDING], the owner's D172): does the puck at this (positional) key, on a day NOT yet published,
      hold a change NEW TO the person looking? Per PLACE, never per person (Astra DP-11). The answer is the viewer's
      (the change history and his seen record live in state/ui), so it arrives as a hook — ui/changesmodel.ts installs
@@ -197,8 +208,31 @@ type SettingsWriteHook = (k: string, v: any, raw: (k: string, v: any) => void) =
 let SETTINGS_WRITE_HOOK: SettingsWriteHook | null = null
 export function setSettingsWriteHook(fn: SettingsWriteHook | null) { SETTINGS_WRITE_HOOK = fn }
 function rawStoreSet(k: any, v: any) {
-  try { if (storeBackend.impl) storeBackend.impl.setItem('sqn142_' + k, JSON.stringify(v)) } catch (e) {}
+  try { if (storeBackend.impl) storeBackend.impl.setItem('sqn142_' + storedKey(k), JSON.stringify(v)) } catch (e) {}
 }
+/* A UNIT'S OWN SETTINGS ARE STORED UNDER ITS ID (multi-squadron batch 1, step 2 — storage/unitid.ts, storage/keyowner.ts).
+   Every reader and writer in the app names a setting by its plain name (`rules`, `flyday:2026-07-13`) and means the unit
+   IN VIEW's (engine/unitview.ts); the store files it as `<unit>@<name>` (`u149@rules`), so 142's Logic and 149's are two
+   records that never meet. A name that already carries a unit is that unit's, read and written as it is — the command
+   layer's records name every unit's rows that way (state/people-settings-commit.ts), and an Undo of one unit's setting
+   writes it back by that name whichever unit is in view. A community setting (an account, a seen mark, the stamp) keeps
+   its plain name. Two of keyowner's unit prefixes are NOT qualified HERE, each with its reason: `missionrole:` rows are
+   never written through store.set (the typed annotation command alone writes them, and its row mapper files each under
+   the unit in view since step 4 — state/persist.ts hydrateRolesFor), and `elog:`, the change history, is read by every
+   person across the app (the changes window, the bell's "new to you" marks) and goes per unit with the history's own
+   step, after batch 1. */
+const QUALIFIED_PREFIXES = UNIT_SETTING_PREFIXES.filter(p => p !== 'missionrole:' && p !== 'elog:')
+export const isUnitSetting = (name: string): boolean =>
+  UNIT_SETTINGS.includes(name) || QUALIFIED_PREFIXES.some(p => name.startsWith(p))
+export function storedKey(k: any): string {
+  const s = String(k)
+  if (split(s).unit != null) return s
+  return isUnitSetting(s) ? qualify(UNIT, s) : s
+}
+/* A UNIT'S OWN SETTING, read for the unit named — never the pick's (the reshape plan §3.2 A-ii, B4): an own page (Inputs,
+   Quals, the Leave War…) reads, and writes, the key of its own squadron (state/perms.ts pageUnit('own')) */
+export const unitSettingKey = (unit: string, name: string): string => qualify(unit, name)
+export function unitSetting(unit: string, name: string, fallback: any): any { return store.get(unitSettingKey(unit, name), fallback) }
 /* [ARCH-STACK] follow-up #1: the SCHEDULER backstop seam. state/view.ts's
    afterSchedMutate() is the durable-write epilogue for the ~40 board sites that
    mutate the model in place and then repaint. The command layer installs a hook
@@ -223,7 +257,7 @@ export const store = {
   group(name: string, fn: () => void) { if (SETTINGS_GROUP_HOOK) SETTINGS_GROUP_HOOK(name, fn); else fn() },
   get(k: any, d: any) {
     try {
-      const v = storeBackend.impl ? storeBackend.impl.getItem('sqn142_' + k) : null
+      const v = storeBackend.impl ? storeBackend.impl.getItem('sqn142_' + storedKey(k)) : null
       return v == null ? d : JSON.parse(v)
     } catch (e) { return d }
   },
@@ -232,10 +266,16 @@ export const store = {
     else rawStoreSet(k, v)
   },
   /* every stored key that starts with `prefix`, without the store's own prefix — the rows of a record kept one row per
-     thing (`elog:`, `seen:`, `account:` …); none on a backend that cannot list */
+     thing (`elog:`, `seen:`, `account:` …); none on a backend that cannot list. A unit's own prefix (`flyday:`) lists the
+     unit IN VIEW's rows by their plain names, as every reader asks for them; the empty prefix lists every stored key as
+     it is stored, each unit's own named with its unit (the command layer's records — people-settings-commit.ts) */
   keys(prefix: string): string[] {
     try {
       const all = storeBackend.impl && storeBackend.impl.keys ? storeBackend.impl.keys() : []
+      if (prefix && isUnitSetting(prefix)) {
+        const p = 'sqn142_' + qualify(UNIT, prefix)
+        return all.filter(k => k.startsWith(p)).map(k => localOf(k.slice(7)))
+      }
       const p = 'sqn142_' + prefix
       return all.filter(k => k.startsWith(p)).map(k => k.slice(7))
     } catch (e) { return [] }

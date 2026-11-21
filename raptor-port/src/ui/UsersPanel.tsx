@@ -29,8 +29,8 @@ import { PEOPLE, nameToId, archivedHolders } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { elogWhen } from '../engine/editlog'
 import {
-  ACCESS_REQS, GUESTVIEW, accountOfPid, linkablePeople, addAccount, updateAccount,
-  approveRequest, approveRequestNew, addPersonAndAccount, declineRequest, setGuestView,
+  ACCESS_REQS, accountOfPid, linkablePeople, addAccount, updateAccount,
+  approveRequest, approveRequestNew, addPersonAndAccount, declineRequest,
   requestSummary, accessAlert, markRequestsSeen, MAX_SIGNIN, isAdminAccount, type Account, type AccountRole, type AccessRequest,
 } from '../state/accounts'
 import {
@@ -572,13 +572,8 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
           {hasName ? 'Add person and sign-in' : 'Add person'}</button>
         <p className="adm-note" id="accAddNote">Makes his Quals row, and his sign-in if you give one. The Leave War counts him from the post-in date.</p>
       </div>
-      <hr className="adm-sep" />
-      <h4 className="adm-sub">Guest view</h4>
-      <label className="acc-switch">
-        <input type="checkbox" id="admGuestView" checked={GUESTVIEW}
-          onChange={e => done(setGuestView(e.target.checked), e.target.checked ? 'People waiting can now view the schedule' : 'Guest view is off')} />
-        <span>Let people waiting for access view the schedule (read only)</span>
-      </label>
+      {/* (the "Guest view" switch that stood here, under its own rule, is removed with the guest view — his D2239,
+          20 Nov 26: a person waiting sees only the waiting screen until an admin of his squadron approves him) */}
     </>
   )
 }

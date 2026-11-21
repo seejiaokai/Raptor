@@ -13,6 +13,9 @@ import { WEEK1_DAYS_SNAP } from './data'
 import { rowsOf } from './rowids'
 import { WEEK1_INPUTS_SNAP, WEEK1_DATES, baseYear } from './inputs'
 import { WEEK2_DAYS, WEEK2_DATES, WEEK2_INPUTS } from './week2'
+import { UNIT, DEMO_SEED_UNIT } from './unitview'
+import { week149Days, WEEK149_DATES } from './week149'
+import { split } from '../storage/unitid'
 
 const DOW=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -121,18 +124,28 @@ export function setAuthoredWeeks(on:any){ AUTHORED=!!on; }
    (rowsOf, then the note lines; the walk ensureRowIds makes). A row that already has an id keeps it; a blank week has
    no rows; a saved day keeps whatever it was saved with. Never printed, like every rid. */
 const AUTHORED_WEEKS=new Set(['13/07/2026','20/07/2026']);
-export function seedRids(days:any[],v:any){
+/* `pre` keeps 149's demo week's ids apart from 142's week on the same dates (multi-squadron batch 1, step 4) */
+export function seedRids(days:any[],v:any,pre:string='rs'){
   if(!AUTHORED||!AUTHORED_WEEKS.has(String(v)))return days;
   const wk=String(v).replace(/[^0-9]/g,'');
   (days||[]).forEach((d:any,di:number)=>{
     let n=0;
-    const give=(r:any)=>{ if(!r||typeof r!=='object')return; const id='rs'+wk+di+'x'+(n++).toString(36); if(typeof r.rid!=='string'||!r.rid)r.rid=id; };
+    const give=(r:any)=>{ if(!r||typeof r!=='object')return; const id=pre+wk+di+'x'+(n++).toString(36); if(typeof r.rid!=='string'||!r.rid)r.rid=id; };
     rowsOf(d||{}).forEach(give);
     (d&&Array.isArray(d.notes)?d.notes:[]).forEach(give);
   });
   return days;
 }
 export function weekBundle(v:any){
+  /* multi-squadron batch 1, step 2: a unit-qualified week is read by its date part (storage/unitid.ts), and the two
+     authored demo weeks are the demo squadron's ONLY — another unit's untouched week is blank, never a copy of 142's
+     (unitview.ts DEMO_SEED_UNIT). Step 4 gives the second demo squadron, 149, a week of its own on the same dates as
+     142's first (engine/week149.ts) — its own people, its own row ids — so the two schedules can be set side by side;
+     every other week of 149's, and every week of any other unit, is blank. */
+  const sp=split(String(v)); v=sp.local;
+  const unit=sp.unit??UNIT;
+  if(unit==='u149'&&AUTHORED&&v==='13/07/2026') return {days:seedRids(week149Days(),v,'r9s'), dates:WEEK149_DATES.slice(), inputs:[], seedSans:false};
+  if(unit!==DEMO_SEED_UNIT) return emptyWeek(v);
   if(!AUTHORED) return emptyWeek(v);
   if(v==='13/07/2026') return {days:seedRids(JSON.parse(WEEK1_DAYS_SNAP),v), dates:WEEK1_DATES.slice(), inputs:JSON.parse(WEEK1_INPUTS_SNAP), seedSans:true};
   if(v==='20/07/2026') return {days:seedRids(JSON.parse(JSON.stringify(WEEK2_DAYS)),v), dates:WEEK2_DATES.slice(), inputs:JSON.parse(JSON.stringify(WEEK2_INPUTS)), seedSans:false};

@@ -29,7 +29,9 @@ const CHOICES: Array<{ cls: Cls; label: string }> = [
 const A_DAY: Record<Cls, string> = { day: 'a day-flying day', night: 'a night-flying day', nf: 'a no-fly day' }
 const LEAD: Record<FlyCls, string> = { day: 'Day flying', night: 'Night flying', nf: 'No fly', none: 'No flying set' }
 
-export function EveryWeekday({ wd, from: from0, onClose }: {
+export function EveryWeekday({ wd, from: from0, unit, onClose }: {
+  /** the squadron whose flying plan it edits — the Calendar window's (left out, the pick's) */
+  unit?: string
   /** 0 = Monday … 6 = Sunday */
   wd: number
   /** the start the form opens on — the first such day on screen that is not in the past (Days works it out) */
@@ -49,7 +51,7 @@ export function EveryWeekday({ wd, from: from0, onClose }: {
 
   /* this weekday's rules, in date order (the plan keeps its rules sorted by start). Read at every paint: this window is
      drawn by Days, which repaints on the scheduler's signal — so the list follows a Remove, an Undo, a Save */
-  const mine = getFlyPlan().rules.filter(r => r.wd === wd)
+  const mine = getFlyPlan(unit).rules.filter(r => r.wd === wd)
   const said = (r: FlyRule) => `${LEAD[r.cls]} · from ${sayDateYY(r.from)} · ${r.until ? 'until ' + sayDateYY(r.until) : 'no end'}`
 
   const done = (then: () => void) => (r: FlySave) => { if (r.ok) then(); else setErr(r.message || 'This change could not be saved.') }
@@ -58,7 +60,7 @@ export function EveryWeekday({ wd, from: from0, onClose }: {
     if (!validIso(from)) { setErr('Choose the date it starts.'); return }
     if (ends && !validIso(until)) { setErr('Choose the date it ends, or pick No end.'); return }
     if (ends && until < from) { setErr('It cannot end before it starts.'); return }
-    run(setFlyRule(ends ? { wd, cls, from, until } : { wd, cls, from }), onClose)
+    run(setFlyRule(ends ? { wd, cls, from, until } : { wd, cls, from }, unit), onClose)
   }
 
   const fromSaid = validIso(from) ? sayDateYY(from) : '…'
@@ -120,7 +122,7 @@ export function EveryWeekday({ wd, from: from0, onClose }: {
                 className="abtn"
                 data-testid={`every-remove-${r.id}`}
                 aria-label={`Remove: ${LEAD[r.cls]} from ${sayDateY(r.from)}`}
-                onClick={() => run(removeFlyRule(r.id), () => setErr(''))}
+                onClick={() => run(removeFlyRule(r.id, unit), () => setErr(''))}
               >Remove</button>
             </div>
           ))}

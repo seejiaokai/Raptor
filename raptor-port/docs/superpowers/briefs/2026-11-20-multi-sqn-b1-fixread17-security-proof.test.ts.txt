@@ -1,0 +1,106 @@
+// @vitest-environment jsdom
+/* TEMPORARY security proof — fix read 17 — deleted before the reader finishes */
+import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { storeBackend, store } from '../engine/hooks'
+import { initStore, resetSession, notify } from './store'
+import { signIn, sessionFor, accountsLoad, levelIn } from './accounts'
+import { setSession } from './auth'
+import { installGlobalUndo } from './undo-wire'
+import { _resetTimeline, globalUndo } from '../undo/timeline'
+import { setUnitSeeds, setHome, setGrant, homeOn, unitsLoad, addUnit, todayIso, unitRows } from './units'
+import { GRANT_PFX, HOME_PFX } from './units-model'
+import { commitSettingsIntent } from './people-settings-commit'
+
+const mem: Record<string, string> = {}
+const fake = {
+  getItem: (k: string) => (k in mem ? mem[k]! : null),
+  setItem: (k: string, v: string) => { if (v === 'null') delete mem[k]; else mem[k] = v },
+  keys: () => Object.keys(mem),
+}
+const signInAs = (name: string, pass: string) => { const r = signIn(name, pass); resetSession(sessionFor(r)); notify(); return r }
+const on = (d: number) => { vi.setSystemTime(new Date(2026, 6, d, 9, 0, 0)); unitsLoad() }
+
+beforeEach(() => {
+  vi.useFakeTimers({ toFake: ['Date'] })
+  vi.setSystemTime(new Date(2026, 6, 15, 9, 0, 0))
+  Object.keys(mem).forEach(k => delete mem[k])
+  storeBackend.impl = fake
+  setUnitSeeds(true)
+  initStore()
+  accountsLoad()
+  resetSession(null)
+  _resetTimeline()
+  installGlobalUndo()
+})
+afterEach(() => { setSession(null); resetSession(null); _resetTimeline(); vi.useRealTimers() })
+afterAll(() => { storeBackend.impl = null })
+
+const setup = () => {
+  signInAs('ad', 'a')
+  const u150 = addUnit('150', 'p1')
+  expect(setGrant('acus', u150.id!, 'view', 'bane').ok).toBe(true)
+  expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
+  signInAs('ad2', 'a2')
+  unitsLoad()
+  return u150.id!
+}
+
+describe('SEC17', () => {
+  it('A: Hunter moves Ranger to 149 and back to 142 the same day — Ranger never moves, 150 View gone', () => {
+    const u150 = setup()
+    expect(setHome('bane', 'u149').ok).toBe(true)
+    unitsLoad()
+    const back = setHome('bane', 'u142')
+    unitsLoad()
+    console.log('A move back:', JSON.stringify(back), 'home 16th:', homeOn('bane', '2026-07-16'), 'view150:', levelIn('acus', u150))
+    on(16)
+    expect(homeOn('bane')).toBe('u142')
+    expect(levelIn('acus', u150), "150's right taken by a 142/149 admin with no move").toBe('view')
+  })
+  it('A2: one forged command — Ranger to 149 for one day only (16th), back to 142 from the 17th, 150 View dropped', () => {
+    const u150 = setup()
+    const g = unitRows().grants.find(x => x.account === 'acus' && x.unit === u150)!
+    const r = commitSettingsIntent('home.set', null, () => {
+      store.set(HOME_PFX + 'hz0', { id: 'hz0', pid: 'bane', unit: 'u142', from: todayIso() })
+      store.set(HOME_PFX + 'hz1', { id: 'hz1', pid: 'bane', unit: 'u149', from: '2026-07-16' })
+      store.set(HOME_PFX + 'hz2', { id: 'hz2', pid: 'bane', unit: 'u142', from: '2026-07-17' })
+      store.set(GRANT_PFX + g.id, null)
+    }) as any
+    console.log('A2:', JSON.stringify(r))
+    unitsLoad()
+    expect(levelIn('acus', u150), 'one-day move strips the right').toBe('view')
+  })
+  it('B: Hunter undoes his own move that dropped a 150 View', () => {
+    const u150 = setup()
+    expect(setHome('bane', 'u149').ok).toBe(true)
+    const u = globalUndo()
+    unitsLoad()
+    console.log('B undo:', JSON.stringify(u), 'home 16th:', homeOn('bane', '2026-07-16'), 'view150:', levelIn('acus', u150))
+    expect(homeOn('bane', '2026-07-16')).toBe('u142')
+  })
+  it('B-control: Hunter undoes his own move when Ranger holds no third-squadron right', () => {
+    signInAs('ad', 'a')
+    expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
+    signInAs('ad2', 'a2')
+    expect(setHome('bane', 'u149').ok).toBe(true)
+    const u = globalUndo()
+    unitsLoad()
+    console.log('Bc undo:', JSON.stringify(u), 'home 16th:', homeOn('bane', '2026-07-16'))
+    expect(homeOn('bane', '2026-07-16')).toBe('u142')
+  })
+  it('C: forged move dated the 20th — a 150 right given on the 16th survives his move', () => {
+    signInAs('ad', 'a')
+    const u150 = addUnit('150', 'p1').id!
+    const r = commitSettingsIntent('home.set', null, () => {
+      store.set(HOME_PFX + 'hz0', { id: 'hz0', pid: 'bane', unit: 'u142', from: todayIso() })
+      store.set(HOME_PFX + 'hz1', { id: 'hz1', pid: 'bane', unit: 'u149', from: '2026-07-20' })
+    }) as any
+    console.log('C forged far move:', JSON.stringify(r))
+    on(16)
+    const g = setGrant('acus', u150, 'view', 'bane')
+    console.log('C grant on 16th:', JSON.stringify(g))
+    on(20)
+    console.log('C on 20th home:', homeOn('bane'), 'view150:', levelIn('acus', u150))
+    expect(levelIn('acus', u150)).toBeNull()
+  })
+})

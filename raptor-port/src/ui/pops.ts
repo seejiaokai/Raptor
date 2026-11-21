@@ -137,7 +137,8 @@ export type { AvailWin, AvailBox } from '../state/view'
 /* ---- EVERY WINDOW CLOSES AT A SIGN-IN AND A SIGN-OUT ([ACCOUNTS], 26 Sep 26) ------
    With personal accounts the next person on a browser must never inherit the last
    one's open input editor, document, history list or template sheet (Astra R1-3) —
-   above all a guest, who may read nothing but the published week. POPS_RESET is the one
+   above all a person waiting for access or switched off, who is shown no page of the app
+   (the guest, who read the published week, went with the guest view — D2239). POPS_RESET is the one
    list of every flag above, each with how it closes; it is registered into state/view.ts
    VIEW_RESET under 'session', so resetSession (the ONE session-change path) closes
    them all with no import from state into ui. pops.test.ts fails when an `export let`
@@ -171,8 +172,12 @@ export function setBellList(open: boolean, at = '') { BELLLIST = open; BELLAT = 
    is read live, never held here. One of the windows that do NOT block the page (D641), so not in windowOverSchedule. */
 /* `plain` — the day is NOT a public holiday (a weekend): the list was opened by a published version loaded back (owner
    D818), which can land on any non-working day, and its heading must not call a Saturday a public holiday */
-export let OILLIST: null | { from: string; to: string; name: string; fresh: boolean; plain?: boolean } = null
-export function setOilList(v: null | { from: string; to: string; name: string; fresh?: boolean; plain?: boolean }) { OILLIST = v ? { from: v.from, to: v.to || v.from, name: v.name || '', fresh: !!v.fresh, ...(v.plain ? { plain: true } : {}) } : null }
+/* `unit` — THE SQUADRON IT LISTS (the blind read's R3, the Plan audit's PB4 — the reshape plan §19, §19b): a holiday is its
+   own squadron's, and its line may be tapped by an admin of it whose own page is another squadron's (one holding Plan of
+   it, a master admin), so the list it opens lists, and its Save answers, that squadron's inputs; left out, the list works
+   it out (ui/OilDayList.tsx) */
+export let OILLIST: null | { from: string; to: string; name: string; fresh: boolean; plain?: boolean; unit?: string } = null
+export function setOilList(v: null | { from: string; to: string; name: string; fresh?: boolean; plain?: boolean; unit?: string }) { OILLIST = v ? { from: v.from, to: v.to || v.from, name: v.name || '', fresh: !!v.fresh, ...(v.plain ? { plain: true } : {}), ...(v.unit ? { unit: v.unit } : {}) } : null }
 export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DAYPOP', reset: () => setDayPop(null) },
   { name: 'INSIGHTS', reset: () => setInsights(false) },

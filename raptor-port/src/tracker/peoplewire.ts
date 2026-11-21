@@ -5,14 +5,15 @@
    that by reading the sources). It projects PEOPLE into the few fields the
    Tracker's + Add dialog shows and files, and re-projects on every Raptor
    notify; the bridge's own signature guard makes an unrelated notify free. */
-import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
-import { INPUTS, isDownchit, isUpchit, inpType, leadOf } from '../engine/inputs'
+import { inputsTouching, isDownchit, isUpchit, inpType, leadOf } from '../engine/inputs'
+import { unitPeople, rosterToday } from '../engine/roster'
+import { storageUnit } from './storage.js'
 import { medStartOrd, medEndOrd, firstEndOrd, firstEndIso, ordShift } from '../engine/medical'
 import { subscribe } from '../state/store'
 import { setPeople, setWhoami, setWhoamiId, setGonePeople, setMedInputs } from './people.js'
 import { setTrackerAdmin } from './role.js'
-import { roleOf } from '../state/perms'
+import { roleOf, pageUnit } from '../state/perms'
 
 export type TrackerPerson = { id: string; cs: string; seat: string; q: string; sxo: boolean }
 
@@ -89,7 +90,7 @@ export function whoamiForTracker(): string {
 /* The signed-in PERSON's id, for the Tracker's per-person place (D376). Nobody ('')
    whenever there is no session: after a logout Raptor's person id falls back to the
    headless default — a real member's id — and a pick written then must never land
-   under his name (the plan's red team, Fable F6). A guest or a pending account has
+   under his name (the plan's red team, Fable F6). A pending account has
    no person. */
 export function whoamiIdForTracker(): string {
   if (HOOKS.whoami() === 'Unknown') return ''
@@ -112,7 +113,17 @@ export function wireTrackerPeople(): void {
   setWhoamiId(whoamiIdForTracker)
   /* the medical days ride the same push: an input filed, moved or cut on the Inputs page reaches the Tracker's number
      at the next notify, and the bridge's guard makes an unrelated notify free (D1002) */
-  const push = () => { setPeople(projectForTracker(PEOPLE)); setGonePeople(deletedForTracker(PEOPLE)); setMedInputs(medForTracker(INPUTS)) }
+  const push = () => {
+    /* ONE SQUADRON'S PEOPLE (multi-squadron batch 1, step 4): the Tracker is a world per squadron — the one its doorway
+       is bound to (tracker/storage.js), else the signed-in person's own (it binds that one at its first load) — so its
+       + Add offers that squadron's roster alone, and its down days and gone men are that squadron's (engine/roster.ts
+       unitPeople, engine/inputs.ts inputsTouching — every medical touching that squadron, a list reader). A 149 man is
+       never offered on 142's course. Unbound, the page's own squadron (state/perms.ts pageUnit — the reshape plan §3.2
+       A-ii): his own, a master admin's or Plan holder's following his pick (D2197). */
+    const unit = storageUnit() || pageUnit('own')
+    const people = unitPeople(unit, rosterToday())
+    setPeople(projectForTracker(people)); setGonePeople(deletedForTracker(people)); setMedInputs(medForTracker(inputsTouching(unit)))
+  }
   subscribe(push)
   push()
 }

@@ -300,7 +300,9 @@ describe('what is new to you is one row per person, by position (F2-02)', () => 
     expect(g.filter(c => c.collection === 'settings' && !c.id.startsWith('elog:')).map(c => c.id)).toEqual(['seen:bane'])
     const seen = JSON.parse(wb.get('settings', 'seen:bane')!)
     const last = ELOG.rows[1]!
-    expect(seen).toEqual({ upto: { at: last.t, lineId: last.lineId }, extra: [] })
+    /* one cursor a squadron since the fix read of multi-squadron batch 1's full check (18 Nov 26 — Astra 6): the row keeps
+       his place in the history of the squadron in view, 142's here */
+    expect(seen).toEqual({ units: { u142: { upto: { at: last.t, lineId: last.lineId }, extra: [] } } })
     expect(wb.has('settings', 'changeseen')).toBe(false)
   })
 

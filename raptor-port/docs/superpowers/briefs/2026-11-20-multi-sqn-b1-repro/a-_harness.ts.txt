@@ -1,0 +1,52 @@
+/* shared set-up for the area-A repro tests — copied from leavewar/multi-sqn-a3-foreign.test.ts (not a test file) */
+import { vi, expect } from 'vitest'
+import { storeBackend, HOOKS } from '../engine/hooks'
+import { PEOPLE, indexCallsigns } from '../engine/people'
+import { INPUTS } from '../engine/inputs'
+import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
+import { accountsLoad, signIn, sessionFor } from '../state/accounts'
+import { installGlobalUndo } from '../state/undo-wire'
+import { _resetTimeline } from '../undo/timeline'
+import { setConflictChecker } from '../command'
+import { initStore as lwInitStore, setPeople, worldUnit, lwHistInit } from '../leavewar/state/store'
+import { memoryBackend, type StorageBackend } from '../leavewar/state/storage'
+import { projectPeople } from '../leavewar/state/raptorRoster'
+import { wireLeaveWarSync, setWarWorldDoor } from '../leavewar/sync'
+import { unitsLoad } from '../state/units'
+
+export const mem: Record<string, string> = {}
+let PEOPLE0 = ''
+let ISNAP = ''
+export let worlds: Record<string, StorageBackend> = {}
+export const signInAs = (name: string, pass = 'x') => { resetSession(sessionFor(signIn(name, pass))); raptorNotify() }
+export const saber = () => { signInAs('ad', 'a'); expect(worldUnit()).toBe('u142') }
+export const kestrel = () => { signInAs('ad9', 'a9'); expect(worldUnit()).toBe('u149') }
+export const on = (d: number, h = 9, m = 0) => { vi.setSystemTime(new Date(2026, 6, d, h, m, 0)); unitsLoad() }
+
+export function hBeforeAll() {
+  vi.useFakeTimers({ toFake: ['Date'] })
+  PEOPLE0 = JSON.stringify(PEOPLE)
+  ISNAP = JSON.stringify(INPUTS)
+}
+export function hAfterAll() { vi.useRealTimers(); storeBackend.impl = null; setWarWorldDoor(null) }
+export function hBeforeEach() {
+  vi.setSystemTime(new Date(2026, 6, 15, 9, 0, 0))                       // Wed 15 Jul 26
+  Object.keys(mem).forEach(k => delete mem[k])
+  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v }, keys: () => Object.keys(mem) } as any
+  const p0 = JSON.parse(PEOPLE0)
+  for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
+  Object.assign(PEOPLE, p0); indexCallsigns()
+  INPUTS.length = 0; JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
+  worlds = { u142: memoryBackend(), u149: memoryBackend() }
+  setWarWorldDoor(null)
+  lwInitStore(worlds.u142)
+  raptorInitStore()
+  accountsLoad()
+  unitsLoad()
+  setPeople(projectPeople())
+  wireLeaveWarSync()
+  setWarWorldDoor((u: string) => ({ backend: worlds[u] ?? (worlds[u] = memoryBackend()) }))
+  _resetTimeline(); lwHistInit(); installGlobalUndo()
+  vi.spyOn(HOOKS, 'toast').mockImplementation(() => {})
+}
+export function hAfterEach() { setConflictChecker(null); _resetTimeline(); resetSession(null); vi.restoreAllMocks() }

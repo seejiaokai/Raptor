@@ -40,9 +40,10 @@ import { DAYSWIN, setDaysWin } from './pops'
 import { useVersion } from './useStore'
 import { notify } from '../state/store'
 import { isAdmin } from '../state/perms'
+import { forgetWin, winUnit } from '../state/cutoff'
 import { setFlyDays, type FlySave } from '../state/flyplan'
 import { monthDates, nextCls, weekdayOf, type DayAnswer, type FlyCls } from '../state/flyplan-model'
-import { dayFacts, flyMonth, useWarFacts } from '../leavewar/sync'
+import { flyMonth, unitDayFacts, useWarFacts } from '../leavewar/sync'
 import { type HolidayLine } from '../leavewar/sync'
 import { EveryWeekday } from './EveryWeekday'
 import { HolidayForm, HolidaysPanel } from './HolidaysPanel'
@@ -86,28 +87,37 @@ function Face({ cls }: { cls: FlyCls }) {
 
 /* A HOLIDAY'S TAG IS ITS SHORT FORM, in the kind's colour - "PH", "OFF", or the squadron's own "ND" (the build plan
    section 3.12; D645, D652): the word the Leave War's Event row prints and the SANS and Inputs months print, from the ONE
-   answer (leavewar/sync.ts dayFacts). This month once printed the fixed words "PH" / "OFF", so a National Day read "ND"
+   answer (leavewar/sync.ts unitDayFacts — the squadron it edits, as its kind is; never the loaded war's when that is
+   another squadron's). This month once printed the fixed words "PH" / "OFF", so a National Day read "ND"
    on the other three and "PH" here (the calendar job's bug check, roll-call row A5 - 8 Oct 26). The title carries the
    full name, as an opened day does on the calendars. */
-function holidayTitle(iso: string, kind: 'ph' | 'off'): string {
+function holidayTitle(unit: string, iso: string, kind: 'ph' | 'off'): string {
   const word = kind === 'ph' ? 'public holiday' : 'Off day'
-  const name = dayFacts(iso).name
+  const name = unitDayFacts(unit, iso).name
   return name && name.toLowerCase() !== (kind === 'ph' ? 'ph' : 'off day') ? `${name} - ${word}` : kind === 'ph' ? 'Public holiday' : 'Off day'
 }
 
-export function DaysWindow() {
+export function DaysWindow({ unit }: { unit?: string } = {}) {
   useVersion()
   /* the page is the gate, as Admin's is: a member has no door to this window, and one asked for anyway draws nothing —
      and is not left asked for, or an admin who looks at the member view (D292) would find it back up on his return */
   const refused = !!DAYSWIN && !isAdmin()
   useEffect(() => { if (refused) setDaysWin(null) }, [refused])
+  /* THE SQUADRON IT EDITS (the reshape plan §3.2 A-ii; the host's ruling of 21 Nov 26): the page it was opened from —
+     `unit` when handed in, else what its door named (state/cutoff.ts openWinFor: a calendar's gear its own squadron),
+     else the pick (the Logic page's doors name none). It forgets the door's squadron once closed, so the next opening that
+     names none is the pick's again; keyed by it, so a draft never carries over to another squadron. */
+  useEffect(() => { if (!DAYSWIN) forgetWin('days') })
   if (!DAYSWIN || refused) return null
+  /* (its month and its tags come through the Leave War's join, leavewar/sync.ts flyMonth, asked for this squadron's
+     plan — the one it writes) */
+  const u = unit ?? winUnit('days')
   /* keyed by the date it was asked for, so asking again for another month (the Leave War's settings, on the month the
      war is showing) opens on that month */
-  return <DaysBody key={DAYSWIN} at={DAYSWIN} />
+  return <DaysBody key={DAYSWIN + '|' + u} at={DAYSWIN} unit={u} />
 }
 
-function DaysBody({ at }: { at: string }) {
+function DaysBody({ at, unit }: { at: string; unit: string }) {
   useVersion()
   useWarFacts()
   const narrow = useMedia(NARROW)
@@ -120,7 +130,7 @@ function DaysBody({ at }: { at: string }) {
   const [side, setSide] = useState<Side>(null)
   const every = side && side.k === 'every' ? side.wd : null
   const dates = monthDates(ym.y, ym.m)
-  const answers = flyMonth(ym.y, ym.m)
+  const answers = flyMonth(ym.y, ym.m, unit)   // the squadron it edits — its plan, never the war loaded's
   const today = isoToday()
 
   const close = () => { setDaysWin(null); notify() }
@@ -129,7 +139,7 @@ function DaysBody({ at }: { at: string }) {
     return { y: Math.floor(n / 12), m: (n % 12) + 1 }
   })
   const set = (iso: string, cls: FlyCls) => {
-    const r = setFlyDays([{ iso, cls }])
+    const r = setFlyDays([{ iso, cls }], unit)
     const done = (x: FlySave) => setErr(x.ok ? '' : x.message || 'This change could not be saved.')
     if (r.pending) void r.pending.then(done); else done(r)
   }
@@ -231,8 +241,8 @@ function DaysBody({ at }: { at: string }) {
                 {a.clsFrom === 'date' && <span className="days-dot" data-testid={`days-dot-${iso}`} title="Set for this date" aria-label="Set for this date" />}
               </div>
               {a.kind ? (
-                <span className={'days-tag t-' + a.kind} data-testid={`days-tag-${iso}`} title={holidayTitle(iso, a.kind)}>
-                  {dayFacts(iso).short || (a.kind === 'ph' ? 'PH' : 'OFF')}
+                <span className={'days-tag t-' + a.kind} data-testid={`days-tag-${iso}`} title={holidayTitle(unit, iso, a.kind)}>
+                  {unitDayFacts(unit, iso).short ||(a.kind === 'ph' ? 'PH' : 'OFF')}
                 </span>
               ) : narrow ? (
                 <button
@@ -272,7 +282,7 @@ function DaysBody({ at }: { at: string }) {
       </div>
     </FloatWin>
     {/* keyed by the weekday, so another heading starts a fresh form */}
-    {every !== null && <EveryWeekday key={every} wd={every} from={everyFrom(every)} onClose={() => setSide(null)} />}
+    {every !== null && <EveryWeekday key={every} wd={every} from={everyFrom(every)} unit={unit} onClose={() => setSide(null)} />}
     {side && side.k === 'hol' && <HolidayForm key={side.n} line={side.line} year={holYear} onClose={() => setSide(null)} />}
     </>
   )

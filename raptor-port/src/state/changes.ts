@@ -19,12 +19,23 @@
    Written by ONE command, `changes.seen` — the `access.seen` precedent (the admins' bell, D216/D227) — which may write
    only the signed-in person's OWN row: perms.ts (`EditLogSeen`, own row) and data-model.md §11, together.
    A line is never new to its own author, never new when no person made it (a boot or reconciler line), and nothing is
-   new to someone signed in without a person (a guest, a request waiting, nobody). */
+   new to someone signed in without a person (a request waiting, an account switched off, nobody).
+
+   ONE CURSOR PER SQUADRON (the fix read of multi-squadron batch 1's full check, 18 Nov 26 — Astra 6): each squadron's
+   history is loaded alone (engine/editlog.ts elogLoad), so one cursor for all of them, folded over 142's lines, stepped
+   past an older 149 line nobody had marked and read it seen. The row is now
+
+     `settings/seen:<pid>` = { units: { <unit>: { upto, extra } } }
+
+   one cursor for each squadron's history; a row in the old shape (`upto` and `extra` at its top — demo data, D56) reads
+   as every squadron's until that squadron is marked, then is written in the new shape, each other squadron keeping it. */
 import { store } from '../engine/hooks'
 import { ELOG, posOf, posCmp, type ELogRow, type LinePos } from '../engine/editlog'
 import { me } from './perms'
 import { commitSettingsIntent } from './people-settings-commit'
 import { ACCOUNTS_LIST } from './accounts'
+import { units } from './units'
+import { UNIT } from '../engine/unitview'
 
 export const SEEN_PFX = 'seen:'
 const isPos = (v: any): v is LinePos => !!v && typeof v === 'object' && Number.isFinite(v.at) && typeof v.lineId === 'string'
@@ -37,22 +48,35 @@ const seenFromOf = (pid: string): LinePos | null => {
 export const CHANGES_TYPES = ['changes.seen'] as const
 
 type Seen = { upto: LinePos | null; extra: string[] }
-let SEEN: Record<string, Seen> = {}
+/* a person's row: each squadron's cursor; `all` — a row in the old shape, every squadron's until that one is marked */
+type SeenRow = { all: Seen | null; units: Record<string, Seen> }
+let SEEN: Record<string, SeenRow> = {}
+const seenIn = (row: SeenRow | undefined, unit: string): Seen | null => (row ? row.units[unit] || row.all : null)
 /* bumps on every load and mark — the week's per-viewer marks (the chips, the OG tag) memoise on it with the log's
    length, so a render never re-derives what has not changed */
 export let SEEN_VER = 0
 
-/* one person's row, read defensively */
-function readSeen(v: any): Seen | null {
+/* one squadron's cursor, read defensively */
+function readCursor(v: any): Seen | null {
   if (!v || typeof v !== 'object' || Array.isArray(v)) return null
   const upto = isPos(v.upto) ? { at: +v.upto.at, lineId: v.upto.lineId } : null
   const extra = Array.isArray(v.extra) ? [...new Set<string>(v.extra.filter((s: any) => typeof s === 'string' && s))] : []
   return { upto, extra }
 }
+/* one person's row: its squadrons' cursors, and an old-shape row's one cursor */
+function readSeen(v: any): SeenRow | null {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return null
+  const out: SeenRow = { all: null, units: {} }
+  if (v.units && typeof v.units === 'object' && !Array.isArray(v.units)) {
+    for (const [u, c] of Object.entries(v.units)) { const s = readCursor(c); if (u && s) out.units[u] = s }
+  }
+  if ('upto' in v || 'extra' in v) out.all = readCursor(v)
+  return out
+}
 
 /* a settings loader: runs at boot and inside every settings rollback, so it NEVER writes */
 export function changesLoad(): void {
-  const out: Record<string, Seen> = {}
+  const out: Record<string, SeenRow> = {}
   for (const k of store.keys(SEEN_PFX)) {
     const pid = k.slice(SEEN_PFX.length)
     const s = pid ? readSeen(store.get(k, null)) : null
@@ -67,7 +91,7 @@ const after = (r: ELogRow, p: LinePos) => posCmp(posOf(r), p) > 0
 /* is this line new to the person signed in (or to `pid`)? */
 export function isNewToMe(r: ELogRow, pid: string | null = me()): boolean {
   if (!pid || !r.pid || r.pid === pid) return false
-  const s = SEEN[pid]
+  const s = seenIn(SEEN[pid], r.u || UNIT)
   /* no seen row yet: someone given access after the history began starts with nothing new (his account's `seenFrom`,
      Fable F6); a seeded account has none and reads every other person's line as new */
   if (!s) { const from = seenFromOf(pid); return from == null || after(r, from) }
@@ -82,7 +106,8 @@ export function markSeen(rows: readonly ELogRow[]): boolean {
   if (!pid) return false
   const ids = rows.filter(r => isNewToMe(r, pid)).map(r => r.lineId)
   if (!ids.length) return false
-  const cur: Seen = SEEN[pid] || { upto: seenFromOf(pid), extra: [] }
+  const row = SEEN[pid]
+  const cur: Seen = seenIn(row, UNIT) || { upto: seenFromOf(pid), extra: [] }
   const extra = new Set<string>([...cur.extra, ...ids])
   let upto = cur.upto
   for (const r of ELOG.rows) {                        // the log is kept in its order, (at, lineId)
@@ -93,9 +118,14 @@ export function markSeen(rows: readonly ELogRow[]): boolean {
   /* a line folded into `upto` leaves `extra`; so does one no longer in the loaded history (it can never be listed again) */
   const loaded = new Set(ELOG.rows.filter(r => !upto || after(r, upto)).map(r => r.lineId))
   const next: Seen = { upto, extra: [...extra].filter(id => loaded.has(id)).sort() }
-  const res = commitSettingsIntent('changes.seen', { owner: pid }, () => { store.set(SEEN_PFX + pid, next) })
+  /* this squadron's cursor only (the history loaded is the squadron in view's); every other squadron's kept — an old-shape
+     row's one cursor written down for each squadron not yet marked */
+  const all: Record<string, Seen> = { ...(row ? row.units : {}) }
+  if (row && row.all) for (const u of units()) if (!all[u.id]) all[u.id] = row.all
+  all[UNIT] = next
+  const res = commitSettingsIntent('changes.seen', { owner: pid }, () => { store.set(SEEN_PFX + pid, { units: all }) })
   if (!(res as any).ok) { changesLoad(); return false }
-  SEEN = { ...SEEN, [pid]: next }
+  SEEN = { ...SEEN, [pid]: { all: null, units: all } }
   SEEN_VER++
   return true
 }

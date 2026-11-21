@@ -41,6 +41,10 @@ import { getState, installDemoBalances, installDemoCounters, installDemoOil, per
  * the seed's — slipway is Raptor's own SXO — which keeps the demo overlay
  * below down to the one thing Raptor cannot know: a posting-out date.)
  */
+/* the squadron the demo world below is 142's (the demo's own — engine/unitview.ts DEMO_SEED_UNIT, not imported here so
+   the war's demo stays free of the schedule's modules) */
+export const DEMO_WAR_UNIT = 'u142'
+
 export const DEMO_MAP: Record<string, string> = {
   ramp: 'slipway',      // pilot / ops, SXO
   tata: 'prowler',      // pilot / instructor
@@ -301,12 +305,16 @@ export function demoBalances(people: readonly Person[]): { balances: Balances; g
  * Boot-time projection + demo re-key. Called once from main.tsx, after
  * lwInitStore and before the sync wires run.
  */
-export function installDemoWorld(hadStoredWars: boolean, seedDemo = true): void {
+export function installDemoWorld(hadStoredWars: boolean, seedDemo = true, unit: string = DEMO_WAR_UNIT): void {
   /* honour a stored showSans at boot — the store loaded before this runs */
   const people = projectPeople(getState().showSans)
   /* the demo is laid on only a store that has not started, and only under the demo policy ([DB-READINESS] group A,
-     phase 5 — src/bootpolicy.ts): a SHARED store's first boot gets the roster projection and nothing else */
-  const demo = !hadStoredWars && seedDemo
+     phase 5 — src/bootpolicy.ts): a SHARED store's first boot gets the roster projection and nothing else.
+     …AND ONLY ON THE DEMO'S OWN SQUADRON (multi-squadron batch 1, step 4): everything below is 142's — its men re-keyed
+     from the seed by DEMO_MAP, their OIL story, their requests and their leave filed as Inputs. A second squadron's first
+     world (149's) is the seed's leave periods and holidays with nobody's records (store.ts initStore demoRecords:
+     false) and its own roster; its demo people's own leave is filed with them (state/demoseed.ts seedDemo149). */
+  const demo = !hadStoredWars && seedDemo && unit === DEMO_WAR_UNIT
 
   if (demo) {
     /* The demo overlay: the posting-out window comes from the SEED person,

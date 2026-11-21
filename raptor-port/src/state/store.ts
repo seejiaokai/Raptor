@@ -19,15 +19,18 @@ import { validate } from '../engine/validate'
 import { lookaheadLoad } from '../engine/lookahead'
 import { rulesLoad } from '../engine/rules'
 import { flyplanLoad } from './flyplan'
+import { unitsLoad, setUnitSeeds, homeOn, todayIso, unitById } from './units'
+import { UNIT, BOOT_UNIT, setUnitInView, inView } from '../engine/unitview'
+import { isUnitId } from '../storage/unitid'
 import { insightsLoad } from '../engine/insights-config'
 import { registerMissionRoles } from './mission-roles'
-import { mintInpIds, INPUTS, DATES, baseYear, dateIx, inputCoversDate, inpId, shapeProblem, tillSettle } from '../engine/inputs'
+import { mintInpIds, INPUTS, inputsOnFirstDay, inputsOnDay, inputAtIso, DATES, baseYear, dateIx, inputCoversDate, inpId, shapeProblem, tillSettle } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, migrateLegacyIds } from '../engine/rowids'
 import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs, seedRids } from '../engine/weeks-data'
-import { seedDemoSans, seedDemoMedical, seedDemoStamps, seedDemoGroup, seedDemoPlaceholders } from './demoseed'
+import { seedDemoSans, seedDemoMedical, seedDemoStamps, seedDemoGroup, seedDemoPlaceholders, seedDemo149 } from './demoseed'
 import { docAdd } from './docs'
 import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
 import { qualColsLoad } from '../engine/qualcols'
@@ -44,24 +47,27 @@ import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit, histSnap, histRestore, schedFields } from './history'
 import { setSession as authSetSession, canEditSched, SESSION, setMe, DEFAULT_ME, setLgEdit } from './auth'
-import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce } from './perms'
+import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUnitNow, trkUnitNow, pickStandsOn } from './perms'
+import { holdNow, setBands, setHoldRelease, type MoveBand, type HoldKind } from './typing-hold'
 import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { endTrackerSession } from '../tracker/role.js'
-import { isHydrated } from './persist'
-import { deferEffect, CmdRefused, setPermissionResolver, commitProjection, onPipelineBegin, deriveActor, definePermission, anyone } from '../command'
+import { rebindStorageUnit } from '../tracker/storage.js'
+import { isHydrated, hydratePlan, hydrateRolesFor, persistWb } from './persist'
+import { deferEffect, CmdRefused, setPermissionResolver, commitProjection, onPipelineBegin, deriveActor, definePermission, anyone, activeEnvelope, isCommitting } from '../command'
 /* internal wiring may raise a command as a named person (command/index.ts — commitAs stays off the public surface) */
 import { commitAs } from '../command/commit'
 import { defineInvariant } from '../command/harness'
 import type { CommitEnvelope } from '../command/types'
-import { cmdAuthorize, ownershipViolation } from './perms'
+import { cmdAuthorize, ownershipViolation, elogUnitAllowed, elogWriteProblem, elogOwnUnit } from './perms'
 import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
 import { snapshotStash, restoreStash, stashEntries, writeStashRecords } from '../engine/weekstash'
 import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, commitInputsProjection, commitInputsWith, SCHED_TYPES, resyncSchedBaseline } from './sched-commit'
-import { resyncPeopleBaseline, mintPeopleOrd } from './people-settings-commit'
+import { resyncPeopleBaseline, mintPeopleOrd, reloadUnitSettings, setElogWriteGuard } from './people-settings-commit'
 import { registerPeopleSettingsCommandLayer } from './people-settings-wire'
 import { mintOrd } from '../command/ord'
-import { PLANPUCKS } from './plan'
+import { PLANPUCKS, DAYRMK } from './plan'
+import { keepPlan, keptPlan, forgetKeptPlans, dropStoredPlan, setPlanStoreDoor } from './plan-foreign'
 import { accountsLoad, setAccountSeeds } from './accounts'
 
 let VERSION = 0
@@ -77,7 +83,7 @@ export function getVersion() { return VERSION }
    the gate (loadWeek, initStore, toggleRole, …) — deferEffect returns false and
    notify runs inline exactly as before, so behaviour is unchanged. */
 export function notify() { if (deferEffect(realNotify)) return; realNotify() }
-function realNotify() { VERSION++; listeners.forEach(f => f()) }
+function realNotify() { maybeReenter(); publishBands(); VERSION++; listeners.forEach(f => f()) }
 /* Day-to-day board navigation is view-only. Give the board a narrow repaint
    lane so a swipe does not wake every mounted store consumer (most notably
    EditWeek's seven large dayHTML calculations) while ordinary mutations still
@@ -151,6 +157,14 @@ export function writeDelete(fn: () => void, di?: number, kind: any = 'programme'
    refuses. When nothing is quarantined — the overwhelmingly common case — it is
    a no-op fast path, byte-identical to the pre-redesign funnel, so ordinary
    weeks (and the never-quarantined parity harness) are untouched. */
+/* THE REQUESTS THE LOADED WEEK LANDS — each read on its FIRST day, the day a request lands (the reshape plan §3.2 A-iii;
+   Fable F4): a body that rewrites an input's accepted mark never iterates the inputs a squadron's list "touches" — one
+   input across a move is two squadrons', and a writer run over it from each squadron's load would undo the other's.
+   So the week load and the boot clear the landing of exactly the inputs that are the schedule in view's on their first
+   day — today's answer (engine/inputs.ts inputsOnFirstDay IS inputOnDay(r, unit, its first day)); the alias it stood on
+   until the core gave the first-day list its own name went with phase 3's contract, which took inputsFor's
+   no-day form. */
+const landingInputs = (): any[] => inputsOnFirstDay(UNIT)
 function protectedTouched(before: any, prot: string[]): boolean {
   /* the LOADED week is itself protected and its schedule was mutated (an input
      auto-landing a ground row onto a frozen day). Only fires when protectedWeek()
@@ -159,12 +173,16 @@ function protectedTouched(before: any, prot: string[]): boolean {
   /* the sorted multiset of inputs covering a protected date must be unchanged.
      A row added onto, removed from, edited on, or MOVED off a protected date all
      change this set; a pure reorder of unrelated rows (unshift) does not. */
-  const cover = (rows: any[]) => {
-    const sig: string[] = []
-    for (const r of rows || []) if (r && prot.some(dt => inputCoversDate(r, dt))) sig.push(JSON.stringify(r))
-    return sig.sort()
+  /* the protected days are the loaded week's: only the schedule in view's requests can change them (multi-squadron step 3)
+     — and an input is the schedule in view's ON EACH protected day it covers, read on that day (the reshape plan §3.2
+     A-iii — the protected days' signature asks inputOnDay per protected date): a leave across a man's move is 142's on
+     its days before the move and 149's after, so a protected 149 day is guarded against it, a protected 142 day too */
+  const cover = (list?: any[]) => {
+    const on = new Set<any>()
+    for (const dt of prot) for (const r of inputsOnDay(UNIT, inputAtIso(dt) ?? todayIso(), list)) if (inputCoversDate(r, dt)) on.add(r)
+    return [...on].map(r => JSON.stringify(r)).sort()
   }
-  const a = cover(before.i), b = cover(INPUTS)
+  const a = cover(before.i || []), b = cover()
   if (a.length !== b.length) return true
   for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return true
   return false
@@ -318,6 +336,7 @@ const weekstashStore: EnlistableStore = {
   key: 'weekstash',
   capture: () => snapshotStash(),
   restore: (snap) => restoreStash(snap as any),
+  /* every unit's saved weeks — stashEntries keys each by its unit (`u149@13/07/2026`), so the records do too */
   records: () => {
     const m = new Map<string, RecordEntry>()
     for (const [wk] of stashEntries()) {
@@ -340,8 +359,10 @@ const weekstashStore: EnlistableStore = {
   write: (entries) => {
     const byWeek = new Map<string, Array<{ id: string; value?: any; op?: string }>>()
     for (const e of entries) {
+      /* every record names its week with its unit (`u149@13/07/2026#3` — storage/unitid.ts, step 2), so another unit's
+         week of the same dates is another week, written through the stash like any week off screen */
       const wk = e.id.split(/[:#]/)[0]
-      if (wk === CURWEEK) throw new CmdRefused(`weekstash write to the loaded week ${wk} — undo it from another week`)
+      if (wk === inView(CURWEEK)) throw new CmdRefused(`weekstash write to the loaded week ${wk} — undo it from another week`)
       if (isPreservedWeek(wk)) throw new CmdRefused(`weekstash write to a read-only week ${wk}`)
       let l = byWeek.get(wk)
       if (!l) byWeek.set(wk, l = [])
@@ -440,12 +461,26 @@ export function resetSession(s: any) {
   resyncSchedBaseline()
   /* THE SIGNED-IN PERSON ([ACCOUNTS], D166 (3), 26 Sep 26): signing in makes you that
      callsign — `s.pid` is the account's person (null for someone signed in without
-     access: pending, a guest, an account switched off). It is what every own-row rule
+     access: pending, an account switched off — the guest view is removed, D2239). It is what every own-row rule
      asks (state/perms.ts), and what the Leave War's own-row rule reads (the sync mirrors
      it into the war's `viewer`). "View as" is retired, so nothing else sets it in
      production. A logout, or a headless call with no `pid` (the unit tests' bare
      { user, role }), puts back the headless default. */
   setMe(s && Object.prototype.hasOwnProperty.call(s, 'pid') ? s.pid : DEFAULT_ME)
+  /* THE UNIT IN VIEW STARTS AS HIS HOME (multi-squadron batch 1, step 2): the signed-in person's home unit today
+     (state/units.ts homeOn), the boot unit for a logout, a headless call or someone with no home. Already there — every
+     sign-in on the demo today — it moves nothing.
+     …AND HIS OWN SQUADRON'S LEAVE WAR (multi-squadron batch 1, step 4 — D2132: the Leave War stays on his own squadron
+     whatever schedule is in view). The war is a world per squadron and the boot loaded the boot unit's before anyone
+     signed in; the sync loads his own in its place (leavewar/sync.ts swapWarWorld — installed by its wiring, so this
+     file never imports the war's sync). Before the Undo list is cleared below, so the swap's own passes are no step
+     of his. Nothing when it is already loaded — every 142 sign-in on the demo.
+     Both — and the Tracker — through the ONE entry for the open page, enterSquadron (the reshape plan §3.2 A-iv, below),
+     which records HIS HOME AT ENTRY, never the pick (Opus L2), so step 5's master admin pick is never pulled back to his
+     home by the midnight check. */
+  HOME_AT_ENTRY = s && s.pid ? sessionUnit(s.pid) : null
+  ENTRY_TRIED = ''
+  enterSquadron(sessionUnit(s && s.pid))
   /* the undo list is per sign-in (13 Sep 26; D148 — "the list clears when they sign
      out"): the global undo never cleared it, so an admin signing in after a member
      could reverse the member's change (Fable R1-7, Astra R1-10) */
@@ -664,7 +699,9 @@ function applyWeekModel(v: any, opts?: { landLater?: boolean }): any {
      autoAcceptInput both skip a truthy acc, so a kept 'u' is never re-landed. */
   /* Ground rows belong to the loaded week; acc belongs to the global input.
      A protected-spanning row keeps its filing even when this week has no landing. */
-  INPUTS.forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
+  /* (the week loaded is the schedule in view's: only ITS requests' landings are re-derived — another squadron's 'g'
+     belongs to that squadron's rows; multi-squadron step 3) */
+  landingInputs().forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
   mintInpIds()
   /* [ARCH-STACK] f/u#1 (F-01): the command-layer baseline advanced to the freshly-swapped week at once, so nothing that
      runs before the caller's own re-baseline diffs the OLD week against the new one */
@@ -710,10 +747,18 @@ function workOutLoadedWeek(): void {
    stash (if this week has been visited and edited before) or falls back to
    the same pure-bundle path as always. */
 export function loadWeek(v: any) {
+  leaveWeek()
+  enterWeek(v)
+}
+/* the week on screen, kept in the stash under the unit in view as it is left (by a week load or a change of unit) */
+function leaveWeek(): void {
   const leaveSnap = weekStashSnap()
   /* a preserved (byte-frozen) week keeps its ORIGINAL blob in the stash, never a
      re-serialization of the un-migrated live model (P2-IMPL-02). */
   if (stashHas(CURWEEK) || leaveSnap !== weekBaseline) stashPut(CURWEEK, isPreservedWeek(CURWEEK) ? (preservedBlob(CURWEEK) ?? leaveSnap) : leaveSnap)
+}
+/* the week `v` of the unit in view, installed and worked out — loadWeek's second half, and switchUnit's */
+function enterWeek(v: any): void {
   /* WEEK NAVIGATION IS READ-ONLY ([DB-READINESS] group A, phase 1 — R3-01, F3-01). The week being left has nothing to
      save: every change to it went out, as its rows, with the command that made it; its saved copy above is memory.
      The arriving week is installed with no store enlisted across the change of week, and its landing pass runs as ONE
@@ -786,6 +831,206 @@ export function loadWeek(v: any) {
   notify()
 }
 
+/* ---- THE UNIT IN VIEW (multi-squadron batch 1, step 2) ----
+   The scheduler's singletons — the loaded week (DAYS, SCHED, DATES, CURWEEK), the planning calendar (PLANPUCKS, DAYRMK)
+   and every setting held in memory (VCONF / SHIFT_HARD, the templates, the flying plan) — hold ONE unit, the unit in
+   view (engine/unitview.ts; storage/keyowner.ts UNIT_SINGLETONS), as they hold one week. Changing it is a load, by the
+   path a week load takes: the week on screen is kept in the stash under the unit being left, the unit's settings and
+   planning calendar are read again, and the same dates are entered for the new unit — its saved copy if it has one, else
+   its untouched week (engine/weeks-data.ts weekBundle: the demo's authored weeks are the demo squadron's only). Like a
+   week load it is navigation: no command, nothing saved, every record of each unit already saved by the command that
+   made it. Undo is NOT cleared by it: there is one change stream, and a person's Undo on a schedule steps back his own
+   changes in the unit in view (undo/timeline.ts, D148).
+   The planning calendar of a unit left is kept in memory (state/plan-foreign.ts keepPlan — kept there since the reshape's
+   routed planning record, §3.2 A-ii, so the stored half reads and updates it) as the stash keeps its weeks, so coming back shows
+   it as it was; a unit never shown this session reads its rows from the whiteboard (state/persist.ts hydratePlan), and
+   headless — no whiteboard — starts empty. Who may look at a unit is the "▾" menu's question (step 5), not this one's:
+   this function only changes what is held in memory. */
+export function switchUnit(unit: string): void {
+  if (!isUnitId(unit)) throw new Error(`switchUnit: not a unit id: ${unit}`)
+  if (unit === UNIT) return
+  leaveWeek()
+  // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the unit left keeps its planning calendar as saving stores it (keys set to undefined dropped), the same image a reload of that unit reads; structuredClone would keep them
+  const keptPucks = JSON.parse(JSON.stringify(PLANPUCKS))
+  keepPlan(UNIT, { pucks: keptPucks, titles: { ...DAYRMK } })
+  /* the change history in memory is the unit in view's (engine/editlog.ts elogLoad): the lines held for the unit left
+     are kept first, then the list is read again for the unit entered (the full check, 18 Nov 26) */
+  elogFlush()
+  setUnitInView(unit)
+  elogLoad()
+  reloadUnitSettings()
+  /* the blue/red answers held in memory are the unit in view's (state/persist.ts hydrateRolesFor) */
+  { const wb = persistWb(); if (wb) hydrateRolesFor(wb, unit) }
+  const kept = keptPlan(unit)
+  if (kept) {
+    PLANPUCKS.length = 0; kept.pucks.forEach(p => PLANPUCKS.push(p))
+    for (const k of Object.keys(DAYRMK)) delete DAYRMK[k]
+    Object.assign(DAYRMK, kept.titles)
+  } else {
+    const wb = persistWb()
+    if (wb) hydratePlan(wb, unit, true)
+    else { PLANPUCKS.length = 0; for (const k of Object.keys(DAYRMK)) delete DAYRMK[k] }
+  }
+  /* the squadron entered is the loaded calendar now: its stored half holds nothing of it (state/plan-foreign.ts) */
+  dropStoredPlan(unit)
+  enterWeek(CURWEEK)
+}
+/* the unit a session starts in: the signed-in person's home today (state/units.ts homeOn — D2094), else the boot unit
+   (headless, nobody signed in, a person with no home) */
+/* the hook the Leave War's sync installs to load a squadron's world at sign-in (resetSession, above) — null until it is
+   wired (a test that never boots the war) */
+let SESSION_WORLD: ((unit: string) => void) | null = null
+export function setSessionWorldHook(fn: ((unit: string) => void) | null): void { SESSION_WORLD = fn }
+function sessionUnit(pid: string | null | undefined): string {
+  const h = pid ? homeOn(String(pid), todayIso()) : null
+  return h && isUnitId(h) ? h : BOOT_UNIT
+}
+
+/* ---- ENTERING A SQUADRON — ONE ENTRY FOR THE OPEN PAGE (the reshape plan §3.2 A-iv) ----
+   Three things say which squadron the open page holds, each set once at sign-in until now: the schedule in view (UNIT —
+   switchUnit), the Leave War's world (the sync's swapWarWorld) and the Tracker's door (tracker/storage.js). They move
+   together here, in a fixed order: the schedule in view first, then the war and the Tracker to the page's own squadron
+   (state/perms.ts pageUnit('own') — his home, or the pick for a master admin or a Plan holder of it that day; equal to
+   his home today, as nothing picks yet). resetSession enters at sign-in; the midnight check below enters again when his
+   own move takes effect (A2) — it does NOT reset the page or clear the Undo list: his steps in the old squadron wait
+   there, by their stamp (A-v).
+   THE TRACKER moves only where it has not loaded (tracker/storage.js rebindStorageUnit — §14.3: once loaded its records
+   sit in module caches that cannot be re-read in place, so it keeps its squadron until the next sign-in). The answer is
+   handed back, so a caller can tell. */
+export type TrackerEntry = 'none' | 'same' | 'later' | 'bound' | 'kept'
+export interface Entered { unit: string; own: string; tracker: TrackerEntry }
+let ENTERING = false
+/* `holdWar` (phase 3 — the plan §3.2 A-iv "Typed work at the swap"; state/typing-hold.ts): an open Leave War window holds
+   the WAR'S step only, so nothing typed in it is ever saved into the new squadron; the schedule in view and the Tracker
+   still move. The war is entered once the window goes (the check below finds the war not the page's own squadron). */
+export function enterSquadron(scheduleUnit: string, holdWar = false): Entered {
+  if (ENTERING) return { unit: UNIT, own: pageUnit('own', todayIso()), tracker: 'none' }
+  ENTERING = true
+  try {
+    switchUnit(scheduleUnit)
+    const own = pageUnit('own', todayIso())
+    if (!holdWar) {
+      const before = lwUnitNow()
+      SESSION_WORLD?.(own)
+      /* A WAR LOADED AFRESH STARTS WITH A MEMBER'S ROLE (leavewar/state/store.ts initStore): the role in force is set on it
+         again, as a sign-in and the member-view switch set it — found switching the midnight swap on: Hunter, an admin,
+         was a member in his new squadron's war after midnight and every admin change there was refused */
+      if (lwUnitNow() !== before) lwSetRole(isAdmin() ? 'admin' : 'member')
+    }
+    return { unit: UNIT, own, tracker: rebindStorageUnit(own) as TrackerEntry }
+  } finally { ENTERING = false }
+}
+
+/* HIS HOME AT ENTRY — recorded by resetSession, never the pick (Opus L2); null nobody signed in (or a sign-in with no
+   person). The midnight check compares his home today with it. */
+let HOME_AT_ENTRY: string | null = null
+export const homeAtEntry = (): string | null => HOME_AT_ENTRY
+/* THE MIDNIGHT TRIGGER — ON SINCE PHASE 3 (the reshape plan §3.2 A-iv "Switched on only after A-v", §10): helper "undo &
+   roles" has merged A-v — every Leave War and Tracker step carries its squadron, so an Undo after the swap never writes a
+   142 step into 149 (Fable F2, Astra 2). A test that needs the page held where it is switches it off for itself. */
+let ENTRY_TRIGGER = true
+export function setEntryTrigger(on: boolean): void { ENTRY_TRIGGER = !!on }
+/* THE HOLD (state/typing-hold.ts): an open Leave War window holds the war's swap, whatever is typed in it (Astra 7,
+   Fable F9). A test may hand its own; `null` puts the app's own back. 'tracker' holds nothing of its own: the Tracker
+   cannot be re-read in place once loaded (§14.3), so it never moves under an open editor. */
+export type EntryHold = HoldKind
+let ENTRY_HOLD: () => EntryHold = holdNow
+export function setEntryHold(fn: (() => EntryHold) | null): void { ENTRY_HOLD = fn || holdNow }
+/* one try per day, squadron pair and hold, so a war that will not load is not tried again on every notify — and a war
+   held by a window is tried again the moment the window goes */
+let ENTRY_TRIED = ''
+
+/* WHERE THE PICK GOES WHEN HIS OWN MOVE TAKES EFFECT (Fable 9; the Plan audit, D2242): it moves to his new home only where
+   it stood on his old home; a pick of another squadron stays where a right still reaches it on the new day — a master
+   admin's always — else it moves home. His own move ends every View and Plan he held (D2203, from the start of his move
+   day — D2243 Q4), so for his own move pageUnit('own') on the new day answers it: the pick is his own page's squadron
+   only for a master admin or a Plan holder whose Plan still holds (Hunter, 142's admin with Plan of 149, 149 picked,
+   moved to 150 at midnight, goes to 150). Dormant until step 5's menu: today the pick is always his home. */
+function pickAfterMove(pick: string, oldHome: string, newHome: string, iso: string): string {
+  if (pick === oldHome) return newHome
+  return pageUnit('own', iso) === pick ? pick : newHome
+}
+
+/* THE CHECK notify() RUNS while the trigger is on: the squadron to enter now, or null.
+   - his own move (A2): his home today is not his home at entry → the pick by the rule above;
+   - the blind read's R6 (the plan §19b; dormant until P1/P3 — nothing in the app makes these cases yet), three halves:
+     the pick has no readable right behind it today (perms.ts pickStandsOn — a View or Plan taken away or ended while he
+     is on that squadron's pages) → his home, entered again; the page's own squadron is not the Leave War's loaded one —
+     a right lowered, removed or raised mid-day, or a war held by a window that has since gone — → the same pick, entered
+     again; or not the Tracker's bound one → the same pick, entered again, the Tracker moving only where it has not yet
+     loaded (tracker/storage.js rebindStorageUnit: a loaded one is kept until the next sign-in, its band saying so, and the
+     key in maybeReenter stops a second try). */
+function entryDue(): string | null {
+  const m = me()
+  if (!m || HOME_AT_ENTRY == null) return null
+  const iso = todayIso()
+  const home = homeOn(m, iso)
+  if (!home || !isUnitId(home)) return null
+  if (home !== HOME_AT_ENTRY) return pickAfterMove(UNIT, HOME_AT_ENTRY, home, iso)
+  if (!pickStandsOn(iso)) return home
+  const own = pageUnit('own', iso)
+  const war = lwUnitNow()
+  if (war && war !== own) return UNIT
+  const trk = trkUnitNow()
+  if (trk && trk !== own) return UNIT
+  return null
+}
+/* run from realNotify — never inside a command (a swap loads a week and a war, which are no one's command), never while
+   entering; an open war window holds the war's step (above). The midnight wake (leavewar/sync.ts installPostingClock)
+   calls notify() at 00:00:01 and whenever the page is shown or focused on a new day, so the swap needs no click (Fable
+   F8, Opus L2) */
+function maybeReenter(): void {
+  if (!ENTRY_TRIGGER || ENTERING || isCommitting()) return
+  const to = entryDue()
+  if (to == null) return
+  const held = ENTRY_HOLD() === 'war'
+  const key = `${todayIso()}|${to}|${lwUnitNow() ?? ''}|${trkUnitNow() ?? ''}|${me() ?? ''}|${held ? 'held' : ''}`
+  if (key === ENTRY_TRIED) return
+  ENTRY_TRIED = key
+  const m = me()
+  enterSquadron(to, held)
+  if (m) HOME_AT_ENTRY = sessionUnit(m)
+}
+
+/* THE BAND (state/typing-hold.ts; D2243 Q7 — the approved drawing's words, D1478): while the world a page holds is not
+   the page's own squadron — the war under a window that held its swap, or the Tracker, which keeps the squadron it loaded
+   until the next sign-in (§14.3) — its open window or chart editor says so. Written after every check, so a surface reads
+   the band of the page as it stands. */
+const isoDayBefore = (iso: string): string => {
+  const [y, m, d] = iso.split('-').map(Number)
+  const t = new Date(y!, m! - 1, d! - 1)
+  return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`
+}
+const unitNum = (u: string): string => unitById(u)?.num ?? u
+/* His own move taking effect today, out of the squadron the world belongs to: the drawing's words — "You are 149's from
+   today. This can't be saved in 142's Leave War." (or "…in 142's Tracker."). Any other way the world stopped being his
+   page's own (R6: a right ended mid-day — dormant) has no approved words, so it reads the app's generic "This change could
+   not be saved." (the phase-2 helpers' brief, named in the report). */
+function bandWords(world: string, page: 'Leave War' | 'Tracker', pid: string, iso: string): MoveBand {
+  const home = homeOn(pid, iso)
+  const was = homeOn(pid, isoDayBefore(iso))
+  if (home && was && home !== was && world === was) {
+    return { lead: `You are ${unitNum(home)}'s from today.`, rest: `This can't be saved in ${unitNum(world)}'s ${page}.` }
+  }
+  return { lead: 'This change could not be saved.', rest: '' }
+}
+function publishBands(): void {
+  const m = me()
+  if (!ENTRY_TRIGGER || !m || HOME_AT_ENTRY == null) { setBands(null, null); return }
+  const iso = todayIso()
+  const own = pageUnit('own', iso)
+  const war = lwUnitNow(), trk = trkUnitNow()
+  setBands(war && war !== own ? bandWords(war, 'Leave War', m, iso) : null, trk && trk !== own ? bandWords(trk, 'Tracker', m, iso) : null)
+}
+/* a window that held the war's swap goes: the check runs again at once (typing-hold.ts warWindowGone) */
+setHoldRelease(() => notify())
+/** the planning calendars kept for units left this session — cleared with the session (tests and sign-out) */
+export function forgetUnitPlans(): void { forgetKeptPlans() }
+/* the stored half of another squadron's planning calendar reads its rows from the whiteboard this app saves to (none
+   headless) — handed over here, since state/plan-foreign.ts may not import state/persist.ts (which imports the schedule
+   store that imports it) */
+setPlanStoreDoor(() => persistWb())
+
 /* ---- wiring ---- */
 let ELOG_ADOPT_WIRED = false
 export function wireStore() {
@@ -856,10 +1101,9 @@ export function wireStore() {
      the drawer open. Guarded for jsdom, which has no matchMedia. */
   /* the name the edit log (and a bug report, and the Tracker's mark stamps) records:
      since [ACCOUNTS] (D166 (5), 26 Sep 26) the signed-in CALLSIGN — replacing D104's
-     shared "Admin" / "Squadron member". A guest reads "Guest". */
+     shared "Admin" / "Squadron member". (The guest view is removed — D2239.) */
   HOOKS.whoami = () => {
     if (!SESSION) return 'Unknown'
-    if (roleOf() === 'guest') return 'Guest'
     const pid = me()
     const p = pid ? (PEOPLE as any)[pid] : null
     return p ? String(p.cs) : String(SESSION.name || SESSION.user)
@@ -868,6 +1112,13 @@ export function wireStore() {
      "who", so a callsign rename moves nothing and a reused callsign inherits nothing
      (the one-identity rule; Astra R1-9) */
   HOOKS.whoamiId = () => me()
+  /* a history line names another squadron only where the person giving it may file there, and a line kept, rewritten or
+     deleted inside a person's command is judged by its squadron (the second fix read, security H5 — state/perms.ts 7d) */
+  HOOKS.elogUnitOk = (u: string) => elogUnitAllowed(activeEnvelope()?.actor ?? deriveActor(), u)
+  /* …and the giver's own squadron, where a line naming nobody (an Undo's own line) cannot be filed in the squadron in view:
+     a 142 member with View of 149, 149 in view, undoing his own input's change kept no line at all (job 2's fix read, 1) */
+  HOOKS.elogOwnUnit = () => elogOwnUnit(activeEnvelope()?.actor ?? deriveActor())
+  setElogWriteGuard((key, v) => elogWriteProblem(activeEnvelope()?.actor ?? deriveActor(), key, v))
   /* a line written while a command runs is kept only if the command commits ([DRAFT-PENDING] — the history is
      durable now, so a refused command's lines would otherwise stand for good) */
   setElogDefer(deferEffect)
@@ -877,11 +1128,12 @@ export function wireStore() {
   /* …except the Admin → Data history sweep, which is the admin's own act: it runs as HIM (origin `projection`, so it is
      no Undo step), and its change-log batch names who cleared the history (the group-A final read, Fable F1 step 4,
      30 Sep 26). Its authority is perms.ts COMMAND_OPS — a delete on EditLog, an admin's alone. */
+  /* (it answers whether the save went through: a refused sweep is then said as not saved, never as "Cleared") */
   setElogDoor((type, fn) => {
     const cmd = { type, scope: { module: 'settings' }, apply: () => { fn() } } as any
     const actor = deriveActor()
-    if (type === 'elog.sweep' && actor.role !== 'system') { commitAs(cmd, { actor, origin: 'projection' }); return }
-    commitProjection(cmd)
+    if (type === 'elog.sweep' && actor.role !== 'system') return (commitAs(cmd, { actor, origin: 'projection' }) as any).ok !== false
+    return (commitProjection(cmd) as any).ok !== false
   })
   definePermission('elog.sweep', anyone)
   /* …and a line given just BEFORE its command opens (the board's in-place edits, a text box) joins that command's group
@@ -906,6 +1158,7 @@ export function setToast(fn: (...a: any[]) => any) { HOOKS.toast = fn }
 export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
   wireStore()
   setAccountSeeds(policy.seedDemo)
+  setUnitSeeds(policy.seedDemo)   // the units' seeds follow the accounts' (state/units.ts; it also drops the read rows)
   /* every person's place in the roster's order, before the people baseline is taken ([DB-READINESS] group A, phase 2) */
   mintPeopleOrd()
   /* [ARCH-STACK] Fable-5: the people command layer captured its baseline from the
@@ -917,6 +1170,7 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
   rulesLoad()
   insightsLoad()
   flyplanLoad()      // the flying plan is re-read from the rows this store holds (state/flyplan.ts)
+  unitsLoad()        // the units, places, homes and rights the same (state/units.ts)
   storesLoad()
   lookaheadLoad()
   cxReasonsLoad()
@@ -931,8 +1185,9 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
      the never-booting parity harness stays blind to them. */
   secDefaultLoad()
   waveDefaultLoad()
-  /* [ACCOUNTS] (26 Sep 26): the accounts, the access requests and the guest switch
-     (three durable settings keys) load here like every other setting. The loader sat
+  /* [ACCOUNTS] (26 Sep 26): the accounts and the access requests (durable settings rows —
+     the guest switch, once the third, went with the guest view, D2239) load here like
+     every other setting. The loader sat
      only in the settings rollback list, so a built site forgot every account the admin
      added at the next reload — found by the walk, not by any test (every test ran in
      one page life). After hydrate(): the lock-out check reads the stored roster. */
@@ -974,6 +1229,12 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
     seedDemoGroup()
     /* an input filed for ALL AVAIL and an Event filed for ALL, so both are on every list from the first look */
     seedDemoPlaceholders()
+    /* the second demo squadron's people and their two inputs (multi-squadron batch 1, step 4 — state/demoseed.ts) */
+    seedDemo149()
+    /* …people the roster did not hold when its order and the people baseline were taken above: each gets his place in
+       the order, and the baseline is taken again — so the first people command writes only what it changed, never the
+       ten seeded people (they are stored with the seed's rows, state/persist.ts writeSeedRows) */
+    mintPeopleOrd(); resyncPeopleBaseline()
     /* who placed each demo input, and when — made up, as they are (D629; state/demoseed.ts says why and what it never
        does). After the seeds above, so every one of their rows is there to stamp. */
     seedDemoStamps()
@@ -1014,7 +1275,7 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
        commitments). applyWeekModel already does this clear for a stashed week
        (its INPUTS acc-clear above reconcileLandedAcc); mirror it here so the
        no-stash boot re-lands too. 'r'/'u' are deliberate decisions, kept. */
-    INPUTS.forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
+    landingInputs().forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
   }
   /* stable row ids (engine/rowids.ts) BEFORE the baseline: the walk mutates
      DAYS, and a mint after the yardstick would make the pristine seed week

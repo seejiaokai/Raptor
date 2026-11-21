@@ -33,18 +33,21 @@
    The subscriber is registered once, at boot (initStore). */
 import { onCommit } from '../command'
 import type { CommitEnvelope, Change } from '../command/types'
-import { logAction, keyLabel } from '../engine/editlog'
+import { logAction, keyLabel, type LineAt } from '../engine/editlog'
 import { parseHideDetail } from '../engine/hidedetail'
 import { decodeRoleId, roleAnswerName, roleSideWord } from '../engine/mission-role'
 import type { RoleIdentity } from '../engine/mission-role'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
+import { homeUnitOf, rosterToday } from '../engine/roster'
+import { UNIT } from '../engine/unitview'
 import { isOD, dateOrd, INPUTS, inpLabel, inpKindTag, isFly, isLeave, titleOf, toOf, isSansAvail, sansLetters, idsOf, leadOf, namedOf, placeholderOf, remarksTyped, tillShown, tillTurned } from '../engine/inputs'
 import { parseVerId, dayIso } from '../engine/verid'
-import { qualCols } from '../engine/qualcols'
+import { qualColsOf } from '../engine/qualcols'
 import { actorIsAdmin } from './perms'
 import { rowDocIds } from './docs'
+import { localOf, split } from '../storage/unitid'
 
 /* ---- the reason a door hands in (inside its command) ---- */
 const REASONS = new Map<string, string>()
@@ -317,6 +320,18 @@ function crossLines(env: CommitEnvelope): void {
       if (what) logAction(null, `Leave War · ${cs(pid)} · ${r.code || ''} ${dayWord(date)}: ${what}`.replace('  ', ' '), { date, sect: 'abs', sub: pid, ...mark })
     }
   }
+  /* …and a bid taken out of ANOTHER squadron's stored war, through the second store (leavewar/state/foreign.ts — A3: the
+     master's Archive or Delete of a 149 man with 142's war loaded): one record a row, carrying its man and day, told in
+     that squadron's history, the same words (job 2, 19 Nov 26 — Astra's 4; D337) */
+  for (const c of env.changes) {
+    if (c.collection !== 'lwx.rec') continue
+    const r: any = c.before
+    if (!r || typeof r !== 'object' || c.after != null || r.kind !== 'request') continue
+    const pid = String(r.pid ?? ''), date = String(r.date ?? '')
+    if (!pid || !date) continue
+    const what = covered.has(`${pid}|${date}`) ? 'bid taken away — an input covers it' : 'bid removed'
+    logAction(null, `Leave War · ${cs(pid)} · ${r.code || ''} ${dayWord(date)}: ${what}`.replace('  ', ' '), { date, sect: 'abs', sub: pid, unit: split(String(c.id)).unit || undefined, fld: 'deleted', itype: String(r.code || '') })
+  }
 }
 /* THE WAR'S OWN DOORS ON AN APPROVED LEAVE (Fable's final read, F2; Astra's read of the fixes, 01). The war files its
    approvals as Inputs and takes them back inside its own command — cutting, SPLITTING (a middle day out of three leaves
@@ -450,7 +465,7 @@ function postoutLines(c: Change, env: CommitEnvelope): void {
     }
   }
 }
-function ledgerLines(c: Change): void {
+function ledgerLines(c: Change, unit?: string): void {
   /* ONE ENTRY PER CHANGE since the ledger went into small pieces ([OIL-AWARD-IS-A-GRANT], 29 Sep 26); an array is still
      read, entry by entry, so a change from before that shape says the same */
   const bl: any[] = Array.isArray(c.before) ? c.before : c.before ? [c.before] : []
@@ -458,7 +473,8 @@ function ledgerLines(c: Change): void {
   const bm = new Map(bl.map(r => [r.id, r])), am = new Map(al.map(r => [r.id, r]))
   const award = (e: any) => e && e.counter === 'oil' && +e.amount > 0
   const iso = (d: any) => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)
-  const at = (e: any) => ({ date: iso(e.date) ? e.date : localToday(), sect: 'abs', sub: String(e.personId || '') })
+  /* (another squadron's stored war, through the second store, names its squadron — `unit`, job 2's Astra 4) */
+  const at = (e: any) => ({ date: iso(e.date) ? e.date : localToday(), sect: 'abs', sub: String(e.personId || ''), ...(unit ? { unit } : {}) })
   /* AN OIL AWARD reads as it always did in the changes window — "Leave War · <him> · FO 9 Feb: OIL award given by …" —
      whichever door gave it, now with what it is worth (the amount, never worked back from its FO / HO label); any other
      entry by its counter as the app names it — OIL, ANNUAL, CCL … (D25: OIL) */
@@ -574,7 +590,9 @@ function personLines(c: Change, env?: CommitEnvelope): void {
   }
   /* a qualification tick lives in the person's `quals` (Quals' own columns, named by their heading); a tick that is
      also a flag on the person (SANS, SXO) is said once */
-  for (const q of qualCols()) {
+  /* (the reshape plan §3.2 A-ii — Quals is an own page: a tick is named by the MAN'S OWN squadron's columns, on the day the
+     line is filed, never the pick's — a master admin who picked 149 read a 142 man's tick under 149's heading) */
+  for (const q of qualColsOf(homeUnitOf(pid, localToday()) ?? UNIT)) {
     const x = b.quals && b.quals[q.k], y = a.quals && a.quals[q.k]
     if (same(norm(x), norm(y)) || seen.has(q.h) || byPosting(q.k)) continue
     seen.set(q.h, { from: qv(x), to: qv(y), fld: q.k })
@@ -612,7 +630,29 @@ function roleFormationName(role: RoleIdentity): string {
   }
   return ''
 }
-export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 'undo' | 'redo'): void {
+/* the squadron a change to men of the roster is filed with: each man's own, read on the day it is asked — one squadron
+   only, and only a change made of the roster alone; '' otherwise (the squadron in view) */
+/* (the reshape plan §3.2 A-i: each man's squadron on the DAY THE CHANGE IS FILED, named — today as it is made; for a step
+   made before this page life kept its line, the day the step was made, else today) */
+function peopleLineUnit(forward: readonly Change[], iso: string): string {
+  const homes = new Set<string>()
+  for (const c of forward) if (c.collection === 'people' && (PEOPLE as any)[String(c.id)]) homes.add(homeUnitOf(String(c.id), iso) ?? UNIT)
+  return homes.size === 1 && forward.length > 0 && forward.every(c => c.collection === 'people') ? [...homes][0]! : ''
+}
+/* a user's change to men of the roster: the squadron its line was filed with as it was made, by the command's sequence
+   number — what its Undo and Redo are filed with (logReversed). Bounded: the oldest forgotten past the Undo's reach. */
+const LINE_UNIT = new Map<number, string>()
+const LINE_UNIT_CAP = 500
+function keepLineUnit(env: CommitEnvelope): void {
+  if (typeof env.seq !== 'number') return
+  const u = peopleLineUnit(env.changes, rosterToday())
+  if (!u) return
+  LINE_UNIT.set(env.seq, u)
+  if (LINE_UNIT.size > LINE_UNIT_CAP) LINE_UNIT.delete(LINE_UNIT.keys().next().value as number)
+}
+/* the local day of a moment (the step's `madeAt`) */
+const dayOfMs = (ms: number): string => { const d = new Date(ms); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` }
+export function logReversed(entry: { label?: string; forward?: Change[]; madeAt?: number }, dir: 'undo' | 'redo'): void {
   const days = new Set<string>()
   const addSpan = (s: Span | null) => { if (!s) return; for (let d = s.date; d <= s.end; d = nextIso(d)) days.add(d) }
   for (const c of entry.forward || []) {
@@ -628,10 +668,20 @@ export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 
     else if (c.collection === 'sched.issuance' || c.collection === 'sched.retraction') { const m = /:(\d{4}-\d{2}-\d{2})#/.exec(id); if (m) days.add(m[1]) }
     /* a note on the planning calendar writes its own line since D710, so its Undo / Redo lands on its day too (old and
        new, for a note moved) — the fresh read of the night, 2 */
-    else if (c.collection === 'plan' && id.startsWith('pp:')) for (const e of [c.before, c.after]) { const d = e && (e as any).date; if (typeof d === 'string') days.add(d) }
+    else if (c.collection === 'plan' && localOf(id).startsWith('pp:')) for (const e of [c.before, c.after]) { const d = e && (e as any).date; if (typeof d === 'string') days.add(d) }
   }
   const sorted = [...days].filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort()
   const what = `${dir === 'undo' ? 'Undo' : 'Redo'}${entry.label ? ' — ' + entry.label : ''}`
+  /* WHOSE HISTORY (the fix read, 18 Nov 26 — Astra 4, Opus 3b): a change to men of the roster (their Quals, their name)
+     is filed with each man's own squadron (engine/editlog.ts push), so its Undo and Redo go there too — filed under the
+     squadron in view, the master's Undo of Osprey's CAT made from 142 showed in 142's history and not in 149's. Men of
+     one squadron only; any other step stays with the squadron in view. */
+  /* …and the squadron is the one the change was filed with WHEN IT WAS MADE, kept by its sequence number — read again at
+     the Undo, a man moved to another squadron at midnight in between took his Undo there (the second fix read, 18 Nov
+     26 — Astra 5). A step made before this page life kept it (none now) reads the squadron now, as before. */
+  const seq = (entry as any).seq
+  const unit = (typeof seq === 'number' && LINE_UNIT.has(seq) ? LINE_UNIT.get(seq) : peopleLineUnit(entry.forward || [], typeof entry.madeAt === 'number' ? dayOfMs(entry.madeAt) : rosterToday())) || undefined
+  const say = (text: string, at: LineAt) => logAction(null, text, unit ? { ...at, unit } : at)
   if (!sorted.length) {
     /* an Undo line only where its change wrote a line of its own (the change-recording plan §11.9, walker A2-F5): the
        roster, the war's ledger and its postings write theirs dated today (changeLinesFor below), so their Undo does too;
@@ -647,11 +697,11 @@ export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 
       return !same(b.grades, a.grades) || !!b.balLock !== !!a.balLock
     }
     const wrote = (entry.forward || []).some(c => c.collection === 'people' || c.collection === 'lw.ledger' || c.collection === 'lw.postouts' || lwOwn(c))
-    if (wrote) logAction(null, what, { date: localToday(), sect: 'day' })
+    if (wrote) say(what, { date: localToday(), sect: 'day' })
     return
   }
   let a = sorted[0]!, b = a
-  const flush = () => logAction(null, what, { date: a, end: b, sect: 'day' })
+  const flush = () => say(what, { date: a, end: b, sect: 'day' })
   for (const d of sorted.slice(1)) { if (d === nextIso(b)) b = d; else { flush(); a = b = d } }
   flush()
 }
@@ -660,6 +710,7 @@ export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 
 export function changeLinesFor(env: CommitEnvelope): void {
   try {
     if (env.origin !== 'user') return
+    keepLineUnit(env)
     const war = !!(env.scope && (env.scope as any).module === 'lw')
     /* in a Leave War decision the approvals are read by the DAYS they cover (warInputLines) — which is also what tells
        the war's own side which request left because it was approved, and which came back because an approval was taken
@@ -682,11 +733,13 @@ export function changeLinesFor(env: CommitEnvelope): void {
       }
       if (c.collection === 'inputs' && c.id !== '__order') { if (!wi.said.has(c)) inputLines(c, env, war) }
       else if (c.collection === 'lw.ledger') ledgerLines(c)
+      else if (c.collection === 'lwx.ledger') ledgerLines(c, split(String(c.id)).unit || undefined)
       else if (c.collection === 'lw.postouts') postoutLines(c, env)
       else if (c.collection === 'lw.balance') balanceLines(c, env)
       else if (c.collection === 'lw.grade') gradeLines(c, env)
       else if (c.collection === 'people') personLines(c, env)
-      else if (c.collection === 'plan' && String(c.id).startsWith('pp:')) noteLines(c)
+      /* a note's id names its unit (`u149@pp:<id>` — step 2): its kind read with the unit split off */
+      else if (c.collection === 'plan' && localOf(String(c.id)).startsWith('pp:')) noteLines(c)
     }
     /* A WARNING HIDDEN, OR FLAGGED AGAIN ([WARN-HIDE-KEPT], owner D469, 1 Oct 26). A hide is kept with its day for
        everyone "until another person unhides it" — so who hid it, and when, has to be answerable from the change

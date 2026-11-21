@@ -47,7 +47,7 @@ let rid = 0
    point of the page); the guards are honesty guards: a blank description
    or an unknown category files nothing, and the caller toasts. */
 export function fileReport(cat: string, text: string): BugReport | null {
-  if (!isMember()) return null   // an admin or a member — never a guest or someone waiting for access
+  if (!isMember()) return null   // an admin or a member — never someone waiting for access
   const tx = String(text || '').trim()
   if (!tx || !BUG_CATS.includes(cat)) return null
   const r: BugReport = { id: 'bug' + (++rid), t: Date.now(), who: HOOKS.whoami(), pid: HOOKS.whoamiId(), cat, text: tx, seen: false }

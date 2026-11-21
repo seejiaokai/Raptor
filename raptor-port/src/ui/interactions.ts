@@ -40,6 +40,8 @@ import { openScheduler, openSchedulerByKeys, toggleSbwarn, boardTab, dayTplMenu,
 import { findInputCell, hideHistBub, pinHistBubAt, findHistCell, findSeatRow, isSeatKey, onlyOn } from './histbubble'
 import { pickRosDay, hsSync } from './pan'
 import { isStandalone, saTyped, saFlies, CURWEEK } from '../engine/waves'
+import { dayIso } from '../engine/verid'
+import { UNIT } from '../engine/unitview'
 import { WARN } from '../engine/validate'
 import { hm24,parseHM } from '../engine/time'
 import { parseReportingLines,resolveReporting,REPORTING_LABEL } from '../engine/reporting'
@@ -1340,7 +1342,8 @@ export function routeClick(e: MouseEvent) {
     /* the SANS add offers SANS aircrew only — the commit refuses anyone else
        anyway (sansRefusal), so seeding a non-SANS default would open a dialog
        already pointed at a refusal */
-    const pool = kind === 's' ? rosterOptions().filter(id => PEOPLE[id].san) : rosterOptions()
+    /* (the day it acts on — the reshape plan §3.3 C6: a man who is 149's from Thursday is not seeded into 142's Friday) */
+    const pool = kind === 's' ? rosterOptions(UNIT, dayIso(String(CURWEEK), di)).filter(id => PEOPLE[id].san) : rosterOptions(UNIT, dayIso(String(CURWEEK), di))
     const person = pool[0]
     if (!person) { HOOKS.toast(kind === 's' ? 'No SANS aircrew on the roster' : 'No crew on the roster to file an input for', 'warn'); return }
     const seedType = kind === 'u' ? firstUnavailType() : kind === 's' ? firstSansType() : firstPersonalType()

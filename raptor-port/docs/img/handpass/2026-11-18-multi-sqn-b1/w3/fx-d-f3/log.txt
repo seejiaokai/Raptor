@@ -1,0 +1,12 @@
+msq-w3-fixread v1 desktop only F3
+ROW PASS | F3 | desktop | ad2 opens Saber's Post out, picks the Delete chip | saw: Saber is a master admin, so he can't be deleted
+F3 saber row still on the grid true
+F3 after Saber press tail  Static Trident Warden — name — Anvil Basher Bolt Cinch Drifter Echo Forge Piston Ranger Reaper Ridge Saber Sidewinder Static Trident Warden — name — Anvil Basher Bolt Cinch Drifter Echo Forge Piston Ranger Reaper Ridge Saber Sidewinder Static Trident Warden JAN - DEC 26 JAN - DEC 27 + New period on
+ROW PASS | F3 | desktop | ad2 presses Post out on the master (Delete chip) and, if asked, confirms | saw: Saber on grid: true; words: y, with his account. Days he flew keep his puck. Saber is a master admin, so he can't be deleted Post out Delete Saber? On 18 Nov the app deletes him au
+F3 no Rocky in this world; using Ranger (142 member)
+F3 rocky sheet true Ranger Wed 18 Nov Auto-approve ✕ No manning row turns amber or red till 18 Nov Document Whole day AM PM Pick a range LL 11.5 OL 11.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 PO FROM Wed 18 Nov 26 ▾ POSTING Overseas Sqn ✓ Delete SANS Transfer to Sqn On 18 Nov the app deletes him automatically, with his a
+F3 rocky press 1 Post out
+F3 rocky card Delete press 2
+ROW RECORD | F3 | desktop | ad2 posts Ranger (a 142 member; Rocky is not in this world if Ranger) out with Delete today, confirms as asked | saw: page alive: true; Rocky: 
+errors []
+DONE 2 PASS 0 FAIL 1 OTHER of 3

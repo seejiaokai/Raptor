@@ -1,0 +1,66 @@
+{
+ "q6b-142-d.png": {
+  "question": "Q6, Q3",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "drawn",
+  "transform": "the grid's own class for a day outside a man's time in the squadron (`gone`, matrix.css) put on Ranger's 169 cells from Thu 16 Jul; nothing else",
+  "caption": "Proposed, 142's Leave War (Saber, Wed 15 Jul): Ranger's row as now up to Wed 15 Jul, then from Thu 16 Jul (New) the war's own look for days outside a man's time — the grey hatch, with no \"PO\" in it, as no posting was set. Fri 24 Jul (3) is a day a master could no longer write Ranger's leave into here. Real, beside it: Havoc, posted out through the war's own Post out (\"PO from\" Thu 16 Jul, so his last day is Wed 15 Jul) — the same hatch, and \"PO\" in each day after.",
+  "asserted": "Havoc's Post out: date \"Thu 16 Jul 26\n▾\", line \"On 16 Jul: archived.\"; his 15 Jul \" act pofin bx-last\", 16 Jul \"gone act hasc\" reads \"PO\""
+ },
+ "q6c-ref-d.png": {
+  "question": "Q6",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none",
+  "caption": "For comparison, the same world: Havoc's row on Admin → Users after his Post out — the line under his callsign as the app draws it for a posting.",
+  "asserted": "{\"sub\":\"no sign-in · Pilot · CAT IP\\nPOSTING OUT 16 JUL · OVERSEAS SQN\",\"tag\":\"POSTING OUT 16 JUL · OVERSEAS SQN\",\"held\":\"\"}"
+ },
+ "q6c-d.png": {
+  "question": "Q6",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Admin → Users (Saber, Wed 15 Jul), Ranger's row after the move to 149 was written: the line under his callsign carries no posting tag (6) — the move is not a posting.",
+  "asserted": "{\"sub\":\"us\\n· Pilot · CAT IP\",\"tag\":false}"
+ },
+ "q6b-149-d.png": {
+  "question": "Q6",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "drawn",
+  "transform": "the grid's own class for a day outside a man's time (`gone`) put on Ranger's 196 cells from 1 Jan to Wed 15 Jul; nothing else",
+  "caption": "Proposed, 149's Leave War (Kestrel, Thu 16 Jul, the JUL button pressed): Ranger's row from Thu 16 Jul; before it (New) the war's own look for days before a man arrives — the hatch, blank. Real, beside it: Swift, added on 149's Admin → Users with a post-in date of Thu 16 Jul — the same blank hatch before his first day.",
+  "asserted": "Swift added (post-in box \"Thu 16 Jul 26\n▾\"); his 15 Jul \"gone act\" reads \"\", 16 Jul \" act\""
+ },
+ "q6b-142-p.png": {
+  "question": "Q6, Q3",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "drawn",
+  "transform": "the grid's own class for a day outside a man's time in the squadron (`gone`, matrix.css) put on Ranger's 108 cells from Thu 16 Jul; nothing else",
+  "caption": "Proposed, 142's Leave War (Saber, Wed 15 Jul): Ranger's row as now up to Wed 15 Jul, then from Thu 16 Jul (New) the war's own look for days outside a man's time — the grey hatch, with no \"PO\" in it, as no posting was set. Fri 24 Jul (3) is a day a master could no longer write Ranger's leave into here. Real, beside it: Havoc, posted out through the war's own Post out (\"PO from\" Thu 16 Jul, so his last day is Wed 15 Jul) — the same hatch, and \"PO\" in each day after.",
+  "asserted": "Havoc's Post out: date \"Thu 16 Jul 26\n▾\", line \"On 16 Jul: archived.\"; his 15 Jul \" act pofin bx-last\", 16 Jul \"gone act hasc\" reads \"PO\""
+ },
+ "q6c-ref-p.png": {
+  "question": "Q6",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "none",
+  "caption": "For comparison, the same world: Havoc's row on Admin → Users after his Post out — the line under his callsign as the app draws it for a posting.",
+  "asserted": "{\"sub\":\"no sign-in · Pilot · CAT IP\\nPOSTING OUT 16 JUL · OVERSEAS SQN\",\"tag\":\"POSTING OUT 16 JUL · OVERSEAS SQN\",\"held\":\"\"}"
+ },
+ "q6c-p.png": {
+  "question": "Q6",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Admin → Users (Saber, Wed 15 Jul), Ranger's row after the move to 149 was written: the line under his callsign carries no posting tag (6) — the move is not a posting.",
+  "asserted": "{\"sub\":\"us\\n· Member\\n· Pilot · CAT IP\",\"tag\":false}"
+ },
+ "q6b-149-p.png": {
+  "question": "Q6",
+  "size": "iPhone 402×874 (WebKit, touch, 3x)",
+  "kind": "drawn",
+  "transform": "the grid's own class for a day outside a man's time (`gone`) put on Ranger's 45 cells from 1 Jan to Wed 15 Jul; nothing else",
+  "caption": "Proposed, 149's Leave War (Kestrel, Thu 16 Jul, the JUL button pressed): Ranger's row from Thu 16 Jul; before it (New) the war's own look for days before a man arrives — the hatch, blank. Real, beside it: Swift, added on 149's Admin → Users with a post-in date of Thu 16 Jul — the same blank hatch before his first day.",
+  "asserted": "Swift added (post-in box \"Thu 16 Jul 26\n▾\"); his 15 Jul \"gone act\" reads \"\", 16 Jul \" act\""
+ }
+}

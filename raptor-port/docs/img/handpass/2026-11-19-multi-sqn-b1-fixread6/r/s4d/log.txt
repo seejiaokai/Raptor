@@ -1,0 +1,20 @@
+msq-fr6-f4s v1
+ROW RECORD | F4 | desktop | Saber (tab 1): Ranger posted out today via the sheet | saw: page words: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Saber · Admi
+signed in as ad2
+now Hunter, same tab
+ROW PASS | F4 | desktop | Hunter (same tab, signed in fresh): bell after the posting, NOT opened further | saw: dot "block"; ["unread | RangerThu 19 Nov Posted out · off the manpower 16 h"]
+signed in as ad
+now Saber, same tab
+undo post out count 1
+ROW RECORD | F4 | desktop | Saber (same tab): Undo post out on the sheet | saw: page words: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Saber · Admi
+ROW PASS | F4 | desktop | Saber (same tab): his own bell after his Undo | saw: dot "none"; []
+signed in as ad2
+now Hunter, same tab
+ROW PASS | F4 | desktop | Hunter (same tab, fresh): bell after the take-back (he had not read it) | saw: dot "none"; []
+signed in as ad
+now Saber, same tab
+ROW RECORD | F5 | desktop | Leave War: Ranger's cell for today after the take-back | saw: cell ""
+ROW RECORD | F5 | desktop | Admin -> Users: Ranger's row | saw: row "Ranger us · Pilot · CAT IP MEMBER SIGN-IN (DEFENCE MAIL) ROLE Member — own inputs, quals and bids Admin — schedules and manages Save Suspend Archive Delete Cancel"
+ROW RECORD | F5 | desktop | posting sheet reopened for Ranger | saw: sheet "Ranger Thu 19 Nov Auto-approve ✕ No manning row turns amber or red till 19 Nov Document Whole day AM PM Pick a range LL 11.5 OL 11.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 PO FROM Thu 19 Nov 26 ▾ POSTING ✓ Overseas Sqn Delete SANS Transfer to Sqn On 19"
+errors []
+DONE 3 PASS 0 FAIL 5 OTHER of 8

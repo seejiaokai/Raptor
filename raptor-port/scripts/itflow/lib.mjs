@@ -71,7 +71,8 @@ export async function signIn(page, user, pass) {
 }
 
 export async function signOut(page) {
-  await page.locator('#logout:visible, #accOut:visible, #guestOut:visible').first().click()
+  // (the guest page's own Sign out, #guestOut, went with the guest view — D2239)
+  await page.locator('#logout:visible, #accOut:visible').first().click()
   await page.waitForSelector('#luser')
 }
 

@@ -1,0 +1,137 @@
+[
+ [
+  "F1",
+  "iPhone",
+  "ad Saber: fresh world, open the bell",
+  "opens; lines or the empty state; dot matches",
+  "open true; words \"Nothing new\"; line-ish elements 1; bell class \"bellbtn\"; dot display none w 0 vis visible cls belldot",
+  "PASS",
+  "f1-ad-open.png"
+ ],
+ [
+  "F1",
+  "iPhone",
+  "ad: close the bell with its own control",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-ad-closed-bell.png"
+ ],
+ [
+  "F1",
+  "iPhone",
+  "ad: reopen, tap outside",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-ad-closed-outside.png"
+ ],
+ [
+  "F1",
+  "iPhone",
+  "ad2 Hunter: fresh world, open the bell",
+  "opens; lines or the empty state; dot matches",
+  "open true; words \"Nothing new\"; line-ish elements 1; bell class \"bellbtn\"; dot display none w 0 vis visible cls belldot",
+  "PASS",
+  "f1-ad2-open.png"
+ ],
+ [
+  "F1",
+  "iPhone",
+  "ad2: close the bell with its own control",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-ad2-closed-bell.png"
+ ],
+ [
+  "F1",
+  "iPhone",
+  "ad2: reopen, tap outside",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-ad2-closed-outside.png"
+ ],
+ [
+  "F1",
+  "iPhone",
+  "us Ranger: fresh world, open the bell",
+  "opens; lines or the empty state; dot matches",
+  "open true; words \"Nothing new\"; line-ish elements 1; bell class \"bellbtn\"; dot display none w 0 vis visible cls belldot",
+  "PASS",
+  "f1-us-open.png"
+ ],
+ [
+  "F1",
+  "iPhone",
+  "us: close the bell with its own control",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-us-closed-bell.png"
+ ],
+ [
+  "F1",
+  "iPhone",
+  "us: reopen, tap outside",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-us-closed-outside.png"
+ ],
+ [
+  "F1",
+  "iPhone",
+  "ad9 Kestrel: fresh world, open the bell",
+  "opens; lines or the empty state; dot matches",
+  "open true; words \"Nothing new\"; line-ish elements 1; bell class \"bellbtn\"; dot display none w 0 vis visible cls belldot",
+  "PASS",
+  "f1-ad9-open.png"
+ ],
+ [
+  "F1",
+  "iPhone",
+  "ad9: close the bell with its own control",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-ad9-closed-bell.png"
+ ],
+ [
+  "F1",
+  "iPhone",
+  "ad9: reopen, tap outside",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-ad9-closed-outside.png"
+ ],
+ [
+  "F1",
+  "iPhone",
+  "us9 Osprey: fresh world, open the bell",
+  "opens; lines or the empty state; dot matches",
+  "open true; words \"Nothing new\"; line-ish elements 1; bell class \"bellbtn\"; dot display none w 0 vis visible cls belldot",
+  "PASS",
+  "f1-us9-open.png"
+ ],
+ [
+  "F1",
+  "iPhone",
+  "us9: close the bell with its own control",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-us9-closed-bell.png"
+ ],
+ [
+  "F1",
+  "iPhone",
+  "us9: reopen, tap outside",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-us9-closed-outside.png"
+ ]
+]

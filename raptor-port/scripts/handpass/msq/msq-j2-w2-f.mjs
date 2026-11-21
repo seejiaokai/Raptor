@@ -1,0 +1,148 @@
+/* msq-j2-w2-f v1 — W2-F: the plain-user round, 142's admin (ad2) then 149's admin (ad9), a second fresh world (desktop). */
+process.env.MSQ_WHO = 'w2'
+process.env.MSQ_RUN = process.env.MSQ_RUN || 'f1'
+const H = await (await import('./msq-j2-w2-h.mjs')).mk()
+const { X, U, say, sleep, row, iso, T } = H
+say('msq-j2-w2-f v1')
+const w = await X.open({ user: 'ad2' })
+const p = w.page
+const oilOf = t => (t.match(/OIL\s+[-\d.]+/) || ['(no OIL figure)'])[0]
+const step = async (name, fn) => { try { if (/war|approvals|sheet/.test(name)) { await p.keyboard.press('Escape'); await sleep(300); await p.keyboard.press('Escape'); await sleep(300) } await fn() } catch (e) { say('STEP FAILED', name, e.message.slice(0, 300)); try { await X.pic(w, 'fail-' + name) } catch {}; row(name, 'desktop', 'script step', 'completes', 'script error: ' + e.message.slice(0, 200), 'OWED', 'fail-' + name + '.png') } }
+// who: tag; user; a man of the squadron to work with (callsign) and a second man to open
+async function round(tag, user, man, other, grantCs) {
+  const pm = await U.pidOf(p, man), po = await U.pidOf(p, other), pg = await U.pidOf(p, grantCs)
+  say(tag, 'pids', pm, po, pg)
+  await step(tag + '-users', async () => {
+    await H.usersPage(w)
+    await p.locator(H.FIND).fill(man); await sleep(600)
+    await p.locator(`.acc-row[data-person="${pm}"] .acc-tap`).first().click(); await sleep(800)
+    await X.pic(w, `${tag}-01-row-open`)
+    const hasBox = await p.locator('#accEdName, #accGiveName').first().isVisible().catch(() => false)
+    await p.locator('#accEdName, #accGiveName').first().fill('typed-w2').catch(() => {}); await sleep(400)
+    await X.pic(w, `${tag}-02-typed`)
+    await p.locator('#accEdCancel').click(); await sleep(700)
+    await X.pic(w, `${tag}-03-after-cancel`)
+    await p.locator(`.acc-row[data-person="${pm}"] .acc-tap`).first().click(); await sleep(800)
+    const v = await p.locator('#accEdName, #accGiveName').first().inputValue().catch(() => '(no box)')
+    await X.pic(w, `${tag}-04-reopened`)
+    row(`W2-F ${tag}`, 'desktop', `${user}: Users, ${man}'s row, type in the sign-in box, Cancel, reopen`, 'typing gone', `box present ${hasBox}; after reopen reads "${v}"`, v === 'typed-w2' ? 'FAIL' : 'PASS', `${tag}-01..04`)
+    await p.locator('#accEdCancel').click().catch(() => {}); await sleep(500)
+    await p.locator(H.FIND).fill(other); await sleep(600)
+    await p.locator(`.acc-row[data-person="${po}"] .acc-tap`).first().click(); await sleep(800)
+    const o1 = await p.locator('#accEdCancel, #accEdArchive').first().isVisible().catch(() => false)
+    await X.pic(w, `${tag}-05-other-open`)
+    await p.locator(`.acc-row[data-person="${po}"] .acc-tap`).first().click(); await sleep(800)
+    const o2 = await p.locator('#accEdCancel, #accEdArchive').first().isVisible().catch(() => false)
+    await X.pic(w, `${tag}-06-other-closed`)
+    row(`W2-F ${tag}`, 'desktop', `${user}: open ${other}'s row, close it by pressing his name again`, 'closes', `editor visible open: ${o1}; after name pressed again: ${o2}`, o1 && !o2 ? 'PASS' : 'FAIL', `${tag}-05, ${tag}-06`)
+  })
+  await step(tag + '-add', async () => {
+    await H.usersPage(w)
+    const T3 = iso(T, 1)
+    await p.locator('#accAddCs').fill('F' + tag + 'X'); await p.locator('#accAddIni').fill('FX')
+    await p.locator('#accAddPostIn').click(); await sleep(700)
+    await X.pic(w, `${tag}-07-cal-open`)
+    const a = await p.locator(`[data-testid="dcal-day-${T3}"]`).isVisible().catch(() => false)
+    await p.mouse.click(300, 700); await sleep(700)
+    await X.pic(w, `${tag}-08-cal-after-outside`)
+    const b = await p.locator(`[data-testid="dcal-day-${T3}"]`).isVisible().catch(() => false)
+    row(`W2-F ${tag}`, 'desktop', `${user}: Add a person, calendar open, press outside`, 'calendar closes, box text kept', `calendar visible before ${a} after ${b}; callsign box: ${await p.locator('#accAddCs').inputValue()}`, a && !b ? 'PASS' : 'FAIL', `${tag}-07, ${tag}-08`)
+    await p.locator('#accAddPostIn').click(); await sleep(700)
+    await p.locator(`[data-testid="dcal-day-${T3}"]`).click(); await sleep(700)
+    const pi = (await p.locator('#accAddPostIn').textContent()).trim()
+    await X.pic(w, `${tag}-09-cal-picked`)
+    row(`W2-F ${tag}`, 'desktop', `${user}: reopen calendar, pick T+1`, 'box shows T+1', `post-in box: ${pi}`, /20 Nov/.test(pi) ? 'PASS' : 'FAIL', `${tag}-09`)
+    // leave the form unsubmitted
+    await p.locator('#accAddCs').fill('')
+  })
+  await step(tag + '-war', async () => {
+    await X.L.go(p, 'leavewar'); await sleep(2500)
+    await X.pic(w, `${tag}-10-leavewar-open`)
+    const d = iso(T, 5)
+    const cell = p.locator(`[data-testid="cell-${pg}-${d}"]`).first()
+    await cell.scrollIntoViewIfNeeded(); await cell.click(); await sleep(900)
+    await X.pic(w, `${tag}-11-day-window`)
+    await p.locator('button:visible', { hasText: '⋯' }).last().click({ timeout: 4000 }); await sleep(600)
+    await X.pic(w, `${tag}-12-dots-list-open`)
+    const list = await p.evaluate(() => [...document.querySelectorAll('button')].filter(b => b.offsetWidth > 1).map(b => b.textContent.replace(/\s+/g, ' ').trim()).filter(t => /Grant OIL|Post out|Delete|Move|Clear/.test(t)).slice(0, 8).join(' | '))
+    row(`W2-F ${tag}`, 'desktop', `${user}: ${grantCs}'s cell ${d} → day window → ⋯`, 'the list opens', `list: ${list}`, list ? 'PASS' : 'FAIL', `${tag}-12`)
+    const body0 = await U.bodyText(p)
+    await p.locator('button:visible', { hasText: '⋯' }).last().click({ timeout: 4000 }); await sleep(600)   // close the list again
+    await p.getByRole('button', { name: 'Grant OIL', exact: true }).click(); await sleep(700)
+    await p.locator('input[placeholder^="why"]').fill('w2 walk'); await sleep(300)
+    await X.pic(w, `${tag}-13-grant-form`)
+    await p.getByRole('button', { name: /^Give (FO|HO)/ }).click(); await sleep(1000)
+    await X.pic(w, `${tag}-14-after-give`)
+    await p.keyboard.press('Escape'); await sleep(600)
+    const rowT = await H.Hm.lwRow(p, pg, [d])
+    await X.pic(w, `${tag}-15-row-after`)
+    // the man's person window
+    const puck = p.locator('span.puck:visible', { hasText: new RegExp('^' + grantCs) }).first()
+    await puck.click(); await sleep(900)
+    await X.pic(w, `${tag}-16-person-window`)
+    const win = await U.bodyText(p)
+    row(`W2-F ${tag}`, 'desktop', `${user}: Grant OIL one day on ${grantCs} (${d}); his row and person window`, 'row shows FO/HO box; OIL figure rose', `cell reads: ${rowT[d]} ; person window ${oilOf(win)} (before: ${oilOf(body0)} on the day window) `, /FO|HO/.test(rowT[d]) ? 'RECORD' : 'FAIL', `${tag}-14, ${tag}-15, ${tag}-16`)
+    // year selector
+    const yr = p.locator('button:visible, select:visible').filter({ hasText: /^20\d\d$/ }).first()
+    say(tag, 'year selector count', await yr.count())
+    if (await yr.count()) { await yr.click().catch(() => {}); await sleep(600); await X.pic(w, `${tag}-17-year`) }
+    await p.locator('button:visible', { hasText: '✕' }).first().click().catch(() => {}); await sleep(700)
+    const g1 = await p.getByText('BALANCES').first().isVisible().catch(() => false)
+    await X.pic(w, `${tag}-18-after-x`)
+    await puck.click(); await sleep(800)
+    await p.keyboard.press('Escape'); await sleep(700)
+    const g2 = await p.getByText('BALANCES').first().isVisible().catch(() => false)
+    await X.pic(w, `${tag}-19-after-escape`)
+    row(`W2-F ${tag}`, 'desktop', `${user}: person window closed by ✕, then reopened and closed by Escape`, 'both close', `BALANCES visible after ✕: ${g1}; after Escape: ${g2}`, !g1 && !g2 ? 'PASS' : 'FAIL', `${tag}-18, ${tag}-19`)
+  })
+  await step(tag + '-approvals', async () => {
+    const ap = p.getByRole('button', { name: /Approvals/ }).first()
+    await ap.click(); await sleep(1200)
+    await X.pic(w, `${tag}-20-approvals`)
+    const gr = p.getByRole('button', { name: /^Grid/ }).first()
+    await gr.click(); await sleep(1200)
+    await X.pic(w, `${tag}-21-back-to-grid`)
+    row(`W2-F ${tag}`, 'desktop', `${user}: open Approvals and back to the Grid`, 'back on the grid', 'grid cells visible: ' + await p.locator('[data-testid^="cell-"]').count(), (await p.locator('[data-testid^="cell-"]').count()) > 0 ? 'PASS' : 'FAIL', `${tag}-20, ${tag}-21`)
+  })
+  await step(tag + '-sheet', async () => {
+    const d = iso(T, 7)
+    const kinds = [['Close', async () => { await p.locator('button:visible', { hasText: '✕' }).last().click() }], ['Escape', async () => { await p.keyboard.press('Escape') }], ['outside press', async () => { await p.mouse.click(1450, 120) }]]
+    let i = 0
+    for (const [nm, fn] of kinds) {
+      i++
+      const cell = p.locator(`[data-testid="cell-${pg}-${d}"]`).first()
+      await cell.scrollIntoViewIfNeeded(); await cell.click(); await sleep(900)
+      await p.locator('button:visible', { hasText: '⋯' }).last().click({ timeout: 4000 }); await sleep(600)
+      await p.locator('button:visible', { hasText: /^Post out/ }).first().click(); await sleep(800)
+      await X.pic(w, `${tag}-22-${i}a-sheet-open`)
+      const sheet = () => p.getByText(/PO FROM/i).first().isVisible().catch(() => false)
+      const o = await sheet()
+      await fn(); await sleep(900)
+      await X.pic(w, `${tag}-22-${i}b-after-${nm.replace(' ', '-')}`)
+      const o2 = await sheet()
+      const dayWin = await p.getByText(new RegExp(grantCs + '\\s+[A-Z][a-z]{2} \\d+ Nov')).first().isVisible().catch(() => false)
+      row(`W2-F ${tag}`, 'desktop', `${user}: Post out sheet on ${grantCs} ${d}, dismissed by ${nm}`, 'sheet gone, page under it as it was', `sheet before ${o} after ${o2}; day window still showing: ${dayWin}`, o && !o2 ? 'PASS' : 'FAIL', `${tag}-22-${i}a / b`)
+      await p.keyboard.press('Escape'); await sleep(500)
+    }
+  })
+  await step(tag + '-gear', async () => {
+    await X.L.go(p, 'leavewar'); await sleep(2000)
+    await p.evaluate(() => window.scrollTo(0, 0)); await sleep(400)
+    const gb = await p.evaluate(() => {
+      const c = [...document.querySelectorAll('button')].filter(b => { const r = b.getBoundingClientRect(); return r.width > 20 && r.top > 60 && r.top < 130 && r.left > 1400 && !b.textContent.trim() })
+      return c.map(b => { const r = b.getBoundingClientRect(); return [Math.round(r.left + r.width / 2), Math.round(r.top + r.height / 2), b.getAttribute('aria-label') || b.title || ''] })
+    })
+    say(tag, 'gear candidates', JSON.stringify(gb))
+    if (!gb.length) { row(`W2-F ${tag}`, 'desktop', 'Settings (gear)', 'opens and closes', 'no gear control found at the top right of the Leave War', 'OWED', `${tag}-21-back-to-grid.png`); return }
+    await p.mouse.click(gb[0][0], gb[0][1]); await sleep(900)
+    await X.pic(w, `${tag}-23-settings-open`)
+    const t = await U.bodyText(p)
+    await p.keyboard.press('Escape'); await sleep(700)
+    await X.pic(w, `${tag}-24-settings-closed`)
+    row(`W2-F ${tag}`, 'desktop', `${user}: Settings (gear) → open, close (Escape)`, 'opens and closes', 'opened; words: ' + (t.match(/Settings[^]{0,120}/) || [''])[0].slice(0, 120), 'RECORD', `${tag}-23, ${tag}-24`)
+  })
+}
+await round('ad2', 'ad2', 'Ranger', 'Anvil', 'Hunter')
+await H.swap(w, 'ad9')
+await round('ad9', 'ad9', 'Osprey', 'Merlin', 'Merlin')
+await X.fin(w)

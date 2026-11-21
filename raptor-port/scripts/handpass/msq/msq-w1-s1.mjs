@@ -1,0 +1,55 @@
+/* msq-w1-s1 v1 — S1 a 149 edit never shows in 142 (desktop). usage (from raptor-port/): node scripts/handpass/msq/msq-w1-s1.mjs
+   This run's world is the one the later scenarios continue in: it prints nothing it cannot rebuild, so S2..S8 scripts import it. */
+process.env.MSQ_WHO = 'w1'
+process.env.MSQ_RUN = 's1-d'
+const X = await import('./msq-lib.mjs')
+const U = await import('./msq-w1-util.mjs')
+const { say, sleep, row } = X
+say('msq-w1-s1 v1 desktop')
+const w = await X.open({ phone: false, user: 'ad9' })
+const { page } = w
+say('DAY KEYS', await U.dayKeys(page))
+async function addGround(name, who, di) {
+  await X.W.board(w, di); await sleep(600)
+  await X.W.press(w, `[data-gradd="${di}"]`, { scope: 'board' }); await sleep(600)
+  const n = (await U.groundNames(page, di)).length - 1
+  await X.W.typeIn(w, `[data-bfld="gr:${di}.${n}.prog"]`, name)
+  const id = await U.pidOf(page, who)
+  const r = await X.W.seat(w, `[data-fill="g:${di}.${n}.+"]`, id)
+  say('ground add', name, who, id, r, JSON.stringify(await U.groundNames(page, di)))
+  return r
+}
+const r1 = await addGround('W149 GROUND', 'Kestrel', 2)
+await X.pic(w, 's1-01-ad9-board-after-add')
+await X.W.closeBoard(w); await sleep(600)
+await X.L.go(page, 'editsched'); await sleep(800)
+await X.pic(w, 's1-02-ad9-week-after-add')
+const t9 = await U.bodyText(page)
+row('S1', 'desktop', 'ad9 adds ground row "W149 GROUND" with Kestrel on Wed 15 Jul, closes board', 'row is on 149 week', 'week shows W149 GROUND: ' + t9.includes('W149 GROUND') + '; seat: ' + r1, t9.includes('W149 GROUND') ? 'PASS' : 'FAIL', 's1-02-ad9-week-after-add.png')
+let so = await X.signOut(w); say('signout', JSON.stringify(so))
+await X.login(page, 'ad'); await X.L.go(page, 'editsched'); await sleep(800)
+await X.pic(w, 's1-03-ad-week')
+const t142 = await U.bodyText(page)
+await X.W.board(w, 2); await sleep(600)
+await X.pic(w, 's1-04-ad-board-wed15')
+const tb = await U.bodyText(page)
+row('S1', 'desktop', 'ad (142) looks at Wed 15 Jul on the week and on the board', 'no "W149 GROUND" on either', `week: ${t142.includes('W149 GROUND')}; board: ${tb.includes('W149 GROUND')}; ground rows on 142 day: ${JSON.stringify(await U.groundNames(page, 2))}`, !t142.includes('W149 GROUND') && !tb.includes('W149 GROUND') ? 'PASS' : 'FAIL', 's1-03-ad-week.png, s1-04-ad-board-wed15.png')
+await X.W.closeBoard(w)
+// reverse: ad adds W142 GROUND with Saber on Thu 16 (index 3)
+const r2 = await addGround('W142 GROUND', 'Saber', 3)
+await X.pic(w, 's1-05-ad-board-thu16-after-add')
+await X.W.closeBoard(w); await sleep(600)
+await X.L.go(page, 'editsched'); await sleep(800)
+await X.pic(w, 's1-06-ad-week-after-add')
+const t142b = await U.bodyText(page)
+row('S1', 'desktop', 'ad adds ground row "W142 GROUND" with Saber on Thu 16 Jul', 'row is on 142 week', 'week shows W142 GROUND: ' + t142b.includes('W142 GROUND') + '; seat: ' + r2, t142b.includes('W142 GROUND') ? 'PASS' : 'FAIL', 's1-06-ad-week-after-add.png')
+so = await X.signOut(w); say('signout', JSON.stringify(so))
+await X.login(page, 'ad9'); await X.L.go(page, 'editsched'); await sleep(800)
+await X.pic(w, 's1-07-ad9-week-again')
+const t9b = await U.bodyText(page)
+row('S1', 'desktop', 'ad9 signs in again, looks at the week', 'W149 GROUND still there; no "W142 GROUND"', `W149: ${t9b.includes('W149 GROUND')}; W142: ${t9b.includes('W142 GROUND')}`, t9b.includes('W149 GROUND') && !t9b.includes('W142 GROUND') ? 'PASS' : 'FAIL', 's1-07-ad9-week-again.png')
+await X.W.board(w, 2); await sleep(600)
+const tb9 = await U.bodyText(page)
+row('S1', 'desktop', 'ad9 opens Wed 15 board', 'W149 GROUND on the board', String(tb9.includes('W149 GROUND')), tb9.includes('W149 GROUND') ? 'PASS' : 'FAIL')
+await X.W.closeBoard(w)
+await X.fin(w)

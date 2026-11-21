@@ -360,7 +360,7 @@ describe('T18 — the notice and Undo (Fable F9; D148): reading is each person\'
 describe('who may write a notice (the plan §4.10 — state/perms.ts ownershipViolation; docs/data-model.md §11) (OR50)', () => {
   const env = (changes: any[], type = 'inputs.write', origin = 'user') => ({ seq: 1, at: '', actor: { id: 'us', role: 'member', personId: RANGER, session: null }, origin, scope: {}, type, changes } as any)
   const inp = { iid: 'i1', people: [{ p: RANGER, by: RANGER }, { p: HEX, by: RANGER }], type: 'Training', date: 'Jul 15', yr: 2026, by: RANGER }
-  const note = (over: any = {}) => ({ id: 'n1', to: HEX, by: RANGER, at: 1, iid: 'i1', name: 'Training', day: '2026-07-15', what: [{ k: 'in' }], ...over })
+  const note = (over: any = {}) => ({ id: 'n1', to: HEX, by: RANGER, at: Date.now(), iid: 'i1', name: 'Training', day: '2026-07-15', what: [{ k: 'in' }], ...over })
   it('a member\'s notice rides his own change to that input, names him as its maker, and is addressed to someone else', () => {
     const ok = env([{ op: 'put', collection: 'inputs', id: 'i1', after: inp }, { op: 'put', collection: 'notices', id: 'n1', after: note() }])
     expect(ownershipViolation(ok)).toBeNull()

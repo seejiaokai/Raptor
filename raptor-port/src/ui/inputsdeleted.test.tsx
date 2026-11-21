@@ -20,6 +20,7 @@ import { HOOKS, storeBackend } from '../engine/hooks'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
 import { _resetFloatWins } from './winorder'
+import { settleWorld } from '../test-support/world'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement, root: Root
@@ -45,6 +46,9 @@ beforeEach(async () => {
   was = {}
   host = document.createElement('div'); document.body.append(host); root = createRoot(host)
   await act(async () => { root.render(<InputsPage />) })
+  /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read) */
+  settleWorld()
 })
 afterEach(async () => {
   await act(async () => { root.unmount() })

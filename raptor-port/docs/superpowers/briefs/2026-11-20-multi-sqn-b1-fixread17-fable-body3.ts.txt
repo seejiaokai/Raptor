@@ -1,0 +1,35 @@
+
+import { HOME_PFX } from './units-model'
+describe('FR17 probe 3', () => {
+  it('a move saved and replaced back the same day: Ranger never moves, his View of 150 stands', () => {
+    signInAs('ad', 'a')
+    const u150 = addUnit('150', 'p1')
+    expect(setGrant('acus', u150.id!, 'view', 'bane').ok).toBe(true)
+    expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
+    signInAs('ad2', 'a2')
+    expect(setHome('bane', 'u149').ok).toBe(true)
+    const back = setHome('bane', 'u142')
+    expect(back.ok, JSON.stringify(back)).toBe(true)
+    on(16)
+    expect(homeOn('bane')).toBe('u142')
+    expect(levelIn('acus', u150.id!), 'he never moved').toBe('view')
+  })
+  it('a home row written for the day after tomorrow (past setHome): a right given meanwhile ends with the move', () => {
+    signInAs('ad', 'a')
+    const u150 = addUnit('150', 'p1')
+    expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
+    signInAs('ad2', 'a2')
+    const r = commitSettingsIntent('home.set', null, () => {
+      store.set(HOME_PFX + 'hx0', { id: 'hx0', pid: 'bane', unit: 'u142', from: '2026-07-15' })
+      store.set(HOME_PFX + 'hx1', { id: 'hx1', pid: 'bane', unit: 'u149', from: '2026-07-17' })
+    }) as any
+    unitsLoad()
+    expect(r.ok, JSON.stringify(r)).toBe(true)
+    signInAs('ad', 'a')
+    const g = setGrant('acus', u150.id!, 'view', 'bane')
+    expect(g.ok, JSON.stringify(g)).toBe(true)
+    on(17)
+    expect(homeOn('bane')).toBe('u149')
+    expect(levelIn('acus', u150.id!), 'his right ends with the move').toBeNull()
+  })
+})

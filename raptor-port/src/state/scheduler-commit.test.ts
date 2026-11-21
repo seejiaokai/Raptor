@@ -4,6 +4,7 @@
    nothing, and a throwing write rolls the model back (atomicity, property a) —
    all while the existing suite (run separately) stays byte-identical (property g). */
 import { beforeEach, afterEach, describe, expect, it } from 'vitest'
+import { inView } from '../engine/unitview'
 import { DAYS } from '../engine/data'
 import { INPUTS, baseYear } from '../engine/inputs'
 import { SCHED } from '../engine/publish'
@@ -42,9 +43,9 @@ describe('every scheduler write emits a record-level envelope (property c)', () 
     writeSlot('0.0.0.0.p', 'casper')
     expect(caught.length).toBe(1)
     expect(caught[0].type).toBe('sched.slot')
-    expect(caught[0].scope).toEqual({ module: 'sched', weekId: CURWEEK })
+    expect(caught[0].scope).toEqual({ module: 'sched', weekId: inView(CURWEEK) })
     expect(cols(caught[0])).toContain('days')
-    expect(caught[0].changes.some(c => c.collection === 'days' && c.id === `${CURWEEK}#0`)).toBe(true)
+    expect(caught[0].changes.some(c => c.collection === 'days' && c.id === `${inView(CURWEEK)}#0`)).toBe(true)
   })
 
   it('writeText -> a day change', () => {

@@ -83,6 +83,26 @@ const hasWords = (p: any) => !!String(p.text == null ? '' : p.text).trim()
    (state/person-delete.ts); these keep every later write from putting him back: a move is refused whole, an add
    leaves him out. */
 const goneOn = (personId: string, iso: string) => { const p: any = (PEOPLE as any)[personId]; return !!p && !!p.deleted && String(iso) >= String(p.deletedFrom || '') }
+/** A DELETED MAN TAKEN OFF A CALENDAR'S NOTES — the one body for the calendar loaded (state/person-delete.ts step 3c) and
+ *  every other squadron's (its stored half, the same file — the reshape plan §6.2 B1): `pid` off each note of `notes`
+ *  dated on or after `cutoff`, a GAP, never a splice (the surviving pucks keep their places), the trailing blanks trimmed —
+ *  the after-image the commit gate allows a delete to write on a squadron its admin holds no right in (perms.ts
+ *  deleteStripsOnly). Changes the notes in place; returns those it changed and, among them, those left with neither
+ *  words nor people, which the caller removes (D695's reading — togglePuckPerson's own rule). */
+export function stripGoneFrom(notes: readonly any[], pid: string, cutoff: string): { hit: any[]; empty: any[] } {
+  const hit: any[] = [], empty: any[] = []
+  for (const e of notes) {
+    if (!e || !Array.isArray(e.ids) || String(e.date || '') < cutoff) continue
+    const ix = e.ids.indexOf(pid)
+    if (ix < 0) continue
+    e.ids[ix] = ''
+    while (e.ids.length && !e.ids[e.ids.length - 1]) e.ids.pop()
+    hit.push(e)
+    if (!e.ids.length && !hasWords(e)) empty.push(e)
+  }
+  return { hit, empty }
+}
+
 /** who stops a note moving to `iso` — the first deleted man on it whose delete is on or before that day; null if none */
 export function planMoveBlock(id: string, iso: string): string | null {
   const p = PLANPUCKS.find((x: any) => x.id === id)

@@ -114,10 +114,12 @@ describe('minting a block from a template', () => {
   })
 })
 
+/* a unit's setting is stored under its unit (multi-squadron batch 1, step 2 — engine/hooks.ts storedKey): the boot unit's
+   `stores` is the stored key `sqn142_u142@stores` */
 describe('persistence, like the stores list', () => {
   it('the standard library writes nothing, and a divergence survives a reload', () => {
     dutyTplSave()
-    expect('sqn142_dutytpl' in mem ? JSON.parse(mem['sqn142_dutytpl']!) : 'unset').toBe(null)
+    expect('sqn142_u142@dutytpl' in mem ? JSON.parse(mem['sqn142_u142@dutytpl']!) : 'unset').toBe(null)
     renameTpl(DUTYTPL_CFG[0]!.id, 'Weekend Desk')
     addTpl('IRT')
     dutyTplSave()
@@ -128,7 +130,7 @@ describe('persistence, like the stores list', () => {
     expect(DUTYTPL_CFG.map(t => t.title)).toEqual(['Weekend Desk', 'SC Shift', 'AVALON', 'IRT'])
   })
   it('garbage in storage falls back to the seed, dropping bad rows', () => {
-    mem['sqn142_dutytpl'] = JSON.stringify([
+    mem['sqn142_u142@dutytpl'] = JSON.stringify([
       { id: 'x', title: 'Ok', rows: [{ role: 'SDO', str: '0700', end: '1300' }, 'junk', { role: 42 }] },
       'not a template',
       { title: 'no rows' },
@@ -141,7 +143,7 @@ describe('persistence, like the stores list', () => {
     ])
   })
   it('a non-array blob resets to the seed', () => {
-    mem['sqn142_dutytpl'] = JSON.stringify({ nope: true })
+    mem['sqn142_u142@dutytpl'] = JSON.stringify({ nope: true })
     dutyTplLoad()
     expect(DUTYTPL_CFG.map(t => t.title)).toEqual(['Standard', 'SC Shift', 'AVALON'])
   })
@@ -149,7 +151,7 @@ describe('persistence, like the stores list', () => {
   it('a malformed stored time is dropped on load, a valid one canonicalised', () => {
     /* untrusted storage from a pre-guard session could hold a nonsense time —
        load is the second net under the editor, so it never reaches a block */
-    mem['sqn142_dutytpl'] = JSON.stringify([
+    mem['sqn142_u142@dutytpl'] = JSON.stringify([
       { id: 'x', title: 'Ok', rows: [{ role: 'SDO', str: '2500', end: '7:00' }] },
     ])
     dutyTplLoad()
@@ -161,7 +163,7 @@ describe('persistence, like the stores list', () => {
        loop) and the second is 'u1'. The pre-scan advances SEQ past 'u1' BEFORE
        minting, so the two get distinct ids and both stay reachable to
        rename/delete rather than colliding on 'u1'. */
-    mem['sqn142_dutytpl'] = JSON.stringify([
+    mem['sqn142_u142@dutytpl'] = JSON.stringify([
       { title: 'A', rows: [{ role: 'SDO', str: '0700', end: '1300' }] },
       { id: 'u1', title: 'B', rows: [{ role: 'SDO', str: '0700', end: '1300' }] },
     ])
@@ -209,7 +211,7 @@ describe('a template names the wave its desk serves', () => {
     expect(DUTYTPL_CFG.find(x => x.id === t.id)!.wave).toBe('avalon')
   })
   it('untrusted storage: a nonsense wave drops to none; a pre-7-Sep library keeps the seed desks\' waves by id', () => {
-    mem['sqn142_dutytpl'] = JSON.stringify([
+    mem['sqn142_u142@dutytpl'] = JSON.stringify([
       { id: 'u1', title: 'Bad', wave: 'moon', rows: [{ role: 'SDO', str: '', end: '' }] },
       { id: 'u2', title: 'None', rows: [{ role: 'SDO', str: '', end: '' }] },
       { id: 'avalon', title: 'AVALON', rows: [{ role: 'SXO', str: '19:00', end: '07:00' }] },
@@ -219,7 +221,7 @@ describe('a template names the wave its desk serves', () => {
     expect(DUTYTPL_CFG.map(t => [t.id, t.wave])).toEqual([['u1', ''], ['u2', ''], ['avalon', 'avalon'], ['sc', 'sc']])
   })
   it('an explicit null wave on a seed desk reads as "unset" too — the seed wave comes back, never a silent plain desk', () => {
-    mem['sqn142_dutytpl'] = JSON.stringify([
+    mem['sqn142_u142@dutytpl'] = JSON.stringify([
       { id: 'avalon', title: 'AVALON', wave: null, rows: [{ role: 'SXO', str: '19:00', end: '07:00' }] },
       { id: 'u1', title: 'Mine', wave: null, rows: [{ role: 'SDO', str: '', end: '' }] },
     ])

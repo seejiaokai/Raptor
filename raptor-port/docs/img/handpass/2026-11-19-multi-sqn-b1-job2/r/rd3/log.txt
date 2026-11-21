@@ -1,0 +1,46 @@
+msq-j2-r-d v1 D,E,F
+pids {"Merlin":"mer9","Osprey":"osp9","Kestrel":"kes9"}
+approve state aria-pressed=null aria-checked=true class=pp-sw bp-sw on
+approve now aria-pressed=null aria-checked=false class=pp-sw bp-sw
+sheet after LL Merlin Thu 26 Nov Auto-approve ✕ No manning row turns amber or red till 26 Nov Document Whole day AM PM Pick a range That takes Merlin to −1 LVE. Tap the same leave again to go ahead. LL −1 OL −1 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯
+ROW PASS | R-D | desktop | ad9: Merlin Thu 26 Nov, Auto-approve off, LL | saw: cell "LL" class  act hasc; approve state before: aria-pressed=null aria-checked=true class=pp-sw bp-sw on
+ROW PASS | R-D | desktop | ad9: Merlin Tue 24 Nov, Grant OIL, reason, Give FO | saw: cell "FO"
+signed in as ad
+elog before delete [{"u":"u149","sub":"mer9","lbl":"Leave War · Merlin · FO 24 Nov: OIL award given · 1 day","date":"2026-11-24"}]
+elog after delete [{"u":"u149","sub":"mer9","lbl":"Merlin · archived","date":"2026-11-19","kind":"archived"},{"u":"u149","sub":"mer9","lbl":"Leave War · Merlin · LL 26 Nov: bid removed","date":"2026-11-26","kind":"deleted"},{"u":"u149","sub":"mer9","lbl":"Leave War · Merlin · FO 24 Nov: OIL award given · 1 day","date":"2026-11-24"},{"u":"u149","sub":"mer9","lbl":"Merlin · deleted","date":"2026-11-19","kind":"deleted"},{"u":"u149","sub":"mer9","lbl":"Leave War · Merlin · FO 24 Nov: OIL award taken away","date":"2026-11-24"}]
+ROW PASS | R-D | desktop | ad: Admin -> Users -> Merlin -> Delete (twice); the stored history lines | saw: new lines: [["u149","Merlin · archived","2026-11-19"],["u149","Leave War · Merlin · LL 26 Nov: bid removed","2026-11-26"],["u149","Merlin · deleted","2026-11-19"],["u149","Leave War · Merlin · FO 24 Nov: OIL award taken away","2026-11-24"]]
+signed in as ad9
+ROW RECORD | R-D | desktop | ad9: the war after Merlin's delete | saw: name "Merlin
+B" cells {"2026-11-19":"PO","2026-11-20":"PO","2026-11-24":"PO","2026-11-26":"PO","2026-12-01":"PO"}
+signed in as ad9
+ROW RECORD | E-setup | desktop | ad9: open November for bidding (so Osprey can bid on Mon 30 Nov) | saw: lines ["1 Jan – 31 Mar past","19 Nov – 30 Nov 12 days"]; chip "Open for bidding 19 Nov – 30 Nov"
+signed in as us9
+us9 sheet Osprey Mon 30 Nov ✕ No manning row turns amber or red till 30 Nov Document Whole day AM PM Pick a range LL −1 OL −1 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD ⋯
+ROW RECORD | E-setup | desktop | us9: Mon 30 Nov bid LL | saw: cell "LL"
+signed in as ad9
+ROW FAIL | R-E | desktop | ad9: Leave War -> Approvals | saw: Osprey on screen: true; 'new' marks: 0; words: Approvals 1 Balances OIL View My leave LVE 0 · OIL 0 · 0 pending › Approvals 1 pending · 1 new New 1 Dates All Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec Pick dates… Approve all 1 Name Kind Dates Days LVE Bal Lowest Avail Placed Osprey A LL Mon 30 Nov › 1 day −1 P 3 19 Nov 05:55 Approve Refuse — name — Condor Falcon Gannet Harrier Heron Kestrel O
+ROW PASS | R-E | desktop | ad9: leave Approvals (Grid), come back | saw: 'new' marks: 0; Osprey still listed: true
+request card TALON Request access Signed in as newr1 You're not on the squadron's list yet. Tell the admins who you are and they'll give you access. DISPLAYED CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL Pick… Pilot WSO Personnel (ground crew) CAT Pick… Request access Sign out
+fields INPUT#accCs[callsign or name] INPUT#accIni[initials] SELECT#accSeat[Pick…
+Pilot
+WSO
+Personne] SELECT#accCat[Pick…] BUTTON#accSend[Request access] BUTTON#accOut[Sign out]
+select 0 Pick…|Pilot|WSO|Personnel (ground crew)
+picked Pilot
+select 1 Pick…|OCU|D|C|B|A|IP|IR|FI
+picked OCU
+card after fill TALON Request access Signed in as newr1 You're not on the squadron's list yet. Tell the admins who you are and they'll give you access. DISPLAYED CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL Pick… Pilot WSO Personnel (ground crew) CAT Pick… OCU D C B A IP IR FI Request access Sign out
+after send TALON Waiting for an admin NEWBIRD INITIALS NB SEAT Pilot CAT OCU Request sent An admin approves You're on the schedule Sign out Signed in as newr1
+signed in as ad9
+ROW FAIL | R-E | desktop | ad9 signs in after a new person asked for access | saw: bell cls "bellbtn on"; lines null
+admin words 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin 1 ↶ ↷ Insights Logout Kestrel · Admin Grid Approvals 1 Balances OIL View My leave LVE 0 · OIL 0 · 0 pending › ▾ Manning Open for bidding 19 Nov – 30 Nov Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC 2026 CS/Name +LVE NOV SUN 01 MON 02 TUE 03 WED 04 THU 05 FRI 06 SAT 07 SUN 08 MON 09 TUE 10 WED 11 THU 12 FRI 13 SAT 14 SUN 15 MON 16 TUE 17 WED 18 THU 19 FRI 20 SAT 21 SUN 22 MON 23 TUE 24 WED 25 THU 26 
+ROW RECORD | R-E | desktop | ad9: open the bell, then Admin -> Users, leave; bell again | saw: bell cls "bellbtn"; lines ["Nothing new"]
+signed in as ad
+ROW RECORD | R-E | desktop | ad (the master): bell | saw: bell cls "bellbtn on"; lines null
+signed in as ad
+ROW PASS | R-F | desktop | ad: Admin -> Users -> Kestrel -> Archive | saw: Kestrel is 149's last admin.
+opts Member — own inputs, quals and bids|Admin — schedules and manages
+ROW RECORD | R-F | desktop | ad: Osprey -> role Admin -> Save | saw: Osprey us9 · Pilot · CAT A Admin Add a person Callsign/Name Initials Pilot, WSO or per
+ROW PASS | R-F | desktop | ad: Kestrel -> Archive again | saw: Archived · 1
+errors []
+DONE 6 PASS 2 FAIL 6 OTHER of 14

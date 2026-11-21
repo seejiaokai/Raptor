@@ -1,0 +1,74 @@
+[
+ [
+  "R1",
+  "desktop",
+  "ad9 adds ground row \"R149 HIST\" on Wed 15 Jul",
+  "149's Wed 15 counts the change",
+  "Wed: 3 changes; all heads: (no chip), (no chip), 3 changes, (no chip), (no chip), (no chip), (no chip); chips: 3 changes@day-head | 3 changes@?; clock: Changes",
+  "RECORD",
+  "r1-02-ad9-week-after-add.png"
+ ],
+ [
+  "R1",
+  "desktop",
+  "ad (142) looks at the week after 149's change",
+  "142's day heads and clock as before: Wed \"(no chip)\", clock \"Changes\"",
+  "Wed: (no chip); clock: Changes",
+  "PASS",
+  "r1-03-ad-week-after-149-change.png"
+ ],
+ [
+  "R1",
+  "desktop",
+  "ad opens the changes window (the clock)",
+  "nothing of 149: no \"R149 HIST\", no Kestrel",
+  "",
+  "FAIL",
+  "r1-04-ad-changes-window.png"
+ ],
+ [
+  "R1",
+  "desktop",
+  "ad9 signs in again",
+  "149's own count still there",
+  "Wed: 3 changes; clock: Changes",
+  "PASS",
+  "r1-05-ad9-week-again.png"
+ ],
+ [
+  "R2",
+  "desktop",
+  "ad (master) sets Kestrel, 149's only admin, to Member and saves",
+  "refused: \"Kestrel is 149's last admin. Make another admin of 149 first.\"",
+  "Kestrel is 149's last admin. Make another admin of 149 first.",
+  "PASS",
+  "r2-ad-demotes-kestrel.png"
+ ],
+ [
+  "R2",
+  "desktop",
+  "ad2 (a plain 142 admin) sets Kestrel (149) to Member and saves",
+  "refused, with its reason; Kestrel still Admin",
+  "He is 149's. Only an admin of 149 can change his account. · his badge: ADMIN",
+  "PASS",
+  "r2-ad2-demotes-kestrel.png"
+ ],
+ [
+  "R2",
+  "desktop",
+  "ad9 (149's admin) sets Ranger (142) to Admin and saves",
+  "refused, with its reason; Ranger still Member",
+  "He is 142's. Only an admin of 142 can change his account. · his badge: MEMBER",
+  "PASS",
+  "r2-ad9-promotes-ranger.png"
+ ],
+ [
+  "R3",
+  "desktop",
+  "ad9, every save refused, makes a change then signs out",
+  "the \"Not saved\" band; no reload while the save waits (the reload is owed)",
+  "band: true; reloaded: false (loads 2 → 2)",
+  "PASS",
+  "r3-01-ad9-not-saved-band.png, r3-02-after-sign-out.png"
+ ]
+]

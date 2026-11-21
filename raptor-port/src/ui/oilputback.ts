@@ -13,11 +13,12 @@
 
    Use: `const after = oilPutBackWatch(di)` BEFORE the replacement; `const n = after()` once it is made (and the day
    re-checked) — it opens the list where n > 0; the note's tail is `oilNeedSaid(n)`. */
-import { INPUTS, inpId, inputCoversDate } from '../engine/inputs'
+import { inputsOnDay, inpId, inputCoversDate } from '../engine/inputs'
+import { UNIT } from '../engine/unitview'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { dayIso } from '../engine/verid'
-import { oilOpenOn, dayFacts, holidayOwnName } from '../leavewar/sync'
+import { oilOpenOn, unitDayFacts, holidayOwnNameOf } from '../leavewar/sync'
 import { unfmt } from './inputedit'
 import { setOilList } from './pops'
 
@@ -34,27 +35,29 @@ export function oilPutBackWatch(di: number): () => number {
      another of its days — a Fri–Sat input put back on Friday still needs its Saturday's answer, and it is counted (D862).
      The day's date does not change with its content, so the same inputs cover it before and after. */
   let lo = iso, hi = iso
-  for (const x of INPUTS as any[]) {
+  /* (the replaced day is the schedule in view's: only its own requests stand on it — multi-squadron step 3) */
+  const mine = DAYS[di] ? inputsOnDay(UNIT, dayIso(String(CURWEEK), di)) as any[] : []
+  for (const x of mine) {
     if (!x || !DAYS[di] || !inputCoversDate(x, DAYS[di].dt)) continue
     const a = unfmt(x.date, x.yr) || iso, b = x.endDate ? (unfmt(x.endDate, x.yr) || a) : a
     if (a < lo) lo = a
     if (b > hi) hi = b
   }
-  const openNow = () => new Map(oilOpenOn(lo, hi).map(o => [o.iid, o.days] as const))
+  const openNow = () => new Map(oilOpenOn(lo, hi, UNIT).map(o => [o.iid, o.days] as const))
   const openWas = openNow()
-  const stood = new Set(INPUTS.filter((x: any) => stands(x) && openWas.has(String(inpId(x)))).map((x: any) => String(inpId(x))))
+  const stood = new Set(mine.filter((x: any) => stands(x) && openWas.has(String(inpId(x)))).map((x: any) => String(inpId(x))))
   return () => {
     const open = openNow()
-    const back = INPUTS.filter((x: any) => stands(x) && !stood.has(String(inpId(x))) && open.has(String(inpId(x))))
+    const back = (DAYS[di] ? inputsOnDay(UNIT, dayIso(String(CURWEEK), di)) as any[] : []).filter((x: any) => stands(x) && !stood.has(String(inpId(x))) && open.has(String(inpId(x))))
     /* THE LIST OPENS FOR THE DAYS THOSE INPUTS NEED AN ANSWER FOR — the replaced day, almost always; another day of a
        several-day input where that is the one unanswered (F1, D862). It names the holiday where every such day is one —
        by the holiday's OWN name, never the preset's word ("Public holiday · PH": the read's F2; sync.ts holidayOwnName is
        what the holiday's own save and the bell read it through) — and on a plain weekend says nothing of a holiday. */
     if (back.length) {
       const days = [...new Set(back.flatMap((x: any) => open.get(String(inpId(x))) || []))].sort()
-      const allPh = days.length > 0 && days.every(d => dayFacts(d).kind === 'ph')
-      const names = allPh ? [...new Set(days.map(d => holidayOwnName(d)))] : []
-      setOilList({ from: days[0] || iso, to: days[days.length - 1] || iso, name: names.length === 1 ? names[0]! : '', fresh: false, plain: !allPh })
+      const allPh = days.length > 0 && days.every(d => unitDayFacts(UNIT, d).kind === 'ph')
+      const names = allPh ? [...new Set(days.map(d => holidayOwnNameOf(UNIT, d)))] : []
+      setOilList({ from: days[0] || iso, to: days[days.length - 1] || iso, name: names.length === 1 ? names[0]! : '', fresh: false, plain: !allPh, unit: UNIT })
     }
     return back.length
   }

@@ -1,0 +1,56 @@
+[
+ [
+  "H-1",
+  "desktop ref",
+  "Saber places approved AM-half LL for Ranger 27 Jul (portion-am, bid-LL), words \"morning words\"",
+  "half placed",
+  "switch true; cell \"LL\"; window open 0",
+  "RECORD",
+  "h1-desktop-ref-placed.png"
+ ],
+ [
+  "H-2",
+  "desktop ref",
+  "Hunter places approved PM-half LL for Ranger 27 Jul, words \"afternoon words\"",
+  "both halves in the cell",
+  "switch true; cell \"LL LL\"; window open 0",
+  "RECORD",
+  "h2-desktop-ref-cell.png"
+ ],
+ [
+  "H-3",
+  "desktop ref",
+  "Saber on PM half only: decide-refuse",
+  "PM gone/not approved; AM stands with morning words; window not claiming done",
+  "cell before \"LL LL\"; window before \"NO WINDOW\"; window@110ms \"NO WINDOW\"; after \"NO WINDOW\" (no confirm); window open 0; cell after \"LL LL\"",
+  "RECORD",
+  "h3-desktop-ref-settled.png"
+ ],
+ [
+  "H-4",
+  "desktop ref",
+  "reload as Saber, Ranger 27 Jul",
+  "same as H-3 settled",
+  "cell \"LL LL\"; window \"NO WINDOW\"; remarks [\"morning words\",\"afternoon words\"]",
+  "RECORD",
+  "h4-desktop-ref-reloaded.png"
+ ],
+ [
+  "H-5a",
+  "desktop ref",
+  "us bell",
+  "no \"Remark changed\" line",
+  "badge {\"dot\":\"block\",\"text\":\"\",\"aria\":\"Notifications\"}; lines [\"NEW Your leaveMon 27 Jul LL (PM) refused · Saber now\",\"NEW LLMon 27 Jul Remark changed · Hunter now\",\"NEW Your leaveMon 27 Jul LL (PM) added and approved · Hunter now\",\"NEW Your leaveMon 27 Jul LL (AM) added and approved · Saber now\",\"NEW Leave War17 Jul – 31 Jul Bidding open · Saber now\"]",
+  "FAIL",
+  "H-5a-desktop-ref-us-bell.png"
+ ],
+ [
+  "H-5b",
+  "desktop ref",
+  "ad2 bell",
+  "no \"Remark changed\" line",
+  "badge {\"dot\":\"block\",\"text\":\"\",\"aria\":\"Notifications\"}; lines [\"NEW Leave War17 Jul – 31 Jul Bidding open · Saber now\"]",
+  "PASS",
+  "H-5b-desktop-ref-ad2-bell.png"
+ ]
+]

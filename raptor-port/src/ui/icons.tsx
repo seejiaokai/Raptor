@@ -258,8 +258,8 @@ export function PenIcon({ solo = false, className = 'pen-ic' }: { solo?: boolean
   )
 }
 
-/* The squadron's mark at the left of the top bar — ONE drawing for the app's bar (Shell.tsx) and the guest page's bar
-   (GuestApp.tsx), so the two cannot drift apart (8 Nov 26, React Doctor's duplicate-jsx-subtree). */
+/* The squadron's mark at the left of the top bar (Shell.tsx) — made one drawing on 8 Nov 26 (React Doctor's
+   duplicate-jsx-subtree) when the guest page's bar drew it too; that page went with the guest view (D2239). */
 export function TalonMark() {
   return (
     <div className="mark">

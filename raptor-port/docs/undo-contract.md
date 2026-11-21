@@ -329,6 +329,14 @@ barrier from its undo's restore (`undoneSeq`). A step blocked by such a sticky b
 next press takes, then is passed over — still guarding older steps (the plan's §11.5; on his look card). In one browser
 another person's change never reaches the list (it empties at every sign-in); the unit models are `timeline-cr.test.ts`.
 
+**And of the unit in view (multi-squadron batch 1, step 2, 18 Nov 26).** There is still ONE change stream and one
+timeline — never a stack per unit. The next step is chosen among his own entries that touched the unit in view
+(`undo/timeline.ts inUnitView`: an entry whose records name the unit in view — `storage/unitid.ts unitOf` of each
+change's id — or name no unit at all, a roster or an input change), so his Undo on 142's schedule never steps back what
+he did on 149's, and back on 149 that step is still his to undo. A step that touched two units is ONE step, taken from
+either. Redo is chosen the same way. Undo never changes the unit in view: a change to another unit's week is put back
+through the stash, as an off-week one is (`state/undo-wire.ts loadContext`). Pinned by `state/units-switch.test.ts`.
+
 **An input is ONE record — since the one-rule build (12 Oct 26, `[ALL-AVAIL-AS-MEMBER]`; owner D756, D759 reading 9;
 the plan `superpowers/plans/2026-10-11-one-rule-plan.md` §4.9, §4.11).** An input filed for several people was one
 record a person (a command over N records); it is now the one record `inputs/<iid>`, its before and after images

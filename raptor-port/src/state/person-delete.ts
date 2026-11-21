@@ -53,14 +53,18 @@ import { logEdit } from '../engine/editlog'
 import { INPUTS, dateOrd, remarksTyped, tillSettle, nowStamp, holds as inInput, idsOf } from '../engine/inputs'
 import { ownInputOf, takePerson } from '../engine/inputown'
 import { ordShift, ordLabel } from '../engine/medical'
-import { stashKeys, stashGet, stashWeekState, isPreservedWeek } from '../engine/weekstash'
-import { stripPersonFromDay, trimTail, hisLanded } from '../engine/overlay'
+import { stashEntries, stashGet, stashWeekState, isPreservedWeek } from '../engine/weekstash'
+import { UNIT } from '../engine/unitview'
+import { qualify, localOf } from '../storage/unitid'
+import { stripPersonFromDay, hisLanded } from '../engine/overlay'
 import { validate } from '../engine/validate'
 import { localToday } from '../leavewar/engine/period'
-import { PLANPUCKS } from './plan'
-import { commit, CmdRefused, isCommitting } from '../command'
+import { PLANPUCKS, stripGoneFrom } from './plan'
+import { storedCalendar, storedPlan } from './plan-foreign'
+import { units } from './units'
+import { commit, CmdRefused, isCommitting, isInReducer } from '../command'
 import { peopleStore, settingsStore, finishPeopleWrite } from './people-settings-commit'
-import { schedStore, schedApplyEnd, resyncSchedBaseline } from './sched-commit'
+import { schedStore, schedApplyEnd, resyncBeforeEnlist } from './sched-commit'
 import { mayDeletePerson, byAfterLeaving } from './perms'
 import { deleteAccountProblem, dropAccountOfPid, accountsAfter } from './accounts'
 import { saidOf } from './roster-add'
@@ -160,18 +164,23 @@ export function stashPreflight(id: string, cutoff: string): string | null {
     for (let di = 0; di < DAYS.length; di++) if (dayIso(CURWEEK, di) >= cutoff && JSON.stringify((DAYS as any)[di] || {}).includes(`"${id}"`))
       return `The week of ${CURWEEK} can't be changed — the delete was not made`
   }
-  for (const v of stashKeys()) {
-    if (v === CURWEEK) continue
+  /* EVERY SQUADRON'S STASHED WEEKS, not the schedule in view's alone (multi-squadron step 3): a man's days are worked out
+     of whatever week holds them, 149's as 142's, so a read-only or unreadable week of the squadron NOT on screen refuses
+     the delete just as one of the squadron on screen does. The keys are unit-qualified (`u149@13/07/2026`); only the
+     loaded week's own entry is skipped — the stale copy written on the way out. The message names the week by its date. */
+  const loaded = qualify(UNIT, String(CURWEEK))
+  for (const [v] of stashEntries()) {
+    if (v === loaded) continue
     if (dayIso(v, 6) < cutoff) continue                         // the whole week is before the cutoff — untouched
     const st = stashWeekState(v)
     if (st === 'ok') continue
-    if (st === 'unreadable') return `The week of ${v} can't be read — the delete was not made`
+    if (st === 'unreadable') return `The week of ${localOf(v)} can't be read — the delete was not made`
     /* preserved: refused only if he is on it on or after the cutoff */
     try {
       const p = JSON.parse(stashGet(v) || '{}'); const days = Array.isArray(p.d) ? p.d : []
       for (let di = 0; di < days.length; di++) if (dayIso(v, di) >= cutoff && JSON.stringify(days[di] || {}).includes(`"${id}"`))
-        return `The week of ${v} can't be changed — the delete was not made`
-    } catch (_e) { return `The week of ${v} can't be read — the delete was not made` }
+        return `The week of ${localOf(v)} can't be changed — the delete was not made`
+    } catch (_e) { return `The week of ${localOf(v)} can't be read — the delete was not made` }
   }
   return null
 }
@@ -260,19 +269,42 @@ export function applyDelete(id: string, cutoff: string): void {
   }
   /* 3b. every saved week — NOT rewritten since phase 6 (d): each reads without him from his cutoff when its days come
      into memory (engine/overlay.ts). */
-  /* 3c. the planning calendar's pucks — a gap, never a splice (the surviving pucks keep their places) */
-  for (const e of [...PLANPUCKS]) {
-    /* the row's day is its `date` (state/plan.ts) — this read `iso`, a field no calendar row carries, so a delete never took
-       him off one ([DB-READINESS] group A, phase 2: found moving the calendar to one row each) */
-    /* a NOTE's people too, whatever `kind` it was saved with (D684: one kind of section since 9 Oct 26) */
-    if (!e || !Array.isArray(e.ids) || String(e.date || '') < cutoff) continue
-    const ix = e.ids.indexOf(id)
-    if (ix < 0) continue
-    e.ids[ix] = ''; trimTail(e.ids)
-    /* a note left with neither words nor people is not kept (D695's reading; state/plan.ts togglePuckPerson) */
-    if (!e.ids.length && !String(e.text == null ? '' : e.text).trim()) PLANPUCKS.splice(PLANPUCKS.indexOf(e), 1)
-  }
+  /* 3c. the planning calendar's pucks — a gap, never a splice (the surviving pucks keep their places). The row's day is
+     its `date` (state/plan.ts) — this once read `iso`, a field no calendar row carries, so a delete never took him off one
+     ([DB-READINESS] group A, phase 2: found moving the calendar to one row each); a NOTE's people too, whatever `kind` it
+     was saved with (D684: one kind of section since 9 Oct 26); a note left with neither words nor people is not kept
+     (D695's reading). The one strip body, state/plan.ts stripGoneFrom, shared with 3d. */
+  for (const e of stripGoneFrom([...PLANPUCKS], id, cutoff).empty) PLANPUCKS.splice(PLANPUCKS.indexOf(e), 1)
+  /* 3d. …AND EVERY OTHER SQUADRON'S CALENDAR THAT NAMES HIM (the reshape plan §6.2 B1 — Fable 1 of the full review; D299:
+     a delete takes him out of every day still to come). Step 3c reaches only the calendar loaded — the schedule in view's
+     — so a master admin deleting a 149 man with 142 in view, or 142's admin deleting a man moved 149 → 142 still on a
+     future 149 note, left him there. Each squadron's calendar not loaded is read as stored; where it names him on or after
+     his cutoff its stored half joins THIS command (loading those notes first, so each before-image is the note as stored)
+     and the same strip is written through it — saved with the delete, rolled back whole with it (state/plan-foreign.ts).
+     The commit gate lets the delete change those notes, and only so, though its admin holds no right in that squadron
+     (perms.ts section 7, deleteStripsOnly). Both doors reach here: the admin's Delete and a posting's (leavewar/sync.ts). */
+  stripOtherCalendars(id, cutoff)
   validate()
+}
+
+/* 3d's body: every squadron's calendar but the one loaded, read as stored; only one that names him from his cutoff joins */
+function stripOtherCalendars(id: string, cutoff: string): void {
+  for (const u of units()) {
+    if (!u || u.id === UNIT) continue
+    const naming = storedCalendar(u.id).pucks.filter((p: any) => p && p.id != null && Array.isArray(p.ids) && String(p.date || '') >= cutoff && p.ids.includes(id))
+    if (!naming.length) continue
+    const stored = storedPlan(u.id)
+    const locals = naming.map((p: any) => `pp:${p.id}`)
+    /* JOINED TO THE DELETE'S OWN COMMAND: applyDelete is handed no transaction (the posting pass calls it too), and a
+       command raised inside a running reducer joins it — one envelope, one rollback, no second authorization — so the
+       stored half loads his notes and enlists through that join (command/commit.ts dispatch) */
+    if (!isInReducer()) throw new Error('applyDelete strips another squadron\'s calendar only inside a command')
+    commit({ type: 'person.delete', scope: { module: 'people' }, meta: null, apply: (txn: any) => stored.join(txn, locals) })
+    const notes = locals.map(l => stored.get(l)).filter(Boolean)
+    const { hit, empty } = stripGoneFrom(notes, id, cutoff)
+    const gone = new Set(empty)
+    for (const n of hit) { if (gone.has(n)) stored.drop(`pp:${n.id}`); else stored.put(`pp:${n.id}`, n) }
+  }
 }
 
 /* ---- UNDO AND REDO NEVER PUT HIM BACK (the plan's Round 1 and 2 — Fable F2, Astra A1 / round-2 2) ----
@@ -468,8 +500,9 @@ export function deletePerson(id: string, dateIso?: string | null): string | null
   return saidOf(commit({
     type: 'person.delete', scope: { module: 'people' }, meta: null,
     apply: (txn: any) => {
-      /* the baseline to LIVE before enlisting (the input batch's own rule, sched-commit.ts commitInputsWith) */
-      resyncSchedBaseline()
+      /* the baseline to LIVE before enlisting, and the bell's image with it (sched-commit.ts resyncBeforeEnlist — fix
+         read 9, fault B: a bare resync refused the Delete after a write outside every command) */
+      resyncBeforeEnlist()
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(schedStore)   // no saved week is written (phase 6 (d))
       /* a man the war does not show (a SANS man with Show SANS off) is caught as the war would draw him BEFORE the mark
          takes him off every projection — so the months he was here keep his row (D299; Astra 3, Fable 3) */

@@ -1,0 +1,23 @@
+# Fix read 4 — the fresh, blind Opus read (08:31–08:42 19 Nov 26)
+
+Read of an exported copy of `claude/multi-sqn-b1-107` at `ea68a8f48` (fix read 3's five fixes), brief `…-fixread4-brief.md`. Blind to the walk and to Astra's report. Saved by the night coordinator after both readers had reported, condensed by it — every finding, cause, fix, proof and negative kept. Proof tests kept in the night chat's scratch `fixread4-opus-proofs/` (`zz-fr4-opus-o1.test.ts` from `src/state/`, `zz-fr4-opus-o2.test.ts` from `src/leavewar/`). Not yet reproduced by the host.
+
+---
+
+## 1. O1 lets an admin skip every own-input rule on another squadron's days (introduced by d5b2a25cd) — proof fails
+Cause: `perms.ts` `inputUnitViolation` now continues for any actor whose input names only himself; for a member `inputBreach` still runs after, for an admin nothing does (`memberViolation` returns early for admins). Setup: Hunter (142's admin) moved to 149 from 16 Jul, today 15 Jul, leave 20–22 Jul (149's days): saving it with the war's approved mark (`lw`) — accepted (Ranger, a member, refused); with a scheduler's cancel mark (`cx`) — accepted; Kestrel cancels it on 149's days and Hunter clears the cancel — accepted (member refused); the same after the move on 142's days. He overrides the other squadron's scheduler decisions on his own leave. Fix: in the `onlyMe` branch, for an admin, continue only if `levelInForce(a, u, today, before) === 'admin'` for every unit of `was` and `is`; otherwise run the member's own-input rules (`inputBreach(env, c, String(a.personId), replayed)`, `replayed` from `REPLAY`) and refuse on any; keep `multi-sqn-fixread3-admin-own-input.test.ts` green, add the three cases.
+
+## 2. O2: a Redo puts another squadron's war line back on a moved man (introduced by 3cbb6e815) — proof fails
+Kestrel opens bidding, Osprey told; Osprey's move to 142 from 16 Jul arrives; on 16 Jul Kestrel's Undo goes through (right); Redo goes through and Osprey, now 142's, holds 149's "Bidding open" again — a line the action itself would not write now (control: opening bidding that day does not tell him). Against D148 and D2194. Cause: `adminOwnerViolation` passes any verified restore of a line by its maker, adds as well as deletes; the same lets an Undo put back a line its step had taken away. Fix: the exception for `c.op === 'delete'` only, and the restore leaves out a line put back for a man no longer at the war's squadron (as `warNoticesReversed` does with `atWarHome`), so the Redo goes through without it.
+
+## 3. O3 on a desktop: any click clears the "jump landed" mark, so the old drift can return (read; no unit test)
+Press a month button, click a day cell before the whole-year fill ends: `pointerdown` clears `landedRef`, later redraws take the shift rule, the day can slide under the frozen columns ([LW-MONTHJUMP-SUBPIXEL]). Fix: clear the mark only when the person actually scrolls — `pointerdown` only on the scroll box itself, or in `onWrapScroll` when the scroll leaves where the landing put it. The phone holds.
+
+## 4. A ruling clash for him: a moved admin's "taken back" line (A2) — no defect test
+A2 writes a new "taken back" line about a 142 posting on the bell of an admin now 149's (`noticePostingBack`): D1693, D1699 say he is owed it; D2194 says no line about another squadron's own business. O2's follow-up does the opposite (a moved man gets no "taken back", `atWarHome` in `warNoticesReversed`). The later ruling, D2194, would favour deleting his line without a new one.
+
+## Negatives
+- A2 narrow: the posting command, that man's run posting record; "po" lines by the app, only deleted, one run, matching date and outcome; "taken back" lines only added, by the actor, only for a holder whose line the same command deletes; a forged delete refused; another squadron's posting record refused by 7b; every take-back door is the posting command (Undo post out, `postOut` D1710, `takeBack`); Restore keeps the lines by design.
+- O2 cannot be forged: `verifiedReplay` needs the restore the timeline is applying, by the same person, image for image; adding `notices` does not widen the member checks.
+- A1 (`postingLock`) is the same calculation as the gate's `lastAdminViolation` (archived excluded, today and every saved home date, the same lookup); two due together — the second waits; an ordinary member's posting never held but where no admin who can sign in is left; a squadron already short skipped; no case where the preflight passes and the backstop refuses; the Archive door uses the same lock.
+- O3 on a phone: no sub-pixel write outside the jump's window; a keyboard jump sets the mark after the key's clear.

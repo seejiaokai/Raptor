@@ -2,13 +2,16 @@ import { DAYS } from './data'
 import { PEOPLE, whoId, isSpecial, callsignTakenBy, indexCallsigns } from './people'
 import { SCHED, markEdit, markDeletion, deletionWasIssued, markStructuralAdd, dayApproved, dropRowMarks, protectedWeek, dayCurVer, daySnapOf } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
-import { isOD, goesOnProg, INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx, holds, leadOf, isPlaceholderInput } from './inputs'
+import { UNIT } from './unitview'
+import { isOD, goesOnProg, INPUTS, inputsOnDay, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx, holds, leadOf, isPlaceholderInput } from './inputs'
 import { shiftKeys, seatRow, iuParts } from './keys'
 import { inputProtected } from './quarantine'
 import { VCONF } from './rules'
 import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
 import { ridWriteKey } from './rowids'
+import { CURWEEK } from './waves'
+import { dayIso } from './verid'
 import { rowElsewhere } from './weekstash'
 import { requestRowFields, srcvOf, standsOn, standingRow, requestOfBox, REQ_BOX, placeRequestRow, asIssuedOrder, landedRid } from './overlay'
 export function whoArr(r:any){return Array.isArray(r.who)?r.who.slice():(r.who?[r.who]:[]);}
@@ -656,7 +659,7 @@ export function acceptedDay(inp:any){
    recovery that keeps the row), and a multi-day 'g' still landed on another day. */
 export function reconcileDayFiling(di:any){
   const dt=(DAYS[+di]||{}).dt; if(dt==null)return;
-  INPUTS.forEach((inp:any)=>{
+  inputsOnDay(UNIT,dayIso(String(CURWEEK),+di)).forEach((inp:any)=>{   // the schedule in view's own, on this day (multi-squadron step 3; the reshape §3.2 A-i)
     if(!inputCoversDate(inp,dt)||inputProtected(inp))return;
     /* 'u' (a global filing DECISION with no ground row) and 'r' (dormant) are not
        per-week ground landings — untouched. */

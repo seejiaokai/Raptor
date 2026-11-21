@@ -1,0 +1,29 @@
+[
+ [
+  "R1",
+  "phone",
+  "ad9 adds ground row \"R149 HIST\" on Wed 15 Jul",
+  "149's Wed 15 counts the change",
+  "Wed: 3 changes; all heads: (no chip), (no chip), 3 changes, (no chip), (no chip), (no chip), (no chip); chips: 3 changes@day-head | 3 changes@?; clock: Changes",
+  "RECORD",
+  "r1-02-ad9-week-after-add.png"
+ ],
+ [
+  "R1",
+  "phone",
+  "ad (142) looks at the week after 149's change",
+  "142's day heads and clock as before: Wed \"(no chip)\", clock \"Changes\"",
+  "Wed: (no chip); clock: Changes",
+  "PASS",
+  "r1-03-ad-week-after-149-change.png"
+ ],
+ [
+  "R1",
+  "phone",
+  "ad9 signs in again",
+  "149's own count still there",
+  "Wed: 3 changes; clock: Changes",
+  "PASS",
+  "r1-05-ad9-week-again.png"
+ ]
+]

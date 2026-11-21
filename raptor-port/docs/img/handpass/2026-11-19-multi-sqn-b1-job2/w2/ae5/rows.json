@@ -1,0 +1,20 @@
+[
+ [
+  "W2-C",
+  "desktop",
+  "ad2: Admin → Data → Clear edit history… all it offers",
+  "142's lines gone; every 149 line still there",
+  "steps: period options: before=Anything older than a date / on=A specific date / range=A date range ; chose: older than T+1 ### step1: ster Squadron config Duty, day & wave templates Data Storage & cleanup Data Old clutter Period Older than Pick a date ▾ Clear old clutter… Removes only old calendar pucks and day notes in the chosen period // nly partly inside the period is kept whole. Edit history Period Older than Fri 20 Nov 26 ▾ Tap again to clear 3 entries Permanently removes entries from the edit history — the record of who changed what — made in the chosen period ; buttons: ↶ Undo | ↷ Redo | Sync · slow | Insights | Logout | Hunter · Admin | Jul 06 | Jul 13 | Jul 20 | Jul 27 | CAT | Type | Quals | Templates | Live working copy▾ | i | Publish day | Make public | Traffic | + In-time | ✕ | ✕ | C | C | C | C | Traffic | + In-time | ✕ | ✕ | C | C | C | C | Make public | Make public | Make public | CPTallyOFPM | OML | ATT C | Templates | Live working copy▾ | i | Publish da ### step2: ster Squadron config Duty, day & wave templates Data Storage & cleanup Data Old clutter Period Older than Pick ; lines before: [\"u=u149 who=Kestrel pid=kes9 | Ground · W2 149 LINE · item\",\"u=u149 who=Kestrel pid=kes9 | Ground · W2 149 LINE\",\"u=u142 who=Hunter pid=prowler | Ground · W2 142 LINE\",\"u=u149 who=Kestrel pid=kes9 | Ground item added\",\"u=u142 who=Hunter pid=prowler | Ground · W2 142 LINE · item\",\"u=u142 who=Hunter pid=prowler | Ground item added\"] ; after: [\"u=u149 who=Kestrel pid=kes9 | Ground · W2 149 LINE · item\",\"u=u149 who=Kestrel pid=kes9 | Ground · W2 149 LINE\",\"u=u149 who=Kestrel pid=kes9 | Ground item added\",\"u=u142 who=Hunter pid=prowler | Edit history cleared — 3 entries from be\"] ; 149 lines before 3 after 3 ; 142 lines before 3 after 1",
+  "FAIL",
+  "c-05, c-06"
+ ],
+ [
+  "W2-C",
+  "desktop",
+  "ad9: Edit Schedule (week of Wed 15 Jul) → clock → All changes",
+  "\"W2 149 LINE\" still listed",
+  "⠿Changes · week of 13/73 changes this week✕New to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWho▾Wed · Ground · W2 149 LINE · 203:08Kestrel put onKestrel · 19/11 03:08Item— → W2 149 LINEKestrel · 19/11 03:08Wed · The dayKestrel · 19/11 03:08Ground item addedTap a change to go to it — the window stays open.",
+  "PASS",
+  "c-06-ad9-allchanges-wed15.png"
+ ]
+]

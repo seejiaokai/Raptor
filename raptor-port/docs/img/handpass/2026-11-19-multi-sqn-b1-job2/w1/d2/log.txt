@@ -1,0 +1,8 @@
+msq-j2-w1-d v1
+ROW PASS | W1-D | desktop | Leave War: Ranger's cell on 2026-11-21 → day window → ⋯ → Post out → sheet; dismiss by Close | saw: sheet open before: true; after: false; day window words: (no day window); Post out controls still visible: 0
+ROW PASS | W1-D | desktop | Leave War: Ranger's cell on 2026-11-21 → day window → ⋯ → Post out → sheet; dismiss by Escape | saw: sheet open before: true; after: false; day window words: (no day window); Post out controls still visible: 0
+ROW PASS | W1-D | desktop | Leave War: Ranger's cell on 2026-11-21 → day window → ⋯ → Post out → sheet; dismiss by outside press | saw: sheet open before: true; after: false; day window words: (no day window); Post out controls still visible: 0
+ROW FAIL | W1-D | desktop | Leave War: open a man's person window from his name, close by ✕ | saw: open: true after ✕: true
+ROW FAIL | W1-D | desktop | reopen the person window, close by Escape | saw: open: true after Escape: true
+errors []
+DONE 3 PASS 2 FAIL 0 OTHER of 5

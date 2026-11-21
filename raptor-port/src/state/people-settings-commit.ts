@@ -42,7 +42,8 @@ import {
   cmdDeferEffect,
 } from '../command'
 import { PEOPLE, indexCallsigns } from '../engine/people'
-import { store, setSettingsWriteHook, setSettingsGroupHook, HOOKS } from '../engine/hooks'
+import { store, setSettingsWriteHook, setSettingsGroupHook, HOOKS, storedKey } from '../engine/hooks'
+import { split, localOf } from '../storage/unitid'
 import { rulesLoad, rulesResetMem } from '../engine/rules'
 import { lookaheadLoad } from '../engine/lookahead'
 import { qualColsLoad } from '../engine/qualcols'
@@ -53,6 +54,7 @@ import {
 import { mintOrd, byOrd } from '../command/ord'
 import { insightsLoad } from '../engine/insights-config'
 import { FLY_TYPES, FLY_ROW_PREFIXES } from './flyplan-model'
+import { UNIT_TYPES, UNIT_ROW_PREFIXES } from './units-model'
 /* This file imports NONE of the files that save through it (accounts, changes, noticeseen, apprseen, lwseen, flyplan,
    roster-add, memberfile): each imports its commit helpers from here, so importing them back made 13 import cycles
    (React Doctor, [RD-LEFT-1108], 8 Nov 26). What it needs of them — their loaders and their command-type lists — is
@@ -65,9 +67,9 @@ import { FLY_TYPES, FLY_ROW_PREFIXES } from './flyplan-model'
 export const SETTINGS_KEYS = [
   'rules', 'stores', 'cxreasons', 'daytpl', 'dutytpl', 'wavetpl', 'wavehide',
   'qualcols', 'lookahead', 'secdefault', 'wavedefault',
-  /* [ACCOUNTS] (D166, D204, 26 Sep 26): the guest switch — one `Setting` (data-model §3, §11). Written ONLY by
-     state/accounts.ts, through its intent commands. */
-  'guestview', 'insights', 'sanscalendar',
+  /* (`guestview` — [ACCOUNTS]' guest switch, D204 — stood here until the guest view was removed, his D2239 of 20 Nov 26:
+     no command writes it, and a value an older build stored is no settings record any more, read by nothing — D56) */
+  'insights', 'sanscalendar',
   /* (`flynames` — a saved name for each of the Leave War's Required rows — stood here from step 1 of the Inputs / SANS
      redesign until 8 Oct 26: D668, the Required rows keep their names.) */
   /* the members' switch — "members may file duties and commitments for other people" (D654, D655; the plan §3.13).
@@ -92,13 +94,24 @@ export const SETTINGS_KEYS = [
 /* - `noticeseen:<pid>` — what each person has read of his bell's notices, `NoticeSeen`; written ONLY by
      state/noticeseen.ts, through its one command `notices.seen` (own row only — the one-rule build's step 7). */
 /* (…'apprseen:' — each admin's own moment of opening the Leave War's Approvals, M4 8.4: state/apprseen.ts) */
-export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', 'noticeseen:', 'apprseen:', 'lwseen:', ...FLY_ROW_PREFIXES] as const
-const isRowKey = (k: string) => SETTINGS_ROW_PREFIXES.some(p => k.startsWith(p))
+export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', 'noticeseen:', 'apprseen:', 'lwseen:', ...FLY_ROW_PREFIXES,
+  /* the units, places, homes and rights (state/units.ts — multi-squadron batch 1, step 1), one row each */
+  ...UNIT_ROW_PREFIXES] as const
+/* EVERY UNIT'S SETTINGS, NAMED WITH ITS UNIT (multi-squadron batch 1, step 2 — engine/hooks.ts storedKey): a unit's own
+   setting or row is the record `settings/<unit>@<name>` (`settings/u149@rules`, `settings/u149@flyday:2026-07-13`), a
+   community one keeps its plain name. The records hold EVERY unit's stored settings — not only the unit in view's — so a
+   change to 149's rules is 149's record whichever unit is on screen, and an Undo of it writes 149's back by that name.
+   A record's kind is read from its name with the unit split off (localOf). */
+const isRowKey = (k: string) => { const l = localOf(k); return SETTINGS_ROW_PREFIXES.some(p => l.startsWith(p)) }
+const isFixedKey = (k: string) => (SETTINGS_KEYS as readonly string[]).includes(localOf(k))
 /* every row stored now — ONE pass over the settings keys (the guard reads this on every command, so never one per kind) */
 const settingsRowKeys = (): string[] => store.keys('').filter(isRowKey)
-/* every settings record's key: the fixed ones, then each row stored now */
+/* every settings record's key: the fixed ones — the unit in view's always (absent reads as null), and every other unit's
+   that is stored — then each row stored now */
 function settingsRecordKeys(): string[] {
-  return [...SETTINGS_KEYS, ...settingsRowKeys()]
+  const out = new Set<string>(SETTINGS_KEYS.map(k => storedKey(k)))
+  for (const k of store.keys('')) if (isFixedKey(k) && split(k).unit != null) out.add(k)
+  return [...out, ...settingsRowKeys()]
 }
 /* the loaders of the four files that save through this layer and keep a copy in memory — the accounts, the change
    history's and the bell's seen marks, the flying plan — handed in at registration (see the imports' note). Until then
@@ -106,23 +119,22 @@ function settingsRecordKeys(): string[] {
    unregistered type); the app's own headless actor is not checked by type, but every way into the app loads
    state/store.ts, whose wireStore() registers before anything runs — so no rollback in the app meets these empty ones
    (chat 32's reads, 8 Nov 26). */
-export interface ModuleLoaders { accounts: () => void; changes: () => void; noticeSeen: () => void; flyplan: () => void }
+export interface ModuleLoaders { accounts: () => void; changes: () => void; noticeSeen: () => void; flyplan: () => void; units: () => void }
 const noLoad = () => {}
-let MODULE_LOADERS: ModuleLoaders = { accounts: noLoad, changes: noLoad, noticeSeen: noLoad, flyplan: noLoad }
+let MODULE_LOADERS: ModuleLoaders = { accounts: noLoad, changes: noLoad, noticeSeen: noLoad, flyplan: noLoad, units: noLoad }
 /* every xLoad(), run to rebuild the module CFGs from the (restored) store on a
    rollback — deduped (waveTplLoad rebuilds both wavetpl + wavehide). In the order the list has always run. */
 const settingsLoaders = (): Array<() => void> => [
   rulesLoad, storesLoad, cxReasonsLoad, dayTplLoad, dutyTplLoad, waveTplLoad,
   qualColsLoad, lookaheadLoad, secDefaultLoad, waveDefaultLoad,
   MODULE_LOADERS.accounts, MODULE_LOADERS.changes, MODULE_LOADERS.noticeSeen, insightsLoad, MODULE_LOADERS.flyplan,
+  MODULE_LOADERS.units,
 ]
 function settingsRecords(): Map<string, RecordEntry> {
   const m = new Map<string, RecordEntry>()
-  for (const k of SETTINGS_KEYS) {
-    m.set(`settings/${k}`, { collection: 'settings', id: k, value: store.get(k, null) })
-  }
-  /* a row is a record while it is stored; absent, it is no record (so adding one is a put, removing it a delete) */
-  for (const k of settingsRowKeys()) m.set(`settings/${k}`, { collection: 'settings', id: k, value: store.get(k, null) })
+  /* the fixed keys, each by its stored name (`u142@rules`); a row is a record while it is stored; absent, it is no
+     record (so adding one is a put, removing it a delete) */
+  for (const k of settingsRecordKeys()) m.set(`settings/${k}`, { collection: 'settings', id: k, value: store.get(k, null) })
   return m
 }
 function captureSettings(): string {
@@ -142,15 +154,19 @@ function rehydrateSettings(): void {
   rulesResetMem()
   for (const load of settingsLoaders()) load()
 }
+/* THE UNIT IN VIEW CHANGED (state/store.ts switchUnit — multi-squadron step 2): every setting held in memory (VCONF, the
+   templates, the flying plan …) is the unit in view's, so the same reset-then-overlay re-derive reads the new unit's
+   records; nothing is written */
+export const reloadUnitSettings = (): void => rehydrateSettings()
 /* rollback: restore each key's persisted value, then the reset-then-overlay
    re-derive. Writes go through the raw setter (the hook is inert while
    committing) so nothing nests. */
 function restoreSettings(snap: string): void {
   const o = JSON.parse(snap)
-  for (const k of SETTINGS_KEYS) store.set(k, k in o ? o[k] : null)
-  /* the rows: every one the snapshot held, back as it was; every one written since, removed */
-  for (const k of settingsRowKeys()) if (!(k in o)) store.set(k, null)
-  for (const k of Object.keys(o)) if (isRowKey(k)) store.set(k, o[k])
+  /* every record the snapshot held, back as it was (each by its stored name, so another unit's is put back as that unit's);
+     every one written since, removed */
+  for (const k of settingsRecordKeys()) if (!(k in o)) store.set(k, null)
+  for (const k of Object.keys(o)) store.set(k, o[k])
   rehydrateSettings()
 }
 export const settingsStore: EnlistableStore = {
@@ -334,6 +350,11 @@ let registered = false
 /* `loaders` — the four files' loaders (ModuleLoaders above); `moduleTypes` — the command types those files declare, in
    the order the wire file lists them (the accounts', the change history's, the bell's, the Leave War's seen marks', the
    Approvals' seen marks'), each declared here as it always was */
+/* the change history's write guard (state/perms.ts elogWriteProblem, with the running command's actor), handed in by
+   state/store.ts so this file imports no permission module (the import-cycle note above) */
+let ELOG_WRITE_GUARD: ((key: string, v: unknown) => string | null) | null = null
+export function setElogWriteGuard(fn: ((key: string, v: unknown) => string | null) | null): void { ELOG_WRITE_GUARD = fn }
+
 export function registerPeopleSettingsCore(loaders: ModuleLoaders, moduleTypes: readonly string[]): void {
   if (registered) return
   registered = true
@@ -346,18 +367,30 @@ export function registerPeopleSettingsCore(loaders: ModuleLoaders, moduleTypes: 
      resolver store.ts wireStore installs */
   for (const t of moduleTypes) definePermission(t, anyone)
   for (const t of FLY_TYPES) definePermission(t, anyone)   // the same: perms.ts COMMAND_OPS decides
+  for (const t of UNIT_TYPES) definePermission(t, anyone)  // the same; and the commit gate reads each row's unit
   registerGuardedStore(peopleStore)
   registerGuardedStore(settingsStore)
   // route every durable settings write (store.set) through a named command.
   // Inside a running command (a rollback, or a save nested in another command)
   // or for an unknown key, write raw so nothing nests or is refused-and-lost.
-  setSettingsWriteHook((k, v, raw) => {
+  /* every check reads the setting's plain name (`rules`, never `u149@rules` — engine/hooks.ts storedKey): a unit's setting
+     is written by its own named command, `settings.rules`, whichever unit it is (the gate then asks whether the actor is
+     an admin OF that unit — perms.ts unitAdminViolation, from the record's name) */
+  setSettingsWriteHook((key, v, raw) => {
+    const k = localOf(String(key))
     if (k.startsWith('missionrole:')) throw new Error('Mission-role rows require the typed annotation command')
+    /* a history line kept, rewritten or deleted inside a person's command is judged by its squadron (the second fix read,
+       security H5 — state/perms.ts 7d, installed by state/store.ts; a line is a raw write, never seen by the gate) */
+    if (k.startsWith('elog:') && isCommitting() && ELOG_WRITE_GUARD) {
+      const p = ELOG_WRITE_GUARD(String(key), v)
+      if (p) throw new Error(`Refused: ${p}`)
+    }
     if (!isCommitting() && k === 'sanscalendar') throw new Error('SANS calendar settings require the typed settings command')
     if (!isCommitting() && FLY_ROW_PREFIXES.some(p => k.startsWith(p))) throw new Error('The flying plan is written only by its typed commands')
+    if (!isCommitting() && UNIT_ROW_PREFIXES.some(p => k.startsWith(p))) throw new Error('Units, places, homes and rights are written only by their typed commands')
     if (!isCommitting() && k === 'memberfile') throw new Error('The switch for members filing for other people is written only by its typed command')
-    if (isCommitting() || !(SETTINGS_KEYS as readonly string[]).includes(k)) { raw(k, v); return }
-    commitSettings(settingsType(k), () => raw(k, v))
+    if (isCommitting() || !(SETTINGS_KEYS as readonly string[]).includes(k)) { raw(key, v); return }
+    commitSettings(settingsType(k), () => raw(key, v))
   })
   // a save that writes several keys (store.group) is ONE command, named for its first key; inside a running command the
   // body just runs (every store.set in it then writes raw)

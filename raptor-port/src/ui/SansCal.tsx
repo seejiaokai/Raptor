@@ -30,11 +30,13 @@
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
 import { INPUTS, isSansAvail } from '../engine/inputs'
 import { getTones, sansCommittedOn } from '../state/flyplan'
-import { addDays } from '../state/flyplan-model'
+import { addDays, type Tones } from '../state/flyplan-model'
 import { notify } from '../state/store'
 import { CALMONTH, INPREVEAL, SANSHL, clearInpReveal, setCalMonth, setSansHl } from '../state/view'
-import { dayFacts, flyMonth, useWarFacts } from '../leavewar/sync'
-import { isAdmin } from '../state/perms'
+import { flyMonth, ownDayFacts, useWarFacts } from '../leavewar/sync'
+import { isAdmin, pageUnit } from '../state/perms'
+import { openWinFor } from '../state/cutoff'
+import { unitPeople } from '../engine/roster'
 import { setSansSet } from './pops'
 import { initCalPick } from './calpick'
 import { MONTHS, WD, isoToday } from './daysfmt'
@@ -52,17 +54,29 @@ import { useVersion } from './useStore'
 import { KEYBOARD_MIN, screenBox } from './kbscroll'
 import { frontWin } from './floatwin'
 
+/* THE PAGE'S SQUADRON AND ITS COLOURS — one place the page and its tests read (the reshape plan §3.2 A-ii): the SANS
+   calendar is an own page — his own squadron's whatever schedule he picks (D2132), a master admin's or a Plan holder's
+   following his pick (D2197, D2201). Its month's day class and need come through the Leave War's join,
+   leavewar/sync.ts flyMonth, asked for this squadron's flying plan — never the war loaded's. */
+// eslint-disable-next-line react-doctor/only-export-components -- the page's squadron, read by the page and its proofs
+export const sansCalUnit = (): string => pageUnit('own')
+// eslint-disable-next-line react-doctor/only-export-components -- the three day colours the page draws, read by the page and its proofs
+export const sansCalTones = (): Tones => getTones(sansCalUnit())
+
 /** "1–2", "3–4", "5+" — the three colours' ranges, from the figures as set */
 const span = (from: number, below?: number): string => below === undefined ? `${from}+` : below - 1 <= from ? String(from) : `${from}–${below - 1}`
 const KIND_SAY: Record<string, string> = { day: 'day flying', night: 'night flying', nf: 'no-fly day', none: 'no flying set' }
 
 /** a date said whole, for a screen reader — the figures a sighted reader takes from the columns; with a man
  *  highlighted, what he offered there */
-function say(c: SansCell, kind: 'ph' | 'off' | null, cls: string | null, covered: boolean, mine: { f: boolean; o: boolean; a: boolean } | null, who: string): string {
+function say(c: SansCell, kind: 'ph' | 'off' | null, cls: string | null, facts: { covered: boolean; otherWar: boolean }, mine: { f: boolean; o: boolean; a: boolean } | null, who: string): string {
   const what = kind === 'ph' ? 'public holiday' : kind === 'off' ? 'Off day' : KIND_SAY[cls || 'none']
   const seat = (n: number | null, word: string) => n === null ? `no figure for ${word}` : `${n} ${word}`
+  /* (a squadron whose war is not the loaded one: who is available is not known — and its own war may cover the date, so
+     it is never said to be a date no period covers; leavewar/sync.ts ownDayFacts) */
   const need = c.need ? `Still needed: ${seat(c.need.p, 'pilots')}, ${seat(c.need.w, 'WSOs')}.`
-    : covered ? 'No required figure.' : 'No leave period covers this date.'
+    : facts.otherWar ? `Still needed: ${seat(null, 'pilots')}, ${seat(null, 'WSOs')}.`
+    : facts.covered ? 'No required figure.' : 'No leave period covers this date.'
   const his = mine ? ` ${who} committed: ${[mine.f ? 'fly' : '', mine.o ? 'OFT' : '', mine.a ? 'AMT' : ''].filter(Boolean).join(', ')}.` : ''
   return `${dayWord(c.iso)}, ${what}. ${need} SANS committed: fly ${c.f.p} and ${c.f.w}, OFT ${c.o.p} and ${c.o.w}, AMT ${c.a.p} and ${c.a.w}.${his}`
 }
@@ -257,12 +271,13 @@ export function SansCal({ lead }: { lead?: ReactNode } = {}) {
   }, [])
 
   /* the man picked in Highlight — only while he is still SANS and on the roster; one who has left it is let go */
-  const roster = sansRoster()
+  /* (his own squadron's SANS men — the SANS calendar stays on his own, D2132; multi-squadron step 3) */
+  const roster = sansRoster(unitPeople(sansCalUnit(), isoToday()))
   const hi = SANSHL && roster.includes(SANSHL) ? SANSHL : null
   const stale = !!SANSHL && !hi
   useEffect(() => { if (stale) { setSansHl(null); notify() } }, [stale])
-  const answers = flyMonth(cur.y, cur.m)
-  const tones = getTones()
+  const answers = flyMonth(cur.y, cur.m, sansCalUnit())   // the page's own squadron's plan, never the war loaded's
+  const tones = sansCalTones()
   const cells = monthCells(cur.y, cur.m)
   const weeks: (string | null)[][] = []
   for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7))
@@ -289,7 +304,7 @@ export function SansCal({ lead }: { lead?: ReactNode } = {}) {
               read as the day-flying sun beside it. Admins only; everyone has the line below. */}
           {isAdmin() && (
             <button type="button" className="abtn sc-gear" data-testid="sc-gear" title="SANS calendar settings — day colours, the late cut-off, the Calendar"
-              aria-label="SANS calendar settings" onClick={() => { setSansSet(true); notify() }}><GearIcon /></button>
+              aria-label="SANS calendar settings" onClick={() => { openWinFor('sans', sansCalUnit()); setSansSet(true); notify() }}><GearIcon /></button>
           )}
         </div>
         <div className="sc-sub">
@@ -325,8 +340,8 @@ export function SansCal({ lead }: { lead?: ReactNode } = {}) {
           <div key={wi} className="sc-week">
             {week.map((iso, ci) => {
               if (!iso) return <div key={'x' + ci} className="sc-x" />
-              const a = answers[iso], facts = dayFacts(iso)
-              const com = sansCommittedOn(iso)
+              const a = answers[iso], facts = ownDayFacts(sansCalUnit(), iso)   // the page's squadron's tag, never the war loaded's
+              const com = sansCommittedOn(iso, undefined, unitPeople(sansCalUnit(), iso))   // his own squadron's SANS men (step 4)
               const c = sansCell(a, facts.short, com)
               const mine = sansMine(com, hi)
               const picked = !!run && iso >= run.a && iso <= run.b
@@ -341,7 +356,7 @@ export function SansCal({ lead }: { lead?: ReactNode } = {}) {
               )
               return (
                 <div key={iso} className={cls} data-icday={iso} data-testid={'sc-day-' + iso} role="button" tabIndex={iso === tabAt ? 0 : -1}
-                  aria-label={say(c, a.kind, a.cls, facts.covered, mine, hi ? PEOPLE[hi].cs : '')} aria-pressed={iso === dayIso} onKeyDown={onKey(iso)} onFocus={() => setAt(iso)}>
+                  aria-label={say(c, a.kind, a.cls, facts, mine, hi ? PEOPLE[hi].cs : '')} aria-pressed={iso === dayIso} onKeyDown={onKey(iso)} onFocus={() => setAt(iso)}>
                   <div className="sc-date">
                     <span className="sc-num">{+iso.slice(8, 10)}</span>
                     {c.icon === 'day' && <span className="sc-icon c-day" data-icon="day"><SunIcon /></span>}

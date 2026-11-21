@@ -12,9 +12,11 @@
    it. */
 import { defaultAllday } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
-import { isAdmin, me } from '../state/perms'
+import { isAdmin, me, pageUnit } from '../state/perms'
+import { rosterOf } from '../engine/roster'
 import { notify } from '../state/store'
 import { flyAnswer } from '../leavewar/sync'
+import { todayIso } from '../engine/editlog'
 import { fmt } from './inputedit'
 import { setInpEdit } from './pops'
 
@@ -28,13 +30,15 @@ export function openSansAdd(from: string, until?: string): boolean {
   const [iso, end] = until && until < from ? [until, from] : [from, until]
   const mine = me()
   const who = isSans(mine) ? mine
-    : Object.keys(PEOPLE).find(id => PEOPLE[id].san && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special)
+    /* (a SANS man of the page's own squadron — the SANS calendar stays on his own, D2132; the reshape plan §3.2 A-ii) */
+    : rosterOf(pageUnit('own'), iso).find(id => PEOPLE[id].san && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special)
   const single = !end || end === iso
   setInpEdit({
     _new: true, _calendar: true, _ctx: 's', person: who, type: TYPE,
     date: fmt(iso), endDate: single ? undefined : fmt(end),
     allday: defaultAllday(TYPE), s: 360, e: 1080,
-    sans: single && flyAnswer(iso).cls === 'nf' ? {} : { f: true },
+    /* (the page's own squadron's flying plan — the SANS calendar is an own page — never the war loaded's) */
+    sans: single && flyAnswer(iso, pageUnit('own', todayIso())).cls === 'nf' ? {} : { f: true },
   })
   notify()
   return true

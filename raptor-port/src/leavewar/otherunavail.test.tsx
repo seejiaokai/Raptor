@@ -29,6 +29,7 @@ import { SelectSheet } from './ui/SelectSheet'
 import { accCtl } from '../ui/html'
 import { Matrix } from './ui/Matrix'
 import type { MergedWar } from './state/merge'
+import { settleWorld } from '../test-support/world'
 
 const ISNAP = JSON.stringify(INPUTS)
 const P = 'dusk', D = '2026-02-11'
@@ -124,6 +125,9 @@ describe('the Inputs page files them (the one save)', () => {
     raptorInitStore()
     initStore(memoryBackend()); setRole('admin'); setPeople(projectPeople()); wireLeaveWarSync()
     _resetTimeline(); lwHistInit(); installGlobalUndo()
+    /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+       next command saves only its own change (test-support/world.ts — the second fix read) */
+    settleWorld()
   })
   afterEach(() => { _resetTimeline(); setSession(null); setMe('bane'); INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i)) })
   const add = (type: string, extra: Record<string, unknown> = {}) => {
@@ -136,6 +140,7 @@ describe('the Inputs page files them (the one save)', () => {
     for (const [type, extra] of [['CSE', {}], ['Training', {}], ['Other', { goes: 'u' }]] as Array<[string, Record<string, unknown>]>) {
       INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i))
       initStore(memoryBackend()); setRole('admin'); setPeople(projectPeople()); wireLeaveWarSync()
+      settleWorld()   // (the reset above is outside every command: the world settled first — test-support/world.ts)
       const r = add(type, extra)
       if (type === 'Training') { r.acc = 'u'; raptorNotify() }
       expect(setCell(P, D, 'LL'), `a bid beside the ${type}`).toBe(true)
@@ -227,6 +232,9 @@ describe('the war files an Other (D1365) — an admin’s, straight under Unavai
     raptorInitStore()
     initStore(memoryBackend()); setRole('admin'); setPeople(projectPeople()); wireLeaveWarSync()
     _resetTimeline(); lwHistInit(); installGlobalUndo()
+    /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+       next command saves only its own change (test-support/world.ts — the second fix read) */
+    settleWorld()
   })
   afterEach(() => { _resetTimeline(); setSession(null); setMe('bane'); INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i)) })
   const others = () => INPUTS.filter((r: any) => r.type === 'Other' && ((r.people ?? []).some((x: any) => x.p === P) || r.person === P))
@@ -260,6 +268,9 @@ describe('the bid window’s row under the leaves (D1349, D1356)', () => {
     initStore(memoryBackend()); setRole('admin'); setPeople(projectPeople()); wireLeaveWarSync()
     _resetTimeline(); lwHistInit(); installGlobalUndo()
     try { localStorage.clear() } catch { /* none */ }
+    /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+       next command saves only its own change (test-support/world.ts — the second fix read) */
+    settleWorld()
   })
   afterEach(() => { _resetTimeline(); setSession(null); setMe('bane'); INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i)) })
   it('an admin’s: CSE · OD · Grant OIL · ⋯, and the ⋯ holds Attach, Other, Post out, Post in (D1378)', () => {
@@ -299,6 +310,9 @@ describe('an Attach filed from the war (D1378–D1380)', () => {
     initStore(memoryBackend()); setRole('admin'); setPeople(projectPeople()); wireLeaveWarSync()
     _resetTimeline(); lwHistInit(); installGlobalUndo()
     try { localStorage.clear() } catch { /* none */ }
+    /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+       next command saves only its own change (test-support/world.ts — the second fix read) */
+    settleWorld()
   })
   afterEach(() => { _resetTimeline(); setSession(null); setMe('bane'); INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i)) })
   it('the store: an Attach on a morning, under Unavailable, its words, no "To"; half a man out; the same half again left as it is', () => {
@@ -421,6 +435,9 @@ describe('the free half beside a half-day Other (D1353, D1371)', () => {
     raptorInitStore()
     initStore(memoryBackend()); setRole('admin'); setPeople(projectPeople()); wireLeaveWarSync()
     _resetTimeline(); lwHistInit(); installGlobalUndo()
+    /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+       next command saves only its own change (test-support/world.ts — the second fix read) */
+    settleWorld()
   })
   afterEach(() => { _resetTimeline(); setSession(null); setMe('bane'); INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i)) })
   it('the window opens on PM; its held-half line names the morning Other by its box and its words', () => {

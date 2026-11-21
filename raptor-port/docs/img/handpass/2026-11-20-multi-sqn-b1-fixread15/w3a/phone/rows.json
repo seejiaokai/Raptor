@@ -1,0 +1,56 @@
+[
+ [
+  "W3-1",
+  "iPhone",
+  "Hunter opens July for bidding, places an approved LL for Ranger on 27 Jul (switch label on screen: \"Auto-approve\", on) with words \"hunter words\"",
+  "the leave is placed and approved",
+  "switch aria-checked true; cell text \"LL\"; window still open 0",
+  "PASS",
+  "s1-phone-hunter-placed.png"
+ ],
+ [
+  "W3-2",
+  "iPhone",
+  "Ranger signs in, places his own pending LL bid on 28 Jul",
+  "bid placed (window closes)",
+  "cell text \"LL\"; window open 0",
+  "PASS",
+  "s2-phone-ranger-placed.png"
+ ],
+ [
+  "W3-4",
+  "iPhone",
+  "Saber looks at the Inputs page afterwards",
+  "the leave runs 27-28 Jul with the words typed (W3: new words; W3c: unchanged words)",
+  "rows [\"10:00–11:00 Drifter, Echo, Ranger, SaberMEETING Flight safety brief By Saber\",\"LATE No document till 28 Jul RangerLL saber words a By Saber\"]",
+  "RECORD",
+  "s4-phone-saber-inputs.png"
+ ],
+ [
+  "W3-4b",
+  "iPhone",
+  "stored leave record",
+  "one leave running 27-28 Jul",
+  "[{\"date\":\"Jul 27\",\"end\":\"Jul 28\",\"type\":\"LL\",\"rmk\":\"saber words a\",\"lw\":\"y2026\"},{\"date\":\"Jul 23\",\"type\":\"Meeting\",\"rmk\":\"Flight safety brief\"},{\"date\":\"Jul 16\",\"type\":\"Appointment\",\"rmk\":\"Medical / PHA\"}]",
+  "PASS",
+  "s4-phone-saber-inputs.png"
+ ],
+ [
+  "W3-5",
+  "iPhone",
+  "Hunter's bell",
+  "exactly one new line, a remark change",
+  "badge {\"dot\":\"block\",\"text\":\"\",\"aria\":\"Notifications\"}; new 1; remark lines 1; lines [\"NEW LLMon 27 Jul Remark changed · Saber now\"]",
+  "PASS",
+  "s5-phone-ad2-bell.png"
+ ],
+ [
+  "W3-6",
+  "iPhone",
+  "Ranger's bell (control for W3c: no remark-change line)",
+  "RECORD",
+  "badge {\"dot\":\"block\",\"text\":\"\",\"aria\":\"Notifications\"}; remark lines 1; lines [\"NEW LLMon 27 Jul Remark changed · Saber now\",\"NEW Your leaveTue 28 Jul LL approved · Saber now\",\"NEW Your leaveMon 27 Jul LL added and approved · Hunter 1 min\",\"NEW Leave War17 Jul – 31 Jul Bidding open · Hunter 1 min\"]",
+  "RECORD",
+  "s6-phone-us-bell.png"
+ ]
+]

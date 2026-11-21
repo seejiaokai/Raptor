@@ -1,0 +1,21 @@
+const L = await import('./msq-pa-a-lib.mjs')
+const { X, say, sleep, sj, tap } = L
+say('msq-pa-a-s6b v2', L.size)
+const w = await L.start(true)
+const p = w.page
+await X.login(p, 'ad2'); await L.toUsers(w)
+const f = L.find(w)
+await f.fill(''); await sleep(400)
+await f.type('Kes', { delay: 60 }); await sleep(700)
+const cnt1 = await p.locator('#page-admin button.acc-main').count()
+say('search box parent html', await f.evaluate(e => e.parentElement.outerHTML.replace(/\s+/g, ' ').slice(0, 600)))
+const bb = await f.boundingBox()
+const cx = bb.x + bb.width - 10, cy = bb.y + bb.height / 2
+say('x position', cx, cy, JSON.stringify(bb))
+await X.pic(w, 'r5b-typed')
+if (L.phone) await p.touchscreen.tap(cx, cy); else await p.mouse.click(cx, cy)
+await sleep(120); await X.pic(w, 'r5b-x-press'); await sleep(700)
+const cnt2 = await p.locator('#page-admin button.acc-main').count()
+await X.pic(w, 'r5b-cleared')
+L.rep('Round', 'search typed "Kes" then cleared by its x (re-run, selector fixed)', 'rows 1 then many, box empty', 'rows typed=' + cnt1 + ' after x=' + cnt2 + ' box="' + await f.inputValue() + '"', (cnt1 === 1 && cnt2 > 10 && (await f.inputValue()) === '') ? 'PASS' : 'FAIL', 'r5b-cleared')
+await L.done(w)

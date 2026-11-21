@@ -1,0 +1,80 @@
+// @vitest-environment jsdom
+/* REPRO K2 — the gate fails open when the actor's account is missing from the in-memory ACCOUNTS_LIST (core read,
+   security S1). Correct (D2191/D2192: 142's plain admin writes nothing of 149's; the gate reads rights, never a missing
+   memory row as "admin of the unit in view"): with Hunter's account spliced out of memory, his write of 149's Logic
+   (lookahead) is still refused and nothing is saved. RED while the claim holds. Needs in-memory tampering.
+   Harness: state/units-switch.test.ts's boot, copied. */
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { INPUTS } from '../engine/inputs'
+import { PEOPLE, ID_BY_CS } from '../engine/people'
+import { storeBackend, store } from '../engine/hooks'
+import { stashClear } from '../engine/weekstash'
+import { UNIT, BOOT_UNIT } from '../engine/unitview'
+import { CURWEEK } from '../engine/waves'
+import { storesReset } from '../engine/stores'
+import { PLANPUCKS, DAYRMK } from '../state/plan'
+import { initStore, weekStashSnap, weekDirty, loadWeek, resetSession, switchUnit, forgetUnitPlans, notify } from '../state/store'
+import { setSession } from '../state/auth'
+import { signIn, sessionFor, ACCOUNTS_LIST } from '../state/accounts'
+import { hydrate, wirePersist } from '../state/persist'
+import { _resetTimeline } from '../undo/timeline'
+import { installGlobalUndo } from '../state/undo-wire'
+import { bootStorage } from '../storage/boot'
+import { settingsAdapter } from '../storage/adapters'
+import { MemoryBackend } from '../storage/memory'
+import { SCHEMA_VERSION } from '../storage/reset'
+
+const ISNAP = JSON.stringify(INPUTS)
+const PSNAP = JSON.stringify(PEOPLE)
+const BOOT_WEEK = CURWEEK
+const signInAs = (name: string, pass = 'x') => { const r = signIn(name, pass); resetSession(sessionFor(r)); notify(); return r }
+function resetWorld() {
+  if (UNIT !== BOOT_UNIT) switchUnit(BOOT_UNIT)
+  forgetUnitPlans()
+  INPUTS.length = 0; JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
+  for (const k of Object.keys(PEOPLE)) delete PEOPLE[k]
+  Object.assign(PEOPLE, JSON.parse(PSNAP))
+  for (const k of Object.keys(ID_BY_CS)) delete ID_BY_CS[k]
+  for (const id of Object.keys(PEOPLE)) ID_BY_CS[PEOPLE[id].cs.toLowerCase()] = id
+  PLANPUCKS.length = 0; for (const k of Object.keys(DAYRMK)) delete DAYRMK[k]
+  stashClear(); loadWeek(BOOT_WEEK); stashClear()
+  storesReset()
+}
+async function boot(be: MemoryBackend) {
+  be.seed({ settings: { schema: JSON.stringify(SCHEMA_VERSION) } })
+  const p = bootStorage(be)
+  await vi.advanceTimersByTimeAsync(be.latency)
+  const { wb, postman } = await p
+  storeBackend.impl = settingsAdapter(wb)
+  hydrate(wb)
+  initStore()
+  wirePersist(wb, { weekSnap: weekStashSnap, weekDirty })
+  return { wb, postman }
+}
+beforeEach(() => { vi.useFakeTimers(); resetWorld(); _resetTimeline(); installGlobalUndo() })
+afterEach(() => { vi.useRealTimers(); setSession(null); resetWorld(); _resetTimeline(); storeBackend.impl = null })
+
+describe("K2 — 142's plain admin (Hunter) and 149's Logic", () => {
+  it('(control) with his account in memory: his write of 149\'s lookahead is refused', async () => {
+    const { wb } = await boot(new MemoryBackend())
+    signInAs('ad2', 'a2')
+    expect(UNIT).toBe('u142')
+    switchUnit('u149')
+    store.set('lookahead', 9)
+    await vi.advanceTimersByTimeAsync(300)
+    expect(wb.get('settings', 'u149@lookahead')).toBeNull()
+  })
+  it('his account spliced out of memory: still refused, nothing saved', async () => {
+    const { wb } = await boot(new MemoryBackend())
+    signInAs('ad2', 'a2')
+    switchUnit('u149')
+    const i = ACCOUNTS_LIST.findIndex(x => x.id === 'acad2')
+    expect(i).toBeGreaterThanOrEqual(0)
+    const [gone] = ACCOUNTS_LIST.splice(i, 1)
+    try {
+      store.set('lookahead', 7)
+      await vi.advanceTimersByTimeAsync(300)
+      expect(wb.get('settings', 'u149@lookahead'), "149's Logic written by 142's plain admin").toBeNull()
+    } finally { ACCOUNTS_LIST.splice(i, 0, gone!) }
+  })
+})

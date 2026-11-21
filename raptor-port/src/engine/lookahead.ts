@@ -24,7 +24,8 @@
  * (the same rule the rest of the config surfaces use).
  */
 
-import { store } from './hooks'
+import { store, unitSetting, unitSettingKey } from './hooks'
+import { UNIT } from './unitview'
 
 export interface Lookahead {
   /** Whole weeks ahead of today. Bounded — see LOOK_MIN/LOOK_MAX. */
@@ -73,6 +74,22 @@ export function setLookahead(weeks: number | string, toSunday: boolean): boolean
   return true
 }
 
+/* A SQUADRON'S LOOK-AHEAD (the reshape plan §3.2 A-ii — the Inputs page is an own page: it reads and writes its own
+   squadron's, never the pick's). The loaded squadron's is the live LOOK_CFG and its own writer above; another's is read
+   from the store each time and written straight to its own record, never through LOOK_CFG, so the loaded squadron's
+   setting is never filled with another's. */
+export function lookaheadOf(unit: string): Lookahead {
+  return unit === UNIT ? LOOK_CFG : storedLookahead(unitSetting(unit, 'lookahead', null))
+}
+export function setLookaheadFor(unit: string, weeks: number | string, toSunday: boolean): boolean {
+  if (unit === UNIT) return setLookahead(weeks, toSunday)
+  const n = lookaheadParse(weeks)
+  if (n === null) return false
+  const std = n === LOOK_STD.weeks && !!toSunday === LOOK_STD.toSunday
+  store.set(unitSettingKey(unit, 'lookahead'), std ? null : { w: n, s: !!toSunday })
+  return true
+}
+
 const pad = (n: number) => String(n).padStart(2, '0')
 const isoOf = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
 /* Date normalises an overflow for us — 20 Dec + 3 weeks is 10 Jan, never a
@@ -105,19 +122,23 @@ export function lookaheadLabel(cfg: Lookahead = LOOK_CFG): string {
 /** Persist — nothing at all while the squadron is on the standard, so a later
  *  change to that standard is picked up rather than frozen in a browser. */
 export function lookaheadSave(): void {
-  store.set('lookahead', lookaheadIsStandard() ? null : { w: LOOK_CFG.weeks, s: LOOK_CFG.toSunday })
+  store.set(unitSettingKey(UNIT, 'lookahead'), lookaheadIsStandard() ? null : { w: LOOK_CFG.weeks, s: LOOK_CFG.toSunday })
 }
 
 /** Load, treating storage as untrusted: a week count outside the bounds, or a
  *  non-number, leaves the standard in place. */
 export function lookaheadLoad(): void {
-  LOOK_CFG.weeks = LOOK_STD.weeks
-  LOOK_CFG.toSunday = LOOK_STD.toSunday
-  const raw: any = store.get('lookahead', null)
-  if (!raw || typeof raw !== 'object') return
+  const v = storedLookahead(unitSetting(UNIT, 'lookahead', null))
+  LOOK_CFG.weeks = v.weeks
+  LOOK_CFG.toSunday = v.toSunday
+}
+function storedLookahead(raw: any): Lookahead {
+  const out: Lookahead = { ...LOOK_STD }
+  if (!raw || typeof raw !== 'object') return out
   const n = lookaheadParse(raw.w)
-  if (n !== null) LOOK_CFG.weeks = n
-  LOOK_CFG.toSunday = raw.s === true
+  if (n !== null) out.weeks = n
+  out.toSunday = raw.s === true
+  return out
 }
 
 /** Put it back to the squadron standard. */

@@ -1,0 +1,67 @@
+// @vitest-environment jsdom
+/* A6 (Opus F2, its second half): Admin → Users' amber "posting could not run" line (D2214) reads only the Leave War that
+   is loaded, so the master, with 142's war loaded, never sees a 149 man's held posting on the 149 man's row.
+   Correct per D2214 ("shows the amber line drawn on the man's Admin → Users row") and D1546 (nobody gone silently).
+   Kestrel, 149's only admin, is posted out Overseas Sqn for 16 Jul — the last-admin lock holds it. */
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { storeBackend, HOOKS } from '../engine/hooks'
+import { PEOPLE, indexCallsigns } from '../engine/people'
+import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
+import { accountsLoad, signIn, sessionFor } from '../state/accounts'
+import { initStore as lwInitStore, setPeople, worldUnit } from '../leavewar/state/store'
+import { memoryBackend } from '../leavewar/state/storage'
+import { projectPeople } from '../leavewar/state/raptorRoster'
+import { wireLeaveWarSync, setWarWorldDoor, postOut, postingHeldNote } from '../leavewar/sync'
+import { unitsLoad } from '../state/units'
+import { INPUTS } from '../engine/inputs'
+
+const mem: Record<string, string> = {}
+let PEOPLE0 = ''
+const signInAs = (name: string, pass = 'x') => { resetSession(sessionFor(signIn(name, pass))); raptorNotify() }
+let worlds: Record<string, any> = {}
+
+beforeAll(() => {
+  vi.useFakeTimers({ toFake: ['Date'] })
+  vi.setSystemTime(new Date(2026, 6, 15, 9, 0, 0))
+  PEOPLE0 = JSON.stringify(PEOPLE)
+})
+afterAll(() => { vi.useRealTimers(); storeBackend.impl = null; setWarWorldDoor(null) })
+beforeEach(() => {
+  vi.setSystemTime(new Date(2026, 6, 15, 9, 0, 0))
+  Object.keys(mem).forEach(k => delete mem[k])
+  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v }, keys: () => Object.keys(mem) } as any
+  const p0 = JSON.parse(PEOPLE0)
+  for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
+  Object.assign(PEOPLE, p0); indexCallsigns()
+  for (let i = INPUTS.length - 1; i >= 0; i--) if (String((INPUTS as any)[i].iid || '').startsWith('ipd')) INPUTS.splice(i, 1)
+  worlds = { u142: memoryBackend(), u149: memoryBackend() }
+  setWarWorldDoor(null)
+  lwInitStore(worlds.u142)
+  raptorInitStore()
+  accountsLoad()
+  setPeople(projectPeople())
+  wireLeaveWarSync()
+  setWarWorldDoor((u: string) => ({ backend: worlds[u] ?? (worlds[u] = memoryBackend()) }))
+  vi.spyOn(HOOKS, 'toast').mockImplementation(() => {})
+})
+const setPosting = () => {
+  signInAs('ad9', 'a9')
+  expect(worldUnit()).toBe('u149')
+  expect(postOut('kes9', '2026-07-16', 'overseas')).toBe(true)
+}
+
+describe('A6 — the held posting’s amber line shows whichever war is loaded', () => {
+  it('(control) Kestrel’s own 149 war loaded on 16 Jul: his row says why the posting waits', () => {
+    setPosting()
+    vi.setSystemTime(new Date(2026, 6, 16, 9, 0, 0)); unitsLoad()
+    signInAs('ad9', 'a9')
+    expect(postingHeldNote('kes9')).toMatch(/last admin/)
+  })
+  it('Saber (master, 142’s war loaded) on 16 Jul: Kestrel’s row says the same', () => {
+    setPosting()
+    vi.setSystemTime(new Date(2026, 6, 16, 9, 0, 0)); unitsLoad()
+    signInAs('ad', 'a')
+    expect(worldUnit()).toBe('u142')
+    expect(postingHeldNote('kes9') ?? '(no line)', 'the amber line on the 149 man’s row').toMatch(/last admin/)
+  })
+})

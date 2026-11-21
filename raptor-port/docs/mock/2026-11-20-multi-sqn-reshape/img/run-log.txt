@@ -1,0 +1,34 @@
+q6b-142 d on screen {"ranger":true,"havoc":true}
+q6b-142 p on screen {"ranger":true,"havoc":true}
+--- page errors and failures ---
+[d] q1 FAILED page.evaluate: Error: mark moved its element
+    at mq.mark (<anonymous>:44:87)
+    at eval (eval at evaluate (:311:30), <anonymous>:15:8)
+    at UtilityScript.evaluate (<anonymous>:313:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+[p] q1 FAILED page.evaluate: Error: mark moved its element=== run 2026-11-20T11:04:02.024Z pieces q1,q2,q6 sizes d,p bundle index-a7kr8dHR.js
+q6b-142 d on screen {"ranger":true,"havoc":true}
+q6b-142 p on screen {"ranger":true,"havoc":true}
+--- page errors and failures ---
+none
+=== run 2026-11-20T11:06:21.473Z pieces q6 sizes d,p bundle index-a7kr8dHR.js
+q6b-142 d on screen {"ranger":true,"havoc":true}
+q6b-142 p on screen {"ranger":true,"havoc":true}
+--- page errors and failures ---
+none
+=== run 2026-11-20T11:13:46.554Z pieces q8,q6d sizes d bundle index-a7kr8dHR.js
+--- page errors and failures ---
+[d] q8 FAILED Q8 draft premise: {"offered14":true,"head":"","who":"Ranger","type":"LL","offered":true}
+[d] q6d FAILED Q6d: no refused Undo note: {"n":{"text":"Undid: placing and approving leave","op":"1","face":"","color":"var(--ink)","border":"var(--edge-2)","at":"foot","w":227,"h":38},"gone2":"","aSees":"LL","undoTitle":"Undo — placing and approving leave"}
+=== run 2026-11-20T11:18:37.700Z pieces q8,q6d sizes d bundle index-a7kr8dHR.js
+--- page errors and failures ---
+[d] q6d FAILED Q6d: no refused Undo: {"n":{"text":"Undid: removing Havoc’s LL — the later posting stays; it isn’t undone here.","op":"1","face":"","color":"var(--ink)","border":"var(--edge-2)","at":"foot","w":439,"h":38},"still":"LL","undoTitle":"Undo — removing Havoc’s LL","hvState":{"d16":"gone act hasc","d17":"PO"}}
+=== run 2026-11-20T11:19:23.853Z pieces q6d sizes d bundle index-a7kr8dHR.js
+--- page errors and failures ---
+[d] q6d FAILED Q6d: no refused Undo: {"n":{"text":"Undid: removing Havoc’s LL — the later posting stays; it isn’t undone here.","op":"1","face":"","color":"var(--ink)","border":"var(--edge-2)","at":"foot","w":439,"h":38},"still":"LL","undoTitle":"Undo — removing Havoc’s LL","hvState":{"d16":"gone act hasc","d17":"PO"},"poLine":"On 16 Jul the app deletes him automatically. Days he flew keep his puck.","undoAfterDel":"Undo — removing Havoc’s LL"}
+=== run 2026-11-20T11:21:13.840Z pieces q6d sizes d bundle index-a7kr8dHR.js
+--- page errors and failures ---
+[d] q6d FAILED Q6d: no refused Undo: {"n":{"text":"Undid: removing Ranger’s LL","op":"1","face":"","color":"var(--ink)","border":"var(--edge-2)","at":"foot","w":190,"h":38},"back":"(no row)","undoBefore":"Undo — removing Ranger’s LL","undoTitle":"Undo — removing Ranger’s LL","rowNow":0,"t":"Thu Jul 16 2026 00:00:31"}
+=== run 2026-11-20T11:22:47.889Z pieces q8,q6d sizes d,p bundle index-a7kr8dHR.js
+--- page errors and failures ---
+none

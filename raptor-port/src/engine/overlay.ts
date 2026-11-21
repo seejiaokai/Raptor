@@ -19,7 +19,9 @@
 import { PEOPLE, whoId } from './people'
 import { whoArr } from './slots'
 import { dayIso } from './verid'
-import { goesOnProg, INPUTS, inpId, inpLabel, isPersonal, inputCoversDate, dateOrd, idsOf, leadOf, onlyNamed, remarksShown } from './inputs'
+import { UNIT } from './unitview'
+import { unitOf } from '../storage/unitid'
+import { goesOnProg, INPUTS, inputOnDay, inputAtIso, inpId, inpLabel, isPersonal, inputCoversDate, dateOrd, idsOf, leadOf, onlyNamed, remarksShown } from './inputs'
 import { hhmm } from './time'
 import { inputProtected } from './quarantine'
 import { rowElsewhere } from './weekstash'
@@ -225,7 +227,7 @@ export function asIssuedOrder(f: any, issuedRow: any): any {
      out as ALn" tag where only the new man's is a change (D93, D736). Someone who LEFT closes the gap as before — the
      next man takes his place (state/inputcount.test.ts "the first person leaves"). */
   const order = [...was.filter(p => have.has(p)), ...now.filter(p => !went.has(p))]
-  if (order.join('\u0000') === now.join('\u0000')) return f
+  if (order.join('\u0000') === now.join('\u0000')) return f   // the separator as an escape, never a raw NUL byte: React Doctor reads a file holding one as binary and cannot compare it
   f.who = order[0]
   if (order.length > 1) f.more = order.slice(1); else delete f.more
   return f
@@ -275,6 +277,15 @@ function requestsById(): Map<string, any> {
   const m = new Map<string, any>()
   for (const r of INPUTS as any[]) if (r && r.iid) m.set(String(r.iid), r)
   return m
+}
+/* A SQUADRON'S REQUESTS AS THEY LAND — each judged on its OWN FIRST DAY, the day a request lands on (the reshape plan
+   §3.2 A-iii, Fable F4: "a body that writes never iterates the touches list"). One input across a man's move is two
+   squadrons'; a writer run over every input touching a squadron, from each squadron's load, would undo the other's
+   accepted mark. So the landing below, the cheap landing test and the holder's accepted-mark pass (state/holderbase.ts)
+   keep today's answer — inputsFor(unit) with no day was its first day — under its new name, inputOnDay on that day.
+   An input with no readable first day lands nowhere, as before (its day is never found). */
+export function landingRequests(unit: string): any[] {
+  return (INPUTS as any[]).filter((r: any) => { const d = r ? inputAtIso(r.date, r.yr) : undefined; return !!d && inputOnDay(r, unit, d) })
 }
 /* may a row for request `r` stand on a day dated `dt`: the request is an activity (a meeting, an appointment — isPersonal),
    covers the day, and is not filed under Unavailable. A request taken off ('r') still qualifies: its row stands as it is. */
@@ -415,7 +426,7 @@ export function placeRequestRow(d: any, row: any): number {
 }
 
 /* ---- land: an activity request with no row standing anywhere goes on its START day, if that day is in this week ---- */
-function landRequests(days: any[], ctx: ViewCtx, info: ViewDayInfo[], taken?: Set<string>): void {
+function landRequests(days: any[], ctx: ViewCtx, info: ViewDayInfo[], taken?: Set<string>, unit: string = UNIT): void {
   const ordOf = days.map((d: any) => (d && d.dt != null ? dateOrd(d.dt) : null))
   const reqs = requestsById()
   const stands = (ds: any[], id: string) => ds.some((d: any) =>
@@ -423,8 +434,11 @@ function landRequests(days: any[], ctx: ViewCtx, info: ViewDayInfo[], taken?: Se
   /* OLDEST FIRST: a filing goes to the FRONT of the request list, so the list read backwards lands each request after the
      ones filed before it — a row never moves down a line because someone else filed (the board's "nothing re-orders
      itself", 10 Aug 26; the build before (c) appended each landing at its filing). Found by the FULL check's walk. */
-  for (let i = (INPUTS as any[]).length - 1; i >= 0; i--) {
-    const r = (INPUTS as any[])[i]
+  /* ONLY THIS WEEK'S UNIT'S REQUESTS LAND ON IT (multi-squadron step 3): a 149 member's filing never stands on 142's
+     day — judged on the request's own first day, the day it lands on (landingRequests, above) */
+  const mine = landingRequests(unit)
+  for (let i = mine.length - 1; i >= 0; i--) {
+    const r = mine[i]
     if (!r || !r.iid || !goesOnProg(r) || r.acc === 'r' || r.acc === 'u' || inputProtected(r)) continue
     const s0 = dateOrd(r.date, r.yr)
     if (s0 == null) continue
@@ -466,14 +480,14 @@ export function viewOfWeek(v: string, days: any[], ctx: ViewCtx): ViewDayInfo[] 
   const own = { ...ctx, year: +String(v).split('/')[2] || undefined }
   reconcileRequestRows(days, info, own)
   overlayDeletedWeek(String(v), days, ctx.book)
-  landRequests(days, own, info, taken)
+  landRequests(days, own, info, taken, unitOf(String(v)) ?? UNIT)
   return info
 }
 /* would a week read need the view's landing — some activity request, not taken off or filed, starts on one of its days.
    A cheap test so a never-saved week with nothing to land keeps its cached seed (weekctx.ts bundle). */
 export function landingDue(v: string): boolean {
   const lo = +dayIso(String(v), 0).replace(/-/g, ''), hi = +dayIso(String(v), 6).replace(/-/g, '')
-  for (const r of INPUTS as any[]) {
+  for (const r of landingRequests(unitOf(String(v)) ?? UNIT)) {
     if (!r || !goesOnProg(r) || r.acc === 'r' || r.acc === 'u') continue
     const s0 = dateOrd(r.date, r.yr)
     if (s0 != null && s0 >= lo && s0 <= hi) return true

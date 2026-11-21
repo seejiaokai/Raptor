@@ -229,7 +229,7 @@ describe('4. a member’s notice never carries a Leave War line', () => {
     /* his ordinary line about his own filing still passes */
     expect(ownershipViolation(env([
       { collection: 'inputs', id: 'x4', op: 'put', before: null, after: inp({ iid: 'x4', type: 'OD', people: [{ p: 'bane', by: 'bane', at: 1 }, { p: 'ammo', by: 'bane', at: 1 }], person: undefined }) },
-      { collection: 'notices', id: 'n1', op: 'put', before: null, after: { id: 'n1', to: 'ammo', by: 'bane', iid: 'x4', name: 'OD', what: [{ k: 'in' }] } },
+      { collection: 'notices', id: 'n1', op: 'put', before: null, after: { id: 'n1', to: 'ammo', by: 'bane', at: Date.now(), iid: 'x4', name: 'OD', what: [{ k: 'in' }] } },
     ], 'inputs.write')) ?? '').not.toMatch(/notice/)
   })
   it('the war’s follow-up notice command is the admin’s alone', () => {

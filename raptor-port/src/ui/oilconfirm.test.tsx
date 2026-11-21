@@ -29,6 +29,7 @@ import { CURPAGE, setPage, OILWAIT, OILBAR, setOilWait, setOilBar } from '../sta
 import { answerOilWait, leaveOilWait } from './oilwait'
 import { INPUTS as LIVE_INPUTS } from '../engine/inputs'
 import { commitInputEdit, draftOf, oilGate, oilAnswered, reassignInput, setInpField } from './inputedit'
+import { settleWorld } from '../test-support/world'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -65,6 +66,9 @@ beforeEach(async () => {
   INPUTS.length = 0
   JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
   TOASTS = []
+  /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read) */
+  settleWorld()
 })
 
 const openAdd = async (seed: any) => {

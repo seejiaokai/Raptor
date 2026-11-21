@@ -94,12 +94,13 @@ it('outside pointer closes without cancelling its target or stealing focus',asyn
   await act(async()=>{ search.dispatchEvent(event); search.focus() })
   expect(event.defaultPrevented).toBe(false); expect($('#viewSchedMoreMenu')).toBeNull(); expect(document.activeElement).toBe(search)
 })
-it('hidden menu releases its Escape listener; guest tree receives no new doors',async()=>{
+/* (a guest's tree stood here until the guest view went, D2239: a person waiting, on the access screen, takes its place) */
+it('hidden menu releases its Escape listener; a person waiting\'s access screen receives no new doors',async()=>{
   await click('#viewSchedMore');await change(()=>setPage('inputs'))
   const event=new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true})
   await act(async()=>document.dispatchEvent(event));expect(event.defaultPrevented).toBe(false)
-  await change(()=>setSession({user:'guest',role:'guest'}))
-  expect($('#guestApp')).toBeTruthy();expect($('#shell')).toBeNull()
+  await change(()=>setSession({user:'principal:w@mail',role:'pending',name:'w@mail'}))
+  expect($('#accessRequest')).toBeTruthy();expect($('#guestApp')).toBeNull();expect($('#shell')).toBeNull()
   expect($('#viewSchedMore,#editSchedMore,#drawer,#insightModal')).toBeNull()
 })
 it('open/close is local chrome: schedule, issued data, storage and history stay silent',async()=>{

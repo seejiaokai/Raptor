@@ -1,0 +1,27 @@
+// @vitest-environment jsdom
+/* C11 (Opus F4): the Inputs page's Person filter lists rosterOptions() — the unit IN VIEW, fixed at sign-in — while its
+   rows list inputsFor(myUnit()), read live. A session open across the midnight of his own move shows the old squadron's
+   people in the filter and the new squadron's inputs in the rows. Correct: one page, one squadron — the Inputs page stays
+   on his own squadron (D2132, D2197), the filter and the rows alike. */
+import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { rosterOptions } from '../ui/inputedit'
+import { UNIT } from '../engine/unitview'
+import { setHome } from '../state/units'
+import { myUnit } from '../state/perms'
+import { before, after, done, at, boot, signInAs } from './harness'
+
+beforeEach(before); afterEach(after); afterAll(done)
+
+describe('C11 — the Person filter across the midnight of his move', () => {
+  it("lists the same squadron's people as the rows", () => {
+    at('2026-07-14', 22); boot()
+    signInAs('ad', 'a')
+    expect(setHome('bane', 'u149').ok).toBe(true)            // 149's from 15 Jul
+    signInAs('us', 'us')                                      // bane, 22:00 on the 14th
+    expect(UNIT).toBe('u142'); expect(myUnit()).toBe('u142')
+    at('2026-07-15', 1)                                       // the page left open past midnight
+    expect(myUnit(), 'the rows now read 149').toBe('u149')
+    /* InputsPage.tsx: `people()` = rosterOptions() (default UNIT) for the filter; rows = inputsFor(myUnit()) */
+    expect(rosterOptions().sort(), "the filter's people").toEqual(rosterOptions(myUnit()).sort())
+  })
+})

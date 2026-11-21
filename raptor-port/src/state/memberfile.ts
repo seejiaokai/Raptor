@@ -11,10 +11,10 @@
 
    Admin only: `settings.memberfile` in state/perms.ts COMMAND_OPS, mirrored by docs/data-model.md §11 (D200). A raw
    write of the key is refused (state/people-settings-commit.ts), so the value is only ever a switch. */
-import { store } from '../engine/hooks'
+import { store, unitSettingKey } from '../engine/hooks'
 import type { CommitResult } from '../command'
 import { commitSettingsIntent } from './people-settings-commit'
-import { membersFileOn } from './perms'
+import { membersFileOn, pageUnit } from './perms'
 
 export type SwitchSave = { ok: boolean; message?: string; pending?: Promise<SwitchSave> }
 
@@ -28,7 +28,8 @@ export function setMembersFile(on: boolean): SwitchSave {
   const want = !!on
   if (membersFileOn() === want) return { ok: true }
   return result(commitSettingsIntent('settings.memberfile', null, () => {
-    store.set('memberfile', want ? null : false)
+    /* the page's own squadron's key — the one membersFileOn reads (B4: an own page writes the key it reads, Opus L6) */
+    store.set(unitSettingKey(pageUnit('own'), 'memberfile'), want ? null : false)
     /* read back inside the command, as the flying plan's saves do: a switch is never reported flipped unless it is */
     if (membersFileOn() !== want) throw new Error('The setting could not be saved. Try again.')
   }))

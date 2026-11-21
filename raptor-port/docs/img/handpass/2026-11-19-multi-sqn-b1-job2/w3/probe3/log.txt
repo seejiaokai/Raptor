@@ -1,0 +1,95 @@
+msq-j2-w3-probe2 v1
+LIST buttons:
+BUTTON#burger.burger[Menu]@14,9,32x30
+BUTTON#undoBtn.abtn hbtn[Undo]@249,9,30x30
+BUTTON#redoBtn.abtn hbtn[Redo]@285,9,30x30
+BUTTON#fastSync.fastsync[Sync · slow]@322,14,25x21
+BUTTON#notifyBell.bellbtn[Notifications]@354,8,34x32
+BUTTON#.wknav-mbtn filt-cal[Jump to a date]@12,58,34x26
+BUTTON#exportSched.abtn[Export to Excel (CSV)]@51,56,42x30
+BUTTON#exportPdf.abtn[Export as PDF (print)]@98,56,42x30
+BUTTON#.hl-tog[Highlight filters]@145,58,30x26
+BUTTON#editSchedMore.abtn schedule-more[More schedule options]@180,58,30x26
+INPUT#searchE.[Search by name or callsign]@285,63,96x16
+BUTTON#inMemberMode.intab[Inputs]@12,57,125x36
+BUTTON#inSansMode.intab[SANS]@139,57,125x36
+BUTTON#inMedBtn.intab[Medical]@265,57,125x36
+BUTTON#inNew.abtn primary in-new[+ Input]@8,102,56x36
+BUTTON#inRangeBtn.abtn[19 Nov → 3 Dec]@72,102,127x36
+BUTTON#inCalBtn.abtn[Calendar]@246,102,34x36
+BUTTON#inListBtn.abtn[List]@280,102,34x36
+BUTTON#inFiltersBtn.abtn[Filters]@318,102,34x36
+BUTTON#inGear.abtn inputs-gear[Inputs calendar settings]@356,102,38x36
+new input count 1
+dialogs modal:0x0 | floatwin inpedwin front:378x850 | win-bar:376x57 | win-grip:12x16 | win-ttl:290x18 | win-x:44x44 | win-body:376x791 | inpedbox inped-win:376x800 | modal:0x0 | modal:0x0 | modal:0x0 | modal:0x0 | availwin:0x0 | chgwin:0x0
+WIN buttons:
+BUTTON#burger.burger[Menu]@14,9,32x30
+BUTTON#undoBtn.abtn hbtn[Undo]@249,9,30x30
+BUTTON#redoBtn.abtn hbtn[Redo]@285,9,30x30
+BUTTON#fastSync.fastsync[Sync · slow]@322,14,25x21
+BUTTON#notifyBell.bellbtn[Notifications]@354,8,34x32
+BUTTON#.wknav-mbtn filt-cal[Jump to a date]@12,58,34x26
+BUTTON#exportSched.abtn[Export to Excel (CSV)]@51,56,42x30
+BUTTON#exportPdf.abtn[Export as PDF (print)]@98,56,42x30
+BUTTON#.hl-tog[Highlight filters]@145,58,30x26
+BUTTON#editSchedMore.abtn schedule-more[More schedule options]@180,58,30x26
+INPUT#searchE.[Search by name or callsign]@285,63,96x16
+BUTTON#inMemberMode.intab[Inputs]@12,57,125x36
+BUTTON#inSansMode.intab[SANS]@139,57,125x36
+BUTTON#inMedBtn.intab[Medical]@265,57,125x36
+BUTTON#inNew.abtn primary in-new[+ Input]@8,102,56x36
+BUTTON#inRangeBtn.abtn[19 Nov → 3 Dec]@72,102,127x36
+BUTTON#inCalBtn.abtn[Calendar]@246,102,34x36
+BUTTON#inListBtn.abtn[List]@280,102,34x36
+BUTTON#inFiltersBtn.abtn[Filters]@318,102,34x36
+BUTTON#inGear.abtn inputs-gear[Inputs calendar settings]@356,102,38x36
+BUTTON#.win-x[Close New input]@339,19,44x44
+SELECT#inpEditPerson.[Person]@28,103,198x43
+BUTTON#.pp-sw[Several people]@234,102,140x44
+BUTTON#inTypeHelp.tylegend-b[?]@69,157,15x15
+SELECT#inpEditType.[Type]@28,177,346x43
+BUTTON#.spanbtn on[All day]@28,251,86x36
+BUTTON#.spanbtn[AM]@114,251,86x36
+BUTTON#.spanbtn[PM]@201,251,86x36
+BUTTON#.spanbtn[Custom]@287,251,87x36
+BUTTON#.abtn docbtn[Document]@28,318,107x30
+INPUT#inpEditRmk.[Remarks]@28,379,346x33
+BUTTON#.dcal-title[July 2026 — choose the month a]@37,450,170x40
+BUTTON#.wc-today[Go to today]@211,454,38x32
+BUTTON#.dcal-nav[Previous month]@281,450,40x40
+BUTTON#.dcal-nav[Next month]@325,450,40x40
+BUTTON#.dcal-d[Wed 1 Jul 2026]@131,514,47x44
+BUTTON#.dcal-d[Thu 2 Jul 2026]@178,514,47x44
+BUTTON#.dcal-d[Fri 3 Jul 2026]@224,514,47x44
+BUTTON#.dcal-d is-we[Sat 4 Jul 2026]@271,514,47x44
+BUTTON#.dcal-d is-we[Sun 5 Jul 2026]@318,514,47x44
+BUTTON#.dcal-d[Mon 6 Jul 2026]@37,558,47x44
+BUTTON#.dcal-d[Tue 7 Jul 2026]@84,558,47x44
+BUTTON#.dcal-d[Wed 8 Jul 2026]@131,558,47x44
+BUTTON#.dcal-d[Thu 9 Jul 2026]@178,558,47x44
+BUTTON#.dcal-d[Fri 10 Jul 2026]@224,558,47x44
+BUTTON#.dcal-d is-we[Sat 11 Jul 2026]@271,558,47x44
+BUTTON#.dcal-d is-we[Sun 12 Jul 2026]@318,558,47x44
+BUTTON#.dcal-d is-today[Mon 13 Jul 2026, today]@37,602,47x44
+BUTTON#.dcal-d[Tue 14 Jul 2026]@84,602,47x44
+BUTTON#.dcal-d[Wed 15 Jul 2026]@131,602,47x44
+BUTTON#.dcal-d[Thu 16 Jul 2026]@178,602,47x44
+BUTTON#.dcal-d[Fri 17 Jul 2026]@224,602,47x44
+BUTTON#.dcal-d is-we[Sat 18 Jul 2026]@271,602,47x44
+BUTTON#.dcal-d is-we[Sun 19 Jul 2026]@318,602,47x44
+BUTTON#.dcal-d[Mon 20 Jul 2026]@37,646,47x44
+BUTTON#.dcal-d[Tue 21 Jul 2026]@84,646,47x44
+BUTTON#.dcal-d[Wed 22 Jul 2026]@131,646,47x44
+BUTTON#.dcal-d[Thu 23 Jul 2026]@178,646,47x44
+BUTTON#.dcal-d[Fri 24 Jul 2026]@224,646,47x44
+BUTTON#.dcal-d is-we[Sat 25 Jul 2026]@271,646,47x44
+BUTTON#.dcal-d is-we[Sun 26 Jul 2026]@318,646,47x44
+BUTTON#.dcal-d[Mon 27 Jul 2026]@37,690,47x44
+BUTTON#.dcal-d[Tue 28 Jul 2026]@84,690,47x44
+BUTTON#.dcal-d[Wed 29 Jul 2026]@131,690,47x44
+BUTTON#.dcal-d[Thu 30 Jul 2026]@178,690,47x44
+BUTTON#.dcal-d[Fri 31 Jul 2026]@224,690,47x44
+BUTTON#inpEditCancel.abtn ghost[Cancel]@251,823,65x28
+BUTTON#inpEditSave.abtn primary[Add]@325,823,49x28
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

@@ -1,0 +1,28 @@
+// @vitest-environment jsdom
+/* C3 (Fable F2): an ALL AVAIL commitment filed in 142 changes squadron when its filer is moved to 149. Correct: a
+   squadron's own commitment stays on that squadron's schedule (each squadron's own world — the brief's promise 1;
+   D2097's reading: each squadron's ALL AVAIL counts its own people; D2194 one squadron's business never the other's). */
+import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { INPUTS, inputBelongs, inputUnitOf } from '../engine/inputs'
+import { writeInputsBatch } from '../state/store'
+import { setHome } from '../state/units'
+import { before, after, done, at, boot, signInAs } from './harness'
+
+beforeEach(before); afterEach(after); afterAll(done)
+
+describe("C3 — an ALL AVAIL commitment and its filer's move", () => {
+  it("a 142 meeting for ALL AVAIL on 20 Jul stays 142's after its filer moves to 149", () => {
+    at('2026-07-12'); boot()
+    signInAs('us', 'us')                                      // bane, a 142 man, files it in 142
+    const ok = writeInputsBatch(() => { INPUTS.push({ iid: 'c03', person: 'allavail', people: [{ p: 'allavail', by: 'bane', at: Date.now() }], type: 'Meeting', date: 'Jul 20', yr: 2026, allday: true, remarks: '142 brief', by: 'bane', at: Date.now(), ord: 99903 } as any) })
+    expect(ok).toBeTruthy()
+    const r = INPUTS.find((x: any) => x.iid === 'c03')
+    expect(r, 'filed').toBeTruthy()
+    expect(inputBelongs(r, 'u142'), "control: 142's when filed").toBe(true)
+    signInAs('ad', 'a')
+    expect(setHome('bane', 'u149').ok).toBe(true)            // 149's from 13 Jul
+    expect(inputBelongs(r, 'u142'), "still on 142's schedule and Inputs").toBe(true)
+    expect(inputBelongs(r, 'u149'), "not landed on 149's 20 Jul").toBe(false)
+    expect(inputUnitOf(r)).toBe('u142')
+  })
+})

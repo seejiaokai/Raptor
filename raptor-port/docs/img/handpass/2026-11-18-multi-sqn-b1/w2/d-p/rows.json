@@ -1,0 +1,29 @@
+[
+ [
+  "T6",
+  "phone",
+  "ad9 adds ground row \"W2 PHONE\" with Kestrel on Wed 15 Jul by taps, Done",
+  "row on 149 Wed 15",
+  "ground: [\"W2 PHONE=kes9\"]; week text has W2 PHONE: true",
+  "PASS",
+  "t6-02-after-add-try*.png, t6-03-ad9-week-after-done.png"
+ ],
+ [
+  "T6",
+  "phone",
+  "ad (142) looks at Wed 15 Jul, week and board",
+  "no \"W2 PHONE\" on either",
+  "week: false; board: false; 142 ground rows: [\"MAINT CONF @ ENG WING\",\"NAV-SYS TRIAL PREP\"]",
+  "PASS",
+  "t6-04-ad-week.png, t6-05-ad-board-wed15.png"
+ ],
+ [
+  "T6",
+  "phone",
+  "ad9 signs in again",
+  "W2 PHONE still on Wed 15",
+  "ground: [\"W2 PHONE\"]",
+  "PASS",
+  "t6-07-ad9-again.png"
+ ]
+]

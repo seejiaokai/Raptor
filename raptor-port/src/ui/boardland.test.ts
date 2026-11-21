@@ -9,6 +9,7 @@ import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { initStore } from '../state/store'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
+import { inView } from '../engine/unitview'
 import { INPUTS, DATES, inpId } from '../engine/inputs'
 import { standsOn } from '../engine/overlay'
 import * as view from '../state/view'
@@ -26,7 +27,7 @@ const MON = 0
 const copy = <T,>(v: T): T => structuredClone(v)
 /* a step that changed one day from `before` to `after` — only the fields the landing reads */
 const step = (di: number, before: unknown, after: unknown, more: any[] = []): UndoEntry =>
-  ({ forward: [{ op: 'put', collection: 'days', id: `${CURWEEK}#${di}`, before, after }, ...more] } as unknown as UndoEntry)
+  ({ forward: [{ op: 'put', collection: 'days', id: `${inView(CURWEEK)}#${di}`, before, after }, ...more] } as unknown as UndoEntry)
 
 beforeAll(() => { initStore() })
 
@@ -401,8 +402,9 @@ describe('the board\'s Undo landing: a box brought up from below rests clear of 
    issues list head the board's one scroller and go back unseen from its foot */
 describe('the board\'s Undo landing: a sign-off, a publish mark, a hidden warning', () => {
   afterEach(() => { document.body.innerHTML = '' })
-  const book = (di: number, wk = CURWEEK): UndoEntry => ({ forward: [{ op: 'put', collection: 'sched.book', id: `${wk}#${di}`, before: { sg: {} }, after: { sg: { ao: 'bane' } } }] } as unknown as UndoEntry)
-  const mutes = (di: number, wk = CURWEEK): UndoEntry => ({ forward: [{ op: 'put', collection: 'sched.mutes', id: `${wk}#${di}`, before: [], after: ['0|x'] }] } as unknown as UndoEntry)
+  /* a schedule record names its week WITH its unit (multi-squadron step 2) */
+  const book = (di: number, wk = inView(CURWEEK)): UndoEntry => ({ forward: [{ op: 'put', collection: 'sched.book', id: `${wk}#${di}`, before: { sg: {} }, after: { sg: { ao: 'bane' } } }] } as unknown as UndoEntry)
+  const mutes = (di: number, wk = inView(CURWEEK)): UndoEntry => ({ forward: [{ op: 'put', collection: 'sched.mutes', id: `${wk}#${di}`, before: [], after: ['0|x'] }] } as unknown as UndoEntry)
 
   it('each names a place on its own day and loaded week, and none on another day or week', () => {
     for (const dir of ['undo', 'redo'] as const) {
@@ -412,6 +414,9 @@ describe('the board\'s Undo landing: a sign-off, a publish mark, a hidden warnin
       expect(boardLandKeys(mutes(1), dir, MON)).toEqual([])
       expect(boardLandKeys(book(MON, '01/01/2001'), dir, MON)).toEqual([])
       expect(boardLandKeys(mutes(MON, '01/01/2001'), dir, MON)).toEqual([])
+      /* the same dates of ANOTHER unit are not the loaded week either (multi-squadron step 2) */
+      expect(boardLandKeys(book(MON, `u149@${CURWEEK}`), dir, MON)).toEqual([])
+      expect(boardLandKeys(mutes(MON, `u149@${CURWEEK}`), dir, MON)).toEqual([])
     }
   })
   it('a sign-off undone from the foot of a phone\'s board: the sign-off line comes down into view', () => {
@@ -436,7 +441,7 @@ describe('the board\'s Undo landing: a sign-off, a publish mark, a hidden warnin
   it('a hidden warning whose own line is drawn: in view it moves nothing though the bar is above; out of view, its list comes to the line', () => {
     const w = (view.displayedByDay(MON)?.warns || [])[0]
     expect(w, 'the demo Monday raises a warning').toBeTruthy()
-    const e = { forward: [{ op: 'put', collection: 'sched.mutes', id: `${CURWEEK}#${MON}`, before: [], after: [view.warnMuteKey(w)] }] } as unknown as UndoEntry
+    const e = { forward: [{ op: 'put', collection: 'sched.mutes', id: `${inView(CURWEEK)}#${MON}`, before: [], after: [view.warnMuteKey(w)] }] } as unknown as UndoEntry
     const desk = (line: Place, bar: Place = ABOVE) => {
       document.body.innerHTML = `<div id="schedBoard"><div class="sb-main"><div class="sb-boardwrap"><div class="sb-board" id="sbBoard"></div></div>`
         + `<div class="sb-side"><div class="sb-warn" id="sbWarn" style="overflow-y:auto"><div class="sbwrap open"><div class="wh" data-sbwtog></div>`

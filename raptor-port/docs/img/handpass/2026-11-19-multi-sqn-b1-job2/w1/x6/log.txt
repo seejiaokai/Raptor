@@ -1,0 +1,5 @@
+msq-j2-w1-x6 v1
+cal buttons 19[Go to today] 1[Sun 1 Nov 2026] 2[Mon 2 Nov 2026] 3[Tue 3 Nov 2026] 4[Wed 4 Nov 2026] 5[Thu 5 Nov 2026] 6[Fri 6 Nov 2026] 7[Sat 7 Nov 2026] 8[Sun 8 Nov 2026] 9[Mon 9 Nov 2026] 10[Tue 10 Nov 2026] 11[Wed 11 Nov 2026] 12[Thu 12 Nov 2026] 13[Fri 13 Nov 2026] 14[Sat 14 Nov 2026] 15[Sun 15 Nov 2026] 16[Mon 16 Nov 2026] 17[Tue 17 Nov 2026] 18[Wed 18 Nov 2026] 19[Thu 19 Nov 2026, picked] 20[Fri 20 Nov 2026] 21[Sat 21 Nov 2026] 22[Sun 22 Nov 2026] 23[Mon 23 Nov 2026] 24[Tue 24 Nov 2026] 25[Wed 25 Nov 2026] 26[Thu 26 Nov 2026] 27[Fri 27 Nov 2026] 28[Sat 28 Nov 2026] 29[Sun 29 Nov 2026] 30[Mon 30 Nov 2026]
+btn21 <button type="button" class="dcal-d is-we" data-iso="2026-11-21" data-testid="dcal-day-2026-11-21" tabindex="-1" aria-pressed="false" aria-label="Sat 21 Nov 2026"><b>21</b></button>
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

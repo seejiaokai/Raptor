@@ -1,0 +1,65 @@
+[
+ [
+  "B-1",
+  "iPhone",
+  "Saber opens July, places an approved LL for Ranger on 27 Jul, words empty",
+  "placed and approved",
+  "switch true; cell \"LL\"; window open 0",
+  "PASS",
+  "b1-phone-placed.png"
+ ],
+ [
+  "B-2",
+  "iPhone",
+  "Hunter places an approved LL for Ranger on 29 Jul, words \"hunter words\"",
+  "27 and 29 approved, 28 empty",
+  "switch true; cells [\"27: LL\",\"28: \",\"29: LL\"]; window open 0",
+  "PASS",
+  "b2-phone-grid.png"
+ ],
+ [
+  "B-3",
+  "iPhone",
+  "Ranger places his own pending LL bid on 28 Jul",
+  "bid placed",
+  "cell \"LL\"; window open 0",
+  "PASS",
+  "b3-phone-placed.png"
+ ],
+ [
+  "B-4",
+  "iPhone",
+  "Saber drag-selects Ranger's 27-29 Jul, approves with words 'joined'",
+  "RECORD whether one leave or several",
+  "sheet \"Ranger 27–29 Jul · 3 days Auto-approve ✕ No manning row is amber or red Approve Refuse ⇄Move Delete “hunter words” · 29 Jul till 29 Jul Document Whole day AM PM LL 9.5 OL 9.5 OIL −1 CCL 1 FCL 4 PL 0.5\"; cells [\"27: LL\",\"28: LL\",\"29: LL\"]; inputs rows [\"10:00–11:00 Drifter, Echo, Ranger, SaberMEETING Flight safety brief By Saber\",\"LATE No document till 29 Jul RangerLL joined By Saber\"]; stored [{\"date\":\"Jul 27\",\"end\":\"Jul 29\",\"rmk\":\"joined\"},{\"date\":\"Jul 23\",\"rmk\":\"Flight safety brief\"},{\"date\":\"Jul 16\",\"rmk\":\"Medical / PHA\"}]",
+  "RECORD",
+  "b4-phone-settled.png"
+ ],
+ [
+  "B-5",
+  "iPhone",
+  "Hunter's bell",
+  "exactly one words-change line; tap opens leave 27-29",
+  "badge {\"dot\":\"block\",\"text\":\"\",\"aria\":\"Notifications\"}; word lines 1; lines [\"NEW LLMon 27 Jul Remark changed · Saber now\",\"NEW Leave War17 Jul – 31 Jul Bidding open · Saber 2 min\"]; after tap: ⠿ Ranger · 27 Jul → 29 Jul ✕ PERSON Several people TYPE ? DURATION ALL DAY AM PM CUSTOM DOCUMENT Document REMARKS till 29 Jul DATES July 2026 › 13 ‹ › MON TUE WED THU FRI SAT SUN 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Jul 27 → Jul 29 Placed by Saber for R",
+  "PASS",
+  "b5-phone-ad2-bell.png"
+ ],
+ [
+  "B-6",
+  "iPhone",
+  "Ranger's bell",
+  "words change told once",
+  "badge {\"dot\":\"block\",\"text\":\"\",\"aria\":\"Notifications\"}; word lines 1; lines [\"NEW LLMon 27 Jul Remark changed · Saber now\",\"NEW Your leaveTue 28 Jul LL approved · Saber now\",\"NEW Your leaveWed 29 Jul LL added and approved · Hunter 1 min\",\"NEW Your leaveMon 27 Jul LL added and approved · Saber 2 min\",\"NEW Leave War17 Jul – 31 Jul Bidding open · Saber 2 min\"]",
+  "PASS",
+  "b6-phone-us-bell.png"
+ ],
+ [
+  "B-7",
+  "iPhone",
+  "Saber's bell",
+  "no line about words he typed himself",
+  "badge {\"dot\":\"none\",\"text\":\"\",\"aria\":\"Notifications\"}; word lines 0; lines []",
+  "PASS",
+  "b7-phone-ad-bell.png"
+ ]
+]

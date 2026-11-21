@@ -1,0 +1,56 @@
+[
+ [
+  "W2-1",
+  "iPhone",
+  "Hunter files Ranger LL 23 Jul",
+  "on the list",
+  "[\"LATE No document All day RangerLL w2 orig By Hunter\",\"10:00–11:00 Drifter, Echo, Ranger, SaberMEETING Flight safety brief By Saber\"]",
+  "PASS",
+  "s1-phone-filed.png"
+ ],
+ [
+  "W2-2",
+  "iPhone",
+  "moves stored; Saber (master) opens Inputs",
+  "Ranger's 23 Jul LL on 142's list",
+  "[\"LATE No document All day RangerLL w2 orig By Hunter\",\"10:00–11:00 Drifter, Echo, Ranger, SaberMEETING Flight safety brief By Saber\"]",
+  "PASS",
+  "s2-phone-saber-inputs.png"
+ ],
+ [
+  "W2-3",
+  "iPhone",
+  "Saber changes the leave to Outlaw (Casper) on Mon 27 Jul and saves",
+  "the list shows Outlaw on 27 Jul",
+  "[\"LATE No document All day OutlawLL w2 orig By Hunter\",\"10:00–11:00 Drifter, Echo, Ranger, SaberMEETING Flight safety brief By Saber\"]",
+  "PASS",
+  "s3-phone-saved.png"
+ ],
+ [
+  "W2-4",
+  "iPhone",
+  "Hunter's bell",
+  "NO line about the change",
+  "badge {\"dot\":\"none\",\"text\":\"\",\"aria\":\"Notifications\"}; lines []",
+  "PASS",
+  "s4-phone-ad2-bell.png"
+ ],
+ [
+  "W2-5",
+  "iPhone",
+  "Casper's (Outlaw) bell",
+  "a line that he was put in the leave",
+  "badge {\"dot\":\"block\",\"text\":\"\",\"aria\":\"Notifications\"}; lines [\"NEW LLMon 27 Jul You were added · Saber now\"]",
+  "PASS",
+  "s5-phone-outlaw-bell.png"
+ ],
+ [
+  "W2-6",
+  "iPhone",
+  "Ranger's bell",
+  "a line that he was taken out",
+  "badge {\"dot\":\"block\",\"text\":\"\",\"aria\":\"Notifications\"}; lines [\"NEW LLMon 27 Jul You were taken off · Saber now\",\"NEW LLThu 23 Jul You were added · Hunter now\"]",
+  "FAIL",
+  "s6-phone-us-bell.png"
+ ]
+]

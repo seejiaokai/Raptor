@@ -8,7 +8,7 @@ import { logEdit } from './editlog'
 import { ridKey, posKey, ridWriteKey, ensureRowIds, RID_BOOK_VERSION } from './rowids'
 import { canonicalDiff, canonicalUnits, digest } from './canonical'
 import type { DeltaEntry, PendUnit } from './canonical'
-import { isOD, INPUTS, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson, idsOf, namedOf, goesOnProg } from './inputs'
+import { isOD, INPUTS, inputsOnDay, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson, idsOf, namedOf, goesOnProg } from './inputs'
 import { CURWEEK, isStandalone } from './waves'
 import { groundOrder } from './order'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
@@ -16,6 +16,8 @@ import { isPreservedWeek, rowElsewhere } from './weekstash'
 import { standsOn } from './overlay'   // functions only both ways
 import { inputProtected, weekLockReason, anyUnreadableWeek } from './quarantine'   // functions only both ways, so the import loop is safe
 import { rosterIds, dayRuleVals } from './faceattrs'
+import { rosterOf, rosterToday } from './roster'
+import { UNIT } from './unitview'
 import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly, oilRuleShift, oilShiftKey, oilKeptVals, oilValsSame } from './oilev'
 import { oilRuleValsNow } from './oil'
 
@@ -574,7 +576,8 @@ export function daySnap(di:any){di=+di;
 export function dayInputsFrozen(di:any):any{di=+di;
   const dt=(DAYS[di]||{}).dt, out:any={};
   if(dt==null)return out;
-  (INPUTS||[]).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))out[inpId(inp)]=JSON.parse(JSON.stringify(inp)); });
+  /* the schedule in view's own requests only: a version of 142's day freezes no 149 filing (multi-squadron step 3) */
+  inputsOnDay(UNIT,dayIso(CURWEEK,di)).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))out[inpId(inp)]=JSON.parse(JSON.stringify(inp)); });
   return out;}
 /* ---- Phase 2: the FILING FINGERPRINT (P2-R3-01 / P2-R4-01) ------------------
    The publication delta has a fourth axis — input filings — that day content
@@ -595,7 +598,7 @@ export function dayFilingFingerprint(di:any):any{di=+di;
   if(dt==null)return fil;
   /* an overseas duty on the Ground Programme is 'g' by its mark too (D1393 — the narrow read's N2: a week whose day is not
      the one its row stands on carries no 'g' of its own) */
-  (INPUTS||[]).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))fil[inpId(inp)]=inp.acc||(isOD(inp.type)&&inp.odGround?'g':''); });
+  inputsOnDay(UNIT,dayIso(CURWEEK,di)).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))fil[inpId(inp)]=inp.acc||(isOD(inp.type)&&inp.odGround?'g':''); });
   return fil;}
 /* a STABLE string of the day's filing state, so a signature can bind to the filing
    axis too (owner, 15 Sep 26 — Codex PSF-001). A filing-only change (an Other input
@@ -758,7 +761,7 @@ function freezeWarn(snap:any,di:number){ if(!HOOKS.issuedWarn||!snap)return; con
      for a count on a panel; nothing on the published face moves either way. */
   /* …and EVERY LOGIC SETTING its checks read (owner D2005, 12 Nov 26): the day is judged by them until its next amendment
      (faceattrs.ts dayRuleVals / withDayRules). Only the brief lead it prints is compared (warnDelta, below — D186). */
-  snap.pa=dayPeopleAttrs(snap.d,snap.inp); snap.rv=dayRuleVals(); snap.ros=rosterIds(); }
+  snap.pa=dayPeopleAttrs(snap.d,snap.inp); snap.rv=dayRuleVals(); snap.ros=rosterIds(dayIso(CURWEEK,di)); }
 /* every man an issued face draws, with what his puck draws from the roster: a person id in a PERSON SLOT of its content —
    a flying seat (p, w), a sim seat or passenger (p, w, pax), a desk's holder (id), a ground or Common Programme name
    (who), the extras beside a row (more) — never free text that happens to spell an id (a programme called "bane" is not
@@ -975,7 +978,7 @@ export function dayDiscardCount(di:any,toVer?:any):number{di=+di;
      Thursday and Friday too — is unfiled all the same; where it can no longer stand on the programme it does not land
      again, so its row goes with the load: one edit, never the 0 a landing simulated from its old filing gave (nor the 2 a
      row re-landed under another name gave). An activity unfiled so lands again, fresh, and keeps its row. */
-  {const dt=(DAYS[di]||{}).dt; if(dt!=null)(INPUTS||[]).forEach((r:any)=>{
+  {const dt=(DAYS[di]||{}).dt; if(dt!=null)inputsOnDay(UNIT,dayIso(CURWEEK,di)).forEach((r:any)=>{
     if(!r||r.acc!=='g'||!inputCoversDate(r,dt)||inputProtected(r))return;
     const id=String(inpId(r));
     if(DAYS.some((d0:any,j:number)=>!!standsOn(j===di?asIssued:d0,id,r)))return;
@@ -1024,7 +1027,7 @@ export function dayDiscardCount(di:any,toVer?:any):number{di=+di;
 export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:any,want:string}>,left:string[]}{di=+di;
   const dt=(DAYS[di]||{}).dt, put:any[]=[], left:string[]=[];
   if(dt==null)return {put,left};
-  (INPUTS||[]).forEach((inp:any)=>{
+  inputsOnDay(UNIT,dayIso(CURWEEK,di)).forEach((inp:any)=>{
     if(!inputCoversDate(inp,dt))return;
     /* an overseas duty on the Ground Programme keeps that by a mark (D1393 — engine/inputs.ts odOut): its filing is 'g'
        with or without the week's own mark (the fresh code read's F1) */
@@ -1719,13 +1722,27 @@ export function verSigners(di:any,ver:any):any{di=+di;
   const g=rec&&rec.sign&&rec.sign[di];
   return g&&SIGN_ROLES.some((r:any)=>g[r[0]])?g:null;}
 export function signNames(di:any){const g=signAt(di),o:any={};SIGN_ROLES.forEach((r:any)=>{const p=PEOPLE[g[r[0]]];o[r[0]]=p?p.cs:'';});return o;}
-export function signPeople(schedOnly:any,keep?:any){
-  const ids=Object.keys(PEOPLE).filter((id:any)=>!PEOPLE[id].special&&!PEOPLE[id].archived
+/* (the reshape plan §19b R8 — D2245: who else a scheduler's box offers, after the day's own people — a Plan holder of the
+   squadron that day and a master admin; handed in by state/sign-more.ts, the engine reading no accounts; unset, none) */
+let SIGN_MORE:((unit:string,iso:string)=>string[])|null=null;
+export function setSignMore(fn:((unit:string,iso:string)=>string[])|null){SIGN_MORE=fn;}
+export function signPeople(schedOnly:any,keep?:any,di?:any){
+  /* the schedule in view's own people ON THE DAY SIGNED sign it (multi-squadron step 3 — engine/roster.ts; the reshape plan
+     §12 Q2, D2243: the day's people, as the crew list beside them — a man 149's from Thu 16 Jul signs no 142 Friday) */
+  const iso=di==null||di===''?rosterToday():dayIso(CURWEEK,+di);
+  const ids=rosterOf(UNIT,iso).filter((id:any)=>!PEOPLE[id].special&&!PEOPLE[id].archived
       &&(!schedOnly||isScheduler(id)));
   /* a name already signed stays offered even if the appointment was since
      withdrawn, so an existing signature never silently blanks itself */
   if(keep&&PEOPLE[keep]&&!ids.includes(keep))ids.push(keep);
-  return ids.sort((a:any,b:any)=>PEOPLE[a].cs.localeCompare(PEOPLE[b].cs));
+  const byCs=(a:any,b:any)=>PEOPLE[a].cs.localeCompare(PEOPLE[b].cs);
+  ids.sort(byCs);
+  /* …then, in the three boxes needing the Scheduler tick, a Plan holder of the squadron while his Plan holds that day and
+     a master admin, each carrying the tick (D2245) — after the day's own, never in CUR CK */
+  if(schedOnly&&SIGN_MORE){const own=new Set(ids);
+    ids.push(...SIGN_MORE(UNIT,iso).filter((id:any)=>!own.has(id)&&PEOPLE[id]&&!PEOPLE[id].special&&!PEOPLE[id].archived&&!PEOPLE[id].deleted&&isScheduler(id))
+      .filter((id:any,i:number,a:any[])=>a.indexOf(id)===i).sort(byCs));}
+  return ids;
 }
 /* the next per-day sequence for a day: highest issued seq for THIS day + 1
    (Original is seq 0, so a day's first amendment is AL1). Per-day, so Monday's

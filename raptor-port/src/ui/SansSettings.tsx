@@ -24,7 +24,7 @@ import { isAdmin } from '../state/perms'
 import { notify } from '../state/store'
 import { getTones, saveTones, type FlySave } from '../state/flyplan'
 import { validTones } from '../state/flyplan-model'
-import { cutProblem, getCut, saveCut, type CutRule } from '../state/cutoff'
+import { cutProblem, forgetWin, getCut, openWinFor, saveCut, winUnit, type CutRule } from '../state/cutoff'
 import { CALMONTH } from '../state/view'
 import { FloatWin } from './FloatWindow'
 import { bringForward, openBeside } from './winorder'
@@ -33,20 +33,26 @@ import { CutFields } from './CutFields'
 import { cutDraftOf, cutRuleOf } from './cutdraft'
 import { useVersion } from './useStore'
 
-export function SansSettings() {
+export function SansSettings({ unit }: { unit?: string } = {}) {
   useVersion()
   const refused = SANSSET && !isAdmin()
   useEffect(() => { if (refused) setSansSet(false) }, [refused])
+  /* THE SQUADRON IT EDITS (the reshape plan §3.2 A-ii; the host's ruling of 21 Nov 26): the page it was opened from —
+     `unit` when handed in, else what its door named (state/cutoff.ts openWinFor: a calendar's gear its own squadron),
+     else the pick (the Logic page's doors name none). It forgets the door's squadron once closed, so the next opening that
+     names none is the pick's again; keyed by it, so a draft never carries over to another squadron. */
+  useEffect(() => { if (!SANSSET) forgetWin('sans') })
   if (!SANSSET || refused) return null
-  return <Body />
+  const u = unit ?? winUnit('sans')
+  return <Body key={u} unit={u} />
 }
 
 /* a typed figure: a whole number, or NaN for anything that is not one — so "x" and "" are refused, never read as 0 */
 const num = (v: string): number => (/^\d+$/.test(v.trim()) ? +v.trim() : NaN)
 
-function Body() {
-  const [tones] = useState(getTones)
-  const [cut] = useState(() => getCut('sans'))
+function Body({ unit }: { unit: string }) {
+  const [tones] = useState(() => getTones(unit))
+  const [cut] = useState(() => getCut('sans', unit))
   const [yellow, setYellow] = useState(String(tones.yellowFrom))
   const [amber, setAmber] = useState(String(tones.amberFrom))
   const [red, setRed] = useState(String(tones.redFrom))
@@ -64,18 +70,19 @@ function Body() {
     if (bad) return setErr(bad)
     const done = (r: FlySave) => {
       if (!r.ok) return setErr(r.message || 'The colours could not be saved. Try again.')
-      const c = saveCut('sans', rule)
+      const c = saveCut('sans', rule, unit)
       if (!c.ok) return setErr(c.message || 'The cut-off could not be saved. Try again.')
       close()
     }
     const same = t.yellowFrom === tones.yellowFrom && t.amberFrom === tones.amberFrom && t.redFrom === tones.redFrom
-    const r: FlySave = same ? { ok: true } : saveTones(t)
+    const r: FlySave = same ? { ok: true } : saveTones(t, unit)
     if (r.pending) void r.pending.then(done); else done(r)
   }
   const openDays = () => {
     const now = new Date(), m = CALMONTH || { y: now.getFullYear(), m: now.getMonth() + 1 }
     /* beside this window, never over it (F9's rule, met at every Calendar door — the bug check of 3 Nov 26, W1 S21.4pre) */
     openBeside('days', 'sansset')
+    openWinFor('days', unit)
     setDaysWin(`${m.y}-${String(m.m).padStart(2, '0')}-01`); notify(); bringForward('days')
   }
   const box = (id: string, label: string, tone: string, v: string, set: (s: string) => void) => (

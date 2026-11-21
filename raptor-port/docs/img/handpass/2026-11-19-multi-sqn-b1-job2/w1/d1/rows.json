@@ -1,0 +1,65 @@
+[
+ [
+  "W1-D",
+  "desktop",
+  "ad: Users, search Ranger, open row, type in the sign-in box, Cancel, reopen",
+  "the typing is gone (RECORD)",
+  "sign-in box after reopen reads: \"us\"",
+  "RECORD",
+  "d1-01..03"
+ ],
+ [
+  "W1-D",
+  "desktop",
+  "ad: open Hunter's row, close it by pressing his name again",
+  "row closes",
+  "editor visible after open: true; after pressing name again: false",
+  "PASS",
+  "d1-04, d1-05"
+ ],
+ [
+  "W1-D",
+  "desktop",
+  "add-person form: open the Post in calendar, press outside it",
+  "calendar closes, nothing else changes",
+  "calendar visible before: true after: false ; callsign box: J2Saber ; post in: Thu 19 Nov 26▾",
+  "PASS",
+  "d2-01, d2-02"
+ ],
+ [
+  "W1-D",
+  "desktop",
+  "add J2Saber, initials JJ, Pilot, CAT OCU, post in T+1",
+  "person added",
+  "post-in box read: Fri 20 Nov 26▾ ; words: J2Saber O 0 Recon O 31 Talisman O 0 Wildcard O 17 ▾ Personnel · 3 Cotter G 0 Ratchet G  ; note: J2Saber added to the roster — set flight and quals on the Quals page — name — Ace Anvil Bashe",
+  "RECORD",
+  "d2-03, d2-04"
+ ],
+ [
+  "W1-D",
+  "desktop",
+  "ad opens Quals; is J2Saber listed, whose squadron's Quals",
+  "J2Saber listed (RECORD whose squadron)",
+  "J2Saber on page: true ; Ranger (142): true ; Kestrel (149): false ; top: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout SABER · ADMI",
+  "RECORD",
+  "d3-01-quals.png"
+ ],
+ [
+  "D4",
+  "desktop",
+  "script step",
+  "completes",
+  "script error: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Close', exact: true }).last()\u001b[22m\n",
+  "OWED",
+  "fail-D4.png"
+ ],
+ [
+  "D5",
+  "desktop",
+  "script step",
+  "completes",
+  "script error: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('tr:has([data-testid=\"cell-bane-2026-11-19\"]) .puck').first()\u001b[22m\n\u001b[2m",
+  "OWED",
+  "fail-D5.png"
+ ]
+]

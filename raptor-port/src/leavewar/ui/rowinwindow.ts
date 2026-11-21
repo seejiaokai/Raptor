@@ -28,6 +28,9 @@ import type { RecordSpans } from '../state/merge'
 export function rowInWindow(p: Person, win: string, spans?: RecordSpans): boolean {
   if (!win) return true
   const [first, last] = win.split('|')
+  /* A1 (the multi-squadron reshape §6.2; his D2243 Q6): a man's squadron stints bound his row first — a leave period
+     wholly outside them shows no row of his here, whatever is stored there (it stays out of sight, as drawn) */
+  if (p.home && !p.home.some(s => (s.to === null || s.to.slice(0, 7) >= first!) && (s.from === null || s.from.slice(0, 7) <= last!))) return false
   const span = spans?.get(p.id)
   const endsAt = p.to === null ? null
     : span && span.last > p.to.slice(0, 7) ? span.last : p.to.slice(0, 7)

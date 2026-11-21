@@ -1,0 +1,56 @@
+[
+ [
+  "W3-1",
+  "desktop",
+  "Hunter opens July for bidding, places an approved LL for Ranger on 27 Jul (switch label on screen: \"Auto-approve\", on) with words \"hunter words\"",
+  "the leave is placed and approved",
+  "switch aria-checked true; cell text \"LL\"; window still open 0",
+  "PASS",
+  "s1-desktop-hunter-placed.png"
+ ],
+ [
+  "W3-2",
+  "desktop",
+  "Ranger signs in, places his own pending LL bid on 28 Jul",
+  "bid placed (window closes)",
+  "cell text \"LL\"; window open 0",
+  "PASS",
+  "s2-desktop-ranger-placed.png"
+ ],
+ [
+  "W3-4",
+  "desktop",
+  "Saber looks at the Inputs page afterwards",
+  "the leave runs 27-28 Jul with the words typed (W3: new words; W3c: unchanged words)",
+  "rows [\"Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 MEETING Flight safety briefBy Saber 25 Jun 26\",\"Ranger 27 Jul 28 Jul LL LATEhunter words till 28 JulBy Saber now No document\"]",
+  "RECORD",
+  "s4-desktop-saber-inputs.png"
+ ],
+ [
+  "W3-4b",
+  "desktop",
+  "stored leave record",
+  "one leave running 27-28 Jul",
+  "[{\"date\":\"Jul 16\",\"type\":\"Appointment\",\"rmk\":\"Medical / PHA\"},{\"date\":\"Jul 27\",\"end\":\"Jul 28\",\"type\":\"LL\",\"rmk\":\"hunter words\",\"lw\":\"y2026\"},{\"date\":\"Jul 23\",\"type\":\"Meeting\",\"rmk\":\"Flight safety brief\"}]",
+  "PASS",
+  "s4-desktop-saber-inputs.png"
+ ],
+ [
+  "W3-5",
+  "desktop",
+  "Hunter's bell",
+  "no remark-change line",
+  "badge {\"dot\":\"none\",\"text\":\"\",\"aria\":\"Notifications\"}; new 0; remark lines 0; lines []",
+  "PASS",
+  "s5-desktop-ad2-bell.png"
+ ],
+ [
+  "W3-6",
+  "desktop",
+  "Ranger's bell (control for W3c: no remark-change line)",
+  "no remark-change line",
+  "badge {\"dot\":\"block\",\"text\":\"\",\"aria\":\"Notifications\"}; remark lines 0; lines [\"NEW Your leaveTue 28 Jul LL approved · Saber now\",\"NEW Your leaveMon 27 Jul LL added and approved · Hunter now\",\"NEW Leave War17 Jul – 31 Jul Bidding open · Hunter now\"]",
+  "PASS",
+  "s6-desktop-us-bell.png"
+ ]
+]

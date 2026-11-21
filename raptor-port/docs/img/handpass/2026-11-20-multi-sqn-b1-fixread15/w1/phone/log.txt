@@ -1,0 +1,27 @@
+msq-fr15-w1 v1 iPhone
+ROW FAIL | W1-1 | iPhone | Hunter (142 admin) files an LL for Ranger on Thu 23 Jul, remark "orig words" | saw: rows with Ranger: []
+baseline notices (Hunter) [{"id":"nmro8dz2a20kq","to":"bane","by":"prowler","at":1784250010306,"iid":"imro8dz1gduzile","name":"LL","day":"2026-07-23","what":[{"k":"in"}]}]
+ROW FAIL | W1-2 | iPhone | both moved to 149 from 16 Jul (stored); Kestrel (149 admin) signs in and opens Inputs | saw: rows with Ranger: []
+ERR W1-3 locator.tap: Timeout 30000ms exceeded.
+ROW OWED | W1-3 | iPhone | script step | saw: script error locator.tap: Timeout 30000ms exceeded.
+s4 ad2 notices [{"id":"nmro8dz2a20kq","to":"bane","by":"prowler","at":1784250010306,"iid":"imro8dz1gduzile","name":"LL","day":"2026-07-23","what":[{"k":"in"}]}]
+s4 ad2 badge {"dot":"none","text":"","aria":"Notifications"} lines []
+ROW FAIL | W1-4 | iPhone | Hunter (149 admin, filer) signs in and opens the bell | saw: badge {"dot":"none","text":"","aria":"Notifications"}; new lines 0; remark-change lines 0; lines []
+s5 us notices [{"id":"nmro8dz2a20kq","to":"bane","by":"prowler","at":1784250010306,"iid":"imro8dz1gduzile","name":"LL","day":"2026-07-23","what":[{"k":"in"}]}]
+s5 us badge {"dot":"block","text":"","aria":"Notifications"} lines ["NEW LLThu 23 Jul You were added · Hunter now"]
+ROW FAIL | W1-5 | iPhone | Ranger signs in and opens the bell | saw: badge {"dot":"block","text":"","aria":"Notifications"}; new lines 1; matching 0; lines ["NEW LLThu 23 Jul You were added · Hunter now"]
+errors []
+DONE 0 PASS 4 FAIL 1 OTHER of 5
+msq-fr15-w1 v1 iPhone
+ROW FAIL | W1-1 | iPhone | Hunter (142 admin) files an LL for Ranger on Thu 23 Jul, remark "orig words" | saw: rows with Ranger: ["LATE No document All day RangerLL orig words By Hunter","10:00–11:00 Drifter, Echo, Ranger, SaberMEETING Flight safety brief By Saber"]
+baseline notices (Hunter) [{"id":"nmro8dyw924ni","to":"bane","by":"prowler","at":1784250010089,"iid":"imro8dyvjt2w7pw","name":"LL","day":"2026-07-23","what":[{"k":"in"}]}]
+ROW FAIL | W1-2 | iPhone | both moved to 149 from 16 Jul (stored); Kestrel (149 admin) signs in and opens Inputs | saw: rows with Ranger: ["LATE No document All day RangerLL orig words By Hunter","10:00–11:00 Drifter, Echo, Ranger, SaberMEETING Flight safety brief By Saber"]
+ROW PASS | W1-3 | iPhone | Kestrel changes the leave's remark to 'new words by Kestrel' and Saves | saw: rows with Ranger: ["LATE No document All day RangerLL new words by Kestrel By Hunter","10:00–11:00 Drifter, Echo, Ranger, SaberMEETING Flight safety brief By Saber"]
+s4 ad2 notices [{"id":"nmro8dyw924ni","to":"bane","by":"prowler","at":1784250010089,"iid":"imro8dyvjt2w7pw","name":"LL","day":"2026-07-23","what":[{"k":"in"}]},{"id":"nmro8e5su37jz","to":"bane","by":"kes9","at":1784250019038,"iid":"imro8dyvjt2w7pw","name":"LL","day":"2026-07-23","what":[{"k":"rmk"}]},{"id":"nmro8e5su42q9","to":"prowler","by":"kes9","at":1784250019038,"iid":"imro8dyvjt2w7pw","name":"LL","day":"2026-07-23","what":[{"k":"rmk"}],"fu":["u149"]}]
+s4 ad2 badge {"dot":"block","text":"","aria":"Notifications"} lines ["NEW LLThu 23 Jul Remark changed · Kestrel now"]
+ROW PASS | W1-4 | iPhone | Hunter (149 admin, filer) signs in and opens the bell | saw: badge {"dot":"block","text":"","aria":"Notifications"}; new lines 1; remark-change lines 1; lines ["NEW LLThu 23 Jul Remark changed · Kestrel now"]
+s5 us notices [{"id":"nmro8dyw924ni","to":"bane","by":"prowler","at":1784250010089,"iid":"imro8dyvjt2w7pw","name":"LL","day":"2026-07-23","what":[{"k":"in"}]},{"id":"nmro8e5su37jz","to":"bane","by":"kes9","at":1784250019038,"iid":"imro8dyvjt2w7pw","name":"LL","day":"2026-07-23","what":[{"k":"rmk"}]},{"id":"nmro8e5su42q9","to":"prowler","by":"kes9","at":1784250019038,"iid":"imro8dyvjt2w7pw","name":"LL","day":"2026-07-23","what":[{"k":"rmk"}],"fu":["u149"]}]
+s5 us badge {"dot":"block","text":"","aria":"Notifications"} lines ["NEW LLThu 23 Jul Remark changed · Kestrel now","NEW LLThu 23 Jul You were added · Hunter now"]
+ROW FAIL | W1-5 | iPhone | Ranger signs in and opens the bell | saw: badge {"dot":"block","text":"","aria":"Notifications"}; new lines 2; matching 1; lines ["NEW LLThu 23 Jul Remark changed · Kestrel now","NEW LLThu 23 Jul You were added · Hunter now"]
+errors []
+DONE 2 PASS 3 FAIL 0 OTHER of 5

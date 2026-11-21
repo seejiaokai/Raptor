@@ -1,0 +1,38 @@
+// @vitest-environment jsdom
+/* C6 (Fable F3c, Opus F1 step 5): the people pickers (ui/inputedit.ts rosterOptions -> peoplepick-model pickRoster ->
+   PeoplePick; the InputWindow's Person list; the schedule's "+ input" seed pool) read the squadron on TODAY. Correct: the
+   picker offers whom the save will accept for the draft's days — the commit gate judges an input by its man's squadron on
+   every day it covers (job 2, state/multi-sqn-job2-inputs.test.ts), and D2221 lets each squadron's admin act on the days
+   that are his squadron's. Two directions: 149's admin is not offered the man whose 149 days he may file; 142's admin
+   is offered him for days the gate will refuse. */
+import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { INPUTS } from '../engine/inputs'
+import { writeInputsBatch } from '../state/store'
+import { setHome } from '../state/units'
+import { myUnit } from '../state/perms'
+import { pickRoster } from '../ui/peoplepick-model'
+import { before, after, done, at, boot, signInAs } from './harness'
+
+beforeEach(before); afterEach(after); afterAll(done)
+
+describe('C6 — the pickers and a move of squadron', () => {
+  it("149's admin, filing for Tue 14 Jul (bane's first 149 days), is offered bane — the save accepts it", () => {
+    at('2026-07-12'); boot()
+    signInAs('ad', 'a')
+    expect(setHome('bane', 'u149').ok).toBe(true)            // 149's from 13 Jul
+    signInAs('ad9', 'a9')
+    expect(myUnit()).toBe('u149')
+    /* the save itself accepts it (as job 2's third test) */
+    expect(writeInputsBatch(() => { INPUTS.push({ person: 'bane', date: 'Jul 14', endDate: 'Jul 16', yr: 2026, allday: true, type: 'LL', remarks: '149', by: 'kes9', at: Date.now(), iid: 'c06a', ord: 99906 } as any) })).toBeTruthy()
+    expect(pickRoster(false, myUnit()), "149's picker offers him").toContain('bane')
+  })
+  it("142's admin, filing for 20 Jul (a 149 day), is not offered bane — the save refuses it", () => {
+    at('2026-07-15'); boot()
+    signInAs('ad', 'a')
+    expect(setHome('bane', 'u149').ok).toBe(true)            // 149's from 16 Jul
+    signInAs('ad2', 'a2')
+    expect(myUnit()).toBe('u142')
+    expect(writeInputsBatch(() => { INPUTS.push({ person: 'bane', date: 'Jul 20', endDate: 'Jul 21', yr: 2026, allday: true, type: 'LL', remarks: '142', by: 'prowler', at: Date.now(), iid: 'c06b', ord: 99907 } as any) }), 'refused').toBe(false)
+    expect(pickRoster(false, myUnit()), "142's picker for a 149 day does not offer him").not.toContain('bane')
+  })
+})

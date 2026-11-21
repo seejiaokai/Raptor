@@ -8,13 +8,13 @@ import { describe, it, expect, beforeAll, beforeEach, afterEach } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import {
-  PERMS, T, MEDICAL_DETAIL, COMMAND_OPS, allows, cmdAuthorize, type Act, type Cell, type Role,
+  PERMS, T, MEDICAL_DETAIL, COMMAND_OPS, allows, cmdAuthorize, roleOf, type Act, type Cell, type Role,
   memberFilesForOthers, mayFileInputFor, mayFileGroup, mayEditInput, mayDeleteInput, filedForOther, INPUT_FILER_NOTE,
 } from './perms'
 import { registeredTypes } from '../command'
 import type { Actor } from '../command/types'
 import { initStore, resetSession, notify, switchRoleView } from './store'
-import { signIn, sessionFor } from './accounts'
+import { signIn, sessionFor, requestAccess } from './accounts'
 import { setMembersFile } from './memberfile'
 import { storeBackend } from '../engine/hooks'
 import { INPUT_TYPES, isLeave, needsDoc, isSansAvail, typeGroup } from '../engine/inputs'
@@ -27,7 +27,9 @@ const read = (p: string) => readFileSync(join(ROOT, p), 'utf8')
    Reads the letters C R U D in each cell; "own" makes the letters of its clause the
    own-row rule; words in parentheses are notes; "gap: [ITEM-ID]" in the notes column
    names a rule the app does not obey yet. */
-const ROLES: Role[] = ['admin', 'member', 'guest', 'pending']
+/* §11's columns are the roles a session holds: the Guest column left the document and PERMS together (the reshape's
+   phase 3 — D2239, the guest view removed) */
+const ROLES: Role[] = ['admin', 'member', 'pending']
 function parseCell(raw: string): Cell {
   let t = raw.replace(/\*\*/g, '').replace(/`/g, '').trim()
   while (/\([^()]*\)/.test(t)) t = t.replace(/\([^()]*\)/g, ' ')
@@ -41,7 +43,7 @@ function parseCell(raw: string): Cell {
   }
   return out
 }
-function section11(): { head: string[]; rows: Record<string, { cells: Record<Role, Cell>; gaps: string[]; guestNote: string }> } {
+function section11(): { head: string[]; rows: Record<string, { cells: Record<Role, Cell>; gaps: string[] }> } {
   const md = read('docs/data-model.md')
   const a = md.indexOf('## 11. Security roles'), b = md.indexOf('## 12.')
   expect(a, '§11 exists').toBeGreaterThan(0)
@@ -54,8 +56,8 @@ function section11(): { head: string[]; rows: Record<string, { cells: Record<Rol
     const key = c[0].replace(/`/g, '').trim()
     const cells = {} as Record<Role, Cell>
     ROLES.forEach((r, i) => { cells[r] = parseCell(c[i + 1]) })
-    const gaps = [...c[5].matchAll(/gap:\s*`?\[([A-Z0-9-]+)\]/g)].map(m => m[1])
-    rows[key] = { cells, gaps, guestNote: c[3] }
+    const gaps = [...c[4].matchAll(/gap:\s*`?\[([A-Z0-9-]+)\]/g)].map(m => m[1])
+    rows[key] = { cells, gaps }
   }
   return { head, rows }
 }
@@ -65,7 +67,7 @@ describe('D200 (3): the permissions matrix IS data-model.md §11', () => {
   const { head, rows } = section11()
 
   it('§11 has the columns the matrix has', () => {
-    expect(head).toEqual(['Table', 'Admin', 'Member', 'Guest', 'Pending', 'Own-row rule and notes'])
+    expect(head).toEqual(['Table', 'Admin', 'Member', 'Pending', 'Own-row rule and notes'])
   })
   it('every §11 row is in PERMS and every PERMS row is in §11', () => {
     expect(Object.keys(rows).sort()).toEqual(Object.keys(PERMS).sort())
@@ -80,10 +82,12 @@ describe('D200 (3): the permissions matrix IS data-model.md §11', () => {
       expect([...PERMS[key].gaps].sort()).toEqual([...rows[key].gaps].sort())
     })
   }
-  it('D211 + D213: the medical-detail rule and §11 agree — every member reads a medical input in full, and a guest too', () => {
-    const guestNote = rows[T.input].guestNote
-    expect(MEDICAL_DETAIL.includes('guest')).toBe(!/no medical detail/.test(guestNote))
-    expect(MEDICAL_DETAIL).toEqual(expect.arrayContaining(['admin', 'member', 'guest']))
+  /* rewritten to his D2239 (20 Nov 26), which replaces D213: the guest who read a medical input in full is gone with the
+     guest view, so the rule is D211's alone — every admin and member, nobody else (the test was tied to §11's Guest cell,
+     gone with its column) */
+  it('D211 + D2239: every admin and member reads a medical input in full, and nobody else — there is no guest', () => {
+    expect([...MEDICAL_DETAIL].sort()).toEqual(['admin', 'member'])
+    expect(MEDICAL_DETAIL as string[]).not.toContain('guest')
   })
   it('the parser itself reads the forms the table uses', () => {
     expect(parseCell('R, C U D **own** on a day open for bidding, not before today (on any other day only D of his own pending bid — D1177, D1211, D1225)')).toEqual({ all: ['R'], own: ['C', 'U', 'D'] })
@@ -108,10 +112,14 @@ describe('allows — the one rule under every question', () => {
     expect(allows('member', T.person, 'U', 'stiff', 'bane')).toBe(false)
     expect(allows('admin', T.person, 'U', 'stiff', 'bane')).toBe(true)
   })
-  it('a guest reads the published week and writes nothing', () => {
-    expect(allows('guest', T.sched, 'R')).toBe(true)
+  /* rewritten to his D2239 (20 Nov 26): it pinned the guest reading the published week; the guest view is removed, so it
+     pins that the guest role holds nothing — not the week, not a write — whatever a hand-made call or session passes */
+  it('there is no guest: the retired guest role reads and writes nothing, and a session still carrying it is switched off', () => {
+    expect(allows('guest' as any, T.sched, 'R'), 'not the published week').toBe(false)
     for (const [t, a] of [[T.sched, 'U'], [T.input, 'C'], [T.person, 'U'], [T.bid, 'C'], [T.tracker, 'U']] as [string, Act][])
-      expect(allows('guest', t, a, 'x', 'x'), `${t} ${a}`).toBe(false)
+      expect(allows('guest' as any, t, a, 'x', 'x'), `${t} ${a}`).toBe(false)
+    for (const t of Object.keys(PERMS)) for (const a of ['C', 'R', 'U', 'D'] as Act[]) expect(allows('guest' as any, t, a, 'x', 'x'), `${t} ${a}`).toBe(false)
+    expect(roleOf({ user: 'principal:g', role: 'guest', pid: null, name: 'g' }), 'never read as a member').toBe('off')
   })
   it('a pending person may only ask for access, as himself', () => {
     expect(allows('pending', T.accessreq, 'C', 'hex2@mail', 'hex2@mail')).toBe(true)
@@ -232,8 +240,12 @@ describe('D654 / D655: the input questions take the record — the man, whoever 
     switchRoleView()
     expect(mayFileInputFor('rocky', 'LL')).toBe(true)
   })
-  it('a guest, a pending person and an account switched off: nothing', () => {
-    for (const s of [{ user: 'principal:g', role: 'guest', pid: null, name: 'g' }, { user: 'principal:p', role: 'pending', pid: null, name: 'p' }, { user: 'principal:o', role: 'off', pid: null, name: 'o' }]) {
+  /* the guest (gone with the guest view, D2239) stood here as a person without access: a person waiting takes his place */
+  it('a person waiting, a pending person and an account switched off: nothing', () => {
+    as('waits@mail'); expect(requestAccess({ cs: 'Waits', ini: '', seat: 'FCP', cat: 'C' })).toBeNull()
+    const waiting = sessionFor(signIn('waits@mail', 'x'))
+    expect(waiting.role, 'a person waiting').toBe('pending')
+    for (const s of [waiting, { user: 'principal:p', role: 'pending', pid: null, name: 'p' }, { user: 'principal:o', role: 'off', pid: null, name: 'o' }]) {
       resetSession(s as any)
       expect(mayFileInputFor('rocky', 'Meeting'), s.role).toBe(false)
       expect(mayFileGroup('Meeting'), s.role).toBe(false)
@@ -311,8 +323,10 @@ describe('the command gate (cmdAuthorize) — every command the app registers', 
   })
   it("NP8 — a command is authorised only if EVERY table it writes allows it (Astra's plan read 1)", () => {
     /* [ONE-DOOR] (D308; round 1 — Fable F11 / Astra 6): each also writes his post-in date on the war */
-    expect(COMMAND_OPS['account.addNew'].more).toEqual([[T.person, 'C'], [T.accessreq, 'D'], [T.profile, 'U']])
-    expect(COMMAND_OPS['access.approveNew'].more).toEqual([[T.user, 'C'], [T.person, 'C'], [T.profile, 'U']])
+    /* …and his home unit, in the same command (multi-squadron batch 1, step 1 — D2094) */
+    expect(COMMAND_OPS['account.addNew'].more).toEqual([[T.person, 'C'], [T.accessreq, 'D'], [T.profile, 'U'], [T.home, 'C']])
+    expect(COMMAND_OPS['access.approveNew'].more).toEqual([[T.user, 'C'], [T.person, 'C'], [T.profile, 'U'], [T.home, 'C']])
+    expect(COMMAND_OPS['person.add'].more).toEqual([[T.profile, 'U'], [T.home, 'C']])
     expect(COMMAND_OPS['account.update'].more, 'a rename onto a waiting name answers its request').toEqual([[T.accessreq, 'D']])
     /* withhold ONE of the tables from the admin: the whole command is refused, not just that half */
     const cell = PERMS[T.person].admin, was = cell.all.slice()
@@ -361,8 +375,9 @@ describe('the command gate (cmdAuthorize) — every command the app registers', 
     expect(cmdAuthorize('people.edit', actor('member', 'bane'))).toBe(false)
     expect(cmdAuthorize('people.edit', actor('admin', 'stiff'))).toBe(true)
   })
-  it('a guest, a pending person and an account switched off run no forward command', () => {
-    for (const role of ['guest', 'pending', 'off'] as Actor['role'][])
+  /* the guest's actor (gone with the guest view, D2239) is now the retired role on a hand-made actor: it holds nothing */
+  it('a pending person, an account switched off — and an actor still carrying the retired guest role — run no forward command', () => {
+    for (const role of ['guest' as any, 'pending', 'off'] as Actor['role'][])
       for (const t of Object.keys(COMMAND_OPS)) {
         if (role === 'pending' && t === 'access.request') continue
         expect(cmdAuthorize(t, actor(role, undefined, 'p@mail'), { owner: 'p@mail' }), `${role} ${t}`).toBe(false)
@@ -374,11 +389,17 @@ describe('the command gate (cmdAuthorize) — every command the app registers', 
     expect(cmdAuthorize('access.request', actor('pending', undefined, 'p@mail'))).toBe(false)
     expect(cmdAuthorize('settings.accessreqs', actor('pending', undefined, 'p@mail'), { owner: 'p@mail' })).toBe(false)
   })
-  it('accounts, the guest switch and every settings key are the admin\'s', () => {
+  it('accounts and every settings key are the admin\'s — the guest switch\'s two commands are gone (D2239)', () => {
+    /* rewritten to his D2239: the guest switch and its setting are removed, so neither command has a row — refused for
+       everyone, an admin too (an unmapped type fails closed) */
+    for (const t of ['guestview.set', 'settings.guestview']) {
+      expect(COMMAND_OPS[t], t).toBeUndefined()
+      expect(cmdAuthorize(t, actor('admin', 'stiff')), t).toBe(false)
+    }
     /* the accounts and the requests are rows since [DB-READINESS] group A, phase 4.4 — written only by their intents,
        never by a bare `settings.<key>` command */
-    for (const t of ['account.add', 'account.update', 'access.approve', 'access.decline', 'guestview.set',
-      'settings.guestview', 'settings.rules',
+    for (const t of ['account.add', 'account.update', 'access.approve', 'access.decline',
+      'settings.rules',
       /* [ACCOUNTS-NEW-PERSON] (NP8): a new person alone, with his account, by approval */
       'person.add', 'account.addNew', 'access.approveNew']) {
       expect(cmdAuthorize(t, actor('admin', 'stiff')), t).toBe(true)

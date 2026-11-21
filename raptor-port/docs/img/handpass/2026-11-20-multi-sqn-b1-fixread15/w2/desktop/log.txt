@@ -1,0 +1,15 @@
+msq-fr15-w2 v1 desktop
+ROW PASS | W2-1 | desktop | Hunter files Ranger LL 23 Jul | saw: ["Ranger 23 Jul LL LATEw2 orig till 23 JulBy Hunter now No document","Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 MEETING Flight safety briefBy Saber 25 Jun 26"]
+ROW PASS | W2-2 | desktop | moves stored; Saber (master) opens Inputs | saw: ["Ranger 23 Jul LL LATEw2 orig till 23 JulBy Hunter now No document","Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 MEETING Flight safety briefBy Saber 25 Jun 26"]
+notices before [{"id":"nmro8dy2j2n9e","to":"bane","by":"prowler","at":1784250009019,"iid":"imro8dy2234a5qy","name":"LL","day":"2026-07-23","what":[{"k":"in"}]}]
+window tail y 2026 › 13 ‹ › MON TUE WED THU FRI SAT SUN 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Jul 27 Placed by Hunter for Ranger · 17 Jul 26, 09:00 Delete Cancel Save
+ROW PASS | W2-3 | desktop | Saber changes the leave to Outlaw (Casper) on Mon 27 Jul and saves | saw: ["Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 MEETING Flight safety briefBy Saber 25 Jun 26","Outlaw 27 Jul LL LATEw2 orig till 27 JulBy Hunter now No document"]
+notices after [{"id":"nmro8dy2j2n9e","to":"bane","by":"prowler","at":1784250009019,"iid":"imro8dy2234a5qy","name":"LL","day":"2026-07-23","what":[{"k":"in"}]},{"id":"nmro8e5k435hr","to":"bane","by":"stiff","at":1784250018724,"iid":"imro8dy2234a5qy","name":"LL","day":"2026-07-27","what":[{"k":"out"}]},{"id":"nmro8e5k44cuy","to":"casper","by":"stiff","at":1784250018724,"iid":"imro8dy2234a5qy","name":"LL","day":"2026-07-27","what":[{"k":"in"}]}]
+s4 ad2 lines []
+ROW PASS | W2-4 | desktop | Hunter's bell | saw: badge {"dot":"none","text":"","aria":"Notifications"}; lines []
+s5 outlaw lines ["NEW LLMon 27 Jul You were added · Saber now"]
+ROW PASS | W2-5 | desktop | Casper's (Outlaw) bell | saw: badge {"dot":"block","text":"","aria":"Notifications"}; lines ["NEW LLMon 27 Jul You were added · Saber now"]
+s6 us lines ["NEW LLMon 27 Jul You were taken off · Saber now","NEW LLThu 23 Jul You were added · Hunter now"]
+ROW FAIL | W2-6 | desktop | Ranger's bell | saw: badge {"dot":"block","text":"","aria":"Notifications"}; lines ["NEW LLMon 27 Jul You were taken off · Saber now","NEW LLThu 23 Jul You were added · Hunter now"]
+errors []
+DONE 5 PASS 1 FAIL 0 OTHER of 6

@@ -27,6 +27,7 @@ import { stashClear } from '../engine/weekstash'
 import { emptyWeek, setAuthoredWeeks } from '../engine/weeks-data'
 import { PLANPUCKS, DAYRMK } from './plan'
 import { setAccountSeeds } from './accounts'
+import { setUnitSeeds } from './units'
 
 /* the policy this page life booted with — read by the one part that boots LATER, at its first mount: the Tracker, through
    its page seam (tracker/TrackerPage.tsx), so no new crossing into it is made */
@@ -37,6 +38,7 @@ export function resetSeedWorld(seedDemo: boolean): void {
   SEED_DEMO = seedDemo
   setAuthoredWeeks(seedDemo)
   setAccountSeeds(seedDemo)
+  setUnitSeeds(seedDemo)   // the demo's two units and their place; a shared store's are its own rows (step 1)
   /* the week first — a blank week's date labels read the loaded week's year */
   setCurWeek(BOOT_WEEK)
   resetSched()

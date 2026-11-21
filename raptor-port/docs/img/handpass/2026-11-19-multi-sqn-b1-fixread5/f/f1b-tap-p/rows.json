@@ -1,0 +1,29 @@
+[
+ [
+  "F1",
+  "iPhone",
+  "Osprey: bell after bidding opened then closed",
+  "two lines, both new; dot lit",
+  "dot before open \"block\"; [\"NEW Leave War1 Dec – 31 Dec Bidding open · Kestrel now\"]",
+  "RECORD",
+  "f1b-03-osprey-bell.png"
+ ],
+ [
+  "F1",
+  "iPhone",
+  "Osprey: tap the first line",
+  "opens the place it names (RECORD)",
+  "page leavewar; bell still open 0; words 142 TALON ↶ ↷ Grid Balances OIL View My leave LVE 0 · OIL 0 · 0 pending › ▸ Manning Open 1 Dec – 31 Dec Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC 2026 CS/Name +LVE JUL WED 01 THU 02 FRI 0",
+  "RECORD",
+  "f1b-04-after-line-tap.png"
+ ],
+ [
+  "F1",
+  "iPhone",
+  "Osprey: reopen the bell",
+  "the tapped line no longer new; one fewer new",
+  "dot none; [\"read Leave War1 Dec – 31 Dec Bidding open · Kestrel now\"]",
+  "PASS",
+  "f1b-05-reopen.png"
+ ]
+]

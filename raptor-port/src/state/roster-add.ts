@@ -28,9 +28,10 @@
 import { PEOPLE, QCHIP, deriveQuals, indexCallsigns, callsignTakenBy } from '../engine/people'
 import { newId } from '../engine/newid'
 import { CmdRefused, isCommitting } from '../command'
-import { mayManageRoster } from './perms'
+import { mayManageRoster, me } from './perms'
 import { HOOKS } from '../engine/hooks'
-import { commitPeopleIntent } from './people-settings-commit'
+import { commitPeopleSettingsIntent } from './people-settings-commit'
+import { putNewHome } from './units'
 
 /* the ONE seat list every form reads (D220) — the stored value is the seat code */
 export const SEATS: { v: 'FCP' | 'RCP' | 'GND'; l: string }[] = [
@@ -149,8 +150,11 @@ export function addRosterPerson(np: NewPerson, postIn?: string): string | null {
   if (!mayManageRoster()) return 'Only an admin can add someone'
   const bad = newPersonProblem(np) || (postIn !== undefined ? postInProblem(postIn) : null)
   if (bad) return bad
-  return saidOf(commitPeopleIntent('person.add', null, txn => {
+  /* the settings store enlisted too since multi-squadron batch 1, step 1: his home unit is written in the same command
+     (the adder's own by default, D2094 — state/units.ts putNewHome), so a person is never made without one */
+  return saidOf(commitPeopleSettingsIntent('person.add', null, txn => {
     const id = putNewPerson(np)
+    putNewHome(id, me())   // before the war's post-in, which finds him in its own squadron's projection (Astra 4)
     if (postIn !== undefined) HOOKS.warPostIn(txn, id, postIn)
   }))
 }

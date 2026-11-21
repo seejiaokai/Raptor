@@ -1,0 +1,15 @@
+msq-fr17-halves v2 desktop ref
+ROW RECORD | H-1 | desktop ref | Saber places approved AM-half LL for Ranger 27 Jul (portion-am, bid-LL), words "morning words" | saw: switch true; cell "LL"; window open 0
+H-2 boxes 2
+ROW RECORD | H-2 | desktop ref | Hunter places approved PM-half LL for Ranger 27 Jul, words "afternoon words" | saw: switch true; cell "LL LL"; window open 0
+H-3 sections 2
+H-3 control decide-refuse refuse offered 2
+ROW RECORD | H-3 | desktop ref | Saber on PM half only: decide-refuse | saw: cell before "LL LL"; window before "NO WINDOW"; window@110ms "NO WINDOW"; after "NO WINDOW" (no confirm); window open 0; cell after "LL LL"
+ROW RECORD | H-4 | desktop ref | reload as Saber, Ranger 27 Jul | saw: cell "LL LL"; window "NO WINDOW"; remarks ["morning words","afternoon words"]
+H-5a us ["NEW Your leaveMon 27 Jul LL (PM) refused · Saber now","NEW LLMon 27 Jul Remark changed · Hunter now","NEW Your leaveMon 27 Jul LL (PM) added and approved · Hunter now","NEW Your leaveMon 27 Jul LL (AM) added and approved · Saber now","NEW Leave War17 Jul – 31 Jul Bidding open · Saber now"]
+ROW FAIL | H-5a | desktop ref | us bell | saw: badge {"dot":"block","text":"","aria":"Notifications"}; lines ["NEW Your leaveMon 27 Jul LL (PM) refused · Saber now","NEW LLMon 27 Jul Remark changed · Hunter now","NEW Your leaveMon 27 Jul LL (PM) added and approved · Hunter now","NEW Your leaveMon 27 Jul LL (AM) added and approved · Saber now","NEW Leave War17 Jul – 31 Jul Bidding open · Saber now"]
+H-5b ad2 ["NEW Leave War17 Jul – 31 Jul Bidding open · Saber now"]
+ROW PASS | H-5b | desktop ref | ad2 bell | saw: badge {"dot":"block","text":"","aria":"Notifications"}; lines ["NEW Leave War17 Jul – 31 Jul Bidding open · Saber now"]
+ERRORS []
+errors []
+DONE 1 PASS 1 FAIL 4 OTHER of 6

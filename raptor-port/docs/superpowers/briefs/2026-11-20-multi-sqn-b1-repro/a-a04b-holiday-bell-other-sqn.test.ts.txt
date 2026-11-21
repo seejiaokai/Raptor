@@ -1,0 +1,69 @@
+// @vitest-environment jsdom
+/* A4, the bell half (Opus F1): a public holiday 142 makes tells 149's schedulers ("Inputs need an OIL answer").
+   Correct per D2195: "no bell line goes to the other squadron for a holiday; the 'Inputs need an OIL answer' line goes to
+   its own squadron's schedulers only". Harness: leavewar/multi-sqn-fixread10.test.ts (its realHoliday). */
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { storeBackend, HOOKS } from '../engine/hooks'
+import { PEOPLE, indexCallsigns } from '../engine/people'
+import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
+import { accountsLoad, signIn, sessionFor } from '../state/accounts'
+import { initStore as lwInitStore, setPeople, holidayAdd } from '../leavewar/state/store'
+import { commitInput, draftOf } from '../ui/inputedit'
+import { memoryBackend } from '../leavewar/state/storage'
+import { projectPeople } from '../leavewar/state/raptorRoster'
+import { wireLeaveWarSync, setWarWorldDoor } from '../leavewar/sync'
+import { INPUTS } from '../engine/inputs'
+import { NOTICES } from '../state/notices'
+import { noticeSeenLoad } from '../state/noticeseen'
+import { installGlobalUndo } from '../state/undo-wire'
+import { _resetTimeline } from '../undo/timeline'
+
+const mem: Record<string, string> = {}
+let PEOPLE0 = ''
+const signInAs = (name: string, pass = 'x') => { resetSession(sessionFor(signIn(name, pass))); raptorNotify() }
+let worlds: Record<string, any> = {}
+
+beforeAll(() => {
+  vi.useFakeTimers({ toFake: ['Date'] })
+  vi.setSystemTime(new Date(2026, 6, 15, 9, 0, 0))
+  PEOPLE0 = JSON.stringify(PEOPLE)
+})
+afterAll(() => { vi.useRealTimers(); storeBackend.impl = null; setWarWorldDoor(null) })
+beforeEach(() => {
+  vi.setSystemTime(new Date(2026, 6, 15, 9, 0, 0))
+  Object.keys(mem).forEach(k => delete mem[k])
+  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v }, keys: () => Object.keys(mem) } as any
+  const p0 = JSON.parse(PEOPLE0)
+  for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
+  Object.assign(PEOPLE, p0); indexCallsigns()
+  for (let i = INPUTS.length - 1; i >= 0; i--) if (String((INPUTS as any)[i].iid || '').startsWith('ipd')) INPUTS.splice(i, 1)
+  worlds = { u142: memoryBackend(), u149: memoryBackend() }
+  setWarWorldDoor(null)
+  lwInitStore(worlds.u142)
+  raptorInitStore()
+  NOTICES.splice(0)
+  accountsLoad()
+  noticeSeenLoad()
+  setPeople(projectPeople())
+  wireLeaveWarSync()
+  setWarWorldDoor((u: string) => ({ backend: worlds[u] ?? (worlds[u] = memoryBackend()) }))
+  _resetTimeline(); installGlobalUndo()
+  vi.spyOn(HOOKS, 'toast').mockImplementation(() => {})
+})
+
+const fileOn = (pid: string, filer: [string, string], title: string) => {
+  signInAs(filer[0], filer[1])
+  expect(commitInput(null, draftOf({ person: pid, type: 'Training', title, date: 'Jul 17', yr: 2026, allday: false, s: 540, e: 720, remarks: '' } as any), [pid]), 'filed: ' + title).toBe(true)
+}
+
+describe('A4 (bell) — 142’s holiday tells only 142’s schedulers', () => {
+  it('Saber (142’s war loaded) makes Fri 17 Jul a holiday; Kestrel (149) is not told, Hunter (142) is', () => {
+    fileOn('osp9', ['ad9', 'a9'], 'Range 149')
+    fileOn('bane', ['ad2', 'a2'], 'Range 142')
+    signInAs('ad', 'a')
+    expect(holidayAdd({ kind: 'ph', name: 'National Day', from: '2026-07-17', to: '2026-07-17' }).ok).toBe(true)
+    const told = NOTICES.filter(x => x.name === 'National Day').map(x => x.to).sort()
+    expect(told, 'sanity: 142’s own scheduler told').toContain('prowler')
+    expect(told, '149’s scheduler is not told of 142’s holiday').not.toContain('kes9')
+  })
+})

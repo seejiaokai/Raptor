@@ -1,0 +1,72 @@
+msq-w3-fixread v1 desktop only F1
+F1 controls [{"tag":"BUTTON","id":"","label":"Ospreyus9 · Member · Pilot · CAT A","cls":"acc-main acc-tap"},{"tag":"INPUT","id":"accEdName","label":"us9","cls":""},{"tag":"SELECT","id":"accEdRole","label":"Member or admin","cls":""},{"tag":"BUTTON","id":"accEdSave","label":"Save","cls":"abtn primary"},{"tag":"BUTTON","id":"accEdOnOff","label":"Suspend","cls":"abtn"},{"tag":"BUTTON","id":"accEdArchive","label":"Archive","cls":"abtn"},{"tag":"BUTTON","id":"accEdDel","label":"Delete","cls":"abtn danger"},{"tag":"BUTTON","id":"accEdCancel","label":"Cancel","cls":"abtn"}]
+F1 opened true pid osp9
+F1 body after open: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Hunter · Admin Grid Approvals 13 Balances OIL View My leave LVE 20.5 · OIL 2.5 · 0 pending › ▾ Manning Bidding closed Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC 2026 CS/Name +LVE NOV SUN 01 MON 02 TUE 03 WED 04 THU 05 FRI 06 SAT 07 SUN 08 MON 09 TUE 10 WED 11 THU 12 FRI 13 SAT 14 SUN 15 MON 16 TUE 17 WED 18 THU 19 FRI 20 SAT 21 SUN 22 MON 23 TUE 24 WED 25 THU 26 FRI 27 SAT 28 SUN 29 MON 30 DEC TUE 01 WED 02 THU 03 FRI 04 SAT 05 SUN 06 MON 07 TUE 08 WED 09 THU 10 FRI 11 SAT 12 SUN 13 MON 14 TUE 15 WED 16 THU 17 FRI 18 SAT 19 SUN 20 MON 21 TUE 22 WED 23 THU 24 FRI 25 SAT 26 SUN 27 MON 28 TUE 29 WED 30 THU 31 Crew sets 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 IP 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 IWSO 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 OPSP 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 OPSW 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 1
+ROW RECORD | F1 | desktop | ad2 searches Osprey and opens his row | saw: opened: true; controls: Ospreyus9 · Member · Pilot · CAT A | us9 | Member or admin | Save | Suspend | Archive | Delete | Cancel
+ROW RECORD | F1 | desktop | ad2 on Osprey's row: INPUT "us9" | saw: no exact refusal; bad words: none ; tail:  Bolt Cinch Drifter Echo Forge Piston Ranger Reaper Ridge Saber Sidewinder Static Trident Warden — name — Anvil Basher Bolt Cinch Drifter Echo Forge Piston Ranger Reaper Ridge Saber Sidewinder Static Trident Warden — name — Anvil Basher Bolt Cinch Drifter Echo Forge Piston Ranger Reaper Ridge Saber Sidewinder Static Trident Warden JAN - DEC 26 JAN - DEC 27
+F1 select accEdRole main,admin
+ROW RECORD | F1 | desktop | ad2 on Osprey's row: SELECT "Member or admin" | saw: no exact refusal; bad words: none ; tail:  Bolt Cinch Drifter Echo Forge Piston Ranger Reaper Ridge Saber Sidewinder Static Trident Warden — name — Anvil Basher Bolt Cinch Drifter Echo Forge Piston Ranger Reaper Ridge Saber Sidewinder Static Trident Warden — name — Anvil Basher Bolt Cinch Drifter Echo Forge Piston Ranger Reaper Ridge Saber Sidewinder Static Trident Warden JAN - DEC 26 JAN - DEC 27
+ROW PASS | F1 | desktop | ad2 on Osprey's row: BUTTON "Save" | saw: He is 149's. Only an admin of 149 can change his account.
+ROW PASS | F1 | desktop | ad2 on Osprey's row: BUTTON "Suspend" | saw: He is 149's. Only an admin of 149 can change his account.
+ROW PASS | F1 | desktop | ad2 on Osprey's row: BUTTON "Archive" | saw: He is 149's. Only an admin of 149 can change him.
+ROW PASS | F1 | desktop | ad2 on Osprey's row: BUTTON "Delete" | saw: He is 149's. Only an admin of 149 can change him.
+ROW PASS | F1 | desktop | ad2 on Osprey's row: BUTTON "Cancel" | saw: He is 149's. Only an admin of 149 can change him.
+ROW RECORD | F1 | desktop | Osprey checked afterwards | saw: Osprey us9 · Pilot · CAT A MEMBER
+errors []
+DONE 5 PASS 0 FAIL 4 OTHER of 9
+msq-w3-fixread v1 desktop only F2,F3
+F2 controls [{"tag":"BUTTON","id":"","label":"Kestrelad9 · Admin · Pilot · CAT IP","cls":"acc-main acc-tap"},{"tag":"INPUT","id":"accEdName","label":"ad9","cls":""},{"tag":"SELECT","id":"accEdRole","label":"Member or admin","cls":""},{"tag":"BUTTON","id":"accEdSave","label":"Save","cls":"abtn primary"},{"tag":"BUTTON","id":"accEdOnOff","label":"Suspend","cls":"abtn"},{"tag":"BUTTON","id":"accEdArchive","label":"Archive","cls":"abtn"},{"tag":"BUTTON","id":"accEdDel","label":"Delete","cls":"abtn danger"},{"tag":"BUTTON","id":"accEdCancel","label":"Cancel","cls":"abtn"}]
+ROW PASS | F2 | desktop | ad presses Archive on Kestrel | saw: Kestrel is 149's last admin. Make another admin of 149 first.
+ROW PASS | F2 | desktop | ad sets Kestrel to Member and saves | saw: Kestrel is 149's last admin. Make another admin of 149 first.
+ROW RECORD | F2 | desktop | ad looks for the schedules menu ("142 ▾") at the top left of the Leave War, and clicks the "142 TALON" mark | saw: no menu opened; top-left reads: 142TALON | buttons with ▾ in top bar: 
+errors []
+DONE 2 PASS 0 FAIL 1 OTHER of 3
+ROW FAIL | F2 | desktop | ad9 (149's only admin, in 149's Leave War) opens Kestrel's Post out, Overseas Sqn, today | saw: sheet text: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout KESTREL · ADMIN Grid Approvals Balances OIL VIEW JAN - DEC 26 JAN - DEC 27 + New period MY LEAVE LVE 0 · OIL 0 · 0 pending › ▾ Manning Bidding closed Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC 2026 CS/Name +LVE JAN THU 01 FRI 02 SAT 03 SUN 04 MON 05 TUE 06 WED 07 THU 
+F2 last-admin-who-can-sign-in words present: false
+ROW RECORD | F2 | desktop | ad9 presses Post out for Kestrel | saw: (nothing about a waiting posting on screen)
+errors []
+DONE 2 PASS 1 FAIL 2 OTHER of 5
+ROW PASS | F3 | desktop | ad2 opens Saber's Post out, picks the Delete chip | saw: Saber is a master admin, so he can't be deleted
+F3 saber row still on the grid true
+F3 after Saber press tail  Static Trident Warden — name — Anvil Basher Bolt Cinch Drifter Echo Forge Piston Ranger Reaper Ridge Saber Sidewinder Static Trident Warden — name — Anvil Basher Bolt Cinch Drifter Echo Forge Piston Ranger Reaper Ridge Saber Sidewinder Static Trident Warden JAN - DEC 26 JAN - DEC 27 + New period on
+ROW PASS | F3 | desktop | ad2 presses Post out on the master (Delete chip) and, if asked, confirms | saw: Saber on grid: true; words: y, with his account. Days he flew keep his puck. Saber is a master admin, so he can't be deleted Post out Delete Saber? On 18 Nov the app deletes him au
+F3 rocky sheet false no grid cell for null on 2026-11-18
+F3 rocky press 1 Post out
+F3 rocky press 2 Post out
+F3 rocky press 3 Post out
+ROW RECORD | F3 | desktop | ad2 posts Rocky (a 142 member) out with Delete today, confirms as asked | saw: page alive: true; Rocky: (no row for him on the grid)
+errors []
+DONE 4 PASS 1 FAIL 3 OTHER of 8
+msq-w3-fixread v1 desktop only F2,F3,F4
+F2 controls [{"tag":"BUTTON","id":"","label":"Kestrelad9 · Admin · Pilot · CAT IP","cls":"acc-main acc-tap"},{"tag":"INPUT","id":"accEdName","label":"ad9","cls":""},{"tag":"SELECT","id":"accEdRole","label":"Member or admin","cls":""},{"tag":"BUTTON","id":"accEdSave","label":"Save","cls":"abtn primary"},{"tag":"BUTTON","id":"accEdOnOff","label":"Suspend","cls":"abtn"},{"tag":"BUTTON","id":"accEdArchive","label":"Archive","cls":"abtn"},{"tag":"BUTTON","id":"accEdDel","label":"Delete","cls":"abtn danger"},{"tag":"BUTTON","id":"accEdCancel","label":"Cancel","cls":"abtn"}]
+ROW PASS | F2 | desktop | ad presses Archive on Kestrel | saw: Kestrel is 149's last admin. Make another admin of 149 first.
+ROW PASS | F2 | desktop | ad sets Kestrel to Member and saves | saw: Kestrel is 149's last admin. Make another admin of 149 first.
+ROW RECORD | F2 | desktop | ad looks for the schedules menu ("142 ▾") at the top left of the Leave War, and clicks the "142 TALON" mark | saw: no menu opened; top-left reads: 142TALON | buttons with ▾ in top bar: 
+errors []
+DONE 2 PASS 0 FAIL 1 OTHER of 3
+ROW PASS | F2 | desktop | ad9 (149's only admin, in 149's Leave War) opens Kestrel's Post out, Overseas Sqn, today | saw: Kestrel is 149's last admin. The posting waits until 149 has another admin.
+F2 last-admin-who-can-sign-in words present: false
+ROW PASS | F2 | desktop | ad9 presses Post out for Kestrel | saw: WED 23 THU 24 FRI 25 SAT 26 SUN 27 MON 28 TUE 29 WED 30 THU 31 Kestrel is 149's last admin. The posting waits until 149 has another admin. — name — Condor Falcon Gannet Harrier Heron Kestrel Merlin Osprey Raven
+errors []
+DONE 4 PASS 0 FAIL 1 OTHER of 5
+ROW PASS | F3 | desktop | ad2 opens Saber's Post out, picks the Delete chip | saw: Saber is a master admin, so he can't be deleted
+F3 saber row still on the grid true
+F3 after Saber press tail  Static Trident Warden — name — Anvil Basher Bolt Cinch Drifter Echo Forge Piston Ranger Reaper Ridge Saber Sidewinder Static Trident Warden — name — Anvil Basher Bolt Cinch Drifter Echo Forge Piston Ranger Reaper Ridge Saber Sidewinder Static Trident Warden JAN - DEC 26 JAN - DEC 27 + New period on
+ROW PASS | F3 | desktop | ad2 presses Post out on the master (Delete chip) and, if asked, confirms | saw: Saber on grid: true; words: y, with his account. Days he flew keep his puck. Saber is a master admin, so he can't be deleted Post out Delete Saber? On 18 Nov the app deletes him au
+F3 no Rocky in this world; using Ranger (142 member)
+F3 rocky sheet true Ranger Wed 18 Nov Auto-approve ✕ No manning row turns amber or red till 18 Nov Document Whole day AM PM Pick a range LL 11.5 OL 11.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 PO FROM Wed 18 Nov 26 ▾ POSTING Overseas Sqn ✓ Delete SANS Transfer to Sqn On 18 Nov the app deletes him automatically, with his a
+F3 rocky press 1 Post out
+ROW RECORD | F3 | desktop | ad2 posts Ranger (a 142 member; Rocky is not in this world if Ranger) out with Delete today, confirms as asked | saw: page alive: true; Rocky: 
+errors []
+DONE 6 PASS 0 FAIL 2 OTHER of 8
+ROW PASS | F4 | desktop | ad9 adds ground row "F4 149 LINE" on Wed with Kestrel | saw: row "F4 149 LINE" on screen
+ROW PASS | F4 | desktop | ad2 adds ground row "F4 142 LINE" on Wed with Hunter | saw: row "F4 142 LINE" on screen
+F4 ad clock before Changes, 3 new to you this week | text:3
+F4 ad window ⠿Changes · week of 13/73 changes this week✕New to you 3All changes 3WeekMonTueWedThuFriSatSunGroup byItemWho▾Wed · Ground · F4 142 LINE · 2NEW08:27Hunter put onHunter · 18/11 08:27Item— → F4 142 LINEHunter · 18/11 08:27Wed · The dayHunter · 18/11 08:27Ground item added✓ Mark all as seen
+ROW PASS | F4 | desktop | ad (master, 142) opens the changes window | saw: ⠿Changes · week of 13/73 changes this week✕New to you 3All changes 3WeekMonTueWedThuFriSatSunGroup byItemWho▾Wed · Ground · F4 142 LINE · 2NEW08:27Hunter put onHunter · 18/11 08:27Item— → F4 142 LINEHunter · 18/11 08:27Wed · The dayHunter · 18/11 08:27Ground item added✓ Mark all as seen
+ROW PASS | F4 | desktop | ad presses "Mark all as seen" | saw: window: ⠿Changes · week of 13/73 changes this week✕New to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWhoNothing new to you this week.✓ Mark all as seen ; clock before: Changes, 3 new to you this week | text:3 ; after: Changes | text:
+ROW RECORD | F4 | desktop | ad switches to 149 with the "142 ▾" schedules menu | saw: this build draws no such menu at the top left (see F2 row); steps 4 and 5 cannot be done as ad. The 149 side is checked as 149's own admin below.
+ROW PASS | F4 | desktop | ad reloads and signs in again (142) | saw: clock: Changes | text:
+ROW PASS | F4 | desktop | ad9 (149) opens his changes window (his own 149 line was made by himself) | saw: clock: Changes | text: ; window: ⠿Changes · week of 13/73 changes this week✕New to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWhoNothing new to you this week.✓ Mark all as seen
+errors []
+DONE 12 PASS 0 FAIL 3 OTHER of 15

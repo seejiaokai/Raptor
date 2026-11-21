@@ -1,0 +1,47 @@
+msq-j2-w2-f v1
+ad2 pids bane shaft prowler
+ROW PASS | W2-F ad2 | desktop | ad2: Users, Ranger's row, type in the sign-in box, Cancel, reopen | saw: box present true; after reopen reads "us"
+ROW PASS | W2-F ad2 | desktop | ad2: open Anvil's row, close it by pressing his name again | saw: editor visible open: true; after name pressed again: false
+ROW PASS | W2-F ad2 | desktop | ad2: Add a person, calendar open, press outside | saw: calendar visible before true after false; callsign box: Fad2X
+ROW PASS | W2-F ad2 | desktop | ad2: reopen calendar, pick T+1 | saw: post-in box: Fri 20 Nov 26▾
+ROW PASS | W2-F ad2 | desktop | ad2: Hunter's cell 2026-11-24 → day window → ⋯ | saw: list: Grant OIL | Post out
+ROW RECORD | W2-F ad2 | desktop | ad2: Grant OIL one day on Hunter (2026-11-24); his row and person window | saw: cell reads: FO {duty.act.hasc} ; person window OIL 3.5 (before: OIL 2.5 on the day window) 
+ad2 year selector count 0
+ROW FAIL | W2-F ad2 | desktop | ad2: person window closed by ✕, then reopened and closed by Escape | saw: BALANCES visible after ✕: true; after Escape: true
+STEP FAILED ad2-approvals locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: /Approvals/ }).first()[22m
+
+ROW OWED | ad2-approvals | desktop | script step | saw: script error: locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: /Approvals/ }).first()[22m
+
+ROW PASS | W2-F ad2 | desktop | ad2: Post out sheet on Hunter 2026-11-26, dismissed by Close | saw: sheet before true after false; day window still showing: false
+ROW PASS | W2-F ad2 | desktop | ad2: Post out sheet on Hunter 2026-11-26, dismissed by Escape | saw: sheet before true after false; day window still showing: false
+ROW PASS | W2-F ad2 | desktop | ad2: Post out sheet on Hunter 2026-11-26, dismissed by outside press | saw: sheet before true after false; day window still showing: false
+ad2 gear candidates [[1494,89,"Settings"]]
+ROW RECORD | W2-F ad2 | desktop | ad2: Settings (gear) → open, close (Escape) | saw: opened; words: 
+ad9 pids osp9 mer9 mer9
+ROW PASS | W2-F ad9 | desktop | ad9: Users, Osprey's row, type in the sign-in box, Cancel, reopen | saw: box present true; after reopen reads "us9"
+ROW PASS | W2-F ad9 | desktop | ad9: open Merlin's row, close it by pressing his name again | saw: editor visible open: true; after name pressed again: false
+ROW PASS | W2-F ad9 | desktop | ad9: Add a person, calendar open, press outside | saw: calendar visible before true after false; callsign box: Fad9X
+ROW PASS | W2-F ad9 | desktop | ad9: reopen calendar, pick T+1 | saw: post-in box: Fri 20 Nov 26▾
+ROW PASS | W2-F ad9 | desktop | ad9: Merlin's cell 2026-11-24 → day window → ⋯ | saw: list: Grant OIL | Post out
+ROW RECORD | W2-F ad9 | desktop | ad9: Grant OIL one day on Merlin (2026-11-24); his row and person window | saw: cell reads: FO {duty.act.hasc} ; person window OIL 0 (before: OIL 0 on the day window) 
+ad9 year selector count 0
+ROW FAIL | W2-F ad9 | desktop | ad9: person window closed by ✕, then reopened and closed by Escape | saw: BALANCES visible after ✕: true; after Escape: true
+STEP FAILED ad9-approvals locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: /Approvals/ }).first()[22m
+
+ROW OWED | ad9-approvals | desktop | script step | saw: script error: locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: /Approvals/ }).first()[22m
+
+ROW PASS | W2-F ad9 | desktop | ad9: Post out sheet on Merlin 2026-11-26, dismissed by Close | saw: sheet before true after false; day window still showing: false
+ROW PASS | W2-F ad9 | desktop | ad9: Post out sheet on Merlin 2026-11-26, dismissed by Escape | saw: sheet before true after false; day window still showing: false
+ROW PASS | W2-F ad9 | desktop | ad9: Post out sheet on Merlin 2026-11-26, dismissed by outside press | saw: sheet before true after false; day window still showing: false
+ad9 gear candidates [[1494,89,"Settings"]]
+ROW RECORD | W2-F ad9 | desktop | ad9: Settings (gear) → open, close (Escape) | saw: opened; words: 
+errors []
+DONE 16 PASS 2 FAIL 6 OTHER of 24

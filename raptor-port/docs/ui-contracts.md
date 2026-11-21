@@ -1085,8 +1085,8 @@ tag is drawn off its puck, which the first look found). Only pucks; a man taken 
 chip and the changes window carry that). Per place, never per person (a man on two places, one changed, wears one tag —
 Astra DP-11). Decided in the one function that marks a slot (`publish.ts alAttr`) through one engine hook,
 `HOOKS.newToMe` (`ui/changesmodel.ts` installs it; headless, false — byte-identical HTML). On the edit week, the board
-and View-only Sched's live draft of a day not yet published; never on a published day (its ALn tags say it), never for a
-guest, never in print or CSV. "Mark all as seen" takes it away. The day headings are unchanged (D172).
+and View-only Sched's live draft of a day not yet published; never on a published day (its ALn tags say it), never in
+print or CSV (the guest's view, where it never showed either, is removed — D2239). "Mark all as seen" takes it away. The day headings are unchanged (D172).
 **A seat that also holds the ALL AVAIL / ALL count** (`.seat:has(> .oilcount)`) wears its tag — OG, the waiting ALn and the
 issued ALn alike — on the PUCK's own corner, its right edge 3px past the puck's (`left: calc(var(--puck-w) + 3px)` and a
 shift back by its own width), not the seat's: the seat's corner there is the count's, and the tag lay over the count's
@@ -1174,7 +1174,7 @@ history).
   given access after the history began starts with nothing new (his account's `seenFrom`, Fable F6).
 - **The doors** (D171): (1) **the day's ONE chip**, on every day heading — the edit week, the board's strip, View-only
   Sched (a published day on its working copy only — its issued face never reads pending, AM24), desktop and phone — for
-  an admin or a member, never a guest: a published day with changes waiting → "N pending" (a gold dot on it when
+  an admin or a member (nobody else is shown a schedule since the guest view went — D2239): a published day with changes waiting → "N pending" (a gold dot on it when
   something on the day is new to you), opening To go out; else something new to you → "N new" (gold), opening New to
   you; else changes on the day → "N changes" (quiet), opening All changes; else none. Under a version preview it stays
   the plain count it was. (2) **The admin's top-bar icon** — the clock alone, no word, desktop and phone, on Edit
@@ -1204,7 +1204,8 @@ history).
   of the loaded week, the line is listed, not a button; a miss says "That input is not shown on this day" (Fable F5).
 - **A move pairs into one line only within one day** — a man moved to another day is one line on each day, in the
   week's view as on the two days' chips (D109; Fable F7).
-- **What it deliberately does not do:** show on a guest's view (D215); change the day headings (D172 — ORIG keeps its
+- **What it deliberately does not do:** show to a person waiting for access, who sees only the waiting screen (D2239,
+  replacing D215's guest view); change the day headings (D172 — ORIG keeps its
   seal, the AL tags stay solid); reach another device before the database (one browser per store).
 
 ## The pending list, the one jump, and what the day head says (owner, 25 Sep 26 — the amendment batch)
@@ -5198,7 +5199,7 @@ except where noted:
   his screen — the Users pane beside the rail on a desktop, the drilled-in list on
   a phone, never the category list alone — puts it out (`markRequestsSeen`, one
   `access.seen` command); the Admin tab's count stays until each is answered; a
-  member's, a guest's or a pending person's bell never lights for it. A tap with a bug alert live
+  member's or a pending person's bell never lights for it (a guest's went with the guest view, D2239). A tap with a bug alert live
   toasts the count and goes straight to
   the Help page, whose admin view is the acknowledgement (§The Help page);
   with an OIL question pending it lands the Inputs page on the exact input,
@@ -6008,8 +6009,8 @@ Actual FULL checks, real-route scenario results and inspected running-bundle pic
 latest-issued read-only Remarks door, without replacing the active field. It restores native keyboard selection
 after an explicit role action. Guarded annotations have their own history/Undo; no canonical programme role field.
 Phone Board Insights is in its More menu; phone week pages use their own More
-menus (D558), while desktop keeps its direct action. GuestApp remains its separate
-published-only tree without these Shell controls or an Insights window.
+menus (D558), while desktop keeps its direct action. (GuestApp, the separate
+published-only tree that had none of these Shell controls and no Insights window, is deleted with the guest view — D2239.)
 **ACCEPTED navigation, owner D557/D558, 4 Oct26; built on the branch:** remove the phone drawer's WEEK
 heading/Pick a date/Week insights block; add ellipsis → Insights in the circled
 Edit Schedule and View-only Sched filter strips, following the Board example.
@@ -6989,7 +6990,8 @@ the accounts — and carries every action on him** (D309, D310). Blocks, top to 
   app"), **Post in** `#accAddPostIn` (today — D308), Role `#accAddRole` once a sign-in is typed; **Add person** / **Add
   person and sign-in** `#accAdd`; the note "Makes his Quals row, and his sign-in if you give one. The Leave War counts him
   from the post-in date." Quals' "+ Add person" opens it with the Callsign/Name box ready (`ADMINOPEN`, as before).
-- **Guest view** (`#admGuestView`) — as `[ACCOUNTS]` built it.
+- **Guest view** (`#admGuestView`) — removed with the guest view (D2239, 20 Nov 26): the pane ends at Add a person, and
+  nothing moves up into its place (pinned by `ui/reshape-b2-no-guest-switch.test.tsx`).
 
 **The man's own welcome note** (`ui/WelcomeBack.tsx`, D305): under the top bar on every page while his Person's `back` is
 set (every Restore sets it) — "**Welcome back, <cs>** — check your quals and CAT." with **Check my quals** `#welcomeCheck`
@@ -7100,7 +7102,12 @@ letter spacing after its N is pulled back by a matching negative right margin, s
 one mark. Its gap was measured to the letters' ink, the T's upright standing 8px in from its edge
 (`scripts/handpass/talon-lockup-measure.mjs`, `talon-lockup-options.mjs`).
 
-## The access screens and the guest view (`[ACCOUNTS]`, D204, 26 Sep 26)
+## The access screens — the guest view removed (`[ACCOUNTS]`, D204, 26 Sep 26; D2239, 20 Nov 26)
+
+> **Removed — his D2239, 20 Nov 26 (built 21 Nov 26, the reshape plan's §8, B2):** the guest view, its Admin switch
+> (`#admGuestView`) and the waiting screen's "View the schedule" button are gone; a person waiting sees only the waiting
+> screen until an admin of his squadron approves him. What follows describes the app without them. *(Was this section's
+> name: "The access screens and the guest view".)*
 
 **No "Sign up" button on the sign-in page (D293, 27 Sep 26):** whoever signs in and is on no list lands on Request access
 by itself; held in reserve only, if new people are confused once live — one line under the button, "New here? Sign in
@@ -7118,19 +7125,22 @@ whether a callsign is taken (a person not yet let in may not read the roster). *
 5 Nov 26, a PASS, `.acc-pass`: the claws and a "Waiting for an admin" mark, his callsign large `#accAsked` (set smaller, never
 below 16px, until it fits one line — `AccessScreen.tsx PassCallsign`), his initials, seat and CAT (`.pass-fields` — one he did
 not give is left out), a dashed tear line, then the three steps (Request sent · An admin approves · You're on the schedule,
-the middle one where he is), with the guest switch ON "Meanwhile you can look at the schedule, read only." and "View the
-schedule" `#accGuest` (straight into the guest view, D221), Sign out, and "Signed in as …" `#accName` small at the foot; the
+the middle one where he is), Sign out, and "Signed in as …" `#accName` small at the foot (the line "Meanwhile you can look
+at the schedule, read only." and the button "View the schedule" `#accGuest` that followed the steps went with the guest
+view — D2239 replacing D221; Sign out follows the steps, nothing else moved); the
 blue fade from the top left over the whole card (D1654). *Was, 26 Sep 26: one line `#accAsked`, "You asked for access as
 **Viper** (JKB · Pilot · CAT C).", "an admin will answer it".*);
 **Switched off** (`#accessOff`). Each has Sign out (`#accOut`, through `ui/logout.ts`). Each, and the sign-in, carries the
 failed-save band across its top while a save has failed, the screen moved down under it (D1657 — §The failed-save warning).
 Above the phone width the column is centred only while it fits, so a screen taller than the window starts at its top and
-every part can be scrolled to (`.login-wrap{margin-block:auto}`, 5 Nov 26). With the admin's guest switch ON a
-person waiting instead gets the guest view (`ui/GuestApp.tsx`, `#guestApp`): a slim bar (the mark, "Waiting for access —
-view only" `#guestNote`, Sign out `#guestOut`), the week window, and the week from the view page's builder — what a
-member reads on View-only Sched, read only (D215): a published day's ISSUED face (no working-draft picker) and a day not
-yet published as it stands; a medical input in full (D211, D213); no ⓘ, warning list, pending list or Traffic button. Nothing else of the app is mounted — no windows, no tabs, no
-document-wide listeners.
+every part can be scrolled to (`.login-wrap{margin-block:auto}`, 5 Nov 26). **A person waiting sees the waiting screen
+and nothing else of the app (D2239, replacing D215, D221 and D213):** a person signed in without access — on no list,
+waiting, or switched off — gets only these cards (`ui/App.tsx`: the role `pending` or `off` mounts `AccessScreen` alone —
+no windows, no tabs, no schedule); a person who asked signs in waiting whatever an older build stored
+(`state/accounts.ts signIn`; a stored `guestview` value is read by nothing, D56). The guest view that an admin's switch
+once opened (`ui/GuestApp.tsx`, `#guestApp` — deleted), its bar (`#guestNote`, `#guestOut`) and its role are gone. Pinned
+by `ui/accounts-ui.test.tsx`, `ui/reshape-b2-no-guest-switch.test.tsx` and
+`state/reshape-b2b-no-guest-switch-shared-store.test.ts`.
 
 The LEAVE WAR change of the same day (engine-rules §Auth / roles): moving
 the cycle forward is admin-only, so the stage-advance chip
@@ -11948,8 +11958,8 @@ SplitWords`.
 **Also where there is no top bar (owner D1657, 5 Nov 26 — `[GUEST-SAVE-WARNING]`):** the sign-in screen and the access
 screens (asking for access, waiting, suspended) carry the band across the top of the screen (`SaveBand screen`,
 `.saveband.is-screen`), the screen moved down under it (`.login.band-up`) so nothing is covered — so a stranger whose
-request was not saved is never told it was sent; the guest page carries it as its bar's last line, exactly as every page's
-top bar does (`GuestApp.tsx` mounts `SaveStatus` in its `.topbar.guestbar`). Pinned by `ui/accounts-ui.test.tsx` (D1657).
+request was not saved is never told it was sent (the guest page, which carried it as its bar's last line, is removed
+with the guest view — D2239). Pinned by `ui/accounts-ui.test.tsx` (D1657).
 
 **The rule (D587):** when a save has failed, the warning — "Not saved — keep this page open" and **Retry** — fills a
 line of its own along the bottom of the top bar, edge to edge. The top bar is one line (36px, `--save-band`) taller

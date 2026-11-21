@@ -1,0 +1,56 @@
+[
+ [
+  "W2-1",
+  "desktop",
+  "Hunter files Ranger LL 23 Jul",
+  "on the list",
+  "[\"Ranger 23 Jul LL LATEw2 orig till 23 JulBy Hunter now No document\",\"Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 MEETING Flight safety briefBy Saber 25 Jun 26\"]",
+  "PASS",
+  "s1-desktop-filed.png"
+ ],
+ [
+  "W2-2",
+  "desktop",
+  "moves stored; Saber (master) opens Inputs",
+  "Ranger's 23 Jul LL on 142's list",
+  "[\"Ranger 23 Jul LL LATEw2 orig till 23 JulBy Hunter now No document\",\"Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 MEETING Flight safety briefBy Saber 25 Jun 26\"]",
+  "PASS",
+  "s2-desktop-saber-inputs.png"
+ ],
+ [
+  "W2-3",
+  "desktop",
+  "Saber changes the leave to Outlaw (Casper) on Mon 27 Jul and saves",
+  "the list shows Outlaw on 27 Jul",
+  "[\"Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 MEETING Flight safety briefBy Saber 25 Jun 26\",\"Outlaw 27 Jul LL LATEw2 orig till 27 JulBy Hunter now No document\"]",
+  "PASS",
+  "s3-desktop-saved.png"
+ ],
+ [
+  "W2-4",
+  "desktop",
+  "Hunter's bell",
+  "NO line about the change",
+  "badge {\"dot\":\"none\",\"text\":\"\",\"aria\":\"Notifications\"}; lines []",
+  "PASS",
+  "s4-desktop-ad2-bell.png"
+ ],
+ [
+  "W2-5",
+  "desktop",
+  "Casper's (Outlaw) bell",
+  "a line that he was put in the leave",
+  "badge {\"dot\":\"block\",\"text\":\"\",\"aria\":\"Notifications\"}; lines [\"NEW LLMon 27 Jul You were added · Saber now\"]",
+  "PASS",
+  "s5-desktop-outlaw-bell.png"
+ ],
+ [
+  "W2-6",
+  "desktop",
+  "Ranger's bell",
+  "a line that he was taken out",
+  "badge {\"dot\":\"block\",\"text\":\"\",\"aria\":\"Notifications\"}; lines [\"NEW LLMon 27 Jul You were taken off · Saber now\",\"NEW LLThu 23 Jul You were added · Hunter now\"]",
+  "FAIL",
+  "s6-desktop-us-bell.png"
+ ]
+]

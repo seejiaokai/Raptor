@@ -16,6 +16,7 @@
       the batches written since its mark, re-reads EACH named row ONCE, and ends with the first client's view — an
       input, a day, a war record and a history line — without reading anything else. */
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import { inView } from '../engine/unitview'
 import { INPUTS, inpId } from '../engine/inputs'
 import { storeBackend, store } from '../engine/hooks'
 import { txtSet } from '../engine/slots'
@@ -233,11 +234,11 @@ describe('the roll-call: every save after boot carries its batch', () => {
   })
 
   /* …AND THE BATCH DOES NOT NAME HIM BY HIS SIGN-IN NAME (the member / guest check's security read, F1 — 5 Nov 26). A batch
-     is read by every member and guest (§11: ChangeBatch member C R, guest R); a waiting person has no account, so his
+     is read by every member (§11: ChangeBatch member C R; a guest too until the guest view went, D2239); a waiting person has no account, so his
      session's id is `principal:<sign-in name>` — his defence mail at the database step — which §11 shows to admins only
      (AccessRequest: admin R D, nobody else). Written into the batch's `actorId`, every member would read who is asking for
      access. The batch says only that a waiting person acted; the request row names him, for the admins. */
-  it('a waiting person’s batch names his role, never his sign-in name — members and guests read every batch (§11)', async () => {
+  it('a waiting person’s batch names his role, never his sign-in name — members read every batch (§11)', async () => {
     resetSession(sessionFor(signIn('kite@mail', 'x') as any))
     const from = groups.length
     expect(requestAccess({ cs: 'Kite', ini: '', seat: 'GND', cat: '' } as any)).toBeNull()
@@ -313,7 +314,7 @@ describe('the stand-in reader (phase 4.2): a second client catches up from the c
     /* its view of every row the first client wrote is the first client's */
     const iid = inpId(INPUTS.find((r: any) => r.remarks === 'READER'))
     expect(reader.view.inputs[iid]).toBe(wb.get('inputs', iid))
-    const dayRow = Object.keys(reader.view.weeks).find(k => k.endsWith('#2') && k.startsWith('13-07-2026'))!
+    const dayRow = Object.keys(reader.view.weeks).find(k => k.endsWith('#2') && k.startsWith(inView('13-07-2026')))!   // the stored week id carries its unit (step 2)
     expect(reader.view.weeks[dayRow]).toContain('READER NOTE 2')
     expect(reader.view.weeks[dayRow]).toBe(wb.get('weeks', dayRow))
     const rec = recordsAt(lwPid, day)[0]!
