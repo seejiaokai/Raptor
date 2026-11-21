@@ -43,7 +43,7 @@ import type { DayWhatIf } from '../engine/whatif'
 import { DayLine } from './DayLine'
 import { dayLineCode } from './daylinecode'
 import { DutyButtons, GrantOilButton, LeaveButtons } from './LeaveButtons'
-import { bidHeldWhy, openInputDocs, sayOnWar } from '../sync'
+import { bidHeldWhy, openInputDocs, sayOnWar, dutyFiledNote } from '../sync'
 import { warBand } from '../../state/typing-hold'
 import { PlacedLine } from './PlacedLine'
 
@@ -529,7 +529,7 @@ export function BidPicker({
        check — the fresh code read's F2): as a passing note, since the window closes — the day tapped now holds the input,
        and the grid opens that input's own window for it (the design guide: a press that did less than expected, D850) */
     if (r.done > 0) {
-      if (r.skipped) sayOnWar(`${r.done} day${r.done === 1 ? '' : 's'} filed. ${r.why[0] ?? `${r.skipped} day${r.skipped === 1 ? ' was' : 's were'} not yours to change`}.`)
+      if (r.skipped) sayOnWar(dutyFiledNote(r))
       return onClose()
     }
     setNoteAt('leave')

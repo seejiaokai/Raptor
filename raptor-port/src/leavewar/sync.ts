@@ -801,6 +801,13 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
  *  it now (D629). No `lw`
  *  provenance: the war never changes these kinds (dayview OFF_WAR — design §5.4, owner §13 Q1), so once filed it is the
  *  Inputs page's, exactly as one filed there. The Inputs door's own rules run (a course or an OD never replaces a bid). */
+/** THE PASSING NOTE OF A DUTY FILED WITH A DAY LEFT OUT — "1 day filed. 12 Feb already holds an OD — left as it is." (the bid
+ *  window's course, overseas duty, Other and Attach buttons — ui/BidPicker.tsx fileDuty): the count, then the first reason
+ *  the door gave, else that the days were not his to change. */
+export function dutyFiledNote(r: { done: number; skipped: number; why: readonly string[] }): string {
+  const why = r.why[0] ?? `${r.skipped} day${r.skipped === 1 ? ' was' : 's were'} not yours to change`
+  return `${r.done} day${r.done === 1 ? '' : 's'} filed. ${why}.`
+}
 function doorFile(items: Array<{ personId: string; date: string }>, code: string, words?: ReqWords): { done: number; skipped: number; why: string[] } {
   const why: string[] = []
   const prot = new Set(protectedDates().map(d => labelToISO(d)).filter(Boolean) as string[])
