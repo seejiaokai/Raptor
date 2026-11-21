@@ -3712,6 +3712,10 @@ export function Matrix() {
   /* A BID OF THIS WAR'S OWN ON A DAY NOW ANOTHER SQUADRON'S (the reshape walk's W2-F3 — MatrixRows.tsx awayBid): the day's
      list, every record on its own line with its own actions — the window that offers Delete beside a greyed Approve */
   const openAwayBid = !!open && !!openPerson && awayFromHome(openPerson, open.date) && !!openView?.all.some(c => c.kind === 'request')
+  /* …and once that bid is gone — its Delete pressed — the day opens nothing again, as every other day of the stripe: the
+     window closes with it, never turning into a bid window on another squadron's day */
+  const openAwayDone = !!open && !!openPerson && !warBand() && awayFromHome(openPerson, open.date) && !openAwayBid
+  useEffect(() => { if (openAwayDone) { setOpen(null); setPlaceAt(null) } }, [openAwayDone])
   const openHeld = open && openView && !openAwayBid && (placing || !(role === 'admin' && (openPostedOut || openNotYetArrived))) && bidOpenOn(open.id, open.date)
     /* (only LEAVE there — the day's list's own rule, `listOpen` below: a course, a medical or an OD outside his time still opens
        the window, as a course's day did before — the fresh code read's F3) */

@@ -86,6 +86,9 @@ describe('W2-F3 — a pending bid on a day now 149’s, in 142’s war', () => {
     expect(screen.getByText(NOT_SAVED)).toBeTruthy()
     fireEvent.click(screen.getByTestId(`dl-clear-${id}`))
     expect(reqs('bane', FRI)).toEqual([])
+    /* the bid gone, the day opens nothing again: the window closes with it — never a bid window on 149's day */
+    expect(document.querySelector('.bidsheet'), 'the window closed').toBeNull()
+    expect(screen.getByTestId(`cell-bane-${FRI}`).className).not.toContain(' act')
   })
   it('(control) a striped day holding nothing of the war’s own still opens nothing', () => {
     bidThenMoved()
