@@ -178,3 +178,46 @@ Your files (§10, §3.6): `ui/InputsPage.tsx`, `ui/InputsCal.tsx` (its calendar 
    into the branch** (§3.2 A-ii, "The Inputs calendar"; §10): the Inputs calendar's notes, day titles, their edits,
    change capture and Undo by `pageUnit('own')`; §3.4's planning-calendar test through the Inputs calendar's page.
 NOT yours: `ui/oilday.ts`'s A4 lines (core, phase 3) — leave its holiday code as it is.
+
+## ITEMS — helper "undo & roles", second pass (branch `undo2`) — drafted by chat 129
+Your files: as the first pass (`state/undo-wire.ts`, `undo/timeline.ts`, `undo/derive.ts`, `command/commit.ts`'s key hook,
+K4's list with `state/changelines.ts`). Every phase-2 helper before you is merged: "session"'s stored half
+(`state/plan-foreign.ts`), "war"'s A7 sentence (`leavewar/sync.ts warDayRefusal` / `warDaySentence`), the core's Piece B
+with `perms.ts restoreLeavesOut` and its probe setter `setRestoreGrantCtx`. One test is red on BASECOMMIT and yours to
+turn green: `leavewar/multi-sqn-fixread11.test.ts` F11-4. In this order, each its own commit:
+1. **The planning record's per-record store** (§3.2 A-ii "The Inputs calendar", its "Through Undo, in both directions";
+   §10's ordering): the timeline picks the store per record — a `plan` record (`plan/<unit>@pp:<id>` or `@dm:<iso>`) of a
+   squadron not loaded goes to `storedPlan(unit)` (session's: `load`, `join(txn, locals)`, `write(entries, {restore: true})`),
+   enlisted as its own store; the loaded squadron's stays with the schedule store, as now. Its tests (§3.4 "The planning
+   calendar's one identity", both directions — yours at this commit, through the store layer; the same through the
+   Inputs calendar's page is "own pages"' last item): a note edited on 142's calendar while 149 is picked, then 142
+   loaded, then a newer edit, then Undo — refused as a later change; edit, load, Undo, Redo, reload — the stored copy, the
+   loaded calendar and the screen's data agree; and a 142 plain admin with View of 149 picks 149 (`switchUnit`) and edits
+   an existing note of 142's (not loaded) — a change, its before-image the stored note — Undo: the note as it was, stored
+   and cached; Redo; a restore refused part-way leaves the stored and cached copies untouched.
+2. **Piece B's restore lines** (§4.3 "At the restore", "A step the leave-out empties", "At the gate"; §4.4; §10's
+   two-job tests): `restoreLeavesOut` wired into the timeline's `leaveOut` hook (which already leaves out a bell line put
+   back to no one, D2218); the man and the link day of each grant row's account a step touches recorded on the step as it
+   is recorded (asked once, kept on the entry as `closedAt` is), the hook handed the restore's other changes and
+   `stoodBefore`; the gate's probe installed (`setRestoreGrantCtx`) from what the step recorded; and `master` passed
+   (whether the person pressing Undo or Redo is a master admin) — the body's rule 4 (chat 129, his D2250): a Plan row is
+   put back only by a master admin's restore. A step the leave-out empties commits nothing and is blocked for good in
+   that direction (`sayBlocked`), in today's words "Something else changed this after your action — it can’t be undone
+   now." Tests through the real Undo and Redo: §4.4's re-link and guardrail-2 cases; F11-4 green; and **D2250's Undo**
+   (red on BASECOMMIT — the Undo is offered, labelled "Hunter’s role", then fails "That couldn’t be completed just now."):
+   Saber gives Hunter Plan of 149 and makes Ranger an admin; Ranger makes Hunter a member, presses Undo — Hunter an admin
+   of 142 again, no Plan of 149; Redo — a member again; the same three by Saber — his Undo puts back the role and the Plan.
+3. **A7's line** (§6.2 A7; §10 "A7's Undo sentence through the top bar's Undo"): the timeline's `restoreRefusal` hook in
+   `state/undo-wire.ts` answers with `warDayRefusal(changes)` beside its other refusals, so an Undo that would put an
+   entry back on a day now another squadron's says war's sentence before anything is written; removing one entry of a
+   two-entry cell, or its last entry, still passes. Its test through the top bar's Undo, red first.
+4. **A Quals change worded with the right columns** (`state/changelines.ts`, the `qualCols()` loop of the person lines):
+   Quals is an own page (A-ii), so a tick is named by the man's own squadron's columns (`engine/qualcols.ts qualColsOf`),
+   never the pick's. Red first: a master admin picks 149 (whose Quals columns differ) and reads the line of a 142 man's
+   Quals change.
+5. **An own-page step's Undo while another squadron is picked** (§3.2 A-v "Eligibility": "In view" is the pick on
+   schedule pages, `pageUnit('own')` on own pages): `inUnitView` lets a step whose ids name his own page's squadron be
+   taken while another squadron is picked. Red first: a 142 admin with View of 149 picks 149 (`switchUnit`), changes a
+   142 own-page setting (Quals' columns), presses Undo — taken; a 142 schedule step made before the pick — passed over,
+   as today; a master admin who picked 149 and changed 149's Quals — taken.
+NOT in this pass: the Inputs calendar's page ("own pages" item 4, after you); the midnight switch (session, phase 3).
