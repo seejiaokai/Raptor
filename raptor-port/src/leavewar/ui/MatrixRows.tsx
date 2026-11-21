@@ -118,6 +118,9 @@ const NO_ENTRIES: Contrib[] = []
 /* where a box sits, the joined bar (`joinClasses`, `JOIN_REACH`) and a placeholder's width (`setPhWidth`):
    ui/matrixrowparts.ts */
 
+/* a row's own click, which does nothing (see the row below — W2-F1) */
+const ROW_TAP = (): void => {}
+
 export const PersonRow = memo(function PersonRow({ p, version, period, monthDays, grid, states, views, recs, role, viewer, deciding, movedShown, shown, evKind, lockedCols, quals, me, arranging, dragging, over, api, padL, padR, phL, phR }: PersonRowProps) {
   // THE TWO SMALL LINES BESIDE HIS NAME (the M5a build spec §1.4, finding 12): his LVE War bal on top — a bid comes off
   // at once (D1153), below zero shown red, never refused — and under it his LL and OL days in the View period, approved
@@ -134,6 +137,13 @@ export const PersonRow = memo(function PersonRow({ p, version, period, monthDays
        than starting a drag. */
     <tr
       data-testid={`row-${p.id}`}
+      /* THE ROW TAKES THE TAP ITS BOXES DO NOT (the reshape walk's W2-F1, 22 Nov 26): on an iPhone a finger's tap on a
+         box that takes no click — a striped day, another man's day — is handed by WebKit to the nearest thing that does,
+         and a day box is about 21 × 18 px there: Ranger's striped Fri 17 opened Piston's Thu 16. With a click handler on
+         the row itself (React puts the listener on this node) the tap stays where it landed and opens nothing — tried in
+         WebKit on the built app: a handler on the cell or on its row stops it, one on the table does not. One a row, none
+         a cell (performance.md §E). */
+      onClick={ROW_TAP}
       className={[
         me ? 'me' : '',
         arranging ? 'arrange' : '',
