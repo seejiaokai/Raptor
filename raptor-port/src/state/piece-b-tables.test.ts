@@ -217,7 +217,8 @@ describe('in the shared world', () => {
       expect(setGrant(ACCT.hunter, 'u149', 'admin', PID.hunter), 'a raising').toMatchObject({ ok: false, message: 'He moves squadron tomorrow — give this after the move' })
       expect(removeGrant(ACCT.hunter, 'u149').ok, 'a removal').toBe(true)
       expect(setGrant(ACCT.hunter, 'u149', 'view', PID.hunter), 'a giving').toMatchObject({ ok: false, message: 'He moves squadron tomorrow — give this after the move' })
-      expect(levelIn(ACCT.hunter, 'u149', '2026-07-16'), 'his own squadron from tomorrow — no right of 149 is his then').toBe('admin')
+      /* (helper "kinds", K3 — his D2160: he joins as a member; was 'admin', the role read in any home) */
+      expect(levelIn(ACCT.hunter, 'u149', '2026-07-16'), 'his own squadron from tomorrow — no right of 149 is his then, and he joins as a member').toBe('member')
     })
   })
 })

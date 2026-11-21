@@ -31,7 +31,10 @@ export interface UnitPlace { id: string; unit: string; place: string; from: stri
    not bring that line back — on the move's own day too: a move day counts only a grant held before that day began
    (fix read 8, fault D). The gate's levelFrom never reads it — a grant counts from the moment it is saved. Absent on
    a grant saved before it was kept (D56): counts from always. */
-export interface Grant { id: string; account: string; unit: string; level: GrantLevel; from?: string }
+/* `first` (the sign-in kinds review's K3 — D2160, D2191, D2247): the Plan "+ New squadron" gives the squadron's named first
+   admin (units.ts addUnit, a master admin's alone). A man who moves squadron joins as a member — save the first admin of
+   a new squadron, who moves into it as its admin: adminRoleHolds reads this mark for that, and nothing else does. */
+export interface Grant { id: string; account: string; unit: string; level: GrantLevel; from?: string; first?: true }
 export interface Home { id: string; pid: string; unit: string; from: string }
 export interface UnitRows { units: Unit[]; places: Place[]; unitplaces: UnitPlace[]; grants: Grant[]; homes: Home[] }
 
@@ -92,7 +95,7 @@ export function validUnitPlace(v: any, key?: string): UnitPlace | null {
 export function validGrant(v: any, key?: string): Grant | null {
   if (!v || typeof v !== 'object' || typeof v.id !== 'string' || !GRANT_ID.test(v.id) || (key != null && v.id !== key)) return null
   if (!isStr(v.account) || !isUnitId(v.unit) || (v.level !== 'admin' && v.level !== 'view')) return null
-  return { id: v.id, account: v.account, unit: v.unit, level: v.level, ...(validIso(v.from) ? { from: String(v.from) } : {}) }
+  return { id: v.id, account: v.account, unit: v.unit, level: v.level, ...(validIso(v.from) ? { from: String(v.from) } : {}), ...(v.first === true && v.level === 'admin' ? { first: true as const } : {}) }
 }
 export function validHome(v: any, key?: string): Home | null {
   if (!v || typeof v !== 'object' || typeof v.id !== 'string' || !HOME_ID.test(v.id) || (key != null && v.id !== key)) return null
@@ -242,9 +245,10 @@ export function grantOn(r: UnitRows, acct: GrantHolder, unit: string, iso: strin
       whole by the command is not judged here (the master-only rule and "a unit removed while still named" judge it —
       "+ New squadron", its Undo and its Redo; Fable F7, Opus M3); nor a man the command itself makes (his first home is
       the squadron rows' own check).
-   2. WHO — a man's squadron changing on a day: an admin, on today, of the squadron he LEAVES that day (`adminOn`); the
-      squadron he joins is the row's own check (an admin of the unit each home row names). A place row's squadron:
-      likewise its row's own check.
+   2. WHO — a man's squadron changing on a day: an admin, on today, of the squadron he LEAVES that day (`adminOn`) — or, in
+      the Undo of his own step (`takeBack`), where the change keeps the man that day in the squadron he is in today (a
+      move not yet begun, taken back), an admin of that one; the squadron he joins is never asked (K4 — his D2160; only a first placing is, by the row's own check in
+      perms.ts unitRowViolation). A place row's squadron: its row's own check.
    3. NOBODY MOVES HIMSELF (the blind read's R1 — the agent's reading, as Archive and Delete refuse "yourself"): `self`, the
       actor's own person, never has his squadron changed by his own command.
    Pure: the gate (perms.ts) calls it once for the command; the doors may call it on their draft. Its code is turned into
@@ -256,7 +260,7 @@ export type DatedBreach =
   | { code: 'self'; who: string; date: string }
 export function datedRowsBreach(before: UnitRows, after: UnitRows, today: string, opts: {
   pids: Iterable<string>; units: Iterable<string>; made?: ReadonlySet<string>; self?: string | null
-  adminOn?: (unit: string) => boolean; fallback: string | null
+  adminOn?: (unit: string) => boolean; takeBack?: boolean; fallback: string | null
 }): DatedBreach | null {
   const tomorrow = moveFrom(today)
   const datesOf = (rows: Array<{ from: string }>) => [...new Set([today, ...rows.map(x => x.from).filter(d => typeof d === 'string')])].sort()
@@ -268,7 +272,13 @@ export function datedRowsBreach(before: UnitRows, after: UnitRows, today: string
       if (was == null) { if (d < today) return { code: 'first-past', kind: 'home', who: pid, date: d }; continue }
       if (d < tomorrow) return { code: 'begun', kind: 'home', who: pid, date: d }
       if (opts.self != null && pid === opts.self) return { code: 'self', who: pid, date: d }
-      if (opts.adminOn && !opts.adminOn(was)) return { code: 'leaves', who: pid, unit: was, date: d }
+      /* (K4 — D2160, "Undo before the date cancels it": his own move, not yet begun, is taken back by its maker's Undo —
+         `takeBack`, a verified replay of his own step (D148) — as an admin of the squadron the man is in TODAY, the day
+         keeping him where he is. 142's admin who moved his own man to 149 from tomorrow could not undo it: on that day the
+         rows already read 149, whose admin he is not. Never a hand-made change: a move the master admin saved is not 142's
+         plain admin's to cancel — the full check's F2, state/units-sqn-fixread.test.ts) */
+      const here = opts.takeBack ? homeUnitOn(before, pid, today, opts.fallback) : null
+      if (opts.adminOn && !opts.adminOn(was) && !(here != null && now === here && opts.adminOn(here))) return { code: 'leaves', who: pid, unit: was, date: d }
     }
   }
   for (const u of new Set(opts.units)) {
@@ -292,13 +302,43 @@ export const isAdminRole = (a: { role?: unknown } | null | undefined): boolean =
    holds that day (grantOn); otherwise none. Plan is an admin's (the Plan audit's PA2 — D2201, D785): an `admin` right on
    an account whose role is not admin reads as no right. `acct` — the account as the caller has it (the live list, or
    the image before a command), its `role` the role the caller reads (the role in force at the gate — R7). */
-export interface LevelAccount extends GrantHolder { role: string; master?: boolean }
+/* THE SQUADRON AN ADMIN ROLE WAS GIVEN IN (the sign-in kinds review's K3 — his D2160, the transfer: "he joins as a member,
+   his access, admin rights and Scheduler tick in the old squadron end on the date"). The role rides the account, and the
+   home branch below read it in ANY home, so 142's admin moved to 149 arrived as 149's admin. An account's admin role now
+   counts at home only in the squadron it was given in (`adminOf`), from the day it was given (`adminFrom`), and only
+   while his squadron has not changed since — the grants' own reading rule (grantHolds): it ends at the start of his move
+   day and never holds again, no end stored, so no Undo and no restore brings it back; in the squadron he joins he is a
+   member until one of its admins, or a master admin, makes him an admin there (accounts.ts updateAccount writes the
+   record anew). An account with no record (every seeded one; a row stored before the record was kept — D56): the
+   squadron of his first home row, from always — the squadron he is in when this lands, for every man who has not moved.
+   THE FIRST ADMIN OF A NEW SQUADRON (D2191, D2247) moves into it as its admin: the Plan "+ New squadron" gave him carries
+   `first`, and it counts at home there where that Plan held on the day before he arrived. */
+export interface LevelAccount extends GrantHolder { role: string; master?: boolean; adminOf?: string; adminFrom?: string }
+export function adminRoleHolds(acct: LevelAccount, unit: string, iso: string, r: UnitRows, fallback: string | null): boolean {
+  const given = acct.adminOf ?? homeUnitOn(r, acct.pid, '', fallback)
+  const from = acct.adminOf != null && typeof acct.adminFrom === 'string' ? acct.adminFrom : ''
+  if (given === unit && !homeChangesIn(r, acct.pid, from, iso, fallback).length) return true
+  /* the first admin, arrived: the day his squadron last changed, and his `first` Plan of it holding the day before */
+  const arrived = homeChangesIn(r, acct.pid, '', iso, fallback).at(-1)
+  if (!arrived) return false
+  const eve = addDays(arrived, -1)
+  return r.grants.some(g => g.account === acct.id && g.unit === unit && g.level === 'admin' && g.first === true && grantHolds(r, acct, g, eve, fallback))
+}
+/* (K1 — his D2253: a master admin in the member view is "a member of his own squadron holding View of the squadrons he
+   could edit" — the mark answers admin only for a role that is admin, the role in force at the gate; View writes nothing) */
 export function levelFrom(acct: LevelAccount | null | undefined, unit: string, iso: string, r: UnitRows, fallback: string | null): UnitLevel | null {
   if (!acct) return null
-  if (acct.master) return 'admin'
-  if (homeUnitOn(r, acct.pid, iso, fallback) === unit) return acct.role === 'admin' ? 'admin' : 'member'
+  const home = homeUnitOn(r, acct.pid, iso, fallback) === unit
+  if (acct.master) return acct.role === 'admin' ? 'admin' : home ? 'member' : 'view'
+  if (home) return acct.role === 'admin' && adminRoleHolds(acct, unit, iso, r, fallback) ? 'admin' : 'member'
   const g = grantOn(r, acct, unit, iso, fallback)
-  if (!g || (g.level === 'admin' && acct.role !== 'admin')) return null
+  if (!g) return null
+  /* (…and an admin is one whose role counts in the squadron he is at home in that day — K3: an admin who moved squadron
+     is a member there, and a member holds no Plan, D2250) */
+  if (g.level === 'admin') {
+    const h = homeUnitOn(r, acct.pid, iso, fallback)
+    if (acct.role !== 'admin' || (h != null && !adminRoleHolds(acct, h, iso, r, fallback))) return null
+  }
   return g.level
 }
 

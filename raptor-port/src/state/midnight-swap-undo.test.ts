@@ -8,11 +8,11 @@
 import { describe, it, expect } from 'vitest'
 import { useMsqWorld, signInAs, PID, ACCT, on, moveMan, pastMidnight } from '../test-support/msq-world'
 import { homeAtEntry } from './store'
-import { setSession, setMe, SESSION } from './auth'
-import { signIn, sessionFor } from './accounts'
+import { setSession, setMe } from './auth'
+import { signIn, sessionFor, updateAccount } from './accounts'
 import { setGrant, homeOn } from './units'
 import { lwUnitNow } from './perms'
-import { getState, setShowSans, setCell } from '../leavewar/state/store'
+import { getState, setShowSans, setCell, setRole } from '../leavewar/state/store'
 import { worldUnit } from '../leavewar/state/store'
 import { globalUndo, _timelineEntries } from '../undo/timeline'
 import { commitNewInput, commitInputEdit, draftOf } from '../ui/inputedit'
@@ -59,6 +59,11 @@ describe('A-v across the midnight swap — his Undo after the clock moved him', 
     pastMidnight()
     expect(homeOn(PID.hunter, rosterToday())).toBe('u149')
     expect(lwUnitNow(), '149’s war loaded by the swap').toBe('u149')
+    /* (setup — helper "kinds", K3, his D2160: he joins 149 as a member; the master admin, on another sign-in, makes him an
+       admin of 149, which the scenario needs — his Undo list is left as it stands) */
+    setSession(sessionFor(signIn('ad', 'a'))); setMe(PID.saber)
+    expect(updateAccount(ACCT.hunter, { role: 'admin' })).toBeNull()
+    setSession(sessionFor(signIn('ad2', 'a2'))); setMe(PID.hunter); setRole('admin')
     const s149 = getState().showSans
     expect(setShowSans(!s149)).toBe(true)                                            // his 149 war step
     const u1 = globalUndo()
@@ -121,10 +126,12 @@ describe('A-v across the midnight swap — his Undo after the clock moved him', 
     const { iid } = fable4()
     pastMidnight()
     /* the master admin gives him Plan of 142 — on another sign-in, which leaves his Undo list as it stands */
-    const his = SESSION
     setSession(sessionFor(signIn('ad', 'a'))); setMe(PID.saber)
+    /* (setup — helper "kinds", K3, his D2160: he joined 149 as a member, and only an admin holds Plan — made an admin of
+       149 first; his session is then his account's as it stands) */
+    expect(updateAccount(ACCT.hunter, { role: 'admin' })).toBeNull()
     expect(setGrant(ACCT.hunter, 'u142', 'admin', PID.hunter)).toMatchObject({ ok: true })
-    setSession(his); setMe(PID.hunter)
+    setSession(sessionFor(signIn('ad2', 'a2'))); setMe(PID.hunter); setRole('admin')
     const u = globalUndo()
     expect({ ok: u.ok, reason: u.reason }).toEqual({ ok: false, reason: 'A later change touches the same thing — undo that first.' })
     expect(inputOf(iid)?.endDate).toBe('Aug 12')

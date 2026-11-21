@@ -14,7 +14,9 @@ const plain = (what: string, r: { ok: boolean; message?: string }) => {
   expect(r.message ?? '', `${what} — the gate's own words reached the screen`).not.toMatch(RAW)
 }
 describe('F3 — a door refused by the gate says plain words', () => {
-  it('Hunter, admin of 142, moves his man Ranger to 149', () => { signInAs('hunter'); plain('move out', setHome(PID.ranger, 'u149')) })
+  /* (helper "kinds", K4 — his D2160, "the new one never asked": a squadron's own admin moves his own man; it was refused,
+     in plain words — now it saves) */
+  it('Hunter, admin of 142, moves his man Ranger to 149: saved', () => { signInAs('hunter'); expect(setHome(PID.ranger, 'u149')).toMatchObject({ ok: true }) })
   it('Kestrel, admin of 149, takes Ranger into 149', () => { signInAs('kestrel'); plain('move in', setHome(PID.ranger, 'u149')) })
   it('Hunter takes away a View of 149 that Kestrel gave Ranger', () => {
     signInAs('kestrel'); expect(setGrant(ACCT.ranger, 'u149', 'view', PID.ranger).ok).toBe(true)

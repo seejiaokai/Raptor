@@ -32,7 +32,7 @@ import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
 import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, levelAcct, readAccounts, adminsOf, type Account } from './accounts'
-import { unitRowsBefore, unitRowsAfter, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach, lockBreach } from './units'
+import { unitRowsBefore, unitRowsAfter, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach, lockBreach, everOfBefore } from './units'
 import { PEOPLE } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
 import { unitOf, isUnitId, split } from '../storage/unitid'
@@ -1698,6 +1698,15 @@ function warUnitViolation(env: CommitEnvelope): string | null {
     const lv = levelInForce(a, u, todayIso(), rows)
     const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
     if (!ok) return `a change to another squadron's Leave War (${u}) by one with ${lv ? `${lv} rights` : 'no rights'} there`
+    /* K5 — A TYPED FIGURE IS A MAN OF THIS WAR'S (the sign-in kinds review — D1695, D2197: his own leave figures stay in
+       his own squadron): a balance written for a man who has a squadron and was never this war's squadron's — no stint in
+       it, on any day, over the rows before the command — is refused, whoever types it (the war's own door says "That
+       person is not on the Leave War", leavewar/state/store.ts balanceProblem). A removal is never refused. */
+    for (const c of lw) {
+      if (c.collection !== 'lw.balance' || c.op === 'delete' || c.after == null) continue
+      const id = String(c.id), bpid = id.slice(0, id.lastIndexOf(':'))
+      if (homeBefore(bpid, todayIso(), rows) && !everOfBefore(bpid, u, rows)) return `a balance typed for a man who is not this war's squadron's (${c.collection}/${c.id})`
+    }
     /* A7 — a man's day that is not this war's squadron's only loses entries here (below) */
     if (LW_MAN_DAY) {
       for (const c of lw) {
@@ -2105,6 +2114,27 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
     if (c.collection !== 'settings' || !String(c.id).startsWith(ACCOUNT_ROW) || c.after == null) continue
     const was: any = c.before != null ? c.before : accountBefore(String(c.id).slice(ACCOUNT_ROW.length), null)
     const is: any = c.after
+    /* K2 — ONLY AN ADMIN CARRIES THE MASTER MARK (his D2260, 21 Nov 26): no command, whoever makes it, leaves an account
+       whose role is not admin carrying the mark — a master admin made a member reached every squadron still, and counted
+       as a master admin left. The mark comes off first, by its own command (accounts.ts setMaster, updateAccount). */
+    if (is.master === true && is.role !== 'admin') return `the master mark on an account that is not an admin's (${c.id})`
+    /* K3 — WHERE AN ADMIN ROLE WAS GIVEN IS WRITTEN ONLY AS IT IS (his D2160 — a man who moves squadron joins as a member;
+       units-model.ts adminRoleHolds): the record is an admin's row's alone; it stands unchanged on the same man, or is
+       absent (the plain reading: his first squadron, while he has never moved), or names the squadron he is in TODAY, from
+       today — so nobody is made an admin of a squadron he is not in, to arrive there as one by a move (K4: the squadron
+       joined is never asked). A restore's verified replay puts back the image its step recorded: a record of a squadron
+       he has left since holds nothing by the reading rule. */
+    {
+      const rec = (x: any) => (x && x.role === 'admin' && x.adminOf != null ? JSON.stringify([x.adminOf, x.adminFrom ?? null]) : '')
+      if (is.role !== 'admin' && (is.adminOf != null || is.adminFrom != null)) return `where an admin role was given, on an account that is not an admin's (${c.id})`
+      if (is.role === 'admin' && is.adminOf == null && is.adminFrom != null) return `an admin role's day with no squadron (${c.id})`
+      const keptRec = !!was && String(was.pid) === String(is.pid) && rec(was) === rec(is)
+      if (rec(is) && !keptRec && !(env.origin === 'restore' && REPLAY != null && !!REPLAY(env)?.(c))) {
+        const pid = String(is.pid)
+        const homeNow = homeBefore(pid, today, w.personB(pid) == null ? w.rowsA : w.rowsB)
+        if (is.adminFrom !== today || is.adminOf !== homeNow) return `an admin role recorded as given in a squadron he is not in today, or on another day (${c.id})`
+      }
+    }
     /* (fix read 9, fault A — Fable 1, Opus O9-2): the day is kept only where the mark stood before and after
        (masterKept). A mark turned on, by a command or by an Undo or Redo, is dated today: an Undo or Redo pressed after a
        move putting back the recorded day brought back a line the move had retired (D2218, D2223). So the replay
@@ -2388,7 +2418,15 @@ function unitRowViolation(env: CommitEnvelope): string | null {
         const planA = !!n && n.level === 'admin' && grantRowHolds(holderA(String(n.account)), n, today, after)
         if (planB || planA) return `Plan given, changed or taken by one who is not a master admin (${id})`
       }
-      for (const img of [b, n]) if (img && !adminOf(String(img.unit))) return `not an admin of ${img.unit} (${id})`
+      /* K4 — A MOVE NEVER ASKS THE SQUADRON JOINED (his D2160, the transfer: "both squadrons' admins told when it is set and
+         on the date, the new one never asked"): a home row of a man who has a squadron today is judged by the one check
+         below alone — an admin of the squadron he LEAVES on each day his squadron changes (datedBreach, "leaves"), never
+         himself, never a day already begun. Only a FIRST placing — a man with no squadron at all today, or one this command
+         makes — still needs an admin of the squadron its row names. Safe since K3: he joins as a member, so 142's admin
+         plants no admin in 149 by moving his own man there. */
+      const moved = id.startsWith(HOME_PFX) && [b, n].every(img => !img || (img.pid != null && homeBefore(String(img.pid), today, before) != null
+        && !env.changes.some(x => x.collection === 'people' && String(x.id) === String(img.pid) && x.before == null)))
+      if (!moved) for (const img of [b, n]) if (img && !adminOf(String(img.unit))) return `not an admin of ${img.unit} (${id})`
     } else if (id.startsWith(UNIT_PFX)) {
       if (!master) return `only a master admin makes or changes a unit (${id})`
     } else if (id.startsWith(PLACE_PFX) && b != null && !master) {
@@ -2441,7 +2479,11 @@ function unitRowViolation(env: CommitEnvelope): string | null {
         else if (id.startsWith(UNITPLACE_PFX) && r.unit != null) unitsTouched.push(String(r.unit))
       }
     }
-    const br = datedBreach(before, after, today, { pids, units: unitsTouched, made, self: a.personId != null ? String(a.personId) : null, adminOn: adminOf })
+    /* (the Undo of his own move, K4: the timeline's own restore of a step of this actor's, which it is applying now —
+       undo/timeline.ts verifiedReplay answers only then; it vouches for no home row image by image, so this asks only
+       that the restore is the timeline's, of his own step) */
+    const takeBack = env.origin === 'restore' && !!REPLAY && REPLAY(env) != null
+    const br = datedBreach(before, after, today, { pids, units: unitsTouched, made, self: a.personId != null ? String(a.personId) : null, adminOn: adminOf, takeBack })
     if (br) {
       if (br.code === 'begun') return br.kind === 'home' ? `a home changed for a day already begun (home of ${br.who} on ${br.date})` : `a squadron's place changed for a day already begun (${br.who} on ${br.date})`
       if (br.code === 'first-past') return br.kind === 'home' ? `a first home dated before today (home of ${br.who} from ${br.date})` : `a squadron's first place dated before today (${br.who} from ${br.date})`
@@ -2457,7 +2499,8 @@ function unitRowViolation(env: CommitEnvelope): string | null {
       const img: any = c.after ?? c.before
       if (String(c.id) === ACCOUNT_ROW + a.id || (img && a.personId != null && String(img.pid) === String(a.personId))) return 'never his own master mark'
     }
-    if (!(w ? w.acctA : readAccounts(accountImagesNow())).some(x => x.master === true)) return 'one master admin must be left'
+    /* (only an admin's account counts as a master admin left — D2260) */
+    if (!(w ? w.acctA : readAccounts(accountImagesNow())).some(x => x.master === true && x.role === 'admin')) return 'one master admin must be left'
   }
   return null
 }

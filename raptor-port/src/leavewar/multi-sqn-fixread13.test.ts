@@ -15,7 +15,7 @@ import { projectPeople } from '../leavewar/state/raptorRoster'
 import { wireLeaveWarSync, setWarWorldDoor, postOut, runPoOutcomes, undoPostOut } from '../leavewar/sync'
 import { unitsLoad, setGrant, setHome, unitRows, homeOn, grantOfOn } from '../state/units'
 import { HOME_PFX } from '../state/units-model'
-import { accountOfPid } from '../state/accounts'
+import { accountOfPid, updateAccount } from '../state/accounts'
 import { commit } from '../command'
 import { peopleStore, finishPeopleWrite } from '../state/people-settings-commit'
 import { resyncBeforeEnlist } from '../state/sched-commit'
@@ -301,7 +301,7 @@ describe("item C — D2228: a moved filer who is again an admin of the named man
     homes('bane', 'hr',[['u142', '2026-07-15'], ['u149', '2026-07-16']])
     on(17)
     expect(shown('prowler', before[0]!.id), 'the line from before his move left his bell on the move day (D2218)').toBe(false)
-    signInAs('ad9', 'a9'); rmk('Kestrel on the 17th')
+    signInAs('ad9', 'a9'); expect(updateAccount('acad2', { role: 'admin' }), 'setup (K3, D2160): he joined as a member — made an admin of his new squadron first').toBeNull(); rmk('Kestrel on the 17th')
     const now = linesTo('prowler').filter(n => n.id !== before[0]!.id)
     expect(now.map(n => n.fu), "Hunter, an admin of Ranger's squadron again, told — through 149").toEqual([['u149']])
     expect(shown('prowler', now[0]!.id), 'on his bell').toBe(true)
@@ -311,7 +311,7 @@ describe("item C — D2228: a moved filer who is again an admin of the named man
     signInAs('ad2', 'a2'); fileFor('bane', 'prowler', 'Jul 23', 'Jul 27')
     homes('prowler', 'hc', [['u142', '2026-07-15'], ['u149', '2026-07-16'], ['u142', '2026-07-18']])
     on(19)
-    signInAs('ad', 'a'); rmk('Saber on the 19th')
+    signInAs('ad', 'a'); expect(updateAccount('acad2', { role: 'admin' }), 'setup (K3, D2160): he joined as a member — made an admin of his new squadron first').toBeNull(); rmk('Saber on the 19th')
     const l = linesTo('prowler')
     expect(l.map(n => n.fu), "Hunter, Ranger's admin again, told through 142").toEqual([['u142']])
     expect(shown('prowler', l[0]!.id)).toBe(true)
@@ -325,6 +325,7 @@ describe("item C — D2228: a moved filer who is again an admin of the named man
     /* (§4.5 of the reshape plan, rewrite 2 — his D2243, Q4: the move deletes no row now; "his Plan went with his move"
        reads that no right of his holds on the 17th) */
     expect(grantsOf('acad2').filter(g => grantOfOn({ id: 'acad2', pid: 'prowler', pidFrom: undefined }, g.unit, '2026-07-17')?.id === g.id), 'his Plan went with his move (D2203)').toEqual([])
+    signInAs('ad', 'a'); expect(updateAccount('acad2', { role: 'admin' }), 'setup (K3, D2160): he joined as a member — made an admin of his new squadron first').toBeNull()
     expect(filerVia('prowler', [inp]), "now 149's own admin — still Osprey's admin").toEqual(['u149'])
   })
   it("(control, D2223) Hunter moves to 149 alone, Ranger stays 142's: no admin of Ranger's squadron, not told", () => {

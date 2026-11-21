@@ -11,7 +11,7 @@
    What is NOT here is the Inputs page's own furniture — the calendar, the
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
-import { isOD, INPUTS, INPUT_TYPES, TYPE_GROUPS, TYPE_FAMILY_LABEL, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel, filingOf, landsUnavail, isOther, isFly, toOf, placeOf, inputSpanIso, inputUnitOf } from '../engine/inputs'
+import { isOD, INPUTS, INPUT_TYPES, TYPE_GROUPS, TYPE_FAMILY_LABEL, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel, filingOf, landsUnavail, isOther, isFly, toOf, placeOf, inputSpanIso, inputUnitOf, settleStamp as settleStampOf } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, upchitDeletePlan, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel, firstEndIso, firstEndOrd } from '../engine/medical'
 import { OilConfirm } from './OilConfirm'
 import { DocConfirm } from './DocConfirm'
@@ -1001,10 +1001,8 @@ const filedOn = (draft: any): string => (isUnitId(draft && draft.u) ? String(dra
    ui/phmember.test.tsx T1): filed for ALL AVAIL, or filed for Ranger, ALL AVAIL dropped on and Ranger taken off — both
    stamped with the squadron the input stood on. ALL AVAIL / ALL alone keeps a stamp it has, else takes `was` (the
    squadron the input was before the save — its people's, or its own stamp), else the page's own; anyone named, none. */
-function settleStamp(r: any, was: string | null): void {
-  if (namedOf(r).length) { delete r.u; return }
-  if (isPlaceholderInput(r) && r.u == null) r.u = isUnitId(was) ? String(was) : pageUnit('own', todayIso())
-}
+/* (one body with a man's delete since the sign-in kinds night, 21 Nov 26 — engine/inputs.ts settleStamp) */
+const settleStamp = (r: any, was: string | null): void => settleStampOf(r, isUnitId(was) ? String(was) : null, () => pageUnit('own', todayIso()))
 export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, entryEnd?: any, onAdded?: (row:any)=>void): boolean {
   if (!draft) return false
   /* write-path role backstop (owner, 22 Aug 26 — a member files inputs only

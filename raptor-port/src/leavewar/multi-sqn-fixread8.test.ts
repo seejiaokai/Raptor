@@ -98,7 +98,7 @@ describe('fault R — a filer who has moved is not told again, and his old line 
   it('(Opus Q-1, D2228) Hunter, 149’s admin from 16 Jul, is told on 17 Jul of Saber’s change — through 149, Ranger’s on 25–27 Jul', () => {
     signInAs('ad2', 'a2'); fileFor('bane', 'prowler', 'Jul 23', 'Jul 27')
     rangerMovesOn25(); hunterMovesOn16(); on(17)
-    signInAs('ad', 'a'); rmk('Saber words')
+    signInAs('ad', 'a'); expect(updateAccount('acad2', { role: 'admin' }), 'setup (K3, D2160): he joined as a member — made an admin of his new squadron first').toBeNull(); rmk('Saber words')
     expect(lineTo('prowler')?.fu, 'Hunter, an admin of Ranger’s squadron on 25–27 Jul, told through it alone').toEqual(['u149'])
   })
   it('(Opus Q-2) the line Hunter got on 15 Jul, before his move, leaves his bell on his move', () => {
@@ -126,7 +126,7 @@ describe('fault D — a right given ON the move day never brings the retired lin
       hunterMovesOn16(); on(16)
       expect(shown('prowler', l.id), 'retired by his move').toBe(false)
       signInAs('ad', 'a')
-      expect(setGrant('acad2', 'u142', 'admin', 'prowler').ok).toBe(true)
+      expect(updateAccount('acad2', { role: 'admin' }), 'setup (K3, D2160): he joined as a member — made an admin of his new squadron first').toBeNull(); expect(setGrant('acad2', 'u142', 'admin', 'prowler').ok).toBe(true)
       expect(shown('prowler', l.id), 'still off after Plan given on his move day').toBe(false)
     })
     it(`(Fable 2, Opus 2) master mark set on 16 Jul, his move day: the ${read ? 'read' : 'unread'} line stays off`, () => {
@@ -188,7 +188,7 @@ describe('fault G — the gate checks a grant’s day and the master mark’s da
   it('(control) the real setGrant and setMaster pass, and the Undo and Redo of each, a day later', () => {
     hunterMovesOn16(); on(18)
     signInAs('ad', 'a')
-    expect(setGrant('acad2', 'u142', 'admin', 'prowler').ok).toBe(true)
+    expect(updateAccount('acad2', { role: 'admin' }), 'setup (K3, D2160): he joined as a member — made an admin of his new squadron first').toBeNull(); expect(setGrant('acad2', 'u142', 'admin', 'prowler').ok).toBe(true)
     expect(unitRows().grants.find(g => g.account === 'acad2')?.from).toBe('2026-07-18')
     on(19)
     expect(globalUndo().ok, 'Undo of the grant').toBe(true)

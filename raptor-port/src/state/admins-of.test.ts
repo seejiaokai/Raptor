@@ -21,11 +21,12 @@ describe('adminsOf', () => {
     expect(adminsOf('u149')).not.toContain(PID.saber)
     expect(adminsOf('u149')).not.toContain(PID.ranger)
   })
-  it('on a day: an admin moved away is his new squadron\'s from the move day', () => {
+  /* (helper "kinds", K3 — his D2160: he joins as a member, so he is no admin of the squadron he joined until made one) */
+  it('on a day: an admin moved away is no longer his old squadron\'s from the move day, and a member of the new one', () => {
     const d = acrossMove(PID.hunter, 'u142', 'u149')
     expect(adminsOf('u142', d.before)).toContain(PID.hunter)
     expect(adminsOf('u142', d.moveDay)).not.toContain(PID.hunter)
-    expect(adminsOf('u149', d.moveDay)).toContain(PID.hunter)
+    expect(adminsOf('u149', d.moveDay)).not.toContain(PID.hunter)
   })
   it('over the rows handed in (the gate\'s rows before a command), never the live ones', () => {
     signInAs('saber')

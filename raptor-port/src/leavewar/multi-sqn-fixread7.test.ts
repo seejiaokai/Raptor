@@ -16,7 +16,7 @@ import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync, setWarWorldDoor, followUpsFor } from './sync'
 import { unitsLoad, setGrant, grantOfOn } from '../state/units'
 import { HOME_PFX, GRANT_PFX } from '../state/units-model'
-import { setMaster } from '../state/accounts'
+import { setMaster, updateAccount } from '../state/accounts'
 import { INPUTS } from '../engine/inputs'
 import { NOTICES, noticesFor, type Notice } from '../state/notices'
 import { noticeSeenLoad } from '../state/noticeseen'
@@ -187,7 +187,7 @@ describe('fault P — a right given after the move never brings a retired line b
       const l = hunterLine(); if (read) readIt('prowler', l)
       hunterMoves(l)
       on(18); signInAs('ad', 'a')
-      expect(setGrant('acad2', 'u142', 'admin', 'prowler').ok).toBe(true)
+      expect(updateAccount('acad2', { role: 'admin' }), 'setup (K3, D2160): he joined as a member — made an admin of his new squadron first').toBeNull(); expect(setGrant('acad2', 'u142', 'admin', 'prowler').ok).toBe(true)
       signInAs('ad2', 'a2')
       expect(shown('prowler', l.id), 'still off after the Plan grant').toBe(false)
     })
@@ -215,7 +215,7 @@ describe('fault P — a right given after the move never brings a retired line b
     /* …and the grant setGrant writes after the move is a new row, carrying its day */
     on(18); signInAs('ad', 'a')
     mem['sqn142_' + GRANT_PFX + 'gfr7'] = JSON.stringify({ id: 'gfr7', account: 'acad2', unit: 'u142', level: 'view', from: '2026-07-15' }); unitsLoad()
-    expect(setGrant('acad2', 'u142', 'admin', 'prowler').ok).toBe(true)
+    expect(updateAccount('acad2', { role: 'admin' }), 'setup (K3, D2160): he joined as a member — made an admin of his new squadron first').toBeNull(); expect(setGrant('acad2', 'u142', 'admin', 'prowler').ok).toBe(true)
     expect(JSON.parse(mem['sqn142_' + GRANT_PFX + 'gfr7']!).from, 'the ended row is never re-dated').toBe('2026-07-15')
     expect(grantOfOn({ id: 'acad2', pid: 'prowler', pidFrom: undefined }, 'u142', '2026-07-18')?.from).toBe('2026-07-18')
   })

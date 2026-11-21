@@ -800,6 +800,15 @@ export function isOther(t:any){return /^Other$/i.test(String(t==null?'':t).trim(
 export const PLACEHOLDER_KINDS:string[]=['Training','Meeting','Personal','Appointment','Duty','Event','Other'];
 export function placeholderKind(t:any){return PLACEHOLDER_KINDS.indexOf(inpType(t))>=0;}
 export function isPlaceholderInput(inp:any){return !!inp&&!!placeholderOf(inp);}
+/* THE SQUADRON STAMP FOLLOWS WHO IS IN THE INPUT (C3, his D2243 Q1 — an ALL AVAIL meeting stays on the squadron it was
+   filed on), ONE BODY for every door that changes who an input names: the input's own window (ui/inputedit.tsx) and a
+   man's delete (state/person-delete.ts applyDelete — the sign-in kinds night, 21 Nov 26: Osprey deleted out of a 149
+   meeting left it naming nobody with no stamp, read by its filer's home, 142). Anyone named: no stamp — he places it.
+   ALL AVAIL / ALL alone: it keeps a stamp it has, else takes `was` (the squadron the input was before the change —
+   inputUnitOf, asked BEFORE the man is taken out), else `page`'s answer where the door has a page (the window's own). */
+export function settleStamp(r:any,was:string|null,page?:()=>string|null):void{
+  if(namedOf(r).length){delete r.u;return;}
+  if(isPlaceholderInput(r)&&r.u==null){const u=was||(page?page():null); if(u)r.u=u;}}
 export function placeholderProblem(inp:any):string{
   if(!isPlaceholderInput(inp))return '';
   const ph=placeholderOf(inp).p;
