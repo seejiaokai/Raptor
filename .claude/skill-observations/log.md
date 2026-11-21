@@ -1024,3 +1024,29 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** the background script pushed and detached the checkout between the chat's stop request and its next commit; the new commit landed on a detached head and had to be moved back by hand (switch to the branch, fast-forward to the stray commit).
 **Suggested improvement:** in "Release the branch", when the push must wait: the waiting script pushes only if the branch tip is still the commit it was started for, and never detaches by itself — the chat releases in the foreground once it has the push result; and after any new message from the owner, check `git branch --show-current` before committing.
 **Principle:** an irreversible last step queued in the background must check that nothing moved since it was queued, or be left for the foreground.
+
+### Observation 993: A ruling that lifts a refusal was filed with two of the four places that enforce it
+
+**Status:** OPEN
+**Date:** 21 Nov 26
+**Session context:** chat 129 — building his D2250 (an admin of a man's own squadron may make a Plan holder a member), filed by chat 128 as "remove the door's refusal and the gate's R7 line"
+**Skill:** record-decisions (D201, step 2 "The app")
+**Type:** open-source
+**Phase/Area:** filing the build a new ruling needs
+
+**Issue:** with both named lines removed, the rewritten test still failed: a third rule (the save check's "Plan taken only by a master admin") refused the same change, and a fourth place (Undo putting the Plan back) then failed with a vague message. The filing listed the places found by reading, not by running the new behaviour.
+**Suggested improvement:** in D201's "The app" step, when a ruling lifts or narrows a refusal, file the build as "make this scenario pass" with its test named, and say the places listed are a start, not the scope; the builder runs the scenario forward AND through Undo and Redo before calling the places complete.
+**Principle:** a restriction is usually enforced in more places than the one that says it; find them by running the newly allowed action, both ways, not by searching for the old words.
+
+### Observation 994: A commit chained before a push was lost when the push guard refused the command
+
+**Status:** OPEN
+**Date:** 21 Nov 26
+**Session context:** chat 129 — `git commit … && git push …` in one shell call while a check run was in progress
+**Skill:** New skill candidate: pre-push local checks (`shipping.md` §The loop)
+**Type:** internal
+**Phase/Area:** committing and pushing as the host
+
+**Issue:** the push guard refuses a whole command, so the commit before the push never ran; only a `git status` afterwards showed the file still uncommitted. The helpers' brief already says "push alone in its own command"; the host's own rules do not.
+**Suggested improvement:** `shipping.md` §The loop: "commit and push in separate calls — a refused push takes everything in its command with it".
+**Principle:** never chain a step that must happen to one a guard may refuse.
