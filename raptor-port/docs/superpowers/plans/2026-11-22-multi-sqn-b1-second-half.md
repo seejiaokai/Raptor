@@ -21,8 +21,8 @@ are the spec;** D2306's five wordings change the drawn text. Paths are under `ra
    posting could not run; a sign-in that waits for the last person's save.
 5. Tested with eight squadrons, walked on your desktop's size and your iPhone's, every picture checked beside the
    approved drawing.
-6. Six small things found while planning and by its two readers need your look before they are built (§9) — one
-   picture each, on one page, at the build's start.
+6. Eight small things found while planning and by its three readers need your look before they are built (§9, §15) —
+   one picture each, on one page, at the build's start.
 
 ## 0. Ground rules
 
@@ -113,7 +113,8 @@ The menu makes another squadron reachable, so the protection lands before it (Fa
    keep today's hold (`state/typing-hold.ts`). It is navigation, not a command: nothing saved, Undo untouched (D148).
 4. **Pages that follow it:** the schedule pages and Logic for everyone with a right; every page for a master admin or a
    Plan holder of the pick (`pageUnit('own')` already answers this). Step A's tabs and landing apply.
-5. **The Tracker cannot follow a pick once it has opened** — already established on 21 Nov by the reshape's step-0 read
+5. **[Narrowed in round 2 by §15 D2 — the page covered read only, its words from the Tracker's permitted squadron, an
+   unsaved edit asked first.]** **The Tracker cannot follow a pick once it has opened** — already established on 21 Nov by the reshape's step-0 read
    of its load path: its records sit in `app/core.js`'s module caches and a one-shot init draws its board, so it cannot
    be re-read in place (`tracker/storage.js` l.66–76, `rebindStorageUnit` answers `kept`; the plan's first draft called
    this a spike — red team R-O13, R-A1). It binds to `pageUnit('own')` the first time it opens (`boot.ts` l.93), so a
@@ -263,7 +264,8 @@ The layouts by Fable (D2269); the doors by Opus.
    saved setting per person (`bellsqn:<pid>`, a community setting written by the settings command, its `PERMS` row his
    own only) holding **only his own choices, squadron by squadron**: a squadron he never switched takes the default, so a
    Plan given later starts on (R-O12). Lines switched off are kept, not deleted: switched on, they come back.
-4. **D2310 and R10 — a squadron's admin lines stay only while he has been its admin without a break** from the line's day
+4. **[REPLACED in round 2 by §15 D1 — the command that ends his admin right removes that squadron's admin lines; the
+   text below is kept for the record and is not built.]** **D2310 and R10 — a squadron's admin lines stay only while he has been its admin without a break** from the line's day
    to today (R-O6, R-A2): his home admin role there, a Plan of it holding from on or before the line's day, or the master
    mark held from then — read from the rows' start days, as `adminThen` reads them. So Plan lowered to View, Plan taken,
    made a member, master admin taken off: that squadron's lines leave at once, read or not, and a Plan given again later
@@ -427,4 +429,129 @@ R-O is the fresh Opus reader's numbering, R-A Astra's. Where both found one thin
 | R-A9 | the plan asked an archive Undo that D350 keeps out | §0 and §4 item 8: archive stays outside Undo |
 
 **Round 2** (the same two readers, blind, on the revised plan — whether each fix above is right and complete, and
-anything the revision broke) before the build; at most three rounds (the design red-team cap).
+anything the revision broke) before the build; at most three rounds (the design red-team cap). Done: §15.
+
+## 15. Round 2 — three readers, and what the plan did
+
+Round 2 on `db88bc66`: Astra and a fresh Opus reader on round 2's brief (`…/2026-11-22-msq-b1-second-half-plan-read2-brief.md`),
+and — on his ask, 22 Nov 26 ("should we also ask an independent fable reviewer to red team the plan?"), by D2255's
+rule for high-risk work — Fable on round 1's brief, asked where the plan's shape breeds faults; the three blind to each
+other. Reports beside the brief: `…-read2-astra.md`, `…-read2-opus.md`, `…-read-fable.md`. The host spot-checked the
+code claims it acted on (Fable's 1–4; the others' overlap them) — each held. **Where §15 and an earlier section differ,
+§15 is the plan.** R2-A is Astra's numbering, R2-O the Opus reader's, F Fable's.
+
+**Fable's shape answer, adopted as the rule for the build:** the pick is a second meaning of "the squadron" laid over
+three things that keep their own — the Tracker's bound door, the settings held in memory (`VCONF`, the templates) and
+the bell. Every reader of any of the three reachable from an own page is listed and marked (D4), not only the edit rights.
+
+### The decisions
+
+- **D1 — a lost admin right takes its squadron's admin lines with it, in the same command** (replaces §7 item 4; closes
+  R2-A2, R2-O1–3, F4, F6). Three readers showed that "admin without a break, read from the rows' start days" cannot be
+  read: the home role keeps no start day (`accounts.ts adminRecFor` l.352–362), rows keep days not moments (a right taken
+  at 10:00 and given back at 11:00 brings 09:00's line back), and deleting a Plan row on promotion erases the history.
+  So no continuity is worked out at read time. **The command that ends a man's admin level in a squadron** — Plan taken
+  or lowered to View, made a member (his home's admin lines and every Plan's), master admin taken off (every squadron he
+  is no longer admin of) — **also removes his stored lines of that squadron of the admin kinds** (`po`, `poback`,
+  `oilhol`, the posting-failed kind). They leave at once, read or not (D2310), and a right given back later brings none
+  back (D2218: for good); an Undo of that command puts the right and the lines back together. The gate passes those
+  removals only where the same command's records show his level in that squadron going from admin to not (judged
+  before and after, as the member's drop is judged). A **gain** removes nothing: made a master admin, his Plan rows go
+  (R-O10, still right — "Full access" shows no buttons) and his lines stay, his bell switch written "on" for each
+  squadron he held Plan of, so they stay in view (D2198 would default them off). The derived lines (the "off the
+  manpower" and "dates ended" lines) need nothing: they are worked out live from the audience. The move rule
+  (`noticeLeftBell`) stays as it is. The agent's reading, told to him: an admin made a member loses his own squadron's
+  admin lines too (D2310 names the Plan squadron; the same reason applies). Tests: Plan → View, Plan → None, made a
+  member, master admin off — the lines gone at once with the bell open; taken at 10:00 and given at 11:00 — none back;
+  Undo of the take-away — all back; made a master admin — none gone; a forged removal of another man's lines refused.
+- **D2 — the Tracker after a pick** (narrows §3 item 5; R2-A1, R2-A5, R2-O15, F1). The Tracker's **permitted squadron**
+  is `pageUnit('own')` — for a View holder always his home. When the bound Tracker (`storageUnit()`) is not it: (a) if he
+  may still edit the bound squadron's Tracker (it is a squadron he holds Plan of, or he is a master admin), the page is
+  covered read only — no control offered, the gate's 7f clause kept — with "This is 149's Tracker. Pick 149 to change
+  it."; (b) if he may no longer open it at all (Plan lowered or taken, the member view — D2252, D2253), its contents are
+  hidden, every control, export and key handler off, the records kept in memory (no reset, no unmount — so a draft is
+  not lost), with "You can't open 149's Tracker any more. Sign out and in to open 142's."; (c) bound = permitted:
+  nothing shown. **With unsaved Tracker edits a pick asks first**, sign-out's Save / Discard / Stay question
+  (`trackerMayLogOut`). Both lines, and the pick-time bands of an open Leave War window and an open Input window (today
+  "This change could not be saved." when nothing was tried — `state/store.ts bandWords` l.1028–1043,
+  `ui/InputWindow.tsx` l.185–187), are drawn first (§9 F2, F7). Tests for each of (a)–(c), the member view and back
+  keeping the draft, a bell tap reaching (a).
+- **D3 — the access-request tap** (R2-A4, R2-O9, F2): the bell's access branch (`ui/topstate.ts bellTap` l.51–56) takes
+  the newest unseen request among the squadrons switched on in his bell, enters its squadron when it is not the page's
+  (R9's path), then opens Admin → Users — the toast naming it ("1 waiting for access to 149"). The bell alert counts
+  requests of switched-on squadrons; the Admin tab's and drawer's badges count the page's squadron's only, so every badge
+  has a row behind it. Test: Hunter with Plan of 149, 142 picked, a 149 request — one tap lands on 149's list and clears
+  the alert; the next tap opens the bell list.
+- **D4 — the second inventory: settings in memory read from an own page** (F3): beside step A's edit rights, every
+  reader of `VCONF` / `ruleNow` and the in-memory templates reachable from Inputs, SANS, Quals, the OIL list, the Leave
+  War and the bell's pending-OIL count is listed in `docs/data-schema.md`, marked "schedule in view" or "own squadron",
+  with its guard test. First known case: an input's OIL amount (`leavewar/sync.ts oilAskPlan` l.1382 → `engine/oil.ts
+  inputOilAmt` l.107–112 → `ruleNow('oilFullMin')`) reads the input's own squadron's threshold, as `engine/inputs.ts
+  cutBackFor` l.1224 reads its cut-off. Test (red first): Hunter with View of 149, 149's threshold changed — his own
+  Saturday input asks the same with 149 picked as with 142; the bell's pending count the same. `desiredOilCells` traced
+  at build time.
+- **D5 — own-account lines are about him** (R2-O6, F4): `noticeAboutHim` returns true for `acct`; an `acct` line carries
+  no squadron mark, so neither the bell switch, the grey mark nor D1 touches it, and a move keeps it.
+- **D6 — the bell switch lives in `noticeLive`** (F5, R2-O19), the one body behind the list, the unread count, the lit
+  bell and the seen mark: a switched-off squadron's line neither lights the bell nor is marked seen by opening it;
+  switched on, it shows unread. **The switch row is the owner's alone** (R2-O12): a gate row rule — `bellsqn:<pid>` only
+  for the actor's own person, by its one command — and its type in `undo/timeline.ts` NOT_STEPS (l.272). The worked-out
+  posting lines are stamped with the squadron they are built for (`leavewar/sync.ts postedLinesOf` l.1723–1744; R2-O18).
+- **D7 — an Undo or Redo of an access change tells him** (F7, R2-O7): it keeps the first line and writes the opposite one
+  ("Plan of 149 ended · Saber") as a follow-up in its own command, as the posting's take-back is
+  (`restoreFollowUpOwed`, the gate's follow-up door `state/perms.ts setFollowUpsProbe` l.2918–2920 extended to `acct`);
+  unread at the Undo, the first line simply goes. `account.access` gets its Undo label (`undo/describe.ts`, R2-O19).
+- **D8 — the landing is a standing check** (F8, R2-O17): after every `enterSquadron` and on the notify path, wherever the
+  page is Edit Schedule and `maySchedEditPage()` is false, View-only Sched — so a pick, R6's re-entry and a Plan lowered
+  while he is on the page all land him; the Admin half of `store.ts` l.550 keeps asking the role.
+- **D9 — one body for "may he read this squadron"** (F9): `pickStandsOn(iso)` = `readableUnits(iso).includes(UNIT)`,
+  both reading the account's own role (a Plan holder in the member view keeps 149 in his menu, "View only" — D2253).
+- **D10 — the posting-failed line needs proof that the posting fails** (R2-A3, R2-O4, R2-O16): its own command type,
+  written only by the runner, **out of band** like `lw.postoutRun` (`undo/timeline.ts` l.234–241 — never folded into the
+  step of the person whose press woke the pass); its gate rule re-runs the named posting's own check against the stored
+  rows and passes the line only where that posting is refused now, or held for a reason other than the last-admin lock
+  (`stashPreflight`, `masterDeleteProblem` — `leavewar/sync.ts` l.2895–2897, `deleteBlocked` l.3277–3288); a correctly
+  shaped line for a posting that would run is refused. Tests: a forgery for a due, untried posting refused; a held
+  Delete rings once across three loads; a group failure followed by individual passes rings for none of those; an Undo
+  of the press that woke a failing pass leaves the line.
+- **D11 — own-account lines written when a change takes effect** (R2-O4, R2-O5): the app's own writer, out of band, its
+  gate check keyed on the line kind — his home changes that day, the right named held the day before and not that day,
+  the line to that account's man, its id the change's, dated that day; a forged one for a cancelled move refused. F3 gains
+  "Made a member: you moved to 149" (a moved admin is a member of his new squadron, K3) and "Suspended" with no name (an
+  Overseas posting's suspension) (R2-O8).
+- **D12 — a waiting request is answered only by an admin of its squadron, whatever path deletes it** (R2-O10): the rule
+  on the request row — deleting it needs an admin of its squadron, the posting pass's Delete excepted — so `addAccount`,
+  `addPersonAndAccount`, a rename in `updateAccount` and `dropAccountOfPid` (`state/accounts.ts` l.570, l.987, l.644,
+  l.870) are held too; at the door "He asked to join 149 — only an admin of 149 can answer it." (new words, §9 F8).
+- **D13 — a place's squadrons, today or later, at the gate too** (R2-O11, F10): the gate's check (`state/perms.ts`
+  l.2615–2617, today `placeIdOn` → `atOn`, the row of one day) is replaced by the set of squadrons whose place rows name
+  the place holding today or from a later day — an admin of every one, a master admin always. "Or by the admin who made
+  it" is dropped (a place row keeps no maker); a place is only ever made with a move or a new squadron (one command), so
+  it always has a squadron.
+- **D14 — smaller:** R2's moved Approvals mark keeps the own-row rule (7e matches the unit-split local name; the key in
+  `UNIT_SETTING_PREFIXES` — R2-O13); `setGrant` refuses a master admin's account and the gate refuses a grant row left on
+  one after the command (R2-O14); the first-admin list leaves out master admins and anyone the door would refuse (one who
+  moves tomorrow) — named to him as the agent's narrowing of D2308's words (F10); step G keeps the typed name when Sign
+  in is pressed (sessionStorage, in try/catch — sign-out's reload is registered first, `ui/logout.ts` l.39) and a save
+  that never lands gets a test and words (§9 F6) (R2-O19).
+
+### §9 gains (drawn first, on the same page)
+- **F2** now (a) and (b) of D2; **F7** the pick-time bands of an open Leave War window and Input window; **F8** "He asked
+  to join 149 — only an admin of 149 can answer it."; **F3** with D11's two lines; **F6** with the save that never lands.
+- **Told, not asked:** D1's reading (an admin made a member loses his own squadron's admin lines); D14's first-admin
+  list.
+
+### The rows
+| Round-1 row | After round 2 |
+|---|---|
+| R-O6, R-A2 | replaced by D1 |
+| R-O8 | completed by D13 |
+| R-O9, R-A8 | completed by D3 |
+| R-O10 | stands; D1 keeps his lines, D14 closes the planted row |
+| R-O13, R-A1 | completed by D2 |
+| R-O15, R-A7 | completed by D10 |
+| R-A6 | completed by D5, D7, D11 |
+| every other row | held by both readers |
+
+**Round 3** — the last under the cap: Astra, a fresh Opus reader and Fable, blind, on §15 alone (is each decision right,
+and what does it break), before the build.

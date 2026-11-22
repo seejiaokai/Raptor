@@ -1141,3 +1141,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The plan wrote "a spike: find out whether the Tracker can be re-read in place" as an open point. The module's own comment, written by an earlier step's read of its load path, already answered it: it cannot be re-read cleanly, and it listed the caches. The host found this only after the plan was written and sent to readers, so the plan went out with a question already settled.
 **Suggested improvement:** In writing-plans, before an item is written as "to be found out", search the earlier plans' open-points sections and the code comments of the files concerned for an answer, and cite it, or say none was found.
 **Principle:** An open point in a plan is a claim that nobody has answered it; check the earlier work and the code's own notes before making that claim.
+
+### Observation 1010: A plan's red team was given the older two-reader rule, not the newer risk rule that adds Fable
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** batch 1's second-half plan (chat 138); numbered past 1008, held on another open branch
+**Skill:** claudex-loop
+**Type:** internal
+**Phase/Area:** choosing the readers of a plan's red team
+
+**Issue:** The host sent the plan to Astra and a fresh Opus reader only ("an important plan's red team: two readers"), though the newer ruling D2255 (21 Nov 26) has high-risk work read by Fable beside the others, and the build's earlier plan had three readers. He had to ask "should we also ask an independent fable reviewer?". Fable, added in round 2, found the plan's shape fault (the pick laid over three things that keep their own squadron) the other two had missed.
+**Suggested improvement:** Before sending any red team or code read, list the reader rulings that apply by date and risk (how-we-work §Models and readers), newest first, and name in the brief which one sets the readers.
+**Principle:** When several rules set who reads, the newest that covers the case decides; read the list by date each time instead of from memory.
