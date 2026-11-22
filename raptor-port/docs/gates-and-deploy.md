@@ -723,7 +723,7 @@ and ride along with the next real change or the merge; the merge itself earns on
   budget that only warns, and back to the free plan if it warns; the budget's
   "Pause Production Deployments" stays off, since it takes the live app down.
 
-## Lean working copies — helpers' copies leave out the walk pictures (his D2290, 22 Nov 26)
+## Lean working copies — helpers' copies leave out the walk pictures (his D2290, 22 Nov 26; chats' own copies too, D2292)
 
 `scripts/lean-copy.mjs` ([HELPER-COPIES-NO-PICTURES]): a copy of the project made for a helper, a reviewer or a side
 chat leaves out `raptor-port/docs/img/handpass/` — 7.8 GB of the project's 8.6 GB on 22 Nov 26 — by a git sparse
