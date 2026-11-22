@@ -157,6 +157,18 @@ export function UsersIcon() {
   )
 }
 
+/** A map pin — the Squadrons category (the places the squadrons are at): the 19 Nov drawing's own tile icon, drawn
+    again in pictures b1-3 and p7, so it never shares Users' people (one thing, one icon — D1134). */
+export function MapPinIcon() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" />
+      <circle cx="12" cy="10" r="2.4" />
+    </svg>
+  )
+}
+
 /** Three sliders — the Squadron-configuration category (templates & policy). */
 export function SlidersIcon() {
   return (

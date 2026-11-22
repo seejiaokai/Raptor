@@ -248,6 +248,43 @@ the scrim and closes the window first; on an iPhone the Input window covers the 
 keyboard, a bell tap from elsewhere or a window left open in another way — on a desktop the Input window on Inputs, which
 floats, leaves the menu free.
 
+## Admin → Squadrons, and Request access's squadron (batch 1's second half §5 item 1, §6 — night job 3, 23 Nov 26)
+
+**Admin → Squadrons** (`ui/SquadronsPanel.tsx`, its reads `ui/squadrons-model.ts`; his D2110, D2196, D2298, D2306, D2308,
+D2336; the drawings `docs/mock/2026-11-22-msq-b1-screens/img/b1-3`, `b1-4`, `b1-9`, `b1-10`, `p7`): a tile on the Admin
+rail for every admin, after Users — "Squadrons", grey line "Places", the line map pin (`ui/icons.tsx MapPinIcon`, never
+Users' people). Built from Users' own parts (`.acc-list`, `.acc-row.od-row`, `.acc-edit`, `.adm-2col`, `.mfield`, `.abtn`):
+"Squadrons · N", a row per squadron by number, its grey line its place today and its people ("Home base · 61 people" —
+the count Users' "People · N" reads, `ui/userslist-model.ts`); then, for a master admin only, "+ New squadron"; then
+"Places · N", a row per place A to Z, its grey line the squadrons at it — today or from a later day, a move saved for
+tomorrow counting (`state/units-model.ts unitsAtPlace`) — and its time zone for today ("142 · 149 · Perth · GMT+8",
+`gmtLabel`). One row's form open at a time, as on Users.
+- **A squadron's place** (b1-4): its row opens only for an admin of it (`state/units.ts mayMoveUnit`, the move door's own
+  check — a disabled row otherwise); a Place list ending "+ New place…", which opens "New place's name" and "Time zone" in
+  the same form (D2298); the line "Saved at once. The new place applies from tomorrow." (D2306); Save moves it through
+  `moveUnit` from tomorrow (D2119, D2160) — the move and a new place one command, one Undo step.
+- **A place** (p7): its row opens for every admin — "Name" and "Time zone" (each zone picked by its city's name and shown
+  as GMT+X for today, D2165; every zone the browser knows, `tzChoices`); where `placeChangeProblem` refuses him (an admin
+  of every squadron at it, a master admin always — D2196, D2336, §15 D13, §16 D13′) both boxes and Save are greyed and
+  its words stand under them: "Only an admin of both 142 and 149 can change the time zone: both squadrons are here."
+  (three or more name every one). The drawing greyed only the time zone; the door refuses a rename too, so the name is
+  greyed with it. Save through `setPlace`.
+- **"+ New squadron"** (b1-9, b1-10 — D2308, D2298): the button gives way to a row "New squadron / Not saved yet" with
+  "Squadron number" (a faded "150"), "Place" (ending "+ New place…" as above) and "First admin" ("Pick an admin…", then
+  the admins `state/units.ts firstAdminProblem` would take — never a master admin, nobody moving squadron tomorrow; §15
+  D14 — as "Hunter · 142"); its line "Hunter gets Plan of 150, full access to it, so 150 starts with an admin." (D2306;
+  "The first admin" before one is picked, the number typed filled in, the faded 150 until then), "Saved together: 150 and
+  its new place, Northern base." before it where a new place is typed (b1-10). Save makes the squadron, its place row, a
+  new place and the first admin's Plan through `addUnit` — ONE command, one Undo step; a refusal stays in the form, said
+  in the warning note; the new squadron's row then wears the just-added ring for its six seconds (`.acc-ring`, D850).
+Pinned by `ui/msq-squadrons-panel.test.tsx`; the doors by `state/units-place.test.ts`.
+
+**Request access asks the squadron** (§5 item 1 — D2094, D2111; the drawing b1-5): "Squadron" is the card's first choice
+(`#accSqn`, the CAT choice's look), the squadrons by number, the first picked to start as drawn; the request is sent with
+it (`state/accounts.ts requestAccess(np, unit)`) and reaches that squadron's admins only. With one squadron in the store
+there is nothing to choose, so no box (as Add a person's Home squadron). Pinned by `ui/msq-squadrons-panel.test.tsx` and
+`ui/accounts-newperson.test.tsx` NP4.
+
 ## The day carries across a page switch (owner, 9 Aug 26)
 
 View-only Sched and Edit Schedule are **two separate horizontal scrollers** —

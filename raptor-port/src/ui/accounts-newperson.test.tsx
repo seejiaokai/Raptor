@@ -73,7 +73,9 @@ describe('NP4 — the sign-up card asks what the admin asks (D214, D222, D225, D
   it('four labelled fields, the D222 label, no Name box; Pilot / WSO / Personnel; CAT hidden for personnel', async () => {
     await signInAs('fresh@mail')
     const labels = $$('#accForm label').map(l => l.textContent)
-    expect(labels).toEqual(['Displayed callsign/name', 'Initials', 'Pilot, WSO or personnel', 'CAT'])
+    /* (since batch 1's second half §5 item 1 — D2094, D2111, picture b1-5 — "Squadron" is the card's first choice where
+       the store holds more than one squadron, as the demo's 142 and 149; the four fields follow it unchanged) */
+    expect(labels).toEqual(['Squadron', 'Displayed callsign/name', 'Initials', 'Pilot, WSO or personnel', 'CAT'])
     expect($('#accFull'), 'the Name box gave way to initials (D219)').toBeFalsy()
     expect(optTexts('#accSeat')).toEqual(['Pick…', 'Pilot', 'WSO', 'Personnel (ground crew)'])
     await type($('#accSeat') as HTMLSelectElement, 'GND')

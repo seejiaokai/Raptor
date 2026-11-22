@@ -222,12 +222,8 @@ export function addUnit(numIn: string, place: string | NewPlace, firstAdmin?: st
      a first admin whose move away is saved for a later day leaves it none from then. Those two say the generic words
      until "+ New squadron" has its screen, drawn for him (D1625). */
   if (!firstAdmin) return no("Name the squadron's first admin.")
-  const fa = accountById(firstAdmin)
-  if (fa && homeOn(String(fa.pid), moveFrom(todayIso())) !== homeOn(String(fa.pid), todayIso())) return no('He moves squadron tomorrow — give this after the move')
-  if (fa && !adminNow(fa)) return no('This change could not be saved.')
-  /* never a master admin (§15 D14): he acts in every squadron already, so Plan gives him nothing and the last-admin rule
-     would not count him (state/lastadmin.ts) — the first-admin list leaves him out; no right is ever given his account */
-  if (fa && fa.master) return no('This change could not be saved.')
+  const faBad = firstAdminProblem(firstAdmin)
+  if (faBad) return no(faBad)
   const id = newId('u'), up = newId('up'), g = newId('g')
   const draft = rowsDraft(unitRows(), {
     units: [{ id, num, kind: 'sqn' }], unitplaces: [{ id: up, unit: id, place: placeId, from: todayIso() }],
@@ -245,6 +241,25 @@ export function addUnit(numIn: string, place: string | NewPlace, firstAdmin?: st
     return id
   })
 }
+
+/* WHO MAY BE A NEW SQUADRON'S FIRST ADMIN — the door's own checks, one body: addUnit asks it, and Admin → Squadrons'
+   first-admin list (ui/squadrons-model.ts) offers only the accounts it passes, so the list never offers a man the door
+   would refuse (§15 D14 — the agent's narrowing of D2308's words, told to him). An account that is gone passes here: the
+   gate judges it. */
+export function firstAdminProblem(account: string): string | null {
+  const fa = accountById(account)
+  if (!fa) return null
+  if (homeOn(String(fa.pid), moveFrom(todayIso())) !== homeOn(String(fa.pid), todayIso())) return 'He moves squadron tomorrow — give this after the move'
+  if (!adminNow(fa)) return 'This change could not be saved.'
+  /* never a master admin (§15 D14): he acts in every squadron already, so Plan gives him nothing and the last-admin rule
+     would not count him (state/lastadmin.ts) — the first-admin list leaves him out; no right is ever given his account */
+  if (fa.master) return 'This change could not be saved.'
+  return null
+}
+
+/* MAY THE SIGNED-IN ACCOUNT MOVE THIS SQUADRON — the move door's own check (moveUnit below), read by Admin → Squadrons to
+   open a squadron's row only for an admin of it (§6 item 2) */
+export const mayMoveUnit = (unit: string): boolean => signedInAdminOf(unit)
 
 /* unit.place — a unit moves: a new row from tomorrow (D2119), its past places kept; a second move typed for the same
    date replaces that date's row */

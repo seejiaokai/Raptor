@@ -33,7 +33,8 @@ import { kindLabel } from '../engine/wavetpl'
 import { secDefault, moveSecDefault, secDefaultSave, secDefaultReset, waveDefault, waveDefaultView, moveWaveDefault, waveDefaultSave, waveDefaultReset } from '../engine'
 import { clearHistoryData, clearEditHistory, type ClearMode } from './inputedit'
 import { useVersion } from './useStore'
-import { UsersIcon, SlidersIcon, DatabaseIcon } from './icons'
+import { UsersIcon, SlidersIcon, DatabaseIcon, MapPinIcon } from './icons'
+import { SquadronsPanel } from './SquadronsPanel'
 import { DateBox } from './DateBox'
 import { DateCal } from './DateCal'
 import { sayDateYY } from './daysfmt'
@@ -42,6 +43,10 @@ import { sayDateYY } from './daysfmt'
    panel below — nothing else in the layout moves. */
 const CATS = [
   { id: 'users', label: 'Users', sub: 'Sign-in and roster', icon: <UsersIcon /> },
+  /* the squadrons and their places, for every admin (batch 1's second half §6 — D2110, D2196; pictures b1-3, p7): its
+     tile wears the map pin, never Users' people (one thing, one icon — D1134); "Places" its grey line until batch 2's
+     detachments */
+  { id: 'squadrons', label: 'Squadrons', sub: 'Places', icon: <MapPinIcon /> },
   { id: 'config', label: 'Squadron config', sub: 'Duty, day & wave templates', icon: <SlidersIcon /> },
   { id: 'data', label: 'Data', sub: 'Storage & cleanup', icon: <DatabaseIcon /> },
 ]
@@ -282,6 +287,11 @@ export function AdminPage() {
               {/* `shown`: the waiting list is on his screen — Users chosen, and on a phone
                   drilled in (the category list alone does not count — D216, D227) */}
               <UsersPanel shown={cat === 'users' && (drilled || !HOOKS.isPhone())} openNew={openNew} ring={ring} />
+            </section>
+            {/* ---- Squadrons — each squadron and its place, the places and their time zones, "+ New squadron" for a
+                master admin (ui/SquadronsPanel.tsx) ---- */}
+            <section className={'adm-panel' + (cat === 'squadrons' ? ' on' : '')} id="admSquadrons">
+              <SquadronsPanel />
             </section>
             {/* ---- Squadron configuration — front doors to the two template
                 editors. The modals are App-level siblings (App.tsx), so they

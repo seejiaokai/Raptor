@@ -108,6 +108,13 @@
 #page-admin .acc-sq .abtn:disabled{opacity:.42}
 #page-admin .acc-sq-note{grid-column:2;margin:-2px 0 0}
 #page-admin .acc-edit :is(input,select,.abtn):disabled{opacity:.42}
+/* ADMIN → SQUADRONS (ui/SquadronsPanel.tsx; pictures b1-3, b1-4, b1-9, b1-10, p7 — drawn from Users' own parts): a form's
+   line in the row's grey-line look, a sentence that wraps (b1-4's "Saved at once…", b1-9's first admin line); a refusal
+   in the note's look under the boxes (p7); "+ New squadron" under the squadrons; the Places a little apart */
+#page-admin .acc-sub.sq-note{display:block;margin:2px 0 10px;white-space:normal}
+#page-admin .adm-note.sq-why{margin:6px 0 12px}
+#page-admin .sq-add{margin:10px 0 4px}
+#page-admin .sq-places{margin-top:14px}
 /* a man of another squadron on this list: his squadron's grey number by his name (the role chip's look, picture rB2) */
 #page-admin .acc-sqn{display:inline-block;margin-left:6px;vertical-align:1px;font-family:'Barlow Condensed','Inter Tight',sans-serif;
   font-size:8.5px;font-weight:800;letter-spacing:.08em;line-height:1.35;padding:0 5px;border-radius:3px;color:var(--ink-2);
