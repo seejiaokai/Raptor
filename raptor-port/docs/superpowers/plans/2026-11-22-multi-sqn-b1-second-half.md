@@ -554,4 +554,106 @@ the bell. Every reader of any of the three reachable from an own page is listed 
 | every other row | held by both readers |
 
 **Round 3** — the last under the cap: Astra, a fresh Opus reader and Fable, blind, on §15 alone (is each decision right,
-and what does it break), before the build.
+and what does it break), before the build. Done: §16.
+
+## 16. Round 3 — three readers, and what the plan did (the last round; the build follows)
+
+Round 3 on `310496564`, brief `…/2026-11-22-msq-b1-second-half-plan-read3-brief.md`, reports beside it
+(`…-read3-astra.md`, `…-read3-opus.md`, `…-read3-fable.md`), the three blind to each other. **Where §16 and an earlier
+section differ, §16 is the plan.** R3-A is Astra's numbering, R3-O the Opus reader's, R3-F Fable's. The host
+spot-checked the claims it acted on — each held: `setGrant` writes a grant's `from` as a day (`state/units.ts`
+l.286–291); `adminRecFor` writes `adminFrom` only for an admin made after a move (`state/accounts.ts` l.352–362); a
+role's Undo by anyone but a master admin leaves the Plan row out (`state/perms.ts restoreLeavesOut` l.2160–2178); the
+pick's question would reuse "Save them before logging out?" (`tracker/app/core.js` l.94); `voidedOil` and `repricedOil`
+read `inputOilAmt` (`engine/oil.ts` l.123–146); `endedLines` reads the loaded war (`leavewar/sync.ts` l.1685–1690); the
+place check sits at `state/perms.ts` l.2588–2589 in that copy; a bell line keeps its moment (`Notice.at`, a number);
+`adminThen` already reads a right's start for the filer's lines (`state/notices.ts` l.300).
+
+**All three found §15 D1 does not hold** (R3-A1–3, R3-O1–7, R3-F1–4, 6): removing lines in named commands misses every
+other path that ends a right (an Undo of a give, a Redo of a take-away, an archive, an Overseas posting, a non-master's
+Undo of "made a member" that puts the role back without the Plan), cannot stop the worked-out posting lines coming back
+on a re-grant, and its promotion write breaks D6. **The shape answer, adopted: the bell reads the right; no command
+deletes another person's lines for a lost right** — so no gate rule for such removals is needed (R3-O3 falls away), and
+no line of another person's step is written to (Fable's database-step note falls away).
+
+### The decisions (D1′ replaces §15 D1 and §7 item 4; the rest add to §15)
+
+- **D1′ — an admin-kind line is shown only while the right that brought it holds, without a break since the line was
+  written.** In `noticeLive` (`state/notices.ts` l.739 — the one body behind the list, the count, the lit bell and the
+  seen mark, §15 D6), beside the member-view test: a line of the admin kinds (`po`, `poback`, `oilhol`, the
+  posting-failed kind) stamped `u`, and a filer's line (`fu`) told through a Plan or the master mark (R3-O2), is live
+  only while (1) he is in `adminLineAudience(u, today)` by his account's own role — so it leaves at once on any path
+  that ends the right (a command, an Undo, a Redo, an archive, an Overseas posting) and comes back with the right
+  (D2310); and (2) the right he holds in `u` now began no later than the line's moment (`at`), so a right given back
+  later brings none of the old lines back (D2218 "for good"). **The start moment:** each road keeps one — a grant row's
+  new `fromAt` (written whenever its level becomes `admin`, by `setGrant`); the account row's new `adminAt` (whenever the
+  home role becomes admin) and `masterAt` (with the master mark, beside `masterFrom`). An Undo restores rows whole, so a
+  right put back brings its own start and its lines with it, and a role put back without its Plan (`restoreLeavesOut`,
+  D2250) brings back the home's lines only (R3-A3, R3-F3). A row stored before this build has no moment and counts from
+  the start (D56: demo data). The worked-out posting lines (`postedLinesOf`, `leavewar/sync.ts` l.1723–1744) take the
+  same test against the posting's own day: a posting dated before the day the present right began is not shown (R3-A1,
+  R3-O5, R3-F4). The agent's reading, told to him: a posting of the very day a right is given back shows again — a
+  posting keeps a day, not a moment. Tests: Plan → View, Plan → None, made a member, master admin off, archive, Overseas,
+  an Undo of a give with a line arrived since, a Redo of a take-away — each line gone at once with the bell open; taken
+  at 10:00 and given at 11:00 — none back, stored or worked out; an Undo of the take-away — all back; a non-master's Undo
+  of "made a member" — 142's back, 149's not, and not after a later Plan of 149 either.
+- **D1′a — made a master admin, he keeps his lines without his bell switch being touched** (R3-A2, R3-O4, R3-F1): the
+  command drops his Plan rows (R-O10) and writes on his account row `kept: {<unit>: <that Plan's start>}` for each one
+  dropped; for those squadrons his `masterAt` counts from that start, and his bell's default reads "on" (D2198's "off"
+  for the rest). His own `bellsqn` choices still win, and no one else's command writes them (§15 D6 and §7 item 3
+  stand). Cleared when the mark comes off; an Undo restores the row whole. Tests: promoted with 149 unset, on and off —
+  each saves and the bell reads on, on, off; Saber's Undo goes through after Hunter switched 149 off.
+- **D1′b — a master admin's move keeps the squadrons he is still admin of** (R3-F6): `noticeLeftBell`'s last branch
+  (`state/notices.ts` l.729–731) leaves an admin-kind line stamped `u` only where, from the move day, he is not admin of
+  `u` by any road (`adminThen`). A Plan holder's move ends his Plan (D2203), so his lines still leave. Tests: Saber's move
+  keeps 149's; Hunter's move with Plan of 149 loses them.
+- **D1′c — the posting take-back works over the stored lines** (R3-O7): `retractPostingLines` deletes the take-back's
+  lines from the stored rows whether shown or hidden, so a later Undo that gives a right back never shows a line for a
+  posting taken back since. Test that sequence.
+- **D2′ — the Tracker after a pick** (R3-A4, R3-O8–9, R3-F10): (a)'s condition is his account being an admin of the bound
+  squadron today by any road (home role, Plan or the master mark — `levelOfAccount(levelAcct(acct), bound, iso) ===
+  'admin'`, or master — read from the account, not the role in force); (a)'s words gain the road back: "This is 149's
+  Tracker. Pick 149 to change it. To open 142's, sign out and in."; (b) only where that fails; in the member view its own
+  line, "This is 149's Tracker. Leave the member view to open it." A pick with unsaved chart edits asks its own question
+  — "Save them before switching to 142?", Save / Discard / Stay — Save saving to the bound Tracker before the pick goes
+  on, never jumping to the Tracker page first. All drawn (§9 F2, now four pictures).
+- **D3′** — the toast "1 waiting for access to 149" is new words: drawn (§9 F9) (R3-A4, R3-O15, R3-F10).
+- **D4′ — the inventory gains two readers** (R3-O12, R3-F8): `voidedOil` and `repricedOil` (`engine/oil.ts` l.123–146) —
+  `inputOilAmt` takes the input's squadron, as `cutBackFor` does, at the door and at the gate (test red first: a remark
+  edit with 149 picked keeps a Yes worked under 142's threshold); and `endedLines` (`leavewar/sync.ts` l.1685), which
+  reads the wars of the reader's home squadron, not the loaded one when it is another (test red first: 149 picked, the
+  "bidding closed" line and the unread count unchanged). Both marked "own squadron".
+- **D5′ / D6′ — the switch spares lines about him; the own-account door's place** (R3-F5, R3-O13): in `noticeLive` the
+  bell switch is asked only where `!noticeAboutHim(n)` and the line carries a squadron (tests: his own leave decision
+  stamped 142 after his move to 150 stays; a filer-only line follows the switch). The gate checks an `acct` line before
+  `ownsLine` and "a bell line about nothing the command changed" (`state/perms.ts` l.3108, l.3150–3154); the app's own
+  writer (D11) has a section of its own, as `postingPassViolation` has; its line carries `at` = now and the day = the
+  change's day.
+- **D7′ — an Undo of an access change follows the war's shape** (R3-O10, R3-F9): the Undo always takes the step's
+  own-account line; where he had read it, the restore writes the opposite line ("Plan of 149 ended · Saber") inside its
+  own envelope, proved by §7's own-account rule over the replayed rows (not the follow-up probe); the Redo puts the first
+  line back by verified replay, and where he had read the opposite line writes a fresh unread one, as the war's "again"
+  line does. No separate follow-up command, so nothing new enters the Undo list. The own-account part stores the
+  squadron's number as written (`num`) beside its id, so a line about "+ New squadron" still prints 150 once the squadron
+  is undone. The Undo label is new words: drawn (§9 F10). Tests: give → read → Undo → Redo; the Undo of "+ New squadron".
+- **D10′ — the proof of a refused posting is the runner's own record** (R3-O11, R3-F7): the runner hands its refused keys
+  (`PO_REFUSED`, set by the retry, and `FX_REFUSED`) to the gate through a probe, as `setLwPostingProbe` does; the
+  posting-failed line passes where `poHeldReason` gives a reason other than the last-admin lock, or the probe holds that
+  posting's key. A group failure sets no key before the single retries ("rings for none"). Test a gate-refused posting.
+- **D11′ — the writer runs at midnight too** (R3-F11): wherever the posting pass runs on a new day (the midnight wake,
+  `leavewar/sync.ts` l.3044–3046), as well as at sign-in.
+- **D13′ — an empty set is a master admin's** (R3-O14, R3-F12): where no place row names the place today or later, only a
+  master admin may change it; and a new place row passes only where the same command writes a squadron's place row
+  naming it, or the actor is a master admin (`setPlace`, `state/units.ts` l.250–259, can make one alone today). Tests
+  for both. §15's line numbers corrected from the readers' copy (the check at l.2588–2589; `stashPreflight` /
+  `masterDeleteProblem` inside `poHeldReason` l.2812–2824).
+- **Held by all three:** D8, D9, D12, D14.
+
+### §9 gains (drawn first, on the same page)
+- **F2** four pictures: (a) with its road back, (b), the member view, the pick's own question; **F9** the toast; **F10**
+  the Undo label for an access change.
+- **Told, not asked:** a posting of the very day a right is given back shows again (D1′); a master admin keeps his Plan
+  squadrons' lines, their bell default "on", when made one (D1′a).
+
+The cap is reached (three rounds): what is left is folded into the build and checked by its code reads and the walk
+(the bug-check order's FULL tier, §12).
