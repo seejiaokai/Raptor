@@ -29,8 +29,12 @@ reached (below; two of them, f7a-p and f7b-p, have a file that does not show the
    the day/wave/duty template buttons among them). Built the page is Hunter's 142 set-up, fully editable. Picture:
    `2026-11-23-msq-b1-drawing-check/f1a-d.png`, `…/f1a-p.png`. Not named in any of the four builders' reports (plan §
    F1, D2317, was not built by jobs 1–4).
+   **Fixed in 6fcb8ea99** (the night fix job): re-measured with `measure-job5.mjs` / `compare-job5.mjs` at 1536 and 402 —
+   f1a-d 650×805 as drawn, 0% differing; f1a-p 402×874, 0.073% (one sub-pixel region); the heading "Squadron config · 149"
+   196.6×17 (desktop), the line 584×16.5 at the panel's top, 32 controls greyed (every one).
 2. **f1b — the same page with 142 picked: the heading lacks "· 142"** (drawn "Squadron config · 142"; a 35×9px
    region). Everything else equals the drawing to the pixel (0.02% differing). Picture `…/f1b-d.png`. Same cause as 1.
+   **Fixed in 6fcb8ea99:** f1b-d 0% differing, f1b-p 0.001%; the heading "Squadron config · 142", no line, his to change.
 3. **b1-8 (desktop and phone) — the holiday window lacks the quiet line "Off days stay each squadron's own"** at the
    right of the KIND label (drawn ~183×12px, 11px grey), and the amber warning before Save ("142's published Fri 7 Aug
    and 149's published Fri 7 Aug become holidays after publishing…", drawn 354×72px) does not show: window 702px tall
@@ -38,12 +42,21 @@ reached (below; two of them, f7a-p and f7b-p, have a file that does not show the
    + Add, Fri 7 Aug picked; the bar reads 149. The warning needs both squadrons to have published that day — the demo
    has no published Fri 7 Aug, so its absence here is not shown to be a fault; the quiet line has no condition and is
    not in the code (searched). Pictures `…/b1-8-d.png`, `…/b1-8-p.png`. No builder's report names b1-8.
+   **The quiet line fixed in 6fcb8ea99:** re-measured at the b1 drawings' sizes (1440, 390) — the line sits where drawn,
+   in the drawn look, no differing region round it at either size; the window is still 702 / 714px against 775 / 767 for
+   the amber warning alone (354×72, data: no published Fri 7 Aug in the demo), and the phone window's frame 22px lower as
+   before. The warning was not in scope.
 
 ## Differences for the owner
 4. **The roles fold sits 6px lower than drawn** (k1, k3, k4, k5, rB1–rB4, f4, f8 — both sizes; k1-d 421px against 415
    drawn, k5-p 353 against 347, k3-d 771 against 765): between the squadron lines' note and "What each role allows" the
    build leaves ~6px more than the drawing (k3-d: 65 against 54 half-pixels). Picture `…/k3-d.png`. Also in k2-d/p
    (fold open): built 748/813 against 801/882 drawn — that is data (the drawing held a 150 line the run had not made).
+   **Fixed in 6fcb8ea99** (the lines' foot 4px and the grey line's 2px, as `draw-roles.mjs` drew them): k1-d 415 as
+   drawn (0.075%), k3-d 765 (0.3%), k3-p 829 (0.07%), k4-d 367 (0.08%), k5-d 379 and k5-p 347 (0%), f4-d 379 and f4-p 313
+   as drawn (only the drawing's own marks differ); k1-p 416 and k4-p 347 against 400 and 331 only for "· also plans 150"
+   under Hunter's name (data: the run gives him Plan of 150); rB1–rB4 desktop now +34px (was +40) for the fold the k
+   pictures drew (a departure already explained).
 5. **mA1/mA2 phone rows are 38px, drawn 44** (`draw-menu.mjs` 44 on a phone). The build equals f5d's 38 (page question B,
    recommended). The sheet is 56px / 12px shorter in mA1-p / mA2-p for that and for no detachment line. Picture
    `…/mA1-p.png` (desktop `…/mA1-d.png`: panel 268 wide against 276 drawn — the drawing's "249 · Exercise North" line
@@ -68,7 +81,10 @@ reached (below; two of them, f7a-p and f7b-p, have a file that does not show the
 - **Role box words** "Admin" / "Member" for the drawn "Admin — schedules and manages" / "Member — own inputs, quals and
   bids": D2305 (rB1–rB4, f4, f8, k*, b1-6). **Fold "What each role allows"** is in the build of rB1–rB4/f4 (+40px in
   the row) because the k pictures drew it (job 1).
-- **b1-2** badge 31×14 beside the title (job 2, within the drawn figures); **b1-3, b1-4, b1-9, b1-10, p7** are 41–69px
+- **b1-2** badge 31×14 beside the title (job 2, within the drawn figures) — since 6fcb8ea99 the desktop title slot is
+  344px (was 312), so the day chips start 32px further right than drawn (484 against 452 at 1536, every day; the bar's
+  height unchanged at 1024–1920 wide; the phone unchanged): with the number, Wednesday's title was 331px in the Linux
+  font GitHub's run uses, 19px into the chips — a departure for his look; **b1-3, b1-4, b1-9, b1-10, p7** are 41–69px
   lower under the Admin panel's own "SQUADRONS" heading and back arrow, hidden in the drawing scripts (job 3); p7's Name
   and Save greyed too, the list above Places; b1-9's first-admin list is the real list (job 3). **b1-5** matches: 0% on
   the phone, 1.4% desktop (sub-pixel text); **b1-7** equals within 1px (job 1; the phone 360 wide against 348 only for
