@@ -7063,6 +7063,40 @@ it) wears his squadron's grey number by his name, and the rest of his row — si
 is greyed unless the admin is an admin of his own squadron (D2191). A Plan holder's grey line ends "· also plans 149",
 the same on both lists. **Save sends the role, the mark and every line at once** (`state/accounts.ts saveAccess` — one
 command, one Undo step), a rename of his sign-in after it. Pinned by `ui/msq-users-row.test.tsx`.
+
+**"▸ What each role allows" (since 23 Nov 26 — §4 item 6; his D2302, D2305, picture k2; the night of 22–23 Nov, job 1):**
+under the squadron lines of every opened row, closed, in the Logic page's "How it works" fold look. Inside: "View and Plan
+give access to another squadron."; the grid — Edit Schedule, View-only Sched, Logic, Inputs, Quals, Leave War, Tracker,
+Admin down the side; Member, Admin, View, Plan, Master admin across; ✓, "read" or —, notes 1–4 on Member's Inputs, Quals,
+Leave War and Tracker ticks and 5 on Admin's and Plan's Admin ticks; "✓ can change · read: can see, not change · —
+cannot open"; the five notes, as drawn. The cells and words are ONE table, `ui/rolestable.ts`; `ui/rolestable.test.tsx`
+signs in a person of each role (View, Plan and Master admin with 149 picked) and asks the app's own readers whether each
+page opens on that squadron and offers its controls — a drawn cell the app answers otherwise is listed there (KNOWN) and
+put to him, never changed to pass. On his iPhone the grid fits the row (`e2e/users-fit.spec.ts`).
+
+**The filter (since 23 Nov 26 — §4 item 2; his D2335, D2307, D2306; pictures nfa–nfd, f5c-p):** one "Filter" button
+beside the search (a line funnel, the app's .abtn), the two one row after "People · 61" — on a phone the row's full width.
+A tap opens a panel under it, over the list (380px on a desktop, its right edge on the button's; the row's width on a
+phone): tick chips in Edit Schedule's chip look (`.fchip`, "✓ " on a ticked one) — Seat (Pilots, WSOs, Personnel), CAT
+(the CATs held on the list), Role (Member — a sign-in that is not an admin's; Admin — an admin not a master admin;
+"Plans 149" — the page's squadron's number: a man of another squadron holding Plan of it; Master admin) and, for a master
+admin alone, Squadron (a chip per squadron, D2321) — and "Clear all". Several ticks in a group mean any of them; the
+groups combine; a man with no sign-in holds no role. The button lit (the app's primary button, dark on blue) with its
+count, "Filter · 2" — every squadron ticked counts one; the line over the list "Showing 1 of 61 · Clear" (the rows shown
+of those the list shows with no Seat, CAT or Role tick), Clear taking every tick off. Rows are only hidden, A to Z kept
+(D322); the Archived fold's rows and count follow the ticks too. The panel closes on a press outside it and on Escape,
+the keys back on the button; a tick keeps it open. What each tick keeps: `ui/usersfilter-model.ts`. **A master admin's
+Squadron ticks** (D2270): the ticked squadrons' people, each squadron under its heading ("142 · 61", "149 · 10" — its
+own people), each group A to Z, a man of a squadron other than the page's wearing its grey number; the heading "People ·
+71" counts the squadrons in view; every squadron of two ticked and nothing else, "Showing both squadrons, grouped ·
+Clear" (picture nfc). A search still finds a man of a squadron not in view, under his own squadron's heading. Pinned by
+`ui/msq-users-filter.test.tsx`.
+
+**Add a person's "Home squadron" (since 23 Nov 26 — §4 item 7; picture b1-7):** first in the form, the squadrons the
+signed-in admin is an admin of (`perms.ts adminOfUnit` — his own, one he holds Plan of, every one for a master admin),
+the page's own first and picked; with one to offer there is nothing to choose, so no box. The squadron picked carries
+through the whole add — his home row and his first stint that squadron's (`state/accounts.ts addPersonAndAccount` →
+`roster-add.ts newHomeProblem`), the post-in in that squadron's war only. Pinned by `ui/msq-users-filter.test.tsx`.
 ## The loading claw (`[TALON-LOADING-CLAW]`, D1591, D1605, 3 Nov 26)
 
 While the app loads, the talon claws scratch in over a plain dark screen: the left claw from its tip to its end, the

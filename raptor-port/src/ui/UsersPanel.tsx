@@ -34,7 +34,7 @@ import {
   requestSummary, accessAlert, markRequestsSeen, MAX_SIGNIN, isAdminAccount, type Account, type AccountRole, type AccessRequest,
   type AccessSave, type AccessLine,
 } from '../state/accounts'
-import { RoleBox, SquadronLines } from './UserAccess'
+import { RoleBox, SquadronLines, RolesFold } from './UserAccess'
 import { accessLinesOf, alsoPlansOf, rolePickOf, actorIsMaster, type RolePick } from './useraccess-model'
 import {
   SEATS, catsFor, MAX_CS, MAX_INITIALS, CALLSIGN_LABEL, CS_TOO_LONG, callsignProblem, nextFreeCallsign, type NewPerson,
@@ -42,7 +42,8 @@ import {
 import { SESSION } from '../state/auth'
 import { me, pageUnit, adminOfUnit } from '../state/perms'
 import { todayIso, homeOn, unitById } from '../state/units'
-import { usersListOf } from './userslist-model'
+import { usersView, addHomeChoices, NO_FILTER, type UsersFilter } from './usersfilter-model'
+import { UsersFilterBox, ShowingLine } from './UsersFilter'
 import { notify } from '../state/store'
 import { deletePerson, effectiveToday } from '../state/person-delete'
 import { updatePersonField } from '../state/quals-write'
@@ -390,6 +391,8 @@ function PersonEditor(p: { pid: string; a: Account | undefined; callsign: string
       </div>
       <SquadronLines pid={p.pid} hasSignIn={!!a} rolePick={role} now={linesNow} pick={lines}
         onPick={(u, v) => setLines({ ...lines, [u]: v })} />
+      {/* what each role may see and do, under the lines where roles and access are given (D2302, D2305) */}
+      <RolesFold />
       <div className="acc-acts">
         {a
           ? <>
@@ -495,7 +498,6 @@ function ArchivedEditor(p: { pid: string; a: Account | undefined; onClose: () =>
 }
 
 const BLANK: NewPerson = { cs: '', ini: '', seat: '', cat: '' }
-const byCs = (x: string, y: string) => cs(x).localeCompare(cs(y))
 /* the column heads over the two dots, drawn once over each list */
 const Cols = () => (
   <div className="od-cols" aria-hidden="true"><span className="od-grow" /><span className="od-c">Sign-in</span><span className="od-c">Roster</span><span className="od-rc" /></div>
@@ -539,6 +541,10 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   const [np, setNp] = useState<NewPerson>(BLANK)
   const [role, setRole] = useState<AccountRole>('main')
   const [postIn, setPostIn] = useState(effectiveToday)
+  /* Add a person's Home squadron (§4 item 7 — picture b1-7): null is the page's own, whichever squadron that is now */
+  const [home, setHome] = useState<string | null>(null)
+  /* the filter's ticks (D2335 — ui/usersfilter-model.ts); kept while the page is open, as the search is */
+  const [filt, setFilt] = useState<UsersFilter>(NO_FILTER)
   const addRef = useRef<HTMLDivElement>(null)
   const csRef = useRef<HTMLInputElement>(null)
 
@@ -565,12 +571,16 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   const ringPid = useRingLanding(p.ring, setFind, setArchOpen)
 
   const hasName = !!name.trim()
-  const resetAddForm = () => { setName(''); setNp(BLANK); setRole('main'); setPostIn(effectiveToday()) }
+  const resetAddForm = () => { setName(''); setNp(BLANK); setRole('main'); setPostIn(effectiveToday()); setHome(null) }
   const add = () => {
     const nm = name.trim().toLowerCase()
     const who = np.cs.trim()
     const ok = hasName ? `${who} added — ${nm} can sign in now` : `${who} added to the roster — set flight and quals on the Quals page`
-    if (done(addPersonAndAccount(name, np, role, postIn), ok)) resetAddForm()
+    /* the Home squadron picked carries through the whole add — his home row and his first stint, that squadron's
+       (accounts.ts addPersonAndAccount → roster-add.ts newHomeProblem, leavewar/sync.ts postInNewPerson); none picked,
+       the page's own (PD1) */
+    const picked = home && addHomeChoices(pageUnit('own')).includes(home) ? home : undefined
+    if (done(addPersonAndAccount(name, np, role, postIn, picked), ok)) resetAddForm()
   }
   /* the search (the agent's call on the approved page): a callsign or a sign-in name, anywhere in it; the Archived
      group opens while it holds a match */
@@ -579,34 +589,51 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
      its archived men; a search also finds a man of another squadron (ui/userslist-model.ts). The heading counts the
      squadron's own people only. (How a Plan holder's or another squadron's row reads — "· also plans 149", his
      squadron, read only — is the screens' step, phase 3, drawn first.) */
+  /* THE FILTER (D2335, D2307) AND A MASTER ADMIN'S SQUADRONS (D2270): the rows a tick keeps, A to Z, never reordered
+     (D322); a master admin's Squadron ticks group the list under each squadron's heading (ui/usersfilter-model.ts) */
   const unit = pageUnit('own'), today = todayIso()
-  const list = usersListOf(unit, today, q)
-  const archived = q ? usersListOf(unit, today, '').archived : list.archived
-  const rosterShown = [...list.own, ...list.planners, ...list.found].sort(byCs)
-  const archShown = list.archived
+  const master = actorIsMaster()
+  const view = usersView(unit, today, q, filt, master)
+  const archShown = view.archived
   const archOpenNow = archOpen ?? (!!q && archShown.length > 0)
   const toggle = (pid: string) => setEditing(editing === pid ? null : pid)
+  const homes = addHomeChoices(unit)
+  const row = (pid: string) => <PersonRow key={pid + (editing === pid ? ':e' : '')} pid={pid} open={editing === pid} ringed={ringPid === pid}
+    onToggle={() => toggle(pid)} onClose={() => setEditing(null)} />
+  const nobody = !view.groups.some(g => g.rows.length)
   return (
     <>
       <h4 className="adm-sub">Waiting for access</h4>
       <Waiting />
       <hr className="adm-sep" />
       <div className="od-head">
-        <h4 className="adm-sub">People · {list.count}</h4>
-        {/* the app's line magnifier, as in every search box (owner D1127, 21 Oct 26 — never the coloured emoji) */}
-        <div className="searchbox od-find"><SrchIcon /><input id="accFind" type="search" value={find} placeholder="Find a callsign or sign-in"
-          aria-label="Find a callsign or sign-in" onChange={e => { setFind(e.target.value); setArchOpen(null) }} /></div>
+        <h4 className="adm-sub">People · {view.people}</h4>
+        {/* the search and, beside it, the Filter button and its panel (D2335 — picture nfa) */}
+        <div className="od-findrow">
+          {/* the app's line magnifier, as in every search box (owner D1127, 21 Oct 26 — never the coloured emoji) */}
+          <div className="searchbox od-find"><SrchIcon /><input id="accFind" type="search" value={find} placeholder="Find a callsign or sign-in"
+            aria-label="Find a callsign or sign-in" onChange={e => { setFind(e.target.value); setArchOpen(null) }} /></div>
+          <UsersFilterBox f={filt} onChange={setFilt} unit={unit} master={master} cats={view.cats} />
+        </div>
       </div>
-      <div className="acc-list od-list" id="accList">
-        <Cols />
-        {rosterShown.map(pid => <PersonRow key={pid + (editing === pid ? ':e' : '')} pid={pid} open={editing === pid} ringed={ringPid === pid}
-          onToggle={() => toggle(pid)} onClose={() => setEditing(null)} />)}
-        {!rosterShown.length && <p className="adm-note" id="accNoMatch">Nobody matches.</p>}
+      {view.line && <ShowingLine words={view.line} onClear={() => setFilt(NO_FILTER)} />}
+      <div data-testid="acc-groups">
+        {nobody
+          ? <div className="acc-list od-list" id="accList"><Cols /><p className="adm-note" id="accNoMatch">Nobody matches.</p></div>
+          : view.groups.map((g, i) => (
+            <div key={g.unit}>
+              {g.head && <h4 className={'adm-sub od-grphead' + (i ? ' next' : '')} data-unit-head={g.unit}>{g.head}</h4>}
+              <div className="acc-list od-list" id={i === 0 ? 'accList' : undefined} data-unit={g.unit}>
+                {i === 0 && <Cols />}
+                {g.rows.map(row)}
+              </div>
+            </div>
+          ))}
       </div>
-      {archived.length > 0 && (
+      {view.archivedAll > 0 && (
         <div className="od-arch" id="accArchived">
           <button className="abtn" id="accArchToggle" aria-expanded={archOpenNow} onClick={() => setArchOpen(!archOpenNow)}>
-            {archOpenNow ? '▾' : '▸'} Archived · {archived.length}
+            {archOpenNow ? '▾' : '▸'} Archived · {view.archivedAll}
           </button>
           {archOpenNow && (
             <div className="acc-list od-list" id="accArchList">
@@ -620,6 +647,16 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
       <hr className="adm-sep" />
       <div id="accAddBlock" ref={addRef}>
         <h4 className="adm-sub">Add a person</h4>
+        {/* "Home squadron" first (§4 item 7 — picture b1-7): the squadrons he is an admin of, the page's own picked to
+            start; with one squadron to offer there is nothing to choose, so no box (as the Schedules menu, D2132) */}
+        {homes.length > 1 && (
+          <div className="adm-2col">
+            <div className="mfield"><label htmlFor="accAddHome">Home squadron</label>
+              <select id="accAddHome" value={home && homes.includes(home) ? home : unit} onChange={e => setHome(e.target.value)}>
+                {homes.map(u => <option key={u} value={u}>{unitById(u)?.num ?? u}</option>)}
+              </select></div>
+          </div>
+        )}
         <PersonFields idp="accAdd" np={np} onChange={setNp} csRef={csRef} />
         <div className="adm-2col">
           <div className="mfield"><label htmlFor="accAddName">Sign-in (defence mail)</label>

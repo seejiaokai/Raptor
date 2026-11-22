@@ -11,6 +11,7 @@ paths:
   # the browser tests, one by one (D1973): the Leave War's own (*leavewar*) no longer load this page; the document
   # check fails a test that loads neither this page nor the Leave War's — add a new test here or name it *leavewar*
   - raptor-port/e2e/amendbatch.spec.ts
+  - raptor-port/e2e/users-fit.spec.ts
   - raptor-port/e2e/sched-right-edge.spec.ts
   - raptor-port/e2e/app.ts
   - raptor-port/e2e/availwin.spec.ts

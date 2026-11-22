@@ -8,12 +8,14 @@
      under them, where it is not his to change: no sign-in (D2320); not an admin of that squadron (D2336); Plan only a
      master admin's to give (picture rB2), and only on an admin (D2306). Plan picked: what it gives (D2211).
    - "· also plans 149" at the end of a Plan holder's grey line (pictures p2a, p2b).
+   - Under the lines, "▸ What each role allows" — the roles table (D2302, D2305; `RolesFold`, its cells ui/rolestable.ts).
    The reads behind it — each line's state and words, his lines today, "also plans" — are ui/useraccess-model.ts.
    The row's Save sends every change of these at once through the one door, state/accounts.ts saveAccess — one command,
    one Undo step; the door and the commit gate judge each part again. */
 import type { AccessLine } from '../state/accounts'
 import { units, homeOn, todayIso } from '../state/units'
 import { numOf, byNum, lineState, type RolePick } from './useraccess-model'
+import { ROLES_TABLE, ROLES_LABEL, ROLES_KEY, ROLES_NOTES, TABLE_ROLES, ROLE_HEADS, MARK_WORD } from './rolestable'
 
 export function RoleBox(p: { id: string; value: RolePick; disabled?: boolean; masterOff?: boolean; onChange: (v: RolePick) => void }) {
   return (
@@ -53,6 +55,37 @@ export function SquadronLines(p: {
         )
       })}
     </div>
+  )
+}
+/* "▸ What each role allows" (D2302, D2305 — picture k2; the drawing draw-roles.mjs): under the squadron lines, closed, in
+   the Logic page's "How it works" fold look (an accent ▸ summary, 12px lines); inside, the label, the grid of eight
+   pages × five roles, the key and the five notes. Its cells and words are ui/rolestable.ts — one table, held to the app
+   by ui/rolestable.test.tsx. A native <details>: it opens and closes from the keys (Enter, Space) by itself. */
+export function RolesFold() {
+  return (
+    <details className="acc-roles" data-testid="acc-roles">
+      <summary>What each role allows</summary>
+      <p className="acc-rt-lab">{ROLES_LABEL}</p>
+      <table className="acc-rt">
+        <thead>
+          <tr><td />{TABLE_ROLES.map(r => <th key={r} scope="col">{ROLE_HEADS[r]}</th>)}</tr>
+        </thead>
+        <tbody>
+          {ROLES_TABLE.map(r => (
+            <tr key={r.page} data-page={r.page}>
+              <th scope="row">{r.name}</th>
+              {TABLE_ROLES.map(k => {
+                const cell = r.cells[k]
+                return <td key={k} className={cell.mark === 'yes' ? 'y' : cell.mark === 'read' ? 'r' : 'n'} data-role={k}>
+                  {MARK_WORD[cell.mark]}{cell.note && <sup>{cell.note}</sup>}</td>
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="acc-rt-key">{ROLES_KEY}</p>
+      <ol className="acc-rt-notes">{ROLES_NOTES.map(t => <li key={t}>{t}</li>)}</ol>
+    </details>
   )
 }
 function SqLine(p: { n: string; unit: string; note?: string | null; children: React.ReactNode }) {

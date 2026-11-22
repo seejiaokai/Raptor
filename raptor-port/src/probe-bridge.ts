@@ -49,6 +49,8 @@ import { setMemberTodayForTests as lwSetMemberToday, landingOf as lwLandingOf, m
 import { setRole as lwSetRole, selectWar as lwSelectWar, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut, saveManningRule as lwSaveManningRule, getState as lwGetState, setDayEvent as lwSetDayEvent, createWar as lwCreateWar } from './leavewar/state/store'
 import { pinViewer, carryViewerPin, dayFacts as lwDayFacts, flyAnswer } from './leavewar/sync'
 import { setFlyDays, setFlyRun, setFlyRule } from './state/flyplan'
+import { addUnit, placeOfOn, todayIso } from './state/units'
+import { UNIT } from './engine/unitview'
 
 /* the hosts the bridge is installed on ([ACCOUNTS], 26 Sep 26): this PC only — the
    e2e suite, the probes, the Tracker smoke and the hand-pass drivers all serve the
@@ -192,6 +194,15 @@ export function installProbeBridge() {
        fresh demo world — bug-check order §7.7). It replaces the one e2e step that
        drove the retired "View as" picker. */
     w.raptorMe = (pid: string | null) => { setMe(pid); notify() }
+    /* batch 1's second half (§11 — eight squadrons): a squadron made through the REAL door "+ New squadron" will use
+       (state/units.ts addUnit, held by its own checks and the commit gate — a master admin's alone), at the place of the
+       squadron in view, its first admin the account named. The browser tests and the drawing's measurements make 150 to
+       155 with it while Admin → Squadrons is not yet on screen. */
+    w.raptorAddUnit = (num: string, firstAdmin?: string) => {
+      const r = addUnit(num, placeOfOn(UNIT, todayIso())?.id ?? '', firstAdmin)
+      notify()
+      return r
+    }
   }
   /* the Leave War VIEWER — the person the war scopes a member to (canEditRow).
      Production mirrors the SIGNED-IN person onto it through the sync (D166 (4)); the
