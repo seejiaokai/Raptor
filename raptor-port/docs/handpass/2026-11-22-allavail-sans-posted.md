@@ -325,11 +325,22 @@ and desktop 1536): fit-02 and fit-03 PASS at both sizes, no errors; the host ope
   him SANS (D2327) — as ruled; R4 (archived Mon 13): the published Tue keeps 35 with Vandal in and reads pending "SQN EVENT
   · who it stands for · Vandal → no longer free" — D327, D44.
 
-**Reads (blind, on `9ff8a917c`, the code of `a203fc98c`; the CSS fix after):** Astra, a fresh Opus reader, and a security
-reader (D1411 — the new saved line kind the permissions check lets through) — started after this section was written;
-their results below when they return.
+**Reads (blind, three readers on `9ff8a917c`, then narrow re-reads of each fix round; every report saved under
+`docs/superpowers/briefs/2026-11-23-d2338-read*`):** Astra, a fresh Opus reader and a security reader (D1411) each found
+the same two holes — a forged "taken back" line (any days, any number, could break his bell) and a stored worked-out line
+reading as the app's own — FIXED red-first (`53ffa626e`, the readers' own tests); his D2218 (the struck line follows him on a
+move) FIXED there too; Astra #3 — a no-row man archived then RESTORED lost his earlier days in the crowd (D327) — FIXED
+(`7611d8647`). The re-reads (Astra, security): made-up struck days on a real take-back, the read check trusting the
+in-memory record, and a no-row man archived then DELETED taking back the gap — FIXED red-first (`f292ab846`; then the whole
+unit suite PASS under the lock, 16,053). The last security read: all shut but one low opening across two commands that
+rests on the older door filed as (u)(3). FILED: Astra #2 and the read-record doors (u)(1), (3), (4); Astra #5 (u)(2). FOR HIM:
+(v) — a newly planned day after he read the line; a hand-ticked SANS man; the crew list's note with no seat armed (Astra #6).
+Not walked again: the bell line's take-back gate and the crowd fixes after the walk — no screen changed (the struck line's
+words are as walked); held by their tests.
 
 ## 14. The Walk line
+
+**Round 5 (chat 147):** `Walk: docs/handpass/2026-11-22-allavail-sans-posted.md §16 · 3,934 pictures (46 kept here, all on his PC's D: drive) · 6 surfaces (Edit Schedule's crew list, the Scheduler Board's crew list, an armed seat, the bell, the Inputs page's SANS tab, ALL AVAIL's window) · 37 orders (Astra's 24 and R1–R4) and the plain-user round, each at a desktop's and his iPhone's size · MISSING: 0 (1 found, fixed red-first and re-walked); NOT WALKED: the page hidden across midnight (his iPhone)`
 
 `Walk: docs/handpass/2026-11-22-allavail-sans-posted.md · 462 pictures (and 684 phone tap pictures) · 9 surfaces · 15 orders and the plain-user round, each at a desktop's and his iPhone's size · MISSING: 1 filed (q), older`
 
