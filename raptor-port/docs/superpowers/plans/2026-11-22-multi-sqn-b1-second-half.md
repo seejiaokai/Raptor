@@ -108,7 +108,7 @@ The menu makes another squadron reachable, so the protection lands before it (Fa
 2. **The look (M1, M2; D2301, D2304, O5):** `SqnMark` becomes a button ("142 ▾"); the menu a list, a tick on the
    squadron in view, a grey label — "Your squadron", "View only", "Full access" — rows 38 high on both, the panel in the
    look of the Schedule Insights menu (`ui/ScheduleInsightsMenu.tsx`, `.schedule-moremenu`: outside press, Escape, arrow
-   keys, focus back to the button); on a phone a sheet from the top. Layout by Fable (D2269), drawn beside M1/M2.
+   keys, focus back to the button); on a phone a sheet from the top. Layout by Opus since his D2334 (was Fable, D2269), built beside M1/M2.
 3. **A pick** calls `enterSquadron(unit, holdNow() === 'war')` — the path sign-in and midnight already take; open windows
    keep today's hold (`state/typing-hold.ts`). It is navigation, not a command: nothing saved, Undo untouched (D148).
 4. **Pages that follow it:** the schedule pages and Logic for everyone with a right; every page for a master admin or a
@@ -354,7 +354,7 @@ name, the page reloads, the name is kept, and after he signs in his Tracker is h
 |---|---|---|---|
 | 1 | A (edit rights) | Opus | `state/auth.ts`, `state/perms.ts`, `state/store.ts`, the 37 caller files, `docs/data-schema.md` |
 | 2 — doors | C's doors (`saveAccess`, the list, D2311), D, E's doors (`addUnit` with a place, PG1), F's lines, audiences, gate kinds and setting, G | Opus | `state/accounts.ts`, `state/units.ts`, `state/perms.ts`, `state/notices.ts`, `state/noticeseen.ts`, `leavewar/sync.ts`, `ui/Login.tsx` |
-| 3 — screens | B's menu and C's Admin → Users layouts | Fable (D2269), each beside its drawing | `ui/topbits.tsx`, a new `ui/SquadronMenu.tsx`, `ui/UsersPanel.tsx`, `ui/rolestable.ts`, the CSS |
+| 3 — screens | B's menu and C's Admin → Users layouts | Opus since his D2334 (22 Nov 26 — Fable's week nearly spent; was Fable, D2269), each beside its drawing and the drawing check; Fable reads them after its weekly reset | `ui/topbits.tsx`, a new `ui/SquadronMenu.tsx`, `ui/UsersPanel.tsx`, `ui/rolestable.ts`, the CSS |
 | 3 — screens | B's board number and Tracker, D's screen, E's panel, F's bell buttons and mark | Opus | `ui/SchedBoard.tsx`, `tracker/`, `ui/AccessScreen.tsx`, a new `ui/SquadronsPanel.tsx`, `ui/AdminPage.tsx`, `ui/topbits.tsx` (after Fable's menu) |
 | 4 | documents (below), the drawing check, the walk, the reads | host | — |
 
