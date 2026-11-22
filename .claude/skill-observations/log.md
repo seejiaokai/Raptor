@@ -1115,3 +1115,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The handoff said "the next batch per the batch plan". The next chat read it as the plan's batch 2 and put that to the owner, who said go; only on reading the plan did it find batch 1's last two steps (every screen of it) unbuilt and a prerequisite of batch 2. The owner had to answer twice.
 **Suggested improvement:** In the handoff step that writes "Pick up here", name the exact next step by the plan's own numbering and say what of the previous phase is still unbuilt ("batch 1 steps 5–6, then batch 2"); in the opening read, check a named phase's prerequisites are built (one search of the code for its screens) before proposing it to the owner.
 **Principle:** "The next phase" is ambiguous once a phase was split across two pull requests; a handoff names the step, and a reader verifies the step before offering it.
+
+### Observation 1004: A drawing helper's script checked button rows but not text cut off inside a select
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** Chat 137, batch 1's second-half mock-up page — opening the row-redesign pictures a helper drew (numbered past 1002–1003, held by other branches)
+**Skill:** New skill candidate: mockups-on-the-real-app (`.claude/skills/brainstorming/mockups-on-the-real-app.md`)
+**Type:** open-source
+**Phase/Area:** the premise checks a drawing script runs before it takes the picture
+
+**Issue:** The helper's script asserted that each row of buttons stayed on one line, but the phone picture of its recommended option showed the Role drop-down cutting its words off mid-word ("Admin — schedule…"). The helper did not report it; the host found it only by opening the picture.
+**Suggested improvement:** In the guide's premise checks, add: for every input or select a transform touches or puts beside new content, assert its text is not cut off (`scrollWidth <= clientWidth + 1`) at each picture size, and print the result.
+**Principle:** A drawing's automatic checks cover overflow in every control it changes, not only the layout it meant to change; a picture is opened by the host whatever the checks say.
