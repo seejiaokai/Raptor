@@ -780,7 +780,7 @@ function tdOver(x: any, y: any, scroll = true) {
    week-drag page over a smooth slide; the design guide's drag rule, D895). On Edit Schedule a man carried with the mouse
    could only be dropped on a day already in view: held at the week's left or right side the week never moved
    ([WEEK-DRAG-EDGE-PAN]). Now, held in the app's mouse edge band (ui/edgescroll.ts EDGE) at the week's side, the week
-   steps one day after WEEK_STEP_WAIT — exactly one press of ‹ / › (pan.ts panDays, so the front day lands flush, D275) —
+   steps one day after WEEK_STEP_WAIT — exactly one press of ‹ / › (pan.ts panDays, so the front day lands where an arrow lands one — the strip's margin in, D275, D2295) —
    and again each WEEK_STEP_WAIT while he stays. The wait is what lets a name only PASS THROUGH the side: every name from
    the crew panel crosses the week's right side on its way in. It stops at Monday and Sunday (`cross` false): a week
    loaded under a held man repaints the cells he is aiming at.

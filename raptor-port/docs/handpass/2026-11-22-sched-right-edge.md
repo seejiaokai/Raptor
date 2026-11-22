@@ -170,3 +170,19 @@ Findings only; dispositions are the host's. Detail and pictures: `2026-11-22-sch
 - **F3 (S8, 1920 wide at 125%) — folded, the CREW tab lies over the right of Thursday's "Templates" button** (20 x 15px of
   its 71 x 21; the word reads "Templat"). The rest of the button presses and opens Day templates. A question, not a
   fail: D2293 lets the tab lie over the days. Picture `a/only-under1920/u1-templates-under-tab.png`.
+
+### The host's dispositions (22 Nov 26)
+
+| Finding | Reproduced by the host | Disposition |
+|---|---|---|
+| Walk F1 — Edit Schedule → View-only Sched slides from Monday to the carried day | the spec's "no slide" test, failing first (the first frame stood at 0 of 1128) | FIXED — his "fix the slide" (D2296): smooth scrolling off round the carried-day write, `ViewWeek.tsx` and `EditWeek.tsx` |
+| Walk F2 — after an Undo or "take me to this change" the next arrow press showed Saturday | the two jump tests' added press, failing first ("5" for "1") | FIXED — `panForget` (`pan.ts`), called where `highlights.ts` moves the week; older code |
+| Walk F3 — at 1920 wide the CREW tab lies over the end of a half-shown day's Templates button | not needed: a reading of D2293, not a fault | RULED — D2293 lets the tab lie over the days; that part of the day was hidden by the lane before, and the button still presses |
+| Fresh Opus read F1 = Astra's finding 1 — the Scheduler Board closed on another day left the arrows' count stale | the spec's board test, failing first ("5" for "2") | FIXED — `panForget` beside the carry in `EditWeek.tsx` and `ViewWeek.tsx`; older code |
+| Astra's finding 2 — on Edit Schedule "Jump to a date" lit Monday whatever day stood first | the spec's calendar test, failing first | FIXED — `WeekCal.tsx` reads the week of the page in front; older code |
+| GitHub's first run — the older warning-jump test expected the day on the week box's edge | read in the run's log (expected 0, received 20) | the test's measure now starts at the strip's margin (D2295, his "keep both"); the geometry suite 210 passed |
+| Opus read, question 1 — `weekFrontInset`'s 820 test against the stylesheet's 821 at a fractional zoom | not made concrete by the reader | LEFT — `pan.ts` reads the same line everywhere; older, no case found |
+| Opus read, question 2 — a cell partly under the folded CREW tab counts as on screen for the warning jump | not made concrete (no wholly hidden cell) | LEFT — at most 26px of a cell, for the tab's height |
+| Opus read, question 3 — `drag.ts`'s WEEK_STEP_WAIT note says a step lands "flush, D275" | words only | to correct with this job's last commit |
+
+**The readers:** Astra (Codex CLI, gpt-6-astra, read-only; its report whole: `docs/superpowers/briefs/2026-11-22-sched-right-edge-read-astra.md`) and a fresh, blind Opus reader (its report came back in the chat; its finding and questions are the rows above). Neither saw the walk's report or the other's. **Not walked, and what carries each:** the next-week preview pressed — code this change does not touch (`scrollWeekToLanding`); a warning whose man is off the side — the older geometry test "the week lands on the day … with the puck on screen" drives exactly that press and passes with the new measure. **Astra's list of cases with no test** (a calendar landing, week crossings folded, a resize across 820, the phone's AIRCREW tab): each was walked — S13, S5, S9, P1.
