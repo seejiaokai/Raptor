@@ -1245,3 +1245,16 @@ gives the clock line and how to move it a day (`page.clock.fastForward`), and th
 today before the first step.
 **Principle:** A date rule is only walked when the walk's "today" stands where the rule's boundary can be seen from both
 sides.
+
+### Observation 1015: A closing report listed the agent's own readings in words alone, in its own shorthand
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** Chat 140, the closing report of SANS from its date (D2313). Numbered past 1013 and 1014, which other open branches hold.
+**Skill:** session-handoff (the closing report) / the plain-language rule
+**Type:** open-source
+**Phase/Area:** The part of a closing report that lists choices the builder made for the owner to keep or strike
+
+**Issue:** The report listed four readings as one-line statements, two of them in the builder's own shorthand ("hand untick") and none with a picture, though each was about what a screen shows. The owner had to ask what the shorthand meant, and then ask for the readings again with pictures. Taking the pictures also surfaced a consequence the one-liner had not stated (a man posted out from a date ahead cannot be filed for until that date).
+**Suggested improvement:** In the closing-report step, each listed reading about something on screen carries a worked example (who, which days, what the screen shows) and a marked picture of the real app, taken before the report is sent; a reading is written as who presses what on which page, never with a label coined during the build. Reuse one small script that drives the built app and cuts each picture to its place (here `raptor-port/scripts/handpass/sfd-explain.mjs`).
+**Principle:** A choice put to someone to keep or strike is only decidable when it is shown as a case on the thing itself; a one-line statement in the builder's vocabulary hides both its meaning and its costs.
