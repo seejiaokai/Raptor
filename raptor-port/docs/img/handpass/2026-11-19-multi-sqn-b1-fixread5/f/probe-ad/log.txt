@@ -1,0 +1,5 @@
+msq-fr5-probe v1
+bell html <button class="bellbtn" id="notifyBell" aria-label="Notifications" title="Notifications" aria-haspopup="menu" aria-expanded="false"><svg class="bellglyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a6 6 0 0 0-6 6c0 3.5-1.2 5.4-2.2 6.5-.5.6-.1 1.5.7 1.5h15c.8 0 1.2-.9.7-1.5C19.2 13.4 18 11.5 18 8a6 6 0 0 0-6-6Zm0 20a2.6 2.6 0 0 0 2.5-2h-5a2.6 2.6 0 0 0 2.5 2Z" fill="currentColor"></path></svg><span class="belldot" aria-hidden="true"></span></button>
+list html <div class="bell-list" role="menu" aria-label="Notifications" data-testid="bell-list" style="top: 50px; right: 310px;"><div class="bl-scroll"><div class="bl-empty" data-testid="bell-empty">Nothing new</div></div></div>
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

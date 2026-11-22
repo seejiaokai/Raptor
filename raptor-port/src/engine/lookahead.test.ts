@@ -81,11 +81,13 @@ describe('a typed value is bounded, and refused rather than silently clamped', (
   })
 })
 
+/* a unit's setting is stored under its unit (multi-squadron batch 1, step 2 — engine/hooks.ts storedKey): the boot unit's
+   `stores` is the stored key `sqn142_u142@stores` */
 describe('storage', () => {
   it('writes nothing while the squadron is on the standard', () => {
     const map = fakeBackend()
     lookaheadReset()
-    expect(map.get('sqn142_lookahead')).toBe('null')
+    expect(map.get('sqn142_u142@lookahead')).toBe('null')
     expect(lookaheadIsStandard()).toBe(true)
   })
 
@@ -97,11 +99,11 @@ describe('storage', () => {
 
   it('treats storage as untrusted — a silly value leaves the standard', () => {
     const map = fakeBackend()
-    map.set('sqn142_lookahead', JSON.stringify({ w: 999, s: 'yes' }))
+    map.set('sqn142_u142@lookahead', JSON.stringify({ w: 999, s: 'yes' }))
     lookaheadLoad()
     expect(LOOK_CFG.weeks).toBe(LOOK_STD.weeks)          // out of range → standard
     expect(LOOK_CFG.toSunday).toBe(false)                // only `true` counts
-    map.set('sqn142_lookahead', '"garbage"')
+    map.set('sqn142_u142@lookahead', '"garbage"')
     lookaheadLoad()
     expect(LOOK_CFG.weeks).toBe(LOOK_STD.weeks)
   })

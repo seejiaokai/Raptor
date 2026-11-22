@@ -11,10 +11,11 @@ import { initStore, resetSession, notify, writeInputs } from './store'
 import { commitSettingsIntent } from './people-settings-commit'
 import {
   accountsLoad, signIn, sessionFor, addAccount, updateAccount, approveRequest, declineRequest,
-  requestAccess, setGuestView, ACCOUNTS_LIST, ACCESS_REQS, GUESTVIEW, accountByName, accountById,
+  requestAccess, ACCOUNTS_LIST, ACCESS_REQS, accountByName, accountById,
   addPersonAndAccount, approveRequestNew, requestByName, requestSummary, accessAlert, unseenRequests,
   markRequestsSeen, currentAdminAccountId,
 } from './accounts'
+import * as accountsModule from './accounts'
 import { commandStream } from '../command'
 import { peopleStore, commitPeopleSettingsIntent } from './people-settings-commit'
 import { putNewPerson } from './roster-add'
@@ -70,12 +71,13 @@ describe('AC1 — the sign-in stands for the defence-mail sign-in (D166 (2))', (
     expect(addAccount('pike@mail', 'pike', 'main')).toBe(null)
     /* one stored row per account ([DB-READINESS] group A, phase 4.4) — the seeded ones stored with the first write */
     const rows = Object.keys(mem).filter(k => k.startsWith('sqn142_account:')).map(k => mem[k]!)
-    expect(rows.length).toBe(5)
+    expect(rows.length).toBe(8)   // the four seeded, three more since multi-squadron step 4 (149's admin and member, a second 142 admin), and pike
     for (const r of rows) expect(r).not.toMatch(/pass/i)
     /* every field a stored account may carry, and nothing else — `seenFrom` since [DRAFT-PENDING] (Fable F6: where the
        change history stood when the account was made — a position since phase 4.3), `createdAt` since phase 4.4 (the
-       older of two accounts for one person wins), never a password */
-    const OK = ['id', 'name', 'on', 'pid', 'role', 'offBy', 'seenFrom', 'createdAt']
+       older of two accounts for one person wins), `master` since multi-squadron batch 1, step 1 (the master mark — the
+       database's User.master), never a password */
+    const OK = ['id', 'name', 'on', 'pid', 'role', 'offBy', 'seenFrom', 'createdAt', 'master']
     expect(rows.every(r => Object.keys(JSON.parse(r)).every(k => OK.includes(k)))).toBe(true)
   })
 })
@@ -100,8 +102,8 @@ describe('AC2 — signing in makes you that callsign (D166 (3)); every "who" nam
        mirror itself is walked on the running app (the unit store does not wire the sync) */
     signInAs('hex'); expect(viewerId()).toBe('rocky')
     signInAs('nobody@mail'); expect(viewerId()).toBe('')                // pending: matches no row
-    signInAs('ad', 'a'); setGuestView(true); signInAs('nobody@mail')
-    signInAs('ad', 'a'); setGuestView(false)
+    /* (a guest stood here — the guest view went with D2239): a person who asked and is waiting matches no row either */
+    ask('Nobody'); signInAs('nobody@mail'); expect(viewerId()).toBe('')
   })
 })
 
@@ -153,17 +155,22 @@ describe('AC3 — a new user joins either way (D204)', () => {
        its missing parts blank, for the admin to pick when he approves */
     expect(ACCESS_REQS[0]).toMatchObject({ cs: 'K', ini: '', seat: '', cat: '', seenBy: [] })
   })
-  it('the guest switch is off by default; on, a waiting person signs in as a guest', () => {
-    expect(GUESTVIEW).toBe(false)
+  /* rewritten to his D2239 (20 Nov 26), which replaces D221 and D215: it pinned the guest switch and a waiting person let
+     in as a guest; the guest view is removed, so it pins its absence — no switch, and a person waiting signs in waiting
+     whatever an older build stored (D56: left where it lies, read by nothing) */
+  it('there is no guest switch: a waiting person signs in waiting, whatever was stored (D2239)', () => {
+    expect((accountsModule as any).GUESTVIEW, 'no switch is held').toBeUndefined()
+    expect((accountsModule as any).setGuestView, 'and no door sets one').toBeUndefined()
     signInAs('viper@mail'); ask('Viper')
-    signInAs('ad', 'a'); expect(setGuestView(true)).toBe(null)
-    expect(signInAs('viper@mail')).toEqual({ kind: 'guest', name: 'viper@mail' })
-    expect(roleOf()).toBe('guest'); expect(me()).toBe(null); expect(HOOKS.whoami()).toBe('Guest')
+    for (const k of ['guestview', 'u142@guestview']) mem['sqn142_' + k] = 'true'
+    accountsLoad()
+    expect(signInAs('viper@mail')).toEqual({ kind: 'waiting', name: 'viper@mail' })
+    expect(roleOf()).toBe('pending'); expect(me()).toBe(null); expect(HOOKS.whoami()).toBe('viper@mail')
   })
   it('a person on no list cannot do an admin\'s work, nor ask for someone else', () => {
     signInAs('viper@mail')
     expect(addAccount('x@mail', 'pike', 'main')).toMatch(/Only an admin/)
-    expect(setGuestView(true)).toMatch(/Only an admin/)
+    /* (the guest switch, once refused him here too, is gone for everyone — D2239; the test above pins its absence) */
     /* the gate itself refuses a request that names someone else (perms.ts COMMAND_OPS) */
     const r: any = commitSettingsIntent('access.request', { owner: 'someone@else' }, () => store.set('accessreq:x', { id: 'x', name: 'someone@else', cs: 'X', ini: '', seat: 'FCP', cat: 'C', at: 1 }))
     expect(r.ok).toBe(false)
@@ -188,8 +195,15 @@ describe('AC4 — the guards (each refusal says why)', () => {
     /* an admin session whose own account is not in the list (so "not your own" does
        not stand in the way) cannot demote the last admin */
     setSession({ user: 'someone', role: 'admin', pid: 'nact', name: 'someone' })
-    expect(updateAccount('acad', { role: 'main' })).toMatch(/At least one admin/)
-    expect(updateAccount('acad', { on: false })).toMatch(/At least one admin/)
+    /* the demo carries three admins since multi-squadron step 4 (149's, and a second 142 admin). Since the full check of
+       18 Nov 26 a squadron is never left with no admin of its own (D2184 Q10): 149's one admin cannot step down, and once
+       142's second does, `acad` is 142's last */
+    expect(updateAccount('acad9', { role: 'main' })).toBe("Kestrel is 149's last admin. Make another admin of 149 first.")
+    expect(updateAccount('acad2', { role: 'main' })).toBe(null)
+    /* `acad` is Saber, the master: since his D2205 (18 Nov 26) only a master changes his account, said first — the lock
+       for 142 is still held at the commit gate (state/units-sqn-fixread2.test.ts, G3) */
+    expect(updateAccount('acad', { role: 'main' })).toBe('Only a master admin can do that')
+    expect(updateAccount('acad', { on: false })).toBe('Only a master admin can do that')
   })
   it('one person one account; one sign-in name one account', () => {
     signInAs('ad', 'a')
@@ -271,10 +285,10 @@ describe('AC6 — an account change is one command; its keys roll back together 
 })
 
 describe('AC7 — a member\'s command changes only his own records (perms.ts ownershipViolation)', () => {
-  it('a guest files nothing; a member files only for himself', () => {
+  /* the guest (gone with the guest view, D2239) stood here as someone not a member: a person waiting takes his place */
+  it('a person waiting files nothing; a member files only for himself', () => {
     signInAs('viper@mail'); ask('V')
-    signInAs('ad', 'a'); setGuestView(true)
-    signInAs('viper@mail')
+    expect(signInAs('viper@mail').kind).toBe('waiting')
     const n = INPUTS.length
     writeInputs(() => { INPUTS.unshift({ iid: 'zzguest', person: 'bane', type: 'LL', date: '14/07/2026', remarks: '' } as any) })
     expect(INPUTS.length).toBe(n)
@@ -364,7 +378,9 @@ describe('NP3 — a new person with his account is ONE step (D214, D217)', () =>
     const got = envs[0].changes.map(c => `${c.collection}/${c.id}`)
     expect(got).toContain(`people/${pid}`)
     expect(got).toContain(`settings/account:${accountByName('blaze@mail')!.id}`)
-    expect(got.every(k => k === `people/${pid}` || k.startsWith('settings/account:'))).toBe(true)
+    /* …and his home unit, in the same command since multi-squadron batch 1, step 1 (D2094 — the adder's own) */
+    expect(got.filter(k => k.startsWith('settings/home:')).length).toBe(1)
+    expect(got.every(k => k === `people/${pid}` || k.startsWith('settings/account:') || k.startsWith('settings/home:'))).toBe(true)
     expect(signInAs('blaze@mail')).toMatchObject({ kind: 'ok' })
     expect(ME).toBe(pid)
   })
@@ -457,7 +473,10 @@ describe('NP5 — approving with New person, filled from what he gave (D214, D20
     expect(got).toContain(`people/${pid}`)
     expect(got).toContain(`settings/account:${accountByName('viper@mail')!.id}`)
     expect(envs[0].changes.find(c => c.id === `accessreq:${rq.id}`)?.op).toBe('delete')
-    expect(got.every(k => k === `people/${pid}` || k.startsWith('settings/account:') || k === `settings/accessreq:${rq.id}`)).toBe(true)
+    /* …and his home row: a new man approved is the approving admin's squadron's, in the same step (D2094 — the full check
+       of 18 Nov 26 moved it from approveRequest, where it moved a man already on the roster, to here) */
+    expect(got.some(k => k.startsWith('settings/home:'))).toBe(true)
+    expect(got.every(k => k === `people/${pid}` || k.startsWith('settings/account:') || k.startsWith('settings/home:') || k === `settings/accessreq:${rq.id}`)).toBe(true)
   })
   it("a typed callsign that is someone's is refused as New person; the request stays", () => {
     signInAs('viper@mail'); ask('Ranger')

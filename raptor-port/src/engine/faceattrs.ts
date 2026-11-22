@@ -9,6 +9,8 @@
    withDayRules); the brief lead is still the one setting it PRINTS, so the only one compared (publish.ts warnDelta).
    Synchronous, restored in finally; nothing inside may write. Outside an issued face everything reads live. */
 import { PEOPLE, SEATRANK, QORDER } from './people'
+import { rosterOf } from './roster'
+import { UNIT } from './unitview'
 import { VCONF, SHIFT_HARD, withRuleVals } from './rules'
 
 type Face = { pa?: any, rv?: any, ros?: any } | null
@@ -21,13 +23,15 @@ export function withFaceAttrs<T>(face: Face, fn: () => T): T {
 }
 /* the aircrew a day counts as its roster — every man not posted out and not ground crew — as the app stands today; the
    issued version keeps this list (publish.ts freezeWarn → `snap.ros`, Astra's second read #3) */
-export function rosterIds(): string[] {
-  return Object.keys(PEOPLE).filter((id: any) => { const p = (PEOPLE as any)[id]; return p && !p.archived && !p.pers }).sort()
+export function rosterIds(iso: string): string[] {
+  /* the schedule in view's own people ON THE DAY (multi-squadron step 3 — engine/roster.ts; the reshape plan §3.3 C4: a man
+     who is 149's from Thu 16 Jul is not on 142's Friday, as the crew list beside it already says — D2119, D327) */
+  return rosterOf(UNIT, iso).filter((id: any) => { const p = (PEOPLE as any)[id]; return p && !p.archived && !p.pers }).sort()
 }
 /* the roster the face being drawn counts ("free all day" on the day panel): the day's own, as issued, when it kept one —
-   a man since deleted from the roster outright has nothing to draw and drops — else today's */
-export function rosterShown(): string[] {
-  return FA && FA.ros ? FA.ros.filter((id: any) => !!(PEOPLE as any)[id]) : rosterIds()
+   a man since deleted from the roster outright has nothing to draw and drops — else the day's own (`iso`, C4) */
+export function rosterShown(iso: string): string[] {
+  return FA && FA.ros ? FA.ros.filter((id: any) => !!(PEOPLE as any)[id]) : rosterIds(iso)
 }
 /* the person as the face being drawn shows him: the issued attributes over today's record (callsign and all else live) */
 export function personShown(id: any): any {

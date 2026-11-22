@@ -55,7 +55,8 @@ const saber = () => signInAs('ad', 'a')
 const ranger = () => signInAs('us', 'us')
 const hex = () => signInAs('hex')
 const outlaw = () => signInAs('outlaw')
-const flipElsewhere = (on: boolean) => { if (on) delete mem['sqn142_memberfile']; else mem['sqn142_memberfile'] = 'false' }
+/* the members' switch is the boot unit's setting, stored under its unit (multi-squadron step 2): sqn142_u142@memberfile */
+const flipElsewhere = (on: boolean) => { if (on) delete mem['sqn142_u142@memberfile']; else mem['sqn142_u142@memberfile'] = 'false' }
 
 const TUE = '2026-02-10', SAT = '2026-02-14'
 const SIX = ['bane', 'stiff', 'rocky', 'casper', 'harpoon', 'razer']

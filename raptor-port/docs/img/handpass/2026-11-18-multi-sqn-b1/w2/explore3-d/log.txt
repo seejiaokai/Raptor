@@ -1,0 +1,12 @@
+msq-w2-explore3 v1
+LOGICDOM none
+EVWIN trUndoBtn|↶ ; trRedoBtn|↷ ; fastSync| ; notifyBell| ; insightBtn|Insights ; logout|Logout ; roleBadge|KESTREL · ADMIN ; exportSched| ; exportPdf| ; courseMenuBtn| ; sylMenuBtn| ; detailsBtn| ; showAllBtn|Show All ; legendBtn|Legend ; fileMenuBtn|File ▾ ; hSearchClear|✕ ; flexBtn| ; barHideBtn| ; fzOut|− ; fzIn|+ ; fzReset|reset ; ordCrew|Reorder ; addStu|+ Add ; |CFT-01 ; |IAT-01 ; |TR(S)-1 ; |TR-1(P) ; |ST-01 ; |ST-02 ; lastSyll|Pick a date
+▾ ; lastCurr|Pick a date
+▾ ; courseStart|Pick a date
+▾ ; downDays|—
+› ; targetIn|Pick a date
+▾ ; targetIn2|Pick a date
+▾ ; failTitle|FAILURES ; setLullBtn|+ Set lull period ; copyLullBtn|Copy to… ; szOut|− ; szIn|+ ; szReset|reset
+POPTEXT 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

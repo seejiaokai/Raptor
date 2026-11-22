@@ -6,6 +6,7 @@
    `settings.memberfile`; read by the one permission module. Its two doors on screen (behind the Inputs calendar's
    gear, and the Logic page's row) come with the Inputs calendar — this is the record, the command and Undo's words. */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { inView } from '../engine/unitview'
 import { storeBackend, store } from '../engine/hooks'
 import { setSession } from './auth'
 import { installGlobalUndo } from './undo-wire'
@@ -66,9 +67,9 @@ describe('the members\' switch is one setting, written by its own admin command'
     expect(membersFileOn()).toBe(true)
   })
   it('anything stored that is not exactly "off" reads as ON', () => {
-    mem.set('sqn142_memberfile', '"no"')
+    mem.set('sqn142_' + inView('memberfile'), '"no"')
     expect(membersFileOn()).toBe(true)
-    mem.set('sqn142_memberfile', 'false')
+    mem.set('sqn142_' + inView('memberfile'), 'false')
     expect(membersFileOn()).toBe(false)
   })
   it('Undo and Redo take it back and put it again, and say which way it went', () => {

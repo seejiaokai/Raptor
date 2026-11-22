@@ -1,0 +1,92 @@
+[
+ [
+  "S4",
+  "desktop",
+  "us9 files Other on Thu 10 Dec 2026, list on All dates",
+  "his list shows it",
+  "shown: true",
+  "PASS",
+  "s4-02-us9-list.png"
+ ],
+ [
+  "S4",
+  "desktop",
+  "us opens Inputs list, All dates",
+  "does not see it",
+  "sees: false; logout reloaded: true",
+  "PASS",
+  "s4-03-us-list.png"
+ ],
+ [
+  "S4",
+  "desktop",
+  "ad opens Inputs list, All dates",
+  "does not see it",
+  "sees: false; logout reloaded: true",
+  "PASS",
+  "s4-03-ad-list.png"
+ ],
+ [
+  "S4",
+  "desktop",
+  "ad9 opens Inputs list, All dates",
+  "sees Osprey 10 Dec",
+  "sees: true; logout reloaded: true",
+  "PASS",
+  "s4-03-ad9-list.png"
+ ],
+ [
+  "S6",
+  "desktop",
+  "ad9 saves PH W149 PH on Wed 9 Dec 2026",
+  "RECORD what the app says",
+  "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Kestrel · Admin Grid Approvals Balances OIL View My leave LVE 0 · OIL 0 · 0 pending › ▾ Manning Bidding closed Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC 2026 CS/Name +LVE JAN THU 01 FRI 02 SAT 03 SUN 04 MON 05 TUE 06 WED 07 THU 08 FRI 09 SAT 10 SUN 11 MON 12 TUE 13 WED 14 THU 15",
+  "RECORD",
+  "s6-02-ad9-after-save.png"
+ ],
+ [
+  "S6",
+  "desktop",
+  "ad9's holiday list for 2026",
+  "lists Wed 9 Dec W149 PH",
+  "W149 PH: true",
+  "PASS",
+  "s6-03-ad9-list.png"
+ ],
+ [
+  "S6",
+  "desktop",
+  "ad's holiday list for 2026 (142, Home base)",
+  "lists W149 PH too (one place, D2160 F1)",
+  "W149 PH: true",
+  "PASS",
+  "s6-04-ad-list.png"
+ ],
+ [
+  "S6",
+  "desktop",
+  "ad9's list after ad's Off day",
+  "no W142 OFF; W149 PH still there",
+  "W142 OFF: false; W149 PH: true",
+  "PASS",
+  "s6-07-ad9-list-after-off.png"
+ ],
+ [
+  "S8",
+  "desktop",
+  "ad9 reloads; holiday list",
+  "W149 PH still there, no W142 OFF",
+  "W149 PH: true; W142 OFF: false",
+  "PASS",
+  "s8-01-ad9-list-after-reload.png"
+ ],
+ [
+  "S8",
+  "desktop",
+  "second tab, same storage: ad, holiday list",
+  "W149 PH and W142 OFF both listed",
+  "W149 PH: true; W142 OFF: true",
+  "PASS",
+  "s8-02-tab2-ad-list.png"
+ ]
+]

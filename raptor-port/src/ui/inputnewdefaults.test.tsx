@@ -24,6 +24,7 @@ import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/stat
 import { memoryBackend } from '../leavewar/state/storage'
 import { _resetFloatWins } from './winorder'
 import { setInpEdit } from './pops'
+import { settleWorld } from '../test-support/world'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement, root: Root
@@ -62,6 +63,9 @@ beforeEach(() => {
   setSession({ user: admin, role: 'admin' }); setMe(admin); lwInitStore(memoryBackend()); lwSetRole('admin')
   setPage('inputs'); setInpMode('member'); setInpView('table')
   HOOKS.toast = (() => {}) as any
+  /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read) */
+  settleWorld()
 })
 afterEach(async () => {
   await act(async () => { root?.unmount(); setInpEdit(null) })

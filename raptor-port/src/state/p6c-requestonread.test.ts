@@ -11,6 +11,7 @@
    real saved store (the Memory backend behind the whiteboard) and reads what reached storage; a "reload" is a second boot
    from the same store. */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { inView } from '../engine/unitview'
 import { INPUTS, idsOf, inpId } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS, indexCallsigns } from '../engine/people'
 import { DAYS } from '../engine/data'
@@ -196,7 +197,7 @@ describe('phase 6 (c) — a filing, an edit, a delete and a hand-over write the 
     clear()
     const iid = file({}, true)
     expect(rowOf(iid, WED)).toBeTruthy()
-    expect(weekWrites(), 'the day it was placed on is saved').toContain(`${weekId(W1)}#${WED}`)
+    expect(weekWrites(), 'the day it was placed on is saved').toContain(`${weekId(inView(W1))}#${WED}`)
   })
 
   it('Accept and ✕ are the scheduler\'s: the day row is saved with each', async () => {
@@ -204,11 +205,11 @@ describe('phase 6 (c) — a filing, an edit, a delete and a hand-over write the 
     const iid = file({})
     clear()
     schedWrite(SCHED_TYPES.mutate, () => { unacceptInput(WED, reqOf(iid)); afterSchedMutate() })
-    expect(weekWrites()).toContain(`${weekId(W1)}#${WED}`)
+    expect(weekWrites()).toContain(`${weekId(inView(W1))}#${WED}`)
     expect(rowOf(iid)).toBeNull()
     clear()
     schedWrite(SCHED_TYPES.mutate, () => { acceptInput(WED, reqOf(iid), 'g'); afterSchedMutate() })
-    expect(weekWrites()).toContain(`${weekId(W1)}#${WED}`)
+    expect(weekWrites()).toContain(`${weekId(inView(W1))}#${WED}`)
     expect(rowOf(iid, WED)).toBeTruthy()
   })
 

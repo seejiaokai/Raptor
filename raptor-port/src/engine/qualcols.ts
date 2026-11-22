@@ -21,7 +21,8 @@
    ticks beside it persist now, so a column that vanished on reload left its
    ticks orphaned under a key no heading named. `qualcols` is null while the
    list is the default ten, like every other settings key. */
-import { store } from './hooks'
+import { store, unitSetting, unitSettingKey } from './hooks'
+import { UNIT } from './unitview'
 
 export type QualCol = {
   k: string
@@ -62,6 +63,12 @@ let cols: readonly QualCol[] = DEFAULT_QUAL_COLS
 export function qualCols(): readonly QualCol[] {
   return cols
 }
+/** A SQUADRON'S column list (the reshape plan §3.2 A-ii — Quals is an own page: it reads its own squadron's, never the
+ *  pick's). The loaded squadron's is the live list above; another's is read from the store each time and never cached, so
+ *  the loaded squadron's list is never filled with another's. */
+export function qualColsOf(unit: string): readonly QualCol[] {
+  return unit === UNIT ? cols : cleanCols(unitSetting(unit, 'qualcols', null))
+}
 
 /** Replace the list. Returns true when it actually changed (same keys, same
  *  headings, same order = no change), so the caller can notify only then —
@@ -69,10 +76,15 @@ export function qualCols(): readonly QualCol[] {
  *  the engine does not import the store; the page that edits the LoX already
  *  calls Raptor's `notify`, which is the lane Leave War's re-projection rides. */
 export function setQualCols(next: readonly QualCol[]): boolean {
+  return setQualColsOf(UNIT, next)
+}
+/** The same for a named squadron: its own record written (`<unit>@qualcols`), the live list changed only when it is the
+ *  loaded squadron's */
+export function setQualColsOf(unit: string, next: readonly QualCol[]): boolean {
   next = withMgmt(next)
-  if (sameCols(next, cols)) return false
-  cols = next
-  store.set('qualcols', sameCols(cols, DEFAULT_QUAL_COLS) ? null : cols.map(c => ({ ...c })))
+  if (sameCols(next, qualColsOf(unit))) return false
+  if (unit === UNIT) cols = next
+  store.set(unitSettingKey(unit, 'qualcols'), sameCols(next, DEFAULT_QUAL_COLS) ? null : next.map(c => ({ ...c })))
   return true
 }
 
@@ -90,21 +102,22 @@ function withMgmt(list: readonly QualCol[]): readonly QualCol[] {
 /** Untrusted storage → the list, or the default when the record is unusable.
  *  Called by initStore beside the other settings loaders. */
 export function qualColsLoad(): void {
-  const raw = store.get('qualcols', null)
-  cols = DEFAULT_QUAL_COLS
-  if (!Array.isArray(raw)) return
+  cols = cleanCols(unitSetting(UNIT, 'qualcols', null))
+}
+function cleanCols(raw: unknown): readonly QualCol[] {
+  if (!Array.isArray(raw)) return DEFAULT_QUAL_COLS
   /* a stored EMPTY list is a decision — the Quals page's column delete has no last-column guard, and `[]` is what it
      writes — so it reads back empty, not as the default ten ([STORE-READER-SWEEP], [DB-READINESS] phase 7) */
   /* …all but Management, which every squadron has (D1502): it is put back at load, nothing written */
-  if (!raw.length) { cols = withMgmt([]); return }
+  if (!raw.length) return withMgmt([])
   const clean: QualCol[] = []
   for (const c of raw) {
-    if (!c || typeof c !== 'object' || typeof c.k !== 'string' || typeof c.h !== 'string' || !c.k) return
+    if (!c || typeof c !== 'object' || typeof c.k !== 'string' || typeof c.h !== 'string' || !c.k) return DEFAULT_QUAL_COLS
     const col: QualCol = { k: c.k, h: c.h }
     for (const f of ['lav', 'apt', 'scq', 'aar', 'fcpOnly'] as const) if (c[f] === true) col[f] = true
     clean.push(col)
   }
-  cols = withMgmt(clean)
+  return withMgmt(clean)
 }
 
 /** Tests only: back to the default ten. */

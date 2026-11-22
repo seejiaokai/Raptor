@@ -1,0 +1,29 @@
+[
+ [
+  "F3",
+  "desktop",
+  "ad2 opens Saber's Post out, picks the Delete chip",
+  "Saber is a master admin, so he can't be deleted",
+  "Saber is a master admin, so he can't be deleted",
+  "PASS",
+  "f3-01-saber-delete-chip.png"
+ ],
+ [
+  "F3",
+  "desktop",
+  "ad2 presses Post out on the master (Delete chip) and, if asked, confirms",
+  "refused / nothing saved: Saber stays on the grid, page alive",
+  "Saber on grid: true; words: y, with his account. Days he flew keep his puck. Saber is a master admin, so he can't be deleted Post out Delete Saber? On 18 Nov the app deletes him au",
+  "PASS",
+  "f3-02-saber-after-post-out-press.png"
+ ],
+ [
+  "F3",
+  "desktop",
+  "ad2 posts Ranger (a 142 member; Rocky is not in this world if Ranger) out with Delete today, confirms as asked",
+  "Rocky's posting runs (he posts out / leaves the roster); page not frozen or blank",
+  "page alive: true; Rocky: ",
+  "RECORD",
+  "f3-05-rocky-after.png"
+ ]
+]

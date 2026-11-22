@@ -1,0 +1,63 @@
+// @vitest-environment jsdom
+/* C10 (Opus F3; Fable measured the demo size and found nothing): the squadron filter (inputsFor(unit, at) ->
+   inputBelongs -> homeUnitOf -> state/units-model.ts homeUnitOn, which filters every home row per call) runs on every
+   input before the date test, in the readers that used to be a plain date pass. MEASURED, not red/green: 4 squadrons x
+   40 people, 4,000 inputs over a year, 200 home rows (40 men moved once). */
+import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { INPUTS, inputsFor, inputCoversDate, inputsOn, inputBelongs } from '../engine/inputs'
+import { PEOPLE, indexCallsigns } from '../engine/people'
+import { rosterOf } from '../engine/roster'
+import { HOME_PFX } from '../state/units-model'
+import { unitsLoad, homeOn } from '../state/units'
+import { before, after, done, at, mem } from './harness'
+
+beforeEach(before); afterEach(after); afterAll(done)
+
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const lbl = (d: Date) => `${MON[d.getMonth()]} ${d.getDate()}`
+const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+const UNITS = ['u142', 'u149', 'u150', 'u151']
+const time = (n: number, f: () => void) => { const t0 = performance.now(); for (let i = 0; i < n; i++) f(); return (performance.now() - t0) / n }
+
+describe('C10 — the cost of the squadron filter at a realistic size', () => {
+  it('MEASURE', () => {
+    at('2026-07-14')
+    /* 160 people, 40 a squadron; 40 of them moved once (mid-year) */
+    const tmpl = structuredClone((PEOPLE as any).bane)
+    const pids: string[] = []
+    UNITS.forEach((u, ui) => { for (let i = 0; i < 40; i++) {
+      const pid = `zz${ui}x${i}`; pids.push(pid)
+      ;(PEOPLE as any)[pid] = { ...structuredClone(tmpl), cs: `ZZ${ui}X${i}` }
+      mem[`sqn142_${HOME_PFX}h${pid}`] = JSON.stringify({ id: `h${pid}`, pid, unit: u, from: '2026-01-01' })
+      if (i < 10) mem[`sqn142_${HOME_PFX}h${pid}m`] = JSON.stringify({ id: `h${pid}m`, pid, unit: UNITS[(ui + 1) % 4], from: '2026-07-01' })
+    } })
+    indexCallsigns(); unitsLoad()
+    expect(homeOn('zz2x0', '2026-08-01')).toBe('u151')
+    expect(homeOn('zz2x11', '2026-08-01')).toBe('u150')
+    /* 4,000 inputs: 25 a man, 1–5 days each, spread over the year */
+    INPUTS.length = 0
+    let k = 0
+    for (const pid of pids) for (let j = 0; j < 25; j++) {
+      const s = new Date(2026, 0, 1 + ((j * 14 + k * 3) % 360)); const e = new Date(s); e.setDate(s.getDate() + (k % 5))
+      INPUTS.push({ iid: `zi${k}`, person: pid, date: lbl(s), endDate: k % 5 ? lbl(e) : undefined, yr: 2026, allday: true, type: 'LL', by: pid, at: 1, ord: k } as any)
+      k++
+    }
+    const days: Date[] = []; for (let i = 0; i < 365; i++) days.push(new Date(2026, 0, 1 + i))
+    const year = () => { for (const d of days) inputsFor('u149', iso(d)).filter((r: any) => inputCoversDate(r, lbl(d))) }
+    const plain = () => { for (const d of days) INPUTS.filter((r: any) => inputCoversDate(r, lbl(d))) }
+    const dateFirst = () => { for (const d of days) INPUTS.filter((r: any) => inputCoversDate(r, lbl(d)) && inputBelongs(r, 'u149', iso(d))) }
+    const day = () => inputsFor('u149', '2026-07-14')
+    const onDay = () => inputsOn('Jul 14')
+    const roster = () => { for (const d of days) rosterOf('u149', iso(d)) }
+    const r = {
+      'inputsFor(unit, day) one call, 4,000 inputs (ms)': time(20, day),
+      'inputsOn(day) one call — the schedule reader (ms)': time(20, onDay),
+      'a year of days, squadron filter first, as built (ms)': time(2, year),
+      'a year of days, the date test alone, as before the batch (ms)': time(2, plain),
+      'a year of days, date test first then squadron (ms)': time(2, dateFirst),
+      'rosterOf for a year of days, 160 + demo people (ms)': time(2, roster),
+    }
+    for (const [n, v] of Object.entries(r)) console.log(`MEASURE ${n}: ${v.toFixed(2)}`)
+    console.log(`MEASURE per day, as built / before: ${(r['a year of days, squadron filter first, as built (ms)'] / 365).toFixed(3)} / ${(r['a year of days, the date test alone, as before the batch (ms)'] / 365).toFixed(3)} ms`)
+  })
+})

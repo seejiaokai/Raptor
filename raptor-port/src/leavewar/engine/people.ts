@@ -95,7 +95,17 @@ export interface Person {
   /** A personnel body's free-text label ("Maintenance", "Line crew"). Editable
    *  in edit mode; seeded from Raptor's `flight`. Only meaningful when `pers`. */
   label?: string
+  /** HIS RUNS OF DAYS IN THIS WAR'S SQUADRON (the multi-squadron reshape, A1 — plan §6.2; his D2243, Q6): laid fresh by
+   *  the projection (state/raptorRoster.ts, units-model.ts stintsIn) on every projection, oldest first, `from` null from
+   *  always and `to` null with no end. KEPT APART FROM POSTINGS: never saved, never captured into a posting record
+   *  (store.ts stripHome), never read by the posting tag — a squadron move is not a posting. Every reader of his months
+   *  reads his posting window CUT BY these (`inSquadron`); a day outside them is "away" in the war's hatch, with no PO,
+   *  no posting sheet and nothing written there but a removal (A7). Absent — one squadron, or a row built by hand — no
+   *  limit, exactly as before. */
+  home?: HomeStint[]
 }
+/** one run of days in this war's squadron (`from`/`to` inclusive; null = no limit that side) */
+export interface HomeStint { from: string | null; to: string | null }
 
 export function categoryOf(p: Person): Category {
   // Manning only. Ground crew never reach here — countsFor skips `pers` before
@@ -308,8 +318,26 @@ export interface Stint { from: string | null; to: string }
 // lexicographically in date order, so no parsing (and no timezone) is involved.
 const inWindow = (from: string | null, to: string | null, date: string): boolean =>
   !(from && date < from) && !(to && date > to)
-/* D320: the current stint (`from`/`to`) OR any closed earlier one (`past`). A man with one stint reads as before. */
+/* A1 (the reshape plan §6.2): is the day inside his squadron stints — always, with none laid (one squadron) */
+export function atHome(p: Person, date: string): boolean {
+  return !p.home || p.home.some(s => inWindow(s.from, s.to, date))
+}
+/* …and the day is outside them: the war's "away" look — hatched, no PO, no posting sheet, out of manning (D2243 Q6) */
+export function awayFromHome(p: Person, date: string): boolean {
+  return !atHome(p, date)
+}
+/* his first day here: the first day both inside his squadron stints and inside his posting window (null — always) */
+export function firstDayHere(p: Person): string | null {
+  const firstHome = p.home && p.home.length ? p.home[0]!.from : null
+  const firstPost = p.past && p.past.length ? p.past[0]!.from : p.from
+  if (firstHome === null) return firstPost
+  if (firstPost === null) return firstHome
+  return firstHome > firstPost ? firstHome : firstPost
+}
+/* D320: the current stint (`from`/`to`) OR any closed earlier one (`past`). A man with one stint reads as before.
+   A1: cut by his squadron stints — a saved joining window no longer outlasts his move, nor a posting dated past it. */
 export function inSquadron(p: Person, date: string): boolean {
+  if (!atHome(p, date)) return false
   if (inWindow(p.from, p.to, date)) return true
   return !!p.past && p.past.some(s => inWindow(s.from, s.to, date))
 }
@@ -344,6 +372,8 @@ export function gapBeforeCurrent(p: Person, date: string): boolean {
    read-only on the war. */
 export function postingSheetFor(p: Person, date: string): 'pi' | 'po' | undefined {
   if (inSquadron(p, date)) return undefined
+  /* A1: a day outside his squadron stints is no posting's — no sheet opens (his move set no posting, D2243 Q6) */
+  if (awayFromHome(p, date)) return undefined
   if (!p.past || !p.past.length) return p.from !== null && date < p.from ? 'pi' : 'po'
   if (gapBeforeCurrent(p, date)) return 'pi'
   if (p.to !== null && date > p.to) return 'po'

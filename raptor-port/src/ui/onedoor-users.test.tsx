@@ -17,6 +17,7 @@ import { PEOPLE, indexCallsigns } from '../engine/people'
 import { accountsLoad, signIn, sessionFor, requestAccess, ACCESS_REQS, accountByName, accountOfPid } from '../state/accounts'
 import { setPage } from '../state/view'
 import { effectiveToday } from '../state/person-delete'
+import { settleWorld } from '../test-support/world'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement
@@ -67,6 +68,9 @@ beforeEach(async () => {
   accountsLoad()
   toasts.length = 0
   await act(async () => { resetSession(null); notify() })
+  /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read) */
+  settleWorld()
 })
 
 describe('D309 / D310 — every person, one row, two dots', () => {

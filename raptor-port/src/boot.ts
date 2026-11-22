@@ -14,25 +14,29 @@ import { resyncSchedBaseline } from './state/sched-commit'
 import { storeBackend, HOOKS } from './engine/hooks'
 import { initStore as lwInitStore, lwHistInit } from './leavewar/state/store'
 import { installDemoWorld } from './leavewar/state/demoworld'
-import { wireLeaveWarSync, installPostingClock } from './leavewar/sync'
+import { wireLeaveWarSync, installPostingClock, setWarWorldDoor } from './leavewar/sync'
 import { validate } from './engine/validate'
 import { bootStorage } from './storage/boot'
 import { BrowserBackend } from './storage/browser'
 import { idbDocStore } from './storage/docstore'
 import { docBoot } from './state/docs'
 import { settingsAdapter, leavewarAdapter, trackerTarget } from './storage/adapters'
-import { setStorageImpl } from './tracker/storage.js'
+import { setStorageImpl, setStorageMaker, storageUnit } from './tracker/storage.js'
 /* the Tracker's one-time conversion — the fold's last converter ([DB-READINESS] group A, phase 5b): registered by the
    boot, since the Tracker's own code is a lazy chunk the fold cannot wait for */
 import './tracker/fold'
 import { hydrate, wirePersist, wireRows, leaveWarStarted } from './state/persist'
 import { openBootGroup, storeInitialized } from './storage/schema'
+import { BOOT_UNIT } from './engine/unitview'
 import { resetSeedWorld } from './state/seeds'
 import { PEOPLE, indexCallsigns } from './engine/people'
 import { newId } from './engine/newid'
 import { newPersonProblem, personRecord } from './state/roster-add'
 import { firstAdminRow, storedAccountNamed, normName, MAX_SIGNIN } from './state/accounts'
+import { UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, HOME_PFX, validUnitNum, validTz, MAX_PLACE_NAME } from './state/units-model'
+import { todayIso, units } from './state/units'
 import { installGlobalUndo } from './state/undo-wire'
+import { pageUnit, setTrkUnitProbe } from './state/perms'
 import type { Backend } from './storage/backend'
 import type { Whiteboard } from './storage/whiteboard'
 import type { Postman } from './storage/postman'
@@ -79,7 +83,17 @@ export async function bootApp(backend: Backend, policy: BootPolicy = DEMO_POLICY
 function bootBody(wb: Whiteboard, policy: BootPolicy): void {
   /* the three doors (storage/adapters.ts): settings, Leave War, Tracker */
   storeBackend.impl = settingsAdapter(wb)
-  setStorageImpl(trackerTarget(wb))
+  /* THE TRACKER IS ONE WORLD PER SQUADRON (multi-squadron batch 1, step 4): the doorway is handed a maker of each unit's
+     door and a way to ask whose squadron is signed in, and binds the signed-in person's own (his home — D2132) at the
+     moment the Tracker first loads (tracker/storage.js markStorageLoaded); the boot unit's until then. WHOSE is the page's
+     own squadron on the day it loads (the reshape plan §3.2 A-ii — state/perms.ts pageUnit('own'): his home, or the pick
+     for a master admin or a Plan holder of it that day — the same as his home today, as nothing picks yet), so the
+     Tracker binds what enterSquadron would bind it to (state/store.ts) */
+  setStorageImpl(trackerTarget(wb, BOOT_UNIT))
+  setStorageMaker((u: string) => trackerTarget(wb, u), () => pageUnit('own', todayIso()))
+  /* …and the commit gate is told which squadron's Tracker the doorway is bound to, so a change to it is judged by that
+     squadron (state/perms.ts 7f — the second fix read, Fable's plan still open 3); none bound yet, nothing is asked */
+  setTrkUnitProbe(() => storageUnit())
 
   /* inputs / roster / plan layer / stashed weeks: whiteboard → singletons,
      BEFORE initStore so its seeds know to stand down (state/persist.ts) */
@@ -95,10 +109,27 @@ function bootBody(wb: Whiteboard, policy: BootPolicy): void {
      REAL: a world that came back from storage keeps its wars, its OIL story
      and its inputs; only a first-ever boot gets the demo overlay. */
   const hadStoredWars = leaveWarStarted(wb)
+  /* THE LEAVE WAR IS ONE WORLD PER SQUADRON (multi-squadron batch 1, step 4 — the plan §3.4): each squadron's wars,
+     records and settings behind its own door (storage/adapters.ts leavewarAdapter(wb, unit)). The demo's first boot
+     stores every squadron's first world inside the boot's one group — each other squadron's first (the seed's leave
+     periods and holidays, nobody's records), then the boot unit's, which stays loaded until someone signs in and the
+     sync loads his own squadron's in its place (leavewar/sync.ts swapWarWorld). A started store — or a shared one's
+     first boot — writes no other squadron's: its world is read, or starts empty, when it is first loaded. */
+  if (!hadStoredWars && policy.seedDemo) {
+    for (const u of units()) {
+      if (u.id === BOOT_UNIT) continue
+      lwInitStore(leavewarAdapter(wb, u.id), { started: false, seedDemo: true, unit: u.id, demoRecords: false })
+      installDemoWorld(false, true, u.id)
+    }
+  }
   /* the war reads its rows on a started store, and stores the seed as rows on one that has not ([DB-READINESS] group A,
      phase 3 — leavewar/state/store.ts initStore) */
-  lwInitStore(leavewarAdapter(wb), { started: hadStoredWars, seedDemo: policy.seedDemo })
-  installDemoWorld(hadStoredWars, policy.seedDemo)
+  lwInitStore(leavewarAdapter(wb, BOOT_UNIT), { started: hadStoredWars, seedDemo: policy.seedDemo, unit: BOOT_UNIT })
+  installDemoWorld(hadStoredWars, policy.seedDemo, BOOT_UNIT)
+  /* the door a sign-in loads his own squadron's world through — started where that squadron's door holds a war (the
+     war's own test, leavewar/state/store.ts initStore), so a demo store begun before step 4 still gives 149 the seed's
+     leave periods on its first open, and a shared store's squadron with no war yet starts empty */
+  setWarWorldDoor(u => ({ backend: leavewarAdapter(wb, u), seedDemo: policy.seedDemo }))
   /* [ARCH-STACK] step 4 — the demo world files its approved leave as INPUTS
      (raw, before any command). The scheduler's warnings were computed by
      initStore before those rows existed, so re-derive them now — else a day
@@ -170,6 +201,11 @@ function bootstrapFirstAdmin(wb: Whiteboard, policy: BootPolicy): void {
   const name = normName(b.principal)
   if (!name || name.length > MAX_SIGNIN) throw new BootConfigError(`the first admin's sign-in name must be 1 to ${MAX_SIGNIN} characters.`)
   if (storedAccountNamed(name)) return
+  /* THE FIRST UNIT (multi-squadron batch 1, step 1): checked before anything is made, so a wrong value writes nothing */
+  const u = { num: '142', place: 'Home base', tz: 'Australia/Perth', ...(b.unit ?? {}) }
+  if (!validUnitNum(u.num)) throw new BootConfigError("the first squadron's number (unit.num) must be 1 to 12 letters or digits.")
+  if (!u.place || u.place.length > MAX_PLACE_NAME) throw new BootConfigError(`the first squadron's place (unit.place) must be 1 to ${MAX_PLACE_NAME} characters.`)
+  if (!validTz(u.tz)) throw new BootConfigError("the first squadron's time zone (unit.tz) is not one this browser knows — for example Australia/Perth.")
   let pid: string
   if ('personId' in b) {
     const p = (PEOPLE as any)[b.personId]
@@ -182,8 +218,18 @@ function bootstrapFirstAdmin(wb: Whiteboard, policy: BootPolicy): void {
     ;(PEOPLE as any)[pid] = personRecord(b.person)
     indexCallsigns()
   }
-  const [key, row] = firstAdminRow(name, pid)
+  /* the first admin is the store's first MASTER (D2191 — a master makes the squadrons and the other masters); his unit,
+     its place, the unit's place from today and his home there, in the same boot group — or, with it, nothing at all.
+     The unit's id is its number's (u142), the same id the demo seeds: the storage keys already carry the number, and
+     step 2 qualifies every record by this id. (Written raw: the boot runs before the command layer, as the account's
+     row always has.) */
+  const [key, row] = firstAdminRow(name, pid, true)
   wb.set('settings', key, JSON.stringify(row))
+  const unit = 'u' + u.num.toLowerCase(), place = newId('p'), up = newId('up'), home = newId('h'), from = todayIso()
+  wb.set('settings', UNIT_PFX + unit, JSON.stringify({ id: unit, num: u.num, kind: 'sqn' }))
+  wb.set('settings', PLACE_PFX + place, JSON.stringify({ id: place, name: u.place, tz: u.tz }))
+  wb.set('settings', UNITPLACE_PFX + up, JSON.stringify({ id: up, unit, place, from }))
+  wb.set('settings', HOME_PFX + home, JSON.stringify({ id: home, pid, unit, from }))
 }
 
 /* A shared store's first boot cannot start: its first admin is not configured, or not as one of the two forms, or not

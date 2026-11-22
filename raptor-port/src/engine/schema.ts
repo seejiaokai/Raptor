@@ -126,6 +126,11 @@ export type Person = {
   /** His SANS tick was made by a SANS posting on its date (D283) — the tick the posting's Undo, or Archive, takes back;
    *  absent = ticked by hand — screen (`leavewar/sync.ts`). */
   sanBy?: 'po'
+  /** The squadron his Scheduler tick was given in, and the day (ISO) — state (`state/quals-write.ts` writes them with
+   *  the tick; `state/units-model.ts schedTickHolds` reads them: the tick counts there until the start of his move day,
+   *  D2160). Absent on a ticked man: the squadron of his first home row, from always. */
+  schedOf?: string
+  schedFrom?: string
   /** Restored and not yet told: his own "Welcome back — check your quals and CAT" note shows on his next sign-in until
    *  he answers it (D305, [ONE-DOOR]) — screen (`leavewar/sync.ts restoreBody`, cleared by `person.backSeen`). */
   back?: boolean
@@ -227,6 +232,10 @@ export type Input = {
   mod: string
   /** Landing state — engine (slots.ts acceptInput / unacceptInput). */
   acc?: InputAcc
+  /** The squadron an input of ALL AVAIL / ALL alone was filed on (`u142`) — it stays there when its filer moves (the
+   *  reshape plan §12 Q1, D2243). Stamped at filing (ui/inputedit.tsx commitNewInput, commitInput; the demo seed); read by
+   *  engine/inputs.ts inputSquadrons / inputOnDay. Absent on an input naming anyone, and on one filed before the stamp. */
+  u?: string
   /** The Leave War's loop-breaker: the id of the war this leave came from (never a boolean) — screen (src/leavewar/sync.ts). */
   lw?: string
   /** Attachment id — screen (state/docs.ts). */
@@ -731,6 +740,9 @@ export type NoticePartRec = {
   /** when: its first and last day NOW, ISO, where the days moved — screen. */
   a?: string
   b?: string
+  /** oilhol: the squadron the line was written for (the reshape plan §19 PB4 — its count, dates, name and the list it
+   *  opens are that squadron's) — store. A line saved before it reads as its reader's home squadron (D56). */
+  u?: string
   /** when: its hours NOW ("10:00–11:00", "all day"), where they moved — screen. */
   t?: string
   /** add / rem: who — PEOPLE ids, a placeholder among them — screen. */

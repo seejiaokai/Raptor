@@ -136,6 +136,9 @@ describe('the table each stored row belongs to', () => {
     ['settings', 'account:acad', 'User'],
     ['settings', 'accessreq:rq1', 'AccessRequest'],
     ['settings', 'reqseen:acad', 'AccessRequestSeen'],
+    /* multi-squadron batch 1, step 1 */
+    ['settings', 'unit:u142', 'Unit'], ['settings', 'unitplace:up142', 'UnitPlace'], ['settings', 'place:p1', 'Place'],
+    ['settings', 'grant:g1', 'UnitGrant'], ['settings', 'home:h1', 'PersonHome'],
     /* the bell's notices and what each person has read of them (the one-rule build's step 7, 12 Oct 26 — D755 (3), D769):
        a notice is a row of its own collection; "read" is a row a person among the settings, never a write to the notice */
     ['settings', 'noticeseen:bane', 'NoticeSeen'],

@@ -1,0 +1,308 @@
+[
+ [
+  "S0 editsched",
+  "desktop",
+  "ad () on editsched: own-squadron names seen / other-squadron names seen",
+  "no 149 names",
+  "own: Saber,Ranger,Echo,Static; other: -",
+  "PASS",
+  "ad-editsched.png"
+ ],
+ [
+  "S0 inputs",
+  "desktop",
+  "ad () on inputs: own-squadron names seen / other-squadron names seen",
+  "no 149 names",
+  "own: Saber,Ranger,Echo,Static; other: -",
+  "PASS",
+  "ad-inputs.png"
+ ],
+ [
+  "S0 quals",
+  "desktop",
+  "ad () on quals: own-squadron names seen / other-squadron names seen",
+  "no 149 names",
+  "own: Saber,Ranger,Echo,Static; other: -",
+  "PASS",
+  "ad-quals.png"
+ ],
+ [
+  "S0 leavewar",
+  "desktop",
+  "ad () on leavewar: own-squadron names seen / other-squadron names seen",
+  "no 149 names",
+  "own: Saber,Ranger,Echo,Static; other: -",
+  "PASS",
+  "ad-leavewar.png"
+ ],
+ [
+  "S0 tracker",
+  "desktop",
+  "ad () on tracker: own-squadron names seen / other-squadron names seen",
+  "no 149 names",
+  "own: Saber,Ranger,Echo,Static; other: -",
+  "PASS",
+  "ad-tracker.png"
+ ],
+ [
+  "S0 tracker + Add",
+  "desktop",
+  "ad opens + Add",
+  "only own-squadron names",
+  "own: Saber,Ranger,Echo,Static; other: -",
+  "PASS",
+  "ad-tracker-add.png"
+ ],
+ [
+  "S0",
+  "desktop",
+  "Logout before ad2",
+  "reloaded true",
+  "{\"reloaded\":true}",
+  "PASS",
+  ""
+ ],
+ [
+  "S0 editsched",
+  "desktop",
+  "ad2 () on editsched: own-squadron names seen / other-squadron names seen",
+  "no 149 names",
+  "own: Saber,Ranger,Echo,Static; other: -",
+  "PASS",
+  "ad2-editsched.png"
+ ],
+ [
+  "S0 inputs",
+  "desktop",
+  "ad2 () on inputs: own-squadron names seen / other-squadron names seen",
+  "no 149 names",
+  "own: Saber,Ranger,Echo,Static; other: -",
+  "PASS",
+  "ad2-inputs.png"
+ ],
+ [
+  "S0 quals",
+  "desktop",
+  "ad2 () on quals: own-squadron names seen / other-squadron names seen",
+  "no 149 names",
+  "own: Saber,Ranger,Echo,Static; other: -",
+  "PASS",
+  "ad2-quals.png"
+ ],
+ [
+  "S0 leavewar",
+  "desktop",
+  "ad2 () on leavewar: own-squadron names seen / other-squadron names seen",
+  "no 149 names",
+  "own: Saber,Ranger,Echo,Static; other: -",
+  "PASS",
+  "ad2-leavewar.png"
+ ],
+ [
+  "S0 tracker",
+  "desktop",
+  "ad2 () on tracker: own-squadron names seen / other-squadron names seen",
+  "no 149 names",
+  "own: Saber,Ranger,Echo,Static; other: -",
+  "PASS",
+  "ad2-tracker.png"
+ ],
+ [
+  "S0 tracker + Add",
+  "desktop",
+  "ad2 opens + Add",
+  "only own-squadron names",
+  "own: Saber,Ranger,Echo,Static; other: -",
+  "PASS",
+  "ad2-tracker-add.png"
+ ],
+ [
+  "S0",
+  "desktop",
+  "Logout before us",
+  "reloaded true",
+  "{\"reloaded\":true}",
+  "PASS",
+  ""
+ ],
+ [
+  "S0 viewsched",
+  "desktop",
+  "us () on viewsched: own-squadron names seen / other-squadron names seen",
+  "no 149 names",
+  "own: Saber,Ranger,Echo,Static; other: -",
+  "PASS",
+  "us-viewsched.png"
+ ],
+ [
+  "S0 inputs",
+  "desktop",
+  "us () on inputs: own-squadron names seen / other-squadron names seen",
+  "no 149 names",
+  "own: Saber,Ranger,Echo,Static; other: -",
+  "PASS",
+  "us-inputs.png"
+ ],
+ [
+  "S0 quals",
+  "desktop",
+  "us () on quals: own-squadron names seen / other-squadron names seen",
+  "no 149 names",
+  "own: Saber,Ranger,Echo,Static; other: -",
+  "PASS",
+  "us-quals.png"
+ ],
+ [
+  "S0 leavewar",
+  "desktop",
+  "us () on leavewar: own-squadron names seen / other-squadron names seen",
+  "no 149 names",
+  "own: Saber,Ranger,Echo,Static; other: -",
+  "PASS",
+  "us-leavewar.png"
+ ],
+ [
+  "S0 tracker",
+  "desktop",
+  "us () on tracker: own-squadron names seen / other-squadron names seen",
+  "no 149 names",
+  "own: Saber,Ranger,Echo,Static; other: -",
+  "PASS",
+  "us-tracker.png"
+ ],
+ [
+  "S0 tracker + Add",
+  "desktop",
+  "us opens + Add",
+  "only own-squadron names",
+  "own: Saber,Ranger,Echo,Static; other: -",
+  "PASS",
+  "us-tracker-add.png"
+ ],
+ [
+  "S0",
+  "desktop",
+  "Logout before ad9",
+  "reloaded true",
+  "{\"reloaded\":true}",
+  "PASS",
+  ""
+ ],
+ [
+  "S0 editsched",
+  "desktop",
+  "ad9 () on editsched: own-squadron names seen / other-squadron names seen",
+  "no 142 names",
+  "own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -",
+  "PASS",
+  "ad9-editsched.png"
+ ],
+ [
+  "S0 inputs",
+  "desktop",
+  "ad9 () on inputs: own-squadron names seen / other-squadron names seen",
+  "no 142 names",
+  "own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -",
+  "PASS",
+  "ad9-inputs.png"
+ ],
+ [
+  "S0 quals",
+  "desktop",
+  "ad9 () on quals: own-squadron names seen / other-squadron names seen",
+  "no 142 names",
+  "own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -",
+  "PASS",
+  "ad9-quals.png"
+ ],
+ [
+  "S0 leavewar",
+  "desktop",
+  "ad9 () on leavewar: own-squadron names seen / other-squadron names seen",
+  "no 142 names",
+  "own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -",
+  "PASS",
+  "ad9-leavewar.png"
+ ],
+ [
+  "S0 tracker",
+  "desktop",
+  "ad9 () on tracker: own-squadron names seen / other-squadron names seen",
+  "no 142 names",
+  "own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -",
+  "PASS",
+  "ad9-tracker.png"
+ ],
+ [
+  "S0 tracker + Add",
+  "desktop",
+  "ad9 opens + Add",
+  "only own-squadron names",
+  "own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -",
+  "PASS",
+  "ad9-tracker-add.png"
+ ],
+ [
+  "S0",
+  "desktop",
+  "Logout before us9",
+  "reloaded true",
+  "{\"reloaded\":true}",
+  "PASS",
+  ""
+ ],
+ [
+  "S0 viewsched",
+  "desktop",
+  "us9 () on viewsched: own-squadron names seen / other-squadron names seen",
+  "no 142 names",
+  "own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -",
+  "PASS",
+  "us9-viewsched.png"
+ ],
+ [
+  "S0 inputs",
+  "desktop",
+  "us9 () on inputs: own-squadron names seen / other-squadron names seen",
+  "no 142 names",
+  "own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -",
+  "PASS",
+  "us9-inputs.png"
+ ],
+ [
+  "S0 quals",
+  "desktop",
+  "us9 () on quals: own-squadron names seen / other-squadron names seen",
+  "no 142 names",
+  "own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -",
+  "PASS",
+  "us9-quals.png"
+ ],
+ [
+  "S0 leavewar",
+  "desktop",
+  "us9 () on leavewar: own-squadron names seen / other-squadron names seen",
+  "no 142 names",
+  "own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -",
+  "PASS",
+  "us9-leavewar.png"
+ ],
+ [
+  "S0 tracker",
+  "desktop",
+  "us9 () on tracker: own-squadron names seen / other-squadron names seen",
+  "no 142 names",
+  "own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -",
+  "PASS",
+  "us9-tracker.png"
+ ],
+ [
+  "S0 tracker + Add",
+  "desktop",
+  "us9 opens + Add",
+  "only own-squadron names",
+  "own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -",
+  "PASS",
+  "us9-tracker-add.png"
+ ]
+]

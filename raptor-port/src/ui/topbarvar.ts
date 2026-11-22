@@ -3,9 +3,10 @@
    window while the page scrolls must be held UNDER it, not behind it — Edit Schedule's crew panel, whose "AIRCREW ·
    ‹ MONDAY ›" heading sat 8 from the window's top, under the bar. The bar's height is not fixed (58 to 67 on a desktop as
    its buttons wrap, taller with the "Not saved" band), so it is measured and kept on the page's root as --topbar-h, which
-   the stylesheets read (03-week.css .edit-board .eroster). D1873: it also reserves the fixed bar's space in Shell and
-   GuestApp. Keep the exact height, not rounded pixels, so the page starts at the same place as with the in-flow bar.
-   Both trees call this before paint. Without ResizeObserver it still measures on mount and window resize. */
+   the stylesheets read (03-week.css .edit-board .eroster). D1873: it also reserves the fixed bar's space in Shell (and,
+   until the guest view went with D2239, the guest page). Keep the exact height, not rounded pixels, so the page starts
+   at the same place as with the in-flow bar. The Shell calls this before paint. Without ResizeObserver it still
+   measures on mount and window resize. */
 export function syncTopbarVar(bar: HTMLElement | null) {
   if (!bar) return
   const root = document.documentElement
@@ -27,7 +28,7 @@ export function wireTopbarVar(bar: HTMLElement | null) {
      Leave the observer's delivery cycle before changing layout; collapse multiple wraps into one live read.
      Mount and window resize still measure before paint, and an unchanged height never writes anything. The bands the
      app itself puts in the bar ("Not saved", the OIL answer's bar) are written before paint by the page's own layout
-     effect calling syncTopbarVar (Shell, GuestApp), so the page moves down in the band's first frame. */
+     effect calling syncTopbarVar (Shell), so the page moves down in the band's first frame. */
   let frame = 0
   const resized = () => {
     if (!frame) frame = requestAnimationFrame(() => { frame = 0; set() })

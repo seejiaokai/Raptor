@@ -1,0 +1,68 @@
+// @vitest-environment jsdom
+/* A4 (Opus F1; Fable named it "known"): one squadron's public holiday still reaches the other squadron at the same place.
+   Correct per D2195 ("a holiday one squadron adds never touches another squadron's days, OIL or bell") and D2207 (the
+   warning names only its own squadron's days). Harness: leavewar/holidays-by-place.test.ts. */
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { HOOKS, storeBackend } from '../engine/hooks'
+import { DAYS } from '../engine/data'
+import { setDayApproved } from '../engine/publish'
+import { initStore as raptorInitStore, resetSession, notify } from '../state/store'
+import { setSession } from '../state/auth'
+import { signIn, sessionFor } from '../state/accounts'
+import { _resetTimeline } from '../undo/timeline'
+import { installGlobalUndo } from '../state/undo-wire'
+import { projectPeople } from '../leavewar/state/raptorRoster'
+import { holidayAdd, initStore as lwInitStore, lwHistInit, setPeople, setRole, worldUnit } from '../leavewar/state/store'
+import { memoryBackend, type StorageBackend } from '../leavewar/state/storage'
+import { dayFacts, nonWorkingFor, setWarWorldDoor, swapWarWorld, wireLeaveWarSync } from '../leavewar/sync'
+
+const toast = HOOKS.toast
+let doors: Record<string, StorageBackend>
+const mem: Record<string, string> = {}
+const fake = {
+  getItem: (k: string) => (k in mem ? mem[k]! : null),
+  setItem: (k: string, v: string) => { if (v === 'null') delete mem[k]; else mem[k] = v },
+  keys: () => Object.keys(mem),
+}
+const WED = '2026-07-15', WED_DI = 2
+const one = (iso: string) => ({ kind: 'ph' as const, name: '', from: iso, to: iso })
+const as = (name: string, pass: string, unit: string) => {
+  const r = signIn(name, pass); resetSession(sessionFor(r)); notify()
+  swapWarWorld(unit); setRole('admin')
+  expect(worldUnit()).toBe(unit)
+}
+const as142 = () => as('ad', 'a', 'u142'), as149 = () => as('ad9', 'a9', 'u149')
+
+beforeEach(() => {
+  vi.useFakeTimers(); vi.setSystemTime(new Date(2026, 6, 1, 9, 0, 0))
+  Object.keys(mem).forEach(k => delete mem[k])
+  storeBackend.impl = fake
+  setSession({ user: 'ad', role: 'admin' })
+  raptorInitStore()
+  doors = { u142: memoryBackend(), u149: memoryBackend() }
+  lwInitStore(doors.u142, { unit: 'u142' })
+  setPeople(projectPeople())
+  wireLeaveWarSync()
+  setWarWorldDoor(u => ({ backend: doors[u]!, seedDemo: true }))
+  _resetTimeline(); lwHistInit(); installGlobalUndo()
+  HOOKS.toast = () => {}
+  as142()
+})
+afterEach(() => {
+  setWarWorldDoor(null)
+  for (let di = 0; di < DAYS.length; di++) setDayApproved(di, false)
+  HOOKS.toast = toast; _resetTimeline(); setSession(null); vi.useRealTimers(); storeBackend.impl = null
+})
+
+describe('A4 — a holiday 142 adds stays 142’s (D2195)', () => {
+  it('149 asked from its own door: Wed 15 Jul stays a working day', () => {
+    expect(holidayAdd(one(WED))).toEqual({ ok: true })
+    expect(nonWorkingFor('u149', WED), '149’s day is untouched').toBe(false)
+  })
+  it('149’s own Leave War loaded: Wed 15 Jul is not a public holiday, and earns no OIL', () => {
+    expect(holidayAdd(one(WED))).toEqual({ ok: true })
+    as149()
+    expect(dayFacts(WED).kind, '149’s war').not.toBe('ph')
+    expect(HOOKS.oilEarningDay(WED_DI), '149 earns no OIL on 142’s holiday').toBe(false)
+  })
+})

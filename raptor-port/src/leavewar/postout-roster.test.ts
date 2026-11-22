@@ -20,7 +20,7 @@ import { storeBackend, HOOKS } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { INPUTS } from '../engine/inputs'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
-import { accountsLoad, signIn, sessionFor } from '../state/accounts'
+import { accountsLoad, signIn, sessionFor, accountOfPid } from '../state/accounts'
 import { commandStream, commitProjection } from '../command'
 import type { CommitEnvelope } from '../command'
 import { peopleStore, revertUnsavedPeople } from '../state/people-settings-commit'
@@ -303,7 +303,8 @@ describe('the hard rule: a posting pass changes a person only where it carries o
     const e = realPass('bane', 'overseas')
     const p = ch(e, 'lw.postouts', 'bane')
     p.after.to = '2026-08-01'; p.after.poDone = '2026-08-02'
-    expect(ownershipViolation(e)).toMatch(/people\/bane/)
+    /* refused at the posting record itself since fix read 13's item B: the pass never changes a posting's date */
+    expect(ownershipViolation(e)).toMatch(/posting pass may change only.*\(lw\.postouts\/bane\)/)
   })
   it('once the accounts are stored, the posted man’s own account row alone (suspended) passes', () => {
     const e = realPass('bane', 'overseas')
@@ -314,6 +315,27 @@ describe('the hard rule: a posting pass changes a person only where it carries o
     expect(ownershipViolation(e)).toBeNull()
     ;(acc as any).after = { ...(acc.after as any), role: 'admin' }
     expect(ownershipViolation(e), 'his role changed with it').toMatch(/settings\/account:/)
+  })
+  /* multi-squadron batch 1, step 1: the master mark rides on the accounts' first write as the seed has it (Saber's), and
+     the pass never sets it on the man it posts out */
+  it('the master mark: the accounts\' first write carries the seed\'s as seeded, never dropped', () => {
+    const first = realPass('bane', 'overseas')
+    expect(first.changes.some(c => c.id === 'account:acad' && (c.after as any)?.master === true), 'Saber\'s seeded mark').toBe(true)
+    expect(ownershipViolation(first)).toBeNull()
+    const forged = structuredClone(first)
+    ;(forged.changes.find(c => c.id === 'account:acad')!.after as any).master = undefined
+    /* refused twice over: the master check (a mark changed outside its own command) answers first, the posting pass's
+       first-write rule (the seed's own row) would too */
+    expect(ownershipViolation(forged), 'the seed\'s mark dropped on the way').toMatch(/master mark|settings\/account:acad/)
+  })
+  it('the master mark: once the accounts are stored, the pass may not set it on the man it posts out', () => {
+    const e = realPass('bane', 'overseas')
+    const acc = e.changes.find(c => c.collection === 'settings' && (c.after as any)?.pid === 'bane')!
+    ;(acc as any).before = { ...(acc.after as any), on: true }
+    delete (acc as any).before.offBy
+    e.changes = e.changes.filter(c => c.collection !== 'settings' || c === acc)
+    ;(acc as any).after = { ...(acc.after as any), master: true }
+    expect(ownershipViolation(e), 'the posted man made a master').toMatch(/master|settings\/account:/)
   })
   /* each condition of the tightened rule with a test only it satisfies (the break list, walk-scripts §9) */
   const storedAccountsPass = (): CommitEnvelope => {
@@ -355,7 +377,9 @@ describe('the hard rule: a posting pass changes a person only where it carries o
     const e = realPass('rocky', 'sans')
     expect(e.changes.some(c => c.collection === 'settings'), 'a SANS pass writes no account row').toBe(false)
     e.changes.push({ op: 'put', collection: 'settings', id: 'account:zz8', before: null, after: { id: 'zz8', name: 'evil', role: 'admin', pid: 'rocky', on: true } } as any)
-    expect(ownershipViolation(e)).toMatch(/settings\/account:zz8/)
+    /* refused either way: with no account stored yet, a list holding only the new row drops the seeded master too, so the
+       master check (the gate's section 6, the full check of 18 Nov 26) may be the one that names it */
+    expect(ownershipViolation(e)).toMatch(/settings\/account:zz8|master mark/)
   })
   it('on the accounts’ first write, the posted man’s own new row with another role is refused', () => {
     const e = realPass('bane', 'overseas')
@@ -403,5 +427,43 @@ describe('the hard rule: a posting pass changes a person only where it carries o
     const e = realPass('rocky', 'sans')
     e.changes.push({ op: 'put', collection: 'settings', id: 'account:zz9', before: { id: 'zz9', name: 'us', role: 'member', pid: 'bane', on: true }, after: { id: 'zz9', name: 'us', role: 'admin', pid: 'bane', on: true } } as any)
     expect(ownershipViolation(e)).toMatch(/settings\/account:zz9/)
+  })
+})
+
+/* THE PASS STORES THE ACCOUNTS ON ITS FIRST TRY (the fix read of multi-squadron batch 1's full check, 18 Nov 26). On a store
+   that had never written its accounts, a Delete's pass wrote "nothing" over Ranger's account row (never stored — a change
+   the gate refuses), and a SANS man due beside an Overseas Sqn one had his seeded account judged as if suspended: both
+   passes were refused, and ran only on the pass's own retry — whose command then carried no account row at all, so the
+   suspension of an Overseas Sqn posting lived in memory only and was gone on the next load. Found when Opus 1's loop
+   break ended that retry. Each test reads the ONE pass command that landed. */
+describe('the pass stores the accounts on its first try, on a store that never wrote them', () => {
+  const acctIds = (e: CommitEnvelope) => e.changes.filter(c => c.collection === 'settings' && String(c.id).startsWith('account:')).map(c => String(c.id))
+  it('Delete: the list it stores leaves his account out, every other seeded account stored', () => {
+    postAhead('bane', 'delete')
+    const n = commandStream().length
+    runPoOutcomes()
+    const envs = passEnvs(n)
+    expect(envs).toHaveLength(1)
+    const ids = acctIds(envs[0]!)
+    expect(ids, 'the seeded list stored with it').toContain('account:acad')
+    expect(ids, 'his account simply left out').not.toContain('account:acus')
+    accountsLoad()
+    expect(accountOfPid('bane'), 'gone after a reload').toBeUndefined()
+    expect(accountOfPid('stiff'), 'Saber’s kept').toBeTruthy()
+  })
+  it('Overseas Sqn and SANS at once: his account stored suspended, the SANS man’s as it was, and so after a reload', () => {
+    expect(postOut('bane', POSTDATE, 'overseas')).toBe(true)
+    expect(postOut('rocky', POSTDATE, 'sans')).toBe(true)
+    vi.setSystemTime(new Date(2026, 6, 21, 9, 0, 0))
+    const n = commandStream().length
+    runPoOutcomes()
+    const envs = passEnvs(n)
+    expect(envs).toHaveLength(1)
+    const ch = (id: string): any => envs[0]!.changes.find(c => c.id === id)
+    expect(ch('account:acus')?.after?.on, 'Ranger’s account stored suspended').toBe(false)
+    expect(ch('account:achex')?.after?.on, 'the SANS man’s stored as seeded').toBe(true)
+    accountsLoad()
+    expect(accountOfPid('bane')?.on, 'still suspended after a reload').toBe(false)
+    expect(accountOfPid('rocky')?.on).toBe(true)
   })
 })

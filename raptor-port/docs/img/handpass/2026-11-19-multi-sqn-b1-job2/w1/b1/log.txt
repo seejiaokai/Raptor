@@ -1,0 +1,37 @@
+msq-j2-w1-b v1 B1,B2,B3,B4,B5,B6,C
+pids {"Harrier":"har9","Heron":"her9","Raven":"rav9","Shrike":"shr9","Gannet":"gan9","Condor":"con9","Falcon":"fal9"}
+ROW PASS | W1-B1 | desktop | ad9 grants Harrier an OIL award by hand (a day cell → its window → Grant OIL, a reason, Give FO) on T-1 2026-11-18 and T+7 2026-11-26 | saw: T-1: FO {duty.act.hasc} ; T+7: FO {duty.act.hasc} ; person window: OIL 2
+ROW PASS | W1-B1 | desktop | ad9 grants Heron an OIL award by hand (a day cell → its window → Grant OIL, a reason, Give FO) on T-1 2026-11-18 and T+7 2026-11-26 | saw: T-1: FO {duty.act.hasc} ; T+7: FO {duty.act.hasc} ; person window: OIL 2
+ROW PASS | W1-B1 | desktop | ad9 grants Raven an OIL award by hand (a day cell → its window → Grant OIL, a reason, Give FO) on T-1 2026-11-18 and T+7 2026-11-26 | saw: T-1: FO {duty.act.hasc} ; T+7: FO {duty.act.hasc} ; person window: OIL 2
+ROW PASS | W1-B1 | desktop | ad9 grants Shrike an OIL award by hand (a day cell → its window → Grant OIL, a reason, Give FO) on T-1 2026-11-18 and T+7 2026-11-26 | saw: T-1: FO {duty.act.hasc} ; T+7: FO {duty.act.hasc} ; person window: OIL 2
+B2 notes Harrier archived — name — Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Com | Heron archived — name — Condor Falcon Gannet Heron Kestrel Merlin Osprey R
+B2 Harrier 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=FO PO|duty.act.pofin.bx-last.hasc  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=FO|gone.outlv.act.hasc.bx-gone  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc
+B2 Heron 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=FO PO|duty.act.pofin.bx-last.hasc  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=FO|gone.outlv.act.hasc.bx-gone  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc
+ROW PASS | W1-B2 | desktop | ad archives Harrier; ad9 archives Heron; 149 war rows compared | saw: Harrier: 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=FO PO|duty.act.pofin.bx-last.hasc  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=FO|gone.outlv.act.hasc.bx-gone  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc ; OIL OIL 2 ;; Heron: 11-15
+ROW RECORD | W1-B2 | desktop | what each man's T+7 award does | saw: Harrier T+7 FO {gone.outlv.act.hasc.bx-gone} ; Heron T+7 FO {gone.outlv.act.hasc.bx-gone}
+ROW PASS | W1-B3 | desktop | ad: Raven → Delete (first press), Cancel, reopen | saw: first press: Tap again to delete Raven Cancel Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone. ▸ Archived · 2 Add a person Callsign/Name Initia ; after reopen the button reads: Delete
+B3 raven after  Raven deleted — name — Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cu
+undo count 1
+undo press failed locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('
+ROW FAIL | W1-B3 | desktop | ad deletes Raven (two presses), then top-bar Undo once | saw: Users search "Raven": Raven deleted
+ROW FAIL | W1-B3 | desktop | ad9 deletes Shrike (two presses), then Undo once | saw: Users search "Shrike": Shrike deleted
+B3 Raven 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=FO PO|duty.act.pofin.bx-last.hasc  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=PO|gone.act.hasc  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc
+B3 Shrike 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=FO PO|duty.act.pofin.bx-last.hasc  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=PO|gone.act.hasc  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc
+ROW PASS | W1-B3 | desktop | 149's war: Raven's (deleted by ad) and Shrike's (by ad9) rows | saw: Raven: 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=FO PO|duty.act.pofin.bx-last.hasc  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=PO|gone.act.hasc  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc ;; Shrike: 11-15=|weekend.act  11-16=|.act 
+ROW RECORD | W1-B4 | desktop | ad: archived Harrier, post-in 2026-11-16 (before T), Restore | saw: date box: Mon 16 Nov 26▾ ; words: (no refusal words seen) ; still archived: true
+STEP FAILED B4 locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#accArPostIn')[22m
+
+ROW OWED | B4 | desktop | script step | saw: script error: locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#accArPostIn')[22m
+
+B5 GannetX pid gan9 Gannet pid gan9
+ROW RECORD | W1-B5 | desktop | ad archives Gannet, types GannetX in the Archived fold row, button, T+2, Restore as…; ad9 views | saw: button read: Restore as GannetX ; war row: 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=PO|.act.pofin.bx-last  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=|weekend.act  11-22=|weekend.act  11-23=|.act  11-24=|.act  11-25=|.act  11-26=|.act  11-27=|.act  11-28=|weekend.act ; GannetX pid: gan9 ; Users: GannetX no sign-in · WSO · CAT OCU POSTING IN 21 NOV ▸ Archived · 2 ADD A PERSON 
+B6 save name count 1 controls Condorno sign-in · Pilot · CAT OCUArchiv | CondorZ | Post in: Thu 19 Nov 2026 | Restore as CondorZ | Save name | Delete | Cancel
+ROW RECORD | W1-B6 | desktop | ad archives Condor, types CondorZ, presses Save name | saw: controls: Condorno sign-in · Pilot · CAT OCUArchiv | CondorZ | Post in: Thu 19 Nov 2026 | Restore as CondorZ | Save name | Delete | Cancel ; Users: Archived · 3 SIGN-IN ROSTER CondorZ no sign-in · Pilot · CAT OCU Archived 19 Nov 26 by Saber CALLSIGN/NAME POST IN Thu 19 Nov 26 ▾ The Leave War counts him from the post-in date. Restore Delete Cancel ADD A PERSON CALLSIGN/NAME INITIALS PILOT, WSO OR P
+errors []
+DONE 7 PASS 2 FAIL 5 OTHER of 14

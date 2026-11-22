@@ -1,0 +1,25 @@
+msq-j2-w1-d v1
+ROW RECORD | W1-D | desktop | ad: Users, search Ranger, open row, type in the sign-in box, Cancel, reopen | saw: sign-in box after reopen reads: "us"
+ROW PASS | W1-D | desktop | ad: open Hunter's row, close it by pressing his name again | saw: editor visible after open: true; after pressing name again: false
+cats Pick…,OCU,D,C,B,A,IP,IR,FI
+ROW PASS | W1-D | desktop | add-person form: open the Post in calendar, press outside it | saw: calendar visible before: true after: false ; callsign box: J2Saber ; post in: Thu 19 Nov 26▾
+ROW RECORD | W1-D | desktop | add J2Saber, initials JJ, Pilot, CAT OCU, post in T+1 | saw: post-in box read: Fri 20 Nov 26▾ ; words: J2Saber O 0 Recon O 31 Talisman O 0 Wildcard O 17 ▾ Personnel · 3 Cotter G 0 Ratchet G  ; note: J2Saber added to the roster — set flight and quals on the Quals page — name — Ace Anvil Bashe
+ROW RECORD | W1-D | desktop | ad opens Quals; is J2Saber listed, whose squadron's Quals | saw: J2Saber on page: true ; Ranger (142): true ; Kestrel (149): false ; top: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout SABER · ADMI
+STEP FAILED D4 locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: 'Close', exact: true }).last()[22m
+
+ROW OWED | D4 | desktop | script step | saw: script error: locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: 'Close', exact: true }).last()[22m
+
+STEP FAILED D5 locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('tr:has([data-testid="cell-bane-2026-11-19"]) .puck').first()[22m
+[2m    - locator resolved to <span class="puck">…</sp
+ROW OWED | D5 | desktop | script step | saw: script error: locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('tr:has([data-testid="cell-bane-2026-11-19"]) .puck').first()[22m
+[2m
+errors []
+DONE 2 PASS 0 FAIL 5 OTHER of 7

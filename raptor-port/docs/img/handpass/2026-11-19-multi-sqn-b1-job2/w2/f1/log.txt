@@ -1,0 +1,41 @@
+msq-j2-w2-f v1
+ad2 pids bane shaft prowler
+ROW PASS | W2-F ad2 | desktop | ad2: Users, Ranger's row, type in the sign-in box, Cancel, reopen | saw: box present true; after reopen reads "us"
+ROW PASS | W2-F ad2 | desktop | ad2: open Anvil's row, close it by pressing his name again | saw: editor visible open: true; after name pressed again: false
+ROW PASS | W2-F ad2 | desktop | ad2: Add a person, calendar open, press outside | saw: calendar visible before true after false; callsign box: Fad2X
+ROW PASS | W2-F ad2 | desktop | ad2: reopen calendar, pick T+1 | saw: post-in box: Fri 20 Nov 26▾
+ROW PASS | W2-F ad2 | desktop | ad2: Hunter's cell 2026-11-24 → day window → ⋯ | saw: list: Grant OIL | Post out
+STEP FAILED ad2-war locator.fill: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('input[placeholder^="why"]')[22m
+
+ROW OWED | ad2-war | desktop | script step | saw: script error: locator.fill: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('input[placeholder^="why"]')[22m
+
+STEP FAILED ad2-approvals locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: /Approvals/ }).first()[22m
+
+ROW OWED | ad2-approvals | desktop | script step | saw: script error: locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: /Approvals/ }).first()[22m
+
+STEP FAILED ad2-sheet locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-testid="cell-prowler-2026-11-26"]').first()[22m
+[2m    - locator resolved to <td class=" act" data-testid="cell-prowler-2026-11-26"></td>[22m
+[2m  - attempting click action[22m
+[2m    - waiting for element to
+ROW OWED | ad2-sheet | desktop | script step | saw: script error: locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-testid="cell-prowler-2026-11-26"]').first()[22m
+[2m    - locator resolved to <td class=" act" data-testid="cell-
+ad2 gear count 1
+STEP FAILED ad2-gear locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('button[aria-label*="ettings" i]:visible, button[title*="ettings" i]:visible, button:visible:has(svg[class*=gear])').first()[22m
+[2m    - locator resolved to <button type="button" class="lw-gear" aria-label="Settings" d
+ROW OWED | ad2-gear | desktop | script step | saw: script error: locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('button[aria-label*="ettings" i]:visible, button[title*="ettings" i]:visible, button:visible:has(svg[class*=gear])').firs

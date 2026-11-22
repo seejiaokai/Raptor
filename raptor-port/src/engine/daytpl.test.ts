@@ -263,10 +263,12 @@ describe('applyDayTpl', () => {
   })
 })
 
+/* a unit's setting is stored under its unit (multi-squadron batch 1, step 2 — engine/hooks.ts storedKey): the boot unit's
+   `stores` is the stored key `sqn142_u142@stores` */
 describe('persistence, like dutytpl', () => {
   it('the empty library writes nothing, and a saved template survives a reload', () => {
     dayTplSave()
-    expect('sqn142_daytpl' in mem ? JSON.parse(mem['sqn142_daytpl']!) : 'unset').toBe(null)
+    expect('sqn142_u142@daytpl' in mem ? JSON.parse(mem['sqn142_u142@daytpl']!) : 'unset').toBe(null)
     addDayTpl(0, 'Keeper')
     dayTplSave()
     addDayTpl(0, 'Scratch')   // live edit after the save
@@ -284,7 +286,7 @@ describe('persistence, like dutytpl', () => {
   })
 
   it('garbage in storage falls back to empty, dropping bad entries', () => {
-    mem['sqn142_daytpl'] = JSON.stringify([
+    mem['sqn142_u142@daytpl'] = JSON.stringify([
       { id: 'x', title: 'Ok', d: { notes: ['n'], allhands: 'nope', waves: [], sims: { amt: [] }, dutywaves: [], ground: [], simnotes: 5, prognotes: '', dutynotes: '', grndnotes: '' } },
       'not a template',
       { title: 'no d blob' },
@@ -304,7 +306,7 @@ describe('persistence, like dutytpl', () => {
   it('an id-less entry ahead of a literal dtN id does not collide with it', () => {
     /* a hand-edited file: an entry with no id sits BEFORE one that reads 'dt1'.
        Minting must skip 'dt1' rather than reuse it, so both stay addressable. */
-    mem['sqn142_daytpl'] = JSON.stringify([
+    mem['sqn142_u142@daytpl'] = JSON.stringify([
       { title: 'no id', d: {} },
       { id: 'dt1', title: 'literal dt1', d: {} },
     ])
@@ -315,7 +317,7 @@ describe('persistence, like dutytpl', () => {
   })
 
   it('a non-array blob resets to empty', () => {
-    mem['sqn142_daytpl'] = JSON.stringify({ nope: true })
+    mem['sqn142_u142@daytpl'] = JSON.stringify({ nope: true })
     dayTplLoad()
     expect(DAYTPL_CFG).toEqual([])
   })
@@ -325,7 +327,7 @@ describe('persistence, like dutytpl', () => {
     dayTplSave()
     dayTplReset()
     expect(DAYTPL_CFG).toEqual([])
-    expect(mem['sqn142_daytpl'] ? JSON.parse(mem['sqn142_daytpl']) : null).toBe(null)
+    expect(mem['sqn142_u142@daytpl'] ? JSON.parse(mem['sqn142_u142@daytpl']) : null).toBe(null)
   })
 })
 
@@ -350,7 +352,7 @@ describe('a day template remembers the section order (owner, 29 Aug 26)', () => 
   })
 
   it('a hand-edited storage file has its secOrder cleaned (unknowns and repeats dropped)', () => {
-    mem['sqn142_daytpl'] = JSON.stringify([{
+    mem['sqn142_u142@daytpl'] = JSON.stringify([{
       id: 'dt1', title: 'junk', d: {
         notes: [], allhands: [], waves: [], sims: {}, dutywaves: [], ground: [],
         simnotes: '', prognotes: '', dutynotes: '', grndnotes: '',

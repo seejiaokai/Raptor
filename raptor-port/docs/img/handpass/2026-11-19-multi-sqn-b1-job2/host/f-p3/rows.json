@@ -1,0 +1,119 @@
+[
+ [
+  "W3-F host",
+  "iPhone",
+  "ad9: Add a person -> tap the Post in date",
+  "the calendar opens, inside the screen",
+  "day 2026-11-20 shown: true; calendar box: [39,344,363,608] inside: true",
+  "PASS",
+  "f01-cal-open.png"
+ ],
+ [
+  "W3-F host",
+  "iPhone",
+  "taps outside the calendar at [200,758]",
+  "the calendar closes, the form as it was",
+  "day still shown: false",
+  "PASS",
+  "f02-cal-outside.png"
+ ],
+ [
+  "W3-F host",
+  "iPhone",
+  "reopens the calendar, taps Fri 20 Nov",
+  "the calendar closes, the date reads 20 Nov",
+  "Post in reads \"Fri 20 Nov 26▾\"; calendar still shown: false",
+  "PASS",
+  "f03-cal-picked.png"
+ ],
+ [
+  "W3-F host",
+  "iPhone",
+  "ad9 taps Merlin's name on the war grid",
+  "his window opens, inside the screen, named Merlin",
+  "open: true; name: \"Merlin\"; window box: [23,224,379,261] inside: true",
+  "PASS",
+  "f11-name-window.png"
+ ],
+ [
+  "W3-F host",
+  "iPhone",
+  "presses the window's ✕",
+  "the window goes, the grid as it was",
+  "window still shown: false",
+  "PASS",
+  "f12-name-closed.png"
+ ],
+ [
+  "W3-F host",
+  "iPhone",
+  "ad9 taps Merlin's Mon 23 Nov",
+  "the day window opens, inside the screen",
+  "open: true; cell box [184,397,205,414]; window box [25,616,377,653] inside: true",
+  "PASS",
+  "f13-day-window.png"
+ ],
+ [
+  "W3-F host",
+  "iPhone",
+  "presses the window's ⋯",
+  "its list opens, inside the screen",
+  "items: [\"Attach\",\"Other\",\"Post out\",\"Post in\"]; last item box [232,770,372,808] inside: true",
+  "PASS",
+  "f14-dots-open.png"
+ ],
+ [
+  "W3-F host",
+  "iPhone",
+  "presses ⋯ again",
+  "the list closes, the window stays",
+  "menu items still shown: 0; window still open: true",
+  "PASS",
+  "f15-dots-closed.png"
+ ],
+ [
+  "W3-F host",
+  "iPhone",
+  "presses the window's ✕",
+  "the window goes, the grid as it was",
+  "window still shown: false",
+  "PASS",
+  "f16-day-closed.png"
+ ],
+ [
+  "W3-F host",
+  "iPhone",
+  "reads how tall the Leave War page is against the screen",
+  "RECORD",
+  "{\"doc\":874,\"view\":874}",
+  "RECORD",
+  "f10-war.png"
+ ],
+ [
+  "W3-F host",
+  "iPhone",
+  "taps the bell",
+  "its list opens, inside the screen",
+  "open: true; box [8,46,394,106] inside: true; words: Nothing new",
+  "PASS",
+  "f20-bell-open.png"
+ ],
+ [
+  "W3-F host",
+  "iPhone",
+  "taps the bell again",
+  "the list closes",
+  "list still shown: false",
+  "PASS",
+  "f21-bell-bell.png"
+ ],
+ [
+  "W3-F host",
+  "iPhone",
+  "opens the bell, taps outside it at [20,860]",
+  "the list closes",
+  "list still shown: false",
+  "PASS",
+  "f22-bell-outside.png"
+ ]
+]

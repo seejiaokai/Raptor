@@ -1,0 +1,7 @@
+msq-j2-host-probe v1 desktop
+Osprey pid osp9
+row found 1
+buttons ↶ Undo | ↷ Redo | Sync · slow | Insights | Logout | Saber · Admin | Jul 06 | Jul 13 | Jul 20 | Jul 27 | CAT | Type | Quals | Templates | Live working copy▾ | i | Publish day | Make public | Traffic | + In-time | ✕ | ✕ | C | C | C | C | Traffic | + In-time | ✕ | ✕ | C | C | C | C | Make public | Make public | Make public | CPTallyOFPM | OML | ATT C | Templates | Live working copy▾ | i | Publish day | Make public | Traffic | + In-time | ✕ | ✕ | C | C | C | C | Traffic | + In-time | ✕ | ✕ | C | C | C | C | Make public | Make public | Make public | ZuluOF/O/Aall day | RebelBFall day | LL | OIL | ATT C | Templates | Live working copy▾ | i | Publish day | Make public | Traffic | + In-time | ✕ | ✕ | C | C
+lw text 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout SABER · ADMIN Grid Approvals 13 Balances OIL VIEW JAN - DEC 26 JAN - DEC 27 + New period MY LEAVE LVE 17.5 · OIL 0 · 0 pending › ▾ Manning Bidding closed Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC 2026 CS/Name +LVE JAN THU 01 FRI 02 SAT 03 SUN 04 MON 05 TUE 06 WED 07 THU 08 FRI 0
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

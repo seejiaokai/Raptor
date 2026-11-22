@@ -78,10 +78,12 @@ describe('add / rename / delete / move', () => {
   })
 })
 
+/* a unit's setting is stored under its unit (multi-squadron batch 1, step 2 — engine/hooks.ts storedKey): the boot unit's
+   `stores` is the stored key `sqn142_u142@stores` */
 describe('save / load round-trip', () => {
   it('writes null while the list is standard', () => {
     cxReasonsSave()
-    expect(mem['sqn142_cxreasons']).toBe(JSON.stringify(null))
+    expect(mem['sqn142_u142@cxreasons']).toBe(JSON.stringify(null))
   })
   it('round-trips a customised list, order intact', () => {
     addCxReason('DIVERTED'); delCxReason(0); moveCxReason(0, 2)
@@ -104,7 +106,7 @@ describe('a list emptied on purpose', () => {
   it('stays empty after a reload', () => {
     while (CXR_CFG.length) delCxReason(0)
     cxReasonsSave()
-    expect(mem['sqn142_cxreasons'], 'the writer stores the empty list').toBe('[]')
+    expect(mem['sqn142_u142@cxreasons'], 'the writer stores the empty list').toBe('[]')
     addCxReason('DIVERGE')
     cxReasonsLoad()
     expect(CXR_CFG, 'the standard reasons do not come back').toEqual([])
@@ -112,7 +114,7 @@ describe('a list emptied on purpose', () => {
 })
 
 describe('a hand-edited blob is untrusted', () => {
-  const load = (raw: any) => { mem['sqn142_cxreasons'] = JSON.stringify(raw); cxReasonsLoad() }
+  const load = (raw: any) => { mem['sqn142_u142@cxreasons'] = JSON.stringify(raw); cxReasonsLoad() }
   it('falls back to standard when the blob is not an array', () => {
     addCxReason('DIVERGE')
     load({ wx: true })
@@ -132,7 +134,7 @@ describe('a hand-edited blob is untrusted', () => {
     expect(cxrAreStandard()).toBe(true)
   })
   it('survives a corrupt JSON string without throwing', () => {
-    mem['sqn142_cxreasons'] = '{not json'
+    mem['sqn142_u142@cxreasons'] = '{not json'
     expect(() => cxReasonsLoad()).not.toThrow()
     expect(cxrAreStandard()).toBe(true)
   })

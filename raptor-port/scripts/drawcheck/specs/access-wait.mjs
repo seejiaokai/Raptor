@@ -14,11 +14,17 @@
 //     DRAWCHECK_DRAWN_ON='main at 42df6337b' node --import ./scripts/drawcheck/record.mjs scripts/handpass/aw1105-mock.mjs
 //   (and again with ONLY=C for the desktop)
 // Check a build:  node scripts/drawcheck/check.mjs scripts/drawcheck/specs/access-wait.mjs --dist dist --out <folder>
+//
+// SINCE HIS D2239 (20 Nov 26 — the guest view removed): the drawings still show the line "Meanwhile you can look at the
+// schedule, read only." and the "View the schedule" button, which the build no longer draws; Sign out and "Signed in
+// as …" follow the steps directly. The drawings and their records are left as approved. This part list drops ONLY the
+// two removed parts (`read-only`, `view`); every other part is still measured against the drawing, so the check now
+// lists what moved because they went — the card shorter, Sign out and "Signed in as …" higher — for him to see.
 import { fileURLToPath } from 'node:url'
 
-// the drawing's own way there (aw1105-mock.mjs reachWaiting, through aw1105-lib.mjs open / signIn / signOut): the admin
-// turns on the guest switch on Admin → Users, signs out; a stranger signs in and asks for access as Stranger / ST /
-// Pilot / OCU
+// the way there: a stranger signs in and asks for access as Stranger / ST / Pilot / OCU. (The drawing's way —
+// aw1105-mock.mjs reachWaiting — first had the admin turn on the guest switch on Admin → Users and sign out; the switch
+// went with the guest view, D2239, so the build's side starts at the stranger's sign-in.)
 const QUIET = '*{scroll-behavior:auto !important} *,*::before,*::after{transition:none !important;animation:none !important}'
 async function signIn(page, user, pass) {
   await page.waitForSelector('#luser')
@@ -26,23 +32,9 @@ async function signIn(page, user, pass) {
   await page.click('#loginForm button[type=submit]')
   await page.waitForTimeout(900)
 }
-async function signOut(page) {
-  const vis = async sel => page.locator(sel).first().isVisible().catch(() => false)
-  for (const sel of ['#logout', '#guestOut', '#accOut']) if (await vis(sel)) { await page.locator(sel).first().click(); await page.waitForTimeout(700); return }
-  const burger = page.locator('#burger')
-  if (await burger.isVisible().catch(() => false)) { await burger.click(); await page.waitForTimeout(400) }
-  await page.getByRole('button', { name: /Log ?out|Sign out/i }).first().click()
-  await page.waitForTimeout(700)
-}
 async function reachWaiting(page, { origin }) {
   await page.goto(origin + '/')
   await page.addStyleTag({ content: QUIET }).catch(() => {})
-  await signIn(page, 'ad', 'a')
-  await page.evaluate(() => window.go('admin')); await page.waitForTimeout(500)
-  await page.locator('.adm-cat').filter({ hasText: 'Users' }).first().click(); await page.waitForTimeout(400)
-  if (!(await page.locator('#admGuestView').isChecked())) await page.locator('#admGuestView').click()
-  await page.waitForTimeout(300)
-  await signOut(page)
   await signIn(page, 'stranger', 'x')
   if (!(await page.locator('#accCs').count())) return 'the access request form did not open for a stranger signing in'
   await page.fill('#accCs', 'Stranger'); await page.fill('#accIni', 'ST')
@@ -70,8 +62,9 @@ const parts = [
   P('steps', 'the steps row', `${C} .aw-steps`, `${C} .pass-steps`, ['place', 'size'], { rel: 'card' }),
   ...[1, 2, 3].map(n => P('step-' + n, ['', 'step 1 "Request sent"', 'step 2 "An admin approves"', 'step 3 "You\'re on the schedule"'][n], `${C} .aw-steps > li:nth-child(${n})`, `${C} .pass-steps > li:nth-child(${n})`, ['place', 'size', 'words-place', 'colour', 'letters', 'text'], { rel: 'steps' })),
   ...[1, 2, 3].map(n => P('dot-' + n, `step ${n}'s dot`, `${C} .aw-steps > li:nth-child(${n}) .aw-dot`, `${C} .pass-steps > li:nth-child(${n}) .pass-dot`, ['place', 'size', ...LOOK], { rel: 'steps' })),
-  P('read-only', 'the read-only line', `${C} .awb-bot > p.acc-p`, `${C} .pass-foot > p.acc-p`, ['place', 'size', 'words-x', 'colour', 'text'], { rel: 'card' }),
-  P('view', '"View the schedule"', `${C} #accGuest`, `${C} #accGuest`, ['place', 'size', ...LOOK, 'colour', 'text'], { rel: 'card' }),
+  /* (`read-only` — the line "Meanwhile you can look at the schedule, read only." — and `view` — the "View the schedule"
+     button — stood here: both are removed from the screen with the guest view, his D2239, so neither is measured; the
+     drawing still shows them) */
   P('sign-out', '"Sign out"', `${C} #accOut`, `${C} #accOut`, ['place', 'size', ...LOOK, 'colour', 'text'], { rel: 'card' }),
   P('signed-in-as', '"Signed in as …"', `${C} .awc-who`, `${C} .pass-who`, ['place', 'size', 'words-x', 'colour', 'text'], { rel: 'card' }),
 ]
@@ -103,5 +96,18 @@ export default {
        difference of design (the drawing check, 5 Nov 26) */
     { state: 'pass-desk', part: 'sign-out', check: 'edge', why: 'the drawing state: Sign out under the resting pointer (its hover look), not a design difference' },
     { state: 'pass-desk', part: 'sign-out', check: 'colour', why: 'the drawing state: Sign out under the resting pointer (its hover look), not a design difference' },
+    /* what moved because the read-only line and "View the schedule" went (his D2239): the card 88px shorter, Sign out and
+       "Signed in as …" 88px higher in it, and on the desktop the centred card 44px lower — each kept at the value built
+       (21 Nov 26, helper "left2"), so any further move is new */
+    ...[
+      ['pass-phone', 'card', 'height', '347.4'],
+      ['pass-phone', 'sign-out', 'place', '263.4'],
+      ['pass-phone', 'signed-in-as', 'place', '312.4'],
+      ['pass-desk', 'card', 'place', '287.3'],
+      ['pass-desk', 'card', 'height', '357.4'],
+      ['pass-desk', 'sign-out', 'place', '271.4'],
+      ['pass-desk', 'signed-in-as', 'place', '320.4'],
+    ].map(([state, part, check, build]) => ({ state, part, check, build,
+      why: 'his D2239 (20 Nov 26): the guest view removed — the read-only line and "View the schedule" are gone, so the card is shorter and what was under them sits higher' })),
   ],
 }

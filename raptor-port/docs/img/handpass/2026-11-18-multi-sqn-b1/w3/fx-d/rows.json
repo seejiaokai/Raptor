@@ -1,0 +1,137 @@
+[
+ [
+  "F2",
+  "desktop",
+  "ad presses Archive on Kestrel",
+  "Kestrel is 149's last admin. Make another admin of 149 first.",
+  "Kestrel is 149's last admin. Make another admin of 149 first.",
+  "PASS",
+  "f2-02-archive.png"
+ ],
+ [
+  "F2",
+  "desktop",
+  "ad sets Kestrel to Member and saves",
+  "Kestrel is 149's last admin. Make another admin of 149 first.",
+  "Kestrel is 149's last admin. Make another admin of 149 first.",
+  "PASS",
+  "f2-03-role-member.png"
+ ],
+ [
+  "F2",
+  "desktop",
+  "ad looks for the schedules menu (\"142 ▾\") at the top left of the Leave War, and clicks the \"142 TALON\" mark",
+  "a menu offering 149",
+  "no menu opened; top-left reads: 142TALON | buttons with ▾ in top bar: ",
+  "RECORD",
+  "f2-05-top-left-clicked.png"
+ ],
+ [
+  "F2",
+  "desktop",
+  "ad9 (149's only admin, in 149's Leave War) opens Kestrel's Post out, Overseas Sqn, today",
+  "Kestrel is 149's last admin. The posting waits until 149 has another admin.",
+  "Kestrel is 149's last admin. The posting waits until 149 has another admin.",
+  "PASS",
+  "f2-07-kestrel-postout-sheet.png"
+ ],
+ [
+  "F2",
+  "desktop",
+  "ad9 presses Post out for Kestrel",
+  "the posting waits: his row says the posting waits (or the sheet refuses in the same words)",
+  "WED 23 THU 24 FRI 25 SAT 26 SUN 27 MON 28 TUE 29 WED 30 THU 31 Kestrel is 149's last admin. The posting waits until 149 has another admin. — name — Condor Falcon Gannet Harrier Heron Kestrel Merlin Osprey Raven",
+  "PASS",
+  "f2-08-after-post-out.png"
+ ],
+ [
+  "F3",
+  "desktop",
+  "ad2 opens Saber's Post out, picks the Delete chip",
+  "Saber is a master admin, so he can't be deleted",
+  "Saber is a master admin, so he can't be deleted",
+  "PASS",
+  "f3-01-saber-delete-chip.png"
+ ],
+ [
+  "F3",
+  "desktop",
+  "ad2 presses Post out on the master (Delete chip) and, if asked, confirms",
+  "refused / nothing saved: Saber stays on the grid, page alive",
+  "Saber on grid: true; words: y, with his account. Days he flew keep his puck. Saber is a master admin, so he can't be deleted Post out Delete Saber? On 18 Nov the app deletes him au",
+  "PASS",
+  "f3-02-saber-after-post-out-press.png"
+ ],
+ [
+  "F3",
+  "desktop",
+  "ad2 posts Ranger (a 142 member; Rocky is not in this world if Ranger) out with Delete today, confirms as asked",
+  "Rocky's posting runs (he posts out / leaves the roster); page not frozen or blank",
+  "page alive: true; Rocky: ",
+  "RECORD",
+  "f3-05-rocky-after.png"
+ ],
+ [
+  "F4",
+  "desktop",
+  "ad9 adds ground row \"F4 149 LINE\" on Wed with Kestrel",
+  "row on screen",
+  "row \"F4 149 LINE\" on screen",
+  "PASS",
+  "f4-01-ad9-added.png"
+ ],
+ [
+  "F4",
+  "desktop",
+  "ad2 adds ground row \"F4 142 LINE\" on Wed with Hunter",
+  "row on screen",
+  "row \"F4 142 LINE\" on screen",
+  "PASS",
+  "f4-02-ad2-added.png"
+ ],
+ [
+  "F4",
+  "desktop",
+  "ad (master, 142) opens the changes window",
+  "the 142 line is listed as new; nothing of 149 (\"F4 149 LINE\", Kestrel)",
+  "⠿Changes · week of 13/73 changes this week✕New to you 3All changes 3WeekMonTueWedThuFriSatSunGroup byItemWho▾Wed · Ground · F4 142 LINE · 2NEW08:27Hunter put onHunter · 18/11 08:27Item— → F4 142 LINEHunter · 18/11 08:27Wed · The dayHunter · 18/11 08:27Ground item added✓ Mark all as seen",
+  "PASS",
+  "f4-04-ad-changes-window.png"
+ ],
+ [
+  "F4",
+  "desktop",
+  "ad presses \"Mark all as seen\"",
+  "nothing new is listed; the clock count drops",
+  "window: ⠿Changes · week of 13/73 changes this week✕New to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWhoNothing new to you this week.✓ Mark all as seen ; clock before: Changes, 3 new to you this week | text:3 ; after: Changes | text:",
+  "PASS",
+  "f4-05-ad-after-mark-all.png"
+ ],
+ [
+  "F4",
+  "desktop",
+  "ad switches to 149 with the \"142 ▾\" schedules menu",
+  "menu offers 149",
+  "this build draws no such menu at the top left (see F2 row); steps 4 and 5 cannot be done as ad. The 149 side is checked as 149's own admin below.",
+  "RECORD",
+  "f2-05-top-left-clicked.png (desktop F2)"
+ ],
+ [
+  "F4",
+  "desktop",
+  "ad reloads and signs in again (142)",
+  "still nothing new",
+  "clock: Changes | text:",
+  "PASS",
+  "f4-06-ad-after-reload.png"
+ ],
+ [
+  "F4",
+  "desktop",
+  "ad9 (149) opens his changes window (his own 149 line was made by himself)",
+  "149 line shown; nothing of 142 (\"F4 142 LINE\", Hunter)",
+  "clock: Changes | text: ; window: ⠿Changes · week of 13/73 changes this week✕New to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWhoNothing new to you this week.✓ Mark all as seen",
+  "PASS",
+  "f4-08-ad9-changes-window.png"
+ ]
+]

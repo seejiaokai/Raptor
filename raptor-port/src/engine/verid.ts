@@ -21,6 +21,8 @@
 
    Ordinary TS style (new file, not a ported engine body). */
 
+import { localOf } from '../storage/unitid'
+
 const DAY_MS = 86_400_000
 
 /** A day's full ISO date, `yyyy-mm-dd` incl the year, from the week's Monday key
@@ -28,7 +30,9 @@ const DAY_MS = 86_400_000
  *  Same UTC-midnight arithmetic as ui/WeekCal.tsx and ui/weeknav.ts, so the id's
  *  date and the calendar's date can never disagree. */
 export function dayIso(weekKey: string, di: number): string {
-  const [d, m, y] = weekKey.split('/').map(n => parseInt(n, 10))
+  /* a unit-qualified week (`u149@13/07/2026` — storage/unitid.ts) is read by its date part, split off FIRST (multi-squadron
+     batch 1, step 2): the unit is never parsed as part of the date */
+  const [d, m, y] = localOf(weekKey).split('/').map(n => parseInt(n, 10))
   const dt = new Date(Date.UTC(y, m - 1, d) + di * DAY_MS)
   const p = (n: number) => String(n).padStart(2, '0')
   return `${dt.getUTCFullYear()}-${p(dt.getUTCMonth() + 1)}-${p(dt.getUTCDate())}`

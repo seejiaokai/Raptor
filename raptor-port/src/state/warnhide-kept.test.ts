@@ -5,6 +5,7 @@
    give back. Before this build the boot threw the week's saved hides away (initStore never read `wo` back, where
    loadWeek did), the next edit of that day then rewrote its row WITHOUT them, and every sign-in cleared the set. */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { inView } from '../engine/unitview'
 import { INPUTS } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS } from '../engine/people'
 import { DAYS } from '../engine/data'
@@ -95,7 +96,7 @@ describe('WH1 (D469) — a hidden warning is kept with its day, across a reload'
     await reload(be)
     writeText(`dn:${TUE}.0`, 'A NOTE TYPED AFTER THE RELOAD')
     await vi.advanceTimersByTimeAsync(300)
-    const row = JSON.parse(String(be.peek('weeks', `${weekId(W1)}#${TUE}`) ?? wb.get('weeks', `${weekId(W1)}#${TUE}`) ?? '{}'))
+    const row = JSON.parse(String(be.peek('weeks', `${weekId(inView(W1))}#${TUE}`) ?? wb.get('weeks', `${weekId(inView(W1))}#${TUE}`) ?? '{}'))
     expect((row.wo || []).length, 'Tuesday\'s saved row still carries its hide').toBe(1)
     await reload(be)
     expect(view.warnShown(longDay()), 'still hidden after an edit and a second reload').toBe(false)

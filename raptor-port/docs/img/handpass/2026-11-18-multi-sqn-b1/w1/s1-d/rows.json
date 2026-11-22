@@ -1,0 +1,47 @@
+[
+ [
+  "S1",
+  "desktop",
+  "ad9 adds ground row \"W149 GROUND\" with Kestrel on Wed 15 Jul, closes board",
+  "row is on 149 week",
+  "week shows W149 GROUND: true; seat: ok",
+  "PASS",
+  "s1-02-ad9-week-after-add.png"
+ ],
+ [
+  "S1",
+  "desktop",
+  "ad (142) looks at Wed 15 Jul on the week and on the board",
+  "no \"W149 GROUND\" on either",
+  "week: false; board: false; ground rows on 142 day: [\"MAINT CONF @ ENG WING\",\"NAV-SYS TRIAL PREP\"]",
+  "PASS",
+  "s1-03-ad-week.png, s1-04-ad-board-wed15.png"
+ ],
+ [
+  "S1",
+  "desktop",
+  "ad adds ground row \"W142 GROUND\" with Saber on Thu 16 Jul",
+  "row is on 142 week",
+  "week shows W142 GROUND: true; seat: ok",
+  "PASS",
+  "s1-06-ad-week-after-add.png"
+ ],
+ [
+  "S1",
+  "desktop",
+  "ad9 signs in again, looks at the week",
+  "W149 GROUND still there; no \"W142 GROUND\"",
+  "W149: true; W142: false",
+  "PASS",
+  "s1-07-ad9-week-again.png"
+ ],
+ [
+  "S1",
+  "desktop",
+  "ad9 opens Wed 15 board",
+  "W149 GROUND on the board",
+  "true",
+  "PASS",
+  ""
+ ]
+]

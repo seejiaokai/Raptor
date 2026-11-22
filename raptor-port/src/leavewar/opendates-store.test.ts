@@ -226,9 +226,10 @@ describe('B8 — a member\'s bid on a closed day is refused at the commit, not o
     expect(ownershipViolation(restore([], [bid('n1')]))).toMatch(/not open for bidding/)
     expect(ownershipViolation(restore([bid('n1')], []))).toBeNull()
     expect(ownershipViolation(restore([bid('n1')], [bid('n1', 'OL')]))).toMatch(/not open for bidding/)
-    expect(ownershipViolation(restore([], [{ ...bid('n1'), state: 'approved' } as unknown as WarRec]))).toMatch(/not open for bidding/)
-    expect(ownershipViolation(restore([], [{ ...bid('n1'), state: 'refused' } as WarRec]))).toMatch(/not open for bidding/)
-    expect(ownershipViolation(restore([bid('n1')], [{ ...bid('n1'), state: 'approved' } as unknown as WarRec]))).toMatch(/not open for bidding/)
+    /* (an approved record of his own making is refused by its state first since fix read 16's S16-2 — refused either way) */
+    expect(ownershipViolation(restore([], [{ ...bid('n1'), state: 'approved' } as unknown as WarRec]))).toMatch(/not open for bidding|who decided a request/)
+    expect(ownershipViolation(restore([], [{ ...bid('n1'), state: 'refused' } as WarRec]))).toMatch(/not open for bidding|who decided a request/)
+    expect(ownershipViolation(restore([bid('n1')], [{ ...bid('n1'), state: 'approved' } as unknown as WarRec]))).toMatch(/not open for bidding|who decided a request/)
   })
 
   it('a member command that writes a bid onto a closed day around the store\'s check is rolled back whole', () => {
@@ -562,7 +563,8 @@ describe('H1 — his Inputs-page half day over his own whole-day pending bid lan
     expect(ownershipViolation(env([{ ...bid, code: '*LL' } as WarRec]))).toBeNull()
     expect(ownershipViolation(env([{ ...bid, code: 'OL' } as WarRec]))).toMatch(/not open for bidding/)
     expect(ownershipViolation(env([{ ...bid, code: '*OL' } as WarRec]))).toMatch(/not open for bidding/)
-    expect(ownershipViolation(env([{ ...bid, code: 'LL*', state: 'approved' } as unknown as WarRec]))).toMatch(/not open for bidding/)
+    /* (refused by its state first since fix read 16's S16-2 — refused either way) */
+    expect(ownershipViolation(env([{ ...bid, code: 'LL*', state: 'approved' } as unknown as WarRec]))).toMatch(/not open for bidding|who decided a request/)
   })
 })
 

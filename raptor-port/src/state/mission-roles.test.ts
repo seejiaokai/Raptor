@@ -180,9 +180,10 @@ it.each(['missing','future','changed'])('MIX11 template %s seed remains valid un
   dayTplSave();dayTplLoad();expect(pickDayTpl(1,tpl.id)).toBe('applied');const target=roleTarget(1,DAYS[1].waves[0]!.formations[0]!.rid!)!
   expect(readRole(target.id)).toBeUndefined();expect(readRole(source.id)?.side).toBe('red');dayTplReset()
 })
-it('D524/D530 the actual command refuses guest, pending, member and tracking-Off writes',()=>{
+/* the guest (gone with the guest view, D2239) stood here as a reader without access: a person waiting takes his place */
+it('D524/D530 the actual command refuses a person waiting, pending, member and tracking-Off writes',()=>{
   const t=roleTarget(0,'role-test')!,rows=roleStore.signature!()
-  for(const role of ['main','guest','pending','off']){setSession({user:'viewer',role});const n=commandStream().length;expect(isOk(setMissionRole(t,'red'))).toBe(false);expect(commandStream().length).toBe(n)}
+  for(const [user,role] of [['viewer','main'],['principal:w@mail','pending'],['viewer','pending'],['viewer','off']]){setSession({user,role});const n=commandStream().length;expect(isOk(setMissionRole(t,'red'))).toBe(false);expect(commandStream().length).toBe(n)}
   setSession({user:'ad',role:'admin'});setMissionTracking(false);const n=commandStream().length
   expect(isOk(setMissionRole(roleTarget(0,'role-test')!,'red'))).toBe(false);expect(commandStream().length).toBe(n);expect(roleStore.signature!()).toBe(rows)
 })

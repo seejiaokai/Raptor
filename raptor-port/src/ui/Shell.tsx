@@ -9,7 +9,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
-import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon, TalonMark } from './icons'
+import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon } from './icons'
 import { isAdmin, me, mayViewAsMember } from '../state/perms'
 import { toggleChanges } from './changesopen'
 import { weekNew } from './changesmodel'
@@ -36,13 +36,14 @@ import { useVersion, useUndoVersion } from './useStore'
 import { ViewWeek } from './ViewWeek'
 import { legendHTML } from './html'
 import { routeClick, routeOpenKey, routeMenuKey } from './interactions'
-import { routeFocusOut, routeFocusIn, routeKeyDown, routeReportingInput } from './textedit'
+import { routeFocusOut, routeFocusIn, routeKeyDown, routeReportingInput, enteredOnAnother } from './textedit'
+import { SCHED_MOVE_WORDS } from '../state/typing-hold'
 import { DayPop, InsightsModal, AirPop } from './Modals'
 import { WeekCal } from './WeekCal'
 import { setInsights, setDrawer, setWeekCal } from './pops'
 import { Drawer } from './Drawer'
 import { ScheduleInsightsMenu } from './ScheduleInsightsMenu'
-import { exportCSV, schedRows, publishedDays } from './export'
+import { exportCSV, schedRows, publishedDays, schedCsvName } from './export'
 import { printSchedPDF } from './printpdf'
 import { InputsPage } from './InputsPage'
 import { LogicPage } from './LogicPage'
@@ -74,7 +75,7 @@ import { pageDownload } from './pagedownload'
 import { SaveStatus, useBandUp } from './SaveStatus'
 import { OilBar, useOilBarTop } from './OilWaitSheet'
 import { bugAlert } from '../state/reports'
-import { UndoPair, SyncChip, BellButton, BellList } from './topbits'
+import { UndoPair, SyncChip, BellButton, BellList, SqnMark } from './topbits'
 import { globalUndoEngine, trackerUndoEngine, useTrackerUndoVersion, fastSync } from './topstate'
 
 /* THE WEEK BANNER IS GONE (owner, 15 Sep 26 — item 2). First the week-STATUS
@@ -203,6 +204,9 @@ export function Shell() {
       }
       const sel = (e.target as HTMLElement).closest('select[data-sign]') as HTMLSelectElement | null
       if (!sel) return
+      /* a sign-off list opened on another squadron's schedule — his own move took effect while it was open: the pick is
+         not written, and the note says so (state/typing-hold.ts "the schedule side"; ui/textedit.ts enteredOnAnother) */
+      if (enteredOnAnother(sel)) { HOOKS.toast(SCHED_MOVE_WORDS, 'warn'); notify(); return }
       const di = +sel.dataset.signday!
       const wasSigned = daySigned(di)             // capture BEFORE, so the note fires only on COMPLETING the set (kept OUTSIDE the command, R2-11)
       /* [ARCH-STACK] follow-up #1 (row D): route the sign write through a
@@ -380,7 +384,7 @@ export function Shell() {
          at a glance — both widths; View-only keeps the neutral dark. */
       <div ref={topbarRef} className={'topbar' + (page === 'editsched' ? ' editing' : '') + (pairOn ? ' has-undo' : '') + (saveFailed ? ' save-failed' : '') + (oilTop ? ' oil-waiting' : '') + (navFold ? ' nav-fold' : '')}>
         <button className="burger" id="burger" aria-label="Menu" onClick={() => { setDrawer(true); notify() }}><span></span><span></span><span></span></button>
-        <TalonMark />
+        <SqnMark />
         <nav className="nav" id="topnav">
           {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab drawn by the bar's own rule for links (`.nav a`), which a <button> would not take without restyling every tab; every test and walk finds the tabs as #topnav a[data-page] */}
           <a data-page="editsched" data-admin="" hidden={!admin} role="button" tabIndex={0} className={page === 'editsched' ? 'on' : ''} onClick={() => nav('editsched')} onKeyDown={navKey('editsched')}>Edit Schedule</a>
@@ -623,7 +627,7 @@ export function Shell() {
                 on desktop, so this page needs no separate control. */}
             <button className="abtn" id="exportSched" title="Export to Excel (CSV)" aria-label="Export to Excel (CSV)"
               onClick={() => {
-                exportCSV('142-schedule.csv', schedRows(publishedDays()))   /* the PUBLISHED version ([FLAG-EXPORT]) */
+                exportCSV(schedCsvName(), schedRows(publishedDays()))   /* the PUBLISHED version ([FLAG-EXPORT]) */
                 /* same reason as the Inputs page's export: a phone shows nothing
                    when a download lands, so the tap otherwise reads as dead */
                 HOOKS.toast('CSV downloaded', 'ok')

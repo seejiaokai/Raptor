@@ -1,0 +1,13 @@
+msq-host-rewalk v2 desktop
+ROW RECORD | R1 | desktop | ad9 adds ground row "R149 HIST" on Wed 15 Jul | saw: Wed: 3 changes; all heads: (no chip), (no chip), 3 changes, (no chip), (no chip), (no chip), (no chip); chips: 3 changes@day-head | 3 changes@?; clock: Changes
+ROW PASS | R1 | desktop | ad (142) looks at the week after 149's change | saw: Wed: (no chip); clock: Changes
+ROW FAIL | R1 | desktop | ad opens the changes window (the clock) | saw: 
+ROW PASS | R1 | desktop | ad9 signs in again | saw: Wed: 3 changes; clock: Changes
+ROW PASS | R2 | desktop | ad (master) sets Kestrel, 149's only admin, to Member and saves | saw: Kestrel is 149's last admin. Make another admin of 149 first.
+ROW PASS | R2 | desktop | ad2 (a plain 142 admin) sets Kestrel (149) to Member and saves | saw: He is 149's. Only an admin of 149 can change his account. · his badge: ADMIN
+ROW PASS | R2 | desktop | ad9 (149's admin) sets Ranger (142) to Admin and saves | saw: He is 142's. Only an admin of 142 can change his account. · his badge: MEMBER
+errors []
+DONE 5 PASS 1 FAIL 1 OTHER of 7
+ROW PASS | R3 | desktop | ad9, every save refused, makes a change then signs out | saw: band: true; reloaded: false (loads 2 → 2)
+errors []
+DONE 6 PASS 1 FAIL 1 OTHER of 8

@@ -1,0 +1,131 @@
+// @vitest-environment jsdom
+/* REPRO R1 — a member's Move of his own refused bid answers "moved" and does nothing (fable F1, opus F1, astra 2).
+   Correct per D1177 ("a member moves his own bid while it waits"): no Move offered to the member on a refused bid, and a
+   forced move returns a refusal, never "moved". RED while the claim holds. Harness: leavewar/multi-sqn-fixread16.test.ts
+   lines 9-84, copied whole. */
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { storeBackend, HOOKS } from '../engine/hooks'
+import { PEOPLE, indexCallsigns } from '../engine/people'
+import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputsBatch } from '../state/store'
+import { accountsLoad, signIn, sessionFor, ACCOUNTS_LIST } from '../state/accounts'
+import { initStore as lwInitStore, setPeople, getState } from '../leavewar/state/store'
+import { memoryBackend } from '../leavewar/state/storage'
+import { projectPeople } from '../leavewar/state/raptorRoster'
+import { wireLeaveWarSync, setWarWorldDoor, postOut, runPoOutcomes, undoPostOut } from '../leavewar/sync'
+import { unitsLoad, setGrant, setHome, unitRows, homeOn } from '../state/units'
+import { HOME_PFX } from '../state/units-model'
+import { accountOfPid } from '../state/accounts'
+import { commit } from '../command'
+import { peopleStore, finishPeopleWrite } from '../state/people-settings-commit'
+import { resyncBeforeEnlist } from '../state/sched-commit'
+import { deletePerson } from '../state/person-delete'
+import { updatePersonField } from '../state/quals-write'
+import { placeApproved, inOneWarCommand, setRemarksOn } from '../leavewar/state/store'
+import { leaveInputsAt } from '../leavewar/sync'
+import { setLeaveRemarks } from '../ui/inputedit'
+import { INPUTS } from '../engine/inputs'
+import { NOTICES, noticesFor, filerVia } from '../state/notices'
+import { onCommit } from '../command'
+import { noticeSeenLoad } from '../state/noticeseen'
+import { installGlobalUndo } from '../state/undo-wire'
+import { _resetTimeline, globalUndo } from '../undo/timeline'
+import { commitInputsWith } from '../state/sched-commit'
+import { Whiteboard } from '../storage/whiteboard'
+import { wireRows, writeSeedRows } from '../state/persist'
+import { setStoredRowProbe, setStoredRowsWhole, ownershipViolation } from '../state/perms'
+
+const mem: Record<string, string> = {}
+let PEOPLE0 = ''
+const signInAs = (name: string, pass = 'x') => { resetSession(sessionFor(signIn(name, pass))); raptorNotify() }
+let worlds: Record<string, any> = {}
+
+beforeAll(() => {
+  vi.useFakeTimers({ toFake: ['Date'] })
+  vi.setSystemTime(new Date(2026, 6, 15, 9, 0, 0))
+  PEOPLE0 = JSON.stringify(PEOPLE)
+})
+afterAll(() => { vi.useRealTimers(); storeBackend.impl = null; setWarWorldDoor(null) })
+beforeEach(() => {
+  vi.setSystemTime(new Date(2026, 6, 15, 9, 0, 0))
+  Object.keys(mem).forEach(k => delete mem[k])
+  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v }, keys: () => Object.keys(mem) } as any
+  const p0 = JSON.parse(PEOPLE0)
+  for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
+  Object.assign(PEOPLE, p0); indexCallsigns()
+  for (let i = INPUTS.length - 1; i >= 0; i--) if (String((INPUTS as any)[i].iid || '').startsWith('ipd')) INPUTS.splice(i, 1)
+  worlds = { u142: memoryBackend(), u149: memoryBackend() }
+  setWarWorldDoor(null)
+  lwInitStore(worlds.u142)
+  raptorInitStore()
+  NOTICES.splice(0)
+  accountsLoad()
+  noticeSeenLoad()
+  setPeople(projectPeople())
+  wireLeaveWarSync()
+  setWarWorldDoor((u: string) => ({ backend: worlds[u] ?? (worlds[u] = memoryBackend()) }))
+  _resetTimeline(); installGlobalUndo()
+  vi.spyOn(HOOKS, 'toast').mockImplementation(() => {})
+})
+
+const on = (d: number, h = 9, m = 0) => { vi.setSystemTime(new Date(2026, 6, d, h, m, 0)); unitsLoad() }
+const grantsOf = (id: string) => unitRows().grants.filter(g => g.account === id)
+const passTypes = () => {
+  const seen: string[] = []
+  const off = onCommit((e: any) => { seen.push(e.type) })
+  try { runPoOutcomes() } finally { off() }
+  return seen
+}
+import { setCell, setBidStates } from '../leavewar/state/store'
+import { changeAbsenceById } from '../leavewar/state/store'
+import { foldedInto } from '../state/notices'
+
+import { openDates, moveRecords, movableRecords } from '../leavewar/state/store'
+const dayRecs = (d: string): any[] => {
+  const out: any[] = []
+  const walk = (o: any) => {
+    if (!o || typeof o !== 'object') return
+    for (const [k, v] of Object.entries(o)) {
+      if (k === d && Array.isArray(v)) out.push(...(v as any[]))
+      else if (typeof v === 'object') walk(v)
+    }
+  }
+  walk((getState() as any).wars)
+  return out.filter(r => r && r.kind === 'request')
+}
+/* Saber opens 20 Jul–10 Aug; Ranger bids LL on 28 Jul; Saber refuses it (refuse=false: left pending) */
+const bidOn28 = (refuse: boolean) => {
+  signInAs('ad', 'a')
+  openDates('2026-07-20', '2026-08-10')
+  signInAs('us', 'us')
+  expect(setCell('bane', '2026-07-28', 'LL')).toBe(true)
+  if (refuse) { signInAs('ad', 'a'); setBidStates([{ personId: 'bane', date: '2026-07-28' }], 'refused'); signInAs('us', 'us') }
+  const rec = dayRecs('2026-07-28')[0]
+  expect(rec?.state).toBe(refuse ? 'refused' : 'pending')
+  return rec
+}
+
+describe('R1 — a member and his own refused bid (D1177: a member moves his own bid while it waits)', () => {
+  it('no Move is offered to the member on his refused bid', () => {
+    bidOn28(true)
+    expect(movableRecords([{ personId: 'bane', date: '2026-07-28' }]), 'Move offered on a refused bid').toEqual([])
+  })
+  it('forced, the move answers a refusal — never "moved" — and changes nothing', () => {
+    const rec = bidOn28(true)
+    const res = moveRecords([{ personId: 'bane', date: '2026-07-28', id: rec.id, kind: 'request' }], 1)
+    expect(dayRecs('2026-07-28')[0]?.state, 'the refused bid stays').toBe('refused')
+    expect(dayRecs('2026-07-29'), 'nothing landed').toEqual([])
+    expect(res, 'said "moved" while nothing moved').not.toBe('moved')
+  })
+  it('(control) his pending bid is offered and moves, landing pending on the 29th', () => {
+    const rec = bidOn28(false)
+    expect(movableRecords([{ personId: 'bane', date: '2026-07-28' }]).map(m => m.id)).toEqual([rec.id])
+    expect(moveRecords([{ personId: 'bane', date: '2026-07-28', id: rec.id, kind: 'request' }], 1)).toBe('moved')
+    expect(dayRecs('2026-07-29')[0]?.state).toBe('pending')
+  })
+  it('(control) the admin moves the refused bid: it lands pending on the 29th', () => {
+    const rec = bidOn28(true)
+    signInAs('ad', 'a')
+    expect(moveRecords([{ personId: 'bane', date: '2026-07-28', id: rec.id, kind: 'request' }], 1)).toBe('moved')
+    expect(dayRecs('2026-07-29')[0]?.state).toBe('pending')
+  })
+})

@@ -6,6 +6,16 @@ import { VCONF } from '../engine/rules'
 import { STORE_CFG } from '../engine'
 import { isStandalone } from '../engine/waves'
 import { dayApproved, dayCurVer, daySnapOf, verLabel } from '../engine/publish'
+import { pageUnit } from '../state/perms'
+import { unitById } from '../state/units'
+
+/* THE SQUADRON'S NUMBER A PAGE CARRIES (the batch plan docs/superpowers/plans/2026-11-17-multi-sqn-build-batches.md §3.4
+   "What shows 142 today"; D2184 R29, first half — the walk of 21 Nov 26 found every one still reading a written-in
+   "142"): 'schedule' — the top bar's mark, the schedule's CSV, the print's title and heading: the schedule in view's;
+   'own' — Quals' LoX export: the page's own squadron's (state/perms.ts pageUnit). The one place the number comes from. */
+export const sqnNum = (kind: 'schedule' | 'own'): string => { const u = pageUnit(kind); return String(unitById(u)?.num ?? u) }
+export const schedCsvName = (): string => `${sqnNum('schedule')}-schedule.csv`
+export const loxCsvName = (seatView: string): string => `${sqnNum('own')}-LoX-${seatView}.csv`
 
 /* Excel does not sniff a .csv for UTF-8: with no byte-order mark it decodes the
    file in the machine's ANSI codepage, so every byte of a multi-byte character

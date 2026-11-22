@@ -34,6 +34,7 @@ import { _resetFloatWins } from './winorder'
 import { setInpEdit } from './pops'
 import { toast as theToast, toastBatch as theBatch } from './toast'
 import { setInputGate } from '../state/inputgate-hook'
+import { settleWorld } from '../test-support/world'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement, root: Root
@@ -105,6 +106,9 @@ beforeEach(async () => {
   /* the app's own Undo, wired as the app wires it — it is what asks a screen to show what it put back */
   _resetTimeline(); installGlobalUndo()
   HOOKS.toast = (() => {}) as any
+  /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read) */
+  settleWorld()
 })
 afterEach(async () => {
   await act(async () => { root.unmount(); setInpEdit(null) })

@@ -1,0 +1,68 @@
+// @vitest-environment jsdom
+/* REPRO K3 — another squadron's man re-made as "new" via the in-memory people baseline (core read, security S2).
+   Correct (D2191: 142's admin changes nothing of a 149 man's row; D2119/D2160 R7: a move counts from tomorrow, never a
+   day already begun): the person.add that rewrites Merlin (149's) and homes him in 142 from today is refused. RED while
+   the claim holds. Needs in-memory tampering (delete PEOPLE.mer9 + resync of the baseline) before a forged command.
+   Harness: units-sqn-fixread16.test.ts, copied. */
+import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { storeBackend, store } from '../engine/hooks'
+import { PEOPLE, indexCallsigns } from '../engine/people'
+import { initStore, resetSession, notify } from '../state/store'
+import { signIn, sessionFor, accountsLoad } from '../state/accounts'
+import { setSession } from '../state/auth'
+import { installGlobalUndo } from '../state/undo-wire'
+import { _resetTimeline } from '../undo/timeline'
+import { setUnitSeeds, homeOn, unitsLoad, todayIso } from '../state/units'
+import { commitPeopleSettingsIntent, resyncPeopleBaseline } from '../state/people-settings-commit'
+
+const mem: Record<string, string> = {}
+const fake = {
+  getItem: (k: string) => (k in mem ? mem[k]! : null),
+  setItem: (k: string, v: string) => { if (v === 'null') delete mem[k]; else mem[k] = v },
+  keys: () => Object.keys(mem),
+}
+const signInAs = (name: string, pass: string) => { const r = signIn(name, pass); resetSession(sessionFor(r)); notify(); return r }
+const P0 = JSON.stringify(PEOPLE)
+
+beforeEach(() => {
+  vi.useFakeTimers({ toFake: ['Date'] })
+  vi.setSystemTime(new Date(2026, 6, 15, 9, 0, 0))
+  Object.keys(mem).forEach(k => delete mem[k])
+  for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
+  Object.assign(PEOPLE, JSON.parse(P0)); indexCallsigns()
+  storeBackend.impl = fake
+  setUnitSeeds(true); initStore(); accountsLoad(); resetSession(null); _resetTimeline(); installGlobalUndo()
+  resyncPeopleBaseline()
+})
+afterEach(() => { setSession(null); resetSession(null); _resetTimeline(); vi.useRealTimers() })
+afterAll(() => {
+  storeBackend.impl = null
+  for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
+  Object.assign(PEOPLE, JSON.parse(P0)); indexCallsigns()
+})
+
+const hijack = (saved: any) => commitPeopleSettingsIntent('person.add', null, () => {
+  ;(PEOPLE as any).mer9 = { ...saved, cs: 'HIJACKED' }
+  store.set('home:hzz1', { id: 'hzz1', pid: 'mer9', unit: 'u142', from: todayIso() })
+}) as any
+
+describe("K3 — 142's plain admin and 149's Merlin", () => {
+  it('(control) the same command without the memory trick: refused', () => {
+    signInAs('ad2', 'a2')
+    expect(homeOn('mer9')).toBe('u149')
+    const saved = JSON.parse(JSON.stringify((PEOPLE as any).mer9))
+    const r = hijack(saved)
+    unitsLoad()
+    expect(r.ok, JSON.stringify(r?.reason ?? r)).toBe(false)
+    expect(homeOn('mer9')).toBe('u149')
+  })
+  it('Merlin deleted from memory and the baseline re-read, then "added": refused, his row and squadron untouched', () => {
+    signInAs('ad2', 'a2')
+    const saved = JSON.parse(JSON.stringify((PEOPLE as any).mer9))
+    delete (PEOPLE as any).mer9
+    resyncPeopleBaseline()
+    const r = hijack(saved)
+    unitsLoad()
+    expect({ ok: r.ok, cs: (PEOPLE as any).mer9?.cs, home: homeOn('mer9') }).toEqual({ ok: false, cs: saved.cs, home: 'u149' })
+  })
+})

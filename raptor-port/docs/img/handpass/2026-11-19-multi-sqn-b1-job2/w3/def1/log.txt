@@ -1,0 +1,32 @@
+msq-j2-w3-def v1
+Condor controls ["BUTTON#[Condorno sign-in · Pilot · CAT]@37,308,253,337","INPUT#accGiveName[]@37,367,196,407","SELECT#accGiveRole[Member or admin]@206,367,365,407","BUTTON#accGive[Give sign-in]@37,418,132,446","BUTTON#accEdArchive[Archive]@138,418,208,446","BUTTON#accEdDel[Delete]@214,418,276,446","BUTTON#accEdCancel[Cancel]@282,418,347,446"]
+archive box 138,418,208,446
+USERS TEXT 142 TALON ↶ ↷ ‹ Users Waiting for access Nobody is waiting for access. People · 70 Sign-in Roster Nobody matches. ▾ Archived · 1 Sign-in Roster Condor no sign-in · Pilot · CAT OCU Archived 19 Nov 26 by Saber Add a person Callsign/Name Initials Pilot, WSO or personnel CAT Sign-in (defence mail) Post in Thu 19 Nov 26 ▾ Add person Makes his Quals row, and his sign-in if you give one. The Leave War counts him from the post-in date. Guest view Let people waiting for access view the schedule (read only) Condor archived Pick… Pilot WSO Personnel (ground crew) Pick… Condor on
+ROW PASS | W3-D | iPhone | ad (master) Admin -> Users -> Condor -> Archive | saw: Archived · 1; Condor no sign-in · Pilot · CAT OCU Archived 19 Nov 26 by Saber Add a person Callsign/Name Initials Pilo; Archived 19 Nov 26 by Saber Add a person Call
+ROW PASS | W3-D | iPhone | the Archived fold, with Condor | saw: ign-in Roster Nobody matches. ▾ Archived · 1 Sign-in Roster Condor no sign-in · Pilot · CAT OCU Archived 19 Nov 26 by Saber Add a person Callsign/Name Initials Pilot,
+signed in as ad9
+Condor cell 19 Nov count 1
+Condor ROW CELLS 11-10=·{.act} 11-15=·{weekend.act} 11-17=·{.act} 11-18=PO{.act.pofin.bx-last} 11-19=PO{gone.act.hasc} 11-20=PO{gone.act.hasc} 11-23=PO{gone.act.hasc} 11-30=PO{gone.act.hasc}
+ROW RECORD | W3-D | iPhone | ad9 opens 149's Leave War, Condor's row around Thu 19 Nov | saw: 11-10=·{.act} 11-15=·{weekend.act} 11-17=·{.act} 11-18=PO{.act.pofin.bx-last} 11-19=PO{gone.act.hasc} 11-20=PO{gone.act.hasc} 11-23=PO{gone.act.hasc} 11-30=PO{gone.act.hasc}
+ROW PASS | W3-D | iPhone | ad9 Admin -> Users -> Heron -> Archive (his own man) | saw: Archived 19 Nov 26 by Kestrel Add a person Ca ; Archived · 2
+Heron cell 19 Nov count 1
+Heron ROW CELLS 11-10=·{.act} 11-15=·{weekend.act} 11-17=·{.act} 11-18=PO{.act.pofin.bx-last} 11-19=PO{gone.act.hasc} 11-20=PO{gone.act.hasc} 11-23=PO{gone.act.hasc} 11-30=PO{gone.act.hasc}
+ROW PASS | W3-D | iPhone | the war: Heron's row looks the same as Condor's at Thu 19 Nov | saw: Heron: 11-10=·{.act} 11-15=·{weekend.act} 11-17=·{.act} 11-18=PO{.act.pofin.bx-last} 11-19=PO{gone.act.hasc} 11-20=PO{gone.act.hasc} 11-23=PO{gone.act.hasc} 11-30=PO{gone.act.hasc} || Condor: 11-10=·{.act} 11-15=·{weekend.act} 11-17=·{.act} 11-18=PO{.act.pofin.bx-last} 11-19=PO{gone.act.hasc} 11-20=PO{gone.act.hasc} 11-23=PO{gone.act.hasc} 11-30=PO{gone.act.hasc}
+signed in as ad2
+Osprey controls ["BUTTON#[Ospreyus9 · Member · Pilot · C]@37,308,253,337","INPUT#accEdName[us9]@37,367,196,407","SELECT#accEdRole[Member or admin]@206,367,365,407","BUTTON#accEdSave[Save]@37,418,91,446","BUTTON#accEdOnOff[Suspend]@97,418,174,446","BUTTON#accEdArchive[Archive]@180,418,250,446","BUTTON#accEdDel[Delete]@256,418,318,446","BUTTON#accEdCancel[Cancel]@37,452,102,480"]
+ROW PASS | W3-E | iPhone | ad2 presses Suspend on Osprey | saw: He is 149's. Only an admin of 149 can change his account.; words box: 12,812,390,848 inside
+ROW PASS | W3-E | iPhone | ad2 presses Archive on Osprey | saw: He is 149's. Only an admin of 149 can change him.; words box: 12,812,390,848 inside
+ROW RECORD | W3-E | iPhone | Osprey looked at afterwards | saw: before: Osprey us9 · Member · Pilot · CAT A SIGN-IN (DEFENCE MAIL) ROLE Save Suspend Archive Delete Cancel || after: Osprey us9 · Member · Pilot · CAT A SIGN-IN (DEFENCE MAIL) ROLE Save Suspend Archive Delete Cancel
+signed in as ad9
+sign-in box accGiveName
+ROW PASS | W3-F | iPhone | ad9 opens Falcon's row, types in his sign-in box, presses Cancel, reopens | saw: typed: "zzztyped"; editor still open after Cancel: 0; reopened value: ""
+ERR F2 post-in calendar locator.tap: Timeout 30000ms exceeded.
+ROW RECORD | W3-F | iPhone | MY LEAVE: open, close by its own control | saw: boxes: bidsheet nonmodal:10,213,392,661; close pressed: true
+Kestrel point [-6611.875,343.78125]
+ROW FAIL | W3-F | iPhone | a name's window: open by tapping his name, close by its X | saw: close pressed: false
+dots count 1 294,819,377,847
+ROW FAIL | W3-F | iPhone | a day cell -> its window -> its dots list -> close | saw: dots list entries: Attach:232,656,372,694 | Other:232,694,372,732 | Post out:232,732,372,770 | Post in:232,770,372,808; close pressed: false; window buttons still on screen after: 1
+ROW RECORD | W3-F | iPhone | scrolls the page to its very foot (script scroll, not a finger: WebKit) | saw: scrollTop 0 -> 0 of 874; burger button top,bottom 9,39
+ROW FAIL | W3-F | iPhone | the bell: open and close | saw: bell list still shown after second tap: 1
+errors []
+DONE 7 PASS 3 FAIL 4 OTHER of 14

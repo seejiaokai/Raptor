@@ -26,6 +26,8 @@ import { HOOKS } from '../engine/hooks'
 import { mayEditQualsOf, mayRenameCallsign, mayTickManagement, mayTickScheduler } from './perms'
 import { MGMT_KEY, SCHED_KEY } from '../engine/qualcols'
 import { commitPeopleEdit } from './people-settings-commit'
+import { otherSquadronPersonProblem, masterChangeProblem } from './accounts'
+import { homeOn, todayIso } from './units'
 
 export type QualsOp =
   | { tick: string }
@@ -49,8 +51,13 @@ export const SCHED_ADMIN_ONLY = 'Only an admin can appoint a scheduler'
 export function updatePersonField(pid: string, op: QualsOp): string | null {
   const p = (PEOPLE as any)[pid]
   if (!p) return 'That person is not on the roster'
+  /* an admin on another squadron's man is told whose he is, never "your own row" (the fix read, 18 Nov 26 — Opus 4) */
+  const other = otherSquadronPersonProblem(pid)
+  if (other) { HOOKS.toast(other, 'warn'); return other }
   if (!mayEditQualsOf(pid)) { HOOKS.toast(OWN_ROW_ONLY, 'warn'); return OWN_ROW_ONLY }
   if ('callsign' in op && !mayRenameCallsign()) { HOOKS.toast(RENAME_ADMIN_ONLY, 'warn'); return RENAME_ADMIN_ONLY }   // D218
+  /* a master's callsign is his account's name on every line: a master's alone (D2205, Fable's plan H4) */
+  if ('callsign' in op) { const m = masterChangeProblem(pid); if (m) { HOOKS.toast(m, 'warn'); return m } }
   if ('tick' in op && op.tick === MGMT_KEY && !mayTickManagement()) { HOOKS.toast(MGMT_ADMIN_ONLY, 'warn'); return MGMT_ADMIN_ONLY }   // D1510
   if ('tick' in op && op.tick === SCHED_KEY && !mayTickScheduler()) { HOOKS.toast(SCHED_ADMIN_ONLY, 'warn'); return SCHED_ADMIN_ONLY }   // D1651
   let refused: string | null = null
@@ -74,6 +81,13 @@ export function updatePersonField(pid: string, op: QualsOp): string | null {
          posting ever undoes it ([POST-OUT-OUTCOMES], the plan's Round 1, Astra A5 — found missing by Fable's scenarios) */
       if (k === 'san') { p.san = !!next; delete p.sanBy; if (next) p.sanQ = p.sanQ || { flown: 0, carry: 0, missedQtrs: 0 } }
       if (k === 'sxo') p.sxo = !!next
+      /* the Scheduler tick is kept with the squadron and day it was given in (core line 4, 22 Nov 26 — his D2160: the
+         tick ends in the old squadron on a move's date, so the squadron he joins ticks him anew —
+         units-model.ts schedTickHolds reads the record; unticked, it goes) */
+      if (k === SCHED_KEY) {
+        const today = todayIso(), home = next ? homeOn(pid, today) : null
+        if (home) { p.schedOf = home; p.schedFrom = today } else { delete p.schedOf; delete p.schedFrom }
+      }
       if (k === 'daar' && !next && p.quals.naar) { p.quals.naar = false; HOOKS.toast(`${p.cs} — NAAR removed too, it cannot stand without DAAR`) }
       if (k === 'daar' && next === true && p.quals.naar === 'I') { p.quals.naar = true; HOOKS.toast(`${p.cs} — NAAR instructor mark removed too, it cannot stand without DAAR's`) }
       if (k === 'scDay' && !next && p.quals.scNight) { p.quals.scNight = false; HOOKS.toast(`${p.cs} — SC NIGHT removed too, it cannot stand without SC DAY`) }

@@ -1,0 +1,20 @@
+[
+ [
+  "W1-C",
+  "desktop",
+  "ad: archive Falcon, Save name FalconQ, Undo, Redo, then Edit Schedule → clock → All changes",
+  "no line about Falcon / FalconQ (nor Undo / Redo) in 142 history",
+  "undo: disabled=false aria-disabled=null title=\"Undo — Falcon’s callsign\" aria-label=\"Undo\" class=abtn hbtn ; Undo pressed ; Undid: Falcon’s callsign — name — Ace Anvil Basher Blade Bolt Cin ; Redo pressed ; Redid: Falcon’s callsign — name — Ace Anvil Basher Blade Bolt Cin ; 142 history window words: [Jul 13] ⠿Changes · week of 13/70 changes this week✕New to you 0All changes 0WeekMonTueWedThuFriSatSunGroup byItemWhoNo changes this week yet. [Jul 06] ⠿Changes · week of 6/70 changes this week✕New to you 0All changes 0WeekMonTueWedThuFriSatSunGroup byItemWhoNo changes this week yet. [Jul 20] ⠿Changes · week of 20/70 changes this week✕New to you 0All changes 0WeekMonTueWedThuFriSatSunGroup byItemWhoNo changes this week yet. [Jul 27] ⠿Changes · week of 27/70 changes this week✕New to you 0All changes 0WeekMonTueWedThuFriSatSunGroup byItemWhoNo changes this week yet. ",
+  "PASS",
+  "c-04-ad-142-allchanges.png"
+ ],
+ [
+  "W1-C",
+  "desktop",
+  "ad9: Edit Schedule → clock → All changes",
+  "the rename, its Undo and its Redo lines are there",
+  "149 history window words: [Jul 13] ⠿Changes · week of 13/70 changes this week✕New to you 0All changes 0WeekMonTueWedThuFriSatSunGroup byItemWhoNo changes this week yet. [Jul 06] ⠿Changes · week of 6/70 changes this week✕New to you 0All changes 0WeekMonTueWedThuFriSatSunGroup byItemWhoNo changes this week yet. [Jul 20] ⠿Changes · week of 20/70 changes this week✕New to you 0All changes 0WeekMonTueWedThuFriSatSunGroup byItemWhoNo changes this week yet. [Jul 27] ⠿Changes · week of 27/70 changes this week✕New to you 0All changes 0WeekMonTueWedThuFriSatSunGroup byItemWhoNo changes this week yet. ",
+  "FAIL",
+  "c-05-ad9-149-allchanges.png"
+ ]
+]

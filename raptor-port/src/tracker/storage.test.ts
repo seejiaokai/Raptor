@@ -59,7 +59,10 @@ describe('the app’s boot plugs the doorway in before the Tracker can be drawn'
   it('after the real boot, a Tracker write lands on the whiteboard’s tracker records — not in memory, not in the browser’s storage', async () => {
     const { wb } = await bootApp(new MemoryBackend())
     await storage.set('v3:plugcheck', 'ON-THE-BOARD')
-    expect(wb.get('tracker', 'v3:plugcheck')).toBe('ON-THE-BOARD')
+    /* each squadron's Tracker is its own since multi-squadron step 4: before anyone signs in the door is the boot unit's,
+       and every key is stored under it — never bare, where another squadron's Tracker could read it */
+    expect(wb.get('tracker', 'u142@v3:plugcheck')).toBe('ON-THE-BOARD')
+    expect(wb.get('tracker', 'v3:plugcheck')).toBe(null)
     expect(localStorage.length).toBe(0)
   })
   it('main.tsx draws the app only once the boot has finished, and the boot plugs the door in on every backend', () => {
@@ -69,7 +72,7 @@ describe('the app’s boot plugs the doorway in before the Tracker can be drawn'
     expect(drawn, 'and draws the app after it').toBeGreaterThan(booted)
     const boot = readFileSync(join(__dirname, '../boot.ts'), 'utf8')
     const body = boot.slice(boot.indexOf('function bootBody('))
-    expect(body, 'the door is plugged in the boot body, which every backend runs').toMatch(/^function bootBody\([^)]*\): void \{\s*(?:\/\*[\s\S]*?\*\/\s*)?storeBackend\.impl = settingsAdapter\(wb\)\s*setStorageImpl\(trackerTarget\(wb\)\)/)
+    expect(body, 'the door is plugged in the boot body, which every backend runs').toMatch(/^function bootBody\([^)]*\): void \{\s*(?:\/\*[\s\S]*?\*\/\s*)?storeBackend\.impl = settingsAdapter\(wb\)\s*(?:\/\*[\s\S]*?\*\/\s*)?setStorageImpl\(trackerTarget\(wb, BOOT_UNIT\)\)/)
   })
   /* THE SAVE CORNER'S WIRE ([TRK-SAVE-FAIL-SAYS-SAVED]; the setter renamed setSaveHealth by this job). The Tracker's
      "● saved" corner hears Raptor's saver only because main.tsx hands the postman over after the boot; without it the

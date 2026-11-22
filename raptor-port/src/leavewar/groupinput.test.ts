@@ -55,7 +55,8 @@ const switchOff = () => { saber(); expect(setMembersFile(false).ok).toBe(true) }
 const switchOn = () => { saber(); expect(setMembersFile(true).ok).toBe(true) }
 /* the switch flipped by an admin ELSEWHERE - the signed-in person stays signed in, so his Undo steps are kept (they
    clear at a sign-out, D148): the stored setting itself, which every question reads live */
-const flipElsewhere = (on: boolean) => { if (on) delete mem['sqn142_memberfile']; else mem['sqn142_memberfile'] = 'false' }
+/* the members' switch is the boot unit's setting, stored under its unit (multi-squadron step 2): sqn142_u142@memberfile */
+const flipElsewhere = (on: boolean) => { if (on) delete mem['sqn142_u142@memberfile']; else mem['sqn142_u142@memberfile'] = 'false' }
 
 const SAT = '2026-02-14', SUN = '2026-02-15', TUE = '2026-02-10'
 const mine = (p: string, type = 'Meeting', mon = 'Feb') => INPUTS.filter((r: any) => holds(r, p) && r.type === type && String(r.date).startsWith(mon))
@@ -229,8 +230,9 @@ describe('a member files for another man — a duty or a commitment, and nothing
     expect(chg(id, r => { r.people = [{ p: 'bane', by: 'bane', at: t2 }] }), 'by a hand-made call alike — onto himself too').toBe(true)
     expect(idsOf(byId(id))).toEqual(['bane'])
   })
-  it('a guest, a pending person and an account switched off change nothing', () => {
-    for (const s of [{ user: 'principal:g', role: 'guest', pid: null, name: 'g' }, { user: 'principal:p', role: 'pending', pid: null, name: 'p' }, { user: 'principal:o', role: 'off', pid: null, name: 'o' }]) {
+  /* the guest (gone with the guest view, D2239) stood first here as a person without access: a person waiting takes his place */
+  it('a person waiting, a pending person and an account switched off change nothing', () => {
+    for (const s of [{ user: 'principal:w@mail', role: 'pending', pid: null, name: 'w@mail' }, { user: 'principal:p', role: 'pending', pid: null, name: 'p' }, { user: 'principal:o', role: 'off', pid: null, name: 'o' }]) {
       resetSession(s as any)
       const r = rec('rocky', { by: 'bane' })
       expect(raw(() => { INPUTS.unshift(r) }), s.role).toBe(false)

@@ -90,7 +90,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - The amber edge down the left of each cut line on the upchit sheet stays — the app's own warning-row mark, not a stripe to remove — and the design checker keeps skipping it there [D1025].
 - "Delete" in an input's own window deletes at once and asks nothing, as built, Undo bringing it back — except an upchit whose delete gives a downchit its days back, which asks first on the upchit sheet [D792, D1022].
 - No calendar is folded to a dates line: an input's window, and SANS "+ Commitment", keep their calendar showing; nothing else is folded, and the design guide carries no such rule [D916].
-- An Attach keeps what D1374 built: under the schedule's Unavailable list by itself, counting him out on the Leave War (1, or 0.5 for half a day), with its "To" box — more than a new name for "Fly with", which never counted on the war [D1377, D1374]; the row made by itself from another squadron's plan never counts him out [D2160, D2165, D2184].
+- An Attach keeps what D1374 built: under the schedule's Unavailable list by itself, counting him out on the Leave War (1, or 0.5 for half a day), with its "To" box — more than a new name for "Fly with", which never counted on the war [D1377, D1374]; the row made by itself from another squadron's plan never counts him out [D2160, D2165, D2184, D2195].
 
 ## Built, stated here: their tests hold only part
 
@@ -106,7 +106,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - On a phone the list's day headings and cards take the screen's full width less the margin the filters and search box above them have [D1293].
 - On a phone the Inputs page's tab row (Inputs · SANS · Medical) sits 4px under the app's top bar, as the Leave War's does, so the tabs stand in the same place on both pages [D1280].
 - The "OIL?" sign: a small outlined "OIL?" tag on an input card's top line, left of the hours, where nobody has answered its OIL question — a day opened on the calendar and the list on a phone; the desktop list's "OIL?" button shows for an input of several people too; the month's bars get nothing [D777].
-- Undo and Redo name what they take back by person and kind — "Undid: Drifter's ISR brief", "Undo — Ranger's OL" — and several at once by count, "Undid: 3 inputs", never "a personal input" [D1582].
+- Undo and Redo name what they take back by person and kind — "Undid: Drifter's ISR brief", "Undo — Ranger's OL" — and several at once by count, "Undid: 3 inputs", never "a personal input" [D1582]; a late cut-off's by its window's heading, "Undid: the late cut-off for inputs" (or "…for SANS commitments") [D2267].
 
 ### The Inputs and SANS calendars' month
 - Three tabs across the top — Inputs, SANS, Medical — less tall, one place reaching all three, each calendar opening on its calendar; Inputs keeps its List; SANS availability is filed on the SANS calendar only, which has no list; the rest of the first mock-ups' drawings stand as drawn [D620, D626, D630, D576].
@@ -167,7 +167,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - A day is day flying by default, night flying, or no fly — exactly one; an NF day needs nobody, its counters 0, "NF", in step with the Leave War; public holidays (green) and off days show on the SANS and inputs calendars from one record; the sun and moon on the SANS calendar only [D627, D631, D633, D636, D638, D577, D637, D665, D674].
 - The baseline is set once: no-fly days repeat — Every Thursday from a date, no end; the holidays are seen and set in one list; each date carries its own select button, no normal-week view; the required pilots and WSOs are typed on the Leave War's own columns [D631, D633, D636, D638, D637, D665, D674].
 - On the days month a phone date carries one stepping button, a desktop date three; a weekday's heading sets repeating days; a public holiday and an off day each have two doors onto one record — the Leave War's Event row and the Holidays list; No Leave is on the Leave War only [D638].
-- It stays open when he changes page, closing only with its ✕ or Escape, opened from several places and belonging to no one page [D1623].
+- It stays open when he changes page, closing only with its ✕ or Escape, opened from several places and belonging to no one page [D1623] — except when his squadron changes at the midnight of his move: it closes, as do the Inputs and SANS settings, nothing saved, a short note saying so, its words drawn first [D2263].
 - "Every <weekday>"'s from date and Until's "A date" are the app's own date field opening the app's own calendar, never the phone's box; any date may be picked, the weekday standing out [D795, D796].
 - On a phone a sideways swipe anywhere on its month changes the month, on the Holidays list the year, never pressing a date; the "Every <weekday>" from box fits at any phone width [D786, D795, D796].
 - The holiday form picks its dates on the Leave War Event sheet's one-calendar picker — a tap for the start, a tap for the end; its "Add a day" form carries the short form "On grid" beside the name [D671, D652].

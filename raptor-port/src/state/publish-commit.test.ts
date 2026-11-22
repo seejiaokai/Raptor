@@ -9,6 +9,7 @@
        vs the legacy serializer (completeness, §7 / Codex R4-004).
    A refused/no-op publish mints nothing → no boundary, no envelope. */
 import { beforeEach, afterEach, describe, expect, it } from 'vitest'
+import { inView } from '../engine/unitview'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
 import { SCHED, signOf, dayApproved, dayHasChanges } from '../engine/publish'
@@ -74,9 +75,9 @@ describe('first publish (setDayApproved) emits the Original + a publish boundary
     expect(caught.length).toBe(1)
     const e = caught[0]
     expect(e.type).toBe('sched.approve')
-    expect(e.scope).toEqual({ module: 'sched', weekId: CURWEEK })
+    expect(e.scope).toEqual({ module: 'sched', weekId: inView(CURWEEK) })
     // the Original is emitted as its own append-only record — issuance 0 of its version ([DB-READINESS] group A, phase 1)
-    expect(e.changes.some(c => c.collection === 'sched.issuance' && c.id === `${CURWEEK}:${(SCHED.orig as any)[0].id}~0`)).toBe(true)
+    expect(e.changes.some(c => c.collection === 'sched.issuance' && c.id === `${inView(CURWEEK)}:${(SCHED.orig as any)[0].id}~0`)).toBe(true)
     // the mutable book moved too (dayOK / cur / pending cleared)
     expect(cols(e)).toContain('sched.book')
     // the publish boundary carries the new issued id, crossable (nothing disclosed)
@@ -175,7 +176,7 @@ describe('completeness — the stream reconstructs the persisted week (§7 / R4-
      the logical records and re-assemble the legacy histSnap shape from them — the
      week through its rows' own join ([DB-READINESS] group A, phase 1: state/weekrows.ts). */
   function recordsToHist(m: Map<string, { collection: string; id: string; value: any }>): any {
-    const wk = CURWEEK
+    const wk = inView(CURWEEK)   // the records name the week with its unit (step 2)
     const days = [0, 1, 2, 3, 4, 5, 6].map(di => ({
       d: m.get(`days/${wk}#${di}`)!.value, book: m.get(`sched.book/${wk}#${di}`)!.value, wo: m.get(`sched.mutes/${wk}#${di}`)!.value,
     }))

@@ -1,0 +1,34 @@
+msq-fr15-w5 v1 iPhone
+s1 ad2 dot before block lines ["NEW LLThu 23 Jul Remark changed · Kestrel now"] controls ["bell-line-nmro8e9594zab||LLThu 23 Jul\nRemark changed · ","bell-markall||Mark all read"]
+ROW PASS | W5-s1 | iPhone | ad2: open the bell, read lines, press each line | saw: dot before block; bell opened 1; lines ["NEW LLThu 23 Jul Remark changed · Kestrel now"]; 0: page inputs, windows 2, bell open 0
+s1 ad2 mark-all control count 0
+ROW BLOCKED | W5-s1m | iPhone | ad2: Mark all read | saw: mark-all controls 0; lines after ["read LLThu 23 Jul Remark changed · Kestrel now"]
+ROW PASS | W5-s1c | iPhone | ad2: close the bell with its button, badge after | saw: closed true; dot before block after none
+s1 ad2 no x control; outside press closed: true
+ERR W5-r locator.waitFor: Timeout 8000ms exceeded.
+ROW OWED | W5-r | iPhone | script step | saw: script error locator.waitFor: Timeout 8000ms exceeded.
+ERR W5-s locator.waitFor: Timeout 8000ms exceeded.
+ROW OWED | W5-s | iPhone | script step | saw: script error locator.waitFor: Timeout 8000ms exceeded.
+errors []
+DONE 2 PASS 0 FAIL 3 OTHER of 5
+msq-fr15-w5 v1 iPhone
+s1 ad2 dot before block lines ["NEW LLThu 23 Jul Remark changed · Kestrel now"] controls ["bell-line-nmro8e5bg40hc||LLThu 23 Jul\nRemark changed · ","bell-markall||Mark all read"]
+ROW PASS | W5-s1 | iPhone | ad2: open the bell, read lines, press each line | saw: dot before block; bell opened 1; lines ["NEW LLThu 23 Jul Remark changed · Kestrel now"]; 0: page inputs, windows 2, bell open 0
+s1 ad2 mark-all control count 0
+ROW BLOCKED | W5-s1m | iPhone | ad2: Mark all read | saw: mark-all controls 0; lines after ["read LLThu 23 Jul Remark changed · Kestrel now"]
+ROW PASS | W5-s1c | iPhone | ad2: close the bell with its button, badge after | saw: closed true; dot before block after none
+s1 ad2 no x control; outside press closed: true
+s2 us dot before block lines ["NEW LLThu 23 Jul Remark changed · Kestrel now","NEW LLThu 23 Jul You were added · Hunter now"] controls ["bell-line-nmro8e5bg3ccz||LLThu 23 Jul\nRemark changed · ","bell-line-nmro8dyv02r86||LLThu 23 Jul\nYou were added · ","bell-markall||Mark all read"]
+s2 us mark-all control count 1
+ROW PASS | W5-s2 | iPhone | us: open the bell, read lines, press each line | saw: dot before block; bell opened 1; lines ["NEW LLThu 23 Jul Remark changed · Kestrel now","NEW LLThu 23 Jul You were added · Hunter now"]; 0: page inputs, windows 2, bell open 0 ; 1: page inputs, windows 2, bell open 0
+ROW PASS | W5-s2m | iPhone | us: Mark all read | saw: mark-all controls 1; lines after ["read LLThu 23 Jul Remark changed · Kestrel now","read LLThu 23 Jul You were added · Hunter now"]
+ROW PASS | W5-s2c | iPhone | us: close the bell with its button, badge after | saw: closed true; dot before block after none
+s2 us no x control; outside press closed: true
+s3 ad dot before none lines [] controls []
+ROW PASS | W5-s3 | iPhone | ad: open the bell, read lines, press each line | saw: dot before none; bell opened 1; lines []; 
+s3 ad mark-all control count 0
+ROW BLOCKED | W5-s3m | iPhone | ad: Mark all read | saw: mark-all controls 0; lines after []
+ROW PASS | W5-s3c | iPhone | ad: close the bell with its button, badge after | saw: closed true; dot before none after none
+s3 ad no x control; outside press closed: true
+errors []
+DONE 7 PASS 0 FAIL 2 OTHER of 9

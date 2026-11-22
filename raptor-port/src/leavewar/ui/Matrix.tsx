@@ -2,7 +2,7 @@ import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRe
 import { dayLabel, shortDate, shortSpan } from './dates'
 import { isCommitCode, isLeaveCode, isSickCode, type Contrib, type DayView } from '../engine/dayview'
 import { INPUTS, remarksShown, remarksTyped } from '../../engine/inputs'
-import { addDays, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, dayName, isWeekend, monthsIn, parseCell, lockedOnWar, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
+import { addDays, awayFromHome, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, dayName, isWeekend, monthsIn, parseCell, lockedOnWar, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
 import { actCount, filedSince, awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, oilOnDay, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet, type HeldLine } from './BidPicker'
 import { PersonWindow } from './PersonWindow'
@@ -57,7 +57,21 @@ import { keyCount, setGridGuard, useGuardOnClose, WINDOW_PRESS } from './gridgua
 import { bubbleParts, bubbleWords, worsenedRows, type BubbleFlags, type FiledKind } from './bubblewords'
 import { warInputs, type WarInput } from '../absences'
 import { ReorderIcon } from '../../ui/icons'
+import { landingScroll, leftTheLanding, reanchorPlan } from './reanchor'
+import { warBand } from '../../state/typing-hold'
 import './matrix.css'
+
+/* THE BID WINDOW HELD UNDER THE MIDNIGHT BAND (his D2243 Q7: "His typed words stay visible"; the reshape plan §3.2 A-iv).
+   At midnight of his own move the day he is bidding on can close to him (it is no longer his in this war), and the grid
+   would swap his open bid window for the closed note — his words gone, though the band holds the war for the window. So
+   the cell whose bid window was open when the band went up stays a bid window while the band is up; its save is the old
+   squadron's to refuse, which the band names. Read at every draw while no band is up; the band's Close lets the swap run. */
+let BID_AT_BAND: string | null = null
+const bidOpenOn = (id: string, date: string): boolean => {
+  const live = canBidOn(id, date), key = `${id}|${date}`
+  if (!warBand()) { BID_AT_BAND = live ? key : null; return live }
+  return live || BID_AT_BAND === key
+}
 
 /** the year of a 'yyyy-mm-dd' date, as the grid's corner writes it (D1561) */
 const yearAt = (iso: string) => iso.slice(0, 4)
@@ -84,6 +98,8 @@ function moveReason(r: Exclude<MoveResult, 'moved'>): string {
     case 'window': return 'That lands outside what you can edit — pick another day.'
     /* a member's landing on a day closed for him (M3 §4 (4) — the agent's words, shown at his look, his to change) */
     case 'closed': return 'That day is closed for bidding. Pick an open day.'
+    /* a landing day that is another squadron's now (A7, his D2243 Q3) — the app's generic words: no ruling gives others */
+    case 'away': return 'This change could not be saved.'
     default: return 'Nothing to move.'
   }
 }
@@ -1065,6 +1081,26 @@ export function Matrix() {
     return who + (wrap.querySelector<HTMLElement>('.bal')?.getBoundingClientRect().width ?? 0)
   }
 
+  // LAND A DAY ON THE FROZEN EDGE — AT it, never under it ([LW-MONTHJUMP-SUBPIXEL], 19 Nov 26). The day columns sit at
+  // fractional offsets (a month's measured width carries a fraction), but the browser keeps `scrollLeft` in whole pixels
+  // on a desktop and ROUNDS a fractional write: `scrollLeft += 6380.53` landed 1 September 0.47px under the counter
+  // column. Each later redraw to the left (the desktop's whole-year fill draws a month a beat) moved it again, the anchor
+  // below skipped every shift of a pixel or less, and re-captured the drifted place as its new anchor — so the halves
+  // added up: 0.47, then 0.86, then 1.13px under, a sliver of the day hidden and the browser test red on GitHub's slower
+  // machine, which measured mid-fill. Rounding the scroll DOWN instead puts the day 0–1px clear of the edge, every time;
+  // and an anchor that was such a landing is put back the same way (`edge` in anchorNow), so nothing accumulates.
+  // A no-op when already there (no write, so no scroll event and no loop). The 0.01 absorbs float noise in the sum.
+  //   ON THE SCREEN'S OWN DOTS (fix read 4's claim 5, 19 Nov 26): "whole pixels" is 100%'s case — at his PC's 125% the
+  // scroll moves in 0.8px dots and rounds a write to the nearest one, so the whole-pixel floor still left the day 0.275px
+  // under; landingScroll floors in dots (reanchor.ts). Where the write came back is kept (ownLeftRef), so the scroll it
+  // raises is known for the grid's own, never the person's (onWrapScroll — the "landed" mark).
+  const landOnEdge = (wrap: HTMLElement, cell: HTMLElement) => {
+    const dpr = window.devicePixelRatio || 1
+    const want = landingScroll(wrap.scrollLeft + cell.getBoundingClientRect().left - wrap.getBoundingClientRect().left - frozenWidth(wrap), dpr)
+    if (Math.round(want * dpr) !== Math.round(wrap.scrollLeft * dpr)) wrap.scrollLeft = want
+    ownLeftRef.current = wrap.scrollLeft
+  }
+
   const hiddenJumpRef = useRef<string | null>(null)
   const jumpTo = (date: string) => {
     /* any jump spends a month pressed in the strip (D1477) — the strip's own press sets it again after this call, and a
@@ -1104,9 +1140,15 @@ export function Matrix() {
     // hiding rows and shrinking columns enough to leave the target far off the
     // frozen edge if the re-centre is skipped.
     jumpAtRef.current = Date.now()
-    // Scrolling BY a delta rather than TO an absolute keeps this correct
-    // wherever the grid happens to be scrolled already.
-    wrap.scrollLeft += cell.getBoundingClientRect().left - wrap.getBoundingClientRect().left - frozenWidth(wrap)
+    // Measured from where the grid is now (a delta, not an absolute), so this is
+    // correct wherever the grid happens to be scrolled already.
+    landOnEdge(wrap, cell)
+    landedRef.current = true
+    /* AN ANCHOR TAKEN BEFORE THE JUMP NEVER UNDOES IT (chat 112, 19 Nov 26 — one month-button run in 140 left the grid on
+       September after MAR was pressed): the row window notes the first day in view at rest (measureWindow) and its redraw
+       commits a task later; a press in between landed March, then that redraw put the noted September day back on the edge.
+       The note waiting for that redraw is now the jumped day, taken where the jump left it. */
+    if (anchorRef.current) anchorRef.current = anchorNow(wrap)
   }
   /* the on-screen listener is wired once; it reaches this render's jumpTo through the ref */
   const jumpToRef = useRef(jumpTo)
@@ -1197,7 +1239,7 @@ export function Matrix() {
   // them UPSTREAM of the view — which otherwise yanks the grid sideways under
   // the reader and lands a month jump short (measured 165px off at SEP, from
   // the demo's one posted-out man leaving the roster).
-  const anchorRef = useRef<{ date: string; left: number } | null>(null)
+  const anchorRef = useRef<{ date: string; left: number; edge: boolean; sl: number } | null>(null)
   // When the last scrollLeft move was a programmatic month/day JUMP, not a
   // finger flick. The anchor correction below is skipped on touch to protect a
   // fling's momentum, but a jump has no fling to protect and MUST re-centre or
@@ -1206,6 +1248,38 @@ export function Matrix() {
   // reflows within a fraction of a second, and a later flick can never be
   // mistaken for the jump once the window has passed.
   const jumpAtRef = useRef(0)
+  // WHERE THE FIRST DAY STANDS IS A JUMP'S LANDING (fix read 3 — both readers): set by a jump's landOnEdge, cleared by
+  // the person's own scroll, so the re-anchor's edge rule (reanchor.ts) puts back on the frozen edge only a day a jump
+  // put there, never one his own scroll left near it.
+  //   ONLY HIS SCROLL, NEVER ANY PRESS (fix read 4's claim 5, 19 Nov 26): every pointer press and key on the page cleared
+  // it, so a click on a day cell — or Escape closing the window it opened — while the desktop's fill still ran handed the
+  // later redraws back to the old rule, and the jumped day slid under the frozen columns half a pixel a beat
+  // ([LW-MONTHJUMP-SUBPIXEL]). Now: a scroll event that leaves where the grid's own last write put it (`ownLeftRef`,
+  // onWrapScroll — wheels, the scroll bars, arrow keys, Tab bringing a cell into view, a drag at the edge all arrive
+  // there); and, before that event can come, a sideways wheel over the grid and a press on its own scroll bar, so a
+  // redraw in between never puts the day back over his scroll. A phone keeps clearing it at any touch, as it did.
+  const landedRef = useRef(false)
+  const ownLeftRef = useRef<number | null>(null)
+  useEffect(() => {
+    const opts = { capture: true, passive: true } as const
+    const touch = () => { landedRef.current = false }
+    const wheel = (e: WheelEvent) => {
+      const wrap = wrapRef.current
+      /* a SIDEWAYS wheel only: a trackpad's downward swipe carries a little sideways noise, scrolls the page and not the
+         grid, and must not end the landing (the fresh Opus read's F1) — any real move of the grid still ends it in
+         onWrapScroll */
+      if (wrap && e.target instanceof Node && wrap.contains(e.target) && (Math.abs(e.deltaX) > Math.abs(e.deltaY) || (e.shiftKey && e.deltaY !== 0))) landedRef.current = false
+    }
+    const press = (e: PointerEvent) => { if (e.target === wrapRef.current) landedRef.current = false }
+    document.addEventListener('touchstart', touch, opts)
+    document.addEventListener('wheel', wheel, opts)
+    document.addEventListener('pointerdown', press, opts)
+    return () => {
+      document.removeEventListener('touchstart', touch, opts)
+      document.removeEventListener('wheel', wheel, opts)
+      document.removeEventListener('pointerdown', press, opts)
+    }
+  }, [])
 
   // The grid ZOOM (owner, 18 Aug 26 — "a zoom function for mobile leave
   // war"). `zoom` (not transform) so layout, scroll width and the sticky offsets
@@ -2378,6 +2452,7 @@ export function Matrix() {
     if (hbarWantRef.current != null && Math.abs(h.scrollLeft - hbarWantRef.current) <= 1) { hbarWantRef.current = null; return }
     hbarWantRef.current = null
     hbarUserTsRef.current = Date.now()
+    landedRef.current = false   // his drag of the grid's own scroll bar leaves a jump's landing (fix read 4's claim 5)
     const hMax = h.scrollWidth - h.clientWidth
     const wMax = wrap.scrollWidth - wrap.clientWidth
     wrap.scrollLeft = hMax > 0 ? Math.round((h.scrollLeft / hMax) * wMax) : 0
@@ -2773,7 +2848,7 @@ export function Matrix() {
   // left) puts back in the same place. Binary search — column lefts are
   // monotonic — so ~9 rect reads. Shared by the row window and the column
   // window so the two corrections cannot disagree.
-  const anchorNow = (wrap: HTMLElement): { date: string; left: number } | null => {
+  const anchorNow = (wrap: HTMLElement): { date: string; left: number; edge: boolean; sl: number } | null => {
     const { drawnDates } = liveRef.current
     if (drawnDates.length === 0) return null
     const viewL = wrap.getBoundingClientRect().left + frozenWidth(wrap)
@@ -2783,7 +2858,13 @@ export function Matrix() {
       const mid = (lo + hi) >> 1
       if (at(mid) >= viewL - 1) { best = mid; hi = mid - 1 } else lo = mid + 1
     }
-    return { date: drawnDates[best]!, left: at(best) }
+    // `edge`: the day sits ON the frozen edge (within a pixel either way) — a landed jump, put back there exactly
+    // (landOnEdge, [LW-MONTHJUMP-SUBPIXEL]); any other first day is held where it was, as before.
+    // `sl`: where the grid stood when the note was taken, so a scroll before its redraw is known for his (reanchorPlan).
+    // `edge` within one screen dot, never under a pixel: zoomed out below 100% a dot is wider than a pixel, and a landing
+    // up to a dot clear is still a landing (the fresh Opus read's F2, chat 112).
+    const left = at(best)
+    return { date: drawnDates[best]!, left, edge: Math.abs(left - viewL) < Math.max(1, 1 / (window.devicePixelRatio || 1)) + 0.01, sl: wrap.scrollLeft }
   }
 
   const measureWindow = () => {
@@ -2838,6 +2919,9 @@ export function Matrix() {
   const scrollSpeedRef = useRef({ v: 0, t: 0, sl: 0 })
   const onWrapScroll = () => {
     const now = Date.now()
+    /* the person's scroll leaves a jump's landing (the "landed" mark above — fix read 4's claim 5): a scroll the grid's
+       own write raised stands where that write left it */
+    if (landedRef.current && wrapRef.current && leftTheLanding(wrapRef.current.scrollLeft, ownLeftRef.current)) landedRef.current = false
     /* THE PINCH'S OWN SCROLL IS NOT A FLING ([LW-PHONE-PINCH-ZOOM], the walk of 23 Oct 26): at the lift the pinch scrolls
        the year — often thousands of pixels, the zoom having moved every column — to put the day under the fingers back
        under them. Counted as a scroll in motion, it let the fill draw the month left of the view "mid-fling" over a
@@ -3203,7 +3287,8 @@ export function Matrix() {
       const wrap = wrapRef.current, cell = headCell(pj)
       if (wrap && cell) {
         jumpAtRef.current = Date.now()
-        wrap.scrollLeft += cell.getBoundingClientRect().left - wrap.getBoundingClientRect().left - frozenWidth(wrap)
+        landOnEdge(wrap, cell)
+        landedRef.current = true
       }
       return
     }
@@ -3220,9 +3305,19 @@ export function Matrix() {
     // and the grid's repaint; 1200ms is comfortably clear of all three and
     // still far shorter than the gap before a deliberate follow-up flick.
     const fromJump = Date.now() - jumpAtRef.current < 1200
-    if (coarse && !fromJump && !colShift) return
-    const shift = cell.getBoundingClientRect().left - a.left
-    if (Math.abs(shift) > 1) wrap.scrollLeft += shift
+    // A day a JUMP landed ON the frozen edge goes back on it exactly — the sub-pixel rule of landOnEdge — so the redraws
+    // after a jump never walk it under the edge half a pixel at a time ([LW-MONTHJUMP-SUBPIXEL]); a day the person's own
+    // scroll left near the edge keeps the old rule, and on a touch screen only inside the jump's window (reanchor.ts —
+    // fix read 3: a sub-pixel write in a coast's lull stops a phone's fling).
+    //   A SCROLL SINCE THE NOTE IS HIS, AND KEPT (Astra's read of chat 112's fix): the note is taken at rest and applied a
+    // task later; an arrow key, an edge step or a wheel in between moved the day too — that move ends the landing, is
+    // never the edge rule's, and only what the redraw itself moved is corrected (reanchorPlan).
+    const plan = reanchorPlan({ coarse, fromJump, colShift, edge: a.edge, landed: landedRef.current,
+      cellLeft: cell.getBoundingClientRect().left, anchorLeft: a.left, anchorSl: a.sl, nowSl: wrap.scrollLeft })
+    landedRef.current = plan.landed
+    if (plan.mode === 'skip') return
+    if (plan.mode === 'edge') { landOnEdge(wrap, cell); return }
+    if (Math.abs(plan.shift) > 1) { wrap.scrollLeft += plan.shift; ownLeftRef.current = wrap.scrollLeft }
   }, [visWindow, colWin?.lo, colWin?.hi])
   /* the row set this render drew, for the measure to compare with (visSeqRef above) — the same test the rows are drawn by */
   useLayoutEffect(() => {
@@ -3616,7 +3711,14 @@ export function Matrix() {
      he chose to place leave or OIL there (the narrow read's N3 — the bid window's own condition, below). It comes before the
      day's list, the member's remarks window and the read-only note, each of which it replaces on such a day — but never on a
      day outside his time in the squadron, where the day's list shows every record on its own line (owner answer C, below). */
-  const openHeld = open && openView && (placing || !(role === 'admin' && (openPostedOut || openNotYetArrived))) && canBidOn(open.id, open.date)
+  /* A BID OF THIS WAR'S OWN ON A DAY NOW ANOTHER SQUADRON'S (the reshape walk's W2-F3 — MatrixRows.tsx awayBid): the day's
+     list, every record on its own line with its own actions — the window that offers Delete beside a greyed Approve */
+  const openAwayBid = !!open && !!openPerson && awayFromHome(openPerson, open.date) && !!openView?.all.some(c => c.kind === 'request')
+  /* …and once that bid is gone — its Delete pressed — the day opens nothing again, as every other day of the stripe: the
+     window closes with it, never turning into a bid window on another squadron's day */
+  const openAwayDone = !!open && !!openPerson && !warBand() && awayFromHome(openPerson, open.date) && !openAwayBid
+  useEffect(() => { if (openAwayDone) { setOpen(null); setPlaceAt(null) } }, [openAwayDone])
+  const openHeld = open && openView && !openAwayBid && (placing || !(role === 'admin' && (openPostedOut || openNotYetArrived))) && bidOpenOn(open.id, open.date)
     /* (only LEAVE there — the day's list's own rule, `listOpen` below: a course, a medical or an OD outside his time still opens
        the window, as a course's day did before — the fresh code read's F3) */
     && !(role !== 'admin' && openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null)
@@ -3624,8 +3726,8 @@ export function Matrix() {
   /* A COMMITMENT UNDER UNAVAILABLE (D1356) opens the day's list, its remarks read there by everyone — except beside the
      half he may still bid on, where the free half's window comes first and names it in one line (D1353, D1371) */
   const commitHeld = !!openView && openView.all.some(c => c.kind === 'absence' && isCommitCode(c.code))
-    && !(open && canBidOn(open.id, open.date) && freeHalfBeside(openView))
-  const listOpen = !!open && !!openView && !openHeld && (openView.mark !== '' || commitHeld ||
+    && !(open && bidOpenOn(open.id, open.date) && freeHalfBeside(openView))
+  const listOpen = !!open && !!openView && !openHeld && (openView.mark !== '' || commitHeld || openAwayBid ||
     /* leave dated outside his time opens the list on HIS OWN tap (owner answer C); an admin's tap there opens what the day
        opens on any other day (D1722, D1725 — `openGoneHolds` above) */
     (role !== 'admin' && !!openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null))
@@ -3635,7 +3737,7 @@ export function Matrix() {
      half he may still bid on. Its remarks are reached from the Inputs page then. */
   /* …and his own leave on a day filled from the Inputs page opens the bid window, its Remarks and Document there (D1552) */
   const canRemark = !listOpen && !!remarkRow && !openHeld
-    && !(open && canBidOn(open.id, open.date) && freeHalfBeside(openView))
+    && !(open && bidOpenOn(open.id, open.date) && freeHalfBeside(openView))
   /* THE FREE HALF BESIDE INPUTS-FILED LEAVE (CURRENT-STATE item D). When the
      cell is locked to the Inputs page but only HALF of it is actually spoken
      for, the tap opens the bid picker on the free half instead of the
@@ -3681,7 +3783,7 @@ export function Matrix() {
     ? (() => { const h = openHeld.held.find(x => x.portion !== 'full' && (isLeaveCode(x.c.code) || isSickCode(x.c.code))); return h ? { half: h.portion as 'am' | 'pm', code: h.c.code } : null })()
     : null
   const openFreeHalf = open && lockedOnWar(openView)
-    && canBidOn(open.id, open.date)
+    && bidOpenOn(open.id, open.date)
     ? freeHalfBeside(openView)
     : null
 
@@ -4367,7 +4469,7 @@ export function Matrix() {
       {/* HIS OWN OIL AWARD, READ ONLY (owner, D261, 27 Sep 26), wherever the bid sheet will not open for him — a day not
           open for him. Where it does open its foot reads the award back already, so this stands aside. */}
       {open && !listOpen && !canRemark && openCredit && ownAwardAlone(openView, viewer, open.id)
-        && !canBidOn(open.id, open.date) && (
+        && !bidOpenOn(open.id, open.date) && (
         <AwardSheet
           callsign={open.callsign}
           date={open.date}
@@ -4380,7 +4482,7 @@ export function Matrix() {
           refuses. Last in line: his remarks, a leave filed on the Inputs page, his own award and the day's list each
           answer first, as before. The posting days (before he joined, after he left) are his too. */}
       {open && !listOpen && !canRemark && role !== 'admin' && canEditRow(role, viewer, open.id)
-        && !canBidOn(open.id, open.date)
+        && !bidOpenOn(open.id, open.date)
         && !lockedOnWar(openView)
         && !(openCredit && ownAwardAlone(openView, viewer, open.id)) && (
         <ClosedNoteSheet
@@ -4697,7 +4799,7 @@ export function Matrix() {
       {/* a member may bid CLEARING leave after their own posting-out (owner
           answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
       {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!lockedOnWar(openView) || !!openFreeHalf || openWorkOnly || !!openHeld)
-        && canBidOn(open.id, open.date) && (
+        && bidOpenOn(open.id, open.date) && (
         <BidPicker
           key={`${open.id}-${open.date}`}
           /* the approved leave's Remarks and Document, shown at once (his D1307 — "Note" went) */

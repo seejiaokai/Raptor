@@ -99,8 +99,7 @@
 #page-admin .acc-edit{flex:1 1 100%;padding:10px 0 4px}
 #page-admin .acc-edit .mfield select,#page-admin .acc-edit .mfield input{width:100%;box-sizing:border-box}
 #page-admin #admUsers .mfield select,#page-admin #admUsers .mfield input{width:100%;box-sizing:border-box}
-#page-admin .acc-switch{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--ink-2);cursor:pointer;line-height:1.45}
-#page-admin .acc-switch input{margin-top:2px;flex:0 0 auto;width:16px;height:16px;accent-color:var(--accent)}
+/* (the guest switch's row, .acc-switch, went with the guest view — his D2239, 20 Nov 26) */
 /* (the Admin + Wave show/hide list was removed 29 Aug 26 pt.3 — show/hide/delete
    moved to the + Wave menu, and on 30 Aug 26 folded into the one Flying-waves sheet;
    its .wvmng-* row/eye styles live by the modal and are reused there.) */

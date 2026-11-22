@@ -35,6 +35,7 @@ import {
   MGMT_KEY,
   type GroupDef,
   inSquadron,
+  awayFromHome,
   isBiddable,
   isDuty,
   isMedical,
@@ -171,7 +172,7 @@ import {
   type AvailPoints,
   type ReqNames,
 } from '../engine'
-import { mergeWar, absencesAt, absenceRows, absenceVersion, awardsAt, awardRows, awardVersion, setAwardRows, type AwardRows, type MergedWar, type RecordSpans, type Views } from './merge'
+import { mergeWar, absencesAt, ownAbsenceRows, absenceVersion, awardsAt, awardRows, awardVersion, setAwardRows, type AwardRows, type MergedWar, type RecordSpans, type Views } from './merge'
 import { counterLabel } from '../engine/counters'
 import {
   BAL_KINDS, FIG_MAX, isBalKind, KIND_COUNTER, personFigures, readTypedBalShape, snapshotOf, START_GRADES, startYear,
@@ -181,7 +182,7 @@ import { creditWorth } from '../engine/credit'
 import { localBackend, memoryBackend, type StorageBackend } from './storage'
 /* [DB-READINESS] group A, phase 3 — the war saved one row per record (state/rows.ts), each list's order on its records
    (command/ord.ts), and the one-time fold of an old store's whole-list records (storage/fold.ts) */
-import { lwRows, allRows, WAR, REC, LEDGER, OPENING, PROFILE, BALANCE, GRADE, parseRecKey, parseOpeningKey, parseBalanceKey, type LwNow } from './rows'
+import { lwRows, allRows, WAR, REC, LEDGER, OPENING, PROFILE, BALANCE, GRADE, profileKey, parseRecKey, parseOpeningKey, parseBalanceKey, type LwNow } from './rows'
 import { mintOrd, byOrd } from '../../command/ord'
 import { registerConverter, type Converter } from '../../storage/fold'
 import type { Entry } from '../../storage/backend'
@@ -1120,10 +1121,32 @@ let INIT_HOOK: (() => void) | null = null
 /** Test-only: run after every initStore (the Leave War suite's seed absences). */
 export function _setInitHook(fn: (() => void) | null): void { INIT_HOOK = fn }
 
-export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDemo?: boolean } = {}): void {
+/* WHOSE WORLD THIS IS (multi-squadron batch 1, step 4 — the plan §3.4 "The Leave War and the Tracker — each a whole world
+   per unit"). The store holds ONE squadron's Leave War — its wars, records, ledger, openings, figures, grades, profiles
+   and settings — read through that squadron's own door (storage/adapters.ts leavewarAdapter(wb, unit)); its roster is
+   that squadron's people (state/raptorRoster.ts projectPeople). The boot loads the boot unit's; signing in loads the
+   person's own squadron's in its place (sync.ts swapWarWorld). The store never filters: the other squadron's records
+   are simply not in it. 'u142' — the demo's squadron — until a boot or a swap names one. */
+let WORLD_UNIT = 'u142'
+export const worldUnit = (): string => WORLD_UNIT
+
+export function initStore(b?: StorageBackend, opts: {
+  started?: boolean; seedDemo?: boolean
+  /** the squadron whose world this is (the door `b` is its own) — the store's own tests leave it at the demo's */
+  unit?: string
+  /** a store that has not started takes the seed's wars WITH their demo records (the seed people's bids, openings and
+   *  ledger, which the demo world dresses onto 142's men) — false for a second squadron's first world: the same leave
+   *  periods and holidays, nobody's records (its people are not the seed's) */
+  demoRecords?: boolean
+  /** a SWAP of worlds after the boot (sync.ts swapWarWorld): the page's and the sync's subscribers stay — the boot's
+   *  first load clears them, as it always has */
+  keepListeners?: boolean
+} = {}): void {
   backend = b ?? localBackend()
   state = blank()
   BOOT_KEYS = null
+  WORLD_UNIT = opts.unit ?? 'u142'
+  const demoRecords = opts.demoRecords ?? true
 
   /* [DB-READINESS] group A, phase 3 — THE WAR IS READ FROM ITS ROWS (state/rows.ts). Whether the store has STARTED is
      the boot's answer (main.tsx: the stamp's `initialized` — storage/schema.ts), or, standalone and in the tests,
@@ -1137,7 +1160,12 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDem
   const started = opts.started ?? backend.keys().some(k => k.startsWith(WAR))
   const seedDemo = opts.seedDemo ?? true
   const stored = started ? readWorldRows() : null
-  const wars = stored ? stored.wars : seedDemo ? seedWars() : []
+  /* A WORLD NOT YET STARTED MAY ALREADY HOLD A MAN'S PROFILE (A3, Fable's design A): the master's Archive, Restore or Delete
+     of another squadron's man writes that squadron's stored profile row (leavewar/state/foreign.ts) whether or not anyone
+     has opened its war. Its first open takes the seed's periods as ever, and keeps the windows and labels already stored
+     — never the seed's empty ones over them. */
+  const early = !stored && backend.keys().some(k => k.startsWith(PROFILE)) ? readWorldRows() : null
+  const wars = stored ? stored.wars : seedDemo ? (demoRecords ? seedWars() : seedWars().map(w => ({ ...w, recs: {} }))) : []
   /* THE TAB ALWAYS OPENS ON THE WAR BEING WORKED (owner, 7 Sep 26, restated
      and reaffirmed 17 Sep 26) — since the stages went (D1177, 21 Oct 26), on the
      period holding the first open date from today, else on the one holding
@@ -1154,14 +1182,14 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDem
      database may yet want it per user; it is simply not honoured at boot. */
   const currentId = landingOf(wars.map(w => w.period), memberToday())?.periodId ?? (wars[0] ? wars[0].period.id : '')
 
-  const openings = stored ? stored.openings : seedDemo ? seedOpenings() : {}
-  const ledger = stored ? stored.ledger : seedDemo ? seedLedger() : []
+  const openings = stored ? stored.openings : seedDemo && demoRecords ? seedOpenings() : {}
+  const ledger = stored ? stored.ledger : seedDemo && demoRecords ? seedLedger() : []
   const eventDefs = readStored('eventdefs', readEventDefs) ?? seedEventDefs()
   const oilPolicy = readStored('oilpolicy', readOilPolicy) ?? { ...DEFAULT_OIL_POLICY }
   const figureOrder = readStored('figorder', readFigureOrder) ?? [...DEFAULT_FIGURE_ORDER]
   const rosterOrder = readStored('rosterorder', readIdList) ?? []
   /* the personnel labels ride each man's profile row with his posting window (LeavePersonProfile) */
-  const persLabels = stored ? stored.persLabels : {}
+  const persLabels = stored ? stored.persLabels : early ? early.persLabels : {}
   const manningOrder = readStored('manningorder', readIdList) ?? []
   const manningHidden = readStored('manninghidden', readIdList) ?? []
   const figureHidden = readStored('fighidden', readIdList) ?? []
@@ -1186,7 +1214,7 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDem
   ) ?? DEFAULT_EVENT_ROWS
   const showSans = readStored('showsans', x => (typeof x === 'boolean' ? x : null)) ?? false
   const reqNames = readStored('reqnames', readReqNames) ?? {}
-  const postOuts = stored ? stored.postOuts : {}
+  const postOuts = stored ? stored.postOuts : early ? early.postOuts : {}
   const balances = stored ? stored.balances : {}
   const gradeHist = stored ? stored.gradeHist : {}
   const grades = readStored('grades', readGrades)
@@ -1213,7 +1241,7 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDem
   LW_BASELINE = state
 
   version = 0
-  listeners.clear()
+  if (!opts.keepListeners) listeners.clear()
   MERGED = null
   // [ARCH-STACK] step 4 — the Leave War suite's setup files the seed's
   // approved leave as Inputs here (test-only; production files it through
@@ -1267,6 +1295,28 @@ function syncAwardIndex(ledger: Ledger): void {
   LAST_AWD_VER = awardVersion()
 }
 
+/* ---- EACH SQUADRON'S PUBLIC HOLIDAYS ARE ITS OWN (his D2195, 18 Nov 26: "The holiday list shouldn't be shared.
+   Individual sqns will own it" — the reshape plan §7, A4). Step 4 of batch 1 laid the other squadrons' public holidays at
+   this squadron's place onto the war a person opened (D2160's shared list); D2195 narrowed that away, so that overlay is
+   gone: the war a person opens reads only the holidays written into it — its own squadron's Holidays list (D638). A
+   holiday one squadron adds never touches another squadron's days, OIL or bell. */
+
+/** the wars another squadron keeps behind its own door, read as the boot reads them (readWar) — its periods (days,
+ *  bands, events) and its event types — for the sync's reads of that squadron's own days off and holidays
+ *  (leavewar/sync.ts nonWorkingFor, unitDayFacts). Records are not read: nothing outside a squadron's own war reads
+ *  another's leave. */
+export function readStoredPeriods(b: StorageBackend): { periods: Period[]; eventDefs: EventDef[] | null } {
+  const periods: Period[] = []
+  const parse = (k: string): unknown => { try { return JSON.parse(b.read(k) ?? 'null') } catch { return undefined } }
+  for (const k of b.keys()) {
+    if (!k.startsWith(WAR)) continue
+    const w = readWar({ period: parse(k), recs: {} })
+    if (w && w.period.id === k.slice(WAR.length)) periods.push(w.period)
+  }
+  const defs = parse('eventdefs')
+  return { periods, eventDefs: defs == null ? null : readEventDefs(defs) }
+}
+
 /* the merged read, cached on the raw state ref, the absence index version and
    the award index version, so a view-only render pays nothing (design §4.2/§4.3) */
 let MERGED: { raw: State; ver: number; awd: number; out: MergedState } | null = null
@@ -1275,11 +1325,12 @@ export function getState(): MergedState {
   const ver = absenceVersion()
   const awd = awardVersion()
   if (MERGED && MERGED.raw === state && MERGED.ver === ver && MERGED.awd === awd) return MERGED.out
-  const wars = state.wars.map(mergeWar)
+  const wars = state.wars.map(w => mergeWar(w))
   const cur = wars.find(w => w.period.id === state.currentId) ?? wars[0]
   /* no war at all (phase 5 — withCurrent): nothing on any person's any day */
   const out: MergedState = cur
-    ? { ...state, wars, grid: cur.grid, states: cur.states, views: cur.views, spans: cur.spans }
+    /* the top-level period is the current war's as read */
+    ? { ...state, wars, period: cur.period, grid: cur.grid, states: cur.states, views: cur.views, spans: cur.spans }
     : { ...state, wars, grid: {}, states: {}, views: {}, spans: new Map() }
   MERGED = { raw: state, ver, awd, out }
   return out
@@ -1289,6 +1340,71 @@ export function getState(): MergedState {
  *  command layer and tests of the stored shape; screens read getState(). */
 export function rawState(): State {
   return state
+}
+
+/* A MAN'S POSTING AS SAVED — the war's own stored profile row, read as a reload reads it (readWorldRows), or null where
+   none is saved. The posting pass is judged against it (fix read 13, item B — SEC13-1: perms.ts postingPassViolation,
+   through the probe sync.ts installs), never against memory: a posting changed in place outside every command changes the
+   committed world's object too, since the two share it, so only the stored row tells a real posting from a made-up one. */
+export function savedPostOut(pid: string): Person | null {
+  let x: unknown
+  try { x = JSON.parse(backend.read(profileKey(pid)) ?? 'null') } catch { return null }
+  if (!isPlainObject(x) || x.post === undefined) return null
+  return readPostOuts({ [pid]: x.post })?.[pid] ?? null
+}
+/* a posting as a reload would read it — the one shape both sides of the comparisons below are put in; one a reload would
+   not read at all is still a posting, never read as none */
+const postNorm = (pid: string, p: unknown): string => {
+  if (p == null) return 'null'
+  const s = JSON.stringify(p)
+  return JSON.stringify(readPostOuts({ [pid]: JSON.parse(s) })?.[pid] ?? { unreadable: s })
+}
+/** a stored profile row's posting window as the boot reader takes it (null: none) — another squadron's stored war read by
+ *  the posting pass over every squadron (sync.ts storedPostings — the reshape plan §6.2 A5), the same reader as the war's own */
+export function readStoredPost(pid: string, raw: unknown): Person | null {
+  if (raw == null) return null
+  return readPostOuts({ [pid]: raw })?.[pid] ?? null
+}
+/** are two posting records (or none) the same posting, as a reload would read them — the gate's probe for another
+ *  squadron's stored posting (sync.ts foreignPostingSaved) */
+export function samePosting(pid: string, a: unknown, b: unknown): boolean {
+  return postNorm(pid, a) === postNorm(pid, b)
+}
+/** is `p` (a posting record, or null for none) the man's posting exactly as saved? */
+export function postOutIsSaved(pid: string, p: unknown): boolean {
+  return postNorm(pid, p) === postNorm(pid, savedPostOut(pid))
+}
+/* THE POSTINGS IN MEMORY PUT BACK TO THE SAVED ONES (fix read 13, item B — SEC13-1), as the roster is put back
+   (people-settings-commit.ts revertUnsavedPeople) before the posting pass runs: every in-app posting write is saved by its
+   own command, its row written as it lands, so only a posting changed in memory outside every command (a browser's
+   console) differs — and the pass, run as the app itself in whoever's browser is signed in, must never carry it out.
+   Called by sync.ts runPoOutcomes before it reads which postings are due, never inside another command (that command's
+   own unsaved posting is its own). The committed world takes the same postings, so nothing of this reads as a change.
+   Before the war has started (boot) nothing is put back. The men whose postings were put back. */
+export function revertUnsavedPostOuts(): string[] {
+  if (!LW_READY) return []
+  /* each posting memory holds, against its saved row — one read a man, on every pass (a posting memory lost cannot be
+     carried out, so the saved rows memory does not hold are not read) */
+  const mem = state.postOuts
+  const saved: Record<string, Person> = {}
+  const out = Object.keys(mem).filter(pid => {
+    const s = savedPostOut(pid)
+    if (s) saved[pid] = s
+    return postNorm(pid, mem[pid]) !== postNorm(pid, s)
+  })
+  if (!out.length) return out
+  const asSaved = (from: Record<string, Person>): Record<string, Person> => {
+    const o = { ...from }
+    for (const pid of out) { if (saved[pid]) o[pid] = saved[pid]; else delete o[pid] }
+    return o
+  }
+  const postOuts = asSaved(mem)
+  state = { ...state, postOuts }
+  /* the committed world's postings as saved too: the pass's change is worked out against it */
+  LW_BASELINE = LW_BASELINE.postOuts === mem ? { ...LW_BASELINE, postOuts } : { ...LW_BASELINE, postOuts: asSaved(LW_BASELINE.postOuts) }
+  /* (inside the pass's own command the command's own repaint follows) */
+  if (!cmdIsInReducer()) notify()
+  return out
 }
 
 /** A repaint after the absence index changed (sync.ts) — no persist, no
@@ -2078,7 +2194,6 @@ export function forgetPersonFrom(id: string, iso: string, frozen: Person | null 
     if (!n) return w
     return { ...w, recs: { ...w.recs, [id]: kept } }
   })
-  const last = addDays(iso, -1)
   const had = state.people.some(p => p.id === id)
   /* a man the war did not show (a SANS man with Show SANS off) with a past to keep: his row comes back as the war drew
      him (`frozen` — the seam passes it only when he has a record from the months he was here: a war record, or an
@@ -2090,15 +2205,7 @@ export function forgetPersonFrom(id: string, iso: string, frozen: Person | null 
      (round 1, Fable F4 / Astra 3) */
   /* …and a man who never arrived (his only stint still to come, no earlier one) has no months to keep: his row and his
      record go — never a stint closing before it opens (the walk's design, Fable 4.5, 27 Sep 26) */
-  const cut = (p: Person): Person | null => {
-    const past = (p.past || []).filter(s => s.from === null || s.from < iso).map(s => ({ from: s.from, to: s.to < last ? s.to : last }))
-    if (p.from !== null && p.from > last) {
-      if (!past.length) return null
-      const prev = past.pop()!
-      return { ...p, from: prev.from, to: prev.to, past: past.length ? past : undefined, gone: true }
-    }
-    return { ...p, to: p.to !== null && p.to < last ? p.to : last, past: past.length ? past : undefined, gone: true }
-  }
+  const cut = (p: Person): Person | null => personCut(p, iso)
   const back = hadPast ? cut(withStored(frozen as Person)) : null
   const people = had
     ? state.people.flatMap(p => (p.id === id ? (cut(dated(p)) ?? []) : [p]))
@@ -2114,6 +2221,21 @@ export function forgetPersonFrom(id: string, iso: string, frozen: Person | null 
     : state.ledger
   state = withCurrent({ ...state, wars, people, postOuts, ledger })
   persistNotify()
+}
+
+/** THE DELETE'S CUT OF ONE MAN, PURE (A3 — the master's Delete of another squadron's man writes that squadron's stored
+ *  war through the same body, leavewar/state/foreign.ts): his stints from `iso` cut, the current one closed the day
+ *  before and `gone`; null for a man who never arrived (no months to keep). `forgetPersonFrom` above is its caller for
+ *  the war loaded. */
+export function personCut(p: Person, iso: string): Person | null {
+  const last = addDays(iso, -1)
+  const past = (p.past || []).filter(s => s.from === null || s.from < iso).map(s => ({ from: s.from, to: s.to < last ? s.to : last }))
+  if (p.from !== null && p.from > last) {
+    if (!past.length) return null
+    const prev = past.pop()!
+    return { ...p, from: prev.from, to: prev.to, past: past.length ? past : undefined, gone: true }
+  }
+  return { ...p, to: p.to !== null && p.to < last ? p.to : last, past: past.length ? past : undefined, gone: true }
 }
 
 /**
@@ -2196,10 +2318,18 @@ export function postingProblem(id: string, kind: 'in' | 'out' | 'restore', date:
   if (kind === 'in' && person.to !== null && date > person.to)
     return `Posted out from ${said(addDays(person.to, 1))} — the post-in has to be before that day.`
   /* Restore's post-in date (D308, D320): after the day his stint closed (the day after reopens it — Fable F5) */
-  if (kind === 'restore') {
-    const closed = person.to !== null ? person.to : lastPast ? lastPast.to : null
-    if (closed !== null && date <= closed) return `Posted out from ${said(addDays(closed, 1))} — the post-in has to be on or after that day.`
-  }
+  if (kind === 'restore') return restoreDateProblem(person, date)
+  return null
+}
+/** Restore's post-in date judged on a man's own saved person, PURE (A3 — the same sentence for the war loaded and for
+ *  another squadron's stored war): a whole date, after the day his stint closed (the day after reopens it). */
+export function restoreDateProblem(person: Person, date: string): string | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return 'Pick a whole date first.'
+  const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const said = (iso: string) => `${Number(iso.slice(8, 10))} ${MON[Number(iso.slice(5, 7)) - 1]} ${iso.slice(2, 4)}`
+  const lastPast = person.past && person.past.length ? person.past[person.past.length - 1] : null
+  const closed = person.to !== null ? person.to : lastPast ? lastPast.to : null
+  if (closed !== null && date <= closed) return `Posted out from ${said(addDays(closed, 1))} — the post-in has to be on or after that day.`
   return null
 }
 
@@ -2215,18 +2345,27 @@ export function openStint(id: string, date: string, identity?: Person): boolean 
   const person = state.people.find(p => p.id === id) || (identity && withStored(identity))
   if (!person || person.gone) return false
   if (postingProblem(id, 'restore', date, person)) return false
-  const clear = { poArchive: undefined, poOutcome: undefined, poDone: undefined }
-  let next: Person
-  if (person.to !== null) {
-    next = date === addDays(person.to, 1)
-      ? { ...person, to: null, ...clear }
-      : { ...person, past: [...(person.past || []), { from: person.from, to: person.to }], from: date, to: null, ...clear }
-  } else next = { ...person, from: date, ...clear }
+  const next = stintOpened(person, date)
+  if (!next) return false
   const had = state.people.some(p => p.id === id)
   const people = had ? state.people.map(p => (p.id === id ? next : p)) : [...state.people, next]
   state = withCurrent({ ...state, people, postOuts: windowRecord(people, id) })
   persistNotify()
   return true
+}
+
+/** RESTORE'S NEXT PERSON, PURE (A3 — `openStint` above for the war loaded, leavewar/state/foreign.ts's caller for
+ *  another squadron's stored war): his new stint from `date`, or null where Restore refuses (a deleted man, a date on or
+ *  before the day his stint closed — `restoreDateProblem` says why). No role check: the command's gate decides. */
+export function stintOpened(person: Person, date: string): Person | null {
+  if (person.gone || restoreDateProblem(person, date)) return null
+  const clear = { poArchive: undefined, poOutcome: undefined, poDone: undefined }
+  if (person.to !== null) {
+    return date === addDays(person.to, 1)
+      ? { ...person, to: null, ...clear }
+      : { ...person, past: [...(person.past || []), { from: person.from, to: person.to }], from: date, to: null, ...clear }
+  }
+  return { ...person, from: date, ...clear }
 }
 
 /** ARCHIVE'S WAR HALF ([ONE-DOOR], owner D323, 27 Sep 26 — "posted out from today", his past kept): the current stint
@@ -2240,6 +2379,16 @@ export function closeStintOnArchive(id: string, today: string, identity?: Person
   const shown = state.people.find(p => p.id === id)
   const person = shown ? dated(shown) : (identity && withStored(identity))
   if (!person || person.gone) return { replaced: null }
+  const { next, replaced } = stintClosed(person, today)
+  const had = state.people.some(p => p.id === id)
+  const people = had ? state.people.map(p => (p.id === id ? next : p)) : [...state.people, next]
+  state = withCurrent({ ...state, people, postOuts: windowRecord(people, id) })
+  persistNotify()
+  return { replaced }
+}
+/** ARCHIVE'S NEXT PERSON, PURE (A3 — `closeStintOnArchive` above for the war loaded, leavewar/state/foreign.ts's caller
+ *  for another squadron's stored war): the rules above, on one man's saved person. */
+export function stintClosed(person: Person, today: string): { next: Person; replaced: PostOutcome | null } {
   const yesterday = addDays(today, -1)
   /* a posting that has not RUN yet (its date to come — or come, with nothing repainted since midnight, or held) is
      replaced; one that has run keeps its date (the final code read, Fable F5: the date alone called a due-today posting run) */
@@ -2255,21 +2404,27 @@ export function closeStintOnArchive(id: string, today: string, identity?: Person
   next = next.to !== null
     ? { ...next, poArchive: true, poOutcome: 'overseas', poDone: addDays(next.to, 1) }
     : { ...next, poArchive: undefined, poOutcome: undefined, poDone: undefined }
-  const had = state.people.some(p => p.id === id)
-  const people = had ? state.people.map(p => (p.id === id ? next : p)) : [...state.people, next]
-  state = withCurrent({ ...state, people, postOuts: windowRecord(people, id) })
-  persistNotify()
-  return { replaced: pending && pending !== 'none' ? pending : null }
+  return { next, replaced: pending && pending !== 'none' ? pending : null }
 }
+/** whether a man's saved person is a posting window worth a record (`windowRecord` below — the same test) */
+export const keepsWindow = (p: Person): boolean => p.from !== null || p.to !== null || !!(p.past && p.past.length)
 
 /* The persisted squadron window (State.postOuts): the person as they stand
    now, kept while EITHER end is set — or he has a closed earlier stint (D320) —
    and dropped once all are clear. One body so the ends cannot disagree about
    when the record goes. */
+/* A SQUADRON STINT IS NEVER A POSTING (the multi-squadron reshape, A1 — plan §6.2): the projection lays his stints in this
+   war's squadron on his row (`home`, raptorRoster.ts), fresh on every projection; a posting record saved from that row
+   never carries them, so no move ever reaches a saved posting, the posting tag or Admin → Users */
+export function stripHome(p: Person): Person {
+  if (!('home' in p)) return p
+  const { home: _drop, ...rest } = p
+  return rest
+}
 function windowRecord(people: Person[], id: string): Record<string, Person> {
   const next = { ...state.postOuts }
   const p = people.find(x => x.id === id)!
-  if (p.from !== null || p.to !== null || (p.past && p.past.length)) next[id] = p
+  if (keepsWindow(p)) next[id] = stripHome(p)
   else delete next[id]
   return next
 }
@@ -2297,6 +2452,7 @@ export function setPeople(people: Person[]): void {
     return w ? { ...p, ...windowFor(w, state.showSans) } : { ...p }
   })
   const ids = new Set(next.map(p => p.id))
+  /* (a frozen record put back below is a saved posting: it carries no squadron stints — stripHome) */
   /* `.to`, not merely a record (22 Sep 26). The comment above says what this is
      for and says the other half out loud: a body archived WITHOUT a posting-out
      window leaves at once, because that ✕ meant "should never have been here".
@@ -2310,7 +2466,7 @@ export function setPeople(people: Person[]): void {
      back anyway. It lasted a session before, because the boot reader discarded
      a record with no leaving date; now that the reader keeps one (a joining date
      is an official date too), it would have lasted for good. */
-  for (const id of Object.keys(po)) if (!ids.has(id) && po[id].to) next.push(po[id])
+  for (const id of Object.keys(po)) if (!ids.has(id) && po[id].to) next.push(stripHome(po[id]))
   /* AND A WINDOW THAT ARRIVES WITH THE PROJECTION IS RECORDED (the walk's F1 and
      F2, 22 Sep 26 — two reported defects, one cause).
      This body laid the stored record ON but never took one OFF, and the one
@@ -2331,7 +2487,8 @@ export function setPeople(people: Person[]): void {
      this never fires for it; an admin who CLEARS a window leaves no window to
      catch, so a cleared one is never resurrected. */
   const caught: Record<string, Person> = {}
-  for (const p of next) if (!po[p.id] && (p.from != null || p.to != null || (p.past && p.past.length))) caught[p.id] = p
+  /* (A1: the row's squadron stints are never part of what is caught — stripHome) */
+  for (const p of next) if (!po[p.id] && (p.from != null || p.to != null || (p.past && p.past.length))) caught[p.id] = stripHome(p)
   const got = Object.keys(caught).length > 0
   state = withCurrent({ ...state, people: next, ...(got ? { postOuts: { ...po, ...caught } } : {}) })
   /* A CAPTURE IS A PROJECTION, NEVER AN EDIT (the independent code read, F6).
@@ -2831,7 +2988,7 @@ export interface AbsenceDoor {
   /** delete approved leave days (`lw.removeApproved`) */
   removeApproved(items: Array<{ personId: string; date: string; iid: string }>): { done: number; skipped: number; why: string[] }
   /** slide approved leave days by `delta` (`lw.moveApproved`); null = clear, else the refusal */
-  moveApproved(items: Array<{ personId: string; date: string; iid: string }>, delta: number, tracked: boolean, check: boolean, skip?: ReadonlySet<string>): { reason: 'occupied' | 'window' | 'nothing'; at?: string } | null
+  moveApproved(items: Array<{ personId: string; date: string; iid: string }>, delta: number, tracked: boolean, check: boolean, skip?: ReadonlySet<string>): { reason: 'occupied' | 'window' | 'nothing' | 'away'; at?: string } | null
   /** file a course, an overseas duty or the unforeseen absence straight as Inputs (`lw.file` — round 2, D1318): one
    *  input a man a run of days, no bid, no approval */
   file(items: Array<{ personId: string; date: string }>, code: string, words?: ReqWords): { done: number; skipped: number; why: string[] }
@@ -2921,6 +3078,27 @@ export function newHolidayRuns(before: State, after: State): HolidayRun[] {
     else runs.push({ from: d, to: d })
   }
   return runs
+}
+/** THE HOLIDAY RUNS A COMMAND'S OWN WAR CHANGES MADE (fix read 11, fault C — leavewar/sync.ts holidayLinesOwed): the same
+ *  test as tellHolidays, between the state as it stands now — inside the command, after its changes — and that state
+ *  with this command's war periods and event types put back to their before-images. Only the command's own changes
+ *  count: a holiday already standing owes nothing. */
+export function holidayRunsOfChanges(changes: ReadonlyArray<{ collection: string; id: string; op: string; before?: unknown; after?: unknown }>): HolidayRun[] {
+  const wc = changes.filter(c => c.collection === 'lw.war')
+  const cfg = changes.find(c => c.collection === 'lw.config')
+  if (!wc.length && !cfg) return []
+  const byId = new Map(wc.map(c => [String(c.id), c]))
+  const wars: LeaveWar[] = []
+  for (const w of state.wars) {
+    const c = byId.get(w.period.id)
+    if (!c) { wars.push(w); continue }
+    byId.delete(w.period.id)
+    if (c.before) wars.push({ ...w, period: c.before as Period })      // a war this command made had none before
+  }
+  for (const c of byId.values()) if (c.before) wars.push({ period: c.before as Period } as LeaveWar)   // one it took away
+  const cb = cfg && cfg.before && typeof cfg.before === 'object' ? (cfg.before as Partial<LwConfigRecord>) : null
+  const eventDefs = cb && Array.isArray(cb.eventDefs) ? cb.eventDefs : state.eventDefs
+  return newHolidayRuns({ ...state, wars, eventDefs }, state)
 }
 function tellHolidays(before: State): void {
   if (!HOLIDAY_TELL) return
@@ -3162,9 +3340,36 @@ function listAt(personId: string, date: string): readonly WarRec[] {
   return war ? recsAt(war.recs, personId, date) : []
 }
 /** Replace the list at one address, in the war holding the date. */
+/* A WAR TAKES A MAN'S DAY ONLY WHERE THAT DAY IS ITS SQUADRON'S (the multi-squadron reshape, A7 — plan §6.2; his D2243 Q3:
+   for everyone, master admins and Plan holders included). The war's own door: a day his squadron on it is another's (his
+   home that day, asked of the home rows through sync.ts's probe, as the commit gate's 7b backstop asks them) takes
+   nothing new — no bid, no award, no absence, no credit — and keeps only removals: a list whose every entry left stood
+   there unchanged, in the same order (perms.ts removesOnly, the gate's own rule). Unwired (one war on the page), each
+   row's own stints answer, and a man the war has no row of is never refused here. */
+let WAR_HOME: ((pid: string, iso: string) => string | null) | null = null
+export function setWarHomeProbe(fn: ((pid: string, iso: string) => string | null) | null): void { WAR_HOME = fn }
+export function notThisWarsDay(personId: string, date: string): boolean {
+  if (WAR_HOME) { const h = WAR_HOME(personId, date); return !!h && h !== WORLD_UNIT }
+  // eslint-disable-next-line react-doctor/js-index-maps -- one look a write, never a loop over the roster
+  const p = state.people.find(x => x.id === personId)
+  return !!p && awayFromHome(p, date)
+}
+/* the app's generic refusal, for a change such a day refuses that no ruling gives words for */
+const NOT_SAVED = 'This change could not be saved.'
+const sameRec = (a: WarRec, b: WarRec): boolean => a === b || JSON.stringify(a) === JSON.stringify(b)
+function removesOnly(before: readonly WarRec[], after: readonly WarRec[]): boolean {
+  let i = 0
+  for (const x of after) {
+    while (i < before.length && !sameRec(before[i]!, x)) i++
+    if (i === before.length) return false
+    i++
+  }
+  return true
+}
 function putList(personId: string, date: string, list: readonly WarRec[]): boolean {
   const war = warHolding(state.wars, date)
   if (!war) return false
+  if (notThisWarsDay(personId, date) && !removesOnly(listAt(personId, date), list)) return false
   updateWar(war.period.id, w => ({ ...w, recs: withList(w.recs, personId, date, list) }))
   return true
 }
@@ -3172,14 +3377,22 @@ function putList(personId: string, date: string, list: readonly WarRec[]): boole
 /** The absence door's edit of the war's own records (sync.ts): per address,
  *  drop records by id and add new ones, as ONE write inside the caller's
  *  gesture. Not a user entry point — the door has already checked the rules. */
-export function lwEditLists(edits: Array<{ personId: string; date: string; drop: string[]; add: WarRec[] }>): void {
+/* A WRITE THE WAR REFUSES STOPS THE WHOLE COMMAND (the fix read of the reshape — opus-3 F3): the door has already cut the
+   leave from its Input when it comes here, so a list the war then refused (a day now another squadron's, A7) left the leave
+   gone and no bid in its place. The door's edit now throws on a refused write — the caller's command rolls back whole, as
+   a move's does (`MoveRefusedAtCommit`). `lenient` — the Inputs page's own filing over a bid (inputgate.ts
+   replaceClashingBids), which is not a war gesture and keeps what it did before: the bid there stays as it was. */
+class WarWriteRefused extends Error {
+  constructor(personId: string, date: string) { super(`lw: the war refused a write at ${personId} ${date}`) }
+}
+export function lwEditLists(edits: Array<{ personId: string; date: string; drop: string[]; add: WarRec[] }>, lenient = false): void {
   if (!edits.length) return
   const wasQuiet = quiet
   quiet = true
   try {
     for (const e of edits) {
       const list = listAt(e.personId, e.date).filter(r => !e.drop.includes(r.id))
-      putList(e.personId, e.date, [...list, ...e.add])
+      if (!putList(e.personId, e.date, [...list, ...e.add]) && !lenient) throw new WarWriteRefused(e.personId, e.date)
     }
   } finally { quiet = wasQuiet }
   if (!quiet) persistNotify()
@@ -3342,6 +3555,8 @@ function mainAt(personId: string, date: string): Contrib | null {
 export function setCell(personId: string, date: string, code: string, words?: ReqWords): boolean {
   if (!canEditRow(state.role, state.viewer, personId)) return false
   const clean = code.trim().toUpperCase()
+  /* A7: a day that is another squadron's takes no bid here (a clear still goes — it only removes) */
+  if (clean && notThisWarsDay(personId, date)) return false
   if (!clean && !dayWritable(date)) {
     /* a day closed for him: only his own pending bids go (D1225) — never an award, a refused bid or anything else */
     const pend = ownPendingOnClosedDay(personId, date)
@@ -3812,10 +4027,20 @@ export function fileStraight(cells: { personId: string; date: string }[], code: 
   const ok = cells.filter(c => !!warHolding(state.wars, c.date) && canEditRow(state.role, state.viewer, c.personId))
   let out = { done: 0, skipped: cells.length - ok.length, why: [] as string[] }
   if (!ok.length || !DOOR) return { ...out, skipped: cells.length }
+  /* WHAT THE STORE HOLDS AFTER THE COMMAND (the fix read of the reshape — fable-3 F2 (c); `setRequestWords`' way): a filing
+     the commit gate refused rolled back, and the door's own count still said "filed" — the window closed on nothing. The
+     days that hold the kind now and did not before are what was filed; fewer than the door counted is a refusal. */
+  const bare = filed.replace(/\*/g, ''), half = filed.startsWith('*') ? 'am' : filed.endsWith('*') ? 'pm' : 'full'
+  const holds = (c: { personId: string; date: string }) => absencesAt(c.personId, c.date)
+    .some(o => o.code === bare && (half === 'full' || (half === 'am' ? o.win[0] <= 720 : o.win[1] >= 721)))
+  const keyOf = (c: { personId: string; date: string }) => `${c.personId}|${c.date}`
+  const had = new Set(ok.filter(holds).map(keyOf))
   gesture('lw.file', () => {
     const r = DOOR!.file(ok, filed, words)
     out = { done: r.done, skipped: out.skipped + r.skipped, why: r.why }
   })
+  const landed = new Set(ok.filter(c => !had.has(keyOf(c)) && holds(c)).map(keyOf)).size
+  if (landed < out.done) out = { done: landed, skipped: cells.length - landed, why: out.why }
   if (out.done > 0) lastFiled = { kind: clean as 'CSE' | 'OD' | 'OTH' | 'ATCH', at: actSeq }
   return out
 }
@@ -3896,6 +4121,8 @@ export function decideRequestById(personId: string, date: string, recId: string,
       return r.done > 0 ? true : (r.why[0] ?? false)
     })
   }
+  /* (a day now another squadron's takes only removals — said, as `decideWhy` says it: W2-F3) */
+  if (notThisWarsDay(personId, date)) return NOT_SAVED
   return gesture('lw.decide', () => decideRequest(personId, date, recId, bid))
 }
 
@@ -4128,6 +4355,10 @@ function decideWhy(line: DecideLine): string | null {
       if (why) return why
       continue
     }
+    /* A DAY NOW ANOTHER SQUADRON'S TAKES ONLY REMOVALS (A7 — `notThisWarsDay`; his D2243 Q3): a Refuse, or a decision sent
+       back to waiting, changes the record and is refused there — said in the app's generic words (no ruling gives others),
+       never as a locked week (the reshape walk's W2-F3). Delete is the way out, and is never refused. */
+    if (notThisWarsDay(personId, p.date)) return NOT_SAVED
     if (p.state === 'approved') {
       const why = DOOR?.decideApprovedWhy?.({ personId, date: p.date, iid: p.iid! })
       if (why) return why
@@ -5083,6 +5314,9 @@ export function grantTo(personIds: string[], counter: CounterName, amount: numbe
   if (!ids.length) return 'Pick at least one person'
   const problem = ledgerProblem(counter, amount, date, reason, givenBy)
   if (problem) return problem
+  /* A7 (the fix read of the reshape, opus-3 F5 / fable-3 F5; his D2243 Q3): a day that is another squadron's takes no award
+     and no credit here (`putList`'s rule, said of the ledger) — the app's generic words, nothing written for anyone */
+  if (ids.some(id => notThisWarsDay(id, date))) return NOT_SAVED
   const approvedBy = approverName()
   const by = givenBy.trim()
   const who = entered()
@@ -5143,6 +5377,8 @@ export function updateLedgerEntry(id: string, patch: { amount?: number; date?: s
     ? pickedHalf(patch.half) ?? (cur.amount === 0.5 ? cur.half : defaultAwardHalf(cur.personId, date, cur.id))
     : undefined
   if (amount === cur.amount && date === cur.date && reason.trim() === cur.reason && givenBy === (cur.givenBy ?? '') && half === cur.half) return null
+  /* A7: an entry on a day now another squadron's is not changed here, nor moved onto one (taking it away still goes) */
+  if (notThisWarsDay(cur.personId, date) || notThisWarsDay(cur.personId, cur.date)) return NOT_SAVED
   gesture(ledgerType(cur.counter, cur.amount), () => {
     state = withCurrent({
       ...state,
@@ -5182,7 +5418,8 @@ export function setHiddenIdentityLookup(fn: ((id: string) => Person | null) | nu
  *  requests on him. */
 export function dayRecsOf(pid: string): DayRecs {
   const out = new Map<string, Contrib[]>()
-  const abs = absenceRows().get(pid)
+  /* …that are THIS war's (W2-F2 — merge.ts AbsenceOwner): a man who moved has his old squadron's leave in its war alone */
+  const abs = ownAbsenceRows(pid)
   if (abs) for (const [d, list] of abs) out.set(d, [...list])
   for (const w of getState().wars) {
     const row = w.views[pid]
@@ -5272,7 +5509,13 @@ export function balanceProblem(pid: string, kind: string, amount: number, cf?: n
     if (!state.viewer || pid !== state.viewer) return 'You can change only your own figures'
     if (state.balLock) return 'Locked by admin'
   }
-  if (!state.people.some(p => p.id === pid) && !(HIDDEN_IDENTITY && HIDDEN_IDENTITY(pid))) return 'That person is not on the Leave War'
+  /* A FIGURE IS TYPED ONLY FOR A MAN OF THE WAR LOADED (the sign-in kinds review's K5 — D1695, D2197: his own leave figures
+     stay in his own squadron): on its roster, or in its posting records; a man it has no row of only where today is this
+     war's squadron's for him (a SANS man while SANS is off — the spec §4). The hidden-identity lookup alone also answered
+     for a man of ANOTHER squadron (sync.ts hiddenIdentity, for a delete's war half), so Hunter, 142's admin holding Plan
+     of 149, typed his own balance into 149's war. The gate holds the same (perms.ts warUnitViolation). */
+  if (!state.people.some(p => p.id === pid) && !state.postOuts[pid]
+    && (!(HIDDEN_IDENTITY && HIDDEN_IDENTITY(pid)) || notThisWarsDay(pid, memberToday()))) return 'That person is not on the Leave War'
   return null
 }
 
@@ -5754,6 +5997,8 @@ export function setDayAward(personId: string, date: string, days: number, opts: 
   if (days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
   const note = (opts.note ?? '').trim()
   const givenBy = (opts.givenBy ?? '').trim()
+  /* A7 (opus-3 F5 / fable-3 F5): no award on a day that is another squadron's — the generic words */
+  if (notThisWarsDay(personId, date)) return NOT_SAVED
   const here = awardsOnDay(personId, date)
   if (here.length > 1) return `This day holds ${here.length} OIL awards — change them from the day’s list`
   const half = pickedHalf(opts.half)
@@ -5794,6 +6039,8 @@ export function grantOilDays(cells: readonly { personId: string; date: string }[
     if (!warHolding(state.wars, c.date)) return 'A day picked is in no war'
     const problem = ledgerProblem('oil', days, c.date, note, givenBy, false)
     if (problem) return problem
+    /* A7 (opus-3 F5 / fable-3 F5): a day picked that is another squadron's refuses the grant whole — nothing half-given */
+    if (notThisWarsDay(c.personId, c.date)) return NOT_SAVED
   }
   const approvedBy = approverName(), who = entered()
   const entries: LedgerEntry[] = todo.map(c => ({
@@ -5882,12 +6129,15 @@ function viewAt(personId: string, date: string) {
 /* WHO MAY MOVE — ONE RULE, EVERY DOOR (D333 narrowed by D1177: "a member moves his own bid while it waits and its days are
    open"). A request: on a row this role may write, on a day it may write (a member: his own row, an open day from today
    — `dayWritable`; the admin: any row, any day). A REFUSED request is a record
-   that can move too — it lands undecided, a move being a proposal (D262 (b); the mock-up's reading, uncorrected) — but
-   NOT while a live bid holds its half: it is history beside that bid, and moving the two together would land two live
-   bids on one half (Fable's S32). */
+   only the ADMIN may move — it lands undecided, a move being a proposal (D262 (b)) — never the member: his bid moves
+   "while it waits" (D1177), and a refused one does not wait; his move of it landed it pending with the refusal gone, which
+   the gate refuses (S16-2), so the door offered a Move that silently did nothing (fix read 17, R1: Fable 1, Opus 1, Astra
+   2) — and NOT while a live bid holds its half: it is history beside that bid, and moving the two together would land
+   two live bids on one half (Fable's S32). */
 function requestMovable(personId: string, date: string, r: RequestRec, list: readonly WarRec[]): boolean {
   if (!canEditRow(state.role, state.viewer, personId)) return false
   if (!isBiddable(r.code) || !dayWritable(date)) return false
+  if (r.state === 'refused' && !canDecide(state.role)) return false
   if (r.state === 'refused' && liveRequestsOn(list, portionOfCode(r.code)).length) return false
   /* …AND BENEATH AN ABSENCE ON ITS HALF (Fable's final read, finding 2, 27 Sep 26): a refused morning stays as history
      when a second morning bid is approved (the approval drops only its own record), so a day holds approved leave AND
@@ -5968,7 +6218,10 @@ export function stayingIn(
 
 /* 'closed' (M3 §4 (4) — M1's code read): a landing day in the war but closed for this person — his own words, apart from a
    landing outside the war's dates ('window') */
-export type MoveResult = 'moved' | { reason: 'nothing' | 'raptor' | 'occupied' | 'window' | 'closed'; at?: string }
+/* 'away' (the fix read of the reshape — opus-3 F1, F2; fable-3 F1, F2; astra-3 F1, F2; his D2243 Q3): a landing day that is
+   another squadron's now takes nothing new in this war — a bid or approved leave — whoever moves it; said in the app's
+   generic words (no ruling gives others) */
+export type MoveResult = 'moved' | { reason: 'nothing' | 'raptor' | 'occupied' | 'window' | 'closed' | 'away'; at?: string }
 
 /** The validation half of `moveRecords`, held apart so the grid's landing preview asks the SAME rule the commit
  *  applies. Null when clear. Each record is asked again here (the store's own gate, not the caller's word). */
@@ -5993,6 +6246,9 @@ export function moveRecordsProblem(recs: readonly MoveRec[], dayDelta: number): 
   for (const r of reqs) {
     const to = addDays(r.date, dayDelta)
     if (!held(to)) return { reason: 'window', at: to }
+    /* A7: the landing is asked whose day it is BEFORE anything leaves its own day (the source was taken off and the
+       landing refused in silence — the bid was lost) */
+    if (notThisWarsDay(r.personId, to)) return { reason: 'away', at: to }
     if (!dayWritable(to)) return { reason: 'closed', at: to }
     const landing = listAt(r.personId, to).filter(x => !moving.has(x as RequestRec))
     const c: Contrib = { id: r.rec.id, kind: 'request', code: parseCell(r.rec.code)!.type, win: requestWin(r.rec.code), state: 'pending' }
@@ -6014,6 +6270,8 @@ export function moveRecordsProblem(recs: readonly MoveRec[], dayDelta: number): 
     for (const a of abs) {
       const to = addDays(a.date, dayDelta)
       if (!held(to) || warHolding(state.wars, to) !== warHolding(state.wars, a.date)) return { reason: 'window', at: to }
+      /* A7: approved leave lands on no day that is another squadron's either (the door asks the same at the commit) */
+      if (notThisWarsDay(a.personId, to)) return { reason: 'away', at: to }
     }
     /* the moving requests still stand on their old days now — the door leaves them out (Fable 3, Astra 1) */
     const skip = new Set(reqs.map(r => r.rec.id))
@@ -6050,7 +6308,14 @@ export function moveRecords(recs: readonly MoveRec[], dayDelta: number): MoveRes
     try {
       // every source out before any landing, so a block sliding over itself
       // never deletes a day it has just filled
-      for (const r of reqs) putList(r.personId, r.from, listAt(r.personId, r.from).filter(x => x !== r.rec))
+      /* A WRITE THE WAR REFUSES ROLLS THE WHOLE MOVE BACK (the fix read of the reshape — all three readers' F1): both
+         answers were thrown away, so a landing refused after its source had gone committed half a move */
+      const put = (pid: string, date: string, list: readonly WarRec[], why: 'nothing' | 'away') => {
+        if (putList(pid, date, list)) return
+        refused = { reason: why, at: date }
+        throw new MoveRefusedAtCommit(why)
+      }
+      for (const r of reqs) put(r.personId, r.from, listAt(r.personId, r.from).filter(x => x !== r.rec), 'nothing')
       for (const r of reqs) {
         const landed: RequestRec = {
           id: r.rec.id, kind: 'request', code: r.rec.code, state: 'pending',
@@ -6060,7 +6325,7 @@ export function moveRecords(recs: readonly MoveRec[], dayDelta: number): MoveRes
           /* who placed it stays with it (M4 8.6); it lands pending, so who decided it does not */
           ...requestStamps(r.rec, false),
         }
-        putList(r.personId, r.to, [...listAt(r.personId, r.to), landed])
+        put(r.personId, r.to, [...listAt(r.personId, r.to), landed], notThisWarsDay(r.personId, r.to) ? 'away' : 'nothing')
       }
     } finally { quiet = wasQuiet }
     if (reqs.length && !quiet) persistNotify()
@@ -6070,7 +6335,22 @@ export function moveRecords(recs: readonly MoveRec[], dayDelta: number): MoveRes
     }
     })
   } catch (e) { if (!(e instanceof MoveRefusedAtCommit)) throw e }
-  return refused ?? 'moved'
+  if (refused) return refused
+  /* WHAT THE STORE HOLDS AFTER THE COMMAND (fix read 17, R1's second half — all three readers): a command the commit gate
+     refused rolls back, and the gesture says nothing; "moved" is said only when every moved request stands on its landing
+     day — as `setRequestWords` reads the store after its own command. */
+  for (const m of recs) {
+    /* …and every moved leave has left its day (fable-3 F2 (b)): the commit gate refused a plain admin's slide onto a day
+       another squadron's and the door still said "moved". A moved day is cut from its Input and filed again under a new
+       id, so the old id still standing on the old day is a move that did not happen. */
+    if (m.kind === 'absence') {
+      if (absencesAt(m.personId, m.date).some(c => c.id === m.id)) return { reason: 'nothing', at: m.date }
+      continue
+    }
+    const to = addDays(m.date, dayDelta)
+    if (!listAt(m.personId, to).some(r => r.kind === 'request' && r.id === m.id)) return { reason: 'nothing', at: m.date }
+  }
+  return 'moved'
 }
 
 /** The throw that rolls a move back when the absence door refuses at the commit (inside a command the command catches it

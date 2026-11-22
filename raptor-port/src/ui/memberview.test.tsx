@@ -14,7 +14,7 @@ import { initStore, notify, resetSession, switchRoleView } from '../state/store'
 import { SESSION, canEditSched } from '../state/auth'
 import { storeBackend } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
-import { accountsLoad, signIn, sessionFor, updateAccount } from '../state/accounts'
+import { accountsLoad, signIn, sessionFor, updateAccount, requestAccess } from '../state/accounts'
 import { isAdmin, me, mayViewAsMember, switchRoleInForce } from '../state/perms'
 import { getState as lwState } from '../leavewar/state/store'
 import { CURPAGE, setPage } from '../state/view'
@@ -109,9 +109,14 @@ describe('PO11 — only a real admin may switch; nobody climbs (Astra A6)', () =
     await click($('#burger'))
     expect($('#drawerRole')).toBeFalsy()
   })
-  it('a pending person, a guest and a suspended account cannot switch into admin', async () => {
+  /* the guest (gone with the guest view, D2239) stood here, untested: a person waiting takes his place, tested */
+  it('a pending person, a person waiting and a suspended account cannot switch into admin', async () => {
     await signInAs('nobody@mail')
     expect(switchRoleInForce('admin')).toBe(false)
+    expect(isAdmin()).toBe(false)
+    expect(requestAccess({ cs: 'Nobody', ini: '', seat: 'GND', cat: '' })).toBeNull()
+    await signInAs('nobody@mail')
+    expect(switchRoleInForce('admin'), 'a person waiting').toBe(false)
     expect(isAdmin()).toBe(false)
     await signInAs('ad', 'a'); expect(updateAccount('achex', { on: false })).toBe(null)
     await signInAs('hex')

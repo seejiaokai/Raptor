@@ -1,0 +1,58 @@
+msq-j2-w3-probe1 v1
+INPUTS buttons:
+BUTTON#burger.burger[Menu]@14,9,32x30
+BUTTON#undoBtn.abtn hbtn[Undo]@249,9,30x30
+BUTTON#redoBtn.abtn hbtn[Redo]@285,9,30x30
+BUTTON#fastSync.fastsync[Sync · slow]@322,14,25x21
+BUTTON#notifyBell.bellbtn[Notifications]@354,8,34x32
+BUTTON#.wknav-mbtn filt-cal[Jump to a date]@12,58,34x26
+BUTTON#exportSched.abtn[Export to Excel (CSV)]@51,56,42x30
+BUTTON#exportPdf.abtn[Export as PDF (print)]@98,56,42x30
+BUTTON#.hl-tog[Highlight filters]@145,58,30x26
+BUTTON#editSchedMore.abtn schedule-more[More schedule options]@180,58,30x26
+INPUT#searchE.[Search by name or callsign]@285,63,96x16
+BUTTON#inMemberMode.intab[Inputs]@12,57,125x36
+BUTTON#inSansMode.intab[SANS]@139,57,125x36
+BUTTON#inMedBtn.intab[Medical]@265,57,125x36
+BUTTON#icPrev.abtn[Previous month]@8,102,32x36
+BUTTON#.ic-mon mjt[November 2026 — choose the mon]@43,111,96x18
+BUTTON#icNext.abtn[Next month]@142,102,32x36
+BUTTON#icToday.abtn[Today]@177,102,52x36
+BUTTON#inCalBtn.abtn[Calendar]@246,102,34x36
+BUTTON#inListBtn.abtn[List]@280,102,34x36
+BUTTON#inFiltersBtn.abtn[Filters]@318,102,34x36
+BUTTON#inGear.abtn inputs-gear[Inputs calendar settings]@356,102,38x36
+BUTTON#.sc-how[How this works]@8,144,119x28
+BUTTON#.abtn ib-expand[Show every input]@360,144,34x28
+DIV#.ib-day is-we[Sun 1 Nov, no inputs]@339,205,54x109
+DIV#.ib-day[Mon 2 Nov, no inputs]@9,315,54x109
+DIV#.ib-day[Tue 3 Nov, no inputs]@64,315,54x109
+DIV#.ib-day[Wed 4 Nov, no inputs]@119,315,54x109
+DIV#.ib-day[Thu 5 Nov, no inputs]@174,315,54x109
+DIV#.ib-day[Fri 6 Nov, no inputs]@229,315,54x109
+DIV#.ib-day is-we[Sat 7 Nov, no inputs]@284,315,54x109
+DIV#.ib-day is-we[Sun 8 Nov, no inputs]@339,315,54x109
+DIV#.ib-day[Mon 9 Nov, no inputs]@9,425,54x109
+DIV#.ib-day[Tue 10 Nov, no inputs]@64,425,54x109
+DIV#.ib-day[Wed 11 Nov, no inputs]@119,425,54x109
+DIV#.ib-day[Thu 12 Nov, no inputs]@174,425,54x109
+DIV#.ib-day[Fri 13 Nov, no inputs]@229,425,54x109
+DIV#.ib-day is-we[Sat 14 Nov, no inputs]@284,425,54x109
+DIV#.ib-day is-we[Sun 15 Nov, no inputs]@339,425,54x109
+DIV#.ib-day[Mon 16 Nov, no inputs]@9,535,54x109
+DIV#.ib-day[Tue 17 Nov, no inputs]@64,535,54x109
+DIV#.ib-day[Wed 18 Nov, no inputs]@119,535,54x109
+DIV#.ib-day is-today[Thu 19 Nov, no inputs]@174,535,54x109
+DIV#.ib-day[Fri 20 Nov, no inputs]@229,535,54x109
+DIV#.ib-day is-we[Sat 21 Nov, no inputs]@284,535,54x109
+DIV#.ib-day is-we[Sun 22 Nov, no inputs]@339,535,54x109
+DIV#.ib-day[Mon 23 Nov, no inputs]@9,645,54x109
+DIV#.ib-day[Tue 24 Nov, no inputs]@64,645,54x109
+DIV#.ib-day[Wed 25 Nov, no inputs]@119,645,54x109
+DIV#.ib-day[Thu 26 Nov, no inputs]@174,645,54x109
+DIV#.ib-day[Fri 27 Nov, no inputs]@229,645,54x109
+DIV#.ib-day is-we[Sat 28 Nov, no inputs]@284,645,54x109
+DIV#.ib-day is-we[Sun 29 Nov, no inputs]@339,645,54x109
+DIV#.ib-day[Mon 30 Nov, no inputs]@9,755,54x109
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

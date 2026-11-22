@@ -69,6 +69,7 @@ import { acceptInput, unacceptInput } from '../engine/slots'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
 import { readSchedulerCss } from '../testing/scheduler-css'
+import { settleWorld } from '../test-support/world'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 const ISNAP = JSON.stringify(INPUTS)
@@ -149,6 +150,9 @@ describe('PART ONE — the Inputs pages', () => {
     setSession({ user: admin, role: 'admin' }); setMe(admin); lwInitStore(memoryBackend()); lwSetRole('admin')
     setPage('inputs'); setInpMode('member'); setInpView('table')
     HOOKS.toast = (() => {}) as any
+    /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+       next command saves only its own change (test-support/world.ts — the second fix read) */
+    settleWorld()
   })
   afterEach(async () => {
     await unmount()
@@ -571,6 +575,9 @@ describe('PART TWO — the schedule\'s own lines, by the board\'s real CX button
     view.WARNOFF.clear(); view.disarmSlot(); setOilDay(null); view.PIOPEN.clear()
     pops.setInpEdit(null); pops.setOilAsk(null)
     stashClear()
+    /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+       next command saves only its own change (test-support/world.ts — the second fix read) */
+    settleWorld()
   }
   const admin = () => { setSession({ user: 'ad', role: 'admin', name: 'ad' }); setMe('stiff') }      // Saber, a scheduler
   const member = (id: string) => { setSession({ user: 'us', role: 'main', name: 'us' }); setMe(id) }

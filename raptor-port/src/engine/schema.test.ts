@@ -97,6 +97,7 @@ const inputSpec = (booted: boolean): Spec => ({
   people: { $opt: [{ p: 'string', by: 'string?', at: 'number?', mod: 'string?', h: 'number?' }] }, endDate: 'string?', yr: 'number?', allday: 'boolean',
   s: 'number?', e: 'number?', half: { $opt: { $lit: ['am', 'pm'] } }, type: { $lit: INPUT_TYPES }, remarks: 'string?', title: 'string?', to: 'string?',
   mod: 'string', acc: { $opt: { $lit: ['g', 'u', 'r'] } }, lw: 'string?', docId: 'string?', docIds: { $opt: ['string'] },
+  u: 'string?',     // the squadron an input of ALL AVAIL / ALL alone was filed on (the reshape plan §12 Q1, D2243 — engine/schema.ts Input.u)
   oil: { $opt: { $map: { $lit: [0, 0.5, 1] } } }, sans: { $opt: { f: { $opt: { $lit: [true] } }, o: { $opt: { $lit: [true] } }, a: { $opt: { $lit: [true] } } } },
   ord: 'number?',   // its place in the list ([DB-READINESS] group A, phase 2 — state/ord.ts; every booted row has one — below)
   hand: 'number?',  // how many times it has changed hands ([DB-READINESS] group A, phase 6 (a) — an OIL decision's holding)

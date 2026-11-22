@@ -8,6 +8,11 @@ import { slotVal, setSlotVal, fillSlot, lastFilled, sentinelSeatOK } from '../en
 import { slotBar, rowTwice } from '../engine/avail'
 import { WARN } from '../engine/validate'
 import { keyDay } from '../engine/keys'
+import { onRosterOf } from '../engine/roster'
+import { dayIso } from '../engine/verid'
+import { CURWEEK } from '../engine/waves'
+import { UNIT } from '../engine/unitview'
+import { SCHED_MOVE_WORDS } from '../state/typing-hold'
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { notify } from '../state/store'
@@ -258,6 +263,27 @@ export function applyDrop(el: any, x: any, y: any) {
     const n = nearSeat(cell, x, y)
     if (n && !(DRAG.kind === 'slot' && n.dataset.slot === DRAG.key)
       && y <= n.getBoundingClientRect().bottom) slotEl = n
+  }
+  /* NEVER ONTO A DAY HE IS NOT THE SQUADRON'S (his D2243 Q2: the day's people, as the crew list — which leaves a man out
+     from the day his move counts; the walk of 21 Nov 26, W4-F2: Ranger's puck, on a Thu 16 line that already named him,
+     dragged onto 142's Fri 17 landed with no word). Asked here, before every branch that writes — a seat, a row's "+ add",
+     an input's row — of the man dragged and the day dropped on; and, where the drop would SWAP two seats, of the man
+     standing on the seat dropped on and the day he would go to. A puck let go on nothing still comes off its seat (no
+     place dropped on, nothing asked), so a line that named him before his move can be cleared. The words are the app's
+     generic refusal: no ruling or drawing gives this door a sentence of its own (the fix brief). */
+  {
+    const toKey = slotEl ? (slotEl as HTMLElement).dataset.slot : cell ? (cell as HTMLElement).dataset.fill : undefined
+    const moving = DRAG.kind === 'roster' ? DRAG.id : slotVal(DRAG.key)
+    const notOf = (pid: any, key: any): boolean => {
+      if (!pid || !PEOPLE[pid] || isSpecial(pid) || key == null) return false
+      const di = keyDay(String(key))
+      return di >= 0 && di <= 6 && !onRosterOf(pid, UNIT, dayIso(String(CURWEEK), di))
+    }
+    const swapped = slotEl && DRAG.kind === 'slot' && toKey !== DRAG.key ? slotVal(toKey) : ''
+    if (toKey != null && (notOf(moving, toKey) || notOf(swapped, DRAG.key))) {
+      toast(SCHED_MOVE_WORDS, 'warn')
+      DRAG = null; dndOff(); return false
+    }
   }
   /* a jet line is two seats — FCP and RCP. A palette drop below them adds
      nothing; a seat puck falls through and comes off instead. */

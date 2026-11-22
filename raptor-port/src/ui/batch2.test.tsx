@@ -45,6 +45,7 @@ import { setOilPlan } from '../state/inputgate-hook'
 import { _resetFloatWins } from './winorder'
 import { frontWin } from './floatwin'
 import { setInpEdit } from './pops'
+import { settleWorld } from '../test-support/world'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement, root: Root
@@ -132,6 +133,9 @@ beforeEach(async () => {
   host = document.createElement('div'); document.body.append(host); root = createRoot(host)
   await act(async () => { root.render(<><InputsPage /><InputEditor /></>) })
   await act(async () => { setCalMonth({ y: 2026, m: 10 }); notify() })
+  /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read) */
+  settleWorld()
 })
 afterEach(async () => {
   await act(async () => { root.unmount(); setInpEdit(null) })

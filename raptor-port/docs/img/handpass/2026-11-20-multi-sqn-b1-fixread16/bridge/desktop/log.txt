@@ -1,0 +1,14 @@
+msq-fr16-bridge v1 desktop
+ROW PASS | B-1 | desktop | Saber opens July, places an approved LL for Ranger on 27 Jul, words empty | saw: switch true; cell "LL"; window open 0
+ROW PASS | B-2 | desktop | Hunter places an approved LL for Ranger on 29 Jul, words "hunter words" | saw: switch true; cells ["27: LL","28: ","29: LL"]; window open 0
+ROW PASS | B-3 | desktop | Ranger places his own pending LL bid on 28 Jul | saw: cell "LL"; window open 0
+select sheet Ranger 27–29 Jul · 3 days Auto-approve ✕ No manning row is amber or red Approve Refuse ⇄Move Delete “hunter words” · 29 Jul till 29 Jul Document Whole day AM PM LL 9.5 OL 9.5 OIL −1 CCL 1 FCL 4 PL 0.5
+ROW RECORD | B-4 | desktop | Saber drag-selects Ranger's 27-29 Jul, approves with words 'joined' | saw: sheet "Ranger 27–29 Jul · 3 days Auto-approve ✕ No manning row is amber or red Approve Refuse ⇄Move Delete “hunter words” · 29 Jul till 29 Jul Document Whole day AM PM LL 9.5 OL 9.5 OIL −1 CCL 1 FCL 4 PL 0.5"; cells ["27: LL","28: LL","29: LL"]; inputs rows ["Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 MEETING Flight safety briefBy Saber 25 Jun 26","Ranger 27 Jul 29 Jul LL LATEjoined till 29 J
+b5 ad2 lines ["NEW LLMon 27 Jul Remark changed · Saber now","NEW Leave War17 Jul – 31 Jul Bidding open · Saber 1 min"]
+ROW PASS | B-5 | desktop | Hunter's bell | saw: badge {"dot":"block","text":"","aria":"Notifications"}; word lines 1; lines ["NEW LLMon 27 Jul Remark changed · Saber now","NEW Leave War17 Jul – 31 Jul Bidding open · Saber 1 min"]; after tap: ⠿ Ranger · 27 Jul → 29 Jul ✕ PERSON Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nom
+b6 us lines ["NEW LLMon 27 Jul Remark changed · Saber now","NEW Your leaveTue 28 Jul LL approved · Saber now","NEW Your leaveWed 29 Jul LL added and approved · Hunter 1 min","NEW Your leaveMon 27 Jul LL added and approved · Saber 1 min","NEW Leave War17 Jul – 31 Jul Bidding open · Saber 1 min"]
+ROW PASS | B-6 | desktop | Ranger's bell | saw: badge {"dot":"block","text":"","aria":"Notifications"}; word lines 1; lines ["NEW LLMon 27 Jul Remark changed · Saber now","NEW Your leaveTue 28 Jul LL approved · Saber now","NEW Your leaveWed 29 Jul LL added and approved · Hunter 1 min","NEW Your leaveMon 27 Jul LL added and approved · Saber 1 min","NEW Leave War17 Jul – 31 Jul Bidding open · Saber 1 min"]
+b7 ad lines []
+ROW PASS | B-7 | desktop | Saber's bell | saw: badge {"dot":"none","text":"","aria":"Notifications"}; word lines 0; lines []
+errors []
+DONE 6 PASS 0 FAIL 1 OTHER of 7

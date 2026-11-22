@@ -1,8 +1,10 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { storeBackend } from '../engine/hooks'
+import { inView } from '../engine/unitview'
 import { STORE_CFG, storesReset } from '../engine/stores'
 import { initStore } from './store'
-import { signIn, ACCESS_REQS, GUESTVIEW } from './accounts'
+import { signIn, ACCESS_REQS } from './accounts'
+import * as accountsModule from './accounts'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -19,7 +21,7 @@ beforeEach(() => {
 
 describe('boot', () => {
   it('initStore picks up a stored stores list', () => {
-    mem['sqn142_stores'] = JSON.stringify([['tpod', 'TPOD'], ['nav', 'NAV']])
+    mem['sqn142_' + inView('stores')] = JSON.stringify([['tpod', 'TPOD'], ['nav', 'NAV']])
     initStore()
     expect(STORE_CFG).toEqual([['tpod', 'TPOD'], ['nav', 'NAV']])
   })
@@ -35,17 +37,19 @@ describe('boot', () => {
    tests called the loader by hand after initStore, which is why none of them saw it.
    Register line AC7. */
 describe('boot — the accounts come back after a reload', () => {
-  it('initStore alone loads a stored account, a waiting request and the guest switch', () => {
+  /* the guest switch it loaded too went with the guest view (his D2239, 20 Nov 26): a switch an older build stored is
+     still on the store here, and now loads as nothing — the person waiting signs in waiting (D56) */
+  it('initStore alone loads a stored account and a waiting request — and a stored guest switch as nothing (D2239)', () => {
     /* one row per account and per request ([DB-READINESS] group A, phase 4.4) */
     mem['sqn142_account:acad'] = JSON.stringify({ id: 'acad', name: 'ad', role: 'admin', pid: 'stiff', on: true })
     mem['sqn142_account:acw'] = JSON.stringify({ id: 'acw', name: 'wren@mail', role: 'main', pid: 'dj', on: true })
     mem['sqn142_accessreq:rq1'] = JSON.stringify({ id: 'rq1', name: 'kite@mail', cs: 'Kite', full: 'K', at: 1 })
-    mem['sqn142_guestview'] = JSON.stringify(true)
+    mem['sqn142_' + inView('guestview')] = JSON.stringify(true)
     initStore()
     expect(signIn('wren@mail', 'x')).toMatchObject({ kind: 'ok', account: { id: 'acw', pid: 'dj' } })
     expect(ACCESS_REQS.map(r => r.name)).toEqual(['kite@mail'])
-    expect(GUESTVIEW).toBe(true)
-    expect(signIn('kite@mail', 'x')).toMatchObject({ kind: 'guest' })
+    expect((accountsModule as any).GUESTVIEW, 'no switch is held').toBeUndefined()
+    expect(signIn('kite@mail', 'x')).toMatchObject({ kind: 'waiting' })
   })
   it('every settings loader the rollback runs is also run at boot (the drift that hid it)', () => {
     const psc = readFileSync(join(__dirname, 'people-settings-commit.ts'), 'utf8')
@@ -55,11 +59,12 @@ describe('boot — the accounts come back after a reload', () => {
     expect(list, 'the rollback loader list').toBeTruthy()
     const own = list![1].split(',').map(x => x.trim()).filter(x => x && !x.startsWith('MODULE_LOADERS.'))
     const wire = readFileSync(join(__dirname, 'people-settings-wire.ts'), 'utf8')
-    const handed = wire.match(/\{ accounts: (\w+), changes: (\w+), noticeSeen: (\w+), flyplan: (\w+) \}/)
+    /* …the units' loader handed in too since multi-squadron batch 1, step 1 (state/units.ts unitsLoad) */
+    const handed = wire.match(/\{ accounts: (\w+), changes: (\w+), noticeSeen: (\w+), flyplan: (\w+), units: (\w+) \}/)
     expect(handed, 'the loaders the wire file hands in').toBeTruthy()
-    expect(list![1].match(/MODULE_LOADERS\./g)?.length, 'each handed-in loader is in the list').toBe(4)
+    expect(list![1].match(/MODULE_LOADERS\./g)?.length, 'each handed-in loader is in the list').toBe(5)
     const loaders = [...own, ...handed!.slice(1)]
-    expect(loaders.length).toBe(15)
+    expect(loaders.length).toBe(16)
     const src = readFileSync(join(__dirname, 'store.ts'), 'utf8')
     const boot = src.slice(src.indexOf('export function initStore'))
     for (const l of loaders) expect(boot, `${l}() at boot`).toMatch(new RegExp('\\b' + l + '\\(\\)'))

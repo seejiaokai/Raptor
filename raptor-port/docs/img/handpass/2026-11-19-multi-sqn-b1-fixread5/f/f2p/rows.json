@@ -1,0 +1,83 @@
+[
+ [
+  "F2",
+  "iPhone",
+  "ad2 Hunter: Inputs + Input, LL for Hunter disabled=false, Mon 23 Nov, Add",
+  "saved; shown on his row",
+  "LL count 0 -> 0; window open 0; list Inputs Inputs SANS Medical 2 1 + Input 19 Nov → 3 Dec Calendar List Filters MON 23 NOV 1 input LATE No document All day HunterLL",
+  "FAIL",
+  "f2-ad2-03-after-add.png"
+ ],
+ [
+  "F2",
+  "iPhone",
+  "ad2: top bar Undo",
+  "the leave is gone",
+  "LL count 0",
+  "PASS",
+  "f2-ad2-05-undo.png"
+ ],
+ [
+  "F2",
+  "iPhone",
+  "ad2: top bar Redo",
+  "the leave is back",
+  "LL count 0",
+  "FAIL",
+  "f2-ad2-06-redo.png"
+ ],
+ [
+  "F2",
+  "iPhone",
+  "us Ranger: Inputs + Input, LL for none, Mon 23 Nov, Add",
+  "saved; shown on his row",
+  "LL count 0 -> 0; window open 0; list Inputs Inputs SANS Medical 2 1 + Input 19 Nov → 3 Dec Calendar List Filters1 Ranger Clear filters MON 23 NOV 1 input LATE No document All day RangerLL",
+  "FAIL",
+  "f2-us-03-after-add.png"
+ ],
+ [
+  "F2",
+  "iPhone",
+  "us: top bar Undo",
+  "the leave is gone",
+  "LL count 0",
+  "PASS",
+  "f2-us-05-undo.png"
+ ],
+ [
+  "F2",
+  "iPhone",
+  "us: top bar Redo",
+  "the leave is back",
+  "LL count 0",
+  "FAIL",
+  "f2-us-06-redo.png"
+ ],
+ [
+  "F2",
+  "iPhone",
+  "ad9 Kestrel: Inputs + Input, LL for Kestrel disabled=false, Mon 23 Nov, Add",
+  "saved; shown on his row",
+  "LL count 0 -> 0; window open 0; list Inputs Inputs SANS Medical + Input 19 Nov → 3 Dec Calendar List Filters MON 23 NOV 1 input LATE No document All day KestrelLL",
+  "FAIL",
+  "f2-ad9-03-after-add.png"
+ ],
+ [
+  "F2",
+  "iPhone",
+  "ad9: top bar Undo",
+  "the leave is gone",
+  "LL count 0",
+  "PASS",
+  "f2-ad9-05-undo.png"
+ ],
+ [
+  "F2",
+  "iPhone",
+  "ad9: top bar Redo",
+  "the leave is back",
+  "LL count 0",
+  "FAIL",
+  "f2-ad9-06-redo.png"
+ ]
+]

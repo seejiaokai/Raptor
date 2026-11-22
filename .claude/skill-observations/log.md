@@ -894,3 +894,211 @@ _13 Nov 26, chat 68 (the sim count fix and the two explanations): no observation
 **Issue:** four local preview servers started on 17 Nov from two working copies were still running on 22 Nov. They held files open, so removing those copies failed with "Invalid argument" and the folders stayed on disk. Separately, each helper's working copy duplicated about 7.6 GB of committed screenshots, and reviewers' read-copies in the chat's temp folder added about 90 GB across 53 idle chats.
 **Suggested improvement:** a session that starts a preview server stops it, by its port, before it ends; a cleanup first lists processes whose command line points into a folder before removing it; a periodic housekeeping step measures working copies and per-chat temp folders and offers to clear those of chats idle for more than a day.
 **Principle:** long-running helper processes and per-task copies must have an owner who ends them; otherwise they silently accumulate until the disk is full.
+
+### Observation 983: Settling a merge clash by taking one side's whole file drops that file's other changes
+
+**Status:** OPEN
+**Date:** 20 Nov 26
+**Session context:** chat 119, bringing `main` into a long-lived feature branch before a fix read (numbered past 982, held on another branch)
+**Skill:** New skill candidate: bringing main into a branch (today the shipping rule's step 2 and `records-merge.mjs`)
+**Type:** open-source
+**Phase/Area:** settling a clash in a code file during a merge
+
+**Issue:** One app file clashed on a single line (both sides had the same code, one with a comment). It was settled with `git checkout --theirs <file>`, which takes the other side's WHOLE file, not just the clashing hunk — the branch's own earlier changes elsewhere in that file vanished. Three unit tests went red on GitHub's run; the four blind readers' copies had already been made from the bad commit and had to be patched on disk mid-read.
+**Suggested improvement:** settle a clash in a code file by editing the hunk (keep one side's lines between the markers, nothing else), never `--ours`/`--theirs` on the file; then check `git diff <branch's pre-merge head> HEAD -- <file>` equals the other side's own change to that file (`git diff <merge-base> <other side> -- <file>`); and run the tests of every settled file before the commit that readers' copies are cut from.
+**Principle:** a whole-file pick settles a clash by discarding everything else that side changed in the file; settle the hunk, then prove the result holds both sides' changes.
+
+### Observation 984: The reworded-brief guard for a Codex reader (note 980) is refused by the host's own permission check
+
+**Status:** OPEN
+**Date:** 20 Nov 26
+**Session context:** chat 119, fix read 14 of multi-squadron batch 1 (four blind readers)
+**Skill:** the bug-check order §4 "Before a brief leaves" (as actioned for note 980); `raptor-port/docs/codex-guide.md`
+**Type:** open-source
+**Phase/Area:** writing the brief a Codex reader receives
+
+**Issue:** Note 980's last met-again proposed giving the Codex reader a brief of its own worded as a rules-enforcement check, without "holes / forged / bypass". Writing that copy was refused by the host's own permission check as rewording to get past a provider's filter. The reader got the shared brief unchanged plus one line to keep its findings in its progress messages; its provider stopped it again after ~268k tokens, and three confirmed findings survived only in those progress messages (all three reproduced red by the host).
+**Suggested improvement:** drop the reworded-brief step from any guide that carries it; keep "keep each finding in your progress messages as you confirm it" in the Codex reader's prompt (it saved this round's findings); when the provider stops the reader, read its progress messages and reproduce each claim; put to the owner whether to accept the stops or seat another reader.
+**Principle:** a brief is worded for the job, never re-worded to steer past another provider's filter; design the run so a stop keeps what was found.
+
+
+### Observation 985: A test that holds an input object across a Leave War approval reads a stale copy
+
+**Status:** OPEN
+**Date:** 2026-11-20
+**Session context:** chat 122, fix read 14's item C control test (multi-squadron batch 1)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** writing the red test / reading the result
+
+**Issue:** A control test kept a reference to the war-approved leave, then approved the next day's bid. The approval joins
+the day onto the leave by building a NEW record and replacing the old one in the list, so the held reference still read
+the old end date and the test failed for a reason that had nothing to do with the fix. A debug print of the list showed
+the join had happened.
+**Suggested improvement:** in the red-first step, add: "after any action that may replace a record (a merge, a split, a
+join, a re-slice), look the record up again by its id before asserting on it; never assert on a reference taken before
+the action."
+**Principle:** an assertion on an object reference taken before an action proves nothing about a store that replaces
+records rather than editing them in place; re-read by identity after the action.
+
+### Observation 986: Fix-only re-reads converge on the fixes, not the code
+
+**Status:** OPEN
+**Date:** 20 Nov 26
+**Session context:** multi-squadron batch 1, chat 123 — fix read 16 beside Fable's sample review of the batch's own code (D2234)
+**Skill:** bug-check order (`raptor-port/docs/bug-check-order.md` §5, "A fix is new code")
+**Type:** open-source
+**Phase/Area:** the narrow read of each round's fixes, repeated round after round
+
+**Issue:** sixteen rounds of fix reads each read only the previous round's fix commits. One blind sample review of the
+batch's own core files (about 2,300 lines, ten minutes) found two confirmed faults in code no fix had touched — faults
+every fix read was structurally unable to see, because none was ever handed that code. The rounds' falling fault count
+(8, 5, 4, 3) measured the fixes converging, not the batch being clean.
+**Suggested improvement:** in §5's "A fix is new code", add: when fix rounds pass the cap (about three), or a batch's
+risk is roles, saved data or the published record, put one blind read of the batch's riskiest ORIGINAL files beside the
+next round — not in a reader's seat — and read a clean fix round as "the fixes are clean", never "the batch is clean".
+**Principle:** a review scoped to each round's diff can only converge on that diff; schedule a fresh read of the
+untouched high-risk code, or the fault count's fall says nothing about what was never read.
+
+### Observation 987: A walk script committed before it ever ran to the end costs the next chat its first walk
+
+**Status:** OPEN
+**Date:** 20 Nov 26
+**Session context:** multi-squadron batch 1, fix read 17's half-day walk (chat 124), whose script chat 123 committed when its run was stopped
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** what a handoff says of a script or test left unverified
+
+**Issue:** The previous chat committed a scripted browser walk that had never completed a run, marked "unverified" in the handoff. On its first full run it failed at three separate points (a wrong box for the second half's words that silently changed the first half's words, wrong button names, no sign-in after a reload); each needed a picture opened and a fix before the walk proved anything — four runs instead of one.
+**Suggested improvement:** In the handoff skill's "what is left" step: a script or test committed without a completed run is named with the exact step it last reached and the pictures of that step, and the next chat's pick-up runs it once on one size and opens the first failing step's picture before the full matrix.
+**Principle:** Unverified automation handed over is a draft, not a tool — hand over where it stopped and what it saw, and have the receiver prove it on the smallest run before trusting a full one.
+
+### Observation 988: Blind readers get a copy with the other readers' reports left out, not an instruction not to open them
+
+**Status:** OPEN
+**Date:** 20 Nov 26
+**Session context:** chat 125 — round 2 of a three-reader blind red team of a plan (Astra, a fresh Opus reader, Fable)
+**Skill:** claudex-loop
+**Type:** open-source
+**Phase/Area:** starting blind reviewers on a second round, when the first round's reports sit in the same repository
+
+**Issue:** Round 1's brief kept the readers blind by asking them not to open files named like the other reports, which sat in the same folder they were reading. In round 2 each reader was given its own exported copy of the branch with every earlier reader's report (and the reviser's brief that summarised them) excluded at export time, so blindness no longer rested on each model obeying a file-name rule while it searched the same folder.
+**Suggested improvement:** In the review round's set-up step: export one copy per reader (`git archive <commit> -- . ':(exclude,glob)**/<report-pattern>*'`, pictures excluded to keep it small), point each reader only at its copy, and say in the brief "this copy holds no reader's report". Keep the "do not open" line only as a second guard.
+**Principle:** Enforce a reviewer's blindness by what it can reach, not by what it is asked not to read.
+
+### Observation 989: A find-and-replace edit script re-run by mistake doubles its text
+
+**Status:** OPEN
+**Date:** 20 Nov 26
+**Session context:** chat 126, the Plan audit — editing the backlog with a small node script of exact-anchor replacements
+**Skill:** New skill candidate: safe-doc-edits (or the CLAUDE.md editing guidance for scripted edits)
+**Type:** open-source
+**Phase/Area:** scripted edits of tracked documents
+
+**Issue:** an edit script that replaced an anchor with "anchor + new text" checked only that the anchor occurred once. Re-run later by mistake (its path reused in a command meant only to search), it matched the same anchor again and appended the new text a second time, doubling two backlog lines. Caught by `git diff --stat` and undone with a checkout of the file; nothing was committed.
+**Suggested improvement:** every replacement in an edit script refuses when its NEW text is already present (an idempotence guard), not only when its anchor is missing or doubled; and a script's run and an unrelated search never share one command line.
+**Principle:** an edit that keeps its anchor in its output must check for its own output before writing, or a second run silently duplicates it.
+
+### Observation 990: the code check ran only on GitHub — a pushed build turned the whole run red for one finding
+
+**Status:** OPEN
+**Date:** 2026-11-21
+**Session context:** chat 127, the multi-squadron reshape build (phase 0 and 1)
+**Skill:** New skill candidate: pre-push local checks (the build loop in `raptor-port/CLAUDE.md` §Coding conventions, `shipping.md` §The loop)
+**Type:** open-source
+**Phase/Area:** the push step of the build loop
+
+**Issue:** The project's rule says that before a push the changed-files code check reports no new finding. The builder ran the touched unit tests and the type check but not that check, pushed, and the whole remote run went red on a single style finding in a new test-only file; the fix then had a second finding of the same kind. A new test-world folder also broke three separate source-walking guard tests, which each keep their own list of folders to skip.
+**Suggested improvement:** Make the changed-files code check part of the same pre-push step as the type check (a script the push guard runs, or one command `prepush` that runs type check + changed-files lint + touched tests), so it cannot be skipped by memory. And give the source-walking guards one shared list of folders that are not the app, so a new test-support folder is added once.
+**Principle:** A check that the rules require before a push, but that only a remote run enforces, will be skipped under pressure; fold every required pre-push check into one local command, and keep any list several guards share in one place.
+
+### Observation 991: The host re-runs a helper's "red first" in its own checkout by restoring only the changed source files
+
+**Status:** OPEN
+**Date:** 21 Nov 26
+**Session context:** chat 128 — merging phase 2's parallel helpers of the multi-squadron reshape, each built in a worktree of its own
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** checking each helper's result before it counts (the host's check of a helper's proofs)
+
+**Issue:** each helper reported its proofs "red on the base, green after"; the plan asks the host to rerun both runs. A second worktree per check is slow and a guard refuses writes into other checkouts. What worked in seconds: in the host's own checkout, after the merge, `git checkout <before-commit> -- <the helper's changed non-test source files>`, run the proof files, then `git checkout HEAD -- <same files>` and confirm a clean status; the failure reasons are then grouped (assertion vs "is not a function") so a red that is only a missing function is told apart from a red that shows the fault.
+**Suggested improvement:** in the overnight guide's "check each result" step (and the bug-check order's red-first protocol), add the recipe: restore only the changed source files to the commit before the change (`--diff-filter=M`, tests excluded), run the proofs, restore, check `git status`, and count failure kinds — at least one assertion-kind failure per proof, not only missing functions.
+**Principle:** to confirm a "failing first" claim, put back only the code under test, never the tests, and judge the red by why it fails, not that it fails.
+
+### Observation 992: A queued "push, then release the branch" ran while the owner gave the chat more work
+
+**Status:** OPEN
+**Date:** 21 Nov 26
+**Session context:** chat 128 — the handoff's last push had to wait for a check run, so a background script waited, pushed and released the branch; the owner then answered a question and the chat committed again
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** Step 1, "Release the branch as your LAST step"
+
+**Issue:** the background script pushed and detached the checkout between the chat's stop request and its next commit; the new commit landed on a detached head and had to be moved back by hand (switch to the branch, fast-forward to the stray commit).
+**Suggested improvement:** in "Release the branch", when the push must wait: the waiting script pushes only if the branch tip is still the commit it was started for, and never detaches by itself — the chat releases in the foreground once it has the push result; and after any new message from the owner, check `git branch --show-current` before committing.
+**Principle:** an irreversible last step queued in the background must check that nothing moved since it was queued, or be left for the foreground.
+
+### Observation 993: A ruling that lifts a refusal was filed with two of the four places that enforce it
+
+**Status:** OPEN
+**Date:** 21 Nov 26
+**Session context:** chat 129 — building his D2250 (an admin of a man's own squadron may make a Plan holder a member), filed by chat 128 as "remove the door's refusal and the gate's R7 line"
+**Skill:** record-decisions (D201, step 2 "The app")
+**Type:** open-source
+**Phase/Area:** filing the build a new ruling needs
+
+**Issue:** with both named lines removed, the rewritten test still failed: a third rule (the save check's "Plan taken only by a master admin") refused the same change, and a fourth place (Undo putting the Plan back) then failed with a vague message. The filing listed the places found by reading, not by running the new behaviour.
+**Suggested improvement:** in D201's "The app" step, when a ruling lifts or narrows a refusal, file the build as "make this scenario pass" with its test named, and say the places listed are a start, not the scope; the builder runs the scenario forward AND through Undo and Redo before calling the places complete.
+**Principle:** a restriction is usually enforced in more places than the one that says it; find them by running the newly allowed action, both ways, not by searching for the old words.
+
+### Observation 994: A commit chained before a push was lost when the push guard refused the command
+
+**Status:** OPEN
+**Date:** 21 Nov 26
+**Session context:** chat 129 — `git commit … && git push …` in one shell call while a check run was in progress
+**Skill:** New skill candidate: pre-push local checks (`shipping.md` §The loop)
+**Type:** internal
+**Phase/Area:** committing and pushing as the host
+
+**Issue:** the push guard refuses a whole command, so the commit before the push never ran; only a `git status` afterwards showed the file still uncommitted. The helpers' brief already says "push alone in its own command"; the host's own rules do not.
+**Suggested improvement:** `shipping.md` §The loop: "commit and push in separate calls — a refused push takes everything in its command with it".
+**Principle:** never chain a step that must happen to one a guard may refuse.
+
+### Observation 995: A helper's proof drove a stand-in for the real surface, so the real one's own swap went unseen
+
+**Status:** OPEN
+**Date:** 21 Nov 26
+**Session context:** chat 130, the multi-squadron reshape's phase 3 — helper "session" built the midnight band; its unit proof rendered a hand-made window inside the real window frame, not the war's own grid
+**Skill:** New skill candidate: helper-brief (the phase helpers' common brief) — and the bug-check order's §8 (tests find rather than confirm)
+**Type:** open-source
+**Phase/Area:** writing a red-first proof for "what the person sees keeps X"
+
+**Issue:** The band's proof passed while the real app lost the man's typed words: at midnight the real grid re-judged the open day as closed and replaced the bid window with a different one. Only the drawing check, in a real browser, caught it. A jsdom test through the real grid reproduced it once the page was drawn again after the clock moved.
+**Suggested improvement:** In a helper's brief, a proof about what a person sees after an event must drive the real component that draws it (not a stand-in), and must re-draw after the event the way the app does (a re-render after the clock or a notify), so a parent that re-judges its children is in the test.
+**Principle:** A stand-in proves the piece, not the page: whatever decides which child is shown sits above the stand-in, and a test that leaves it out cannot see it swap.
+
+### Observation 996: A handoff named the cause of a red check it had not re-run
+
+**Status:** OPEN
+**Date:** 21 Nov 26
+**Session context:** Chat 131 picking up the multi-squadron reshape's phase 3 from chat 130's handoff block
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** The block's "Pick up here" — what is said about a check left red
+
+**Issue:** The handoff told the next chat to re-run a drawing check and stated, as fact, that its recorded differences "came from" a fault since fixed. The re-run on the fixed build showed the same six differences: they come from the fixture's day (the drawing's window was on a later day than the one the check can open now), not from that fault. The next chat would have closed the item on the handoff's word had it not opened the marked pictures.
+**Suggested improvement:** In the handoff skill's rules for the "Pick up here" line: a check left red is written as "red: <what it shows>; cause not confirmed — <the writer's guess>, re-run and open the pictures", never as a cause, unless the writer re-ran it after the fix. One line in the skill's checklist: "any stated cause of a red or differing check: did a run after the fix confirm it? If not, mark it a guess."
+**Principle:** A handoff carries what was observed, and marks every explanation that no run has confirmed as a guess; the next reader trusts a stated cause and stops looking.
+
+### Observation 997: Sort an unattended run's questions by whether anyone can hit them today
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** Chat 132, putting the night's 16 questions on a page with pictures
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** the morning report's list of questions for the owner
+
+**Issue:** The morning list put 16 questions to the owner as equals. Checking them showed 13 could only happen after an action no screen offers yet (the walk set that state up behind the scenes), so they could wait for the feature that adds it; only 3 were live. Two recommendations also changed once each was checked against the rulings.
+**Suggested improvement:** In the morning report step, mark each parked question "reachable today" or "only once <feature> exists" (checked against how the walk set it up), and lead with the reachable ones. Check each recommendation against the rulings before it goes in the list.
+**Principle:** A question about a state users cannot reach yet is cheaper to settle when the feature that reaches it is designed; sorting by reachability shrinks what the owner must decide now.

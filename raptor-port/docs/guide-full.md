@@ -629,7 +629,7 @@ the resolved id, so an id-form `who` renders identically to a callsign one.
 "session-only" sentence elsewhere in this file).** A BUILT SITE runs on the
 Browser backend (`storage/boot.ts chooseBackend`), and across a reload it KEEPS:
 `INPUTS`, `PEOPLE`, the `plan` layer (PLANPUCKS/DAYRMK), every stashed week AND
-the live week (`persistAll`), the 14 durable settings keys (incl. `qualcols` and, since `[ACCOUNTS]`, `accounts`, `accessreqs`, `guestview`),
+the live week (`persistAll`), the 14 durable settings keys (incl. `qualcols` and, since `[ACCOUNTS]`, `accounts`, `accessreqs`; `guestview`, once among them, went with the guest view — D2239),
 the whole Leave War world, the Tracker's `ocu:` data, and medical documents
 (IndexedDB). MEMORY-ONLY is now just the `vite` dev server, `MODE==='test'`,
 `?fresh=1`, or a browser whose storage cannot be touched. Genuinely still

@@ -1,0 +1,117 @@
+msq-j2-w3-probe5 v1
+BELL:
+BUTTON#burger.burger[Menu]@14,9,32x30
+BUTTON#undoBtn.abtn hbtn[Undo]@213,9,30x30
+BUTTON#redoBtn.abtn hbtn[Redo]@249,9,30x30
+BUTTON#histBtn.abtn chgbtn[Changes]@285,9,30x30
+BUTTON#fastSync.fastsync[Sync · slow]@322,14,25x21
+BUTTON#notifyBell.bellbtn[Notifications]@354,8,34x32
+BUTTON#.wknav-mbtn filt-cal[Jump to a date]@12,58,34x26
+BUTTON#exportSched.abtn[Export to Excel (CSV)]@51,56,42x30
+BUTTON#exportPdf.abtn[Export as PDF (print)]@98,56,42x30
+BUTTON#.hl-tog[Highlight filters]@145,58,30x26
+BUTTON#editSchedMore.abtn schedule-more[More schedule options]@180,58,30x26
+SPAN#.dow crewday[Monday]@16,138,60x18
+SPAN#.dt sb-open[Jul 13]@82,142,32x14
+BUTTON#.dhbtn[Templates]@16,170,73x20
+BUTTON#.planselbtn[Live working copy▾]@117,170,124x20
+BUTTON#.dinfobtn[i]@95,172,16x16
+BUTTON#.dbeak locked[Publish day]@247,170,106x20
+BUTTON#.notepub[Make public]@133,399,82x19
+BUTTON#.airbtn[Traffic]@94,502,54x19
+BUTTON#.airbtn[+ In-time]@156,502,66x19
+BUTTON#.stcfg[C]@337,570,16x13
+BUTTON#.stcfg[C]@337,615,16x13
+BUTTON#.notepub[Make public]@133,780,82x19
+SPAN#.dow crewday[Tuesday]@406,138,63x18
+SPAN#.dt sb-open[Jul 14]@475,142,32x14
+BUTTON#.dhbtn[Templates]@406,170,73x20
+BUTTON#.planselbtn[Live working copy▾]@507,170,124x20
+BUTTON#.dinfobtn[i]@485,172,16x16
+BUTTON#.dbeak locked[Publish day]@637,170,106x20
+BUTTON#.notepub[Make public]@523,399,82x19
+BUTTON#.airbtn[Traffic]@484,502,54x19
+BUTTON#.airbtn[+ In-time]@546,502,66x19
+BUTTON#.stcfg[C]@727,570,16x13
+BUTTON#.stcfg[C]@727,615,16x13
+BUTTON#.notepub[Make public]@523,780,82x19
+SPAN#.dow crewday[Wednesday]@796,138,88x18
+SPAN#.dt sb-open[Jul 15]@890,142,32x14
+BUTTON#.dhbtn[Templates]@796,170,73x20
+BUTTON#.planselbtn[Live working copy▾]@897,170,124x20
+BUTTON#.dinfobtn[i]@875,172,16x16
+BUTTON#.dbeak locked[Publish day]@1027,170,106x20
+BUTTON#.notepub[Make public]@913,399,82x19
+BUTTON#.airbtn[Traffic]@874,502,54x19
+BUTTON#.airbtn[+ In-time]@936,502,66x19
+BUTTON#.stcfg[C]@1117,570,16x13
+BUTTON#.stcfg[C]@1117,615,16x13
+BUTTON#.notepub[Make public]@913,780,82x19
+SPAN#.dow crewday[Thursday]@1186,138,72x18
+SPAN#.dt sb-open[Jul 16]@1264,142,32x14
+BUTTON#.dhbtn[Templates]@1186,170,73x20
+BUTTON#.planselbtn[Live working copy▾]@1287,170,124x20
+BUTTON#.dinfobtn[i]@1265,172,16x16
+BUTTON#.dbeak locked[Publish day]@1417,170,106x20
+BUTTON#.notepub[Make public]@1303,399,82x19
+BUTTON#.airbtn[Traffic]@1264,502,54x19
+BUTTON#.airbtn[+ In-time]@1326,502,66x19
+BUTTON#.stcfg[C]@1507,570,16x13
+BUTTON#.stcfg[C]@1507,615,16x13
+BUTTON#.notepub[Make public]@1303,780,82x19
+SPAN#.dow crewday[Friday]@1576,138,48x18
+SPAN#.dt sb-open[Jul 17]@1630,142,32x14
+BUTTON#.dhbtn[Templates]@1576,170,73x20
+BUTTON#.planselbtn[Live working copy▾]@1677,170,124x20
+BUTTON#.dinfobtn[i]@1655,172,16x16
+BUTTON#.dbeak locked[Publish day]@1807,170,106x20
+BUTTON#.notepub[Make public]@1693,399,82x19
+BUTTON#.airbtn[Traffic]@1654,502,54x19
+BUTTON#.airbtn[+ In-time]@1716,502,66x19
+BUTTON#.stcfg[C]@1897,570,16x13
+BUTTON#.stcfg[C]@1897,615,16x13
+BUTTON#.notepub[Make public]@1693,780,82x19
+SPAN#.dow crewday[Saturday]@1966,138,68x18
+SPAN#.dt sb-open[Jul 18]@2040,142,32x14
+BUTTON#.dhbtn[Templates]@1966,170,73x20
+BUTTON#.planselbtn[Live working copy▾]@2067,170,124x20
+BUTTON#.dinfobtn[i]@2045,172,16x16
+BUTTON#.dbeak locked[Publish day]@2197,170,106x20
+BUTTON#.notepub[Make public]@2083,399,82x19
+BUTTON#.notepub[Make public]@2083,556,82x19
+BUTTON#.notepub[Make public]@2083,665,82x19
+BUTTON#.notepub[Make public]@2083,754,82x19
+SPAN#.dow crewday[Sunday]@2356,138,57x18
+SPAN#.dt sb-open[Jul 19]@2419,142,32x14
+BUTTON#.dhbtn[Templates]@2356,170,73x20
+BUTTON#.planselbtn[Live working copy▾]@2457,170,124x20
+BUTTON#.dinfobtn[i]@2435,172,16x16
+BUTTON#.dbeak locked[Publish day]@2587,170,106x20
+BUTTON#.notepub[Make public]@2473,399,82x19
+BUTTON#.notepub[Make public]@2473,556,82x19
+BUTTON#.notepub[Make public]@2473,665,82x19
+BUTTON#.notepub[Make public]@2473,754,82x19
+BUTTON#.er-daynav[‹]@479,228,18x18
+BUTTON#.er-daynav[›]@576,228,18x18
+DIV#.bell-list wide[Notifications]@8,46,386x60
+TRACKER:
+SELECT#activeSel.[STUDENT ASTUDENT B]@8,54,107x26
+SELECT#courseSel.[26ABSG]@121,54,85x26
+BUTTON#courseMenuBtn.sm icon[]@212,54,29x26
+SELECT#sylSel.[20242026Tx 2026A/G - A/A 2026]@247,54,88x26
+BUTTON#sylMenuBtn.sm icon[]@341,54,29x26
+BUTTON#detailsBtn.sm icon[]@8,86,29x26
+BUTTON#legendBtn.sm[Legend]@43,86,51x26
+BUTTON#fileMenuBtn.sm[File ▾]@100,86,63x26
+BUTTON#hSearchBtn.sm[Find an event]@169,86,29x26
+BUTTON#flexBtn.sm icon[Flex settings]@204,86,26x26
+BUTTON#barHideBtn.sm icon barhide[]@236,86,29x26
+BUTTON#.active[Flow chart]@12,127,125x29
+BUTTON#.[Info]@139,127,125x29
+BUTTON#showAllTab.[Show All]@265,127,125x29
+BUTTON#fzOut.[−]@7,846,26x23
+BUTTON#fzIn.[+]@79,846,26x23
+BUTTON#fzReset.sm[reset]@109,848,42x19
+TRACKER TEXT: STUDENT A STUDENT B 26ABSG 2024 2026 Tx 2026 A/G - A/A 2026 Legend File ▾ ● saved Flow chart Info Show All ST-01 ST-02 ACG-01 ACG-02 ACG-03 ACG-04 ACG-05 ACG-06 ACG-07 ACG-08 ACG-09 ST-06 CFT-01 T-01 ST-03 AVI-01 AVI-02 AVI-03 AVI-04 IAT-01 AVI-05 T-02 AVI-06 AVI-07 AVI-08 AVI-09 IAT-02 AVI-10 T-03 AVI-11 AVI-12A/B AVI-14 AVI-15 IAT-03 AVI-16 T-04 OPS-01 OPS-02 OPS-03 OPS-04 ST-04 ST-05 T-05 TR(S)-1 RDR-01 RDR-02 RDR-03 RDR-04 IAT-04 RDR-05 T-06 TR(S)-2 CFT-02 CFT-03 CFT-04 TR(S)-3 EW-01 EW-02 IAT-05 AAW-01 AAW-02 T-07 AAW-03 AAW-04 AAW-05 IAT-06 T-08 JMP-01 TR(S)-4 EPT-01 EPT-02 TR(S)-5 AAM-0
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

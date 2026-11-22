@@ -76,7 +76,8 @@ describe('what is new to you', () => {
     as('ad', 'a'); for (let i = 0; i < 30; i++) logAction(0, 'x' + i)
     as('us', 'us')
     expect(markSeen(ELOG.rows)).toBe(true)
-    const saved = JSON.parse(fake.get('sqn142_seen:bane')!)
+    /* one cursor for each squadron's history (the fix read of multi-squadron batch 1's full check, 18 Nov 26 — Astra 6) */
+    const saved = JSON.parse(fake.get('sqn142_seen:bane')!).units.u142
     expect(saved.extra).toEqual([])
     expect(saved.upto).toEqual(posOf(ELOG.rows[29]!))
   })

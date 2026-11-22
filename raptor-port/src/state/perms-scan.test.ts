@@ -25,6 +25,9 @@ const ALLOW: Record<string, string> = {
   'command/permissions.ts': 'the command layer\'s own role helpers (adminOnly, ownOrAdmin)',
   'undo/timeline.ts': 'mayReverse compares the actors of two undo entries',
   'state/accounts.ts': 'an ACCOUNT record\'s role (isAdminAccount) — data, not the session',
+  /* multi-squadron batch 1, step 1: an account RECORD's role read as its level in its home unit (levelFrom) — data, as
+     accounts.ts's; perms.ts asks it at the commit gate, and the session's role in force stays perms.ts's own check */
+  'state/units-model.ts': 'an ACCOUNT record\'s role as its level in its home unit (levelFrom) — data, not the session',
 }
 /* the Leave War is a second app with its own store: its `role` and `viewer` are the war's,
    written ONLY by resetSession (the one seam), and its writers are held to §11 by

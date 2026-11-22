@@ -1,12 +1,11 @@
 import { useEffect } from 'react'
 import { SESSION } from '../state/auth'
 import { sessionNow } from '../state/accounts'
-import { notify, resetSession } from '../state/store'
+import { notify, resetSession, refreshAccess } from '../state/store'
 import { roleOf } from '../state/perms'
 import { useVersion } from './useStore'
 import { Login } from './Login'
 import { AccessScreen } from './AccessScreen'
-import { GuestApp } from './GuestApp'
 import { Shell } from './Shell'
 import { SchedBoard, CxDialog, SortAllDialog } from './SchedBoard'
 import { InputEditor } from './InputWindow'
@@ -38,14 +37,20 @@ export function App() {
   useEffect(() => {
     const next = sessionNow()
     if (next === undefined) return
-    resetSession(next)
+    /* (fix read 2 — Astra 2: the same account and the same person, only what his account gives has changed — his own
+       move's day come, or another admin changed his role — is no sign-out, so his Undo list stays, D148; a suspension, a
+       deleted account and an account put on another person keep the full reset) */
+    const samePerson = !!SESSION.acct && !!next && !!next.acct && next.user === SESSION.user && next.pid === SESSION.pid
+    if (samePerson) refreshAccess(next)
+    else resetSession(next)
     notify()
   })
   /* WHO IS SIGNED IN DECIDES THE WHOLE TREE ([ACCOUNTS], D204, 26 Sep 26): nobody —
-     the sign-in; signed in but on no list, or switched off — the access screens (ask
-     for access, waiting, switched off); a guest (asked, the admin's guest switch on) —
-     the separate read-only GuestApp, which mounts none of what follows; an admin or a
-     member — the app.
+     the sign-in; signed in but on no list, waiting for access, or switched off — the
+     access screens (ask for access, waiting, switched off); an admin or a member — the
+     app. (The guest view — a read-only week for a person waiting, behind an admin's
+     switch — is removed, his D2239 of 20 Nov 26: a person who asked sees only the
+     waiting screen until an admin of his squadron approves him.)
      The scheduler board overlay is a SIBLING of the shell, as in the
      reference — logout unmounts both. The changes list is a sibling of the
      BOARD for the same reason the board is one of the shell: it opens from
@@ -54,6 +59,5 @@ export function App() {
   if (!SESSION) return <Login />
   const who = roleOf()
   if (who === 'pending' || who === 'off') return <AccessScreen />
-  if (who === 'guest') return <GuestApp />
   return <><Shell /><SchedBoard /><CxDialog /><SortAllDialog /><InputEditor /><MedMoveConfirm /><OilWait /><DocViewer /><DutyTplModal /><WaveTplModal /><DayTplModal /><DraftsModal /><SecDefaultSnackbar /><AvailWindow /><ChangesWindow /><DaysWindow /><SansSettings /><InputsSettings /><OilDayList /></>
 }

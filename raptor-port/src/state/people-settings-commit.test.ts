@@ -6,6 +6,7 @@
    stream RECONSTRUCTS the persisted people/settings vs the legacy serializers
    (completeness, §7 / R4-004). */
 import { beforeEach, afterEach, describe, expect, it } from 'vitest'
+import { storedKey } from '../engine/hooks'
 import { storeBackend, store } from '../engine/hooks'
 import { PEOPLE, ID_BY_CS } from '../engine/people'
 import { STORE_CFG, addStore, storesSave, storesReset, storesAreStandard } from '../engine/stores'
@@ -54,7 +55,7 @@ describe('a settings write emits a settings/<key> envelope (property c), no call
     expect(caught.length).toBe(1)
     expect(caught[0].type).toBe('settings.stores')
     expect(caught[0].scope).toEqual({ module: 'settings' })
-    expect(caught[0].changes.some(c => c.collection === 'settings' && c.id === 'stores')).toBe(true)
+    expect(caught[0].changes.some(c => c.collection === 'settings' && c.id === storedKey('stores'))).toBe(true)
   })
 
   it('a no-op save (standard list -> null, unchanged) emits nothing', () => {
@@ -116,7 +117,7 @@ describe('completeness — the stream reconstructs people + settings (§7 / R4-0
   it('a sequence of people + settings writes reconstructs to the live state', () => {
     const basePeople = JSON.parse(JSON.stringify(PEOPLE))
     const baseSettings: Record<string, unknown> = {}
-    for (const k of SETTINGS_KEYS) baseSettings[k] = store.get(k, null)
+    for (const k of SETTINGS_KEYS) baseSettings[storedKey(k)] = store.get(k, null)   // a unit's setting is named by its unit (step 2)
 
     const id = Object.keys(PEOPLE)[0]
     ;(PEOPLE as any)[id].initials = 'QQ'; persistPeople()
@@ -135,7 +136,7 @@ describe('completeness — the stream reconstructs people + settings (§7 / R4-0
     }
     expect(people).toEqual(PEOPLE)
     const live: Record<string, unknown> = {}
-    for (const k of SETTINGS_KEYS) live[k] = store.get(k, null)
+    for (const k of SETTINGS_KEYS) live[storedKey(k)] = store.get(k, null)
     expect(settings).toEqual(live)
   })
 })

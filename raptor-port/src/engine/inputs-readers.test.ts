@@ -37,7 +37,6 @@ const RECORDS: Record<string, string> = {
   'engine/inputs.ts': 'the home of the list, of the two funnels by date (inputsOn — records; inputLinesOn — lines) and of the view; sansAvailOn finds one man\'s SANS offer by who is IN the record (namedOf) and hands back the record',
   'engine/events.ts': 'MIXED — a day\'s inputs as the rules read them (mapInp, the whole-day list, both midnight tails) read LINES; a ground row\'s own request, for its clash grade (shiftEvHard), reads the record',
   'engine/weekctx.ts': 'MIXED — who worked a neighbour day (workedSet) reads LINES; the live filing and the neighbours\' issued copies read records',
-  'tracker/peoplewire.ts': 'the Tracker medical rider (D1002): each man downchit RECORDS handed to the Tracker as plain dates; a medical kind holds one person',
   'engine/medical.ts': 'the medical lists and trim plans: it hands the records themselves to the one applier and tells them apart by identity — a medical kind holds one person',
   'engine/canonical.ts': 'a request\'s row in the published comparison',
   'engine/drafts.ts': 'loads: a version or a plan against the live requests',
@@ -76,6 +75,7 @@ const RECORDS: Record<string, string> = {
   'ui/html.ts': 'draws the day\'s inputs on the week; how many SANS men have offered reads lines through sansAvailOn',
   'ui/inputscal-model.ts': 'the Inputs calendar\'s bars',
   'ui/InputsCal.tsx': 'the Inputs calendar',
+  'ui/owncal.ts': 'the Inputs calendar\'s notes and day titles, through the Inputs page\'s door (writeInputs) — it writes planning records only, never an input',
   'ui/InputsSettings.tsx': 'the late cut-off\'s count of inputs',
   'ui/interactions.ts': 'the schedule\'s hands on an input',
   'ui/oilputback.ts': 'what a whole-day replacement (a load, a plan switch) put back that still needs an OIL answer — reads the records (D865)',
@@ -124,14 +124,25 @@ const RECORD_READS = /\bINPUTS\b|\binputsOn\(|\binpById\(|\binputOn\(|\bwarInput
 function files(dir: string, out: string[] = []): string[] {
   for (const f of readdirSync(dir)) {
     const p = join(dir, f)
-    if (statSync(p).isDirectory()) { if (f !== 'testing') files(p, out) }
+    /* (test-support/ holds test worlds — never imported by the app, test-support/no-app-import.test.ts — so a world
+       putting the inputs list back between tests is not one of the app's readers or writers) */
+    if (statSync(p).isDirectory()) { if (f !== 'testing' && f !== 'test-support') files(p, out) }
     else if (/\.(ts|tsx|js|jsx)$/.test(f) && !/\.test\.|\.spec\.|test-setup|testkit/.test(f)) out.push(p)
   }
   return out
 }
 const rel = (p: string) => relative(SRC, p).replace(/\\/g, '/')
 const read = (f: string) => readFileSync(join(SRC, f), 'utf8')
-const universe = files(SRC).map(rel).filter(f => NAMES.test(read(f))).sort()
+/* FILES THAT ONLY SPELL A NAME, inside quotes — never a reader, never a writer (multi-squadron batch 1, step 0's red run,
+   17 Nov 26). The key inventory (storage/keyowner.ts) lists the module singletons by name, as strings, so its own test
+   can check each module still exports it: `{ name: 'INPUTS', module: 'engine/inputs' }`. That reaches no input. A file
+   here is out of the universe only while it really reaches nothing — the test below strips its comments AND its quoted
+   strings and fails the moment a name is left, so a real read added to it later turns the guard red again. */
+const MENTIONS_ONLY: Record<string, string> = {
+  'storage/keyowner.ts': 'the key inventory names the INPUTS singleton as a string for its own export check; it imports and reads nothing of the inputs',
+}
+const unquoted = (s: string) => code(s).replace(/'(?:[^'\\\n]|\\.)*'|"(?:[^"\\\n]|\\.)*"|`(?:[^`\\]|\\.)*`/g, "''")
+const universe = files(SRC).map(rel).filter(f => NAMES.test(read(f)) && !(f in MENTIONS_ONLY)).sort()
 const listed = [LINES, RECORDS, WRITERS]
 
 describe('every file that reaches the inputs is on one list — lines, records or writers (D756; Fable F1, F15)', () => {
@@ -140,6 +151,15 @@ describe('every file that reaches the inputs is on one list — lines, records o
     const twice = universe.filter(f => listed.filter(l => f in l).length > 1)
     expect(none, 'reaches the inputs and is on no list — decide which it is: does it ask about one man\'s day (LINES), about the input (RECORDS), or does it write (WRITERS)?').toEqual([])
     expect(twice, 'on two lists').toEqual([])
+  })
+  it('a file left out as only spelling a name reaches nothing once its quoted strings are taken out — and still spells it', () => {
+    for (const f of Object.keys(MENTIONS_ONLY)) {
+      expect(NAMES.test(read(f)), `${f} no longer names the inputs — take it off MENTIONS_ONLY`).toBe(true)
+      expect(NAMES.test(unquoted(read(f))), `${f} reaches the inputs outside a quoted string — put it on LINES, RECORDS or WRITERS`).toBe(false)
+    }
+    /* the stripper itself: a name in quotes goes, a real read stays */
+    expect(NAMES.test(unquoted("const a = { name: 'INPUTS' }"))).toBe(false)
+    expect(NAMES.test(unquoted("const n = INPUTS.length // 'x'"))).toBe(true)
   })
   it('the lists name no file that no longer reaches the inputs', () => {
     const gone = listed.flatMap(l => Object.keys(l)).filter(f => !universe.includes(f))

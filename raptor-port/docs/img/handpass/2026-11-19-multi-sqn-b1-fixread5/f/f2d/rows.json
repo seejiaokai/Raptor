@@ -1,0 +1,83 @@
+[
+ [
+  "F2",
+  "desktop",
+  "ad2 Hunter: Inputs + Input, LL for Hunter disabled=false, Mon 23 Nov, Add",
+  "saved; shown on his row",
+  "LL count 1 -> 2; window open 0; list Inputs Inputs SANS Medical 2 1 Calendar List Everyone ALL AVAIL ALL Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter Out",
+  "PASS",
+  "f2-ad2-03-after-add.png"
+ ],
+ [
+  "F2",
+  "desktop",
+  "ad2: top bar Undo",
+  "the leave is gone",
+  "LL count 1",
+  "PASS",
+  "f2-ad2-05-undo.png"
+ ],
+ [
+  "F2",
+  "desktop",
+  "ad2: top bar Redo",
+  "the leave is back",
+  "LL count 2",
+  "PASS",
+  "f2-ad2-06-redo.png"
+ ],
+ [
+  "F2",
+  "desktop",
+  "us Ranger: Inputs + Input, LL for none, Mon 23 Nov, Add",
+  "saved; shown on his row",
+  "LL count 1 -> 2; window open 0; list Inputs Inputs SANS Medical 2 1 Calendar List Everyone ALL AVAIL ALL Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter Out",
+  "PASS",
+  "f2-us-03-after-add.png"
+ ],
+ [
+  "F2",
+  "desktop",
+  "us: top bar Undo",
+  "the leave is gone",
+  "LL count 1",
+  "PASS",
+  "f2-us-05-undo.png"
+ ],
+ [
+  "F2",
+  "desktop",
+  "us: top bar Redo",
+  "the leave is back",
+  "LL count 2",
+  "PASS",
+  "f2-us-06-redo.png"
+ ],
+ [
+  "F2",
+  "desktop",
+  "ad9 Kestrel: Inputs + Input, LL for Kestrel disabled=false, Mon 23 Nov, Add",
+  "saved; shown on his row",
+  "LL count 1 -> 2; window open 0; list Inputs Inputs SANS Medical Calendar List Everyone ALL AVAIL ALL Condor Falcon Gannet Harrier Heron Kestrel Merlin Osprey Raven Shrike All types All leave LL OL OIL CCL PL FCL EL CL All medical HL OML ATT C ATT B Upchit All duty & commitments Training",
+  "PASS",
+  "f2-ad9-03-after-add.png"
+ ],
+ [
+  "F2",
+  "desktop",
+  "ad9: top bar Undo",
+  "the leave is gone",
+  "LL count 1",
+  "PASS",
+  "f2-ad9-05-undo.png"
+ ],
+ [
+  "F2",
+  "desktop",
+  "ad9: top bar Redo",
+  "the leave is back",
+  "LL count 2",
+  "PASS",
+  "f2-ad9-06-redo.png"
+ ]
+]
