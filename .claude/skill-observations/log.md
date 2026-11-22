@@ -1232,3 +1232,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The first red run had every Undo test fail with "Undo did nothing" before the rule under test was even reached: the test world's `signInAs` (and any helper that calls it — "post him out as Kestrel", "read Hunter's bell as Hunter") resets the session, and a sign-in clears the signed-in person's Undo list (D148). The tests looked red for the right reason only after one sign-in carried the whole step-then-Undo sequence (a second master admin made first, so one person could give, post and undo).
 **Suggested improvement:** In the project's test-writing notes (raptor-executor rules, the tests section): a test that presses Undo or Redo keeps ONE sign-in from the step to the Undo — no helper in between that signs in — and reads other people's bells without signing in as them; and a red-first run is read for WHY each test failed (the assertion's message), never only for "it is red".
 **Principle:** A red test proves the gap only when it fails at the assertion that names the gap; read the failure's reason before believing the red.
+
+### Observation 1020: A gate-refusal test must save the forged record the way a real writer does
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** chat 146 — multi-squadron batch 1's second half, step F: the own-account bell lines and their commit-gate check (numbered past 1019, the highest on any branch)
+**Skill:** New skill candidate: gate-test-writing (or the project's test-writing notes, raptor-executor rules)
+**Type:** open-source
+**Phase/Area:** writing a test that a forged record is refused by a commit check
+
+**Issue:** Four "a forged line is refused" tests passed the gate (the command came back ok) although the check was correct. The hand-built commands pushed the forged line into memory but skipped the store's own end-of-command step, so the line never entered the command's list of changes — the check had nothing to judge, and the line sat unsaved in memory. A one-off probe that printed the command's changes showed it; with the end step added, every forgery was refused for the right reason.
+**Suggested improvement:** In the test-writing notes: a forgery test builds its command exactly as the real writer does (every store enlisted and every end step run), and asserts the refusal's own words, not only "not ok" — and when a refusal test unexpectedly passes, print the command's change list before doubting the check.
+**Principle:** A test of a guard only proves something if the forged input actually reaches the guard; check what the guard was handed before concluding it let something through.
