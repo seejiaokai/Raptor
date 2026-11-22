@@ -29,7 +29,7 @@ import { PEOPLE, nameToId, archivedHolders } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { elogWhen } from '../engine/editlog'
 import {
-  ACCESS_REQS, accountOfPid, linkablePeople, addAccount, updateAccount,
+  accountOfPid, linkablePeople, addAccount, updateAccount, waitingHere, unseenRequests,
   approveRequest, approveRequestNew, addPersonAndAccount, declineRequest,
   requestSummary, accessAlert, markRequestsSeen, MAX_SIGNIN, isAdminAccount, type Account, type AccountRole, type AccessRequest,
 } from '../state/accounts'
@@ -38,7 +38,7 @@ import {
 } from '../state/roster-add'
 import { SESSION } from '../state/auth'
 import { me, pageUnit } from '../state/perms'
-import { todayIso } from '../state/units'
+import { todayIso, homeOn } from '../state/units'
 import { usersListOf } from './userslist-model'
 import { notify } from '../state/store'
 import { deletePerson, effectiveToday } from '../state/person-delete'
@@ -52,8 +52,9 @@ import { DateBox } from './DateBox'
 
 const P = (pid: string): any => (PEOPLE as any)[pid]
 const cs = (pid: string) => (P(pid) ? String(P(pid).cs) : '')
-function PuckSelect(p: { id: string; value: string; keep?: string; onChange: (v: string) => void }) {
-  const opts = linkablePeople(p.keep)
+/* `unit` — whose men are offered: the page's squadron by default; a request's own squadron when approving it (§5) */
+function PuckSelect(p: { id: string; value: string; keep?: string; unit?: string; onChange: (v: string) => void }) {
+  const opts = linkablePeople(p.keep, p.unit)
   return (
     <select id={p.id} value={p.value} aria-label="The callsign or name this account belongs to" onChange={e => p.onChange(e.target.value)}>
       <option value="">Pick a callsign or name…</option>
@@ -144,6 +145,9 @@ function rosterMatch(r: AccessRequest): { pid: string; note: string } | null {
   const hit = r.cs ? nameToId(r.cs) : undefined
   const p = hit && P(hit)
   if (!hit || !p || p.special || p.archived) return null
+  /* a man of another squadron than the one he asked to join is nobody to link him to (§5 — linking offers that
+     squadron's men only): New person opens, which says the callsign is taken */
+  if (homeOn(hit, todayIso()) !== r.unit) return null
   const same = String(p.cs).toLowerCase() === r.cs.trim().toLowerCase()
   const acct = accountOfPid(hit)
   if (acct) {
@@ -177,10 +181,12 @@ function startApprove(r: AccessRequest): Approving {
 
 function Waiting() {
   const [open, setOpen] = useState<Approving | null>(null)
-  if (!ACCESS_REQS.length) return <p className="adm-note" id="admNoWaiting">Nobody is waiting for access.</p>
+  /* the page's squadron's requests only, those he is an admin of (§5 — accounts.ts waitingHere) */
+  const reqs = waitingHere()
+  if (!reqs.length) return <p className="adm-note" id="admNoWaiting">Nobody is waiting for access.</p>
   return (
     <div className="acc-list" id="admWaiting">
-      {ACCESS_REQS.map(r => {
+      {reqs.map(r => {
         const sum = requestSummary(r)
         const a = open && open.id === r.id ? open : null
         const match = rosterMatch(r)
@@ -205,7 +211,7 @@ function Waiting() {
                       </>
                     : <>
                         <div className="mfield"><label htmlFor="apvPid">{CALLSIGN_LABEL}</label>
-                          <PuckSelect id="apvPid" value={a.pid} onChange={v => setOpen({ ...a, pid: v })} /></div>
+                          <PuckSelect id="apvPid" value={a.pid} unit={r.unit} onChange={v => setOpen({ ...a, pid: v })} /></div>
                         {match && <p className="adm-note acc-note" id="apvNote">{match.note}</p>}
                       </>}
                   <div className="adm-2col">
@@ -491,9 +497,11 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
 
   /* D216, D227 — the list has been on this admin's screen: his bell goes out */
   useEffect(() => {
-    if (!p.shown || !accessAlert()) return
+    /* (the requests SHOWN — the page's squadron's — never the whole list: another squadron's stays new, §5, R-O9) */
+    const here = pageUnit('own')
+    if (!p.shown || !unseenRequests().some(r => r.unit === here)) return
     const bad = markRequestsSeen()
-    if (!bad && !accessAlert()) notify()
+    if (!bad) notify()
   })
   /* Quals' "+ Add person" (D217): the form in view, the callsign box ready — after the render that drew it (the walk,
      26 Sep 26: a focus asked on a timer landed before the real browser had drawn the box) */

@@ -10,7 +10,7 @@ import { HOOKS } from '../engine/hooks'
 import { globalUndo, globalRedo, undoState } from '../undo'
 import { editingText } from './textedit'
 import { oilUndoBoundary } from './oilmode'
-import { accessAlert, waitingCount } from '../state/accounts'
+import { accessAlert, unseenRequests } from '../state/accounts'
 import { bugAlert, unseenReports } from '../state/reports'
 import { openAdminUsers } from './adminopen'
 import { oilPendingFor, openWarAt } from '../leavewar/sync'
@@ -50,7 +50,9 @@ export function bellOn(): boolean {
 }
 export function bellTap(from?: HTMLElement | null): void {
   if (accessAlert()) {
-    const n = waitingCount()
+    /* (every unseen request of his squadrons — the page's alone could read "0 waiting"; the tap that moves him to the
+       request's squadron, §15 D3, is the bell's step, F) */
+    const n = unseenRequests().length
     HOOKS.toast(`${n} waiting for access — opening Admin → Users`)
     openAdminUsers(); return
   }

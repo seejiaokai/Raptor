@@ -2600,7 +2600,9 @@ function unitRowViolation(env: CommitEnvelope): string | null {
       /* (the reshape plan §4.3 — Fable 6: a right that holds nothing on today names nothing a person can use, and no door
          removes one, so it never blocks the Undo of "+ New squadron") */
       if (after.unitplaces.some(x => x.unit === key) || after.homes.some(x => x.unit === key)
-        || after.grants.some(x => x.unit === key && grantRowHolds(holderA(x.account), x, today, after))) return `a unit removed while still named (${id})`
+        || after.grants.some(x => x.unit === key && grantRowHolds(holderA(x.account), x, today, after))
+        /* (and a request waiting to join it — §5 item 4, R-O11) */
+        || requestsNaming(key)) return `a unit removed while still named (${id})`
     } else if (id.startsWith(PLACE_PFX)) {
       if (after.unitplaces.some(x => x.place === key)) return `a place removed while a unit is there (${id})`
     }
@@ -2825,8 +2827,8 @@ function homeUnitViolation(env: CommitEnvelope): string | null {
    squadron's schedulers only; the reshape plan §7, A4, with the Plan audit's PB3): it was kept crossing while a holiday
    reached every squadron at the place (D2184 R32), skipping these checks; it now takes them as any admin line does — to his
    own squadron's people, or to a reader in adminsOf of a squadron he is an admin of (PC1, below) — and the war-line check
-   below asks it is the holiday's own. `accessreq:` rows carry no squadron yet (Request access asking the squadron, D2111,
-   is not built), so there is nothing to judge them by — filed.
+   below asks it is the holiday's own. `accessreq:` rows name their squadron since batch 1's second half §5 (D2111) and
+   are judged by it in their own section (8b, requestRowViolation).
    ONE LINE IS NOT JUDGED BY ITS READER'S SQUADRON: the telling of an input this very command changed (state/sched-commit.ts
    tellPass — whoever is in it and whoever filed it is told). That input is judged by its own people's squadrons
    (7c above), and its filer may be of another squadron (a master who filed for a 149 man, who is then told when 149's
@@ -3404,6 +3406,42 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
   if (!why && stored) env.changes = stored
   return why
 }
+/* 8b. A WAITING REQUEST IS ITS SQUADRON'S (batch 1's second half §5 — D2111, D2094; §15 D12, his D2324). A request
+   (`accessreq:<id>`) names the squadron he asks to join: a row written must name a squadron in the store; and a change
+   of one by an admin — answering it (approve, decline, an account added or renamed under its name, a delete taking his
+   account) or putting it back (an Undo) — needs him an admin of that squadron (its own admin, a Plan holder of it, a
+   master admin), as the rows stood before the command; a row moved to another squadron needs both. The pending
+   person's own request is held by its own rule (section 7, below); the app's own posting pass, which runs as the app,
+   is not asked. A row of before §5 has no squadron and reads as the boot squadron's (D56 — accounts.ts reqsLoad). */
+const REQ_ROW = 'accessreq:'
+const reqUnit = (v: any): string => (v && typeof v.unit === 'string' && v.unit ? v.unit : BOOT_UNIT)
+function requestRowViolation(env: CommitEnvelope): string | null {
+  const reqs = env.changes.filter(c => c.collection === 'settings' && String(c.id).startsWith(REQ_ROW))
+  if (!reqs.length) return null
+  const after = unitRowsBefore([])
+  for (const c of reqs) {
+    const n: any = c.op === 'delete' ? null : c.after
+    if (n != null && JSON.stringify(c.before ?? null) !== JSON.stringify(n)
+      && (typeof n.unit !== 'string' || !after.units.some(u => u.id === n.unit))) return `a request naming no squadron in the store (${c.collection}/${c.id})`
+  }
+  const a = env.actor
+  if (!a || a.role !== 'admin') return null
+  const before = unitRowsBefore(env.changes), today = todayIso()
+  for (const c of reqs) {
+    const b: any = c.before ?? null, n: any = c.op === 'delete' ? null : c.after ?? null
+    if (JSON.stringify(b) === JSON.stringify(n)) continue
+    for (const u of new Set([b, n].filter(Boolean).map(reqUnit))) {
+      if (levelInForce(a, u, today, before) !== 'admin') return `a request to join ${u} answered by one who is not its admin (${c.collection}/${c.id})`
+    }
+  }
+  return null
+}
+/* the squadrons the waiting requests name, as stored after the command (the gate reads the store once the command has
+   written it) — a squadron one names is never removed under it (§5 item 4, R-O11) */
+function requestsNaming(unit: string): boolean {
+  for (const k of store.keys(REQ_ROW)) { const v: any = store.get(k, null); if (v && reqUnit(v) === unit) return true }
+  return false
+}
 function ownershipChecks(env: CommitEnvelope): string | null {
   const a = env.actor
   const asNew = writtenAsNewViolation(env)
@@ -3428,6 +3466,8 @@ function ownershipChecks(env: CommitEnvelope): string | null {
   if (dayBad) return dayBad
   const homeBad = homeUnitViolation(env)
   if (homeBad) return homeBad
+  const reqBad = requestRowViolation(env)
+  if (reqBad) return reqBad
   const inputBad = inputUnitViolation(env)
   if (inputBad) return inputBad
   /* WHEN A PERSON LAST OPENED HIS OWN WINDOW (M5a — the security read's finding 4): his own row, by its one command,

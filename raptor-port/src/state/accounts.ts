@@ -28,12 +28,14 @@
                   on load with a logged line (a seeded account, with none, is the oldest).
                   NO ROWS AT ALL = the seeded list, in memory (as a missing record was): the first
                   write then stores every account of the list it leaves, so none is lost.
-   - `accessreq:<id>` { id, name, cs, ini, seat, cat, at }: the
+   - `accessreq:<id>` { id, name, cs, ini, seat, cat, at, unit }: the
                   signed-in principal who asked (from the session, never a typed field);
                   what he typed — the displayed callsign/name, initials, pilot / WSO /
                   personnel, CAT (text only: approving with New person makes the person
                   from it, with the admin's corrections — [ACCOUNTS-NEW-PERSON], D214);
-                  when.
+                  when; the squadron he asks to join (`unit` — batch 1's second half §5, D2111:
+                  only its admins see and answer it; one stored before has none and reads as
+                  the boot squadron's, D56).
    - `reqseen:<accountId>` { userId, seenRequestIds } — which requests that admin has had on
                   screen (the bell — D216, D227); his own row, removed with his account. In
                   memory each request still carries `seenBy` (every admin who has seen it), read
@@ -65,6 +67,7 @@ import { elogNow, type LinePos } from '../engine/editlog'
 import { store } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
 import { rosterOf } from '../engine/roster'
+import { BOOT_UNIT } from '../engine/unitview'
 import { SESSION } from './auth'
 import { isAdmin, mayManageAccounts, mayManageRoster, mayRequestAccess, me, roleOf, pageUnit } from './perms'
 import { commitSettingsIntent, commitPeopleSettingsIntent, commitPeopleIntent } from './people-settings-commit'
@@ -112,7 +115,7 @@ const masterOf = (x: { master?: true; masterFrom?: string; pidFrom?: string; rol
 })
 /* `seat` 'FCP' | 'RCP' | 'GND' (never '' on a request made now — the card refuses it; an
    old stored one reads '' and the admin picks at approval); `cat` '' for personnel */
-export interface AccessRequest { id: string; name: string; cs: string; ini: string; seat: string; cat: string; at: number; seenBy: string[] }
+export interface AccessRequest { id: string; name: string; cs: string; ini: string; seat: string; cat: string; at: number; seenBy: string[]; unit: string }
 
 /* the intent commands (perms.ts COMMAND_OPS decides who may run each) */
 /* (`guestview.set`, the guest switch's command, went with the guest view — D2239) */
@@ -192,7 +195,7 @@ let ACCOUNTS_STORED = false
 /* an account as its row stores it */
 const accountRow = (a: Account) => ({ id: a.id, name: a.name, role: a.role, pid: a.pid, on: a.on, ...(a.offBy ? { offBy: a.offBy } : {}), ...(a.seenFrom ? { seenFrom: a.seenFrom } : {}), ...(a.createdAt != null ? { createdAt: a.createdAt } : {}), ...masterOf(a) })
 /* a request as its row stores it — who has seen it is not on it (reqseen rows) */
-const reqRow = (r: AccessRequest) => ({ id: r.id, name: r.name, cs: r.cs, ini: r.ini, seat: r.seat, cat: r.cat, at: r.at })
+const reqRow = (r: AccessRequest) => ({ id: r.id, name: r.name, cs: r.cs, ini: r.ini, seat: r.seat, cat: r.cat, at: r.at, unit: r.unit })
 
 /* the accounts a list of stored images would load as — the loader's own reading (dedupe, the older of two for one
    person, a deleted man's never), without the lock-out repair. `why` hears each image dropped. Pure. `person` — the
@@ -273,6 +276,8 @@ export function accountsLoad(): void {
       id: x.id, name, cs: String(x.cs ?? '').slice(0, MAX_CS), ini: String(x.ini ?? '').toUpperCase().slice(0, MAX_INITIALS),
       seat, cat, at: Number(x.at) || 0,
       seenBy: seenByReq.get(x.id) || [],
+      /* the squadron he asked to join; none stored (a request of before §5) — the boot squadron's (D56) */
+      unit: typeof x.unit === 'string' && x.unit ? x.unit : bootRequestUnit(),
     })
   }
   ACCESS_REQS = reqs
@@ -283,7 +288,35 @@ export const accountByName = (name: any): Account | undefined => ACCOUNTS_LIST.f
 export const accountById = (id: any): Account | undefined => ACCOUNTS_LIST.find(a => a.id === id)
 export const accountOfPid = (pid: any): Account | undefined => ACCOUNTS_LIST.find(a => a.pid === pid)
 export const requestByName = (name: any): AccessRequest | undefined => ACCESS_REQS.find(r => r.name === normName(name))
-export const waitingCount = (): number => ACCESS_REQS.length
+/* ---- WHO A REQUEST IS FOR (batch 1's second half §5 — D2111, D2094; §15 D3, D12) ----
+   A request is its squadron's: the admins of that squadron — its own, a Plan holder of it, a master admin (the one
+   answer, levelOfAccount — "an admin of 149", D2299) — see it, are told of it and answer it, and nobody else.
+   `requestsFor` — every request an account is an admin of the squadron of (the bell: every squadron of his; the
+   bell's squadron switch, D2198, is step F's); `waitingHere` — those of the page's squadron (`pageUnit('own')`),
+   which the Waiting list shows and the Admin tab's and the drawer's badges count, so every badge has a row behind it. */
+export const adminOfRequest = (a: Account | undefined, r: AccessRequest, iso: string = todayIso()): boolean =>
+  !!a && a.role === 'admin' && (a.master === true || levelOfAccount(levelAcct(a), r.unit, iso) === 'admin')
+export const requestsFor = (a: Account | undefined, iso: string = todayIso()): AccessRequest[] =>
+  ACCESS_REQS.filter(r => adminOfRequest(a, r, iso))
+const signedInAdmin = (): Account | undefined => { const id = currentAdminAccountId(); return id ? accountById(id) : undefined }
+/* THE BOOT SQUADRON a request with none named belongs to — a request of before §5 (D56), or one asked with none: the
+   demo's first squadron where the store has it, else the store's first (a shared store whose first squadron is 149) */
+export const bootRequestUnit = (): string => (unitById(BOOT_UNIT) ? BOOT_UNIT : units()[0]?.id ?? BOOT_UNIT)
+export const waitingHere = (): AccessRequest[] => {
+  const u = pageUnit('own')
+  return requestsFor(signedInAdmin()).filter(r => r.unit === u)
+}
+export const waitingCount = (): number => waitingHere().length
+/* THE ONE REFUSAL FOR ANSWERING A REQUEST OF A SQUADRON NOT HIS (§15 D12, his D2324 — F8's words): approving, declining,
+   linking, and every other door that would answer it — an account added, or a sign-in renamed, under its name */
+export function requestNotHis(r: AccessRequest | undefined): string | null {
+  if (!r) return null
+  const a = SESSION ? accountById(SESSION.user) : undefined
+  /* no account behind the session (a probe's or a test's) — the gate judges */
+  if (!a || adminOfRequest(a, r)) return null
+  const num = unitById(r.unit)?.num ?? r.unit
+  return `He asked to join ${num} — only an admin of ${num} can answer it.`
+}
 /* what he gave, in one line — "JKB · Pilot · CAT C" / "BC · Personnel" — Admin → Users reads this one body (a blank
    part drops out); the waiting screen shows the same parts as the pass's fields since D1656 (ui/AccessScreen.tsx) */
 export function requestSummary(r: AccessRequest): string {
@@ -573,7 +606,7 @@ const ownAccount = (a: Account) => (SESSION && SESSION.user === a.id) || (me() !
 export function addAccount(nameIn: any, pid: string, role: AccountRole): string | null {
   if (!mayManageAccounts()) return 'Only an admin can add an account'
   const name = normName(nameIn)
-  const bad = nameProblem(name) || pidProblem(pid) || otherSquadronProblem(pid) || (isAccountRole(role) ? null : 'Pick member or admin')
+  const bad = requestNotHis(requestByName(name)) || nameProblem(name) || pidProblem(pid) || otherSquadronProblem(pid) || (isAccountRole(role) ? null : 'Pick member or admin')
   if (bad) return bad
   return commitIntent('account.add', null, () => {
     writeAccounts([...ACCOUNTS_LIST, adminRecFor({ id: newAccountId(), name, role, pid, on: true, ...newAccountStamp() })])
@@ -598,7 +631,8 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   const other = otherSquadronProblem(a.pid) || (patch.pid !== undefined ? otherSquadronProblem(patch.pid) : null)
   if (other) return other
   const next: Account = { ...a }
-  if (patch.name !== undefined) { const n = normName(patch.name); const bad = nameProblem(n, a.id); if (bad) return bad; next.name = n }
+  /* (a rename onto a waiting request's name answers it — only an admin of its squadron, §15 D12) */
+  if (patch.name !== undefined) { const n = normName(patch.name); const bad = (n !== a.name ? requestNotHis(requestByName(n)) : null) || nameProblem(n, a.id); if (bad) return bad; next.name = n }
   if (patch.pid !== undefined) { const bad = pidProblem(patch.pid, a.id); if (bad) return bad; next.pid = patch.pid }
   /* RE-LINKED: A RIGHT THE ACCOUNT HOLDS CHANGES HANDS TODAY (fix read 10, fault D — O10-4, F10-3, F10-4). The link is
      dated today, and the master mark with it (a right that changes hands is a right given today — perms.ts masterKept);
@@ -770,6 +804,12 @@ export function approveRequest(reqId: string, pid: string, role: AccountRole): s
   if (!mayManageAccounts()) return 'Only an admin can approve a request'
   const rq = ACCESS_REQS.find(r => r.id === reqId)
   if (!rq) return 'That request is gone'
+  /* only an admin of the squadron he asked to join, and only to a man of that squadron (§5 — linking offers that
+     squadron's men only; the Waiting list's picker is the page's squadron's, which is the request's) */
+  const notHis = requestNotHis(rq)
+  if (notHis) return notHis
+  const h = homeOn(pid, todayIso())
+  if (h && h !== rq.unit) return 'That did not save'
   const bad = nameProblem(rq.name) || pidProblem(pid) || otherSquadronProblem(pid) || (isAccountRole(role) ? null : 'Pick member or admin')
   if (bad) return bad
   /* linked to a man already on the roster, he keeps the squadron he has — no home is written here: a new home row moved
@@ -782,7 +822,10 @@ export function approveRequest(reqId: string, pid: string, role: AccountRole): s
 }
 export function declineRequest(reqId: string): string | null {
   if (!mayManageAccounts()) return 'Only an admin can decline a request'
-  if (!ACCESS_REQS.some(r => r.id === reqId)) return 'That request is gone'
+  const rq = ACCESS_REQS.find(r => r.id === reqId)
+  if (!rq) return 'That request is gone'
+  const notHis = requestNotHis(rq)
+  if (notHis) return notHis
   return commitIntent('access.decline', null, () => writeReqs(ACCESS_REQS.filter(r => r.id !== reqId)))
 }
 /* (setGuestView — the Admin "Guest view" switch's door — went with the guest view, D2239) */
@@ -793,8 +836,11 @@ export function declineRequest(reqId: string): string | null {
    initials (asked, never required — D225), pilot / WSO / personnel (D220), CAT — refused
    with its reason when a pick is missing or the name is over 14 letters (D226). Never
    whether a callsign is taken: a person not yet let in may not read the roster. */
-export function requestAccess(npIn: NewPerson): string | null {
+/* `unit` — the squadron he asks to join (§5, picture 4: asked first on the card); none named, the boot squadron's, as a
+   request of before §5 reads */
+export function requestAccess(npIn: NewPerson, unit: string = bootRequestUnit()): string | null {
   if (!mayRequestAccess()) return 'You cannot ask for access from here'
+  if (!unitById(unit)) return 'That did not save'
   const name = normName(SESSION && SESSION.name)
   if (!name) return 'Sign in first'
   if (accountByName(name)) return 'This sign-in already has an account — sign out and in again'
@@ -805,7 +851,7 @@ export function requestAccess(npIn: NewPerson): string | null {
   return commitIntent('access.request', { owner: name }, () =>
     writeReqs([...ACCESS_REQS, {
       id: 'rq' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name,
-      cs: np.cs, ini: np.ini, seat: np.seat, cat: np.cat, at: Date.now(), seenBy: [],
+      cs: np.cs, ini: np.ini, seat: np.seat, cat: np.cat, at: Date.now(), seenBy: [], unit,
     }]))
 }
 
@@ -1083,7 +1129,7 @@ export function addPersonAndAccount(nameIn: any, np: NewPerson, role: AccountRol
   const name = normName(nameIn)
   if (!name) return addRosterPerson(np, postIn, unit)
   if (!mayManageAccounts() || !mayManageRoster()) return 'Only an admin can add a person'
-  const bad = newHomeProblem(unit, 'Only an admin can add a person') || nameProblem(name) || newPersonProblem(np) || (isAccountRole(role) ? null : 'Pick member or admin')
+  const bad = newHomeProblem(unit, 'Only an admin can add a person') || requestNotHis(requestByName(name)) || nameProblem(name) || newPersonProblem(np) || (isAccountRole(role) ? null : 'Pick member or admin')
     || (postIn !== undefined ? postInProblem(postIn) : null)
   if (bad) return bad
   return saidOf(commitPeopleSettingsIntent('account.addNew', null, txn => {
@@ -1098,18 +1144,20 @@ export function addPersonAndAccount(nameIn: any, np: NewPerson, role: AccountRol
 }
 /* approving with New person: the person from what he gave, with the admin's corrections,
    his account, and the request answered — one command */
-export function approveRequestNew(reqId: string, np: NewPerson, role: AccountRole, postIn?: string, unit?: string): string | null {
+/* the new man is the squadron's he asked to join (§5 — `putNewHome(pid, rq.unit)`), his first stint in its war */
+export function approveRequestNew(reqId: string, np: NewPerson, role: AccountRole, postIn?: string): string | null {
   if (!mayManageAccounts() || !mayManageRoster()) return 'Only an admin can approve a request'
-  const notHis = newHomeProblem(unit, 'Only an admin can approve a request')
-  if (notHis) return notHis
   const rq = ACCESS_REQS.find(r => r.id === reqId)
   if (!rq) return 'That request is gone'
+  const notHis = requestNotHis(rq)
+  if (notHis) return notHis
+  const unit = rq.unit
   const bad = nameProblem(rq.name) || newPersonProblem(np) || (isAccountRole(role) ? null : 'Pick member or admin')
     || (postIn !== undefined ? postInProblem(postIn) : null)
   if (bad) return bad
   return saidOf(commitPeopleSettingsIntent('access.approveNew', null, txn => {
     const pid = putNewPerson(np)
-    putNewHome(pid, me(), unit)   // his home unit, before the war's post-in (Astra 4) — the approving admin's own by default (D2094); the named one wins (§4 item 7)
+    putNewHome(pid, me(), unit)   // his home unit, before the war's post-in (Astra 4) — the squadron he asked to join (§5)
     if (postIn !== undefined) HOOKS.warPostIn(txn, pid, postIn)
     writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name: rq.name, role, pid, on: true, ...newAccountStamp() }])
     writeReqs(ACCESS_REQS.filter(r => r.id !== reqId))
@@ -1128,19 +1176,25 @@ export function currentAdminAccountId(): string | null {
 }
 export function unseenRequests(): AccessRequest[] {
   const id = currentAdminAccountId()
-  return id ? ACCESS_REQS.filter(r => !r.seenBy.includes(id)) : []
+  return id ? requestsFor(accountById(id)).filter(r => !r.seenBy.includes(id)) : []
 }
 /* what lights the bell for access: an admin with a request he has not had on screen */
 export const accessAlert = (): boolean => unseenRequests().length > 0
 /* the waiting list was on screen for this admin (Admin → Users — on a phone, drilled in):
    ONE command marking every waiting request seen by him; nothing when nothing is new */
-export function markRequestsSeen(): string | null {
+/* (since §5 — R-O9, R-A8: the requests SHOWN, the page's squadron's Waiting list, merged with the ones he had already
+   seen that still wait — never the whole list, so opening 142's leaves 149's new) */
+export function markRequestsSeen(shownIds?: string[]): string | null {
   const id = currentAdminAccountId()
-  if (!id || !unseenRequests().length) return null
+  if (!id) return null
+  const shown = new Set(shownIds ?? waitingHere().map(r => r.id))
+  const fresh = unseenRequests().filter(r => shown.has(r.id))
+  if (!fresh.length) return null
   /* his OWN row only — the requests waiting now (one he saw that has since gone is no longer kept) */
-  const seen = ACCESS_REQS.map(r => r.id)
+  const seen = ACCESS_REQS.filter(r => r.seenBy.includes(id) || shown.has(r.id)).map(r => r.id)
+  const now = new Set(seen)
   return commitIntent('access.seen', { owner: me() }, () => {
     store.set(REQSEEN_PFX + id, { userId: id, seenRequestIds: seen })
-    ACCESS_REQS = ACCESS_REQS.map(r => r.seenBy.includes(id) ? r : { ...r, seenBy: [...r.seenBy, id] })
+    ACCESS_REQS = ACCESS_REQS.map(r => r.seenBy.includes(id) || !now.has(r.id) ? r : { ...r, seenBy: [...r.seenBy, id] })
   })
 }

@@ -77,6 +77,7 @@ const INVENTORY: Record<string, { n: Partial<Record<keyof typeof Q, number>>; ki
   'ui/sansadd.ts': { n: { isAdmin: 1 }, kind: ['role'], why: 'who may add on the SANS calendar — his own squadron\'s page; the role answers it' },
   /* ---- named: a squadron of its own ---- */
   'state/cutoff.ts': { n: { adminOfUnit: 1 }, kind: ['named'], why: 'the late cut-off of the squadron named' },
+  'state/roster-add.ts': { n: { adminOfUnit: 1 }, kind: ['named'], why: 'the Home squadron Add a person names: an admin of THAT squadron (batch 1\'s second half §4 item 7)' },
   'state/plan.ts': { n: { adminOfUnit: 1, mayWriteCal: 9 }, kind: ['named'], why: 'the planning calendar\'s verbs write the calendar lent to them (ui/owncal.ts), else the loaded one: an admin of THAT squadron' },
   'ui/DaysWindow.tsx': { n: { adminOfUnit: 1 }, kind: ['named'], why: 'the Calendar window edits the squadron it opened on' },
   'ui/InputsSettings.tsx': { n: { adminOfUnit: 1 }, kind: ['named'], why: 'the Inputs settings window edits the squadron it opened on' },
