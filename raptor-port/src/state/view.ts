@@ -309,7 +309,21 @@ export function weekLeftDay(el:any):any{
   const n=+best.dataset.day
   return Number.isFinite(n)?n:null
 }
-/* the write half — put day `di` at the week's left edge. Deliberately the
+/* WHERE A DAY BROUGHT TO THE FRONT RESTS, measured from the week's own left edge (his D2295, 22 Nov 26 —
+   [SCHED-OPEN-20-OFF]). On a desktop the strip does not snap and a day arrow lands whole days from the strip's start
+   (ui/pan.ts panDays), which leaves the front day the strip's own left padding in — 20px, clear of the left arrow's
+   tab. Every other way the app brings a named day to the front used to park it ON the week's left edge instead: Edit
+   Schedule, opened from View-only Sched, showed Monday hard against the window with the arrow over its blue bar, and
+   the same day sat 20px further in after any arrow press. One reading for all of them, so a day has one place. A
+   phone is untouched: there a day rests flush, on its snap point (.day{scroll-snap-align:start}, no scroll-padding),
+   which is also where a swipe leaves it — so 0. The 820 is the stylesheet's own phone/desktop line (pan.ts reads the
+   same). No layout to read (jsdom's stand-in weeks, the headless state tests) is 0 too — the old behaviour. */
+export function weekFrontInset(el:any):number{
+  if(!el||el.nodeType!==1||typeof window==='undefined'||!(window.innerWidth>820)||typeof getComputedStyle!=='function')return 0
+  return parseFloat(getComputedStyle(el).paddingLeft)||0
+}
+/* the write half — put day `di` at the week's front: its left edge on a phone, the strip's margin in on a desktop
+   (weekFrontInset above). Deliberately the
    mirror of weekLeftDay, so a read on one page and a write on the other land
    where they started. `+=` on the measured gap rather than an absolute
    offsetLeft: the week has padding and the day boxes are not its offset
@@ -318,7 +332,7 @@ export function scrollWeekToDay(el:any,di:any){
   if(!el||di==null||typeof el.querySelector!=='function')return
   const d=el.querySelector(`.day[data-day="${di}"]`)
   if(!d||typeof d.getBoundingClientRect!=='function')return
-  el.scrollLeft+=d.getBoundingClientRect().left-el.getBoundingClientRect().left
+  el.scrollLeft+=d.getBoundingClientRect().left-el.getBoundingClientRect().left-weekFrontInset(el)
 }
 /* the PEEKLAND write half — park live day `di` at viewport x `x` (not the
    week's own left edge, which is what scrollWeekToDay always targets). Same

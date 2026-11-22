@@ -2899,12 +2899,12 @@ window's edge with the tab floating over them; only after the week's last day a 
 Sunday's right edge. **His question, a requirement:** the left and right arrows still step one day at a time, each day
 landing at the left edge as today — written as a test. **How:** drawn first, before and after, at his PC's 125% and on a
 phone (D1625); built by Fable (D2269), walked by Opus (D2256); the bug-check order's sizing; his look; "merge live".
-**Place:** a chat of its own, from `main`. **22 Nov 26, chat 135:** drawn and sent to him, nothing built until his yes —
+**Place:** a chat of its own, from `main`. **22 Nov 26, chat 135:** drawn, approved (D2293) and BUILT, its walk and reads to come —
 `raptor-port/docs/mock/2026-11-22-sched-right-edge/` (page, script, pictures, measures); branch `claude/sched-right-edge-135`.
 
 ### [SCHED-OPEN-20-OFF] A schedule page opens its first day 20px off the arrows' place (found 22 Nov 26, chat 135)
 **What:** on a desktop, a switch between View-only Sched and Edit Schedule parks the front day's left edge on the window's
 edge (`raptor-port/src/state/view.ts` `scrollWeekToDay`), where an arrow press lands a day 20px in (`ui/pan.ts` `panDays`):
 Edit Schedule opens with Monday under the left arrow's tab. Older code; a phone is right as it is. **Proof:** that job's
-drawing folder — `summary.mjs`, pictures `pc-today-L1-…`, `-L2-…`. **How:** put to him as that page's question 2,
-recommended: on his yes fixed there, a failing test first; on his no, a known oddity. **Place:** with the right-edge job.
+drawing folder — `summary.mjs`, pictures `pc-today-L1-…`, `-L2-…`. **How:** his yes to that page's question 2 (D2295,
+narrowing D275): BUILT 22 Nov 26 there, each landing a failing test first; walk and reads to come. **Place:** that job.
