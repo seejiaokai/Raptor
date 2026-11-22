@@ -9,7 +9,7 @@ import { act, cleanup, fireEvent, render } from '@testing-library/react'
 import { useMsqWorld, signInAs, ACCT } from '../test-support/msq-world'
 import { addUnit, placeOfOn, todayIso, units, unitsLoad } from '../state/units'
 import { saveAccess } from '../state/accounts'
-import { setPage } from '../state/view'
+import { setPage, CURPAGE } from '../state/view'
 import { notify } from '../state/store'
 import { globalUndo, globalRedo } from '../undo/timeline'
 import { AdminPage } from './AdminPage'
@@ -49,5 +49,29 @@ describe('an Undo or Redo of "+ New squadron" on Admin → Squadrons stays on Sq
     await act(async () => { expect(saveAccess(ACCT.hunter, { grants: { u149: 'view' } })).toBeNull(); notify() })
     await act(async () => { expect(globalUndo().ok).toBe(true); notify() })
     expect(a.on()).toBe('admUsers')
+  })
+  /* the fix read's A3 (docs/superpowers/briefs/2026-11-23-msq-b1-fixread-astra.md finding 3): kept only where the change is
+     in view (D672) — pressed on another Admin panel, the Undo or Redo of "+ New squadron" shows Squadrons */
+  it('pressed from Admin → Data: the Undo shows Squadrons, and so does the Redo pressed from Data again (A3)', async () => {
+    signInAs('saber')
+    const a = adminOn(/Squadrons/)
+    await act(async () => { expect(addUnit('150', placeOfOn('u142', todayIso())!.id, ACCT.hunter)).toMatchObject({ ok: true }); notify() })
+    const toData = () => { const d = [...a.c.querySelectorAll('button.adm-cat')].find(b => /^Data/.test(b.textContent || '')) as HTMLElement; act(() => { fireEvent.click(d) }) }
+    toData()
+    expect(a.on()).toBe('admData')
+    await act(async () => { expect(globalUndo().ok).toBe(true); notify() })
+    expect(a.on(), 'after the Undo').toBe('admSquadrons')
+    toData()
+    await act(async () => { expect(globalRedo().ok).toBe(true); notify() })
+    expect(a.on(), 'after the Redo').toBe('admSquadrons')
+  })
+  it('pressed from another page: the Undo lands on Admin → Squadrons (A3)', async () => {
+    signInAs('saber')
+    await act(async () => { expect(addUnit('150', placeOfOn('u142', todayIso())!.id, ACCT.hunter)).toMatchObject({ ok: true }); notify() })
+    act(() => { setPage('viewsched'); notify() })
+    await act(async () => { expect(globalUndo().ok).toBe(true); notify() })
+    expect(CURPAGE).toBe('admin')
+    const page = render(<AdminPage />)
+    expect((page.container.querySelector('section.adm-panel.on') as HTMLElement | null)?.id).toBe('admSquadrons')
   })
 })

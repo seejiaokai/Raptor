@@ -520,9 +520,12 @@ export function clearBack(pid: string) { BACKPROMPT = BACKPROMPT.filter(x => x !
 export let QUALSFOCUS: string | null = null
 export function focusQualsRow(pid: string | null) { QUALSFOCUS = pid }
 /* `person` — a man whose row should be brought into view and ringed (a bell's posting line, [POSTOUT-RUN-NOTICE]) */
-export let ADMINOPEN: { seq: number; newPerson: boolean; person?: string } | null = null
+/* `cat` — another Admin panel than Users to open (the Squadrons panel, where an Undo of "+ New squadron" shows — the fix
+   read's A3, D672) */
+export let ADMINOPEN: { seq: number; newPerson: boolean; person?: string; cat?: 'squadrons' } | null = null
 let adminOpenSeq = 0
 export function requestAdminUsers(newPerson: boolean, person?: string) { ADMINOPEN = { seq: ++adminOpenSeq, newPerson: !!newPerson, ...(person ? { person } : {}) } }
+export function requestAdminSquadrons() { ADMINOPEN = { seq: ++adminOpenSeq, newPerson: false, cat: 'squadrons' } }
 export function clearAdminOpen() { ADMINOPEN = null }
 export let AVAILWIN: AvailWin | null = null
 /* EVERY OPEN AND EVERY CLOSE GOES THROUGH HERE, so this is where a window

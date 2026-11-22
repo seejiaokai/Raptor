@@ -240,7 +240,7 @@ export function AdminPage() {
   useVersion()
   /* which category the pane shows; `drilled` only matters on a phone, where the
      rail and pane share the screen — it flips from the list to the detail */
-  const [cat, setCat] = useState('users')
+  const [cat, setCat] = useState<string>(() => ADMINOPEN?.cat ?? 'users')
   /* arriving by the bell or Quals' "+ Add person" opens Users straight away — on a phone
      drilled in, never the category list first ([ACCOUNTS-NEW-PERSON]) */
   const [drilled, setDrilled] = useState(() => !!ADMINOPEN)
@@ -257,7 +257,8 @@ export function AdminPage() {
   useEffect(() => {
     const it = ADMINOPEN
     if (!it) return
-    setCat('users'); setDrilled(true)
+    /* (Users, or the panel the intent names — Squadrons for an Undo of "+ New squadron", the fix read's A3) */
+    setCat(it.cat ?? 'users'); setDrilled(true)
     setOpenNew(it.newPerson ? it.seq : 0)
     const seq = it.seq, person = it.person
     setRing(person ? { seq, pid: person, on: true } : null)

@@ -38,7 +38,7 @@ import { todayIso } from './units'
 import { schedStore, schedPostRestore } from './sched-commit'
 import { weekstashStore, loadWeek } from './store'
 import { HIST } from './history'
-import { armDrop, prunePreviews, SBDAY, CURPAGE, setPage, setBoardDay, focusQualsRow, requestAdminUsers, setSecDefOffer, setInpView, setInpMode, setCalMonth, INPVIEW, CALMONTH, clearInpReveal, requestInpReveal, requestPlanReveal } from './view'
+import { armDrop, prunePreviews, SBDAY, CURPAGE, setPage, setBoardDay, focusQualsRow, requestAdminUsers, requestAdminSquadrons, setSecDefOffer, setInpView, setInpMode, setCalMonth, INPVIEW, CALMONTH, clearInpReveal, requestInpReveal, requestPlanReveal } from './view'
 import { canEditSched, SESSION } from './auth'
 import { bringDayIntoView } from '../ui/highlights'
 import { boardTab } from '../ui/board'
@@ -221,11 +221,12 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
        draws them; until then Admin → Users, where every account change already lands) */
     if (ids.some(k => k.startsWith('account:') || k.startsWith('accessreq:') || UNIT_ROW_PREFIXES.some(p => k.startsWith(p)))) {
       primary = 'admin'
-      /* A STEP OF SQUADRONS AND PLACES IS THE SQUADRONS PANEL'S (the second half's walk, F3, 23 Nov 26): "+ New squadron"
-         or a squadron's place undone or redone on the Admin page leaves it on the panel he is on — asking for Users here
-         put the squadron's going out of sight. Every other step of these rows still opens Users, where it shows. */
+      /* A STEP OF SQUADRONS AND PLACES IS THE SQUADRONS PANEL'S (the second half's walk, F3; the fix read's A3, D672):
+         "+ New squadron" or a squadron's place undone or redone lands on Admin → Squadrons, where it shows — from another
+         page, and from another Admin panel; pressed on Squadrons it stays there (the panel is already the one asked for).
+         Asking for Users here put the squadron's going out of sight. Every other step of these rows opens Users. */
       const squadrons = ids.some(k => k.startsWith(UNIT_PFX) || k.startsWith(PLACE_PFX) || k.startsWith(UNITPLACE_PFX))
-      if (!(squadrons && CURPAGE === 'admin')) then = () => requestAdminUsers(false)
+      then = squadrons ? () => requestAdminSquadrons() : () => requestAdminUsers(false)
     }
     else if (ids.includes('rules') || ids.includes('insights')) {
       primary = 'logic'
