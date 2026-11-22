@@ -1,0 +1,314 @@
+{
+ "state": "trk-phone",
+ "drawing": {
+  "script": "docs/mock/2026-11-20-multi-sqn-reshape/draw.mjs",
+  "shot": "q7c-p"
+ },
+ "recorded": "2026-11-21T10:09:03.585Z",
+ "drawnOn": "19608876a (chat 125)",
+ "checkout": "",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 3,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "tools": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 0,
+    "y": 118.5,
+    "w": 402,
+    "h": 203.7
+   },
+   "ink": {
+    "x": 23.3,
+    "y": 131.5,
+    "w": 347.5,
+    "h": 182.8
+   },
+   "text": "Move Select Connect Delete + Flight + Acad + Test + Sim + CFT/IAT/EPT Text Line Edit lines Arrow Merge Unmerge Select all Font Fit Reset layout Edit events Double-click any pokéball on the chart to edit that event directly.",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "center",
+    "font": "400 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.arrtools.on"
+  },
+  "band": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 0,
+    "y": 322.2,
+    "w": 402,
+    "h": 53.3
+   },
+   "ink": {
+    "x": 14,
+    "y": 331.2,
+    "w": 364,
+    "h": 36.1
+   },
+   "text": "You are 149's from today. This can't be saved in 142's Tracker. Close",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(11, 13, 16)",
+    "image": "linear-gradient(90deg, rgba(229, 194, 74, 0.2), rgba(229, 194, 74, 0.06) 55%, rgba(229, 194, 74, 0.03)), none",
+    "edge": [
+     "1px solid rgba(229, 194, 74, 0.5)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "space-between",
+    "font": "600 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.saveband.mkq.mkq-in"
+  },
+  "sign": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 14,
+    "y": 331.2,
+    "w": 16,
+    "h": 16
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.6 15 14H1z' fill",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "500 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.sv-sign"
+  },
+  "lead": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 39,
+    "y": 330.2,
+    "w": 147.5,
+    "h": 18.1
+   },
+   "ink": {
+    "x": 39,
+    "y": 331.2,
+    "w": 147.5,
+    "h": 16
+   },
+   "text": "You are 149's from today.",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(242, 212, 107)",
+     "0px none rgb(242, 212, 107)",
+     "0px none rgb(242, 212, 107)",
+     "0px none rgb(242, 212, 107)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(242, 212, 107)",
+    "align": "start",
+    "justify": "normal",
+    "font": "700 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "b"
+  },
+  "rest": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 14,
+    "y": 350.3,
+    "w": 194.7,
+    "h": 18.1
+   },
+   "ink": {
+    "x": 14,
+    "y": 351.4,
+    "w": 194.7,
+    "h": 16
+   },
+   "text": "This can't be saved in 142's Tracker.",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "500 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.sv-rest"
+  },
+  "close": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 336,
+    "y": 335.3,
+    "w": 52,
+    "h": 28
+   },
+   "ink": {
+    "x": 346,
+    "y": 342.3,
+    "w": 32,
+    "h": 14
+   },
+   "text": "Close",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "button"
+  },
+  "hint": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 0,
+    "y": 383.4,
+    "w": 402,
+    "h": 26.4
+   },
+   "ink": {
+    "x": 25.1,
+    "y": 388.1,
+    "w": 351.8,
+    "h": 16
+   },
+   "text": "Move: drag a ball (snap-aligns to others). Drag empty space to pan.",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "linear-gradient(rgba(59, 198, 232, 0.16), rgba(59, 198, 232, 0.16))",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgb(59, 198, 232)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 12px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.arrhint.on"
+  }
+ },
+ "approved": {
+  "picture": "q7c-p.png",
+  "identical": true
+ }
+}

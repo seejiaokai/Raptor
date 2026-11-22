@@ -1,0 +1,20 @@
+msq-j2-w2-f3 v1
+ad2 approvals buttons 0
+ROW OWED | W2-F ad2 | desktop | Approvals round trip | saw: script error locator.click: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: /Approvals/ }).first()[22m
+
+ad9 approvals buttons 0
+ROW OWED | W2-F ad9 | desktop | Approvals round trip | saw: script error locator.click: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: /Approvals/ }).first()[22m
+
+errors []
+DONE 0 PASS 0 FAIL 2 OTHER of 2
+msq-j2-w2-f3 v2
+ad2 approvals buttons 1
+ROW PASS | W2-F ad2 | desktop | ad2: Leave War → Approvals → back to Grid | saw: Approvals page words: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Hunter · Admin Grid Approvals 13 Balances OIL View My leave LVE 20.5 · OIL 2.5 · 0 pending › Approvals 11 pending + 2 pending in JAN - DEC 27 › New 0 Da ; grid cells after: 17885
+ad9 approvals buttons 1
+ROW PASS | W2-F ad9 | desktop | ad9: Leave War → Approvals → back to Grid | saw: Approvals page words: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Kestrel · Admin Grid Approvals Balances OIL View My leave LVE 0 · OIL 0 · 0 pending › Approvals 0 pending New 0 Dates All Jan Feb Mar Apr May Jun Jul Au ; grid cells after: 3650
+errors []
+DONE 2 PASS 0 FAIL 0 OTHER of 2

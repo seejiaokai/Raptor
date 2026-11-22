@@ -24,9 +24,13 @@
    an unstarted shared store then refuses to start (fail closed), and says so. */
 import type { NewPerson } from './state/roster-add'
 
+/* THE FIRST UNIT (multi-squadron batch 1, step 1): the squadron the first admin is made in, its place and the place's
+   time zone. Optional — left out, it is 142 at Home base on Perth time, the squadron this build has always been for (its
+   storage keys say so); a value given and wrong refuses the boot (src/boot.ts). */
+export type BootstrapUnit = { num?: string; place?: string; tz?: string }
 export type BootstrapAdmin =
-  | { principal: string; person: NewPerson }
-  | { principal: string; personId: string }
+  | { principal: string; person: NewPerson; unit?: BootstrapUnit }
+  | { principal: string; personId: string; unit?: BootstrapUnit }
 export type BootPolicy = {
   seedDemo: boolean
   /* null — none configured; 'invalid' — configured, but not readable as one of the two forms */
@@ -47,10 +51,19 @@ export function readBootstrap(raw: unknown): BootstrapAdmin | 'invalid' | null {
   const o = v as Record<string, unknown>
   if (!str(o.principal)) return 'invalid'
   const principal = o.principal.trim()
-  if (str(o.personId) && o.person == null) return { principal, personId: o.personId.trim() }
+  /* the first unit, when given: an object of strings, or the whole setting is invalid (never half-read) */
+  let unit: BootstrapUnit | undefined
+  if (o.unit != null) {
+    if (typeof o.unit !== 'object' || Array.isArray(o.unit)) return 'invalid'
+    const u = o.unit as Record<string, unknown>
+    for (const k of ['num', 'place', 'tz']) if (u[k] != null && typeof u[k] !== 'string') return 'invalid'
+    unit = { ...(u.num != null ? { num: String(u.num).trim() } : {}), ...(u.place != null ? { place: String(u.place).trim() } : {}), ...(u.tz != null ? { tz: String(u.tz).trim() } : {}) }
+  }
+  const withUnit = unit ? { unit } : {}
+  if (str(o.personId) && o.person == null) return { principal, personId: o.personId.trim(), ...withUnit }
   if (o.person && typeof o.person === 'object' && !Array.isArray(o.person) && o.personId == null) {
     const p = o.person as Record<string, unknown>
-    return { principal, person: { cs: String(p.cs ?? ''), ini: String(p.ini ?? ''), seat: String(p.seat ?? ''), cat: String(p.cat ?? '') } }
+    return { principal, person: { cs: String(p.cs ?? ''), ini: String(p.ini ?? ''), seat: String(p.seat ?? ''), cat: String(p.cat ?? '') }, ...withUnit }
   }
   return 'invalid'
 }

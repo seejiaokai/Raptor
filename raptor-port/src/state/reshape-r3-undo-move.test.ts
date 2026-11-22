@@ -1,0 +1,78 @@
+// @vitest-environment jsdom
+/* REPRO R3 — a plain admin's Undo of his own move that dropped a third-squadron right is refused (security S17-2,
+   astra 3). Correct (D148 — Undo reverses your own change; D2203 — the move's command drops the rights so its Undo puts
+   them back with it): Hunter's Undo restores Ranger's 142 home and his 150 View. RED while the claim holds.
+   Harness: units-sqn-fixread16.test.ts, copied. */
+import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { storeBackend } from '../engine/hooks'
+import { initStore, resetSession, notify } from '../state/store'
+import { signIn, sessionFor, accountsLoad, levelIn } from '../state/accounts'
+import { setSession } from '../state/auth'
+import { installGlobalUndo } from '../state/undo-wire'
+import { _resetTimeline, globalUndo } from '../undo/timeline'
+import { setUnitSeeds, setHome, setGrant, homeOn, unitsLoad, addUnit } from '../state/units'
+import { rosterToday } from '../engine/roster'
+
+const mem: Record<string, string> = {}
+const fake = {
+  getItem: (k: string) => (k in mem ? mem[k]! : null),
+  setItem: (k: string, v: string) => { if (v === 'null') delete mem[k]; else mem[k] = v },
+  keys: () => Object.keys(mem),
+}
+const signInAs = (name: string, pass: string) => { const r = signIn(name, pass); resetSession(sessionFor(r)); notify(); return r }
+
+beforeEach(() => {
+  vi.useFakeTimers({ toFake: ['Date'] })
+  vi.setSystemTime(new Date(2026, 6, 15, 9, 0, 0))
+  Object.keys(mem).forEach(k => delete mem[k])
+  storeBackend.impl = fake
+  setUnitSeeds(true); initStore(); accountsLoad(); resetSession(null); _resetTimeline(); installGlobalUndo()
+})
+afterEach(() => { setSession(null); resetSession(null); _resetTimeline(); vi.useRealTimers() })
+afterAll(() => { storeBackend.impl = null })
+
+const setup = () => {
+  signInAs('ad', 'a')
+  const u150 = addUnit('150', 'p1', 'acad9' /* a bystander first admin — §9.2, Piece C */)
+  expect(u150.ok).toBe(true)
+  expect(setGrant('acus', u150.id!, 'view', 'bane').ok).toBe(true)
+  expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
+  signInAs('ad2', 'a2')
+  unitsLoad()
+  return u150.id!
+}
+
+describe('R3 — Hunter undoes his own move of Ranger', () => {
+  it('the move dropped Ranger\'s 150 View: Undo puts back his 142 home on the 16th and the View', () => {
+    const u150 = setup()
+    expect(setHome('bane', 'u149').ok).toBe(true)
+    unitsLoad()
+    /* (the reshape plan §4.4: the copy names the move day in its two reads of his right — the right now ends when the move
+       counts, not when it is saved, his D2243 (Q4); the assertion words stay) */
+    expect(levelIn('acus', u150, '2026-07-16'), 'the move dropped it').toBeNull()
+    const u = globalUndo() as any
+    unitsLoad()
+    expect(u?.ok, JSON.stringify(u)).toBe(true)
+    expect(homeOn('bane', '2026-07-16')).toBe('u142')
+    expect(levelIn('acus', u150, '2026-07-16')).toBe('view')
+  })
+  it('(control) the same move with no third-squadron right undoes cleanly', () => {
+    signInAs('ad', 'a')
+    expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
+    signInAs('ad2', 'a2')
+    expect(setHome('bane', 'u149').ok).toBe(true)
+    const u = globalUndo() as any
+    unitsLoad()
+    expect(u?.ok, JSON.stringify(u)).toBe(true)
+    expect(homeOn('bane', '2026-07-16')).toBe('u142')
+  })
+  it('(control) the master\'s Undo of the same move restores the View', () => {
+    const u150 = setup()
+    signInAs('ad', 'a')
+    expect(setHome('bane', 'u149').ok).toBe(true)
+    const u = globalUndo() as any
+    unitsLoad()
+    expect(u?.ok, JSON.stringify(u)).toBe(true)
+    expect(levelIn('acus', u150, rosterToday())).toBe('view')
+  })
+})

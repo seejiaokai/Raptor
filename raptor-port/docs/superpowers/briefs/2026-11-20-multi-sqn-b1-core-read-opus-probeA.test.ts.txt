@@ -1,0 +1,53 @@
+// @vitest-environment jsdom
+import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { storeBackend, store } from '../engine/hooks'
+import { initStore, resetSession, notify } from './store'
+import { signIn, sessionFor, accountsLoad } from './accounts'
+import { setSession } from './auth'
+import { installGlobalUndo } from './undo-wire'
+import { _resetTimeline } from '../undo/timeline'
+import { setUnitSeeds, setPlace, moveUnit, placeOfOn, unitRows, todayIso } from './units'
+import { commitSettingsIntent } from './people-settings-commit'
+
+const mem: Record<string, string> = {}
+const fake = {
+  getItem: (k: string) => (k in mem ? mem[k]! : null),
+  setItem: (k: string, v: string) => { if (v === 'null') delete mem[k]; else mem[k] = v },
+  keys: () => Object.keys(mem),
+}
+const signInAs = (name: string, pass: string) => { const r = signIn(name, pass); resetSession(sessionFor(r)); notify(); return r }
+beforeEach(() => {
+  Object.keys(mem).forEach(k => delete mem[k])
+  storeBackend.impl = fake
+  setUnitSeeds(true); initStore(); accountsLoad(); resetSession(null); _resetTimeline(); installGlobalUndo()
+})
+afterEach(() => { setSession(null); resetSession(null); _resetTimeline() })
+afterAll(() => { storeBackend.impl = null })
+
+describe('PROBE A: a unit place row dated in the past', () => {
+  it("142's plain admin rewrites 142's place on a past day (a place keeps its history; a change counts from tomorrow)", () => {
+    signInAs('ad2', 'a2')
+    const p = setPlace({ name: 'Det base', tz: 'Australia/Darwin' })
+    expect(p.ok).toBe(true)
+    const pastDay = '2026-01-05'
+    expect(placeOfOn('u142', pastDay)?.id).toBe('p1')
+    const r = commitSettingsIntent('unit.place', null, () => {
+      store.set('unitplace:upzz', { id: 'upzz', unit: 'u142', place: p.id, from: '2026-01-01' })
+    })
+    console.log('forged back-dated unit.place:', JSON.stringify(r), 'place on', pastDay, '=', placeOfOn('u142', pastDay)?.id)
+    expect(r.ok).toBe(false)
+  })
+  it("…and deletes a place row already in force, erasing a move from history", () => {
+    vi.useFakeTimers({ toFake: ['Date'] }); vi.setSystemTime(new Date(2026, 6, 1, 9, 0, 0))
+    signInAs('ad2', 'a2')
+    const p = setPlace({ name: 'Det base', tz: 'Australia/Darwin' })
+    expect(moveUnit('u142', p.id!).ok).toBe(true)
+    vi.setSystemTime(new Date(2026, 6, 10, 9, 0, 0))
+    expect(placeOfOn('u142', '2026-07-05')?.id).toBe(p.id)
+    const row = unitRows().unitplaces.find(x => x.unit === 'u142' && x.place === p.id)!
+    const r = commitSettingsIntent('unit.place', null, () => { store.set('unitplace:' + row.id, null) })
+    console.log('forged delete of a place row in force since 2 Jul, on 10 Jul:', JSON.stringify(r), 'place on 5 Jul now', placeOfOn('u142', '2026-07-05')?.id)
+    vi.useRealTimers()
+    expect(r.ok).toBe(false)
+  })
+})

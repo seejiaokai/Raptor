@@ -1,0 +1,51 @@
+// @vitest-environment jsdom
+/* C10, second measure: one validate() (runs on every edit) on the loaded week, with 4,000 extra inputs over the year for
+   160 extra people in 4 squadrons, the home look-up ON (as built) vs OFF (setHomeResolver(null): every person the boot
+   unit's, no look-up — the cost before the batch). MEASURED, not red/green. */
+import { afterAll, afterEach, beforeEach, describe, it } from 'vitest'
+import { INPUTS } from '../engine/inputs'
+import { PEOPLE, indexCallsigns } from '../engine/people'
+import { setHomeResolver } from '../engine/roster'
+import { validate } from '../engine/validate'
+import { reconcileDayFiling } from '../engine/slots'
+import { HOME_PFX } from '../state/units-model'
+import { unitsLoad, homeOn } from '../state/units'
+import { before, after, done, at, boot, signInAs, mem } from './harness'
+
+beforeEach(before); afterEach(() => { setHomeResolver((pid, iso) => homeOn(pid, iso)); after() }); afterAll(done)
+
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const lbl = (d: Date) => `${MON[d.getMonth()]} ${d.getDate()}`
+const UNITS = ['u142', 'u149', 'u150', 'u151']
+const time = (n: number, f: () => void) => { f(); const t0 = performance.now(); for (let i = 0; i < n; i++) f(); return (performance.now() - t0) / n }
+
+describe('C10b — validate() at a realistic size', () => {
+  it('MEASURE', () => {
+    at('2026-07-14'); boot(); signInAs('ad', 'a')
+    const tmpl = structuredClone((PEOPLE as any).bane)
+    const pids: string[] = []
+    UNITS.forEach((u, ui) => { for (let i = 0; i < 40; i++) {
+      const pid = `zz${ui}x${i}`; pids.push(pid)
+      ;(PEOPLE as any)[pid] = { ...structuredClone(tmpl), cs: `ZZ${ui}X${i}` }
+      mem[`sqn142_${HOME_PFX}h${pid}`] = JSON.stringify({ id: `h${pid}`, pid, unit: u, from: '2026-01-01' })
+      if (i < 10) mem[`sqn142_${HOME_PFX}h${pid}m`] = JSON.stringify({ id: `h${pid}m`, pid, unit: UNITS[(ui + 1) % 4], from: '2026-07-01' })
+    } })
+    indexCallsigns(); unitsLoad()
+    const base = INPUTS.length
+    const v0on = time(5, () => validate())
+    let k = 0
+    for (const pid of pids) for (let j = 0; j < 25; j++) {
+      const s = new Date(2026, 0, 1 + ((j * 14 + k * 3) % 360)); const e = new Date(s); e.setDate(s.getDate() + (k % 5))
+      INPUTS.push({ iid: `zi${k}`, person: pid, date: lbl(s), endDate: k % 5 ? lbl(e) : undefined, yr: 2026, allday: true, type: 'LL', by: pid, at: 1, ord: 100000 + k } as any)
+      k++
+    }
+    const on = time(5, () => validate())
+    const recOn = time(5, () => { for (let di = 0; di < 7; di++) reconcileDayFiling(di) })
+    setHomeResolver(null)
+    const off = time(5, () => validate())
+    const recOff = time(5, () => { for (let di = 0; di < 7; di++) reconcileDayFiling(di) })
+    console.log(`MEASURE demo inputs (${base}), validate() look-up on: ${v0on.toFixed(1)} ms`)
+    console.log(`MEASURE ${INPUTS.length} inputs, validate() look-up ON (as built): ${on.toFixed(1)} ms; OFF (before the batch): ${off.toFixed(1)} ms`)
+    console.log(`MEASURE ${INPUTS.length} inputs, reconcileDayFiling x7 days ON: ${recOn.toFixed(1)} ms; OFF: ${recOff.toFixed(1)} ms`)
+  })
+})

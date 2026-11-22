@@ -9,6 +9,7 @@ import { sansGate, SANS_LABEL } from './avail'
 import { seedRunIn, datedRestSeed, dayHidesIn, nextMondayWorked, nextMondayDay, nextMondayHides, windowDiverges, windowFiling, windowInputs, filingDivergesAt } from './weekctx'
 import { setWorld, setFiling, clearFiling } from './world'
 import { CURWEEK, isStandalone, saExempt, saAnyFlies } from './waves'
+import { dayIso } from './verid'
 import { DAYS } from './data'
 import { dayOilBlind, blindDesks, fltMeasuresNothing, saZeroSpanWin } from './oil'
 import { oilWouldEarn, oilOldBlockCrowd, oilEvidenceOf } from './oilev'
@@ -2082,11 +2083,11 @@ function hoursEvd(){
 let ISS_DAYS:any=null, ISS_EVD:any=null;
 /* …and its ROSTER (Astra's final read, 1 Oct 26): the aircrew of those same days — each published day the roster its
    current version went out with (publish.ts `snap.ros`, what the day panel's "free all day" counts; a man since deleted
-   outright has nothing to draw and drops, as faceattrs.ts rosterShown), a day not yet published today's — as one list
+   outright has nothing to draw and drops, as faceattrs.ts rosterShown), a day not yet published its own day's (C4) — as one list
    for the week. So a man added or archived since does not move "who is not flying" on a week already published. */
-function issuedRoster(){ const s=new Set<string>(); let now:any=null;
+function issuedRoster(){ const s=new Set<string>();
   DAYS.forEach((_d:any,di:any)=>{ const v=dayApproved(di)?dayCurVer(di):null, sn:any=v!=null?daySnapOf(di,v):null;
-    (sn&&Array.isArray(sn.ros)?sn.ros.filter((id:any)=>!!PEOPLE[id]):(now||(now=rosterIds()))).forEach((id:any)=>s.add(id)); });
+    (sn&&Array.isArray(sn.ros)?sn.ros.filter((id:any)=>!!PEOPLE[id]):rosterIds(dayIso(CURWEEK,di))).forEach((id:any)=>s.add(id)); });
   return [...s]; }
 export function issuedWorld(){ return {days:ISS_DAYS||DAYS, evd:ISS_EVD||EVD, warn:faceWarn(), roster:issuedRoster()}; }
 /* Install EVERY approved day's issued snapshot at once (F-4/CRP-006 — a

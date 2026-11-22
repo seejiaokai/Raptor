@@ -1,0 +1,57 @@
+/* msq-j2-w1-a v1 — W1-A: Archive before 149's war is ever opened, and the twin */
+process.env.MSQ_WHO = 'w1'
+process.env.MSQ_RUN = process.env.MSQ_RUN || 'a1'
+const H = await (await import('./msq-j2-w1-h.mjs')).mk()
+const G = await import('./msq-j2-w1-h3.mjs')
+const { X, U, say, sleep, row } = H
+say('msq-j2-w1-a v1')
+const look = async (w, tag, cs) => {
+  await X.L.go(w.page, 'leavewar'); await sleep(2500)
+  const pid = await U.pidOf(w.page, cs)
+  const r = await G.rowClip(w, X, tag, pid, cs)
+  say(tag, 'SIG', G.sig(r))
+  const win = await G.personWin(w, X, tag, pid)
+  say(tag, 'WIN', win)
+  return { sig: G.sig(r), win, pid }
+}
+/* ---- world 1 */
+const w = await X.open({ user: 'ad' })
+const o = await H.openRow(w, 'Osprey')
+await X.pic(w, 'a-01-osprey-open')
+await w.page.getByRole('button', { name: /^Archive/ }).first().click(); await sleep(900)
+await X.pic(w, 'a-02-users-after-archive')
+const t = await U.bodyText(w.page)
+row('W1-A', 'desktop', 'ad archives Osprey (Admin → Users → his row → Archive)', 'Osprey in the Archived fold', (t.match(/Archived · \d+/) || [''])[0] + ' ; ' + (t.match(/Osprey archived[^.]{0,60}/) || ['(no toast words)'])[0] + ' ; ' + (t.match(/Archived 19 Nov[^.]{0,30}/) || ['no archived-on line'])[0], /Archived 19 Nov/.test(t) ? 'PASS' : 'FAIL', 'a-02-users-after-archive.png')
+await H.swap(w, 'ad9')
+const k1 = await look(w, 'a-03-ad9-first', 'Osprey')
+row('W1-A', 'desktop', "ad9 opens 149's Leave War for the first time, Osprey's row around T=Thu 19 Nov", 'months before T kept, from T shown gone like an archived man', 'row: ' + k1.sig + ' ; person window: ' + k1.win, 'RECORD', 'a-03-ad9-first-row.png / a-03-ad9-first-win.png')
+await w.page.reload(); await sleep(1500); await X.login(w.page, 'ad9')
+const k2 = await look(w, 'a-04-ad9-reload', 'Osprey')
+row('W1-A', 'desktop', 'reload, sign in as ad9 again, same look', 'the same as before', k2.sig === k1.sig ? 'identical row to the first look' : 'DIFFERENT: ' + k2.sig, k2.sig === k1.sig ? 'PASS' : 'FAIL', 'a-04-ad9-reload-row.png')
+await H.swap(w, 'ad')
+await X.L.go(w.page, 'leavewar'); await sleep(2500)
+await X.pic(w, 'a-05-ad-142-leavewar')
+const t142 = await U.bodyText(w.page)
+row('W1-A', 'desktop', "ad opens 142's Leave War", 'opens normally', 'Kestrel on screen: ' + /Kestrel/.test(t142) + ' ; Saber/Ranger on screen: ' + /Ranger/.test(t142) + ' ; first words: ' + t142.slice(0, 120), 'RECORD', 'a-05-ad-142-leavewar.png')
+await X.signOut(w)
+// us9 sign-in attempt
+await w.page.fill('#luser', 'us9'); await w.page.fill('#lpass', 'us9'); await w.page.click('#loginForm button[type=submit]'); await sleep(2500)
+await X.pic(w, 'a-06-us9-signin')
+const tu = await U.bodyText(w.page)
+row('W1-A', 'desktop', 'sign in as us9 (Osprey, archived)', 'RECORD what the sign-in says', tu.slice(0, 400), 'RECORD', 'a-06-us9-signin.png')
+await X.fin(w)
+/* ---- world 2: the twin */
+const w2 = await X.open({ user: 'ad9' })
+await X.L.go(w2.page, 'leavewar'); await sleep(2500)
+const pre = await U.pidOf(w2.page, 'Merlin')
+await X.pic(w2, 'b-01-ad9-lw-first')
+const m = await H.openRow(w2, 'Merlin')
+await X.pic(w2, 'b-02-merlin-open')
+await w2.page.getByRole('button', { name: /^Archive/ }).first().click(); await sleep(900)
+await X.pic(w2, 'b-03-merlin-archived')
+const t2 = await U.bodyText(w2.page)
+say('b merlin users', (t2.match(/Archived 19 Nov[^.]{0,30}/) || ['no archived line'])[0])
+const k3 = await look(w2, 'b-04-merlin', 'Merlin')
+const norm = s => s.replace(/Merlin|Osprey/g, 'X')
+row('W1-A', 'desktop', 'twin: ad9 archives Merlin (after opening 149 war first); his row on the war', "looks like Osprey's did (the same shape at T)", 'Merlin: ' + k3.sig + ' ; Osprey was: ' + k1.sig + ' ; person window Merlin: ' + k3.win + ' ; Osprey: ' + k1.win, k3.sig === k1.sig ? 'PASS' : 'FAIL', 'b-04-merlin-row.png vs a-03-ad9-first-row.png')
+await X.fin(w2)

@@ -1,0 +1,96 @@
+{
+ "q1a-d.png": {
+  "question": "1",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Wed 15 Jul 2026, 10:00. Setup: Hunter's Plan of 149 written as a stored row (no screen gives Plan yet); Saber made Outlaw a 142 admin on Admin → Users. Outlaw, signed in, opens Hunter's row, picks Member, presses Save: refused today, the note reads \"This change could not be saved.\" (1); Hunter stays an admin, his Plan of 149 stands.",
+  "asserted": "{\"stored\":[\"grant:gpa149={\\\"id\\\":\\\"gpa149\\\",\\\"account\\\":\\\"acad2\\\",\\\"unit\\\":\\\"u149\\\",\\\"level\\\":\\\"admin\\\",\\\"from\\\":\\\"2026-01-01\\\"}\"],\"outlawRow\":{\"sub\":\"outlaw · Pilot · CAT C\",\"pill\":\"ADMIN\",\"open\":false,\"edit\":false,\"role\":\"\"},\"before\":{\"sub\":\"ad2 · Pilot · CAT IP\",\"pill\":\"ADMIN\",\"open\":true,\"edit\":true,\"role\":\"admin\"},\"note\":{\"text\":\"This change could not be saved.\",\"op\":\"1\",\"face\":\"\",\"color\":\"var(--adv)\",\"border\":\"var(--adv)\",\"w\":209,\"h\":38},\"after\":{\"sub\":\"ad2 · Pilot · CAT IP\",\"pill\":\"ADMIN\",\"open\":true,\"edit\":true,\"role\":\"main\"},\"hunterAccount\":{\"id\":\"acad2\",\"name\":\"ad2\",\"role\":\"admin\",\"pid\":\"prowler\",\"on\":true},\"grant\":{\"id\":\"gpa149\",\"account\":\"acad2\",\"unit\":\"u149\",\"level\":\"admin\",\"from\":\"2026-01-01\"}}"
+ },
+ "q1b-d.png": {
+  "question": "1",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "drawn",
+  "transform": "the refusal note's words changed (today's \"This change could not be saved.\"), its amber face kept as the app drew it; nothing else",
+  "caption": "Proposed: the same press, the note reading \"Hunter holds Plan of 149. Only a master admin can make him a member.\" (New).",
+  "asserted": "{\"drawn\":{\"w\":429,\"h\":38,\"text\":\"Hunter holds Plan of 149. Only a master admin can make him a member. New\",\"color\":\"var(--adv)\",\"border\":\"var(--adv)\"}}"
+ },
+ "q1-master-d": {
+  "question": "1",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "asserted, no picture",
+  "caption": "Saber (master admin) makes Hunter a member on Admin → Users: allowed, and Hunter's Plan of 149 ends with it.",
+  "asserted": "{\"note\":{\"text\":\"Saved\",\"op\":\"1\",\"face\":\"\",\"color\":\"var(--ink)\",\"border\":\"var(--edge-2)\",\"w\":67,\"h\":38},\"hunterAccount\":{\"id\":\"acad2\",\"name\":\"ad2\",\"role\":\"main\",\"pid\":\"prowler\",\"on\":true},\"grantAfter\":null}"
+ },
+ "q1a-p.png": {
+  "question": "1",
+  "size": "iPhone 402×874 (WebKit, touch, 2x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Wed 15 Jul 2026, 10:00. Setup: Hunter's Plan of 149 written as a stored row (no screen gives Plan yet); Saber made Outlaw a 142 admin on Admin → Users. Outlaw, signed in, opens Hunter's row, picks Member, presses Save: refused today, the note reads \"This change could not be saved.\" (1); Hunter stays an admin, his Plan of 149 stands.",
+  "asserted": "{\"stored\":[\"grant:gpa149={\\\"id\\\":\\\"gpa149\\\",\\\"account\\\":\\\"acad2\\\",\\\"unit\\\":\\\"u149\\\",\\\"level\\\":\\\"admin\\\",\\\"from\\\":\\\"2026-01-01\\\"}\"],\"outlawRow\":{\"sub\":\"outlaw · Admin · Pilot · CAT C\",\"pill\":\"Admin\",\"open\":false,\"edit\":false,\"role\":\"\"},\"before\":{\"sub\":\"ad2 · Admin · Pilot · CAT IP\",\"pill\":\"Admin\",\"open\":true,\"edit\":true,\"role\":\"admin\"},\"note\":{\"text\":\"This change could not be saved.\",\"op\":\"1\",\"face\":\"\",\"color\":\"var(--adv)\",\"border\":\"var(--adv)\",\"w\":378,\"h\":36},\"after\":{\"sub\":\"ad2 · Admin · Pilot · CAT IP\",\"pill\":\"Admin\",\"open\":true,\"edit\":true,\"role\":\"main\"},\"hunterAccount\":{\"id\":\"acad2\",\"name\":\"ad2\",\"role\":\"admin\",\"pid\":\"prowler\",\"on\":true},\"grant\":{\"id\":\"gpa149\",\"account\":\"acad2\",\"unit\":\"u149\",\"level\":\"admin\",\"from\":\"2026-01-01\"}}"
+ },
+ "q1b-p.png": {
+  "question": "1",
+  "size": "iPhone 402×874 (WebKit, touch, 2x)",
+  "kind": "drawn",
+  "transform": "the refusal note's words changed (today's \"This change could not be saved.\"), its amber face kept as the app drew it; nothing else",
+  "caption": "Proposed: the same press, the note reading \"Hunter holds Plan of 149. Only a master admin can make him a member.\" (New).",
+  "asserted": "{\"drawn\":{\"w\":378,\"h\":50,\"text\":\"Hunter holds Plan of 149. Only a master admin can make him a member.New\",\"color\":\"var(--adv)\",\"border\":\"var(--adv)\"}}"
+ },
+ "q1-master-p": {
+  "question": "1",
+  "size": "iPhone 402×874 (WebKit, touch, 2x)",
+  "kind": "asserted, no picture",
+  "caption": "Saber (master admin) makes Hunter a member on Admin → Users: allowed, and Hunter's Plan of 149 ends with it.",
+  "asserted": "{\"note\":{\"text\":\"Saved\",\"op\":\"1\",\"face\":\"\",\"color\":\"var(--ink)\",\"border\":\"var(--edge-2)\",\"w\":378,\"h\":36},\"hunterAccount\":{\"id\":\"acad2\",\"name\":\"ad2\",\"role\":\"main\",\"pid\":\"prowler\",\"on\":true},\"grantAfter\":null}"
+ },
+ "q2a-d.png": {
+  "question": "2",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Tue 17 Nov 2026. Hunter (142's admin) signed in, the Leave War, his own row, Post out: \"Transfer to Sqn\" (2) is greyed — \"Comes with the shared database\" — so no screen moves anyone yet.",
+  "asserted": "{\"head\":\"Hunter Fri 20 Nov\",\"disabled\":true,\"title\":\"Comes with the shared database\",\"chips\":[\"✓ Overseas Sqn\",\"Delete\",\"SANS\",\"Transfer to Sqn\"]}"
+ },
+ "q2b-d.png": {
+  "question": "2",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "drawn",
+  "transform": "round 7's approved transfer sheet (variant F, its TRANSFER transform) on the real Post out sheet, then round 7's D3 refusal line (\"note warn\" above a greyed Post out) with these words",
+  "caption": "Hunter signed in, Hunter's Post out sheet as the approved drawing draws it (Transfer to Sqn → 149, Fri 3 Apr, the figures made up), refused: \"You can't move yourself to another squadron — ask another admin\" (New). Not built.",
+  "asserted": "{\"head\":\"Hunter Fri 20 Nov\",\"transform\":{\"orig\":\"Fri 20 Nov\",\"who\":\"Hunter\"},\"refusal\":{\"op\":\"0.45\",\"color\":\"rgb(242, 200, 121)\"},\"seen\":{\"inView\":true,\"head\":\"Hunter\"}}"
+ },
+ "q2c-d.png": {
+  "question": "2",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "drawn",
+  "transform": "round 7's approved transfer sheet (variant F, its TRANSFER transform) on the real Post out sheet, then round 7's D3 refusal line (\"note warn\" above a greyed Post out) with these words",
+  "caption": "Hunter signed in, Saber's Post out sheet as the approved drawing draws it (Transfer to Sqn → 149, Fri 3 Apr, the figures made up), refused: \"Only a master admin can do that\" (New). Not built.",
+  "asserted": "{\"head\":\"Saber Fri 20 Nov\",\"transform\":{\"orig\":\"Fri 20 Nov\",\"who\":\"Saber\"},\"refusal\":{\"op\":\"0.45\",\"color\":\"rgb(242, 200, 121)\"},\"seen\":{\"inView\":true,\"head\":\"Saber\"}}"
+ },
+ "q2a-p.png": {
+  "question": "2",
+  "size": "iPhone 402×874 (WebKit, touch, 2x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Tue 17 Nov 2026. Hunter (142's admin) signed in, the Leave War, his own row, Post out: \"Transfer to Sqn\" (2) is greyed — \"Comes with the shared database\" — so no screen moves anyone yet.",
+  "asserted": "{\"head\":\"Hunter Fri 20 Nov\",\"disabled\":true,\"title\":\"Comes with the shared database\",\"chips\":[\"✓ Overseas Sqn\",\"Delete\",\"SANS\",\"Transfer to Sqn\"]}"
+ },
+ "q2b-p.png": {
+  "question": "2",
+  "size": "iPhone 402×874 (WebKit, touch, 2x)",
+  "kind": "drawn",
+  "transform": "round 7's approved transfer sheet (variant F, its TRANSFER transform) on the real Post out sheet, then round 7's D3 refusal line (\"note warn\" above a greyed Post out) with these words",
+  "caption": "Hunter signed in, Hunter's Post out sheet as the approved drawing draws it (Transfer to Sqn → 149, Fri 3 Apr, the figures made up), refused: \"You can't move yourself to another squadron — ask another admin\" (New). Not built.",
+  "asserted": "{\"head\":\"Hunter Fri 20 Nov\",\"transform\":{\"orig\":\"Fri 20 Nov\",\"who\":\"Hunter\"},\"refusal\":{\"op\":\"0.45\",\"color\":\"rgb(242, 200, 121)\"},\"seen\":{\"inView\":true,\"head\":\"Hunter\"}}"
+ },
+ "q2c-p.png": {
+  "question": "2",
+  "size": "iPhone 402×874 (WebKit, touch, 2x)",
+  "kind": "drawn",
+  "transform": "round 7's approved transfer sheet (variant F, its TRANSFER transform) on the real Post out sheet, then round 7's D3 refusal line (\"note warn\" above a greyed Post out) with these words",
+  "caption": "Hunter signed in, Saber's Post out sheet as the approved drawing draws it (Transfer to Sqn → 149, Fri 3 Apr, the figures made up), refused: \"Only a master admin can do that\" (New). Not built.",
+  "asserted": "{\"head\":\"Saber Fri 20 Nov\",\"transform\":{\"orig\":\"Fri 20 Nov\",\"who\":\"Saber\"},\"refusal\":{\"op\":\"0.45\",\"color\":\"rgb(242, 200, 121)\"},\"seen\":{\"inView\":true,\"head\":\"Saber\"}}"
+ }
+}

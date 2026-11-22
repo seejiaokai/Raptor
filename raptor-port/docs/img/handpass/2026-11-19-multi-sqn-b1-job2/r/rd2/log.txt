@@ -1,0 +1,16 @@
+msq-j2-r-d v1 E
+pids {"Merlin":"mer9","Osprey":"osp9","Kestrel":"kes9"}
+signed in as ad9
+ROW RECORD | E-setup | desktop | ad9: open November for bidding (so Osprey can bid on Mon 30 Nov) | saw: lines ["1 Jan – 31 Mar past","19 Nov – 30 Nov 12 days"]; chip "Open for bidding 19 Nov – 30 Nov"
+signed in as us9
+us9 sheet Osprey Mon 30 Nov ✕ No manning row turns amber or red till 30 Nov Document Whole day AM PM Pick a range LL −1 OL −1 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD ⋯
+ROW RECORD | E-setup | desktop | us9: Mon 30 Nov bid LL | saw: cell "LL"
+signed in as ad9
+ERR RE-approvals locator.click: Timeout 30000ms exceeded.
+ROW OWED | RE-approvals | desktop | script step | saw: script error locator.click: Timeout 30000ms exceeded.
+card words TALON TRAINING · AVAILABILITY LEAVE & OPS NEXUS USERNAME PASSWORD Sign in build 29JUL·B55
+ask count 0
+ERR RE-access locator.click: Timeout 30000ms exceeded.
+ROW OWED | RE-access | desktop | script step | saw: script error locator.click: Timeout 30000ms exceeded.
+errors []
+DONE 0 PASS 0 FAIL 4 OTHER of 4

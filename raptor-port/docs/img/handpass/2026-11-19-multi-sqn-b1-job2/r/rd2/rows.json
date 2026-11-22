@@ -1,0 +1,38 @@
+[
+ [
+  "E-setup",
+  "desktop",
+  "ad9: open November for bidding (so Osprey can bid on Mon 30 Nov)",
+  "RECORD",
+  "lines [\"1 Jan – 31 Mar past\",\"19 Nov – 30 Nov 12 days\"]; chip \"Open for bidding 19 Nov – 30 Nov\"",
+  "RECORD",
+  "e00-nov-opened.png"
+ ],
+ [
+  "E-setup",
+  "desktop",
+  "us9: Mon 30 Nov bid LL",
+  "a bid shows",
+  "cell \"LL\"",
+  "RECORD",
+  "e03-us9-after.png"
+ ],
+ [
+  "RE-approvals",
+  "desktop",
+  "script step",
+  "completes",
+  "script error locator.click: Timeout 30000ms exceeded.",
+  "OWED",
+  "err-RE-approvals.png"
+ ],
+ [
+  "RE-access",
+  "desktop",
+  "script step",
+  "completes",
+  "script error locator.click: Timeout 30000ms exceeded.",
+  "OWED",
+  "err-RE-access.png"
+ ]
+]

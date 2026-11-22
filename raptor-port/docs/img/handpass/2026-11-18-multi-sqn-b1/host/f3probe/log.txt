@@ -1,0 +1,9 @@
+Ranger pid bane
+after the press: Ranger on the grid true
+notes on screen  ||  ||  ||  ||  ||  ||  || 
+bell ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ▾ SXO · 12 Reaper IR 22 Anvil IP 19 Cinch IP 23.5 Piston IP 0 Ranger IP 12.5 7.5 LL LL LL LL LL LL LL LL LL CCL PL CL PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO Saber IP 17.5 S
+users list ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ▾ SXO · 12 Reaper IR 22 Anvil IP 19 Cinch IP 23.5 Piston IP 0 Ranger IP 12.5 7.5 PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO Saber IP 17.5 Sidewinder IP 12 Warden IP 13 Drifter 
+after reload: Ranger on the grid true
+users list after reload ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ＋ ▾ SXO · 12 Reaper IR 22 Anvil IP 19 Cinch IP 23.5 Piston IP 0 Ranger IP 12.5 7.5 PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO Saber IP 17.5 Sidewinder IP 12 Warden IP 13 Drifter 
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

@@ -31,6 +31,7 @@ import { setAvailWin, OILASK } from './pops'
 import { commitInput, draftOf } from './inputedit'
 import { rowPut } from './reqdoor'
 import { applyDrop, setDrag } from './drag'
+import { settleWorld } from '../test-support/world'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -78,6 +79,9 @@ beforeEach(async () => {
   HOOKS.oilDayISO = (di: number) => (di === SAT ? SAT_ISO : di === TUE ? TUE_ISO : '2026-07-15')
   HOOKS.oilSentinel = () => CROWD.slice()
   SAID = []; HOOKS.toast = (m: any) => { SAID.push(String(m)) }
+  /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read) */
+  settleWorld()
 })
 afterEach(async () => {
   HOOKS.toast = toast

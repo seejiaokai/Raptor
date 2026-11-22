@@ -1,0 +1,26 @@
+// @vitest-environment jsdom
+/* C2 (Opus F2): a man's own input dated after his saved move disappears from his own Inputs page. Correct: his own
+   inputs are filed in his primary and are his (D1695, D2197; §11 "a member's own input is his"), so his own page lists
+   what he has just filed. */
+import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { INPUTS, inputsFor } from '../engine/inputs'
+import { writeInputsBatch } from '../state/store'
+import { setHome } from '../state/units'
+import { myUnit } from '../state/perms'
+import { before, after, done, at, boot, signInAs } from './harness'
+
+beforeEach(before); afterEach(after); afterAll(done)
+
+describe('C2 — his own input after his move', () => {
+  it('is on his own Inputs page the moment he files it', () => {
+    at('2026-07-14'); boot()
+    signInAs('ad', 'a')
+    expect(setHome('bane', 'u149').ok).toBe(true)          // 149's from 15 Jul
+    signInAs('us', 'us')                                      // bane himself
+    expect(myUnit()).toBe('u142')
+    const ok = writeInputsBatch(() => { INPUTS.push({ person: 'bane', date: 'Jul 20', endDate: 'Jul 21', yr: 2026, allday: true, type: 'LL', remarks: 'mine', by: 'bane', at: Date.now(), iid: 'c02', ord: 99902 } as any) })
+    expect(ok, 'the gate lets him file it').toBeTruthy()
+    expect(INPUTS.some((r: any) => r.iid === 'c02')).toBe(true)
+    expect(inputsFor(myUnit()).some((r: any) => r.iid === 'c02'), 'his own Inputs page lists it').toBe(true)
+  })
+})

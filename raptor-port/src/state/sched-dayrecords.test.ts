@@ -11,6 +11,7 @@ import { INPUTS } from '../engine/inputs'
 import { SCHED, signOf, dayCurVer, dayApproved } from '../engine/publish'
 import { txtGet, txtSet } from '../engine/slots'
 import { CURWEEK } from '../engine/waves'
+import { inView } from '../engine/unitview'
 import { initStore, writeText, loadWeek } from './store'
 import {
   commitSetDayApproved, commitPublishALDay, commitUnpublish, schedStore, schedWrite, schedWriteValue, SCHED_TYPES,
@@ -59,7 +60,8 @@ beforeEach(() => {
 afterEach(() => { unsub(); _resetTimeline() })
 
 const last = () => caught[caught.length - 1]
-const wk = () => CURWEEK
+/* the records name the week WITH its unit (multi-squadron batch 1, step 2): `u142@13/07/2026#0` */
+const wk = () => inView(CURWEEK)
 
 describe('the records one command changes', () => {
   it('a Monday edit changes Monday alone — its day and its book slice, nothing of Tuesday, not the week', () => {
@@ -225,7 +227,7 @@ describe('completeness — the stream rebuilds the week (§7 / R4-004)', () => {
       const k = `${c.collection}/${c.id}`
       if (c.op === 'delete') base.delete(k); else base.set(k, c.after)
     }
-    const w = CURWEEK
+    const w = inView(CURWEEK)
     const days = [0, 1, 2, 3, 4, 5, 6].map(di => ({ d: base.get(`days/${w}#${di}`), book: base.get(`sched.book/${w}#${di}`), wo: base.get(`sched.mutes/${w}#${di}`) }))
     const is: Array<[string, any]> = [], rx: Array<[string, any]> = []
     for (const [k, v] of base) {

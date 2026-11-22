@@ -2,6 +2,7 @@
    DS/RED prose is a reason to ask, never an interpretation of which unit supports whom. */
 import { dayIso } from './verid'
 import { isStandalone } from './waves'
+import { localOf } from '../storage/unitid'
 export type MissionSide = 'blue' | 'red'
 export type MissionSource = { msn?: unknown; aircraft?: Array<{ rmks?: unknown }> }
 export type RoleIdentity = { weekKey: string; dayISO: string; formationRid: string; context: string }
@@ -66,13 +67,18 @@ export function encodeRoleId(v: RoleIdentity): string {
   if (!validIdentity(v)) throw new Error('Invalid mission-role identity')
   return encodeURIComponent(JSON.stringify([1, v.weekKey, v.dayISO, v.formationRid, v.context]))
 }
+/* AN ANSWER'S CHANGE ID CARRIES ITS SQUADRON (the reshape plan §7, K4 + B5): `<unit>@<encoded id>` in the change stream
+   (state/mission-roles.ts roleStore), so the commit gate's section 7 sees whose answer it is and Undo filters the step
+   by it. The encoded id never holds an `@` (encodeURIComponent writes it %40), so the squadron is split off here, and
+   every reader of an id — the store, the change history, Undo — decodes either form. */
 export function decodeRoleId(id: unknown): RoleIdentity | null {
   if (typeof id !== 'string') return null
+  const local = localOf(id)
   try {
-    const t = JSON.parse(decodeURIComponent(id))
+    const t = JSON.parse(decodeURIComponent(local))
     if (!Array.isArray(t) || t.length !== 5 || t[0] !== 1) return null
     const v = { weekKey: t[1], dayISO: t[2], formationRid: t[3], context: t[4] }
-    return validIdentity(v) && encodeRoleId(v) === id ? v : null
+    return validIdentity(v) && encodeRoleId(v) === local ? v : null
   } catch { return null }
 }
 export function validRoleAnswer(id: unknown, answer: unknown): answer is RoleAnswer {

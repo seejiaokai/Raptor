@@ -1,0 +1,33 @@
+#!/bin/bash
+# Fix read 15: one exported copy of the branch head per reader (no pictures), the fixes' diff and log, the branch's
+# HANDOFF block blanked, a node_modules junction to the main folder's. Usage: mkcopies15.sh <head>
+set -e
+HEAD="$1"
+BASE=d18b72d80
+SRC=/c/Users/User/projects/Raptor-msq
+OUT=/c/Users/User/AppData/Local/Temp/claude/37df10f156419f1e/ca38a290-f0cf-4a47-a2ea-3f72fa4cd01a/scratchpad/fr15
+mkdir -p "$OUT"
+for r in astra opus fable security; do
+  D="$OUT/$r"
+  rm -rf "$D"; mkdir -p "$D"
+  git -C "$SRC" archive "$HEAD" -- . ':(exclude)raptor-port/docs/img' ':(exclude)raptor-port/docs/handpass/**/*.png' ':(exclude)*.png' ':(exclude)*.jpg' | tar -x -C "$D"
+  git -C "$SRC" diff "$BASE" "$HEAD" -- raptor-port/src > "$D/FIXES.patch"
+  git -C "$SRC" log --reverse --format='==== %h %s%n%n%b' "$BASE..$HEAD" -- raptor-port/src > "$D/FIXES-LOG.txt"
+  node "$OUT/../blank-block.mjs" "$D/HANDOFF.md"
+  sed "s/@@HEAD@@/$HEAD/g" "$D/raptor-port/docs/superpowers/briefs/2026-11-20-multi-sqn-b1-fixread15-brief.md" > "$D/BRIEF.md"
+  WIN=$(cygpath -w "$D/raptor-port/node_modules")
+  NM=$(cygpath -w /c/Users/User/projects/Raptor/raptor-port/node_modules)
+  MSYS_NO_PATHCONV=1 cmd /c mklink /J "$WIN" "$NM" > /dev/null
+  echo "$r ready: $D ($(du -sh --exclude=node_modules "$D" | cut -f1))"
+done
+# --- blank-block.mjs (the helper it runs; put it beside the scratch folder) ---
+# // Blank the claude/multi-sqn-b1-107 block of a HANDOFF.md copy, keeping its markers.
+# import fs from 'fs'
+# const p = process.argv[2]
+# const s = fs.readFileSync(p, 'utf8')
+# const open = '<!-- now:claude/multi-sqn-b1-107 -->'
+# const i = s.indexOf(open)
+# if (i < 0) throw new Error('no block')
+# const j = s.indexOf('<!-- /now -->', i)
+# const out = s.slice(0, i + open.length) + '\n(blanked for the readers of fix read 15)\n' + s.slice(j)
+# fs.writeFileSync(p, out)

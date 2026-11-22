@@ -1,0 +1,27 @@
+msq-w1-main v1 desktop
+ground add W149 GROUND Kestrel ok ["W149 GROUND"]
+ROW PASS | S1 | desktop | ad9 adds ground row "W149 GROUND" with Kestrel on Wed 15 Jul, closes board | saw: week shows W149 GROUND: true
+signout {"reloaded":true}
+ROW PASS | S1 | desktop | ad (142) looks at Wed 15 Jul on the week and on the board | saw: week: false; board: false; 142 ground rows: ["MAINT CONF @ ENG WING","NAV-SYS TRIAL PREP"]
+BASE142 Wed15 {"beak":"Publish day","chip":"DRAFT","pend":""}
+PUB142 week 0:Publish day/DRAFT | 1:Publish day/DRAFT | 2:Publish day/DRAFT | 3:Publish day/DRAFT | 4:Publish day/DRAFT | 5:Publish day/DRAFT | 6:Publish day/DRAFT
+ground add W142 GROUND Saber ok ["MEDICAL APPT","DENTAL APPT","APPOINTMENT","W142 GROUND"]
+ROW PASS | S1 | desktop | ad adds ground row "W142 GROUND" with Saber on Thu 16 Jul | saw: week shows W142 GROUND: true
+ROW PASS | S1 | desktop | ad9 signs in again, looks at the week | saw: W149: true; W142: false
+PUB149 week 0:Publish day/DRAFT | 1:Publish day/DRAFT | 2:Publish day/DRAFT | 3:Publish day/DRAFT | 4:Publish day/DRAFT | 5:Publish day/DRAFT | 6:Publish day/DRAFT
+BASE149 Wed15 {"beak":"Publish day","chip":"DRAFT","pend":""}
+PUBLISH {"published":true,"version":"ORIG","signSelects":4}
+AFTER149 Wed15 {"beak":null,"chip":"ORIG","pend":"0 pending › ▾ Manning Bidding closed Le"}
+ROW RECORD | S2 | desktop | ad9 publishes Wed 15 Jul | saw: before: {"beak":"Publish day","chip":"DRAFT","pend":""}; publish result: {"published":true,"version":"ORIG","signSelects":4}; after: {"beak":null,"chip":"ORIG","pend":"0 pending › ▾ Manning Bidding closed Le"}
+ROW PASS | S2 | desktop | ad looks at 142 Wed 15 after ad9 published | saw: {"beak":"Publish day","chip":"DRAFT","pend":""}
+AMEND149 {"beak":null,"chip":"ORIG","pend":"1 pending i Publish AL1 Unpublish ⠿ Ove"} week pend: 1 pending i Publish AL1 Unpublish Signe
+ROW PASS | S2 | desktop | ad9 renames the ground row on the published 15 Jul | saw: board: {"beak":null,"chip":"ORIG","pend":"1 pending i Publish AL1 Unpublish ⠿ Ove"}; week: 1 pending i Publish AL1 Unpublish Signe
+ROW FAIL | S2 | desktop | ad looks at 142 after ad9 amended 149 | saw: board: {"beak":"Publish day","chip":"DRAFT","pend":""}; week: 
+ground add W149 UNDO A Kestrel ok ["GROUND SCHOOL - EW","AIRCREW ADMIN","W149 UNDO A"]
+UNDO BTN {"disabled":null,"title":"Undo — a change to the schedule"}
+ROW FAIL | S3 | desktop | ad9 adds ground row A on Fri 17 then presses the top bar Undo once | saw: ground before: ["GROUND SCHOOL - EW","AIRCREW ADMIN","W149 UNDO A"]; after undo: ["GROUND SCHOOL - EW","AIRCREW ADMIN","W149 UNDO A"]
+ground add W149 UNDO B Kestrel ok ["GROUND SCHOOL - EW","AIRCREW ADMIN","W149 UNDO A","W149 UNDO B"]
+ROW PASS | S3 | desktop | ad signs in after ad9 made change B; reads Undo button | saw: {"disabled":true,"title":"Undo"}
+ROW PASS | S3 | desktop | ad9 signs in again | saw: ground: ["GROUND SCHOOL - EW","AIRCREW ADMIN","W149 UNDO A","W149 UNDO B"]; undo: {"disabled":true,"title":"Undo"}
+errors []
+DONE 8 PASS 2 FAIL 1 OTHER of 11

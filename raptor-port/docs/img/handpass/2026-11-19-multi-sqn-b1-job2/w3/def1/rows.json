@@ -1,0 +1,128 @@
+[
+ [
+  "W3-D",
+  "iPhone",
+  "ad (master) Admin -> Users -> Condor -> Archive",
+  "Condor in the Archived fold",
+  "Archived · 1; Condor no sign-in · Pilot · CAT OCU Archived 19 Nov 26 by Saber Add a person Callsign/Name Initials Pilo; Archived 19 Nov 26 by Saber Add a person Call",
+  "PASS",
+  "d02-after-archive.png"
+ ],
+ [
+  "W3-D",
+  "iPhone",
+  "the Archived fold, with Condor",
+  "Condor listed under Archived",
+  "ign-in Roster Nobody matches. ▾ Archived · 1 Sign-in Roster Condor no sign-in · Pilot · CAT OCU Archived 19 Nov 26 by Saber Add a person Callsign/Name Initials Pilot,",
+  "PASS",
+  "d03-archived-fold.png"
+ ],
+ [
+  "W3-D",
+  "iPhone",
+  "ad9 opens 149's Leave War, Condor's row around Thu 19 Nov",
+  "months before 19 Nov kept; from 19 Nov posted out (hatched PO)",
+  "11-10=·{.act} 11-15=·{weekend.act} 11-17=·{.act} 11-18=PO{.act.pofin.bx-last} 11-19=PO{gone.act.hasc} 11-20=PO{gone.act.hasc} 11-23=PO{gone.act.hasc} 11-30=PO{gone.act.hasc}",
+  "RECORD",
+  "d04-lw-at-19nov.png"
+ ],
+ [
+  "W3-D",
+  "iPhone",
+  "ad9 Admin -> Users -> Heron -> Archive (his own man)",
+  "Heron archived",
+  "Archived 19 Nov 26 by Kestrel Add a person Ca ; Archived · 2",
+  "PASS",
+  "d06-heron-archived.png"
+ ],
+ [
+  "W3-D",
+  "iPhone",
+  "the war: Heron's row looks the same as Condor's at Thu 19 Nov",
+  "the same shape as Condor's",
+  "Heron: 11-10=·{.act} 11-15=·{weekend.act} 11-17=·{.act} 11-18=PO{.act.pofin.bx-last} 11-19=PO{gone.act.hasc} 11-20=PO{gone.act.hasc} 11-23=PO{gone.act.hasc} 11-30=PO{gone.act.hasc} || Condor: 11-10=·{.act} 11-15=·{weekend.act} 11-17=·{.act} 11-18=PO{.act.pofin.bx-last} 11-19=PO{gone.act.hasc} 11-20=PO{gone.act.hasc} 11-23=PO{gone.act.hasc} 11-30=PO{gone.act.hasc}",
+  "PASS",
+  "d07-lw-at-19nov.png vs d04-lw-at-19nov.png"
+ ],
+ [
+  "W3-E",
+  "iPhone",
+  "ad2 presses Suspend on Osprey",
+  "He is 149's. Only an admin of 149 can change his account.",
+  "He is 149's. Only an admin of 149 can change his account.; words box: 12,812,390,848 inside",
+  "PASS",
+  "e-Suspend.png"
+ ],
+ [
+  "W3-E",
+  "iPhone",
+  "ad2 presses Archive on Osprey",
+  "He is 149's. Only an admin of 149 can change him.",
+  "He is 149's. Only an admin of 149 can change him.; words box: 12,812,390,848 inside",
+  "PASS",
+  "e-Archive.png"
+ ],
+ [
+  "W3-E",
+  "iPhone",
+  "Osprey looked at afterwards",
+  "unchanged",
+  "before: Osprey us9 · Member · Pilot · CAT A SIGN-IN (DEFENCE MAIL) ROLE Save Suspend Archive Delete Cancel || after: Osprey us9 · Member · Pilot · CAT A SIGN-IN (DEFENCE MAIL) ROLE Save Suspend Archive Delete Cancel",
+  "RECORD",
+  "e-osprey-after.png"
+ ],
+ [
+  "W3-F",
+  "iPhone",
+  "ad9 opens Falcon's row, types in his sign-in box, presses Cancel, reopens",
+  "row closes on Cancel; reopened box empty",
+  "typed: \"zzztyped\"; editor still open after Cancel: 0; reopened value: \"\"",
+  "PASS",
+  "f03-after-cancel.png, f04-reopened.png"
+ ],
+ [
+  "W3-F",
+  "iPhone",
+  "MY LEAVE: open, close by its own control",
+  "opens inside the screen, closes",
+  "boxes: bidsheet nonmodal:10,213,392,661; close pressed: true",
+  "RECORD",
+  "f11-myleave.png, f12-myleave-closed.png"
+ ],
+ [
+  "W3-F",
+  "iPhone",
+  "a name's window: open by tapping his name, close by its X",
+  "opens, closes",
+  "close pressed: false",
+  "FAIL",
+  "f13-name-window.png, f14-name-closed.png"
+ ],
+ [
+  "W3-F",
+  "iPhone",
+  "a day cell -> its window -> its dots list -> close",
+  "window opens inside the screen, list opens, closes",
+  "dots list entries: Attach:232,656,372,694 | Other:232,694,372,732 | Post out:232,732,372,770 | Post in:232,770,372,808; close pressed: false; window buttons still on screen after: 1",
+  "FAIL",
+  "f16-day-window.png, f17-dots-list.png, f18-day-closed.png"
+ ],
+ [
+  "W3-F",
+  "iPhone",
+  "scrolls the page to its very foot (script scroll, not a finger: WebKit)",
+  "page moves; the top bar stays",
+  "scrollTop 0 -> 0 of 874; burger button top,bottom 9,39",
+  "RECORD",
+  "f19-foot.png"
+ ],
+ [
+  "W3-F",
+  "iPhone",
+  "the bell: open and close",
+  "opens, closes by the bell",
+  "bell list still shown after second tap: 1",
+  "FAIL",
+  "f21-bell.png, f22-bell-closed.png"
+ ]
+]

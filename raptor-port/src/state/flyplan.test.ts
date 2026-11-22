@@ -3,6 +3,7 @@
    docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md §3.2, §5 "The store"). The resolver itself is pinned
    by flyplan-model.suite.ts. */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { inView } from '../engine/unitview'
 import { storeBackend, store } from '../engine/hooks'
 import { setSession, setEffectiveRole } from './auth'
 import { installGlobalUndo } from './undo-wire'
@@ -63,7 +64,7 @@ describe('the flying plan is three kinds of settings row, each written by its ow
     expect(req(MON)).toEqual({ p: 16, w: 14 }); expect(req(THU)).toEqual({ p: 12, w: null })
     const env = commandStream().at(-1)!
     expect(env.type).toBe('fly.day.set')
-    expect(env.changes.filter(c => c.collection === 'settings').map(c => c.id)).toEqual(['flyday:' + THU])
+    expect(env.changes.filter(c => c.collection === 'settings').map(c => c.id)).toEqual([inView('flyday:' + THU)])
   })
   it('a patch names only what it changes: null clears a field, a field not named is left, an emptied row goes', () => {
     setFlyDays([{ iso: MON, p: 16, w: 14, cls: 'night' }])
@@ -153,7 +154,7 @@ describe('what is refused, and that a refusal writes nothing', () => {
   })
   it('a refused update goes back to exactly what was there', () => {
     setFlyDays([{ iso: MON, p: 5 }])
-    setConflictChecker(changes => changes.some(c => c.id === 'flyday:' + MON) ? 'test conflict' : null)
+    setConflictChecker(changes => changes.some(c => c.id === inView('flyday:' + MON)) ? 'test conflict' : null)
     expect(setFlyDays([{ iso: MON, p: 8 }]).ok).toBe(false)
     expect(req(MON)).toEqual({ p: 5, w: null })
   })
@@ -226,7 +227,7 @@ describe('Undo, Redo, and the words they say', () => {
     expect(setFlyRun(MON, { p: 18, w: 18 }, { clear: [MON, '2026-01-13', '2026-01-14'] }).ok).toBe(true)
     expect(commandStream().length).toBe(n + 1)
     expect(commandStream().at(-1)!.changes.filter(c => c.collection === 'settings').map(c => c.id).sort())
-      .toEqual(['flyday:' + MON, 'flyday:2026-01-14', 'flyrun:' + MON])
+      .toEqual([inView('flyday:' + MON), inView('flyday:2026-01-14'), inView('flyrun:' + MON)])
     expect(req('2026-01-14')).toEqual({ p: 18, w: 18 })
     expect(store.get('flyday:2026-01-17', null)).toEqual({ p: 3 })            // a date not named is left
     expect(globalUndo().ok).toBe(true)

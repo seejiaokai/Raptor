@@ -1,0 +1,29 @@
+[
+ [
+  "W2-C host",
+  "desktop",
+  "Hunter: Admin → Data → Clear edit history, today's run; button read \"Tap again to clear 1 entry\"",
+  "142's lines gone, every u149 line kept",
+  "u149 before 1 after 1; other lines after 1; words: Cleared 1 entry Cleared 1 entry",
+  "FAIL",
+  "c11-clear-armed, c12-cleared"
+ ],
+ [
+  "W2-E host",
+  "desktop",
+  "Kestrel makes Osprey (149, us9) an admin",
+  "saved; Osprey Admin",
+  "Osprey us9 · Pilot · CAT A ADMIN ▸ Archived · 2 ADD A PERSON CALLSIGN/NAME INITIALS PI",
+  "RECORD",
+  "e01-osprey-admin"
+ ],
+ [
+  "W2-E host",
+  "desktop",
+  "with Osprey a second 149 admin, the master archives Kestrel",
+  "allowed now (no last-admin words)",
+  "Archived · 3",
+  "PASS",
+  "e02-kestrel-archive-by-master"
+ ]
+]

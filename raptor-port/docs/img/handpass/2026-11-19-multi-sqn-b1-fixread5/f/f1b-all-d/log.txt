@@ -1,0 +1,6 @@
+msq-fr5-f1b v1
+signed in as us9
+ROW RECORD | F1 | desktop | Osprey: bell after bidding opened then closed | saw: dot before open "block"; ["NEW Leave War1 Dec – 31 Dec Bidding open · Kestrel now"]
+ROW PASS | F1 | desktop | Osprey: Mark all read | saw: dot "none"; ["read Leave War1 Dec – 31 Dec Bidding open · Kestrel now"]
+errors []
+DONE 1 PASS 0 FAIL 1 OTHER of 2

@@ -258,13 +258,14 @@ export function PenIcon({ solo = false, className = 'pen-ic' }: { solo?: boolean
   )
 }
 
-/* The squadron's mark at the left of the top bar — ONE drawing for the app's bar (Shell.tsx) and the guest page's bar
-   (GuestApp.tsx), so the two cannot drift apart (8 Nov 26, React Doctor's duplicate-jsx-subtree). */
-export function TalonMark() {
+/* The squadron's mark at the left of the top bar (Shell.tsx) — made one drawing on 8 Nov 26 (React Doctor's
+   duplicate-jsx-subtree) when the guest page's bar drew it too; that page went with the guest view (D2239). Its
+   number is handed in — the schedule in view's, never a written-in "142" (ui/topbits.tsx SqnMark). */
+export function TalonMark({ num }: { num: string }) {
   return (
     <div className="mark">
       <svg className="rglyph" viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z" /></svg>
-      <span className="tx"><span className="k">142</span><span className="v">TALON</span></span>
+      <span className="tx"><span className="k">{num}</span><span className="v">TALON</span></span>
     </div>
   )
 }

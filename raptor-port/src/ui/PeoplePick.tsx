@@ -46,7 +46,7 @@ export function PlaceholderGroup({ type, current, all, value }: { type?: any; cu
 }
 
 // eslint-disable-next-line react-doctor/no-high-complexity-react-function -- one picker in its two modes (one person, several), the placeholders and the finger's drag across the pucks share one set of props and refs; split, the drag's reading of what is picked and the lists it lights could drift apart, in the window every input is filed through
-export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly, more, moreIds, phWhy, onChange }: {
+export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly, more, moreIds, phWhy, unit, iso, offers, onChange }: {
   people: string[]
   several: boolean
   type: any
@@ -68,9 +68,17 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
   /** may THIS input hold a placeholder? — '' or the sentence, from the window that knows its dates as well as its kind
    *  (engine/inputs.ts placeholderProblem, the one body). Without it the kind alone is asked. */
   phWhy?: (id: string) => string
+  /** whose people it offers — one squadron's (multi-squadron step 3): the window passes the signed-in person's own on the
+   *  Inputs page, the schedule in view's on the schedule; unset, the schedule in view's */
+  unit?: string
+  /** …on the draft's first day (the reshape plan §3.3 C6); unset, today */
+  iso?: string
+  /** whom the draft with him added would let be saved — the window's one whole-draft answer (ui/inputedit.ts offersFor);
+   *  unset, everyone listed */
+  offers?: (id: string) => boolean
   onChange: (people: string[], several: boolean) => void
 }) {
-  const roster = pickRoster(sansOnly)
+  const roster = pickRoster(sansOnly, unit, iso, offers)
   const first = people[0]
   const others = !lockOne && mayPickOthers(type)
   /* the two placeholders: where he may pick another "person" for this kind, never on the SANS calendar */
@@ -95,7 +103,13 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
     if (people.includes(id)) { if (people.length > 1) onChange(people.filter(p => p !== id), true) }
     else onChange([...people, id], true)
   }
-  const groups = GROUPS.map(g => ({ ...g, ids: roster.filter(id => g.has(PEOPLE[id])) })).filter(g => g.ids.length)
+  /* A PICKED MAN KEEPS HIS PUCK (the fix round of 22 Nov 26, Fable's read F5): the roster is the draft's first day's, so
+     Ranger — picked for Tue 14 Jul, 149's from Thu 16 — dropped off it when the draft moved to Fri 17: still in the
+     draft ("2 picked"), no puck to press to take him out, and the save refused. He is drawn in his group, lit, after
+     the day's own people. */
+  const onRoster = new Set(roster)
+  const shown = several ? [...roster, ...people.filter(p => !isSpecial(p) && !!PEOPLE[p] && !onRoster.has(p))] : roster
+  const groups = GROUPS.map(g => ({ ...g, ids: shown.filter(id => g.has(PEOPLE[id])) })).filter(g => g.ids.length)
   /* A DRAG PICKS EVERY PUCK IT PASSES (owner D685, 9 Oct 26 — from his iPhone: "I should be able to drag to select
      multiple pucks"). The drag does what its FIRST puck does: begun on a man not picked it picks all it passes; begun
      on a picked man it lets them go — never the last one, as a press never does. It runs across the headings (the

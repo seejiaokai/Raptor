@@ -68,9 +68,14 @@ beforeEach(() => {
   wireLeaveWarSync()
   HOOKS.toast = () => {}
   signInAs('ad', 'a')
+  /* the demo carries two more admins since multi-squadron step 4 — 149's (Kestrel) and a second 142 admin (Prowler):
+     these tests are written for a squadron of two admins, so those two step down first */
+  expect(updateAccount('acad2', { role: 'main' })).toBeNull()
+  /* (Kestrel stays: he is 149's only admin, and a squadron is never left with none — D2184 Q10, the full check of
+     18 Nov 26; these postings are 142's, and 149's admin is never told of them) */
   /* a second admin, so "every admin" is two people (Hex — rocky's sign-in — made an admin on Admin → Users) */
   expect(updateAccount('achex', { role: 'admin' })).toBeNull()
-  expect(admins()).toEqual(['rocky', 'stiff'])
+  expect(admins()).toEqual(['kes9', 'rocky', 'stiff'])   // 142's two, and 149's Kestrel, never told of a 142 posting
   _resetTimeline(); lwHistInit(); installGlobalUndo()
 })
 afterEach(() => { HOOKS.toast = toast; _resetTimeline(); resetSession(null); clearAdminOpen() })
@@ -152,6 +157,17 @@ describe('who is told', () => {
     reach(); runPoOutcomes()
     expect(poLines('casper'), 'Outlaw, a member').toEqual([])
     expect(poLines('bane'), 'Ranger, a member').toEqual([])
+  })
+  /* multi-squadron batch 1, step 4: a posting is a fact of the Leave War it was set in — 142's — so its line goes to
+     142's admins only (Prowler, the second 142 admin, included), never to 149's (Kestrel), whose Admin → Users lists his
+     own squadron. Red first: before step 4 every admin of the app was told. */
+  it('the line goes to the posting squadron\'s admins only, never the other squadron\'s', () => {
+    expect(updateAccount('acad2', { role: 'admin' })).toBeNull()
+    expect(updateAccount('acad9', { role: 'admin' })).toBeNull()
+    expect(postOut('bane', PO, 'overseas')).toBe(true)
+    reach(); runPoOutcomes()
+    expect(NOTICES.filter(n => (n.what || [])[0]?.k === 'po').map(n => n.to).sort()).toEqual(['prowler', 'rocky', 'stiff'])
+    expect(poLines('kes9'), '149\'s admin').toEqual([])
   })
   it('a held posting (the last admin who can sign in) tells nothing new', () => {
     expect(updateAccount('achex', { role: 'main' })).toBeNull()

@@ -1,0 +1,254 @@
+[
+ [
+  "W3-A",
+  "iPhone",
+  "ad9 Inputs -> List -> + Input -> window's Person select and the Several-people picker, scrolled to the end",
+  "149's people only",
+  "select: [Condor, Falcon, Gannet, Harrier, Heron, Kestrel, Merlin, Osprey, Raven, Shrike] selected: Kestrel; pucks: [ALL AVAIL, ALL, CondorO, HarrierC, KestrelIP*, MerlinB, OspreyA, FalconIW, GannetO, HeronA, RavenB, ShrikeC]; not-149 names: []; 149 names: [Condor, Falcon, Gannet, Harrier, Heron, Kestrel, Merlin, Osprey, Raven, Shrike]",
+  "PASS",
+  "a01-ad9-several-open.png, a01-ad9-several-end.png"
+ ],
+ [
+  "W3-A",
+  "iPhone",
+  "ad2 Inputs -> List -> + Input -> window's Person select and the Several-people picker, scrolled to the end",
+  "142's only",
+  "select: [Ace, Anvil, Basher, Blade, Bolt, Cinch, Cinder, Cobra, Comet, Cotter, Cutter, Dash, Diesel, Drifter, Echo, Fable, Forge, Gambit, Ghost, Grit, Havoc, Hex, Hunter, Jester, Kraken, Ledger, Marlin, Nomad, Otter, Outlaw, Piston, Pixel, Quill, Ranger, Ratchet, Reaper, Rebel, Recon, Relay, Ridge, Rune, Ryder, Saber, Saint, Scope, Scribe, Sidewinder, Static, Talisman, Tally, Torch, Trident, Vandal, Vapor, Vector, Warden, Widget, Wildcard, Wisp, Zenith, Zulu] selected: Hunter; pucks: [ALL AVAIL, ALL, AceA, AnvilIP, BladeIP, CinchIP, CobraIP, CometIP, DieselD, DrifterA, ForgeIP, GambitC, HavocIP, HunterIP*, NomadC, OutlawC, PistonIP, RangerIP, ReaperIR, ReconO, RidgeC, SaberIP, SaintB, SidewinderIP, TalismanO, TorchC, TridentIP, VandalIP, VaporD, WardenIP, WildcardO, BasherIW, CinderB, CutterC, DashC, EchoIW, FableC, GhostC, GritC, HexC, LedgerIW, QuillIW, RelayIW, RuneB, RyderC, ScopeIW, StaticIW, VectorC, WispC, BoltC, JesterB, KrakenD, MarlinA, OtterD, PixelD, RebelB, ScribeD, TallyO, ZenithC, ZuluO, Cotter, Ratchet, Widget]; not-149 names: [Ace, Anvil, Basher, Blade, Bolt, Cinch, Cinder, Cobra, Comet, Cotter, Cutter, Dash, Diesel, Drifter, Echo, Fable, Forge, Gambit, Ghost, Grit, Havoc, Hex, Hunter, Jester, Kraken, Ledger, Marlin, Nomad, Otter, Outlaw, Piston, Pixel, Quill, Ranger, Ratchet, Reaper, Rebel, Recon, Relay, Ridge, Rune, Ryder, Saber, Saint, Scope, Scribe, Sidewinder, Static, Talisman, Tally, Torch, Trident, Vandal, Vapor, Vector, Warden, Widget, Wildcard, Wisp, Zenith, Zulu, DieselD, ReaperIR, VaporD, KrakenD, OtterD, PixelD, ScribeD]; 149 names: []",
+  "PASS",
+  "a02-ad2-several-open.png, a02-ad2-several-end.png"
+ ],
+ [
+  "W3-A",
+  "iPhone",
+  "ad Inputs -> List -> + Input -> window's Person select and the Several-people picker, scrolled to the end",
+  "142's only",
+  "select: [Ace, Anvil, Basher, Blade, Bolt, Cinch, Cinder, Cobra, Comet, Cotter, Cutter, Dash, Diesel, Drifter, Echo, Fable, Forge, Gambit, Ghost, Grit, Havoc, Hex, Hunter, Jester, Kraken, Ledger, Marlin, Nomad, Otter, Outlaw, Piston, Pixel, Quill, Ranger, Ratchet, Reaper, Rebel, Recon, Relay, Ridge, Rune, Ryder, Saber, Saint, Scope, Scribe, Sidewinder, Static, Talisman, Tally, Torch, Trident, Vandal, Vapor, Vector, Warden, Widget, Wildcard, Wisp, Zenith, Zulu] selected: Saber; pucks: [ALL AVAIL, ALL, AceA, AnvilIP, BladeIP, CinchIP, CobraIP, CometIP, DieselD, DrifterA, ForgeIP, GambitC, HavocIP, HunterIP, NomadC, OutlawC, PistonIP, RangerIP, ReaperIR, ReconO, RidgeC, SaberIP*, SaintB, SidewinderIP, TalismanO, TorchC, TridentIP, VandalIP, VaporD, WardenIP, WildcardO, BasherIW, CinderB, CutterC, DashC, EchoIW, FableC, GhostC, GritC, HexC, LedgerIW, QuillIW, RelayIW, RuneB, RyderC, ScopeIW, StaticIW, VectorC, WispC, BoltC, JesterB, KrakenD, MarlinA, OtterD, PixelD, RebelB, ScribeD, TallyO, ZenithC, ZuluO, Cotter, Ratchet, Widget]; not-149 names: [Ace, Anvil, Basher, Blade, Bolt, Cinch, Cinder, Cobra, Comet, Cotter, Cutter, Dash, Diesel, Drifter, Echo, Fable, Forge, Gambit, Ghost, Grit, Havoc, Hex, Hunter, Jester, Kraken, Ledger, Marlin, Nomad, Otter, Outlaw, Piston, Pixel, Quill, Ranger, Ratchet, Reaper, Rebel, Recon, Relay, Ridge, Rune, Ryder, Saber, Saint, Scope, Scribe, Sidewinder, Static, Talisman, Tally, Torch, Trident, Vandal, Vapor, Vector, Warden, Widget, Wildcard, Wisp, Zenith, Zulu, DieselD, ReaperIR, VaporD, KrakenD, OtterD, PixelD, ScribeD]; 149 names: []",
+  "PASS",
+  "a03-ad-several-open.png, a03-ad-several-end.png"
+ ],
+ [
+  "W3-A",
+  "iPhone",
+  "us Inputs -> List -> + Input -> window's Person select and the Several-people picker, scrolled to the end",
+  "142's only (RECORD what a member sees)",
+  "select: [none] selected: null; pucks: []; not-149 names: []; 149 names: []",
+  "RECORD",
+  "a04-us-several-open.png, a04-us-several-end.png"
+ ],
+ [
+  "W3-A",
+  "iPhone",
+  "us9 Inputs -> List -> + Input -> window's Person select and the Several-people picker, scrolled to the end",
+  "149's people only",
+  "select: [none] selected: null; pucks: []; not-149 names: []; 149 names: []",
+  "RECORD",
+  "a05-us9-several-open.png, a05-us9-several-end.png"
+ ],
+ [
+  "W3-A",
+  "iPhone",
+  "ad9: look for a box to type \"Os\" in the people picker",
+  "a typing box (brief), or record there is none",
+  "inputs inside the picker: 0; picker words: PEOPLE 1 picked Several people WHOEVER IS FREE THAT DAY ALL AVAIL ALL ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other PILOTS All Condor O Harrier C Kestrel IP Merlin B Osprey A WSOS All Falcon IW Gannet O Heron A Raven B Shrike C",
+  "RECORD",
+  "b01-ad9-several.png"
+ ],
+ [
+  "W3-A",
+  "iPhone",
+  "ad9 picks Osprey, picks Merlin, takes Merlin off again",
+  "Osprey on, Merlin off",
+  "after Merlin: 3 picked; after taking off: 2 picked; pucks lit: [KestrelIP*, OspreyA*]",
+  "PASS",
+  "b03-merlin-picked.png, b04-merlin-off.png"
+ ],
+ [
+  "W3-A",
+  "iPhone",
+  "ad9 presses Add on the LL input",
+  "RECORD what is asked",
+  "⠿ New input · Nov 23 ✕ PEOPLE 1 picked Several people WHOEVER IS FREE THAT DAY ALL AVAIL ALL ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other PILOTS All Condor O Harrier C Kestrel IP Merlin B Osprey A WSOS All Falcon IW Gannet O Heron A Raven B Shrike C TYPE ? DURATIO",
+  "RECORD",
+  "b09a-question.png"
+ ],
+ [
+  "W3-A",
+  "iPhone",
+  "ad9 files LL for Osprey on Mon 23 Nov and presses Add",
+  "window closes, input saved",
+  "window gone: true; Add button inside; page words: 142 TALON ↶ ↷ Inputs Inputs SANS Medical + Input 19 Nov → 3 Dec Calendar List Filters MON 23 NOV 1 input LATE No document All day OspreyLL By Kestrel Input added",
+  "RECORD",
+  "b09-after-add.png"
+ ],
+ [
+  "W3-A",
+  "iPhone",
+  "the Inputs list after saving shows Osprey's LL on 23 Nov",
+  "a card for Osprey, LL, 23 Nov",
+  "9 Nov → 3 Dec Calendar List Filters MON 23 NOV 1 input LATE No document All day OspreyLL By Kestrel Input added",
+  "PASS",
+  "b09-after-add.png"
+ ],
+ [
+  "W3-A",
+  "iPhone",
+  "second new input (window box 13,70,389,870): closed by its X",
+  "window gone, Inputs page under it as it was",
+  "window still open: 0; Inputs page (+ Input) shown: true",
+  "PASS",
+  "c1-x.png"
+ ],
+ [
+  "W3-A",
+  "iPhone",
+  "second new input (window box 13,70,389,870): closed by a tap outside it (left edge, 4,450)",
+  "window gone, Inputs page under it as it was",
+  "window still open: 1; Inputs page (+ Input) shown: true",
+  "RECORD",
+  "c2-outside.png"
+ ],
+ [
+  "W3-B",
+  "iPhone",
+  "us9 files a Course (CSE) for himself on Tue 24 Nov and presses Add",
+  "saved",
+  "window gone: true; extra buttons: []; page words: 142 TALON ↶ ↷ Inputs Inputs SANS Medical + Input 19 Nov → 3 Dec Calendar List Filters1 Osprey Clear filters MON 23 NOV 1 input LATE No document All day OspreyLL By Kestrel TUE 24 NOV 1 input LATE 06:00–18:00 OspreyCSE Input added",
+  "PASS",
+  "d01-us9-after-add.png"
+ ],
+ [
+  "W3-B",
+  "iPhone",
+  "us files a Course (CSE) for himself on Tue 24 Nov and presses Add",
+  "saved",
+  "window gone: true; extra buttons: []; page words: 142 TALON ↶ ↷ Inputs Inputs SANS Medical 2 1 + Input 19 Nov → 3 Dec Calendar List Filters1 Ranger Clear filters TUE 24 NOV 1 input LATE 06:00–18:00 RangerCSE Input added",
+  "PASS",
+  "d02-us-after-add.png"
+ ],
+ [
+  "W3-B",
+  "iPhone",
+  "ad9 opens the bell",
+  "a line about Osprey, none about Ranger",
+  "badge before: text=\"\" aria=\"Notifications\" cls=\"bellbtn\" kids=[]; lines: [\"Nothing new\"]",
+  "FAIL",
+  "e01-ad9-bell-open.png"
+ ],
+ [
+  "W3-B",
+  "iPhone",
+  "ad2 opens the bell",
+  "a line about Ranger, none about Osprey",
+  "badge before: text=\"\" aria=\"Notifications\" cls=\"bellbtn\" kids=[]; lines: [\"Nothing new\"]",
+  "FAIL",
+  "e02-ad2-bell-open.png"
+ ],
+ [
+  "W3-B",
+  "iPhone",
+  "ad opens the bell",
+  "RECORD exactly which lines",
+  "badge before: text=\"\" aria=\"Notifications\" cls=\"bellbtn\" kids=[]; lines: [\"Nothing new\"]",
+  "RECORD",
+  "e03-ad-bell-open.png"
+ ],
+ [
+  "W3-B",
+  "iPhone",
+  "ad9 taps the bell line about Osprey",
+  "RECORD what it opens",
+  "no line with Osprey found",
+  "OWED",
+  "f01-ad9-bell.png"
+ ],
+ [
+  "W3-B",
+  "iPhone",
+  "ad9 presses the bell's mark-read control \"(none)\"",
+  "the badge goes",
+  "badge before: text=\"\" aria=\"Notifications\" cls=\"bellbtn\" kids=[]; after: text=\"\" aria=\"Notifications\" cls=\"bellbtn\" kids=[]; bell lines after: [\"Nothing new\"]",
+  "OWED",
+  "f05-after-mark.png"
+ ],
+ [
+  "W3-B",
+  "iPhone",
+  "ad2 signs in after Kestrel read his bell: his badge and lines",
+  "unchanged from before",
+  "badge before: text=\"\" aria=\"Notifications\" cls=\"bellbtn\" kids=[]; now: text=\"\" aria=\"Notifications\" cls=\"bellbtn\" kids=[]; lines now: [\"Nothing new\"]",
+  "PASS",
+  "f06-ad2-bell-after.png"
+ ],
+ [
+  "W3-B",
+  "iPhone",
+  "reload, sign in as ad9: his bell",
+  "still read",
+  "badge: text=\"\" aria=\"Notifications\" cls=\"bellbtn\" kids=[]; lines: [\"Nothing new\"]",
+  "PASS",
+  "f07-ad9-after-reload-bell.png"
+ ],
+ [
+  "W3-C",
+  "iPhone",
+  "ad9 opens the Tracker, taps event ACG-01 and grades it DCO",
+  "one mark on one student",
+  "lists: {\"course\":[\"26ABSG\"],\"student\":[\"STUDENT A\",\"STUDENT B\"],\"syl\":[\"2024\",\"2026\",\"Tx 2026\",\"A/G - A/A 2026\"]}; popup after: (no popup text); mark records before 0, after 1",
+  "PASS",
+  "g02-graded-ACG-01.png"
+ ],
+ [
+  "W3-C",
+  "iPhone",
+  "ad2 opens the Tracker: is it 142's own, with no 149 mark on ACG-01",
+  "142's course list, ACG-01 not marked",
+  "lists: {\"course\":[\"26ABSG\"],\"student\":[\"STUDENT A\",\"STUDENT B\"],\"syl\":[\"2024\",\"2026\",\"Tx 2026\",\"A/G - A/A 2026\"]}; ACG-01 popup words: (no popup text)",
+  "RECORD",
+  "g03-ad2-tracker.png, g04-ad2-popup-ACG-01-before.png"
+ ],
+ [
+  "W3-C",
+  "iPhone",
+  "ad2 grades ACG-02 DCO on a 142 student",
+  "one mark",
+  "popup after: (no popup text); mark records before 1, after 2",
+  "PASS",
+  "g05-graded-ACG-02.png"
+ ],
+ [
+  "W3-C",
+  "iPhone",
+  "us9 (149 member) opens the Tracker and looks at ACG-01 (Kestrel's DCO) and ACG-02 (Hunter's, 142)",
+  "149's course with Kestrel's mark on ACG-01, ACG-02 not marked",
+  "lists: {\"course\":[\"26ABSG\"],\"student\":[\"STUDENT A\",\"STUDENT B\"],\"syl\":[\"2024\",\"2026\",\"Tx 2026\",\"A/G - A/A 2026\"]}; ACG-01 popup: (no popup text); ACG-02 popup: (no popup text)",
+  "FAIL",
+  "g07-us9-popup-ACG-01.png, g08-us9-popup-ACG-02.png"
+ ],
+ [
+  "W3-C",
+  "iPhone",
+  "us9 (member) grades ACG-03 DCO",
+  "RECORD (D121: everyone has the same access)",
+  "DCO button present: 1",
+  "RECORD",
+  "g09-us9-marked-ACG-03.png"
+ ],
+ [
+  "W3-C",
+  "iPhone",
+  "reload as us9: ACG-01 again",
+  "the same as before the reload",
+  "popup: (no popup text)",
+  "PASS",
+  "g10-us9-reload-popup-ACG-01.png"
+ ],
+ [
+  "W3-A",
+  "iPhone",
+  "second new input: closed by the browser's back",
+  "window gone, Inputs page under it as it was",
+  "history length before 2; url after: about:blank; window open: 0",
+  "FAIL",
+  "h02-after-back.png"
+ ]
+]

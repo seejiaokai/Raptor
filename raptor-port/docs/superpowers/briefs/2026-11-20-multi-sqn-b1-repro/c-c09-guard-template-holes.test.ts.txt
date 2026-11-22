@@ -1,0 +1,17 @@
+/* C9 (Fable F6): the people/inputs guards (testing/enumguard.ts bare) empty a whole template string, `${…}` holes
+   included, so a walk of the people written inside a template (the style of html.ts, board-html.ts, palette-html.ts) is
+   never counted. Correct: the guard counts every walk (plan §3.4 "an enumeration outside rosterOf and an explicit
+   allow-list fails it"). The WALK pattern below is copied from engine/roster-readers.test.ts. */
+import { describe, expect, it } from 'vitest'
+import { countIn } from '../testing/enumguard'
+
+const WALK = /Object\.(?:keys|values|entries)\(\s*\(?\s*PEOPLE\b|for\s*\(\s*(?:const|let|var)\s+\w+\s+in\s+PEOPLE\b|[(,=]\s*PEOPLE\s*[),;]/
+
+describe('C9 — a walk inside a template string', () => {
+  it('control: counted outside a template', () => {
+    expect(countIn('const h = Object.keys(PEOPLE).map(li).join("")', WALK)).toBe(1)
+  })
+  it('is counted inside a template hole', () => {
+    expect(countIn('const h = `<ul>${Object.keys(PEOPLE).map(li).join("")}</ul>`', WALK)).toBe(1)
+  })
+})

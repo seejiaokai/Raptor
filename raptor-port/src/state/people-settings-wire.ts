@@ -11,10 +11,11 @@ import { noticeSeenLoad, NOTICE_TYPES } from './noticeseen'
 import { LWSEEN_TYPES } from './lwseen'
 import { APPRSEEN_TYPES } from './apprseen'
 import { flyplanLoad } from './flyplan'
+import { unitsLoad } from './units'
 
 export function registerPeopleSettingsCommandLayer(): void {
   registerPeopleSettingsCore(
-    { accounts: accountsLoad, changes: changesLoad, noticeSeen: noticeSeenLoad, flyplan: flyplanLoad },
+    { accounts: accountsLoad, changes: changesLoad, noticeSeen: noticeSeenLoad, flyplan: flyplanLoad, units: unitsLoad },
     [...ACCOUNT_TYPES, ...CHANGES_TYPES, ...NOTICE_TYPES, ...LWSEEN_TYPES, ...APPRSEEN_TYPES],
   )
 }

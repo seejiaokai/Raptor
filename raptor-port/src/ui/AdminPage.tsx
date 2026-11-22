@@ -22,6 +22,7 @@
 import { useEffect, useState } from 'react'
 import { canEditSched } from '../state/auth'
 import { isAdmin } from '../state/perms'
+import { UNIT } from '../engine/unitview'
 import { waitingCount } from '../state/accounts'
 import { ADMINOPEN, clearAdminOpen } from '../state/view'
 import { UsersPanel } from './UsersPanel'
@@ -56,11 +57,21 @@ const CATS = [
    the count the second tap clears. A zero count never arms: the toast says
    so instead of offering a no-op confirm (a silent no-op reads as a broken
    button — the 12 Aug 26 audit rule). State is chrome, like `drilled`. */
-/* exported for its own test (ui/adminclear.test.tsx) — it is drawn only by this page */
-export function ClearControl(props: {
+/* A REFUSED SAVE IS ANSWERED BELOW ZERO by `run` (inputedit.tsx clearHistoryData, clearEditHistory): the form then says
+   the generic words and clears nothing — never "Cleared 3 items" for a save that did not happen (helper "left2", 21 Nov
+   26). KEYED BY THE SQUADRON IN VIEW — the one whose calendar and history `run` clears: a change of squadron (his own
+   move taking effect at midnight) puts the form back to its first state, so a count armed for 142 is never the count
+   the second tap clears on 149 (the same day's fault: 142's "Tap again to clear 3 items" cleared 149's 4). */
+type ClearProps = {
   idp: string; act: string; note: string; zero: string; unit: [string, string]
   run: (mode: ClearMode, a: string, b: string, dry?: boolean) => number
-}) {
+}
+/* exported for its own test (ui/adminclear.test.tsx) — it is drawn only by this page */
+export function ClearControl(props: ClearProps) {
+  useVersion()
+  return <ClearForm key={UNIT} {...props} />
+}
+function ClearForm(props: ClearProps) {
   const [mode, setMode] = useState<ClearMode>('before')
   const [a, setA] = useState('')
   const [b, setB] = useState('')
@@ -76,7 +87,8 @@ export function ClearControl(props: {
     }
     const n = props.run(mode, a, b)
     setArmed(-1)
-    HOOKS.toast(n ? `Cleared ${n} ${n === 1 ? props.unit[0] : props.unit[1]}` : props.zero)
+    if (n < 0) return HOOKS.toast('This change could not be saved.', 'warn')
+    HOOKS.toast(n ?`Cleared ${n} ${n === 1 ? props.unit[0] : props.unit[1]}` : props.zero)
   }
   /* THE APP'S OWN DATE BOX for the one date of "older than" and "a specific date"; for "a date range", ONE calendar
      drawn in the form itself — two taps make the run, and it is said in words beneath (owner D796, D797; before, two of
@@ -263,8 +275,8 @@ export function AdminPage() {
           </div>
           <div className="adm-pane-body">
             {/* ---- Users — the accounts ([ACCOUNTS], D166 (1), D204, 26 Sep 26): who can
-                sign in, as which callsign, admin or member; the requests waiting; the
-                guest switch. Replaces the reference's Manage-users list, which drove
+                sign in, as which callsign, admin or member; the requests waiting (the
+                guest switch went with the guest view, D2239). Replaces the reference's Manage-users list, which drove
                 nothing. ---- */}
             <section className={'adm-panel' + (cat === 'users' ? ' on' : '')} id="admUsers">
               {/* `shown`: the waiting list is on his screen — Users chosen, and on a phone

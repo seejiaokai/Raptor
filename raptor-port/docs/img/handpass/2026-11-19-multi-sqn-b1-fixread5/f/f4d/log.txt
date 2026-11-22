@@ -1,0 +1,9 @@
+msq-fr5-f4 v1
+sheet Ranger Thu 19 Nov Auto-approve ✕ No manning row turns amber or red till 19 Nov Document Whole day AM PM Pick a range LL 11.5 OL 11.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 PO FROM Thu 19 Nov 26 ▾ POSTING ✓ Overseas Sqn Delete SANS Transfer to Sqn On 19 Nov: archived, account suspended. Post out
+ROW RECORD | F4 | desktop | Saber: Leave War, Ranger's day window, ⋯, Post out, Overseas Sqn chip, Post out | saw: sheet words: Ranger Thu 19 Nov Auto-approve ✕ No manning row turns amber or red till 19 Nov Document Whole day AM PM Pick a range LL 11.5 OL 11.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 PO FROM Thu 19 Nov 26 ▾ POSTING ✓ Overseas Sqn Del; Ranger now: {"cs":"Ranger","posted":null,"status":null,"keys":[]}; undo: undoBtn disabled=true; redoBtn disabled=true; page words: 142 TALON Edit Schedule View-only 
+ROW PASS | F4 | desktop | Hunter (tab 2): bell after the posting | saw: dot "block"; ["NEW RangerThu 19 Nov Posted out · off the manpower 14 h"]
+state before undo undoBtn disabled=true; redoBtn disabled=true
+ERR F4-undo locator.click: Timeout 30000ms exceeded.
+ROW OWED | F4-undo | desktop | script step | saw: script error locator.click: Timeout 30000ms exceeded.
+errors []
+DONE 1 PASS 0 FAIL 2 OTHER of 3

@@ -9,6 +9,7 @@
    than migrated. The migration proper happens once, server-side, at the DB step. */
 import type { Backend, Collection, Snapshot } from './backend'
 import { SCHEMA_KEY, makeSchema, schemaJSON, storedFormat } from './schema'
+import { localOf } from './unitid'
 
 /* bumped whenever a persisted shape changes incompatibly. 1 = step 1A;
    2 = step 1C (who→personId): ground/programme `who` now store the stable
@@ -59,7 +60,8 @@ export const SCHEMA_VERSION = 5
    it is cleared with them. */
 /* `notices` joins with the one-rule build's step 7 (12 Oct 26): a notice names an input, and the inputs are cleared. */
 export const RESET: Collection[] = ['inputs', 'weeks', 'leavewar', 'changes', 'notices']
-export const resetEntry = (collection: Collection, id: string) => RESET.includes(collection) || (collection==='settings' && id.startsWith('missionrole:'))
+/* (a blue/red answer row is stored under its unit since multi-squadron step 4 — `u142@missionrole:…` — so its local name is read) */
+export const resetEntry = (collection: Collection, id: string) => RESET.includes(collection) || (collection==='settings' && localOf(id).startsWith('missionrole:'))
 
 /** the wipe is due on this snapshot (below the current format — the reset below will run) */
 export function wipeDue(snap: Snapshot): boolean { return storedFormat(snap) < SCHEMA_VERSION }

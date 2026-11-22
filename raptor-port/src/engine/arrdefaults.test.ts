@@ -39,6 +39,8 @@ beforeEach(() => {
   SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
 })
 
+/* a unit's setting is stored under its unit (multi-squadron batch 1, step 2 — engine/hooks.ts storedKey): the boot unit's
+   `stores` is the stored key `sqn142_u142@stores` */
 describe('the default SECTION order', () => {
   it('defaults to the canonical ten', () => {
     expect(secDefault()).toEqual(['notes', 'prog', 'waves', 'duty', 'sims', 'ground', 'inputs', 'avail', 'sans', 'unav'])
@@ -75,7 +77,7 @@ describe('the default SECTION order', () => {
     expect(store.get('secdefault', null)).toEqual(['duty', 'notes', 'prog', 'waves', 'sims', 'ground', 'inputs', 'avail', 'sans', 'unav'])
     secDefaultReset(); secDefaultLoad()                      // reload the saved value
     expect(secDefault()).toEqual(['duty', 'notes', 'prog', 'waves', 'sims', 'ground', 'inputs', 'avail', 'sans', 'unav'])
-    mem['sqn142_secdefault'] = JSON.stringify(['junk', 42, 'ground'])   // garbage in storage
+    mem['sqn142_u142@secdefault'] = JSON.stringify(['junk', 42, 'ground'])   // garbage in storage
     secDefaultLoad()
     expect(secDefault()).toEqual(['ground', 'notes', 'prog', 'waves', 'duty', 'sims', 'inputs', 'avail', 'sans', 'unav'])  // salvaged + completed
   })
@@ -144,7 +146,7 @@ describe('the default FLYING-WAVE order', () => {
     expect(store.get('wavedefault', null)).toEqual(['sc', 'fly'])
     waveDefaultReset(); waveDefaultLoad()
     expect(waveDefault()).toEqual(['sc', 'fly'])
-    mem['sqn142_wavedefault'] = JSON.stringify(['bb', 'junk', 'sc'])
+    mem['sqn142_u142@wavedefault'] = JSON.stringify(['bb', 'junk', 'sc'])
     waveDefaultLoad()
     expect(waveDefault()).toEqual(['bb', 'sc'])                // salvaged, unknown dropped
   })

@@ -20,11 +20,14 @@
    and handed to tracker.css as `--tr-top`. Hidden, the section is display:none
    and measures 0×0, so the measurement is taken only while active — the same
    rule LeaveWarPage follows for its own re-measure. */
-import { memo, useEffect } from 'react'
+import { memo, useEffect, useLayoutEffect, useState, useSyncExternalStore } from 'react'
+import { createPortal } from 'react-dom'
 import App, { PAGE_ID } from './App.jsx'
 import { wireTrackerPeople } from './peoplewire'
-import { setTrackerSeedDemo } from './app/core.js'
+import * as core from './app/core.js'
 import { seedDemoNow } from '../state/seeds'
+import { subscribeBands, trackerBand } from '../state/typing-hold'
+import { MoveBandView } from '../ui/MoveBand'
 import './tracker.css'
 
 /* The render firewall (LeaveWarPage.tsx has the measured why): every Raptor
@@ -35,7 +38,7 @@ import './tracker.css'
 /* THE BOOT POLICY ([DB-READINESS] group A, phase 5 — D463): the Tracker boots at its first mount, long after Raptor's
    boot, so this page — the seam between the two — tells it the policy Raptor booted with (state/seeds.ts): on a shared
    store it makes no course and no demo student. Set as this chunk loads, before the first mount's init. */
-setTrackerSeedDemo(seedDemoNow())
+core.setTrackerSeedDemo(seedDemoNow())
 /* Wired as this chunk loads, not only on the first mount: the engine's boot (a
    child's effect, which runs BEFORE this page's own) reads the signed-in person to
    open on his own course and student (D376). Idempotent — the mount's call below
@@ -44,6 +47,46 @@ wireTrackerPeople()
 
 const TrBody = memo(function TrBody({ active }: { active: boolean }) {
   return <App active={active} />
+})
+
+/* THE BAND ACROSS THE CHART EDITOR WHEN HIS SQUADRON CHANGES UNDER IT (the reshape plan §3.2 A-iv "Typed work at the swap";
+   his D2243 Q7, "as drawn" — docs/mock/2026-11-20-multi-sqn-reshape/page.html §7, pictures q7c-d and q7c-p, D1478).
+   The Tracker cannot be re-read in place once it has loaded (the plan §14 item 3 — its records sit in module caches of
+   app/core.js; tracker/storage.js rebindStorageUnit): at his move's midnight the schedule and the Leave War move to his
+   new squadron, and this page keeps the squadron it loaded until he signs in again, the gate's 7f refusing his changes
+   to it. So while "Edit chart layout" is open on a Tracker that is no longer his page's own squadron, one band stands
+   across the chart's top, between the editing tools and the editing hint, in the failed-save band's own look
+   (ui/scheduler/17-save-status.css): "You are 149's from today. This can't be saved in 142's Tracker." — the words
+   state/store.ts writes into state/typing-hold.ts — and one button, "Close", the editing row's own button look. Close
+   leaves Edit chart layout as "✓ Done editing chart" does: the edits stay unsaved, never saved by the band, and the bar
+   says they are unsaved. On the iPhone the band takes two lines. Nothing else of the Tracker carries it (the drawing drew
+   the chart editor alone, D1625). Drawn from this page, the seam between the two stores, in a slot of its own put after
+   the editing tools (`.arrwrap`): nothing under app/ or components/ reads Raptor's state (tracker.test.tsx). */
+const TrkMoveBand = memo(function TrkMoveBand() {
+  const band = useSyncExternalStore(subscribeBands, trackerBand, trackerBand)
+  useSyncExternalStore(core.subscribe, core.getVersion)
+  const up = !!band && core.arrangeMode
+  const [slot, setSlot] = useState<HTMLElement | null>(null)
+  useLayoutEffect(() => {
+    const tools = up ? document.querySelector(`#${PAGE_ID} .arrwrap`) : null
+    const host = tools?.parentElement
+    if (!tools || !host) return
+    const el = document.createElement('div')
+    el.className = 'moveband-slot'
+    /* across the chart's top, let out past its column's padding as the board's band is past its bar's */
+    const cs = getComputedStyle(host)
+    const pl = parseFloat(cs.paddingLeft) || 0, pr = parseFloat(cs.paddingRight) || 0
+    el.style.margin = `0 -${pr}px 8px -${pl}px`
+    el.style.width = `calc(100% + ${pl + pr}px)`
+    tools.after(el)
+    setSlot(el)
+    return () => { el.remove(); setSlot(null) }
+  }, [up])
+  if (!band || !up || !slot) return null
+  return createPortal(
+    <MoveBandView band={band} testid="trk-move-band" onClose={() => { if (core.arrangeMode) core.toggleArrange() }} />,
+    slot,
+  )
 })
 
 export function TrackerPage({ active = true }: { active?: boolean }) {
@@ -83,5 +126,5 @@ export function TrackerPage({ active = true }: { active?: boolean }) {
       document.body.classList.remove('tr-on')
     }
   }, [active])
-  return <TrBody active={active} />
+  return <><TrBody active={active} /><TrkMoveBand /></>
 }

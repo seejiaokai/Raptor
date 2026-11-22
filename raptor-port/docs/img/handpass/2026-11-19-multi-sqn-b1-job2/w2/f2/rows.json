@@ -1,0 +1,218 @@
+[
+ [
+  "W2-F ad2",
+  "desktop",
+  "ad2: Users, Ranger's row, type in the sign-in box, Cancel, reopen",
+  "typing gone",
+  "box present true; after reopen reads \"us\"",
+  "PASS",
+  "ad2-01..04"
+ ],
+ [
+  "W2-F ad2",
+  "desktop",
+  "ad2: open Anvil's row, close it by pressing his name again",
+  "closes",
+  "editor visible open: true; after name pressed again: false",
+  "PASS",
+  "ad2-05, ad2-06"
+ ],
+ [
+  "W2-F ad2",
+  "desktop",
+  "ad2: Add a person, calendar open, press outside",
+  "calendar closes, box text kept",
+  "calendar visible before true after false; callsign box: Fad2X",
+  "PASS",
+  "ad2-07, ad2-08"
+ ],
+ [
+  "W2-F ad2",
+  "desktop",
+  "ad2: reopen calendar, pick T+1",
+  "box shows T+1",
+  "post-in box: Fri 20 Nov 26▾",
+  "PASS",
+  "ad2-09"
+ ],
+ [
+  "W2-F ad2",
+  "desktop",
+  "ad2: Hunter's cell 2026-11-24 → day window → ⋯",
+  "the list opens",
+  "list: Grant OIL | Post out",
+  "PASS",
+  "ad2-12"
+ ],
+ [
+  "W2-F ad2",
+  "desktop",
+  "ad2: Grant OIL one day on Hunter (2026-11-24); his row and person window",
+  "row shows FO/HO box; OIL figure rose",
+  "cell reads: FO {duty.act.hasc} ; person window OIL 3.5 (before: OIL 2.5 on the day window) ",
+  "RECORD",
+  "ad2-14, ad2-15, ad2-16"
+ ],
+ [
+  "W2-F ad2",
+  "desktop",
+  "ad2: person window closed by ✕, then reopened and closed by Escape",
+  "both close",
+  "BALANCES visible after ✕: true; after Escape: true",
+  "FAIL",
+  "ad2-18, ad2-19"
+ ],
+ [
+  "ad2-approvals",
+  "desktop",
+  "script step",
+  "completes",
+  "script error: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /Approvals/ }).first()\u001b[22m\n",
+  "OWED",
+  "fail-ad2-approvals.png"
+ ],
+ [
+  "W2-F ad2",
+  "desktop",
+  "ad2: Post out sheet on Hunter 2026-11-26, dismissed by Close",
+  "sheet gone, page under it as it was",
+  "sheet before true after false; day window still showing: false",
+  "PASS",
+  "ad2-22-1a / b"
+ ],
+ [
+  "W2-F ad2",
+  "desktop",
+  "ad2: Post out sheet on Hunter 2026-11-26, dismissed by Escape",
+  "sheet gone, page under it as it was",
+  "sheet before true after false; day window still showing: false",
+  "PASS",
+  "ad2-22-2a / b"
+ ],
+ [
+  "W2-F ad2",
+  "desktop",
+  "ad2: Post out sheet on Hunter 2026-11-26, dismissed by outside press",
+  "sheet gone, page under it as it was",
+  "sheet before true after false; day window still showing: false",
+  "PASS",
+  "ad2-22-3a / b"
+ ],
+ [
+  "W2-F ad2",
+  "desktop",
+  "ad2: Settings (gear) → open, close (Escape)",
+  "opens and closes",
+  "opened; words: ",
+  "RECORD",
+  "ad2-23, ad2-24"
+ ],
+ [
+  "W2-F ad9",
+  "desktop",
+  "ad9: Users, Osprey's row, type in the sign-in box, Cancel, reopen",
+  "typing gone",
+  "box present true; after reopen reads \"us9\"",
+  "PASS",
+  "ad9-01..04"
+ ],
+ [
+  "W2-F ad9",
+  "desktop",
+  "ad9: open Merlin's row, close it by pressing his name again",
+  "closes",
+  "editor visible open: true; after name pressed again: false",
+  "PASS",
+  "ad9-05, ad9-06"
+ ],
+ [
+  "W2-F ad9",
+  "desktop",
+  "ad9: Add a person, calendar open, press outside",
+  "calendar closes, box text kept",
+  "calendar visible before true after false; callsign box: Fad9X",
+  "PASS",
+  "ad9-07, ad9-08"
+ ],
+ [
+  "W2-F ad9",
+  "desktop",
+  "ad9: reopen calendar, pick T+1",
+  "box shows T+1",
+  "post-in box: Fri 20 Nov 26▾",
+  "PASS",
+  "ad9-09"
+ ],
+ [
+  "W2-F ad9",
+  "desktop",
+  "ad9: Merlin's cell 2026-11-24 → day window → ⋯",
+  "the list opens",
+  "list: Grant OIL | Post out",
+  "PASS",
+  "ad9-12"
+ ],
+ [
+  "W2-F ad9",
+  "desktop",
+  "ad9: Grant OIL one day on Merlin (2026-11-24); his row and person window",
+  "row shows FO/HO box; OIL figure rose",
+  "cell reads: FO {duty.act.hasc} ; person window OIL 0 (before: OIL 0 on the day window) ",
+  "RECORD",
+  "ad9-14, ad9-15, ad9-16"
+ ],
+ [
+  "W2-F ad9",
+  "desktop",
+  "ad9: person window closed by ✕, then reopened and closed by Escape",
+  "both close",
+  "BALANCES visible after ✕: true; after Escape: true",
+  "FAIL",
+  "ad9-18, ad9-19"
+ ],
+ [
+  "ad9-approvals",
+  "desktop",
+  "script step",
+  "completes",
+  "script error: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /Approvals/ }).first()\u001b[22m\n",
+  "OWED",
+  "fail-ad9-approvals.png"
+ ],
+ [
+  "W2-F ad9",
+  "desktop",
+  "ad9: Post out sheet on Merlin 2026-11-26, dismissed by Close",
+  "sheet gone, page under it as it was",
+  "sheet before true after false; day window still showing: false",
+  "PASS",
+  "ad9-22-1a / b"
+ ],
+ [
+  "W2-F ad9",
+  "desktop",
+  "ad9: Post out sheet on Merlin 2026-11-26, dismissed by Escape",
+  "sheet gone, page under it as it was",
+  "sheet before true after false; day window still showing: false",
+  "PASS",
+  "ad9-22-2a / b"
+ ],
+ [
+  "W2-F ad9",
+  "desktop",
+  "ad9: Post out sheet on Merlin 2026-11-26, dismissed by outside press",
+  "sheet gone, page under it as it was",
+  "sheet before true after false; day window still showing: false",
+  "PASS",
+  "ad9-22-3a / b"
+ ],
+ [
+  "W2-F ad9",
+  "desktop",
+  "ad9: Settings (gear) → open, close (Escape)",
+  "opens and closes",
+  "opened; words: ",
+  "RECORD",
+  "ad9-23, ad9-24"
+ ]
+]

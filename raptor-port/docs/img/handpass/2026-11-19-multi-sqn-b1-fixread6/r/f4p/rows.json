@@ -1,0 +1,74 @@
+[
+ [
+  "F4",
+  "iPhone",
+  "Saber: Leave War, Ranger's day window, ⋯, Post out, Overseas Sqn chip, Post out",
+  "posted out today (sheet closes, a note)",
+  "sheet words: Ranger Thu 19 Nov Auto-approve ✕ No manning row turns amber or red till 19 Nov Document Whole day AM PM Pick a range LL 11.5 OL 11.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 PO FROM Thu 19 Nov 26 ▾ POSTING ✓ Overseas Sqn Del; Ranger now: {\"cs\":\"Ranger\",\"posted\":null,\"status\":null,\"keys\":[]}; undo: undoBtn disabled=true; redoBtn disabled=true; page words: 142 TALON ↶ ↷ Grid Approvals 13 Balances OIL View My leave LVE 17.5 · OIL 0 · 0 pending › ▸ Manning Bidding closed Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OC",
+  "RECORD",
+  "f4-05-after-post.png"
+ ],
+ [
+  "F4",
+  "iPhone",
+  "Hunter (tab 2): bell after the posting",
+  "a posting line",
+  "dot \"block\"; [\"NEW RangerThu 19 Nov Posted out · off the manpower 16 h\"]",
+  "PASS",
+  "f4-06-hunter-bell.png"
+ ],
+ [
+  "F4",
+  "iPhone",
+  "Saber: top bar Undo",
+  "the posting is taken back",
+  "Ranger now []; undoBtn disabled=true; redoBtn disabled=true; words 142 TALON ↶ ↷ Grid Approvals 13 Balances OIL View My leave LVE 17.5 · OIL 0 · 0 pending › ▸ Manning Bidding closed Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OC",
+  "RECORD",
+  "f4-08-saber-after-undo.png"
+ ],
+ [
+  "F4",
+  "iPhone",
+  "Hunter (tab 2, reopened): bell after the take-back (he had not read it)",
+  "the posting line gone",
+  "dot \"none\"; []",
+  "RECORD",
+  "f4-09-hunter-bell-after-undo.png"
+ ],
+ [
+  "F4",
+  "iPhone",
+  "Ranger (tab 2): bell after the take-back",
+  "RECORD",
+  "dot \"none\"; []",
+  "RECORD",
+  "f4-10-ranger-bell-after-undo.png"
+ ],
+ [
+  "F4",
+  "iPhone",
+  "Saber (tab 2, fresh load): his own bell after pressing Undo post out",
+  "nothing about the posting or its take-back",
+  "dot \"none\"; []",
+  "PASS",
+  "f4-11-saber-bell-after-undo.png"
+ ],
+ [
+  "F5",
+  "iPhone",
+  "Leave War list for Nov: Ranger's cell for today after the take-back",
+  "no posting mark",
+  "cell \"\"",
+  "RECORD",
+  "f5-01-leavewar-ranger-row.png"
+ ],
+ [
+  "F5",
+  "iPhone",
+  "script step",
+  "completes",
+  "script error locator.fill: Timeout 30000ms exceeded.",
+  "OWED",
+  "err-F5.png"
+ ]
+]

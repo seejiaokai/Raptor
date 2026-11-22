@@ -1,0 +1,22 @@
+msq-fr5-f1 v1
+ROW PASS | F1 | iPhone | ad Saber: fresh world, open the bell | saw: open true; words "Nothing new"; line-ish elements 1; bell class "bellbtn"; dot display none w 0 vis visible cls belldot
+ROW PASS | F1 | iPhone | ad: close the bell with its own control | saw: still shown false
+ROW PASS | F1 | iPhone | ad: reopen, tap outside | saw: still shown false
+errors ad []
+ROW PASS | F1 | iPhone | ad2 Hunter: fresh world, open the bell | saw: open true; words "Nothing new"; line-ish elements 1; bell class "bellbtn"; dot display none w 0 vis visible cls belldot
+ROW PASS | F1 | iPhone | ad2: close the bell with its own control | saw: still shown false
+ROW PASS | F1 | iPhone | ad2: reopen, tap outside | saw: still shown false
+errors ad2 []
+ROW PASS | F1 | iPhone | us Ranger: fresh world, open the bell | saw: open true; words "Nothing new"; line-ish elements 1; bell class "bellbtn"; dot display none w 0 vis visible cls belldot
+ROW PASS | F1 | iPhone | us: close the bell with its own control | saw: still shown false
+ROW PASS | F1 | iPhone | us: reopen, tap outside | saw: still shown false
+errors us []
+ROW PASS | F1 | iPhone | ad9 Kestrel: fresh world, open the bell | saw: open true; words "Nothing new"; line-ish elements 1; bell class "bellbtn"; dot display none w 0 vis visible cls belldot
+ROW PASS | F1 | iPhone | ad9: close the bell with its own control | saw: still shown false
+ROW PASS | F1 | iPhone | ad9: reopen, tap outside | saw: still shown false
+errors ad9 []
+ROW PASS | F1 | iPhone | us9 Osprey: fresh world, open the bell | saw: open true; words "Nothing new"; line-ish elements 1; bell class "bellbtn"; dot display none w 0 vis visible cls belldot
+ROW PASS | F1 | iPhone | us9: close the bell with its own control | saw: still shown false
+ROW PASS | F1 | iPhone | us9: reopen, tap outside | saw: still shown false
+errors us9 []
+DONE

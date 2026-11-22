@@ -5,6 +5,8 @@ import { ridKey, posKey } from './rowids'
 import { CURWEEK } from './waves'
 import { dayIso } from './verid'
 import { REPORTING_LABEL } from './reporting'
+import { UNIT, BOOT_UNIT } from './unitview'
+import { homeUnitOf } from './roster'
 
 /* THE EDIT LOG (owner, 11 Aug 26) — who changed which detail, when, and what
    it was before. The board's History toggle reads it two ways: a bubble on
@@ -74,6 +76,11 @@ export type ELogRow = {
                       //   handed to another man, who is in `sub` (state/changelines.ts — 13 Oct 26, so History tells it on his puck))
   sect?: string       // what a line with no key is about — 'abs' (an absence, the Leave War), 'quals', 'day' — which the
                       //   changes window reads to file it under its item (ui/changesmodel.ts itemOf; Group by Where went, D345)
+  u?: string          // the unit (squadron) whose history it is — the unit in view when it was kept (the full check of
+                      //   multi-squadron batch 1, 18 Nov 26: one history for both squadrons showed 149's lines, private
+                      //   reasons included, in 142's changes window, and either squadron's sweep cleared both). The list in
+                      //   memory holds the unit in view's lines only (elogLoad, read again at a unit switch); a saved line
+                      //   with none is the boot unit's (only the demo's stored data has none — D56)
   key: string         // the slot key, '' for a structural note
   lbl: string         // WHAT it was, in words — frozen at log time, see below
   from: string
@@ -168,10 +175,13 @@ export function elogLoad(): void {
   for (const k of store.keys(ROW_PFX)) {
     const x = store.get(k, null)
     if (!x || typeof x !== 'object' || Array.isArray(x) || !Number.isFinite(x.t)) continue
+    /* the unit in view's lines only — another squadron's history is never in the list a reader walks */
+    const u = typeof x.u === 'string' && x.u ? x.u : BOOT_UNIT
+    if (u !== UNIT) continue
     const r: ELogRow = {
       seq: 0, lineId: k.slice(ROW_PFX.length), t: +x.t, who: str(x.who), pid: typeof x.pid === 'string' ? x.pid : null,
       di: Number.isFinite(x.di) ? +x.di : null, date: isoOk(x.date) ? x.date : null,
-      key: str(x.key), lbl: str(x.lbl), from: str(x.from), to: str(x.to),
+      key: str(x.key), lbl: str(x.lbl), from: str(x.from), to: str(x.to), u,
     }
     if (isoOk(x.end)) r.end = x.end
     if (isoOk(x.wdate)) { r.wdate = x.wdate; if (isoOk(x.wend)) r.wend = x.wend }
@@ -208,9 +218,11 @@ export function setElogDefer(fn: ((fn: () => void) => boolean) | null) { DEFER =
    storage as a saved group of its own, with its change-log batch — never a bare write ([DB-READINESS] group A, phase
    4.1/4.3). The state layer installs the door: `(type, fn)` runs `fn` inside a command of that type (state/store.ts
    wireStore); headless, `fn` just runs. `elog.sweep` uses the same door. */
-let DOOR: ((type: string, fn: () => void) => void) | null = null
-export function setElogDoor(fn: ((type: string, fn: () => void) => void) | null) { DOOR = fn }
-function throughDoor(type: string, fn: () => void) { if (DOOR) DOOR(type, fn); else fn() }
+/* (the door answers false when its command was refused — the sweep then answers -1, never its count; anything else it
+   answers, nothing included, is a save that went through) */
+let DOOR: ((type: string, fn: () => void) => boolean | void) | null = null
+export function setElogDoor(fn: ((type: string, fn: () => void) => boolean | void) | null) { DOOR = fn }
+function throughDoor(type: string, fn: () => void): boolean { if (DOOR) return DOOR(type, fn) !== false; fn(); return true }
 /* A LINE GIVEN WITH NO COMMAND RUNNING IS HELD for the rest of the turn ([DB-READINESS] group A, the group-wide walk's
    finding H2, 30 Sep 26). The board's in-place edits and a text box make their change first and open the command that
    saves it right after, so their line used to go out through the door as a SECOND saved group, before the edit's own.
@@ -252,13 +264,16 @@ export function elogAdoptHeld(): void {
    Admin panel's wording promises.
    ONE NAMED COMMAND ([DB-READINESS] group A, phase 4.3 — Astra R2-06): `elog.sweep` deletes EXACTLY the lines it
    swept, each its row, and `said` — the caller's line recording that history was cleared, and by whom — is kept in
-   the same saved group, with one change-log batch. The lines to delete are chosen before anything is removed. */
+   the same saved group, with one change-log batch. The lines to delete are chosen before anything is removed.
+   A SWEEP THE GATE REFUSES answers -1 and leaves the list in memory as it was (helper "left2", 21 Nov 26: a refused
+   sweep once answered its count, and Admin → Data said "Cleared 1 entry"). */
 export function elogSweep(lo: number | null, hi: number | null, dry?: boolean, said?: (n: number) => string | null): number {
   const hit = (r: ELogRow) => (lo == null || r.t >= lo) && (hi == null || r.t < hi)
   const gone = ELOG.rows.filter(hit)
   const n = gone.length
   if (dry || !n) return n
-  throughDoor('elog.sweep', () => {
+  const was = ELOG.rows.slice(), wasNext = ELOG.next
+  const ok = throughDoor('elog.sweep', () => {
     const drop = new Set(gone.map(r => r.lineId))
     const keep = ELOG.rows.filter(r => !drop.has(r.lineId))
     ELOG.rows.length = 0
@@ -267,7 +282,11 @@ export function elogSweep(lo: number | null, hi: number | null, dry?: boolean, s
     const text = said ? said(n) : null
     if (text) logAction(null, text, { date: todayIso(), sect: 'day' })
   })
-  return n
+  if (ok) return n
+  ELOG.rows.length = 0
+  was.forEach(r => ELOG.rows.push(r))
+  ELOG.next = wasNext
+  return -1
 }
 
 /* THE LOG'S ADDRESSES MOVE WITH THE KEY SPACE (audit, 12 Aug 26). A delete
@@ -426,10 +445,30 @@ export function keyLabel(key: any, days: any[] = DAYS): string {
    row deleted in the same write. Held while a command runs (DEFER) — the identity is given when the line is KEPT, so a
    refused command burns none and the order is the order kept; kept with no command running, it goes through the door
    (a saved group of its own, with its batch). */
-function push(row: Omit<ELogRow, 'seq' | 'lineId'>) {
+function push(row: Omit<ELogRow, 'seq' | 'lineId'>, unit?: string) {
+  /* whose history it is, read now, not when a held line is kept: a line about one man with no schedule place (his Quals,
+     his absence, his posting — `sub` with no key) is his own squadron's, wherever it was made from (the master changing a
+     149 man from 142's view filed it in 142's history, which 142's members read — the fix's blind read, F2); any other
+     line, the unit in view's */
+  /* (the fix read, 18 Nov 26 — Astra 3, Opus 3: `sub` is a PERSON only where the roster has him — a mission-role answer's
+     `sub` is its formation's row id, read as a man with no home and filed under the demo's 142; and a writer that knows
+     whose line it is says so — an Undo or Redo of one man's change, filed with the change it takes back) */
+  /* (the second fix read, security H5: a squadron other than the unit in view only where the person giving the line may
+     file there — HOOKS.elogUnitOk; else the unit in view's, as every other line) */
+  /* (the reshape plan §3.2 A-i — the day always given: the line's own date, today when it has none) */
+  const u0 = unit || (row.sub && !row.key && (PEOPLE as any)[row.sub] ? (homeUnitOf(row.sub, isoOk(row.date) ? row.date! : todayIso()) ?? UNIT) : UNIT)
+  /* (job 2 — Astra's 5: the unit in view is asked as well; a line its giver may file in neither is not kept — a View
+     right writes nothing there, and none of his commands there goes through) */
+  /* (job 2's fix read, 1: a line naming nobody — an Undo's or a Redo's own line — that its giver may not file in the
+     squadron in view goes to his own squadron: a 142 member with View of 149, 149 in view, undoing his own input's
+     change, kept no line at all) */
+  const own = HOOKS.elogOwnUnit()
+  const u = HOOKS.elogUnitOk(u0) ? u0 : u0 !== UNIT && HOOKS.elogUnitOk(UNIT) ? UNIT : own && HOOKS.elogUnitOk(own) ? own : null
+  if (u == null) return
   const keep = () => {
-    const r = { ...row, lineId: mintLineId(), seq: ELOG.next++ } as ELogRow
-    ELOG.rows.push(r)
+    const r = { ...row, u, lineId: mintLineId(), seq: ELOG.next++ } as ELogRow
+    /* the list in memory is the unit in view's only (elogLoad); another squadron's line is saved, and read with it */
+    if (u === UNIT) ELOG.rows.push(r)
     writeRow(r)
     while (ELOG.rows.length > ELOG.cap) dropRow(ELOG.rows.shift()!)
   }
@@ -472,6 +511,7 @@ export type LineAt = {
   iid?: string | null; itype?: string; iname?: string; grp?: string; key?: string; sect?: string; from?: string; to?: string; sub?: string; fld?: string
   iids?: string[]; days?: string[]; wdays?: string[]
   one?: 1 | boolean
+  unit?: string       // whose history the line is, where its writer knows it (an Undo / Redo of one man's change) — never stored as such: it becomes the row's `u`
 }
 export function logAction(di: any, text: string, at?: LineAt) {
   const d = di == null ? null : +di
@@ -498,7 +538,7 @@ export function logAction(di: any, text: string, at?: LineAt) {
   if (at && at.iids && at.iids.length > 1) row.iids = at.iids.slice()
   if (at && at.days && at.days.length) row.days = at.days.slice()
   if (at && at.wdays && at.wdays.length) row.wdays = at.wdays.slice()
-  push(row)
+  push(row, (at && at.unit) || undefined)
 }
 
 /* newest first, optionally narrowed to one day — the listed view's whole

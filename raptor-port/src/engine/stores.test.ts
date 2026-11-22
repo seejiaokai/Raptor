@@ -138,10 +138,12 @@ describe('reordering', () => {
   })
 })
 
+/* a unit's setting is stored under its unit (multi-squadron batch 1, step 2 — engine/hooks.ts storedKey): the boot unit's
+   `stores` is the stored key `sqn142_u142@stores` */
 describe('persistence', () => {
   it('writes nothing while the list is standard', () => {
     storesSave()
-    expect(mem['sqn142_stores']).toBe(JSON.stringify(null))
+    expect(mem['sqn142_u142@stores']).toBe(JSON.stringify(null))
   })
   it('round-trips a customised list, order and labels intact', () => {
     renameStore('tk2', '2 TANKS'); delStore('cl'); addStore('LGB'); moveStore(0, 3)
@@ -163,7 +165,7 @@ describe('persistence', () => {
     for (const [k] of STORE_CFG.slice()) delStore(k)
     expect(STORE_CFG).toEqual([])
     storesSave()
-    expect(mem['sqn142_stores'], 'the writer stores the empty list').toBe('[]')
+    expect(mem['sqn142_u142@stores'], 'the writer stores the empty list').toBe('[]')
     addStore('DIVERGE')
     storesLoad()
     expect(STORE_CFG, 'the standard six do not come back').toEqual([])
@@ -178,7 +180,7 @@ describe('persistence', () => {
 })
 
 describe('a hand-edited blob is untrusted — see rulesLoad on isFinite("840")', () => {
-  const load = (raw: any) => { mem['sqn142_stores'] = JSON.stringify(raw); storesLoad() }
+  const load = (raw: any) => { mem['sqn142_u142@stores'] = JSON.stringify(raw); storesLoad() }
   it('falls back to standard when the blob is not an array', () => {
     /* diverge the LIVE list first — storesReset() in beforeEach already
        leaves it standard, so without this the assertion below would pass
@@ -215,7 +217,7 @@ describe('a hand-edited blob is untrusted — see rulesLoad on isFinite("840")',
   })
   it('survives a corrupt JSON string without throwing', () => {
     addStore('DIVERGE')
-    mem['sqn142_stores'] = '{not json'
+    mem['sqn142_u142@stores'] = '{not json'
     expect(() => storesLoad()).not.toThrow()
     expect(storesAreStandard()).toBe(true)
   })

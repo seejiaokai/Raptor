@@ -1,0 +1,9 @@
+msq-j2-host-c v1
+name boxes 5
+msq-j2-host-c v2
+after save [{"k":"raptor:settings/elog:mwmg32mlgy1v.000002","u":"u149","sub":"fal9","fld":"cs","lbl":"Falcon · callsign","date":"2026-11-19"},{"k":"raptor:settings/elog:mwmg32mlgy1v.000001","u":"u149","sub":"fal9","fld":"archived","lbl":"Falcon · archived","date":"2026-11-19"}]
+after undo [{"k":"raptor:settings/elog:mwmg32mlgy1v.000002","u":"u149","sub":"fal9","fld":"cs","lbl":"Falcon · callsign","date":"2026-11-19"},{"k":"raptor:settings/elog:mwmg32mlgy1v.000003","u":"u149","lbl":"Undo — Falcon’s callsign","date":"2026-11-19"},{"k":"raptor:settings/elog:mwmg32mlgy1v.000001","u":"u149","sub":"fal9","fld":"archived","lbl":"Falcon · archived","date":"2026-11-19"}]
+after redo [{"k":"raptor:settings/elog:mwmg32mlgy1v.000004","u":"u149","lbl":"Redo — Falcon’s callsign","date":"2026-11-19"},{"k":"raptor:settings/elog:mwmg32mlgy1v.000002","u":"u149","sub":"fal9","fld":"cs","lbl":"Falcon · callsign","date":"2026-11-19"},{"k":"raptor:settings/elog:mwmg32mlgy1v.000003","u":"u149","lbl":"Undo — Falcon’s callsign","date":"2026-11-19"},{"k":"raptor:settings/elog:mwmg32mlgy1v.000001","u":"u149","sub":"fal9","fld":"archived","lbl":"Falcon · archived","date":"2026-11-19"}]
+ROW PASS | W1-C host | desktop | ad: archive Falcon, Save name FalconQ, Undo, Redo; the saved history lines about him | saw: [["u149",null,"Redo — Falcon’s callsign"],["u149","cs","Falcon · callsign"],["u149",null,"Undo — Falcon’s callsign"],["u149","archived","Falcon · archived"]]
+errors []
+DONE 1 PASS 0 FAIL 0 OTHER of 1

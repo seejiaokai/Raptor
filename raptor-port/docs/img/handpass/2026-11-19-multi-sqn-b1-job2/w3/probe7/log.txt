@@ -1,0 +1,86 @@
+msq-j2-w3-probe7 v1
+USERS:
+BUTTON#.adm-back[Back to categories]@31,77,32x32
+INPUT#accFind.[Find a callsign or sign-in]@69,244,285x17
+BUTTON#.acc-main acc-tap[Aceno sign-in · Pilot · CAT A]@37,308,216x29
+BUTTON#.acc-main acc-tap[Anvilno sign-in · Pilot · CAT IP]@37,354,216x29
+BUTTON#.acc-main acc-tap[Basherno sign-in · WSO · CAT IW]@37,400,216x29
+BUTTON#.acc-main acc-tap[Bladeno sign-in · Pilot · CAT IP]@37,446,216x29
+BUTTON#.acc-main acc-tap[Boltno sign-in · Pilot · CAT C]@37,492,216x29
+BUTTON#.acc-main acc-tap[Cinchno sign-in · Pilot · CAT IP]@37,538,216x29
+BUTTON#.acc-main acc-tap[Cinderno sign-in · WSO · CAT B]@37,584,216x29
+BUTTON#.acc-main acc-tap[Cobrano sign-in · Pilot · CAT IP]@37,630,216x29
+BUTTON#.acc-main acc-tap[Cometno sign-in · Pilot · CAT IP]@37,676,216x29
+BUTTON#.acc-main acc-tap[Condorno sign-in · Pilot · CAT OCU]@37,722,216x29
+BUTTON#.acc-main acc-tap[Cotterno sign-in · Personnel]@37,768,216x29
+BUTTON#.acc-main acc-tap[Cutterno sign-in · WSO · CAT C]@37,814,216x29
+BUTTON#.acc-main acc-tap[Dashno sign-in · WSO · CAT C]@37,860,216x29
+BUTTON#.acc-main acc-tap[Dieselno sign-in · Pilot · CAT D]@37,906,216x29
+BUTTON#.acc-main acc-tap[Drifterno sign-in · Pilot · CAT A]@37,952,216x29
+BUTTON#.acc-main acc-tap[Echono sign-in · WSO · CAT IW]@37,998,216x29
+BUTTON#.acc-main acc-tap[Fableno sign-in · WSO · CAT C]@37,1044,216x29
+BUTTON#.acc-main acc-tap[Falconno sign-in · WSO · CAT IW]@37,1090,216x29
+BUTTON#.acc-main acc-tap[Forgeno sign-in · Pilot · CAT IP]@37,1136,216x29
+BUTTON#.acc-main acc-tap[Gambitno sign-in · Pilot · CAT C]@37,1182,216x29
+BUTTON#.acc-main acc-tap[Gannetno sign-in · WSO · CAT OCU]@37,1228,216x29
+BUTTON#.acc-main acc-tap[Ghostno sign-in · WSO · CAT C]@37,1274,216x29
+BUTTON#.acc-main acc-tap[Gritno sign-in · WSO · CAT C]@37,1320,216x29
+BUTTON#.acc-main acc-tap[Harrierno sign-in · Pilot · CAT C]@37,1366,216x29
+BUTTON#.acc-main acc-tap[Havocno sign-in · Pilot · CAT IP]@37,1412,216x29
+BUTTON#.acc-main acc-tap[Heronno sign-in · WSO · CAT A]@37,1458,216x29
+BUTTON#.acc-main acc-tap[Hexhex · Member · WSO · CAT C]@37,1504,216x29
+BUTTON#.acc-main acc-tap[Hunterad2 · Admin · Pilot · CAT IP]@37,1550,216x29
+BUTTON#.acc-main acc-tap[Jesterno sign-in · Pilot · CAT B]@37,1596,216x29
+BUTTON#.acc-main acc-tap[Kestrelad9 · Admin · Pilot · CAT IPyou]@37,1642,216x30
+BUTTON#.acc-main acc-tap[Krakenno sign-in · Pilot · CAT D]@37,1689,216x29
+BUTTON#.acc-main acc-tap[Ledgerno sign-in · WSO · CAT IW]@37,1735,216x29
+BUTTON#.acc-main acc-tap[Marlinno sign-in · WSO · CAT A]@37,1781,216x29
+BUTTON#.acc-main acc-tap[Merlinno sign-in · Pilot · CAT B]@37,1827,216x29
+BUTTON#.acc-main acc-tap[Nomadno sign-in · Pilot · CAT C]@37,1873,216x29
+BUTTON#.acc-main acc-tap[Ospreyus9 · Member · Pilot · CAT A]@37,1919,216x29
+BUTTON#.acc-main acc-tap[Otterno sign-in · WSO · CAT D]@37,1965,216x29
+BUTTON#.acc-main acc-tap[Outlawoutlaw · Member · Pilot · CAT C]@37,2011,216x29
+BUTTON#.acc-main acc-tap[Pistonno sign-in · Pilot · CAT IP]@37,2057,216x29
+BUTTON#.acc-main acc-tap[Pixelno sign-in · WSO · CAT D]@37,2103,216x29
+BUTTON#.acc-main acc-tap[Quillno sign-in · WSO · CAT IW]@37,2149,216x29
+BUTTON#.acc-main acc-tap[Rangerus · Member · Pilot · CAT IP]@37,2195,216x29
+BUTTON#.acc-main acc-tap[Ratchetno sign-in · Personnel]@37,2241,216x29
+BUTTON#.acc-main acc-tap[Ravenno sign-in · WSO · CAT B]@37,2287,216x29
+BUTTON#.acc-main acc-tap[Reaperno sign-in · Pilot · CAT IR]@37,2333,216x29
+BUTTON#.acc-main acc-tap[Rebelno sign-in · Pilot · CAT B]@37,2379,216x29
+BUTTON#.acc-main acc-tap[Reconno sign-in · Pilot · CAT OCU]@37,2425,216x29
+BUTTON#.acc-main acc-tap[Relayno sign-in · WSO · CAT IW]@37,2471,216x29
+BUTTON#.acc-main acc-tap[Ridgeno sign-in · Pilot · CAT C]@37,2517,216x29
+BUTTON#.acc-main acc-tap[Runeno sign-in · WSO · CAT B]@37,2563,216x29
+BUTTON#.acc-main acc-tap[Ryderno sign-in · WSO · CAT C]@37,2609,216x29
+BUTTON#.acc-main acc-tap[Saberad · Admin · Pilot · CAT IP]@37,2655,216x29
+BUTTON#.acc-main acc-tap[Saintno sign-in · Pilot · CAT B]@37,2701,216x29
+BUTTON#.acc-main acc-tap[Scopeno sign-in · WSO · CAT IW]@37,2747,216x29
+BUTTON#.acc-main acc-tap[Scribeno sign-in · WSO · CAT D]@37,2793,216x29
+BUTTON#.acc-main acc-tap[Shrikeno sign-in · WSO · CAT C]@37,2839,216x29
+BUTTON#.acc-main acc-tap[Sidewinderno sign-in · Pilot · CAT IP]@37,2885,216x29
+BUTTON#.acc-main acc-tap[Staticno sign-in · WSO · CAT IW]@37,2931,216x29
+BUTTON#.acc-main acc-tap[Talismanno sign-in · Pilot · CAT OCU]@37,2977,216x29
+BUTTON#.acc-main acc-tap[Tallyno sign-in · WSO · CAT OCU]@37,3023,216x29
+BUTTON#.acc-main acc-tap[Torchno sign-in · Pilot · CAT C]@37,3069,216x29
+BUTTON#.acc-main acc-tap[Tridentno sign-in · Pilot · CAT IP]@37,3115,216x29
+BUTTON#.acc-main acc-tap[Vandalno sign-in · Pilot · CAT IP]@37,3161,216x29
+BUTTON#.acc-main acc-tap[Vaporno sign-in · Pilot · CAT D]@37,3207,216x29
+BUTTON#.acc-main acc-tap[Vectorno sign-in · WSO · CAT C]@37,3253,216x29
+BUTTON#.acc-main acc-tap[Wardenno sign-in · Pilot · CAT IP]@37,3299,216x29
+BUTTON#.acc-main acc-tap[Widgetno sign-in · Personnel]@37,3345,216x29
+BUTTON#.acc-main acc-tap[Wildcardno sign-in · Pilot · CAT OCU]@37,3391,216x29
+BUTTON#.acc-main acc-tap[Wispno sign-in · WSO · CAT C]@37,3437,216x29
+BUTTON#.acc-main acc-tap[Zenithno sign-in · Pilot · CAT C]@37,3483,216x29
+BUTTON#.acc-main acc-tap[Zuluno sign-in · WSO · CAT OCU]@37,3529,216x29
+INPUT#accAddCs.[]@37,3639,159x40
+INPUT#accAddIni.[]@206,3639,159x40
+SELECT#accAddSeat.[Pick…PilotWSOPersonnel (ground crew)]@37,3715,159x40
+SELECT#accAddCat.[Pick…]@206,3715,159x40
+INPUT#accAddName.[blank if he won't use the app]@37,3780,159x40
+BUTTON#accAddPostIn.datebox[Post in: Thu 19 Nov 2026]@206,3780,159x40
+BUTTON#accAdd.abtn primary[Add person]@37,3831,328x28
+INPUT#admGuestView.[]@39,3960,16x16
+add count 0
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

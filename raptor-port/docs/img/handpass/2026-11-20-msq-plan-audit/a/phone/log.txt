@@ -1,0 +1,96 @@
+msq-pa-a-s1 v1 iPhone PART=abc
+S1a after Suspend {"row":{"signin":"r","roster":"g","badge":"Member","header":"Osprey us9 · Member · Pilot · CAT A","cls":"acc-row od-row","editWords":""},"toast":"Osprey suspended","dlg":[],"sr":"Osprey suspended"}
+ROW PASS | S1a | iPhone | Osprey row, Suspend | saw: toast=Osprey suspended dot=r
+buttons #burger: | #undoBtn:↶ | #redoBtn:↷ | #fastSync: | #notifyBell: | #exportSched: | #exportPdf: | #editSchedMore: | ‹ | Osprey us9 · Member · Pilot · CAT A | #accEdSave:Save | #accEdOnOff:Enable | #accEdArchive:Archive | #accEdDel:Delete | #accEdCancel:Cancel | #accAddPostIn:Fri 20 Nov 26 ▾ | #accAdd:Add person
+S1a after Enable {"row":{"signin":"g","roster":"g","badge":"Member","header":"Osprey us9 · Member · Pilot · CAT A","cls":"acc-row od-row","editWords":""},"toast":"Osprey can sign in again","dlg":[],"sr":"Osprey can sign in again"}
+ROW PASS | S1a | iPhone | Osprey row, Enable | saw: toast=Osprey can sign in again dot=g
+S1a after Undo {"row":{"signin":"r","roster":"g","badge":"Member","header":"Osprey us9 · Member · Pilot · CAT A","cls":"acc-row od-row","editWords":""},"toast":"Undid: enabling Osprey’s sign-in","dlg":[],"sr":"Undid: enabling Osprey’s sign-in"}
+ROW RECORDED | S1a | iPhone | top bar Undo | saw: toast=Undid: enabling Osprey’s sign-in dot=r
+S1a after Redo {"row":{"signin":"g","roster":"g","badge":"Member","header":"Osprey us9 · Member · Pilot · CAT A","cls":"acc-row od-row","editWords":""},"toast":"Redid: enabling Osprey’s sign-in","dlg":[],"sr":"Redid: enabling Osprey’s sign-in"}
+ROW RECORDED | S1a | iPhone | top bar Redo | saw: toast=Redid: enabling Osprey’s sign-in dot=g
+S1b after Save {"row":{"signin":"g","roster":"g","badge":"Admin","header":"Osprey us9 · Admin · Pilot · CAT A","cls":"acc-row od-row","editWords":""},"toast":"Saved","dlg":[],"sr":"Saved"}
+ROW PASS | S1b | iPhone | Role Admin, Save | saw: toast=Saved badge=Admin header=Osprey us9 · Admin · Pilot · CAT A
+S1b after Undo {"row":{"signin":"g","roster":"g","badge":"Member","header":"Osprey us9 · Member · Pilot · CAT A","cls":"acc-row od-row","editWords":""},"toast":"Undid: Osprey’s role","dlg":[],"sr":"Undid: Osprey’s role"}
+ROW RECORDED | S1b | iPhone | top bar Undo | saw: toast=Undid: Osprey’s role badge=Member header=Osprey us9 · Member · Pilot · CAT A
+buttons before archive #burger: | #undoBtn:↶ | #redoBtn:↷ | #fastSync: | #notifyBell: | #exportSched: | #exportPdf: | #editSchedMore: | ‹ | Osprey us9 · Member · Pilot · CAT A | #accEdSave:Save | #accEdOnOff:Suspend | #accEdArchive:Archive | #accEdDel:Delete | #accEdCancel:Cancel | #accAddPostIn:Fri 20 Nov 26 ▾ | #accAdd:Add person
+S1c after Archive tap {"row":{"signin":"r","roster":"r","badge":"Member","header":"Osprey us9 · Pilot · CAT A Archived 20 Nov 26 by Hunter","cls":"acc-row od-row","editWords":""},"toast":"Osprey archived — his sign-in is suspended","dlg":[],"sr":"Osprey archived — his sign-in is suspended"}
+buttons after archive tap #burger: | #undoBtn:↶ | #redoBtn:↷ | #fastSync: | #notifyBell: | #exportSched: | #exportPdf: | #editSchedMore: | ‹ | #accArchToggle:▾ Archived · 1 | Osprey us9 · Pilot · CAT A Archived 20 Nov 26 by Hunter | #accAddPostIn:Fri 20 Nov 26 ▾ | #accAdd:Add person
+S1c page text near ‹ USERS WAITING FOR ACCESS Nobody is waiting for access. PEOPLE · 70 SIGN-IN ROSTER Nobody matches. ▾ Archived · 1 SIGN-IN ROSTER Osprey us9 · Pilot · CAT A Archived 20 Nov 26 by Hunter ADD A PERSON CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL CAT SIGN-IN (DEFENCE MAIL) POST IN Fri 20 Nov 26 ▾ Add person Makes his Quals row, and his sign-in if you give one. The Leave War counts him from the post-in date. GUEST VIEW Let people waiting for access view the schedule (read only)
+ROW RECORDED | S1c | iPhone | Archive tap 1 | saw: toast=Osprey archived — his sign-in is suspended dlg=[] edit=
+stop-point: leaving world open? no — closing
+errors []
+msq-pa-a-s1c v1 iPhone
+ROW PASS | S1c | iPhone | Archive (no question asked; done on first tap) | saw: toast=Osprey archived — his sign-in is suspended header=Osprey us9 · Pilot · CAT A Archived 20 Nov 26 by Hunter
+archived list read {"row":{"signin":"r","roster":"r","badge":"Member","header":"Osprey us9 · Pilot · CAT A Archived 20 Nov 26 by Hunter","cls":"acc-row od-row","editWords":""},"toast":"Osprey archived — his sign-in is suspended","dlg":[],"sr":"Osprey archived — his sign-in is suspended"}
+buttons ‹ | Ace no sign-in · Pilot · CAT A | Anvil no sign-in · Pilot · CAT IP | Basher no sign-in · WSO · CAT IW | Blade no sign-in · Pilot · CAT IP | Bolt no sign-in · Pilot · CAT C | Cinch no sign-in · Pilot · CAT IP | Cinder no sign-in · WSO · CAT B | Cobra no sign-in · Pilot · CAT IP | Comet no sign-in · Pilot · CAT IP | Condor no sign-in · Pilot · CAT OCU | Cotter no sign-in · Personnel | Cutter no sign-in · WSO · CAT C | Dash no sign-in · WSO · CAT C | Diesel no sign-in · Pilot · CAT D | Drifter no sign-in · Pilot · CAT A | Echo no sign-in · WSO · CAT IW | Fable no sign-in · WSO · CAT C | Falcon no sign-in · WSO · CAT IW | Forge no sign-in · Pilot · CAT IP | Gambit no sign-in · Pilot · CAT C | Gannet no sign-in · WSO · CAT OCU | Ghost no sign-in · WSO · CAT C | Grit no sign-in · WSO · CAT C | Harrier no sign-in · Pilot · CAT C | Havoc no sign-in · Pilot · CAT IP | Heron no sign-in · WSO ·
+restore buttons 1
+after restore {"row":{"signin":"g","roster":"g","badge":"Member","header":"Osprey us9 · Member · Pilot · CAT A","cls":"acc-row od-row","editWords":""},"toast":"Osprey restored — he can sign in, and he'll be asked to check his quals and CAT","dlg":[],"sr":"Osprey restored — he can sign in, and he'll be asked to check his quals and CAT"} buttons ‹ | Ace no sign-in · Pilot · CAT A | Anvil no sign-in · Pilot · CAT IP | Basher no sign-in · WSO · CAT IW | Blade no sign-in · Pilot · CAT IP | Bolt no sign-in · Pilot · CAT C | Cinch no sign-in · Pilot · CAT IP | Cinder no sign-in · WSO · CAT B | Cobra no sign-in · Pilot · CAT IP | Comet no sign-in · Pilot · CAT IP | Condor no sign-in · Pilot · CAT OCU | Cotter no sign-in · Personnel | Cutter no sign-in · WSO · CAT C | Dash no sign-in · WSO · CAT C | Diesel no sign-in · Pilot · CAT D | Drifter no sign-in · Pilot · CAT A | Echo no sign-in · WSO · CAT IW | Fable no sign-in · WSO · CAT C | Falcon no sign-in · WSO · CAT IW | Forge no sign-in · Pilot · CAT IP | Gambit no sign-in · Pilot · CAT C | Gannet no sign-in · WSO · CAT OCU | Ghost no sign-in · WSO · CAT C | Grit no sign-in · WSO · CAT C | Harrier no sign-in · Pilot · CAT C | Havoc no sign-in · Pilot · CAT IP | Heron no sign-in · WSO ·
+ROW RECORDED | S1c | iPhone | archived row opened, Restore | saw: toast=Osprey restored — he can sign in, and he'll be asked to check his quals and CAT header=Osprey us9 · Member · Pilot · CAT A signin=g roster=g
+errors []
+after delete tap1 {"row":{"signin":"g","roster":"g","badge":"Member","header":"Osprey us9 · Member · Pilot · CAT A","cls":"acc-row od-row od-row-on","editWords":"SIGN-IN (DEFENCE MAIL) ROLE Save Suspend Archive Tap again to delete Osprey Cancel Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone."},"toast":"","dlg":[],"sr":""} buttons ‹ | Osprey us9 · Member · Pilot · CAT A | #accEdSave:Save | #accEdOnOff:Suspend | #accEdArchive:Archive | #accEdDel:Tap again to delete Osprey | #accEdCancel:Cancel | #accAddPostIn:Fri 20 Nov 26 ▾ | #accAdd:Add person
+ROW RECORDED | S1d | iPhone | Delete, first tap | saw: toast= dlg=[] edit=SIGN-IN (DEFENCE MAIL) ROLE Save Suspend Archive Tap again to delete Osprey Cancel Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone. btn=Tap again to delete Osprey
+after delete tap2 {"row":"NO ROW","toast":"Osprey deleted","dlg":[],"sr":"Osprey deleted"}
+ROW PASS | S1d | iPhone | Delete, second tap | saw: toast=Osprey deleted dlg=[] row=NO ROW (gone)
+errors []
+msq-pa-a-s234 v1 iPhone
+S2 list contains Osprey? 1
+S2 Osprey rows after search 1
+S2 after suspend {"row":{"signin":"g","roster":"g","badge":"Member","header":"Osprey us9 · Member · Pilot · CAT A","cls":"acc-row od-row od-row-on","editWords":"SIGN-IN (DEFENCE MAIL) ROLE Save Suspend Archive Delete Cancel"},"toast":"He is 149's. Only an admin of 149 can change his account.","dlg":[],"sr":"He is 149's. Only an admin of 149 can change his account."}
+ROW PASS | S2 | iPhone | Hunter (no Plan): Osprey Suspend | saw: toast=He is 149's. Only an admin of 149 can change his account. dot=g
+S2 after archive {"row":{"signin":"g","roster":"g","badge":"Member","header":"Osprey us9 · Member · Pilot · CAT A","cls":"acc-row od-row od-row-on","editWords":"SIGN-IN (DEFENCE MAIL) ROLE Save Suspend Archive Delete Cancel"},"toast":"He is 149's. Only an admin of 149 can change him.","dlg":[],"sr":"He is 149's. Only an admin of 149 can change him."}
+ROW RECORDED | S2 | iPhone | Hunter (no Plan): Osprey Archive | saw: toast=He is 149's. Only an admin of 149 can change him. header=Osprey us9 · Member · Pilot · CAT A
+errors []
+S3 after Kestrel suspend {"row":{"signin":"g","roster":"g","badge":"Admin","header":"Kestrel ad9 · Admin · Pilot · CAT IP","cls":"acc-row od-row od-row-on","editWords":"SIGN-IN (DEFENCE MAIL) ROLE Save Suspend Archive Delete Cancel"},"toast":"Kestrel is 149's last admin. Make another admin of 149 first.","dlg":[],"sr":"Kestrel is 149's last admin. Make another admin of 149 first."}
+ROW PASS | S3 | iPhone | Plan: Kestrel Suspend | saw: toast=Kestrel is 149's last admin. Make another admin of 149 first. dot=g
+S3 Osprey admin {"row":{"signin":"g","roster":"g","badge":"Admin","header":"Osprey us9 · Admin · Pilot · CAT A","cls":"acc-row od-row","editWords":""},"toast":"Saved","dlg":[],"sr":"Saved"}
+ROW PASS | S3 | iPhone | Plan: Osprey role Admin, Save | saw: toast=Saved badge=Admin
+S3 Kestrel suspend again {"row":{"signin":"r","roster":"g","badge":"Admin","header":"Kestrel ad9 · Admin · Pilot · CAT IP","cls":"acc-row od-row","editWords":""},"toast":"Kestrel suspended","dlg":[],"sr":"Kestrel suspended"}
+ROW RECORDED | S3 | iPhone | Plan: Kestrel Suspend again (Osprey now admin) | saw: toast=Kestrel suspended dot=r
+S4 Saber suspend {"row":{"signin":"g","roster":"g","badge":"Admin","header":"Saber ad · Admin · Pilot · CAT IP","cls":"acc-row od-row od-row-on","editWords":"SIGN-IN (DEFENCE MAIL) ROLE Save Suspend Archive Delete Cancel"},"toast":"Only a master admin can do that","dlg":[],"sr":"Only a master admin can do that"}
+ROW PASS | S4 | iPhone | Plan: Saber (master admin) Suspend | saw: toast=Only a master admin can do that dot=g
+S4 Saber role save {"row":{"signin":"g","roster":"g","badge":"Admin","header":"Saber ad · Admin · Pilot · CAT IP","cls":"acc-row od-row od-row-on","editWords":"SIGN-IN (DEFENCE MAIL) ROLE Save Suspend Archive Delete Cancel"},"toast":"Only a master admin can do that","dlg":[],"sr":"Only a master admin can do that"}
+ROW RECORDED | S4 | iPhone | Plan: Saber Role Member, Save | saw: toast=Only a master admin can do that badge=Admin
+errors []
+msq-pa-a-s5 v1 iPhone
+Osprey signed in
+person select options none
+person select not set: page.selectOption: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locat
+inputs rows ["LATE No document All day OspreyLL"]
+Osprey signed out
+s5-4-kestrel-bell {"badge":{"dot":"none","text":"","aria":"Notifications"},"lines":[],"all":"Nothing new"}
+ROW RECORDED | S5 | iPhone | Kestrel (149 admin) opens the bell after Osprey filed LL | saw: badge={"dot":"none","text":"","aria":"Notifications"} list=Nothing new
+s5-5-hunter-bell {"badge":{"dot":"none","text":"","aria":"Notifications"},"lines":[],"all":"Nothing new"}
+ROW RECORDED | S5 | iPhone | Hunter (Plan of 149) opens the bell | saw: badge={"dot":"none","text":"","aria":"Notifications"} list=Nothing new
+archive toast Osprey archived — his sign-in is suspended
+s5-7-kestrel-bell-after-archive {"badge":{"dot":"none","text":"","aria":"Notifications"},"lines":[],"all":"Nothing new"}
+ROW RECORDED | S5 | iPhone | Hunter archived Osprey; Kestrel opens the bell | saw: badge={"dot":"none","text":"","aria":"Notifications"} list=Nothing new
+Kestrel LeaveWar (Osprey archived) {"osprey":true,"kestrel":true,"hunter":false,"saber":false,"len":5385,"head":"Grid Approvals Balances OIL VIEW MY LEAVE LVE 0 · OIL 0 · 0 pending › ▸ Manning Bidding closed Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC 2026 CS/Name +LVE JUN MON 01 TUE 02 WED 03 THU 04 FRI 05 SAT 06 SUN 07 MON 08 TUE 09 WED 10 THU 11 FRI 12 SAT 13 SUN 14 MON 15 TUE 16 WED 17 THU 18 FR"}
+ROW RECORDED | Round | iPhone | Kestrel: Leave War while Osprey archived | saw: {"osprey":true,"kestrel":true,"hunter":false,"saber":false,"len":5385,"head":"Grid Approvals Balances OIL VIEW MY LEAVE LVE 0 · OIL 0 · 0 pending › ▸ Manning Bidding closed Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC 2026 CS/Name +LVE JUN MON 01 TUE 02 WED 03 THU 04 FRI 05 SAT 06 SUN 07 MON 08 TUE 09 WED 10 THU 11 FRI 12 SAT 13 SUN 14 MON 15 TUE 16 WED 17 THU 18 FR"}
+restore toast Osprey restored — he can sign in, and he'll be asked to check his quals and CAT
+ROW RECORDED | Round | iPhone | Kestrel: Leave War after Osprey restored | saw: {"osprey":true,"kestrel":true,"hunter":false,"saber":false,"len":5167,"head":"Grid Approvals Balances OIL VIEW MY LEAVE LVE 0 · OIL 0 · 0 pending › ▸ Manning Bidding closed Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC 2026 CS/Name +LVE JUN MON 01 TUE 02 WED 03 THU 04 FRI 05 SAT 06 SUN 07 MON 08 TUE 09 WED 10 THU 11 FRI 12 SAT 13 SUN 14 MON 15 TUE 16 WED 17 THU 18 FR"}
+s5-9-kestrel-bell-after-restore {"badge":{"dot":"none","text":"","aria":"Notifications"},"lines":[],"all":"Nothing new"}
+ROW RECORDED | S5 | iPhone | after restore, Kestrel opens the bell | saw: badge={"dot":"none","text":"","aria":"Notifications"} list=Nothing new
+errors []
+msq-pa-a-s6 v1 iPhone
+S6 inputs {"page":"inputs","n":{"osprey":false,"kestrel":false,"hunter":false,"saber":false,"ranger":false,"has149only":false},"head":"Inputs Inputs SANS Medical 2 1 + Input 20 Nov → 4 Dec Calendar List Filters No inputs 20 Nov – 4 Dec. Try All dates.","people":73}
+ROW RECORDED | S6 | iPhone | Hunter (Plan of 149): inputs page, whose people | saw: page=inputs Osprey(149)=false Kestrel(149)=false Hunter=false Saber=false Ranger=false head=Inputs Inputs SANS Medical 2 1 + Input 20 Nov → 4 Dec Calendar List Filters No inputs 20 Nov – 4 Dec. Try All dates.
+S6 leavewar {"page":"leavewar","n":{"osprey":false,"kestrel":false,"hunter":true,"saber":true,"ranger":true,"has149only":false},"head":"Grid Approvals 13 Balances OIL VIEW MY LEAVE LVE 20.5 · OIL 2.5 · 0 pending › ▸ Manning Bidding closed Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC 2026 CS/Name +LVE JUL WED 01 THU 02 FRI 03 SAT 04 SUN 05 MON 06 TUE 07 WED 08 THU 09 FRI 10 ","people":73}
+ROW RECORDED | S6 | iPhone | Hunter (Plan of 149): leavewar page, whose people | saw: page=leavewar Osprey(149)=false Kestrel(149)=false Hunter=true Saber=true Ranger=true head=Grid Approvals 13 Balances OIL VIEW MY LEAVE LVE 20.5 · OIL 2.5 · 0 pending › ▸ Manning Bidding closed Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC 2026 CS/Name +LVE JUL WED 01 THU 02 FRI 03 SAT 04 SUN 05 MON 06 TUE 07 WED 08 THU 09 FRI 10 
+S6 quals {"page":"quals","n":{"osprey":false,"kestrel":false,"hunter":true,"saber":true,"ranger":true,"has149only":false},"head":"Edit Export to ExcelExport VIEWING Pilots WSOs Personnel All + Add person CALLSIGN/NAME▲ INITIALSFLIGHTCATSANSSXOMANAGEMENTSCHEDULERSC DAYSC NIGHTDAARNAARNVGIMCTFREMARKS ASSIGNED PILOTS · 34 Ace AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL Anvil IPIP ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓","people":73}
+ROW RECORDED | S6 | iPhone | Hunter (Plan of 149): quals page, whose people | saw: page=quals Osprey(149)=false Kestrel(149)=false Hunter=true Saber=true Ranger=true head=Edit Export to ExcelExport VIEWING Pilots WSOs Personnel All + Add person CALLSIGN/NAME▲ INITIALSFLIGHTCATSANSSXOMANAGEMENTSCHEDULERSC DAYSC NIGHTDAARNAARNVGIMCTFREMARKS ASSIGNED PILOTS · 34 Ace AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL Anvil IPIP ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓
+ROW PASS | Round | iPhone | row opened then closed by its header | saw: after open=1 after header again=0
+ROW PASS | Round | iPhone | row opened then Cancel | saw: open after Cancel=0
+ROW RECORDED | Round | iPhone | row opened then tap on empty page area outside | saw: open after outside tap=1
+clear button count 0 
+ROW FAIL | Round | iPhone | search typed "Kes" then cleared by its x | saw: rows typed=1 after x=-1 box=Kes
+ROW PASS | Round | iPhone | Suspend Osprey, Undo from top bar | saw: toast=Undid: suspending Osprey’s sign-in dot=g
+ROW PASS | Round | iPhone | Redo from top bar | saw: toast=Redid: suspending Osprey’s sign-in dot=r
+ROW RECORDED | Round | iPhone | Quals page after Osprey suspended | saw: {"osprey":false,"len":2010,"head":"Edit Export to ExcelExport VIEWING Pilots WSOs Personnel All + Add person CALLSIGN/NAME▲ INITIALSFLIGHTCATSANSSXOMANAGEMENTSCHEDULERSC DAYSC NIGHTDAARNAARNVGIMCTFREMARKS ASSIGNED PILOTS · 34 Ace AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL Anvil IPIP ✓ ✓ ✓ ✓ ✓ ✓ ✓ ✓"}
+errors []
+msq-pa-a-s6b v2 iPhone
+search box parent html <div class="searchbox od-find"><svg class="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg><input id="accFind" placeholder="Find a callsign or sign-in" aria-label="Find a callsign or sign-in" type="search" value="Kes"></div>
+x position 344 252.5 {"x":69,"y":244,"width":285,"height":17}
+ROW PASS | Round | iPhone | search typed "Kes" then cleared by its x (re-run, selector fixed) | saw: rows typed=1 after x=71 box=""
+errors []

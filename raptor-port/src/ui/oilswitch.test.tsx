@@ -41,6 +41,7 @@ import { rowItemKey } from '../engine/oil'
 import { oilEvidence, spanDefault, itemState } from '../engine/oilev'
 import { toggleOilItem, toggleOilPerson, oilItemMark, oilItemMasked, oilItemCellHTML, oilPersonOn } from './oilmode'
 import { setOilDay } from '../state/view'
+import { settleWorld } from '../test-support/world'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -81,6 +82,9 @@ beforeEach(() => {
   HOOKS.oilEarningDay = (di: number) => di === SAT
   HOOKS.oilDayISO = (di: number) => (di === SAT ? SAT_ISO : '2026-07-15')
   HOOKS.oilSentinel = () => ['bane', 'stiff']
+  /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read, Opus 7) */
+  settleWorld()
 })
 
 const groundItem = (who = 'bane') => {

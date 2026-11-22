@@ -1,0 +1,138 @@
+/* msq-w1-main v1 — S1 to S3 in one desktop world (S4.. continue in msq-w1-main2 via STAGE). usage: node scripts/handpass/msq/msq-w1-main.mjs */
+process.env.MSQ_WHO = 'w1'
+process.env.MSQ_RUN = 'main-d'
+const X = await import('./msq-lib.mjs')
+const U = await import('./msq-w1-util.mjs')
+const { say, sleep, row } = X
+say('msq-w1-main v1 desktop')
+const w = await X.open({ phone: false, user: 'ad9' })
+const { page } = w
+const pend = t => (t.match(/(\d+ pending[^.]{0,30}|No pending changes|pending[^.]{0,30})/gi) || []).slice(0, 6).join(' / ')
+async function addGround(name, who, di) {
+  await X.W.board(w, di); await sleep(600)
+  await X.W.press(w, `[data-gradd="${di}"]`, { scope: 'board' }); await sleep(600)
+  const n = (await U.groundNames(page, di)).length - 1
+  await X.W.typeIn(w, `[data-bfld="gr:${di}.${n}.prog"]`, name)
+  const id = await U.pidOf(page, who)
+  const r = await X.W.seat(w, `[data-fill="g:${di}.${n}.+"]`, id)
+  say('ground add', name, who, r, JSON.stringify(await U.groundNames(page, di)))
+  return r
+}
+const swap = async (user) => { const so = await X.signOut(w); await X.login(page, user); return so }
+const state = async di => { await X.W.board(w, di); await sleep(500); const s = await X.L.signState(page, di); const t = await U.bodyText(page); return { beak: s.beak && s.beak.text, chip: s.chip, pend: pend(t) } }
+
+// ---- S1
+await addGround('W149 GROUND', 'Kestrel', 2)
+await X.pic(w, 's1-01-ad9-board-after-add')
+await X.W.closeBoard(w); await sleep(600)
+await X.L.go(page, 'editsched'); await sleep(800)
+await X.pic(w, 's1-02-ad9-week-after-add')
+let t = await U.bodyText(page)
+row('S1', 'desktop', 'ad9 adds ground row "W149 GROUND" with Kestrel on Wed 15 Jul, closes board', 'row is on 149 week', 'week shows W149 GROUND: ' + t.includes('W149 GROUND'), t.includes('W149 GROUND') ? 'PASS' : 'FAIL', 's1-02-ad9-week-after-add.png')
+await X.W.closeBoard(w)
+let so = await swap('ad'); say('signout', JSON.stringify(so))
+await X.L.go(page, 'editsched'); await sleep(800)
+await X.pic(w, 's1-03-ad-week')
+const t142 = await U.bodyText(page)
+const base142 = await state(2)   // S2 baseline for 142's Wed 15 (before ad9 publishes)
+await X.pic(w, 's1-04-ad-board-wed15')
+const tb = await U.bodyText(page)
+row('S1', 'desktop', 'ad (142) looks at Wed 15 Jul on the week and on the board', 'no "W149 GROUND" on either', `week: ${t142.includes('W149 GROUND')}; board: ${tb.includes('W149 GROUND')}; 142 ground rows: ${JSON.stringify(await U.groundNames(page, 2))}`, !t142.includes('W149 GROUND') && !tb.includes('W149 GROUND') ? 'PASS' : 'FAIL', 's1-03-ad-week.png, s1-04-ad-board-wed15.png')
+say('BASE142 Wed15', JSON.stringify(base142))
+await X.W.closeBoard(w)
+// days published for 142 (S5): read each day's beak
+const pub142 = []
+for (let d = 0; d < 7; d++) { const s = await state(d); pub142.push(d + ':' + s.beak + '/' + s.chip) }
+say('PUB142 week', pub142.join(' | '))
+await X.W.closeBoard(w)
+await addGround('W142 GROUND', 'Saber', 3)
+await X.pic(w, 's1-05-ad-board-thu16-after-add')
+await X.W.closeBoard(w); await sleep(600)
+await X.L.go(page, 'editsched'); await sleep(800)
+await X.pic(w, 's1-06-ad-week-after-add')
+t = await U.bodyText(page)
+row('S1', 'desktop', 'ad adds ground row "W142 GROUND" with Saber on Thu 16 Jul', 'row is on 142 week', 'week shows W142 GROUND: ' + t.includes('W142 GROUND'), t.includes('W142 GROUND') ? 'PASS' : 'FAIL', 's1-06-ad-week-after-add.png')
+await swap('ad9'); await X.L.go(page, 'editsched'); await sleep(800)
+await X.pic(w, 's1-07-ad9-week-again')
+t = await U.bodyText(page)
+row('S1', 'desktop', 'ad9 signs in again, looks at the week', 'W149 GROUND still there; no "W142 GROUND"', `W149: ${t.includes('W149 GROUND')}; W142: ${t.includes('W142 GROUND')}`, t.includes('W149 GROUND') && !t.includes('W142 GROUND') ? 'PASS' : 'FAIL', 's1-07-ad9-week-again.png')
+const pub149 = []
+for (let d = 0; d < 7; d++) { const s = await state(d); pub149.push(d + ':' + s.beak + '/' + s.chip) }
+say('PUB149 week', pub149.join(' | '))
+await X.W.closeBoard(w)
+
+// ---- S2
+const b149 = await state(2)
+say('BASE149 Wed15', JSON.stringify(b149))
+await X.pic(w, 's2-01-ad9-wed15-before-publish')
+const pubr = await X.L.publish(page, 2)
+say('PUBLISH', JSON.stringify(pubr))
+await sleep(800)
+await X.pic(w, 's2-02-ad9-wed15-after-publish')
+const a149 = await state(2)
+say('AFTER149 Wed15', JSON.stringify(a149))
+row('S2', 'desktop', 'ad9 publishes Wed 15 Jul', '149 day shows published (version chip / button changes)', `before: ${JSON.stringify(b149)}; publish result: ${JSON.stringify(pubr)}; after: ${JSON.stringify(a149)}`, pubr.published ? 'RECORD' : 'BLOCKED', 's2-02-ad9-wed15-after-publish.png')
+await X.W.closeBoard(w)
+await swap('ad')
+const c142 = await state(2)
+await X.pic(w, 's2-03-ad-wed15-after-ad9-publish')
+row('S2', 'desktop', 'ad looks at 142 Wed 15 after ad9 published', 'same as before: ' + JSON.stringify(base142), JSON.stringify(c142), JSON.stringify(c142) === JSON.stringify(base142) ? 'PASS' : 'FAIL', 's2-03-ad-wed15-after-ad9-publish.png')
+await X.W.closeBoard(w)
+await swap('ad9')
+// amend published 15 Jul: rename the ground row
+await X.W.board(w, 2); await sleep(600)
+await X.W.typeIn(w, '[data-bfld="gr:2.0.prog"]', 'W149 GROUND AMENDED')
+await sleep(600)
+await X.pic(w, 's2-04-ad9-wed15-after-amend-board')
+const am149 = await state(2)
+await X.W.closeBoard(w); await X.L.go(page, 'editsched'); await sleep(800)
+await X.pic(w, 's2-05-ad9-week-after-amend')
+const tw149 = await U.bodyText(page)
+say('AMEND149', JSON.stringify(am149), 'week pend:', pend(tw149))
+row('S2', 'desktop', 'ad9 renames the ground row on the published 15 Jul', 'pending amendment mark on 149 day', `board: ${JSON.stringify(am149)}; week: ${pend(tw149)}`, /[1-9]\d* pending|AL\d|pending/i.test(am149.pend + pend(tw149)) && !/No pending/.test(pend(tw149)) ? 'PASS' : 'FAIL', 's2-04-ad9-wed15-after-amend-board.png, s2-05-ad9-week-after-amend.png')
+await swap('ad')
+const d142 = await state(2)
+await X.pic(w, 's2-06-ad-wed15-after-ad9-amend')
+await X.W.closeBoard(w); await X.L.go(page, 'editsched'); await sleep(800)
+const tw142 = await U.bodyText(page)
+await X.pic(w, 's2-07-ad-week-after-ad9-amend')
+row('S2', 'desktop', 'ad looks at 142 after ad9 amended 149', 'no new pending mark: ' + JSON.stringify(base142), `board: ${JSON.stringify(d142)}; week: ${pend(tw142)}`, JSON.stringify(d142) === JSON.stringify(base142) && /No pending/.test(pend(tw142)) ? 'PASS' : 'FAIL', 's2-06-ad-wed15-after-ad9-amend.png, s2-07-ad-week-after-ad9-amend.png')
+
+// ---- S3 (Fri 17 = day 4)
+await swap('ad9')
+await X.L.go(page, 'editsched'); await sleep(600)
+const undoState = async () => page.evaluate(() => { const b = document.querySelector('#undoBtn'); return b ? { disabled: b.disabled || b.getAttribute('aria-disabled'), title: b.title || b.getAttribute('aria-label') } : null })
+await addGround('W149 UNDO A', 'Kestrel', 4)
+await X.W.closeBoard(w); await X.L.go(page, 'editsched'); await sleep(600)
+const g0 = await U.groundNames(page, 4)
+await X.pic(w, 's3-01-ad9-fri17-after-A')
+say('UNDO BTN', JSON.stringify(await undoState()))
+let guard = 0
+while (JSON.stringify(await U.groundNames(page, 4)) === JSON.stringify(g0) && guard++ < 1) {}
+await page.locator('#undoBtn').click(); await sleep(900)
+const g1 = await U.groundNames(page, 4)
+await X.pic(w, 's3-02-ad9-after-undo')
+row('S3', 'desktop', 'ad9 adds ground row A on Fri 17 then presses the top bar Undo once', 'the change goes', `ground before: ${JSON.stringify(g0)}; after undo: ${JSON.stringify(g1)}`, g1.length < g0.length || JSON.stringify(g1) !== JSON.stringify(g0) ? 'PASS' : 'FAIL', 's3-02-ad9-after-undo.png')
+await addGround('W149 UNDO B', 'Kestrel', 4)
+await X.W.closeBoard(w); await X.L.go(page, 'editsched'); await sleep(600)
+const gB = await U.groundNames(page, 4)
+await X.pic(w, 's3-03-ad9-after-B')
+await swap('ad')
+await X.L.go(page, 'editsched'); await sleep(800)
+const us = await undoState()
+await X.pic(w, 's3-04-ad-undo-state')
+const gAd0 = await U.groundNames(page, 4)
+row('S3', 'desktop', 'ad signs in after ad9 made change B; reads Undo button', 'greyed / nothing of ad9s', JSON.stringify(us), us && (us.disabled === true || us.disabled === 'true') ? 'PASS' : 'FAIL', 's3-04-ad-undo-state.png')
+if (us && !(us.disabled === true || us.disabled === 'true')) {
+  await page.locator('#undoBtn').click().catch(() => {}); await sleep(900)
+  const gAd1 = await U.groundNames(page, 4)
+  await X.pic(w, 's3-05-ad-after-undo-press')
+  row('S3', 'desktop', 'ad pressed the live Undo', 'RECORD', `142 Fri 17 ground before ${JSON.stringify(gAd0)} after ${JSON.stringify(gAd1)}`, 'RECORD', 's3-05-ad-after-undo-press.png')
+}
+await swap('ad9')
+await X.L.go(page, 'editsched'); await sleep(800)
+const gBack = await U.groundNames(page, 4)
+const us9 = await undoState()
+await X.pic(w, 's3-06-ad9-back')
+row('S3', 'desktop', 'ad9 signs in again', 'change B still there; Undo list empty (greyed)', `ground: ${JSON.stringify(gBack)}; undo: ${JSON.stringify(us9)}`, gBack.includes('W149 UNDO B') && us9 && (us9.disabled === true || us9.disabled === 'true') ? 'PASS' : 'FAIL', 's3-06-ad9-back.png')
+await X.fin(w)

@@ -1,0 +1,66 @@
+{
+ "r8a-d.png": {
+  "question": "1",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "the box's own list drawn open in place (the box cloned as an open list under its pill, its options as the box holds them: the browser draws its drop-down outside the page, an iPhone a wheel at the foot of the screen — neither can be pictured)",
+  "caption": "Wed 15 Jul 2026, 10:00. Setup: Hunter (142's admin) given Plan of 149 by a stored row (no screen gives Plan yet); Saber ticked Hunter's Scheduler box on Quals (Edit → his Scheduler box → Done). Kestrel (149's admin) signed in, Edit Schedule, Mon 13 Jul (149's demo week): the SKED CK box's list (1) offers 149's own schedulers only — Hunter and Saber, both with the Scheduler tick, are not in it.",
+  "asserted": "stored: grant:gpa149={\"id\":\"gpa149\",\"account\":\"acad2\",\"unit\":\"u149\",\"level\":\"admin\",\"from\":\"2026-01-01\"}; Hunter's tick {\"before\":false,\"after\":true}, Saber's true; the real box's options: — name —, Kestrel; day head \"Monday Jul 13 Templates\""
+ },
+ "r8b-d.png": {
+  "question": "1",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "drawn",
+  "transform": "clone: two lines cloned from the list's own last line, re-lettered Hunter and Saber, appended after 149's own people; their background lit pink (an option draws no outline)",
+  "caption": "Proposed: the same list offers, after 149's own people, an admin holding Plan of 149 (Hunter) and the master admin (Saber), each with the Scheduler tick (New).",
+  "asserted": "lines shown: — name —, Kestrel, Hunter, Saber; line heights real 17 new 17/17"
+ },
+ "r8a-p.png": {
+  "question": "1",
+  "size": "iPhone 402×874 (WebKit, touch, 2x)",
+  "kind": "real",
+  "transform": "the box's own list drawn open in place (the box cloned as an open list under its pill, its options as the box holds them: the browser draws its drop-down outside the page, an iPhone a wheel at the foot of the screen — neither can be pictured)",
+  "caption": "Wed 15 Jul 2026, 10:00. Setup: Hunter (142's admin) given Plan of 149 by a stored row (no screen gives Plan yet); Saber ticked Hunter's Scheduler box on Quals (Edit → his Scheduler box → Done). Kestrel (149's admin) signed in, Edit Schedule, Mon 13 Jul (149's demo week): the SKED CK box's list (1) offers 149's own schedulers only — Hunter and Saber, both with the Scheduler tick, are not in it.",
+  "asserted": "stored: grant:gpa149={\"id\":\"gpa149\",\"account\":\"acad2\",\"unit\":\"u149\",\"level\":\"admin\",\"from\":\"2026-01-01\"}; Hunter's tick {\"before\":false,\"after\":true}, Saber's true; the real box's options: — name —, Kestrel; day head \"Monday Jul 13 Templates\""
+ },
+ "r8b-p.png": {
+  "question": "1",
+  "size": "iPhone 402×874 (WebKit, touch, 2x)",
+  "kind": "drawn",
+  "transform": "clone: two lines cloned from the list's own last line, re-lettered Hunter and Saber, appended after 149's own people; their background lit pink (an option draws no outline)",
+  "caption": "Proposed: the same list offers, after 149's own people, an admin holding Plan of 149 (Hunter) and the master admin (Saber), each with the Scheduler tick (New).",
+  "asserted": "lines shown: — name —, Kestrel, Hunter, Saber; line heights real 16 new 16/16"
+ },
+ "r12a-d.png": {
+  "question": "2",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Wed 15 Jul 2026, 10:00. Setup: a squadron 150 and Hunter's Plan of 150 written as stored rows (no screen makes a squadron or gives Plan yet) — Hunter is 150's only admin. Saber made Outlaw a 142 admin on Admin → Users (the demo has no 142 admin who is not a master admin). Outlaw, signed in, opens Hunter's row and presses Suspend: today it is not refused — the note says \"Hunter suspended\" (2) and 150 is left with no admin who can sign in.",
+  "asserted": "{\"stored\":[\"unit:u150={\\\"id\\\":\\\"u150\\\",\\\"num\\\":\\\"150\\\",\\\"kind\\\":\\\"sqn\\\"}\",\"unitplace:up150={\\\"id\\\":\\\"up150\\\",\\\"unit\\\":\\\"u150\\\",\\\"place\\\":\\\"p1\\\",\\\"from\\\":\\\"2000-01-01\\\"}\",\"grant:gpa150={\\\"id\\\":\\\"gpa150\\\",\\\"account\\\":\\\"acad2\\\",\\\"unit\\\":\\\"u150\\\",\\\"level\\\":\\\"admin\\\",\\\"from\\\":\\\"2026-01-01\\\"}\"],\"outlawRow\":{\"sub\":\"outlaw · Pilot · CAT C\",\"pill\":\"ADMIN\",\"open\":false,\"edit\":false,\"onoff\":\"\"},\"outlawMaster\":false,\"before\":{\"sub\":\"ad2 · Pilot · CAT IP\",\"pill\":\"ADMIN\",\"open\":true,\"edit\":true,\"onoff\":\"Suspend\"},\"note\":{\"text\":\"Hunter suspended\",\"op\":\"1\",\"face\":\"\",\"color\":\"var(--ink)\",\"border\":\"var(--edge-2)\",\"w\":134,\"h\":38},\"after\":{\"sub\":\"ad2 · Pilot · CAT IP\",\"pill\":\"ADMIN\",\"open\":false,\"edit\":false,\"onoff\":\"\"},\"hunterAccount\":{\"id\":\"acad2\",\"name\":\"ad2\",\"role\":\"admin\",\"pid\":\"prowler\",\"on\":false},\"hunterDot\":\"Sign-in suspended\",\"topBar\":\"ve War Tracker Help Admin ↶ ↷ Insights Logout OUTLAW · ADMIN\"}"
+ },
+ "r12b-d.png": {
+  "question": "2",
+  "size": "desktop 1536×864 (Chromium, 2x)",
+  "kind": "drawn",
+  "transform": "the passing note the top bar's Undo raised (today's words \"Undid: suspending Hunter’s sign-in\") redrawn as this screen draws a refusal — the app's amber note (toast(words, 'warn')), the face p9's real last-admin refusal wore; nothing else",
+  "caption": "Proposed: the same press refused. The Suspend was taken back by the top bar's Undo and Hunter's row opened again (real), so the screen stands as it did before the press; the note reads \"Hunter is 150's last admin. Only a master admin or an admin of 150 can make another.\" (New).",
+  "asserted": "{\"undoTitle\":\"Undo — suspending Hunter’s sign-in\",\"undoNote\":{\"text\":\"Undid: suspending Hunter’s sign-in\",\"op\":\"1\",\"face\":\"\",\"color\":\"var(--ink)\",\"border\":\"var(--edge-2)\",\"w\":226,\"h\":38},\"hunterAccount\":{\"id\":\"acad2\",\"name\":\"ad2\",\"role\":\"admin\",\"pid\":\"prowler\",\"on\":true},\"row\":{\"sub\":\"ad2 · Pilot · CAT IP\",\"pill\":\"ADMIN\",\"open\":true,\"edit\":true,\"onoff\":\"Suspend\"},\"drawn\":{\"w\":504,\"h\":38,\"text\":\"Hunter is 150's last admin. Only a master admin or an admin of 150 can make another. New\"}}"
+ },
+ "r12a-p.png": {
+  "question": "2",
+  "size": "iPhone 402×874 (WebKit, touch, 2x)",
+  "kind": "real",
+  "transform": "none (marks only)",
+  "caption": "Wed 15 Jul 2026, 10:00. Setup: a squadron 150 and Hunter's Plan of 150 written as stored rows (no screen makes a squadron or gives Plan yet) — Hunter is 150's only admin. Saber made Outlaw a 142 admin on Admin → Users (the demo has no 142 admin who is not a master admin). Outlaw, signed in, opens Hunter's row and presses Suspend: today it is not refused — the note says \"Hunter suspended\" (2) and 150 is left with no admin who can sign in.",
+  "asserted": "{\"stored\":[\"unit:u150={\\\"id\\\":\\\"u150\\\",\\\"num\\\":\\\"150\\\",\\\"kind\\\":\\\"sqn\\\"}\",\"unitplace:up150={\\\"id\\\":\\\"up150\\\",\\\"unit\\\":\\\"u150\\\",\\\"place\\\":\\\"p1\\\",\\\"from\\\":\\\"2000-01-01\\\"}\",\"grant:gpa150={\\\"id\\\":\\\"gpa150\\\",\\\"account\\\":\\\"acad2\\\",\\\"unit\\\":\\\"u150\\\",\\\"level\\\":\\\"admin\\\",\\\"from\\\":\\\"2026-01-01\\\"}\"],\"outlawRow\":{\"sub\":\"outlaw · Admin · Pilot · CAT C\",\"pill\":\"Admin\",\"open\":false,\"edit\":false,\"onoff\":\"\"},\"outlawMaster\":false,\"before\":{\"sub\":\"ad2 · Admin · Pilot · CAT IP\",\"pill\":\"Admin\",\"open\":true,\"edit\":true,\"onoff\":\"Suspend\"},\"note\":{\"text\":\"Hunter suspended\",\"op\":\"1\",\"face\":\"\",\"color\":\"var(--ink)\",\"border\":\"var(--edge-2)\",\"w\":378,\"h\":36},\"after\":{\"sub\":\"ad2 · Admin · Pilot · CAT IP\",\"pill\":\"Admin\",\"open\":false,\"edit\":false,\"onoff\":\"\"},\"hunterAccount\":{\"id\":\"acad2\",\"name\":\"ad2\",\"role\":\"admin\",\"pid\":\"prowler\",\"on\":false},\"hunterDot\":\"Sign-in suspended\",\"topBar\":\"142 TALON ↶ ↷\"}"
+ },
+ "r12b-p.png": {
+  "question": "2",
+  "size": "iPhone 402×874 (WebKit, touch, 2x)",
+  "kind": "drawn",
+  "transform": "the passing note the top bar's Undo raised (today's words \"Undid: suspending Hunter’s sign-in\") redrawn as this screen draws a refusal — the app's amber note (toast(words, 'warn')), the face p9's real last-admin refusal wore; nothing else",
+  "caption": "Proposed: the same press refused. The Suspend was taken back by the top bar's Undo and Hunter's row opened again (real), so the screen stands as it did before the press; the note reads \"Hunter is 150's last admin. Only a master admin or an admin of 150 can make another.\" (New).",
+  "asserted": "{\"undoTitle\":\"Undo — suspending Hunter’s sign-in\",\"undoNote\":{\"text\":\"Undid: suspending Hunter’s sign-in\",\"op\":\"1\",\"face\":\"\",\"color\":\"var(--ink)\",\"border\":\"var(--edge-2)\",\"w\":378,\"h\":36},\"hunterAccount\":{\"id\":\"acad2\",\"name\":\"ad2\",\"role\":\"admin\",\"pid\":\"prowler\",\"on\":true},\"row\":{\"sub\":\"ad2 · Admin · Pilot · CAT IP\",\"pill\":\"Admin\",\"open\":true,\"edit\":true,\"onoff\":\"Suspend\"},\"drawn\":{\"w\":378,\"h\":50,\"text\":\"Hunter is 150's last admin. Only a master admin or an admin of 150 can make another.New\"}}"
+ }
+}

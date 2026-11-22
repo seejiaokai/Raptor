@@ -4,8 +4,8 @@
    the username plays the defence mail address, the password the organisation's
    (Microsoft checks both at the database step; the app never keeps a password).
    state/accounts.ts signIn turns what was typed into one of: in, as that callsign;
-   his account switched off; on no list (ask for access); asked and waiting; or, with
-   the admin's guest switch on, the published week as a guest (D204). The card
+   his account switched off; on no list (ask for access); or asked and waiting (D204 —
+   the guest view a switch once opened to a person waiting is removed, D2239). The card
    itself is unchanged (the 7 Aug 26 "login page stays simple"). */
 import { useState } from 'react'
 import { signIn, sessionFor } from '../state/accounts'
@@ -31,7 +31,7 @@ export function Login() {
        the PREVIOUS session (on a shared browser) left behind. */
     resetSession(sessionFor(r))
     /* after Retry on a failed page download reloaded the app, its page reopens by itself (D1635): read once, thrown away;
-       only someone let into the app goes there — the access screens and a guest keep their own first screen */
+       only someone let into the app goes there — the access screens keep their own first screen */
     const back = takeReopen()
     if (back && r.kind === 'ok') setPage(back)
     notify()

@@ -1,0 +1,2772 @@
+{
+ "spec": "The band at midnight (D2243 Q7)",
+ "dist": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\agent-a65770f22ccfd926d\\raptor-port\\dist",
+ "all": false,
+ "report": [
+  {
+   "state": "war-desk",
+   "title": "A Leave War window at midnight of his move, desktop, Ranger",
+   "drawing": {
+    "script": "docs/mock/2026-11-20-multi-sqn-reshape/draw.mjs",
+    "shot": "q7b-d"
+   },
+   "approved": {
+    "picture": "q7b-d.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "window",
+     "label": "the window",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top)",
+       "drawing": "541",
+       "build": "619.9",
+       "by": "78.9px lower",
+       "accepted": null,
+       "counts": true
+      },
+      {
+       "check": "height",
+       "what": "its height",
+       "drawing": "309",
+       "build": "230.1",
+       "by": "78.9px less",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "war-desk--window.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 488,
+        "y": 541,
+        "w": 560,
+        "h": 309
+       },
+       "ink": {
+        "x": 503,
+        "y": 562,
+        "w": 528,
+        "h": 270
+       },
+       "text": "Ranger Fri 24 Jul ✕ You are 149's from today. This can't be saved in 142's Leave War. Close No manning row turns amber or red Family wedding in Perth, back Sunday till 24 Jul Document Whole day AM PM Pick a range LL 11.5 OL 11.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 CSE OD ⋯",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "16px",
+         "16px",
+         "16px",
+         "16px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.55) 0px 18px 48px 0px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 488,
+        "y": 619.9,
+        "w": 560,
+        "h": 230.1
+       },
+       "ink": {
+        "x": 501,
+        "y": 640.9,
+        "w": 530,
+        "h": 188.1
+       },
+       "text": "Ranger Wed 15 Jul ✕ You are 149's from today. This can't be saved in 142's Leave War. Close Bidding is closed. To change your leave, seek management’s approval, then file it on the Inputs page. Your approved leave updates here by itself. CSE OD ⋯ Open the Inputs page",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "16px",
+         "16px",
+         "16px",
+         "16px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.55) 0px 18px 48px 0px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet"
+      }
+     }
+    },
+    {
+     "part": "title",
+     "label": "the window's title strip",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 501,
+        "y": 552,
+        "w": 534,
+        "h": 37
+       },
+       "ink": {
+        "x": 522.7,
+        "y": 562,
+        "w": 508.3,
+        "h": 17
+       },
+       "text": "Ranger Fri 24 Jul ✕",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet-hd"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 501,
+        "y": 630.9,
+        "w": 534,
+        "h": 37
+       },
+       "ink": {
+        "x": 522.7,
+        "y": 640.9,
+        "w": 508.3,
+        "h": 17
+       },
+       "text": "Ranger Wed 15 Jul ✕",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet-hd"
+      }
+     }
+    },
+    {
+     "part": "band",
+     "label": "the band",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 489,
+        "y": 597,
+        "w": 558,
+        "h": 36
+       },
+       "ink": {
+        "x": 534,
+        "y": 607.5,
+        "w": 481,
+        "h": 16
+       },
+       "text": "You are 149's from today. This can't be saved in 142's Leave War. Close",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "linear-gradient(90deg, rgba(229, 194, 74, 0.2), rgba(229, 194, 74, 0.06) 55%, rgba(229, 194, 74, 0.03)), none",
+        "edge": [
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "space-between",
+        "font": "600 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.saveband.mkq.mkq-in"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 489,
+        "y": 675.9,
+        "w": 558,
+        "h": 36
+       },
+       "ink": {
+        "x": 534,
+        "y": 686.4,
+        "w": 481,
+        "h": 16
+       },
+       "text": "You are 149's from today. This can't be saved in 142's Leave War. Close",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "linear-gradient(90deg, rgba(229, 194, 74, 0.2), rgba(229, 194, 74, 0.06) 55%, rgba(229, 194, 74, 0.03)), none",
+        "edge": [
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "space-between",
+        "font": "600 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.saveband.moveband"
+      }
+     }
+    },
+    {
+     "part": "sign",
+     "label": "its warning sign",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 509,
+        "y": 607.5,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.6 15 14H1z' fill",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-sign"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 509,
+        "y": 686.4,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.6 15 14H1z' fill",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-sign"
+      }
+     }
+    },
+    {
+     "part": "lead",
+     "label": "\"You are 149's from today.\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 534,
+        "y": 607.5,
+        "w": 147.5,
+        "h": 16
+       },
+       "ink": {
+        "x": 534,
+        "y": 607.5,
+        "w": 147.5,
+        "h": 16
+       },
+       "text": "You are 149's from today.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 212, 107)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 534,
+        "y": 686.4,
+        "w": 147.5,
+        "h": 16
+       },
+       "ink": {
+        "x": 534,
+        "y": 686.4,
+        "w": 147.5,
+        "h": 16
+       },
+       "text": "You are 149's from today.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 212, 107)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      }
+     }
+    },
+    {
+     "part": "rest",
+     "label": "\"This can't be saved in 142's Leave War.\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 690.5,
+        "y": 607.5,
+        "w": 212.4,
+        "h": 16
+       },
+       "ink": {
+        "x": 690.5,
+        "y": 607.5,
+        "w": 212.4,
+        "h": 16
+       },
+       "text": "This can't be saved in 142's Leave War.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-rest"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 690.5,
+        "y": 686.4,
+        "w": 212.4,
+        "h": 16
+       },
+       "ink": {
+        "x": 690.5,
+        "y": 686.4,
+        "w": 212.4,
+        "h": 16
+       },
+       "text": "This can't be saved in 142's Leave War.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-rest"
+      }
+     }
+    },
+    {
+     "part": "close",
+     "label": "\"Close\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 973.7,
+        "y": 600.5,
+        "w": 53.3,
+        "h": 30
+       },
+       "ink": {
+        "x": 985.7,
+        "y": 607.5,
+        "w": 29.3,
+        "h": 16
+       },
+       "text": "Close",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.pchip.bp-range"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 973.7,
+        "y": 679.4,
+        "w": 53.3,
+        "h": 30
+       },
+       "ink": {
+        "x": 985.7,
+        "y": 686.4,
+        "w": 29.3,
+        "h": 16
+       },
+       "text": "Close",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.pchip"
+      }
+     }
+    },
+    {
+     "part": "remarks",
+     "label": "his typed words, under the band",
+     "diffs": [
+      {
+       "check": "found",
+       "what": "the part itself",
+       "drawing": "drawn",
+       "build": "NOT FOUND in the build",
+       "by": "no visible match (0 visible) for #bid-remarks",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "war-desk--remarks.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 501,
+        "y": 663,
+        "w": 337.9,
+        "h": 30
+       },
+       "ink": {
+        "x": 512,
+        "y": 670.2,
+        "w": 223.3,
+        "h": 15.6
+       },
+       "text": "Family wedding in Perth, back Sunday Family wedding in Perth, back Sunday",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "8px",
+         "8px",
+         "8px",
+         "8px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 13px",
+        "spacing": "normal"
+       },
+       "tag": "textarea"
+      },
+      "build": {
+       "found": false,
+       "count": 0,
+       "why": "no visible match (0 visible) for #bid-remarks"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "war-phone",
+   "title": "A Leave War window at midnight of his move, iPhone (WebKit), Ranger",
+   "drawing": {
+    "script": "docs/mock/2026-11-20-multi-sqn-reshape/draw.mjs",
+    "shot": "q7b-p"
+   },
+   "approved": {
+    "picture": "q7b-p.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 3",
+   "parts": [
+    {
+     "part": "window",
+     "label": "the window",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top)",
+       "drawing": "534",
+       "build": "603.3",
+       "by": "69.3px lower",
+       "accepted": null,
+       "counts": true
+      },
+      {
+       "check": "height",
+       "what": "its height",
+       "drawing": "326",
+       "build": "256.7",
+       "by": "69.3px less",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "war-phone--window.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 534,
+        "w": 378,
+        "h": 326
+       },
+       "ink": {
+        "x": 27,
+        "y": 555,
+        "w": 346,
+        "h": 286.5
+       },
+       "text": "Ranger Fri 24 Jul ✕ You are 149's from today. This can't be saved in 142's Leave War. Close No manning row turns amber or red Family wedding in Perth, back Sunday till 24 Jul Document Whole day AM PM Pick a range LL 11.5 OL 11.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 CSE OD ⋯",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "16px",
+         "16px",
+         "16px",
+         "16px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.55) 0px 18px 48px 0px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 603.3,
+        "w": 378,
+        "h": 256.7
+       },
+       "ink": {
+        "x": 25,
+        "y": 624.3,
+        "w": 348,
+        "h": 214.7
+       },
+       "text": "Ranger Wed 15 Jul ✕ You are 149's from today. This can't be saved in 142's Leave War. Close Bidding is closed. To change your leave, seek management’s approval, then file it on the Inputs page. Your approved leave updates here by itself. CSE OD ⋯ Open the Inputs page",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "16px",
+         "16px",
+         "16px",
+         "16px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.55) 0px 18px 48px 0px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet"
+      }
+     }
+    },
+    {
+     "part": "title",
+     "label": "the window's title strip",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 25,
+        "y": 545,
+        "w": 352,
+        "h": 37
+       },
+       "ink": {
+        "x": 46.7,
+        "y": 555,
+        "w": 326.3,
+        "h": 18
+       },
+       "text": "Ranger Fri 24 Jul ✕",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet-hd"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 25,
+        "y": 614.3,
+        "w": 352,
+        "h": 37
+       },
+       "ink": {
+        "x": 46.7,
+        "y": 624.3,
+        "w": 326.3,
+        "h": 18
+       },
+       "text": "Ranger Wed 15 Jul ✕",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet-hd"
+      }
+     }
+    },
+    {
+     "part": "band",
+     "label": "the band",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 13,
+        "y": 590,
+        "w": 376,
+        "h": 47
+       },
+       "ink": {
+        "x": 27,
+        "y": 599,
+        "w": 336,
+        "h": 31
+       },
+       "text": "You are 149's from today. This can't be saved in 142's Leave War. Close",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "linear-gradient(90deg, rgba(229, 194, 74, 0.2), rgba(229, 194, 74, 0.06) 55%, rgba(229, 194, 74, 0.03)), none",
+        "edge": [
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "space-between",
+        "font": "600 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.saveband.mkq.mkq-in"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 13,
+        "y": 659.3,
+        "w": 376,
+        "h": 47
+       },
+       "ink": {
+        "x": 27,
+        "y": 668.3,
+        "w": 336,
+        "h": 31
+       },
+       "text": "You are 149's from today. This can't be saved in 142's Leave War. Close",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "linear-gradient(90deg, rgba(229, 194, 74, 0.2), rgba(229, 194, 74, 0.06) 55%, rgba(229, 194, 74, 0.03)), none",
+        "edge": [
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "space-between",
+        "font": "600 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.saveband.moveband"
+      }
+     }
+    },
+    {
+     "part": "sign",
+     "label": "its warning sign",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 27,
+        "y": 598,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.6 15 14H1z' fill",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-sign"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 27,
+        "y": 667.3,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.6 15 14H1z' fill",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-sign"
+      }
+     }
+    },
+    {
+     "part": "lead",
+     "label": "\"You are 149's from today.\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 52,
+        "y": 599,
+        "w": 148.2,
+        "h": 14
+       },
+       "ink": {
+        "x": 52,
+        "y": 599,
+        "w": 148.2,
+        "h": 14
+       },
+       "text": "You are 149's from today.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 212, 107)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 52,
+        "y": 668.3,
+        "w": 148.2,
+        "h": 14
+       },
+       "ink": {
+        "x": 52,
+        "y": 668.3,
+        "w": 148.2,
+        "h": 14
+       },
+       "text": "You are 149's from today.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 212, 107)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      }
+     }
+    },
+    {
+     "part": "rest",
+     "label": "\"This can't be saved in 142's Leave War.\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 27,
+        "y": 616,
+        "w": 217.2,
+        "h": 14
+       },
+       "ink": {
+        "x": 27,
+        "y": 616,
+        "w": 217.2,
+        "h": 14
+       },
+       "text": "This can't be saved in 142's Leave War.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-rest"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 27,
+        "y": 685.3,
+        "w": 217.2,
+        "h": 14
+       },
+       "ink": {
+        "x": 27,
+        "y": 685.3,
+        "w": 217.2,
+        "h": 14
+       },
+       "text": "This can't be saved in 142's Leave War.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-rest"
+      }
+     }
+    },
+    {
+     "part": "close",
+     "label": "\"Close\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 318.3,
+        "y": 600,
+        "w": 56.7,
+        "h": 28
+       },
+       "ink": {
+        "x": 330.3,
+        "y": 607,
+        "w": 32.7,
+        "h": 14
+       },
+       "text": "Close",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.pchip.bp-range"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 318.3,
+        "y": 669.3,
+        "w": 56.7,
+        "h": 28
+       },
+       "ink": {
+        "x": 330.3,
+        "y": 676.3,
+        "w": 32.7,
+        "h": 14
+       },
+       "text": "Close",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.pchip"
+      }
+     }
+    },
+    {
+     "part": "remarks",
+     "label": "his typed words, under the band",
+     "diffs": [
+      {
+       "check": "found",
+       "what": "the part itself",
+       "drawing": "drawn",
+       "build": "NOT FOUND in the build",
+       "by": "no visible match (0 visible) for #bid-remarks",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "war-phone--remarks.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 25,
+        "y": 665,
+        "w": 159.5,
+        "h": 46
+       },
+       "ink": {
+        "x": 36,
+        "y": 680.2,
+        "w": 236.9,
+        "h": 15.6
+       },
+       "text": "Family wedding in Perth, back Sunday Family wedding in Perth, back Sunday",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "8px",
+         "8px",
+         "8px",
+         "8px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 13px",
+        "spacing": "normal"
+       },
+       "tag": "textarea"
+      },
+      "build": {
+       "found": false,
+       "count": 0,
+       "why": "no visible match (0 visible) for #bid-remarks"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "trk-desk",
+   "title": "The Tracker's chart editor at midnight of his move, desktop, Ranger",
+   "drawing": {
+    "script": "docs/mock/2026-11-20-multi-sqn-reshape/draw.mjs",
+    "shot": "q7c-d"
+   },
+   "approved": {
+    "picture": "q7c-d.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "tools",
+     "label": "the chart editor's tools",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 108,
+        "w": 1536,
+        "h": 100.7
+       },
+       "ink": {
+        "x": 87.7,
+        "y": 119,
+        "w": 1373.5,
+        "h": 81
+       },
+       "text": "Move Select Connect Delete + Flight + Acad + Test + Sim + CFT/IAT/EPT Text Line Edit lines Arrow Merge Unmerge Select all Font Fit Reset layout Edit events Double-click any pokéball on the chart to edit that event directly.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "center",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.arrtools.on"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 108,
+        "w": 1536,
+        "h": 100.7
+       },
+       "ink": {
+        "x": 87.7,
+        "y": 119,
+        "w": 1373.5,
+        "h": 81
+       },
+       "text": "Move Select Connect Delete + Flight + Acad + Test + Sim + CFT/IAT/EPT Text Line Edit lines Arrow Merge Unmerge Select all Font Fit Reset layout Edit events Double-click any pokéball on the chart to edit that event directly.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "center",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.arrtools.on"
+      }
+     }
+    },
+    {
+     "part": "band",
+     "label": "the band",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 208.7,
+        "w": 1536,
+        "h": 36
+       },
+       "ink": {
+        "x": 45,
+        "y": 219.1,
+        "w": 1461,
+        "h": 16
+       },
+       "text": "You are 149's from today. This can't be saved in 142's Tracker. Close",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "linear-gradient(90deg, rgba(229, 194, 74, 0.2), rgba(229, 194, 74, 0.06) 55%, rgba(229, 194, 74, 0.03)), none",
+        "edge": [
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "space-between",
+        "font": "600 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.saveband.mkq.mkq-in"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 208.7,
+        "w": 1536,
+        "h": 36
+       },
+       "ink": {
+        "x": 45,
+        "y": 219.1,
+        "w": 1461,
+        "h": 16
+       },
+       "text": "You are 149's from today. This can't be saved in 142's Tracker. Close",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "linear-gradient(90deg, rgba(229, 194, 74, 0.2), rgba(229, 194, 74, 0.06) 55%, rgba(229, 194, 74, 0.03)), none",
+        "edge": [
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "space-between",
+        "font": "600 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.saveband.moveband"
+      }
+     }
+    },
+    {
+     "part": "sign",
+     "label": "its warning sign",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 20,
+        "y": 219.2,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.6 15 14H1z' fill",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-sign"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 20,
+        "y": 219.2,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.6 15 14H1z' fill",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-sign"
+      }
+     }
+    },
+    {
+     "part": "lead",
+     "label": "\"You are 149's from today.\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 45,
+        "y": 218.1,
+        "w": 147.5,
+        "h": 18.1
+       },
+       "ink": {
+        "x": 45,
+        "y": 219.1,
+        "w": 147.5,
+        "h": 16
+       },
+       "text": "You are 149's from today.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 212, 107)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 45,
+        "y": 218.1,
+        "w": 147.5,
+        "h": 18.1
+       },
+       "ink": {
+        "x": 45,
+        "y": 219.1,
+        "w": 147.5,
+        "h": 16
+       },
+       "text": "You are 149's from today.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 212, 107)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      }
+     }
+    },
+    {
+     "part": "rest",
+     "label": "\"This can't be saved in 142's Tracker.\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 201.5,
+        "y": 218.1,
+        "w": 194.7,
+        "h": 18.1
+       },
+       "ink": {
+        "x": 201.5,
+        "y": 219.1,
+        "w": 194.7,
+        "h": 16
+       },
+       "text": "This can't be saved in 142's Tracker.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-rest"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 201.5,
+        "y": 218.1,
+        "w": 194.7,
+        "h": 18.1
+       },
+       "ink": {
+        "x": 201.5,
+        "y": 219.1,
+        "w": 194.7,
+        "h": 16
+       },
+       "text": "This can't be saved in 142's Tracker.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-rest"
+      }
+     }
+    },
+    {
+     "part": "close",
+     "label": "\"Close\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1464,
+        "y": 213.2,
+        "w": 52,
+        "h": 28
+       },
+       "ink": {
+        "x": 1474,
+        "y": 220.2,
+        "w": 32,
+        "h": 14
+       },
+       "text": "Close",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "normal"
+       },
+       "tag": "button"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1464,
+        "y": 213.2,
+        "w": 52,
+        "h": 28
+       },
+       "ink": {
+        "x": 1474,
+        "y": 220.2,
+        "w": 32,
+        "h": 14
+       },
+       "text": "Close",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "normal"
+       },
+       "tag": "button"
+      }
+     }
+    },
+    {
+     "part": "hint",
+     "label": "the editing hint, under the band",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 252.7,
+        "w": 1536,
+        "h": 26.4
+       },
+       "ink": {
+        "x": 592.1,
+        "y": 256.7,
+        "w": 351.8,
+        "h": 16
+       },
+       "text": "Move: drag a ball (snap-aligns to others). Drag empty space to pan.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "linear-gradient(rgba(59, 198, 232, 0.16), rgba(59, 198, 232, 0.16))",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(59, 198, 232)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.arrhint.on"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 252.7,
+        "w": 1536,
+        "h": 26.4
+       },
+       "ink": {
+        "x": 592.1,
+        "y": 256.7,
+        "w": 351.8,
+        "h": 16
+       },
+       "text": "Move: drag a ball (snap-aligns to others). Drag empty space to pan.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "linear-gradient(rgba(59, 198, 232, 0.16), rgba(59, 198, 232, 0.16))",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(59, 198, 232)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.arrhint.on"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "trk-phone",
+   "title": "The Tracker's chart editor at midnight of his move, iPhone (WebKit), Ranger",
+   "drawing": {
+    "script": "docs/mock/2026-11-20-multi-sqn-reshape/draw.mjs",
+    "shot": "q7c-p"
+   },
+   "approved": {
+    "picture": "q7c-p.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 3",
+   "parts": [
+    {
+     "part": "tools",
+     "label": "the chart editor's tools",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 118.5,
+        "w": 402,
+        "h": 203.7
+       },
+       "ink": {
+        "x": 23.3,
+        "y": 131.5,
+        "w": 347.5,
+        "h": 182.8
+       },
+       "text": "Move Select Connect Delete + Flight + Acad + Test + Sim + CFT/IAT/EPT Text Line Edit lines Arrow Merge Unmerge Select all Font Fit Reset layout Edit events Double-click any pokéball on the chart to edit that event directly.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "center",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.arrtools.on"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 118.5,
+        "w": 402,
+        "h": 203.7
+       },
+       "ink": {
+        "x": 23.3,
+        "y": 131.5,
+        "w": 347.5,
+        "h": 182.8
+       },
+       "text": "Move Select Connect Delete + Flight + Acad + Test + Sim + CFT/IAT/EPT Text Line Edit lines Arrow Merge Unmerge Select all Font Fit Reset layout Edit events Double-click any pokéball on the chart to edit that event directly.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "center",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.arrtools.on"
+      }
+     }
+    },
+    {
+     "part": "band",
+     "label": "the band",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 322.2,
+        "w": 402,
+        "h": 53.3
+       },
+       "ink": {
+        "x": 14,
+        "y": 331.2,
+        "w": 364,
+        "h": 36.1
+       },
+       "text": "You are 149's from today. This can't be saved in 142's Tracker. Close",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "linear-gradient(90deg, rgba(229, 194, 74, 0.2), rgba(229, 194, 74, 0.06) 55%, rgba(229, 194, 74, 0.03)), none",
+        "edge": [
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "space-between",
+        "font": "600 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.saveband.mkq.mkq-in"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 322.2,
+        "w": 402,
+        "h": 53.3
+       },
+       "ink": {
+        "x": 14,
+        "y": 331.2,
+        "w": 364,
+        "h": 36.1
+       },
+       "text": "You are 149's from today. This can't be saved in 142's Tracker. Close",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "linear-gradient(90deg, rgba(229, 194, 74, 0.2), rgba(229, 194, 74, 0.06) 55%, rgba(229, 194, 74, 0.03)), none",
+        "edge": [
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "space-between",
+        "font": "600 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.saveband.moveband"
+      }
+     }
+    },
+    {
+     "part": "sign",
+     "label": "its warning sign",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 14,
+        "y": 331.2,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.6 15 14H1z' fill",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-sign"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 14,
+        "y": 331.2,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.6 15 14H1z' fill",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-sign"
+      }
+     }
+    },
+    {
+     "part": "lead",
+     "label": "\"You are 149's from today.\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 39,
+        "y": 330.2,
+        "w": 147.5,
+        "h": 18.1
+       },
+       "ink": {
+        "x": 39,
+        "y": 331.2,
+        "w": 147.5,
+        "h": 16
+       },
+       "text": "You are 149's from today.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 212, 107)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 39,
+        "y": 330.2,
+        "w": 147.5,
+        "h": 18.1
+       },
+       "ink": {
+        "x": 39,
+        "y": 331.2,
+        "w": 147.5,
+        "h": 16
+       },
+       "text": "You are 149's from today.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 212, 107)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      }
+     }
+    },
+    {
+     "part": "rest",
+     "label": "\"This can't be saved in 142's Tracker.\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 14,
+        "y": 350.3,
+        "w": 194.7,
+        "h": 18.1
+       },
+       "ink": {
+        "x": 14,
+        "y": 351.4,
+        "w": 194.7,
+        "h": 16
+       },
+       "text": "This can't be saved in 142's Tracker.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-rest"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 14,
+        "y": 350.3,
+        "w": 194.7,
+        "h": 18.1
+       },
+       "ink": {
+        "x": 14,
+        "y": 351.4,
+        "w": 194.7,
+        "h": 16
+       },
+       "text": "This can't be saved in 142's Tracker.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-rest"
+      }
+     }
+    },
+    {
+     "part": "close",
+     "label": "\"Close\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 336,
+        "y": 335.3,
+        "w": 52,
+        "h": 28
+       },
+       "ink": {
+        "x": 346,
+        "y": 342.3,
+        "w": 32,
+        "h": 14
+       },
+       "text": "Close",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "normal"
+       },
+       "tag": "button"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 336,
+        "y": 335.3,
+        "w": 52,
+        "h": 28
+       },
+       "ink": {
+        "x": 346,
+        "y": 342.3,
+        "w": 32,
+        "h": 14
+       },
+       "text": "Close",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "normal"
+       },
+       "tag": "button"
+      }
+     }
+    },
+    {
+     "part": "hint",
+     "label": "the editing hint, under the band",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 383.4,
+        "w": 402,
+        "h": 26.4
+       },
+       "ink": {
+        "x": 25.1,
+        "y": 388.1,
+        "w": 351.8,
+        "h": 16
+       },
+       "text": "Move: drag a ball (snap-aligns to others). Drag empty space to pan.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "linear-gradient(rgba(59, 198, 232, 0.16), rgba(59, 198, 232, 0.16))",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(59, 198, 232)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.arrhint.on"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 383.4,
+        "w": 402,
+        "h": 26.4
+       },
+       "ink": {
+        "x": 25.1,
+        "y": 388.1,
+        "w": 351.8,
+        "h": 16
+       },
+       "text": "Move: drag a ball (snap-aligns to others). Drag empty space to pan.",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "linear-gradient(rgba(59, 198, 232, 0.16), rgba(59, 198, 232, 0.16))",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(59, 198, 232)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.arrhint.on"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "errors": []
+}

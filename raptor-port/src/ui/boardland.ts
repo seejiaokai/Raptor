@@ -35,6 +35,7 @@ import { groundOrder } from '../engine/order'
 import { standsOn } from '../engine/overlay'
 import { rowsOf } from '../engine/rowids'
 import { CURWEEK } from '../engine/waves'
+import { inView } from '../engine/unitview'
 import type { UndoEntry } from '../undo/types'
 import { dayKeyOf } from '../undo/derive'
 import { notify } from '../state/store'
@@ -151,7 +152,8 @@ export function boardLandKeys(entry: UndoEntry, dir: 'undo' | 'redo', di: number
     /* this day of the LOADED week only: the day number alone let a step of another week put that week's positions onto
        this week's board (the fresh Opus reader, F5) */
     const dk = dayKeyOf(ch.collection, ch.id), h = dk ? dk.lastIndexOf('#') : -1
-    if (!dk || h < 0 || dk.slice(0, h) !== String(CURWEEK) || Number(dk.slice(h + 1)) !== di) continue
+    /* …and of the unit in view: a day key names its unit (`u142@13/07/2026#0` — multi-squadron step 2) */
+    if (!dk || h < 0 || dk.slice(0, h) !== inView(String(CURWEEK)) || Number(dk.slice(h + 1)) !== di) continue
     /* undo: the record goes from its `after` back to its `before`; redo: the other way */
     const from: any = dir === 'undo' ? ch.after : ch.before, to: any = dir === 'undo' ? ch.before : ch.after
     if (ch.collection === 'days') {

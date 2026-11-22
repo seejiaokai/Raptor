@@ -23,7 +23,9 @@
    `sansday:` rows, its command `sans.day.set` and its two-figure `sanscalendar`. The SANS calendar reads THIS module
    through the one join (leavewar/sync.ts flyAnswer / flyMonth). A two-figure colour record that build left in a
    browser's storage reads here as the defaults; a `sansday:` row is read by nothing. */
-import { store, HOOKS } from '../engine/hooks'
+import { store, HOOKS, unitSetting } from '../engine/hooks'
+import { UNIT } from '../engine/unitview'
+import { qualify, localOf } from '../storage/unitid'
 import { inputLines, isSansAvail, inputCoversDate } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { newId } from '../engine/newid'
@@ -41,29 +43,40 @@ export interface FlySave { ok: boolean; message?: string; id?: string; pending?:
    flyplanLoad — which sits in the settings store's loader list, so a rollback, an Undo and a Redo (each re-derives every
    settings module from the restored store) drop it too, and in the boot. A row that cannot be trusted is read as
    nothing. */
+/* BY SQUADRON (the reshape plan §3.2 A-ii — the SANS calendar, the Inputs calendar and their Calendar window are own
+   pages; the Leave War reads this too). Every read and write names its squadron: `unit` left out is the loaded squadron
+   (the pick — engine/unitview.ts UNIT), exactly as these read before. The cache holds the loaded squadron's plan only; a
+   plan of another squadron is built from its stored rows each time it is asked for and never cached, so the loaded
+   squadron's cache is never filled with another's. */
 let PLAN: FlyPlan | null = null
 export function flyplanLoad(): void { PLAN = null }
-export function getFlyPlan(): FlyPlan {
-  if (PLAN) return PLAN
+/* a squadron's rows of one kind, each by its plain name (`flyday:2026-07-13`) — `store.keys` of a qualified prefix
+   answers each key as stored, its squadron in front */
+const rowsOf = (unit: string, prefix: string): string[] => store.keys(qualify(unit, prefix)).map(localOf)
+function planOf(unit: string): FlyPlan {
   const days: Record<string, FlyDay> = {}, runs: Record<string, FlyRun> = {}, rules: FlyRule[] = []
-  for (const k of store.keys('flyday:')) {
-    const iso = k.slice(7), v: unknown = store.get(k, null)
+  for (const k of rowsOf(unit, 'flyday:')) {
+    const iso = k.slice(7), v: unknown = store.get(qualify(unit, k), null)
     if (validIso(iso) && validFlyDay(v) && Object.keys(v).length) days[iso] = v
   }
-  for (const k of store.keys('flyrun:')) {
-    const iso = k.slice(7), v: unknown = store.get(k, null)
+  for (const k of rowsOf(unit, 'flyrun:')) {
+    const iso = k.slice(7), v: unknown = store.get(qualify(unit, k), null)
     if (validIso(iso) && validFlyRun(v)) runs[iso] = v
   }
-  for (const k of store.keys('flyrule:')) {
-    const v: unknown = store.get(k, null)
+  for (const k of rowsOf(unit, 'flyrule:')) {
+    const v: unknown = store.get(qualify(unit, k), null)
     if (validFlyRule(v) && v.id === k.slice(8)) rules.push(v)
   }
   /* a fixed order, so two browsers holding the same rows resolve a tie between two rules the same way */
   rules.sort((a, b) => a.from < b.from ? -1 : a.from > b.from ? 1 : a.id < b.id ? -1 : a.id > b.id ? 1 : 0)
-  return (PLAN = { days, rules, runs })
+  return { days, rules, runs }
 }
-export function getTones(): Tones {
-  const v: unknown = store.get('sanscalendar', null)
+export function getFlyPlan(unit: string = UNIT): FlyPlan {
+  if (unit !== UNIT) return planOf(unit)
+  return PLAN || (PLAN = planOf(UNIT))
+}
+export function getTones(unit: string = UNIT): Tones {
+  const v: unknown = unitSetting(unit, 'sanscalendar', null)
   return validTones(v) ? { yellowFrom: v.yellowFrom, amberFrom: v.amberFrom, redFrom: v.redFrom } : { ...DEFAULT_TONES }
 }
 
@@ -75,9 +88,11 @@ function result(r: CommitResult): FlySave {
   if ('queued' in r) return { ok: false, pending: r.done.then(result) }
   return { ok: r.ok, ...(!r.ok ? { message: r.message || 'This change could not be saved.' } : {}) }
 }
-function save(type: string, meta: unknown, writes: Array<[string, unknown]>): FlySave {
+/* `writes` name each row plainly; `unit` is whose rows they are — each written under its own squadron's name */
+function save(type: string, meta: unknown, writes: Array<[string, unknown]>, unit: string): FlySave {
   const r = result(commitSettingsIntent(type, meta, () => {
-    for (const [k, v] of writes) {
+    for (const [name, v] of writes) {
+      const k = qualify(unit, name)
       store.set(k, v)
       if (JSON.stringify(store.get(k, null)) !== JSON.stringify(v)) throw new Error('The setting could not be saved. Try again.')
     }
@@ -95,9 +110,9 @@ const no = (message: string): FlySave => ({ ok: false, message })
    row at all when nothing is left. One command for the whole block: a picked rectangle of cells is ONE Undo step. */
 export interface FlyDayPatch { iso: string; cls?: FlyCls | null; p?: number | null; w?: number | null }
 const PATCH_KEYS = ['iso', 'cls', 'p', 'w']
-export function setFlyDays(patches: FlyDayPatch[]): FlySave {
+export function setFlyDays(patches: FlyDayPatch[], unit: string = UNIT): FlySave {
   if (!Array.isArray(patches) || !patches.length) return no('Pick at least one day.')
-  const plan = getFlyPlan()
+  const plan = getFlyPlan(unit)
   const next = new Map<string, FlyDay | null>()
   for (const pt of patches) {
     if (!pt || typeof pt !== 'object' || !Object.keys(pt).every(k => PATCH_KEYS.includes(k)) || !validIso(pt.iso)) return no('Choose a valid calendar date.')
@@ -115,25 +130,25 @@ export function setFlyDays(patches: FlyDayPatch[]): FlySave {
     if (JSON.stringify(row) !== JSON.stringify(plan.days[iso] ?? null)) writes.push(['flyday:' + iso, row])
   }
   if (!writes.length) return { ok: true }                        // nothing would change: no command, no Undo step
-  return save('fly.day.set', { dates: [...next.keys()] }, writes)
+  return save('fly.day.set', { dates: [...next.keys()] }, writes, unit)
 }
 
 /* ---- "every <weekday> from a date onward" -------------------------------------------------------------------------
    A second rule for the same weekday and the same start REPLACES the first (it takes its id), so "every Thursday from
    5 Nov" is one thing he changes, never two rules arguing. */
-export function setFlyRule(rule: { wd: number; cls: FlyCls; from: string; until?: string }): FlySave {
-  const plan = getFlyPlan()
+export function setFlyRule(rule: { wd: number; cls: FlyCls; from: string; until?: string }, unit: string = UNIT): FlySave {
+  const plan = getFlyPlan(unit)
   const same = rule && plan.rules.find(r => r.wd === rule.wd && r.from === rule.from)
   const row: any = { id: same ? same.id : newId('fr'), wd: rule && rule.wd, cls: rule && rule.cls, from: rule && rule.from }
   if (rule && rule.until !== undefined) row.until = rule.until
   if (!rule || !Object.keys(rule).every(k => ['wd', 'cls', 'from', 'until'].includes(k)) || !validFlyRule(row))
     return no('Choose the weekday, what kind of day it is, and the date it starts — an end date cannot be before the start.')
-  const r = save('fly.rule.set', { rule: row.id }, [['flyrule:' + row.id, row]])
+  const r = save('fly.rule.set', { rule: row.id }, [['flyrule:' + row.id, row]], unit)
   return r.ok ? { ...r, id: row.id } : r
 }
-export function removeFlyRule(id: string): FlySave {
-  if (!getFlyPlan().rules.some(r => r.id === id)) return no('That rule is no longer there.')
-  return save('fly.rule.remove', { rule: id }, [['flyrule:' + id, null]])
+export function removeFlyRule(id: string, unit: string = UNIT): FlySave {
+  if (!getFlyPlan(unit).rules.some(r => r.id === id)) return no('That rule is no longer there.')
+  return save('fly.rule.remove', { rule: id }, [['flyrule:' + id, null]], unit)
 }
 
 /* ---- a figure that RUNS from a date ---------------------------------------------------------------------------------
@@ -147,10 +162,10 @@ export function removeFlyRule(id: string): FlySave {
    run ends (null) and the date's class are left as they are. `clear` names MORE dates to treat the same way: the
    Required panel's picked block (he picked those cells and said "18 from here on" — a figure left typed on one of
    them would hide the run there). */
-export function setFlyRun(iso: string, patch: FlyRun, opts?: { clearDay?: boolean; clear?: readonly string[] }): FlySave {
+export function setFlyRun(iso: string, patch: FlyRun, opts?: { clearDay?: boolean; clear?: readonly string[] }, unit: string = UNIT): FlySave {
   if (!validIso(iso)) return no('Choose a valid calendar date.')
   if (!validFlyRun(patch)) return no('A required figure is a whole number of zero or more.')
-  const plan = getFlyPlan()
+  const plan = getFlyPlan(unit)
   const row: FlyRun = { ...(plan.runs[iso] || {}), ...patch }
   const writes: Array<[string, unknown]> = [['flyrun:' + iso, row]]
   const clear = new Set<string>([...(opts && opts.clearDay ? [iso] : []), ...((opts && opts.clear) || [])])
@@ -162,20 +177,20 @@ export function setFlyRun(iso: string, patch: FlyRun, opts?: { clearDay?: boolea
     const trimmed = trimDay(d, next, plan)
     if (JSON.stringify(trimmed) !== JSON.stringify(day)) writes.push(['flyday:' + d, trimmed])
   }
-  return save('fly.run.set', { from: iso }, writes)
+  return save('fly.run.set', { from: iso }, writes, unit)
 }
-export function dropFlyRun(iso: string, seats: Array<'p' | 'w'>): FlySave {
-  const cur = getFlyPlan().runs[iso]
+export function dropFlyRun(iso: string, seats: Array<'p' | 'w'>, unit: string = UNIT): FlySave {
+  const cur = getFlyPlan(unit).runs[iso]
   if (!validIso(iso) || !cur) return no('No figure starts on that date.')
   const row: FlyRun = { ...cur }
   for (const s of seats || []) delete row[s]
-  return save('fly.run.set', { from: iso }, [['flyrun:' + iso, Object.keys(row).length ? row : null]])
+  return save('fly.run.set', { from: iso }, [['flyrun:' + iso, Object.keys(row).length ? row : null]], unit)
 }
 
 /* ---- the three colours ----------------------------------------------------------------------------------------------- */
-export function saveTones(t: Tones): FlySave {
+export function saveTones(t: Tones, unit: string = UNIT): FlySave {
   if (!validTones(t)) return no('Use whole numbers of 1 or more, each above the last: yellow, then amber, then red.')
-  return save('settings.sanscalendar', null, [['sanscalendar', { yellowFrom: t.yellowFrom, amberFrom: t.amberFrom, redFrom: t.redFrom }]])
+  return save('settings.sanscalendar', null, [['sanscalendar', { yellowFrom: t.yellowFrom, amberFrom: t.amberFrom, redFrom: t.redFrom }]], unit)
 }
 
 /* ---- the SANS committed, per seat ------------------------------------------------------------------------------------

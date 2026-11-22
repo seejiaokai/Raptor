@@ -6,6 +6,7 @@
    a row that will not read is left as it is; the order of every list survives a reload, ties broken by id; the two
    placeholder pucks (ALL, ALL AVAIL) are code, never rows; a cleared setting removes its key (F3-07). */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { inView } from '../engine/unitview'
 import { INPUTS, inpId } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS } from '../engine/people'
 import { DAYS } from '../engine/data'
@@ -188,10 +189,10 @@ describe('the planning calendar and the roster, one row each', () => {
     clear()
     addPlanPuckCmd('2026-07-21', 'NOTE')
     const p = PLANPUCKS.find((x: any) => x.text === 'NOTE')
-    expect(writes('plan')).toEqual([`pp:${p.id}`])
+    expect(writes('plan')).toEqual([inView(`pp:${p.id}`)])
     clear()
     expect(writeInputs(() => { setDayRemark('2026-07-21', 'TITLE') })).toBe(true)
-    expect(writes('plan')).toEqual(['dm:2026-07-21'])
+    expect(writes('plan')).toEqual([inView('dm:2026-07-21')])
     expect(wb.has('plan', 'all')).toBe(false)
   })
 
@@ -235,9 +236,9 @@ describe('a cleared setting removes its key (F3-07)', () => {
   it('saving null takes the setting out of storage — it reads as never set', async () => {
     const wb = await boot(new MemoryBackend())
     store.set('cxreasons', ['WX'])
-    expect(wb.has('settings', 'cxreasons')).toBe(true)
+    expect(wb.has('settings', inView('cxreasons'))).toBe(true)
     store.set('cxreasons', null)
-    expect(wb.has('settings', 'cxreasons')).toBe(false)
+    expect(wb.has('settings', inView('cxreasons'))).toBe(false)
     expect(store.get('cxreasons', null)).toBeNull()
   })
 })

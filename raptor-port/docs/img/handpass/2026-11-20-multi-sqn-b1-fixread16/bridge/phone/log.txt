@@ -1,0 +1,28 @@
+msq-fr16-bridge v1 iPhone
+ROW PASS | B-1 | iPhone | Saber opens July, places an approved LL for Ranger on 27 Jul, words empty | saw: switch true; cell "LL"; window open 0
+ROW PASS | B-2 | iPhone | Hunter places an approved LL for Ranger on 29 Jul, words "hunter words" | saw: switch true; cells ["27: LL","28: ","29: LL"]; window open 0
+ROW PASS | B-3 | iPhone | Ranger places his own pending LL bid on 28 Jul | saw: cell "LL"; window open 0
+select sheet Ranger 27–29 Jul · 3 days Auto-approve ✕ No manning row is amber or red Approve Refuse ⇄Move Delete “hunter words” · 29 Jul till 29 Jul Document Whole day AM PM LL 9.5 OL 9.5 OIL −1 CCL 1 FCL 4 PL 0.5
+ROW RECORD | B-4 | iPhone | Saber drag-selects Ranger's 27-29 Jul, approves with words 'joined' | saw: sheet "Ranger 27–29 Jul · 3 days Auto-approve ✕ No manning row is amber or red Approve Refuse ⇄Move Delete “hunter words” · 29 Jul till 29 Jul Document Whole day AM PM LL 9.5 OL 9.5 OIL −1 CCL 1 FCL 4 PL 0.5"; cells ["27: LL","28: LL","29: LL"]; inputs rows ["10:00–11:00 Drifter, Echo, Ranger, SaberMEETING Flight safety brief By Saber","LATE No document till 29 Jul RangerLL joined By Saber"]; stor
+b5 ad2 lines ["NEW LLMon 27 Jul Remark changed · Saber now","NEW Leave War17 Jul – 31 Jul Bidding open · Saber 2 min"]
+ROW PASS | B-5 | iPhone | Hunter's bell | saw: badge {"dot":"block","text":"","aria":"Notifications"}; word lines 1; lines ["NEW LLMon 27 Jul Remark changed · Saber now","NEW Leave War17 Jul – 31 Jul Bidding open · Saber 2 min"]; after tap: ⠿ Ranger · 27 Jul → 29 Jul ✕ PERSON Several people TYPE ? DURATION ALL DAY AM PM CUSTOM DOCUMENT Document REMARKS till 29 Jul DATES July 2026 › 13 ‹ › MON TUE WED THU FRI SAT SUN 1 2 3 4 5 6 7 8 9 10 11 12 
+ERR B-6 locator.waitFor: Timeout 8000ms exceeded.
+ROW OWED | B-6 | iPhone | script step | saw: script error locator.waitFor: Timeout 8000ms exceeded.
+ERR B-7 locator.waitFor: Timeout 8000ms exceeded.
+ROW OWED | B-7 | iPhone | script step | saw: script error locator.waitFor: Timeout 8000ms exceeded.
+errors []
+DONE 4 PASS 0 FAIL 3 OTHER of 7
+msq-fr16-bridge v1 iPhone
+ROW PASS | B-1 | iPhone | Saber opens July, places an approved LL for Ranger on 27 Jul, words empty | saw: switch true; cell "LL"; window open 0
+ROW PASS | B-2 | iPhone | Hunter places an approved LL for Ranger on 29 Jul, words "hunter words" | saw: switch true; cells ["27: LL","28: ","29: LL"]; window open 0
+ROW PASS | B-3 | iPhone | Ranger places his own pending LL bid on 28 Jul | saw: cell "LL"; window open 0
+select sheet Ranger 27–29 Jul · 3 days Auto-approve ✕ No manning row is amber or red Approve Refuse ⇄Move Delete “hunter words” · 29 Jul till 29 Jul Document Whole day AM PM LL 9.5 OL 9.5 OIL −1 CCL 1 FCL 4 PL 0.5
+ROW RECORD | B-4 | iPhone | Saber drag-selects Ranger's 27-29 Jul, approves with words 'joined' | saw: sheet "Ranger 27–29 Jul · 3 days Auto-approve ✕ No manning row is amber or red Approve Refuse ⇄Move Delete “hunter words” · 29 Jul till 29 Jul Document Whole day AM PM LL 9.5 OL 9.5 OIL −1 CCL 1 FCL 4 PL 0.5"; cells ["27: LL","28: LL","29: LL"]; inputs rows ["10:00–11:00 Drifter, Echo, Ranger, SaberMEETING Flight safety brief By Saber","LATE No document till 29 Jul RangerLL joined By Saber"]; stor
+b5 ad2 lines ["NEW LLMon 27 Jul Remark changed · Saber now","NEW Leave War17 Jul – 31 Jul Bidding open · Saber 2 min"]
+ROW PASS | B-5 | iPhone | Hunter's bell | saw: badge {"dot":"block","text":"","aria":"Notifications"}; word lines 1; lines ["NEW LLMon 27 Jul Remark changed · Saber now","NEW Leave War17 Jul – 31 Jul Bidding open · Saber 2 min"]; after tap: ⠿ Ranger · 27 Jul → 29 Jul ✕ PERSON Several people TYPE ? DURATION ALL DAY AM PM CUSTOM DOCUMENT Document REMARKS till 29 Jul DATES July 2026 › 13 ‹ › MON TUE WED THU FRI SAT SUN 1 2 3 4 5 6 7 8 9 10 11 12 
+b6 us lines ["NEW LLMon 27 Jul Remark changed · Saber now","NEW Your leaveTue 28 Jul LL approved · Saber now","NEW Your leaveWed 29 Jul LL added and approved · Hunter 1 min","NEW Your leaveMon 27 Jul LL added and approved · Saber 2 min","NEW Leave War17 Jul – 31 Jul Bidding open · Saber 2 min"]
+ROW PASS | B-6 | iPhone | Ranger's bell | saw: badge {"dot":"block","text":"","aria":"Notifications"}; word lines 1; lines ["NEW LLMon 27 Jul Remark changed · Saber now","NEW Your leaveTue 28 Jul LL approved · Saber now","NEW Your leaveWed 29 Jul LL added and approved · Hunter 1 min","NEW Your leaveMon 27 Jul LL added and approved · Saber 2 min","NEW Leave War17 Jul – 31 Jul Bidding open · Saber 2 min"]
+b7 ad lines []
+ROW PASS | B-7 | iPhone | Saber's bell | saw: badge {"dot":"none","text":"","aria":"Notifications"}; word lines 0; lines []
+errors []
+DONE 6 PASS 0 FAIL 1 OTHER of 7

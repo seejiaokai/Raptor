@@ -12,7 +12,7 @@
    tapping another date re-points this same window, and a commitment saved behind it shows in it at once.
 
    IT WORKS NOTHING OUT. The working is the ONE resolver's answer (leavewar/sync.ts flyAnswer → state/flyplan-model.ts
-   planFor) with the two figures it was worked from (dayFacts — who is available; sansCommittedOn — the SANS committed);
+   planFor) with the two figures it was worked from (ownDayFacts — who is available; sansCommittedOn — the SANS committed);
    the list is ui/sanscal-model.ts sansDayGroups. It repaints on the scheduler's signal (a commitment, a plan row) and
    on the war's (`useWarFacts` — a bid decided, a holiday declared, a count row re-defined).
 
@@ -21,12 +21,15 @@
    it stands on is the button. */
 import { placedShort } from './placedline'
 import { useState } from 'react'
-import { idsOf } from '../engine/inputs'
+import { idsOf, inputsOnDay } from '../engine/inputs'
+import { unitPeople } from '../engine/roster'
 import { PEOPLE } from '../engine/people'
-import { isAdmin } from '../state/perms'
+import { isAdmin, pageUnit } from '../state/perms'
+import { openWinFor } from '../state/cutoff'
 import { notify } from '../state/store'
 import { sansCommittedOn } from '../state/flyplan'
-import { dayFacts, flyAnswer, useWarFacts } from '../leavewar/sync'
+import { flyAnswer, ownDayFacts, useWarFacts } from '../leavewar/sync'
+import { todayIso } from '../engine/editlog'
 import { FloatWin } from './FloatWindow'
 import { bringForward, openBeside } from './winorder'
 import { puck } from './html'
@@ -35,11 +38,18 @@ import { maySansAdd, openSansAdd } from './sansadd'
 import { dayWord, sansDayGroups, type SansEntry } from './sanscal-model'
 import { useVersion } from './useStore'
 
+/* the flying plan of the page's own squadron today (the reshape plan §3.2 A-ii — the SANS calendar is an own page, as
+   its month is: ui/SansCal.tsx sansCalUnit), never the war loaded's */
+const flyOwn = (iso: string) => flyAnswer(iso, pageUnit('own', todayIso()))
+/* …and the facts it was worked from, the same squadron's (leavewar/sync.ts ownDayFacts): its holiday's name, and who is
+   available — not known where its war is not the loaded one, never the loaded war's figure */
+const factsOwn = (iso: string) => ownDayFacts(pageUnit('own', todayIso()), iso)
+
 /** what kind of day it is, in words — the window's second line */
 function kindWord(iso: string): string {
-  const a = flyAnswer(iso)
+  const a = flyOwn(iso)
   if (a.kind) {
-    const name = dayFacts(iso).name
+    const name = factsOwn(iso).name
     const word = a.kind === 'ph' ? 'Public holiday' : 'Off day'
     /* its own name where it has one that says more than the kind does ("National Day") */
     return name && !/^(ph|off day|off)$/i.test(name.trim()) ? `${word} · ${name}` : word
@@ -59,7 +69,11 @@ export function SansDay({ iso, hi, onClose }: {
   useWarFacts()
   /* which late commitment's note is showing (its input id) */
   const [lateOpen, setLateOpen] = useState<string | null>(null)
-  const a = flyAnswer(iso), facts = dayFacts(iso), com = sansCommittedOn(iso), g = sansDayGroups(iso)
+  /* ONE SQUADRON FOR THE WHOLE WINDOW — the page's own TODAY, as its calendar's month, its flying answer and its facts
+     (the fix round of 22 Nov 26, the three readers' find): asked on the day shown, Ranger — 142's today, 149's from Thu 16
+     Jul — opening Fri 17 Jul from his 142 SANS calendar got 142's flying and facts over 149's men and commitments. That
+     squadron's people and inputs are still read ON the day shown. */
+  const a = flyOwn(iso), facts = factsOwn(iso), u = pageUnit('own', todayIso()), com = sansCommittedOn(iso, undefined, unitPeople(u, iso)), g = sansDayGroups(iso, inputsOnDay(u, iso), unitPeople(u, iso))
   const canAdd = maySansAdd()
   const avail = { p: facts.availP, w: facts.availW }
 
@@ -128,12 +142,14 @@ export function SansDay({ iso, hi, onClose }: {
             ))}</tr>
           </tbody>
         </table>
-        {!facts.covered && <p className="sd-note" data-testid="sd-nocover">No leave period covers this date, so who is available is not known.</p>}
+        {/* (not where the squadron's war is not the loaded one: its own war may well cover the date — the figures are
+            "–" and nothing is said) */}
+        {!facts.covered && !facts.otherWar && <p className="sd-note" data-testid="sd-nocover">No leave period covers this date, so who is available is not known.</p>}
         <div className="sd-acts">
           <button type="button" className="abtn primary sd-add" data-testid="sd-add" disabled={!canAdd} onClick={() => { openSansAdd(iso) }}>+ Commitment</button>
           {isAdmin() && (
             <button type="button" className="abtn sd-days" data-testid="sd-days" title="Set this month’s day, night and no-fly days, and the year’s holidays"
-              onClick={() => { openBeside('days', 'sansday'); setDaysWin(iso); notify(); bringForward('days') }}>Calendar…</button>
+              onClick={() => { openWinFor('days', pageUnit('own')); openBeside('days', 'sansday'); setDaysWin(iso); notify(); bringForward('days') }}>Calendar…</button>
           )}
         </div>
         {!canAdd && <p className="sd-note" data-testid="sd-addwhy">SANS aircrew add their availability here.</p>}

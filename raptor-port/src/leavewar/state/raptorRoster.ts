@@ -6,8 +6,10 @@
 // drop in without a migration.
 
 import { PEOPLE, isInstr } from '../../engine/people'
-import { qualCols } from '../../engine/qualcols'
-import type { Person, QualDef } from '../engine'
+import { homeHandle, isSentinel } from '../../engine/roster'
+import { worldUnit, getState } from './store'
+import { qualColsOf } from '../../engine/qualcols'
+import type { HomeStint, Person, QualDef } from '../engine'
 import type { Person as RaptorPerson } from '../../engine/schema'
 
 /* Raptor's roster, typed once at the Leave War's edge: the engine's PEOPLE is untyped (a word-for-word port — D1537),
@@ -43,10 +45,20 @@ const raptorPeople = (): Record<string, RaptorPerson> => PEOPLE
  *   state/demoworld.ts is the one thing that sets them, and only on the
  *   demo crew.
  */
-export function projectPeople(includeSans = false): Person[] {
+/* ONE SQUADRON'S PEOPLE (multi-squadron batch 1, step 4): the war is a whole world per squadron (store.ts worldUnit), so
+   its roster is that squadron's men only — a man at home in 149 today is never a row of 142's war, nor 142's of 149's
+   (engine/roster.ts onRosterOf, the one answer to "is he this unit's"; the placeholders are skipped below as before).
+   `unit` defaults to the world loaded; a caller asking about one man by id (sync.ts) asks the same world. */
+export function projectPeople(includeSans = false, unit: string = worldUnit()): Person[] {
   const out: Person[] = []
+  const since = warsSince(unit)
   for (const [id, p] of Object.entries(raptorPeople())) {
     if (p.special || p.archived) continue
+    /* A1 (the reshape plan §6.2): his row is this squadron's wherever a stint of his here reaches the war's months — the
+       old squadron keeps him up to his move, the new one has him from it — never on today's home alone */
+    const home = homeStintsFor(id, unit)
+    if (!home.some(s => s.to === null || s.to >= since)) continue
+    const lay = laidHome(home)
     if (p.san && !includeSans) continue
     // Ground crew ride the roster since 18 Aug 26 (owner: "when I add
     // personnel through quals, the new personnel will appear on leave war
@@ -58,6 +70,7 @@ export function projectPeople(includeSans = false): Person[] {
       out.push({
         id, callsign: p.cs, seat: 'gnd', band: 'ops', sxo: false,
         from: null, to: null, pers: true, label: p.flight || '',
+        ...lay,
       })
       continue
     }
@@ -87,9 +100,43 @@ export function projectPeople(includeSans = false): Person[] {
       // otherwise). Carry the flag so the display can draw them in their own
       // group at the foot (owner, 3 Sep 26); manning never reads it.
       san: !!p.san,
+      ...lay,
     })
   }
   return out
+}
+
+/* HIS STINTS IN A SQUADRON (A1), from the engine's home handle — state/units.ts installs it; read as units-model.ts
+   stintsIn reads the rows: `from` null reaches back over every day before his first row, `to` null runs on. Oldest
+   first. A placeholder is every squadron's for ever. */
+const FAR_BACK = '0001-01-01', FAR_ON = '9999-12-31'
+const dayBefore = (iso: string): string => {
+  const [y, m, d] = iso.split('-').map(Number)
+  const t = new Date(Date.UTC(y!, m! - 1, d! - 1))
+  return `${t.getUTCFullYear()}-${String(t.getUTCMonth() + 1).padStart(2, '0')}-${String(t.getUTCDate()).padStart(2, '0')}`
+}
+export function homeStintsFor(id: string, unit: string): HomeStint[] {
+  if (isSentinel(id)) return [{ from: null, to: null }]
+  const h = homeHandle()
+  const starts: Array<string | null> = [null, ...h.changesIn(id, FAR_BACK, FAR_ON)]
+  const out: HomeStint[] = []
+  for (let i = 0; i < starts.length; i++) {
+    const from = starts[i]!, next = starts[i + 1]
+    if (h.on(id, from ?? FAR_BACK) !== unit) continue
+    out.push({ from, to: next ? dayBefore(next) : null })
+  }
+  return out
+}
+/* what the war's row carries: nothing for a man always this squadron's (every reader exactly as before), his stints
+   otherwise — never saved (store.ts stripHome) */
+export const laidHome = (home: HomeStint[]): { home?: HomeStint[] } =>
+  home.length === 1 && home[0]!.from === null && home[0]!.to === null ? {} : { home: home.map(s => ({ ...s })) }
+/* the first day the war can show — its earliest period's start, or 1 Jan of last year where earlier or none: a stint
+   ended before it adds no row */
+function warsSince(unit: string): string {
+  let since = `${new Date().getFullYear() - 1}-01-01`
+  if (unit === worldUnit()) for (const w of getState().wars) if (w.period.start && w.period.start < since) since = w.period.start
+  return since
 }
 
 /**
@@ -108,7 +155,8 @@ export function projectPeople(includeSans = false): Person[] {
  * rather than being pruned out from under them.
  */
 export function qualCatalogue(): QualDef[] {
-  const out: QualDef[] = qualCols().map(c => ({ k: c.k, label: c.h }))
+  /* the war's own squadron's columns, never the pick's (the reshape plan §3.2 A-ii — helper "war", second pass) */
+  const out: QualDef[] = qualColsOf(worldUnit()).map(c => ({ k: c.k, label: c.h }))
   const listed = new Set(out.map(q => q.k))
   const held = new Set<string>()
   for (const p of Object.values(raptorPeople())) {

@@ -1,0 +1,65 @@
+[
+ [
+  "T3",
+  "desktop",
+  "us9 files Other on Mon 14 Dec 2026 for himself",
+  "input is on his list",
+  "Osprey: true; 14 Dec: true",
+  "PASS",
+  "t3-02-us9-list.png"
+ ],
+ [
+  "T3",
+  "desktop",
+  "ad opens the bell",
+  "no line about Osprey input",
+  "lines: \"Nothing new\"; mentions Osprey/14 Dec/Other: false",
+  "PASS",
+  "t3-03-ad-bell.png"
+ ],
+ [
+  "T3",
+  "desktop",
+  "ad2 opens the bell",
+  "no line about Osprey input",
+  "lines: \"Nothing new\"; mentions Osprey/14 Dec/Other: false",
+  "PASS",
+  "t3-03-ad2-bell.png"
+ ],
+ [
+  "T3",
+  "desktop",
+  "ad9 opens the bell",
+  "RECORD lines",
+  "lines: \"Nothing new\"; mentions Osprey/14 Dec/Other: false",
+  "RECORD",
+  "t3-03-ad9-bell.png"
+ ],
+ [
+  "T4",
+  "desktop",
+  "ad opens Tracker, taps ST-01 on the chart, presses Marginal for STUDENT A, Close",
+  "RECORD course, students; mark taken",
+  "before: {\"course\":\"26ABSG [now 26ABSG]\",\"students\":\"STUDENT A/STUDENT B [now STUDENT A]\",\"overall\":\"\",\"done\":\"0\"}; after: {\"course\":\"26ABSG [now 26ABSG]\",\"students\":\"STUDENT A/STUDENT B [now STUDENT A]\",\"overall\":\"\",\"done\":\"1\"}; marked: true",
+  "RECORD",
+  "t4-01-ad-tracker.png, t4-04-ad-after-mark.png, t4-05-ad-window-closed.png"
+ ],
+ [
+  "T4",
+  "desktop",
+  "ad9 opens Tracker",
+  "149's own course; ad's mark NOT on 149's student",
+  "ad9: {\"course\":\"26ABSG [now 26ABSG]\",\"students\":\"STUDENT A/STUDENT B [now STUDENT A]\",\"overall\":\"\",\"done\":\"0\"}; ad's done count: 0 -> 1; ad9 done: 0",
+  "PASS",
+  "t4-06-ad9-tracker.png, t4-07-ad9-ball-window.png"
+ ],
+ [
+  "T4",
+  "desktop",
+  "ad signs in again, opens Tracker",
+  "ad's mark still there",
+  "{\"course\":\"26ABSG [now 26ABSG]\",\"students\":\"STUDENT A/STUDENT B [now STUDENT A]\",\"overall\":\"\",\"done\":\"1\"}",
+  "PASS",
+  "t4-08-ad-again.png"
+ ]
+]

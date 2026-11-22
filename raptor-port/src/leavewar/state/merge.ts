@@ -70,7 +70,48 @@ let ABS_VER = 0
  *  row is the SAME object as before keep their merged rows. */
 export function setAbsenceRows(ix: AbsenceRows): void { ABS = ix; ABS_VER++ }
 export function absenceRows(): AbsenceRows { return ABS }
-export function absenceVersion(): number { return ABS_VER }
+export function absenceVersion(): number { ownerTick(); return ABS_VER }
+
+/* ---- WHICH WAR AN ABSENCE IS IN (the reshape walk's W2-F2, 22 Nov 26; his D2243 Q6, the plan's A1) -----------------
+   The absence index is one for every squadron — an absence is the Input, and an Input names a man, never a squadron. So
+   once a man had moved, BOTH wars drew and charged all of it: leave approved in 142's war before his move showed on 149's
+   grid and came off 149's balance too, with his leave of January beside it. Each war now MERGES only the absences that are
+   its own — asked of sync.ts, which knows the squadrons:
+   - leave a war approved (the Input's `lwU`) is that squadron's war's alone — out of sight under the stripe in his old
+     war, and not in his new one "until the Transfer batch carries it" (D2243 Q6);
+   - anything else (leave of before this stamp, an absence filed on the Inputs page — a medical, a course, an overseas
+     duty) is in the war whose squadron he is on that day (A1: each war counts him only inside his squadron stints).
+   `absencesAt` stays whole: the time is taken whichever war shows it, so no door writes a second leave over the one the
+   schedule shows. `token` changes whenever an answer could (the squadron rows, the war loaded): the merged rows are
+   then built afresh, through the same version every cache already reads. Unset (one war on the page): every absence. */
+export interface AbsenceOwner {
+  token(): unknown
+  /** is this absence of his, on this day, this war's — or null where every one is (a man always this squadron's) */
+  of(personId: string): ((date: string, lwU: string | undefined) => boolean) | null
+}
+let OWNER: AbsenceOwner | null = null
+let OWN_TOK: unknown = null
+export function setAbsenceOwner(o: AbsenceOwner | null): void { OWNER = o; OWN_TOK = null; ROWS.clear(); ABS_VER++ }
+/** HIS ABSENCES THAT ARE THIS WAR'S, date by date — what the figures read (store.ts dayRecsOf: the figure beside his
+ *  name, My leave, the person window, Balances, Days taken), by the same rule the merged rows are built on. */
+export function ownAbsenceRows(personId: string): ReadonlyMap<string, readonly Contrib[]> | undefined {
+  ownerTick()
+  const abs = ABS.get(personId)
+  const mine = abs && OWNER ? OWNER.of(personId) : null
+  if (!abs || !mine) return abs
+  const out = new Map<string, readonly Contrib[]>()
+  for (const [d, list] of abs) {
+    const keep = list.filter(c => mine(d, c.lwU))
+    if (keep.length) out.set(d, keep)
+  }
+  return out
+}
+function ownerTick(): void {
+  if (!OWNER) return
+  const t = OWNER.token()
+  if (t === OWN_TOK) return
+  OWN_TOK = t; ROWS.clear(); ABS_VER++
+}
 /** The absences on one person/date, war-agnostic (design §3.1 `absenceAt`). */
 export function absencesAt(personId: string, date: string): readonly Contrib[] {
   return ABS.get(personId)?.get(date) ?? []
@@ -143,12 +184,15 @@ function mergeRow(war: LeaveWar, pid: string, raw: Record<string, WarRec[]> | un
   const dates = new Set<string>(raw ? Object.keys(raw) : [])
   if (abs) for (const d of abs.keys()) if (d >= start && d <= end) dates.add(d)
   if (awd) for (const d of awd.keys()) if (d >= start && d <= end) dates.add(d)
+  /* only the absences that are this war's (AbsenceOwner, above) */
+  const mine = abs && OWNER ? OWNER.of(pid) : null
   const grid: Record<string, string> = {}
   const states: Record<string, BidRecord> = {}
   const views: Record<string, DayView> = {}
   for (const d of dates) {
     const own = raw?.[d]
-    const contribs = [...(own ? recContribs(own) : []), ...(abs?.get(d) ?? []), ...(awd?.get(d) ?? []).map(awardContrib)]
+    const absent = abs?.get(d) ?? []
+    const contribs = [...(own ? recContribs(own) : []), ...(mine ? absent.filter(c => mine(d, c.lwU)) : absent), ...(awd?.get(d) ?? []).map(awardContrib)]
     if (!contribs.length) continue
     const v = dayView(contribs)
     views[d] = v
@@ -164,6 +208,7 @@ function mergeRow(war: LeaveWar, pid: string, raw: Record<string, WarRec[]> | un
 /** The merged view of one raw war — cached on the war object and the index
  *  version, so a view-only render pays nothing. */
 export function mergeWar(war: LeaveWar): MergedWar {
+  ownerTick()
   const hit = WARS.get(war)
   if (hit && hit.ver === ABS_VER && hit.awd === AWD_VER) return hit.merged
   const recs: Recs = war.recs

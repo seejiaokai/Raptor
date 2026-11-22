@@ -1,0 +1,13 @@
+msq-fr5-f4 v2
+sheet Ranger Thu 19 Nov Auto-approve ✕ No manning row turns amber or red till 19 Nov Document Whole day AM PM Pick a range LL 11.5 OL 11.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 PO FROM Thu 19 Nov 26 ▾ POSTING ✓ Overseas Sqn Delete SANS Transfer to Sqn On 19 Nov: archived, account suspended. Post out
+ROW RECORD | F4 | desktop | Saber: Leave War, Ranger's day window, ⋯, Post out, Overseas Sqn chip, Post out | saw: sheet words: Ranger Thu 19 Nov Auto-approve ✕ No manning row turns amber or red till 19 Nov Document Whole day AM PM Pick a range LL 11.5 OL 11.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 PO FROM Thu 19 Nov 26 ▾ POSTING ✓ Overseas Sqn Del; Ranger now: {"cs":"Ranger","posted":null,"status":null,"keys":[]}; undo: undoBtn disabled=true; redoBtn disabled=true; page words: 142 TALON Edit Schedule View-only 
+ROW PASS | F4 | desktop | Hunter (tab 2): bell after the posting | saw: dot "block"; ["NEW RangerThu 19 Nov Posted out · off the manpower 14 h"]
+Hunter tapped the line; his page now admin
+state before undo undoBtn disabled=true; redoBtn disabled=true
+buttons in window ↶ Undo | Delete | Undo post out (PO)
+undo post out count 1
+ROW RECORD | F4 | desktop | Saber: top bar Undo | saw: Ranger now []; undoBtn disabled=true; redoBtn disabled=true; words 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Saber · Admin Grid Approvals 13 Balances OIL View My
+ROW RECORD | F4 | desktop | Hunter (tab 2, reopened): bell after the take-back (he had read the line first) | saw: dot "none"; []
+ROW RECORD | F4 | desktop | Ranger (tab 2): bell after the take-back | saw: dot "none"; []
+errors []
+DONE 1 PASS 0 FAIL 4 OTHER of 5

@@ -1,0 +1,137 @@
+[
+ [
+  "F1",
+  "desktop",
+  "ad Saber: fresh world, open the bell",
+  "opens; lines or the empty state; dot matches",
+  "open true; words \"Nothing new\"; line-ish elements 1; bell class \"bellbtn\"; dot display none w 0 vis visible cls belldot",
+  "PASS",
+  "f1-ad-open.png"
+ ],
+ [
+  "F1",
+  "desktop",
+  "ad: close the bell with its own control",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-ad-closed-bell.png"
+ ],
+ [
+  "F1",
+  "desktop",
+  "ad: reopen, tap outside",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-ad-closed-outside.png"
+ ],
+ [
+  "F1",
+  "desktop",
+  "ad2 Hunter: fresh world, open the bell",
+  "opens; lines or the empty state; dot matches",
+  "open true; words \"Nothing new\"; line-ish elements 1; bell class \"bellbtn\"; dot display none w 0 vis visible cls belldot",
+  "PASS",
+  "f1-ad2-open.png"
+ ],
+ [
+  "F1",
+  "desktop",
+  "ad2: close the bell with its own control",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-ad2-closed-bell.png"
+ ],
+ [
+  "F1",
+  "desktop",
+  "ad2: reopen, tap outside",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-ad2-closed-outside.png"
+ ],
+ [
+  "F1",
+  "desktop",
+  "us Ranger: fresh world, open the bell",
+  "opens; lines or the empty state; dot matches",
+  "open true; words \"Nothing new\"; line-ish elements 1; bell class \"bellbtn\"; dot display none w 0 vis visible cls belldot",
+  "PASS",
+  "f1-us-open.png"
+ ],
+ [
+  "F1",
+  "desktop",
+  "us: close the bell with its own control",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-us-closed-bell.png"
+ ],
+ [
+  "F1",
+  "desktop",
+  "us: reopen, tap outside",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-us-closed-outside.png"
+ ],
+ [
+  "F1",
+  "desktop",
+  "ad9 Kestrel: fresh world, open the bell",
+  "opens; lines or the empty state; dot matches",
+  "open true; words \"Nothing new\"; line-ish elements 1; bell class \"bellbtn\"; dot display none w 0 vis visible cls belldot",
+  "PASS",
+  "f1-ad9-open.png"
+ ],
+ [
+  "F1",
+  "desktop",
+  "ad9: close the bell with its own control",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-ad9-closed-bell.png"
+ ],
+ [
+  "F1",
+  "desktop",
+  "ad9: reopen, tap outside",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-ad9-closed-outside.png"
+ ],
+ [
+  "F1",
+  "desktop",
+  "us9 Osprey: fresh world, open the bell",
+  "opens; lines or the empty state; dot matches",
+  "open true; words \"Nothing new\"; line-ish elements 1; bell class \"bellbtn\"; dot display none w 0 vis visible cls belldot",
+  "PASS",
+  "f1-us9-open.png"
+ ],
+ [
+  "F1",
+  "desktop",
+  "us9: close the bell with its own control",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-us9-closed-bell.png"
+ ],
+ [
+  "F1",
+  "desktop",
+  "us9: reopen, tap outside",
+  "closes",
+  "still shown false",
+  "PASS",
+  "f1-us9-closed-outside.png"
+ ]
+]

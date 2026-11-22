@@ -1,10 +1,12 @@
 import { DAYS } from './data'
 import { rosterShown } from './faceattrs'
-import { goesOnProg, inputLinesOn, inputReadPass, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inpLabel, shiftHardInput } from './inputs'
+import { DATES, inputAtIso, goesOnProg, inputLinesOn, inputReadPass, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inpLabel, shiftHardInput } from './inputs'
 import { PEOPLE, isSpecial, whoId, aarNeed, aarOK, scShiftKind, scQualOK } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
-import { isStandalone, scSpare, saExempt, saExemptKind, saFlies, saDeskFlies } from './waves'
+import { isStandalone, scSpare, saExempt, saExemptKind, saFlies, saDeskFlies, CURWEEK } from './waves'
+import { dayIso } from './verid'
+import { rosterToday } from './roster'
 import { WARN, restClear, dayEvents, crossDayIfPlaced } from './validate'
 import { waveWindows, inpShow, shiftEvHard, seatIntime, scSeatHit, avSeatHit } from './events'
 import { whoArr, rowRef, rowPlaces, XKEY, sentinelSeatOK, SENTINEL_JET_BAR } from './slots'
@@ -110,6 +112,9 @@ export function dayOff(d:any){return dayAway(d).all;}
 export function dayTasked(d:any,standbyFree?:any){const s:any=dayEngaged(d,standbyFree);
   inputLinesOn(d.dt).forEach((i:any)=>{if(isAway(i)&&isPersonal(i.type)&&!awayAllDay(i)&&PEOPLE[i.person]&&!PEOPLE[i.person].special)s.add(i.person);});
   return s;}
+/* the date of a loaded day, from its label: its place in the loaded week (the Monday's own arithmetic — engine/verid.ts
+   dayIso), else the label read as the engine reads it; never left to today (the reshape plan §3.2 A-i) */
+const dayIsoOf=(d:any):string=>{const i=DATES.indexOf(d&&d.dt); return i>=0?dayIso(String(CURWEEK),i):(inputAtIso(d&&d.dt)||rosterToday());};
 /* available crew bucketed by wave; anyWave = free across every wave (untasked) */
 export function availByWave(d:any){
   const wins:any[]=waveWindows(d), aw=dayAway(d), off=aw.all, eng=dayTasked(d);
@@ -120,8 +125,9 @@ export function availByWave(d:any){
      seat by hand. Keeping them out stops the flying counts reading high.
      The roster is the one the face being drawn shows ([LEAVE-LATE-PUBLISHED], Astra's second read #3): an issued day
      counts the aircrew it went out with — a man posted out (or added) since moves the working copy, not the published
-     day's "free all day" (engine/faceattrs.ts rosterShown); everywhere else it is today's, the same filter as before. */
-  rosterShown().forEach((id:any)=>{
+     day's "free all day" (engine/faceattrs.ts rosterShown); everywhere else it is the day's own people (the reshape plan
+     §3.3 C4 — never today's: a man 149's from Thu 16 Jul is not free all day on 142's Friday). */
+  rosterShown(dayIsoOf(d)).forEach((id:any)=>{
     if(off.has(id))return;
     /* AN ABSENCE OCCUPIES TIME EXACTLY AS A TASK DOES, so it is folded into
        the same busy list rather than checked on a second path — one overlap

@@ -213,7 +213,7 @@ This page translates between the app’s words, their everyday meaning and the n
 | Request access | Sends an admin a request to join the app. | `AccessScreen`, `ACCESS_REQS` |
 | Waiting for access | Lists requests that an admin has not yet decided. | `UsersPanel`, `ACCESS_REQS` |
 | Give access | Approves a request and links the account to a roster person. | `UsersPanel`, `accounts.ts` |
-| Guest view / View the schedule | Lets a person waiting for access read the schedule when the admin enables it. | `GuestApp`, `guestEntry` |
+| Guest view / View the schedule — no longer on screen | Was the admin’s switch and the waiting screen’s button that let a person waiting for access read the schedule; removed with the guest view (D2239, 20 Nov 26) — a person waiting sees only the waiting screen. | deleted: `GuestApp`, `guestEntry` |
 | Member / Admin | The access role for personal work or scheduling and management. | `AccountRole`, `perms.ts` |
 | [The signed-in name badge] | Identifies the current person and lets an admin switch between admin and member views. | `switchRoleView`, `mayViewAsMember` |
 | Add a person / + Add person — two names on screen | Creates a roster person and, when supplied, that person’s sign-in. | `UsersPanel`, `NewPerson`, `openAdminUsers` |

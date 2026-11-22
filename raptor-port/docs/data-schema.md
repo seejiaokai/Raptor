@@ -54,9 +54,10 @@ owner approved "everything persists on the built site".
 | The Scheduler Board's right-panel width (D1113, D1118 — 21 Oct 26) | this browser's localStorage, key `raptorLocal:sbSideW` (a number of pixels; absent = 320), written straight there by `src/ui/board.ts wireSideGrip` — NOT through the whiteboard or the settings command, outside every shared prefix: a view preference of one person on one computer, like the Tracker's `ocuLocal:*` (World 3). Not a table for the database step | **Yes**, on that browser only; never shared |
 | The change history (the edit log) and each person's seen record | settings collection, one row per line (`elog:<lineId>`) and one per person (`seen:<pid>`) since 30 Sep 26 (`[DB-READINESS]` group A phase 4.3 — they were `elog` and `changeseen`, `[DRAFT-PENDING]`, 28 Sep 26) | **Yes** — and it outlives a sign-out (D336 (b)) |
 | Attachment bytes (medical documents) | in-memory cache → per-browser IndexedDB drawer (`raptor-docs`, `src/storage/docstore.ts`) on the built site; memory-only in dev/tests | **Yes** on the built site (per browser, since 8 Sep 26); no in dev/tests |
+| Units, places, each unit's place, rights in another unit, each person's home (multi-squadron batch 1, step 1) | settings collection, one row each — `unit:<id>`, `place:<id>`, `unitplace:<id>`, `grant:<id>`, `home:<id>` — §Units, places, homes and rights | Yes |
 | Accounts, access requests, each admin's seen requests | settings collection, one row each — `account:<id>`, `accessreq:<id>`, `reqseen:<accountId>` (since 30 Sep 26, `[DB-READINESS]` group A phase 4.4; they were `accounts` and `accessreqs`) — below, §Accounts and session | Yes |
 | The store's own stamp, `settings/schema` | ONE object since 30 Sep 26 (`[DB-READINESS]` group A phase 0, `src/storage/schema.ts`): `{ stage, dataFormatVersion, initialized, appliedAt, minClient }` — the design's `SchemaVersion` row (`data-model.md`). `initialized` is how the app knows the store has STARTED (it replaced the sniffs of `inputs/all` and `leavewar/wars`); a first boot writes its seed and `initialized` in ONE saved group; a wipe clears it; a store ahead of the build is never touched. A bare number (every store before) still reads, as format 5 with `initialized` unknown, and is upgraded at its next boot | Yes |
-| The change log, `changes/*` | its own collection since 30 Sep 26 (group A phase 0 — cleared by a wipe with `inputs`, `weeks`, `leavewar`); written since phase 4.1: ONE `changes/<clientBootId>-<first seq>` per saved group, in that group — `{ type, seqs, actorId, at, items: [{ table, key, op }] }` (`actorId` an account's id, or for a session with no account its bare role — `pending`, `guest`, `off` — never a sign-in name, 5 Nov 26), a pure invalidation log (it names the rows, never their values) — by the whiteboard's seal (`src/state/changebatch.ts`); the newest 200 kept, the oldest retired in the group that adds the newest. A group written outside every command is never sealed — only the Tracker's first mount (its seed and migrations), named in `src/state/changebatch-rollcall.test.ts` | Yes |
+| The change log, `changes/*` | its own collection since 30 Sep 26 (group A phase 0 — cleared by a wipe with `inputs`, `weeks`, `leavewar`); written since phase 4.1: ONE `changes/<clientBootId>-<first seq>` per saved group, in that group — `{ type, seqs, actorId, at, items: [{ table, key, op }] }` (`actorId` an account's id, or for a session with no account its bare role — `pending`, `off` (`guest` went with the guest view — D2239) — never a sign-in name, 5 Nov 26), a pure invalidation log (it names the rows, never their values) — by the whiteboard's seal (`src/state/changebatch.ts`); the newest 200 kept, the oldest retired in the group that adds the newest. A group written outside every command is never sealed — only the Tracker's first mount (its seed and migrations), named in `src/state/changebatch-rollcall.test.ts` | Yes |
 
 **What an empty store starts with — the boot policy (since 30 Sep 26, `[DB-READINESS]` group A phase 5 — `src/bootpolicy.ts`,
 `src/boot.ts`).** The build's own settings choose it: the DEMO (the default — every test, the dev server, the e2e suite,
@@ -73,6 +74,102 @@ blank (`src/state/seeds.ts`), before storage is read.
 `?fresh=1` on the URL forces the Memory backend for a clean-start demo. So
 "moving RAPTOR to a database" is now giving these already-per-browser shapes
 a permanent, **shared** home, rather than saving them for the first time.
+
+## Whose is each record — a squadron's or everyone's (the key inventory, 17 Nov 26)
+
+The multi-squadron build's first step (batch 1, step 0 — plan
+`docs/superpowers/plans/2026-11-17-multi-sqn-build-batches.md` §3.4; D1695, D2087). From batch 1 two squadrons share
+one app, so every stored record is placed once: **a unit's** — one squadron's (a detachment's from batch 2), each unit
+keeping its own copy, its id carrying the unit from step 2 (`<unit>@<its id today>`) — or **the community's** — one
+record for everyone, whatever schedule is in view. Nothing a person's own squadron owns is ever worked out from the
+schedule in view. The list in code is `src/storage/keyowner.ts`; `storage/keyowner.test.ts` fails on a stored key or a
+settings key the source names that is on neither list, so a new kind of record cannot be saved before someone decides
+whose it is.
+
+| Owner | Stored records |
+|---|---|
+| **A unit's** | `weeks/*` (weeks, days, issued versions, retractions) · `plan/*` (the planning calendar's `pp:` and `dm:`) · `leavewar/*` — the Leave War's whole world · `tracker/*` — the Tracker's whole key space (courses, charts, ball details, flex, layouts, marks, dates, pace, plans) · settings `rules`, `daytpl`, `dutytpl`, `wavetpl`, `wavehide`, `wavedefault`, `cxreasons`, `stores`, `lookahead`, `secdefault`, `qualcols`, `insights`, `sanscalendar`, `memberfile` (`guestview` left this list with the guest view — D2239) · settings rows `flyday:`, `flyrule:`, `flyrun:`, `missionrole:`, `elog:` |
+| **The community's** | `people/*` · `inputs/*` (one record an input; from step 3 every reader asks `inputsFor(unit, iso…)` — an input belongs to its person's home unit on its date) · `notices/*` · `changes/*` (the store's change log) · settings `schema` · settings rows `account:`, `accessreq:`, `reqseen:`, `seen:`, `noticeseen:`, `apprseen:`, `lwseen:` · settings rows `unit:`, `place:`, `unitplace:`, `grant:`, `home:` — the units, where each is, each person's home and each right in another unit (step 1, §Units, places, homes and rights below): they say which unit a record is, so they are no one unit's |
+| **Neither — this browser's** | `raptorLocal:*` and `ocuLocal:*` (view preferences, outside the store) · the documents drawer `raptor-docs` (a person's attachment, the community's when it reaches the database) |
+
+**The module singletons**, the live halves of those records: a **unit's** holds the one unit in view, as it holds one
+week today, and the "142 ▾" pick reloads it by a week load's path (step 2) — `DAYS`, `SCHED`, `DATES`, `CURWEEK`,
+`PLANPUCKS`, `DAYRMK`, `VCONF`, `SHIFT_HARD`, `CXR_CFG`, `DAYTPL_CFG`, `DUTYTPL_CFG`, `WAVETPL_CFG`, `WAVEHIDE`,
+`STORE_CFG`, `LOOK_CFG`, `ELOG`, the check's results (`WARN`, `REST`, `EVD`, …), and the module-private
+week stash (`engine/weekstash.ts`, keyed by unit and week from step 2 — it holds every unit's weeks touched, never only
+the one in view), flying-plan cache (`state/flyplan.ts`), Quals' column list (`engine/qualcols.ts`), mission-role
+answers (`state/mission-roles.ts`) and members' switch (`state/memberfile.ts`); the Leave War's and the Tracker's whole
+stores are each a unit's world, held for the signed-in person's home unit and started fresh by the reload at sign-out.
+A **community** singleton holds everyone's and is never swapped — `PEOPLE`, `ID_BY_CS`, `INPUTS`, `ACCOUNTS_LIST`,
+`ACCESS_REQS`, `NOTICES`, the seen caches (`state/changes.ts`, `state/noticeseen.ts`); from step 3 every enumeration of
+`PEOPLE` goes through `rosterOf(unit, iso)`.
+
+**Whose a community record is — asked, never stored (step 3, 18 Nov 26).** Nothing new is saved: no person row and no
+input row carries a unit. A person is the unit of his home row on the date (`home:` rows, `state/units.ts homeOn`; on the
+demo a person with no home row is `u142`'s); an input is its person's home unit's on its date (`engine/inputs.ts
+inputsFor` / `inputBelongs` — a unit's when any man named in it is at home there on the date, its window offering its
+first named man's unit's people, `inputUnitOf`; an input naming only ALL / ALL AVAIL is its filer's unit's).
+So a transfer (batch 4) moves a man's inputs from its date by adding one home row, rewriting none. Every walk of either
+whole list that is not for one squadron is allowed by name in the two guard tests, each with its reason
+(`engine/roster-readers.test.ts`, `engine/inputsfor-readers.test.ts`). The Leave War's OIL credits are derived from the
+signed-in person's home unit's own published days (its loaded week live when it is in view, its other weeks from the
+stash by their qualified keys), never from the schedule in view — the stored war records are unchanged in shape.
+
+### The unit-qualified id — `<unit>@<its id today>` (batch 1, step 2, 18 Nov 26)
+
+One codec, `src/storage/unitid.ts` (`qualify`, `split`, `unitOf`, `localOf`), carried through every layer — the engine,
+the state layer, the change stream, Undo and storage — never added only at the storage edge. A unit id is opaque and
+plain, `u` and base-36 letters (`u142`, `u149`): no hyphen, slash, tilde, colon, hash or `@`, so nothing that reads an
+id by its separators can take the unit for part of the date. **The date part is read only after the unit is split off**
+(`localOf` — `engine/verid.ts dayIso`, `engine/weeks-data.ts weekBundle`, `undo/derive.ts isoOfDay`,
+`state/persist.ts weekKey`). An `@` after anything that is not a unit id (`wren@mail`) is not a unit.
+
+| Where | A unit's record, as named now |
+|---|---|
+| the change stream (`collection/id`) | `days/u142@13/07/2026#0`, `sched.book/…#0`, `sched.mutes/…#4`, `sched.week/u142@13/07/2026`, `sched.issuance/u142@13/07/2026:<verId>~n`, `sched.retraction/…`, `weekstash/u142@13/07/2026<sfx>`, `plan/u142@pp:<id>`, `plan/u142@dm:<iso>`, `settings/u142@rules`, `settings/u142@flyday:<iso>`; a schedule command's scope `{ module:'sched', weekId:'u142@13/07/2026' }` |
+| stored rows | `weeks/u142@13-07-2026` (the week row), `…#<di>`, `…:is:<verId>~n`, `…:rx:<verId>~n` · `plan/u142@pp:<id>`, `plan/u142@dm:<iso>` · `settings/u142@<name>` (`sqn142_u142@<name>` behind the settings door, `engine/hooks.ts storedKey`) |
+| memory | the week stash (`engine/weekstash.ts`) is keyed by unit and week: a bare week key means the unit in view's, a qualified one that unit's; `stashKeys()` lists the unit in view's weeks, `stashEntries()` every unit's, qualified |
+
+**Settings:** a setting's logical name (`rules`, `stores`, `flyday:<iso>` …) means the unit in view's; it is stored as
+`<unit>@<name>` and written only by its named settings command (`settings.stores`, `fly.day.set` …), whose change names
+the stored id. The settings records the command layer keeps cover every unit's stored settings, so Undo puts back
+another unit's setting by its own name. **Not yet qualified, on purpose:** `elog:` (the change history across the apps)
+stays as it was, readable by the unit in view only. *(Step 4, 18 Nov 26: `missionrole:` is qualified now — each blue/red
+answer row is stored as `<unit>@missionrole:<its id>`, under the unit whose schedule it was given on, and only the unit in
+view's rows are read into memory, read again when the unit in view changes (`state/persist.ts hydrateRolesFor`, from
+`state/store.ts switchUnit`). `elog:` is the open item still: its reader did not move in step 4.)* *(The full check of
+batch 1, 18 Nov 26: each `elog:` line now carries `u`, the unit it was made in — the unit in view when the change was
+made; a line saved before carries none and reads as the boot unit's. Only the unit in view's lines are read into
+memory (`engine/editlog.ts elogLoad`), read again when the unit in view changes (`state/store.ts switchUnit`), so a
+squadron's changes window, its "new to you" count and Admin → Data's "Clear edit history…" reach its own lines only. The
+row id stays bare: the line's id is minted once, never shared, so it needs no qualifying.)*
+
+**The Leave War and the Tracker — a whole world per unit (step 4, 18 Nov 26).** Neither store knows a squadron
+exists: each reads and writes its keys as it always has (`war:2026`, `v3:master:syls` …), and the door it is handed
+stores every key under one unit — `leavewar/u149@war:2026`, `tracker/u142@v3:master:syls` (`storage/adapters.ts
+leavewarAdapter(wb, unit)`, `trackerTarget(wb, unit)`, the same codec as the weeks). A door lists, reads, writes and
+removes only its own unit's keys, so two squadrons' worlds never meet; a key with no unit (a browser's records from
+before step 4) is no unit's and is never read (D22 — cleared at step 6). The Leave War loaded is the signed-in
+person's home unit's (`leavewar/sync.ts swapWarWorld`, at every sign-in — and, since the reshape of 21 Nov 26, again at
+midnight of his own move, through the page's one entry `state/store.ts enterSquadron`), its roster that unit's people alone; the
+other squadrons' worlds are read from their own doors where a reader needs them (their public holidays, below). The
+Tracker binds the signed-in person's home unit when it first loads (`tracker/storage.js markStorageLoaded`) and refuses a
+bind to another unit after that — so, until signing out reloads the app (plan §3.4, O8 — not built in step 4), a second
+person of the other squadron signing in on the same tab is still shown the first one's Tracker. Nothing changes in the
+records' shape. **Public holidays — each squadron's own (his D2195, 18 Nov 26; built 21 Nov 26, the reshape's A4):** a
+public holiday is stored in the one squadron's war it was entered in and is that squadron's alone — no other squadron
+reads it, even at the same place (`leavewar/sync.ts nonWorkingFor(unit, iso)` answers from that squadron's own list: the
+loaded war for its own squadron, another's from its door). *(Replaced: as built on the night of 17–18 Nov 26 every other
+squadron at the same place on that date read it laid onto its own war — `placeHolidaysFor`, removed.)* An
+Off day stays its own squadron's. **The demo (step 4):** 149's people (`state/demoseed.ts DEMO_149_PEOPLE` — their own
+ids and callsigns, each with a seeded home row in 149), their own two inputs, their own week on the same dates as 142's
+(`engine/week149.ts`), their own Leave War world (the seed's periods and holidays, nobody's records) and one Tracker
+course; seeded accounts `ad9` (149's admin), `us9` (149's member) and `ad2` (a second 142 admin), never printed on the
+sign-in card.
+
+**Stored data from before step 2 (D22):** an unqualified week, day or planning row is simply not read — the store is
+cleared and both units seeded fresh, never converted; no converter is written for it. The schema stamp bump that clears
+it on the next boot is step 6's. Until then a browser that saved weeks before step 2 shows them as never saved.
 
 ---
 
@@ -133,6 +230,7 @@ the schedule, the inputs and the Leave War all use.
 | `archivedOn`, `archivedWho` | `'YYYY-MM-DD'`, person id | **how and when he came to be archived** (D329, 28 Sep 26 — his row on Admin → Users says it, `leavewar/sync.ts archivedLine`): the day an admin archived him and that admin's person id (read back as his current callsign), or — `archivedBy 'po'` — his posting's date and no id. Cleared by Restore and by a posting's take-back; absent on a man archived before it was kept |
 | `deleted`, `deletedFrom` | boolean, `'YYYY-MM-DD'` | **the delete's hidden mark** (`[POST-OUT-OUTCOMES]`, D287, D290, 27 Sep 26 — `state/person-delete.ts`): the record is KEPT (every day he flew still points at him, D297) but read as gone everywhere — no list, no picker, the Archived one included; his callsign free (the callsign index skips him); `deletedFrom` the first day he is gone, the later of the delete's date and the calendar date. Written with `archived: true, archivedBy: 'del'`. Never cleared — a delete is final |
 | `sanBy` | `'po'` | present only when a SANS posting ticked `san` on its date (D283) — what the posting takes back; absent = ticked by hand |
+| `schedOf`, `schedFrom` | unit id, `'YYYY-MM-DD'` | **the squadron his Scheduler tick was given in, and the day** (core line 4, 22 Nov 26 — D2160: the tick ends in the old squadron on a move's date). Written with the tick by `state/quals-write.ts`, dropped when it is unticked; read by `state/units-model.ts schedTickHolds` for the sign-off boxes (`engine/publish.ts signPeople`): the tick counts in that squadron from that day until the start of his next move day. Absent on a ticked man (every seeded one): the squadron of his first home row, from always. An admin's to write, as the tick is (`perms.ts OWN_ROW_ADMIN_ONLY`), and only as it is: on a ticked person, the squadron he is in today, from today — the Undo of an untick alone puts back an earlier day (`perms.ts schedRecordViolation`, fix read 2); it counts on no day before its own |
 | `san`, `sanQ` | boolean, `{flown, carry, missedQtrs}` | SANS member and their quarter progress |
 | `tf`, `sched` | boolean | terrain-following mark; scheduler appointment (both granted, never derived) |
 | `quals` | object | **derived at boot** by `deriveQuals`: `sxo, imc, nvg, tf, san, sched, scDay, scNight, daar, naar` (booleans; `daar`/`naar` may also be `'I'` = instructor) |
@@ -164,6 +262,7 @@ truth for what each type means; the fields below are what a record carries.
 | `title` | string? | **the input's own name** (owner D715, D716 — 9 Oct 26; `[INPUT-OWN-TITLE]`): present ONLY where its filer typed one that differs from its kind's own name, on a kind that takes a title (the "Duty & other commitments" kinds — `engine/inputs.ts titledKind`); trimmed, at most 40 characters (`titleOf`, the one normaliser). Absent on every other record — a title on a kind that takes none is ignored on read and dropped at the next save. Shared by every record of a group input (`state/inputgroup.ts SHARED_FIELDS`) *(since the one-rule build, 12 Oct 26 — D756: an input is one record, so its title is everyone's; `state/inputgroup.ts` is removed)*. The KIND (`type`) goes on deciding every rule. |
 | `mod` | string | last-modified date, ISO `yyyy-mm-dd` — **frozen at the moment of the write** (`engine/inputs.ts nowStamp`, every create, edit, trim and the Leave War's approve door); a record minted before the freeze may still carry the literal `'now'`, which the reader resolves to today (`inputStampISO`). *(Corrected 1 Oct 26, `[STORE-READER-SWEEP]`: this row said the app still writes `'now'`.)* |
 | `acc` | `undefined \| 'g' \| 'u' \| 'r'` | never landed / landed on the Ground Programme / actioned to Unavailable / **removed by a scheduler (dormant)** — ONE filing for everyone in the input since the one-rule build (12 Oct 26, D759 reading 1): one man is not taken off the programme alone, he is taken out of the input |
+| `u` | string? (a squadron's id, `u142`) | **the squadron an input of ALL AVAIL / ALL alone was filed on** (the multi-squadron reshape, 21 Nov 26 — his D2243, the reshape plan §12 Q1: such an input stays on the squadron it was filed on when its filer moves squadron). Present on an input that holds a placeholder — with men named beside it too (the fix round of 22 Nov 26, Opus's read F3: the stamp was dropped once a man was named and found again from the man taken out, so a 149 meeting whose added man had moved to 142 came back stamped 142). **Written at filing:** the squadron its window was opened among — the schedule in view's from a schedule's panel, the page's own squadron from the Inputs page or its calendars (`ui/InputWindow.tsx` hands it in; `ui/inputedit.tsx commitNewInput`, `filedOn`: with none handed in, the page's own) — and on the demo seed's placeholder inputs (`state/demoseed.ts`). **Settled by every save that changes who is in it** (`engine/inputs.ts settleStamp`): an input left with no placeholder loses the stamp — whose it is follows its people; one holding a placeholder keeps the stamp it has, and with none takes the squadron the input stood on before the save, else the page's own. A member's take-out of himself alone writes no stamp — it stays exactly as it was (the gate lets him change only his own entry — D770). The window's Person list and its save door judge the same stamp the save will write (`ui/inputedit.tsx draftImage`). **Read by** `engine/inputs.ts inputSquadrons` / `inputOnDay` (and through them the gate, the lists and the bell's `state/notices.ts filerUnits`), named-first: while a man is named the input is its people's and the stamp is only carried; naming nobody, the stamp where there is one, else its filer's squadron on its first day — so an input filed before the stamp, which carries none, reads as it always did (demo data, D56). Not to be confused with the filing `acc: 'u'` above. Pinned by `state/reshape-c3-allavail-stamp.test.ts` |
 | `schedPlaced` | `true?` | **a scheduler has moved this input** (his D1388, 26 Oct 26 — `[LW-OTHER-GOES-TO-LOCK]`): written in the same command as his move by each of his doors — Reject, → Ground, → Unavail (`ui/interactions.ts`), its Ground Programme row removed (`ui/board.ts`), his window's Goes to or a retype that moves it (`ui/inputedit.tsx markMoved`) — never on his own one-person input, never by filing; from then on a member's save leaves where it stands (`commitInputEdit`), his window offers no Goes to, and the commit gate refuses a member's command that moves it or sets or clears the mark (`state/perms.ts mayMovePlace`, `inputBreach`); read by `engine/inputs.ts placeHeld`, which also holds a record parked by a Reject (`acc:'r'`) |
 | `odGround` | `true?` | **an overseas duty a scheduler put on the Ground Programme** (his D1393, 26 Oct 26): kept on the record because the `'g'` a week works out for itself is cleared at every week load, and an overseas duty with no mark stands under Unavailable by its kind; absent on every other record. Taken off again by Reject or → Unavail (`engine/slots.ts`), dropped by a retype (`ui/inputedit.tsx`); read by `engine/inputs.ts odOut` / `goesOnProg` |
 | `hand` | number? | how many times the request has changed hands — +1 at every change of person (`ui/inputedit.tsx commitInputEdit`); absent = 0 (`[DB-READINESS]` group A phase 6 (a), 30 Sep 26). *(Since the one-rule build, 12 Oct 26: +1 each time a person or placeholder is put in, taken out or replaced — `engine/inputown.ts`; an entry's `h` is its value when he was put in.)* |
@@ -177,6 +276,7 @@ truth for what each type means; the fields below are what a record carries.
 | `grp` / `grpBy` | string? / string? | **NOT WRITTEN ANY MORE (the one-rule build, 12 Oct 26 — owner D756, D759): an input filed for several is ONE record with `people`; there is no group id, no entry worked out on read, and `state/inputgroup.ts` is removed. A record saved before the build may still carry the two fields: they are ignored — it reads as that man's own one-person input (D759 reading 10; demo data, D56) — and dropped the first time who is in it changes (`inputown.ts toPeople`). The text below is the shape of 7 Oct 26, kept as the record.** *As it was:* **an input filed for a GROUP** (owner D654, D655, 7 Oct 26; the plan `docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.13): `grp` is a group id, the same on every record of one group filing, absent on an ordinary input; `grpBy` is the ENTRY'S FILER (a person id), the same on every record of the group and never changed once set — always together, never one alone. The group is kept as ONE RECORD PER MAN (every reader of an input reads one man's record and is unchanged); an "entry" — the one thing the Inputs page shows — is worked out on read: the records sharing a `grp` AND the same shared fields (`type, title, date, endDate, yr, allday, s, e, half, remarks, sans` — `sans` read as the set of Fly / OFT / AMT boxes ticked, so one availability an admin files for several SANS people is one entry, D658), `src/state/inputgroup.ts entriesOf`. A record changed alone no longer matches and reads as that man's own input; nothing is written to keep a group in step. Held at the write (the inputs door and the Undo / Redo restore): one man once an entry, one filer a group. `by` stays the truth of who placed THIS man's record |
 | `lw` | string? | the **war id** the leave was approved in — PROVENANCE ("approved in war W"), written by the war's approval door (`src/leavewar/sync.ts` `doorApprove`); a member's own date/type edit clears it ([ARCH-STACK] step 4) |
 | `lwBy` / `lwAt` | string? / number? | **who placed the REQUEST this leave was approved from, and when** (ms) — the earliest of the run's (the Leave War overhaul's M4, 8.6, 27 Oct 26): the Input's own `by` / `at` name the APPROVER, so the placer rides beside them and a put-back gives them back to the request (`sync.ts doorApprove`, `placerOf`). Written only by the war's approval door; a member's command never writes them (`perms.ts ownershipViolation`, the `inputs` case — a piece cut from the leave carries its parent's) |
+| `lwU` | string? | **the squadron whose Leave War approved it** (the reshape walk's W2-F2, 22 Nov 26 — his D2243 Q6): written by `sync.ts doorApprove` where each squadron has a war of its own, so leave approved in 142's war before a man's move stays 142's (out of sight under the stripe) and is not in 149's war "until the Transfer batch carries it". A leave without it, and every other absence, is in the war whose squadron he is on that day (`sync.ts absenceOwnerOf`, `state/merge.ts AbsenceOwner`). Policed by the gate with `lwBy` / `lwAt` — one stamp: a person's own command keeps it or drops it, never writes or changes it (`perms.ts warPlacerForged`; `state/corelines-lwu.test.ts`) |
 | `docId` / `docIds` | string / string[] | attachment ids (see Attachments) |
 | `oil` | `{ 'yyyy-mm-dd': 0 \| 0.5 \| 1 }`? | the per-day OIL credit decision from the OilConfirm ask-flow — **the input's ONE answer, for everyone in it** (owner D762; the one-rule build, 12 Oct 26: given by whoever filed it or an admin; nobody in an input of several gives an answer of his own) — written after a create or edit (`src/ui/InputsPage.tsx:425`, `:599`, `:631`; `src/ui/inputedit.tsx:1325`, `:1335`) |
 | `sans` | `{ f?, o?, a? }`? | SANS Availability only: which of Fly / OFT / AMT are offered (`src/ui/inputedit.tsx:715`, `:861`; `src/ui/InputsPage.tsx:397`) |
@@ -432,9 +532,12 @@ the line's identity; the history's order is `(t, lineId)` on every client, and `
 loaded now. Capped at 2,000 lines — the oldest line's row deleted in the same group that adds the newest; a boot loads the
 newest 2,000 in order; a row that will not read, or lacks its time, is left in storage and not read. The old whole record
 (`elog = { v, next, rows }`) is converted by the fold (`src/state/settingsrows.ts elogConverter`), never read.
-**Each person's "seen"** is `settings/seen:<pid>` = `{ upto: { at, lineId } | null, extra: lineId[] }` (was one
-`changeseen` record for everyone): positions in that order, written only by `state/changes.ts` through `changes.seen`,
-his OWN row only (`perms.ts ownershipViolation`) — data-model §11 `EditLogSeen`.
+**Each person's "seen"** is `settings/seen:<pid>` = `{ units: { <unit>: { upto: { at, lineId } | null, extra: lineId[] } } }`
+— one cursor for each squadron's history, since each history is loaded alone (the fix read of multi-squadron batch 1's
+full check, 18 Nov 26 — Astra 6: one cursor folded over 142's lines read an older 149 line seen); a row in the old shape,
+`{ upto, extra }` at its top (was one `changeseen` record for everyone), reads as every squadron's until that squadron
+is marked: positions in that order, written only by `state/changes.ts` through `changes.seen`, his OWN row only
+(`perms.ts ownershipViolation`) — data-model §11 `EditLogSeen`.
 
 ### The bell's notices — `NOTICES[]`, `src/state/notices.ts` (the one-rule build's step 7, 12 Oct 26 — D755 (3), D760, D769)
 
@@ -447,8 +550,16 @@ sentence): `{k:'in'}` he was put in · `{k:'out'}` he was taken out · `{k:'del'
 `{k:'uncx'}` brought back · `{k:'off'}` / `{k:'on'}` taken off the programme / put back · `{k:'unav'}` / `{k:'unavoff'}` filed under Unavailable / taken out of it (D815) · `{k:'when', a?, b?, t?}` its
 day(s) and hours as they are now · `{k:'add', who}` / `{k:'rem', who}` others (ids, a placeholder among them) put in or
 taken out · `{k:'title', was}` renamed · `{k:'rmk'}` its remark changed.
+*(19 Nov 26, fix read 6, fault C — his D2223, D2218: an input's line to someone told ONLY as its filer — named in it
+neither before nor after — also carries `fu`, the squadrons that judgement read (each named man's home on each of the
+input's days — since fix read 7, fault Q, his D2225 — or the input's own squadron where it names nobody —
+`state/notices.ts filerUnits`), only those he was told through (`filerVia`: his home while he has not moved since the
+input was filed, a right he holds, or — once moved — his home today where he is its admin, his D2228, 20 Nov 26, fix
+read 13, item C); absent on a named man's line. His move retires such
+a line by `fu` alone, on his move day (`noticeLeftBell`), never by the input as it stands later. Lines stored before
+carry none: demo data, D56.)*
 *(13 Oct 26, `[OIL-ASK-NOTIFY]`: a second kind rides the same record — a day made a holiday, `iid` empty and `what` =
-`[{ k: 'oilhol', a, b }]` (`name` is the holiday's own name, '' where it has none; `a`..`b` the whole holiday as it stood when the notice was made — what the bell shows is read live from the war, never from these), one a scheduler, written inside the Leave War's own command through the scheduler store;
+`[{ k: 'oilhol', a, b, u? }]` (`name` is the holiday's own name, '' where it has none; `a`..`b` the whole holiday as it stood when the notice was made — what the bell shows is read live from the war, never from these; `u` — since the multi-squadron reshape, 21 Nov 26, the Plan audit's PB4 with the blind read's R3 and R4 — the squadron the line was written for, each squadron owning its own holiday list, D2195: its count of inputs still to answer, its dates and name, the list a tap opens, and which lines it replaces are that squadron's, whoever reads it — at home, by Plan, or a master admin; a line stored before `u` reads as its reader's home squadron today, D56 — `notices.ts holOf`), one a scheduler, written inside the Leave War's own command through the scheduler store;
 `state/notices.ts noticeHoliday`. Nothing else about how a notice is stored changes.)*
 *(27 Oct 26, the Leave War overhaul's M4 — D1142, D1214, D1216, D1422: the WAR'S OWN LINES ride the same record, `iid` empty, `name` "Your leave" or "Leave War", `day` the first day: `{ k: 'lw', c, a, b, d, to?, tb?, again? }` a decision on his leave — `c` the kind as stored (LL, \*LL), `a`..`b` its days, `d` what was done (`approved`, `refused`, `repend`, `putback`, `moved`, `deleted`, `added`, `bidmoved`, `biddel`), `to`..`tb` where a move took it, `again` a Redo after a "taken back" line · `{ k: 'lwopen', a, b, open }` bidding opened or closed on a stretch (`end: true` — closed because its last date passed: never stored, each person's bell works it out from the periods, `state/notices.ts setDerivedNotices`, id `lwend:<war>:<from>:<to>`) · `{ k: 'lwback', c?, a, b, d, ref }` a line the admin's Undo took back after the member had read it, `ref` the line it was. Written inside the war's own command (`leavewar/state/store.ts tellDecisions` / `tellOpenings` → `leavewar/sync.ts tellWar` / `tellBidding`), and the "taken back" lines by the follow-up command `lw.notice` (`sync.ts warNoticesReversed`), never an Undo step. **And on an input's own line:** `{ k: 'rbid', c }` — this input replaced his pending Leave War bid of kind `c` (9.3a: "You were added · replaces your LL bid"), noted by the clash gate inside the same command (`notices.ts noteReplacedBid`).)*
 *(5 Nov 26, `[POSTOUT-RUN-NOTICE]` — D1546, D1547, D1690, D1691: A POSTING OUT THAT RAN rides the same record, `iid` empty, `by` empty (a posting keeps no setter), `name` the man's callsign when it ran (shown by his callsign of today), `day` the posting's date: `{ k: 'po', who, o, acct? }` — `who` the man, `o` the outcome that ran (`overseas`, `delete`, `sans`), `acct: true` an archived man who held a sign-in ("archived, account suspended"). One an admin who can sign in, never the man himself, written inside the posting pass's own command (`leavewar/sync.ts runPoOutcomes`, the scheduler store enlisted — `state/notices.ts noticePosting`), kept as the record that it ran. **A posting with no outcome ("off the manpower") runs nothing, so its line is never stored:** each admin's bell works it out from the stored posting once its date has come, for fourteen days, id `po:<person>:<date>`, `o: 'none'` — following the posting as it stands, never saved (his D1696) (`leavewar/sync.ts postedLines`, through `setDerivedNotices`). A scheduler's line only: hidden in the admin's member view (`notices.ts noticeLive`). **Taken back (5 Nov 26, `[NOTICE-UNDO-RETRACT]` step 1 — D1693, D1699):** the posting sheet's "Undo post out" removes every admin's line about that posting inside its own command, and to each admin who had READ his (his `noticeseen` record) writes `{ k: 'poback', who, o, acct? }` — `by` the admin who pressed it (never to him), the same `name` and `day` — shown as the posting's words struck through, then "taken back · <who>". The war's own taken-back line `lwback` now also carries `to`, `tb` (where a move took the leave), so its struck words are the line's own.)*
@@ -467,7 +578,7 @@ his OWN row only (`perms.ts ownershipViolation`), never an Undo step — data-mo
 ### Accounts and session — `src/state/accounts.ts`, `src/state/auth.ts` (`[ACCOUNTS]`, 26 Sep 26 — D166, D204)
 
 Durable settings rows below — one per account (`account:<id>`), per waiting request (`accessreq:<id>`), per admin's
-seen requests (`reqseen:<accountId>`) since 30 Sep 26 (`[DB-READINESS]` group A phase 4.4), and the `guestview` key —
+seen requests (`reqseen:<accountId>`) since 30 Sep 26 (`[DB-READINESS]` group A phase 4.4) —
 written ONLY by `state/accounts.ts` through its intent commands, each command writing EXACTLY the rows its own list edit
 changed (never against storage, so a client that has not read another's new account cannot remove it); the session is
 memory only (a reload lands on the sign-in, as always).
@@ -476,7 +587,8 @@ memory only (a reload lands on the sign-in, as always).
   database's unique `personId` refuses the second, group B): the older (`createdAt`; a seeded one, with none, oldest)
   is kept on load, the other dropped with a logged line.
 - `SESSION`: `{ user, role, pid, name }` — `user` the account id (or `principal:<name>` for someone signed in without
-  access), `role` `'admin' | 'main' | 'pending' | 'guest' | 'off'`, `pid` his person (null without access), `name` the
+  access), `role` `'admin' | 'main' | 'pending' | 'off'` (`'guest'` went with the guest view — D2239; a session still carrying it
+  is read as switched off, `perms.ts roleOf`), `pid` his person (null without access), `name` the
   sign-in name (it stands for the defence mail address)
 - `ME`: the signed-in person's PEOPLE id — set only by `resetSession` from the account (the "View as" picker is gone)
 - **No password is stored anywhere** (data-model §3): an added account takes any password; the two seeded sign-ins'
@@ -502,19 +614,45 @@ a later change to the standard is picked up rather than frozen in a browser.
 | `secdefault` | `string[]` | section order, from `notes, prog, waves, duty, sims, ground, inputs, avail, sans, unav` |
 | `stores` | `[[key, label]]` | the stores list — a stored empty list stays empty after a reload (as `cxreasons`) |
 | `qualcols` | `QualCol[]` | the LoX column list — `{ k, h, lav?, apt?, scq?, aar?, fcpOnly? }` in display order (saved since the 8 Sep 26 bug pass: the ticks under a column persist, so the column must too); a stored empty list — every column removed on the Quals page — stays empty after a reload (as `cxreasons`) **but for Management**: the built-in column `mgmt` (D1502, 29 Oct 26) cannot be removed, so every list read gains it after SXO (first where there is no SXO) and the writer puts it back — nothing written at load; its ticks are `p.quals.mgmt`, and the Leave War draws its group first once added |
-| `account:<id>` | `Account` | one row per account (`[DB-READINESS]` group A phase 4.4 — it was one `accounts` list): `{ id, name, role: 'admin' \| 'main', pid, on, offBy?, seenFrom?, createdAt? }` — `seenFrom` (`[DRAFT-PENDING]`, Fable F6): where the change history stood when the account was made, a POSITION `{ at, lineId }` (phase 4.3), so someone given access later starts with nothing new; `createdAt` (ms) — the older of two accounts for one person wins; `name` the sign-in name (lower-case, unique; stands for the defence mail address), `pid` the person (one account each), `on` false = **suspended** (D285); `offBy: 'po'` only when an "Overseas Sqn" posting suspended it on its date (what "he's back" enables — any hand Suspend / Enable drops it). An account is removed only with its person, by a delete (D287, `[POST-OUT-OUTCOMES]`). **No password.** No row at all = the four seeded demo accounts (`[ACCOUNTS]`, D166) |
+| `account:<id>` | `Account` | one row per account (`[DB-READINESS]` group A phase 4.4 — it was one `accounts` list): `{ id, name, role: 'admin' \| 'main', pid, on, offBy?, seenFrom?, createdAt?, master?, masterFrom?, pidFrom? }` — `seenFrom` (`[DRAFT-PENDING]`, Fable F6): where the change history stood when the account was made, a POSITION `{ at, lineId }` (phase 4.3), so someone given access later starts with nothing new; `createdAt` (ms) — the older of two accounts for one person wins; `name` the sign-in name (lower-case, unique; stands for the defence mail address), `pid` the person (one account each), `on` false = **suspended** (D285); `offBy: 'po'` only when an "Overseas Sqn" posting suspended it on its date (what "he's back" enables — any hand Suspend / Enable drops it); `master: true` — the master mark (multi-squadron batch 1, step 1, D2191): a master is admin of every unit and the only one who makes a unit or another master; it changes only by its own command `account.master`, by a master, never on his own account, one master always left — the commit gate refuses it in any other command; absent on every other account (the demo's master is Saber, `acad`); `masterFrom` (fix read 7, fault P, 19 Nov 26) the day the mark was set, written with it and gone with it — read only by the bell's move-day test (`state/notices.ts adminThen`), so a mark set after a man's move, or on the move's own day (a move day counts only a mark held before that day began — fix read 8, fault D), never brings back a line his move retired; absent on a mark set before it (counts from always, D56); `pidFrom` (fix read 10, fault D, 20 Nov 26) the day the account was last linked to another person, written by a re-link and read only by the same move-day test, so an admin's right counts from the later of its own day and the re-link; absent on an account never re-linked. An account is removed only with its person, by a delete (D287, `[POST-OUT-OUTCOMES]`). **No password.** No row at all = the four seeded demo accounts (`[ACCOUNTS]`, D166) |
 | `accessreq:<id>` | `AccessRequest` | one row per waiting request (was one `accessreqs` list): `{ id, name, cs, ini, seat, cat, at }` — who asked (the signed-in principal, from the session); what he typed, text only — the displayed callsign/name (≤ 14), initials (may be blank), `seat` `FCP`/`RCP`/`GND`, `cat` (`''` for personnel) — never a link to a puck; when. (D204; `[ACCOUNTS-NEW-PERSON]` D214, D216, D227 — the typed name field gave way to the initials, D219). Who has had it on screen is no longer on it: |
 | `reqseen:<accountId>` | `{ userId, seenRequestIds }` | each admin's own row of the requests he has had on screen — his bell (D216, D227); written only by `access.seen`, his own row; removed with his account (data-model `AccessRequestSeen`, R3-04) |
-| `seen:<pid>` | `{ upto, extra }` | each person's own "seen" for the change history — §The change history above (was one `changeseen` record) |
+| `seen:<pid>` | `{ units: { <unit>: { upto, extra } } }` | each person's own "seen" for the change history, one cursor a squadron — §The change history above (was one `changeseen` record, then one `{ upto, extra }` for every squadron) |
 | `noticeseen:<pid>` | `{ upto, ids }` | each person's own record of which of his bell's notices he has read — §The bell's notices above; an ADMIN reads every person's (M4 9.3 — his Undo of a war decision asks whether its line was read) |
 | `apprseen:<pid>` | `{ at }` | when this ADMIN last opened the Leave War's Approvals (ms) — what its "New" choice and cyan dots count from (the overhaul's M4, 8.4 — D1231); written when he OPENS the tab (a reload or a dropped page keeps it), by `lw.apprseen`, his own row only, never an Undo step (`state/apprseen.ts`; data-model `LeaveApprovalsSeen`) |
 | `lwseen:<pid>` | `{ at }` | when this PERSON last opened his OWN person window on the Leave War (ms, the moment, not the day) — a line of his leave someone else changed since then wears the cyan dot (the overhaul's M5a, D1231, D1481); written when he opens it (an admin too, on his own window), by `lw.seen`, his own pid only — the gate allows `lwseen:<pid>` only for the signed-in person and only under `lw.seen`; never an Undo step; the previous moment is what "new" counts from for that visit and is kept across a reload (`state/lwseen.ts`; data-model `LeaveSeen`) |
-| `guestview` | `true` or null | the admin's switch letting people waiting for access read the published week as a guest — OFF (null) by default (D204) |
+| `guestview` | — (no longer a record) | was the admin's switch letting people waiting for access read the published week as a guest (D204). **Removed with the guest view — D2239, 20 Nov 26:** no command writes it (`guestview.set` has no row at the gate, so it is refused), it is no settings key (`state/people-settings-commit.ts SETTINGS_KEYS`, `storage/keyowner.ts`), and a value an older build stored is left where it lies and read by nothing (D56) |
 | `memberfile` | `false` or null | the members' switch — "members may file duties and commitments for other people" (owner D654, D655): ON (null) by default, `false` = admins only. Written only by the admin command `settings.memberfile` (`src/state/memberfile.ts`); a raw write is refused. Read live by `src/state/perms.ts membersFileOn`. Switched off, nothing already filed is removed or altered — a member's right over what he had filed for others simply goes |
 | `rules` | `{ v: { numericRule?: number, reportText?: string }, s: { kind: boolean } }` | overrides only: `v` for thresholds off the standard (`briefLead, dur, step, dekit, minTurn, tightTurn, crewRest, debrief, reportLead, longDay, epBrief, simDebrief, amtDebrief, openEnd, maxRun, inputLead, scDayFrom, scDayTo, simLen, fltLen, oilFullMin` (`fltLen`, the assumed flight length — D2046, 16 Nov 26) — and, since 7 Oct 26 (D628, D639), the two late cut-offs' seven: `inputCutMode, inputCutWd, inputCutWeeks, sansLead, sansCutMode, sansCutWd, sansCutWeeks` — a mode (0 days / 1 weekday), a weekday (0 = Monday … 6), a number of weeks (1–8), a number of days (0–60)), plus D511 text `reportText` (default `IN TIME + WX/NOTAMS`, trim/CR-LF-to-space, max60, empty falls back); `s` for which kinds hard-clash a shift (`fly, sim, duty, shift, ground, prog`). Numeric keys remain numbers; text travels with the same rules record/reset/snapshot/export/Undo |
 | `sanscalendar`, `flyday:<ISO>`, `flyrule:<id>`, `flyrun:<ISO>` | see below | the SANS calendar's three day colours and the flying plan's three kinds of row — a date's class and required figures, a weekday's rule, a running figure (`src/state/flyplan.ts`): §The flying plan and the SANS calendar's colours, at the foot of this file |
 
 ---
+
+### Units, places, homes and rights — `src/state/units.ts`, `src/state/units-model.ts` (multi-squadron batch 1, step 1, 17 Nov 26)
+
+Durable settings rows, one per thing, written ONLY by their typed commands (`unit.add`, `unit.place`, `place.set`,
+`grant.set`, `grant.remove`, `home.set`; a person's first home also inside `person.add`, `account.addNew` and
+`access.approveNew`) and refused as a raw write, as the flying plan's are. Ids are a letter and base 36 — never a
+hyphen, a tilde or a dot. Nothing on screen reads them yet; step 2 puts the unit into the schedule's identity.
+
+| Key | Fields | Notes |
+|---|---|---|
+| `unit:<id>` | `{ id, num, kind: 'sqn', parent? }` | a squadron; `id` `u` + base 36 (`u142`), `num` what a person reads (letters and digits, at most 12, one unit per number); `parent` for a detachment (batch 2). Made only by a master |
+| `place:<id>` | `{ id, name, tz }` | where a unit is; `tz` a time zone the browser knows (`Intl`). The GMT label ("GMT+8") is worked out for each date (`gmtLabel(tz, iso)`), never stored |
+| `unitplace:<id>` | `{ id, unit, place, from }` | a unit at a place from a date: a move adds a row from the NEXT day (D2119), the history kept; before a unit's first row, that first row holds |
+| `grant:<id>` | `{ id, account, unit, level: 'admin' \| 'view', from? }` | a right in a unit that is NOT the account's home — never "member" of another squadron (D2094); one per account and unit; `from` (fix read 7, fault P, 19 Nov 26) the day it was given (rewritten when a grant is replaced) — read only by the bell's move-day test (`state/notices.ts adminThen`), so a right given after a man's move, or on the move's own day (a move day counts only a right held before that day began — fix read 8, fault D), never brings back a line his move retired; absent on a grant saved before it (counts from always, D56); the gate's levels never read it |
+| `home:<id>` | `{ id, pid, unit, from }` | a person's home unit from a date: written in the command that makes him (the adder's own unit by default, D2094); a change counts from the next day; before his first row, that first row holds |
+
+**One answer for a level, no fact stored twice:** an account's level in a unit is its own `role` in its HOME unit
+(`admin`, or `member` for `main`), its grant's level elsewhere, `admin` everywhere for a master, otherwise none
+(`state/accounts.ts levelIn`). **Seeds, as the accounts:** no stored row means the seeded one, held in memory and never
+written at load; a stored row of the same id wins. The demo seeds `u142` and `u149` at `p1` "Home base"
+(`Australia/Perth`), both from 2000-01-01; on the demo a person with no home row is at `u142`, on a shared store
+nowhere — a shared store's first boot makes its first unit (142 at Home base on Perth time unless the bootstrap setting
+names another, `unit: { num, place, tz }`), its place, the unit's place, the first admin's home and his master mark, in
+the boot's one group (`src/boot.ts`). **Who writes them** is the commit gate's (`state/perms.ts` unitRowViolation):
+a unit a master's; a unit's place, a right and a home an admin OF the unit the row names, before and after, judged on the
+rows as they stood before the command.
 
 ## World 2 — Leave War
 
@@ -528,6 +666,12 @@ FROM THE COMMAND that changed it — the war's store subscribes to the command s
 door (`state/storage.ts`), exactly the rows each command's changes land in, inside that command's one saved group; a
 row is removed only for a record that command removed. The first boot stores the seed's world as rows (and the demo
 world replaces it, inside the boot's group); the one-time fold (`store.ts leavewarConverter`) converts an old store.
+**One more writer, for another squadron's war (A3, 19 Nov 26 — `src/leavewar/state/foreign.ts`):** the master's Archive,
+Restore, Restore as and Delete on Admin → Users of a man whose squadron's war is not the one loaded write that
+squadron's own rows through its own door — his `profile:<pid>` (the window; the label kept as stored), his `rec:` rows
+and his `ledger:` rows (a delete's records and OIL awards from the cutoff) — from the command's `lwx.profile` /
+`lwx.rec` / `lwx.ledger` changes. The same keys and values; nothing new is stored. A squadron whose war has never been
+opened keeps such a profile row: its first open takes the seed's periods and keeps the stored windows and labels.
 
 | stored key | the design's table | holds |
 |---|---|---|

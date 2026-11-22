@@ -42,7 +42,8 @@
    this seed added its first two half-day rows. Writing the real shape the
    UI itself produces is the fix, not a test workaround. */
 import { INPUTS, leadOf } from '../engine/inputs'
-import { PEOPLE } from '../engine/people'
+import { BOOT_UNIT } from '../engine/unitview'
+import { PEOPLE, deriveQuals, indexCallsigns, isOcu, isInstr } from '../engine/people'
 
 const DEMO_SANS: any[] = [
   /* nick — flies Jul 13's night wave (RCP, to 19:45 / ld 21:10; padded
@@ -260,7 +261,59 @@ export function seedDemoPlaceholders() {
      store seeded before it carries the old shape, which the test below reads too */
   for (const { ph, ...rec } of recs) {
     if (INPUTS.some((r: any) => r && String(leadOf(r)) === ph && r.type === rec.type && r.date === rec.date)) continue
-    INPUTS.push({ ...rec, people: [{ p: ph, by: admin, at }], mod: '2026-06-26', by: admin, at, modBy: admin, modAt: at })
+    /* …stamped with the squadron it was filed on, as the app's filing stamps it (the reshape plan §12 Q1, D2243 — ui/inputedit.ts
+       commitNewInput): Saber filed both in his own 142 */
+    INPUTS.push({ ...rec, people: [{ p: ph, by: admin, at }], u: BOOT_UNIT, mod: '2026-06-26', by: admin, at, modBy: admin, modAt: at })
   }
+}
+
+/* ---- THE SECOND DEMO SQUADRON, 149 (multi-squadron batch 1, step 4 — the plan §3.4 "149 seeded") ----------------------
+   So a walk can prove the two squadrons never meet, the demo carries a second squadron with its own people: ten aircrew,
+   their own hidden ids and their own callsigns (unique across the community — D288 — none of 142's, none archived),
+   each at 149 by the units' seed homes (state/units.ts SEED.homes), so 142's rosters, Inputs, Leave War and Tracker never
+   list them (engine/roster.ts rosterOf). Their week is engine/week149.ts (the same dates as 142's first), their Leave
+   War a world of its own (src/boot.ts), their Tracker one course (the Tracker's own first-load seed, under 149).
+
+   Built the way the module load builds 142's (engine/people.ts): the CAT ladder's quals, the SXO's Scheduler tick, SC
+   and AAR currency by CAT. Two inputs of their own — a local leave and an appointment, off the days each man flies —
+   placed by the man himself, so the stamps leave them alone and no 142 admin is recorded as filing for 149.
+
+   Same boot-only home and idempotence as the seeds above: a fresh (un-hydrated) store only — after the shared input and
+   the placeholders, so neither ever picks a 149 man (both take the first people in the roster's order) — skipped where
+   a person or an input is already there. Demo data, wiped before the database (D56). */
+export const DEMO_149_PEOPLE: ReadonlyArray<readonly [string, string, 'FCP' | 'RCP', string, boolean]> = [
+  ['kes9', 'Kestrel', 'FCP', 'IP', true], ['osp9', 'Osprey', 'FCP', 'A', false], ['mer9', 'Merlin', 'FCP', 'B', false],
+  ['har9', 'Harrier', 'FCP', 'C', false], ['con9', 'Condor', 'FCP', 'OCU', false],
+  ['fal9', 'Falcon', 'RCP', 'IW', false], ['her9', 'Heron', 'RCP', 'A', false], ['rav9', 'Raven', 'RCP', 'B', false],
+  ['shr9', 'Shrike', 'RCP', 'C', false], ['gan9', 'Gannet', 'RCP', 'OCU', false],
+]
+export function seedDemo149() {
+  for (const [id, cs, seat, q, sxo] of DEMO_149_PEOPLE) {
+    if (PEOPLE[id]) continue
+    const p: any = { cs, seat, q }
+    if (sxo) p.sxo = true
+    deriveQuals(p)
+    if (p.quals.sxo) p.quals.sched = true
+    if (!isOcu(q)) {
+      p.quals.scDay = true
+      if (isInstr(q) || q === 'A' || q === 'B') p.quals.scNight = true
+      if (seat === 'FCP') { p.quals.daar = true; if (isInstr(q) || q === 'A' || q === 'B') p.quals.naar = true }
+    }
+    PEOPLE[id] = p
+  }
+  /* the two placeholder pucks (ALL, ALL AVAIL — code, never rows) stay at the end of the roster's order, where a reload
+     puts them (state/people-settings-commit.ts reorderPeople) — so the order read back is the order seeded */
+  for (const id of Object.keys(PEOPLE)) if (PEOPLE[id] && PEOPLE[id].special) { const p = PEOPLE[id]; delete PEOPLE[id]; PEOPLE[id] = p }
+  indexCallsigns()
+  const recs: any[] = [
+    { person: 'her9', date: 'Jul 17', allday: true, type: 'LL', remarks: 'Local leave', mod: '2026-06-24' },
+    { person: 'gan9', date: 'Jul 14', allday: false, s: 840, e: 900, type: 'Appointment', remarks: 'Dental appt', mod: '2026-06-26' },
+  ]
+  recs.forEach((rec, i) => {
+    if (INPUTS.some((r: any) => r && String(leadOf(r)) === rec.person && r.type === rec.type && r.date === rec.date)) return
+    const [y, mo, d] = String(rec.mod).split('-').map(Number)
+    const at = new Date(y, mo - 1, d, 9 + i, 20).getTime()
+    INPUTS.push({ ...rec, by: rec.person, at, modBy: rec.person, modAt: at })
+  })
 }
 

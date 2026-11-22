@@ -1,0 +1,4 @@
+msq-w1-explore3 v1
+GROUND ["BUTTON||data-inpadd=2.g|+ INPUTS","BUTTON||data-sortsec=g.2|Auto sort","BUTTON||data-gradd=2|+ Item","TEXTAREA||data-bfld=gr:2.0.prog,placeholder=OCU PROGRESS REVIEW|","INPUT||data-bfld=gr:2.0.str|","INPUT||data-bfld=gr:2.0.end|","TEXTAREA||data-bfld=gr:2.0.rmks,placeholder=Remarks|","BUTTON||data-grcx=2.0|CX","BUTTON||data-grinfo=2.0|ⓘ","BUTTON||data-grflag=2.0|■","BUTTON||data-grdel=2.0|✕","BUTTON||data-notepub=gn:2|MAKE PUBLIC","TEXTAREA||data-bfld=gn:2|"]
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

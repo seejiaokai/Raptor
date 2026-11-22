@@ -1,0 +1,5 @@
+=== run 2026-11-21T02:06:28.526Z pieces q6 sizes d,p bundle index-w0QlOxG4.js
+q6b-142 d on screen {"ranger":true,"havoc":true}
+q6b-142 p on screen {"ranger":true,"havoc":true}
+--- page errors and failures ---
+none

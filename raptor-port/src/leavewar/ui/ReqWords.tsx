@@ -18,6 +18,7 @@ import { setLeaveRemarks } from '../../ui/inputedit'
 import { inputDates, type WarInput } from '../absences'
 import { DocField, inputById, requestDocRow, rowDocIds, tillOfISO, usePlanVersion } from '../sync'
 import { TILL_DEFAULT, type ReqDraft } from './reqdraft'
+import { warBand } from '../../state/typing-hold'
 
 /* THE BOX GROWS WITH ITS WORDS (his D1333): one line tall to start; as the words wrap it grows a line at a time, so a long
    remark is read whole, never hidden in one line that scrolls sideways. Measured after each change of the words (the
@@ -204,6 +205,10 @@ export function LeaveWords({ row, personId, testPrefix = 'bid', onRefused, flush
   const dates = row ? inputDates(row) : []
   const till = dates.length ? tillOfISO(row?.type ?? 'LL', dates[0], dates[dates.length - 1]) : ''
   const save = (remarks: string, ids: string[], tillTo?: boolean) => {
+    /* UNDER THE MIDNIGHT BAND NOTHING IS SAVED (his D2243 Q7; the fix read of the reshape — astra-3 F4's rule, for the
+       approved leave's own box as for a bid's, BidPicker.tsx onWords): the band across the window is the refusal, and the
+       words typed stay in the box */
+    if (warBand()) return setEdit(remarks)
     if (!setLeaveRemarks(row, remarks, personId, ids, tillTo)) onRefused?.('That could not be saved — change it on the Inputs page.')
   }
   return (

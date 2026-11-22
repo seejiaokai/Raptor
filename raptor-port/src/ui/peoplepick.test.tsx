@@ -26,6 +26,8 @@ import { setMembersFile } from '../state/memberfile'
 import { me } from '../state/perms'
 import { setMe } from '../state/auth'
 import { PEOPLE } from '../engine/people'
+import { rosterOf, rosterToday } from '../engine/roster'
+import { BOOT_UNIT } from '../engine/unitview'
 import { storeBackend } from '../engine/hooks'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -35,7 +37,9 @@ const $ = (sel: string) => host.querySelector(sel) as HTMLElement | null
 const $$ = (sel: string) => [...host.querySelectorAll(sel)] as HTMLElement[]
 const tid = (id: string) => $(`[data-testid="${id}"]`)
 const click = async (el: Element | null) => { expect(el, 'click target').toBeTruthy(); await act(async () => { (el as HTMLElement).click() }) }
-const live = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special)
+/* the signed-in man's own squadron's people: the picker lists his squadron's roster (multi-squadron step 3,
+   engine/roster.ts rosterOf), and the demo carries 149's people beside 142's since step 4 */
+const live = () => rosterOf(BOOT_UNIT, rosterToday()).filter(id => PEOPLE[id] && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special)
 const cs = (id: string) => PEOPLE[id].cs as string
 const az = (ids: string[]) => [...ids].sort((a, b) => cs(a).localeCompare(cs(b), undefined, { sensitivity: 'base' }))
 const pilots = () => az(live().filter(id => !PEOPLE[id].san && !PEOPLE[id].pers && PEOPLE[id].seat !== 'RCP'))

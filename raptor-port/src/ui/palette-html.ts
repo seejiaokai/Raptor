@@ -7,6 +7,13 @@ import { hm24 } from '../engine/time'
 import { dayTasked, dayOff, dayStandby, slotBar, slotRules } from '../engine/avail'
 import { esc, ARM, ROSDAY, slotTitle } from '../state/view'
 import { puck, puckMarks } from './html'
+import { rosterOf } from '../engine/roster'
+import { UNIT } from '../engine/unitview'
+import { dayIso } from '../engine/verid'
+import { CURWEEK } from '../engine/waves'
+/* the crew list is the schedule in view's own people on the day it lists (multi-squadron step 3 — engine/roster.ts);
+   another squadron's free men are batch 3's group of their own (D2133) */
+const rosOn=(di:any)=>rosterOf(UNIT,dayIso(String(CURWEEK),+di||0));
 
 export function paletteDay(){ return ARM&&ARM.di>=0?ARM.di:(DAYS[ROSDAY]?ROSDAY:0); }
 /* one puck, with the reason it cannot be used carried on the title */
@@ -155,7 +162,7 @@ function paletteHTMLBody(di:any,opts?:any){
   /* SANS members are no longer split into a per-column sub-band (owner, 14 Aug
      26) — they move into ONE full-width section below, sansAvailHTML, so
      every column here lists non-SANS crew only. */
-  const sel=(seat:any)=>Object.keys(PEOPLE).filter((id:any)=>ok(id)&&PEOPLE[id].seat===seat&&!PEOPLE[id].san).sort(bySort);
+  const sel=(seat:any)=>rosOn(di).filter((id:any)=>ok(id)&&PEOPLE[id].seat===seat&&!PEOPLE[id].san).sort(bySort);
   const col=(title:any,seat:any)=>{
     const act=sel(seat), free=act.filter((id:any)=>!rank(id)).length;
     /* one reason shared by EVERY barred name in the column reads ONCE, under
@@ -258,7 +265,7 @@ export function sansAvailHTML(di:any,armKey:any,eng:any,off:any,sby:any,arules:a
   const rk=(id:any)=>{const g=!armKey&&!!(off&&off.has(id))&&groundedOnly(id,di);
     if(whyOf(id,di,armKey,off,arules,g))return 2;
     const t=!!(eng&&eng.has(id));return g?(t?1:.5):(t?1:0);};
-  const ids=Object.keys(PEOPLE).filter((id:any)=>ok(id)&&PEOPLE[id].san)
+  const ids=rosOn(di).filter((id:any)=>ok(id)&&PEOPLE[id].san)
     .map((id:any)=>[id,rk(id)] as [any,number])
     .sort((a:any,b:any)=>a[1]-b[1]||PEOPLE[a[0]].cs.localeCompare(PEOPLE[b[0]].cs));
   if(!ids.length)return '';

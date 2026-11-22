@@ -1,0 +1,35 @@
+// @vitest-environment jsdom
+/* A1 (Fable F1): a move leaves both squadrons' Leave Wars wrong. Correct per D2160 (Transfer: "the old squadron keeps …
+   its Leave War months to the date"; "whose man he is is read from his stints by date", F13) and D299 (the past keeps
+   its record of him, his row in the months he was here): after Ranger moves 142 → 149 from 16 Jul, 142's war still has
+   his row (his 8 Jul leave), and 149's war counts him only from 16 Jul. */
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { getState, setCell } from '../leavewar/state/store'
+import { setHome, homeOn } from '../state/units'
+import { hBeforeAll, hAfterAll, hBeforeEach, hAfterEach, saber, kestrel, on } from './_harness'
+
+beforeAll(hBeforeAll); afterAll(hAfterAll); beforeEach(hBeforeEach); afterEach(hAfterEach)
+
+function moveRanger() {
+  saber()
+  expect(setCell('bane', '2026-07-08', 'LL')).toBe(true)
+  expect(setHome('bane', 'u149').ok).toBe(true)
+  on(16)
+  expect(homeOn('bane', '2026-07-08')).toBe('u142')
+  expect(homeOn('bane', '2026-07-16')).toBe('u149')
+}
+
+describe('A1 — a move keeps each squadron’s war true by date', () => {
+  it('142’s war still has Ranger’s row for the months he was there (his 8 Jul leave)', () => {
+    moveRanger()
+    kestrel(); saber()
+    expect(getState().people.some(p => p.id === 'bane'), '142 keeps his row up to the move').toBe(true)
+  })
+  it('149’s war counts Ranger only from his move day, 16 Jul', () => {
+    moveRanger()
+    kestrel()
+    const row = getState().people.find(p => p.id === 'bane')
+    expect(row, '149 has his row').toBeTruthy()
+    expect(row?.from ?? null, '149’s row starts on his move day, not every month before it').toBe('2026-07-16')
+  })
+})

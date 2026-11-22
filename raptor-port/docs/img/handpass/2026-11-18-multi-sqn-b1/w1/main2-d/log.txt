@@ -1,0 +1,56 @@
+msq-w1-main2 v1 desktop
+PUB 149 Fri17 {"published":false,"why":"no publish button on the day","signSelects":0}
+PUB 142 Wed15 {"published":false,"why":"no publish button on the day","signSelects":0}
+PUB 142 Thu16 {"published":false,"why":"no publish button on the day","signSelects":0}
+ROW RECORD | S5 | desktop | setup: ad9 publishes 149 Fri 17 Jul; ad publishes 142 Wed 15 and Thu 16 Jul | saw: 149: {"published":false,"why":"no publish button on the day","signSelects":0}; 142: {"published":false,"why":"no publish button on the day","signSelects":0} {"published":false,"why":"no publish button on the day","signSelects":0}
+NEW INPUT FIELDS ["searchE:","inFPerson:Everyone/ALL AVAIL/ALL/Condor/Falcon/Gannet/Harrier/Heron/Kestrel/Merlin/Osprey/Raven/Shrike","inFType:All types/All leave/LL/OL/OIL/CCL/PL/FCL/EL/CL/All medical/HL/OML/ATT C/ATT B/Upchit/All duty & commitments/Training/CSE/Meeting/Attach/Personal/Appointment/Duty/Event/OD/Other","inFSearch:","SELECT:JAN - DEC 26/JAN - DEC 27","inpEditType:LL/OL/OIL/CCL/PL/FCL/EL/CL/HL/OML/ATT C/ATT B/Upchit/Training/CSE/Meeting/Attach/Personal/Appointment/Duty/Event/OD/Other","inpEditRmk:"]
+ERR month locator.click: Timeout 30000ms exceeded.
+ERR day locator.click: Timeout 30000ms exceeded.
+US9 text has Dec 10: false Other: true
+ROW RECORD | S4 | desktop | us9 adds a leave / Other on Thu 10 Dec 2026 | saw: after add the list reads: 142 TALON View-only Sched Inputs Quals Logic Leave War Tracker Help ↶ ↷ Insights Logout Osprey · Member Inputs Inputs SANS Medical Calendar List Osprey Clear filters 18 Nov → 2 Dec + Input Name Start ▲ End Type Remarks Changed No inputs 18 Nov – 2 Dec. Try All dates. Grid Balances OIL View My leave 
+ROW PASS | S4 | desktop | us opens Inputs list | saw: Kestrel+10 Dec seen: false; text: 142 TALON View-only Sched Inputs Quals Logic Leave War Tracker Help ↶ ↷ Insights Logout Ranger · Member Inputs Inputs SANS Medical 2 1 Calendar List Ranger Clear filters 18 Nov → 2 Dec + Input Name Start ▲ End Type Remarks Changed No inputs 18 Nov – 
+ROW PASS | S4 | desktop | ad opens Inputs list | saw: Kestrel+10 Dec seen: false; text: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Saber · Admin Inputs Inputs SANS Medical 2 1 Calendar List 18 Nov → 2 Dec + Input Name Start ▲ End Type Remarks Changed No inputs 18 Nov – 2 D
+ROW FAIL | S4 | desktop | ad9 opens Inputs list | saw: Kestrel+10 Dec seen: false; text: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Kestrel · Admin Inputs Inputs SANS Medical Calendar List 18 Nov → 2 Dec + Input Name Start ▲ End Type Remarks Changed No inputs 18 Nov – 2 Dec
+ROW FAIL | S5 | desktop | ad9 Holidays + Add, Public holiday, dates 2026-07-15..2026-07-15, not saved | saw: (no sentence)
+ROW FAIL | S5 | desktop | ad9 Holidays + Add, Public holiday, dates 2026-07-15..2026-07-16, not saved | saw: (no sentence)
+ROW FAIL | S5 | desktop | ad9 Holidays + Add, Public holiday, dates 2026-07-15..2026-07-17, not saved | saw: (no sentence)
+ROW RECORD | S5 | desktop | (d) same dates, kind switched to Off day | saw: (no sentence)
+msq-w1-main2 v1 desktop
+PUB 149 Fri17 {"published":true,"version":"ORIG","signSelects":4}
+PUB 142 Wed15 {"published":true,"version":"ORIG","signSelects":4}
+ERR s6 locator.click: Timeout 30000ms exceeded.
+PUB 142 Thu16 {"published":true,"version":"ORIG","signSelects":4}
+ROW RECORD | S5 | desktop | setup: ad9 publishes 149 Fri 17 Jul; ad publishes 142 Wed 15 and Thu 16 Jul | saw: 149: {"published":true,"version":"ORIG","signSelects":4}; 142: {"published":true,"version":"ORIG","signSelects":4} {"published":true,"version":"ORIG","signSelects":4}
+149 grid has WPH: true
+ROW FAIL | S6 | desktop | ad looks at 142's Leave War grid for Wed 9 Dec | saw: WPH: false; W149 PH: false
+NEW INPUT FIELDS ["searchE:","inFPerson:Everyone/ALL AVAIL/ALL/Condor/Falcon/Gannet/Harrier/Heron/Kestrel/Merlin/Osprey/Raven/Shrike","inFType:All types/All leave/LL/OL/OIL/CCL/PL/FCL/EL/CL/All medical/HL/OML/ATT C/ATT B/Upchit/All duty & commitments/Training/CSE/Meeting/Attach/Personal/Appointment/Duty/Event/OD/Other","inFSearch:","SELECT:JAN - DEC 26/JAN - DEC 27","inpEditType:LL/OL/OIL/CCL/PL/FCL/EL/CL/HL/OML/ATT C/ATT B/Upchit/Training/CSE/Meeting/Attach/Personal/Appointment/Duty/Event/OD/Other","inpEditRmk:"]
+AD HOLIDAY LIST has W149 PH: false
+ERR month locator.click: Timeout 30000ms exceeded.
+ERR s6b locator.click: Timeout 30000ms exceeded.
+ROW PASS | S6 | desktop | ad9 looks at 149's grid after ad added Off day W142 OFF | saw: WOF: false; W142 OFF: false; WPH still: false
+BELL count ad 2
+ROW RECORD | S7 | desktop | ad opens the bell | saw: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin Sync · slow Insights Logout Saber · Admin Jul 06 Jul 13 Jul 20 Jul 27 CAT Type Quals Legend — colours & flags Monday Jul 13 · Today DRAFT 4 X 4 i ⚠ 17 issues · 6 warnings ▼ Common Programme EP: ENGINE FIRE ON TAKE OFF ORDERS: FLYING ORDERS SECTION 2 Name Start End People Rmks SODB 07:45 08:15 MET + NOTAM BRIEF 
+BELL count ad2 2
+ROW RECORD | S7 | desktop | ad2 opens the bell | saw: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin Sync · slow Insights Logout Hunter · Admin Jul 06 Jul 13 Jul 20 Jul 27 CAT Type Quals Legend — colours & flags Monday Jul 13 · Today DRAFT 4 X 4 i ⚠ 17 issues · 6 warnings ▼ Common Programme EP: ENGINE FIRE ON TAKE OFF ORDERS: FLYING ORDERS SECTION 2 Name Start End People Rmks SODB 07:45 08:15 MET + NOTAM BRIEF
+BELL count ad9 2
+ROW RECORD | S7 | desktop | ad9 opens the bell | saw: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin Sync · slow Insights Logout Kestrel · Admin Jul 06 Jul 13 Jul 20 Jul 27 CAT Type Quals Legend — colours & flags Monday Jul 13 DRAFT 2 i WAVE 1 Traffic CS MSN R B TO LD FCP / RCP RMKS HK BFM 07:20 09:40 11:05 Kestrel IP Falcon IW 1B: BFM-2 2 TKS Osprey A Heron A 2A: BFM-1 2 TKS AREA NORTH · SOUTH 0940-1105 Dutie
+ERR day locator.click: Timeout 30000ms exceeded.
+RELOAD ground Wed15 []
+ROW RECORD | S8 | desktop | ad9 reloads the page | saw: signed in: true; Wed15 ground rows: []
+US9 text has Dec 10: false Other: true
+ROW RECORD | S4 | desktop | us9 adds a leave / Other on Thu 10 Dec 2026 | saw: after add the list reads: 142 TALON View-only Sched Inputs Quals Logic Leave War Tracker Help ↶ ↷ Insights Logout Osprey · Member Inputs Inputs SANS Medical Calendar List Osprey Clear filters 18 Nov → 2 Dec + Input Name Start ▲ End Type Remarks Changed No inputs 18 Nov – 2 Dec. Try All dates. Grid Balances OIL View My leave 
+ROW FAIL | S8 | desktop | ad9 reload: grid still shows holiday WPH | saw: WPH: false
+ROW PASS | S4 | desktop | us opens Inputs list | saw: Osprey+10 Dec seen: false; text: 142 TALON View-only Sched Inputs Quals Logic Leave War Tracker Help ↶ ↷ Insights Logout Ranger · Member Inputs Inputs SANS Medical 2 1 Calendar List Ranger Clear filters All dates + Input Name Start ▲ End Type Remarks Changed Ranger 19 Jan 21 Jan LL 
+ROW RECORD | S8 | desktop | second tab, same storage: sign in as ad, Leave War | saw: WPH: false; WOF: false
+errors []
+DONE 3 PASS 6 FAIL 8 OTHER of 17
+ROW PASS | S4 | desktop | ad opens Inputs list | saw: Osprey+10 Dec seen: false; text: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Saber · Admin Inputs Inputs SANS Medical 2 1 Calendar List All dates + Input Name Start ▲ End Type Remarks Changed Drifter 1 Jan OL LATE till 
+ROW FAIL | S4 | desktop | ad9 opens Inputs list | saw: Osprey+10 Dec seen: false; text: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Kestrel · Admin Inputs Inputs SANS Medical Calendar List All dates + Input Name Start ▲ End Type Remarks Changed Gannet 14 Jul 14:00–15:00 App
+ROW PASS | S5 | desktop | ad9 Holidays + Add, Public holiday, dates 2026-07-15..2026-07-15, not saved | saw: This puts a published day out of date: 142's Wed 15 Jul. Publish it again so OIL is earned.
+ROW PASS | S5 | desktop | ad9 Holidays + Add, Public holiday, dates 2026-07-15..2026-07-16, not saved | saw: This puts published days out of date: 142's Wed 15 Jul and Thu 16 Jul. Publish them again so OIL is earned.
+ROW PASS | S5 | desktop | ad9 Holidays + Add, Public holiday, dates 2026-07-15..2026-07-17, not saved | saw: This puts published days out of date: 142's Wed 15 Jul and Thu 16 Jul; 149's Fri 17 Jul. Publish them again so OIL is earned.
+ROW RECORD | S5 | desktop | (d) same dates, kind switched to Off day | saw: (no sentence)
+ERR s6 locator.click: Timeout 30000ms exceeded.
+149 grid has WPH: true
+ROW FAIL | S6 | desktop | ad looks at 142's Leave War grid for Wed 9 Dec | saw: WPH: false; W149 PH: false
+AD HOLIDAY LIST has W149 PH: false

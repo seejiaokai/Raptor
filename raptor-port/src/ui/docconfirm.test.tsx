@@ -14,6 +14,7 @@ import { INPUTS, holds } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { setInpEdit, INPEDIT } from './pops'
 import { docAdd, rowDocIds } from '../state/docs'
+import { settleWorld } from '../test-support/world'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -47,6 +48,9 @@ beforeEach(async () => {
   INPUTS.length = 0
   JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
   TOASTS = []
+  /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read) */
+  settleWorld()
 })
 
 const openMedAdd = async (over: any = {}) => {
