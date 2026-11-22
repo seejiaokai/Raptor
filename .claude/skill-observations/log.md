@@ -1193,3 +1193,29 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** Step A changed which edit question many doors ask. The previous chat ran the test files that NAME the changed helpers and reported them green; the whole suite then found three faults none of those files covered: a test that faked the OLD helper (a spy on a function the door no longer calls, so it stopped testing anything and failed on the real answer), a type check over a folder no named file touched, and a window that turned read-only for a case its own code comment said must stay editable. Selecting tests by "names the changed function" misses a test that names the function the code moved AWAY from, and every test whose subject is the screen rather than the helper.
 **Suggested improvement:** When a change swaps which helper a caller asks, select the related tests by the OLD name as well as the new (a spy or a mock of the old one is now testing nothing), and treat "related files green" as a provisional result until the whole suite has run — say so in the handoff rather than "green".
 **Principle:** A test that fakes a dependency silently stops testing once the code stops depending on it; test selection by name must include the names the change removed.
+
+### Observation 1016: A test written first but never seen red per test can pass for the wrong reason
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 143 — multi-squadron batch 1 second half, phase 2 step D (requests by squadron); numbered past 1015, which another branch holds
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** RED — verify the test fails for the reason it names
+
+**Issue:** The new tests were written before the code, but their first run failed only because the file could not import a function not yet written, so no single test was ever seen failing. Proving the gate tests afterwards by switching each new rule off showed one ("the Undo of a new squadron is refused while a request names it") still passing with its rule off: it was refused for another reason — the test signed in as the person asking, and signing in as someone else clears the first person's Undo list, so the Undo failed with nothing to undo. Rewritten (the request arrives as if from another device, plus a control that the same Undo goes through without the request), it then failed with the rule off and passed with it on.
+**Suggested improvement:** In RED, a file-level failure (an import, a missing export) is not a red: each test must be seen failing on its own assertion. Where the code cannot be stubbed first, prove it afterwards by disabling the one line under test and running again, and add a control case showing the same steps succeed when only that line's condition is absent.
+**Principle:** A refusal test proves the rule only if the same steps succeed once the rule's one condition is removed; a whole-file failure proves nothing about any single test.
+
+### Observation 1017: A seeded record has no stored row, so "no row before" does not mean "new"
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 143 — step E's place rule at the commit gate
+**Skill:** New skill candidate: raptor-gate-rules (or the executor rules, `.claude/rules/raptor-executor.md`)
+**Type:** internal
+**Phase/Area:** writing a commit-gate rule that tells a created record from a changed one
+
+**Issue:** The new gate rule treated a place row with no "before" image as a new place (a master admin's alone), so a Plan holder changing the demo's Home base — a seeded place that was never stored as a row — was refused as "a new place made alone". The fix asks whether the rows before the command hold it (the seeded rows included).
+**Suggested improvement:** Add to the executor rules: in a gate rule, "created" is "not in the rows before the command" (the loader's reading, seeds included), never `before == null` alone — a seeded record's first write has no before image.
+**Principle:** Judge creation against the model's view of what existed, not against the storage layer's record of what was written.
