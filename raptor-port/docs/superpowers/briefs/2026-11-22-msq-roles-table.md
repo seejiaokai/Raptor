@@ -1,4 +1,4 @@
-# "What each role allows" — the table, checked (D2302)
+# "What each role allows" — the table, checked (D2302); approved as drawn 22 Nov 26 (D2305)
 
 Checked 22 Nov 26 against the rulings pages, their full rows, and the code on branch `claude/msq-b1-screens-135`.
 Paths below are under `raptor-port/src/` unless they start with `.claude/`.
