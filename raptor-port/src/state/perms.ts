@@ -720,6 +720,10 @@ Object.assign(COMMAND_OPS, {
   /* (a move drops every right the man held in another squadron — his D2203 — inside the same command) */
   'home.set': op(T.home, 'U', 'never', [[T.home, 'C'], [T.grant, 'D']]),
   'account.master': op(T.user, 'U'),
+  /* Admin → Users' one Save (batch 1's second half, plan §4 item 5 — accounts.ts saveAccess): the account row (role, master
+     mark) and the rights of that account in other squadrons, given, changed or taken — and, made a master admin, every
+     right he held dropped (R-O10). Which squadron's admin may write each row is unitRowViolation's, as for grant.set */
+  'account.access': op(T.user, 'U', 'never', [[T.grant, 'C'], [T.grant, 'U'], [T.grant, 'D']]),
 } satisfies Record<string, CommandOp>)
 for (const k of SETTINGS_KEYS_ALL) COMMAND_OPS[`settings.${k}`] = op(T.setting, 'U')
 /* COMMANDS ONLY AN ADMIN RUNS, though the table they write grants a member the same letter for his own change: the war's
@@ -2517,6 +2521,11 @@ function unitRowViolation(env: CommitEnvelope): string | null {
         if (after.grants.filter(g => g.account === n.account && g.unit === n.unit && grantRowHolds(hA, g, today, after)).length > 1) return `two rights holding for one account in one unit (${id})`
         /* PLAN IS AN ADMIN'S (the Plan audit's PA2 — D2201, D785): never on an account whose role is not admin */
         if (n.level === 'admin' && String(who.role) !== 'admin') return `Plan on an account that is not an admin's (${id})`
+        /* NO RIGHT GIVEN ON A MASTER ADMIN'S ACCOUNT (batch 1's second half, plan §15 D14 — R2-O14): he acts in every
+           squadron, his row reads "Full access" with no buttons (R4), so a row given him would be hidden and come back when
+           the mark comes off. A command's own write only — a restore puts back what its step recorded (units.ts setGrant
+           and accounts.ts saveAccess refuse it at the door) */
+        if (who.master === true && env.origin !== 'restore' && grantRowHolds(hA, n, today, after)) return `a right on a master admin's account (${id})`
         /* ITS DAY IS THE DAY IT WAS GIVEN (fix read 8, fault G — Fable's 1, the security read's SEC8-3, the fresh Opus
            read's 3): the bell's move-day test counts a grant from its `from` (notices.ts adminThen, his D2218, D2223),
            and a grant with no day, or back-dated, put by a plain admin brought back a line a man's move had retired. A
@@ -2669,11 +2678,19 @@ function unitRowViolation(env: CommitEnvelope): string | null {
   }
 
   if (masterMoved) {
-    if (env.type !== 'account.master' && !(env.type === 'undo.restore' && env.origin === 'restore')) return 'the master mark changes only by its own command'
+    /* (…or Admin → Users' one Save, which carries the role, the mark and the squadron lines together — batch 1's second
+       half, plan §4 item 5, R-O3, R-A5; accounts.ts saveAccess) */
+    if (env.type !== 'account.master' && env.type !== 'account.access' && !(env.type === 'undo.restore' && env.origin === 'restore')) return 'the master mark changes only by its own command'
     if (!master) return 'only a master admin sets the master mark'
     for (const c of masterCh) {
       const img: any = c.after ?? c.before
       if (String(c.id) === ACCOUNT_ROW + a.id || (img && a.personId != null && String(img.pid) === String(a.personId))) return 'never his own master mark'
+      /* MADE A MASTER ADMIN BY THE ONE SAVE, HE KEEPS NO RIGHT (R-O10): every View and Plan he holds goes in the same
+         command — a kept row would be hidden behind "Full access" and come back when the mark comes off */
+      if (env.type === 'account.access' && c.after != null && (c.after as any).master === true) {
+        const id = String(c.id).slice(ACCOUNT_ROW.length), h = holderA(id)
+        if (after.grants.some(g => g.account === id && grantRowHolds(h, g, today, after))) return `a right left on an account made a master admin (${c.id})`
+      }
     }
     /* (only an admin's account counts as a master admin left — D2260) */
     if (!(w ? w.acctA : readAccounts(accountImagesNow())).some(x => x.master === true && x.role === 'admin')) return 'one master admin must be left'

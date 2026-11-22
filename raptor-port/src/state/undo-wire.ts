@@ -20,7 +20,8 @@ import { decodeRoleId } from '../engine/mission-role'
 import { peopleStore, settingsStore } from './people-settings-commit'
 import { rosterRestoreProblem } from './roster-restore'
 import { seedAccounts, levelIn, accountById, isMasterAccount, ACCOUNT_PFX, signedInAccount, adminNow } from './accounts'
-import { unitRows, homeOn, unitRowsBefore } from './units'
+import { unitRows, homeOn, unitRowsBefore, unitById } from './units'
+import { setDescribeUnits } from '../undo/describe'
 import { store } from '../engine/hooks'
 import { deletedRestoreProblem, postingRestoreProblem } from './person-delete'
 import {
@@ -584,6 +585,8 @@ export function installGlobalUndo(): void {
   setRecordKeyHook({ stamp: (changes) => stampOf(changes, worldNow), key: (c, stamp) => recordKeyIn(c, stamp) })
   /* the words name a man by his callsign (describe.ts — the Leave War's records carry his id) */
   setDescribeNames((pid) => ((PEOPLE as any)[pid] ? String((PEOPLE as any)[pid].cs) : null), (k) => (k === 'accounts' ? seedAccounts() : null))
+  /* (Admin → Users' one Save — "Plan of 149 given · Hunter", D2326: the squadron's number and the account's man) */
+  setDescribeUnits(u => unitById(u)?.num ?? null, id => { const a = accountById(id); const p = a ? (PEOPLE as any)[a.pid] : null; return p ? String(p.cs) : null })
   registerUndoStore(schedStore, SCHED_COLLS)
   registerUndoStore(lwStore, LW_COLLS as unknown as string[])
   registerUndoStore(weekstashStore, ['weekstash'])

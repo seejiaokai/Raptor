@@ -274,6 +274,10 @@ export function setGrant(account: string, unit: string, level: GrantLevel, accou
      given Plan; its words wait for the first screen that gives a right, drawn then — §14 of the plan) */
   if ((level === 'admin' || had?.level === 'admin') && notMaster()) return no(PLAN_MASTER_ONLY)
   if (level === 'admin' && acct && !adminNow(acct)) return no('This change could not be saved.')
+  /* NO RIGHT ON A MASTER ADMIN'S ACCOUNT (batch 1's second half, plan §15 D14 — R2-O14): he acts in every squadron, his row
+     reads "Full access" with no buttons (R4), so a row given him would be hidden and come back when the mark comes off.
+     The generic words: no screen offers it. Held at the gate too (perms.ts unitRowViolation). */
+  if (acct?.master) return no('This change could not be saved.')
   /* NOT BETWEEN A MOVE SAVED AND ITS DAY (Fable's sample review, 1 — his D2203; the plan §4.3, Fable 4, Opus L3): a right
      ends at the start of his move day, so one given or raised in the rest of the day it is saved would last that day
      only. A lowering passes — whatever it leaves ends at midnight by the rule. Held at the gate too (perms.ts
@@ -313,6 +317,18 @@ export function removeGrant(account: string, unit: string): UnitSave {
 export function dropGrantsOfAccount(accountId: string): void {
   if (!isCommitting()) throw new Error('dropGrantsOfAccount runs only inside a command')
   for (const g of unitRows().grants.filter(x => x.account === accountId)) put(GRANT_PFX + g.id, null)
+}
+/* ONE SQUADRON'S LINE OF A PERSON'S ACCESS, written INSIDE Admin → Users' one Save (accounts.ts saveAccess — batch 1's
+   second half, plan §4 item 5): the right that holds today set to `level`, or taken away (null). As setGrant writes it —
+   the same row raised or lowered, dated today; where none holds, a new row (an ended row is never re-dated). The door
+   has judged it; the commit gate judges every row again. */
+export function putGrantLine(account: string, unit: string, level: GrantLevel | null): void {
+  if (!isCommitting()) throw new Error('putGrantLine runs only inside a command')
+  const had = grantOn(unitRows(), holderOf(account), unit, todayIso(), fallbackHome())
+  if (level == null) { if (had) put(GRANT_PFX + had.id, null); return }
+  if (had && had.level === level) return
+  const id = had ? had.id : newId('g')
+  put(GRANT_PFX + id, { id, account, unit, level, from: todayIso() })
 }
 /* named rights, dropped INSIDE another command (a Plan holder made a member — accounts.ts updateAccount, PA2) */
 export function dropGrantRows(ids: readonly string[]): void {

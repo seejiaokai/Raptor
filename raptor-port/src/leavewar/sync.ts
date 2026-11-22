@@ -1687,7 +1687,7 @@ const ENDED_DAYS = 14
 /* the war's audience (warAudience) for a squadron not loaded: a man with a sign-in, not a special, archived or deleted
    person (noticeWar's own leave-outs) */
 function storedAudienceHas(pid: string): boolean {
-  const p: any = (PEOPLE as any)[pid]
+  const p = (PEOPLE as Record<string, { special?: unknown; archived?: unknown; deleted?: unknown } | undefined>)[pid]
   if (!p || p.special || p.archived || p.deleted) return false
   return ACCOUNTS_LIST.some(a => a && a.pid != null && String(a.pid) === pid)
 }

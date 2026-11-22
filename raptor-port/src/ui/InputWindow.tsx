@@ -11,7 +11,7 @@ import { placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup } from './PeoplePick'
 import { pickProblem } from './peoplepick-model'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { inputUnitOf, INPUTS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpType, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, idsOf, leadOf, holds, isPlaceholderInput, isOther, isFly } from '../engine/inputs'
+import { inputUnitOf, inputSquadrons, INPUTS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpType, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, idsOf, leadOf, holds, isPlaceholderInput, isOther, isFly } from '../engine/inputs'
 import { upchitEffects, medClashes } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -786,8 +786,17 @@ export function InputEditor() {
      Where the input's own squadron (engine/inputs.ts inputUnitOf — the squadron its save is judged in first) is one he is
      not an admin of, and it is not his own input, nothing is offered. A leave of 142's man running into 149 stays his to
      try — its refusal has its approved words (D2240, the save door). A member's window is unchanged (canEditOwn false). */
+  /* (…"stays his to try" for an admin of EITHER side of the move: the full unit run of chat 142 found Kestrel, 149's admin,
+     opening Saber's 142 leave of Ranger running into Ranger's 149 days read only — the C6 test wants the editable window
+     and its approved refusal. So the squadrons asked are the input's own and every squadron a man named in it is in on
+     any of its days — engine/inputs.ts inputSquadrons, the gate's own reading; foreign only where he is an admin of none
+     of them.) */
   const foreign = !isNew && !!r && canEditOwn() && !(idsOf(r).length <= 1 && isMe(leadOf(r)))
-    && (() => { const u = inputUnitOf(r); return u != null && !adminOfUnit(u) })()
+    && (() => {
+      const u = inputUnitOf(r)
+      if (u == null) return false
+      return ![u, ...inputSquadrons(r)].some(x => adminOfUnit(x))
+    })()
   const readOnly = !isNew && !!r && (!mayEditInput(r) || foreign)
   /* WHERE IT GOES IS A SCHEDULER'S once he has moved it (his D1388): the member's window shows where it stands, picked,
      and offers neither button — as a rejected one already does (G5) */

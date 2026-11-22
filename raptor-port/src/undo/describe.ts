@@ -35,6 +35,11 @@ import { localOf } from '../storage/unitid'
 let nameOf: (pid: string) => string | null = () => null
 let defaultOf: (settingId: string) => any = () => null
 export function setDescribeNames(fn: (pid: string) => string | null, dflt?: (settingId: string) => any): void { nameOf = fn; if (dflt) defaultOf = dflt }
+/* a squadron's number by its id and an account's callsign by its id, for Admin → Users' one Save (batch 1's second half,
+   D2326 — "Plan of 149 given · Hunter"): installed by the app (state/undo-wire.ts), read LIVE when the entry is recorded */
+let unitNumOf: (unit: string) => string | null = () => null
+let accountCsOf: (account: string) => string | null = () => null
+export function setDescribeUnits(num: (unit: string) => string | null, cs: (account: string) => string | null): void { unitNumOf = num; accountCsOf = cs }
 const poss = (cs: string | null | undefined) => (cs ? `${cs}’s ` : '')
 
 /* known command types → a specific plain phrase. Optional: any type absent here
@@ -383,6 +388,42 @@ function accountLabel(entry: UndoEntry): string | null {
   }
   return 'an account'
 }
+/* ADMIN → USERS' ONE SAVE (batch 1's second half, plan §4 item 5; his D2326, picture 10 — "Undid: Plan of 149 given ·
+   Hunter"): a change of the role reads as a role change does ("Hunter’s role"), the mark alone as the mark's own command
+   ("the master admin mark"); otherwise each squadron line changed, in his drawn words — "<View|Plan> of <num> given",
+   "… ended" — joined, then " · " and the man. */
+function accessLabel(entry: UndoEntry): string | null {
+  if (entry.type !== 'account.access') return null
+  const seeded = listOf(defaultOf('accounts'))
+  let acct = '', roleCh = false, markCh = false
+  for (const ch of entry.forward) {
+    if (ch.collection !== 'settings' || !ch.id.startsWith('account:')) continue
+    const x: any = ch.after, id = ch.id.slice('account:'.length)
+    const y: any = ch.before ?? seeded.find((z: any) => z && z.id === id)
+    if (!x || !y) continue
+    acct = nameOf(x.pid) || x.name
+    if (y.role !== x.role) roleCh = true
+    if ((y.master === true) !== (x.master === true)) markCh = true
+  }
+  if (roleCh) return `${poss(acct)}role`
+  if (markCh) return 'the master admin mark'
+  const word = (l: unknown) => (l === 'admin' ? 'Plan' : 'View')
+  const parts: string[] = []
+  let who = ''
+  for (const ch of entry.forward) {
+    if (ch.collection !== 'settings' || !/(^|_)grant:/.test(ch.id)) continue
+    const b: any = ch.before, a: any = ch.after
+    const g = a ?? b
+    if (!g) continue
+    who = who || accountCsOf(String(g.account)) || ''
+    const num = unitNumOf(String(g.unit)) || String(g.unit)
+    if (b && a && b.level !== a.level) parts.push(`${word(a.level)} of ${num} given`)
+    else if (a && !b) parts.push(`${word(a.level)} of ${num} given`)
+    else if (b && !a) parts.push(`${word(b.level)} of ${num} ended`)
+  }
+  if (!parts.length) return null
+  return who ? `${parts.join(', ')} · ${who}` : parts.join(', ')
+}
 
 function oneInputWords(entry: UndoEntry): string | null {
   const ch = entry.forward.filter((c: Change) => c.collection === 'inputs' && c.id !== '__order')
@@ -502,6 +543,7 @@ export function describeEntry(entry: UndoEntry): string {
   if (entry.type === 'inputs.batch') { const n = inputsCount(entry); return n === 1 ? 'a personal input' : n > 1 ? `${n} inputs` : TYPE_PHRASE['inputs.batch'] }
   if ((entry.scope && entry.scope.module) === 'lw' || entry.type.startsWith('lw.')) return lwLabel(entry)
   const acct = accountLabel(entry); if (acct) return acct
+  const access = accessLabel(entry); if (access) return access
   if (TYPE_PHRASE[entry.type]) return TYPE_PHRASE[entry.type]
   if (entry.type === 'people.edit') return peopleLabel(entry) || genericLabel(entry)
   if (entry.type.startsWith('settings.')) {

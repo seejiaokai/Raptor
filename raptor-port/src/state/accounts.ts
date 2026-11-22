@@ -72,8 +72,8 @@ import {
   postInProblem, type NewPerson,
 } from './roster-add'
 import { HOOKS } from '../engine/hooks'
-import { putNewHome, dropGrantsOfAccount, dropGrantRows, levelOfAccount, levelBefore, homeBefore, todayIso, homeOn, units, unitById, unitRows, grantOfOn, lockBreach, rowsDraft } from './units'
-import type { UnitRows } from './units-model'
+import { putNewHome, dropGrantsOfAccount, dropGrantRows, levelOfAccount, levelBefore, homeBefore, todayIso, homeOn, units, unitById, unitRows, grantOfOn, lockBreach, rowsDraft, putGrantLine, PLAN_MASTER_ONLY } from './units'
+import { moveFrom, type UnitRows, type Grant, type GrantLevel } from './units-model'
 import type { LockBreach } from './lastadmin'
 import { noticeDay } from './notices'
 import { isUnitId, type UnitLevel, type LevelAccount } from './units-model'
@@ -127,7 +127,10 @@ export const ACCOUNT_TYPES = ['access.request', 'access.decline', 'access.approv
   /* [ONE-DOOR]: Archive on Admin → Users (leavewar/sync.ts archivePerson); the man's own "welcome back" seen (D305) */
   'person.archive', 'person.backSeen',
   /* multi-squadron batch 1, step 1: the master mark set or cleared (setMaster below) — a master's alone */
-  'account.master'] as const
+  'account.master',
+  /* batch 1's second half, plan §4 item 5: Admin → Users' one Save — the role, the master mark and every squadron's line
+     of one account in one command (saveAccess below) */
+  'account.access'] as const
 
 /* ---- the seeds (demo data, D56 — wiped with everything else before the database) ----
    `us` stays Ranger (bane), as "View as" left every member test before; `ad` is Saber
@@ -669,6 +672,91 @@ export function setMaster(id: string, on: boolean): { ok: boolean; message?: str
   if (locked) return { ok: false, message: locked }
   const bad = commitIntent('account.master', null, () => writeAccounts(list))
   return bad ? { ok: false, message: bad } : { ok: true }
+}
+
+/* ---- ADMIN → USERS' ONE SAVE (batch 1's second half, plan §4 item 5 — D2303, R-O3, R-A5, R-O10) ----
+   The opened row's changes — the role, the master admin mark, every other squadron's line ("149 None · View · Plan") —
+   saved together, as one `account.access` command and one Undo step. Each check only for the part it governs:
+   - the role or the mark changed → the account's own checks (updateAccount's and setMaster's): not his own account, a
+     master admin's account only by a master admin, the mark a master admin's alone to set or clear, the role an admin's
+     of his own squadron (otherSquadronProblem); a row where only another squadron's line changed asks none of these
+     (Kestrel giving Hunter View of 149 — R-O3b);
+   - each squadron's line → setGrant / removeGrant's for that squadron: Plan given, changed or taken only by a master admin
+     (PA1); View given or taken by an admin of that squadron (R5 — D2299's words); Plan only on an admin's account, judged
+     on the role AFTER the Save (Member → Admin with Plan in one Save passes — R-O3c); never his own squadron; never one
+     given between a move saved and its day; never on a master admin's account (R4: "Full access", no buttons);
+   - the last-admin and last-master locks once, over the whole state the Save leaves.
+   Picking Member for a master admin is the mark off and the role down in this one command (D2303), a master admin's
+   alone. Made a master admin, every View and Plan he holds today is dropped in the same command (R-O10 — the agent's
+   decision, technical, told to him: a kept row would be hidden behind "Full access" and come back when the mark comes
+   off). Made a member, the Plan he holds today goes (PA2 — D2250, as updateAccount does). The first refusal is the one
+   said; nothing of the Save is committed. The commit gate checks the same rows by the same rules (perms.ts). */
+export type AccessLine = 'none' | 'view' | 'plan'
+export interface AccessSave { role?: AccountRole; master?: boolean; grants?: Readonly<Record<string, AccessLine>> }
+const lineLevel = (l: AccessLine): GrantLevel | null => (l === 'plan' ? 'admin' : l === 'view' ? 'view' : null)
+export function saveAccess(id: string, want: AccessSave): string | null {
+  if (!mayManageAccounts()) return 'Only an admin can change an account'
+  const a = accountById(id)
+  if (!a) return 'That account is gone'
+  if (ownAccount(a)) return "You can't change your own account — ask another admin"
+  const today = todayIso()
+  const mine = signedInAccount()
+  const actorMaster = mine?.master === true
+  const roleAfter: AccountRole = want.role ?? a.role
+  if (!isAccountRole(roleAfter)) return 'Pick member or admin'
+  /* (only an admin carries the mark — D2260; picking Member is taking it off, D2303) */
+  if (want.master === true && roleAfter !== 'admin') return 'This change could not be saved.'
+  const masterAfter = roleAfter === 'admin' && (want.master ?? a.master === true)
+  const roleCh = roleAfter !== a.role, masterCh = masterAfter !== (a.master === true)
+  const acct = levelAcct(a)
+  const lines: Array<{ unit: string; to: GrantLevel | null; had: Grant | undefined }> = []
+  for (const [unit, l] of Object.entries(want.grants ?? {})) {
+    const to = lineLevel(l), had = grantOfOn(acct, unit, today)
+    if ((had?.level ?? null) !== to) lines.push({ unit, to, had })
+  }
+  if (!roleCh && !masterCh && !lines.length) return null
+  /* the account's own part */
+  if (roleCh || masterCh) {
+    const masterOnly = masterChangeProblem(a.pid)
+    if (masterOnly) return masterOnly
+    if (masterCh && !actorMaster) return MASTER_ONLY_WORDS
+    if (roleCh) { const other = otherSquadronProblem(a.pid); if (other) return other }
+  }
+  const next: Account = { ...a, role: roleAfter }
+  if (masterCh) { if (masterAfter) { next.master = true; next.masterFrom = today } else { delete next.master; delete next.masterFrom } }
+  const next0 = roleCh ? adminRecFor(next) : next
+  /* the squadrons' part */
+  for (const ln of lines) {
+    const u = unitById(ln.unit)
+    if (!u) return 'That squadron is gone'
+    if (homeOn(a.pid, today) === ln.unit) return 'That is his own squadron — his role there is set on his account'
+    if (masterAfter && ln.to) return 'This change could not be saved.'
+    const plan = ln.to === 'admin' || ln.had?.level === 'admin'
+    if (plan && !actorMaster) return PLAN_MASTER_ONLY
+    if (!plan && !(mine && levelOfAccount(levelAcct(mine, 'admin'), ln.unit, today) === 'admin')) return `Only an admin of ${u.num} can give access to ${u.num}.`
+    if (ln.to === 'admin' && roleAfter !== 'admin') return 'Plan is for admins only.'
+    if (ln.to === 'admin' && !adminNow(next0)) return 'This change could not be saved.'
+    const gives = !ln.had || (ln.had.level === 'view' && ln.to === 'admin')
+    if (ln.to && gives && homeOn(a.pid, moveFrom(today)) !== homeOn(a.pid, today)) return 'He moves squadron tomorrow — give this after the move'
+  }
+  /* what the Save drops with it: made a master admin, every right holding today; made a member, his Plan holding today */
+  const holds = (g: Grant) => g.account === a.id && grantOfOn(acct, g.unit, today)?.id === g.id
+  const drops = unitRows().grants.filter(g => holds(g) && (masterAfter && !a.master ? true : a.role === 'admin' && roleAfter !== 'admin' ? g.level === 'admin' : false))
+  const dropIds = new Set(drops.map(g => g.id))
+  const laid: Grant[] = []
+  for (const ln of lines) if (ln.to) laid.push({ id: ln.had && !dropIds.has(ln.had.id) ? ln.had.id : `~${ln.unit}`, account: a.id, unit: ln.unit, level: ln.to, from: today })
+  const gone = new Set([...dropIds, ...lines.filter(ln => !ln.to && ln.had).map(ln => ln.had!.id)])
+  const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? next0 : x))
+  if (masterCh && !list.some(x => x.master && x.role === 'admin')) return 'At least one master admin must be left'
+  const rowsA = rowsDraft(unitRows(), { dropGrants: g => gone.has(g.id), grants: laid })
+  const locked = lockProblem(list, undefined, rowsA)
+  if (locked) return locked
+  const accountCh = roleCh || masterCh
+  return commitIntent('account.access', null, () => {
+    if (accountCh) writeAccounts(list)
+    if (drops.length) dropGrantRows(drops.map(g => g.id))
+    for (const ln of lines) if (!(ln.to == null && ln.had && dropIds.has(ln.had.id))) putGrantLine(a.id, ln.unit, ln.to)
+  })
 }
 
 /* the admin approves a request: the account AND the request cleared, one command */
