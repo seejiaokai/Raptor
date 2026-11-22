@@ -3082,6 +3082,19 @@ marked `it.fails` until fixed. Goes with (j).
 pass (`state/perms.ts postingPassViolation`) and comments in `runForeignPosting` still say a Delete of a man who never
 arrived REMOVES his posting record; since D2328 part 2 it is replaced by the kept arrival record (`to: null`). No screen
 reaches it (a Delete posting's date is always after his post-in date); bring the two in step when next there.
+**(u) from D2338's code reads (chat 147, 23 Nov 26), filed, not fixed:** (1) **Astra #2 — an admin's ordinary command can
+erase a saved bell line of his own man**, the struck "taken back" SANS line included (`state/perms.ts adminOwnerViolation`,
+the notice delete path checks only that he owns the man) — the security reader found the same and calls it older, true
+of every kind; for the security review before the database step (D1411, `[DB-SECURITY-ROLES]`). (2) **Astra #5 — his SANS
+days line goes while he views another squadron's schedule** (`leavewar/sansunfiled.ts unfiledNow` answers nothing when the
+squadron in view is not his home one — the builder's reading, so it never shows something wrong); it comes back when he
+returns to his own. Fix if wanted: read his home squadron's weeks and inputs by unit. With `[MULTI-SQN-DESIGN]`.
+**(v) questions for him from D2338 (chat 147; in the morning report):** (1) once he has read the line, should a day newly
+planned with nothing filed light his bell again? (as built: no — the line just grows; the builder recommends yes for a new
+day, not for a shrink; test kept `it.fails` in `opus-read-147.test.ts`); (2) a man ticked SANS by hand (not posted out),
+planned with nothing filed — the same line? (as built: no); (3) the crew list's SANS note — the usual one and D2338's alike —
+shows only as a desktop hover title with no seat armed, so a phone shows the struck name with no words (older; Astra #6
+reads D2338 as wanting it on screen): show it in the SANS Avail rows without arming? A new look — drawn first.
 **(g) gains one more reader on today's tick (Astra #3):** the input window's "Several people" picker groups and draws a
 dated input's people by today's tick (`ui/PeoplePick.tsx`) — with the Inputs calendar's opened day.
 
