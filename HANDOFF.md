@@ -27,11 +27,23 @@ the later merge keeps both (D78).
 - **Not built:** OIL F2 — **his choice made, D2294**: the day's open OIL list opens at the first press of any of its four sign-off boxes, BEFORE the name is recorded (an OIL answer clears sign-offs already given); Later asks no more that day; the publish note names the unanswered input ("Saturday 18 Jul published and approved. Ranger's Training has no OIL answer, so nobody on it earns OIL."). To draw for him first (D1625) — beside the old drawing, `raptor-port/docs/mock/2026-11-22-oil-unanswered-publish/` (published at https://claude.ai/artifact/5gpX9R6GSwmixz2NcmFNAU, republish the same file to keep the link) — then build, its proof `fableoil-unanswered-publish.test.tsx` turned from `it.fails` to `it`. And Leave War F2 (guard taken out — it broke D327's writes); both proofs `it.fails`. Found-not-fixed and his questions: the `[FABLE-READ-FAULTS]` item's Status paragraph.
 - **Checked:** every proof and pin green (34 + 3 expected fails) after the merge; before it the whole unit suite 14,589 passed with 2 Leave War double-tap timeouts that pass alone twice; build and the code check clean (before the merge). **Reads done:** Astra (`D:\raptor-work\c133-astra-report.md`) and a fresh blind Opus reader — no fault in the fixes; their points dispositioned in the item. **OWED:** GitHub's run on the last push (read it, fix red); the walk of the running app (Opus walks, D2256) — sizing in the sheet `raptor-port/docs/handpass/2026-11-22-fable-read-faults.md` (laid down: §1 tier FULL done, the rest empty); then the sheet's close, the Walk line, his look with the preview link.
 - **The walk to run:** (1) the SANS case — a published holiday with ALL AVAIL, Rocky posted out as SANS two days later: the day reads nothing pending, the next amendment keeps his FO; (2) a shared Meeting: attach a document, Save, reopen — it is there; take it off — gone; (3) an Other: Unavailable + the OIL answer in one Save → under Unavailable on the schedule; ✕ after picking Unavailable asks; (4) the LATE chip on a late-added man's Unavailable row drops on a tap; (5) OIL leave filed for next year (no period) → the OIL tracker and My leave drop at once. Desktop 1536 and iPhone 402, pictures each.
-- **Chat 137 (22 Nov 26):** GitHub's run on `5b0388a66` read: all green. OIL F2 DRAWN, round 2 on the same link
-  (`index.html` + `draw-f2.mjs`; round 1 kept as `round1.html`) — WAITING for his approval before the build; his two
-  questions on the page (the flow as drawn; ✕ cancels the sign-off, recommended). Then: build F2 red-first (its proof
-  `it.fails` → `it`), walk the five scenarios + the sign-off question at 1536 and 402, close the sheet, preview link.
-- **Rulings:** 1 recorded → `oil.md` (D2294); the OIL page's limit 15950 → 16250 for it, by his standing word (D2148). `main` brought in again at the merge after `c160bc534` (main's fix of the ruling homes; the record clashes settled). **Chat numbers:** this chat was handed 133, which the disk-space chat also used; chats run to 136, so the **next chat is 137**. **Next free ruling:** D2296 (chat 134 holds D2292, chat 135 D2293 and D2295 — check before taking).
+- **Chat 137 (22 Nov 26):** GitHub's run on `5b0388a66` read: all green. OIL F2 DRAWN in five rounds on the same link
+  (rounds in git; `draw-f2.mjs` the flow, Save, Later, publish note, the week; `draw-f3.mjs` the chosen look). His
+  rulings: D2296 (the list's lines in the fewest words; design lesson 97) and **D2297 — look A**: at the list's top the
+  pressed sign-off box itself (a copy of the board's `.sgn` pill, `mk-held`: dotted edge, no ▾, the board's text size)
+  reading the held name, beside it "waiting for your answer"; the foot (`odl-left`) "Later: Ace signs, but nobody on it
+  earns OIL."; no lead paragraph. **WAITING on him:** (1) are round 5's two wordings clear (recommended yes); (2) ✕ /
+  Escape on the list cancels the sign-off — nothing signed, the next press asks again (recommended). **The build, once
+  he says go:** in `ui/Shell.tsx`'s `select[data-sign]` change handler, before `setSign`: if the day has an open OIL
+  question (`leavewar/sync.ts oilOpenOn` for the day) and Later was not pressed for that day, hold the pick (revert
+  the select), open the list (`setOilList`, plain) carrying the held role + person; Save writes answers, THEN the sign;
+  Later writes the sign and marks the day asked (session memory, per day); ✕ drops the hold. Same for Edit Schedule's
+  week boxes (same handler). The publish note's tail: "<Day> <date> published and approved. <Callsign>'s <Kind> has no
+  OIL answer, so nobody on it earns OIL." The proof `fableoil-unanswered-publish.test.tsx` `it.fails` → `it`. Then walk
+  the block's five scenarios + this one at 1536 and 402, close the sheet with its Walk line, preview link to him.
+  Found while drawing (filed in the item): Switch to this plan on an unpublished day puts a row back, its input left
+  rejected. **Next chat: 138.** Next free ruling: D2298.
+- **Rulings:** 1 recorded → `oil.md` (D2294); the OIL page's limit 15950 → 16250 for it, by his standing word (D2148). `main` brought in again at the merge after `c160bc534` (main's fix of the ruling homes; the record clashes settled). **Chat numbers:** this chat was handed 133, which the disk-space chat also used; chats run to 136, so the next chat was 137 (now 138, above). **Next free ruling:** D2296 (chat 134 holds D2292, chat 135 D2293 and D2295 — check before taking).
 <!-- /now -->
 <!-- now:claude/lw-monthjump-click -->
 ### CHAT 112 — fix read 4's claim 5, the Leave War month landing (19 Nov 26, started by chat 111) — verify before use
