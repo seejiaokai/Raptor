@@ -600,7 +600,7 @@ selection — `leavewar/ui/OutcomeChips.tsx`): a date and WHICH posting it is. T
 (`sync.ts runPoOutcomes` — boot, every Raptor notify, every Leave War notify; the CALENDAR date) runs the outcome ONCE in
 ONE projection command (`lw.postoutRun`) over the people, settings and war stores (and the schedule and the week stash
 for a delete): Overseas Sqn → `PEOPLE[id].archived` (`archivedBy: 'po'`) + his account suspended (`offBy: 'po'`,
-`state/accounts.ts suspendForPosting`); SANS → `san` ticked (`sanBy: 'po'`); Delete → Flow I below; then `poDone`. The
+`state/accounts.ts suspendForPosting`); SANS → `san` ticked (`sanBy: 'po'`) from the posting's own date (`sanFrom` — D2313: every reader about a day asks `engine/people.ts sansOn`); Delete → Flow I below; then `poDone`. The
 pass can be woken while another command is delivering — its command then QUEUES, and a queued pass is never re-queued
 (`PO_INFLIGHT`; the endless loop the tests found, 27 Sep 26). What reads the result, and must repaint: the Quals roster, every crew list and picker (an archived man is on none), Admin → Users (his row moves to the
 Archived group; his Sign-in dot turns red),

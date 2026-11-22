@@ -28,7 +28,8 @@
    trailing children of the same `.week` container their own live-day diff
    loop never touches, so a one-day edit still rewrites only that day's node. */
 import { rowPeopleDrawn, inputRowSeveral } from '../engine/grouprows'
-import { PEOPLE, whoId, QCHIP, QCLASS } from '../engine/people'
+import { PEOPLE, whoId, QCHIP, QCLASS, sansOnP } from '../engine/people'
+import { dayIso } from '../engine/verid'
 import { noteText } from '../engine/note'
 import { isStandalone, saFlies, saAnyFlies, mColor, dayCount, CURWEEK } from '../engine/waves'
 import { groundOrder } from '../engine/order'
@@ -59,7 +60,8 @@ function peekPuck(id: any): string {
   const p = PEOPLE[id]; if (!p) return ''
   if (p.special) return `<span class="puck allavail sm"><span class="nm">${esc(p.cs)}</span></span>`
   const cls = ['puck', 'sm']; if (p.seat === 'RCP') cls.push('r'); if (p.pers) cls.push('pers')
-  if (p.san) cls.push('san')
+  /* (SANS on the previewed day itself — D2313, engine/people.ts sansOn; outside a preview draw, today's tick) */
+  if (sansOnP(p, PEEK_WK != null ? dayIso(String(PEEK_WK), PEEK_DI) : null)) cls.push('san')
   const chipTxt = QCHIP[p.q], chipCls = QCLASS[p.q]
   const qchip = p.q ? `<span class="role ${chipCls}">${chipTxt}</span>` : ''
   return `<span class="${cls.join(' ')}" title="${esc(p.cs)}"><span class="nm">${esc(p.cs)}</span>${qchip}</span>`
