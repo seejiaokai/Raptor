@@ -196,6 +196,23 @@ It closes `[SHELL-SIDEWAYS-BAR]` (28 Sep 26): at 844 × 390 the bar wrapped onto
 How it is built: `ui/navfold.ts`; the menu closes on Escape, the keys back on ☰ (`ui/Drawer.tsx`); pinned by
 `navfold.test.tsx`, `drawer-keys.test.tsx`, `e2e/topbar-names.spec.ts`; its check `docs/handpass/2026-11-04-topbar-names.md`.
 
+## The Schedules menu — "142 ▾" (his D2301, D2304, D2132, D2253, 22 Nov 26 — batch 1's second half §3, built chat 149)
+
+Whoever may read two squadrons or more (`state/perms.ts readableUnits` — his home that day, each View or Plan of his that
+holds that day, every squadron for a master admin; the account's own role, so the member view keeps them) has the top
+bar's squadron number as a button: "142 ▾", nothing about the mark moving, a pale fill round it while open or under the
+pointer. One squadron: the plain mark, no ▾ (D2132). Its list (`ui/SquadronMenu.tsx`, in the app's own small menu's look,
+`.sb-moremenu`): "SCHEDULES", then a row per squadron by number — a tick on the one in view, the number, and a short grey
+label at the right: "Your squadron" (his home), "Full access" (a Plan or the master mark while the role in force is
+admin), "View only" (a View, or any other squadron in the member view — D2253). Rows 38 high on a desktop and a phone
+alike (D2304). A desktop hangs it 12px under the bar at the mark's left; a phone opens a sheet from the bar's foot, the
+full width, the page under it dimmed. Escape and an outside press close it, the arrows and Home / End move along the
+rows, focus goes back to the button. **A pick is navigation, not a command:** `state/store.ts enterSquadron`, the same
+path as sign-in and midnight (an open Leave War window holds the war's step) — nothing saved, the Undo list untouched
+(D148); the schedule pages and Logic follow it for everyone, his own pages only for a master admin or a Plan holder of
+it (`pageUnit('own')`). Pinned by `ui/msq-sqn-menu.test.tsx`; the drawing `docs/mock/2026-11-22-msq-b1-screens/img/mA1-d.png`,
+`mA1-p.png`, `f5d-p.png`.
+
 ## The day carries across a page switch (owner, 9 Aug 26)
 
 View-only Sched and Edit Schedule are **two separate horizontal scrollers** —

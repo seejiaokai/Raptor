@@ -17,7 +17,7 @@ import { me } from '../state/perms'
 import { noticesFor, noticeWords, noticeAge } from '../state/notices'
 import { isUnread, unreadFor, markAllNoticesRead } from '../state/noticeseen'
 import { useVersion } from './useStore'
-import { TalonMark } from './icons'
+import { SquadronMenu } from './SquadronMenu'
 import { sqnNum } from './export'
 import { holdPageScroll } from './floatwin'
 import { fixedOrigin } from './kbscroll'
@@ -25,10 +25,11 @@ import { fastSync, toggleFastSync, bellOn, bellTap, closeBellList, openNotice, t
 
 /* ---- the squadron's mark, with the number of the schedule in view (ui/export.ts sqnNum — never a written-in "142", the
    walk of 21 Nov 26). Read again whenever the store moves, so it follows his own move at midnight with no reload: the bar
-   around it is drawn from a memo that does not ---- */
+   around it is drawn from a memo that does not. Whoever may read two squadrons or more gets the Schedules menu on it,
+   "142 ▾" (ui/SquadronMenu.tsx; one squadron, the plain mark — D2132) ---- */
 export function SqnMark() {
   useVersion()
-  return <TalonMark num={sqnNum('schedule')} />
+  return <SquadronMenu num={sqnNum('schedule')} />
 }
 
 /* ---- the Sync chip (its one state for both bars, and its toggle: ui/topstate.ts) ---- */

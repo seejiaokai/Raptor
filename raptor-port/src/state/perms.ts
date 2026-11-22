@@ -34,7 +34,7 @@ import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
 import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, levelAcct, readAccounts, adminLineAudience, type Account } from './accounts'
-import { unitRowsBefore, unitRowsAfter, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach, lockBreach, everOfBefore } from './units'
+import { unitRowsBefore, unitRowsAfter, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach, lockBreach, everOfBefore, units as storeUnits, unitById as storeUnitById } from './units'
 import { PEOPLE } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
 import { unitOf, isUnitId, split } from '../storage/unitid'
@@ -302,15 +302,49 @@ export function ownPageMayBe(u: string, iso: string = todayIso()): boolean {
 /* DOES THE PICK STILL STAND ON `iso` (the blind read's R6, its pick half — the reshape plan §19b; A-iv widened, dormant
    until P1/P3): the squadron picked (engine/unitview.ts UNIT) is one the signed-in person can read that day — his home
    there, a View or Plan of it that holds that day (units-model.ts levelFrom, the reading rule), or a master admin's
-   anywhere. Nobody signed in: the boot unit only. state/store.ts notify() re-enters his own squadron when it does not. */
+   anywhere. Nobody signed in: the boot unit only. state/store.ts notify() re-enters his own squadron when it does not.
+   One body with the menu's rows (§15 D9). */
 export function pickStandsOn(iso: string): boolean {
-  if (!SESSION) return UNIT === BOOT_UNIT
+  return readableUnits(iso).includes(UNIT)
+}
+/* THE SQUADRONS HE MAY READ ON `iso` — the Schedules menu's rows (the second-half plan §3 item 1) and the pick's test
+   above, one body (§15 D9): his home that day; each squadron a View or Plan of his holds that day (units-model.ts
+   levelFrom, read from the ACCOUNT'S own role, so a Plan holder or master admin in the member view keeps them — "View
+   only", D2253); every squadron in the store for a master admin. Nobody signed in, or a sign-in with no person: the boot
+   unit only. By number; a squadron undone away is in none. */
+export function readableUnits(iso: string = todayIso()): string[] {
+  if (!SESSION) return [BOOT_UNIT]
   const m = me()
-  if (!m) return UNIT === BOOT_UNIT
-  if (homeOn(m, iso) === UNIT) return true
+  if (!m) return [BOOT_UNIT]
+  const home = homeOn(m, iso)
   const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
-  if (!acct) return false
-  return acct.master === true || levelOfAccount(levelAcct(acct), UNIT, iso) != null
+  const out: string[] = []
+  for (const u of storeUnits()) {
+    if (u.id === home) { out.push(u.id); continue }
+    if (acct && (acct.master === true || levelOfAccount(levelAcct(acct), u.id, iso) != null)) out.push(u.id)
+  }
+  /* (a home the store does not list still reads as his, as before this reader) */
+  if (home && !out.includes(home)) out.unshift(home)
+  /* by number (the store keeps its rows by id, in no order a person reads): 142, 149, 150 … */
+  const numOf = (id: string) => String(storeUnitById(id)?.num ?? id)
+  return out.sort((a, b) => numOf(a).localeCompare(numOf(b), undefined, { numeric: true }))
+}
+/* THE SCHEDULES MENU'S ROWS (M1/M2 — his D2301): each squadron he may read, its number and its short grey label — "Your
+   squadron" his home that day; "Full access" where the role in force is admin and he is admin there by a Plan or the
+   master mark; "View only" otherwise — a View, or a Plan or master admin's squadron while he is in the member view
+   (D2253). One row only: no menu (D2132). */
+export type MenuLabel = 'Your squadron' | 'Full access' | 'View only'
+export function menuSquadrons(iso: string = todayIso()): { id: string; num: string; label: MenuLabel }[] {
+  const m = me()
+  const home = m ? homeOn(m, iso) : null
+  const acct: any = SESSION ? ACCOUNTS_LIST.find(a => a.id === SESSION.user) : null
+  const adminNow = roleOf() === 'admin'
+  return readableUnits(iso).map(id => ({
+    id, num: String(storeUnitById(id)?.num ?? id),
+    label: id === home ? 'Your squadron'
+      : adminNow && acct && (acct.master === true || levelOfAccount(levelAcct(acct), id, iso) === 'admin') ? 'Full access'
+        : 'View only',
+  }))
 }
 /* AN ADMIN OF THE PAGE'S SQUADRON (the Plan audit's PE1 as the blind read's R5 rewrote it): the role in force is admin AND
    his level in the page's squadron that day is admin — so a View holder picking another squadron is never offered its
