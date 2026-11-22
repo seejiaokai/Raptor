@@ -725,14 +725,22 @@ and ride along with the next real change or the merge; the merge itself earns on
 
 ## Lean working copies — helpers' copies leave out the walk pictures (his D2290, 22 Nov 26; chats' own copies too, D2292)
 
-`scripts/lean-copy.mjs` ([HELPER-COPIES-NO-PICTURES]): a copy of the project made for a helper, a reviewer or a side
-chat leaves out `raptor-port/docs/img/handpass/` — 7.8 GB of the project's 8.6 GB on 22 Nov 26 — by a git sparse
-checkout; a real copy measured 815 MB against 8.3 GB, and took the same two minutes to make. The main folder is never
-touched. It leaves out each walk folder the copy's commit holds, by name, so a new walk's folder is inside the copy
-and its pictures commit with no step; an old walk's folder is refused by `git add`, loudly, until `… lean-copy.mjs get
-<folder>` fetches it (seconds — the copy shares the main folder's store). A copy with picture changes of its own, or
-`RAPTOR_FULL_COPY=1`, is left whole; `… lean-copy.mjs full` puts every picture back. Tests: `node --test
-scripts/lean-copy.test.mjs` (the Docs guard runs them).
+`scripts/lean-copy.mjs` ([HELPER-COPIES-NO-PICTURES]): a NEW copy of the project made for a helper, a reviewer or a
+chat leaves out the picture files under `raptor-port/docs/img/handpass/` — 8.0 GB of the project's 8.6 GB on 22 Nov 26
+— by a git sparse checkout; every other file there (results, notes, scripts, and the drawing check's record folders
+whole) stays. A real copy measured 929 MB against 8.3 GB. The main folder is never touched. It leaves out the pictures
+of each walk folder the copy's commit holds, by name, so a new walk's folder is inside the copy and its pictures commit
+with no step. **A picture written into an OLD walk's folder is the trap** (found by all three reads, 22 Nov 26): a new
+one is refused by `git add` aloud, but one written over a picture the commit holds is skipped by `git add -A`, `add .`
+and `commit -a` without a word — so git's `pre-commit` hook (put in place by `install`) stops such a commit and names
+the command, `… lean-copy.mjs get <folder>` (seconds — the copy shares the main folder's store, and fetching keeps the
+new pictures). The Leave War's browser test re-draws two pictures in the old folder `2026-10-27-lw-m4/d1444/` on every
+run, so in a lean copy it trips the guard: fetch the folder and `git restore` them. The hooks act only on a copy made
+in the last 15 minutes (its `commondir` file's time) and never on one set whole (`… full`, or `RAPTOR_FULL_COPY=1` at
+its making); a copy with picture changes of its own is left whole. `… slim` by hand slims an older copy (a long-lived
+copy fills again as `main` brings new walks in). Tests: `node --test scripts/lean-copy.test.mjs` (the Docs guard runs
+them). **Every way in writes the copy whole first and slims it after**, so making one still needs the full space for a
+minute or two — three helpers at once, about 25 GB.
 - **The app makes its copies without git's checkout hook** (tested 22 Nov 26 in a throwaway project): a helper's
   `isolation: "worktree"` copy never ran `post-checkout`. So the app's copies are slimmed by its own hooks in
   `.claude/settings.json` — SubagentStart, acting only on the copy named `agent-<the helper's id>` (never the copy of
@@ -740,13 +748,19 @@ scripts/lean-copy.test.mjs` (the Docs guard runs them).
   helper or chat a note on how to reach the pictures. The app's own clean-up of an unchanged helper's copy still works
   (tested). The chat path was tested with `claude --worktree`; the desktop's own worktree sessions were not started
   for the test — the git hook below is their second net. A `WorktreeCreate` hook was set aside: it replaces the app's copy-making, and the app then never removes a
-  helper's copy, so they would pile up again.
+  helper's copy, so they would pile up again. The long git step runs as a child the hook does not own, waited on up
+  to 200 seconds (the hooks' limit is 300): three slimmed at once took 112 s each (the Opus read). Past 200 s it is
+  left to finish and the note says "still being slimmed" — never "lean" or "whole"; `… status` names a git still busy.
 - **Copies made by typing `git worktree add`, and Codex's,** are slimmed by git's `post-checkout` hook, which git runs
-  only for a NEW copy with the null commit as the old one. Git keeps hooks outside the project, so it is put in place
-  once per PC: `node raptor-port/scripts/lean-copy.mjs install` from the main folder (`uninstall` takes it out; it never
-  replaces another hook). The copy is still written whole first and slimmed after, so it briefly needs the full space.
+  only for a NEW copy with the null commit as the old one, and its note is shown on the screen of whoever made it. Git
+  keeps hooks outside the project, so both hooks are put in place once per PC: `node raptor-port/scripts/lean-copy.mjs
+  install` from the main folder (`uninstall` takes them out; it never replaces another hook; it also switches git's
+  per-copy settings on once, since copies made together on a PC that never had one could trip over that one shared
+  file — Fable, 6 of 40). Not covered: `git worktree add --no-checkout`, which runs no checkout hook (no recipe here
+  uses it); that Codex makes its copies this way is not proven.
 - **Reviewers' read-copies were already lean:** `docs/codex-guide.md` §Reading a commit that is not the branch head
-  exports without the pictures (19 Nov 26).
+  exports without the pictures (19 Nov 26); `get` there says the pictures were never in it and to open them in the
+  main folder.
 - **The document check counted a left-out file as missing:** two rulings (D340, D1575) name a home inside the pictures
   folder, so `npm run docsize` failed in every lean copy and passed in the main folder; it now counts a file git marks
   as left out (`ls-files -t`, "S") as present.
