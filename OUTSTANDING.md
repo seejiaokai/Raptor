@@ -2895,13 +2895,20 @@ code read F1). Reads done: Astra and a fresh blind Opus reader (no fault in the 
 the evidence sheet's close (`raptor-port/docs/handpass/2026-11-22-fable-read-faults.md`, laid down), GitHub's run, his look.
 LEFT: **OIL F2** — his choice made, D2294 (the open OIL list at the first sign-off press, before the name is recorded;
 Later asks no more that day; the publish note names the input): to draw for him (D1625), then build; its proof runs as `it.fails`.
+DRAWN 22 Nov 26 (chat 137), round 2 of the same link, waiting for his look: `raptor-port/docs/mock/2026-11-22-oil-unanswered-publish/`
+`index.html` + `draw-f2.mjs` (round 1 kept as `round1.html`); his two questions there — the flow and its two new lines as
+drawn, and ✕ on the list cancelling the sign-off (recommended); the lead line's claim checked in the code
+(`engine/publish.ts currentBindNow` binds the OIL evidence, so an answer after signing drops the four).
 **Leave War F2** — a guard was built and taken out: the war writes for ids on no roster list by design (a deleted man's
 past days, D327) — "names nobody" needs defining first; proof kept as `it.fails`. **Found, not fixed:** (a) a man the
 scheduler adds from the schedule to an input already LATE reads LATE (D741 reading 1) — older than this job; the fix needs
 a mark of its own on his entry (Astra's read F2); (b) Fable's three SANS questions — should a hand SANS tick (on or off)
 keep earlier published days' crowds, should a hand re-tick after a SANS posting keep the posting's date, should a man
 NAMED on a published day before his SANS posting read pending; (c) under Unavailable one LATE tap drops every man's mark
-of that input — as D1586 rules ("saved on the input"), comment corrected, no change.
+of that input — as D1586 rules ("saved on the input"), comment corrected, no change; (d) seen while drawing OIL F2
+(22 Nov 26, chat 137), not yet checked as a fault: on an UNPUBLISHED day, "+ Alt Plan", the input's row rejected there,
+then "Switch to this plan" back to the first plan puts the row back on the Ground Programme while the input itself stays
+rejected (`acc` 'r'), so no OIL list opens (`ui/oilputback.ts` reads `acc`); on a published day the switch re-files it.
 
 ### [SCHED-RIGHT-EDGE] Edit Schedule's days to the window's right edge under the folded CREW tab (his "draw it", 22 Nov 26; D2269)
 **What:** on a desktop, Edit Schedule keeps a 26px lane at its right for the folded CREW tab and the next-day arrow

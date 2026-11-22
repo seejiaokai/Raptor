@@ -1115,3 +1115,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** A guard ("refuse a write for an id that names nobody") was added at five doors of a store and checked only against its own proof test, which went green. The area's whole suite later showed 37 failures: the store writes, by design, for ids that are on no roster list (a deleted person's past days, the demo data's own ids). The guard was taken out. Separately, a test file edited while a full run was in flight showed a false failure from the version the run had loaded.
 **Suggested improvement:** In the skill's verify step: a change to a shared write path (a store's doors, a gate, a guard every caller passes) runs the whole suite of the area it sits in before it is reported fixed, not only the new test and its neighbours by name; and no test file is edited while a full run that includes it is in flight.
 **Principle:** A guard's reach is every caller of the door it sits in; a test that names the guard cannot show who else relied on the door staying open.
+
+### Observation 1002: A "door that opens it today" may open it only in some states
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 137, drawing OIL F2 round 2 (the day's OIL list opened at the sign-off press) on the real app. Numbered past 1000 and 1001, taken on other branches.
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** The Method, step 2 (the nearest real interaction)
+
+**Issue:** The window was to be opened by "Switch to this plan", a door the rulings say opens it. On an unpublished day that door put the row back but not the input's state, so the window never opened and the script timed out; the working door (load a published version back, then unpublish) took three more real steps, and the gap the first door showed was itself a finding.
+**Suggested improvement:** In step 2, when a real door is borrowed to open an existing window for a proposal, assert after it both that the window opened AND that the state behind it is the premise (the staged record, the empty boxes); on a miss, log what the door left, try the next real door, say on the page which door was used and why, and file what the failed door did.
+**Principle:** A door documented as opening something is a claim about some states; check it in the state you draw, and treat its failure there as data, not only as an obstacle.
