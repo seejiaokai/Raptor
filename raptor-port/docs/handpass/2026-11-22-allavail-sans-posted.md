@@ -61,6 +61,23 @@ Passed — no new gesture or mode (question 5).
 
 ## 5. The five sizing lines (the order's §7.0)
 
+1. **The type of change:** A — a rule inside ONE shared calculation (who is still ours on a day, inside the crowd), with
+   G's edge: the crowd is frozen at publication, so the orders round a publish count.
+2. **What only a walk could find here:** that each place a person reads the crowd is wired to it through the real
+   controls — the posting made on the Leave War's own sheet, "+ SANS" pressed in the war's Settings, the man named on a
+   day by a drag, the ALL AVAIL count chip on the week and on the board, the ALL AVAIL window's pucks, OIL Earn's green
+   bar, the published day's "N pending", his FO on the Leave War grid — and that pressing "+ SANS" repaints nothing on
+   the schedule; at a phone's size and a desktop's. The tests carry the calculation itself and the OIL credited, by
+   calling the writers directly; the two code reads carry the search for another reader of the war's display row.
+3. **What the ledger says:** nine walks of leading type A found 14 faults, only 2 of them in the change itself (12 older,
+   met in passing); a measured Opus walker cost 350 to 630 thousand tokens.
+4. **The walk chosen:** ONE Opus walker (his D2256) in one world on the build of `55c87b1dc`, the host opening every
+   deciding picture and reproducing any finding. Astra's scenarios marked WALK, with the plain-user round, at a
+   desktop's 1536 and his iPhone's 402 by touch; no size beyond those — no layout changes. The repeated cases of the
+   calculation (each state a SANS posting can be in, each other kind of posting) are carried by
+   `src/leavewar/allavail-sans-posted.test.ts`, whose route on screen is the one the walk drives once.
+5. **After the walk:** its row is added to `docs/walk-ledger.md`.
+
 ## 6. The orders walked — what the screen said and what the OIL said
 
 ## 7. The cases carried by a test
