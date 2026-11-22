@@ -41,12 +41,19 @@ import { rosterOptions, archivedOptions, fmt, fmtDay, unfmt, hasHalf, spanOf, sp
 import type { Span } from './inputedit'
 
 /* ANYTHING OF HIS IN THE WINDOW'S FIELDS NOT SAVED — the ✕'s and Escape's "Close it and lose them?" (owner D1622) and the
-   question before another input opens: every window field, an Other's "Goes to" and an Attach's "To" (draftChanges), and
-   a document attached or taken off. WIN_FIELDS alone missed the last three, so a window holding only a new "Goes to",
-   "To" or document closed at once and lost it (found beside Fable's Inputs F1/F2, 22 Nov 26). */
-const unsavedFields = (draft: any, saved: any): boolean =>
-  draftChanges(draft, saved).length > 0
-  || (Array.isArray(draft?.docIds) && JSON.stringify(rowDocIds(draft)) !== JSON.stringify(rowDocIds(saved)))
+   question before another input opens: every window field and an Other's "Goes to" and an Attach's "To" (draftChanges).
+   WIN_FIELDS alone missed the last two, so a window holding only a new "Goes to" or "To" closed at once and lost it
+   (found beside Fable's Inputs F1/F2, 22 Nov 26). */
+const unsavedFields = (draft: any, saved: any): boolean => draftChanges(draft, saved).length > 0
+/* THE FIELDS THE WINDOW FOLLOWS when its record changes behind it (the calendar plan §3.7): every window field, and the
+   two it draws apart from them — an Attach's "To" and an Other's "Goes to" (Astra's code read of 22 Nov 26, F1: an Undo
+   pressed behind the open window put the input back on the programme, and the remark saved next wrote "Unavailable"
+   back with it, unasked). "To" compared as draftChanges compares it, a blank and none the same. */
+/* built on first use: the two files import each other, so WIN_FIELDS is not there yet while this one loads */
+let FOLLOWED_LIST: { k: string; label: string; keys: string[] }[] | null = null
+const followed = () => FOLLOWED_LIST ??= [...WIN_FIELDS, { k: 'to', label: 'To', keys: ['to'] }, { k: 'goes', label: 'Goes to', keys: ['goes'] }]
+const followSame = (f: { k: string; keys: string[] }, a: any, b: any): boolean =>
+  f.k === 'to' ? String(a?.to ?? '') === String(b?.to ?? '') : fieldSame(f, a, b)
 
 export function SpanPicker({ id, span, onPick }: { id: string, span: Span, onPick: (m: Span) => void }) {
   return <div className="spanpick" id={id} role="group" aria-label="Duration">
@@ -361,18 +368,18 @@ export function InputEditor() {
     }
     const cur = draftOf(now), b = base.current
     if (!b) { base.current = cur; return }
-    if (WIN_FIELDS.every(f => fieldSame(f, cur, b))) return
+    if (followed().every(f => followSame(f, cur, b))) return
     let next = draft
     const hit = new Set(clash)
-    for (const f of WIN_FIELDS) {
-      if (fieldSame(f, cur, b)) continue                                   // not changed behind him
+    for (const f of followed()) {
+      if (followSame(f, cur, b)) continue                                   // not changed behind him
       /* a date he has TAPPED is his, even where the tap was on the day already saved (`datesPicked`, above) */
       const tapped = datesPicked && (f.k === 'start' || f.k === 'end')
-      if (!tapped && fieldSame(f, draft, b)) { next = { ...next, ...fieldPart(f, cur) }; delete madeOver.current[f.k] } // he has not touched it: theirs, silently
-      else if (!fieldSame(f, draft, cur)) {                                // changed both ways…
+      if (!tapped && followSame(f, draft, b)) { next = { ...next, ...fieldPart(f, cur) }; delete madeOver.current[f.k] } // he has not touched it: theirs, silently
+      else if (!followSame(f, draft, cur)) {                                // changed both ways…
         if (!madeOver.current[f.k]) madeOver.current[f.k] = b
         /* …unless the record is BACK to what his change was made over (`madeOver`, above): nothing is in dispute */
-        if (fieldSame(f, cur, madeOver.current[f.k])) hit.delete(f.k)
+        if (followSame(f, cur, madeOver.current[f.k])) hit.delete(f.k)
         else hit.add(f.k)
       }
       else { hit.delete(f.k); delete madeOver.current[f.k] }               // both made the same change
@@ -1304,7 +1311,7 @@ export function InputEditor() {
           <div className="inped-ask" data-testid="inped-clash" role="alert">
             <b className="inped-ask-h">Changed while this window was open</b>
             {clash.map(k => {
-              const f = WIN_FIELDS.find(x => x.k === k)!
+              const f = followed().find(x => x.k === k)!
               return (
                 <div key={k} className="inped-clash-row">
                   <span className="inped-ask-q">{f.label} — theirs {fieldSay(k, base.current)}, yours {fieldSay(k, draft)}</span>

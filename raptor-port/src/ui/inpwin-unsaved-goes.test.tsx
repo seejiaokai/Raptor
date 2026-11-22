@@ -17,6 +17,7 @@ import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/stat
 import { memoryBackend } from '../leavewar/state/storage'
 import { _resetFloatWins } from './winorder'
 import { setInpEdit } from './pops'
+import { undo } from '../state/history'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement, root: Root
@@ -73,6 +74,23 @@ describe('the window’s ✕ with only a "Goes to" or a document not saved', () 
     await act(async () => { Object.defineProperty(file, 'files', { value: [f], configurable: true }); file.dispatchEvent(new Event('change', { bubbles: true })) })
     await click(tid('win-inputedit-x'))
     expect(tid('inped-escask'), '✕ asks before losing the document').toBeTruthy()
+  })
+  it('Astra F1: an Undo of "Goes to" behind the open window is followed — the remark saved next does not put it back', async () => {
+    await openOther()
+    await click(tid('inpEdit-goes-u')); await click($('#inpEditSave'))
+    expect(live('uns-goes').acc, 'premise: saved under Unavailable').toBe('u')
+    await act(async () => { setInpEdit(live('uns-goes')); notify() })
+    const box = $('#inpEditRmk') as HTMLInputElement
+    expect(box, 'the remarks box').toBeTruthy()
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(Object.getPrototypeOf(box), 'value')!.set!.call(box, 'away, now with words')
+      box.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+    await act(async () => { undo(); notify() })
+    expect(live('uns-goes').acc, 'the Undo took it back to the programme').toBeUndefined()
+    await click($('#inpEditSave'))
+    expect(live('uns-goes').remarks, 'his remark is saved').toBe('away, now with words')
+    expect(live('uns-goes').acc, 'and the Undo stands: it is not put back under Unavailable').toBeUndefined()
   })
   it('left as it is: nothing changed, ✕ closes at once without asking', async () => {
     await openOther()

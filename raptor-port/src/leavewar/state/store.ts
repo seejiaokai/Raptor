@@ -4924,8 +4924,10 @@ export function figureCtxOf(): FigureCtx {
    ordinary case every November and December, before that year's period is made — was never taken off his OIL, while
    the same leave as LL came off his LVE at once (the leave-year engine reads `dayRecsOf`, every date: reading 17). This
    hands the figures the rest of the absence index: a date a period holds is left to that war, so nothing counts twice;
-   a source with no period is charged by the weekday rule (charge.ts `held`), and making the period later moves
-   nothing. Only absences live out here: a bid exists only inside a war, an award is a ledger entry read apart. Built
+   a source with no period is charged by the weekday rule (charge.ts `held`): only a weekend is excused out here, so
+   making the period later moves the figure only where it marks a weekday public holiday (LL behaves the same). It
+   widens every figure read through this context alike — CCL, FCL, CL, PL, the totals — as the leave-year engine already
+   reads those dates (reading 17). Only absences live out here: a bid exists only inside a war, an award is a ledger entry read apart. Built
    once per absence index and set of wars. */
 let OUTSIDE: { abs: AbsenceRows | null; wars: unknown; src: LeaveSource } = { abs: null, wars: null, src: { grid: {}, states: {}, views: {} } }
 function outsideSource(wars: readonly MergedWar[]): LeaveSource {

@@ -2305,6 +2305,9 @@ export function fieldSay(k: string, d: any): string {
   if (k === 'till') return typeof d.till === 'boolean' ? (d.till ? 'shown' : 'hidden') : 'as its dates say'
   if (k === 'title') return `“${titleOf(d.type, d.title) || String(d.type || '')}”`
   if (k === 'sans') return d.sans ? (['f', 'o', 'a'].filter(x => d.sans[x]).map(x => x.toUpperCase()).join(' ') || 'none ticked') : 'none'
+  /* an Attach's "To" and an Other's "Goes to" — the window follows them too (ui/InputWindow.tsx followed) */
+  if (k === 'to') return d.to ? `“${d.to}”` : 'none'
+  if (k === 'goes') return d.goes === 'u' ? 'Unavailable' : 'the programme'
   const n = (d.docIds || []).length
   return n ? `${n} document${n > 1 ? 's' : ''}` : 'none'
 }
