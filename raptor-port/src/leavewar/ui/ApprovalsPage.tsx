@@ -173,7 +173,10 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
   /* ANOTHER PERIOD STARTS THE PICK AFRESH (the D1444 read's F2): the rows already start afresh with the period (D1421), but the
      filter did not — "+2 in JAN - DEC 27 ›" with Feb picked opened the other period on the old Feb ("Nothing here for these
      dates", no chip lit, Approve all 0). The filter, the date picker and an armed Approve all go with the period. */
-  const periodId = st.period.id
+  /* …and so does another squadron's war (the fix read's A2, the re-walk's N1 — D2197): the visit is the war's squadron AND
+     its period, since two squadrons' periods with the same dates share an id — kept by the period alone, a pick of the
+     other squadron left the old one's rows, filter and armed Approve all on the page */
+  const periodId = `${war}|${st.period.id}`
   useEffect(() => { setFilterRaw({ kind: 'all' }); setPicking(false); setArmed(null) }, [periodId])
   /* …and the box back to the new list's first request before the frame is drawn, never one frame at the old place (the fix
      read, 13 Nov 26). On the page's first showing this wipes nothing: the page is made anew for each visit (LeaveWarPage.tsx). */
@@ -225,7 +228,7 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
   }
   /* a decision the rules refused changes nothing in the war — this repaints the line's reason */
   const [tick, setTick] = useState(0)
-  const rowsRef = useRef<{ period: string; rows: Row[] }>({ period: st.period.id, rows: [] })
+  const rowsRef = useRef<{ period: string; rows: Row[] }>({ period: periodId, rows: [] })
 
   /* THE ROWS — the pending lines of the period on view, merged with the lines decided here this visit (they stay lit where
      they were) and the ones gone since they were drawn (they say what happened). Changing the dates — another filter, or
@@ -233,10 +236,10 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
   const fresh = useMemo(() => {
     const war = getState().wars.find(w => w.period.id === getState().period.id)
     return war ? linesOfWar(war) : []
-  }, [version, st.period.id])
+  }, [version, periodId])
   const rows = useMemo(() => {
     let cur = rowsRef.current
-    if (cur.period !== st.period.id) cur = { period: st.period.id, rows: [] }
+    if (cur.period !== periodId) cur = { period: periodId, rows: [] }
     const byId = new Map<string, ApprLine>()
     for (const l of fresh) for (const id of recIds(l)) byId.set(id, l)
     const used = new Set<ApprLine>()
@@ -288,10 +291,10 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
     out.sort((a, b) => (a.line.placedAt ?? -1) - (b.line.placedAt ?? -1) || (a.line.from < b.line.from ? -1 : a.line.from > b.line.from ? 1 : 0) || (a.key < b.key ? -1 : 1))
     return out
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fresh, st.period.id, tick])
+  }, [fresh, periodId, tick])
   /* the rows as drawn, kept for the next merge and for Approve / Refuse — written once the render that drew them has
      committed, never during a render React may throw away (the next merge, and every press, comes after it) */
-  const periodNow = st.period.id
+  const periodNow = periodId
   useLayoutEffect(() => { rowsRef.current = { period: periodNow, rows } })
 
   /* the figures, once per change of the war, for the lines still pending (a lit line keeps the figures it was decided on) */
@@ -329,7 +332,7 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
      saying more stood above (on main the chips scrolled away with the page, so a new list always showed from its top).
      `keepPlace`: a range's first day pressed, the calendar still open — nothing moves under the finger (2 Sep 26). */
   const setFilter = (f: Filter, keepPlace = false) => {
-    rowsRef.current = { period: st.period.id, rows: rowsRef.current.rows.filter(r => !r.lit && r.msg?.kind !== 'stale') }
+    rowsRef.current = { period: periodId, rows: rowsRef.current.rows.filter(r => !r.lit && r.msg?.kind !== 'stale') }
     setFilterRaw(f); setArmed(null); setTick(t => t + 1)
     if (!keepPlace) listTop()
   }
@@ -355,7 +358,7 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
       } else row.msg = { kind: o.kind, why: o.why }
       next[ix] = row
     })
-    rowsRef.current = { period: st.period.id, rows: next }
+    rowsRef.current = { period: periodId, rows: next }
     setArmed(null); setTick(t => t + 1)
   }
   const press = (r: Row, to: Exclude<DecideTo, 'pending'>) => apply([r], r.lit === to ? 'pending' : to)
@@ -380,7 +383,7 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
     if (!r) return
     if (!inFilter(r.line, filter, seen, mePid)) {
       /* every line shown, as a press on All does (`setFilter`) */
-      rowsRef.current = { period: st.period.id, rows: rowsRef.current.rows.filter(x => !x.lit && x.msg?.kind !== 'stale') }
+      rowsRef.current = { period: periodId, rows: rowsRef.current.rows.filter(x => !x.lit && x.msg?.kind !== 'stale') }
       // eslint-disable-next-line react-doctor/no-adjust-state-on-prop-change -- the answer to an ask from outside the page (the clash note's link, taken once from lwnav), not to a prop: a render may not take the ask, so it is taken here after the rows it looks in have committed
       setFilterRaw({ kind: 'all' }); setArmed(null); setTick(t => t + 1)
     }
