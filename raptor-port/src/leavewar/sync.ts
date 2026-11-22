@@ -2101,11 +2101,18 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
        posting that had run as an Overseas one (store.ts stintClosed), closing his window from the posting's date — so
        archiving him took him out of the crowd of every day between the posting and the archive, and a published one of
        those read pending and lost him his OIL (F1; D327: in the crowd on every day before his archive). So for a SANS
-       man named that day the window is not asked: his squadron stints still are (`atHome`), his archive ends it BY ITS
-       DATE (an archive with no date kept falls back to the window), and his delete is read by date above. Everyone else —
-       a man not SANS that day, a SANS posting still to come — is read by the posting window as before. */
+       man named that day two parts of the window are not asked — a post-in date still to come, and the END an archive
+       wrote: his archive ends it BY ITS DATE instead (an archive with no date kept falls back to the window). His squadron
+       stints still are asked (`atHome`), his delete is read by date above — AND SO IS A REAL DEPARTURE: a posting with no
+       chip, or an Overseas Sqn or Delete posting still to come, closes it from its date for a SANS man as for anyone (the
+       narrow read of this fix, 22 Nov 26: with the whole window set aside he counted past such a date until the posting
+       ran, and a day published meanwhile then read pending). A SANS posting that has run is no end at all (`lw.to` is
+       null — above). Everyone else — a man not SANS that day, a SANS posting still to come — is read by the posting
+       window as before. */
     const sansWithUs = sansOnP(p, iso) && !!engaged && engaged.has(id) && !(p.archived && !p.archivedOn)
-    const ours = !lw || (sansWithUs ? atHome(lw, iso) && !(p.archived && iso >= String(p.archivedOn)) : inSquadron(lw, iso))
+    const ours = !lw || (sansWithUs
+      ? atHome(lw, iso) && (p.archived ? iso < String(p.archivedOn) : !(lw.to != null && iso > lw.to))
+      : inSquadron(lw, iso))
     if (!ours) continue
     if (keptOut.has(id)) continue
     if (engaged && personBusy(day, id).some((w: [number, number]) => w[0] < win[1] && win[0] < w[1])) continue

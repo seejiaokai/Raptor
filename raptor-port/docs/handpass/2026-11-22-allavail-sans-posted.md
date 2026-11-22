@@ -155,6 +155,16 @@ the fresh Opus reader, who ran its proofs (`…-read-opus.md`). Astra's scenario
 | R7 | Both | The three host's readings | — | (1) supported for the crowd, the published day and OIL (the war's own tracking follows the switch by D283); (2) supported (D2327 with D27); (3) the owner's to decide — kept as on `main`, pinned, filed (p) as a question |
 | R8 | Both, tidiness | The bare `true` in `windowFor(posting, true)`; the story told twice in comments | — | Filed, not fixed (D489) |
 
-The second fix is new logic, so it gets its own narrow read by a fresh Opus reader handed only the fix and R1–R2 (§5).
+The second fix is new logic, so it got its own narrow read by a fresh Opus reader handed only the fix and R1–R2 (§5):
+`docs/superpowers/briefs/2026-11-22-allavail-sans-posted-read-fix2-opus.md`, its proofs run.
+
+| # | Who | The claim | Reproduced by the host | Disposition |
+|---|---|---|---|---|
+| R9 | The narrow read, finding 1 and its "change to put to him" | The second fix set aside the WHOLE posting window for a SANS man named that day — so a real departure (an Overseas Sqn or Delete posting still to come, a posting with no chip) stopped counting for him: he stayed in the crowd past its date, and a day published meanwhile would read pending when the posting ran | YES — 2 tests, seen failing with the repair taken out and passing with it | **Confirmed, new with the second fix. FIXED** (round 2, the last): only a post-in date still to come and the end an archive wrote are not asked; any other posting's date ends it. Tests "left as it was: a SANS man with an Overseas Sqn posting still to come…", "…posted out with no chip chosen…". A one-line guard on the reader's own exact repair, proved by its six proofs and the host's two — no further read (§5: more than a one-line guard gets one) |
+| R10 | The narrow read's negatives | F1 and F2 right and complete; a restored man, an archive on the day he is named, a posting archive once run, a delete once run, both switch positions: no fault. Two cases read in the code, not run: a move between squadrons, a man with no war row | — | Recorded |
+
+**The walk ran on the build of `100fa3bb7` (the second fix); the third fix changes one state no scenario walks** — a
+SANS man who also holds a posting that is not a SANS one — and leaves every walked scenario's answer as it was (the
+same tests pass before and after). No re-walk; said in §11.
 
 ## 14. The Walk line

@@ -265,6 +265,37 @@ describe('a SANS man named with us counts whatever his posting window on the war
     expect(availableFor(SAT_ISO, WIN, DAYS[SAT] as any), 'Sat 18 Jul, two days before his archive').toContain('rocky')
   })
 
+  /* the narrow read of the second fix (a fresh Opus reader, 22 Nov 26 — …-read-fix2-opus.md): the SANS branch had set aside
+     the WHOLE posting window, so a SANS man's real departure — an Overseas or Delete posting still to come, a posting with
+     no chip — stopped counting; a day published meanwhile then read pending when the posting ran. Only the END a SANS
+     posting or an archive wrote is not a departure; every other posting's date is, for a SANS man as for anyone. */
+  it('left as it was: a SANS man with an Overseas Sqn posting still to come, named on a day past its date, is out, both ways', () => {
+    onlyTheEvent(SAT); plan(SAT, 'rocky'); onlyTheEvent(THU); plan(THU, 'rocky')
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()   // SANS by hand, Wed 15 Jul
+    expect(setShowSans(true)).toBe(true); raptorNotify()                             // a hidden SANS man has no row to post out from
+    expect(postOut('rocky', FRI_ISO, 'overseas')).toBe(true); raptorNotify()         // from Fri 17 Jul — not run yet
+    expect(P('rocky').archived, 'the posting has not run').toBeFalsy()
+    const sat = crowdBothWays(SAT_ISO, SAT)
+    expect(sat.off).toEqual(sat.on)
+    expect(sat.off, 'Sat 18 Jul is past his posting-out date').not.toContain('rocky')
+    const thu = crowdBothWays(THU_ISO, THU)
+    expect(thu.off).toEqual(thu.on)
+    expect(thu.off, 'Thu 16 Jul, before it: SANS and named with us').toContain('rocky')
+  })
+
+  it('left as it was: a SANS man posted out with no chip chosen ("off the manpower", D303), named after it, is out, both ways', () => {
+    onlyTheEvent(THU); plan(THU, 'rocky'); onlyTheEvent(SAT); plan(SAT, 'rocky')
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()   // SANS by hand, Wed 15 Jul
+    expect(setShowSans(true)).toBe(true); raptorNotify()
+    expect(postOut('rocky', FRI_ISO, 'none')).toBe(true); raptorNotify()            // off the manpower from Fri 17 Jul
+    const sat = crowdBothWays(SAT_ISO, SAT)
+    expect(sat.off).toEqual(sat.on)
+    expect(sat.off, 'Sat 18 Jul, after the posting').not.toContain('rocky')
+    const thu = crowdBothWays(THU_ISO, THU)
+    expect(thu.off).toEqual(thu.on)
+    expect(thu.off, 'Thu 16 Jul, before the posting: SANS and named with us').toContain('rocky')
+  })
+
   it('left as it was: a man who is NOT SANS, not yet posted in, is out though named (the posting window still decides)', () => {
     onlyTheEvent(THU); plan(THU, 'rocky')
     expect(setPostIn('rocky', FRI_ISO)).toBe(true); raptorNotify()
