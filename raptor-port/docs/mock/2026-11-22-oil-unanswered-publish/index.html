@@ -3,108 +3,69 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
-:root{--bg:#f4f6f8;--card:#ffffff;--fg:#14202b;--mute:#5b6b78;--line:#d6dee5;--acc:#0e7fa6;--rec:#0b7a4b;--mark:#d4157a;--tint:rgba(14,127,166,.07);
+:root{--bg:#f4f6f8;--card:#ffffff;--fg:#14202b;--mute:#5b6b78;--line:#d6dee5;--rec:#0b7a4b;--mark:#d4157a;--tint:rgba(14,127,166,.07);
 --f-body:Inter,system-ui,'Segoe UI',sans-serif;--f-head:'Space Grotesk',Inter,system-ui,sans-serif}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--tint:rgba(60,196,234,.08);color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--tint:rgba(60,196,234,.08);color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--rec:#43c98a;--mark:#ff4fa3;--tint:rgba(60,196,234,.08);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--rec:#43c98a;--mark:#ff4fa3;--tint:rgba(60,196,234,.08);color-scheme:dark}
 body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-body);margin:0}
 .wrap{max-width:1100px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-h1,h2,h3{font-family:var(--f-head);text-wrap:balance;margin:0}
-h1{font-size:25px}h2{font-size:19px;margin-top:34px;padding-top:14px;border-top:1px solid var(--line)}
+h1,h2{font-family:var(--f-head);text-wrap:balance;margin:0}
+h1{font-size:25px}h2{font-size:19px;margin-top:30px;padding-top:14px;border-top:1px solid var(--line)}
 .sub{color:var(--mute);margin:4px 0 0}
-.top{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:16px}
-.top p{margin:6px 0}
+.top,.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:14px}
+.top p,.q p{margin:6px 0;max-width:80ch}
 .rec{color:var(--rec);font-weight:600}
-.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:14px}
-.q p,.q li{max-width:80ch}.q p{margin:8px 0}
-.q ol,.q ul{margin:6px 0;padding-left:22px}.q li{margin:4px 0}
 .words{background:var(--tint);border-radius:8px;padding:8px 12px;margin:8px 0}
 .words p{margin:4px 0}
-.words q{quotes:"“" "”" "‘" "’";font-weight:600}
+.words q{quotes:"“" "”";font-weight:600;color:var(--mark)}
 .pics{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;align-items:flex-start}
 figure{margin:0;min-width:0;max-width:100%}
 figure img{display:block;max-width:100%;height:auto;border-radius:6px;border:1px solid var(--line);cursor:zoom-in;background:#000}
 figcaption{font-size:12.5px;color:var(--mute);margin-top:4px;max-width:60ch}
 figcaption b{color:var(--fg)}
-.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--mute);margin-right:4px}
-.tag.p{color:var(--mark);border-color:var(--mark)}
 #zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20;overflow:auto}
 #zoom[hidden]{display:none}
 #zoom img{max-width:none;width:auto;max-height:none}
 </style>
 <div class="wrap">
 <h1>Unanswered OIL asked at the first sign-off</h1>
-<p class="sub">Round 2, drawn 22 Nov 26 on the real app at a desktop's size and at your iPhone's, as you chose: the question comes when someone first presses a sign-off box. Tap any picture to see it full size.</p>
+<p class="sub">Round 3: the list's two lines cut short. Tap a picture to enlarge.</p>
 
 <div class="top">
-<p><b>1. Is this how it should work?</b> Press any of the four sign-off boxes on a day with an unanswered OIL question, and the day's OIL list opens before the name goes in. Save or Later puts the name in. Later means no more asking that day. <a href="#flow">See the pictures</a></p>
-<p class="rec">Recommended: yes, as drawn.</p>
-<p><b>2. What should ✕ on the list do?</b> Close the list and leave the sign-off box empty, so nothing is signed. The next press on any of the four asks again. <a href="#close">Why</a></p>
-<p class="rec">Recommended: yes, ✕ cancels the sign-off.</p>
+<p><b>1. The two lines, shorter.</b> OK? <a href="#flow">Pictures</a></p>
+<p class="rec">Recommended: yes.</p>
+<p><b>2. ✕ on the list:</b> nothing is signed, and the next press asks again.</p>
+<p class="rec">Recommended: yes. If ✕ worked like Later, closing the list would sign the day by accident.</p>
 </div>
 
-<h2>Today</h2>
+<h2 id="flow">The press opens the OIL list</h2>
 <div class="q">
-<p>The same example as last time: Saturday 18 Jul holds only Ranger's Training, 08:00 to 17:00, and nobody has answered its OIL question. Today the four sign, the name goes in at once, and nothing asks about OIL.</p>
-<div class="pics">
-<figure><img src="img/f2-t1-sign-desktop.png" width="616" alt="Saturday's four empty sign-off boxes"><figcaption><span class="tag">Real</span><b>1.</b> The four empty sign-off boxes on the Scheduler Board.</figcaption></figure>
-<figure><img src="img/f2-t2-signed-desktop.png" width="616" alt="CUR CK reads Ace, nothing else happened"><figcaption><span class="tag">Real</span><b>2.</b> Ace picked in CUR CK: the name goes straight in.</figcaption></figure>
-<figure><img src="img/f2-t2-signed-phone.png" width="402" alt="Phone: CUR CK reads Ace"><figcaption><span class="tag">Real</span><b>3.</b> The same on your iPhone.</figcaption></figure>
-</div>
-</div>
-
-<h2 id="flow">The press opens the day's OIL list</h2>
-<div class="q">
-<p>The scheduler presses CUR CK (marked 1) and picks Ace. The name waits, and the day's OIL list opens: the same list a new public holiday opens today. Two new lines say why it is asking now and what Later does.</p>
+<p>Pick a name in any sign-off box. The list opens first, and the name goes in on Save or Later.</p>
 <div class="words">
-<p>At the top: <q>Asked now because an answer given after signing clears the sign-offs. Ace’s CUR CK goes in when you press Save or Later.</q></p>
-<p>Beside Later and Save: <q>Later signs without an answer: nobody on it earns OIL, and Saturday won’t ask again.</q></p>
+<p>Top: <q>Answer before Ace signs CUR CK.</q></p>
+<p>Beside Later: <q>Later: nobody on it earns OIL.</q></p>
 </div>
 <div class="pics">
-<figure><img src="img/f2-p1-screen-desktop.png" width="1000" alt="Desktop: the OIL list open beside the board, CUR CK still empty"><figcaption><span class="tag">Real window</span><span class="tag p">Two lines drawn in</span><b>4.</b> The Scheduler Board. CUR CK stays empty while the list is up.</figcaption></figure>
+<figure><img src="img/f2-p1-list-phone.png" width="394" alt="Phone: the list with the two short lines"><figcaption><b>1.</b> iPhone.</figcaption></figure>
+<figure><img src="img/f2-p1-list-desktop.png" width="456" alt="Desktop: the list with the two short lines"><figcaption><b>2.</b> Desktop.</figcaption></figure>
 </div>
 <div class="pics">
-<figure><img src="img/f2-p1-list-desktop.png" width="456" alt="The list close up"><figcaption><span class="tag">Real window</span><span class="tag p">Two lines drawn in</span><b>5.</b> The list close up.</figcaption></figure>
-<figure><img src="img/f2-p1-screen-phone.png" width="300" alt="Phone: the list over the board"><figcaption><span class="tag">Real window</span><span class="tag p">Two lines drawn in</span><b>6.</b> On your iPhone, the list over the board.</figcaption></figure>
+<figure><img src="img/f2-p1-screen-phone.png" width="300" alt="Phone: the list over the board, CUR CK still empty"><figcaption><b>3.</b> On the board. CUR CK (marked 1) stays empty until Save or Later.</figcaption></figure>
+<figure><img src="img/f2-p1-screen-desktop.png" width="760" alt="Desktop: the list beside the board"><figcaption><b>4.</b> Desktop board.</figcaption></figure>
 </div>
 <div class="pics">
-<figure><img src="img/f2-w-screen-desktop.png" width="1000" alt="Edit Schedule's week with the same list"><figcaption><span class="tag">Real window</span><span class="tag p">Two lines drawn in</span><b>7.</b> Edit Schedule's week has the same four boxes on each day. A press there opens the same list.</figcaption></figure>
+<figure><img src="img/f2-w-screen-desktop.png" width="760" alt="Edit Schedule's week with the same list"><figcaption><b>5.</b> Edit Schedule's week: the same.</figcaption></figure>
 </div>
 </div>
 
-<h2>What each answer leaves</h2>
+<h2>After Save or Later</h2>
 <div class="q">
-<p><b>Save, with Yes · FO picked.</b> The answer goes in first, then Ace's name. The name stays, because nothing changes after it.</p>
 <div class="pics">
-<figure><img src="img/f2-p2-signed-save-desktop.png" width="616" alt="After Save: CUR CK reads Ace, 3 to sign"><figcaption><span class="tag">Real</span><b>8.</b> After Save: CUR CK reads Ace, three still to sign. Ranger earns a full day of OIL once the day is published.</figcaption></figure>
-<figure><img src="img/f2-p2-signed-save-phone.png" width="402" alt="Phone: after Save"><figcaption><span class="tag">Real</span><b>9.</b> The same on your iPhone.</figcaption></figure>
+<figure><img src="img/f2-p2-signed-save-phone.png" width="402" alt="After Save: CUR CK reads Ace"><figcaption><b>6.</b> Save with Yes: Ace signs, Ranger earns OIL once published.</figcaption></figure>
+<figure><img src="img/f2-p3-signed-later-phone.png" width="402" alt="After Later: all four signed"><figcaption><b>7.</b> Later: Ace signs; the other three don't ask again.</figcaption></figure>
+<figure><img src="img/f2-p3-note-phone.png" width="398" alt="Publish note naming Ranger's Training"><figcaption><b>8.</b> The publish note, as chosen last round.</figcaption></figure>
 </div>
-<p><b>Later.</b> Ace's name goes in without an answer. The other three boxes then sign without asking.</p>
-<div class="pics">
-<figure><img src="img/f2-p3-signed-later-desktop.png" width="616" alt="After Later: all four signed, Publish day ready"><figcaption><span class="tag">Real</span><b>10.</b> After Later and the other three: all four signed, Publish day ready.</figcaption></figure>
-<figure><img src="img/f2-p3-signed-later-phone.png" width="402" alt="Phone: all four signed"><figcaption><span class="tag">Real</span><b>11.</b> The same on your iPhone.</figcaption></figure>
-</div>
-<p>Then Publish day. The note names the input, in the words from last round:</p>
-<div class="pics">
-<figure><img src="img/f2-p3-note-desktop.png" width="624" alt="Saturday 18 Jul published and approved. Ranger's Training has no OIL answer, so nobody on it earns OIL."><figcaption><span class="tag">Words drawn in</span><b>12.</b> The note after Publish day. Today it says only "Saturday published and approved".</figcaption></figure>
-<figure><img src="img/f2-p3-note-phone.png" width="398" alt="Phone: the publish note"><figcaption><span class="tag">Words drawn in</span><b>13.</b> On your iPhone it takes two lines.</figcaption></figure>
-</div>
-</div>
-
-<h2 id="close">Question 2: closing the list with ✕</h2>
-<div class="q">
-<p>Later says "sign anyway". ✕ (or Escape) says "I didn't mean to sign yet". So ✕ leaves the box empty and signs nothing, and the next press on any of the four asks again. Otherwise a scheduler who closes the list to check something would find the day signed with no answer.</p>
-<p>The alternative is for ✕ to work like Later. That is one fewer thing to learn, but it signs the day by accident.</p>
-</div>
-
-<h2>Found while drawing</h2>
-<div class="q">
-<ul>
-<li>The list's reason line says an answer after signing clears the sign-offs. I checked this in the code: each signature covers the day's OIL answers, so a later answer drops all four names. That is why the list comes before the name.</li>
-<li>To open the list for these pictures I first tried "Switch to this plan" on the unpublished Saturday. It put Ranger's Training row back on the schedule, but the input itself stayed rejected, so the OIL question never opened. I've noted it to look into separately. It doesn't change this design.</li>
-<li>"10 changes" and "14 changes" in some pictures come from how the Saturday was set up for drawing. They are not part of the design.</li>
-</ul>
-<p class="sub">Which pictures are real: "Real" pictures show the app exactly as it draws itself, and every button in them was pressed in the app. "Real window, two lines drawn in" shows the app's own OIL list window with the two pink-outlined lines added. "Words drawn in" shows the app's own note with its words changed. The pink outlines, the "New" tags and the number 1 are not part of the design. To get the list open over an unsigned Saturday for these pictures, the day was published, the Training taken off, the Original loaded back (which opens this list today), and the day unpublished again. The first round's page, with options A and B, is kept in the project.</p>
+<p class="sub">Pictures are the real app. The two pink-outlined lines are drawn in; pink outlines, "New" and "1" are not part of the design. Earlier rounds are kept in the project.</p>
 </div>
 </div>
 <div id="zoom" hidden></div>

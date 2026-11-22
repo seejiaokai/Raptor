@@ -1,9 +1,9 @@
 {
-  "drawn": "2026-11-22T01:43:27.053Z",
+  "drawn": "2026-11-22T02:01:59.878Z",
   "url": "http://localhost:4187/",
   "words": {
-    "lead": "Asked now because an answer given after signing clears the sign-offs. Ace’s CUR CK goes in when you press Save or Later.",
-    "foot": "Later signs without an answer: nobody on it earns OIL, and Saturday won’t ask again.",
+    "lead": "Answer before Ace signs CUR CK.",
+    "foot": "Later: nobody on it earns OIL.",
     "note_tail": "Ranger's Training has no OIL answer, so nobody on it earns OIL."
   },
   "frames": [
@@ -43,7 +43,7 @@
         "x": 1072,
         "y": 106,
         "width": 456,
-        "height": 282
+        "height": 259.75
       }
     },
     {
@@ -119,9 +119,9 @@
       "file": "f2-p1-list-phone.png",
       "clip": {
         "x": 4,
-        "y": 282.1875,
+        "y": 302.4375,
         "width": 394,
-        "height": 309.625
+        "height": 269.125
       }
     },
     {
@@ -141,7 +141,7 @@
       "file": "f2-p3-note-phone.png",
       "clip": {
         "x": 2,
-        "y": 789.5520629882812,
+        "y": 789.2467041015625,
         "width": 398,
         "height": 70
       }

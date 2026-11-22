@@ -5,8 +5,8 @@
 //
 // Drawn on the REAL running app by .claude/skills/brainstorming/mockups-on-the-real-app.md. Frames:
 //   T  today: the Saturday's four empty sign-off boxes; CUR CK picked for real — the name goes in, nothing asks
-//   P1 proposed: the press opens the day's one OIL list (the app's own window, opened for the drawing by the door that
-//      opens it today — "Switch to this plan" bringing the unanswered input back, D865), the CUR CK box still empty;
+//   P1 proposed: the press opens the day's one OIL list (the app's own window, opened for the drawing by a door that
+//      opens it today — see openList), the CUR CK box still empty;
 //      a new lead line and a new foot line in the window's own classes, marked "New"
 //   P2 Save with Yes, then the name — what the build does in that order — pressed for real: the box reads Ace, the input
 //      answered, nothing cleared
@@ -30,10 +30,12 @@ const SIZES = {
   p: { name: 'phone', eng: webkit, opts: { viewport: { width: 402, height: 874 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 } },
 }
 
-/* the words, one place — each new line is put to him on the page */
+/* the words, one place — each new line is put to him on the page. Round 3 (his D2296, "too much words. be concise"):
+   round 2's were "Asked now because an answer given after signing clears the sign-offs. Ace's CUR CK goes in when you
+   press Save or Later." and "Later signs without an answer: nobody on it earns OIL, and Saturday won't ask again." */
 const W = {
-  lead: 'Asked now because an answer given after signing clears the sign-offs. Ace’s CUR CK goes in when you press Save or Later.',
-  foot: 'Later signs without an answer: nobody on it earns OIL, and Saturday won’t ask again.',
+  lead: 'Answer before Ace signs CUR CK.',
+  foot: 'Later: nobody on it earns OIL.',
   note_tail: "Ranger's Training has no OIL answer, so nobody on it earns OIL.",
 }
 
