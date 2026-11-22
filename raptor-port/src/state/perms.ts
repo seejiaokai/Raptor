@@ -3642,7 +3642,42 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
    is not asked. A row of before §5 has no squadron and reads as the boot squadron's (D56 — accounts.ts reqsLoad). */
 const REQ_ROW = 'accessreq:'
 const reqUnit = (v: any): string => (v && typeof v.unit === 'string' && v.unit ? v.unit : BOOT_UNIT)
+/* …AND AN ACCOUNT ADDED OR RENAMED ONTO A WAITING REQUEST'S NAME ANSWERS IT, its row touched or not (the second half's
+   final reads, R5 — the security read's 1): the loader drops a request whose sign-in name has an account (accounts.ts),
+   so a hand-made `account.add`, `account.addNew` or `account.update` rename under a 149 requester's name, the request row
+   left alone, answered it — the newcomer in as a 142 admin of the 142 admin's choosing. So every account row a command
+   writes under a name it did not carry before, where a request waited under that name before the command, needs an
+   admin of that request's squadron, as the rows stood before the command (§15 D12, "whatever path"). An admin actor only,
+   as above. */
+function requestAnsweredByAccount(env: CommitEnvelope): string | null {
+  const a = env.actor
+  if (!a || a.role !== 'admin') return null
+  const accts = env.changes.filter(c => c.collection === 'settings' && String(c.id).startsWith(ACCOUNT_ROW) && c.op !== 'delete' && c.after != null)
+  if (!accts.length) return null
+  const nm = (s: unknown): string => String(s ?? '').trim().toLowerCase()
+  /* the requests waiting BEFORE the command: those stored now, with each this command changed put back as it stood */
+  const waiting = new Map<string, any>()
+  for (const k of store.keys(REQ_ROW)) { const v: any = store.get(k, null); if (v) waiting.set(k, v) }
+  for (const c of env.changes) {
+    if (c.collection !== 'settings' || !String(c.id).startsWith(REQ_ROW)) continue
+    if (c.before == null) waiting.delete(String(c.id)); else waiting.set(String(c.id), c.before)
+  }
+  if (!waiting.size) return null
+  const unitOfName = new Map<string, string>()
+  for (const v of waiting.values()) if (v && v.name) unitOfName.set(nm(v.name), reqUnit(v))
+  const before = unitRowsBefore(env.changes), today = todayIso()
+  for (const c of accts) {
+    const id = String(c.id).slice(ACCOUNT_ROW.length)
+    const was: any = accountBefore(id, c.before), name = nm((c.after as any).name)
+    if (!name || (was && nm(was.name) === name)) continue
+    const u = unitOfName.get(name)
+    if (u && levelInForce(a, u, today, before) !== 'admin') return `a request to join ${u} answered by one who is not its admin (${c.collection}/${c.id})`
+  }
+  return null
+}
 function requestRowViolation(env: CommitEnvelope): string | null {
+  const answered = requestAnsweredByAccount(env)
+  if (answered) return answered
   const reqs = env.changes.filter(c => c.collection === 'settings' && String(c.id).startsWith(REQ_ROW))
   if (!reqs.length) return null
   const after = unitRowsBefore([])
