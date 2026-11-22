@@ -1103,7 +1103,33 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Suggested improvement:** In the morning report step, mark each parked question "reachable today" or "only once <feature> exists" (checked against how the walk set it up), and lead with the reachable ones. Check each recommendation against the rulings before it goes in the list.
 **Principle:** A question about a state users cannot reach yet is cheaper to settle when the feature that reaches it is designed; sorting by reachability shrinks what the owner must decide now.
 
-### Observation 1000: A "today" picture taken after a scripted scroll reset hid the app's real opening position
+### Observation 999: Test which mechanism the harness uses before hooking the tool under it
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** [HELPER-COPIES-NO-PICTURES] — making helpers' working copies leave out 7.8 GB of pictures
+**Skill:** using-git-worktrees
+**Type:** open-source
+**Phase/Area:** where a worktree's set-up is hooked (the native-tool path)
+
+**Issue:** The obvious net — git's post-checkout hook, which git runs for every `git worktree add` — never fired when the app made a subagent's isolated worktree; a five-minute trial in a throwaway repo (a hook that logs its arguments, one `claude -p` run spawning an isolated subagent) showed it. Built on the assumption, every helper's copy would have stayed full while the typed-copy test passed. The same trial showed the app's SubagentStart hook runs inside the helper's own worktree, before the helper starts, which became the working route.
+**Suggested improvement:** In the skill's native-tool section: before relying on a git hook (or any tool-level hook) for worktrees the harness creates, prove it fires for the harness's own creation path in a throwaway repo; prefer the harness's own lifecycle hooks, which keep its clean-up, over replacing its creation step.
+**Principle:** A hook on the tool underneath only catches what goes through that tool's front door; a harness may not use it. Test the real creation path in a throwaway project before building on it.
+
+### Observation 1000: Run the project's own checks inside the new kind of copy before calling it equivalent
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** [HELPER-COPIES-NO-PICTURES] — sparse working copies without the walk pictures
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** what counts as evidence that a changed environment still works
+
+**Issue:** The sparse copy was believed safe because CI's own sparse checkout passed every gate. Running the document check inside a real sparse copy failed it: two records named a home file inside the left-out folder, and CI's guard job happens to use a full checkout. Every helper would have hit a red check the main folder did not show.
+**Suggested improvement:** When a change alters the environment work runs in (a checkout shape, a container, a path), run the project's standing checks inside one real instance of the new environment and compare with the old, before claiming equivalence from a similar-looking environment elsewhere.
+**Principle:** "Another place already works this way" is evidence only for the checks that place runs; run the rest in the new environment itself.
+
+### Observation 1005: A "today" picture taken after a scripted scroll reset hid the app's real opening position
 
 **Status:** OPEN
 **Date:** 2026-11-22

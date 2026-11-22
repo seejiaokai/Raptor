@@ -684,8 +684,13 @@ const PATHLIKE = /\/|\.(md|mjs|cjs|js|ts|tsx|sh|json|ya?ml|html|css)$/
 function homes(paths, allow) {
   const fails = []
   if (allow.has('homes')) return { fails, ok: true }
-  /* only files that exist NOW — `git ls-files` still lists a tracked file this change deleted (Astra) */
-  const all = [...(tryGit('ls-files') || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard') || '').split('\n')].filter(f => f && existsSync(join(REPO, f)))
+  /* only files that exist NOW — `git ls-files` still lists a tracked file this change deleted (Astra) — counting as
+     existing a file a lean working copy leaves off the disk: his D2290 keeps the walk pictures out of helpers' copies,
+     git marks each "S" (skip-worktree), and two rulings (D340, D1575) name a home in that folder. Without this, every
+     helper's copy failed the check while the main folder passed (found 22 Nov 26, [HELPER-COPIES-NO-PICTURES]). */
+  const skipped = new Set((tryGit('ls-files', '-t') || '').split('\n').filter(l => l.startsWith('S ')).map(l => l.slice(2)))
+  const present = f => existsSync(join(REPO, f)) || skipped.has(f)
+  const all = [...(tryGit('ls-files') || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard') || '').split('\n')].filter(f => f && present(f))
   const changed = new Set(paths)
   const resolve = tok => {
     /* `…/x`, a bare `x.ts` and a folder `…/briefs/` are all shorthand the rows really use */
@@ -693,7 +698,7 @@ function homes(paths, allow) {
     const bySuffix = () => all.filter(f => tail.endsWith('/') ? ('/' + f).includes('/' + tail) : (f === tail || f.endsWith('/' + tail)))
     if (tail !== tok.replace(/^(\.\.?\/)+/, '') || !tail.includes('/')) return bySuffix()
     for (const pre of ['', 'raptor-port/', 'raptor-port/src/', 'raptor-port/docs/', 'raptor-port/docs/superpowers/'])
-      if (existsSync(join(REPO, pre + tail))) return [pre + tail]
+      if (present(pre + tail)) return [pre + tail]
     return bySuffix()
   }
   const baseRows = new Set(identityRows('base').map(r => r.d))
