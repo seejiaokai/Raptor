@@ -1,0 +1,491 @@
+[
+ {
+  "scn": "s28",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s28",
+  "size": "phone",
+  "id": "s28-01",
+  "what": "Hex posted out from Wed 15 Jul with NO chip chosen (the chosen Overseas Sqn tapped again)",
+  "ok": null,
+  "note": "chips before po-date po-overseas[on] po-delete po-sans po-transfer po-line po-confirm · after po-date po-overseas po-delete po-sans po-transfer po-line po-confirm · line \"On 15 Jul: off the manpower, nothing else.\" · {\"san\":false,\"sanFrom\":null}",
+  "pics": "s28-s28-01-postout-open-phone.png, s28-s28-01-postout-sheet-phone.png"
+ },
+ {
+  "scn": "s28",
+  "size": "phone",
+  "id": "s28-01b",
+  "what": "his record after the posting (read only)",
+  "ok": null,
+  "note": "{\"archived\":false,\"san\":false}"
+ },
+ {
+  "scn": "s28",
+  "size": "phone",
+  "id": "s28-02",
+  "what": "Saturday: BRIEF 08:00–09:00 naming Hex, SQN EVENT 10:00–17:00 for ALL AVAIL",
+  "ok": true,
+  "note": "{\"g\":{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\",\"rid\":\"rmrldiipcelqhaq\"},\"a\":{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldinkbo38yhc\"},\"offered\":true}",
+  "pics": "s28-02-fixture-phone.png"
+ },
+ {
+  "scn": "s28",
+  "size": "phone",
+  "id": "s28-03.off",
+  "what": "SQN EVENT's ALL AVAIL window: Hex NOT in the crowd (posted out, no SANS) — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "s28-s28-03-off-win-phone.png"
+ },
+ {
+  "scn": "s28",
+  "size": "phone",
+  "id": "s28-03.on",
+  "what": "SQN EVENT's ALL AVAIL window: Hex NOT in the crowd (posted out, no SANS) — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "s28-s28-03-on-win-phone.png"
+ },
+ {
+  "scn": "s28",
+  "size": "phone",
+  "id": "s28-03.off2",
+  "what": "SQN EVENT's ALL AVAIL window: Hex NOT in the crowd (posted out, no SANS) — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "s28-s28-03-off2-win-phone.png"
+ },
+ {
+  "scn": "s28",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-01",
+  "what": "Hex posted out as SANS from Wed 15 Jul",
+  "ok": true,
+  "note": "line \"On 15 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s23-s23-01-postout-open-desktop.png, s23-s23-01-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-02",
+  "what": "Saturday: BRIEF 08:00–09:00 naming Hex; ALL AVAIL on the SDO desk 10:00–17:00 (armed d:5.0.0.+) and on a new OFT session's front seat 10:00–17:00 (armed s:5.oft.0.p)",
+  "ok": false,
+  "note": "{\"brief\":{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\",\"rid\":\"rmrldid9f2dkj5h\"},\"duty\":{\"role\":\"SDO\",\"str\":\"10:00\",\"end\":\"17:00\",\"more\":[\"allavail\"],\"rid\":\"rs130720265x1\"},\"sim\":{\"label\":\"EP-9\",\"str\":\"10:00\",\"end\":\"17:00\",\"rid\":\"rmrldiirhijmbms\"}}",
+  "pics": "s23-02-fixture-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-03d.off",
+  "what": "the SDO desk's count door: its window lists Hex — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s23-s23-03-r0-off-win-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-03d.on",
+  "what": "the SDO desk's count door: its window lists Hex — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s23-s23-03-r0-on-win-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-03d.off2",
+  "what": "the SDO desk's count door: its window lists Hex — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s23-s23-03-r0-off2-win-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-03s.off",
+  "what": "the OFT session's count door: its window lists Hex — \"+ SANS\" off",
+  "ok": false,
+  "note": "SANS off: chip \"NO CHIP\", window null",
+  "pics": "s23-s23-03-r1-off-win-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-03s.on",
+  "what": "the OFT session's count door: its window lists Hex — \"+ SANS\" on",
+  "ok": false,
+  "note": "SANS on: chip \"NO CHIP\", window null",
+  "pics": "s23-s23-03-r1-on-win-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-03s.off2",
+  "what": "the OFT session's count door: its window lists Hex — \"+ SANS\" off again",
+  "ok": false,
+  "note": "SANS off: chip \"NO CHIP\", window null",
+  "pics": "s23-s23-03-r1-off2-win-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23-01",
+  "what": "Hex posted out as SANS from Wed 15 Jul",
+  "ok": true,
+  "note": "line \"On 15 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s23-s23-01-postout-open-phone.png, s23-s23-01-postout-sheet-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "ERR",
+  "what": "script stopped",
+  "ok": false,
+  "note": "locator.tap: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#schedBoard [data-person=\"allavail\"]:visible').first()\u001b[22m\n\u001b[2m    - locator resolved to <span class=\"rpuck\" data-drag=\"1\" data-person=\"allavail\" title=\"ALL AVAIL — a placeholder, never validated\">…</span>\u001b[22m\n\u001b[2m  - attempting tap action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m ",
+  "pics": "s23-ERR-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-01",
+  "what": "on Wed 15 Jul: Hex posted out as SANS from Thu 16 Jul",
+  "ok": null,
+  "note": "line \"On 16 Jul: becomes SANS.\" · {\"san\":false,\"sanFrom\":null}",
+  "pics": "s8-s8-01-postout-open-desktop.png, s8-s8-01-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-02",
+  "what": "Saturday: BRIEF 08:00–09:00 naming Hex, SQN EVENT 10:00–17:00 for ALL AVAIL",
+  "ok": true,
+  "note": "{\"g\":{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\",\"rid\":\"rmrldicf8nygcez\"},\"a\":{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldifp3r9b4un\"}}",
+  "pics": "s8-02-fixture-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-03.off",
+  "what": "before midnight (Wed Jul 15 2026 09:01): RECORD who is in — \"+ SANS\" off",
+  "ok": "REC",
+  "note": "SANS off (group false): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "s8-s8-03-before-off-win-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-03.on",
+  "what": "before midnight (Wed Jul 15 2026 09:01): RECORD who is in — \"+ SANS\" on",
+  "ok": "REC",
+  "note": "SANS on (group true): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "s8-s8-03-before-on-win-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-03.off2",
+  "what": "before midnight (Wed Jul 15 2026 09:01): RECORD who is in — \"+ SANS\" off again",
+  "ok": "REC",
+  "note": "SANS off (group false): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "s8-s8-03-before-off2-win-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-03x",
+  "what": "before midnight: the same answer with \"+ SANS\" off, on and off again",
+  "ok": true,
+  "note": "false/false/false"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-04",
+  "what": "the clock moved to Thu Jul 16 2026 00:31 with the app open (read: Hex's record {\"san\":true,\"sanFrom\":\"2026-07-16\"})",
+  "ok": null,
+  "note": "",
+  "pics": "s8-04-after-midnight-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-05.off",
+  "what": "after midnight, app left open: Hex IN the crowd — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s8-s8-05-open-off-win-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-05.on",
+  "what": "after midnight, app left open: Hex IN the crowd — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s8-s8-05-open-on-win-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-05.off2",
+  "what": "after midnight, app left open: Hex IN the crowd — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s8-s8-05-open-off2-win-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-06",
+  "what": "reopened (reload) on Thu Jul 16 2026 00:31",
+  "ok": null,
+  "note": "Jul 13,Jul 14,Jul 15,Jul 16,Jul 17,Jul 18,Jul 19",
+  "pics": "s8-06-reopened-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-07.off",
+  "what": "after midnight, reopened: Hex IN the crowd — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s8-s8-07-reopen-off-win-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-07.on",
+  "what": "after midnight, reopened: Hex IN the crowd — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s8-s8-07-reopen-on-win-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-07.off2",
+  "what": "after midnight, reopened: Hex IN the crowd — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s8-s8-07-reopen-off2-win-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-07x",
+  "what": "left open and reopened agree",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-01",
+  "what": "on Wed 15 Jul: Hex posted out as SANS from Thu 16 Jul",
+  "ok": null,
+  "note": "line \"On 16 Jul: becomes SANS.\" · {\"san\":false,\"sanFrom\":null}",
+  "pics": "s8-s8-01-postout-open-phone.png, s8-s8-01-postout-sheet-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-02",
+  "what": "Saturday: BRIEF 08:00–09:00 naming Hex, SQN EVENT 10:00–17:00 for ALL AVAIL",
+  "ok": true,
+  "note": "{\"g\":{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\",\"rid\":\"rmrldijjyebay7y\"},\"a\":{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldioffd7tfuz\"}}",
+  "pics": "s8-02-fixture-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-03.off",
+  "what": "before midnight (Wed Jul 15 2026 09:01): RECORD who is in — \"+ SANS\" off",
+  "ok": "REC",
+  "note": "SANS off (group false): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "s8-s8-03-before-off-win-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-03.on",
+  "what": "before midnight (Wed Jul 15 2026 09:01): RECORD who is in — \"+ SANS\" on",
+  "ok": "REC",
+  "note": "SANS on (group true): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "s8-s8-03-before-on-win-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-03.off2",
+  "what": "before midnight (Wed Jul 15 2026 09:01): RECORD who is in — \"+ SANS\" off again",
+  "ok": "REC",
+  "note": "SANS off (group false): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "s8-s8-03-before-off2-win-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-03x",
+  "what": "before midnight: the same answer with \"+ SANS\" off, on and off again",
+  "ok": true,
+  "note": "false/false/false"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-04",
+  "what": "the clock moved to Thu Jul 16 2026 00:31 with the app open (read: Hex's record {\"san\":true,\"sanFrom\":\"2026-07-16\"})",
+  "ok": null,
+  "note": "",
+  "pics": "s8-04-after-midnight-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-05.off",
+  "what": "after midnight, app left open: Hex IN the crowd — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s8-s8-05-open-off-win-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-05.on",
+  "what": "after midnight, app left open: Hex IN the crowd — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s8-s8-05-open-on-win-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-05.off2",
+  "what": "after midnight, app left open: Hex IN the crowd — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s8-s8-05-open-off2-win-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-06",
+  "what": "reopened (reload) on Thu Jul 16 2026 00:33",
+  "ok": null,
+  "note": "Jul 13,Jul 14,Jul 15,Jul 16,Jul 17,Jul 18,Jul 19",
+  "pics": "s8-06-reopened-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-07.off",
+  "what": "after midnight, reopened: Hex IN the crowd — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s8-s8-07-reopen-off-win-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-07.on",
+  "what": "after midnight, reopened: Hex IN the crowd — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s8-s8-07-reopen-on-win-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-07.off2",
+  "what": "after midnight, reopened: Hex IN the crowd — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s8-s8-07-reopen-off2-win-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-07x",
+  "what": "left open and reopened agree",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

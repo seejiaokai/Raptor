@@ -1,0 +1,598 @@
+[
+ {
+  "scn": "s12",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s12",
+  "size": "desktop",
+  "id": "s12-01",
+  "what": "Hex posted out as SANS from Wed 15 Jul",
+  "ok": true,
+  "note": "line \"On 15 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s12-s12-01-postout-open-desktop.png, s12-s12-01-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "s12",
+  "size": "desktop",
+  "id": "s12-02",
+  "what": "Saturday fixture made; the count door before Publish lists Hex",
+  "ok": true,
+  "note": "chip \"45\" {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"flag\":\"\",\"ttl\":\"SQN EVENTJul 18 · 10:00–17:00\",\"who\":\"Reaper,Anvil,Blade,Cinch,Cobra,Comet,Forge,Havoc,Hunter,Piston,Ranger,Saber,Sidewinder,Trident,Vandal,Warden,Ace,Drifter,Saint,Gambit,Nomad,Outlaw,Ridge,Diesel,Vapor,Recon,Talisman,Wildcard,Basher,Echo,Ledger,Quill,Relay,Scope,Static,Cinder,Rune,Cutter,Dash,Ghost,Grit,Hex,Ryder,Vector,Wisp\"}",
+  "pics": "s12-02-win-before-publish-desktop.png"
+ },
+ {
+  "scn": "s12",
+  "size": "desktop",
+  "id": "s12-03",
+  "what": "four sign-offs and Publish (Publish day)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true}",
+  "pics": "s12-03-published-desktop.png"
+ },
+ {
+  "scn": "s12",
+  "size": "desktop",
+  "id": "s12-04",
+  "what": "Hex's Leave War cell for Sat 18 Jul after Publish",
+  "ok": true,
+  "note": "\"FO*\"",
+  "pics": "s12-04-lw-cell-desktop.png"
+ },
+ {
+  "scn": "s12",
+  "size": "desktop",
+  "id": "s12-05",
+  "what": "\"Undo post out\" pressed: Hex an ordinary WSO again (read)",
+  "ok": true,
+  "note": "note \"Saturday published and approved\" · {\"san\":false,\"archived\":false,\"seat\":\"RCP\"}",
+  "pics": "s12-05b-postout-sheet-desktop.png, s12-05c-after-undo-desktop.png"
+ },
+ {
+  "scn": "s12",
+  "size": "desktop",
+  "id": "s12-06",
+  "what": "his Leave War cell for Sat 18 Jul after the undo (RECORD)",
+  "ok": "REC",
+  "note": "\"FO*\"",
+  "pics": "s12-06-lw-cell-desktop.png"
+ },
+ {
+  "scn": "s12",
+  "size": "desktop",
+  "id": "s12-07",
+  "what": "the published Saturday after the undo: pending and the sign-offs (RECORD)",
+  "ok": "REC",
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"\",\"approved\":true}",
+  "pics": "s12-07-editsched-sat-desktop.png"
+ },
+ {
+  "scn": "s12",
+  "size": "desktop",
+  "id": "s12-07b",
+  "what": "the Saturday's pending list, if any (RECORD)",
+  "ok": "REC",
+  "note": "⠿ Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 15 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Hex · SANS Saber 15/7 09:00 yes → no",
+  "pics": "s12-07b-pending-desktop.png"
+ },
+ {
+  "scn": "s12",
+  "size": "desktop",
+  "id": "s12-08",
+  "what": "the bell after the undo (RECORD)",
+  "ok": "REC",
+  "note": "Nothing new",
+  "pics": "s12-08-bell-desktop.png"
+ },
+ {
+  "scn": "s12",
+  "size": "desktop",
+  "id": "s12-09",
+  "what": "the changes window after the undo (RECORD)",
+  "ok": "REC",
+  "note": "⠿ Changes · week of 13/7 17 changes this week ✕ New to you 0 All changes 17 To go out 1 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who Nothing new to you this week. ✓ Mark all as seen",
+  "pics": "s12-09-changes-desktop.png"
+ },
+ {
+  "scn": "s12",
+  "size": "desktop",
+  "id": "s12-10.off",
+  "what": "after the undo: Hex in the crowd, an ordinary WSO (no purple line) — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN, pending 1",
+  "pics": "s12-s12-10-off-win-desktop.png"
+ },
+ {
+  "scn": "s12",
+  "size": "desktop",
+  "id": "s12-10.on",
+  "what": "after the undo: Hex in the crowd, an ordinary WSO (no purple line) — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"45\", window 45 people, Hex IN, pending 1",
+  "pics": "s12-s12-10-on-win-desktop.png"
+ },
+ {
+  "scn": "s12",
+  "size": "desktop",
+  "id": "s12-10.off2",
+  "what": "after the undo: Hex in the crowd, an ordinary WSO (no purple line) — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN, pending 1",
+  "pics": "s12-s12-10-off2-win-desktop.png"
+ },
+ {
+  "scn": "s12",
+  "size": "desktop",
+  "id": "s12-10x",
+  "what": "the Saturday pending count across the switch (read from each reading)",
+  "ok": true,
+  "note": "1/1/1"
+ },
+ {
+  "scn": "s12",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s12",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s12",
+  "size": "phone",
+  "id": "s12-01",
+  "what": "Hex posted out as SANS from Wed 15 Jul",
+  "ok": true,
+  "note": "line \"On 15 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s12-s12-01-postout-open-phone.png, s12-s12-01-postout-sheet-phone.png"
+ },
+ {
+  "scn": "s12",
+  "size": "phone",
+  "id": "s12-02",
+  "what": "Saturday fixture made; the count door before Publish lists Hex",
+  "ok": true,
+  "note": "chip \"45\" {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"flag\":\"\",\"ttl\":\"SQN EVENTJul 18 · 10:00–17:00\",\"who\":\"Reaper,Anvil,Blade,Cinch,Cobra,Comet,Forge,Havoc,Hunter,Piston,Ranger,Saber,Sidewinder,Trident,Vandal,Warden,Ace,Drifter,Saint,Gambit,Nomad,Outlaw,Ridge,Diesel,Vapor,Recon,Talisman,Wildcard,Basher,Echo,Ledger,Quill,Relay,Scope,Static,Cinder,Rune,Cutter,Dash,Ghost,Grit,Hex,Ryder,Vector,Wisp\"}",
+  "pics": "s12-02-win-before-publish-phone.png"
+ },
+ {
+  "scn": "s12",
+  "size": "phone",
+  "id": "s12-03",
+  "what": "four sign-offs and Publish (Publish day)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true}",
+  "pics": "s12-03-published-phone.png"
+ },
+ {
+  "scn": "s12",
+  "size": "phone",
+  "id": "s12-04",
+  "what": "Hex's Leave War cell for Sat 18 Jul after Publish",
+  "ok": true,
+  "note": "\"FO*\"",
+  "pics": "s12-04-lw-cell-phone.png"
+ },
+ {
+  "scn": "s12",
+  "size": "phone",
+  "id": "s12-05",
+  "what": "\"Undo post out\" pressed: Hex an ordinary WSO again (read)",
+  "ok": true,
+  "note": "note \"Saturday published and approved\" · {\"san\":false,\"archived\":false,\"seat\":\"RCP\"}",
+  "pics": "s12-05b-postout-sheet-phone.png, s12-05c-after-undo-phone.png"
+ },
+ {
+  "scn": "s12",
+  "size": "phone",
+  "id": "s12-06",
+  "what": "his Leave War cell for Sat 18 Jul after the undo (RECORD)",
+  "ok": "REC",
+  "note": "\"FO*\"",
+  "pics": "s12-06-lw-cell-phone.png"
+ },
+ {
+  "scn": "s12",
+  "size": "phone",
+  "id": "s12-07",
+  "what": "the published Saturday after the undo: pending and the sign-offs (RECORD)",
+  "ok": "REC",
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"\",\"approved\":true}",
+  "pics": "s12-07-editsched-sat-phone.png"
+ },
+ {
+  "scn": "s12",
+  "size": "phone",
+  "id": "s12-07b",
+  "what": "the Saturday's pending list, if any (RECORD)",
+  "ok": "REC",
+  "note": "⠿ Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1 Hide ▾ ✕ History on: Tap a gold dot on the schedule New to you 0 All changes 15 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Hex · SANS Saber 15/7 09:00 yes → no",
+  "pics": "s12-07b-pending-phone.png"
+ },
+ {
+  "scn": "s12",
+  "size": "phone",
+  "id": "s12-08",
+  "what": "the bell after the undo (RECORD)",
+  "ok": "REC",
+  "note": "Nothing new",
+  "pics": "s12-08-bell-phone.png"
+ },
+ {
+  "scn": "s12",
+  "size": "phone",
+  "id": "s12-09",
+  "what": "the changes window after the undo (RECORD)",
+  "ok": "REC",
+  "note": "⠿ Changes · week of 13/7 17 changes this week Hide ▾ ✕ History on: Tap a gold dot on the schedule New to you 0 All changes 17 To go out 1 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who Nothing new to you this week. ✓ Mark all as seen",
+  "pics": "s12-09-changes-phone.png"
+ },
+ {
+  "scn": "s12",
+  "size": "phone",
+  "id": "s12-10.off",
+  "what": "after the undo: Hex in the crowd, an ordinary WSO (no purple line) — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN, pending 1",
+  "pics": "s12-s12-10-off-win-phone.png"
+ },
+ {
+  "scn": "s12",
+  "size": "phone",
+  "id": "s12-10.on",
+  "what": "after the undo: Hex in the crowd, an ordinary WSO (no purple line) — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"45\", window 45 people, Hex IN, pending 1",
+  "pics": "s12-s12-10-on-win-phone.png"
+ },
+ {
+  "scn": "s12",
+  "size": "phone",
+  "id": "s12-10.off2",
+  "what": "after the undo: Hex in the crowd, an ordinary WSO (no purple line) — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN, pending 1",
+  "pics": "s12-s12-10-off2-win-phone.png"
+ },
+ {
+  "scn": "s12",
+  "size": "phone",
+  "id": "s12-10x",
+  "what": "the Saturday pending count across the switch (read from each reading)",
+  "ok": true,
+  "note": "1/1/1"
+ },
+ {
+  "scn": "s12",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-01",
+  "what": "Hex posted out as SANS from Mon 13 Jul (a past date)",
+  "ok": true,
+  "note": "line \"On 13 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-13\"}",
+  "pics": "s13-s13-01-postout-open-desktop.png, s13-s13-01-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-02",
+  "what": "Tue 14 Jul: BRIEF 08:00–09:00 naming Hex, SQN EVENT 10:00–17:00 for ALL AVAIL; its window before Publish",
+  "ok": false,
+  "note": "{\"g\":{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\",\"rid\":\"rmrldibnhzq7xno\"},\"a\":{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldiewwh3xyxs\"}} chip \"23\" {\"n\":23,\"has\":false,\"san\":null,\"why\":\"\",\"flag\":\"\",\"ttl\":\"SQN EVENTJul 14 · 10:00–17:00\",\"who\":\"Reaper,Anvil,Blade,Cobra,Forge,Hunter,Piston,Ranger,Saber,Sidewinder,Trident,Vandal,Jester,Nomad,Diesel,Recon,Wildcard,Ledger,Relay,Cutter,Fable,Ghost,Ryder\"}",
+  "pics": "s13-02-tue-win-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-03",
+  "what": "Tue 14 Jul signed and published (Publish day)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true}",
+  "pics": "s13-03-tue-published-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-04",
+  "what": "Thu 16 Jul: the same two items, not published; its window before the archive",
+  "ok": false,
+  "note": "chip \"21\" {\"n\":21,\"has\":false,\"san\":null,\"why\":\"\",\"flag\":\"\",\"ttl\":\"SQN EVENTJul 16 · 10:00–17:00\",\"who\":\"Reaper,Cinch,Cobra,Havoc,Hunter,Piston,Saber,Sidewinder,Trident,Vandal,Drifter,Outlaw,Vapor,Recon,Relay,Cinder,Rune,Cutter,Ghost,Ryder,Wisp\"}",
+  "pics": "s13-04-thu-win-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-05",
+  "what": "Hex archived on Admin → Users (his row → Archive)",
+  "ok": true,
+  "note": "note \"Hex archived — his sign-in is suspended\"",
+  "pics": "s13-s13-05-acc-open-desktop.png, s13-s13-05-archived-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-06.off",
+  "what": "Tue 14 Jul's crowd after the archive: Hex still IN — \"+ SANS\" off",
+  "ok": false,
+  "note": "SANS off (group false): chip \"23\", window 23 people, Hex out, pending 1",
+  "pics": "s13-s13-06-tue-off-win-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-06.on",
+  "what": "Tue 14 Jul's crowd after the archive: Hex still IN — \"+ SANS\" on",
+  "ok": false,
+  "note": "SANS on (group true): chip \"23\", window 23 people, Hex out, pending 1",
+  "pics": "s13-s13-06-tue-on-win-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-06.off2",
+  "what": "Tue 14 Jul's crowd after the archive: Hex still IN — \"+ SANS\" off again",
+  "ok": false,
+  "note": "SANS off (group false): chip \"23\", window 23 people, Hex out, pending 1",
+  "pics": "s13-s13-06-tue-off2-win-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-07.off",
+  "what": "Thu 16 Jul's crowd after the archive: Hex NOT in — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"21\", window 21 people, Hex out, pending 0",
+  "pics": "s13-s13-07-thu-off-win-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-07.on",
+  "what": "Thu 16 Jul's crowd after the archive: Hex NOT in — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"21\", window 21 people, Hex out, pending 0",
+  "pics": "s13-s13-07-thu-on-win-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-07.off2",
+  "what": "Thu 16 Jul's crowd after the archive: Hex NOT in — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"21\", window 21 people, Hex out, pending 0",
+  "pics": "s13-s13-07-thu-off2-win-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-08",
+  "what": "Tue 14 Jul's pending count and lines after the archive (RECORD)",
+  "ok": "REC",
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"\",\"approved\":true} · lines: ⠿ Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 15 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Hex · posted out Saber 15/7 09:00 no → yes",
+  "pics": "s13-08-tue-pending-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-08x",
+  "what": "no Tue pending line is about the event's crowd or OIL",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s13",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s13",
+  "size": "phone",
+  "id": "s13-01",
+  "what": "Hex posted out as SANS from Mon 13 Jul (a past date)",
+  "ok": true,
+  "note": "line \"On 13 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-13\"}",
+  "pics": "s13-s13-01-postout-open-phone.png, s13-s13-01-postout-sheet-phone.png"
+ },
+ {
+  "scn": "s13",
+  "size": "phone",
+  "id": "s13-02",
+  "what": "Tue 14 Jul: BRIEF 08:00–09:00 naming Hex, SQN EVENT 10:00–17:00 for ALL AVAIL; its window before Publish",
+  "ok": false,
+  "note": "{\"g\":{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\",\"rid\":\"rmrldijc6bpqx2o\"},\"a\":{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldioql0jivrp\"}} chip \"23\" {\"n\":23,\"has\":false,\"san\":null,\"why\":\"\",\"flag\":\"\",\"ttl\":\"SQN EVENTJul 14 · 10:00–17:00\",\"who\":\"Reaper,Anvil,Blade,Cobra,Forge,Hunter,Piston,Ranger,Saber,Sidewinder,Trident,Vandal,Jester,Nomad,Diesel,Recon,Wildcard,Ledger,Relay,Cutter,Fable,Ghost,Ryder\"}",
+  "pics": "s13-02-tue-win-phone.png"
+ },
+ {
+  "scn": "s13",
+  "size": "phone",
+  "id": "s13-03",
+  "what": "Tue 14 Jul signed and published (Publish day)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true}",
+  "pics": "s13-03-tue-published-phone.png"
+ },
+ {
+  "scn": "s13",
+  "size": "phone",
+  "id": "s13-04",
+  "what": "Thu 16 Jul: the same two items, not published; its window before the archive",
+  "ok": false,
+  "note": "chip \"21\" {\"n\":21,\"has\":false,\"san\":null,\"why\":\"\",\"flag\":\"\",\"ttl\":\"SQN EVENTJul 16 · 10:00–17:00\",\"who\":\"Reaper,Cinch,Cobra,Havoc,Hunter,Piston,Saber,Sidewinder,Trident,Vandal,Drifter,Outlaw,Vapor,Recon,Relay,Cinder,Rune,Cutter,Ghost,Ryder,Wisp\"}",
+  "pics": "s13-04-thu-win-phone.png"
+ },
+ {
+  "scn": "s13",
+  "size": "phone",
+  "id": "s13-05",
+  "what": "Hex archived on Admin → Users (his row → Archive)",
+  "ok": true,
+  "note": "note \"Hex archived — his sign-in is suspended\"",
+  "pics": "s13-s13-05-acc-open-phone.png, s13-s13-05-archived-phone.png"
+ },
+ {
+  "scn": "s13",
+  "size": "phone",
+  "id": "s13-06.off",
+  "what": "Tue 14 Jul's crowd after the archive: Hex still IN — \"+ SANS\" off",
+  "ok": false,
+  "note": "SANS off (group false): chip \"23\", window 23 people, Hex out, pending 1",
+  "pics": "s13-s13-06-tue-off-win-phone.png"
+ },
+ {
+  "scn": "s13",
+  "size": "phone",
+  "id": "s13-06.on",
+  "what": "Tue 14 Jul's crowd after the archive: Hex still IN — \"+ SANS\" on",
+  "ok": false,
+  "note": "SANS on (group true): chip \"23\", window 23 people, Hex out, pending 1",
+  "pics": "s13-s13-06-tue-on-win-phone.png"
+ },
+ {
+  "scn": "s13",
+  "size": "phone",
+  "id": "s13-06.off2",
+  "what": "Tue 14 Jul's crowd after the archive: Hex still IN — \"+ SANS\" off again",
+  "ok": false,
+  "note": "SANS off (group false): chip \"23\", window 23 people, Hex out, pending 1",
+  "pics": "s13-s13-06-tue-off2-win-phone.png"
+ },
+ {
+  "scn": "s13",
+  "size": "phone",
+  "id": "s13-07.off",
+  "what": "Thu 16 Jul's crowd after the archive: Hex NOT in — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"21\", window 21 people, Hex out, pending 0",
+  "pics": "s13-s13-07-thu-off-win-phone.png"
+ },
+ {
+  "scn": "s13",
+  "size": "phone",
+  "id": "s13-07.on",
+  "what": "Thu 16 Jul's crowd after the archive: Hex NOT in — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"21\", window 21 people, Hex out, pending 0",
+  "pics": "s13-s13-07-thu-on-win-phone.png"
+ },
+ {
+  "scn": "s13",
+  "size": "phone",
+  "id": "s13-07.off2",
+  "what": "Thu 16 Jul's crowd after the archive: Hex NOT in — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"21\", window 21 people, Hex out, pending 0",
+  "pics": "s13-s13-07-thu-off2-win-phone.png"
+ },
+ {
+  "scn": "s13",
+  "size": "phone",
+  "id": "s13-08",
+  "what": "Tue 14 Jul's pending count and lines after the archive (RECORD)",
+  "ok": "REC",
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"\",\"approved\":true} · lines: ⠿ Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1 Hide ▾ ✕ History on: Tap a gold dot on the schedule New to you 0 All changes 15 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Hex · posted out Saber 15/7 09:01 no → yes",
+  "pics": "s13-08-tue-pending-phone.png"
+ },
+ {
+  "scn": "s13",
+  "size": "phone",
+  "id": "s13-08x",
+  "what": "no Tue pending line is about the event's crowd or OIL",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s13",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "ERR",
+  "what": "script stopped",
+  "ok": false,
+  "note": "locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#accAdd:visible').first()\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"accAdd\" class=\"abtn primary\">Add person</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into vie",
+  "pics": "s3-ERR-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "ERR",
+  "what": "script stopped",
+  "ok": false,
+  "note": "locator.tap: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#accAdd:visible').first()\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"accAdd\" class=\"abtn primary\">Add person</button>\u001b[22m\n\u001b[2m  - attempting tap action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if",
+  "pics": "s3-ERR-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

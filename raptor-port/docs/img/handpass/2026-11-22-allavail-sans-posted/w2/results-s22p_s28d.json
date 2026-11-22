@@ -1,0 +1,132 @@
+[
+ {
+  "scn": "s22",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s22",
+  "size": "phone",
+  "id": "s22-01",
+  "what": "Hex posted out as SANS from Wed 15 Jul (his cell → ⋯ → Post out → SANS → Post out)",
+  "ok": true,
+  "note": "line \"On 15 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s22-s22-01-postout-open-phone.png, s22-s22-01-postout-sheet-phone.png"
+ },
+ {
+  "scn": "s22",
+  "size": "phone",
+  "id": "s22-02",
+  "what": "Saturday: BRIEF 11:00–12:00 naming Hex, SQN EVENT 10:00–17:00 for ALL AVAIL, made on the board",
+  "ok": true,
+  "note": "{\"g\":{\"prog\":\"BRIEF\",\"str\":\"11:00\",\"end\":\"12:00\",\"who\":\"rocky\",\"rid\":\"rmrldipis8b36uh\"},\"a\":{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldiupduqx0vd\"}}",
+  "pics": "s22-02-fixture-phone.png"
+ },
+ {
+  "scn": "s22",
+  "size": "phone",
+  "id": "s22-03.off",
+  "what": "SQN EVENT's ALL AVAIL window: Hex NOT in the crowd (his briefing clashes) — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "s22-s22-03-off-win-phone.png"
+ },
+ {
+  "scn": "s22",
+  "size": "phone",
+  "id": "s22-03.on",
+  "what": "SQN EVENT's ALL AVAIL window: Hex NOT in the crowd (his briefing clashes) — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "s22-s22-03-on-win-phone.png"
+ },
+ {
+  "scn": "s22",
+  "size": "phone",
+  "id": "s22-03.off2",
+  "what": "SQN EVENT's ALL AVAIL window: Hex NOT in the crowd (his briefing clashes) — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "s22-s22-03-off2-win-phone.png"
+ },
+ {
+  "scn": "s22",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s28",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s28",
+  "size": "desktop",
+  "id": "s28-01",
+  "what": "Hex posted out from Wed 15 Jul with NO chip chosen (the chosen Overseas Sqn tapped again)",
+  "ok": null,
+  "note": "chips before po-date po-overseas[on] po-delete po-sans po-transfer po-line po-confirm · after po-date po-overseas po-delete po-sans po-transfer po-line po-confirm · line \"On 15 Jul: off the manpower, nothing else.\" · {\"san\":false,\"sanFrom\":null}",
+  "pics": "s28-s28-01-postout-open-desktop.png, s28-s28-01-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "s28",
+  "size": "desktop",
+  "id": "s28-01b",
+  "what": "his record after the posting (read only)",
+  "ok": null,
+  "note": "{\"archived\":false,\"san\":false}"
+ },
+ {
+  "scn": "s28",
+  "size": "desktop",
+  "id": "s28-02",
+  "what": "Saturday: BRIEF 08:00–09:00 naming Hex, SQN EVENT 10:00–17:00 for ALL AVAIL",
+  "ok": true,
+  "note": "{\"g\":{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\",\"rid\":\"rmrldic0n9irbbh\"},\"a\":{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldif9q8ddp7b\"},\"offered\":true}",
+  "pics": "s28-02-fixture-desktop.png"
+ },
+ {
+  "scn": "s28",
+  "size": "desktop",
+  "id": "s28-03.off",
+  "what": "SQN EVENT's ALL AVAIL window: Hex NOT in the crowd (posted out, no SANS) — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "s28-s28-03-off-win-desktop.png"
+ },
+ {
+  "scn": "s28",
+  "size": "desktop",
+  "id": "s28-03.on",
+  "what": "SQN EVENT's ALL AVAIL window: Hex NOT in the crowd (posted out, no SANS) — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "s28-s28-03-on-win-desktop.png"
+ },
+ {
+  "scn": "s28",
+  "size": "desktop",
+  "id": "s28-03.off2",
+  "what": "SQN EVENT's ALL AVAIL window: Hex NOT in the crowd (posted out, no SANS) — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "s28-s28-03-off2-win-desktop.png"
+ },
+ {
+  "scn": "s28",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

@@ -3001,6 +3001,14 @@ Astra reads D308 the other way (out until his post-in date). If no: honour the p
 **(p) a question for him:** a SANS posting dated ahead — on a day past its date, named with us, he is out of ALL AVAIL
 until the date arrives and the posting runs (as before the fix, pinned by two tests); both readers call it his to
 decide. A day published ahead with him named then reads pending when the posting runs.
+**(q) older, met in passing by the walk of that fix (walker w2, S23, both sizes; seen by the host in the walker's picture
+`raptor-port/docs/img/handpass/2026-11-22-allavail-sans-posted/w2/s23probe-chip-crop-desktop.png`, not driven again):** on the
+Scheduler Board, with ALL AVAIL in an OFT sim session's FRONT seat, a press on its count chip ("45") arms the empty back seat
+instead of opening the ALL AVAIL window — the back seat's dashed "+" box takes the press; nothing to do with "+ SANS" or a
+posting. With ALL AVAIL in the back seat, or on a duty desk, the count door opens. One separate phone tap at the same point
+did open the window — check on his iPhone. Place: the board's next job; a test that presses the chip in a real browser.
+**The bug check of (i) is closed** (22 Nov 26): two Opus walkers, 15 of Astra's 28 scenarios and the plain-user round at both
+sizes, 0 faults in the change; its sheet `raptor-port/docs/handpass/2026-11-22-allavail-sans-posted.md`.
 **(j) after a hand untick, the SANS days a posting made stay when the posting is undone or moved later (Opus #2):** a
 question for him — a tick touched by hand has been the admin's own since it was built; should the posting's take-back
 still take the days before that untick? Fix if yes: tag the stretch a posting made, drop it in the take-back.

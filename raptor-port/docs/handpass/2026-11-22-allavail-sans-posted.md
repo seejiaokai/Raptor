@@ -23,14 +23,14 @@ the scenarios Astra's; the walk the host's; the code reads Astra's and a fresh, 
 
 | Ruling | What it says, in the app's words | Checked |
 |---|---|---|
-| [ALL-AVAIL-REDEF], D27 | ALL AVAIL counts a SANS man only when he is planned with us that day; a time clash keeps him out | |
-| D283 | Posted out as SANS, he becomes SANS on the date; "+ SANS" off, the Leave War still shows him in his old place, posted out | |
-| D2313, D2327 | He is SANS only from his SANS date; a tick taken off by hand makes him an ordinary man again from that day | |
-| D25, D142 | OIL is owed; a day's OIL comes from its latest published version | |
-| D44, D45, D103 | Nothing on a published day changes without the scheduler acknowledging it; pending takes the four sign-offs | |
-| D303 | A posting with no chip chosen: off the manpower from the date | |
-| D327, D320 | An archived man is out from his archive on, in before; every stint is kept | |
-| D1215, D1221 | SANS men are off the Leave War unless "+ SANS" puts them on | |
+| [ALL-AVAIL-REDEF], D27 | ALL AVAIL counts a SANS man only when he is planned with us that day; a time clash keeps him out | PASS — S1 (in when named, 45), S5 (out when not named, 44), S22 (out on a time clash, 44) |
+| D283 | Posted out as SANS, he becomes SANS on the date; "+ SANS" off, the Leave War still shows him in his old place, posted out | PASS — S1: SANS from 15 Jul, purple line on his puck; the war still draws him posted out with "+ SANS" off |
+| D2313, D2327 | He is SANS only from his SANS date; a tick taken off by hand makes him an ordinary man again from that day | PASS — S8 (not SANS before the date: out; in after midnight), S12 (Undo post out: an ordinary WSO, in); the hand untick by a test (§7) |
+| D25, D142 | OIL is owed; a day's OIL comes from its latest published version | PASS — S1: FO* on Sat 18 Jul after Publish; S6: FO* → HO* (AL1) → FO* (AL2); S5: the cell stays FO* until an amendment |
+| D44, D45, D103 | Nothing on a published day changes without the scheduler acknowledging it; pending takes the four sign-offs | PASS — S1, S16, S17: each "+ SANS" switch, a week change, two reloads and a new sign-in leave 0 pending and the four names; S5: a real change reads pending and drops them |
+| D303 | A posting with no chip chosen: off the manpower from the date | PASS — S28: "On 15 Jul: off the manpower, nothing else."; Hex out of the crowd, both ways |
+| D327, D320 | An archived man is out from his archive on, in before; every stint is kept | PASS — S13: archived, Hex still in Tue 14 Jul's crowd (35) both ways, out of Thu 16 Jul's (33 → 32); Tue's one pending line is the briefing that names him |
+| D1215, D1221 | SANS men are off the Leave War unless "+ SANS" puts them on | PASS — S1, S2: "+ SANS" pressed on and off in the war's Settings; nothing on the schedule moved |
 
 **Clashes:** none found. The fix follows D283 ("still flying with us") over the war's display window; no ruling says the
 "+ SANS" switch may change the crowd.
@@ -43,17 +43,17 @@ else is drawn there.
 
 | # | Place | Reads the crowd by | Shows him, "+ SANS" off | Same with it on | Else there | Proved by |
 |---|---|---|---|---|---|---|
-| 1 | Edit Schedule's week — the ALL AVAIL count chip on its row | `ui/html.ts` → `oilmode.ts oilSentinelSummary` | | | | |
-| 2 | The Scheduler Board — the count chip | the same | | | | |
-| 3 | The ALL AVAIL window — its pucks, who is available | `oilmode.ts oilSentinelPeople` | | | | |
-| 4 | OIL Earn — the window's earning half, the green OIL bar on his puck | `oilmode.ts` → `dayOilWork` | | | | |
-| 5 | A published day — the crowd it keeps, and "N pending" | `engine/oilev.ts` (lines 574–638) | | | | |
-| 6 | View-only Sched — the published face | the kept crowd | | | | |
-| 7 | An input filed for ALL AVAIL — its row's crowd | `oilev.ts` (609, 638) | | | | |
-| 8 | The Leave War grid — his OIL cell (FO / HO) | `sync.ts runOilPass` from the kept crowd | | | | |
-| 9 | The OIL tracker and Balances — his OIL figure | the war's ledger | | | | |
-| 10 | The Leave War's own row, manning, Available rows, day panel | the war's display row (`inSquadron`) | NO-because: the war's display follows the switch by his D283 — not changed | — | | |
-| 11 | The validator, the crew list, the SANS calendar | do not read the crowd | NO-because: none calls `availableFor` or `inSquadron` (searched) | — | | |
+| 1 | Edit Schedule's week — the ALL AVAIL count chip on its row | `ui/html.ts` → `oilmode.ts oilSentinelSummary` | YES — "45", Hex counted (S2, S5 on Edit Schedule) | YES | the row's CX and remarks; nothing over the chip | w1 S2, S5; w2 S8 |
+| 2 | The Scheduler Board — the count chip | the same | YES — "45" (S1) | YES | on an OFT sim's FRONT seat the back seat's empty "+" box may take the press — older, filed (q) | w1 S1; w2 S23 |
+| 3 | The ALL AVAIL window — its pucks, who is available | `oilmode.ts oilSentinelPeople` | YES — Hex among the WSOs with his purple SANS line (S1; the host saw both sizes) | YES | a flagged man's reason under his puck (S13) | w1 S1, S7; w2 S13, S8 |
+| 4 | OIL Earn — the window's earning half, the green OIL bar on his puck | `oilmode.ts` → `dayOilWork` | YES — "Who earns OIL 45 of 45", Hex included (S1); switched off for him alone (S6) | YES | the green OIL bar | w1 S1, S6 |
+| 5 | A published day — the crowd it keeps, and "N pending" | `engine/oilev.ts` (lines 574–638) | YES — 0 pending after Publish and after every switch (S1); a real change reads pending (S5: 2 lines) | YES | the four sign-off boxes | w1 S1, S5, S16, S17; tests |
+| 6 | View-only Sched — the published face | the kept crowd | YES — the member sees the same 45 with Hex (S20); the 👁 look at the Original the same (S7) | YES | no control offered to the member | w1 S7, S20 |
+| 7 | An input filed for ALL AVAIL — its row's crowd | `oilev.ts` (609, 638) | YES — an Event filed for ALL AVAIL lists Hex before and after Publish (S2) | YES | the input's row on the Common Programme | w1 S2 |
+| 8 | The Leave War grid — his OIL cell (FO / HO) | `sync.ts runOilPass` from the kept crowd | YES — FO* on Sat 18 Jul (S1; the host saw the grid) | YES — in his old row, or the SANS group | the posting hatch and "PO" on his other days (D283) | w1 S1, S2, S6; tests |
+| 9 | The OIL tracker and Balances — his OIL figure | the war's ledger | YES — the member opened the OIL tracker for Hex (S20); the figure by a test (`sans-postout-oil.test.ts`) | YES | — | w1 S20; tests |
+| 10 | The Leave War's own row, manning, Available rows, day panel | the war's display row (`inSquadron`) | NO-because: the war's display follows the switch by his D283 — not changed | — | his row hatched "PO" with "+ SANS" off, in the SANS group with it on | w1 S1 (the host saw the grid) |
+| 11 | The validator, the crew list, the SANS calendar | do not read the crowd | NO-because: none calls `availableFor` or `inSquadron` (searched) | — | — | the search; both readers' point 2 |
 
 ## 4. The door check
 
@@ -80,6 +80,28 @@ Passed — no new gesture or mode (question 5).
 
 ## 6. The orders walked — what the screen said and what the OIL said
 
+Two Opus walkers side by side, each in its own world, on the build of `100fa3bb7`; a desktop (Chromium 1536×864) and his
+iPhone's size (WebKit 402×874, real taps), the browser's clock on Wed 15 Jul 26. Reports: `docs/handpass/parts/asp/w1-report.md`
+(162 steps: 136 PASS, 0 FAIL, 10 RECORDED) and `w2-report.md` (200 steps: 139 PASS, 6 FAIL — one fault, S23 — 36 RECORDED, 1 NOT
+WALKED). The host opened the deciding pictures (§8). Every answer was the same at both sizes.
+
+| # | The order | What the screen said | What the OIL said |
+|---|---|---|---|
+| S1 | Post Hex out as SANS (15 Jul) → name him on Sat 18 Jul's briefing → ALL AVAIL event → sign → Publish → another week and back → "+ SANS" on, off, on, off | Count 45, Hex in the window with his purple line, "+ SANS" off. After every switch: 0 pending, "SIGNED ORIG Ace Anvil Basher Bolt", 45, Hex in | FO* on Sat 18 Jul, unchanged throughout |
+| S5 | From S1: the briefing taken off; switched both ways; put back by Undo | 2 pending, "Not yet signed"; 44, Hex out, both ways. Put back: 0 pending, the signed line back, 45 | FO* stays until an amendment |
+| S6 | From S1: OIL Earn, Hex's earning on the event off → AL1 → on → AL2 | Hex stays in "Who's available" at 45 throughout | FO* → HO* (AL1) → FO* (AL2), the same both ways |
+| S7 | A change waiting: the count from the board, the 👁 look, View-only Sched | The board: the working copy (44, no Hex); the Original and View-only: the published 45 with Hex | — |
+| S2 | An Event input filed for ALL AVAIL, its OIL answered Yes; publish; both ways | Hex in the input's window before and after Publish; nothing pending either way | FO* |
+| S16, S17, S20 | Two reloads; sign out and in; the member | The same 45 with Hex, 0 pending; the member has no ⚙, no posting control, no credit control | FO* |
+| S8 | A posting dated tomorrow; before midnight; past midnight with the app open; reopened | Before: 44, Hex out, 0 pending, the same both ways (RECORDED — question (p)). After: 45, Hex in with his purple line, left open and reopened alike | — |
+| S12 | S1 published, then "Undo post out" | "1 pending", "Not yet signed", four boxes empty, "Publish AL1"; the one line "Hex · SANS — yes → no"; the working crowd has Hex, no purple line, 45 (RECORDED — right: his puck on a published day changed, D186) | FO* still |
+| S13 | SANS from Mon 13 Jul; Tue 14 Jul published with him named and behind ALL AVAIL; archive him | Tue: Hex still in the crowd (35), both ways; "1 pending", its one line "Hex · posted out — no → yes" (the briefing that names him — D327); no line about the crowd or OIL. Thu 16 Jul: 33 → 32, Hex out | not reopened |
+| S3 | A new man, post-in Fri 17 Jul, SANS ticked, named on Thu 16 Jul | In the crowd, the same both ways (RECORDED — question (o)); also seen: the crew list offers him before his post-in date | — |
+| S22 | Hex's briefing inside the event's hours | Out of the crowd, 44, both ways | — |
+| S23 | ALL AVAIL on a duty desk, and on OFT sim seats | The desk's and a back seat's count doors open and list Hex, both ways. **FAIL, older:** on a sim's FRONT seat a press on the count chip arms the empty back seat instead — filed (q) | — |
+| S28 | A posting with no chip chosen | "On 15 Jul: off the manpower, nothing else."; Hex out, 44, both ways | — |
+| The plain-user round | The posting sheet, the war's Settings, the ALL AVAIL window, OIL Earn — each opened and closed by ✕, Escape and a tap outside | Each opened and closed as it should; nothing left behind | — |
+
 ## 7. The cases carried by a test
 
 All in `src/leavewar/allavail-sans-posted.test.ts`; each calls the app's writers directly (the posting, the Quals tick,
@@ -103,6 +125,15 @@ in S1 and S13.
 
 ## 8. The pictures
 
+462 settled pictures and 684 taken within about 100 ms of a phone tap, under `docs/img/handpass/2026-11-22-allavail-sans-posted/`
+(`w1/<run>/`, `w2/`, `w2/taps/`). Opened by the host:
+
+- `w1/s1-desktop/05-s1-05-board-availwin-desktop.png` — the board on Sat 18 Jul, "+ SANS" off: "Who's available 45", Hex among the 17 WSOs.
+- `w1/s1-desktop/10-s1-09-lw-fo-desktop.png` — the Leave War: Hex's row hatched "PO" from 15 Jul, FO* standing on Sat 18 Jul.
+- `w1/s2-phone/11-s2-07-on-availwin-phone.png` — his iPhone's size, "+ SANS" on: the Saturday still ORIG, "SIGNED ORIG Ace Anvil Basher Bolt", Hex in the window with his purple line.
+- `w2/s13-s13-06-tue-on-win-desktop.png` — Tue 14 Jul after his archive: ORIG, "1 pending" (the briefing naming him), "Who's available 35" with Hex.
+- `w2/s23probe-chip-crop-desktop.png` — the sim seat's count chip beside the empty "+" box (the filed (q)).
+
 ## 9. The break tests
 
 The fix was built red-first, so each wired answer has a test that fails without it: commit `2785b1463` holds the first
@@ -111,6 +142,9 @@ three more failed on the first fix before the second (`F1` twice, `F2`) — run 
 filed fault (m) stands in the suite as `it.fails`.
 
 ## 10. Errors seen
+
+None in any final run of either walker: no console error, page error, failed request, 4xx or native dialog. Each walker's
+own script mistakes (nine in all) are listed in its report, each fixed and its scenario walked again from the start.
 
 ## 11. What was NOT walked, and why
 
@@ -133,10 +167,19 @@ plain-user round (S24). Set aside, each with its reason (§7.0):
 - **S25, S26** (the Leave War's own counts, warnings and links; withdrawing a credit already used): the war's display
   and tracking follow "+ SANS" by his D283 and are not changed (roll-call row 10); the withdrawal warning reads the
   ledger, which the fix reaches only through a published day's crowd — walked in S1 and S6.
+- **Within S23:** the passenger and extra-person lines, and ALL in place of ALL AVAIL — one calculation behind every landing
+  (`HOOKS.oilSentinel`); a desk, a sim back seat and the Common Programme were walked. **Within the plain-user round:** dragging
+  the ALL AVAIL window on a phone — the test browser makes no touch drag; the desktop drag passed.
+- **The third fix** (R9) was not walked: it changes only a SANS man who also holds a posting that is not a SANS one — no
+  scenario's state — and is carried by its two tests.
 - **S27** (another squadron's schedule in view): filed as (n) — a fault of its own in the two-squadron work, found by
   both readers, not this fix's to walk.
 
 ## 12. The gate counts
+
+On his PC (the repo is public — D1086): `src/leavewar/allavail-sans-posted.test.ts` 20 passed, 1 expected fail; the 76 test files
+that touch the crowd or postings 1,695 passed; `npx tsc -b` clean; the code check "no new finding". GitHub's run of pull
+request 825: green on `2a69462f9` and on `100fa3bb7`; the run on the last pushed commit is named in the closing report.
 
 ## 13. What the walk and the reads found, and each disposition
 
@@ -168,3 +211,9 @@ SANS man who also holds a posting that is not a SANS one — and leaves every wa
 same tests pass before and after). No re-walk; said in §11.
 
 ## 14. The Walk line
+
+`Walk: docs/handpass/2026-11-22-allavail-sans-posted.md · 462 pictures (and 684 phone tap pictures) · 9 surfaces · 15 orders and the plain-user round, each at a desktop's and his iPhone's size · MISSING: 1 filed (q), older`
+
+Carried by a test, not walked: the rows of §7. **What the walk found beside the change (older, filed):** (q) on the board, ALL
+AVAIL on an OFT sim's front seat — a press on its count chip arms the empty back seat instead of opening the ALL AVAIL window
+(walker w2, both sizes; one separate phone tap did open it; seen by the host in the walker's picture, not driven again).

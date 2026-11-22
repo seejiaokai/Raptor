@@ -1,0 +1,100 @@
+[
+ {
+  "run": "s2-desktop",
+  "scn": "s2",
+  "size": "desktop",
+  "id": "premise",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "run": "s2-desktop",
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-01",
+  "what": "Event input for ALL AVAIL on Sat 18 Jul 10:00–17:00 filed, OIL answered Yes",
+  "ok": true,
+  "note": "placeholder options [\"allavail\",\"all\"] · asked: OIL: ALL AVAIL, Event ✕ This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Back Add · read from window.INPUTS: {\"iid\":\"imrldi6xtarmmbk\",\"people\":[{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1784077206689}],\"type\":\"Event\",\"s\":600,\"e\":1020,\"oil\":{\"2026-07-18\":1},\"acc\":\"g\"}",
+  "pics": "s2-desktop/01-s2-01a-input-window-desktop.png, s2-desktop/03-s2-01c-filed-desktop.png"
+ },
+ {
+  "run": "s2-desktop",
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-02",
+  "what": "BRIEFING 08:00–09:00 naming Hex on the board; the input's row on the Common Programme",
+  "ok": true,
+  "note": "{\"prog\":\"BRIEFING\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\"} · rows {\"allhands\":[],\"ground\":[\"EVENT|allavail\",\"BRIEFING|rocky\"]}",
+  "pics": "s2-desktop/04-s2-02-board-rows-desktop.png"
+ },
+ {
+  "run": "s2-desktop",
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-03",
+  "what": "Hex posted out as SANS from Wed 15 Jul",
+  "ok": true,
+  "note": "line \"On 15 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s2-desktop/05-s2-03-postout-sheet-desktop.png"
+ },
+ {
+  "run": "s2-desktop",
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-04",
+  "what": "board, before Publish: the input row's window lists Hex (purple SANS line)",
+  "ok": true,
+  "note": "chips [{\"sent\":\"i:imrldi6xtarmmbk\",\"ver\":\"\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who is free as things stand now)\"}] · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null}",
+  "pics": "s2-desktop/06-s2-04-window-before-desktop.png"
+ },
+ {
+  "run": "s2-desktop",
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-05",
+  "what": "published (Publish day): nothing pending, the window lists Hex",
+  "ok": true,
+  "note": "{\"pend\":0,\"pendWords\":\"\",\"head\":\"\",\"notSigned\":false,\"notPub\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\"} · chip {\"sent\":\"i:imrldi6xtarmmbk\",\"ver\":\"\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who is free as things stand now)\"} · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null}",
+  "pics": "s2-desktop/07-s2-05-published-window-desktop.png"
+ },
+ {
+  "run": "s2-desktop",
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-06",
+  "what": "Hex's Leave War cell Sat 18 Jul reads FO",
+  "ok": true,
+  "note": "cell \"FO*\"",
+  "pics": "s2-desktop/08-s2-06-lw-cell-desktop.png"
+ },
+ {
+  "run": "s2-desktop",
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-07",
+  "what": "\"+ SANS\" on: nothing pending, signed, same count, Hex in the input's crowd, cell FO",
+  "ok": true,
+  "note": "pending 0 · signed \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\" · chip {\"sent\":\"i:imrldi6xtarmmbk\",\"ver\":\"\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who is free as things stand now)\"} · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null} · cell \"FO*\"",
+  "pics": "s2-desktop/09-s2-07-sans-on-settings-desktop.png, s2-desktop/10-s2-07-on-editsched-sat-desktop.png, s2-desktop/11-s2-07-on-availwin-desktop.png"
+ },
+ {
+  "run": "s2-desktop",
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-08",
+  "what": "\"+ SANS\" off: nothing pending, signed, same count, Hex in the input's crowd, cell FO",
+  "ok": true,
+  "note": "pending 0 · signed \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\" · chip {\"sent\":\"i:imrldi6xtarmmbk\",\"ver\":\"\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who is free as things stand now)\"} · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null} · cell \"FO*\"",
+  "pics": "s2-desktop/12-s2-08-sans-off-settings-desktop.png, s2-desktop/13-s2-08-off-editsched-sat-desktop.png, s2-desktop/14-s2-08-off-availwin-desktop.png"
+ },
+ {
+  "run": "s2-desktop",
+  "scn": "s2",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]
