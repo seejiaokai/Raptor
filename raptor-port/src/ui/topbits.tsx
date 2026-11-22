@@ -17,7 +17,6 @@ import { me } from '../state/perms'
 import { noticesFor, noticeWords, noticeAge } from '../state/notices'
 import { isUnread, unreadFor, markAllNoticesRead } from '../state/noticeseen'
 import { bellSquadrons, bellShows, setBellSquadron } from '../state/bellsqn'
-import { HOOKS } from '../engine/hooks'
 import { lineSqnMark } from '../state/belltap'
 import { useVersion } from './useStore'
 import { SquadronMenu } from './SquadronMenu'
@@ -154,11 +153,7 @@ function BellShowRow({ pid, sqns, last }: { pid: string; sqns: { id: string; num
       {sqns.map(s => {
         const shown = bellShows(pid, s.id)
         return <button type="button" key={s.id} className={'fchip' + (shown ? ' on' : '')} aria-pressed={shown}
-          onClick={() => {
-            /* a press that did not save is never silent (the second half's final reads, R1): the app's own words for it */
-            if (!setBellSquadron(s.id, !shown)) HOOKS.toast('This change could not be saved.', 'warn')
-            notify()
-          }}>{s.num}</button>
+          onClick={() => { setBellSquadron(s.id, !shown); notify() }}>{s.num}</button>
       })}
     </span>
   )

@@ -4,7 +4,8 @@
    (a bell switch is no Undo step); every later press — 149 off, say — was refused ("a bell switch that will not read"),
    because the writer (state/bellsqn.ts setBellSquadron) carried 150's id over and the gate (state/perms.ts
    bellSqnRowViolation) refuses an id not in the store. Now the writer drops the ids of squadrons no longer in the store
-   (the press's silence: ui/msq-fix3-bell-refused.test.tsx). Red first: the save was refused. */
+   (a word on a refused press is a question to him first — D1625 — so the button still says nothing). Red first: the
+   save was refused. */
 import { describe, it, expect } from 'vitest'
 import { act } from '@testing-library/react'
 import { useMsqWorld, signInAs, ACCT, PID } from '../test-support/msq-world'
