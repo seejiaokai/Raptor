@@ -1,0 +1,65 @@
+[
+ [
+  "R-D",
+  "desktop",
+  "ad9: Merlin Thu 26 Nov, Auto-approve off, LL",
+  "a bid (not approved) shows on the day",
+  "cell \"LL\" class  act hasc; approve state before: aria-pressed=null aria-checked=true class=pp-sw bp-sw on",
+  "PASS",
+  "d05-after-bid.png"
+ ],
+ [
+  "R-D",
+  "desktop",
+  "ad9: Merlin Tue 24 Nov, Grant OIL, reason, Give FO",
+  "FO on the day",
+  "cell \"FO\"",
+  "PASS",
+  "d07-after-grant.png"
+ ],
+ [
+  "R-D",
+  "desktop",
+  "ad: Admin -> Users -> Merlin -> Delete (twice); the stored history lines",
+  "filed under u149: Merlin deleted; bid removed 26 Nov; OIL award taken away 24 Nov",
+  "new lines: [[\"u149\",\"Merlin · deleted\",\"2026-11-19\"],[\"u149\",\"Leave War · Merlin · FO 24 Nov: OIL award taken away\",\"2026-11-24\"],[\"u149\",\"Leave War · Merlin · LL 26 Nov: bid removed\",\"2026-11-26\"],[\"u149\",\"Merlin · archived\",\"2026-11-19\"]]",
+  "PASS",
+  "d08-merlin-deleted.png"
+ ],
+ [
+  "R-D",
+  "desktop",
+  "ad9: the war after Merlin's delete",
+  "Merlin's row with nothing from today on",
+  "name \"Merlin\nB\" cells {\"2026-11-19\":\"PO\",\"2026-11-20\":\"PO\",\"2026-11-24\":\"PO\",\"2026-11-26\":\"PO\",\"2026-12-01\":\"PO\"}",
+  "RECORD",
+  "d09-ad9-war-after.png"
+ ],
+ [
+  "RE-bid",
+  "desktop",
+  "script step",
+  "completes",
+  "script error locator.click: Timeout 30000ms exceeded.",
+  "OWED",
+  "err-RE-bid.png"
+ ],
+ [
+  "RE-approvals",
+  "desktop",
+  "script step",
+  "completes",
+  "script error locator.click: Timeout 30000ms exceeded.",
+  "OWED",
+  "err-RE-approvals.png"
+ ],
+ [
+  "RE-access",
+  "desktop",
+  "script step",
+  "completes",
+  "script error locator.click: Timeout 30000ms exceeded.",
+  "OWED",
+  "err-RE-access.png"
+ ]
+]

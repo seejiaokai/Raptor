@@ -1,0 +1,65 @@
+[
+ [
+  "F4",
+  "iPhone",
+  "Saber (tab 1): Ranger posted out today via the sheet",
+  "posted out",
+  "page words: 142 TALON ↶ ↷ Grid Approvals 13 Balances OIL View My leave LVE 17.5 · OIL 0 · 0 pending › ▸ Manning Bidding closed Legen",
+  "RECORD",
+  "s-02-after-post.png"
+ ],
+ [
+  "F4",
+  "iPhone",
+  "Hunter (same tab, signed in fresh): bell after the posting, NOT opened further",
+  "a posting line, unread",
+  "dot \"block\"; [\"unread | RangerThu 19 Nov Posted out · off the manpower 16 h\"]",
+  "PASS",
+  "s-03-hunter-bell.png"
+ ],
+ [
+  "F4",
+  "iPhone",
+  "Saber (same tab): Undo post out on the sheet",
+  "posting taken back",
+  "page words: 142 TALON ↶ ↷ Grid Approvals 13 Balances OIL View My leave LVE 17.5 · OIL 0 · 0 pending › ▸ Manning Bidding closed Legen",
+  "RECORD",
+  "s-05-saber-after-undo.png"
+ ],
+ [
+  "F4",
+  "iPhone",
+  "Saber (same tab): his own bell after his Undo",
+  "nothing about it",
+  "dot \"none\"; []",
+  "PASS",
+  "s-06-saber-bell.png"
+ ],
+ [
+  "F4",
+  "iPhone",
+  "Hunter (same tab, fresh): bell after the take-back (he had not read it)",
+  "the posting line gone",
+  "dot \"none\"; []",
+  "PASS",
+  "s-07-hunter-bell-after-undo.png"
+ ],
+ [
+  "F5",
+  "iPhone",
+  "Leave War: Ranger's cell for today after the take-back",
+  "no posting mark",
+  "cell \"\"",
+  "RECORD",
+  "s-08-leavewar-ranger-row.png"
+ ],
+ [
+  "F5",
+  "iPhone",
+  "script step",
+  "completes",
+  "script error locator.tap: Timeout 30000ms exceeded.",
+  "OWED",
+  "err-F5.png"
+ ]
+]

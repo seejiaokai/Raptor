@@ -3,6 +3,7 @@
    (incl. an empty-delta correction, §6.1 GU5-001); readers never pick a retired
    record; disseminated vs silent (issuedDisclosed) governs the `logged` flag. */
 import { beforeEach, afterEach, describe, expect, it } from 'vitest'
+import { inView } from '../engine/unitview'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
 import {
@@ -63,7 +64,7 @@ describe('unpublish an Original → a plain draft, the Original retired', () => 
     expect(e.boundary!.ids).toEqual([origId])
     // the stream carries the Unpublish as a retraction beside the Original — the issuance itself is never touched
     // ([DB-READINESS] group A, phase 1 — R2-04: an Unpublish adds a retraction and never deletes or moves an issuance)
-    expect(e.changes.some(c => c.collection === 'sched.retraction' && c.op === 'put' && c.id === `${CURWEEK}:${origId}~0`)).toBe(true)
+    expect(e.changes.some(c => c.collection === 'sched.retraction' && c.op === 'put' && c.id === `${inView(CURWEEK)}:${origId}~0`)).toBe(true)
     expect(e.changes.some(c => c.collection === 'sched.issuance')).toBe(false)
   })
 })

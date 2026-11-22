@@ -2,7 +2,8 @@ import { DAYS } from './data'
 import { PEOPLE, whoId, isSpecial, callsignTakenBy, indexCallsigns } from './people'
 import { SCHED, markEdit, markDeletion, deletionWasIssued, markStructuralAdd, dayApproved, dropRowMarks, protectedWeek, dayCurVer, daySnapOf } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
-import { isOD, goesOnProg, INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx, holds, leadOf, isPlaceholderInput } from './inputs'
+import { UNIT } from './unitview'
+import { isOD, goesOnProg, INPUTS, inputsOnFirstDay, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx, holds, leadOf, isPlaceholderInput } from './inputs'
 import { shiftKeys, seatRow, iuParts } from './keys'
 import { inputProtected } from './quarantine'
 import { VCONF } from './rules'
@@ -656,7 +657,12 @@ export function acceptedDay(inp:any){
    recovery that keeps the row), and a multi-day 'g' still landed on another day. */
 export function reconcileDayFiling(di:any){
   const dt=(DAYS[+di]||{}).dt; if(dt==null)return;
-  INPUTS.forEach((inp:any)=>{
+  /* THE FILING AXIS IS THE LANDING SQUADRON'S (the fix round of 22 Nov 26, Fable's read F1 — the plan's F4 rule): the
+     requests that LAND on the schedule in view — its own by their FIRST day (inputsOnFirstDay, the list state/store.ts
+     landingInputs walks) — never the day's own list. Ranger's Training 14–17 Jul, 142's by its first day, is 149's on
+     Thu 16: walked from 149's Thursday it has no row in 149's week, so 149's Undo, plan switch, template apply or
+     version load deleted 142's accepted mark — or was refused whole by the gate. */
+  inputsOnFirstDay(UNIT).forEach((inp:any)=>{
     if(!inputCoversDate(inp,dt)||inputProtected(inp))return;
     /* 'u' (a global filing DECISION with no ground row) and 'r' (dormant) are not
        per-week ground landings — untouched. */

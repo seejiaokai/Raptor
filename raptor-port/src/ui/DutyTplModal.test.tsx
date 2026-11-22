@@ -108,6 +108,8 @@ describe('renaming the selected template', () => {
    reads off a minted block, so the editor must let an admin set it and the
    seed must open on the right answers. A <select>, so the change event is a
    plain 'change' with the option value. */
+/* a unit's setting is stored under its unit (multi-squadron batch 1, step 2 — engine/hooks.ts storedKey): the boot unit's
+   `stores` is the stored key `sqn142_u142@stores` */
 describe('the "For wave" picker', () => {
   const pick = async (value: string) => {
     const sel = $('.tpl-wave select') as HTMLSelectElement
@@ -137,7 +139,7 @@ describe('the "For wave" picker', () => {
     await click($$('.tpl-tab:not(.new)')[0]!)   // Standard
     await pick('avalon')
     expect(DUTYTPL_CFG[0]!.wave).toBe('avalon')
-    expect(JSON.parse(mem['sqn142_dutytpl']!)[0].wave).toBe('avalon')
+    expect(JSON.parse(mem['sqn142_u142@dutytpl']!)[0].wave).toBe('avalon')
     await pick('')
     expect(DUTYTPL_CFG[0]!.wave).toBe('')
   })

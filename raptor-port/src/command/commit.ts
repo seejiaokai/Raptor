@@ -332,9 +332,14 @@ function finalize(txn: TxnState): void {
   if (txn.boundary) txn.env.boundary = txn.boundary
   // per-record revision map (§3.3): every authoritative write advances the
   // touched record's revision; the envelope pins the causal result's revisions.
+  /* A-v (the reshape plan §3.2): the worlds' squadrons are stamped on the envelope first, and each record is counted
+     under the key the hook gives it — `<collection>/<unit>@<id>` for a Leave War or Tracker record — so 142's and 149's
+     `lw.config/all` are two records to Undo, never one */
+  const stamp = keyHook ? keyHook.stamp(txn.env.changes) : undefined
+  if (stamp) txn.env.stamp = stamp
   const revs: Record<string, number> = {}
   for (const c of txn.env.changes) {
-    const key = `${c.collection}/${c.id}`
+    const key = keyHook ? keyHook.key(c, stamp) : `${c.collection}/${c.id}`
     const next = (revisions.get(key) || 0) + 1
     revisions.set(key, next)
     revs[key] = next
@@ -549,6 +554,10 @@ export function commitPhase(): 'idle' | 'reducer' | 'post' { return phase }
    the command wrote ([DB-READINESS] group A, phase 6 (c): the holder base moves only for the days a command's rows name).
    null outside a command. */
 export function activeEnvelope(): CommitEnvelope | null { return active ? active.env : null }
+/* has the command now running enlisted this store yet? (its before-side is then set: what the store's records change
+   from here on rides the command's changes). False outside a command. Read by the scheduler's input command, which
+   decides from it whether the bell's before-image follows its resync (state/sched-commit.ts — fix read 8, fault W). */
+export function isEnlisted(key: string): boolean { return !!active && active.enlisted.has(key) }
 
 /* ---- stream + subscriptions ---------------------------------------------- */
 export function onCommit(fn: (env: CommitEnvelope) => void): () => void {
@@ -559,6 +568,24 @@ export function commandStream(): readonly CommitEnvelope[] { return stream }
 export function revisionOf(collection: string, id: string): number {
   return revisions.get(`${collection}/${id}`) || 0
 }
+
+/* ---- the record-key hook (the reshape plan §3.2 A-v) ----------------------
+   Undo compares records by key: the revision counted here, the envelope's `revs`, the expected revisions a restore pins.
+   A Leave War or Tracker record's id names no squadron — each squadron has a world of its own and the storage door adds
+   the squadron — so `lw.config/all` was one record for 142 and 149: an Undo in 142 was told "a later change touches the
+   same thing" about 149's change, and a background change in 149 barred a 142 step for good. The hook (installed by
+   state/undo-wire.ts, built in undo/derive.ts recordKey) stamps the envelope with each world's squadron as the command
+   ends and gives each record its key: `<collection>/<unit>@<id>` for those worlds, the second store's rows keyed as the
+   war's own record they are, every other record `<collection>/<id>` as before. None installed: as before. The command
+   layer imports nothing of Undo, hence the hook. */
+export interface RecordKeyHook {
+  /** the squadron each world held, for the worlds these changes wrote — or undefined */
+  stamp(changes: readonly Change[]): Record<string, string> | undefined
+  /** the record's key, given the envelope's stamp */
+  key(c: Change, stamp: Record<string, string> | undefined): string
+}
+let keyHook: RecordKeyHook | null = null
+export function setRecordKeyHook(h: RecordKeyHook | null): void { keyHook = h }
 
 /* ---- store registration for the debug guard ------------------------------ */
 export function registerGuardedStore(s: EnlistableStore): void {
@@ -575,5 +602,5 @@ export function _resetCommandEngine(): void {
   SEQ = 0; phase = 'idle'; active = null; deliveringSeq = undefined
   stream.length = 0; subscribers.length = 0; guardedStores.length = 0
   revisions.clear(); queue.length = 0; conflictChecker = null
-  txnWrapper = null; openTxn = null
+  txnWrapper = null; openTxn = null; keyHook = null
 }

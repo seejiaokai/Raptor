@@ -3,8 +3,8 @@
    without an account: round 1, Fable F12 / Astra 5); on his first sign-in after it he is told, under the top bar on
    every page, to check his quals and CAT. It changes nothing (D284). "Check my quals" opens his own Quals row (he edits
    it — D149); "Later" puts it away. Either clears `back` — his OWN row only (state/accounts.ts markBackSeen, the
-   `person.backSeen` command). An admin in the member view (D292) sees his own, never another's; a guest, a person
-   waiting and an account suspended never reach the Shell. The words are the approved mock-up's (docs/mock/one-door.html
+   `person.backSeen` command). An admin in the member view (D292) sees his own, never another's; a person waiting and
+   an account suspended never reach the Shell. The words are the approved mock-up's (docs/mock/one-door.html
    §6, D322). */
 import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'

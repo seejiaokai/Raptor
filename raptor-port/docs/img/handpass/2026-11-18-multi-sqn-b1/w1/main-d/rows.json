@@ -1,0 +1,101 @@
+[
+ [
+  "S1",
+  "desktop",
+  "ad9 adds ground row \"W149 GROUND\" with Kestrel on Wed 15 Jul, closes board",
+  "row is on 149 week",
+  "week shows W149 GROUND: true",
+  "PASS",
+  "s1-02-ad9-week-after-add.png"
+ ],
+ [
+  "S1",
+  "desktop",
+  "ad (142) looks at Wed 15 Jul on the week and on the board",
+  "no \"W149 GROUND\" on either",
+  "week: false; board: false; 142 ground rows: [\"MAINT CONF @ ENG WING\",\"NAV-SYS TRIAL PREP\"]",
+  "PASS",
+  "s1-03-ad-week.png, s1-04-ad-board-wed15.png"
+ ],
+ [
+  "S1",
+  "desktop",
+  "ad adds ground row \"W142 GROUND\" with Saber on Thu 16 Jul",
+  "row is on 142 week",
+  "week shows W142 GROUND: true",
+  "PASS",
+  "s1-06-ad-week-after-add.png"
+ ],
+ [
+  "S1",
+  "desktop",
+  "ad9 signs in again, looks at the week",
+  "W149 GROUND still there; no \"W142 GROUND\"",
+  "W149: true; W142: false",
+  "PASS",
+  "s1-07-ad9-week-again.png"
+ ],
+ [
+  "S2",
+  "desktop",
+  "ad9 publishes Wed 15 Jul",
+  "149 day shows published (version chip / button changes)",
+  "before: {\"beak\":\"Publish day\",\"chip\":\"DRAFT\",\"pend\":\"\"}; publish result: {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; after: {\"beak\":null,\"chip\":\"ORIG\",\"pend\":\"0 pending › ▾ Manning Bidding closed Le\"}",
+  "RECORD",
+  "s2-02-ad9-wed15-after-publish.png"
+ ],
+ [
+  "S2",
+  "desktop",
+  "ad looks at 142 Wed 15 after ad9 published",
+  "same as before: {\"beak\":\"Publish day\",\"chip\":\"DRAFT\",\"pend\":\"\"}",
+  "{\"beak\":\"Publish day\",\"chip\":\"DRAFT\",\"pend\":\"\"}",
+  "PASS",
+  "s2-03-ad-wed15-after-ad9-publish.png"
+ ],
+ [
+  "S2",
+  "desktop",
+  "ad9 renames the ground row on the published 15 Jul",
+  "pending amendment mark on 149 day",
+  "board: {\"beak\":null,\"chip\":\"ORIG\",\"pend\":\"1 pending i Publish AL1 Unpublish ⠿ Ove\"}; week: 1 pending i Publish AL1 Unpublish Signe",
+  "PASS",
+  "s2-04-ad9-wed15-after-amend-board.png, s2-05-ad9-week-after-amend.png"
+ ],
+ [
+  "S2",
+  "desktop",
+  "ad looks at 142 after ad9 amended 149",
+  "no new pending mark: {\"beak\":\"Publish day\",\"chip\":\"DRAFT\",\"pend\":\"\"}",
+  "board: {\"beak\":\"Publish day\",\"chip\":\"DRAFT\",\"pend\":\"\"}; week: ",
+  "FAIL",
+  "s2-06-ad-wed15-after-ad9-amend.png, s2-07-ad-week-after-ad9-amend.png"
+ ],
+ [
+  "S3",
+  "desktop",
+  "ad9 adds ground row A on Fri 17 then presses the top bar Undo once",
+  "the change goes",
+  "ground before: [\"GROUND SCHOOL - EW\",\"AIRCREW ADMIN\",\"W149 UNDO A\"]; after undo: [\"GROUND SCHOOL - EW\",\"AIRCREW ADMIN\",\"W149 UNDO A\"]",
+  "FAIL",
+  "s3-02-ad9-after-undo.png"
+ ],
+ [
+  "S3",
+  "desktop",
+  "ad signs in after ad9 made change B; reads Undo button",
+  "greyed / nothing of ad9s",
+  "{\"disabled\":true,\"title\":\"Undo\"}",
+  "PASS",
+  "s3-04-ad-undo-state.png"
+ ],
+ [
+  "S3",
+  "desktop",
+  "ad9 signs in again",
+  "change B still there; Undo list empty (greyed)",
+  "ground: [\"GROUND SCHOOL - EW\",\"AIRCREW ADMIN\",\"W149 UNDO A\",\"W149 UNDO B\"]; undo: {\"disabled\":true,\"title\":\"Undo\"}",
+  "PASS",
+  "s3-06-ad9-back.png"
+ ]
+]

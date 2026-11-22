@@ -18,6 +18,7 @@ import { SESSION, ME, setSession, setMe } from '../state/auth'
 import { SCHED } from '../engine/publish'
 import { stashClear, stashPut } from '../engine/weekstash'
 import { weekBundle } from '../engine/weeks-data'
+import { settleWorld } from '../test-support/world'
 
 const ISNAP = JSON.stringify(INPUTS)
 let said: string[] = []
@@ -33,6 +34,9 @@ beforeEach(() => {
   said = []
   kinds = []
   HOOKS.toast = ((m: any, k?: any) => { said.push(String(m)); kinds.push(k) }) as any
+  /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read) */
+  settleWorld()
 })
 afterEach(() => { HOOKS.toast = realToast })
 

@@ -1,0 +1,31 @@
+#!/bin/bash
+# D2235's full review: one copy per reader (fable-a/b/c, opus-a/b/c), each with its area's files and AREA.patch.
+set -e
+HEAD="$1"
+SRC=/c/Users/User/projects/Raptor-msq
+SP=/c/Users/User/AppData/Local/Temp/claude/37df10f156419f1e/84cddf99-d01b-4843-976a-f817810987f3/scratchpad
+OUT=$SP/frv
+B=raptor-port/docs/superpowers/briefs
+mkdir -p "$OUT"
+ALL=$(git -C "$SRC" diff --name-only origin/main "$HEAD" -- raptor-port/src ':(exclude)*.test.ts' ':(exclude)*.test.tsx' ':(exclude)raptor-port/src/state/perms.ts' ':(exclude)raptor-port/src/state/notices.ts' ':(exclude)raptor-port/src/state/units.ts')
+A=$(echo "$ALL" | grep -E '^raptor-port/src/(leavewar|tracker)/' || true)
+C=$(echo "$ALL" | grep -E '^raptor-port/src/(engine|ui|testing)/' || true)
+Bf=$(echo "$ALL" | grep -vE '^raptor-port/src/(leavewar|tracker|engine|ui|testing)/' || true)
+for area in a b c; do
+  case $area in a) F="$A"; L="A — the Leave War and the Tracker";; b) F="$Bf"; L="B — accounts, people, squadron records, saved data and Undo";; c) F="$C"; L="C — the engine and the screens";; esac
+  echo "$area: $(echo "$F" | wc -l) files"
+  for m in fable opus; do
+    D="$OUT/$m-$area"
+    rm -rf "$D"; mkdir -p "$D"
+    git -C "$SRC" archive "$HEAD" -- . ':(exclude)raptor-port/docs/img' ':(exclude)raptor-port/docs/handpass/**/*.png' ':(exclude)*.png' ':(exclude)*.jpg' | tar -x -C "$D"
+    node "$SP/blank-block.mjs" "$D/HANDOFF.md"
+    git -C "$SRC" diff origin/main "$HEAD" -- $F > "$D/AREA.patch"
+    LIST=$(echo "$F" | sed 's/^/`/; s/$/`/' | paste -sd ',' - | sed 's/,/, /g')
+    node -e 'const fs=require("fs");const [p,o,h,a,l]=process.argv.slice(1);let s=fs.readFileSync(p,"utf8");s=s.split("@@HEAD@@").join(h).split("@@AREA@@").join(a).split("@@FILES@@").join(l);fs.writeFileSync(o,s)' "$D/$B/2026-11-20-multi-sqn-b1-full-review-brief.md" "$D/BRIEF.md" "$HEAD" "$L" "$LIST"
+    rm -f "$D"/$B/*fixread* "$D"/$B/*fable-sample*
+    WIN=$(cygpath -w "$D/raptor-port/node_modules")
+    NM=$(cygpath -w /c/Users/User/projects/Raptor/raptor-port/node_modules)
+    MSYS_NO_PATHCONV=1 cmd /c mklink /J "$WIN" "$NM" > /dev/null
+    echo "$m-$area ready ($(wc -l < "$D/AREA.patch") patch lines)"
+  done
+done

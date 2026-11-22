@@ -1,0 +1,29 @@
+[
+ [
+  "F4",
+  "desktop",
+  "Saber: Leave War, Ranger's day window, ⋯, Post out, Overseas Sqn chip, Post out",
+  "posted out today (sheet closes, a note)",
+  "sheet words: Ranger Thu 19 Nov Auto-approve ✕ No manning row turns amber or red till 19 Nov Document Whole day AM PM Pick a range LL 11.5 OL 11.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 PO FROM Thu 19 Nov 26 ▾ POSTING ✓ Overseas Sqn Del; Ranger now: {\"cs\":\"Ranger\",\"posted\":null,\"status\":null,\"keys\":[]}; undo: undoBtn disabled=true; redoBtn disabled=true; page words: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Saber · Admin Grid Approvals 13 Balances OIL View My",
+  "RECORD",
+  "f4-05-after-post.png"
+ ],
+ [
+  "F4",
+  "desktop",
+  "Hunter (tab 2): bell after the posting",
+  "a posting line",
+  "dot \"block\"; [\"NEW RangerThu 19 Nov Posted out · off the manpower 14 h\"]",
+  "PASS",
+  "f4-06-hunter-bell.png"
+ ],
+ [
+  "F4-undo",
+  "desktop",
+  "script step",
+  "completes",
+  "script error locator.click: Timeout 30000ms exceeded.",
+  "OWED",
+  "err-F4-undo.png"
+ ]
+]

@@ -1,0 +1,56 @@
+[
+ [
+  "H-1",
+  "iPhone del",
+  "Saber places approved AM-half LL for Ranger 27 Jul (portion-am, bid-LL), words \"morning words\"",
+  "half placed",
+  "switch true; cell \"LL\"; window open 0",
+  "RECORD",
+  "h1-phone-del-placed.png"
+ ],
+ [
+  "H-2",
+  "iPhone del",
+  "Hunter places approved PM-half LL for Ranger 27 Jul, words \"afternoon words\"",
+  "both halves in the cell",
+  "switch true; cell \"LLLL\"; window open 0",
+  "RECORD",
+  "h2-phone-del-cell.png"
+ ],
+ [
+  "H-3",
+  "iPhone del",
+  "Saber on PM half only: bid-clear",
+  "PM gone/not approved; AM stands with morning words; window not claiming done",
+  "cell before \"LLLL\"; window before \"NO WINDOW\"; window@110ms \"Ranger Mon 27 Jul Auto-approve ✕ No manning row is amber or red Placed Saber · Fri 17 Jul, 09:00 · Approved Saber · Fri 17 Jul, 09:00 Approved Refuse ⇄Move Delete till 27 Jul Document Whole day AM PM Pick a range <LL 12 <OL 12 <OIL 0 <CCL 2 <FCL 5 <PL 1.5 <EL 4 <CL 0 CSE OD Grant OIL ⋯\"; after \"Ranger Mon 27 Jul Auto-approve ✕ No manning row is amber or red Placed Saber · Fri 17 Jul, 09:00 · Approved Saber · Fri 17 Jul, 09:00 Approved Refuse ⇄Move Delete till 27 Jul Document Whole day AM PM Pick a range <LL 12 <OL 12 <OIL 0 <CCL 2 <FCL 5 <PL 1.5 <EL 4 <CL 0 CSE OD Grant OIL ⋯\" (no confirm); window open 1; cell after \"LL\"",
+  "RECORD",
+  "h3-phone-del-settled.png"
+ ],
+ [
+  "H-4",
+  "iPhone del",
+  "reload as Saber, Ranger 27 Jul",
+  "same as H-3 settled",
+  "cell \"LL\"; window \"Ranger Mon 27 Jul Auto-approve ✕ No manning row is amber or red Placed Saber · Fri 17 Jul, 09:00 · Approved Saber · Fri 17 Jul, 09:00 Approved Refuse ⇄Move Delete till 27 Jul Document Whole day AM PM Pick a range <LL 12 <OL 12 <OIL 0 <CCL 2 <FCL 5 <PL 1.5 <EL 4 <CL 0 CSE OD Grant OIL ⋯\"; remarks [\"morning words\"]",
+  "RECORD",
+  "h4-phone-del-reloaded.png"
+ ],
+ [
+  "H-5a",
+  "iPhone del",
+  "us bell",
+  "no \"Remark changed\" line",
+  "badge {\"dot\":\"block\",\"text\":\"\",\"aria\":\"Notifications\"}; lines [\"NEW Your leaveMon 27 Jul LL (PM) deleted · Saber now\",\"NEW LLMon 27 Jul Remark changed · Hunter 1 min\",\"NEW Your leaveMon 27 Jul LL (PM) added and approved · Hunter 1 min\",\"NEW Your leaveMon 27 Jul LL (AM) added and approved · Saber 1 min\",\"NEW Leave War17 Jul – 31 Jul Bidding open · Saber 1 min\"]",
+  "FAIL",
+  "H-5a-phone-del-us-bell.png"
+ ],
+ [
+  "H-5b",
+  "iPhone del",
+  "ad2 bell",
+  "no \"Remark changed\" line",
+  "badge {\"dot\":\"block\",\"text\":\"\",\"aria\":\"Notifications\"}; lines [\"NEW Leave War17 Jul – 31 Jul Bidding open · Saber 1 min\"]",
+  "PASS",
+  "H-5b-phone-del-ad2-bell.png"
+ ]
+]

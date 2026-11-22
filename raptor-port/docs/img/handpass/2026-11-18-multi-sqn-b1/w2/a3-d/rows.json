@@ -1,0 +1,74 @@
+[
+ [
+  "T1",
+  "desktop",
+  "ad9 adds ground row \"W2 UNDO\" with Kestrel on Fri 17, presses top bar Undo one at a time",
+  "goes within 4 presses (RECORD count)",
+  "presses: 2; ground after each: [\"W2 UNDO\"] -> [\"\"]; gone: true; start: [\"W2 UNDO\"]",
+  "PASS",
+  "t1-01-after-add.png, t1-02-undo-*.png"
+ ],
+ [
+  "T1",
+  "desktop",
+  "ad9 presses Redo once",
+  "RECORD whether it comes back",
+  "ground: [\"W2 UNDO\"]; W2 UNDO back: true",
+  "RECORD",
+  "t1-03-after-redo.png"
+ ],
+ [
+  "T1",
+  "desktop",
+  "ad signs in; reads Undo button",
+  "greyed (disabled)",
+  "{\"disabled\":true,\"aria\":null}; 142 Fri17 ground: [\"GROUND SCHOOL - EW\",\"AIRCREW ADMIN\"]",
+  "PASS",
+  "t1-05-ad-undo-state.png"
+ ],
+ [
+  "T1",
+  "desktop",
+  "ad9 signs in again",
+  "W2 UNDO still on Fri 17; Undo greyed",
+  "ground: [\"W2 UNDO\"]; undo: {\"disabled\":true,\"aria\":null}",
+  "PASS",
+  "t1-06-ad9-back.png"
+ ],
+ [
+  "T2",
+  "desktop",
+  "ad9 Logic: Long work day 12h -> 13h, Done",
+  "shows new value",
+  "before: [\"Crew rest=12h\",\"Days in a row=6 days\",\"Long work day=12h\",\"Default rally before take-off=3h\",\"Brief before take-off=2h20\",\"Step before take-off=1h\",\"Dekit after landing=30 min\",\"Debrief after landing=2h\"]; after: [\"Crew rest=12h\",\"Days in a row=6 days\",\"Long work day=13h\",\"Default rally before take-off=3h\",\"Brief before take-off=2h20\",\"Step before take-off=1h\",\"Dekit after landing=30 min\",\"Debrief after landing=2h\"]",
+  "PASS",
+  "t2-02-ad9-changed.png, t2-03-ad9-after-done.png"
+ ],
+ [
+  "T2",
+  "desktop",
+  "ad (142) opens Logic",
+  "Long work day still 12h",
+  "[\"Crew rest=12h\",\"Days in a row=6 days\",\"Long work day=12h\",\"Default rally before take-off=3h\",\"Brief before take-off=2h20\",\"Step before take-off=1h\",\"Dekit after landing=30 min\",\"Debrief after landing=2h\"]",
+  "PASS",
+  "t2-04-ad-logic.png"
+ ],
+ [
+  "T2",
+  "desktop",
+  "ad9 opens Logic again",
+  "Long work day 13h",
+  "[\"Crew rest=12h\",\"Days in a row=6 days\",\"Long work day=13h\",\"Default rally before take-off=3h\",\"Brief before take-off=2h20\",\"Step before take-off=1h\",\"Dekit after landing=30 min\",\"Debrief after landing=2h\"]",
+  "PASS",
+  "t2-05-ad9-logic-again.png"
+ ],
+ [
+  "T2",
+  "desktop",
+  "ad9 puts Long work day back to 12h",
+  "restored",
+  "[\"Crew rest=12h\",\"Days in a row=6 days\",\"Long work day=12h\",\"Default rally before take-off=3h\",\"Brief before take-off=2h20\",\"Step before take-off=1h\",\"Dekit after landing=30 min\",\"Debrief after landing=2h\"]",
+  "RECORD",
+  "t2-06-ad9-restored.png"
+ ]
+]

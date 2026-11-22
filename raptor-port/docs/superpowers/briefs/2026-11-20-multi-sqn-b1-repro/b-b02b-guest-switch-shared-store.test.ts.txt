@@ -1,0 +1,42 @@
+// @vitest-environment jsdom
+/* B2, its shared-store half (Fable 2a, shape 2): on a shared store whose first squadron is not 142, the guest switch of
+   the ONLY squadron does nothing — a person waiting has no home, so his session sits on the literal BOOT_UNIT 'u142'
+   (engine/unitview.ts; store.ts sessionUnit), a squadron that does not exist, and reads its (absent) switch. Harness as
+   boot.test.ts (the app's real boot). */
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { signIn, sessionFor, requestAccess, setGuestView, GUESTVIEW } from '../state/accounts'
+import { resetSession, notify } from '../state/store'
+import { setSession } from '../state/auth'
+import { units } from '../state/units'
+import { MemoryBackend } from '../storage/memory'
+import { bootApp } from '../boot'
+import type { BootPolicy } from '../bootpolicy'
+
+const POLICY: BootPolicy = { seedDemo: false, bootstrap: { principal: 'boss@unit.example', person: { cs: 'Boss', ini: 'BS', seat: 'FCP', cat: 'A' }, unit: { num: '149' } } as any }
+async function boot(be: MemoryBackend) {
+  const p = bootApp(be, POLICY)
+  const settled = p.then(() => null, (e: unknown) => e)
+  await vi.advanceTimersByTimeAsync(be.latency + 1)
+  const err = await settled
+  if (err) throw err
+}
+const signInAs = (name: string, pass: string) => { const r = signIn(name, pass); resetSession(sessionFor(r)); notify(); return r }
+const signOut = () => { setSession(null); resetSession(null); notify() }
+
+beforeEach(() => { vi.useFakeTimers() })
+afterEach(() => { signOut(); vi.useRealTimers() })
+
+describe('B2 (shared store, first squadron 149) — its guest switch lets the person waiting in', () => {
+  it('the admin turns it on; the person waiting signs in as a guest', async () => {
+    await boot(new MemoryBackend())
+    expect(units().map(u => u.num)).toEqual(['149'])
+    expect(signInAs('new@unit.example', 'p').kind).toBe('new')
+    expect(requestAccess({ cs: 'Newbie', ini: 'NB', seat: 'FCP', cat: 'C' })).toBeNull()
+    signOut()
+    expect(signInAs('boss@unit.example', 'p').kind).toBe('ok')
+    expect(setGuestView(true)).toBeNull()
+    expect(GUESTVIEW).toBe(true)
+    signOut()
+    expect(signIn('new@unit.example', 'p').kind).toBe('guest')
+  })
+})

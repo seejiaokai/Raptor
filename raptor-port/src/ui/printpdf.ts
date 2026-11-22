@@ -14,7 +14,7 @@
    print dialog is not. */
 import { esc } from '../state/view'
 import { DAYS } from '../engine/data'
-import { schedRows, publishedDays, dayIssuedLabel } from './export'
+import { schedRows, publishedDays, dayIssuedLabel, sqnNum } from './export'
 
 const HEAD = ['Day', 'Date', 'Wave', 'CS', 'Mission', 'Rally', 'Brief', 'TO', 'Land', 'FCP', 'FCP lvl', 'RCP', 'RCP lvl', 'Area', 'Area time', 'Rmks', 'Stores']
 /* column index by header name, so the report reads by meaning not position */
@@ -29,6 +29,8 @@ function crewCell(cs: string, lvl: string) {
 }
 
 export function schedPrintHTML(rows: any[][], weekLabel: string, dayLabel?: (dayName: string) => string): string {
+  /* the schedule's own number — title and heading (D2184 R29; ui/export.ts sqnNum) */
+  const num = esc(sqnNum('schedule'))
   const body = rows.slice(1)
   /* group the flat rows by day (column 0 carries the day name) — one titled block
      per day, the report's single clean layout instead of one long table. */
@@ -68,7 +70,7 @@ export function schedPrintHTML(rows: any[][], weekLabel: string, dayLabel?: (day
   }).join('')
   const now = new Date()
   const gen = `${String(now.getDate()).padStart(2, '0')} ${now.toLocaleString('en', { month: 'short' })} ${now.getFullYear()}, ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
-  return `<!doctype html><html><head><meta charset="utf-8"><title>142 Flying Programme — ${esc(weekLabel)}</title><style>
+  return `<!doctype html><html><head><meta charset="utf-8"><title>${num} Flying Programme — ${esc(weekLabel)}</title><style>
 @page{size:A4 portrait;margin:14mm 12mm}
 *{box-sizing:border-box}
 body{font-family:'Segoe UI',system-ui,-apple-system,Arial,sans-serif;color:#1a1a1a;background:#fff;margin:0;font-size:10px;line-height:1.35}
@@ -95,7 +97,7 @@ td.rmk{color:#333}
 tbody tr:nth-child(even) td{background:#fafafa}
 </style></head><body>
 <div class="mark">RESTRICTED</div>
-<header><h1>142 — Flying Programme</h1><div class="wk">${esc(weekLabel)}</div><div class="gen">Generated ${esc(gen)} · published schedule</div></header>
+<header><h1>${num} — Flying Programme</h1><div class="wk">${esc(weekLabel)}</div><div class="gen">Generated ${esc(gen)} · published schedule</div></header>
 ${blocks}
 <div class="mark" style="margin-top:10px">RESTRICTED</div>
 </body></html>`

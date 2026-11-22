@@ -3,8 +3,9 @@
    REPLACES roletoggle.test.tsx: the admin's "View as member" toggle it pinned (27 Aug 26) is
    gone — "There isint a need for preview as a member" (D166 (3)) — and so is the "View as"
    picker; these tests pin their ABSENCE, the badge that names the signed-in person, the
-   access screens and the walled-off guest view (D204), the Admin tab's waiting badge and the
-   Users panel (D166 (1)). Register lines AC10–AC13. */
+   access screens (D204), the Admin tab's waiting badge and the Users panel (D166 (1)).
+   Register lines AC10–AC13. The walled-off guest view (D204, D221, D215, D213) is removed
+   by his D2239 (20 Nov 26): the tests that pinned it now pin its absence. */
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
@@ -15,7 +16,7 @@ import { storeBackend } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
-import { accountsLoad, signIn, sessionFor, requestAccess, setGuestView, ACCESS_REQS, accountByName } from '../state/accounts'
+import { accountsLoad, signIn, sessionFor, requestAccess, ACCESS_REQS, accountByName } from '../state/accounts'
 import { getState as lwState } from '../leavewar/state/store'
 import { viewerId, roleOf } from '../state/perms'
 import { setPage, BACKPROMPT } from '../state/view'
@@ -45,6 +46,13 @@ const signInAs = async (name: string, pass = 'x') => act(async () => { resetSess
 /* a sign-up as the card sends it ([ACCOUNTS-NEW-PERSON] — D214: callsign/name, initials, seat, CAT) */
 const ask = (cs: string, o: { ini?: string; seat?: string; cat?: string } = {}) =>
   requestAccess({ cs, ini: o.ini ?? 'JB', seat: o.seat ?? 'FCP', cat: o.cat ?? 'C' })
+/* THE GUEST SWITCH AS AN OLDER BUILD STORED IT (his D2239, 20 Nov 26 removed it): under every name it was stored by — the
+   plain one, and 142's. Read by nothing now (D56); the tests below that once turned the switch on store it instead, to pin
+   that it lets nobody in. (Read back after a reload: state/accounts.test.ts and B2's proofs — this file's fake store
+   cannot list rows, so a reload here would drop the requests the tests make.) */
+const OLD_SWITCH = ['guestview', 'u142@guestview']
+const storeOldSwitch = () => { for (const k of OLD_SWITCH) mem['sqn142_' + k] = 'true' }
+const clearOldSwitch = () => { for (const k of OLD_SWITCH) delete mem['sqn142_' + k] }
 
 const mem: Record<string, string> = {}
 let host: HTMLDivElement
@@ -63,21 +71,23 @@ afterAll(async () => {
 })
 beforeEach(async () => { await act(async () => { resetSession(null); notify() }) })
 
-describe('D1873 — the fixed bar reserves space in both app trees and leaves none at sign-in', () => {
-  it('measures the guest bar on entry, then the main bar, and clears the height on sign-out', async () => {
+/* (rewritten to his D2239: it measured the guest page's bar, the second app tree; the guest view is removed, so a person
+   waiting — an old switch stored or not — gets the waiting screen, which has no fixed bar and reserves no room) */
+describe('D1873 — the fixed bar reserves space in the app\'s tree and leaves none at sign-in or on the waiting screen', () => {
+  it('a person waiting reserves no bar, there is no guest page; then the main bar, and the height cleared on sign-out', async () => {
     const rect = HTMLElement.prototype.getBoundingClientRect
     const measured = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
-      if (this.matches('#guestApp > .topbar')) return { height: 52.375, top: 0, bottom: 52.375 } as DOMRect
       if (this.matches('#shell > .topbar')) return { height: 86.375, top: 0, bottom: 86.375 } as DOMRect
       return rect.call(this)
     })
     const height = () => document.documentElement.style.getPropertyValue('--topbar-h')
     try {
       await signInAs('bar1873@mail'); ask('Bar1873')
-      await signInAs('ad', 'a'); setGuestView(true)
+      storeOldSwitch()
       await signInAs('bar1873@mail')
-      expect($('#guestApp')).toBeTruthy()
-      expect(height()).toBe('52.375px')
+      expect($('#accessWaiting'), 'the waiting screen').toBeTruthy()
+      expect($('#guestApp'), 'never a guest page').toBeFalsy()
+      expect(height(), 'no bar, no room reserved').toBe('')
       await signInAs('ad', 'a')
       expect($('#shell')).toBeTruthy()
       expect(height()).toBe('86.375px')
@@ -86,7 +96,7 @@ describe('D1873 — the fixed bar reserves space in both app trees and leaves no
       expect(height()).toBe('')
     } finally {
       measured.mockRestore()
-      await signInAs('ad', 'a'); setGuestView(false)
+      clearOldSwitch()
       await act(async () => { resetSession(null); notify() })
     }
   })
@@ -170,30 +180,35 @@ describe('AC11 — the access screens (D204)', () => {
     expect($('#shell')).toBeFalsy()
     await signInAs('ad', 'a'); updateAccount('achex', { on: true })
   })
-  it('waiting, with the guest switch on: "View the schedule" goes straight into the guest view (D221); off, no button', async () => {
+  /* rewritten to his D2239 (20 Nov 26), which replaces D221: it pinned the waiting screen's "View the schedule" button
+     into the guest view; the button and the view are removed, so it pins their absence, an old switch stored or not */
+  it('waiting: no "View the schedule" button and no guest view, whatever switch an older build stored (D2239)', async () => {
     await signInAs('wait1@mail')
     await type($('#accCs') as HTMLInputElement, 'W1')
     await type($('#accSeat') as HTMLSelectElement, 'GND')
     await act(async () => { $('#accForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })) })
     expect($('#accessWaiting')).toBeTruthy()
     expect($('#accessWaiting')!.closest('.login')!.querySelector('.lb-word')!.textContent, 'D1606 — the access screen names the app TALON').toBe('TALON')
-    expect($('#accGuest'), 'the switch is off: no button').toBeFalsy()
-    await signInAs('ad', 'a'); setGuestView(true)
+    expect($('#accGuest'), 'no button').toBeFalsy()
+    storeOldSwitch()
     await signInAs('wait1@mail')
-    expect($('#guestApp'), 'a fresh sign-in with the switch on is already the guest view').toBeTruthy()
-    await click($('#guestOut')); await act(async () => { await Promise.resolve() })
-    /* the waiting screen itself, while the switch is on: the button */
-    await act(async () => { resetSession({ user: 'principal:wait1@mail', role: 'pending', pid: null, name: 'wait1@mail' }); notify() })
+    expect($('#guestApp'), 'a fresh sign-in is the waiting screen, never the guest view').toBeFalsy()
     expect($('#accessWaiting')).toBeTruthy()
-    await click($('#accGuest'))
-    expect($('#guestApp'), 'one tap into the guest view').toBeTruthy()
-    expect(roleOf()).toBe('guest')
-    await signInAs('ad', 'a'); setGuestView(false)
+    expect($('#accGuest'), 'still no button').toBeFalsy()
+    expect($('#accessWaiting').textContent, 'nothing offers the schedule').not.toContain('View the schedule')
+    expect(roleOf()).toBe('pending')
+    /* what the foot shows without it: the three steps, Sign out, "Signed in as …" — nothing in the button's place */
+    const foot = [...document.querySelectorAll('#accessWaiting .pass-foot > *')].map(n => n.tagName.toLowerCase() + (n.className ? '.' + n.className : ''))
+    expect(foot).toEqual(['ol.pass-steps', 'button.acc-out', 'p.pass-who'])
+    clearOldSwitch()
   })
 })
 
-describe('AC12 — the guest sees the published week only, walled off (D204; medical in full, D213)', () => {
-  it('none of the app is mounted; an unpublished day shows as members see it (D215); a medical input reads in full (D213)', async () => {
+/* rewritten to his D2239 (20 Nov 26), which replaces D215 and D213: it pinned the guest reading the published week and a
+   medical input in full; the guest view is removed, so a person waiting reads none of the programme, whatever switch an
+   older build stored */
+describe('AC12 — a person waiting sees none of the programme: no guest view (D2239)', () => {
+  it('none of the app is mounted, no week is drawn, and no medical input or day of the schedule reaches him', async () => {
     /* a published day carrying a medical input */
     const dt = DAYS[0].dt
     INPUTS.unshift({ iid: 'medg', person: 'dj', type: 'OML', date: dt, allday: true, remarks: 'secret diagnosis', mod: '2026-01-01' } as any)
@@ -206,28 +221,18 @@ describe('AC12 — the guest sees the published week only, walled off (D204; med
     })
     expect(dayApproved(0), 'the fixture day is published').toBe(true)
     await signInAs('guesty@mail'); ask('G')
-    await signInAs('ad', 'a'); setGuestView(true)
+    storeOldSwitch()
     await signInAs('guesty@mail')
-    expect($('#guestApp')).toBeTruthy()
-    expect($('#guestApp .tx')!.textContent, "D1606 — the guest's bar names the app TALON").toBe('142TALON')
+    expect($('#guestApp'), 'no guest page').toBeFalsy()
+    expect($('#accessWaiting'), 'the waiting screen, and only it').toBeTruthy()
     expect($('#shell')).toBeFalsy()
-    for (const sel of ['#topnav', '#viewAs', '#notifyBell', '#insightBtn', '#page-editsched', '#page-inputs', '#page-admin'])
-      expect($(sel), `${sel} is not mounted for a guest`).toBeFalsy()
-    expect($('#guestApp').textContent, 'D213 — a guest sees medical inputs too').toContain('secret diagnosis')
-    expect($('#guestApp .day[data-day="0"]')!.textContent, 'the published day is drawn').not.toContain('Not published yet')
-    expect($('#guestApp .day[data-day="0"]')!.textContent).toContain('OML')
-    /* D215 — "What members see": a day not yet published shows as it stands, read only */
-    expect($('#guestApp').textContent).not.toContain('Not published yet')
-    expect($$('#guestApp .day[data-day="1"] .day-body').length, 'an unpublished day is drawn').toBe(1)
-    expect($$('#guestApp select[data-vwork]')).toHaveLength(0)
-    /* the walk (26 Sep 26): his tree mounts no day panel and no warning list, so neither
-       door is drawn — no ⓘ, no "tap to review", no day name that looks tappable */
-    expect($$('#guestApp .day[data-day="0"]')).toHaveLength(1)
-    expect($$('#guestApp [data-dayinfo]')).toHaveLength(0)
-    expect($$('#guestApp .dinfobtn')).toHaveLength(0)
-    expect($$('#guestApp [data-daywarn], #guestApp .dwbox')).toHaveLength(0)
+    for (const sel of ['#topnav', '#viewAs', '#notifyBell', '#insightBtn', '#page-viewsched', '#page-editsched', '#page-inputs', '#page-admin'])
+      expect($(sel), `${sel} is not mounted for a person waiting`).toBeFalsy()
+    expect($$('.day'), 'no day of the week is drawn').toHaveLength(0)
+    expect(document.body.textContent, 'the medical input never reaches him').not.toContain('secret diagnosis')
+    expect(document.body.textContent).not.toContain('OML')
     INPUTS.splice(INPUTS.findIndex((r: any) => r.iid === 'medg'), 1)
-    await signInAs('ad', 'a'); setGuestView(false)
+    clearOldSwitch()
   })
 })
 
@@ -332,9 +337,9 @@ describe('PO3 — Suspend / Enable, "suspended", the sign-in (D285, D300)', () =
 
 /* D1657 (5 Nov 26, "the rest as recommended" — [GUEST-SAVE-WARNING], answering the member / guest check's finding): when a
    save has failed, the "Not saved — keep this page open · Retry" band shows on the sign-in screen, the screen after asking
-   for access and the guest page too, the page moved down under it so nothing is covered — so a stranger whose request
+   for access (and, until the guest view went with D2239, the guest page too), the page moved down under it so nothing is covered — so a stranger whose request
    was not saved is never told it was sent. Its Retry saves, and the band goes. */
-describe('D1657 — the failed-save band on the sign-in, the access screens and the guest page', () => {
+describe('D1657 — the failed-save band on the sign-in and the access screens (the guest page gone, D2239)', () => {
   const be = new MemoryBackend(), wb = new Whiteboard(), pm = new Postman(be)
   beforeAll(() => { pm.attach(wb); setSaveStatusSource(pm) })
   const fail = async () => {
@@ -389,20 +394,22 @@ describe('D1657 — the failed-save band on the sign-in, the access screens and 
     expect($('#accessWaiting .pass-state').classList.contains('unsent')).toBe(false)
     expect(steps()).toEqual(['done:Request sent', 'now:An admin approves', ":You're on the schedule"])
   })
-  it('the guest page: the band is the guest bar last line, as on every other page', async () => {
-    await signInAs('ad', 'a'); setGuestView(true)
+  /* rewritten to his D2239: it pinned the band as the guest page's bar's last line; the guest page is removed, so a
+     person waiting with an old switch stored is on the waiting screen, and the band is across its top there */
+  it('a person waiting, an old guest switch stored: no guest page — the band across his waiting screen, moved down under it', async () => {
+    storeOldSwitch()
     await signInAs('band1657@mail')
-    expect($('#guestApp')).toBeTruthy()
+    expect($('#guestApp'), 'no guest page').toBeFalsy()
+    expect($('#accessWaiting')).toBeTruthy()
     await fail()
-    const bar = $('#guestApp .topbar.guestbar')
-    expect(bar.classList.contains('save-failed'), 'the bar makes room').toBe(true)
-    const band = bar.querySelector('.savestat.failed') as HTMLElement
-    expect(band, 'the band in the bar').toBeTruthy()
+    const band = $('.saveband.is-screen')
+    expect(band, 'the band').toBeTruthy()
     expect(band.textContent).toContain('Not saved — keep this page open')
+    expect($('#accessWaiting').classList.contains('band-up'), 'the screen moved down under it').toBe(true)
     await retry(band)
-    expect(bar.classList.contains('save-failed')).toBe(false)
-    expect($('#guestApp .savestat.failed')).toBeFalsy()
-    await signInAs('ad', 'a'); setGuestView(false)
+    expect($('.saveband')).toBeFalsy()
+    expect($('#accessWaiting').classList.contains('band-up')).toBe(false)
+    clearOldSwitch()
   })
   /* D1873 (round 2): the bar is fixed now, so the page moves down under the band only when --topbar-h changes. The bar's
      own resize watch writes it a frame late (to stay out of the browser's resize-watch loop), so the band's coming and
@@ -411,7 +418,7 @@ describe('D1657 — the failed-save band on the sign-in, the access screens and 
   it('D1873 — the band moves the page in the same frame: the reserved height follows the bar as the band comes and goes', async () => {
     const rect = HTMLElement.prototype.getBoundingClientRect
     const measured = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
-      if (this.matches('#shell > .topbar, #guestApp > .topbar')) {
+      if (this.matches('#shell > .topbar')) {
         const h = this.classList.contains('save-failed') ? 94.375 : 58.375
         return { height: h, top: 0, bottom: h } as DOMRect
       }
@@ -435,20 +442,22 @@ describe('D1657 — the failed-save band on the sign-in, the access screens and 
       expect(height(), 'and back up when it went').toBe('58.375px')
       expect(atNotice, 'the room was already right before the band was painted, both ways').toEqual(['94.375px', '58.375px'])
       window.removeEventListener('resize', onResize)
+      /* (the guest page measured here too until D2239 removed it: a person waiting, an old switch stored, is on the
+         waiting screen, which moves down under the band by its own class, never by the bar's reserved room) */
       await signInAs('band1873@mail'); ask('Band1873')
-      await signInAs('ad', 'a'); setGuestView(true)
+      storeOldSwitch()
       await signInAs('band1873@mail')
-      expect($('#guestApp')).toBeTruthy()
-      expect(height()).toBe('58.375px')
+      expect($('#guestApp'), 'no guest page').toBeFalsy()
+      expect($('#accessWaiting')).toBeTruthy()
       await fail()
-      expect(height(), 'the guest page too').toBe('94.375px')
-      await retry($('#guestApp .topbar .savestat.failed'))
-      expect(height()).toBe('58.375px')
+      expect($('#accessWaiting').classList.contains('band-up'), 'his screen moved down with the band').toBe(true)
+      await retry($('.saveband.is-screen'))
+      expect($('#accessWaiting').classList.contains('band-up')).toBe(false)
     } finally {
       window.removeEventListener('resize', onResize)
       measured.mockRestore()
       be.failNext(0)
-      await signInAs('ad', 'a'); setGuestView(false)
+      clearOldSwitch()
     }
   })
 })
@@ -457,7 +466,7 @@ describe('D1657 — the failed-save band on the sign-in, the access screens and 
    it the same way — the room is made for either band. The fresh Opus read of chat 28 found nothing guarding that room:
    any of these screens could go back to making room for a failed save only and every test still passed. And the access
    pass reads "Not sent yet" only for a failed save (D1664), never because the browser keeps nothing. */
-describe('D1901 — the "Not kept" band on the sign-in, the access screens, the guest page and the app', () => {
+describe('D1901 — the "Not kept" band on the sign-in, the access screens and the app (the guest page gone, D2239)', () => {
   const be = new MemoryBackend(), wb = new Whiteboard(), pm = new Postman(be)
   beforeAll(() => { pm.attach(wb); setSaveStatusSource(pm) })
   beforeEach(async () => { setStorageKept(false); await act(async () => { notify() }) })
@@ -483,14 +492,17 @@ describe('D1901 — the "Not kept" band on the sign-in, the access screens, the 
     expect($('#accessWaiting .pass-state').textContent, 'not "Not sent yet": nothing failed').toBe('Waiting for an admin')
     expect($('#accessWaiting .pass-state').classList.contains('unsent')).toBe(false)
   })
-  it('the guest page and the app: the band the bar last line, the bar making room', async () => {
-    await signInAs('ad', 'a'); setGuestView(true)
+  /* rewritten to his D2239: its first half pinned the band in the guest page's bar; the guest page is removed, so a person
+     waiting with an old switch stored gets it across his waiting screen; the app's half is kept as it was */
+  it('a person waiting (no guest page) and the app: the band across his screen; in the app the bar\'s last line, the bar making room', async () => {
+    storeOldSwitch()
     await signInAs('nokeep1901@mail')
-    const gbar = $('#guestApp .topbar.guestbar')
-    expect(gbar.classList.contains('save-failed'), 'the guest bar makes room').toBe(true)
-    expect(gbar.querySelector('.savestat.nokeep'), 'the band in the guest bar').toBeTruthy()
-    await signInAs('ad', 'a'); setGuestView(false)
-    const bar = document.querySelector('.topbar:not(.guestbar)') as HTMLElement
+    expect($('#guestApp'), 'no guest page').toBeFalsy()
+    expect($('#accessWaiting').classList.contains('band-up'), 'his screen makes room').toBe(true)
+    expect($('.saveband.is-screen').textContent, 'the band across it').toContain('Not kept')
+    clearOldSwitch()
+    await signInAs('ad', 'a')
+    const bar = $('#shell > .topbar')
     expect(bar.classList.contains('save-failed'), "the app's bar makes room").toBe(true)
     expect(bar.querySelector('.savestat.nokeep'), "the band in the app's bar").toBeTruthy()
   })

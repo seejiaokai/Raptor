@@ -1,0 +1,15 @@
+msq-fr15-w2 v1 iPhone
+ROW PASS | W2-1 | iPhone | Hunter files Ranger LL 23 Jul | saw: ["LATE No document All day RangerLL w2 orig By Hunter","10:00–11:00 Drifter, Echo, Ranger, SaberMEETING Flight safety brief By Saber"]
+ROW PASS | W2-2 | iPhone | moves stored; Saber (master) opens Inputs | saw: ["LATE No document All day RangerLL w2 orig By Hunter","10:00–11:00 Drifter, Echo, Ranger, SaberMEETING Flight safety brief By Saber"]
+notices before [{"id":"nmro8dyvk2n5n","to":"bane","by":"prowler","at":1784250010064,"iid":"imro8dyuulyky8m","name":"LL","day":"2026-07-23","what":[{"k":"in"}]}]
+window tail y 2026 › 13 ‹ › MON TUE WED THU FRI SAT SUN 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Jul 27 Placed by Hunter for Ranger · 17 Jul 26, 09:00 Delete Cancel Save
+ROW PASS | W2-3 | iPhone | Saber changes the leave to Outlaw (Casper) on Mon 27 Jul and saves | saw: ["LATE No document All day OutlawLL w2 orig By Hunter","10:00–11:00 Drifter, Echo, Ranger, SaberMEETING Flight safety brief By Saber"]
+notices after [{"id":"nmro8dyvk2n5n","to":"bane","by":"prowler","at":1784250010064,"iid":"imro8dyuulyky8m","name":"LL","day":"2026-07-23","what":[{"k":"in"}]},{"id":"nmro8e78m3njs","to":"bane","by":"stiff","at":1784250020902,"iid":"imro8dyuulyky8m","name":"LL","day":"2026-07-27","what":[{"k":"out"}]},{"id":"nmro8e78m4z0t","to":"casper","by":"stiff","at":1784250020902,"iid":"imro8dyuulyky8m","name":"LL","day":"2026-07-27","what":[{"k":"in"}]}]
+s4 ad2 lines []
+ROW PASS | W2-4 | iPhone | Hunter's bell | saw: badge {"dot":"none","text":"","aria":"Notifications"}; lines []
+s5 outlaw lines ["NEW LLMon 27 Jul You were added · Saber now"]
+ROW PASS | W2-5 | iPhone | Casper's (Outlaw) bell | saw: badge {"dot":"block","text":"","aria":"Notifications"}; lines ["NEW LLMon 27 Jul You were added · Saber now"]
+s6 us lines ["NEW LLMon 27 Jul You were taken off · Saber now","NEW LLThu 23 Jul You were added · Hunter now"]
+ROW FAIL | W2-6 | iPhone | Ranger's bell | saw: badge {"dot":"block","text":"","aria":"Notifications"}; lines ["NEW LLMon 27 Jul You were taken off · Saber now","NEW LLThu 23 Jul You were added · Hunter now"]
+errors []
+DONE 5 PASS 1 FAIL 0 OTHER of 6

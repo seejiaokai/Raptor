@@ -6,6 +6,7 @@
    at 15 Jul 26, inside the demo week (13–19 Jul), so the 13th and 14th are days he flew and the 15th on are days to come.
    Tests loop over the roll-call of slot KINDS (bug-check order §8.1). Register lines PO4, PO5, PO6, PO7. */
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { inView } from '../engine/unitview'
 import { storeBackend } from '../engine/hooks'
 import { PEOPLE, nameToId, indexCallsigns, archivedHolders } from '../engine/people'
 import { DAYS } from '../engine/data'
@@ -18,6 +19,7 @@ import { initStore, resetSession, notify, weekStashSnap, weekDirty, writeInputs,
 import { ELOG } from '../engine/editlog'
 import { Whiteboard } from '../storage/whiteboard'
 import { wirePersist } from './persist'
+import { setStoredRowProbe, setStoredRowsWhole } from './perms'
 import { schedWrite, SCHED_TYPES } from './sched-commit'
 import { HOOKS } from '../engine/hooks'
 import { accountsLoad, accountByName, signIn, sessionFor, ACCOUNTS_LIST } from './accounts'
@@ -75,7 +77,9 @@ beforeEach(() => {
   initStore(); accountsLoad()
   signInAs('ad', 'a')
 })
-afterEach(() => { resetSession(null) })
+/* the saved copy a test wires is that test's own (fix read 13, item A): left wired, the next test's records — pushed into
+   memory as its set-up — read as never saved, and their removal is refused */
+afterEach(() => { resetSession(null); setStoredRowProbe(null); setStoredRowsWhole(false) })
 
 describe('PO6 — the cutoff: the later of its date and today, on ONE clock (the plan, Round 2)', () => {
   it('today is the calendar date; a date to come stands; a date already past becomes today', () => {
@@ -224,7 +228,7 @@ describe('PO6 — the delete is saved: the week on screen reads without him, and
       for (const di of [TO_COME, PAST]) (DAYS as any)[di].notes.push({ t: 'PO6 SAVED ' + di })
     })
     /* the week is saved as one row per day ([DB-READINESS] group A, phase 1 — state/weekrows.ts) */
-    const day = (di: number) => JSON.parse(wb.get('weeks', `13-07-2026#${di}`)!).d
+    const day = (di: number) => JSON.parse(wb.get('weeks', `${inView('13-07-2026')}#${di}`)!).d
     expect(JSON.stringify(day(TO_COME)), 'the fixture is saved').toContain(`"${HIM}"`)
     expect(deletePerson(HIM)).toBe(null)
     expect(personKeysOnDay(TO_COME, HIM), 'the week on screen: a day to come, at once').toEqual([])
@@ -309,8 +313,10 @@ describe('B4 — undo and redo never put a deleted man, or his account, back', (
 })
 
 describe('PO4 — the refusals: never oneself, never a placeholder, never twice, only an admin; a refusal changes nothing', () => {
+  /* Saber is the master: since the second fix read (18 Nov 26 — Astra 6) the master sentence is said before any other,
+     his own Delete included; the own-account refusal still holds an admin who is not a master (accounts.test.ts) */
   it('his own person / account', () => {
-    expect(deletePerson('stiff')).toMatch(/can't delete your own account|can't delete yourself/)
+    expect(deletePerson('stiff')).toBe("Saber is a master admin, so he can't be deleted")
     expect((PEOPLE as any).stiff.deleted).toBeFalsy()
   })
   it('a placeholder, and a man already deleted', () => {

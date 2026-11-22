@@ -64,6 +64,7 @@ import { initStore as lwInitStore, lwHistInit, getState, setPeople, setRole, set
 import { memoryBackend } from '../leavewar/state/storage'
 import { projectPeople } from '../leavewar/state/raptorRoster'
 import { wireLeaveWarSync, postOut, archivePerson, runPoOutcomes } from '../leavewar/sync'
+import { settleWorld } from '../test-support/world'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 const ISNAP = JSON.stringify(INPUTS)
@@ -92,9 +93,14 @@ function resetWorld() {
   view.WARNOFF.clear(); view.disarmSlot(); view.BELLLIT.clear()
   pops.setInpEdit(null); pops.setOilAsk(null); closeBellList()
   stashClear()
+  /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read) */
+  settleWorld()
 }
 const SABER = 'stiff', RANGER = 'bane', HEX = 'rocky', PIKE = 'pike'
-const admin = () => { setSession({ user: 'ad', role: 'admin', name: 'ad' }); setMe(SABER) }          // Saber, a scheduler
+/* (signed in as the app signs Saber in — his ACCOUNT id, as accounts.ts sessionFor makes it: since his D2205 only a master
+   changes a master's person, and the gate knows Saber is one only by his account — the second fix read) */
+const admin = () => { setSession({ user: 'acad', role: 'admin', name: 'ad' }); setMe(SABER) }          // Saber, a scheduler
 const member = (id = RANGER) => { setSession({ user: 'us', role: 'main', name: 'us' }); setMe(id) }
 /* another person's command while the signed-in person stays signed in — what a second device's command is to this one */
 function asOther(who: () => void, fn: () => void): void {
@@ -530,10 +536,11 @@ describe('the list (D769; the plan §4.10 "the bell", §10 step 7 item 8)', () =
     expect(store.get('noticeseen:' + HEX, null)).toBeNull()
     expect(unreadFor(HEX)).toBe(1)
   })
-  it('a person with no person behind the sign-in (a guest): the bell is dark, a tap says "Nothing new", and nothing breaks', async () => {
+  /* the guest (gone with the guest view, D2239) stood here as a sign-in with no person behind it: a person waiting takes his place */
+  it('a person with no person behind the sign-in (a person waiting): the bell is dark, a tap says "Nothing new", and nothing breaks', async () => {
     await boot()
     file([RANGER, HEX])
-    setSession({ user: 'guest', role: 'guest', name: 'guest' }); setMe(null)
+    setSession({ user: 'principal:w@mail', role: 'pending', name: 'w@mail' }); setMe(null)
     expect(bellOn()).toBe(false)
     await draw(); await tap($('#notifyBell'))
     expect($('[data-testid="bell-empty"]')!.textContent).toBe('Nothing new')

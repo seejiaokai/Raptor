@@ -1,0 +1,5 @@
+msq-j2-w1-x2 v1
+row {"2026-11-16":" {.act}","2026-11-17":" {.act}","2026-11-18":" {.act}","2026-11-19":" {.act}","2026-11-20":" {.act}","2026-11-21":" {weekend.act}","2026-11-26":" {.act}"}
+named els SPAN.puck:OspreyA | SPAN.puck sm:OspreyA | SPAN.puck:OspreyA | SPAN.puck:OspreyA | SPAN.seat:OspreyA | SPAN.puck sm:OspreyA | SPAN.puck sm:OspreyA | SPAN.puck:OspreyA | SPAN.seat:OspreyA | SPAN.puck sm:OspreyA | SPAN.seat:OspreyA | SPAN.puck sm:OspreyA | SPAN.seat:OspreyA | SPAN.puck sm:OspreyA | SPAN.rpuck busy:OspreyA | SPAN.puck sm:OspreyA | TD.bal act figbox:0
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

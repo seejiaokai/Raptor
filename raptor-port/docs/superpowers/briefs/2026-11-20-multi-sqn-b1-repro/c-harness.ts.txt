@@ -1,0 +1,35 @@
+/* shared set-up for the area-C repro tests — copied from state/multi-sqn-job2-inputs.test.ts */
+import { vi } from 'vitest'
+import { storeBackend } from '../engine/hooks'
+import { initStore, resetSession, notify } from '../state/store'
+import { INPUTS } from '../engine/inputs'
+import { PEOPLE, indexCallsigns } from '../engine/people'
+import { signIn, sessionFor, accountsLoad } from '../state/accounts'
+import { setSession } from '../state/auth'
+import { installGlobalUndo } from '../state/undo-wire'
+import { _resetTimeline } from '../undo/timeline'
+import { setUnitSeeds } from '../state/units'
+import { settleWorld } from '../test-support/world'
+
+export const mem: Record<string, string> = {}
+const fake = {
+  getItem: (k: string) => (k in mem ? mem[k]! : null),
+  setItem: (k: string, v: string) => { if (v === 'null') delete mem[k]; else mem[k] = v },
+  keys: () => Object.keys(mem),
+}
+export const signInAs = (name: string, pass: string) => { const r = signIn(name, pass); resetSession(sessionFor(r)); notify(); return r }
+let ISNAP = '', PSNAP = ''
+export const at = (iso: string, h = 9) => { const [y, m, d] = iso.split('-').map(Number); vi.setSystemTime(new Date(y!, m! - 1, d!, h, 0, 0)) }
+export function before() {
+  vi.useFakeTimers({ toFake: ['Date'] })
+  if (!ISNAP) { ISNAP = JSON.stringify(INPUTS); PSNAP = JSON.stringify(PEOPLE) }
+  INPUTS.length = 0; JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
+  for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
+  Object.assign(PEOPLE, JSON.parse(PSNAP)); indexCallsigns()
+  Object.keys(mem).forEach(k => delete mem[k])
+  storeBackend.impl = fake as any
+  setUnitSeeds(true)
+}
+export function after() { setSession(null); resetSession(null); _resetTimeline(); vi.useRealTimers() }
+export function done() { storeBackend.impl = null }
+export const boot = () => { initStore(); accountsLoad(); resetSession(null); _resetTimeline(); installGlobalUndo(); settleWorld() }

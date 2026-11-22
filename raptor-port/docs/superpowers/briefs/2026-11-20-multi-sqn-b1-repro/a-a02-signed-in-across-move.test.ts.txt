@@ -1,0 +1,46 @@
+// @vitest-environment jsdom
+/* A2 (Fable F2): a man still signed in across his move day is left on his old squadron's Leave War (and Tracker).
+   Correct per D2132 / D2087: the Leave War and the Tracker stay on HIS OWN (primary) squadron — on 16 Jul that is 149. */
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { notify as raptorNotify } from '../state/store'
+import { getState, worldUnit } from '../leavewar/state/store'
+import { setHome } from '../state/units'
+import { myUnit } from '../state/perms'
+// @ts-ignore — a .js module
+import { setStorageMaker, markStorageLoaded, storageUnit } from '../tracker/storage.js'
+import { hBeforeAll, hAfterAll, hBeforeEach, hAfterEach, saber, signInAs, on } from './_harness'
+
+beforeAll(hBeforeAll); afterAll(hAfterAll); beforeEach(hBeforeEach); afterEach(hAfterEach)
+
+describe('A2 — the war follows his squadron at midnight of his move', () => {
+  it('Ranger signed in on 15 Jul, moved to 149 from 16 Jul; at 00:05 on 16 Jul his war is 149’s and holds his row', () => {
+    saber()
+    expect(setHome('bane', 'u149').ok).toBe(true)
+    signInAs('us', 'us')
+    expect(worldUnit()).toBe('u142')
+    on(16, 0, 5)
+    raptorNotify()
+    expect(myUnit(), 'sanity: his squadron today is 149').toBe('u149')
+    expect(worldUnit(), 'his own squadron’s Leave War').toBe('u149')
+    expect(getState().people.some(p => p.id === 'bane'), 'his own row on the war he is looking at').toBe(true)
+  })
+  it('(control) signing in again on 16 Jul loads 149’s war', () => {
+    saber()
+    expect(setHome('bane', 'u149').ok).toBe(true)
+    on(16, 0, 5)
+    signInAs('us', 'us')
+    expect(worldUnit()).toBe('u149')
+  })
+  it('the Tracker too: loaded as Ranger on 15 Jul (142), it is 149’s at 00:05 on 16 Jul', () => {
+    const mk = () => { const m = new Map(); return { get: (k: string) => m.get(k) ?? null, set: (k: string, v: string) => { m.set(k, v) }, remove: (k: string) => { m.delete(k) }, keys: () => [...m.keys()] } }
+    setStorageMaker((_u: string) => mk(), () => myUnit())
+    saber()
+    expect(setHome('bane', 'u149').ok).toBe(true)
+    signInAs('us', 'us')
+    markStorageLoaded()
+    expect(storageUnit()).toBe('u142')
+    on(16, 0, 5)
+    raptorNotify()
+    expect(storageUnit(), 'his own squadron’s Tracker').toBe('u149')
+  })
+})

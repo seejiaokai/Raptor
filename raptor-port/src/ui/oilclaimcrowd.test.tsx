@@ -52,6 +52,7 @@ import { commitInput, draftOf } from './inputedit'
 import { rowPut, rowTake } from './reqdoor'
 import { answerOilWait } from './oilwait'
 import { setOilAsk, setInpEdit } from './pops'
+import { settleWorld } from '../test-support/world'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -97,6 +98,9 @@ beforeEach(async () => {
   HOOKS.oilEarningDay = (di: number) => di === SAT
   HOOKS.oilDayISO = (di: number) => (di === SAT ? SAT_ISO : '2026-07-15')
   HOOKS.oilSentinel = () => CROWD.slice()
+  /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read) */
+  settleWorld()
 })
 /* (a man put on the only man's puck opens the OIL question again, in the input's window — closed here) */
 afterEach(async () => { await act(async () => { setOilDay(null); setOilAsk(null); setInpEdit(null) }) })

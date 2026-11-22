@@ -1,0 +1,20 @@
+msq-j2-host-f v3
+ROW PASS | W3-F host | iPhone | ad9: Add a person -> tap the Post in date | saw: day 2026-11-20 shown: true; calendar box: [39,344,363,608] inside: true
+outside point [200,758] lands on DIV.dcal-scrim dcal-scrim
+ROW PASS | W3-F host | iPhone | taps outside the calendar at [200,758] | saw: day still shown: false
+ROW PASS | W3-F host | iPhone | reopens the calendar, taps Fri 20 Nov | saw: Post in reads "Fri 20 Nov 26▾"; calendar still shown: false
+Merlin point [36.671875,405.265625]
+ROW PASS | W3-F host | iPhone | ad9 taps Merlin's name on the war grid | saw: open: true; name: "Merlin"; window box: [23,224,379,261] inside: true
+ROW PASS | W3-F host | iPhone | presses the window's ✕ | saw: window still shown: false
+cell box [184,397,205,414]
+ROW PASS | W3-F host | iPhone | ad9 taps Merlin's Mon 23 Nov | saw: open: true; cell box [184,397,205,414]; window box [25,616,377,653] inside: true
+ROW PASS | W3-F host | iPhone | presses the window's ⋯ | saw: items: ["Attach","Other","Post out","Post in"]; last item box [232,770,372,808] inside: true
+ROW PASS | W3-F host | iPhone | presses ⋯ again | saw: menu items still shown: 0; window still open: true
+ROW PASS | W3-F host | iPhone | presses the window's ✕ | saw: window still shown: false
+ROW RECORD | W3-F host | iPhone | reads how tall the Leave War page is against the screen | saw: {"doc":874,"view":874}
+ROW PASS | W3-F host | iPhone | taps the bell | saw: open: true; box [8,46,394,106] inside: true; words: Nothing new
+ROW PASS | W3-F host | iPhone | taps the bell again | saw: list still shown: false
+bell outside point [20,860]
+ROW PASS | W3-F host | iPhone | opens the bell, taps outside it at [20,860] | saw: list still shown: false
+errors []
+DONE 12 PASS 0 FAIL 1 OTHER of 13

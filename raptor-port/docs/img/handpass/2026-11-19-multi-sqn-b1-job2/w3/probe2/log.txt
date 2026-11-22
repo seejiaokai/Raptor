@@ -1,0 +1,46 @@
+msq-j2-w3-probe2 v1
+LIST buttons:
+BUTTON#burger.burger[Menu]@14,9,32x30
+BUTTON#undoBtn.abtn hbtn[Undo]@249,9,30x30
+BUTTON#redoBtn.abtn hbtn[Redo]@285,9,30x30
+BUTTON#fastSync.fastsync[Sync · slow]@322,14,25x21
+BUTTON#notifyBell.bellbtn[Notifications]@354,8,34x32
+BUTTON#.wknav-mbtn filt-cal[Jump to a date]@12,58,34x26
+BUTTON#exportSched.abtn[Export to Excel (CSV)]@51,56,42x30
+BUTTON#exportPdf.abtn[Export as PDF (print)]@98,56,42x30
+BUTTON#.hl-tog[Highlight filters]@145,58,30x26
+BUTTON#editSchedMore.abtn schedule-more[More schedule options]@180,58,30x26
+INPUT#searchE.[Search by name or callsign]@285,63,96x16
+BUTTON#inMemberMode.intab[Inputs]@12,57,125x36
+BUTTON#inSansMode.intab[SANS]@139,57,125x36
+BUTTON#inMedBtn.intab[Medical]@265,57,125x36
+BUTTON#inNew.abtn primary in-new[+ Input]@8,102,56x36
+BUTTON#inRangeBtn.abtn[19 Nov → 3 Dec]@72,102,127x36
+BUTTON#inCalBtn.abtn[Calendar]@246,102,34x36
+BUTTON#inListBtn.abtn[List]@280,102,34x36
+BUTTON#inFiltersBtn.abtn[Filters]@318,102,34x36
+BUTTON#inGear.abtn inputs-gear[Inputs calendar settings]@356,102,38x36
+new input count 1
+WIN buttons:
+BUTTON#burger.burger[Menu]@14,9,32x30
+BUTTON#undoBtn.abtn hbtn[Undo]@249,9,30x30
+BUTTON#redoBtn.abtn hbtn[Redo]@285,9,30x30
+BUTTON#fastSync.fastsync[Sync · slow]@322,14,25x21
+BUTTON#notifyBell.bellbtn[Notifications]@354,8,34x32
+BUTTON#.wknav-mbtn filt-cal[Jump to a date]@12,58,34x26
+BUTTON#exportSched.abtn[Export to Excel (CSV)]@51,56,42x30
+BUTTON#exportPdf.abtn[Export as PDF (print)]@98,56,42x30
+BUTTON#.hl-tog[Highlight filters]@145,58,30x26
+BUTTON#editSchedMore.abtn schedule-more[More schedule options]@180,58,30x26
+INPUT#searchE.[Search by name or callsign]@285,63,96x16
+BUTTON#inMemberMode.intab[Inputs]@12,57,125x36
+BUTTON#inSansMode.intab[SANS]@139,57,125x36
+BUTTON#inMedBtn.intab[Medical]@265,57,125x36
+BUTTON#inNew.abtn primary in-new[+ Input]@8,102,56x36
+BUTTON#inRangeBtn.abtn[19 Nov → 3 Dec]@72,102,127x36
+BUTTON#inCalBtn.abtn[Calendar]@246,102,34x36
+BUTTON#inListBtn.abtn[List]@280,102,34x36
+BUTTON#inFiltersBtn.abtn[Filters]@318,102,34x36
+BUTTON#inGear.abtn inputs-gear[Inputs calendar settings]@356,102,38x36
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

@@ -1,0 +1,74 @@
+[
+ [
+  "R-G",
+  "iPhone",
+  "us9 taps the bell",
+  "its list opens, inside the screen",
+  "open: true; box [8,46,394,106] inside: true; words: Nothing new",
+  "PASS",
+  "g01-bell-open.png"
+ ],
+ [
+  "R-G",
+  "iPhone",
+  "taps the bell again",
+  "the list closes",
+  "list still shown: false",
+  "PASS",
+  "g02-bell-bell.png"
+ ],
+ [
+  "R-G",
+  "iPhone",
+  "opens the bell, taps outside it at [20,860]",
+  "the list closes",
+  "list still shown: false",
+  "PASS",
+  "g03-bell-outside.png"
+ ],
+ [
+  "R-G",
+  "iPhone",
+  "ad9 taps Osprey's Tue 24 Nov",
+  "the day window opens, inside the screen",
+  "open: true; window box [25,616,377,653] inside: true",
+  "PASS",
+  "g04-day-window.png"
+ ],
+ [
+  "R-G",
+  "iPhone",
+  "ad9: Grant OIL -> Give FO on Osprey's Tue 24 Nov",
+  "FO on the grid",
+  "cell \"FO\"",
+  "PASS",
+  "g08-grid.png"
+ ],
+ [
+  "R-G",
+  "iPhone",
+  "ad9: top bar Undo",
+  "the FO is gone",
+  "cell \"\"",
+  "PASS",
+  "g09-undo.png"
+ ],
+ [
+  "R-G",
+  "iPhone",
+  "ad9: top bar Redo",
+  "the FO is back",
+  "cell \"FO\"",
+  "PASS",
+  "g10-redo.png"
+ ],
+ [
+  "R-G",
+  "iPhone",
+  "us: Inputs -> + Input -> Training for himself, Mon 23 Nov -> Add",
+  "it shows",
+  "window gone true; rows []; page Inputs Inputs SANS Medical 2 1 + Input 19 Nov → 3 Dec Calendar List Filters1 Ranger Clear filters MON 23 NOV 1 input LATE 06:00–18:00 RangerTRAINING",
+  "RECORD",
+  "g13-after-add.png"
+ ]
+]

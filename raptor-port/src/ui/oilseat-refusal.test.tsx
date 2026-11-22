@@ -29,6 +29,7 @@ import * as view from '../state/view'
 import { applyDrop, setDrag } from './drag'
 import { specialRowHTML } from './palette-html'
 import { elogClear, elogRows } from '../engine/editlog'
+import { settleWorld } from '../test-support/world'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -74,6 +75,9 @@ beforeEach(async () => {
      day reset above — and a day listed in it is read-only, which silently
      refuses every arm below */
   view.DPREV.clear()
+  /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read, Opus 7) */
+  settleWorld()
   await act(async () => { view.disarmSlot(); notify() })
 })
 afterEach(async () => { await act(async () => { view.disarmSlot() }) })

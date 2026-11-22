@@ -280,13 +280,7 @@ img,a{-webkit-user-drag:none;user-drag:none}
 .pass-steps li.unsent .pass-dot{background:transparent;border-color:#E5C24A;color:#E5C24A;font-size:12px;font-weight:800;line-height:1}
 .pass-who{text-align:center;margin:12px 0 0;font-size:12px;color:var(--ink-3);overflow-wrap:anywhere}
 .pass-who b{color:var(--ink-2);font-weight:600}
-/* the guest view's slim bar: the mark, the note, Sign out — and the week window stays
-   on a phone too (the member's phone reaches weeks from the calendar, which a guest
-   does not mount) */
-.guestbar{gap:12px}
-.guest-note{font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.guestbar .right{margin-left:auto}
-#guestApp .guest-wks{display:inline-flex;flex-wrap:wrap}
+/* (the guest view's slim bar, .guestbar, went with the guest view — his D2239, 20 Nov 26) */
 /* the Admin tab's count of access requests waiting (D204 "a badge on the Admin tab") —
    the top nav and the phone drawer; admins only */
 .navbadge{display:inline-block;min-width:16px;height:16px;padding:0 4px;margin-left:6px;border-radius:8px;

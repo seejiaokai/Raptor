@@ -1,0 +1,34 @@
+// @vitest-environment jsdom
+/* C7 (Fable F4; Opus calls the case D2205's M2, filed): sign-out draws the sign-in screen, then waits for the last saves
+   to be sent, then reloads with no check that nobody has signed in meanwhile. Correct: the owed-reload branch's own rule
+   in ui/logout.ts — "Someone signed in before it landed keeps his session (a reload would sign him out unasked)". */
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { logOut, setReloadSeam } from '../ui/logout'
+import { watchSaves } from '../storage/savewait'
+import { resetSession } from '../state/store'
+import * as auth from '../state/auth'
+
+let calls: string[] = []
+let prev: (() => void) | null = null
+beforeEach(() => {
+  calls = []
+  prev = setReloadSeam(() => { calls.push(`reload (signed in: ${auth.SESSION ? 'yes' : 'no'})`) })
+  resetSession({ user: 'ad', role: 'admin' })
+})
+afterEach(() => { if (prev) setReloadSeam(prev); watchSaves(null); resetSession(null) })
+
+describe('C7 — sign-out while the last saves are still being sent', () => {
+  it('never reloads (signs out) the next person who signed in before the send finished', async () => {
+    let status: 'saving' | 'saved' = 'saving'
+    let finish: () => void = () => {}
+    const sent = new Promise<void>(res => { finish = res })
+    watchSaves({ get status() { return status }, flush: async () => { calls.push('flush'); await sent; status = 'saved' } } as any)
+    const p = logOut()
+    await Promise.resolve(); await Promise.resolve()
+    expect(auth.SESSION, 'the sign-in screen is up').toBeNull()
+    resetSession({ user: 'ad9', role: 'admin' })              // the next person signs in on the same page
+    finish()
+    expect(await p).toBe(true)
+    expect(calls).toEqual(['flush'])
+  })
+})

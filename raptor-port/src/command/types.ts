@@ -43,6 +43,10 @@ export type LogicalCollection =
   // posting window and one personnel label per person ([DB-READINESS] group A, phase 3 — leavewar/state/rows.ts)
   | 'lw.cell' | 'lw.war'
   | 'lw.ledger' | 'lw.opening' | 'lw.balance' | 'lw.grade' | 'lw.oilpolicy' | 'lw.postouts' | 'lw.label' | 'lw.current' | 'lw.config'
+  // ANOTHER squadron's stored war, written only by Admin → Users' Archive, Restore, Restore as and Delete of its man while
+  // another war is loaded (multi-squadron batch 1, A3 — leavewar/state/foreign.ts): his posting window, his war records,
+  // his ledger entries; each id `<unit>@<local>`, so the gate's section 7 asks about THAT squadron
+  | 'lwx.profile' | 'lwx.rec' | 'lwx.ledger'
   // tracker (the v3: keys)
   | 'trk.marks' | 'trk.dates' | 'trk.roster' | 'trk.layout' | 'trk.syls'
   | 'trk.plan' | 'trk.pace' | 'trk.lulls' | 'trk.eventinfo' | 'trk.catalogue' | 'trk.courses'
@@ -67,14 +71,15 @@ export type Scope =
 /* WHO made the change (design §3.5). Since [ACCOUNTS] (26 Sep 26, D166): the
    account id and its role from SESSION (`main` -> `member`), and the person the
    account belongs to — signing in makes you that callsign, so personId is the
-   real person, not a "View as" lens (retired). `guest`, `pending` and `off` are
-   people signed in without access (D204): every forward command refuses them,
-   except a pending person asking for access (`principal` = his sign-in name).
+   real person, not a "View as" lens (retired). `pending` and `off` are people
+   signed in without access (D204): every forward command refuses them, except a
+   pending person asking for access (`principal` = his sign-in name). (`guest` went
+   with the guest view, his D2239.)
    `system` is ONLY the explicit seed / load / projection actor, never inferred
    for a user (Astra R1-4). Its personId is undefined (Fable R4-6). */
 export interface Actor {
   id: string
-  role: 'admin' | 'member' | 'guest' | 'pending' | 'off' | 'system'
+  role: 'admin' | 'member' | 'pending' | 'off' | 'system'
   personId?: string
   principal?: string
   session: any
@@ -117,6 +122,11 @@ export interface CommitEnvelope {
   /* per-logical-record revisions AFTER this commit (design §3.3), keyed
      `${collection}/${id}`. Undo (Step 3) pins the causal result's revisions. */
   revs?: Record<string, number>
+  /* WHICH SQUADRON EACH WORLD HELD when the command was made (the reshape plan §3.2 A-v): `{ lw: 'u142' }` for a command
+     that wrote the Leave War loaded then, `trk` for the Tracker's. Their record ids name no squadron (the storage door adds
+     it), so Undo reads the squadron here — its record keys (`<collection>/<unit>@<id>`, in `revs` too) and whether the
+     step's world still holds that squadron. Set by the record-key hook (setRecordKeyHook); absent with no world door. */
+  stamp?: Record<string, string>
   /* remote changes apply silently — the fold/persistence subscriber does not
      echo them (design §3.3). Annotated now; consumed at Step 5. */
   emit?: boolean

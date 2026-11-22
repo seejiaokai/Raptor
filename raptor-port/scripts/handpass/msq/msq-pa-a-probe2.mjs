@@ -1,0 +1,12 @@
+const L = await import('./msq-pa-a-lib.mjs')
+const { X, say, sleep } = L
+say('msq-pa-a-probe2 v1', L.size)
+const w = await L.start(true)
+await X.login(w.page, 'ad2')
+await L.toUsers(w)
+await L.openRow(w, 'Osprey')
+say('PARENT', await w.page.evaluate(() => { const b = [...document.querySelectorAll('#page-admin button.acc-main')][0]; return b.parentElement.parentElement.outerHTML.replace(/\s+/g, ' ').slice(0, 1800) }))
+await L.tap(L.btn(w, /^Suspend$/)); await sleep(300)
+say('TOAST', await w.page.evaluate(() => [...document.querySelectorAll('div,span')].filter(e => /Osprey suspended/.test(e.innerText) && e.children.length === 0).map(e => e.tagName + '.' + e.className + '#' + e.id + ' parent ' + e.parentElement.className).join(' ; ')))
+say('TOP', await w.page.evaluate(() => [...document.querySelectorAll('button')].filter(b => b.getBoundingClientRect().width > 2 && /undo|redo/i.test((b.id || '') + (b.getAttribute('aria-label') || '') + b.innerText)).map(b => b.id + '|' + b.getAttribute('aria-label') + '|' + b.innerText + '|' + b.disabled).join(' ; ')))
+await L.done(w)

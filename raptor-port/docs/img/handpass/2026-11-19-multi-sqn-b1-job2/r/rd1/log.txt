@@ -1,0 +1,24 @@
+msq-j2-r-d v1 D,E,F
+pids {"Merlin":"mer9","Osprey":"osp9","Kestrel":"kes9"}
+approve state aria-pressed=null aria-checked=true class=pp-sw bp-sw on
+approve now aria-pressed=null aria-checked=false class=pp-sw bp-sw
+sheet after LL Merlin Thu 26 Nov Auto-approve ✕ No manning row turns amber or red till 26 Nov Document Whole day AM PM Pick a range That takes Merlin to −1 LVE. Tap the same leave again to go ahead. LL −1 OL −1 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 CSE OD Grant OIL ⋯
+ROW PASS | R-D | desktop | ad9: Merlin Thu 26 Nov, Auto-approve off, LL | saw: cell "LL" class  act hasc; approve state before: aria-pressed=null aria-checked=true class=pp-sw bp-sw on
+ROW PASS | R-D | desktop | ad9: Merlin Tue 24 Nov, Grant OIL, reason, Give FO | saw: cell "FO"
+signed in as ad
+elog before delete [{"u":"u149","sub":"mer9","lbl":"Leave War · Merlin · FO 24 Nov: OIL award given · 1 day","date":"2026-11-24"}]
+elog after delete [{"u":"u149","sub":"mer9","lbl":"Leave War · Merlin · FO 24 Nov: OIL award given · 1 day","date":"2026-11-24"},{"u":"u149","sub":"mer9","lbl":"Merlin · deleted","date":"2026-11-19","kind":"deleted"},{"u":"u149","sub":"mer9","lbl":"Leave War · Merlin · FO 24 Nov: OIL award taken away","date":"2026-11-24"},{"u":"u149","sub":"mer9","lbl":"Leave War · Merlin · LL 26 Nov: bid removed","date":"2026-11-26","kind":"deleted"},{"u":"u149","sub":"mer9","lbl":"Merlin · archived","date":"2026-11-19","kind":"archived"}]
+ROW PASS | R-D | desktop | ad: Admin -> Users -> Merlin -> Delete (twice); the stored history lines | saw: new lines: [["u149","Merlin · deleted","2026-11-19"],["u149","Leave War · Merlin · FO 24 Nov: OIL award taken away","2026-11-24"],["u149","Leave War · Merlin · LL 26 Nov: bid removed","2026-11-26"],["u149","Merlin · archived","2026-11-19"]]
+signed in as ad9
+ROW RECORD | R-D | desktop | ad9: the war after Merlin's delete | saw: name "Merlin
+B" cells {"2026-11-19":"PO","2026-11-20":"PO","2026-11-24":"PO","2026-11-26":"PO","2026-12-01":"PO"}
+signed in as us9
+us9 sheet Osprey Mon 30 Nov ✕ Bidding is closed. To change your leave, seek management’s approval, then file it on the Inputs page. Your approved leave updates here by itself. CSE OD ⋯ Open the Inputs page
+ERR RE-bid locator.click: Timeout 30000ms exceeded.
+ROW OWED | RE-bid | desktop | script step | saw: script error locator.click: Timeout 30000ms exceeded.
+ERR RE-approvals locator.click: Timeout 30000ms exceeded.
+ROW OWED | RE-approvals | desktop | script step | saw: script error locator.click: Timeout 30000ms exceeded.
+ERR RE-access locator.click: Timeout 30000ms exceeded.
+ROW OWED | RE-access | desktop | script step | saw: script error locator.click: Timeout 30000ms exceeded.
+errors []
+DONE 3 PASS 0 FAIL 4 OTHER of 7

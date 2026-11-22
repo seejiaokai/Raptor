@@ -17,8 +17,9 @@ import { slotVal, setSlotVal, renameCallsign } from '../engine/slots'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, weekStashSnap, weekDirty, writeText } from '../state/store'
 import { Whiteboard } from '../storage/whiteboard'
 import { wirePersist } from '../state/persist'
+import { setStoredRowProbe, setStoredRowsWhole } from '../state/perms'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
-import { accountsLoad, accountByName, signIn, sessionFor, updateAccount } from '../state/accounts'
+import { accountsLoad, accountByName, signIn, sessionFor, updateAccount, addAccount, setMaster } from '../state/accounts'
 import { BACKPROMPT } from '../state/view'
 import { commit, commandStream } from '../command'
 import { getState, initStore as lwInitStore, lwStore, postingBlocked, setPeople, setPostIn, setPostOut, setRole, setShowSans } from './state/store'
@@ -57,7 +58,9 @@ afterAll(() => { vi.useRealTimers(); storeBackend.impl = null })
 beforeEach(() => {
   vi.setSystemTime(new Date(2026, 6, 15, 9, 0, 0))
   Object.keys(mem).forEach(k => delete mem[k])
-  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v } }
+  /* (it lists its keys, as the browser's store does — without them no account row is ever listed, and a posting's Delete
+     of the master passed the master check only by that: the fix read of 18 Nov 26, Opus 1) */
+  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v }, keys: () => Object.keys(mem) } as any
   const p0 = JSON.parse(PEOPLE0)
   for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
   Object.assign(PEOPLE, p0); indexCallsigns()
@@ -70,8 +73,15 @@ beforeEach(() => {
   setPeople(projectPeople())
   wireLeaveWarSync()
   signInAs('ad', 'a')
+  /* the demo carries two more admins since multi-squadron step 4 — 149's (Kestrel) and a second 142 admin (Prowler):
+     these tests are written for Saber as the one admin, so those two step down first */
+  expect(updateAccount('acad2', { role: 'main' })).toBeNull()
+  /* (Kestrel stays: he is 149's only admin, and a squadron is never left with none — D2184 Q10, the full check of
+     18 Nov 26; these postings are 142's, and 149's admin is never told of them) */
 })
-afterEach(() => { resetSession(null); vi.restoreAllMocks() })
+/* the saved copy a test wires is that test's own (fix read 13, item A): left wired, the next test's records — pushed into
+   memory as its set-up — read as never saved, and their removal is refused */
+afterEach(() => { resetSession(null); vi.restoreAllMocks(); setStoredRowProbe(null); setStoredRowsWhole(false) })
 
 describe('PO2 — overseas: archived on Quals and his account suspended, on the date, once', () => {
   /* [ONE-DOOR] (D322, 27 Sep 26 — "no Enable on an archived row"): while he is archived his sign-in is NOT enabled by
@@ -121,7 +131,8 @@ describe('PO2 — overseas: archived on Quals and his account suspended, on the 
 describe('PO2 / PO4 — the last admin who can sign in is never suspended or deleted by a posting; said once', () => {
   it('overseas for the last admin: NOTHING happens (never half — Astra 2), said once; another admin able to sign in → both at once', () => {
     const toast = vi.spyOn(HOOKS, 'toast')
-    const WAITS = 'Saber is the last admin who can sign in — the posting waits until another admin can'
+    /* worded per squadron: 149 still has Kestrel, so the lock is 142's (the fix read, 18 Nov 26 — Opus 5) */
+    const WAITS = "Saber is 142's last admin. The posting waits until 142 has another admin."
     expect(postOut('stiff', TODAY, 'overseas')).toBe(true)
     expect(P('stiff').archived, 'not archived while it waits').toBeFalsy()
     expect(accountByName('ad')!.on).toBe(true)
@@ -137,8 +148,9 @@ describe('PO2 / PO4 — the last admin who can sign in is never suspended or del
     expect(postingHeldNote('stiff')).toBe(null)
   })
   it('the sheets are told beforehand: the seam answers which postings the last admin holds back', () => {
-    expect(postingBlocked('stiff', 'delete')).toBe('Saber is the last admin who can sign in — he is not deleted until another admin can')
-    expect(postingBlocked('stiff', 'overseas')).toBe('Saber is the last admin who can sign in — the posting waits until another admin can')
+    /* Saber is the master: a Delete of him is held for that first (the fix read, 18 Nov 26 — Opus 1) */
+    expect(postingBlocked('stiff', 'delete')).toBe("Saber is a master admin, so he can't be deleted")
+    expect(postingBlocked('stiff', 'overseas')).toBe("Saber is 142's last admin. The posting waits until 142 has another admin.")
     expect(postingBlocked('stiff', 'sans')).toBe(null)
     expect(postingBlocked('bane', 'delete'), 'a member: nothing held back').toBe(null)
   })
@@ -149,13 +161,23 @@ describe('PO2 / PO4 — the last admin who can sign in is never suspended or del
     expect(P('stiff').deleted).toBeFalsy()
     expect(war('stiff')!.to).toBeNull()
   })
-  it('delete: not deleted, and said (a posting made with no one signed in — the pass is nobody acting)', () => {
+  it('delete: the last admin of his squadron is not deleted, and said (a posting made with no one signed in — the pass is nobody acting)', () => {
+    /* Hunter (ad2) is 142's one admin who can sign in once Saber's account is suspended by hand (Kestrel is 149's): worded per
+       squadron (the fix read, 18 Nov 26 — Opus 5) */
+    expect(updateAccount('acad2', { role: 'admin' })).toBeNull()
+    /* since his D2205 (18 Nov 26) only a master suspends Saber, a master: Saber gives Heron (149's) an admin account and
+       the master mark, and Heron suspends him — Hunter is still 142's one admin who can sign in */
+    signInAs('ad', 'a')
+    expect(addAccount('heron@mail', 'her9', 'admin')).toBeNull()
+    expect(setMaster(accountByName('heron@mail')!.id, true).ok).toBe(true)
+    signInAs('heron@mail')
+    expect(updateAccount('acad', { on: false } as any)).toBeNull()
     resetSession(null); setRole('admin')
     const toast = vi.spyOn(HOOKS, 'toast')
-    expect(postOut('stiff', TODAY, 'delete')).toBe(true)
-    expect(P('stiff').deleted).toBeFalsy()
-    expect(accountByName('ad')).toBeTruthy()
-    expect(toast.mock.calls.map(c => c[0])).toContain('Saber is the last admin who can sign in — he is not deleted until another admin can')
+    expect(postOut('prowler', TODAY, 'delete')).toBe(true)
+    expect(P('prowler').deleted).toBeFalsy()
+    expect(accountByName('ad2')).toBeTruthy()
+    expect(toast.mock.calls.map(c => c[0])).toContain("Hunter is 142's last admin. He is not deleted until 142 has another admin.")
   })
 })
 
@@ -243,7 +265,8 @@ describe('PO5 / PO6 / PO7 — delete: his account and his person; days he flew k
     /* planted the way the app writes — inside a schedule command, whose rows are the save; the week is one row per day
        ([DB-READINESS] group A, phase 1 — state/weekrows.ts) */
     schedWrite(SCHED_TYPES.mutate, () => { plantGround(4, 'rocky') })
-    const day4 = () => JSON.stringify(JSON.parse(wb.get('weeks', '13-07-2026#4')!).d)
+    /* the stored day row names its unit (multi-squadron step 2) */
+    const day4 = () => JSON.stringify(JSON.parse(wb.get('weeks', 'u142@13-07-2026#4')!).d)
     expect(day4()).toContain('"rocky"')
     expect(postOut('rocky', TODAY, 'delete')).toBe(true)
     expect(JSON.stringify((DAYS as any)[4]), 'the week on screen, at once').not.toContain('"rocky"')
@@ -373,13 +396,63 @@ describe('from the code reads', () => {
     expect(war('rocky'), 'and with Show SANS on').toBeTruthy()
   })
   it('Fable 6 — a posting’s Delete of the person signed in says so', () => {
+    /* Ranger, made an admin, signed in when his own Delete runs (Saber, the master, is never deleted — below) */
     const toast = vi.spyOn(HOOKS, 'toast')
-    expect(updateAccount('acus', { role: 'admin' })).toBe(null)                  // a second admin, so Saber is not the last
-    resetSession(null); setRole('admin')
-    expect(postOut('stiff', '2026-07-16', 'delete')).toBe(true)                  // made by "another admin" (nobody signed in)
-    signInAs('ad', 'a')
+    expect(updateAccount('acus', { role: 'admin' })).toBe(null)
+    expect(postOut('bane', '2026-07-16', 'delete')).toBe(true)                   // made by another admin, Saber
+    signInAs('us', 'us')
     vi.setSystemTime(new Date(2026, 6, 16, 9, 0, 0)); runPoOutcomes()
-    expect(P('stiff').deleted).toBe(true)
+    expect(P('bane').deleted).toBe(true)
     expect(toast.mock.calls.map(c => c[0])).toContain('You have been deleted by your posting out — please sign out')
+  })
+  /* THE FIX READ OF 18 NOV 26 — Opus 1: a posting's Delete of the master was refused whole at the commit gate (the master
+     mark changes only by its own command), every other posting due that day refused with it, unsaid, and the pass's own
+     notify ran it again until "Maximum call stack size exceeded". Now it is held and said, and the others run. */
+  it('a posting’s Delete of the master waits and is said; another man’s posting that day still runs', () => {
+    const toast = vi.spyOn(HOOKS, 'toast')
+    expect(postOutProblem('stiff', 'delete'), 'refused as it is set, signed in as anyone but him too').toBe("You can't delete yourself — ask another admin")
+    resetSession(null); setRole('admin')
+    expect(postOutProblem('stiff', 'delete'), 'with nobody signed in').toBe("Saber is a master admin, so he can't be deleted")
+    /* a Delete posting already stored for him (made before this check — or by an older build) */
+    expect(postOut('stiff', '2026-07-16', 'delete'), 'the posting door refuses it').toBe(false)
+    expect(setPostOut('stiff', '2026-07-16', 'delete'), 'the store itself still writes it').toBe(true)
+    expect(postOut('bane', '2026-07-16', 'overseas')).toBe(true)
+    signInAs('ad2', 'a2')
+    vi.setSystemTime(new Date(2026, 6, 16, 9, 0, 0))
+    expect(() => runPoOutcomes()).not.toThrow()
+    expect(P('bane').archived, 'Ranger’s posting ran').toBe(true)
+    expect(accountByName('us')!.on).toBe(false)
+    expect(P('stiff').deleted, 'Saber is not deleted').toBeFalsy()
+    expect(accountByName('ad')).toBeTruthy()
+    expect(toast.mock.calls.filter(c => c[0] === "Saber is a master admin, so he can't be deleted").length, 'said once').toBe(1)
+  })
+})
+
+/* THE FIX READ OF THE FULL CHECK (18 Nov 26 — Opus 4 and 5): the words the person doors say. */
+describe('the words a door says across two squadrons', () => {
+  it("Kestrel, 149's only admin: the lock is worded as 149's, never the whole app's, while 142 has its own", async () => {
+    const { archiveProblem } = await import('./sync')
+    expect(postingBlocked('kes9', 'overseas')).toBe("Kestrel is 149's last admin. The posting waits until 149 has another admin.")
+    expect(archiveProblem('kes9')).toBe("Kestrel is 149's last admin. Make another admin of 149 first.")
+  })
+  it("142's plain admin on a 149 man: Archive, Save name and Restore say whose he is, as Suspend and Delete do", async () => {
+    const { archivePerson, restoreProblem } = await import('./sync')
+    const { deleteProblem } = await import('../state/person-delete')
+    vi.spyOn(HOOKS, 'toast').mockImplementation(() => {})
+    expect(updateAccount('acad2', { role: 'admin' })).toBeNull()
+    signInAs('ad2', 'a2')                                   // Hunter, 142's plain admin
+    expect(updateAccount('acus9', { on: false })).toBe("He is 149's. Only an admin of 149 can change his account.")
+    expect(deleteProblem('osp9')).toBe("He is 149's. Only an admin of 149 can change his account.")
+    const HIM = "He is 149's. Only an admin of 149 can change him."
+    expect(archivePerson('osp9').bad, 'Archive').toBe(HIM)
+    expect(updatePersonField('osp9', { callsign: 'OSPREYX' }), 'Save name').toBe(HIM)
+    signInAs('ad', 'a'); expect(archivePerson('osp9').bad, 'the master archives him').toBe(null)
+    signInAs('ad2', 'a2')
+    expect(restoreProblem('osp9', TODAY), 'Restore').toBe(HIM)
+    expect(restoreArchivedAs('osp9', 'OSPREYX', TODAY), 'Restore as').toBe(HIM)
+    expect(restoreArchivedPerson('osp9', TODAY)).toBe(false)
+    /* a member keeps his own rule's words */
+    signInAs('us', 'us')
+    expect(updatePersonField('osp9', { callsign: 'OSPREYX' })).toBe('You can only edit your own row')
   })
 })

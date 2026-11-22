@@ -1,0 +1,10 @@
+msq-j2-w1-x5 v1
+after Delete press :Ravenno sign-in · WSO · CAT B | accGiveName: | accGiveRole:Member or admin | accGive:Give sign-in | accEdArchive:Archive | accEdDel:Tap again to delete Raven | accEdCancel:Cancel
+tail Nobody is waiting for access. People · 71 Sign-in Roster Raven no sign-in · WSO · CAT B Sign-in (defence mail) Role Give sign-in Archive Tap again to delete Raven Cancel Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone. Add a person Callsign/Name Initials Pilot, WSO or personnel CAT Sign-in (defence m
+after cancel controls :Ravenno sign-in · WSO · CAT B
+fold count 1 ▾ Archived · 1
+tap count 1
+archived row controls [{"tag":"BUTTON","id":"","label":"Harrierno sign-in · Pilot · CAT CArchive","cls":"acc-main acc-tap"},{"tag":"INPUT","id":"accArCs","label":"Harrier","cls":""},{"tag":"BUTTON","id":"accArPostIn","label":"Post in: Thu 19 Nov 2026","cls":"datebox"},{"tag":"BUTTON","id":"accArRestore","label":"Restore","cls":"abtn primary"},{"tag":"BUTTON","id":"accArDel","label":"Delete","cls":"abtn danger"},{"tag":"BUTTON","id":"accArCancel","label":"Cancel","cls":"abtn"}]
+row text SIGN-IN ROSTER Harrier no sign-in · Pilot · CAT C Archived 19 Nov 26 by Saber CALLSIGN/NAME POST IN Thu 19 Nov 26 ▾ The Leave War counts him from the post-in date. Restore Delete Cancel
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

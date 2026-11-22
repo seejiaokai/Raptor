@@ -11,7 +11,7 @@ import { DEFAULT_LAYOUTS } from '../data/layouts.js';
 import { EVENT_INFO, EVENT_INFO_BY_SYL } from '../data/eventInfo.js';
 import { shippedDetails, diffDetails, scrubBlock, mergeBlock, realFlatEdits, blockFromFlat, isDetailsTable } from './eventDetails.js';
 import { SEED_STATE, SEED_STAMP } from '../data/seedState.js';
-import { storage, flushNow, loadLatest, saveHealth, onSaveHealth, storageKept } from '../storage.js';
+import { storage, flushNow, loadLatest, saveHealth, onSaveHealth, storageKept, markStorageLoaded, storageUnit } from '../storage.js';
 import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { normalizeImport as normalizeFile, STUDENT_GUARD_MSG, STUDENT_CHART_MSG, sameDef, remapStudentsSyl } from './fileTransfer.js';
@@ -457,6 +457,36 @@ function trkCollectionOf(k) {
   // out through metaWrite (below), in a saved group of their own.
   return null;
 }
+/* A SAVE THE COMMAND GATE REFUSES SAYS SO (the reshape walk's W3-F4, 22 Nov 26). After a man's squadron move the Tracker
+   keeps the squadron it loaded until his next sign-in (storage.js rebindStorageUnit), and the gate refuses his changes to
+   it (state/perms.ts 7f). Every write here threw the command's answer away: a grade in an event's pop-up was refused
+   with no word, a refused Undo likewise, and "✓ Save changes" went on to clear the edit and read "● syllabus … saved"
+   with nothing stored. Now every command of this page goes through `trkCommit`, and a refused one:
+   - says "This change could not be saved." in the Tracker's own box — the app's generic words (the midnight band's own
+     generic form, state/store.ts bandWords; no ruling gives others), said once however many writes a press makes;
+   - turns the corner red with the same words, and the corner says nothing of saving until a command next goes through;
+   - is counted, so a caller that would go on to claim a save (persistSyl) can see it and stop.
+   The command layer has already put the records and the live lists back (trkStore.restore). A writer with words of its
+   own for a refusal (the flex settings' window) asks for no box (`trkQuietly`). */
+export const NOT_SAVED = 'This change could not be saved.';
+let TRK_REFUSED_N = 0;
+let refusedLatch = false, refusedBox = false, refusedQuiet = 0;
+function trkRefused() {
+  TRK_REFUSED_N++; refusedLatch = true;
+  saveStat = { text: '● ' + NOT_SAVED, cls: 'err' };
+  if (!refusedBox && !refusedQuiet) {
+    refusedBox = true;
+    const done = () => { refusedBox = false; };
+    uiAlert(NOT_SAVED).then(done, done);
+  }
+  notify();
+}
+function trkCommit(cmd) {
+  const r = cmdCommit(cmd);
+  if (r && r.ok === false) trkRefused(); else refusedLatch = false;
+  return r;
+}
+async function trkQuietly(fn) { refusedQuiet++; try { return await fn(); } finally { refusedQuiet--; } }
 /* A COURSE CONVERSION'S OWN RECORDS — its flags, its in-progress name → id map, the old links record ([DB-READINESS]
    group A, the group-wide walk — Astra's finding A, W5 finding 1, 30 Sep 26). They stay raw writes (not records of any
    command: a conversion is bookkeeping, never an undo step), and at the first mount they are the named exempt writer.
@@ -710,7 +740,7 @@ function trkWriteRecords(entries) {
 function trkWrite(k, v) {
   const col = (TRK_COMMANDS && !TRK_RESTORING) ? trkCollectionOf(k) : null;
   if (col && !cmdIsCommitting()) {
-    cmdCommit({
+    trkCommit({
       type: col,
       scope: { module: 'trk', courseId: course, sylId: curSylId() },
       apply: (txn) => { txn.enlist(trkStore); mem[k] = v; bumpMemGen(k); TRK_SIG++; },
@@ -763,7 +793,7 @@ function trkGesture(fn, type) {
   const pending = new Map();
   TRK_GESTURE_PENDING = pending;
   try {
-    cmdCommit({
+    trkCommit({
       type: type || 'trk.gesture',
       scope: { module: 'trk', courseId: course, sylId: curSylId() },
       apply: (txn) => { txn.enlist(trkStore); fn(); cmdDeferEffect(() => flushGesture(pending)); },
@@ -789,7 +819,7 @@ function prefSet(k, v) { try { localStorage.setItem(PP + k, v); } catch (e) {} }
    person to sign in opened on the last one's course and student. Every read and
    write of the two pick keys (`lastCourse`, `lastCrew:<course>`) goes through here:
    under the signed-in person's id when there is one, else the browser's own key
-   (nobody signed in as a person — a guest, a pending account, or a test with nothing wired — as before). The boot converters that
+   (nobody signed in as a person — a pending account, or a test with nothing wired — as before). The boot converters that
    rewrite OLD unprefixed keys are left as they are (D120). */
 export function pickKey(k) { const w = whoamiId(); return w ? 'who:' + w + ':' + k : k; }
 
@@ -1010,7 +1040,10 @@ function loadLineDefaults() {
 async function saveLayout() {
   saveEdgeMeta();
   if (firstFinger && !TRK_RESTORING && !TRK_IN_RESTORE) { firstFinger.save = true; return; }
-  await sSet(kLayout(), JSON.stringify(layout));
+  const refusedBefore = TRK_REFUSED_N;
+  const p = sSet(kLayout(), JSON.stringify(layout));
+  if (TRK_REFUSED_N !== refusedBefore) dropRefusedStep();
+  await p;
 }
 
 const kSyls = c => SYL_NS + ':syls';                       /* syllabus definitions: global */
@@ -2017,7 +2050,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
   /* each person's OWN chart on this course comes first (D376, reading 5 — Fable's final read
      F2): the roster is per chart, so the shared chart below opened the next person on the
      last person's chart and, their own student not on it, on the last person's student.
-     Signed-in people only; with nobody signed in as a person (a guest, a pending account, or a test with nothing wired), the shared answer, as before. */
+     Signed-in people only; with nobody signed in as a person (a pending account, or a test with nothing wired), the shared answer, as before. */
   /* and on EVERY load, not only the first ([DB-READINESS] group A, phase 5b): his chart is no longer written into the
      course's shared plan (below), so a reload of the course — an import, discarded chart edits, a chart switch — reads
      his pick from his own place */
@@ -2039,7 +2072,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
      in phase 4). This used to save the chart on screen as the course's chart too, so that a later reload read it back;
      but the plan is one record for the whole course, so on a shared store whoever opened the course last moved everyone
      else's chart. A signed-in person's chart is his own place (D376 reading 5, the line above) and every load reads it
-     from there. With nobody signed in as a person (a guest, a pending account, or a test with nothing wired), the one shared answer is kept, as before. */
+     from there. With nobody signed in as a person (a pending account, or a test with nothing wired), the one shared answer is kept, as before. */
   if (!whoamiId() && plan.sylId !== __storedSyl) await savePlan();
   /* With no charts shipped in the code and none opened yet, DEFAULT_SYLLABUS is
      undefined and JSON.parse(JSON.stringify(undefined)) throws, which aborted
@@ -2116,7 +2149,7 @@ async function saveRoster() { if (rosterHeld) return; await sSet(kRosterFor(cour
 async function savePlan() { await sSet(kPlan(course), JSON.stringify(plan)); }
 /* THE CHART A SIGNED-IN PERSON HAS OPEN ON A COURSE — his own place (owner D376 reading 5, confirmed D377), kept on his
    own browser under his own id, never in the course's shared plan ([DB-READINESS] group A, phase 5b). Null with
-   nobody signed in as a person (a guest, a pending account, or a test with nothing wired), when he has none yet, or when his chart has since gone. */
+   nobody signed in as a person (a pending account, or a test with nothing wired), when he has none yet, or when his chart has since gone. */
 function mySylOn(c) {
   if (!whoamiId() || c == null) return null;
   const s = prefGet(pickKey('lastSyl:' + c));
@@ -3050,7 +3083,24 @@ export let tool = 'move'; let connectSrc = null, undoStack = [], pan = null;
    every student ticked, is ONE step — a GROUP entry { group: [steps], what } —
    that takes them all back together and leaves the picker where it is. */
 function trimUndo() { if (undoStack.length > 60) undoStack.shift(); }
-function pushUndo() { undoStack.push({ syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }); trimUndo(); redoStack = []; notify(); }
+function pushUndo() { pushChartStep({ syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }); }
+/* A CHART EDIT WHOSE SAVE IS REFUSED LEAVES NO STEP BEHIND (the reshape walk RS, item (b), 22 Nov 26). A chart edit puts
+   its Undo step on the list (and may light ✓ Save changes) BEFORE its save; a refused save (trkRefused — after a man's
+   squadron move, say) put the chart back from the store, but the step and the button stayed: the step took back
+   nothing, its Undo passed the gate for want of any change, lit ✓ Save changes, and that press read "● saved" with
+   nothing stored. `lastPush` is the step a chart edit last put on the list, with the Redo list and ✓ Save changes as they
+   were before it; a refused save whose chart is back where that step began removes the step and puts those back. */
+let lastPush = null;
+function pushChartStep(entry) {
+  lastPush = { entry, redo: redoStack, dirty: sylDirty };
+  undoStack.push(entry); trimUndo(); redoStack = []; notify();
+}
+function chartStepIsNoop(u) { return !!u && !u.group && u.who == null && u.syl === JSON.stringify(SYL) && u.lay === JSON.stringify(layout); }
+function dropRefusedStep() {
+  const lp = lastPush; lastPush = null;
+  if (!lp || undoStack[undoStack.length - 1] !== lp.entry || !chartStepIsNoop(lp.entry)) return;
+  undoStack.pop(); redoStack = lp.redo; sylDirty = lp.dirty; notify();
+}
 /* A snapshot also notes which of the four records were STORED when it was taken ([TRK-UNDO-WRITES-DEFAULTS], 17 Oct 26):
    a student's pace, lull periods and dates are filled with their defaults in memory the moment his chart opens, stored
    or not, so the first ↶ of a mark wrote a pace, an empty lull list and a dates record nobody had made, and left his
@@ -3169,7 +3219,8 @@ function step(from, to, dir) {
        writes its record as it always did */
     trkRestoring(apply);
   }
-  if (!ok) { notify(); return false; }
+  /* refused: every list and record is back as it was (trkStore.restore), and it is said (trkRefused — W3-F4) */
+  if (!ok) { trkRefused(); return false; }
   if (u.group) renderSide();
   /* keep the view: the person is looking at the ball they are taking back, as grading keeps it (R62) — a plain redraw
      threw the chart back to its top ([HUMAN-RETEST] W2-F6) */
@@ -4288,7 +4339,7 @@ function moveGroup(ev) {
   if (!groupDrag) return; const p = svgPt(ev); let dx = p.x - groupDrag.px, dy = p.y - groupDrag.py;
   /* the group stops as a whole where its first ball would pass the chart's start (onChart) — it keeps its shape */
   for (const bid of selBalls) { const st = groupDrag.start[bid]; if (!st) continue; dx = Math.max(dx, BALL_HALF - st.x); dy = Math.max(dy, BALL_HALF - st.y); }
-  if (!groupDrag.moved && !groupDrag.pushed) { undoStack.push(groupDrag.snap); trimUndo(); redoStack = []; groupDrag.pushed = true; notify(); }
+  if (!groupDrag.moved && !groupDrag.pushed) { pushChartStep(groupDrag.snap); groupDrag.pushed = true; }
   groupDrag.moved = true;
   selBalls.forEach(bid => {
     const st = groupDrag.start[bid]; const nx = st.x + dx, ny = st.y + dy; layout[bid] = { x: nx, y: ny };
@@ -4314,7 +4365,7 @@ function startDrag(ev) {
 function onDrag(ev) { if (drag) drag.fe.point(ev); moveBall(ev); }
 function moveBall(ev) {
   if (!drag) return; const p = svgPt(ev); let nx = p.x - drag.dx, ny = p.y - drag.dy;
-  if (!drag.moved && !drag.pushed) { undoStack.push(drag.snap); trimUndo(); redoStack = []; drag.pushed = true; notify(); }
+  if (!drag.moved && !drag.pushed) { pushChartStep(drag.snap); drag.pushed = true; }
   /* smart-align: snap to any other ball's x or y within threshold */
   const TH = 6; alignGuides = []; let gx = null, gy = null;
   SYL.forEach(e => {
@@ -4511,7 +4562,7 @@ export async function setFlexSetting(next) {
   if (bad) return { ok: false, message: bad };
   if (want.on === FLEX.on && want.from.every((v, i) => v === FLEX.from[i])) return { ok: true };
   const json = JSON.stringify(want);
-  await sSet(kFlex(), json);
+  await trkQuietly(() => sSet(kFlex(), json));   /* (its refusal is said in the window's own words, just below) */
   if (memGet(kFlex()) !== json) { flexFromMem(); notify(); return { ok: false, message: 'The flex settings could not be saved. Try again.' }; }
   FLEX = flexOf(want);
   renderSide(); notify();
@@ -5679,7 +5730,7 @@ function trkDelete(k) {
      delete of a stored-but-unwritten-this-session key must still route through a
      command so it emits a delete change with a real before-image. */
   if (col && !cmdIsCommitting()) {
-    cmdCommit({
+    trkCommit({
       type: col,
       scope: { module: 'trk', courseId: course, sylId: curSylId() },
       apply: (txn) => { txn.enlist(trkStore); delete mem[k]; bumpMemGen(k); TRK_SIG++; },
@@ -5993,11 +6044,15 @@ export async function persistSyl() {
   // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- this copy becomes the saved chart: the ball editor clears a name or number by setting it undefined, and JSON drops those keys as the stored chart does
   const def = JSON.parse(JSON.stringify(SYL));
   /* the chart itself saved INSIDE the sweep's gesture: its marks and the chart they went with, one saved group */
+  const refusedBefore = TRK_REFUSED_N;
   await sweepChart(id, new Set(gone), saved, SYL, () => {
     if (shipped && sameDef(def, shipped)) delete customDefs[id];
     else customDefs[id] = def;
     sSet(kSyls(course), JSON.stringify(customDefs));
   });
+  /* THE SAVE WAS REFUSED (W3-F4): the edit stays as it is, still to be saved — never cleared, never "saved". The command
+     layer put the chart's records back; the draft on screen and its Undo list are the ones he had (trkStore.restore). */
+  if (TRK_REFUSED_N !== refusedBefore) { sylDirty = true; notify(); return false; }
   clearDirty(); refreshSyl(); renderBoard(); renderSide();
   setSaveStatus('syllabus “' + sylName(id) + '” saved' + (isBuiltinSylId(id) && sylHasOwnDef(id) ? ' (overrides the built-in)' : ''), 'ok');
   return true;
@@ -6574,6 +6629,9 @@ export function saveWords() {
 let saveFailed = saveHealth() === 'failed';
 onSaveHealth(() => { const f = saveHealth() === 'failed'; if (f !== saveFailed) { saveFailed = f; notify(); } });
 function setSaveStatus(msg, cls) {
+  /* a refused save keeps the corner until a command next goes through (trkRefused — W3-F4): nothing after it in the same
+     press may say "saving" or "saved" */
+  if (refusedLatch && cls !== 'err') return;
   saveStat = {
     text: (cls === 'saving' ? (msg ? '● ' + msg : '● saving…')
       : cls === 'ok' ? (msg ? '● ' + msg : '● saved')
@@ -7333,6 +7391,9 @@ export async function rehydrateForTests() {
 }
 export async function init() {
   if (initStarted) return; initStarted = true;
+  /* WHOSE TRACKER (multi-squadron batch 1, step 4): the doorway binds the signed-in person's own squadron now, before
+     the first read — every record below is that squadron's (storage.js) */
+  markStorageLoaded();
   /* every stored record into the mirror FIRST ([DB-READINESS] group A, phase 5b): the row door compares each write with
      the rows this copy of the Tracker has read, and the boot's own upgrades write through it too */
   await trkHydrateMem();
@@ -7453,7 +7514,9 @@ export async function init() {
       coursesNow: () => COURSES.slice(),
       /* a record as the browser has DURABLY stored it — read from localStorage itself, as the smoke suite's storage
          checks always did — rebuilt from its rows where it is kept one row per thing ([DB-READINESS] group A, phase 5b) */
-      lsRecord: (k, pre = 'raptor:tracker/') => {
+      /* a record's browser key carries its squadron since step 4 (`raptor:tracker/u142@<key>` — storage/adapters.ts) */
+      storeKey: k => 'raptor:tracker/' + (storageUnit() ? storageUnit() + '@' : '') + k,
+      lsRecord: (k, pre = 'raptor:tracker/' + (storageUnit() ? storageUnit() + '@' : '')) => {
         const whole = localStorage.getItem(pre + k);
         const L = TRKROWS.logicalOf(k);
         if (!L || (whole != null && whole !== '')) return whole;

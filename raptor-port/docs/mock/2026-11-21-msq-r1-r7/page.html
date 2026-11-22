@@ -1,0 +1,91 @@
+<title>Refusal Words Questions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* layout: one reading column; each question a card, its pictures desktop beside iPhone (copied from the 21 Nov page) */
+:root{--bg:#f4f6f8;--card:#ffffff;--fg:#14202b;--mute:#5b6b78;--line:#d6dee5;--acc:#0e7fa6;--rec:#0b7a4b;--mark:#d4157a;--tint:rgba(14,127,166,.07);
+--f-body:Inter,system-ui,'Segoe UI',sans-serif;--f-head:'Space Grotesk',Inter,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--tint:rgba(60,196,234,.08);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--tint:rgba(60,196,234,.08);color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-body)}
+.wrap{max-width:1100px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-head);text-wrap:balance;margin:0}
+h1{font-size:26px}h2{font-size:21px;margin-top:38px;padding-top:14px;border-top:2px solid var(--line)}h3{font-size:16px;margin-top:18px}
+.sub{color:var(--mute);margin:4px 0 0;max-width:80ch}
+.top{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:16px}
+.top ol{margin:6px 0 0;padding-left:0;list-style:none;display:grid;gap:8px}
+.top li{display:grid;grid-template-columns:40px minmax(0,1fr);gap:8px}
+.top b.n{font-family:var(--f-head);color:var(--acc)}
+a{color:var(--acc)}
+.rec{color:var(--rec);font-weight:600}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:12px}
+.q p,.q li{max-width:80ch}.q p{margin:8px 0}
+.ex{background:var(--tint);border-radius:8px;padding:8px 12px;color:var(--mute)}
+.ex b{color:var(--fg)}
+.pair{display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr);gap:10px;margin-top:10px;align-items:start}
+figure{margin:0;min-width:0}
+figure img{display:block;width:100%;border-radius:6px;border:1px solid var(--line);cursor:zoom-in;background:#000}
+figcaption{font-size:12.5px;color:var(--mute);margin-top:4px}
+figcaption b{color:var(--fg)}
+.words{font-family:var(--f-head);background:var(--tint);border:1px dashed var(--mark);padding:6px 10px;margin:8px 0;border-radius:6px}
+.tag{display:inline-block;font:700 11px/16px system-ui,'Segoe UI',sans-serif;padding:0 6px;border-radius:8px;color:#fff;background:#ff2d95;vertical-align:1px}
+.note{border-left:4px solid var(--line);padding-left:10px;color:var(--mute)}
+.later{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-top:24px;color:var(--mute)}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:flex-start;justify-content:center;padding:16px;z-index:20;overflow:auto}
+#zoom[hidden]{display:none}
+#zoom img{max-width:none;width:auto;cursor:zoom-out}
+@media (max-width:640px){.pair{grid-template-columns:minmax(0,1fr)}.top li{grid-template-columns:34px minmax(0,1fr)}}
+</style>
+
+<div class="wrap">
+<h1>Two squadrons: the words for two refusals</h1>
+<p class="sub">Two things the app already refuses still say only "This change could not be saved." Each needs words you can read first. The rules themselves are built; only the words are open. Real pictures are the app as it is today; anything drawn in is outlined in pink and tagged <span class="tag">New</span>. Tap a picture to see it full size. Big picture: a desktop. Small picture: your iPhone.</p>
+
+<div class="top">
+<h3 style="margin-top:0">2 questions, each with my recommendation</h3>
+<ol>
+<li><b class="n">1</b><span>An ordinary admin tries to make a member of an admin who holds Plan of another squadron. <span class="rec">Recommended: "Hunter holds Plan of 149. Only a master admin can make him a member."</span> <a href="#q1">Pictures 1</a></span></li>
+<li><b class="n">2</b><span>Someone tries to move himself to another squadron, or an ordinary admin tries to move the master admin. <span class="rec">Recommended: "You can't move yourself to another squadron — ask another admin", and for the master admin the app's existing "Only a master admin can do that".</span> <a href="#q2">Pictures 2</a></span></li>
+</ol>
+<p class="sub">Answer by number. "Both as recommended" is fine. Until you answer, each refusal says "This change could not be saved."</p>
+</div>
+
+<h2 id="q1">1 · Making a member of an admin who holds Plan of another squadron</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Hunter is 142's admin and holds Plan of 149, given by Saber, the master admin. On Wed 15 Jul Outlaw, another 142 admin who is not a master admin, opens Hunter's row on Admin → Users, picks Member and presses Save. Only a master admin can take Plan away, and making Hunter a member would end his Plan, so the app refuses. Today the note only says "This change could not be saved." (1a), which does not tell Outlaw why or who can do it.</p>
+<p><span class="rec">Recommended: these words (1b).</span> They say what stops it and who can do it.</p>
+<p class="words">Hunter holds Plan of 149. Only a master admin can make him a member.</p>
+<p>When Saber, the master admin, does the same, it goes through: Hunter becomes a member, and his Plan of 149 ends with the change. I checked this in the running app.</p>
+</div>
+<div class="pair"><figure><img src="img/q1a-d.png" alt="Admin, Users: Hunter's row set to Member, the note saying the change could not be saved"><figcaption><b>1a, real, today.</b> Outlaw signed in. He picked Member on Hunter's row and pressed Save: refused, the note (1) reads "This change could not be saved." Hunter stays an admin. Set up for the picture: Hunter's Plan of 149 written in, as no screen gives Plan yet; and Saber made Outlaw an admin on Admin → Users, as the demo has no 142 admin who is not a master admin.</figcaption></figure>
+<figure><img src="img/q1a-p.png" alt="the same on the iPhone"><figcaption><b>1a, iPhone, real.</b> The same set-up.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/q1b-d.png" alt="the same screen, the note with the proposed words"><figcaption><span class="tag">New</span> <b>1b, drawn, recommended.</b> The same press. Only the note's words are changed; its amber look is the one the app already uses for a refusal on this page.</figcaption></figure>
+<figure><img src="img/q1b-p.png" alt="the same on the iPhone"><figcaption><span class="tag">New</span> <b>1b, iPhone, drawn.</b></figcaption></figure></div>
+
+<h2 id="q2">2 · Moving yourself, or the master admin, to another squadron</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Hunter, 142's admin, opens his own Post out sheet, picks Transfer to Sqn and 149, from Fri 3 Apr. The app refuses: nobody moves himself, just as nobody can archive or delete himself. Then he opens Saber's sheet and does the same. The app refuses again: only a master admin moves a master admin.</p>
+<p>No screen moves anyone yet: today Transfer to Sqn is greyed (2a). The rule is already built underneath, so when the transfer sheet you approved is built, these two refusals need words.</p>
+<p><span class="rec">Recommended: for himself (2b),</span> words that match the app's existing "You can't delete yourself — ask another admin":</p>
+<p class="words">You can't move yourself to another squadron — ask another admin</p>
+<p><span class="rec">For the master admin (2c),</span> the words the app already uses wherever an ordinary admin tries to change the master admin, so nothing new to learn:</p>
+<p class="words">Only a master admin can do that</p>
+<p>Each shows above Post out, which goes grey, in the same look as the refusal you approved for a transfer that would leave 142 with no admin.</p>
+</div>
+<div class="pair"><figure><img src="img/q2a-d.png" alt="the Leave War's Post out sheet for Hunter, Transfer to Sqn greyed"><figcaption><b>2a, real, today.</b> Hunter signed in, the Leave War, his own Post out sheet. Transfer to Sqn (2) is greyed: it is not built yet.</figcaption></figure>
+<figure><img src="img/q2a-p.png" alt="the same on the iPhone"><figcaption><b>2a, iPhone, real.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/q2b-d.png" alt="the approved transfer sheet on Hunter's own row, refused"><figcaption><span class="tag">New</span> <b>2b, drawn, recommended.</b> Your approved transfer sheet, not yet built, on Hunter's own row: To 149, Fri 3 Apr (the "As of today" figures are made up, as in the approved drawing). The refusal line is new.</figcaption></figure>
+<figure><img src="img/q2b-p.png" alt="the same on the iPhone"><figcaption><span class="tag">New</span> <b>2b, iPhone, drawn.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/q2c-d.png" alt="the approved transfer sheet on Saber's row, refused"><figcaption><span class="tag">New</span> <b>2c, drawn, recommended.</b> The same sheet, Hunter on Saber's row. The words already exist in the app; their place on this sheet is new.</figcaption></figure>
+<figure><img src="img/q2c-p.png" alt="the same on the iPhone"><figcaption><span class="tag">New</span> <b>2c, iPhone, drawn.</b></figcaption></figure></div>
+
+<p class="later">The words for "+ New squadron" when the first admin picked for it cannot be its admin wait until that screen is drawn.</p>
+</div>
+
+<div id="zoom" hidden></div>
+<script>
+(function(){var z=document.getElementById('zoom'),zi=document.createElement('img');z.appendChild(zi);
+document.addEventListener('click',function(e){var t=e.target;
+if(t.matches&&t.matches('figure img')){zi.src=t.src;zi.alt=t.alt;z.hidden=false;return}
+if(!z.hidden&&(t===z||t===zi)){z.hidden=true}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')z.hidden=true});})();
+</script>

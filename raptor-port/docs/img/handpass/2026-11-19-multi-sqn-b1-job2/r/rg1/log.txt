@@ -1,0 +1,18 @@
+msq-j2-r-g v1
+bell class bellbtn
+ROW PASS | R-G | iPhone | us9 taps the bell | saw: open: true; box [8,46,394,106] inside: true; words: Nothing new
+ROW PASS | R-G | iPhone | taps the bell again | saw: list still shown: false
+ROW PASS | R-G | iPhone | opens the bell, taps outside it at [20,860] | saw: list still shown: false
+signed in as ad9
+cell box [205,379,224,397]
+ROW PASS | R-G | iPhone | ad9 taps Osprey's Tue 24 Nov | saw: open: true; window box [25,616,377,653] inside: true
+ROW PASS | R-G | iPhone | ad9: Grant OIL -> Give FO on Osprey's Tue 24 Nov | saw: cell "FO"
+undo count 1 undoBtn abtn hbtn disabled=false
+ROW PASS | R-G | iPhone | ad9: top bar Undo | saw: cell ""
+ROW PASS | R-G | iPhone | ad9: top bar Redo | saw: cell "FO"
+signed in as us
+calendar on: November 2026›
+day button Mon 23 Nov 2026 inside
+ROW RECORD | R-G | iPhone | us: Inputs -> + Input -> Training for himself, Mon 23 Nov -> Add | saw: window gone true; rows []; page Inputs Inputs SANS Medical 2 1 + Input 19 Nov → 3 Dec Calendar List Filters1 Ranger Clear filters MON 23 NOV 1 input LATE 06:00–18:00 RangerTRAINING
+errors []
+DONE 7 PASS 0 FAIL 1 OTHER of 8

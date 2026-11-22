@@ -29,8 +29,8 @@ import { PEOPLE, nameToId, archivedHolders } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { elogWhen } from '../engine/editlog'
 import {
-  ACCESS_REQS, GUESTVIEW, accountOfPid, linkablePeople, addAccount, updateAccount,
-  approveRequest, approveRequestNew, addPersonAndAccount, declineRequest, setGuestView,
+  ACCESS_REQS, accountOfPid, linkablePeople, addAccount, updateAccount,
+  approveRequest, approveRequestNew, addPersonAndAccount, declineRequest,
   requestSummary, accessAlert, markRequestsSeen, MAX_SIGNIN, isAdminAccount, type Account, type AccountRole, type AccessRequest,
 } from '../state/accounts'
 import {
@@ -301,14 +301,20 @@ function PersonRow(p: { pid: string; open: boolean; ringed?: boolean; onToggle: 
 function PersonEditor(p: { pid: string; a: Account | undefined; callsign: string; onClose: () => void }) {
   const { a, callsign } = p
   const [name, setName] = useState(a ? a.name : '')
-  const [role, setRole] = useState<AccountRole>(a ? a.role : 'main')
+  /* THE ROLE HIS ACCOUNT GIVES TODAY, as his row's badge reads it (roleWordOf — accounts.ts adminNow), never the stored
+     role alone (the sign-in re-walk, 22 Nov 26): an admin who moved squadron is a member of the one he joined (K3, D2160)
+     while his account still stores "admin", so the box opened on Admin beside a row reading MEMBER, and saving Admin
+     changed nothing and said nothing. Picking Admin and saving now sends the role, and the account door records it for
+     the squadron he is in today (accounts.ts updateAccount, adminRecFor). */
+  const roleNow: AccountRole = a && isAdminAccount(a) ? 'admin' : 'main'
+  const [role, setRole] = useState<AccountRole>(roleNow)
   /* the delete's first tap arms it; Cancel, closing the editor or another row disarms it (the editor unmounts) */
   const [armDel, setArmDel] = useState(false)
   const save = () => {
     if (!a) return
     const patch: any = {}
     if (name !== a.name) patch.name = name
-    if (role !== a.role) patch.role = role
+    if (role !== roleNow) patch.role = role
     if (!Object.keys(patch).length) return p.onClose()
     if (done(updateAccount(a.id, patch), 'Saved')) p.onClose()
   }
@@ -572,13 +578,8 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
           {hasName ? 'Add person and sign-in' : 'Add person'}</button>
         <p className="adm-note" id="accAddNote">Makes his Quals row, and his sign-in if you give one. The Leave War counts him from the post-in date.</p>
       </div>
-      <hr className="adm-sep" />
-      <h4 className="adm-sub">Guest view</h4>
-      <label className="acc-switch">
-        <input type="checkbox" id="admGuestView" checked={GUESTVIEW}
-          onChange={e => done(setGuestView(e.target.checked), e.target.checked ? 'People waiting can now view the schedule' : 'Guest view is off')} />
-        <span>Let people waiting for access view the schedule (read only)</span>
-      </label>
+      {/* (the "Guest view" switch that stood here, under its own rule, is removed with the guest view — his D2239,
+          20 Nov 26: a person waiting sees only the waiting screen until an admin of his squadron approves him) */}
     </>
   )
 }

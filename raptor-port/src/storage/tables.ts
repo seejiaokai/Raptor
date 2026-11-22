@@ -11,6 +11,7 @@
    `v3:master:chart:<id>`, a ball's typed details `v3:master:info:<chart>:<ball>` — read first, since a ball's code may
    spell any word the older checks look for. */
 import type { Collection } from './backend'
+import { localOf } from './unitid'
 
 const TRACKER = (id: string): string => {
   if (id.startsWith('v3:master:course:')) return 'Course'
@@ -42,8 +43,10 @@ export function tableOf(collection: Collection, id: string): string {
       return id.includes('#') ? 'ScheduleDay' : 'ScheduleWeek'
     case 'inputs': return 'Input'
     case 'people': return 'Person'
-    case 'plan': return id.startsWith('dm:') ? 'DayRemark' : 'PlanningPuck'
+    case 'plan': return localOf(id).startsWith('dm:') ? 'DayRemark' : 'PlanningPuck'   // `u149@dm:<iso>`: the unit split off first (step 2)
     case 'leavewar':
+      /* a squadron's world since step 4: `u149@war:<id>` — the unit split off first (storage/adapters.ts) */
+      id = localOf(id)
       if (id.startsWith('war:')) return 'LeaveWar'
       if (id.startsWith('rec:')) return 'LeaveBid'
       if (id.startsWith('ledger:')) return 'LeaveLedger'
@@ -64,8 +67,16 @@ export function tableOf(collection: Collection, id: string): string {
       /* when an admin last opened the Leave War's Approvals (M4 8.4): its own table, as the permissions table names it */
       if (id.startsWith('apprseen:')) return 'LeaveApprovalsSeen'
       if (id.startsWith('lwseen:')) return 'LeaveSeen'
+      /* the units, their places, each person's home and each right in another unit (multi-squadron batch 1, step 1 —
+         state/units.ts): each its own table, as the permissions table names it. 'unitplace:' before 'unit:' is not needed
+         (neither starts the other) but is kept first so a later prefix cannot misfile it */
+      if (id.startsWith('unitplace:')) return 'UnitPlace'
+      if (id.startsWith('unit:')) return 'Unit'
+      if (id.startsWith('place:')) return 'Place'
+      if (id.startsWith('grant:')) return 'UnitGrant'
+      if (id.startsWith('home:')) return 'PersonHome'
       return 'Setting'
-    case 'tracker': return TRACKER(id)
+    case 'tracker': return TRACKER(localOf(id))   // `u149@v3:…` — the unit split off first (step 4)
     case 'changes': return 'ChangeBatch'
     case 'notices': return 'Notice'
   }

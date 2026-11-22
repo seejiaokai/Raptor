@@ -835,7 +835,7 @@ const stApplied = await pg.evaluate(async () => {
   const roster = t.lsRecord('v3:' + cid + ':' + id + ':roster');   /* one row per student since phase 5b */
   let entry = null; try { entry = (JSON.parse(roster || '[]') || []).find(e => e && e.name === 'STUDENT Z'); } catch (_) {}
   return { roster, id: entry ? entry.id : null,
-           marks: entry ? localStorage['raptor:tracker/v3:' + cid + ':' + id + ':m:' + entry.id] : null };
+           marks: entry ? localStorage['raptor:tracker/u142@v3:' + cid + ':' + id + ':m:' + entry.id] : null };
 });
 ok('applying students writes the roster', !!stApplied && (stApplied.roster || '').includes('STUDENT Z'));
 ok('the roster it writes carries an enrolment id, not a bare name',
@@ -1334,7 +1334,7 @@ ok('the spacer falls after the search, with only the Save slot to its right',
        segment, it just is not the callsign any more. */
     const c = document.getElementById('courseSel').value, id = document.getElementById('activeSel').value;
     const syl = document.getElementById('sylSel').value;
-    const raw = localStorage.getItem('raptor:tracker/v3:' + c + ':' + syl + ':m:' + id);
+    const raw = localStorage.getItem('raptor:tracker/u142@v3:' + c + ':' + syl + ':m:' + id);
     return !raw || !((JSON.parse(raw)['ST-01'] || {}).g);
   }));
   await pg.keyboard.press('Control+y'); await pg.waitForTimeout(400);
@@ -2219,7 +2219,7 @@ ok('the lull calendar is shut until it is asked for', await pg.locator('#lullCal
        is id-native end to end — re-migrating the live store mid-suite would wipe
        the students the checks below rely on, so this only READS. */
     const idn = await pg.evaluate(() => {
-      const t = window.__coreForTests, P = 'raptor:tracker/';
+      const t = window.__coreForTests, P = 'raptor:tracker/u142@';   /* 142's Tracker: its keys carry its squadron since batch 1's step 4 */
       return { vals: [...document.querySelectorAll('#sylSel option')].map(o => o.value),
                cur: t.curSylId(), name: t.curSylName(),
                cat: t.lsRecord('v3:master:sylcat', P),   /* one row per chart since phase 5b */
@@ -2614,7 +2614,7 @@ if (two.length >= 2) {
    app reads it back exactly where it would read its own. */
 ok('a remembered syllabus that no longer exists does not break opening the app',
   await pg.evaluate(async () => {
-    localStorage.setItem('raptor:tracker/v3:' + document.getElementById('courseSel').value + ':lastStudent', 'NO SUCH PERSON');
+    localStorage.setItem('raptor:tracker/u142@v3:' + document.getElementById('courseSel').value + ':lastStudent', 'NO SUCH PERSON');
     return true;
   }));
 await openTracker(pg);
@@ -2860,13 +2860,13 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
      does not re-run the migration and the id-keyed key survives. */
   await pg.evaluate(() => {
     const t = window.__coreForTests, id = t.sylIdOf('A/G - A/A 2026');
-    localStorage.setItem('raptor:tracker/v3:master:lay:' + id, JSON.stringify(t.DEFAULT_LAYOUTS['A/G - A/A 2026']));
+    localStorage.setItem('raptor:tracker/u142@v3:master:lay:' + id, JSON.stringify(t.DEFAULT_LAYOUTS['A/G - A/A 2026']));
   });
   await openTracker(pg); await pg.waitForSelector('#flowSvg .ball');
   await selAG(); await pg.waitForTimeout(1200);
   const linesOf = () => pg.evaluate(() => {
     const t = window.__coreForTests, id = t.sylIdOf('A/G - A/A 2026');
-    const raw = localStorage.getItem('raptor:tracker/v3:master:lay:' + id);
+    const raw = localStorage.getItem('raptor:tracker/u142@v3:master:lay:' + id);
     return raw ? (JSON.parse(raw).__lines || []).length : 0;
   });
   const linesBefore = await linesOf();
@@ -2902,7 +2902,7 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   await pg.click('#trUndoBtn'); await pg.waitForTimeout(500);
   const txBoxes = () => pg.evaluate(() => {
     const id = window.__coreForTests.sylIdOf('Tx 2026');
-    const raw = localStorage.getItem('raptor:tracker/v3:master:lay:' + id);
+    const raw = localStorage.getItem('raptor:tracker/u142@v3:master:lay:' + id);
     return raw ? Object.keys(JSON.parse(raw)).filter(k => !k.startsWith('__')).length : 0;
   });
   const txBefore = await txBoxes();
@@ -2980,8 +2980,8 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   ok('the pace-and-lulls checks know which enrolment they are seeding', !!paceA, `id ${paceA}`);
   await pg.evaluate(id => {
     const c = document.getElementById('courseSel').value;
-    localStorage.setItem('raptor:tracker/v3:' + c + ':pace:' + id, JSON.stringify({ epw: '3.5', target: '2027-01-01' }));
-    localStorage.setItem('raptor:tracker/v3:' + c + ':lulls:' + id, JSON.stringify([{ a: 1, b: 2 }]));
+    localStorage.setItem('raptor:tracker/u142@v3:' + c + ':pace:' + id, JSON.stringify({ epw: '3.5', target: '2027-01-01' }));
+    localStorage.setItem('raptor:tracker/u142@v3:' + c + ':lulls:' + id, JSON.stringify([{ a: 1, b: 2 }]));
   }, paceA);
   await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.waitForTimeout(700);
   await viaMenu('course', '#renCourse'); await pg.waitForTimeout(250);
@@ -2997,12 +2997,12 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
        that a rename is not asked to move. An emptied key counts as gone: where
        the store has no delete of its own, that is the tombstone it writes. */
     const stale = Object.keys(localStorage).filter(k =>
-      k.startsWith('raptor:tracker/v3:26ABSG:')
+      k.startsWith('raptor:tracker/u142@v3:26ABSG:')
       && (/:m:|:d:|:pace:|:lulls:|:last:|:enr:/.test(k) || k.endsWith(':roster'))
       && localStorage.getItem(k));
     return { c, stale: stale.length, staleKeys: stale.slice(0, 3).join(' | '),
-      pace: localStorage.getItem('raptor:tracker/v3:' + c + ':pace:' + id),
-      lulls: localStorage.getItem('raptor:tracker/v3:' + c + ':lulls:' + id) };
+      pace: localStorage.getItem('raptor:tracker/u142@v3:' + c + ':pace:' + id),
+      lulls: localStorage.getItem('raptor:tracker/u142@v3:' + c + ':lulls:' + id) };
   }, paceA);
   ok('renaming a course carries each crew member\'s pace and lull periods',
     !!carried.pace && carried.pace.includes('3.5') && !!carried.lulls,
@@ -3014,7 +3014,7 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   const paceB = await idOf('STUDENT B');
   await pg.evaluate(id => {
     const c = document.getElementById('courseSel').value;
-    localStorage.setItem('raptor:tracker/v3:' + c + ':pace:' + id, JSON.stringify({ epw: '9.9' }));
+    localStorage.setItem('raptor:tracker/u142@v3:' + c + ':pace:' + id, JSON.stringify({ epw: '9.9' }));
   }, paceB);
   await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.waitForTimeout(700);
   await pickStudent('STUDENT B'); await pg.waitForTimeout(300);
@@ -3042,7 +3042,7 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   const newBId = await idOf('STUDENT B');
   const revived = await pg.evaluate(id => {
     const c = document.getElementById('courseSel').value;
-    return localStorage.getItem('raptor:tracker/v3:' + c + ':pace:' + id);
+    return localStorage.getItem('raptor:tracker/u142@v3:' + c + ':pace:' + id);
   }, newBId);
   ok('adding the same callsign back starts them clean',
     !revived || !revived.includes('9.9'), `pace after re-adding: ${revived}`);

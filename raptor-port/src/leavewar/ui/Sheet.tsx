@@ -12,8 +12,11 @@
 // the grid, and the manning counts behind an open sheet are exactly what
 // somebody is reading while they decide.
 
-import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import './bidpicker.css'
+import { setWarWindowsProbe, warWindowGone, subscribeBands, warBand } from '../../state/typing-hold'
+import { MoveBandView } from '../../ui/MoveBand'
 import { followVisible } from '../../ui/vvfollow'
 import { holdPageScroll } from '../../ui/floatwin'
 import { screenBox } from '../../ui/kbscroll'
@@ -41,6 +44,42 @@ const PAN_THRESH = 6 // px before a gesture commits to an axis
    lost Escape to it, and the bid window no longer held Tab. Each panel is pushed here as it mounts and taken out as it
    goes, so the last entry is the window opened last. */
 const OPEN: HTMLElement[] = []
+/* …AND THE PAGE ASKS IT WHETHER A WINDOW IS OPEN (the reshape plan §3.2 A-iv "Typed work at the swap"; state/typing-hold.ts):
+   an open war window holds the war's swap when his squadron changes under it — his own move at midnight — whatever is
+   typed in it, so no form has to report its typing */
+setWarWindowsProbe(() => OPEN.length)
+
+/* THE BAND ACROSS AN OPEN WINDOW WHEN HIS SQUADRON CHANGES UNDER IT (his D2243 Q7, "as drawn" — docs/mock/
+   2026-11-20-multi-sqn-reshape/page.html §7, pictures q7b-d and q7b-p, D1478). While the war loaded is no longer the page's
+   own squadron, every open war window carries one band across its top, under its title strip — the failed-save band's
+   own look (ui/scheduler/17-save-status.css: the drawn sign, the lead in bold amber, the rest quieter), let out to the
+   window's edges — and one button, "Close", the window's own chip (`pchip`, as "Pick a range" is drawn). Close closes the
+   window: the swap it held then runs and 149's Leave War opens (typing-hold.ts warWindowGone). His typed words stay
+   visible under the band, so he can copy them; nothing is saved by it. On the iPhone the band takes two lines.
+   The band is drawn in a slot of its own put after the window's title strip (`.bidsheet-hd`, on every sheet) — the frame
+   cannot place it inside a title strip each sheet writes itself. */
+function useMoveBand(panelRef: { current: HTMLDivElement | null }, onClose: () => void): ReactNode {
+  const band = useSyncExternalStore(subscribeBands, warBand, warBand)
+  const up = !!band
+  const [slot, setSlot] = useState<HTMLElement | null>(null)
+  useLayoutEffect(() => {
+    const panel = panelRef.current
+    if (!up || !panel) return
+    const el = document.createElement('div')
+    el.className = 'moveband-slot'
+    /* let out to the window's own edges past its padding, as the board's band is let out past its bar's */
+    const cs = getComputedStyle(panel)
+    const pl = parseFloat(cs.paddingLeft) || 0, pr = parseFloat(cs.paddingRight) || 0
+    el.style.margin = `0 -${pr}px 8px -${pl}px`
+    el.style.width = `calc(100% + ${pl + pr}px)`
+    const hd = panel.querySelector('.bidsheet-hd')
+    if (hd && hd.parentElement) hd.after(el); else panel.prepend(el)
+    setSlot(el)
+    return () => { el.remove(); setSlot(null) }
+  }, [panelRef, up])
+  if (!band || !slot) return null
+  return createPortal(<MoveBandView band={band} onClose={onClose} testid="move-band" closeClass="pchip" />, slot)
+}
 
 /** How much of the visual viewport must be gone before it counts as a KEYBOARD
  *  rather than a URL bar showing or hiding — below this, a docked panel must
@@ -436,8 +475,10 @@ export function Sheet({
     const n = panelRef.current
     if (!n) return
     OPEN.push(n)
-    return () => { const i = OPEN.lastIndexOf(n); if (i >= 0) OPEN.splice(i, 1) }
+    /* a window going lets a swap it held run (state/typing-hold.ts — only while a band is up) */
+    return () => { const i = OPEN.lastIndexOf(n); if (i >= 0) OPEN.splice(i, 1); warWindowGone() }
   }, [panelRef])
+  const moveBand = useMoveBand(panelRef, () => closeRef.current())
   /* A FINGER ON THE WINDOW NEVER SCROLLS THE PAGE BEHIND IT (owner D686, 9 Oct 26; found on this window on his iPhone,
      22 Oct 26 — "I could scroll the page behind this page somehow vertically"). The inner list's `overscroll-behavior:
      contain` (bidpicker.css) holds only where there is something left to scroll; where what is in the window fits, or has
@@ -561,6 +602,7 @@ export function Sheet({
       <div ref={panelRef} className={`bidsheet${narrow ? ' narrow' : ''}${full ? ' full' : ''}${asPage ? ' fullpage' : ''}${modal ? '' : ' nonmodal'}${over ? ' raised' : ''}`} data-testid={testid} role="dialog" aria-label={label}>
         {children}
       </div>
+      {moveBand}
     </>
   )
 }

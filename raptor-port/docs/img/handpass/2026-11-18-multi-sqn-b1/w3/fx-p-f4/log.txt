@@ -1,0 +1,12 @@
+msq-w3-fixread v1 phone only F4
+ROW PASS | F4 | phone | ad9 adds ground row "F4 149 LINE" on Wed with Kestrel | saw: row "F4 149 LINE" on screen
+ROW PASS | F4 | phone | ad2 adds ground row "F4 142 LINE" on Wed with Hunter | saw: row "F4 142 LINE" on screen
+F4 ad clock before Changes, 3 new to you this week | text:3
+F4 ad window ⠿Changes · week of 13/73 changes this weekHide ▾✕History on: Tap a gold dot on the scheduleNew to you 3All changes 3WeekMonTueWedThuFriSatSunGroup byItemWho▾Wed · Ground · F4 142 LINE · 2NEW08:30Hunter put onHunter · 18/11 08:30Item— → F4 142 LINEHunter · 18/11 08:30Wed · The dayHunter · 18/11 08:30Ground item added✓ Mark all as seen
+ROW PASS | F4 | phone | ad (master, 142) opens the changes window | saw: ⠿Changes · week of 13/73 changes this weekHide ▾✕History on: Tap a gold dot on the scheduleNew to you 3All changes 3WeekMonTueWedThuFriSatSunGroup byItemWho▾Wed · Ground · F4 142 LINE · 2NEW08:30Hunter put onHunter · 18/11 08:30Item— → F4 142 LINEHunter · 18/11 08:30Wed · The dayHunter · 18/11 08:30Ground item added✓ Mark all as seen
+ROW PASS | F4 | phone | ad presses "Mark all as seen" | saw: window: ⠿Changes · week of 13/73 changes this weekHide ▾✕History on: Tap a gold dot on the scheduleNew to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWhoNothing new to you this week.✓ Mark all as seen ; clock before: Changes, 3 new to you this week | text:3 ; after: Changes | text:
+ROW RECORD | F4 | phone | ad switches to 149 with the "142 ▾" schedules menu | saw: this build draws no such menu at the top left (see F2 row); steps 4 and 5 cannot be done as ad. The 149 side is checked as 149's own admin below.
+ROW PASS | F4 | phone | ad reloads and signs in again (142) | saw: clock: Changes | text:
+ROW PASS | F4 | phone | ad9 (149) opens his changes window (his own 149 line was made by himself) | saw: clock: Changes | text: ; window: ⠿Changes · week of 13/73 changes this weekHide ▾✕History on: Tap a gold dot on the scheduleNew to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWhoNothing new to you this week.✓ Mark all as seen
+errors []
+DONE 6 PASS 0 FAIL 1 OTHER of 7

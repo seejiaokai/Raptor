@@ -1,0 +1,6 @@
+msq-host-rewalk v2 phone
+ROW RECORD | R1 | phone | ad9 adds ground row "R149 HIST" on Wed 15 Jul | saw: Wed: 3 changes; all heads: (no chip), (no chip), 3 changes, (no chip), (no chip), (no chip), (no chip); chips: 3 changes@day-head | 3 changes@?; clock: Changes
+ROW PASS | R1 | phone | ad (142) looks at the week after 149's change | saw: Wed: (no chip); clock: Changes
+ROW PASS | R1 | phone | ad9 signs in again | saw: Wed: 3 changes; clock: Changes
+errors []
+DONE 2 PASS 0 FAIL 1 OTHER of 3

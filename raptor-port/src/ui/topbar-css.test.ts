@@ -10,9 +10,11 @@ import { describe, it, expect } from 'vitest'
 const css = readSchedulerCss().replace(/\/\*[\s\S]*?\*\//g, '')
 
 describe('D1873 — the app bar holds to the screen through the page spring', () => {
-  it('fixes only the main and guest bars to the viewport, at their full width', () => {
+  /* (the guest page's bar was fixed beside the main one until the guest view went, D2239: the main bar alone now) */
+  it('fixes only the main bar to the viewport, at its full width — no guest page\'s bar', () => {
     const screen = css.match(/@media screen\s*\{([\s\S]*?)\n\}/)?.[1] ?? ''
-    const bar = screen.match(/#shell > \.topbar, #guestApp > \.topbar\{([^}]*)\}/)?.[1] ?? ''
+    const bar = screen.match(/#shell > \.topbar\{([^}]*)\}/)?.[1] ?? ''
+    expect(css, 'nothing names the guest page').not.toContain('#guestApp')
     expect(bar).toMatch(/position:fixed[;}]/)
     expect(bar).toMatch(/top:0[;}]/)
     expect(bar).toMatch(/left:0[;}]/)
@@ -21,9 +23,9 @@ describe('D1873 — the app bar holds to the screen through the page spring', ()
     expect(css).toMatch(/\.topbar\{position:sticky;/)
   })
 
-  it('reserves the measured bar height in both page trees, only on screen', () => {
+  it('reserves the measured bar height in the app\'s page tree, only on screen', () => {
     const screen = css.match(/@media screen\s*\{([\s\S]*?)\n\}/)?.[1] ?? ''
-    const space = screen.match(/#shell::before, #guestApp::before\{([^}]*)\}/)?.[1] ?? ''
+    const space = screen.match(/#shell::before\{([^}]*)\}/)?.[1] ?? ''
     expect(space).toContain('content:"";')
     expect(space).toContain('display:block;')
     expect(space).toContain('height:var(--topbar-h,0px)')

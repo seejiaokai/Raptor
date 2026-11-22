@@ -75,20 +75,31 @@ bar for anyone who may see more than one schedule; Admin → Squadrons; each pla
 - Each person has one home squadron, set with his account; an admin adding a person picks it, his own by default
   [D1695, D2087, D2094]. He files inputs and leave only in his home squadron [D2087].
 - "Request access" asks the squadron first, as drawn; the request goes to that squadron's admins only, the bell telling
-  them [D2094, D2111, D1695, D216].
+  them [D2094, D2111, D1695, D216]. *[21 Nov 26, the blind read's R13: "that squadron's admins" are its admins of the
+  day — a plain admin holding Plan of it among them (D2202; `state/accounts.ts adminsOf`).]*
 - Access to another squadron is View only, never as a scheduler, given on Admin → Users by that squadron's admins (or
   an admin of both), never asked at sign-up [D2094, D2160 Q5]; an admin of a squadron is made only by its own admins or
-  a master admin [D2160, D2184].
+  a master admin [D2160, D2184]. *[Changed 18 Nov 26 by his D2192, D2199, D2201, marked here 21 Nov 26 (the blind read's
+  R13): another squadron is View only UNLESS a master admin gives an admin "Plan" of it — full access, as its own admins
+  have; Plan is a master admin's alone to give or take; an admin holding Plan of a squadron may make its admins too
+  (D2241).]*
 - Admin gains "Squadrons", as drawn [D2110]: each squadron with its place; each place, home included, set by a time
   zone picked by name and shown as GMT+X [D2165]; a place change saved at once, no "From", counting from the next day's
-  start; a place keeps its history [D2119, D2160 R7, D2184]. *(Its detachment rows are batch 2.)*
+  start; a place keeps its history [D2119, D2160 R7, D2184]. *(Its detachment rows are batch 2.)* *[Added 18 Nov 26 by
+  his D2196: only a master admin sets the time zone of a place more than one squadron sits on.]*
 - Where a person may see several schedules the TALON mark is a "149 ▾" button opening "Schedules"; Edit Schedule,
   View-only Sched, the Scheduler Board and Logic follow the pick; Inputs, Quals, the Leave War and the Tracker stay on
   his own squadron; the board's bar shows the squadron number beside its day title, small and grey [D2132]. Someone
-  who may see one schedule sees no ▾ [D2132].
+  who may see one schedule sees no ▾ [D2132]. *[Narrowed 18 Nov 26 by his D2197: for a master admin every page
+  follows the pick — Inputs, Quals, the Leave War, the Tracker and Admin → Users too — each his to edit; and by his
+  D2198: his bell carries his primary squadron's lines by default, the others' off until he switches them on.]* *[And an
+  admin holding Plan of the squadron picked, the same — every page follows his pick of it, each his to edit (D2201,
+  D2241); his bell carries that squadron's admin lines, on by default (D2202) — the blind read's R13, 21 Nov 26.]*
 - Each squadron its own schedule and its own Logic settings, crew rest included, edited by its own admin [D2109,
   D2122]. Each squadron its own Tracker [D2167].
-- Squadrons at one place share one public-holiday list, each keeping its own Off day [D2160 F1, D2184]; adding a
+- *[SET ASIDE 18 Nov 26 by his D2195: no holiday list is shared — each squadron owns its own; the form names only its
+  own published days and tells no other squadron. This line and §Public holidays below stand as first planned.]*
+  Squadrons at one place share one public-holiday list, each keeping its own Off day [D2160 F1, D2184]; adding a
   holiday names, before saving, each squadron's published days it puts out of date, both squadrons' admins told; the
   admin answers the OIL question for his own squadron only, the other's schedulers for theirs [D2184 R32, narrowing
   D781].
@@ -109,19 +120,22 @@ is not shown until then.
 ### 3.3 Open points for his batch-1 page (each with the agent's recommendation)
 
 - **O1 — where the demo 149 sits:** at Home base with 142, as round 7's pictures have it (both "Perth · GMT+8") —
-  his own example is two squadrons on one base (D2090), and the shared holiday list only shows itself there.
+  his own example is two squadrons on one base (D2090), and the shared holiday list only shows itself there. *[Set aside by his D2195, 18 Nov 26: no holiday list is shared.]*
 - **O2 — what a master admin is in the app:** a mark on an account ("Master admin"), set only by another master admin,
   acting as an admin in every squadron (D2093) and alone seeing "+ New squadron" on Admin → Squadrons, where he names
   the new squadron's first admin so it never starts with none; the demo's admin sign-in (Saber) is one, and a second
   142 admin and a 149 admin are seeded so a plain admin's view can be seen.
 - **O3 — whose people an admin sees on Admin → Users:** his own squadron's people only; a man of the other squadron is
   given View of this squadron from here by search (the row shows his squadron), the rest of his row read only.
+  *[21 Nov 26, the blind read's R13: for a master admin, or an admin holding Plan of the squadron picked, Admin → Users
+  is that squadron's — its people, his to edit as its own admins do (D2197, D2201, D2211, D2241); built with the
+  Schedules menu, step 5.]*
 - **O4 — what a View-only person sees of the other squadron:** its schedule pages as View-only Sched shows them to a
   member, and its Logic read only; the other squadron's bell does not reach him (he is told only of his own squadron's
   things) — until borrowing, when a pick of him rings his own bell (batch 3).
 - **O5 — the "149 ▾" on a phone:** the same button in the same place, the menu opening as a sheet from the top.
 - **O6 — undrawn pieces drawn for the first time on the page (D1625):** the home-squadron field on New person; each
-  squadron's own Off day under a shared holiday list; "+ New squadron" for a master admin; the Schedules menu with no
+  squadron's own Off day under a shared holiday list *[set aside by his D2195: each squadron's own list]*; "+ New squadron" for a master admin; the Schedules menu with no
   detachment in it.
 - **O7 — his browser's demo changes:** the store starts fresh once, both squadrons seeded (D22).
 - **O8 — signing out reloads the app** (§3.4): he sees the start-up claw a moment after "Sign out" — told, not asked.
@@ -156,6 +170,10 @@ its history, a move counting from the next day, D2119), `Grant` (**one row per r
 `member` / `view` — not an array inside the account, so each grant is guarded and kept as its own row, the database's
 shape too), and a `master` mark on the account. A person's home is `Home` rows (person, unit, `from`) — one each until
 batch 4's transfer adds one; `homeOn(pid, iso)` is the one function every reader asks.
+*Refined as built, step 1 (17 Nov 26 — HANDOFF's step-1 design):* the account's own `role` stays its level in its HOME
+unit, so a `Grant` row (table `UnitGrant`) holds only a right in ANOTHER unit, level `admin` or `view` — no "member" of
+another squadron (D2094); `levelIn(account, unit, iso)` is the one answer (master → admin; home → the role; else the
+grant). Settings rows need no mapper in `persist.ts` — they are saved as every settings row is.
 
 **The schedule in view is swapped; everything else asks by unit.**
 - The scheduler's singletons (`DAYS`, `SCHED`, `DATES`, `CURWEEK`, `PLANPUCKS`, `DAYRMK`, `VCONF`/`SHIFT_HARD`, the
@@ -176,6 +194,21 @@ batch 4's transfer adds one; `homeOn(pid, iso)` is the one function every reader
 - **People:** `PEOPLE` stays one list; every *enumeration* of it (45 in 22 files today — a loop, `filter`, `map`,
   `find` over the whole list) goes through `rosterOf(unit, iso)`; a look-up by id stays. The guard test counts
   enumerations, not files: an enumeration outside `rosterOf` and an explicit allow-list (with its reason) fails it.
+*Refined as built, step 3 (18 Nov 26):* `engine/roster.ts` holds `rosterOf` (and `unitPeople`, its record form), the
+engine reaching `homeOn` through a resolver `state/units.ts` installs; `engine/inputs.ts inputsFor(unit, at?)` — an input
+is a unit's when a man named in it is at home there on the date, a placeholder-only one its filer's. Which unit: the
+schedule's readers (a day's landing, a published day's frozen copies and filing, the OIL evidence, the crew lists) ask the
+unit in view; the Inputs pages, Medical, the SANS calendar and day and the OIL pass ask the signed-in person's own
+(`myUnit()`, D2132). The inventory, both guard tests (`engine/roster-readers.test.ts`, `engine/inputsfor-readers.test.ts`,
+counter `testing/enumguard.ts`, each red-proven): 56 walks of `PEOPLE` left in 19 files and 58 whole-list reads of the
+inputs in 22, each allowed by name with its reason — storage and the seed, the deleted men stripped from every unit's weeks,
+a man's own records, look-ups by id handed a record, Admin → Users and account linking (step 5, O3), and the Leave War's and
+the Tracker's projections, which step 4 makes a world per unit. The OIL pass reads its unit's loaded week live only when that
+unit is in view, every other week of its from the stash by qualified key, and its reverse sweep skips a man whose home that
+day is another unit. A person's delete and a restore's check read every unit's stored weeks (`stashEntries`); the
+restore's check had never matched a stored week at all (it read the stored text as text a second time) — fixed. Behaviour
+tests, red on step 2's code: `state/units-roster.test.ts`. Left for step 4: `sansCommittedOn` and the need figures per unit,
+the `missionrole:` key, other units' planning rows loaded beside the one in view.
 - **Undo:** one command stream, as today; "Undo" on a schedule steps back through that person's own changes in the unit
   in view, picked from the one stream — never a separate snapshot stack per unit (D148). A change touching two units is
   one step in both.
@@ -186,12 +219,27 @@ Tracker's whole key space under the unit — courses, the chart catalogue, each 
 details, the flex settings, its destructive sweeps (a deleted ball, a deleted chart), Import and Export, its command
 permissions and Undo identities. Test: in 142 delete a ball, import a chart, change a flex setting — 149's Tracker is
 unchanged, before and after signing out and in.
+*Refined as built, step 4 (18 Nov 26):* neither store knows a squadron exists — each is handed a door that stores every
+key under one unit (`storage/adapters.ts unitDoor`; `u149@war:2026`, `u142@v3:master:syls`), so no key of the store was
+renamed and two worlds cannot meet. The Leave War loaded is the signed-in person's home unit's, swapped in at every
+sign-in (`leavewar/sync.ts swapWarWorld`, its roster that unit's people); the boot seeds every squadron's first world in
+its one group. The Tracker binds his unit at its first load and refuses another after that, so until the sign-out reload
+(below, not built in step 4) a second person of the other squadron on the same tab keeps the first one's Tracker. Public
+holidays: stored only in the war they were entered in and laid onto every squadron at the same place on that date at read
+(`placeHolidaysFor`); `HOOKS.oilEarningDay` and `nonWorkingFor(unit, iso)` read through it. R32: `holidayOutOfDate`
+names each squadron's published days, shown under the Holidays form before it is saved; the OIL bell line reaches each
+squadron's schedulers for its own inputs only. Step 3's open items: `missionrole:` is stored per unit
+(`persist.ts hydrateRolesFor`); `sansCommittedOn` and the need figures take one squadron's people; `elog:` stays
+unqualified (its reader did not move). A posting's bell lines go to its own squadron's admins. The demo: 149's people
+(`demoseed.ts DEMO_149_PEOPLE`), its two inputs, its week (`engine/week149.ts`), its war and one Tracker course; the
+accounts `ad9`, `us9`, `ad2`. Admin → Users still lists everyone until step 5. Tests: `tracker/trk-per-unit.test.ts`,
+`leavewar/holidays-by-place.test.ts`, `state/multi-sqn-step4.test.ts`.
 
 **Signing out reloads the app.** Today signing out keeps the page, and the Leave War and the Tracker load once: a 149
 man signing in after a 142 man on the same PC would get 142's. A reload at sign-out starts every world fresh for the
 next person — the simplest guarantee (he sees the start-up claw a moment after "Sign out").
 
-**Public holidays and Off days.** The holiday list belongs to a place; each Leave War reads the list of the place its
+**Public holidays and Off days.** *[Set aside by his D2195, 18 Nov 26: each squadron owns its own list.]* The holiday list belongs to a place; each Leave War reads the list of the place its
 unit is at **on that date** (a later move never rewrites past leave charges). An Off day is a dated entry, as today, kept
 per unit. The OIL earning day (`HOOKS.oilEarningDay`, `sync.ts isNonWorkingISO`) reads both through one function naming
 the unit. R32's warning names each squadron's published days a new holiday puts out of date.

@@ -1,0 +1,32 @@
+msq-fr15-w4 v1 iPhone
+ROW PASS | W4-0 | iPhone | before: Quals page (Hunter) | saw: {"exact":1,"any":["Outlaw"]}
+ERR W4-1 locator.fill: Timeout 30000ms exceeded.
+ROW OWED | W4-1 | iPhone | script step | saw: script error locator.fill: Timeout 30000ms exceeded.
+ROW FAIL | W4-s2 | iPhone | s2: Quals page | saw: {"exact":1,"any":["Outlaw"]}
+ERR W4-2 locator.fill: Timeout 30000ms exceeded.
+ROW OWED | W4-2 | iPhone | script step | saw: script error locator.fill: Timeout 30000ms exceeded.
+ROW FAIL | W4-s3 | iPhone | s3: Quals page | saw: {"exact":1,"any":["Outlaw"]}
+ERR W4-3 locator.fill: Timeout 30000ms exceeded.
+ROW OWED | W4-3 | iPhone | script step | saw: script error locator.fill: Timeout 30000ms exceeded.
+ROW RECORD | W4-4 | iPhone | extra look (not in the brief): Leave War grid after the delete | saw: Outlaw mentions in the Leave War page ["Outlaw","Outlaw"]; Outlaw's cells 1
+errors []
+DONE 1 PASS 2 FAIL 4 OTHER of 7
+msq-fr15-w4 v1 iPhone
+ROW PASS | W4-0 | iPhone | before: Quals page (Hunter) | saw: {"exact":1,"any":["Outlaw"]}
+buttons ["accEdDel|Tap again to delete Outlaw","accEdCancel|Cancel"]
+second press text Tap again to delete Outlaw
+buttons after []
+ROW PASS | W4-1 | iPhone | Hunter deletes Outlaw (Casper) on Admin > Users | saw: rows for casper now 0; buttons seen ["accEdDel|Tap again to delete Outlaw","accEdCancel|Cancel"]
+ROW PASS | W4-s2 | iPhone | s2: Quals page | saw: {"exact":0,"any":[]}
+s2 admin controls ["‹","Ace\nno sign-in · Pilot ·","Anvil\nno sign-in · Pilot","Basher\nno sign-in · WSO ","Blade\nno sign-in · Pilot","Bolt\nno sign-in · Pilot ","Cinch\nno sign-in · Pilot","Cinder\nno sign-in · WSO ","Cobra\nno sign-in · Pilot","Comet\nno sign-in · Pilot","Condor\nno sign-in · Pilo","Cotter\nno sign-in · Pers","Cutter\nno sign-in · WSO ","Dash\nno sign-in · WSO · ","Diesel\nno sign-in · Pilo","Drifter\nno sign-in · Pil","Echo\nno sign-in · WSO · ","Fable\nno sign-in · WSO ·","Falcon\nno sign-in · WSO ","Forge\nno sign-in · Pilot","Gambit\nno sign-in · Pilo","Gannet\nno sign-in · WSO ","Ghost\nno sign-in · WSO ·","Grit\nno sign-in · WSO · ","Harrier\nno sign-in · Pil","Havoc\nno sign-in · Pilot","Heron\nno sign-in · WSO ·","Hex\nhex\n· Member\n· WSO ·","Hunter\nad2\n· Admin\n· Pil","Jester\nno sign-in · Pilo","Kestrel\nad9\n· Admin\n· Pi","Kraken\nno sign-in · Pilo","Ledger\nno sign-in · WSO ","Marlin\nno sign-in · WSO ","Merlin\nno sign-in · Pilo","Nomad\nno sign-in · Pilot","Osprey\nus9\n· Member\n· Pi","Otter\nno sign-in · WSO ·","Piston\nno sign-in · Pilo","Pixel\nno sign-in · WSO ·"]
+s2 admin: rows for the search [] mentions with no search []
+s2 archive-ish text []
+ROW BLOCKED | W4-s2b | iPhone | s2: Admin > Users lists, search "Outlaw", all lists, and the Archived list | saw: search rows []; mentions in the whole page []; archived list open: no Archived control
+ROW PASS | W4-s3 | iPhone | s3: Quals page | saw: {"exact":0,"any":[]}
+s3 admin controls ["‹","Ace\nno sign-in · Pilot ·","Anvil\nno sign-in · Pilot","Basher\nno sign-in · WSO ","Blade\nno sign-in · Pilot","Bolt\nno sign-in · Pilot ","Cinch\nno sign-in · Pilot","Cinder\nno sign-in · WSO ","Cobra\nno sign-in · Pilot","Comet\nno sign-in · Pilot","Condor\nno sign-in · Pilo","Cotter\nno sign-in · Pers","Cutter\nno sign-in · WSO ","Dash\nno sign-in · WSO · ","Diesel\nno sign-in · Pilo","Drifter\nno sign-in · Pil","Echo\nno sign-in · WSO · ","Fable\nno sign-in · WSO ·","Falcon\nno sign-in · WSO ","Forge\nno sign-in · Pilot","Gambit\nno sign-in · Pilo","Gannet\nno sign-in · WSO ","Ghost\nno sign-in · WSO ·","Grit\nno sign-in · WSO · ","Harrier\nno sign-in · Pil","Havoc\nno sign-in · Pilot","Heron\nno sign-in · WSO ·","Hex\nhex\n· Member\n· WSO ·","Hunter\nad2\n· Admin\n· Pil","Jester\nno sign-in · Pilo","Kestrel\nad9\n· Admin\n· Pi","Kraken\nno sign-in · Pilo","Ledger\nno sign-in · WSO ","Marlin\nno sign-in · WSO ","Merlin\nno sign-in · Pilo","Nomad\nno sign-in · Pilot","Osprey\nus9\n· Member\n· Pi","Otter\nno sign-in · WSO ·","Piston\nno sign-in · Pilo","Pixel\nno sign-in · WSO ·"]
+s3 admin: rows for the search [] mentions with no search []
+s3 archive-ish text []
+ROW BLOCKED | W4-s3b | iPhone | s3: Admin > Users lists, search "Outlaw", all lists, and the Archived list | saw: search rows []; mentions in the whole page []; archived list open: no Archived control
+ROW RECORD | W4-4 | iPhone | extra look (not in the brief): Leave War grid after the delete | saw: Outlaw mentions in the Leave War page ["Outlaw","Outlaw"]; Outlaw's cells 1
+errors []
+DONE 4 PASS 0 FAIL 3 OTHER of 7

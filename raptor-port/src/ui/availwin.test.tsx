@@ -46,6 +46,7 @@ import { oilSeatDeco, withChipWorld } from './html'
 import { toggleOilPerson, toggleOilItem, oilFromWords, setOilBlanket } from './oilmode'
 import { commitUnpublish } from '../state/sched-commit'
 import { elogRows } from '../engine/editlog'
+import { settleWorld } from '../test-support/world'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -102,6 +103,9 @@ beforeEach(async () => {
   HOOKS.oilEarningDay = (di: number) => di === SAT
   HOOKS.oilDayISO = (di: number) => (di === SAT ? SAT_ISO : di === TUE ? TUE_ISO : '2026-07-15')
   HOOKS.oilSentinel = () => CROWD.slice()
+  /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read, Opus 7) */
+  settleWorld()
 })
 afterEach(async () => {
   setOilDay(null)

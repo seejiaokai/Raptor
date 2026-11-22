@@ -10,6 +10,7 @@
    cutoff keep him (D297); issued versions keep him (D299). The clock is FIXED at 15 Jul 26, inside the demo week
    (13–19 Jul): the 13th and 14th are days he flew, the 15th on are days to come. */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { inView } from '../engine/unitview'
 import { INPUTS } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS, indexCallsigns } from '../engine/people'
 import { DAYS } from '../engine/data'
@@ -153,9 +154,9 @@ describe('phase 6 (d) — a delete writes his records, never a week; every day f
     expect(deletePerson(HIM)).toBe(null)
     clear()
     writeText(`dn:${TO_COME}.0`, 'NEXT CHANGE')
-    expect(weekWrites()).toEqual([`${weekId(W1)}#${TO_COME}`])
-    expect(wb.get('weeks', `${weekId(W1)}#${TO_COME}`), 'saved without him').not.toContain(`"${HIM}"`)
-    expect(wb.get('weeks', `${weekId(W1)}#5`), 'another day he was on, not changed, is not rewritten').toContain(`"${HIM}"`)
+    expect(weekWrites()).toEqual([`${weekId(inView(W1))}#${TO_COME}`])
+    expect(wb.get('weeks', `${weekId(inView(W1))}#${TO_COME}`), 'saved without him').not.toContain(`"${HIM}"`)
+    expect(wb.get('weeks', `${weekId(inView(W1))}#5`), 'another day he was on, not changed, is not rewritten').toContain(`"${HIM}"`)
   })
 
   it('a published day to come reads pending, before and after a reload; its issued version still holds him', async () => {
@@ -164,7 +165,7 @@ describe('phase 6 (d) — a delete writes his records, never a week; every day f
     planDuty(TO_COME)
     publish(TO_COME)
     const ver = dayCurVer(TO_COME)
-    const issued = wb.get('weeks', `${weekId(W1)}:is:${ver}~0`)
+    const issued = wb.get('weeks', `${weekId(inView(W1))}:is:${ver}~0`)
     expect(issued).toContain(`"${HIM}"`)
     expect(deletePerson(HIM)).toBe(null)
     expect(dayDelta(TO_COME).length, 'pending at once').toBeGreaterThan(0)
@@ -173,7 +174,7 @@ describe('phase 6 (d) — a delete writes his records, never a week; every day f
     resetWorld()
     await boot(be)
     expect(dayDelta(TO_COME).length, 'still pending after a reload').toBeGreaterThan(0)
-    expect(wb.get('weeks', `${weekId(W1)}:is:${ver}~0`), 'the issued version is a record — never rewritten').toBe(issued)
+    expect(wb.get('weeks', `${weekId(inView(W1))}:is:${ver}~0`), 'the issued version is a record — never rewritten').toBe(issued)
   })
 
   it('the cross-week read (next Monday, for crew rest) and the next-week peek read him gone', async () => {
@@ -239,7 +240,7 @@ describe('phase 6 (d) — a delete writes his records, never a week; every day f
     expect(personKeysOnDay(2, HIM).length, 'the seed has him flying Wednesday').toBeGreaterThan(0)
     expect(deletePerson(HIM)).toBe(null)
     await vi.advanceTimersByTimeAsync(1000)
-    expect(wb.keys('weeks').filter(k => k.startsWith(weekId(W1))), 'no row of this week was ever written').toEqual([])
+    expect(wb.keys('weeks').filter(k => k.startsWith(weekId(inView(W1)))), 'no row of this week was ever written').toEqual([])
     resetWorld()
     await boot(be)
     expect(PEOPLE[HIM].deleted, 'read back deleted').toBeTruthy()

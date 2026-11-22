@@ -1,0 +1,13 @@
+msq-j2-r-a v1
+chip before Bidding closed
+states 2026-01:open 2026-02:open 2026-03:open 2026-04:closed 2026-05:closed 2026-06:closed 2026-07:closed 2026-08:closed 2026-09:closed 2026-10:closed 2026-11:closed 2026-12:closed
+ROW PASS | R-A | desktop | ad9: Leave War, chip "Bidding closed" -> open December (one month tap) -> done | saw: lines in window ["1 Jan – 31 Mar past","1 Dec – 31 Dec 31 days"]; chip now "Open for bidding 1 Dec – 31 Dec"
+signed in as us9
+ROW PASS | R-A | desktop | us9: open the bell after bidding opened | saw: bell cls "bellbtn on" aria "Notifications" text "" lines ["Leave War1 Dec – 31 Dec","Bidding open · Kestrel","now","Mark all read"]
+ROW RECORD | R-A | desktop | us9: taps the bidding line | saw: page leavewar; words 142 TALON View-only Sched Inputs Quals Logic Leave War Tracker Help ↶ ↷ Insights Logout Osprey · Member Grid Balances OIL View My leave LVE 0 · OIL 0 · 0 pending › ▾ Manning Open for bidding 1 Dec – 31 Dec Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC 2026 CS/Name +LVE FEB SUN 01 MON 02 TUE
+signed in as ad9
+ROW PASS | R-A | desktop | ad9: close December again | saw: lines ["1 Jan – 31 Mar past"]; chip "Bidding closed"
+signed in as us9
+ROW PASS | R-A | desktop | us9: bell after bidding closed | saw: lines ["Leave War1 Dec – 31 Dec","Bidding closed · Kestrel","now","Mark all read"]
+errors []
+DONE 4 PASS 0 FAIL 1 OTHER of 5

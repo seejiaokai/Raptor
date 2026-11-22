@@ -57,6 +57,10 @@ export const LOGICAL_TO_BLOB: Record<LogicalCollection, string> = {
   'lw.label': 'leavewar',
   'lw.current': 'leavewar',
   'lw.config': 'leavewar',
+  // another squadron's stored war (A3 — leavewar/state/foreign.ts writes its rows through that squadron's own door)
+  'lwx.profile': 'leavewar',
+  'lwx.rec': 'leavewar',
+  'lwx.ledger': 'leavewar',
   // tracker (the v3: keys)
   'trk.marks': 'tracker/marks',
   'trk.dates': 'tracker/dates',

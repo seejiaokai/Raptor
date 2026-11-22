@@ -4,6 +4,8 @@ import { CURWEEK } from './waves'
 import { newId } from './newid'
 import { mintOrd } from '../command/ord'
 import { PEOPLE, isSpecial } from './people'
+import { UNIT } from './unitview'
+import { homeUnitOf, homeHandle, needDay, rosterToday, type HomeHandle } from './roster'
 /* A STABLE ADDRESS FOR ONE INPUT (owner, 10 Aug 26 — editing an input's times
    and remarks in place, on the week and on the board).
    Every other editable row in this app is addressed by its position in the
@@ -72,7 +74,67 @@ export function withFrozenInputs<T>(byDate:any,fn:()=>T):T{
 export function inputsFrozenOn(dt:any){if(!FZ)return false;const k=dateOrd(dt);return k!=null&&FZ.has(k);}
 export function inputsOn(dt:any):any[]{
   if(FZ){const k=dateOrd(dt); const f=k!=null?FZ.get(k):undefined; if(f)return f;}
-  return INPUTS.filter((inp:any)=>inputCoversDate(inp,dt));}
+  /* the schedule in view's own (multi-squadron step 3): a frozen face above is already its unit's issued copy */
+  const at=inputAtIso(dt);
+  return INPUTS.filter((inp:any)=>inputCoversDate(inp,dt)&&inputBelongs(inp,UNIT,at));}
+/* WHOSE AN INPUT IS — ONE UNIT'S, ON A DATE (multi-squadron batch 1, step 3; plan §3.4 "Inputs stay one list"). The list
+   stays ONE (one authoritative record each, the community's — storage/keyowner.ts); what changes is the reader: every
+   reader that chooses a set of inputs asks inputsFor(unit, date) — the schedule in view's (UNIT) for a schedule surface,
+   the signed-in person's own squadron (state/perms.ts myUnit) for the Inputs page — so a 149 member's leave never lands
+   on 142's day. An input is a unit's when one of its NAMED people is that unit's on the date (engine/roster.ts
+   homeUnitOf — his Home rows); an input of placeholders only (ALL AVAIL / ALL) is its FILER's unit's — the placeholder
+   entry's `by`, else the record's — and one with no filer recorded (a seed) is the demo's home unit's, as a person with
+   no home row is. `at` is the date judged on (yyyy-mm-dd, or a day label); omitted, the input's own first day — the same
+   answer for every day it covers until a transfer (batch 4) moves a man mid-input. A look-up by id (inpById) stays as it
+   is; every enumeration outside inputsFor is on engine/roster-readers.test.ts's allow-list with its reason. */
+const isoOfOrd=(o:number):string=>`${Math.floor(o/10000)}-${pad2(Math.floor(o/100)%100)}-${pad2(o%100)}`;
+export function inputAtIso(at:any,yr?:any):string|undefined{if(at==null||at==='')return undefined; const s=String(at); if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s; const o=dateOrd(s,yr); return o==null?undefined:isoOfOrd(o);}
+/* AN INPUT'S SQUADRONS — ONE BODY (the reshape plan §3.2 A-iii). Before it, the gate (7c's daysOf/unitsOf), the bell's
+   filer test (notices.ts filerUnits, inputSpan) and the lists each worked out an input's days and squadrons their own
+   way, and the year-wrap case already disagreed. Now:
+   - inputSpanIso: its first and last day as dates. The app writes an input over the year's end with its end carrying its
+     year ('Dec 30' → 'Jan 2 2027', engine/crossyear.test.ts). An end before its start (never written by the app) is
+     its first day alone — never no day, never a year later — so its first day's squadrons are always judged (Opus L6).
+   - inputSquadrons: every squadron it touches — each named man's on its first day and on every day of it where his
+     squadron changes (the home handle's changesIn); a placeholder-only input (ALL AVAIL / ALL): its stamped squadron
+     `u` when it carries one (C3), else its filer's on its first day. The gate hands in its "rows before" handle.
+   - inputOnDay: a day reader's question (the crew list, the day's counts) — today's inputBelongs with its day.
+   - inputTouches / inputsTouching: a list reader's (a squadron's Inputs list shows an input on every squadron whose days
+     it touches — C1). A body that WRITES never iterates "touches" (Fable F4): one input across a move is two squadrons',
+     and a writer run over it from each squadron's load would undo the other's — it asks inputOnDay on the first day. */
+export function inputSpanIso(r:any):[string,string]|null{if(!r)return null; const a=inputAtIso(r.date,r.yr); if(!a)return null;
+  const b=r.endDate?inputAtIso(r.endDate,r.yr):undefined; return [a,b&&b>a?b:a];}
+const filerOfPh=(r:any):string=>{const ph=placeholderOf(r); const by=ph&&ph.by!=null&&ph.by!==''?ph.by:r.by; return by==null?'':String(by);};
+const stampOf=(r:any):string|null=>r&&typeof r.u==='string'&&r.u?r.u:null;
+/* (`fb` — the day an input with no readable date is judged on: the gate hands in today, so a forged date judges nothing
+   away; a reader hands none, and such an input touches nothing) */
+export function inputSquadrons(r:any,home:HomeHandle=homeHandle(),fb?:string):string[]{const sp=inputSpanIso(r)??(r&&fb?[fb,fb] as [string,string]:null); if(!sp)return []; const out=new Set<string>(); const named=namedOf(r);
+  if(named.length){for(const e of named){const p=String(e.p); const u0=home.on(p,sp[0]); if(u0)out.add(u0);
+      for(const d of home.changesIn(p,sp[0],sp[1])){const u=home.on(p,d); if(u)out.add(u);}} return [...out];}
+  const st=stampOf(r); if(st)return [st]; const u=home.on(filerOfPh(r),sp[0]); return u?[u]:[];}
+export function inputOnDay(r:any,unit:any,iso:any):boolean{needDay(iso,'inputOnDay'); if(!r)return false; const named=namedOf(r);
+  if(named.length)return named.some((e:any)=>homeUnitOf(e.p,iso)===unit);
+  const st=stampOf(r); if(st)return st===unit;
+  return homeUnitOf(filerOfPh(r),iso)===unit;}
+export function inputTouches(r:any,unit:any):boolean{return !!r&&inputSquadrons(r).includes(unit);}
+/* (an input with no readable first day, and no day asked: judged today — the answer the readers' old default gave) */
+export function inputBelongs(r:any,unit:any,at?:any):boolean{if(!r)return false;
+  return inputOnDay(r,unit,inputAtIso(at)||inputAtIso(r.date,r.yr)||rosterToday());}
+/* a squadron's inputs on one day (a day reader), and every input touching it (a list reader) */
+export function inputsOnDay(unit:any,iso:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputOnDay(r,unit,iso));}
+export function inputsTouching(unit:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputTouches(r,unit));}
+/* his own Inputs page: every input touching his squadron, and every input naming him wherever it sits (C2) */
+export function inputsListed(unit:any,pid:any,list?:any):any[]{const p=String(pid??''); return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&(inputTouches(r,unit)||(p!==''&&holds(r,p))));}
+/* a squadron's inputs by the day each LANDS — its own first day (the reshape plan §3.2 A-iii, Fable F4: a body that writes
+   an input's accepted mark or lands it asks the first day, never "touches"; state/store.ts landingInputs). The contract
+   step (phase 3) took inputsFor's no-day form: a day reader names its day (inputsFor(unit, at) / inputsOnDay). */
+export function inputsOnFirstDay(unit:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputBelongs(r,unit));}
+export function inputsFor(unit:any,at:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputBelongs(r,unit,at));}
+/* the one unit a saved input is read as — whose people its window offers: the squadron of its first day, through the
+   same body (its first named man's, else its stamp, else its filer's) */
+export function inputUnitOf(r:any):string|null{if(!r)return null; const sp=inputSpanIso(r); const iso=sp?sp[0]:rosterToday(); const named=namedOf(r);
+  if(named.length)return homeUnitOf(named[0].p,iso);
+  const st=stampOf(r); if(st)return st; return homeUnitOf(filerOfPh(r),iso);}
 /* one input by id, as the document for date `dt` holds it — the frozen copy on a frozen date (null when that version
    never held it), else the live record */
 export function inputOn(iid:any,dt:any):any{
@@ -240,7 +302,7 @@ export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:
   if(!frozen||dt==null)return {diffs:[],same:[]};
   const W:any[]=[], N:any[]=[];
   Object.keys(frozen).forEach((id:any)=>{const w=frozen[id]; if(w&&!isUpchit(w.type))W.push({id,r:w,k:inpDetailKey(w)});});
-  INPUTS.forEach((x:any)=>{ if(inputCoversDate(x,dt)&&!isUpchit(x.type))N.push({id:inpId(x),r:x,k:inpDetailKey(x)}); });
+  inputsFor(UNIT,dt).forEach((x:any)=>{ if(inputCoversDate(x,dt)&&!isUpchit(x.type))N.push({id:inpId(x),r:x,k:inpDetailKey(x)}); });   // the unit in view's day's own (multi-squadron step 3)
   const out:any[]=[], same:any[]=[];
   /* 1 — the same record, unchanged */
   for(let i=W.length-1;i>=0;i--){const j=N.findIndex((n:any)=>n.id===W[i].id);
@@ -741,6 +803,20 @@ export function isOther(t:any){return /^Other$/i.test(String(t==null?'':t).trim(
 export const PLACEHOLDER_KINDS:string[]=['Training','Meeting','Personal','Appointment','Duty','Event','Other'];
 export function placeholderKind(t:any){return PLACEHOLDER_KINDS.indexOf(inpType(t))>=0;}
 export function isPlaceholderInput(inp:any){return !!inp&&!!placeholderOf(inp);}
+/* THE SQUADRON STAMP FOLLOWS WHO IS IN THE INPUT (C3, his D2243 Q1 — an ALL AVAIL meeting stays on the squadron it was
+   filed on), ONE BODY for every door that changes who an input names: the input's own window (ui/inputedit.tsx) and a
+   man's delete (state/person-delete.ts applyDelete — the sign-in kinds night, 21 Nov 26: Osprey deleted out of a 149
+   meeting left it naming nobody with no stamp, read by its filer's home, 142).
+   AN INPUT HOLDING ALL AVAIL / ALL KEEPS ITS STAMP WHILE MEN ARE NAMED IN IT TOO (the fix round of 22 Nov 26, Opus's read
+   F3 — his D2243 Q1). The stamp used to be dropped the moment anyone was named, and found again from the man taken out:
+   Kestrel's 149 meeting, Osprey added, Osprey moved to 142, Osprey taking himself out — stamped 142, on 142's schedule.
+   Now: no ALL AVAIL / ALL in it — no stamp, its people place it. One in it — it keeps a stamp it has, else takes `was`
+   (the squadron the input was before the change — inputUnitOf, asked BEFORE the change), else `page`'s answer where
+   the door has a page (the window's own). The READERS stay named-first (inputSquadrons, inputOnDay, inputUnitOf):
+   while a man is named the stamp is only carried, read again once ALL AVAIL / ALL stands alone. */
+export function settleStamp(r:any,was:string|null,page?:()=>string|null):void{
+  if(!isPlaceholderInput(r)){delete r.u;return;}
+  if(r.u==null){const u=was||(page?page():null); if(u)r.u=u;}}
 export function placeholderProblem(inp:any):string{
   if(!isPlaceholderInput(inp))return '';
   const ph=placeholderOf(inp).p;
@@ -1143,24 +1219,35 @@ function cutBackDays(set:any){
   const k=CUT_KEYS[set==='sans'?'sans':'inputs'];
   return cutBackOf(VCONF[k[1]],VCONF[k[0]],VCONF[k[2]],VCONF[k[3]]);
 }
+/* BY THE INPUT'S OWN SQUADRON (the reshape's phase 3): each squadron keeps its own Logic, its cut-offs among it (D2109,
+   D2122). The loaded squadron's is VCONF, as always; another's is its own stored rules, which state/cutoff.ts reads
+   (getCut) and installs here at its load — the engine does not import state/. Unset: VCONF for every squadron. */
+let CUT_OF:((unit:string,set:any)=>number)|null=null;
+export function setCutOfUnit(fn:((unit:string,set:any)=>number)|null){CUT_OF=fn;}
+function cutBackFor(unit:any,set:any){return unit&&unit!==UNIT&&CUT_OF?CUT_OF(String(unit),set):cutBackDays(set);}
 /* the rule in words, as each calendar's "How this works" states it — from the set in force, so it changes when the
    setting does (D628, D646: the rule only; the date an entry missed is said by its LATE tag) */
 const CUT_WD=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 const CUT_N=['','one','two','three','four','five','six','seven','eight'];
 export function cutRuleText(set:any){
   const k=CUT_KEYS[set==='sans'?'sans':'inputs'];
-  if(VCONF[k[1]]===1){
-    const wk=Math.min(8,Math.max(1,Math.floor(+VCONF[k[3]])||1)), wd=Math.min(6,Math.max(0,Math.floor(+VCONF[k[2]])||0));
+  return cutRuleWords(VCONF[k[1]],VCONF[k[0]],VCONF[k[2]],VCONF[k[3]]);
+}
+/* …the same words from a rule's four values, whichever squadron's they are (the fix round of 22 Nov 26, Fable's read F6:
+   an own calendar states its OWN squadron's rule, which is not VCONF when another squadron is picked — ui/sanscal-model.ts) */
+export function cutRuleWords(mode:any,lead:any,wdIn:any,weeks:any){
+  if(mode===1){
+    const wk=Math.min(8,Math.max(1,Math.floor(+weeks)||1)), wd=Math.min(6,Math.max(0,Math.floor(+wdIn)||0));
     return wk===1?`the ${CUT_WD[wd]} of the week before`:`the ${CUT_WD[wd]} ${CUT_N[wk]} weeks before`;
   }
-  const n=cutBackDays(set);
+  const n=cutBackOf(mode,lead,wdIn,weeks);
   return n===0?'the Monday the week starts':`${n} day${n===1?'':'s'} before the week starts`;
 }
 /* a week-start ISO date → that week's input deadline (its Monday minus the
    lead), '' in for '' out so unknown stays unknown */
-function dueOfWeekISO(ws:any,set?:any){
+function dueOfWeekISO(ws:any,set?:any,unit?:any){
   if(!ws)return '';
-  const n=cutBackDays(set);
+  const n=cutBackFor(unit,set);
   const t=Date.UTC(+ws.slice(0,4),+ws.slice(5,7)-1,+ws.slice(8,10))-n*86400000;
   const d=new Date(t);
   return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`;
@@ -1182,8 +1269,9 @@ export function inputWeekStartISO(inp:any){
   return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`;
 }
 /* the running deadline: the last day THIS input may be touched and still
-   count as on time, wherever the viewer happens to be */
-export function inputOwnDueISO(inp:any){ return dueOfWeekISO(inputWeekStartISO(inp),cutSetOf(inp)); }
+   count as on time, wherever the viewer happens to be — by its own squadron's
+   cut-off (the squadron of its first day, inputUnitOf) */
+export function inputOwnDueISO(inp:any){ return dueOfWeekISO(inputWeekStartISO(inp),cutSetOf(inp),inputUnitOf(inp)); }
 /* TODAY as an ISO 'yyyy-mm-dd' stamp — what every input WRITE path records as
    `mod`, FROZEN at the moment of the edit (ARCH-STACK 1b). The literal 'now'
    used to be stored instead and re-resolved to whatever "today" was at read

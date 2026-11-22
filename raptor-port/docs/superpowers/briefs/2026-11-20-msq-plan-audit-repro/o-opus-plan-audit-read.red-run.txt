@@ -1,0 +1,6 @@
+     × (a) Saber gives Hunter Plan of 149; Hunter moves HIMSELF into 149: refused 52ms
+     × (b) Saber gives Hunter Plan of 149; Hunter moves SABER, the master admin, into 149: refused (D2205 — "M3 holds against a planner too") 14ms
+     × Saber opens 142's Approvals, then 149's, then 142's again: 142's "since" is his last 142 visit 22ms
+     × a 149 input on Sat 18 Jul, listed for 149, is answered by the master admin whose own squadron is 142 46ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  4 failed | 2 passed (6)

@@ -18,14 +18,18 @@ import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, fltNoLenMsg, versionFaceWarn, withVersionWarn } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns, dayTasked } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass, unpublishBackTo, pendingInputIds } from '../engine/publish'
-import { verSeq } from '../engine/verid'
+import { verSeq, dayIso } from '../engine/verid'
+import { rosterOf } from '../engine/roster'
+import { UNIT } from '../engine/unitview'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
 import { esc, escMsg, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, unpubArmed, notePub, stSavedOn, displayedBundle } from '../state/view'
 import { shownWarns } from '../engine/warnhide'
 import { canEditSched } from '../state/auth'
-import { isGuest, mayReadMedicalOf, isMember } from '../state/perms'
+import { mayReadMedicalOf, isMember } from '../state/perms'
+/* who else the scheduler's sign-off boxes offer — a Plan holder and a master admin (R8, D2245): handed to the engine as it loads */
+import '../state/sign-more'
 import { chgDayCounts } from './changesmodel'
 import { HOOKS } from '../engine/hooks'
 import { oilBarOf, oilItemOfKey, inputItemKey, oilSentinelSummary, oilFromWords } from './oilmode'
@@ -275,14 +279,8 @@ export function dayIssuedHTML(di:any){
      content-swapped render as-is (its flags were computed on the live day, not
      the previewed snapshot), so it is left un-wrapped. */
 export function viewDayHTML(di:any){
-  /* A GUEST ([ACCOUNTS], D204; D215 — "What members see") — signed in, waiting for access,
-     the admin's guest switch on — reads what a member reads here, read only: a published
-     day's issued face (never the working copy — VWORK is cleared at every sign-in and its
-     picker is not drawn for him) and a day not yet published as it stands now. His tree
-     mounts no day panel, warning list or pending list, so the builder draws none of their
-     doors for him. Never reached with no session, so the byte-exact comparison with the
-     original (sessionless) is untouched. */
-  if(isGuest()) return dayApproved(di)?dayIssuedHTML(di):withOfficialWarn(()=>dayHTML(di,false))
+  /* (the guest's branch here — a person waiting reading the issued face only — went with the guest view, his D2239
+     of 20 Nov 26: nobody but an admin or a member is shown the schedule) */
   if(dayApproved(di)) return VWORK.has(di)?dayHTML(di,false):dayIssuedHTML(di)
   const ver=DPREV.get(di)
   if(!isDraftVer(ver)) return withOfficialWarn(()=>dayHTML(di,false))
@@ -417,7 +415,6 @@ export function viewDraftSelHTML(di:any){
    drafts-only picker unchanged. */
 export function viewVerSelHTML(di:any){
   di=+di
-  if(isGuest())return ''   // a guest reads the issued face only (D204) — no working-draft picker
   if(!dayApproved(di))return viewDraftSelHTML(di)
   const cv=dayCurVer(di)
   if(cv==null)return ''   // published with no snapshot — probe/import state, nothing to offer
@@ -921,7 +918,8 @@ export function availHTML(d:any,di:any,ed:any){
      filed records in the card grid below the input blocks (sansCardsHTML),
      so this panel keeps a single count — how many SANS are offering
      ANYTHING today — as a pointer to that grid, not a second listing of it. */
-  const sansOffering=Object.keys(PEOPLE).filter((id:any)=>PEOPLE[id].san&&!PEOPLE[id].archived&&sansAvailOn(id,d.dt)).length;
+  /* (the schedule in view's own SANS men, on this day — multi-squadron step 3, engine/roster.ts) */
+  const sansOffering=rosterOf(UNIT,dayIso(String(CURWEEK),+di||0)).filter((id:any)=>PEOPLE[id].san&&!PEOPLE[id].archived&&sansAvailOn(id,d.dt)).length;
   const allA=active(A.anyWave);
   if(AVSHUT.has(di)){
     const parts=[`${allA.length} all day`];
@@ -1678,7 +1676,7 @@ export function dayStatHTML(di:any,ed:any){
        · else something new to you on the day → "N new" (gold), opening on "New to you";
        · else changes on the day → "N changes" (quiet), opening on "All changes";
        · else nothing.
-       For an admin or a member — never a guest (D215: no buttons; Fable F9 — a guest was drawn a count), never under a
+       For an admin or a member only (the guest it once left out — D215, Fable F9 — went with the guest view, D2239), never under a
        version preview (a preview reads a document, not the working copy). On View-only Sched a published day shows it
        only on the working copy: its issued face (PVQ) never reads pending (AM24). */
     const viewer=isMember();
@@ -1744,7 +1742,7 @@ export function dayStatHTML(di:any,ed:any){
       : '';
     /* the ⓘ chip is the ONLY way into the day panel on the view page, and it opens a
        read-only panel — clicking a day in view mode must never lead into editing. */
-    const infoChip=isGuest()?'':`<button class="dinfobtn" data-dayinfo="${di}" title="${d.dow} — approval, AL versions, advisories">i</button>`;   /* a guest has no day panel (GuestApp) */
+    const infoChip=`<button class="dinfobtn" data-dayinfo="${di}" title="${d.dow} — approval, AL versions, advisories">i</button>`;
     /* the "Publishes Plan B" chip is RETIRED (owner, 15 Sep 26): the plans
        selector's own label already names the live plan, so a second chip saying
        the same thing is the clutter the redesign removes. */
@@ -1830,8 +1828,6 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
     let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?(PVQ?' issued':' preview'):''}" data-day="${di}">
       <div class="day-head">${ed
         ? `<span class="dow crewday" data-crewday="${di}" role="button" tabindex="0" title="Show this day's crew in the aircrew panel">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" role="button" tabindex="0" title="Open scheduler board">${shortYear(d.dt)}${d.today?' · Today':''}</span>`
-        : isGuest()   /* a guest's tree has no day panel (GuestApp) — plain text, never a dead door */
-        ? `<span class="dow">${d.dow}</span><span class="dt">${shortYear(d.dt)}${d.today?' · Today':''}</span>`
         : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${shortYear(d.dt)}${d.today?' · Today':''}</span>`}${(ed||vsel)?`<span class="dhtpl">${ed?`<button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button>`:''}${planSelectorHTML(di)}</span>`:''}<span class="dhver">${verTagHTML(di)}${nysMarkHTML(di)}</span>
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
       <span class="dstat">${(!ed&&!vsel)?viewVerSelHTML(di):''}${dayStatHTML(di,ed)}</span></div>`
@@ -1865,10 +1861,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
       +(ed?`<div class="signoff day-sign" data-signbar="${di}">${signoffHTML(di,false)}</div>`:'')
       +`<div class="day-body">`;
     /* warnings are live-model state — a snapshot is never validated */
-    /* A GUEST ([ACCOUNTS], D204) gets no warning box: his tree mounts no handler to open
-       it (a "tap to review" that does nothing), and the list names people and their
-       reasons — a guest reads the published programme only (the walk, 26 Sep 26). */
-    if((!PV||OFW)&&!isGuest())h+=dayWarnHTML(di);
+    if(!PV||OFW)h+=dayWarnHTML(di);
     /* THE SCHEDULE SECTIONS are captured by slicing `h` at these boundary marks
        and re-emitted in the day's own order (owner, 29 Aug 26 — engine/order.ts
        secOrder), so a re-arrange costs no churn in the dense builders below and
@@ -1929,7 +1922,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
       h+=`<div class="go ${w.night?'night':''} ${sa?'sa sa-'+(w.kind||'x'):''}"${ed?` data-move="mv:w.${di}.${gi}"`:''} style="border-left-color:${sa?'var(--san)':(w.night?'var(--hard)':edge)}">
         <div class="go-tab">${ed?'<span class="wvgrip" title="Drag to reorder this wave" aria-label="Reorder this wave">⠿</span>':''}<span class="asd">${ted(`wl:${di}.${gi}`,w.label,ed,'ntx')}${waveHeadTail(w)}`
         +`${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?((w.formations||[]).some((f:any)=>saAnyFlies(w,f))?' · flies':' · availability, currency and seat checks only'):''}</span>`:''}</span>
-        ${sa||isGuest()?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an ${REPORTING_LABEL} line to this wave">+ ${REPORTING_LABEL}</button>`}</div>`;
+        ${sa?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an ${REPORTING_LABEL} line to this wave">+ ${REPORTING_LABEL}</button>`}</div>`;
       /* "+ In time" renders whether or not the wave has lines — the always-there
          add control is the fix for the old trap where deleting the last line
          dropped the whole block with no way back (owner, 21 Aug 26). Standalone
@@ -2273,8 +2266,9 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
         const inprow=isMember()?` data-inprow="${esc(iuTail(inp))}"`:'';
         s+=`<div class="pl-row${line.length>1?' gshared':''}${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}${inprow}>`
           /* a medical input's type and remarks are for the squadron's members (D211 —
-             every member reads them, his 27 Aug 26 rule); a GUEST, not yet a member,
-             reads it only as "Unavailable" and its times (perms.ts mayReadMedicalOf) */
+             every member reads them, his 27 Aug 26 rule); a reader the rule left out would read
+             it only as "Unavailable" and its times (perms.ts mayReadMedicalOf) — nobody shown the
+             schedule today, the guest gone with the guest view (D2239) */
           +`<span class="nm">${hideMed(inp)?'<span class="ntx">Unavailable</span>':inpCxHTML(inp)+inpEditLabel(inp,ed,inpLabel(inp),'ntx'+inpCxCls(inp),acc?'':unavPendAtt(di,inp))+inpKindTagHTML(inp)}</span>${inpTimeCells(inp,ed)}`
           +`<div class="ppl${line.length>1?'':' one'}">${pk}</div>${hideMed(inp)?'<span class="rmk rk-e"><span class="ntx"></span></span>':inpRmkCell(inp,ed,d.dt)}`
           +(acc||unfile?accCtl(di,inp):'')+`</div>`; });
@@ -2365,8 +2359,8 @@ export function inpTimeCells(inp:any,ed:any){
    prefix idiom as lateTag just above: printed ahead of the free text, never
    nested inside it, so it survives the contenteditable span untouched. */
 /* [ACCOUNTS] does this reader see a medical input only as "Unavailable"? Nobody who is
-   shown the schedule today — every member and admin (D211) and a guest (D213) reads a
-   medical input in full; the one question (perms.ts mayReadMedicalOf) is kept so a later
+   shown the schedule today — every member and admin reads a medical input in full (D211;
+   the guest who once did too, D213, went with the guest view, D2239); the one question (perms.ts mayReadMedicalOf) is kept so a later
    ruling moves one line. */
 const hideMed=(inp:any)=>isDownchit(inp.type)&&!mayReadMedicalOf(inp.person);
 export function inpRmkCell(inp:any,ed:any,dt?:any){
@@ -2512,7 +2506,7 @@ export function signoffHTML(di:any,full:any){
   const why=(l:any)=>stale.includes(l)?`${l} needs an appointed scheduler`:l;
   return `<span class="so-h">Sign-off</span>`
     +SIGN_ROLES.map(([k,lbl,sch]:any)=>{
-      const v=g[k], ids=signPeople(sch,v);
+      const v=g[k], ids=signPeople(sch,v,di);
       /* the select is stretched invisibly over the whole pill (iPhone Safari
          will not open a select from a tap on its wrapping label, so the label
          text used to be dead space on the phone). The .v span is the visible

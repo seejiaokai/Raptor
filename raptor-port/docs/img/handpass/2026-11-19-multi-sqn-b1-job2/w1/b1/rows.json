@@ -1,0 +1,128 @@
+[
+ [
+  "W1-B1",
+  "desktop",
+  "ad9 grants Harrier an OIL award by hand (a day cell → its window → Grant OIL, a reason, Give FO) on T-1 2026-11-18 and T+7 2026-11-26",
+  "FO boxes on both days",
+  "T-1: FO {duty.act.hasc} ; T+7: FO {duty.act.hasc} ; person window: OIL 2",
+  "PASS",
+  "b1-Harrier-row.png / b1-Harrier-win.png"
+ ],
+ [
+  "W1-B1",
+  "desktop",
+  "ad9 grants Heron an OIL award by hand (a day cell → its window → Grant OIL, a reason, Give FO) on T-1 2026-11-18 and T+7 2026-11-26",
+  "FO boxes on both days",
+  "T-1: FO {duty.act.hasc} ; T+7: FO {duty.act.hasc} ; person window: OIL 2",
+  "PASS",
+  "b1-Heron-row.png / b1-Heron-win.png"
+ ],
+ [
+  "W1-B1",
+  "desktop",
+  "ad9 grants Raven an OIL award by hand (a day cell → its window → Grant OIL, a reason, Give FO) on T-1 2026-11-18 and T+7 2026-11-26",
+  "FO boxes on both days",
+  "T-1: FO {duty.act.hasc} ; T+7: FO {duty.act.hasc} ; person window: OIL 2",
+  "PASS",
+  "b1-Raven-row.png / b1-Raven-win.png"
+ ],
+ [
+  "W1-B1",
+  "desktop",
+  "ad9 grants Shrike an OIL award by hand (a day cell → its window → Grant OIL, a reason, Give FO) on T-1 2026-11-18 and T+7 2026-11-26",
+  "FO boxes on both days",
+  "T-1: FO {duty.act.hasc} ; T+7: FO {duty.act.hasc} ; person window: OIL 2",
+  "PASS",
+  "b1-Shrike-row.png / b1-Shrike-win.png"
+ ],
+ [
+  "W1-B2",
+  "desktop",
+  "ad archives Harrier; ad9 archives Heron; 149 war rows compared",
+  "same look; T-1 award kept on both; T+7 award the SAME on both",
+  "Harrier: 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=FO PO|duty.act.pofin.bx-last.hasc  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=FO|gone.outlv.act.hasc.bx-gone  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc ; OIL OIL 2 ;; Heron: 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=FO PO|duty.act.pofin.bx-last.hasc  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=FO|gone.outlv.act.hasc.bx-gone  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc ; OIL OIL 2",
+  "PASS",
+  "b2-Harrier-row.png vs b2-Heron-row.png"
+ ],
+ [
+  "W1-B2",
+  "desktop",
+  "what each man's T+7 award does",
+  "the same for both",
+  "Harrier T+7 FO {gone.outlv.act.hasc.bx-gone} ; Heron T+7 FO {gone.outlv.act.hasc.bx-gone}",
+  "RECORD",
+  "b2-Harrier-row.png"
+ ],
+ [
+  "W1-B3",
+  "desktop",
+  "ad: Raven → Delete (first press), Cancel, reopen",
+  "first press arms (\"Tap again to delete Raven\"); after Cancel and reopen Delete is not armed",
+  "first press: Tap again to delete Raven Cancel Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone. ▸ Archived · 2 Add a person Callsign/Name Initia ; after reopen the button reads: Delete",
+  "PASS",
+  "b3-01..03"
+ ],
+ [
+  "W1-B3",
+  "desktop",
+  "ad deletes Raven (two presses), then top-bar Undo once",
+  "Undo does not bring him back (D350)",
+  "Users search \"Raven\": Raven deleted",
+  "FAIL",
+  "b3-05, b3-06"
+ ],
+ [
+  "W1-B3",
+  "desktop",
+  "ad9 deletes Shrike (two presses), then Undo once",
+  "Undo does not bring him back",
+  "Users search \"Shrike\": Shrike deleted",
+  "FAIL",
+  "b3-07"
+ ],
+ [
+  "W1-B3",
+  "desktop",
+  "149's war: Raven's (deleted by ad) and Shrike's (by ad9) rows",
+  "same for both: months before T kept, T-1 award kept, T+7 award gone",
+  "Raven: 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=FO PO|duty.act.pofin.bx-last.hasc  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=PO|gone.act.hasc  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc ;; Shrike: 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=FO PO|duty.act.pofin.bx-last.hasc  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=PO|gone.act.hasc  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc",
+  "PASS",
+  "b3-Raven-row.png vs b3-Shrike-row.png"
+ ],
+ [
+  "W1-B4",
+  "desktop",
+  "ad: archived Harrier, post-in 2026-11-16 (before T), Restore",
+  "refused, nothing changes",
+  "date box: Mon 16 Nov 26▾ ; words: (no refusal words seen) ; still archived: true",
+  "RECORD",
+  "b4-01, b4-02"
+ ],
+ [
+  "B4",
+  "desktop",
+  "script step",
+  "completes",
+  "script error: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#accArPostIn')\u001b[22m\n",
+  "OWED",
+  "fail-B4.png"
+ ],
+ [
+  "W1-B5",
+  "desktop",
+  "ad archives Gannet, types GannetX in the Archived fold row, button, T+2, Restore as…; ad9 views",
+  "button \"Restore as GannetX\"; war row under GannetX counted from T+2; Users shows GannetX active",
+  "button read: Restore as GannetX ; war row: 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=PO|.act.pofin.bx-last  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=|weekend.act  11-22=|weekend.act  11-23=|.act  11-24=|.act  11-25=|.act  11-26=|.act  11-27=|.act  11-28=|weekend.act ; GannetX pid: gan9 ; Users: GannetX no sign-in · WSO · CAT OCU POSTING IN 21 NOV ▸ Archived · 2 ADD A PERSON CALLSI",
+  "RECORD",
+  "b5-02, b5-GannetX-row.png, b5-05"
+ ],
+ [
+  "W1-B6",
+  "desktop",
+  "ad archives Condor, types CondorZ, presses Save name",
+  "CondorZ stays in the Archived fold, sign-in dot unchanged, war row still away",
+  "controls: Condorno sign-in · Pilot · CAT OCUArchiv | CondorZ | Post in: Thu 19 Nov 2026 | Restore as CondorZ | Save name | Delete | Cancel ; Users: Archived · 3 SIGN-IN ROSTER CondorZ no sign-in · Pilot · CAT OCU Archived 19 Nov 26 by Saber CALLSIGN/NAME POST IN Thu 19 Nov 26 ▾ The Leave War counts him from the post-in date. Restore Delete Cancel ADD A PERSON CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL Pick… Pilot WSO Personnel (ground crew) ; war row: 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=PO|.act.pofin.bx-last  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=PO|gone.act.hasc  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc",
+  "RECORD",
+  "b6-01, b6-02, b6-03, b6-Condor-row.png"
+ ]
+]

@@ -1,0 +1,25 @@
+msq-w2-c v1 phone
+menu button count 1
+MENU TEXT 142 TALON Sync · slow ⋯ Legend — colours & flags Monday Jul 13 DRAFT 2 i WAVE 1 Traffic CS MSN R B TO LD FCP / RCP RMKS HK BFM 07:20 09:40 11:05 Kestrel IP Falcon IW 1B: BFM-2 2 TKS Osprey A Heron A 2A: BFM-1 2 TKS AREA NORTH · SOUTH 0940-1105 Duties Name Start People Rmks 1st wave SDO 07:00 15:00 M
+SIGNOUT {"reloaded":true}
+ROW RECORD | T5 | phone | ad9 presses Logout through the phone menu (X.signOut) | saw: {"reloaded":true}
+ROW PASS | T5 | phone | ad9 opens Wed 15 Jul's board | saw: {"has142":[],"has149":["Kestrel","Falcon","Osprey","Heron","Merlin","Raven","Harrier","Shrike","Gannet","Condor"]}
+ROW PASS | T5 | phone | closes the board by its own Done | saw: week days: 7; board still visible: 0
+ROW PASS | T5 | phone | ad9 opens the Leave War | saw: {"has142":[],"has149":["Kestrel","Falcon","Osprey","Heron","Merlin","Raven","Harrier","Shrike","Gannet","Condor"]}
+ROW PASS | T5 | phone | ad9 taps MY LEAVE | saw: {"has142":[],"has149":["Kestrel","Falcon","Osprey","Heron","Merlin","Raven","Harrier","Shrike","Gannet","Condor"]}
+MYLEAVE TEXT 142 TALON ↶ ↷ Grid Approvals Balances OIL View My leave LVE 0 · OIL 0 · 0 pending › ▸ Manning Bidding closed Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC 2026 CS/Name +LVE JUL WED 01 THU 02 FRI 03 SAT 04 SUN 05 MON 06 TUE 07 WED 08 THU 09 FRI 10 SAT 11 SUN 12 MON 13 TUE 14 WED 15 THU 16 FR
+ROW RECORD | T5 | phone | closes MY LEAVE by its own close | saw: pressed a close: true; grid names: {"has142":[],"has149":["Kestrel","Falcon","Osprey","Heron","Merlin","Raven","Harrier","Shrike","Gannet","Condor"]}
+Kestrel point [-612.5,565.40625]
+ROW PASS | T5 | phone | ad9 taps a name on the war grid (Kestrel) | saw: {"has142":[],"has149":["Kestrel","Falcon","Osprey","Heron","Merlin","Raven","Harrier","Shrike","Gannet","Condor"]}
+ROW BLOCKED | T5 | phone | closes the person window by its own close | saw: pressed a close: false
+BELL 142 TALON ↶ ↷ ⋯ Legend — colours & flags Monday Jul 13 Templates Live working copy ▾ DRAFT 2 i Publish day Sign-off CUR CK — name — SKED CK — name — PLANNED BY — name — APPROVED BY — name — 4 to sign 
+ROW RECORD | T5 | phone | bell open then close | saw: see pictures
+ROW RECORD | T5 | phone | ad9 opens the Tracker | saw: STUDENT A STUDENT B 26ABSG 2024 2026 Tx 2026 A/G - A/A 2026 Legend File ▾ ● saved Flow chart Info Show All ST-01 ST-02 ACG-01 ACG-02 ACG-03 ACG-04 ACG-05 ACG-06 ACG-07 ACG-08 ACG-09 ST-06 CFT-01 T-01 
+calendar button count 1
+ROW PASS | T5 | phone | ad9 opens Inputs and its calendar | saw: {"has142":[],"has149":["Kestrel","Falcon","Osprey","Heron","Merlin","Raven","Harrier","Shrike","Gannet","Condor"]}
+us signed in; reloaded {"reloaded":true}
+ROW PASS | T5 | phone | us (Ranger) opens Leave War -> MY LEAVE | saw: {"has142":["Saber","Ranger","Echo","Static"],"has149":[]}
+ROW PASS | T5 | phone | us (Ranger) Leave War grid | saw: {"has142":["Saber","Ranger","Echo","Static"],"has149":[]}
+ROW PASS | T5 | phone | us (Ranger) Inputs calendar | saw: {"has142":["Saber","Ranger","Echo","Static"],"has149":[]}
+errors []
+DONE 9 PASS 0 FAIL 5 OTHER of 14

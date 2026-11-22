@@ -1,0 +1,5 @@
+msq-j2-w1-x4 v1
+win Harrier Wed 18 Nov Auto-approve ✕ No manning row turns amber or red till 18 Nov Document Whole day AM PM Pick a range LL −1 OL −1 OIL −1 CCL −1 FCL −1 PL −1 EL −1 CL −1 DAYS HO · 0.5 FO · 1 Give FO
+row {"2026-11-18":" {act.selcell}","2026-11-19":" {.act}"}
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

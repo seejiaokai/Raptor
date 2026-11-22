@@ -1,0 +1,7 @@
+msq-fr5-f1b v1
+signed in as us9
+ROW RECORD | F1 | desktop | Osprey: bell after bidding opened then closed | saw: dot before open "block"; ["NEW Leave War1 Dec – 31 Dec Bidding open · Kestrel now"]
+ROW RECORD | F1 | desktop | Osprey: tap the first line | saw: page leavewar; bell still open 0; words 142 TALON View-only Sched Inputs Quals Logic Leave War Tracker Help ↶ ↷ Insights Logout Osprey · Member Grid Balances OIL View My leave LVE 0 · OIL 0 · 0 pending › ▾ Manning Open for bidding 1 Dec – 3
+ROW PASS | F1 | desktop | Osprey: reopen the bell | saw: dot none; ["read Leave War1 Dec – 31 Dec Bidding open · Kestrel now"]
+errors []
+DONE 1 PASS 0 FAIL 2 OTHER of 3

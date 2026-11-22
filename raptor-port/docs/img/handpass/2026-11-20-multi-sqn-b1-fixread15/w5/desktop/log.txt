@@ -1,0 +1,42 @@
+msq-fr15-w5 v1 desktop
+s1 ad2 dot before block lines ["NEW LLThu 23 Jul Remark changed · Kestrel now"] controls ["bell-line-nmro8e5ck40mz||LLThu 23 Jul\nRemark changed · ","bell-markall||Mark all read"]
+ROW PASS | W5-s1 | desktop | ad2: open the bell, read lines, press each line | saw: dot before block; bell opened 1; lines ["NEW LLThu 23 Jul Remark changed · Kestrel now"]; 0: page inputs, windows 2, bell open 0
+s1 ad2 mark-all control count 0
+ROW BLOCKED | W5-s1m | desktop | ad2: Mark all read | saw: mark-all controls 0; lines after ["read LLThu 23 Jul Remark changed · Kestrel now"]
+ROW PASS | W5-s1c | desktop | ad2: close the bell with its button, badge after | saw: closed true; dot before block after none
+s1 ad2 no x control; outside press closed: true
+s2 us dot before block lines ["NEW LLThu 23 Jul Remark changed · Kestrel now","NEW LLThu 23 Jul You were added · Hunter now"] controls ["bell-line-nmro8e5ck3e7c||LLThu 23 Jul\nRemark changed · ","bell-line-nmro8dyyw24jg||LLThu 23 Jul\nYou were added · ","bell-markall||Mark all read"]
+ROW PASS | W5-s2 | desktop | us: open the bell, read lines, press each line | saw: dot before block; bell opened 1; lines ["NEW LLThu 23 Jul Remark changed · Kestrel now","NEW LLThu 23 Jul You were added · Hunter now"]; 0: page inputs, windows 2, bell open 0 ; 1: page inputs, windows 2, bell open 0
+s2 us mark-all control count 0
+ROW BLOCKED | W5-s2m | desktop | us: Mark all read | saw: mark-all controls 0; lines after ["read LLThu 23 Jul Remark changed · Kestrel now","read LLThu 23 Jul You were added · Hunter now"]
+ROW PASS | W5-s2c | desktop | us: close the bell with its button, badge after | saw: closed true; dot before block after none
+s2 us no x control; outside press closed: true
+s3 ad dot before none lines [] controls []
+ROW PASS | W5-s3 | desktop | ad: open the bell, read lines, press each line | saw: dot before none; bell opened 1; lines []; 
+s3 ad mark-all control count 0
+ROW BLOCKED | W5-s3m | desktop | ad: Mark all read | saw: mark-all controls 0; lines after []
+ROW PASS | W5-s3c | desktop | ad: close the bell with its button, badge after | saw: closed true; dot before none after none
+s3 ad no x control; outside press closed: true
+errors []
+DONE 6 PASS 0 FAIL 3 OTHER of 9
+msq-fr15-w5 v1 desktop
+s1 ad2 dot before block lines ["NEW LLThu 23 Jul Remark changed · Kestrel now"] controls ["bell-line-nmro8e5bz4p4b||LLThu 23 Jul\nRemark changed · ","bell-markall||Mark all read"]
+ROW PASS | W5-s1 | desktop | ad2: open the bell, read lines, press each line | saw: dot before block; bell opened 1; lines ["NEW LLThu 23 Jul Remark changed · Kestrel now"]; 0: page inputs, windows 2, bell open 0
+s1 ad2 mark-all control count 0
+ROW BLOCKED | W5-s1m | desktop | ad2: Mark all read | saw: mark-all controls 0; lines after ["read LLThu 23 Jul Remark changed · Kestrel now"]
+ROW PASS | W5-s1c | desktop | ad2: close the bell with its button, badge after | saw: closed true; dot before block after none
+s1 ad2 no x control; outside press closed: true
+s2 us dot before block lines ["NEW LLThu 23 Jul Remark changed · Kestrel now","NEW LLThu 23 Jul You were added · Hunter now"] controls ["bell-line-nmro8e5bz3ox1||LLThu 23 Jul\nRemark changed · ","bell-line-nmro8dz1s249w||LLThu 23 Jul\nYou were added · ","bell-markall||Mark all read"]
+s2 us mark-all control count 1
+ROW PASS | W5-s2 | desktop | us: open the bell, read lines, press each line | saw: dot before block; bell opened 1; lines ["NEW LLThu 23 Jul Remark changed · Kestrel now","NEW LLThu 23 Jul You were added · Hunter now"]; 0: page inputs, windows 2, bell open 0 ; 1: page inputs, windows 2, bell open 0
+ROW PASS | W5-s2m | desktop | us: Mark all read | saw: mark-all controls 1; lines after ["read LLThu 23 Jul Remark changed · Kestrel now","read LLThu 23 Jul You were added · Hunter now"]
+ROW PASS | W5-s2c | desktop | us: close the bell with its button, badge after | saw: closed true; dot before block after none
+s2 us no x control; outside press closed: true
+s3 ad dot before none lines [] controls []
+ROW PASS | W5-s3 | desktop | ad: open the bell, read lines, press each line | saw: dot before none; bell opened 1; lines []; 
+s3 ad mark-all control count 0
+ROW BLOCKED | W5-s3m | desktop | ad: Mark all read | saw: mark-all controls 0; lines after []
+ROW PASS | W5-s3c | desktop | ad: close the bell with its button, badge after | saw: closed true; dot before none after none
+s3 ad no x control; outside press closed: true
+errors []
+DONE 7 PASS 0 FAIL 2 OTHER of 9

@@ -26,6 +26,7 @@ import { REPORTING_LABEL } from '../engine/reporting'
 import { DAYS } from '../engine/data'
 import { posKey } from '../engine/rowids'
 import { isStandalone } from '../engine/waves'
+import { localOf } from '../storage/unitid'
 
 /* a person's callsign by id, for the Leave War's records (its ids carry the person, not his name) — installed by the
    app (state/undo-wire.ts), read LIVE when the entry is recorded; null when none is installed (tests). `defaultOf` —
@@ -70,7 +71,14 @@ const TYPE_PHRASE: Record<string, string> = {
   'account.add': 'giving a sign-in',
   'access.approve': 'giving access',
   'access.decline': 'refusing a request for access',
-  'guestview.set': 'the guest switch',
+  /* the squadrons (multi-squadron batch 1, step 1 — state/units.ts; the master mark, accounts.ts setMaster) */
+  'unit.add': 'adding a squadron',
+  'unit.place': 'moving a squadron',
+  'place.set': 'a change to a place',
+  'grant.set': 'giving a right in another squadron',
+  'grant.remove': 'taking away a right in another squadron',
+  'home.set': 'a change of home squadron',
+  'account.master': 'the master admin mark',
   /* the five D350 keeps out of Undo — named when the greyed button or a bubble speaks of them */
   'person.add': 'adding a person',
   'account.addNew': 'adding a person',
@@ -105,8 +113,14 @@ const SETTING_PHRASE: Record<string, string> = {
   lookahead: 'the Inputs look-ahead',
   stores: 'the stores list',
   cxreasons: 'the cancel reasons',
-  guestview: 'the guest switch',
   sanscalendar: 'the SANS calendar’s day colours',
+}
+
+/* each calendar's late cut-off, as the four Logic values that hold it (state/cutoff.ts KEYS — not imported: state is above
+   undo's describe) */
+const CUT_KEYS: Record<'inputs' | 'sans', Set<string>> = {
+  inputs: new Set(['inputLead', 'inputCutMode', 'inputCutWd', 'inputCutWeeks']),
+  sans: new Set(['sansLead', 'sansCutMode', 'sansCutWd', 'sansCutWeeks']),
 }
 
 /* a safe generic label from the entry's module, used when the type is unknown. */
@@ -417,7 +431,8 @@ function flySpan(isos: string[]): string {
   return a.slice(0, 7) === b.slice(0, 7) ? `${+a.slice(8, 10)}–${flyDM(b)}` : `${flyDM(a)} – ${flyDM(b)}`
 }
 function describeFly(entry: UndoEntry): string | null {
-  const rows = (entry.forward || []).filter(c => c.collection === 'settings')
+  /* each row by its plain name: a unit's is named with its unit (`u149@flyday:<iso>` — step 2) */
+  const rows = (entry.forward || []).filter(c => c.collection === 'settings').map(c => ({ ...c, id: localOf(c.id) }))
   if (entry.type === 'fly.day.set') {
     const days = rows.filter(c => c.id.startsWith('flyday:'))
     const isos = days.map(c => c.id.slice(7)).sort()
@@ -465,7 +480,7 @@ export function describeEntry(entry: UndoEntry): string {
      on the calendar (the walk, R2: a day title read "a personal input") */
   const plans = entry.forward.filter((c: Change) => c.collection === 'plan')
   if (plans.length && inputsCount(entry) === 0) {
-    const dm = plans.some(c => c.id.startsWith('dm:')), pp = plans.some(c => c.id.startsWith('pp:'))
+    const dm = plans.some(c => localOf(c.id).startsWith('dm:')), pp = plans.some(c => localOf(c.id).startsWith('pp:'))   // `u149@dm:<iso>` (step 2)
     return dm && !pp ? 'a day title on the calendar' : pp && !dm ? 'a note on the calendar' : 'a change to the calendar'
   }
   /* …and ONE input changed in a way a person names ([OIL-NOTIFY-SEEN] (1), the OIL-ask walk, 13 Oct 26): a swap on an
@@ -493,8 +508,25 @@ export function describeEntry(entry: UndoEntry): string {
     const k = entry.type.slice('settings.'.length)
     /* the members' switch says which way it went (the plan §3.13): stored only when OFF, so no record = on */
     if (k === 'memberfile') {
-      const ch = entry.forward.find(c => c.collection === 'settings' && c.id === 'memberfile')
+      const ch = entry.forward.find(c => c.collection === 'settings' && localOf(c.id) === 'memberfile')
       return `members filing for other people — ${ch && ch.op !== 'delete' && ch.after === false ? 'off' : 'on'}`
+    }
+    /* A LATE CUT-OFF IS NAMED AS ITS OWN WINDOW HEADS IT (the walk of 21 Nov 26, W1-05): it is one setting with two ways
+       in (D639 — behind each calendar's gear, and on the Logic page) saved as the `rules` record either way
+       (state/cutoff.ts), so a cut-off changed on Inputs read "Undid: a rule on the Logic page". Where the step changed
+       only one calendar's cut-off values the note names that setting, by its settings window's own heading
+       (ui/InputsSettings.tsx "Late cut-off for inputs", ui/SansSettings.tsx "Late cut-off for SANS commitments") — true
+       whichever page it was changed on; any other rule, or several at once, keeps the Logic page. */
+    if (k === 'rules') {
+      const ch = entry.forward.find(c => c.collection === 'settings' && localOf(c.id) === 'rules')
+      const half = (x: any): Record<string, unknown> => (x && typeof x === 'object' && x.v && typeof x.v === 'object' ? x.v : {})
+      const b = half(ch && (ch as any).before), a = half(ch && ch.op !== 'delete' ? (ch as any).after : null)
+      const sb = (ch && (ch as any).before && (ch as any).before.s) || {}, sa = (ch && ch.op !== 'delete' && (ch as any).after && (ch as any).after.s) || {}
+      const moved = [...new Set([...Object.keys(b), ...Object.keys(a)])].filter(x => JSON.stringify(b[x]) !== JSON.stringify(a[x]))
+      if (ch && moved.length && JSON.stringify(sb) === JSON.stringify(sa)) {
+        if (moved.every(x => CUT_KEYS.inputs.has(x))) return 'the late cut-off for inputs'
+        if (moved.every(x => CUT_KEYS.sans.has(x))) return 'the late cut-off for SANS commitments'
+      }
     }
     return SETTING_PHRASE[k] || 'a settings change'
   }

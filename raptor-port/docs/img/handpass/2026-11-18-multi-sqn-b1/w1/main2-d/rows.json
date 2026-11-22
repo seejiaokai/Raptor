@@ -1,0 +1,155 @@
+[
+ [
+  "S5",
+  "desktop",
+  "setup: ad9 publishes 149 Fri 17 Jul; ad publishes 142 Wed 15 and Thu 16 Jul",
+  "RECORD published days",
+  "149: {\"published\":false,\"why\":\"no publish button on the day\",\"signSelects\":0}; 142: {\"published\":false,\"why\":\"no publish button on the day\",\"signSelects\":0} {\"published\":false,\"why\":\"no publish button on the day\",\"signSelects\":0}",
+  "RECORD",
+  ""
+ ],
+ [
+  "S4",
+  "desktop",
+  "us9 adds a leave / Other on Thu 10 Dec 2026",
+  "RECORD it is filed",
+  "after add the list reads: 142 TALON View-only Sched Inputs Quals Logic Leave War Tracker Help ↶ ↷ Insights Logout Osprey · Member Inputs Inputs SANS Medical Calendar List Osprey Clear filters 18 Nov → 2 Dec + Input Name Start ▲ End Type Remarks Changed No inputs 18 Nov – 2 Dec. Try All dates. Grid Balances OIL View My leave ",
+  "RECORD",
+  "s4-02-us9-filled.png, s4-03-us9-after-add.png"
+ ],
+ [
+  "S4",
+  "desktop",
+  "us opens Inputs list",
+  "does not see it",
+  "Kestrel+10 Dec seen: false; text: 142 TALON View-only Sched Inputs Quals Logic Leave War Tracker Help ↶ ↷ Insights Logout Ranger · Member Inputs Inputs SANS Medical 2 1 Calendar List Ranger Clear filters 18 Nov → 2 Dec + Input Name Start ▲ End Type Remarks Changed No inputs 18 Nov – ",
+  "PASS",
+  "s4-04-us-inputs.png"
+ ],
+ [
+  "S4",
+  "desktop",
+  "ad opens Inputs list",
+  "does not see it",
+  "Kestrel+10 Dec seen: false; text: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Saber · Admin Inputs Inputs SANS Medical 2 1 Calendar List 18 Nov → 2 Dec + Input Name Start ▲ End Type Remarks Changed No inputs 18 Nov – 2 D",
+  "PASS",
+  "s4-04-ad-inputs.png"
+ ],
+ [
+  "S4",
+  "desktop",
+  "ad9 opens Inputs list",
+  "sees the new input",
+  "Kestrel+10 Dec seen: false; text: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Kestrel · Admin Inputs Inputs SANS Medical Calendar List 18 Nov → 2 Dec + Input Name Start ▲ End Type Remarks Changed No inputs 18 Nov – 2 Dec",
+  "FAIL",
+  "s4-04-ad9-inputs.png"
+ ],
+ [
+  "S5",
+  "desktop",
+  "ad9 Holidays + Add, Public holiday, dates 2026-07-15..2026-07-15, not saved",
+  "This puts a published day out of date: 142's Wed 15 Jul. Publish it again so OIL is earned.",
+  "(no sentence)",
+  "FAIL",
+  "s5-a-form.png"
+ ],
+ [
+  "S5",
+  "desktop",
+  "ad9 Holidays + Add, Public holiday, dates 2026-07-15..2026-07-16, not saved",
+  "This puts published days out of date: 142's Wed 15 Jul and Thu 16 Jul. Publish them again so OIL is earned.",
+  "(no sentence)",
+  "FAIL",
+  "s5-b-form.png"
+ ],
+ [
+  "S5",
+  "desktop",
+  "ad9 Holidays + Add, Public holiday, dates 2026-07-15..2026-07-17, not saved",
+  "142's Wed 15 Jul and Thu 16 Jul; 149's Fri 17 Jul",
+  "(no sentence)",
+  "FAIL",
+  "s5-c-form.png"
+ ],
+ [
+  "S5",
+  "desktop",
+  "(d) same dates, kind switched to Off day",
+  "RECORD whether the sentence goes",
+  "(no sentence)",
+  "RECORD",
+  "s5-d-offday.png"
+ ],
+ [
+  "S6",
+  "desktop",
+  "ad looks at 142's Leave War grid for Wed 9 Dec",
+  "shows the same holiday (WPH / W149 PH)",
+  "WPH: false; W149 PH: false",
+  "FAIL",
+  "s6-04-ad-grid.png"
+ ],
+ [
+  "S6",
+  "desktop",
+  "ad9 looks at 149's grid after ad added Off day W142 OFF",
+  "does NOT show W142 OFF / WOF",
+  "WOF: false; W142 OFF: false; WPH still: false",
+  "PASS",
+  "s6-08-ad9-grid-after-off.png"
+ ],
+ [
+  "S7",
+  "desktop",
+  "ad opens the bell",
+  "RECORD every line; no other squadron's input line",
+  "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin Sync · slow Insights Logout Saber · Admin Jul 06 Jul 13 Jul 20 Jul 27 CAT Type Quals Legend — colours & flags Monday Jul 13 · Today DRAFT 4 X 4 i ⚠ 17 issues · 6 warnings ▼ Common Programme EP: ENGINE FIRE ON TAKE OFF ORDERS: FLYING ORDERS SECTION 2 Name Start End People Rmks SODB 07:45 08:15 MET + NOTAM BRIEF 08:15 08:30 Warden IP FLIGHT SAFETY STAND-DOWN 08:30 09:00 C Ranger IP WPNS & TACTICS SYNC 11:30 12:00 Trident IP STANDARDISATION MEETING 13:30 14:30 C Piston IP OCU PROGRESS REVIEW 14:45 15:30 CP Wil",
+  "RECORD",
+  "s7-ad-bell.png"
+ ],
+ [
+  "S7",
+  "desktop",
+  "ad2 opens the bell",
+  "RECORD every line; no other squadron's input line",
+  "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin Sync · slow Insights Logout Hunter · Admin Jul 06 Jul 13 Jul 20 Jul 27 CAT Type Quals Legend — colours & flags Monday Jul 13 · Today DRAFT 4 X 4 i ⚠ 17 issues · 6 warnings ▼ Common Programme EP: ENGINE FIRE ON TAKE OFF ORDERS: FLYING ORDERS SECTION 2 Name Start End People Rmks SODB 07:45 08:15 MET + NOTAM BRIEF 08:15 08:30 Warden IP FLIGHT SAFETY STAND-DOWN 08:30 09:00 C Ranger IP WPNS & TACTICS SYNC 11:30 12:00 Trident IP STANDARDISATION MEETING 13:30 14:30 C Piston IP OCU PROGRESS REVIEW 14:45 15:30 CP Wi",
+  "RECORD",
+  "s7-ad2-bell.png"
+ ],
+ [
+  "S7",
+  "desktop",
+  "ad9 opens the bell",
+  "RECORD every line; no other squadron's input line",
+  "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin Sync · slow Insights Logout Kestrel · Admin Jul 06 Jul 13 Jul 20 Jul 27 CAT Type Quals Legend — colours & flags Monday Jul 13 DRAFT 2 i WAVE 1 Traffic CS MSN R B TO LD FCP / RCP RMKS HK BFM 07:20 09:40 11:05 Kestrel IP Falcon IW 1B: BFM-2 2 TKS Osprey A Heron A 2A: BFM-1 2 TKS AREA NORTH · SOUTH 0940-1105 Duties Name Start End People Rmks 1st wave SDO 07:00 15:00 Merlin B Unavailable Nil Tuesday Jul 14 DRAFT 2 i WAVE 1 Traffic CS MSN R B TO LD FCP / RCP RMKS HK BFM 07:20 09:40 11:05 Merlin B Raven B 1B: BFM",
+  "RECORD",
+  "s7-ad9-bell.png"
+ ],
+ [
+  "S8",
+  "desktop",
+  "ad9 reloads the page",
+  "W149 GROUND present or world intact; holiday still there",
+  "signed in: true; Wed15 ground rows: []",
+  "RECORD",
+  "s8-01-ad9-after-reload.png"
+ ],
+ [
+  "S8",
+  "desktop",
+  "ad9 reload: grid still shows holiday WPH",
+  "still there",
+  "WPH: false",
+  "FAIL",
+  "s8-02-ad9-grid-after-reload.png"
+ ],
+ [
+  "S8",
+  "desktop",
+  "second tab, same storage: sign in as ad, Leave War",
+  "142's world as left: WPH shown (shared), WOF shown",
+  "WPH: false; WOF: false",
+  "RECORD",
+  "s8-03-second-tab-ad-grid.png"
+ ]
+]

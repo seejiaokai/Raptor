@@ -1406,7 +1406,7 @@ describe('a published version loaded back: how many inputs need an OIL answer, a
     expect(said).toContain('Saturday is back to the Original.')   // the shortened note (owner D863)
     expect(said, 'the tail, in his words').toContain(' 1 input needs an OIL answer.')
     /* (`plain`: a Saturday is a weekend, not a public holiday — the list's heading must not call it one) */
-    expect(pops.OILLIST, 'the day\'s one list is open, for that day').toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true })
+    expect(pops.OILLIST, 'the day\'s one list is open, for that day').toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true, unit: 'u142' })
     expect(view.OILWAIT, 'the load itself was not held').toBeNull()
   })
   it('the input it put back is already answered: nothing is added and no list opens', async () => {
@@ -1447,7 +1447,7 @@ describe('a published version loaded back: how many inputs need an OIL answer, a
     for (let i = 0; i < 2 && riOf() < 0; i++) pressRouted(b => { b.dataset.restore = String(SAT); b.dataset.rver = ver })
     expect(riOf(SAT, TITLE)).toBeGreaterThanOrEqual(0); expect(riOf(SAT, SECOND)).toBeGreaterThanOrEqual(0)
     expect(SAID.join(' | ')).toContain(' 1 input needs an OIL answer.')
-    expect(pops.OILLIST).toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true })
+    expect(pops.OILLIST).toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true, unit: 'u142' })
   })
   /* (the fresh read, F1) An input of several days has ONE row, on its first day. Its unanswered day can be another day
      than the one loaded — and the load still put it back, and it still needs its answer: it is counted, and the list
@@ -1469,7 +1469,7 @@ describe('a published version loaded back: how many inputs need an OIL answer, a
     for (let i = 0; i < 2 && !stands(); i++) pressRouted(b => { b.dataset.restore = String(FRI); b.dataset.rver = ver })
     expect(stands(), 'the load put it back: ' + SAID.join(' | ')).toBe(true)
     expect(SAID.join(' | '), 'counted, though Friday itself has nothing to answer').toContain(' 1 input needs an OIL answer.')
-    expect(pops.OILLIST, 'the list opens for the day that needs the answer').toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true })
+    expect(pops.OILLIST, 'the list opens for the day that needs the answer').toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true, unit: 'u142' })
     /* the note, shortened (owner D863, 15 Oct 26 — "Shorten it"): short sentences, every fact kept but the edits the
        confirming button already counted */
     expect(SAID.join(' | ')).toBe('Friday is back to the Original. Viewers still see the Original. ' + TITLE + ' is on Saturday again too. 1 input needs an OIL answer.')
@@ -1531,7 +1531,7 @@ describe('"Switch to this plan" that brings back an unanswered input says so, an
     expect(rec().acc, 'and it is on the programme again').toBe('g')
     /* Plan B is the day as it went out: nothing is pending against the Original */
     expect(SAID.join(' | ')).toBe('Saturday is now "Plan B". Nothing is pending: it matches the Original. 1 input needs an OIL answer.')
-    expect(pops.OILLIST, 'the day\'s one list is open, for that day').toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true })
+    expect(pops.OILLIST, 'the day\'s one list is open, for that day').toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true, unit: 'u142' })
     expect(view.OILWAIT, 'the switch itself was not held').toBeNull()
   })
   it('the switch AWAY says what is pending, and asks nothing: the input it unfiled needs no answer now', async () => {
@@ -1603,7 +1603,7 @@ describe('"Switch to this plan" that brings back an unanswered input says so, an
     expect(switchDraft(FRI, b)).toBe(true)
     expect(two().acc).toBe('g')
     expect(SAID.join(' | ')).toBe('Friday is now "Plan B". Nothing is pending: it matches the Original. 1 input needs an OIL answer.')
-    expect(pops.OILLIST, 'the list opens for the day that needs the answer').toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true })
+    expect(pops.OILLIST, 'the list opens for the day that needs the answer').toEqual({ from: SAT_ISO, to: SAT_ISO, name: '', fresh: false, plain: true, unit: 'u142' })
   })
   it('an Undo of the switch takes the row away again and opens nothing more', async () => {
     await boot()

@@ -1,0 +1,56 @@
+[
+ [
+  "F3",
+  "desktop",
+  "Kestrel: chip \"Bidding closed\" -> open December -> done",
+  "bidding opens, chip shows dates",
+  "chip now \"Open for bidding 1 Dec – 31 Dec\"",
+  "PASS",
+  "f3-04-chip-after.png"
+ ],
+ [
+  "F3",
+  "desktop",
+  "Osprey: bell after bidding opened",
+  "a bidding-open line (unread, dot lit)",
+  "dot display \"block\"; lines [\"Leave War1 Dec – 31 Dec\",\"Bidding open · Kestrel\",\"now\",\"Mark all read\"]",
+  "PASS",
+  "f3-05-us9-bell.png"
+ ],
+ [
+  "F3",
+  "desktop",
+  "Kestrel: top bar Undo",
+  "the bidding opening is taken back (chip closed)",
+  "chip \"Open for bidding 1 Dec – 31 Dec\"; undoBtn disabled=true w=34; redoBtn disabled=true w=34",
+  "RECORD",
+  "f3-08-war-after-undo.png"
+ ],
+ [
+  "F3",
+  "desktop",
+  "Osprey: bell after Kestrel undid",
+  "the bidding-open line no longer shown as new",
+  "dot \"block\"; lines [\"Leave War1 Dec – 31 Dec\",\"Bidding open · Kestrel\",\"now\",\"Mark all read\"]",
+  "RECORD",
+  "f3-09-us9-bell-after-undo.png"
+ ],
+ [
+  "F3",
+  "desktop",
+  "Kestrel: top bar Redo",
+  "bidding open again",
+  "chip \"Open for bidding 1 Dec – 31 Dec\"; undoBtn disabled=true w=34; redoBtn disabled=true w=34",
+  "PASS",
+  "f3-11-war-after-redo.png"
+ ],
+ [
+  "F3",
+  "desktop",
+  "Osprey: bell after Redo",
+  "the bidding-open line shows again",
+  "dot \"block\"; lines [\"Leave War1 Dec – 31 Dec\",\"Bidding open · Kestrel\",\"now\",\"Mark all read\"]",
+  "RECORD",
+  "f3-12-us9-bell-after-redo.png"
+ ]
+]

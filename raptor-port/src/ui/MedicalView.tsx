@@ -22,6 +22,8 @@
    squadron's medical state, not a filtered list (docs/ui-contracts.md). */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { PEOPLE, byCrew } from '../engine/people'
+import { onRosterOf } from '../engine/roster'
+import { pageUnit } from '../state/perms'
 import { INPUT_TYPES, inpMeta, inpType, leadOf, remarksTyped, defaultAllday } from '../engine/inputs'
 import { medDownAsOf, pendingUpchits, upchitsWithin, medEpisode } from '../engine/medical'
 import { docHas, rowDocIds } from '../state/docs'
@@ -186,9 +188,12 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
   const crew = (a: any, b: any) => (PEOPLE[a.person] && PEOPLE[b.person])
     ? byCrew(a.person, b.person)
     : String(a.person).localeCompare(String(b.person))
-  const down = medDownAsOf(ord).sort(crew)
-  const pend = pendingUpchits(ord).sort(crew)
-  const done = upchitsWithin(ord, 30)          // newest first, its own order
+  /* the page's own squadron's men (the Medical tab stays on his own, D2132 — a master admin's or Plan holder's following
+     his pick, D2197; the reshape plan §3.2 A-ii) */
+  const mine = (e: any) => onRosterOf(e.person, pageUnit('own'), asOf)
+  const down = medDownAsOf(ord).filter(mine).sort(crew)
+  const pend = pendingUpchits(ord).filter(mine).sort(crew)
+  const done = upchitsWithin(ord, 30).filter(mine)          // newest first, its own order
 
   /* this person's overlapping-episode documents that are actually on file.
      ROWS feed the pager; the card's count of documents — its title, and the drawing and number from two (D966, D967) — counts FILES (an

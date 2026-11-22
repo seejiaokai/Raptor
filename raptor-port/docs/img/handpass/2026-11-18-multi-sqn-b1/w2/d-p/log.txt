@@ -1,0 +1,9 @@
+msq-w2-d v1 phone
+149 Wed15 ground before []
+seat result ok ["W2 PHONE=kes9"]
+added ["W2 PHONE=kes9"]
+ROW PASS | T6 | phone | ad9 adds ground row "W2 PHONE" with Kestrel on Wed 15 Jul by taps, Done | saw: ground: ["W2 PHONE=kes9"]; week text has W2 PHONE: true
+ROW PASS | T6 | phone | ad (142) looks at Wed 15 Jul, week and board | saw: week: false; board: false; 142 ground rows: ["MAINT CONF @ ENG WING","NAV-SYS TRIAL PREP"]
+ROW PASS | T6 | phone | ad9 signs in again | saw: ground: ["W2 PHONE"]
+errors []
+DONE 3 PASS 0 FAIL 0 OTHER of 3

@@ -1,0 +1,24 @@
+#!/bin/bash
+# Fix read 17: one exported copy of the branch head per reader (no pictures), the fixes' diff and log, the branch's
+# HANDOFF block blanked, a node_modules junction to the main folder's. Usage: mkcopies17.sh <head>
+set -e
+HEAD="$1"
+BASE=078bc2f7e
+SRC=/c/Users/User/projects/Raptor-msq
+SP=/c/Users/User/AppData/Local/Temp/claude/37df10f156419f1e/84cddf99-d01b-4843-976a-f817810987f3/scratchpad
+OUT=$SP/fr17
+B=raptor-port/docs/superpowers/briefs
+mkdir -p "$OUT"
+for r in astra opus fable security; do
+  D="$OUT/$r"
+  rm -rf "$D"; mkdir -p "$D"
+  git -C "$SRC" archive "$HEAD" -- . ':(exclude)raptor-port/docs/img' ':(exclude)raptor-port/docs/handpass/**/*.png' ':(exclude)*.png' ':(exclude)*.jpg' | tar -x -C "$D"
+  node "$SP/blank-block.mjs" "$D/HANDOFF.md"
+  git -C "$SRC" diff "$BASE" "$HEAD" -- raptor-port/src > "$D/FIXES.patch"
+  git -C "$SRC" log --no-merges --reverse --format='==== %h %s%n%n%b' "$BASE..$HEAD" -- raptor-port/src > "$D/FIXES-LOG.txt"
+  sed "s/@@HEAD@@/$HEAD/g" "$D/$B/2026-11-20-multi-sqn-b1-fixread17-brief.md" > "$D/BRIEF.md"
+  WIN=$(cygpath -w "$D/raptor-port/node_modules")
+  NM=$(cygpath -w /c/Users/User/projects/Raptor/raptor-port/node_modules)
+  MSYS_NO_PATHCONV=1 cmd /c mklink /J "$WIN" "$NM" > /dev/null
+  echo "$r ready: $D"
+done

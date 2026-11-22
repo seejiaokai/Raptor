@@ -1,0 +1,356 @@
+{
+ "state": "war-desk",
+ "drawing": {
+  "script": "docs/mock/2026-11-20-multi-sqn-reshape/draw.mjs",
+  "shot": "q7b-d"
+ },
+ "recorded": "2026-11-21T10:08:07.575Z",
+ "drawnOn": "19608876a (chat 125)",
+ "checkout": "",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "window": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 488,
+    "y": 541,
+    "w": 560,
+    "h": 309
+   },
+   "ink": {
+    "x": 503,
+    "y": 562,
+    "w": 528,
+    "h": 270
+   },
+   "text": "Ranger Fri 24 Jul ✕ You are 149's from today. This can't be saved in 142's Leave War. Close No manning row turns amber or red Family wedding in Perth, back Sunday till 24 Jul Document Whole day AM PM Pick a range LL 11.5 OL 11.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 CSE OD ⋯",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "16px",
+     "16px",
+     "16px",
+     "16px"
+    ],
+    "shadow": "rgba(0, 0, 0, 0.55) 0px 18px 48px 0px",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.bidsheet"
+  },
+  "title": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 501,
+    "y": 552,
+    "w": 534,
+    "h": 37
+   },
+   "ink": {
+    "x": 522.7,
+    "y": 562,
+    "w": 508.3,
+    "h": 17
+   },
+   "text": "Ranger Fri 24 Jul ✕",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.bidsheet-hd"
+  },
+  "band": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 489,
+    "y": 597,
+    "w": 558,
+    "h": 36
+   },
+   "ink": {
+    "x": 534,
+    "y": 607.5,
+    "w": 481,
+    "h": 16
+   },
+   "text": "You are 149's from today. This can't be saved in 142's Leave War. Close",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(11, 13, 16)",
+    "image": "linear-gradient(90deg, rgba(229, 194, 74, 0.2), rgba(229, 194, 74, 0.06) 55%, rgba(229, 194, 74, 0.03)), none",
+    "edge": [
+     "1px solid rgba(229, 194, 74, 0.5)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "space-between",
+    "font": "600 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.saveband.mkq.mkq-in"
+  },
+  "sign": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 509,
+    "y": 607.5,
+    "w": 16,
+    "h": 16
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.6 15 14H1z' fill",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "500 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.sv-sign"
+  },
+  "lead": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 534,
+    "y": 607.5,
+    "w": 147.5,
+    "h": 16
+   },
+   "ink": {
+    "x": 534,
+    "y": 607.5,
+    "w": 147.5,
+    "h": 16
+   },
+   "text": "You are 149's from today.",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(242, 212, 107)",
+     "0px none rgb(242, 212, 107)",
+     "0px none rgb(242, 212, 107)",
+     "0px none rgb(242, 212, 107)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(242, 212, 107)",
+    "align": "start",
+    "justify": "normal",
+    "font": "700 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "b"
+  },
+  "rest": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 690.5,
+    "y": 607.5,
+    "w": 212.4,
+    "h": 16
+   },
+   "ink": {
+    "x": 690.5,
+    "y": 607.5,
+    "w": 212.4,
+    "h": 16
+   },
+   "text": "This can't be saved in 142's Leave War.",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "500 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.sv-rest"
+  },
+  "close": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 973.7,
+    "y": 600.5,
+    "w": 53.3,
+    "h": 30
+   },
+   "ink": {
+    "x": 985.7,
+    "y": 607.5,
+    "w": 29.3,
+    "h": 16
+   },
+   "text": "Close",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "normal"
+   },
+   "tag": "button.pchip.bp-range"
+  },
+  "remarks": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 501,
+    "y": 663,
+    "w": 337.9,
+    "h": 30
+   },
+   "ink": {
+    "x": 512,
+    "y": 670.2,
+    "w": 223.3,
+    "h": 15.6
+   },
+   "text": "Family wedding in Perth, back Sunday Family wedding in Perth, back Sunday",
+   "typed": true,
+   "marked": false,
+   "look": {
+    "fill": "rgb(11, 13, 16)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 13px",
+    "spacing": "normal"
+   },
+   "tag": "textarea"
+  }
+ },
+ "approved": {
+  "picture": "q7b-d.png",
+  "identical": true
+ }
+}

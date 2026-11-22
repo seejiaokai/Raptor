@@ -1,0 +1,83 @@
+[
+ [
+  "F1",
+  "phone",
+  "ad2 searches Osprey and opens his row",
+  "his row opens",
+  "opened: true; controls: Ospreyus9 · Member · Pilot · CAT A | us9 | Member or admin | Save | Suspend | Archive | Delete | Cancel",
+  "RECORD",
+  "f1-01-osprey-row-opened.png"
+ ],
+ [
+  "F1",
+  "phone",
+  "ad2 on Osprey's row: INPUT \"us9\"",
+  "not offered, or the exact 149 refusal",
+  "no exact refusal; bad words: none ; tail: me Initials Pilot, WSO or personnel CAT Sign-in (defence mail) Post in Wed 18 Nov 26 ▾ Add person Makes his Quals row, and his sign-in if you give one. The Leave War counts him from the post-in date. Guest view Let people waiting for access view the schedule (read only) Couldn't save that document: your browser storage may be full, so it may not be here after a reload. Member — own inputs, quals and bids Admin — schedules and manages Pick… Pilot WSO Personnel (ground crew) Pick… Osprey Osprey on",
+  "RECORD",
+  "f1-02-02-us9.png"
+ ],
+ [
+  "F1",
+  "phone",
+  "ad2 on Osprey's row: SELECT \"Member or admin\"",
+  "not offered, or the exact 149 refusal",
+  "no exact refusal; bad words: none ; tail: Pilot, WSO or personnel CAT Sign-in (defence mail) Post in Wed 18 Nov 26 ▾ Add person Makes his Quals row, and his sign-in if you give one. The Leave War counts him from the post-in date. Guest view Let people waiting for access view the schedule (read only) Nothing new Couldn't save that document: your browser storage may be full, so it may not be here after a reload. Member — own inputs, quals and bids Admin — schedules and manages Pick… Pilot WSO Personnel (ground crew) Pick… Osprey Osprey on",
+  "RECORD",
+  "f1-02-03-Member-or-admin.png"
+ ],
+ [
+  "F1",
+  "phone",
+  "ad2 on Osprey's row: BUTTON \"Save\"",
+  "not offered, or the exact 149 refusal",
+  "He is 149's. Only an admin of 149 can change his account.",
+  "PASS",
+  "f1-02-04-Save.png"
+ ],
+ [
+  "F1",
+  "phone",
+  "ad2 on Osprey's row: BUTTON \"Suspend\"",
+  "not offered, or the exact 149 refusal",
+  "He is 149's. Only an admin of 149 can change his account.",
+  "PASS",
+  "f1-02-05-Suspend.png"
+ ],
+ [
+  "F1",
+  "phone",
+  "ad2 on Osprey's row: BUTTON \"Archive\"",
+  "not offered, or the exact 149 refusal",
+  "He is 149's. Only an admin of 149 can change him.",
+  "PASS",
+  "f1-02-06-Archive.png"
+ ],
+ [
+  "F1",
+  "phone",
+  "ad2 on Osprey's row: BUTTON \"Delete\"",
+  "not offered, or the exact 149 refusal",
+  "He is 149's. Only an admin of 149 can change him.",
+  "PASS",
+  "f1-02-07-Delete.png"
+ ],
+ [
+  "F1",
+  "phone",
+  "ad2 on Osprey's row: BUTTON \"Cancel\"",
+  "not offered, or the exact 149 refusal",
+  "He is 149's. Only an admin of 149 can change him.",
+  "PASS",
+  "f1-02-08-Cancel.png"
+ ],
+ [
+  "F1",
+  "phone",
+  "Osprey checked afterwards",
+  "unchanged: callsign Osprey, still a member",
+  "Osprey us9 · Member · Pilot · CAT A",
+  "RECORD",
+  "f1-03-osprey-after.png"
+ ]
+]

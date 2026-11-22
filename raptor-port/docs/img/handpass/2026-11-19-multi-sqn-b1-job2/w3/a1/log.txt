@@ -1,0 +1,32 @@
+msq-j2-w3-a v1
+ad9 person select {"disabled":false,"val":"Kestrel","opts":["Condor","Falcon","Gannet","Harrier","Heron","Kestrel","Merlin","Osprey","Raven","Shrike"]}
+ad9 picker box inside win OUTSIDE 13,70,389,1194
+ad9 window scrolled to end: nobody
+ad9 pucks ["ALL AVAIL","ALL","CondorO","HarrierC","KestrelIP*","MerlinB","OspreyA","FalconIW","GannetO","HeronA","RavenB","ShrikeC"] textboxes in picker: 0
+ROW FAIL | W3-A | iPhone | ad9 Inputs -> List -> + Input -> window's Person select and the Several-people picker, scrolled to the end | saw: select: [Condor, Falcon, Gannet, Harrier, Heron, Kestrel, Merlin, Osprey, Raven, Shrike] selected: Kestrel; pucks: [ALL AVAIL, ALL, CondorO, HarrierC, KestrelIP*, MerlinB, OspreyA, FalconIW, GannetO, HeronA, RavenB, ShrikeC]; not-149 names: [CondorO, HarrierC, KestrelIP, MerlinB, OspreyA, FalconIW, GannetO, HeronA, RavenB, ShrikeC]; 149 names: [Condor, Falcon, Gannet, Harrier, Heron, Kestrel, Merl
+signed in as ad2
+ad2 person select {"disabled":false,"val":"Hunter","opts":["Ace","Anvil","Basher","Blade","Bolt","Cinch","Cinder","Cobra","Comet","Cotter","Cutter","Dash","Diesel","Drifter","Echo","Fable","Forge","Gambit","Ghost","Grit","Havoc","Hex","Hunter","Jester","Kraken","Ledger","Marlin","Nomad","Otter","Outlaw","Piston","Pixel","Quill","Ranger","Ratchet","Reaper","Rebel","Recon","Relay","Ridge","Rune","Ryder","Saber","Saint","Scope","Scribe","Sidewinder","Static","Talisman","Tally","Torch","Trident","Vandal","Vapor","Vector","Warden","Widget","Wildcard","Wisp","Zenith","Zulu"]}
+ad2 picker box OUTSIDE 28,82,374,1044 win OUTSIDE 13,70,389,1768
+ad2 window scrolled to end: nobody
+ad2 pucks ["ALL AVAIL","ALL","AceA","AnvilIP","BladeIP","CinchIP","CobraIP","CometIP","DieselD","DrifterA","ForgeIP","GambitC","HavocIP","HunterIP*","NomadC","OutlawC","PistonIP","RangerIP","ReaperIR","ReconO","RidgeC","SaberIP","SaintB","SidewinderIP","TalismanO","TorchC","TridentIP","VandalIP","VaporD","WardenIP","WildcardO","BasherIW","CinderB","CutterC","DashC","EchoIW","FableC","GhostC","GritC","HexC","LedgerIW","QuillIW","RelayIW","RuneB","RyderC","ScopeIW","StaticIW","VectorC","WispC","BoltC","JesterB","KrakenD","MarlinA","OtterD","PixelD","RebelB","ScribeD","TallyO","ZenithC","ZuluO","Cotter","Ratchet","Widget"] textboxes in picker: 0
+ROW PASS | W3-A | iPhone | ad2 Inputs -> List -> + Input -> window's Person select and the Several-people picker, scrolled to the end | saw: select: [Ace, Anvil, Basher, Blade, Bolt, Cinch, Cinder, Cobra, Comet, Cotter, Cutter, Dash, Diesel, Drifter, Echo, Fable, Forge, Gambit, Ghost, Grit, Havoc, Hex, Hunter, Jester, Kraken, Ledger, Marlin, Nomad, Otter, Outlaw, Piston, Pixel, Quill, Ranger, Ratchet, Reaper, Rebel, Recon, Relay, Ridge, Rune, Ryder, Saber, Saint, Scope, Scribe, Sidewinder, Static, Talisman, Tally, Torch, Trident, Vanda
+signed in as ad
+ad person select {"disabled":false,"val":"Saber","opts":["Ace","Anvil","Basher","Blade","Bolt","Cinch","Cinder","Cobra","Comet","Cotter","Cutter","Dash","Diesel","Drifter","Echo","Fable","Forge","Gambit","Ghost","Grit","Havoc","Hex","Hunter","Jester","Kraken","Ledger","Marlin","Nomad","Otter","Outlaw","Piston","Pixel","Quill","Ranger","Ratchet","Reaper","Rebel","Recon","Relay","Ridge","Rune","Ryder","Saber","Saint","Scope","Scribe","Sidewinder","Static","Talisman","Tally","Torch","Trident","Vandal","Vapor","Vector","Warden","Widget","Wildcard","Wisp","Zenith","Zulu"]}
+ad picker box OUTSIDE 28,82,374,1044 win OUTSIDE 13,70,389,1768
+ad window scrolled to end: nobody
+ad pucks ["ALL AVAIL","ALL","AceA","AnvilIP","BladeIP","CinchIP","CobraIP","CometIP","DieselD","DrifterA","ForgeIP","GambitC","HavocIP","HunterIP","NomadC","OutlawC","PistonIP","RangerIP","ReaperIR","ReconO","RidgeC","SaberIP*","SaintB","SidewinderIP","TalismanO","TorchC","TridentIP","VandalIP","VaporD","WardenIP","WildcardO","BasherIW","CinderB","CutterC","DashC","EchoIW","FableC","GhostC","GritC","HexC","LedgerIW","QuillIW","RelayIW","RuneB","RyderC","ScopeIW","StaticIW","VectorC","WispC","BoltC","JesterB","KrakenD","MarlinA","OtterD","PixelD","RebelB","ScribeD","TallyO","ZenithC","ZuluO","Cotter","Ratchet","Widget"] textboxes in picker: 0
+ROW PASS | W3-A | iPhone | ad Inputs -> List -> + Input -> window's Person select and the Several-people picker, scrolled to the end | saw: select: [Ace, Anvil, Basher, Blade, Bolt, Cinch, Cinder, Cobra, Comet, Cotter, Cutter, Dash, Diesel, Drifter, Echo, Fable, Forge, Gambit, Ghost, Grit, Havoc, Hex, Hunter, Jester, Kraken, Ledger, Marlin, Nomad, Otter, Outlaw, Piston, Pixel, Quill, Ranger, Ratchet, Reaper, Rebel, Recon, Relay, Ridge, Rune, Ryder, Saber, Saint, Scope, Scribe, Sidewinder, Static, Talisman, Tally, Torch, Trident, Vanda
+signed in as us
+us person select null
+ROW RECORD | W3-A | iPhone | us Inputs -> List -> + Input -> window's Person select and the Several-people picker, scrolled to the end | saw: select: [none] selected: null; pucks: []; not-149 names: []; 149 names: []
+signed in as us9
+us9 person select null
+ROW FAIL | W3-A | iPhone | us9 Inputs -> List -> + Input -> window's Person select and the Several-people picker, scrolled to the end | saw: select: [none] selected: null; pucks: []; not-149 names: []; 149 names: []
+signed in as ad9
+ROW RECORD | W3-A | iPhone | ad9: look for a box to type "Os" in the people picker | saw: inputs inside the picker: 0; picker words: PEOPLE 1 picked Several people WHOEVER IS FREE THAT DAY ALL AVAIL ALL ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other PILOTS All Condor O Harrier C Kestrel IP Merlin B Osprey A WSOS All Falcon IW Gannet O Heron A Raven B Shrike C
+ERR file locator.tap: Timeout 30000ms exceeded.
+ERR close x locator.tap: Timeout 30000ms exceeded.
+ERR close outside locator.tap: Timeout 30000ms exceeded.
+ERR close back locator.tap: Timeout 30000ms exceeded.
+errors []
+DONE 2 PASS 2 FAIL 2 OTHER of 6

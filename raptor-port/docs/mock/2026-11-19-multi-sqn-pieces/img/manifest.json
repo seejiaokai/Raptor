@@ -1,0 +1,248 @@
+{
+ "p1a-d.png": {
+  "piece": "p1",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Saber, the master admin, has opened Hunter's row (an admin of 142) on Admin → Users. New: the \"Other squadrons\" ladder under Sign-in and Role, Plan 149 picked, its one line saying what Plan means. Every rung is Saber's to set. Measured: ladder 584px wide in a 584px editor, 1 row(s)."
+ },
+ "p1b-d.png": {
+  "piece": "p1",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Kestrel, 149's admin, has opened Ranger's row (a member of 142, found by search; his row marked with the grey \"142\"). New: the ladder with View 149 picked; Plan 149 and Master admin greyed, the line under them saying why; everything else on Ranger's row greyed, since it stays 142's; Save saves the ladder only. Measured: 1 row(s), 5 controls greyed."
+ },
+ "p1c-d.png": {
+  "piece": "p1",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Hunter, 142's own admin, has opened Ranger's row. New: the ladder greyed whole, None lit, the line saying who may give access to 149."
+ },
+ "p1a-p.png": {
+  "piece": "p1",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Saber, the master admin, has opened Hunter's row (an admin of 142) on Admin → Users. New: the \"Other squadrons\" ladder under Sign-in and Role, Plan 149 picked, its one line saying what Plan means. Every rung is Saber's to set. Measured: ladder 328px wide in a 328px editor, 2 row(s)."
+ },
+ "p1b-p.png": {
+  "piece": "p1",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Kestrel, 149's admin, has opened Ranger's row (a member of 142, found by search; his row marked with the grey \"142\"). New: the ladder with View 149 picked; Plan 149 and Master admin greyed, the line under them saying why; everything else on Ranger's row greyed, since it stays 142's; Save saves the ladder only. Measured: 2 row(s), 5 controls greyed."
+ },
+ "p2a-d.png": {
+  "piece": "p2",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Admin → Users as Saber, the master admin (his list is 142's). Hunter holds Plan of 149. New: \"· also plans 149\" at the end of his line under the callsign, in that line's own grey — the same on 142's list and on 149's."
+ },
+ "p2b-d.png": {
+  "piece": "p2",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Admin → Users as Kestrel, 149's admin (149's list). Hunter holds Plan of 149. New: \"· also plans 149\" at the end of his line under the callsign, in that line's own grey — the same on 142's list and on 149's."
+ },
+ "p2a-p.png": {
+  "piece": "p2",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Admin → Users as Saber, the master admin (his list is 142's). Hunter holds Plan of 149. New: \"· also plans 149\" at the end of his line under the callsign, in that line's own grey — the same on 142's list and on 149's."
+ },
+ "p3a-p.png": {
+  "piece": "p3",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Saber's bell, the master admin. New: \"Show 142 149\" at the list's foot, the filter chip's own look; 142 (his own squadron) on, 149 off as it starts. Only 142's lines show. The lines are drawn in the bell's own line markup (today's demo has none for Saber)."
+ },
+ "p3b-p.png": {
+  "piece": "p3",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "The same bell after Saber taps 149. New: 149's lines in among 142's, newest first, each with the grey \"149\" mark after its name — the same grey badge already approved for another squadron's line on the schedule. His own squadron's lines carry no mark."
+ },
+ "p4-d.png": {
+  "piece": "p4",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Inputs → ⚙ → Calendar…, the Holidays part, opened for the detachment 249 (149's, not built yet: the window's title re-lettered \"Calendar · 249\", 149's real list hidden). New: while 249's own list is empty, one line and \"Copy 149's 2026 list\". The copy is a one-off start: afterwards each list is edited on its own, never kept in step."
+ },
+ "p5-d.png": {
+  "piece": "p5",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "The sign-in screen on a shared tab: Saber signed out a moment ago and his last change is still saving. Kestrel has pressed Sign in. New: the button reads \"Signing in…\" and waits, greyed, with one line under it; once the save lands he is signed in by himself. If that save fails, the \"Not saved\" band already built shows on this screen, with its Retry, and Kestrel stays on this screen until Retry saves it."
+ },
+ "p5-p.png": {
+  "piece": "p5",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "The sign-in screen on a shared tab: Saber signed out a moment ago and his last change is still saving. Kestrel has pressed Sign in. New: the button reads \"Signing in…\" and waits, greyed, with one line under it; once the save lands he is signed in by himself. If that save fails, the \"Not saved\" band already built shows on this screen, with its Retry, and Kestrel stays on this screen until Retry saves it."
+ },
+ "p6-p.png": {
+  "piece": "p6",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Kestrel's bell (149's admin and scheduler), Ranger of 142 borrowed onto 149's RU and VL. New: the four lines that cross squadrons, top to bottom — Ranger unavailable at home on a day 149 plans him; Ranger posted out of 142 while 149 still plans him, naming the days; 142 taking Ranger back out of 149's plan, naming the day; and Kestrel's change to RU replaced by Hunter's later save. The grey \"142\" marks 142's people: Ranger on the first three lines, Hunter on the fourth (RU is 149's own line). Kestrel's top bar still reads \"142 TALON\": the number there is not yet per squadron in the build."
+ },
+ "p7-d.png": {
+  "piece": "p7",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Admin → Squadrons as Hunter, 142's admin — the Squadrons page drawn in round 4, not built yet, made here from Admin → Users' own parts. Home base is shared by 142 and 149. New: its Time zone greyed for him, one line under it saying why. A place only 142 sits on stays his to set; Saber, the master, sees it ordinary. The Squadrons tile's map pin is drawn here too, so it does not share Users' icon."
+ },
+ "p7-p.png": {
+  "piece": "p7",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Admin → Squadrons as Hunter, 142's admin — the Squadrons page drawn in round 4, not built yet, made here from Admin → Users' own parts. Home base is shared by 142 and 149. New: its Time zone greyed for him, one line under it saying why. A place only 142 sits on stays his to set; Saber, the master, sees it ordinary. The Squadrons tile's map pin is drawn here too, so it does not share Users' icon."
+ },
+ "p8-d.png": {
+  "piece": "p8",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Admin → Users as Saber. Outlaw's posting out was due Fri 20 Nov and the app could not run it for a reason nobody foresaw. New: the line under his row, in the amber the app already uses there for a posting held by the last-admin rule (\"…The posting waits until 149 has another admin.\"). His \"posted out from\" tag re-lettered for the drawing."
+ },
+ "p8-p.png": {
+  "piece": "p8",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Admin → Users as Saber. Outlaw's posting out was due Fri 20 Nov and the app could not run it for a reason nobody foresaw. New: the line under his row, in the amber the app already uses there for a posting held by the last-admin rule (\"…The posting waits until 149 has another admin.\"). His \"posted out from\" tag re-lettered for the drawing."
+ },
+ "p9-built-d.png": {
+  "piece": "p9",
+  "size": "desktop 1536",
+  "kind": "real",
+  "caption": "Real, today: Saber demotes Kestrel, 149's only admin, and the note says the words already built: \"Kestrel is 149's last admin. Make another admin of 149 first.\""
+ },
+ "p9-d.png": {
+  "piece": "p9",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Proposed: Osprey, 149's second admin, is already set to move to 142 from Fri 27 Nov; Saber demotes Kestrel today. Today the app refuses with \"You are not allowed to do that\" (read from the code: no screen saves a home move yet). New: the same note in the built sentence's shape, naming the date and the reason."
+ },
+ "p9-built-p.png": {
+  "piece": "p9",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "real",
+  "caption": "Real, today: Saber demotes Kestrel, 149's only admin, and the note says the words already built: \"Kestrel is 149's last admin. Make another admin of 149 first.\""
+ },
+ "p9-p.png": {
+  "piece": "p9",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Proposed: Osprey, 149's second admin, is already set to move to 142 from Fri 27 Nov; Saber demotes Kestrel today. Today the app refuses with \"You are not allowed to do that\" (read from the code: no screen saves a home move yet). New: the same note in the built sentence's shape, naming the date and the reason."
+ },
+ "p3a-d.png": {
+  "piece": "p3",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Saber's bell, the master admin. New: \"Show 142 149\" at the list's foot, the filter chip's own look; 142 (his own squadron) on, 149 off as it starts. Only 142's lines show. The lines are drawn in the bell's own line markup (today's demo has none for Saber)."
+ },
+ "p3b-d.png": {
+  "piece": "p3",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "The same bell after Saber taps 149. New: 149's lines in among 142's, newest first, each with the grey \"149\" mark after its name — the same grey badge already approved for another squadron's line on the schedule. His own squadron's lines carry no mark."
+ },
+ "p3c-d.png": {
+  "piece": "p3",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Hunter's bell, 142's admin who holds Plan of 149: the same chips, 149 on as it starts (his to switch off), 149's admin lines marked \"149\"."
+ },
+ "p4-p.png": {
+  "piece": "p4",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Inputs → ⚙ → Calendar…, the Holidays part, opened for the detachment 249 (149's, not built yet: the window's title re-lettered \"Calendar · 249\", 149's real list hidden). New: while 249's own list is empty, one line and \"Copy 149's 2026 list\". The copy is a one-off start: afterwards each list is edited on its own, never kept in step."
+ },
+ "p6-d.png": {
+  "piece": "p6",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Kestrel's bell (149's admin and scheduler), Ranger of 142 borrowed onto 149's RU and VL. New: the four lines that cross squadrons, top to bottom — Ranger unavailable at home on a day 149 plans him; Ranger posted out of 142 while 149 still plans him, naming the days; 142 taking Ranger back out of 149's plan, naming the day; and Kestrel's change to RU replaced by Hunter's later save. The grey \"142\" marks 142's people: Ranger on the first three lines, Hunter on the fourth (RU is 149's own line). Kestrel's top bar still reads \"142 TALON\": the number there is not yet per squadron in the build."
+ },
+ "p10-d.png": {
+  "piece": "p10",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Saber's bell (a 142 admin). Outlaw's posting out was due Fri 20 Nov and the app could not run it. New: the top line — \"Outlaw · Fri 20 Nov / Posting out could not run. See his row on Admin → Users.\" — rung once, the first time it fails, to 142's admins only (Outlaw is 142's, so no squadron mark); a tap opens his row, where the amber line of picture 8 says what to do. The two lines under it are today's kind, for scale."
+ },
+ "p10-p.png": {
+  "piece": "p10",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Saber's bell (a 142 admin). Outlaw's posting out was due Fri 20 Nov and the app could not run it. New: the top line — \"Outlaw · Fri 20 Nov / Posting out could not run. See his row on Admin → Users.\" — rung once, the first time it fails, to 142's admins only (Outlaw is 142's, so no squadron mark); a tap opens his row, where the amber line of picture 8 says what to do. The two lines under it are today's kind, for scale."
+ },
+ "p11a-d.png": {
+  "piece": "p11",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Today, as the branch does it: Hunter, a 142 admin who read \"Jester · Posted out · archived\", has since moved to 149. 142 undoes Jester's posting out of the app. Hunter's bell, now 149's, gets the struck line with \"taken back · Saber\"."
+ },
+ "p11b-d.png": {
+  "piece": "p11",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Proposed: the day Hunter moved to 149, 142's lines left his bell, so the undo tells him nothing. 142's own admins get the taken-back line as today."
+ },
+ "p11c-d.png": {
+  "piece": "p11",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Kestrel's bell (149). Today's ruled line covers leave and medical; proposed: the same line for any input at home that takes Ranger away, with that input's word: DET, a course, a duty, an overseas duty, OIL."
+ },
+ "p11d-d.png": {
+  "piece": "p11",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Ranger's own bell. 142 takes him off 149's VL formation; 149's schedulers are already told (ruled). Proposed: Ranger is told too, the \"149\" badge saying whose formation."
+ },
+ "p11e-d.png": {
+  "piece": "p11",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "142's admins on the date of a transfer to 149: the line already ruled, unchanged."
+ },
+ "p11f-d.png": {
+  "piece": "p11",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Proposed: 149's admins get it in their own words, \"Posted in · from 142\", in place of the same \"Posted out · now with 149\"."
+ },
+ "p11c-p.png": {
+  "piece": "p11",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Kestrel's bell (149). Today's ruled line covers leave and medical; proposed: the same line for any input at home that takes Ranger away, with that input's word: DET, a course, a duty, an overseas duty, OIL."
+ },
+ "p11f-p.png": {
+  "piece": "p11",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Proposed: 149's admins get it in their own words, \"Posted in · from 142\", in place of the same \"Posted out · now with 149\"."
+ },
+ "p12a-d.png": {
+  "piece": "p12",
+  "size": "desktop 1536",
+  "kind": "as built",
+  "caption": "Question 1 — Ranger's bell (142 member, never moved). He filed a Training for Ace; Saber changed its remark. As built and recommended: Ranger is told, as here. Nothing new is drawn."
+ },
+ "p12b-d.png": {
+  "piece": "p12",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Question 2 — Hunter's bell (142 admin, never moved). He filed Ranger's leave, 23–27 Nov; Ranger moved to 149 from 25 Nov; Saber changed its remark. As built Hunter's bell shows nothing. Recommended (marked New): he is told, as he would be had Ranger not moved, because 23 and 24 Nov are still 142's days."
+ },
+ "p12a-p.png": {
+  "piece": "p12",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "as built",
+  "caption": "Question 1 — Ranger's bell (142 member, never moved). He filed a Training for Ace; Saber changed its remark. As built and recommended: Ranger is told, as here. Nothing new is drawn."
+ },
+ "p12b-p.png": {
+  "piece": "p12",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Question 2 — Hunter's bell (142 admin, never moved). He filed Ranger's leave, 23–27 Nov; Ranger moved to 149 from 25 Nov; Saber changed its remark. As built Hunter's bell shows nothing. Recommended (marked New): he is told, as he would be had Ranger not moved, because 23 and 24 Nov are still 142's days."
+ }
+}

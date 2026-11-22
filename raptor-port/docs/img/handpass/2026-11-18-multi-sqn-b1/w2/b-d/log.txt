@@ -1,0 +1,18 @@
+msq-w2-b v1 desktop
+ROW PASS | T3 | desktop | us9 files Other on Mon 14 Dec 2026 for himself | saw: Osprey: true; 14 Dec: true
+BELL ad Nothing new badge: |bellbtn
+ROW PASS | T3 | desktop | ad opens the bell | saw: lines: "Nothing new"; mentions Osprey/14 Dec/Other: false
+BELL ad2 Nothing new badge: |bellbtn
+ROW PASS | T3 | desktop | ad2 opens the bell | saw: lines: "Nothing new"; mentions Osprey/14 Dec/Other: false
+BELL ad9 Nothing new badge: |bellbtn
+ROW RECORD | T3 | desktop | ad9 opens the bell | saw: lines: "Nothing new"; mentions Osprey/14 Dec/Other: false
+AD TRACKER {"course":"26ABSG [now 26ABSG]","students":"STUDENT A/STUDENT B [now STUDENT A]","overall":"","done":"0"}
+student chip [1231,176.6953125,"DIV","chips"]
+ERR closewin locator.click: Timeout 30000ms exceeded.
+AD AFTER {"course":"26ABSG [now 26ABSG]","students":"STUDENT A/STUDENT B [now STUDENT A]","overall":"","done":"1"}
+ROW RECORD | T4 | desktop | ad opens Tracker, taps ST-01 on the chart, presses Marginal for STUDENT A, Close | saw: before: {"course":"26ABSG [now 26ABSG]","students":"STUDENT A/STUDENT B [now STUDENT A]","overall":"","done":"0"}; after: {"course":"26ABSG [now 26ABSG]","students":"STUDENT A/STUDENT B [now STUDENT A]","overall":"","done":"1"}; marked: true
+AD9 TRACKER {"course":"26ABSG [now 26ABSG]","students":"STUDENT A/STUDENT B [now STUDENT A]","overall":"","done":"0"}
+ROW PASS | T4 | desktop | ad9 opens Tracker | saw: ad9: {"course":"26ABSG [now 26ABSG]","students":"STUDENT A/STUDENT B [now STUDENT A]","overall":"","done":"0"}; ad's done count: 0 -> 1; ad9 done: 0
+ROW PASS | T4 | desktop | ad signs in again, opens Tracker | saw: {"course":"26ABSG [now 26ABSG]","students":"STUDENT A/STUDENT B [now STUDENT A]","overall":"","done":"1"}
+errors []
+DONE 5 PASS 0 FAIL 2 OTHER of 7
