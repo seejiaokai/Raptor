@@ -30,7 +30,8 @@ import { homeUnitOf } from '../engine/roster'
 import { getVersion as raptorVersion } from '../state/store'
 import { effectiveToday } from '../state/person-delete'
 import { NOTICES, noticeSansBack, type Notice } from '../state/notices'
-import { hasRead } from '../state/noticeseen'
+import { hasRead, hasReadSaved, NOTICESEEN_PFX } from '../state/noticeseen'
+import { onPipelineBegin, activeEnvelope } from '../command'
 import { getState } from './state/store'
 import { addDays, outcomeOf } from './engine'
 
@@ -141,12 +142,35 @@ export function sansBackOwed(c: { collection: string; op: string; before?: unkno
   const kept = !!a && !a.gone && typeof a.to === 'string' && a.poDone === day
   return kept ? null : day
 }
+/* HIS LIVE LINE'S DAYS AS THEY STOOD WHEN THE COMMAND BEGAN (chat 147's re-reads — Astra's R1, the security reader's
+   SEC2-1): the struck line keeps what his line SAID (D1693, D1699, D1710), and the gate runs after the posting has
+   changed, when the line no longer exists to ask — so a list of well-formed later days, made up, passed. So at the start
+   of every person's command, before its body runs, the days of each man whose SANS posting has run are noted here
+   (sansUnfiledDays — what postingLinesOf hands the writer at the same moment), with the command they belong to; the gate
+   compares the struck days with them, exactly. A command they were not noted for (no person's, or a later one) has no
+   such days and owes no struck line. Only the men a run SANS posting makes SANS are asked (sansRunFrom), from the day's
+   cache — the bell asks the same on every draw. */
+let BEFORE: { env: unknown; days: Map<string, string[]> } | null = null
+let BEFORE_WIRED = false
+export function wireSansBackBefore(): void {
+  if (BEFORE_WIRED) return
+  BEFORE_WIRED = true
+  onPipelineBegin(() => {
+    const days = new Map<string, string[]>()
+    try {
+      for (const pid of Object.keys(getState().postOuts)) if (sansRunFrom(pid)) days.set(pid, [...sansUnfiledDays(pid)])
+    } catch { /* no war loaded: no line to note */ }
+    BEFORE = { env: activeEnvelope(), days }
+  })
+}
+const sameDays = (a: readonly unknown[], b: readonly string[]): boolean => a.length === b.length && a.every((d, i) => d === b[i])
 /* WHAT THE PERMISSIONS CHECK ASKS OF SUCH A LINE (state/perms.ts, through sync.ts warLineCovered): owed only by that
-   take-back (above), to the man himself, on its date; its days as the writer gives them — a non-empty list of distinct
-   ISO dates in order, each on or after that date (the live line's days, sansUnfiledDays); and only where he had READ the
-   live line (his read record, as the restore's follow-ups ask it — sync.ts followUpsOwed's hasRead): its id as it stood
-   before this command, counting the struck lines he held then (sansUnfiledLines). One a man and posting a command is the
-   gate's own count (state/perms.ts `sansBacks`). */
+   take-back (above), to the man himself, on its date; its days a non-empty list of distinct ISO dates in order, each on
+   or after that date, and EXACTLY the days his live line named when the command began (BEFORE, above); and only where he
+   had READ the live line by his read record AS SAVED, never this device's copy in memory (the security re-read's SEC2-2):
+   the record as it stood before this command where the command changes it (its before-image), else the stored row
+   (state/noticeseen.ts hasReadSaved). Its id as it stood before this command, counting the struck lines he held then
+   (sansUnfiledLines). One a man and posting a command is the gate's own count (state/perms.ts `sansBacks`). */
 const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/
 export function sansBackCovered(o: { who: string; day: string; o: string }, n: { id?: unknown; to?: unknown; name?: unknown; day?: unknown; what?: unknown },
   changes: ReadonlyArray<{ collection: string; id: string; op: string; before?: unknown }> = []): boolean {
@@ -158,9 +182,12 @@ export function sansBackCovered(o: { who: string; day: string; o: string }, n: {
     const d = days[i]
     if (typeof d !== 'string' || !ISO_DAY.test(d) || d < o.day || (i > 0 && d <= (days[i - 1] as string))) return false
   }
+  const said = BEFORE && BEFORE.env != null && BEFORE.env === activeEnvelope() ? BEFORE.days.get(o.who) : undefined
+  if (!said || !sameDays(days, said)) return false
   /* the struck lines he held before this command: every stored one of his for this date but those it newly puts */
   const putNow = new Set(changes.filter(c => c.collection === 'notices' && c.op === 'put' && c.before == null).map(c => String(c.id)))
   const backs = NOTICES.filter(x => x.to === o.who && x.day === o.day && (x.what || [])[0]?.k === 'sansback' && !putNow.has(String(x.id))).length
   const at = new Date(+o.day.slice(0, 4), +o.day.slice(5, 7) - 1, +o.day.slice(8, 10)).getTime()
-  return hasRead(o.who, { id: `sansdue:${o.who}:${o.day}${backs ? `:${backs}` : ''}`, at })
+  const rec = changes.find(c => c.collection === 'settings' && c.id === NOTICESEEN_PFX + o.who)
+  return hasReadSaved(o.who, { id: `sansdue:${o.who}:${o.day}${backs ? `:${backs}` : ''}`, at }, rec ? { before: rec.before ?? null } : undefined)
 }

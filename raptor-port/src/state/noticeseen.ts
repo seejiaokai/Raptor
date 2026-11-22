@@ -72,6 +72,15 @@ export function hasRead(pid: string, n: Pick<Notice, 'id' | 'at'>): boolean {
   const s = SEEN[pid]
   return !!s && (n.at <= s.upto || s.ids.includes(n.id))
 }
+/** HAS HE READ IT, BY HIS READ RECORD AS SAVED — never this device's copy in memory (chat 147's security re-read, SEC2-2):
+ *  the permissions check's question of a struck SANS-days line (leavewar/sansunfiled.ts sansBackCovered). The copy in
+ *  memory says what this device was told; the saved row says what he did. `prior`, where the command running changes
+ *  his record, is that record as it stood before the command (its change's before-image) — a command writing his record
+ *  cannot vouch for itself; otherwise the stored row. */
+export function hasReadSaved(pid: string, n: Pick<Notice, 'id' | 'at'>, prior?: { before: unknown }): boolean {
+  const s = readSeen(prior ? prior.before : store.get(NOTICESEEN_PFX + pid, null))
+  return !!s && (n.at <= s.upto || s.ids.includes(n.id))
+}
 
 function write(pid: string, next: Seen): boolean {
   const res = commitSettingsIntent('notices.seen', { owner: pid }, () => { store.set(NOTICESEEN_PFX + pid, next) })

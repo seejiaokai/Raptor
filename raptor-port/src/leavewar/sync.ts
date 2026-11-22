@@ -173,7 +173,7 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncBeforeEnlist, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { sansUnfiledLines, sansLineBack, sansBackCovered, sansBackOwed } from './sansunfiled'
+import { sansUnfiledLines, sansLineBack, sansBackCovered, sansBackOwed, wireSansBackBefore } from './sansunfiled'
 import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
@@ -2075,8 +2075,16 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
        (Fable's round-4b read F1, 22 Nov 26): the archive closes a stint only for a man the war shows or one with a past
        on it, so a hand-ticked SANS man with "+ SANS" off and nothing filed has no row — and was dropped from EVERY day,
        a published day he was named on reading pending, the display switch at the archive deciding who is owed OIL
-       (D327, D25). Before his archive he falls through as any man with no row; no archive date kept → out everywhere. */
-    if (p.deleted ? iso >= String(p.deletedFrom || '') : (p.archived && !lwById.get(id) && (!p.archivedOn || iso >= String(p.archivedOn)))) continue
+       (D327, D25). Before his archive he falls through as any man with no row; no archive date kept → out everywhere.
+       …AND A DELETE AFTER THAT ARCHIVE KEEPS ITS DATE (Astra's re-read of chat 147, R2): the delete read only its own
+       cutoff, so a no-row man archived on Friday and deleted on Monday, never restored, came back into Saturday's crowd —
+       the delete read as his return (D323: archived is "posted out from today"; D327: the gap stays a gap). A deleted man
+       with no war row is out from his archive's date as well (the delete keeps `archivedOn`; a Restore clears it, so one
+       still there is the archive the delete found him in); a deleted man never archived first has no such date and is
+       read by his cutoff alone, as before. */
+    const noRowArchive = p.archived && !lwById.get(id)
+    if (p.deleted ? (iso >= String(p.deletedFrom || '') || (noRowArchive && !!p.archivedOn && iso >= String(p.archivedOn)))
+      : (noRowArchive && (!p.archivedOn || iso >= String(p.archivedOn)))) continue
     /* SANS are another squadron's men until they are on our programme for the
        day. With no day blob to read (a caller that cannot supply one) they stay
        out, which is the pre-[ALL-AVAIL-REDEF] answer — fail closed. */
@@ -4119,6 +4127,8 @@ export function wireLeaveWarSync(): void {
   /* a fresh wiring (a boot) tries every refused posting again (the fix read, 18 Nov 26 — Opus 1) */
   PO_REFUSED.clear(); PO_RETRIED.clear()
   setSansAhead(sansAheadOf)
+  /* the days each man's SANS-days line named when a command began — what its struck line must keep (sansunfiled.ts) */
+  wireSansBackBefore()
   /* [POST-OUT-OUTCOMES]: the posting's one line names his account only when he has one — the answer installed here, at
      the seam (the war never reads Raptor's accounts itself) */
   setAccountLookup(id => !!accountOfPid(id))
