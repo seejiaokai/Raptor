@@ -159,7 +159,11 @@ export function withDaySnap(di:any,ver:any,fn:any){
    needing to know.
    `fn(false)`: the version no longer resolves (unpublished, undone). It runs in
    the LIVE world, so the caller must treat it as GONE and read nothing. */
-export function withChipWorld<T>(di:any,ver:any,ofw:any,fn:(ok:boolean)=>T):T{
+export function withChipWorld<T>(di:any,ver:any,ofw:any,fn0:(ok:boolean)=>T):T{
+  /* …AND THE DAY ITSELF (D2313): the window's pucks show each man as he was ON this day — a man since made SANS stands
+     in an earlier day's crowd as the regular he was, so his puck there wears no SANS line (engine/faceattrs.ts
+     withDrawDay; an issued version's own kept answer still wins inside it) */
+  const fn=(ok:boolean):T=>withDrawDay(dayIso(String(CURWEEK),+di||0),()=>fn0(ok));
   /* no version, official world: the view page's draft day (Fable F6) */
   if(!ver)return ofw?withOfficialWarn(()=>fn(true)):fn(true)
   if(!ofw)return withDaySnap(di,ver,(ok:any)=>fn(!!ok))

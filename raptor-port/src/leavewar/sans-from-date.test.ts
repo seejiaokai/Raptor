@@ -23,7 +23,7 @@ import { commitSetDayApproved, commitPublishALDay } from '../state/sched-commit'
 import { afterSchedMutate } from '../state/view'
 import { updatePersonField } from '../state/quals-write'
 import { paletteHTML, sansAvailHTML } from '../ui/palette-html'
-import { dayHTML } from '../ui/html'
+import { dayHTML, personPuckHTML, withChipWorld } from '../ui/html'
 import { getState, initStore as lwInitStore, setPeople, setDayEvent } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
@@ -96,6 +96,16 @@ describe('D2313 (e) — the crew list follows the posting\'s date', () => {
     expect(mon.some(c => /\bsan\b/.test(c)), 'Mon 13 Jul: an ordinary WSO puck').toBe(false)
     expect(thu.length, 'Thursday draws him').toBeGreaterThan(0)
     expect(thu.every(c => /\bsan\b/.test(c)), 'Thu 16 Jul: the purple SANS line').toBe(true)
+  })
+})
+
+describe('D2313 (e) — the ALL AVAIL window draws each man as he was on its day', () => {
+  it('his puck in the window of a day before his SANS date wears no SANS line; on a day from it, it does', () => {
+    expect(postOut('rocky', WED_ISO, 'sans')).toBe(true)
+    raptorNotify()
+    const inWindow = (di: number) => withChipWorld(di, null, false, () => personPuckHTML(di, 'rocky')) as string
+    expect(/class="puck[^"]*\bsan\b/.test(inWindow(MON)), 'Mon 13 Jul: an ordinary WSO puck').toBe(false)
+    expect(/class="puck[^"]*\bsan\b/.test(inWindow(THU)), 'Thu 16 Jul: the purple SANS line').toBe(true)
   })
 })
 
