@@ -5,7 +5,7 @@ import { chromium, webkit } from '@playwright/test'
 import { spawn, execSync } from 'node:child_process'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 
-export const PORT = 4477
+export const PORT = +(process.env.MQ_PORT || 4477)   // the re-walk of 23 Nov 26 serves on its own free port
 export const URL_ = `http://localhost:${PORT}/`
 export const OUT = process.env.MQ_OUT || 'n149-walk-out'
 mkdirSync(OUT, { recursive: true })
