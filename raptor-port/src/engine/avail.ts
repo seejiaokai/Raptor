@@ -349,7 +349,7 @@ export function slotRules(key:any){
    words name that date and where it is filed; from the date on, the usual words. `iso`: the day looked at. */
 export function sansNoneWhy(p:any,iso:any):string{
   const f=sansAheadFrom(p,iso);
-  return f?`SANS from ${isoDayWords(f)} — no availability filed. It can be filed from that day on the SANS calendar.`:'SANS — no availability filed for today';}
+  return f?`SANS from ${isoDayWords(f)}: no availability filed. It can be filed from that day on the Inputs page's SANS tab.`:'SANS — no availability filed for today';}
 const SANS_KEY:any={fly:'f',oft:'o',amt:'a'};
 export const SANS_LABEL:any={fly:'Fly',oft:'OFT',amt:'AMT'};
 /* `iso`: the day being asked about — only a man who is SANS ON THAT DAY is judged (owner D2313, 22 Nov 26: a day before

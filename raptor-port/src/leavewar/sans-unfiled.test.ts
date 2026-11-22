@@ -20,14 +20,15 @@ import { stashClear } from '../engine/weekstash'
 import { slotBar } from '../engine/avail'
 import { afterSchedMutate, CALMONTH, INPMODE, SANSDAYASK, clearSansDayAsk } from '../state/view'
 import { sansAvailHTML } from '../ui/palette-html'
-import { noticesFor, noticeWords, type Notice } from '../state/notices'
+import { NOTICES, noticesFor, noticeWords, type Notice } from '../state/notices'
+import { markAllNoticesRead, unreadFor } from '../state/noticeseen'
 import { me } from '../state/perms'
 import { CURPAGE } from '../state/view'
 import { openNotice } from '../ui/topstate'
 import { initStore as lwInitStore, setPeople } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
-import { availableFor, postOut, runPoOutcomes, wireLeaveWarSync } from './sync'
+import { availableFor, postOut, runPoOutcomes, undoPostOut, wireLeaveWarSync } from './sync'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = '', DAYS0 = '', INPUTS0 = ''
@@ -35,7 +36,9 @@ const P = (id: string): any => (PEOPLE as any)[id]
 const signInAs = (name: string, pass = 'x') => { resetSession(sessionFor(signIn(name, pass))); raptorNotify() }
 const FRI = 4, SAT = 5, FRI_ISO = '2026-07-17', SAT_ISO = '2026-07-18'
 const at = (y: number, m: number, d: number) => vi.setSystemTime(new Date(y, m - 1, d, 9, 0, 0))
-const LOOK = 'SANS from Fri 17 Jul — no availability filed. It can be filed from that day on the SANS calendar.'
+/* (the writing guide §1b: a colon, not a dash, joins the opening name and its fact; the place named as the screen names it —
+   the Inputs page's tab reads "SANS"; the coordinator's correction of 23 Nov 26) */
+const LOOK = 'SANS from Fri 17 Jul: no availability filed. It can be filed from that day on the Inputs page\'s SANS tab.'
 const USUAL = 'SANS — no availability filed for today'
 /* his line in a day's crew list, the SANS section, nothing armed — the reason he is struck with (the puck's data-why) */
 const whyIn = (di: number, id: string): string | null => {
@@ -43,13 +46,13 @@ const whyIn = (di: number, id: string): string | null => {
   const m = new RegExp(`<span class="rpuck[^"]*"[^>]*data-person="${id}"([^>]*)>`).exec(html)
   if (!m) return null
   const w = /data-why="([^"]*)"/.exec(m[1]!)
-  return w ? w[1]!.replace(/&amp;/g, '&') : ''
+  return w ? w[1]!.replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&') : ''
 }
 /* the first WSO seat of a day's first flight, the place an armed seat asks the SANS gate about — the demo's Friday flies
    nothing, so it is given Thursday's first wave first */
 const wsoSeat = (di: number): string => {
   const d: any = DAYS[di]
-  if (!(d.waves || []).length) { d.waves = [JSON.parse(JSON.stringify((DAYS[3] as any).waves[0]))]; afterSchedMutate() }
+  if (!(d.waves || []).length) { d.waves = [structuredClone((DAYS[3] as any).waves[0])]; afterSchedMutate() }
   return `${di}.0.0.0.w`
 }
 /* a briefing on a day naming him — "planned with us" (D2329) */
@@ -72,6 +75,7 @@ beforeEach(() => {
   Object.assign(PEOPLE, p0); indexCallsigns()
   DAYS.length = 0; JSON.parse(DAYS0).forEach((d: any) => DAYS.push(d))
   INPUTS.length = 0; JSON.parse(INPUTS0).forEach((i: any) => INPUTS.push(i))
+  NOTICES.length = 0
   SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
   SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}
   SCHED.signBind = {}; SCHED.drafts = {}; SCHED.curDraft = {}; SCHED.retired = {}; SCHED.correcting = {}
@@ -180,5 +184,51 @@ describe('D2338 (2) — on the posting\'s date his bell lists the planned days w
     expect(INPMODE).toBe('sans')
     expect(CALMONTH).toEqual({ y: 2026, m: 7 })
     expect(SANSDAYASK).toBe(SAT_ISO)
+  })
+})
+
+/* TAKEN BACK WITH THE POSTING THAT MADE IT (his standing rule — D1693, D1699, D1710; the "off the manpower" line, also worked
+   out, the same — D1696): an unread line simply goes; a read one keeps its words struck through, "taken back · <who>",
+   unread; the presser is told nothing. Filing, or a day leaving, is no take-back: the line only shrinks or goes. */
+describe('D2338 (2) — the bell line taken back with its posting', () => {
+  /* Hex reads his bell ("Mark all read", his own command), then Saber is signed in again */
+  const hexReads = () => { signInAs('hex'); expect(markAllNoticesRead()).toBe(true); signInAs('ad', 'a') }
+  const ran = () => { plan(SAT, 'rocky'); expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify(); at(2026, 7, 17); runPoOutcomes(); raptorNotify(); expect(sansLines('rocky').length).toBe(1) }
+  /* (a kind not built yet, so read as a plain string) */
+  const backOf = (pid: string) => noticesFor(pid).filter(n => String((n.what || [])[0]?.k) === 'sansback').map(n => noticeWords(n))
+  const STRUCK = { name: 'Your SANS availability', day: 'Sat 18 Jul', struck: 'Planned, no availability filed', what: 'taken back', who: 'Saber' }
+
+  it('unread, then "Undo post out": the line simply goes', () => {
+    ran()
+    expect(undoPostOut('rocky')).toBe(true); raptorNotify()
+    expect(sansLines('rocky')).toEqual([])
+    expect(backOf('rocky')).toEqual([])
+  })
+
+  /* NOT BUILT YET — the next two fail today, so it.fails keeps the proof; once built they go red, and it.fails goes back to
+     it. A read line's "taken back" is a STORED line, and the posting's take-back writes it through one mechanism
+     (leavewar/sync.ts postingLinesOf, retractPostingLines; the gate's warLinesOwed and state/perms.ts WAR_LINE_KINDS) — more of
+     sync.ts and the permissions gate than this night's agreed limit allows (the builder's report of 23 Nov 26). Today a read
+     line simply goes with the posting, as an unread one does. */
+  it.fails('read, then "Undo post out": struck through, "taken back · Saber", unread', () => {
+    ran(); hexReads()
+    expect(undoPostOut('rocky')).toBe(true); raptorNotify()
+    expect(sansLines('rocky')).toEqual([])
+    expect(backOf('rocky')).toEqual([STRUCK])
+    expect(unreadFor('rocky'), 'unread: his bell lights').toBe(1)
+  })
+
+  it.fails('read, then the posting moved later: struck through the same way', () => {
+    ran(); hexReads()
+    expect(postOut('rocky', '2026-07-24', 'sans')).toBe(true); raptorNotify()
+    expect(sansLines('rocky')).toEqual([])
+    expect(backOf('rocky')).toEqual([STRUCK])
+  })
+
+  it('read, then every day filed: the line goes, never struck', () => {
+    ran(); hexReads()
+    file((DAYS[SAT] as any).dt, 'rocky')
+    expect(sansLines('rocky')).toEqual([])
+    expect(backOf('rocky')).toEqual([])
   })
 })
