@@ -141,6 +141,7 @@ import {
   stintClosed,
   stintOpened,
   personCut,
+  arrivalKept,
   restoreDateProblem,
   keepsWindow,
   windowFor,
@@ -2127,13 +2128,23 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
        date tell the two gaps apart: the archive ENDED the posting's SANS stretch (sansStop), and that stretch began the
        day after the stint's written end. On a day inside such a stretch he was ours. A real gap has no SANS day in it,
        and a tick an admin made on the Quals page is never ended by an archive, so neither is read this way. */
+    /* …AND WHILE HE IS STILL ARCHIVED THE SAME STRETCH FOLLOWS HIS CURRENT STINT'S WRITTEN END, AND ONLY A POSTING'S STRETCH
+       COUNTS (Astra's read of the D2328 change, 22 Nov 26, findings 1 and 3 — d2328-astra.test.ts). The archive's END used
+       to be replaced by the archive's own date for any SANS man named that day; that also filled a real gap — a man posted
+       Overseas, restored to return later, ticked SANS by hand and archived again before his return counted on the days he
+       was away (D320, D323). And a stretch a hand tick made, begun the day his Overseas posting ran and later taken off,
+       has the same shape as a posting's. So the one rule now: a day inside an ended SANS stretch that a SANS POSTING made
+       (marked 'po' by engine/people.ts sansStop when his archive ended it), begun the day after a stint's written end —
+       the current one's or an earlier one's — is a day he flew with us. */
     const flewAsSans = (): boolean => {
-      if (!sansWithUs || !lw || !lw.past || !lw.past.length) return false
+      if (!sansWithUs || !lw) return false
       const was: unknown[] = Array.isArray(p.sanWas) ? p.sanWas : []
-      const st = was.find(s => Array.isArray(s) && iso >= String(s[0] || '') && iso < String(s[1] || '')) as string[] | undefined
-      return !!st && lw.past.some(x => x.to != null && addDays(x.to, 1) === String(st[0]))
+      const st = was.find(s => Array.isArray(s) && s[2] === 'po' && iso >= String(s[0] || '') && iso < String(s[1] || '')) as string[] | undefined
+      if (!st) return false
+      const ends = [lw.to, ...(lw.past || []).map(x => x.to)]
+      return ends.some(t => t != null && addDays(t, 1) === String(st[0]))
     }
-    const ours = !lw || inSquadron(sansWithUs && p.archived ? { ...lw, to: addDays(String(p.archivedOn), -1) } : lw, iso) || flewAsSans()
+    const ours = !lw || inSquadron(lw, iso) || flewAsSans()
     if (!ours) continue
     if (keptOut.has(id)) continue
     if (engaged && personBusy(day, id).some((w: [number, number]) => w[0] < win[1] && win[0] < w[1])) continue
@@ -3344,7 +3355,8 @@ function deleteOnForeign(txn: Txn, fw: ForeignWar, id: string, cutoff: string, f
   const person = foreignPerson(fw.post(id), fw.unit, id, frozen)
   if (!person || (!foreignShows(fw, id, person) && !pastOnForeign(fw, id, cutoff))) return
   const next = personCut(person, cutoff)
-  fw.setPost(id, next && keepsWindow(next) ? next : null)
+  /* a man who never arrived keeps his post-in date there too (store.ts arrivalKept — Astra's read of D2328, finding 2) */
+  fw.setPost(id, next ? (keepsWindow(next) ? next : null) : arrivalKept(person))
 }
 /* a hidden man's row is kept only when he has a past there: a war record before the cutoff, or an input (leave,
    medical, course…) that starts before it — the war derives his leave from those. One body for the delete and
@@ -3475,7 +3487,7 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
       body.archived = false
       delete body.archivedBy; delete body.archivedOn; delete body.archivedWho
       /* the posting undone: its SANS never was; "he's back" with a date: SANS until today, the days he was SANS kept (D2313) */
-      if (body.sanBy === 'po') { if (postIn === undefined) sansErase(body); else sansStop(body, effectiveToday()); delete body.sanBy }
+      if (body.sanBy === 'po') { if (postIn === undefined) sansErase(body); else sansStop(body, effectiveToday(), true); delete body.sanBy }
       if (postIn === undefined) enableAfterPosting(id)
       else {
         /* the war's picture of him when it holds no row (archived with no stint closed — his post-in was still to come),
@@ -3719,7 +3731,7 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
       body.archivedOn = today                                           // D329: how and when — who, by his person id
       if (me() != null) body.archivedWho = me() as string; else delete body.archivedWho
       delete body.back
-      if (body.sanBy === 'po') { sansStop(body, today); delete body.sanBy }   // SANS until his archive; the days he was SANS kept (D2313)
+      if (body.sanBy === 'po') { sansStop(body, today, true); delete body.sanBy }   // SANS until his archive; the days he was SANS kept (D2313), marked a posting's
       if (fw) {
         /* store.ts closeStintOnArchive's rules, its pure half, on his own squadron's stored window */
         if (fperson && !fperson.gone && fkeep) {

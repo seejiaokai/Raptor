@@ -2214,7 +2214,13 @@ export function forgetPersonFrom(id: string, iso: string, frozen: Person | null 
     : back ? [...state.people, back] : state.people
   const kept = people.some(p => p.id === id)
   const { [id]: _dropped, ...rest } = state.postOuts
-  const postOuts = kept ? windowRecord(people, id) : had || hadPast ? rest : state.postOuts
+  /* …but the date he was to arrive is kept (Astra's read of D2328, 22 Nov 26, finding 2): with his record gone the ALL
+     AVAIL crowd found no post-in date for him and counted him on every day before his delete — days he was never ours
+     (D2328, D308). The kept record is no row on the war and nothing to run: his post-in date, no end, `gone`. */
+  const arrival = !kept && (had || hadPast)
+    ? arrivalKept(had ? dated(state.people.find(p => p.id === id)!) : withStored(frozen as Person))
+    : null
+  const postOuts = kept ? windowRecord(people, id) : arrival ? { ...rest, [id]: arrival } : had || hadPast ? rest : state.postOuts
   /* HIS OIL AWARDS FROM THE CUTOFF GO TOO — what the delete took when they were war records ([OIL-AWARD-IS-A-GRANT],
      the award plan §2.6a); his past awards stay (D299), corrections and other pools are untouched, as before. An
      archive takes nothing (D323). */
@@ -2238,6 +2244,16 @@ export function personCut(p: Person, iso: string): Person | null {
     return { ...p, from: prev.from, to: prev.to, past: past.length ? past : undefined, gone: true }
   }
   return { ...p, to: p.to !== null && p.to < last ? p.to : last, past: past.length ? past : undefined, gone: true }
+}
+
+/** WHAT A DELETE KEEPS OF A MAN WHO NEVER ARRIVED (`personCut` above gave null): the date he was to be posted in, so the
+ *  days before it stay days he was not ours (Astra's read of D2328, finding 2) — no end, no earlier stint, no posting
+ *  outcome to run, `gone`; null where he has no post-in date to keep. One body for the war loaded (`forgetPersonFrom`)
+ *  and another squadron's stored war (sync.ts deleteOnForeign). */
+export function arrivalKept(p: Person): Person | null {
+  if (p.from === null) return null
+  const { past: _p, poOutcome: _o, poDone: _d, poArchive: _a, ...rest } = stripHome(p)
+  return { ...rest, to: null, gone: true }
 }
 
 /**

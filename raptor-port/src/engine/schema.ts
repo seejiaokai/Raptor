@@ -131,8 +131,10 @@ export type Person = {
    *  a DAY asks `sansOn(id, iso)`, never `san` alone (D2313). */
   sanFrom?: string
   /** Each earlier stretch of SANS that has ended, `[first day, the day it ended]` — the end day is not a SANS day; a
-   *  first day of '' is "from always" — state (`engine/people.ts sansStop`: a tick taken off by hand, an archive). */
-  sanWas?: [string, string][]
+   *  first day of '' is "from always" — state (`engine/people.ts sansStop`: a tick taken off by hand, an archive). A
+   *  stretch a SANS POSTING made, ended by his archive, carries a third part, 'po' (Astra's read of D2328, 22 Nov 26):
+   *  the ALL AVAIL crowd reads it as days he flew with us though his stint had closed (leavewar/sync.ts availableFor). */
+  sanWas?: ([string, string] | [string, string, 'po'])[]
   /** The squadron his Scheduler tick was given in, and the day (ISO) — state (`state/quals-write.ts` writes them with
    *  the tick; `state/units-model.ts schedTickHolds` reads them: the tick counts there until the start of his move day,
    *  D2160). Absent on a ticked man: the squadron of his first home row, from always. */

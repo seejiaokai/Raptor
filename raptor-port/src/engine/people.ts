@@ -250,9 +250,12 @@ export function sansStart(p:any,from:string,apart?:boolean):void{
   sansQ(p);}
 /* SANS ENDS ON `day` — he is a regular from that day on, and SANS on every day he was (D2313 (a): a tick taken off by
    hand counts from the day it is made). A stretch that began that same day, or later, was never a SANS day: nothing kept. */
-export function sansStop(p:any,day:string):void{
+/* `po` — the SANS a POSTING made, ended (by his archive, or "he's back" with a date): the stretch keeps a third part, 'po', so
+   the ALL AVAIL crowd can tell the days he flew with us after his stint closed from a tick an admin made by hand (Astra's
+   read of D2328, 22 Nov 26 — leavewar/sync.ts availableFor) */
+export function sansStop(p:any,day:string,po?:boolean):void{
   if(p.san){ const f=String(p.sanFrom||''), t=String(day||'');
-    if(t&&f<t)p.sanWas=(Array.isArray(p.sanWas)?p.sanWas:[]).concat([[f,t]]); }
+    if(t&&f<t)p.sanWas=(Array.isArray(p.sanWas)?p.sanWas:[]).concat([po?[f,t,'po']:[f,t]]); }
   p.san=false; delete p.sanFrom;
   sansQ(p);}
 /* THE SANS HE HOLDS NOW NEVER WAS — a posting taken back takes its SANS days with it (leavewar/sync.ts takeBack: "Undo
