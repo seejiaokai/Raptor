@@ -669,7 +669,28 @@ async function b9(sz) {
   await ctx.close()
 }
 
-const ALL = { b1, b2, b3, b4, b5, b6, b7, b8, b9 }
+// ---------- b10 · his D2298: "+ New place…" picked in the new squadron's Place list — its name and time zone in the form ----------
+async function b10(sz) {
+  const { ctx, page } = await world(sz)
+  await toAdmin(page)
+  await squadrons(page, { newForm: {
+    fields: [['Squadron number', 'in', '150', null, ''], ['Place', 'sel', '', ['+ New place…', 'Home base']],
+      ['New place\'s name', 'in', 'Northern base', null, ''], ['Time zone', 'sel', '', ['Darwin · GMT+9:30', 'Perth · GMT+8', 'Brisbane · GMT+10']],
+      ['First admin', 'sel', '', ['Hunter · 142', 'Kestrel · 149', 'Osprey · 149']]],
+    note: 'Saved together: 150 and its new place, Northern base. Hunter gets Plan of 150: full access to it, so 150 never starts without an admin.' } })
+  await page.evaluate(() => {
+    const mq = window.__mq, ed = window.__mqSq.newForm.ed
+    const fs = [...ed.querySelectorAll('.mfield')].filter(f => /New place's name|Time zone/.test(f.querySelector('label').textContent))
+    mq.markNew(fs[0].parentElement, 'in')
+  })
+  await page.waitForTimeout(250)
+  const f = `b1-10-${sz}.png`
+  await shot(page, f, await adminClip(page, sz))
+  rec(f, 'b1-10', sz, `The same row with "+ New place…" picked from its Place list (his "yes"): the place's name and its time zone open right there in the form, no going somewhere else first. Save makes 150 and its new place together; the place then shows on the Places list for every squadron.`)
+  await ctx.close()
+}
+
+const ALL = { b1, b2, b3, b4, b5, b6, b7, b8, b9, b10 }
 try {
   if (process.env.MQ_PROBE === '2') { await probe2(process.env.MQ_SZ || 'd') }
   else if (process.env.MQ_PROBE) { await probe(process.env.MQ_SZ || 'd') }

@@ -707,6 +707,116 @@ async function n1(sz) {
     await ctx.close()
   }
 }
+// nf — his D2297 (22 Nov 26): one filter button beside the search; a tap opens tick boxes in groups (Seat, CAT, Role,
+// and for a master admin Squadron); any tick of a group, groups combined; the button lit with its count; a line over the
+// list "Showing N of 61 · Clear". The tick boxes in the app's own filter-chip look (.fchip / .on), the panel over the list.
+async function filterBtn(page, { ticks = {}, open = false, master = false }) {
+  return page.evaluate(({ ticks, open, master, SQ149 }) => {
+    const mq = window.__mq, head = document.querySelector('#page-admin .od-head'), list = document.querySelector('#accList')
+    const find = head.querySelector('.od-find'), phone = innerWidth < 600
+    const rows = [...list.querySelectorAll(':scope > .acc-row')]
+    const nm = r => (r.querySelector('.acc-name')?.textContent || '').trim()
+    const is149 = r => SQ149.includes(nm(r))
+    const both = master && (ticks.Squadron || []).length === 2
+    if (!both) for (const r of rows) if (is149(r)) mq.hide(r)
+    const n = Object.entries(ticks).filter(([k, v]) => v.length && !(k === 'Squadron' && v.length === 2)).reduce((a, [, v]) => a + v.length, 0) + (both ? 1 : 0)
+    // the button: the app's own .abtn, a line funnel in the search box's glyph stroke, lit (.primary) when a filter is set
+    const b = mq.el('button', 'abtn' + (n ? ' primary' : '')); b.type = 'button'
+    b.innerHTML = '<svg class="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;vertical-align:-3px;margin-right:6px"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>'
+    b.appendChild(document.createTextNode(n ? 'Filter · ' + n : 'Filter')); b.setAttribute('data-mine', '1')
+    b.style.whiteSpace = 'nowrap'; b.style.flex = '0 0 auto'; b.style.display = 'inline-flex'; b.style.alignItems = 'center'
+    b.querySelector('svg').style.verticalAlign = '0'
+    const wrapF = mq.el('div'); wrapF.style.cssText = 'display:flex;gap:8px;align-items:center;position:relative;' + (phone ? 'width:100%' : '')
+    find.before(wrapF); wrapF.appendChild(find); wrapF.appendChild(b); if (phone) find.style.flex = '1 1 auto'
+    head.querySelector('h4.adm-sub').textContent = both ? 'People · 71' : 'People · 61'
+    // the rows a tick set keeps (a group's ticks: any; groups: all); Saber is the demo's master admin, his own role
+    const seatOf = r => { const s = r.querySelector('.acc-sub')?.textContent || ''; return /Personnel/.test(s) ? 'Personnel' : /WSO/.test(s) ? 'WSOs' : 'Pilots' }
+    const roleOf = r => nm(r) === 'Saber' ? 'Master admin' : /admin/i.test(r.querySelector('.od-rc')?.textContent || '') ? 'Admin' : 'Member'
+    const catOf = r => ((r.querySelector('.acc-sub')?.textContent || '').match(/CAT (\w+)/) || [])[1] || ''
+    let shown = 0
+    for (const r of rows) {
+      if (r.style.display === 'none') continue
+      const ok = (!ticks.Seat?.length || ticks.Seat.includes(seatOf(r))) && (!ticks.Role?.length || ticks.Role.includes(roleOf(r))) && (!ticks.CAT?.length || ticks.CAT.includes(catOf(r)))
+      if (!ok) mq.hide(r); else shown++
+    }
+    if (both) {
+      const h = head.querySelector('h4.adm-sub')
+      const h142 = mq.strip(h.cloneNode(true)); h142.textContent = '142 · 61'; h142.style.margin = '6px 0 4px'; list.before(h142)
+      const l2 = mq.strip(list.cloneNode(false)), h149 = mq.strip(h.cloneNode(true)); h149.textContent = '149 · 10'; h149.style.margin = '14px 0 4px'
+      list.after(h149); h149.after(l2)
+      for (const r of rows) if (is149(r) && r.style.display === 'none') { const c = mq.strip(r.cloneNode(true)); c.style.removeProperty('display'); c.removeAttribute('data-mqhid'); l2.appendChild(c); const cn = c.querySelector('.acc-name'); if (cn) cn.appendChild(mq.badge('149')) }
+    }
+    let line = null
+    if (n) {
+      line = mq.el('p', 'adm-note'); line.style.margin = '2px 0 8px'
+      line.appendChild(document.createTextNode(both ? 'Showing both squadrons, grouped · ' : `Showing ${shown} of 61 · `))
+      const c = mq.el('a', '', 'Clear'); c.href = '#'; c.style.color = 'var(--accent, #3cc0e6)'; line.appendChild(c)
+      head.after(line)
+    }
+    let panel = null
+    if (open) {
+      panel = mq.el('div', 'mq-fpanel')
+      panel.style.cssText = `position:absolute;top:calc(100% + 6px);right:0;z-index:50;${phone ? 'left:0;' : 'width:380px;'}background:var(--card, #1b2129);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:12px 14px;display:grid;gap:10px;box-shadow:0 12px 32px rgba(0,0,0,.45)`
+      const groups = [['Seat', ['Pilots', 'WSOs', 'Personnel']], ['CAT', ['IP', 'IW', 'A', 'B', 'C', 'OCU']], ['Role', ['Member', 'Admin', 'Admin + Plan of 149', 'Master admin']]]
+      if (master) groups.push(['Squadron', ['142', '149']])
+      for (const [g, opts] of groups) {
+        const box = mq.el('div'); box.style.cssText = 'display:grid;gap:6px'
+        box.appendChild(mq.el('span', 'mfield-lbl', g))
+        const r = mq.el('div'); r.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px'
+        for (const o of opts) { const on = (ticks[g] || []).includes(o); const c = mq.el('button', 'fchip' + (on ? ' on' : ''), (on ? '✓ ' : '') + o); c.type = 'button'; c.setAttribute('aria-pressed', String(on)); r.appendChild(c) }
+        box.appendChild(r); panel.appendChild(box)
+      }
+      const ft = mq.el('div'); ft.style.cssText = 'display:flex;justify-content:flex-end'
+      const cl = mq.el('button', 'abtn', 'Clear all'); cl.type = 'button'; ft.appendChild(cl); panel.appendChild(ft)
+      wrapF.appendChild(panel)
+    }
+    mq.markNew(b)
+    if (panel) mq.markNew(panel, true)
+    if (line) mq.markNew(line)
+    window.scrollTo(0, 0)
+    return { n, shown }
+  }, { ticks, open, master, SQ149 })
+}
+async function nf(sz) {
+  const frame = sz === 'd' ? ['#page-admin .od-head', '#page-admin .mq-fpanel', '#page-admin .adm-note', '#accList > .acc-row:not([data-mqhid])'] : null
+  // nfa — Hunter, 142's admin: the button beside the search, nothing filtered
+  {
+    const { ctx, page } = await session(sz, 'ad2', 'a2')
+    await toUsers(page)
+    await filterBtn(page, {})
+    const f = `nfa-${sz}.png`; await shot(page, f, sz === 'd' ? ['#page-admin .od-head', '#accList > .acc-row:nth-child(-n+3)'] : null, 24)
+    rec(f, 'nf', sz, 'drawn', 'Admin → Users as Hunter, 142\'s admin: 142\'s 61 people. New: one "Filter" button beside the search, nothing filtered.')
+    await ctx.close()
+  }
+  // nfb — the same, the panel open, Pilots and Admin ticked: the button lit "Filter · 2", the line over the list
+  {
+    const { ctx, page } = await session(sz, 'ad2', 'a2')
+    await toUsers(page)
+    const m = await filterBtn(page, { ticks: { Seat: ['Pilots'], Role: ['Admin'] }, open: true })
+    const f = `nfb-${sz}.png`; await shot(page, f, frame, 24)
+    rec(f, 'nf', sz, 'drawn', `The panel open: Seat, CAT and Role, each a row of tick chips. Pilots and Admin ticked, so the button reads "Filter · 2" in blue and the line over the list "Showing ${m.shown} of 61 · Clear". Several ticks in one group mean any of them; groups combine.`)
+    await ctx.close()
+  }
+  // nfd — the panel closed again with the same two ticks: the lit button, the line, the rows it keeps
+  {
+    const { ctx, page } = await session(sz, 'ad2', 'a2')
+    await toUsers(page)
+    const m = await filterBtn(page, { ticks: { Seat: ['Pilots'], Role: ['Admin'] } })
+    const f = `nfd-${sz}.png`; await shot(page, f, frame, 24)
+    rec(f, 'nf', sz, 'drawn', `The panel closed with Pilots and Admin still ticked: "Filter · 2" stays blue, and the line "Showing ${m.shown} of 61 · Clear" sits over the list, so a short list never looks like missing people. "Clear" takes every tick off.`)
+    await ctx.close()
+  }
+  // nfc — Saber, the master admin: a fourth group, Squadron; 142 and 149 both ticked, the people grouped under each
+  {
+    const { ctx, page } = await session(sz, 'ad', 'a')
+    await toUsers(page)
+    await filterBtn(page, { ticks: { Squadron: ['142', '149'] }, open: true, master: true })
+    await page.evaluate(() => { const k = document.querySelector('.topbar .mark .k'); if (k && window.__mq.vis(k)) { const k2 = window.__mq.strip(k.cloneNode(true)); k2.textContent = '142 ▾'; window.__mq.hide(k); k.after(k2) } })
+    const f = `nfc-${sz}.png`; await shot(page, f, frame, 24)
+    rec(f, 'nf', sz, 'drawn', 'As Saber, the master admin: the panel has a fourth group, Squadron. 142 and 149 both ticked: everyone, grouped under each squadron (the 149 group further down, its people marked "149").')
+    await ctx.close()
+  }
+}
 async function n3(sz) {
   const { ctx, page } = await session(sz, 'ad2', 'a2')
   await openBell(page)
@@ -722,7 +832,7 @@ async function n3(sz) {
   await ctx.close()
 }
 
-const PIECES = { p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, n1, n3 }
+const PIECES = { p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, n1, n3, nf }
 for (const [k, fn] of Object.entries(PIECES)) {
   if (ONLY && !ONLY.includes(k)) continue
   for (const sz of ['d', 'p']) {
