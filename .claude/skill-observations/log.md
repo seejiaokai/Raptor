@@ -1245,3 +1245,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** Four "a forged line is refused" tests passed the gate (the command came back ok) although the check was correct. The hand-built commands pushed the forged line into memory but skipped the store's own end-of-command step, so the line never entered the command's list of changes — the check had nothing to judge, and the line sat unsaved in memory. A one-off probe that printed the command's changes showed it; with the end step added, every forgery was refused for the right reason.
 **Suggested improvement:** In the test-writing notes: a forgery test builds its command exactly as the real writer does (every store enlisted and every end step run), and asserts the refusal's own words, not only "not ok" — and when a refusal test unexpectedly passes, print the command's change list before doubting the check.
 **Principle:** A test of a guard only proves something if the forged input actually reaches the guard; check what the guard was handed before concluding it let something through.
+
+### Observation 1021: a "next load" test must load the same saved data, or it proves nothing
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** chat 147 — multi-squadron batch 1's second half, step F §7 item 7: the "posting could not run" line, tested across three loads of the app
+**Skill:** New skill candidate: gate-test-writing (or the project's test-writing notes, raptor-executor rules)
+**Type:** open-source
+**Phase/Area:** writing a test that simulates the app being opened again
+
+**Issue:** The test's "open the app again" helper gave the reload a brand-new empty store for one half of the data. The saved posting was gone after the reload, so "it runs on the next load once the cause is gone" failed for a reason that had nothing to do with the code. Only reading the failure ("it did not run at all") against the helper showed it.
+**Suggested improvement:** In the test-writing notes: a reload helper re-reads the SAME stored data the earlier steps wrote — keep each store in one variable made fresh per test, never inside the helper — and a "survives a reload" test asserts first that the saved record is still there after the reload.
+**Principle:** A simulated restart must keep what a real restart keeps; check the saved state survived before judging behaviour after it.

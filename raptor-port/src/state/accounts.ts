@@ -183,7 +183,10 @@ export const ACCOUNT_TYPES = ['access.request', 'access.decline', 'access.approv
   'account.access',
   /* batch 1's second half, plan §7 item 6 (§15 D11, §16 D11′): the app's own line on a man's bell on the day his move
      takes effect (state/acctlines.ts writeMoveLines) — the system actor; perms.ts acctLineViolation has its own section */
-  'account.told'] as const
+  'account.told',
+  /* …and §7 item 7 (§15 D10, §16 D10′): the app's own line that a posting could not run (leavewar/sync.ts
+     tellPostingFailed) — the system actor; perms.ts postingFailedViolation has its own section */
+  'posting.failed'] as const
 
 /* ---- the seeds (demo data, D56 — wiped with everything else before the database) ----
    `us` stays Ranger (bane), as "View as" left every member test before; `ad` is Saber

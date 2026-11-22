@@ -12,7 +12,7 @@ import { worldUnit, setCell, inOneWarCommand } from './state/store'
 import { postOut, runPoOutcomes, postingHeldNote, runForeignPostings } from './sync'
 import { unitsLoad, setGrant, setHome } from '../state/units'
 import { useMsqWorld, signInAs as msqSignIn, worlds } from '../test-support/msq-world'
-import { onCommit } from '../command'
+import { onCommit, setConflictChecker } from '../command'
 import { NOTICES } from '../state/notices'
 import { HOOKS } from '../engine/hooks'
 import { notify as raptorNotify } from '../state/store'
@@ -182,5 +182,31 @@ describe('A6 — the held posting’s amber line shows whichever war is loaded',
     signInAs('ad', 'a')
     expect(worldUnit()).toBe('u142')
     expect(postingHeldNote('kes9') ?? '(no line)', 'the amber line on the 149 man’s row').toMatch(/last admin/)
+  })
+})
+
+/* batch 1's second half, plan §7 item 7 (§15 D10, §16 D10′ — his D2214): a 149 posting that could not run, with 142's war
+   loaded — its save refused (the commit layer's test switch), tried once more on the next run, then given up: 149's
+   admins are told once, the line stamped 149; 142's plain admin is not; the amber line on his row; a later load, none */
+describe('§7 item 7 — another squadron’s posting that could not run', () => {
+  it('149’s admins told once, stamped 149, with 142 loaded; 142’s plain admin not; three loads, still once', () => {
+    post149('osp9', 'overseas')
+    setConflictChecker(ch => ch.some(c => c.collection === 'people' && String(c.id) === 'osp9') ? 'refused for the test' : null)
+    try {
+      day16()
+      signInAs('ad', 'a')
+      runForeignPostings()
+      expect((PEOPLE as any).osp9.archived, 'it did not run').toBeFalsy()
+      const fail = (to: string) => NOTICES.filter(n => !BEFORE.has(n.id) && n.to === to && (n.what || []).some((p: any) => p.k === 'pofail' && p.who === 'osp9'))
+      expect(fail('kes9').map(n => n.u), 'Kestrel, 149’s').toEqual(['u149'])
+      expect(fail('stiff').length, 'Saber, a master admin — the one audience').toBe(1)
+      expect(fail('prowler').length, 'Hunter, 142’s plain admin').toBe(0)
+      expect(postingHeldNote('osp9') ?? '', 'the amber line on his row').toMatch(/^This posting could not run\./)
+      signInAs('ad', 'a'); runForeignPostings(); runForeignPostings()
+      signInAs('ad9', 'a9'); runPoOutcomes()
+      expect(fail('kes9').length, 'still once').toBe(1)
+    } finally {
+      setConflictChecker(null)
+    }
   })
 })

@@ -95,6 +95,12 @@ export type NoticePart =
      it — the line's own words struck through, then "taken back · Saber" (his idea, D1699). One he had not read simply went;
      the admin who pressed Undo gets none. `who`, `o`, `acct` — as the line it takes back; `day` its posting date. */
   | { k: 'poback'; who: string; o: PoOutcome; acct?: true }
+  /* A POSTING OUT THE APP COULD NOT RUN (batch 1's second half, plan §7 item 7, §15 D10, §16 D10′ — his D2214: "Bell the
+     admins"): "Ranger · Mon 20 Jul / Posting out could not run. See his row on Admin → Users." — to each of his squadron's
+     admins once, by the app (no one's name), in a command of its own after the posting's was refused (leavewar/sync.ts
+     tellPostingFailed); its id fixed by the posting (a later load finds it and writes nothing); a tap opens his row.
+     `who`, `o` — the posting; `day` its date; stamped with its squadron (`u`), an admin line like the posting's own. */
+  | { k: 'pofail'; who: string; o: PoOutcome }
   /* HIS OWN ACCOUNT CHANGED (batch 1's second half, plan §7 item 6, §15 D5, D11, §16 D5′–D7′ — his D2251, D2309, D2319):
      a line to the man himself, about no input (`iid` is ''), `name` his callsign, `day` the day it took effect. `c` what
      changed; `u` the squadron it names (a role at home, a View or a Plan), `num` that squadron's number as it was written
@@ -695,7 +701,7 @@ export function noticeAboutHim(n: Pick<Notice, 'to' | 'iid' | 'what' | 'fu'>): b
   if (!p) return false
   if (p.k === 'lw') return true
   if (p.k === 'lwback') return p.d !== 'open' && p.d !== 'close'
-  if (p.k === 'po' || p.k === 'poback') return String(p.who) === String(n.to)
+  if (p.k === 'po' || p.k === 'poback' || p.k === 'pofail') return String(p.who) === String(n.to)
   return false
 }
 /** HAS THIS LINE LEFT ITS READER'S BELL? (his D2218, 19 Nov 26: "On the day a person moves squadron the old squadron's
@@ -769,7 +775,7 @@ export function noticeLeftBell(n: Pick<Notice, 'to' | 'at' | 'iid' | 'what' | 'f
   return moves.some(d => !(acct && adminThen(acct, u, d)))
 }
 /* the squadron of an admin-kind line — a posting's, its take-back's, a holiday's (§16 D1′) — stamped with it; else null */
-const ADMIN_KINDS = new Set(['po', 'poback', 'oilhol'])
+const ADMIN_KINDS = new Set(['po', 'poback', 'pofail', 'oilhol'])
 function adminLineSquadron(n: Pick<Notice, 'iid' | 'what'> & { u?: string }): string | null {
   const p: any = (n.what || [])[0]
   return !n.iid && p && ADMIN_KINDS.has(p.k) && typeof n.u === 'string' && n.u ? n.u : null
@@ -865,7 +871,7 @@ export function noticeLive(n: Notice): boolean {
   /* A POSTING'S LINE IS A SCHEDULER'S, as a holiday's is (below): it is addressed to an admin and its tap opens Admin →
      Users, so with his member view on (D292) it is neither listed nor counted, and is there again, read or unread as he
      left it, when he switches back */
-  if (w && (w.k === 'po' || w.k === 'poback')) return mayEditSched()
+  if (w && (w.k === 'po' || w.k === 'poback' || w.k === 'pofail')) return mayEditSched()
   const h = holOf(n)
   if (!h) return true
   /* A SCHEDULER'S LINE, AND ONLY WHILE HE IS ONE (the check's walk, E8 — 13 Oct 26; owner D785, with the reading told to
@@ -963,6 +969,22 @@ export function noticePostingBack(to: string, by: string | null, who: string, o:
   noteWarMade(id)
   return true
 }
+/** A POSTING THAT COULD NOT RUN (§7 item 7 — his D2214): one line to each of `to` (his squadron's admins, the man
+ *  himself left out by the caller), by the app, each its fixed id — the posting's key and the admin — so a second load
+ *  writes nothing. Pushed INSIDE the app's own `posting.failed` command (leavewar/sync.ts tellPostingFailed). */
+export const poFailedLineId = (key: string, to: string): string => `pofail:${key}:${to}`
+export function noticePostingFailed(to: readonly string[], key: string, who: string, o: PoOutcome, day: string, u: string, at: number = Date.now()): number {
+  const p: any = PEOPLE[who]
+  let made = 0
+  for (const t of new Set(to.map(String))) {
+    const id = poFailedLineId(key, t)
+    if (!here(t) || NOTICES.some(n => n.id === id)) continue
+    NOTICES.push({ id, to: t, by: null, at, iid: '', name: p && p.cs ? String(p.cs) : who, day, what: [{ k: 'pofail', who, o }], u })
+    noteWarMade(id)
+    made++
+  }
+  return made
+}
 /** A LINE ABOUT HIS OWN ACCOUNT (§7 item 6), pushed INSIDE the command that changed it (state/acctlines.ts tellAccess), or
  *  by the app's own writer when a move takes effect (`id` fixed by the change, so a second load writes nothing). To the man
  *  himself, archived or suspended among them — he reads it once he can sign in again (D2251); never a deleted man. */
@@ -980,7 +1002,8 @@ export const isAcctNotice = (n: any): boolean => !!n && Array.isArray(n.what) &&
 /** the posting a line is about, or null — the bell's tap asks it (ui/topstate.ts openNotice) */
 export function postOf(n: Pick<Notice, 'what'>): { who: string; o: PoOutcome; acct: boolean } | null {
   const p: any = (n.what || [])[0]
-  return p && (p.k === 'po' || p.k === 'poback') ? { who: String(p.who), o: p.o as PoOutcome, acct: !!p.acct } : null
+  /* (…and a posting that could not run: its tap opens his row too — §7 item 7) */
+  return p && (p.k === 'po' || p.k === 'poback' || p.k === 'pofail') ? { who: String(p.who), o: p.o as PoOutcome, acct: !!p.acct } : null
 }
 /* what the outcome did, in the past (D1690 — the drawing of record docs/mock/2026-11-05-postout-bell/, picture 2b): the
    sheet's own line (leavewar/ui/outcomewords.ts) said as done. A Delete reads "deleted" whether or not he held a sign-in
@@ -1090,6 +1113,8 @@ function partWords(p: NoticePart): string {
       return c
     }
     case 'po': return `Posted out · ${PO_DID[p.o] ? PO_DID[p.o](!!p.acct) : 'off the manpower'}`
+    /* (his D2214's words, as drawn — picture p10 of the second half's page) */
+    case 'pofail': return 'Posting out could not run. See his row on Admin → Users.'
     /* "Bidding" with a capital, as his drawing writes it (his D1433, 27 Oct 26) */
     case 'lwopen': return p.end ? 'Bidding closed · its dates ended' : p.open ? 'Bidding open' : 'Bidding closed'
     /* a taken-back line's own words are "taken back"; what it took back is said struck through beside them (backWords) */
@@ -1157,7 +1182,7 @@ export function noticeWords(n: Notice): { name: string; day: string; what: strin
   }
   /* A POSTING'S LINE (D1690 — picture 2b): the man in bold, by his callsign of today (a deleted man keeps his record, so
      his name still reads), the posting's date; "Posted out · archived, account suspended"; nobody named */
-  if (w && w.k === 'po') {
+  if (w && (w.k === 'po' || w.k === 'pofail')) {
     const p: any = PEOPLE[String(w.who)]
     return { name: p && p.cs ? String(p.cs) : n.name, day: noticeDay(n.day), what: partWords(w), who: '' }
   }

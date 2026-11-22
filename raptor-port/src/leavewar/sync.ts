@@ -23,7 +23,7 @@ import { inputOnDay, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, in
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
-import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, setLwPostingProbe, setFollowUpsProbe, setWarLinesOwed, setHolidayLinesOwed, pageUnit } from '../state/perms'
+import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, setLwPostingProbe, setPostingFailedProbe, setFollowUpsProbe, setWarLinesOwed, setHolidayLinesOwed, pageUnit } from '../state/perms'
 import { openWinFor } from '../state/cutoff'
 import { rosterOf, homeUnitOf, unitPeople } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
@@ -173,7 +173,7 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncBeforeEnlist, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, noticeAccount, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
+import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, noticeAccount, noticePostingFailed, poFailedLineId, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
 import { hasRead, forgetRead } from '../state/noticeseen'
@@ -341,6 +341,8 @@ export function installAbsenceDoor(): void {
   /* WHAT A POSTING IS AS SAVED (perms.ts setLwPostingProbe — fix read 13, item B): the posting pass is judged against the
      war's stored profile row, never memory's copy, which a change outside every command rewrites in place */
   setLwPostingProbe(postOutIsSaved)
+  /* …and whether a posting failed now, for its posting-failed line (perms.ts postingFailedViolation — §16 D10′) */
+  setPostingFailedProbe(id => { const f = postingFailedNow(id); return f ? { unit: f.unit, key: f.d.key } : null })
   /* A7 — A WAR TAKES A MAN'S DAY ONLY WHERE IT IS ITS SQUADRON'S (the reshape plan §6.2; his D2243 Q3), installed with A1 as
      one change: the war's own door asks his home on the day (store.ts notThisWarsDay — only while each squadron has a world
      of its own, as the unit probe above), and the gate's 7b backstop reads `(pid, day)` off a war cell's change
@@ -2894,7 +2896,9 @@ export function postingPendingTag(id: string): string | null {
 export function postingHeldNote(id: string): string | null {
   const u = foreignHome(id)
   const d = poDueOf(id, u ? storedPostings(u)[id] : getState().postOuts[id], effectiveToday())
-  return d ? poHeldReason(id, d.outcome, d.poDate) : null
+  if (!d) return null
+  /* (…or that it could not run — the runner gave it up this session: his D2214, D2306's words, picture p8) */
+  return poHeldReason(id, d.outcome, d.poDate) || (poRefused(d, u ?? worldUnit()) ? PO_FAILED_ROW : null)
 }
 /* would a posting dated `poDate` run NOW — on the pass's own clock (poDueNow: today on or after the date)? The Post out
    sheet asks before it saves a Delete's date that answers yes (D1102 — [PO-MOVE-DATE-DELETE-ASK]) */
@@ -2919,6 +2923,43 @@ function runMoveLines(): void {
   let res: CommitResult | undefined
   writeMoveLines((type, apply) => (res = cmdCommitProjection({ type, scope: { module: 'inputs' }, apply })))
   if (res && !isQueued(res) && !isOk(res)) MV_REFUSED_DAY = today
+}
+/* A POSTING THE APP COULD NOT RUN (batch 1's second half, plan §7 item 7, §15 D10, §16 D10′ — his D2214: "Bell the
+   admins"): once the runner gives a posting up — its command refused after its one retry of it alone (PO_REFUSED; another
+   squadron's, FX_REFUSED), or held for any reason but the last-admin lock, which keeps its own words — each admin of his
+   squadron is told once: "Ranger · Mon 20 Jul / Posting out could not run. See his row on Admin → Users.", by the app, a
+   tap opening his row. Written by a command of its own, `posting.failed`, out of band (a line inside the refused command
+   would roll back with it — R-A7, R-O15), each line's id the posting's (state/notices.ts poFailedLineId): a later load,
+   which tries the posting again, finds them and writes nothing. The gate passes it only where this same proof holds now
+   (perms.ts postingFailedViolation, through setPostingFailedProbe — D10′). */
+const PO_FAILED_ROW = 'This posting could not run. The app tries again the next time it opens. If this line is still here after that, report it with “Report a problem” on the Help page.'
+const poRefused = (d: PoDue, unit: string): boolean => (unit === worldUnit() && PO_REFUSED.has(d.key)) || FX_REFUSED.has(`${unit}:${d.key}`)
+/** has this man's posting failed now — the runner's own record, or a hold that is not the last-admin lock: his squadron
+ *  (whose admins are told) and the posting, or null */
+export function postingFailedNow(id: string): { unit: string; d: PoDue } | null {
+  const fu = foreignHome(id)
+  const unit = fu ?? worldUnit()
+  const d = poDueOf(id, fu ? storedPostings(fu)[id] : getState().postOuts[id], effectiveToday())
+  if (!d) return null
+  if (poRefused(d, unit)) return { unit, d }
+  return poHeldReason(id, d.outcome, d.poDate) && !lastAdminLock(id) ? { unit, d } : null
+}
+/* told this session (a fresh wiring forgets, and the lines' own ids keep a later load from writing twice) */
+const PO_FAILED_TOLD = new Set<string>()
+function tellPostingFailed(d: PoDue, unit: string): void {
+  const k = `${unit}:${d.key}`
+  if (PO_FAILED_TOLD.has(k)) return
+  /* never inside another command: straight after it */
+  if (isInReducer() || cmdIsCommitting()) { if (!cmdDeferEffect(() => tellPostingFailed(d, unit))) queueMicrotask(() => tellPostingFailed(d, unit)); return }
+  PO_FAILED_TOLD.add(k)
+  const to = postingAdmins(unit).filter(t => t !== d.id)
+  if (to.every(t => NOTICES.some(n => n.id === poFailedLineId(d.key, t)))) return
+  cmdCommitProjection({ type: 'posting.failed', scope: { module: 'inputs' }, apply: (txn: Txn) => {
+    HOOKS.bellEnlist(txn)
+    noticePostingFailed(to, d.key, d.id, d.outcome as PoOutcome, d.poDate, unit)
+    HOOKS.bellEnd()
+  } })
+  raptorNotify()
 }
 /* A POSTING WHOSE MAN IS NOT AT HOME IN ITS SQUADRON TODAY IS SKIPPED BY BOTH PASSES (§6.2 A5, step 2): the gate would
    refuse it (perms.ts postingPassViolation: his home before the pass must be the war's); skipped, it is neither run, nor
@@ -2945,7 +2986,7 @@ function runLoadedPostings(only?: string): void {
     if (!d || PO_INFLIGHT.has(d.key) || PO_REFUSED.has(d.key) || (typeof only === 'string' && d.key !== only)) continue
     if (awayFrom(id, worldUnit(), today)) continue
     const held = poHeldReason(id, d.outcome, d.poDate)
-    if (held) { tellOnce(d.key, held); continue }
+    if (held) { tellOnce(d.key, held); if (!lastAdminLock(id)) tellPostingFailed(d, worldUnit()); continue }
     due.push(d)
   }
   if (!due.length) return
@@ -3071,7 +3112,9 @@ function runLoadedPostings(only?: string): void {
     for (const d of due) PO_RETRIED.add(d.key)
     if (fresh) { runLoadedPostings(only); return }
     for (const d of due) PO_REFUSED.add(d.key)
-    if (due.length < 2) return
+    /* (given up alone — after its one retry, or alone after a group's: his squadron's admins are told, §7 item 7; a
+       group's failure tells nobody, so a posting that then runs alone rings for none) */
+    if (due.length < 2) { for (const d of due) tellPostingFailed(d, worldUnit()); return }
     for (const d of due) { PO_REFUSED.delete(d.key); runLoadedPostings(d.key) }
   }
 }
@@ -3160,7 +3203,9 @@ export function runForeignPostings(): void {
         if (!d) continue
         const fxKey = `${u.id}:${d.key}`
         if (FX_REFUSED.has(fxKey) || FX_INFLIGHT.has(fxKey) || awayFrom(id, u.id, today)) continue
-        if (poHeldReason(id, d.outcome, d.poDate)) continue          // held: nothing now, nothing said (A6's note says it)
+        /* held: nothing now, nothing said on screen (A6's note says it) — but a hold for any reason but the last-admin lock
+           rings that squadron's admins once (§7 item 7) */
+        if (poHeldReason(id, d.outcome, d.poDate)) { if (!lastAdminLock(id)) tellPostingFailed(d, u.id); continue }
         due.push({ ...d, unit: u.id, fxKey })
       }
     }
@@ -3228,6 +3273,7 @@ function runForeignPosting(d: FxDue): void {
   const refusedNow = (): void => {
     if (!FX_RETRIED.has(d.fxKey)) { FX_RETRIED.add(d.fxKey); FX_DIRTY = true; return }   // tried once more on the next run
     FX_REFUSED.add(d.fxKey)                                                            // then given up for the session
+    tellPostingFailed(d, d.unit)                                                       // …and his squadron's admins told (§7 item 7)
   }
   const landed = (): void => { FX_INFLIGHT.delete(d.fxKey); FX_POSTS.delete(d.unit) }
   if (res && isQueued(res)) { res.done.then(r => { landed(); if (!isOk(r)) refusedNow() }, () => { landed(); refusedNow() }); return }
@@ -4029,7 +4075,7 @@ export function installPostingClock(): () => void {
 
 export function wireLeaveWarSync(): void {
   /* a fresh wiring (a boot) tries every refused posting again (the fix read, 18 Nov 26 — Opus 1) */
-  PO_REFUSED.clear(); PO_RETRIED.clear()
+  PO_REFUSED.clear(); PO_RETRIED.clear(); PO_FAILED_TOLD.clear()
   /* [POST-OUT-OUTCOMES]: the posting's one line names his account only when he has one — the answer installed here, at
      the seam (the war never reads Raptor's accounts itself) */
   setAccountLookup(id => !!accountOfPid(id))

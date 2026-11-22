@@ -46,7 +46,7 @@ import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim, noticeLeftBell, filerTold, filerVia, foldedInto, joinFilerImgs, dayOfAt, changeFiler, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES, isAcctNotice } from './notices'
+import { noticeAboutHim, noticeLeftBell, filerTold, filerVia, foldedInto, joinFilerImgs, dayOfAt, changeFiler, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES, isAcctNotice, poFailedLineId } from './notices'
 import { accessIn, accessParts, movedParts, acctByApp, movedLineId, MOVES_TOLD_DAYS, type AcctPart } from './acctlines'
 import { addDays } from './flyplan-model'
 
@@ -740,6 +740,10 @@ Object.assign(COMMAND_OPS, {
   /* the app's own line that a move has taken effect (batch 1's second half §15 D11, §16 D11′ — leavewar/sync.ts
      runMoveLines): the system actor, a Notice created, nothing else (acctLineViolation's own section) */
   'account.told': op(T.notice, 'C'),
+  /* the app's own line that a posting could not run (batch 1's second half §7 item 7, §15 D10, §16 D10′ — leavewar/sync.ts
+     tellPostingFailed): the system actor, a Notice created to each of his squadron's admins, nothing else
+     (postingFailedViolation's own section) */
+  'posting.failed': op(T.notice, 'C'),
 } satisfies Record<string, CommandOp>)
 for (const k of SETTINGS_KEYS_ALL) COMMAND_OPS[`settings.${k}`] = op(T.setting, 'U')
 /* COMMANDS ONLY AN ADMIN RUNS, though the table they write grants a member the same letter for his own change: the war's
@@ -1785,6 +1789,13 @@ export const lwUnitNow = (): string | null => (LW_UNIT ? LW_UNIT() : null)
 type LwPostingSaved = (pid: string, p: unknown) => boolean
 let LW_POSTING: LwPostingSaved | null = null
 export function setLwPostingProbe(fn: LwPostingSaved | null): void { LW_POSTING = fn }
+/* HAS THIS MAN'S POSTING FAILED NOW (batch 1's second half §16 D10′ — R3-O11, R3-F7): the runner's own record — its
+   command refused after its retry alone, or held for any reason but the last-admin lock (leavewar/sync.ts
+   postingFailedNow) — with his squadron and the posting's key; null where it would run, is not due, or ran. Installed by
+   leavewar/sync.ts; none installed, no posting-failed line passes */
+type PostingFailed = (pid: string) => { unit: string; key: string } | null
+let PO_FAILED: PostingFailed | null = null
+export function setPostingFailedProbe(fn: PostingFailed | null): void { PO_FAILED = fn }
 /* …AND IN ANOTHER SQUADRON'S STORED WAR (the reshape plan §6.2 A5, step 7 — core, phase 1): is this posting record his
    posting exactly as THAT squadron's stored profile row holds it? Installed by leavewar/sync.ts with the pass over every
    squadron (helper "war"). On a built site (the saved copy wired) a posting run through the second store is refused
@@ -3655,6 +3666,40 @@ function acctLineViolation(env: CommitEnvelope): string | null {
   }
   return null
 }
+/* A POSTING THAT COULD NOT RUN — ITS LINE ONLY WHERE IT DID NOT (batch 1's second half, plan §7 item 7, §15 D10, §16 D10′
+   — his D2214): a line of the `pofail` kind is written only by the app's own `posting.failed` command, which writes nothing
+   else; each line new, from the app (no one's name), about no input, dated the posting's day, stamped with the squadron the
+   runner's record names, to an admin of that squadron today (the one audience, accounts.ts adminLineAudience) but never the
+   man himself, its id the posting's and that admin's (notices.ts poFailedLineId) — and only where the posting has failed
+   NOW by the runner's own record (setPostingFailedProbe: refused after its retry alone, or held for a reason other than
+   the last-admin lock). A correctly shaped line for a posting that would run, or ran, is refused. Any other command that
+   writes one is refused: the line is never a person's to write. */
+const poFailChange = (c: Change): boolean => c.collection === 'notices' && c.op !== 'delete'
+  && Array.isArray((c.after as any)?.what) && (c.after as any).what.some((p: any) => p && p.k === 'pofail')
+function postingFailedViolation(env: CommitEnvelope): string | null {
+  const mine = env.type === 'posting.failed'
+  if (!mine) {
+    const c = env.changes.find(poFailChange)
+    return c ? `a posting-failed line only the app writes (${c.collection}/${c.id})` : null
+  }
+  const a = env.actor
+  if (!a || a.role !== 'system') return 'a posting-failed line only the app writes (posting.failed)'
+  const today = todayIso(), now = Date.now()
+  for (const c of env.changes) {
+    const where = `${c.collection}/${c.id}`
+    const n: any = c.op === 'delete' ? null : c.after
+    if (!poFailChange(c) || c.before != null || !n) return `a posting-failed line not as the app writes it (${where})`
+    const p: any = n.what[0]
+    if (n.what.length !== 1 || n.by != null || n.iid !== '' || n.fu !== undefined || typeof n.to !== 'string' || String(n.id) !== String(c.id)
+      || !Number.isFinite(n.at) || Math.abs(n.at - now) > AT_SLACK_MS || typeof p.who !== 'string' || String(n.to) === String(p.who)
+      || String(n.name) !== String((PEOPLE as any)[String(p.who)]?.cs ?? p.who)) return `a posting-failed line not as the app writes it (${where})`
+    const f = PO_FAILED ? PO_FAILED(String(p.who)) : null
+    const key = `${p.who}@${n.day}:${p.o}`
+    if (!f || f.key !== key || n.u !== f.unit || String(n.id) !== poFailedLineId(key, String(n.to))
+      || !adminLineAudience(f.unit, today).includes(String(n.to))) return `a posting-failed line for a posting that did not fail (${where})`
+  }
+  return null
+}
 function ownershipChecks(env: CommitEnvelope): string | null {
   const a = env.actor
   const asNew = writtenAsNewViolation(env)
@@ -3703,6 +3748,10 @@ function ownershipChecks(env: CommitEnvelope): string | null {
     const bad = postingPassViolation(env)
     if (bad) return bad
   }
+  /* A POSTING THAT COULD NOT RUN (§7 item 7): its line only where it did not, and only the app's (above) */
+  const failBad = postingFailedViolation(env)
+  if (failBad) return failBad
+  if (env.type === 'posting.failed') return null
   /* HIS OWN ACCOUNT'S LINES (§16 D6′): before ownsLine and "a bell line about nothing" (adminOwnerViolation), after every
      check of the rows themselves, so a command refused for its own change keeps that refusal's words */
   const acctBad = acctLineViolation(env)

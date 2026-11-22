@@ -238,7 +238,8 @@ function ingest(env: CommitEnvelope): void {
          or, undone, bring a posted man back. It sets a barrier that names the app instead. */
       /* (…and so is the app's own line that a move has taken effect — batch 1's second half §16 D11: written beside the pass,
          never part of the step of whoever's press woke it) */
-      if (env.type === 'lw.postoutRun' || env.type === 'account.told') { outOfBand(env); break }
+      /* (…and the app's own line that a posting could not run — §7 item 7, §15 D10: never part of the press that woke it) */
+      if (env.type === 'lw.postoutRun' || env.type === 'account.told' || env.type === 'posting.failed') { outOfBand(env); break }
       const root = resolveRoot(env)
       if (root != null) foldProjection(root, env)   // a tracked causal child
       else if (causedByRestoreOrSeed(env)) advanceExpectedNoBarrier(env)
