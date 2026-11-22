@@ -12,7 +12,7 @@ import { storeBackend, HOOKS } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { INPUTS } from '../engine/inputs'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
-import { accountsLoad, signIn, sessionFor, updateAccount } from '../state/accounts'
+import { accountsLoad, signIn, sessionFor, updateAccount, setMaster } from '../state/accounts'
 import { installGlobalUndo } from '../state/undo-wire'
 import { globalUndo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
@@ -115,6 +115,23 @@ describe('a posting that could not run rings his squadron’s admins once (his D
     reach(); runPoOutcomes()
     globalUndo()
     expect(failLines().length).toBe(2)
+  })
+  /* HELD FOR A REASON OTHER THAN THE LAST-ADMIN LOCK (§7 item 7; chat 147's handoff — owed a test of its own): a master
+     admin's Delete waits on its date (accounts.ts masterDeleteProblem), its own words on his row; it rings once, like a
+     refused one — never the man himself — and a later load writes nothing */
+  it('a master admin’s Delete, held: rings the other admins once across loads, never him; his row keeps its own words', () => {
+    /* (the posting's own door refuses a Delete for a master admin — so the hold is a Delete saved first, the mark set after) */
+    expect(postOut('rocky', PO, 'delete')).toBe(true)
+    expect(setMaster('achex', true)).toEqual({ ok: true })
+    reach(); runPoOutcomes()
+    expect(P('rocky').deleted, 'held, not run').toBeFalsy()
+    expect(failLines('rocky'), 'never the man').toEqual([])
+    expect(failLines('stiff').map(drawn)).toEqual(['Hex · Mon 20 Jul / Posting out could not run. See his row on Admin → Users.'])
+    expect(postingHeldNote('rocky'), 'his row: the hold’s own words').toBe('Hex is a master admin, so he can\'t be deleted')
+    const n = failLines().length
+    boot(); signInAs('ad', 'a'); runPoOutcomes()
+    boot(); signInAs('ad', 'a'); runPoOutcomes()
+    expect(failLines().length, 'two loads later, no more').toBe(n)
   })
 })
 

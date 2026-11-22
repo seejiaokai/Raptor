@@ -288,6 +288,17 @@ export function pageUnit(kind: 'schedule' | 'own', iso: string = todayIso()): st
   if (acct && UNIT !== homeOn(m, iso) && (acct.master === true || levelOfAccount(levelAcct(acct), UNIT, iso) === 'admin')) return UNIT
   return myUnit(iso)
 }
+/* COULD HIS OWN PAGES BE `u`'s (batch 1's second half §7 item 5, R9 — the bell's tap on a line of another squadron): the
+   squadron pageUnit('own') would answer were `u` picked — his home that day, or, the role in force admin, a squadron he
+   is admin of by a Plan or the master mark (pageUnit's own test, above). A View holder's own pages are always his home,
+   so a View of `u` answers false. */
+export function ownPageMayBe(u: string, iso: string = todayIso()): boolean {
+  if (!SESSION || !me() || !u) return false
+  if (u === myUnit(iso)) return true
+  if (roleOf() !== 'admin') return false
+  const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
+  return !!acct && (acct.master === true || levelOfAccount(levelAcct(acct), u, iso) === 'admin')
+}
 /* DOES THE PICK STILL STAND ON `iso` (the blind read's R6, its pick half — the reshape plan §19b; A-iv widened, dormant
    until P1/P3): the squadron picked (engine/unitview.ts UNIT) is one the signed-in person can read that day — his home
    there, a View or Plan of it that holds that day (units-model.ts levelFrom, the reading rule), or a master admin's
@@ -3634,6 +3645,7 @@ function acctLineViolation(env: CommitEnvelope): string | null {
       const p: AcctPart = n.what[0], d = String(n.day)
       const acct = ACCOUNTS_LIST.find(x => String(x.pid) === String(n.to))
       if (!acct || p.why !== 'moved' || !(d <= today && d > addDays(today, -MOVES_TOLD_DAYS)) || movedLineId(acct.id, d, p) !== String(n.id)
+        // eslint-disable-next-line react-doctor/js-set-map-lookups -- one look in a list worked out afresh for this line's own man and day, never the same list twice
         || !homeChangesBefore(String(n.to), addDays(d, -1), d, rows).includes(d)
         || !movedParts(accessIn(acct, rows, addDays(d, -1)), accessIn(acct, rows, d)).some(x => deepEqual(x, p))) return `an account line the app did not owe (${where})`
     }
@@ -3643,8 +3655,15 @@ function acctLineViolation(env: CommitEnvelope): string | null {
   /* what this command's own change owes each man, part by part — each once */
   const w = buildWorlds(env)
   const owed = new Map<string, Array<{ p: AcctPart; app: boolean } | null>>()
-  for (const id of new Set([...w.acctB.map(x => x.id), ...w.acctA.map(x => x.id)])) {
-    const b = w.acctB.find(x => x.id === id), f = w.acctA.find(x => x.id === id)
+  /* (each account by its id, before and after — the first row of an id, as find gave it) */
+  const byId = (rows: typeof w.acctB): Map<string, (typeof w.acctB)[number]> => {
+    const m = new Map<string, (typeof w.acctB)[number]>()
+    for (const x of rows) if (!m.has(x.id)) m.set(x.id, x)
+    return m
+  }
+  const acctB = byId(w.acctB), acctA = byId(w.acctA)
+  for (const id of new Set([...acctB.keys(), ...acctA.keys()])) {
+    const b = acctB.get(id), f = acctA.get(id)
     if (!b || !f) continue
     const pid = String(f.pid)
     const why = w.personB(pid)?.archived !== true && w.personA(pid)?.archived === true ? 'archived' as const : undefined
@@ -3696,6 +3715,7 @@ function postingFailedViolation(env: CommitEnvelope): string | null {
     const f = PO_FAILED ? PO_FAILED(String(p.who)) : null
     const key = `${p.who}@${n.day}:${p.o}`
     if (!f || f.key !== key || n.u !== f.unit || String(n.id) !== poFailedLineId(key, String(n.to))
+      // eslint-disable-next-line react-doctor/js-set-map-lookups -- one look in the audience of this line's own squadron, worked out afresh for it
       || !adminLineAudience(f.unit, today).includes(String(n.to))) return `a posting-failed line for a posting that did not fail (${where})`
   }
   return null

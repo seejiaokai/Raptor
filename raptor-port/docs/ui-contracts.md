@@ -5193,8 +5193,12 @@ except where noted:
   order (`[ACCOUNTS-NEW-PERSON]`, D216, D227, 26 Sep 26) — when an ADMIN has an
   access request he has not yet had on screen (`accessAlert()`,
   `state/accounts.ts`: each request carries `seenBy`, the admins who have seen
-  it, so every admin's bell is his own). That tap toasts "N waiting for access —
-  opening Admin → Users" and opens Admin → Users (`ui/adminopen.ts
+  it, so every admin's bell is his own; since 22 Nov 26 only a request of a
+  squadron switched on in his bell lights it — `state/belltap.ts
+  bellAccessAlert`, §15 D3). That tap (since 22 Nov 26, §15 D3, D2325) enters
+  the newest such request's squadron when it is not the page's, toasts
+  "N waiting for access to 149" (N — that squadron's Waiting list) and opens
+  Admin → Users (`ui/adminopen.ts
   openAdminUsers`, from any page, the Admin page itself included); the list on
   his screen — the Users pane beside the rail on a desktop, the drilled-in list on
   a phone, never the category list alone — puts it out (`markRequestsSeen`, one
@@ -7134,6 +7138,14 @@ blue fade from the top left over the whole card (D1654). *Was, 26 Sep 26: one li
 **Viper** (JKB · Pilot · CAT C).", "an admin will answer it".*);
 **Switched off** (`#accessOff`). Each has Sign out (`#accOut`, through `ui/logout.ts`). Each, and the sign-in, carries the
 failed-save band across its top while a save has failed, the screen moved down under it (D1657 — §The failed-save warning).
+**The sign-in waits for the last save (since 22 Nov 26 — batch 1's second half §8, step G; D2205, D2322; pictures 10, f6a,
+f6b):** Sign in pressed while a change on the page has not landed (waiting or still on its way — `storage/savewait.ts
+saveSettling`) is held — the button "Signing in…", disabled at the app's .42, and one small grey line under it (`#lheld`),
+"Waiting for the last change on this page to save.", or, once a save was refused, "The last change has not saved yet —
+check the connection. Sign in waits until it saves."; a wrong name or password is said at once, never held. When it lands:
+a sign-out's owed reload runs first (`ui/logout.ts`) and the card after it shows his typed name kept (this tab only,
+ten minutes, never the password — `ui/signinhold.ts`), the password empty, and under the name (`#lkept`) "Saved. Press
+Sign in again." — the same on this page should the reload be held back; with no reload owed he is signed in by himself.
 Above the phone width the column is centred only while it fits, so a screen taller than the window starts at its top and
 every part can be scrolled to (`.login-wrap{margin-block:auto}`, 5 Nov 26). **A person waiting sees the waiting screen
 and nothing else of the app (D2239, replacing D215, D221 and D213):** a person signed in without access — on no list,

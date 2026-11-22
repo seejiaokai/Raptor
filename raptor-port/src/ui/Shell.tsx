@@ -14,7 +14,8 @@ import { isAdmin, me, mayViewAsMember } from '../state/perms'
 import { toggleChanges } from './changesopen'
 import { weekNew } from './changesmodel'
 import { CHGWIN } from '../state/view'
-import { waitingCount, accessAlert } from '../state/accounts'
+import { waitingCount } from '../state/accounts'
+import { bellAccessAlert } from '../state/belltap'
 import { WelcomeBack } from './WelcomeBack'
 import { notify, setPage, switchRoleView } from '../state/store'
 import { logOut } from './logout'
@@ -347,8 +348,9 @@ export function Shell() {
      it (bug pass, 28 Aug 26: two full INPUTS scans per render was waste);
      the tap handler re-derives its own fresh copy at click time. */
   const oilPend = mine ? oilPendingFor(mine).length : 0
-  /* D216, D227 — an access request this admin has not had on screen yet (his own bell) */
-  const accAlert = accessAlert()
+  /* D216, D227 — an access request this admin has not had on screen yet (his own bell) — of a squadron switched on in
+     his bell (§15 D3 — state/belltap.ts) */
+  const accAlert = bellAccessAlert()
   /* a failed save's warning has a line of its own along the bar's bottom ([SAVE-NOTE-COVERS], D587): the bar makes room —
      and the same room for a browser's "Not kept" band (D1901), so `.save-failed` below names the room, either band in it */
   const saveFailed = useBandUp()

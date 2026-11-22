@@ -391,7 +391,9 @@ describe("NP6 — the admins' bell, each admin's own (D216, D227)", () => {
     await signInAs('ad', 'a')
     expect($('#notifyBell').classList.contains('on')).toBe(true)
     await click($('#notifyBell')); await flush()
-    expect(toasts).toContain('1 waiting for access — opening Admin → Users')
+    /* (the words since his D2325 — picture f9, batch 1's second half §15 D3: the squadron landed on named; the toast was
+       "1 waiting for access — opening Admin → Users") */
+    expect(toasts).toContain('1 waiting for access to 142')
     expect(CURPAGE).toBe('admin')
     expect($('#admUsers').classList.contains('on')).toBe(true)
     expect(accessAlert(), 'the list was on his screen').toBe(false)

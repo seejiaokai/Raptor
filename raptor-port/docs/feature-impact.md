@@ -847,7 +847,12 @@ the war's own squadron's admins of today, a plain admin holding Plan of it among
 `adminsOf`; `ownSchedulerIds` is the loaded war's). Signing out reloads the app (`ui/logout.ts`); while a save waits it does not, and the
 reload is owed, made the moment the save lands if nobody has signed in since (the full check, 18 Nov 26). Still open:
 someone of the other squadron signing in on that tab BEFORE the save lands keeps the first one's Tracker (a question
-for him — the evidence sheet's §Questions). (5) The change history is the unit in view's: each line carries its unit
+for him — the evidence sheet's §Questions). **Closed 22 Nov 26 (batch 1's second half §8 — step G; D2205, D2322):** a
+sign-in pressed while a change on the page has not landed is held (`ui/Login.tsx` — "Signing in…", greyed, "Waiting for
+the last change on this page to save.", or once refused "The last change has not saved yet — check the connection. Sign in
+waits until it saves."); once it lands the owed reload runs first and the card after it keeps his typed name, never the
+password, "Saved. Press Sign in again." (`ui/signinhold.ts`); with no reload owed he is signed in by himself. A new door
+into a session must ask the same (`storage/savewait.ts saveSettling`). (5) The change history is the unit in view's: each line carries its unit
 (`engine/editlog.ts`, `u`), only the unit in view's lines are in `ELOG.rows`, re-read at `state/store.ts switchUnit` —
 a new reader of the history reads `ELOG.rows` and so gets one squadron's; whatever must see every squadron's lines reads
 the stored rows. Pinned by `engine/editlog-unit.test.ts`, `ui/logout.test.ts`, `leavewar/holidays-by-place.test.ts`,

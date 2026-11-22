@@ -10,7 +10,7 @@ import { HOOKS } from '../engine/hooks'
 import { globalUndo, globalRedo, undoState } from '../undo'
 import { editingText } from './textedit'
 import { oilUndoBoundary } from './oilmode'
-import { accessAlert, unseenRequests } from '../state/accounts'
+import { bellAccessAlert, openBellRequest, enterForLine } from '../state/belltap'
 import { bugAlert, unseenReports } from '../state/reports'
 import { openAdminUsers } from './adminopen'
 import { oilPendingFor, openWarAt } from '../leavewar/sync'
@@ -46,16 +46,13 @@ export const bellListOpen = (): boolean => BELLLIST
 export function closeBellList(): void { if (BELLLIST) { setBellList(false); notify() } }
 export function bellOn(): boolean {
   const mine = me()
-  return bellLit() || bugAlert() || (mine ? oilPendingFor(mine).length > 0 || unreadFor(mine) > 0 : false) || accessAlert()
+  return bellLit() || bugAlert() || (mine ? oilPendingFor(mine).length > 0 || unreadFor(mine) > 0 : false) || bellAccessAlert()
 }
 export function bellTap(from?: HTMLElement | null): void {
-  if (accessAlert()) {
-    /* (every unseen request of his squadrons — the page's alone could read "0 waiting"; the tap that moves him to the
-       request's squadron, §15 D3, is the bell's step, F) */
-    const n = unseenRequests().length
-    HOOKS.toast(`${n} waiting for access — opening Admin → Users`)
-    openAdminUsers(); return
-  }
+  /* AN ACCESS REQUEST (§15 D3, his D2325 — picture f9): the newest unseen one of the squadrons switched on in his bell, its
+     squadron entered when it is not the page's, then Admin → Users there — "1 waiting for access to 149"
+     (state/belltap.ts) */
+  if (openBellRequest(() => openAdminUsers(), s => HOOKS.toast(s))) return
   if (bugAlert()) {
     const n = unseenReports()
     HOOKS.toast(`${n} new bug report${n === 1 ? '' : 's'}`)
@@ -87,7 +84,17 @@ export function bellTap(from?: HTMLElement | null): void {
   notify()
 }
 /* a tap on a line: the input's own window — or, where it has since been deleted, the words; either way that line is read */
+/* A LINE OF ANOTHER SQUADRON (batch 1's second half §7 item 5, R9 — state/belltap.ts enterForLine): its squadron (the
+   line's stamp `u`) is entered first, then the tap lands as below — only where his own pages may be that squadron's. Where
+   they may not (a View holder's, or a line of a squadron he has since left), a posting's, a holiday's and a Leave War
+   line is only read: opening his own squadron's page at it would show the wrong war, or a row not there. An input's line
+   still opens its window — he is named in it or filed it, and the window judges its own edit rights by the input's
+   squadron. His own account's line carries no squadron (§16 D5′). */
 export function openNotice(n: Notice): void {
+  const where = isAcctNotice(n) ? 'here' : enterForLine(n.u)
+  if (where === 'no' && (postOf(n) || isWarNotice(n) || ((n.what || [])[0] as any)?.k === 'oilhol')) {
+    markNoticeRead(n.id); notify(); return
+  }
   /* a holiday's line opens the ONE list for its dates ([OIL-ASK-NOTIFY], owner D783 (6): "a tap opening the list") — it
      is about no single input, so it is asked before any input is looked for (Fable's read of the plan, A6) */
   const hol: any = (n.what || [])[0]
