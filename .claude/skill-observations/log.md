@@ -1219,3 +1219,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The new gate rule treated a place row with no "before" image as a new place (a master admin's alone), so a Plan holder changing the demo's Home base — a seeded place that was never stored as a row — was refused as "a new place made alone". The fix asks whether the rows before the command hold it (the seeded rows included).
 **Suggested improvement:** Add to the executor rules: in a gate rule, "created" is "not in the rows before the command" (the loader's reading, seeds included), never `before == null` alone — a seeded record's first write has no before image.
 **Principle:** Judge creation against the model's view of what existed, not against the storage layer's record of what was written.
+
+### Observation 1018: A test's sign-in switch silently empties the Undo list, so an Undo test fails for the wrong reason
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** chat 145, multi-squadron batch 1 step F (D1′) — tests of a bell line coming back with an Undo of a right's take-away
+**Skill:** test-driven-development
+**Type:** internal
+**Phase/Area:** writing a red-first test that presses Undo or Redo
+
+**Issue:** The first red run had every Undo test fail with "Undo did nothing" before the rule under test was even reached: the test world's `signInAs` (and any helper that calls it — "post him out as Kestrel", "read Hunter's bell as Hunter") resets the session, and a sign-in clears the signed-in person's Undo list (D148). The tests looked red for the right reason only after one sign-in carried the whole step-then-Undo sequence (a second master admin made first, so one person could give, post and undo).
+**Suggested improvement:** In the project's test-writing notes (raptor-executor rules, the tests section): a test that presses Undo or Redo keeps ONE sign-in from the step to the Undo — no helper in between that signs in — and reads other people's bells without signing in as them; and a red-first run is read for WHY each test failed (the assertion's message), never only for "it is red".
+**Principle:** A red test proves the gap only when it fails at the assertion that names the gap; read the failure's reason before believing the red.

@@ -34,7 +34,12 @@ export interface UnitPlace { id: string; unit: string; place: string; from: stri
 /* `first` (the sign-in kinds review's K3 — D2160, D2191, D2247): the Plan "+ New squadron" gives the squadron's named first
    admin (units.ts addUnit, a master admin's alone). A man who moves squadron joins as a member — save the first admin of
    a new squadron, who moves into it as its admin: adminRoleHolds reads this mark for that, and nothing else does. */
-export interface Grant { id: string; account: string; unit: string; level: GrantLevel; from?: string; first?: true }
+/* `fromAt` (batch 1's second half, plan §16 D1′ — his D2310, D2218): the MOMENT the right became Plan (ms), written by
+   every door that makes a grant's level `admin` (units.ts setGrant, putGrantLine, addUnit) and kept while it stays Plan;
+   a View row has none. The bell shows a squadron's admin line only where the right its reader holds there began no later
+   than the line (notices.ts rightStart), so Plan taken at 10:00 and given at 11:00 brings none of the old lines back.
+   An Undo restores the row whole, its moment with it. Absent on a row from before it was kept (D56): from always. */
+export interface Grant { id: string; account: string; unit: string; level: GrantLevel; from?: string; first?: true; fromAt?: number }
 export interface Home { id: string; pid: string; unit: string; from: string }
 export interface UnitRows { units: Unit[]; places: Place[]; unitplaces: UnitPlace[]; grants: Grant[]; homes: Home[] }
 
@@ -95,7 +100,8 @@ export function validUnitPlace(v: any, key?: string): UnitPlace | null {
 export function validGrant(v: any, key?: string): Grant | null {
   if (!v || typeof v !== 'object' || typeof v.id !== 'string' || !GRANT_ID.test(v.id) || (key != null && v.id !== key)) return null
   if (!isStr(v.account) || !isUnitId(v.unit) || (v.level !== 'admin' && v.level !== 'view')) return null
-  return { id: v.id, account: v.account, unit: v.unit, level: v.level, ...(validIso(v.from) ? { from: String(v.from) } : {}), ...(v.first === true && v.level === 'admin' ? { first: true as const } : {}) }
+  return { id: v.id, account: v.account, unit: v.unit, level: v.level, ...(validIso(v.from) ? { from: String(v.from) } : {}), ...(v.first === true && v.level === 'admin' ? { first: true as const } : {}),
+    ...(v.level === 'admin' && Number.isFinite(v.fromAt) ? { fromAt: +v.fromAt } : {}) }
 }
 export function validHome(v: any, key?: string): Home | null {
   if (!v || typeof v !== 'object' || typeof v.id !== 'string' || !HOME_ID.test(v.id) || (key != null && v.id !== key)) return null

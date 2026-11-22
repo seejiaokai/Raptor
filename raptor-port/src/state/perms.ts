@@ -46,7 +46,7 @@ import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim, filerTold, filerVia, foldedInto, joinFilerImgs, dayOfAt, changeFiler, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES } from './notices'
+import { noticeAboutHim, noticeLeftBell, filerTold, filerVia, foldedInto, joinFilerImgs, dayOfAt, changeFiler, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES } from './notices'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 /* THE ROLES A SESSION HOLDS. The guest role is gone (his D2239, 20 Nov 26: the guest view is removed — a person who asked
@@ -2094,6 +2094,39 @@ const ACCOUNT_LIKE = (p: any) => JSON.stringify(p == null ? null : [p.cs, !!p.ar
    a right that changes hands is a right given today. */
 export const grantKept = (b: any, n: any): boolean => b != null && n != null && b.account === n.account && b.unit === n.unit && b.level === n.level
 export const masterKept = (was: any, is: any): boolean => !!was && !!is && was.master === true && is.master === true && String(was.pid) === String(is.pid)
+/* A RIGHT'S MOMENT (batch 1's second half, plan §16 D1′): a moment written now — the clock's slack the bell lines' own
+   (notices.ts AT_SLACK_MS) */
+const momentNow = (x: unknown): boolean => typeof x === 'number' && Number.isFinite(x) && Math.abs(x - Date.now()) <= AT_SLACK_MS
+const keptKey = (k: unknown): string => (k && typeof k === 'object' ? JSON.stringify(Object.entries(k).sort(([x], [y]) => (x < y ? -1 : 1))) : '')
+/* the moments of one account row a command writes (G2c, in accountShapeAndMasterViolation): the reason it is refused, or
+   null. `was` the row before (none: a new account), `relinked` the row now naming another man (a right that changes hands
+   is a right begun now) */
+function momentsViolation(was: any, is: any, relinked: boolean, env: CommitEnvelope): string | null {
+  const adminBegun = !was || relinked || was.role !== 'admin' || was.adminOf !== is.adminOf || was.adminFrom !== is.adminFrom
+  if (is.role !== 'admin') { if (is.adminAt !== undefined) return "an admin role's moment on an account that is not an admin's" }
+  else if (adminBegun) { if (!momentNow(is.adminAt)) return 'an admin role not dated now' }
+  else if (is.adminAt !== was.adminAt) return "an admin role's moment changed"
+  if (is.master !== true) {
+    if (is.masterAt !== undefined || is.kept !== undefined) return "the master mark's moment without the mark"
+    return null
+  }
+  if (!was || relinked || was.master !== true) {
+    if (!momentNow(is.masterAt)) return 'the master mark not dated now'
+    if (is.kept === undefined) return null
+    if (!is.kept || typeof is.kept !== 'object' || Array.isArray(is.kept) || !Object.keys(is.kept).length) return 'kept squadrons that will not read'
+    /* each one a squadron he held Plan of before this command, with that Plan's own moment (0: one from before moments) */
+    const rows = unitRowsBefore(env.changes), today = todayIso()
+    const holder = accountHolder(env, String(is.id), 'b')
+    for (const [u, v] of Object.entries(is.kept)) {
+      const g = grantBefore(holder, u, today, rows)
+      if (!g || g.level !== 'admin' || v !== (Number.isFinite(g.fromAt) ? g.fromAt : 0)) return 'a squadron kept that he held no Plan of'
+    }
+    return null
+  }
+  if (is.masterAt !== was.masterAt) return "the master mark's moment changed"
+  if (keptKey(is.kept) !== keptKey(was.kept)) return 'kept squadrons changed'
+  return null
+}
 /* …and the restore writes it so: an Undo or Redo whose image turns a right on dates it today (installed in
    undo-wire.ts as the timeline's `redate` hook, before the restore is named for verifiedReplay, so the image the
    timeline vouches for IS the one written); one that leaves a right standing keeps the day it has now. */
@@ -2387,11 +2420,21 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
       const wantLink = relinked ? today : !was ? (is.pidFrom === undefined ? undefined : today) : was.pidFrom
       if (is.pidFrom !== wantLink) return `an account's link to its person not dated today (${c.id})`
     }
+    /* G2c — THE MOMENTS ARE THE MOMENTS THE RIGHTS BEGAN (batch 1's second half, plan §16 D1′, D1′a — his D2310, D2218,
+       D2198): the bell shows a squadron's admin line only where the right its reader holds there began no later than the
+       line (notices.ts rightStart), so a back-dated moment would bring back the lines of a right taken away. The home
+       admin role begun now (made an admin, its record written anew, a re-link, a new admin account) carries now; unchanged,
+       its moment; not an admin, none. The mark the same. `kept` only with the mark: written with the mark set now, each
+       entry one squadron he held Plan of before this command, with that Plan's own moment; the mark unchanged, as it
+       was. A restore's verified replay puts back its image whole (an Undo of the take-away brings the lines back). Asked
+       last, after the days, so a row refused for its days is refused in those words first. */
+    const moments = replayed ? null : momentsViolation(was, is, relinked, env)
     /* (fix read 10, fault E): a mark put back on the same person, off since a moment with no move of his since, keeps its
        recorded day — the restore writes it so (restoreRedated); the gate asks the same of the same moment */
     if (replayed && (is.master !== true || kept || back || markBackHolds(was, is, OFFAT?.(env), w.rowsB.homes))) continue
     const want = is.master !== true ? undefined : kept ? was.masterFrom : today
     if (is.masterFrom !== want) return `the master mark not dated today (${c.id})`
+    if (moments) return `${moments} (${c.id})`
   }
   const droppedB = droppedKeys(w.rawB, w.acctB, w.personB)
   for (const k of droppedKeys(w.rawA, w.acctA, w.personA)) if (!droppedB.has(k)) return `an account row the app would not load (${k})`
@@ -2658,6 +2701,17 @@ function unitRowViolation(env: CommitEnvelope): string | null {
         const planB = !!b && b.level === 'admin' && grantRowHolds(holderB(String(b.account)), b, today, before)
         const planA = !!n && n.level === 'admin' && grantRowHolds(holderA(String(n.account)), n, today, after)
         if (planB || planA) return `Plan given, changed or taken by one who is not a master admin (${id})`
+      }
+      /* A PLAN'S MOMENT IS THE MOMENT IT BECAME PLAN (batch 1's second half, plan §16 D1′ — his D2310, D2218): the bell
+         shows a squadron's admin line only where the right began no later than the line (notices.ts rightStart), so a
+         back-dated moment would bring back the lines of a right taken away. Plan unchanged keeps its moment; Plan given or
+         raised now carries now; a View row carries none. A restore's verified replay puts back the row whole, its moment
+         with it (an Undo of the take-away brings the lines back — D1′). Asked after who may change it, so a plain admin's
+         Plan is refused in those words first. */
+      if (id.startsWith(GRANT_PFX) && n && !(env.origin === 'restore' && REPLAY && REPLAY(env)?.(c))) {
+        if (n.level !== 'admin') { if (n.fromAt !== undefined) return `a moment on a right that is not Plan (${id})` }
+        else if (grantKept(b, n)) { if (n.fromAt !== b.fromAt) return `a Plan's moment changed (${id})` }
+        else if (!momentNow(n.fromAt)) return `a Plan not dated now (${id})`
       }
       /* K4 — A MOVE NEVER ASKS THE SQUADRON JOINED (his D2160, the transfer: "both squadrons' admins told when it is set and
          on the date, the new one never asked"): a home row of a man who has a squadron today is judged by the one check
@@ -3241,6 +3295,20 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
                rode beside it) */
             if (ref && !followed.has(ref)) { followed.add(ref); continue }
           }
+        }
+        /* A POSTING'S LINE TAKEN AWAY WITH ITS POSTING, SHOWN OR HIDDEN (batch 1's second half, plan §16 D1′c — R3-O7):
+           "Undo post out" takes every stored line of the run, a line its reader's bell now hides among them (he lost the
+           Plan that brought it — notices.ts rightHolds), so a later Undo giving the right back shows none about a posting
+           taken back. Only a removal, only of a posting line stamped with a squadron the actor is an admin of in force,
+           only where this command takes that man's posting back — his posting record changed, not merely re-saved as it
+           ran (and so owed by the war, warLinesOwed) — and never a line that has left a moved man's bell (his D2218: no
+           squadron's command touches another's bell; fix read 4, Astra §1). */
+        const poRec = n === c.before && Array.isArray(n.what) && n.what.length === 1 && n.what[0]?.k === 'po'
+          ? env.changes.find(x => x.collection === 'lw.postouts' && String(x.id) === String(n.what[0].who)) : undefined
+        if (to !== self && poRec && poRec.before != null && !deepEqual(poRec.before, poRec.op === 'delete' ? null : poRec.after)
+          && (c.op === 'delete' || c.after == null) && typeof n.u === 'string' && n.u && !noticeLeftBell(n) && !!WAR_OWED?.(env.changes, n)) {
+          if (today == null) { today = todayIso(); rows = unitRowsBefore(env.changes) }
+          if (levelInForce(a, n.u, today, rows!) === 'admin') continue
         }
         if (to !== self && !ownsLine(n, to)) return `a bell line of another squadron's man (${where})`
         /* (fault M: the own-man fallback no longer lets through an input line the pass would not write) */

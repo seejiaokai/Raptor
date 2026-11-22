@@ -238,7 +238,7 @@ export function addUnit(numIn: string, place: string | NewPlace, firstAdmin?: st
     /* (dated the day it is given, as setGrant's: the commit gate refuses a new right not dated today — fix read 8, fault G) */
     /* (`first` — K3: the squadron's named first admin moves into it as its admin, units-model.ts adminRoleHolds; every
        other man who moves squadron joins as a member, D2160) */
-    put(GRANT_PFX + g, { id: g, account: firstAdmin, unit: id, level: 'admin', from: todayIso(), first: true })
+    put(GRANT_PFX + g, { id: g, account: firstAdmin, unit: id, level: 'admin', from: todayIso(), first: true, fromAt: Date.now() })
     return id
   })
 }
@@ -348,8 +348,9 @@ export function setGrant(account: string, unit: string, level: GrantLevel, accou
   }
   return save('grant.set', null, () => {
     const id = had ? had.id : newId('g')
-    /* (its day — fault P: notices.ts adminThen counts it only from then, so a line his move retired stays retired) */
-    put(GRANT_PFX + id, { id, account, unit, level, from: todayIso() })
+    /* (its day — fault P: notices.ts adminThen counts it only from then, so a line his move retired stays retired; and,
+       made Plan, its moment — §16 D1′: a level written here always differs from the one it had) */
+    put(GRANT_PFX + id, { id, account, unit, level, from: todayIso(), ...(level === 'admin' ? { fromAt: Date.now() } : {}) })
     return id
   })
 }
@@ -385,7 +386,7 @@ export function putGrantLine(account: string, unit: string, level: GrantLevel | 
   if (level == null) { if (had) put(GRANT_PFX + had.id, null); return }
   if (had && had.level === level) return
   const id = had ? had.id : newId('g')
-  put(GRANT_PFX + id, { id, account, unit, level, from: todayIso() })
+  put(GRANT_PFX + id, { id, account, unit, level, from: todayIso(), ...(level === 'admin' ? { fromAt: Date.now() } : {}) })
 }
 /* named rights, dropped INSIDE another command (a Plan holder made a member — accounts.ts updateAccount, PA2) */
 export function dropGrantRows(ids: readonly string[]): void {

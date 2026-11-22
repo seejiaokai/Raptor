@@ -12,6 +12,8 @@ import { ridKey } from '../engine/rowids'
 import { CURWEEK, WEEKS } from '../engine/waves'
 import { SCHED } from '../engine/publish'
 import { ACCOUNTS_LIST, accountByName } from '../state/accounts'
+import { homeOn, todayIso } from '../state/units'
+import { pageUnit } from '../state/perms'
 import { schedRows } from './export'
 import { openScheduler, closeScheduler } from './board'
 
@@ -154,7 +156,8 @@ describe('Users (Admin page)', () => {
   it('the Admin tab reaches it, listing every account with its role', async () => {
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'admin')!)
     expect($('#page-admin').classList.contains('on')).toBe(true)
-    expect($$('#accList [data-acct]').length).toBe(ACCOUNTS_LIST.length)
+    /* (Admin → Users lists the squadron in view — batch 1's second half, step C, D2297: the accounts of its people) */
+    expect($$('#accList [data-acct]').length).toBe(ACCOUNTS_LIST.filter(a => homeOn(a.pid, todayIso()) === pageUnit('own')).length)
     expect(/Admin/.test($('#accList').textContent!)).toBe(true)
     expect(accountByName('ad')).toBeTruthy()
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'viewsched')!)

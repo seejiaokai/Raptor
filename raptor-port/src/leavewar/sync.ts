@@ -3781,12 +3781,13 @@ function postingLinesOf(id: string): Notice[] {
      left his bell on his first move day for good (D2218, noticeLeftBell). The newest run is still found from EVERY stored
      line of this posting (`last`, above) — only then is each retired line left out: neither deleted nor told. The worked-out
      "off the manpower" line the same, by its posting date. */
-  /* PB1 (the Plan audit, §19 — with §6.2 step 6): "whoever would be told of it today" is the squadron's admins of today
-     (postingAdmins — a plain admin holding Plan of it among them, D2202), never the reader's home alone */
-  /* (…and a man at home here today as before: a suspended admin, whom adminsOf leaves out, still has his line taken back
-     — the fixes' read 1 below) */
-  const told = new Set(postingAdmins(worldUnit()))
-  const stored = mine.filter(n => n.at === last && (told.has(String(n.to)) || atWarHome(n.to) || noticeAboutHim(n)) && !noticeLeftBell(n))
+  /* (PB1 — who is TOLD of the take-back, the squadron's admins of today, a Plan holder among them, D2202: asked in
+     retractPostingLines below, beside a suspended admin at home here, the fixes' read 1) */
+  /* …AND THE LINES THE BELL HIDES TOO (batch 1's second half, plan §16 D1′c — R3-O7): a line whose reader has lost the
+     right that brought it (Plan taken, made a member) is hidden, never deleted (state/notices.ts rightHolds), so a later
+     Undo giving the right back would show it — about a posting taken back since. Every stored line of the run is taken
+     here, shown or hidden, save one that has left a moved man's bell (D2218); who is told is retractPostingLines's. */
+  const stored = mine.filter(n => n.at === last && !noticeLeftBell(n))
   const derived = ownSchedulerIds().flatMap(pid => postedLines(pid)).filter(n => { const p = n.what[0]; return p?.k === 'po' && p.who === id && !noticeLeftBell(n) })
   return [...stored, ...derived]
 }
@@ -3804,9 +3805,11 @@ function retractPostingLines(lines: readonly Notice[]): string[] {
   const told = new Set(postingAdmins(worldUnit()))
   for (const n of lines) {
     /* (a line held by a man since moved to another squadron is neither removed nor told — above, D2218) */
-    if (!(told.has(String(n.to)) || atWarHome(n.to) || noticeAboutHim(n)) || noticeLeftBell(n)) continue
+    if (noticeLeftBell(n)) continue
     const ix = NOTICES.findIndex(x => x.id === n.id)
     if (ix >= 0) NOTICES.splice(ix, 1)
+    /* (a line the bell hides — its reader no longer holds the right that brought it, §16 D1′c — goes, and tells nobody) */
+    if (!(told.has(String(n.to)) || atWarHome(n.to) || noticeAboutHim(n))) continue
     if (n.to === by) { if (by && hasRead(by, n)) forget.push(n.id); continue }
     if (!hasRead(n.to, n) || !admins.has(n.to)) continue
     const p = n.what[0]

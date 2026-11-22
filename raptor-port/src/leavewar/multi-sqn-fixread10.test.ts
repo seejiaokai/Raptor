@@ -372,7 +372,10 @@ describe('fault D — a right that changes hands through the account row is a ri
     const e = (after: any) => ({ type: 'account.update', origin: 'user', actor: deriveActor(), changes: [{ collection: 'settings', id: 'account:acad2', op: 'put', before: b, after }] })
     expect(ownershipViolation(e({ ...b, pid: 'dj' }) as any)).toMatch(/link to its person not dated today/)
     expect(ownershipViolation(e({ ...b, pid: 'dj', pidFrom: '2026-07-18' }) as any)).toMatch(/master mark not dated today/)
-    expect(ownershipViolation(e({ ...b, pid: 'dj', pidFrom: '2026-07-18', masterFrom: '2026-07-18' }) as any) ?? 'allowed').toBe('allowed')
+    /* (batch 1's second half, §16 D1′ — rewritten to the ruling's outcome: a re-link begins the role and the mark now, so
+       their moments are now too) */
+    expect(ownershipViolation(e({ ...b, pid: 'dj', pidFrom: '2026-07-18', masterFrom: '2026-07-18' }) as any) ?? 'allowed').toMatch(/not dated now/)
+    expect(ownershipViolation(e({ ...b, pid: 'dj', pidFrom: '2026-07-18', masterFrom: '2026-07-18', adminAt: Date.now(), masterAt: Date.now() }) as any) ?? 'allowed').toBe('allowed')
   })
 })
 

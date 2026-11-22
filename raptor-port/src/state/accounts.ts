@@ -106,13 +106,58 @@ export type AccountRole = 'admin' | 'main'
    home only there, only while his squadron has not changed since. Written only where the plain reading (no record: the
    squadron of his first home row, from always) would not make him an admin of the squadron he is in — a man made an admin
    after a move (adminRecFor below). Only on an admin's row; they go when the role does. */
-export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po'; seenFrom?: LinePos; createdAt?: number; master?: true; masterFrom?: string; pidFrom?: string; adminOf?: string; adminFrom?: string }
+/* `adminAt`, `masterAt`, `kept` (batch 1's second half, plan §16 D1′ and D1′a — his D2310, D2218, D2198): the MOMENTS
+   (ms) the home admin role and the master mark began — the bell shows a squadron's admin line only where the right its
+   reader holds there began no later than the line (notices.ts rightStart), so a right taken and given back later brings
+   none of the old lines back. Written by the one row writer (writeAccounts → stampMoments): `adminAt` whenever the home
+   role becomes admin (made an admin, an admin's record written anew, a re-link), `masterAt` whenever the mark is set (or
+   the account re-linked); kept while unchanged; they go with the role and the mark. `kept` — made a master admin, the
+   squadrons he held Plan of then, each with that Plan's own moment (0: one from before moments were kept): for those his
+   right counts from the Plan's start, and his bell's default for them reads "on" (state/bellsqn.ts bellDefault); written
+   by the door that sets the mark (saveAccess, setMaster), it goes with the mark. An Undo restores the row whole. Absent on
+   a row from before they were kept (D56): from always. The gate holds every one (perms.ts accountShapeAndMasterViolation). */
+export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po'; seenFrom?: LinePos; createdAt?: number; master?: true; masterFrom?: string; pidFrom?: string; adminOf?: string; adminFrom?: string; adminAt?: number; masterAt?: number; kept?: Record<string, number> }
 /* the master mark as a row keeps it — the mark, and its day where it has one; and the day of the link, where it has one;
-   and where the admin role was given, where that is recorded */
-const masterOf = (x: { master?: true; masterFrom?: string; pidFrom?: string; role?: string; adminOf?: string; adminFrom?: string }) => ({
-  ...(x.master ? { master: true as const, ...(x.masterFrom ? { masterFrom: x.masterFrom } : {}) } : {}), ...(x.pidFrom ? { pidFrom: x.pidFrom } : {}),
+   and where the admin role was given, where that is recorded; and the moments (§16 D1′) */
+const masterOf = (x: { master?: true; masterFrom?: string; pidFrom?: string; role?: string; adminOf?: string; adminFrom?: string; adminAt?: number; masterAt?: number; kept?: Record<string, number> }) => ({
+  ...(x.master ? { master: true as const, ...(x.masterFrom ? { masterFrom: x.masterFrom } : {}), ...(Number.isFinite(x.masterAt) ? { masterAt: x.masterAt } : {}), ...(x.kept ? { kept: { ...x.kept } } : {}) } : {}), ...(x.pidFrom ? { pidFrom: x.pidFrom } : {}),
   ...(x.role === 'admin' && x.adminOf ? { adminOf: x.adminOf, ...(x.adminFrom ? { adminFrom: x.adminFrom } : {}) } : {}),
+  ...(x.role === 'admin' && Number.isFinite(x.adminAt) ? { adminAt: x.adminAt } : {}),
 })
+/* a stored `kept` as the loader takes it: squadron id → a moment; anything else is none */
+const keptOf = (v: any): Record<string, number> | undefined => {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return undefined
+  const out: Record<string, number> = {}
+  for (const [k, x] of Object.entries(v)) if (isUnitId(k) && Number.isFinite(x)) out[k] = +(x as number)
+  return out
+}
+/* THE MOMENTS, STAMPED BY THE ONE ROW WRITER (§16 D1′): `prev` the row as it stood, `a` as the door leaves it */
+export function stampMoments(prev: Account | undefined, a: Account, now: number = Date.now()): Account {
+  const out: Account = { ...a }
+  const relinked = !prev || String(prev.pid) !== String(a.pid)
+  if (out.role !== 'admin') delete out.adminAt
+  else if (relinked || prev!.role !== 'admin' || prev!.adminOf !== out.adminOf || prev!.adminFrom !== out.adminFrom) out.adminAt = now
+  else if (prev!.adminAt === undefined) delete out.adminAt
+  else out.adminAt = prev!.adminAt
+  if (out.master !== true) { delete out.masterAt; delete out.kept }
+  /* (`kept` as the door wrote it — but never carried to another man by a re-link: those Plans were the old man's) */
+  else if (relinked || prev!.master !== true) { out.masterAt = now; if (relinked && prev) delete out.kept }
+  else {
+    if (prev!.masterAt === undefined) delete out.masterAt; else out.masterAt = prev!.masterAt
+    if (prev!.kept === undefined) delete out.kept; else out.kept = { ...prev!.kept }
+  }
+  return out
+}
+/* made a master admin: the squadrons he holds Plan of today, each with that Plan's moment (§16 D1′a) */
+function keptPlans(a: Account): Record<string, number> | undefined {
+  const today = todayIso(), acct = levelAcct(a)
+  const out: Record<string, number> = {}
+  for (const g of unitRows().grants) {
+    if (g.account !== a.id || g.level !== 'admin' || grantOfOn(acct, g.unit, today)?.id !== g.id) continue
+    out[g.unit] = Number.isFinite(g.fromAt) ? g.fromAt! : 0
+  }
+  return Object.keys(out).length ? out : undefined
+}
 /* `seat` 'FCP' | 'RCP' | 'GND' (never '' on a request made now — the card refuses it; an
    old stored one reads '' and the admin picks at approval); `cat` '' for personnel */
 export interface AccessRequest { id: string; name: string; cs: string; ini: string; seat: string; cat: string; at: number; seenBy: string[]; unit: string }
@@ -221,9 +266,10 @@ export function readAccounts(images: any[], why?: (text: string) => void, person
       ...(x.on === false && x.offBy === 'po' ? { offBy: 'po' as const } : {}),
       ...(isPos(x.seenFrom) ? { seenFrom: { at: +x.seenFrom.at, lineId: x.seenFrom.lineId } } : {}),
       ...(Number.isFinite(x.createdAt) ? { createdAt: +x.createdAt } : {}),
-      ...(x.master === true ? masterOf({ master: true, ...(validIso(x.masterFrom) ? { masterFrom: String(x.masterFrom) } : {}) }) : {}),
+      ...(x.master === true ? masterOf({ master: true, ...(validIso(x.masterFrom) ? { masterFrom: String(x.masterFrom) } : {}), ...(Number.isFinite(x.masterAt) ? { masterAt: +x.masterAt } : {}), ...(keptOf(x.kept) ? { kept: keptOf(x.kept) } : {}) }) : {}),
       ...(validIso(x.pidFrom) ? { pidFrom: String(x.pidFrom) } : {}),
       ...(x.role === 'admin' && isUnitId(x.adminOf) ? { adminOf: String(x.adminOf), ...(validIso(x.adminFrom) ? { adminFrom: String(x.adminFrom) } : {}) } : {}),
+      ...(x.role === 'admin' && Number.isFinite(x.adminAt) ? { adminAt: +x.adminAt } : {}),
     })
   }
   return out
@@ -572,7 +618,11 @@ function commitIntent(type: typeof ACCOUNT_TYPES[number], meta: any, fn: () => v
 /* a write stores EXACTLY the rows this command's list edit changed — the list before it against the list after (plan
    §2.2: never inferred from storage, so a stale client never removes what it has not read); the very first write on a
    store still holding the seeded list stores every account it leaves, so no seeded account is lost */
-function writeAccounts(next: Account[]) {
+function writeAccounts(next0: Account[]) {
+  /* (the moments, stamped here for every door at once — §16 D1′: a right begun is dated now, one unchanged keeps its own) */
+  const prevById = new Map(ACCOUNTS_LIST.map(a => [a.id, a]))
+  const now = Date.now()
+  const next = next0.map(a => stampMoments(prevById.get(a.id), a, now))
   const before = new Map(ACCOUNTS_LIST.map(a => [a.id, JSON.stringify(accountRow(a))]))
   for (const a of next) {
     const row = accountRow(a)
@@ -719,7 +769,8 @@ export function setMaster(id: string, on: boolean): { ok: boolean; message?: str
   if (on && a.role !== 'admin') return { ok: false, message: 'This change could not be saved.' }
   const next: Account = { ...a }
   /* (its day with it — fault P: a line his move retired stays retired however the mark comes later) */
-  if (on) { next.master = true; next.masterFrom = todayIso() } else { delete next.master; delete next.masterFrom }
+  /* (and, made one, the squadrons he holds Plan of with each Plan's moment — §16 D1′a; writeAccounts dates the mark) */
+  if (on) { next.master = true; next.masterFrom = todayIso(); const k = keptPlans(a); if (k) next.kept = k; else delete next.kept } else { delete next.master; delete next.masterFrom; delete next.kept }
   const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? next : x))
   /* (only an admin's account counts as a master admin left — D2260) */
   if (!list.some(x => x.master && x.role === 'admin')) return { ok: false, message: 'At least one master admin must be left' }
@@ -780,7 +831,9 @@ export function saveAccess(id: string, want: AccessSave): string | null {
     if (roleCh) { const other = otherSquadronProblem(a.pid); if (other) return other }
   }
   const next: Account = { ...a, role: roleAfter }
-  if (masterCh) { if (masterAfter) { next.master = true; next.masterFrom = today } else { delete next.master; delete next.masterFrom } }
+  /* (made one, the Plan rows the Save drops below are kept on his account, each with its moment — §16 D1′a: for those
+     squadrons his right counts from the Plan's start, and his bell's default reads "on"; his own bell choices still win) */
+  if (masterCh) { if (masterAfter) { next.master = true; next.masterFrom = today; const k = keptPlans(a); if (k) next.kept = k; else delete next.kept } else { delete next.master; delete next.masterFrom; delete next.kept } }
   const next0 = roleCh ? adminRecFor(next) : next
   /* the squadrons' part */
   for (const ln of lines) {

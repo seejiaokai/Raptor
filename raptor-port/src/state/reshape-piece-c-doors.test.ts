@@ -149,7 +149,8 @@ describe('the gate holds it past the door — the commands it now judges', () =>
     const r = commitSettingsIntent('unit.add', null, () => {
       store.set(UNIT_PFX + 'ux2', { id: 'ux2', num: '152', kind: 'sqn' })
       store.set(UNITPLACE_PFX + 'upx2', { id: 'upx2', unit: 'ux2', place: 'p1', from: todayIso() })
-      store.set(GRANT_PFX + 'gx2', { id: 'gx2', account: ACCT.hunter, unit: 'ux2', level: 'admin', from: todayIso() })
+      /* (its moment — batch 1's second half, §16 D1′: a Plan is dated now as well as today) */
+      store.set(GRANT_PFX + 'gx2', { id: 'gx2', account: ACCT.hunter, unit: 'ux2', level: 'admin', from: todayIso(), fromAt: Date.now() })
     }) as any
     expect(r.ok, JSON.stringify(r)).toBe(true)
   })

@@ -738,9 +738,72 @@ export function noticeLeftBell(n: Pick<Notice, 'to' | 'at' | 'iid' | 'what' | 'f
     }
     return false
   }
-  const moved = homeChangesOn(to, wrote, today).length > 0
+  const moves = homeChangesOn(to, wrote, today)
   /* (the move first: it is the cheap question, and asks no input — read for every line each time a bell is drawn) */
-  return moved && !noticeAboutHim(n)
+  if (!moves.length || noticeAboutHim(n)) return false
+  /* A MASTER ADMIN'S MOVE KEEPS THE SQUADRONS HE IS STILL ADMIN OF (batch 1's second half, plan §16 D1′b — R3-F6; his
+     D2198, D2218): a squadron's admin line (a posting's, its take-back's, a holiday's) carries its squadron (`u`), so it
+     leaves on a move day only where, from that day, he is not admin of that squadron by any road (adminThen: the master
+     mark, or Plan held before the day began). A Plan holder's move ends his Plan (D2203), so his lines still leave. A
+     line with no stamp (D56) is his old home's business, as before. */
+  const u = adminLineSquadron(n)
+  if (!u) return true
+  const acct = accountOfPid(to)
+  return moves.some(d => !(acct && adminThen(acct, u, d)))
+}
+/* the squadron of an admin-kind line — a posting's, its take-back's, a holiday's (§16 D1′) — stamped with it; else null */
+const ADMIN_KINDS = new Set(['po', 'poback', 'oilhol'])
+function adminLineSquadron(n: Pick<Notice, 'iid' | 'what'> & { u?: string }): string | null {
+  const p: any = (n.what || [])[0]
+  return !n.iid && p && ADMIN_KINDS.has(p.k) && typeof n.u === 'string' && n.u ? n.u : null
+}
+/** WHEN DID THE ADMIN RIGHT HE HOLDS IN THAT SQUADRON NOW BEGIN? (batch 1's second half, plan §16 D1′ — his D2310, D2218)
+ *  Null: he holds none today by his account's own role (never the role in force — a tap to the member view retires
+ *  nothing). Else the earliest moment among the roads that hold: his home's admin role (Account.adminAt), Plan of it
+ *  (Grant.fromAt — Plan is an admin's), the master mark (Account.masterAt; for a squadron he held Plan of when made one,
+ *  that Plan's own moment, Account.kept — D1′a). A road with no moment (a row from before they were kept — D56) counts
+ *  from always. `roads` 'rights' — the Plan and the mark only (a filer told through a right, R3-O2). */
+export function rightStart(pid: string, u: string, iso: string = todayIso(), roads: 'all' | 'rights' = 'all'): number | null {
+  const acct: any = accountOfPid(pid)
+  if (!acct || !isAdminRole(acct)) return null
+  let best: number | null = null
+  const take = (x: unknown): void => { const v = typeof x === 'number' && Number.isFinite(x) ? x : -Infinity; best = best == null ? v : Math.min(best, v) }
+  if (acct.master === true) {
+    const k = acct.kept && typeof acct.kept === 'object' && Object.prototype.hasOwnProperty.call(acct.kept, u) ? acct.kept[u] : undefined
+    take(typeof k === 'number' && Number.isFinite(k) ? (Number.isFinite(acct.masterAt) ? Math.min(k, acct.masterAt) : -Infinity) : acct.masterAt)
+  }
+  if (homeOn(pid, iso) === u) {
+    if (roads === 'all' && levelOfAccount(levelAcct({ ...acct, master: undefined }), u, iso) === 'admin') take(acct.adminAt)
+  } else {
+    const g = grantOfOn({ id: acct.id, pid: String(acct.pid), pidFrom: acct.pidFrom }, u, iso)
+    if (g && g.level === 'admin') take(g.fromAt)
+  }
+  return best
+}
+/** IS THE RIGHT THAT BROUGHT THIS LINE STILL HELD, WITHOUT A BREAK SINCE THE LINE? (§16 D1′ — his D2310: "a squadron's
+ *  admin lines stay only while he has been its admin without a break"; D2218: a line leaves for good.) An admin-kind line
+ *  (adminLineSquadron) is live only while (1) its reader holds an admin right in its squadron by his account's own role —
+ *  so it leaves at once on every road that ends the right: a command, an Undo, a Redo, an archive, an Overseas posting —
+ *  and (2) that right began no later than the line, so a right given back later brings none of the old lines back; an
+ *  Undo of the take-away restores the row whole, its moment with it, and the lines come back. A worked-out "off the
+ *  manpower" line (leavewar/sync.ts postedLinesOf) is judged by its posting's day: a posting dated before the day the
+ *  right began is not shown — one of that very day shows (a posting keeps a day, not a moment: the agent's reading,
+ *  told to him). A line about the reader himself (his own posting) stays. A line he was told only as an input's filer
+ *  (`fu`) stays while one of its squadrons is his home, or a right of his in one — Plan or the mark — began no later than
+ *  it (R3-O2). Nothing is deleted: the lines are kept, and the change history keeps everything. */
+function rightHolds(n: Notice, today: string): boolean {
+  const u = adminLineSquadron(n)
+  if (u) {
+    if (noticeAboutHim(n)) return true
+    const s = rightStart(String(n.to), u, today)
+    if (s == null) return false
+    return n.id.startsWith('po:') ? s === -Infinity || dayOfAt(s) <= n.day : s <= n.at
+  }
+  if (n.iid && Array.isArray(n.fu) && n.fu.length && !noticeAboutHim(n)) {
+    const to = String(n.to), home = homeOn(to, today)
+    return n.fu.some(x => { if (x === home) return true; const s = rightStart(to, x, today, 'rights'); return s != null && s <= n.at })
+  }
+  return true
 }
 
 /** IS THIS NOTICE ONE TO SHOW? Every notice about an input is. A holiday's is only while an input on its dates still
@@ -751,6 +814,8 @@ export function noticeLeftBell(n: Pick<Notice, 'to' | 'at' | 'iid' | 'what' | 'f
 export function noticeLive(n: Notice): boolean {
   /* a line of his old squadron's, once he has moved (D2218 — noticeLeftBell, above) */
   if (noticeLeftBell(n)) return false
+  /* a squadron's admin line whose right has ended, or begun again since (§16 D1′ — rightHolds, above) */
+  if (!rightHolds(n, todayIso())) return false
   /* A SQUADRON HIS BELL'S SWITCH HAS OFF (batch 1's second half §7 item 3, §15 D6, §16 D5′ — D2198, D2202; state/bellsqn.ts):
      asked here, the one body, so a line switched off is neither listed, counted, lighting the bell nor marked read; kept,
      it is back as he left it once switched on. Never of a line about him (his own leave, his own posting, an input he is
