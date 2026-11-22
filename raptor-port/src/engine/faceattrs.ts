@@ -8,7 +8,7 @@
    the owner's D2005 (12 Nov 26): a published day is checked by every Logic setting it was published under (below,
    withDayRules); the brief lead is still the one setting it PRINTS, so the only one compared (publish.ts warnDelta).
    Synchronous, restored in finally; nothing inside may write. Outside an issued face everything reads live. */
-import { PEOPLE, SEATRANK, QORDER } from './people'
+import { PEOPLE, SEATRANK, QORDER, sansOnP } from './people'
 import { rosterOf } from './roster'
 import { UNIT } from './unitview'
 import { VCONF, SHIFT_HARD, withRuleVals } from './rules'
@@ -33,12 +33,29 @@ export function rosterIds(iso: string): string[] {
 export function rosterShown(iso: string): string[] {
   return FA && FA.ros ? FA.ros.filter((id: any) => !!(PEOPLE as any)[id]) : rosterIds(iso)
 }
-/* the person as the face being drawn shows him: the issued attributes over today's record (callsign and all else live) */
+/* THE DAY BEING DRAWN (owner D2313, 22 Nov 26 — "a man counts as SANS only from the date his SANS starts, on every
+   screen"): a puck is drawn for a man ON A DAY, and whether it wears the SANS line is that day's fact, not today's
+   (engine/people.ts sansOn). The builders of a day — the week's day, the board's, the crew list, the ALL AVAIL window —
+   run inside `withDrawDay`, and `personShown` then hands the puck the man as he was on that day. Outside one (a puck
+   drawn about no day: the Quals page, a picker) he reads as he is today. Scoped and restored like the face above. */
+let DRAW_ISO: string | null = null
+export function withDrawDay<T>(iso: string | null | undefined, fn: () => T): T {
+  const outer = DRAW_ISO
+  DRAW_ISO = iso || null
+  try { return fn() } finally { DRAW_ISO = outer }
+}
+const onDrawDay = (p: any): any => {
+  if (!p || !DRAW_ISO) return p
+  const s = sansOnP(p, DRAW_ISO)
+  return s === !!p.san ? p : { ...p, san: s }
+}
+/* the person as the face being drawn shows him: the issued attributes over today's record (callsign and all else live) —
+   an issued version kept whether he was SANS on its own day (publish.ts attrsOf), so its own answer stands */
 export function personShown(id: any): any {
   const p = (PEOPLE as any)[id]
-  if (!p || !FA || !FA.pa) return p
+  if (!p || !FA || !FA.pa) return onDrawDay(p)
   const f = FA.pa[id]
-  if (!f) return p
+  if (!f) return onDrawDay(p)
   return { ...p, q: f.q ?? undefined, seat: f.seat ?? undefined, pers: !!f.pers, san: !!f.san, sxo: !!f.sxo }
 }
 /* the crew order the app sorts men by (people.ts byCrew — seat, then CAT, then callsign), read as the face being drawn

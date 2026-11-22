@@ -3,8 +3,9 @@
    went out (fableoil-sans-crowd.test.ts). These pin what that fix must NOT move:
    - from his posting date on he is SANS, out of the ALL AVAIL crowd (D283), and a day already published for those dates
      still reads pending — nothing on a published day changes without the scheduler acknowledging it (D44, D45);
-   - a SANS tick made by hand on Quals keeps no date, so it is read on every date exactly as before: out of every crowd,
-     a published day he was free on reading pending (no date is invented for it — a question for the owner);
+   - (a SANS tick made by hand on Quals was pinned here as "keeps no date, read on every date — a question for the owner".
+     He answered it the same day, D2313: a hand tick counts from the day it is made, a re-tick after a posting keeps the
+     posting's date. The three tests below now hold that; the full set is sans-from-date.test.ts.)
    - a SANS posting still to come changes no crowd. */
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { storeBackend } from '../engine/hooks'
@@ -96,29 +97,33 @@ describe('a man posted out as SANS — from his posting date on he is out of the
   })
 })
 
-describe('a SANS tick made by hand on Quals keeps no date — read on every date, exactly as before', () => {
-  it('he is out of the crowd on every day, the days before the tick included', () => {
+describe('a SANS tick made by hand on Quals counts from the day it is made (owner D2313, 22 Nov 26)', () => {
+  it('he is out of the crowd from the day of the tick; the days before it keep him', () => {
     onlyTheEvent(MON); onlyTheEvent(THU)
     expect(crowd(MON_ISO, MON)).toContain('rocky')
-    expect(updatePersonField('rocky', { tick: 'san' } as any)).toBeNull()
+    expect(updatePersonField('rocky', { tick: 'san' } as any)).toBeNull()   // ticked Wed 15 Jul
     raptorNotify()
     expect(P('rocky').san).toBe(true)
     expect(P('rocky').sanBy, 'a hand tick carries no posting mark').toBeUndefined()
-    expect(crowd(MON_ISO, MON), 'Mon 13 Jul: out, as today').not.toContain('rocky')
+    expect(P('rocky').sanFrom, 'it keeps the day it was made').toBe(WED_ISO)
+    expect(crowd(MON_ISO, MON), 'Mon 13 Jul, before the tick: the crowd as it was').toContain('rocky')
     expect(crowd(THU_ISO, THU), 'Thu 16 Jul: out').not.toContain('rocky')
   })
 
-  it('a published day he was free on reads pending after the hand tick, as before', () => {
-    onlyTheEvent(MON)
+  it('a published day before the tick reads nothing pending; one after it still does', () => {
+    onlyTheEvent(MON); onlyTheEvent(THU)
     sign(MON); commitSetDayApproved(MON, true)
+    sign(THU); commitSetDayApproved(THU, true)
     expect(dayPendingItems(MON).length).toBe(0)
+    expect(dayPendingItems(THU).length).toBe(0)
     expect(updatePersonField('rocky', { tick: 'san' } as any)).toBeNull()
     raptorNotify()
-    expect(dayPendingItems(MON).length, 'unchanged by the fix: the hand tick is read on every date').toBeGreaterThan(0)
+    expect(dayPendingItems(MON).length, 'Mon 13 Jul went out before he was SANS: unchanged').toBe(0)
+    expect(dayPendingItems(THU).length, 'he left Thursday’s crowd: the scheduler is shown it (D44, D45)').toBeGreaterThan(0)
   })
 
-  it('a hand tick put on after a SANS posting drops the posting’s date with its mark, as before', () => {
-    onlyTheEvent(MON)
+  it('a hand tick put back after a SANS posting keeps the posting’s date, though the mark is the admin’s own', () => {
+    onlyTheEvent(MON); onlyTheEvent(THU)
     expect(postOut('rocky', WED_ISO, 'sans')).toBe(true)
     raptorNotify()
     expect(crowd(MON_ISO, MON)).toContain('rocky')
@@ -128,6 +133,8 @@ describe('a SANS tick made by hand on Quals keeps no date — read on every date
     raptorNotify()
     expect(P('rocky').san).toBe(true)
     expect(P('rocky').sanBy).toBeUndefined()
-    expect(crowd(MON_ISO, MON), 'a hand tick: read on every date').not.toContain('rocky')
+    expect(P('rocky').sanFrom, 'SANS from the posting’s date still').toBe(WED_ISO)
+    expect(crowd(MON_ISO, MON), 'Mon 13 Jul, before his SANS date: in').toContain('rocky')
+    expect(crowd(THU_ISO, THU), 'Thu 16 Jul: out').not.toContain('rocky')
   })
 })

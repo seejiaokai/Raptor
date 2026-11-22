@@ -19,7 +19,8 @@
    3. a callsign goes through renameCallsign (the uniqueness rule and the callsign index —
       Astra R3-5), never a bare assignment.
    The behaviour of each op is moved unchanged from QualsPage.tsx (its toasts included). */
-import { PEOPLE, deriveQuals, isInstrPilot } from '../engine/people'
+import { PEOPLE, deriveQuals, isInstrPilot, sansStart, sansStop } from '../engine/people'
+import { sansPostedFrom } from '../leavewar/sync'
 import { renameCallsign } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
@@ -79,7 +80,14 @@ export function updatePersonField(pid: string, op: QualsOp): string | null {
          tick through (15 Aug / 18 Aug 26) */
       /* a hand SANS tick is the admin's own: it drops the posting's mark (`sanBy: 'po'`), so no take-back of a SANS
          posting ever undoes it ([POST-OUT-OUTCOMES], the plan's Round 1, Astra A5 — found missing by Fable's scenarios) */
-      if (k === 'san') { p.san = !!next; delete p.sanBy; if (next) p.sanQ = p.sanQ || { flown: 0, carry: 0, missedQtrs: 0 } }
+      /* …AND IT COUNTS FROM THE DAY IT IS MADE (owner D2313, 22 Nov 26): the days before a tick put on stay a regular's,
+         the days before one taken off stay SANS — so a published day's ALL AVAIL crowd, its sign-offs and its OIL are not
+         moved by a tick made later (engine/people.ts sansOn). Put back on a man a SANS posting made SANS, it is SANS from
+         the posting's date again, never from the day of the re-tick (D2313 (b) — the posting's own record says which). */
+      if (k === 'san') {
+        if (next) sansStart(p, sansPostedFrom(pid) ?? todayIso()); else sansStop(p, todayIso())
+        delete p.sanBy
+      }
       if (k === 'sxo') p.sxo = !!next
       /* the Scheduler tick is kept with the squadron and day it was given in (core line 4, 22 Nov 26 — his D2160: the
          tick ends in the old squadron on a move's date, so the squadron he joins ticks him anew —

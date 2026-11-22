@@ -3,7 +3,7 @@
    store's notify(). The CX-with-a-reason dialog state lives here too. */
 import { DAYS } from '../engine/data'
 import { mkNote, noteText } from '../engine/note'
-import { briefLeadShown } from '../engine/faceattrs'
+import { briefLeadShown, withDrawDay } from '../engine/faceattrs'
 import { INPUTS, inputsOn, inputCoversDate, inpById, inpTimeText, inpId, inputReadPass, remarksTyped } from '../engine/inputs'
 import { onCommon } from '../engine/grouprows'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
@@ -48,6 +48,7 @@ import * as view from '../state/view'
 import { esc, escMsg } from '../state/view'
 import { notify, notifyBoard, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
+import { dayIso } from '../engine/verid'
 import { shiftWeek } from './weeknav'
 import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemMasked, oilItemCellHTML, oilItemHistName, oilPersonSays, DAY_EARNS_NOTHING, inertSays, placeholderWhy } from './oilmode'
 import { rowItemKey } from '../engine/oil'
@@ -75,7 +76,8 @@ const afterSchedMutate = () => view.afterSchedMutate()
    answer to validation, signing or publication — none of which run in here. */
 /* …and the inputs' per-person lines once a date ([ALL-AVAIL-AS-MEMBER] step 1 — engine/inputs.ts inputReadPass): the
    same contract, the same reason. */
-export function boardHTML(di: number, pv?: boolean) { return inputReadPass(() => oilReadPass(() => publishReadPass(() => boardHTMLBody(di, pv)))) }
+/* (inside `withDrawDay`, as the week's day is — ui/html.ts dayHTML: a puck's SANS line is the day's own fact, D2313) */
+export function boardHTML(di: number, pv?: boolean) { return withDrawDay(dayIso(String(CURWEEK), +di || 0), () => inputReadPass(() => oilReadPass(() => publishReadPass(() => boardHTMLBody(di, pv))))) }
 function boardHTMLBody(di: number, pv?: boolean) {
   /* a QUARANTINED loaded week is read-only and its days are the seed placeholder;
      the board is a third surface that reached the ordinary builder and painted the

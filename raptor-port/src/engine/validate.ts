@@ -1,4 +1,4 @@
-import { PEOPLE, isSpecial, realP, whoId, isOcu, isInstr, isInstrPilot, aarOK, aarInstrOK, scShiftKind, scQualOK } from './people'
+import { PEOPLE, isSpecial, realP, whoId, isOcu, isInstr, isInstrPilot, aarOK, aarInstrOK, scShiftKind, scQualOK, sansOnP } from './people'
 import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel, inpMeta, withFrozenInputs, inputReadPass, frozenInputDiffs, stableJson } from './inputs'
 import { VCONF, SHIFT_HARD, withLiveRules } from './rules'
 import { overlap, hm24, lgT, parseHM } from './time'
@@ -1538,8 +1538,10 @@ function validateCore(){
     day.fly.forEach((e:any)=>sansChecks.push({id:e.id,domain:'fly',s:Math.min(e.report,e.step),en:e.dekit,to:e.to,label:e.label,key:e.key}));   // `to` names the line ([WARN-WORDS-STANDALONE])
     day.events.forEach((e:any)=>{ const m=/^s:\d+\.(amt|oft)\./.exec(String(e.key||'')); if(!m)return;
       sansChecks.push({id:e.id,domain:m[1],s:e.s,en:e.e,label:e.label,key:e.key}); });
-    sansChecks.forEach((c:any)=>{ const p=PEOPLE[c.id]; if(!p||!p.san)return;
-      const g=sansGate(c.id,day.dt,c.domain,c.s,c.en);
+    /* (only a man SANS ON THIS DAY — D2313: a day before his SANS date asks no SANS availability of him) */
+    const sansIso=dayIso(String(CURWEEK),di);
+    sansChecks.forEach((c:any)=>{ const p=PEOPLE[c.id]; if(!p||!sansOnP(p,sansIso))return;
+      const g=sansGate(c.id,day.dt,c.domain,c.s,c.en,sansIso);
       if(g.status!=='not-offered'&&g.status!=='window')return;
       /* [BLANK-LINE-SANS-WORDS]: a seat with no times yet has nothing to hold his offered window against — no clash to
          word, as the crew list (which strikes him only against a window) already says */
@@ -2048,7 +2050,7 @@ function untouchedKept(){
       const now=[...hidden()].filter((k:any)=>raised.has(k)).sort().join('\n');
       const was=(((snap.w&&snap.w.wo)||[]) as any[]).map(String).filter((k:any)=>raised.has(k)).sort().join('\n');
       if(now!==was)return;}
-    if(snap.pa&&stableJson(peopleAttrsNow(snap.pa))!==stableJson(snap.pa))return;
+    if(snap.pa&&stableJson(peopleAttrsNow(snap.pa,dayIso(String(CURWEEK),di)))!==stableJson(snap.pa))return;
     if(faceRuleValsCompared(snap.d)&&snap.rv.briefLead!=null&&+snap.rv.briefLead!==+VCONF.briefLead)return;   // the brief it prints reads pending (D186)
     out.push({d,rv:snap.rv});
   });

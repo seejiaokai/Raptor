@@ -39,6 +39,7 @@ import { ruleNow } from './rules'
 import { oilRuleShift } from './oilev'
 import { canonicalDiff } from './canonical'
 import { keepRulesOn, keptRulesDiffer, withDayRules } from './faceattrs'
+import { dayIso } from './verid'
 import { viewOfWeek, deletedOverlayDue, landingDue } from './overlay'
 
 /* weekBundle(v) is a pure function of v for the two authored weeks and a
@@ -101,7 +102,7 @@ function keepUntouchedRules(v:any,days:any[]){
     if(dt!=null&&(filingDiffers(snap.fil,dt,true)||frozenInputDiffs(snap.inp,dt).length>0))continue;
     /* …and the men on it and the brief it prints, as the loaded week's validate.ts untouchedKept asks (the two blind
        reads, 12 Nov 26): a neighbour day with either waiting previews its next amendment, as its own week does */
-    if(snap.pa&&stableJson(peopleAttrsNow(snap.pa))!==stableJson(snap.pa))continue;
+    if(snap.pa&&stableJson(peopleAttrsNow(snap.pa,dayIso(String(v),di)))!==stableJson(snap.pa))continue;
     if(faceRuleValsCompared(snap.d)&&snap.rv.briefLead!=null&&+snap.rv.briefLead!==+ruleNow('briefLead'))continue;   // today's, even if a day's kept values are laid on
     /* …and its OIL: an OIL setting changed so that the day's OIL would change waits on it as one pending entry (publish.ts
        oilRuleDelta, D2044), so it too previews its next amendment by today's settings (D2013) — Astra's blind read,
