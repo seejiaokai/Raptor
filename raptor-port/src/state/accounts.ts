@@ -343,7 +343,7 @@ export const accountOfPid = (pid: any): Account | undefined => ACCOUNTS_LIST.fin
 export const requestByName = (name: any): AccessRequest | undefined => ACCESS_REQS.find(r => r.name === normName(name))
 /* ---- WHO A REQUEST IS FOR (batch 1's second half §5 — D2111, D2094; §15 D3, D12) ----
    A request is its squadron's: the admins of that squadron — its own, a Plan holder of it, a master admin (the one
-   answer, levelOfAccount — "an admin of 149", D2299) — see it, are told of it and answer it, and nobody else.
+   answer, levelOfAccount — "an admin of 149", D2336) — see it, are told of it and answer it, and nobody else.
    `requestsFor` — every request an account is an admin of the squadron of (the bell: every squadron of his; the
    bell's squadron switch, D2198, is step F's); `waitingHere` — those of the page's squadron (`pageUnit('own')`),
    which the Waiting list shows and the Admin tab's and the drawer's badges count, so every badge has a row behind it. */
@@ -799,7 +799,7 @@ export function setMaster(id: string, on: boolean): { ok: boolean; message?: str
      of his own squadron (otherSquadronProblem); a row where only another squadron's line changed asks none of these
      (Kestrel giving Hunter View of 149 — R-O3b);
    - each squadron's line → setGrant / removeGrant's for that squadron: Plan given, changed or taken only by a master admin
-     (PA1); View given or taken by an admin of that squadron (R5 — D2299's words); Plan only on an admin's account, judged
+     (PA1); View given or taken by an admin of that squadron (R5 — D2336's words); Plan only on an admin's account, judged
      on the role AFTER the Save (Member → Admin with Plan in one Save passes — R-O3c); never his own squadron; never one
      given between a move saved and its day; never on a master admin's account (R4: "Full access", no buttons);
    - the last-admin and last-master locks once, over the whole state the Save leaves.

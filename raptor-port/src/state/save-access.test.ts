@@ -95,7 +95,7 @@ describe('saveAccess — one Save', () => {
     /* …but his role is 142's to change, not 149's */
     expect(saveAccess(ACCT.hunter, { role: 'main' })).toBe("He is 142's. Only an admin of 142 can change his account.")
   })
-  it('View of a squadron is given only by an admin of it (R5, D2299): Hunter, 142 only, giving Ranger View of 149', () => {
+  it('View of a squadron is given only by an admin of it (R5, D2336): Hunter, 142 only, giving Ranger View of 149', () => {
     signInAs('hunter')
     expect(saveAccess(ACCT.ranger, { grants: { u149: 'view' } })).toBe('Only an admin of 149 can give access to 149.')
     expect(level(ACCT.ranger, 'u149')).toBe('none')

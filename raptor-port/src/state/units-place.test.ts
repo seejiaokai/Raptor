@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-/* ADMIN → SQUADRONS' DOORS (batch 1's second half, plan §6 — P2, PG1, D2196, D2298, D2299, D2308; §15 D13, §16 D13′):
+/* ADMIN → SQUADRONS' DOORS (batch 1's second half, plan §6 — P2, PG1, D2196, D2298, D2336, D2308; §15 D13, §16 D13′):
    "+ New squadron" with a new place, and a squadron's move onto a new place, are each ONE command — one Undo step; a
    place's time zone is changed only by an admin of every squadron at it, today or from a later day (a move saved for
    tomorrow counts), a master admin always; a place no squadron is at, and a new place row on its own, are a master
@@ -79,7 +79,7 @@ describe('a squadron moved onto a new place — one command, one Undo step', () 
   })
 })
 
-describe('a place\'s time zone — an admin of every squadron at it (D2299, PG1; D13)', () => {
+describe('a place\'s time zone — an admin of every squadron at it (D2336, PG1; D13)', () => {
   it('Hunter (142 only) is refused Home base\'s time zone in the drawn words; with Plan of 149 he may; Saber may', () => {
     signInAs('hunter')
     expect(setPlace({ id: 'p1', name: 'Home base', tz: 'Asia/Tokyo' })).toMatchObject({ ok: false, message: BOTH })

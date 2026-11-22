@@ -156,7 +156,7 @@ describe('Users (Admin page)', () => {
   it('the Admin tab reaches it, listing every account with its role', async () => {
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'admin')!)
     expect($('#page-admin').classList.contains('on')).toBe(true)
-    /* (Admin → Users lists the squadron in view — batch 1's second half, step C, D2297: the accounts of its people) */
+    /* (Admin → Users lists the squadron in view — batch 1's second half, step C, D2335: the accounts of its people) */
     expect($$('#accList [data-acct]').length).toBe(ACCOUNTS_LIST.filter(a => homeOn(a.pid, todayIso()) === pageUnit('own')).length)
     expect(/Admin/.test($('#accList').textContent!)).toBe(true)
     expect(accountByName('ad')).toBeTruthy()

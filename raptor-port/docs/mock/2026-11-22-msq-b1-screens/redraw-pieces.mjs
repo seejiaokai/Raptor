@@ -209,7 +209,7 @@ async function p1(sz) {
   if (sz === 'd') {
     const { ctx, page } = await session(sz, 'ad2', 'a2')
     await toUsers(page); await openRow(page, 'Ranger')
-    await ladder(page, { picked: 0, off: [1, 2, 3], note: 'Only an admin of 149 can give access to 149.' }) // D2299
+    await ladder(page, { picked: 0, off: [1, 2, 3], note: 'Only an admin of 149 can give access to 149.' }) // D2336
     await page.evaluate(() => { const n = [...document.querySelectorAll('.mq-ladder .adm-note')].pop(); window.__mq.markNew(n) })
     const f = `p1c-${sz}.png`; await shot(page, f, ['#page-admin .acc-row.od-row-on'], 40)
     rec(f, 'p1', sz, 'drawn', 'Hunter, 142\'s own admin, has opened Ranger\'s row. New: the ladder greyed whole, None lit, the line saying who may give access to 149.')
@@ -463,7 +463,7 @@ async function p7(sz) {
     const f1 = mq.el('div', 'mfield'); f1.appendChild(mq.el('label', '', 'Name')); const i1 = mq.el('input'); i1.value = 'Home base'; f1.appendChild(i1)
     const f2 = mq.el('div', 'mfield'); f2.appendChild(mq.el('label', '', 'Time zone')); const s2 = mq.el('select'); const o = mq.el('option', '', 'Perth · GMT+8'); s2.appendChild(o); s2.disabled = true; f2.appendChild(s2)
     two.appendChild(f1); two.appendChild(f2); ed.appendChild(two)
-    const n = mq.el('p', 'adm-note', 'Only an admin of both 142 and 149 can change the time zone: both squadrons are here.'); n.style.margin /* D2299 */ = '6px 0 0'; ed.appendChild(n)
+    const n = mq.el('p', 'adm-note', 'Only an admin of both 142 and 149 can change the time zone: both squadrons are here.'); n.style.margin /* D2336 */ = '6px 0 0'; ed.appendChild(n)
     const acts = mq.el('div', 'acc-acts'); const sv = mq.el('button', 'abtn primary', 'Save'); const cc = mq.el('button', 'abtn', 'Cancel'); acts.appendChild(sv); acts.appendChild(cc); ed.appendChild(acts)
     row.appendChild(ed); list.appendChild(row)
     s2.style.opacity = '.55'; n.style.margin = '6px 0 12px'
@@ -707,7 +707,7 @@ async function n1(sz) {
     await ctx.close()
   }
 }
-// nf — his D2297 (22 Nov 26): one filter button beside the search; a tap opens tick boxes in groups (Seat, CAT, Role,
+// nf — his D2335 (22 Nov 26): one filter button beside the search; a tap opens tick boxes in groups (Seat, CAT, Role,
 // and for a master admin Squadron); any tick of a group, groups combined; the button lit with its count; a line over the
 // list "Showing N of 61 · Clear". The tick boxes in the app's own filter-chip look (.fchip / .on), the panel over the list.
 async function filterBtn(page, { ticks = {}, open = false, master = false }) {

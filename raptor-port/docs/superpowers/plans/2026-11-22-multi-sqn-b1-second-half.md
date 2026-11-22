@@ -3,7 +3,7 @@
 The screens of the multi-squadron build's batch 1: the batch plan §3.6 steps 5–6
 (`2026-11-17-multi-sqn-build-batches.md`), the rest-pieces map's P1–P4, P6, P8 (`2026-11-19-multi-sqn-b1-rest-files.md`),
 the reshape plan §19's step-5 items (PE1's call sites, PF1/O3, PG1, PK1, R2, R6, R9, R10 —
-`2026-11-20-multi-sqn-b1-reshape.md`), and his rulings D2297–D2311 as drawn on the second-half page
+`2026-11-20-multi-sqn-b1-reshape.md`), and his rulings D2335–D2311 as drawn on the second-half page
 (`docs/mock/2026-11-22-msq-b1-screens/page.html`, approved whole — "as recommended for all", 22 Nov 26). **The pictures
 are the spec;** D2306's five wordings change the drawn text. Paths are under `raptor-port/src/` unless they start with
 `docs/` (= `raptor-port/docs/`) or `.claude/`. What exists today was surveyed by three read-only helpers on
@@ -33,7 +33,7 @@ are the spec;** D2306's five wordings change the drawn text. Paths are under `ra
   squadron's View-only Sched and Logic, read only (D2252, D2191). Plan is a master admin's to give (D2199) and gives full
   access (D2201, D2211); a master admin's and a Plan holder's every page follows the pick (D2197, D2241). In the member
   view a master admin or Plan holder is a member of his own squadron holding View of what he could edit (D2253). "An
-  admin of 149" covers 149's own admins, a Plan holder of it and a master admin (D2299). The right design, not the
+  admin of 149" covers 149's own admins, a Plan holder of it and a master admin (D2336). The right design, not the
   easiest (D754).
 - **Engine bodies are verbatim ports;** none changes here. The original's 728 stay 728/0 (`node reference/tfin.js`).
 - **Every existing test stays green** except those a ruling of this half rewrites (named in the report, read by the fix
@@ -134,7 +134,7 @@ The menu makes another squadron reachable, so the protection lands before it (Fa
     squadrons; a master admin flipping 142 ↔ 149 ten times changes no OIL credit in either (the batch plan §3.4's test,
     now through the menu); a pick and back keeps the Undo list and steps back only the unit in view's own changes.
 
-## 4. Step C — Admin → Users by squadron (P1, PF1/O3, D2297, D2300–D2307, D2311, [ROLE-BOX-CUT-IPHONE])
+## 4. Step C — Admin → Users by squadron (P1, PF1/O3, D2335, D2300–D2307, D2311, [ROLE-BOX-CUT-IPHONE])
 
 The layouts by Fable (D2269); the doors by Opus.
 
@@ -145,7 +145,7 @@ The layouts by Fable (D2269); the doors by Opus.
    squadron (to give him View), his row showing his squadron, the rest of it read only (R3, 5b). `linkablePeople`
    offers only the page's squadron's men. The Waiting list shows that squadron's requests (§5). Step 3's allow-list
    entry for Admin → Users in the roster guard is removed.
-2. **The filter (7a–7d; D2297, D2307):** one Filter button beside the search, a panel of tick groups — Seat (Pilots,
+2. **The filter (7a–7d; D2335, D2307):** one Filter button beside the search, a panel of tick groups — Seat (Pilots,
    WSOs, Personnel), CAT, Role (Member, Admin, "Plans 149" (D2306), Master admin), Squadron for a master admin; ticks in
    a group any of them, groups combined; lit dark on blue with its count; "Showing 1 of 61 · Clear" over the list; rows
    only hidden, A to Z kept (D322); the chips in the look of Edit Schedule's CAT / Type / Quals chips.
@@ -154,7 +154,7 @@ The layouts by Fable (D2269); the doors by Opus.
    admin (D2305's short names end the cut words); then one line per squadron, "142 Home squadron" and, for each other
    squadron in the store, "149 None · View · Plan"; a master admin's other squadrons "Full access", no buttons (R4); a
    member's Plan greyed, "Plan is for admins only." (R3, D2306); a squadron not his to give reads "Only an admin of
-   149 can give access to 149." (R5, D2299). Plan is offered only to a master admin; View to an admin of that squadron.
+   149 can give access to 149." (R5, D2336). Plan is offered only to a master admin; View to an admin of that squadron.
 5. **One Save, one command, one Undo step:** the row's changes — role, master mark, every squadron's line — are saved
    together by a new door `state/accounts.ts saveAccess(accountId, { role, master, grants })`, a new command type
    `account.access` (in `ACCOUNT_TYPES`, `COMMAND_OPS`, and the gate's list of types allowed to change the master mark,
@@ -222,7 +222,7 @@ The layouts by Fable (D2269); the doors by Opus.
    it by a 142 admin refused at the gate; a master admin and a Plan holder with requests in two squadrons — opening one
    leaves the other new, the drawer's count included; the Undo of 150 refused while a request names it.
 
-## 6. Step E — Admin → Squadrons (P2, PG1, D2196, D2298, D2299, D2306, D2308; 3a–3e)
+## 6. Step E — Admin → Squadrons (P2, PG1, D2196, D2298, D2336, D2306, D2308; 3a–3e)
 
 1. **The panel:** a "Squadrons" tab on Admin for every admin (3d is a plain admin's), the squadrons with their place,
    then the Places list with each time zone shown as GMT+X for today (`gmtLabel`); its tile wears the map pin.
@@ -232,7 +232,7 @@ The layouts by Fable (D2269); the doors by Opus.
 3. **A place's time zone (3d):** `setPlace`; the squadrons "at" a place are those with a place row there holding today
    **or any later day** (a move saved for tomorrow counts — R-O8a); where there are two or more, the door and the gate
    need an admin of every one (a master admin always) — else greyed with "Only an admin of both 142 and 149 can change
-   the time zone: both squadrons are here." (D2299; PG1 closed), the same set naming the squadrons. A place nobody sits on
+   the time zone: both squadrons are here." (D2336; PG1 closed), the same set naming the squadrons. A place nobody sits on
    yet is changed by an admin of a squadron moving there, or by the admin who made it (the gate's `placeIdOn(before,
    u.id, today)`, about l.2615, reads later rows too). With three squadrons at a place the words name all three ("Only an
    admin of 142, 149 and 150 …" — the agent's reading, §9).
@@ -344,7 +344,7 @@ name, the page reloads, the name is kept, and after he signs in his Tracker is h
   shows no buttons, so a kept row would be hidden and come back later). Archive stays outside Undo (D350).
 - **Not in this half, named:** D2220's lines to others (Plan given told to that squadron's admins, a shared place's time
   zone changed told to the other squadron — not drawn; the page promised only the three lines of §7), filed for batch
-  2's page under [MULTI-SQN-DESIGN]. The words for a place shared by three squadrons (§6 item 3) follow D2299's rule.
+  2's page under [MULTI-SQN-DESIGN]. The words for a place shared by three squadrons (§6 item 3) follow D2336's rule.
   Batch plan step 6 (the second demo squadron and the store's fresh start) is done already (step 4 seeded 149) and
   nothing here needs the store cleared — if the build finds otherwise, he is told before the merge (the page's promise).
 
@@ -374,7 +374,7 @@ lines marked built. Rulings pages are never trimmed by a source change (D29).
   Squadron group, the bell buttons, Admin → Squadrons; the time a pick takes measured on two squadrons and on eight
   at the build's start and reported to him as measured (no figure is guessed); a slow one is a finding.
 - **The drawing check** (D1494) against R1–R5, M1–M2, pictures 1–2, 3a–3e, 4, 6a–6c, 7a–7d, 8a–8c, 9a–9b, 10, at his
-  iPhone's width (402) and a desktop's (1536 × 864) — D2306's five wordings and D2299's two sentences the named
+  iPhone's width (402) and a desktop's (1536 × 864) — D2306's five wordings and D2336's two sentences the named
   departures; every other difference over about 2 px fixed or put to him.
 - **Gates:** GitHub's run (the repo is public); `npm run build` for the types; `node reference/tfin.js` 728/0.
 

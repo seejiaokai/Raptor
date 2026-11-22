@@ -246,7 +246,7 @@ const CASES = [
     lines: [{ sq: '149', picked: 1, off: [2], line: 'Plan is for admins only.' }] }, // Ranger is a member (D2250)
   // k4: Saber picks Master admin for Hunter — every other squadron reads "Full access"
   { f: 'k4', who: ['ad', 'a'], open: 'Hunter', master: true, lines: [{ sq: '149' }, { sq: '150' }] },
-  // k5: Hunter, 142's admin, opens Ranger — 149 not his to give (D2299's words); Ranger's own row stays his to change
+  // k5: Hunter, 142's admin, opens Ranger — 149 not his to give (D2336's words); Ranger's own row stays his to change
   { f: 'k5', who: ['ad2', 'a2'], open: 'Ranger', grey: 'lines', lines: [{ sq: '149', picked: 0, line: 'Only an admin of 149 can give access to 149.' }] },
 ]
 const PICK = process.env.MQ_ONLY ? process.env.MQ_ONLY.split(',') : null

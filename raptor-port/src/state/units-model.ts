@@ -149,7 +149,7 @@ export const unitIn = (r: UnitRows, id: string): Unit | undefined => r.units.fin
 export const placeIn = (r: UnitRows, id: string): Place | undefined => r.places.find(p => p.id === id)
 /* the place a unit is at on a date (its place's id), or null for a unit never placed */
 export const placeIdOn = (r: UnitRows, unit: string, iso: string): string | null => atOn(r.unitplaces.filter(x => x.unit === unit), iso)?.place ?? null
-/* THE SQUADRONS AT A PLACE (batch 1's second half §6 item 3 — D2196, D2299, PG1; §15 D13, R-O8a): every squadron whose
+/* THE SQUADRONS AT A PLACE (batch 1's second half §6 item 3 — D2196, D2336, PG1; §15 D13, R-O8a): every squadron whose
    place that day is it, or whose place row names it from a later day (a move saved for tomorrow counts) — the set an
    admin must be an admin of, every one, to change its time zone; the door (state/units.ts setPlace) and the gate
    (state/perms.ts unitRowViolation) read this one body */

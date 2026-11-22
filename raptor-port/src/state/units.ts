@@ -278,7 +278,7 @@ function newPlaceProblem(p: NewPlace): string | null {
   if (!validTz(p.tz)) return 'Pick the place’s time zone'
   return null
 }
-/* the signed-in account an admin of that squadron today — its own admin, a Plan holder, a master admin (D2299); no
+/* the signed-in account an admin of that squadron today — its own admin, a Plan holder, a master admin (D2336); no
    account behind the session (a probe's or a test's) — the gate judges */
 function signedInAdminOf(unit: string): boolean {
   const me = signedInAccount()
@@ -286,9 +286,9 @@ function signedInAdminOf(unit: string): boolean {
   /* (levelOfAccount reads the role with the level: a member is no squadron's admin; a master admin is every one's) */
   return levelOfAccount(levelAcct(me), unit, todayIso()) === 'admin'
 }
-/* WHO MAY CHANGE A PLACE (§6 item 3 — D2196, D2299, PG1; §15 D13, §16 D13′): an admin of EVERY squadron at it, today or
+/* WHO MAY CHANGE A PLACE (§6 item 3 — D2196, D2336, PG1; §15 D13, §16 D13′): an admin of EVERY squadron at it, today or
    from a later day (units-model.ts unitsAtPlace), a master admin always; a place no squadron is at, and a new place on
-   its own, a master admin's. The drawn words for two (D2299); for three or more they name every one, by the same rule
+   its own, a master admin's. The drawn words for two (D2336); for three or more they name every one, by the same rule
    (§9 — the agent's reading); for one, the drawn "Only an admin of 149 can change it." */
 const COUNT = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve']
 export function placeChangeProblem(placeId: string | undefined): string | null {

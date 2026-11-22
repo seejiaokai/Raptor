@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 /* STEP A — EDIT RIGHTS FOLLOW THE SQUADRON (the second-half plan, docs/superpowers/plans/2026-11-22-multi-sqn-b1-second-half.md
-   §2; §15 D8; D2299, D2252, D2253, D2317). The menu (step B) makes another squadron reachable, so this lands first: a
+   §2; §15 D8; D2336, D2252, D2253, D2317). The menu (step B) makes another squadron reachable, so this lands first: a
    person with View only of 149 who has 149 picked is offered none of 149's edit controls — the schedule pages, Logic,
    the templates, Admin → Squadron config, Admin → Data's two clears — while his own squadron's pages (Inputs, the OIL
    list, the settings windows of 142) stay his. Plan of 149 and the master mark: everything on, in both. The pick here is

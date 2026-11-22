@@ -335,7 +335,7 @@ export const maySchedEditPage = (iso?: string): boolean => mayEditSched() && adm
      late cut-off, the OIL list): adminOfUnit(u);
    - role — a question about the person, not a squadron (the member-view switch, a tab's visibility): isAdmin, kept. */
 export const mayEditOwnPage = (iso?: string): boolean => mayEditSched() && adminOfPage('own', iso)
-/* AN ADMIN OF THAT SQUADRON, THE ROLE IN FORCE (D2299: its own admins, a Plan holder of it, a master admin; the member
+/* AN ADMIN OF THAT SQUADRON, THE ROLE IN FORCE (D2336: its own admins, a Plan holder of it, a master admin; the member
    view is never an admin's, D292). A session with no account behind it (a hand-made test session) answers for the
    page's own squadron only, as adminOfPage does. */
 export function adminOfUnit(unit: string, iso: string = todayIso()): boolean {
@@ -2755,7 +2755,7 @@ function unitRowViolation(env: CommitEnvelope): string | null {
     } else if (id.startsWith(UNIT_PFX)) {
       if (!master) return `only a master admin makes or changes a unit (${id})`
     } else if (id.startsWith(PLACE_PFX) && !master) {
-      /* A PLACE'S SQUADRONS, TODAY OR LATER (batch 1's second half §6 item 3 — D2196, D2299, PG1; §15 D13, §16 D13′): an
+      /* A PLACE'S SQUADRONS, TODAY OR LATER (batch 1's second half §6 item 3 — D2196, D2336, PG1; §15 D13, §16 D13′): an
          existing place changed (or removed) needs an admin of EVERY squadron at it — today or from a later day, as the rows
          stood before the command and after it (units-model.ts unitsAtPlace, the door's one body) — and one no squadron is
          at, a master admin. A NEW place passes only where the same command writes a squadron's place row naming it (+ New
