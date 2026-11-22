@@ -82,13 +82,59 @@ Passed — no new gesture or mode (question 5).
 
 ## 7. The cases carried by a test
 
+All in `src/leavewar/allavail-sans-posted.test.ts`; each calls the app's writers directly (the posting, the Quals tick,
+the archive, the day's sign-off and approval, the OIL pass) and asks the crowd — none presses a control, so none stands
+in for a walked route; the route itself (the war's sheet, "+ SANS" in Settings, the count door, Publish) is walked once
+in S1 and S13.
+
+| Case | The test | What it proves |
+|---|---|---|
+| The fault: named, posted out as SANS, "+ SANS" off | "he is in the crowd of a day after his posting that names him" | he is in the crowd |
+| What it cost | "a published Saturday credits him the event's hours…" | FO, not HO, on the war's grid for a nine-hour Saturday |
+| The switch and a published day | "turning "+ SANS" on after the day is published…" | nothing pending, the same OIL, both ways |
+| Each state of a SANS posting | "the "+ SANS" switch never changes who ALL AVAIL counts" (7 tests) | planned / not planned / busy / a day before / hand untick / to come / undone: the same people both ways, and who |
+| Every other posting | "left as it was…" (3 tests) | no chip, Overseas Sqn, a SANS posting moved later: still departures |
+| An archive after a SANS posting (R1) | "F1: …" (2 tests) | in on the days before his archive, out from it; the published day's crowd unchanged |
+| A post-in date ahead (R2) | "F2: …", "left as it was: a man who is NOT SANS, not yet posted in…" | the same both ways; an ordinary man still waits for his post-in date |
+| A hand-ticked SANS man, archived (R6) | "a hand-ticked SANS man, archived…" | in before his archive, out from it |
+| Astra's S9–S11 (today's and backdated postings, untick and retick, the date moved) | the rows above, and `src/leavewar/sans-from-date.test.ts` (chat 140, walked there by w1, w2 and r1) | the dates' edges and the gap |
+| Astra's S21–S22 (what counts as named; exclusions and time edges) beyond the one clash walked in S22 | `src/leavewar/sync.wire.test.ts`, `src/engine/rulesfirst-4-availability.test.ts`, `src/leavewar/oilsync.test.ts` | the membership rules this fix leaves as they were — the changed lines sit after the SANS check and before the clash checks, and touch neither |
+| Astra's S4 (a Personal input's crowd, a row with no end) | `src/engine/oilpersonalcrowd.test.ts`, `src/engine/oilclaimcrowd.test.ts` | those crowds come through the same one door (`HOOKS.oilSentinel`) |
+
 ## 8. The pictures
 
 ## 9. The break tests
 
+The fix was built red-first, so each wired answer has a test that fails without it: commit `2785b1463` holds the first
+five failing on `main`'s code (the crowd, the FO, the published day's pending count, the switch, the hand untick), and
+three more failed on the first fix before the second (`F1` twice, `F2`) — run and seen by the host each time. The
+filed fault (m) stands in the suite as `it.fails`.
+
 ## 10. Errors seen
 
 ## 11. What was NOT walked, and why
+
+Astra designed 28 scenarios; 15 were walked (S1, S2, S3, S5, S6, S7, S8, S12, S13, S16, S17, S20, S22, S23, S28) with the
+plain-user round (S24). Set aside, each with its reason (§7.0):
+
+- **S9, S10, S11** (today's and backdated postings; untick and retick; the posting's date moved): carried by the tests of
+  §7, and their routes on screen were walked on the SANS-from-its-date job this morning
+  (`docs/handpass/2026-11-22-sans-from-date.md`, walkers w1, w2, r1) on code these lines leave as it was.
+- **S4, S21** (a Personal input's crowd and rows with no end; each kind of named item): the tests of §7 — one door, and
+  the changed lines do not read what kind of item names him (`dayEngaged` is asked as before).
+- **S14, S15** (a restore with a gap; a delete and a reused callsign): the stints and the delete are read as before
+  (`inSquadron` on the saved posting; the delete by its date above the changed lines) — `src/leavewar/stints.test.ts`,
+  `deletednorow.test.ts`, `deleteposting-restore.test.ts`, `onedoor.test.ts`, all green; the narrow read of the second
+  fix was asked about a restored SANS man by name.
+- **S18, S19** (week and period changes; Undo and Redo): the week change is walked inside S1. Undo and Redo were not
+  walked: the fix stores nothing — the crowd is worked out afresh each time it is drawn, from the saved posting, the
+  person's own dates and the day — so there is no state of this change for an Undo to restore wrongly; "Undo post out"
+  is walked (S12). Said plainly: no step pressed the top bar's Undo.
+- **S25, S26** (the Leave War's own counts, warnings and links; withdrawing a credit already used): the war's display
+  and tracking follow "+ SANS" by his D283 and are not changed (roll-call row 10); the withdrawal warning reads the
+  ledger, which the fix reaches only through a published day's crowd — walked in S1 and S6.
+- **S27** (another squadron's schedule in view): filed as (n) — a fault of its own in the two-squadron work, found by
+  both readers, not this fix's to walk.
 
 ## 12. The gate counts
 
