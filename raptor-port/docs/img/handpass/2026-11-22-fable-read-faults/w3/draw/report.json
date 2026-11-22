@@ -1,0 +1,270 @@
+{
+ "desktop": {
+  "drawn": {
+   "win": {
+    "x": 1080,
+    "y": 114,
+    "w": 440,
+    "h": 236.5
+   },
+   "row": {
+    "x": 1093,
+    "y": 172,
+    "w": 414,
+    "h": 22
+   },
+   "pill": {
+    "x": 1093,
+    "y": 172,
+    "w": 143.53,
+    "h": 22
+   },
+   "say": {
+    "x": 1246.53,
+    "y": 174,
+    "w": 117.58,
+    "h": 15
+   },
+   "count": {
+    "x": 1093,
+    "y": 204,
+    "w": 414,
+    "h": 22
+   },
+   "foot": {
+    "x": 1093,
+    "y": 316,
+    "w": 288.63,
+    "h": 15
+   },
+   "pillToCountLetter": 0,
+   "gapUnderRow": 10,
+   "gapAboveRow": 26.5,
+   "xMidOffBoxMid": 0,
+   "pillBorder": "dotted 1px rgb(138, 150, 163)",
+   "pillBg": "rgb(26, 31, 38)",
+   "pillRadius": "999px",
+   "pillFont": "13px/normal",
+   "after": "none",
+   "kColor": "rgb(138, 150, 163)",
+   "kFont": "800 10px",
+   "vColor": "rgb(138, 150, 163)",
+   "vFont": "700 11.5px",
+   "vText": "Ace",
+   "sayColor": "rgb(138, 150, 163)",
+   "sayFont": "normal 400 11.5px",
+   "sayText": "waiting for your answer",
+   "footText": "Later: Ace signs, but nobody on it earns OIL.",
+   "footColor": "rgb(138, 150, 163)",
+   "footFont": "normal 400 11.5px"
+  },
+  "built": {
+   "win": {
+    "x": 1080,
+    "y": 114,
+    "w": 440,
+    "h": 236.5
+   },
+   "row": {
+    "x": 1093,
+    "y": 172,
+    "w": 414,
+    "h": 22
+   },
+   "pill": {
+    "x": 1093,
+    "y": 172,
+    "w": 143.53,
+    "h": 22
+   },
+   "say": {
+    "x": 1246.53,
+    "y": 174,
+    "w": 117.58,
+    "h": 15
+   },
+   "count": {
+    "x": 1093,
+    "y": 204,
+    "w": 414,
+    "h": 22
+   },
+   "foot": {
+    "x": 1093,
+    "y": 316,
+    "w": 288.63,
+    "h": 15
+   },
+   "pillToCountLetter": 0,
+   "gapUnderRow": 10,
+   "gapAboveRow": 26.5,
+   "xMidOffBoxMid": 0,
+   "pillBorder": "dotted 1px rgb(138, 150, 163)",
+   "pillBg": "rgb(26, 31, 38)",
+   "pillRadius": "999px",
+   "pillFont": "13px/normal",
+   "after": "none",
+   "kColor": "rgb(138, 150, 163)",
+   "kFont": "800 10px",
+   "vColor": "rgb(138, 150, 163)",
+   "vFont": "700 11.5px",
+   "vText": "Ace",
+   "sayColor": "rgb(138, 150, 163)",
+   "sayFont": "normal 400 11.5px",
+   "sayText": "waiting for your answer",
+   "footText": "Later: Ace signs, but nobody on it earns OIL.",
+   "footColor": "rgb(138, 150, 163)",
+   "footFont": "normal 400 11.5px"
+  },
+  "diffs": [],
+  "win": {
+   "drawn": 440,
+   "built": 440,
+   "drawnH": 236.5,
+   "builtH": 236.5,
+   "drawnAt": [
+    1080,
+    114
+   ],
+   "builtAt": [
+    1080,
+    114
+   ]
+  },
+  "errs": []
+ },
+ "phone": {
+  "drawn": {
+   "win": {
+    "x": 12,
+    "y": 315.06,
+    "w": 378,
+    "h": 243.88
+   },
+   "row": {
+    "x": 25,
+    "y": 385.06,
+    "w": 352,
+    "h": 20
+   },
+   "pill": {
+    "x": 25,
+    "y": 385.06,
+    "w": 143.53,
+    "h": 20
+   },
+   "say": {
+    "x": 178.53,
+    "y": 388.56,
+    "w": 116.77,
+    "h": 12
+   },
+   "count": {
+    "x": 25,
+    "y": 415.06,
+    "w": 352,
+    "h": 22
+   },
+   "foot": {
+    "x": 25,
+    "y": 525.94,
+    "w": 226.63,
+    "h": 12
+   },
+   "pillToCountLetter": 0,
+   "gapUnderRow": 10,
+   "gapAboveRow": 32,
+   "xMidOffBoxMid": 0,
+   "pillBorder": "dotted 1px rgb(138, 150, 163)",
+   "pillBg": "rgb(26, 31, 38)",
+   "pillRadius": "999px",
+   "pillFont": "13px/normal",
+   "after": "none",
+   "kColor": "rgb(138, 150, 163)",
+   "kFont": "800 10px",
+   "vColor": "rgb(138, 150, 163)",
+   "vFont": "700 11.5px",
+   "vText": "Ace",
+   "sayColor": "rgb(138, 150, 163)",
+   "sayFont": "normal 400 11.5px",
+   "sayText": "waiting for your answer",
+   "footText": "Later: Ace signs, but nobody on it earns OIL.",
+   "footColor": "rgb(138, 150, 163)",
+   "footFont": "normal 400 11.5px"
+  },
+  "built": {
+   "win": {
+    "x": 12,
+    "y": 315.06,
+    "w": 378,
+    "h": 243.88
+   },
+   "row": {
+    "x": 25,
+    "y": 385.06,
+    "w": 352,
+    "h": 20
+   },
+   "pill": {
+    "x": 25,
+    "y": 385.06,
+    "w": 143.53,
+    "h": 20
+   },
+   "say": {
+    "x": 178.53,
+    "y": 388.56,
+    "w": 116.77,
+    "h": 12
+   },
+   "count": {
+    "x": 25,
+    "y": 415.06,
+    "w": 352,
+    "h": 22
+   },
+   "foot": {
+    "x": 25,
+    "y": 525.94,
+    "w": 226.63,
+    "h": 12
+   },
+   "pillToCountLetter": 0,
+   "gapUnderRow": 10,
+   "gapAboveRow": 32,
+   "xMidOffBoxMid": 0,
+   "pillBorder": "dotted 1px rgb(138, 150, 163)",
+   "pillBg": "rgb(26, 31, 38)",
+   "pillRadius": "999px",
+   "pillFont": "13px/normal",
+   "after": "none",
+   "kColor": "rgb(138, 150, 163)",
+   "kFont": "800 10px",
+   "vColor": "rgb(138, 150, 163)",
+   "vFont": "700 11.5px",
+   "vText": "Ace",
+   "sayColor": "rgb(138, 150, 163)",
+   "sayFont": "normal 400 11.5px",
+   "sayText": "waiting for your answer",
+   "footText": "Later: Ace signs, but nobody on it earns OIL.",
+   "footColor": "rgb(138, 150, 163)",
+   "footFont": "normal 400 11.5px"
+  },
+  "diffs": [],
+  "win": {
+   "drawn": 378,
+   "built": 378,
+   "drawnH": 243.88,
+   "builtH": 243.88,
+   "drawnAt": [
+    12,
+    315.06
+   ],
+   "builtAt": [
+    12,
+    315.06
+   ]
+  },
+  "errs": []
+ }
+}

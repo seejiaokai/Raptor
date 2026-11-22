@@ -264,7 +264,7 @@ happened, what it means for you and what to do, in a sentence a person would say
 
 **When the aims pull apart, this order (approved by him — D836, 14 Oct 26, "All approved as recommended"; it narrows
 D806's "fewest words" and D726 by a word or two where speech reads better):** every fact first (§1a's
-protected list); then a sentence a person would say; then as short as those two allow. A sentence that reads like
+protected list; a line added in a window: §9 lesson 97); then a sentence a person would say; then as short as those two allow. A sentence that reads like
 speech may be a word or two LONGER than the clipped one it replaces. It is taken when the cold reader (test 11) gets
 every fact in one reading; the change shows the words added as well as the words cut (§1a test 8); and a wording that
 ends longer than the one on screen today is marked "longer", with both word counts, where it is put to him — a longer
@@ -642,6 +642,8 @@ the lesson wins, and that rule points here. A branch that will add lessons takes
 first, as a chat does for ruling numbers, and names it in its handoff block; where two branches still meet on a number,
 the merge renumbers only the branch's own side, by script, and the closing report tells him the old and new numbers
 (D1417).*
+
+**Lesson 97 (22 Nov 26, D2312 — "too much words. be concise").** A line added inside a window is concise: only what the person must know to act. *(The agent's reading: why the design asks it stays off the screen, but a warning of what a press costs, a refusal's reason and an error's remedy stay (§1); it narrows §1b's "every fact first" for such a line — round 2's "Asked now because an answer given after signing clears the sign-offs…" became "Answer before Ace signs CUR CK.")*
 
 **Lesson 96 (19 Nov 26, D2211 — "Instead of saying as for 149's own admin. Perhaps make it clearer").** The line under an access level says plainly what the person gets, never by comparison with another role. *(The agent's reading: the same holds for any line that explains a role or a setting.)*
 

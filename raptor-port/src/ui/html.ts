@@ -1513,7 +1513,8 @@ export function saBadgesHTML(key:any,a:any,ed:any,board?:boolean){
    from the schedule is never late (D741), so the first man's record alone could say "on time" for an input whose
    other people filed late. `lateMates` is the records one drawn mark speaks for: every live record of the entry, for
    an activity input not filed under Unavailable (that list stays a row a man — D737 — and each row there keeps its
-   own mark). A copy that is not the live record (the one an issued face holds) and an ordinary input speak for
+   own mark — drawn from his own face; the DROP is still the input's one mark, D1586's "saved on the input", so a tap on
+   one man's chip there drops it for every man of the input). A copy that is not the live record (the one an issued face holds) and an ordinary input speak for
    themselves alone. Every helper below asks it, so the passive tag, the board's chip, the promoted row's amber edge
    and its tooltip agree. */
 export function lateMates(inp:any):any[]{

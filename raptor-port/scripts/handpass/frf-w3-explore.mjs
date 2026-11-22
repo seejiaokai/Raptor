@@ -1,0 +1,17 @@
+// frf-w3 explore: what the doors are on this build (not evidence)
+import * as L from './frf-w3-lib.mjs'
+console.log('frf-w3-explore v2')
+const sz = L.SIZES.desktop
+const { b, p } = await L.open(sz)
+await L.login(p, 'ad')
+const people = await p.evaluate(() => [...document.querySelectorAll('#inpEditPop #inpEditPerson option')].length)
+const r = await L.fileInput(p, sz, L.SAT, { type: 'Training', person: 'bane', from: '08:00', to: '17:00', answer: 'y' })
+console.log('admin filing', r)
+console.log(await p.evaluate(iid => JSON.stringify(window.INPUTS.find(x => String(x.iid) === iid)), r.iid))
+await L.closeInpDay(p)
+await L.openBoard(p)
+console.log('board sign selects', await p.evaluate(() => [...document.querySelectorAll('select[data-sign]')].map(s => s.closest('#schedBoard') ? 'B' : s.closest('#eWeek') ? 'W' : '?').join('')))
+console.log('signs', await L.signs(p))
+await L.shot(p, sz, 'x-board')
+await L.done(b)
+console.log(L.errs)

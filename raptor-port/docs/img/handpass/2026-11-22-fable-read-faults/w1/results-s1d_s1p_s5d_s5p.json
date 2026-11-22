@@ -1,0 +1,570 @@
+[
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "premise",
+  "what": "the man of the crowd",
+  "ok": null,
+  "note": "id rocky callsign Hex seat RCP SANS false; no callsign \"Rocky\" on the roster"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-01",
+  "what": "Common Programme row SQN EVENT 08:00–15:00 with ALL AVAIL, made by + Item, typing and a tap (armed a:5.0.+)",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"08:00\",\"end\":\"15:00\",\"who\":\"allavail\"}",
+  "pics": "s1-01-row-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-02",
+  "what": "Saturday signed and published (Publish day pressed)",
+  "ok": true,
+  "note": "{\"pend\":0,\"pendWords\":\"\",\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true}",
+  "pics": "s1-02-published-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-03",
+  "what": "Leave War: Hex's 18 Jul reads FO after the publish",
+  "ok": true,
+  "note": "cell \"FO*\", chip before 45",
+  "pics": "s1-03-lw-fo-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-04",
+  "what": "posted out as SANS from Mon 20 Jul through the bid sheet's ⋯ → Post out → SANS",
+  "ok": true,
+  "note": "line \"On 20 Jul: becomes SANS.\" · {\"san\":true,\"sanBy\":\"po\"}",
+  "pics": "s1-04b-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-05",
+  "what": "after the posting: his 18 Jul FO still on the Leave War",
+  "ok": true,
+  "note": "cell \"FO*\"",
+  "pics": "s1-05-lw-after-po-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-05b",
+  "what": "his row after the posting (purple SANS line from 20 Jul)",
+  "ok": null,
+  "note": "<tr data-testid=\"row-rocky\"><td class=\"who\"><div class=\"whorow\"><button class=\"whoedit\" data-testid=\"person-rocky\" title=\"Hex — every figure\"><span class=\"puck r san\"><span class=\"nm\">Hex</span><span class=\"lw-sr\"> SANS<"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-05c",
+  "what": "the bell after the posting",
+  "ok": null,
+  "note": "HexMon 20 Jul Posted out · now SANS now Mark all read",
+  "pics": "s1-05c-bell-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-05d",
+  "what": "the bell list closes (Escape, else a tap outside)",
+  "ok": true,
+  "note": "Escape closed it",
+  "pics": "s1-05d-bell-closed-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-06",
+  "what": "Edit Schedule: the published Saturday reads nothing pending, its four sign-offs kept",
+  "ok": false,
+  "note": "day head pending chip \"\" · {\"pend\":0,\"pendWords\":\"\",\"notSigned\":false,\"signed\":\"\",\"approved\":true}",
+  "pics": "s1-06-editsched-sat-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-06b",
+  "what": "View-only Sched on the Saturday",
+  "ok": null,
+  "note": "",
+  "pics": "s1-06b-viewsched-sat-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-07",
+  "what": "retimed the row to 08:00–16:00 on the published Saturday: 1 pending, sign-offs fall",
+  "ok": true,
+  "note": "{\"pend\":1,\"pendWords\":\"1 pending\",\"notSigned\":true,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true} chip \"45\"",
+  "pics": "s1-07-retimed-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-08",
+  "what": "amendment published (Publish AL1)",
+  "ok": true,
+  "note": "{\"pend\":0,\"pendWords\":\"\",\"notSigned\":false,\"signed\":\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true} version AL1",
+  "pics": "s1-08-al-published-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-09",
+  "what": "ALL AVAIL count chip after AL (\"45\") — its window lists Hex",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true}",
+  "pics": "s1-09-availwin-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-09b",
+  "what": "ALL AVAIL window closes on Escape",
+  "ok": true,
+  "note": "",
+  "pics": "s1-09b-availwin-esc-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-10",
+  "what": "after AL: his 18 Jul FO still on the Leave War",
+  "ok": true,
+  "note": "cell \"FO*\"",
+  "pics": "s1-10-lw-after-al-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "premise",
+  "what": "the man of the crowd",
+  "ok": null,
+  "note": "id rocky callsign Hex seat RCP SANS false; no callsign \"Rocky\" on the roster"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-01",
+  "what": "Common Programme row SQN EVENT 08:00–15:00 with ALL AVAIL, made by + Item, typing and a tap (armed a:5.0.+)",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"08:00\",\"end\":\"15:00\",\"who\":\"allavail\"}",
+  "pics": "s1-01-row-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-02",
+  "what": "Saturday signed and published (Publish day pressed)",
+  "ok": true,
+  "note": "{\"pend\":0,\"pendWords\":\"\",\"notSigned\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true}",
+  "pics": "s1-02-published-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-03",
+  "what": "Leave War: Hex's 18 Jul reads FO after the publish",
+  "ok": true,
+  "note": "cell \"FO*\", chip before 45",
+  "pics": "s1-03-lw-fo-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-04",
+  "what": "posted out as SANS from Mon 20 Jul through the bid sheet's ⋯ → Post out → SANS",
+  "ok": true,
+  "note": "line \"On 20 Jul: becomes SANS.\" · {\"san\":true,\"sanBy\":\"po\"}",
+  "pics": "s1-04b-postout-sheet-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-05",
+  "what": "after the posting: his 18 Jul FO still on the Leave War",
+  "ok": true,
+  "note": "cell \"FO*\"",
+  "pics": "s1-05-lw-after-po-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-05b",
+  "what": "his row after the posting (purple SANS line from 20 Jul)",
+  "ok": null,
+  "note": "<tr data-testid=\"row-rocky\"><td class=\"who\"><div class=\"whorow\"><button class=\"whoedit\" data-testid=\"person-rocky\" title=\"Hex — every figure\"><span class=\"puck r san\"><span class=\"nm\">Hex</span><span class=\"lw-sr\"> SANS<"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-05c",
+  "what": "the bell after the posting",
+  "ok": null,
+  "note": "HexMon 20 Jul Posted out · now SANS now Mark all read",
+  "pics": "s1-05c-bell-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-05d",
+  "what": "the bell list closes (Escape, else a tap outside)",
+  "ok": true,
+  "note": "Escape closed it",
+  "pics": "s1-05d-bell-closed-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-06",
+  "what": "Edit Schedule: the published Saturday reads nothing pending, its four sign-offs kept",
+  "ok": false,
+  "note": "day head pending chip \"\" · {\"pend\":0,\"pendWords\":\"\",\"notSigned\":false,\"signed\":\"\",\"approved\":true}",
+  "pics": "s1-06-editsched-sat-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-06b",
+  "what": "View-only Sched on the Saturday",
+  "ok": null,
+  "note": "",
+  "pics": "s1-06b-viewsched-sat-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-07",
+  "what": "retimed the row to 08:00–16:00 on the published Saturday: 1 pending, sign-offs fall",
+  "ok": true,
+  "note": "{\"pend\":1,\"pendWords\":\"1 pending\",\"notSigned\":true,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true} chip \"45\"",
+  "pics": "s1-07-retimed-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-08",
+  "what": "amendment published (Publish AL1)",
+  "ok": true,
+  "note": "{\"pend\":0,\"pendWords\":\"\",\"notSigned\":false,\"signed\":\"SIGNED AL1 Ace Anvil Basher Bolt\",\"approved\":true} version AL1",
+  "pics": "s1-08-al-published-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-09",
+  "what": "ALL AVAIL count chip after AL (\"45\") — its window lists Hex",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true}",
+  "pics": "s1-09-availwin-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-09b",
+  "what": "ALL AVAIL window closes on Escape",
+  "ok": true,
+  "note": "",
+  "pics": "s1-09b-availwin-esc-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-10",
+  "what": "after AL: his 18 Jul FO still on the Leave War",
+  "ok": true,
+  "note": "cell \"FO*\"",
+  "pics": "s1-10-lw-after-al-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "premise",
+  "what": "the Leave War periods on the View picker",
+  "ok": null,
+  "note": "JAN - DEC 26 | JAN - DEC 27 | + New period",
+  "pics": "s5-00-periods-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-00",
+  "what": "Ranger starts with OIL 0: crediting him 3 through the OIL tracker",
+  "ok": null,
+  "note": "{\"tracker\":\"0\",\"balances\":\"0 ›\",\"pw\":\"OIL 0 ›\"}",
+  "pics": "s5-01-before-tracker-desktop.png, s5-01-before-balances-desktop.png, s5-01-before-personwin-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-00b",
+  "what": "credit saved",
+  "ok": null,
+  "note": "3",
+  "pics": "s5-00c-credited-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-01",
+  "what": "Ranger's OIL before (tracker · Balances · person window); filing on 2028-02-03, year 2028 in no period",
+  "ok": true,
+  "note": "{\"tracker\":\"3\",\"balances\":\"3 ›\",\"pw\":\"OIL 3 ›\"}",
+  "pics": "s5-01-before-tracker-desktop.png, s5-01-before-balances-desktop.png, s5-01-before-personwin-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-02",
+  "what": "OIL filed for Ranger on 2028-02-03 through + Input (month reached \"february 2028\", option OIL=OIL)",
+  "ok": true,
+  "note": "window still open 0 · Ranger OIL bars on the month 1",
+  "pics": "s5-02b-window-desktop.png, s5-02c-filed-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-03",
+  "what": "no reload: Ranger's OIL drops by 1 in all three places (3 → 2)",
+  "ok": true,
+  "note": "{\"tracker\":\"2\",\"balances\":\"2 ›\",\"pw\":\"OIL 2 ›\"}",
+  "pics": "s5-03-filed-tracker-desktop.png, s5-03-filed-balances-desktop.png, s5-03-filed-personwin-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-04",
+  "what": "deleted the OIL input from its own window (opened by its card)",
+  "ok": true,
+  "note": "left 0",
+  "pics": "s5-04b-deleted-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-05",
+  "what": "after delete: Ranger's OIL back to 3",
+  "ok": true,
+  "note": "{\"tracker\":\"3\",\"balances\":\"3 ›\",\"pw\":\"OIL 3 ›\"}",
+  "pics": "s5-05-deleted-tracker-desktop.png, s5-05-deleted-balances-desktop.png, s5-05-deleted-personwin-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-06",
+  "what": "Undo of the delete: the input back (1), OIL 2 again",
+  "ok": true,
+  "note": "{\"tracker\":\"2\",\"balances\":\"2 ›\",\"pw\":\"OIL 2 ›\"}",
+  "pics": "s5-06-undo-tracker-desktop.png, s5-06-undo-balances-desktop.png, s5-06-undo-personwin-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-07",
+  "what": "Redo of the delete: the input gone (0), OIL 3 again",
+  "ok": true,
+  "note": "{\"tracker\":\"3\",\"balances\":\"3 ›\",\"pw\":\"OIL 3 ›\"}",
+  "pics": "s5-07-redo-tracker-desktop.png, s5-07-redo-balances-desktop.png, s5-07-redo-personwin-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-08",
+  "what": "signed in as Ranger (us/us): My leave's OIL reads 2 (his 2028 OIL still filed: 1)",
+  "ok": true,
+  "note": "My leave \"OIL 2\"",
+  "pics": "s5-08-member-myleave-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-09",
+  "what": "Ranger's own person window from My leave",
+  "ok": null,
+  "note": "OIL 2 ›",
+  "pics": "s5-09-member-personwin-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-09b",
+  "what": "his person window after Escape",
+  "ok": true,
+  "note": "",
+  "pics": "s5-09b-member-esc-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-10",
+  "what": "as Ranger: the OIL tracker's figure for him",
+  "ok": true,
+  "note": "\"2\"",
+  "pics": "s5-10-member-tracker-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "premise",
+  "what": "the Leave War periods on the View picker",
+  "ok": null,
+  "note": "JAN - DEC 26 | JAN - DEC 27 | + New period",
+  "pics": "s5-00-periods-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-00",
+  "what": "Ranger starts with OIL 0: crediting him 3 through the OIL tracker",
+  "ok": null,
+  "note": "{\"tracker\":\"0\",\"balances\":\"0 ›\",\"pw\":\"OIL 0 ›\"}",
+  "pics": "s5-01-before-tracker-phone.png, s5-01-before-balances-phone.png, s5-01-before-personwin-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-00b",
+  "what": "credit saved",
+  "ok": null,
+  "note": "3",
+  "pics": "s5-00c-credited-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-01",
+  "what": "Ranger's OIL before (tracker · Balances · person window); filing on 2028-02-03, year 2028 in no period",
+  "ok": true,
+  "note": "{\"tracker\":\"3\",\"balances\":\"3 ›\",\"pw\":\"OIL 3 ›\"}",
+  "pics": "s5-01-before-tracker-phone.png, s5-01-before-balances-phone.png, s5-01-before-personwin-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-02",
+  "what": "OIL filed for Ranger on 2028-02-03 through + Input (month reached \"feb 2028\", option OIL=OIL)",
+  "ok": false,
+  "note": "window still open 0 · Ranger OIL bars on the month 0",
+  "pics": "s5-02b-window-phone.png, s5-02c-filed-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-03",
+  "what": "no reload: Ranger's OIL drops by 1 in all three places (3 → 2)",
+  "ok": true,
+  "note": "{\"tracker\":\"2\",\"balances\":\"2 ›\",\"pw\":\"OIL 2 ›\"}",
+  "pics": "s5-03-filed-tracker-phone.png, s5-03-filed-balances-phone.png, s5-03-filed-personwin-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-04",
+  "what": "deleted the OIL input from its own window (opened by its card)",
+  "ok": true,
+  "note": "left 0",
+  "pics": "s5-04b-deleted-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-05",
+  "what": "after delete: Ranger's OIL back to 3",
+  "ok": true,
+  "note": "{\"tracker\":\"3\",\"balances\":\"3 ›\",\"pw\":\"OIL 3 ›\"}",
+  "pics": "s5-05-deleted-tracker-phone.png, s5-05-deleted-balances-phone.png, s5-05-deleted-personwin-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-06",
+  "what": "Undo of the delete: the input back (0), OIL 2 again",
+  "ok": false,
+  "note": "{\"tracker\":\"2\",\"balances\":\"2 ›\",\"pw\":\"OIL 2 ›\"}",
+  "pics": "s5-06-undo-tracker-phone.png, s5-06-undo-balances-phone.png, s5-06-undo-personwin-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-07",
+  "what": "Redo of the delete: the input gone (0), OIL 3 again",
+  "ok": true,
+  "note": "{\"tracker\":\"3\",\"balances\":\"3 ›\",\"pw\":\"OIL 3 ›\"}",
+  "pics": "s5-07-redo-tracker-phone.png, s5-07-redo-balances-phone.png, s5-07-redo-personwin-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-08",
+  "what": "signed in as Ranger (us/us): My leave's OIL reads 2 (his 2028 OIL still filed: 0)",
+  "ok": false,
+  "note": "My leave \"OIL 2\"",
+  "pics": "s5-08-member-myleave-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-09",
+  "what": "Ranger's own person window from My leave",
+  "ok": null,
+  "note": "OIL 2 ›",
+  "pics": "s5-09-member-personwin-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-09b",
+  "what": "his person window after Escape",
+  "ok": true,
+  "note": "",
+  "pics": "s5-09b-member-esc-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-10",
+  "what": "as Ranger: the OIL tracker's figure for him",
+  "ok": true,
+  "note": "\"2\"",
+  "pics": "s5-10-member-tracker-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

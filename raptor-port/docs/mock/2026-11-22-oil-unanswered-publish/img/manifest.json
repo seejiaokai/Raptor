@@ -1,0 +1,410 @@
+{
+  "drawn": "2026-11-22T00:44:18.492Z",
+  "url": "http://localhost:4183/",
+  "words": {
+    "a_line": "Training has no OIL answer, so nobody on it earns OIL for this day",
+    "a_btn": "Answer OIL",
+    "a_note_tail": "Ranger's Training has no OIL answer, so nobody on it earns OIL.",
+    "b_lead": "Saturday 18 Jul published and approved. 1 input has no OIL answer, so nobody on it earns OIL yet.",
+    "b_foot": "An answer makes Saturday pending again: it needs signing and publishing once more"
+  },
+  "frames": [
+    {
+      "name": "t0-row",
+      "size": "desktop",
+      "file": "t0-row-desktop.png",
+      "clip": {
+        "x": 8,
+        "y": 374.15625,
+        "width": 1200,
+        "height": 220.71875
+      }
+    },
+    {
+      "name": "t1-checks",
+      "size": "desktop",
+      "file": "t1-checks-desktop.png",
+      "clip": {
+        "x": 1219,
+        "y": 106,
+        "width": 315,
+        "height": 74.25
+      }
+    },
+    {
+      "name": "a1-checks",
+      "size": "desktop",
+      "file": "a1-checks-desktop.png",
+      "clip": {
+        "x": 1217,
+        "y": 104,
+        "width": 319,
+        "height": 114.75
+      }
+    },
+    {
+      "name": "t2-note",
+      "size": "desktop",
+      "file": "t2-note-desktop.png",
+      "clip": {
+        "x": 648.8984375,
+        "y": 798,
+        "width": 238.203125,
+        "height": 58
+      }
+    },
+    {
+      "name": "a2-note",
+      "size": "desktop",
+      "file": "a2-note-desktop.png",
+      "clip": {
+        "x": 455.921875,
+        "y": 792.2578125,
+        "width": 624.15625,
+        "height": 58
+      }
+    },
+    {
+      "name": "t3-checks-published",
+      "size": "desktop",
+      "file": "t3-checks-published-desktop.png",
+      "clip": {
+        "x": 1219,
+        "y": 106,
+        "width": 315,
+        "height": 74.25
+      }
+    },
+    {
+      "name": "t3b-sign-published",
+      "size": "desktop",
+      "file": "t3b-sign-published-desktop.png",
+      "clip": {
+        "x": 0,
+        "y": 98,
+        "width": 1232,
+        "height": 186
+      }
+    },
+    {
+      "name": "b0-list-today",
+      "size": "desktop",
+      "file": "b0-list-today-desktop.png",
+      "clip": {
+        "x": 1072,
+        "y": 106,
+        "width": 456,
+        "height": 220.5
+      }
+    },
+    {
+      "name": "b1-list",
+      "size": "desktop",
+      "file": "b1-list-desktop.png",
+      "clip": {
+        "x": 1072,
+        "y": 106,
+        "width": 456,
+        "height": 282
+      }
+    },
+    {
+      "name": "b2-after-answer",
+      "size": "desktop",
+      "file": "b2-after-answer-desktop.png",
+      "clip": {
+        "x": 0,
+        "y": 98,
+        "width": 1232,
+        "height": 189
+      }
+    },
+    {
+      "name": "t4-week",
+      "size": "desktop",
+      "file": "t4-week-desktop.png",
+      "clip": {
+        "x": 346,
+        "y": 312,
+        "width": 566,
+        "height": 208.40625
+      }
+    },
+    {
+      "name": "a3-week",
+      "size": "desktop",
+      "file": "a3-week-desktop.png",
+      "clip": {
+        "x": 356,
+        "y": 312,
+        "width": 546,
+        "height": 187.65625
+      }
+    },
+    {
+      "name": "t0-row",
+      "size": "phone",
+      "file": "t0-row-phone.png",
+      "clip": {
+        "x": 8,
+        "y": 328.90625,
+        "width": 370,
+        "height": 289.96875
+      }
+    },
+    {
+      "name": "t1-checks",
+      "size": "phone",
+      "file": "t1-checks-phone.png",
+      "clip": {
+        "x": 20,
+        "y": 238,
+        "width": 362,
+        "height": 80.25
+      }
+    },
+    {
+      "name": "a1-checks",
+      "size": "phone",
+      "file": "a1-checks-phone.png",
+      "clip": {
+        "x": 18,
+        "y": 236,
+        "width": 366,
+        "height": 103.5
+      }
+    },
+    {
+      "name": "t2-note",
+      "size": "phone",
+      "file": "t2-note-phone.png",
+      "clip": {
+        "x": 2,
+        "y": 804.0048217773438,
+        "width": 398,
+        "height": 56
+      }
+    },
+    {
+      "name": "a2-note",
+      "size": "phone",
+      "file": "a2-note-phone.png",
+      "clip": {
+        "x": 2,
+        "y": 788.1950073242188,
+        "width": 398,
+        "height": 70
+      }
+    },
+    {
+      "name": "t3-checks-published",
+      "size": "phone",
+      "file": "t3-checks-published-phone.png",
+      "clip": {
+        "x": 20,
+        "y": 271,
+        "width": 362,
+        "height": 80.25
+      }
+    },
+    {
+      "name": "t3b-sign-published",
+      "size": "phone",
+      "file": "t3b-sign-published-phone.png",
+      "clip": {
+        "x": 0,
+        "y": 67,
+        "width": 402,
+        "height": 222
+      }
+    },
+    {
+      "name": "b0-list-today",
+      "size": "phone",
+      "file": "b0-list-today-phone.png",
+      "clip": {
+        "x": 4,
+        "y": 322.0625,
+        "width": 394,
+        "height": 229.875
+      }
+    },
+    {
+      "name": "b1-list",
+      "size": "phone",
+      "file": "b1-list-phone.png",
+      "clip": {
+        "x": 4,
+        "y": 292.3125,
+        "width": 394,
+        "height": 289.375
+      }
+    },
+    {
+      "name": "b2-after-answer",
+      "size": "phone",
+      "file": "b2-after-answer-phone.png",
+      "clip": {
+        "x": 0,
+        "y": 67,
+        "width": 402,
+        "height": 224
+      }
+    }
+  ],
+  "checks": {
+    "desktop-premise": {
+      "dow": "Saturday",
+      "ground": [
+        "mk-train"
+      ],
+      "training": true,
+      "ranger": true,
+      "checks": [
+        "No conflicts flagged for this day ✓"
+      ],
+      "open": null
+    },
+    "desktop-publishNote": "Saturday published and approved",
+    "desktop-signPublished": "SIGNED\nORIG\nCUR CKAce\nSKED CKBasher\nPLANNEDBolt\nAPPROVEDCinch\nSIGN-OFF\nCUR CK\n— name —\n— name —\nAce\nAnvil\nBasher\nBlade\nBolt\nCinch\nCinder\nCobra\nComet\nCotter\nCutter\nDash\nDiesel\nDrifter\nEcho\nFable\nForge\nGambit\nGhost\nGrit\nHavoc\nHex\nHunter\nJester\nKraken\nLedger\nMarlin\nNomad\nOtter\nOutlaw\nPiston\nPixel\nQuill\nRanger\nRatchet\nReaper\nRebel\nRecon\nRelay\nRidge\nRune\nRyder\nSaber\nSaint\nScope\nScribe\nSidewinder\nStatic\nTalisman\nTally\nTorch\nTrident\nVandal\nVapor\nVector\nWarden\nWidget\nWildcard\nWisp\nZenith\nZulu\nSKED CK\n— name —\n— name —\nAnvil\nBasher\nBolt\nCinch\nDrifter\nEcho\nForge\nPiston\nRanger\nReaper\nRidge\nSaber\nSidewinder\nStatic\nTrident\nWarden\nPLANNED BY\n— name —\n— name —\nAnvil\nBasher\nBolt\nCinch\nDrifter\nEcho\nForge\nPiston\nRanger\nReaper\nRidge\nSaber\nSidewinder\nStatic\nTrident\nWarden\nAPPROVED BY\n— name —\n— name —\nAnvil\nBasher\nBolt\nCinch\nDrifter\nEcho\nForge\nPiston\nRanger\nReaper\nRidge\nSaber\nSidewinder\nStatic\nTrident\nWarden\n4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\nLive working copy\n▾\nORIG\n6 changes\ni\nUnpublish",
+    "desktop-answerOnPublished": {
+      "before": {
+        "approved": true,
+        "unsigned": [
+          "CUR CK",
+          "SKED CK",
+          "PLANNED BY",
+          "APPROVED BY"
+        ],
+        "pending": 0
+      },
+      "answered": {
+        "approved": true,
+        "unsigned": [
+          "CUR CK",
+          "SKED CK",
+          "PLANNED BY",
+          "APPROVED BY"
+        ],
+        "pending": 0
+      },
+      "back": {
+        "approved": true,
+        "unsigned": [
+          "CUR CK",
+          "SKED CK",
+          "PLANNED BY",
+          "APPROVED BY"
+        ],
+        "pending": 0
+      }
+    },
+    "desktop-listToday": "⠿\nOIL — Sat 18 Jul\n✕\n1 TO ANSWER\nYes to all\nNo to all\n08:00–17:00\nRangerTRAINING\nYes · FO\nNo\nLater\nSave",
+    "desktop-answerAfterPublish": {
+      "before": {
+        "approved": true,
+        "missing": [
+          "CUR CK",
+          "SKED CK",
+          "PLANNED BY",
+          "APPROVED BY"
+        ],
+        "pending": [],
+        "signLine": "Live working copy | ▾ | ORIG | 11 changes | i | Unpublish"
+      },
+      "after": {
+        "approved": true,
+        "missing": [
+          "CUR CK",
+          "SKED CK",
+          "PLANNED BY",
+          "APPROVED BY"
+        ],
+        "pending": [],
+        "oil": {
+          "2026-07-18": 1
+        },
+        "signText": "SIGNED\nORIG\nCUR CKAce\nSKED CKBasher\nPLANNEDBolt\nAPPROVEDCinch\nSIGN-OFF\nCUR CK\n— name —\n— name —\nAce\nAnvil\nBasher\nBlade\nBolt\nCinch\nCinder\nCobra\nComet\nCotter\nCutter\nDash\nDiesel\nDrifter\nEcho\nFable\nForge\nGambit\nGhost\nGrit\nHavoc\nHex\nHunter\nJester\nKraken\nLedger\nMarlin\nNomad\nOtter\nOutlaw\nPiston\nPixel\nQuill\nRanger\nRatchet\nReaper\nRebel\nRecon\nRelay\nRidge\nRune\nRyder\nSaber\nSaint\nScope\nScribe\nSidewinder\nStatic\nTalisman\nTally\nTorch\nTrident\nVandal\nVapor\nVector\nWarden\nWidget\nWildcard\nWisp\nZenith\nZulu\nSKED CK\n— name —\n— name —\nAnvil\nBasher\nBolt\nCinch\nDrifter\nEcho\nForge\nPiston\nRanger\nReaper\nRidge\nSaber\nSidewinder\nStatic\nTrident\nWarden\nPLANNED BY\n— name —\n— name —\nAnvil\nBasher\nBolt\nCinch\nDrifter\nEcho\nForge\nPiston\nRanger\nReaper\nRidge\nSaber\nSidewinder\nStatic\nTrident\nWarden\nAPPROVED BY\n— name —\n— name —\nAnvil\nBasher\nBolt\nCinch\nDrifter\nEcho\nForge\nPiston\nRanger\nReaper\nRidge\nSaber\nSidewinder\nStatic\nTrident\nWarden\n4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\nLive working copy\n▾\nORIG\nNot yet signed\n1 pending\ni\nPublish AL1\nUnpublish"
+      }
+    },
+    "desktop-weekSaturday": {
+      "body": true,
+      "box": false,
+      "donor": true
+    },
+    "phone-premise": {
+      "dow": "Saturday",
+      "ground": [
+        "mk-train"
+      ],
+      "training": true,
+      "ranger": true,
+      "checks": [
+        "No conflicts flagged for this day ✓"
+      ],
+      "open": null
+    },
+    "phone-publishNote": "Saturday published and approved",
+    "phone-signPublished": "SIGNED\nORIG\nAce\nBasher\nBolt\nCinch\nSIGN-OFF\nCUR CK\n— name —\nSKED CK\n— name —\nPLANNED BY\n— name —\nAPPROVED BY\n— name —\n4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\nLive working copy\n▾\nORIG\n6 changes\ni\nUnpublish",
+    "phone-answerOnPublished": {
+      "before": {
+        "approved": true,
+        "unsigned": [
+          "CUR CK",
+          "SKED CK",
+          "PLANNED BY",
+          "APPROVED BY"
+        ],
+        "pending": 0
+      },
+      "answered": {
+        "approved": true,
+        "unsigned": [
+          "CUR CK",
+          "SKED CK",
+          "PLANNED BY",
+          "APPROVED BY"
+        ],
+        "pending": 0
+      },
+      "back": {
+        "approved": true,
+        "unsigned": [
+          "CUR CK",
+          "SKED CK",
+          "PLANNED BY",
+          "APPROVED BY"
+        ],
+        "pending": 0
+      }
+    },
+    "phone-listToday": "⠿\nOIL — Sat 18 Jul\n✕\n1 TO ANSWER\nYes to all\nNo to all\n08:00–17:00\nRangerTRAINING\nYes · FO\nNo\nLater\nSave",
+    "phone-answerAfterPublish": {
+      "before": {
+        "approved": true,
+        "missing": [
+          "CUR CK",
+          "SKED CK",
+          "PLANNED BY",
+          "APPROVED BY"
+        ],
+        "pending": [],
+        "signLine": "Live working copy | ▾ | ORIG | 11 changes | i | Unpublish"
+      },
+      "after": {
+        "approved": true,
+        "missing": [
+          "CUR CK",
+          "SKED CK",
+          "PLANNED BY",
+          "APPROVED BY"
+        ],
+        "pending": [],
+        "oil": {
+          "2026-07-18": 1
+        },
+        "signText": "SIGNED\nORIG\nAce\nBasher\nBolt\nCinch\nSIGN-OFF\nCUR CK\n— name —\nSKED CK\n— name —\nPLANNED BY\n— name —\nAPPROVED BY\n— name —\n4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\nLive working copy\n▾\nORIG\nNot yet signed\n1 pending\ni\nPublish AL1\nUnpublish"
+      }
+    }
+  }
+}

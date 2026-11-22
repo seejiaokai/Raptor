@@ -1,0 +1,250 @@
+{
+ "R": [
+  {
+   "sc": "F2-a",
+   "size": "phone",
+   "step": "1 list opens, nothing written",
+   "pass": true,
+   "note": "{\"held\":{\"held\":true,\"label\":\"CUR CK\",\"name\":\"Ace\",\"border\":\"dotted\",\"after\":\"none\",\"beside\":\"waiting for your answer\",\"foot\":\"Later: Ace signs, but nobody on it earns OIL.\",\"count\":\"1 to answer\",\"sub\":\"\",\"title\":\"OIL — Sat 18 Jul\"},\"behind\":{\"v\":\"— name —\",\"on\":false,\"color\":\"rgb(138, 150, 163)\"},\"cur\":\"\"}"
+  },
+  {
+   "sc": "F2-a",
+   "size": "phone",
+   "step": "1 painted marks",
+   "pass": true,
+   "note": "border dotted, ::after none, beside \"waiting for your answer\""
+  },
+  {
+   "sc": "F2-a",
+   "size": "phone",
+   "step": "1 foot",
+   "pass": true,
+   "note": "\"Later: Ace signs, but nobody on it earns OIL.\""
+  },
+  {
+   "sc": "F2-a",
+   "size": "phone",
+   "step": "2 Save: note, list closes, CUR CK signed green",
+   "pass": true,
+   "note": "{\"toast\":\"OIL answered for 1 input\",\"up\":false,\"cur\":{\"v\":\"Ace\",\"on\":true,\"color\":\"rgb(223, 246, 231)\"},\"sg\":\"dj\"}"
+  },
+  {
+   "sc": "F2-a",
+   "size": "phone",
+   "step": "3 sked signs at once",
+   "pass": true,
+   "note": "list up false, written \"shaft\""
+  },
+  {
+   "sc": "F2-a",
+   "size": "phone",
+   "step": "3 plan signs at once",
+   "pass": true,
+   "note": "list up false, written \"glass\""
+  },
+  {
+   "sc": "F2-a",
+   "size": "phone",
+   "step": "3 appr signs at once",
+   "pass": true,
+   "note": "list up false, written \"yeti\""
+  },
+  {
+   "sc": "F2-a",
+   "size": "phone",
+   "step": "4 publish note plain",
+   "pass": true,
+   "note": "{\"approved\":true,\"toast\":{\"text\":\"Saturday published and approved\",\"cls\":\"\",\"op\":\"1\",\"color\":\"rgb(241, 244, 247)\"}}"
+  },
+  {
+   "sc": "F2-a",
+   "size": "phone",
+   "step": "5 Leave War FO",
+   "pass": true,
+   "note": "cell reads FO"
+  },
+  {
+   "sc": "F2-a",
+   "size": "phone",
+   "step": "6 card has no OIL? tag",
+   "pass": true,
+   "note": "tag false"
+  },
+  {
+   "sc": "F2-b",
+   "size": "phone",
+   "step": "1 list opens for PLANNED BY",
+   "pass": true,
+   "note": "{\"held\":true,\"label\":\"PLANNED BY\",\"name\":\"Basher\",\"border\":\"dotted\",\"after\":\"none\",\"beside\":\"waiting for your answer\",\"foot\":\"Later: Basher signs, but nobody on it earns OIL.\",\"count\":\"1 to answer\",\"sub\":\"\",\"title\":\"OIL — Sat 18 Jul\"}"
+  },
+  {
+   "sc": "F2-b",
+   "size": "phone",
+   "step": "2 Later: name signed, no answer",
+   "pass": true,
+   "note": "{\"plan\":\"glass\",\"up\":false,\"oil\":\"{}\"}"
+  },
+  {
+   "sc": "F2-b",
+   "size": "phone",
+   "step": "3 cur signs with no list",
+   "pass": true,
+   "note": "list up false, written \"dj\""
+  },
+  {
+   "sc": "F2-b",
+   "size": "phone",
+   "step": "3 sked signs with no list",
+   "pass": true,
+   "note": "list up false, written \"shaft\""
+  },
+  {
+   "sc": "F2-b",
+   "size": "phone",
+   "step": "3 appr signs with no list",
+   "pass": true,
+   "note": "list up false, written \"yeti\""
+  },
+  {
+   "sc": "F2-b",
+   "size": "phone",
+   "step": "4 publish note names the input (amber)",
+   "pass": true,
+   "note": "{\"got\":{\"text\":\"Saturday 18 Jul published and approved. Ranger’s Training has no OIL answer, so nobody on it earns OIL.\",\"cls\":\"\",\"op\":\"1\",\"color\":\"rgb(229, 168, 59)\"},\"want\":\"Saturday 18 Jul published and approved. Ranger’s Training has no OIL answer, so nobody on it earns OIL.\"}"
+  },
+  {
+   "sc": "F2-b",
+   "size": "phone",
+   "step": "5 no FO/HO on the Leave War",
+   "pass": true,
+   "note": "cell reads (blank: )"
+  },
+  {
+   "sc": "F2-b",
+   "size": "phone",
+   "step": "6 card still wears OIL?",
+   "pass": true,
+   "note": "tag true"
+  },
+  {
+   "sc": "F2-c",
+   "size": "phone",
+   "step": "1 list up",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "sc": "F2-c",
+   "size": "phone",
+   "step": "1 ✕ signs nothing",
+   "pass": true,
+   "note": "{\"sg\":{\"cur\":\"\",\"sked\":\"\",\"plan\":\"\",\"appr\":\"\"},\"bx\":{\"v\":\"— name —\",\"on\":false,\"color\":\"rgb(138, 150, 163)\"}}"
+  },
+  {
+   "sc": "F2-c",
+   "size": "phone",
+   "step": "2 next box asks again, holding SKED CK",
+   "pass": true,
+   "note": "{\"held\":true,\"label\":\"SKED CK\",\"name\":\"Anvil\",\"border\":\"dotted\",\"after\":\"none\",\"beside\":\"waiting for your answer\",\"foot\":\"Later: Anvil signs, but nobody on it earns OIL.\",\"count\":\"1 to answer\",\"sub\":\"\",\"title\":\"OIL — Sat 18 Jul\"}"
+  },
+  {
+   "sc": "F2-c",
+   "size": "phone",
+   "step": "3 Escape signs nothing",
+   "pass": true,
+   "note": "{\"sg\":{\"cur\":\"\",\"sked\":\"\",\"plan\":\"\",\"appr\":\"\"},\"bx\":{\"v\":\"— name —\",\"on\":false,\"color\":\"rgb(138, 150, 163)\"}}"
+  },
+  {
+   "sc": "F2-c",
+   "size": "phone",
+   "step": "4 asks again after Escape (APPROVED BY)",
+   "pass": true,
+   "note": "{\"held\":true,\"label\":\"APPROVED BY\",\"name\":\"Bolt\",\"border\":\"dotted\",\"after\":\"none\",\"beside\":\"waiting for your answer\",\"foot\":\"Later: Bolt signs, but nobody on it earns OIL.\",\"count\":\"1 to answer\",\"sub\":\"\",\"title\":\"OIL — Sat 18 Jul\"}"
+  },
+  {
+   "sc": "F2-d",
+   "size": "phone",
+   "step": "board cur first press",
+   "pass": true,
+   "note": "{\"label\":\"CUR CK\",\"name\":\"Ace\",\"border\":\"dotted\",\"written\":\"\"}"
+  },
+  {
+   "sc": "F2-d",
+   "size": "phone",
+   "step": "board sked first press",
+   "pass": true,
+   "note": "{\"label\":\"SKED CK\",\"name\":\"Anvil\",\"border\":\"dotted\",\"written\":\"\"}"
+  },
+  {
+   "sc": "F2-d",
+   "size": "phone",
+   "step": "board plan first press",
+   "pass": true,
+   "note": "{\"label\":\"PLANNED BY\",\"name\":\"Basher\",\"border\":\"dotted\",\"written\":\"\"}"
+  },
+  {
+   "sc": "F2-d",
+   "size": "phone",
+   "step": "board appr first press",
+   "pass": true,
+   "note": "{\"label\":\"APPROVED BY\",\"name\":\"Bolt\",\"border\":\"dotted\",\"written\":\"\"}"
+  },
+  {
+   "sc": "F2-d",
+   "size": "phone",
+   "step": "board Clear: no list, names cleared",
+   "pass": true,
+   "note": "{\"before\":{\"cur\":\"dj\",\"sked\":\"shaft\",\"plan\":\"\",\"appr\":\"\"},\"after\":{\"cur\":\"\",\"sked\":\"\",\"plan\":\"\",\"appr\":\"\"}}"
+  },
+  {
+   "sc": "F2-d",
+   "size": "phone",
+   "step": "board empty \"— name —\" option: no list, name cleared",
+   "pass": true,
+   "note": "{\"pre\":\"dj\",\"post\":\"\"}"
+  },
+  {
+   "sc": "F2-d",
+   "size": "phone",
+   "step": "week cur first press",
+   "pass": true,
+   "note": "{\"label\":\"CUR CK\",\"name\":\"Ace\",\"border\":\"dotted\",\"written\":\"\"}"
+  },
+  {
+   "sc": "F2-d",
+   "size": "phone",
+   "step": "week sked first press",
+   "pass": true,
+   "note": "{\"label\":\"SKED CK\",\"name\":\"Anvil\",\"border\":\"dotted\",\"written\":\"\"}"
+  },
+  {
+   "sc": "F2-d",
+   "size": "phone",
+   "step": "week plan first press",
+   "pass": true,
+   "note": "{\"label\":\"PLANNED BY\",\"name\":\"Basher\",\"border\":\"dotted\",\"written\":\"\"}"
+  },
+  {
+   "sc": "F2-d",
+   "size": "phone",
+   "step": "week appr first press",
+   "pass": true,
+   "note": "{\"label\":\"APPROVED BY\",\"name\":\"Bolt\",\"border\":\"dotted\",\"written\":\"\"}"
+  },
+  {
+   "sc": "F2-d",
+   "size": "phone",
+   "step": "week Clear: no list, names cleared",
+   "pass": true,
+   "note": "{\"before\":{\"cur\":\"dj\",\"sked\":\"shaft\",\"plan\":\"\",\"appr\":\"\"},\"after\":{\"cur\":\"\",\"sked\":\"\",\"plan\":\"\",\"appr\":\"\"}}"
+  },
+  {
+   "sc": "F2-d",
+   "size": "phone",
+   "step": "week empty \"— name —\" option: no list, name cleared",
+   "pass": true,
+   "note": "{\"pre\":\"dj\",\"post\":\"\"}"
+  }
+ ],
+ "errs": []
+}

@@ -1,0 +1,103 @@
+{
+ "R": [
+  {
+   "sc": "F2-j plan switch",
+   "size": "desktop",
+   "step": "1 list up, CUR CK held",
+   "pass": true,
+   "note": "{\"held\":true,\"name\":\"Ace\"}"
+  },
+  {
+   "sc": "F2-j plan switch",
+   "size": "desktop",
+   "step": "2 \"+ Alt Plan\" behind the list: a new plan is live",
+   "pass": true,
+   "note": "{\"planB\":\"dr2\",\"up\":true}"
+  },
+  {
+   "sc": "F2-j plan switch",
+   "size": "desktop",
+   "step": "3 the list no longer shows the held box nor promises Later signs",
+   "pass": true,
+   "note": "{\"held\":false,\"foot\":\"\"}"
+  },
+  {
+   "sc": "F2-j plan switch",
+   "size": "desktop",
+   "step": "4 Later signs nothing on the new plan; list closes",
+   "pass": true,
+   "note": "{\"cur\":\"\",\"sked\":\"\",\"plan\":\"\",\"appr\":\"\"}"
+  },
+  {
+   "sc": "F2-j plan switch",
+   "size": "desktop",
+   "step": "5 the next press on the new plan asks again",
+   "pass": true,
+   "note": "{\"held\":true}"
+  },
+  {
+   "sc": "F2-j plan switch",
+   "size": "desktop",
+   "step": "6 switched back to the first plan with the list up",
+   "pass": false,
+   "note": "{\"now\":\"dr1\"}"
+  },
+  {
+   "sc": "F2-j plan switch",
+   "size": "desktop",
+   "step": "7 Save writes the answer but signs nothing on the first plan",
+   "pass": true,
+   "note": "{\"oil\":\"{\\\"2026-07-18\\\":1}\",\"signs\":{\"cur\":\"\",\"sked\":\"\",\"plan\":\"\",\"appr\":\"\"}}"
+  },
+  {
+   "sc": "F2-j plan switch",
+   "size": "phone",
+   "step": "1 list up, CUR CK held",
+   "pass": true,
+   "note": "{\"held\":true,\"name\":\"Ace\"}"
+  },
+  {
+   "sc": "F2-j plan switch",
+   "size": "phone",
+   "step": "2 \"+ Alt Plan\" behind the list: a new plan is live",
+   "pass": true,
+   "note": "{\"planB\":\"dr2\",\"up\":true}"
+  },
+  {
+   "sc": "F2-j plan switch",
+   "size": "phone",
+   "step": "3 the list no longer shows the held box nor promises Later signs",
+   "pass": true,
+   "note": "{\"held\":false,\"foot\":\"\"}"
+  },
+  {
+   "sc": "F2-j plan switch",
+   "size": "phone",
+   "step": "4 Later signs nothing on the new plan; list closes",
+   "pass": true,
+   "note": "{\"cur\":\"\",\"sked\":\"\",\"plan\":\"\",\"appr\":\"\"}"
+  },
+  {
+   "sc": "F2-j plan switch",
+   "size": "phone",
+   "step": "5 the next press on the new plan asks again",
+   "pass": true,
+   "note": "{\"held\":true}"
+  },
+  {
+   "sc": "F2-j plan switch",
+   "size": "phone",
+   "step": "6 switched back to the first plan with the list up",
+   "pass": false,
+   "note": "{\"now\":\"dr1\"}"
+  },
+  {
+   "sc": "F2-j plan switch",
+   "size": "phone",
+   "step": "7 Save writes the answer but signs nothing on the first plan",
+   "pass": true,
+   "note": "{\"oil\":\"{\\\"2026-07-18\\\":1}\",\"signs\":{\"cur\":\"\",\"sked\":\"\",\"plan\":\"\",\"appr\":\"\"}}"
+  }
+ ],
+ "errs": []
+}

@@ -1167,3 +1167,59 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The search before the question ran on the backlog and on two keywords taken from the fault's own description ("opens", "20px"). The earlier ruling was worded by its subject from the other side ("the day flush at the left edge, no room beside the arrow") and sat in an area page that loads only when one of its source files is read; neither keyword matched it. The page went out without naming the ruling it narrowed, his blanket yes carried it, and it had to be told to him afterwards. Observation 970's rule (a clash pass before a recommendations page) was in force and was run — its search was too narrow to find the clash.
 **Suggested improvement:** Make the clash pass a fixed search, not a judgement: for each question, search the full rulings rows for (1) the screen part's name as the app shows it, (2) each control or gesture that reaches the behaviour, and (3) the opposite of the proposed outcome ("flush", "no gap", "at the edge" when proposing a margin) — and open the area page of every source file the fix would touch before the page is drafted. Write the three search words used on the page's own notes, so a reviewer can see what was searched.
 **Principle:** An earlier decision is filed under the words of the day it was made, often the opposite of the words of today's proposal; search by the subject and by the outcome's opposite, never only by the new problem's description.
+
+### Observation 1006: A store-wide guard broke 37 tests the narrow run never touched
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 133, fixing the faults Fable's reads proved ([FABLE-READ-FAULTS])
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** verifying a fix before calling it done
+
+**Issue:** A guard ("refuse a write for an id that names nobody") was added at five doors of a store and checked only against its own proof test, which went green. The area's whole suite later showed 37 failures: the store writes, by design, for ids that are on no roster list (a deleted person's past days, the demo data's own ids). The guard was taken out. Separately, a test file edited while a full run was in flight showed a false failure from the version the run had loaded.
+**Suggested improvement:** In the skill's verify step: a change to a shared write path (a store's doors, a gate, a guard every caller passes) runs the whole suite of the area it sits in before it is reported fixed, not only the new test and its neighbours by name; and no test file is edited while a full run that includes it is in flight.
+**Principle:** A guard's reach is every caller of the door it sits in; a test that names the guard cannot show who else relied on the door staying open.
+
+### Observation 1002: A "door that opens it today" may open it only in some states
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 137, drawing OIL F2 round 2 (the day's OIL list opened at the sign-off press) on the real app. Numbered past 1000 and 1001, taken on other branches.
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** The Method, step 2 (the nearest real interaction)
+
+**Issue:** The window was to be opened by "Switch to this plan", a door the rulings say opens it. On an unpublished day that door put the row back but not the input's state, so the window never opened and the script timed out; the working door (load a published version back, then unpublish) took three more real steps, and the gap the first door showed was itself a finding.
+**Suggested improvement:** In step 2, when a real door is borrowed to open an existing window for a proposal, assert after it both that the window opened AND that the state behind it is the premise (the staged record, the empty boxes); on a miss, log what the door left, try the next real door, say on the page which door was used and why, and file what the failed door did.
+**Principle:** A door documented as opening something is a claim about some states; check it in the state you draw, and treat its failure there as data, not only as an obstacle.
+
+### Observation 1003: A shared edge measured across, never along
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 137, OIL F2 round 6 — he saw a drawn row's words ("waiting for your answer") not lined up with the box beside them.
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** The Method, step 3 (a new part's shared edge measured against its neighbour)
+
+**Issue:** The script measured the new row's left edge against the list's first letter and the box's height against the real one, both exact; it never measured the row's two parts against each other vertically. Their baselines were level (0px), yet he saw a miss: lower-case words beside a capitals label sit optically low, their x-height middle 0.75px under the box's middle on the desktop.
+**Suggested improvement:** In step 3, a part placed BESIDE another is measured on the cross axis too: the words' x-height middle (canvas `measureText('x')`) against the neighbour's middle line, failing above 0.5px; where baselines are level but the cases differ, centre the x-height optically and say so. Check the picture's ink as well (rows of bright pixels in each box).
+**Principle:** Level baselines are not level to the eye when one side is capitals in a box and the other is lower case; measure what the eye compares.
+
+### Observation 1008: A walker's results file held a failed line no report named
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 139, closing the [FABLE-READ-FAULTS] walk (numbered past 1007 on another branch)
+**Skill:** session-handoff (and the bug-check order's §7.5 "walked enough")
+**Type:** open-source
+**Phase/Area:** closing a walk — reading the walkers' results
+
+**Issue:** The handoff said a walker's three scenarios "PASS at both sizes"; its results file held a third failed line
+(on the phone, a document gone after a reload) that neither its report nor the handoff named. Tallying every results
+file before writing the sheet found it; it proved to be the test browser's own limit (its WebKit stores no file in its
+local database), but it could as well have been lost saved data.
+**Suggested improvement:** in the handoff skill's and the sheet's close: tally every walker's results file by
+pass / fail / note and name each failed line with its disposition; a report's "PASS" is never copied without that tally.
+**Principle:** A summary of a test run is not the run; count the raw results before repeating anyone's verdict.

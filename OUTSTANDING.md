@@ -158,7 +158,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
 - [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK] (done 31 Oct 26), then [LW-WEEKDAY-WORK], then the database.
 - [MULTI-SQN-DESIGN] — one app, one database, many squadrons: home squadron at account creation, view-only rights to others, transfer on posting out, a day split between squadrons (his D1695, 5 Nov 26), with detachment modes — the design answered whole 17 Nov 26 (rounds 1–7, chats 90–104); its BUILD now, in batches, before the database step (D2187, changing D2086), each batch's agreed design and mock-up shown to him before it starts (D2188); the batch plan written and red-teamed (chat 106, `raptor-port/docs/superpowers/plans/2026-11-17-multi-sqn-build-batches.md`); batch 1's page put to him, waiting for his look. **Batch 1 steps 0–4 built on `claude/multi-sqn-b1-107` (pull request 806, draft) the night of 17–18 Nov 26 and FULL-checked; NOT ready to merge: the last reads (18 Nov, 09:00–09:41, `raptor-port/docs/superpowers/briefs/2026-11-18-multi-sqn-b1-fixread2-{astra,opus,security}.md`) left open faults to fix red first — the last-admin lock and master guard skipped by person-only and home-only changes, the gate's account list read differently from the loader's (a re-keyed or colliding row), a plain admin able to suspend or demote the master, a 142 admin able to post a 149 man out or touch 149's history, the master's Archive / Restore / Delete of a 149 man acting on 142's Leave War, a new 149 man losing his post-in date, inputs not checked by squadron at the gate (`…-fixread-opus7-open.md`); and, by his D2205–D2207 (18 Nov 26) the eleven open questions as recommended (only a master changes a master; sign-in held for a pending save; four cross-squadron bell lines; holiday OIL by one's own list; "142's" dropped from the holiday warning; the code-check pull request to `main`); by his D2203 (18 Nov 26), a move to another squadron clearing every View and Plan held of others; by his D2202 (18 Nov 26), a planner's bell carrying the other squadron's admin lines, on by default, each line showing its squadron; by his D2200 (18 Nov 26), each person to choose which notifications reach his bell, a few that need action always on — a job after the multi-squadron batches, drawn first; by his D2192 and D2199 (18 Nov 26), step 1's 'admin' level for a right in another squadron kept only as "Plan" — full access to that squadron, as its own admins (D2201) — given person by person by a master admin, off by default — otherwise View only; by his D2195 (18 Nov 26), each squadron's own public-holiday list, never shared, and by his D2204 a detachment's own list, which may start as a copy of its squadron's — step 4's holidays by place undone, the Holidays form naming only its own squadron's days, no holiday bell to the other squadron; by his D2196 (18 Nov 26), only a master admin sets the time zone of a place more than one squadron sits on — the place's save refused for anyone else; by his D2197 and D2198 (18 Nov 26), a master admin's menu pick moves every page, each his to edit, his bell his primary squadron's by default; his idea of a master-set access table (per squadron, per role, per page) and of each person choosing his own notifications — answered by chat 108 with a recommendation, his ruling awaited, nothing built; then steps 5–6.**
-- [FABLE-READ-FAULTS] — fix now, a job of its own from `main` (D2268): OIL F1 first (a SANS posting takes earlier days' OIL), then two saves lost while saying saved, the LATE mark and three smaller.
+- [FABLE-READ-FAULTS] — seven of eight fixed, OIL F2 built (D2294, D2299), walked and re-walked on `claude/fable-read-faults-4104f0` (pull request 820, chats 133–139); his look and "merge live" owed. His answers of 22 Nov 26 (chat 139): D2313 (SANS from its date everywhere — closes (e) and (b)) and D2314 (the publish note's names) TO BUILD, a fresh chat; D2315 (Leave War F2 waits for the database step), D2316 (the held name kept) as built.
 - [MSQ-MIDNIGHT-CLOCK] — at the Transfer step, a roll-call of every window and page open at a man's midnight swap (band, close with a note, or refresh), and at the database step, which clock decides "today" (each device's own today; a detachment abroad meets it first).
 - [NOTICE-UNDO-RETRACT] — every bell line retracted by the undo of what made it: unread goes, read becomes "… taken back · <who>" (his D1693, 5 Nov 26) — step 1 (the posting line) LIVE 5 Nov 26; step 2 (the input lines, the holiday's OIL line) open, his to place. — the posting line first, on `claude/postout-bell-look`; draw the new words first (D1625).
 - [TOPBAR-BAND-ANCHOR] — on a scrolled desktop page the "Not saved" band covers the page's first 36px (the old build too; not on his iPhone).
@@ -1695,6 +1695,7 @@ section folds are next touched. (Its first half — the wave show/hide toggle le
   the roles split, what each warning means in practice, the phone gestures.
 
 ### [DB-SYNC-MODEL] How the app shares and locks once it is in the database — his idea, to be designed now, built with the adapter (29 Sep 26)
+**Asked again at this step (his D2316, 22 Nov 26):** whether a sign-off name held while the day's OIL list is open should drop when another scheduler changes the day behind the list — kept as built until then (the OIL page).
 **8 Nov 26 — his D1751 replaces D450:** the day lock is a simple mark — who is editing the day — set when he starts and cleared once saved, held by the app; the database refuses nobody; no row ownership, free team or server check (`raptor-port/docs/data-model.md` §9). The code comments citing D450 for "only the day's holder saves a day" stay true (the app holds it — §9 rule 9); the few saying the database refuses are corrected with the lock's build.
 His idea, stated as "just an idea" (not a ruling yet): *"a refresh to update button for all members. And if a scheduler
 wants to edit a schedule for that particular day they have click edit for that day. This will block any other scheduler
@@ -2886,6 +2887,45 @@ publishes without a word, D81); **Leave War F2** (LOW, dormant — the war write
 cause, fix and proof: `raptor-port/docs/superpowers/briefs/2026-11-21-msq-fable-never-read.md` §2–4 (the proofs on
 D: under raptor-work, job3, and the copies' test files named there). **How (D2268, D2258):** its own branch from `main`;
 Fable fixes OIL F1, Inputs F1 and F2 (OIL and saved data), Opus the rest; each a failing test first; the bug-check order's
-sizing, walk and reads; his look and "merge live". **Place:** now — a session of its own (started 22 Nov 26 by chat 132:
-branch `claude/fable-read-faults-4104f0`).
+sizing, walk and reads; his look and "merge live". **Place:** now — a session of its own.
+**Status (22 Nov 26, chat 133, branch `claude/fable-read-faults-4104f0`, pull request 820):** all eight re-proved red on
+`main` first. FIXED, red-first: OIL F1 (Fable), Inputs F1 and F2 (Fable), Inputs F3 and F4, Leave War F1; beside them the
+input window's ✕ asks over a "Goes to" / "To" not saved, and the window follows "To" / "Goes to" changed behind it (Astra's
+code read F1). Reads done: Astra and a fresh blind Opus reader (no fault in the fixes). OWED: the walk of the running app,
+the evidence sheet's close (`raptor-port/docs/handpass/2026-11-22-fable-read-faults.md`, laid down), GitHub's run, his look.
+LEFT: **OIL F2** — his choice made, D2294 (the open OIL list at the first sign-off press, before the name is recorded;
+Later asks no more that day; the publish note names the input): to draw for him (D1625), then build; its proof runs as `it.fails`.
+DRAWN 22 Nov 26 (chat 137), round 2 of the same link, waiting for his look: `raptor-port/docs/mock/2026-11-22-oil-unanswered-publish/`
+`index.html` + `draw-f2.mjs` (round 1 kept as `round1.html`); his two questions there — the flow and its two new lines as
+drawn, and ✕ on the list cancelling the sign-off (recommended); the lead line's claim checked in the code
+(`engine/publish.ts currentBindNow` binds the OIL evidence, so an answer after signing drops the four).
+**Leave War F2** — a guard was built and taken out: the war writes for ids on no roster list by design (a deleted man's
+past days, D327) — "names nobody" needs defining first; proof kept as `it.fails`. **Found, not fixed:** (a) a man the
+scheduler adds from the schedule to an input already LATE reads LATE (D741 reading 1) — older than this job; the fix needs
+a mark of its own on his entry (Astra's read F2); (b) Fable's three SANS questions — should a hand SANS tick (on or off)
+keep earlier published days' crowds, should a hand re-tick after a SANS posting keep the posting's date, should a man
+NAMED on a published day before his SANS posting read pending; (c) under Unavailable one LATE tap drops every man's mark
+of that input — as D1586 rules ("saved on the input"), comment corrected, no change; (d) seen while drawing OIL F2
+(22 Nov 26, chat 137), not yet checked as a fault: on an UNPUBLISHED day, "+ Alt Plan", the input's row rejected there,
+then "Switch to this plan" back to the first plan puts the row back on the Ground Programme while the input itself stays
+rejected (`acc` 'r'), so no OIL list opens (`ui/oilputback.ts` reads `acc`); on a published day the switch re-files it;
+(e) found by the walk of 22 Nov 26 (chat 138, walker w1, the host saw the picture
+`raptor-port/docs/img/handpass/2026-11-22-fable-read-faults/w1/s1-08-al-published-desktop.png`): after a man is posted
+out as SANS, the Scheduler Board's crew list shows him under "SANS avail", greyed, on a day BEFORE his posting date too
+(Hex posted out 20 Jul, the board on Sat 18 Jul: WSOs 17 free became 16), while the ALL AVAIL window on that same day
+still counts him as a regular — the crew list reads today's SANS tick, the crowd reads the posting's date (the OIL F1
+fix, `leavewar/sync.ts sansSince`). His D283 makes him SANS "on the date"; whether the crew list of an earlier day
+should follow goes with Fable's three SANS questions in (b), one answer for all four. Nothing saved is wrong: his OIL
+for the earlier day stayed, the day read nothing pending; (f) **FIXED 22 Nov 26 (chat 139)** — reproduced by the host on
+a fresh build with walker w2's route, fixed red-first (`ui/InputWindow.tsx`: the window follows its record wherever it
+stands, the schedule's pop-up too; test `inpwin-unsaved-goes.test.tsx`), re-walked at both sizes; the root — on a PC the
+top bar stays pressable over an input's own window, where D1645 says it is covered — stays filed under
+[VEILED-WINDOWS-BAR] (a visible change, drawn for him first). What it was (walker w2, desktop only): with an input's own
+window open on the Inputs page (opened from the List), the top bar's Undo of a change of where that input goes (Reject,
+then → Unavail on the board; or Rejected → Ground) takes the app to Edit Schedule and turns the window into the
+schedule's pop-up, and (1) its "Goes to" still shows the place the Undo just took back
+(`…/w2/s3-17-*`, `s3-19-*`), and (2) a remark then typed and Saved is lost behind the note "That input is no longer
+there — nothing was saved", though the input is still there (`…/w2/s3-18-*`). The old place is not put back. Whether it
+is older than this job's "the window follows To / Goes to changed behind it" fix is not known. On a phone the top bar
+is covered while the window is up, so the route does not exist there.
 

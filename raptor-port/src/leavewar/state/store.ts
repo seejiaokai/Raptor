@@ -172,7 +172,9 @@ import {
   type AvailPoints,
   type ReqNames,
 } from '../engine'
-import { mergeWar, absencesAt, ownAbsenceRows, absenceVersion, awardsAt, awardRows, awardVersion, setAwardRows, type AwardRows, type MergedWar, type RecordSpans, type Views } from './merge'
+import { mergeWar, absencesAt, absenceRows, ownAbsenceRows, absenceVersion, awardsAt, awardRows, awardVersion, setAwardRows, type AwardRows, type MergedWar, type RecordSpans, type Views } from './merge'
+import { dayView, type DayView } from '../engine/dayview'
+import type { LeaveSource } from '../engine/charge'
 import { counterLabel } from '../engine/counters'
 import {
   BAL_KINDS, FIG_MAX, isBalKind, KIND_COUNTER, personFigures, readTypedBalShape, snapshotOf, START_GRADES, startYear,
@@ -5144,7 +5146,40 @@ export function figureCtxOf(): FigureCtx {
   // `eventDefs` and `people` feed the weekend/PH charging rule (charge.ts,
   // 3 Sep 26): which typed words are a holiday, and who is a pilot.
   // the MERGED wars (design §4.2 FB2-01): approved leave lives in the Inputs now
-  return { openings: state.openings, ledger: state.ledger, sources: getState().wars, oilPolicy: state.oilPolicy, asOf: localToday(), eventDefs: state.eventDefs, people: state.people }
+  const wars = getState().wars
+  return { openings: state.openings, ledger: state.ledger, sources: [...wars, outsideSource(wars)], oilPolicy: state.oilPolicy, asOf: localToday(), eventDefs: state.eventDefs, people: state.people }
+}
+
+/* THE ABSENCES ON DATES NO LEAVE PERIOD HOLDS, as one more source with no period (Fable's read of the Leave War, F1,
+   22 Nov 26). The wars' own views end at their periods, so OIL leave filed on the Inputs page for next year — the
+   ordinary case every November and December, before that year's period is made — was never taken off his OIL, while
+   the same leave as LL came off his LVE at once (the leave-year engine reads `dayRecsOf`, every date: reading 17). This
+   hands the figures the rest of the absence index: a date a period holds is left to that war, so nothing counts twice;
+   a source with no period is charged by the weekday rule (charge.ts `held`): only a weekend is excused out here, so
+   making the period later moves the figure only where it marks a weekday public holiday (LL behaves the same). It
+   widens every figure read through this context alike — CCL, FCL, CL, PL, the totals — as the leave-year engine already
+   reads those dates (reading 17). Only absences live out here: a bid exists only inside a war, an award is a ledger entry read apart. Built
+   once per absence index and set of wars. */
+/* …and, since the squadrons (merge.ts ownAbsenceRows), only the absences that are this war's squadron's, by the rule the
+   merged rows and the leave-year engine's dayRecsOf read — a man's days with his other squadron are never charged here.
+   Keyed on the absence version, which moves with the index and with the squadron rows the split reads. */
+let OUTSIDE: { ver: number; wars: unknown; src: LeaveSource } = { ver: -1, wars: null, src: { grid: {}, states: {}, views: {} } }
+function outsideSource(wars: readonly MergedWar[]): LeaveSource {
+  const ver = absenceVersion()
+  if (OUTSIDE.ver === ver && OUTSIDE.wars === wars) return OUTSIDE.src
+  const views: Views = {}
+  for (const pid of absenceRows().keys()) {
+    const days = ownAbsenceRows(pid)
+    if (!days) continue
+    let row: Record<string, DayView> | undefined
+    for (const [date, list] of days) {
+      if (!list.length || warHolding(wars as unknown as LeaveWar[], date)) continue
+      ;(row ??= {})[date] = dayView(list)
+    }
+    if (row) views[pid] = row
+  }
+  OUTSIDE = { ver, wars, src: { grid: {}, states: {}, views } }
+  return OUTSIDE.src
 }
 
 /** What a leave FILL would do to the balance it spends — the one question both leave sheets ask before taking someone
