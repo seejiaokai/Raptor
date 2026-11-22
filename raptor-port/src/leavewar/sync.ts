@@ -2119,7 +2119,21 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
        the two parts set aside above only ONE still is: the END an archive wrote, replaced by the archive's own date. The
        start of his window — and his earlier stints — are read as for everyone, by the one rule, `inSquadron`. */
     const sansWithUs = sansOnP(p, iso) && !!engaged && engaged.has(id) && !(p.archived && !p.archivedOn)
-    const ours = !lw || inSquadron(sansWithUs && p.archived ? { ...lw, to: addDays(String(p.archivedOn), -1) } : lw, iso)
+    /* …AND THE SAME WRITTEN END, ONCE HE IS RESTORED, SITS ON AN EARLIER STINT (the fresh Opus reader's R1 of the D2328
+       change, 22 Nov 26 — proved by d2328-read.test.ts R1a, R1b). Posted out as SANS, archived, then restored with a
+       post-in date: his record is a closed stint ending the day before the SANS posting, then the new one. The days he
+       flew with us as SANS — from the posting to the archive — fall in the gap between the two, and asking the stints
+       alone took him out of them: a published one read pending on its OIL (D283, D27, D327; D44, D45). His SANS days by
+       date tell the two gaps apart: the archive ENDED the posting's SANS stretch (sansStop), and that stretch began the
+       day after the stint's written end. On a day inside such a stretch he was ours. A real gap has no SANS day in it,
+       and a tick an admin made on the Quals page is never ended by an archive, so neither is read this way. */
+    const flewAsSans = (): boolean => {
+      if (!sansWithUs || !lw || !lw.past || !lw.past.length) return false
+      const was: unknown[] = Array.isArray(p.sanWas) ? p.sanWas : []
+      const st = was.find(s => Array.isArray(s) && iso >= String(s[0] || '') && iso < String(s[1] || '')) as string[] | undefined
+      return !!st && lw.past.some(x => x.to != null && addDays(x.to, 1) === String(st[0]))
+    }
+    const ours = !lw || inSquadron(sansWithUs && p.archived ? { ...lw, to: addDays(String(p.archivedOn), -1) } : lw, iso) || flewAsSans()
     if (!ours) continue
     if (keptOut.has(id)) continue
     if (engaged && personBusy(day, id).some((w: [number, number]) => w[0] < win[1] && win[0] < w[1])) continue

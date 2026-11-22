@@ -1,0 +1,210 @@
+[
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "r41-01",
+  "what": "Admin → Users: New person Quokka, WSO, CAT C, Post in Fri 17 Jul, Add person (read back)",
+  "ok": true,
+  "note": "id pmrldi53axiasrt {\"cs\":\"Quokka\",\"seat\":\"RCP\",\"san\":false} · post-in box \"Fri 17 Jul 26 ▾\" · note \"Quokka added to the roster — set flight and quals on the Quals page\" · record {\"postIn\":null,\"keys\":[]}",
+  "pics": "r41-r41-01-newperson-form-desktop.png, r41-r41-01-newperson-added-desktop.png"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "r41-02",
+  "what": "Quals: WSOs → ✎ Edit → his SANS cell (read back)",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "r41-r41-02-quals-desktop.png"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "r41-03",
+  "what": "Thu 16 Jul board: Quokka offered in the crew list (1 copies)",
+  "ok": null,
+  "note": "",
+  "pics": "r41-03-thu-crew-desktop.png"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "r41-04",
+  "what": "Thu 16 Jul: BRIEF 08:00–09:00 naming Quokka, SQN EVENT 10:00–17:00 for ALL AVAIL (read back)",
+  "ok": true,
+  "note": "{\"g\":{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"pmrldi53axiasrt\",\"rid\":\"rmrldibv6s4otfp\"},\"a\":{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldif1ylxa29i\"}}",
+  "pics": "r41-04-thu-fixture-desktop.png"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "R4-1.off",
+  "what": "Thu 16 Jul SQN EVENT window: Quokka NOT in — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"21\", window 21 people, Quokka out, pending 0",
+  "pics": "r41-r41-05-off-win-desktop.png"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "R4-1.on",
+  "what": "Thu 16 Jul SQN EVENT window: Quokka NOT in — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"21\", window 21 people, Quokka out, pending 0",
+  "pics": "r41-r41-05-on-win-desktop.png"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "R4-1.off2",
+  "what": "Thu 16 Jul SQN EVENT window: Quokka NOT in — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"21\", window 21 people, Quokka out, pending 0",
+  "pics": "r41-r41-05-off2-win-desktop.png"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "R4-1.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": true,
+  "note": "in: false/false/false · chip/window: 21/21 ; 21/21 ; 21/21"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "R4-1.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "21/21 ; 21/21 ; 21/21"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "r42-01",
+  "what": "Sat 18 Jul board: Quokka offered in the crew list (1 copies)",
+  "ok": null,
+  "note": "",
+  "pics": "r41-r42-01-sat-crew-desktop.png"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "r42-02",
+  "what": "Sat 18 Jul: BRIEF 08:00–09:00 naming Quokka, SQN EVENT 10:00–17:00 for ALL AVAIL (read back)",
+  "ok": true,
+  "note": "{\"g\":{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"pmrldi53axiasrt\",\"rid\":\"rmrldjcln12ffjs\"},\"a\":{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldjfpmom2cln\"}}",
+  "pics": "r41-r42-02-sat-fixture-desktop.png"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "R4-2.off",
+  "what": "Sat 18 Jul SQN EVENT window: Quokka IN — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"46\", window 46 people, Quokka IN (purple line), pending 0",
+  "pics": "r41-r42-03-off-win-desktop.png"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "R4-2.on",
+  "what": "Sat 18 Jul SQN EVENT window: Quokka IN — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"46\", window 46 people, Quokka IN (purple line), pending 0",
+  "pics": "r41-r42-03-on-win-desktop.png"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "R4-2.off2",
+  "what": "Sat 18 Jul SQN EVENT window: Quokka IN — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"46\", window 46 people, Quokka IN (purple line), pending 0",
+  "pics": "r41-r42-03-off2-win-desktop.png"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "R4-2.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": true,
+  "note": "in: true/true/true · chip/window: 46/46 ; 46/46 ; 46/46"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "R4-2.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "46/46 ; 46/46 ; 46/46"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "r43-01",
+  "what": "Tue 14 Jul: SQN EVENT 10:00–17:00 for ALL AVAIL, Quokka not named (read back)",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldkc80jo04w5\"}",
+  "pics": "r41-r43-01-tue-fixture-desktop.png"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "R4-3.off",
+  "what": "Tue 14 Jul SQN EVENT window: Quokka NOT in — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"23\", window 23 people, Quokka out, pending 0",
+  "pics": "r41-r43-02-off-win-desktop.png"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "R4-3.on",
+  "what": "Tue 14 Jul SQN EVENT window: Quokka NOT in — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"23\", window 23 people, Quokka out, pending 0",
+  "pics": "r41-r43-02-on-win-desktop.png"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "R4-3.off2",
+  "what": "Tue 14 Jul SQN EVENT window: Quokka NOT in — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"23\", window 23 people, Quokka out, pending 0",
+  "pics": "r41-r43-02-off2-win-desktop.png"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "R4-3.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": true,
+  "note": "in: false/false/false · chip/window: 23/23 ; 23/23 ; 23/23"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "R4-3.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "23/23 ; 23/23 ; 23/23"
+ },
+ {
+  "scn": "r41",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

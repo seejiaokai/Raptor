@@ -158,6 +158,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
 - [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK] (done 31 Oct 26), then [LW-WEEKDAY-WORK], then the database.
 - [MULTI-SQN-DESIGN] — one app, one database, many squadrons: home squadron at account creation, view-only rights to others, transfer on posting out, a day split between squadrons (his D1695, 5 Nov 26), with detachment modes — the design answered whole 17 Nov 26 (rounds 1–7, chats 90–104); its BUILD now, in batches, before the database step (D2187, changing D2086), each batch's agreed design and mock-up shown to him before it starts (D2188); the batch plan written and red-teamed (chat 106, `raptor-port/docs/superpowers/plans/2026-11-17-multi-sqn-build-batches.md`); batch 1's page put to him, waiting for his look. **Batch 1 steps 0–4 built on `claude/multi-sqn-b1-107` (pull request 806, draft) the night of 17–18 Nov 26 and FULL-checked; NOT ready to merge: the last reads (18 Nov, 09:00–09:41, `raptor-port/docs/superpowers/briefs/2026-11-18-multi-sqn-b1-fixread2-{astra,opus,security}.md`) left open faults to fix red first — the last-admin lock and master guard skipped by person-only and home-only changes, the gate's account list read differently from the loader's (a re-keyed or colliding row), a plain admin able to suspend or demote the master, a 142 admin able to post a 149 man out or touch 149's history, the master's Archive / Restore / Delete of a 149 man acting on 142's Leave War, a new 149 man losing his post-in date, inputs not checked by squadron at the gate (`…-fixread-opus7-open.md`); and, by his D2205–D2207 (18 Nov 26) the eleven open questions as recommended (only a master changes a master; sign-in held for a pending save; four cross-squadron bell lines; holiday OIL by one's own list; "142's" dropped from the holiday warning; the code-check pull request to `main`); by his D2203 (18 Nov 26), a move to another squadron clearing every View and Plan held of others; by his D2202 (18 Nov 26), a planner's bell carrying the other squadron's admin lines, on by default, each line showing its squadron; by his D2200 (18 Nov 26), each person to choose which notifications reach his bell, a few that need action always on — a job after the multi-squadron batches, drawn first; by his D2192 and D2199 (18 Nov 26), step 1's 'admin' level for a right in another squadron kept only as "Plan" — full access to that squadron, as its own admins (D2201) — given person by person by a master admin, off by default — otherwise View only; by his D2195 (18 Nov 26), each squadron's own public-holiday list, never shared, and by his D2204 a detachment's own list, which may start as a copy of its squadron's — step 4's holidays by place undone, the Holidays form naming only its own squadron's days, no holiday bell to the other squadron; by his D2196 (18 Nov 26), only a master admin sets the time zone of a place more than one squadron sits on — the place's save refused for anyone else; by his D2197 and D2198 (18 Nov 26), a master admin's menu pick moves every page, each his to edit, his bell his primary squadron's by default; his idea of a master-set access table (per squadron, per role, per page) and of each person choosing his own notifications — answered by chat 108 with a recommendation, his ruling awaited, nothing built; then steps 5–6.**
+- [ALL-AVAIL-REMOVE-BY-HAND] — take a person out of an ALL AVAIL crowd by hand (his D2330, 22 Nov 26): not built; a mock-up and five points for him first.
 - [FABLE-READ-FAULTS] — seven of eight fixed, OIL F2 built (D2294, D2299), walked and re-walked on `claude/fable-read-faults-4104f0` (pull request 820, chats 133–139) — LIVE 22 Nov 26. His answers of 22 Nov 26 (chat 139): D2313 (SANS from its date everywhere — closes (e) and (b)) and D2314 (the publish note's names) BUILT 22 Nov 26 on `claude/sans-from-date-139` (chat 140, pull request 824) — LIVE 22 Nov 26, his "merge live", D2327; (i) ALL AVAIL leaving out a man posted out as SANS — FIXED 22 Nov 26 on `claude/allavail-sans-postout-141` (chat 141, pull request 825), its bug check (FULL) in hand, his look and "merge live" owed; (g), (h), (j), (k), (l) open; D2315 (Leave War F2 waits for the database step), D2316 (the held name kept) as built.
 - [MSQ-MIDNIGHT-CLOCK] — at the Transfer step, a roll-call of every window and page open at a man's midnight swap (band, close with a note, or refresh), and at the database step, which clock decides "today" (each device's own today; a detachment abroad meets it first).
 - [NOTICE-UNDO-RETRACT] — every bell line retracted by the undo of what made it: unread goes, read becomes "… taken back · <who>" (his D1693, 5 Nov 26) — step 1 (the posting line) LIVE 5 Nov 26; step 2 (the input lines, the holiday's OIL line) open, his to place. — the posting line first, on `claude/postout-bell-look`; draw the new words first (D1625).
@@ -2875,6 +2876,17 @@ recommended to him: each squadron's or detachment's pages judge by that place's 
 and the database step for the trusted time itself — his D2264 (22 Nov 26): the server's time, read at sign-in, never each
 device's clock. **Next:** the place time zone put to him with the detachments batch's design.
 
+### [ALL-AVAIL-REMOVE-BY-HAND] Take a person out of an ALL AVAIL crowd by hand (his D2330, 22 Nov 26, chat 141)
+
+He asked for it while settling who ALL AVAIL counts: "I would also like to have the ability to remove people on all avail
+manually." Not built. A new control he will see, so the first step is a mock-up on the real ALL AVAIL window, at his
+iPhone's size and a desktop's (D1625), with these put to him, each with its picture and a recommendation: (1) taken out
+of ONE item's crowd, or of every ALL AVAIL item that day; (2) a man taken out earns no OIL for that item (today, in OIL
+Earn, a scheduler can switch one man off earning while he stays in the count — D65, D762); (3) how he is put back;
+(4) on a published day the change reads pending until the next amendment (D44, D45); (5) whether ALL takes it too.
+Before the drawing: check what already exists outside OIL Earn (not checked). Place: its own job, after
+[FABLE-READ-FAULTS] (p) and (r).
+
 ### [FABLE-READ-FAULTS] The faults Fable's reads of 21–22 Nov found outside the two-squadron work — fix now (his D2268, 22 Nov 26)
 **What:** proved by failing tests on the night's copy (very probably live today), none fixed: **OIL F1** (MED — a man posted
 out as SANS drops from the crowd of earlier days, so the next amendment of a published day before his posting takes his
@@ -3004,7 +3016,16 @@ Scheduler Board's crew list offered a SANS man on a day before his post-in date 
 post-in Fri 17 Jul, offered on Thu 16 Jul). Not checked: the same for a man who is not SANS, Edit Schedule's crew panel,
 the SANS availability panel, the highlight chips. A job of its own: a roll-call of every place that asks "is he ours
 this day", each given has it / must not / missing, then the build.
-**(p) a question for him:** a SANS posting dated ahead — on a day past its date, named with us, he is out of ALL AVAIL
+**(p) ANSWERED 22 Nov 26 by D2329 — TO BUILD:** a SANS posting set ahead is read by the day. Before its date he is the
+ordinary man he is (built). From its date he is SANS: counted only on a day a scheduler has put him on our programme, no
+time clash — WHENEVER that day is looked at (the agent's reading of his example, told to him). Built today: looked at
+before the posting's date, a day past it leaves him out though named, and counts him once the date arrives (two tests in
+`allavail-sans-posted.test.ts` pin that — "a SANS posting still to come…", "a SANS posting whose date was moved later…" —
+and change with this). The build, in `leavewar/sync.ts availableFor`: for a saved posting whose outcome is SANS and which
+has not run, a day past its date is a SANS day for the crowd — he counts if named (`engaged`), not otherwise; red-first,
+then the check (OIL: FULL, a narrow walk of picture 4's case both ways and a published Saturday that stays clean when
+Friday arrives). The crew list and the SANS marks for such a day are (r)'s. The older wording of the question:
+a SANS posting dated ahead — on a day past its date, named with us, he is out of ALL AVAIL
 until the date arrives and the posting runs (as before the fix, pinned by two tests); both readers call it his to
 decide. A day published ahead with him named then reads pending when the posting runs.
 **(q) older, met in passing by the walk of that fix (walker w2, S23, both sizes; seen by the host in the walker's picture
