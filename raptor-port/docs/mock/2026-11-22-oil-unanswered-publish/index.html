@@ -3,21 +3,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
-:root{--bg:#f4f6f8;--card:#ffffff;--fg:#14202b;--mute:#5b6b78;--line:#d6dee5;--rec:#0b7a4b;--mark:#d4157a;--tint:rgba(14,127,166,.07);
+:root{--bg:#f4f6f8;--card:#ffffff;--fg:#14202b;--mute:#5b6b78;--line:#d6dee5;--rec:#0b7a4b;--mark:#d4157a;
 --f-body:Inter,system-ui,'Segoe UI',sans-serif;--f-head:'Space Grotesk',Inter,system-ui,sans-serif}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--rec:#43c98a;--mark:#ff4fa3;--tint:rgba(60,196,234,.08);color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--rec:#43c98a;--mark:#ff4fa3;--tint:rgba(60,196,234,.08);color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--rec:#43c98a;--mark:#ff4fa3;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--rec:#43c98a;--mark:#ff4fa3;color-scheme:dark}
 body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-body);margin:0}
-.wrap{max-width:1100px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1000px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 h1,h2{font-family:var(--f-head);text-wrap:balance;margin:0}
-h1{font-size:25px}h2{font-size:19px;margin-top:30px;padding-top:14px;border-top:1px solid var(--line)}
+h1{font-size:25px}h2{font-size:19px;margin-top:28px;padding-top:14px;border-top:1px solid var(--line)}
 .sub{color:var(--mute);margin:4px 0 0}
 .top,.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:14px}
-.top p,.q p{margin:6px 0;max-width:80ch}
+.top p,.q p{margin:6px 0;max-width:75ch}
 .rec{color:var(--rec);font-weight:600}
-.words{background:var(--tint);border-radius:8px;padding:8px 12px;margin:8px 0}
-.words p{margin:4px 0}
-.words q{quotes:"“" "”";font-weight:600;color:var(--mark)}
 .pics{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;align-items:flex-start}
 figure{margin:0;min-width:0;max-width:100%}
 figure img{display:block;max-width:100%;height:auto;border-radius:6px;border:1px solid var(--line);cursor:zoom-in;background:#000}
@@ -29,43 +26,33 @@ figcaption b{color:var(--fg)}
 </style>
 <div class="wrap">
 <h1>Unanswered OIL asked at the first sign-off</h1>
-<p class="sub">Round 3: the list's two lines cut short. Tap a picture to enlarge.</p>
+<p class="sub">Round 4: two nicer looks for the top of the list. Tap a picture to enlarge.</p>
 
 <div class="top">
-<p><b>1. The two lines, shorter.</b> OK? <a href="#flow">Pictures</a></p>
-<p class="rec">Recommended: yes.</p>
+<p><b>1. A or B?</b> <a href="#a">A</a> shows Ace's waiting sign-off as the box itself. <a href="#b">B</a> puts one line under the title.</p>
+<p class="rec">Recommended: A. You see what you pressed, so no sentence is needed.</p>
 <p><b>2. ✕ on the list:</b> nothing is signed, and the next press asks again.</p>
 <p class="rec">Recommended: yes. If ✕ worked like Later, closing the list would sign the day by accident.</p>
 </div>
 
-<h2 id="flow">The press opens the OIL list</h2>
+<h2 id="a">A: the waiting sign-off, shown as the box</h2>
 <div class="q">
-<p>Pick a name in any sign-off box. The list opens first, and the name goes in on Save or Later.</p>
-<div class="words">
-<p>Top: <q>Answer before Ace signs CUR CK.</q></p>
-<p>Beside Later: <q>Later: nobody on it earns OIL.</q></p>
-</div>
+<p>The CUR CK box you pressed, reading Ace, with a dotted edge. The app already uses dotted for "waiting to go in".</p>
 <div class="pics">
-<figure><img src="img/f2-p1-list-phone.png" width="394" alt="Phone: the list with the two short lines"><figcaption><b>1.</b> iPhone.</figcaption></figure>
-<figure><img src="img/f2-p1-list-desktop.png" width="456" alt="Desktop: the list with the two short lines"><figcaption><b>2.</b> Desktop.</figcaption></figure>
-</div>
-<div class="pics">
-<figure><img src="img/f2-p1-screen-phone.png" width="300" alt="Phone: the list over the board, CUR CK still empty"><figcaption><b>3.</b> On the board. CUR CK (marked 1) stays empty until Save or Later.</figcaption></figure>
-<figure><img src="img/f2-p1-screen-desktop.png" width="760" alt="Desktop: the list beside the board"><figcaption><b>4.</b> Desktop board.</figcaption></figure>
-</div>
-<div class="pics">
-<figure><img src="img/f2-w-screen-desktop.png" width="760" alt="Edit Schedule's week with the same list"><figcaption><b>5.</b> Edit Schedule's week: the same.</figcaption></figure>
+<figure><img src="img/f3-a-list-phone.png" width="394" alt="A on the phone: a dotted CUR CK Ace box, signs on Save or Later"><figcaption><b>A1.</b> iPhone.</figcaption></figure>
+<figure><img src="img/f3-a-list-desktop.png" width="456" alt="A on the desktop"><figcaption><b>A2.</b> Desktop.</figcaption></figure>
+<figure><img src="img/f3-a-screen-phone.png" width="260" alt="A over the board on the phone"><figcaption><b>A3.</b> Over the board.</figcaption></figure>
 </div>
 </div>
 
-<h2>After Save or Later</h2>
+<h2 id="b">B: one line under the title</h2>
 <div class="q">
+<p>Where a holiday's name stands today when this list opens for a holiday.</p>
 <div class="pics">
-<figure><img src="img/f2-p2-signed-save-phone.png" width="402" alt="After Save: CUR CK reads Ace"><figcaption><b>6.</b> Save with Yes: Ace signs, Ranger earns OIL once published.</figcaption></figure>
-<figure><img src="img/f2-p3-signed-later-phone.png" width="402" alt="After Later: all four signed"><figcaption><b>7.</b> Later: Ace signs; the other three don't ask again.</figcaption></figure>
-<figure><img src="img/f2-p3-note-phone.png" width="398" alt="Publish note naming Ranger's Training"><figcaption><b>8.</b> The publish note, as chosen last round.</figcaption></figure>
+<figure><img src="img/f3-b-list-phone.png" width="394" alt="B on the phone: Before Ace signs CUR CK under the title"><figcaption><b>B1.</b> iPhone.</figcaption></figure>
+<figure><img src="img/f3-b-list-desktop.png" width="456" alt="B on the desktop"><figcaption><b>B2.</b> Desktop.</figcaption></figure>
 </div>
-<p class="sub">Pictures are the real app. The two pink-outlined lines are drawn in; pink outlines, "New" and "1" are not part of the design. Earlier rounds are kept in the project.</p>
+<p class="sub">Both keep "Later: nobody on it earns OIL." from last round. Real app pictures; only the pink-outlined part is drawn in. Earlier rounds are kept in the project.</p>
 </div>
 </div>
 <div id="zoom" hidden></div>

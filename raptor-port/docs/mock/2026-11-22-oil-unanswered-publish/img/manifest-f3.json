@@ -1,0 +1,75 @@
+{
+  "drawn": "2026-11-22T02:11:39.897Z",
+  "url": "http://localhost:4187/",
+  "words": {
+    "held": "signs on Save or Later",
+    "sub": "Before Ace signs CUR CK",
+    "foot": "Later: nobody on it earns OIL."
+  },
+  "frames": [
+    {
+      "name": "f3-a-list",
+      "size": "desktop",
+      "clip": {
+        "x": 1072,
+        "y": 106,
+        "width": 456,
+        "height": 252.5
+      }
+    },
+    {
+      "name": "f3-b-list",
+      "size": "desktop",
+      "clip": {
+        "x": 1072,
+        "y": 106,
+        "width": 456,
+        "height": 223.5
+      }
+    },
+    {
+      "name": "f3-a-list",
+      "size": "phone",
+      "clip": {
+        "x": 4,
+        "y": 307.0625,
+        "width": 394,
+        "height": 259.875
+      }
+    },
+    {
+      "name": "f3-a-screen",
+      "size": "phone",
+      "clip": "viewport"
+    },
+    {
+      "name": "f3-b-list",
+      "size": "phone",
+      "clip": {
+        "x": 4,
+        "y": 322.0625,
+        "width": 394,
+        "height": 229.875
+      }
+    },
+    {
+      "name": "f3-b-screen",
+      "size": "phone",
+      "clip": "viewport"
+    }
+  ],
+  "checks": {
+    "desktop-A": {
+      "pillH": 22,
+      "realH": 22,
+      "rowLeft": 1093,
+      "countLeft": 1093
+    },
+    "phone-A": {
+      "pillH": 20,
+      "realH": 20,
+      "rowLeft": 25,
+      "countLeft": 25
+    }
+  }
+}
