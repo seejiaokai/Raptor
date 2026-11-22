@@ -176,8 +176,15 @@ export function setBellList(open: boolean, at = '') { BELLLIST = open; BELLAT = 
    own squadron's, and its line may be tapped by an admin of it whose own page is another squadron's (one holding Plan of
    it, a master admin), so the list it opens lists, and its Save answers, that squadron's inputs; left out, the list works
    it out (ui/OilDayList.tsx) */
-export let OILLIST: null | { from: string; to: string; name: string; fresh: boolean; plain?: boolean; unit?: string } = null
-export function setOilList(v: null | { from: string; to: string; name: string; fresh?: boolean; plain?: boolean; unit?: string }) { OILLIST = v ? { from: v.from, to: v.to || v.from, name: v.name || '', fresh: !!v.fresh, ...(v.plain ? { plain: true } : {}), ...(v.unit ? { unit: v.unit } : {}) } : null }
+/* `hold` — A SIGN-OFF WAITING ON THE LIST (his D2294, D2299 — ui/oilsign.ts): the list was opened by a press on one of the
+   day's four sign-off boxes, and holds the name picked there, unwritten. The list's Save and Later write it; closing the
+   list any other way drops it with the list, so nothing is signed. */
+export let OILLIST: null | { from: string; to: string; name: string; fresh: boolean; plain?: boolean; unit?: string; hold?: { di: number; role: string; who: string } } = null
+export function setOilList(v: null | { from: string; to: string; name: string; fresh?: boolean; plain?: boolean; unit?: string; hold?: { di: number; role: string; who: string } }) { OILLIST = v ? { from: v.from, to: v.to || v.from, name: v.name || '', fresh: !!v.fresh, ...(v.plain ? { plain: true } : {}), ...(v.unit ? { unit: v.unit } : {}), ...(v.hold ? { hold: { di: v.hold.di, role: v.hold.role, who: v.hold.who } } : {}) } : null }
+/* THE DAYS "LATER" WAS PRESSED ON AT A SIGN-OFF, each with the inputs left unanswered then (ui/oilsign.ts — "Later asks no
+   more that day", D2294): his for as long as he is signed in, cleared with the windows at the session's end. Keyed by
+   squadron and date, so another week's Saturday or another squadron's is its own. */
+export const OILSIGN_LATER = new Map<string, Set<string>>()
 export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'DAYPOP', reset: () => setDayPop(null) },
   { name: 'INSIGHTS', reset: () => setInsights(false) },
@@ -200,6 +207,7 @@ export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'SANSSET', reset: () => setSansSet(false) },
   { name: 'INPSET', reset: () => setInpSet(false) },
   { name: 'OILLIST', reset: () => setOilList(null) },
+  { name: 'OILSIGN_LATER', reset: () => OILSIGN_LATER.clear() },
   { name: 'BELLLIST', reset: () => setBellList(false) },
   { name: 'BELLAT', reset: () => setBellList(false) },   // set and cleared with the flag above — one setter for the pair
 ]

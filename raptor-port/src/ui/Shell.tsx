@@ -22,15 +22,13 @@ import { HLSET, SEARCH, HLOPEN, toggleHlOpen, HLGROUP, setSearch, CURPAGE, setDa
 import { HlChips } from './hlchips'
 import { initDrag } from './drag'
 import { initPan, updateWeekNav, panDays } from './pan'
-import { setSign, daySigned, dayApproved, dayHasChanges, SIGN_ROLES } from '../engine/publish'
-import { logAction } from '../engine/editlog'
+import { signPick, signNow } from './oilsign'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import { slotVal, setSlotVal } from '../engine/slots'
 import { rowTake } from './reqdoor'
 import { afterSchedMutate } from '../state/view'
 import { toast } from './toast'
-import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { HIST } from '../state/history'
 import { useVersion, useUndoVersion } from './useStore'
 import { ViewWeek } from './ViewWeek'
@@ -208,31 +206,11 @@ export function Shell() {
          not written, and the note says so (state/typing-hold.ts "the schedule side"; ui/textedit.ts enteredOnAnother) */
       if (enteredOnAnother(sel)) { HOOKS.toast(SCHED_MOVE_WORDS, 'warn'); notify(); return }
       const di = +sel.dataset.signday!
-      const wasSigned = daySigned(di)             // capture BEFORE, so the note fires only on COMPLETING the set (kept OUTSIDE the command, R2-11)
-      /* [ARCH-STACK] follow-up #1 (row D): route the sign write through a
-         sched.sign command. setSign mutates SCHED.sign/signBind and histPush
-         persists — both inside so the command captures the change and the legacy
-         persist still runs (latched, phase 8). The daySigned reads and reflow
-         stay outside (they read, they don't write). */
-      schedWrite(SCHED_TYPES.sign, () => {
-        setSign(di, sel.dataset.sign!, sel.value)   // AM-06: binds the signature to the content it signed
-        HOOKS.histPush()
-        /* the change history's line for a sign-off, inside the command so a refused one leaves none ([DRAFT-PENDING] —
-           Fable F3 / Astra DP-07: signing is an official act on the day, and every member reads who did it, D169) */
-        const role = (SIGN_ROLES.find((r: any) => r[0] === sel.dataset.sign) || [])[1] || 'Sign-off'
-        logAction(di, sel.value ? `Signed · ${role} · ${(PEOPLE as any)[sel.value]?.cs || sel.value}` : `Sign-off cleared · ${role}`, { sect: 'day' })
-      })
-      /* R2 (owner, 15 Sep 26): completing the four sign-offs on an ALREADY-published
-         day with nothing pending correctly shows NO publish button — which reads like
-         a bug ("I signed everything, where's publish?"). Say so, once, only on the
-         transition INTO fully-signed (not when re-picking a name on an already-signed
-         day — Codex PSF-004). Not on an unpublished day: there, signing IS what
-         unlocks the first publish, so the button appears and there is no confusion.
-         dayHasChanges is the one publish-eligibility authority (same one the status
-         line reads). */
-      if (!wasSigned && daySigned(di) && dayApproved(di) && !dayHasChanges(di))
-        HOOKS.toast('All signed — no changes to publish right now')
-      HOOKS.reflow()   // histPush moved INSIDE the sched.sign command above
+      /* THE WRITE IS ui/oilsign.ts's (moved there whole, 22 Nov 26): on a day with an input whose OIL question nobody has
+         answered, a name picked here is HELD and the day's OIL list opens first (his D2294, D2299) — the box goes back
+         to what is written, and the list's Save or Later writes the name by that same path */
+      if (signPick(di, sel.dataset.sign!, sel.value) === 'held') { sel.value = signNow(di, sel.dataset.sign!); notify() }
+      HOOKS.reflow()   // histPush is INSIDE the sched.sign command (ui/oilsign.ts writeSign)
     }
     /* right-click a filled slot in edit mode → clear it (reference verbatim,
        gated on the role and on being on the edit page) */

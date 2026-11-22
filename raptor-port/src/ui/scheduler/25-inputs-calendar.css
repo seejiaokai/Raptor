@@ -667,6 +667,21 @@ body.in-cal{padding-bottom:0}
    The cards are the input's OWN (ui/InputCard.tsx) with one thing added: `.icard-act`, the two buttons at the right of
    the words row — "By …" then stands just before them, as drawn, instead of at the row's far right. */
 .odl-lead{margin:0 0 10px;padding-bottom:10px;border-bottom:1px solid var(--edge);font-size:15px;line-height:1.35;color:var(--ink)}
+/* THE HELD SIGN-OFF AT THE LIST'S TOP (his D2297 look A; round 6 as drawn, D2299 —
+   docs/mock/2026-11-22-oil-unanswered-publish/draw-f3.mjs, its measures img/manifest-f3.json). The board's own box
+   (`.sgn`, 04-pucks-sections.css) at the board's height — 22 on a desktop, 20 on a phone — its edge DOTTED, the app's
+   mark for "waiting to go in" (a pending row's dotted underline, the hollow ALn tag), and no ▾, since it opens nothing.
+   The words beside it are lower case, so their letters' middle (the x-height) is what sits on the box's middle line,
+   where the capitals of "CUR CK" are centred: lifted by the measured 1.5px on a desktop, 0.5px with a phone's letters
+   (his round-6 correction, "not vertically aligned"). */
+.odl-held{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:2px 0 10px}
+.odl-held .sgn{height:22px;box-sizing:border-box;border-style:dotted;border-color:var(--ink-3);cursor:default}
+.odl-held .sgn::after{content:none}
+.odl-held .upconf-need{position:relative;top:-1.5px}
+@media (max-width:820px){
+  .odl-held .sgn{height:20px}
+  .odl-held .upconf-need{top:-.5px}
+}
 .odl-count{display:flex;align-items:center;gap:8px;margin:2px 0 10px}
 .odl-count .sd-gh{margin:0;flex:1}
 .oildaywin .icard{cursor:default}

@@ -1,0 +1,150 @@
+// @vitest-environment jsdom
+/* THE OIL QUESTION AT THE SIGN-OFF ([FABLE-READ-FAULTS], OIL F2 — his D2294, D2296, D2297, D2299; the drawing of record
+   docs/mock/2026-11-22-oil-unanswered-publish/draw-f3.mjs, round 6). A day with an input whose OIL question nobody has
+   answered asks it when a scheduler presses any of its four sign-off boxes: the day's open OIL list opens BEFORE the name
+   is written (an answer given after signing clears the sign-offs); Save writes the answers, then the name; Later writes
+   the name and asks no more that day; the list's close button or Escape signs nothing, and the next press asks again.
+   Driven through the door the sign-off box's own handler calls (ui/oilsign.ts signPick — ui/Shell.tsx) and the list's own
+   buttons, drawn for real; the press on the real box is walked in the browser (the evidence sheet). The harness is
+   leavewar/fableoil-unanswered-publish.test.tsx's. */
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { act } from 'react'
+import { createRoot } from 'react-dom/client'
+import { DAYS } from '../engine/data'
+import { INPUTS } from '../engine/inputs'
+import { PEOPLE } from '../engine/people'
+import { SCHED, signOf } from '../engine/publish'
+import { HOOKS } from '../engine/hooks'
+import { stashClear } from '../engine/weekstash'
+import { initStore, writeInputsBatch, notify } from '../state/store'
+import { setSession } from '../state/auth'
+import * as view from '../state/view'
+import { _resetDisclosure } from '../state/disclosure'
+import { projectPeople } from '../leavewar/state/raptorRoster'
+import { initStore as lwInitStore, setPeople, setRole } from '../leavewar/state/store'
+import { memoryBackend } from '../leavewar/state/storage'
+import { oilOpenOn, wireLeaveWarSync } from '../leavewar/sync'
+import * as pops from './pops'
+import { OilDayList } from './OilDayList'
+import { signPick, resetOilSign } from './oilsign'
+
+const DSNAP = JSON.stringify(DAYS)
+const ISNAP = JSON.stringify(INPUTS)
+const SAT = 5, SAT_ISO = '2026-07-18'
+const row = (iid: string, person = 'bane'): any => ({ iid, person, type: 'Training', date: 'Jul 18', yr: 2026, allday: false, s: 480, e: 1020, remarks: '', mod: 'now' })
+const file = (r: any) => { expect(writeInputsBatch(() => { INPUTS.push(r) })).toBe(true); view.afterSchedMutate() }
+const answerOf = (iid: string) => ((INPUTS.find((x: any) => x.iid === iid) as any)?.oil || {})[SAT_ISO]
+let said: string[] = []
+const realToast = HOOKS.toast
+let host: HTMLElement, root: ReturnType<typeof createRoot>
+const q = (tid: string) => host.ownerDocument.querySelector(`[data-testid="${tid}"]`) as HTMLElement | null
+const click = async (tid: string) => { const b = q(tid); expect(b, tid).not.toBeNull(); await act(async () => { b!.click() }) }
+const draw = async () => { await act(async () => { notify() }) }
+
+beforeEach(async () => {
+  DAYS.length = 0; JSON.parse(DSNAP).forEach((d: any) => DAYS.push(d))
+  INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i))
+  SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
+  SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}
+  SCHED.signBind = {}; SCHED.drafts = {}; SCHED.curDraft = {}; SCHED.retired = {}; SCHED.correcting = {}
+  stashClear()
+  setSession({ user: 'ad', role: 'admin' })
+  view.selDrop(); view.armDrop(); view.setUnpubArm(null); view.DPREV.clear()
+  initStore()
+  lwInitStore(memoryBackend()); setPeople(projectPeople()); setRole('admin')
+  wireLeaveWarSync()
+  _resetDisclosure()
+  pops.setOilList(null); resetOilSign()
+  said = []
+  HOOKS.toast = ((m: any) => { said.push(String(m)) }) as any
+  view.setPage('editsched')
+  /* the Saturday holds one thing: Bane's Training, its OIL question never answered */
+  const d: any = DAYS[SAT]; d.waves = []; d.sims = {}; d.dutywaves = []; d.ground = []; d.notes = []; d.allhands = []
+  file(row('fx-train'))
+  expect(oilOpenOn(SAT_ISO, SAT_ISO).map(o => o.iid), 'setup: the question is open').toContain('fx-train')
+  host = document.createElement('div'); document.body.appendChild(host)
+  root = createRoot(host)
+  await act(async () => { root.render(<OilDayList />) })
+})
+afterEach(async () => { await act(async () => { root.unmount() }); host.remove(); HOOKS.toast = realToast })
+
+describe('a sign-off pressed on a day with an unanswered OIL question (D2294, D2299)', () => {
+  it('holds the name and opens the day’s list — nothing is signed yet', async () => {
+    expect(signPick(SAT, 'cur', 'ignite')).toBe('held')
+    expect(signOf(SAT).cur, 'the name is not written before the answer').toBeFalsy()
+    expect(pops.OILLIST).toMatchObject({ from: SAT_ISO, to: SAT_ISO, hold: { di: SAT, role: 'cur', who: 'ignite' } })
+    await draw()
+    /* as drawn (round 6): the pressed box itself at the list's top, the name held in it; the words beside it; the foot */
+    const held = q('odl-held')!
+    expect(held.querySelector('.sgn .k')!.textContent).toBe('CUR CK')
+    const cs = String((PEOPLE as any).ignite.cs)
+    expect(held.querySelector('.sgn .v')!.textContent).toBe(cs)
+    expect(held.querySelector('.sgn select'), 'the held box opens nothing').toBeNull()
+    expect(held.textContent).toContain('waiting for your answer')
+    expect(q('odl-left')!.textContent).toBe(`Later: ${cs} signs, but nobody on it earns OIL.`)
+    expect(q('odl-lead'), 'no paragraph above the list').toBeNull()
+  })
+
+  it('Save writes the answer first, then the name — and the name stands', async () => {
+    signPick(SAT, 'cur', 'ignite'); await draw()
+    await click('odl-yes-fx-train'); await click('odl-save')
+    expect(answerOf('fx-train'), 'the answer is on the input').toBeGreaterThan(0)
+    expect(signOf(SAT).cur, 'the held name went in after the answer').toBe('ignite')
+    expect(pops.OILLIST).toBeNull()
+    /* nothing left to ask: the next box signs at once */
+    expect(signPick(SAT, 'sked', 'bane')).toBe('signed')
+    expect(signOf(SAT).sked).toBe('bane')
+    expect(signOf(SAT).cur, 'and the first name was not cleared by it').toBe('ignite')
+  })
+
+  it('Later signs without an answer, and the other three boxes ask no more that day', async () => {
+    signPick(SAT, 'cur', 'ignite'); await draw()
+    await click('odl-later')
+    expect(signOf(SAT).cur).toBe('ignite')
+    expect(answerOf('fx-train'), 'no answer was written').toBeUndefined()
+    expect(pops.OILLIST).toBeNull()
+    for (const [role, who] of [['sked', 'bane'], ['plan', 'stiff'], ['appr', 'pump']] as const) {
+      expect(signPick(SAT, role, who), role).toBe('signed')
+      expect(pops.OILLIST, role).toBeNull()
+    }
+    expect(signOf(SAT)).toMatchObject({ cur: 'ignite', sked: 'bane', plan: 'stiff', appr: 'pump' })
+  })
+
+  it('the list’s close button signs nothing, and the next press on any box asks again', async () => {
+    signPick(SAT, 'cur', 'ignite'); await draw()
+    const x = host.ownerDocument.querySelector('[data-testid="win-oilday"] .win-x, [data-testid="win-oilday"] [aria-label="Close"]') as HTMLElement
+    expect(x, 'the window’s close button').not.toBeNull()
+    await act(async () => { x.click() })
+    expect(pops.OILLIST).toBeNull()
+    expect(signOf(SAT).cur, 'nothing signed').toBeFalsy()
+    expect(signPick(SAT, 'sked', 'bane'), 'another box asks again').toBe('held')
+    expect(signOf(SAT).sked).toBeFalsy()
+    expect(pops.OILLIST).toMatchObject({ hold: { role: 'sked', who: 'bane' } })
+  })
+
+  it('a second input filed after Later is asked once more (the agent’s reading, told to him)', async () => {
+    signPick(SAT, 'cur', 'ignite'); await draw(); await click('odl-later')
+    file(row('fx-two', 'stiff'))
+    expect(signPick(SAT, 'sked', 'bane')).toBe('held')
+    await draw(); await click('odl-later')
+    expect(signPick(SAT, 'plan', 'stiff')).toBe('signed')
+  })
+})
+
+describe('where there is nothing to ask, signing is as it was', () => {
+  it('an answered day signs at once; clearing a name never asks', async () => {
+    /* clearing: even with the question open */
+    expect(signPick(SAT, 'cur', '')).toBe('signed')
+    expect(pops.OILLIST).toBeNull()
+    const r: any = INPUTS.find((x: any) => x.iid === 'fx-train')
+    expect(writeInputsBatch(() => { r.oil = { [SAT_ISO]: 0 } })).toBe(true); view.afterSchedMutate()
+    expect(signPick(SAT, 'cur', 'ignite')).toBe('signed')
+    expect(signOf(SAT).cur).toBe('ignite')
+    expect(pops.OILLIST).toBeNull()
+  })
+  it('a working day’s input asks nothing', () => {
+    const WED = 2
+    expect(signPick(WED, 'cur', 'ignite')).toBe('signed')
+    expect(pops.OILLIST).toBeNull()
+  })
+})

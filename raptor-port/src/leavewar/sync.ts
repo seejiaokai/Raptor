@@ -19,7 +19,7 @@
 
 import { useSyncExternalStore } from 'react'
 import { toPeople, pieceOf } from '../engine/inputown'
-import { inputOnDay, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, remarksTyped, tillShown, tillDefault, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent, filingOf } from '../engine/inputs'
+import { inputOnDay, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, inpLabel,remarksTyped, tillShown, tillDefault, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent, filingOf } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
@@ -2469,6 +2469,27 @@ function oilBlindLine(iso: string, day: Day, spans: Record<string, OilWork[]>): 
     : { line: `${when} earned nobody any OIL — ${desks} no usable times` }
 }
 
+/* THE PUBLISH NOTE'S SENTENCE FOR INPUTS WITH NO OIL ANSWER (his D2294, D2299): what the day's one list would list for the
+   squadron in view on that date (oilOpenOn — so an input taken off the programme, cancelled, information-only or already
+   answered, a No included, is never named). Each is named as the Undo names an input (D1582 — undo/describe.ts): whose
+   and what, its own title standing for its kind; an input of several people by its kind and how many. Up to three are
+   named; more are counted ("4 inputs have no OIL answer…" — the agent's wording for that case, told to him). No day at
+   its head and no full stop: the caller gives it both. */
+function oilUnansweredLine(iso: string): string | null {
+  const named: string[] = []
+  for (const o of oilOpenOn(iso, iso, UNIT)) {
+    const row = warInputs().find(x => String(x.iid) === o.iid) as any
+    if (!row) continue
+    const label = inpLabel(row), ids = idsOf(row).map(String)
+    if (!label) continue
+    named.push(ids.length === 1 ? `${cs(ids[0]!)}’s ${label}` : ids.length > 1 ? `${label} for ${ids.length} people` : label)
+  }
+  if (!named.length) return null
+  if (named.length === 1) return `${named[0]} has no OIL answer, so nobody on it earns OIL`
+  const which = named.length > 3 ? `${named.length} inputs` : `${named.slice(0, -1).join(', ')} and ${named[named.length - 1]}`
+  return `${which} have no OIL answer, so nobody on them earns OIL`
+}
+
 export function publishFlagsBids(di: number): void {
   const iso = labelToISO(DATES[di])
   /* THE `warHolding` TEST USED TO BE HERE, AND IT MADE THE BRANCH BELOW DEAD
@@ -2499,9 +2520,20 @@ export function publishFlagsBids(di: number): void {
   const lines: string[] = []
   const blind = oilBlindLine(iso, snap.d, spans)
   if (blind) lines.push(blind.line)
-  /* said as ONE toast, as before; where the blind line is its first form, the toast also carries that line's two halves
-     and whatever follows it (`after`), for the join with the day's own publish note (oilBlindLine above) */
-  const say = () => HOOKS.toast(lines.join(' · '), 'warn', blind?.told && { day: di, ...blind.told, after: lines.slice(1).join(' · ') })
+  /* AN INPUT NOBODY ANSWERED THE OIL QUESTION FOR IS NAMED TOO (his D2294, D2299 — [FABLE-READ-FAULTS], OIL F2: Fable's
+     OIL read, 22 Nov 26 — such a weekend published in silence, the man on it earning nothing, against D81's "says so …
+     at publish"). The sign-off press has already put the day's list to the scheduler (ui/oilsign.ts); what he left for
+     Later is said here, in the drawing's words: "Saturday 18 Jul published and approved. Ranger's Training has no OIL
+     answer, so nobody on it earns OIL." A sentence of its own behind the blind line's, never joined to it by the dot. */
+  const open = oilUnansweredLine(iso)
+  if (open) lines.push(blind ? `${open.charAt(0).toUpperCase()}${open.slice(1)}` : `${WEEKDAY_NAMES[weekday(iso)]} ${dm(iso)}: ${open}`)
+  /* said as ONE toast, as before; where the first line is the blind line's first form, or the unanswered line with no
+     blind line before it, the toast also carries that line's two halves and whatever follows it (`after`), for the join
+     with the day's own publish note (oilBlindLine above) */
+  const told = blind ? blind.told && { ...blind.told, ...(open ? { body: `${blind.told.body}. ${open.charAt(0).toUpperCase()}${open.slice(1)}` } : {}) }
+    : open ? { head: `${WEEKDAY_NAMES[weekday(iso)]} ${dm(iso)}`, body: open } : undefined
+  const joined = told && open ? (blind ? 2 : 1) : 1      // how many of `lines` the join's own sentences already say
+  const say = () => HOOKS.toast(lines.join(' · '), 'warn', told && { day: di, ...told, after: lines.slice(joined).join(' · ') })
   const war = warHolding(rawState().wars, iso)
   /* amber, like the Inputs page's twin (N18, 21 Sep 26): this is a warning,
      not the face the app says "Saved" in. Both exits, because the day with
