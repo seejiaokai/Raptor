@@ -32,7 +32,7 @@ import { INPUTS, isSansAvail } from '../engine/inputs'
 import { getTones, sansCommittedOn } from '../state/flyplan'
 import { addDays, type Tones } from '../state/flyplan-model'
 import { notify } from '../state/store'
-import { CALMONTH, INPREVEAL, SANSHL, clearInpReveal, setCalMonth, setSansHl } from '../state/view'
+import { CALMONTH, INPREVEAL, SANSHL, SANSDAYASK, clearInpReveal, clearSansDayAsk, setCalMonth, setSansHl } from '../state/view'
 import { flyMonth, ownDayFacts, useWarFacts } from '../leavewar/sync'
 import { isAdmin, pageUnit } from '../state/perms'
 import { openWinFor } from '../state/cutoff'
@@ -171,6 +171,14 @@ export function SansCal({ lead }: { lead?: ReactNode } = {}) {
     notify()
   }, [reveal])
   useEffect(() => () => spendReveal(), [])
+  /* …and a day the bell asked for (his SANS days with nothing filed — D2338, ui/topstate.ts openNotice): its month is already
+     set; its day's window opens, the ask spent at once, whether the calendar was just opened or already up */
+  const askedDay = SANSDAYASK
+  useLayoutEffect(() => {
+    if (!askedDay) return
+    clearSansDayAsk()
+    setDayIso(askedDay)
+  }, [askedDay])
 
   /* ---- the month ------------------------------------------------------------------------------------------------- */
   const goTo = (y: number, m: number, dir: number) => { slide.current = dir; setCalMonth({ y, m }); notify() }

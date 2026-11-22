@@ -94,6 +94,11 @@ export type NoticePart =
      it — the line's own words struck through, then "taken back · Saber" (his idea, D1699). One he had not read simply went;
      the admin who pressed Undo gets none. `who`, `o`, `acct` — as the line it takes back; `day` its posting date. */
   | { k: 'poback'; who: string; o: PoOutcome; acct?: true }
+  /* HIS SANS DAYS WITH NOTHING FILED (owner D2338, 22 Nov 26 — "on that date his bell tells him the planned days with nothing
+     filed, a tap opening the SANS calendar"). About no input (`iid` is ''): `days` — the days, first first (ISO), from his
+     SANS posting's date on, he is planned with us and has filed no SANS availability. Worked out by his own bell from the
+     schedule as it stands, never stored (leavewar/sansunfiled.ts), so it shrinks as he files and goes once all are. */
+  | { k: 'sansdue'; days: string[] }
 
 /** what a posting out did on its date, for the admins' bells ([POSTOUT-RUN-NOTICE]) */
 export type PoOutcome = 'overseas' | 'delete' | 'sans' | 'none'
@@ -979,7 +984,21 @@ function partWords(p: NoticePart): string {
     /* a taken-back line's own words are "taken back"; what it took back is said struck through beside them (backWords) */
     case 'lwback': return 'taken back'
     case 'poback': return 'taken back'
+    /* (the days themselves are the line's date — noticeWords; more than three are counted here) */
+    case 'sansdue': return p.days.length > SANS_DAYS_NAMED ? `Planned, no availability filed · ${p.days.length - SANS_DAYS_NAMED} more ${p.days.length - SANS_DAYS_NAMED === 1 ? 'day' : 'days'}` : 'Planned, no availability filed'
   }
+}
+/* HIS SANS DAYS, AS THE LINE'S DATE (D2338): the first three named, each month once at the end of its run of days, as the
+   bell writes a run of dates — "Sat 18 Jul"; "Fri 17, Sat 18 Jul"; across two months "Fri 31 Jul, Sat 1 Aug" */
+const SANS_DAYS_NAMED = 3
+function sansDaysWords(days: readonly string[]): string {
+  const shown = days.slice(0, SANS_DAYS_NAMED)
+  return shown.map((d, i) => { const w = noticeDay(d); const next = shown[i + 1]; return next && next.slice(0, 7) === d.slice(0, 7) ? w.replace(/ [A-Za-z]{3}$/, '') : w }).join(', ')
+}
+/** the first of a SANS-days line's days, or null — the bell's tap asks it (ui/topstate.ts openNotice) */
+export function sansDueOf(n: Pick<Notice, 'what'>): string | null {
+  const p: any = (n.what || [])[0]
+  return p && p.k === 'sansdue' && Array.isArray(p.days) && p.days.length ? String(p.days[0]) : null
 }
 /* a bidding stretch said without its weekdays — "1 Apr – 30 Jun" (D1214's words) */
 function stretchWords(a: string, b: string): string {
@@ -1029,6 +1048,9 @@ export function noticeWords(n: Notice): { name: string; day: string; what: strin
     const p: any = PEOPLE[String(w.who)]
     return { name: p && p.cs ? String(p.cs) : n.name, day: noticeDay(n.day), what: partWords(w), who: n.by ? cs(n.by) : '', struck: backWords(w) }
   }
+  /* HIS SANS DAYS WITH NOTHING FILED (D2338): "Your SANS availability · Sat 18, Mon 20 Jul / Planned, no availability filed";
+     nobody named — the app worked it out */
+  if (w && w.k === 'sansdue') return { name: 'Your SANS availability', day: sansDaysWords(w.days || []), what: partWords(w), who: '' }
   /* (a bid it replaced on the Leave War is said after the rest, never cut by the first-two rule — M4 9.3a: "You were added ·
      replaces your LL bid") */
   const rb = (n.what || []).filter(p => p.k === 'rbid')

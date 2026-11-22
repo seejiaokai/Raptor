@@ -172,6 +172,7 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncBeforeEnlist, commitInputs, SCHED_TYPES } from '../state/sched-commit'
+import { sansUnfiledLines } from './sansunfiled'
 import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
@@ -390,7 +391,7 @@ export function installAbsenceDoor(): void {
   /* M4 batch 9: a decision on a man's leave, and bidding opened or closed, tell the bell (tellWar, below) */
   setDecisionTell({ leave: warLeaveNow, decisions: tellWar, openings: tellBidding })
   /* (and the admins' line for a posting with nothing to run — postedLines, [POSTOUT-RUN-NOTICE]) */
-  setDerivedNotices(pid => [...endedLines(pid), ...postedLines(pid)])
+  setDerivedNotices(pid => [...endedLines(pid), ...postedLines(pid), ...sansUnfiledLines(pid)])
   setHolidayLeft(holidayLeft)
   setHolidaySpan(holidaySpan)
   /* WHICH DAYS CAN EARN OIL AT ALL — the schedule's blind-desk warning asks

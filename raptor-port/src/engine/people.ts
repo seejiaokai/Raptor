@@ -243,6 +243,17 @@ export function sansOnP(p:any,iso?:any):boolean{
   const was=Array.isArray(p.sanWas)?p.sanWas:[];
   return was.some((s:any)=>Array.isArray(s)&&d>=String(s[0]||'')&&d<String(s[1]||''));}
 export const sansOn=(id:any,iso?:any):boolean=>sansOnP(PEOPLE[id],iso);
+/* IS THIS DAY SANS FOR HIM ONLY BY A POSTING NOT YET RUN — AND FROM WHAT DATE? (owner D2338, 22 Nov 26 — "Should it say no
+   availability filed, await for 17 Jul for SANs availability to be filed"). The first day of that posting, or null: a day
+   his tick or an ended stretch already makes SANS is not one (sansOnP's own order). Who may be filed for SANS goes by who
+   is SANS today (D2327), so on such a day nothing can be filed for him until that date — the crew list says so. */
+export function sansAheadFrom(p:any,iso?:any):string|null{
+  if(!p||!iso||!SANS_AHEAD)return null;
+  const d=String(iso);
+  if(p.san&&(!p.sanFrom||d>=String(p.sanFrom)))return null;
+  const was=Array.isArray(p.sanWas)?p.sanWas:[];
+  if(was.some((s:any)=>Array.isArray(s)&&d>=String(s[0]||'')&&d<String(s[1]||'')))return null;
+  const f=SANS_AHEAD(p); return f&&d>=f?f:null;}
 const sansQ=(p:any)=>{ p.quals=p.quals||{}; p.quals.san=!!p.san; if(p.san)p.sanQ=p.sanQ||{flown:0,carry:0,missedQtrs:0}; };
 /* SANS FROM `from` ON. An earlier stretch that reaches `from` — ended on it or after it — is one stretch with this one,
    which then starts where that one did: so a tick taken off and put back the same day leaves no gap, and a hand re-tick

@@ -1,7 +1,7 @@
 import { DAYS } from './data'
 import { rosterShown } from './faceattrs'
 import { DATES, inputAtIso, goesOnProg, inputLinesOn, inputReadPass, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inpLabel, shiftHardInput } from './inputs'
-import { PEOPLE, isSpecial, whoId, aarNeed, aarOK, scShiftKind, scQualOK, sansOnP } from './people'
+import { PEOPLE, isSpecial, whoId, aarNeed, aarOK, scShiftKind, scQualOK, sansOnP, sansAheadFrom } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
 import { isStandalone, scSpare, saExempt, saExemptKind, saFlies, saDeskFlies, CURWEEK } from './waves'
@@ -11,6 +11,7 @@ import { WARN, restClear, dayEvents, crossDayIfPlaced } from './validate'
 import { waveWindows, inpShow, shiftEvHard, seatIntime, scSeatHit, avSeatHit } from './events'
 import { whoArr, rowRef, rowPlaces, XKEY, sentinelSeatOK, SENTINEL_JET_BAR } from './slots'
 import { keyDay, seatRow } from './keys'
+import { isoDayWords } from './weekstash'   // a function, called only at run time, so the import loop is safe
 /* busy windows [s,e] for one person on a day (fly/duty/sim/ground) */
 export function personBusy(d:any,id:any){
   const out:any[]=[];
@@ -341,6 +342,14 @@ export function slotRules(key:any){
    computes them. The record carries ONE window for every ticked event (owner
    rework, 14 Aug 26 — sansWindow reads it off the row's standard allday /
    half / s / e fields), so `off` is that same window whichever event asked. */
+/* WHY A SANS MAN WITH NOTHING FILED IS STRUCK, IN WORDS — the 'none' status said once, for the two places that print it:
+   the crew list (ui/palette-html.ts whyOf) and an armed seat's reason (slotBar below), so the words never differ by
+   screen. On a day SANS for him only by a posting not yet run (owner D2338, 22 Nov 26 — "no availability filed, await for
+   17 Jul for SANs availability to be filed"), nothing can be filed for him before the posting's date (D2327), so the
+   words name that date and where it is filed; from the date on, the usual words. `iso`: the day looked at. */
+export function sansNoneWhy(p:any,iso:any):string{
+  const f=sansAheadFrom(p,iso);
+  return f?`SANS from ${isoDayWords(f)} — no availability filed. It can be filed from that day on the SANS calendar.`:'SANS — no availability filed for today';}
 const SANS_KEY:any={fly:'f',oft:'o',amt:'a'};
 export const SANS_LABEL:any={fly:'Fly',oft:'OFT',amt:'AMT'};
 /* `iso`: the day being asked about — only a man who is SANS ON THAT DAY is judged (owner D2313, 22 Nov 26: a day before
@@ -616,7 +625,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
        slotRules' flying branch); a sim key sets no sansStart and falls back
        to the box's own start — a sim window is read AS FILED, unchanged */
     const g=sansGate(id,DAYS[r.di].dt,domain,r.sansStart!=null?r.sansStart:r.slotStart,r.slotEnd,dayIso(String(CURWEEK),r.di));
-    if(g.status==='none')return 'SANS — no availability filed for today';
+    if(g.status==='none')return sansNoneWhy(p,dayIso(String(CURWEEK),r.di));
     if(g.status==='not-offered')return `SANS — not offering ${SANS_LABEL[domain]}`;
     if(g.status==='window')return `SANS — available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
   }
