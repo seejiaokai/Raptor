@@ -1128,3 +1128,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The helper's script asserted that each row of buttons stayed on one line, but the phone picture of its recommended option showed the Role drop-down cutting its words off mid-word ("Admin — schedule…"). The helper did not report it; the host found it only by opening the picture.
 **Suggested improvement:** In the guide's premise checks, add: for every input or select a transform touches or puts beside new content, assert its text is not cut off (`scrollWidth <= clientWidth + 1`) at each picture size, and print the result.
 **Principle:** A drawing's automatic checks cover overflow in every control it changes, not only the layout it meant to change; a picture is opened by the host whatever the checks say.
+
+### Observation 1009: A plan called a point open that an earlier step had already answered in the code's own notes
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** writing batch 1's second-half technical plan (chat 138); numbered past 1008, held on another open branch
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** before listing a plan's open points
+
+**Issue:** The plan wrote "a spike: find out whether the Tracker can be re-read in place" as an open point. The module's own comment, written by an earlier step's read of its load path, already answered it: it cannot be re-read cleanly, and it listed the caches. The host found this only after the plan was written and sent to readers, so the plan went out with a question already settled.
+**Suggested improvement:** In writing-plans, before an item is written as "to be found out", search the earlier plans' open-points sections and the code comments of the files concerned for an answer, and cite it, or say none was found.
+**Principle:** An open point in a plan is a claim that nobody has answered it; check the earlier work and the code's own notes before making that claim.
