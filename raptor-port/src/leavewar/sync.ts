@@ -2478,9 +2478,9 @@ function oilBlindLine(iso: string, day: Day, spans: Record<string, OilWork[]>): 
 function oilUnansweredLine(iso: string): string | null {
   const named: string[] = []
   for (const o of oilOpenOn(iso, iso, UNIT)) {
-    const row = warInputs().find(x => String(x.iid) === o.iid) as any
+    const row = warInputs().find(x => String(x.iid) === o.iid)
     if (!row) continue
-    const label = inpLabel(row), ids = idsOf(row).map(String)
+    const label = String(inpLabel(row) || ''), ids = idsOf(row).map(String)
     if (!label) continue
     named.push(ids.length === 1 ? `${cs(ids[0]!)}’s ${label}` : ids.length > 1 ? `${label} for ${ids.length} people` : label)
   }

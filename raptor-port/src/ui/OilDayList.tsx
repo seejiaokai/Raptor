@@ -29,7 +29,7 @@ import { InputCard } from './InputCard'
 import { cardOf, cardWhen } from './inputcard-model'
 import { monthItems } from './inputscal-model'
 import { adminOfList, saveOilDay, type OilPick } from './oilday'
-import { holdLater, holdSave, holdSaid, type SignHold } from './oilsign'
+import { holdLater, holdSave, holdSaid, holdStands, type SignHold } from './oilsign'
 import { OILLIST, setInpEdit, setOilList } from './pops'
 import { useVersion } from './useStore'
 
@@ -59,6 +59,32 @@ export function OilDayList() {
   /* (…and one opened by another sign-off box holds another name: its picks start empty too) */
   return <Body key={`${unit}|${o.from}|${o.to}|${o.hold ? `${o.hold.di}.${o.hold.role}.${o.hold.who}` : ''}`} from={o.from} to={o.to} unit={unit} name={o.name} fresh={!!o.fresh} plain={!!o.plain} hold={o.hold} />
 }
+
+/* the held sign-off, drawn (out of Body so that function stays readable — the code check's own rule) */
+function HeldSign({ held }: { held: { label: string; sch: boolean; cs: string } }) {
+  return (
+    <div className="odl-held" data-testid="odl-held">
+      <span className={'sgn' + (held.sch ? ' sch' : '')}><span className="k">{held.label}</span><span className="v">{held.cs}</span></span>
+      <span className="upconf-need">waiting for your answer</span>
+    </div>
+  )
+}
+/* the lead of a list a holiday's own save opened: named by its own name, else by its day or days */
+const leadSaid = (name: string, from: string, to: string): string =>
+  name ? `${name} is now a public holiday.` : from === to ? `${noticeRun(from, to)} is now a public holiday.` : `${noticeRun(from, to)} are now public holidays.`
+/* the foot's buttons: Close where nothing is left to answer, else Later and Save */
+function FootButtons({ empty, done, onClose, onLater, onSave }: { empty: boolean; done: number; onClose: () => void; onLater: () => void; onSave: () => void }) {
+  if (empty) return <button type="button" className="abtn primary" data-testid="odl-close" onClick={onClose}>Close</button>
+  return (
+    <>
+      <button type="button" className="abtn ghost" data-testid="odl-later" onClick={onLater}>Later</button>
+      <button type="button" className="abtn primary" data-testid="odl-save" disabled={!done} onClick={onSave}>Save</button>
+    </>
+  )
+}
+/* the foot's quiet words: what Later does while a sign-off is held (`signer` — his callsign), else the bells' line */
+const footSaid = (signer: string, rows: number, belled: boolean): string =>
+  !rows ? '' : signer ? `Later: ${signer} signs, but nobody on ${rows > 1 ? 'them' : 'it'} earns OIL.` : belled ? 'What is left goes to the schedulers’ bells' : ''
 
 function Body({ from, to, unit, name, fresh, plain, hold }: { from: string; to: string; unit: string; name: string; fresh: boolean; plain: boolean; hold?: SignHold }) {
   useWarFacts()                                        // a holiday taken away, a period changed: the list is read again
@@ -90,25 +116,25 @@ function Body({ from, to, unit, name, fresh, plain, hold }: { from: string; to: 
      the list as ever, and the hold goes with it — nothing is signed, and the next press asks again. */
   const save = () => { if (hold ? holdSave(hold, from, unit, picks) : saveOilDay(from, to, picks, unit) >= 0) close() }
   const later = () => { if (hold) holdLater(hold, from, unit); close() }
-  const held = hold && rows.length ? holdSaid(hold) : null
+  /* SHOWN ONLY WHILE IT WOULD BE WRITTEN (walker w3's finding 1, 22 Nov 26): the list stays up while the page behind it
+     works, and a week, a squadron or a saved plan changed under it leaves a hold that Save and Later no longer write
+     (ui/oilsign.ts holdStands) — the list then promised "Later: Ace signs" and signed nothing. Read on every draw: back
+     on its own day and plan, the box is shown again. */
+  const held = hold && rows.length && holdStands(hold, from, unit) ? holdSaid(hold) : null
   /* the input's own window, where everything else about it is (the day's cards open it the same way) */
   const openInput = (r: any) => { setInpEdit(r); setPage('inputs'); notify() }
   return (
     <FloatWin id="oilday" title={`OIL — ${noticeRun(from, to)}`} sub={plain ? undefined : name ? `Public holiday · ${name}` : 'Public holiday'}
       testid="win-oilday" className="oildaywin" onClose={close}>
       {/* a holiday with no name of its own is named by its day — never by the preset's word ("PH is now…": the walk, E1) */}
-      {fresh && <p className="odl-lead" data-testid="odl-lead">{name ? `${name} is now a public holiday.`
-        : from === to ? `${noticeRun(from, to)} is now a public holiday.` : `${noticeRun(from, to)} are now public holidays.`}</p>}
+      {fresh && <p className="odl-lead" data-testid="odl-lead">{leadSaid(name, from, to)}</p>}
       {rows.length === 0
         ? <p className="sd-empty" data-testid="odl-empty">Nothing left to answer.</p>
         : <>
           {/* THE PRESSED BOX ITSELF, THE NAME HELD IN IT (look A, his D2297; round 6 as drawn, D2299): the board's own
               sign-off box — its markup, its class — with a dotted edge, the app's mark for "waiting to go in", and no ▾:
               it opens nothing. Beside it the foot's quiet words. No paragraph above the list. */}
-          {held && <div className="odl-held" data-testid="odl-held">
-            <span className={'sgn' + (held.sch ? ' sch' : '')}><span className="k">{held.label}</span><span className="v">{held.cs}</span></span>
-            <span className="upconf-need">waiting for your answer</span>
-          </div>}
+          {held && <HeldSign held={held} />}
           <div className="odl-count">
             <h3 className="sd-gh" data-testid="odl-count">{done ? `${done} of ${rows.length} answered` : `${rows.length} to answer`}</h3>
             <button type="button" className="abtn sm" data-testid="odl-yesall" onClick={() => all('y')}>Yes to all</button>
@@ -131,14 +157,8 @@ function Body({ from, to, unit, name, fresh, plain, hold }: { from: string; to: 
       <div className="odl-foot">
         {/* with a sign-off held the foot says what Later does (his D2296, D2299: "Later: Ace signs, but nobody on it earns
             OIL."; "them" where the list holds several — the agent's wording for that case) */}
-        <span className="upconf-need" data-testid="odl-left">{held ? `Later: ${held.cs} signs, but nobody on ${rows.length > 1 ? 'them' : 'it'} earns OIL.`
-          : belled && rows.length && done < rows.length ? 'What is left goes to the schedulers’ bells' : ''}</span>
-        {rows.length === 0
-          ? <button type="button" className="abtn primary" data-testid="odl-close" onClick={close}>Close</button>
-          : <>
-            <button type="button" className="abtn ghost" data-testid="odl-later" onClick={later}>Later</button>
-            <button type="button" className="abtn primary" data-testid="odl-save" disabled={!done} onClick={save}>Save</button>
-          </>}
+        <span className="upconf-need" data-testid="odl-left">{footSaid(held ? held.cs : '', rows.length, belled && done < rows.length)}</span>
+        <FootButtons empty={rows.length === 0} done={done} onClose={close} onLater={later} onSave={save} />
       </div>
     </FloatWin>
   )

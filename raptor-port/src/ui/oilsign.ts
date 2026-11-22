@@ -93,7 +93,7 @@ function signAsks(di: number): { iso: string; unit: string } | null {
  *  would sign content nobody picked it for. Such a hold is dropped as the list's close drops it: nothing is signed,
  *  Later marks nothing asked, and the next press on the plan now live asks again. */
 const planOf = (di: number): string => String(curDraftId(di) ?? '')
-const holdStands = (hold: SignHold, iso: string, unit: string): boolean =>
+export const holdStands = (hold: SignHold, iso: string, unit: string): boolean =>
   unit === UNIT && !!DAYS[hold.di] && dayIso(String(CURWEEK), hold.di) === iso && (hold.plan ?? '') === planOf(hold.di)
 
 /** LATER, with a sign-off held: the name is written, with no answer — nobody on those inputs earns OIL, and the publish

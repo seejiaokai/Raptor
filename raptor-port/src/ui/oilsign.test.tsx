@@ -131,6 +131,11 @@ describe('a sign-off pressed on a day with an unanswered OIL question (D2294, D2
     const b: any = draftDup(SAT)
     expect(b && b.id, 'setup: a second plan, now the live one').toBeTruthy()
     expect(curDraftId(SAT)).not.toBe(planA)
+    /* …and the list stops promising it (walker w3's finding 1, 22 Nov 26 — the week changed behind the list: it still
+       showed the held box and "Later: Ace signs…", and Later signed nothing): a hold that no longer stands is not drawn */
+    await draw()
+    expect(q('odl-held'), 'no held box for a hold that will not be written').toBeNull()
+    expect(q('odl-left')!.textContent, 'and no promise that Later signs').not.toContain('signs')
     await click('odl-later')
     expect(signOf(SAT).cur, 'Later after the switch signs nothing on the other plan').toBeFalsy()
     expect(pops.OILLIST).toBeNull()

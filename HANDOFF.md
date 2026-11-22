@@ -57,7 +57,24 @@ the later merge keeps both (D78).
   `raptor-port/docs/superpowers/briefs/2026-11-22-fable-read-faults-walk-brief.md`, scripts `scripts/handpass/frf-w*.mjs`,
   pictures `docs/img/handpass/2026-11-22-fable-read-faults/w*/`. Astra designing F2's scenarios (brief
   `…/briefs/2026-11-22-oil-f2-scenario-brief.md`, report to `D:\raptor-work\c138-astra-scenarios.md`).
-  **Next, in order:** (1) read each walker's report, open its deciding pictures, reproduce every finding, fix red-first,
+  **Since (same day, still chat 138):** Astra's scenario report is in (`…/briefs/2026-11-22-oil-f2-scenarios-astra.md`,
+  38 scenarios, a 10-row roll-call, two claims): its F01 — a name held on one saved plan signed another after a plan
+  switch behind the list — FIXED red-first (`oilsign.ts holdStands`, the hold carries its plan); its F02 (re-picking the
+  same name raises no change event) is not a fault — the next box asks and the publish note names what is left.
+  **Walker w3 is back** (report in the chat; script `scripts/handpass/frf-w3*.mjs`): F2-a to F2-i PASS at both sizes,
+  the drawing check 0 differences over 2px (measured, the formal part list NOT made), no errors; it found (1) the list
+  still promised "Later: Ace signs" after the week changed behind it — FIXED red-first (`OilDayList.tsx`: the held box
+  is drawn only while `holdStands`); a lead, left as it is: the board stepped to Friday with Saturday held, Later signs
+  Saturday out of sight (the list's title says Saturday). Its fixture note: the "+ Input" window will not save without
+  an OIL answer, so a plain Saturday's unanswered input was filed through the developer bridge; the holiday scenario
+  (F2-h) used real controls only. NOT walked by w3: a squadron change or sign-out with the list up, a keyboard-only
+  pick, more than three inputs, the member's view. **GitHub's run on `c2b42463b` was RED in two jobs, both mine, both
+  fixed locally:** the code check (the list's function too branchy — parts moved out) and the Leave War's
+  no-`any` test (`sync.ts oilUnansweredLine`). Local commits after `c2b42463b` are NOT pushed until w1 and w2 are back
+  (a rebuild or a push mid-walk would break their build). **Still out:** w1, w2.
+  **Next, in order:** (0) when w1 and w2 are back: rebuild under the checks lock, re-walk what the three fixes touched
+  (F2-a, F2-b, the plan switch, the week change — `scripts/handpass/frf-w3.mjs` re-run on a fresh port), push, read
+  GitHub's run; (1) read each walker's report, open its deciding pictures, reproduce every finding, fix red-first,
   re-walk what a fix touched; (2) walk any scenario of Astra's the walkers did not; (3) the two blind code reads of F2
   (Astra, and a fresh Opus reader — Fable built it), each claim a failing test first; (4) fill and close the sheet
   `raptor-port/docs/handpass/2026-11-22-fable-read-faults.md` (roll-call, the five sizing lines, the Walk line), add
