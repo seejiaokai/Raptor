@@ -95,6 +95,14 @@ the later merge keeps both (D78).
 - **Rulings:** chat 131: 6 recorded → `how-we-work.md` §Models and readers (D2255 Fable used fully; D2256 Opus walks until he says back; D2257 Fable for the rest and the scenarios beside Astra; D2258 each task's model by its risk; D2259 Fable reviews what it has not read, the kinds of sign-in first — filed as [MSQ-FABLE-REVIEW]); that page's limit 40300 → 40800 on his standing word (D2148); `people-accounts.md` (D2260 a master admin is never made a member while he holds the mark; its limit 26950 → 27100) · **Next free ruling:** D2261 · **docsize:** OVER by 12 on `OUTSTANDING.md` (lines), deferred (D29) · **Walk:** not yet (FULL) · **Reads owed:** as chat 126's (unchanged) · **Next chat number:** 132
 <!-- /now -->
 
+<!-- now:claude/low-disk-space-cleanup-38c05a -->
+### CHAT 133 — his PC's disk space, 22 Nov 26 (his "my computer has low disk space already can u clear the data that is not needed") — written 22 Nov 26 — verify before use
+- **Branch / PR:** `claude/low-disk-space-cleanup-38c05a`, from `main`; records and one size limit only. `docsize.mjs` is not on the notes-only list, so it waits for his "merge live". Push only by `git push origin HEAD:refs/heads/claude/low-disk-space-cleanup-38c05a`. Chat number 133 taken clear of the multi-squadron branch (to 131).
+- **Done (on his PC, each on his yes):** C drive 3 GB free → see the closing figure in [REPO-TIDY]'s 22 Nov line; 10 unused working copies removed, 4 stray preview servers of 17 Nov stopped, the temporary folders of 53 chats idle since 20 Nov cleared; leftovers copied to `D:\Raptor-leftovers-2026-11-22`.
+- **Rulings:** D2290 (helpers' copies leave out the walk pictures; a task that needs some fetches them) → `how-we-work.md`, filed as [HELPER-COPIES-NO-PICTURES]; D2291 (the page's limit +200 bytes, spent) → `DECISIONS-ARCHIVE.md`. The multi-squadron branch also raised this page's limit for D2208: the second to merge adds its own bytes.
+- **Pick up here:** his "merge live" for this branch; then [HELPER-COPIES-NO-PICTURES], a job of its own (Astra and a second reader, D1761). **Next chat number:** 134 · **Next free ruling:** D2292 (check the multi-squadron branch first).
+<!-- /now -->
+
 <!-- now:claude/skill-notes-review-0c3a78 -->
 ### CHAT 121 (carrying on chat 120) — the skill-notes review of 20 Nov 26 (his "u can do the skills notes log review in a separate chat"), started from chat 118 — rewritten 20 Nov 26 by chat 121: MERGED (pull request 815, on his "merge live", live on Vercel) — verify before use
 - **Branch / PR:** `claude/skill-notes-review-0c3a78` — pull request 815 MERGED 20 Nov 26 on his "merge live", main's checks green, the Production deployment Ready; the branch restarted from `main` with one commit held back from the merge (a line under skill note 982), in a pull request of its own. Push only by `git push origin HEAD:refs/heads/claude/skill-notes-review-0c3a78` (no upstream).

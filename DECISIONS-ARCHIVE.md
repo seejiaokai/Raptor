@@ -520,3 +520,9 @@ day they moved. The live list and its map: `DECISIONS.md`.
 | # | Date | His ruling, in his words where short enough | What it means | Where it lives now |
 |---|---|---|---|---|
 | D2248 | 21 Nov 26 | **REPLACED BY D2250 (21 Nov 26).** *"As proposed"* (21 Nov 26, to chat 128's questions page https://claude.ai/artifact/Tu9FN7V9w3huNbh866NpMq — question 1) | **An admin who is not a master admin may not make a member of an admin holding Plan of another squadron: the refusal reads "Hunter holds Plan of 149. Only a master admin can make him a member."; a master admin's change goes through and his Plan ends with it.** Plan is given and taken by a master admin only (D2199), and only an admin holds it (D2201) — so the change that would end it is a master admin's. The words are the refusal on Admin → Users' Save of his row; no screen gives Plan yet, so nobody sees it today. | The People & accounts page (§Many squadrons, D2248); `raptor-port/src/state/accounts.ts` (`updateAccount`'s refusal); the reshape plan §19b R7 marked answered |
+
+## Moved 22 Nov 26
+
+| # | Date | His ruling, in his words where short enough | What it means | Where it lives now |
+|---|---|---|---|---|
+| D2291 | 22 Nov 26 | **SPENT 22 Nov 26 — the How we work page's limit raised 39200 → 39400 for D2290.** *"Yes, raise 200 bytes"* (22 Nov 26, to the disk-space chat — told the page every chat reads stood 7 bytes under its limit, so D2290 could not be stated without a raise or tighter wording of other rules, the latter needing two readers first; recommended the raise) | **The How we work page's size limit is raised by 200 bytes, from 39,200 to 39,400, once, to state D2290.** A one-off permission under D1932, which raises a page only on his word; it sets no standing raise. | `raptor-port/scripts/docsize.mjs` (the page's limit and its comment) |
