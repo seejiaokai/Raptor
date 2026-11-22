@@ -1,5 +1,5 @@
 {
-  "drawn": "2026-11-22T02:14:12.459Z",
+  "drawn": "2026-11-22T02:31:00.737Z",
   "url": "http://localhost:4187/",
   "words": {
     "held": "waiting for your answer",
@@ -63,13 +63,21 @@
       "pillH": 22,
       "realH": 22,
       "rowLeft": 1093,
-      "countLeft": 1093
+      "countLeft": 1093,
+      "baselineGapCentred": 0,
+      "xHeight": 6,
+      "lift": 1.5,
+      "baselineGapNow": 0
     },
     "phone-A": {
       "pillH": 20,
       "realH": 20,
       "rowLeft": 25,
-      "countLeft": 25
+      "countLeft": 25,
+      "baselineGapCentred": 0,
+      "xHeight": 7,
+      "lift": 0.5,
+      "baselineGapNow": 0
     }
   }
 }

@@ -104,10 +104,26 @@ async function run(key) {
         row.style.margin = getComputedStyle(count).marginTop + ' 0 10px'
         /* measured: the pill's height against the real box's, and the row's left edge against the count's first letter */
         const r = document.createRange(); r.selectNodeContents(count.querySelector('h3')); const cl = r.getBoundingClientRect().left
-        return { pillH: pill.getBoundingClientRect().height, realH: real.getBoundingClientRect().height, rowLeft: pill.getBoundingClientRect().left, countLeft: cl }
+        /* round 6 (his "/impeccable … waiting for your answer and the CUR CK Ace doesn't seem vertically aligned"): the
+           words beside the box sit on the same baseline as "Ace" inside it. Measured by a zero-height mark at the end
+           of each text (its bottom is the line's baseline); centring the two boxes left them apart, the pill's letters
+           not being centred in its own box. The fix is the row's own rule: align-items: baseline. */
+        const baseOf = el => { const m = document.createElement('span'); m.style.cssText = 'display:inline-block;width:0;height:0'; el.appendChild(m); const y = m.getBoundingClientRect().bottom; m.remove(); return y }
+        const before = baseOf(pill.querySelector('.v')) - baseOf(say)
+        /* the baselines were already level (measured 0), so the miss is optical: "waiting for your answer" is lower
+           case, its letters' middle (x-height) sits below the box's middle, where the capitals "CUR CK" are centred.
+           So the words' x-height middle is put on the box's middle line: raised by the measured difference. */
+        const cv = document.createElement('canvas').getContext('2d'); const sc = getComputedStyle(say)
+        cv.font = `${sc.fontWeight} ${sc.fontSize} ${sc.fontFamily}`; const xh = cv.measureText('x').actualBoundingBoxAscent
+        const pb = pill.getBoundingClientRect(), mid = pb.top + pb.height / 2
+        const lift = (baseOf(say) - xh / 2) - mid
+        say.style.position = 'relative'; say.style.top = (-lift).toFixed(2) + 'px'
+        const after = (baseOf(say) - xh / 2) - mid
+        return { pillH: pill.getBoundingClientRect().height, realH: real.getBoundingClientRect().height, rowLeft: pill.getBoundingClientRect().left, countLeft: cl, baselineGapCentred: before, xHeight: xh, lift, baselineGapNow: after }
       }, [W, SIGN])
       log('A', JSON.stringify(m)); manifest.checks[sz.name + '-A'] = m
       if (Math.abs(m.pillH - m.realH) > 0.5 || Math.abs(m.rowLeft - m.countLeft) > 0.5) log('A: an edge is off — see the measure')
+      if (Math.abs(m.baselineGapNow) > 0.5) throw new Error('A: the words beside the box are not on its baseline ' + m.baselineGapNow)
       await tag(p, '[data-mknew="held"]', 'New')
     } else {
       await p.evaluate(W => {

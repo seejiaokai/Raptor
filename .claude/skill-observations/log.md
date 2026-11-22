@@ -1128,3 +1128,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The window was to be opened by "Switch to this plan", a door the rulings say opens it. On an unpublished day that door put the row back but not the input's state, so the window never opened and the script timed out; the working door (load a published version back, then unpublish) took three more real steps, and the gap the first door showed was itself a finding.
 **Suggested improvement:** In step 2, when a real door is borrowed to open an existing window for a proposal, assert after it both that the window opened AND that the state behind it is the premise (the staged record, the empty boxes); on a miss, log what the door left, try the next real door, say on the page which door was used and why, and file what the failed door did.
 **Principle:** A door documented as opening something is a claim about some states; check it in the state you draw, and treat its failure there as data, not only as an obstacle.
+
+### Observation 1003: A shared edge measured across, never along
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 137, OIL F2 round 6 — he saw a drawn row's words ("waiting for your answer") not lined up with the box beside them.
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** The Method, step 3 (a new part's shared edge measured against its neighbour)
+
+**Issue:** The script measured the new row's left edge against the list's first letter and the box's height against the real one, both exact; it never measured the row's two parts against each other vertically. Their baselines were level (0px), yet he saw a miss: lower-case words beside a capitals label sit optically low, their x-height middle 0.75px under the box's middle on the desktop.
+**Suggested improvement:** In step 3, a part placed BESIDE another is measured on the cross axis too: the words' x-height middle (canvas `measureText('x')`) against the neighbour's middle line, failing above 0.5px; where baselines are level but the cases differ, centre the x-height optically and say so. Check the picture's ink as well (rows of bright pixels in each box).
+**Principle:** Level baselines are not level to the eye when one side is capitals in a box and the other is lower case; measure what the eye compares.
