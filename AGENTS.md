@@ -34,6 +34,9 @@ or change anything.**
 - **Run the document check before you end any turn that changed a document:** `cd raptor-port && npm run docsize`.
   It must pass; read what it says rather than working around it.
 - **A background command starts in the wrong folder** — move into `raptor-port/` by its full path inside the command.
+- **Your working copy may be lean** (his D2290, D2292): a copy other than the main folder leaves out the old walk
+  pictures. `node raptor-port/scripts/lean-copy.mjs status` says; `… get <walk folder>` fetches one walk's before you
+  look at or write into it (`raptor-port/docs/gates-and-deploy.md` §Lean working copies).
 - **Speak to him plainly** (`plain-language.md`): he is not technical. No file names, function names, log lines or
   commit ids in what he reads. Run its "check before you send" on every message.
 

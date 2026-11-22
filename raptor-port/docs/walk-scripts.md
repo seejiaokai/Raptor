@@ -52,6 +52,13 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   to it — "All changes" showed them).
 - **A scenario with an EXPECTED line is PASS or FAIL** (the order's §4), and its EXPECTED line was checked against the
   rulings before the brief left (the order's §4, "Before a brief leaves").
+- **A helper's own copy holds no old walk pictures** (his D2290, D2292, 22 Nov 26 — `scripts/lean-copy.mjs`, which
+  hands the helper the same note when it starts); every other file there stays, the drawing check's records whole. A
+  brief that needs an old walk's pictures (a "before" picture, a re-walk or a re-drawn picture written into an old
+  walk's folder) names that folder and tells the helper to run `node raptor-port/scripts/lean-copy.mjs get <folder>`
+  first — seconds, no download: git skips a picture re-written there without a word, and the commit guard then stops
+  the commit. To only look at one, the main folder holds its own version — for this branch's own walks, fetch. A new
+  walk's pictures go in a new folder, which saves and commits as usual.
 - **Each helper gets its own scratch sub-folder, its own output folder and a file prefix of its own** (`<job>-a-*`) for
   every file it writes — scripts, helpers, scratch output — and writes nothing outside them (8 Nov 26: two walkers named
   a helper file alike, and one overwrote the other's mid-run).

@@ -43,6 +43,29 @@ the later merge keeps both (D78).
   the block's five scenarios + this one at 1536 and 402, close the sheet with its Walk line, preview link to him.
   Found while drawing (filed in the item): Switch to this plan on an unpublished day puts a row back, its input left
   rejected. **Next chat: 138.** Next free ruling: D2300 (D2298 is chat 135's; check every branch before taking one).
+- **Chat 138 (22 Nov 26) — OIL F2 BUILT, the walk running.** It works in this branch's own folder
+  (`.claude/worktrees/fable-read-faults-4104f0`, entered with the app's worktree switch — the main folder was in use by
+  chat 134). Built red-first at `ac3e22f77`: `src/ui/oilsign.ts` (new — the sign-off's write moved from `ui/Shell.tsx`;
+  `signPick` holds the name and opens the list; `holdSave`, `holdLater`), `ui/OilDayList.tsx` (the held box, the foot),
+  `ui/pops.ts` (`OILLIST.hold`, `OILSIGN_LATER`), `leavewar/sync.ts` (`oilUnansweredLine` in `publishFlagsBids`), the
+  `.odl-held` styles; tests `ui/oilsign.test.tsx`, three in `leavewar/publishdoor.test.ts`, the proof a plain `it`; 53
+  related test files (1,401 tests) green, the build clean. `main` brought in after it (no app code came with it; the OIL
+  page was 9 bytes over its limit since D2299 — back under by the "not built" words leaving its line).
+  **Running when this was written:** three Opus walkers on the build of `ac3e22f77` — w1 (ports 4311: the SANS case, OIL
+  leave next year), w2 (4312: the document on a shared Meeting, the Other under Unavailable, the LATE chip), w3 (4313: the
+  sign-off question, nine scenarios, and the drawing check against `draw-f3.mjs`); their brief
+  `raptor-port/docs/superpowers/briefs/2026-11-22-fable-read-faults-walk-brief.md`, scripts `scripts/handpass/frf-w*.mjs`,
+  pictures `docs/img/handpass/2026-11-22-fable-read-faults/w*/`. Astra designing F2's scenarios (brief
+  `…/briefs/2026-11-22-oil-f2-scenario-brief.md`, report to `D:\raptor-work\c138-astra-scenarios.md`).
+  **Next, in order:** (1) read each walker's report, open its deciding pictures, reproduce every finding, fix red-first,
+  re-walk what a fix touched; (2) walk any scenario of Astra's the walkers did not; (3) the two blind code reads of F2
+  (Astra, and a fresh Opus reader — Fable built it), each claim a failing test first; (4) fill and close the sheet
+  `raptor-port/docs/handpass/2026-11-22-fable-read-faults.md` (roll-call, the five sizing lines, the Walk line), add
+  the walk's row to `docs/walk-ledger.md`; (5) push once no run is going, read GitHub's run; (6) the preview link to
+  him with the look card. **My readings to tell him:** an input filed after Later asks once more; Save then Undo takes
+  back the name first, the answers second; several inputs listed → the foot says "them"; over three unanswered inputs
+  are counted, not named, in the publish note; nothing left to answer → the held box is not shown and Close signs
+  nothing. **Rulings:** none new (D2299 was recorded by chat 137). **Next chat: 139.**
 - **Rulings:** 1 recorded → `oil.md` (D2294); the OIL page's limit 15950 → 16250 for it, by his standing word (D2148). `main` brought in again at the merge after `c160bc534` (main's fix of the ruling homes; the record clashes settled). **Chat numbers:** this chat was handed 133, which the disk-space chat also used; chats run to 136, so the next chat was 137 (now 138, above). **Next free ruling:** D2296 (chat 134 holds D2292, chat 135 D2293 and D2295 — check before taking).
 <!-- /now -->
 <!-- now:claude/lw-monthjump-click -->
@@ -68,12 +91,14 @@ the later merge keeps both (D78).
 - **Opening line:** "This is chat 133 (check the next free number across the open branches' `HANDOFF.md`). First list the live chats (`ListAgents`) and say where you are. Work in `C:\Users\User\projects\Raptor-msq` (`git -C` it): `git fetch origin`, `git switch claude/msq-records-132`, `git pull --ff-only`. Read `HANDOFF.md` — the `claude/msq-records-132` block under `## Now` — and carry on from its "Pick up here"."
 <!-- /now -->
 
-<!-- now:claude/low-disk-space-cleanup-38c05a -->
-### CHAT 133 — his PC's disk space, 22 Nov 26 (his "my computer has low disk space already can u clear the data that is not needed") — written 22 Nov 26 — verify before use
-- **Branch / PR:** `claude/low-disk-space-cleanup-38c05a`, from `main`; records and one size limit only. `docsize.mjs` is not on the notes-only list, so it waits for his "merge live". Push only by `git push origin HEAD:refs/heads/claude/low-disk-space-cleanup-38c05a`. Chat number 133 taken clear of the multi-squadron branch (to 131).
-- **Done (on his PC, each on his yes):** C drive 3 GB free → see the closing figure in [REPO-TIDY]'s 22 Nov line; 10 unused working copies removed, 4 stray preview servers of 17 Nov stopped, the temporary folders of 53 chats idle since 20 Nov cleared; leftovers copied to `D:\Raptor-leftovers-2026-11-22`.
-- **Rulings:** D2290 (helpers' copies leave out the walk pictures; a task that needs some fetches them) → `how-we-work.md`, filed as [HELPER-COPIES-NO-PICTURES]; D2291 (the page's limit +200 bytes, spent) → `DECISIONS-ARCHIVE.md`. The multi-squadron branch also raised this page's limit for D2208: the second to merge adds its own bytes.
-- **Pick up here:** his "merge live" for this branch; then [HELPER-COPIES-NO-PICTURES], a job of its own (Astra and a second reader, D1761). **Next chat number:** 134 · **Next free ruling:** D2292 (check the multi-squadron branch first).
+<!-- now:claude/helper-copies-no-pictures-134 -->
+### CHAT 134 — [HELPER-COPIES-NO-PICTURES], his D2290 (the job chat 133 filed), 22 Nov 26 — MERGED and installed — verify before use
+- **Branch / PR:** pull request 821 MERGED 22 Nov 26 on his "merge live"; `install` run on his PC (git's two hooks and the script's copy in the main folder's `.git/hooks`); checked live: a typed copy 929 MB with its note, an app helper's copy lean with its note. The branch restarted from `main` for this closing note (notes only — merges by itself when green). This block is removed at the next handoff.
+- **Built:** `raptor-port/scripts/lean-copy.mjs` (+ 18 tests): a NEW working copy leaves out the old walk pictures (only the picture files; every other file stays), ~0.9 GB a copy against 8.3 GB; the app's SubagentStart and SessionStart hooks run it (`.claude/settings.json`), git's post-checkout hook and commit guard after `install`; `docsize.mjs` counts a left-out file as a ruling's home. How and why: `raptor-port/docs/gates-and-deploy.md` §Lean working copies.
+- **Reads:** round 1 — Astra, a fresh Opus reader and Fable (his call), blind to each other; every finding fixed (`raptor-port/docs/superpowers/briefs/2026-11-22-lean-copy-read-*.md`). Round 2 (the fixes) — Astra and a fresh Opus reader (`…-fixread-*.md`); every finding fixed, 24 tests, each new guard proven by breaking it. Round 3, a fresh Opus reader on round 2's changes only (`…-fixread2-opus.md`): four smaller findings, all fixed; 26 tests. Reads stopped there (the findings shrinking: round 3's worst medium–high, now fixed), said in the closing report. GitHub's full run on the round-1 fixes failed once in the Quals page's unit test (a page timer after its test ended; no app code here, `main` green) — the next push's run re-tests it.
+- **Rulings:** D2292 (a chat's own copy leaves the pictures out too) → `how-we-work.md`, D2290's row marked WIDENED. Numbers agreed with chat 135 (D2293, D2295) and the read-faults chat (D2294): next free D2296.
+- **Not touched, his call:** the working copies already on his PC (`… lean-copy.mjs slim` in each, once its chat is done). Filed: [LW-E2E-WRITES-EVIDENCE]. Leftovers of the trials he can delete by hand (the safety check refused): `D:\rsp-cc`, `D:\rsp-cc-hook.log`, the empty `C:\d`.
+- **Next chat number:** 136 (135 is the Edit Schedule right-edge chat).
 <!-- /now -->
 
 <!-- now:claude/skill-notes-review-0c3a78 -->
