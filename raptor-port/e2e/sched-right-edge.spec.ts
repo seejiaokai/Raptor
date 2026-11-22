@@ -187,6 +187,10 @@ test.describe('Edit Schedule on a desktop — the right edge and the day arrows'
     const back = await read(page, EDIT)
     expect(back.front.day, 'the Undo brought Monday to the front').toBe('0')
     expect(Math.abs(back.front.left - tue.front.left), 'in the place an arrow lands a day').toBeLessThanOrEqual(1)
+    /* …and the next press of an arrow is ONE day from where the Undo left the week — not one day from where the
+       presses before it were heading (walker A's F2, 22 Nov 26: it showed Saturday) */
+    const after = await arrow(page, 'next', EDIT)
+    expect(after.front.day, 'one press after the Undo shows Tuesday').toBe('1')
     await context.close()
   })
   test('"take me to this change" lands its day where an arrow lands a day', async ({ browser, baseURL }) => {
@@ -214,6 +218,8 @@ test.describe('Edit Schedule on a desktop — the right edge and the day arrows'
     const at = await read(page, EDIT)
     expect(at.front.day, 'the jump brought Monday to the front').toBe('0')
     expect(Math.abs(at.front.left - tue.front.left), 'in the place an arrow lands a day').toBeLessThanOrEqual(1)
+    const after = await arrow(page, 'next', EDIT)
+    expect(after.front.day, 'one press after the jump shows Tuesday (walker A\'s F2)').toBe('1')
     await context.close()
   })
 })

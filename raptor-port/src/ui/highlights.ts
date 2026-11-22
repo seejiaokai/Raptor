@@ -10,7 +10,7 @@ import { slotVal } from '../engine/slots'
 import { WARN } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 import { isNewFlag, NEWFLAGS } from '../state/dropflag'
-import { hsSet, hsSync } from './pan'
+import { hsSet, hsSync, panForget } from './pan'
 import { paintLand } from './lift'
 
 /* A ONE-SHOT callback run at the end of the next highlight pass — i.e. in the
@@ -386,6 +386,7 @@ export function bringDayIntoView(di:number){
   const wr=week.getBoundingClientRect(), dr=day.getBoundingClientRect();
   if(wr.width>0&&dr.left>=wr.left-1&&dr.left<wr.right-40)return;   // its front edge already on screen
   /* to the place a day arrow lands a day — the strip's margin in on a desktop, flush on a phone (his D2295; state/view.ts weekFrontInset) */
+  panForget();   // the arrows count from here now, not from where earlier presses were heading (pan.ts panForget)
   hsSet(week,week.scrollLeft+dr.left-wr.left-weekFrontInset(week)); hsSync();
 }
 export function bringIntoView(root:any,tgt:any,weekId:string|null){
@@ -419,6 +420,7 @@ export function bringIntoView(root:any,tgt:any,weekId:string|null){
            offsetParent is not the scroller */
         /* …and to the place a day arrow lands a day: the strip's margin in on a desktop, flush — the snap
            point — on a phone (his D2295; state/view.ts weekFrontInset) */
+        panForget();   // as bringDayIntoView above: the next arrow press is one day from where this jump lands
         hsSet(week,week.scrollLeft+root.getBoundingClientRect().left-wr.left-weekFrontInset(week));
         hsSync();   // the bar geometry, now that the horizontal is final
       }

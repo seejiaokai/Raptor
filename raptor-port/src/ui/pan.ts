@@ -123,7 +123,14 @@ let panAnchor = -1, panTgt = -1
    days. loadWeek is the one choke every swap path funnels through (chips,
    calendar, swipes, board steps, the arrows' own crossings), and HOOKS is the
    doorway state/ has back into ui/ — the same seam closeBoardDialogs rides. */
-HOOKS.weekSwapped = () => { panWk = null; panAnchor = -1; panTgt = -1; glideEnd = 0 }
+/* …AND SO DOES A JUMP INSIDE THE WEEK (walker A's F2, 22 Nov 26, [SCHED-RIGHT-EDGE]'s walk). An Undo whose day had gone
+   off the side, a warning pressed, "take me to this change" (ui/highlights.ts bringDayIntoView, bringIntoView) place
+   the week themselves, and a day they bring back sits INSIDE the corridor the earlier presses left — so the next press
+   counted from where those presses were heading: four days on, Undo back to Monday, one press, and Saturday was first
+   where Tuesday should be. The arrows' own "one press, one day" (his question when he asked for the right edge) holds
+   only if the count starts where the week now stands; the jump says so here. Pinned: e2e/sched-right-edge.spec.ts. */
+export function panForget() { panWk = null; panAnchor = -1; panTgt = -1; glideEnd = 0 }
+HOOKS.weekSwapped = panForget
 /* THE ARROW GLIDE OWNS THE TRACK WHILE IT IS IN FLIGHT (owner, 23-24 Aug 26 —
    the recurring "arrows don't go day by day … stuck halfway then zoom past"
    report). panDays fires a scroll-behavior:smooth glide, and every frame of it
