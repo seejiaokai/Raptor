@@ -692,3 +692,20 @@ describe('holidays by file — the walk’s findings', () => {
     expect(lines(2026).some(h => h.from === '2026-05-05')).toBe(true)
   })
 })
+
+/* "OFF DAYS STAY EACH SQUADRON'S OWN" (his D2190 point 2 — the approved drawing b1-8,
+   docs/mock/2026-11-22-msq-b1-screens/redraw-b1.mjs b8): on the Kind label's own row, at its right, a quiet line in the
+   Days window's hint look — on that row so the window grows no taller. The group is still named "Kind" alone; the line
+   describes it. On adding and on changing a holiday alike (the line has no condition). Red first: it was not built. */
+describe('the Kind row\'s quiet line', () => {
+  it('reads "Off days stay each squadron\'s own", inside the Kind label\'s row, describing the group', () => {
+    open(); add()
+    const hint = t('hol-kind-hint')
+    expect(hint.textContent).toBe('Off days stay each squadron\'s own')
+    const lab = t('win-holiday').querySelector('.every-lab.hol-kind-lab')!
+    expect(lab.contains(hint), 'on the Kind label\'s row').toBe(true)
+    const grp = t('win-holiday').querySelector('[role="group"][aria-labelledby="holKindLab"]')!
+    expect(document.getElementById('holKindLab')!.textContent, 'the group is named Kind alone').toBe('Kind')
+    expect(grp.getAttribute('aria-describedby')).toBe(hint.id)
+  })
+})

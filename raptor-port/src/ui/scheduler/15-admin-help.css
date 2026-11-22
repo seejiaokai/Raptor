@@ -60,6 +60,9 @@
 #page-admin .adm-2col input[type=date]{width:100%;box-sizing:border-box}
 #page-admin #admConfig .abtn{display:block;width:100%;text-align:left;margin-top:2px}
 #page-admin #admConfig .adm-note{margin-bottom:12px}
+/* the read-only line at the panel's top (his D2317 — the drawing f1a, draw-f.mjs: margin 0 0 12px), for anyone who is
+   not an admin of the squadron in view */
+#page-admin #admConfig .adm-note.adm-cfg-ro{margin:0 0 12px}
 /* Admin → Users ([ACCOUNTS], D166, D204): the requests waiting and the accounts, one row
    each — sign-in name over callsign, the role pill at the right; a tapped row opens its
    editor underneath (never on your own account) */
@@ -100,13 +103,16 @@
 #page-admin .acc-edit .mfield select,#page-admin .acc-edit .mfield input{width:100%;box-sizing:border-box}
 /* A PERSON'S SQUADRON LINES (his D2303, design B — the drawing draw-row.mjs `.mqb-sq`, pictures rB1–rB4; ui/UserAccess.tsx):
    under Sign-in and Role, the squadron's number in the field labels' look in a 34px column, then "Home squadron", "Full
-   access" or the editor's own None · View · Plan buttons, one row; a line's grey reason under its buttons */
-#page-admin .acc-sq{display:grid;grid-template-columns:34px 1fr;column-gap:10px;row-gap:8px;align-items:center;margin:12px 0}
+   access" or the editor's own None · View · Plan buttons, one row; a line's grey reason under its buttons.
+   THE FOOT AS draw-roles.mjs DREW IT (the k pictures — the roles fold always follows the lines): the lines' 4px bottom
+   margin meets the fold's 4px top in one, and a grey line keeps 2px under it, so the fold sits 6px under a grey line —
+   the drawing check of 23 Nov 26 measured it 6px lower with the lines' old 12px foot (e2e/users-fit.spec.ts) */
+#page-admin .acc-sq{display:grid;grid-template-columns:34px 1fr;column-gap:10px;row-gap:8px;align-items:center;margin:12px 0 4px}
 #page-admin .acc-sq-n{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
 #page-admin .acc-sq-home{font-size:12px;color:var(--ink-2)}
 #page-admin .acc-sq .acc-acts{margin:0;flex-wrap:nowrap}
 #page-admin .acc-sq .abtn:disabled{opacity:.42}
-#page-admin .acc-sq-note{grid-column:2;margin:-2px 0 0}
+#page-admin .acc-sq-note{grid-column:2;margin:-2px 0 2px}
 #page-admin .acc-edit :is(input,select,.abtn):disabled{opacity:.42}
 /* ADMIN → SQUADRONS (ui/SquadronsPanel.tsx; pictures b1-3, b1-4, b1-9, b1-10, p7 — drawn from Users' own parts): a form's
    line in the row's grey-line look, a sentence that wraps (b1-4's "Saved at once…", b1-9's first admin line); a refusal

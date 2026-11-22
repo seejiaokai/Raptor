@@ -217,7 +217,19 @@ it (`pageUnit('own')`). Pinned by `ui/msq-sqn-menu.test.tsx`; the drawing `docs/
 squadron in view's number (`ui/export.ts sqnNum('schedule')`) in a small grey badge after the day title (`.sb-sqn`, the
 standby badge's recipe in grey, 8.5px type — 7px on a phone), inside `.sb-title`, so no button in the bar moves; on a
 phone it rides the title's ellipsis. Shown for every squadron, one or several, as drawn. Pinned by
-`ui/msq-board-sqn.test.tsx`; the geometry by `e2e/msq-job2.spec.ts`.
+`ui/msq-board-sqn.test.tsx`; the geometry by `e2e/msq-job2.spec.ts`. **The desktop title slot is 344px since the night fix
+job (23 Nov 26), was 312:** the app loads no fonts, and with the number the Wednesday title was 331px in the Linux font
+GitHub's run uses (290 in Windows' own) — 19px into the day chips. The slot stays fixed (the 22 Aug rule — the chips never
+slide between days), sized for the widest font seen with the today dot; the chips sit 32px further right than b1-2 drew
+them, on every day. Pinned in a wide font too: `e2e/geometry.spec.ts` "the full day name comes back above 820px".
+
+**Admin → Squadron config follows the squadron in view (his D2317 — the drawings f1a, f1b; the night fix job, 23 Nov
+26):** its templates and default arrangement load with the schedule in view's settings, so the pane's heading names it —
+"Squadron config · 149", "· 142" for his own; it is his to change only as an admin of that squadron (`canEditSched()` →
+`maySchedEditPage`, the schedule kind). Anyone else — a View holder with 149 picked — sees the line "This is 149's set-up.
+Only an admin of 149 can change it." at the panel's top (`#admCfgRo`) and every control greyed (32 in the demo: the
+arrows, the two buttons under the lists, the three template doors), each door asking again. `ui/AdminPage.tsx`
+`SquadronConfig`, `paneTitle`; pinned by `ui/msq-admin-config.test.tsx`.
 
 **The Tracker after a pick (§16 D2′, his D2318 — the drawings f2a–f2d):** the Tracker keeps the squadron it loaded until
 the next sign-in. When his own pages' squadron (`pageUnit('own')`) is not that one, the Tracker page carries one band
@@ -6546,7 +6558,8 @@ entry plus its `.adm-panel` section; the owner is filling this in over time.
 The three category panels:
 
 - **`#admUsers` Users** (the rail's line under it: "Sign-in and roster" — was "Who can sign in", Fable R13) — one row per PERSON, every action on his row: §Admin → Users — one door (`[ONE-DOOR]`, D309, D310); the `[ACCOUNTS]` text it replaced is in `docs/archive/ui-contracts-2026-09-27.md`.
-- **`#admConfig` Squadron configuration** — `#admDutyTpl` / `#admDayTpl`
+- **`#admConfig` Squadron configuration** (the squadron in view's, read only to anyone who is not its admin — D2317, §The
+  board's number's neighbour paragraph "Admin → Squadron config follows the squadron in view") — `#admDutyTpl` / `#admDayTpl`
   open the duty-template and day-template editors by setting the SAME
   `pops.ts` flags the picker pencils set (`setTplEdit` / `setDayTplEdit`).
   Front doors, not new surfaces: the modals stay App-level siblings and
@@ -7156,7 +7169,9 @@ the same on both lists. **Save sends the role, the mark and every line at once**
 command, one Undo step), a rename of his sign-in after it. Pinned by `ui/msq-users-row.test.tsx`.
 
 **"▸ What each role allows" (since 23 Nov 26 — §4 item 6; his D2302, D2305, picture k2; the night of 22–23 Nov, job 1):**
-under the squadron lines of every opened row, closed, in the Logic page's "How it works" fold look. Inside: "View and Plan
+under the squadron lines of every opened row, closed, in the Logic page's "How it works" fold look — 6px under a line's
+grey reason, as `draw-roles.mjs` drew it (the lines' foot 4px, their grey line's 2px; it sat 6px lower until the night
+fix job, 23 Nov 26 — `e2e/users-fit.spec.ts`). Inside: "View and Plan
 give access to another squadron."; the grid — Edit Schedule, View-only Sched, Logic, Inputs, Quals, Leave War, Tracker,
 Admin down the side; Member, Admin, View, Plan, Master admin across; ✓, "read" or —, notes 1–4 on Member's Inputs, Quals,
 Leave War and Tracker ticks and 5 on Admin's and Plan's Admin ticks; "✓ can change · read: can see, not change · —
@@ -8221,7 +8236,9 @@ The Inputs / SANS redesign, plan §3.4. `ui/DaysWindow.tsx`, on the windows shel
     2031 yet."; two holes joined by "or"), no year button is offered, and each run has its own: "Add a period for 1 Apr
     – 31 Dec…", which opens the Leave War's own New-period sheet with those dates picked.
 - **The holiday form (`HolidayForm` — D641, D652).** A window on the shell, at the left on a desktop, the bottom panel
-  on a phone. "Add a holiday": Kind — Public holiday (lit) / Off day; Name (40 letters at most; empty, the box shows
+  on a phone. "Add a holiday": Kind — Public holiday (lit) / Off day, with a quiet line at the Kind label's right, "Off days
+  stay each squadron's own" (his D2190 point 2, the drawing b1-8 — on the label's own row, so the window grows no taller;
+  12px grey; it describes the group, whose name stays "Kind"; built by the night fix job, 23 Nov 26); Name (40 letters at most; empty, the box shows
   the word it will be saved under) with "On grid" beside it (its short form — capitals as typed, three at most);
   **Dates — the Leave War's own range calendar (D671, 8 Oct 26: "use the same calendar interface and logic for
   selecting start and end date"), `leavewar/ui/RangePicker` itself, not two date boxes:** one tap is one day, a second

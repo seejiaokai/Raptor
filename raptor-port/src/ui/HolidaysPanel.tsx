@@ -352,8 +352,14 @@ export function HolidayForm({ line, year, onClose }: {
 
   return (
     <FloatWin id="holiday" title={line ? 'Change a holiday' : 'Add a holiday'} testid="win-holiday" className="everywin holwin" onClose={onClose}>
-      <div className="every-lab" id="holKindLab">Kind</div>
-      <div className="every-seg two" role="group" aria-labelledby="holKindLab">
+      {/* "OFF DAYS STAY EACH SQUADRON'S OWN" (his D2190 point 2 — the approved drawing b1-8, redraw-b1.mjs b8): at the
+          right of the Kind label, on its own row so the window grows no taller, in the Days window's hint look; an Off
+          day stays a dated entry of one squadron's. The label's word alone names the group; the line describes it. */}
+      <div className="every-lab hol-kind-lab">
+        <span id="holKindLab">Kind</span>
+        <span className="hol-kind-hint" id="holKindHint" data-testid="hol-kind-hint">Off days stay each squadron's own</span>
+      </div>
+      <div className="every-seg two" role="group" aria-labelledby="holKindLab" aria-describedby="holKindHint">
         {(['ph', 'off'] as const).map(k => (
           <button
             key={k}

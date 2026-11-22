@@ -3341,6 +3341,19 @@ test.describe('the phone board keeps its controls to one row', () => {
     expect(m.tailPainted, 'the tail paints again once there is width for it').toBe(true)
     expect(m.text, 'a desktop still reads the day out in full').toBe('Wednesday')
     expect(m.clipped, 'and it fits').toBeLessThanOrEqual(0)
+    /* IN A WIDE FONT TOO (the night fix job, 23 Nov 26): the app loads no fonts, and the squadron's grey number (b1-2)
+       made this title 19px too wide for its slot in the Linux font GitHub's run uses while it fitted in Windows' own — so
+       the same title is set here in Verdana, a wider font than either (or DejaVu Sans where Verdana is missing), and must
+       still fit, the number shown: the slot is sized for the widest font, never for the machine that runs the test */
+    await page.addStyleTag({ content: `.sb-title, .sb-title * { font-family: Verdana, 'DejaVu Sans', sans-serif !important }` })
+    const wide = await page.evaluate(() => {
+      const t = document.querySelector('.sb-title') as HTMLElement
+      const n = t.querySelector('.sb-sqn') as HTMLElement
+      return { clipped: t.scrollWidth - t.clientWidth, num: n ? n.textContent : null, numIn: !!n && Math.round(n.getBoundingClientRect().right) <= Math.round(t.getBoundingClientRect().right) }
+    })
+    expect(wide.num, 'the squadron\'s number is kept').toBe('142')
+    expect(wide.clipped, 'in a wide font the whole title still fits its slot').toBeLessThanOrEqual(0)
+    expect(wide.numIn, 'the number inside the slot, not pushed into the chips').toBe(true)
   })
 
   /* REWRITTEN 23 Aug 26 (owner): this test used to pin the day chips as DOTS
@@ -5828,9 +5841,12 @@ test('the sign-in and Request access buttons sit square under their boxes, insid
 /* [ACCOUNTS-NEW-PERSON] (D214, D224 — Fable's plan read F5): the sign-up card's two picks (pilot / WSO / personnel,
    CAT) wear the boxes' own look, as the approved mock-up drew them — same left and right edges and the same height as
    the first box, at a desktop and a phone width; and the button still sits square under them. A browser-default
-   select would be narrower, square-cornered and a different height, and the button test alone would not see it. */
+   select would be narrower, square-cornered and a different height, and the button test alone would not see it.
+   REWRITTEN BY HIS RULING D2111 (17 Nov 26 — "Request access" asks which squadron, the first choice on its card; built by
+   night job 3, 23 Nov 26): with two squadrons in the demo the card has THREE selects, Squadron first, and each is still
+   measured against the first box — the ids and their order are asserted, so a fourth select or a lost one still fails. */
 for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']] as const) {
-  test(`the sign-up card's two selects are the boxes' size and edges (${tag})`, async ({ page }) => {
+  test(`the sign-up card's three selects are the boxes' size and edges (${tag})`, async ({ page }) => {
     await page.setViewportSize({ width: w, height: h })
     await page.goto('/'); await page.waitForSelector('#luser')
     await page.fill('#luser', `selects-${tag}@mail`); await page.fill('#lpass', 'x')
@@ -5841,12 +5857,12 @@ for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'phone']] as const
       const g = f.querySelector('.go')!.getBoundingClientRect()
       const sel = [...f.querySelectorAll('select')].map(x => {
         const r = x.getBoundingClientRect(), cs = getComputedStyle(x)
-        return { dl: Math.round(r.left - i.left), dr: Math.round(r.right - i.right), dh: Math.round(r.height - i.height), radius: cs.borderTopLeftRadius }
+        return { id: x.id, dl: Math.round(r.left - i.left), dr: Math.round(r.right - i.right), dh: Math.round(r.height - i.height), radius: cs.borderTopLeftRadius }
       })
       return { sel, radius: getComputedStyle(f.querySelector('input')!).borderTopLeftRadius, go: { dl: Math.round(g.left - i.left), dr: Math.round(g.right - i.right) }, scrollX: document.documentElement.scrollWidth > window.innerWidth }
     })
-    expect(m.sel).toHaveLength(2)
-    for (const s of m.sel) expect(s, 'a select shares the box\'s edges, height and corners').toEqual({ dl: 0, dr: 0, dh: 0, radius: m.radius })
+    expect(m.sel.map(s => s.id), 'Squadron first, then pilot / WSO / personnel, then CAT').toEqual(['accSqn', 'accSeat', 'accCat'])
+    for (const { id, ...s } of m.sel) expect(s, `the select ${id} shares the box's edges, height and corners`).toEqual({ dl: 0, dr: 0, dh: 0, radius: m.radius })
     expect(m.go, 'the button still square under them').toEqual({ dl: 0, dr: 0 })
     expect(m.scrollX, 'no sideways scroll').toBe(false)
   })

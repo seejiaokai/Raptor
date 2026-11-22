@@ -38,6 +38,7 @@ import { SquadronsPanel } from './SquadronsPanel'
 import { DateBox } from './DateBox'
 import { DateCal } from './DateCal'
 import { sayDateYY } from './daysfmt'
+import { sqnNum } from './export'
 
 /* The rail is data-driven so a new settings category is one row here plus its
    panel below — nothing else in the layout moves. */
@@ -162,7 +163,8 @@ const ADEF_SEC_LABEL: Record<string, string> = {
   notes: 'Overall notes', prog: 'Common Programme', waves: 'Flying waves', duty: 'Duties', sims: 'Sims', ground: 'Ground Programme',
   inputs: 'Personal Inputs', avail: 'Available crew', sans: 'SANS availability', unav: 'Unavailable',
 }
-function ArrangeDefaults() {
+/* `ro`: the squadron in view is not his to change (D2317) — every control greyed, as the drawing f1a draws it */
+function ArrangeDefaults({ ro }: { ro: boolean }) {
   const sec = secDefault()
   const wav = waveDefaultView()
   const waveOn = waveDefault().length > 0
@@ -173,8 +175,8 @@ function ArrangeDefaults() {
   const row = (key: string, i: number, len: number, label: string, up: () => void, down: () => void) => (
     <div className="arrsec-row" key={key} data-adefrow={key}>
       <span className="grip">
-        <button className="tnudge" aria-label={`Move ${label} up`} disabled={i === 0} onClick={up}>▲</button>
-        <button className="tnudge" aria-label={`Move ${label} down`} disabled={i === len - 1} onClick={down}>▼</button>
+        <button className="tnudge" aria-label={`Move ${label} up`} disabled={ro || i === 0} onClick={up}>▲</button>
+        <button className="tnudge" aria-label={`Move ${label} down`} disabled={ro || i === len - 1} onClick={down}>▼</button>
       </span>
       <span className="arrsec-name">{label}</span>
       <span className="arrsec-pos">{i + 1}</span>
@@ -188,7 +190,7 @@ function ArrangeDefaults() {
           () => nudgeSec(key, -1), () => nudgeSec(key, 1)))}
       </div>
       <p className="adm-note">The order the day’s panels show in. The schedule sections apply on both Edit Schedule and the Scheduler Board; the crew lists (Personal Inputs, Available crew, SANS, Unavailable) reorder on the Scheduler Board only. A day arranged on its own keeps its own order.</p>
-      <button className="abtn" id="admSecDefReset" onClick={resetSec} style={{ marginTop: 2 }}>Reset to standard order</button>
+      <button className="abtn" id="admSecDefReset" onClick={resetSec} disabled={ro} style={{ marginTop: 2 }}>Reset to standard order</button>
       <div className="arrsec-subh" style={{ marginTop: 16 }}>Flying-wave order</div>
       <div className="arrsec-list" id="admWaveDefault">
         {wav.map((key, i) => row(key, i, wav.length, kindLabel(key as any),
@@ -199,9 +201,36 @@ function ArrangeDefaults() {
           ? 'A new wave added to a schedule that isn’t signed off lands in this order (e.g. SC on top). It never re-orders a day already planned, or a signed-off day.'
           : 'Off — a new wave is added at the bottom. Move a wave type to set the order new waves are placed in on a fresh schedule.'}
       </p>
-      {waveOn && <button className="abtn" id="admWaveDefOff" onClick={resetWav} style={{ marginTop: 2 }}>Turn off wave order</button>}
+      {waveOn && <button className="abtn" id="admWaveDefOff" onClick={resetWav} disabled={ro} style={{ marginTop: 2 }}>Turn off wave order</button>}
     </div>
   )
+}
+
+/* SQUADRON CONFIG FOLLOWS THE SQUADRON IN VIEW (his D2317 — the drawings f1a, f1b, draw-f.mjs f1): its templates and
+   default arrangement load with the schedule in view's settings, so its heading names that squadron ("Squadron config ·
+   149", for his own as well — f1b), and it is his to change only as an admin of it — step A's "schedule" kind (auth.ts
+   canEditSched → perms.ts maySchedEditPage), the same question Logic and the template editors ask */
+const paneTitle = (c: { id: string; label: string }): string => (c.id === 'config' ? `${c.label} · ${sqnNum('schedule')}` : c.label)
+/* the panel's controls — the front doors to the template editors (the modals are App-level siblings, App.tsx; these
+   buttons set the same pops.ts flags the picker pencils set). NOT HIS TO CHANGE (D2317): the set-up is the squadron in
+   view's and he is no admin of it — a View holder with 149 picked: the line names it as drawn, every control below is
+   greyed, and each door still asks again */
+function SquadronConfig() {
+  const ro = !canEditSched()
+  const num = sqnNum('schedule')
+  const door = (open: (on: boolean) => void) => () => { if (!canEditSched()) return; open(true); notify() }
+  return (<>
+    {ro && <p className="adm-note adm-cfg-ro" id="admCfgRo">{`This is ${num}'s set-up. Only an admin of ${num} can change it.`}</p>}
+    <h4 className="adm-sub">Default arrangement</h4>
+    <ArrangeDefaults ro={ro} />
+    <hr className="adm-sep" />
+    <button className="abtn" id="admDutyTpl" disabled={ro} onClick={door(setTplEdit)}>Duty templates…</button>
+    <p className="adm-note">A duty template is a saved duty block — its rows and times — that "+ Block" copies onto any day as a plain, conflict-checked desk.</p>
+    <button className="abtn" id="admDayTpl" disabled={ro} onClick={door(setDayTplEdit)}>Day templates…</button>
+    <p className="adm-note">A day template is a whole captured day — waves, duties, sims and ground rows — recaptured off a real day and re-applied from the day-templates picker.</p>
+    <button className="abtn" id="admWaveTpl" disabled={ro} onClick={door(setWaveEdit)}>Wave templates…</button>
+    <p className="adm-note">A wave template is a saved flying wave — its rule-set and lines — that "+ Wave" drops onto any day.</p>
+  </>)
 }
 
 /* how long a row a bell's posting line lands on stays ringed — the app's one just-added mark's six seconds (state/view.ts
@@ -276,7 +305,7 @@ export function AdminPage() {
         <div className="adm-pane">
           <div className="adm-pane-head">
             <button type="button" className="adm-back" onClick={() => setDrilled(false)} aria-label="Back to categories">‹</button>
-            <h3>{active.label}</h3>
+            <h3>{paneTitle(active)}</h3>
           </div>
           <div className="adm-pane-body">
             {/* ---- Users — the accounts ([ACCOUNTS], D166 (1), D204, 26 Sep 26): who can
@@ -298,15 +327,7 @@ export function AdminPage() {
                 paint over this page exactly as they do over any other; these
                 buttons just set the same pops.ts flags the picker pencils set. ---- */}
             <section className={'adm-panel' + (cat === 'config' ? ' on' : '')} id="admConfig">
-              <h4 className="adm-sub">Default arrangement</h4>
-              <ArrangeDefaults />
-              <hr className="adm-sep" />
-              <button className="abtn" id="admDutyTpl" onClick={() => { setTplEdit(true); notify() }}>Duty templates…</button>
-              <p className="adm-note">A duty template is a saved duty block — its rows and times — that "+ Block" copies onto any day as a plain, conflict-checked desk.</p>
-              <button className="abtn" id="admDayTpl" onClick={() => { setDayTplEdit(true); notify() }}>Day templates…</button>
-              <p className="adm-note">A day template is a whole captured day — waves, duties, sims and ground rows — recaptured off a real day and re-applied from the day-templates picker.</p>
-              <button className="abtn" id="admWaveTpl" onClick={() => { setWaveEdit(true); notify() }}>Wave templates…</button>
-              <p className="adm-note">A wave template is a saved flying wave — its rule-set and lines — that "+ Wave" drops onto any day.</p>
+              <SquadronConfig />
             </section>
             {/* ---- Data & persistence — the honesty card. This page is where the
                 real controls land when the shared database arrives; until then the

@@ -49,9 +49,17 @@ body.dw-lock{overflow:hidden}
    shift left and right … it's very hard to click properly"). The widest title
    measured ("Wednesday Jul 17 · scheduler board") is ~297px; 312px clears it and
    the today dot, and a shorter day pads the slot rather than pulling the chips
-   in. The phone keeps its own ellipsised title (the max-width:820 block). */
+   in. The phone keeps its own ellipsised title (the max-width:820 block).
+   344px SINCE THE SQUADRON'S NUMBER JOINED THE TITLE (batch 1's night fix job, 23 Nov 26 — b1-2's grey "142", 37px with
+   its margin): the app loads no fonts, so the title is set in each machine's own — 290px for Wednesday in Windows' font
+   with the number, but 331px in the Linux font GitHub's run uses, 19px past a 312px slot, the full day name pushed into
+   the chips (e2e/geometry.spec.ts "the full day name comes back above 820px"). The slot stays FIXED, as his 22 Aug rule
+   asks — the chips never slide between days — and is sized for the widest font seen, Wednesday with the today dot
+   (~342px); a slot that grew with its words would slide the chips on exactly the machines whose font is wider, and
+   hiding the number would drop the squadron the drawing shows. The cost: the chips sit 32px further right on every
+   day than b1-2 drew them on his PC — a departure named to him. */
 @media (min-width:821px){
-  .sb-title{flex:0 0 312px;width:312px;white-space:nowrap}
+  .sb-title{flex:0 0 344px;width:344px;white-space:nowrap}
 }
 /* THE DAY STRIP AND ITS ARROWS (owner, 12 Aug 26 — "put arrows at the edges of
    the bar at the top to navigate left and right between days").

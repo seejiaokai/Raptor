@@ -86,3 +86,34 @@ test('[ROLE-BOX-CUT-IPHONE] at 402: every Role choice and every squadron line fi
   await page.waitForSelector('#page-admin .acc-edit [data-testid="acc-sq"]')
   expect((await misfits(page)).bad).toEqual([])
 })
+
+/* THE FOLD SITS WHERE IT WAS DRAWN (the drawing check of 23 Nov 26, its line 4 — k1, k3, k4, k5, rB1–rB4: the build left
+   6px more than the drawing): draw-roles.mjs gives the squadron lines `margin: 12px 0 4px`, the grey line under a squadron
+   line `margin: -2px 0 2px`, and the fold `margin: 4px 0 12px` — so from the last grey line's foot to "▸ What each role
+   allows" is 2 + 4 = 6px (the lines' foot and the fold's top meet in one 4px), and from the Role box's foot to the first
+   line 12px, as before. Ranger, a member, opened by Saber: his 149 line ends in "Plan is for admins only." (D2306). */
+for (const [w, h, tag] of [[1536, 864, 'desktop'], [402, 874, 'phone']] as const) {
+  test(`the roles fold sits 6px under the last squadron line's grey line, as drawn (${tag})`, async ({ page }) => {
+    await page.setViewportSize({ width: w, height: h })
+    await login(page)
+    await users(page)
+    await page.locator('#accList [data-person="bane"] .acc-tap').click()
+    await page.waitForSelector('#page-admin .acc-edit [data-testid="acc-roles"]')
+    const g = await page.evaluate(() => {
+      const ed = document.querySelector<HTMLElement>('#page-admin .acc-edit')!
+      const notes = [...ed.querySelectorAll<HTMLElement>('[data-testid="acc-sq"] .acc-sq-note')]
+      const last = notes[notes.length - 1]
+      const sum = ed.querySelector<HTMLElement>('[data-testid="acc-roles"] summary')!
+      const sq = ed.querySelector<HTMLElement>('[data-testid="acc-sq"]')!
+      const two = ed.querySelector<HTMLElement>('.adm-2col')!
+      return {
+        note: last ? last.textContent : null,
+        gap: last ? Math.round(sum.getBoundingClientRect().top - last.getBoundingClientRect().bottom) : null,
+        above: Math.round(sq.getBoundingClientRect().top - two.getBoundingClientRect().bottom),
+      }
+    })
+    expect(g.note).toBe('Plan is for admins only.')
+    expect(g.gap, 'the grey line\'s foot to the fold').toBe(6)
+    expect(g.above, 'the Role box\'s foot to the first squadron line, unchanged').toBe(12)
+  })
+}
