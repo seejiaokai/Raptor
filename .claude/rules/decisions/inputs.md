@@ -76,6 +76,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - A saved shared input's dates are changed in its own window, by whoever may change the input, for everyone in it at once [D681].
 
 ## Not built yet
+- On the SANS calendar a man posted out as SANS from a date ahead sees his own days before that date shaded, beside the guardrail that refuses them; a new look, drawn for him at both sizes before it is built [D2343, D2340].
 - A date clicked on the Inputs or SANS calendar while a new input's window is open never looks picked while doing nothing: the click changes something the person can see, or nothing lights; what it does is his choice first (`[INP-CAL-CLICK-BEHIND-NEW]`) [D1298].
 
 ## Settled — leave as they are
