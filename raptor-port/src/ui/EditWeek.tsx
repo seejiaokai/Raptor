@@ -234,7 +234,13 @@ export function EditWeek() {
          panForget: the carry places the week itself, so the day arrows count from here — the board closed on another
          day sat inside the reach of earlier presses and the next press skipped days (the blind read's F1, 22 Nov 26;
          pan.ts panForget) */
-      if (CARRYDAY != null) { panForget(); scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }
+      /* straight onto the day, no slide (his D2296 — see ViewWeek): smooth off for this one write */
+      if (CARRYDAY != null) {
+        const was = root.style.scrollBehavior
+        root.style.scrollBehavior = 'auto'
+        panForget(); scrollWeekToDay(root, CARRYDAY); setCarryDay(null)
+        root.style.scrollBehavior = was
+      }
     }
     prev.current = { ed, html, chunks }
     refreshHighlights()

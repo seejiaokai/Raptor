@@ -222,6 +222,33 @@ test.describe('Edit Schedule on a desktop — the right edge and the day arrows'
     expect(after.front.day, 'one press after the jump shows Tuesday (walker A\'s F2)').toBe('1')
     await context.close()
   })
+  /* NO SLIDE ON THE WAY IN (his D2296, 22 Nov 26 — "fix the slide"; walker A's F1). Edit Schedule → View-only Sched
+     wrote the carried day's place under the strip's smooth scrolling, so the week was SEEN to slide from Monday across
+     to the day, about half a second; the other direction opened straight on it. Every painted frame of the arriving
+     strip, from the press, must already stand where it comes to rest. */
+  test('a schedule page opened from the other opens straight on the carried day — no slide, either way', async ({ browser, baseURL }) => {
+    const { context, page } = await desktop(browser, baseURL)
+    await tab(page, 'Edit Schedule', 'editsched')
+    await arrow(page, 'next', EDIT); await arrow(page, 'next', EDIT)
+    for (const [name, want, sel] of [['View-only Sched', 'viewsched', VIEW], ['Edit Schedule', 'editsched', EDIT]] as const) {
+      await page.evaluate(s => {
+        const seen: number[] = []; (window as any).__frames = seen
+        const tick = () => {
+          const w = document.querySelector(s) as HTMLElement | null
+          if (w && w.getBoundingClientRect().width > 0) seen.push(w.scrollLeft)
+          if (seen.length < 90) requestAnimationFrame(tick)
+        }
+        requestAnimationFrame(tick)
+      }, sel)
+      await tab(page, name, want)
+      const at = await read(page, sel)
+      const frames: number[] = await page.evaluate(() => (window as any).__frames)
+      expect(at.front.day, `${name}: Wednesday first`).toBe('2')
+      expect(frames.length, `${name}: the arriving strip was watched`).toBeGreaterThan(5)
+      expect(Math.min(...frames), `${name}: no frame of it stood short of its resting place (${at.scrollLeft})`).toBeGreaterThanOrEqual(at.scrollLeft - 1)
+    }
+    await context.close()
+  })
   /* THE SAME STALE COUNT THROUGH THE BOARD (the blind read's F1, 22 Nov 26): the board opened on Friday, stepped to
      Tuesday and closed carries Tuesday to the week's front — inside the reach of the four presses before it — and the
      next press showed Saturday. The carry now drops the arrows' memory too (EditWeek / ViewWeek, beside the landing). */

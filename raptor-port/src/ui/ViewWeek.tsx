@@ -120,7 +120,16 @@ export function ViewWeek() {
          page switch must keep holding scroll, which is the B54 guarantee the
          line above exists for. panForget: the carry places the week itself, so the day arrows count
          from here, not from where earlier presses were heading (the blind read's F1, 22 Nov 26; pan.ts) */
-      if (CARRYDAY != null) { panForget(); scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }
+      /* STRAIGHT ONTO THE DAY, NO SLIDE (his D2296, 22 Nov 26 — "fix the slide"): written under the strip's smooth
+         scrolling, this landing was SEEN — the week slid from Monday across to the carried day, about half a second,
+         every time View-only Sched was opened from Edit Schedule on another day. Smooth is off for this one write, as
+         for the week-crossing landings above. Pinned: e2e/sched-right-edge.spec.ts. */
+      if (CARRYDAY != null) {
+        const was = root.style.scrollBehavior
+        root.style.scrollBehavior = 'auto'
+        panForget(); scrollWeekToDay(root, CARRYDAY); setCarryDay(null)
+        root.style.scrollBehavior = was
+      }
     }
     prev.current = { html, chunks }
     /* the reference re-hangs selection/highlight classes after every render */
