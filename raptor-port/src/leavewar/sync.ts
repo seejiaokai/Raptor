@@ -2064,8 +2064,12 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
        available exactly as he was, so the crowd a day he flew froze at publication compares equal and that day never
        reads pending for the delete; on or after it he is out. An ARCHIVED man is read by his STINTS (D327, 28 Sep 26 —
        "shouldnt all avail crowd remain the same as per how that was published?"): in the crowd on a day he was here,
-       out from his archive on — the `inSquadron` read just below; with no war row (never here) he is out. */
-    if (p.deleted ? iso >= String(p.deletedFrom || '') : (p.archived && !lwById.get(id))) continue
+       out from his archive on — the `inSquadron` read just below. With NO war row he is read by his archive's DATE
+       (Fable's round-4b read F1, 22 Nov 26): the archive closes a stint only for a man the war shows or one with a past
+       on it, so a hand-ticked SANS man with "+ SANS" off and nothing filed has no row — and was dropped from EVERY day,
+       a published day he was named on reading pending, the display switch at the archive deciding who is owed OIL
+       (D327, D25). Before his archive he falls through as any man with no row; no archive date kept → out everywhere. */
+    if (p.deleted ? iso >= String(p.deletedFrom || '') : (p.archived && !lwById.get(id) && (!p.archivedOn || iso >= String(p.archivedOn)))) continue
     /* SANS are another squadron's men until they are on our programme for the
        day. With no day blob to read (a caller that cannot supply one) they stay
        out, which is the pre-[ALL-AVAIL-REDEF] answer — fail closed. */

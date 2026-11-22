@@ -3067,7 +3067,21 @@ still take the days before that untick? Fix if yes: tag the stretch a posting ma
 new words ("not yet SANS") — drawn for him first (D1625).
 **(l) a member's own-row command may write any SANS start or ended stretch (Opus #4):** the screen writes only today;
 the commit gate (`state/perms.ts`, the own-row check) does not hold `sanFrom` / `sanWas` to today — for the security
-review before the database step (D1411, `[DB-SECURITY-ROLES]`).
+review before the database step (D1411, `[DB-SECURITY-ROLES]`). **And `sanPo`** (Fable's round-4b read, item 5, 22 Nov
+26): the stretch of a SANS posting's days kept at an archive is a field on the person that decides who ALL AVAIL counts —
+the same gate should hold it; its reach is small (it counts only on a day he is also SANS and named).
+**(s) a SANS posting dated before the day he was ticked SANS by hand (Fable's round-4b read, F2, 22 Nov 26; filed by chat
+147, not fixed — rare, and the fix needs a new saved stretch):** Wed 15 Jul an admin ticks Hex SANS on Quals; the same
+day he is posted out as SANS from Mon 13 Jul (runs at once). The posting keeps the tick's later start, so Tue 14 Jul is not
+a SANS day for him and, not named, he counts in Tuesday's ALL AVAIL — a man not ticked by hand would not (D283, D27). Fix
+(Fable's): in both posting passes (`leavewar/sync.ts runLoadedPostings`, `runForeignPosting`) keep the earlier days as the
+posting's own stretch apart from his tick, `takeBack` ("Undo post out", a move, another outcome) removing exactly that
+stretch (D2313 kept), the field added to `state/perms.ts PASS_FIELDS.sans`. Proof: `leavewar/fable-r4b.test.ts` "FABLE 2",
+marked `it.fails` until fixed. Goes with (j).
+**(t) a stale rule and comment (Fable's round-4b read, item 4, read not run):** the commit gate's rule for the posting
+pass (`state/perms.ts postingPassViolation`) and comments in `runForeignPosting` still say a Delete of a man who never
+arrived REMOVES his posting record; since D2328 part 2 it is replaced by the kept arrival record (`to: null`). No screen
+reaches it (a Delete posting's date is always after his post-in date); bring the two in step when next there.
 **(g) gains one more reader on today's tick (Astra #3):** the input window's "Several people" picker groups and draws a
 dated input's people by today's tick (`ui/PeoplePick.tsx`) — with the Inputs calendar's opened day.
 
