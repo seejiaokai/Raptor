@@ -1154,3 +1154,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The first pass pressed the next-day arrow to Sunday, then the script wrote the week's scroll back to 0 directly. The arrows remember where their last press was heading; a direct write does not clear that, so the second pass's first press counted from Sunday and loaded the next week. The "proposed" pictures were of a different week from the "today" ones, with no error.
 **Suggested improvement:** In `raptor-port/docs/walk-scripts.md` §4, add: a before-and-after pair takes a fresh page for each state; after any arrow press, move the week only by the app's own controls (the arrows, the foot scroll bar's track), never by writing its scroll — and assert the week's date in both pictures of a pair.
 **Principle:** A control that keeps a remembered target is not reset by moving the thing it controls behind its back; give each compared state its own fresh session and assert they show the same data.
+
+### Observation 1007: Met again (970, closed): a question put to the owner narrowed an earlier ruling the search before it had not found
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** Chat 135, the mock-up page of Edit Schedule's right edge: its question 2 (a day brought to the front rests the strip's margin in) narrowed his D275 of 27 Sep 26, found only after he had answered "all as recommended". Numbered past 1006, which another branch holds.
+**Skill:** New skill candidate: decision-page writing (round pages put to the owner) — the same candidate as Observation 970
+**Type:** open-source
+**Phase/Area:** the search of earlier decisions before a question goes out
+
+**Issue:** The search before the question ran on the backlog and on two keywords taken from the fault's own description ("opens", "20px"). The earlier ruling was worded by its subject from the other side ("the day flush at the left edge, no room beside the arrow") and sat in an area page that loads only when one of its source files is read; neither keyword matched it. The page went out without naming the ruling it narrowed, his blanket yes carried it, and it had to be told to him afterwards. Observation 970's rule (a clash pass before a recommendations page) was in force and was run — its search was too narrow to find the clash.
+**Suggested improvement:** Make the clash pass a fixed search, not a judgement: for each question, search the full rulings rows for (1) the screen part's name as the app shows it, (2) each control or gesture that reaches the behaviour, and (3) the opposite of the proposed outcome ("flush", "no gap", "at the edge" when proposing a margin) — and open the area page of every source file the fix would touch before the page is drafted. Write the three search words used on the page's own notes, so a reviewer can see what was searched.
+**Principle:** An earlier decision is filed under the words of the day it was made, often the opposite of the words of today's proposal; search by the subject and by the outcome's opposite, never only by the new problem's description.

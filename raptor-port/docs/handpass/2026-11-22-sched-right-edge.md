@@ -137,6 +137,10 @@ Opened and cited:
 
 ## The break tests
 
+None of their own beyond the walk's orders: three quick presses of an arrow (S4), the window dragged under the phone's
+width and back (S9), the panel folded and opened at the strip's far end (S6), an Undo and a Redo after scrolling away
+(S14), the window at seven widths (S8).
+
 ## Errors seen
 
 None. Every page of every run was watched for page errors, console errors and HTTP 4xx/5xx: 0 in the full run, 0 in
@@ -153,6 +157,18 @@ None. Every page of every run was watched for page errors, console errors and HT
 - The page switch on a phone was made through the phone's menu (☰), not a top-bar tab — the phone has none.
 
 ## The gate counts
+
+- **GitHub's run of pull request 822 on `8a62bb692`** (the branch with `main` brought in, 22 Nov 26, about 03:15 UTC),
+  the job's full check while the repo is public (D1086): green — 23 jobs passed (the build, the code check, the unit
+  tests in ten parts, the browser tests in seven, the Tracker's two), 2 skipped (the notes-only skip and his PC's own
+  run, both off for a public repo); the documents guard and the secrets scan green. The runs on `df420f885` and
+  `163c850c4` before it: green. The first run, on `55c77ea79`: red on one older browser test — the dispositions below.
+- **On his PC, only what the job touches (D1086):** `e2e/sched-right-edge.spec.ts` 10 passed (after the last fix); that
+  file with the older browser suite of the schedule's layout, 219 passed (before the calendar fix; 210 in that suite);
+  the type check through the build, the touched unit tests and the code check green.
+- **The drawing check (D1494):** 1139 measures at seven window widths and the phone, the built screen against the
+  approved drawing — 0 differences.
+- **The document check:** `docsize: OK`.
 
 ## What the walk found, and each disposition
 
@@ -183,6 +199,25 @@ Findings only; dispositions are the host's. Detail and pictures: `2026-11-22-sch
 | GitHub's first run — the older warning-jump test expected the day on the week box's edge | read in the run's log (expected 0, received 20) | the test's measure now starts at the strip's margin (D2295, his "keep both"); the geometry suite 210 passed |
 | Opus read, question 1 — `weekFrontInset`'s 820 test against the stylesheet's 821 at a fractional zoom | not made concrete by the reader | LEFT — `pan.ts` reads the same line everywhere; older, no case found |
 | Opus read, question 2 — a cell partly under the folded CREW tab counts as on screen for the warning jump | not made concrete (no wholly hidden cell) | LEFT — at most 26px of a cell, for the tab's height |
-| Opus read, question 3 — `drag.ts`'s WEEK_STEP_WAIT note says a step lands "flush, D275" | words only | to correct with this job's last commit |
+| Opus read, question 3 — `drag.ts`'s WEEK_STEP_WAIT note says a step lands "flush, D275" | words only | CORRECTED — the note now says the strip's margin in (D275, D2295) |
+| After the fix of F1 — the same slide on a phone? (his "fix the slide", D2296) | `scripts/handpass/sre-b-phone-slide.mjs`: both directions, three runs, every frame from the tap read | NONE — each page opens straight on the carried day, 90 of 90 frames; pictures `docs/img/handpass/2026-11-22-sched-right-edge/b/` (6). Chromium's touch at his iPhone's size, not his iPhone's Safari — his own look is the check of that |
 
 **The readers:** Astra (Codex CLI, gpt-6-astra, read-only; its report whole: `docs/superpowers/briefs/2026-11-22-sched-right-edge-read-astra.md`) and a fresh, blind Opus reader (its report came back in the chat; its finding and questions are the rows above). Neither saw the walk's report or the other's. **Not walked, and what carries each:** the next-week preview pressed — code this change does not touch (`scrollWeekToLanding`); a warning whose man is off the side — the older geometry test "the week lands on the day … with the puck on screen" drives exactly that press and passes with the new measure. **Astra's list of cases with no test** (a calendar landing, week crossings folded, a resize across 820, the phone's AIRCREW tab): each was walked — S13, S5, S9, P1.
+
+## The closing boxes (the order's §12), 22 Nov 26
+
+- [x] The eight questions answered and the tier chosen, in writing — WALK (question 4).
+- [x] The rulings listed; the one clash named and resolved — D2295 narrows D275, told to him, his "keep both".
+- [x] The roll-call complete, no blank cell.
+- [x] The production build driven at both sizes — his PC's 125% (and seven widths) and his iPhone's 402 x 874.
+- [x] The state made through the app's own controls (the walk); the browser tests that set a seat directly say so.
+- [x] Every surface of the roll-call seen and operated, but the two named under "What was NOT walked", each carried.
+- [x] The walk sized in writing before it started; every order has a result — walked, or carried by a test.
+- [x] The real result seen — where the day rests and what one arrow press then shows; nothing saved is touched.
+- [x] A failing test first for each change and each fix.
+- [x] The gates pass — GitHub's run on the last app commit, above.
+- [x] The reads done — Astra and a fresh, blind Opus reader — every finding fixed or disposed.
+- [x] The sheet with its pictures, naming what was not walked.
+- [ ] His look — the preview link sent 22 Nov 26; his "merge live" is his look done (D1640).
+
+**Walk:** `raptor-port/docs/handpass/2026-11-22-sched-right-edge.md` · 93 pictures (plus 6 of the phone check) · 13 surfaces · 21 scenarios · MISSING: none open — 5 fixed, 1 ruled, 2 questions left as they are
