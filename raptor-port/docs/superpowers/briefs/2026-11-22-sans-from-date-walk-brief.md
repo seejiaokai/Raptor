@@ -153,7 +153,8 @@ amendment): his puck as published, no purple line. And the change history ("All 
 left on Tue 21 Jul's item.
 
 ## Extra scenarios from the independent designer
-(Added by the host below this line before you start; walk every one given to your id.)
+(The designer's list may still be on its way when you start. If the host sends you extra scenarios by message while you
+work, walk them AFTER your own, in the same way, and give each a PASS / FAIL / RECORD line in your report.)
 
 ## What you hand back
 - Your script(s) and pictures as above, pictures named `<scenario>-<step>-<desktop|phone>.png`. Open every picture you

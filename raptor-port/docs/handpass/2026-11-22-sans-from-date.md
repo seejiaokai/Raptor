@@ -64,9 +64,9 @@ PAINTED = what else is drawn there that must agree. *by date* = asks `engine/peo
 | 17 | The Leave War's Available rows and manning counts (`leavewar/engine/availrows.ts` NO_SANS) | MISSING — a SANS man is left out of the Available count on every date, so a date before his SANS date counts one fewer after his posting or tick (and one more after an untick). Only dates already past can be touched — a SANS date is never set in the future — and the SANS calendar's need for those past dates follows it. FILED: (g) | n/a | the SANS calendar's "still needed" | |
 | 18 | The pending list's words for a SANS change (`ui/pendlist.ts` 299–308, `state/changelines.ts` 569–577) | YES — unchanged: the line "SANS: no → yes" shows only on a published day whose own answer differs (row 2), its who and when from the Quals line or the posting's line, as before | n/a | | the "ON or AFTER his SANS date" test; walk 5 |
 | 19 | The publish note's sentence for an unanswered input (`leavewar/sync.ts oilUnansweredLine`) — D2314 | YES | n/a | the blank-desk sentence before it, the bid line after | `publishdoor.test.ts` (four); walk 6 |
-| 20 | Undo of a hand tick, of a posting (the people command's own before/after) | | | | |
+() => b
 
-**Rows by kind of change (the order's §6 list — to run when it is opened):** a changed quantity ("N free", the ALL AVAIL
+() => b a changed quantity ("N free", the ALL AVAIL
 count); one writer of a record (the SANS tick: Quals, the posting's two runs, its three take-backs — all through
 `sansStart` / `sansStop` / `sansErase`); every reader of a changed input or setting (this table); a storage writer (the
 person row — the people command); a new kind of record field (`sanFrom`, `sanWas`: `engine/schema.ts`, `docs/data-schema.md`).
@@ -128,7 +128,7 @@ Scenarios to walk, desktop 1536 and iPhone 402, a picture each (Astra's scenario
 
 | Case | Test | What it proves |
 |---|---|---|
-| each part of D2313, (e) (a) (b) (c) | `src/leavewar/sans-from-date.test.ts` (12) | 11 failed on `main`'s code; all pass on the build |
+() => b
 | the hand tick, the three earlier "as before" pins | `src/leavewar/fableoil-sans-crowd-kept.test.ts` | rewritten to D2313 — an intended change of expected behaviour, traced to the ruling |
 | the publish note's names | `src/leavewar/publishdoor.test.ts` (four new; three failed first, the three-people one held what stays) | |
 | a posted-out SANS man's OIL, SANS off the war | `src/leavewar/sans-postout-oil.test.ts` (3) | green on its first run — the tracker, Balances and the grid show it |

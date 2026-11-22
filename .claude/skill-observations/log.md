@@ -1223,3 +1223,25 @@ local database), but it could as well have been lost saved data.
 **Suggested improvement:** in the handoff skill's and the sheet's close: tally every walker's results file by
 pass / fail / note and name each failed line with its disposition; a report's "PASS" is never copied without that tally.
 **Principle:** A summary of a test run is not the run; count the raw results before repeating anyone's verdict.
+
+### Observation 1012: A rule that counts "from today" needs the walk's clock set — the running app's today is months past the demo week
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 140, the walk of SANS from its date (D2313); numbered past 1009–1011, which other branches hold
+**Skill:** the bug-check order's walk (`raptor-port/docs/walk-scripts.md` §1, §2)
+**Type:** open-source
+**Phase/Area:** before the walkers start — the host's own short walk, and the walkers' brief
+
+**Issue:** The change made a hand tick count "from the day it is made". The app's today in a walk is the PC's real date
+(22 Nov), months after the demo week every walk draws (13 Jul): a tick made in an unclocked browser would have left
+every demo day "before his date", and each scenario about "from today on" would have passed while proving nothing. The
+host's own short walk caught it only because the first draft of the brief was written against the unit tests' fixed
+today. The same short walk also found that the page the route starts on opens filtered (Quals on Pilots; the man was a
+WSO), which the source read had not shown.
+**Suggested improvement:** in `walk-scripts.md` §1, beside "the clock is set to a start time and left running": when a
+change reads today's date, the sizing lines say which today each scenario needs relative to the demo week, the brief
+gives the clock line and how to move it a day (`page.clock.fastForward`), and the host's short walk logs the app's own
+today before the first step.
+**Principle:** A date rule is only walked when the walk's "today" stands where the rule's boundary can be seen from both
+sides.
