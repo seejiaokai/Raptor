@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/msq-b1-screens-135 -->
+### CHAT 135 — batch 1's second half (its screens: steps 5–6 of the batch plan §3.6), his look first (D2188); written 22 Nov 26 as it goes — verify before use
+- **Branch** `claude/msq-b1-screens-135`, from `main` at the records merge (pull request 819, merged this chat on his "merge live", live on Vercel). NO upstream (push by `git push origin HEAD:refs/heads/claude/msq-b1-screens-135`).
+- **Why not batch 2:** chat 135 first told him batch 2 (detachments) was next; the plan's batch 1 steps 5–6 (Admin → Squadrons, the "142 ▾" Schedules menu, Admin → Users by squadron with View / Plan, Request access's squadron, the board's number, print names) are unbuilt and batch 2 needs them. Told him; his "yes second half first" (an order answer the plan already holds — no ruling). Skill note 1001 logged.
+- **Done:** the page for his look, `raptor-port/docs/mock/2026-11-22-msq-b1-screens/page.html` — the 17 Nov and 19 Nov approved pictures redrawn on today's app from copies of their scripts (`redraw-b1.mjs`, `redraw-pieces.mjs`; blue "Approved"), the new pieces pink: the Admin → Users filter row (D2270), "+ New squadron"'s row (number, place, first admin given Plan), the bell line for one's own account change (D2251), the time zone moved to a Places list (D2196), two sentences naming a Plan holder (D2241), 149's count 10. Questions 1–5 (P4's two among them). Served build for drawing: `npx vite preview --port 4601` from this checkout.
+- **Pick up here:** the fresh reader's check of the page (D2140) → fixes → publish as an Artifact → his answers recorded → the technical plan (batch plan §3.6 steps 5–6, the reshape plan §19's step-5 items P1–P4, PF1/O3, R2) → its red team (Astra and a fresh Opus reader) → build (Opus; the Admin → Users and Schedules-menu layouts by Fable, D2269) → FULL bug check with a security read (D1411).
+<!-- /now -->
+
 <!-- now:claude/lw-monthjump-click -->
 ### CHAT 112 — fix read 4's claim 5, the Leave War month landing (19 Nov 26, started by chat 111) — verify before use
 - **Branch** `claude/lw-monthjump-click`, cut from `claude/multi-sqn-b1-107` at `8b6054569`; no pull request into `main` (chat 111 brings it into pull request 806); never merged here.
