@@ -722,3 +722,34 @@ and ride along with the next real change or the merge; the merge itself earns on
   after upgrading. He spends no more than US$20 a month on it (D1794), so builds are kept inside that credit: the Basic machine, a US$1
   budget that only warns, and back to the free plan if it warns; the budget's
   "Pause Production Deployments" stays off, since it takes the live app down.
+
+## Lean working copies — helpers' copies leave out the walk pictures (his D2290, 22 Nov 26)
+
+`scripts/lean-copy.mjs` ([HELPER-COPIES-NO-PICTURES]): a copy of the project made for a helper, a reviewer or a side
+chat leaves out `raptor-port/docs/img/handpass/` — 7.8 GB of the project's 8.6 GB on 22 Nov 26 — by a git sparse
+checkout; a real copy measured 815 MB against 8.3 GB, and took the same two minutes to make. The main folder is never
+touched. It leaves out each walk folder the copy's commit holds, by name, so a new walk's folder is inside the copy
+and its pictures commit with no step; an old walk's folder is refused by `git add`, loudly, until `… lean-copy.mjs get
+<folder>` fetches it (seconds — the copy shares the main folder's store). A copy with picture changes of its own, or
+`RAPTOR_FULL_COPY=1`, is left whole; `… lean-copy.mjs full` puts every picture back. Tests: `node --test
+scripts/lean-copy.test.mjs` (the Docs guard runs them).
+- **The app makes its copies without git's checkout hook** (tested 22 Nov 26 in a throwaway project): a helper's
+  `isolation: "worktree"` copy never ran `post-checkout`. So the app's copies are slimmed by its own hooks in
+  `.claude/settings.json` — SubagentStart, acting only on the copy named `agent-<the helper's id>` (never the copy of
+  the chat that started it), and SessionStart on `startup` for a chat started in a copy of its own — each handing the
+  helper or chat a note on how to reach the pictures. The app's own clean-up of an unchanged helper's copy still works
+  (tested). The chat path was tested with `claude --worktree`; the desktop's own worktree sessions were not started
+  for the test — the git hook below is their second net. A `WorktreeCreate` hook was set aside: it replaces the app's copy-making, and the app then never removes a
+  helper's copy, so they would pile up again.
+- **Copies made by typing `git worktree add`, and Codex's,** are slimmed by git's `post-checkout` hook, which git runs
+  only for a NEW copy with the null commit as the old one. Git keeps hooks outside the project, so it is put in place
+  once per PC: `node raptor-port/scripts/lean-copy.mjs install` from the main folder (`uninstall` takes it out; it never
+  replaces another hook). The copy is still written whole first and slimmed after, so it briefly needs the full space.
+- **Reviewers' read-copies were already lean:** `docs/codex-guide.md` §Reading a commit that is not the branch head
+  exports without the pictures (19 Nov 26).
+- **The document check counted a left-out file as missing:** two rulings (D340, D1575) name a home inside the pictures
+  folder, so `npm run docsize` failed in every lean copy and passed in the main folder; it now counts a file git marks
+  as left out (`ls-files -t`, "S") as present.
+- **Git Bash rewrites a leading `/` in a sparse pattern into a Windows path** (`!/raptor-port/…` became
+  `!C:/Program Files/Git/raptor-port/…`, and the copy kept every picture). Run git by hand with `MSYS_NO_PATHCONV=1`;
+  the script calls git directly, so it is not exposed.

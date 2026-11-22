@@ -80,7 +80,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - The kit's own files, marked for use inside the service only, are not put into the public project — the agent's reading of keeping the project public, not checked with him [D1530].
 - Vercel is on Pro from 8 Nov 26; he spends no more than the plan, US$20 a month, its usage included: the Basic build machine, a US$1 budget that only warns (its pause off), the free plan again if it warns [D1794]; a notes-only push is to skip its build, [VERCEL-SKIP-NOTES] [D2032].
 - Two guards stand: a backgrounded npm command must move into `raptor-port` [D162]; the push-and-lock guard [D976].
-- Helpers' and reviewers' working copies leave out the walk pictures; none is deleted; a task that needs some fetches them, `[HELPER-COPIES-NO-PICTURES]` [D2290].
+- Helpers' and reviewers' working copies leave out the walk pictures; none is deleted; a task that needs some fetches them, `lean-copy.mjs get` [D2290].
 
 ## Showing him, asking him
 - Anything new a person will see — a box, a message, a mark, a button — is drawn as a mock-up and shown before it is built, even when it is only one part of a fault fix or copies a look the app already has; the check before any build of a fix asks "does this add something he will see?", and if so the mock-up comes first [D1625].
