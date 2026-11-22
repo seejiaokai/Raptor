@@ -18,7 +18,9 @@ const SIZES = {
   d: { name: 'desktop', eng: chromium, opts: { viewport: { width: 1536, height: 864 }, deviceScaleFactor: 2 } },
   p: { name: 'phone', eng: webkit, opts: { viewport: { width: 402, height: 874 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 } },
 }
-const W = { held: 'signs on Save or Later', sub: 'Before Ace signs CUR CK', foot: 'Later: nobody on it earns OIL.' }
+/* round 5 (his D2297: A chosen, "what does signs on save or later mean"): round 4's "signs on Save or Later" and
+   "Later: nobody on it earns OIL." reworded so each says what happens */
+const W = { held: 'waiting for your answer', sub: 'Before Ace signs CUR CK', foot: 'Later: Ace signs, but nobody on it earns OIL.' }
 const CSS = `
 .mkq { outline: 2px solid #ff2d95 !important; outline-offset: 2px !important; }
 .mkq-tag { position: fixed; z-index: 2147483647; background: #ff2d95; color: #fff; font: 700 10px/14px system-ui, 'Segoe UI', sans-serif;
