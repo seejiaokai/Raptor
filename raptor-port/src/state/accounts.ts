@@ -80,6 +80,7 @@ import { putNewHome, dropGrantsOfAccount, dropGrantRows, levelOfAccount, levelBe
 import { moveFrom, type UnitRows, type Grant, type GrantLevel } from './units-model'
 import type { LockBreach } from './lastadmin'
 import { noticeDay } from './notices'
+import { accessWas, tellAccess } from './acctlines'
 import { isUnitId, type UnitLevel, type LevelAccount } from './units-model'
 import { validIso } from './flyplan-model'
 
@@ -613,7 +614,9 @@ export function sessionFor(r: SignIn): any {
 function commitIntent(type: typeof ACCOUNT_TYPES[number], meta: any, fn: () => void): string | null {
   /* never the command layer's own words on screen — they name records, not people; a
      refusal raised inside (CmdRefused) keeps its own reason (roster-add.ts saidOf) */
-  return saidOf(commitSettingsIntent(type, meta, fn))
+  /* …and every account command tells each man whose access it changed, inside it (batch 1's second half §7 item 6 — his
+     D2251, D2309): his access before the writes against after, one body for the writer and the gate (state/acctlines.ts) */
+  return saidOf(commitSettingsIntent(type, meta, txn => { const was = accessWas(); fn(); tellAccess(txn, was) }))
 }
 /* a write stores EXACTLY the rows this command's list edit changed — the list before it against the list after (plan
    §2.2: never inferred from storage, so a stale client never removes what it has not read); the very first write on a

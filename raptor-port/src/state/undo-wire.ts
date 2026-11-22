@@ -48,7 +48,7 @@ import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
 import { parseVerId, dayIso } from '../engine/verid'
 import { lwStore, LW_COLLS, selectWar, focusDay, bumpLwHistEpoch, restoreBlocker } from '../leavewar/state/store'
-import { restoreAbsencesOf, warNoticesReversed, warDayRefusal } from '../leavewar/sync'
+import { restoreAbsencesOf, warNoticesReversed, acctNoticesReversed, warDayRefusal } from '../leavewar/sync'
 import { warCounts } from '../leavewar/absences'
 import { DATES, inputCoversDate, isSansAvail } from '../engine/inputs'
 import { UNIT_ROW_PREFIXES, GRANT_PFX, UNIT_PFX, UNITPLACE_PFX } from './units-model'
@@ -608,6 +608,8 @@ export function installGlobalUndo(): void {
       /* M4 9.3 (D1216): a Leave War line the member had read leaves "taken back"; a Redo after it, a fresh line — the step's
          own notices, as it made them (its forward images) */
       warNoticesReversed(entry.forward as any, dir)
+      /* …and a change of a man's own access he had read: the opposite line, or a Redo's fresh one (§16 D7′) */
+      acctNoticesReversed(entry.forward as any, dir)
     },
     reinstallLocks,
     resolvePublishDay,

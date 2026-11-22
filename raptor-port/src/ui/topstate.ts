@@ -17,7 +17,7 @@ import { oilPendingFor, openWarAt } from '../leavewar/sync'
 import { inpById } from '../engine/inputs'
 import { setOilAsk, setInpEdit, BELLLIST, setBellList, setOilList } from './pops'
 import { me } from '../state/perms'
-import { holidayLineOn, noticeSpan, isWarNotice, postOf, type Notice } from '../state/notices'
+import { holidayLineOn, noticeSpan, isWarNotice, postOf, isAcctNotice, type Notice } from '../state/notices'
 import { PEOPLE } from '../engine/people'
 import { unreadFor, markNoticeRead } from '../state/noticeseen'
 import { trackerUndoApi, onTrackerUndo, trackerUndoVersion } from '../tracker/undo-bridge.js'
@@ -100,6 +100,9 @@ export function openNotice(n: Notice): void {
     setOilList({ from: span.a, to: span.b, name: span.name != null ? span.name : n.name, fresh: false, unit: span.u })
     notify(); return
   }
+  /* HIS OWN ACCOUNT'S LINE (batch 1's second half §7 item 6 — his D2309: "a tap on it opens nothing"; nobody opens his
+     own row on Admin → Users): only read */
+  if (isAcctNotice(n)) { markNoticeRead(n.id); notify(); return }
   /* A POSTING'S LINE ([POSTOUT-RUN-NOTICE] — D1547, D1691): Admin → Users at his row, ringed, the Archived fold opened
      for an archived man (UsersPanel's ringPerson). A man with no row there — deleted by the posting, or since — opens
      nothing: the line is only read, and stays in the bell as the record (D1691) */

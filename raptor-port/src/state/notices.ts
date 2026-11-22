@@ -95,6 +95,18 @@ export type NoticePart =
      it — the line's own words struck through, then "taken back · Saber" (his idea, D1699). One he had not read simply went;
      the admin who pressed Undo gets none. `who`, `o`, `acct` — as the line it takes back; `day` its posting date. */
   | { k: 'poback'; who: string; o: PoOutcome; acct?: true }
+  /* HIS OWN ACCOUNT CHANGED (batch 1's second half, plan §7 item 6, §15 D5, D11, §16 D5′–D7′ — his D2251, D2309, D2319):
+     a line to the man himself, about no input (`iid` is ''), `name` his callsign, `day` the day it took effect. `c` what
+     changed; `u` the squadron it names (a role at home, a View or a Plan), `num` that squadron's number as it was written
+     (a line about "+ New squadron" still says 150 once the squadron is undone — D7′); `why` where the app itself did it,
+     with no one's name: `moved` (`mv` the squadron he moved to) or `archived`. One body says what a change owes, for the
+     writer and the gate alike (state/acctlines.ts accessParts); the line carries no squadron stamp of its own (D5), so
+     neither the bell's switch, the grey mark nor the rights rule touches it, and a move keeps it. */
+  | { k: 'acct'; c: AcctChange; u?: string; num?: string; why?: 'moved' | 'archived'; mv?: string }
+
+/** what changed on his account: made an admin of his squadron or a member, suspended or enabled, given or losing View or
+ *  Plan of another squadron, made or unmade a master admin */
+export type AcctChange = 'admin' | 'member' | 'off' | 'on' | 'view' | 'viewEnd' | 'plan' | 'planEnd' | 'master' | 'masterEnd'
 
 /** what a posting out did on its date, for the admins' bells ([POSTOUT-RUN-NOTICE]) */
 export type PoOutcome = 'overseas' | 'delete' | 'sans' | 'none'
@@ -124,6 +136,9 @@ export interface Notice {
    *  not the squadron the command acts in, and a line rewritten to another (state/perms.ts lineStampWrong,
    *  lineRewritten). A line stored before it was carried has none, and reads as its reader's home (lineUnit — D56). */
   u?: string
+  /** ON AN UNDO'S OPPOSITE LINE ABOUT HIS OWN ACCOUNT (batch 1's second half §16 D7′): the step's own line it answers, read
+   *  by a later Redo to know he had been told the opposite (state/acctlines.ts acctFollowUps) */
+  ref?: string
 }
 /** the squadron a line is of — its stamp; a line stored before the stamp (D56: demo data) its reader's home today */
 export const lineUnit = (n: Pick<Notice, 'u' | 'to'>): string | null => (typeof n.u === 'string' && n.u ? n.u : homeOn(String(n.to), todayIso()))
@@ -673,6 +688,8 @@ export function noticeAboutHim(n: Pick<Notice, 'to' | 'iid' | 'what' | 'fu'>): b
     return !Array.isArray(n.fu)
   }
   const p: any = (n.what || [])[0]
+  /* (his own account's line is about him — §15 D5) */
+  if (p && p.k === 'acct') return true
   /* (a line with no part says nothing about him — fix read 10, fault A (e), Fable F10-1: read as his, a made-up line with
      no parts followed a moved man to his new squadron) */
   if (!p) return false
@@ -946,6 +963,20 @@ export function noticePostingBack(to: string, by: string | null, who: string, o:
   noteWarMade(id)
   return true
 }
+/** A LINE ABOUT HIS OWN ACCOUNT (§7 item 6), pushed INSIDE the command that changed it (state/acctlines.ts tellAccess), or
+ *  by the app's own writer when a move takes effect (`id` fixed by the change, so a second load writes nothing). To the man
+ *  himself, archived or suspended among them — he reads it once he can sign in again (D2251); never a deleted man. */
+/* (`ref` — on an Undo's opposite line, the step's own line it answers: a later Redo finds it there, §16 D7′) */
+export function noticeAccount(to: string, by: string | null, part: Extract<NoticePart, { k: 'acct' }>, day: string, at: number = Date.now(), id?: string, ref?: string): string | null {
+  const x: any = PEOPLE[to]
+  if (!x || x.deleted || x.special) return null
+  const nid = id ?? mint(at)
+  if (NOTICES.some(n => n.id === nid)) return null
+  NOTICES.push({ id: nid, to, by, at, iid: '', name: x.cs ? String(x.cs) : to, day, what: [part], ...(ref ? { ref } : {}) })
+  return nid
+}
+/** is this one of his own account's lines (§7 item 6)? */
+export const isAcctNotice = (n: any): boolean => !!n && Array.isArray(n.what) && n.what.some((p: any) => p && p.k === 'acct')
 /** the posting a line is about, or null — the bell's tap asks it (ui/topstate.ts openNotice) */
 export function postOf(n: Pick<Notice, 'what'>): { who: string; o: PoOutcome; acct: boolean } | null {
   const p: any = (n.what || [])[0]
@@ -1064,7 +1095,28 @@ function partWords(p: NoticePart): string {
     /* a taken-back line's own words are "taken back"; what it took back is said struck through beside them (backWords) */
     case 'lwback': return 'taken back'
     case 'poback': return 'taken back'
+    case 'acct': return acctWords(p)
   }
+}
+/* HIS OWN ACCOUNT'S WORDS (his D2319 — docs/mock/2026-11-22-msq-b1-screens, pictures f3a, f3b): "Given Plan of 149: full
+   access to 149"; the app's own, with no one's name, "View of 149 ended: you moved to 150", "Plan of 149 ended: archived",
+   "Made a member: you moved to 149" */
+function acctWords(p: Extract<NoticePart, { k: 'acct' }>): string {
+  const n = p.num ?? ''
+  const why = p.why === 'moved' ? `: you moved to ${p.mv ?? ''}` : p.why === 'archived' ? ': archived' : ''
+  switch (p.c) {
+    case 'admin': return `Made an admin of ${n}`
+    case 'member': return 'Made a member' + why
+    case 'off': return 'Suspended'
+    case 'on': return 'Enabled'
+    case 'view': return `Given View of ${n}`
+    case 'viewEnd': return `View of ${n} ended` + why
+    case 'plan': return `Given Plan of ${n}: full access to ${n}`
+    case 'planEnd': return `Plan of ${n} ended` + why
+    case 'master': return 'Made a master admin'
+    case 'masterEnd': return 'Master admin taken off'
+  }
+  return ''
 }
 /* a bidding stretch said without its weekdays — "1 Apr – 30 Jun" (D1214's words) */
 function stretchWords(a: string, b: string): string {

@@ -236,7 +236,9 @@ function ingest(env: CommitEnvelope): void {
          from the repaint of whatever command came first on the posting's date, so its envelope chains to that command —
          and folded in, a Quals tick would carry an archive, a suspension and a war record, and vanish from Undo (D350)
          or, undone, bring a posted man back. It sets a barrier that names the app instead. */
-      if (env.type === 'lw.postoutRun') { outOfBand(env); break }
+      /* (…and so is the app's own line that a move has taken effect — batch 1's second half §16 D11: written beside the pass,
+         never part of the step of whoever's press woke it) */
+      if (env.type === 'lw.postoutRun' || env.type === 'account.told') { outOfBand(env); break }
       const root = resolveRoot(env)
       if (root != null) foldProjection(root, env)   // a tracked causal child
       else if (causedByRestoreOrSeed(env)) advanceExpectedNoBarrier(env)

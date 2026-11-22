@@ -14,6 +14,7 @@ import { store } from '../engine/hooks'
 import { newId } from '../engine/newid'
 import { isCommitting, type CommitResult } from '../command'
 import { commitSettingsIntent } from './people-settings-commit'
+import { accessWas, tellAccess } from './acctlines'
 import { setHomeResolver, needDay } from '../engine/roster'
 import { setSchedTickAt } from '../engine/publish'
 import { PEOPLE } from '../engine/people'
@@ -173,7 +174,9 @@ function put(k: string, v: unknown): void {
 }
 function save(type: string, meta: unknown, fn: () => string | void): UnitSave {
   let id: string | undefined
-  const r = said(commitSettingsIntent(type, meta, () => { const got = fn(); if (got) id = got; ROWS = null }))
+  /* (a right given, changed or taken — "+ New squadron"'s first admin among them — tells its man, inside: batch 1's second
+     half §7 item 6, state/acctlines.ts) */
+  const r = said(commitSettingsIntent(type, meta, txn => { const was = accessWas(); const got = fn(); if (got) id = got; ROWS = null; tellAccess(txn, was) }))
   ROWS = null
   return r.ok && id ? { ...r, id } : r
 }

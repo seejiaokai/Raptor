@@ -46,7 +46,9 @@ import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim, noticeLeftBell, filerTold, filerVia, foldedInto, joinFilerImgs, dayOfAt, changeFiler, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES } from './notices'
+import { noticeAboutHim, noticeLeftBell, filerTold, filerVia, foldedInto, joinFilerImgs, dayOfAt, changeFiler, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES, isAcctNotice } from './notices'
+import { accessIn, accessParts, movedParts, acctByApp, movedLineId, MOVES_TOLD_DAYS, type AcctPart } from './acctlines'
+import { addDays } from './flyplan-model'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 /* THE ROLES A SESSION HOLDS. The guest role is gone (his D2239, 20 Nov 26: the guest view is removed — a person who asked
@@ -670,7 +672,9 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'access.decline': op(T.accessreq, 'D'),
   'access.approve': op(T.accessreq, 'D', 'never', [[T.user, 'C']]),
   'account.add': op(T.user, 'C', 'never', [[T.accessreq, 'D']]),
-  'account.update': op(T.user, 'U', 'never', [[T.accessreq, 'D']]),
+  /* (…and every door that changes a man's access tells him, a Notice created in the same command — batch 1's second half
+     §7 item 6, his D2251, state/acctlines.ts; the gate's acctLineViolation judges each line) */
+  'account.update': op(T.user, 'U', 'never', [[T.accessreq, 'D'], [T.notice, 'C']]),
   /* (`guestview.set`, the guest switch's command, went with the guest view — D2239: no row, so the gate refuses it) */
   /* a new person ([ACCOUNTS-NEW-PERSON], D214, D217) — made only on Admin → Users: alone (a
      blank sign-in), with his account, or by approving his sign-up; and the admins' bell's
@@ -699,12 +703,12 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   /* he's back — Restore (Admin → Users, D310), Restore under another callsign (D284, D286, D295): the person restored (and
      renamed), his sign-in enabled, a new stint opened; never a member's own-row write. (Undo post out on the posting's own
      archive runs the same body as the POSTING command, `lw.postout` below — [DRAFT-PENDING], Astra's read of the fixes, 02) */
-  'person.restore': op(T.person, 'U', 'never', [[T.user, 'U'], [T.profile, 'U']]),
+  'person.restore': op(T.person, 'U', 'never', [[T.user, 'U'], [T.profile, 'U'], [T.notice, 'C']]),
   /* [ONE-DOOR] (D309, D310, D323): Archive on Admin → Users — the person archived, his account suspended, his war stint
      closed (leavewar/sync.ts archivePerson); the man's own "welcome back" seen — his OWN row only (D305) */
   /* (…and every View and Plan his sign-in holds dropped in the same command — his D2311; so too an Overseas Sqn posting,
      run at once or by the pass, below) */
-  'person.archive': op(T.person, 'U', 'never', [[T.user, 'U'], [T.profile, 'U'], [T.grant, 'D']]),
+  'person.archive': op(T.person, 'U', 'never', [[T.user, 'U'], [T.profile, 'U'], [T.grant, 'D'], [T.notice, 'C']]),
   'person.backSeen': op(T.person, 'U', 'required'),
   /* a posting written with a take-back of what the posting made (its archive, its suspension, its SANS tick) — and its
      Undo, before or after it ran (leavewar/sync.ts takeBack, and restoreBody's undo mode on the posting's own archive) */
@@ -721,18 +725,21 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
 Object.assign(COMMAND_OPS, {
   /* (…with a new place made in the same command — "+ New place…" inside the form, one Undo step: batch 1's second half
      §6 items 2 and 4, R-O8b) */
-  'unit.add': op(T.unit, 'C', 'never', [[T.unitplace, 'C'], [T.grant, 'C'], [T.place, 'C']]),
+  'unit.add': op(T.unit, 'C', 'never', [[T.unitplace, 'C'], [T.grant, 'C'], [T.place, 'C'], [T.notice, 'C']]),
   'unit.place': op(T.unitplace, 'C', 'never', [[T.place, 'C']]),
   'place.set': op(T.place, 'U', 'never', [[T.place, 'C']]),
-  'grant.set': op(T.grant, 'U', 'never', [[T.grant, 'C']]),
-  'grant.remove': op(T.grant, 'D'),
+  'grant.set': op(T.grant, 'U', 'never', [[T.grant, 'C'], [T.notice, 'C']]),
+  'grant.remove': op(T.grant, 'D', 'never', [[T.notice, 'C']]),
   /* (a move drops every right the man held in another squadron — his D2203 — inside the same command) */
   'home.set': op(T.home, 'U', 'never', [[T.home, 'C'], [T.grant, 'D']]),
-  'account.master': op(T.user, 'U'),
+  'account.master': op(T.user, 'U', 'never', [[T.notice, 'C']]),
   /* Admin → Users' one Save (batch 1's second half, plan §4 item 5 — accounts.ts saveAccess): the account row (role, master
      mark) and the rights of that account in other squadrons, given, changed or taken — and, made a master admin, every
      right he held dropped (R-O10). Which squadron's admin may write each row is unitRowViolation's, as for grant.set */
-  'account.access': op(T.user, 'U', 'never', [[T.grant, 'C'], [T.grant, 'U'], [T.grant, 'D']]),
+  'account.access': op(T.user, 'U', 'never', [[T.grant, 'C'], [T.grant, 'U'], [T.grant, 'D'], [T.notice, 'C']]),
+  /* the app's own line that a move has taken effect (batch 1's second half §15 D11, §16 D11′ — leavewar/sync.ts
+     runMoveLines): the system actor, a Notice created, nothing else (acctLineViolation's own section) */
+  'account.told': op(T.notice, 'C'),
 } satisfies Record<string, CommandOp>)
 for (const k of SETTINGS_KEYS_ALL) COMMAND_OPS[`settings.${k}`] = op(T.setting, 'U')
 /* COMMANDS ONLY AN ADMIN RUNS, though the table they write grants a member the same letter for his own change: the war's
@@ -1365,7 +1372,8 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
   const deletes = [...posted.values()].includes('delete')
   const inputsChanged = new Set(env.changes.filter(c => c.collection === 'inputs').map(c => String(c.id)))
   for (const c of env.changes) {
-    if (c.collection !== 'notices') continue
+    /* (his own account's line — judged whole by acctLineViolation, asked before this) */
+    if (c.collection !== 'notices' || acctChange(c)) continue
     const n: any = c.op === 'delete' ? null : c.after
     if (c.before != null || !n || n.by != null || !Array.isArray(n.what) || !n.what.length) return refuse(c)
     const parts: any[] = n.what
@@ -3238,6 +3246,8 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
   for (const c of env.changes) {
     const where = `${c.collection}/${c.id}`
     if (c.collection === 'notices') {
+      /* (his own account's line — judged whole, first, by acctLineViolation: §16 D6′) */
+      if (acctChange(c)) continue
       /* (fault M: no line already written is rewritten — before every door below) */
       if (c.op === 'put') {
         if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
@@ -3581,6 +3591,70 @@ function bellSqnRowViolation(env: CommitEnvelope): string | null {
   }
   return null
 }
+/* HIS OWN ACCOUNT'S LINES (batch 1's second half, plan §7 item 6, §15 D5, D7, D11, §16 D6′, D7′, D11′ — his D2251, D2309,
+   D2319): a line of the `acct` kind reaches only the man whose access the command changed, in words matching the change
+   exactly — part for part what state/acctlines.ts accessParts owes over this command's own rows before and after (the
+   one body the doors' writer asks), each owed part once; signed by the actor, or by no one where the app did it
+   (acctByApp — an archive's ended right, an Overseas posting's suspension); dated today, now; about no input, with no
+   squadron stamp or filer's mark. An Undo or Redo is judged the same over the rows it restores (§16 D7′): the step's
+   own line taken away or put back by its verified replay, and its opposite line — or a Redo's fresh one — owed by the
+   restore's own change. The app's own writer (`account.told`, the system actor) has a section of its own (D11, D11′):
+   a move's line, its fixed id, on the day his squadron changed, for a right held the day before and not that day. A
+   line refused here never reaches the checks below; one passed here is skipped by them (ownsLine, "a bell line about
+   nothing the command changed", the posting pass's own). Asked first, as §16 D6′ places it. */
+export const acctChange = (c: Change): boolean =>
+  c.collection === 'notices' && (isAcctNotice(c.before) || (c.op !== 'delete' && isAcctNotice(c.after)))
+function acctLineViolation(env: CommitEnvelope): string | null {
+  const ch = env.changes.filter(acctChange)
+  if (!ch.length) return null
+  const a = env.actor
+  const today = todayIso(), now = Date.now()
+  let replayed: ((c: Change) => boolean) | null | undefined
+  const shape = (n: any): boolean => !lineMalformed(n) && n.what.length === 1 && n.what[0].k === 'acct' && n.iid === ''
+    && n.u === undefined && n.fu === undefined && typeof n.to === 'string' && Number.isFinite(n.at) && Math.abs(n.at - now) <= AT_SLACK_MS
+    && String(n.name) === String((PEOPLE as any)[String(n.to)]?.cs ?? n.to)
+  if (env.type === 'account.told') {
+    if (!a || a.role !== 'system' || env.changes.some(c => !acctChange(c))) return 'an account line the app did not owe (account.told)'
+    const rows = unitRowsAfter(env.changes)
+    for (const c of ch) {
+      const n: any = c.op === 'delete' ? null : c.after
+      const where = `${c.collection}/${c.id}`
+      if (c.before != null || !n || !shape(n) || n.by != null || String(n.id) !== String(c.id)) return `an account line the app did not owe (${where})`
+      const p: AcctPart = n.what[0], d = String(n.day)
+      const acct = ACCOUNTS_LIST.find(x => String(x.pid) === String(n.to))
+      if (!acct || p.why !== 'moved' || !(d <= today && d > addDays(today, -MOVES_TOLD_DAYS)) || movedLineId(acct.id, d, p) !== String(n.id)
+        || !homeChangesBefore(String(n.to), addDays(d, -1), d, rows).includes(d)
+        || !movedParts(accessIn(acct, rows, addDays(d, -1)), accessIn(acct, rows, d)).some(x => deepEqual(x, p))) return `an account line the app did not owe (${where})`
+    }
+    return null
+  }
+  const self = a?.personId == null ? null : String(a.personId)
+  /* what this command's own change owes each man, part by part — each once */
+  const w = buildWorlds(env)
+  const owed = new Map<string, Array<{ p: AcctPart; app: boolean } | null>>()
+  for (const id of new Set([...w.acctB.map(x => x.id), ...w.acctA.map(x => x.id)])) {
+    const b = w.acctB.find(x => x.id === id), f = w.acctA.find(x => x.id === id)
+    if (!b || !f) continue
+    const pid = String(f.pid)
+    const why = w.personB(pid)?.archived !== true && w.personA(pid)?.archived === true ? 'archived' as const : undefined
+    const parts = accessParts(accessIn(b, w.rowsB, today), accessIn(f, w.rowsA, today), why)
+    if (parts.length) owed.set(pid, [...(owed.get(pid) ?? []), ...parts.map(p => ({ p, app: acctByApp(p, f) }))])
+  }
+  for (const c of ch) {
+    const where = `${c.collection}/${c.id}`
+    if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
+    /* (the step's own line, taken away by its Undo or put back by its Redo, image for image) */
+    if (replayed && replayed(c)) continue
+    const n: any = c.op === 'delete' ? null : c.after
+    if (c.before != null || !n) return `an account line no change of his access owes (${where})`
+    if (!shape(n) || String(n.day) !== today) return `a bell line not as the pass writes it (${where})`
+    const list = owed.get(String(n.to)) ?? []
+    const i = list.findIndex(x => !!x && deepEqual(x.p, n.what[0]) && (n.by ?? null) === (x.app ? null : self))
+    if (i < 0) return `an account line no change of his access owes (${where})`
+    list[i] = null
+  }
+  return null
+}
 function ownershipChecks(env: CommitEnvelope): string | null {
   const a = env.actor
   const asNew = writtenAsNewViolation(env)
@@ -3623,6 +3697,10 @@ function ownershipChecks(env: CommitEnvelope): string | null {
      against on / off (state/bellsqn.ts) */
   const bellBad = bellSqnRowViolation(env)
   if (bellBad) return bellBad
+  /* HIS OWN ACCOUNT'S LINES (§16 D6′): before ownsLine and "a bell line about nothing" (adminOwnerViolation), after every
+     check of the rows themselves, so a command refused for its own change keeps that refusal's words */
+  const acctBad = acctLineViolation(env)
+  if (acctBad) return acctBad
   /* 7e. an admin's bell lines and read records only for his own squadron's people (below) */
   const ownerBad = adminOwnerViolation(env)
   if (ownerBad) return ownerBad
@@ -3675,8 +3753,10 @@ function ownershipChecks(env: CommitEnvelope): string | null {
          to someone else; his own Undo of that change takes away the notices it made (a Redo puts them back the same
          way). Nobody rewrites a notice, and nobody removes another person's. */
       case 'notices': {
+        /* (his own account's line — judged whole by acctLineViolation, before this section) */
+        if (acctChange(c)) break
         const b: any = c.before, n: any = c.after
-        const rides = (iid: any) => env.changes.some(x => x.collection === 'inputs' && x.id === String(iid))
+        const rides =(iid: any) => env.changes.some(x => x.collection === 'inputs' && x.id === String(iid))
         /* A LEAVE WAR LINE IS NEVER A MEMBER'S (M4; the security read's finding 4): "Your leave · LL refused", bidding
            opened or closed, "… taken back" are written only by an admin's war command (state/notices.ts noticeWar, the
            `lw.notice` follow-up) — a member's notice riding his own input may carry none of them */

@@ -290,8 +290,10 @@ function commitPeople(type: string, fn: (txn: any) => void, meta?: any): CommitR
    `fn` writes through store.set, which writes raw while a command is running. `meta`
    carries what the gate reads (perms.ts cmdAuthorize: meta.owner for a pending
    person's own request). */
-export function commitSettingsIntent(type: string, meta: any, fn: () => void): CommitResult {
-  const cmd: Command = { type, scope: settingsScope(), meta, apply: (txn) => { txn.enlist(settingsStore); fn() } }
+/* (`fn` is handed the transaction, as commitPeopleIntent's is: a step that owes a bell line enlists the bell in the same
+   command — state/acctlines.ts tellAccess) */
+export function commitSettingsIntent(type: string, meta: any, fn: (txn: any) => void): CommitResult {
+  const cmd: Command = { type, scope: settingsScope(), meta, apply: (txn) => { txn.enlist(settingsStore); fn(txn) } }
   return commit(cmd)
 }
 /* [ACCOUNTS-NEW-PERSON] (D214, D217) — a NAMED people intent (`person.add`: Person C, never

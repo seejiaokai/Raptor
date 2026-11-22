@@ -447,6 +447,9 @@ export const schedStore: EnlistableStore = {
   signature: () => histSnap(),                        // LIVE — keeps the whole-world guard (SR-005)
   write: schedWriteRecords,
 }
+/* (a bell line owed by another store's command — engine/hooks.ts bellEnlist, state/acctlines.ts) */
+HOOKS.bellEnlist = (txn: any) => { if (!isEnlisted(schedStore.key)) { resyncBeforeEnlist(); txn.enlist(schedStore) } }
+HOOKS.bellEnd = () => applyEnd()
 
 /* the ONE shared apply-end: mint the ids histPush would mint in phase 8 (but it
    is LATCHED until then, AFTER the baseline would advance — SR-006), then advance

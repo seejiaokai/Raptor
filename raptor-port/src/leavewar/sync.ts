@@ -167,12 +167,13 @@ import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused, isInReducer, isCommitting as cmdIsCommitting, activeEnvelope, isQueued, isOk, type CommitResult, type Txn } from '../command'
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
 import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, masterChangeProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount, adminLineAudience, endRightsOfArchived } from '../state/accounts'
+import { accessWas, tellAccess, writeMoveLines, acctFollowUps } from '../state/acctlines'
 import { markBack, clearBack, CURPAGE, setPage } from '../state/view'
 import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncBeforeEnlist, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
+import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, noticeAccount, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
 import { hasRead, forgetRead } from '../state/noticeseen'
@@ -1992,6 +1993,18 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
   commitInputs('lw.notice', () => { for (const f of made) wrote += noticeWar([f.to], by != null ? String(by) : null, f.what[0]) })
   return wrote
 }
+/* …AND HIS OWN ACCOUNT'S LINES (batch 1's second half §16 D7′): the opposite line to a man who had read the line the Undo
+   took away, a fresh one where a Redo follows an opposite line he read — written inside the restore, as the war's are
+   (its envelope; the gate proves each over the restore's own rows, state/perms.ts acctLineViolation), by whoever pressed
+   it; no separate step, so nothing new enters the Undo list (state/acctlines.ts acctFollowUps) */
+export function acctNoticesReversed(changes: ReadonlyArray<{ collection: string; id: string; op: string; before?: unknown; after?: unknown }>, dir: 'undo' | 'redo'): number {
+  const made = acctFollowUps(changes, dir, hasRead)
+  if (!made.length) return 0
+  const by = me(), at = Date.now(), day = todayIso()
+  let wrote = 0
+  commitInputs('lw.notice', () => { for (const f of made) if (noticeAccount(f.to, by != null ? String(by) : null, f.part, day, at, undefined, f.ref)) wrote++ })
+  return wrote
+}
 
 /* WHO AN ALL / ALL AVAIL PUCK STANDS FOR ([ALL-AVAIL-REDEF], owner 21 Sep 26 —
    "ALL Avail and ALL pucks should not consist of ground crew by default. only
@@ -2890,7 +2903,22 @@ export function postingRunsBy(poDate: string): boolean { return poDate <= effect
    whole pass only, never one posting's retry — every other squadron's, from its stored war (runForeignPostings, below) */
 export function runPoOutcomes(only?: string): void {
   runLoadedPostings(only)
-  if (only === undefined) runForeignPostings()
+  if (only === undefined) { runForeignPostings(); runMoveLines() }
+}
+/* A MOVE TELLS HIM ON ITS DAY (batch 1's second half, plan §7 item 6, §15 D11, §16 D11′): a move saved today ends his
+   rights from tomorrow, so the line is written when it takes effect — by the app itself, with no one's name, at the first
+   load on or after that day and at the midnight wake (both run this pass), each line its fixed id (a second load writes
+   nothing; a move cancelled first owes nothing). A command of its own, out of band — never inside another, never part of
+   anyone's Undo step (undo/timeline.ts). Refused, it is not tried again that day. */
+let MV_REFUSED_DAY = ''
+function runMoveLines(): void {
+  if (SYNCING) return
+  if (isInReducer() || cmdIsCommitting()) { if (isInReducer()) cmdDeferEffect(() => runMoveLines()); return }
+  const today = todayIso()
+  if (MV_REFUSED_DAY === today) return
+  let res: CommitResult | undefined
+  writeMoveLines((type, apply) => (res = cmdCommitProjection({ type, scope: { module: 'inputs' }, apply })))
+  if (res && !isQueued(res) && !isOk(res)) MV_REFUSED_DAY = today
 }
 /* A POSTING WHOSE MAN IS NOT AT HOME IN ITS SQUADRON TODAY IS SKIPPED BY BOTH PASSES (§6.2 A5, step 2): the gate would
    refuse it (perms.ts postingPassViolation: his home before the pass must be the war's); skipped, it is neither run, nor
@@ -2964,6 +2992,7 @@ function runLoadedPostings(only?: string): void {
           /* the scheduler store too, every time: the admins' bell lines are its records ([POSTOUT-RUN-NOTICE], below) — and a
              delete's days (no saved week is written for a delete — [DB-READINESS] group A, phase 6 (d)) */
           txn.enlist(schedStore)
+          const accessBefore = accessWas()
           const told: Array<[string, string]> = []
           /* each posting that RAN, for the admins' bells: a held one changed nothing and tells nothing new (D306's note
              already speaks); `acct` — an archived man held a sign-in, read before it is suspended */
@@ -3012,6 +3041,9 @@ function runLoadedPostings(only?: string): void {
             ;[...ran].sort((a, b) => (a.poDate < b.poDate ? 1 : a.poDate > b.poDate ? -1 : 0) || (rank[a.outcome] ?? 3) - (rank[b.outcome] ?? 3) || cs(a.id).localeCompare(cs(b.id)))
               .forEach((r, i) => noticePosting(to.filter(t => t !== r.id), r.id, r.outcome, r.poDate, r.acct, now - i, worldUnit()))
           }
+          /* (an Overseas posting tells the man himself: "Suspended", and each right it ended "…: archived" — no one's name,
+             read once he is restored; §7 item 6, state/acctlines.ts) */
+          tellAccess(txn, accessBefore)
           validate()
           finishPeopleWrite()
           /* the schedule's own save step — the bell's lines; for a delete the loaded week filed too (person-delete.ts deletePerson) */
@@ -3152,6 +3184,7 @@ function runForeignPosting(d: FxDue): void {
         revertUnsavedPeople()                     // the roster as saved: nothing but this posting rides in (the loaded pass's rule)
         resyncBeforeEnlist()
         txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(schedStore); txn.enlist(fw)
+        const accessBefore = accessWas()
         /* asked again as the command runs: still due, still his squadron's, not held */
         const now = poDueOf(d.id, fw.post(d.id), effectiveToday())
         const body = rosterBody(d.id)
@@ -3181,6 +3214,8 @@ function runForeignPosting(d: FxDue): void {
           if (after) fw.setPost(d.id, { ...after, poDone: now.poDate })
           noticePosting(postingAdmins(d.unit).filter(t => t !== d.id), d.id, now.outcome as PoOutcome, now.poDate, acct, Date.now(), d.unit)
           if (now.outcome === 'delete') cmdDeferEffect(() => { HOOKS.reflow(); HOOKS.histPush() })
+          /* (the man himself told, as the loaded pass tells him — §7 item 6) */
+          tellAccess(txn, accessBefore)
         }
         validate()
         finishPeopleWrite()
@@ -3395,6 +3430,8 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
       const lines = postIn === undefined ? postingLinesOf(id) : []
       if (lines.length) { resyncBeforeEnlist(); txn.enlist(schedStore) }
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(fw ?? lwStore)
+      /* (his sign-in enabled again tells him — batch 1's second half §7 item 6, state/acctlines.ts) */
+      const was = accessWas()
       if (rename != null && !renameCallsign(id, rename)) { ok = false; return }
       if (postIn === undefined) setPostOut(id, null)
       body.archived = false
@@ -3418,6 +3455,7 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
         body.back = true
       }
       if (lines.length) forget = retractPostingLines(lines)
+      tellAccess(txn, was)
       validate()
       finishPeopleWrite()
       if (lines.length) schedApplyEnd()
@@ -3637,6 +3675,8 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
     type: 'person.archive', scope: { module: 'people' }, meta: null,
     apply: (txn: Txn) => {
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(fw ?? lwStore)
+      /* (his sign-in suspended and his rights ended tell him, read once he is restored — §7 item 6, state/acctlines.ts) */
+      const was = accessWas()
       if (suspendForArchive(id) === 'lock') throw new CmdRefused(archiveLockWords(id, body.cs) ?? `${body.cs} is the last admin who can sign in — he can't be archived until another admin can`)
       /* his View and Plan of other squadrons end with the archive, in this command — Restore does not put them back (his
          D2311); even where his sign-in was suspended by hand before */
@@ -3655,6 +3695,7 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
           replaced = done.replaced
         }
       } else replaced = closeStintOnArchive(id, today, keepHidden).replaced
+      tellAccess(txn, was)
       validate()
       finishPeopleWrite()
     },
@@ -3835,12 +3876,15 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
          notes there): only this command's own lines are its change */
       if (lines.length) { resyncBeforeEnlist(); txn.enlist(schedStore) }
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
+      /* (a posting run at once, or taken back, tells him what it did to his sign-in — §7 item 6, state/acctlines.ts) */
+      const was = accessWas()
       ok = write()
       if (!ok || !body) return
       if (!keep.archive && body.archived && body.archivedBy === 'po') { body.archived = false; delete body.archivedBy; delete body.archivedOn }
       if (!keep.suspend) enableAfterPosting(id)
       if (!keep.sans && body.sanBy === 'po') { body.san = false; if (body.quals) body.quals.san = false; delete body.sanBy }
       if (lines.length) forget = retractPostingLines(lines)
+      tellAccess(txn, was)
       validate()
       finishPeopleWrite()
       if (lines.length) schedApplyEnd()
