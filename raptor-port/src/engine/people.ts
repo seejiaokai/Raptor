@@ -258,6 +258,13 @@ export function sansStop(p:any,day:string):void{
 /* THE SANS HE HOLDS NOW NEVER WAS — a posting taken back takes its SANS days with it (leavewar/sync.ts takeBack: "Undo
    post out", a posting moved to a later date or given another outcome). Earlier stretches, ended by hand, stay. */
 export function sansErase(p:any):void{ p.san=false; delete p.sanFrom; sansQ(p); }
+/* WHO IS SANS AND FROM WHEN, AS ONE STRING — for a drawing kept by a key (the next-week preview, ui/peek.ts peekKey): a
+   tick put on or taken off, a posting run or taken back, changes it, so a preview already drawn is drawn again. Only the
+   men who are or were SANS are in it. */
+export function sansSig():string{
+  let s='';
+  for(const id in PEOPLE){ const p=PEOPLE[id]; if(p&&(p.san||p.sanWas))s+=id+(p.san?'+':'-')+(p.sanFrom||'')+(p.sanWas?JSON.stringify(p.sanWas):'')+';'; }
+  return s;}
 /* Proficiency status for a SANS member. Deliberately unwired: the rule is
    recorded and regression-tested so the highlighting can be switched on when
    the squadron asks for it, but nothing calls it yet. Not dead code — parked. */

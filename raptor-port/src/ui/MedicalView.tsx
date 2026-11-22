@@ -34,6 +34,7 @@ import { useMedia } from './usemedia'
 import { bringRowOnScreen } from './onscreen'
 import { useVersion } from './useStore'
 import { puck } from './html'
+import { withDrawDay } from '../engine/faceattrs'
 import { fmtDay, unfmt, newInputSeed } from './inputedit'
 import { monthCells } from './inputscal-model'
 import { rangeWords } from './InputsPage'
@@ -94,7 +95,7 @@ function remarkNote(remark: any): string {
    and "upchitted" (its section says Upchit, D961). ITS DOCUMENTS, IN EVERY SECTION (owner D966, D967 — "Both as
    recommended"): from two on file, one page drawing and the number ("▯ 2") after the period; one shows none — a downchit
    always carries one, so it would say nothing. The "N documents" pill went. */
-function Card({ e, line, up, docs, kind = true, lit, onOpen }: { e: any, line: string, up?: boolean, docs?: number, kind?: boolean, lit?: boolean, onOpen: (row: any, up?: boolean) => void }) {
+function Card({ e, line, up, docs, kind = true, lit, on, onOpen }: { e: any, line: string, up?: boolean, docs?: number, kind?: boolean, lit?: boolean, on?: string, onOpen: (row: any, up?: boolean) => void }) {
   const r = e.row
   /* (whose it is: a medical entry and an upchit are ONE person's — engine/inputs.ts shapeProblem, D655 reading 4 — so
      the puck is the first of the record's people, leadOf: a record stored before the one-rule build answers with its
@@ -108,7 +109,9 @@ function Card({ e, line, up, docs, kind = true, lit, onOpen }: { e: any, line: s
       title={n > 1 ? `Tap to view ${n} documents` : 'Tap to view the document'}
       onClick={() => onOpen(r, up)}>
       <span className="medcard-top">
-        <span className="seat" dangerouslySetInnerHTML={{ __html: puck(leadOf(r), 0, true, '') }} />
+        {/* his puck as he was on the page's "as of" date — the SANS line from his SANS date, not today's tick (D2313;
+            Astra's scenario design of 22 Nov 26, candidate A) */}
+        <span className="seat" dangerouslySetInnerHTML={{ __html: withDrawDay(on, () => puck(leadOf(r), 0, true, '')) }} />
       </span>
       <span className="medcard-row2">
         {kind ? <span className="medcard-type">{inpType(r.type)}</span> : null}
@@ -304,7 +307,7 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
           <div className="medsec-h">Medically Down<span className="medsec-n">{down.length}</span></div>
           {down.length
             ? <div className="medcards">{down.map((e: any, i: number) =>
-              <Card key={(e.row.iid || '') + i + litKey(e)} e={e} lit={!!litKey(e)} onOpen={open} docs={episodeDocN(e.row)}
+              <Card key={(e.row.iid || '') + i + litKey(e)} e={e} on={asOf}lit={!!litKey(e)} onOpen={open} docs={episodeDocN(e.row)}
                 line={spanOf(e.row)} />)}</div>
             : <div className="med-empty">Nobody is medically down on this date.</div>}
         </section>
@@ -314,7 +317,7 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
           <div className="medsec-h">Pending Upchit<span className="medsec-n">{pend.length}</span></div>
           {pend.length
             ? <div className="medcards">{pend.map((e: any, i: number) =>
-              <Card key={(e.row.iid || '') + i + litKey(e)} e={e} lit={!!litKey(e)} up onOpen={open} docs={episodeDocN(e.row)}
+              <Card key={(e.row.iid || '') + i + litKey(e)} e={e} on={asOf}lit={!!litKey(e)} up onOpen={open} docs={episodeDocN(e.row)}
                 line={spanOf(e.row)} />)}</div>
             : <div className="med-empty">Nobody is owing an upchit.</div>}
         </section>
@@ -323,7 +326,7 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
             <span className="medsec-sub">the past 30 days, newest first</span></div>
           {done.length
             ? <div className="medcards">{done.map((e: any, i: number) =>
-              <Card key={(e.row.iid || '') + i + litKey(e)} e={e} lit={!!litKey(e)} onOpen={open} docs={episodeDocN(e.row)} kind={false}
+              <Card key={(e.row.iid || '') + i + litKey(e)} e={e} on={asOf}lit={!!litKey(e)} onOpen={open} docs={episodeDocN(e.row)} kind={false}
                 line={lblDay(e.row.date, e.row.yr)} />)}</div>
             : <div className="med-empty">No upchits in the past 30 days.</div>}
         </section>

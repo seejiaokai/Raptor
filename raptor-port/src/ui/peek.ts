@@ -28,14 +28,14 @@
    trailing children of the same `.week` container their own live-day diff
    loop never touches, so a one-day edit still rewrites only that day's node. */
 import { rowPeopleDrawn, inputRowSeveral } from '../engine/grouprows'
-import { PEOPLE, whoId, QCHIP, QCLASS, sansOnP } from '../engine/people'
+import { PEOPLE, whoId, QCHIP, QCLASS, sansSig } from '../engine/people'
 import { dayIso } from '../engine/verid'
 import { noteText } from '../engine/note'
 import { isStandalone, saFlies, saAnyFlies, mColor, dayCount, CURWEEK } from '../engine/waves'
 import { groundOrder } from '../engine/order'
 import { whoArr } from '../engine/slots'
 import { minus, parseHM } from '../engine/time'
-import { ruleFor } from '../engine/faceattrs'
+import { ruleFor, withFaceAttrs, withDrawDay, faceKeptOn, personShown } from '../engine/faceattrs'
 import { VCONF } from '../engine/rules'
 import { weekBundle } from '../engine/weeks-data'
 import { stashDays, stashGenOf } from '../engine/weekstash'
@@ -57,11 +57,13 @@ const loadedSrcSig = () => DAYS.map((d: any) => ((d && d.ground) || []).map((g: 
    wears for WARN/selection (no tabindex, no data-person, no ring/chip/trace
    classes — a peek day is never validated, so there is nothing to ring). */
 function peekPuck(id: any): string {
-  const p = PEOPLE[id]; if (!p) return ''
+  if (!PEOPLE[id]) return ''
+  /* (the man as the day drawn shows him — a published day's own record of him, else SANS by the day's own date: D186,
+     D2313, faceattrs.ts personShown inside peekDayHTML's two scopes; outside a preview draw, today's record) */
+  const p = personShown(id)
   if (p.special) return `<span class="puck allavail sm"><span class="nm">${esc(p.cs)}</span></span>`
   const cls = ['puck', 'sm']; if (p.seat === 'RCP') cls.push('r'); if (p.pers) cls.push('pers')
-  /* (SANS on the previewed day itself — D2313, engine/people.ts sansOn; outside a preview draw, today's tick) */
-  if (sansOnP(p, PEEK_WK != null ? dayIso(String(PEEK_WK), PEEK_DI) : null)) cls.push('san')
+  if (p.san) cls.push('san')
   const chipTxt = QCHIP[p.q], chipCls = QCLASS[p.q]
   const qchip = p.q ? `<span class="role ${chipCls}">${chipTxt}</span>` : ''
   return `<span class="${cls.join(' ')}" title="${esc(p.cs)}"><span class="nm">${esc(p.cs)}</span>${qchip}</span>`
@@ -260,7 +262,15 @@ function peekGround(d: any): string {
 /* PEEK_D: the day being drawn — a published day's copy carries the brief lead it went out with (faceattrs.ts
    keepRulesOn, D1991), so a blank B prints as its face printed it, not at today's setting (the bug check of 12 Nov 26) */
 let PEEK_WK: any = null, PEEK_DI = 0, PEEK_HID: Set<string> = new Set(), PEEK_D: any = null
+/* EACH MAN AS HE IS ON THE DAY DRAWN (D2313, D186): a published day View-only Sched previews carries who each man was on
+   that version (faceattrs.ts keepFaceOn, from weekctx.ts issuedDayIn) — his puck is drawn from that; any other day draws
+   him as he is on the day's own date (SANS from his SANS date). A day drawn about no week (a test's bare call) reads
+   today's record, as before. */
 export function peekDayHTML(d: any, i: number, first: boolean): string {
+  const iso = PEEK_WK != null ? dayIso(String(PEEK_WK), i) : null
+  return withFaceAttrs({ pa: faceKeptOn(d) }, () => withDrawDay(iso, () => peekDayBody(d, i, first)))
+}
+function peekDayBody(d: any, i: number, first: boolean): string {
   PEEK_DI = i; PEEK_D = d; PEEK_HID =PEEK_WK != null ? dayHidesIn(PEEK_WK, i) : new Set()
   let h = `<section class="day peek" data-peek-day="${i}">`
   h += `<div class="day-head">${first ? `<span class="peek-nextwk">Next week: click a day to load it</span>` : ''}`
@@ -300,6 +310,10 @@ export function peekKey(): string {
      reloaded (the bug check of 12 Nov 26) */
   return (HOOKS.editMode() ? 'e|' : 'v|') + CURWEEK + '|' + stashGenOf(shiftWeek(CURWEEK, 1)) + '|' + deletedSig() + '|' + requestsSig() + '|' + loadedSrcSig()
     + '|' + VCONF.briefLead + '|' + VCONF.reportLead + '|' + VCONF.debrief
+    /* …and who is SANS from when (D2313): a tick on Quals, or a posting run or taken back, changes the SANS line on a
+       previewed day's pucks — a preview already drawn kept the old pucks until the week was reloaded (Astra's scenario
+       design of 22 Nov 26, candidate C) */
+    + '|' + sansSig()
 }
 export function peekWeekHTML(): string {
   const key = peekKey()

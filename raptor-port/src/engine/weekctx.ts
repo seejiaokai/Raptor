@@ -38,7 +38,7 @@ import { dayCurVerIn, daySnapIn, peopleAttrsNow, faceRuleValsCompared } from './
 import { ruleNow } from './rules'
 import { oilRuleShift } from './oilev'
 import { canonicalDiff } from './canonical'
-import { keepRulesOn, keptRulesDiffer, withDayRules } from './faceattrs'
+import { keepRulesOn, keepFaceOn, keptRulesDiffer, withDayRules } from './faceattrs'
 import { dayIso } from './verid'
 import { viewOfWeek, deletedOverlayDue, landingDue } from './overlay'
 
@@ -74,7 +74,7 @@ function issuedDayIn(sc:any,di:number,v:any,working:any){
      signed, so returning snap.d raw would re-introduce that label and, at a New Year
      boundary, address the wrong year in inputCoversDate/fileAcc. Never mutate the
      stored snapshot — spread a fresh object. */
-  if(snap&&snap.d)return keepRulesOn({...snap.d,dt:working.dt},snap.rv);   // judged by the rules it went out with (D1991)
+  if(snap&&snap.d)return keepFaceOn(keepRulesOn({...snap.d,dt:working.dt},snap.rv),snap.pa);   // judged by the rules it went out with (D1991), its people as it kept them (D186, D2313)
   return {...working,waves:[],dutywaves:[],sims:{amt:[],oft:[]},ground:[],allhands:[]};
 }
 /* A STASHED WEEK AS ITS READERS ARE SHOWN IT (owner D1010, 18 Oct 26): every published day at its issued version, the

@@ -162,6 +162,17 @@ describe('the Medical view', () => {
     await click($('#medToday'))
     expect($('.medsec.med-pend').textContent).toContain('OML1–5 Jul')
   })
+  /* D2313 (22 Nov 26; Astra's scenario design, candidate A): a card's puck is the man as he was on the "as of" date —
+     bane, down 10–14 Jul and SANS from 13 Jul, wears the SANS line as of 13 Jul and not as of 11 Jul */
+  it('D2313 a card\'s puck wears the SANS line only from his SANS date, by the as-of date', async () => {
+    const baneCard = () => cardsIn('med-down').find(c => c.querySelector('[data-person="bane"]'))!
+    await act(async () => { (PEOPLE as any).bane.san = true; (PEOPLE as any).bane.sanFrom = '2026-07-13'; setMedAsOf('2026-07-13'); notify() })
+    expect(baneCard().querySelector('.puck')!.className, 'as of 13 Jul, his SANS date').toMatch(/\bsan\b/)
+    await act(async () => { setMedAsOf('2026-07-11'); notify() })
+    expect(baneCard(), 'as of 11 Jul he is down too').toBeTruthy()
+    expect(baneCard().querySelector('.puck')!.className, 'as of 11 Jul, before his SANS date').not.toMatch(/\bsan\b/)
+    await act(async () => { delete (PEOPLE as any).bane.san; delete (PEOPLE as any).bane.sanFrom; setMedAsOf(null); notify() })
+  })
   it('the month grid picks a date', async () => {
     await click($('#medCalBtn'))
     await click(document.querySelector('[data-medday="2026-07-03"]'))

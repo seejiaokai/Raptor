@@ -123,6 +123,16 @@ export function keepRulesOn<T>(d: T, rv: any): T {
   if (d && typeof d === 'object') { if (rv) COPY_RV.set(d as any, rv); else COPY_RV.delete(d as any) }
   return d
 }
+/* …and WHO EACH MAN WAS on that version (`snap.pa` — CAT, seat, SANS on its own day: D186, D2313), carried on the same
+   copy, so a reader that draws a neighbour week's published day outside the issued-face pass — the next-week preview on
+   View-only Sched (ui/peek.ts) — draws his puck as published, not as he is today (Astra's scenario design of 22 Nov 26,
+   candidate B: a man ticked SANS after next Monday was published wore the SANS line there before any amendment). */
+const COPY_PA = new WeakMap<object, any>()
+export function keepFaceOn<T>(d: T, pa: any): T {
+  if (d && typeof d === 'object' && pa) COPY_PA.set(d as any, pa)
+  return d
+}
+export const faceKeptOn = (d: any): any => (d && typeof d === 'object' ? COPY_PA.get(d) : null) || null
 const keptOn = (d: any): any => d && typeof d === 'object' ? ((KEPT && KEPT.get(d)) || COPY_RV.get(d) || null) : null
 export function ruleFor(d: any, key: string): number {
   const rv = keptOn(d)
