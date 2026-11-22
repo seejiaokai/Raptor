@@ -98,6 +98,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 
 ## Crew and pucks
 - A posting out as SANS set ahead is read by the day looked at (those two words the agent's reading): an ordinary man before its date, counted by ALL AVAIL if free; SANS from it, counted only on a day a scheduler has put him on our programme, his times clear; his 21 Sep rule kept; the look-ahead built (pull request 825, every screen's SANS-on-a-day read with it) [D2329].
+- That check's round 4b gets a Fable code read too, on his one call: a fresh blind helper after the fixes, beside Astra and the fresh Opus reader [D2337].
 - ALL AVAIL and ALL are a scheduling feature, not an OIL feature: dropped anywhere, on every seat they can land on and with OIL Earn off too, they work out who would be available and show the count — worded as what it is (who has nothing else on the programme then), a starting point and never a promise; where they earn is the OIL page's rule [D27, D37, D43, D755, D776].
 - The two placeholder pucks are refused on flying lines only — both cockpit seats of every flying line, at every door, with the reason on screen — and land everywhere else (sim seats, duty desks, passengers, extras, ground and programme rows), where a placeholder still arms its seat; tapping an empty cockpit seat still narrows the crew list; where they earn is the OIL page's rule [D33, D47, D43, D755, D776].
 
