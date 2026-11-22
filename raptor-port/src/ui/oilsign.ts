@@ -104,10 +104,16 @@ function leaveOpen(iso: string, unit: string): void {
   for (const o of oilOpenOn(iso, iso, unit)) left.add(o.iid)
   OILSIGN_LATER.set(key, left)
 }
+/* THE HELD NAME WRITTEN, AND ONLY THEN THE DAY MARKED ASKED (Astra's blind read, claim 3 — 22 Nov 26): the command layer
+   can refuse the write (it says why itself — state/sched-commit.ts toastFail); a refused name must not use up the
+   question, or the next pick would sign with nobody asked. "Written" is read off the record the box draws. */
+function writeHeld(hold: SignHold, iso: string, unit: string): void {
+  writeSign(hold.di, hold.role, hold.who)
+  if (signNow(hold.di, hold.role) === hold.who) leaveOpen(iso, unit)
+}
 export function holdLater(hold: SignHold, iso: string, unit: string): void {
   if (!holdStands(hold, iso, unit)) return
-  leaveOpen(iso, unit)
-  writeSign(hold.di, hold.role, hold.who)
+  writeHeld(hold, iso, unit)
   HOOKS.reflow()      // the box is drawn by the schedule's own builders: it reads the name on their next draw
 }
 
@@ -121,7 +127,7 @@ export function holdSave(hold: SignHold, iso: string, unit: string, picks: Reado
      26): with two inputs listed and one answered, the next box asked again for the other, and that answer changed what
      the name just written was bound to and cleared it — the list's own path to the thing D2294 asks first to avoid. He
      saw the row and left it: no later box asks, and the publish note names it (the agent's reading, told to him). */
-  if (holdStands(hold, iso, unit)) { leaveOpen(iso, unit); writeSign(hold.di, hold.role, hold.who); HOOKS.reflow() }
+  if (holdStands(hold, iso, unit)) { writeHeld(hold, iso, unit); HOOKS.reflow() }
   return true
 }
 

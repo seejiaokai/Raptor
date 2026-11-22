@@ -19,6 +19,7 @@ import { HOOKS } from '../engine/hooks'
 import { stashClear } from '../engine/weekstash'
 import { initStore, writeInputsBatch, notify } from '../state/store'
 import { setSession } from '../state/auth'
+import { setConflictChecker } from '../command'
 import * as view from '../state/view'
 import { _resetDisclosure } from '../state/disclosure'
 import { projectPeople } from '../leavewar/state/raptorRoster'
@@ -174,6 +175,30 @@ describe('a sign-off pressed on a day with an unanswered OIL question (D2294, D2
     expect(signPick(SAT, 'cur', 'ignite')).toBe('held')
     expect(signNow(SAT, 'cur')).toBe('')
     expect(SCHED.sign[SAT], 'still no sign record for a day nobody signed').toBeUndefined()
+  })
+
+  /* Astra's blind read, claim 2 (22 Nov 26; the same line as the Opus read's finding 2): after an answer was taken back
+     the box reads unsigned while the record still holds the old name — a held re-pick must put the box back to what it
+     SHOWS, or the same name can never be picked again (the native box raises no change for the value it already holds). */
+  it('a held re-pick puts the box back to what it shows, not to a name the content has moved under', async () => {
+    signPick(SAT, 'cur', 'ignite'); await draw()
+    await click('odl-yes-fx-train'); await click('odl-save')
+    await act(async () => {
+      writeInputsBatch(() => { delete (INPUTS.find((r: any) => r.iid === 'fx-train') as any).oil[SAT_ISO] })
+      view.afterSchedMutate()
+    })
+    expect(signShown(SAT).cur, 'setup: the answer taken back dropped the name').toBe('')
+    resetOilSign()
+    expect(signPick(SAT, 'cur', 'ignite')).toBe('held')
+    expect(signNow(SAT, 'cur')).toBe('')
+  })
+  /* Astra's blind read, claim 3: Later promised a signature and "ask no more" together; a refused write (the command
+     layer's own refusal) still marked the day as asked, so the next pick signed with no question. */
+  it('a Later whose signature is refused does not use up the question', async () => {
+    signPick(SAT, 'cur', 'ignite'); await draw()
+    try { setConflictChecker(() => 'test refusal'); await click('odl-later') } finally { setConflictChecker(null) }
+    expect(signShown(SAT).cur, 'the refused name is not written').toBeFalsy()
+    expect(signPick(SAT, 'cur', 'ignite'), 'and the next press still asks').toBe('held')
   })
 
   it('a second input filed after Later is asked once more (the agent’s reading, told to him)', async () => {
