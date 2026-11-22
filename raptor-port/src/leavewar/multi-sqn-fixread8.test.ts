@@ -4,7 +4,7 @@
    code the readers read (71fdfbfd5). Hunter (142's plain admin, `ad2`) files LL for Ranger (142, `us`) on 15 Jul; Saber
    is the master (`ad`); Kestrel and Osprey are 149's (`ad9`, `us9`). Harness as leavewar/multi-sqn-fixread7.test.ts. */
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import { storeBackend, HOOKS } from '../engine/hooks'
+import { storeBackend, HOOKS, store } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputsBatch } from '../state/store'
 import { accountsLoad, signIn, sessionFor, setMaster, updateAccount, ACCOUNTS_LIST } from '../state/accounts'
@@ -71,6 +71,10 @@ const lineTo = (pid: string): Notice | undefined => NOTICES.find(n => n.to === p
 const env = (changes: any[], origin = 'user', type = 'inputs.batch'): any => ({ type, origin, actor: deriveActor(), changes })
 const readIt = (pid: string, l: Notice) => { mem[`sqn142_noticeseen:${pid}`] = JSON.stringify({ upto: 0, ids: [l.id] }); noticeSeenLoad() }
 const shown = (pid: string, id: string) => noticesFor(pid).some(n => n.id === id)
+/* (HIS BELL'S SWITCH — batch 1's second half §7 item 3, §16 D5′; D2198: once a master admin's home is 149, 142's lines not
+   about him are off on his bell by default. These tests are about the move's rule, so the old squadron is switched on, as
+   he would switch it, before the line is looked for) */
+const bellOn = (pid: string, u: string) => { const k = `bellsqn:${pid}`; const v: any = store.get(k, null) || {}; store.set(k, { ...v, [u]: true }) }
 /* Outlaw (`casper`) as a plain 142 admin — as the gate reads an actor (fix read 7's harness) */
 const outlaw = { id: 'acoutlaw', role: 'admin', personId: 'casper', session: null }
 const asOutlaw = (changes: any[], type = 'inputs.batch'): any => ({ type, origin: 'user', actor: outlaw, changes })
@@ -141,6 +145,7 @@ describe('fault D — a right given ON the move day never brings the retired lin
   /* (§4.5 of the reshape plan, rewrite 4 — the master-mark half kept: a master admin's reach is no right and is not ended
      (D2203's reading); a Plan held before his move day ends with it — his D2203, D2243 (Q4) — so its line is retired) */
   it('(control) the master mark set the day before his move keeps the line; Plan held from then ends with the move', () => {
+    bellOn('prowler', 'u142')
     const l = hunterLine()
     signInAs('ad', 'a'); expect(setMaster('acad2', true).ok).toBe(true)
     hunterMovesOn16(); on(17)

@@ -67,6 +67,8 @@ export function tableOf(collection: Collection, id: string): string {
       /* when an admin last opened the Leave War's Approvals (M4 8.4): its own table, as the permissions table names it */
       if (id.startsWith('apprseen:')) return 'LeaveApprovalsSeen'
       if (id.startsWith('lwseen:')) return 'LeaveSeen'
+      /* which squadrons' lines a person's bell shows (state/bellsqn.ts — batch 1's second half §7 item 3) */
+      if (id.startsWith('bellsqn:')) return 'BellSquadrons'
       /* the units, their places, each person's home and each right in another unit (multi-squadron batch 1, step 1 —
          state/units.ts): each its own table, as the permissions table names it. 'unitplace:' before 'unit:' is not needed
          (neither starts the other) but is kept first so a later prefix cannot misfile it */

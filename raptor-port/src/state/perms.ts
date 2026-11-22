@@ -100,6 +100,8 @@ export const T = {
   balance: 'LeaveBalance',
   grade: 'LeaveGrade',
   lwseen: 'LeaveSeen',
+  /* which squadrons' lines a person's bell shows (state/bellsqn.ts — batch 1's second half §7 item 3): his own row */
+  bellsqn: 'BellSquadrons',
   profile: 'LeavePersonProfile',
   tracker: 'Course, Syllabus, TrainingEvent, EventPrerequisite, Layout, CoursePlan, Enrolment, Attempt',
   /* multi-squadron batch 1, step 1 (state/units.ts): the units, the places they are at (and when), a right in a unit
@@ -152,6 +154,7 @@ export const PERMS: Record<string, PermRow> = {
   [T.balance]: row(cell('C R U D'), cell('R', 'C U D')),
   [T.grade]: row(cell('C R U D'), cell('R')),
   [T.lwseen]: row(cell('', 'C R U'), cell('', 'C R U')),
+  [T.bellsqn]: row(cell('', 'C R U'), cell('', 'C R U')),
   [T.profile]: row(cell('C R U D'), cell('R')),
   [T.tracker]: row(cell('C R U D'), cell('C R U D')),
   /* the units (step 1): every signed-in person reads the units — a pending person's view names theirs; only
@@ -646,6 +649,8 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'lw.grades': op(T.setting, 'U'),
   'lw.balLock': op(T.setting, 'U'),
   'lw.seen': op(T.lwseen, 'U', 'required'),
+  /* a press of one of his bell's squadron buttons (state/bellsqn.ts): the signed-in person's OWN row only */
+  'bell.squadrons': op(T.bellsqn, 'U', 'required'),
   'lw.clear': op(T.bid, 'U', 'optional', [[T.award, 'D']]),
   /* the Tracker: everyone with access edits it (D121) */
   'trk.marks': op(T.tracker, 'U'), 'trk.dates': op(T.tracker, 'U'), 'trk.roster': op(T.tracker, 'U'),
@@ -3493,6 +3498,21 @@ function requestsNaming(unit: string): boolean {
   for (const k of store.keys(REQ_ROW)) { const v: any = store.get(k, null); if (v && reqUnit(v) === unit) return true }
   return false
 }
+const BELL_ROW = 'bellsqn:'
+function bellSqnRowViolation(env: CommitEnvelope): string | null {
+  const rows = env.changes.filter(c => c.collection === 'settings' && String(c.id).startsWith(BELL_ROW))
+  if (!rows.length) return null
+  const a = env.actor
+  const units = new Set(unitRowsBefore([]).units.map(u => u.id))
+  for (const c of rows) {
+    const where = `${c.collection}/${c.id}`
+    if (env.type !== 'bell.squadrons' || !a || a.role === 'system' || a.personId == null || c.id !== `${BELL_ROW}${a.personId}`) return `another person's bell switch (${where})`
+    const n: any = c.op === 'delete' ? null : c.after
+    if (n == null) return `a bell switch removed (${where})`
+    if (typeof n !== 'object' || Array.isArray(n) || Object.entries(n).some(([k, v]) => !units.has(k) || typeof v !== 'boolean')) return `a bell switch that will not read (${where})`
+  }
+  return null
+}
 function ownershipChecks(env: CommitEnvelope): string | null {
   const a = env.actor
   const asNew = writtenAsNewViolation(env)
@@ -3530,6 +3550,11 @@ function ownershipChecks(env: CommitEnvelope): string | null {
       if (env.type !== 'lw.seen' || a.personId == null || c.id !== `lwseen:${a.personId}`) return `another person's last visit (${c.collection}/${c.id})`
     }
   }
+  /* WHICH SQUADRONS' LINES HIS BELL SHOWS (batch 1's second half §7 item 3, §15 D6 — R2-O12): his own row, by its one
+     command, for every role — no admin sets another man's switch, nor the app; the row only squadron ids of the store
+     against on / off (state/bellsqn.ts) */
+  const bellBad = bellSqnRowViolation(env)
+  if (bellBad) return bellBad
   /* 7e. an admin's bell lines and read records only for his own squadron's people (below) */
   const ownerBad = adminOwnerViolation(env)
   if (ownerBad) return ownerBad
@@ -3688,6 +3713,12 @@ function ownershipChecks(env: CommitEnvelope): string | null {
         /* when he last opened his own person window on the Leave War (M5a, finding 10c) — his OWN row, by its one command */
         if (c.id.startsWith('lwseen:') && env.type === 'lw.seen') {
           if (c.id !== `lwseen:${pid}`) return `another person's last visit (${where})`
+          break
+        }
+        /* which squadrons' lines his bell shows (batch 1's second half §7 item 3) — his OWN row, by its one command
+           (bellSqnRowViolation, before this section, holds the rest) */
+        if (c.id.startsWith('bellsqn:') && env.type === 'bell.squadrons') {
+          if (c.id !== `bellsqn:${pid}`) return `another person's bell switch (${where})`
           break
         }
         return `an admin's record (${where})`

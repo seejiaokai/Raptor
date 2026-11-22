@@ -77,6 +77,10 @@ const homes = (pid: string, key: string, rows: [string, string][]) => {
 const on = (d: number, h = 9, m = 0) => { vi.setSystemTime(new Date(2026, 6, d, h, m, 0)); unitsLoad() }
 const lineTo = (pid: string): Notice | undefined => NOTICES.find(n => n.to === pid && n.iid === IID)
 const shown = (pid: string, id: string) => noticesFor(pid).some(n => n.id === id)
+/* (HIS BELL'S SWITCH — batch 1's second half §7 item 3, §16 D5′; D2198: once a master admin's home is 149, 142's lines not
+   about him are off on his bell by default. These tests are about the move's rule, so the old squadron is switched on, as
+   he would switch it, before the line is looked for) */
+const bellOn = (pid: string, u: string) => { const k = `bellsqn:${pid}`; const v: any = settingsStore.get(k, null) || {}; settingsStore.set(k, { ...v, [u]: true }) }
 /* Outlaw (`casper`) as a plain 142 admin — as the gate reads an actor (fix read 7's harness) */
 const outlaw = { id: 'acoutlaw', role: 'admin', personId: 'casper', session: null }
 const asOutlaw = (changes: any[], type = 'inputs.batch'): any => ({ type, origin: 'user', actor: outlaw, changes })
@@ -374,6 +378,7 @@ describe('fault D — a right that changes hands through the account row is a ri
 
 describe('fault E — a right taken off after a move and put back by its Undo or Redo, with no move since, keeps its day (O10-1, F10-5)', () => {
   it('(O10-1) master since 10 Jul, moved 12 Jul, the mark taken off by mistake 15 Jul and undone at once: its day and his line come back', () => {
+    bellOn('prowler', 'u142')
     on(10)
     signInAs('ad', 'a'); expect(setMaster('acad2', true).ok).toBe(true)
     expect(hunterAcct().masterFrom).toBe('2026-07-10')

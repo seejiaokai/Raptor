@@ -39,6 +39,7 @@ import { todayIso, homeOn, homeChangesOn, unitRows, levelOfAccount, grantOfOn } 
 import { isAdminRole } from './units-model'
 /* (accounts.ts reaches this module through perms.ts; each side calls the other only at run time, never at load) */
 import { accountOfPid, isAdminAccount, levelAcct } from './accounts'
+import { bellShows } from './bellsqn'
 import { activeEnvelope } from '../command'
 
 export type NoticePart =
@@ -750,6 +751,11 @@ export function noticeLeftBell(n: Pick<Notice, 'to' | 'at' | 'iid' | 'what' | 'f
 export function noticeLive(n: Notice): boolean {
   /* a line of his old squadron's, once he has moved (D2218 — noticeLeftBell, above) */
   if (noticeLeftBell(n)) return false
+  /* A SQUADRON HIS BELL'S SWITCH HAS OFF (batch 1's second half §7 item 3, §15 D6, §16 D5′ — D2198, D2202; state/bellsqn.ts):
+     asked here, the one body, so a line switched off is neither listed, counted, lighting the bell nor marked read; kept,
+     it is back as he left it once switched on. Never of a line about him (his own leave, his own posting, an input he is
+     named in — D5′), and only of a line that carries a squadron (one stored before reads as his home, D56) */
+  if (!noticeAboutHim(n) && !bellShows(String(n.to), lineUnit(n) ?? '')) return false
   /* ONE BIDDING LINE A STRETCH (M4 9.4): each month tapped in "Open for bidding" is its own command — a newer line of his
      about bidding on dates this one shares takes its place, as the holiday's lines do */
   const o = openOf(n)

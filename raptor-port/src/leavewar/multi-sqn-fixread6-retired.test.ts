@@ -8,7 +8,7 @@
    Hunter (142's admin) files LL for Ranger (142) on 15 Jul; Saber's change that day tells Hunter as its filer; Hunter's
    move to 149 from 16 Jul. Harness as leavewar/multi-sqn-fixread4-bells.test.ts. */
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import { storeBackend, HOOKS } from '../engine/hooks'
+import { storeBackend, HOOKS, store } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputsBatch } from '../state/store'
 import { accountsLoad, signIn, sessionFor } from '../state/accounts'
@@ -72,6 +72,10 @@ const homes = (pid: string, key: string, rows: [string, string][]) => {
 const on = (d: number) => { vi.setSystemTime(new Date(2026, 6, d, 9, 0, 0)); unitsLoad() }
 const readIt = (pid: string, l: Notice) => { mem[`sqn142_noticeseen:${pid}`] = JSON.stringify({ upto: 0, ids: [l.id] }); noticeSeenLoad() }
 const shown = (pid: string, id: string) => noticesFor(pid).some(n => n.id === id)
+/* (HIS BELL'S SWITCH — batch 1's second half §7 item 3, §16 D5′; D2198: once a master admin's home is 149, 142's lines not
+   about him are off on his bell by default. These tests are about the move's rule, so the old squadron is switched on, as
+   he would switch it, before the line is looked for) */
+const bellOn = (pid: string, u: string) => { const k = `bellsqn:${pid}`; const v: any = store.get(k, null) || {}; store.set(k, { ...v, [u]: true }) }
 /* Hunter files for Ranger; Saber's change on 15 Jul tells him (filer only); answers that line */
 const hunterLine = (): Notice => {
   signInAs('ad2', 'a2'); fileFor('bane', 'prowler')
@@ -134,6 +138,7 @@ describe('fault C — controls: lines that stay', () => {
     on(17); expect(shown('bane', own.id), 'back home').toBe(true)
   })
   it('a master filer’s line stays: Saber files, Hunter changes it, Saber moves to 149, the input is deleted', () => {
+    bellOn('stiff', 'u142')
     signInAs('ad', 'a'); fileFor('bane', 'stiff')
     signInAs('ad2', 'a2'); rmk('changed by Hunter')
     const l = NOTICES.find(n => n.to === 'stiff' && n.iid === IID)!
