@@ -211,7 +211,8 @@ describe('fault N — a line dated past midnight, written in the last minutes be
   it('(SEC8-1) Outlaw at 23:57 on 15 Jul: a plain line and a marked filer line dated 00:01 on the 16th are refused', () => {
     hunterLine(); hunterMovesOn16(); on(15, 23, 57)
     const plain = { id: 'nfr8-p', to: 'prowler', by: 'casper', iid: '', name: '142 words', day: '2026-07-25', what: [{ k: 'rmk' }] }
-    const marked = { id: 'nfr8-m', to: 'prowler', by: 'casper', iid: IID, name: 'LL', day: '2026-07-25', what: [{ k: 'rmk' }], fu: ['u142'] }
+    /* (stamped with the input's squadron, as the pass stamps it — batch 1's second half, §7 item 1) */
+    const marked = { id: 'nfr8-m', to: 'prowler', by: 'casper', iid: IID, name: 'LL', day: '2026-07-25', what: [{ k: 'rmk' }], fu: ['u142'], u: 'u142' }
     /* (the plain line, naming no input, is refused since fix read 10's fault A whatever its date — no change of the war owes
        it; the marked line still pins the date) */
     expect(ownershipViolation(asOutlaw([put({ ...plain, at: at(16, 0, 1) })])) ?? 'allowed').toMatch(/about nothing the command changed/)
@@ -226,13 +227,14 @@ describe('fault N — a line dated past midnight, written in the last minutes be
     signInAs('us', 'us')
     const now = { ...theInput() }
     const ch = { collection: 'inputs', id: IID, op: 'put', before: now, after: { ...now, remarks: 'Ranger words' } }
-    const toHunter = { id: 'nfr8-mh', to: 'prowler', by: 'bane', iid: IID, name: 'LL', day: '2026-07-25', what: [{ k: 'rmk' }], fu: ['u142'] }
+    /* (each stamped with its input's squadron, as the pass stamps it — batch 1's second half, §7 item 1) */
+    const toHunter = { id: 'nfr8-mh', to: 'prowler', by: 'bane', iid: IID, name: 'LL', day: '2026-07-25', what: [{ k: 'rmk' }], fu: ['u142'], u: 'u142' }
     expect(ownershipViolation(env([ch, put({ ...toHunter, at: at(16, 0, 1) })])) ?? 'allowed').toMatch(/not dated now/)
     expect(ownershipViolation(env([ch, put({ ...toHunter, at: at(15, 23, 57) })]))).toBeNull()
     /* Ranger's Training for Ace, its remark changed, his line to Ace (named in it: no mark) */
     const tr = { person: 'dj', date: 'Jul 25', yr: 2026, s: '09:00', e: '10:00', type: 'Training', remarks: 'for Ace', by: 'bane', at: Date.now(), iid: 'ipd-fr8t', ord: 99982 }
     const ch2 = { collection: 'inputs', id: 'ipd-fr8t', op: 'put', before: tr, after: { ...tr, remarks: 'new words' } }
-    const toAce = { id: 'nfr8-ma', to: 'dj', by: 'bane', iid: 'ipd-fr8t', name: 'Training', day: '2026-07-25', what: [{ k: 'rmk' }] }
+    const toAce = { id: 'nfr8-ma', to: 'dj', by: 'bane', iid: 'ipd-fr8t', name: 'Training', day: '2026-07-25', what: [{ k: 'rmk' }], u: 'u142' }
     expect(ownershipViolation(env([ch2, put({ ...toAce, at: at(16, 0, 1) })])) ?? 'allowed').toMatch(/not dated now/)
     expect(ownershipViolation(env([ch2, put({ ...toAce, at: at(15, 23, 57) })]))).toBeNull()
   })

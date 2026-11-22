@@ -592,6 +592,12 @@ input was filed, a right he holds, or — once moved — his home today where he
 read 13, item C); absent on a named man's line. His move retires such
 a line by `fu` alone, on his move day (`noticeLeftBell`), never by the input as it stands later. Lines stored before
 carry none: demo data, D56.)*
+*(22 Nov 26, batch 1's second half, plan §7 items 1–2 — D2198, D2202: EVERY LINE CARRIES ITS SQUADRON, `u` — an input's
+line its input's (`engine/inputs.ts inputUnitOf`), a war line its war's, a posting's and its take-back's the posting's, a
+holiday's the holiday's (beside its part's `u`); the worked-out lines (bidding ended, "off the manpower") carry theirs
+too. Read by the bell's switch, its grey mark and its tap; a line stored before has none and reads as its reader's
+home (`state/notices.ts lineUnit` — D56). A squadron's admin lines (posting, take-back, holiday) go to ONE audience,
+`state/accounts.ts adminLineAudience`: its admins and Plan holders, and every master admin who can sign in.)*
 *(13 Oct 26, `[OIL-ASK-NOTIFY]`: a second kind rides the same record — a day made a holiday, `iid` empty and `what` =
 `[{ k: 'oilhol', a, b, u? }]` (`name` is the holiday's own name, '' where it has none; `a`..`b` the whole holiday as it stood when the notice was made — what the bell shows is read live from the war, never from these; `u` — since the multi-squadron reshape, 21 Nov 26, the Plan audit's PB4 with the blind read's R3 and R4 — the squadron the line was written for, each squadron owning its own holiday list, D2195: its count of inputs still to answer, its dates and name, the list a tap opens, and which lines it replaces are that squadron's, whoever reads it — at home, by Plan, or a master admin; a line stored before `u` reads as its reader's home squadron today, D56 — `notices.ts holOf`), one a scheduler, written inside the Leave War's own command through the scheduler store;
 `state/notices.ts noticeHoliday`. Nothing else about how a notice is stored changes.)*

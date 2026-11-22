@@ -31,10 +31,10 @@
    (state/noticeseen.ts): were reading to write to the notice, the maker's Undo of his change would be refused —
    "Ranger changed this after your action" — by the read of the very person it told. */
 import { PEOPLE } from '../engine/people'
-import { odOut, isOD, dateOrd, inpLabel, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned, inputSpanIso, inputSquadrons } from '../engine/inputs'
+import { odOut, isOD, dateOrd, inpLabel, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned, inputSpanIso, inputSquadrons, inputUnitOf } from '../engine/inputs'
 import { homeHandle } from '../engine/roster'
 import { hhmm } from '../engine/time'
-import { mayEditSched } from './perms'
+import { mayEditSched, lwUnitNow } from './perms'
 import { todayIso, homeOn, homeChangesOn, unitRows, levelOfAccount, grantOfOn } from './units'
 import { isAdminRole } from './units-model'
 /* (accounts.ts reaches this module through perms.ts; each side calls the other only at run time, never at load) */
@@ -116,7 +116,16 @@ export interface Notice {
    *  his home while he has not moved since the input was filed, and any he holds a right in). Absent: he was named in it. Written once, by the pass, so the line's leaving his
    *  bell after a move (noticeLeftBell) never has to ask the input as it stands today. */
   fu?: string[]
+  /** THE SQUADRON THE LINE IS OF (batch 1's second half, plan §7 item 1 — D2198, D2202): written where the line is made —
+   *  an input's line its input's squadron (engine/inputs.ts inputUnitOf), a war line (`lw`, `lwopen`, `lwback`) the
+   *  war's, a posting's (`po`, `poback`) the posting's, a holiday's the holiday's (its part's `u` too). Read by the
+   *  bell's switch, its grey mark and its tap (noticeLive, ui/topstate.ts). The gate refuses a new line whose stamp is
+   *  not the squadron the command acts in, and a line rewritten to another (state/perms.ts lineStampWrong,
+   *  lineRewritten). A line stored before it was carried has none, and reads as its reader's home (lineUnit — D56). */
+  u?: string
 }
+/** the squadron a line is of — its stamp; a line stored before the stamp (D56: demo data) its reader's home today */
+export const lineUnit = (n: Pick<Notice, 'u' | 'to'>): string | null => (typeof n.u === 'string' && n.u ? n.u : homeOn(String(n.to), todayIso()))
 
 /* the live list — restored IN PLACE by the snapshot (state/history.ts), like the inputs and the planning notes */
 export const NOTICES: Notice[] = []
@@ -495,7 +504,9 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
     /* (the bids of his this input replaced on the Leave War — said on this one line, M4 9.3a) */
     const rb = o.replaced?.get(String(r.iid))?.get(to)
     if (rb && rb.length) what = [...what, ...rb.map(c => ({ k: 'rbid' as const, c }))]
-    NOTICES.push({ id: mint(at), to, by, at, iid: String(r.iid), name: String(inpLabel(r)), day: firstDay(r), what, ...(fu ? { fu } : {}) })
+    /* (the input's squadron — §7 item 1; the gate reads the same body, state/perms.ts lineStampWrong) */
+    const u = inputUnitOf(r)
+    NOTICES.push({ id: mint(at), to, by, at, iid: String(r.iid), name: String(inpLabel(r)), day: firstDay(r), what, ...(fu ? { fu } : {}), ...(u ? { u } : {}) })
     made++
   }
   const split = new Map<string, string>()             // old input id → the man split out of it, told under his new one
@@ -594,7 +605,7 @@ export function noticeHoliday(to: readonly string[], by: string | null, name: st
   for (const p of new Set(to.map(String))) {
     if (!here(p)) continue
     const id = mint(at)
-    NOTICES.push({ id, to: p, by, at, iid: '', name, day: a, what: [{ k: 'oilhol', a, b, ...(unit ? { u: unit } : {}) }] })
+    NOTICES.push({ id, to: p, by, at, iid: '', name, day: a, what: [{ k: 'oilhol', a, b, ...(unit ? { u: unit } : {}) }], ...(unit ? { u: unit } : {}) })
     noteHolMade(id)
     made++
   }
@@ -818,14 +829,15 @@ export function warLineName(part: NoticePart): string {
 }
 /** a war line, written inside the war command that made the change (leavewar/sync.ts) — never to whoever did it, never
  *  to a man who has left. Answers how many were made. */
-export function noticeWar(to: readonly string[], by: string | null, part: NoticePart, at: number = Date.now()): number {
+/* (`u` — the war's squadron: the loaded war's, perms.ts lwUnitNow, unless the caller names it — §7 item 1) */
+export function noticeWar(to: readonly string[], by: string | null, part: NoticePart, at: number = Date.now(), u: string | null = lwUnitNow()): number {
   const p: any = part
   const name = warLineName(part)
   let made = 0
   for (const who of new Set(to.map(String))) {
     if (!here(who) || (by != null && who === by)) continue
     const id = mint(at)
-    NOTICES.push({ id, to: who, by, at, iid: '', name, day: String(p.a), what: [part] })
+    NOTICES.push({ id, to: who, by, at, iid: '', name, day: String(p.a), what: [part], ...(u ? { u } : {}) })
     noteWarMade(id)
     made++
   }
@@ -836,14 +848,15 @@ export function noticeWar(to: readonly string[], by: string | null, part: Notice
  *  scheduler store enlisted), so a refused pass tells nobody; once made it stays as the record that the posting ran (the top
  *  bar's Undo never takes a posting back — D350). `to` — every admin who can sign in (D1547: "each admin's bell"), the man
  *  himself left out by the caller; a man no longer here is told nothing. Answers how many were made. */
-export function noticePosting(to: readonly string[], who: string, o: PoOutcome, day: string, acct: boolean, at: number = Date.now()): number {
+/* (`u` — the posting's squadron: the loaded war's unless the runner names another — §7 item 1) */
+export function noticePosting(to: readonly string[], who: string, o: PoOutcome, day: string, acct: boolean, at: number = Date.now(), u: string | null = lwUnitNow()): number {
   const p: any = PEOPLE[who]
   const part: NoticePart = acct && o === 'overseas' ? { k: 'po', who, o, acct: true } : { k: 'po', who, o }
   let made = 0
   for (const t of new Set(to.map(String))) {
     if (!here(t)) continue
     const id = mint(at)
-    NOTICES.push({ id, to: t, by: null, at, iid: '', name: p && p.cs ? String(p.cs) : who, day, what: [part] })
+    NOTICES.push({ id, to: t, by: null, at, iid: '', name: p && p.cs ? String(p.cs) : who, day, what: [part], ...(u ? { u } : {}) })
     noteWarMade(id)
     made++
   }
@@ -852,12 +865,13 @@ export function noticePosting(to: readonly string[], who: string, o: PoOutcome, 
 /** A POSTING'S LINE TAKEN BACK ([NOTICE-UNDO-RETRACT] step 1 — D1693, D1699): one line to an admin who had read the
  *  posting's line, pushed INSIDE the posting sheet's "Undo post out" command (leavewar/sync.ts retractPostingLines), by the
  *  admin who pressed it — never to him. Its words: the posting's own, struck, then "taken back · Saber" (noticeWords). */
-export function noticePostingBack(to: string, by: string | null, who: string, o: PoOutcome, day: string, acct: boolean, at: number = Date.now()): boolean {
+/* (`u` — the squadron of the line it takes back — §7 item 1) */
+export function noticePostingBack(to: string, by: string | null, who: string, o: PoOutcome, day: string, acct: boolean, at: number = Date.now(), u: string | null = lwUnitNow()): boolean {
   if (!here(to) || (by != null && to === by)) return false
   const p: any = PEOPLE[who]
   const part: NoticePart = acct && o === 'overseas' ? { k: 'poback', who, o, acct: true } : { k: 'poback', who, o }
   const id = mint(at)
-  NOTICES.push({ id, to, by, at, iid: '', name: p && p.cs ? String(p.cs) : who, day, what: [part] })
+  NOTICES.push({ id, to, by, at, iid: '', name: p && p.cs ? String(p.cs) : who, day, what: [part], ...(u ? { u } : {}) })
   noteWarMade(id)
   return true
 }

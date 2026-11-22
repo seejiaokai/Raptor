@@ -361,7 +361,7 @@ export const isAdminAccount = (a: Account | undefined) => adminNow(a)
    run's day, today, read after the outcomes. Who: an account that can sign in as an admin (admin role, switched on, its
    man on the roster — not archived, deleted or a placeholder) that is (a) at home in that squadron that day, or (b) not
    a master admin and holding Plan of it that day by a right (D2202: "while an admin holds Plan of another squadron, his
-   bell carries that squadron's admin lines, on by default"). A master admin counts through his home only (D2198: his
+   bell carries that squadron's admin lines, on by default"). Here a master admin counts through his home only — the bell's lines go to adminLineAudience below, which holds every master admin (§7 item 2; D2198: his
    other squadrons' lines are off by default); a View holder never. Person ids, as a bell line is addressed. */
 /* (`rows` — the unit rows to read: the commit gate hands in the rows as they stood before the command, so a command can
    never widen the audience it writes to; the passes read the live rows) */
@@ -375,6 +375,23 @@ export function adminsOf(unit: string, iso: string = todayIso(), rows?: UnitRows
       && (rows ? levelBefore(acct, unit, iso, rows) : levelOfAccount(acct, unit, iso)) === 'admin'
     const plan = !home && !a.master && (rows ? levelBefore(acct, unit, iso, rows) : levelOfAccount(acct, unit, iso)) === 'admin'
     if (home || plan) out.push(String(a.pid))
+  }
+  return out
+}
+/* WHO IS TOLD A SQUADRON'S ADMIN LINES — ONE AUDIENCE, USED EVERYWHERE IT IS READ (batch 1's second half, plan §7 item 2
+   — R-O2; D2198, D2202): adminsOf above, and every master admin who can sign in. A master admin is an admin of every
+   squadron, so the lines of each reach his bell; whether he sees those of a squadron not his home is his bell's switch
+   (notices.ts noticeLive — D2198: off by default), never who is written to. The five places that must agree read this
+   one body: the posting runner's audience (leavewar/sync.ts postingAdmins), the holiday's (holidayTodo), the posting
+   pass's gate (perms.ts adminOfPosting), the line rule's own-squadron door (perms.ts ownsLine, PC1) and a request's
+   admins (adminOfRequest) — widening one alone would refuse the command that writes the line, or write nothing.
+   An account that can sign in (admin role, switched on, its man on the roster) whose level in that squadron that day is
+   admin — at home there as its admin, a plain admin holding Plan of it, or the master mark (units-model.ts levelFrom). */
+export function adminLineAudience(unit: string, iso: string = todayIso(), rows?: UnitRows): string[] {
+  const out: string[] = []
+  for (const a of ACCOUNTS_LIST) {
+    if (a.role !== 'admin' || !a.on || !a.pid || !personOk(a.pid) || (PEOPLE as any)[a.pid].archived) continue
+    if ((rows ? levelBefore(levelAcct(a), unit, iso, rows) : levelOfAccount(levelAcct(a), unit, iso)) === 'admin') out.push(String(a.pid))
   }
   return out
 }

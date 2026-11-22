@@ -166,7 +166,7 @@ import type { StorageBackend } from './state/storage'
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused, isInReducer, isCommitting as cmdIsCommitting, activeEnvelope, isQueued, isOk, type CommitResult, type Txn } from '../command'
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
-import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, masterChangeProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount, adminsOf, endRightsOfArchived } from '../state/accounts'
+import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, masterChangeProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount, adminLineAudience, endRightsOfArchived } from '../state/accounts'
 import { markBack, clearBack, CURPAGE, setPage } from '../state/view'
 import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
@@ -1535,10 +1535,13 @@ export function holidayOwnName(iso: string): string { const n = dayFacts(iso).na
    its bell lines go to that squadron's admins only, never the other squadron's (each admin's Admin → Users lists his own
    squadron, D2191); the posted man's squadron is the war's, since each squadron's Leave War holds only its own people */
 /* ONE AUDIENCE (the reshape plan §6.2 A5, step 6; D2202, D2198; PB1, PB2): a posting's lines go to the squadron's admins
-   of TODAY (accounts.ts adminsOf — at home there, or a plain admin holding Plan of it; a master through his home only),
+   of TODAY (accounts.ts adminLineAudience since §7 item 2 — at home there, a plain admin holding Plan of it, or a master admin),
    the same set the gate checks every posting line against (perms.ts postingPassViolation). The pass reads it after its
    outcomes, so an admin archived by his own posting is not told. */
-const postingAdmins = (unit: string): string[] => adminsOf(unit, effectiveToday())
+/* …AND EVERY MASTER ADMIN WHO CAN SIGN IN (batch 1's second half, plan §7 item 2 — R-O2): the one audience,
+   accounts.ts adminLineAudience, read at all five places that must agree; whether a master admin sees a squadron's lines
+   other than his home's is his bell's switch (D2198), never who is written to */
+const postingAdmins = (unit: string): string[] => adminLineAudience(unit, effectiveToday())
 const ownSchedulerIds = (): string[] => postingAdmins(worldUnit())
 /* …and a man the war tells of its bidding or of a decision is one at home in the war's own squadron today (job 2, 19 Nov
    26 — the Opus read's F1; D2194): a man posted out of it stays a row of its war while his posting window runs (state/
@@ -1594,9 +1597,10 @@ function holidayTodo(runs: readonly HolidayRun[]): (HolidayRun & { name: string;
      squadron's schedulers only"; D2202: while an admin holds Plan of another squadron his bell carries that squadron's
      admin lines — the Plan audit's PB3, which found Hunter, holding Plan of 149, never told of 149's holiday; it replaces
      step 4's "every squadron at the place, each for its own", D2184 R32). accounts.ts adminsOf — at home there, or a
-     plain admin holding Plan of it; a master admin through his home only (D2198) — the one audience the posting lines
+     plain admin holding Plan of it; every master admin since §7 item 2, his bell's switch deciding what he sees (D2198) — the one audience the posting lines
      use and the gate checks an admin's line against (perms.ts 7e, PC1). The one who made it is among them. */
-  const told = adminsOf(unit, effectiveToday())
+  /* (…every master admin who can sign in with them — the one audience, accounts.ts adminLineAudience, §7 item 2) */
+  const told = adminLineAudience(unit, effectiveToday())
   /* (and each line carries that squadron — notices.ts noticeHoliday's `u`, PB4) */
   return todo.map(h => ({ ...h, told, unit }))
 }
@@ -1714,7 +1718,7 @@ function endedLines(pid: string): Notice[] {
     if (!told && o.to < since) continue
     const end = addDays(o.to, 1)
     const at = Math.max(new Date(+end.slice(0, 4), +end.slice(5, 7) - 1, +end.slice(8, 10)).getTime(), told + 1)
-    out.push({ id: `lwend:${w.period.id}:${o.from}:${o.to}`, to: pid, by: null, at, iid: '', name: 'Leave War', day: o.from, what: [{ k: 'lwopen', a: o.from, b: o.to, open: false, end: true }] })
+    out.push({ id: `lwend:${w.period.id}:${o.from}:${o.to}`, to: pid, by: null, at, iid: '', name: 'Leave War', day: o.from, what: [{ k: 'lwopen', a: o.from, b: o.to, open: false, end: true }], ...(home ? { u: home } : {}) })
   }
   return out
 }
@@ -1734,11 +1738,12 @@ function postedLines(pid: string): Notice[] {
   for (const u of WORLD_DOOR ? unitList().map(x => x.id) : [here]) {
     // eslint-disable-next-line react-doctor/js-set-map-lookups -- each pass reads a different squadron's admin list, built fresh and looked in once: a Set would cost more than the one lookup
     if (!postingAdmins(u).includes(pid)) continue
-    out.push(...postedLinesOf(pid, u === here ? getState().postOuts : storedPostings(u)))
+    out.push(...postedLinesOf(pid, u === here ? getState().postOuts : storedPostings(u), u))
   }
   return out
 }
-function postedLinesOf(pid: string, posts: Readonly<Record<string, Person>>): Notice[] {
+/* (`u` — the postings' squadron, stamped on each line — §7 item 1) */
+function postedLinesOf(pid: string, posts: Readonly<Record<string, Person>>, u: string): Notice[] {
   /* (an admin is never told of his own posting — as the pass's lines, above) */
   const today = effectiveToday(), since = addDays(today, -ENDED_DAYS)
   const out: Notice[] = []
@@ -1756,7 +1761,7 @@ function postedLinesOf(pid: string, posts: Readonly<Record<string, Person>>): No
        he holds for this man and date, so it comes back unread (the scenario designer's 12, 5 Nov 26). An admin never told
        (he had not read it, or pressed the Undo himself) keeps the plain id — unread, or his own act */
     const backs = NOTICES.filter(n => { const q = (n.what || [])[0]; return n.to === pid && n.day === poDate && q?.k === 'poback' && q.who === id }).length
-    out.push({ id: `po:${id}:${poDate}${backs ? `:${backs}` : ''}`, to: pid, by: null, at, iid: '', name: String(body.cs), day: poDate, what: [{ k: 'po', who: id, o: 'none' }] })
+    out.push({ id: `po:${id}:${poDate}${backs ? `:${backs}` : ''}`, to: pid, by: null, at, iid: '', name: String(body.cs), day: poDate, what: [{ k: 'po', who: id, o: 'none' }], u })
   }
   return out
 }
@@ -3005,7 +3010,7 @@ function runLoadedPostings(only?: string): void {
             const to = ownSchedulerIds(), now = Date.now(), rank: Record<string, number> = { overseas: 0, delete: 1, sans: 2 }
             const cs = (id: string) => String(rosterBody(id)?.cs ?? id)
             ;[...ran].sort((a, b) => (a.poDate < b.poDate ? 1 : a.poDate > b.poDate ? -1 : 0) || (rank[a.outcome] ?? 3) - (rank[b.outcome] ?? 3) || cs(a.id).localeCompare(cs(b.id)))
-              .forEach((r, i) => noticePosting(to.filter(t => t !== r.id), r.id, r.outcome, r.poDate, r.acct, now - i))
+              .forEach((r, i) => noticePosting(to.filter(t => t !== r.id), r.id, r.outcome, r.poDate, r.acct, now - i, worldUnit()))
           }
           validate()
           finishPeopleWrite()
@@ -3174,7 +3179,7 @@ function runForeignPosting(d: FxDue): void {
              his window removed by deleteOnForeign: nothing left to mark, and he is deleted, so never due again) */
           const after = fw.post(d.id)
           if (after) fw.setPost(d.id, { ...after, poDone: now.poDate })
-          noticePosting(postingAdmins(d.unit).filter(t => t !== d.id), d.id, now.outcome as PoOutcome, now.poDate, acct, Date.now())
+          noticePosting(postingAdmins(d.unit).filter(t => t !== d.id), d.id, now.outcome as PoOutcome, now.poDate, acct, Date.now(), d.unit)
           if (now.outcome === 'delete') cmdDeferEffect(() => { HOOKS.reflow(); HOOKS.histPush() })
         }
         validate()
@@ -3806,7 +3811,7 @@ function retractPostingLines(lines: readonly Notice[]): string[] {
     if (!hasRead(n.to, n) || !admins.has(n.to)) continue
     const p = n.what[0]
     if (p?.k !== 'po') continue
-    noticePostingBack(n.to, by, p.who, p.o, n.day, !!p.acct, at)
+    noticePostingBack(n.to, by, p.who, p.o, n.day, !!p.acct, at, n.u ?? worldUnit())
   }
   return forget
 }

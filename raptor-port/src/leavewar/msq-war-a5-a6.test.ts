@@ -89,12 +89,15 @@ describe('A5 — the pass over every squadron, as the plan §6.4 lists it', () =
     runPoOutcomes()
     expect(lines('kes9', 'osp9').length, 'not run again when 149’s war loads').toBe(1)
   })
-  it('the audience: 149’s admin of today told; the master at home in 142, and 142’s plain admin, not', () => {
+  /* REWRITTEN TO §7 ITEM 2 (batch 1's second half — R-O2; D2198): it asserted "the master at home in 142, not" told. The
+     one audience now holds every master admin who can sign in; whether he SEES the 149 line is his bell's switch, off by
+     default (D2198) — the switch's own tests. 142's plain admin is still never told. */
+  it('the audience: 149’s admin of today and the master admin at home in 142 told; 142’s plain admin not', () => {
     post149('osp9', 'overseas')
     day16()
     signInAs('ad', 'a')
     expect(lines('kes9', 'osp9').length).toBe(1)
-    expect(lines('stiff', 'osp9').length, 'Saber (master, 142) not told').toBe(0)
+    expect(lines('stiff', 'osp9').length, 'Saber (master, 142) told (§7 item 2)').toBe(1)
     expect(lines('prowler', 'osp9').length, 'Hunter (142) not told').toBe(0)
   })
   it('PC1 through a real line: an admin holding Plan of 149 is told, and the gate takes the line', () => {

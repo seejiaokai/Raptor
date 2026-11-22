@@ -238,8 +238,9 @@ describe('fault T — a line dated in the future never leaves the bell', () => {
     const now = { ...theInput() }
     const ch = { collection: 'inputs', id: IID, op: 'put', before: now, after: { ...now, remarks: 'Ranger words' } }
     expect(ownershipViolation(env([ch, { collection: 'notices', id: n.id, op: 'put', before: null, after: n }])) ?? 'allowed').toMatch(/not dated now/)
-    /* (control) the same line dated now rides his change */
-    expect(ownershipViolation(env([ch, { collection: 'notices', id: n.id, op: 'put', before: null, after: { ...n, at: Date.now() } }]))).toBeNull()
+    /* (control) the same line dated now rides his change — stamped with the input's squadron, as the pass stamps it (batch
+       1's second half, §7 item 1) */
+    expect(ownershipViolation(env([ch, { collection: 'notices', id: n.id, op: 'put', before: null, after: { ...n, at: Date.now(), u: 'u142' } }]))).toBeNull()
   })
   it('(backstop) a line already held dated 2099 leaves Hunter’s bell on his move like any other', () => {
     const l = hunterLine()

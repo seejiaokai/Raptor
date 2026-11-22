@@ -33,7 +33,7 @@ import { deriveActor } from '../command/actor'
 import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
-import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, levelAcct, readAccounts, adminsOf, type Account } from './accounts'
+import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, levelAcct, readAccounts, adminLineAudience, type Account } from './accounts'
 import { unitRowsBefore, unitRowsAfter, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach, lockBreach, everOfBefore } from './units'
 import { PEOPLE } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
@@ -1346,13 +1346,14 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
      (state/sched-commit.ts tellPass — the app's act, with no name, R12), each about an input this changeset changes and
      none of the war's or a posting's kinds. At the database step the pass's service account writes exactly these. */
   /* …addressed to one of that posting's squadron's admins on the run's day, read after the outcomes (the reshape plan §6.2
-     step 6 — accounts.ts adminsOf: at home there, or a plain admin holding Plan of it; a master through his home only; an
+     step 6 — accounts.ts adminLineAudience since §7 item 2: at home there, a plain admin holding Plan of it, or a master admin; an
      admin archived by this very pass not told), whichever war holds the posting (step 7) */
   const audience = new Map<string, Set<string>>()
   const adminOfPosting = (who: string, to: string): boolean => {
     const u = postUnit(who)
     let s = audience.get(u)
-    if (!s) { s = new Set(adminsOf(u, today)); audience.set(u, s) }
+    /* (…and every master admin who can sign in — the one audience, accounts.ts adminLineAudience, §7 item 2) */
+    if (!s) { s = new Set(adminLineAudience(u, today)); audience.set(u, s) }
     return s.has(to)
   }
   const told = new Set<string>()
@@ -1368,6 +1369,8 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
       const ok = parts.length === 1 && p.k === 'po' && posted.has(who) && p.o === posted.get(who)
         && (p.acct === undefined || (p.acct === true && p.o === 'overseas'))
         && n.iid === '' && n.day === postedOn.get(who) && String(n.to) !== who && adminOfPosting(who, String(n.to))
+        /* (stamped with the posting's squadron — §7 item 1) */
+        && n.u === postUnit(who)
         && !told.has(`${n.to}|${who}`)
       if (!ok) return refuse(c)
       told.add(`${n.to}|${who}`)
@@ -2962,7 +2965,35 @@ function lineRewritten(c: Change, replayed: ((c: Change) => boolean) | null): bo
   const b: any = c.before, n: any = c.after
   if (c.op !== 'put' || !b || typeof b !== 'object' || !n || typeof n !== 'object') return false
   if (replayed && replayed(c)) return false
-  return String(b.to) !== String(n.to) || String(b.iid ?? '') !== String(n.iid ?? '') || b.at !== n.at || !deepEqual(b.fu, n.fu)
+  /* (…nor its squadron's stamp — §7 item 1) */
+  return String(b.to) !== String(n.to) || String(b.iid ?? '') !== String(n.iid ?? '') || b.at !== n.at || !deepEqual(b.fu, n.fu) || !deepEqual(b.u, n.u)
+}
+/* A NEW LINE'S STAMP IS THE SQUADRON THE COMMAND ACTS IN (batch 1's second half, plan §7 item 1 — state/notices.ts
+   Notice.u): an input's line its input's squadron as this command leaves it (engine/inputs.ts inputUnitOf — the body the
+   pass stamps with), a holiday's its holiday part's, a posting's or its take-back's the man's home before the command, a
+   war line the war loaded's. The bell's switch, its grey mark and its tap read the stamp, so a line stamped with another
+   squadron would hide from the switch it belongs to, or land a tap elsewhere. A line the command cannot be judged by (an
+   input it does not change, a war line with no war door) is left to the checks that judge it; a restore's verified replay
+   puts back its own. Both sections ask it. */
+function lineStampOwed(env: CommitEnvelope, n: any): string | null | undefined {
+  if (n.iid) {
+    const ch = env.changes.find(x => x.collection === 'inputs' && String(x.id) === String(n.iid))
+    const img: any = !ch ? null : ch.op === 'delete' ? ch.before : (ch.after ?? ch.before)
+    return img ? inputUnitOf(img) : undefined
+  }
+  const p: any = Array.isArray(n.what) ? n.what[0] : null
+  const k = String(p?.k)
+  if (k === 'oilhol') return typeof p.u === 'string' && p.u ? p.u : null
+  if (k === 'po' || k === 'poback') return p.who != null ? homeBefore(String(p.who), todayIso(), unitRowsBefore(env.changes)) ?? null : undefined
+  if (k === 'lw' || k === 'lwopen' || k === 'lwback') return lwUnitNow() ?? undefined
+  return undefined
+}
+function lineStampWrong(env: CommitEnvelope, c: Change, replayed: ((c: Change) => boolean) | null): boolean {
+  const n: any = c.after
+  if (c.op !== 'put' || c.before != null || !n || typeof n !== 'object') return false
+  if (replayed && replayed(c)) return false
+  const want = lineStampOwed(env, n)
+  return want !== undefined && (typeof n.u === 'string' ? n.u : null) !== want
 }
 /* A NEW LINE IS DATED NOW (fix read 7, fault T — the security read's SEC7-2). A line leaves a moved man's bell from the
    first move day after the day it was written (state/notices.ts noticeLeftBell), so a line dated in 2099 was never
@@ -3138,7 +3169,8 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
   const ownsLine = (n: any, pid: string): boolean => {
     if (ownsHome(pid)) return true
     const x = lineSquadron(n)
-    return !!x && levelInForce(a, x, today!, rows!) === 'admin' && adminsOf(x, today!, rows!).includes(pid)
+    /* (the one audience — a master admin among them, §7 item 2) */
+    return !!x && levelInForce(a, x, today!, rows!) === 'admin' && adminLineAudience(x, today!, rows!).includes(pid)
   }
   const changedInputs = new Set(env.changes.filter(c => c.collection === 'inputs').map(c => String(c.id)))
   let replayed: ((c: Change) => boolean) | null | undefined
@@ -3255,6 +3287,8 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
       }
       /* (fault T: a new line is dated now — asked last, so a line refused on another count keeps its own words) */
       if (lineNotNow(c, replayed ?? null)) return `a bell line not dated now (${where})`
+      /* (§7 item 1: its squadron's stamp — after the date, so a line refused on another count keeps its own words) */
+      if (lineStampWrong(env, c, replayed ?? null)) return `a bell line not as the pass writes it (${where})`
       continue
     }
     if (c.collection !== 'settings') continue
@@ -3567,6 +3601,8 @@ function ownershipChecks(env: CommitEnvelope): string | null {
           /* (fix read 7, fault T: dated now — lineNotNow above; his Redo's verified replay puts back its own time) */
           if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
           if (lineNotNow(c, replayed)) return `a bell line not dated now (${where})`
+          /* (§7 item 1: stamped with the input's squadron, as the pass stamps it) */
+          if (lineStampWrong(env, c, replayed)) return `a bell line not as the pass writes it (${where})`
           break
         }
         /* FIX READ 7, FAULT U: his Undo of his own step takes his own line with it. Judged afresh, the restore's images

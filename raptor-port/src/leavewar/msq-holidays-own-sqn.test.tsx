@@ -69,11 +69,14 @@ describe('A4 (bell) — 142’s holiday tells only 142’s schedulers', () => {
 })
 
 describe('PB3 — a holiday’s OIL question reaches that squadron’s admins, a plain admin holding Plan of it among them (D2202)', () => {
-  it('Kestrel makes 17 Jul a holiday in 149’s war: Kestrel and Hunter (Plan of 149) are told; Saber (a master, home 142) and Hunter’s 142 squadron-mates are not', () => {
+  /* REWRITTEN TO §7 ITEM 2 (batch 1's second half — R-O2; D2198): it asserted Saber (a master, home 142) not told. The one
+     audience (accounts.ts adminLineAudience) now holds every master admin who can sign in; whether he SEES the 149 line
+     is his bell's switch, off by default (D2198). Hunter's 142 squadron-mates are still never told. */
+  it('Kestrel makes 17 Jul a holiday in 149’s war: Kestrel, Hunter (Plan of 149) and Saber (a master, home 142) are told; Hunter’s 142 squadron-mates are not', () => {
     huntPlans149()
     kestrelsHoliday(false)                                              // nothing of 142's on the day: Hunter is told by Plan alone
     const told = NOTICES.filter(x => x.name === 'National Day' && (x.what[0] as any)?.k === 'oilhol').map(x => x.to).sort()
-    expect(told).toEqual(['kes9', 'prowler'])
+    expect(told).toEqual(['kes9', 'prowler', 'stiff'])
   })
 })
 

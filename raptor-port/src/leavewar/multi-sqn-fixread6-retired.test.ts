@@ -162,7 +162,8 @@ describe('fault C — the gate: a filer-only line carries its mark', () => {
     /* unmarked, a forger's line would never leave his bell */
     expect(ownershipViolation(env([ch, ln({})])) ?? 'allowed').toMatch(/bell line of another squadron/)
     expect(ownershipViolation(env([ch, ln({ fu: ['u149'] })])) ?? 'allowed').toMatch(/bell line of another squadron/)
-    expect(ownershipViolation(env([ch, ln({ fu: ['u142'] })]))).toBeNull()
+    /* (…and stamped with the input's squadron, as the pass stamps it — batch 1's second half, §7 item 1) */
+    expect(ownershipViolation(env([ch, ln({ fu: ['u142'], u: 'u142' })]))).toBeNull()
     /* …and the pass writes it so */
     rmk('by Hunter, for real')
     const l: any = NOTICES.find(n => n.to === 'stiff' && n.iid === IID)

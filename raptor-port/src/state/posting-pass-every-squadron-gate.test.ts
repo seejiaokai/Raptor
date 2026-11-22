@@ -26,7 +26,9 @@ const lwPost = (pid: string, outcome = 'overseas') => ({ op: 'put', collection: 
 const archived = (pid: string) => ({ op: 'put', collection: 'people', id: pid, before: { cs: pid }, after: { cs: pid, archived: true, archivedBy: 'po', archivedOn: '2026-07-15' } })
 const deleted = (pid: string) => ({ op: 'put', collection: 'people', id: pid, before: { cs: pid }, after: { cs: pid, deleted: true, deletedFrom: '2026-07-15', archived: true, archivedBy: 'del' } })
 let nid = 0
-const line = (who: string, to: string, o = 'overseas') => ({ op: 'put', collection: 'notices', id: `n${++nid}`, before: null, after: { id: `n${nid}`, to, by: null, iid: '', day: '2026-07-15', what: [{ k: 'po', who, o }] } })
+/* (stamped with the posting's squadron, as the pass stamps it — batch 1's second half, §7 item 1; `u` to forge another) */
+const homeOf = (pid: string): string => (pid === PID.osprey || pid === PID.kestrel ? 'u149' : 'u142')
+const line = (who: string, to: string, o = 'overseas', u: string | null = homeOf(who)) => ({ op: 'put', collection: 'notices', id: `n${++nid}`, before: null, after: { id: `n${nid}`, to, by: null, iid: '', day: '2026-07-15', what: [{ k: 'po', who, o }], ...(u ? { u } : {}) } })
 
 describe('another squadron\'s posting, run through the second store', () => {
   it('149\'s posting of Osprey, Kestrel told: allowed (red on the old gate — the second store was no posting record)', () => {
@@ -78,9 +80,16 @@ describe('a Delete\'s war half on another squadron\'s stored war', () => {
 })
 
 describe('the bell lines\' audience — that posting\'s squadron\'s admins, today (step 6)', () => {
-  it('149\'s posting: a 142 admin, and the master admin at home in 142, never told', () => {
+  /* REWRITTEN TO §7 ITEM 2 (batch 1's second half — R-O2; D2198): it asserted "the master admin at home in 142, never told"
+     of 149's posting. The one audience (accounts.ts adminLineAudience) now holds every master admin who can sign in —
+     whether he SEES a 149 line is his bell's switch, off by default (D2198). A 142 plain admin is still never told. */
+  it('149\'s posting: a 142 plain admin never told; the master admin at home in 142 told (§7 item 2)', () => {
     expect(ownershipViolation(passEnv([fxPost('u149', PID.osprey), archived(PID.osprey), line(PID.osprey, PID.hunter)]))).toMatch(/posting pass may change only/)
-    expect(ownershipViolation(passEnv([fxPost('u149', PID.osprey), archived(PID.osprey), line(PID.osprey, PID.saber)]))).toMatch(/posting pass may change only/)
+    expect(ownershipViolation(passEnv([fxPost('u149', PID.osprey), archived(PID.osprey), line(PID.osprey, PID.saber)]))).toBeNull()
+  })
+  it('a posting line stamped with another squadron than the posting\'s, or with none: refused (§7 item 1)', () => {
+    expect(ownershipViolation(passEnv([fxPost('u149', PID.osprey), archived(PID.osprey), line(PID.osprey, PID.kestrel, 'overseas', 'u142')]))).toMatch(/posting pass may change only/)
+    expect(ownershipViolation(passEnv([fxPost('u149', PID.osprey), archived(PID.osprey), line(PID.osprey, PID.kestrel, 'overseas', null)]))).toMatch(/posting pass may change only/)
   })
   it('149\'s posting: a plain admin holding Plan of 149 is told (D2202)', () => {
     signInAs('saber')

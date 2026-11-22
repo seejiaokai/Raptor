@@ -328,7 +328,8 @@ describe("still open 2, his D2194 — an admin's bell lines and read records are
     const byMaster = { ...inp, by: 'stiff' }
     const ch2 = { op: 'put', collection: 'inputs', id: 'i1', before: byMaster, after: { ...byMaster, remarks: 'moved' } }
     /* (marked as the pass marks a filer-only line — fix read 7, fault M: the squadrons its telling read, Ranger's 142) */
-    expect(ownershipViolation(env([ch2, put('notices', 'n1', { ...line('stiff', [{ k: 'rmk' }]), fu: ['u142'] })]))).toBeNull()
+    /* (…and stamped with the input's squadron, as the pass stamps it — batch 1's second half, §7 item 1) */
+    expect(ownershipViolation(env([ch2, put('notices', 'n1', { ...line('stiff', [{ k: 'rmk' }]), fu: ['u142'], u: 'u142' })]))).toBeNull()
   })
 })
 
