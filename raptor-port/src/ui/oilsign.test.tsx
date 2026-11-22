@@ -13,7 +13,7 @@ import { createRoot } from 'react-dom/client'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
-import { SCHED, signOf } from '../engine/publish'
+import { SCHED, signOf, signShown } from '../engine/publish'
 import { curDraftId, dayDrafts, draftDup, draftSelect } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { stashClear } from '../engine/weekstash'
@@ -27,7 +27,7 @@ import { memoryBackend } from '../leavewar/state/storage'
 import { oilOpenOn, wireLeaveWarSync } from '../leavewar/sync'
 import * as pops from './pops'
 import { OilDayList } from './OilDayList'
-import { signPick, resetOilSign } from './oilsign'
+import { signPick, signNow, resetOilSign } from './oilsign'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -149,6 +149,31 @@ describe('a sign-off pressed on a day with an unanswered OIL question (D2294, D2
     await click('odl-yes-fx-train'); await click('odl-save')
     expect(answerOf('fx-train'), 'the answer is the input’s, whatever the plan').toBeGreaterThan(0)
     expect(signOf(SAT).cur, 'Save after the switch signs nothing on the other plan').toBeFalsy()
+  })
+
+  /* The fresh Opus read of the finished code, finding 1 (22 Nov 26): with two inputs listed, Save with one answered
+     signed the name, the next box asked again for the other, and ITS answer changed what the first signature was bound
+     to — clearing it. The very thing D2294 opens the list first to avoid, by a path through the list itself. What a
+     Save leaves unpicked is left as Later leaves it: no later box asks, and the publish note names it. */
+  it('Save with one of two answered: the rest is left as Later leaves it — the next box signs at once and the first name stands', async () => {
+    file(row('fx-meet', 'stiff'))
+    signPick(SAT, 'cur', 'ignite'); await draw()
+    expect(q('odl-left')!.textContent).toContain('nobody on them earns OIL')
+    await click('odl-yes-fx-train'); await click('odl-save')
+    expect(signShown(SAT).cur).toBe('ignite')
+    expect(signPick(SAT, 'sked', 'bane'), 'no second list for what he saw and left').toBe('signed')
+    expect(pops.OILLIST).toBeNull()
+    expect(signShown(SAT), 'and the first name still stands').toMatchObject({ cur: 'ignite', sked: 'bane' })
+    expect(answerOf('fx-meet'), 'the one left has no answer').toBeUndefined()
+  })
+  /* …finding 2: a held press put the box back by reading the stored names through signOf, which CREATES the day's sign
+     record — a write to the schedule outside any command (engine/publish.ts signAt's own warning, R2-01), carried off by
+     the next unrelated command and its Undo step. */
+  it('a held press writes nothing to the schedule’s own record', () => {
+    expect(SCHED.sign[SAT], 'setup: nobody has signed this day').toBeUndefined()
+    expect(signPick(SAT, 'cur', 'ignite')).toBe('held')
+    expect(signNow(SAT, 'cur')).toBe('')
+    expect(SCHED.sign[SAT], 'still no sign record for a day nobody signed').toBeUndefined()
   })
 
   it('a second input filed after Later is asked once more (the agent’s reading, told to him)', async () => {

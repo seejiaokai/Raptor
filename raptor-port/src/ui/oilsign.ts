@@ -23,7 +23,7 @@ import { curDraftId } from '../engine/drafts'
 import { logAction } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
-import { setSign, signOf, daySigned, dayApproved, dayHasChanges, SIGN_ROLES } from '../engine/publish'
+import { setSign, signShown, daySigned, dayApproved, dayHasChanges, SIGN_ROLES } from '../engine/publish'
 import { UNIT } from '../engine/unitview'
 import { dayIso } from '../engine/verid'
 import { CURWEEK } from '../engine/waves'
@@ -98,11 +98,15 @@ export const holdStands = (hold: SignHold, iso: string, unit: string): boolean =
 
 /** LATER, with a sign-off held: the name is written, with no answer — nobody on those inputs earns OIL, and the publish
  *  note says so (leavewar/sync.ts publishFlagsBids) — and the day asks no more of what stood open. */
-export function holdLater(hold: SignHold, iso: string, unit: string): void {
-  if (!holdStands(hold, iso, unit)) return
+/* what stands unanswered on the day now is marked as left: no later box asks about it again */
+function leaveOpen(iso: string, unit: string): void {
   const key = laterKey(unit, iso), left = OILSIGN_LATER.get(key) || new Set<string>()
   for (const o of oilOpenOn(iso, iso, unit)) left.add(o.iid)
   OILSIGN_LATER.set(key, left)
+}
+export function holdLater(hold: SignHold, iso: string, unit: string): void {
+  if (!holdStands(hold, iso, unit)) return
+  leaveOpen(iso, unit)
   writeSign(hold.di, hold.role, hold.who)
   HOOKS.reflow()      // the box is drawn by the schedule's own builders: it reads the name on their next draw
 }
@@ -113,7 +117,11 @@ export function holdLater(hold: SignHold, iso: string, unit: string): void {
  *  answers were refused: nothing is signed, and the list stays up. */
 export function holdSave(hold: SignHold, iso: string, unit: string, picks: Readonly<Record<string, OilPick | undefined>>): boolean {
   if (saveOilDay(iso, iso, picks, unit) < 0) return false
-  if (holdStands(hold, iso, unit)) { writeSign(hold.di, hold.role, hold.who); HOOKS.reflow() }
+  /* WHAT THIS SAVE LEFT UNPICKED IS LEFT AS LATER LEAVES IT (the fresh Opus read of the finished code, finding 1 — 22 Nov
+     26): with two inputs listed and one answered, the next box asked again for the other, and that answer changed what
+     the name just written was bound to and cleared it — the list's own path to the thing D2294 asks first to avoid. He
+     saw the row and left it: no later box asks, and the publish note names it (the agent's reading, told to him). */
+  if (holdStands(hold, iso, unit)) { leaveOpen(iso, unit); writeSign(hold.di, hold.role, hold.who); HOOKS.reflow() }
   return true
 }
 
@@ -124,8 +132,11 @@ export function holdSaid(hold: SignHold): { label: string; sch: boolean; cs: str
   return { label: String(r[1] || 'Sign-off'), sch: !!r[2], cs: String((PEOPLE as any)[hold.who]?.cs || hold.who) }
 }
 
-/** what the box shows now — the handler puts a held pick's `<select>` back to it, so the box never reads a name not written */
-export const signNow = (di: number, role: string): string => String(signOf(di)[role] || '')
+/** what the box shows now — the handler puts a held pick's `<select>` back to it, so the box never reads a name not written.
+ *  Read through signShown, never signOf: signOf CREATES the day's sign record where there is none, a write to the schedule
+ *  outside any command that the next unrelated command and its Undo step would carry off (engine/publish.ts signAt, R2-01 —
+ *  the fresh Opus read, finding 2); and signShown is what the box itself draws, a name the content has moved under included. */
+export const signNow = (di: number, role: string): string => String(signShown(di)[role] || '')
 
 /** the tests' reset (the session's own is ui/pops.ts POPS_RESET) */
 export function resetOilSign(): void { OILSIGN_LATER.clear() }
