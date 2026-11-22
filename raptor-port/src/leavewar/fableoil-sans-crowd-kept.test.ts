@@ -122,7 +122,8 @@ describe('a SANS tick made by hand on Quals counts from the day it is made (owne
     expect(dayPendingItems(THU).length, 'he left Thursday’s crowd: the scheduler is shown it (D44, D45)').toBeGreaterThan(0)
   })
 
-  it('a hand tick put back after a SANS posting keeps the posting’s date, though the mark is the admin’s own', () => {
+  /* (D2327: a tick put back counts from the day it is put back — here that day IS the posting's date, the fixture's today) */
+  it('a tick taken off and put back on the posting’s own day counts from that day, though the mark is the admin’s own', () => {
     onlyTheEvent(MON); onlyTheEvent(THU)
     expect(postOut('rocky', WED_ISO, 'sans')).toBe(true)
     raptorNotify()

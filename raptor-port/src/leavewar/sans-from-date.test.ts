@@ -6,7 +6,8 @@
        counted him);
    (a) a SANS tick put on or taken off BY HAND counts from the day it is made — published days before it keep their crowd,
        read nothing pending and keep their OIL through the next amendment;
-   (b) a hand re-tick after a SANS posting keeps the posting's date;
+   (b) a tick put back after a SANS posting counts from the day it is put back, the posting's earlier SANS days kept and
+       the days between a regular's (his D2327, 22 Nov 26 — the agent's reading until then);
    (c) a man NAMED on a published day before his posting does not make it pending.
    The fixture is fableoil-sans-crowd.test.ts's: the demo week of Mon 13 Jul 26, today Wed 15 Jul; id `rocky` is Hex, a WSO. */
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
