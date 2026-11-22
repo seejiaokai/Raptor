@@ -1167,3 +1167,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The helper redrew an already-approved row design around one new line and tagged the whole row "New"; the host caught it on opening the pictures and sent four pictures back. The brief had listed what to draw but not which of the drawn parts the owner had already approved.
 **Suggested improvement:** In the method's helper-brief section, require the brief to name, per picture, the parts already approved (blue mark) and the parts new this round (pink mark); the helper's report lists the marks it used per picture.
 **Principle:** A picture that marks approved work as new asks the reviewer to decide it again; tell the drawer what is already settled, not only what to draw.
+
+### Observation 1013: A new standing check breaks old tests that forge the state it now forbids
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** batch 1's second half, step A — a check run on every repaint that moves an admin off Edit Schedule where he may not edit the squadron in view (number past 1012, held by another branch)
+**Skill:** New skill candidate: guard-rollout
+**Type:** open-source
+**Phase/Area:** adding an always-on invariant to a shared refresh path
+
+**Issue:** The new check was written over "anyone signed in"; a dozen existing tests deliberately put a member on the edit page (a forged state) to prove the edit guards hold behind it, and the check moved him away first — the tests failed for a reason unrelated to what they prove. The fix was to narrow the check to the one question it owns (the squadron, for an admin), leaving the role's own landing where it was.
+**Suggested improvement:** When adding a check to a shared refresh path, first search the tests for ones that forge the state the check forbids, and scope the check to the exact question it owns rather than a wider condition that happens to include it.
+**Principle:** A standing invariant should own one question; a broader condition silently takes over other rules' territory and breaks the tests that exercise those rules' fallbacks.
