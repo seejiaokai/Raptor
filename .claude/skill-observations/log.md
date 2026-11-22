@@ -1167,3 +1167,20 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The script measured the new row's left edge against the list's first letter and the box's height against the real one, both exact; it never measured the row's two parts against each other vertically. Their baselines were level (0px), yet he saw a miss: lower-case words beside a capitals label sit optically low, their x-height middle 0.75px under the box's middle on the desktop.
 **Suggested improvement:** In step 3, a part placed BESIDE another is measured on the cross axis too: the words' x-height middle (canvas `measureText('x')`) against the neighbour's middle line, failing above 0.5px; where baselines are level but the cases differ, centre the x-height optically and say so. Check the picture's ink as well (rows of bright pixels in each box).
 **Principle:** Level baselines are not level to the eye when one side is capitals in a box and the other is lower case; measure what the eye compares.
+
+### Observation 1008: A walker's results file held a failed line no report named
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 139, closing the [FABLE-READ-FAULTS] walk (numbered past 1007 on another branch)
+**Skill:** session-handoff (and the bug-check order's §7.5 "walked enough")
+**Type:** open-source
+**Phase/Area:** closing a walk — reading the walkers' results
+
+**Issue:** The handoff said a walker's three scenarios "PASS at both sizes"; its results file held a third failed line
+(on the phone, a document gone after a reload) that neither its report nor the handoff named. Tallying every results
+file before writing the sheet found it; it proved to be the test browser's own limit (its WebKit stores no file in its
+local database), but it could as well have been lost saved data.
+**Suggested improvement:** in the handoff skill's and the sheet's close: tally every walker's results file by
+pass / fail / note and name each failed line with its disposition; a report's "PASS" is never copied without that tally.
+**Principle:** A summary of a test run is not the run; count the raw results before repeating anyone's verdict.

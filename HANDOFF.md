@@ -90,48 +90,21 @@ the later merge keeps both (D78).
   `inpLabel,` in sync.ts's import. **Astra's blind read is running** (report to `D:\raptor-work\c138-astra-read.md`,
   export `D:\raptor-work\c138-read-a`). **The code check has one finding in walker w2's own script**
   (`scripts/handpass/frf-w2.mjs:124`, a JSON copy) — fixed (structuredClone).
-  **WHERE CHAT 138 STOPPED (its chat was full) — chat 139 picks up here, nothing is running:**
-  - Astra's blind read is in (`…/briefs/2026-11-22-oil-f2-read-astra.md`): claim 3 (a refused Later used up the
-    question) FIXED red-first (`c30b719a1`, `oilsign.ts writeHeld`); claim 2 was the Opus read's finding 2, already
-    fixed, its test added; claim 1 (a hold should expire when the day's content changes behind the list) NOT taken, its
-    reason in that commit's message — tell him.
-  - Walker w2 is back (report in chat 138 only; script `scripts/handpass/frf-w2.mjs`, 115 pictures `…/w2/`): S2, S3,
-    S4 PASS at both sizes with real controls only. Its two findings (desktop, Undo pressed with an input's window open
-    from the List: the window keeps the old "Goes to"; a remark typed then is lost behind "That input is no longer
-    there") are FILED, NOT REPRODUCED, NOT FIXED — `[FABLE-READ-FAULTS]` found-not-fixed (f). Its leads, unchecked: the
-    document viewer says "Placed by Saber for Drifter" for a two-person input; the Inputs page's input window leaves the
-    top bar pressable on a desktop (D1645 says covered, D641 says the page works); no door exists to change "Goes to"
-    from the schedule with the window open (a shade covers it), so that part of chat 133's fix has only its unit test.
-  - All three walkers' pictures (about 350) are committed with this state. The app was walked at `ac3e22f77`; SIX
-    fixes came after it (the plan switch; the stale held box; the two code-check reds; Save leaves the unpicked as
-    Later does; signNow; the refused Later) — NONE of them walked yet.
-  - **Chat 139's steps, in order:** (1) `git fetch`; read GitHub's run on the last push and fix any red; (2) reproduce
-    w2's finding (f) on a build (`npm run build` under the checks lock, `npx vite preview`), fix red-first or leave it
-    filed with his word; (3) re-walk what the six fixes touched at 1536 and 402 — re-run `scripts/handpass/frf-w3.mjs`
-    on a fresh port (its F2-e EXPECTED has changed: after a Save with one of two answered the next box signs at once
-    and the publish note names the one left), plus the plan switch and the week change behind the list; (4) write the
-    sheet `raptor-port/docs/handpass/2026-11-22-fable-read-faults.md` — the roll-call (Astra's ten rows R01–R10 in its
-    scenario report are the start), the five sizing lines (type C + G + D; three Opus walkers, 14 scenarios, both
-    sizes; the drawing check measured, no formal part list), the orders walked, the cases a test carries, what was not
-    walked (a squadron change or sign-out with the list up, a keyboard-only pick, more than three inputs, a member's
-    view, Astra's S19, S23–S28, S37 beyond the unit tests), every finding with its disposition, the gate counts, the
-    Walk line; add the walk's row to `docs/walk-ledger.md`; (5) `npm run docsize`, push, read GitHub's run; (6) the
-    preview link and the look card to him. Not ready for "merge live" until (2)–(5) are done.
-  - **For him, with the link:** the readings listed above, plus — Save with some inputs left unanswered counts them as
-    left for Later; the "+ Input" window never saves a weekend input without an OIL answer, so the unanswered case
-    comes from a holiday declared afterwards or a published version loaded back; the ALL AVAIL wording question; the
-    crew-list finding (e) and the Undo finding (f).
-  **Next, in order:** (0) when w1 and w2 are back: rebuild under the checks lock, re-walk what the three fixes touched
-  (F2-a, F2-b, the plan switch, the week change — `scripts/handpass/frf-w3.mjs` re-run on a fresh port), push, read
-  GitHub's run; (1) read each walker's report, open its deciding pictures, reproduce every finding, fix red-first,
-  re-walk what a fix touched; (2) walk any scenario of Astra's the walkers did not; (3) the two blind code reads of F2
-  (Astra, and a fresh Opus reader — Fable built it), each claim a failing test first; (4) fill and close the sheet
-  `raptor-port/docs/handpass/2026-11-22-fable-read-faults.md` (roll-call, the five sizing lines, the Walk line), add
-  the walk's row to `docs/walk-ledger.md`; (5) push once no run is going, read GitHub's run; (6) the preview link to
-  him with the look card. **My readings to tell him:** an input filed after Later asks once more; Save then Undo takes
-  back the name first, the answers second; several inputs listed → the foot says "them"; over three unanswered inputs
-  are counted, not named, in the publish note; nothing left to answer → the held box is not shown and Close signs
-  nothing. **Rulings:** none new (D2299 was recorded by chat 137). **Next chat: 139.**
+  **Chat 139 (22 Nov 26) — the walk closed; READY FOR HIS LOOK.** (1) GitHub's run on `0d21c5abe` was all green.
+  (2) Walker w2's finding (f) REPRODUCED on a fresh build (`…/w2/only-s3-d/`), FIXED red-first at `e0a2a4155`
+  (`ui/InputWindow.tsx`: the window follows its record wherever it stands — the schedule's pop-up too; an id-less record
+  is not followed off the Inputs page; `inputedit.test.tsx`'s "undone from under an open dialog" now expects the window
+  to close and say so); the root (on a PC the bar stays pressable over an input's window, against D1645) stays filed
+  under [VEILED-WINDOWS-BAR]. Walker w2's third failed line, never in the handoff — the phone's "No document on file"
+  after a reload — is the test WebKit refusing to store any file (plain browser code fails the same; the app warned):
+  his iPhone checks it (the look card). (3) Re-walked on `e0a2a4155`, both sizes: `frf-w3.mjs` v4 (F2-e's expected
+  result changed) 122 PASS, 0 FAIL; the new `frf-w3-planswitch.mjs` (F2-j) PASS (its step 6 line is the script's own
+  check); `frf-w3-weekhold.mjs` and w2's S3 route PASS; pictures `…/rewalk/w3/`, `…/w2/only-s3-both/`; no errors.
+  (4) The sheet `raptor-port/docs/handpass/2026-11-22-fable-read-faults.md` closed with its Walk line; the ledger's row
+  added. (5) Pushed; GitHub's run on the push read before his look. **Next:** his look (the card in chat 139's last
+  message), then his "merge live" — `main` has moved since (pull request 822 and more), so bring `main` in first by
+  `shipping.md`'s four steps. His to answer: finding (e); the ALL AVAIL wording in the publish note; Leave War F2.
+  **Next chat: 140.**
 - **Rulings:** 1 recorded → `oil.md` (D2294); the OIL page's limit 15950 → 16250 for it, by his standing word (D2148). `main` brought in again at the merge after `c160bc534` (main's fix of the ruling homes; the record clashes settled). **Chat numbers:** this chat was handed 133, which the disk-space chat also used; chats run to 136, so the next chat was 137 (now 138, above). **Next free ruling:** D2296 (chat 134 holds D2292, chat 135 D2293 and D2295 — check before taking).
 <!-- /now -->
 <!-- now:claude/lw-monthjump-click -->

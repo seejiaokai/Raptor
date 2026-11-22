@@ -3,7 +3,7 @@
 import { writeFileSync } from 'node:fs'
 import path from 'node:path'
 import * as L from './frf-w3-lib.mjs'
-console.log('frf-w3 v3', new Date().toISOString())
+console.log('frf-w3 v4', new Date().toISOString())
 const ONLY = (process.env.ONLY || '').split(',').filter(Boolean)
 const SIZE_KEYS = process.env.SIZE ? [process.env.SIZE] : ['desktop', 'phone']
 const R = []
@@ -171,11 +171,12 @@ S.e = async sz => {
   await L.press(p, sz, `${LIST} [data-testid="odl-save"]`); await p.waitForTimeout(400)
   let sg = JSON.parse(await L.signs(p)); const t = await L.toastText(p); await L.shot(p, sz, 'e-2-saved-one')
   res('F2-e', sz, '2 one answered, Save: name signed', !!sg.cur && !(await L.listUp(p)), JSON.stringify({ sg, toast: t && t.text }))
+  /* CHANGED 22 Nov 26 (chat 139): the fresh Opus read's finding 1, fixed at 5c44b1342 — what a Save leaves unpicked is
+     left as Later leaves it (oilsign.ts leaveOpen), so the next box no longer asks: it signs at once, and the publish
+     note names the one left. Before that fix this step expected the list to ask again for the one left. */
   await L.pickSign(p, 'board', 'sked', 0)
-  h = await L.heldFacts(p); await L.shot(p, sz, 'e-3-asks-left')
-  const rows = await p.evaluate(() => [...document.querySelectorAll('[data-testid="win-oilday"] [data-testid^="odl-yes-"]')].map(x => x.getAttribute('data-testid')))
-  res('F2-e', sz, '3 next box asks for the one left', h && h.held && h.count === '1 to answer' && rows.length === 1 && rows[0] === 'odl-yes-w3-t2' && /nobody on it earns/.test(h.foot), JSON.stringify({ count: h && h.count, rows, foot: h && h.foot }))
-  await L.press(p, sz, `${LIST} [data-testid="odl-later"]`); await p.waitForTimeout(300)
+  await L.shot(p, sz, 'e-3-next-signs-at-once')
+  res('F2-e', sz, '3 next box signs at once (the unpicked was left as Later)', !(await L.listUp(p)) && !!JSON.parse(await L.signs(p)).sked, await L.signs(p))
   for (const [role, nth] of [['plan', 1], ['appr', 2]]) {
     await L.pickSign(p, 'board', role, nth)
     res('F2-e', sz, `4 ${role} signs at once`, !(await L.listUp(p)) && !!JSON.parse(await L.signs(p))[role], '')

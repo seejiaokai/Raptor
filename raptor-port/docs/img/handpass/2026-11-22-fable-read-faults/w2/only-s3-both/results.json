@@ -1,0 +1,424 @@
+[
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "A one Save: goes + OIL",
+  "pass": true,
+  "note": "acc=u oil={\"2026-07-18\":0} notes=[]",
+  "pics": [
+   "s3-02-A-filed-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "B fixture",
+  "pass": true,
+  "note": "acc=g oil={\"2026-07-18\":0}",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "F fixture: saved Other, OIL unanswered",
+  "pass": true,
+  "note": "acc=g oil=undefined (Fri 17 made a public holiday, its list left with Later)",
+  "pics": [
+   "s3-04-F-oil-list-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "F2: Goes to Unavailable + OIL answer in one Save",
+  "pass": true,
+  "note": "question asked: true; acc=u; oil={\"2026-07-17\":0}; notes=[]",
+  "pics": [
+   "s3-05-F-oil-asked-desktop.png",
+   "s3-06-F-saved-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "A on the board: Unavailable, not Ground",
+  "pass": true,
+  "note": "board Sat: Unavailable rows of A 1; Hunter pucks on the Ground Programme 0 (B's Drifter on the Ground Programme: 1)",
+  "pics": [
+   "s3-07-A-board-unavailable-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "A on Edit Schedule week",
+  "pass": true,
+  "note": "week: rows of A under Unavailable 2, any edit button 1",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "A card: no OIL? tag",
+  "pass": true,
+  "note": "card 1; OIL? tag 0",
+  "pics": [
+   "s3-08-A-cal-card-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "A counts him out on the Leave War",
+  "pass": true,
+  "note": "Hunter 18 Jul: {\"drawn\":true,\"text\":\"OTH\",\"cls\":\"weekend act hasc\",\"html\":\"<span class=\\\"c k-unav s-a top wide raptor\\\">OTH</span>\"} | Drifter (B, Ground) 18 Jul: {\"drawn\":true,\"text\":\"\",\"cls\":\"weekend act\",\"html\":\"\"}",
+  "pics": [
+   "s3-09-A-leavewar-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "✕ asks, hanging from the ✕",
+  "pass": true,
+  "note": "{\"q\":{\"l\":1216,\"t\":148,\"r\":1516,\"b\":254,\"reached\":true},\"x\":{\"l\":1483,\"t\":105,\"r\":1511,\"b\":133,\"reached\":true},\"foot\":{\"l\":1091,\"t\":790,\"r\":1519,\"b\":839,\"reached\":true},\"nearX\":true,\"aboveFoot\":true}",
+  "pics": [
+   "s3-10-X-asks-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "Escape asks, hanging from the ✕",
+  "pass": true,
+  "note": "{\"q\":{\"l\":1216,\"t\":148,\"r\":1516,\"b\":254,\"reached\":true},\"x\":{\"l\":1483,\"t\":105,\"r\":1511,\"b\":133,\"reached\":true},\"foot\":{\"l\":1091,\"t\":790,\"r\":1519,\"b\":839,\"reached\":true},\"nearX\":true,\"aboveFoot\":true}",
+  "pics": [
+   "s3-11-Esc-asks-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "Keep editing keeps the pick; Cancel closes at once, nothing saved",
+  "pass": true,
+  "note": "pick kept after Keep editing: true; Cancel closed at once: true; B acc=g",
+  "pics": [
+   "s3-12-Cancel-closed-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "Attach To changed: ✕ asks at the ✕",
+  "pass": true,
+  "note": "{\"q\":{\"l\":1216,\"t\":148,\"r\":1516,\"b\":254,\"reached\":true},\"x\":{\"l\":1483,\"t\":105,\"r\":1511,\"b\":133,\"reached\":true},\"foot\":{\"l\":1091,\"t\":790,\"r\":1519,\"b\":839,\"reached\":true},\"nearX\":true,\"aboveFoot\":true}",
+  "pics": [
+   "s3-13-Attach-asks-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "Discard and close leaves the To as saved",
+  "pass": true,
+  "note": "window closed true; to=\"145 Sqn\"",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "follow (door 1): Inputs window kept while the schedule is opened",
+  "pass": "NOTE",
+  "note": "pressed Edit Schedule with the window up: page now editsched, window still up: true",
+  "pics": [
+   "s3-14-follow-inputs-window-then-editsched-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "follow: window follows a move behind it",
+  "pass": "NOT WALKED",
+  "note": "on Edit Schedule the open window becomes the schedule's pop-up over a veil (#inpEditPop), so the week's Personal Inputs fold and its Reject / → Unavail cannot be pressed while it is up; a press outside closes it — no door for one person to change the row behind an open window",
+  "pics": [
+   "s3-14-follow-inputs-window-then-editsched-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "board: Reject then → Unavail on Personal Inputs",
+  "pass": true,
+  "note": "B acc=u",
+  "pics": [
+   "s3-15-follow-board-moved-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "follow u-then-undo: Undo behind the open window — the window follows",
+  "pass": true,
+  "note": "page now editsched; window before {\"win\":\"win-inputedit\",\"picked\":[\"Unavailable\"],\"line\":\"Counted as away on the Leave War\",\"rmk\":\"\"}; record after Undo acc=r; window after {\"win\":\"inpEditPop\",\"picked\":[],\"line\":\"Rejected by a scheduler\",\"rmk\":\"\"}; notes [\"Undid: a change to the schedule\"]",
+  "pics": [
+   "s3-17-follow-u-then-undo-after-undo-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "follow u-then-undo: the window's Save does not put the old place back",
+  "pass": true,
+  "note": "acc before Save r, after r; remarks now \"w2 follow\"; window up false; notes [\"Input updated\"]",
+  "pics": [
+   "s3-18-follow-u-then-undo-after-save-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "board: → Ground on Personal Inputs",
+  "pass": true,
+  "note": "B acc=g",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "follow g-then-undo: Undo behind the open window — the window follows",
+  "pass": true,
+  "note": "page now editsched; window before {\"win\":\"win-inputedit\",\"picked\":[\"Ground Programme\"],\"line\":\"Still counted in the Leave War’s manning\",\"rmk\":\"w2 follow\"}; record after Undo acc=r; window after {\"win\":\"inpEditPop\",\"picked\":[],\"line\":\"Rejected by a scheduler\",\"rmk\":\"w2 follow\"}; notes [\"Undid: a change to the schedule\"]",
+  "pics": [
+   "s3-19-follow-g-then-undo-after-undo-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "follow g-then-undo: the window's Save does not put the old place back",
+  "pass": true,
+  "note": "acc before Save r, after r; remarks now \"w2 follow\"; window up false; notes []",
+  "pics": [
+   "s3-20-follow-g-then-undo-after-save-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "follow: window follows a move behind it",
+  "pass": "NOT WALKED",
+  "note": "with the input's window up on the board, its Personal Inputs button \"→ Ground\" is covered (a press there meets inpEditPop) — the schedule's input window is a pop-up over a veil, a press outside closes it (the pop-up rule), so no person can change the row behind it while it stays open",
+  "pics": [
+   "s3-21-follow-window-open-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "board pop-up: a press outside closes it",
+  "pass": true,
+  "note": "window up after a press outside: false",
+  "pics": [
+   "s3-22-follow-outside-closed-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "errors",
+  "pass": true,
+  "note": "none",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "A one Save: goes + OIL",
+  "pass": true,
+  "note": "acc=u oil={\"2026-07-18\":0} notes=[]",
+  "pics": [
+   "s3-02-A-filed-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "B fixture",
+  "pass": true,
+  "note": "acc=g oil={\"2026-07-18\":0}",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "F fixture: saved Other, OIL unanswered",
+  "pass": true,
+  "note": "acc=g oil=undefined (Fri 17 made a public holiday, its list left with Later)",
+  "pics": [
+   "s3-04-F-oil-list-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "F2: Goes to Unavailable + OIL answer in one Save",
+  "pass": true,
+  "note": "question asked: true; acc=u; oil={\"2026-07-17\":0}; notes=[]",
+  "pics": [
+   "s3-06-F-oil-asked-phone.png",
+   "s3-07-F-saved-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "A on the board: Unavailable, not Ground",
+  "pass": true,
+  "note": "board Sat: Unavailable rows of A 1; Hunter pucks on the Ground Programme 0 (B's Drifter on the Ground Programme: 1)",
+  "pics": [
+   "s3-08-A-board-unavailable-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "A on Edit Schedule week",
+  "pass": true,
+  "note": "week: rows of A under Unavailable 2, any edit button 1",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "A card: no OIL? tag",
+  "pass": true,
+  "note": "card 1; OIL? tag 0",
+  "pics": [
+   "s3-09-A-cal-card-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "A counts him out on the Leave War",
+  "pass": true,
+  "note": "Hunter 18 Jul: {\"drawn\":true,\"text\":\"OTH\",\"cls\":\"weekend act hasc\",\"html\":\"<span class=\\\"c k-unav s-a top wide raptor\\\">OTH</span>\"} | Drifter (B, Ground) 18 Jul: {\"drawn\":true,\"text\":\"\",\"cls\":\"weekend act\",\"html\":\"\"}",
+  "pics": [
+   "s3-10-A-leavewar-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "✕ asks, hanging from the ✕",
+  "pass": true,
+  "note": "{\"q\":{\"l\":80,\"t\":76,\"r\":380,\"b\":190,\"reached\":true},\"x\":{\"l\":339,\"t\":19,\"r\":383,\"b\":63,\"reached\":true},\"foot\":{\"l\":13,\"t\":812,\"r\":389,\"b\":861,\"reached\":true},\"nearX\":true,\"aboveFoot\":true}",
+  "pics": [
+   "s3-12-X-asks-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "Escape asks, hanging from the ✕",
+  "pass": true,
+  "note": "{\"q\":{\"l\":80,\"t\":76,\"r\":380,\"b\":190,\"reached\":true},\"x\":{\"l\":339,\"t\":19,\"r\":383,\"b\":63,\"reached\":true},\"foot\":{\"l\":13,\"t\":812,\"r\":389,\"b\":861,\"reached\":true},\"nearX\":true,\"aboveFoot\":true}",
+  "pics": [
+   "s3-13-Esc-asks-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "Keep editing keeps the pick; Cancel closes at once, nothing saved",
+  "pass": true,
+  "note": "pick kept after Keep editing: true; Cancel closed at once: true; B acc=g",
+  "pics": [
+   "s3-14-Cancel-closed-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "Attach To changed: ✕ asks at the ✕",
+  "pass": true,
+  "note": "{\"q\":{\"l\":80,\"t\":76,\"r\":380,\"b\":190,\"reached\":true},\"x\":{\"l\":339,\"t\":19,\"r\":383,\"b\":63,\"reached\":true},\"foot\":{\"l\":13,\"t\":812,\"r\":389,\"b\":861,\"reached\":true},\"nearX\":true,\"aboveFoot\":true}",
+  "pics": [
+   "s3-15-Attach-asks-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "Discard and close leaves the To as saved",
+  "pass": true,
+  "note": "window closed true; to=\"145 Sqn\"",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "follow (door 1)",
+  "pass": "NOTE",
+  "note": "with the Inputs page window up the top bar is not pressable",
+  "pics": [
+   "s3-16-follow-inputs-window-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "board: Reject then → Unavail on Personal Inputs",
+  "pass": true,
+  "note": "B acc=u",
+  "pics": [
+   "s3-17-follow-board-moved-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "follow u-then-undo",
+  "pass": "NOT WALKED",
+  "note": "the top bar's Undo is not pressable with the window up",
+  "pics": [
+   "s3-19-follow-u-then-undo-noundo-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "follow variant 2",
+  "pass": "NOT WALKED",
+  "note": "B acc=u; → Ground on its line: 0",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "follow: window follows a move behind it",
+  "pass": "NOT WALKED",
+  "note": "with the input's window up on the board, its Personal Inputs button \"Reject\" is covered (a press there meets airpop-body inped-body) — the schedule's input window is a pop-up over a veil, a press outside closes it (the pop-up rule), so no person can change the row behind it while it stays open",
+  "pics": [
+   "s3-20-follow-window-open-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "board pop-up: a press outside closes it",
+  "pass": true,
+  "note": "window up after a press outside: false",
+  "pics": [
+   "s3-21-follow-outside-closed-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "errors",
+  "pass": true,
+  "note": "none",
+  "pics": []
+ }
+]
