@@ -79,7 +79,18 @@ the later merge keeps both (D78).
   board's crew list shows a man posted out as SANS under "SANS avail" on a day before his posting date, while the ALL
   AVAIL window there still counts him — it goes with Fable's three SANS questions (b). Leads, not filed: the person
   window's "Thu 3 Feb · 1 Approved" for a 2028 leave shows no year; the test WebKit draws a serif font there (its own
-  font, not the app's). **Still out:** w2.
+  font, not the app's). **The fresh blind Opus read of F2 is back** (its report is in the chat only — write its two
+  findings into the sheet's §10): (1) Save with one of two answered, then the next box asked again and that answer
+  cleared the first name — FIXED red-first at `5c44b1342` (what a Save leaves unpicked is left as Later leaves it:
+  `oilsign.ts leaveOpen`; this CHANGES what w3 walked as F2-e — the next box now signs at once — so F2-e is re-walked);
+  (2) a held press wrote the day's sign record outside any command (`signNow` read `signOf`) — FIXED red-first, same
+  commit. Its wording question, for him: an input holding ALL AVAIL is named "ALL AVAIL's Training" / "Training for 2
+  people" in the publish note, as the Undo names it. Its tidiness note (filed, not fixed): the day's head and the
+  capital-letter line are each built twice in `publishFlagsBids`; `joined` could be simpler; a space lost after
+  `inpLabel,` in sync.ts's import. **Astra's blind read is running** (report to `D:\raptor-work\c138-astra-read.md`,
+  export `D:\raptor-work\c138-read-a`). **The code check has one finding in walker w2's own script**
+  (`scripts/handpass/frf-w2.mjs:124`, a JSON copy) — fix it once w2 is back, before the push. `5c44b1342` is NOT pushed.
+  **Still out:** w2.
   **Next, in order:** (0) when w1 and w2 are back: rebuild under the checks lock, re-walk what the three fixes touched
   (F2-a, F2-b, the plan switch, the week change — `scripts/handpass/frf-w3.mjs` re-run on a fresh port), push, read
   GitHub's run; (1) read each walker's report, open its deciding pictures, reproduce every finding, fix red-first,
