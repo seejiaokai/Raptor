@@ -100,11 +100,13 @@ export type NoticePart =
      schedule as it stands, never stored (leavewar/sansunfiled.ts), so it shrinks as he files and goes once all are. */
   | { k: 'sansdue'; days: string[]; from?: string }
   /* …TAKEN BACK WITH THE POSTING THAT MADE IT (his D1693, D1699, D1710 — every line is taken back by the undo of what made
-     it): the posting taken back ("Undo post out"), or changed on its sheet after it ran, when he had READ the line. A
-     stored line, by the admin who did it, never to him; `days` — what the line said; its `day` the posting's date (the
-     gate matches it to the posting changed — leavewar/sansunfiled.ts sansBackCovered). Shown struck through, then "taken
-     back · <who>" (backWords). An unread line simply goes with its posting, as every worked-out line does. */
-  | { k: 'sansback'; days: string[] }
+     it): the posting taken back ("Undo post out"), or its date moved or another outcome given — run or not yet run, since
+     his line shows from the save (D2340). A stored line to him, by the admin who did it, never to that admin; its `day` the
+     posting's date (the gate matches it to the posting changed — leavewar/sansunfiled.ts sansBackCovered). `days` — what
+     his live line said, where he had READ it (else empty: an unread line simply goes), shown struck through, then "taken
+     back · <who>" (backWords); `hid` — his SANS availability the change HID, today on (owner D2341, 23 Nov 26), said
+     after it: "Your SANS availability for Sat 18 Jul is hidden while you're not SANS that day." */
+  | { k: 'sansback'; days: string[]; hid?: string[] }
 
 /** what a posting out did on its date, for the admins' bells ([POSTOUT-RUN-NOTICE]) */
 export type PoOutcome = 'overseas' | 'delete' | 'sans' | 'none'
@@ -880,10 +882,10 @@ export function noticePostingBack(to: string, by: string | null, who: string, o:
 /** HIS SANS-DAYS LINE TAKEN BACK (D2338 with D1693, D1699, D1710): one line to the man who had read it, pushed INSIDE the
  *  posting's own take-back command (leavewar/sync.ts retractPostingLines → leavewar/sansunfiled.ts sansLineBack), by the
  *  admin who pressed it — never to him. `day` — the posting's date. */
-export function noticeSansBack(to: string, by: string | null, days: readonly string[], day: string, at: number = Date.now()): boolean {
+export function noticeSansBack(to: string, by: string | null, days: readonly string[], day: string, at: number = Date.now(), hid: readonly string[] = []): boolean {
   if (!here(to) || (by != null && to === by)) return false
   const id = mint(at)
-  NOTICES.push({ id, to, by, at, iid: '', name: 'Your SANS availability', day, what: [{ k: 'sansback', days: [...days] }] })
+  NOTICES.push({ id, to, by, at, iid: '', name: 'Your SANS availability', day, what: [{ k: 'sansback', days: [...days], ...(hid.length ? { hid: [...hid] } : {}) }] })
   noteWarMade(id)
   return true
 }
@@ -1007,7 +1009,8 @@ function partWords(p: NoticePart): string {
     case 'poback': return 'taken back'
     /* (the days themselves are the line's date — noticeWords; more than three are counted here) */
     case 'sansback': return 'taken back'
-    case 'sansdue': { const more = sansDays(p).length - SANS_DAYS_NAMED; return more > 0 ? `Planned, no availability filed · ${more} more ${more === 1 ? 'day' : 'days'}` : 'Planned, no availability filed' }
+    /* (his own words, D2340 — the old "Planned, no availability filed" was not clear, D2342) */
+    case 'sansdue': return `You're planned on ${sansDaysWords(sansDays(p))} with nothing filed. Tap to file.`
   }
 }
 /* HIS SANS DAYS, AS THE LINE'S DATE (D2338): the first three named, each month once at the end of its run of days, as the
@@ -1021,16 +1024,20 @@ const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/
 function sansDays(p: any): string[] {
   return p && Array.isArray(p.days) ? p.days.filter((d: unknown): d is string => typeof d === 'string' && ISO_DAY.test(d)) : []
 }
+/* (past three, "and 2 more" after the dates, part of the list — chat 147's rewording, the agent's reading of D2342) */
 function sansDaysWords(days: readonly string[]): string {
-  const shown = days.slice(0, SANS_DAYS_NAMED)
+  const shown = days.slice(0, SANS_DAYS_NAMED), more = days.length - shown.length
   return shown.map((d, i) => { const w = noticeDay(d); const next = shown[i + 1]; return next && next.slice(0, 7) === d.slice(0, 7) ? w.replace(/ [A-Za-z]{3}$/, '') : w }).join(', ')
+    + (more > 0 ? ` and ${more} more` : '')
 }
 /** the first of a SANS-days line's days, or null — the bell's tap asks it (ui/topstate.ts openNotice); a taken-back one
  *  opens what the line opened (D1693) */
 export function sansDueOf(n: Pick<Notice, 'what'>): string | null {
   const p: any = (n.what || [])[0]
   const days = p && (p.k === 'sansdue' || p.k === 'sansback') ? sansDays(p) : []
-  return days.length ? days[0]! : null
+  /* (a taken-back line with nothing struck opens the first day it says is hidden — D2341) */
+  const hid = p && p.k === 'sansback' && Array.isArray(p.hid) ? sansDays({ days: p.hid }) : []
+  return days.length ? days[0]! : hid.length ? hid[0]! : null
 }
 /* a bidding stretch said without its weekdays — "1 Apr – 30 Jun" (D1214's words) */
 function stretchWords(a: string, b: string): string {
@@ -1043,7 +1050,7 @@ function stretchWords(a: string, b: string): string {
    always the original line's own (one body: partWords). A move made before its line kept where it took the leave reads
    "LL moved" — demo data only (D56). */
 function backWords(p: NoticePart): string {
-  if (p.k === 'sansback') return partWords({ k: 'sansdue', days: sansDays(p) })
+  if (p.k === 'sansback') { const d = sansDays(p); return d.length ? `You're planned on ${sansDaysWords(d)} with nothing filed.` : '' }
   if (p.k === 'poback') return partWords({ k: 'po', who: p.who, o: p.o, ...(p.acct ? { acct: true as const } : {}) })
   if (p.k !== 'lwback') return ''
   if (p.d === 'open' || p.d === 'close') return partWords({ k: 'lwopen', a: p.a, b: p.b, open: p.d === 'open' })
@@ -1054,7 +1061,7 @@ function backWords(p: NoticePart): string {
 }
 /** A LINE OF THE LIST, IN THE SHORTER WORDING (D769): the input and its date; what happened — the first two things,
  *  where a save changed several — and who did it ('' where the app did). */
-export function noticeWords(n: Notice): { name: string; day: string; what: string; who: string; struck?: string } {
+export function noticeWords(n: Notice): { name: string; day: string; what: string; who: string; struck?: string; nameStruck?: boolean; more?: string } {
   /* A HOLIDAY'S LINE (D783 (6) — the picture of record, docs/mock/2026-10-12-oil-notify/*-hol-6-bell.png): the holiday
      and its date(s); how many inputs are LEFT to answer, counted now; who made it a holiday */
   const h = holOf(n)
@@ -1081,11 +1088,21 @@ export function noticeWords(n: Notice): { name: string; day: string; what: strin
     const p: any = PEOPLE[String(w.who)]
     return { name: p && p.cs ? String(p.cs) : n.name, day: noticeDay(n.day), what: partWords(w), who: n.by ? cs(n.by) : '', struck: backWords(w) }
   }
-  /* HIS SANS DAYS WITH NOTHING FILED (D2338): "Your SANS availability · Sat 18, Mon 20 Jul / Planned, no availability filed";
+  /* HIS SANS DAYS WITH NOTHING FILED (D2338), IN HIS OWN WORDS (D2340, D2342 — "The wording is not clear"): one plain
+     sentence, "You're SANS from Fri 17 Jul. / You're planned on Sat 18, Mon 20 Jul with nothing filed. Tap to file.";
      nobody named — the app worked it out */
-  if (w && w.k === 'sansdue') return { name: 'Your SANS availability', day: sansDaysWords(sansDays(w)), what: partWords(w), who: '' }
-  /* …and taken back (D1699): "Your SANS availability · Sat 18 Jul / ~~Planned, no availability filed~~ · taken back · Saber" */
-  if (w && w.k === 'sansback') return { name: 'Your SANS availability', day: sansDaysWords(sansDays(w)), what: partWords(w), who: n.by ? cs(n.by) : '', struck: backWords(w) }
+  if (w && w.k === 'sansdue') {
+    const from = typeof w.from === 'string' && ISO_DAY.test(w.from) ? w.from : n.day
+    return { name: `You're SANS from ${noticeDay(from)}.`, day: '', what: partWords(w), who: '' }
+  }
+  /* …and taken back (D1699): the whole line struck — "~~You're SANS from Fri 17 Jul.~~ / ~~You're planned on Sat 18 Jul
+     with nothing filed.~~ · taken back · Saber" (the struck days only where he had read it) — then what the change hid
+     (D2341): "Your SANS availability for Sat 18 Jul is hidden while you're not SANS that day." */
+  if (w && w.k === 'sansback') {
+    const hid = Array.isArray(w.hid) ? sansDays({ days: w.hid }) : []
+    const more = hid.length ? `Your SANS availability for ${sansDaysWords(hid)} is hidden while you're not SANS ${hid.length === 1 ? 'that day' : 'those days'}.` : ''
+    return { name: `You're SANS from ${noticeDay(n.day)}.`, nameStruck: true, day: '', struck: backWords(w), what: partWords(w), who: n.by ? cs(n.by) : '', ...(more ? { more } : {}) }
+  }
   /* (a bid it replaced on the Leave War is said after the rest, never cut by the first-two rule — M4 9.3a: "You were added ·
      replaces your LL bid") */
   const rb = (n.what || []).filter(p => p.k === 'rbid')
@@ -1096,6 +1113,9 @@ export function noticeWords(n: Notice): { name: string; day: string; what: strin
 
 /** its age, at the line's right: now · 2 min · 1 h · yesterday · 2 d */
 export function noticeAge(n: Pick<Notice, 'at'>, now: number = Date.now()): string {
+  /* (a line dated a moment still to come — his SANS-days line, dated his posting's date while it waits for it, D2340 — has
+     no age to print) */
+  if (n.at > now) return ''
   const ms = Math.max(0, now - n.at), min = Math.floor(ms / 60_000)
   if (min < 1) return 'now'
   if (min < 60) return `${min} min`

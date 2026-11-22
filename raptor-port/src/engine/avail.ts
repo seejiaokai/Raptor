@@ -345,11 +345,12 @@ export function slotRules(key:any){
 /* WHY A SANS MAN WITH NOTHING FILED IS STRUCK, IN WORDS — the 'none' status said once, for the two places that print it:
    the crew list (ui/palette-html.ts whyOf) and an armed seat's reason (slotBar below), so the words never differ by
    screen. On a day SANS for him only by a posting not yet run (owner D2338, 22 Nov 26 — "no availability filed, await for
-   17 Jul for SANs availability to be filed"), nothing can be filed for him before the posting's date (D2327), so the
-   words name that date and where it is filed; from the date on, the usual words. `iso`: the day looked at. */
+   17 Jul for SANs availability to be filed"), the words name that date and where it is filed — his own words since
+   D2340 (23 Nov 26), which lets it be filed from the moment the posting is saved; from the date on, the usual words.
+   `iso`: the day looked at. */
 export function sansNoneWhy(p:any,iso:any):string{
   const f=sansAheadFrom(p,iso);
-  return f?`SANS from ${isoDayWords(f)}: no availability filed. It can be filed from that day on the Inputs page's SANS tab.`:'SANS — no availability filed for today';}
+  return f?`SANS from ${isoDayWords(f)}: no availability filed. File it on the Inputs page's SANS tab.`:'SANS — no availability filed for today';}
 const SANS_KEY:any={fly:'f',oft:'o',amt:'a'};
 export const SANS_LABEL:any={fly:'Fly',oft:'OFT',amt:'AMT'};
 /* `iso`: the day being asked about — only a man who is SANS ON THAT DAY is judged (owner D2313, 22 Nov 26: a day before

@@ -152,10 +152,14 @@ export function sansDayGroups(iso: string, rows: readonly any[] = INPUTS, people
     for (const en of namedOf(r)) {
       if (!en || !en.p) continue
       const id = String(en.p), man = people[id]
+      /* HIDDEN ON A DAY HE IS NOT SANS (owner D2341, 23 Nov 26 — "show like it's deleted … But counts again if it's
+         undone"): his posting moved later or taken back, a tick taken off — not listed apart as "no longer SANS" any more,
+         but not listed at all, as if deleted, back by itself once the day is SANS again (engine/inputs.ts sansShownOn) */
+      if (man && !sansOnP(man, iso)) continue
       const e: SansEntry = { r, id, letters: lettersOf(r), hours: hoursOf(r), late: lateWord(en.mod != null ? { ...r, mod: en.mod } : r), placed: placedLine(r, people) }
       if (!counted.has(id)) {
         /* the count's own reasons, in its order (state/flyplan.ts sansCommittedOn) */
-        const why = !man ? 'no longer on the roster' : man.archived || man.deleted ? 'archived' : !sansOnP(man, iso) ? 'no longer SANS'
+        const why = !man ? 'no longer on the roster' : man.archived || man.deleted ? 'archived'
           : man.seat !== 'FCP' && man.seat !== 'RCP' ? 'not aircrew' : 'no activity chosen'
         out.out.push({ ...e, why })
       } else if (flies.has(id)) (man.seat === 'FCP' ? out.p : out.w).push(e)

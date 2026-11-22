@@ -11,7 +11,7 @@
    day still takes OFT and AMT): nothing is ticked, and he chooses. A run of days starts with Fly whatever lies inside
    it. */
 import { defaultAllday } from '../engine/inputs'
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, sansFiler, sansOnP } from '../engine/people'
 import { isAdmin, me, pageUnit } from '../state/perms'
 import { rosterOf } from '../engine/roster'
 import { notify } from '../state/store'
@@ -21,17 +21,21 @@ import { fmt } from './inputedit'
 import { setInpEdit } from './pops'
 
 const TYPE = 'SANS Availability'
-const isSans = (id: string | null | undefined): boolean => !!id && !!PEOPLE[id] && !!PEOPLE[id].san
+/* (a SANS man — SANS today, or by a SANS posting saved for a date ahead: he may be filed for from the moment it is saved,
+   owner D2340, 23 Nov 26; until then SANS today only, D2327). With a day, SANS on that day: his own "+ Commitment" opens
+   only on a day he can be filed for, so it never seeds a filing the save would refuse. */
+const isSans = (id: string | null | undefined, iso?: string): boolean =>
+  !!id && !!PEOPLE[id] && (iso ? sansOnP(PEOPLE[id], iso) : sansFiler(PEOPLE[id]))
 
-export const maySansAdd = (): boolean => isAdmin() || isSans(me())
+export const maySansAdd = (iso?: string): boolean => isAdmin() || isSans(me(), iso)
 
 export function openSansAdd(from: string, until?: string): boolean {
-  if (!maySansAdd()) return false
   const [iso, end] = until && until < from ? [until, from] : [from, until]
+  if (!maySansAdd(iso)) return false
   const mine = me()
-  const who = isSans(mine) ? mine
+  const who = isSans(mine, iso) ? mine
     /* (a SANS man of the page's own squadron — the SANS calendar stays on his own, D2132; the reshape plan §3.2 A-ii) */
-    : rosterOf(pageUnit('own'), iso).find(id => PEOPLE[id].san && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special)
+    : rosterOf(pageUnit('own'), iso).find(id => isSans(id, iso) && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special)
   const single = !end || end === iso
   setInpEdit({
     _new: true, _calendar: true, _ctx: 's', person: who, type: TYPE,

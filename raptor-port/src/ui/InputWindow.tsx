@@ -9,7 +9,7 @@ import { bringForward } from './winorder'
 import { frontWin, holdPageScroll } from './floatwin'
 import { placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup } from './PeoplePick'
-import { pickProblem } from './peoplepick-model'
+import { pickProblem, sansFor } from './peoplepick-model'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { inputUnitOf, INPUTS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpType, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, idsOf, leadOf, holds, isPlaceholderInput, isOther, isFly } from '../engine/inputs'
 import { upchitEffects, medClashes } from '../engine/medical'
@@ -902,7 +902,7 @@ export function InputEditor() {
   const span = draft ? spanOf(draft.allday, draft.half) : 'all'
   /* the roster a context-bound add offers — SANS Availability is refused for
      anyone else at commit (sansRefusal), so the list should not offer them */
-  const peopleFor = () => rosterOptions(pickUnit, firstDay).filter(id => (ctx !== 's' || PEOPLE[id].san) && (!offers || offers(id)))
+  const peopleFor = () => rosterOptions(pickUnit, firstDay).filter(id => (ctx !== 's' || sansFor(id, firstDay)) && (!offers || offers(id)))   // (SANS on the draft's first day — D2340)
 
   /* the form itself — the same fields, checks and buttons whichever chrome it stands in */
   const inner = (<>

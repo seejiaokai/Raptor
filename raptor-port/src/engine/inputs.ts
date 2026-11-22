@@ -3,7 +3,7 @@ import { hhmm, hm24 } from './time'
 import { CURWEEK } from './waves'
 import { newId } from './newid'
 import { mintOrd } from '../command/ord'
-import { PEOPLE, isSpecial } from './people'
+import { PEOPLE, isSpecial, sansOnP } from './people'
 import { UNIT } from './unitview'
 import { homeUnitOf, homeHandle, needDay, rosterToday, type HomeHandle } from './roster'
 /* A STABLE ADDRESS FOR ONE INPUT (owner, 10 Aug 26 — editing an input's times
@@ -76,7 +76,27 @@ export function inputsOn(dt:any):any[]{
   if(FZ){const k=dateOrd(dt); const f=k!=null?FZ.get(k):undefined; if(f)return f;}
   /* the schedule in view's own (multi-squadron step 3): a frozen face above is already its unit's issued copy */
   const at=inputAtIso(dt);
-  return INPUTS.filter((inp:any)=>inputCoversDate(inp,dt)&&inputBelongs(inp,UNIT,at));}
+  return INPUTS.filter((inp:any)=>inputCoversDate(inp,dt)&&inputBelongs(inp,UNIT,at)&&sansShownOn(inp,at));}
+/* SANS AVAILABILITY SHOWS AND COUNTS ONLY ON A DAY HE IS SANS (owner D2341, 23 Nov 26 — "Is there a way to show like it's
+   deleted instead of faded? But counts again if it's undone"). Filed for a day that has stopped being one of his SANS days —
+   his SANS posting moved later, taken back or given another outcome; a tick taken off — the record is HIDDEN on that day,
+   on every screen and in every count, as if deleted; nothing is deleted, so once the day is SANS again (the posting moved
+   back) it shows and counts again by itself, with nothing to re-file and nothing for an Undo to do. A reading, never a
+   write. Asked by every day reader of the live list below (inputsOn, inputsOnDay, inputsFor), the SANS calendar's day
+   (ui/sanscal-model.ts) and its month (ui/InputsCal.tsx); a published face is its frozen copy and never asks (FZ above).
+   A record of several people is shown on the day while ONE of them is SANS that day; a day no calendar can read is not
+   judged. sansShownAny: the record shows at all — some day of it is a SANS day — the lists of records ask it. */
+export function sansShownOn(inp:any,at:any):boolean{
+  if(!inp||!isSansAvail(inp.type))return true;
+  const iso=inputAtIso(at); if(!iso)return true;
+  const ids=namedOf(inp).map((e:any)=>e.p);
+  return ids.some((p:any)=>sansOnP(PEOPLE[p],iso));}
+export function sansShownAny(inp:any):boolean{
+  if(!inp||!isSansAvail(inp.type))return true;
+  const sp=inputSpanIso(inp); if(!sp)return true;
+  for(let d=sp[0],n=0;d<=sp[1]&&n<400;d=isoNext(d),n++){if(sansShownOn(inp,d))return true;}
+  return false;}
+const isoNext=(iso:string):string=>{const t=new Date(Date.UTC(+iso.slice(0,4),+iso.slice(5,7)-1,+iso.slice(8,10)+1)); return t.toISOString().slice(0,10);};
 /* WHOSE AN INPUT IS — ONE UNIT'S, ON A DATE (multi-squadron batch 1, step 3; plan §3.4 "Inputs stay one list"). The list
    stays ONE (one authoritative record each, the community's — storage/keyowner.ts); what changes is the reader: every
    reader that chooses a set of inputs asks inputsFor(unit, date) — the schedule in view's (UNIT) for a schedule surface,
@@ -121,7 +141,7 @@ export function inputTouches(r:any,unit:any):boolean{return !!r&&inputSquadrons(
 export function inputBelongs(r:any,unit:any,at?:any):boolean{if(!r)return false;
   return inputOnDay(r,unit,inputAtIso(at)||inputAtIso(r.date,r.yr)||rosterToday());}
 /* a squadron's inputs on one day (a day reader), and every input touching it (a list reader) */
-export function inputsOnDay(unit:any,iso:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputOnDay(r,unit,iso));}
+export function inputsOnDay(unit:any,iso:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputOnDay(r,unit,iso)&&sansShownOn(r,iso));}
 export function inputsTouching(unit:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputTouches(r,unit));}
 /* his own Inputs page: every input touching his squadron, and every input naming him wherever it sits (C2) */
 export function inputsListed(unit:any,pid:any,list?:any):any[]{const p=String(pid??''); return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&(inputTouches(r,unit)||(p!==''&&holds(r,p))));}
@@ -129,7 +149,7 @@ export function inputsListed(unit:any,pid:any,list?:any):any[]{const p=String(pi
    an input's accepted mark or lands it asks the first day, never "touches"; state/store.ts landingInputs). The contract
    step (phase 3) took inputsFor's no-day form: a day reader names its day (inputsFor(unit, at) / inputsOnDay). */
 export function inputsOnFirstDay(unit:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputBelongs(r,unit));}
-export function inputsFor(unit:any,at:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputBelongs(r,unit,at));}
+export function inputsFor(unit:any,at:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputBelongs(r,unit,at)&&sansShownOn(r,at));}
 /* the one unit a saved input is read as — whose people its window offers: the squadron of its first day, through the
    same body (its first named man's, else its stamp, else its filer's) */
 export function inputUnitOf(r:any):string|null{if(!r)return null; const sp=inputSpanIso(r); const iso=sp?sp[0]:rosterToday(); const named=namedOf(r);

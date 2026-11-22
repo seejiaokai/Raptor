@@ -173,7 +173,7 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncBeforeEnlist, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { sansUnfiledLines, sansLineBack, sansBackCovered, sansBackOwed, wireSansBackBefore } from './sansunfiled'
+import { sansUnfiledLines, sansLineBack, sansTakeBack, sansPostedFrom, sansBackCovered, sansBackOwed, wireSansBackBefore } from './sansunfiled'
 import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
@@ -3924,7 +3924,7 @@ function retractPostingLines(lines: readonly Notice[]): string[] {
     const ix = NOTICES.findIndex(x => x.id === n.id)
     if (ix >= 0) NOTICES.splice(ix, 1)
     if (n.to === by) { if (by && hasRead(by, n)) forget.push(n.id); continue }
-    if (sansLineBack(n, by, at)) continue   // (the man's own SANS-days line — sansunfiled.ts, D2338)
+    if (sansLineBack(n)) continue   // (the man's own SANS-days line goes; what he is told is sansTakeBack's — sansunfiled.ts, D2338, D2341)
     if (!hasRead(n.to, n) || !admins.has(n.to)) continue
     const p = n.what[0]
     if (p?.k !== 'po') continue
@@ -3945,9 +3945,12 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
     type: 'lw.postout', scope: { module: 'people' }, meta: null,
     apply: (txn: Txn) => {
       const lines = retract ? postingLinesOf(id) : []
+      /* (his SANS posting as it stood before the change — its take-back may owe him one line, D2338, D2341) */
+      const sans = retract ? sansPostedFrom(id) : null
       /* the scheduler store's starting point brought up to memory BEFORE it is enlisted, as the posting pass does (its
          notes there): only this command's own lines are its change */
-      if (lines.length) { resyncBeforeEnlist(); txn.enlist(schedStore) }
+      const tells = lines.length > 0 || !!sans
+      if (tells) { resyncBeforeEnlist(); txn.enlist(schedStore) }
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
       ok = write()
       if (!ok || !body) return
@@ -3955,9 +3958,12 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
       if (!keep.suspend) enableAfterPosting(id)
       if (!keep.sans && body.sanBy === 'po') { sansErase(body); delete body.sanBy }   // the posting's SANS never was (D2313)
       if (lines.length) forget = retractPostingLines(lines)
+      /* HIS ONE LINE (sansunfiled.ts sansTakeBack): his live SANS-days line struck where he had read it, and the SANS
+         availability this change hid (owner D2341 — "show like it's deleted … But counts again if it's undone") */
+      if (sans) sansTakeBack(id, sans, me() != null ? String(me()) : null, Date.now())
       validate()
       finishPeopleWrite()
-      if (lines.length) schedApplyEnd()
+      if (tells) schedApplyEnd()
     },
   })
   /* the command LANDED — never only its body run: a commit refused after the body put every store back, his read record

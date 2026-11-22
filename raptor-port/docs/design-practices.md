@@ -643,6 +643,8 @@ first, as a chat does for ruling numbers, and names it in its handoff block; whe
 the merge renumbers only the branch's own side, by script, and the closing report tells him the old and new numbers
 (D1417).*
 
+**Lesson 99 (23 Nov 26, D2342 — "The wording is not clear. Could u rephrase it for the bell").** A bell line speaks to the person in a plain sentence — what is true for him, then what to do — never a bold label with a clipped status after it. *(The agent's reading: the same holds for every bell line the app works out for one person.)*
+
 **Lesson 97 (22 Nov 26, D2312 — "too much words. be concise").** A line added inside a window is concise: only what the person must know to act. *(The agent's reading: why the design asks it stays off the screen, but a warning of what a press costs, a refusal's reason and an error's remedy stay (§1); it narrows §1b's "every fact first" for such a line — round 2's "Asked now because an answer given after signing clears the sign-offs…" became "Answer before Ace signs CUR CK.")*
 
 **Lesson 96 (19 Nov 26, D2211 — "Instead of saying as for 149's own admin. Perhaps make it clearer").** The line under an access level says plainly what the person gets, never by comparison with another role. *(The agent's reading: the same holds for any line that explains a role or a setting.)*

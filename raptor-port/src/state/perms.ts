@@ -2971,7 +2971,9 @@ const lineMalformed = (n: any): boolean => !n || typeof n !== 'object' || !Array
   || n.what.some((p: any) => !p || typeof p !== 'object' || Array.isArray(p) || typeof p.k !== 'string'
     /* (…and a SANS-days part whose days are not a list of ISO dates — chat 147's reads: `days: 'Sat'` or `[5, 6]` broke
        the bell's words for its reader, who could not remove the line) */
-    || ((p.k === 'sansdue' || p.k === 'sansback') && !isoDays(p.days)))
+    || ((p.k === 'sansdue' || p.k === 'sansback') && !isoDays(p.days))
+    /* (…and a taken-back line's hidden days the same — D2341) */
+    || (p.k === 'sansback' && p.hid !== undefined && !isoDays(p.hid)))
 /* A RESTORE'S FOLLOW-UP TO HIS OWN MAN (fix read 10, fault A (b)): followUpOf below judges the one about a man of another
    squadron; a follow-up on his own man's bell — a "taken back" of bidding opened, an "again" — passed by warMade alone.
    Now it too must be one the restore owes (the probe, field for field), each owed line once (`used`). */

@@ -224,7 +224,8 @@ export const byCrew=(a:any,b:any)=>
    by hand counts from the day it is made (state/quals-write.ts), so a day before it reads as it did.
    EVERY READER THAT IS ABOUT A DAY ASKS `sansOn` WITH THAT DAY — the ALL AVAIL crowd, the crew list, a puck on a day, the
    SANS availability checks, what a published day froze. Only a reader about the man as he is now (the Quals tick itself,
-   who may file SANS availability, the Leave War's row — D283, D321, D1692) reads `p.san`. No date → today's tick. */
+   the Leave War's row — D283, D321, D1692) reads `p.san`; who may be filed for SANS availability goes by the day filed
+   (D2340 — sansFiler below for a door with no day yet). No date → today's tick. */
 /* A SANS POSTING SET AHEAD IS READ BY THE DAY (owner D2329, 22 Nov 26 — "on 18 jul … if hes planned like briefing, hes
    going to be counted in the all avail"; "whenever that day is looked at" the agent's reading, told to him). His tick
    starts only when the posting RUNS on its date (leavewar/sync.ts runPoOutcomes), so a day past the date looked at before
@@ -243,10 +244,15 @@ export function sansOnP(p:any,iso?:any):boolean{
   const was=Array.isArray(p.sanWas)?p.sanWas:[];
   return was.some((s:any)=>Array.isArray(s)&&d>=String(s[0]||'')&&d<String(s[1]||''));}
 export const sansOn=(id:any,iso?:any):boolean=>sansOnP(PEOPLE[id],iso);
+/* MAY HE BE FILED FOR SANS AVAILABILITY AT ALL — SANS today, or by a SANS posting saved for a date ahead (owner D2340,
+   23 Nov 26 — "a SANS man may file SANS availability ahead, as soon as his SANS posting is saved, for days from its date";
+   filing goes by the day filed, which each day's own question, sansOnP with that day, answers). The doors that open
+   before a day is known ask this (the SANS calendar's add, its people list with no day); the save asks the day. */
+export function sansFiler(p:any):boolean{return !!p&&(!!p.san||(!!SANS_AHEAD&&!!SANS_AHEAD(p)));}
 /* IS THIS DAY SANS FOR HIM ONLY BY A POSTING NOT YET RUN — AND FROM WHAT DATE? (owner D2338, 22 Nov 26 — "Should it say no
    availability filed, await for 17 Jul for SANs availability to be filed"). The first day of that posting, or null: a day
-   his tick or an ended stretch already makes SANS is not one (sansOnP's own order). Who may be filed for SANS goes by who
-   is SANS today (D2327), so on such a day nothing can be filed for him until that date — the crew list says so. */
+   his tick or an ended stretch already makes SANS is not one (sansOnP's own order). He may be filed for on such a day
+   from the moment the posting is saved (D2340, narrowing D2327) — the crew list says where. */
 export function sansAheadFrom(p:any,iso?:any):string|null{
   if(!p||!iso||!SANS_AHEAD)return null;
   const d=String(iso);

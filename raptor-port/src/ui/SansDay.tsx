@@ -74,7 +74,7 @@ export function SansDay({ iso, hi, onClose }: {
      Jul — opening Fri 17 Jul from his 142 SANS calendar got 142's flying and facts over 149's men and commitments. That
      squadron's people and inputs are still read ON the day shown. */
   const a = flyOwn(iso), facts = factsOwn(iso), u = pageUnit('own', todayIso()), com = sansCommittedOn(iso, undefined, unitPeople(u, iso)), g = sansDayGroups(iso, inputsOnDay(u, iso), unitPeople(u, iso))
-  const canAdd = maySansAdd()
+  const canAdd = maySansAdd(iso)   // (on a day he is SANS — D2340)
   const avail = { p: facts.availP, w: facts.availW }
 
   const reqText = (s: 'p' | 'w') => a.reqFrom[s] === 'nf' ? 'NF' : a.req[s] === null ? '–' : String(a.req[s])

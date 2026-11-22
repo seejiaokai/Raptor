@@ -9,7 +9,7 @@ import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { standsOn } from '../engine/overlay'
 import { isOD, INPUTS, DATES, inpId, inpLabel, defaultAllday, isLateInput, idsOf, leadOf, inputCoversDate, listedPersonal, facesOf } from '../engine/inputs'
 import { DAYS } from '../engine/data'
-import { PEOPLE, isSpecial, whoId } from '../engine/people'
+import { PEOPLE, isSpecial, whoId, sansOn } from '../engine/people'
 import { hideDetail } from '../engine/warnhide'
 import { dayApproved, dayDelta, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq, daySnapOf, rowsLeftOut, unpublishBackTo } from '../engine/publish'
 import { verSeq } from '../engine/verid'
@@ -1347,7 +1347,7 @@ export function routeClick(e: MouseEvent) {
        anyway (sansRefusal), so seeding a non-SANS default would open a dialog
        already pointed at a refusal */
     /* (the day it acts on — the reshape plan §3.3 C6: a man who is 149's from Thursday is not seeded into 142's Friday) */
-    const pool = kind === 's' ? rosterOptions(UNIT, dayIso(String(CURWEEK), di)).filter(id => PEOPLE[id].san) : rosterOptions(UNIT, dayIso(String(CURWEEK), di))
+    const pool = kind === 's' ? rosterOptions(UNIT, dayIso(String(CURWEEK), di)).filter(id => sansOn(id, dayIso(String(CURWEEK), di)))   /* (SANS on that day — D2340) */ : rosterOptions(UNIT, dayIso(String(CURWEEK), di))
     const person = pool[0]
     if (!person) { HOOKS.toast(kind === 's' ? 'No SANS aircrew on the roster' : 'No crew on the roster to file an input for', 'warn'); return }
     const seedType = kind === 'u' ? firstUnavailType() : kind === 's' ? firstSansType() : firstPersonalType()

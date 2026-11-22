@@ -20,7 +20,8 @@ import { acceptInput } from '../engine/slots'
 import { iuParts } from '../engine/keys'
 import { ownInputOf, toPeople, putPerson, takePerson, swapPerson, pieceOf } from '../engine/inputown'
 import { DAYS } from '../engine/data'
-import { PEOPLE, isSpecial } from '../engine/people'
+import { PEOPLE, isSpecial, sansFiler, sansOnP } from '../engine/people'
+import { isoDayWords } from '../engine/weekstash'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { lockedWeekNote } from '../engine/publish'
@@ -292,10 +293,35 @@ export const sansFlags = (sans: any): any => {
    SAME span/time validation every other half-day type goes through — there
    is no third check here for it any more. Returns '' when the payload is
    fine to save. */
-export function sansRefusal(person: any, sans: any): string {
-  if (!PEOPLE[person]?.san) return 'SANS Availability is for SANS aircrew only'
+/* …AND IT GOES BY THE DAY FILED (owner D2340, 23 Nov 26 — "a SANS man may file SANS availability ahead, as soon as his
+   SANS posting is saved, for days from its date (narrows D2327: filing goes by the day filed)"). Until then it went by who
+   was SANS today, so a man posted out as SANS from a date ahead could be filed for by nobody until that date. Now a man
+   SANS today, or by a SANS posting saved for a date ahead (engine/people.ts sansFiler), may be filed for, on the days he is
+   SANS — every day of the filing one of his SANS days (sansOnP with that day), so a filing never holds a day it would be
+   hidden on (D2341 — engine/inputs.ts sansShownOn), save a day the entry being changed (`except`) already held: a record
+   one of whose days was hidden by a later change of his posting still saves as it stands. `from` / `to`: the filing's
+   first and last days (yyyy-mm-dd); without them only the man is asked, as before. A day before his SANS starts is refused
+   naming the day it starts — "Hex is SANS from Fri 17 Jul: file SANS availability for days from then" (the agent's words,
+   in the note's form, told to him). */
+export function sansRefusal(person: any, sans: any, from?: string, to?: string, except?: any): string {
+  const p = PEOPLE[person]
+  if (!sansFiler(p)) return 'SANS Availability is for SANS aircrew only'
+  if (from && /^\d{4}-\d{2}-\d{2}$/.test(from)) {
+    const last = to && /^\d{4}-\d{2}-\d{2}$/.test(to) && to > from ? to : from
+    for (let d = from, n = 0; d <= last && n < 400; d = isoPlus(d, 1), n++) {
+      if (sansOnP(p, d) || (except && inputCoversDate(except, fmt(d)))) continue
+      /* the next day he is SANS, within a year — the date the refusal names */
+      let next = ''
+      for (let x = isoPlus(d, 1), m = 0; m < 400; x = isoPlus(x, 1), m++) if (sansOnP(p, x)) { next = x; break }
+      return next ? `${p.cs} is SANS from ${isoDayWords(next)}: file SANS availability for days from then` : 'SANS Availability is for SANS aircrew only'
+    }
+  }
   if (!sans || !Object.keys(sans).some(k => sans[k])) return 'Tick at least one of Fly / AMT / OFT'
   return ''
+}
+const isoPlus = (iso: string, n: number): string => {
+  const t = new Date(Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10) + n))
+  return t.toISOString().slice(0, 10)
 }
 
 /* ONE SANS RECORD PER DAY (bug-test fix). SANS Availability is one window per
@@ -707,7 +733,7 @@ export function normalizeInputDraft(draft: any, except: any):
      a type that means nothing, so both are refused here, the one place every
      editor's commit passes through. */
   if (isSansAvail(draft.type)) {
-    const why = sansRefusal(draft.person, draft.sans)
+    const why = sansRefusal(draft.person, draft.sans, draft.start, draft.end, except)
     if (why) { HOOKS.toast(why, 'warn'); return null }
     const dup = sansOverlapRefusal(draft.person, date, endDate, except)
     if (dup) { HOOKS.toast(dup, 'warn'); return null }
