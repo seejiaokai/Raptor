@@ -19,8 +19,8 @@ import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync, setWarWorldDoor, postOut, undoPostOut, restoreArchivedPerson } from './sync'
 import { setHome, homeOn, unitsLoad } from '../state/units'
 import { INPUTS } from '../engine/inputs'
-import { NOTICES, noticesFor, allNoticesFor, type Notice } from '../state/notices'
-import { markNoticeRead, unreadFor, noticeSeenLoad } from '../state/noticeseen'
+import { NOTICES, noticesFor, allNoticesFor, isAcctNotice, type Notice } from '../state/notices'
+import { markNoticeRead, unreadFor, noticeSeenLoad, isUnread } from '../state/noticeseen'
 import { ownershipViolation } from '../state/perms'
 import { rosterToday } from '../engine/roster'
 
@@ -28,6 +28,8 @@ const mem: Record<string, string> = {}
 let PEOPLE0 = ''
 const signInAs = (name: string, pass = 'x') => { resetSession(sessionFor(signIn(name, pass))); raptorNotify() }
 let worlds: Record<string, any> = {}
+/* his unread squadron lines — every line on his bell but those about his own account (a move now writes one: D2251) */
+const unreadSqn = (pid: string) => allNoticesFor(pid).filter(n => !isAcctNotice(n) && isUnread(n, pid)).length
 
 beforeAll(() => {
   vi.useFakeTimers({ toFake: ['Date'] })
@@ -80,7 +82,10 @@ describe("D2218 — a posting taken back, and an admin since moved squadron", ()
     const old = setup(false)
     signInAs('ad2', 'a2')
     expect(noticesFor('prowler').some(n => n.id === old.id), 'off his bell from the move day').toBe(false)
-    expect(unreadFor('prowler'), 'it lights nothing').toBe(0)
+    /* (his move itself tells him on his own bell — batch 1's second half, his D2251: "Made a member: you moved to 149";
+       that line is his, not his old squadron's, and is counted apart) */
+    expect(noticesFor('prowler').filter(isAcctNotice).map(n => n.what[0]), 'his move told him, once').toEqual([{ k: 'acct', c: 'member', why: 'moved', mv: '149' }])
+    expect(unreadSqn('prowler'), 'it lights nothing').toBe(0)
     signInAs('outlaw')
     expect(undoPostOut('bane')).toBe(true)
     expect(getState().postOuts.bane?.to ?? null).toBeNull()

@@ -21,8 +21,8 @@ import { wireLeaveWarSync, setWarWorldDoor } from './sync'
 import { homeOn, unitsLoad } from '../state/units'
 import { HOME_PFX } from '../state/units-model'
 import { INPUTS } from '../engine/inputs'
-import { NOTICES, noticesFor, type Notice } from '../state/notices'
-import { unreadFor, noticeSeenLoad } from '../state/noticeseen'
+import { NOTICES, noticesFor, allNoticesFor, isAcctNotice, type Notice } from '../state/notices'
+import { noticeSeenLoad, isUnread } from '../state/noticeseen'
 import { installGlobalUndo } from '../state/undo-wire'
 import { _resetTimeline } from '../undo/timeline'
 import { rosterToday } from '../engine/roster'
@@ -31,6 +31,9 @@ const mem: Record<string, string> = {}
 let PEOPLE0 = ''
 const signInAs = (name: string, pass = 'x') => { resetSession(sessionFor(signIn(name, pass))); raptorNotify() }
 let worlds: Record<string, any> = {}
+/* his unread squadron lines — every line on his bell but those about his own account: since batch 1's second half a move
+   itself tells him on his own bell (his D2251), a line his, not his old squadron's, which these tests are not about */
+const unreadSqn = (pid: string) => allNoticesFor(pid).filter(n => !isAcctNotice(n) && isUnread(n, pid)).length
 
 beforeAll(() => {
   vi.useFakeTimers({ toFake: ['Date'] })
@@ -93,12 +96,12 @@ describe('fault C — a retired filer line stays retired', () => {
       homes('prowler', 'hc', [['u142', '2026-07-15'], ['u149', '2026-07-16']]); on(17)
       signInAs('ad2', 'a2')
       expect(shown('prowler', l.id), 'off his bell on the 17th').toBe(false)
-      expect(unreadFor('prowler')).toBe(0)
+      expect(unreadSqn('prowler')).toBe(0)
       signInAs('ad', 'a'); del()
       expect(NOTICES.some(n => n.to === 'prowler' && n.iid === IID && n.id !== l.id), 'not told of the delete').toBe(false)
       signInAs('ad2', 'a2')
       expect(shown('prowler', l.id), 'still off after the delete').toBe(false)
-      expect(unreadFor('prowler'), 'the bell stays dark').toBe(0)
+      expect(unreadSqn('prowler'), 'the bell stays dark').toBe(0)
     })
     it(`(Opus P3, ${rd}) away to 149 and back to 142: the line stays off`, () => {
       const l = hunterLine(); if (read) readIt('prowler', l)
@@ -106,14 +109,14 @@ describe('fault C — a retired filer line stays retired', () => {
       on(16); signInAs('ad2', 'a2'); expect(shown('prowler', l.id), 'off on his move day').toBe(false)
       on(17); expect(homeOn('prowler', rosterToday())).toBe('u142')
       expect(shown('prowler', l.id), 'still off, back home').toBe(false)
-      expect(unreadFor('prowler')).toBe(0)
+      expect(unreadSqn('prowler')).toBe(0)
     })
     it(`(Astra, ${rd}) two round trips: the line stays off`, () => {
       const l = hunterLine(); if (read) readIt('prowler', l)
       homes('prowler', 'hc', [['u142', '2026-07-15'], ['u149', '2026-07-16'], ['u142', '2026-07-17'], ['u149', '2026-07-18'], ['u142', '2026-07-19']])
       on(19); signInAs('ad2', 'a2'); expect(homeOn('prowler', rosterToday())).toBe('u142')
       expect(shown('prowler', l.id)).toBe(false)
-      expect(unreadFor('prowler')).toBe(0)
+      expect(unreadSqn('prowler')).toBe(0)
     })
     it(`(security, ${rd}) the named man moves into the filer's squadron after the line retired: it stays off`, () => {
       const l = hunterLine(); if (read) readIt('prowler', l)
@@ -121,7 +124,7 @@ describe('fault C — a retired filer line stays retired', () => {
       homes('bane', 'hb', [['u142', '2026-07-15'], ['u149', '2026-07-17']])
       on(17); signInAs('ad2', 'a2'); expect(homeOn('bane', rosterToday())).toBe('u149')
       expect(shown('prowler', l.id)).toBe(false)
-      expect(unreadFor('prowler')).toBe(0)
+      expect(unreadSqn('prowler')).toBe(0)
     })
   }
 })

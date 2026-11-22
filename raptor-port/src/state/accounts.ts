@@ -180,7 +180,10 @@ export const ACCOUNT_TYPES = ['access.request', 'access.decline', 'access.approv
   'account.master',
   /* batch 1's second half, plan §4 item 5: Admin → Users' one Save — the role, the master mark and every squadron's line
      of one account in one command (saveAccess below) */
-  'account.access'] as const
+  'account.access',
+  /* batch 1's second half, plan §7 item 6 (§15 D11, §16 D11′): the app's own line on a man's bell on the day his move
+     takes effect (state/acctlines.ts writeMoveLines) — the system actor; perms.ts acctLineViolation has its own section */
+  'account.told'] as const
 
 /* ---- the seeds (demo data, D56 — wiped with everything else before the database) ----
    `us` stays Ranger (bane), as "View as" left every member test before; `ad` is Saber

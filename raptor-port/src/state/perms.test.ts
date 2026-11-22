@@ -327,7 +327,8 @@ describe('the command gate (cmdAuthorize) — every command the app registers', 
     expect(COMMAND_OPS['account.addNew'].more).toEqual([[T.person, 'C'], [T.accessreq, 'D'], [T.profile, 'U'], [T.home, 'C']])
     expect(COMMAND_OPS['access.approveNew'].more).toEqual([[T.user, 'C'], [T.person, 'C'], [T.profile, 'U'], [T.home, 'C']])
     expect(COMMAND_OPS['person.add'].more).toEqual([[T.profile, 'U'], [T.home, 'C']])
-    expect(COMMAND_OPS['account.update'].more, 'a rename onto a waiting name answers its request').toEqual([[T.accessreq, 'D']])
+    /* …and, since batch 1's second half (plan §7 item 6, §15 D5), a change to his access writes the line on his own bell */
+    expect(COMMAND_OPS['account.update'].more, 'a rename onto a waiting name answers its request').toEqual([[T.accessreq, 'D'], [T.notice, 'C']])
     /* withhold ONE of the tables from the admin: the whole command is refused, not just that half */
     const cell = PERMS[T.person].admin, was = cell.all.slice()
     cell.all = cell.all.filter(a => a !== 'C')

@@ -26,6 +26,7 @@ import { PEOPLE } from '../engine/people'
 import { notify as raptorNotify } from './store'
 import { commitAs } from '../command/commit'
 import { globalUndo, globalRedo } from '../undo/timeline'
+import { NOTICES, isAcctNotice } from './notices'
 
 useMsqWorld()
 
@@ -81,6 +82,9 @@ describe('guardrail 2 — no restore puts back a right whose man has moved since
     expect(u.reason, 'the next press named').toMatch(/Press Undo again for: /)
     expect(rowsOf(ACCT.ranger), 'nothing put back, not even ended').toEqual([])
     expect(holds(ACCT.ranger, U150)).toBeUndefined()
+    /* (batch 1's second half, §16 D7′: his own line follows the right it tells of — the right left out, "View of 150 ended"
+       stays on his bell, never taken away as if the View came back) */
+    expect(NOTICES.filter(n => String(n.to) === PID.ranger && isAcctNotice(n)).map(n => (n.what[0] as any).c), 'his line stays').toContain('viewEnd')
     /* the next press passes it over: it takes the step before it */
     const u2 = globalUndo()
     expect(u2.reason ?? '', 'never the same refusal again').not.toMatch(/^Something else changed this after your action — it can’t be undone now\. Press Undo again for: .*View/)

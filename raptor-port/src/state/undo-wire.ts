@@ -52,7 +52,7 @@ import { restoreAbsencesOf, warNoticesReversed, acctNoticesReversed, warDayRefus
 import { warCounts } from '../leavewar/absences'
 import { DATES, inputCoversDate, isSansAvail } from '../engine/inputs'
 import { UNIT_ROW_PREFIXES, GRANT_PFX, UNIT_PFX, UNITPLACE_PFX } from './units-model'
-import { noticeLeftBell, type Notice } from './notices'
+import { noticeLeftBell, isAcctNotice, type Notice } from './notices'
 import { UNIT } from '../engine/unitview'
 import { split, localOf, qualify } from '../storage/unitid'
 import { storedPlan } from './plan-foreign'
@@ -463,6 +463,28 @@ function grantLeftOut(c: Change, dir: 'undo' | 'redo', entry: UndoEntry, changes
   const ctx = grantCtx(c, dir, entry, changes)
   return !!ctx && restoreLeavesOut(c, ctx)
 }
+/* HIS OWN ACCOUNT'S LINE FOLLOWS THE RIGHT IT TELLS OF (batch 1's second half, plan §16 D7′, beside Piece B's guardrails):
+   the step's line about a squadron's right ("View of 150 ended") is taken away by its Undo, or put back by its Redo, only
+   with that right — where the guardrails leave out every row of that right the step holds (his man moved since, the
+   sign-in re-linked, a Plan by one who is not a master admin), the line is left out too. Kept, it would say his right
+   came back, or ended again, when nothing of it changed — and a step the guardrails empty would not be empty, so the
+   Undo went through taking only the line, and was never blocked in today's words. A line with no squadron (the master
+   mark, his role at home, his sign-in) rides with its account row, which no guardrail leaves out. */
+function acctLineLeftOut(c: Change, dir: 'undo' | 'redo', entry: UndoEntry, changes: Change[]): boolean {
+  if (c.collection !== 'notices') return false
+  const n: any = c.op === 'delete' ? c.before : (c.after ?? c.before)
+  if (!isAcctNotice(n)) return false
+  const u = n.what?.[0]?.u
+  if (!u) return false
+  const to = String(n.to)
+  const pidOf = (acc: string) => String(entry.holders?.[acc]?.pid ?? accountById(acc)?.pid ?? '')
+  const rows = changes.filter(x => {
+    if (!isGrantRow(x)) return false
+    const g: any = x.after ?? x.before
+    return !!g && String(g.unit) === String(u) && pidOf(String(g.account ?? '')) === to
+  })
+  return rows.length > 0 && rows.every(x => grantLeftOut(x, dir, entry, changes))
+}
 /* GUARDRAIL 1 (§4.3): a restore that puts an account on another man while a right stands on that sign-in — given since, to
    the man then on it — would carry the right to the other man: the record key of that right (any row naming the account
    that the restore itself does not take away), so the timeline blocks the step naming who wrote it */
@@ -644,7 +666,9 @@ export function installGlobalUndo(): void {
        a right put back only on the man the step recorded, never after his move since its start, never by a re-link's Undo
        or Redo, a Plan only by a master admin's restore (his D2250), and no removal of a right not stored */
     leaveOut: (c, dir, entry, changes) => (c.collection === 'notices' && c.op === 'put' && !!c.after && noticeLeftBell(c.after as Notice))
-      || (!!entry && grantLeftOut(c, dir, entry, changes ?? [])),
+      || (!!entry && grantLeftOut(c, dir, entry, changes ?? []))
+      /* …and his own account's line about a right those guardrails left out goes with it (acctLineLeftOut, above) */
+      || (!!entry && acctLineLeftOut(c, dir, entry, changes ?? [])),
     holdersAtStep: (changes) => holdersOf(changes),
     standingKey: (changes) => standingRightKey(changes),
     /* fix read 9, fault A (Fable 1, the fresh Opus read's O9-2; his D2218, D2223): a grant or the master mark an Undo or

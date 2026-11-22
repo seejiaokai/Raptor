@@ -22,7 +22,7 @@ import { _resetTimeline } from '../undo/timeline'
 import { commandStream } from '../command'
 import type { CommitEnvelope } from '../command'
 import { ownershipViolation } from '../state/perms'
-import { NOTICES, noticesFor, noticeWords, noticeLive, allNoticesFor, type Notice } from '../state/notices'
+import { NOTICES, noticesFor, noticeWords, noticeLive, allNoticesFor, isAcctNotice, type Notice } from '../state/notices'
 import { unreadFor, markAllNoticesRead, isUnread } from '../state/noticeseen'
 import { CURPAGE, ADMINOPEN, clearAdminOpen } from '../state/view'
 import { openNotice } from '../ui/topstate'
@@ -79,6 +79,9 @@ beforeEach(() => {
 })
 
 const backLines = (pid: string) => NOTICES.filter(n => n.to === pid && (n.what || [])[0]?.k === 'poback')
+/* his unread count, less the lines about his own account: since batch 1's second half his being made an admin (the setup
+   above) writes "Made an admin of 142 · Saber" on his own bell (his D2251) — not a posting's, which these tests count */
+const unreadPo = (pid: string) => unreadFor(pid) - allNoticesFor(pid).filter(n => isAcctNotice(n) && isUnread(n, pid)).length
 /* the line as the bell draws it: the struck words in ~~ ~~, as the drawing of record shows them (picture 8) */
 const drawn = (n: Notice) => { const w = noticeWords(n); return `${w.name} · ${w.day} / ${w.struck ? `~~${w.struck}~~ · ` : ''}${w.what}${w.who ? ' · ' + w.who : ''}` }
 /* Hex reads his bell — "Mark all read", his own command — then Saber is signed in again */
@@ -95,7 +98,7 @@ describe('Undo post out after the posting ran (D1693, D1699)', () => {
     expect(P('bane').san, 'the posting taken back').toBeFalsy()
     expect(poLines('rocky'), 'his posting line went').toEqual([])
     expect(backLines('rocky').map(drawn)).toEqual(['Ranger · Mon 20 Jul / ~~Posted out · now SANS~~ · taken back · Saber'])
-    expect(unreadFor('rocky'), 'unread: his bell lights').toBe(1)
+    expect(unreadPo('rocky'), 'unread: his bell lights').toBe(1)
     expect(poLines('stiff'), 'Saber pressed it: his own line goes').toEqual([])
     expect(backLines('stiff'), '…and he is told nothing').toEqual([])
     /* one command, the posting's own, carrying the bell's rows — so it saved through the gate (a refused one changes nothing) */
@@ -111,7 +114,7 @@ describe('Undo post out after the posting ran (D1693, D1699)', () => {
     expect(undoPostOut('bane')).toBe(true)
     expect(poLines('rocky')).toEqual([])
     expect(backLines('rocky')).toEqual([])
-    expect(unreadFor('rocky')).toBe(0)
+    expect(unreadPo('rocky')).toBe(0)
   })
   it('Overseas Sqn: Undo post out on its archive takes the line back the same way', () => {
     expect(postOut('bane', PO, 'overseas')).toBe(true)
@@ -169,7 +172,7 @@ describe('Undo post out after the posting ran (D1693, D1699)', () => {
     openNotice(line)
     expect(CURPAGE).toBe('admin')
     expect(ADMINOPEN && ADMINOPEN.person).toBe('bane')
-    expect(unreadFor('rocky')).toBe(0)
+    expect(unreadPo('rocky')).toBe(0)
   })
 })
 
@@ -265,10 +268,10 @@ describe('the member view (D292) and a taken-back line', () => {
     expect(backLines('rocky')).toHaveLength(1)
     switchRoleView()
     expect(noticesFor('rocky').filter(n => (n.what || [])[0]?.k === 'poback'), 'not listed').toEqual([])
-    expect(unreadFor('rocky'), 'not counted').toBe(0)
+    expect(unreadPo('rocky'), 'not counted').toBe(0)
     switchRoleView()
     expect(noticesFor('rocky').filter(n => (n.what || [])[0]?.k === 'poback')).toHaveLength(1)
-    expect(unreadFor('rocky')).toBe(1)
+    expect(unreadPo('rocky')).toBe(1)
   })
 })
 
@@ -287,7 +290,7 @@ describe('a posting that ran, then changed on its Post out sheet (his D1710)', (
     expect(P('bane').san, 'no longer SANS today').toBeFalsy()
     expect(poLines('rocky'), 'no "Posted out" line left standing').toEqual([])
     expect(backLines('rocky').map(drawn)).toEqual(['Ranger · Mon 20 Jul / ~~Posted out · now SANS~~ · taken back · Saber'])
-    expect(unreadFor('rocky')).toBe(1)
+    expect(unreadPo('rocky')).toBe(1)
     expect(poLines('stiff'), 'Saber changed it: his line goes').toEqual([])
     expect(backLines('stiff'), '…and he is told nothing').toEqual([])
     reach(25); runPoOutcomes()
@@ -313,7 +316,7 @@ describe('a posting that ran, then changed on its Post out sheet (his D1710)', (
     expect(P('bane').san, 'made SANS on his date').toBe(true)
     expect(backLines('rocky').map(drawn)).toEqual(['Ranger · Mon 20 Jul / ~~Posted out · archived, account suspended~~ · taken back · Saber'])
     expect(poLines('rocky').map(words)).toEqual(['Ranger · Mon 20 Jul / Posted out · now SANS'])
-    expect(unreadFor('rocky'), 'both lines unread').toBe(2)
+    expect(unreadPo('rocky'), 'both lines unread').toBe(2)
   })
   it('off the manpower, read, its date moved: the worked-out line is taken back', () => {
     const id = noSignIn()
@@ -384,7 +387,7 @@ describe('the fix’s own read (his D1710)', () => {
     runPoOutcomes()
     expect(poLines('rocky')).toHaveLength(1)
     expect(backLines('rocky')).toEqual([])
-    expect(unreadFor('rocky')).toBe(0)
+    expect(unreadPo('rocky')).toBe(0)
   })
   it('a ran posting moved to another day already come: one command — the old line taken back, the new one told, unread', () => {
     expect(postOut('bane', PO, 'sans')).toBe(true)
@@ -396,7 +399,7 @@ describe('the fix’s own read (his D1710)', () => {
     expect(commandStream().slice(from).map(e => e.type)).toEqual(['lw.postout'])
     expect(backLines('rocky').map(drawn)).toEqual(['Ranger · Mon 20 Jul / ~~Posted out · now SANS~~ · taken back · Saber'])
     expect(poLines('rocky').map(words)).toEqual(['Ranger · Wed 22 Jul / Posted out · now SANS'])
-    expect(unreadFor('rocky')).toBe(2)
+    expect(unreadPo('rocky')).toBe(2)
   })
   it('the admin who changed it, having read its line: the "off the manpower" line it now makes comes to him unread', () => {
     expect(postOut('bane', PO, 'sans')).toBe(true)

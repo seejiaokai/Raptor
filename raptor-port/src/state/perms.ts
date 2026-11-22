@@ -1372,7 +1372,7 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
   const deletes = [...posted.values()].includes('delete')
   const inputsChanged = new Set(env.changes.filter(c => c.collection === 'inputs').map(c => String(c.id)))
   for (const c of env.changes) {
-    /* (his own account's line — judged whole by acctLineViolation, asked before this) */
+    /* (his own account's line — judged whole by acctLineViolation, asked right after this) */
     if (c.collection !== 'notices' || acctChange(c)) continue
     const n: any = c.op === 'delete' ? null : c.after
     if (c.before != null || !n || n.by != null || !Array.isArray(n.what) || !n.what.length) return refuse(c)
@@ -3697,6 +3697,12 @@ function ownershipChecks(env: CommitEnvelope): string | null {
      against on / off (state/bellsqn.ts) */
   const bellBad = bellSqnRowViolation(env)
   if (bellBad) return bellBad
+  /* THE POSTING PASS CHANGES ONLY THE MEN IT POSTS OUT — its rows, judged here before the account lines (below, where its
+     story is), so a pass refused for its own change keeps that refusal's words, as the next comment asks */
+  if (a && a.role === 'system' && env.type === 'lw.postoutRun') {
+    const bad = postingPassViolation(env)
+    if (bad) return bad
+  }
   /* HIS OWN ACCOUNT'S LINES (§16 D6′): before ownsLine and "a bell line about nothing" (adminOwnerViolation), after every
      check of the rows themselves, so a command refused for its own change keeps that refusal's words */
   const acctBad = acctLineViolation(env)
@@ -3721,11 +3727,8 @@ function ownershipChecks(env: CommitEnvelope): string | null {
      alone, ANY change to a man's posting record vouched for ANY change to his person, and the pass's account rows were not
      asked at all. Now (postingPassViolation): the posting change must be that posting's own done mark, its date come; his
      person may differ only in that outcome's own fields, its marks set; and the pass's settings rows are only the posted
-     men's accounts (and, for a Delete, the request and bell row that go with his account). */
-  if (a && a.role === 'system' && env.type === 'lw.postoutRun') {
-    const bad = postingPassViolation(env)
-    if (bad) return bad
-  }
+     men's accounts (and, for a Delete, the request and bell row that go with his account). Asked above, just before the
+     account lines (batch 1's second half). */
   if (!a || a.role === 'system' || a.role === 'admin') return null
   let replayed: ((c: Change) => boolean) | null | undefined
   let warRestore: ((c: Change) => boolean) | null | undefined
