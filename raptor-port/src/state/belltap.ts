@@ -17,14 +17,17 @@
    midnight take (state/store.ts enterSquadron), an open Leave War window holding the war's step (state/typing-hold.ts).
    Phase 3's squadron menu routes its pick through the same entry; the pick's own question for unsaved Tracker edits
    (§16 D2′) is asked here too (state/pick.ts askBeforeEntering — night job 2, 23 Nov 26), and an entry made here counts
-   as his pick for the band of a window left open (state/typing-hold.ts enteredByPick). */
+   as his pick for the band of a window left open (state/typing-hold.ts enteredByPick).
+   - THE GREY SQUADRON MARK on a line of a squadron other than his home (lineSqnMark, at the foot — night job 4, 23 Nov
+     26): which squadron the line is from, read by the bell's list. */
 import { unseenRequests, currentAdminAccountId, waitingCount, type AccessRequest } from './accounts'
 import { bellShows } from './bellsqn'
 import { me, pageUnit, ownPageMayBe } from './perms'
 import { enterSquadron } from './store'
 import { askBeforeEntering } from './pick'
 import { holdNow } from './typing-hold'
-import { unitById } from './units'
+import { unitById, homeOn, todayIso } from './units'
+import { lineUnit, isAcctNotice, type Notice } from './notices'
 
 /** the unseen requests that light HIS bell — those of the squadrons switched on in it */
 export function bellRequests(): AccessRequest[] {
@@ -64,4 +67,15 @@ export function openBellRequest(open: () => void, toast: (s: string) => void): b
   open()
   toast(`${waitingCount()} waiting for access to ${num}`)
   return true
+}
+
+/** THE GREY SQUADRON MARK ON A BELL LINE (the plan §7 item 3, 8b; his D2202 "each line shows which squadron it is from";
+ *  the approved picture p3b — the grey badge already approved for another squadron's line): the number of the line's
+ *  squadron (notices.ts lineUnit — its stamp; a line stored before reads as his home, D56) where that is not his home
+ *  today; none on his own account's lines (§15 D5, D2319: "no squadron mark"). Read by ui/topbits.tsx BellList. */
+export function lineSqnMark(n: Notice, pid: string, iso: string = todayIso()): string | null {
+  if (isAcctNotice(n)) return null
+  const u = lineUnit(n)
+  if (!u || u === homeOn(pid, iso)) return null
+  return unitById(u)?.num ?? null
 }

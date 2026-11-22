@@ -16,6 +16,8 @@ import { BELLLIST, BELLAT } from './pops'
 import { me } from '../state/perms'
 import { noticesFor, noticeWords, noticeAge } from '../state/notices'
 import { isUnread, unreadFor, markAllNoticesRead } from '../state/noticeseen'
+import { bellSquadrons, bellShows, setBellSquadron } from '../state/bellsqn'
+import { lineSqnMark } from '../state/belltap'
 import { useVersion } from './useStore'
 import { SquadronMenu } from './SquadronMenu'
 import { sqnNum } from './export'
@@ -102,6 +104,8 @@ export function BellList() {
      would otherwise keep the bell lit with no way to put it out (found by the older tests re-expressed, 12 Oct 26) */
   const unread = unreadFor(mine) > 0
   const now = Date.now()
+  const sqns = mine ? bellSquadrons(String(mine)) : []
+  const showRow = sqns.length > 1
   return (
     <div className={'bell-list' + (at && at.wide ? ' wide' : '')} ref={ref} role="menu" aria-label="Notifications" data-testid="bell-list"
       style={at ? (at.wide ? { top: at.top } : { top: at.top, right: at.right }) : { visibility: 'hidden' }}>
@@ -109,12 +113,14 @@ export function BellList() {
       {list.length === 0 && <div className="bl-empty" data-testid="bell-empty">Nothing new</div>}
       {list.map(n => {
         const w = noticeWords(n), fresh = isUnread(n, mine)
+        /* a line of a squadron other than his home: its number, grey, after the name (picture p3b — §7 item 3, 8b) */
+        const sq = mine ? lineSqnMark(n, String(mine)) : null
         return (
           <button type="button" role="menuitem" key={n.id} className={'bl-line' + (fresh ? ' unread' : '')} data-testid={`bell-line-${n.id}`}
             onClick={() => openNotice(n)}>
             <span className="bl-dot" aria-hidden="true" />
             <span className="bl-main">
-              <span className="bl-t"><b className="bl-name">{w.name}</b><i className="bl-day">{w.day}</i></span>
+              <span className="bl-t"><b className="bl-name">{w.name}</b>{sq && <span className="bl-sqn">{sq}</span>}<i className="bl-day">{w.day}</i></span>
               {/* a taken-back line: what it took back, struck through, then "taken back · Saber" (his D1699) */}
               <span className="bl-what">{w.struck ? <><s className="bl-struck">{w.struck}</s>{' · '}</> : null}{w.what}{w.who ? ` · ${w.who}` : ''}</span>
             </span>
@@ -123,12 +129,33 @@ export function BellList() {
         )
       })}
       </div>
-      {(unread || below > 0) && <div className="bl-foot">
+      {(unread || below > 0 || showRow) && <div className="bl-foot">
+        {showRow && <BellShowRow pid={String(mine)} sqns={sqns} last={below === 0} />}
         {below > 0 && <span className="bl-more" data-testid="bell-more">↓ {below} more</span>}
         {unread && <button type="button" className="abtn sm ghost" data-testid="bell-markall"
           onClick={() => { markAllNoticesRead(); notify() }}>Mark all read</button>}
       </div>}
     </div>
+  )
+}
+/* THE "SHOW" BUTTONS at the bell list's foot (batch 1's second half §7 item 3 — 8a, 8c; his D2198, D2202, D2321; the
+   approved pictures p3a, p3c, f5a): whoever's bell may show lines of more than one squadron (state/bellsqn.ts
+   bellSquadrons) gets "Show" and a button per squadron, the filter chip's own look (the no-glow rule's "a new on / off
+   control takes the filter chip's on look", D887), on / off as his bell shows it. A press is his own saved choice, never
+   an Undo step (setBellSquadron — `bell.squadrons`, undo/timeline.ts NOT_STEPS, §15 D6); the lines follow at once,
+   through the one body that lists, counts and lights them (notices.ts noticeLive). One squadron: no row (the list draws
+   none). Many: one row that slides sideways, never wrapping (D2321 — picture f5a). `last`: no "↓ 3 more" follows it, so
+   the row takes the push to the left itself (two pushes would share the space between them). */
+function BellShowRow({ pid, sqns, last }: { pid: string; sqns: { id: string; num: string }[]; last: boolean }) {
+  return (
+    <span className={'bl-sqns' + (last ? ' last' : '')} role="group" aria-labelledby="blShowLbl" data-testid="bell-show">
+      <span className="bl-more" id="blShowLbl">Show</span>
+      {sqns.map(s => {
+        const shown = bellShows(pid, s.id)
+        return <button type="button" key={s.id} className={'fchip' + (shown ? ' on' : '')} aria-pressed={shown}
+          onClick={() => { setBellSquadron(s.id, !shown); notify() }}>{s.num}</button>
+      })}
+    </span>
   )
 }
 export function BellButton({ id }: { id: string }) {

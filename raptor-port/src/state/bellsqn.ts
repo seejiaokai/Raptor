@@ -14,12 +14,13 @@
    deleted.
    WRITTEN BY HIM ALONE — ONE command, `bell.squadrons`, which may write only the signed-in person's own row, for any role
    (state/perms.ts bellSqnRowViolation; docs/data-model.md §11 — together, D200), and is never an Undo step
-   (undo/timeline.ts NOT_STEPS). The buttons that write it are drawn on his bell (pictures 8a, 8c) — phase 3. */
+   (undo/timeline.ts NOT_STEPS). The buttons that write it are drawn on his bell (ui/topbits.tsx BellList, the "Show"
+   row — the approved pictures p3a, p3c, f5a; built night job 4, 23 Nov 26), one per squadron of bellSquadrons below. */
 import { store } from '../engine/hooks'
 import { commitSettingsIntent } from './people-settings-commit'
 import { me } from './perms'
-import { homeOn, todayIso } from './units'
-import { accountOfPid } from './accounts'
+import { homeOn, todayIso, units } from './units'
+import { accountOfPid, adminLineAudience } from './accounts'
 
 export const BELLSQN_PFX = 'bellsqn:'
 export const BELLSQN_TYPES = ['bell.squadrons'] as const
@@ -45,6 +46,20 @@ export function bellDefault(pid: string, unit: string, iso: string = todayIso())
 export function bellShows(pid: string, unit: string, iso: string = todayIso()): boolean {
   const c = bellChoices(pid)
   return Object.prototype.hasOwnProperty.call(c, unit) ? c[unit]! : bellDefault(pid, unit, iso)
+}
+/** THE SQUADRONS HIS BELL MAY SHOW — one "Show" button each (ui/topbits.tsx BellList; D2198, D2202, D2321): his home, and
+ *  every squadron whose admin lines reach him, read from the ONE audience those lines are written to
+ *  (accounts.ts adminLineAudience — a master admin every squadron, an admin holding Plan his Plan squadrons; a View
+ *  holder never, D2191: "never its bell"). By number, as the Schedules menu lists them (perms.ts readableUnits).
+ *  Fewer than two: no row. */
+export function bellSquadrons(pid: string, iso: string = todayIso()): { id: string; num: string }[] {
+  const home = homeOn(pid, iso)
+  const out: { id: string; num: string }[] = []
+  for (const u of units()) {
+    const told = new Set(adminLineAudience(u.id, iso))
+    if (u.id === home || told.has(pid)) out.push({ id: u.id, num: String(u.num) })
+  }
+  return out.sort((a, b) => a.num.localeCompare(b.num, undefined, { numeric: true }))
 }
 /** a press of one of his bell's squadron buttons: that squadron on or off, saved as his own choice. True when it saved. */
 export function setBellSquadron(unit: string, on: boolean): boolean {

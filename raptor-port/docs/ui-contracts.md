@@ -5231,6 +5231,25 @@ ahead of "Taken off the programme" / "Back on the programme", which read wrongly
 - **Who is told:** every named person in the input before or after the change, and whoever filed it — never whoever
   made the change, never the men behind ALL AVAIL / ALL, never a man archived or deleted. A leave the Leave War
   approves makes no notice (the war tells it on its own page).
+- **The "Show" buttons (batch 1's second half §7 item 3 — 8a, 8c; his D2198, D2202, D2321; built night job 4, 23 Nov
+  26 — the approved pictures `docs/mock/2026-11-22-msq-b1-screens/img/p3a-*`, `p3c-d`, `f5a-p`):** whoever's bell may
+  show lines of more than one squadron — his home and every squadron whose admin lines reach him, read from the one
+  audience they are written to (`state/bellsqn.ts bellSquadrons` → `state/accounts.ts adminLineAudience`: a master
+  admin every squadron, an admin holding Plan his Plan squadrons; a View holder never) — gets "Show" and a filter chip
+  (`.fchip`) per squadron, by number, at the left of the list's foot, 6px apart: on where his bell shows that squadron
+  (`bellShows` — his own choice, else a master admin's home on and the rest off, a Plan squadron on). A press switches
+  it, saved as his own choice (`setBellSquadron`, the command `bell.squadrons`, never an Undo step — `undo/timeline.ts`
+  NOT_STEPS); the lines, the unread count and the lit bell follow at once (`state/notices.ts noticeLive`); the choice
+  survives a reload. One squadron: no row (Ranger, Hunter alone, Kestrel). Many: ONE row that slides sideways, never
+  wrapping, cut off at the list's edge — with eight on his iPhone, 72px past the edge as drawn; "Mark all read" keeps
+  its one line beside it when anything is unread, the row giving way. The foot shows whenever the row does. Built:
+  `ui/topbits.tsx BellShowRow`, `scheduler/02-shell.css .bl-sqns`. Pins: `ui/msq-bell-show.test.tsx`.
+- **The grey squadron mark (§7 item 3, 8b — picture p3b):** a line of a squadron other than his home today carries that
+  squadron's number after its name, in the grey badge already approved for another squadron's line (the role chip's
+  recipe in neutral grey, as Admin → Users' `.acc-sqn`; 6px after the name, the date 7px after it); his home's lines
+  none, and never his own account's lines ("Given Plan of 149: full access to 149 · Saber" — §15 D5, D2319). A line
+  stored before lines carried their squadron reads as his home's: no mark (D56). Built: `state/belltap.ts
+  lineSqnMark`, `scheduler/02-shell.css .bl-sqn`. Pins: `ui/msq-bell-show.test.tsx`.
 
 ## A cancelled input on the Inputs pages and on the schedule's own line (owner D760, D767, D768 — 12 Oct 26; step 5)
 
