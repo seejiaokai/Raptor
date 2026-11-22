@@ -2998,7 +2998,8 @@ are in its report. For the two-squadron build's chats ([MULTI-SQN-DESIGN]).
 it, is left out of ALL AVAIL until that date ("they should only reflect their actual status on the day itself"). Built in
 chat 141 on the same branch: the post-in date is asked in the SANS branch of `availableFor`, from the saved posting where
 the war has no row, so the "+ SANS" switch still changes nothing.
-**(r) from D2328, not built:** every other screen that still shows a man as ours before his post-in date. Known: the
+**(r) from D2328, asked for by him the same evening ("make sure things that are similar to the above cases … be aligned
+as well"), not built yet:** every other screen that still shows a man as ours before his post-in date. Known: the
 Scheduler Board's crew list offered a SANS man on a day before his post-in date (chat 141's walker w2, step S3-3: Quokka,
 post-in Fri 17 Jul, offered on Thu 16 Jul). Not checked: the same for a man who is not SANS, Edit Schedule's crew panel,
 the SANS availability panel, the highlight chips. A job of its own: a roll-call of every place that asks "is he ours
