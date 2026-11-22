@@ -1,0 +1,162 @@
+<title>Squadrons, second half</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column; questions first, then each picture pair (desktop, then phone). Batch 1's page look. */
+:root{--bg:#f4f6f8;--card:#ffffff;--fg:#14202b;--muted:#5a6b78;--line:#d9e0e6;--accent:#0b7fa3;--new:#d81b7a;--rec:#0f7a4a;--ok:#0e7fa6;
+ --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--head:"Space Grotesk","Inter",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e141a;--card:#16202a;--fg:#e6edf2;--muted:#9aabb8;--line:#273642;--accent:#3cc0e6;--new:#ff5fae;--rec:#4fd08f;--ok:#4cc3e6;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e141a;--card:#16202a;--fg:#e6edf2;--muted:#9aabb8;--line:#273642;--accent:#3cc0e6;--new:#ff5fae;--rec:#4fd08f;--ok:#4cc3e6;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.5}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 64px}
+h1{font-family:var(--head);font-size:28px;margin:0 0 4px;text-wrap:balance}
+h2{font-family:var(--head);font-size:20px;margin:36px 0 12px;text-wrap:balance}
+.sub{color:var(--muted);margin:0 0 20px}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:6px;margin-bottom:10px}
+.q b.n{color:var(--accent);margin-right:6px}
+.rec{color:var(--rec);font-weight:600}
+.q a,.told a{color:var(--accent)}
+ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0}
+.told{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px}
+.pic{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;display:grid;gap:10px;scroll-margin-top:16px}
+.pic h3{font-family:var(--head);font-size:17px;margin:0}
+.pic p{margin:0;color:var(--muted)}
+.pair{display:grid;grid-template-columns:2fr 1fr;gap:10px;align-items:start}
+.one{display:grid;grid-template-columns:1fr;gap:10px}
+@media (max-width:620px){.pair{grid-template-columns:1fr}}
+.pair figure,.one figure{margin:0;min-width:0}
+.pair img,.one img{width:100%;border-radius:6px;border:1px solid var(--line);cursor:zoom-in;display:block}
+figcaption{font-size:13px;color:var(--muted);margin-top:4px}
+.new{color:var(--new);font-weight:700}
+.okk{color:var(--ok);font-weight:700}
+.zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:flex-start;justify-content:center;overflow:auto;z-index:20;
+ padding:max(12px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 12px max(12px,env(safe-area-inset-left,0px))}
+.zoom img{max-width:none;width:min(1600px,200%);cursor:zoom-out}
+@media (max-width:620px){.zoom img{width:200%}}
+.later li{color:var(--muted)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+<div class="wrap">
+<h1>Squadrons, the second half of batch 1</h1>
+<p class="sub">The first half of batch 1 is live: 142 and 149 kept apart underneath. This half builds the screens you see. Nothing of it is built yet. Each picture is the real app with the new part drawn in. <span class="okk">Blue "Approved"</span> marks what you already approved on 17 or 19 Nov, redrawn on today's app. <span class="new">Pink "New"</span> marks what is new since. Tap a picture to see it full size.</p>
+
+<h2>Look at now</h2>
+<div class="q"><div><b class="n">1</b>The Admin → Users filter row you asked me to draw (<a href="#p-filter">pictures 7a to 7c</a>).</div>
+<div class="rec">Recommended: as drawn.</div>
+<ul><li>Each admin sees his own squadron's people. Under the search: Pilots · WSOs · Personnel · All (the same switch as on Quals), then a CAT button and a Role button. Each opens a short list.</li>
+<li>Role offers Member, Admin, Admin + Plan of 149, and Master admin, one each. So "Admin" does not show a master admin; "Master admin" does.</li>
+<li>A CAT or Role button that is set turns blue, so a short list never looks like missing people. Filters only hide rows: the list stays A to Z.</li>
+<li>A master admin's row starts with "142 · All squadrons". 142 is the squadron picked in his Schedules menu. All squadrons shows everyone, grouped under each squadron.</li></ul></div>
+
+<div class="q"><div><b class="n">2</b>What "+ New squadron" opens (<a href="#p-new">picture 3c</a>). Only a master admin sees the button.</div>
+<div class="rec">Recommended: as drawn.</div>
+<ul><li>Three boxes: the squadron's number (a faded "150" shows what to type), its place, and its first admin.</li>
+<li>The first admin is picked from the admins of the squadrons there already are. He gets Plan of the new squadron, so it never starts with no admin. Once its own people are added, he or a master admin makes one of them its admin.</li></ul></div>
+
+<div class="q"><div><b class="n">3</b>The bell line when your own account changes (<a href="#p-bell">picture 9b</a>). You ruled that a person is told; this is how it reads.</div>
+<div class="rec">Recommended: as drawn.</div>
+<ul><li>"Hunter · Sun 22 Nov / Given Plan of 149: full access to 149 · Saber". The same shape for made admin or member, View given or ended, master admin made or taken off.</li>
+<li>A tap opens nothing: nobody may open his own row on Admin → Users.</li></ul></div>
+
+<div class="q"><div><b class="n">4</b>Plan taken away without a move. <i>Example:</i> on Monday Saber takes away Hunter's Plan of 149. Hunter stays 142's.</div>
+<div class="rec">Recommended: 149's lines leave Hunter's bell that moment, read or not. His own lines stay.</div>
+<div>This is the same as a man who moves squadron: on that day the old squadron's lines leave his bell. Without it, Hunter would keep tapping lines that open pages he can no longer use.</div></div>
+
+<div class="q"><div><b class="n">5</b>Does a man keep his View and Plan of another squadron when he is archived, posted out to an overseas squadron, or suspended?</div>
+<div class="rec">Recommended: archived or posted overseas, both end, as they do when he moves squadron. Suspended by hand, both stay.</div>
+<div><i>Example:</i> Hunter holds Plan of 149. Posted overseas, he is archived and his account suspended: his Plan of 149 ends, and if he comes back a master admin gives it again. Suspended for a week instead, he cannot sign in, and once he is enabled he has Plan of 149 as before.</div></div>
+
+<h2>Told, not asked</h2>
+<div class="told"><ul>
+<li><b>Two sentences now name an admin with Plan.</b> You ruled that wherever a master admin may act for a squadron, so may an admin with Plan of it, and both are named. So picture 5c reads "Only 149's admins, an admin with Plan of 149 or a master admin give access to 149." Picture 3d reads "Only a master admin, or an admin of both 142 and 149, can change the time zone: 142 and 149 are both here."</li>
+<li><b>Admin → Squadrons is one page made from your two approved drawings.</b> On 17 Nov the time zone sat on each squadron's row. Since your 18 Nov ruling the time zone belongs to the place, which both squadrons share, so it moved to a Places list under the squadrons, as your 19 Nov drawing had it. The tile wears the map pin from that drawing.</li>
+<li><b>149's size corrected.</b> The 17 Nov page said 149 has 48 people. The demo has 10.</li>
+<li><b>The shared holiday picture is dropped.</b> Since your 18 Nov ruling each squadron keeps its own public-holiday list, and that is already live.</li>
+<li><b>The guest view is gone</b>, as you ruled on 20 Nov. Someone waiting for access sees only the waiting screen until his own squadron's admin approves him.</li>
+<li><b>Your demo data.</b> I know of nothing this half needs to clear. If the build finds otherwise, you are told before the merge.</li>
+</ul></div>
+
+<h2>What this half gives you</h2>
+<ul>
+<li>The "142 ▾" button and its Schedules menu for anyone who may see more than one squadron. For View it moves the schedule pages and Logic, read only. For a master admin or an admin with Plan, it moves every page, Admin → Users too, each his to edit.</li>
+<li>The Scheduler Board shows its squadron's number, and prints and exports carry the number of the squadron printed.</li>
+<li>Admin → Squadrons: the squadrons, the places and their time zones, and "+ New squadron" for a master admin.</li>
+<li>Request access asks the squadron first; only that squadron's admins are asked.</li>
+<li>Admin → Users by squadron: the home squadron line, the access buttons (None, View, Plan, Master admin), "also plans 149", Add a person's home squadron, and the filter row.</li>
+<li>The bell: a master admin's or Plan holder's squadron buttons, the line when your account changes, and the line when a posting out could not run.</li>
+<li>A sign-in on a shared computer waits for the last person's change to finish saving.</li>
+</ul>
+
+<section class="pic" id="p-menu"><h3>1 · The "142 ▾" button and its Schedules menu</h3>
+<p>Approved 17 Nov. Saber may see both squadrons, so the TALON mark is a button. The menu lists 142 and 149. On a phone it opens as a sheet from the top.</p>
+<div class="pair"><figure><img src="img/b1-1-d.png" alt="Desktop: the Schedules menu under the 142 button, listing 142 and 149"><figcaption>1, desktop.</figcaption></figure><figure><img src="img/b1-1-p.png" alt="iPhone: the Schedules sheet"><figcaption>1, iPhone.</figcaption></figure></div></section>
+
+<section class="pic"><h3>2 · The board names its squadron</h3>
+<p>Approved 17 Nov. A small grey "142" beside the day title on the Scheduler Board's bar. Nothing else in the bar moves.</p>
+<div class="pair"><figure><img src="img/b1-2-d.png" alt="Desktop: the board's bar with a grey 142 beside the day title"><figcaption>2, desktop.</figcaption></figure><figure><img src="img/b1-2-p.png" alt="iPhone: the board's bar"><figcaption>2, iPhone.</figcaption></figure></div></section>
+
+<section class="pic" id="p-new"><h3>3 · Admin → Squadrons</h3>
+<p>3a: the page as a master admin sees it. "+ New squadron" was approved 17 Nov. <span class="new">New:</span> the Places list, holding the time zone. 3b: 149's row opened; it now holds only the place, saved at once and counting from tomorrow. 3c: <span class="new">New:</span> "+ New squadron" pressed (question 2). 3d: Hunter, 142's admin, opens Home base; its time zone is greyed because both squadrons sit there (approved 19 Nov; <span class="new">New:</span> its sentence).</p>
+<div class="pair"><figure><img src="img/b1-3-d.png" alt="Desktop: Admin, Squadrons, with 142, 149, New squadron and the Places list"><figcaption>3a, desktop.</figcaption></figure><figure><img src="img/b1-3-p.png" alt="iPhone: Admin, Squadrons"><figcaption>3a, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/b1-4-d.png" alt="Desktop: 149's row opened on its place"><figcaption>3b, desktop.</figcaption></figure><figure><img src="img/b1-4-p.png" alt="iPhone: 149's row opened"><figcaption>3b, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/b1-9-d.png" alt="Desktop: the New squadron row with number, place and first admin"><figcaption>3c, desktop.</figcaption></figure><figure><img src="img/b1-9-p.png" alt="iPhone: the New squadron row"><figcaption>3c, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/p7-d.png" alt="Desktop: Home base opened by Hunter, its time zone greyed with the reason"><figcaption>3d, desktop.</figcaption></figure><figure><img src="img/p7-p.png" alt="iPhone: Home base, time zone greyed"><figcaption>3d, iPhone.</figcaption></figure></div></section>
+
+<section class="pic"><h3>4 · Request access asks the squadron first</h3>
+<p>Approved 17 Nov. A person not yet on a list picks his squadron first; only that squadron's admins get the request.</p>
+<div class="pair"><figure><img src="img/b1-5-d.png" alt="Desktop: Request access with Squadron first"><figcaption>4, desktop.</figcaption></figure><figure><img src="img/b1-5-p.png" alt="iPhone: Request access"><figcaption>4, iPhone.</figcaption></figure></div></section>
+
+<section class="pic" id="p-row"><h3>5 · A person's row on Admin → Users</h3>
+<p>Approved 17 and 19 Nov, now in one picture: the "Home squadron" line, then the access buttons. 5a: Saber, the master admin, gives Hunter Plan 149. 5b: Kestrel, 149's admin, opens Ranger (142's): only View 149 is his to give, the rest of Ranger's row stays 142's. 5c: Hunter, 142's admin, opens Ranger: access to 149 is not his to give (<span class="new">New:</span> its sentence names an admin with Plan).</p>
+<div class="pair"><figure><img src="img/p1a-d.png" alt="Desktop: Hunter's row, Plan 149 picked"><figcaption>5a, desktop.</figcaption></figure><figure><img src="img/p1a-p.png" alt="iPhone: Hunter's row"><figcaption>5a, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/p1b-d.png" alt="Desktop: Ranger's row as Kestrel sees it"><figcaption>5b, desktop.</figcaption></figure><figure><img src="img/p1b-p.png" alt="iPhone: Ranger's row as Kestrel sees it"><figcaption>5b, iPhone.</figcaption></figure></div>
+<div class="one"><figure><img src="img/p1c-d.png" alt="Desktop: Ranger's row as Hunter sees it, the buttons greyed"><figcaption>5c, desktop.</figcaption></figure></div></section>
+
+<section class="pic"><h3>6 · Who else plans 149, and adding a person</h3>
+<p>Approved 19 and 17 Nov. 6a and 6b: "· also plans 149" at the end of Hunter's grey line, on 142's list and on 149's. 6c: Add a person starts with "Home squadron", set to the admin's own.</p>
+<div class="pair"><figure><img src="img/p2a-d.png" alt="Desktop: also plans 149 on 142's list"><figcaption>6a, desktop.</figcaption></figure><figure><img src="img/p2a-p.png" alt="iPhone: also plans 149"><figcaption>6a, iPhone.</figcaption></figure></div>
+<div class="one"><figure><img src="img/p2b-d.png" alt="Desktop: the same on 149's list, Hunter marked 142"><figcaption>6b, desktop.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/b1-7-d.png" alt="Desktop: Add a person with Home squadron first"><figcaption>6c, desktop.</figcaption></figure><figure><img src="img/b1-7-p.png" alt="iPhone: Add a person"><figcaption>6c, iPhone.</figcaption></figure></div></section>
+
+<section class="pic" id="p-filter"><h3>7 · Admin → Users by squadron, and its filters</h3>
+<p><span class="new">New</span> (question 1). 7a: Hunter, 142's admin: 142's 61 people, the filter row as it opens. 7b: Pilots and Role "Admin" picked: only 142's pilots who are admins. 7c: Saber, the master admin, picks All squadrons: the people grouped under 142 and 149, each A to Z, 149's people marked "149".</p>
+<div class="pair"><figure><img src="img/n1a-d.png" alt="Desktop: the filter row under the search"><figcaption>7a, desktop.</figcaption></figure><figure><img src="img/n1a-p.png" alt="iPhone: the filter row"><figcaption>7a, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/n1b-d.png" alt="Desktop: Pilots and Admin picked"><figcaption>7b, desktop.</figcaption></figure><figure><img src="img/n1b-p.png" alt="iPhone: Pilots and Admin picked"><figcaption>7b, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/n1c0-d.png" alt="Desktop: All squadrons picked, the 142 group"><figcaption>7c, desktop: the top.</figcaption></figure><figure><img src="img/n1c0-p.png" alt="iPhone: All squadrons picked"><figcaption>7c, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/n1c-d.png" alt="Desktop: the 149 group under its heading"><figcaption>7c, desktop: further down.</figcaption></figure><figure><img src="img/n1c-p.png" alt="iPhone: the 149 group"><figcaption>7c, iPhone: further down.</figcaption></figure></div></section>
+
+<section class="pic" id="p-bell"><h3>8 · The bell for someone with two squadrons</h3>
+<p>Approved 19 Nov. 8a: Saber's bell as it opens: "Show 142 149", his own squadron on. 8b: after he taps 149, 149's lines come in, each marked "149". 8c: Hunter, who plans 149: 149 on as it starts, his to switch off.</p>
+<div class="pair"><figure><img src="img/p3a-d.png" alt="Desktop: Saber's bell, 142 on"><figcaption>8a, desktop.</figcaption></figure><figure><img src="img/p3a-p.png" alt="iPhone: Saber's bell"><figcaption>8a, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/p3b-d.png" alt="Desktop: both squadrons on"><figcaption>8b, desktop.</figcaption></figure><figure><img src="img/p3b-p.png" alt="iPhone: both squadrons on"><figcaption>8b, iPhone.</figcaption></figure></div>
+<div class="one"><figure><img src="img/p3c-d.png" alt="Desktop: Hunter's bell with 149 on"><figcaption>8c, desktop.</figcaption></figure></div></section>
+
+<section class="pic"><h3>9 · Two more bell lines</h3>
+<p>9a: approved 19 Nov: a posting out the app could not run, its line to that squadron's admins once, and the amber line on his row. 9b: <span class="new">New</span> (question 3): the line when your own account changes.</p>
+<div class="pair"><figure><img src="img/p10-d.png" alt="Desktop: the bell line for a posting that could not run"><figcaption>9a, the bell.</figcaption></figure><figure><img src="img/p10-p.png" alt="iPhone: the same line"><figcaption>9a, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/p8-d.png" alt="Desktop: the amber line on Outlaw's row"><figcaption>9a, his row.</figcaption></figure><figure><img src="img/p8-p.png" alt="iPhone: the amber line"><figcaption>9a, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/n3-d.png" alt="Desktop: Hunter's bell with his account lines"><figcaption>9b, desktop.</figcaption></figure><figure><img src="img/n3-p.png" alt="iPhone: Hunter's bell"><figcaption>9b, iPhone.</figcaption></figure></div></section>
+
+<section class="pic"><h3>10 · A sign-in that waits for a save</h3>
+<p>Approved 19 Nov. On a shared computer, the next person's sign-in waits until the last person's change has saved, so it is never saved under the wrong name.</p>
+<div class="pair"><figure><img src="img/p5-d.png" alt="Desktop: Signing in, waiting for the last change to save"><figcaption>10, desktop.</figcaption></figure><figure><img src="img/p5-p.png" alt="iPhone: the waiting sign-in"><figcaption>10, iPhone.</figcaption></figure></div></section>
+
+<h2>Waits for later batches</h2>
+<ul class="later">
+<li>2 · Detachments: making one, its own schedule, a man's DET, Close detachment, and its own holiday list.</li>
+<li>3 · Borrowing and shared waves.</li>
+<li>4 · Transfer to Sqn, and Post out from Admin → Users.</li>
+<li>5 · The whole-app check.</li>
+</ul>
+</div>
+<script>
+document.addEventListener('click', e => {
+ const z = document.querySelector('.zoom')
+ if (z) { z.remove(); return }
+ const img = e.target.closest('.pair img, .one img'); if (!img) return
+ const d = document.createElement('div'); d.className = 'zoom'
+ const big = document.createElement('img'); big.src = img.src; big.alt = img.alt
+ d.appendChild(big); document.body.appendChild(d)
+})
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelector('.zoom')?.remove() })
+</script>

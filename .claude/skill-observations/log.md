@@ -1102,3 +1102,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The morning list put 16 questions to the owner as equals. Checking them showed 13 could only happen after an action no screen offers yet (the walk set that state up behind the scenes), so they could wait for the feature that adds it; only 3 were live. Two recommendations also changed once each was checked against the rulings.
 **Suggested improvement:** In the morning report step, mark each parked question "reachable today" or "only once <feature> exists" (checked against how the walk set it up), and lead with the reachable ones. Check each recommendation against the rulings before it goes in the list.
 **Principle:** A question about a state users cannot reach yet is cheaper to settle when the feature that reaches it is designed; sorting by reachability shrinks what the owner must decide now.
+
+### Observation 1001
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** chat 135, carrying on a handoff whose "Pick up here" said "then the next multi-squadron batch per the batch plan"
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the "Pick up here" line and the next chat's reading of it (numbered past 999 and 1000, held on other branches)
+
+**Issue:** The handoff said "the next batch per the batch plan". The next chat read it as the plan's batch 2 and put that to the owner, who said go; only on reading the plan did it find batch 1's last two steps (every screen of it) unbuilt and a prerequisite of batch 2. The owner had to answer twice.
+**Suggested improvement:** In the handoff step that writes "Pick up here", name the exact next step by the plan's own numbering and say what of the previous phase is still unbuilt ("batch 1 steps 5–6, then batch 2"); in the opening read, check a named phase's prerequisites are built (one search of the code for its screens) before proposing it to the owner.
+**Principle:** "The next phase" is ambiguous once a phase was split across two pull requests; a handoff names the step, and a reader verifies the step before offering it.
