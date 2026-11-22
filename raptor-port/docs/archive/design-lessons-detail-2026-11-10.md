@@ -177,3 +177,7 @@ nothing until accepted again" and a rejected row's hover text "Removed from the 
 Both wait for his answer (the night of 16–17 Oct 26, question 2).
 
 *Lesson 1 (16 Oct 26, D938 — "a scheduler's working screen carries no hint on how a row is edited…") was struck by him the same day: "Disregard this lesson" (D942).*
+
+## Added 22 Nov 26 (chat 137)
+
+**Lesson 98 (22 Nov 26, D2299).** Said of picture 5c on batch 1's second-half page (Admin → Users, Ranger's row opened by Hunter, 142's admin): the line "Only 149's admins, an admin with Plan of 149 or a master admin give access to 149." became "Only an admin of 149 can give access to 149."; the shared place's time-zone line likewise became "Only an admin of both 142 and 149 can change the time zone: both squadrons are here." *Other places it may apply (D852), named, not changed:* every "who can" line the multi-squadron build adds — the last-admin refusals, a greyed access button's line, the bell's lines about who may act — reads one role; "Only a master admin can give Plan." already does. Reader's notes: below, once read.

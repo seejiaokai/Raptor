@@ -22,6 +22,7 @@ li{margin:4px 0}
 .pic h3{font-family:var(--head);font-size:17px;margin:0}
 .pic p{margin:0;color:var(--muted)}
 .pair{display:grid;grid-template-columns:2fr 1fr;gap:10px;align-items:start}
+.pair.even{grid-template-columns:1fr 1fr}
 .one{display:grid;grid-template-columns:1fr;gap:10px}
 @media (max-width:620px){.pair{grid-template-columns:1fr}}
 .pair figure,.one figure{margin:0;min-width:0}
@@ -41,6 +42,39 @@ figcaption{font-size:13px;color:var(--muted);margin-top:4px}
 <p class="sub">The first half of batch 1 is live: 142 and 149 kept apart underneath. This half builds the screens you see. Nothing of it is built yet. Each picture is the real app with the new part drawn in. <span class="okk">Blue "Approved"</span> marks what you already approved on 17 or 19 Nov, redrawn on today's app. <span class="new">Pink "New"</span> marks what is new since. Tap a picture to see it full size.</p>
 
 <h2>Look at now</h2>
+<p class="sub">New today, A to D, first. Then the questions still open from before, 1 to 5.</p>
+
+<div class="q"><div><b class="n">A</b>A person's opened row on Admin → Users, made shorter (<a href="#p-rowB">pictures R1 to R7</a>). You asked for a nicer, more concise design, and what it looks like with three squadrons.</div>
+<div class="rec">Recommended: B, as drawn in R1 to R5.</div>
+<ul><li><b>Role</b> becomes Member, Admin or Master admin. Master admin leaves the access buttons and joins Role, since it is a role, not access to one squadron.</li>
+<li>Under it, <b>one line per squadron</b>: "142 Home squadron", then "149 None · View · Plan". With three squadrons a third line, "150 None · View · Plan", is added (R1). Each line fits on one row of an iPhone.</li>
+<li>A master admin's other squadrons read "Full access", with no buttons (R4).</li>
+<li>What follows from it: you ruled on 21 Nov that a master admin is never made a member until the master admin mark is taken off first. On this row, picking Member in place of Master admin is itself taking the mark off, and only a master admin can do it. So that refusal has nothing left to stop here.</li>
+<li>The other two, for comparison (R6, R7): A keeps today's four buttons and moves "Home squadron" into a small grey "142" by his name. C turns everything into drop-down boxes. B is shorter than both and reads the same with any number of squadrons.</li></ul></div>
+
+<div class="q"><div><b class="n">B</b>The Schedules menu under the "142 ▾" button, redesigned (<a href="#p-menuB">pictures M1 to M4</a>). You asked for a nicer look.</div>
+<div class="rec">Recommended: A, the list with a tick (M1, M2).</div>
+<ul><li>A tick on the squadron in view, as an iPhone menu does it. Beside each squadron one grey word: "Your squadron", "View only" or "Full access".</li>
+<li>M1 also shows a detachment under its squadron, "249 · Exercise North", fainter. Detachments come in batch 2; it shows how the menu grows. M2: the same menu with 149 in view.</li>
+<li>B (M3) uses cards; C (M4) puts the squadrons under headings. Both take more room for two or three lines.</li>
+<li>The rows are drawn 44 high. The app's other menus use 38. I recommend 38, so the menu matches the rest of the app. Say if you prefer the taller rows.</li>
+<li>This replaces picture 1, which you approved on 17 Nov.</li></ul></div>
+
+<div class="q"><div><b class="n">C</b>What each role allows, written where roles are given (<a href="#p-rowB">pictures R2 and R3</a>). You asked for this.</div>
+<div class="rec">Recommended: as drawn.</div>
+<ul><li>A blue "▸ What each role allows" under the squadron lines, closed until tapped, in the look of the Logic page's "How it works". Open, it lists:</li>
+<li><b>Member</b>: reads the schedule; changes only their own inputs, Quals row and leave bids. <b>Admin</b>: full access to the home squadron: its schedule and publishing, its settings, its people and their sign-ins. <b>View of a squadron</b>: reads that squadron's schedule and Logic; changes nothing there. <b>Plan of a squadron</b>: full access to that squadron, the same list. <b>Master admin</b>: full access to every squadron; only a master admin makes a squadron, gives Plan or makes a master admin.</li>
+<li>Because the list explains each role, the Role choices drop their long words: "Member — own inputs, quals and bids" becomes "Member". This also mends an iPhone fault in the earlier drawing, where the Role box cut "Admin — schedules and manages" off mid-word.</li></ul></div>
+
+<div class="q"><div><b class="n">D</b>Clearer words across this page. You asked what else should be changed to be clearer. Each line: the words now, then what I would write.</div>
+<div class="rec">Recommended: all six.</div>
+<ul><li>5b: "Only a master admin gives Plan or makes a master admin." → <b>"Only a master admin can give Plan."</b> With B, making a master admin is in Role, not here.</li>
+<li>5a: "Full access to 149, every page: its schedule and publishing, …" → <b>"Full access to 149: its schedule and publishing, its settings, its people and their sign-ins."</b> "Every page" adds nothing the list does not already say. You approved the longer words on 19 Nov.</li>
+<li>3b: "Saved at once; counts from tomorrow." → <b>"Saved at once. The new place applies from tomorrow."</b> It now says what starts tomorrow.</li>
+<li>3c and 3e: "… gets Plan of 150: full access to it, so 150 never starts without an admin." → <b>"… gets Plan of 150, so 150 starts with an admin."</b> What Plan means is now in the role list.</li>
+<li>7b, the Role ticks: "Admin + Plan of 149" → <b>"Plans 149"</b>, the same words as "· also plans 149" on the person's line.</li>
+<li>9a: "It will try again when the app is next opened. If this stays, report it …" → <b>"The app tries again the next time it opens. If this line is still here after that, report it …"</b> "If this stays" did not say when to report it.</li></ul></div>
+
 <div class="q"><div><b class="n">1</b>Your filter button, drawn (<a href="#p-filter">pictures 7a to 7d</a>). You chose it over my filter row.</div>
 <div class="rec">To check: does it look as you meant?</div>
 <ul><li>One "Filter" button beside the search. A tap opens tick boxes: Seat, CAT, Role, and for a master admin Squadron.</li>
@@ -69,7 +103,8 @@ figcaption{font-size:13px;color:var(--muted);margin-top:4px}
 
 <h2>Told, not asked</h2>
 <div class="told"><ul>
-<li><b>Two sentences now name an admin with Plan.</b> You ruled that wherever a master admin may act for a squadron, so may an admin with Plan of it, and both are named. So picture 5c reads "Only 149's admins, an admin with Plan of 149 or a master admin give access to 149." Picture 3d reads "Only a master admin, or an admin of both 142 and 149, can change the time zone: 142 and 149 are both here."</li>
+<li><b>Two sentences redrawn in your words.</b> Picture 5c now reads "Only an admin of 149 can give access to 149." Picture 3d reads "Only an admin of both 142 and 149 can change the time zone: both squadrons are here." "An admin of 149" covers 149's own admins, an admin with Plan of 149 and a master admin.</li>
+<li><b>The filter button is dark on blue</b>, as the app's other lit buttons are (picture 7c). The earlier drawing had it white on blue.</li>
 <li><b>Admin → Squadrons is one page made from your two approved drawings.</b> On 17 Nov the time zone was drawn on each squadron's row, though you had ruled that it belongs to the place. Since 18 Nov a place both squadrons share is a master admin's to set, so the time zone moved to a Places list under the squadrons, as your 19 Nov drawing had it. The tile wears that drawing's map pin, and reads "Places" until detachments come in batch 2. The time zone reads Perth, as on 17 Nov, where the 19 Nov drawing said Singapore.</li>
 <li><b>Which Hunter is which.</b> In pictures 3d, 5c, 7a and 7b Hunter is 142's admin before Saber gives him Plan of 149. In 5a, 6, 8c and 9b he holds it. With Plan he could change the shared time zone, give View of 149, and would be listed under "Admin + Plan of 149".</li>
 <li><b>149's size corrected.</b> The 17 Nov page said 149 has 48 people. The demo has 10.</li>
@@ -89,7 +124,22 @@ figcaption{font-size:13px;color:var(--muted);margin-top:4px}
 <li>A sign-in on a shared computer waits for the last person's change to finish saving.</li>
 </ul>
 
-<section class="pic" id="p-menu"><h3>1 · The "142 ▾" button and its Schedules menu</h3>
+<section class="pic" id="p-rowB"><h3>R · A person's row, redesigned (questions A and C)</h3>
+<p><span class="new">New.</span> R1: Saber, the master admin, opens Hunter, 142's admin, with three squadrons: Plan of 149, View of 150. R2: the same with "What each role allows" opened. R3: Kestrel, 149's admin, opens Ranger of 142: only 149's line is his to change, so the rest of Ranger's row is greyed. R4: Saber picks Master admin for Hunter. R5: Hunter opens Ranger: access to 149 is not his to give. R6 and R7: options A and C, for comparison.</p>
+<div class="pair"><figure><img src="img/k1-d.png" alt="Desktop: Hunter's row with lines for 142, 149 and 150"><figcaption>R1, desktop.</figcaption></figure><figure><img src="img/k1-p.png" alt="iPhone: the same row"><figcaption>R1, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/k2-d.png" alt="Desktop: the role list opened under the squadron lines"><figcaption>R2, desktop.</figcaption></figure><figure><img src="img/k2-p.png" alt="iPhone: the role list opened"><figcaption>R2, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/k3-d.png" alt="Desktop: Ranger's row as Kestrel sees it, View of 149 picked"><figcaption>R3, desktop.</figcaption></figure><figure><img src="img/k3-p.png" alt="iPhone: Ranger's row as Kestrel sees it"><figcaption>R3, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/k4-d.png" alt="Desktop: Master admin picked, 149 and 150 read Full access"><figcaption>R4, desktop.</figcaption></figure><figure><img src="img/k4-p.png" alt="iPhone: Master admin picked"><figcaption>R4, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/k5-d.png" alt="Desktop: Ranger's row as Hunter sees it, 149's buttons greyed"><figcaption>R5, desktop.</figcaption></figure><figure><img src="img/k5-p.png" alt="iPhone: 149's buttons greyed"><figcaption>R5, iPhone.</figcaption></figure></div>
+<div class="pair even"><figure><img src="img/rA1-d.png" alt="Desktop: option A, today's four buttons with a grey 142 by the name"><figcaption>R6, option A.</figcaption></figure><figure><img src="img/rC1-d.png" alt="Desktop: option C, drop-down boxes"><figcaption>R7, option C.</figcaption></figure></div></section>
+
+<section class="pic" id="p-menuB"><h3>M · The Schedules menu, redesigned (question B)</h3>
+<p><span class="new">New.</span> M1: option A, 142 in view, with a batch 2 detachment shown under 149. M2: option A with 149 in view. M3: option B, cards. M4: option C, headings.</p>
+<div class="pair"><figure><img src="img/mA1-d.png" alt="Desktop: the menu as a list with a tick on 142"><figcaption>M1, desktop.</figcaption></figure><figure><img src="img/mA1-p.png" alt="iPhone: the menu as a list with a tick"><figcaption>M1, iPhone.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/mA2-d.png" alt="Desktop: the tick on 149"><figcaption>M2, desktop.</figcaption></figure><figure><img src="img/mA2-p.png" alt="iPhone: the tick on 149"><figcaption>M2, iPhone.</figcaption></figure></div>
+<div class="pair even"><figure><img src="img/mB1-p.png" alt="iPhone: option B, cards"><figcaption>M3, option B, iPhone.</figcaption></figure><figure><img src="img/mC1-p.png" alt="iPhone: option C, headings"><figcaption>M4, option C, iPhone.</figcaption></figure></div></section>
+
+<section class="pic" id="p-menu"><h3>1 ·The "142 ▾" button and its Schedules menu</h3>
 <p>Approved 17 Nov. Saber may see both squadrons, so the TALON mark is a button. The menu lists 142 and 149. On a phone it opens as a sheet from the top.</p>
 <div class="pair"><figure><img src="img/b1-1-d.png" alt="Desktop: the Schedules menu under the 142 button, listing 142 and 149"><figcaption>1, desktop.</figcaption></figure><figure><img src="img/b1-1-p.png" alt="iPhone: the Schedules sheet"><figcaption>1, iPhone.</figcaption></figure></div></section>
 
@@ -110,7 +160,7 @@ figcaption{font-size:13px;color:var(--muted);margin-top:4px}
 <div class="pair"><figure><img src="img/b1-5-d.png" alt="Desktop: Request access with Squadron first"><figcaption>4, desktop.</figcaption></figure><figure><img src="img/b1-5-p.png" alt="iPhone: Request access"><figcaption>4, iPhone.</figcaption></figure></div></section>
 
 <section class="pic" id="p-row"><h3>5 · A person's row on Admin → Users</h3>
-<p>Approved 17 and 19 Nov, now in one picture: the "Home squadron" line, then the access buttons. 5a: Saber, the master admin, gives Hunter Plan 149. 5b: Kestrel, 149's admin, opens Ranger (142's): only View 149 is his to give, the rest of Ranger's row stays 142's. 5c: Hunter, 142's admin, opens Ranger: access to 149 is not his to give (<span class="new">New:</span> its sentence names an admin with Plan).</p>
+<p>Approved 17 and 19 Nov, now in one picture: the "Home squadron" line, then the access buttons. 5a: Saber, the master admin, gives Hunter Plan 149. 5b: Kestrel, 149's admin, opens Ranger (142's): only View 149 is his to give, the rest of Ranger's row stays 142's. 5c: Hunter, 142's admin, opens Ranger: access to 149 is not his to give (<span class="new">New:</span> its sentence, in your words). Question A would replace this row with R1 to R5.</p>
 <div class="pair"><figure><img src="img/p1a-d.png" alt="Desktop: Hunter's row, Plan 149 picked"><figcaption>5a, desktop.</figcaption></figure><figure><img src="img/p1a-p.png" alt="iPhone: Hunter's row"><figcaption>5a, iPhone.</figcaption></figure></div>
 <div class="pair"><figure><img src="img/p1b-d.png" alt="Desktop: Ranger's row as Kestrel sees it"><figcaption>5b, desktop.</figcaption></figure><figure><img src="img/p1b-p.png" alt="iPhone: Ranger's row as Kestrel sees it"><figcaption>5b, iPhone.</figcaption></figure></div>
 <div class="one"><figure><img src="img/p1c-d.png" alt="Desktop: Ranger's row as Hunter sees it, the buttons greyed"><figcaption>5c, desktop.</figcaption></figure></div></section>
