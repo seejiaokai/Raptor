@@ -2908,7 +2908,15 @@ NAMED on a published day before his SANS posting read pending; (c) under Unavail
 of that input — as D1586 rules ("saved on the input"), comment corrected, no change; (d) seen while drawing OIL F2
 (22 Nov 26, chat 137), not yet checked as a fault: on an UNPUBLISHED day, "+ Alt Plan", the input's row rejected there,
 then "Switch to this plan" back to the first plan puts the row back on the Ground Programme while the input itself stays
-rejected (`acc` 'r'), so no OIL list opens (`ui/oilputback.ts` reads `acc`); on a published day the switch re-files it.
+rejected (`acc` 'r'), so no OIL list opens (`ui/oilputback.ts` reads `acc`); on a published day the switch re-files it;
+(e) found by the walk of 22 Nov 26 (chat 138, walker w1, the host saw the picture
+`raptor-port/docs/img/handpass/2026-11-22-fable-read-faults/w1/s1-08-al-published-desktop.png`): after a man is posted
+out as SANS, the Scheduler Board's crew list shows him under "SANS avail", greyed, on a day BEFORE his posting date too
+(Hex posted out 20 Jul, the board on Sat 18 Jul: WSOs 17 free became 16), while the ALL AVAIL window on that same day
+still counts him as a regular — the crew list reads today's SANS tick, the crowd reads the posting's date (the OIL F1
+fix, `leavewar/sync.ts sansSince`). His D283 makes him SANS "on the date"; whether the crew list of an earlier day
+should follow goes with Fable's three SANS questions in (b), one answer for all four. Nothing saved is wrong: his OIL
+for the earlier day stayed, the day read nothing pending.
 
 ### [SCHED-RIGHT-EDGE] Edit Schedule's days to the window's right edge under the folded CREW tab (his "draw it", 22 Nov 26; D2269)
 **What:** on a desktop, Edit Schedule keeps a 26px lane at its right for the folded CREW tab and the next-day arrow

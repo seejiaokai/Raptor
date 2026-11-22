@@ -445,6 +445,7 @@ async function s3(sz) {
 }
 /* with B's window open, its place changed from the schedule behind it: where can a person press? */
 async function followCheck(c, b, drifter) {
+  if (process.env.W2_DOOR2FIRST) { await door2(c, b); return }
   /* first door tried: the Inputs page's window leaves the page behind working (D641) — is Edit Schedule in the top bar
      pressable with it up, and does the window stay while the schedule is used? */
   await openFromList(c, b)
@@ -458,7 +459,11 @@ async function followCheck(c, b, drifter) {
     log('  after pressing Edit Schedule: page', await c.p.evaluate(() => window.CURPAGE), 'window still up:', still)
     const pic = await c.shot('follow-inputs-window-then-editsched')
     c.rec('follow (door 1): Inputs window kept while the schedule is opened', 'NOTE', `pressed Edit Schedule with the window up: page now ${await c.p.evaluate(() => window.CURPAGE)}, window still up: ${still}`, [pic])
-    if (still) {
+    const veil = await c.p.locator('#inpEditPop:not([hidden])').filter({ visible: true }).count()
+    if (still && veil) {
+      c.rec('follow: window follows a move behind it', 'NOT WALKED', 'on Edit Schedule the open window becomes the schedule\'s pop-up over a veil (#inpEditPop), so the week\'s Personal Inputs fold and its Reject / → Unavail cannot be pressed while it is up; a press outside closes it — no door for one person to change the row behind an open window', [pic])
+      await closeWin(c, 'cancel')
+    } else if (still) {
       await unfoldPI(c, '#eWeek', b, 5)
       const rowBtns = async () => c.p.evaluate(iid => {
         const e = [...document.querySelectorAll(`#eWeek .day:not(.peek) [data-inpedit="${iid}"]`)].find(x => x.getBoundingClientRect().width > 0)
@@ -497,7 +502,47 @@ async function followCheck(c, b, drifter) {
       if (await winUp(c)) await closeWin(c, 'cancel')
     }
   } else { c.rec('follow (door 1)', 'NOTE', 'with the Inputs page window up the top bar is not pressable', [await c.shot('follow-inputs-window')]); await closeWin(c, 'cancel') }
+  await door2(c, b)
   await toBoard(c, 5)
+  await boardDoor(c, b)
+}
+/* door 2: the move made on the board first (Personal Inputs' "→ Unavail"), then the Inputs page's window opened, then the
+   top bar's Undo pressed with the window up — the place changes behind the open window */
+async function door2(c, b) {
+  await toBoard(c, 5)
+  await unfoldPI(c, '#schedBoard', b, 5)
+  const prow = `#schedBoard .sb-panel.pinp .sb-arow:has([data-inpedit="${b}"])`
+  const rj = c.p.locator(`${prow} button`, { hasText: /^Reject$/ }).filter({ visible: true }).first()
+  if (await rj.count()) {
+    await c.press(rj); await c.p.waitForTimeout(400)
+    const un = c.p.locator(`${prow} button[data-acc="u"]`).filter({ visible: true }).first()
+    log('  board: B line buttons after Reject:', JSON.stringify(await c.p.locator(`${prow} button`).evaluateAll(bs => bs.map(x => x.textContent.trim()))))
+    if (await un.count()) {
+      await c.press(un); await c.p.waitForTimeout(400)
+      const ok = c.p.locator('[data-testid="oilconf"]'); if (await ok.count()) { await c.press('[data-testid="oil-no"]'); await c.press('[data-testid="oilconf-save"]') }
+    }
+    let r = await rec(c, b)
+    c.rec('board: Reject then → Unavail on Personal Inputs', r.acc === 'u', `B acc=${r.acc}`, [await c.shot('follow-board-moved')])
+    await closeBoard(c)
+    log('  after closing the board: page', await c.p.evaluate(() => window.CURPAGE))
+    await openFromList(c, b)
+    log('  window opened from the List: page', await c.p.evaluate(() => window.CURPAGE), 'float window', await c.p.locator('[data-testid="win-inputedit"]').filter({ visible: true }).count(), 'schedule pop-up', await c.p.locator('#inpEditPop:not([hidden])').filter({ visible: true }).count())
+    await c.shot('follow-window-from-list')
+    await undoBehind(c, b, 'u-then-undo')
+    /* variant 2: Rejected → Ground on the board, the window opened, Undo (Ground → Rejected) behind it, nothing typed */
+    await toBoard(c, 5); await unfoldPI(c, '#schedBoard', b, 5)
+    const gb = c.p.locator(`${prow} button[data-acc="g"]`).filter({ visible: true }).first()
+    if ((await rec(c, b)).acc === 'r' && await gb.count()) {
+      await c.press(gb); await c.p.waitForTimeout(400)
+      const ok = c.p.locator('[data-testid="oilconf"]'); if (await ok.count()) { await c.press('[data-testid="oil-no"]'); await c.press('[data-testid="oilconf-save"]') }
+      c.rec('board: → Ground on Personal Inputs', (await rec(c, b)).acc === 'g', `B acc=${(await rec(c, b)).acc}`)
+      await closeBoard(c)
+      await openFromList(c, b)
+      await undoBehind(c, b, 'g-then-undo', false)
+    } else c.rec('follow variant 2', 'NOT WALKED', `B acc=${(await rec(c, b)).acc}; → Ground on its line: ${await gb.count()}`)
+  } else c.rec('follow door 2', 'NOT WALKED', 'no Reject on B\'s Personal Inputs line on the board')
+}
+async function boardDoor(c, b) {
   await unfoldPI(c, '#schedBoard', b, 5)
   const rowSel = `#schedBoard .sb-panel.pinp :is([data-inprow^="${b}"], .sb-arow:has([data-inpedit="${b}"]))`
   const btns = await c.p.locator(`${rowSel} button`).evaluateAll(bs => bs.map(x => (x.textContent || '').trim() + (x.getAttribute('data-acc') ? '[' + x.getAttribute('data-acc') + ']' : '')))

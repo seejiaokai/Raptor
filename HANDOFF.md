@@ -71,7 +71,15 @@ the later merge keeps both (D78).
   pick, more than three inputs, the member's view. **GitHub's run on `c2b42463b` was RED in two jobs, both mine, both
   fixed locally:** the code check (the list's function too branchy — parts moved out) and the Leave War's
   no-`any` test (`sync.ts oilUnansweredLine`). Local commits after `c2b42463b` are NOT pushed until w1 and w2 are back
-  (a rebuild or a push mid-walk would break their build). **Still out:** w1, w2.
+  (a rebuild or a push mid-walk would break their build) — pushed since as `9e6e77654` (a push does not touch their
+  build). **Walker w1 is back:** S1 (the SANS case, on Hex — no callsign Rocky exists; id `rocky` is Hex) and S5 (OIL
+  leave on 3 Feb 2028, Ranger, 3 → 2 at once, delete / Undo / Redo, the member's My leave) PASS at both sizes, real
+  controls only, no errors, 158 pictures in `…/w1/`; the host opened `s1-08-al-published-desktop` and
+  `w3/draw/side-by-side-desktop`. Its one finding is FILED, not fixed (`[FABLE-READ-FAULTS]` found-not-fixed (e)): the
+  board's crew list shows a man posted out as SANS under "SANS avail" on a day before his posting date, while the ALL
+  AVAIL window there still counts him — it goes with Fable's three SANS questions (b). Leads, not filed: the person
+  window's "Thu 3 Feb · 1 Approved" for a 2028 leave shows no year; the test WebKit draws a serif font there (its own
+  font, not the app's). **Still out:** w2.
   **Next, in order:** (0) when w1 and w2 are back: rebuild under the checks lock, re-walk what the three fixes touched
   (F2-a, F2-b, the plan switch, the week change — `scripts/handpass/frf-w3.mjs` re-run on a fresh port), push, read
   GitHub's run; (1) read each walker's report, open its deciding pictures, reproduce every finding, fix red-first,
