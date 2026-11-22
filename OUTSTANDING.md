@@ -3089,6 +3089,12 @@ of every kind; for the security review before the database step (D1411, `[DB-SEC
 days line goes while he views another squadron's schedule** (`leavewar/sansunfiled.ts unfiledNow` answers nothing when the
 squadron in view is not his home one — the builder's reading, so it never shows something wrong); it comes back when he
 returns to his own. Fix if wanted: read his home squadron's weeks and inputs by unit. With `[MULTI-SQN-DESIGN]`.
+(3) **The security re-read's SEC2-2 (b) — an admin's command of any type can rewrite his own man's read record**
+(`noticeseen:<pid>`; `adminOwnerViolation` asks only that he owns the man — older, true of every bell line; §11 says a read
+record is written only by its owner through `notices.seen`); the SANS take-back no longer trusts it (it reads the record as
+it stood before the command, `53ffa626e`…`f292ab846`). (4) **A bare write of a read record outside any command** is refused
+now for `noticeseen:` only (`state/people-settings-commit.ts`, `f292ab846`); the other own-row seen records — `seen:`,
+`apprseen:`, `lwseen:`, `reqseen:` — keep that door. Both for the security review before the database step (D1411).
 **(v) questions for him from D2338 (chat 147; in the morning report):** (1) once he has read the line, should a day newly
 planned with nothing filed light his bell again? (as built: no — the line just grows; the builder recommends yes for a new
 day, not for a shrink; test kept `it.fails` in `opus-read-147.test.ts`); (2) a man ticked SANS by hand (not posted out),
