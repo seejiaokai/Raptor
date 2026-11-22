@@ -26,8 +26,9 @@ const on = (root, rel) => existsSync(join(root, rel))
 const roots = []
 test.after(() => { for (const r of roots) rmSync(r, { recursive: true, force: true }) })
 
-/** A repo with two old walks (pictures, a result and a drawing record), a loose picture, and other files. */
-function repo() {
+/** A repo with two old walks (pictures, a result and a drawing record), a loose picture, and other files; the commit
+ *  guard put in place unless `guard: false` (no copy is slimmed without it). */
+function repo({ guard = true } = {}) {
   const base = mkdtempSync(join(tmpdir(), 'lean-copy-'))
   roots.push(base)
   const root = join(base, 'main')
@@ -45,12 +46,14 @@ function repo() {
   put(root, `${PICS}/loose.png`)
   put(root, 'raptor-port/scripts/lean-copy.mjs', readFileSync(SCRIPT, 'utf8'))
   g(root, 'add', '-A'); g(root, 'commit', '-qm', 'init')
+  if (guard) L.install(root)
   return root
 }
 /** A linked copy of `root`, whole at first; named the way the app names a helper's (agent-<id>) by default. */
 function copy(root, name = 'agent-abc123') {
   const dir = join(root, '.claude', 'worktrees', name)
-  g(root, 'worktree', 'add', '-q', '--detach', dir, 'HEAD')
+  // made the way the app makes its copies: without git's checkout hook (so it starts whole, as the app's do)
+  g(root, '-c', `core.hooksPath=${join(dirname(root), 'no-hooks')}`, 'worktree', 'add', '-q', '--detach', dir, 'HEAD')
   return dir
 }
 const gitDir = (dir) => resolve(g(dir, 'rev-parse', '--path-format=absolute', '--git-dir').trim())
@@ -198,17 +201,76 @@ test("the app's chat hook slims a chat's new copy, never the main folder", async
   assert.equal(on(dir, `${PICS}/loose.png`), false)
 })
 
-test('a slim still running past its time is reported as such, not as lean or whole, and then ends lean', async () => {
-  const root = repo(); const dir = copy(root)
+test('a hook past its time says "still being slimmed", returns at once, and the copy then ends lean', async () => {
+  const root = repo(); const dir = copy(root, 'agent-slow')
   process.env.LEAN_COPY_BUDGET_MS = '1'
-  let r
-  try { r = await L.slim(dir) } finally { delete process.env.LEAN_COPY_BUDGET_MS }
-  assert.ok(r === 'slimmed' || r.startsWith('still slimming'), r)
-  if (r.startsWith('still slimming')) assert.match(L.note(root, r), /still being slimmed/)
-  for (let i = 0; i < 100 && !(L.isLean(dir) && !on(dir, `${PICS}/loose.png`) && !existsSync(join(gitDir(dir), 'index.lock'))); i++)
+  const t0 = Date.now()
+  let out
+  try { out = await L.onAppHook({ hook_event_name: 'SubagentStart', agent_id: 'slow', cwd: dir }) } finally { delete process.env.LEAN_COPY_BUDGET_MS }
+  assert.ok(Date.now() - t0 < 15_000, 'the hook did not wait past its budget')
+  assert.ok(out, 'a note is handed over')
+  assert.match(out.hookSpecificOutput.additionalContext, /still being slimmed|leaves out/)
+  for (let i = 0; i < 150 && !(L.isLean(dir) && !on(dir, `${PICS}/loose.png`) && !existsSync(join(gitDir(dir), 'index.lock'))); i++)
     await new Promise((ok) => setTimeout(ok, 200))
   assert.equal(L.isLean(dir), true)
   assert.equal(on(dir, `${PICS}/loose.png`), false)
+  assert.equal(await L.slim(dir), 'slimmed', 'and the hook\'s deadline did not outlive it')
+})
+
+test('no copy is slimmed until the commit guard is in place — the hooks and by hand alike', async () => {
+  const root = repo({ guard: false }); const dir = copy(root, 'agent-g1')
+  assert.match(await L.slim(dir), /commit guard is not in place/)
+  assert.equal(await L.onAppHook({ hook_event_name: 'SubagentStart', agent_id: 'g1', cwd: dir }), null)
+  assert.equal(on(dir, `${PICS}/loose.png`), true)
+  L.install(root)
+  assert.equal(await L.slim(dir), 'slimmed')
+})
+
+test('a copy git is still busy in, already marked lean, is reported as busy — never as plainly lean', async () => {
+  const root = repo(); const dir = copy(root, 'agent-b1')
+  await L.slim(dir)
+  writeFileSync(join(gitDir(dir), 'index.lock'), '')
+  assert.match(await L.slim(dir, { auto: true }), /still slimming, or stopped part-way/)
+  const out = await L.onAppHook({ hook_event_name: 'SubagentStart', agent_id: 'b1', cwd: dir })
+  assert.match(out.hookSpecificOutput.additionalContext, /stopped part-way/)
+  assert.match(L.status(dir), /git is busy/)
+  rmSync(join(gitDir(dir), 'index.lock'))
+})
+
+test('a loose picture re-written straight under the pictures folder is found by the guard too', async () => {
+  const root = repo(); const dir = copy(root)
+  await L.slim(dir)
+  put(dir, `${PICS}/loose.png`, 'NEW')
+  assert.deepEqual(L.stranded(dir), [`${PICS}/loose.png`])
+  assert.equal(L.onPreCommit(dir), 1)
+})
+
+test('a guard that cannot check stops the commit; LEAN_COPY_GUARD=off lets one through', async () => {
+  const root = repo(); const dir = copy(root)
+  await L.slim(dir)
+  rmSync(g(dir, 'rev-parse', '--path-format=absolute', '--git-path', 'info/sparse-checkout').trim())
+  assert.throws(() => L.stranded(dir))
+  assert.equal(L.onPreCommit(dir), 1)
+  process.env.LEAN_COPY_GUARD = 'off'
+  try { assert.equal(L.onPreCommit(dir), 0) } finally { delete process.env.LEAN_COPY_GUARD }
+})
+
+test('keeping one copy whole, in a project that never had a lean copy, keeps only that copy whole', async () => {
+  const root = repo({ guard: false })
+  const a = copy(root, 'chat-a'), b = copy(root, 'chat-b')
+  assert.match(L.full(a), /leave it whole/)
+  assert.equal(spawnSync('git', ['-C', root, 'config', '--file', join(root, '.git', 'config'), '--get', 'raptor.leanCopy'], { encoding: 'utf8' }).stdout.trim(), '', 'not in the shared settings')
+  L.install(root)
+  assert.match(await L.slim(a, { auto: true }), /set whole/)
+  assert.equal(await L.slim(b, { auto: true }), 'slimmed', 'the other copy is slimmed as usual')
+})
+
+test('get takes a folder however it is written: a name, from the top, from a sub-folder, whole, or with ./', async () => {
+  const root = repo(); const dir = copy(root)
+  await L.slim(dir)
+  for (const name of [`./${PICS}/2026-10-02-walk-b`, join(dir, PICS, '2026-10-02-walk-b'), 'pics/2026-10-02-walk-b/'])
+    assert.match(L.get(dir, [name]), /Fetched/, name)
+  assert.equal(on(dir, `${PICS}/2026-10-02-walk-b/s01.png`), true)
 })
 
 test("git's checkout hook only acts on a NEW copy", async () => {
@@ -250,7 +312,7 @@ test('installed, git\'s hooks slim a typed copy (with the note on screen) and st
 })
 
 test('install never replaces a hook of another kind', () => {
-  const root = repo()
+  const root = repo({ guard: false })
   const file = join(root, '.git', 'hooks', 'pre-commit')
   mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, '#!/bin/sh\necho mine\n')
   assert.throws(() => L.install(root), /another hook/)
@@ -259,7 +321,7 @@ test('install never replaces a hook of another kind', () => {
   assert.equal(readFileSync(file, 'utf8'), '#!/bin/sh\necho mine\n')
 })
 
-test('in an exported read-copy (its own repo, no pictures), get says where the pictures are — never that they are here', () => {
+test('in an exported read-copy (its own repo, no pictures), get says where the pictures are — never that they are here', async () => {
   const root = repo()
   const exp = join(dirname(root), 'export')
   mkdirSync(exp)
@@ -268,4 +330,6 @@ test('in an exported read-copy (its own repo, no pictures), get says where the p
   g(exp, 'add', '-A'); g(exp, 'commit', '-qm', 'export')
   assert.throws(() => L.get(exp, ['2026-10-01-walk-a']), /exported read-copy/)
   assert.throws(() => L.get(exp, ['2026-10-02-walk-b']), /exported read-copy/)
+  assert.match(L.status(exp), /exported read-copy/, 'status never calls it the main folder')
+  assert.match(await L.slim(exp), /exported read-copy/)
 })

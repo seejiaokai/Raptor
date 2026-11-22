@@ -11,7 +11,8 @@
  * so a new walk's folder is inside the copy and its pictures commit with no step. A picture written INTO an old walk's
  * folder is not: a new one is refused by `git add` aloud, but one written over a picture the commit holds is skipped
  * by `git add -A` without a word (found by the three reads, 22 Nov 26). The commit guard (`pre-commit`, put in place
- * by `install`) stops that commit, fetches the folder, and says to add again.
+ * by `install`) stops that commit and names the fetch to run; it also stops a commit when it cannot check. No copy is
+ * slimmed until the guard is in place on the PC.
  *
  * The ways in, because copies are made three ways (tested 22 Nov 26):
  *   - the app's helpers (`isolation: "worktree"`): its SubagentStart hook, `hook` below, on the helper's own copy (named
@@ -40,9 +41,13 @@ export const MEDIA = ['png', 'jpg', 'jpeg', 'webp', 'gif', 'mp4', 'webm']
 const KEEP = ['drawcheck-records', 'drawcheck'] // the drawing check reads its records and their pictures from these
 export const NULL_REF = '0'.repeat(40)
 export const NEW_MS = 15 * 60 * 1000
-const BUDGET_MS = () => Number(process.env.LEAN_COPY_BUDGET_MS) || 200_000 // under the hooks' 300 s, with room to spare
+// A hook's whole run, start to note, keeps inside this: the app cancels a hook at 300 s and throws its output away
+const BUDGET_MS = () => Number(process.env.LEAN_COPY_BUDGET_MS) || 230_000
+const RESERVE_MS = 15_000 // kept back at the end for the note
 const MARK = 'lean-copy (his D2290)'
 const SCRIPT = 'raptor-port/scripts/lean-copy.mjs'
+let DEADLINE = Infinity // set by a hook at its start; a command typed by hand has none, and its long steps may take minutes
+const left = () => DEADLINE - Date.now()
 
 const cleanEnv = () => {
   // the variables git sets for its hooks are taken out, so a child git finds the copy by its folder
@@ -50,10 +55,12 @@ const cleanEnv = () => {
   for (const k of ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE', 'GIT_PREFIX', 'GIT_COMMON_DIR']) delete env[k]
   return env
 }
-/** A short git call in `cwd`, never left hanging: a minute at most. */
+/** A git call in `cwd`. Inside a hook it is bounded by what is left of the hook's time (a minute at most); typed by
+ *  hand it is not, since `full` and `get` on a real copy run past a minute (the fix-round read: a 60 s cap left a lock). */
 export function git(cwd, args, input) {
+  const timeout = Number.isFinite(DEADLINE) ? Math.max(1_000, Math.min(60_000, left() - RESERVE_MS)) : undefined
   return execFileSync('git', ['-C', cwd, ...args], {
-    encoding: 'utf8', env: cleanEnv(), input, timeout: 60_000, maxBuffer: 256 * 1024 * 1024, stdio: ['pipe', 'pipe', 'pipe'],
+    encoding: 'utf8', env: cleanEnv(), input, timeout, maxBuffer: 256 * 1024 * 1024, stdio: ['pipe', 'pipe', 'pipe'],
   })
 }
 
@@ -64,16 +71,36 @@ export function where(cwd) {
   return { top, gitDir, linked: gitDir !== common, common, main: dirname(common) }
 }
 
-const cfg = (top, key) => { try { return git(top, ['config', '--worktree', '--get', key]).trim() } catch { return '' } }
-export const isLean = (top) => cfg(top, 'core.sparseCheckout') === 'true'
-/** Mark a copy whole, so the hooks leave it so. A copy's own settings need git's per-copy settings switched on in the
- *  shared settings once (a project that never had a sparse copy has them off, and the mark then failed unseen). */
-const setWhole = (top) => {
-  try { git(top, ['config', '--worktree', 'raptor.leanCopy', 'whole']) } catch {
-    try { git(top, ['config', 'extensions.worktreeConfig', 'true']); git(top, ['config', '--worktree', 'raptor.leanCopy', 'whole']) } catch { /* fails open */ }
+/** A copy's own setting: its value, '' when it is not set (git's exit 1) — and an error when it cannot be read, so the
+ *  commit guard never takes "could not read" for "not lean" (Astra, the fix round). */
+function cfgStrict(top, key) {
+  try { return git(top, ['config', '--worktree', '--get', key]).trim() } catch (e) {
+    if (e.status === 1) return ''
+    throw e
   }
 }
+const cfg = (top, key) => { try { return cfgStrict(top, key) } catch { return '' } }
+export const isLean = (top) => cfg(top, 'core.sparseCheckout') === 'true'
+/** Mark a copy whole, so the hooks leave it so. Git's per-copy settings are switched on FIRST: with them off, git
+ *  writes a "per-copy" setting into the shared settings, and every copy would then be kept whole (Astra, the fix round). */
+function setWhole(top) {
+  try {
+    git(top, ['config', 'extensions.worktreeConfig', 'true'])
+    git(top, ['config', '--worktree', 'raptor.leanCopy', 'whole'])
+    return true
+  } catch { return false }
+}
 const isWhole = (top) => cfg(top, 'raptor.leanCopy') === 'whole'
+/** The commit guard, put in place by `install` — no copy is slimmed without it, since without it a picture re-written
+ *  into an old walk's folder leaves a commit unseen (the fix-round read: helpers were told of a guard not yet there). */
+export function guarded(w) {
+  const f = join(w.common, 'hooks', 'pre-commit')
+  try { return readFileSync(f, 'utf8').includes(MARK) } catch { return false }
+}
+/** A repo that holds no walk pictures at all — an exported read-copy, or a commit before them. */
+function noPictures(top) {
+  try { return !git(top, ['ls-tree', '-r', '-z', '--name-only', 'HEAD', '--', `${PICS}/`]).split('\0').some(isMedia) } catch { return true }
+}
 /** A copy git made in the last 15 minutes: its `commondir` file is written when the copy is made, and never after. */
 export function isNew(gitDir, now = Date.now()) {
   try { return now - statSync(join(gitDir, 'commondir')).mtimeMs < NEW_MS } catch { return false }
@@ -125,13 +152,18 @@ function setSparse(w, lines) {
     const child = spawn('git', ['-C', w.top, 'sparse-checkout', 'set', '--no-cone', '--stdin'],
       { env: cleanEnv(), detached: true, windowsHide: true, stdio: [inFd, 'ignore', logFd] })
     closeSync(inFd); closeSync(logFd)
-    const timer = setTimeout(() => { child.unref(); ok('running') }, BUDGET_MS())
+    // waited on only for what is left of the hook's one deadline (a command typed by hand waits to the end)
+    const wait = Number.isFinite(DEADLINE) ? Math.max(0, left() - RESERVE_MS) : 2 ** 31 - 1
+    const timer = setTimeout(() => { child.unref(); ok('running') }, wait)
     child.on('exit', (code) => { clearTimeout(timer); ok(code === 0 ? 'done' : 'failed') })
     child.on('error', () => { clearTimeout(timer); ok('failed') })
   })
   return once().then(async (r) => {
-    // two copies made at the same moment can trip over one shared settings file: wait a moment and try once more
-    if (r === 'failed' && /lock/i.test(readFileSync(log, 'utf8'))) { await new Promise((ok) => setTimeout(ok, 1500)); return once() }
+    // two copies made at the same moment can trip over one shared settings file: wait a moment and try once more,
+    // only if the deadline leaves room for it
+    if (r === 'failed' && /lock/i.test(readFileSync(log, 'utf8')) && left() > RESERVE_MS + 30_000) {
+      await new Promise((ok) => setTimeout(ok, 1500)); return once()
+    }
     return r
   })
 }
@@ -142,12 +174,17 @@ export async function slim(cwd, { auto = false } = {}) {
   let w
   try { w = where(cwd) } catch (e) { return `left whole: ${String(e.message || e).split('\n')[0]}` }
   try {
-    if (!w.linked) return 'left whole: this is the main folder, which keeps every picture'
-    if (process.env.RAPTOR_FULL_COPY === '1') { setWhole(w.top); return 'left whole: RAPTOR_FULL_COPY=1' }
+    if (!w.linked) return noPictures(w.top) ? 'left whole: this copy holds no walk pictures at all (an exported read-copy?)'
+      : 'left whole: this is the main folder, which keeps every picture'
+    if (process.env.RAPTOR_FULL_COPY === '1') {
+      return setWhole(w.top) ? 'left whole: RAPTOR_FULL_COPY=1' : 'left whole: RAPTOR_FULL_COPY=1 (the mark to keep it whole could not be saved)'
+    }
+    // busy first: a slim still running, or one stopped part-way, sets "lean" before it ends (the fix-round reads)
+    if (busy(w.gitDir)) return isLean(w.top) ? `still slimming, or stopped part-way: ${join(w.gitDir, 'index.lock')} exists` : 'left whole: git is busy in it (index.lock)'
     if (auto && isWhole(w.top)) return 'left whole: this copy was set whole (lean-copy.mjs full)'
     if (auto && isLean(w.top)) return 'already lean'
     if (auto && !isNew(w.gitDir)) return 'left whole: not a new copy (lean-copy.mjs slim does it by hand)'
-    if (busy(w.gitDir)) return 'left whole: git is busy in it (index.lock)'
+    if (!guarded(w)) return `left whole: the commit guard is not in place on this PC — run node ${SCRIPT} install in the main folder`
     const pats = patterns(w.top)
     if (!pats) return 'left whole: its commit holds no walk pictures'
     // a copy with picture work of its own is never touched (a new copy has none)
@@ -170,44 +207,51 @@ export function note(main, result = 'slimmed') {
     `This working copy leaves out the old walk pictures (${PICS}/), his D2290 and D2292; none is deleted, and every other file there stays.`,
     `To work with one walk's pictures here, fetch its folder: node ${SCRIPT} get <walk folder> (seconds, no download).`,
     `To only look at one, open it in the main folder (${join(main, PICS).replace(/\\/g, '/')}/) — that is the main folder's own version; for a walk of this branch's own, fetch it.`,
-    `A new walk's pictures save and commit as usual in a NEW folder. Writing into an OLD walk's folder (a re-walk, a re-drawn picture): fetch that folder first — git skips a re-written picture there without a word, and the commit guard stops the commit.`,
+    `A new walk's pictures save and commit as usual in a NEW folder. Writing into an OLD walk's folder (a re-walk, a re-drawn picture): fetch that folder first — git skips a re-written picture there without a word, and the commit guard then stops the commit.`,
   ]
-  if (result.startsWith('still slimming')) lines.unshift(`It is still being slimmed: wait until \`node ${SCRIPT} status\` says lean before using git here.`)
+  if (result.startsWith('still slimming')) lines.unshift(`It is still being slimmed, or a slim stopped part-way: wait until \`node ${SCRIPT} status\` says lean before using git here; if it says git is busy and no git is running, run \`node ${SCRIPT} full\`.`)
+  if (result.startsWith('may be half-done')) lines.unshift(`Slimming this copy stopped part-way (${result.slice(17)}): run \`node ${SCRIPT} full\` before using git here.`)
   return lines.join('\n')
 }
 
 /** The app's hook: SessionStart (a new chat) or SubagentStart (a helper). Hands over the note when the copy is lean. */
 export async function onAppHook(input) {
+  DEADLINE = Date.now() + BUDGET_MS() // one deadline for the whole hook, every step within it (Astra, the fix round)
+  try { return await appHook(input) } finally { DEADLINE = Infinity }
+}
+async function appHook(input) {
   const cwd = input.cwd || process.cwd()
   const event = input.hook_event_name
+  let w
+  try { w = where(cwd) } catch { return null }
   if (event === 'SubagentStart') {
     // only the helper's OWN copy, which the app names after the helper — never the copy of the chat that started it
-    if (!input.agent_id) return null
-    let top
-    try { top = where(cwd).top } catch { return null }
-    if (basename(top) !== `agent-${input.agent_id}`) return null
+    if (!input.agent_id || basename(w.top) !== `agent-${input.agent_id}`) return null
   } else if (event !== 'SessionStart') return null
   const result = await slim(cwd, { auto: true })
-  if (!['slimmed', 'already lean'].includes(result) && !result.startsWith('still slimming')) return null
-  return { hookSpecificOutput: { hookEventName: event, additionalContext: note(where(cwd).main, result) } }
+  if (!['slimmed', 'already lean'].includes(result) && !/^(still slimming|may be half-done)/.test(result)) return null
+  return { hookSpecificOutput: { hookEventName: event, additionalContext: note(w.main, result) } }
 }
 
 /** git's post-checkout hook: a NEW copy (git passes the null commit as the old one) is slimmed, and told so. */
 export async function onGitHook([prev, , flag], cwd = process.cwd()) {
   if (prev !== NULL_REF || flag !== '1') return null
   const result = await slim(cwd)
-  if (result === 'slimmed' || result.startsWith('still slimming')) process.stderr.write(`${note(where(cwd).main, result)}\n`)
+  if (result === 'slimmed' || /^(still slimming|may be half-done)/.test(result)) process.stderr.write(`${note(where(cwd).main, result)}\n`)
   return result
 }
 
 /** The tracked pictures of a lean copy that sit in a left-out place yet are written on disk — what `git add -A` skips
- *  without a word (a re-written one) or refuses (a new one). */
+ *  without a word (a re-written one) or refuses (a new one). Throws when it cannot tell, so the guard stops. */
 export function stranded(top) {
-  if (!isLean(top)) return []
-  const outFolders = new Set(readFileSync(sparseFile(top), 'utf8').split(/\r?\n/)
-    .map((l) => /^!\/(.+)\/\*\*\/\*\.[a-z0-9]+$/.exec(l)?.[1]).filter(Boolean).map((p) => p.replace(/\\(.)/g, '$1')))
-  const back = fetched(top).map((l) => l.slice(1).replace(/\/\*\*$/, '/').replace(/\\(.)/g, '$1'))
-  const leftOut = (f) => isMedia(f) && [...outFolders].some((d) => f.startsWith(`${d}/`)) &&
+  if (cfgStrict(top, 'core.sparseCheckout') !== 'true') return []
+  const unesc = (p) => p.replace(/\\(.)/g, '$1')
+  const pats = readFileSync(sparseFile(top), 'utf8').split(/\r?\n/)
+  const outFolders = pats.map((l) => /^!\/(.+)\/\*\*\/\*\.[a-z0-9]+$/.exec(l)?.[1]).filter(Boolean).map(unesc)
+  // a loose picture straight under the pictures folder is left out by its own name (both fix-round reads)
+  const outFiles = new Set(pats.filter((l) => l.startsWith('!/') && !l.includes('/**/')).map((l) => unesc(l.slice(2))))
+  const back = fetched(top).map((l) => unesc(l.slice(1).replace(/\/\*\*$/, '/')))
+  const leftOut = (f) => isMedia(f) && (outFiles.has(f) || outFolders.some((d) => f.startsWith(`${d}/`))) &&
     !back.some((b) => f.startsWith(b.endsWith('/') ? b : `${b}/`) || f === b) && !KEEP.some((k) => f.includes(`/${k}/`))
   const changed = git(top, ['diff', '--name-only', '-z', '--', PICS]).split('\0')
   const added = git(top, ['ls-files', '-z', '--others', '--exclude-standard', '--', PICS]).split('\0')
@@ -219,8 +263,13 @@ export function stranded(top) {
 export function onPreCommit(cwd = process.cwd()) {
   let top
   try { top = where(cwd).top } catch { return 0 }
+  if (process.env.LEAN_COPY_GUARD === 'off') return 0
   let files
-  try { files = stranded(top) } catch { return 0 }
+  try { files = stranded(top) } catch (e) {
+    // a guard that cannot look never waves a commit through (Astra, the fix round)
+    process.stderr.write(`lean-copy: commit stopped — the commit guard could not check this copy's pictures (${String(e.message || e).split('\n')[0]}). Commit again; if it keeps failing, run node ${SCRIPT} status, and to commit without the check set LEAN_COPY_GUARD=off for that one commit.\n`)
+    return 1
+  }
   if (!files.length) return 0
   // the folders cannot be fetched from here: git holds the copy's lock for the commit under way (found by the tests)
   const folders = [...new Set(files.map((f) => f.slice(PICS.length + 1).split('/')[0]))]
@@ -236,18 +285,23 @@ export function onPreCommit(cwd = process.cwd()) {
 /** Fetch picture folders into a lean copy. Each name is a folder under handpass/, or a whole path in the project. */
 export function get(cwd, names) {
   const w = where(cwd)
+  const EXPORTED = 'an exported read-copy is made without pictures: open them in the main folder only if it is on the version under review, or ask the host to export that folder from the reviewed commit (git archive <commit> -- <folder>)'
   const lines = []
   for (const raw of names) {
-    const rel = raw.replace(/\\/g, '/').replace(/\/+$/, '')
+    // a folder name, or a path written from the project's top, from raptor-port/, whole, or with ./ (the fix-round read)
+    let rel = raw.replace(/\\/g, '/').replace(/\/+$/, '').replace(/^(\.\/)+/, '')
+    const tail = `${PICS.split('/').pop()}/`
+    if (rel.includes(`${PICS}/`)) rel = rel.slice(rel.indexOf(`${PICS}/`))
+    else if (rel.includes(tail)) rel = `${PICS}/${rel.slice(rel.lastIndexOf(tail) + tail.length)}`
     const path = rel.startsWith(`${PICS}/`) ? rel : `${PICS}/${rel}`
     let type
     try { type = git(w.top, ['cat-file', '-t', `HEAD:${path}`]).trim() } catch {
       throw new Error(`no folder ${path} in this copy's commit — the names are the folders under ${PICS}/` +
-        (w.linked ? '' : '; if this is an exported read-copy, its pictures were never in it: open them in the main folder'))
+        (w.linked ? '' : `; if this is an exported read-copy: ${EXPORTED}`))
     }
     lines.push(type === 'tree' ? `/${esc(path)}/**` : `/${esc(path)}`)
     if (!isLean(w.top) && !git(w.top, ['ls-tree', '-r', '-z', '--name-only', 'HEAD', '--', path]).split('\0').some(isMedia))
-      throw new Error(`${path} holds no pictures in this copy's commit — an exported read-copy is made without them: open them in the main folder`)
+      throw new Error(`${path} holds no pictures in this copy's commit — ${EXPORTED}`)
   }
   if (!isLean(w.top)) return 'This copy already holds every picture.'
   git(w.top, ['sparse-checkout', 'add', '--stdin'], `${lines.join('\n')}\n`)
@@ -256,10 +310,10 @@ export function get(cwd, names) {
 
 export function full(cwd) {
   const w = where(cwd)
-  if (!w.linked) throw new Error('this is the main folder, which already keeps every picture')
-  setWhole(w.top)
+  if (!w.linked) throw new Error(noPictures(w.top) ? 'this copy holds no walk pictures at all (an exported read-copy?) — nothing to put back' : 'this is the main folder, which already keeps every picture')
+  const kept = setWhole(w.top)
   if (isLean(w.top)) git(w.top, ['sparse-checkout', 'disable'])
-  return 'Every picture is back in this copy, and the hooks leave it whole from now on.'
+  return `Every picture is back in this copy${kept ? ', and the hooks leave it whole from now on' : ' (the mark keeping it whole could not be saved: a hook may slim it again)'}.`
 }
 
 const POST = `#!/bin/sh
@@ -303,8 +357,10 @@ export function uninstall(cwd) {
 
 export function status(cwd) {
   const w = where(cwd)
-  if (!w.linked) return 'The main folder: it keeps every picture.'
-  if (busy(w.gitDir)) return `git is busy in this copy (or a slim stopped part-way): ${join(w.gitDir, 'index.lock')} exists — wait; if no git is running, see ${join(w.gitDir, 'lean-copy.log')}`
+  if (!w.linked) return noPictures(w.top) ? 'This copy holds no walk pictures at all — an exported read-copy, made without them: a picture missing here is not missing from the project; ask the host for the version under review.'
+    : 'The main folder: it keeps every picture.'
+  if (busy(w.gitDir)) return `git is busy in this copy (or a slim stopped part-way): ${join(w.gitDir, 'index.lock')} exists — wait; if no git is running, see ${join(w.gitDir, 'lean-copy.log')} and run node ${SCRIPT} full`
+  if (!guarded(w) && isLean(w.top)) return `This copy is lean, but the commit guard is not in place on this PC — run node ${SCRIPT} install in the main folder.`
   if (!isLean(w.top)) return `This copy holds every picture${isWhole(w.top) ? ', and is kept whole' : ''}.`
   const f = fetched(w.top)
   return `This copy is lean.${f.length ? ` Fetched: ${f.join(' ')}` : ' No picture folder fetched.'}`

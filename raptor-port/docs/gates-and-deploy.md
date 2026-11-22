@@ -734,7 +734,9 @@ with no step. **A picture written into an OLD walk's folder is the trap** (found
 one is refused by `git add` aloud, but one written over a picture the commit holds is skipped by `git add -A`, `add .`
 and `commit -a` without a word — so git's `pre-commit` hook (put in place by `install`) stops such a commit and names
 the command, `… lean-copy.mjs get <folder>` (seconds — the copy shares the main folder's store, and fetching keeps the
-new pictures). The Leave War's browser test re-draws two pictures in the old folder `2026-10-27-lw-m4/d1444/` on every
+new pictures). **No copy is slimmed until that guard is in place on the PC** (the fix-round reads: before `install`,
+helpers were told of a guard not there); a guard that cannot check stops the commit too, and `LEAN_COPY_GUARD=off`
+lets one commit through. An exported read-copy says what it is, never "the main folder". The Leave War's browser test re-draws two pictures in the old folder `2026-10-27-lw-m4/d1444/` on every
 run, so in a lean copy it trips the guard: fetch the folder and `git restore` them. The hooks act only on a copy made
 in the last 15 minutes (its `commondir` file's time) and never on one set whole (`… full`, or `RAPTOR_FULL_COPY=1` at
 its making); a copy with picture changes of its own is left whole. `… slim` by hand slims an older copy (a long-lived
@@ -748,9 +750,11 @@ minute or two — three helpers at once, about 25 GB.
   helper or chat a note on how to reach the pictures. The app's own clean-up of an unchanged helper's copy still works
   (tested). The chat path was tested with `claude --worktree`; the desktop's own worktree sessions were not started
   for the test — the git hook below is their second net. A `WorktreeCreate` hook was set aside: it replaces the app's copy-making, and the app then never removes a
-  helper's copy, so they would pile up again. The long git step runs as a child the hook does not own, waited on up
-  to 200 seconds (the hooks' limit is 300): three slimmed at once took 112 s each (the Opus read). Past 200 s it is
-  left to finish and the note says "still being slimmed" — never "lean" or "whole"; `… status` names a git still busy.
+  helper's copy, so they would pile up again. A hook keeps one deadline, 230 s from its start (the hooks' limit is
+  300), every git step inside it; the long step runs as a child the hook does not own: three slimmed at once took
+  112 s each (the Opus read). Past the deadline it is left to finish and the note says "still being slimmed" — never
+  "lean" or "whole"; a slim stopped part-way is said too, and `… status` names a git still busy. Commands typed by
+  hand (`full`, `get`, `slim`) have no time limit: on a real copy they run past a minute.
 - **Copies made by typing `git worktree add`, and Codex's,** are slimmed by git's `post-checkout` hook, which git runs
   only for a NEW copy with the null commit as the old one, and its note is shown on the screen of whoever made it. Git
   keeps hooks outside the project, so both hooks are put in place once per PC: `node raptor-port/scripts/lean-copy.mjs
