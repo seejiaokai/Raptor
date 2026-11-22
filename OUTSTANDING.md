@@ -3036,7 +3036,11 @@ Scheduler Board's crew list offered a SANS man on a day before his post-in date 
 post-in Fri 17 Jul, offered on Thu 16 Jul). Not checked: the same for a man who is not SANS, Edit Schedule's crew panel,
 the SANS availability panel, the highlight chips. A job of its own: a roll-call of every place that asks "is he ours
 this day", each given has it / must not / missing, then the build.
-**(p) ANSWERED 22 Nov 26 by D2329 — TO BUILD:** a SANS posting set ahead is read by the day. Before its date he is the
+**(p) BUILT 22 Nov 26 by chat 146 on `claude/allavail-sans-postout-141` (pull request 825, not merged):** the day's
+SANS reader (`engine/people.ts sansOnP`) asks the Leave War for a SANS posting not yet run (`setSansAhead`, installed by
+`sync.ts wireLeaveWarSync`), so every screen reads such a day alike, and `availableFor` lets his posting close no window
+there; tests in `allavail-sans-posted.test.ts` §D2329. What follows is the plan as it was. **(p) ANSWERED 22 Nov 26 by
+D2329 — TO BUILD:** a SANS posting set ahead is read by the day. Before its date he is the
 ordinary man he is (built). From its date he is SANS: counted only on a day a scheduler has put him on our programme, no
 time clash — WHENEVER that day is looked at (the agent's reading of his example, told to him). Built today: looked at
 before the posting's date, a day past it leaves him out though named, and counts him once the date arrives (two tests in

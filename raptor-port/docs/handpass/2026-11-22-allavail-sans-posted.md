@@ -210,6 +210,41 @@ The second fix is new logic, so it got its own narrow read by a fresh Opus reade
 SANS man who also holds a posting that is not a SANS one — and leaves every walked scenario's answer as it was (the
 same tests pass before and after). No re-walk; said in §11.
 
+## 15. Round 4 — his D2328 (the post-in date) and D2329 (a SANS posting set ahead), chats 141 and 146
+
+**Tier: FULL** — the same eight answers as §1: OIL (who the crowd counts decides it), the published record (a crowd frozen
+at publication), saved data (the delete now keeps a man's post-in date; a SANS stretch carries a posting's mark), the
+warning list (the day's SANS reader every check asks now sees a posting set ahead). **What changed:** (1) D2328, chat 141
+(`1f3e52eb4`): before his post-in date a man is not ours, a SANS man named on our programme included; (2) the fresh Opus
+reader's R1, chat 141 (`34767a739`): a man posted out as SANS, archived and restored with a later post-in date keeps
+the days he flew with us; (3) Astra's read of (1), chat 146 (`36e2e4728`): findings 2 and 3 fixed red-first (below);
+(4) D2329, chat 146 (`ecdac3ebc`): a SANS posting set ahead is read by the day — the day's SANS reader asks the Leave
+War for a SANS posting not yet run, so every screen reads such a day alike and a day published before the posting runs
+keeps its face when it does.
+
+**Sizing (§7.0):** the walk is the crowd on a day before and after a post-in date (w3, done on (1)); his own D2329
+example, both sizes, with a published Saturday carried across the clock moving to Friday; the restore of (2) on a
+published day; a delete before arrival; the plain-user round on the posting sheet and the window (w4). Repeated cases of
+these routes — each posting outcome, each switch position, Undo / moved / another outcome — are carried by tests
+(`allavail-sans-posted.test.ts` §D2329, `d2328-read.test.ts`, `d2328-astra.test.ts`). Lessons of §7.11 checked in
+w4's brief: a press asserted by what the screen shows (the window's own pucks, not a count alone); a set-up step read
+back; the published face compared before and after a clock change, not inferred.
+
+**Walker w3 (Opus), on the build of `1f3e52eb4`** — `docs/handpass/parts/asp/w3-report.md`, pictures `…/w3/`: six
+scenarios, all PASS (Quokka out on Thu 16 Jul: 21; in on Sat 18 Jul: 46; S1 and S13 as first walked). **The host opened
+its four deciding pictures** (`r41-r41-05-off-win-desktop`, `r41-r41-05-on-win-phone`, `r41-r42-03-off-win-desktop`,
+`r41-r42-03-on-win-phone`): Thu 16 Jul's window, 21, no Quokka, desktop and phone; Sat 18 Jul's, 46, Quokka with his
+purple SANS line, desktop and phone — as w3 reported.
+
+**Astra's read of (1)** (`D:\raptor-work\c141-astra-d2328-read.md`, read only, blind; brief `…-read-d2328-brief.md`):
+
+| # | The claim | Reproduced by the host | Disposition |
+|---|---|---|---|
+| A1 | Restored after a SANS posting and an archive, he leaves the days he flew with us | already the fresh reader's R1, repaired in (2) (`d2328-read.test.ts` R1a, R1b) | **Fixed in (2)**; the repair since narrowed by A3's fix |
+| A2 | A man deleted before he ever arrived counts on the days before his post-in date — his saved post-in date went with the delete; for a SANS man only with "+ SANS" on at the delete | YES — 3 tests failed (`d2328-astra.test.ts` "ASTRA 2") | **Fixed red-first**: the delete keeps his post-in date alone (`store.ts arrivalKept`, both delete paths); two older tests that pinned "no record kept" changed with the reason beside them |
+| A3 | A returning man (Overseas, restored to return later, ticked SANS) archived again before his return counts on the days he was away — the archive's end replaced by the archive's date filled a real gap | YES — failed with "+ SANS" on at the archive; and the host found the same shape in (2)'s repair: a hand tick begun the day his Overseas posting ran, later taken off, filled the gap too (1 more test failed) | **Fixed red-first**: the blanket replacement removed; a SANS stretch a posting made is marked when an archive ends it, and only such a stretch, begun the day after a stint's written end, counts as days he flew with us |
+| A4 | Tests missing: the exact post-in date; a delete before arrival each way | — | Added (`d2328-astra.test.ts`) |
+
 ## 14. The Walk line
 
 `Walk: docs/handpass/2026-11-22-allavail-sans-posted.md · 462 pictures (and 684 phone tap pictures) · 9 surfaces · 15 orders and the plain-user round, each at a desktop's and his iPhone's size · MISSING: 1 filed (q), older`

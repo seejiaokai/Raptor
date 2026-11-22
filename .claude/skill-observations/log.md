@@ -1284,3 +1284,17 @@ sides.
 **Issue:** The two findings were each about one date the check should not ask. The fix stopped asking the whole record for that kind of man, so three other dates that must still end his membership stopped counting. Every test written for the fix passed, because each one tested a case the fix was meant to open; none tested a case it was meant to leave shut. A narrow read of the fix found it, and a third fix followed.
 **Suggested improvement:** When a fix relaxes a check, list first every other thing that check refuses, and write one "still refused" test for each beside the "now allowed" tests, before the fix. In the review-response step: name the smallest condition the finding needs relaxed, and say in the commit what stays asked.
 **Principle:** A fix that opens a door is tested from both sides: what must now pass, and everything that passed through the old check's other reasons for saying no.
+
+
+### Observation 1022: Reader copies made without the recipe again — the export of pictures met a third time
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 146, round 4b of the ALL AVAIL bug check (two blind readers, each on an exported copy); numbered past 1021, which another open branch holds
+**Skill:** New skill candidate: blind-reader-copies (the codex-guide recipe for exported copies); cites the closed Observation 977
+**Type:** open-source
+**Phase/Area:** making the readers' copies
+
+**Issue:** The copies were made by hand from an earlier chat's handoff line (`git archive <head> | tar -x`), not from the codex guide's recipe, which already carries the excludes (Observation 977, actioned). The export of every walk picture ran past five minutes for the first copy and was stopped; the Git Bash `mklink /J` failed again. The recipe being written down did not stop it, because nothing in the act of exporting points at it.
+**Suggested improvement:** A guard inside the action, as the short form asks for a trap met again: a small script in the repo (`raptor-port/scripts/reader-copies.mjs <head> <base> <dir…>`) that makes each copy with the excludes, writes the change's patch and the brief beside it, makes the package junction in PowerShell and prints the size — and the codex guide's recipe and every read brief template name the script instead of the commands.
+**Principle:** A recipe that a reader must remember to open loses to a command copied from a handoff; put the safe way in the one command people actually run.
