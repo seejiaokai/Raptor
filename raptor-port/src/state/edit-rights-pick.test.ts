@@ -10,7 +10,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { useMsqWorld, signInAs, ACCT, PID } from '../test-support/msq-world'
 import { enterSquadron, switchUnit, notify } from './store'
 import { setGrant } from './units'
-import { canEditSched, lgCanEdit, setLgEdit, canEditOwn } from './auth'
+import { canEditSched, lgCanEdit, setLgEdit, canEditOwn, setEffectiveRole } from './auth'
 import { maySchedEditPage, adminOfUnit } from './perms'
 import { HOOKS } from '../engine/hooks'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
@@ -122,5 +122,18 @@ describe('Plan of 149 and the master mark — everything on, in both', () => {
   it('a member: nothing, anywhere', () => {
     signInAs('ranger')
     expect(canEditSched() || canEditOwn() || adminOfUnit('u142')).toBe(false)
+  })
+  /* the localhost bridge's raptorRole('admin') (probe-bridge.ts — bug-check order §7.7: the role only, not the world) gives
+     a member the admin role in place; the browser tests and walks lean on it. Step A first read the account's own stored
+     role, so the bridge opened nothing — GitHub's run of 22 Nov 26 failed the changes window's and the Leave War Days
+     window's tests on it. The role in force decides, as before step A; his rows elsewhere stay as they stand. */
+  it('a member given the admin role in place (the test bridge): his own squadron\'s schedule and settings windows, not 149\'s', () => {
+    signInAs('ranger')
+    setEffectiveRole('admin')
+    setPage('editsched')
+    expect(maySchedEditPage()).toBe(true)
+    expect(canEditOwn()).toBe(true)
+    expect(adminOfUnit('u142')).toBe(true)
+    expect(adminOfUnit('u149')).toBe(false)
   })
 })

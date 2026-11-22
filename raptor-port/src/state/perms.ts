@@ -354,8 +354,16 @@ export function adminOfPage(kind: 'schedule' | 'own', iso: string = todayIso()):
   if (!SESSION || roleOf() !== 'admin') return false
   const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
   if (!acct) return pageUnit(kind, iso) === UNIT
-  return levelOfAccount(levelAcct(acct), pageUnit(kind, iso), iso) === 'admin'
+  return levelOfAccount(asAdminInForce(acct), pageUnit(kind, iso), iso) === 'admin'
 }
+/* THE ACCOUNT READ WITH THE ROLE IN FORCE, ADMIN — for the two edit-rights questions below and above, each asked only once
+   the role in force is admin. In the app the role in force is never above the account's own (only an admin switches to
+   the member view and back — switchRoleInForce), so this is the account's own level; the localhost bridge's
+   raptorRole('admin') — a member given the admin role in place, the world unchanged (bug-check order §7.7) — keeps the
+   meaning it had before step A: an admin of his own squadron, his rows elsewhere as they stand (found by GitHub's run of
+   22 Nov 26: the changes window's and the Leave War Days window's browser tests). The gate judges every save by the role
+   in force all the same. */
+const asAdminInForce = (acct: any) => levelAcct(acct, 'admin')
 export const maySchedEditPage = (iso?: string): boolean => mayEditSched() && adminOfPage('schedule', iso)
 /* STEP A's FOUR KINDS OF "MAY HE EDIT" (the second-half plan §2 item 1; the inventory in docs/data-schema.md §Edit rights
    by squadron, held by state/edit-rights-readers.test.ts):
@@ -375,7 +383,7 @@ export const mayEditOwnPage = (iso?: string): boolean => mayEditSched() && admin
 export function adminOfUnit(unit: string, iso: string = todayIso()): boolean {
   if (!mayEditSched()) return false
   const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
-  return acct ? levelOfAccount(levelAcct(acct), unit, iso) === 'admin' : unit === pageUnit('own', iso)
+  return acct ? levelOfAccount(asAdminInForce(acct), unit, iso) === 'admin' : unit === pageUnit('own', iso)
 }
 /* PD1 (the Plan audit — dormant until step 5): a person added by the signed-in admin is made the page's squadron's
    (Admin → Users follows the pick for a master admin or a Plan holder), else his own — handed to units.ts putNewHome,
