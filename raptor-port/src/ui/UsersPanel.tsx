@@ -34,7 +34,8 @@ import {
   requestSummary, accessAlert, markRequestsSeen, MAX_SIGNIN, isAdminAccount, type Account, type AccountRole, type AccessRequest,
   type AccessSave, type AccessLine,
 } from '../state/accounts'
-import { RoleBox, SquadronLines, accessLinesOf, alsoPlansOf, rolePickOf, actorIsMaster, type RolePick } from './UserAccess'
+import { RoleBox, SquadronLines } from './UserAccess'
+import { accessLinesOf, alsoPlansOf, rolePickOf, actorIsMaster, type RolePick } from './useraccess-model'
 import {
   SEATS, catsFor, MAX_CS, MAX_INITIALS, CALLSIGN_LABEL, CS_TOO_LONG, callsignProblem, nextFreeCallsign, type NewPerson,
 } from '../state/roster-add'
