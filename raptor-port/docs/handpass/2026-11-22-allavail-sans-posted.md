@@ -266,6 +266,67 @@ in (Thu 08:00–10:00: 40; Tue, `run3-w3x`: in before, after the archive and aft
 opened** `run2/w1-w1b-03-board-desktop.png`: Saturday after Friday came — signed ORIG, no conflicts, 45. **B1's fix came
 after this walk:** the archive and restore of `run3-w3x` are to be walked again on the new build.
 
+## 16. Round 5 — the Fable read's F1, and his D2338 (the look-ahead SANS note and the man's bell line), chat 147, the night of 22–23 Nov 26
+
+**Tier: FULL**, the branch's riskiest (F1 changes who ALL AVAIL counts on a published day — money and the published record,
+questions 1 and 2; D2338 adds a bell line, new words, a tap that opens a page and a new saved line kind the permissions
+check lets through — questions 5, 6 and 7). **Rulings checked:** D2338, D2339, D2327, D2313, D2329, D27, D327, D25, D44,
+D45, D1151, D1693, D1699, D1710, D1696, D2194, D200, D1411.
+
+**Roll-call (the builder's, checked by the walk):** the look-ahead words print in two places only — the crew list's reason
+(`ui/palette-html.ts whyOf`: Edit Schedule's crew panel and drawer, the Scheduler Board's crew list; unarmed a hover title,
+armed printed under the struck name) and an armed seat's bar (`engine/avail.ts slotBar`) — HAS IT, one function
+(`sansNoneWhy`). The Available panel (`ui/html.ts`) prints a count only — MUST NOT, by D2338's "crew list". The board's
+"No SANS availability filed for this day." is the whole day's message — MUST NOT. The warning list raises nothing for
+nothing filed — MUST NOT (by design). The bell: his own bell HAS IT; an admin's, another squadron's — MUST NOT (D2194).
+The tap: the Inputs page's SANS tab — HAS IT.
+
+**The five sizing lines.** (1) Types A (a new surface — the bell line), G (a rule's reading — who counts, F1), C (words).
+(2) Only a walk finds: the words' fit at his iPhone's width, the bell line drawn and tapped at both sizes, the take-back
+seen struck, midnight with the page open, the crowd unchanged on screen. (3) The ledger: walks of this branch found 0 in
+the change in rounds 1–4 (two and three walkers). (4) Three Opus walkers side by side on `a203fc98c` under one hold of
+the checks lock — w5 the note, the seat, the crowd, the published day (A1–A4, A10, A13, A16–A18, A20, A24); w6 the bell
+line's life and its tap (A5–A9, A11, A12, A14, A15, A19, A21–A23); w7 the re-walk of B1 and the Fable fix (R1–R4) and the
+plain-user round — Astra's 24 scenarios (`docs/superpowers/briefs/2026-11-22-d2338-scenarios-astra.md`), 1536 desktop and
+402 iPhone (WebKit, by touch), the browser's clock on the demo week. (5) The ledger's row: added.
+
+**The walks** (reports `docs/handpass/parts/sud/w5-report.md`, `w6-report.md`, `w7-report.md`; pictures: 3,934 taken, all
+kept whole on his PC at `D:\raptor-work\c147-walk\pictures-all\`, 46 deciding ones here under
+`docs/img/handpass/2026-11-23-sans-unfiled/`): w5 276 steps, 246 PASS, **2 FAIL**, 28 RECORDED; w6 464 rows, 364 PASS, 0
+FAIL, 44 RECORDED, 2 NOT WALKED; w7 373 lines, 323 PASS, 0 FAIL, 34 RECORDED, 2 NOT WALKED. No console or page error, no
+failed request, in any cited run.
+
+**What it found, and each disposition:**
+- **W5-F1 (fit-02, fit-03): on his iPhone, with a seat armed, the look-ahead note is one line running past the screen** —
+  "…It can be filed from that day on th", the rest cut off (the host opened `w5/final/fit/fit-fit-02-clip-phone.png`).
+  Cause (older, unseen until a long note): a SANS Avail row lays its entry out side by side with `flex:0 0 auto`, so the
+  entry took its one-line width and could not shrink; the desktop board alone had the shrink rule (D1118). **Fixed
+  red-first** (`17ab956fe`): the shrink rule at every width on both lists, the puck's width its floor; test
+  `e2e/sans-unfiled-wrap.spec.ts` (phone at 402, 375, 320 on the board and Edit Schedule's drawer — red before; the desktop
+  measured unchanged). **To re-walk** on WebKit 402 (the test ran in Chromium with touch).
+- **RECORDED, each against the rulings:** the working copy drives the line (a draft-only addition or removal on a
+  published day moves it) — the agent's reading, like the crew list; a read line stays read when it shrinks (filed, taken
+  off a day, a cancelled or ⓘ item) — as built, the builder's question to him; the line's days follow CX and ⓘ (out, and
+  back on Un-cancel); after an archive or a Delete no struck line is kept (the line's maker, the posting, was not undone —
+  the archive ends his filing; D1699 is about undo — the agent's reading); "SANS" tapped again on the sheet after it ran is a
+  take-back (struck if read); the year's end reads "Thu 31 Dec, Fri 1 Jan", the tap opening December 26; the phone line is
+  one entry, never more than three days named.
+- **NOT WALKED:** the page hidden across midnight (the test browsers keep a background tab "visible") — on his iPhone look
+  card; a press outside the tall phone day window (it fills the screen).
+- **Phone, nothing armed (the builder's reading, confirmed by w5):** the crew list's note — the old one and the new one alike
+  — is a hover title only, so a phone shows the struck name with no words until a seat is armed. Older, unchanged by this
+  job — for the morning report.
+- **Lead, not a finding (w6):** View-only Sched's week heading "Monday Jul 13 · Today" with the app's day at Fri 17 — not
+  reproduced or judged; for a later look.
+- **w7, RECORDED:** R2 (hand tick + SANS posting) cannot be posted from his cell with "+ SANS" off — he has no war row (D1215,
+  D1221), walked through the SANS group; after R2's restore his row leaves the war ("+ SANS" off), the hand tick keeping
+  him SANS (D2327) — as ruled; R4 (archived Mon 13): the published Tue keeps 35 with Vandal in and reads pending "SQN EVENT
+  · who it stands for · Vandal → no longer free" — D327, D44.
+
+**Reads (blind, on `9ff8a917c`, the code of `a203fc98c`; the CSS fix after):** Astra, a fresh Opus reader, and a security
+reader (D1411 — the new saved line kind the permissions check lets through) — started after this section was written;
+their results below when they return.
+
 ## 14. The Walk line
 
 `Walk: docs/handpass/2026-11-22-allavail-sans-posted.md · 462 pictures (and 684 phone tap pictures) · 9 surfaces · 15 orders and the plain-user round, each at a desktop's and his iPhone's size · MISSING: 1 filed (q), older`
