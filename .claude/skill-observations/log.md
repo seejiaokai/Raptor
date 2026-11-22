@@ -881,3 +881,16 @@ _13 Nov 26, chat 68 (the sim count fix and the two explanations): no observation
 **Issue:** One of two `codex exec … "<prompt>" > log 2> err` commands run in the background printed only "Reading additional input from stdin..." and sat idle for 80 minutes until noticed; the other, started two seconds later, ran. With stdin left open, `codex exec` may wait to read more prompt from it.
 **Suggested improvement:** every backgrounded `codex exec` gets `< /dev/null`; the guide's recipe line shows it; and a short check 90 seconds after the start (the log has grown past one line) before the host waits on it.
 **Principle:** a command meant to run unattended has its input closed explicitly, and its start is confirmed before a long wait begins.
+
+### Observation 998: Preview servers outlive their chats and hold disk and ports for days
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** clearing his C drive (3 GB free); numbered past the multi-squadron branch's 997
+**Skill:** New skill candidate: disk-space housekeeping
+**Type:** open-source
+**Phase/Area:** ending a session that started a local preview server; removing old working copies
+
+**Issue:** four local preview servers started on 17 Nov from two working copies were still running on 22 Nov. They held files open, so removing those copies failed with "Invalid argument" and the folders stayed on disk. Separately, each helper's working copy duplicated about 7.6 GB of committed screenshots, and reviewers' read-copies in the chat's temp folder added about 90 GB across 53 idle chats.
+**Suggested improvement:** a session that starts a preview server stops it, by its port, before it ends; a cleanup first lists processes whose command line points into a folder before removing it; a periodic housekeeping step measures working copies and per-chat temp folders and offers to clear those of chats idle for more than a day.
+**Principle:** long-running helper processes and per-task copies must have an owner who ends them; otherwise they silently accumulate until the disk is full.
