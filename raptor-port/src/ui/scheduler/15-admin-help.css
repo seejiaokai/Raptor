@@ -98,6 +98,20 @@
 #page-admin .adm-note.acc-note{margin:-2px 0 12px}
 #page-admin .acc-edit{flex:1 1 100%;padding:10px 0 4px}
 #page-admin .acc-edit .mfield select,#page-admin .acc-edit .mfield input{width:100%;box-sizing:border-box}
+/* A PERSON'S SQUADRON LINES (his D2303, design B — the drawing draw-row.mjs `.mqb-sq`, pictures rB1–rB4; ui/UserAccess.tsx):
+   under Sign-in and Role, the squadron's number in the field labels' look in a 34px column, then "Home squadron", "Full
+   access" or the editor's own None · View · Plan buttons, one row; a line's grey reason under its buttons */
+#page-admin .acc-sq{display:grid;grid-template-columns:34px 1fr;column-gap:10px;row-gap:8px;align-items:center;margin:12px 0}
+#page-admin .acc-sq-n{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+#page-admin .acc-sq-home{font-size:12px;color:var(--ink-2)}
+#page-admin .acc-sq .acc-acts{margin:0;flex-wrap:nowrap}
+#page-admin .acc-sq .abtn:disabled{opacity:.42}
+#page-admin .acc-sq-note{grid-column:2;margin:-2px 0 0}
+#page-admin .acc-edit :is(input,select,.abtn):disabled{opacity:.42}
+/* a man of another squadron on this list: his squadron's grey number by his name (the role chip's look, picture rB2) */
+#page-admin .acc-sqn{display:inline-block;margin-left:6px;vertical-align:1px;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  font-size:8.5px;font-weight:800;letter-spacing:.08em;line-height:1.35;padding:0 5px;border-radius:3px;color:var(--ink-2);
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);font-style:normal}
 #page-admin #admUsers .mfield select,#page-admin #admUsers .mfield input{width:100%;box-sizing:border-box}
 /* (the guest switch's row, .acc-switch, went with the guest view — his D2239, 20 Nov 26) */
 /* (the Admin + Wave show/hide list was removed 29 Aug 26 pt.3 — show/hide/delete

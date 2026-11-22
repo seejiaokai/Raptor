@@ -39,7 +39,9 @@ const users = async () => { await signInAs('ad', 'a'); await act(async () => { s
 const dot = (kind: 'signin' | 'roster', pid: string) => $(`[data-testid="dot-${kind}-${pid}"]`)?.getAttribute('aria-label')
 /* the dot's COLOUR too, not only its words (the break tests, 27 Sep 26: a Roster dot drawn green on an archived man passed) */
 const dotColour = (kind: 'signin' | 'roster', pid: string) => $(`[data-testid="dot-${kind}-${pid}"] i`)?.className
-const buttons = () => $$('[data-editing] .acc-acts button, [data-restoring] .acc-acts button').map(b => b.textContent)
+/* the row's own buttons — the editor's foot row; the squadron lines' None · View · Plan (his D2303, design B) are read by
+   msq-users-row.test.tsx */
+const buttons = () => $$('[data-editing] > .acc-acts button, [data-restoring] > .acc-acts button').map(b => b.textContent)
 
 const mem: Record<string, string> = {}
 const toasts: string[] = []

@@ -824,7 +824,11 @@ export function saveAccess(id: string, want: AccessSave): string | null {
   /* (only an admin carries the mark — D2260; picking Member is taking it off, D2303) */
   if (want.master === true && roleAfter !== 'admin') return 'This change could not be saved.'
   const masterAfter = roleAfter === 'admin' && (want.master ?? a.master === true)
-  const roleCh = roleAfter !== a.role, masterCh = masterAfter !== (a.master === true)
+  /* (Admin picked for an admin who moved squadron — a member of the one he joined while his account still stores "admin"
+     (K3, D2160) — is a change too, recorded for the squadron he is in today, as updateAccount does: the fix read 2 case,
+     msq-fix2-users-moved-admin.test.tsx, found when Admin → Users' Save moved onto this door) */
+  const remade = want.role === 'admin' && a.role === 'admin' && !adminNow(a)
+  const roleCh = roleAfter !== a.role || remade, masterCh = masterAfter !== (a.master === true)
   const acct = levelAcct(a)
   const lines: Array<{ unit: string; to: GrantLevel | null; had: Grant | undefined }> = []
   for (const [unit, l] of Object.entries(want.grants ?? {})) {

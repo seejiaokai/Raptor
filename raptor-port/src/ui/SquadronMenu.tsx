@@ -13,21 +13,13 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { UNIT } from '../engine/unitview'
 import { menuSquadrons } from '../state/perms'
-import { enterSquadron, notify } from '../state/store'
-import { holdNow } from '../state/typing-hold'
+import { pickSquadron } from '../state/pick'
 import { TalonMark } from './icons'
 import { escCloses } from './sheetfocus'
 import { useVersion } from './useStore'
 
 const PHONE = 820
 const CHECK = <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M4.5 12.5l4.8 4.8L19.5 7" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
-
-/* the pick (§3 item 3): the squadron picked comes into view, every page that follows it with it */
-export function pickSquadron(u: string): void {
-  if (u === UNIT) return
-  enterSquadron(u, holdNow() === 'war')
-  notify()
-}
 
 export function SquadronMenu({ num }: { num: string }) {
   useVersion()
@@ -43,8 +35,8 @@ export function SquadronMenu({ num }: { num: string }) {
     window.addEventListener('resize', resize)
     return () => window.removeEventListener('resize', resize)
   }, [])
-  /* a right taken away while it is open (one row left): it closes */
-  useLayoutEffect(() => { if (open && !many) setOpen(null) }, [open, many])
+  /* a right taken away while it is open (one row left): it closes, and stays closed should the right come back */
+  if (open && !many) setOpen(null)
   /* where it hangs: under the mark on a desktop, from the bar's foot on a phone (the bar's height, --topbar-h) */
   useLayoutEffect(() => {
     if (!shown) { setAt(null); return }

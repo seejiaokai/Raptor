@@ -83,6 +83,8 @@ const INVENTORY: Record<string, { n: Partial<Record<keyof typeof Q, number>>; ki
   'ui/InputsSettings.tsx': { n: { adminOfUnit: 1 }, kind: ['named'], why: 'the Inputs settings window edits the squadron it opened on' },
   'ui/SansSettings.tsx': { n: { adminOfUnit: 1 }, kind: ['named'], why: 'the SANS settings window edits the squadron it opened on' },
   'ui/oilday.ts': { n: { adminOfUnit: 1 }, kind: ['named'], why: 'the OIL list of the squadron it lists' },
+  'ui/UsersPanel.tsx': { n: { adminOfUnit: 1 }, kind: ['named'], why: 'a person\'s row on Admin → Users: his sign-in, role, Suspend, Archive and Delete are an admin of his own squadron\'s (D2191, R3)' },
+  'ui/UserAccess.tsx': { n: { adminOfUnit: 1 }, kind: ['named'], why: 'a person\'s squadron line: access to 149 is an admin of 149\'s to give (D2336)' },
   /* ---- role: a question about the person ---- */
   'state/accounts.ts': { n: { isAdmin: 1 }, kind: ['role'], why: 'who may answer access requests at all (each request then by its squadron — step D)' },
   'state/notices.ts': { n: { mayEditSched: 2 }, kind: ['role'], why: 'the bell\'s own reads (the admin lines\' audience is the squadron\'s — step F)' },

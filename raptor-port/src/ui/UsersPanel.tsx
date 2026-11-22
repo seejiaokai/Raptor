@@ -30,15 +30,17 @@ import { HOOKS } from '../engine/hooks'
 import { elogWhen } from '../engine/editlog'
 import {
   accountOfPid, linkablePeople, addAccount, updateAccount, waitingHere, unseenRequests,
-  approveRequest, approveRequestNew, addPersonAndAccount, declineRequest,
+  approveRequest, approveRequestNew, addPersonAndAccount, declineRequest, saveAccess,
   requestSummary, accessAlert, markRequestsSeen, MAX_SIGNIN, isAdminAccount, type Account, type AccountRole, type AccessRequest,
+  type AccessSave, type AccessLine,
 } from '../state/accounts'
+import { RoleBox, SquadronLines, accessLinesOf, alsoPlansOf, rolePickOf, actorIsMaster, type RolePick } from './UserAccess'
 import {
   SEATS, catsFor, MAX_CS, MAX_INITIALS, CALLSIGN_LABEL, CS_TOO_LONG, callsignProblem, nextFreeCallsign, type NewPerson,
 } from '../state/roster-add'
 import { SESSION } from '../state/auth'
-import { me, pageUnit } from '../state/perms'
-import { todayIso, homeOn } from '../state/units'
+import { me, pageUnit, adminOfUnit } from '../state/perms'
+import { todayIso, homeOn, unitById } from '../state/units'
 import { usersListOf } from './userslist-model'
 import { notify } from '../state/store'
 import { deletePerson, effectiveToday } from '../state/person-delete'
@@ -62,11 +64,12 @@ function PuckSelect(p: { id: string; value: string; keep?: string; unit?: string
     </select>
   )
 }
+/* the Role box of a new person's sign-in (the add form, a request's approval): Member or Admin, the short words of D2305 */
 function RoleSelect(p: { id: string; value: AccountRole; onChange: (v: AccountRole) => void }) {
   return (
     <select id={p.id} value={p.value} aria-label="Member or admin" onChange={e => p.onChange(e.target.value as AccountRole)}>
-      <option value="main">Member — own inputs, quals and bids</option>
-      <option value="admin">Admin — schedules and manages</option>
+      <option value="main">Member</option>
+      <option value="admin">Admin</option>
     </select>
   )
 }
@@ -267,15 +270,45 @@ const roleWordOf = (a: Account | undefined) => (a ? (isAdminAccount(a) ? 'Admin'
    its own with the editor below (React Doctor no-high-complexity-react-function, 8 Nov 26); drawn exactly as before */
 function PersonSub(p: { pid: string; a: Account | undefined; person: any; roleWord: string; own: boolean }) {
   const tag = postingPendingTag(p.pid)
+  /* "· also plans 149" (pictures p2a, p2b — D2303's row): the same on his own squadron's list and on 149's */
+  const plans = alsoPlansOf(p.a, p.pid)
   return (
     <span className="acc-sub">
       {p.a ? <b>{p.a.name}</b> : 'no sign-in'}
       {p.roleWord && <span className="od-rw"> · {p.roleWord}</span>}
       {' · '}{seatText(p.person)}
+      {plans && <span className="od-plans" data-testid={`plans-${p.pid}`}> · {plans}</span>}
       {tag && <span className="od-po" data-testid={`po-tag-${p.pid}`}>{tag}</span>}
       {p.own && <span className="acc-tag you">you</span>}
     </span>
   )
+}
+
+/* a man of another squadron on this list (found by search, or a Plan holder of it): his squadron's number, for the grey
+   badge by his name (picture rB2 — the badge approved for Ranger's row on 149's list); null for the page's own */
+function otherSqnOf(pid: string): string | null {
+  const home = homeOn(pid, todayIso())
+  return !!home && home !== pageUnit('own') ? String(unitById(home)?.num ?? home) : null
+}
+/* THE ROW'S ONE SAVE (D2303): the role, the master mark and every squadron's line changed, as saveAccess takes them —
+   Master admin picked, the lines are not sent (the door drops his rights with the mark, R-O10); null, nothing changed */
+function accessWant(a: Account, role: RolePick, pickNow: RolePick, lines: Record<string, AccessLine>, linesNow: Record<string, AccessLine>): AccessSave | null {
+  const want: AccessSave = {}
+  if (role !== pickNow) {
+    if (role === 'master') { want.role = 'admin'; want.master = true }
+    else { want.role = role; if (a.master) want.master = false }
+  }
+  const changed = Object.keys(lines).filter(u => lines[u] !== linesNow[u])
+  if (role !== 'master' && changed.length) want.grants = Object.fromEntries(changed.map(u => [u, lines[u]!]))
+  return want.role !== undefined || want.master !== undefined || want.grants ? want : null
+}
+/* WHAT OF HIS ROW IS THE SIGNED-IN ADMIN'S TO CHANGE (D2191, R3, 5b — picture rB2): his sign-in, role, Suspend, Archive and
+   Delete are an admin of his own squadron's (a man found by search, or a Plan holder from another squadron, shows only the
+   lines of squadrons the admin may give access to live); a master admin's role a master admin's alone (setMaster) */
+function rowLocks(pid: string, a: Account | undefined): { rest: boolean; roleLocked: boolean } {
+  const home = homeOn(pid, todayIso())
+  const rest = !home || adminOfUnit(home)
+  return { rest, roleLocked: !rest || (a?.master === true && !actorIsMaster()) }
 }
 
 /* ONE ROW PER PERSON ON THE ROSTER (D309, D310). Tap it for his sign-in, his role and his state's buttons — never your
@@ -288,11 +321,12 @@ function PersonRow(p: { pid: string; open: boolean; ringed?: boolean; onToggle: 
   /* his posting out has come and is waiting — why (the last admin; a stored week), on his row, his own included */
   const held = postingHeldNote(p.pid)
   const roleWord = roleWordOf(a)
+  const other = otherSqnOf(p.pid)
   return (
     <div className={'acc-row od-row' + (p.open ? ' od-row-on' : '') + (p.ringed ? ' acc-ring' : '')} data-person={p.pid} {...(a ? { 'data-acct': a.id } : {})}>
       <button className="acc-main acc-tap" disabled={!!own} onClick={p.onToggle}
         title={own ? 'Your own account — another admin can change it' : `Change ${callsign}`}>
-        <span className="acc-name">{callsign}</span>
+        <span className="acc-name">{callsign}{other && <span className="acc-sqn" data-testid={`sqn-${p.pid}`}>{other}</span>}</span>
         <PersonSub pid={p.pid} a={a} person={person} roleWord={roleWord} own={!!own} />
       </button>
       <Dots pid={p.pid} a={a} archived={false} />
@@ -313,18 +347,26 @@ function PersonEditor(p: { pid: string; a: Account | undefined; callsign: string
      role alone (the sign-in re-walk, 22 Nov 26): an admin who moved squadron is a member of the one he joined (K3, D2160)
      while his account still stores "admin", so the box opened on Admin beside a row reading MEMBER, and saving Admin
      changed nothing and said nothing. Picking Admin and saving now sends the role, and the account door records it for
-     the squadron he is in today (accounts.ts updateAccount, adminRecFor). */
+     the squadron he is in today (accounts.ts updateAccount, adminRecFor). The master mark is the box's third choice
+     (D2303). */
   const roleNow: AccountRole = a && isAdminAccount(a) ? 'admin' : 'main'
-  const [role, setRole] = useState<AccountRole>(roleNow)
+  const pickNow = rolePickOf(a, roleNow)
+  const [role, setRole] = useState<RolePick>(pickNow)
+  /* every other squadron's line, as it stands and as picked (ui/UserAccess.tsx) */
+  const [linesNow] = useState(() => accessLinesOf(a, p.pid))
+  const [lines, setLines] = useState(linesNow)
+  const { rest, roleLocked } = rowLocks(p.pid, a)
   /* the delete's first tap arms it; Cancel, closing the editor or another row disarms it (the editor unmounts) */
   const [armDel, setArmDel] = useState(false)
   const save = () => {
     if (!a) return
-    const patch: any = {}
-    if (name !== a.name) patch.name = name
-    if (role !== roleNow) patch.role = role
-    if (!Object.keys(patch).length) return p.onClose()
-    if (done(updateAccount(a.id, patch), 'Saved')) p.onClose()
+    /* the role, the mark and every squadron's line in ONE command (accounts.ts saveAccess — one Undo step); a rename of
+       his sign-in after it, through its own door */
+    const want = accessWant(a, role, pickNow, lines, linesNow)
+    const renamed = name !== a.name
+    if (!want && !renamed) return p.onClose()
+    const bad = (want ? saveAccess(a.id, want) : null) || (renamed ? updateAccount(a.id, { name }) : null)
+    if (done(bad, 'Saved')) p.onClose()
   }
   const archive = () => {
     const r = archivePerson(p.pid)
@@ -338,17 +380,21 @@ function PersonEditor(p: { pid: string; a: Account | undefined; callsign: string
     <div className="acc-edit" data-editing={a ? a.id : p.pid}>
       <div className="adm-2col">
         <div className="mfield"><label htmlFor={a ? 'accEdName' : 'accGiveName'}>Sign-in (defence mail)</label>
-          <input id={a ? 'accEdName' : 'accGiveName'} value={name} maxLength={MAX_SIGNIN} placeholder="name@mail"
+          <input id={a ? 'accEdName' : 'accGiveName'} value={name} maxLength={MAX_SIGNIN} placeholder="name@mail" disabled={!rest}
             onChange={e => setName(e.target.value)} /></div>
         <div className="mfield"><label htmlFor={a ? 'accEdRole' : 'accGiveRole'}>Role</label>
-          <RoleSelect id={a ? 'accEdRole' : 'accGiveRole'} value={role} onChange={setRole} /></div>
+          {/* (no sign-in yet: Member or Admin — the mark is given on an account, D2320) */}
+          <RoleBox id={a ? 'accEdRole' : 'accGiveRole'} value={role} disabled={roleLocked} masterOff={!a || !actorIsMaster()}
+            onChange={setRole} /></div>
       </div>
+      <SquadronLines pid={p.pid} hasSignIn={!!a} rolePick={role} now={linesNow} pick={lines}
+        onPick={(u, v) => setLines({ ...lines, [u]: v })} />
       <div className="acc-acts">
         {a
           ? <>
               <button className="abtn primary" id="accEdSave" onClick={save}>Save</button>
               {/* D285: "Suspend" / "Enable" — a man away is suspended, and enabled when he is back */}
-              <button className="abtn" id="accEdOnOff" onClick={() => {
+              <button className="abtn" id="accEdOnOff" disabled={!rest} onClick={() => {
                 const enabling = !a.on
                 if (done(updateAccount(a.id, { on: !a.on }), a.on ? `${callsign} suspended` : `${callsign} can sign in again`)) {
                   /* D284, D307: enabling his account is one of the "he's back" acts — the Quals prompt to check his quals */
@@ -358,12 +404,12 @@ function PersonEditor(p: { pid: string; a: Account | undefined; callsign: string
               }}>{a.on ? 'Suspend' : 'Enable'}</button>
             </>
           : <button className="abtn primary" id="accGive" onClick={() => {
-              if (done(addAccount(name, p.pid, role), `${callsign} can sign in now`)) p.onClose()
+              if (done(addAccount(name, p.pid, role === 'master' ? 'admin' : role), `${callsign} can sign in now`)) p.onClose()
             }}>Give sign-in</button>}
         {/* D310, D322, D323: Archive — one tap; it also suspends his sign-in; on the war "posted out from today" */}
-        <button className="abtn" id="accEdArchive" onClick={archive}>Archive</button>
+        <button className="abtn" id="accEdArchive" disabled={!rest} onClick={archive}>Archive</button>
         {/* D287, D298 "Delete": his account and his person (a hidden mark underneath, D290); asks twice, says what goes */}
-        <button className={'abtn danger' + (armDel ? ' del-armed' : '')} id="accEdDel" onClick={del}>
+        <button className={'abtn danger' + (armDel ? ' del-armed' : '')} id="accEdDel" disabled={!rest} onClick={del}>
           {armDel ? `Tap again to delete ${callsign}` : 'Delete'}</button>
         <button className="abtn" id="accEdCancel" onClick={p.onClose}>Cancel</button>
       </div>

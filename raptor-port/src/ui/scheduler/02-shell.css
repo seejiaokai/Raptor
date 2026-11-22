@@ -51,8 +51,11 @@
 .sqm-wrap{display:inline-flex;position:relative;flex:0 0 auto}
 .sqm-btn{display:inline-flex;align-items:center;padding:0;margin:0;background:none;border:0;color:inherit;font:inherit;
   text-align:left;cursor:pointer}
-.sqm-btn .mark{border-radius:4px}
-.sqm-btn:hover .mark,.sqm-btn.on .mark{background:rgba(255,255,255,.07);box-shadow:0 0 0 6px rgba(255,255,255,.07)}
+/* (the pale fill reaches 6px past the mark, as drawn — a fill behind it, never a band of light round it: no mark glows,
+   D880–D887, ui/noglow-css.test.ts) */
+.sqm-btn .mark{position:relative}
+.sqm-btn:hover .mark::before,.sqm-btn.on .mark::before{content:"";position:absolute;inset:-6px;border-radius:8px;
+  background:rgba(255,255,255,.07);pointer-events:none}
 .sqm-btn:focus{outline:none}
 .sqm-btn:focus-visible .mark{outline:2px solid var(--accent);outline-offset:6px}
 .mark.menu .k::after{content:" \25BE"}

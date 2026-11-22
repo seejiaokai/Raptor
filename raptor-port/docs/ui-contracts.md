@@ -7048,6 +7048,21 @@ of shows no row for him (`leavewar/engine/people.ts` — `inSquadron`, `beforeFi
 
 **Quals** keeps quals, CAT, flight and initials (D310): no ✕ in edit mode, no Archived section; its help line says
 "Archive, restore and delete are on Admin → Users."; the admin's "he's back" prompt stays (it skips a man archived again).
+
+**A person's access, by squadron (since 22 Nov 26 — batch 1's second half §4 items 3–5; his D2303, design B, pictures
+rB1–rB4; D2305, D2306, D2320, D2336; built chat 149):** the opened row's Role box reads Member, Admin, Master admin
+("Master admin" greyed for anyone but a master admin; a new sign-in's box Member or Admin). Under Sign-in and Role, one
+line per squadron by number, the number in the field labels' look (`ui/UserAccess.tsx`): his home "142 Home squadron";
+every other "149 None · View · Plan" (the editor's segmented buttons); Master admin held or picked, "Full access" with no
+buttons. A line not his to change is greyed with one grey line under it: no sign-in, "Give him a sign-in first to give
+access."; not an admin of that squadron, "Only an admin of 149 can give access to 149."; Plan on a member (or Member
+picked), "Plan is for admins only."; Plan for anyone but a master admin, "Only a master admin gives Plan." (a Plan held
+today, the whole line). Plan picked says what it gives: "Full access to 149, every page: its schedule and publishing, its
+settings, its people and their sign-ins." A man of another squadron on the list (found by search, or a Plan holder of
+it) wears his squadron's grey number by his name, and the rest of his row — sign-in, role, Suspend, Archive, Delete —
+is greyed unless the admin is an admin of his own squadron (D2191). A Plan holder's grey line ends "· also plans 149",
+the same on both lists. **Save sends the role, the mark and every line at once** (`state/accounts.ts saveAccess` — one
+command, one Undo step), a rename of his sign-in after it. Pinned by `ui/msq-users-row.test.tsx`.
 ## The loading claw (`[TALON-LOADING-CLAW]`, D1591, D1605, 3 Nov 26)
 
 While the app loads, the talon claws scratch in over a plain dark screen: the left claw from its tip to its end, the
