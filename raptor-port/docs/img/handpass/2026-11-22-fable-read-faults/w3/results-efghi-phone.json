@@ -1,0 +1,222 @@
+{
+ "R": [
+  {
+   "sc": "F2-e",
+   "size": "phone",
+   "step": "1 two listed, foot says \"them\"",
+   "pass": true,
+   "note": "{\"count\":\"2 to answer\",\"foot\":\"Later: Ace signs, but nobody on them earns OIL.\"}"
+  },
+  {
+   "sc": "F2-e",
+   "size": "phone",
+   "step": "2 one answered, Save: name signed",
+   "pass": true,
+   "note": "{\"sg\":{\"cur\":\"dj\",\"sked\":\"\",\"plan\":\"\",\"appr\":\"\"},\"toast\":\"OIL answered for 1 input\"}"
+  },
+  {
+   "sc": "F2-e",
+   "size": "phone",
+   "step": "3 next box asks for the one left",
+   "pass": true,
+   "note": "{\"count\":\"1 to answer\",\"rows\":[\"odl-yes-w3-t2\"],\"foot\":\"Later: Anvil signs, but nobody on it earns OIL.\"}"
+  },
+  {
+   "sc": "F2-e",
+   "size": "phone",
+   "step": "4 plan signs at once",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "sc": "F2-e",
+   "size": "phone",
+   "step": "4 appr signs at once",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "sc": "F2-e",
+   "size": "phone",
+   "step": "5 publish note names only the one left",
+   "pass": true,
+   "note": "{\"text\":\"Saturday 18 Jul published and approved. Saber’s Training has no OIL answer, so nobody on it earns OIL.\",\"cls\":\"\",\"op\":\"1\",\"color\":\"rgb(229, 168, 59)\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "phone",
+   "step": "1 History opened behind: list and hold stay",
+   "pass": true,
+   "note": "{\"held\":true,\"name\":\"Ace\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "phone",
+   "step": "2 day changed with the list up",
+   "pass": null,
+   "note": "{\"boardDay\":\"Friday\",\"listUp\":true,\"held\":true,\"title\":\"OIL — Sat 18 Jul\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "phone",
+   "step": "3 Later pressed while the board shows Friday",
+   "pass": null,
+   "note": "Saturday's signs now {\"cur\":\"dj\",\"sked\":\"\",\"plan\":\"\",\"appr\":\"\"}; Friday's {\"cur\":\"\",\"sked\":\"\",\"plan\":\"\",\"appr\":\"\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "phone",
+   "step": "4 week changed with the list up",
+   "pass": null,
+   "note": "{\"boardDate\":\"Jul 20\",\"listUp\":true,\"held\":true,\"title\":\"OIL — Sat 18 Jul\",\"rows\":\"1 to answer\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "phone",
+   "step": "5 Later/Close in the other week: written where?",
+   "pass": null,
+   "note": "{\"di5\":\"{\\\"cur\\\":\\\"\\\",\\\"sked\\\":\\\"\\\",\\\"plan\\\":\\\"\\\",\\\"appr\\\":\\\"\\\"}\",\"day\":\"Jul 20\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "phone",
+   "step": "6 card opens the input's own window on Inputs",
+   "pass": true,
+   "note": "{\"page\":\"inputs\",\"inpWin\":true,\"listUp\":true}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "phone",
+   "step": "7 answered in its window; the list now",
+   "pass": null,
+   "note": "{\"oil\":\"{\\\"2026-07-18\\\":1}\",\"listUp\":true,\"held\":false,\"foot\":\"\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "phone",
+   "step": "8 back: held box hidden, Close signs nothing",
+   "pass": true,
+   "note": "{\"h2\":{\"held\":false,\"label\":null,\"name\":null,\"border\":null,\"after\":null,\"beside\":null,\"foot\":\"\",\"sub\":\"\",\"title\":\"OIL — Sat 18 Jul\"},\"after\":\"{\\\"cur\\\":\\\"\\\",\\\"sked\\\":\\\"\\\",\\\"plan\\\":\\\"\\\",\\\"appr\\\":\\\"\\\"}\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "phone",
+   "step": "9 now answered: the box signs at once",
+   "pass": true,
+   "note": "{\"cur\":\"dj\",\"sked\":\"\",\"plan\":\"\",\"appr\":\"\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "phone",
+   "step": "10 version loaded back: list opens, no held box",
+   "pass": true,
+   "note": "{\"held\":false,\"label\":null,\"name\":null,\"border\":null,\"after\":null,\"beside\":null,\"foot\":\"\",\"count\":\"1 to answer\",\"sub\":\"\",\"title\":\"OIL — Sat 18 Jul\"}"
+  },
+  {
+   "sc": "F2-g",
+   "size": "phone",
+   "step": "1 published with Later",
+   "pass": true,
+   "note": "\"Saturday 18 Jul published and approved. Ranger’s Training has no OIL answer, so nobody on it earns OIL.\""
+  },
+  {
+   "sc": "F2-g",
+   "size": "phone",
+   "step": "2 second input: day pending, sign-offs fall",
+   "pass": true,
+   "note": "[\"CUR CK\",\"SKED CK\",\"PLANNED BY\",\"APPROVED BY\"]"
+  },
+  {
+   "sc": "F2-g",
+   "size": "phone",
+   "step": "3 first press asks once more",
+   "pass": true,
+   "note": "{\"count\":\"2 to answer\",\"rows\":[\"odl-yes-w3-t1\",\"odl-yes-w3-t2\"],\"foot\":\"Later: Ace signs, but nobody on them earns OIL.\"}"
+  },
+  {
+   "sc": "F2-g",
+   "size": "phone",
+   "step": "4 sked signs at once",
+   "pass": true,
+   "note": "shaft"
+  },
+  {
+   "sc": "F2-g",
+   "size": "phone",
+   "step": "4 plan signs at once",
+   "pass": true,
+   "note": "glass"
+  },
+  {
+   "sc": "F2-g",
+   "size": "phone",
+   "step": "4 appr signs at once",
+   "pass": true,
+   "note": "yeti"
+  },
+  {
+   "sc": "F2-g",
+   "size": "phone",
+   "step": "5 amendment note keeps its OIL sentence",
+   "pass": true,
+   "note": "{\"text\":\"Published AL1 · 1 item on Sat only · approved by Bolt · Saturday 18 Jul: Saber’s Training and Ranger’s Training have no OIL answer, so nobody on them earns OIL\",\"cls\":\"\",\"op\":\"1\",\"color\":\"rgb(229, 168, 59)\"}"
+  },
+  {
+   "sc": "F2-h",
+   "size": "phone",
+   "step": "0 a weekday Training filed, not asked",
+   "pass": true,
+   "note": "{\"asked\":false,\"iid\":\"imwr9pzjfi9apua\"}"
+  },
+  {
+   "sc": "F2-h",
+   "size": "phone",
+   "step": "1 holiday saved: list opens by itself, no held box",
+   "pass": true,
+   "note": "{\"held\":false,\"label\":null,\"name\":null,\"border\":null,\"after\":null,\"beside\":null,\"foot\":\"What is left goes to the schedulers’ bells\",\"count\":\"2 to answer\",\"sub\":\"Public holiday · National Day\",\"title\":\"OIL — Fri 17 JulPublic holiday · National Day\"}"
+  },
+  {
+   "sc": "F2-h",
+   "size": "phone",
+   "step": "2 the bell's line opens the list, no held box",
+   "pass": true,
+   "note": "{\"held\":false,\"label\":null,\"name\":null,\"border\":null,\"after\":null,\"beside\":null,\"foot\":\"What is left goes to the schedulers’ bells\",\"count\":\"2 to answer\",\"sub\":\"Public holiday · National Day\",\"title\":\"OIL — Fri 17 JulPublic holiday · National Day\"}"
+  },
+  {
+   "sc": "F2-h",
+   "size": "phone",
+   "step": "3 sign-off on the holiday asks, subtitle names the holiday",
+   "pass": true,
+   "note": "{\"held\":true,\"label\":\"CUR CK\",\"name\":\"Ace\",\"border\":\"dotted\",\"after\":\"none\",\"beside\":\"waiting for your answer\",\"foot\":\"Later: Ace signs, but nobody on them earns OIL.\",\"count\":\"2 to answer\",\"sub\":\"Public holiday · National Day\",\"title\":\"OIL — Fri 17 JulPublic holiday · National Day\"}"
+  },
+  {
+   "sc": "F2-h",
+   "size": "phone",
+   "step": "4 Save: answered and signed",
+   "pass": true,
+   "note": "{\"cur\":\"dj\",\"oil\":\"{\\\"2026-07-17\\\":1}\"}"
+  },
+  {
+   "sc": "F2-h",
+   "size": "phone",
+   "step": "5 Undo: name first, then the answers; Redo back",
+   "pass": true,
+   "note": "[{\"btn\":\"#sbUndo\",\"cur\":\"\",\"oil\":\"{\\\"2026-07-17\\\":1}\",\"toast\":\"Undid: a sign-off\",\"listUp\":false},{\"btn\":\"#sbUndo\",\"cur\":\"\",\"oil\":\"{}\",\"toast\":\"Undid: an OIL answer\",\"listUp\":false},{\"btn\":\"#sbRedo\",\"cur\":\"\",\"oil\":\"{\\\"2026-07-17\\\":1}\",\"toast\":\"Redid: an OIL answer\",\"listUp\":false},{\"btn\":\"#sbRedo\",\"cur\":\"dj\",\"oil\":\"{\\\"2026-07-17\\\":1}\",\"toast\":\"Redid: a sign-off\",\"listUp\":false}]"
+  },
+  {
+   "sc": "F2-i",
+   "size": "phone",
+   "step": "1 list below the board's bar; Done and bell pressable",
+   "pass": true,
+   "note": "{\"win\":{\"top\":315.0625,\"bottom\":558.9375,\"left\":12,\"right\":390,\"h\":243.875},\"barBottom\":75,\"ih\":874,\"iw\":402,\"vv\":{\"h\":874,\"top\":0},\"done\":true,\"bell\":true,\"later\":{\"top\":517.9375,\"bottom\":545.9375},\"save\":{\"top\":517.9375,\"bottom\":545.9375}}"
+  },
+  {
+   "sc": "F2-i",
+   "size": "phone",
+   "step": "2 phone: in the middle, no taller than the screen less 24px, Save/Later in sight",
+   "pass": true,
+   "note": "{\"h\":243.875,\"max\":850,\"offMidScreen\":\"0.0\",\"offMidBelowBar\":\"37.5\",\"inScreen\":true}"
+  }
+ ],
+ "errs": []
+}

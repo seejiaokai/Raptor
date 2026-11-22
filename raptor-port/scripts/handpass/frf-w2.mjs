@@ -121,7 +121,7 @@ async function fileNew(c, f) {
   if (iid.length !== 1) throw new Error('fileNew: expected one new record, got ' + JSON.stringify(iid))
   return iid[0]
 }
-const rec = (c, iid) => c.p.evaluate(i => { const r = window.INPUTS.find(x => x.iid === i); return r ? JSON.parse(JSON.stringify(r)) : null }, iid)
+const rec = (c, iid) => c.p.evaluate(i => { const r = window.INPUTS.find(x => x.iid === i); return r ? structuredClone(r) : null }, iid)
 const docCount = r => { if (!r) return -1; const ids = r.docIds || (r.docId ? [r.docId] : []); return ids.length }
 /* the board for a day of the demo week */
 async function toBoard(c, di) {
@@ -376,7 +376,7 @@ async function s3(sz) {
       r = await rec(c, f)
       unanswered = !r.oil
       c.rec('F fixture: saved Other, OIL unanswered', unanswered && r.acc === 'g', `acc=${r.acc} oil=${JSON.stringify(r.oil)} (Fri 17 made a public holiday, its list left with Later)`, [listPic])
-      const dx = c.p.locator('[data-testid="win-days-x"]'); if (await dx.count()) await c.press(dx)
+      for (const w of ['win-days-x', 'win-inputsset-x']) { const dx = c.p.locator(`[data-testid="${w}"]`).filter({ visible: true }); if (await dx.count()) await c.press(dx.first()) }
     } catch (e) { c.rec('F fixture', 'NOT WALKED', 'could not make the unanswered Other through the Calendar window: ' + String(e.message).split('\n')[0], [await c.shot('F-fixture-stopped')]) }
     if (unanswered) {
       await openFromList(c, f)
@@ -542,12 +542,42 @@ async function door2(c, b) {
     } else c.rec('follow variant 2', 'NOT WALKED', `B acc=${(await rec(c, b)).acc}; → Ground on its line: ${await gb.count()}`)
   } else c.rec('follow door 2', 'NOT WALKED', 'no Reject on B\'s Personal Inputs line on the board')
 }
+/* what the VISIBLE input window says about where it goes */
+const visGoes = c => c.p.evaluate(() => {
+  const w = [...document.querySelectorAll('[data-testid="win-inputedit"], #inpEditPop:not([hidden])')].find(x => { const r = x.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(x).visibility !== 'hidden' && !x.closest('[hidden]') })
+  if (!w) return null
+  return { win: w.id || w.getAttribute('data-testid'), picked: [...w.querySelectorAll('.goesbtn')].filter(x => x.getAttribute('aria-pressed') === 'true').map(x => x.textContent.trim()), line: (w.querySelector('[data-testid="inpEdit-goes-line"]')?.textContent || '').trim(), rmk: w.querySelector('#inpEditRmk')?.value ?? null }
+})
+const WORD = { g: 'Ground Programme', u: 'Unavailable' }
+/* the window is up on B; the top bar's Undo is pressed; does the window follow, and what does its Save then do? */
+async function undoBehind(c, b, tag, type = true) {
+  const before = await visGoes(c)
+  const undo = c.p.locator('#undoBtn').filter({ visible: true }).first()
+  const ureach = (await undo.count()) ? await undo.evaluate(e => { const r = e.getBoundingClientRect(); const h = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !!h && (h === e || e.contains(h)) }) : false
+  if (!ureach) { c.rec(`follow ${tag}`, 'NOT WALKED', 'the top bar\'s Undo is not pressable with the window up', [await c.shot(`follow-${tag}-noundo`)]); if (await winUp(c)) await closeWin(c, 'cancel'); return }
+  await c.clearToasts()
+  await c.press(undo); await c.p.waitForTimeout(700)
+  const r = await rec(c, b)
+  const after = await visGoes(c)
+  const want = r.acc === 'r' ? [] : [WORD[r.acc || 'g']]
+  const follows = !!after && JSON.stringify(after.picked) === JSON.stringify(want) && (r.acc !== 'r' || /Rejected/.test(after.line))
+  c.rec(`follow ${tag}: Undo behind the open window — the window follows`, follows, `page now ${await c.p.evaluate(() => window.CURPAGE)}; window before ${JSON.stringify(before)}; record after Undo acc=${r.acc}; window after ${JSON.stringify(after)}; notes ${JSON.stringify(await c.toasts())}`, [await c.shot(`follow-${tag}-after-undo`)])
+  if (!(await winUp(c))) return
+  if (type) await c.p.locator('#inpEditRmk').filter({ visible: true }).first().fill('w2 follow').catch(e => log('  remarks fill failed', e.message.split('\n')[0]))
+  await c.clearToasts()
+  await c.press('#inpEditSave'); await c.p.waitForTimeout(500)
+  const ok = c.p.locator('[data-testid="oilconf"]'); if (await ok.count()) { await c.press('[data-testid="oil-no"]'); await c.press('[data-testid="oilconf-save"]') }
+  const r2 = await rec(c, b)
+  c.rec(`follow ${tag}: the window's Save does not put the old place back`, r2.acc === r.acc, `acc before Save ${r.acc}, after ${r2.acc}; remarks now "${r2.remarks}"; window up ${await winUp(c)}; notes ${JSON.stringify(await c.toasts())}`, [await c.shot(`follow-${tag}-after-save`)])
+  if (await winUp(c)) await closeWin(c, 'cancel')
+}
 async function boardDoor(c, b) {
   await unfoldPI(c, '#schedBoard', b, 5)
-  const rowSel = `#schedBoard .sb-panel.pinp :is([data-inprow^="${b}"], .sb-arow:has([data-inpedit="${b}"]))`
+  const rowSel = `#schedBoard :is(.sb-panel.pinp, .sb-panel.unav) :is([data-inprow^="${b}"], .sb-arow:has([data-inpedit="${b}"]))`
   const btns = await c.p.locator(`${rowSel} button`).evaluateAll(bs => bs.map(x => (x.textContent || '').trim() + (x.getAttribute('data-acc') ? '[' + x.getAttribute('data-acc') + ']' : '')))
-  log('  B row buttons under Personal Inputs:', JSON.stringify(btns))
-  await c.press(`#schedBoard .sb-panel.pinp [data-inpedit="${b}"] >> visible=true`)
+  log('  B row buttons on the board:', JSON.stringify(btns))
+  if (!btns.length) { c.rec('board door', 'NOT WALKED', 'B has no line with an edit button on the board'); return }
+  await c.press(`#schedBoard :is(.sb-panel.pinp, .sb-panel.unav) [data-inpedit="${b}"] >> visible=true`)
   await c.p.locator(WIN + ' >> visible=true').first().waitFor({ timeout: 4000 })
   const winPic = await c.shot('follow-window-open')
   /* can the row's buttons behind be reached with the window up? */
@@ -572,7 +602,126 @@ async function boardDoor(c, b) {
   const r2 = await rec(c, b)
   c.rec('follow: a Save from the window keeps the new place', r2.acc === r.acc, `acc after the window's Save: ${r2.acc}`)
 }
-async function s4() { throw new Error('S4 not yet written') }
+/* ---------- S4: the LATE chip of a late-added man drops on a tap (Inputs F3 / F4); a scheduler's row edit never makes LATE ---------- */
+const chipState = (c, sel) => c.p.evaluate(s => { const e = [...document.querySelectorAll(s)].find(x => x.getBoundingClientRect().width > 0); if (!e) return null; const cs = getComputedStyle(e); return { off: e.classList.contains('off'), pressed: e.getAttribute('aria-pressed'), opacity: cs.opacity, color: cs.color, text: e.textContent.trim() } }, sel)
+async function relogin(c) {
+  await c.p.reload(); await c.p.waitForTimeout(800)
+  if (await c.p.locator('#luser').count()) { await c.p.fill('#luser', 'ad'); await c.p.fill('#lpass', 'a'); await c.p.click('#loginForm button[type=submit]') }
+  await c.p.waitForSelector('#vWeek .day', { state: 'attached' }); await c.p.waitForTimeout(700)
+}
+async function s4(sz) {
+  const c = await boot(sz, 's4')
+  try {
+    const nomad = await pid(c, 'Nomad'), ace = await pid(c, 'Ace')
+    /* the demo's on-time overseas duty of Nomad, 15–17 Jul, under Unavailable; Ace added to it now, through its window */
+    const od = await c.p.evaluate(() => window.INPUTS.find(r => r.type === 'OD' && /Jul 15/.test(r.date) && window.PEOPLE[r.person]?.cs === 'Nomad')?.iid)
+    let r = await rec(c, od)
+    const late0 = await c.p.evaluate(i => window.isLateInput(window.INPUTS.find(x => x.iid === i)), od)
+    c.rec('fixture: demo OD on time', !!od && !late0, `Nomad's OD ${r?.date}–${r?.endDate}, last changed ${r?.mod}, LATE ${late0}, acc ${r?.acc}`)
+    await openFromList(c, od)
+    await c.press(`${WIN} [data-testid="pp-several"]`)
+    await c.press(`${WIN} [data-pp="${ace}"]`)
+    await c.shot('add-ace')
+    await c.press('#inpEditSave'); await c.p.waitForTimeout(400)
+    const dc = c.p.locator('[data-testid="docconf-nodoc"]'); if (await dc.isVisible().catch(() => false)) await c.press(dc)
+    const oc = c.p.locator('[data-testid="oilconf"]'); if (await oc.count()) { await c.shot('add-ace-oil'); await c.press('[data-testid="oilconf-cancel"]') }
+    r = await rec(c, od)
+    c.rec('fixture: Ace added late to the shared OD', (r.people || []).length === 2 && !(await winUp(c)), `people ${JSON.stringify(r.people)}; record mod ${r.mod}; window closed ${!(await winUp(c))}`)
+    /* the board, Wed 15, Unavailable: one row a man */
+    await toBoard(c, 2)
+    const rowN = `#schedBoard .sb-panel.unav [data-inprow="${od}~${nomad}"]`, rowA = `#schedBoard .sb-panel.unav [data-inprow="${od}~${ace}"]`
+    const rows = await c.p.locator(`#schedBoard .sb-panel.unav [data-inprow^="${od}"]`).evaluateAll(es => es.map(e => e.getAttribute('data-inprow')))
+    const chipN0 = await chipState(c, `${rowN} [data-lateoff]`), chipA0 = await chipState(c, `${rowA} [data-lateoff]`)
+    await c.p.locator(rowA).first().scrollIntoViewIfNeeded().catch(() => {})
+    c.rec('F4 reading: each man\'s row', !!chipA0, `rows ${JSON.stringify(rows)}; Nomad's chip ${JSON.stringify(chipN0)}; Ace's chip ${JSON.stringify(chipA0)}`, [await c.shot('unav-rows')])
+    if (chipA0) {
+      await c.clearToasts()
+      await c.press(`${rowA} [data-lateoff]`, 'F3-tap')
+      const chipA1 = await chipState(c, `${rowA} [data-lateoff]`)
+      r = await rec(c, od)
+      c.rec('F3: a tap drops Ace\'s LATE chip (dimmed)', !!chipA1 && chipA1.off === true && Number(chipA1.opacity) < 1 || (chipA1 && chipA1.off), `after the tap ${JSON.stringify(chipA1)}; notes ${JSON.stringify(await c.toasts())}; record lateOff ${JSON.stringify(r.lateOff)} people ${JSON.stringify(r.people)}`, [await c.shot('F3-dropped')])
+      await relogin(c)
+      await toBoard(c, 2)
+      const chipA2 = await chipState(c, `${rowA} [data-lateoff]`)
+      await c.p.locator(rowA).first().scrollIntoViewIfNeeded().catch(() => {})
+      c.rec('F3: still dropped after a reload', !!chipA2 && chipA2.off === true, JSON.stringify(chipA2), [await c.shot('F3-after-reload')])
+      /* the Inputs page still prints LATE */
+      await closeBoard(c)
+      await toList(c)
+      const listLate = await c.p.locator(`${c.phone ? `[data-testid="inl-row-${od}"]` : `#intbl tr[data-iid="${od}"]`} :is(.latetag, [data-testid="inl-late"])`).count()
+      c.rec('the Inputs page still prints LATE', listLate >= 1, `LATE marks on the List's row: ${listLate}`, [await c.shot('F3-inputs-list')])
+      /* the week shows it dropped too */
+      await goPage(c, 'editsched')
+      const wkChip = await chipState(c, `#eWeek .day:not(.peek) [data-inprow="${od}~${ace}"] :is([data-lateoff], .latetag)`)
+      c.rec('Edit Schedule week: Ace\'s mark', 'NOTE', JSON.stringify(wkChip))
+      /* tap the same spot: back */
+      await toBoard(c, 2)
+      await c.clearToasts()
+      await c.press(`${rowA} [data-lateoff]`, 'F3-tap-back')
+      const chipA3 = await chipState(c, `${rowA} [data-lateoff]`)
+      c.rec('a tap on the same spot brings it back', !!chipA3 && chipA3.off === false, `${JSON.stringify(chipA3)}; notes ${JSON.stringify(await c.toasts())}`, [await c.shot('F3-back')])
+      await closeBoard(c)
+    }
+    /* F4: the input changed late in its own window (a remark) — every man's row then reads LATE (the later of the two dates) */
+    await openFromList(c, od)
+    await c.p.locator('#inpEditRmk').filter({ visible: true }).first().fill('exercise, off island — w2 late change')
+    await c.press('#inpEditSave'); await c.p.waitForTimeout(400)
+    const oc2 = c.p.locator('[data-testid="oilconf"]'); if (await oc2.count()) await c.press('[data-testid="oilconf-cancel"]')
+    r = await rec(c, od)
+    await toBoard(c, 2)
+    const n4 = await chipState(c, `${rowN} [data-lateoff]`), a4 = await chipState(c, `${rowA} [data-lateoff]`)
+    await c.p.locator(rowN).first().scrollIntoViewIfNeeded().catch(() => {})
+    c.rec('F4: a late change reads LATE on every man\'s row', !!n4 && !!a4, `record mod ${r.mod}, remarks "${r.remarks}"; Nomad's chip ${JSON.stringify(n4)}; Ace's ${JSON.stringify(a4)}`, [await c.shot('F4-rows')])
+    await closeBoard(c)
+    /* Personal Inputs: a shared Meeting filed now (late), its chip on the board's Personal Inputs line */
+    const mt = await fileNew(c, { type: 'Meeting', people: ['Drifter', 'Hunter'], iso: '2026-07-16', start: '10:00', end: '11:00', title: 'W2 late brief' })
+    await toBoard(c, 3)
+    await unfoldPI(c, '#schedBoard', mt, 3)
+    const pl = `#schedBoard .sb-panel.pinp .sb-arow:has([data-inpedit="${mt}"]) [data-lateoff]`
+    const p0 = await chipState(c, pl)
+    if (p0) {
+      await c.p.locator(pl).first().scrollIntoViewIfNeeded().catch(() => {})
+      await c.press(pl, 'PI-tap')
+      const p1 = await chipState(c, pl)
+      c.rec('Personal Inputs: a tap drops the LATE chip', p1?.off === true, `before ${JSON.stringify(p0)} after ${JSON.stringify(p1)}`, [await c.shot('PI-dropped')])
+      await relogin(c); await toBoard(c, 3); await unfoldPI(c, '#schedBoard', mt, 3)
+      const p2 = await chipState(c, pl)
+      c.rec('Personal Inputs: dropped after a reload', p2?.off === true, JSON.stringify(p2), [await c.shot('PI-after-reload')])
+      await c.press(pl, 'PI-tap-back')
+      const p3 = await chipState(c, pl)
+      c.rec('Personal Inputs: same spot brings it back', p3?.off === false, JSON.stringify(p3), [await c.shot('PI-back')])
+    } else c.rec('Personal Inputs chip', false, 'no LATE chip on the Meeting\'s Personal Inputs line', [await c.shot('PI-nochip')])
+    await closeBoard(c)
+    /* the settled rule: a scheduler's change on an on-time input's row never makes it read LATE */
+    const appt = await c.p.evaluate(() => window.INPUTS.find(r => r.type === 'Appointment' && /Jul 16/.test(r.date) && window.PEOPLE[r.person]?.cs === 'Ranger')?.iid)
+    const cobra = await c.p.evaluate(() => window.INPUTS.find(r => r.type === 'OL' && /Jul 15/.test(r.date) && window.PEOPLE[r.person]?.cs === 'Cobra')?.iid)
+    const lateOf = i => c.p.evaluate(i => window.isLateInput(window.INPUTS.find(x => x.iid === i)), i)
+    const pre = { appt: await lateOf(appt), cobra: await lateOf(cobra) }
+    await toBoard(c, 3)
+    const gRow = c.p.locator('#schedBoard .sb-panel.grnd .sb-arow.gr-frominput').filter({ has: c.p.locator(`[data-person="${await pid(c, 'Ranger')}"]`) }).first()
+    const st = gRow.locator('input[data-bfld$=".str"]')
+    let typed = false
+    if (await st.count()) {
+      await st.click(); await c.p.keyboard.type('1730'); await c.p.keyboard.press('Enter'); await c.p.waitForTimeout(300)
+      const rm = gRow.locator('textarea[data-bfld$=".rmks"]'); await rm.click(); await c.p.keyboard.type(' w2'); await c.p.keyboard.press('Tab'); await c.p.waitForTimeout(400)
+      typed = true
+    }
+    const ra = await rec(c, appt)
+    await c.p.locator('#schedBoard .sb-panel.grnd').first().scrollIntoViewIfNeeded().catch(() => {})
+    const gPic = await c.shot('rule-ground-row-edited')
+    await closeBoard(c)
+    await toBoard(c, 2)
+    const ur = c.p.locator(`#schedBoard .sb-panel.unav [data-inprow^="${cobra}"] textarea[data-ifld$=".rmks"]`).first()
+    if (await ur.count()) { await ur.click(); await c.p.keyboard.press('End'); await c.p.keyboard.type(' w2'); await c.p.keyboard.press('Tab'); await c.p.waitForTimeout(400) }
+    const rc = await rec(c, cobra)
+    const uPic = await c.shot('rule-unav-row-edited')
+    const post = { appt: await lateOf(appt), cobra: await lateOf(cobra) }
+    const chipCobra = await chipState(c, `#schedBoard .sb-panel.unav [data-inprow^="${cobra}"] [data-lateoff]`)
+    c.rec('rule: a scheduler\'s row edit never makes an on-time input LATE', typed && !pre.appt && !pre.cobra && !post.appt && !post.cobra && !chipCobra, `Ranger's Appointment: typed ${typed}, now ${ra.s}–${ra.e} "${ra.remarks}", mod ${ra.mod}, LATE ${pre.appt}→${post.appt}; Cobra's OL remark now "${rc.remarks}", mod ${rc.mod}, LATE ${pre.cobra}→${post.cobra}, chip ${JSON.stringify(chipCobra)}`, [gPic, uPic])
+    await closeBoard(c)
+    c.rec('errors', c.errs.length === 0, c.errs.length ? c.errs.slice(0, 6).join(' || ') : 'none')
+  } finally { await c.browser.close() }
+}
 
 const scen = { s2, s3, s4 }
 for (const k of ['d', 'p']) {

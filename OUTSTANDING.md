@@ -2916,7 +2916,15 @@ out as SANS, the Scheduler Board's crew list shows him under "SANS avail", greye
 still counts him as a regular — the crew list reads today's SANS tick, the crowd reads the posting's date (the OIL F1
 fix, `leavewar/sync.ts sansSince`). His D283 makes him SANS "on the date"; whether the crew list of an earlier day
 should follow goes with Fable's three SANS questions in (b), one answer for all four. Nothing saved is wrong: his OIL
-for the earlier day stayed, the day read nothing pending.
+for the earlier day stayed, the day read nothing pending; (f) found by the same walk (walker w2, desktop only; NOT yet
+reproduced by a host — reproduce first, red-first fix or file, before this job is called ready): with an input's own
+window open on the Inputs page (opened from the List), the top bar's Undo of a change of where that input goes (Reject,
+then → Unavail on the board; or Rejected → Ground) takes the app to Edit Schedule and turns the window into the
+schedule's pop-up, and (1) its "Goes to" still shows the place the Undo just took back
+(`…/w2/s3-17-*`, `s3-19-*`), and (2) a remark then typed and Saved is lost behind the note "That input is no longer
+there — nothing was saved", though the input is still there (`…/w2/s3-18-*`). The old place is not put back. Whether it
+is older than this job's "the window follows To / Goes to changed behind it" fix is not known. On a phone the top bar
+is covered while the window is up, so the route does not exist there.
 
 ### [SCHED-RIGHT-EDGE] Edit Schedule's days to the window's right edge under the folded CREW tab (his "draw it", 22 Nov 26; D2269)
 **What:** on a desktop, Edit Schedule keeps a 26px lane at its right for the folded CREW tab and the next-day arrow
