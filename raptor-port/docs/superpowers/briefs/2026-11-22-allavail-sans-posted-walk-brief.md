@@ -52,7 +52,35 @@ not list him, a published Saturday gave him only his own item's OIL, and turning
 published day read "1 pending". Now he counts, and "+ SANS" changes nothing on the schedule.
 
 ## The scenarios — each at both sizes; a PASS means the screen shows the EXPECTED line
-SCENARIOS-GO-HERE
+The scenarios are Astra's (a reader who did not build this): `docs/superpowers/briefs/2026-11-22-allavail-sans-posted-scenarios-astra.md`
+— read each of YOURS there whole (its setup, action and disproof). Its dates are examples: use the demo week (today Wed
+15 Jul 26; "Saturday" is Sat 18 Jul, a non-working day that earns OIL). The person is Hex (`rocky`). The main fixture:
+on the Saturday, a briefing 08:00–09:00 naming Hex and an event 10:00–17:00 for ALL AVAIL. The EXPECTED lines below are
+the host's, each with its source, and replace Astra's where they differ. Always record WHO is in the crowd (is Hex's
+puck in the ALL AVAIL window), not only the count. "Both ways" = with "+ SANS" off the Leave War, then on, then off.
+Your task names which walker you are: **w1** walks S1, S5, S6, S7, S2, S16, S17, S20; **w2** walks S8, S12, S13, S3, S22,
+S23, S28 and the plain-user round. (w2's files: `asp-w2*.mjs`, pictures `…/w2/`, report `parts/asp/w2-report.md`, port 4392.)
+
+| # | In short | EXPECTED (source) |
+|---|---|---|
+| S1 | Hex posted out as SANS from Wed 15 Jul on the war's sheet; the main fixture; "+ SANS" off: the count, the window, OIL Earn; the four sign-offs; Publish; then another week and back, "+ SANS" on and off | Hex is in the event's crowd, his puck with the purple SANS line; after Publish his Leave War cell for Sat reads FO; after each switch and the week change the day reads nothing pending, keeps its four names, the same count and people, the cell FO (D27, D142, D44; test `allavail-sans-posted.test.ts`) |
+| S5 | From S1: take Hex's briefing off; switch both ways before amending; put the briefing back in a separate run | Without a named item the working crowd no longer has Hex, both ways (D27); the day reads pending and its sign-offs fall (D44, D103); the Leave War cell stays FO until an amendment (D142). After putting it back: RECORD what the day and the sign-offs say |
+| S6 | From S1: OIL Earn, switch Hex's earning on the event off, publish the amendment, on again, amend again; both ways | Hex stays in the window's who-is-available half throughout (D27); RECORD his cell after each amendment (FO → what? → FO) |
+| S7 | From S1 with a change waiting: open the count from View-only Sched, from the 👁 look at the published version, and from the Scheduler Board | View-only and the 👁 look show the published crowd (Hex in); the board shows the working copy's (D44, D45) |
+| S2 | In place of the event row: an input of kind Event filed for ALL AVAIL on the Saturday, 10:00–17:00, its OIL question answered Yes; Hex named on the briefing; publish; both ways | Hex is in the input's crowd on the schedule's row; his cell reads FO; nothing pending after the switch (D27, D142, D44) |
+| S16 | After S1's Publish: reload with "+ SANS" off, and with it on | Nothing pending, the same count and people, the cell FO (D44, D142) |
+| S17 | After S1's Publish: sign out, sign in as `ad` again | The same |
+| S20 | After S1's Publish: sign in as the member `us`: View-only Sched's count and window for the Saturday; the OIL tracker for Hex | The same people as the admin saw; no posting, Settings or earning control offered to him (D1008) |
+| S8 | A SANS posting for Hex from Thu 16 Jul, set on Wed 15 Jul; the main fixture on the Saturday. Both ways before midnight; then the clock moved past midnight with the app open; then reopened | Before the date: RECORD (the tests pin: Hex NOT in the crowd, the same both ways). After the posting has run: Hex in, both ways, left open and reopened alike (D283, D27) |
+| S12 | S1 published, then "Undo post out" on the war's sheet | Hex is an ordinary WSO again and in the crowd; RECORD what the published Saturday says (pending or not, the sign-offs), the bell and the changes window |
+| S13 | A SANS posting for Hex from Mon 13 Jul; on Tue 14 Jul a briefing naming him and an ALL AVAIL event, published; then archive Hex on Admin → Users | Tue's crowd still has Hex, both ways (D327; test "F1"); Thu 16 Jul (the same two items, not published) does not. RECORD Tue's pending count and its lines: one for the briefing that names him is right (D327); none may be about the event's crowd or OIL |
+| S3 | Admin → Users: a new person with a post-in date of Fri 17 Jul; tick SANS for him on Quals; name him on a Thu 16 Jul briefing beside an ALL AVAIL event; both ways | RECORD whether he is in the crowd (built: in, the same both ways — the answer waits for the owner). A different answer between the two switch positions is a FAIL |
+| S22 | The main fixture, but Hex's briefing 11:00–12:00, inside the event's hours | Hex is NOT in the event's crowd, both ways — a time clash (D27) |
+| S23 | ALL AVAIL placed on a duty desk and on a sim seat on the Saturday (each with its hours), Hex named on the 08:00 briefing | Each count door opens and lists Hex, both ways (D27, D37) |
+| S28 | A posting for Hex with NO chip chosen (tap the chosen chip again), from Wed 15 Jul; the main fixture | Hex is NOT in the crowd, both ways (D303) |
+
+A scenario you cannot reach through the app's own controls is reported as NOT WALKED with what stopped you — never
+made by writing to `window.*`.
 
 ## The plain-user round (§7.0a) — on top of the scenarios, both sizes
 Do the area's everyday tasks start to finish as a user would, pressing EVERY control that opens or closes something, and

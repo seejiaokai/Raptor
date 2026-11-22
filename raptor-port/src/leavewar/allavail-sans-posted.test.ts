@@ -22,10 +22,10 @@ import { stashClear } from '../engine/weekstash'
 import { commitSetDayApproved } from '../state/sched-commit'
 import { afterSchedMutate } from '../state/view'
 import { updatePersonField } from '../state/quals-write'
-import { getState, initStore as lwInitStore, setPeople, setShowSans } from './state/store'
+import { getState, initStore as lwInitStore, setPeople, setPostIn, setShowSans } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
-import { availableFor, postOut, undoPostOut, runOilPass, wireLeaveWarSync } from './sync'
+import { archivePerson, availableFor, postOut, undoPostOut, runOilPass, wireLeaveWarSync } from './sync'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = '', DAYS0 = '', INPUTS0 = ''
@@ -141,7 +141,7 @@ describe('the "+ SANS" switch never changes who ALL AVAIL counts', () => {
     expect(off).toContain('rocky')
   })
 
-  it('SANS taken off by hand after the posting: an ordinary man again (D2327), in, both ways — named or not', () => {
+  it('SANS taken off by hand after the posting: an ordinary man again (D2327), in, both ways — without being named', () => {
     onlyTheEvent(THU)
     expect(postOut('rocky', MON_ISO, 'sans')).toBe(true); raptorNotify()   // SANS from Mon 13 Jul
     expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()   // off by hand, Wed 15 Jul
@@ -157,6 +157,7 @@ describe('the "+ SANS" switch never changes who ALL AVAIL counts', () => {
     expect(P('rocky').san, 'the posting has not run').toBeFalsy()
     const { off, on } = crowdBothWays(SAT_ISO, SAT)
     expect(off).toEqual(on)
+    expect(off, 'not SANS until its date arrives, and posted out from it: out, as it was').not.toContain('rocky')
   })
 
   it('"Undo post out": the regular he was, in, both ways', () => {
@@ -192,5 +193,83 @@ describe('left as it was: every other posting is still a departure', () => {
     expect(P('rocky').san, 'the tick the posting made is taken back').toBeFalsy()
     const { off, on } = crowdBothWays(SAT_ISO, SAT)
     expect(off).toEqual(on)
+    expect(off).not.toContain('rocky')
+  })
+})
+
+/* THE FRESH OPUS READER'S TWO FINDINGS (22 Nov 26 — docs/superpowers/briefs/2026-11-22-allavail-sans-posted-read-opus.md),
+   each failing before the second fix. On a day he is SANS and named on our programme he is ours — his posting window on
+   the war does not decide it (his [ALL-AVAIL-REDEF]: "only SANS that are planned on the programmed on that day with us");
+   his archive, by its date (D327), his delete and his squadron stints still do. */
+describe('a SANS man named with us counts whatever his posting window on the war says — his archive, by its date, still ends it', () => {
+  it('F1: archived after a SANS posting, he stays in the crowd of the days before his archive (D327), both ways; out from it', () => {
+    onlyTheEvent(TUE); plan(TUE, 'rocky'); onlyTheEvent(THU); plan(THU, 'rocky')
+    expect(postOut('rocky', MON_ISO, 'sans')).toBe(true); raptorNotify()   // SANS from Mon 13 Jul
+    expect(availableFor(TUE_ISO, WIN, DAYS[TUE] as any), 'before the archive').toContain('rocky')
+    expect(archivePerson('rocky').bad).toBeNull(); raptorNotify()          // archived today, Wed 15 Jul
+    expect(P('rocky').archived).toBe(true)
+    const tue = crowdBothWays(TUE_ISO, TUE)
+    expect(tue.off).toEqual(tue.on)
+    expect(tue.off, 'Tue 14 Jul, the day before his archive').toContain('rocky')
+    const thu = crowdBothWays(THU_ISO, THU)
+    expect(thu.off).toEqual(thu.on)
+    expect(thu.off, 'Thu 16 Jul, after his archive').not.toContain('rocky')
+  })
+
+  it('F1: the crowd a published day before his archive kept still matches — the event\'s OIL is not reopened by the archive', () => {
+    onlyTheEvent(TUE); plan(TUE, 'rocky')
+    expect(postOut('rocky', MON_ISO, 'sans')).toBe(true); raptorNotify()
+    sign(TUE); commitSetDayApproved(TUE, true); runOilPass()
+    expect(dayPendingItems(TUE).length).toBe(0)
+    const before = availableFor(TUE_ISO, WIN, DAYS[TUE] as any)
+    expect(archivePerson('rocky').bad).toBeNull(); raptorNotify(); runOilPass()
+    expect(availableFor(TUE_ISO, WIN, DAYS[TUE] as any), 'the crowd as it was published').toEqual(before)
+    expect(JSON.stringify(dayPendingItems(TUE)), 'no pending line about who earns OIL').not.toMatch(/oil/i)
+  })
+
+  it('F2: a SANS man with a post-in date still to come, named with us before it: the same answer both ways — in', () => {
+    onlyTheEvent(THU); plan(THU, 'rocky')
+    expect(setPostIn('rocky', FRI_ISO)).toBe(true); raptorNotify()        // posted in from Fri 17 Jul
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()   // SANS by hand, Wed 15 Jul
+    expect(sansOn('rocky', THU_ISO)).toBe(true)
+    const { off, on } = crowdBothWays(THU_ISO, THU)
+    expect(off).toEqual(on)
+    expect(off, 'SANS and planned with us that day').toContain('rocky')
+  })
+
+  it('a hand-ticked SANS man, archived: in on a day before his archive that names him, out from it, both ways', () => {
+    onlyTheEvent(TUE); plan(TUE, 'nick'); onlyTheEvent(THU); plan(THU, 'nick')
+    expect(P('nick').san, 'nick is SANS at the start').toBe(true)
+    expect(archivePerson('nick').bad).toBeNull(); raptorNotify()
+    const tue = crowdBothWays(TUE_ISO, TUE)
+    expect(tue.off).toEqual(tue.on)
+    expect(tue.off).toContain('nick')
+    const thu = crowdBothWays(THU_ISO, THU)
+    expect(thu.off).toEqual(thu.on)
+    expect(thu.off).not.toContain('nick')
+  })
+
+  /* FOUND, NOT FIXED — [FABLE-READ-FAULTS] (m), Astra's code read #1 of this fix (22 Nov 26): posted out as SANS, the tick
+     then taken off by hand (an ordinary man of ours again, D2327), then archived days later. The archive rewrites his saved
+     posting as an Overseas one that still ends on the SANS posting's date (store.ts stintClosed), so the ordinary days
+     between the untick and the archive lose him: a Saturday published with him behind ALL AVAIL reads pending, and its
+     next amendment takes his OIL (against D327). The fix changes what the Leave War draws for those days, so it waits for
+     his word; this proof turns green — and the `fails` must come off — the day it is fixed. */
+  it.fails('(m) NOT FIXED: SANS posting, hand untick, then an archive days later — he stays in the crowd of the days before his archive', () => {
+    onlyTheEvent(SAT)
+    expect(postOut('rocky', MON_ISO, 'sans')).toBe(true); raptorNotify()            // SANS from Mon 13 Jul
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()   // off by hand, Wed 15 Jul
+    expect(availableFor(SAT_ISO, WIN, DAYS[SAT] as any), 'an ordinary man on Sat 18 Jul').toContain('rocky')
+    vi.setSystemTime(new Date(2026, 6, 20, 9, 0, 0)); raptorNotify()                // Mon 20 Jul
+    expect(archivePerson('rocky').bad).toBeNull(); raptorNotify()
+    expect(availableFor(SAT_ISO, WIN, DAYS[SAT] as any), 'Sat 18 Jul, two days before his archive').toContain('rocky')
+  })
+
+  it('left as it was: a man who is NOT SANS, not yet posted in, is out though named (the posting window still decides)', () => {
+    onlyTheEvent(THU); plan(THU, 'rocky')
+    expect(setPostIn('rocky', FRI_ISO)).toBe(true); raptorNotify()
+    const { off, on } = crowdBothWays(THU_ISO, THU)
+    expect(off).toEqual(on)
+    expect(off).not.toContain('rocky')
   })
 })

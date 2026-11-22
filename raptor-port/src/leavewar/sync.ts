@@ -55,6 +55,7 @@ import { lwSyncTurn } from './state/store'
 import {
   addDays,
   oilLedgerOf,
+  atHome,
   inSquadron,
   isNonWorkingDay,
   localToday,
@@ -2092,7 +2093,20 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
     const lw0 = lwById.get(id)
     const posting = lw0 ? postings[id] : undefined
     const lw = lw0 && posting ? { ...lw0, ...windowFor(posting, true) } : lw0
-    if (lw && !inSquadron(lw, iso)) continue
+    /* AND ON A DAY HE IS SANS AND NAMED ON OUR PROGRAMME HE IS OURS, WHATEVER HIS POSTING WINDOW ON THE WAR SAYS (the fresh
+       Opus reader's F1 and F2 of this fix, 22 Nov 26; his [ALL-AVAIL-REDEF] at this function's head: "only SANS that are
+       planned on the programmed on that day with us should be included"). With "+ SANS" off — how the squadron works
+       (D1215) — an ordinary SANS man has no war row and so no window was ever asked of him; with it on he had one, and a
+       post-in date still to come dropped him: the switch changed the crowd again (F2). And an archive rewrites a SANS
+       posting that had run as an Overseas one (store.ts stintClosed), closing his window from the posting's date — so
+       archiving him took him out of the crowd of every day between the posting and the archive, and a published one of
+       those read pending and lost him his OIL (F1; D327: in the crowd on every day before his archive). So for a SANS
+       man named that day the window is not asked: his squadron stints still are (`atHome`), his archive ends it BY ITS
+       DATE (an archive with no date kept falls back to the window), and his delete is read by date above. Everyone else —
+       a man not SANS that day, a SANS posting still to come — is read by the posting window as before. */
+    const sansWithUs = sansOnP(p, iso) && !!engaged && engaged.has(id) && !(p.archived && !p.archivedOn)
+    const ours = !lw || (sansWithUs ? atHome(lw, iso) && !(p.archived && iso >= String(p.archivedOn)) : inSquadron(lw, iso))
+    if (!ours) continue
     if (keptOut.has(id)) continue
     if (engaged && personBusy(day, id).some((w: [number, number]) => w[0] < win[1] && win[0] < w[1])) continue
     out.push(id)
