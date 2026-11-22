@@ -1102,3 +1102,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The morning list put 16 questions to the owner as equals. Checking them showed 13 could only happen after an action no screen offers yet (the walk set that state up behind the scenes), so they could wait for the feature that adds it; only 3 were live. Two recommendations also changed once each was checked against the rulings.
 **Suggested improvement:** In the morning report step, mark each parked question "reachable today" or "only once <feature> exists" (checked against how the walk set it up), and lead with the reachable ones. Check each recommendation against the rulings before it goes in the list.
 **Principle:** A question about a state users cannot reach yet is cheaper to settle when the feature that reaches it is designed; sorting by reachability shrinks what the owner must decide now.
+
+### Observation 999: A store-wide guard broke 37 tests the narrow run never touched
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 133, fixing the faults Fable's reads proved ([FABLE-READ-FAULTS])
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** verifying a fix before calling it done
+
+**Issue:** A guard ("refuse a write for an id that names nobody") was added at five doors of a store and checked only against its own proof test, which went green. The area's whole suite later showed 37 failures: the store writes, by design, for ids that are on no roster list (a deleted person's past days, the demo data's own ids). The guard was taken out. Separately, a test file edited while a full run was in flight showed a false failure from the version the run had loaded.
+**Suggested improvement:** In the skill's verify step: a change to a shared write path (a store's doors, a gate, a guard every caller passes) runs the whole suite of the area it sits in before it is reported fixed, not only the new test and its neighbours by name; and no test file is edited while a full run that includes it is in flight.
+**Principle:** A guard's reach is every caller of the door it sits in; a test that names the guard cannot show who else relied on the door staying open.
