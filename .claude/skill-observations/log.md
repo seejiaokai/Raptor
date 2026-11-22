@@ -1258,3 +1258,29 @@ sides.
 **Issue:** The report listed four readings as one-line statements, two of them in the builder's own shorthand ("hand untick") and none with a picture, though each was about what a screen shows. The owner had to ask what the shorthand meant, and then ask for the readings again with pictures. Taking the pictures also surfaced a consequence the one-liner had not stated (a man posted out from a date ahead cannot be filed for until that date).
 **Suggested improvement:** In the closing-report step, each listed reading about something on screen carries a worked example (who, which days, what the screen shows) and a marked picture of the real app, taken before the report is sent; a reading is written as who presses what on which page, never with a label coined during the build. Reuse one small script that drives the built app and cuts each picture to its place (here `raptor-port/scripts/handpass/sfd-explain.mjs`).
 **Principle:** A choice put to someone to keep or strike is only decidable when it is shown as a case on the thing itself; a one-line statement in the builder's vocabulary hides both its meaning and its costs.
+
+### Observation 1018: A red test failed at its set-up again — the set-up call's own answer was never checked
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** Chat 141, the third fix of [FABLE-READ-FAULTS] (i) (ALL AVAIL and a man posted out as SANS). Numbered past 1016 and 1017, which other open branches hold. Cites the closed Observation 979.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** RED — verify the test fails for the right reason
+
+**Issue:** Two new tests for a reader's finding went red at once, and looked like proof of the finding. They were red because the action that sets the case up (posting a man out) had refused and returned false — the man had no row on the screen the action works from — so the case never existed. The skill's "Read the red" step (from Observation 979) was not applied: the red was accepted from its colour. It was caught only because the same tests stayed red after the repair.
+**Suggested improvement:** In the RED step, make the read-back a line of the test, not a judgement: every set-up call that can refuse has its answer asserted in the test (`expect(postOut(...)).toBe(true)`), and the state it should have made is asserted before the claim. Then a broken set-up fails on its own line, with its own message, and cannot pass for the fault. Keep the second proof used here for a fix of new logic: take the repair out, see the claim's own assertion fail, put it back.
+**Principle:** A set-up step that can say no must be asked whether it said yes, inside the test; a rule to "check the red" that relies on reading the failure is skipped exactly when the red is expected.
+
+### Observation 1019: A fix written from readers' findings set aside more than the findings named
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** Chat 141, the second fix of the same fault, written from two blind reads (an archive after a posting; a date still to come). Numbered past 1016 and 1017, which other open branches hold.
+**Skill:** receiving-code-review (and test-driven-development)
+**Type:** open-source
+**Phase/Area:** Turning a review finding into a fix — what is tested before the fix is written
+
+**Issue:** The two findings were each about one date the check should not ask. The fix stopped asking the whole record for that kind of man, so three other dates that must still end his membership stopped counting. Every test written for the fix passed, because each one tested a case the fix was meant to open; none tested a case it was meant to leave shut. A narrow read of the fix found it, and a third fix followed.
+**Suggested improvement:** When a fix relaxes a check, list first every other thing that check refuses, and write one "still refused" test for each beside the "now allowed" tests, before the fix. In the review-response step: name the smallest condition the finding needs relaxed, and say in the commit what stays asked.
+**Principle:** A fix that opens a door is tested from both sides: what must now pass, and everything that passed through the old check's other reasons for saying no.
