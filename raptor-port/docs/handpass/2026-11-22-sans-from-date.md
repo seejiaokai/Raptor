@@ -133,22 +133,83 @@ Scenarios to walk, desktop 1536 and iPhone 402, a picture each (Astra's scenario
 
 ## 8. The pictures
 
+927 pictures in `docs/img/handpass/2026-11-22-sans-from-date/`: `host/` and `host-retick/` (the host's own short walks),
+`w1/` (the drawn man; its phone "right after the tap" pictures in `w1/taps/`), `w2/final/` (the published record and the
+words), `r1/run2` and `r1/run3` (the re-walk). The host opened the deciding ones: `w1/s1pp-sat-crew-closeup-phone.png`
+(Sat 18 Jul: Hex in the WSO column, no purple line), `w1/s1pp-mon20-crew-closeup-phone.png` (Mon 20 Jul: under SANS Avail,
+struck, the purple line), `w2/final/s5-08-tue-board-pending-desktop.png` (Tue 21 Jul's working copy: his puck with the
+line), `r1/run3/crop-r3-04-view-peek-admin.png` and `crop-r3-05-edit-peek-admin.png` (the published next Monday on
+View-only without the line; Edit Schedule's working copy with it), `host/host-crew-day3.png`.
+
+**§2's results, ruling by ruling:** D2313 — PASS on every surface walked (S1, S3, S4, S5, S7, S8, R1–R3) and in its tests;
+D2314 — PASS, the four notes word for word with the curly apostrophe, nothing cut on the phone (S6); D283 — PASS (a
+posting dated tomorrow made nobody SANS until the day turned, S4); D327, D297 — their suites pass, code left as it was;
+D44, D45, D103 — PASS (Tue 21 Jul and Wed 22 Jul read "1 pending", "Not yet signed"; AL1 clears it; S2, S5, R3); D142,
+D48 — PASS (his 18 Jul FO* and OIL 2 there after AL1, S2); D321, D1692, D1697 — the row left whole, recorded in S4;
+D1215, D1221 — as built (a hand tick takes him off the war while SANS is off it; "+ SANS" shows his FO* again, S2);
+D186 — PASS on View-only Sched, the 👁 look and, after its fix, the next-week preview (S9, R3); D149 — PASS (the member
+Ranger ticked SANS on his own row, from that day, S7).
+
 ## 9. The break tests
+
+Driven as scenarios rather than a separate list: the same control again inside its effect (tick and untick the same day —
+test), the opposite after publishing (S2, S5), Undo and Redo of each (S3, R2, the two Undo tests), "Undo post out" (S5,
+S8), a reload, a sign-out and in, a week change (S8), the day turning with the page open (S4), a window closed three ways
+with nothing saved (S7), a member's own tick (S7), a posting's date moved earlier and later (test).
 
 ## 10. Errors seen
 
+None in any cited run of w1, w2 or the host's. r1: two "request failed" lines for a temporary file address each time the
+Medical document viewer was closed — the viewer letting go of the picture it had made; the puck and the card unchanged.
+
 ## 11. What was NOT walked, and why
+
+- R1's "Today" step as written: the Medical page's Today is the demo week's own today (13 Jul, D1383), not the browser
+  clock's, so the card was not there to read; the two dated readings (18 and 20 Jul) carry the rule.
+- The next-week preview on a phone: a phone draws none.
+- The four later fixes after the reads: the re-tick was looked at by the host on the rebuilt app (`host-retick`: Wed 15
+  Jul still SANS, Thu 16 a regular, Fri 17 SANS again); the people-walk guard's allowance draws nothing.
+- Lesson 10 of §7.11 (a page hidden and shown again): no walker covered it — nothing in this change listens for it.
+- An unanswered input could not be filed through the input window (it offers Yes, No OIL or Back), so S6's inputs were
+  filed by the bridge's filing command, as chat 138's walk did; the sign-off boxes and Publish were pressed for real.
+- Real-device lines for his look: none new — no gesture, layout or keyboard changed.
 
 ## 12. The gate counts
 
-- Locally (22 Nov 26): 96 related test files, 1,933 tests, passed; `npm run build` clean; the code check — no new finding
-  (22 changed files); `npm run rulecheck` OK; `npm run docsize` OK (the backlog file over its tripwire by 36, deferred, D29).
-- GitHub's run on `0c6e49e6b` (the first push): all green. The run on the last pushed commit:
+- Locally (22 Nov 26): the SANS, preview, Medical and Quals suites (5 files, 96 tests) pass on the last code; `npx tsc -b`
+  clean; the code check — no new finding; `npm run rulecheck`, `npm run docsize` as in the closing report.
+- GitHub's run: green on `0c6e49e6b`, `eb5c08b38`, `51039962b`, `8069d13cc`; RED once on `6f4dbb20f` (the people-walk
+  guard, `engine/roster-readers.test.ts`: the preview's new signature walks the people list — allowed with its reason);
+  green on `1a1be5a7e`. The run on the last pushed commit: in the closing report.
 
 ## 13. What the walk and the reads found, and each disposition
 
 - Chat 139's check (b), the leave-charging rule's pilot check: **not a fault** — `leavewar/engine/charge.ts isPilot` reads
   the people the war shows; a man posted out as SANS keeps his row and seat; an ordinary SANS pilot hidden from the war has
   no figure on any screen while hidden, and a charge is worked out on every read, never saved.
+- **The roll-call:** the ALL AVAIL window's pucks — FIXED (row 10).
+- **The host, re-reading after the compaction:** a posting taken back wiped the SANS days he had held by hand — FIXED (row 20).
+- **Astra's scenario design:** the Medical "as of" cards, the published next-week day in View-only's preview, a preview
+  already drawn — all three FIXED, each with a test that failed first, and re-walked (R1–R3). Filed: (g) restated, (h).
+- **The walk (w1, w2):** no fault. Two expectations of the brief were wrong, not the app: a SANS man with no availability
+  filed raises no amber advisory when seated (the engine is silent there by design), and "Today" on the Medical page.
+- **The fresh, blind Opus reader** (`docs/superpowers/briefs/2026-11-22-sans-from-date-read-opus.md`): #1 a hand re-tick
+  reached back over the days he was a regular — FIXED with its test (the re-tick counts from its own day; the builder's
+  own test corrected; the reading told to him); #2 → filed (j), a question for him; #3 → filed (k), words drawn for him
+  first; #4 → filed (l), the security review.
+- **Astra's blind read** (`…-read-astra.md`): #1 ALL AVAIL leaves out a posted SANS man planned with us while "+ SANS" is
+  off — reproduced by its test, OLDER than this job (the same lines on `main`), filed (i) with its fix, OIL; #2 the
+  re-tick's posting lookup read only the loaded war — the lookup is gone with Opus #1's fix (the two readers read "keeps
+  the posting's date" differently: Astra — SANS again from the posting's date with no gap; Opus and the host — the
+  posting's days kept, the gap a regular's, which is what leaves a day published in the gap alone; told to him); #3 the
+  "Several people" picker groups by today's tick — filed with (g).
+- **GitHub's run:** the people-walk guard — fixed (the allowance, with its reason).
+- **The sizing looked at again (§7.0):** the faults found were all of the kind the sizing named (a surface outside the
+  wrapped builders: the ALL AVAIL window, the Medical cards, the preview) or an order of the writers (the take-back, the
+  re-tick) — the first by the roll-call and the designer, the second by the reads; the walk found none. The walk was
+  widened once, by R1–R3, for the surfaces the designer added.
+- **Lessons (§7.11):** none added — he found no fault here.
 
 ## 14. The Walk line
+
+`Walk: docs/handpass/2026-11-22-sans-from-date.md · 927 pictures · 14 surfaces · 16 orders · MISSING: 5 fixed (the ALL AVAIL window, the Medical cards, the published preview, a drawn preview, the take-back), 0 ruled, the rest filed ([FABLE-READ-FAULTS] (g)–(l))`

@@ -71,6 +71,20 @@ console.log('AFTER tick:', JSON.stringify(after))
 await p.screenshot({ path: path.join(OUT, 'host-quals-ticked.png') })
 await p.click('#qSave').catch(() => {}); await sleep(300)
 
+if (process.env.SFD_RETICK) {
+  /* THE LOOK AFTER THE READ'S FIX (the blind Opus read #1): ticked Wed 15, unticked Thu 16, ticked again Fri 17 —
+     Wednesday stays a SANS day, Thursday a regular's, Friday SANS again. Each day read off the board's crew list. */
+  const tickCell = async () => { await go('quals'); await p.click('#qViewW'); await sleep(200); if (await p.locator('#qEdit:visible').count()) await p.click('#qEdit'); await sleep(200); await p.locator(`td[data-q="${MAN}|san"]`).first().click(); await sleep(400) }
+  const short = r => r.out.filter(o => /rpuck/.test(o.cls) || /^puck/.test(o.cls)).map(o => `${o.inSansAvail ? 'SANSAVAIL' : 'regular'}:${/\bsan\b/.test(o.cls) ? 'line' : 'noline'}`).join(' ')
+  await p.clock.fastForward('24:00:00'); await sleep(500)
+  await tickCell()   // off, Thu 16
+  console.log('RETICK after untick Thu:', JSON.stringify(await p.evaluate(id => { const q = window.PEOPLE[id]; return { today: new Date().toDateString(), san: !!q.san, sanFrom: q.sanFrom || null, sanWas: q.sanWas || null } }, MAN)))
+  await p.clock.fastForward('24:00:00'); await sleep(500)
+  await tickCell()   // on, Fri 17
+  console.log('RETICK after re-tick Fri:', JSON.stringify(await p.evaluate(id => { const q = window.PEOPLE[id]; return { today: new Date().toDateString(), san: !!q.san, sanFrom: q.sanFrom || null, sanWas: q.sanWas || null } }, MAN)))
+  for (const di of [1, 2, 3, 4]) console.log(`RETICK day ${di}:`, short(await crewOn(di)))
+  console.log('errors:', JSON.stringify(errs)); await b.close(); process.exit(0)
+}
 console.log('AFTER tick, Mon 13 Jul:', JSON.stringify(await crewOn(0)))
 console.log('AFTER tick, Thu 16 Jul:', JSON.stringify(await crewOn(3)))
 

@@ -1970,18 +1970,6 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
   return wrote
 }
 
-/* FROM WHICH DAY A SANS POSTING MADE HIM SANS — the posting's own date (the day after his last as a regular), where his
-   posting record says so today: its outcome SANS and its "has run" mark on that same date. Null for every other man.
-   The Quals page's hand tick asks it (state/quals-write.ts): put back on a man his posting made SANS, the tick is SANS
-   from the posting's date again, never from the day of the re-tick (owner D2313 (b), 22 Nov 26). The day-by-day read
-   itself is the person's own dates (engine/people.ts sansOn), which the posting writes when it runs. */
-export function sansPostedFrom(id: string): string | null {
-  const w = getState().postOuts[id]
-  if (!w || !w.to || outcomeOf(w) !== 'sans') return null
-  const from = addDays(w.to, 1)
-  return w.poDone === from ? from : null
-}
-
 /* WHO AN ALL / ALL AVAIL PUCK STANDS FOR ([ALL-AVAIL-REDEF], owner 21 Sep 26 —
    "ALL Avail and ALL pucks should not consist of ground crew by default. only
    SANS that are planned on the programmed on that day with us should be

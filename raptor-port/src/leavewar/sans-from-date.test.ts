@@ -172,7 +172,7 @@ describe('D2313 (a) — a SANS tick made by hand counts from the day it is made'
 })
 
 describe('D2313 (b) — a hand re-tick after a SANS posting keeps the posting\'s date', () => {
-  it('unticked by hand on Fri 17 Jul and ticked again on Sat 18 Jul: SANS from Wed 15 Jul still', () => {
+  it('unticked by hand on Fri 17 Jul and ticked again on Sat 18 Jul: the posting\'s days from Wed 15 Jul are still his', () => {
     expect(postOut('rocky', WED_ISO, 'sans')).toBe(true)
     raptorNotify()
     at(2026, 7, 17)
@@ -182,7 +182,9 @@ describe('D2313 (b) — a hand re-tick after a SANS posting keeps the posting\'s
     at(2026, 7, 18)
     expect(updatePersonField('rocky', { tick: 'san' })).toBeNull()       // on again, by hand
     expect(P('rocky').san).toBe(true)
-    expect([TUE_ISO, WED_ISO, THU_ISO, FRI_ISO, '2026-07-18'].map(d => sansOn('rocky', d)), 'SANS from the posting\'s date, no gap').toEqual([false, true, true, true, true])
+    /* (corrected after the blind Opus read, #1: Friday, the day he was unticked on, stays a regular's day — "a tick
+       taken off counts from its day"; this test had the re-tick reach back over it) */
+    expect([TUE_ISO, WED_ISO, THU_ISO, FRI_ISO, '2026-07-18'].map(d => sansOn('rocky', d)), 'not SANS before the posting\'s date; its days kept; Friday a regular\'s; SANS again from Saturday').toEqual([false, true, true, false, true])
   })
 
   it('a posting taken back takes its SANS days with it', () => {
@@ -193,6 +195,22 @@ describe('D2313 (b) — a hand re-tick after a SANS posting keeps the posting\'s
     raptorNotify()
     expect(P('rocky').san).toBe(false)
     expect([MON_ISO, WED_ISO, THU_ISO].map(d => sansOn('rocky', d)), 'never SANS: the posting never was').toEqual([false, false, false])
+  })
+
+  /* the blind Opus read, 22 Nov 26 (#1): the re-tick was handed the POSTING's date, and the stretch it started folded
+     every regular day since the untick back into his SANS — a day published in that gap turned pending and lost its
+     four sign-offs, against "earlier published days keep their crowd". The untick already keeps the posting's own days
+     (the ended stretch), so the re-tick counts from its own day, as any hand tick does */
+  it('a re-tick two days after a hand untick leaves a day published in the gap as it went out', () => {
+    expect(postOut('rocky', MON_ISO, 'sans')).toBe(true); raptorNotify()   // SANS from Mon 13 Jul
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull()         // off by hand, Wed 15 Jul: SANS on Mon and Tue only
+    onlyTheEvent(THU); sign(THU); commitSetDayApproved(THU, true)          // Thu 16 Jul goes out with him in its crowd
+    expect(dayPendingItems(THU).length).toBe(0)
+    at(2026, 7, 17)
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()   // on again, Fri 17 Jul
+    expect([MON_ISO, TUE_ISO, WED_ISO, THU_ISO, FRI_ISO].map(d => sansOn('rocky', d)), 'the posting\'s days kept, the gap a regular\'s, SANS again from Friday')
+      .toEqual([true, true, false, false, true])
+    expect(dayPendingItems(THU).length, 'Thursday went out before the re-tick: nothing pending').toBe(0)
   })
 
   it('a posting moved earlier, then later: his SANS days follow its date each time', () => {

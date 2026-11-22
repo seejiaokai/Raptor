@@ -2960,4 +2960,23 @@ longer removes that difference — D2313) is then the newest SANS line, and the 
 (`ui/pendlist.ts qualsLine` takes the newest SANS line whatever its direction). Words only. Fix: hand `qualsLine` the
 value the day now reads and take the newest SANS line whose `to` is that value, any line as the fallback; a test through
 the pending list of a published day.
+**From the two blind code reads of 22 Nov 26 (Astra `raptor-port/docs/superpowers/briefs/2026-11-22-sans-from-date-read-astra.md`,
+the fresh Opus reader `…-read-opus.md` — each report holds its failing test), found, not fixed:**
+**(i) ALL AVAIL leaves out a man posted out as SANS who is planned with us (Astra #1; reproduced by its test, then the
+test taken out of the suite — it is older than this job, the same lines stand on `main`):** with "+ SANS" off the war, a
+man posted out as SANS and named on a day's programme is passed by the SANS check and then dropped as "posted out" by the
+war's row (`leavewar/sync.ts availableFor`, the `inSquadron` read), so the crowd a day freezes, and its OIL, lack him;
+with "+ SANS" on he counts (D27). Fix Astra names: read whether he is still ours from the saved posting, not from the
+row the display switch shapes — from a SANS posting's date the posting is not a departure for a man engaged that day;
+keep the post-in, archive, delete and clash checks. OIL: fix with a test first, before the whole-app check.
+**(j) after a hand untick, the SANS days a posting made stay when the posting is undone or moved later (Opus #2):** a
+question for him — a tick touched by hand has been the admin's own since it was built; should the posting's take-back
+still take the days before that untick? Fix if yes: tag the stretch a posting made, drop it in the take-back.
+**(k) the SANS day says "no longer SANS" of a man who is not SANS yet (Opus #3):** `ui/sanscal-model.ts sansDayGroups`;
+new words ("not yet SANS") — drawn for him first (D1625).
+**(l) a member's own-row command may write any SANS start or ended stretch (Opus #4):** the screen writes only today;
+the commit gate (`state/perms.ts`, the own-row check) does not hold `sanFrom` / `sanWas` to today — for the security
+review before the database step (D1411, `[DB-SECURITY-ROLES]`).
+**(g) gains one more reader on today's tick (Astra #3):** the input window's "Several people" picker groups and draws a
+dated input's people by today's tick (`ui/PeoplePick.tsx`) — with the Inputs calendar's opened day.
 
