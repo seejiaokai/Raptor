@@ -345,13 +345,18 @@ describe('the dialog writes the row it was opened on', () => {
     expect(INPUTS.find((r: any) => r.remarks === 'x-ray')).toBeTruthy()
   })
 
-  it('an input undone from under an open dialog refuses to save', async () => {
+  /* Since the walk's finding (f) (22 Nov 26) the schedule's pop-up follows its record as the Inputs page's window does
+     (ui/InputWindow.tsx, "THE RECORD BEHIND THE WINDOW"): an input taken away under it closes it at once, saying so,
+     rather than leaving a form open whose Save can only be refused. Nothing comes back either way. */
+  it('an input undone from under an open dialog closes it, says so, and is not brought back', async () => {
     const inp: any = { person: 'pike', date: MON, allday: true, s: 0, e: 1439, type: 'LL', remarks: 'ghost', mod: 'now' }
     await act(async () => { INPUTS.unshift(inp); notify() })
     await click(weekBtn(inp))
-    await act(async () => { INPUTS.splice(INPUTS.indexOf(inp), 1); notify() })
-    await set($('#inpEditRmk'), 'still typing')
-    await click($('#inpEditSave'))
+    const said: string[] = [], was = HOOKS.toast
+    HOOKS.toast = ((m: string) => { said.push(m) }) as any
+    try { await act(async () => { INPUTS.splice(INPUTS.indexOf(inp), 1); notify() }) } finally { HOOKS.toast = was }
+    expect(said.join(' | ')).toMatch(/removed while its window was open/)
+    expect($('#inpEditRmk'), 'the window is closed').toBeNull()
     expect(INPUTS.indexOf(inp)).toBe(-1)
     expect(INPEDIT).toBe(null)
   })

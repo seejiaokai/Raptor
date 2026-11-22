@@ -357,7 +357,14 @@ export function InputEditor() {
      So a Save writes only his own changes over the record as it stands (the plan §3.7). */
   // eslint-disable-next-line react-hooks/exhaustive-deps -- after every paint on purpose (any store change can alter the record behind the window); it sets state only when something differs, so it settles
   useLayoutEffect(() => {
-    if (!win || !r || isNew || !draft) return
+    /* WHEREVER THE WINDOW STANDS, not only on the Inputs page (the walk's finding (f), 22 Nov 26): on a PC the top bar's
+       Undo can be pressed over the Inputs page's window, and an Undo whose change is out of view takes the app to Edit
+       Schedule (D672), where this same window becomes the schedule's pop-up in the same paint. Followed only while `win`,
+       the pop-up went on showing the place the Undo took back, and its Save met the old record object, gone from the
+       list the Undo rebuilt: "That input is no longer there", the typed remark lost. A record with no id (a test's
+       hand-made one; every loaded input is given one, engine/inputs.ts mintInpIds) is not followed off the Inputs page:
+       found by its id, it would be taken for the first other record that has none. */
+    if (!open || !r || isNew || !draft || (!win && r.iid == null)) return
     /* NOT WHILE IT IS ASKING. When another input is asked for over unsaved work, the effect above keeps the first one
        and puts it back — but for that one paint `r` IS the other input, and this step took it for the window's own
        record changed behind it: it said "Changed while this window was open: people — X added, Y taken off", said the
@@ -419,7 +426,7 @@ export function InputEditor() {
   /* asked before every write, and again after any blocking question (an upchit, OIL or clash sheet) — the record may
      have been changed behind the window while the question stood */
   const undecided = () => {
-    if (!win || !clash.length) return false
+    if (!open || !clash.length) return false   // the pop-up too: the record can change behind it (finding (f), above)
     setUpConf(null); setMedConf(null); setOilConf(null); setDocConf(null)
     HOOKS.toast('Choose which to keep first — your change, or the one made while this window was open', 'warn')
     return true

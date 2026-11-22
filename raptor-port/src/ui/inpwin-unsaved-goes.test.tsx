@@ -92,6 +92,32 @@ describe('the window’s ✕ with only a "Goes to" or a document not saved', () 
     expect(live('uns-goes').remarks, 'his remark is saved').toBe('away, now with words')
     expect(live('uns-goes').acc, 'and the Undo stands: it is not put back under Unavailable').toBeUndefined()
   })
+  /* the walk's finding (f), walker w2, 22 Nov 26: on a PC the top bar stays pressable over the Inputs page's window; its
+     Undo took back a move made on the board AND took the app to Edit Schedule, where the same window became the
+     schedule's pop-up — which no longer followed its record: it went on showing the place the Undo took back, and a
+     remark typed then was lost behind "That input is no longer there", the Undo having put the list back as new objects */
+  it('finding (f): an Undo that also moves the app to Edit Schedule is followed there — the window shows it, and Save keeps the remark', async () => {
+    await openOther()
+    await click(tid('inpEdit-goes-u')); await click($('#inpEditSave'))
+    expect(live('uns-goes').acc, 'premise: saved under Unavailable').toBe('u')
+    await act(async () => { setInpEdit(live('uns-goes')); notify() })
+    expect(tid('inpEdit-goes-u')?.getAttribute('aria-pressed'), 'premise: the window shows Unavailable').toBe('true')
+    await act(async () => { undo(); setPage('editsched'); notify() })
+    expect(live('uns-goes').acc, 'the Undo took it back to the programme').toBeUndefined()
+    expect(tid('inpEdit-goes-u')?.getAttribute('aria-pressed'), 'the window, now the schedule’s pop-up, no longer shows Unavailable').not.toBe('true')
+    const box = $('#inpEditRmk') as HTMLInputElement
+    expect(box, 'the remarks box').toBeTruthy()
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(Object.getPrototypeOf(box), 'value')!.set!.call(box, 'typed after the Undo')
+      box.dispatchEvent(new Event('input', { bubbles: true }))
+    })
+    let said = ''
+    HOOKS.toast = ((m: string) => { said = m }) as any
+    await click($('#inpEditSave'))
+    expect(said, 'no "That input is no longer there"').not.toMatch(/no longer there/)
+    expect(live('uns-goes').remarks, 'his remark is saved').toBe('typed after the Undo')
+    expect(live('uns-goes').acc, 'and the Undo stands').toBeUndefined()
+  })
   it('left as it is: nothing changed, ✕ closes at once without asking', async () => {
     await openOther()
     await click(tid('win-inputedit-x'))
