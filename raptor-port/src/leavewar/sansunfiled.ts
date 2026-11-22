@@ -29,7 +29,8 @@ import { sansAvailOn } from '../engine/inputs'
 import { homeUnitOf } from '../engine/roster'
 import { getVersion as raptorVersion } from '../state/store'
 import { effectiveToday } from '../state/person-delete'
-import type { Notice } from '../state/notices'
+import { NOTICES, noticeSansBack, type Notice } from '../state/notices'
+import { hasRead } from '../state/noticeseen'
 import { getState } from './state/store'
 import { addDays, outcomeOf } from './engine'
 
@@ -93,5 +94,28 @@ export function sansUnfiledLines(pid: string): Notice[] {
   const from = sansRunFrom(pid)!
   /* dated the posting's own midnight, as the posting's line is (sync.ts postedLinesOf) */
   const at = new Date(+from.slice(0, 4), +from.slice(5, 7) - 1, +from.slice(8, 10)).getTime()
-  return [{ id: `sansdue:${pid}:${from}`, to: pid, by: null, at, iid: '', name: 'Your SANS availability', day: days[0]!, what: [{ k: 'sansdue', days }] }]
+  /* the id is steady, so his read record holds it — but once a posting's take-back has struck a line of his for this date
+     (sansLineBack, below), the same posting made again is NEWS: the id carries how many such struck lines he holds for it,
+     so it comes back unread — the posting line's own way (sync.ts postedLinesOf, [NOTICE-UNDO-RETRACT]) */
+  const backs = NOTICES.filter(n => n.to === pid && n.day === from && (n.what || [])[0]?.k === 'sansback').length
+  return [{ id: `sansdue:${pid}:${from}${backs ? `:${backs}` : ''}`, to: pid, by: null, at, iid: '', name: 'Your SANS availability', day: days[0]!, what: [{ k: 'sansdue', days, from }] }]
+}
+
+/* ---- TAKEN BACK WITH ITS POSTING (his D1693, D1699, D1710 — every bell line is taken back by the undo of what made it;
+   the "off the manpower" line, also worked out, the same — D1696) ----
+   The posting's own take-back gathers this line with its others (sync.ts postingLinesOf) and hands each to
+   retractPostingLines, which asks here first: an unread line simply goes (it is worked out — the posting gone, nothing
+   makes it); a READ one gets a stored line saying what it said, struck through, then "taken back · <who>", unread, by the
+   admin who pressed it — never to him (state/notices.ts noticeSansBack). Filing, or a day leaving, is no take-back: the
+   line only shrinks or goes. True when the line was this kind (handled), so the posting's own steps skip it. */
+export function sansLineBack(n: Notice, by: string | null, at: number): boolean {
+  const p: any = (n.what || [])[0]
+  if (!p || p.k !== 'sansdue') return false
+  if (n.to !== by && hasRead(n.to, n)) noticeSansBack(n.to, by, Array.isArray(p.days) ? p.days : [], String(p.from || n.day), at)
+  return true
+}
+/* WHAT THE PERMISSIONS CHECK ASKS OF SUCH A LINE (state/perms.ts, through sync.ts warLineCovered): owed only by a change of
+   that man's own posting record whose image — before or after — is a SANS posting, to the man himself, on its date */
+export function sansBackCovered(o: { who: string; day: string; o: string }, n: { to?: unknown; name?: unknown; day?: unknown }): boolean {
+  return o.o === 'sans' && String(n.to) === o.who && n.day === o.day && n.name === 'Your SANS availability'
 }

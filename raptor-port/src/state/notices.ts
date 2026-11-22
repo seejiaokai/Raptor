@@ -98,7 +98,13 @@ export type NoticePart =
      filed, a tap opening the SANS calendar"). About no input (`iid` is ''): `days` — the days, first first (ISO), from his
      SANS posting's date on, he is planned with us and has filed no SANS availability. Worked out by his own bell from the
      schedule as it stands, never stored (leavewar/sansunfiled.ts), so it shrinks as he files and goes once all are. */
-  | { k: 'sansdue'; days: string[] }
+  | { k: 'sansdue'; days: string[]; from?: string }
+  /* …TAKEN BACK WITH THE POSTING THAT MADE IT (his D1693, D1699, D1710 — every line is taken back by the undo of what made
+     it): the posting taken back ("Undo post out"), or changed on its sheet after it ran, when he had READ the line. A
+     stored line, by the admin who did it, never to him; `days` — what the line said; its `day` the posting's date (the
+     gate matches it to the posting changed — leavewar/sansunfiled.ts sansBackCovered). Shown struck through, then "taken
+     back · <who>" (backWords). An unread line simply goes with its posting, as every worked-out line does. */
+  | { k: 'sansback'; days: string[] }
 
 /** what a posting out did on its date, for the admins' bells ([POSTOUT-RUN-NOTICE]) */
 export type PoOutcome = 'overseas' | 'delete' | 'sans' | 'none'
@@ -866,6 +872,16 @@ export function noticePostingBack(to: string, by: string | null, who: string, o:
   noteWarMade(id)
   return true
 }
+/** HIS SANS-DAYS LINE TAKEN BACK (D2338 with D1693, D1699, D1710): one line to the man who had read it, pushed INSIDE the
+ *  posting's own take-back command (leavewar/sync.ts retractPostingLines → leavewar/sansunfiled.ts sansLineBack), by the
+ *  admin who pressed it — never to him. `day` — the posting's date. */
+export function noticeSansBack(to: string, by: string | null, days: readonly string[], day: string, at: number = Date.now()): boolean {
+  if (!here(to) || (by != null && to === by)) return false
+  const id = mint(at)
+  NOTICES.push({ id, to, by, at, iid: '', name: 'Your SANS availability', day, what: [{ k: 'sansback', days: [...days] }] })
+  noteWarMade(id)
+  return true
+}
 /** the posting a line is about, or null — the bell's tap asks it (ui/topstate.ts openNotice) */
 export function postOf(n: Pick<Notice, 'what'>): { who: string; o: PoOutcome; acct: boolean } | null {
   const p: any = (n.what || [])[0]
@@ -985,6 +1001,7 @@ function partWords(p: NoticePart): string {
     case 'lwback': return 'taken back'
     case 'poback': return 'taken back'
     /* (the days themselves are the line's date — noticeWords; more than three are counted here) */
+    case 'sansback': return 'taken back'
     case 'sansdue': return p.days.length > SANS_DAYS_NAMED ? `Planned, no availability filed · ${p.days.length - SANS_DAYS_NAMED} more ${p.days.length - SANS_DAYS_NAMED === 1 ? 'day' : 'days'}` : 'Planned, no availability filed'
   }
 }
@@ -995,10 +1012,11 @@ function sansDaysWords(days: readonly string[]): string {
   const shown = days.slice(0, SANS_DAYS_NAMED)
   return shown.map((d, i) => { const w = noticeDay(d); const next = shown[i + 1]; return next && next.slice(0, 7) === d.slice(0, 7) ? w.replace(/ [A-Za-z]{3}$/, '') : w }).join(', ')
 }
-/** the first of a SANS-days line's days, or null — the bell's tap asks it (ui/topstate.ts openNotice) */
+/** the first of a SANS-days line's days, or null — the bell's tap asks it (ui/topstate.ts openNotice); a taken-back one
+ *  opens what the line opened (D1693) */
 export function sansDueOf(n: Pick<Notice, 'what'>): string | null {
   const p: any = (n.what || [])[0]
-  return p && p.k === 'sansdue' && Array.isArray(p.days) && p.days.length ? String(p.days[0]) : null
+  return p && (p.k === 'sansdue' || p.k === 'sansback') && Array.isArray(p.days) && p.days.length ? String(p.days[0]) : null
 }
 /* a bidding stretch said without its weekdays — "1 Apr – 30 Jun" (D1214's words) */
 function stretchWords(a: string, b: string): string {
@@ -1011,6 +1029,7 @@ function stretchWords(a: string, b: string): string {
    always the original line's own (one body: partWords). A move made before its line kept where it took the leave reads
    "LL moved" — demo data only (D56). */
 function backWords(p: NoticePart): string {
+  if (p.k === 'sansback') return partWords({ k: 'sansdue', days: p.days })
   if (p.k === 'poback') return partWords({ k: 'po', who: p.who, o: p.o, ...(p.acct ? { acct: true as const } : {}) })
   if (p.k !== 'lwback') return ''
   if (p.d === 'open' || p.d === 'close') return partWords({ k: 'lwopen', a: p.a, b: p.b, open: p.d === 'open' })
@@ -1051,6 +1070,8 @@ export function noticeWords(n: Notice): { name: string; day: string; what: strin
   /* HIS SANS DAYS WITH NOTHING FILED (D2338): "Your SANS availability · Sat 18, Mon 20 Jul / Planned, no availability filed";
      nobody named — the app worked it out */
   if (w && w.k === 'sansdue') return { name: 'Your SANS availability', day: sansDaysWords(w.days || []), what: partWords(w), who: '' }
+  /* …and taken back (D1699): "Your SANS availability · Sat 18 Jul / ~~Planned, no availability filed~~ · taken back · Saber" */
+  if (w && w.k === 'sansback') return { name: 'Your SANS availability', day: sansDaysWords(w.days || []), what: partWords(w), who: n.by ? cs(n.by) : '', struck: backWords(w) }
   /* (a bid it replaced on the Leave War is said after the rest, never cut by the first-two rule — M4 9.3a: "You were added ·
      replaces your LL bid") */
   const rb = (n.what || []).filter(p => p.k === 'rbid')

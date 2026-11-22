@@ -929,7 +929,7 @@ const STAMP_AHEAD_MS = 5_000
 /* the kinds of a bell line only a Leave War command of an admin's writes (state/notices.ts NoticeWhat: `lw`, `lwopen`,
    `lwback`) — a member's notice carries none (the notices case below); nor a posting's line (`po`, [POSTOUT-RUN-NOTICE] —
    written only by the posting pass, the app's own act) */
-const WAR_LINE_KINDS = new Set(['lw', 'lwopen', 'lwback', 'oilhol', 'po', 'poback'])
+const WAR_LINE_KINDS = new Set(['lw', 'lwopen', 'lwback', 'oilhol', 'po', 'poback', 'sansback'])   // (sansback: D2338's struck SANS-days line, by the posting's take-back)
 const placedOf = (r: any): string => `${r?.placedBy ?? ''}|${r?.placedAt ?? ''}`
 /* the halves a request's code takes — "*LL" the morning, "LL*" the afternoon, "LL" both (the war's notation, read here
    without reaching into the war's engine) */

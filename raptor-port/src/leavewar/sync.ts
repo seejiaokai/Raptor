@@ -172,7 +172,7 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncBeforeEnlist, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { sansUnfiledLines } from './sansunfiled'
+import { sansUnfiledLines, sansLineBack, sansBackCovered } from './sansunfiled'
 import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
@@ -1870,7 +1870,7 @@ export function followUpsOwed(moved: ReadonlyArray<{ collection: string; op: str
 export type OwedWarLine =
   | { k: 'lw'; to: string; days: ReadonlySet<string>; kinds: ReadonlySet<string> }
   | { k: 'lwopen'; a: string; b: string; open: boolean }
-  | { k: 'po' | 'poback'; who: string; day: string; o: string }
+  | { k: 'po' | 'poback' | 'sansback'; who: string; day: string; o: string }
 type LooseRec = Record<string, unknown>
 const looseRec = (x: unknown): LooseRec | null => (x && typeof x === 'object' && !Array.isArray(x) ? (x as LooseRec) : null)
 /* (the same war-approved leave on both sides: its one man, its days, its halves — whole day or its times — its kind and
@@ -1924,7 +1924,7 @@ export function warLinesOwed(changes: ReadonlyArray<{ collection: string; id: st
         const o = outcomeOf(r as { poOutcome?: unknown; poArchive?: boolean })
         if (!o) continue
         const day = addDays(r.to, 1)
-        out.push({ k: 'po', who: String(c.id), day, o }, { k: 'poback', who: String(c.id), day, o })
+        out.push({ k: 'po', who: String(c.id), day, o }, { k: 'poback', who: String(c.id), day, o }, { k: 'sansback', who: String(c.id), day, o })
       }
     }
   }
@@ -1953,6 +1953,7 @@ export function warLineCovered(owed: readonly OwedWarLine[], n: { to?: unknown; 
       return [...run(w.a, w.b), ...run(w.to, w.tb)].some(d => o.days.has(d))
     }
     if (o.k === 'lwopen') return w.a === o.a && w.b === o.b && w.open === o.open
+    if (o.k === 'sansback') return sansBackCovered(o, n)   // (sansunfiled.ts, D2338)
     return String(w.who) === o.who && String(w.o) === o.o && n.day === o.day
   })
 }
@@ -3880,7 +3881,7 @@ function postingLinesOf(id: string): Notice[] {
   const told = new Set(postingAdmins(worldUnit()))
   const stored = mine.filter(n => n.at === last && (told.has(String(n.to)) || atWarHome(n.to) || noticeAboutHim(n)) && !noticeLeftBell(n))
   const derived = ownSchedulerIds().flatMap(pid => postedLines(pid)).filter(n => { const p = n.what[0]; return p?.k === 'po' && p.who === id && !noticeLeftBell(n) })
-  return [...stored, ...derived]
+  return [...stored, ...derived, ...sansUnfiledLines(id)]   // (and the man's own SANS-days line — sansunfiled.ts, D2338)
 }
 /* Returns the ids of the presser's OWN lines he had read: they leave his read record after the command (forgetRead — the
    code read's 2, 5 Nov 26), or a posting set again for the same date, whose worked-out line keeps its id, came back to him
@@ -3900,6 +3901,7 @@ function retractPostingLines(lines: readonly Notice[]): string[] {
     const ix = NOTICES.findIndex(x => x.id === n.id)
     if (ix >= 0) NOTICES.splice(ix, 1)
     if (n.to === by) { if (by && hasRead(by, n)) forget.push(n.id); continue }
+    if (sansLineBack(n, by, at)) continue   // (the man's own SANS-days line — sansunfiled.ts, D2338)
     if (!hasRead(n.to, n) || !admins.has(n.to)) continue
     const p = n.what[0]
     if (p?.k !== 'po') continue

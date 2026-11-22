@@ -22,7 +22,8 @@ import { afterSchedMutate, CALMONTH, INPMODE, SANSDAYASK, clearSansDayAsk } from
 import { sansAvailHTML } from '../ui/palette-html'
 import { NOTICES, noticesFor, noticeWords, type Notice } from '../state/notices'
 import { markAllNoticesRead, unreadFor } from '../state/noticeseen'
-import { me } from '../state/perms'
+import { me, ownershipViolation } from '../state/perms'
+import { deriveActor } from '../command/actor'
 import { CURPAGE } from '../state/view'
 import { openNotice } from '../ui/topstate'
 import { initStore as lwInitStore, setPeople } from './state/store'
@@ -205,12 +206,10 @@ describe('D2338 (2) — the bell line taken back with its posting', () => {
     expect(backOf('rocky')).toEqual([])
   })
 
-  /* NOT BUILT YET — the next two fail today, so it.fails keeps the proof; once built they go red, and it.fails goes back to
-     it. A read line's "taken back" is a STORED line, and the posting's take-back writes it through one mechanism
-     (leavewar/sync.ts postingLinesOf, retractPostingLines; the gate's warLinesOwed and state/perms.ts WAR_LINE_KINDS) — more of
-     sync.ts and the permissions gate than this night's agreed limit allows (the builder's report of 23 Nov 26). Today a read
-     line simply goes with the posting, as an unread one does. */
-  it.fails('read, then "Undo post out": struck through, "taken back · Saber", unread', () => {
+  /* (a read line's "taken back" is a STORED line, written by the posting's own take-back — leavewar/sync.ts postingLinesOf,
+     retractPostingLines — and passed by the gate as owed by the posting's change: warLinesOwed, state/perms.ts
+     WAR_LINE_KINDS) */
+  it('read, then "Undo post out": struck through, "taken back · Saber", unread', () => {
     ran(); hexReads()
     expect(undoPostOut('rocky')).toBe(true); raptorNotify()
     expect(sansLines('rocky')).toEqual([])
@@ -218,11 +217,43 @@ describe('D2338 (2) — the bell line taken back with its posting', () => {
     expect(unreadFor('rocky'), 'unread: his bell lights').toBe(1)
   })
 
-  it.fails('read, then the posting moved later: struck through the same way', () => {
+  it('read, then the posting moved later: struck through the same way', () => {
     ran(); hexReads()
     expect(postOut('rocky', '2026-07-24', 'sans')).toBe(true); raptorNotify()
     expect(sansLines('rocky')).toEqual([])
     expect(backOf('rocky')).toEqual([STRUCK])
+  })
+
+  it('read, then the posting given another outcome after it ran: struck; Saber, who changed it, told nothing', () => {
+    ran(); hexReads()
+    expect(postOut('rocky', FRI_ISO, 'none')).toBe(true); raptorNotify()
+    expect(sansLines('rocky')).toEqual([])
+    expect(backOf('rocky')).toEqual([STRUCK])
+    expect(backOf(me()!), 'the admin who changed it gets nothing').toEqual([])
+  })
+
+  it('read, taken back, then the same SANS posting made again: the struck line and one new line, unread; a tap on the struck line opens the SANS calendar', () => {
+    ran(); hexReads()
+    const first = sansLines('rocky')[0]!.id
+    expect(undoPostOut('rocky')).toBe(true); raptorNotify()
+    expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify(); runPoOutcomes(); raptorNotify()
+    expect(!!P('rocky').san, 'SANS again from Friday').toBe(true)
+    expect(backOf('rocky')).toEqual([STRUCK])
+    const again = sansLines('rocky')
+    expect(again.length).toBe(1)
+    expect(again[0]!.id, 'news again: not the id he read').not.toBe(first)
+    expect(unreadFor('rocky'), 'the struck line and the new one, both unread').toBe(2)
+    const struck = noticesFor('rocky').find(n => String((n.what || [])[0]?.k) === 'sansback')!
+    openNotice(struck)
+    expect(CURPAGE).toBe('inputs')
+    expect(INPMODE).toBe('sans')
+    expect(SANSDAYASK).toBe(SAT_ISO)
+  })
+
+  it('the permissions check: a struck line no posting take-back wrote is refused, even an admin\'s, even about his own man', () => {
+    const n: any = { id: 'forged-sb', to: 'rocky', by: me(), at: Date.now(), iid: '', name: 'Your SANS availability', day: FRI_ISO, what: [{ k: 'sansback', days: [SAT_ISO] }] }
+    const env: any = { type: 'inputs.batch', origin: 'user', actor: deriveActor(), changes: [{ collection: 'notices', id: n.id, op: 'put', before: null, after: n }] }
+    expect(ownershipViolation(env) ?? 'allowed').toMatch(/a war line no war command wrote/)
   })
 
   it('read, then every day filed: the line goes, never struck', () => {
