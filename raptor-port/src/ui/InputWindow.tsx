@@ -41,8 +41,23 @@ import { clickedOutside } from './outside'
 import { useSheetFocus, topSheet } from './sheetfocus'
 import { AskCard } from './AskCard'
 import { lastPressed } from './lastpress'
-import { rosterOptions, archivedOptions, fmt, fmtDay, unfmt, hasHalf, spanOf, spanFields, SPANS, SANS_ROWS, sansRefusal, isoOrd, ordISO, applyMedPlan, medKeptSegments, mintMedSegments, typeOptions, draftOf, normalizeInputDraft, docGate, oilGate, oilAnswered, oilUnansweredDay, oilSummary, oilDayLabel, TYPE_ALLOW, protectedInput, medPlanProtected, medicalLocked, medSegmentsProtected, placeholderRefused, placeholderWhy, commitNewInput, commitInputEdit, medAskFor, saveBatchX, saveBatch, giveBackCuts, askOilIfPending, removeInput, upchitDeleteAsk, sharedRefusal, inputWho, howMany, commitInput, WIN_FIELDS, fieldSame, fieldPart, fieldSay, progOf, offersFor, whoDoorRefusal, draftImage } from './inputedit'
+import { rosterOptions, archivedOptions, fmt, fmtDay, unfmt, hasHalf, spanOf, spanFields, SPANS, SANS_ROWS, sansRefusal, isoOrd, ordISO, applyMedPlan, medKeptSegments, mintMedSegments, typeOptions, draftOf, normalizeInputDraft, docGate, oilGate, oilAnswered, oilUnansweredDay, oilSummary, oilDayLabel, TYPE_ALLOW, protectedInput, medPlanProtected, medicalLocked, medSegmentsProtected, placeholderRefused, placeholderWhy, commitNewInput, commitInputEdit, medAskFor, saveBatchX, saveBatch, giveBackCuts, askOilIfPending, removeInput, upchitDeleteAsk, sharedRefusal, inputWho, howMany, commitInput, WIN_FIELDS, draftChanges, fieldSame, fieldPart, fieldSay, progOf, offersFor, whoDoorRefusal, draftImage } from './inputedit'
 import type { Span } from './inputedit'
+
+/* ANYTHING OF HIS IN THE WINDOW'S FIELDS NOT SAVED — the ✕'s and Escape's "Close it and lose them?" (owner D1622) and the
+   question before another input opens: every window field and an Other's "Goes to" and an Attach's "To" (draftChanges).
+   WIN_FIELDS alone missed the last two, so a window holding only a new "Goes to" or "To" closed at once and lost it
+   (found beside Fable's Inputs F1/F2, 22 Nov 26). */
+const unsavedFields = (draft: any, saved: any): boolean => draftChanges(draft, saved).length > 0
+/* THE FIELDS THE WINDOW FOLLOWS when its record changes behind it (the calendar plan §3.7): every window field, and the
+   two it draws apart from them — an Attach's "To" and an Other's "Goes to" (Astra's code read of 22 Nov 26, F1: an Undo
+   pressed behind the open window put the input back on the programme, and the remark saved next wrote "Unavailable"
+   back with it, unasked). "To" compared as draftChanges compares it, a blank and none the same. */
+/* built on first use: the two files import each other, so WIN_FIELDS is not there yet while this one loads */
+let FOLLOWED_LIST: { k: string; label: string; keys: string[] }[] | null = null
+const followed = () => FOLLOWED_LIST ??= [...WIN_FIELDS, { k: 'to', label: 'To', keys: ['to'] }, { k: 'goes', label: 'Goes to', keys: ['goes'] }]
+const followSame = (f: { k: string; keys: string[] }, a: any, b: any): boolean =>
+  f.k === 'to' ? String(a?.to ?? '') === String(b?.to ?? '') : fieldSame(f, a, b)
 
 export function SpanPicker({ id, span, onPick }: { id: string, span: Span, onPick: (m: Span) => void }) {
   return <div className="spanpick" id={id} role="group" aria-label="Duration">
@@ -293,7 +308,7 @@ export function InputEditor() {
        a word when another input was opened. Compared as a set - picked and un-picked again is no change. */
     const hadPpl = new Set(basePpl.current)
     const pplTouched = ppl.length !== hadPpl.size || ppl.some(id => !hadPpl.has(id))
-    if (win && other && !swapOk.current && draft && base.current && (pplTouched || WIN_FIELDS.some(f => !fieldSame(f, draft, base.current)))) {
+    if (win && other && !swapOk.current && draft && base.current && (pplTouched || unsavedFields(draft, base.current))) {
       /* hung from the other input as a whole — its bar, its list row — where the press landed inside one */
       { const p = lastPressed(); swapAt.current = (p?.closest('[data-iid]') as HTMLElement | null) || p }
       setSwap(r); keepDraft.current = true; setInpEdit(prev); notify()
@@ -342,7 +357,14 @@ export function InputEditor() {
      So a Save writes only his own changes over the record as it stands (the plan §3.7). */
   // eslint-disable-next-line react-hooks/exhaustive-deps -- after every paint on purpose (any store change can alter the record behind the window); it sets state only when something differs, so it settles
   useLayoutEffect(() => {
-    if (!win || !r || isNew || !draft) return
+    /* WHEREVER THE WINDOW STANDS, not only on the Inputs page (the walk's finding (f), 22 Nov 26): on a PC the top bar's
+       Undo can be pressed over the Inputs page's window, and an Undo whose change is out of view takes the app to Edit
+       Schedule (D672), where this same window becomes the schedule's pop-up in the same paint. Followed only while `win`,
+       the pop-up went on showing the place the Undo took back, and its Save met the old record object, gone from the
+       list the Undo rebuilt: "That input is no longer there", the typed remark lost. A record with no id (a test's
+       hand-made one; every loaded input is given one, engine/inputs.ts mintInpIds) is not followed off the Inputs page:
+       found by its id, it would be taken for the first other record that has none. */
+    if (!open || !r || isNew || !draft || (!win && r.iid == null)) return
     /* NOT WHILE IT IS ASKING. When another input is asked for over unsaved work, the effect above keeps the first one
        and puts it back — but for that one paint `r` IS the other input, and this step took it for the window's own
        record changed behind it: it said "Changed while this window was open: people — X added, Y taken off", said the
@@ -369,18 +391,18 @@ export function InputEditor() {
     }
     const cur = draftOf(now), b = base.current
     if (!b) { base.current = cur; return }
-    if (WIN_FIELDS.every(f => fieldSame(f, cur, b))) return
+    if (followed().every(f => followSame(f, cur, b))) return
     let next = draft
     const hit = new Set(clash)
-    for (const f of WIN_FIELDS) {
-      if (fieldSame(f, cur, b)) continue                                   // not changed behind him
+    for (const f of followed()) {
+      if (followSame(f, cur, b)) continue                                   // not changed behind him
       /* a date he has TAPPED is his, even where the tap was on the day already saved (`datesPicked`, above) */
       const tapped = datesPicked && (f.k === 'start' || f.k === 'end')
-      if (!tapped && fieldSame(f, draft, b)) { next = { ...next, ...fieldPart(f, cur) }; delete madeOver.current[f.k] } // he has not touched it: theirs, silently
-      else if (!fieldSame(f, draft, cur)) {                                // changed both ways…
+      if (!tapped && followSame(f, draft, b)) { next = { ...next, ...fieldPart(f, cur) }; delete madeOver.current[f.k] } // he has not touched it: theirs, silently
+      else if (!followSame(f, draft, cur)) {                                // changed both ways…
         if (!madeOver.current[f.k]) madeOver.current[f.k] = b
         /* …unless the record is BACK to what his change was made over (`madeOver`, above): nothing is in dispute */
-        if (fieldSame(f, cur, madeOver.current[f.k])) hit.delete(f.k)
+        if (followSame(f, cur, madeOver.current[f.k])) hit.delete(f.k)
         else hit.add(f.k)
       }
       else { hit.delete(f.k); delete madeOver.current[f.k] }               // both made the same change
@@ -404,7 +426,7 @@ export function InputEditor() {
   /* asked before every write, and again after any blocking question (an upchit, OIL or clash sheet) — the record may
      have been changed behind the window while the question stood */
   const undecided = () => {
-    if (!win || !clash.length) return false
+    if (!open || !clash.length) return false   // the pop-up too: the record can change behind it (finding (f), above)
     setUpConf(null); setMedConf(null); setOilConf(null); setDocConf(null)
     HOOKS.toast('Choose which to keep first — your change, or the one made while this window was open', 'warn')
     return true
@@ -473,7 +495,7 @@ export function InputEditor() {
     if (!draft || !base.current) return false
     const had = new Set(basePpl.current)
     const pplTouched = ppl.length !== had.size || ppl.some(id => !had.has(id))
-    return pplTouched || WIN_FIELDS.some(f => !fieldSame(f, draft, base.current))
+    return pplTouched || unsavedFields(draft, base.current)
   }
   /* THE WINDOW'S ✕ ASKS AS ESCAPE DOES (owner D1622, 3 Nov 26): with anything of his not saved, ✕ puts up the same
      "Close it and lose them?" question — a ✕ is easy to hit by mistake; with nothing typed it closes at once. Cancel keeps
@@ -543,8 +565,7 @@ export function InputEditor() {
          as the record has them, no OIL answer or removal riding along — the window just closes, saying nothing */
       if (rec && !oilDec && !removals.length) {
         const saved = draftOf(rec), inIt = new Set(idsOf(rec).map(String))
-        if (WIN_FIELDS.every(f => fieldSame(f, draft, saved)) && String(draft.to ?? '') === String(saved.to ?? '')
-          && (!('goes' in draft) || draft.goes === saved.goes) && ppl.length === inIt.size && ppl.every(id => inIt.has(String(id)))) { close(); return }
+        if (!draftChanges(draft, saved).length && ppl.length === inIt.size && ppl.every(id => inIt.has(String(id)))) { close(); return }
       }
       if (commitInput(rec, isNew ? { ...draft, u: pickUnit } : draft, ppl, oilDec ? { oil: oilDec } : undefined)) {
         const row = (rec && INPUTS.indexOf(rec) >= 0 ? rec : null) || INPUTS.find((x: any) => !had.has(x.iid))
@@ -584,10 +605,14 @@ export function InputEditor() {
        Save pressed on an input as it stands wrote "changed by" and the time, an Undo step of its own and the just-changed
        mark — for nothing. Where every field of the window, an Attach's "To" and an Other's "Goes to" included, is the
        record's own, and no OIL answer or medical removal rides the save, the window just closes. */
-    const saved = draftOf(r)
-    if (!oilDec && !removals.length && WIN_FIELDS.every(f => fieldSame(f, draft, saved))
-      && String(draft.to ?? '') === String(saved.to ?? '') && (!('goes' in draft) || draft.goes === saved.goes)) { close(); return }
-    if (oilDec && !removals.length && WIN_FIELDS.every(f => fieldSame(f, draft, saved))) {
+    /* ONE BODY ASKS "HAS ANYTHING OF THE INPUT CHANGED?" FOR BOTH (ui/inputedit.tsx draftChanges — Fable's read, 22 Nov 26,
+       F2): the 3 Nov fix added "To" and "Goes to" to the nothing-changed check alone, so the OIL shortcut below still
+       took an Other moved under Unavailable (or an Attach's new "To") for "nothing changed", wrote the answer by itself
+       and said "OIL answer saved" — the move thrown away. Any real change now goes through the full save with the
+       answer: one step, one Undo. */
+    const unchanged = !draftChanges(draft, draftOf(r)).length
+    if (!oilDec && !removals.length && unchanged) { close(); return }
+    if (oilDec && !removals.length && unchanged) {
       if (!mayEditInput(r) || protectedInput(r)) { stay(); return }
       const s = saveBatchX(() => { r.oil = { ...oilDec }; stampChanged(r); return true })
       if (s.ok) { if (CURPAGE === 'inputs' && !onMedTab()) revealInput(r); HOOKS.toast('OIL answer saved', 'ok'); close() }
@@ -1370,7 +1395,7 @@ export function InputEditor() {
           <div className="inped-ask" data-testid="inped-clash" role="alert">
             <b className="inped-ask-h">Changed while this window was open</b>
             {clash.map(k => {
-              const f = WIN_FIELDS.find(x => x.k === k)!
+              const f = followed().find(x => x.k === k)!
               return (
                 <div key={k} className="inped-clash-row">
                   <span className="inped-ask-q">{f.label} — theirs {fieldSay(k, base.current)}, yours {fieldSay(k, draft)}</span>

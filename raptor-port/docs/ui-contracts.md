@@ -206,7 +206,8 @@ week, so it is now the same day, **in both directions**.
 Nothing in the model knows where a week is parked, so the reading is geometry:
 `state/view.ts`'s `weekLeftDay()` returns the day whose LEFT edge sits nearest
 the view's own left edge — the exact inverse of `scrollWeekToDay`, which parks
-a day's left edge there. (Until 22 Aug 26 it named the first day with any
+a day's left edge there on a phone and, on a desktop, the strip's own 20px margin in, where a day
+arrow lands one (`weekFrontInset`, D2295, 22 Nov 26 — pinned by `e2e/sched-right-edge.spec.ts`). (Until 22 Aug 26 it named the first day with any
 sliver still past the edge — the day mostly scrolled OFF — which is why the
 aircrew panel showed Wednesday while the scheduler looked at Thursday; the flip
 between two days is at their midpoint now.) `pan.ts`'s palette follow reads
@@ -357,8 +358,10 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   over. The rail is a slim BLUE vertical `CREW` tab styled
   off the phone drawer's accent tab and sat HIGH on the right edge (owner, 26 Aug
   26 — "make it like a blue side panel similar to the mobile one, labeled as crew
-  … put it higher"); it rides the reserved right lane (`.edit-board` keeps a
-  `padding-right` for it) so it never overlaps a day column's controls, and its
+  … put it higher"); with the panel open it rides the reserved right lane (`.edit-board` keeps a
+  `padding-right` for it) beside the panel; folded, the lane is given up and the days run to the
+  window's edge under the tab, the week's own far end keeping the room (D2293, 22 Nov 26 —
+  `e2e/sched-right-edge.spec.ts`), and its
   chevron flips `›`→`‹`. The rail is
   `position:fixed` so it never rides the roster's own vertical scroll, and it
   lives inside `#page-editsched`, so it is absent on every other page and on the

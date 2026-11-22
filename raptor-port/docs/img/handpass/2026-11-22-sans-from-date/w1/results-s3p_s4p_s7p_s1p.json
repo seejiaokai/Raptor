@@ -1,0 +1,972 @@
+[
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "premise",
+  "what": "the SANS man",
+  "ok": true,
+  "note": "{\"cs\":\"Tally\",\"seat\":\"RCP\",\"san\":true,\"sanFrom\":null} · today Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-01",
+  "what": "Mon 13: Tally on a new ground row (tap row, tap his puck under SANS Avail)",
+  "ok": true,
+  "note": "{\"n0\":9,\"ri\":9,\"armed\":\"g:0.9.+\",\"row\":{\"prog\":\"W1 GROUND\",\"who\":\"nick\"}}",
+  "pics": "s3-01-ground-mon-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-02",
+  "what": "Thu 16: Tally on a new ground row",
+  "ok": true,
+  "note": "{\"n0\":3,\"ri\":3,\"armed\":\"g:3.3.+\",\"row\":{\"prog\":\"W1 GROUND\",\"who\":\"nick\"}}",
+  "pics": "s3-02-ground-thu-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-03",
+  "what": "Quals ✎ Edit: his SANS unticked",
+  "ok": true,
+  "note": "{\"san\":false,\"sanFrom\":null,\"sanWas\":[[\"\",\"2026-07-15\"]],\"sanTo\":null}",
+  "pics": "s3-03-quals-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-04-0",
+  "what": "Mon 13: under SANS Avail, purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 6 FREE\",\"WSOS · 5 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"0.1.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:0.9\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"⠿ SANS AVAIL + ADD\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s3-04-day0-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-04-1",
+  "what": "Tue 14: under SANS Avail, purple line (no row copy)",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 6 FREE\",\"SANS AVAIL · 1 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s3-04-day1-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-04-2",
+  "what": "Wed 15: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 18 FREE\",\"WSOS · 10 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 10 FREE\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"rpuck \"}]",
+  "pics": "s3-04-day2-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-04-3",
+  "what": "Thu 16: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 14 FREE\",\"WSOS · 7 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:3.3\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 7 FREE\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s3-04-day3-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-05",
+  "what": "top bar Undo",
+  "ok": null,
+  "note": "{\"san\":true,\"sanFrom\":null,\"sanTo\":null}",
+  "pics": "s3-05-undo-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-06-0",
+  "what": "Mon 13: under SANS Avail, purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 6 FREE\",\"WSOS · 5 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"0.1.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:0.9\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"⠿ SANS AVAIL + ADD\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s3-06-day0-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-06-1",
+  "what": "Tue 14: under SANS Avail, purple line (no row copy)",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 6 FREE\",\"SANS AVAIL · 1 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s3-06-day1-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-06-2",
+  "what": "Wed 15: under SANS Avail, purple line (no row copy)",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 18 FREE\",\"WSOS · 9 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s3-06-day2-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-06-3",
+  "what": "Thu 16: under SANS Avail, purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 14 FREE\",\"WSOS · 7 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:3.3\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s3-06-day3-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-07",
+  "what": "top bar Redo",
+  "ok": null,
+  "note": "{\"san\":false,\"sanFrom\":null,\"sanTo\":null}",
+  "pics": "s3-07-redo-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-08-0",
+  "what": "Mon 13: under SANS Avail, purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 6 FREE\",\"WSOS · 5 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"0.1.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:0.9\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"⠿ SANS AVAIL + ADD\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s3-08-day0-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-08-1",
+  "what": "Tue 14: under SANS Avail, purple line (no row copy)",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 6 FREE\",\"SANS AVAIL · 1 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s3-08-day1-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-08-2",
+  "what": "Wed 15: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 18 FREE\",\"WSOS · 10 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 10 FREE\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"rpuck \"}]",
+  "pics": "s3-08-day2-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-08-3",
+  "what": "Thu 16: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 14 FREE\",\"WSOS · 7 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:3.3\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 7 FREE\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s3-08-day3-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-09-0",
+  "what": "Mon 13: under SANS Avail, purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 6 FREE\",\"WSOS · 5 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"0.1.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:0.9\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"⠿ SANS AVAIL + ADD\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s3-09-day0-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-09-1",
+  "what": "Tue 14: under SANS Avail, purple line (no row copy)",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 6 FREE\",\"SANS AVAIL · 1 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s3-09-day1-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-09-2",
+  "what": "Wed 15: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 18 FREE\",\"WSOS · 10 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 10 FREE\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"rpuck \"}]",
+  "pics": "s3-09-day2-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-09-3",
+  "what": "Thu 16: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 14 FREE\",\"WSOS · 7 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:3.3\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 7 FREE\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s3-09-day3-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s4",
+  "size": "phone",
+  "id": "s4-01",
+  "what": "Hex posted out as SANS from Wed 15 Jul (today Wed Jul 15 2026 09:00)",
+  "ok": true,
+  "note": "line \"On 15 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-15\",\"sanWas\":null}",
+  "pics": "s4-01-postout-sheet-phone.png"
+ },
+ {
+  "scn": "s4",
+  "size": "phone",
+  "id": "s4-02",
+  "what": "next day (Thu Jul 16 2026 09:00): his SANS unticked on Quals",
+  "ok": true,
+  "note": "{\"san\":false,\"sanFrom\":null,\"sanWas\":[[\"2026-07-15\",\"2026-07-16\"]],\"sanTo\":null}",
+  "pics": "s4-02-quals-phone.png"
+ },
+ {
+  "scn": "s4",
+  "size": "phone",
+  "id": "s4-03-tue",
+  "what": "Tue 14: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 6 FREE\",\"SANS AVAIL · 1 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"1.0.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 6 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s4-03-day1-phone.png"
+ },
+ {
+  "scn": "s4",
+  "size": "phone",
+  "id": "s4-03-wed",
+  "what": "Wed 15: under SANS Avail, purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 18 FREE\",\"WSOS · 9 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"2.0.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s4-03-day2-phone.png"
+ },
+ {
+  "scn": "s4",
+  "size": "phone",
+  "id": "s4-03-thu",
+  "what": "Thu 16: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 14 FREE\",\"WSOS · 7 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"3.1.1.0.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 7 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s4-03-day3-phone.png"
+ },
+ {
+  "scn": "s4",
+  "size": "phone",
+  "id": "s4-04",
+  "what": "day after (Fri Jul 17 2026 09:00): his SANS ticked again by hand",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\",\"sanWas\":null,\"sanTo\":null}",
+  "pics": "s4-04-quals-phone.png"
+ },
+ {
+  "scn": "s4",
+  "size": "phone",
+  "id": "s4-05-tue",
+  "what": "Tue 14: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 6 FREE\",\"SANS AVAIL · 1 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"1.0.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 6 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s4-05-day1-phone.png"
+ },
+ {
+  "scn": "s4",
+  "size": "phone",
+  "id": "s4-05-wed",
+  "what": "Wed 15: under SANS Avail, purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 18 FREE\",\"WSOS · 9 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"2.0.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s4-05-day2-phone.png"
+ },
+ {
+  "scn": "s4",
+  "size": "phone",
+  "id": "s4-05-thu",
+  "what": "Thu 16: under SANS Avail, purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 14 FREE\",\"WSOS · 7 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"3.1.1.0.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s4-05-day3-phone.png"
+ },
+ {
+  "scn": "s4",
+  "size": "phone",
+  "id": "s4-05-fri",
+  "what": "Fri 17: under SANS Avail, purple line (no row copy)",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 24 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s4-05-day4-phone.png"
+ },
+ {
+  "scn": "s4",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests (part 1)",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s4b",
+  "size": "phone",
+  "id": "s4b-01",
+  "what": "Hex posted out as SANS from Thu 16 Jul (today Wed Jul 15 2026 09:00)",
+  "ok": true,
+  "note": "line \"On 16 Jul: becomes SANS.\" · {\"san\":false,\"sanFrom\":null,\"sanWas\":null}",
+  "pics": "s4b-01-postout-sheet-phone.png"
+ },
+ {
+  "scn": "s4b",
+  "size": "phone",
+  "id": "s4b-02",
+  "what": "his Leave War row today (record)",
+  "ok": null,
+  "note": " | Hex SANSC−2POPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOP",
+  "pics": "s4b-02-lw-row-phone.png"
+ },
+ {
+  "scn": "s4b",
+  "size": "phone",
+  "id": "s4b-03-wed",
+  "what": "Wed 15: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 18 FREE\",\"WSOS · 9 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"2.0.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"WSOS · 9 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s4b-03-day2-phone.png"
+ },
+ {
+  "scn": "s4b",
+  "size": "phone",
+  "id": "s4b-03-thu",
+  "what": "Thu 16: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 14 FREE\",\"WSOS · 7 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"3.1.1.0.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 7 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s4b-03-day3-phone.png"
+ },
+ {
+  "scn": "s4b",
+  "size": "phone",
+  "id": "s4b-03-fri",
+  "what": "Fri 17: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 24 FREE\",\"WSOS · 17 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 17 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck \"}]",
+  "pics": "s4b-03-day4-phone.png"
+ },
+ {
+  "scn": "s4b",
+  "size": "phone",
+  "id": "s4b-04",
+  "what": "clock on one day: Thu Jul 16 2026 09:00",
+  "ok": null,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-16\"}"
+ },
+ {
+  "scn": "s4b",
+  "size": "phone",
+  "id": "s4b-05-wed",
+  "what": "Wed 15: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 18 FREE\",\"WSOS · 9 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"2.0.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"WSOS · 9 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s4b-05-day2-phone.png"
+ },
+ {
+  "scn": "s4b",
+  "size": "phone",
+  "id": "s4b-05-thu",
+  "what": "Thu 16: under SANS Avail, purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 14 FREE\",\"WSOS · 7 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"3.1.1.0.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s4b-05-day3-phone.png"
+ },
+ {
+  "scn": "s4b",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests (part 2)",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s7",
+  "size": "phone",
+  "id": "premise",
+  "what": "clock",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s7",
+  "size": "phone",
+  "id": "s7-01",
+  "what": "Quals ✎ Edit: Basher's SANS ticked then unticked",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\"} → {\"san\":false,\"sanFrom\":null}",
+  "pics": "s7-01-ticked-phone.png, s7-02-unticked-phone.png"
+ },
+ {
+  "scn": "s7",
+  "size": "phone",
+  "id": "s7-02",
+  "what": "Quals: Basher's CAT box changed IW → OCU (options OCU/D/C/B/A/IW/FI)",
+  "ok": true,
+  "note": "now OCU",
+  "pics": "s7-04-cat-changed-phone.png"
+ },
+ {
+  "scn": "s7",
+  "size": "phone",
+  "id": "s7-03",
+  "what": "Quals Done closes edit",
+  "ok": true,
+  "note": "",
+  "pics": "s7-05-done-phone.png"
+ },
+ {
+  "scn": "s7",
+  "size": "phone",
+  "id": "s7-04-x",
+  "what": "posting sheet (SANS picked) closed by x: gone, nothing saved",
+  "ok": true,
+  "note": "up true gone true · {\"san\":false,\"sanFrom\":null,\"archived\":false,\"postOut\":null}",
+  "pics": "s7-06-sheet-x-phone.png, s7-07-closed-x-phone.png"
+ },
+ {
+  "scn": "s7",
+  "size": "phone",
+  "id": "s7-04-escape",
+  "what": "posting sheet (SANS picked) closed by escape: gone, nothing saved",
+  "ok": true,
+  "note": "up true gone true · {\"san\":false,\"sanFrom\":null,\"archived\":false,\"postOut\":null}",
+  "pics": "s7-06-sheet-escape-phone.png, s7-07-closed-escape-phone.png"
+ },
+ {
+  "scn": "s7",
+  "size": "phone",
+  "id": "s7-04-outside",
+  "what": "posting sheet (SANS picked) closed by outside: gone, nothing saved",
+  "ok": true,
+  "note": "up true gone true · {\"san\":false,\"sanFrom\":null,\"archived\":false,\"postOut\":null}",
+  "pics": "s7-06-sheet-outside-phone.png, s7-07-closed-outside-phone.png"
+ },
+ {
+  "scn": "s7",
+  "size": "phone",
+  "id": "s7-05",
+  "what": "Hex ticked SANS by hand today (Wed Jul 15 2026 09:00)",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\",\"sanWas\":null,\"sanTo\":null}",
+  "pics": "s7-08-quals-phone.png"
+ },
+ {
+  "scn": "s7",
+  "size": "phone",
+  "id": "s7-06",
+  "what": "Mon 13: Hex seated in a flying line's RCP seat — no SANS warning for him",
+  "ok": true,
+  "note": "{\"slot\":\"0.0.2.0.w\",\"added\":true,\"armed\":\"0.0.2.0.w\",\"now\":true} · warnings {\"head\":\"▸ ⚠ 17 issues · 6 warnings\",\"lines\":[]} · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"0.0.2.0.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"s:0.amt.1.pax.5\",\"panel\":\"⠿ SIMS\"},{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 5 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s7-09-mon-seated-phone.png"
+ },
+ {
+  "scn": "s7",
+  "size": "phone",
+  "id": "s7-07",
+  "what": "Thu 16: Hex seated in a flying RCP seat — RECORD his warnings (amber \"outside SANS availability\" expected)",
+  "ok": null,
+  "note": "{\"slot\":\"3.1.1.0.w\",\"already\":true,\"now\":true} · warnings {\"head\":\"▸ ⚠ 6 issues · 3 warnings\",\"lines\":[]} · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"3.1.1.0.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s7-10-thu-seated-phone.png"
+ },
+ {
+  "scn": "s7",
+  "size": "phone",
+  "id": "s7-08",
+  "what": "the bell (record)",
+  "ok": null,
+  "note": "Nothing new",
+  "pics": "s7-11-bell-phone.png"
+ },
+ {
+  "scn": "s7",
+  "size": "phone",
+  "id": "s7-09",
+  "what": "change history, All changes (Week): the line for Hex's SANS tick (record)",
+  "ok": null,
+  "note": "tab \"All changes 6\" · lines [\"Wed · Quals · HexSaber · 15/7 09:00SANS— → yes\"]",
+  "pics": "s7-12-history-phone.png"
+ },
+ {
+  "scn": "s7",
+  "size": "phone",
+  "id": "s7-10",
+  "what": "Inputs calendar, Thu 16 Jul opened (record; known: reads today's tick)",
+  "ok": null,
+  "note": "⠿ Thu 16 Jul + Note ✕ + Input 4 INPUTS No document All day GambitOIL till 17 Jul GritATT C Medically down till 17 Jul NomadOD Overseas duty — exercise, off island 17:00–18:30 RangerAPPOINTMENT Medical / PHA",
+  "pics": "s7-13-inputs-thu-phone.png"
+ },
+ {
+  "scn": "s7",
+  "size": "phone",
+  "id": "s7-11",
+  "what": "SANS calendar, Thu 16 Jul opened (record; known: reads today's tick)",
+  "ok": null,
+  "note": "Hex pucks [{\"san\":false,\"title\":\"Hex · C · ops wingman\"},{\"san\":false,\"title\":\"Hex · C · ops wingman\"},{\"san\":false,\"title\":\"Hex · C · ops wingman\"},{\"san\":false,\"title\":\"Hex · C · ops wingman\"},{\"san\":false,\"title\":\"Hex · C · ops wingman\"},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\"},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\"},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\"}]",
+  "pics": "s7-14-sans-thu-phone.png"
+ },
+ {
+  "scn": "s7",
+  "size": "phone",
+  "id": "s7-12",
+  "what": "as Ranger: his own SANS tick on Quals (✎ Edit shown: true)",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s7-15-member-tick-phone.png"
+ },
+ {
+  "scn": "s7",
+  "size": "phone",
+  "id": "s7-13",
+  "what": "as Ranger after his own tick: his pucks on View-only Sched (record; Mon/Tue before today expected regular, Wed on SANS)",
+  "ok": null,
+  "note": "[{\"day\":\"Monday Jul 13 · \",\"san\":false,\"title\":\"Ranger · IP · instructor pilot · SXO · Conflict (two events at once)\"},{\"day\":\"Monday Jul 13 · \",\"san\":false,\"title\":\"Ranger · IP · instructor pilot · SXO · Conflict (two events at once)\"},{\"day\":\"Monday Jul 13 · \",\"san\":false,\"title\":\"Ranger · IP · instructor pilot · SXO · Conflict (two events at once)\"},{\"day\":\"Thursday Jul 16 \",\"san\":true,\"title\":\"Ranger · IP · instructor pilot · SXO · SANS · Conflict (two events at once)\"},{\"day\":\"Thursday Jul 16 \",\"san\":true,\"title\":\"Ranger · IP · instructor pilot · SXO · SANS · Conflict (two events at once)\"}]",
+  "pics": "s7-16-member-view-phone.png"
+ },
+ {
+  "scn": "s7",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "premise",
+  "what": "the drawn man",
+  "ok": true,
+  "note": "{\"cs\":\"Hex\",\"seat\":\"RCP\",\"san\":false,\"sanFrom\":null} · app today Wed Jul 22 2026 09:00 · week Jul 13,Jul 14,Jul 15,Jul 16,Jul 17,Jul 18,Jul 19"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-01",
+  "what": "Sat: Common Programme SQN EVENT 08:00–15:00 for ALL AVAIL (+ Item, typed, tapped)",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"08:00\",\"end\":\"15:00\",\"who\":\"allavail\"}",
+  "pics": "s1-01-cmn-row-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-02",
+  "what": "Sat: Hex put on a new Ground Programme row (+ Item, tap the row, tap his puck)",
+  "ok": true,
+  "note": "{\"n0\":0,\"ri\":0,\"armed\":\"g:5.0.+\",\"row\":{\"prog\":\"W1 GROUND\",\"who\":\"rocky\"}}",
+  "pics": "s1-02-ground-sat-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-03a",
+  "what": "the board's › twice from Saturday reaches Mon 20 Jul (next week)",
+  "ok": true,
+  "note": "{\"sbday\":6,\"week\":\"Jul 13,Jul 14,Jul 15,Jul 16,Jul 17,Jul 18,Jul 19\",\"title\":\"Sun Jul 19\"} → {\"sbday\":0,\"week\":\"Jul 20,Jul 21,Jul 22,Jul 23,Jul 24,Jul 25,Jul 26\",\"title\":\"Mon Jul 20\"}"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-03",
+  "what": "Mon 20 Jul: Hex put on a new Ground Programme row",
+  "ok": true,
+  "note": "{\"n0\":3,\"ri\":3,\"armed\":\"g:0.3.+\",\"row\":{\"prog\":\"W1 GROUND\",\"who\":\"rocky\"}}",
+  "pics": "s1-03-ground-mon20-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-04",
+  "what": "Hex posted out as SANS from Mon 20 Jul on the Leave War (cell → ⋯ → Post out → SANS → Post out)",
+  "ok": true,
+  "note": "line \"On 20 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-20\",\"sanWas\":null}",
+  "pics": "s1-04-postout-sheet-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-04b",
+  "what": "his Leave War row after the posting (record)",
+  "ok": null,
+  "note": "",
+  "pics": "s1-04b-lw-row-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-05-board-sat",
+  "what": "board Sat 18 Jul (Wed Jul 22 2026 09:00): Hex in the WSOs column, no purple line on row or crew list",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:5.0\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s1-05-board-sat-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-05-week-sat",
+  "what": "Edit Schedule Sat 18 Jul: his puck on the day card and in the crew panel (saturday) regular",
+  "ok": true,
+  "note": "card [{\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s1-05-week-sat-phone.png, s1-05-panel-sat-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-05-win-sat",
+  "what": "ALL AVAIL window on Sat (chip \"45\") lists Hex without the purple line",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"title\":\"Hex · C · ops wingman\",\"head\":\"SQN EVENT Jul 18 · 08:00–15:00\",\"sec\":\"WSOS · 17\"}",
+  "pics": "s1-05-availwin-sat-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-05-avail-sat",
+  "what": "Available crew count, Sat (record; Hex has no SANS availability filed)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 45 ALL DAY · 0 SANS OFFERING ⌄",
+  "pics": "s1-05-avail-5-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-05-board-mon",
+  "what": "board Mon 20 Jul (week Jul 20): Hex under SANS Avail, purple line on every copy",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"0.0.1.0.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:0.3\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s1-05-board-mon20-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-05-week-mon",
+  "what": "Edit Schedule Mon 20 Jul: card and crew panel (monday) SANS",
+  "ok": true,
+  "note": "card [{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s1-05-week-mon20-phone.png, s1-05-panel-mon20-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-05-avail-mon",
+  "what": "Available crew count, Mon 20 Jul (record)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 27 ALL DAY · +16 1ST WAVE · 0 SANS OFFERING ⌄",
+  "pics": "s1-05-avail-0-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-06",
+  "what": "Edit Schedule's next-week peek on the demo week: his puck on Mon 20 Jul (record)",
+  "ok": null,
+  "note": "no puck of his in a peek day (the phone draws no peek)",
+  "pics": "s1-05-week-sat-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-07",
+  "what": "as Ranger, View-only Sched Sat 18 Jul: Hex's puck (record; expected regular)",
+  "ok": true,
+  "note": "Jul 13 [{\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true}]",
+  "pics": "s1-07-view-sat-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-08",
+  "what": "as Ranger, View-only Sched Mon 20 Jul: Hex's puck (record; expected SANS)",
+  "ok": true,
+  "note": "Jul 20 [{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true}] ",
+  "pics": "s1-07-view-mon20-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-a-board-sat",
+  "what": "board Sat 18 Jul (Wed Jul 22 2026 09:01): Hex in the WSOs column, no purple line on row or crew list",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:5.0\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s8-a-board-sat-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-a-week-sat",
+  "what": "Edit Schedule Sat 18 Jul: his puck on the day card and in the crew panel (saturday) regular",
+  "ok": true,
+  "note": "card [{\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s8-a-week-sat-phone.png, s8-a-panel-sat-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-a-win-sat",
+  "what": "ALL AVAIL window on Sat (chip \"45\") lists Hex without the purple line",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"title\":\"Hex · C · ops wingman\",\"head\":\"SQN EVENT Jul 18 · 08:00–15:00\",\"sec\":\"WSOS · 17\"}",
+  "pics": "s8-a-availwin-sat-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-a-avail-sat",
+  "what": "Available crew count, Sat (record; Hex has no SANS availability filed)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 45 ALL DAY · 0 SANS OFFERING ⌄",
+  "pics": "s8-a-avail-5-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-a-board-mon",
+  "what": "board Mon 20 Jul (week Jul 20): Hex under SANS Avail, purple line on every copy",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"0.0.1.0.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:0.3\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s8-a-board-mon20-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-a-week-mon",
+  "what": "Edit Schedule Mon 20 Jul: card and crew panel (monday) SANS",
+  "ok": true,
+  "note": "card [{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s8-a-week-mon20-phone.png, s8-a-panel-mon20-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-a-avail-mon",
+  "what": "Available crew count, Mon 20 Jul (record)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 27 ALL DAY · +16 1ST WAVE · 0 SANS OFFERING ⌄",
+  "pics": "s8-a-avail-0-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-b-board-sat",
+  "what": "board Sat 18 Jul (Wed Jul 22 2026 09:02): Hex in the WSOs column, no purple line on row or crew list",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:5.0\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s8-b-board-sat-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-b-week-sat",
+  "what": "Edit Schedule Sat 18 Jul: his puck on the day card and in the crew panel (saturday) regular",
+  "ok": true,
+  "note": "card [{\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s8-b-week-sat-phone.png, s8-b-panel-sat-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-b-win-sat",
+  "what": "ALL AVAIL window on Sat (chip \"45\") lists Hex without the purple line",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"title\":\"Hex · C · ops wingman\",\"head\":\"SQN EVENT Jul 18 · 08:00–15:00\",\"sec\":\"WSOS · 17\"}",
+  "pics": "s8-b-availwin-sat-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-b-avail-sat",
+  "what": "Available crew count, Sat (record; Hex has no SANS availability filed)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 45 ALL DAY · 0 SANS OFFERING ⌄",
+  "pics": "s8-b-avail-5-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-b-board-mon",
+  "what": "board Mon 20 Jul (week Jul 20): Hex under SANS Avail, purple line on every copy",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"0.0.1.0.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:0.3\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s8-b-board-mon20-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-b-week-mon",
+  "what": "Edit Schedule Mon 20 Jul: card and crew panel (monday) SANS",
+  "ok": true,
+  "note": "card [{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s8-b-week-mon20-phone.png, s8-b-panel-mon20-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-b-avail-mon",
+  "what": "Available crew count, Mon 20 Jul (record)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 27 ALL DAY · +16 1ST WAVE · 0 SANS OFFERING ⌄",
+  "pics": "s8-b-avail-0-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-c0",
+  "what": "stepped to next week and back (the board's › from Sunday, ‹ from Monday)",
+  "ok": null,
+  "note": "Jul 20,Jul 21,Jul 22,Jul 23,Jul 24,Jul 25,Jul 26 → Jul 13,Jul 14,Jul 15,Jul 16,Jul 17,Jul 18,Jul 19"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-c-board-sat",
+  "what": "board Sat 18 Jul (Wed Jul 22 2026 09:02): Hex in the WSOs column, no purple line on row or crew list",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:5.0\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s8-c-board-sat-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-c-week-sat",
+  "what": "Edit Schedule Sat 18 Jul: his puck on the day card and in the crew panel (saturday) regular",
+  "ok": true,
+  "note": "card [{\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s8-c-week-sat-phone.png, s8-c-panel-sat-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-c-win-sat",
+  "what": "ALL AVAIL window on Sat (chip \"45\") lists Hex without the purple line",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"title\":\"Hex · C · ops wingman\",\"head\":\"SQN EVENT Jul 18 · 08:00–15:00\",\"sec\":\"WSOS · 17\"}",
+  "pics": "s8-c-availwin-sat-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-c-avail-sat",
+  "what": "Available crew count, Sat (record; Hex has no SANS availability filed)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 45 ALL DAY · 0 SANS OFFERING ⌄",
+  "pics": "s8-c-avail-5-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-c-board-mon",
+  "what": "board Mon 20 Jul (week Jul 20): Hex under SANS Avail, purple line on every copy",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"0.0.1.0.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:0.3\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s8-c-board-mon20-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-c-week-mon",
+  "what": "Edit Schedule Mon 20 Jul: card and crew panel (monday) SANS",
+  "ok": true,
+  "note": "card [{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s8-c-week-mon20-phone.png, s8-c-panel-mon20-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-c-avail-mon",
+  "what": "Available crew count, Mon 20 Jul (record)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 27 ALL DAY · +16 1ST WAVE · 0 SANS OFFERING ⌄",
+  "pics": "s8-c-avail-0-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-d1",
+  "what": "Undo post out pressed on his posting's sheet",
+  "ok": true,
+  "note": "{\"san\":false,\"sanFrom\":null,\"sanWas\":null,\"archived\":false}",
+  "pics": "s8-d1-posting-sheet-phone.png, s8-d2-after-undo-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-d-board-sat",
+  "what": "board Sat 18 Jul (Wed Jul 22 2026 09:03): Hex in the WSOs column, no purple line on row or crew list",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:5.0\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s8-d-board-sat-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-d-week-sat",
+  "what": "Edit Schedule Sat 18 Jul: his puck on the day card and in the crew panel (saturday) regular",
+  "ok": true,
+  "note": "card [{\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s8-d-week-sat-phone.png, s8-d-panel-sat-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-d-win-sat",
+  "what": "ALL AVAIL window on Sat (chip \"45\") lists Hex without the purple line",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"title\":\"Hex · C · ops wingman\",\"head\":\"SQN EVENT Jul 18 · 08:00–15:00\",\"sec\":\"WSOS · 17\"}",
+  "pics": "s8-d-availwin-sat-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-d-avail-sat",
+  "what": "Available crew count, Sat (record; Hex has no SANS availability filed)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 45 ALL DAY · 0 SANS OFFERING ⌄",
+  "pics": "s8-d-avail-5-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-d-board-mon",
+  "what": "board Mon 20 Jul (week Jul 20): Hex a regular in WSOs, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"0.0.1.0.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:0.3\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 11 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s8-d-board-mon20-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-d-week-mon",
+  "what": "Edit Schedule Mon 20 Jul: card and crew panel (monday) regular",
+  "ok": true,
+  "note": "card [{\"san\":false,\"title\":\"Hex · C · ops wingman · Crew pairing — this pairing needs approval\",\"shown\":true},{\"san\":false,\"title\":\"Hex · C · ops wingman · Crew pairing — this pairing needs approval\",\"shown\":true},{\"san\":false,\"title\":\"Hex · C · ops wingman · Crew pairing — this pairing needs approval\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"WSOS · 11 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman · Crew pairing — this pairing needs approval\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s8-d-week-mon20-phone.png, s8-d-panel-mon20-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-d-avail-mon",
+  "what": "Available crew count, Mon 20 Jul (record)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 27 ALL DAY · +17 1ST WAVE · 0 SANS OFFERING ⌄",
+  "pics": "s8-d-avail-0-phone.png"
+ },
+ {
+  "scn": "s8",
+  "size": "phone",
+  "id": "s8-d3",
+  "what": "Quals: his SANS tick after Undo post out (expected off)",
+  "ok": true,
+  "note": "{\"text\":\"\",\"cls\":\"qcell\",\"html\":\"\"}",
+  "pics": "s8-d3-quals-phone.png"
+ },
+ {
+  "scn": "s1",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

@@ -260,6 +260,60 @@ describe('the note on the screen after a publish (N1)', () => {
     expect(text()).toBe('Saturday 18 Jul published and approved. The Common Programme has no usable times, so nobody on it earns OIL.')
   })
 
+  /* OIL F2 (his D2294, D2299 — [FABLE-READ-FAULTS]): a day published with an input whose OIL question nobody answered says
+     so in the publish note, naming the input: "Saturday 18 Jul published and approved. Ranger's Training has no OIL answer,
+     so nobody on it earns OIL." (the drawing's words, docs/mock/2026-11-22-oil-unanswered-publish/) */
+  const training = (iid: string, person: string) => ({ iid, person, type: 'Training', date: 'Jul 18', yr: 2026, allday: false, s: 480, e: 1020, remarks: '', mod: 'now' })
+  const csOf = (p: string) => String((PEOPLE as any)[p].cs)
+  it('an input with no OIL answer is named in the publish note, the day once', () => {
+    setRole('admin')
+    INPUTS.push(training('fx-train', 'bane') as any)
+    publish(5)
+    expect(text()).toBe(`Saturday 18 Jul published and approved. ${csOf('bane')}’s Training has no OIL answer, so nobody on it earns OIL.`)
+  })
+  it('two such inputs are both named; an answered one is not', () => {
+    setRole('admin')
+    INPUTS.push(training('fx-a', 'bane') as any, training('fx-b', 'stiff') as any, { ...training('fx-c', 'pump'), oil: { '2026-07-18': 0 } } as any)
+    publish(5)
+    expect(text()).toBe(`Saturday 18 Jul published and approved. ${csOf('bane')}’s Training and ${csOf('stiff')}’s Training have no OIL answer, so nobody on them earns OIL.`)
+  })
+  /* HOW THE NOTE NAMES WHO AN INPUT IS FOR (owner D2314, 22 Nov 26): one person "Ranger's Training", two "Ranger and Hex's
+     Training", three or more "Training for 3 people", an input for ALL AVAIL "Training for ALL AVAIL" — never "ALL AVAIL's
+     Training", which read as if ALL AVAIL were a person, nor "Training for 2 people". */
+  const group = (iid: string, ...ps: string[]) => { const { person: _p, ...r } = training(iid, ps[0]!); return { ...r, people: ps.map(p => ({ p })) } }
+  it('an input for two people names both: "Bane and Stiff\'s Training"', () => {
+    setRole('admin')
+    INPUTS.push(group('fx-two', 'bane', 'stiff') as any)
+    publish(5)
+    expect(text()).toBe(`Saturday 18 Jul published and approved. ${csOf('bane')} and ${csOf('stiff')}’s Training has no OIL answer, so nobody on it earns OIL.`)
+  })
+  it('an input for three or more is counted: "Training for 3 people"', () => {
+    setRole('admin')
+    INPUTS.push(group('fx-three', 'bane', 'stiff', 'pump') as any)
+    publish(5)
+    expect(text()).toBe('Saturday 18 Jul published and approved. Training for 3 people has no OIL answer, so nobody on it earns OIL.')
+  })
+  it('an input for ALL AVAIL reads "Training for ALL AVAIL", never "ALL AVAIL\'s Training"', () => {
+    setRole('admin')
+    INPUTS.push(group('fx-all', 'allavail') as any)
+    publish(5)
+    expect(text()).toBe('Saturday 18 Jul published and approved. Training for ALL AVAIL has no OIL answer, so nobody on it earns OIL.')
+  })
+  it('…and so does one that holds ALL AVAIL beside named people — the placeholder stands for whoever is free', () => {
+    setRole('admin')
+    INPUTS.push(group('fx-mix', 'bane', 'allavail') as any)
+    publish(5)
+    expect(text()).toBe('Saturday 18 Jul published and approved. Training for ALL AVAIL has no OIL answer, so nobody on it earns OIL.')
+  })
+  it('it follows the blank-desk line, each its own sentence', () => {
+    setRole('admin')
+    satDesks().rows.push({ role: 'SXO', id: 'dj', str: '0800', end: '1800' })
+    satDesks().rows[0].str = ''; satDesks().rows[0].end = ''
+    INPUTS.push(training('fx-train', 'bane') as any)
+    publish(5)
+    expect(text()).toBe(`Saturday 18 Jul published and approved. The SDO desk has no usable times, so nobody on it earns OIL. ${csOf('bane')}’s Training has no OIL answer, so nobody on it earns OIL.`)
+  })
+
   it('the bid line rides behind the pair, its own words and its dot unchanged', () => {
     setRole('admin')
     satDesks().rows.push({ role: 'SXO', id: 'plasma', str: '0800', end: '1800' })

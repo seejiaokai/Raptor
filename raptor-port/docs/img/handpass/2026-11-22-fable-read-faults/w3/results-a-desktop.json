@@ -1,0 +1,75 @@
+{
+ "R": [
+  {
+   "sc": "F2-a",
+   "size": "desktop",
+   "step": "1 list opens, nothing written",
+   "pass": true,
+   "note": "{\"held\":{\"held\":true,\"label\":\"CUR CK\",\"name\":\"Ace\",\"border\":\"dotted\",\"after\":\"none\",\"beside\":\"waiting for your answer\",\"foot\":\"Later: Ace signs, but nobody on it earns OIL.\",\"count\":\"1 to answer\",\"sub\":\"\",\"title\":\"OIL — Sat 18 Jul\"},\"behind\":{\"v\":\"— name —\",\"on\":false,\"color\":\"rgb(138, 150, 163)\"},\"cur\":\"\"}"
+  },
+  {
+   "sc": "F2-a",
+   "size": "desktop",
+   "step": "1 painted marks",
+   "pass": true,
+   "note": "border dotted, ::after none, beside \"waiting for your answer\""
+  },
+  {
+   "sc": "F2-a",
+   "size": "desktop",
+   "step": "1 foot",
+   "pass": true,
+   "note": "\"Later: Ace signs, but nobody on it earns OIL.\""
+  },
+  {
+   "sc": "F2-a",
+   "size": "desktop",
+   "step": "2 Save: note, list closes, CUR CK signed green",
+   "pass": true,
+   "note": "{\"toast\":\"OIL answered for 1 input\",\"up\":false,\"cur\":{\"v\":\"Ace\",\"on\":true,\"color\":\"rgb(223, 246, 231)\"},\"sg\":\"dj\"}"
+  },
+  {
+   "sc": "F2-a",
+   "size": "desktop",
+   "step": "3 sked signs at once",
+   "pass": true,
+   "note": "list up false, written \"shaft\""
+  },
+  {
+   "sc": "F2-a",
+   "size": "desktop",
+   "step": "3 plan signs at once",
+   "pass": true,
+   "note": "list up false, written \"glass\""
+  },
+  {
+   "sc": "F2-a",
+   "size": "desktop",
+   "step": "3 appr signs at once",
+   "pass": true,
+   "note": "list up false, written \"yeti\""
+  },
+  {
+   "sc": "F2-a",
+   "size": "desktop",
+   "step": "4 publish note plain",
+   "pass": true,
+   "note": "{\"approved\":true,\"toast\":{\"text\":\"Saturday published and approved\",\"cls\":\"\",\"op\":\"1\"}}"
+  },
+  {
+   "sc": "F2-a",
+   "size": "desktop",
+   "step": "5 Leave War FO",
+   "pass": true,
+   "note": "cell reads FO"
+  },
+  {
+   "sc": "F2-a",
+   "size": "desktop",
+   "step": "6 card has no OIL? tag",
+   "pass": true,
+   "note": "tag false"
+  }
+ ],
+ "errs": []
+}

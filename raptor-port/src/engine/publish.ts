@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { PEOPLE } from './people'
+import { PEOPLE, sansOnP } from './people'
 import { VCONF } from './rules'
 import { keyDay, uniqDays } from './keys'
 import { isScheduler } from './people'
@@ -764,7 +764,7 @@ function freezeWarn(snap:any,di:number){ if(!HOOKS.issuedWarn||!snap)return; con
      for a count on a panel; nothing on the published face moves either way. */
   /* …and EVERY LOGIC SETTING its checks read (owner D2005, 12 Nov 26): the day is judged by them until its next amendment
      (faceattrs.ts dayRuleVals / withDayRules). Only the brief lead it prints is compared (warnDelta, below — D186). */
-  snap.pa=dayPeopleAttrs(snap.d,snap.inp); snap.rv=dayRuleVals(); snap.ros=rosterIds(dayIso(CURWEEK,di)); }
+  snap.pa=dayPeopleAttrs(snap.d,snap.inp,dayIso(CURWEEK,di)); snap.rv=dayRuleVals(); snap.ros=rosterIds(dayIso(CURWEEK,di)); }
 /* every man an issued face draws, with what his puck draws from the roster: a person id in a PERSON SLOT of its content —
    a flying seat (p, w), a sim seat or passenger (p, w, pax), a desk's holder (id), a ground or Common Programme name
    (who), the extras beside a row (more) — never free text that happens to spell an id (a programme called "bane" is not
@@ -781,7 +781,11 @@ export function dayNamedIds(d:any):string[]{const out=new Set<string>();
     if(Array.isArray(v)){ v.forEach((x:any)=>walk(x,k)); return; }
     if(v&&typeof v==='object')Object.keys(v).forEach((kk:any)=>walk(v[kk],kk)); };
   walk(d,''); return [...out]; }
-const attrsOf=(p:any)=>p?{q:p.q??null,seat:p.seat??null,pers:!!p.pers,san:!!p.san,sxo:!!p.sxo,archived:!!p.archived}:null;
+/* SANS IS READ ON THE DAY'S OWN DATE (owner D2313, 22 Nov 26 — "a man named on a published day before his posting does not
+   make it pending"): the version keeps whether he was SANS on ITS day, and the comparison asks the same of the same day
+   (engine/people.ts sansOn) — so a posting, or a tick made by hand, that starts after the day changes nothing on it, and
+   one that covers the day still reads pending. No date handed in (an engine-only caller): today's tick, as before. */
+const attrsOf=(p:any,iso?:any)=>p?{q:p.q??null,seat:p.seat??null,pers:!!p.pers,san:sansOnP(p,iso),sxo:!!p.sxo,archived:!!p.archived}:null;
 /* A MAN WHO IS THERE ONLY AS ONE OF A CROWD KEEPS NO "POSTED OUT" (owner, D327, 28 Sep 26: "an archived man stays in the
    ALL AVAIL crowd on every day before his archive — the crowd on a day already published stays as it went out, and
    nothing reads pending for it"). His CAT and seat are kept and compared — the window draws his puck with them (D186) —
@@ -790,9 +794,9 @@ const attrsOf=(p:any)=>p?{q:p.q??null,seat:p.seat??null,pers:!!p.pers,san:!!p.sa
    behind an ALL AVAIL puck was archived (walker C of the ALL AVAIL check, 9 Oct 26 — older than that job; this function
    is as it is on main). A man NAMED on the day — a seat, a row, an input of his own — keeps it, and his archive still
    reads pending (D321). `peopleAttrsNow` reads the same shape back: no `archived` kept, none compared. */
-export function dayPeopleAttrs(d:any,inp?:any):any{const out:any={};
-  const put=(v:any)=>{ if(typeof v!=='string')return; const p=(PEOPLE as any)[v]; if(p&&!out[v])out[v]=attrsOf(p); };
-  const putCrowd=(v:any)=>{ if(typeof v!=='string')return; const p=(PEOPLE as any)[v]; if(p&&!out[v]){ const a:any=attrsOf(p); delete a.archived; out[v]=a; } };
+export function dayPeopleAttrs(d:any,inp?:any,iso?:any):any{const out:any={};
+  const put=(v:any)=>{ if(typeof v!=='string')return; const p=(PEOPLE as any)[v]; if(p&&!out[v])out[v]=attrsOf(p,iso); };
+  const putCrowd=(v:any)=>{ if(typeof v!=='string')return; const p=(PEOPLE as any)[v]; if(p&&!out[v]){ const a:any=attrsOf(p,iso); delete a.archived; out[v]=a; } };
   /* an array keeps the key it sits under (a sim's pax list, a row's extras, a crowd); an object's fields carry their own */
   const walk=(v:any,k:string)=>{ if(k==='oilev')return;
     if(typeof v==='string'){ if(PERSON_SLOTS.has(k))put(v); return; }
@@ -816,11 +820,14 @@ export function dayPeopleAttrs(d:any,inp?:any):any{const out:any={};
    flew keeps his puck"); on or after it he is taken off the working copy, and THAT seat is the one change (D109, D113 —
    one pending change, not a second "posted out" line). The ONE function the pending count (warnDelta) and the pending
    list (ui/pendlist.ts) both read, so the two always agree. */
-export function peopleAttrsNow(pa:any):any{const out:any={};
+export function peopleAttrsNow(pa:any,iso?:any):any{const out:any={};
   Object.keys(pa||{}).forEach((id:any)=>{ const p=(PEOPLE as any)[id];
     if(p&&p.deleted){ out[id]=pa[id]??null; return; }
-    const a:any=attrsOf(p);
+    const a:any=attrsOf(p,iso);
     /* a crowd-only man was kept with no "posted out" (dayPeopleAttrs, D327): it is not compared for him */
+    /* (the SANS tick needs no such exception since D2313: it is read on the day's own date for everyone — attrsOf — so a
+       man who became SANS after the day, named on it or behind a crowd, reads as the version kept him. Fable's OIL read
+       F1, 22 Nov 26, had exempted only a crowd-only man's posting tick here.) */
     if(a&&pa[id]&&!('archived' in pa[id]))delete a.archived;
     out[id]=a; }); return out;}
 /* the rule values an issued face PRINTS rather than judges — the blank brief's time (html.ts, board.ts, export.ts) —
@@ -870,7 +877,7 @@ function warnDelta(di:any):DeltaEntry[]{di=+di;
   /* the PRINTED value only (D186): the version keeps every setting since D2005, but a change of one it does not print
      never reads pending by itself — the day is judged by the one it kept */
   const pa=snap.pa?stableJson(snap.pa):'', rv=cmpRv?stableJson({briefLead:snap.rv.briefLead}):'';
-  const paNow=snap.pa?stableJson(peopleAttrsNow(snap.pa)):'', rvNow=cmpRv?stableJson(faceRuleVals(snap.d)):'';
+  const paNow=snap.pa?stableJson(peopleAttrsNow(snap.pa,dayIso(CURWEEK,di))):'', rvNow=cmpRv?stableJson(faceRuleVals(snap.d)):'';
   const was=storedWarnKey(snap.w)+'\n'+pa+'\n'+rv, k=liveWarnKey(now)+'\n'+paNow+'\n'+rvNow;
   return k===was?[]:[{addr:`warn:${di}`,kind:'warn',from:fp(was),to:fp(k)}];}
 /* ---- A WARNING HIDDEN ON A PUBLISHED DAY WAITS FOR THE NEXT AMENDMENT ([WARN-HIDE-KEPT], owner D471, 1 Oct 26 — "2. Waits")

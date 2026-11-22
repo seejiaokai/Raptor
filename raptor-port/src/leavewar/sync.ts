@@ -19,7 +19,7 @@
 
 import { useSyncExternalStore } from 'react'
 import { toPeople, pieceOf } from '../engine/inputown'
-import { inputOnDay, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, remarksTyped, tillShown, tillDefault, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent, filingOf, inputUnitOf } from '../engine/inputs'
+import { inputOnDay, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, inpLabel, placeholderOf, remarksTyped, tillShown, tillDefault, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent, filingOf, inputUnitOf } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
@@ -40,7 +40,7 @@ import { SESSION, canEditOwn } from '../state/auth'
    writers — PO-archive, restore — emit a people change too). */
 import { persistPeopleProjection, commitPeopleEdit } from '../state/people-settings-commit'
 import { DAYS } from '../engine/data'
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, sansOnP, sansStart, sansStop, sansErase } from '../engine/people'
 import type { Day, Sched } from '../engine/schema'
 import { SCHED, dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf, amFormatOf, unpublishBackTo } from '../engine/publish'
 import { blindDesks, dayOilBlind, dayOilWork, inputOilAmt, oilWorkWhy, type OilWork } from '../engine/oil'
@@ -2103,7 +2103,16 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
     /* SANS are another squadron's men until they are on our programme for the
        day. With no day blob to read (a caller that cannot supply one) they stay
        out, which is the pre-[ALL-AVAIL-REDEF] answer — fail closed. */
-    if (p.san && !(engaged && engaged.has(id))) continue
+    /* …AND A MAN A POSTING MADE SANS IS SANS FROM ITS DATE, NOT BEFORE (D283: "on the posting-out date he becomes SANS";
+       D327, D297, D44, D45 — the crowd of a day already published stays as it went out; Fable's OIL read F1, 22 Nov 26).
+       This read today's tick on every date, so the published holiday a regular attended behind ALL AVAIL read pending the
+       moment his SANS posting ran, lost its sign-offs, and its next amendment — a remark — published without him and took
+       the day's OIL from him (D142). Read by date, as the deleted and the archived man just above: on a day before the
+       posting's date he is the regular he was.
+       AND SO IS A TICK MADE BY HAND (owner D2313, 22 Nov 26 — "a SANS tick made by hand counts from the day it is made, so
+       earlier published days keep their crowd"): every SANS tick keeps its dates on the person (engine/people.ts sansOn),
+       put on or taken off, by a posting or by hand, and this asks by the day being measured. */
+    if (sansOnP(p, iso) && !(engaged && engaged.has(id))) continue
     const lw = lwById.get(id)
     if (lw && !inSquadron(lw, iso)) continue
     if (keptOut.has(id)) continue
@@ -2488,6 +2497,35 @@ function oilBlindLine(iso: string, day: Day, spans: Record<string, OilWork[]>): 
     : { line: `${when} earned nobody any OIL — ${desks} no usable times` }
 }
 
+/* THE PUBLISH NOTE'S SENTENCE FOR INPUTS WITH NO OIL ANSWER (his D2294, D2299): what the day's one list would list for the
+   squadron in view on that date (oilOpenOn — so an input taken off the programme, cancelled, information-only or already
+   answered, a No included, is never named). Each is named as the Undo names an input (D1582 — undo/describe.ts): whose
+   and what, its own title standing for its kind; who it is for as his D2314 words it (below). Up to three are
+   named; more are counted ("4 inputs have no OIL answer…" — the agent's wording for that case, told to him). No day at
+   its head and no full stop: the caller gives it both. */
+function oilUnansweredLine(iso: string): string | null {
+  const named: string[] = []
+  for (const o of oilOpenOn(iso, iso, UNIT)) {
+    const row = warInputs().find(x => String(x.iid) === o.iid)
+    if (!row) continue
+    const label = String(inpLabel(row) || ''), ids = idsOf(row).map(String)
+    if (!label) continue
+    /* WHO IT IS FOR (owner D2314, 22 Nov 26): one person "Ranger’s Training", two "Ranger and Hex’s Training", three or
+       more "Training for 3 people", and an input holding ALL AVAIL (or ALL) "Training for ALL AVAIL" — the placeholder is
+       not a person, so never "ALL AVAIL’s Training"; one holding it beside named people reads the same (the agent's
+       reading: it stands for whoever is free, the named among them) */
+    const ph = placeholderOf(row)
+    named.push(ph ? `${label} for ${cs(String(ph.p))}`
+      : ids.length === 1 ? `${cs(ids[0]!)}’s ${label}`
+        : ids.length === 2 ? `${cs(ids[0]!)} and ${cs(ids[1]!)}’s ${label}`
+          : ids.length > 2 ? `${label} for ${ids.length} people` : label)
+  }
+  if (!named.length) return null
+  if (named.length === 1) return `${named[0]} has no OIL answer, so nobody on it earns OIL`
+  const which = named.length > 3 ? `${named.length} inputs` : `${named.slice(0, -1).join(', ')} and ${named[named.length - 1]}`
+  return `${which} have no OIL answer, so nobody on them earns OIL`
+}
+
 export function publishFlagsBids(di: number): void {
   const iso = labelToISO(DATES[di])
   /* THE `warHolding` TEST USED TO BE HERE, AND IT MADE THE BRANCH BELOW DEAD
@@ -2518,9 +2556,20 @@ export function publishFlagsBids(di: number): void {
   const lines: string[] = []
   const blind = oilBlindLine(iso, snap.d, spans)
   if (blind) lines.push(blind.line)
-  /* said as ONE toast, as before; where the blind line is its first form, the toast also carries that line's two halves
-     and whatever follows it (`after`), for the join with the day's own publish note (oilBlindLine above) */
-  const say = () => HOOKS.toast(lines.join(' · '), 'warn', blind?.told && { day: di, ...blind.told, after: lines.slice(1).join(' · ') })
+  /* AN INPUT NOBODY ANSWERED THE OIL QUESTION FOR IS NAMED TOO (his D2294, D2299 — [FABLE-READ-FAULTS], OIL F2: Fable's
+     OIL read, 22 Nov 26 — such a weekend published in silence, the man on it earning nothing, against D81's "says so …
+     at publish"). The sign-off press has already put the day's list to the scheduler (ui/oilsign.ts); what he left for
+     Later is said here, in the drawing's words: "Saturday 18 Jul published and approved. Ranger's Training has no OIL
+     answer, so nobody on it earns OIL." A sentence of its own behind the blind line's, never joined to it by the dot. */
+  const open = oilUnansweredLine(iso)
+  if (open) lines.push(blind ? `${open.charAt(0).toUpperCase()}${open.slice(1)}` : `${WEEKDAY_NAMES[weekday(iso)]} ${dm(iso)}: ${open}`)
+  /* said as ONE toast, as before; where the first line is the blind line's first form, or the unanswered line with no
+     blind line before it, the toast also carries that line's two halves and whatever follows it (`after`), for the join
+     with the day's own publish note (oilBlindLine above) */
+  const told = blind ? blind.told && { ...blind.told, ...(open ? { body: `${blind.told.body}. ${open.charAt(0).toUpperCase()}${open.slice(1)}` } : {}) }
+    : open ? { head: `${WEEKDAY_NAMES[weekday(iso)]} ${dm(iso)}`, body: open } : undefined
+  const joined = told && open ? (blind ? 2 : 1) : 1      // how many of `lines` the join's own sentences already say
+  const say = () => HOOKS.toast(lines.join(' · '), 'warn', told && { day: di, ...told, after: lines.slice(joined).join(' · ') })
   const war = warHolding(rawState().wars, iso)
   /* amber, like the Inputs page's twin (N18, 21 Sep 26): this is a warning,
      not the face the app says "Saved" in. Both exits, because the day with
@@ -3051,13 +3100,11 @@ function runLoadedPostings(only?: string): void {
               if (!body.archived) { body.archived = true; body.archivedBy = 'po'; body.archivedOn = d.poDate; endRightsOfArchived(d.id) }   // D329: when
               suspendForPosting(d.id)
             } else if (d.outcome === 'sans') {
-              if (!body.san) {
-                body.san = true
-                body.quals = body.quals || {}
-                body.quals.san = true
-                body.sanQ = body.sanQ || { flown: 0, carry: 0, missedQtrs: 0 }
-                body.sanBy = 'po'
-              }
+              /* SANS FROM THE POSTING'S DATE (D283, D2313): the tick and its first day, so every reader of a day asks
+                 by that date (engine/people.ts sansOn). A posting re-run after its date moved re-dates its own tick; a man
+                 already SANS by hand keeps his own tick and its day */
+              if (!body.san) { sansStart(body, d.poDate, true); body.sanBy = 'po' }   // apart from his own earlier SANS days, so a take-back erases only the posting's
+              else if (body.sanBy === 'po') body.sanFrom = d.poDate
             } else if (d.outcome === 'delete') {
               applyDelete(d.id, deleteCutoff(d.poDate))
               forgetPersonFrom(d.id, deleteCutoff(d.poDate))
@@ -3240,13 +3287,8 @@ function runForeignPosting(d: FxDue): void {
             if (!body.archived) { body.archived = true; body.archivedBy = 'po'; body.archivedOn = now.poDate; endRightsOfArchived(d.id) }
             suspendForPosting(d.id)
           } else if (now.outcome === 'sans') {
-            if (!body.san) {
-              body.san = true
-              body.quals = body.quals || {}
-              body.quals.san = true
-              body.sanQ = body.sanQ || { flown: 0, carry: 0, missedQtrs: 0 }
-              body.sanBy = 'po'
-            }
+            if (!body.san) { sansStart(body, now.poDate, true); body.sanBy = 'po' }   // SANS from the posting's date (D2313), apart from his own earlier days
+            else if (body.sanBy === 'po') body.sanFrom = now.poDate
           } else if (now.outcome === 'delete') {
             const cut = deleteCutoff(now.poDate)
             applyDelete(d.id, cut)
@@ -3482,7 +3524,8 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
       if (postIn === undefined) setPostOut(id, null)
       body.archived = false
       delete body.archivedBy; delete body.archivedOn; delete body.archivedWho
-      if (body.sanBy === 'po') { body.san = false; if (body.quals) body.quals.san = false; delete body.sanBy }
+      /* the posting undone: its SANS never was; "he's back" with a date: SANS until today, the days he was SANS kept (D2313) */
+      if (body.sanBy === 'po') { if (postIn === undefined) sansErase(body); else sansStop(body, effectiveToday()); delete body.sanBy }
       if (postIn === undefined) enableAfterPosting(id)
       else {
         /* the war's picture of him when it holds no row (archived with no stint closed — his post-in was still to come),
@@ -3732,7 +3775,7 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
       body.archivedOn = today                                           // D329: how and when — who, by his person id
       if (me() != null) body.archivedWho = me() as string; else delete body.archivedWho
       delete body.back
-      if (body.sanBy === 'po') { body.san = false; if (body.quals) body.quals.san = false; delete body.sanBy }
+      if (body.sanBy === 'po') { sansStop(body, today); delete body.sanBy }   // SANS until his archive; the days he was SANS kept (D2313)
       if (fw) {
         /* store.ts closeStintOnArchive's rules, its pure half, on his own squadron's stored window */
         if (fperson && !fperson.gone && fkeep) {
@@ -3928,7 +3971,7 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
       if (!ok || !body) return
       if (!keep.archive && body.archived && body.archivedBy === 'po') { body.archived = false; delete body.archivedBy; delete body.archivedOn }
       if (!keep.suspend) enableAfterPosting(id)
-      if (!keep.sans && body.sanBy === 'po') { body.san = false; if (body.quals) body.quals.san = false; delete body.sanBy }
+      if (!keep.sans && body.sanBy === 'po') { sansErase(body); delete body.sanBy }   // the posting's SANS never was (D2313)
       if (lines.length) forget = retractPostingLines(lines)
       tellAccess(txn, was)
       validate()

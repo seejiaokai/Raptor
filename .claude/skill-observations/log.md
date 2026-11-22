@@ -1103,18 +1103,161 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Suggested improvement:** In the morning report step, mark each parked question "reachable today" or "only once <feature> exists" (checked against how the walk set it up), and lead with the reachable ones. Check each recommendation against the rulings before it goes in the list.
 **Principle:** A question about a state users cannot reach yet is cheaper to settle when the feature that reaches it is designed; sorting by reachability shrinks what the owner must decide now.
 
-### Observation 1001
+### Observation 999: Test which mechanism the harness uses before hooking the tool under it
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** [HELPER-COPIES-NO-PICTURES] — making helpers' working copies leave out 7.8 GB of pictures
+**Skill:** using-git-worktrees
+**Type:** open-source
+**Phase/Area:** where a worktree's set-up is hooked (the native-tool path)
+
+**Issue:** The obvious net — git's post-checkout hook, which git runs for every `git worktree add` — never fired when the app made a subagent's isolated worktree; a five-minute trial in a throwaway repo (a hook that logs its arguments, one `claude -p` run spawning an isolated subagent) showed it. Built on the assumption, every helper's copy would have stayed full while the typed-copy test passed. The same trial showed the app's SubagentStart hook runs inside the helper's own worktree, before the helper starts, which became the working route.
+**Suggested improvement:** In the skill's native-tool section: before relying on a git hook (or any tool-level hook) for worktrees the harness creates, prove it fires for the harness's own creation path in a throwaway repo; prefer the harness's own lifecycle hooks, which keep its clean-up, over replacing its creation step.
+**Principle:** A hook on the tool underneath only catches what goes through that tool's front door; a harness may not use it. Test the real creation path in a throwaway project before building on it.
+
+### Observation 1000: Run the project's own checks inside the new kind of copy before calling it equivalent
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** [HELPER-COPIES-NO-PICTURES] — sparse working copies without the walk pictures
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** what counts as evidence that a changed environment still works
+
+**Issue:** The sparse copy was believed safe because CI's own sparse checkout passed every gate. Running the document check inside a real sparse copy failed it: two records named a home file inside the left-out folder, and CI's guard job happens to use a full checkout. Every helper would have hit a red check the main folder did not show.
+**Suggested improvement:** When a change alters the environment work runs in (a checkout shape, a container, a path), run the project's standing checks inside one real instance of the new environment and compare with the old, before claiming equivalence from a similar-looking environment elsewhere.
+**Principle:** "Another place already works this way" is evidence only for the checks that place runs; run the rest in the new environment itself.
+
+### Observation 1005: A "today" picture taken after a scripted scroll reset hid the app's real opening position
 
 **Status:** OPEN
 **Date:** 2026-11-22
-**Session context:** chat 135, carrying on a handoff whose "Pick up here" said "then the next multi-squadron batch per the batch plan"
-**Skill:** session-handoff
+**Session context:** Drawing the before-and-after of Edit Schedule's right edge ([SCHED-RIGHT-EDGE], chat 135). Numbered past 999, which a local branch already holds.
+**Skill:** brainstorming (mockups-on-the-real-app.md)
 **Type:** open-source
-**Phase/Area:** the "Pick up here" line and the next chat's reading of it (numbered past 999 and 1000, held on other branches)
+**Phase/Area:** The Method, step 1 — driving the build to the "today" state
 
-**Issue:** The handoff said "the next batch per the batch plan". The next chat read it as the plan's batch 2 and put that to the owner, who said go; only on reading the plan did it find batch 1's last two steps (every screen of it) unbuilt and a prerequisite of batch 2. The owner had to answer twice.
-**Suggested improvement:** In the handoff step that writes "Pick up here", name the exact next step by the plan's own numbering and say what of the previous phase is still unbuilt ("batch 1 steps 5–6, then batch 2"); in the opening read, check a named phase's prerequisites are built (one search of the code for its screens) before proposing it to the owner.
-**Principle:** "The next phase" is ambiguous once a phase was split across two pull requests; a handoff names the step, and a reader verifies the step before offering it.
+**Issue:** The first run of the drawing script set the week's scroll to 0 by script before each picture, so every "today" picture showed the first day 20px in from the edge. The app itself opens that page with the day hard against the edge (a page switch parks it there); only when the script was changed to reach the page by the real tab press, with no reset, did the pictures show what the owner sees — and a real fault of position surfaced ([SCHED-OPEN-20-OFF]).
+**Suggested improvement:** In "The Method" step 1, add: the "today" frame is pictured as the app's own controls leave it — the page opened by its real tab or button, no scripted scroll or reset before the first picture; a reset is used only to reach a later state, and the opening position is measured and recorded before it.
+**Principle:** A scripted reset to a tidy starting state replaces what the user actually sees first; picture the state the product's own controls produce before normalising anything.
+
+### Observation 1001: After the week's day arrows, a scripted scroll leaves the arrows' remembered target and the next press counts from it
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** The same drawing script (chat 135): one page reused for the "today" and "proposed" passes. Numbered past 999, which a local branch already holds.
+**Skill:** New skill candidate: walk-script traps (the home today is `raptor-port/docs/walk-scripts.md` §4)
+**Type:** internal
+**Phase/Area:** Steps, and what they assert — reusing one page across states
+
+**Issue:** The first pass pressed the next-day arrow to Sunday, then the script wrote the week's scroll back to 0 directly. The arrows remember where their last press was heading; a direct write does not clear that, so the second pass's first press counted from Sunday and loaded the next week. The "proposed" pictures were of a different week from the "today" ones, with no error.
+**Suggested improvement:** In `raptor-port/docs/walk-scripts.md` §4, add: a before-and-after pair takes a fresh page for each state; after any arrow press, move the week only by the app's own controls (the arrows, the foot scroll bar's track), never by writing its scroll — and assert the week's date in both pictures of a pair.
+**Principle:** A control that keeps a remembered target is not reset by moving the thing it controls behind its back; give each compared state its own fresh session and assert they show the same data.
+
+### Observation 1007: Met again (970, closed): a question put to the owner narrowed an earlier ruling the search before it had not found
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** Chat 135, the mock-up page of Edit Schedule's right edge: its question 2 (a day brought to the front rests the strip's margin in) narrowed his D275 of 27 Sep 26, found only after he had answered "all as recommended". Numbered past 1006, which another branch holds.
+**Skill:** New skill candidate: decision-page writing (round pages put to the owner) — the same candidate as Observation 970
+**Type:** open-source
+**Phase/Area:** the search of earlier decisions before a question goes out
+
+**Issue:** The search before the question ran on the backlog and on two keywords taken from the fault's own description ("opens", "20px"). The earlier ruling was worded by its subject from the other side ("the day flush at the left edge, no room beside the arrow") and sat in an area page that loads only when one of its source files is read; neither keyword matched it. The page went out without naming the ruling it narrowed, his blanket yes carried it, and it had to be told to him afterwards. Observation 970's rule (a clash pass before a recommendations page) was in force and was run — its search was too narrow to find the clash.
+**Suggested improvement:** Make the clash pass a fixed search, not a judgement: for each question, search the full rulings rows for (1) the screen part's name as the app shows it, (2) each control or gesture that reaches the behaviour, and (3) the opposite of the proposed outcome ("flush", "no gap", "at the edge" when proposing a margin) — and open the area page of every source file the fix would touch before the page is drafted. Write the three search words used on the page's own notes, so a reviewer can see what was searched.
+**Principle:** An earlier decision is filed under the words of the day it was made, often the opposite of the words of today's proposal; search by the subject and by the outcome's opposite, never only by the new problem's description.
+
+### Observation 1006: A store-wide guard broke 37 tests the narrow run never touched
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 133, fixing the faults Fable's reads proved ([FABLE-READ-FAULTS])
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** verifying a fix before calling it done
+
+**Issue:** A guard ("refuse a write for an id that names nobody") was added at five doors of a store and checked only against its own proof test, which went green. The area's whole suite later showed 37 failures: the store writes, by design, for ids that are on no roster list (a deleted person's past days, the demo data's own ids). The guard was taken out. Separately, a test file edited while a full run was in flight showed a false failure from the version the run had loaded.
+**Suggested improvement:** In the skill's verify step: a change to a shared write path (a store's doors, a gate, a guard every caller passes) runs the whole suite of the area it sits in before it is reported fixed, not only the new test and its neighbours by name; and no test file is edited while a full run that includes it is in flight.
+**Principle:** A guard's reach is every caller of the door it sits in; a test that names the guard cannot show who else relied on the door staying open.
+
+### Observation 1002: A "door that opens it today" may open it only in some states
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 137, drawing OIL F2 round 2 (the day's OIL list opened at the sign-off press) on the real app. Numbered past 1000 and 1001, taken on other branches.
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** The Method, step 2 (the nearest real interaction)
+
+**Issue:** The window was to be opened by "Switch to this plan", a door the rulings say opens it. On an unpublished day that door put the row back but not the input's state, so the window never opened and the script timed out; the working door (load a published version back, then unpublish) took three more real steps, and the gap the first door showed was itself a finding.
+**Suggested improvement:** In step 2, when a real door is borrowed to open an existing window for a proposal, assert after it both that the window opened AND that the state behind it is the premise (the staged record, the empty boxes); on a miss, log what the door left, try the next real door, say on the page which door was used and why, and file what the failed door did.
+**Principle:** A door documented as opening something is a claim about some states; check it in the state you draw, and treat its failure there as data, not only as an obstacle.
+
+### Observation 1003: A shared edge measured across, never along
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 137, OIL F2 round 6 — he saw a drawn row's words ("waiting for your answer") not lined up with the box beside them.
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** The Method, step 3 (a new part's shared edge measured against its neighbour)
+
+**Issue:** The script measured the new row's left edge against the list's first letter and the box's height against the real one, both exact; it never measured the row's two parts against each other vertically. Their baselines were level (0px), yet he saw a miss: lower-case words beside a capitals label sit optically low, their x-height middle 0.75px under the box's middle on the desktop.
+**Suggested improvement:** In step 3, a part placed BESIDE another is measured on the cross axis too: the words' x-height middle (canvas `measureText('x')`) against the neighbour's middle line, failing above 0.5px; where baselines are level but the cases differ, centre the x-height optically and say so. Check the picture's ink as well (rows of bright pixels in each box).
+**Principle:** Level baselines are not level to the eye when one side is capitals in a box and the other is lower case; measure what the eye compares.
+
+### Observation 1008: A walker's results file held a failed line no report named
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 139, closing the [FABLE-READ-FAULTS] walk (numbered past 1007 on another branch)
+**Skill:** session-handoff (and the bug-check order's §7.5 "walked enough")
+**Type:** open-source
+**Phase/Area:** closing a walk — reading the walkers' results
+
+**Issue:** The handoff said a walker's three scenarios "PASS at both sizes"; its results file held a third failed line
+(on the phone, a document gone after a reload) that neither its report nor the handoff named. Tallying every results
+file before writing the sheet found it; it proved to be the test browser's own limit (its WebKit stores no file in its
+local database), but it could as well have been lost saved data.
+**Suggested improvement:** in the handoff skill's and the sheet's close: tally every walker's results file by
+pass / fail / note and name each failed line with its disposition; a report's "PASS" is never copied without that tally.
+**Principle:** A summary of a test run is not the run; count the raw results before repeating anyone's verdict.
+
+### Observation 1012: A rule that counts "from today" needs the walk's clock set — the running app's today is months past the demo week
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 140, the walk of SANS from its date (D2313); numbered past 1009–1011, which other branches hold
+**Skill:** the bug-check order's walk (`raptor-port/docs/walk-scripts.md` §1, §2)
+**Type:** open-source
+**Phase/Area:** before the walkers start — the host's own short walk, and the walkers' brief
+
+**Issue:** The change made a hand tick count "from the day it is made". The app's today in a walk is the PC's real date
+(22 Nov), months after the demo week every walk draws (13 Jul): a tick made in an unclocked browser would have left
+every demo day "before his date", and each scenario about "from today on" would have passed while proving nothing. The
+host's own short walk caught it only because the first draft of the brief was written against the unit tests' fixed
+today. The same short walk also found that the page the route starts on opens filtered (Quals on Pilots; the man was a
+WSO), which the source read had not shown.
+**Suggested improvement:** in `walk-scripts.md` §1, beside "the clock is set to a start time and left running": when a
+change reads today's date, the sizing lines say which today each scenario needs relative to the demo week, the brief
+gives the clock line and how to move it a day (`page.clock.fastForward`), and the host's short walk logs the app's own
+today before the first step.
+**Principle:** A date rule is only walked when the walk's "today" stands where the rule's boundary can be seen from both
+sides.
+
+### Observation 1015: A closing report listed the agent's own readings in words alone, in its own shorthand
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** Chat 140, the closing report of SANS from its date (D2313). Numbered past 1013 and 1014, which other open branches hold.
+**Skill:** session-handoff (the closing report) / the plain-language rule
+**Type:** open-source
+**Phase/Area:** The part of a closing report that lists choices the builder made for the owner to keep or strike
+
+**Issue:** The report listed four readings as one-line statements, two of them in the builder's own shorthand ("hand untick") and none with a picture, though each was about what a screen shows. The owner had to ask what the shorthand meant, and then ask for the readings again with pictures. Taking the pictures also surfaced a consequence the one-liner had not stated (a man posted out from a date ahead cannot be filed for until that date).
+**Suggested improvement:** In the closing-report step, each listed reading about something on screen carries a worked example (who, which days, what the screen shows) and a marked picture of the real app, taken before the report is sent; a reading is written as who presses what on which page, never with a label coined during the build. Reuse one small script that drives the built app and cuts each picture to its place (here `raptor-port/scripts/handpass/sfd-explain.mjs`).
+**Principle:** A choice put to someone to keep or strike is only decidable when it is shown as a case on the thing itself; a one-line statement in the builder's vocabulary hides both its meaning and its costs.
 
 ### Observation 1004: A drawing helper's script checked button rows but not text cut off inside a select
 
@@ -1258,3 +1401,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The test's "open the app again" helper gave the reload a brand-new empty store for one half of the data. The saved posting was gone after the reload, so "it runs on the next load once the cause is gone" failed for a reason that had nothing to do with the code. Only reading the failure ("it did not run at all") against the helper showed it.
 **Suggested improvement:** In the test-writing notes: a reload helper re-reads the SAME stored data the earlier steps wrote — keep each store in one variable made fresh per test, never inside the helper — and a "survives a reload" test asserts first that the saved record is still there after the reload.
 **Principle:** A simulated restart must keep what a real restart keeps; check the saved state survived before judging behaviour after it.
+
+### Observation 1022: A handoff's "Pick up here" named the next phase, not the next step
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** chat 135, carrying on a handoff whose "Pick up here" said "then the next multi-squadron batch per the batch plan"
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the "Pick up here" line and the next chat's reading of it (numbered past 999 and 1000, held on other branches) — renumbered from 1001 at chat 148's merge of main (22 Nov 26): main holds another note 1001
+
+**Issue:** The handoff said "the next batch per the batch plan". The next chat read it as the plan's batch 2 and put that to the owner, who said go; only on reading the plan did it find batch 1's last two steps (every screen of it) unbuilt and a prerequisite of batch 2. The owner had to answer twice.
+**Suggested improvement:** In the handoff step that writes "Pick up here", name the exact next step by the plan's own numbering and say what of the previous phase is still unbuilt ("batch 1 steps 5–6, then batch 2"); in the opening read, check a named phase's prerequisites are built (one search of the code for its screens) before proposing it to the owner.
+**Principle:** "The next phase" is ambiguous once a phase was split across two pull requests; a handoff names the step, and a reader verifies the step before offering it.

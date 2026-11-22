@@ -1,0 +1,1138 @@
+[
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "fixture",
+  "pass": true,
+  "note": "filed one Meeting for 2 people, 0 documents, acc=g",
+  "pics": [
+   "s2-01-filed-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "chip-before-save",
+  "pass": true,
+  "note": "chips in the window before Save: 1",
+  "pics": [
+   "s2-02-chip-in-window-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "attach-saved",
+  "pass": true,
+  "note": "window closed: true; documents on the record: 1; notes: []; late date 2026-11-22",
+  "pics": [
+   "s2-03-after-save-attach-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "attached: List paperclip",
+  "pass": true,
+  "note": "paperclip on the row: 1; viewer {\"up\":true,\"img\":true,\"loaded\":true,\"w\":688,\"none\":null}",
+  "pics": [
+   "s2-04-attached-list-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "attached: List → window chip",
+  "pass": true,
+  "note": "chips 1; viewer {\"up\":true,\"img\":true,\"loaded\":true,\"w\":688,\"none\":null}",
+  "pics": [
+   "s2-05-attached-list-window-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "attached: calendar card clip",
+  "pass": true,
+  "note": "card 1; clip 1; viewer {\"up\":true,\"img\":true,\"loaded\":true,\"w\":688,\"none\":null}",
+  "pics": [
+   "s2-06-attached-cal-card-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "attached: calendar card → window chip",
+  "pass": true,
+  "note": "window true; chips 1",
+  "pics": [
+   "s2-07-attached-cal-window-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "attached: Edit Schedule week row → window chip",
+  "pass": true,
+  "note": "rows 1; window true; chips 1",
+  "pics": [
+   "s2-08-attached-week-window-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "attached: board Ground Programme row there",
+  "pass": true,
+  "note": "rows titled W2 DOC BRIEF on the board's Ground Programme: 1",
+  "pics": []
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "attached: board pinp row → window chip",
+  "pass": true,
+  "note": "window true; chips 1; viewer {\"up\":true,\"img\":true,\"loaded\":true,\"w\":688,\"none\":null}",
+  "pics": [
+   "s2-09-attached-board-pinp-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "attach-after-reload",
+  "pass": true,
+  "note": "after a reload: record 1 doc; chip 1; viewer {\"up\":true,\"img\":true,\"loaded\":true,\"w\":688,\"none\":null}",
+  "pics": [
+   "s2-10-reload-attached-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "chip-off-in-window",
+  "pass": true,
+  "note": "chips after its ✕: 0",
+  "pics": [
+   "s2-11-chip-taken-off-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "remove-saved",
+  "pass": true,
+  "note": "window closed: true; documents on the record: 0; notes: []",
+  "pics": [
+   "s2-12-after-save-remove-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "removed: List paperclip",
+  "pass": true,
+  "note": "paperclip on the row: 0; viewer null",
+  "pics": [
+   "s2-13-removed-list-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "removed: List → window chip",
+  "pass": true,
+  "note": "chips 0; viewer null",
+  "pics": [
+   "s2-14-removed-list-window-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "removed: calendar card clip",
+  "pass": true,
+  "note": "card 1; clip 0; viewer null",
+  "pics": [
+   "s2-15-removed-cal-card-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "removed: calendar card → window chip",
+  "pass": true,
+  "note": "window true; chips 0",
+  "pics": [
+   "s2-16-removed-cal-window-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "removed: Edit Schedule week row → window chip",
+  "pass": true,
+  "note": "rows 1; window true; chips 0",
+  "pics": [
+   "s2-17-removed-week-window-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "removed: board Ground Programme row there",
+  "pass": true,
+  "note": "rows titled W2 DOC BRIEF on the board's Ground Programme: 1",
+  "pics": []
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "removed: board pinp row → window chip",
+  "pass": true,
+  "note": "window true; chips 0; viewer null",
+  "pics": [
+   "s2-18-removed-board-pinp-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "remove-after-reload",
+  "pass": true,
+  "note": "after a reload: record 0; chips 0",
+  "pics": [
+   "s2-19-reload-removed-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "window-escape-clean",
+  "pass": true,
+  "note": "Escape with nothing changed closes the window at once",
+  "pics": [
+   "s2-20-esc-closed-desktop.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "desktop",
+  "id": "errors",
+  "pass": true,
+  "note": "none",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "A one Save: goes + OIL",
+  "pass": true,
+  "note": "acc=u oil={\"2026-07-18\":0} notes=[]",
+  "pics": [
+   "s3-02-A-filed-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "B fixture",
+  "pass": true,
+  "note": "acc=g oil={\"2026-07-18\":0}",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "F fixture: saved Other, OIL unanswered",
+  "pass": true,
+  "note": "acc=g oil=undefined (Fri 17 made a public holiday, its list left with Later)",
+  "pics": [
+   "s3-04-F-oil-list-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "F2: Goes to Unavailable + OIL answer in one Save",
+  "pass": true,
+  "note": "question asked: true; acc=u; oil={\"2026-07-17\":0}; notes=[]",
+  "pics": [
+   "s3-05-F-oil-asked-desktop.png",
+   "s3-06-F-saved-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "A on the board: Unavailable, not Ground",
+  "pass": true,
+  "note": "board Sat: Unavailable rows of A 1; Hunter pucks on the Ground Programme 0 (B's Drifter on the Ground Programme: 1)",
+  "pics": [
+   "s3-07-A-board-unavailable-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "A on Edit Schedule week",
+  "pass": true,
+  "note": "week: rows of A under Unavailable 2, any edit button 1",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "A card: no OIL? tag",
+  "pass": true,
+  "note": "card 1; OIL? tag 0",
+  "pics": [
+   "s3-08-A-cal-card-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "A counts him out on the Leave War",
+  "pass": true,
+  "note": "Hunter 18 Jul: {\"drawn\":true,\"text\":\"OTH\",\"cls\":\"weekend act hasc\",\"html\":\"<span class=\\\"c k-unav s-a top wide raptor\\\">OTH</span>\"} | Drifter (B, Ground) 18 Jul: {\"drawn\":true,\"text\":\"\",\"cls\":\"weekend act\",\"html\":\"\"}",
+  "pics": [
+   "s3-09-A-leavewar-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "✕ asks, hanging from the ✕",
+  "pass": true,
+  "note": "{\"q\":{\"l\":1216,\"t\":148,\"r\":1516,\"b\":254,\"reached\":true},\"x\":{\"l\":1483,\"t\":105,\"r\":1511,\"b\":133,\"reached\":true},\"foot\":{\"l\":1091,\"t\":790,\"r\":1519,\"b\":839,\"reached\":true},\"nearX\":true,\"aboveFoot\":true}",
+  "pics": [
+   "s3-10-X-asks-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "Escape asks, hanging from the ✕",
+  "pass": true,
+  "note": "{\"q\":{\"l\":1216,\"t\":148,\"r\":1516,\"b\":254,\"reached\":true},\"x\":{\"l\":1483,\"t\":105,\"r\":1511,\"b\":133,\"reached\":true},\"foot\":{\"l\":1091,\"t\":790,\"r\":1519,\"b\":839,\"reached\":true},\"nearX\":true,\"aboveFoot\":true}",
+  "pics": [
+   "s3-11-Esc-asks-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "Keep editing keeps the pick; Cancel closes at once, nothing saved",
+  "pass": true,
+  "note": "pick kept after Keep editing: true; Cancel closed at once: true; B acc=g",
+  "pics": [
+   "s3-12-Cancel-closed-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "Attach To changed: ✕ asks at the ✕",
+  "pass": true,
+  "note": "{\"q\":{\"l\":1216,\"t\":148,\"r\":1516,\"b\":254,\"reached\":true},\"x\":{\"l\":1483,\"t\":105,\"r\":1511,\"b\":133,\"reached\":true},\"foot\":{\"l\":1091,\"t\":790,\"r\":1519,\"b\":839,\"reached\":true},\"nearX\":true,\"aboveFoot\":true}",
+  "pics": [
+   "s3-13-Attach-asks-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "Discard and close leaves the To as saved",
+  "pass": true,
+  "note": "window closed true; to=\"145 Sqn\"",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "follow (door 1): Inputs window kept while the schedule is opened",
+  "pass": "NOTE",
+  "note": "pressed Edit Schedule with the window up: page now editsched, window still up: true",
+  "pics": [
+   "s3-14-follow-inputs-window-then-editsched-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "follow: window follows a move behind it",
+  "pass": "NOT WALKED",
+  "note": "on Edit Schedule the open window becomes the schedule's pop-up over a veil (#inpEditPop), so the week's Personal Inputs fold and its Reject / → Unavail cannot be pressed while it is up; a press outside closes it — no door for one person to change the row behind an open window",
+  "pics": [
+   "s3-14-follow-inputs-window-then-editsched-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "board: Reject then → Unavail on Personal Inputs",
+  "pass": true,
+  "note": "B acc=u",
+  "pics": [
+   "s3-15-follow-board-moved-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "follow u-then-undo: Undo behind the open window — the window follows",
+  "pass": false,
+  "note": "page now editsched; window before {\"win\":\"win-inputedit\",\"picked\":[\"Unavailable\"],\"line\":\"Counted as away on the Leave War\",\"rmk\":\"\"}; record after Undo acc=r; window after {\"win\":\"inpEditPop\",\"picked\":[\"Unavailable\"],\"line\":\"Counted as away on the Leave War\",\"rmk\":\"\"}; notes [\"Undid: a change to the schedule\"]",
+  "pics": [
+   "s3-17-follow-u-then-undo-after-undo-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "follow u-then-undo: the window's Save does not put the old place back",
+  "pass": true,
+  "note": "acc before Save r, after r; remarks now \"\"; window up false; notes [\"That input is no longer there — nothing was saved\"]",
+  "pics": [
+   "s3-18-follow-u-then-undo-after-save-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "board: → Ground on Personal Inputs",
+  "pass": true,
+  "note": "B acc=g",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "follow g-then-undo: Undo behind the open window — the window follows",
+  "pass": false,
+  "note": "page now editsched; window before {\"win\":\"win-inputedit\",\"picked\":[\"Ground Programme\"],\"line\":\"Still counted in the Leave War’s manning\",\"rmk\":\"\"}; record after Undo acc=r; window after {\"win\":\"inpEditPop\",\"picked\":[\"Ground Programme\"],\"line\":\"Still counted in the Leave War’s manning\",\"rmk\":\"\"}; notes [\"Undid: a change to the schedule\"]",
+  "pics": [
+   "s3-19-follow-g-then-undo-after-undo-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "follow g-then-undo: the window's Save does not put the old place back",
+  "pass": true,
+  "note": "acc before Save r, after r; remarks now \"\"; window up false; notes []",
+  "pics": [
+   "s3-20-follow-g-then-undo-after-save-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "follow: window follows a move behind it",
+  "pass": "NOT WALKED",
+  "note": "with the input's window up on the board, its Personal Inputs button \"→ Ground\" is covered (a press there meets inpEditPop) — the schedule's input window is a pop-up over a veil, a press outside closes it (the pop-up rule), so no person can change the row behind it while it stays open",
+  "pics": [
+   "s3-21-follow-window-open-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "board pop-up: a press outside closes it",
+  "pass": true,
+  "note": "window up after a press outside: false",
+  "pics": [
+   "s3-22-follow-outside-closed-desktop.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "desktop",
+  "id": "errors",
+  "pass": true,
+  "note": "none",
+  "pics": []
+ },
+ {
+  "scen": "s4",
+  "size": "desktop",
+  "id": "fixture: demo OD on time",
+  "pass": true,
+  "note": "Nomad's OD Jul 15–Jul 17, last changed 2026-06-18, LATE false, acc undefined",
+  "pics": []
+ },
+ {
+  "scen": "s4",
+  "size": "desktop",
+  "id": "fixture: Ace added late to the shared OD",
+  "pass": true,
+  "note": "people [{\"p\":\"pike\",\"by\":\"pike\",\"at\":1781740980000},{\"p\":\"dj\",\"by\":\"stiff\",\"at\":1795318809798,\"mod\":\"2026-11-22\",\"h\":1}]; record mod 2026-06-18; window closed true",
+  "pics": []
+ },
+ {
+  "scen": "s4",
+  "size": "desktop",
+  "id": "F4 reading: each man's row",
+  "pass": true,
+  "note": "rows [\"imwragok1hjkprn~pike\",\"imwragok1hjkprn~dj\"]; Nomad's chip null; Ace's chip {\"off\":false,\"pressed\":\"false\",\"opacity\":\"1\",\"color\":\"rgb(27, 19, 5)\",\"text\":\"LATE\"}",
+  "pics": [
+   "s4-02-unav-rows-desktop.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "desktop",
+  "id": "F3: a tap drops Ace's LATE chip (dimmed)",
+  "pass": true,
+  "note": "after the tap {\"off\":true,\"pressed\":\"true\",\"opacity\":\"0.9\",\"color\":\"rgb(229, 168, 59)\",\"text\":\"LATE\"}; notes [\"LATE mark hidden. The Inputs page still shows it.\"]; record lateOff true people [{\"p\":\"pike\",\"by\":\"pike\",\"at\":1781740980000},{\"p\":\"dj\",\"by\":\"stiff\",\"at\":1795318809798,\"mod\":\"2026-11-22\",\"h\":1}]",
+  "pics": [
+   "s4-03-F3-dropped-desktop.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "desktop",
+  "id": "F3: still dropped after a reload",
+  "pass": true,
+  "note": "{\"off\":true,\"pressed\":\"true\",\"opacity\":\"0.6\",\"color\":\"rgb(229, 168, 59)\",\"text\":\"LATE\"}",
+  "pics": [
+   "s4-04-F3-after-reload-desktop.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "desktop",
+  "id": "the Inputs page still prints LATE",
+  "pass": true,
+  "note": "LATE marks on the List's row: 1",
+  "pics": [
+   "s4-05-F3-inputs-list-desktop.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "desktop",
+  "id": "Edit Schedule week: Ace's mark",
+  "pass": "NOTE",
+  "note": "null",
+  "pics": []
+ },
+ {
+  "scen": "s4",
+  "size": "desktop",
+  "id": "a tap on the same spot brings it back",
+  "pass": true,
+  "note": "{\"off\":false,\"pressed\":\"false\",\"opacity\":\"1\",\"color\":\"rgb(27, 19, 5)\",\"text\":\"LATE\"}; notes [\"LATE mark shown\"]",
+  "pics": [
+   "s4-06-F3-back-desktop.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "desktop",
+  "id": "F4: a late change reads LATE on every man's row",
+  "pass": true,
+  "note": "record mod 2026-11-22, remarks \"exercise, off island — w2 late change\"; Nomad's chip {\"off\":false,\"pressed\":\"false\",\"opacity\":\"1\",\"color\":\"rgb(27, 19, 5)\",\"text\":\"LATE\"}; Ace's {\"off\":false,\"pressed\":\"false\",\"opacity\":\"1\",\"color\":\"rgb(27, 19, 5)\",\"text\":\"LATE\"}",
+  "pics": [
+   "s4-07-F4-rows-desktop.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "desktop",
+  "id": "Personal Inputs: a tap drops the LATE chip",
+  "pass": true,
+  "note": "before {\"off\":false,\"pressed\":\"false\",\"opacity\":\"1\",\"color\":\"rgb(27, 19, 5)\",\"text\":\"LATE\"} after {\"off\":true,\"pressed\":\"true\",\"opacity\":\"0.9\",\"color\":\"rgb(229, 168, 59)\",\"text\":\"LATE\"}",
+  "pics": [
+   "s4-08-PI-dropped-desktop.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "desktop",
+  "id": "Personal Inputs: dropped after a reload",
+  "pass": true,
+  "note": "{\"off\":true,\"pressed\":\"true\",\"opacity\":\"0.6\",\"color\":\"rgb(229, 168, 59)\",\"text\":\"LATE\"}",
+  "pics": [
+   "s4-09-PI-after-reload-desktop.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "desktop",
+  "id": "Personal Inputs: same spot brings it back",
+  "pass": true,
+  "note": "{\"off\":false,\"pressed\":\"false\",\"opacity\":\"1\",\"color\":\"rgb(27, 19, 5)\",\"text\":\"LATE\"}",
+  "pics": [
+   "s4-10-PI-back-desktop.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "desktop",
+  "id": "rule: a scheduler's row edit never makes an on-time input LATE",
+  "pass": true,
+  "note": "Ranger's Appointment: typed true, now 1050–1110 \"Medical / PHA w2\", mod 2026-06-29, LATE false→false; Cobra's OL remark now \"Overseas leave — off island w2\", mod 2026-06-22, LATE false→false, chip null",
+  "pics": [
+   "s4-11-rule-ground-row-edited-desktop.png",
+   "s4-12-rule-unav-row-edited-desktop.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "desktop",
+  "id": "errors",
+  "pass": true,
+  "note": "none",
+  "pics": []
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "fixture",
+  "pass": true,
+  "note": "filed one Meeting for 2 people, 0 documents, acc=g",
+  "pics": [
+   "s2-01-filed-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "chip-before-save",
+  "pass": true,
+  "note": "chips in the window before Save: 1",
+  "pics": [
+   "s2-02-chip-in-window-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "attach-saved",
+  "pass": true,
+  "note": "window closed: true; documents on the record: 1; notes: []; late date 2026-11-22",
+  "pics": [
+   "s2-04-after-save-attach-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "attached: List paperclip",
+  "pass": true,
+  "note": "paperclip on the row: 1; viewer {\"up\":true,\"img\":true,\"loaded\":true,\"w\":326,\"none\":null}",
+  "pics": [
+   "s2-05-attached-list-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "attached: List → window chip",
+  "pass": true,
+  "note": "chips 1; viewer {\"up\":true,\"img\":true,\"loaded\":true,\"w\":326,\"none\":null}",
+  "pics": [
+   "s2-06-attached-list-window-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "attached: calendar card clip",
+  "pass": true,
+  "note": "card 1; clip 1; viewer {\"up\":true,\"img\":true,\"loaded\":true,\"w\":326,\"none\":null}",
+  "pics": [
+   "s2-07-attached-cal-card-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "attached: calendar card → window chip",
+  "pass": true,
+  "note": "window true; chips 1",
+  "pics": [
+   "s2-08-attached-cal-window-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "attached: Edit Schedule week row → window chip",
+  "pass": true,
+  "note": "rows 1; window true; chips 1",
+  "pics": [
+   "s2-09-attached-week-window-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "attached: board Ground Programme row there",
+  "pass": true,
+  "note": "rows titled W2 DOC BRIEF on the board's Ground Programme: 1",
+  "pics": []
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "attached: board pinp row → window chip",
+  "pass": true,
+  "note": "window true; chips 1; viewer {\"up\":true,\"img\":true,\"loaded\":true,\"w\":326,\"none\":null}",
+  "pics": [
+   "s2-10-attached-board-pinp-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "attach-after-reload",
+  "pass": false,
+  "note": "after a reload: record 1 doc; chip 1; viewer {\"up\":true,\"img\":false,\"loaded\":false,\"w\":0,\"none\":\"No document on file for this entry\"}",
+  "pics": [
+   "s2-11-reload-attached-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "chip-off-in-window",
+  "pass": true,
+  "note": "chips after its ✕: 0",
+  "pics": [
+   "s2-13-chip-taken-off-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "remove-saved",
+  "pass": true,
+  "note": "window closed: true; documents on the record: 0; notes: []",
+  "pics": [
+   "s2-15-after-save-remove-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "removed: List paperclip",
+  "pass": true,
+  "note": "paperclip on the row: 0; viewer null",
+  "pics": [
+   "s2-16-removed-list-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "removed: List → window chip",
+  "pass": true,
+  "note": "chips 0; viewer null",
+  "pics": [
+   "s2-17-removed-list-window-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "removed: calendar card clip",
+  "pass": true,
+  "note": "card 1; clip 0; viewer null",
+  "pics": [
+   "s2-18-removed-cal-card-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "removed: calendar card → window chip",
+  "pass": true,
+  "note": "window true; chips 0",
+  "pics": [
+   "s2-19-removed-cal-window-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "removed: Edit Schedule week row → window chip",
+  "pass": true,
+  "note": "rows 1; window true; chips 0",
+  "pics": [
+   "s2-20-removed-week-window-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "removed: board Ground Programme row there",
+  "pass": true,
+  "note": "rows titled W2 DOC BRIEF on the board's Ground Programme: 1",
+  "pics": []
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "removed: board pinp row → window chip",
+  "pass": true,
+  "note": "window true; chips 0; viewer null",
+  "pics": [
+   "s2-21-removed-board-pinp-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "remove-after-reload",
+  "pass": true,
+  "note": "after a reload: record 0; chips 0",
+  "pics": [
+   "s2-22-reload-removed-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "window-escape-clean",
+  "pass": true,
+  "note": "Escape with nothing changed closes the window at once",
+  "pics": [
+   "s2-23-esc-closed-phone.png"
+  ]
+ },
+ {
+  "scen": "s2",
+  "size": "phone",
+  "id": "errors",
+  "pass": true,
+  "note": "none",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "A one Save: goes + OIL",
+  "pass": true,
+  "note": "acc=u oil={\"2026-07-18\":0} notes=[]",
+  "pics": [
+   "s3-02-A-filed-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "B fixture",
+  "pass": true,
+  "note": "acc=g oil={\"2026-07-18\":0}",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "F fixture: saved Other, OIL unanswered",
+  "pass": true,
+  "note": "acc=g oil=undefined (Fri 17 made a public holiday, its list left with Later)",
+  "pics": [
+   "s3-04-F-oil-list-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "F2: Goes to Unavailable + OIL answer in one Save",
+  "pass": true,
+  "note": "question asked: true; acc=u; oil={\"2026-07-17\":0}; notes=[]",
+  "pics": [
+   "s3-06-F-oil-asked-phone.png",
+   "s3-07-F-saved-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "A on the board: Unavailable, not Ground",
+  "pass": true,
+  "note": "board Sat: Unavailable rows of A 1; Hunter pucks on the Ground Programme 0 (B's Drifter on the Ground Programme: 1)",
+  "pics": [
+   "s3-08-A-board-unavailable-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "A on Edit Schedule week",
+  "pass": true,
+  "note": "week: rows of A under Unavailable 2, any edit button 1",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "A card: no OIL? tag",
+  "pass": true,
+  "note": "card 1; OIL? tag 0",
+  "pics": [
+   "s3-09-A-cal-card-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "A counts him out on the Leave War",
+  "pass": true,
+  "note": "Hunter 18 Jul: {\"drawn\":true,\"text\":\"OTH\",\"cls\":\"weekend act hasc\",\"html\":\"<span class=\\\"c k-unav s-a top wide raptor\\\">OTH</span>\"} | Drifter (B, Ground) 18 Jul: {\"drawn\":true,\"text\":\"\",\"cls\":\"weekend act\",\"html\":\"\"}",
+  "pics": [
+   "s3-10-A-leavewar-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "✕ asks, hanging from the ✕",
+  "pass": true,
+  "note": "{\"q\":{\"l\":80,\"t\":76,\"r\":380,\"b\":190,\"reached\":true},\"x\":{\"l\":339,\"t\":19,\"r\":383,\"b\":63,\"reached\":true},\"foot\":{\"l\":13,\"t\":812,\"r\":389,\"b\":861,\"reached\":true},\"nearX\":true,\"aboveFoot\":true}",
+  "pics": [
+   "s3-12-X-asks-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "Escape asks, hanging from the ✕",
+  "pass": true,
+  "note": "{\"q\":{\"l\":80,\"t\":76,\"r\":380,\"b\":190,\"reached\":true},\"x\":{\"l\":339,\"t\":19,\"r\":383,\"b\":63,\"reached\":true},\"foot\":{\"l\":13,\"t\":812,\"r\":389,\"b\":861,\"reached\":true},\"nearX\":true,\"aboveFoot\":true}",
+  "pics": [
+   "s3-13-Esc-asks-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "Keep editing keeps the pick; Cancel closes at once, nothing saved",
+  "pass": true,
+  "note": "pick kept after Keep editing: true; Cancel closed at once: true; B acc=g",
+  "pics": [
+   "s3-14-Cancel-closed-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "Attach To changed: ✕ asks at the ✕",
+  "pass": true,
+  "note": "{\"q\":{\"l\":80,\"t\":76,\"r\":380,\"b\":190,\"reached\":true},\"x\":{\"l\":339,\"t\":19,\"r\":383,\"b\":63,\"reached\":true},\"foot\":{\"l\":13,\"t\":812,\"r\":389,\"b\":861,\"reached\":true},\"nearX\":true,\"aboveFoot\":true}",
+  "pics": [
+   "s3-15-Attach-asks-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "Discard and close leaves the To as saved",
+  "pass": true,
+  "note": "window closed true; to=\"145 Sqn\"",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "follow (door 1)",
+  "pass": "NOTE",
+  "note": "with the Inputs page window up the top bar is not pressable",
+  "pics": [
+   "s3-16-follow-inputs-window-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "board: Reject then → Unavail on Personal Inputs",
+  "pass": true,
+  "note": "B acc=u",
+  "pics": [
+   "s3-17-follow-board-moved-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "follow u-then-undo",
+  "pass": "NOT WALKED",
+  "note": "the top bar's Undo is not pressable with the window up",
+  "pics": [
+   "s3-19-follow-u-then-undo-noundo-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "follow variant 2",
+  "pass": "NOT WALKED",
+  "note": "B acc=u; → Ground on its line: 0",
+  "pics": []
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "follow: window follows a move behind it",
+  "pass": "NOT WALKED",
+  "note": "with the input's window up on the board, its Personal Inputs button \"Reject\" is covered (a press there meets airpop-body inped-body) — the schedule's input window is a pop-up over a veil, a press outside closes it (the pop-up rule), so no person can change the row behind it while it stays open",
+  "pics": [
+   "s3-20-follow-window-open-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "board pop-up: a press outside closes it",
+  "pass": true,
+  "note": "window up after a press outside: false",
+  "pics": [
+   "s3-21-follow-outside-closed-phone.png"
+  ]
+ },
+ {
+  "scen": "s3",
+  "size": "phone",
+  "id": "errors",
+  "pass": true,
+  "note": "none",
+  "pics": []
+ },
+ {
+  "scen": "s4",
+  "size": "phone",
+  "id": "fixture: demo OD on time",
+  "pass": true,
+  "note": "Nomad's OD Jul 15–Jul 17, last changed 2026-06-18, LATE false, acc undefined",
+  "pics": []
+ },
+ {
+  "scen": "s4",
+  "size": "phone",
+  "id": "fixture: Ace added late to the shared OD",
+  "pass": true,
+  "note": "people [{\"p\":\"pike\",\"by\":\"pike\",\"at\":1781740980000},{\"p\":\"dj\",\"by\":\"stiff\",\"at\":1795319037741,\"mod\":\"2026-11-22\",\"h\":1}]; record mod 2026-06-18; window closed true",
+  "pics": []
+ },
+ {
+  "scen": "s4",
+  "size": "phone",
+  "id": "F4 reading: each man's row",
+  "pass": true,
+  "note": "rows [\"imwralhwj7wqfi7~pike\",\"imwralhwj7wqfi7~dj\"]; Nomad's chip null; Ace's chip {\"off\":false,\"pressed\":\"false\",\"opacity\":\"1\",\"color\":\"rgb(27, 19, 5)\",\"text\":\"LATE\"}",
+  "pics": [
+   "s4-02-unav-rows-phone.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "phone",
+  "id": "F3: a tap drops Ace's LATE chip (dimmed)",
+  "pass": true,
+  "note": "after the tap {\"off\":true,\"pressed\":\"true\",\"opacity\":\"0.9\",\"color\":\"rgb(229, 168, 59)\",\"text\":\"LATE\"}; notes [\"LATE mark hidden. The Inputs page still shows it.\"]; record lateOff true people [{\"p\":\"pike\",\"by\":\"pike\",\"at\":1781740980000},{\"p\":\"dj\",\"by\":\"stiff\",\"at\":1795319037741,\"mod\":\"2026-11-22\",\"h\":1}]",
+  "pics": [
+   "s4-04-F3-dropped-phone.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "phone",
+  "id": "F3: still dropped after a reload",
+  "pass": true,
+  "note": "{\"off\":true,\"pressed\":\"true\",\"opacity\":\"0.6\",\"color\":\"rgb(229, 168, 59)\",\"text\":\"LATE\"}",
+  "pics": [
+   "s4-05-F3-after-reload-phone.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "phone",
+  "id": "the Inputs page still prints LATE",
+  "pass": true,
+  "note": "LATE marks on the List's row: 1",
+  "pics": [
+   "s4-06-F3-inputs-list-phone.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "phone",
+  "id": "Edit Schedule week: Ace's mark",
+  "pass": "NOTE",
+  "note": "null",
+  "pics": []
+ },
+ {
+  "scen": "s4",
+  "size": "phone",
+  "id": "a tap on the same spot brings it back",
+  "pass": true,
+  "note": "{\"off\":false,\"pressed\":\"false\",\"opacity\":\"1\",\"color\":\"rgb(27, 19, 5)\",\"text\":\"LATE\"}; notes [\"LATE mark shown\"]",
+  "pics": [
+   "s4-08-F3-back-phone.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "phone",
+  "id": "F4: a late change reads LATE on every man's row",
+  "pass": true,
+  "note": "record mod 2026-11-22, remarks \"exercise, off island — w2 late change\"; Nomad's chip {\"off\":false,\"pressed\":\"false\",\"opacity\":\"1\",\"color\":\"rgb(27, 19, 5)\",\"text\":\"LATE\"}; Ace's {\"off\":false,\"pressed\":\"false\",\"opacity\":\"1\",\"color\":\"rgb(27, 19, 5)\",\"text\":\"LATE\"}",
+  "pics": [
+   "s4-09-F4-rows-phone.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "phone",
+  "id": "Personal Inputs: a tap drops the LATE chip",
+  "pass": true,
+  "note": "before {\"off\":false,\"pressed\":\"false\",\"opacity\":\"1\",\"color\":\"rgb(27, 19, 5)\",\"text\":\"LATE\"} after {\"off\":true,\"pressed\":\"true\",\"opacity\":\"0.9\",\"color\":\"rgb(229, 168, 59)\",\"text\":\"LATE\"}",
+  "pics": [
+   "s4-11-PI-dropped-phone.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "phone",
+  "id": "Personal Inputs: dropped after a reload",
+  "pass": true,
+  "note": "{\"off\":true,\"pressed\":\"true\",\"opacity\":\"0.6\",\"color\":\"rgb(229, 168, 59)\",\"text\":\"LATE\"}",
+  "pics": [
+   "s4-12-PI-after-reload-phone.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "phone",
+  "id": "Personal Inputs: same spot brings it back",
+  "pass": true,
+  "note": "{\"off\":false,\"pressed\":\"false\",\"opacity\":\"1\",\"color\":\"rgb(27, 19, 5)\",\"text\":\"LATE\"}",
+  "pics": [
+   "s4-14-PI-back-phone.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "phone",
+  "id": "rule: a scheduler's row edit never makes an on-time input LATE",
+  "pass": true,
+  "note": "Ranger's Appointment: typed true, now 1050–1110 \"Medical / PHA w2\", mod 2026-06-29, LATE false→false; Cobra's OL remark now \"Overseas leave —  w2off island\", mod 2026-06-22, LATE false→false, chip null",
+  "pics": [
+   "s4-15-rule-ground-row-edited-phone.png",
+   "s4-16-rule-unav-row-edited-phone.png"
+  ]
+ },
+ {
+  "scen": "s4",
+  "size": "phone",
+  "id": "errors",
+  "pass": true,
+  "note": "none",
+  "pics": []
+ }
+]

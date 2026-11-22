@@ -23,7 +23,7 @@ const WALK = /Object\.(?:keys|values|entries)\(\s*\(?\s*PEOPLE\b|for\s*\(\s*(?:c
 
 const ALLOWED: Record<string, { n: number; why: string }> = {
   'engine/roster.ts': { n: 1, why: 'rosterOf itself — THE one walk' },
-  'engine/people.ts': { n: 9, why: 'the people module\'s own upkeep of every record: each man\'s quals derived from his own ticks, the callsign index (callsigns are unique across the community, D288 — a look-up by callsign is a look-up, not a list), the archived men holding one callsign, the two placeholders (SPECIALS) that stand on every squadron\'s schedule, and the seed\'s snapshot' },
+  'engine/people.ts': { n: 10, why: 'the people module\'s own upkeep of every record: each man\'s quals derived from his own ticks, the callsign index (callsigns are unique across the community, D288 — a look-up by callsign is a look-up, not a list), the archived men holding one callsign, the two placeholders (SPECIALS) that stand on every squadron\'s schedule, the seed\'s snapshot, and sansSig — who is SANS from when as one string for a drawing\'s cache key (D2313, ui/peek.ts): it lists nobody and counts nobody, and a change to any squadron\'s man only redraws a preview' },
   /* A RECORD HANDED ON FOR LOOK-UPS BY ID — a default parameter `people = PEOPLE` the model reads only as `people[id]`
      (the name of each person IN an input). Counted all the same, so a walk added behind one is seen. */
   'ui/inputcard-model.ts': { n: 2, why: 'an input card\'s names: the people record is read by id for the men IN the input, never walked' },

@@ -178,10 +178,13 @@ export function leadOf(r:any):any{const ids=idsOf(r);return ids.length?ids[0]:un
 export function onlyNamed(r:any):any{const n=namedOf(r);return n.length===1&&idsOf(r).length===1&&n[0].p!=null&&n[0].p!==''?n[0].p:null;}
 export function holds(r:any,id:any):boolean{return id!=null&&id!==''&&idsOf(r).some((p:any)=>String(p)===String(id));}
 export function entryOf(r:any,id:any):any{return peopleOf(r).find((e:any)=>e&&String(e.p)===String(id))||null;}
+/* a man's own late date counts only where it is LATER than the input's (the one-rule plan §4.1: "a person in it is late
+   when HIS line's mod is later still") — never hiding a change made to the whole input after it (Fable's read, Inputs F4) */
+const laterMod=(rm:any,em:any):any=>inputStampISO({mod:em})>inputStampISO({mod:rm})?em:rm;
 const linesOf=(src:any):any[]=>{const out:any[]=[];
   for(const r of (src||[])){ if(!r||typeof r!=='object')continue;
     for(const e of peopleOf(r)){ if(!e||isPh(e.p))continue;
-      const line:any={...r,person:e.p}; if(e.mod!=null)line.mod=e.mod;
+      const line:any={...r,person:e.p}; if(e.mod!=null)line.mod=laterMod(r.mod,e.mod);
       out.push(Object.freeze(line)); } }
   return Object.freeze(out) as any[];};
 /* ONE FACE A PERSON — FOR A BODY THAT DRAWS AN INPUT ONCE PER PERSON (step 2 (g) of the one-rule build, 12 Oct 26 — the
@@ -196,7 +199,7 @@ export function facesOf(r:any):any[]{
   /* its id is minted on the RECORD where it has none yet (as the builders always did, by asking inpId of the record
      they drew): a face is frozen, and an id minted on a face would be lost with it */
   if(es.length&&!r.iid&&!Object.isFrozen(r))inpId(r);
-  return es.map((e:any)=>{const f:any={...r,person:e.p,several:es.length>1}; if(e.mod!=null)f.mod=e.mod; return Object.freeze(f);});}
+  return es.map((e:any)=>{const f:any={...r,person:e.p,several:es.length>1}; if(e.mod!=null)f.mod=laterMod(r.mod,e.mod); return Object.freeze(f);});}
 /* …and the faces in the order an input's people are NAMED on every screen: A to Z by callsign, then the placeholder
    (owner D721, D727) — for a line that draws a puck a person (Personal Inputs). */
 export function facesDrawn(r:any):any[]{

@@ -18,7 +18,7 @@
 import { INPUTS, inputCoversDate, isSansAvail, isLateInput, inputOwnDueISO, cutRuleWords, namedOf } from '../engine/inputs'
 import { getCut } from '../state/cutoff'
 import { pageUnit } from '../state/perms'
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, sansOnP } from '../engine/people'   // sansOnP: was he SANS on the day asked about (D2313)
 import { hhmm } from '../engine/time'
 import type { DayAnswer, Tone } from '../state/flyplan-model'
 import { sansCommittedOn, sansDateLabel, type SansCommitted } from '../state/flyplan'
@@ -155,7 +155,7 @@ export function sansDayGroups(iso: string, rows: readonly any[] = INPUTS, people
       const e: SansEntry = { r, id, letters: lettersOf(r), hours: hoursOf(r), late: lateWord(en.mod != null ? { ...r, mod: en.mod } : r), placed: placedLine(r, people) }
       if (!counted.has(id)) {
         /* the count's own reasons, in its order (state/flyplan.ts sansCommittedOn) */
-        const why = !man ? 'no longer on the roster' : man.archived || man.deleted ? 'archived' : !man.san ? 'no longer SANS'
+        const why = !man ? 'no longer on the roster' : man.archived || man.deleted ? 'archived' : !sansOnP(man, iso) ? 'no longer SANS'
           : man.seat !== 'FCP' && man.seat !== 'RCP' ? 'not aircrew' : 'no activity chosen'
         out.out.push({ ...e, why })
       } else if (flies.has(id)) (man.seat === 'FCP' ? out.p : out.w).push(e)

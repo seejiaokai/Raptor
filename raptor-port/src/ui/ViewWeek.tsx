@@ -11,7 +11,7 @@ import { CARRYDAY, CURPAGE, PEEKLAND, WEEKJUMP, setCarryDay, setPeekLand, setWee
 import { viewDayHTML } from './html'
 import { refreshHighlights } from './highlights'
 import { beginGlide } from './weekglide'
-import { weekLanding, panHold } from './pan'
+import { weekLanding, panHold, panForget } from './pan'
 import { mountPeek } from './peek'
 import { useVersion } from './useStore'
 import { swapDay, chunksOfHTML, type DayChunks } from './dayswap'
@@ -118,8 +118,18 @@ export function ViewWeek() {
          other week was parked on it, and this one lands there rather than
          wherever it was last left. Consumed once — a repaint that is not a
          page switch must keep holding scroll, which is the B54 guarantee the
-         line above exists for. */
-      if (CARRYDAY != null) { scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }
+         line above exists for. panForget: the carry places the week itself, so the day arrows count
+         from here, not from where earlier presses were heading (the blind read's F1, 22 Nov 26; pan.ts) */
+      /* STRAIGHT ONTO THE DAY, NO SLIDE (his D2296, 22 Nov 26 — "fix the slide"): written under the strip's smooth
+         scrolling, this landing was SEEN — the week slid from Monday across to the carried day, about half a second,
+         every time View-only Sched was opened from Edit Schedule on another day. Smooth is off for this one write, as
+         for the week-crossing landings above. Pinned: e2e/sched-right-edge.spec.ts. */
+      if (CARRYDAY != null) {
+        const was = root.style.scrollBehavior
+        root.style.scrollBehavior = 'auto'
+        panForget(); scrollWeekToDay(root, CARRYDAY); setCarryDay(null)
+        root.style.scrollBehavior = was
+      }
     }
     prev.current = { html, chunks }
     /* the reference re-hangs selection/highlight classes after every render */

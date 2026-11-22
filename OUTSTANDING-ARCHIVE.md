@@ -8873,3 +8873,38 @@ or the keyboard leftovers.
 **Left (his D2173, 17 Nov 26, chat 103):** a click or tap outside the open award editor closes it as Cancel does, an unsaved change dropped too (his D2176, replacing his D2174 "stays open"); a slide of the list closes nothing (D2175), nor a drag begun inside it. Built red-first on pull request 801: a mouse click and a finger tap outside, on the list, the names, the sheet's bar and the page behind; a press inside never closes it; the correction editor and the grid's day sheet editor named as candidates, not changed (D852).
 **What it is:** the editor of an award in the OIL tracker (`raptor-port/src/leavewar/ui/OilTracker.tsx`, the editing branch; `oiltracker.css` `.oil-edit`) wraps its parts freely and draws AM / PM only at 0.5, so the date, reason and given-by jump when the amount changes, and "Really delete?" widens its button. **Build as drawn, option 2** (https://claude.ai/artifact/L45vtW9hopGHDtwp9yaN9H; pictures and the injected CSS in `raptor-port/docs/mock/2026-11-17-lw-oil-editor/`, `oil.mjs`): one fixed grid — amount, AM, PM, date on line 1; reason and given-by side by side on line 2; Save, Cancel, Delete on line 3 — the AM / PM place kept empty (not greyed) when the amount is not a half day, Delete always as wide as "Really delete?". Check the same at his iPhone's size and a desktop's; the credit form (`CreditForm.tsx`) is not part of it unless he says.
 
+
+*Moved here 2026-11-22 by backlog-archive.mjs ([HELPER-COPIES-NO-PICTURES]). Forward facts: `raptor-port/docs/gates-and-deploy.md`.*
+
+### [HELPER-COPIES-NO-PICTURES] Helpers' and reviewers' working copies leave out the walk pictures — OPEN (his D2290, 22 Nov 26)
+**DONE 22 Nov 26:** pull request 821 merged on his "merge live" (D2290, D2292); `install` run on his PC; checked live there — a typed copy 929 MB with its note, and an app helper's copy lean with its note.
+**What:** each working copy a chat makes for a helper or a reviewer (the worktrees under `.claude/worktrees/`, and the reviewers' read-copies in the chat's temporary folder) holds the whole project, and about 7.6 GB of its 8.4 GB is the walk pictures (`raptor-port/docs/img/handpass/`, some 66,000 files on 22 Nov 26). His D2290: those copies leave the pictures out, as GitHub's machines already do (D1091); no picture is deleted. **To do:** find how each kind of copy is made (the app's worktrees, the helpers' `isolation: "worktree"`, the reviewers' read-copies, Codex's), make each leave the pictures folder out (for example a sparse checkout), and give a helper that needs pictures two ways in, as he asked (his question, 22 Nov 26): open one from the main folder, or fetch only the folder its task needs (one walk's pictures, not all of them) — named in the helpers' briefs; a walk's NEW pictures must still save and commit from a helper's copy (a sparse checkout refuses files outside its set unless the walk's own folder is added first — test it); measure a copy before and after. **Read as:** a working-guide change (Astra and a second reader, D1761), live on his "merge live". **Place:** soon — his C drive was down to 3 GB on 22 Nov 26.
+**Built 22 Nov 26 (chat 134, branch `claude/helper-copies-no-pictures-134`):** `raptor-port/scripts/lean-copy.mjs` and its tests; how it works, why, and what was tested: `raptor-port/docs/gates-and-deploy.md` §Lean working copies. A real copy 929 MB against 8.3 GB. Found on the way: the app makes helpers' copies without git's checkout hook (so the app's own SubagentStart and SessionStart hooks do it), and the document check failed in every lean copy (fixed). Read by Astra, a fresh Opus reader and Fable (his call), blind to each other (`raptor-port/docs/superpowers/briefs/2026-11-22-lean-copy-read-*.md`); every finding fixed — among them a picture re-written into an old walk's folder skipped by `git add -A` without a word (now a commit guard), copies already in use slimmed (now new copies only), the drawing check's records left out (now only pictures leave). Chats' own copies too: his D2292. **Left:** (1) the fix round's read; (2) his "merge live" (given ahead, 22 Nov 26: "once done u can merge live"); (3) then, on his PC, `node raptor-port/scripts/lean-copy.mjs install` from the main folder, for typed copies and the commit guard; (4) whether to slim the copies already on his PC (`… lean-copy.mjs slim` inside each, once its chat is done) — his call, none touched. **Found, not fixed:** the Leave War's browser test re-draws two tracked pictures in `2026-10-27-lw-m4/d1444/` on every run (the main folder shows them changed today); in a lean copy that trips the commit guard until they are restored — the test writing into a tracked evidence folder is the fault, its own small job.
+
+
+*Moved here 2026-11-22 by backlog-archive.mjs ([SCHED-RIGHT-EDGE]). Forward facts: `.claude/rules/decisions/scheduler.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [SCHED-RIGHT-EDGE] Edit Schedule's days to the window's right edge under the folded CREW tab (his "draw it", 22 Nov 26; D2269)
+**What:** on a desktop, Edit Schedule keeps a 26px lane at its right for the folded CREW tab and the next-day arrow
+(`raptor-port/src/ui/scheduler/03-week.css` `.edit-board{padding-right:26px…}`, on `main` since at least 3 Oct 26) — he
+saw it as a black border on his PC (picture of 22 Nov 26, 125% display). Recommended and asked for: the days run to the
+window's edge with the tab floating over them; only after the week's last day a 26px gap, so the tab never covers
+Sunday's right edge. **His question, a requirement:** the left and right arrows still step one day at a time, each day
+landing at the left edge as today — written as a test. **How:** drawn first, before and after, at his PC's 125% and on a
+phone (D1625); built by Fable (D2269), walked by Opus (D2256); the bug-check order's sizing; his look; "merge live".
+**Place:** a chat of its own, from `main`. **22 Nov 26, chat 135:** drawn, approved (D2293) and BUILT, its walk and reads to come —
+`raptor-port/docs/mock/2026-11-22-sched-right-edge/` (page, script, pictures, measures); branch `claude/sched-right-edge-135`.
+**DONE 22 Nov 26:** walked and read; the rule on the scheduler's page (D2293); the sheet
+`raptor-port/docs/handpass/2026-11-22-sched-right-edge.md`; pull request 822.
+
+
+*Moved here 2026-11-22 by backlog-archive.mjs ([SCHED-OPEN-20-OFF]). Forward facts: `.claude/rules/decisions/scheduler.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [SCHED-OPEN-20-OFF] A schedule page opens its first day 20px off the arrows' place (found 22 Nov 26, chat 135)
+**What:** on a desktop, a switch between View-only Sched and Edit Schedule parks the front day's left edge on the window's
+edge (`raptor-port/src/state/view.ts` `scrollWeekToDay`), where an arrow press lands a day 20px in (`ui/pan.ts` `panDays`):
+Edit Schedule opens with Monday under the left arrow's tab. Older code; a phone is right as it is. **Proof:** that job's
+drawing folder — `summary.mjs`, pictures `pc-today-L1-…`, `-L2-…`. **How:** his yes to that page's question 2 (D2295,
+narrowing D275): BUILT 22 Nov 26 there, each landing a failing test first; walk and reads to come. **Place:** that job.
+**DONE 22 Nov 26:** walked and read, the page switch without its slide too (D2296); the rule on the scheduler's page
+(D2295); that job's sheet.

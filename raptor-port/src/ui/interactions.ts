@@ -7,7 +7,7 @@ import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay, TIME_TXT, not
 import { CmdRefused } from '../command'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { standsOn } from '../engine/overlay'
-import { isOD, INPUTS, DATES, inpId, inpLabel, defaultAllday, isLateInput, idsOf, leadOf, inputCoversDate, listedPersonal } from '../engine/inputs'
+import { isOD, INPUTS, DATES, inpId, inpLabel, defaultAllday, isLateInput, idsOf, leadOf, inputCoversDate, listedPersonal, facesOf } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, whoId } from '../engine/people'
 import { hideDetail } from '../engine/warnhide'
@@ -1249,13 +1249,17 @@ export function routeClick(e: MouseEvent) {
     if (inp) {
       /* THE ONE ROW'S MARK IS EVERYONE'S ON IT (the plan §4.5): a shared input's chip stands for every late record of
          it (ui/html.ts lateMates), so the tap hides it — or brings it back — for all of them alike */
-      const late = lateMates(inp).filter((r: any) => isLateInput(r))
+      /* …and under Unavailable, where each man's row is his own (D737) and draws its chip from HIS face — his own late
+         date, a man added after the cut-off — the record alone can read on time: the chip's records are then the
+         record's faces too, or the tap found nothing late and wrote nothing (Fable's read, Inputs F3) */
+      const late = [...lateMates(inp), ...facesOf(inp)].filter((r: any) => isLateInput(r))
       const hide = late.some((r: any) => view.lateShown(r))
       /* saved on the input for everyone (D1586): one command, so it is kept, shared and one Undo step */
       /* …through the input funnel every other input write takes (the locked-week refusal, the absence rules), and its
-         note only once the change went through (the code read of 3 Nov 26) */
-      const ok = writeInputsAs(SCHED_TYPES.lateOff, () => { for (const r of late.length ? late : [inp]) if (view.lateShown(r) === hide) view.setLateOff(r, hide) })
-      if (ok) HOOKS.toast(hide ? 'LATE mark hidden. The Inputs page still shows it.' : 'LATE mark shown', 'ok')
+         note only once the change went through (the code read of 3 Nov 26) — and only when it changed something */
+      let changed = false
+      const ok = writeInputsAs(SCHED_TYPES.lateOff, () => { for (const r of late.length ? late : [inp]) if (view.lateShown(r) === hide) changed = view.setLateOff(r, hide) || changed })
+      if (ok && changed) HOOKS.toast(hide ? 'LATE mark hidden. The Inputs page still shows it.' : 'LATE mark shown', 'ok')
     }
     notify(); return
   }

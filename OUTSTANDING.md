@@ -158,8 +158,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
 - [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK] (done 31 Oct 26), then [LW-WEEKDAY-WORK], then the database.
 - [MULTI-SQN-DESIGN] — one app, one database, many squadrons: home squadron at account creation, view-only rights to others, transfer on posting out, a day split between squadrons (his D1695, 5 Nov 26), with detachment modes — the design answered whole 17 Nov 26 (rounds 1–7, chats 90–104); its BUILD now, in batches, before the database step (D2187, changing D2086), each batch's agreed design and mock-up shown to him before it starts (D2188); the batch plan written and red-teamed (chat 106, `raptor-port/docs/superpowers/plans/2026-11-17-multi-sqn-build-batches.md`); batch 1's page put to him, waiting for his look. **Batch 1 steps 0–4 built on `claude/multi-sqn-b1-107` (pull request 806, draft) the night of 17–18 Nov 26 and FULL-checked; NOT ready to merge: the last reads (18 Nov, 09:00–09:41, `raptor-port/docs/superpowers/briefs/2026-11-18-multi-sqn-b1-fixread2-{astra,opus,security}.md`) left open faults to fix red first — the last-admin lock and master guard skipped by person-only and home-only changes, the gate's account list read differently from the loader's (a re-keyed or colliding row), a plain admin able to suspend or demote the master, a 142 admin able to post a 149 man out or touch 149's history, the master's Archive / Restore / Delete of a 149 man acting on 142's Leave War, a new 149 man losing his post-in date, inputs not checked by squadron at the gate (`…-fixread-opus7-open.md`); and, by his D2205–D2207 (18 Nov 26) the eleven open questions as recommended (only a master changes a master; sign-in held for a pending save; four cross-squadron bell lines; holiday OIL by one's own list; "142's" dropped from the holiday warning; the code-check pull request to `main`); by his D2203 (18 Nov 26), a move to another squadron clearing every View and Plan held of others; by his D2202 (18 Nov 26), a planner's bell carrying the other squadron's admin lines, on by default, each line showing its squadron; by his D2200 (18 Nov 26), each person to choose which notifications reach his bell, a few that need action always on — a job after the multi-squadron batches, drawn first; by his D2192 and D2199 (18 Nov 26), step 1's 'admin' level for a right in another squadron kept only as "Plan" — full access to that squadron, as its own admins (D2201) — given person by person by a master admin, off by default — otherwise View only; by his D2195 (18 Nov 26), each squadron's own public-holiday list, never shared, and by his D2204 a detachment's own list, which may start as a copy of its squadron's — step 4's holidays by place undone, the Holidays form naming only its own squadron's days, no holiday bell to the other squadron; by his D2196 (18 Nov 26), only a master admin sets the time zone of a place more than one squadron sits on — the place's save refused for anyone else; by his D2197 and D2198 (18 Nov 26), a master admin's menu pick moves every page, each his to edit, his bell his primary squadron's by default; his idea of a master-set access table (per squadron, per role, per page) and of each person choosing his own notifications — answered by chat 108 with a recommendation, his ruling awaited, nothing built; then steps 5–6.**
-- [SCHED-RIGHT-EDGE] — Edit Schedule's days run to the window's right edge under the folded CREW tab, a gap only after the week's last day; the day arrows still step one day; drawn first, built by Fable (D2269), a chat of its own.
-- [FABLE-READ-FAULTS] — fix now, a job of its own from `main` (D2268): OIL F1 first (a SANS posting takes earlier days' OIL), then two saves lost while saying saved, the LATE mark and three smaller.
+- [FABLE-READ-FAULTS] — seven of eight fixed, OIL F2 built (D2294, D2299), walked and re-walked on `claude/fable-read-faults-4104f0` (pull request 820, chats 133–139); his look and "merge live" owed. His answers of 22 Nov 26 (chat 139): D2313 (SANS from its date everywhere — closes (e) and (b)) and D2314 (the publish note's names) BUILT 22 Nov 26 on `claude/sans-from-date-139` (chat 140, pull request 824), the bug check (FULL) and his look owed; D2315 (Leave War F2 waits for the database step), D2316 (the held name kept) as built.
 - [MSQ-MIDNIGHT-CLOCK] — at the Transfer step, a roll-call of every window and page open at a man's midnight swap (band, close with a note, or refresh), and at the database step, which clock decides "today" (each device's own today; a detachment abroad meets it first).
 - [NOTICE-UNDO-RETRACT] — every bell line retracted by the undo of what made it: unread goes, read becomes "… taken back · <who>" (his D1693, 5 Nov 26) — step 1 (the posting line) LIVE 5 Nov 26; step 2 (the input lines, the holiday's OIL line) open, his to place. — the posting line first, on `claude/postout-bell-look`; draw the new words first (D1625).
 - [TOPBAR-BAND-ANCHOR] — on a scrolled desktop page the "Not saved" band covers the page's first 36px (the old build too; not on his iPhone).
@@ -232,7 +231,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [MAIN-CHECKOUT-STALE] — step 2 left: a guide line to bring the main folder level after a merge that touches settings, hooks or skills.
 - [CI-BROWSER-DEPS-DOWNLOAD] — the browser checks run inside Playwright's own image, LIVE 14 Nov 26 (pull request 761); `main`'s runs green since. Left, not built: cover for an outage of that image's store, a font read-out from a bare machine, the image tag written once — with the next checks job.
 - [REPO-TIDY] — the old worktrees cleared 10 Nov 26 (15 removed; five kinds kept on purpose and three folders left on disk, named in the item); left: those three, the 6 Nov night's three build folders after safety checks, and moving the walk pictures out (his call); 10 more copies and 90 GB of old chats' temporary files cleared 22 Nov 26.
-- [HELPER-COPIES-NO-PICTURES] — helpers' and reviewers' working copies to leave out the walk pictures, about 7.6 GB of each copy (his D2290, 22 Nov 26).
+- [LW-E2E-WRITES-EVIDENCE] — the Leave War's browser test re-draws two tracked walk pictures on every run, so they always show as changed (found 22 Nov 26, chat 134).
 - [COMPACT-WHEN-MOD] — two of the compaction set-up's four checks still unseen — they need a chat that reaches 80%.
 - [OVERNIGHT-RETRY-TRIAL] — the next /overnight night tries the keep-retrying setting (D885).
 - [CI-FAIL-PICTURES] — GitHub's browser-test jobs keep no pictures of a failure — his call.
@@ -1703,6 +1702,7 @@ section folds are next touched. (Its first half — the wave show/hide toggle le
   the roles split, what each warning means in practice, the phone gestures.
 
 ### [DB-SYNC-MODEL] How the app shares and locks once it is in the database — his idea, to be designed now, built with the adapter (29 Sep 26)
+**Asked again at this step (his D2316, 22 Nov 26):** whether a sign-off name held while the day's OIL list is open should drop when another scheduler changes the day behind the list — kept as built until then (the OIL page).
 **8 Nov 26 — his D1751 replaces D450:** the day lock is a simple mark — who is editing the day — set when he starts and cleared once saved, held by the app; the database refuses nobody; no row ownership, free team or server check (`raptor-port/docs/data-model.md` §9). The code comments citing D450 for "only the day's holder saves a day" stay true (the app holds it — §9 rule 9); the few saying the database refuses are corrected with the lock's build.
 His idea, stated as "just an idea" (not a ruling yet): *"a refresh to update button for all members. And if a scheduler
 wants to edit a schedule for that particular day they have click edit for that day. This will block any other scheduler
@@ -2095,8 +2095,8 @@ point, a short job; (2) before the go-ahead to IT.
 **(1) DONE 10 Nov 26 (chat 50):** 30 working-copy folders audited (tracked changes, untracked files, whether the commit is in `main` or on GitHub, and which chat in his sidebar uses it); 12 removed under `.claude/worktrees` (old helper copies, `codex-insights-mission-mix`, `hist-jump-empty-seat`, the dropped cloud-walk trial, its branch kept on GitHub), and the three half-unpacked scratch copies of chat `leave-war-m5a-screens-round2` deleted by hand after git refused (each first checked to hold no link). Every branch kept. Three more left git's list but stay on disk: `Raptor-ui4` and `Raptor-ui4b` (a running program still holds a file in each — likely an old preview server; delete them after a restart of his PC) and the scratch copy `main-src` (it holds a link into the app's packages: delete the link first, then the folder). **Kept on purpose, each for him or a later chat:** `agent-a9aa54061d87f01bc` (branch `m5a-e2e-fix`, two Leave War browser-test commits of late October never pushed nor in `main` — push or drop, a chat's call after reading them); `pr-oil-earn-ffbf07` (two re-taken pictures over 27 Oct evidence, uncommitted — likely an accidental overwrite, to discard); `sync-main-handoff-fe9391` (an uncommitted iPhone guide, `docs/img/handpass/2026-10-29-iphone-guide/` and `scripts/handpass/iphone-guide.mjs` — ask him whether he still wants it); Codex's own locked folder; and the eight folders of chats still in his sidebar, all merged (`beautiful-merkle`, `dreamy-maxwell`, `epic-lehmann`, `leave-war-events-design`, `pictures-round`, `pr-day-start`, `rules-diet-followup`, `xenodochial-tesla`) — free once he archives those chats (the app's own "Clean up inactive sessions" then removes them). Left: (2) and (3).
 **Cleared again 22 Nov 26 (the disk-space chat, his C drive at 3 GB free; each removal on his yes):** 10 working copies removed — `Raptor-lw4`, `Raptor-msqn`, `Raptor-n3`, `Raptor-st3`, `Raptor-tj`, `Raptor-vs` (each at a commit already on GitHub, nothing uncommitted; four preview servers of 17 Nov held the first two and were stopped), `leave-war-events-design`, `agent-a9aa54061d87f01bc` (its five `m5a-e2e-fix` commits are in `main` under other ids, matched by their titles), `pr-oil-earn-ffbf07` and `sync-main-handoff-fe9391` — the last two's uncommitted pictures and the iPhone guide script first copied whole to `D:\Raptor-leftovers-2026-11-22` (whether he still wants that guide stays his question); 15 records of copies already gone pruned. The temporary folders of 53 chats idle since 20 Nov or earlier cleared (about 90 GB of reviewer copies and test output). Kept: the running multi-squadron chat's copies, `Raptor-msq` and its helpers, the Microsoft sign-up chat's copy, `raptor-demo` (his briefing deck, D57), `Raptor-ui4`/`ui4b` (190 MB each). Why the copies are so big — about 7.6 GB of each is the walk pictures — is now his D2290, filed as [HELPER-COPIES-NO-PICTURES].
 
-### [HELPER-COPIES-NO-PICTURES] Helpers' and reviewers' working copies leave out the walk pictures — OPEN (his D2290, 22 Nov 26)
-**What:** each working copy a chat makes for a helper or a reviewer (the worktrees under `.claude/worktrees/`, and the reviewers' read-copies in the chat's temporary folder) holds the whole project, and about 7.6 GB of its 8.4 GB is the walk pictures (`raptor-port/docs/img/handpass/`, some 66,000 files on 22 Nov 26). His D2290: those copies leave the pictures out, as GitHub's machines already do (D1091); no picture is deleted. **To do:** find how each kind of copy is made (the app's worktrees, the helpers' `isolation: "worktree"`, the reviewers' read-copies, Codex's), make each leave the pictures folder out (for example a sparse checkout), and give a helper that needs pictures two ways in, as he asked (his question, 22 Nov 26): open one from the main folder, or fetch only the folder its task needs (one walk's pictures, not all of them) — named in the helpers' briefs; a walk's NEW pictures must still save and commit from a helper's copy (a sparse checkout refuses files outside its set unless the walk's own folder is added first — test it); measure a copy before and after. **Read as:** a working-guide change (Astra and a second reader, D1761), live on his "merge live". **Place:** soon — his C drive was down to 3 GB on 22 Nov 26.
+### [LW-E2E-WRITES-EVIDENCE] The Leave War's browser test re-draws tracked walk pictures — OPEN (found 22 Nov 26, chat 134, by the lean copies' reads)
+**What:** `raptor-port/e2e/leavewar.spec.ts` (two picture steps, the D1444 test) saves its pictures over `raptor-port/docs/img/handpass/2026-10-27-lw-m4/d1444/f1-decided-pressed.png` and `f1-decided-settled.png`, which are committed walk evidence — so every run leaves them changed (the main folder shows them changed on 22 Nov 26), and in a lean working copy the commit guard stops the next commit until they are fetched and restored. **To do:** the test writes its pictures to a folder that is not committed (as the other browser tests do), or stops writing them; the two committed pictures stay as they are. **Place:** low — with the next Leave War batch.
 
 ### [GUIDE-MAP-ROWS] The guide's map table: its long rows to the full text too? — OPEN (the guide step, D391, 28 Sep 26)
 **What:** after the guide step the project guide is ~9.5k tokens, not the plan's ~6k. Of what is left, the map table
@@ -2894,15 +2894,96 @@ publishes without a word, D81); **Leave War F2** (LOW, dormant — the war write
 cause, fix and proof: `raptor-port/docs/superpowers/briefs/2026-11-21-msq-fable-never-read.md` §2–4 (the proofs on
 D: under raptor-work, job3, and the copies' test files named there). **How (D2268, D2258):** its own branch from `main`;
 Fable fixes OIL F1, Inputs F1 and F2 (OIL and saved data), Opus the rest; each a failing test first; the bug-check order's
-sizing, walk and reads; his look and "merge live". **Place:** now — a session of its own (started 22 Nov 26 by chat 132:
-branch `claude/fable-read-faults-4104f0`).
+sizing, walk and reads; his look and "merge live". **Place:** now — a session of its own.
+**Status (22 Nov 26, chat 133, branch `claude/fable-read-faults-4104f0`, pull request 820):** all eight re-proved red on
+`main` first. FIXED, red-first: OIL F1 (Fable), Inputs F1 and F2 (Fable), Inputs F3 and F4, Leave War F1; beside them the
+input window's ✕ asks over a "Goes to" / "To" not saved, and the window follows "To" / "Goes to" changed behind it (Astra's
+code read F1). Reads done: Astra and a fresh blind Opus reader (no fault in the fixes). OWED: the walk of the running app,
+the evidence sheet's close (`raptor-port/docs/handpass/2026-11-22-fable-read-faults.md`, laid down), GitHub's run, his look.
+LEFT: **OIL F2** — his choice made, D2294 (the open OIL list at the first sign-off press, before the name is recorded;
+Later asks no more that day; the publish note names the input): to draw for him (D1625), then build; its proof runs as `it.fails`.
+DRAWN 22 Nov 26 (chat 137), round 2 of the same link, waiting for his look: `raptor-port/docs/mock/2026-11-22-oil-unanswered-publish/`
+`index.html` + `draw-f2.mjs` (round 1 kept as `round1.html`); his two questions there — the flow and its two new lines as
+drawn, and ✕ on the list cancelling the sign-off (recommended); the lead line's claim checked in the code
+(`engine/publish.ts currentBindNow` binds the OIL evidence, so an answer after signing drops the four).
+**Leave War F2** — a guard was built and taken out: the war writes for ids on no roster list by design (a deleted man's
+past days, D327) — "names nobody" needs defining first; proof kept as `it.fails`. **Found, not fixed:** (a) a man the
+scheduler adds from the schedule to an input already LATE reads LATE (D741 reading 1) — older than this job; the fix needs
+a mark of its own on his entry (Astra's read F2); (b) Fable's three SANS questions — should a hand SANS tick (on or off)
+keep earlier published days' crowds, should a hand re-tick after a SANS posting keep the posting's date, should a man
+NAMED on a published day before his SANS posting read pending; (c) under Unavailable one LATE tap drops every man's mark
+of that input — as D1586 rules ("saved on the input"), comment corrected, no change; (d) seen while drawing OIL F2
+(22 Nov 26, chat 137), not yet checked as a fault: on an UNPUBLISHED day, "+ Alt Plan", the input's row rejected there,
+then "Switch to this plan" back to the first plan puts the row back on the Ground Programme while the input itself stays
+rejected (`acc` 'r'), so no OIL list opens (`ui/oilputback.ts` reads `acc`); on a published day the switch re-files it;
+(e) found by the walk of 22 Nov 26 (chat 138, walker w1, the host saw the picture
+`raptor-port/docs/img/handpass/2026-11-22-fable-read-faults/w1/s1-08-al-published-desktop.png`): after a man is posted
+out as SANS, the Scheduler Board's crew list shows him under "SANS avail", greyed, on a day BEFORE his posting date too
+(Hex posted out 20 Jul, the board on Sat 18 Jul: WSOs 17 free became 16), while the ALL AVAIL window on that same day
+still counts him as a regular — the crew list reads today's SANS tick, the crowd reads the posting's date (the OIL F1
+fix, `leavewar/sync.ts sansSince`). His D283 makes him SANS "on the date"; whether the crew list of an earlier day
+should follow goes with Fable's three SANS questions in (b), one answer for all four. Nothing saved is wrong: his OIL
+for the earlier day stayed, the day read nothing pending; (f) **FIXED 22 Nov 26 (chat 139)** — reproduced by the host on
+a fresh build with walker w2's route, fixed red-first (`ui/InputWindow.tsx`: the window follows its record wherever it
+stands, the schedule's pop-up too; test `inpwin-unsaved-goes.test.tsx`), re-walked at both sizes; the root — on a PC the
+top bar stays pressable over an input's own window, where D1645 says it is covered — stays filed under
+[VEILED-WINDOWS-BAR] (a visible change, drawn for him first). What it was (walker w2, desktop only): with an input's own
+window open on the Inputs page (opened from the List), the top bar's Undo of a change of where that input goes (Reject,
+then → Unavail on the board; or Rejected → Ground) takes the app to Edit Schedule and turns the window into the
+schedule's pop-up, and (1) its "Goes to" still shows the place the Undo just took back
+(`…/w2/s3-17-*`, `s3-19-*`), and (2) a remark then typed and Saved is lost behind the note "That input is no longer
+there — nothing was saved", though the input is still there (`…/w2/s3-18-*`). The old place is not put back. Whether it
+is older than this job's "the window follows To / Goes to changed behind it" fix is not known. On a phone the top bar
+is covered while the window is up, so the route does not exist there.
+**Chat 140 (22 Nov 26, branch `claude/sans-from-date-139`, pull request 824):** D2313 and D2314 BUILT, each a failing test
+first — (e) and (b) closed: SANS is a dated status, the person keeping the day it starts and each stretch that ended, and
+every reader about a day asking by that day (`engine/people.ts sansOn`; tests `leavewar/sans-from-date.test.ts`); the
+publish note's names (`leavewar/publishdoor.test.ts`). Chat 139's two checks: a man posted out as SANS who earns OIL on a
+published Saturday after his posting, SANS off the Leave War — his credit shows on the OIL tracker, the Balances page lists
+him for the period and his grid cell holds it (`leavewar/sans-postout-oil.test.ts`, green on the first run: nothing to fix);
+the leave-charging rule's pilot check (`leavewar/engine/charge.ts isPilot`) reads the people the war shows — a man posted
+out as SANS keeps his row and seat, so he is read rightly; an ordinary SANS pilot hidden from the war has no figure on any
+screen while hidden, and the charge is worked out afresh on every read, never saved, so once "+ SANS" shows him he is
+read as a pilot — not a fault, nothing filed. **Found, not fixed (chat 140):** (g) readers left on today's SANS tick, each
+to be decided in the bug check's roll-call: the ALL AVAIL window's pucks, the Inputs calendar's opened day (its seat lists
+and pucks), the SANS day's pucks, the SANS highlight chip, and the Leave War's Available rows, which leave a SANS man out
+of the count on every date — a date before his SANS date then counts one fewer (`leavewar/engine/availrows.ts`); who may
+FILE SANS availability stays on today's tick on purpose (a filing asks who he is now). OWED: the bug check (FULL) — its
+sizing, walk, reads and sheet (`raptor-port/docs/handpass/2026-11-22-sans-from-date.md`, not yet laid down) — then his look.
+**(g) as it stands after the roll-call and Astra's scenario design (22 Nov 26, the sheet's §3 and §6):** FIXED in this
+job, each with a test that failed first — the ALL AVAIL window's pucks, the Medical page's "as of" cards, View-only Sched's
+next-week preview of a published day (each man as that version kept him, D186) and a preview already drawn (it now
+follows a tick). STILL OPEN, each on past dates only: the Inputs calendar's opened day (its seat lists and pucks,
+`ui/InputsCal.tsx` 1247–1253, 1420), the SANS day's pucks and the SANS calendar's Highlight list for a man whose SANS has
+ended (`ui/SansDay.tsx`, `ui/sanscal-model.ts sansRoster`), and the Leave War's Available rows
+(`leavewar/engine/availrows.ts` NO_SANS; the roster the war is handed, `leavewar/state/raptorRoster.ts`, carries no SANS
+dates) — after an UNTICK a past day he was SANS on counts him BOTH as a regular available and as committed SANS, so that
+day's "still needed" reads one fewer; the bid warning, Approvals' LOWEST AVAIL and the red-day list follow the same
+count. The fix Astra names: hand the count the stint-aware roster with his SANS dates and leave SANS men out by the date
+counted, the grid's whole-row rule kept (D321, D1692). The SANS highlight chip stays on today's tick, for his word.
+**(h) the pending list can credit a SANS change to the wrong person (Astra's scenario 12, read in the code, not walked):**
+admin A ticks a man SANS on a day that makes a published day read "SANS: no → yes"; a later untick by admin B (which no
+longer removes that difference — D2313) is then the newest SANS line, and the pending line's "who and when" names B
+(`ui/pendlist.ts qualsLine` takes the newest SANS line whatever its direction). Words only. Fix: hand `qualsLine` the
+value the day now reads and take the newest SANS line whose `to` is that value, any line as the fallback; a test through
+the pending list of a published day.
+**From the two blind code reads of 22 Nov 26 (Astra `raptor-port/docs/superpowers/briefs/2026-11-22-sans-from-date-read-astra.md`,
+the fresh Opus reader `…-read-opus.md` — each report holds its failing test), found, not fixed:**
+**(i) ALL AVAIL leaves out a man posted out as SANS who is planned with us (Astra #1; reproduced by its test, then the
+test taken out of the suite — it is older than this job, the same lines stand on `main`):** with "+ SANS" off the war, a
+man posted out as SANS and named on a day's programme is passed by the SANS check and then dropped as "posted out" by the
+war's row (`leavewar/sync.ts availableFor`, the `inSquadron` read), so the crowd a day freezes, and its OIL, lack him;
+with "+ SANS" on he counts (D27). Fix Astra names: read whether he is still ours from the saved posting, not from the
+row the display switch shapes — from a SANS posting's date the posting is not a departure for a man engaged that day;
+keep the post-in, archive, delete and clash checks. OIL: fix with a test first, before the whole-app check.
+**(j) after a hand untick, the SANS days a posting made stay when the posting is undone or moved later (Opus #2):** a
+question for him — a tick touched by hand has been the admin's own since it was built; should the posting's take-back
+still take the days before that untick? Fix if yes: tag the stretch a posting made, drop it in the take-back.
+**(k) the SANS day says "no longer SANS" of a man who is not SANS yet (Opus #3):** `ui/sanscal-model.ts sansDayGroups`;
+new words ("not yet SANS") — drawn for him first (D1625).
+**(l) a member's own-row command may write any SANS start or ended stretch (Opus #4):** the screen writes only today;
+the commit gate (`state/perms.ts`, the own-row check) does not hold `sanFrom` / `sanWas` to today — for the security
+review before the database step (D1411, `[DB-SECURITY-ROLES]`).
+**(g) gains one more reader on today's tick (Astra #3):** the input window's "Several people" picker groups and draws a
+dated input's people by today's tick (`ui/PeoplePick.tsx`) — with the Inputs calendar's opened day.
 
-### [SCHED-RIGHT-EDGE] Edit Schedule's days to the window's right edge under the folded CREW tab (his "draw it", 22 Nov 26; D2269)
-**What:** on a desktop, Edit Schedule keeps a 26px lane at its right for the folded CREW tab and the next-day arrow
-(`raptor-port/src/ui/scheduler/03-week.css` `.edit-board{padding-right:26px…}`, on `main` since at least 3 Oct 26) — he
-saw it as a black border on his PC (picture of 22 Nov 26, 125% display). Recommended and asked for: the days run to the
-window's edge with the tab floating over them; only after the week's last day a 26px gap, so the tab never covers
-Sunday's right edge. **His question, a requirement:** the left and right arrows still step one day at a time, each day
-landing at the left edge as today — written as a test. **How:** drawn first, before and after, at his PC's 125% and on a
-phone (D1625); built by Fable (D2269), walked by Opus (D2256); the bug-check order's sizing; his look; "merge live".
-**Place:** a chat of its own, from `main`.

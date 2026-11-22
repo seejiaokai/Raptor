@@ -1229,7 +1229,7 @@ function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: bool
    bell's row (dropAccountOfPid). */
 const PASS_FIELDS: Record<string, string[]> = {
   overseas: ['archived', 'archivedBy', 'archivedOn'],
-  sans: ['san', 'quals', 'sanQ', 'sanBy'],
+  sans: ['san', 'quals', 'sanQ', 'sanBy', 'sanFrom', 'sanWas'],   // …and the day it counts from (D2313 — engine/people.ts sansStart)
   delete: ['deleted', 'deletedFrom', 'archived', 'archivedBy'],
 }
 const passOutcomeOf = (p: any): string | undefined =>

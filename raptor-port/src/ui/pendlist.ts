@@ -29,6 +29,7 @@ import { dayPendingItems, inputIdOf, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS,
 import type { PendItem } from '../engine/publish'
 import { ELOG, elogWhen, elogWho, keyLabel, rowTouches, weekDates } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
+import { dayIso } from '../engine/verid'
 import { oilEvidence, oilKeptVals, oilRuleShift } from '../engine/oilev'
 import { oilRuleValsNow } from '../engine/oil'
 import { RULE_SPEC, ruleFmt } from '../engine/rules'
@@ -346,7 +347,7 @@ function faceWords(di: number): Words & { rows?: CrowdRow[] } {
   gone.forEach((x: any) => rows.push({ where: named(x, reword(x.msg || x.code || 'A warning')), from: '', to: 'cleared', keys: [] }))
   /* the men as their pucks draw them */
   if (snap && snap.pa) {
-    const nowPa: any = peopleAttrsNow(snap.pa)
+    const nowPa: any = peopleAttrsNow(snap.pa, dayIso(String(CURWEEK), +di))
     Object.keys(snap.pa).forEach((id: any) => {
       const o = snap.pa[id], n = nowPa[id]; if (!o) return
       /* a man deleted from the roster outright: his puck has nothing left to draw */

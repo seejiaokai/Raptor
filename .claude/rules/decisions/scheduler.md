@@ -11,6 +11,7 @@ paths:
   # the browser tests, one by one (D1973): the Leave War's own (*leavewar*) no longer load this page; the document
   # check fails a test that loads neither this page nor the Leave War's — add a new test here or name it *leavewar*
   - raptor-port/e2e/amendbatch.spec.ts
+  - raptor-port/e2e/sched-right-edge.spec.ts
   - raptor-port/e2e/app.ts
   - raptor-port/e2e/availwin.spec.ts
   - raptor-port/e2e/blankabsence.spec.ts
@@ -85,6 +86,8 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - The app says "OIL earned", never "pays": "it must be published again before OIL can be earned" [D2000].
 
 ## The week on Edit Schedule
+- On a desktop, with the crew panel folded, Edit Schedule's days run to the window's right edge, the CREW tab and the next-day arrow sitting over them — no empty lane; the strip's far end keeps a gap so the tab never covers the last column; with the panel open the tab keeps its lane beside it; the day arrows still step one day, each landing where it did [D2293].
+- On a desktop, a day the app brings to the front — a schedule page opened from the other, a date picked, an Undo, a warning pressed, "take me to this change" — rests where a day arrow lands one, 20px in from the window's left edge, clear of the left arrow, never hard against the edge: one place however it got there; a phone is unchanged [D2295]. A schedule page opened from the other opens straight on the carried day, both directions, never sliding across from Monday [D2296].
 - Cross-week dragging is not built and the work is not filed: on Edit Schedule a carried man stops at Monday and Sunday and is never carried into another week [D1573, D1529].
 - The desktop week's ‹ › arrows stay see-through, never solid — an exception to D1518, because they cover the day's information at times — and are a slim tab, 14 wide and 70 tall, flush on the window's edge, that slides out to the full arrow when the pointer comes near and back when it leaves, see-through at rest and still slightly see-through when open; slid out it looks as the old arrow did at rest — the same frosted glass at the same see-through level, grey edge and grey arrow, never lit blue nor more solid [D1522, D1526, D1527].
 - Faster keyboard entry of times and notes keeps the existing Enter and Escape meanings; the Tab route covers Edit Schedule's week and the Scheduler Board, view-only and issued read-only surfaces staying outside it [D544, D550].
@@ -253,7 +256,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - A placeholder (ALL / ALL AVAIL) may stand on a row twice — "one man, once per row" is about men; an input takes ALL or ALL AVAIL, never both [D278, D753, D755, D776].
 - In OIL Earn mode his own puck that earns nothing keeps its purple "this is you" ring, faded with the puck [D277].
 - One man in both seats of one jet stays a warning (the red "two events at once"), not a refusal — "once per row" covers rows of people's places, not a flying line's two seats [D276].
-- The desktop week keeps no room beside the ‹ arrow: the front day sits flush at the left, the arrow floating over its first few pixels — not re-added without his ask [D275].
+- The desktop week keeps no room beside the ‹ arrow beyond the strip's own 20px margin — none is re-added without his ask; a day brought to the front, by an arrow or any other way, rests that margin in [D275, D2295].
 - The four sign-offs stay as they are: an admin picks all four names, whoever is signed in — convenience wins [D212].
 - Keep it: when a leave or downchit is stretched or trimmed, every published day it still covers reads "1 pending" and its four sign-offs fall, because the "till <date>" note it printed is out of date; View-only Sched keeps the old words until the next AL [D189].
 - Keep it: a man's CAT, seat or posting on his puck and a blank line's suggested brief time stay as published until the next AL, a change to either reading pending and taking the four down; a callsign rename updates the published schedule at once (a label); the published brief lead is kept with the day, as every setting its checks read is since D2005, "no rule versioning" set aside (D2005; the guide corrected by D2024); a published day's crew rest is measured to that printed brief, its other checks by the settings it was published under, as built [D186, D1991, D2005, D2014, D2044, D2024].

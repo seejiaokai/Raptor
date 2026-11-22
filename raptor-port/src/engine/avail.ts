@@ -1,7 +1,7 @@
 import { DAYS } from './data'
 import { rosterShown } from './faceattrs'
 import { DATES, inputAtIso, goesOnProg, inputLinesOn, inputReadPass, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inpLabel, shiftHardInput } from './inputs'
-import { PEOPLE, isSpecial, whoId, aarNeed, aarOK, scShiftKind, scQualOK } from './people'
+import { PEOPLE, isSpecial, whoId, aarNeed, aarOK, scShiftKind, scQualOK, sansOnP } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
 import { isStandalone, scSpare, saExempt, saExemptKind, saFlies, saDeskFlies, CURWEEK } from './waves'
@@ -343,8 +343,10 @@ export function slotRules(key:any){
    half / s / e fields), so `off` is that same window whichever event asked. */
 const SANS_KEY:any={fly:'f',oft:'o',amt:'a'};
 export const SANS_LABEL:any={fly:'Fly',oft:'OFT',amt:'AMT'};
-export function sansGate(id:any,dt:any,domain:any,s:any,e:any):any{
-  const p=PEOPLE[id]; if(!p||!p.san)return {status:'na'};
+/* `iso`: the day being asked about — only a man who is SANS ON THAT DAY is judged (owner D2313, 22 Nov 26: a day before
+   his SANS date is a regular's day, and no SANS availability is asked of it — engine/people.ts sansOn). */
+export function sansGate(id:any,dt:any,domain:any,s:any,e:any,iso?:any):any{
+  const p=PEOPLE[id]; if(!p||!sansOnP(p,iso))return {status:'na'};
   const rec=sansAvailOn(id,dt); if(!rec)return {status:'none'};
   if(!(rec.sans&&rec.sans[SANS_KEY[domain]]))return {status:'not-offered'};
   /* an ALL-DAY offer covers every slot on the day, INCLUDING one whose window
@@ -609,11 +611,11 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
      SANS_AVAIL against them — greying them on the picker would be the picker
      saying what the warning list will not, the drift-seam this gate must avoid. */
   const domain=r.sim?r.simKind:(String(key).indexOf(':')<0?'fly':null);
-  if(domain&&p.san&&r.di>=0&&DAYS[r.di]&&r.slotStart!=null&&r.slotEnd!=null&&!spareLike0(r)){
+  if(domain&&r.di>=0&&DAYS[r.di]&&sansOnP(p,dayIso(String(CURWEEK),r.di))&&r.slotStart!=null&&r.slotEnd!=null&&!spareLike0(r)){
     /* a flying seat is judged from its IN-TIME front edge (sansStart, set in
        slotRules' flying branch); a sim key sets no sansStart and falls back
        to the box's own start — a sim window is read AS FILED, unchanged */
-    const g=sansGate(id,DAYS[r.di].dt,domain,r.sansStart!=null?r.sansStart:r.slotStart,r.slotEnd);
+    const g=sansGate(id,DAYS[r.di].dt,domain,r.sansStart!=null?r.sansStart:r.slotStart,r.slotEnd,dayIso(String(CURWEEK),r.di));
     if(g.status==='none')return 'SANS — no availability filed for today';
     if(g.status==='not-offered')return `SANS — not offering ${SANS_LABEL[domain]}`;
     if(g.status==='window')return `SANS — available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;

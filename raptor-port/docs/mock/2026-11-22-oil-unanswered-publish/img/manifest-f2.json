@@ -1,0 +1,258 @@
+{
+  "drawn": "2026-11-22T02:01:59.878Z",
+  "url": "http://localhost:4187/",
+  "words": {
+    "lead": "Answer before Ace signs CUR CK.",
+    "foot": "Later: nobody on it earns OIL.",
+    "note_tail": "Ranger's Training has no OIL answer, so nobody on it earns OIL."
+  },
+  "frames": [
+    {
+      "name": "f2-t1-sign",
+      "size": "desktop",
+      "file": "f2-t1-sign-desktop.png",
+      "clip": {
+        "x": 0,
+        "y": 98,
+        "width": 1232,
+        "height": 152
+      }
+    },
+    {
+      "name": "f2-t2-signed",
+      "size": "desktop",
+      "file": "f2-t2-signed-desktop.png",
+      "clip": {
+        "x": 0,
+        "y": 98,
+        "width": 1232,
+        "height": 152
+      }
+    },
+    {
+      "name": "f2-p1-screen",
+      "size": "desktop",
+      "file": "f2-p1-screen-desktop.png",
+      "clip": "viewport"
+    },
+    {
+      "name": "f2-p1-list",
+      "size": "desktop",
+      "file": "f2-p1-list-desktop.png",
+      "clip": {
+        "x": 1072,
+        "y": 106,
+        "width": 456,
+        "height": 259.75
+      }
+    },
+    {
+      "name": "f2-p3-signed-later",
+      "size": "desktop",
+      "file": "f2-p3-signed-later-desktop.png",
+      "clip": {
+        "x": 0,
+        "y": 98,
+        "width": 1232,
+        "height": 152
+      }
+    },
+    {
+      "name": "f2-p3-note",
+      "size": "desktop",
+      "file": "f2-p3-note-desktop.png",
+      "clip": {
+        "x": 455.921875,
+        "y": 798,
+        "width": 624.15625,
+        "height": 58
+      }
+    },
+    {
+      "name": "f2-p2-signed-save",
+      "size": "desktop",
+      "file": "f2-p2-signed-save-desktop.png",
+      "clip": {
+        "x": 0,
+        "y": 98,
+        "width": 1232,
+        "height": 152
+      }
+    },
+    {
+      "name": "f2-w-screen",
+      "size": "desktop",
+      "file": "f2-w-screen-desktop.png",
+      "clip": "viewport"
+    },
+    {
+      "name": "f2-t1-sign",
+      "size": "phone",
+      "file": "f2-t1-sign-phone.png",
+      "clip": {
+        "x": 0,
+        "y": 67,
+        "width": 402,
+        "height": 189
+      }
+    },
+    {
+      "name": "f2-t2-signed",
+      "size": "phone",
+      "file": "f2-t2-signed-phone.png",
+      "clip": {
+        "x": 0,
+        "y": 67,
+        "width": 402,
+        "height": 211
+      }
+    },
+    {
+      "name": "f2-p1-screen",
+      "size": "phone",
+      "file": "f2-p1-screen-phone.png",
+      "clip": "viewport"
+    },
+    {
+      "name": "f2-p1-list",
+      "size": "phone",
+      "file": "f2-p1-list-phone.png",
+      "clip": {
+        "x": 4,
+        "y": 302.4375,
+        "width": 394,
+        "height": 269.125
+      }
+    },
+    {
+      "name": "f2-p3-signed-later",
+      "size": "phone",
+      "file": "f2-p3-signed-later-phone.png",
+      "clip": {
+        "x": 0,
+        "y": 67,
+        "width": 402,
+        "height": 211
+      }
+    },
+    {
+      "name": "f2-p3-note",
+      "size": "phone",
+      "file": "f2-p3-note-phone.png",
+      "clip": {
+        "x": 2,
+        "y": 789.2467041015625,
+        "width": 398,
+        "height": 70
+      }
+    },
+    {
+      "name": "f2-p2-signed-save",
+      "size": "phone",
+      "file": "f2-p2-signed-save-phone.png",
+      "clip": {
+        "x": 0,
+        "y": 67,
+        "width": 402,
+        "height": 211
+      }
+    }
+  ],
+  "checks": {
+    "desktop-premise": {
+      "dow": "Saturday",
+      "training": true,
+      "ranger": true,
+      "missing": [
+        "CUR CK",
+        "SKED CK",
+        "PLANNED BY",
+        "APPROVED BY"
+      ],
+      "open": null
+    },
+    "desktop-todayAfterPick": {
+      "missing": [
+        "SKED CK",
+        "PLANNED BY",
+        "APPROVED BY"
+      ],
+      "approved": false,
+      "oil": null,
+      "list": false,
+      "sign": "CUR CK=Ace | SKED CK=— name — | PLANNED BY=— name — | APPROVED BY=— name — · 3 to sign · SKED CK, PLANNED BY, APPROVED BY"
+    },
+    "desktop-listAsOpened": "⠿\nOIL — Sat 18 Jul\n✕\n1 TO ANSWER\nYes to all\nNo to all\n08:00–17:00\nRangerTRAINING\nYes · FO\nNo\nLater\nSave",
+    "desktop-afterLater": {
+      "missing": [],
+      "approved": false,
+      "oil": null,
+      "list": false,
+      "sign": "CUR CK=Ace | SKED CK=Anvil | PLANNED BY=Basher | APPROVED BY=Bolt · Signed — this day can be published"
+    },
+    "desktop-publishNoteToday": "Saturday published and approved",
+    "desktop-afterSave": {
+      "missing": [
+        "SKED CK",
+        "PLANNED BY",
+        "APPROVED BY"
+      ],
+      "approved": false,
+      "oil": {
+        "2026-07-18": 1
+      },
+      "list": false,
+      "sign": "CUR CK=Ace | SKED CK=— name — | PLANNED BY=— name — | APPROVED BY=— name — · 3 to sign · SKED CK, PLANNED BY, APPROVED BY"
+    },
+    "desktop-week": {
+      "page": "editsched",
+      "list": true,
+      "bar": true
+    },
+    "phone-premise": {
+      "dow": "Saturday",
+      "training": true,
+      "ranger": true,
+      "missing": [
+        "CUR CK",
+        "SKED CK",
+        "PLANNED BY",
+        "APPROVED BY"
+      ],
+      "open": null
+    },
+    "phone-todayAfterPick": {
+      "missing": [
+        "SKED CK",
+        "PLANNED BY",
+        "APPROVED BY"
+      ],
+      "approved": false,
+      "oil": null,
+      "list": false,
+      "sign": "CUR CK=Ace | SKED CK=— name — | PLANNED BY=— name — | APPROVED BY=— name — · 3 to sign · SKED CK, PLANNED BY, APPROVED BY"
+    },
+    "phone-listAsOpened": "⠿\nOIL — Sat 18 Jul\n✕\n1 TO ANSWER\nYes to all\nNo to all\n08:00–17:00\nRangerTRAINING\nYes · FO\nNo\nLater\nSave",
+    "phone-afterLater": {
+      "missing": [],
+      "approved": false,
+      "oil": null,
+      "list": false,
+      "sign": "CUR CK=Ace | SKED CK=Anvil | PLANNED BY=Basher | APPROVED BY=Bolt · Signed — this day can be published"
+    },
+    "phone-publishNoteToday": "Saturday published and approved",
+    "phone-afterSave": {
+      "missing": [
+        "SKED CK",
+        "PLANNED BY",
+        "APPROVED BY"
+      ],
+      "approved": false,
+      "oil": {
+        "2026-07-18": 1
+      },
+      "list": false,
+      "sign": "CUR CK=Ace | SKED CK=— name — | PLANNED BY=— name — | APPROVED BY=— name — · 3 to sign · SKED CK, PLANNED BY, APPROVED BY"
+    }
+  }
+}

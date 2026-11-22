@@ -1,0 +1,166 @@
+{
+ "R": [
+  {
+   "sc": "F2-e",
+   "size": "desktop",
+   "step": "1 two listed, foot says \"them\"",
+   "pass": true,
+   "note": "{\"count\":\"2 to answer\",\"foot\":\"Later: Ace signs, but nobody on them earns OIL.\"}"
+  },
+  {
+   "sc": "F2-e",
+   "size": "desktop",
+   "step": "2 one answered, Save: name signed",
+   "pass": true,
+   "note": "{\"sg\":{\"cur\":\"dj\",\"sked\":\"\",\"plan\":\"\",\"appr\":\"\"},\"toast\":\"OIL answered for 1 input\"}"
+  },
+  {
+   "sc": "F2-e",
+   "size": "desktop",
+   "step": "3 next box asks for the one left",
+   "pass": true,
+   "note": "{\"count\":\"1 to answer\",\"rows\":[\"odl-yes-w3-t2\"],\"foot\":\"Later: Anvil signs, but nobody on it earns OIL.\"}"
+  },
+  {
+   "sc": "F2-e",
+   "size": "desktop",
+   "step": "4 plan signs at once",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "sc": "F2-e",
+   "size": "desktop",
+   "step": "4 appr signs at once",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "sc": "F2-e",
+   "size": "desktop",
+   "step": "5 publish note names only the one left",
+   "pass": true,
+   "note": "{\"text\":\"Saturday 18 Jul published and approved. Saber’s Training has no OIL answer, so nobody on it earns OIL.\",\"cls\":\"\",\"op\":\"1\",\"color\":\"rgb(229, 168, 59)\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "desktop",
+   "step": "1 History opened behind: list and hold stay",
+   "pass": true,
+   "note": "{\"held\":true,\"name\":\"Ace\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "desktop",
+   "step": "NOT WALKED",
+   "pass": null,
+   "note": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#sbPrevDay').first()\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"sbPrevDay\" title=\"Previous day\" class=\"abtn sb-arrow\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible"
+  },
+  {
+   "sc": "F2-g",
+   "size": "desktop",
+   "step": "1 published with Later",
+   "pass": true,
+   "note": "\"Saturday 18 Jul published and approved. Ranger’s Training has no OIL answer, so nobody on it earns OIL.\""
+  },
+  {
+   "sc": "F2-g",
+   "size": "desktop",
+   "step": "2 second input: day pending, sign-offs fall",
+   "pass": true,
+   "note": "[\"CUR CK\",\"SKED CK\",\"PLANNED BY\",\"APPROVED BY\"]"
+  },
+  {
+   "sc": "F2-g",
+   "size": "desktop",
+   "step": "3 first press asks once more",
+   "pass": true,
+   "note": "{\"count\":\"2 to answer\",\"rows\":[\"odl-yes-w3-t1\",\"odl-yes-w3-t2\"],\"foot\":\"Later: Ace signs, but nobody on them earns OIL.\"}"
+  },
+  {
+   "sc": "F2-g",
+   "size": "desktop",
+   "step": "4 sked signs at once",
+   "pass": true,
+   "note": "shaft"
+  },
+  {
+   "sc": "F2-g",
+   "size": "desktop",
+   "step": "4 plan signs at once",
+   "pass": true,
+   "note": "glass"
+  },
+  {
+   "sc": "F2-g",
+   "size": "desktop",
+   "step": "4 appr signs at once",
+   "pass": true,
+   "note": "yeti"
+  },
+  {
+   "sc": "F2-g",
+   "size": "desktop",
+   "step": "NOT WALKED",
+   "pass": null,
+   "note": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#schedBoard [data-beak=\"5\"]').first()\u001b[22m\n"
+  },
+  {
+   "sc": "F2-h",
+   "size": "desktop",
+   "step": "0 a weekday Training filed, not asked",
+   "pass": true,
+   "note": "{\"asked\":false,\"iid\":\"imwr9ijva4q2f1u\"}"
+  },
+  {
+   "sc": "F2-h",
+   "size": "desktop",
+   "step": "1 holiday saved: list opens by itself, no held box",
+   "pass": true,
+   "note": "{\"held\":false,\"label\":null,\"name\":null,\"border\":null,\"after\":null,\"beside\":null,\"foot\":\"What is left goes to the schedulers’ bells\",\"count\":\"2 to answer\",\"sub\":\"Public holiday · National Day\",\"title\":\"OIL — Fri 17 JulPublic holiday · National Day\"}"
+  },
+  {
+   "sc": "F2-h",
+   "size": "desktop",
+   "step": "2 the bell's line opens the list, no held box",
+   "pass": true,
+   "note": "{\"held\":false,\"label\":null,\"name\":null,\"border\":null,\"after\":null,\"beside\":null,\"foot\":\"What is left goes to the schedulers’ bells\",\"count\":\"2 to answer\",\"sub\":\"Public holiday · National Day\",\"title\":\"OIL — Fri 17 JulPublic holiday · National Day\"}"
+  },
+  {
+   "sc": "F2-h",
+   "size": "desktop",
+   "step": "3 sign-off on the holiday asks, subtitle names the holiday",
+   "pass": true,
+   "note": "{\"held\":true,\"label\":\"CUR CK\",\"name\":\"Ace\",\"border\":\"dotted\",\"after\":\"none\",\"beside\":\"waiting for your answer\",\"foot\":\"Later: Ace signs, but nobody on them earns OIL.\",\"count\":\"2 to answer\",\"sub\":\"Public holiday · National Day\",\"title\":\"OIL — Fri 17 JulPublic holiday · National Day\"}"
+  },
+  {
+   "sc": "F2-h",
+   "size": "desktop",
+   "step": "4 Save: answered and signed",
+   "pass": true,
+   "note": "{\"cur\":\"dj\",\"oil\":\"{\\\"2026-07-17\\\":1}\"}"
+  },
+  {
+   "sc": "F2-h",
+   "size": "desktop",
+   "step": "5 Undo: name first, then the answers; Redo back",
+   "pass": true,
+   "note": "[{\"btn\":\"#sbUndo\",\"cur\":\"\",\"oil\":\"{\\\"2026-07-17\\\":1}\",\"toast\":\"Undid: a sign-off\",\"listUp\":false},{\"btn\":\"#sbUndo\",\"cur\":\"\",\"oil\":\"{}\",\"toast\":\"Undid: an OIL answer\",\"listUp\":false},{\"btn\":\"#sbRedo\",\"cur\":\"\",\"oil\":\"{\\\"2026-07-17\\\":1}\",\"toast\":\"Redid: an OIL answer\",\"listUp\":false},{\"btn\":\"#sbRedo\",\"cur\":\"dj\",\"oil\":\"{\\\"2026-07-17\\\":1}\",\"toast\":\"Redid: a sign-off\",\"listUp\":false}]"
+  },
+  {
+   "sc": "F2-i",
+   "size": "desktop",
+   "step": "1 list below the board's bar; Done and bell pressable",
+   "pass": true,
+   "note": "{\"win\":{\"top\":114,\"bottom\":350.5,\"left\":1080,\"right\":1520,\"h\":236.5},\"barBottom\":106,\"ih\":864,\"iw\":1536,\"vv\":{\"h\":864,\"top\":0},\"done\":true,\"bell\":true,\"later\":{\"top\":309.5,\"bottom\":337.5},\"save\":{\"top\":309.5,\"bottom\":337.5}}"
+  },
+  {
+   "sc": "F2-i",
+   "size": "desktop",
+   "step": "2 desktop: Save/Later in sight",
+   "pass": true,
+   "note": ""
+  }
+ ],
+ "errs": []
+}

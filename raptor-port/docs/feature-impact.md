@@ -600,7 +600,7 @@ selection — `leavewar/ui/OutcomeChips.tsx`): a date and WHICH posting it is. T
 (`sync.ts runPoOutcomes` — boot, every Raptor notify, every Leave War notify; the CALENDAR date) runs the outcome ONCE in
 ONE projection command (`lw.postoutRun`) over the people, settings and war stores (and the schedule and the week stash
 for a delete): Overseas Sqn → `PEOPLE[id].archived` (`archivedBy: 'po'`) + his account suspended (`offBy: 'po'`,
-`state/accounts.ts suspendForPosting`); SANS → `san` ticked (`sanBy: 'po'`); Delete → Flow I below; then `poDone`. The
+`state/accounts.ts suspendForPosting`); SANS → `san` ticked (`sanBy: 'po'`) from the posting's own date (`sanFrom` — D2313: every reader about a day asks `engine/people.ts sansOn`); Delete → Flow I below; then `poDone`. The
 pass can be woken while another command is delivering — its command then QUEUES, and a queued pass is never re-queued
 (`PO_INFLIGHT`; the endless loop the tests found, 27 Sep 26). What reads the result, and must repaint: the Quals roster, every crew list and picker (an archived man is on none), Admin → Users (his row moves to the
 Archived group; his Sign-in dot turns red),
@@ -1116,9 +1116,12 @@ truth: a flying spare would be standing by on one screen and flying on another. 
   — and all of them go through `engine/keys.ts seatRow`. Two private trims had drifted: the programme one cut the
   row's own number off an event's key (a man moved inside his own crowd was "already on" it), the validator's raw
   compare never matched a crowd seat or an extra with its row. A new "exclude this place" question uses `seatRow`.
-- **The week's front edge is the week box's own left edge** (D275, 27 Sep 26). Every landing that puts a day "at the
-  front" — `pan.ts panDays`, `state/view.ts scrollWeekToDay` / `weekLeftDay`, `ui/highlights.ts bringIntoView` — measures
-  from it, and the ‹ arrow floats over the first few pixels by his choice. A room beside the arrows was built and taken out
+- **The week's front is ONE place: on a desktop the strip's own left margin in from the week box's left edge, on a phone
+  the edge itself** (D275, 27 Sep 26; D2295, 22 Nov 26 — until then only the arrows landed a day the margin in, and a page
+  switch, a date pick, an Undo and the warning and change jumps parked it on the edge, 20px off). Every landing that puts
+  a day "at the front" — `pan.ts panDays`, `state/view.ts scrollWeekToDay` / `weekLeftDay`, `ui/highlights.ts bringIntoView`
+  and `bringDayIntoView` — reads it from `state/view.ts weekFrontInset` (the arrows by whole days from the strip's start,
+  which is the same place); no room is added beside the ‹ arrow. A room beside the arrows was built and taken out
   before merging (`[ARROW-ROOM-OUT]`); if he ever asks for one, every landing must read ONE declared number, as that build
   did — its roll-call of the landings is the five-flags evidence sheet §3d.
 

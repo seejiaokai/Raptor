@@ -1,0 +1,192 @@
+<title>SANS readings 2 to 4</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column; each reading is a short story (numbered steps, because the order is the point) followed by
+   its pictures in a row that wraps to one column on a phone. The rose of the ring drawn on every picture is the accent. */
+:root {
+  --bg: #f4f6fa; --panel: #ffffff; --ink: #141a26; --soft: #4d586b; --line: #d5dbe6;
+  --mark: #c8153f; --mark-soft: #fde8ee; --sans: #7a3fd0; --shot: #0e1219;
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --head: "Space Grotesk", "Inter", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d1118; --panel: #151b26; --ink: #e8ecf3; --soft: #9aa6b8; --line: #283142;
+  --mark: #ff5c82; --mark-soft: #33131c; --sans: #b88cff; --shot: #05070b; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0d1118; --panel: #151b26; --ink: #e8ecf3; --soft: #9aa6b8; --line: #283142;
+  --mark: #ff5c82; --mark-soft: #33131c; --sans: #b88cff; --shot: #05070b; color-scheme: dark }
+
+body { background: var(--bg); color: var(--ink); font: 16px/1.55 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 56px }
+.wrap { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px }
+h1, h2, h3 { font-family: var(--head); text-wrap: balance; margin: 0; line-height: 1.2 }
+h1 { font-size: 30px }
+h2 { font-size: 23px }
+h3 { font-size: 17px }
+p { margin: 0; max-width: 68ch }
+.lead { color: var(--soft) }
+.now { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--mark); border-radius: 10px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px }
+.now ol { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 10px }
+.now a { color: var(--mark); font-weight: 600 }
+.rec { color: var(--soft) }
+.key { display: flex; flex-direction: column; gap: 6px; color: var(--soft); font-size: 15px }
+.key b { color: var(--ink) }
+.pl { color: var(--sans); font-weight: 600 }
+section { display: flex; flex-direction: column; gap: 16px; border-top: 1px solid var(--line); padding-top: 26px }
+.steps { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; max-width: 68ch }
+.shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; align-items: start }
+.shots.wide { grid-template-columns: 1fr }
+.shots.two { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) }
+figure { margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0 }
+figure button { all: unset; cursor: zoom-in; display: block; background: var(--shot); border: 1px solid var(--line); border-radius: 8px; overflow: hidden }
+figure button:focus-visible { outline: 3px solid var(--mark); outline-offset: 2px }
+figure img { display: block; width: 100%; height: auto }
+.tall img { max-height: 520px; object-fit: contain; object-position: top right }
+figcaption { font-size: 14.5px; color: var(--soft) }
+figcaption b { color: var(--ink) }
+.why { background: var(--mark-soft); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px }
+.why p { max-width: 72ch }
+.sub { display: flex; flex-direction: column; gap: 12px; padding-top: 6px }
+#zoom { position: fixed; inset: 0; background: rgba(4, 6, 10, .92); z-index: 50; overflow: auto; cursor: zoom-out;
+  padding: max(12px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)) }
+#zoom img { display: block; margin: 0 auto; max-width: none }
+#zoom.fit img { max-width: 100% }
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:10px">
+    <h1>SANS readings 2 to 4</h1>
+    <p class="lead">Three choices I made while building “SANS from its date”. Each one is shown on the real app with one man: <b>Hex</b>, a WSO posted out as SANS from <b>Wed 15 Jul</b>. The red ring marks where to look. Tap a picture to enlarge it.</p>
+  </header>
+
+  <div class="now">
+    <h3>What I need from you</h3>
+    <ol start="2">
+      <li><a href="#r2">Tick taken off, then put back.</a> The days in between stay ordinary days. <span class="rec">I recommend keeping it.</span></li>
+      <li><a href="#r3">How his SANS ends.</a> “Undo post out” wipes the posting’s SANS days. Taking the tick off, or archiving him, keeps them. <span class="rec">I recommend keeping it.</span></li>
+      <li><a href="#r4">Two places that go by today.</a> The SANS highlight chip, and who can be given SANS availability, go by who is SANS today, not by the day you are looking at. <span class="rec">I recommend keeping it.</span></li>
+    </ol>
+    <p>If all three are right, say <b>merge live</b>. If you want one the other way, tell me which and I change it first.</p>
+  </div>
+
+  <div class="key">
+    <p><b>Reading the crew list.</b> An ordinary WSO stands in the WSOS column. A SANS man stands under <span class="pl">SANS AVAIL</span> at the foot, with a <span class="pl">purple line</span> at the right end of his puck.</p>
+    <p>Hex’s name is struck through under SANS AVAIL only because he has filed no SANS availability for that day.</p>
+  </div>
+
+  <section id="r2">
+    <h2>2. Tick taken off, then put back</h2>
+    <ol class="steps">
+      <li><b>Wed 15 Jul.</b> His posting’s date arrives. The app ticks SANS for him.</li>
+      <li><b>Thu 16 Jul.</b> An admin clicks Hex’s SANS box on the Quals page. The tick comes off.</li>
+      <li><b>Fri 17 Jul.</b> The admin clicks the box again. The tick is back.</li>
+    </ol>
+    <div class="shots wide">
+      <figure><button type="button"><img src="img/r2-1-quals-untick-thu.png" alt="The Quals page on Thu 16 Jul, Hex’s SANS box ringed and empty"></button><figcaption><b>Thu 16 Jul, the Quals page.</b> Hex’s SANS box after the admin’s click: empty.</figcaption></figure>
+      <figure><button type="button"><img src="img/r2-2-quals-tick-fri.png" alt="The Quals page on Fri 17 Jul, Hex’s SANS box ringed and ticked"></button><figcaption><b>Fri 17 Jul, the Quals page.</b> The same box after the second click: ticked.</figcaption></figure>
+    </div>
+    <p>What the board’s crew list shows for each of the three days afterwards:</p>
+    <div class="shots tall">
+      <figure><button type="button"><img src="img/r2-3-crew-wed.png" alt="Wed 15 Jul crew list: Hex under SANS AVAIL"></button><figcaption><b>Wed 15 Jul: SANS.</b> Under SANS AVAIL, with the purple line.</figcaption></figure>
+      <figure><button type="button"><img src="img/r2-4-crew-thu.png" alt="Thu 16 Jul crew list: Hex in the WSOS column"></button><figcaption><b>Thu 16 Jul: an ordinary WSO.</b> In the WSOS column, no purple line. He is greyed because he is flying that day.</figcaption></figure>
+      <figure><button type="button"><img src="img/r2-5-crew-fri.png" alt="Fri 17 Jul crew list: Hex under SANS AVAIL"></button><figcaption><b>Fri 17 Jul: SANS again.</b> Back under SANS AVAIL.</figcaption></figure>
+    </div>
+    <div class="why">
+      <p><b>Why I chose this.</b> A schedule published for Thu 16 Jul while the tick was off shows Hex as an ordinary WSO. If ticking him again on Friday reached back to Wed 15 Jul, that published Thursday would change behind you and read “1 pending”.</p>
+      <p><b>The other way.</b> Ticking him again makes him SANS straight through from Wed 15 Jul, with no gap. Thursday would then show him as SANS, and a Thursday already published would need publishing again.</p>
+    </div>
+  </section>
+
+  <section id="r3">
+    <h2>3. How his SANS ends</h2>
+    <p>There are three ways a posted-out man stops being SANS. They differ in what happens to <b>Wed 15 Jul</b>, the day he was SANS.</p>
+
+    <div class="sub">
+      <h3>“Undo post out”: the SANS days are wiped</h3>
+      <p>On Thu 16 Jul an admin opens Hex’s posting on the Leave War and presses “Undo post out (PO)”. Wed 15 Jul goes back to an ordinary day for him, as if the posting was never made.</p>
+      <div class="shots wide">
+        <figure><button type="button"><img src="img/r3a-2-undo-button.png" alt="The posting’s sheet on the Leave War with Undo post out ringed"></button><figcaption><b>The Leave War, Hex’s posting.</b> The button the admin presses.</figcaption></figure>
+      </div>
+      <div class="shots tall two">
+        <figure><button type="button"><img src="img/r3a-1-crew-wed-before.png" alt="Wed 15 Jul crew list before the undo: Hex under SANS AVAIL"></button><figcaption><b>Wed 15 Jul, before.</b> SANS.</figcaption></figure>
+        <figure><button type="button"><img src="img/r3a-3-crew-wed-after.png" alt="Wed 15 Jul crew list after the undo: Hex in the WSOS column"></button><figcaption><b>Wed 15 Jul, after “Undo post out”.</b> An ordinary WSO.</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="sub">
+      <h3>An admin takes the tick off on Quals: the SANS days are kept</h3>
+      <p>On Thu 16 Jul an admin clicks Hex’s SANS box on Quals, as in reading 2. Wed 15 Jul stays a SANS day. He is an ordinary WSO from Thu 16 Jul.</p>
+      <div class="shots tall two">
+        <figure><button type="button"><img src="img/r3b-crew-wed-after-untick.png" alt="Wed 15 Jul crew list after the tick came off: Hex still under SANS AVAIL"></button><figcaption><b>Wed 15 Jul.</b> Still SANS.</figcaption></figure>
+        <figure><button type="button"><img src="img/r3b-crew-thu-after-untick.png" alt="Thu 16 Jul crew list after the tick came off: Hex in the WSOS column"></button><figcaption><b>Thu 16 Jul.</b> An ordinary WSO.</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="sub">
+      <h3>An admin archives him: the SANS days are kept</h3>
+      <p>On Thu 16 Jul an admin archives Hex on Admin → Users. An archived man leaves the crew list on every day, so these pictures show his seat in the flying wave instead.</p>
+      <div class="shots two">
+        <figure><button type="button"><img src="img/r3c-1-archive-button.png" alt="Admin, Users: Hex’s row open with Archive ringed"></button><figcaption><b>Admin → Users, Hex’s row.</b> The button the admin presses.</figcaption></figure>
+        <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+          <figure><button type="button"><img src="img/r3c-4-seat-wed.png" alt="Hex’s seat on Wed 15 Jul with the purple line"></button><figcaption><b>Wed 15 Jul.</b> His seat still has the purple line: SANS that day.</figcaption></figure>
+          <figure><button type="button"><img src="img/r3c-5-seat-thu.png" alt="Hex’s seat on Thu 16 Jul without the purple line"></button><figcaption><b>Thu 16 Jul.</b> No purple line.</figcaption></figure>
+        </div>
+      </div>
+    </div>
+
+    <div class="why">
+      <p><b>Why I chose this.</b> “Undo post out” says the posting was a mistake, so the SANS days it gave him never happened. Taking the tick off, or archiving him, says he really was SANS up to that day and then stopped. Days already published while he was SANS are left alone.</p>
+      <p><b>Kept for later, not decided.</b> If an admin has already taken the tick off and the posting is then undone, the earlier SANS days are still wiped today. Whether they should be is a question in the backlog.</p>
+    </div>
+  </section>
+
+  <section id="r4">
+    <h2>4. Two places that go by today</h2>
+    <p>Everything drawn on a day now asks “was he SANS on <i>that</i> day?”. These two do not. They ask “is he SANS <i>today</i>?”.</p>
+
+    <div class="sub">
+      <h3>The SANS highlight chip</h3>
+      <p>Today is Thu 16 Jul. Hex has been SANS since Wed 15 Jul. On Edit Schedule, press TYPE, then SANS. The chip lights Hex on every day of the week in view, Tue 14 Jul included, where he was still an ordinary WSO.</p>
+      <div class="shots">
+        <figure><button type="button"><img src="img/r4a-1-chip.png" alt="The TYPE row with the SANS chip pressed"></button><figcaption><b>The chip, pressed.</b></figcaption></figure>
+        <figure><button type="button"><img src="img/r4a-2-seat-tue.png" alt="Hex’s seat on Tue 14 Jul, lit, no purple line"></button><figcaption><b>Tue 14 Jul.</b> Lit, with no purple line.</figcaption></figure>
+        <figure><button type="button"><img src="img/r4a-3-seat-wed.png" alt="Hex’s seat on Wed 15 Jul, lit, with the purple line"></button><figcaption><b>Wed 15 Jul.</b> Lit, with the purple line.</figcaption></figure>
+      </div>
+      <div class="why">
+        <p><b>Why I chose this.</b> A highlight chip picks people by what they are now and lights them across the whole week. The CAT and QUALS chips work the same way. The purple line on the puck is what tells you about the day itself.</p>
+      </div>
+    </div>
+
+    <div class="sub">
+      <h3>Who can be given SANS availability</h3>
+      <p>Today is Mon 13 Jul and Hex’s posting is dated Wed 15 Jul, two days ahead. On the SANS calendar an admin opens Thu 16 Jul and presses “+ Commitment”. Hex is not offered, although Thu 16 Jul is after his date. From Wed 15 Jul he is offered.</p>
+      <div class="shots two">
+        <figure><button type="button"><img src="img/r4b-1-commit-mon.png" alt="The new SANS availability window on Mon 13 Jul: the Person list has no Hex"></button><figcaption><b>Mon 13 Jul.</b> The Person list has no Hex.</figcaption></figure>
+        <figure><button type="button"><img src="img/r4b-2-commit-wed.png" alt="The same window on Wed 15 Jul: Hex is picked"></button><figcaption><b>Wed 15 Jul.</b> Hex can be picked.</figcaption></figure>
+      </div>
+      <div class="why">
+        <p><b>What it costs.</b> A man posted out as SANS from a date ahead cannot have SANS availability filed for him until that date arrives. Nor can he file his own.</p>
+        <p><b>Why I left it.</b> The app worked this way before this job: a posting takes effect on its date, and filing asks who he is today. Letting him be filed ahead, for days on or after his date, would be a new change. If you want it, I draw it for you first.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="zoom" hidden role="dialog" aria-label="Enlarged picture. Tap or press Escape to close."></div>
+<script>
+(() => {
+  const z = document.getElementById('zoom'), zi = new Image()
+  let from = null
+  const close = () => { z.hidden = true; if (from) from.focus(); from = null }
+  document.querySelectorAll('figure button').forEach(b => b.addEventListener('click', () => {
+    const im = b.querySelector('img')
+    from = b; zi.src = im.src; zi.alt = im.alt
+    if (!zi.parentNode) z.appendChild(zi)
+    zi.style.width = Math.round(im.naturalWidth / 2) + 'px'   // the pictures are taken at twice the size, so this is life size
+    z.classList.toggle('fit', im.naturalWidth / 2 <= innerWidth - 24)
+    z.hidden = false; z.scrollTop = 0
+  }))
+  z.addEventListener('click', close)
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !z.hidden) close() })
+})()
+</script>

@@ -1,0 +1,124 @@
+{
+ "R": [
+  {
+   "sc": "F2-f",
+   "size": "desktop",
+   "step": "1 History opened behind: list and hold stay",
+   "pass": true,
+   "note": "{\"held\":true,\"name\":\"Ace\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "desktop",
+   "step": "2 day changed with the list up",
+   "pass": null,
+   "note": "{\"boardDay\":\"Friday\",\"listUp\":true,\"held\":true,\"title\":\"OIL — Sat 18 Jul\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "desktop",
+   "step": "3 Later pressed while the board shows Friday",
+   "pass": null,
+   "note": "Saturday's signs now {\"cur\":\"dj\",\"sked\":\"\",\"plan\":\"\",\"appr\":\"\"}; Friday's {\"cur\":\"\",\"sked\":\"\",\"plan\":\"\",\"appr\":\"\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "desktop",
+   "step": "4 week changed with the list up",
+   "pass": null,
+   "note": "{\"boardDate\":\"Jul 25\",\"listUp\":true,\"held\":true,\"title\":\"OIL — Sat 18 Jul\",\"rows\":\"1 to answer\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "desktop",
+   "step": "5 Later/Close in the other week: written where?",
+   "pass": null,
+   "note": "{\"di5\":\"{\\\"cur\\\":\\\"\\\",\\\"sked\\\":\\\"\\\",\\\"plan\\\":\\\"\\\",\\\"appr\\\":\\\"\\\"}\",\"day\":\"Jul 25\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "desktop",
+   "step": "6 card opens the input's own window on Inputs",
+   "pass": true,
+   "note": "{\"page\":\"inputs\",\"inpWin\":true,\"listUp\":true}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "desktop",
+   "step": "7 answered in its window; the list now",
+   "pass": null,
+   "note": "{\"oil\":\"{\\\"2026-07-18\\\":1}\",\"listUp\":true,\"held\":false,\"foot\":\"\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "desktop",
+   "step": "8 back: held box hidden, Close signs nothing",
+   "pass": true,
+   "note": "{\"h2\":{\"held\":false,\"label\":null,\"name\":null,\"border\":null,\"after\":null,\"beside\":null,\"foot\":\"\",\"sub\":\"\",\"title\":\"OIL — Sat 18 Jul\"},\"after\":\"{\\\"cur\\\":\\\"\\\",\\\"sked\\\":\\\"\\\",\\\"plan\\\":\\\"\\\",\\\"appr\\\":\\\"\\\"}\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "desktop",
+   "step": "9 now answered: the box signs at once",
+   "pass": true,
+   "note": "{\"cur\":\"dj\",\"sked\":\"\",\"plan\":\"\",\"appr\":\"\"}"
+  },
+  {
+   "sc": "F2-f",
+   "size": "desktop",
+   "step": "10 version loaded back: list opens, no held box",
+   "pass": true,
+   "note": "{\"held\":false,\"label\":null,\"name\":null,\"border\":null,\"after\":null,\"beside\":null,\"foot\":\"\",\"count\":\"1 to answer\",\"sub\":\"\",\"title\":\"OIL — Sat 18 Jul\"}"
+  },
+  {
+   "sc": "F2-g",
+   "size": "desktop",
+   "step": "1 published with Later",
+   "pass": true,
+   "note": "\"Saturday 18 Jul published and approved. Ranger’s Training has no OIL answer, so nobody on it earns OIL.\""
+  },
+  {
+   "sc": "F2-g",
+   "size": "desktop",
+   "step": "2 second input: day pending, sign-offs fall",
+   "pass": true,
+   "note": "[\"CUR CK\",\"SKED CK\",\"PLANNED BY\",\"APPROVED BY\"]"
+  },
+  {
+   "sc": "F2-g",
+   "size": "desktop",
+   "step": "3 first press asks once more",
+   "pass": true,
+   "note": "{\"count\":\"2 to answer\",\"rows\":[\"odl-yes-w3-t1\",\"odl-yes-w3-t2\"],\"foot\":\"Later: Ace signs, but nobody on them earns OIL.\"}"
+  },
+  {
+   "sc": "F2-g",
+   "size": "desktop",
+   "step": "4 sked signs at once",
+   "pass": true,
+   "note": "shaft"
+  },
+  {
+   "sc": "F2-g",
+   "size": "desktop",
+   "step": "4 plan signs at once",
+   "pass": true,
+   "note": "glass"
+  },
+  {
+   "sc": "F2-g",
+   "size": "desktop",
+   "step": "4 appr signs at once",
+   "pass": true,
+   "note": "yeti"
+  },
+  {
+   "sc": "F2-g",
+   "size": "desktop",
+   "step": "5 amendment note keeps its OIL sentence",
+   "pass": true,
+   "note": "{\"text\":\"Published AL1 · 1 item on Sat only · approved by Bolt · Saturday 18 Jul: Saber’s Training and Ranger’s Training have no OIL answer, so nobody on them earns OIL\",\"cls\":\"\",\"op\":\"1\",\"color\":\"rgb(229, 168, 59)\"}"
+  }
+ ],
+ "errs": []
+}

@@ -1203,8 +1203,12 @@ test.describe('clicking a warning brings the puck into view', () => {
         inView: p.left >= w.left - 1 && p.right <= w.right + 1,
         /* the snap assertion: inline:'center' asks to rest between two snap
            points, so the browser re-snaps and can leave you a whole day past
-           the one you clicked. On the snap point, this delta is 0. */
-        dayOffset: Math.round(day.getBoundingClientRect().left - w.left),
+           the one you clicked. On the snap point, this delta is 0.
+           THE DAY'S PLACE ON A DESKTOP IS THE STRIP'S OWN MARGIN IN (his D2295, 22 Nov 26 — until then this jump
+           parked the day on the week box's edge, 20px off the place a day arrow lands one, and this line measured
+           from that edge; his "keep both" the same day put the warning jump in the one place). So the delta is
+           taken from the margin's inside edge: 0 there, as before, and never between two days. */
+        dayOffset: Math.round(day.getBoundingClientRect().left - w.left - (parseFloat(getComputedStyle(week).paddingLeft) || 0)),
       }
     }, di)
     expect(m, 'a focused puck is on the page').not.toBeNull()

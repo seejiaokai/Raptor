@@ -215,6 +215,56 @@ export const byCrew=(a:any,b:any)=>
   (SEATRANK[PEOPLE[a].seat]??3)-(SEATRANK[PEOPLE[b].seat]??3)
   ||(QORDER[PEOPLE[b].q]??-1)-(QORDER[PEOPLE[a].q]??-1)
   ||PEOPLE[a].cs.localeCompare(PEOPLE[b].cs);
+/* ---- SANS BY DATE (owner D2313, 22 Nov 26 — "A man counts as SANS only from the date his SANS starts, on every screen,
+   and days before it are untouched"; D283: "on the posting-out date he becomes SANS") ----
+   `san` is the tick as it stands TODAY. WHEN he was SANS is kept beside it: `sanFrom`, the first day (ISO) of the SANS he
+   holds now — absent, from always (every tick older than this rule, the demo's SANS men); and `sanWas`, each earlier
+   stretch that has ended, `[first day, the day it ended]` (ended that morning — the end day is NOT a SANS day; a first
+   day of '' is "from always"). A posting writes its own date (leavewar/sync.ts runPoOutcomes); a tick put on or taken off
+   by hand counts from the day it is made (state/quals-write.ts), so a day before it reads as it did.
+   EVERY READER THAT IS ABOUT A DAY ASKS `sansOn` WITH THAT DAY — the ALL AVAIL crowd, the crew list, a puck on a day, the
+   SANS availability checks, what a published day froze. Only a reader about the man as he is now (the Quals tick itself,
+   who may file SANS availability, the Leave War's row — D283, D321, D1692) reads `p.san`. No date → today's tick. */
+export function sansOnP(p:any,iso?:any):boolean{
+  if(!p)return false;
+  if(!iso)return !!p.san;
+  const d=String(iso);
+  if(p.san&&(!p.sanFrom||d>=String(p.sanFrom)))return true;
+  const was=Array.isArray(p.sanWas)?p.sanWas:[];
+  return was.some((s:any)=>Array.isArray(s)&&d>=String(s[0]||'')&&d<String(s[1]||''));}
+export const sansOn=(id:any,iso?:any):boolean=>sansOnP(PEOPLE[id],iso);
+const sansQ=(p:any)=>{ p.quals=p.quals||{}; p.quals.san=!!p.san; if(p.san)p.sanQ=p.sanQ||{flown:0,carry:0,missedQtrs:0}; };
+/* SANS FROM `from` ON. An earlier stretch that reaches `from` — ended on it or after it — is one stretch with this one,
+   which then starts where that one did: so a tick taken off and put back the same day leaves no gap, and a hand re-tick
+   after a SANS posting, handed the posting's date, is SANS from that date again (D2313 (b)). */
+export function sansStart(p:any,from:string,apart?:boolean):void{
+  let f=String(from||'');
+  /* `apart` — a POSTING's start: his earlier stretches are left as they stand, never folded into this one, so the
+     posting's take-back (sansErase) removes the posting's days only and the SANS days he held by hand before it stay */
+  if(apart){ p.san=true; if(f)p.sanFrom=f; else delete p.sanFrom; sansQ(p); return; }
+  const keep:any[]=[];
+  (Array.isArray(p.sanWas)?p.sanWas:[]).forEach((s:any)=>{ if(!Array.isArray(s))return;
+    if(String(s[1]||'')>=f){ if(String(s[0]||'')<f)f=String(s[0]||''); } else keep.push(s); });
+  if(keep.length)p.sanWas=keep; else delete p.sanWas;
+  p.san=true; if(f)p.sanFrom=f; else delete p.sanFrom;
+  sansQ(p);}
+/* SANS ENDS ON `day` — he is a regular from that day on, and SANS on every day he was (D2313 (a): a tick taken off by
+   hand counts from the day it is made). A stretch that began that same day, or later, was never a SANS day: nothing kept. */
+export function sansStop(p:any,day:string):void{
+  if(p.san){ const f=String(p.sanFrom||''), t=String(day||'');
+    if(t&&f<t)p.sanWas=(Array.isArray(p.sanWas)?p.sanWas:[]).concat([[f,t]]); }
+  p.san=false; delete p.sanFrom;
+  sansQ(p);}
+/* THE SANS HE HOLDS NOW NEVER WAS — a posting taken back takes its SANS days with it (leavewar/sync.ts takeBack: "Undo
+   post out", a posting moved to a later date or given another outcome). Earlier stretches, ended by hand, stay. */
+export function sansErase(p:any):void{ p.san=false; delete p.sanFrom; sansQ(p); }
+/* WHO IS SANS AND FROM WHEN, AS ONE STRING — for a drawing kept by a key (the next-week preview, ui/peek.ts peekKey): a
+   tick put on or taken off, a posting run or taken back, changes it, so a preview already drawn is drawn again. Only the
+   men who are or were SANS are in it. */
+export function sansSig():string{
+  let s='';
+  for(const id in PEOPLE){ const p=PEOPLE[id]; if(p&&(p.san||p.sanWas))s+=id+(p.san?'+':'-')+(p.sanFrom||'')+(p.sanWas?JSON.stringify(p.sanWas):'')+';'; }
+  return s;}
 /* Proficiency status for a SANS member. Deliberately unwired: the rule is
    recorded and regression-tested so the highlighting can be switched on when
    the squadron asks for it, but nothing calls it yet. Not dead code — parked. */

@@ -121,10 +121,20 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
    is gone on every other page. */
 .ros-rail{display:none}
 @media (min-width:821px){
-  /* reserve the rail's lane at the right; position:relative makes .edit-board the
-     containing block for the collapsed (absolute) roster, so right:0 lands on the
+  /* reserve the rail's lane at the right WHILE THE PANEL IS OPEN (folded: just below); position:relative makes
+     .edit-board the containing block for the collapsed (absolute) roster, so right:0 lands on the
      board's own right edge rather than the viewport's */
   .edit-board{padding-right:26px;position:relative;overflow-x:clip}
+  /* FOLDED, THE DAYS RUN TO THE WINDOW'S EDGE UNDER THE TAB (his D2293, 22 Nov 26 — he saw the empty lane as a black
+     border down the right of his screen and asked for the days to run under the CREW tab; drawn first and approved,
+     docs/mock/2026-11-22-sched-right-edge/). The lane is given up only while the panel is folded: open, the tab must
+     stand BESIDE the panel, never over its names. The week's own far end takes the lane's 26px on top of its 8, so
+     at the strip's end the last column still stops clear of the tab; pan.ts setWeekTail reads this padding off the
+     strip, and the 26 more of strip and the 26 more of padding cancel, so the tail and every arrow stop are where
+     they were (pinned: e2e/sched-right-edge.spec.ts). Nothing shown before is covered — the tab and the next-day
+     arrow lie only over what the lane hid. */
+  body.ros-collapsed .edit-board{padding-right:0}
+  body.ros-collapsed .edit-board .week{padding-right:34px}
   /* overflow-x:clip (his find, D1528, 30 Oct 26, with four pictures): the hidden crew panel slides out past the window's right
      edge, and without a clip the page counted it as width — the browser's own grey sideways scroll bar came up at the
      foot of Edit Schedule, which View-only never shows. clip, not hidden: it makes no scroll box, so the open panel's
@@ -150,8 +160,9 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
   /* a slim BLUE "CREW" tab, styled off the phone drawer's accent tab and sat
      HIGH on the right edge rather than mid-height (owner, 26 Aug 26 — "make it
      like a blue side panel similar to the mobile one, labeled as crew … put it
-     higher … doesn't block much of the view"). It rides the reserved right lane,
-     so it never overlaps a day column's controls. */
+     higher … doesn't block much of the view"). With the panel open it rides the reserved
+     right lane beside it; folded, it lies over the days' strip, which now runs to the window's
+     edge (his D2293, above) — over nothing that the lane did not hide before. */
   .ros-rail{position:fixed;top:150px;right:0;z-index:151;display:flex;flex-direction:column;
     align-items:center;justify-content:center;gap:8px;width:26px;padding:13px 0;
     border:1px solid rgba(59,198,232,.5);border-right:none;border-radius:11px 0 0 11px;

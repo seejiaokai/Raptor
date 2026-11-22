@@ -1,0 +1,448 @@
+[
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "premise",
+  "what": "the drawn man",
+  "ok": true,
+  "note": "{\"cs\":\"Hex\",\"seat\":\"RCP\",\"san\":false,\"sanFrom\":null} · app today Wed Jul 22 2026 09:00 · week Jul 13,Jul 14,Jul 15,Jul 16,Jul 17,Jul 18,Jul 19"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-01",
+  "what": "Sat: Common Programme SQN EVENT 08:00–15:00 for ALL AVAIL (+ Item, typed, tapped)",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"08:00\",\"end\":\"15:00\",\"who\":\"allavail\"}",
+  "pics": "s1-01-cmn-row-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-02",
+  "what": "Sat: Hex put on a new Ground Programme row (+ Item, tap the row, tap his puck)",
+  "ok": true,
+  "note": "{\"n0\":0,\"ri\":0,\"armed\":\"g:5.0.+\",\"row\":{\"prog\":\"W1 GROUND\",\"who\":\"rocky\"}}",
+  "pics": "s1-02-ground-sat-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-03a",
+  "what": "the board's › twice from Saturday reaches Mon 20 Jul (next week)",
+  "ok": true,
+  "note": "{\"sbday\":6,\"week\":\"Jul 13,Jul 14,Jul 15,Jul 16,Jul 17,Jul 18,Jul 19\",\"title\":\"Sunday Jul 19 · scheduler board\"} → {\"sbday\":0,\"week\":\"Jul 20,Jul 21,Jul 22,Jul 23,Jul 24,Jul 25,Jul 26\",\"title\":\"Monday Jul 20 · scheduler board\"}"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-03",
+  "what": "Mon 20 Jul: Hex put on a new Ground Programme row",
+  "ok": true,
+  "note": "{\"n0\":3,\"ri\":3,\"armed\":\"g:0.3.+\",\"row\":{\"prog\":\"W1 GROUND\",\"who\":\"rocky\"}}",
+  "pics": "s1-03-ground-mon20-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-04",
+  "what": "Hex posted out as SANS from Mon 20 Jul on the Leave War (cell → ⋯ → Post out → SANS → Post out)",
+  "ok": true,
+  "note": "line \"On 20 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-20\",\"sanWas\":null}",
+  "pics": "s1-04-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-04b",
+  "what": "his Leave War row after the posting (record)",
+  "ok": null,
+  "note": "",
+  "pics": "s1-04b-lw-row-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-05-board-sat",
+  "what": "board Sat 18 Jul (Wed Jul 22 2026 09:00): Hex in the WSOs column, no purple line on row or crew list",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\"},{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s1-05-board-sat-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-05-week-sat",
+  "what": "Edit Schedule Sat 18 Jul: his puck on the day card and in the crew panel (saturday) regular",
+  "ok": true,
+  "note": "card [{\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s1-05-week-sat-desktop.png, s1-05-panel-sat-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-05-win-sat",
+  "what": "ALL AVAIL window on Sat (chip \"45\") lists Hex without the purple line",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"title\":\"Hex · C · ops wingman\",\"head\":\"SQN EVENT Jul 18 · 08:00–15:00\",\"sec\":\"WSOS · 17\"}",
+  "pics": "s1-05-availwin-sat-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-05-avail-sat",
+  "what": "Available crew count, Sat (record; Hex has no SANS availability filed)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 45 ALL DAY · 0 SANS OFFERING ⌄",
+  "pics": "s1-avail-5-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-05-board-mon",
+  "what": "board Mon 20 Jul (week Jul 20): Hex under SANS Avail, purple line on every copy",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\"},{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s1-05-board-mon20-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-05-week-mon",
+  "what": "Edit Schedule Mon 20 Jul: card and crew panel (monday) SANS",
+  "ok": true,
+  "note": "card [{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s1-05-week-mon20-desktop.png, s1-05-panel-mon20-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-05-avail-mon",
+  "what": "Available crew count, Mon 20 Jul (record)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 27 ALL DAY · +16 1ST WAVE · 0 SANS OFFERING ⌄",
+  "pics": "s1-avail-0-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-06",
+  "what": "Edit Schedule's next-week peek on the demo week: his puck on Mon 20 Jul (record)",
+  "ok": null,
+  "note": "no puck of his in a peek day (the phone draws no peek)",
+  "pics": "s1-05-week-sat-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-06b",
+  "what": "the peek scrolled into view",
+  "ok": null,
+  "note": "[]",
+  "pics": "s1-06-peek-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-07",
+  "what": "as Ranger, View-only Sched Sat 18 Jul: Hex's puck (record; expected regular)",
+  "ok": true,
+  "note": "Jul 13 [{\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true}]",
+  "pics": "s1-07-view-sat-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "s1-08",
+  "what": "as Ranger, View-only Sched Mon 20 Jul: Hex's puck (record; expected SANS)",
+  "ok": true,
+  "note": "Jul 20 [{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true}] ",
+  "pics": "s1-07-view-mon20-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-a-board-sat",
+  "what": "board Sat 18 Jul (Wed Jul 22 2026 09:01): Hex in the WSOs column, no purple line on row or crew list",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\"},{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s8-a-board-sat-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-a-week-sat",
+  "what": "Edit Schedule Sat 18 Jul: his puck on the day card and in the crew panel (saturday) regular",
+  "ok": true,
+  "note": "card [{\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s8-a-week-sat-desktop.png, s8-a-panel-sat-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-a-win-sat",
+  "what": "ALL AVAIL window on Sat (chip \"45\") lists Hex without the purple line",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"title\":\"Hex · C · ops wingman\",\"head\":\"SQN EVENT Jul 18 · 08:00–15:00\",\"sec\":\"WSOS · 17\"}",
+  "pics": "s8-a-availwin-sat-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-a-avail-sat",
+  "what": "Available crew count, Sat (record; Hex has no SANS availability filed)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 45 ALL DAY · 0 SANS OFFERING ⌄",
+  "pics": "s8-avail-5-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-a-board-mon",
+  "what": "board Mon 20 Jul (week Jul 20): Hex under SANS Avail, purple line on every copy",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\"},{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s8-a-board-mon20-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-a-week-mon",
+  "what": "Edit Schedule Mon 20 Jul: card and crew panel (monday) SANS",
+  "ok": true,
+  "note": "card [{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s8-a-week-mon20-desktop.png, s8-a-panel-mon20-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-a-avail-mon",
+  "what": "Available crew count, Mon 20 Jul (record)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 27 ALL DAY · +16 1ST WAVE · 0 SANS OFFERING ⌄",
+  "pics": "s8-avail-0-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-b-board-sat",
+  "what": "board Sat 18 Jul (Wed Jul 22 2026 09:01): Hex in the WSOs column, no purple line on row or crew list",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\"},{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s8-b-board-sat-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-b-week-sat",
+  "what": "Edit Schedule Sat 18 Jul: his puck on the day card and in the crew panel (saturday) regular",
+  "ok": true,
+  "note": "card [{\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s8-b-week-sat-desktop.png, s8-b-panel-sat-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-b-win-sat",
+  "what": "ALL AVAIL window on Sat (chip \"45\") lists Hex without the purple line",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"title\":\"Hex · C · ops wingman\",\"head\":\"SQN EVENT Jul 18 · 08:00–15:00\",\"sec\":\"WSOS · 17\"}",
+  "pics": "s8-b-availwin-sat-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-b-avail-sat",
+  "what": "Available crew count, Sat (record; Hex has no SANS availability filed)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 45 ALL DAY · 0 SANS OFFERING ⌄",
+  "pics": "s8-avail-5-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-b-board-mon",
+  "what": "board Mon 20 Jul (week Jul 20): Hex under SANS Avail, purple line on every copy",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\"},{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s8-b-board-mon20-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-b-week-mon",
+  "what": "Edit Schedule Mon 20 Jul: card and crew panel (monday) SANS",
+  "ok": true,
+  "note": "card [{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s8-b-week-mon20-desktop.png, s8-b-panel-mon20-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-b-avail-mon",
+  "what": "Available crew count, Mon 20 Jul (record)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 27 ALL DAY · +16 1ST WAVE · 0 SANS OFFERING ⌄",
+  "pics": "s8-avail-0-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-c0",
+  "what": "stepped to next week and back (the board's › from Sunday, ‹ from Monday)",
+  "ok": null,
+  "note": "Jul 20,Jul 21,Jul 22,Jul 23,Jul 24,Jul 25,Jul 26 → Jul 13,Jul 14,Jul 15,Jul 16,Jul 17,Jul 18,Jul 19"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-c-board-sat",
+  "what": "board Sat 18 Jul (Wed Jul 22 2026 09:02): Hex in the WSOs column, no purple line on row or crew list",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\"},{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s8-c-board-sat-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-c-week-sat",
+  "what": "Edit Schedule Sat 18 Jul: his puck on the day card and in the crew panel (saturday) regular",
+  "ok": true,
+  "note": "card [{\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s8-c-week-sat-desktop.png, s8-c-panel-sat-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-c-win-sat",
+  "what": "ALL AVAIL window on Sat (chip \"45\") lists Hex without the purple line",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"title\":\"Hex · C · ops wingman\",\"head\":\"SQN EVENT Jul 18 · 08:00–15:00\",\"sec\":\"WSOS · 17\"}",
+  "pics": "s8-c-availwin-sat-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-c-avail-sat",
+  "what": "Available crew count, Sat (record; Hex has no SANS availability filed)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 45 ALL DAY · 0 SANS OFFERING ⌄",
+  "pics": "s8-avail-5-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-c-board-mon",
+  "what": "board Mon 20 Jul (week Jul 20): Hex under SANS Avail, purple line on every copy",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\"},{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s8-c-board-mon20-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-c-week-mon",
+  "what": "Edit Schedule Mon 20 Jul: card and crew panel (monday) SANS",
+  "ok": true,
+  "note": "card [{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s8-c-week-mon20-desktop.png, s8-c-panel-mon20-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-c-avail-mon",
+  "what": "Available crew count, Mon 20 Jul (record)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 27 ALL DAY · +16 1ST WAVE · 0 SANS OFFERING ⌄",
+  "pics": "s8-avail-0-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-d1",
+  "what": "Undo post out pressed on his posting's sheet",
+  "ok": true,
+  "note": "{\"san\":false,\"sanFrom\":null,\"sanWas\":null,\"archived\":false}",
+  "pics": "s8-d1-posting-sheet-desktop.png, s8-d2-after-undo-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-d-board-sat",
+  "what": "board Sat 18 Jul (Wed Jul 22 2026 09:02): Hex in the WSOs column, no purple line on row or crew list",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\"},{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s8-d-board-sat-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-d-week-sat",
+  "what": "Edit Schedule Sat 18 Jul: his puck on the day card and in the crew panel (saturday) regular",
+  "ok": true,
+  "note": "card [{\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 29 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"WSOS · 16 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s8-d-week-sat-desktop.png, s8-d-panel-sat-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-d-win-sat",
+  "what": "ALL AVAIL window on Sat (chip \"45\") lists Hex without the purple line",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"title\":\"Hex · C · ops wingman\",\"head\":\"SQN EVENT Jul 18 · 08:00–15:00\",\"sec\":\"WSOS · 17\"}",
+  "pics": "s8-d-availwin-sat-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-d-avail-sat",
+  "what": "Available crew count, Sat (record; Hex has no SANS availability filed)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 45 ALL DAY · 0 SANS OFFERING ⌄",
+  "pics": "s8-avail-5-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-d-board-mon",
+  "what": "board Mon 20 Jul (week Jul 20): Hex a regular in WSOs, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\"},{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\"},{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\"},{\"where\":\"WSOS · 11 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s8-d-board-mon20-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-d-week-mon",
+  "what": "Edit Schedule Mon 20 Jul: card and crew panel (monday) regular",
+  "ok": true,
+  "note": "card [{\"san\":false,\"title\":\"Hex · C · ops wingman · Crew pairing — this pairing needs approval\",\"shown\":true},{\"san\":false,\"title\":\"Hex · C · ops wingman · Crew pairing — this pairing needs approval\",\"shown\":true},{\"san\":false,\"title\":\"Hex · C · ops wingman · Crew pairing — this pairing needs approval\",\"shown\":true}] · panel heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 11 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] pucks [{\"where\":\"WSOS · 11 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman · Crew pairing — this pairing needs approval\",\"shown\":true,\"why\":\"\"}]",
+  "pics": "s8-d-week-mon20-desktop.png, s8-d-panel-mon20-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-d-avail-mon",
+  "what": "Available crew count, Mon 20 Jul (record)",
+  "ok": null,
+  "note": "⠿ AVAILABLE CREW 27 ALL DAY · +17 1ST WAVE · 0 SANS OFFERING ⌄",
+  "pics": "s8-avail-0-desktop.png"
+ },
+ {
+  "scn": "s8",
+  "size": "desktop",
+  "id": "s8-d3",
+  "what": "Quals: his SANS tick after Undo post out (expected off)",
+  "ok": true,
+  "note": "{\"text\":\"\",\"cls\":\"qcell\",\"html\":\"\"}",
+  "pics": "s8-d3-quals-desktop.png"
+ },
+ {
+  "scn": "s1",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

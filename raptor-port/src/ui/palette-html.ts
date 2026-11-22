@@ -1,7 +1,8 @@
 /* The aircrew palette — paletteDay/rosterPuck/armStripHTML/paletteHTML and
    the placeholder row, verbatim. */
 import { DAYS } from '../engine/data'
-import { PEOPLE, SPECIALS, scQualOK } from '../engine/people'
+import { PEOPLE, SPECIALS, scQualOK, sansOn } from '../engine/people'
+import { withDrawDay } from '../engine/faceattrs'
 import { inputLinesOn, inputReadPass, isAway, offWord, awayAllDay, canWork, sansBadge, sansAvailOn } from '../engine/inputs'
 import { hm24 } from '../engine/time'
 import { dayTasked, dayOff, dayStandby, slotBar, slotRules } from '../engine/avail'
@@ -14,6 +15,12 @@ import { CURWEEK } from '../engine/waves'
 /* the crew list is the schedule in view's own people on the day it lists (multi-squadron step 3 — engine/roster.ts);
    another squadron's free men are batch 3's group of their own (D2133) */
 const rosOn=(di:any)=>rosterOf(UNIT,dayIso(String(CURWEEK),+di||0));
+/* WHO IS SANS ON THE DAY THE LIST IS FOR (owner D2313, 22 Nov 26 — "the board's crew list follows the posting's date as
+   the ALL AVAIL window does"): a man posted out as SANS, or ticked SANS by hand, stands among the pilots or WSOs on every
+   day before his SANS date and under SANS Avail from it; one whose SANS ended stays under SANS Avail on the days he was
+   (engine/people.ts sansOn). The list read today's tick on every day, so Hex, SANS from Mon 20 Jul, stood under SANS
+   Avail on Sat 18 Jul while the ALL AVAIL window there still counted him (walker w1, chat 138). */
+const sansDay=(id:any,di:any)=>sansOn(id,dayIso(String(CURWEEK),+di||0));
 
 export function paletteDay(){ return ARM&&ARM.di>=0?ARM.di:(DAYS[ROSDAY]?ROSDAY:0); }
 /* one puck, with the reason it cannot be used carried on the title */
@@ -44,7 +51,7 @@ const groundedType=(id:any,di:any)=>{
 function whyOf(id:any,di:any,armKey:any,off:any,rules:any,grounded:any){
   return armKey?slotBar(id,armKey,rules)
     :((off&&off.has(id)&&!grounded)?offReason(id,di)
-      :((PEOPLE[id].san&&di>=0&&DAYS[di]&&!sansAvailOn(id,DAYS[di].dt))?'SANS — no availability filed for today':''));
+      :((di>=0&&DAYS[di]&&sansDay(id,di)&&!sansAvailOn(id,DAYS[di].dt))?'SANS — no availability filed for today':''));
 }
 export function rosterPuck(id:any,di:any,armKey:any,eng:any,off:any,sby:any,rules:any,hideWhy?:any){
   const grounded=!armKey&&!!(off&&off.has(id))&&groundedOnly(id,di);
@@ -119,7 +126,7 @@ export function armStripHTML(){
 /* ONE PAINT READS EACH DAY'S INPUTS ONCE (engine/inputs.ts inputReadPass; Fable's read of the one-rule plan, F10): the
    list asks why each man may or may not take the armed place — four reads of a day's inputs a man (avail.ts slotBar) —
    and the builder writes nothing, which is the shape a pass requires. */
-export function paletteHTML(di:any,opts?:any){ return inputReadPass(()=>paletteHTMLBody(di,opts)); }
+export function paletteHTML(di:any,opts?:any){ return withDrawDay(dayIso(String(CURWEEK),+di||0),()=>inputReadPass(()=>paletteHTMLBody(di,opts))); }   // each puck as the man was on the list's day (D2313)
 function paletteHTMLBody(di:any,opts?:any){
   const o=opts||{}, d=DAYS[di]||{};
   /* the armed key AS ARMED — a "+ add" keeps its `.+`, which slotBar reads as a NEW place (its one-man-one-place-on-a-
@@ -162,7 +169,7 @@ function paletteHTMLBody(di:any,opts?:any){
   /* SANS members are no longer split into a per-column sub-band (owner, 14 Aug
      26) — they move into ONE full-width section below, sansAvailHTML, so
      every column here lists non-SANS crew only. */
-  const sel=(seat:any)=>rosOn(di).filter((id:any)=>ok(id)&&PEOPLE[id].seat===seat&&!PEOPLE[id].san).sort(bySort);
+  const sel=(seat:any)=>rosOn(di).filter((id:any)=>ok(id)&&PEOPLE[id].seat===seat&&!sansDay(id,di)).sort(bySort);
   const col=(title:any,seat:any)=>{
     const act=sel(seat), free=act.filter((id:any)=>!rank(id)).length;
     /* one reason shared by EVERY barred name in the column reads ONCE, under
@@ -265,7 +272,7 @@ export function sansAvailHTML(di:any,armKey:any,eng:any,off:any,sby:any,arules:a
   const rk=(id:any)=>{const g=!armKey&&!!(off&&off.has(id))&&groundedOnly(id,di);
     if(whyOf(id,di,armKey,off,arules,g))return 2;
     const t=!!(eng&&eng.has(id));return g?(t?1:.5):(t?1:0);};
-  const ids=rosOn(di).filter((id:any)=>ok(id)&&PEOPLE[id].san)
+  const ids=rosOn(di).filter((id:any)=>ok(id)&&sansDay(id,di))
     .map((id:any)=>[id,rk(id)] as [any,number])
     .sort((a:any,b:any)=>a[1]-b[1]||PEOPLE[a[0]].cs.localeCompare(PEOPLE[b[0]].cs));
   if(!ids.length)return '';
