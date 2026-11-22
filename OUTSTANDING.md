@@ -184,6 +184,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [MSQ-PLAN-AUDIT] — a dedicated check of everything built and planned for an admin with Plan of a squadron left out or let in wrongly, faults fixed before the reshape build; his D2242 (20 Nov 26).
 - [MSQ-FABLE-REVIEW] — Fable reviews what it has not read: the kinds of sign-in together first (who edits, who only views, is each guarded), then the areas ranked by risk; his D2259 (21 Nov 26).
 - [MSQ-FIXREAD17-OPEN] — fix read 17's, the core read's and the full review's 35 faults, all reproduced red, in seven cause families; his shape question first, then the fixes and one combined fix read (20 Nov 26).
+- [ROLE-BOX-CUT-IPHONE] — on an iPhone, Admin → Users' Role box cuts "Admin — schedules and manages" off mid-word (found 22 Nov 26); fixed with batch 1's second half
 - [ACCOUNT-STATUS-TOLD] — a person told on his own bell when his account status changes (D2251); drawn first
 - [MSQ-FIXREAD10-LEFT] — what fix read 10 left: F (a bell line dated minutes ahead hidden for those minutes once a right is removed — for the database step, the server's clock), a war line's content field not checked, the GitHub browser-test flakes (the date calendar's glide; the Leave War phone's pinned dates row), a bell walk owed after fix read 13 (20 Nov 26); the code check cannot compare against main until pull request 817 merges (cause found 20 Nov 26); a remote-edit Undo note for the database step.
 - [SEED-UNDO-DROPS-ACCOUNT] — with the demo's seeded people, an Undo of a seeded account's first saved change can take the account's own row with it (seen by fix read 9's builder, outside its brief; to reproduce first, 20 Nov 26).
@@ -307,6 +308,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [ROLE-BOX-CUT-IPHONE] Admin → Users' Role box cuts its words off on an iPhone (22 Nov 26, chat 137) — OPEN
+**What it is:** today's app, a person's opened row on Admin → Users at an iPhone's width (402): the Role box is half the row wide and shows "Admin — schedule…", the rest of "Admin — schedules and manages" cut off. Seen in the redrawn approved picture `raptor-port/docs/mock/2026-11-22-msq-b1-screens/img/p1a-p.png`; found by the host opening a helper's picture, confirmed by chat 137's fresh reader.
+**To do:** if he takes question C of batch 1's second-half page (the Role choices shortened to "Member", "Admin", "Master admin", the long words moved into "What each role allows"), the fault goes with it; if he keeps the long words, fix the box's fit on a phone anyway. Either way, a test that the Role box's text is not cut off at a phone's width.
+**Where:** People & accounts; `raptor-port/src/ui/UsersPanel.tsx` (the Role choice); with batch 1's second half ([MULTI-SQN-DESIGN]).
 
 ### [ACCOUNT-STATUS-TOLD] A person told on his own bell when his account status changes (his D2251, 21 Nov 26, chat 128) — OPEN
 **What it is:** his D2251 — "the players should be informed when their account status changes": a line on the person's own bell whenever he is made an admin or a member, suspended or enabled, given or losing View or Plan of a squadron (a move, or a change to member, ending it included — D2203, D2250), made or unmade a master admin; it names what changed and who changed it.

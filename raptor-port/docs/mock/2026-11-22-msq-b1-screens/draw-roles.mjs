@@ -20,10 +20,11 @@ const NEW = '#ff2d95'
 const PLAN_LINE = 'Full access to 149, every page: its schedule and publishing, its settings, its people and their sign-ins.' // D2211
 // D2300: what each role and access lets a person see and do — short, plain, one line each
 const KEY = [
-  ['Member', 'Reads the schedule. Changes only their own inputs, Quals row and leave bids.'],
-  ['Admin', 'Full access to the home squadron: its schedule and publishing, its settings, its people and their sign-ins.'],
+  // the fresh read of 22 Nov: a member sees Logic and the Leave War too; "every page" kept (D2201, D2211); Plan for an admin only (D2250)
+  ['Member', "Reads the squadron's schedule, Logic and Leave War. Changes only their own inputs, Quals row and leave bids."],
+  ['Admin', 'Full access to the home squadron, every page: its schedule and publishing, its settings, its people and their sign-ins.'],
   ['View of a squadron', "Reads that squadron's schedule and Logic. Changes nothing there."],
-  ['Plan of a squadron', 'Full access to that squadron: its schedule and publishing, its settings, its people and their sign-ins.'],
+  ['Plan of a squadron', 'For an admin only. Full access to that squadron, every page: its schedule and publishing, its settings, its people and their sign-ins.'],
   ['Master admin', 'Full access to every squadron. Only a master admin makes a squadron, gives Plan or makes a master admin.'],
 ]
 const SIZES = {
@@ -180,7 +181,7 @@ const CASES = [
   { f: 'k1', who: ['ad', 'a'], open: 'Hunter', open_: false, lines: [{ sq: '149', picked: 2, line: PLAN_LINE }, { sq: '150', picked: 1 }] },
   { f: 'k2', who: ['ad', 'a'], open: 'Hunter', open_: true, lines: [{ sq: '149', picked: 2, line: PLAN_LINE }, { sq: '150', picked: 1 }] },
   { f: 'k3', who: ['ad9', 'a9'], open: 'Ranger', open_: true, badge: true, grey: 'rest',
-    lines: [{ sq: '149', picked: 1, off: [2], line: 'Only a master admin can give Plan.' }] },
+    lines: [{ sq: '149', picked: 1, off: [2], line: 'Plan is for admins only.' }] }, // Ranger is a member (D2250)
   // k4: Saber picks Master admin for Hunter — every other squadron reads "Full access"
   { f: 'k4', who: ['ad', 'a'], open: 'Hunter', master: true, lines: [{ sq: '149' }, { sq: '150' }] },
   // k5: Hunter, 142's admin, opens Ranger — 149 not his to give (D2299's words); Ranger's own row stays his to change

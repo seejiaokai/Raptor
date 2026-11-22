@@ -643,7 +643,7 @@ first, as a chat does for ruling numbers, and names it in its handoff block; whe
 the merge renumbers only the branch's own side, by script, and the closing report tells him the old and new numbers
 (D1417).*
 
-**Lesson 98 (22 Nov 26, D2299 — "this is not written clearly").** A line saying who may do something names one role once — "Only an admin of 149 can give access to 149." — never a list of every kind of person who holds that right. *(The agent's reading: where one role already covers the others, as "an admin of 149" covers 149's own admins, a Plan holder of 149 and a master admin, that one role is the one named.)*
+**Lesson 98 (22 Nov 26, D2299 — "this is not written clearly").** A line saying who may give access to a squadron names one role once — "Only an admin of 149 can give access to 149." — never a list of each kind of person who holds that right; a shared place's time-zone line likewise. *(The agent's reading: the same holds for any line saying who may do something where one role covers them all, as "an admin of 149" covers 149's own admins, a Plan holder of 149 and a master admin; where no one role covers them, each is named, as D2241 asks.)*
 
 **Lesson 96 (19 Nov 26, D2211 — "Instead of saying as for 149's own admin. Perhaps make it clearer").** The line under an access level says plainly what the person gets, never by comparison with another role. *(The agent's reading: the same holds for any line that explains a role or a setting.)*
 
