@@ -19,7 +19,7 @@
 
 import { useSyncExternalStore } from 'react'
 import { toPeople, pieceOf } from '../engine/inputown'
-import { inputOnDay, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, remarksTyped, tillShown, tillDefault, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent, filingOf } from '../engine/inputs'
+import { inputOnDay, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, remarksTyped, tillShown, tillDefault, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent, filingOf, inputUnitOf } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
@@ -1380,7 +1380,8 @@ export function isNonWorkingISO(date: string): boolean {
    inputDates does, same 400-day cap. */
 export function oilAskPlan(row: { person?: unknown; date: string; endDate?: string; yr?: unknown; allday?: unknown; s?: unknown; e?: unknown }): { iso: string; amt: 0.5 | 1 }[] {
   const out: { iso: string; amt: 0.5 | 1 }[] = []
-  const amt = inputOilAmt(row.allday, row.s, row.e)
+  /* its own squadron's threshold, whichever squadron is picked (§15 D4 — engine/oil.ts inputOilAmt) */
+  const amt = inputOilAmt(row.allday, row.s, row.e, inputUnitOf(row))
   if (amt == null) return out
   const start = labelToISO(row.date, row.yr)
   if (!start) return out
@@ -1683,11 +1684,27 @@ function tellBidding(tells: OpenTell[]): void {
    open" for dates long gone. So where he holds a line about the stretch, it is listed however old, dated just after
    the newest of them. */
 const ENDED_DAYS = 14
+/* the war's audience (warAudience) for a squadron not loaded: a man with a sign-in, not a special, archived or deleted
+   person (noticeWar's own leave-outs) */
+function storedAudienceHas(pid: string): boolean {
+  const p: any = (PEOPLE as any)[pid]
+  if (!p || p.special || p.archived || p.deleted) return false
+  return ACCOUNTS_LIST.some(a => a && a.pid != null && String(a.pid) === pid)
+}
+/* …READ FROM HIS OWN SQUADRON'S WAR, WHICHEVER IS LOADED (batch 1's second half, §16 D4′ — R3-O12, R3-F8): a master
+   admin's or Plan holder's pick loads the picked squadron's war, and the line read the loaded one — his own war's line
+   left his bell, and the unread count moved with the pick. The loaded war where it is his home's (its audience as
+   before); else his home's stored war (storedWorld — its stretches only), for a man with a sign-in on no special,
+   archived or deleted person. */
 function endedLines(pid: string): Notice[] {
-  if (!warAudience().includes(pid)) return []
+  const home = homeUnitOf(pid, effectiveToday())
+  const loaded = home === worldUnit()
+  if (loaded ? !warAudience().includes(pid) : !storedAudienceHas(pid)) return []
+  const periods: Period[] = loaded ? rawState().wars.map(w => w.period) : (home ? storedWorld(home).periods : [])
   const today = memberToday(), since = addDays(today, -ENDED_DAYS)
   const out: Notice[] = []
-  for (const w of rawState().wars) for (const o of w.period.open) {
+  for (const period of periods) for (const o of period.open) {
+    const w = { period }
     if (!(o.to < today)) continue
     let told = 0
     for (const n of NOTICES) {

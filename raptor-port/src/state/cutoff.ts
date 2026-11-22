@@ -13,6 +13,7 @@
    Only the values of the mode chosen are written: choosing "a weekday" leaves the day count as it was, so going back
    to "days before" finds the squadron's old figure, not a nought. */
 import { cutBackOf, setCutOfUnit } from '../engine/inputs'
+import { setRuleOfUnit } from '../engine/oil'
 import { RULE_SPEC, RULE_STD, VCONF, rulesSave } from '../engine/rules'
 import { store, unitSetting, unitSettingKey } from '../engine/hooks'
 import { UNIT } from '../engine/unitview'
@@ -49,6 +50,9 @@ setCutOfUnit((unit, set) => {
   const k = KEYS[set === 'sans' ? 'sans' : 'inputs'], V = rulesOf(unit)
   return cutBackOf(V[k.mode], V[k.lead], V[k.wd], V[k.weeks])
 })
+/* …and an input's OIL amount its own squadron's threshold (engine/oil.ts inputOilAmt — batch 1's second half, §15 D4):
+   another squadron's number, from its stored rules over the standard */
+setRuleOfUnit((unit, key) => rulesOf(unit)[key])
 /* a squadron's stored `rules` record as its two halves — the values it overrides and the hard kinds — each a copy */
 function storedRules(unit: string): { v: Record<string, unknown>; s: Record<string, unknown> } {
   const r: any = unitSetting(unit, 'rules', null)

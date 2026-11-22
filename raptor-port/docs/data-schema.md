@@ -190,6 +190,21 @@ pick of a squadron he holds View of, R6's re-entry, a Plan lowered while he is t
 (`state/store.ts landOffEditSched`, run on every notify and after every `enterSquadron`). Tests:
 `src/state/edit-rights-pick.test.ts`.
 
+### Settings held in memory — read from an own page (step A's second inventory, §15 D4 / §16 D4′, 22 Nov 26)
+
+`VCONF` (and `ruleNow`, which reads it) holds one squadron's Logic values: the schedule in view's. Each reader is marked
+in `src/state/vconf-readers.test.ts` — **schedule in view** (the schedule engine, Logic, the week, the board, OIL Earn
+mode: they judge the schedule shown) or **own squadron** (they ask the squadron of the thing judged, through the readers
+`state/cutoff.ts` installs, `VCONF` only where that squadron is the loaded one):
+- an input's late mark — its own squadron's cut-off (`engine/inputs.ts cutBackFor`, the reshape's phase 3);
+- an input's OIL amount — its own squadron's "Full-day OIL threshold" (`engine/oil.ts inputOilAmt(…, unit)`, read by the
+  ask plan `leavewar/sync.ts oilAskPlan`, the bell's pending-OIL count through it, and `voidedOil` / `repricedOil` at the
+  save door and at the gate); test `src/state/vconf-own-readers.test.ts`;
+- the "bidding closed · its dates ended" line — his own squadron's war, loaded or stored (`leavewar/sync.ts endedLines`);
+  test `src/leavewar/msq-ended-lines.test.ts`.
+Traced, nothing to change: the Leave War's OIL credits (`desiredOilCells`) read each published day's own kept threshold
+(`engine/oilev.ts oilAmount`); only a block published before the values were kept falls to today's — stored data (D56).
+
 ---
 
 ## World 1 — the scheduler
