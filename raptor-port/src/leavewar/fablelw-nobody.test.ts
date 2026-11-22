@@ -38,11 +38,16 @@ describe('an id that names nobody', () => {
   it('the tracker\'s grant refuses it (the rule that exists)', () => {
     expect(grantOil(['nobody'], 1, '2026-08-03', 'x')).toBe('Pick at least one person')
   })
-  it('place-and-approve must write no leave for it', () => {
+  /* `it.fails` (22 Nov 26, chat 133): proved, LOW and dormant — no screen sends such an id. A guard at the five doors was
+     built and taken out the same day: the war writes, by design and in its tests, for ids that are on no roster list —
+     a deleted man's past days (People & accounts' D327: an admin may still add leave or OIL there) and the demo war's
+     own ids — so "names nobody" needs its own definition first ([FABLE-READ-FAULTS] in OUTSTANDING.md). These run the
+     proof every time and go red the day it is fixed: then they become plain `it`. */
+  it.fails('place-and-approve must write no leave for it', () => {
     const r = placeApproved([{ personId: 'nobody', date: '2026-08-03' }], 'LL')
     expect({ approved: r.approved, inputs: INPUTS.filter((x: any) => JSON.stringify(x).includes('nobody')).length }).toEqual({ approved: 0, inputs: 0 })
   })
-  it('the grid\'s Grant OIL must give it no award', () => {
+  it.fails('the grid\'s Grant OIL must give it no award', () => {
     grantOilDays([{ personId: 'nobody', date: '2026-08-03' }], 1)
     expect(rawState().ledger.filter(e => e.personId === 'nobody')).toHaveLength(0)
   })

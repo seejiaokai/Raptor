@@ -1493,6 +1493,18 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
   return wrote
 }
 
+/* FROM WHICH DAY A POSTING MADE HIM SANS — the posting's own date (the day after his last as a regular), for a man whose
+   SANS tick is the posting's (`sanBy: 'po'`, put on by runPoOutcomes) and whose posting record still says so: its outcome
+   SANS and its "has run" mark on that same date. Null for every other SANS man — a tick made by hand on Quals drops the
+   posting's mark (state/quals-write.ts) and keeps no date, so none is invented for him. */
+function sansSince(id: string, body: { sanBy?: unknown }): string | null {
+  if (body.sanBy !== 'po') return null
+  const w = getState().postOuts[id]
+  if (!w || !w.to || outcomeOf(w) !== 'sans') return null
+  const from = addDays(w.to, 1)
+  return w.poDone === from ? from : null
+}
+
 /* WHO AN ALL / ALL AVAIL PUCK STANDS FOR ([ALL-AVAIL-REDEF], owner 21 Sep 26 —
    "ALL Avail and ALL pucks should not consist of ground crew by default. only
    SANS that are planned on the programmed on that day with us should be
@@ -1586,7 +1598,14 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
     /* SANS are another squadron's men until they are on our programme for the
        day. With no day blob to read (a caller that cannot supply one) they stay
        out, which is the pre-[ALL-AVAIL-REDEF] answer — fail closed. */
-    if (p.san && !(engaged && engaged.has(id))) continue
+    /* …AND A MAN A POSTING MADE SANS IS SANS FROM ITS DATE, NOT BEFORE (D283: "on the posting-out date he becomes SANS";
+       D327, D297, D44, D45 — the crowd of a day already published stays as it went out; Fable's OIL read F1, 22 Nov 26).
+       This read today's tick on every date, so the published holiday a regular attended behind ALL AVAIL read pending the
+       moment his SANS posting ran, lost its sign-offs, and its next amendment — a remark — published without him and took
+       the day's OIL from him (D142). Read by date, as the deleted and the archived man just above: on a day before the
+       posting's date he is the regular he was. Only the tick a posting put on has a date (`sanBy: 'po'` and the posting's
+       own record — `sansSince`); a SANS tick made by hand on Quals keeps none and is read on every date, as before. */
+    if (p.san && !(engaged && engaged.has(id))) { const since = sansSince(id, p); if (!since || iso >= since) continue }
     const lw = lwById.get(id)
     if (lw && !inSquadron(lw, iso)) continue
     if (keptOut.has(id)) continue

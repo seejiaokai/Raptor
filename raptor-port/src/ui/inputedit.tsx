@@ -2028,7 +2028,12 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
     || (isFly(draft.type) && String(rec.to || '') !== toOf(draft.to === undefined ? rec.to : draft.to))
     || (isOther(draft.type) && 'goes' in draft && goesOf(rec) !== draft.goes)
     || ('till' in draft && (typeof rec.till === 'boolean' ? rec.till : undefined) !== (typeof draft.till === 'boolean' ? draft.till : undefined))
-    || (isSansAvail(draft.type) && sansKey(rec.sans) !== sansKey(draft.sans)))
+    || (isSansAvail(draft.type) && sansKey(rec.sans) !== sansKey(draft.sans))
+    /* …AND ITS DOCUMENTS (Fable's read, 22 Nov 26 — F1; his D1150: every input carries photos and PDFs): a file attached
+       to, or taken off, an input of several was no change here, so the save wrote nothing and its window said "Input
+       updated". A draft that carries no list (a caller that never drew the Document row) changes none — the one-person
+       save's own rule (commitInputEdit). */
+    || (Array.isArray(draft.docIds) && JSON.stringify(rowDocIds(rec)) !== JSON.stringify(rowDocIds(draft))))
   const answers = !!opts && !!opts.oil && (!rec || JSON.stringify(rec.oil || {}) !== JSON.stringify(opts.oil))
 
   /* WHO MAY — asked before anything is written, of the one module (state/perms.ts) */
@@ -2063,7 +2068,10 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
            refused whole, after the window had offered "Goes to") */
         if (r.acc === 'u' && isPlaceholderInput(r)) delete r.acc
       } else {
-        if (says && !commitInputEdit(r, { ...draft, person: leadOf(r), docIds: rowDocIds(r) }, undefined, undefined, opts)) stop()
+        /* the draft's own documents go through (F1, above): until 22 Nov 26 the record's old list was passed in their
+           place, so the one-person body, which adds and takes off files (and leaves the late date alone for a change of
+           documents only), never saw the change */
+        if (says && !commitInputEdit(r, { ...draft, person: leadOf(r) }, undefined, undefined, opts)) stop()
         /* who filed it passes on with its filer (state/perms.ts byAfterLeaving — Fable F13): to the scheduler who takes
            him out (D759 reading 7); to whoever put in the newest entry not his own, when he takes himself out */
         const filer = r.by == null ? null : String(r.by)
@@ -2273,6 +2281,19 @@ export const WIN_FIELDS: { k: string; label: string; keys: string[] }[] = [
 ]
 export const fieldSame = (f: { keys: string[] }, a: any, b: any) => f.keys.every(k => JSON.stringify(a?.[k] ?? null) === JSON.stringify(b?.[k] ?? null))
 export const fieldPart = (f: { keys: string[] }, d: any) => Object.fromEntries(f.keys.map(k => [k, d?.[k]]))
+/** WHAT OF AN INPUT A DRAFT CHANGES — the ONE body of "has anything of the input itself changed?" for the window's save
+ *  (ui/InputWindow.tsx saveNow: its nothing-changed close, for one person and for several, and its "an OIL answer alone"
+ *  shortcut). Every field of the window (WIN_FIELDS), then the two the window draws apart from them: an Attach's "To"
+ *  ('to') and an Other's "Goes to" ('goes' — only where the draft carries one). Returns the changed fields' keys; an
+ *  empty list is "nothing changed". (Fable's read of the Inputs area, 22 Nov 26 — F2: the question was asked three times
+ *  with three hand-written lists, and the OIL shortcut's lacked "To" and "Goes to" — an Other moved under Unavailable in
+ *  a save that also answered its OIL question kept where it stood, and the window said "OIL answer saved".) */
+export function draftChanges(draft: any, saved: any): string[] {
+  const out = WIN_FIELDS.filter(f => !fieldSame(f, draft, saved)).map(f => f.k)
+  if (String(draft?.to ?? '') !== String(saved?.to ?? '')) out.push('to')
+  if (draft && 'goes' in draft && draft.goes !== saved?.goes) out.push('goes')
+  return out
+}
 /** a field's value in words, for "theirs … yours …" */
 export function fieldSay(k: string, d: any): string {
   if (!d) return 'nothing'

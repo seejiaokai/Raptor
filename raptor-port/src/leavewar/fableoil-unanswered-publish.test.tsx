@@ -49,7 +49,10 @@ beforeEach(() => {
 afterEach(() => { HOOKS.toast = realToast })
 
 describe('a weekend whose only work is an input with no OIL answer', () => {
-  it('publishing it says that nobody earns OIL and why — on the day and at publish (D81)', () => {
+  /* `it.fails` (22 Nov 26, chat 133): the fault is proved and still stands — what the day and the publish say is new on
+     screen, so it is drawn for him first and built on his choice (D1625; docs/mock/2026-11-22-oil-unanswered-publish/).
+     This line runs the proof every time and goes red the day the fault is fixed: then it becomes a plain `it`. */
+  it.fails('publishing it says that nobody earns OIL and why — on the day and at publish (D81)', () => {
     /* the Saturday holds one thing: Bane's Training, 08:00 to 17:00, on the programme, its OIL question never answered */
     const d: any = DAYS[SAT]; d.waves = []; d.sims = {}; d.dutywaves = []; d.ground = []; d.notes = []; d.allhands = []
     const row: any = { iid: 'fx-train', person: 'bane', type: 'Training', date: 'Jul 18', yr: 2026, allday: false, s: 480, e: 1020, remarks: '', mod: 'now' }

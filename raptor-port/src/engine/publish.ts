@@ -806,7 +806,12 @@ export function peopleAttrsNow(pa:any):any{const out:any={};
     if(p&&p.deleted){ out[id]=pa[id]??null; return; }
     const a:any=attrsOf(p);
     /* a crowd-only man was kept with no "posted out" (dayPeopleAttrs, D327): it is not compared for him */
-    if(a&&pa[id]&&!('archived' in pa[id]))delete a.archived;
+    /* …NOR IS THE SANS TICK A POSTING PUT ON HIM (D283, D327 — Fable's OIL read F1, 22 Nov 26): a man there only as one
+       of a crowd, since posted out as SANS, read "SANS: no → yes" on every published day he had merely been free on — the
+       holiday before his posting among them — and took its four sign-offs. Whether he is still in that day's crowd is
+       read by the posting's date (leavewar/sync.ts availableFor), and THAT is the one change where there is one. A SANS
+       tick made by hand (no `sanBy`) is compared as before; a man NAMED on the day keeps the comparison too. */
+    if(a&&pa[id]&&!('archived' in pa[id])){ delete a.archived; if(p.sanBy==='po')a.san=!!pa[id].san; }
     out[id]=a; }); return out;}
 /* the rule values an issued face PRINTS rather than judges — the blank brief's time (html.ts, board.ts, export.ts) —
    only on a day that prints one (a line with no B) */

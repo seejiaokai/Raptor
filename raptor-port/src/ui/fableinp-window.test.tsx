@@ -17,6 +17,7 @@ import { INPUTS, idsOf } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { HOOKS, storeBackend } from '../engine/hooks'
 import { rowDocIds } from '../state/docs'
+import { undo } from '../state/history'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
 import { _resetFloatWins } from './winorder'
@@ -113,5 +114,107 @@ describe('F2 — an Other moved by "Goes to" in a save that also answers OIL', (
     expect(win(), 'the window closed as saved').toBeNull()
     expect(live('fbl-goes').oil, 'the answer was written').toBeTruthy()
     expect(live('fbl-goes').acc, `where it goes was saved too (the window said: ${said.join(' | ') || 'nothing'})`).toBe('u')
+  })
+})
+
+/* THE PINS OF THE FIX (22 Nov 26): each fixed save is ONE step — one Undo puts back exactly the record that stood before
+   it (oil.md: "Answered, the answer and the change are one step and one Undo") — a change of documents alone never
+   moves the late date (D1150 — "they can apply first but upload after"), and the one-person input's document save is
+   as it was. */
+describe('the pins of the fix — Undo, the late date, and the one-person input as before', () => {
+  const sharedRec = (over: any = {}) => {
+    const [b, c] = others()
+    const rec: any = { iid: 'fbl-doc', type: 'Meeting', date: 'Oct 13', yr: 2026, allday: false, s: 600, e: 660, remarks: 'brief', mod: '2026-09-01', by: admin, at: T0, ...over }
+    rec.people = [b, c].map(p => ({ p, by: admin, at: T0 }))
+    return rec
+  }
+  const oneOther = () => {
+    const b = others()[0]
+    return { iid: 'fbl-goes', type: 'Other', date: 'Oct 17', yr: 2026, allday: true, s: 0, e: 1439, remarks: 'family', mod: '2026-09-01', by: b, at: T0, people: [{ p: b, by: b, at: T0 }] }
+  }
+  const attach = async (name: string) => {
+    const file = $('#inpEditPop .docfield input[type="file"]') as HTMLInputElement
+    expect(file, 'the window draws the Document row').toBeTruthy()
+    const f = new File(['x'], name, { type: 'application/pdf' })
+    await act(async () => { Object.defineProperty(file, 'files', { value: [f], configurable: true }); file.dispatchEvent(new Event('change', { bubbles: true })) })
+  }
+  const snap = (iid: string) => JSON.stringify(live(iid))
+  const undoOnce = async () => act(async () => { undo(); notify() })
+
+  it('a document attached to a shared input: the late date is not moved, and one Undo takes the document off again', async () => {
+    const r = await put(sharedRec())
+    const before = snap('fbl-doc')
+    await openOn(r); await attach('orders.pdf'); await click($('#inpEditSave'))
+    expect(rowDocIds(live('fbl-doc'))).toHaveLength(1)
+    expect(live('fbl-doc').mod, 'a file attached is not a change to what was filed').toBe('2026-09-01')
+    await undoOnce()
+    expect(snap('fbl-doc'), 'exactly the record as it stood').toBe(before)
+  })
+  it('a document taken off a shared input: the other stays, and one Undo puts back exactly what stood', async () => {
+    const r = await put(sharedRec({ docId: 'fbl-a', docIds: ['fbl-a', 'fbl-b'] }))
+    const before = snap('fbl-doc')
+    await openOn(r)
+    expect($$('#inpEditPop .docchip')).toHaveLength(2)
+    await click($('#inpEditPop .docdel'))
+    await click($('#inpEditSave'))
+    expect(rowDocIds(live('fbl-doc')), 'the first was taken off, the second kept').toEqual(['fbl-b'])
+    expect(live('fbl-doc').mod).toBe('2026-09-01')
+    await undoOnce()
+    expect(snap('fbl-doc')).toBe(before)
+    expect(rowDocIds(live('fbl-doc'))).toEqual(['fbl-a', 'fbl-b'])
+  })
+  it('the one writer: a draft that carries no document list leaves a shared input’s documents alone', async () => {
+    const r = await put(sharedRec({ docId: 'fbl-a' }))
+    const d: any = { ...draftOf(r), remarks: 'new words' }; delete d.docIds
+    let ok = false
+    await act(async () => { ok = commitInput(r, d, idsOf(r)); notify() })
+    expect(ok).toBe(true)
+    expect(live('fbl-doc').remarks).toBe('new words')
+    expect(rowDocIds(live('fbl-doc'))).toEqual(['fbl-a'])
+  })
+  it('the one writer: the same documents and nothing else changed writes nothing', async () => {
+    const r = await put(sharedRec({ docId: 'fbl-a' }))
+    const before = snap('fbl-doc')
+    let ok = false
+    await act(async () => { ok = commitInput(r, draftOf(r), idsOf(r)); notify() })
+    expect(ok).toBe(true)
+    expect(snap('fbl-doc')).toBe(before)
+  })
+  it('a ONE-person input: a file attached in its window is saved as before — on the record, the late date not moved, one Undo', async () => {
+    const b = others()[0]
+    const r = await put({ iid: 'fbl-one', type: 'Meeting', date: 'Oct 13', yr: 2026, allday: false, s: 600, e: 660, remarks: 'brief', mod: '2026-09-01', by: b, at: T0, people: [{ p: b, by: b, at: T0 }] })
+    const before = snap('fbl-one')
+    await openOn(r); await attach('orders.pdf'); await click($('#inpEditSave'))
+    expect(win()).toBeNull()
+    expect(rowDocIds(live('fbl-one'))).toHaveLength(1)
+    expect(live('fbl-one').mod).toBe('2026-09-01')
+    await undoOnce()
+    expect(snap('fbl-one')).toBe(before)
+  })
+  it('F2: "Goes to" and the OIL answer are ONE step — one Undo puts back both, and the window never says "OIL answer saved"', async () => {
+    const r = await put(oneOther())
+    const before = snap('fbl-goes')
+    await openOn(r)
+    await click(tid('inpEdit-goes-u')); await click($('#inpEditSave'))
+    await click(tid('oil-no')); await click(tid('oilconf-save'))
+    expect(live('fbl-goes').acc).toBe('u')
+    expect(live('fbl-goes').oil).toBeTruthy()
+    expect(said, 'a change went with the answer, so it is not "the answer alone"').not.toContain('OIL answer saved')
+    await undoOnce()
+    expect(snap('fbl-goes'), 'neither the move nor the answer is left behind').toBe(before)
+  })
+  it('an OIL answer ALONE is still written by itself: where it goes and the late date are left as they were', async () => {
+    const r = await put(oneOther())
+    const before = snap('fbl-goes')
+    await openOn(r)
+    await click($('#inpEditSave'))
+    await click(tid('oil-no')); await click(tid('oilconf-save'))
+    expect(win()).toBeNull()
+    expect(live('fbl-goes').oil).toBeTruthy()
+    expect(live('fbl-goes').acc).toBeUndefined()
+    expect(live('fbl-goes').mod, 'an answer alone never makes an on-time input read late').toBe('2026-09-01')
+    expect(said).toContain('OIL answer saved')
+    await undoOnce()
+    expect(snap('fbl-goes')).toBe(before)
   })
 })

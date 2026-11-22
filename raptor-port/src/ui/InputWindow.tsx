@@ -37,8 +37,16 @@ import { clickedOutside } from './outside'
 import { useSheetFocus, topSheet } from './sheetfocus'
 import { AskCard } from './AskCard'
 import { lastPressed } from './lastpress'
-import { rosterOptions, archivedOptions, fmt, fmtDay, unfmt, hasHalf, spanOf, spanFields, SPANS, SANS_ROWS, sansRefusal, isoOrd, ordISO, applyMedPlan, medKeptSegments, mintMedSegments, typeOptions, draftOf, normalizeInputDraft, docGate, oilGate, oilAnswered, oilUnansweredDay, oilSummary, oilDayLabel, TYPE_ALLOW, protectedInput, medPlanProtected, medicalLocked, medSegmentsProtected, placeholderRefused, placeholderWhy, commitNewInput, commitInputEdit, medAskFor, saveBatchX, saveBatch, giveBackCuts, askOilIfPending, removeInput, upchitDeleteAsk, sharedRefusal, inputWho, howMany, commitInput, WIN_FIELDS, fieldSame, fieldPart, fieldSay, progOf } from './inputedit'
+import { rosterOptions, archivedOptions, fmt, fmtDay, unfmt, hasHalf, spanOf, spanFields, SPANS, SANS_ROWS, sansRefusal, isoOrd, ordISO, applyMedPlan, medKeptSegments, mintMedSegments, typeOptions, draftOf, normalizeInputDraft, docGate, oilGate, oilAnswered, oilUnansweredDay, oilSummary, oilDayLabel, TYPE_ALLOW, protectedInput, medPlanProtected, medicalLocked, medSegmentsProtected, placeholderRefused, placeholderWhy, commitNewInput, commitInputEdit, medAskFor, saveBatchX, saveBatch, giveBackCuts, askOilIfPending, removeInput, upchitDeleteAsk, sharedRefusal, inputWho, howMany, commitInput, WIN_FIELDS, draftChanges, fieldSame, fieldPart, fieldSay, progOf } from './inputedit'
 import type { Span } from './inputedit'
+
+/* ANYTHING OF HIS IN THE WINDOW'S FIELDS NOT SAVED — the ✕'s and Escape's "Close it and lose them?" (owner D1622) and the
+   question before another input opens: every window field, an Other's "Goes to" and an Attach's "To" (draftChanges), and
+   a document attached or taken off. WIN_FIELDS alone missed the last three, so a window holding only a new "Goes to",
+   "To" or document closed at once and lost it (found beside Fable's Inputs F1/F2, 22 Nov 26). */
+const unsavedFields = (draft: any, saved: any): boolean =>
+  draftChanges(draft, saved).length > 0
+  || (Array.isArray(draft?.docIds) && JSON.stringify(rowDocIds(draft)) !== JSON.stringify(rowDocIds(saved)))
 
 export function SpanPicker({ id, span, onPick }: { id: string, span: Span, onPick: (m: Span) => void }) {
   return <div className="spanpick" id={id} role="group" aria-label="Duration">
@@ -277,7 +285,7 @@ export function InputEditor() {
        a word when another input was opened. Compared as a set - picked and un-picked again is no change. */
     const hadPpl = new Set(basePpl.current)
     const pplTouched = ppl.length !== hadPpl.size || ppl.some(id => !hadPpl.has(id))
-    if (win && other && !swapOk.current && draft && base.current && (pplTouched || WIN_FIELDS.some(f => !fieldSame(f, draft, base.current)))) {
+    if (win && other && !swapOk.current && draft && base.current && (pplTouched || unsavedFields(draft, base.current))) {
       /* hung from the other input as a whole — its bar, its list row — where the press landed inside one */
       { const p = lastPressed(); swapAt.current = (p?.closest('[data-iid]') as HTMLElement | null) || p }
       setSwap(r); keepDraft.current = true; setInpEdit(prev); notify()
@@ -457,7 +465,7 @@ export function InputEditor() {
     if (!draft || !base.current) return false
     const had = new Set(basePpl.current)
     const pplTouched = ppl.length !== had.size || ppl.some(id => !had.has(id))
-    return pplTouched || WIN_FIELDS.some(f => !fieldSame(f, draft, base.current))
+    return pplTouched || unsavedFields(draft, base.current)
   }
   /* THE WINDOW'S ✕ ASKS AS ESCAPE DOES (owner D1622, 3 Nov 26): with anything of his not saved, ✕ puts up the same
      "Close it and lose them?" question — a ✕ is easy to hit by mistake; with nothing typed it closes at once. Cancel keeps
@@ -527,8 +535,7 @@ export function InputEditor() {
          as the record has them, no OIL answer or removal riding along — the window just closes, saying nothing */
       if (rec && !oilDec && !removals.length) {
         const saved = draftOf(rec), inIt = new Set(idsOf(rec).map(String))
-        if (WIN_FIELDS.every(f => fieldSame(f, draft, saved)) && String(draft.to ?? '') === String(saved.to ?? '')
-          && (!('goes' in draft) || draft.goes === saved.goes) && ppl.length === inIt.size && ppl.every(id => inIt.has(String(id)))) { close(); return }
+        if (!draftChanges(draft, saved).length && ppl.length === inIt.size && ppl.every(id => inIt.has(String(id)))) { close(); return }
       }
       if (commitInput(rec, draft, ppl, oilDec ? { oil: oilDec } : undefined)) {
         const row = (rec && INPUTS.indexOf(rec) >= 0 ? rec : null) || INPUTS.find((x: any) => !had.has(x.iid))
@@ -567,10 +574,14 @@ export function InputEditor() {
        Save pressed on an input as it stands wrote "changed by" and the time, an Undo step of its own and the just-changed
        mark — for nothing. Where every field of the window, an Attach's "To" and an Other's "Goes to" included, is the
        record's own, and no OIL answer or medical removal rides the save, the window just closes. */
-    const saved = draftOf(r)
-    if (!oilDec && !removals.length && WIN_FIELDS.every(f => fieldSame(f, draft, saved))
-      && String(draft.to ?? '') === String(saved.to ?? '') && (!('goes' in draft) || draft.goes === saved.goes)) { close(); return }
-    if (oilDec && !removals.length && WIN_FIELDS.every(f => fieldSame(f, draft, saved))) {
+    /* ONE BODY ASKS "HAS ANYTHING OF THE INPUT CHANGED?" FOR BOTH (ui/inputedit.tsx draftChanges — Fable's read, 22 Nov 26,
+       F2): the 3 Nov fix added "To" and "Goes to" to the nothing-changed check alone, so the OIL shortcut below still
+       took an Other moved under Unavailable (or an Attach's new "To") for "nothing changed", wrote the answer by itself
+       and said "OIL answer saved" — the move thrown away. Any real change now goes through the full save with the
+       answer: one step, one Undo. */
+    const unchanged = !draftChanges(draft, draftOf(r)).length
+    if (!oilDec && !removals.length && unchanged) { close(); return }
+    if (oilDec && !removals.length && unchanged) {
       if (!mayEditInput(r) || protectedInput(r)) { stay(); return }
       const s = saveBatchX(() => { r.oil = { ...oilDec }; stampChanged(r); return true })
       if (s.ok) { if (CURPAGE === 'inputs' && !onMedTab()) revealInput(r); HOOKS.toast('OIL answer saved', 'ok'); close() }
