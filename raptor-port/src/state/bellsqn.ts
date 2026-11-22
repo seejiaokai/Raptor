@@ -19,7 +19,7 @@
 import { store } from '../engine/hooks'
 import { commitSettingsIntent } from './people-settings-commit'
 import { me } from './perms'
-import { homeOn, todayIso, units } from './units'
+import { homeOn, todayIso, units, unitRowsBefore } from './units'
 import { accountOfPid, adminLineAudience } from './accounts'
 
 export const BELLSQN_PFX = 'bellsqn:'
@@ -67,7 +67,13 @@ export function setBellSquadron(unit: string, on: boolean): boolean {
   if (!pid || !unit) return false
   const p = String(pid)
   if (bellShows(p, unit) === on && Object.prototype.hasOwnProperty.call(bellChoices(p), unit)) return false
-  const next = { ...bellChoices(p), [unit]: on }
+  /* ONLY SQUADRONS STILL IN THE STORE (the second half's final reads, R1): a choice for a squadron since undone away — "+ New
+     squadron" taken back by an Undo, which a bell switch is not — is dropped, read from the stored rows as the gate reads
+     them (perms.ts bellSqnRowViolation refuses an id not there); carried over, it made every later press refused */
+  const live = new Set(unitRowsBefore([]).units.map(u => u.id))
+  const next: Record<string, boolean> = {}
+  for (const [k, v] of Object.entries(bellChoices(p))) if (live.has(k)) next[k] = v
+  next[unit] = on
   const res: any = commitSettingsIntent('bell.squadrons', { owner: p }, () => { store.set(BELLSQN_PFX + p, next) })
   return !!res && res.ok !== false
 }
