@@ -19,6 +19,7 @@ paths:
   - raptor-port/e2e/board-undo-land.spec.ts
   - raptor-port/e2e/board-layout.spec.ts
   - raptor-port/e2e/boardside.spec.ts
+  - raptor-port/e2e/sans-unfiled-wrap.spec.ts
   - raptor-port/e2e/changeswin.spec.ts
   - raptor-port/e2e/consistency-heights.spec.ts
   - raptor-port/e2e/datecal.spec.ts
