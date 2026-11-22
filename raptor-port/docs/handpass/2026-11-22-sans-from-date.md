@@ -77,6 +77,37 @@ No new gesture or mode (question 5): passed.
 
 ## 5. The five sizing lines (the order's §7.0)
 
+Written by the host (Fable, his D2255 — above the Opus the ledger asks for) after the roll-call, before any walker.
+
+1. **The type of change:** D — a mark and a listing DRAWN in several places, each by its own code (the SANS line on a puck,
+   the crew list's sections, the Available crew panel, the ALL AVAIL window, the preview); A — a rule inside one shared
+   calculation (`sansOn`, read by the crowd, the published day's compare and the SANS checks); G — saved data and the
+   publish path (two new person fields; what a published day keeps; pending and the sign-offs).
+2. **What only a walk could find here:** a surface that draws a man on a day outside the three builders that were wrapped
+   (`dayHTML`, `boardHTML`, `paletteHTML`, `withChipWorld`) — a partial repaint, the phone board, the member's View-only
+   Sched, the issued face, a look at an older version; whether the crew list, the puck on the row and the ALL AVAIL
+   window on ONE screen now agree for the same man; whether the dates survive what else makes them appear or vanish
+   (the order's "a change that reads stored state"): a reload, a sign-out and in, a week change and back, Undo and Redo
+   of the tick, a posting's date moved, the posting's "Undo post out". The tests already cover the calculation, the
+   writers and the compare, each through the app's own writers (`postOut`, `updatePersonField`, the publish commands) —
+   never through a control on screen.
+3. **What the ledger says:** type D — 10 walks, all 10 found a real fault, 57 in the change itself; type G — 7 walks,
+   4 found faults (20 in the change); type A — 9 walks, 5 found faults but only 2 in the change. So the walk goes where
+   D and G point: every place he is DRAWN, and the saved dates across a reload, Undo and a week change.
+4. **The walk chosen:** two Opus walkers side by side, each in its own world (own port, own browser profile), on a fresh
+   production build of the last pushed commit, at 1536 desktop and 402 iPhone (WebKit), real controls only — the Quals
+   tick pressed, the posting set on the Leave War's sheet, the day signed and published by its boxes:
+   **w1 (the drawn man):** scenarios 1, 3, 4 and 7 below, plus 8 — after scenario 1, reload, sign out and in, step to next
+   week and back: the Saturday still shows him a regular; Undo the tick / "Undo post out": he is a regular on every day;
+   Redo. **w2 (the published record and the words):** scenarios 2, 5 and 6, plus 9 — a look at the published version
+   (👁) and View-only Sched as a member on the earlier day: his puck as published; the pending list's line on a day
+   after the date. Sizes beyond the two required: none (no layout change). **Carried by a test, not walked:** the
+   repeated date cases of the calculation — the same-day tick and untick, the merge of touching stretches, a posting
+   re-dated (`sans-from-date.test.ts`, through the app's writers; their route on screen is the Quals tick walked in
+   scenarios 2–4); the three-people and placeholder-beside-names wordings of the publish note (`publishdoor.test.ts` —
+   the same sentence builder as the one- and two-person notes walked in scenario 6).
+5. **After the walk:** its row in `docs/walk-ledger.md` —
+
 ## 6. The orders walked — what the screen said and what the OIL said
 
 Scenarios to walk, desktop 1536 and iPhone 402, a picture each (Astra's scenario design to be added before the walk):
