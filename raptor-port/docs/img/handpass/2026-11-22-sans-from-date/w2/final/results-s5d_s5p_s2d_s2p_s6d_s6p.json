@@ -1,0 +1,986 @@
+[
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "premise",
+  "what": "the man and the clock",
+  "ok": null,
+  "note": "rocky = Hex RCP SANS false; today Wed Jul 22 2026 09:00"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-01",
+  "what": "Mon 13 Jul (Jul 13): Ground Programme row with Hex by + Item and the crew list",
+  "ok": true,
+  "note": "{\"prog\":\"W2 MON BRIEF\",\"str\":\"09:00\",\"end\":\"10:00\",\"who\":\"rocky\"}",
+  "pics": "s5-01-mon-row-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-02",
+  "what": "Mon 13 Jul signed and published (Publish day)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true}",
+  "pics": "s5-02-mon-published-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-03",
+  "what": "Tue 21 Jul (Jul 21): Ground Programme row with Hex",
+  "ok": true,
+  "note": "{\"prog\":\"W2 TUE BRIEF\",\"str\":\"09:00\",\"end\":\"10:00\",\"who\":\"rocky\"}",
+  "pics": "s5-03-tue-row-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-04",
+  "what": "Tue 21 Jul signed and published (Publish day)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true} pucks [{\"sec\":\"⠿Ground Programme + In\",\"head\":\"\",\"san\":false,\"cls\":\"puck r sm\",\"title\":\"Hex · C · ops wingman\"},{\"sec\":\"ap-grid\",\"head\":\"\",\"san\":false,\"cls\":\"seat\",\"title\":\"\"},{\"sec\":\"seat\",\"head\":\"\",\"san\":false,\"cls\":\"puck r sm\",\"title\":\"Hex · C · ops wingman\"},{\"sec\":\"crew-col\",\"head\":\"\",\"san\":false,\"cls\":\"rpuck busy\",\"title\":\"Hex — already tasked today, but you can still plan him\"},{\"sec\":\"crew-col\",\"head\":\"\",\"san\":false,\"cls\":\"puck r sm\",\"title\":\"Hex · C · ops wingman\"}]",
+  "pics": "s5-04-tue-published-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-05",
+  "what": "posted out as SANS from Mon 20 Jul (Leave War ⋯ → Post out → SANS → Post out)",
+  "ok": true,
+  "note": "line \"On 20 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-20\"}",
+  "pics": "s5-05-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-06",
+  "what": "Mon 13 Jul on the board after the posting: nothing pending, signed line stands, his row puck no purple line, a regular in the crew list",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true} · pucks [\"⠿Sims//san=false\",\"⠿Ground Programme + In//san=false\",\"ap-grid//san=false\",\"seat//san=false\",\"crew-col//san=false\",\"crew-col//san=false\"] · heads [\"PLACEHOLDERS\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"]",
+  "pics": "s5-06-mon-board-desktop.png, s5-06b-mon-row-desktop.png, s5-06c-mon-crew-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-07",
+  "what": "Mon 13 Jul on Edit Schedule: nothing pending, signed, his puck(s) with no purple line",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"\",\"approved\":true} · week pucks [{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false}]",
+  "pics": "s5-07-mon-editsched-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-08",
+  "what": "Tue 21 Jul on the board: \"1 pending\", sign-offs fallen (\"Not yet signed\"); RECORD his pucks",
+  "ok": true,
+  "note": "{\"pend\":1,\"notSigned\":true,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true} · pucks [\"⠿Ground Programme + In//san=true\",\"SANS Avail/SANS AVAIL · 0 FREE/san=false\",\"SANS Avail/SANS AVAIL · 0 FREE/san=true\"]",
+  "pics": "s5-08-tue-board-pending-desktop.png, s5-08b-tue-row-desktop.png, s5-08c-tue-crew-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-09",
+  "what": "S9: the 👁 look at Tue 21 Jul's published version — his puck as published, no purple line",
+  "ok": true,
+  "note": "versions [\"2026-07-21#0=Originalread-only — look, don'\"] · pucks [{\"sec\":\"Ground Programme\",\"head\":\"\",\"san\":false,\"cls\":\"puck r sm\",\"title\":\"Hex · C · ops wingman\"}] · banner \"Original▾\"",
+  "pics": "s5-09-tue-eye-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-10",
+  "what": "Tue 21 Jul: the pending list — RECORD its line",
+  "ok": null,
+  "note": "⠿ Changes · Tuesday 21/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 10 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Hex · SANS Saber 22/7 09:00 no → yes",
+  "pics": "s5-10-tue-pendlist-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-11",
+  "what": "S9: the change history (\"All changes\") — RECORD the line the posting left on Tue 21 Jul",
+  "ok": null,
+  "note": "⠿ Changes · Tuesday 21/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 10 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ The day · 6 09:00 Published — the Original Saber · 22/7 09:00 Signed · APPROVED BY · Bolt Saber · 22/7 09:00 Signed · PLANNED BY · Basher Saber · 22/7 09:00 Signed · SKED CK · Anvil Saber · 22/7 09:00 Signed · CUR CK · Ace Saber · 22/7 09:00 Ground item added Saber · 22/7 09:00 ▾ Ground · W2 TUE BRIEF · 4 09:00 Hex put on Saber · 22/7 09:00 End— → 10:00 Saber · 22/7 09:00 Start— → 09:00 Saber · 22/7 09:00 Item— → W2 TUE BRIEF Saber · 22/7 09:00 Tap a change to go to it — the window stays open.",
+  "pics": "s5-11-all-changes-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-12",
+  "what": "S9: View-only Sched as Ranger, Tue 21 Jul — his puck as published, no purple line",
+  "ok": true,
+  "note": "[{\"san\":false,\"cls\":\"puck r sm\",\"txt\":\"HexC\"}]",
+  "pics": "s5-12-tue-view-ranger-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-13",
+  "what": "View-only Sched as Ranger, Mon 13 Jul — his puck no purple line",
+  "ok": true,
+  "note": "[{\"san\":false,\"cls\":\"puck r sm\",\"txt\":\"HexC\"},{\"san\":false,\"cls\":\"puck r sm\",\"txt\":\"HexC\"}]",
+  "pics": "s5-13-mon-view-ranger-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-14",
+  "what": "Tue 21 Jul AL1 published (Publish AL1): nothing pending, his puck wears the purple line on the board",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true} · pucks [\"⠿Ground Programme + In//san=true\",\"SANS Avail/SANS AVAIL · 0 FREE/san=false\",\"SANS Avail/SANS AVAIL · 0 FREE/san=true\"] · toast \"Published AL1 · 1 item on Tue only · approved by Bolt\"",
+  "pics": "s5-14-tue-al1-desktop.png, s5-14b-tue-row-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-15",
+  "what": "after AL1: Edit Schedule week Jul 20 — his pucks (Tue row should wear the line)",
+  "ok": null,
+  "note": "[{\"san\":true},{\"san\":true},{\"san\":true}]",
+  "pics": "s5-15-editsched-after-al1-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-16",
+  "what": "after AL1: View-only Sched as Ranger, Tue 21 Jul — purple line now",
+  "ok": true,
+  "note": "[{\"san\":true,\"cls\":\"puck r sm san\",\"txt\":\"HexC\"}]",
+  "pics": "s5-16-tue-view-ranger-al1-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-17",
+  "what": "Undo post out on his posting's sheet",
+  "ok": true,
+  "note": "button 1 err \"\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "s5-17-undo-poa-sheet-desktop.png, s5-17-undo-pob-after-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-18",
+  "what": "after Undo post out: RECORD Tue 21 Jul (expected pending again, a regular there)",
+  "ok": null,
+  "note": "{\"pend\":1,\"notSigned\":true,\"signed\":\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true} · pucks [\"⠿Ground Programme + In//san=false\",\"ap-grid//san=false\",\"seat//san=false\",\"crew-col//san=false\",\"crew-col//san=false\"]",
+  "pics": "s5-18-tue-after-undo-desktop.png, s5-18b-tue-row-desktop.png, s5-18c-tue-crew-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "s5-19",
+  "what": "after Undo post out: Mon 13 Jul still nothing pending",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true}",
+  "pics": "s5-19-mon-after-undo-desktop.png"
+ },
+ {
+  "scn": "s5",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "premise",
+  "what": "the man and the clock",
+  "ok": null,
+  "note": "rocky = Hex RCP SANS false; today Wed Jul 22 2026 09:00"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-01",
+  "what": "Mon 13 Jul (Jul 13): Ground Programme row with Hex by + Item and the crew list",
+  "ok": true,
+  "note": "{\"prog\":\"W2 MON BRIEF\",\"str\":\"09:00\",\"end\":\"10:00\",\"who\":\"rocky\"}",
+  "pics": "s5-01-mon-row-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-02",
+  "what": "Mon 13 Jul signed and published (Publish day)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true}",
+  "pics": "s5-02-mon-published-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-03",
+  "what": "Tue 21 Jul (Jul 21): Ground Programme row with Hex",
+  "ok": true,
+  "note": "{\"prog\":\"W2 TUE BRIEF\",\"str\":\"09:00\",\"end\":\"10:00\",\"who\":\"rocky\"}",
+  "pics": "s5-03-tue-row-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-04",
+  "what": "Tue 21 Jul signed and published (Publish day)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true} pucks [{\"sec\":\"⠿Ground Programme + In\",\"head\":\"\",\"san\":false,\"cls\":\"puck r sm\",\"title\":\"Hex · C · ops wingman\"},{\"sec\":\"ap-grid\",\"head\":\"\",\"san\":false,\"cls\":\"seat\",\"title\":\"\"},{\"sec\":\"seat\",\"head\":\"\",\"san\":false,\"cls\":\"puck r sm\",\"title\":\"Hex · C · ops wingman\"},{\"sec\":\"crew-col\",\"head\":\"\",\"san\":false,\"cls\":\"rpuck busy\",\"title\":\"Hex — already tasked today, but you can still plan him\"},{\"sec\":\"crew-col\",\"head\":\"\",\"san\":false,\"cls\":\"puck r sm\",\"title\":\"Hex · C · ops wingman\"}]",
+  "pics": "s5-04-tue-published-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-05",
+  "what": "posted out as SANS from Mon 20 Jul (Leave War ⋯ → Post out → SANS → Post out)",
+  "ok": true,
+  "note": "line \"On 20 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-20\"}",
+  "pics": "s5-05-postout-sheet-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-06",
+  "what": "Mon 13 Jul on the board after the posting: nothing pending, signed line stands, his row puck no purple line, a regular in the crew list",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true} · pucks [\"⠿Sims//san=false\",\"⠿Ground Programme + In//san=false\",\"ap-grid//san=false\",\"seat//san=false\",\"crew-col//san=false\",\"crew-col//san=false\"] · heads [\"PLACEHOLDERS\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"]",
+  "pics": "s5-06-mon-board-phone.png, s5-06b-mon-row-phone.png, s5-06c-mon-crew-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-07",
+  "what": "Mon 13 Jul on Edit Schedule: nothing pending, signed, his puck(s) with no purple line",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"\",\"approved\":true} · week pucks [{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false},{\"san\":false}]",
+  "pics": "s5-07-mon-editsched-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-08",
+  "what": "Tue 21 Jul on the board: \"1 pending\", sign-offs fallen (\"Not yet signed\"); RECORD his pucks",
+  "ok": true,
+  "note": "{\"pend\":1,\"notSigned\":true,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true} · pucks [\"⠿Ground Programme + In//san=true\",\"SANS Avail/SANS AVAIL · 0 FREE/san=false\",\"SANS Avail/SANS AVAIL · 0 FREE/san=true\"]",
+  "pics": "s5-08-tue-board-pending-phone.png, s5-08b-tue-row-phone.png, s5-08c-tue-crew-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-09",
+  "what": "S9: the 👁 look at Tue 21 Jul's published version — his puck as published, no purple line",
+  "ok": true,
+  "note": "versions [\"2026-07-21#0=Originalread-only — look, don'\"] · pucks [{\"sec\":\"Ground Programme\",\"head\":\"\",\"san\":false,\"cls\":\"puck r sm\",\"title\":\"Hex · C · ops wingman\"}] · banner \"Original▾\"",
+  "pics": "s5-09-tue-eye-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-10",
+  "what": "Tue 21 Jul: the pending list — RECORD its line",
+  "ok": null,
+  "note": "⠿ Changes · Tuesday 21/7 Published · 1 change waiting to go out as AL1 Hide ▾ ✕ History on: Tap a gold dot on the schedule New to you 0 All changes 10 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Hex · SANS Saber 22/7 09:00 no → yes",
+  "pics": "s5-10-tue-pendlist-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-11",
+  "what": "S9: the change history (\"All changes\") — RECORD the line the posting left on Tue 21 Jul",
+  "ok": null,
+  "note": "⠿ Changes · Tuesday 21/7 Published · 1 change waiting to go out as AL1 Hide ▾ ✕ History on: Tap a gold dot on the schedule New to you 0 All changes 10 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ The day · 6 09:00 Published — the Original Saber · 22/7 09:00 Signed · APPROVED BY · Bolt Saber · 22/7 09:00 Signed · PLANNED BY · Basher Saber · 22/7 09:00 Signed · SKED CK · Anvil Saber · 22/7 09:00 Signed · CUR CK · Ace Saber · 22/7 09:00 Ground item added Saber · 22/7 09:00 ▾ Ground · W2 TUE BRIEF · 4 09:00 Hex put on Saber · 22/7 09:00 End— → 10:00 Saber · 22/7 09:00 Start— → 09:00 Saber · 22/7 09:00 Item— → W2 TUE BRIEF Saber · 22/7 09:00 Tap a change to go to it — the window stays open.",
+  "pics": "s5-11-all-changes-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-12",
+  "what": "S9: View-only Sched as Ranger, Tue 21 Jul — his puck as published, no purple line",
+  "ok": true,
+  "note": "[{\"san\":false,\"cls\":\"puck r sm\",\"txt\":\"HexC\"}]",
+  "pics": "s5-12-tue-view-ranger-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-13",
+  "what": "View-only Sched as Ranger, Mon 13 Jul — his puck no purple line",
+  "ok": true,
+  "note": "[{\"san\":false,\"cls\":\"puck r sm\",\"txt\":\"HexC\"},{\"san\":false,\"cls\":\"puck r sm\",\"txt\":\"HexC\"}]",
+  "pics": "s5-13-mon-view-ranger-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-14",
+  "what": "Tue 21 Jul AL1 published (Publish AL1): nothing pending, his puck wears the purple line on the board",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED AL1 Ace Anvil Basher Bolt\",\"approved\":true} · pucks [\"⠿Ground Programme + In//san=true\",\"SANS Avail/SANS AVAIL · 0 FREE/san=false\",\"SANS Avail/SANS AVAIL · 0 FREE/san=true\"] · toast \"Published AL1 · 1 item on Tue only · approved by Bolt\"",
+  "pics": "s5-14-tue-al1-phone.png, s5-14b-tue-row-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-15",
+  "what": "after AL1: Edit Schedule week Jul 20 — his pucks (Tue row should wear the line)",
+  "ok": null,
+  "note": "[{\"san\":true},{\"san\":true},{\"san\":true}]",
+  "pics": "s5-15-editsched-after-al1-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-16",
+  "what": "after AL1: View-only Sched as Ranger, Tue 21 Jul — purple line now",
+  "ok": true,
+  "note": "[{\"san\":true,\"cls\":\"puck r sm san\",\"txt\":\"HexC\"}]",
+  "pics": "s5-16-tue-view-ranger-al1-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-17",
+  "what": "Undo post out on his posting's sheet",
+  "ok": true,
+  "note": "button 1 err \"\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "s5-17-undo-poa-sheet-phone.png, s5-17-undo-pob-after-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-18",
+  "what": "after Undo post out: RECORD Tue 21 Jul (expected pending again, a regular there)",
+  "ok": null,
+  "note": "{\"pend\":1,\"notSigned\":true,\"signed\":\"SIGNED AL1 Ace Anvil Basher Bolt\",\"approved\":true} · pucks [\"⠿Ground Programme + In//san=false\",\"ap-grid//san=false\",\"seat//san=false\",\"crew-col//san=false\",\"crew-col//san=false\"]",
+  "pics": "s5-18-tue-after-undo-phone.png, s5-18b-tue-row-phone.png, s5-18c-tue-crew-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-19",
+  "what": "after Undo post out: Mon 13 Jul still nothing pending",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true}",
+  "pics": "s5-19-mon-after-undo-phone.png"
+ },
+ {
+  "scn": "s5",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "premise",
+  "what": "clock",
+  "ok": null,
+  "note": "today Wed Jul 22 2026 09:00"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-01",
+  "what": "Sat 18 Jul: Common Programme SQN EVENT 08:00–15:00 for ALL AVAIL",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"08:00\",\"end\":\"15:00\",\"who\":\"allavail\"}",
+  "pics": "s2-01-row-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-02",
+  "what": "Sat 18 Jul published (Publish day); RECORD the ALL AVAIL count",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true} · count chip \"45\" · toast \"Saturday published and approved\"",
+  "pics": "s2-02-published-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-03",
+  "what": "ALL AVAIL window lists Hex as a regular (before the tick)",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"cls\":\"rpuck\"}",
+  "pics": "s2-03-availwin-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-04",
+  "what": "Leave War: Hex 18 Jul (expected FO…)",
+  "ok": true,
+  "note": "cell \"FO*\" · OIL tracker \"2\"",
+  "pics": "s2-04-lw-fo-desktop.png, s2-04b-oil-before-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-05",
+  "what": "Wed 22 Jul published with an ALL AVAIL item (Publish day)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true}",
+  "pics": "s2-05-wed-published-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-06",
+  "what": "Quals ✎ Edit: Hex SANS ticked by hand (today Wed 22 Jul)",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-22\"}",
+  "pics": "s2-06-quals-ticked-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-07",
+  "what": "Sat 18 Jul after the tick: no \"N pending\", Signed ORIG line and four names stand",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true} · chip \"45\"",
+  "pics": "s2-07-sat-after-tick-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-08",
+  "what": "ALL AVAIL window still lists Hex as a regular (no purple line)",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"cls\":\"rpuck\"}",
+  "pics": "s2-08-availwin-after-tick-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-08b",
+  "what": "Sat 18 Jul crew list after the tick: where Hex stands",
+  "ok": true,
+  "note": "[\"ap-grid//san=false\",\"seat//san=false\",\"crew-col//san=false\",\"crew-col//san=false\"]",
+  "pics": "s2-08b-sat-crew-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-09",
+  "what": "Leave War: Hex 18 Jul still FO after the tick (grid cell; where the grid hides his row, his OIL tracker figure against before)",
+  "ok": null,
+  "note": "cell \"NO CELL\" · OIL tracker now \"NO OIL ROW\" (before: \"2\")",
+  "pics": "s2-09-lw-after-tick-desktop.png, s2-09b-oil-after-tick-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-10",
+  "what": "a remark changed on Saturday: pending, sign-offs fall",
+  "ok": true,
+  "note": "{\"pend\":1,\"notSigned\":true,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true}",
+  "pics": "s2-10-sat-remark-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-11",
+  "what": "Sat 18 Jul AL1 published (Publish AL1)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true} · toast \"Published AL1 · 1 item on Sat only · approved by Bolt\"",
+  "pics": "s2-11-sat-al1-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-12",
+  "what": "after AL1: ALL AVAIL window — RECORD whether Hex is listed",
+  "ok": null,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"cls\":\"rpuck\"}",
+  "pics": "s2-12-availwin-after-al1-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-13",
+  "what": "after AL1: Hex 18 Jul FO still there (D142 + D2313)",
+  "ok": false,
+  "note": "cell \"NO CELL\" · OIL tracker now \"NO OIL ROW\" (before the tick \"2\")",
+  "pics": "s2-13-lw-after-al1-desktop.png, s2-13b-oil-after-al1-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-14",
+  "what": "Wed 22 Jul (the tick's day): reads pending, sign-offs fallen",
+  "ok": true,
+  "note": "{\"pend\":1,\"notSigned\":true,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true} · pucks [\"seat//san=true\",\"SANS Avail/SANS AVAIL · 0 FREE/san=false\",\"SANS Avail/SANS AVAIL · 0 FREE/san=true\"]",
+  "pics": "s2-14-wed-pending-desktop.png, s2-14b-wed-crew-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-15",
+  "what": "Wed 22 Jul pending list — RECORD its line for him exactly",
+  "ok": null,
+  "note": "⠿ Changes · Wednesday 22/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 11 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Hex · SANS Saber 22/7 09:00 no → yes",
+  "pics": "s2-15-wed-pendlist-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "premise",
+  "what": "clock",
+  "ok": null,
+  "note": "today Wed Jul 22 2026 09:00"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-01",
+  "what": "Sat 18 Jul: Common Programme SQN EVENT 08:00–15:00 for ALL AVAIL",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"08:00\",\"end\":\"15:00\",\"who\":\"allavail\"}",
+  "pics": "s2-01-row-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-02",
+  "what": "Sat 18 Jul published (Publish day); RECORD the ALL AVAIL count",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true} · count chip \"45\" · toast \"Saturday published and approved\"",
+  "pics": "s2-02-published-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-03",
+  "what": "ALL AVAIL window lists Hex as a regular (before the tick)",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"cls\":\"rpuck\"}",
+  "pics": "s2-03-availwin-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-04",
+  "what": "Leave War: Hex 18 Jul (expected FO…)",
+  "ok": true,
+  "note": "cell \"FO*\" · OIL tracker \"2\"",
+  "pics": "s2-04-lw-fo-phone.png, s2-04b-oil-before-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-05",
+  "what": "Wed 22 Jul published with an ALL AVAIL item (Publish day)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true}",
+  "pics": "s2-05-wed-published-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-06",
+  "what": "Quals ✎ Edit: Hex SANS ticked by hand (today Wed 22 Jul)",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-22\"}",
+  "pics": "s2-06-quals-ticked-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-07",
+  "what": "Sat 18 Jul after the tick: no \"N pending\", Signed ORIG line and four names stand",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true} · chip \"45\"",
+  "pics": "s2-07-sat-after-tick-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-08",
+  "what": "ALL AVAIL window still lists Hex as a regular (no purple line)",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"cls\":\"rpuck\"}",
+  "pics": "s2-08-availwin-after-tick-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-08b",
+  "what": "Sat 18 Jul crew list after the tick: where Hex stands",
+  "ok": true,
+  "note": "[\"ap-grid//san=false\",\"seat//san=false\",\"crew-col//san=false\",\"crew-col//san=false\"]",
+  "pics": "s2-08b-sat-crew-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-09",
+  "what": "Leave War: Hex 18 Jul still FO after the tick (grid cell; where the grid hides his row, his OIL tracker figure against before)",
+  "ok": null,
+  "note": "cell \"NO CELL\" · OIL tracker now \"NO OIL ROW\" (before: \"2\")",
+  "pics": "s2-09-lw-after-tick-phone.png, s2-09b-oil-after-tick-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-10",
+  "what": "a remark changed on Saturday: pending, sign-offs fall",
+  "ok": true,
+  "note": "{\"pend\":1,\"notSigned\":true,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true}",
+  "pics": "s2-10-sat-remark-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-11",
+  "what": "Sat 18 Jul AL1 published (Publish AL1)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED AL1 Ace Anvil Basher Bolt\",\"approved\":true} · toast \"Published AL1 · 1 item on Sat only · approved by Bolt\"",
+  "pics": "s2-11-sat-al1-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-12",
+  "what": "after AL1: ALL AVAIL window — RECORD whether Hex is listed",
+  "ok": null,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"cls\":\"rpuck\"}",
+  "pics": "s2-12-availwin-after-al1-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-13",
+  "what": "after AL1: Hex 18 Jul FO still there (D142 + D2313)",
+  "ok": false,
+  "note": "cell \"NO CELL\" · OIL tracker now \"NO OIL ROW\" (before the tick \"2\")",
+  "pics": "s2-13-lw-after-al1-phone.png, s2-13b-oil-after-al1-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-14",
+  "what": "Wed 22 Jul (the tick's day): reads pending, sign-offs fallen",
+  "ok": true,
+  "note": "{\"pend\":1,\"notSigned\":true,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true} · pucks [\"seat//san=true\",\"SANS Avail/SANS AVAIL · 0 FREE/san=false\",\"SANS Avail/SANS AVAIL · 0 FREE/san=true\"]",
+  "pics": "s2-14-wed-pending-phone.png, s2-14b-wed-crew-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-15",
+  "what": "Wed 22 Jul pending list — RECORD its line for him exactly",
+  "ok": null,
+  "note": "⠿ Changes · Wednesday 22/7 Published · 1 change waiting to go out as AL1 Hide ▾ ✕ History on: Tap a gold dot on the schedule New to you 0 All changes 11 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Hex · SANS Saber 22/7 09:00 no → yes",
+  "pics": "s2-15-wed-pendlist-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s6one",
+  "size": "desktop",
+  "id": "s6-00",
+  "what": "the real door: + Input → Training for Ranger on Sat 18 Jul → Save: is there a way to leave the OIL question for later?",
+  "ok": null,
+  "note": "asked 1; buttons ✕ | Yes: credit FO | No OIL | Back | Add(disabled); after Back: Training on 18 Jul filed 0; bar \"\"",
+  "pics": "s6one-00a-oil-question-desktop.png, s6one-00b-after-back-desktop.png"
+ },
+ {
+  "scn": "s6one",
+  "size": "desktop",
+  "id": "s6-01",
+  "what": "fixture: Training on Sat 18 Jul for Ranger, no OIL answer (planted through the bridge's fileInput, as frf-w3)",
+  "ok": true,
+  "note": "{\"people\":[{\"p\":\"bane\"}],\"oil\":{}}"
+ },
+ {
+  "scn": "s6one",
+  "size": "desktop",
+  "id": "s6-02",
+  "what": "the sign-off press opened the day's OIL list; Later pressed",
+  "ok": true,
+  "note": "",
+  "pics": "s6one-02-oil-list-desktop.png"
+ },
+ {
+  "scn": "s6one",
+  "size": "desktop",
+  "id": "s6-03",
+  "what": "publish note for one (expected \"…Ranger’s Training has no OIL answer, so nobody on it earns OIL.\")",
+  "ok": true,
+  "note": "NOTE: \"Saturday 18 Jul published and approved. Ranger’s Training has no OIL answer, so nobody on it earns OIL.\" · box {\"left\":465.9375,\"right\":1070.0625,\"w\":1536,\"sw\":602,\"cw\":602,\"sh\":36,\"ch\":36} fits true",
+  "pics": "s6one-03-note-desktop.png"
+ },
+ {
+  "scn": "s6one",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s6two",
+  "size": "desktop",
+  "id": "s6-01",
+  "what": "fixture: Training on Sat 18 Jul for Ranger + Hex, no OIL answer (planted through the bridge's fileInput, as frf-w3)",
+  "ok": true,
+  "note": "{\"people\":[{\"p\":\"bane\"},{\"p\":\"rocky\"}],\"oil\":{}}"
+ },
+ {
+  "scn": "s6two",
+  "size": "desktop",
+  "id": "s6-02",
+  "what": "the sign-off press opened the day's OIL list; Later pressed",
+  "ok": true,
+  "note": "",
+  "pics": "s6two-02-oil-list-desktop.png"
+ },
+ {
+  "scn": "s6two",
+  "size": "desktop",
+  "id": "s6-03",
+  "what": "publish note for two (expected \"…Ranger and Hex’s Training has no OIL answer, so nobody on it earns OIL.\")",
+  "ok": true,
+  "note": "NOTE: \"Saturday 18 Jul published and approved. Ranger and Hex’s Training has no OIL answer, so nobody on it earns OIL.\" · box {\"left\":441.796875,\"right\":1094.203125,\"w\":1536,\"sw\":650,\"cw\":650,\"sh\":36,\"ch\":36} fits true",
+  "pics": "s6two-03-note-desktop.png"
+ },
+ {
+  "scn": "s6two",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s6three",
+  "size": "desktop",
+  "id": "s6-01",
+  "what": "fixture: Training on Sat 18 Jul for Ranger + Hex + Tally, no OIL answer (planted through the bridge's fileInput, as frf-w3)",
+  "ok": true,
+  "note": "{\"people\":[{\"p\":\"bane\"},{\"p\":\"rocky\"},{\"p\":\"nick\"}],\"oil\":{}}"
+ },
+ {
+  "scn": "s6three",
+  "size": "desktop",
+  "id": "s6-02",
+  "what": "the sign-off press opened the day's OIL list; Later pressed",
+  "ok": true,
+  "note": "",
+  "pics": "s6three-02-oil-list-desktop.png"
+ },
+ {
+  "scn": "s6three",
+  "size": "desktop",
+  "id": "s6-03",
+  "what": "publish note for three (expected \"…Training for 3 people has no OIL answer, so nobody on it earns OIL.\")",
+  "ok": true,
+  "note": "NOTE: \"Saturday 18 Jul published and approved. Training for 3 people has no OIL answer, so nobody on it earns OIL.\" · box {\"left\":456.078125,\"right\":1079.921875,\"w\":1536,\"sw\":622,\"cw\":622,\"sh\":36,\"ch\":36} fits true",
+  "pics": "s6three-03-note-desktop.png"
+ },
+ {
+  "scn": "s6three",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s6aa",
+  "size": "desktop",
+  "id": "s6-01",
+  "what": "fixture: Training on Sat 18 Jul for ALL AVAIL, no OIL answer (planted through the bridge's fileInput, as frf-w3)",
+  "ok": true,
+  "note": "{\"people\":[{\"p\":\"allavail\"}],\"oil\":{}}"
+ },
+ {
+  "scn": "s6aa",
+  "size": "desktop",
+  "id": "s6-02",
+  "what": "the sign-off press opened the day's OIL list; Later pressed",
+  "ok": true,
+  "note": "",
+  "pics": "s6aa-02-oil-list-desktop.png"
+ },
+ {
+  "scn": "s6aa",
+  "size": "desktop",
+  "id": "s6-03",
+  "what": "publish note for aa (expected \"…Training for ALL AVAIL has no OIL answer, so nobody on it earns OIL.\")",
+  "ok": true,
+  "note": "NOTE: \"Saturday 18 Jul published and approved. Training for ALL AVAIL has no OIL answer, so nobody on it earns OIL.\" · box {\"left\":452.875,\"right\":1083.125,\"w\":1536,\"sw\":628,\"cw\":628,\"sh\":36,\"ch\":36} fits true",
+  "pics": "s6aa-03-note-desktop.png"
+ },
+ {
+  "scn": "s6aa",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s6one",
+  "size": "phone",
+  "id": "s6-00",
+  "what": "the real door: + Input → Training for Ranger on Sat 18 Jul → Save: is there a way to leave the OIL question for later?",
+  "ok": null,
+  "note": "asked 1; buttons ✕ | Yes: credit FO | No OIL | Back | Add(disabled); after Back: Training on 18 Jul filed 0; bar \"\"",
+  "pics": "s6one-00a-oil-question-phone.png, s6one-00b-after-back-phone.png"
+ },
+ {
+  "scn": "s6one",
+  "size": "phone",
+  "id": "s6-01",
+  "what": "fixture: Training on Sat 18 Jul for Ranger, no OIL answer (planted through the bridge's fileInput, as frf-w3)",
+  "ok": true,
+  "note": "{\"people\":[{\"p\":\"bane\"}],\"oil\":{}}"
+ },
+ {
+  "scn": "s6one",
+  "size": "phone",
+  "id": "s6-02",
+  "what": "the sign-off press opened the day's OIL list; Later pressed",
+  "ok": true,
+  "note": "",
+  "pics": "s6one-02-oil-list-phone.png"
+ },
+ {
+  "scn": "s6one",
+  "size": "phone",
+  "id": "s6-03",
+  "what": "publish note for one (expected \"…Ranger’s Training has no OIL answer, so nobody on it earns OIL.\")",
+  "ok": true,
+  "note": "NOTE: \"Saturday 18 Jul published and approved. Ranger’s Training has no OIL answer, so nobody on it earns OIL.\" · box {\"left\":12,\"right\":390,\"w\":402,\"sw\":376,\"cw\":376,\"sh\":48,\"ch\":48} fits true",
+  "pics": "s6one-03-note-phone.png"
+ },
+ {
+  "scn": "s6one",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s6two",
+  "size": "phone",
+  "id": "s6-01",
+  "what": "fixture: Training on Sat 18 Jul for Ranger + Hex, no OIL answer (planted through the bridge's fileInput, as frf-w3)",
+  "ok": true,
+  "note": "{\"people\":[{\"p\":\"bane\"},{\"p\":\"rocky\"}],\"oil\":{}}"
+ },
+ {
+  "scn": "s6two",
+  "size": "phone",
+  "id": "s6-02",
+  "what": "the sign-off press opened the day's OIL list; Later pressed",
+  "ok": true,
+  "note": "",
+  "pics": "s6two-02-oil-list-phone.png"
+ },
+ {
+  "scn": "s6two",
+  "size": "phone",
+  "id": "s6-03",
+  "what": "publish note for two (expected \"…Ranger and Hex’s Training has no OIL answer, so nobody on it earns OIL.\")",
+  "ok": true,
+  "note": "NOTE: \"Saturday 18 Jul published and approved. Ranger and Hex’s Training has no OIL answer, so nobody on it earns OIL.\" · box {\"left\":12,\"right\":390,\"w\":402,\"sw\":376,\"cw\":376,\"sh\":48,\"ch\":48} fits true",
+  "pics": "s6two-03-note-phone.png"
+ },
+ {
+  "scn": "s6two",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s6three",
+  "size": "phone",
+  "id": "s6-01",
+  "what": "fixture: Training on Sat 18 Jul for Ranger + Hex + Tally, no OIL answer (planted through the bridge's fileInput, as frf-w3)",
+  "ok": true,
+  "note": "{\"people\":[{\"p\":\"bane\"},{\"p\":\"rocky\"},{\"p\":\"nick\"}],\"oil\":{}}"
+ },
+ {
+  "scn": "s6three",
+  "size": "phone",
+  "id": "s6-02",
+  "what": "the sign-off press opened the day's OIL list; Later pressed",
+  "ok": true,
+  "note": "",
+  "pics": "s6three-02-oil-list-phone.png"
+ },
+ {
+  "scn": "s6three",
+  "size": "phone",
+  "id": "s6-03",
+  "what": "publish note for three (expected \"…Training for 3 people has no OIL answer, so nobody on it earns OIL.\")",
+  "ok": true,
+  "note": "NOTE: \"Saturday 18 Jul published and approved. Training for 3 people has no OIL answer, so nobody on it earns OIL.\" · box {\"left\":12,\"right\":390,\"w\":402,\"sw\":376,\"cw\":376,\"sh\":48,\"ch\":48} fits true",
+  "pics": "s6three-03-note-phone.png"
+ },
+ {
+  "scn": "s6three",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s6aa",
+  "size": "phone",
+  "id": "s6-01",
+  "what": "fixture: Training on Sat 18 Jul for ALL AVAIL, no OIL answer (planted through the bridge's fileInput, as frf-w3)",
+  "ok": true,
+  "note": "{\"people\":[{\"p\":\"allavail\"}],\"oil\":{}}"
+ },
+ {
+  "scn": "s6aa",
+  "size": "phone",
+  "id": "s6-02",
+  "what": "the sign-off press opened the day's OIL list; Later pressed",
+  "ok": true,
+  "note": "",
+  "pics": "s6aa-02-oil-list-phone.png"
+ },
+ {
+  "scn": "s6aa",
+  "size": "phone",
+  "id": "s6-03",
+  "what": "publish note for aa (expected \"…Training for ALL AVAIL has no OIL answer, so nobody on it earns OIL.\")",
+  "ok": true,
+  "note": "NOTE: \"Saturday 18 Jul published and approved. Training for ALL AVAIL has no OIL answer, so nobody on it earns OIL.\" · box {\"left\":12,\"right\":390,\"w\":402,\"sw\":376,\"cw\":376,\"sh\":48,\"ch\":48} fits true",
+  "pics": "s6aa-03-note-phone.png"
+ },
+ {
+  "scn": "s6aa",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

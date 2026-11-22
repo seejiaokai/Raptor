@@ -1,0 +1,153 @@
+[
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "premise",
+  "what": "clock",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-01",
+  "what": "Quals ✎ Edit: Basher's SANS ticked then unticked",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\"} → {\"san\":false,\"sanFrom\":null}",
+  "pics": "s7-01-ticked-desktop.png, s7-02-unticked-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-02",
+  "what": "Quals: Basher's CAT box changed IW → OCU (options OCU/D/C/B/A/IW/FI)",
+  "ok": true,
+  "note": "now OCU",
+  "pics": "s7-04-cat-changed-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-03",
+  "what": "Quals Done closes edit",
+  "ok": true,
+  "note": "",
+  "pics": "s7-05-done-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-04-x",
+  "what": "posting sheet (SANS picked) closed by x: gone, nothing saved",
+  "ok": true,
+  "note": "up true gone true · {\"san\":false,\"sanFrom\":null,\"archived\":false,\"postOut\":null}",
+  "pics": "s7-06-sheet-x-desktop.png, s7-07-closed-x-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-04-escape",
+  "what": "posting sheet (SANS picked) closed by escape: gone, nothing saved",
+  "ok": true,
+  "note": "up true gone true · {\"san\":false,\"sanFrom\":null,\"archived\":false,\"postOut\":null}",
+  "pics": "s7-06-sheet-escape-desktop.png, s7-07-closed-escape-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-04-outside",
+  "what": "posting sheet (SANS picked) closed by outside: gone, nothing saved",
+  "ok": true,
+  "note": "up true gone true · {\"san\":false,\"sanFrom\":null,\"archived\":false,\"postOut\":null}",
+  "pics": "s7-06-sheet-outside-desktop.png, s7-07-closed-outside-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-05",
+  "what": "Hex ticked SANS by hand today (Wed Jul 15 2026 09:00)",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\",\"sanWas\":null,\"sanTo\":null}",
+  "pics": "s7-08-quals-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-06",
+  "what": "Mon 13: Hex seated in a flying line's RCP seat — no SANS warning for him",
+  "ok": true,
+  "note": "{\"slot\":\"0.0.2.0.w\",\"added\":true,\"armed\":\"0.0.2.0.w\",\"now\":true} · warnings {\"head\":\"⚠ 17 issues · 6 warnings\",\"lines\":[]} · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"0.0.2.0.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"s:0.amt.1.pax.5\",\"panel\":\"⠿ SIMS\"},{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 5 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s7-09-mon-seated-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-07",
+  "what": "Thu 16: Hex seated in a flying RCP seat — RECORD his warnings (amber \"outside SANS availability\" expected)",
+  "ok": null,
+  "note": "{\"slot\":\"3.1.1.0.w\",\"already\":true,\"now\":true} · warnings {\"head\":\"⚠ 6 issues · 3 warnings\",\"lines\":[]} · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"3.1.1.0.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s7-10-thu-seated-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-08",
+  "what": "the bell (record)",
+  "ok": null,
+  "note": "Nothing new",
+  "pics": "s7-11-bell-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-09",
+  "what": "change history, All changes (Week): the line for Hex's SANS tick (record)",
+  "ok": null,
+  "note": "tab \"All changes 6\" · lines [\"Wed · Quals · HexSaber · 15/7 09:00SANS— → yes\"]",
+  "pics": "s7-12-history-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-10",
+  "what": "Inputs calendar, Thu 16 Jul opened (record; known: reads today's tick)",
+  "ok": null,
+  "note": "⠿ Thu 16 Jul + Note ✕ + Input 4 INPUTS No document All day GambitOIL till 17 Jul GritATT C Medically down till 17 Jul NomadOD Overseas duty — exercise, off island 17:00–18:30 RangerAPPOINTMENT Medical / PHA",
+  "pics": "s7-13-inputs-thu-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-11",
+  "what": "SANS calendar, Thu 16 Jul opened (record; known: reads today's tick)",
+  "ok": null,
+  "note": "Hex pucks [{\"san\":false,\"title\":\"Hex · C · ops wingman\"},{\"san\":false,\"title\":\"Hex · C · ops wingman\"},{\"san\":false,\"title\":\"Hex · C · ops wingman\"},{\"san\":false,\"title\":\"Hex · C · ops wingman\"},{\"san\":false,\"title\":\"Hex · C · ops wingman\"},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\"},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\"},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\"}]",
+  "pics": "s7-14-sans-thu-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-12",
+  "what": "as Ranger: his own SANS tick on Quals (✎ Edit shown: true)",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s7-15-member-tick-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-13",
+  "what": "as Ranger after his own tick: his pucks on View-only Sched (record; Mon/Tue before today expected regular, Wed on SANS)",
+  "ok": null,
+  "note": "[{\"day\":\"Monday Jul 13 · \",\"san\":false,\"title\":\"Ranger · IP · instructor pilot · SXO · Conflict (two events at once)\"},{\"day\":\"Monday Jul 13 · \",\"san\":false,\"title\":\"Ranger · IP · instructor pilot · SXO · Conflict (two events at once)\"},{\"day\":\"Monday Jul 13 · \",\"san\":false,\"title\":\"Ranger · IP · instructor pilot · SXO · Conflict (two events at once)\"},{\"day\":\"Thursday Jul 16 \",\"san\":true,\"title\":\"Ranger · IP · instructor pilot · SXO · SANS · Conflict (two events at once)\"},{\"day\":\"Thursday Jul 16 \",\"san\":true,\"title\":\"Ranger · IP · instructor pilot · SXO · SANS · Conflict (two events at once)\"}]",
+  "pics": "s7-16-member-view-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

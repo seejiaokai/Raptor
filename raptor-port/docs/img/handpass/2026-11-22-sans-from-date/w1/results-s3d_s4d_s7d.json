@@ -1,0 +1,534 @@
+[
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "premise",
+  "what": "the SANS man",
+  "ok": true,
+  "note": "{\"cs\":\"Tally\",\"seat\":\"RCP\",\"san\":true,\"sanFrom\":null} · today Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-01",
+  "what": "Mon 13: Tally on a new ground row (tap row, tap his puck under SANS Avail)",
+  "ok": true,
+  "note": "{\"n0\":9,\"ri\":9,\"armed\":\"g:0.9.+\",\"row\":{\"prog\":\"W1 GROUND\",\"who\":\"nick\"}}",
+  "pics": "s3-01-ground-mon-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-02",
+  "what": "Thu 16: Tally on a new ground row",
+  "ok": true,
+  "note": "{\"n0\":3,\"ri\":3,\"armed\":\"g:3.3.+\",\"row\":{\"prog\":\"W1 GROUND\",\"who\":\"nick\"}}",
+  "pics": "s3-02-ground-thu-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-03",
+  "what": "Quals ✎ Edit: his SANS unticked",
+  "ok": true,
+  "note": "{\"san\":false,\"sanFrom\":null,\"sanWas\":[[\"\",\"2026-07-15\"]],\"sanTo\":null}",
+  "pics": "s3-03-quals-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-04-0",
+  "what": "Mon 13: under SANS Avail, purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 6 FREE\",\"WSOS · 5 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"0.1.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:0.9\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"⠿ SANS AVAIL + ADD\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s3-04-day0-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-04-1",
+  "what": "Tue 14: under SANS Avail, purple line (no row copy)",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 6 FREE\",\"SANS AVAIL · 1 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s3-04-day1-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-04-2",
+  "what": "Wed 15: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 18 FREE\",\"WSOS · 10 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 10 FREE\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"rpuck \"}]",
+  "pics": "s3-04-day2-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-04-3",
+  "what": "Thu 16: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 14 FREE\",\"WSOS · 7 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:3.3\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 7 FREE\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s3-04-day3-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-05",
+  "what": "top bar Undo",
+  "ok": null,
+  "note": "{\"san\":true,\"sanFrom\":null,\"sanTo\":null}",
+  "pics": "s3-05-undo-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-06-0",
+  "what": "Mon 13: under SANS Avail, purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 6 FREE\",\"WSOS · 5 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"0.1.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:0.9\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"⠿ SANS AVAIL + ADD\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s3-06-day0-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-06-1",
+  "what": "Tue 14: under SANS Avail, purple line (no row copy)",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 6 FREE\",\"SANS AVAIL · 1 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s3-06-day1-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-06-2",
+  "what": "Wed 15: under SANS Avail, purple line (no row copy)",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 18 FREE\",\"WSOS · 9 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s3-06-day2-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-06-3",
+  "what": "Thu 16: under SANS Avail, purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 14 FREE\",\"WSOS · 7 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:3.3\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s3-06-day3-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-07",
+  "what": "top bar Redo",
+  "ok": null,
+  "note": "{\"san\":false,\"sanFrom\":null,\"sanTo\":null}",
+  "pics": "s3-07-redo-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-08-0",
+  "what": "Mon 13: under SANS Avail, purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 6 FREE\",\"WSOS · 5 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"0.1.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:0.9\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"⠿ SANS AVAIL + ADD\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s3-08-day0-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-08-1",
+  "what": "Tue 14: under SANS Avail, purple line (no row copy)",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 6 FREE\",\"SANS AVAIL · 1 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s3-08-day1-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-08-2",
+  "what": "Wed 15: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 18 FREE\",\"WSOS · 10 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 10 FREE\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"rpuck \"}]",
+  "pics": "s3-08-day2-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-08-3",
+  "what": "Thu 16: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 14 FREE\",\"WSOS · 7 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:3.3\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 7 FREE\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s3-08-day3-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-09-0",
+  "what": "Mon 13: under SANS Avail, purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 6 FREE\",\"WSOS · 5 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"0.1.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:0.9\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"row\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"⠿ SANS AVAIL + ADD\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS · Crew pairing — this pairing needs approval\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s3-09-day0-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-09-1",
+  "what": "Tue 14: under SANS Avail, purple line (no row copy)",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 6 FREE\",\"SANS AVAIL · 1 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Tally · OCU (ab-initio) · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s3-09-day1-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-09-2",
+  "what": "Wed 15: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 18 FREE\",\"WSOS · 10 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 10 FREE\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"rpuck \"}]",
+  "pics": "s3-09-day2-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-09-3",
+  "what": "Thu 16: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 14 FREE\",\"WSOS · 7 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"g:3.3\",\"panel\":\"⠿ GROUND PROGRAMME + INPUTS Au\"},{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"row\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 7 FREE\",\"san\":false,\"title\":\"Tally · OCU (ab-initio)\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s3-09-day3-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s4",
+  "size": "desktop",
+  "id": "s4-01",
+  "what": "Hex posted out as SANS from Wed 15 Jul (today Wed Jul 15 2026 09:00)",
+  "ok": true,
+  "note": "line \"On 15 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-15\",\"sanWas\":null}",
+  "pics": "s4-01-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "s4",
+  "size": "desktop",
+  "id": "s4-02",
+  "what": "next day (Thu Jul 16 2026 09:00): his SANS unticked on Quals",
+  "ok": true,
+  "note": "{\"san\":false,\"sanFrom\":null,\"sanWas\":[[\"2026-07-15\",\"2026-07-16\"]],\"sanTo\":null}",
+  "pics": "s4-02-quals-desktop.png"
+ },
+ {
+  "scn": "s4",
+  "size": "desktop",
+  "id": "s4-03-tue",
+  "what": "Tue 14: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 6 FREE\",\"SANS AVAIL · 1 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"1.0.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 6 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s4-03-day1-desktop.png"
+ },
+ {
+  "scn": "s4",
+  "size": "desktop",
+  "id": "s4-03-wed",
+  "what": "Wed 15: under SANS Avail, purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 18 FREE\",\"WSOS · 9 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"2.0.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s4-03-day2-desktop.png"
+ },
+ {
+  "scn": "s4",
+  "size": "desktop",
+  "id": "s4-03-thu",
+  "what": "Thu 16: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 14 FREE\",\"WSOS · 7 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"3.1.1.0.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 7 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s4-03-day3-desktop.png"
+ },
+ {
+  "scn": "s4",
+  "size": "desktop",
+  "id": "s4-04",
+  "what": "day after (Fri Jul 17 2026 09:00): his SANS ticked again by hand",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\",\"sanWas\":null,\"sanTo\":null}",
+  "pics": "s4-04-quals-desktop.png"
+ },
+ {
+  "scn": "s4",
+  "size": "desktop",
+  "id": "s4-05-tue",
+  "what": "Tue 14: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 16 FREE\",\"WSOS · 6 FREE\",\"SANS AVAIL · 1 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"1.0.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 6 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s4-05-day1-desktop.png"
+ },
+ {
+  "scn": "s4",
+  "size": "desktop",
+  "id": "s4-05-wed",
+  "what": "Wed 15: under SANS Avail, purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 18 FREE\",\"WSOS · 9 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"2.0.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s4-05-day2-desktop.png"
+ },
+ {
+  "scn": "s4",
+  "size": "desktop",
+  "id": "s4-05-thu",
+  "what": "Thu 16: under SANS Avail, purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 14 FREE\",\"WSOS · 7 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"3.1.1.0.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s4-05-day3-desktop.png"
+ },
+ {
+  "scn": "s4",
+  "size": "desktop",
+  "id": "s4-05-fri",
+  "what": "Fri 17: under SANS Avail, purple line (no row copy)",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 24 FREE\",\"WSOS · 16 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s4-05-day4-desktop.png"
+ },
+ {
+  "scn": "s4",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests (part 1)",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s4b",
+  "size": "desktop",
+  "id": "s4b-01",
+  "what": "Hex posted out as SANS from Thu 16 Jul (today Wed Jul 15 2026 09:00)",
+  "ok": true,
+  "note": "line \"On 16 Jul: becomes SANS.\" · {\"san\":false,\"sanFrom\":null,\"sanWas\":null}",
+  "pics": "s4b-01-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "s4b",
+  "size": "desktop",
+  "id": "s4b-02",
+  "what": "his Leave War row today (record)",
+  "ok": null,
+  "note": " | Hex SANSC−2LLPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOPOP",
+  "pics": "s4b-02-lw-row-desktop.png"
+ },
+ {
+  "scn": "s4b",
+  "size": "desktop",
+  "id": "s4b-03-wed",
+  "what": "Wed 15: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 18 FREE\",\"WSOS · 9 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"2.0.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"WSOS · 9 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s4b-03-day2-desktop.png"
+ },
+ {
+  "scn": "s4b",
+  "size": "desktop",
+  "id": "s4b-03-thu",
+  "what": "Thu 16: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 14 FREE\",\"WSOS · 7 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"3.1.1.0.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 7 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s4b-03-day3-desktop.png"
+ },
+ {
+  "scn": "s4b",
+  "size": "desktop",
+  "id": "s4b-03-fri",
+  "what": "Fri 17: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 24 FREE\",\"WSOS · 17 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 17 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck \"}]",
+  "pics": "s4b-03-day4-desktop.png"
+ },
+ {
+  "scn": "s4b",
+  "size": "desktop",
+  "id": "s4b-04",
+  "what": "clock on one day: Thu Jul 16 2026 09:00",
+  "ok": null,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-16\"}"
+ },
+ {
+  "scn": "s4b",
+  "size": "desktop",
+  "id": "s4b-05-wed",
+  "what": "Wed 15: in his seat's column, no purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 18 FREE\",\"WSOS · 9 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"2.0.0.1.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"WSOS · 9 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s4b-05-day2-desktop.png"
+ },
+ {
+  "scn": "s4b",
+  "size": "desktop",
+  "id": "s4b-05-thu",
+  "what": "Thu 16: under SANS Avail, purple line",
+  "ok": true,
+  "note": "heads [\"PLACEHOLDERS\",\"PILOTS · 14 FREE\",\"WSOS · 7 FREE\",\"SANS AVAIL · 0 FREE\",\"PERSONNEL · 3 FREE\"] · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"3.1.1.0.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s4b-05-day3-desktop.png"
+ },
+ {
+  "scn": "s4b",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests (part 2)",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "premise",
+  "what": "clock",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-01",
+  "what": "Quals ✎ Edit: Basher's SANS ticked then unticked",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\"} → {\"san\":false,\"sanFrom\":null}",
+  "pics": "s7-01-ticked-desktop.png, s7-02-unticked-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-02",
+  "what": "Quals CAT change",
+  "ok": null,
+  "note": "NOT WALKED: no CAT cell in the WSOs view"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-03",
+  "what": "Quals Done closes edit",
+  "ok": true,
+  "note": "",
+  "pics": "s7-05-done-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-04-x",
+  "what": "posting sheet (SANS picked) closed by x: gone, nothing saved",
+  "ok": true,
+  "note": "up true gone true · {\"san\":false,\"sanFrom\":null,\"archived\":false,\"postOut\":null}",
+  "pics": "s7-06-sheet-x-desktop.png, s7-07-closed-x-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-04-escape",
+  "what": "posting sheet (SANS picked) closed by escape: gone, nothing saved",
+  "ok": true,
+  "note": "up true gone true · {\"san\":false,\"sanFrom\":null,\"archived\":false,\"postOut\":null}",
+  "pics": "s7-06-sheet-escape-desktop.png, s7-07-closed-escape-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-04-outside",
+  "what": "posting sheet (SANS picked) closed by outside: gone, nothing saved",
+  "ok": true,
+  "note": "up true gone true · {\"san\":false,\"sanFrom\":null,\"archived\":false,\"postOut\":null}",
+  "pics": "s7-06-sheet-outside-desktop.png, s7-07-closed-outside-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-05",
+  "what": "Hex ticked SANS by hand today (Wed Jul 15 2026 09:00)",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\",\"sanWas\":null,\"sanTo\":null}",
+  "pics": "s7-08-quals-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-06",
+  "what": "Mon 13: Hex seated in a flying line's RCP seat — no SANS warning for him",
+  "ok": false,
+  "note": "{\"slot\":null} · warnings {\"head\":\"\",\"lines\":[]} · pucks [{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"s:0.amt.1.pax.5\",\"panel\":\"⠿ SIMS\"},{\"where\":\"row\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"\",\"panel\":\"availpuck sec sec-avail\"},{\"where\":\"WSOS · 5 FREE\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"why\":\"\",\"rpcls\":\"rpuck busy\"}]",
+  "pics": "s7-09-mon-seated-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-07",
+  "what": "Thu 16: Hex seated in a flying RCP seat — RECORD his warnings (amber \"outside SANS availability\" expected)",
+  "ok": false,
+  "note": "{\"slot\":null} · warnings {\"head\":\"\",\"lines\":[]} · pucks [{\"where\":\"row\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"\",\"slot\":\"3.1.1.0.w\",\"panel\":\"⠿ FLYING WAVES + Wave\"},{\"where\":\"SANS Avail\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"why\":\"\",\"rpcls\":\"rpuck no\"}]",
+  "pics": "s7-10-thu-seated-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-08",
+  "what": "the bell (record)",
+  "ok": null,
+  "note": "Nothing new",
+  "pics": "s7-11-bell-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-09",
+  "what": "change history, All changes: the line for Hex's SANS tick (record)",
+  "ok": null,
+  "note": "[]",
+  "pics": "s7-12-history-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-10",
+  "what": "Inputs calendar, Thu 16 Jul opened (record; known: reads today's tick)",
+  "ok": null,
+  "note": "⠿ Thu 16 Jul + Note ✕ + Input 4 INPUTS No document All day GambitOIL till 17 Jul GritATT C Medically down till 17 Jul NomadOD Overseas duty — exercise, off island 17:00–18:30 RangerAPPOINTMENT Medical / PHA",
+  "pics": "s7-13-inputs-thu-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-11",
+  "what": "SANS calendar, Thu 16 Jul opened (record; known: reads today's tick)",
+  "ok": null,
+  "note": "Hex pucks [{\"san\":false,\"title\":\"Hex · C · ops wingman\"},{\"san\":false,\"title\":\"Hex · C · ops wingman\"},{\"san\":false,\"title\":\"Hex · C · ops wingman\"},{\"san\":false,\"title\":\"Hex · C · ops wingman\"},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\"},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\"},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\"}]",
+  "pics": "s7-14-sans-thu-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-12",
+  "what": "as Ranger: his own SANS tick on Quals (✎ Edit shown: true)",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s7-15-member-tick-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "s7-13",
+  "what": "as Ranger after his own tick: his pucks on View-only Sched (record; Mon/Tue before today expected regular, Wed on SANS)",
+  "ok": null,
+  "note": "[{\"day\":\"Monday Jul 13 · \",\"san\":false,\"title\":\"Ranger · IP · instructor pilot · SXO · Conflict (two events at once)\"},{\"day\":\"Monday Jul 13 · \",\"san\":false,\"title\":\"Ranger · IP · instructor pilot · SXO · Conflict (two events at once)\"},{\"day\":\"Monday Jul 13 · \",\"san\":false,\"title\":\"Ranger · IP · instructor pilot · SXO · Conflict (two events at once)\"},{\"day\":\"Thursday Jul 16 \",\"san\":true,\"title\":\"Ranger · IP · instructor pilot · SXO · SANS · Conflict (two events at once)\"},{\"day\":\"Thursday Jul 16 \",\"san\":true,\"title\":\"Ranger · IP · instructor pilot · SXO · SANS · Conflict (two events at once)\"}]",
+  "pics": "s7-16-member-view-desktop.png"
+ },
+ {
+  "scn": "s7",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]
