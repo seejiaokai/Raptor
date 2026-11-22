@@ -726,6 +726,9 @@ async function filterBtn(page, { ticks = {}, open = false, master = false }) {
     b.appendChild(document.createTextNode(n ? 'Filter · ' + n : 'Filter')); b.setAttribute('data-mine', '1')
     b.style.whiteSpace = 'nowrap'; b.style.flex = '0 0 auto'; b.style.display = 'inline-flex'; b.style.alignItems = 'center'
     b.querySelector('svg').style.verticalAlign = '0'
+    // lit, it takes the app's own lit-button ink — dark on cyan, read off the real "Add person" button (his "black on
+    // cyan", 22 Nov 26); the funnel follows it (stroke="currentColor")
+    if (n) { const real = [...document.querySelectorAll('#page-admin button')].find(x => !x.getAttribute('data-mine') && /^Add person$/.test(x.textContent.trim())); if (real) { const cs = getComputedStyle(real); b.style.color = cs.color; b.style.background = cs.backgroundColor; b.style.borderColor = cs.borderColor } }
     const wrapF = mq.el('div'); wrapF.style.cssText = 'display:flex;gap:8px;align-items:center;position:relative;' + (phone ? 'width:100%' : '')
     find.before(wrapF); wrapF.appendChild(find); wrapF.appendChild(b); if (phone) find.style.flex = '1 1 auto'
     head.querySelector('h4.adm-sub').textContent = both ? 'People · 71' : 'People · 61'
