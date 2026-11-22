@@ -55,7 +55,6 @@ import { lwSyncTurn } from './state/store'
 import {
   addDays,
   oilLedgerOf,
-  atHome,
   inSquadron,
   isNonWorkingDay,
   localToday,
@@ -2090,9 +2089,14 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
        as the war lays it with SANS shown: a SANS posting that has run closes no window. Every other posting is a
        departure from its date as before, and the post-in date, his earlier stints, his squadron stints and the archive,
        delete and clash checks are all read as they were. */
+    /* …AND IT IS READ WHETHER OR NOT THE WAR SHOWS HIM A ROW (owner D2328, 22 Nov 26 — "they should only reflect their
+       actual status on the day itself", said of a posting in as of a posting out). With "+ SANS" off an ordinary SANS
+       man has no row on the war, and with no row nothing was asked of him: a man ticked SANS counted on days before his
+       POST-IN date — and, on a day before his tick, he counted with the switch off and not with it on. His saved posting
+       holds the post-in date either way. */
     const lw0 = lwById.get(id)
-    const posting = lw0 ? postings[id] : undefined
-    const lw = lw0 && posting ? { ...lw0, ...windowFor(posting, true) } : lw0
+    const posting = postings[id]
+    const lw = posting ? { ...(lw0 || posting), ...windowFor(posting, true) } : lw0
     /* AND ON A DAY HE IS SANS AND NAMED ON OUR PROGRAMME HE IS OURS, WHATEVER HIS POSTING WINDOW ON THE WAR SAYS (the fresh
        Opus reader's F1 and F2 of this fix, 22 Nov 26; his [ALL-AVAIL-REDEF] at this function's head: "only SANS that are
        planned on the programmed on that day with us should be included"). With "+ SANS" off — how the squadron works
@@ -2101,18 +2105,21 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
        posting that had run as an Overseas one (store.ts stintClosed), closing his window from the posting's date — so
        archiving him took him out of the crowd of every day between the posting and the archive, and a published one of
        those read pending and lost him his OIL (F1; D327: in the crowd on every day before his archive). So for a SANS
-       man named that day two parts of the window are not asked — a post-in date still to come, and the END an archive
-       wrote: his archive ends it BY ITS DATE instead (an archive with no date kept falls back to the window). His squadron
-       stints still are asked (`atHome`), his delete is read by date above — AND SO IS A REAL DEPARTURE: a posting with no
+       man named that day two parts of the window WERE not asked — a post-in date still to come, and the END an archive
+       wrote (the post-in date is asked again since his D2328, the same day — below; only the archive's END is still set
+       aside): his archive ends it BY ITS DATE instead (an archive with no date kept falls back to the window). His squadron
+       stints still are asked, his delete is read by date above — AND SO IS A REAL DEPARTURE: a posting with no
        chip, or an Overseas Sqn or Delete posting still to come, closes it from its date for a SANS man as for anyone (the
        narrow read of this fix, 22 Nov 26: with the whole window set aside he counted past such a date until the posting
        ran, and a day published meanwhile then read pending). A SANS posting that has run is no end at all (`lw.to` is
        null — above). Everyone else — a man not SANS that day, a SANS posting still to come — is read by the posting
        window as before. */
+    /* AND HIS POST-IN DATE IS ASKED OF HIM AS OF ANYONE (owner D2328, 22 Nov 26, to this case shown to him — a new man
+       ticked SANS and named the day before his post-in date: "the sans should left out until he becomes a SANS"). So of
+       the two parts set aside above only ONE still is: the END an archive wrote, replaced by the archive's own date. The
+       start of his window — and his earlier stints — are read as for everyone, by the one rule, `inSquadron`. */
     const sansWithUs = sansOnP(p, iso) && !!engaged && engaged.has(id) && !(p.archived && !p.archivedOn)
-    const ours = !lw || (sansWithUs
-      ? atHome(lw, iso) && (p.archived ? iso < String(p.archivedOn) : !(lw.to != null && iso > lw.to))
-      : inSquadron(lw, iso))
+    const ours = !lw || inSquadron(sansWithUs && p.archived ? { ...lw, to: addDays(String(p.archivedOn), -1) } : lw, iso)
     if (!ours) continue
     if (keptOut.has(id)) continue
     if (engaged && personBusy(day, id).some((w: [number, number]) => w[0] < win[1] && win[0] < w[1])) continue

@@ -227,14 +227,45 @@ describe('a SANS man named with us counts whatever his posting window on the war
     expect(JSON.stringify(dayPendingItems(TUE)), 'no pending line about who earns OIL').not.toMatch(/oil/i)
   })
 
-  it('F2: a SANS man with a post-in date still to come, named with us before it: the same answer both ways — in', () => {
+  /* HIS D2328 (22 Nov 26), to this very case shown to him on the app: "the sans should left out until he becomes a SANS.
+     This modality should be applied for post in and out. Like they should only reflect their actual status on the day
+     itself." Before his post-in date a man is not ours, SANS and named or not. The fresh Opus reader's F2 was the
+     switch changing this answer; the first repair made it "in" both ways, and his ruling makes it "out" both ways.
+     With "+ SANS" off an ordinary SANS man has NO row on the war, so the post-in date is read from his saved posting. */
+  it('F2, D2328: a SANS man with a post-in date still to come, named with us before it, is out — both ways', () => {
     onlyTheEvent(THU); plan(THU, 'rocky')
     expect(setPostIn('rocky', FRI_ISO)).toBe(true); raptorNotify()        // posted in from Fri 17 Jul
     expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()   // SANS by hand, Wed 15 Jul
     expect(sansOn('rocky', THU_ISO)).toBe(true)
+    /* the set-up took: no row on the war with "+ SANS" off, and the post-in date is on his saved posting */
+    expect(getState().showSans).toBe(false)
+    expect(getState().people.some(p => p.id === 'rocky'), 'hidden from the war').toBe(false)
+    expect(getState().postOuts.rocky?.from).toBe(FRI_ISO)
     const { off, on } = crowdBothWays(THU_ISO, THU)
     expect(off).toEqual(on)
-    expect(off, 'SANS and planned with us that day').toContain('rocky')
+    expect(off, 'not ours until his post-in date, Fri 17 Jul').not.toContain('rocky')
+  })
+
+  it('D2328: from his post-in date the same SANS man, named with us, is in — both ways', () => {
+    onlyTheEvent(SAT); plan(SAT, 'rocky')
+    expect(setPostIn('rocky', FRI_ISO)).toBe(true); raptorNotify()
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    expect(sansOn('rocky', SAT_ISO)).toBe(true)
+    expect(getState().postOuts.rocky?.from).toBe(FRI_ISO)
+    const { off, on } = crowdBothWays(SAT_ISO, SAT)
+    expect(off).toEqual(on)
+    expect(off, 'ours from Fri 17 Jul, SANS and planned with us on Sat 18 Jul').toContain('rocky')
+  })
+
+  it('D2328: ticked SANS today, on a day before both his tick and his post-in date he is out — both ways', () => {
+    onlyTheEvent(TUE)
+    expect(setPostIn('rocky', FRI_ISO)).toBe(true); raptorNotify()
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()   // SANS from Wed 15 Jul
+    expect(sansOn('rocky', TUE_ISO), 'a regular on Tuesday').toBe(false)
+    expect(getState().people.some(p => p.id === 'rocky'), 'hidden from the war today').toBe(false)
+    const { off, on } = crowdBothWays(TUE_ISO, TUE)
+    expect(off).toEqual(on)
+    expect(off, 'not yet posted in on Tue 14 Jul').not.toContain('rocky')
   })
 
   it('a hand-ticked SANS man, archived: in on a day before his archive that names him, out from it, both ways', () => {

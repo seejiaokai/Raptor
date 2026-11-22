@@ -95,6 +95,7 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 
 ## Posting in and stints
 - Posted in, the app asks the admin for his post-in date, so the Leave War is right; his access can start a few days before it [D308, D322].
+- A man shows on any day by what he actually is on that day, for a posting in as for a posting out: before his post-in date he is not ours — ALL AVAIL leaves out even a SANS man named on our programme until it — and a posting out changes him only from its own date [D2328, D308].
 - The Leave War keeps every stint a man has, not one in-and-out window: posted out and restored with a post-in date he reads "away" between — not in manning or availability, no bids, the posting hatch — his months before the posting as they were, his leave included, counted again from the post-in date; a leave period he is away for all of shows no row for him, one holding his posting-out date shows his days before it as normal [D320, D308].
 - The posting sheets are the admin's, open at any time — a posting date is an official date, not a bid — never the man's, as he was told; an earlier stint's dates are read-only, as built: its Post in sheet says "Back from a posting on …" with no Undo, a date aimed into an earlier stint is refused with the reason; the current stint's dates still move, chosen knowing an old stint's wrong date then has no door to correct it [D328].
 
