@@ -14,7 +14,7 @@ import { paletteHTML, paletteDay } from './palette-html'
 import { ARM, CARRYDAY, CURPAGE, DPREV, PEEKLAND, WEEKJUMP, navGen, setCarryDay, setPeekLand, setWeekJump, scrollWeekToDay, scrollWeekToLanding } from '../state/view'
 import { refreshHighlights } from './highlights'
 import { beginGlide } from './weekglide'
-import { weekLanding, panHold } from './pan'
+import { weekLanding, panHold, panForget } from './pan'
 import { mountPeek } from './peek'
 import { editingText, textCaret, CARET_GONE } from './textedit'
 import { wireRowDrag } from './rowdrag'
@@ -230,8 +230,17 @@ export function EditWeek() {
          strip, so there is nothing to hold it against. */
       if (wrote) root.scrollLeft = panHold(sl)
       /* the carried day from a page switch — see ViewWeek for the reasoning;
-         both weeks consume it the same way so the hop works in both directions */
-      if (CARRYDAY != null) { scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }
+         both weeks consume it the same way so the hop works in both directions.
+         panForget: the carry places the week itself, so the day arrows count from here — the board closed on another
+         day sat inside the reach of earlier presses and the next press skipped days (the blind read's F1, 22 Nov 26;
+         pan.ts panForget) */
+      /* straight onto the day, no slide (his D2296 — see ViewWeek): smooth off for this one write */
+      if (CARRYDAY != null) {
+        const was = root.style.scrollBehavior
+        root.style.scrollBehavior = 'auto'
+        panForget(); scrollWeekToDay(root, CARRYDAY); setCarryDay(null)
+        root.style.scrollBehavior = was
+      }
     }
     prev.current = { ed, html, chunks }
     refreshHighlights()

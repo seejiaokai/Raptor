@@ -1111,9 +1111,12 @@ truth: a flying spare would be standing by on one screen and flying on another. 
   — and all of them go through `engine/keys.ts seatRow`. Two private trims had drifted: the programme one cut the
   row's own number off an event's key (a man moved inside his own crowd was "already on" it), the validator's raw
   compare never matched a crowd seat or an extra with its row. A new "exclude this place" question uses `seatRow`.
-- **The week's front edge is the week box's own left edge** (D275, 27 Sep 26). Every landing that puts a day "at the
-  front" — `pan.ts panDays`, `state/view.ts scrollWeekToDay` / `weekLeftDay`, `ui/highlights.ts bringIntoView` — measures
-  from it, and the ‹ arrow floats over the first few pixels by his choice. A room beside the arrows was built and taken out
+- **The week's front is ONE place: on a desktop the strip's own left margin in from the week box's left edge, on a phone
+  the edge itself** (D275, 27 Sep 26; D2295, 22 Nov 26 — until then only the arrows landed a day the margin in, and a page
+  switch, a date pick, an Undo and the warning and change jumps parked it on the edge, 20px off). Every landing that puts
+  a day "at the front" — `pan.ts panDays`, `state/view.ts scrollWeekToDay` / `weekLeftDay`, `ui/highlights.ts bringIntoView`
+  and `bringDayIntoView` — reads it from `state/view.ts weekFrontInset` (the arrows by whole days from the strip's start,
+  which is the same place); no room is added beside the ‹ arrow. A room beside the arrows was built and taken out
   before merging (`[ARROW-ROOM-OUT]`); if he ever asks for one, every landing must read ONE declared number, as that build
   did — its roll-call of the landings is the five-flags evidence sheet §3d.
 

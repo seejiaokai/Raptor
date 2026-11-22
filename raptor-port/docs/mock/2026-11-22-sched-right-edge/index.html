@@ -1,0 +1,128 @@
+<title>Edit Schedule right edge</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+  /* layout: one reading column; the two questions first, then each question's pictures in today / proposed pairs */
+  :root {
+    --bg: #f5f7f9; --panel: #ffffff; --fg: #17202a; --soft: #55626f; --edge: #d5dce3;
+    --accent: #0b7f9c; --mark: #d81b7f; --ok: #1d7a46; --okbg: #e4f4ea;
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #0d1116; --panel: #151b22; --fg: #e8edf2; --soft: #9aa8b5; --edge: #2a323b;
+    --accent: #3bc6e8; --mark: #ff4fa8; --ok: #6fd69a; --okbg: #12301f; color-scheme: dark } }
+  :root[data-theme="dark"] {
+    --bg: #0d1116; --panel: #151b22; --fg: #e8edf2; --soft: #9aa8b5; --edge: #2a323b;
+    --accent: #3bc6e8; --mark: #ff4fa8; --ok: #6fd69a; --okbg: #12301f; color-scheme: dark }
+  body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.5 }
+  .wrap { max-width: 1100px; margin: 0 auto; padding-block: 24px 56px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: flex; flex-direction: column; gap: 28px }
+  h1 { font-size: 1.55rem; line-height: 1.2; margin: 0; text-wrap: balance }
+  h2 { font-size: 1.2rem; line-height: 1.25; margin: 0; text-wrap: balance }
+  p { margin: 0; max-width: 68ch }
+  .lede { color: var(--soft) }
+  .ask { background: var(--panel); border: 1px solid var(--edge); border-radius: 12px; padding: 16px 18px;
+    display: flex; flex-direction: column; gap: 14px }
+  .ask h2 { font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--soft) }
+  .q { display: grid; grid-template-columns: 2.1rem minmax(0, 1fr); gap: 4px 10px; align-items: start }
+  .q b.n { grid-row: span 2; width: 2.1rem; height: 2.1rem; border-radius: 50%; background: var(--accent); color: var(--bg);
+    display: flex; align-items: center; justify-content: center; font-size: 1rem }
+  .rec { color: var(--ok); background: var(--okbg); border-radius: 6px; padding: 2px 8px; font-weight: 600; display: inline-block }
+  a { color: var(--accent) }
+  section { display: flex; flex-direction: column; gap: 14px }
+  .pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 16px }
+  figure { margin: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0 }
+  figcaption { font-size: .92rem; color: var(--soft) }
+  figcaption b { color: var(--fg) }
+  .pic { position: relative; display: block; padding: 0; border: 1px solid var(--edge); border-radius: 8px; overflow: hidden;
+    background: #0b0d10; cursor: zoom-in; width: 100%; line-height: 0 }
+  .pic:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px }
+  .pic img { display: block; width: 100%; height: auto }
+  .ring { position: absolute; border: 3px solid var(--mark); border-radius: 6px; pointer-events: none }
+  .narrow { max-width: 460px }
+  .phone { max-width: 300px }
+  .facts { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 6px; max-width: 68ch }
+  .note { font-size: .92rem; color: var(--soft) }
+  #big { position: fixed; inset: 0; background: rgba(0, 0, 0, .92); overflow: auto; z-index: 50; cursor: zoom-out;
+    padding: max(12px, env(safe-area-inset-top, 0px)) 12px 12px }
+  #big img { display: block; max-width: none; margin: 0 auto }
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <h1>Edit Schedule: the days run to the window's right edge</h1>
+    <p class="lede">Before and after, on your PC's screen (125%) and on a phone. Nothing is built yet. Every picture is the real app; the "proposed" ones are the real app with the change switched on. Tap a picture to see it full size.</p>
+  </header>
+
+  <div class="ask">
+    <h2>What I need from you</h2>
+    <div class="q"><b class="n">1</b>
+      <p><b>The right edge.</b> With the crew panel folded, the days run to the window's edge and the CREW tab sits on top of them. Build it as drawn? <a href="#q1">Pictures 1 to 5</a></p>
+      <p><span class="rec">I recommend yes</span></p></div>
+    <div class="q"><b class="n">2</b>
+      <p><b>A small find at the left edge.</b> When Edit Schedule opens, the first day sits hard against the left edge. After any arrow press, a day sits a little way in. Make it always sit a little way in, in this same job? <a href="#q2">Pictures 9 and 10</a></p>
+      <p><span class="rec">I recommend yes</span></p></div>
+  </div>
+
+  <section id="q1">
+    <h2>Question 1 — the right edge, crew panel folded</h2>
+    <p>Today a black strip runs down the right side of the window. It is kept empty for the CREW tab and the next-day arrow. In the proposal the strip is gone: the next day shows that much further, and the tab and the arrow sit on top of it. The scroll bar at the foot runs to the edge too.</p>
+    <div class="pair">
+      <figure><button class="pic" type="button" data-src="shots/pc-today-1-folded-start.png"><img src="shots/pc-today-1-folded-start.png" alt="Edit Schedule today, a black strip down the right side" loading="lazy"><span class="ring" style="left:97.7%;width:2.3%;top:14%;height:83%"></span></button>
+        <figcaption><b>1 · Today.</b> The ringed black strip beside Wednesday.</figcaption></figure>
+      <figure><button class="pic" type="button" data-src="shots/pc-proposed-1-folded-start.png"><img src="shots/pc-proposed-1-folded-start.png" alt="Edit Schedule proposed, Wednesday runs to the window's edge" loading="lazy"><span class="ring" style="left:97.7%;width:2.3%;top:14%;height:83%"></span></button>
+        <figcaption><b>2 · Proposed.</b> The same place: Wednesday runs to the edge, under the tab and the arrow.</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure class="narrow"><button class="pic" type="button" data-src="shots/pc-today-R1-right-edge.png"><img src="shots/pc-today-R1-right-edge.png" alt="Close-up of the right edge today" loading="lazy"><span class="ring" style="left:93%;width:7%;top:0;height:100%"></span></button>
+        <figcaption><b>3 · Today, close up.</b> The CREW tab and the arrow stand in an empty strip.</figcaption></figure>
+      <figure class="narrow"><button class="pic" type="button" data-src="shots/pc-proposed-R1-right-edge.png"><img src="shots/pc-proposed-R1-right-edge.png" alt="Close-up of the right edge proposed" loading="lazy"><span class="ring" style="left:93%;width:7%;top:0;height:100%"></span></button>
+        <figcaption><b>4 · Proposed, close up.</b> The day carries on under them.</figcaption></figure>
+    </div>
+    <ul class="facts">
+      <li><b>Nothing you can see today gets covered.</b> The tab only sits over the strip that is black today, so you only gain.</li>
+      <li><b>The day arrows still move one day a press.</b> I pressed the right arrow from Monday to Sunday and the left arrow back, before and after, at six window widths. Each press moved exactly one day, and each day stopped in the same place as it does today.</li>
+      <li><b>At the very end of the strip</b> the last column still stops clear of the tab, as it does today.</li>
+    </ul>
+    <figure><button class="pic" type="button" data-src="shots/pc-proposed-2-after-one-press.png"><img src="shots/pc-proposed-2-after-one-press.png" alt="Proposed, after one press of the right arrow: Tuesday is the first day" loading="lazy"></button>
+      <figcaption><b>5 · Proposed, the right arrow pressed once.</b> Tuesday is now the first day, in the place an arrow puts it today.</figcaption></figure>
+  </section>
+
+  <section>
+    <h2>What does not change</h2>
+    <div class="pair">
+      <figure><button class="pic" type="button" data-src="shots/pc-proposed-4-panel-open.png"><img src="shots/pc-proposed-4-panel-open.png" alt="The crew panel open, unchanged" loading="lazy"></button>
+        <figcaption><b>6 · Crew panel open.</b> Same as today. The tab stays beside the panel, so it never covers a name.</figcaption></figure>
+      <figure><button class="pic" type="button" data-src="shots/pc-proposed-3-folded-far-end.png"><img src="shots/pc-proposed-3-folded-far-end.png" alt="The far end of the strip, unchanged" loading="lazy"></button>
+        <figcaption><b>7 · The far end of the strip.</b> Same as today.</figcaption></figure>
+    </div>
+    <figure class="phone"><button class="pic" type="button" data-src="shots/phone-proposed.png"><img src="shots/phone-proposed.png" alt="Edit Schedule on a phone, unchanged" loading="lazy"></button>
+      <figcaption><b>8 · On a phone.</b> Same as today. A phone never had the black strip: the day already runs under the AIRCREW tab.</figcaption></figure>
+  </section>
+
+  <section id="q2">
+    <h2>Question 2 — a small find at the left edge</h2>
+    <p>I found this while taking the pictures. It is in the app today and has nothing to do with the right edge. When you come to Edit Schedule from View-only Sched, the first day opens hard against the window's left edge, with the left arrow sitting on it. Press either arrow and from then on a day stops a little way in, clear of the arrow. So the same day sits in two different places.</p>
+    <div class="pair">
+      <figure class="narrow"><button class="pic" type="button" data-src="shots/pc-today-L1-left-edge-as-opened.png"><img src="shots/pc-today-L1-left-edge-as-opened.png" alt="Monday as it opens, hard against the left edge" loading="lazy"><span class="ring" style="left:0;width:7%;top:0;height:100%"></span></button>
+        <figcaption><b>9 · Today, as it opens.</b> Monday touches the edge; the arrow sits on its blue bar.</figcaption></figure>
+      <figure class="narrow"><button class="pic" type="button" data-src="shots/pc-today-L2-left-edge-after-arrows.png"><img src="shots/pc-today-L2-left-edge-after-arrows.png" alt="Monday after the arrows, a little way in" loading="lazy"><span class="ring" style="left:0;width:7%;top:0;height:100%"></span></button>
+        <figcaption><b>10 · Today, after an arrow press.</b> Monday sits a little way in. <b>Proposed: it always opens like this.</b></figcaption></figure>
+    </div>
+    <p class="note">If you would rather leave it, say so and I will only write it down as a known oddity.</p>
+  </section>
+</div>
+
+<div id="big" hidden><img alt=""></div>
+<script>
+  (function () {
+    var big = document.getElementById('big'), img = big.querySelector('img'), last = null
+    function shut() { big.hidden = true; img.removeAttribute('src'); if (last) last.focus() }
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('.pic') : null
+      if (b) { last = b; img.src = b.getAttribute('data-src'); big.hidden = false; big.scrollTop = 0; return }
+      if (!big.hidden) shut()
+    })
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !big.hidden) shut() })
+  })()
+</script>

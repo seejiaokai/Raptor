@@ -23,7 +23,7 @@ import { useEffect, useRef } from 'react'
 import { CURWEEK } from '../engine/waves'
 import { loadWeek, notify } from '../state/store'
 import { boardTab } from './board'
-import { SBDAY, weekLeftDay, setWeekJump } from '../state/view'
+import { CURPAGE, SBDAY, weekLeftDay, setWeekJump } from '../state/view'
 import { WEEKCAL, setWeekCal } from './pops'
 import { useVersion } from './useStore'
 import { mondayOf, keyToIso, dayIndexInWeek, TODAY } from './weeknav'
@@ -41,7 +41,10 @@ function currentDayIso(): string {
   let di = 0
   if (SBDAY != null) di = SBDAY
   else {
-    const el = document.getElementById('vWeek') || document.getElementById('eWeek')
+    /* THE WEEK OF THE PAGE IN FRONT (Astra's finding 2, 22 Nov 26): both weeks stay mounted, so "vWeek, else eWeek"
+       always read View-only's — hidden on Edit Schedule, every box of it zero wide, its first day the answer — and the
+       calendar lit Monday there whatever day stood first. Pinned: e2e/sched-right-edge.spec.ts. */
+    const el = document.getElementById(CURPAGE === 'editsched' ? 'eWeek' : 'vWeek') || document.getElementById('vWeek') || document.getElementById('eWeek')
     const left = el ? weekLeftDay(el) : null
     if (left != null) di = left
   }
