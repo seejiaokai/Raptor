@@ -205,6 +205,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [VEILED-WINDOWS-BAR] — both parts BUILT and live: the Escape part 3 Nov 26, the bar part (his D1645, D1647) 6 Nov 26 (pull request 636). Left: on a PC an input's own window opens below the bar, which stays pressable, where D1645 says that window keeps the bar covered (seen 8 Nov 26, chat 28's walk) — to check against D1645, then fix or put to him (low).
 - [SCHED-CTRL-Z] — the schedule pages have no Ctrl+Z (only the Tracker has one): a question for him, not put until he says (D994).
 - [BOARD-OTHER-RINGS] — most other Scheduler Board buttons and its time boxes still wear the browser's own ring under the keys, not the app's cyan one: a question for him with pictures, not built (D1625).
+- [SCHED-OPEN-20-OFF] — coming from View-only Sched, Edit Schedule opens with its first day hard against the window's left edge, 20px off the place an arrow press lands a day; found 22 Nov 26 drawing the right edge, put to him with pictures (question 2), built with that job on his yes.
 - [BOARD-TAB-MENU-BUTTONS] — a walker found Tab never stops on the board's + Block, + Wave or a jet's stores, which D1646 says the keys reach: to reproduce, then fix or put to him.
 - [BOARD-SIDEWAYS-SMALL-PHONE] — a question kept for him: on a smaller phone on its side (844 wide) the board's pinned bar is two rows, so the list above the keys is 101px, not his phone's 151.
 - [BOARD-UNDO-LAND-ODDS] — what the board's Undo landing left after its reads and walk: nine small points — Redo of an input's date move goes to the old day, two changes that return unseen, the refused-Undo fix with unit tests only, a stale comment, the reads' tidiness notes, two touch gestures for his iPhone, a walk-scripts lesson needing his word, and the last box of the list resting under the passing note (a drawing for him first) (found 11 Nov 26, chat 64; low).
@@ -2898,4 +2899,12 @@ window's edge with the tab floating over them; only after the week's last day a 
 Sunday's right edge. **His question, a requirement:** the left and right arrows still step one day at a time, each day
 landing at the left edge as today — written as a test. **How:** drawn first, before and after, at his PC's 125% and on a
 phone (D1625); built by Fable (D2269), walked by Opus (D2256); the bug-check order's sizing; his look; "merge live".
-**Place:** a chat of its own, from `main`.
+**Place:** a chat of its own, from `main`. **22 Nov 26, chat 135:** drawn and sent to him, nothing built until his yes —
+`raptor-port/docs/mock/2026-11-22-sched-right-edge/` (page, script, pictures, measures); branch `claude/sched-right-edge-135`.
+
+### [SCHED-OPEN-20-OFF] A schedule page opens its first day 20px off the arrows' place (found 22 Nov 26, chat 135)
+**What:** on a desktop, a switch between View-only Sched and Edit Schedule parks the front day's left edge on the window's
+edge (`raptor-port/src/state/view.ts` `scrollWeekToDay`), where an arrow press lands a day 20px in (`ui/pan.ts` `panDays`):
+Edit Schedule opens with Monday under the left arrow's tab. Older code; a phone is right as it is. **Proof:** that job's
+drawing folder — `summary.mjs`, pictures `pc-today-L1-…`, `-L2-…`. **How:** put to him as that page's question 2,
+recommended: on his yes fixed there, a failing test first; on his no, a known oddity. **Place:** with the right-edge job.

@@ -20,6 +20,16 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/sched-right-edge-135 -->
+### CHAT 135 — Edit Schedule's days to the window's right edge under the folded CREW tab ([SCHED-RIGHT-EDGE], D2269) — written 22 Nov 26: DRAWN, waiting for his yes; nothing built — verify before use
+- **Branch / folder:** `claude/sched-right-edge-135`, level with `main` at `f32887894`; worked in `D:\Raptor-edge` (a lean copy, D2290 — the main folder was held by the live chat on `claude/helper-copies-no-pictures-134` with unsaved work); `raptor-port/node_modules` there is a junction to the main folder's — unlink it before removing the copy. His opening line said chat 134; that number was already a live chat's branch, so this chat is 135.
+- **The job's item and D2269 are on `claude/msq-records-132`, not on `main` yet** (`git show origin/claude/msq-records-132:OUTSTANDING.md`); this branch does not copy them.
+- **Drawn and sent (D1625):** the page https://claude.ai/artifact/AntYxsrkqnNw5nVQZoCu89 — ten real pictures at his PC's 125% (a browser started at 1.25, 1536 x 864) and his iPhone's 402 x 874; its script, pictures, measures and the page: `raptor-port/docs/mock/2026-11-22-sched-right-edge/` (`draw.mjs` holds the exact rule to build, `PROPOSED`; `summary.mjs` prints the measures and fails if an arrow press ever moves other than one day). Two questions put to him, both recommended yes: (1) build the right edge as drawn; (2) fix [SCHED-OPEN-20-OFF], found while drawing, in the same job.
+- **Measured, before and after, at 822 / 1024 / 1140 / 1280 / 1536 / 1707 / 1920 wide:** the days' strip ends at the window's edge (26px more of the next day); the CREW tab and the next-day arrow keep their places; nothing shown today is covered; the foot scroll bar runs to the edge; each arrow press moves one day and lands it 20px in, as today; the strip's far end and the open panel are unchanged; a phone is unchanged.
+- **Pick up here, on his yes:** the bug-check order by its checklist (sizing first); build it (Fable, D2269 — this chat runs on Fable): the two rules of `PROPOSED` into `raptor-port/src/ui/scheduler/03-week.css` beside `.edit-board{padding-right:26px}`, its comments corrected; a browser test that the arrows step one day, each day landing where today's does, with the panel folded, and that the strip reaches the window's edge; `MOCK_BUILT=1` on `draw.mjs` for the side-by-side with the drawing (D1494); walked by Opus (D2256); Astra's read and a fresh Opus read; the pull request, its preview link to him; "merge live" is his.
+- **Rulings:** none this chat so far. **Next chat number:** 136 · **Next free ruling:** D2292 (check the open branches first).
+<!-- /now -->
+
 <!-- now:claude/lw-monthjump-click -->
 ### CHAT 112 — fix read 4's claim 5, the Leave War month landing (19 Nov 26, started by chat 111) — verify before use
 - **Branch** `claude/lw-monthjump-click`, cut from `claude/multi-sqn-b1-107` at `8b6054569`; no pull request into `main` (chat 111 brings it into pull request 806); never merged here.

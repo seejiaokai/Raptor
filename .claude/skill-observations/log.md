@@ -1102,3 +1102,29 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The morning list put 16 questions to the owner as equals. Checking them showed 13 could only happen after an action no screen offers yet (the walk set that state up behind the scenes), so they could wait for the feature that adds it; only 3 were live. Two recommendations also changed once each was checked against the rulings.
 **Suggested improvement:** In the morning report step, mark each parked question "reachable today" or "only once <feature> exists" (checked against how the walk set it up), and lead with the reachable ones. Check each recommendation against the rulings before it goes in the list.
 **Principle:** A question about a state users cannot reach yet is cheaper to settle when the feature that reaches it is designed; sorting by reachability shrinks what the owner must decide now.
+
+### Observation 1000: A "today" picture taken after a scripted scroll reset hid the app's real opening position
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** Drawing the before-and-after of Edit Schedule's right edge ([SCHED-RIGHT-EDGE], chat 135). Numbered past 999, which a local branch already holds.
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** The Method, step 1 — driving the build to the "today" state
+
+**Issue:** The first run of the drawing script set the week's scroll to 0 by script before each picture, so every "today" picture showed the first day 20px in from the edge. The app itself opens that page with the day hard against the edge (a page switch parks it there); only when the script was changed to reach the page by the real tab press, with no reset, did the pictures show what the owner sees — and a real fault of position surfaced ([SCHED-OPEN-20-OFF]).
+**Suggested improvement:** In "The Method" step 1, add: the "today" frame is pictured as the app's own controls leave it — the page opened by its real tab or button, no scripted scroll or reset before the first picture; a reset is used only to reach a later state, and the opening position is measured and recorded before it.
+**Principle:** A scripted reset to a tidy starting state replaces what the user actually sees first; picture the state the product's own controls produce before normalising anything.
+
+### Observation 1001: After the week's day arrows, a scripted scroll leaves the arrows' remembered target and the next press counts from it
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** The same drawing script (chat 135): one page reused for the "today" and "proposed" passes. Numbered past 999, which a local branch already holds.
+**Skill:** New skill candidate: walk-script traps (the home today is `raptor-port/docs/walk-scripts.md` §4)
+**Type:** internal
+**Phase/Area:** Steps, and what they assert — reusing one page across states
+
+**Issue:** The first pass pressed the next-day arrow to Sunday, then the script wrote the week's scroll back to 0 directly. The arrows remember where their last press was heading; a direct write does not clear that, so the second pass's first press counted from Sunday and loaded the next week. The "proposed" pictures were of a different week from the "today" ones, with no error.
+**Suggested improvement:** In `raptor-port/docs/walk-scripts.md` §4, add: a before-and-after pair takes a fresh page for each state; after any arrow press, move the week only by the app's own controls (the arrows, the foot scroll bar's track), never by writing its scroll — and assert the week's date in both pictures of a pair.
+**Principle:** A control that keeps a remembered target is not reset by moving the thing it controls behind its back; give each compared state its own fresh session and assert they show the same data.

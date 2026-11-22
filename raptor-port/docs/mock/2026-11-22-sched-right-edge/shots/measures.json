@@ -1,0 +1,7857 @@
+{
+ "errors": [],
+ "measures": {
+  "pc": {
+   "today-open-start": {
+    "innerWidth": 1536,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": false,
+    "board": {
+     "left": 0,
+     "right": 1536,
+     "top": 208.4,
+     "bottom": 3942.6,
+     "width": 1536
+    },
+    "week": {
+     "left": 0,
+     "right": 1259.2,
+     "top": 208.4,
+     "bottom": 3856.6,
+     "width": 1259.2
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 6768,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1510,
+     "right": 1536,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1522,
+     "right": 1536,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1259,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1259
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 210.4,
+      "bottom": 3816.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 210.4,
+      "bottom": 2873.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 210.4,
+      "bottom": 2579.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 210.4,
+      "bottom": 2822.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 210.4,
+      "bottom": 1701.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 210.4,
+      "bottom": 1493.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 210.4,
+      "bottom": 1151.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 210.4,
+      "bottom": 955.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 210.4,
+      "bottom": 749.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 210.4,
+      "bottom": 831,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 210.4,
+      "bottom": 511.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 210.4,
+      "bottom": 459.4,
+      "width": 552
+     }
+    ]
+   },
+   "today-folded-start": {
+    "innerWidth": 1536,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1536,
+     "top": 208.4,
+     "bottom": 3942.6,
+     "width": 1536
+    },
+    "week": {
+     "left": 0,
+     "right": 1510,
+     "top": 208.4,
+     "bottom": 3856.6,
+     "width": 1510
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 6768,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1510,
+     "right": 1536,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1522,
+     "right": 1536,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1510,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1510
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 210.4,
+      "bottom": 3816.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 210.4,
+      "bottom": 2873.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 210.4,
+      "bottom": 2579.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 210.4,
+      "bottom": 2822.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 210.4,
+      "bottom": 1701.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 210.4,
+      "bottom": 1493.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 210.4,
+      "bottom": 1151.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 210.4,
+      "bottom": 955.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 210.4,
+      "bottom": 749.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 210.4,
+      "bottom": 831,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 210.4,
+      "bottom": 511.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 210.4,
+      "bottom": 459.4,
+      "width": 552
+     }
+    ]
+   },
+   "today-under-tab": {
+    "weekRight": 1510,
+    "railLeft": 1510,
+    "underTheTab": [],
+    "inItsColumn": 31,
+    "shownInItsColumnPx": 0
+   },
+   "today-arrow-presses": [
+    {
+     "arrow": "next",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "next",
+     "front": "2",
+     "left": 20,
+     "scrollLeft": 1128
+    },
+    {
+     "arrow": "next",
+     "front": "3",
+     "left": 20.8,
+     "scrollLeft": 1691.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "4",
+     "left": 20.8,
+     "scrollLeft": 2255.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "5",
+     "left": 20.8,
+     "scrollLeft": 2819.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "6",
+     "left": 20.8,
+     "scrollLeft": 3383.199951171875
+    },
+    {
+     "arrow": "prev",
+     "front": "5",
+     "left": 20,
+     "scrollLeft": 2820
+    },
+    {
+     "arrow": "prev",
+     "front": "4",
+     "left": 19.2,
+     "scrollLeft": 2256.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "3",
+     "left": 19.2,
+     "scrollLeft": 1692.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "2",
+     "left": 20,
+     "scrollLeft": 1128
+    },
+    {
+     "arrow": "prev",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "prev",
+     "front": "0",
+     "left": 19.2,
+     "scrollLeft": 0.800000011920929
+    }
+   ],
+   "today-folded-end": {
+    "innerWidth": 1536,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1536,
+     "top": 208.4,
+     "bottom": 3942.6,
+     "width": 1536
+    },
+    "week": {
+     "left": 0,
+     "right": 1510,
+     "top": 208.4,
+     "bottom": 3856.6,
+     "width": 1510
+    },
+    "weekScrollLeft": 6768,
+    "weekScrollMaxFree": 6768,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1510,
+     "right": 1536,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1522,
+     "right": 1536,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1510,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1510
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": -6748,
+      "right": -6196,
+      "top": 210.4,
+      "bottom": 3816.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": -6184,
+      "right": -5632,
+      "top": 210.4,
+      "bottom": 2873.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": -5620,
+      "right": -5068,
+      "top": 210.4,
+      "bottom": 2579.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": -5056,
+      "right": -4504,
+      "top": 210.4,
+      "bottom": 2822.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": -4492,
+      "right": -3940,
+      "top": 210.4,
+      "bottom": 1701.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": -3928,
+      "right": -3376,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": -3364,
+      "right": -2812,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": -2800,
+      "right": -2248,
+      "top": 210.4,
+      "bottom": 1493.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": -2236,
+      "right": -1684,
+      "top": 210.4,
+      "bottom": 1151.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": -1672,
+      "right": -1120,
+      "top": 210.4,
+      "bottom": 955.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": -1108,
+      "right": -556,
+      "top": 210.4,
+      "bottom": 749.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": -544,
+      "right": 8,
+      "top": 210.4,
+      "bottom": 831,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 20,
+      "right": 572,
+      "top": 210.4,
+      "bottom": 511.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 584,
+      "right": 1136,
+      "top": 210.4,
+      "bottom": 459.4,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-open-start": {
+    "innerWidth": 1536,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": false,
+    "board": {
+     "left": 0,
+     "right": 1536,
+     "top": 208.4,
+     "bottom": 3942.6,
+     "width": 1536
+    },
+    "week": {
+     "left": 0,
+     "right": 1259.2,
+     "top": 208.4,
+     "bottom": 3856.6,
+     "width": 1259.2
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 6768,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1510,
+     "right": 1536,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1522,
+     "right": 1536,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1259,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1259
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 210.4,
+      "bottom": 3816.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 210.4,
+      "bottom": 2873.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 210.4,
+      "bottom": 2579.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 210.4,
+      "bottom": 2822.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 210.4,
+      "bottom": 1701.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 210.4,
+      "bottom": 1493.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 210.4,
+      "bottom": 1151.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 210.4,
+      "bottom": 955.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 210.4,
+      "bottom": 749.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 210.4,
+      "bottom": 831,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 210.4,
+      "bottom": 511.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 210.4,
+      "bottom": 459.4,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-folded-start": {
+    "innerWidth": 1536,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1536,
+     "top": 208.4,
+     "bottom": 3942.6,
+     "width": 1536
+    },
+    "week": {
+     "left": 0,
+     "right": 1536,
+     "top": 208.4,
+     "bottom": 3856.6,
+     "width": 1536
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 6768,
+    "weekPadRight": "34px",
+    "boardPadRight": "0px",
+    "rail": {
+     "left": 1510,
+     "right": 1536,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1522,
+     "right": 1536,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1536,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1536
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 210.4,
+      "bottom": 3816.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 210.4,
+      "bottom": 2873.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 210.4,
+      "bottom": 2579.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 210.4,
+      "bottom": 2822.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 210.4,
+      "bottom": 1701.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 210.4,
+      "bottom": 1493.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 210.4,
+      "bottom": 1151.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 210.4,
+      "bottom": 955.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 210.4,
+      "bottom": 749.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 210.4,
+      "bottom": 831,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 210.4,
+      "bottom": 511.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 210.4,
+      "bottom": 459.4,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-under-tab": {
+    "weekRight": 1536,
+    "railLeft": 1510,
+    "underTheTab": [],
+    "inItsColumn": 53,
+    "shownInItsColumnPx": 26
+   },
+   "proposed-arrow-presses": [
+    {
+     "arrow": "next",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "next",
+     "front": "2",
+     "left": 20.8,
+     "scrollLeft": 1127.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "3",
+     "left": 20.8,
+     "scrollLeft": 1691.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "4",
+     "left": 20.8,
+     "scrollLeft": 2255.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "5",
+     "left": 20.8,
+     "scrollLeft": 2819.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "6",
+     "left": 20,
+     "scrollLeft": 3384
+    },
+    {
+     "arrow": "prev",
+     "front": "5",
+     "left": 19.2,
+     "scrollLeft": 2820.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "4",
+     "left": 19.2,
+     "scrollLeft": 2256.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "3",
+     "left": 20,
+     "scrollLeft": 1692
+    },
+    {
+     "arrow": "prev",
+     "front": "2",
+     "left": 20,
+     "scrollLeft": 1128
+    },
+    {
+     "arrow": "prev",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "prev",
+     "front": "0",
+     "left": 19.2,
+     "scrollLeft": 0.800000011920929
+    }
+   ],
+   "proposed-folded-end": {
+    "innerWidth": 1536,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1536,
+     "top": 208.4,
+     "bottom": 3942.6,
+     "width": 1536
+    },
+    "week": {
+     "left": 0,
+     "right": 1536,
+     "top": 208.4,
+     "bottom": 3856.6,
+     "width": 1536
+    },
+    "weekScrollLeft": 6768,
+    "weekScrollMaxFree": 6768,
+    "weekPadRight": "34px",
+    "boardPadRight": "0px",
+    "rail": {
+     "left": 1510,
+     "right": 1536,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1522,
+     "right": 1536,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1536,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1536
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": -6748,
+      "right": -6196,
+      "top": 210.4,
+      "bottom": 3816.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": -6184,
+      "right": -5632,
+      "top": 210.4,
+      "bottom": 2873.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": -5620,
+      "right": -5068,
+      "top": 210.4,
+      "bottom": 2579.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": -5056,
+      "right": -4504,
+      "top": 210.4,
+      "bottom": 2822.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": -4492,
+      "right": -3940,
+      "top": 210.4,
+      "bottom": 1701.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": -3928,
+      "right": -3376,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": -3364,
+      "right": -2812,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": -2800,
+      "right": -2248,
+      "top": 210.4,
+      "bottom": 1493.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": -2236,
+      "right": -1684,
+      "top": 210.4,
+      "bottom": 1151.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": -1672,
+      "right": -1120,
+      "top": 210.4,
+      "bottom": 955.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": -1108,
+      "right": -556,
+      "top": 210.4,
+      "bottom": 749.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": -544,
+      "right": 8,
+      "top": 210.4,
+      "bottom": 831,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 20,
+      "right": 572,
+      "top": 210.4,
+      "bottom": 511.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 584,
+      "right": 1136,
+      "top": 210.4,
+      "bottom": 459.4,
+      "width": 552
+     }
+    ]
+   }
+  },
+  "w822": {
+   "today-open-start": {
+    "innerWidth": 822,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": false,
+    "board": {
+     "left": 0,
+     "right": 822.4,
+     "top": 242,
+     "bottom": 3976.2,
+     "width": 822.4
+    },
+    "week": {
+     "left": 0,
+     "right": 545.6,
+     "top": 242,
+     "bottom": 3890.2,
+     "width": 545.6
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 7896,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 796.4,
+     "right": 822.4,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 808.4,
+     "right": 822.4,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 546,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 546
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 244,
+      "bottom": 3850.2,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 244,
+      "bottom": 2906.95,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 244,
+      "bottom": 2613.05,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 244,
+      "bottom": 2855.85,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 244,
+      "bottom": 1735.35,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 244,
+      "bottom": 1272.3,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 244,
+      "bottom": 1272.3,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 244,
+      "bottom": 1526.68,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 244,
+      "bottom": 1184.98,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 244,
+      "bottom": 988.98,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 244,
+      "bottom": 783.08,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 244,
+      "bottom": 864.6,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 244,
+      "bottom": 544.8,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 244,
+      "bottom": 493,
+      "width": 552
+     }
+    ]
+   },
+   "today-folded-start": {
+    "innerWidth": 822,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 822.4,
+     "top": 242,
+     "bottom": 3976.2,
+     "width": 822.4
+    },
+    "week": {
+     "left": 0,
+     "right": 796.4,
+     "top": 242,
+     "bottom": 3890.2,
+     "width": 796.4
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 7332,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 796.4,
+     "right": 822.4,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 808.4,
+     "right": 822.4,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 796,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 796
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 244,
+      "bottom": 3850.2,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 244,
+      "bottom": 2906.95,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 244,
+      "bottom": 2613.05,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 244,
+      "bottom": 2855.85,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 244,
+      "bottom": 1735.35,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 244,
+      "bottom": 1272.3,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 244,
+      "bottom": 1272.3,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 244,
+      "bottom": 1526.68,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 244,
+      "bottom": 1184.98,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 244,
+      "bottom": 988.98,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 244,
+      "bottom": 783.08,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 244,
+      "bottom": 864.6,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 244,
+      "bottom": 544.8,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 244,
+      "bottom": 493,
+      "width": 552
+     }
+    ]
+   },
+   "today-under-tab": {
+    "weekRight": 796.4,
+    "railLeft": 796.4,
+    "underTheTab": [],
+    "inItsColumn": 33,
+    "shownInItsColumnPx": 0
+   },
+   "today-arrow-presses": [
+    {
+     "arrow": "next",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "next",
+     "front": "2",
+     "left": 20.8,
+     "scrollLeft": 1127.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "3",
+     "left": 20,
+     "scrollLeft": 1692
+    },
+    {
+     "arrow": "next",
+     "front": "4",
+     "left": 20,
+     "scrollLeft": 2256
+    },
+    {
+     "arrow": "next",
+     "front": "5",
+     "left": 20.8,
+     "scrollLeft": 2819.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "6",
+     "left": 20.8,
+     "scrollLeft": 3383.199951171875
+    },
+    {
+     "arrow": "prev",
+     "front": "5",
+     "left": 19.2,
+     "scrollLeft": 2820.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "4",
+     "left": 19.2,
+     "scrollLeft": 2256.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "3",
+     "left": 19.2,
+     "scrollLeft": 1692.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "2",
+     "left": 19.2,
+     "scrollLeft": 1128.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "prev",
+     "front": "0",
+     "left": 20,
+     "scrollLeft": 0
+    }
+   ],
+   "today-folded-end": {
+    "innerWidth": 822,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 822.4,
+     "top": 242,
+     "bottom": 3976.2,
+     "width": 822.4
+    },
+    "week": {
+     "left": 0,
+     "right": 796.4,
+     "top": 242,
+     "bottom": 3890.2,
+     "width": 796.4
+    },
+    "weekScrollLeft": 7331.2001953125,
+    "weekScrollMaxFree": 7332,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 796.4,
+     "right": 822.4,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 808.4,
+     "right": 822.4,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 796,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 796
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": -7311.2,
+      "right": -6759.2,
+      "top": 244,
+      "bottom": 3850.2,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": -6747.2,
+      "right": -6195.2,
+      "top": 244,
+      "bottom": 2906.95,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": -6183.2,
+      "right": -5631.2,
+      "top": 244,
+      "bottom": 2613.05,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": -5619.2,
+      "right": -5067.2,
+      "top": 244,
+      "bottom": 2855.85,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": -5055.2,
+      "right": -4503.2,
+      "top": 244,
+      "bottom": 1735.35,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": -4491.2,
+      "right": -3939.2,
+      "top": 244,
+      "bottom": 1272.3,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": -3927.2,
+      "right": -3375.2,
+      "top": 244,
+      "bottom": 1272.3,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": -3363.2,
+      "right": -2811.2,
+      "top": 244,
+      "bottom": 1526.68,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": -2799.2,
+      "right": -2247.2,
+      "top": 244,
+      "bottom": 1184.98,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": -2235.2,
+      "right": -1683.2,
+      "top": 244,
+      "bottom": 988.98,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": -1671.2,
+      "right": -1119.2,
+      "top": 244,
+      "bottom": 783.08,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": -1107.2,
+      "right": -555.2,
+      "top": 244,
+      "bottom": 864.6,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": -543.2,
+      "right": 8.8,
+      "top": 244,
+      "bottom": 544.8,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 20.8,
+      "right": 572.8,
+      "top": 244,
+      "bottom": 493,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-open-start": {
+    "innerWidth": 822,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": false,
+    "board": {
+     "left": 0,
+     "right": 822.4,
+     "top": 242,
+     "bottom": 3976.2,
+     "width": 822.4
+    },
+    "week": {
+     "left": 0,
+     "right": 545.6,
+     "top": 242,
+     "bottom": 3890.2,
+     "width": 545.6
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 7896,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 796.4,
+     "right": 822.4,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 808.4,
+     "right": 822.4,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 546,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 546
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 244,
+      "bottom": 3850.2,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 244,
+      "bottom": 2906.95,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 244,
+      "bottom": 2613.05,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 244,
+      "bottom": 2855.85,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 244,
+      "bottom": 1735.35,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 244,
+      "bottom": 1272.3,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 244,
+      "bottom": 1272.3,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 244,
+      "bottom": 1526.68,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 244,
+      "bottom": 1184.98,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 244,
+      "bottom": 988.98,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 244,
+      "bottom": 783.08,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 244,
+      "bottom": 864.6,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 244,
+      "bottom": 544.8,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 244,
+      "bottom": 493,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-folded-start": {
+    "innerWidth": 822,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 822.4,
+     "top": 242,
+     "bottom": 3976.2,
+     "width": 822.4
+    },
+    "week": {
+     "left": 0,
+     "right": 822.4,
+     "top": 242,
+     "bottom": 3890.2,
+     "width": 822.4
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 7332,
+    "weekPadRight": "34px",
+    "boardPadRight": "0px",
+    "rail": {
+     "left": 796.4,
+     "right": 822.4,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 808.4,
+     "right": 822.4,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 822,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 822
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 244,
+      "bottom": 3850.2,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 244,
+      "bottom": 2906.95,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 244,
+      "bottom": 2613.05,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 244,
+      "bottom": 2855.85,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 244,
+      "bottom": 1735.35,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 244,
+      "bottom": 1272.3,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 244,
+      "bottom": 1272.3,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 244,
+      "bottom": 1526.68,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 244,
+      "bottom": 1184.98,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 244,
+      "bottom": 988.98,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 244,
+      "bottom": 783.08,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 244,
+      "bottom": 864.6,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 244,
+      "bottom": 544.8,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 244,
+      "bottom": 493,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-under-tab": {
+    "weekRight": 822.4,
+    "railLeft": 796.4,
+    "underTheTab": [],
+    "inItsColumn": 44,
+    "shownInItsColumnPx": 26
+   },
+   "proposed-arrow-presses": [
+    {
+     "arrow": "next",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "next",
+     "front": "2",
+     "left": 20,
+     "scrollLeft": 1128
+    },
+    {
+     "arrow": "next",
+     "front": "3",
+     "left": 20.8,
+     "scrollLeft": 1691.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "4",
+     "left": 20.8,
+     "scrollLeft": 2255.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "5",
+     "left": 20.8,
+     "scrollLeft": 2819.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "6",
+     "left": 20,
+     "scrollLeft": 3384
+    },
+    {
+     "arrow": "prev",
+     "front": "5",
+     "left": 20,
+     "scrollLeft": 2820
+    },
+    {
+     "arrow": "prev",
+     "front": "4",
+     "left": 19.2,
+     "scrollLeft": 2256.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "3",
+     "left": 19.2,
+     "scrollLeft": 1692.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "2",
+     "left": 19.2,
+     "scrollLeft": 1128.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "1",
+     "left": 19.2,
+     "scrollLeft": 564.7999877929688
+    },
+    {
+     "arrow": "prev",
+     "front": "0",
+     "left": 20,
+     "scrollLeft": 0
+    }
+   ],
+   "proposed-folded-end": {
+    "innerWidth": 822,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 822.4,
+     "top": 242,
+     "bottom": 3976.2,
+     "width": 822.4
+    },
+    "week": {
+     "left": 0,
+     "right": 822.4,
+     "top": 242,
+     "bottom": 3890.2,
+     "width": 822.4
+    },
+    "weekScrollLeft": 7331.2001953125,
+    "weekScrollMaxFree": 7332,
+    "weekPadRight": "34px",
+    "boardPadRight": "0px",
+    "rail": {
+     "left": 796.4,
+     "right": 822.4,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 808.4,
+     "right": 822.4,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 822,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 822
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": -7311.2,
+      "right": -6759.2,
+      "top": 244,
+      "bottom": 3850.2,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": -6747.2,
+      "right": -6195.2,
+      "top": 244,
+      "bottom": 2906.95,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": -6183.2,
+      "right": -5631.2,
+      "top": 244,
+      "bottom": 2613.05,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": -5619.2,
+      "right": -5067.2,
+      "top": 244,
+      "bottom": 2855.85,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": -5055.2,
+      "right": -4503.2,
+      "top": 244,
+      "bottom": 1735.35,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": -4491.2,
+      "right": -3939.2,
+      "top": 244,
+      "bottom": 1272.3,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": -3927.2,
+      "right": -3375.2,
+      "top": 244,
+      "bottom": 1272.3,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": -3363.2,
+      "right": -2811.2,
+      "top": 244,
+      "bottom": 1526.68,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": -2799.2,
+      "right": -2247.2,
+      "top": 244,
+      "bottom": 1184.98,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": -2235.2,
+      "right": -1683.2,
+      "top": 244,
+      "bottom": 988.98,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": -1671.2,
+      "right": -1119.2,
+      "top": 244,
+      "bottom": 783.08,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": -1107.2,
+      "right": -555.2,
+      "top": 244,
+      "bottom": 864.6,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": -543.2,
+      "right": 8.8,
+      "top": 244,
+      "bottom": 544.8,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 20.8,
+      "right": 572.8,
+      "top": 244,
+      "bottom": 493,
+      "width": 552
+     }
+    ]
+   }
+  },
+  "w1024": {
+   "today-open-start": {
+    "innerWidth": 1024,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": false,
+    "board": {
+     "left": 0,
+     "right": 1024,
+     "top": 254.4,
+     "bottom": 3988.6,
+     "width": 1024
+    },
+    "week": {
+     "left": 0,
+     "right": 747.2,
+     "top": 254.4,
+     "bottom": 3902.6,
+     "width": 747.2
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 7332,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 998,
+     "right": 1024,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1010,
+     "right": 1024,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 747,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 747
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 256.4,
+      "bottom": 3862.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 256.4,
+      "bottom": 2919.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 256.4,
+      "bottom": 2625.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 256.4,
+      "bottom": 2868.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 256.4,
+      "bottom": 1747.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 256.4,
+      "bottom": 1539.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 256.4,
+      "bottom": 1197.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 256.4,
+      "bottom": 1001.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 256.4,
+      "bottom": 795.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 256.4,
+      "bottom": 877,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 256.4,
+      "bottom": 557.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 256.4,
+      "bottom": 505.4,
+      "width": 552
+     }
+    ]
+   },
+   "today-folded-start": {
+    "innerWidth": 1024,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1024,
+     "top": 254.4,
+     "bottom": 3988.6,
+     "width": 1024
+    },
+    "week": {
+     "left": 0,
+     "right": 998,
+     "top": 254.4,
+     "bottom": 3902.6,
+     "width": 998
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 7332,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 998,
+     "right": 1024,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1010,
+     "right": 1024,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 998,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 998
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 256.4,
+      "bottom": 3862.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 256.4,
+      "bottom": 2919.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 256.4,
+      "bottom": 2625.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 256.4,
+      "bottom": 2868.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 256.4,
+      "bottom": 1747.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 256.4,
+      "bottom": 1539.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 256.4,
+      "bottom": 1197.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 256.4,
+      "bottom": 1001.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 256.4,
+      "bottom": 795.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 256.4,
+      "bottom": 877,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 256.4,
+      "bottom": 557.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 256.4,
+      "bottom": 505.4,
+      "width": 552
+     }
+    ]
+   },
+   "today-under-tab": {
+    "weekRight": 998,
+    "railLeft": 998,
+    "underTheTab": [],
+    "inItsColumn": 50,
+    "shownInItsColumnPx": 0
+   },
+   "today-arrow-presses": [
+    {
+     "arrow": "next",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "next",
+     "front": "2",
+     "left": 20.8,
+     "scrollLeft": 1127.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "3",
+     "left": 20,
+     "scrollLeft": 1692
+    },
+    {
+     "arrow": "next",
+     "front": "4",
+     "left": 20.8,
+     "scrollLeft": 2255.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "5",
+     "left": 20.8,
+     "scrollLeft": 2819.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "6",
+     "left": 20,
+     "scrollLeft": 3384
+    },
+    {
+     "arrow": "prev",
+     "front": "5",
+     "left": 20,
+     "scrollLeft": 2820
+    },
+    {
+     "arrow": "prev",
+     "front": "4",
+     "left": 19.2,
+     "scrollLeft": 2256.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "3",
+     "left": 20,
+     "scrollLeft": 1692
+    },
+    {
+     "arrow": "prev",
+     "front": "2",
+     "left": 20,
+     "scrollLeft": 1128
+    },
+    {
+     "arrow": "prev",
+     "front": "1",
+     "left": 19.2,
+     "scrollLeft": 564.7999877929688
+    },
+    {
+     "arrow": "prev",
+     "front": "0",
+     "left": 19.2,
+     "scrollLeft": 0.800000011920929
+    }
+   ],
+   "today-folded-end": {
+    "innerWidth": 1024,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1024,
+     "top": 254.4,
+     "bottom": 3988.6,
+     "width": 1024
+    },
+    "week": {
+     "left": 0,
+     "right": 998,
+     "top": 254.4,
+     "bottom": 3902.6,
+     "width": 998
+    },
+    "weekScrollLeft": 7332,
+    "weekScrollMaxFree": 7332,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 998,
+     "right": 1024,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1010,
+     "right": 1024,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 998,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 998
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": -7312,
+      "right": -6760,
+      "top": 256.4,
+      "bottom": 3862.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": -6748,
+      "right": -6196,
+      "top": 256.4,
+      "bottom": 2919.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": -6184,
+      "right": -5632,
+      "top": 256.4,
+      "bottom": 2625.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": -5620,
+      "right": -5068,
+      "top": 256.4,
+      "bottom": 2868.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": -5056,
+      "right": -4504,
+      "top": 256.4,
+      "bottom": 1747.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": -4492,
+      "right": -3940,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": -3928,
+      "right": -3376,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": -3364,
+      "right": -2812,
+      "top": 256.4,
+      "bottom": 1539.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": -2800,
+      "right": -2248,
+      "top": 256.4,
+      "bottom": 1197.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": -2236,
+      "right": -1684,
+      "top": 256.4,
+      "bottom": 1001.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": -1672,
+      "right": -1120,
+      "top": 256.4,
+      "bottom": 795.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": -1108,
+      "right": -556,
+      "top": 256.4,
+      "bottom": 877,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": -544,
+      "right": 8,
+      "top": 256.4,
+      "bottom": 557.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 20,
+      "right": 572,
+      "top": 256.4,
+      "bottom": 505.4,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-open-start": {
+    "innerWidth": 1024,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": false,
+    "board": {
+     "left": 0,
+     "right": 1024,
+     "top": 254.4,
+     "bottom": 3988.6,
+     "width": 1024
+    },
+    "week": {
+     "left": 0,
+     "right": 747.2,
+     "top": 254.4,
+     "bottom": 3902.6,
+     "width": 747.2
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 7332,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 998,
+     "right": 1024,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1010,
+     "right": 1024,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 747,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 747
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 256.4,
+      "bottom": 3862.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 256.4,
+      "bottom": 2919.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 256.4,
+      "bottom": 2625.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 256.4,
+      "bottom": 2868.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 256.4,
+      "bottom": 1747.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 256.4,
+      "bottom": 1539.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 256.4,
+      "bottom": 1197.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 256.4,
+      "bottom": 1001.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 256.4,
+      "bottom": 795.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 256.4,
+      "bottom": 877,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 256.4,
+      "bottom": 557.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 256.4,
+      "bottom": 505.4,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-folded-start": {
+    "innerWidth": 1024,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1024,
+     "top": 254.4,
+     "bottom": 3988.6,
+     "width": 1024
+    },
+    "week": {
+     "left": 0,
+     "right": 1024,
+     "top": 254.4,
+     "bottom": 3902.6,
+     "width": 1024
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 7332,
+    "weekPadRight": "34px",
+    "boardPadRight": "0px",
+    "rail": {
+     "left": 998,
+     "right": 1024,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1010,
+     "right": 1024,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1024,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1024
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 256.4,
+      "bottom": 3862.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 256.4,
+      "bottom": 2919.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 256.4,
+      "bottom": 2625.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 256.4,
+      "bottom": 2868.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 256.4,
+      "bottom": 1747.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 256.4,
+      "bottom": 1539.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 256.4,
+      "bottom": 1197.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 256.4,
+      "bottom": 1001.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 256.4,
+      "bottom": 795.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 256.4,
+      "bottom": 877,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 256.4,
+      "bottom": 557.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 256.4,
+      "bottom": 505.4,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-under-tab": {
+    "weekRight": 1024,
+    "railLeft": 998,
+    "underTheTab": [],
+    "inItsColumn": 53,
+    "shownInItsColumnPx": 26
+   },
+   "proposed-arrow-presses": [
+    {
+     "arrow": "next",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "next",
+     "front": "2",
+     "left": 20.8,
+     "scrollLeft": 1127.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "3",
+     "left": 20,
+     "scrollLeft": 1692
+    },
+    {
+     "arrow": "next",
+     "front": "4",
+     "left": 20.8,
+     "scrollLeft": 2255.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "5",
+     "left": 20.8,
+     "scrollLeft": 2819.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "6",
+     "left": 20.8,
+     "scrollLeft": 3383.199951171875
+    },
+    {
+     "arrow": "prev",
+     "front": "5",
+     "left": 19.2,
+     "scrollLeft": 2820.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "4",
+     "left": 20,
+     "scrollLeft": 2256
+    },
+    {
+     "arrow": "prev",
+     "front": "3",
+     "left": 20,
+     "scrollLeft": 1692
+    },
+    {
+     "arrow": "prev",
+     "front": "2",
+     "left": 19.2,
+     "scrollLeft": 1128.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "1",
+     "left": 19.2,
+     "scrollLeft": 564.7999877929688
+    },
+    {
+     "arrow": "prev",
+     "front": "0",
+     "left": 19.2,
+     "scrollLeft": 0.800000011920929
+    }
+   ],
+   "proposed-folded-end": {
+    "innerWidth": 1024,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1024,
+     "top": 254.4,
+     "bottom": 3988.6,
+     "width": 1024
+    },
+    "week": {
+     "left": 0,
+     "right": 1024,
+     "top": 254.4,
+     "bottom": 3902.6,
+     "width": 1024
+    },
+    "weekScrollLeft": 7331.2001953125,
+    "weekScrollMaxFree": 7332,
+    "weekPadRight": "34px",
+    "boardPadRight": "0px",
+    "rail": {
+     "left": 998,
+     "right": 1024,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1010,
+     "right": 1024,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1024,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1024
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": -7311.2,
+      "right": -6759.2,
+      "top": 256.4,
+      "bottom": 3862.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": -6747.2,
+      "right": -6195.2,
+      "top": 256.4,
+      "bottom": 2919.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": -6183.2,
+      "right": -5631.2,
+      "top": 256.4,
+      "bottom": 2625.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": -5619.2,
+      "right": -5067.2,
+      "top": 256.4,
+      "bottom": 2868.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": -5055.2,
+      "right": -4503.2,
+      "top": 256.4,
+      "bottom": 1747.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": -4491.2,
+      "right": -3939.2,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": -3927.2,
+      "right": -3375.2,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": -3363.2,
+      "right": -2811.2,
+      "top": 256.4,
+      "bottom": 1539.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": -2799.2,
+      "right": -2247.2,
+      "top": 256.4,
+      "bottom": 1197.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": -2235.2,
+      "right": -1683.2,
+      "top": 256.4,
+      "bottom": 1001.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": -1671.2,
+      "right": -1119.2,
+      "top": 256.4,
+      "bottom": 795.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": -1107.2,
+      "right": -555.2,
+      "top": 256.4,
+      "bottom": 877,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": -543.2,
+      "right": 8.8,
+      "top": 256.4,
+      "bottom": 557.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 20.8,
+      "right": 572.8,
+      "top": 256.4,
+      "bottom": 505.4,
+      "width": 552
+     }
+    ]
+   }
+  },
+  "w1140": {
+   "today-open-start": {
+    "innerWidth": 1140,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": false,
+    "board": {
+     "left": 0,
+     "right": 1140,
+     "top": 254.4,
+     "bottom": 3988.6,
+     "width": 1140
+    },
+    "week": {
+     "left": 0,
+     "right": 863.2,
+     "top": 254.4,
+     "bottom": 3902.6,
+     "width": 863.2
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 7332,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1114,
+     "right": 1140,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1126,
+     "right": 1140,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 863,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 863
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 256.4,
+      "bottom": 3862.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 256.4,
+      "bottom": 2919.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 256.4,
+      "bottom": 2625.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 256.4,
+      "bottom": 2868.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 256.4,
+      "bottom": 1747.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 256.4,
+      "bottom": 1539.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 256.4,
+      "bottom": 1197.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 256.4,
+      "bottom": 1001.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 256.4,
+      "bottom": 795.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 256.4,
+      "bottom": 877,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 256.4,
+      "bottom": 557.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 256.4,
+      "bottom": 505.4,
+      "width": 552
+     }
+    ]
+   },
+   "today-folded-start": {
+    "innerWidth": 1140,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1140,
+     "top": 254.4,
+     "bottom": 3988.6,
+     "width": 1140
+    },
+    "week": {
+     "left": 0,
+     "right": 1114,
+     "top": 254.4,
+     "bottom": 3902.6,
+     "width": 1114
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 7332,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1114,
+     "right": 1140,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1126,
+     "right": 1140,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1114,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1114
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 256.4,
+      "bottom": 3862.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 256.4,
+      "bottom": 2919.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 256.4,
+      "bottom": 2625.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 256.4,
+      "bottom": 2868.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 256.4,
+      "bottom": 1747.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 256.4,
+      "bottom": 1539.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 256.4,
+      "bottom": 1197.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 256.4,
+      "bottom": 1001.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 256.4,
+      "bottom": 795.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 256.4,
+      "bottom": 877,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 256.4,
+      "bottom": 557.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 256.4,
+      "bottom": 505.4,
+      "width": 552
+     }
+    ]
+   },
+   "today-under-tab": {
+    "weekRight": 1114,
+    "railLeft": 1114,
+    "underTheTab": [],
+    "inItsColumn": 0,
+    "shownInItsColumnPx": 0
+   },
+   "today-arrow-presses": [
+    {
+     "arrow": "next",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "next",
+     "front": "2",
+     "left": 20.8,
+     "scrollLeft": 1127.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "3",
+     "left": 20,
+     "scrollLeft": 1692
+    },
+    {
+     "arrow": "next",
+     "front": "4",
+     "left": 20.8,
+     "scrollLeft": 2255.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "5",
+     "left": 20.8,
+     "scrollLeft": 2819.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "6",
+     "left": 20.8,
+     "scrollLeft": 3383.199951171875
+    },
+    {
+     "arrow": "prev",
+     "front": "5",
+     "left": 19.2,
+     "scrollLeft": 2820.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "4",
+     "left": 20,
+     "scrollLeft": 2256
+    },
+    {
+     "arrow": "prev",
+     "front": "3",
+     "left": 20,
+     "scrollLeft": 1692
+    },
+    {
+     "arrow": "prev",
+     "front": "2",
+     "left": 19.2,
+     "scrollLeft": 1128.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "prev",
+     "front": "0",
+     "left": 20,
+     "scrollLeft": 0
+    }
+   ],
+   "today-folded-end": {
+    "innerWidth": 1140,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1140,
+     "top": 254.4,
+     "bottom": 3988.6,
+     "width": 1140
+    },
+    "week": {
+     "left": 0,
+     "right": 1114,
+     "top": 254.4,
+     "bottom": 3902.6,
+     "width": 1114
+    },
+    "weekScrollLeft": 7332,
+    "weekScrollMaxFree": 7332,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1114,
+     "right": 1140,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1126,
+     "right": 1140,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1114,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1114
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": -7312,
+      "right": -6760,
+      "top": 256.4,
+      "bottom": 3862.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": -6748,
+      "right": -6196,
+      "top": 256.4,
+      "bottom": 2919.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": -6184,
+      "right": -5632,
+      "top": 256.4,
+      "bottom": 2625.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": -5620,
+      "right": -5068,
+      "top": 256.4,
+      "bottom": 2868.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": -5056,
+      "right": -4504,
+      "top": 256.4,
+      "bottom": 1747.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": -4492,
+      "right": -3940,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": -3928,
+      "right": -3376,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": -3364,
+      "right": -2812,
+      "top": 256.4,
+      "bottom": 1539.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": -2800,
+      "right": -2248,
+      "top": 256.4,
+      "bottom": 1197.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": -2236,
+      "right": -1684,
+      "top": 256.4,
+      "bottom": 1001.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": -1672,
+      "right": -1120,
+      "top": 256.4,
+      "bottom": 795.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": -1108,
+      "right": -556,
+      "top": 256.4,
+      "bottom": 877,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": -544,
+      "right": 8,
+      "top": 256.4,
+      "bottom": 557.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 20,
+      "right": 572,
+      "top": 256.4,
+      "bottom": 505.4,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-open-start": {
+    "innerWidth": 1140,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": false,
+    "board": {
+     "left": 0,
+     "right": 1140,
+     "top": 254.4,
+     "bottom": 3988.6,
+     "width": 1140
+    },
+    "week": {
+     "left": 0,
+     "right": 863.2,
+     "top": 254.4,
+     "bottom": 3902.6,
+     "width": 863.2
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 7332,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1114,
+     "right": 1140,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1126,
+     "right": 1140,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 863,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 863
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 256.4,
+      "bottom": 3862.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 256.4,
+      "bottom": 2919.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 256.4,
+      "bottom": 2625.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 256.4,
+      "bottom": 2868.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 256.4,
+      "bottom": 1747.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 256.4,
+      "bottom": 1539.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 256.4,
+      "bottom": 1197.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 256.4,
+      "bottom": 1001.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 256.4,
+      "bottom": 795.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 256.4,
+      "bottom": 877,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 256.4,
+      "bottom": 557.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 256.4,
+      "bottom": 505.4,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-folded-start": {
+    "innerWidth": 1140,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1140,
+     "top": 254.4,
+     "bottom": 3988.6,
+     "width": 1140
+    },
+    "week": {
+     "left": 0,
+     "right": 1140,
+     "top": 254.4,
+     "bottom": 3902.6,
+     "width": 1140
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 7332,
+    "weekPadRight": "34px",
+    "boardPadRight": "0px",
+    "rail": {
+     "left": 1114,
+     "right": 1140,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1126,
+     "right": 1140,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1140,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1140
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 256.4,
+      "bottom": 3862.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 256.4,
+      "bottom": 2919.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 256.4,
+      "bottom": 2625.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 256.4,
+      "bottom": 2868.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 256.4,
+      "bottom": 1747.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 256.4,
+      "bottom": 1539.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 256.4,
+      "bottom": 1197.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 256.4,
+      "bottom": 1001.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 256.4,
+      "bottom": 795.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 256.4,
+      "bottom": 877,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 256.4,
+      "bottom": 557.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 256.4,
+      "bottom": 505.4,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-under-tab": {
+    "weekRight": 1140,
+    "railLeft": 1114,
+    "underTheTab": [],
+    "inItsColumn": 0,
+    "shownInItsColumnPx": 26
+   },
+   "proposed-arrow-presses": [
+    {
+     "arrow": "next",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "next",
+     "front": "2",
+     "left": 20,
+     "scrollLeft": 1128
+    },
+    {
+     "arrow": "next",
+     "front": "3",
+     "left": 20.8,
+     "scrollLeft": 1691.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "4",
+     "left": 20.8,
+     "scrollLeft": 2255.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "5",
+     "left": 20.8,
+     "scrollLeft": 2819.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "6",
+     "left": 20.8,
+     "scrollLeft": 3383.199951171875
+    },
+    {
+     "arrow": "prev",
+     "front": "5",
+     "left": 20,
+     "scrollLeft": 2820
+    },
+    {
+     "arrow": "prev",
+     "front": "4",
+     "left": 20,
+     "scrollLeft": 2256
+    },
+    {
+     "arrow": "prev",
+     "front": "3",
+     "left": 20,
+     "scrollLeft": 1692
+    },
+    {
+     "arrow": "prev",
+     "front": "2",
+     "left": 19.2,
+     "scrollLeft": 1128.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "prev",
+     "front": "0",
+     "left": 19.2,
+     "scrollLeft": 0.800000011920929
+    }
+   ],
+   "proposed-folded-end": {
+    "innerWidth": 1140,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1140,
+     "top": 254.4,
+     "bottom": 3988.6,
+     "width": 1140
+    },
+    "week": {
+     "left": 0,
+     "right": 1140,
+     "top": 254.4,
+     "bottom": 3902.6,
+     "width": 1140
+    },
+    "weekScrollLeft": 7332,
+    "weekScrollMaxFree": 7332,
+    "weekPadRight": "34px",
+    "boardPadRight": "0px",
+    "rail": {
+     "left": 1114,
+     "right": 1140,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1126,
+     "right": 1140,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1140,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1140
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": -7312,
+      "right": -6760,
+      "top": 256.4,
+      "bottom": 3862.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": -6748,
+      "right": -6196,
+      "top": 256.4,
+      "bottom": 2919.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": -6184,
+      "right": -5632,
+      "top": 256.4,
+      "bottom": 2625.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": -5620,
+      "right": -5068,
+      "top": 256.4,
+      "bottom": 2868.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": -5056,
+      "right": -4504,
+      "top": 256.4,
+      "bottom": 1747.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": -4492,
+      "right": -3940,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": -3928,
+      "right": -3376,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": -3364,
+      "right": -2812,
+      "top": 256.4,
+      "bottom": 1539.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": -2800,
+      "right": -2248,
+      "top": 256.4,
+      "bottom": 1197.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": -2236,
+      "right": -1684,
+      "top": 256.4,
+      "bottom": 1001.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": -1672,
+      "right": -1120,
+      "top": 256.4,
+      "bottom": 795.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": -1108,
+      "right": -556,
+      "top": 256.4,
+      "bottom": 877,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": -544,
+      "right": 8,
+      "top": 256.4,
+      "bottom": 557.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 20,
+      "right": 572,
+      "top": 256.4,
+      "bottom": 505.4,
+      "width": 552
+     }
+    ]
+   }
+  },
+  "w1280": {
+   "today-open-start": {
+    "innerWidth": 1280,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": false,
+    "board": {
+     "left": 0,
+     "right": 1280,
+     "top": 254.4,
+     "bottom": 3988.6,
+     "width": 1280
+    },
+    "week": {
+     "left": 0,
+     "right": 1003.2,
+     "top": 254.4,
+     "bottom": 3902.6,
+     "width": 1003.2
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 7332,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1254,
+     "right": 1280,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1266,
+     "right": 1280,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1003,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1003
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 256.4,
+      "bottom": 3862.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 256.4,
+      "bottom": 2919.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 256.4,
+      "bottom": 2625.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 256.4,
+      "bottom": 2868.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 256.4,
+      "bottom": 1747.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 256.4,
+      "bottom": 1539.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 256.4,
+      "bottom": 1197.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 256.4,
+      "bottom": 1001.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 256.4,
+      "bottom": 795.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 256.4,
+      "bottom": 877,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 256.4,
+      "bottom": 557.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 256.4,
+      "bottom": 505.4,
+      "width": 552
+     }
+    ]
+   },
+   "today-folded-start": {
+    "innerWidth": 1280,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1280,
+     "top": 254.4,
+     "bottom": 3988.6,
+     "width": 1280
+    },
+    "week": {
+     "left": 0,
+     "right": 1254,
+     "top": 254.4,
+     "bottom": 3902.6,
+     "width": 1254
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 6768,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1254,
+     "right": 1280,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1266,
+     "right": 1280,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1254,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1254
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 256.4,
+      "bottom": 3862.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 256.4,
+      "bottom": 2919.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 256.4,
+      "bottom": 2625.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 256.4,
+      "bottom": 2868.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 256.4,
+      "bottom": 1747.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 256.4,
+      "bottom": 1539.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 256.4,
+      "bottom": 1197.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 256.4,
+      "bottom": 1001.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 256.4,
+      "bottom": 795.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 256.4,
+      "bottom": 877,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 256.4,
+      "bottom": 557.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 256.4,
+      "bottom": 505.4,
+      "width": 552
+     }
+    ]
+   },
+   "today-under-tab": {
+    "weekRight": 1254,
+    "railLeft": 1254,
+    "underTheTab": [],
+    "inItsColumn": 39,
+    "shownInItsColumnPx": 0
+   },
+   "today-arrow-presses": [
+    {
+     "arrow": "next",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "next",
+     "front": "2",
+     "left": 20,
+     "scrollLeft": 1128
+    },
+    {
+     "arrow": "next",
+     "front": "3",
+     "left": 20.8,
+     "scrollLeft": 1691.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "4",
+     "left": 20.8,
+     "scrollLeft": 2255.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "5",
+     "left": 20.8,
+     "scrollLeft": 2819.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "6",
+     "left": 20.8,
+     "scrollLeft": 3383.199951171875
+    },
+    {
+     "arrow": "prev",
+     "front": "5",
+     "left": 19.2,
+     "scrollLeft": 2820.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "4",
+     "left": 19.2,
+     "scrollLeft": 2256.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "3",
+     "left": 19.2,
+     "scrollLeft": 1692.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "2",
+     "left": 19.2,
+     "scrollLeft": 1128.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "prev",
+     "front": "0",
+     "left": 20,
+     "scrollLeft": 0
+    }
+   ],
+   "today-folded-end": {
+    "innerWidth": 1280,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1280,
+     "top": 254.4,
+     "bottom": 3988.6,
+     "width": 1280
+    },
+    "week": {
+     "left": 0,
+     "right": 1254,
+     "top": 254.4,
+     "bottom": 3902.6,
+     "width": 1254
+    },
+    "weekScrollLeft": 6768,
+    "weekScrollMaxFree": 6768,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1254,
+     "right": 1280,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1266,
+     "right": 1280,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1254,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1254
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": -6748,
+      "right": -6196,
+      "top": 256.4,
+      "bottom": 3862.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": -6184,
+      "right": -5632,
+      "top": 256.4,
+      "bottom": 2919.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": -5620,
+      "right": -5068,
+      "top": 256.4,
+      "bottom": 2625.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": -5056,
+      "right": -4504,
+      "top": 256.4,
+      "bottom": 2868.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": -4492,
+      "right": -3940,
+      "top": 256.4,
+      "bottom": 1747.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": -3928,
+      "right": -3376,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": -3364,
+      "right": -2812,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": -2800,
+      "right": -2248,
+      "top": 256.4,
+      "bottom": 1539.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": -2236,
+      "right": -1684,
+      "top": 256.4,
+      "bottom": 1197.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": -1672,
+      "right": -1120,
+      "top": 256.4,
+      "bottom": 1001.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": -1108,
+      "right": -556,
+      "top": 256.4,
+      "bottom": 795.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": -544,
+      "right": 8,
+      "top": 256.4,
+      "bottom": 877,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 20,
+      "right": 572,
+      "top": 256.4,
+      "bottom": 557.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 584,
+      "right": 1136,
+      "top": 256.4,
+      "bottom": 505.4,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-open-start": {
+    "innerWidth": 1280,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": false,
+    "board": {
+     "left": 0,
+     "right": 1280,
+     "top": 254.4,
+     "bottom": 3988.6,
+     "width": 1280
+    },
+    "week": {
+     "left": 0,
+     "right": 1003.2,
+     "top": 254.4,
+     "bottom": 3902.6,
+     "width": 1003.2
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 7332,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1254,
+     "right": 1280,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1266,
+     "right": 1280,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1003,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1003
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 256.4,
+      "bottom": 3862.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 256.4,
+      "bottom": 2919.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 256.4,
+      "bottom": 2625.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 256.4,
+      "bottom": 2868.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 256.4,
+      "bottom": 1747.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 256.4,
+      "bottom": 1539.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 256.4,
+      "bottom": 1197.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 256.4,
+      "bottom": 1001.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 256.4,
+      "bottom": 795.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 256.4,
+      "bottom": 877,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 256.4,
+      "bottom": 557.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 256.4,
+      "bottom": 505.4,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-folded-start": {
+    "innerWidth": 1280,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1280,
+     "top": 254.4,
+     "bottom": 3988.6,
+     "width": 1280
+    },
+    "week": {
+     "left": 0,
+     "right": 1280,
+     "top": 254.4,
+     "bottom": 3902.6,
+     "width": 1280
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 6768,
+    "weekPadRight": "34px",
+    "boardPadRight": "0px",
+    "rail": {
+     "left": 1254,
+     "right": 1280,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1266,
+     "right": 1280,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1280,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1280
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 256.4,
+      "bottom": 3862.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 256.4,
+      "bottom": 2919.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 256.4,
+      "bottom": 2625.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 256.4,
+      "bottom": 2868.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 256.4,
+      "bottom": 1747.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 256.4,
+      "bottom": 1539.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 256.4,
+      "bottom": 1197.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 256.4,
+      "bottom": 1001.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 256.4,
+      "bottom": 795.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 256.4,
+      "bottom": 877,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 256.4,
+      "bottom": 557.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 256.4,
+      "bottom": 505.4,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-under-tab": {
+    "weekRight": 1280,
+    "railLeft": 1254,
+    "underTheTab": [],
+    "inItsColumn": 66,
+    "shownInItsColumnPx": 26
+   },
+   "proposed-arrow-presses": [
+    {
+     "arrow": "next",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "next",
+     "front": "2",
+     "left": 20.8,
+     "scrollLeft": 1127.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "3",
+     "left": 20.8,
+     "scrollLeft": 1691.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "4",
+     "left": 20.8,
+     "scrollLeft": 2255.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "5",
+     "left": 20.8,
+     "scrollLeft": 2819.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "6",
+     "left": 20,
+     "scrollLeft": 3384
+    },
+    {
+     "arrow": "prev",
+     "front": "5",
+     "left": 19.2,
+     "scrollLeft": 2820.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "4",
+     "left": 19.2,
+     "scrollLeft": 2256.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "3",
+     "left": 20,
+     "scrollLeft": 1692
+    },
+    {
+     "arrow": "prev",
+     "front": "2",
+     "left": 20,
+     "scrollLeft": 1128
+    },
+    {
+     "arrow": "prev",
+     "front": "1",
+     "left": 19.2,
+     "scrollLeft": 564.7999877929688
+    },
+    {
+     "arrow": "prev",
+     "front": "0",
+     "left": 20,
+     "scrollLeft": 0
+    }
+   ],
+   "proposed-folded-end": {
+    "innerWidth": 1280,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1280,
+     "top": 254.4,
+     "bottom": 3988.6,
+     "width": 1280
+    },
+    "week": {
+     "left": 0,
+     "right": 1280,
+     "top": 254.4,
+     "bottom": 3902.6,
+     "width": 1280
+    },
+    "weekScrollLeft": 6767.2001953125,
+    "weekScrollMaxFree": 6768,
+    "weekPadRight": "34px",
+    "boardPadRight": "0px",
+    "rail": {
+     "left": 1254,
+     "right": 1280,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1266,
+     "right": 1280,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1280,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1280
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": -6747.2,
+      "right": -6195.2,
+      "top": 256.4,
+      "bottom": 3862.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": -6183.2,
+      "right": -5631.2,
+      "top": 256.4,
+      "bottom": 2919.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": -5619.2,
+      "right": -5067.2,
+      "top": 256.4,
+      "bottom": 2625.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": -5055.2,
+      "right": -4503.2,
+      "top": 256.4,
+      "bottom": 2868.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": -4491.2,
+      "right": -3939.2,
+      "top": 256.4,
+      "bottom": 1747.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": -3927.2,
+      "right": -3375.2,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": -3363.2,
+      "right": -2811.2,
+      "top": 256.4,
+      "bottom": 1284.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": -2799.2,
+      "right": -2247.2,
+      "top": 256.4,
+      "bottom": 1539.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": -2235.2,
+      "right": -1683.2,
+      "top": 256.4,
+      "bottom": 1197.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": -1671.2,
+      "right": -1119.2,
+      "top": 256.4,
+      "bottom": 1001.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": -1107.2,
+      "right": -555.2,
+      "top": 256.4,
+      "bottom": 795.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": -543.2,
+      "right": 8.8,
+      "top": 256.4,
+      "bottom": 877,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 20.8,
+      "right": 572.8,
+      "top": 256.4,
+      "bottom": 557.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 584.8,
+      "right": 1136.8,
+      "top": 256.4,
+      "bottom": 505.4,
+      "width": 552
+     }
+    ]
+   }
+  },
+  "w1707": {
+   "today-open-start": {
+    "innerWidth": 1707,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": false,
+    "board": {
+     "left": 0,
+     "right": 1707.2,
+     "top": 208.4,
+     "bottom": 3942.6,
+     "width": 1707.2
+    },
+    "week": {
+     "left": 0,
+     "right": 1430.4,
+     "top": 208.4,
+     "bottom": 3856.6,
+     "width": 1430.4
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 6768,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1681.2,
+     "right": 1707.2,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1693.2,
+     "right": 1707.2,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1430,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1430
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 210.4,
+      "bottom": 3816.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 210.4,
+      "bottom": 2873.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 210.4,
+      "bottom": 2579.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 210.4,
+      "bottom": 2822.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 210.4,
+      "bottom": 1701.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 210.4,
+      "bottom": 1493.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 210.4,
+      "bottom": 1151.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 210.4,
+      "bottom": 955.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 210.4,
+      "bottom": 749.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 210.4,
+      "bottom": 831,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 210.4,
+      "bottom": 511.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 210.4,
+      "bottom": 459.4,
+      "width": 552
+     }
+    ]
+   },
+   "today-folded-start": {
+    "innerWidth": 1707,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1707.2,
+     "top": 208.4,
+     "bottom": 3942.6,
+     "width": 1707.2
+    },
+    "week": {
+     "left": 0,
+     "right": 1681.2,
+     "top": 208.4,
+     "bottom": 3856.6,
+     "width": 1681.2
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 6768,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1681.2,
+     "right": 1707.2,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1693.2,
+     "right": 1707.2,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1681,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1681
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 210.4,
+      "bottom": 3816.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 210.4,
+      "bottom": 2873.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 210.4,
+      "bottom": 2579.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 210.4,
+      "bottom": 2822.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 210.4,
+      "bottom": 1701.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 210.4,
+      "bottom": 1493.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 210.4,
+      "bottom": 1151.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 210.4,
+      "bottom": 955.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 210.4,
+      "bottom": 749.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 210.4,
+      "bottom": 831,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 210.4,
+      "bottom": 511.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 210.4,
+      "bottom": 459.4,
+      "width": 552
+     }
+    ]
+   },
+   "today-under-tab": {
+    "weekRight": 1681.2,
+    "railLeft": 1681.2,
+    "underTheTab": [],
+    "inItsColumn": 0,
+    "shownInItsColumnPx": 0
+   },
+   "today-arrow-presses": [
+    {
+     "arrow": "next",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "next",
+     "front": "2",
+     "left": 20.8,
+     "scrollLeft": 1127.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "3",
+     "left": 20,
+     "scrollLeft": 1692
+    },
+    {
+     "arrow": "next",
+     "front": "4",
+     "left": 20,
+     "scrollLeft": 2256
+    },
+    {
+     "arrow": "next",
+     "front": "5",
+     "left": 20,
+     "scrollLeft": 2820
+    },
+    {
+     "arrow": "next",
+     "front": "6",
+     "left": 20.8,
+     "scrollLeft": 3383.199951171875
+    },
+    {
+     "arrow": "prev",
+     "front": "5",
+     "left": 19.2,
+     "scrollLeft": 2820.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "4",
+     "left": 19.2,
+     "scrollLeft": 2256.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "3",
+     "left": 20,
+     "scrollLeft": 1692
+    },
+    {
+     "arrow": "prev",
+     "front": "2",
+     "left": 19.2,
+     "scrollLeft": 1128.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "1",
+     "left": 19.2,
+     "scrollLeft": 564.7999877929688
+    },
+    {
+     "arrow": "prev",
+     "front": "0",
+     "left": 19.2,
+     "scrollLeft": 0.800000011920929
+    }
+   ],
+   "today-folded-end": {
+    "innerWidth": 1707,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1707.2,
+     "top": 208.4,
+     "bottom": 3942.6,
+     "width": 1707.2
+    },
+    "week": {
+     "left": 0,
+     "right": 1681.2,
+     "top": 208.4,
+     "bottom": 3856.6,
+     "width": 1681.2
+    },
+    "weekScrollLeft": 6767.2001953125,
+    "weekScrollMaxFree": 6768,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1681.2,
+     "right": 1707.2,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1693.2,
+     "right": 1707.2,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1681,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1681
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": -6747.2,
+      "right": -6195.2,
+      "top": 210.4,
+      "bottom": 3816.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": -6183.2,
+      "right": -5631.2,
+      "top": 210.4,
+      "bottom": 2873.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": -5619.2,
+      "right": -5067.2,
+      "top": 210.4,
+      "bottom": 2579.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": -5055.2,
+      "right": -4503.2,
+      "top": 210.4,
+      "bottom": 2822.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": -4491.2,
+      "right": -3939.2,
+      "top": 210.4,
+      "bottom": 1701.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": -3927.2,
+      "right": -3375.2,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": -3363.2,
+      "right": -2811.2,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": -2799.2,
+      "right": -2247.2,
+      "top": 210.4,
+      "bottom": 1493.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": -2235.2,
+      "right": -1683.2,
+      "top": 210.4,
+      "bottom": 1151.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": -1671.2,
+      "right": -1119.2,
+      "top": 210.4,
+      "bottom": 955.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": -1107.2,
+      "right": -555.2,
+      "top": 210.4,
+      "bottom": 749.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": -543.2,
+      "right": 8.8,
+      "top": 210.4,
+      "bottom": 831,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 20.8,
+      "right": 572.8,
+      "top": 210.4,
+      "bottom": 511.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 584.8,
+      "right": 1136.8,
+      "top": 210.4,
+      "bottom": 459.4,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-open-start": {
+    "innerWidth": 1707,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": false,
+    "board": {
+     "left": 0,
+     "right": 1707.2,
+     "top": 208.4,
+     "bottom": 3942.6,
+     "width": 1707.2
+    },
+    "week": {
+     "left": 0,
+     "right": 1430.4,
+     "top": 208.4,
+     "bottom": 3856.6,
+     "width": 1430.4
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 6768,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1681.2,
+     "right": 1707.2,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1693.2,
+     "right": 1707.2,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1430,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1430
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 210.4,
+      "bottom": 3816.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 210.4,
+      "bottom": 2873.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 210.4,
+      "bottom": 2579.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 210.4,
+      "bottom": 2822.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 210.4,
+      "bottom": 1701.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 210.4,
+      "bottom": 1493.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 210.4,
+      "bottom": 1151.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 210.4,
+      "bottom": 955.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 210.4,
+      "bottom": 749.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 210.4,
+      "bottom": 831,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 210.4,
+      "bottom": 511.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 210.4,
+      "bottom": 459.4,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-folded-start": {
+    "innerWidth": 1707,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1707.2,
+     "top": 208.4,
+     "bottom": 3942.6,
+     "width": 1707.2
+    },
+    "week": {
+     "left": 0,
+     "right": 1707.2,
+     "top": 208.4,
+     "bottom": 3856.6,
+     "width": 1707.2
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 6768,
+    "weekPadRight": "34px",
+    "boardPadRight": "0px",
+    "rail": {
+     "left": 1681.2,
+     "right": 1707.2,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1693.2,
+     "right": 1707.2,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1707,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1707
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 210.4,
+      "bottom": 3816.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 210.4,
+      "bottom": 2873.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 210.4,
+      "bottom": 2579.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 210.4,
+      "bottom": 2822.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 210.4,
+      "bottom": 1701.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 210.4,
+      "bottom": 1493.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 210.4,
+      "bottom": 1151.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 210.4,
+      "bottom": 955.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 210.4,
+      "bottom": 749.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 210.4,
+      "bottom": 831,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 210.4,
+      "bottom": 511.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 210.4,
+      "bottom": 459.4,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-under-tab": {
+    "weekRight": 1707.2,
+    "railLeft": 1681.2,
+    "underTheTab": [
+     "dow crewday \"Thursday\" 1px of 64"
+    ],
+    "inItsColumn": 1,
+    "shownInItsColumnPx": 26
+   },
+   "proposed-arrow-presses": [
+    {
+     "arrow": "next",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "next",
+     "front": "2",
+     "left": 20,
+     "scrollLeft": 1128
+    },
+    {
+     "arrow": "next",
+     "front": "3",
+     "left": 20.8,
+     "scrollLeft": 1691.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "4",
+     "left": 20.8,
+     "scrollLeft": 2255.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "5",
+     "left": 20.8,
+     "scrollLeft": 2819.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "6",
+     "left": 20.8,
+     "scrollLeft": 3383.199951171875
+    },
+    {
+     "arrow": "prev",
+     "front": "5",
+     "left": 19.2,
+     "scrollLeft": 2820.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "4",
+     "left": 19.2,
+     "scrollLeft": 2256.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "3",
+     "left": 19.2,
+     "scrollLeft": 1692.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "2",
+     "left": 19.2,
+     "scrollLeft": 1128.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "prev",
+     "front": "0",
+     "left": 19.2,
+     "scrollLeft": 0.800000011920929
+    }
+   ],
+   "proposed-folded-end": {
+    "innerWidth": 1707,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1707.2,
+     "top": 208.4,
+     "bottom": 3942.6,
+     "width": 1707.2
+    },
+    "week": {
+     "left": 0,
+     "right": 1707.2,
+     "top": 208.4,
+     "bottom": 3856.6,
+     "width": 1707.2
+    },
+    "weekScrollLeft": 6768,
+    "weekScrollMaxFree": 6768,
+    "weekPadRight": "34px",
+    "boardPadRight": "0px",
+    "rail": {
+     "left": 1681.2,
+     "right": 1707.2,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1693.2,
+     "right": 1707.2,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1707,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1707
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": -6748,
+      "right": -6196,
+      "top": 210.4,
+      "bottom": 3816.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": -6184,
+      "right": -5632,
+      "top": 210.4,
+      "bottom": 2873.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": -5620,
+      "right": -5068,
+      "top": 210.4,
+      "bottom": 2579.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": -5056,
+      "right": -4504,
+      "top": 210.4,
+      "bottom": 2822.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": -4492,
+      "right": -3940,
+      "top": 210.4,
+      "bottom": 1701.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": -3928,
+      "right": -3376,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": -3364,
+      "right": -2812,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": -2800,
+      "right": -2248,
+      "top": 210.4,
+      "bottom": 1493.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": -2236,
+      "right": -1684,
+      "top": 210.4,
+      "bottom": 1151.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": -1672,
+      "right": -1120,
+      "top": 210.4,
+      "bottom": 955.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": -1108,
+      "right": -556,
+      "top": 210.4,
+      "bottom": 749.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": -544,
+      "right": 8,
+      "top": 210.4,
+      "bottom": 831,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 20,
+      "right": 572,
+      "top": 210.4,
+      "bottom": 511.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 584,
+      "right": 1136,
+      "top": 210.4,
+      "bottom": 459.4,
+      "width": 552
+     }
+    ]
+   }
+  },
+  "w1920": {
+   "today-open-start": {
+    "innerWidth": 1920,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": false,
+    "board": {
+     "left": 0,
+     "right": 1920,
+     "top": 208.4,
+     "bottom": 3942.6,
+     "width": 1920
+    },
+    "week": {
+     "left": 0,
+     "right": 1643.2,
+     "top": 208.4,
+     "bottom": 3856.6,
+     "width": 1643.2
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 6768,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1894,
+     "right": 1920,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1906,
+     "right": 1920,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1643,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1643
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 210.4,
+      "bottom": 3816.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 210.4,
+      "bottom": 2873.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 210.4,
+      "bottom": 2579.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 210.4,
+      "bottom": 2822.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 210.4,
+      "bottom": 1701.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 210.4,
+      "bottom": 1493.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 210.4,
+      "bottom": 1151.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 210.4,
+      "bottom": 955.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 210.4,
+      "bottom": 749.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 210.4,
+      "bottom": 831,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 210.4,
+      "bottom": 511.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 210.4,
+      "bottom": 459.4,
+      "width": 552
+     }
+    ]
+   },
+   "today-folded-start": {
+    "innerWidth": 1920,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1920,
+     "top": 208.4,
+     "bottom": 3942.6,
+     "width": 1920
+    },
+    "week": {
+     "left": 0,
+     "right": 1894,
+     "top": 208.4,
+     "bottom": 3856.6,
+     "width": 1894
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 6204,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1894,
+     "right": 1920,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1906,
+     "right": 1920,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1894,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1894
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 210.4,
+      "bottom": 3816.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 210.4,
+      "bottom": 2873.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 210.4,
+      "bottom": 2579.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 210.4,
+      "bottom": 2822.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 210.4,
+      "bottom": 1701.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 210.4,
+      "bottom": 1493.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 210.4,
+      "bottom": 1151.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 210.4,
+      "bottom": 955.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 210.4,
+      "bottom": 749.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 210.4,
+      "bottom": 831,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 210.4,
+      "bottom": 511.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 210.4,
+      "bottom": 459.4,
+      "width": 552
+     }
+    ]
+   },
+   "today-under-tab": {
+    "weekRight": 1894,
+    "railLeft": 1894,
+    "underTheTab": [],
+    "inItsColumn": 51,
+    "shownInItsColumnPx": 0
+   },
+   "today-arrow-presses": [
+    {
+     "arrow": "next",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "next",
+     "front": "2",
+     "left": 20.8,
+     "scrollLeft": 1127.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "3",
+     "left": 20.8,
+     "scrollLeft": 1691.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "4",
+     "left": 20.8,
+     "scrollLeft": 2255.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "5",
+     "left": 20.8,
+     "scrollLeft": 2819.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "6",
+     "left": 20.8,
+     "scrollLeft": 3383.199951171875
+    },
+    {
+     "arrow": "prev",
+     "front": "5",
+     "left": 20,
+     "scrollLeft": 2820
+    },
+    {
+     "arrow": "prev",
+     "front": "4",
+     "left": 19.2,
+     "scrollLeft": 2256.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "3",
+     "left": 20,
+     "scrollLeft": 1692
+    },
+    {
+     "arrow": "prev",
+     "front": "2",
+     "left": 20,
+     "scrollLeft": 1128
+    },
+    {
+     "arrow": "prev",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "prev",
+     "front": "0",
+     "left": 19.2,
+     "scrollLeft": 0.800000011920929
+    }
+   ],
+   "today-folded-end": {
+    "innerWidth": 1920,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1920,
+     "top": 208.4,
+     "bottom": 3942.6,
+     "width": 1920
+    },
+    "week": {
+     "left": 0,
+     "right": 1894,
+     "top": 208.4,
+     "bottom": 3856.6,
+     "width": 1894
+    },
+    "weekScrollLeft": 6204,
+    "weekScrollMaxFree": 6204,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1894,
+     "right": 1920,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1906,
+     "right": 1920,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1894,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1894
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": -6184,
+      "right": -5632,
+      "top": 210.4,
+      "bottom": 3816.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": -5620,
+      "right": -5068,
+      "top": 210.4,
+      "bottom": 2873.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": -5056,
+      "right": -4504,
+      "top": 210.4,
+      "bottom": 2579.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": -4492,
+      "right": -3940,
+      "top": 210.4,
+      "bottom": 2822.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": -3928,
+      "right": -3376,
+      "top": 210.4,
+      "bottom": 1701.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": -3364,
+      "right": -2812,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": -2800,
+      "right": -2248,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": -2236,
+      "right": -1684,
+      "top": 210.4,
+      "bottom": 1493.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": -1672,
+      "right": -1120,
+      "top": 210.4,
+      "bottom": 1151.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": -1108,
+      "right": -556,
+      "top": 210.4,
+      "bottom": 955.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": -544,
+      "right": 8,
+      "top": 210.4,
+      "bottom": 749.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 20,
+      "right": 572,
+      "top": 210.4,
+      "bottom": 831,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 584,
+      "right": 1136,
+      "top": 210.4,
+      "bottom": 511.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 1148,
+      "right": 1700,
+      "top": 210.4,
+      "bottom": 459.4,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-open-start": {
+    "innerWidth": 1920,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": false,
+    "board": {
+     "left": 0,
+     "right": 1920,
+     "top": 208.4,
+     "bottom": 3942.6,
+     "width": 1920
+    },
+    "week": {
+     "left": 0,
+     "right": 1643.2,
+     "top": 208.4,
+     "bottom": 3856.6,
+     "width": 1643.2
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 6768,
+    "weekPadRight": "8px",
+    "boardPadRight": "26px",
+    "rail": {
+     "left": 1894,
+     "right": 1920,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1906,
+     "right": 1920,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1643,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1643
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 210.4,
+      "bottom": 3816.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 210.4,
+      "bottom": 2873.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 210.4,
+      "bottom": 2579.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 210.4,
+      "bottom": 2822.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 210.4,
+      "bottom": 1701.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 210.4,
+      "bottom": 1493.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 210.4,
+      "bottom": 1151.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 210.4,
+      "bottom": 955.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 210.4,
+      "bottom": 749.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 210.4,
+      "bottom": 831,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 210.4,
+      "bottom": 511.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 210.4,
+      "bottom": 459.4,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-folded-start": {
+    "innerWidth": 1920,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1920,
+     "top": 208.4,
+     "bottom": 3942.6,
+     "width": 1920
+    },
+    "week": {
+     "left": 0,
+     "right": 1920,
+     "top": 208.4,
+     "bottom": 3856.6,
+     "width": 1920
+    },
+    "weekScrollLeft": 20,
+    "weekScrollMaxFree": 6204,
+    "weekPadRight": "34px",
+    "boardPadRight": "0px",
+    "rail": {
+     "left": 1894,
+     "right": 1920,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1906,
+     "right": 1920,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1920,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1920
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": 0,
+      "right": 552,
+      "top": 210.4,
+      "bottom": 3816.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": 564,
+      "right": 1116,
+      "top": 210.4,
+      "bottom": 2873.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": 1128,
+      "right": 1680,
+      "top": 210.4,
+      "bottom": 2579.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": 1692,
+      "right": 2244,
+      "top": 210.4,
+      "bottom": 2822.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": 2256,
+      "right": 2808,
+      "top": 210.4,
+      "bottom": 1701.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": 2820,
+      "right": 3372,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": 3384,
+      "right": 3936,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": 3948,
+      "right": 4500,
+      "top": 210.4,
+      "bottom": 1493.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": 4512,
+      "right": 5064,
+      "top": 210.4,
+      "bottom": 1151.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": 5076,
+      "right": 5628,
+      "top": 210.4,
+      "bottom": 955.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": 5640,
+      "right": 6192,
+      "top": 210.4,
+      "bottom": 749.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 6204,
+      "right": 6756,
+      "top": 210.4,
+      "bottom": 831,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 6768,
+      "right": 7320,
+      "top": 210.4,
+      "bottom": 511.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 7332,
+      "right": 7884,
+      "top": 210.4,
+      "bottom": 459.4,
+      "width": 552
+     }
+    ]
+   },
+   "proposed-under-tab": {
+    "weekRight": 1920,
+    "railLeft": 1894,
+    "underTheTab": [
+     "planselbtn \"Live working copy▾\" 21px of 122"
+    ],
+    "inItsColumn": 55,
+    "shownInItsColumnPx": 26
+   },
+   "proposed-arrow-presses": [
+    {
+     "arrow": "next",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "next",
+     "front": "2",
+     "left": 20.8,
+     "scrollLeft": 1127.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "3",
+     "left": 20.8,
+     "scrollLeft": 1691.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "4",
+     "left": 20.8,
+     "scrollLeft": 2255.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "5",
+     "left": 20.8,
+     "scrollLeft": 2819.199951171875
+    },
+    {
+     "arrow": "next",
+     "front": "6",
+     "left": 20,
+     "scrollLeft": 3384
+    },
+    {
+     "arrow": "prev",
+     "front": "5",
+     "left": 19.2,
+     "scrollLeft": 2820.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "4",
+     "left": 20,
+     "scrollLeft": 2256
+    },
+    {
+     "arrow": "prev",
+     "front": "3",
+     "left": 19.2,
+     "scrollLeft": 1692.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "2",
+     "left": 19.2,
+     "scrollLeft": 1128.800048828125
+    },
+    {
+     "arrow": "prev",
+     "front": "1",
+     "left": 20,
+     "scrollLeft": 564
+    },
+    {
+     "arrow": "prev",
+     "front": "0",
+     "left": 20,
+     "scrollLeft": 0
+    }
+   ],
+   "proposed-folded-end": {
+    "innerWidth": 1920,
+    "innerHeight": 864,
+    "dpr": 1.25,
+    "folded": true,
+    "board": {
+     "left": 0,
+     "right": 1920,
+     "top": 208.4,
+     "bottom": 3942.6,
+     "width": 1920
+    },
+    "week": {
+     "left": 0,
+     "right": 1920,
+     "top": 208.4,
+     "bottom": 3856.6,
+     "width": 1920
+    },
+    "weekScrollLeft": 6203.2001953125,
+    "weekScrollMaxFree": 6204,
+    "weekPadRight": "34px",
+    "boardPadRight": "0px",
+    "rail": {
+     "left": 1894,
+     "right": 1920,
+     "top": 150,
+     "bottom": 235.7,
+     "width": 26
+    },
+    "nextArrow": {
+     "left": 1906,
+     "right": 1920,
+     "top": 414.27,
+     "bottom": 484.27,
+     "width": 14
+    },
+    "scrollBar": {
+     "left": 0,
+     "right": 1920,
+     "top": 829.2,
+     "bottom": 864,
+     "width": 1920
+    },
+    "days": [
+     {
+      "day": "0",
+      "left": -6183.2,
+      "right": -5631.2,
+      "top": 210.4,
+      "bottom": 3816.6,
+      "width": 552
+     },
+     {
+      "day": "1",
+      "left": -5619.2,
+      "right": -5067.2,
+      "top": 210.4,
+      "bottom": 2873.35,
+      "width": 552
+     },
+     {
+      "day": "2",
+      "left": -5055.2,
+      "right": -4503.2,
+      "top": 210.4,
+      "bottom": 2579.45,
+      "width": 552
+     },
+     {
+      "day": "3",
+      "left": -4491.2,
+      "right": -3939.2,
+      "top": 210.4,
+      "bottom": 2822.25,
+      "width": 552
+     },
+     {
+      "day": "4",
+      "left": -3927.2,
+      "right": -3375.2,
+      "top": 210.4,
+      "bottom": 1701.75,
+      "width": 552
+     },
+     {
+      "day": "5",
+      "left": -3363.2,
+      "right": -2811.2,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "6",
+      "left": -2799.2,
+      "right": -2247.2,
+      "top": 210.4,
+      "bottom": 1238.7,
+      "width": 552
+     },
+     {
+      "day": "next week 0",
+      "left": -2235.2,
+      "right": -1683.2,
+      "top": 210.4,
+      "bottom": 1493.08,
+      "width": 552
+     },
+     {
+      "day": "next week 1",
+      "left": -1671.2,
+      "right": -1119.2,
+      "top": 210.4,
+      "bottom": 1151.38,
+      "width": 552
+     },
+     {
+      "day": "next week 2",
+      "left": -1107.2,
+      "right": -555.2,
+      "top": 210.4,
+      "bottom": 955.38,
+      "width": 552
+     },
+     {
+      "day": "next week 3",
+      "left": -543.2,
+      "right": 8.8,
+      "top": 210.4,
+      "bottom": 749.48,
+      "width": 552
+     },
+     {
+      "day": "next week 4",
+      "left": 20.8,
+      "right": 572.8,
+      "top": 210.4,
+      "bottom": 831,
+      "width": 552
+     },
+     {
+      "day": "next week 5",
+      "left": 584.8,
+      "right": 1136.8,
+      "top": 210.4,
+      "bottom": 511.2,
+      "width": 552
+     },
+     {
+      "day": "next week 6",
+      "left": 1148.8,
+      "right": 1700.8,
+      "top": 210.4,
+      "bottom": 459.4,
+      "width": 552
+     }
+    ]
+   }
+  },
+  "phone": {
+   "today": {
+    "innerWidth": 402,
+    "dpr": 3,
+    "weekRight": 402,
+    "dayLeft": 0,
+    "dayRight": 378,
+    "tabLeft": 373,
+    "tabRight": 403,
+    "boardPadRight": "0px"
+   },
+   "proposed": {
+    "innerWidth": 402,
+    "dpr": 3,
+    "weekRight": 402,
+    "dayLeft": 0,
+    "dayRight": 378,
+    "tabLeft": 373,
+    "tabRight": 403,
+    "boardPadRight": "0px"
+   }
+  }
+ }
+}
