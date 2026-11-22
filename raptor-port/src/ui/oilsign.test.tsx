@@ -14,6 +14,7 @@ import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import { SCHED, signOf } from '../engine/publish'
+import { curDraftId, dayDrafts, draftDup, draftSelect } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { stashClear } from '../engine/weekstash'
 import { initStore, writeInputsBatch, notify } from '../state/store'
@@ -120,6 +121,29 @@ describe('a sign-off pressed on a day with an unanswered OIL question (D2294, D2
     expect(signPick(SAT, 'sked', 'bane'), 'another box asks again').toBe('held')
     expect(signOf(SAT).sked).toBeFalsy()
     expect(pops.OILLIST).toMatchObject({ hold: { role: 'sked', who: 'bane' } })
+  })
+
+  /* Astra's scenario read, F01 (22 Nov 26): the list stays up while the page behind it works (D641), so the day's saved
+     plan can be switched under a held name — and each plan owns its own signatures. The hold checked only the date. */
+  it('a name held on one saved plan is never written onto another: the plan switched behind the list, Later and Save sign nothing', async () => {
+    const planA = curDraftId(SAT)
+    signPick(SAT, 'cur', 'ignite'); await draw()
+    const b: any = draftDup(SAT)
+    expect(b && b.id, 'setup: a second plan, now the live one').toBeTruthy()
+    expect(curDraftId(SAT)).not.toBe(planA)
+    await click('odl-later')
+    expect(signOf(SAT).cur, 'Later after the switch signs nothing on the other plan').toBeFalsy()
+    expect(pops.OILLIST).toBeNull()
+    /* …and the day was not marked asked by a Later that signed nothing: the next press on this plan asks */
+    expect(signPick(SAT, 'cur', 'ignite')).toBe('held')
+    await draw()
+    const live = curDraftId(SAT), other = dayDrafts(SAT).find((x: any) => x.id !== live)
+    expect(other, 'setup: the first plan is kept beside the live one').toBeTruthy()
+    draftSelect(SAT, other.id); view.afterSchedMutate()
+    expect(curDraftId(SAT), 'setup: back on the first plan').not.toBe(live)
+    await click('odl-yes-fx-train'); await click('odl-save')
+    expect(answerOf('fx-train'), 'the answer is the input’s, whatever the plan').toBeGreaterThan(0)
+    expect(signOf(SAT).cur, 'Save after the switch signs nothing on the other plan').toBeFalsy()
   })
 
   it('a second input filed after Later is asked once more (the agent’s reading, told to him)', async () => {

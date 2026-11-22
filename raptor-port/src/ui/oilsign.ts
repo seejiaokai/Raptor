@@ -19,6 +19,7 @@
    cleared with the session). The other three boxes then sign at once. An input filed on the day AFTERWARDS has never been
    put to anyone, so the next press asks once more, the list showing what is open. */
 import { DAYS } from '../engine/data'
+import { curDraftId } from '../engine/drafts'
 import { logAction } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
@@ -31,7 +32,7 @@ import { oilOpenOn, unitDayFacts, holidayOwnNameOf } from '../leavewar/sync'
 import { adminOfList, saveOilDay, type OilPick } from './oilday'
 import { OILSIGN_LATER, setOilList } from './pops'
 
-export type SignHold = { di: number; role: string; who: string }
+export type SignHold = { di: number; role: string; who: string; plan?: string }
 
 /** the sign-off's write — the body the boxes' handler has always run (ui/Shell.tsx), moved here whole so the list's Save
  *  and Later write the held name by the very same path */
@@ -69,7 +70,7 @@ export function signPick(di: number, role: string, who: string): 'held' | 'signe
   /* the list for that one day, as a put-back opens it (ui/oilputback.ts): a holiday named by its own name, a plain
      weekend saying nothing of a holiday; never the "is now a public holiday" lead — nothing was just declared */
   const ph = unitDayFacts(ask.unit, ask.iso).kind === 'ph'
-  setOilList({ from: ask.iso, to: ask.iso, name: ph ? holidayOwnNameOf(ask.unit, ask.iso) : '', fresh: false, plain: !ph, unit: ask.unit, hold: { di, role, who } })
+  setOilList({ from: ask.iso, to: ask.iso, name: ph ? holidayOwnNameOf(ask.unit, ask.iso) : '', fresh: false, plain: !ph, unit: ask.unit, hold: { di, role, who, ...(planOf(di) ? { plan: planOf(di) } : {}) } })
   return 'held'
 }
 
@@ -87,8 +88,13 @@ function signAsks(di: number): { iso: string; unit: string } | null {
 
 /** IS THE HELD SIGN-OFF STILL THE DAY'S? — the list stays up while he works behind it (D641), so the week or the squadron
  *  in view can change under it: a hold whose day is no longer the list's date and squadron is not written anywhere. */
+/*  …NOR IS ONE WHOSE SAVED PLAN IS NO LONGER THE DAY'S LIVE ONE (Astra's scenario read, F01 — 22 Nov 26): each plan of a
+ *  day owns its own four signatures (engine/drafts.ts), so a name picked on plan A and written after a switch to plan B
+ *  would sign content nobody picked it for. Such a hold is dropped as the list's close drops it: nothing is signed,
+ *  Later marks nothing asked, and the next press on the plan now live asks again. */
+const planOf = (di: number): string => String(curDraftId(di) ?? '')
 const holdStands = (hold: SignHold, iso: string, unit: string): boolean =>
-  unit === UNIT && !!DAYS[hold.di] && dayIso(String(CURWEEK), hold.di) === iso
+  unit === UNIT && !!DAYS[hold.di] && dayIso(String(CURWEEK), hold.di) === iso && (hold.plan ?? '') === planOf(hold.di)
 
 /** LATER, with a sign-off held: the name is written, with no answer — nobody on those inputs earns OIL, and the publish
  *  note says so (leavewar/sync.ts publishFlagsBids) — and the day asks no more of what stood open. */

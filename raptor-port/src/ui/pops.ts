@@ -179,8 +179,8 @@ export function setBellList(open: boolean, at = '') { BELLLIST = open; BELLAT = 
 /* `hold` — A SIGN-OFF WAITING ON THE LIST (his D2294, D2299 — ui/oilsign.ts): the list was opened by a press on one of the
    day's four sign-off boxes, and holds the name picked there, unwritten. The list's Save and Later write it; closing the
    list any other way drops it with the list, so nothing is signed. */
-export let OILLIST: null | { from: string; to: string; name: string; fresh: boolean; plain?: boolean; unit?: string; hold?: { di: number; role: string; who: string } } = null
-export function setOilList(v: null | { from: string; to: string; name: string; fresh?: boolean; plain?: boolean; unit?: string; hold?: { di: number; role: string; who: string } }) { OILLIST = v ? { from: v.from, to: v.to || v.from, name: v.name || '', fresh: !!v.fresh, ...(v.plain ? { plain: true } : {}), ...(v.unit ? { unit: v.unit } : {}), ...(v.hold ? { hold: { di: v.hold.di, role: v.hold.role, who: v.hold.who } } : {}) } : null }
+export let OILLIST: null | { from: string; to: string; name: string; fresh: boolean; plain?: boolean; unit?: string; hold?: { di: number; role: string; who: string; plan?: string } } = null
+export function setOilList(v: null | { from: string; to: string; name: string; fresh?: boolean; plain?: boolean; unit?: string; hold?: { di: number; role: string; who: string; plan?: string } }) { OILLIST = v ? { from: v.from, to: v.to || v.from, name: v.name || '', fresh: !!v.fresh, ...(v.plain ? { plain: true } : {}), ...(v.unit ? { unit: v.unit } : {}), ...(v.hold ? { hold: { di: v.hold.di, role: v.hold.role, who: v.hold.who, ...(v.hold.plan ? { plan: v.hold.plan } : {}) } } : {}) } : null }
 /* THE DAYS "LATER" WAS PRESSED ON AT A SIGN-OFF, each with the inputs left unanswered then (ui/oilsign.ts — "Later asks no
    more that day", D2294): his for as long as he is signed in, cleared with the windows at the session's end. Keyed by
    squadron and date, so another week's Saturday or another squadron's is its own. */
