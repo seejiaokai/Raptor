@@ -159,6 +159,21 @@ function keptPlans(a: Account): Record<string, number> | undefined {
   }
   return Object.keys(out).length ? out : undefined
 }
+/* THE MASTER MARK SET OR CLEARED, AND THE RIGHTS THAT GO WITH A CHANGE OF MARK OR ROLE — ONE body for the mark's own door
+   (setMaster) and Admin → Users' one Save (saveAccess) (the second half's final reads, R3: setMaster had its own copy,
+   which dropped nothing, so a Plan holder made a master admin by it kept his Plan, hidden behind "Full access" and back
+   when the mark came off — R-O10). `markWith` writes the mark on `next` — its day, and, made one, the Plans he holds
+   with each one's moment (§16 D1′a); `rightsDropped` names the rows the same command drops: made a master admin, every
+   right holding today; made a member, his Plan holding today (PA2 — D2250). */
+function markWith(next: Account, a: Account, on: boolean, today: string): void {
+  if (on) { next.master = true; next.masterFrom = today; const k = keptPlans(a); if (k) next.kept = k; else delete next.kept }
+  else { delete next.master; delete next.masterFrom; delete next.kept }
+}
+function rightsDropped(a: Account, masterAfter: boolean, roleAfter: AccountRole): Grant[] {
+  const today = todayIso(), acct = levelAcct(a)
+  const holds = (g: Grant) => g.account === a.id && grantOfOn(acct, g.unit, today)?.id === g.id
+  return unitRows().grants.filter(g => holds(g) && (masterAfter && !a.master ? true : a.role === 'admin' && roleAfter !== 'admin' ? g.level === 'admin' : false))
+}
 /* `seat` 'FCP' | 'RCP' | 'GND' (never '' on a request made now — the card refuses it; an
    old stored one reads '' and the admin picks at approval); `cat` '' for personnel */
 export interface AccessRequest { id: string; name: string; cs: string; ini: string; seat: string; cat: string; at: number; seenBy: string[]; unit: string }
@@ -779,15 +794,18 @@ export function setMaster(id: string, on: boolean): { ok: boolean; message?: str
   const next: Account = { ...a }
   /* (its day with it — fault P: a line his move retired stays retired however the mark comes later) */
   /* (and, made one, the squadrons he holds Plan of with each Plan's moment — §16 D1′a; writeAccounts dates the mark) */
-  if (on) { next.master = true; next.masterFrom = todayIso(); const k = keptPlans(a); if (k) next.kept = k; else delete next.kept } else { delete next.master; delete next.masterFrom; delete next.kept }
+  markWith(next, a, on, todayIso())
+  /* (made one, every View and Plan he holds today goes in this same command, as the one Save drops them — R-O10, R3) */
+  const drops = rightsDropped(a, on, a.role)
+  const dropIds = new Set(drops.map(g => g.id))
   const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? next : x))
   /* (only an admin's account counts as a master admin left — D2260) */
   if (!list.some(x => x.master && x.role === 'admin')) return { ok: false, message: 'At least one master admin must be left' }
   /* a master admin counts only at home (Piece C): marking a squadron's only Plan admin a master leaves it none — said in
-     the lock's words, as every other door says it (Fable's blind read, 2) */
-  const locked = lockProblem(list)
+     the lock's words, as every other door says it (Fable's blind read, 2) — over the rows the command leaves */
+  const locked = lockProblem(list, undefined, drops.length ? rowsDraft(unitRows(), { dropGrants: g => dropIds.has(g.id) }) : undefined)
   if (locked) return { ok: false, message: locked }
-  const bad = commitIntent('account.master', null, () => writeAccounts(list))
+  const bad = commitIntent('account.master', null, () => { writeAccounts(list); if (drops.length) dropGrantRows(drops.map(g => g.id)) })
   return bad ? { ok: false, message: bad } : { ok: true }
 }
 
@@ -846,7 +864,7 @@ export function saveAccess(id: string, want: AccessSave): string | null {
   const next: Account = { ...a, role: roleAfter }
   /* (made one, the Plan rows the Save drops below are kept on his account, each with its moment — §16 D1′a: for those
      squadrons his right counts from the Plan's start, and his bell's default reads "on"; his own bell choices still win) */
-  if (masterCh) { if (masterAfter) { next.master = true; next.masterFrom = today; const k = keptPlans(a); if (k) next.kept = k; else delete next.kept } else { delete next.master; delete next.masterFrom; delete next.kept } }
+  if (masterCh) markWith(next, a, masterAfter, today)
   const next0 = roleCh ? adminRecFor(next) : next
   /* the squadrons' part */
   for (const ln of lines) {
@@ -863,8 +881,7 @@ export function saveAccess(id: string, want: AccessSave): string | null {
     if (ln.to && gives && homeOn(a.pid, moveFrom(today)) !== homeOn(a.pid, today)) return 'He moves squadron tomorrow — give this after the move'
   }
   /* what the Save drops with it: made a master admin, every right holding today; made a member, his Plan holding today */
-  const holds = (g: Grant) => g.account === a.id && grantOfOn(acct, g.unit, today)?.id === g.id
-  const drops = unitRows().grants.filter(g => holds(g) && (masterAfter && !a.master ? true : a.role === 'admin' && roleAfter !== 'admin' ? g.level === 'admin' : false))
+  const drops = rightsDropped(a, masterAfter, roleAfter)
   const dropIds = new Set(drops.map(g => g.id))
   const laid: Grant[] = []
   for (const ln of lines) if (ln.to) laid.push({ id: ln.had && !dropIds.has(ln.had.id) ? ln.had.id : `~${ln.unit}`, account: a.id, unit: ln.unit, level: ln.to, from: today })

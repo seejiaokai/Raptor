@@ -2905,9 +2905,11 @@ function unitRowViolation(env: CommitEnvelope): string | null {
     for (const c of masterCh) {
       const img: any = c.after ?? c.before
       if (String(c.id) === ACCOUNT_ROW + a.id || (img && a.personId != null && String(img.pid) === String(a.personId))) return 'never his own master mark'
-      /* MADE A MASTER ADMIN BY THE ONE SAVE, HE KEEPS NO RIGHT (R-O10): every View and Plan he holds goes in the same
-         command — a kept row would be hidden behind "Full access" and come back when the mark comes off */
-      if (env.type === 'account.access' && c.after != null && (c.after as any).master === true) {
+      /* MADE A MASTER ADMIN, HE KEEPS NO RIGHT (R-O10): every View and Plan he holds goes in the same command — a kept row
+         would be hidden behind "Full access" and come back when the mark comes off. Whichever command sets the mark — the
+         one Save, the mark's own `account.master`, an Undo or Redo (§15 D14; the second half's final reads, R3: it was
+         asked of the one Save only, and the mark's own command kept a Plan) */
+      if (c.after != null && (c.after as any).master === true) {
         const id = String(c.id).slice(ACCOUNT_ROW.length), h = holderA(id)
         if (after.grants.some(g => g.account === id && grantRowHolds(h, g, today, after))) return `a right left on an account made a master admin (${c.id})`
       }
