@@ -245,6 +245,27 @@ purple SANS line, desktop and phone — as w3 reported.
 | A3 | A returning man (Overseas, restored to return later, ticked SANS) archived again before his return counts on the days he was away — the archive's end replaced by the archive's date filled a real gap | YES — failed with "+ SANS" on at the archive; and the host found the same shape in (2)'s repair: a hand tick begun the day his Overseas posting ran, later taken off, filled the gap too (1 more test failed) | **Fixed red-first**: the blanket replacement removed; a SANS stretch a posting made is marked when an archive ends it, and only such a stretch, begun the day after a stint's written end, counts as days he flew with us |
 | A4 | Tests missing: the exact post-in date; a delete before arrival each way | — | Added (`d2328-astra.test.ts`) |
 
+**Round 4b's reads** of `1f3e52eb4..6d135301a` (brief `…-read-r4b-brief.md`; Astra `D:\raptor-work\c146-astra-r4b-read.md`; the
+fresh Opus reader's report in chat 146, its proofs copied into `d2328-r4b.test.ts`), each blind to the other and the walk:
+
+| # | Who | The claim | Reproduced | Disposition |
+|---|---|---|---|---|
+| B1 | both | A man SANS by hand when his SANS posting runs (or unticked and re-ticked after it) gets no posting mark; an archive drops him from the days he flew with us | YES — 3 failed | **Fixed red-first** (`8c16a3c47`): the archive writes the posting's days from his saved posting (`sanPo`); the `'po'` mark gone. The reader's "nothing pending" narrowed to D327 (a named man's archive reads 1 pending; crowd and OIL unchanged) |
+| B2 | Astra | A hand tick the day of a restore folds the posting's stretch away — the same loss | YES — 1 failed | **Fixed** by B1's change |
+| B3 | both | The next-week preview's key misses a SANS posting set ahead | YES — 2 failed | **Fixed**: `sansSig` includes it |
+| B4 | Opus | On a day SANS only by a posting not yet run, the crew list strikes him "no availability filed", which nobody can file before it runs (D2327) | seen in w4's `run2/w1-w1b-03-board-desktop.png` (Hex greyed under "SANS AVAIL · 0 FREE") | **Put to him** with the preview link — recommended: no strike on such a day |
+| B5 | both | Checked right: the post-in date kept at a delete; the look-ahead's crowd; each outcome; the switch both ways; the kept record's other readers | — | Recorded |
+
+**Walker w4 (Opus), on the build of `ecdac3ebc`** — `docs/handpass/parts/asp/w4-report.md`, pictures `…/w4/run2/`, `…/w4/run3-w3x/`:
+W1 (his example) desktop and phone — Sat not named out (44), named in (45, his puck already wearing the purple line on Wed);
+W1b — published Sat: 0 pending, "SIGNED ORIG", 45, "FO*"; the clock moved to Fri 17 Jul and reloaded: the same, both switch
+positions; W2 (a clash) out; W4 (Kiwi deleted before arriving) out before and after, 23 unchanged; the plain-user round
+passes. **17 FAIL lines were the brief's, not the app's:** the event's hours clashed with Hex's own demo flights (Thu RU BFM
+16:45; Tue VL BFM 08:40) — the host opened `run2/w1-w1-03x-thu-crew-desktop.png` (Hex greyed, tasked); at clear hours he is
+in (Thu 08:00–10:00: 40; Tue, `run3-w3x`: in before, after the archive and after the restore, 35 each way). **The host
+opened** `run2/w1-w1b-03-board-desktop.png`: Saturday after Friday came — signed ORIG, no conflicts, 45. **B1's fix came
+after this walk:** the archive and restore of `run3-w3x` are to be walked again on the new build.
+
 ## 14. The Walk line
 
 `Walk: docs/handpass/2026-11-22-allavail-sans-posted.md · 462 pictures (and 684 phone tap pictures) · 9 surfaces · 15 orders and the plain-user round, each at a desktop's and his iPhone's size · MISSING: 1 filed (q), older`
