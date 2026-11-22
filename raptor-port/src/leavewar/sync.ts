@@ -2145,16 +2145,16 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
        to be replaced by the archive's own date for any SANS man named that day; that also filled a real gap — a man posted
        Overseas, restored to return later, ticked SANS by hand and archived again before his return counted on the days he
        was away (D320, D323). And a stretch a hand tick made, begun the day his Overseas posting ran and later taken off,
-       has the same shape as a posting's. So the one rule now: a day inside an ended SANS stretch that a SANS POSTING made
-       (marked 'po' by engine/people.ts sansStop when his archive ended it), begun the day after a stint's written end —
-       the current one's or an earlier one's — is a day he flew with us. */
+       has the same shape as a posting's. So the one rule now: a day between a SANS POSTING's date and the archive that
+       closed his stint, as that archive kept it, is a day he flew with us — whether he is still archived or restored. */
+    /* …AND SINCE ROUND 4B'S READS (22 Nov 26 — d2328-r4b.test.ts) THOSE DAYS ARE KEPT ON HIM BY THE ARCHIVE ITSELF, from
+       his saved posting (`sanPo`, archivePerson), never worked out from his SANS tick's stretches: a tick he held by hand
+       when the posting ran, or unticked and put back, or ticked again after a restore, left no posting's stretch, and he
+       lost those days again. */
     const flewAsSans = (): boolean => {
-      if (!sansWithUs || !lw) return false
-      const was: unknown[] = Array.isArray(p.sanWas) ? p.sanWas : []
-      const st = was.find(s => Array.isArray(s) && s[2] === 'po' && iso >= String(s[0] || '') && iso < String(s[1] || '')) as string[] | undefined
-      if (!st) return false
-      const ends = [lw.to, ...(lw.past || []).map(x => x.to)]
-      return ends.some(t => t != null && addDays(t, 1) === String(st[0]))
+      if (!sansWithUs) return false
+      const po: unknown[] = Array.isArray(p.sanPo) ? p.sanPo : []
+      return po.some(s => Array.isArray(s) && iso >= String(s[0] || '') && iso < String(s[1] || ''))
     }
     const ours = !lw || inSquadron(lw, iso) || flewAsSans()
     if (!ours) continue
@@ -3499,7 +3499,7 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
       body.archived = false
       delete body.archivedBy; delete body.archivedOn; delete body.archivedWho
       /* the posting undone: its SANS never was; "he's back" with a date: SANS until today, the days he was SANS kept (D2313) */
-      if (body.sanBy === 'po') { if (postIn === undefined) sansErase(body); else sansStop(body, effectiveToday(), true); delete body.sanBy }
+      if (body.sanBy === 'po') { if (postIn === undefined) sansErase(body); else sansStop(body, effectiveToday()); delete body.sanBy }
       if (postIn === undefined) enableAfterPosting(id)
       else {
         /* the war's picture of him when it holds no row (archived with no stint closed — his post-in was still to come),
@@ -3743,7 +3743,14 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
       body.archivedOn = today                                           // D329: how and when — who, by his person id
       if (me() != null) body.archivedWho = me() as string; else delete body.archivedWho
       delete body.back
-      if (body.sanBy === 'po') { sansStop(body, today, true); delete body.sanBy }   // SANS until his archive; the days he was SANS kept (D2313), marked a posting's
+      /* THE DAYS A SANS POSTING HAD HIM FLY WITH US ARE KEPT ON HIM, from his SAVED posting (round 4b's reads, 22 Nov 26 —
+         d2328-r4b.test.ts): the archive below closes his stint where the posting ended it, so the days from the posting to
+         the archive leave his stints; the crowd reads them here (availableFor `flewAsSans`). Read from the saved posting
+         and kept apart from his SANS tick, because a tick he already held by hand when the posting ran, or one unticked and
+         put back, or a hand tick after a restore, would otherwise lose them (D327, D283, D27). */
+      const ranSans = savedSansRun(fw ? (fw.post(id) ?? null) : st.postOuts[id] ?? null)
+      if (ranSans && ranSans < today) body.sanPo = (Array.isArray(body.sanPo) ? body.sanPo : []).concat([[ranSans, today]])
+      if (body.sanBy === 'po') { sansStop(body, today); delete body.sanBy }   // SANS until his archive; the days he was SANS kept (D2313)
       if (fw) {
         /* store.ts closeStintOnArchive's rules, its pure half, on his own squadron's stored window */
         if (fperson && !fperson.gone && fkeep) {
@@ -4065,6 +4072,10 @@ export function installPostingClock(): () => void {
    per change of the saved postings (the store replaces the object on every change), so the reader — asked in the checks'
    inner loops — walks only the few postings waiting, never the roster. A posting held or not yet repainted on its date
    still counts from its date; one taken back ("Undo post out"), moved or given another outcome is read as it now stands. */
+/* the first day of a saved SANS posting that has RUN, or null (the archive's `sanPo` above) */
+function savedSansRun(w: Person | null): string | null {
+  return w && !w.gone && outcomeOf(w) === 'sans' && w.to !== null && w.poDone === addDays(w.to, 1) ? addDays(w.to, 1) : null
+}
 let AHEAD_SRC: unknown = null
 let AHEAD: Array<[string, string]> = []
 function sansAheadOf(p: unknown): string | null {

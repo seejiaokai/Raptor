@@ -260,12 +260,9 @@ export function sansStart(p:any,from:string,apart?:boolean):void{
   sansQ(p);}
 /* SANS ENDS ON `day` — he is a regular from that day on, and SANS on every day he was (D2313 (a): a tick taken off by
    hand counts from the day it is made). A stretch that began that same day, or later, was never a SANS day: nothing kept. */
-/* `po` — the SANS a POSTING made, ended (by his archive, or "he's back" with a date): the stretch keeps a third part, 'po', so
-   the ALL AVAIL crowd can tell the days he flew with us after his stint closed from a tick an admin made by hand (Astra's
-   read of D2328, 22 Nov 26 — leavewar/sync.ts availableFor) */
-export function sansStop(p:any,day:string,po?:boolean):void{
+export function sansStop(p:any,day:string):void{
   if(p.san){ const f=String(p.sanFrom||''), t=String(day||'');
-    if(t&&f<t)p.sanWas=(Array.isArray(p.sanWas)?p.sanWas:[]).concat([po?[f,t,'po']:[f,t]]); }
+    if(t&&f<t)p.sanWas=(Array.isArray(p.sanWas)?p.sanWas:[]).concat([[f,t]]); }
   p.san=false; delete p.sanFrom;
   sansQ(p);}
 /* THE SANS HE HOLDS NOW NEVER WAS — a posting taken back takes its SANS days with it (leavewar/sync.ts takeBack: "Undo
@@ -276,7 +273,10 @@ export function sansErase(p:any):void{ p.san=false; delete p.sanFrom; sansQ(p); 
    men who are or were SANS are in it. */
 export function sansSig():string{
   let s='';
-  for(const id in PEOPLE){ const p=PEOPLE[id]; if(p&&(p.san||p.sanWas))s+=id+(p.san?'+':'-')+(p.sanFrom||'')+(p.sanWas?JSON.stringify(p.sanWas):'')+';'; }
+  /* …and a SANS posting set ahead (D2329 — round 4b's reads, 22 Nov 26): saved, moved or taken back, it changes what a day
+     reads without touching the tick, so a preview drawn before it is drawn again */
+  for(const id in PEOPLE){ const p=PEOPLE[id]; const f=p&&SANS_AHEAD?SANS_AHEAD(p):null;
+    if(p&&(p.san||p.sanWas||f))s+=id+(p.san?'+':'-')+(p.sanFrom||'')+(p.sanWas?JSON.stringify(p.sanWas):'')+(f?'>'+f:'')+';'; }
   return s;}
 /* Proficiency status for a SANS member. Deliberately unwired: the rule is
    recorded and regression-tested so the highlighting can be switched on when
