@@ -222,6 +222,30 @@ test.describe('Edit Schedule on a desktop — the right edge and the day arrows'
     expect(after.front.day, 'one press after the jump shows Tuesday (walker A\'s F2)').toBe('1')
     await context.close()
   })
+  /* THE SAME STALE COUNT THROUGH THE BOARD (the blind read's F1, 22 Nov 26): the board opened on Friday, stepped to
+     Tuesday and closed carries Tuesday to the week's front — inside the reach of the four presses before it — and the
+     next press showed Saturday. The carry now drops the arrows' memory too (EditWeek / ViewWeek, beside the landing). */
+  test('the Scheduler Board closed on another day: that day first, and the next arrow press is one day on', async ({ browser, baseURL }) => {
+    const { context, page } = await desktop(browser, baseURL)
+    await tab(page, 'Edit Schedule', 'editsched')
+    const tue = await arrow(page, 'next', EDIT)
+    await arrow(page, 'next', EDIT); await arrow(page, 'next', EDIT)
+    const fri = await arrow(page, 'next', EDIT)
+    expect(fri.front.day).toBe('4')
+    await page.locator(`${EDIT} .day[data-day="4"] [data-sbday="4"]`).first().click()
+    await page.waitForSelector('#schedBoard:not([hidden])', { state: 'visible' })
+    await page.locator('#schedBoard [data-sbtab="1"]').first().click()
+    await page.waitForFunction(() => (window as any).SBDAY === 1)
+    await page.click('#sbDone')
+    await page.waitForFunction(() => (window as any).SBDAY == null)
+    await rest(page, EDIT)
+    const closed = await read(page, EDIT)
+    expect(closed.front.day, 'the board\'s day is first on the week').toBe('1')
+    expect(Math.abs(closed.front.left - tue.front.left), 'in the place an arrow lands a day').toBeLessThanOrEqual(1)
+    const after = await arrow(page, 'next', EDIT)
+    expect(after.front.day, 'one press after closing the board shows Wednesday').toBe('2')
+    await context.close()
+  })
 })
 
 test('a phone: the day still rests against the screen\'s edge and the strip still runs under the AIRCREW tab', async ({ browser, baseURL }) => {
