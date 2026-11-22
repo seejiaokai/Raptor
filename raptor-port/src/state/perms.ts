@@ -697,17 +697,19 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'person.restore': op(T.person, 'U', 'never', [[T.user, 'U'], [T.profile, 'U']]),
   /* [ONE-DOOR] (D309, D310, D323): Archive on Admin → Users — the person archived, his account suspended, his war stint
      closed (leavewar/sync.ts archivePerson); the man's own "welcome back" seen — his OWN row only (D305) */
-  'person.archive': op(T.person, 'U', 'never', [[T.user, 'U'], [T.profile, 'U']]),
+  /* (…and every View and Plan his sign-in holds dropped in the same command — his D2311; so too an Overseas Sqn posting,
+     run at once or by the pass, below) */
+  'person.archive': op(T.person, 'U', 'never', [[T.user, 'U'], [T.profile, 'U'], [T.grant, 'D']]),
   'person.backSeen': op(T.person, 'U', 'required'),
   /* a posting written with a take-back of what the posting made (its archive, its suspension, its SANS tick) — and its
      Undo, before or after it ran (leavewar/sync.ts takeBack, and restoreBody's undo mode on the posting's own archive) */
   /* …and its Undo takes back the posting's bell lines ([NOTICE-UNDO-RETRACT], D1693, D1699): each admin's line removed (D), and
      one he had read replaced by its "taken back" line (C) */
-  'lw.postout': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.user, 'U'], [T.notice, 'C'], [T.notice, 'D']]),
+  'lw.postout': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.user, 'U'], [T.notice, 'C'], [T.notice, 'D'], [T.grant, 'D']]),
   /* the posting pass on its date — a reconciler (the system actor); every table an outcome writes is named (D200) */
   /* …and each admin's bell line saying it ran ([POSTOUT-RUN-NOTICE], D1547 — a Notice created; so too a posting made today,
      run inside `lw.postout` above) */
-  'lw.postoutRun': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.person, 'D'], [T.user, 'U'], [T.user, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.bid, 'D'], [T.award, 'D'], [T.notice, 'C']]),
+  'lw.postoutRun': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.person, 'D'], [T.user, 'U'], [T.user, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.bid, 'D'], [T.award, 'D'], [T.notice, 'C'], [T.grant, 'D']]),
 }
 /* THE UNITS (multi-squadron batch 1, step 1 — state/units.ts; the master mark, state/accounts.ts setMaster). The type
    says only that an admin may run it; which unit's admin is the commit gate's, read from each row (unitRowViolation) */
@@ -1381,13 +1383,24 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
   /* the rest of the pass's settings rows: for a Delete, the request waiting under his account's sign-in name, his bell's
      row and every right his sign-in holds in another squadron (the delete's own body drops them — units.ts
      dropGrantsOfAccount, fix read 11's E — and a right left naming a sign-in gone is G5's), all removed; nothing else */
+  /* …and for an Overseas Sqn posting, which archives him, every View and Plan his sign-in holds in another squadron, removed
+     (his D2311 — batch 1's second half, plan §4 item 8, R-O1, R-A4: archived or posted overseas, View and Plan end; the
+     pass drops them, accounts.ts endRightsOfArchived), whether or not this pass changes his account row (an account
+     suspended by hand before keeps its row) — the posted man read from the verified posting above, his sign-in from the
+     list before the command */
+  const wB = worldsOf(env)
+  const overseasAcct = new Set<string>()
+  for (const [pid, o] of posted) {
+    if (o !== 'overseas') continue
+    for (const x of (wB ? wB.acctB : ACCOUNTS_LIST)) if (String(x.pid) === pid) overseasAcct.add(x.id)
+  }
   for (const c of env.changes) {
     if (c.collection !== 'settings' || String(c.id).startsWith('account:')) continue
     const b: any = c.before, id = String(c.id)
     const ok = (c.op === 'delete' && (
       (id.startsWith('accessreq:') && !!b && [...accounts.values()].some(a => a.name === b.name))
       || (id.startsWith('reqseen:') && accounts.has(id.slice('reqseen:'.length)))))
-      || (id.startsWith(GRANT_PFX) && !!b && (c.op === 'delete' || c.after == null) && gone.has(String(b.account)))
+      || (id.startsWith(GRANT_PFX) && !!b && (c.op === 'delete' || c.after == null) && (gone.has(String(b.account)) || overseasAcct.has(String(b.account))))
     if (!ok) return refuse(c)
   }
   /* G5 holds for the pass too (fix read 12, fault A (2)): no account row goes while a right still names it */
@@ -1950,6 +1963,21 @@ function personDeletedHere(env: CommitEnvelope, pid: string | null, adminOfHome:
   if (!b || b.deleted === true || !f || f.deleted !== true || f.archived !== true || f.archivedBy !== 'del') return false
   const w = worldsOf(env)
   if (!w || [...w.rawA.values()].some(x => x && String(x.pid) === pid)) return false
+  const u = homeBefore(pid, todayIso(), rows)
+  return !u || adminOfHome(u)
+}
+/* DOES THIS COMMAND ITSELF ARCHIVE THAT PERSON (his D2311 — batch 1's second half, plan §4 item 8, R-O1, R-A4): its own
+   people change of him, not archived before and archived after (Archive on Admin → Users, or an Overseas Sqn posting run
+   at once inside the posting command), made by an admin of his squadron as section 8 reads it (his home today over the
+   rows before; no home known — nothing to judge). Read from the command's own records, never its label. */
+function personArchivedHere(env: CommitEnvelope, pid: string | null, adminOfHome: (unit: string) => boolean, rows: UnitRows): boolean {
+  if (!pid) return false
+  const c = env.changes.find(x => x.collection === 'people' && String(x.id) === pid)
+  if (!c) return false
+  const b: any = c.before, f: any = c.op === 'delete' ? null : c.after
+  /* (a delete marks him archived too — its rights are judged by personDeletedHere alone, which also asks that no sign-in
+     is left naming him: the archive's exception let fix read 12's forged delete with a new sign-in through) */
+  if (!b || b.archived === true || !f || f.archived !== true || f.deleted === true || b.deleted === true) return false
   const u = homeBefore(pid, todayIso(), rows)
   return !u || adminOfHome(u)
 }
@@ -2595,6 +2623,11 @@ function unitRowViolation(env: CommitEnvelope): string | null {
          change the account itself (an admin of his own squadron, at home or by Plan, or a master admin), the last-admin
          lock the squadron he held it of (D2247) */
       if (id.startsWith(GRANT_PFX) && b && n == null && b.level === 'admin' && accountMadeMember(env, String(b.account))) continue
+      /* ARCHIVED, HIS VIEW AND PLAN END (his D2311 — batch 1's second half, plan §4 item 8, R-O1, R-A4): Archive, or an
+         Overseas Sqn posting run at once, drops every right his sign-in holds in the same command (accounts.ts
+         endRightsOfArchived) — a removal that passes where the command's own records archive that account's man, made by
+         an admin of his own squadron (personArchivedHere); a forged removal beside an unrelated archive stays refused */
+      if (id.startsWith(GRANT_PFX) && b && n == null && personArchivedHere(env, accountPidBefore(env, String(b.account)), adminOf, before)) continue
       /* PLAN IS A MASTER ADMIN'S TO GIVE, RAISE, LOWER OR TAKE (the Plan audit's PA1 — D2199, D2211): a grant row whose
          level is `admin` on either side — and that holds there (a row holding nothing is no Plan a person can use) — needs a
          master admin; a person delete's drop (above) and a verified replay excepted */

@@ -867,6 +867,19 @@ export function suspendForArchive(pid: string): 'done' | 'none' | 'lock' {
   writeAccounts(list)
   return 'done'
 }
+/* ARCHIVED OR POSTED OVERSEAS, HIS VIEW AND PLAN END (his D2311 — batch 1's second half, plan §4 item 8, R-O1, R-A4):
+   every right his sign-in holds today in another squadron is dropped INSIDE the archive's own command — Archive on Admin →
+   Users, an Overseas Sqn posting run at once or by the pass — even where his account was already suspended by hand (the
+   suspension helpers above return early there). Restore does not put them back; a hand Suspend leaves them. The commit
+   gate lets these removals through only where the same command archives that account's man (perms.ts
+   personArchivedHere, and the pass's own rule in postingPassViolation). Mutations only. */
+export function endRightsOfArchived(pid: string): void {
+  const a = accountOfPid(pid)
+  if (!a) return
+  const today = todayIso(), acct = levelAcct(a)
+  const ids = unitRows().grants.filter(g => g.account === a.id && grantOfOn(acct, g.unit, today)?.id === g.id).map(g => g.id)
+  if (ids.length) dropGrantRows(ids)
+}
 export function enableForRestore(pid: string): boolean {
   const a = accountOfPid(pid)
   if (!a || a.on) return false

@@ -166,7 +166,7 @@ import type { StorageBackend } from './state/storage'
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused, isInReducer, isCommitting as cmdIsCommitting, activeEnvelope, isQueued, isOk, type CommitResult, type Txn } from '../command'
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
-import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, masterChangeProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount, adminsOf } from '../state/accounts'
+import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, masterChangeProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount, adminsOf, endRightsOfArchived } from '../state/accounts'
 import { markBack, clearBack, CURPAGE, setPage } from '../state/view'
 import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
@@ -2972,7 +2972,8 @@ function runLoadedPostings(only?: string): void {
             const body = rosterBody(d.id)!   // (poDueNow just found his body)
             ran.push({ id: d.id, poDate: d.poDate, outcome: d.outcome as PoOutcome, acct: !!accountOfPid(d.id) })
             if (d.outcome === 'overseas') {
-              if (!body.archived) { body.archived = true; body.archivedBy = 'po'; body.archivedOn = d.poDate }   // D329: when
+              /* (archived, his View and Plan of other squadrons end in the same command — his D2311) */
+              if (!body.archived) { body.archived = true; body.archivedBy = 'po'; body.archivedOn = d.poDate; endRightsOfArchived(d.id) }   // D329: when
               suspendForPosting(d.id)
             } else if (d.outcome === 'sans') {
               if (!body.san) {
@@ -3152,7 +3153,8 @@ function runForeignPosting(d: FxDue): void {
         if (now && now.key === d.key && body && !awayFrom(d.id, d.unit, effectiveToday()) && !poHeldReason(d.id, now.outcome, now.poDate)) {
           const acct = !!accountOfPid(d.id)
           if (now.outcome === 'overseas') {
-            if (!body.archived) { body.archived = true; body.archivedBy = 'po'; body.archivedOn = now.poDate }
+            /* (archived, his View and Plan of other squadrons end in the same command — his D2311) */
+            if (!body.archived) { body.archived = true; body.archivedBy = 'po'; body.archivedOn = now.poDate; endRightsOfArchived(d.id) }
             suspendForPosting(d.id)
           } else if (now.outcome === 'sans') {
             if (!body.san) {
@@ -3631,6 +3633,9 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
     apply: (txn: Txn) => {
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(fw ?? lwStore)
       if (suspendForArchive(id) === 'lock') throw new CmdRefused(archiveLockWords(id, body.cs) ?? `${body.cs} is the last admin who can sign in — he can't be archived until another admin can`)
+      /* his View and Plan of other squadrons end with the archive, in this command — Restore does not put them back (his
+         D2311); even where his sign-in was suspended by hand before */
+      endRightsOfArchived(id)
       body.archived = true
       body.archivedBy = 'admin'
       body.archivedOn = today                                           // D329: how and when — who, by his person id

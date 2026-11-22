@@ -1180,3 +1180,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The new check was written over "anyone signed in"; a dozen existing tests deliberately put a member on the edit page (a forged state) to prove the edit guards hold behind it, and the check moved him away first — the tests failed for a reason unrelated to what they prove. The fix was to narrow the check to the one question it owns (the squadron, for an admin), leaving the role's own landing where it was.
 **Suggested improvement:** When adding a check to a shared refresh path, first search the tests for ones that forge the state the check forbids, and scope the check to the exact question it owns rather than a wider condition that happens to include it.
 **Principle:** A standing invariant should own one question; a broader condition silently takes over other rules' territory and breaks the tests that exercise those rules' fallbacks.
+
+### Observation 1014: "The related tests are green" missed three faults the whole suite found
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** batch 1's second half, phase 2 — the whole unit suite, owed by the chat that built step A (it had run "the 131 test files that name the changed helpers"), run under the lock at the next chat's start
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** choosing which tests to run after a change, before the whole suite
+
+**Issue:** Step A changed which edit question many doors ask. The previous chat ran the test files that NAME the changed helpers and reported them green; the whole suite then found three faults none of those files covered: a test that faked the OLD helper (a spy on a function the door no longer calls, so it stopped testing anything and failed on the real answer), a type check over a folder no named file touched, and a window that turned read-only for a case its own code comment said must stay editable. Selecting tests by "names the changed function" misses a test that names the function the code moved AWAY from, and every test whose subject is the screen rather than the helper.
+**Suggested improvement:** When a change swaps which helper a caller asks, select the related tests by the OLD name as well as the new (a spy or a mock of the old one is now testing nothing), and treat "related files green" as a provisional result until the whole suite has run — say so in the handoff rather than "green".
+**Principle:** A test that fakes a dependency silently stops testing once the code stops depending on it; test selection by name must include the names the change removed.
