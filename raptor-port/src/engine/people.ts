@@ -237,8 +237,11 @@ const sansQ=(p:any)=>{ p.quals=p.quals||{}; p.quals.san=!!p.san; if(p.san)p.sanQ
 /* SANS FROM `from` ON. An earlier stretch that reaches `from` — ended on it or after it — is one stretch with this one,
    which then starts where that one did: so a tick taken off and put back the same day leaves no gap, and a hand re-tick
    after a SANS posting, handed the posting's date, is SANS from that date again (D2313 (b)). */
-export function sansStart(p:any,from:string):void{
+export function sansStart(p:any,from:string,apart?:boolean):void{
   let f=String(from||'');
+  /* `apart` — a POSTING's start: his earlier stretches are left as they stand, never folded into this one, so the
+     posting's take-back (sansErase) removes the posting's days only and the SANS days he held by hand before it stay */
+  if(apart){ p.san=true; if(f)p.sanFrom=f; else delete p.sanFrom; sansQ(p); return; }
   const keep:any[]=[];
   (Array.isArray(p.sanWas)?p.sanWas:[]).forEach((s:any)=>{ if(!Array.isArray(s))return;
     if(String(s[1]||'')>=f){ if(String(s[0]||'')<f)f=String(s[0]||''); } else keep.push(s); });

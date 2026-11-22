@@ -28,6 +28,9 @@ import { getState, initStore as lwInitStore, setPeople, setDayEvent } from './st
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { availableFor, postOut, undoPostOut, runOilPass, wireLeaveWarSync } from './sync'
+import { installGlobalUndo } from '../state/undo-wire'
+import { globalUndo, globalRedo } from '../undo'
+import { _resetTimeline } from '../undo/timeline'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = '', DAYS0 = '', INPUTS0 = ''
@@ -68,6 +71,7 @@ beforeEach(() => {
   accountsLoad()
   setPeople(projectPeople())
   wireLeaveWarSync()
+  _resetTimeline(); installGlobalUndo()
   signInAs('ad', 'a')
 })
 afterEach(() => { resetSession(null); vi.restoreAllMocks() })
@@ -189,6 +193,44 @@ describe('D2313 (b) — a hand re-tick after a SANS posting keeps the posting\'s
     raptorNotify()
     expect(P('rocky').san).toBe(false)
     expect([MON_ISO, WED_ISO, THU_ISO].map(d => sansOn('rocky', d)), 'never SANS: the posting never was').toEqual([false, false, false])
+  })
+
+  it('a posting taken back keeps the SANS days he held BY HAND before it', () => {
+    at(2026, 7, 13)
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull()       // SANS by hand from Mon 13 Jul
+    at(2026, 7, 15)
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull()       // off by hand on Wed 15 Jul: SANS on Mon and Tue only
+    expect([MON_ISO, TUE_ISO, WED_ISO].map(d => sansOn('rocky', d))).toEqual([true, true, false])
+    expect(postOut('rocky', WED_ISO, 'sans')).toBe(true)                 // …then posted out as SANS from that same Wednesday
+    raptorNotify()
+    expect([MON_ISO, TUE_ISO, WED_ISO, THU_ISO].map(d => sansOn('rocky', d)), 'SANS throughout').toEqual([true, true, true, true])
+    expect(undoPostOut('rocky')).toBe(true)
+    raptorNotify()
+    expect(P('rocky').san).toBe(false)
+    expect([MON_ISO, TUE_ISO, WED_ISO, THU_ISO].map(d => sansOn('rocky', d)), 'the posting\'s days go; his own two days stay').toEqual([true, true, false, false])
+  })
+
+})
+
+describe('D2313 — Undo and Redo of a hand tick take its date with it', () => {
+  it('Undo of a tick put on: never SANS; Redo: SANS from the day it was made', () => {
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull()
+    expect(sansOn('rocky', WED_ISO)).toBe(true)
+    expect(globalUndo().ok).toBe(true)
+    expect(!!P('rocky').san).toBe(false)
+    expect(P('rocky').sanFrom, 'no date left behind').toBeUndefined()
+    expect([MON_ISO, WED_ISO, THU_ISO].map(d => sansOn('rocky', d))).toEqual([false, false, false])
+    expect(globalRedo().ok).toBe(true)
+    expect([MON_ISO, WED_ISO, THU_ISO].map(d => sansOn('rocky', d))).toEqual([false, true, true])
+  })
+
+  it('Undo of a tick taken off: SANS on every day again, no ended stretch left behind', () => {
+    expect(updatePersonField('nick', { tick: 'san' })).toBeNull()
+    expect(sansOn('nick', THU_ISO)).toBe(false)
+    expect(globalUndo().ok).toBe(true)
+    expect(P('nick').san).toBe(true)
+    expect(P('nick').sanWas, 'no ended stretch left behind').toBeUndefined()
+    expect([MON_ISO, WED_ISO, THU_ISO].map(d => sansOn('nick', d))).toEqual([true, true, true])
   })
 })
 

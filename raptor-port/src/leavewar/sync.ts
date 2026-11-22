@@ -3021,7 +3021,7 @@ function runLoadedPostings(only?: string): void {
               /* SANS FROM THE POSTING'S DATE (D283, D2313): the tick and its first day, so every reader of a day asks
                  by that date (engine/people.ts sansOn). A posting re-run after its date moved re-dates its own tick; a man
                  already SANS by hand keeps his own tick and its day */
-              if (!body.san) { sansStart(body, d.poDate); body.sanBy = 'po' }
+              if (!body.san) { sansStart(body, d.poDate, true); body.sanBy = 'po' }   // apart from his own earlier SANS days, so a take-back erases only the posting's
               else if (body.sanBy === 'po') body.sanFrom = d.poDate
             } else if (d.outcome === 'delete') {
               applyDelete(d.id, deleteCutoff(d.poDate))
@@ -3196,7 +3196,7 @@ function runForeignPosting(d: FxDue): void {
             if (!body.archived) { body.archived = true; body.archivedBy = 'po'; body.archivedOn = now.poDate }
             suspendForPosting(d.id)
           } else if (now.outcome === 'sans') {
-            if (!body.san) { sansStart(body, now.poDate); body.sanBy = 'po' }   // SANS from the posting's date (D2313)
+            if (!body.san) { sansStart(body, now.poDate, true); body.sanBy = 'po' }   // SANS from the posting's date (D2313), apart from his own earlier days
             else if (body.sanBy === 'po') body.sanFrom = now.poDate
           } else if (now.outcome === 'delete') {
             const cut = deleteCutoff(now.poDate)
