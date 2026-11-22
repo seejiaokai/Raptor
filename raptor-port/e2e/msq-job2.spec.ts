@@ -50,7 +50,11 @@ test.describe('night job 2', () => {
       })
       expect(m.right, `${m.day}: the number clear of the bar's next part`).toBeLessThanOrEqual(m.nextLeft)
     }
+    /* the board covers the top bar: closed (Done), 149 picked in the Schedules menu, the board opened again */
+    await page.locator('#sbDone').click()
+    await page.waitForSelector('#schedBoard[hidden]', { state: 'attached' })
     await pick(page, '149')
+    await toBoard(page)
     await expect(page.locator('#schedBoard .sb-sqn')).toHaveText('149')
   })
 

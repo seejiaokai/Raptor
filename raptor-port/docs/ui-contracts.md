@@ -243,6 +243,10 @@ that did not take: he stays), Discard drops the edits, Stay makes no pick. Pinne
 149 — close this to go on." and every control under it is greyed and dead (`ui/heldro.ts` — `inert` and `data-heldro` on
 every part but the title strip with its ✕ and the band with its Close); picking back gives the window back as it was.
 Held by his own midnight move the window keeps its own words and live controls. Pinned by `ui/msq-pick-windows.test.tsx`.
+Found by the drawing check (23 Nov 26): a Leave War window's scrim lies over the top bar, so a press on "142 ▾" lands on
+the scrim and closes the window first; on an iPhone the Input window covers the bar too. The band is met there by the
+keyboard, a bell tap from elsewhere or a window left open in another way — on a desktop the Input window on Inputs, which
+floats, leaves the menu free.
 
 ## The day carries across a page switch (owner, 9 Aug 26)
 

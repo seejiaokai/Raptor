@@ -63,7 +63,13 @@ for (const sz of ['d', 'p']) {
     facts[`b1-2-${sz}`] = await rects(page, ['#schedBoard .sb-top', '#schedBoard .sb-title', '#sbDate', '#schedBoard .sb-today', '#schedBoard .sb-sqn', '#sbDays', '#sbCal'])
     facts[`b1-2-${sz}`].cut = await page.evaluate(() => { const t = document.querySelector('#schedBoard .sb-title'); const b = t.querySelector('.sb-sqn').getBoundingClientRect(); return b.right > t.getBoundingClientRect().right + 0.5 })
     await page.screenshot({ path: `${OUT}/b1-2-${sz}.png`, clip: { x: 0, y: 0, width: sz === 'd' ? 1536 : 402, height: Math.round(facts[`b1-2-${sz}`]['#schedBoard .sb-top'].h) + 8 } })
+    /* the board covers the top bar: Done, 149 picked, the board opened again */
+    await page.locator('#sbDone').click()
+    await page.waitForSelector('#schedBoard[hidden]', { state: 'attached' })
     await pick(page, '149')
+    await page.evaluate(() => window.go('editsched')); await page.waitForTimeout(600)
+    await page.evaluate(() => document.querySelector('#eWeek .day:not(.peek) [data-sbday="0"]').click())
+    await page.waitForSelector('#schedBoard:not([hidden]) .sb-sqn'); await page.waitForTimeout(600)
     facts[`b1-2-${sz}`].after149 = await page.textContent('#schedBoard .sb-sqn')
     await ctx.close() }
   // f2a — Saber opened the Tracker on 149, then picked 142
@@ -110,9 +116,16 @@ for (const sz of ['d', 'p']) {
     if (id) {
       await page.locator(`[data-testid="${id}"]`).first().scrollIntoViewIfNeeded()
       await page.locator(`[data-testid="${id}"]`).first().click(); await page.waitForTimeout(700)
-      await pick(page, '149')
+      /* the war window's scrim lies over the top bar, so a press on "142 ▾" lands on the scrim and closes the window first
+         (found by this script, 23 Nov 26 — named in the job's report): the menu is pressed here through its own buttons */
+      facts[`f7a-${sz}-scrim`] = await page.evaluate(() => { const b = document.querySelector('#sqnMenuBtn').getBoundingClientRect(); const at = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2); return at ? (at.getAttribute('data-testid') || at.id || at.className) : null })
+      await page.evaluate(() => document.querySelector('#sqnMenuBtn').click()); await page.waitForTimeout(250)
+      const picked = await page.evaluate(() => { const r = [...document.querySelectorAll('#sqnMenu .sqm-row')].find(r => /149/.test(r.textContent)); if (r) r.click(); return !!r })
+      await page.waitForTimeout(500)
+      if (!picked) errs.push(`[${sz}] f7a: the Schedules menu did not open with the war window up`)
       facts[`f7a-${sz}`] = await rects(page, ['[data-testid="move-band"]', '[data-testid="move-band"] b', '[data-testid="move-band"] .sv-rest', '[data-testid="move-band"] button', '.bidsheet-hd'])
-      facts[`f7a-${sz}`].greyed = await page.evaluate(() => { const p = document.querySelector('[data-testid="move-band"]').closest('.bidsheet'); return [...(p || document).querySelectorAll('button, input, select, textarea')].filter(c => c.closest('[data-heldro]')).length })
+      facts[`f7a-${sz}`].greyed = await page.evaluate(() => { const b = document.querySelector('[data-testid="move-band"]'); if (!b) return null; const p = b.closest('.bidsheet'); return [...(p || document).querySelectorAll('button, input, select, textarea')].filter(c => c.closest('[data-heldro]')).length })
+      facts[`f7a-${sz}`].windowOpen = await page.evaluate(() => !!document.querySelector('.bidsheet-hd'))
       await shot(page, `f7a-${sz}.png`)
     } else errs.push(`[${sz}] f7a: Ranger's Wed 25 Nov not found`)
     await ctx.close() }
@@ -122,7 +135,12 @@ for (const sz of ['d', 'p']) {
     await page.waitForSelector('#inpCal [data-icday="2026-11-25"]', { timeout: 20000 }); await page.waitForTimeout(600)
     await page.locator('#inpCal [data-icday="2026-11-25"]').click({ position: { x: 8, y: 8 } }); await page.waitForTimeout(500)
     await page.locator('#icPopAdd').click(); await page.waitForSelector('[data-testid="win-inputedit"]'); await page.waitForTimeout(600)
-    await pick(page, '149')
+    /* what lies over "142 ▾" with the window up, then the menu pressed through its own buttons (on the iPhone the window's
+       own bar covers it — named in the job's report) */
+    facts[`f7b-${sz}-over`] = await page.evaluate(() => { const b = document.querySelector('#sqnMenuBtn').getBoundingClientRect(); const at = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2); return at ? (at.closest('#sqnMenuBtn') ? 'the menu button' : (at.getAttribute('data-testid') || at.id || at.className)) : null })
+    await page.evaluate(() => document.querySelector('#sqnMenuBtn').click()); await page.waitForTimeout(250)
+    if (!(await page.evaluate(() => { const r = [...document.querySelectorAll('#sqnMenu .sqm-row')].find(r => /149/.test(r.textContent)); if (r) r.click(); return !!r }))) errs.push(`[${sz}] f7b: the menu did not open`)
+    await page.waitForTimeout(500)
     facts[`f7b-${sz}`] = await rects(page, ['[data-testid="inped-moveband"]', '[data-testid="inped-moveband"] b', '[data-testid="inped-moveband"] .sv-rest', '[data-testid="inped-moveband"] button', '[data-testid="win-inputedit"]'])
     facts[`f7b-${sz}`].greyed = await page.evaluate(() => [...document.querySelectorAll('[data-testid="win-inputedit"] :is(button, input, select, textarea)')].filter(c => c.closest('[data-heldro]')).length)
     await shot(page, `f7b-${sz}.png`)
