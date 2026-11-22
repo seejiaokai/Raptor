@@ -1414,3 +1414,16 @@ sides.
 **Issue:** The handoff said "the next batch per the batch plan". The next chat read it as the plan's batch 2 and put that to the owner, who said go; only on reading the plan did it find batch 1's last two steps (every screen of it) unbuilt and a prerequisite of batch 2. The owner had to answer twice.
 **Suggested improvement:** In the handoff step that writes "Pick up here", name the exact next step by the plan's own numbering and say what of the previous phase is still unbuilt ("batch 1 steps 5–6, then batch 2"); in the opening read, check a named phase's prerequisites are built (one search of the code for its screens) before proposing it to the owner.
 **Principle:** "The next phase" is ambiguous once a phase was split across two pull requests; a handoff names the step, and a reader verifies the step before offering it.
+
+### Observation 1023: A pull request that cannot run hides every browser-test failure until it can
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** Chat 149, the multi-squadron screens branch, phase 3 — the first GitHub run the branch ever had, after `main` was brought in
+**Skill:** session-handoff (and the bug-check order's gates step)
+**Type:** open-source
+**Phase/Area:** the handoff's "Gates" line; the gates step before a phase is called done
+
+**Issue:** Two phases were built and handed off while the pull request clashed with `main`, so GitHub never ran it; on the developer's PC only the unit tests ran. The first real run found 35 browser-test failures from phase 1's permission change (a test-only shortcut that sets the role in force stopped opening edit controls). Each handoff's "Gates" line said "Not run: browser tests", which read as a small gap, not as "this phase has never been checked in a browser".
+**Suggested improvement:** In the handoff skill's gates line, when the pull request ran no checks (clashing, stacked or not opened), say so as its own line ("GitHub's run has never passed on this branch — N phases unchecked in a browser") and make the next chat's first step bringing `main` in and getting one green run before building more; in the bug-check order's gates step, a phase that changes permissions runs the browser tests of the pages it guards locally before it is called done.
+**Principle:** A check that did not run is not a pass; a handoff must name an absent check as loudly as a failed one, and the next builder settles it before stacking more work on top.
