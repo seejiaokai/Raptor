@@ -2884,6 +2884,10 @@ with "Conflict: RU BFM (step 12:40, T/O 13:40) & STANDARDISATION MEETING 13:30�
 double-turn note, Wildcard with a crew-solo note of 19:45: none touches 07:45–08:15, and he reads them as reasons about
 the event ("it's not even related and it's misleading"). His pictures: the chat's uploads of 22 Nov 26 (not in the repo).
 Built so on purpose, to the Sep 26 design (D38–D41, D1106: the schedule's own pucks, "a clash shown, never filtered out").
+**HIS PICK (22 Nov 26, late): just the available people — plain pucks, no flags, no reasons, no tap for why, and the
+words at the window's foot gone** ("Shouldn't we just show the all available people? No need to tap to see reason also.
+The words below"). The drawing is now before and after of that one design; it shows the foot with and without "who is
+free as things stand now" (his own D27 wording — a starting point, never a promise) for him to settle. The earlier plan:
 To do: (1) a drawing of the window at his iPhone's size and a desktop's, before and after, with the two readings —
 recommended: plain pucks, no flags, no reasons, no "N men are flagged" line (a man whose own item overlaps the event is
 already left out, so no flag in the list can be about the event's time); the other: keep only a flag the event itself
