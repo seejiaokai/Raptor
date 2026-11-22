@@ -7165,8 +7165,10 @@ today, the whole line). Plan picked says what it gives: "Full access to 149, eve
 settings, its people and their sign-ins." A man of another squadron on the list (found by search, or a Plan holder of
 it) wears his squadron's grey number by his name, and the rest of his row — sign-in, role, Suspend, Archive, Delete —
 is greyed unless the admin is an admin of his own squadron (D2191). A Plan holder's grey line ends "· also plans 149",
-the same on both lists. **Save sends the role, the mark and every line at once** (`state/accounts.ts saveAccess` — one
-command, one Undo step), a rename of his sign-in after it. Pinned by `ui/msq-users-row.test.tsx`.
+the same on both lists. **Save sends the role, the mark, every line and a rename of his sign-in at once** (`state/accounts.ts saveAccess` —
+one command, one Undo step; a refusal of any part saves nothing and the row stays open with it — the final reads, R4; a
+rename alone goes through its own door, one command too). Pinned by `ui/msq-users-row.test.tsx`,
+`ui/msq-fix3-users-one-save.test.tsx`.
 
 **"▸ What each role allows" (since 23 Nov 26 — §4 item 6; his D2302, D2305, picture k2; the night of 22–23 Nov, job 1):**
 under the squadron lines of every opened row, closed, in the Logic page's "How it works" fold look — 6px under a line's

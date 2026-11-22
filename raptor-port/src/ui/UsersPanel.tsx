@@ -362,12 +362,13 @@ function PersonEditor(p: { pid: string; a: Account | undefined; callsign: string
   const [armDel, setArmDel] = useState(false)
   const save = () => {
     if (!a) return
-    /* the role, the mark and every squadron's line in ONE command (accounts.ts saveAccess — one Undo step); a rename of
-       his sign-in after it, through its own door */
+    /* the role, the mark, every squadron's line AND his sign-in in ONE command (accounts.ts saveAccess — one Undo step;
+       every part checked before anything is written — the final reads, R4: the rename ran after as a second command, so
+       a refused rename left the access saved); a rename alone through its own door, one command as before */
     const want = accessWant(a, role, pickNow, lines, linesNow)
     const renamed = name !== a.name
     if (!want && !renamed) return p.onClose()
-    const bad = (want ? saveAccess(a.id, want) : null) || (renamed ? updateAccount(a.id, { name }) : null)
+    const bad = want ? saveAccess(a.id, renamed ? { ...want, name } : want) : updateAccount(a.id, { name })
     if (done(bad, 'Saved')) p.onClose()
   }
   const archive = () => {

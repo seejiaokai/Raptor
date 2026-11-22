@@ -825,9 +825,14 @@ export function setMaster(id: string, on: boolean): { ok: boolean; message?: str
    alone. Made a master admin, every View and Plan he holds today is dropped in the same command (R-O10 — the agent's
    decision, technical, told to him: a kept row would be hidden behind "Full access" and come back when the mark comes
    off). Made a member, the Plan he holds today goes (PA2 — D2250, as updateAccount does). The first refusal is the one
-   said; nothing of the Save is committed. The commit gate checks the same rows by the same rules (perms.ts). */
+   said; nothing of the Save is committed. The commit gate checks the same rows by the same rules (perms.ts).
+   THE SIGN-IN NAME RIDES IN THE SAME COMMAND (`name` — the second half's final reads, R4): the row's Save ran the access
+   here and then a rename through updateAccount, two commands — a refused rename left the access saved, a good one took
+   two Undos. A rename is checked here with updateAccount's own checks (a master admin's account a master admin's, an
+   admin of his own squadron's, a request waiting under the new name only an admin of its squadron's — §15 D12 — and the
+   name free) before anything is written, and answers that request in this command, as updateAccount's rename does. */
 export type AccessLine = 'none' | 'view' | 'plan'
-export interface AccessSave { role?: AccountRole; master?: boolean; grants?: Readonly<Record<string, AccessLine>> }
+export interface AccessSave { role?: AccountRole; master?: boolean; grants?: Readonly<Record<string, AccessLine>>; name?: any }
 const lineLevel = (l: AccessLine): GrantLevel | null => (l === 'plan' ? 'admin' : l === 'view' ? 'view' : null)
 export function saveAccess(id: string, want: AccessSave): string | null {
   if (!mayManageAccounts()) return 'Only an admin can change an account'
@@ -853,15 +858,19 @@ export function saveAccess(id: string, want: AccessSave): string | null {
     const to = lineLevel(l), had = grantOfOn(acct, unit, today)
     if ((had?.level ?? null) !== to) lines.push({ unit, to, had })
   }
-  if (!roleCh && !masterCh && !lines.length) return null
+  const nameAfter = want.name !== undefined ? normName(want.name) : a.name
+  const nameCh = nameAfter !== a.name
+  if (!roleCh && !masterCh && !nameCh && !lines.length) return null
   /* the account's own part */
-  if (roleCh || masterCh) {
+  if (roleCh || masterCh || nameCh) {
     const masterOnly = masterChangeProblem(a.pid)
     if (masterOnly) return masterOnly
     if (masterCh && !actorMaster) return MASTER_ONLY_WORDS
-    if (roleCh) { const other = otherSquadronProblem(a.pid); if (other) return other }
+    if (roleCh || nameCh) { const other = otherSquadronProblem(a.pid); if (other) return other }
   }
-  const next: Account = { ...a, role: roleAfter }
+  /* (a rename onto a waiting request's name answers it — only an admin of its squadron, §15 D12; as updateAccount) */
+  if (nameCh) { const bad = requestNotHis(requestByName(nameAfter)) || nameProblem(nameAfter, a.id); if (bad) return bad }
+  const next: Account = { ...a, role: roleAfter, name: nameAfter }
   /* (made one, the Plan rows the Save drops below are kept on his account, each with its moment — §16 D1′a: for those
      squadrons his right counts from the Plan's start, and his bell's default reads "on"; his own bell choices still win) */
   if (masterCh) markWith(next, a, masterAfter, today)
@@ -891,9 +900,11 @@ export function saveAccess(id: string, want: AccessSave): string | null {
   const rowsA = rowsDraft(unitRows(), { dropGrants: g => gone.has(g.id), grants: laid })
   const locked = lockProblem(list, undefined, rowsA)
   if (locked) return locked
-  const accountCh = roleCh || masterCh
+  const accountCh = roleCh || masterCh || nameCh
+  const answered = nameCh && !!requestByName(nameAfter)
   return commitIntent('account.access', null, () => {
     if (accountCh) writeAccounts(list)
+    if (answered) writeReqs(ACCESS_REQS.filter(r => r.name !== nameAfter))
     if (drops.length) dropGrantRows(drops.map(g => g.id))
     for (const ln of lines) if (!(ln.to == null && ln.had && dropIds.has(ln.had.id))) putGrantLine(a.id, ln.unit, ln.to)
   })

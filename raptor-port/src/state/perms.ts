@@ -811,8 +811,10 @@ Object.assign(COMMAND_OPS, {
   'account.master': op(T.user, 'U', 'never', [[T.notice, 'C']]),
   /* Admin → Users' one Save (batch 1's second half, plan §4 item 5 — accounts.ts saveAccess): the account row (role, master
      mark) and the rights of that account in other squadrons, given, changed or taken — and, made a master admin, every
-     right he held dropped (R-O10). Which squadron's admin may write each row is unitRowViolation's, as for grant.set */
-  'account.access': op(T.user, 'U', 'never', [[T.grant, 'C'], [T.grant, 'U'], [T.grant, 'D'], [T.notice, 'C']]),
+     right he held dropped (R-O10). Which squadron's admin may write each row is unitRowViolation's, as for grant.set.
+     The sign-in name rides in it too (the final reads, R4), and a rename onto a waiting request answers it, as
+     account.update's does — the request row deleted (who may: requestRowViolation, §15 D12) */
+  'account.access': op(T.user, 'U', 'never', [[T.grant, 'C'], [T.grant, 'U'], [T.grant, 'D'], [T.accessreq, 'D'], [T.notice, 'C']]),
   /* the app's own line that a move has taken effect (batch 1's second half §15 D11, §16 D11′ — leavewar/sync.ts
      runMoveLines): the system actor, a Notice created, nothing else (acctLineViolation's own section) */
   'account.told': op(T.notice, 'C'),
