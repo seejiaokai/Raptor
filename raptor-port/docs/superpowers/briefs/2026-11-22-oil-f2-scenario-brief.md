@@ -17,7 +17,7 @@ The owner's rulings, as built:
   sign-offs already given). "Later" signs with no answer and asks no more that day. The publish note then names the
   unanswered input: "Saturday 18 Jul published and approved. Ranger's Training has no OIL answer, so nobody on it earns
   OIL."
-- **D2296** — the list's added lines in the fewest words.
+- **D2312** — the list's added lines in the fewest words.
 - **D2297, D2299** — at the list's top, the pressed sign-off box itself, the name held in it, its edge dotted, "waiting for
   your answer" beside it; the foot reads "Later: Ace signs, but nobody on it earns OIL."; the list's close button (✕) or
   Escape cancels the sign-off — nothing is signed, and the next press on any of the four boxes asks again. The drawing

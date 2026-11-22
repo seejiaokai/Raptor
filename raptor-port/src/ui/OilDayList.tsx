@@ -155,7 +155,7 @@ function Body({ from, to, unit, name, fresh, plain, hold }: { from: string; to: 
           })}
         </>}
       <div className="odl-foot">
-        {/* with a sign-off held the foot says what Later does (his D2296, D2299: "Later: Ace signs, but nobody on it earns
+        {/* with a sign-off held the foot says what Later does (his D2312, D2299: "Later: Ace signs, but nobody on it earns
             OIL."; "them" where the list holds several — the agent's wording for that case) */}
         <span className="upconf-need" data-testid="odl-left">{footSaid(held ? held.cs : '', rows.length, belled && done < rows.length)}</span>
         <FootButtons empty={rows.length === 0} done={done} onClose={close} onLater={later} onSave={save} />

@@ -1,4 +1,4 @@
-// frf-w3 — walker w3: the OIL question at the sign-off (OIL F2 — his D2294, D2296, D2297, D2299), both sizes.
+// frf-w3 — walker w3: the OIL question at the sign-off (OIL F2 — his D2294, D2312, D2297, D2299), both sizes.
 // Run from raptor-port/ against the served build:  TS_URL=http://localhost:4313/ ONLY=a,b SIZE=desktop node scripts/handpass/frf-w3.mjs
 import { writeFileSync } from 'node:fs'
 import path from 'node:path'

@@ -2,7 +2,7 @@
    the reference. Runs after every week render; the markup it decorates is
    the verbatim dayHTML output, so the selectors line up exactly. */
 import { PEOPLE, isSpecial } from '../engine/people'
-import { HLSET, SEARCH, SELID, WFOCUS, ARM, FRESHADD, FRESHOUT, warnFocusMap, personMatchesHL, CURPAGE, SBDAY, lookWearsFlags } from '../state/view'
+import { HLSET, SEARCH, SELID, WFOCUS, ARM, FRESHADD, FRESHOUT, warnFocusMap, personMatchesHL, CURPAGE, SBDAY, lookWearsFlags, weekFrontInset } from '../state/view'
 import { isMe } from '../state/perms'
 import { slotBar } from '../engine/avail'
 import { inputReadPass } from '../engine/inputs'
@@ -10,7 +10,7 @@ import { slotVal } from '../engine/slots'
 import { WARN } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 import { isNewFlag, NEWFLAGS } from '../state/dropflag'
-import { hsSet, hsSync } from './pan'
+import { hsSet, hsSync, panForget } from './pan'
 import { paintLand } from './lift'
 
 /* A ONE-SHOT callback run at the end of the next highlight pass — i.e. in the
@@ -385,7 +385,9 @@ export function bringDayIntoView(di:number){
   if(!week||!day)return;
   const wr=week.getBoundingClientRect(), dr=day.getBoundingClientRect();
   if(wr.width>0&&dr.left>=wr.left-1&&dr.left<wr.right-40)return;   // its front edge already on screen
-  hsSet(week,week.scrollLeft+dr.left-wr.left); hsSync();
+  /* to the place a day arrow lands a day — the strip's margin in on a desktop, flush on a phone (his D2295; state/view.ts weekFrontInset) */
+  panForget();   // the arrows count from here now, not from where earlier presses were heading (pan.ts panForget)
+  hsSet(week,week.scrollLeft+dr.left-wr.left-weekFrontInset(week)); hsSync();
 }
 export function bringIntoView(root:any,tgt:any,weekId:string|null){
   /* The week is snap-scrolled (.week{scroll-snap-type:x mandatory} with
@@ -416,7 +418,10 @@ export function bringIntoView(root:any,tgt:any,weekId:string|null){
       if(!inView){
         /* rect delta, not offsetLeft: .week is position:static, so a day's
            offsetParent is not the scroller */
-        hsSet(week,week.scrollLeft+root.getBoundingClientRect().left-wr.left);
+        /* …and to the place a day arrow lands a day: the strip's margin in on a desktop, flush — the snap
+           point — on a phone (his D2295; state/view.ts weekFrontInset) */
+        panForget();   // as bringDayIntoView above: the next arrow press is one day from where this jump lands
+        hsSet(week,week.scrollLeft+root.getBoundingClientRect().left-wr.left-weekFrontInset(week));
         hsSync();   // the bar geometry, now that the horizontal is final
       }
     }

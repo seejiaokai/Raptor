@@ -1,4 +1,4 @@
-// OIL F2, round 4 (his "/impeccable can u design 1 nicer", 22 Nov 26, after D2296's "be concise"): two looks for the top of
+// OIL F2, round 4 (his "/impeccable can u design 1 nicer", 22 Nov 26, after D2312's "be concise"): two looks for the top of
 // the day's OIL list when a sign-off press opens it, drawn on the REAL app (mockups-on-the-real-app.md), the same Saturday
 // and the same door as draw-f2.mjs (published, Training off, the Original loaded back, Unpublish — every step pressed).
 //   A  the held signature shown as itself: a copy of the board's own CUR CK pill (its markup, class .sgn) reading "Ace",

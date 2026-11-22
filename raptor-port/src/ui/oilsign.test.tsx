@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-/* THE OIL QUESTION AT THE SIGN-OFF ([FABLE-READ-FAULTS], OIL F2 — his D2294, D2296, D2297, D2299; the drawing of record
+/* THE OIL QUESTION AT THE SIGN-OFF ([FABLE-READ-FAULTS], OIL F2 — his D2294, D2312, D2297, D2299; the drawing of record
    docs/mock/2026-11-22-oil-unanswered-publish/draw-f3.mjs, round 6). A day with an input whose OIL question nobody has
    answered asks it when a scheduler presses any of its four sign-off boxes: the day's open OIL list opens BEFORE the name
    is written (an answer given after signing clears the sign-offs); Save writes the answers, then the name; Later writes

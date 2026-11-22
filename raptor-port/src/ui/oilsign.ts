@@ -6,7 +6,7 @@
    His rulings: D2294 — "how about B but u ask when any sign off is selected": the day's open OIL list opens at the first
    press of any of the day's four sign-off boxes, BEFORE the name is recorded (an OIL answer given after signing changes
    the day and clears the sign-offs already given, so asking afterwards would undo the signing); Later asks no more that
-   day. D2296, D2297, D2299 — the list as drawn (docs/mock/2026-11-22-oil-unanswered-publish/draw-f3.mjs, round 6): the
+   day. D2312, D2297, D2299 — the list as drawn (docs/mock/2026-11-22-oil-unanswered-publish/draw-f3.mjs, round 6): the
    pressed box itself at its top, the name held in it; the list's close button or Escape signs nothing, and the next press
    on any of the four boxes asks again. The publish note's half is leavewar/sync.ts publishFlagsBids.
 

@@ -30,7 +30,7 @@ const SIZES = {
   p: { name: 'phone', eng: webkit, opts: { viewport: { width: 402, height: 874 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 } },
 }
 
-/* the words, one place — each new line is put to him on the page. Round 3 (his D2296, "too much words. be concise"):
+/* the words, one place — each new line is put to him on the page. Round 3 (his D2312, "too much words. be concise"):
    round 2's were "Asked now because an answer given after signing clears the sign-offs. Ace's CUR CK goes in when you
    press Save or Later." and "Later signs without an answer: nobody on it earns OIL, and Saturday won't ask again." */
 const W = {
