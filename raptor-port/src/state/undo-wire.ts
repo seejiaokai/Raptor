@@ -19,15 +19,15 @@ import { roleStore, invalidateRoleTargets } from './mission-roles'
 import { decodeRoleId } from '../engine/mission-role'
 import { peopleStore, settingsStore } from './people-settings-commit'
 import { rosterRestoreProblem } from './roster-restore'
-import { seedAccounts, levelIn, accountById, isMasterAccount, ACCOUNT_PFX, signedInAccount, adminNow } from './accounts'
-import { unitRows, homeOn, unitRowsBefore, unitById } from './units'
+import { seedAccounts, levelIn, accountById, isMasterAccount, ACCOUNT_PFX, signedInAccount, adminNow, masterRightLeft, accountsAfter, ACCOUNTS_LIST } from './accounts'
+import { unitRows, homeOn, unitRowsBefore, unitRowsAfter, unitById } from './units'
 import { setDescribeUnits } from '../undo/describe'
 import { store } from '../engine/hooks'
 import { deletedRestoreProblem, postingRestoreProblem } from './person-delete'
 import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks, setDescribeNames,
 } from '../undo'
-import { verifiedReplay, verifiedWarRestore, restoreOffAt, restoreDir, applyingRestore } from '../undo/timeline'
+import { verifiedReplay, verifiedWarRestore, restoreOffAt, restoreDir, applyingRestore, outOfBandWords } from '../undo/timeline'
 import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, restoreStood, setRestoreOffAt, setRestoreDir, lwUnitNow, trkUnitNow, pageUnit, isAdmin, restoreLeavesOut, setRestoreGrantCtx, madeAsAdmin, inputWhoProblem, type RestoreGrantCtx } from './perms'
 import type { RecordCtx, UndoEntry } from '../undo/types'
 import type { Change } from '../command'
@@ -609,6 +609,19 @@ function inputStuck(changes: Change[], entry: UndoEntry): boolean {
 /** tests only — the landing, driven with a made-up entry */
 export const _snapView = (e: UndoEntry, d: 'undo' | 'redo'): void => snapView(e, d)
 
+/* NO RIGHT LEFT ON A MASTER ADMIN'S ACCOUNT BY AN UNDO OR REDO (§15 D14 — the fix read's A1), and the refusal SAYS WHO made
+   him one (D148 — the fix read's A4): the account the restore would leave a right holding on (accounts.ts masterRightLeft,
+   over the accounts and squadron rows the restore would leave), named through the timeline's one body for "someone has
+   since changed it" (undo/timeline.ts outOfBandWords — "Kestrel changed this after your action — it can’t be undone
+   now.", today's anonymous words only where nothing names the writer). Asked only of a step that changes an account or a
+   squadron row. */
+function masterRightRefusal(changes: readonly Change[]): string | null {
+  const touches = changes.some(ch => ch.collection === 'settings' && (String(ch.id).startsWith(ACCOUNT_PFX) || UNIT_ROW_PREFIXES.some(p => String(ch.id).startsWith(p))))
+  if (!touches) return null
+  const id = masterRightLeft(accountsAfter(changes) ?? ACCOUNTS_LIST, unitRowsAfter(changes as any))
+  return id ? outOfBandWords(`settings/${ACCOUNT_PFX}${id}`) : null
+}
+
 export function installGlobalUndo(): void {
   installUndo()
   /* A-v — the stamp and the one record key, in the command layer's revision counter */
@@ -652,7 +665,9 @@ export function installGlobalUndo(): void {
        postingRestoreProblem) */
     /* …and A7 (the reshape plan §6.2): an entry put back on a man's day now another squadron's says war's sentence before
        anything is written — a removal, of one entry of two or of the last, still passes (leavewar/sync.ts warDayRefusal) */
+    /* …and A1 / A4 (the fix reads): no right left on a master admin's account, refused naming who made him one (D148) */
     restoreRefusal: (changes, dir, entry) => restoreBlocker(changes as any, dir, restoreAbsencesOf(changes as any)) || rosterRestoreProblem(changes as any, dir)
+      || masterRightRefusal(changes as any)
       || postingRestoreProblem(changes as any, dir, entry?.scope?.module) || warDayRefusal(changes as any),
     /* [POST-OUT-OUTCOMES]: a step that would put a deleted man back is passed over, never taken (person-delete.ts) */
     /* the direction and the step's module: a war step's Redo is judged by the leave it adds (person-delete.ts) */

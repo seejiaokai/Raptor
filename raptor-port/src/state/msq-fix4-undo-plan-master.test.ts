@@ -27,7 +27,8 @@ const remote = (actor: any, type: string, fn: () => void) => {
   expect((r as any).ok, JSON.stringify(r)).not.toBe(false)
   unitsLoad(); accountsLoad()
 }
-const OUT_OF_BAND = /^Something else changed this after your action — it can’t be undone now\./
+/* D148's words naming who (undo/timeline.ts outOfBandWords — the fix read's A4; anonymous only where nothing names him) */
+const OUT_OF_BAND = /^Kestrel changed this after your action — it can’t be undone now\./
 function hunterMadeMasterElsewhere(): void {
   remote(KESTREL, 'account.master', () => {
     const key = 'account:' + ACCT.hunter
@@ -77,5 +78,19 @@ describe('no Undo or Redo puts a right back on a master admin\'s account (A1, §
     expect(removeGrant(ACCT.hunter, 'u149').ok).toBe(true)
     expect(globalUndo().ok).toBe(true)
     expect(holds(ACCT.hunter, 'u149')?.level).toBe('admin')
+  })
+  /* A4 (docs/superpowers/briefs/2026-11-23-msq-b1-fixread2-astra.md): D148 — the refusal says who changed it, through the
+     one body that names him (undo/timeline.ts outOfBandWords) */
+  it('D148 names who made Hunter a master admin', () => {
+    signInAs('saber')
+    expect(setMaster(ACCT.kestrel, true).ok).toBe(true)
+    expect(setGrant(ACCT.hunter, 'u149', 'admin', PID.hunter).ok).toBe(true)
+    expect(removeGrant(ACCT.hunter, 'u149').ok).toBe(true)
+    hunterMadeMasterElsewhere()
+
+    const result = globalUndo()
+    expect(result.ok).toBe(false)
+    expect(holds(ACCT.hunter, 'u149')).toBeUndefined()
+    expect(result.reason).toContain('Kestrel')
   })
 })

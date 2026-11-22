@@ -812,7 +812,9 @@ function dayKeysOf(entry: UndoEntry): string[] {
 /* D148 — the refusal for a change made OUTSIDE his line of steps on the same thing, naming who made it: another person
    (his callsign), the app's own posting pass, or — when nothing names it — today's words. */
 const OUT_OF_BAND = 'Something else changed this after your action — it can’t be undone now.'
-function outOfBandWords(key: string): string {
+/* (exported for a refusal the wiring finds by its own rule on a record another person changed — state/undo-wire.ts
+   masterRightRefusal, the fix read's A4 — so it names him by this one body) */
+export function outOfBandWords(key: string): string {
   let a = BARRIER_BY.get(key)
   if (!a) { const w = writerOf(key, liveRevision(key)); if (w && w.origin !== 'user' && w.origin !== 'restore') a = w.actor }
   if (!a) return OUT_OF_BAND

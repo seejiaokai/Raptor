@@ -1169,6 +1169,20 @@ export const accountBefore = (id: string, image: any): any => image ?? (SEEDS_ON
    view moves and again inside the restore itself (undo/timeline.ts applyRestore). A sentence, or null.
    `next` — the accounts list the restore would leave (null: unchanged); `reqs` — the access requests it would leave. */
 /* (`rows` — the unit rows the restore would leave, when it changes any: the lock judges them, as the gate does) */
+/* NO RIGHT STANDS ON A MASTER ADMIN'S ACCOUNT AFTER A RESTORE (§15 D14 — the fix read's A1): an Undo of a right taken
+   away, or a Redo of one given, after another master admin made that man one since, would put the right back hidden under
+   "Full access" — back again the day the mark comes off. The account such a restore would leave a right holding on, or
+   null; the Undo refuses it naming who made him one (D148 — state/undo-wire.ts masterRightRefusal, the fix read's A4), and
+   the gate refuses the same (perms.ts unitRowViolation). */
+export function masterRightLeft(list: readonly any[], rows: UnitRows): string | null {
+  const today = todayIso()
+  for (const a of list) {
+    if (!a || a.master !== true) continue
+    const h = { id: String(a.id), pid: String(a.pid), pidFrom: a.pidFrom }
+    if (rows.grants.some(g => g.account === a.id && grantRowHolds(h, g, today, rows))) return String(a.id)
+  }
+  return null
+}
 export function accountsRestoreProblem(next: any[] | null, reqs: any[] | null, people: Record<string, any>, rows?: UnitRows, rowsChange = false): string | null {
   const list: any[] = next ?? ACCOUNTS_LIST
   /* at least one admin who can sign in, and one of each squadron (ADMIN_LOCK — the write path's own guard). Asked when
@@ -1178,16 +1192,6 @@ export function accountsRestoreProblem(next: any[] | null, reqs: any[] | null, p
   if (next || rowsChange) {
     const locked = lockProblem(list, pid => people[pid], rows)
     if (locked) return locked
-    /* NO RIGHT STANDS ON A MASTER ADMIN'S ACCOUNT AFTER IT (§15 D14 — the fix read's A1): an Undo of a right taken away, or a
-       Redo of one given, after another master admin made that man one since, would put the right back hidden under "Full
-       access" — back again the day the mark comes off. Someone has since changed it (D148): refused in those words. The
-       gate refuses the same (perms.ts unitRowViolation). */
-    const r = rows ?? unitRows(), today = todayIso()
-    for (const a of list) {
-      if (!a || a.master !== true) continue
-      const h = { id: String(a.id), pid: String(a.pid), pidFrom: a.pidFrom }
-      if (r.grants.some(g => g.account === a.id && grantRowHolds(h, g, today, r))) return 'Something else changed this after your action — it can’t be undone now.'
-    }
   }
   if (next) {
     const ids = new Set<string>(), names = new Set<string>(), pids = new Set<string>()
