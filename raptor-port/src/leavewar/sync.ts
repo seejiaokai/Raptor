@@ -1989,7 +1989,9 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
    - never a sentinel, an archived body or ground-crew Personnel (unchanged);
    - a SANS man ONLY when he is planned on OUR programme that day — named
      anywhere on it (`dayEngaged`). He is otherwise another squadron's;
-   - not posted in, or posted out, drops him (`inSquadron`, unchanged);
+   - not posted in, or posted out, drops him (`inSquadron`) — read from his saved
+     posting, where a SANS posting that has run is no departure, whatever the
+     war's "+ SANS" switch shows ([FABLE-READ-FAULTS] (i), 22 Nov 26);
    - an away-making input — all leave, medical, overseas duty — that overlaps
      the event's window drops him, EXCEPT **ATT B**, the one type in the app
      that says "no flying, may still work" (`canWork`);
@@ -2017,6 +2019,7 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
      mint a credit the matrix hides behind its not-yet-arrived blank. The
      same inSquadron read the manning counts make. */
   const lwById = new Map(getState().people.map(p => [p.id, p]))
+  const postings = getState().postOuts
   /* computed ONCE for the whole walk, not per person: dayEngaged is a full pass
      over the day, and this loop runs sixty times per sentinel window. */
   const engaged = day ? dayEngaged(day) : null
@@ -2075,7 +2078,20 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
        earlier published days keep their crowd"): every SANS tick keeps its dates on the person (engine/people.ts sansOn),
        put on or taken off, by a posting or by hand, and this asks by the day being measured. */
     if (sansOnP(p, iso) && !(engaged && engaged.has(id))) continue
-    const lw = lwById.get(id)
+    /* WHETHER HE IS STILL OURS THAT DAY IS READ FROM HIS SAVED POSTING, NEVER FROM THE ROW "+ SANS" SHAPES
+       ([FABLE-READ-FAULTS] (i), Astra's code read #1, 22 Nov 26). The war's display row carries the posting window as the
+       "+ SANS" switch lays it (store.ts windowFor, D283): off — the window stands, his old place, "posted out"; on — a SANS
+       posting that has run lays none. This asked that row, so with the switch off a man posted out as SANS and named on
+       our programme passed the SANS check above and was then dropped here as departed: the crowd a published day froze
+       lacked him and so did its OIL (a nine-hour Saturday credited him his briefing's half day), and turning the switch on
+       afterwards made that published day read pending. A SANS posting is not a departure — he still flies with us (D283,
+       D27) — and a display switch never changes who is owed OIL (D25). So his saved posting is laid here the one way,
+       as the war lays it with SANS shown: a SANS posting that has run closes no window. Every other posting is a
+       departure from its date as before, and the post-in date, his earlier stints, his squadron stints and the archive,
+       delete and clash checks are all read as they were. */
+    const lw0 = lwById.get(id)
+    const posting = lw0 ? postings[id] : undefined
+    const lw = lw0 && posting ? { ...lw0, ...windowFor(posting, true) } : lw0
     if (lw && !inSquadron(lw, iso)) continue
     if (keptOut.has(id)) continue
     if (engaged && personBusy(day, id).some((w: [number, number]) => w[0] < win[1] && win[0] < w[1])) continue
