@@ -107,7 +107,19 @@ the later merge keeps both (D78).
   **`main` brought in (chat 139, after the push showed the pull request clashing and running no checks):** records only
   (the settle script, one backlog line by hand); this branch's D2296 (the list's words, lesson 97) RENUMBERED D2312 —
   chat 135's "fix the slide" had merged first under D2296 (D78); D2312 was past every branch's highest (D2311).
-  **Next chat: 140.** Next free ruling: past D2312 — check every branch.
+  **His four answers (chat 139, "all as recommended", after Fable's and the agent's side by side):** D2313 → People &
+  accounts (a man counts as SANS only from his SANS date on every screen: the board's crew list follows the posting's
+  date; a hand SANS tick counts from the day it is made; a hand re-tick keeps the posting's date; a man named on an
+  earlier published day leaves it unchanged — closes finding (e) and Fable's (b)); D2314 → OIL (the publish note:
+  "Ranger's Training", "Ranger and Hex's Training", "Training for 3 people", "Training for ALL AVAIL" — the last the
+  agent's reading of "as recommended"); D2315 → Leave War (F2 waits for the database step); D2316 → OIL (a held name
+  stays held if the day changes behind the list; asked again at the database step, noted in [DB-SYNC-MODEL]). Page
+  limits raised by D2148: OIL 16450 → 16700, People & accounts 27900 → 28150. **TO BUILD, a fresh chat, on this
+  branch before "merge live" or a new one from `main` after it — his call:** D2313 (the crew list's SANS reading and
+  the hand tick's date — find the crew list builder and the hand SANS tick's writer; a red test each first) and D2314
+  (`leavewar/sync.ts oilUnansweredLine`'s names; the test in `leavewar/publishdoor.test.ts`). Both FULL-tier (the
+  published record, who counts as present).
+  **Next chat: 140.** Next free ruling: past D2316 — check every branch.
 - **Rulings:** 1 recorded → `oil.md` (D2294); the OIL page's limit 15950 → 16250 for it, by his standing word (D2148). `main` brought in again at the merge after `c160bc534` (main's fix of the ruling homes; the record clashes settled). **Chat numbers:** this chat was handed 133, which the disk-space chat also used; chats run to 136, so the next chat was 137 (now 138, above). **Next free ruling:** D2296 (chat 134 holds D2292, chat 135 D2293 and D2295 — check before taking).
 <!-- /now -->
 <!-- now:claude/sched-right-edge-135 -->
