@@ -37,7 +37,7 @@ import { addDays, outcomeOf } from './engine'
 /* the first day of HIS SANS posting that has RUN, or null (sync.ts savedSansRun's test — a posting taken back, gone or of
    another outcome is no longer his SANS posting) */
 function sansRunFrom(pid: string): string | null {
-  let w: any
+  let w: ReturnType<typeof getState>['postOuts'][string] | undefined
   try { w = getState().postOuts[pid] } catch { return null }
   return w && !w.gone && outcomeOf(w) === 'sans' && w.to !== null && w.poDone === addDays(w.to, 1) ? addDays(w.to, 1) : null
 }
@@ -59,6 +59,7 @@ export function sansUnfiledDays(pid: string): string[] {
   return out
 }
 function unfiledNow(pid: string, today: string): string[] {
+  // any: the engine's person record is untyped (a verbatim port, src/engine/people.ts)
   const p: any = (PEOPLE as any)[pid]
   /* he can be filed for only while SANS today (D2327), and the line is for a man his SANS posting made SANS */
   if (!p || p.special || p.deleted || p.archived || !p.san) return []
@@ -69,7 +70,9 @@ function unfiledNow(pid: string, today: string): string[] {
   if (homeUnitOf(pid, today) !== UNIT) return []
   const start = from > today ? from : today
   const days: string[] = []
+  // any: a day of the engine's week is untyped (a verbatim port, src/engine/data.ts)
   const look = (wk: string, list: any[] | null | undefined) => {
+    // any: the same engine day
     (list || []).forEach((d: any, di: number) => {
       if (!d) return
       const iso = dayIso(wk, di)
@@ -78,6 +81,7 @@ function unfiledNow(pid: string, today: string): string[] {
       days.push(iso)
     })
   }
+  // any: the engine's loaded week is untyped (a verbatim port)
   look(String(CURWEEK), DAYS as any[])
   for (const k of stashKeys()) {
     if (k === String(CURWEEK)) continue
@@ -109,6 +113,7 @@ export function sansUnfiledLines(pid: string): Notice[] {
    admin who pressed it — never to him (state/notices.ts noticeSansBack). Filing, or a day leaving, is no take-back: the
    line only shrinks or goes. True when the line was this kind (handled), so the posting's own steps skip it. */
 export function sansLineBack(n: Notice, by: string | null, at: number): boolean {
+  // any: a notice part is read by its kind, the fields differing by kind (state/notices.ts)
   const p: any = (n.what || [])[0]
   if (!p || p.k !== 'sansdue') return false
   if (n.to !== by && hasRead(n.to, n)) noticeSansBack(n.to, by, Array.isArray(p.days) ? p.days : [], String(p.from || n.day), at)
