@@ -655,5 +655,12 @@ no line of another person's step is written to (Fable's database-step note falls
 - **Told, not asked:** a posting of the very day a right is given back shows again (D1′); a master admin keeps his Plan
   squadrons' lines, their bell default "on", when made one (D1′a).
 
+**His answers (22 Nov 26, "All as recommended", to chat 139):** the page's version 5 approved whole — F1 Squadron
+config follows the squadron in view (D2317); F2 the Tracker's four cases and the pick's own question (D2318); F3 the
+own-account lines' words (D2319); F4 no sign-in, no access to give (D2320); F5 eight squadrons on an iPhone (D2321); F6
+the shared computer's sign-in words (D2322); F7 a window open at a pick, greyed with its line (D2323); F8 a request
+answered only by its squadron's admins (D2324); F9 the bell tap's toast (D2325); F10 the Undo words (D2326). The build
+follows the drawn words (`docs/mock/2026-11-22-msq-b1-screens/`, pictures f1a–f10).
+
 The cap is reached (three rounds): what is left is folded into the build and checked by its code reads and the walk
 (the bug-check order's FULL tier, §12).

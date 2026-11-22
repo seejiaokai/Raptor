@@ -148,6 +148,10 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - A person's opened row: Role, then one line per squadron — "142 Home squadron", "149 None · View · Plan" — a master admin's "Full access"; a member's Plan greyed, "Plan is for admins only." [D2303, D2306].
 - "+ New squadron": number, place, first admin picked from existing admins and given Plan, its last admin till it has its own [D2308, D2298].
 - Plan ended without a move — taken, made a member, master admin off — takes that squadron's lines off his bell at once; archived or posted overseas, View and Plan end; suspended, they stay [D2310, D2311].
+- Squadron config follows the squadron in view, only its admin changing it [D2317]; the Tracker keeps its squadron until sign-out, read only or hidden after a pick, unsaved chart changes asked first [D2318].
+- His own account's lines read as drawn, no squadron mark [D2319, D2309]; no sign-in, no access to give [D2320]; many squadrons on a phone: the bell's Show buttons one sliding row [D2321].
+- A shared computer's next sign-in reloads once the save lands, his name kept [D2322, D2205]; a window open at a pick is greyed and says so [D2323].
+- A request is answered only by its squadron's admins [D2324], a bell tap moving him there [D2325]; an Undo of access reads "Undid: Plan of 149 given · Hunter" [D2326].
 - A squadron's admins make admins of their own squadron only, never of another; another squadron is View only, unless a master admin gives him Plan (below) [D2192, D2191, D2198, D2199, D2250, D2201].
 - View never reaches another squadron's Inputs, Quals, Leave War or Tracker, even read only — a master admin and a Plan holder work there as its admins: on those pages a member sees mostly his own, and the war's leave and balances are its people's [D2252, D2132, D2197, D2201, D2191, D2198, D2199, D2250].
 - In the member view a Plan holder or master admin is a member of his own squadron with View of what he could edit: on that schedule he stays, read only; his own pages are his own squadron's [D2253, D292, D2252].
