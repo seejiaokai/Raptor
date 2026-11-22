@@ -1298,3 +1298,16 @@ sides.
 **Issue:** The copies were made by hand from an earlier chat's handoff line (`git archive <head> | tar -x`), not from the codex guide's recipe, which already carries the excludes (Observation 977, actioned). The export of every walk picture ran past five minutes for the first copy and was stopped; the Git Bash `mklink /J` failed again. The recipe being written down did not stop it, because nothing in the act of exporting points at it.
 **Suggested improvement:** A guard inside the action, as the short form asks for a trap met again: a small script in the repo (`raptor-port/scripts/reader-copies.mjs <head> <base> <dir…>`) that makes each copy with the excludes, writes the change's patch and the brief beside it, makes the package junction in PowerShell and prints the size — and the codex guide's recipe and every read brief template name the script instead of the commands.
 **Principle:** A recipe that a reader must remember to open loses to a command copied from a handoff; put the safe way in the one command people actually run.
+
+### Observation 1024: A replace-the-first-match edit landed in a look-alike block of another function
+
+**Status:** OPEN
+**Date:** 23 Nov 26
+**Session context:** chat 148, wiring a new step into the posting command's body in a 4,700-line file (another branch holds note 1023)
+**Skill:** New skill candidate: safe-scripted-edits
+**Type:** open-source
+**Phase/Area:** editing code by script when the edit tool's exact match is impractical
+
+**Issue:** A script replaced the first occurrence of a three-line block; the same three lines stood in an earlier function (a restore) as well as the intended one (the posting change), so the new step was wired into the wrong function. The new tests caught it only because they exercised the intended path; nothing failed loudly.
+**Suggested improvement:** A scripted replacement asserts the anchor occurs exactly once (count, not includes) and anchors on a line unique to the target function — its signature — before the block; the edit tool's own uniqueness check is the default.
+**Principle:** An edit keyed on repeated boilerplate must prove the anchor is unique before it writes; "found" is not "found once".
