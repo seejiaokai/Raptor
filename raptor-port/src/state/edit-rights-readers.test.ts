@@ -90,7 +90,7 @@ const INVENTORY: Record<string, { n: Partial<Record<keyof typeof Q, number>>; ki
   'state/accounts.ts': { n: { isAdmin: 1 }, kind: ['role'], why: 'who may answer access requests at all (each request then by its squadron — step D)' },
   'state/notices.ts': { n: { mayEditSched: 2 }, kind: ['role'], why: 'the bell\'s own reads (the admin lines\' audience is the squadron\'s — step F)' },
   'state/reports.ts': { n: { isAdmin: 1 }, kind: ['role'], why: 'the bug reports\' new-mark is an admin\'s' },
-  'ui/Drawer.tsx': { n: { isAdmin: 1 }, kind: ['role'], why: 'the drawer\'s admin entries' },
+  'ui/Drawer.tsx': { n: { isAdmin: 1, canEditSched: 1 }, kind: ['role', 'schedule'], why: 'the drawer\'s Admin entry and the member-view switch\'s words — questions about the person; its Edit Schedule entry is the schedule in view\'s, as the top bar\'s tab (the walk\'s F1)' },
   'ui/HelpPage.tsx': { n: { isAdmin: 1 }, kind: ['role'], why: 'the help page\'s admin sections' },
 }
 

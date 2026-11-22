@@ -8,6 +8,7 @@
 import { useEffect } from 'react'
 import { PEOPLE } from '../engine/people'
 import { isAdmin, me, mayViewAsMember } from '../state/perms'
+import { canEditSched } from '../state/auth'
 import { waitingCount } from '../state/accounts'
 import { CURPAGE } from '../state/view'
 import { notify, setPage, switchRoleView } from '../state/store'
@@ -24,7 +25,9 @@ export function Drawer() {
   const mineCs = mine && PEOPLE[mine] ? PEOPLE[mine].cs : ''
   const waiting = admin ? waitingCount() : 0
   const items: [string, string, boolean][] = [
-    ['editsched', 'Edit Schedule', !!admin], ['viewsched', 'View-only Sched', true],
+    /* Edit Schedule is the schedule in view's, as the top bar's tab (Shell.tsx — the second-half plan §2 item 3):
+       a View holder of 149 with 149 picked is not offered it (the walk's F1, 23 Nov 26) */
+    ['editsched', 'Edit Schedule', canEditSched()], ['viewsched', 'View-only Sched', true],
     ['inputs', 'Inputs', true], ['quals', 'Quals', true], ['logic', 'Logic', true],
     ['leavewar', 'Leave War', true],
     ['tracker', 'Tracker', true],

@@ -51,7 +51,7 @@ import { lwStore, LW_COLLS, selectWar, focusDay, bumpLwHistEpoch, restoreBlocker
 import { restoreAbsencesOf, warNoticesReversed, acctNoticesReversed, warDayRefusal } from '../leavewar/sync'
 import { warCounts } from '../leavewar/absences'
 import { DATES, inputCoversDate, isSansAvail } from '../engine/inputs'
-import { UNIT_ROW_PREFIXES, GRANT_PFX, UNIT_PFX, UNITPLACE_PFX } from './units-model'
+import { UNIT_ROW_PREFIXES, GRANT_PFX, UNIT_PFX, UNITPLACE_PFX, PLACE_PFX } from './units-model'
 import { noticeLeftBell, isAcctNotice, type Notice } from './notices'
 import { UNIT } from '../engine/unitview'
 import { split, localOf, qualify } from '../storage/unitid'
@@ -219,7 +219,14 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
     const ids = fwd.filter(c => c.collection === 'settings').map(c => localOf(c.id))
     /* …and the squadrons' rows (multi-squadron batch 1, step 1 — units, places, homes, rights: Admin's, where step 3
        draws them; until then Admin → Users, where every account change already lands) */
-    if (ids.some(k => k.startsWith('account:') || k.startsWith('accessreq:') || UNIT_ROW_PREFIXES.some(p => k.startsWith(p)))) { primary = 'admin'; then = () => requestAdminUsers(false) }
+    if (ids.some(k => k.startsWith('account:') || k.startsWith('accessreq:') || UNIT_ROW_PREFIXES.some(p => k.startsWith(p)))) {
+      primary = 'admin'
+      /* A STEP OF SQUADRONS AND PLACES IS THE SQUADRONS PANEL'S (the second half's walk, F3, 23 Nov 26): "+ New squadron"
+         or a squadron's place undone or redone on the Admin page leaves it on the panel he is on — asking for Users here
+         put the squadron's going out of sight. Every other step of these rows still opens Users, where it shows. */
+      const squadrons = ids.some(k => k.startsWith(UNIT_PFX) || k.startsWith(PLACE_PFX) || k.startsWith(UNITPLACE_PFX))
+      if (!(squadrons && CURPAGE === 'admin')) then = () => requestAdminUsers(false)
+    }
     else if (ids.includes('rules') || ids.includes('insights')) {
       primary = 'logic'
       /* A LATE CUT-OFF IS SET BEHIND A CALENDAR'S OWN GEAR TOO (D639 — one setting, two ways in), so the Inputs page
