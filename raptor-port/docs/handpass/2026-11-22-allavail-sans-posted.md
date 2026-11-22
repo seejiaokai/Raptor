@@ -303,7 +303,9 @@ failed request, in any cited run.
   entry took its one-line width and could not shrink; the desktop board alone had the shrink rule (D1118). **Fixed
   red-first** (`17ab956fe`): the shrink rule at every width on both lists, the puck's width its floor; test
   `e2e/sans-unfiled-wrap.spec.ts` (phone at 402, 375, 320 on the board and Edit Schedule's drawer — red before; the desktop
-  measured unchanged). **To re-walk** on WebKit 402 (the test ran in Chromium with touch).
+  measured unchanged). **Re-walked by the host** on a fresh build of `664dddb39` (w5's own `sud-w5-fit.mjs`, WebKit 402 by touch
+and desktop 1536): fit-02 and fit-03 PASS at both sizes, no errors; the host opened
+`w5/refit-17ab/fit-fit-03-clip-phone.png` — the note on two lines inside the drawer, the notes above and below unmoved.
 - **RECORDED, each against the rulings:** the working copy drives the line (a draft-only addition or removal on a
   published day moves it) — the agent's reading, like the crew list; a read line stays read when it shrinks (filed, taken
   off a day, a cancelled or ⓘ item) — as built, the builder's question to him; the line's days follow CX and ⓘ (out, and
