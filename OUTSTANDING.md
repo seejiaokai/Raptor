@@ -2943,4 +2943,21 @@ and pucks), the SANS day's pucks, the SANS highlight chip, and the Leave War's A
 of the count on every date — a date before his SANS date then counts one fewer (`leavewar/engine/availrows.ts`); who may
 FILE SANS availability stays on today's tick on purpose (a filing asks who he is now). OWED: the bug check (FULL) — its
 sizing, walk, reads and sheet (`raptor-port/docs/handpass/2026-11-22-sans-from-date.md`, not yet laid down) — then his look.
+**(g) as it stands after the roll-call and Astra's scenario design (22 Nov 26, the sheet's §3 and §6):** FIXED in this
+job, each with a test that failed first — the ALL AVAIL window's pucks, the Medical page's "as of" cards, View-only Sched's
+next-week preview of a published day (each man as that version kept him, D186) and a preview already drawn (it now
+follows a tick). STILL OPEN, each on past dates only: the Inputs calendar's opened day (its seat lists and pucks,
+`ui/InputsCal.tsx` 1247–1253, 1420), the SANS day's pucks and the SANS calendar's Highlight list for a man whose SANS has
+ended (`ui/SansDay.tsx`, `ui/sanscal-model.ts sansRoster`), and the Leave War's Available rows
+(`leavewar/engine/availrows.ts` NO_SANS; the roster the war is handed, `leavewar/state/raptorRoster.ts`, carries no SANS
+dates) — after an UNTICK a past day he was SANS on counts him BOTH as a regular available and as committed SANS, so that
+day's "still needed" reads one fewer; the bid warning, Approvals' LOWEST AVAIL and the red-day list follow the same
+count. The fix Astra names: hand the count the stint-aware roster with his SANS dates and leave SANS men out by the date
+counted, the grid's whole-row rule kept (D321, D1692). The SANS highlight chip stays on today's tick, for his word.
+**(h) the pending list can credit a SANS change to the wrong person (Astra's scenario 12, read in the code, not walked):**
+admin A ticks a man SANS on a day that makes a published day read "SANS: no → yes"; a later untick by admin B (which no
+longer removes that difference — D2313) is then the newest SANS line, and the pending line's "who and when" names B
+(`ui/pendlist.ts qualsLine` takes the newest SANS line whatever its direction). Words only. Fix: hand `qualsLine` the
+value the day now reads and take the newest SANS line whose `to` is that value, any line as the fallback; a test through
+the pending list of a published day.
 

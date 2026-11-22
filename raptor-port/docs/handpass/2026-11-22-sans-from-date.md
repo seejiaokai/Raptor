@@ -123,9 +123,7 @@ Scenarios to walk, desktop 1536 and iPhone 402, a picture each (Astra's scenario
 6. The publish note on a Saturday: one person, two people, three people, ALL AVAIL.
 7. The plain-user round (the order's §7.0a): Quals' everyday edits, the posting sheet opened and closed, a puck dragged
    from the crew list onto a seat on a day before and a day after the date.
-
-## 7. The cases carried by a test
-
+() => b
 | Case | Test | What it proves |
 |---|---|---|
 () => b

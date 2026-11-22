@@ -195,6 +195,19 @@ describe('D2313 (b) — a hand re-tick after a SANS posting keeps the posting\'s
     expect([MON_ISO, WED_ISO, THU_ISO].map(d => sansOn('rocky', d)), 'never SANS: the posting never was').toEqual([false, false, false])
   })
 
+  it('a posting moved earlier, then later: his SANS days follow its date each time', () => {
+    expect(postOut('rocky', WED_ISO, 'sans')).toBe(true)                 // SANS from Wed 15 Jul (today)
+    raptorNotify()
+    expect([TUE_ISO, WED_ISO].map(d => sansOn('rocky', d))).toEqual([false, true])
+    expect(postOut('rocky', TUE_ISO, 'sans'), 'the date moved a day earlier').toBe(true)
+    raptorNotify()
+    expect([MON_ISO, TUE_ISO, WED_ISO].map(d => sansOn('rocky', d)), 'SANS from Tue 14 Jul now').toEqual([false, true, true])
+    expect(postOut('rocky', FRI_ISO, 'sans'), 'the date moved to Friday, still to come').toBe(true)
+    raptorNotify()
+    expect(!!P('rocky').san, 'a posting still to come has made nobody SANS').toBe(false)
+    expect([TUE_ISO, WED_ISO, THU_ISO, FRI_ISO].map(d => sansOn('rocky', d)), 'no SANS day left behind').toEqual([false, false, false, false])
+  })
+
   it('a posting taken back keeps the SANS days he held BY HAND before it', () => {
     at(2026, 7, 13)
     expect(updatePersonField('rocky', { tick: 'san' })).toBeNull()       // SANS by hand from Mon 13 Jul
