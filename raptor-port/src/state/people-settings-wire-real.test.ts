@@ -183,9 +183,9 @@ describe('2 — every family the wire declares runs for a real member and a real
 
   it('a member (Ranger) may not mark the Leave War\'s Approvals seen — refused, and its caller still hands back the old moment', () => {
     signInAs('us', 'us')
-    expect(openApprovals('bane', 7000)).toBe(0)
-    expect(apprSeenAt('bane'), 'nothing stored for a member').toBe(0)
-    expect(stored(APPRSEEN_PFX + 'bane')).toBe(null)
+    expect(openApprovals('bane', 'u142', 7000)).toBe(0)
+    expect(apprSeenAt('bane', 'u142'), 'nothing stored for a member').toBe(0)
+    expect(stored('u142@' + APPRSEEN_PFX + 'bane')).toBe(null)
   })
 
   it('an admin (Saber): an account change, the Approvals seen and every seen mark land', async () => {
@@ -195,8 +195,8 @@ describe('2 — every family the wire declares runs for a real member and a real
     NOTICES.push(bellLine('n-ad', 'stiff', 100))
     expect(updateAccount('acus', { role: 'admin' }), 'Admin → Users keeps the change').toBe(null)
     expect(role('acus')).toBe('admin')
-    expect(openApprovals('stiff', 9000)).toBe(0)
-    expect(apprSeenAt('stiff'), 'his Approvals visit is kept').toBe(9000)
+    expect(openApprovals('stiff', 'u142', 9000)).toBe(0)
+    expect(apprSeenAt('stiff', 'u142'), 'his Approvals visit is kept').toBe(9000)
     expect(markSeen([ELOG.rows[0]!])).toBe(true)
     expect(isNewToMe(ELOG.rows[0]!)).toBe(false)
     expect(markNoticeRead('n-ad')).toBe(true)
@@ -290,18 +290,18 @@ describe('3 — a command that changes real values and then throws leaves nothin
     try {
       commitSettingsIntent('account.update', null, () => {
         openOwnWindow('stiff', 4000)
-        openApprovals('stiff', 4100)
+        openApprovals('stiff', 'u142', 4100)
         expect(lwSeenAt('stiff')).toBe(4000)
         throw new Error('boom')
       })
     } catch { /* refused */ }
     expect(lwSeenAt('stiff')).toBe(0)
-    expect(apprSeenAt('stiff')).toBe(0)
+    expect(apprSeenAt('stiff', 'u142')).toBe(0)
     expect(groups).toBe(0)
     expect(pm.hasWork()).toBe(false)
     expect(openOwnWindow('stiff', 4200)).toBe(0)
     expect(lwSeenAt('stiff')).toBe(4200)
-    expect(openApprovals('stiff', 4300)).toBe(0)
-    expect(apprSeenAt('stiff')).toBe(4300)
+    expect(openApprovals('stiff', 'u142', 4300)).toBe(0)
+    expect(apprSeenAt('stiff', 'u142')).toBe(4300)
   })
 })

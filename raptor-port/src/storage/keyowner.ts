@@ -54,6 +54,8 @@ export const UNIT_SETTING_PREFIXES: readonly string[] = [
   'flyday:', 'flyrule:', 'flyrun:', // the flying plan — a date's class and figures, a weekday's rule, a running figure
   'missionrole:', // a formation's blue/red answer on a schedule day
   'elog:',        // the change history's lines — each unit's own schedule's history
+  'apprseen:',    // when an admin last opened a squadron's Leave War Approvals — his own row, one per squadron (batch 1's
+                  // second half §3 item 7 — R2; written by state/apprseen.ts under the war's squadron it names)
 ]
 export const COMMUNITY_SETTINGS: readonly string[] = [
   'schema',       // the store's own stamp (storage/schema.ts)
@@ -62,7 +64,6 @@ export const COMMUNITY_SETTING_PREFIXES: readonly string[] = [
   'account:', 'accessreq:', 'reqseen:', // accounts, access requests and each admin's seen requests
   'seen:',        // each person's own "seen" for the change history
   'noticeseen:',  // each person's own read marks of his bell
-  'apprseen:',    // when an admin last opened the Leave War's Approvals — his own row
   'lwseen:',      // when a person last opened his own Leave War window — his own row
   'bellsqn:',     // which squadrons' lines his bell shows — his own row (state/bellsqn.ts, batch 1's second half §7 item 3)
   /* the units themselves, where they are, each person's home and each right in another unit (state/units.ts — step 1):

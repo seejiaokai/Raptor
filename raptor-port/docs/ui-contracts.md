@@ -12494,7 +12494,8 @@ Built on `claude/leave-war-m4-planning-d18224` from `docs/superpowers/plans/2026
   A line the rules refuse says why, in red, under its dates; one drawn from a state since changed says what happened
   ("Already refused by Hex", "Moved to Thu 29 Jan", "No longer there" — B8). Approve all approves exactly what the list
   shows: one tap arms it ("Approve 13 — tap again"), anything that changes what the list shows disarms it.
-- **New (D1231's reading):** the moment he OPENS the tab is stored (`state/apprseen.ts`); "New N" shows the requests
+- **New (D1231's reading):** the moment he OPENS the tab is stored (`state/apprseen.ts`) — one per squadron, for the war
+  the page shows, so 142's visit leaves 149's requests "New" (batch 1's second half §3 item 7, R2); "New N" shows the requests
   placed since the previous moment and, under them, "Also since you last looked · nothing to decide" — a member's
   withdrawn pending bid ("Bid withdrawn by Cinch", its box struck through) and leave filed on the Inputs page ("Filed on
   the Inputs page · approved") — each with its dates as a link (`sync.ts alsoSince`). The dots go when he leaves.

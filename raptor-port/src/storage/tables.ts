@@ -64,8 +64,9 @@ export function tableOf(collection: Collection, id: string): string {
       if (id.startsWith('account:')) return 'User'
       if (id.startsWith('accessreq:')) return 'AccessRequest'
       if (id.startsWith('reqseen:')) return 'AccessRequestSeen'
-      /* when an admin last opened the Leave War's Approvals (M4 8.4): its own table, as the permissions table names it */
-      if (id.startsWith('apprseen:')) return 'LeaveApprovalsSeen'
+      /* when an admin last opened the Leave War's Approvals (M4 8.4): its own table, as the permissions table names it —
+         one row per squadron since batch 1's second half (R2), `u149@apprseen:<pid>`, so read with the squadron split off */
+      if (localOf(id).startsWith('apprseen:')) return 'LeaveApprovalsSeen'
       if (id.startsWith('lwseen:')) return 'LeaveSeen'
       /* which squadrons' lines a person's bell shows (state/bellsqn.ts — batch 1's second half §7 item 3) */
       if (id.startsWith('bellsqn:')) return 'BellSquadrons'

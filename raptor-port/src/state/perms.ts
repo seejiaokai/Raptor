@@ -3462,7 +3462,9 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
       continue
     }
     if (c.collection !== 'settings') continue
-    const id = String(c.id)
+    /* the name with its squadron split off (§15 D14): the Approvals moment is a row of the war's squadron since R2,
+       `u149@apprseen:<pid>` (state/apprseen.ts) — read as its plain name, it is judged as every read record is */
+    const id = split(String(c.id)).local
     /* (job 2, 19 Nov 26 — the security read's SEC-1: an admin's Approvals moment, `apprseen:<pid>`, and his record of
        the access requests he has seen, `reqseen:<account>`, are read records too — 142's plain admin set 149's admin's) */
     const pfx = id.startsWith('seen:') ? 'seen:' : id.startsWith('noticeseen:') ? 'noticeseen:' : id.startsWith('apprseen:') ? 'apprseen:' : id.startsWith('reqseen:') ? 'reqseen:' : null

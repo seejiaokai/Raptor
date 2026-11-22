@@ -26,7 +26,7 @@
    visit: a request placed since wears the cyan dot, and "New N" shows only those. The dots go when he leaves Approvals. */
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import { boxText, kindOf } from '../engine'
-import { decideRequests, getState, getVersion, lineStale, postedOutBy, selectWar, type DecideTo } from '../state/store'
+import { decideRequests, getState, getVersion, lineStale, postedOutBy, selectWar, worldUnit, type DecideTo } from '../state/store'
 import { figuresOf, linesOfWar, pendingCount, pendingElsewhere, type ApprFigures, type ApprLine } from '../approvals'
 import { alsoSince, openRequestDocs, postingPendingTag, puckHtml, rosterCallsign, type AlsoLine } from '../sync'
 import { openApprovals } from '../../state/apprseen'
@@ -90,10 +90,12 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
   const st = getState()
   const version = getVersion()
   const pid = me()
-  /* the moment he opened it — written now, the previous one kept for this visit (state/apprseen.ts) */
+  /* the moment he opened it — written now, the previous one kept for this visit (state/apprseen.ts) — ONE PER SQUADRON
+     (batch 1's second half §3 item 7, R2): the moment of the war this page shows, so 142's visit leaves 149's "New" */
   const [prev, setPrev] = useState<number | null>(null)
-  // eslint-disable-next-line react-hooks/exhaustive-deps, react-doctor/rendering-hydration-no-flicker -- once per visit: opening writes the moment he opened it, so a re-run would move his "since you last looked" mark mid-visit; and that write to storage is a side effect no render may make — until it runs nothing is marked new, so nothing flashes
-  useEffect(() => { setPrev(openApprovals(pid != null ? String(pid) : null)) }, [])
+  const war = worldUnit()
+  // eslint-disable-next-line react-hooks/exhaustive-deps, react-doctor/rendering-hydration-no-flicker -- once per visit of each squadron's war: opening writes the moment he opened it, so a re-run would move his "since you last looked" mark mid-visit — another squadron's war loaded under the page is a visit of its own; and that write to storage is a side effect no render may make — until it runs nothing is marked new, so nothing flashes
+  useEffect(() => { setPrev(openApprovals(pid != null ? String(pid) : null, war)) }, [war])
   const [filter, setFilterRaw] = useState<Filter>({ kind: 'all' })
   const [picking, setPicking] = useState(false)
   const pickRef = useRef<HTMLDivElement | null>(null)
