@@ -32,9 +32,9 @@ the later merge keeps both (D78).
   rulings: D2296 (the list's lines in the fewest words; design lesson 97) and **D2297 — look A**: at the list's top the
   pressed sign-off box itself (a copy of the board's `.sgn` pill, `mk-held`: dotted edge, no ▾, the board's text size)
   reading the held name, beside it "waiting for your answer"; the foot (`odl-left`) "Later: Ace signs, but nobody on it
-  earns OIL."; no lead paragraph. **WAITING on him:** (1) are round 5's two wordings clear (recommended yes); (2) ✕ /
-  Escape on the list cancels the sign-off — nothing signed, the next press asks again (recommended). **The build, once
-  he says go:** in `ui/Shell.tsx`'s `select[data-sign]` change handler, before `setSign`: if the day has an open OIL
+  earns OIL."; no lead paragraph; round 6 lifts the words to the box's middle by their x-height (`draw-f3.mjs`).
+  **APPROVED, D2299 ("yes to both"):** the words as drawn, and ✕ / Escape on the list cancels the sign-off — nothing
+  signed, the next press asks again. **The build, now his:** in `ui/Shell.tsx`'s `select[data-sign]` change handler, before `setSign`: if the day has an open OIL
   question (`leavewar/sync.ts oilOpenOn` for the day) and Later was not pressed for that day, hold the pick (revert
   the select), open the list (`setOilList`, plain) carrying the held role + person; Save writes answers, THEN the sign;
   Later writes the sign and marks the day asked (session memory, per day); ✕ drops the hold. Same for Edit Schedule's
@@ -42,7 +42,7 @@ the later merge keeps both (D78).
   OIL answer, so nobody on it earns OIL." The proof `fableoil-unanswered-publish.test.tsx` `it.fails` → `it`. Then walk
   the block's five scenarios + this one at 1536 and 402, close the sheet with its Walk line, preview link to him.
   Found while drawing (filed in the item): Switch to this plan on an unpublished day puts a row back, its input left
-  rejected. **Next chat: 138.** Next free ruling: D2298.
+  rejected. **Next chat: 138.** Next free ruling: D2300 (D2298 is chat 135's; check every branch before taking one).
 - **Rulings:** 1 recorded → `oil.md` (D2294); the OIL page's limit 15950 → 16250 for it, by his standing word (D2148). `main` brought in again at the merge after `c160bc534` (main's fix of the ruling homes; the record clashes settled). **Chat numbers:** this chat was handed 133, which the disk-space chat also used; chats run to 136, so the next chat was 137 (now 138, above). **Next free ruling:** D2296 (chat 134 holds D2292, chat 135 D2293 and D2295 — check before taking).
 <!-- /now -->
 <!-- now:claude/lw-monthjump-click -->
