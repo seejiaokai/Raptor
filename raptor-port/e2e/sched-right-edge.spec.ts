@@ -249,6 +249,29 @@ test.describe('Edit Schedule on a desktop — the right edge and the day arrows'
     }
     await context.close()
   })
+  /* "JUMP TO A DATE" LIGHTS THE DAY AT THE FRONT ON EDIT SCHEDULE TOO (Astra's finding 2, 22 Nov 26 — older code): the
+     calendar read the front day off View-only's week whenever that week existed, and it always does, hidden, so on
+     Edit Schedule it lit Monday whatever day stood first. Both pages must light the same day for the same front day. */
+  test('"Jump to a date" lights the day at the front, on Edit Schedule as on View-only Sched', async ({ browser, baseURL }) => {
+    const { context, page } = await desktop(browser, baseURL)
+    await tab(page, 'Edit Schedule', 'editsched')
+    const lit = async () => {
+      await page.locator('button[aria-label="Jump to a date"]:visible').first().click()
+      await expect(page.locator('#weekCal:not([hidden])')).toBeVisible()
+      const cell = page.locator('#weekCal:not([hidden]) [aria-pressed="true"]').first()
+      const what = (await cell.getAttribute('aria-label')) || (await cell.textContent()) || ''
+      await page.keyboard.press('Escape')
+      await expect(page.locator('#weekCal:not([hidden])')).toHaveCount(0)
+      return what.trim()
+    }
+    const monday = await lit()
+    await arrow(page, 'next', EDIT); await arrow(page, 'next', EDIT); await arrow(page, 'next', EDIT)
+    const onEdit = await lit()
+    expect(onEdit, 'Thursday first: the calendar no longer lights Monday').not.toBe(monday)
+    await tab(page, 'View-only Sched', 'viewsched')
+    expect(await lit(), 'and it is the day View-only Sched lights for the same front day').toBe(onEdit)
+    await context.close()
+  })
   /* THE SAME STALE COUNT THROUGH THE BOARD (the blind read's F1, 22 Nov 26): the board opened on Friday, stepped to
      Tuesday and closed carries Tuesday to the week's front — inside the reach of the four presses before it — and the
      next press showed Saturday. The carry now drops the arrows' memory too (EditWeek / ViewWeek, beside the landing). */
