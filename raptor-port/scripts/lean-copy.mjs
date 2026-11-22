@@ -99,7 +99,8 @@ export function guarded(w) {
 }
 /** A repo that holds no walk pictures at all — an exported read-copy, or a commit before them. */
 function noPictures(top) {
-  try { return !git(top, ['ls-tree', '-r', '-z', '--name-only', 'HEAD', '--', `${PICS}/`]).split('\0').some(isMedia) } catch { return true }
+  // by .png only: the export recipe leaves some other kinds in (27 .webp in one real walk folder — the third read)
+  try { return !git(top, ['ls-tree', '-r', '-z', '--name-only', 'HEAD', '--', `${PICS}/`]).split('\0').some((f) => f.toLowerCase().endsWith('.png')) } catch { return true }
 }
 /** A copy git made in the last 15 minutes: its `commondir` file is written when the copy is made, and never after. */
 export function isNew(gitDir, now = Date.now()) {
@@ -205,7 +206,7 @@ export async function slim(cwd, { auto = false } = {}) {
 export function note(main, result = 'slimmed') {
   const lines = [
     `This working copy leaves out the old walk pictures (${PICS}/), his D2290 and D2292; none is deleted, and every other file there stays.`,
-    `To work with one walk's pictures here, fetch its folder: node ${SCRIPT} get <walk folder> (seconds, no download).`,
+    `To work with one walk's pictures here, fetch its folder, from the project's top folder: node ${SCRIPT} get <walk folder> (seconds, no download).`,
     `To only look at one, open it in the main folder (${join(main, PICS).replace(/\\/g, '/')}/) — that is the main folder's own version; for a walk of this branch's own, fetch it.`,
     `A new walk's pictures save and commit as usual in a NEW folder. Writing into an OLD walk's folder (a re-walk, a re-drawn picture): fetch that folder first — git skips a re-written picture there without a word, and the commit guard then stops the commit.`,
   ]
@@ -267,7 +268,7 @@ export function onPreCommit(cwd = process.cwd()) {
   let files
   try { files = stranded(top) } catch (e) {
     // a guard that cannot look never waves a commit through (Astra, the fix round)
-    process.stderr.write(`lean-copy: commit stopped — the commit guard could not check this copy's pictures (${String(e.message || e).split('\n')[0]}). Commit again; if it keeps failing, run node ${SCRIPT} status, and to commit without the check set LEAN_COPY_GUARD=off for that one commit.\n`)
+    process.stderr.write(`lean-copy: commit stopped — the commit guard could not check this copy's pictures (${String(e.message || e).split('\n')[0]}). Commit again; if it keeps failing, run node ${SCRIPT} status from the project's top folder (a slim stopped part-way is put right by node ${SCRIPT} full), and to commit without the check set LEAN_COPY_GUARD=off for that one commit.\n`)
     return 1
   }
   if (!files.length) return 0
@@ -276,7 +277,7 @@ export function onPreCommit(cwd = process.cwd()) {
   process.stderr.write([
     `lean-copy: commit stopped — ${files.length} picture(s) written into an old walk's folder this copy leaves out, which git would leave behind:`,
     ...files.slice(0, 8).map((f) => `  ${f}`), ...(files.length > 8 ? [`  … and ${files.length - 8} more`] : []),
-    `To keep them: node ${SCRIPT} get ${folders.join(' ')}   then: git add -- ${PICS}   and commit again (fetching keeps the new pictures).`,
+    `To keep them, from the project's top folder: node ${SCRIPT} get ${folders.join(' ')}   then: git add -- ':/${PICS}'   and commit again (fetching keeps the new pictures).`,
     `If they were not meant to change (a test re-draws them): fetch the same way, then git restore -- <the files>, and commit again.`,
   ].join('\n') + '\n')
   return 1
@@ -286,6 +287,7 @@ export function onPreCommit(cwd = process.cwd()) {
 export function get(cwd, names) {
   const w = where(cwd)
   const EXPORTED = 'an exported read-copy is made without pictures: open them in the main folder only if it is on the version under review, or ask the host to export that folder from the reviewed commit (git archive <commit> -- <folder>)'
+  if (!w.linked && noPictures(w.top)) throw new Error(`this copy holds no walk pictures at all — ${EXPORTED}`)
   const lines = []
   for (const raw of names) {
     // a folder name, or a path written from the project's top, from raptor-port/, whole, or with ./ (the fix-round read)
@@ -320,15 +322,23 @@ const POST = `#!/bin/sh
 # ${MARK}: a new working copy leaves out the old walk pictures. Put here by
 # \`node ${SCRIPT} install\`; \`… uninstall\` takes it out. It always exits 0; its note goes to the screen.
 S="$(git rev-parse --show-toplevel 2>/dev/null)/${SCRIPT}"
+[ -f "$S" ] || S="$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)/hooks/lean-copy.mjs"
 [ -f "$S" ] && command -v node >/dev/null 2>&1 && node "$S" git-hook "$@" >/dev/null
 exit 0
 `
 const PRE = `#!/bin/sh
 # ${MARK}: in a lean copy, stops a commit that would leave behind pictures written into an old walk's folder.
-# Put here by \`node ${SCRIPT} install\`. A whole copy and the main folder pass at once.
+# Put here by \`node ${SCRIPT} install\`. A whole copy and the main folder pass at once. A copy on a branch without
+# the script uses the one kept beside this hook; a lean copy with no script or no node at all is stopped, never waved on.
 S="$(git rev-parse --show-toplevel 2>/dev/null)/${SCRIPT}"
-[ -f "$S" ] && command -v node >/dev/null 2>&1 || exit 0
-node "$S" pre-commit
+[ -f "$S" ] || S="$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)/hooks/lean-copy.mjs"
+if [ -f "$S" ] && command -v node >/dev/null 2>&1; then node "$S" pre-commit; exit $?; fi
+if [ "$(git config --worktree --get core.sparseCheckout 2>/dev/null)" = "true" ]; then
+  echo "lean-copy: commit stopped — this lean copy's commit guard cannot run (no script or no node). Set LEAN_COPY_GUARD=off for one commit only if no picture of an old walk changed." >&2
+  [ "$LEAN_COPY_GUARD" = "off" ] && exit 0
+  exit 1
+fi
+exit 0
 `
 const HOOKS = { 'post-checkout': POST, 'pre-commit': PRE }
 
@@ -338,6 +348,8 @@ export function install(cwd) {
   for (const f of files) if (existsSync(f) && !readFileSync(f, 'utf8').includes(MARK)) throw new Error(`${f} already holds another hook; nothing replaced`)
   mkdirSync(join(w.common, 'hooks'), { recursive: true })
   for (const [h, text] of Object.entries(HOOKS)) writeFileSync(join(w.common, 'hooks', h), text, { mode: 0o755 })
+  // a copy of this script beside the hooks, for a copy switched to a branch cut before it existed (the third read)
+  writeFileSync(join(w.common, 'hooks', 'lean-copy.mjs'), readFileSync(fileURLToPath(import.meta.url), 'utf8'))
   // set once here, so copies made together never race to set it in the one shared settings file (Fable, 22 Nov 26)
   git(w.main, ['config', 'extensions.worktreeConfig', 'true'])
   return `Installed: ${files.join(', ')}`
@@ -352,6 +364,10 @@ export function uninstall(cwd) {
     if (!readFileSync(f, 'utf8').includes(MARK)) { out.push(`${f} is another hook; left in place`); continue }
     unlinkSync(f); out.push(`Taken out: ${f}`)
   }
+  const kept = join(w.common, 'hooks', 'lean-copy.mjs')
+  if (existsSync(kept) && !Object.keys(HOOKS).some((h) => existsSync(join(w.common, 'hooks', h)) && readFileSync(join(w.common, 'hooks', h), 'utf8').includes(MARK))) {
+    unlinkSync(kept); out.push(`Taken out: ${kept}`)
+  }
   return out.length ? out.join('\n') : 'Nothing to take out.'
 }
 
@@ -362,6 +378,7 @@ export function status(cwd) {
   if (busy(w.gitDir)) return `git is busy in this copy (or a slim stopped part-way): ${join(w.gitDir, 'index.lock')} exists — wait; if no git is running, see ${join(w.gitDir, 'lean-copy.log')} and run node ${SCRIPT} full`
   if (!guarded(w) && isLean(w.top)) return `This copy is lean, but the commit guard is not in place on this PC — run node ${SCRIPT} install in the main folder.`
   if (!isLean(w.top)) return `This copy holds every picture${isWhole(w.top) ? ', and is kept whole' : ''}.`
+  if (!existsSync(sparseFile(w.top))) return `This copy is marked lean but its list of what to leave out is missing — a slim stopped part-way: run node ${SCRIPT} full from the project's top folder.`
   const f = fetched(w.top)
   return `This copy is lean.${f.length ? ` Fetched: ${f.join(' ')}` : ' No picture folder fetched.'}`
 }

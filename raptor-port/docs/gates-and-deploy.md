@@ -736,7 +736,10 @@ and `commit -a` without a word — so git's `pre-commit` hook (put in place by `
 the command, `… lean-copy.mjs get <folder>` (seconds — the copy shares the main folder's store, and fetching keeps the
 new pictures). **No copy is slimmed until that guard is in place on the PC** (the fix-round reads: before `install`,
 helpers were told of a guard not there); a guard that cannot check stops the commit too, and `LEAN_COPY_GUARD=off`
-lets one commit through. An exported read-copy says what it is, never "the main folder". The Leave War's browser test re-draws two pictures in the old folder `2026-10-27-lw-m4/d1444/` on every
+lets one commit through. `install` keeps a copy of the script beside the hooks, for a copy switched to a branch cut
+before the script existed, and a lean copy with no script or node at all is stopped, never waved on (the third read).
+The commands run from the project's top folder. An exported read-copy (no `.png` under the pictures folder) says what
+it is, never "the main folder". The Leave War's browser test re-draws two pictures in the old folder `2026-10-27-lw-m4/d1444/` on every
 run, so in a lean copy it trips the guard: fetch the folder and `git restore` them. The hooks act only on a copy made
 in the last 15 minutes (its `commondir` file's time) and never on one set whole (`… full`, or `RAPTOR_FULL_COPY=1` at
 its making); a copy with picture changes of its own is left whole. `… slim` by hand slims an older copy (a long-lived

@@ -311,6 +311,32 @@ test('installed, git\'s hooks slim a typed copy (with the note on screen) and st
   assert.equal(existsSync(join(hooks, 'pre-commit')), false)
 })
 
+test('a lean copy switched to a branch without the script is still guarded, by the copy kept beside the hooks', async () => {
+  const root = repo()
+  g(root, 'checkout', '-q', '-b', 'old-branch'); g(root, 'rm', '-q', 'raptor-port/scripts/lean-copy.mjs'); g(root, 'commit', '-qm', 'no script')
+  g(root, 'checkout', '-q', 'main')
+  const dir = copy(root, 'agent-sw')
+  await L.slim(dir)
+  g(dir, 'checkout', '-q', 'old-branch')
+  assert.equal(on(dir, 'raptor-port/scripts/lean-copy.mjs'), false)
+  put(dir, `${PICS}/2026-10-01-walk-a/s01.png`, 'NEW')
+  const r = spawnSync('git', ['-C', dir, 'commit', '-qam', 'x'], { encoding: 'utf8', env: { ...process.env, LEAN_COPY_PICS: PICS } })
+  assert.notEqual(r.status, 0, `the commit is stopped: ${r.stderr}`)
+  assert.match(r.stderr, /written into an old walk's folder/, 'by the full guard, from the copy beside the hooks')
+  // and with no script anywhere, a lean copy is still stopped, never waved on
+  rmSync(join(resolve(g(root, 'rev-parse', '--path-format=absolute', '--git-common-dir').trim()), 'hooks', 'lean-copy.mjs'))
+  const r2 = spawnSync('git', ['-C', dir, 'commit', '-qam', 'x'], { encoding: 'utf8', env: { ...process.env, LEAN_COPY_PICS: PICS } })
+  assert.notEqual(r2.status, 0)
+  assert.match(r2.stderr, /guard cannot run/)
+})
+
+test('a copy marked lean whose list is missing is called stopped part-way, with full named', async () => {
+  const root = repo(); const dir = copy(root)
+  await L.slim(dir)
+  rmSync(g(dir, 'rev-parse', '--path-format=absolute', '--git-path', 'info/sparse-checkout').trim())
+  assert.match(L.status(dir), /stopped part-way.*full/)
+})
+
 test('install never replaces a hook of another kind', () => {
   const root = repo({ guard: false })
   const file = join(root, '.git', 'hooks', 'pre-commit')
@@ -327,6 +353,7 @@ test('in an exported read-copy (its own repo, no pictures), get says where the p
   mkdirSync(exp)
   g(exp, 'init', '-q', '-b', 'main'); g(exp, 'config', 'user.email', 't@t'); g(exp, 'config', 'user.name', 't')
   put(exp, 'docs/guide.md', 'guide'); put(exp, `${PICS}/2026-10-01-walk-a/result.json`, '{}')
+  put(exp, `${PICS}/2026-10-01-walk-a/s01.webp`) // the export recipe leaves .webp in (the third read)
   g(exp, 'add', '-A'); g(exp, 'commit', '-qm', 'export')
   assert.throws(() => L.get(exp, ['2026-10-01-walk-a']), /exported read-copy/)
   assert.throws(() => L.get(exp, ['2026-10-02-walk-b']), /exported read-copy/)
