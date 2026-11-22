@@ -51,3 +51,20 @@ export async function trackerMayLogOut(show) {
   if (!beforeLogout) return true
   try { return (await beforeLogout(show)) !== false } catch (_) { return true }
 }
+
+/* ASK BEFORE A PICK TAKES THE TRACKER AWAY (multi-squadron batch 1's second half §16 D2′; his D2318 — the drawing f2d):
+   the Tracker keeps the squadron it loaded until the next sign-in, so a pick in the Schedules menu (or a bell tap) that
+   moves his own pages off it leaves it read only or hidden — and unsaved chart edits could no longer be saved. So the pick
+   asks first, the sign-out's question with its own words: "Save them before switching to 142?", Save them / Discard them /
+   Stay. Asked WHERE HE IS — never jumping to the Tracker page first (core.js raises it over any page). Raptor's pick
+   (state/pick.ts, state/belltap.ts) calls trackerSwitchAsk: null — nothing to ask (no Tracker loaded, no unsaved edit),
+   the pick goes on at once; else a promise, true to go on, false to stay. core.js registers { needs, ask }. */
+let beforeSwitch = null
+export function onBeforeTrackerSwitch(f) { beforeSwitch = f && typeof f.needs === 'function' && typeof f.ask === 'function' ? f : null }
+export function trackerSwitchAsk(toNum) {
+  if (!beforeSwitch) return null
+  try {
+    if (!beforeSwitch.needs()) return null
+    return Promise.resolve(beforeSwitch.ask(String(toNum))).then(v => v !== false, () => true)
+  } catch (_) { return null }
+}

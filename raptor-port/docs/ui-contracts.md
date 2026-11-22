@@ -213,6 +213,37 @@ path as sign-in and midnight (an open Leave War window holds the war's step) —
 it (`pageUnit('own')`). Pinned by `ui/msq-sqn-menu.test.tsx`; the drawing `docs/mock/2026-11-22-msq-b1-screens/img/mA1-d.png`,
 `mA1-p.png`, `f5d-p.png`.
 
+**The board's number (§3 item 8, the drawing b1-2 — night job 2, 23 Nov 26):** the Scheduler Board's bar carries the
+squadron in view's number (`ui/export.ts sqnNum('schedule')`) in a small grey badge after the day title (`.sb-sqn`, the
+standby badge's recipe in grey, 8.5px type — 7px on a phone), inside `.sb-title`, so no button in the bar moves; on a
+phone it rides the title's ellipsis. Shown for every squadron, one or several, as drawn. Pinned by
+`ui/msq-board-sqn.test.tsx`; the geometry by `e2e/msq-job2.spec.ts`.
+
+**The Tracker after a pick (§16 D2′, his D2318 — the drawings f2a–f2d):** the Tracker keeps the squadron it loaded until
+the next sign-in. When his own pages' squadron (`pageUnit('own')`) is not that one, the Tracker page carries one band
+across its top, in the band's own look (`ui/MoveBand.tsx`, no Close) — `state/perms.ts trackerCoverKind`, words by
+`state/store.ts`:
+- he is still an admin of it by any road (home, Plan, master): "This is 149's Tracker. Pick 149 to change it. To open
+  142's, sign out and in." — the Tracker in view under a light veil, nothing live (`inert` on `.trk-host`, its keys off,
+  its Undo and Redo in the top bar greyed);
+- he is not any more (a Plan lowered or taken): "You can't open 149's Tracker any more. Sign out and in to open 142's." —
+  nothing of the Tracker shown, kept in memory (never reset or unmounted, so an unsaved draft survives);
+- the member view: "This is 149's Tracker. Leave the member view to open it." — hidden the same way.
+The column is measured to the band's foot. His own move at midnight keeps its band across the chart editor and no cover
+(D2243 Q7). **A pick with unsaved chart edits asks first** (the drawing f2d): the menu's pick and a bell tap that enters
+another squadron (`state/pick.ts askBeforeEntering`, `state/belltap.ts enterForLine`) — only where the pick moves his own
+pages off the Tracker's squadron — ask the logout's question, its last line "Save them before switching to 142?", Save them
+/ Discard them / Stay, where he is: from another page the Tracker's section shows the question alone over it
+(`.trk-askonly`), never the Tracker tab brought forward; Save saves into the Tracker's own squadron before the pick (a save
+that did not take: he stays), Discard drops the edits, Stay makes no pick. Pinned by `state/msq-trk-cover.test.tsx`,
+`tracker/msq-trk-pick-ask.test.tsx`, `e2e/msq-job2.spec.ts`.
+
+**A window open at a pick (his D2323 — the drawings f7a, f7b):** a Leave War window or an Input window open when his pick
+(or a bell tap) moves the page to another squadron is held as at midnight, but its band reads "This is 142's. You picked
+149 — close this to go on." and every control under it is greyed and dead (`ui/heldro.ts` — `inert` and `data-heldro` on
+every part but the title strip with its ✕ and the band with its Close); picking back gives the window back as it was.
+Held by his own midnight move the window keeps its own words and live controls. Pinned by `ui/msq-pick-windows.test.tsx`.
+
 ## The day carries across a page switch (owner, 9 Aug 26)
 
 View-only Sched and Edit Schedule are **two separate horizontal scrollers** —

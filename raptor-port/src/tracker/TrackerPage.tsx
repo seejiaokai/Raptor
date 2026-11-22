@@ -20,13 +20,13 @@
    and handed to tracker.css as `--tr-top`. Hidden, the section is display:none
    and measures 0×0, so the measurement is taken only while active — the same
    rule LeaveWarPage follows for its own re-measure. */
-import { memo, useEffect, useLayoutEffect, useState, useSyncExternalStore } from 'react'
+import { memo, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { createPortal } from 'react-dom'
 import App, { PAGE_ID } from './App.jsx'
 import { wireTrackerPeople } from './peoplewire'
 import * as core from './app/core.js'
 import { seedDemoNow } from '../state/seeds'
-import { subscribeBands, trackerBand } from '../state/typing-hold'
+import { subscribeBands, trackerBand, trackerCover, type TrkCover } from '../state/typing-hold'
 import { MoveBandView } from '../ui/MoveBand'
 import './tracker.css'
 
@@ -45,8 +45,41 @@ core.setTrackerSeedDemo(seedDemoNow())
    is then a no-op. */
 wireTrackerPeople()
 
-const TrBody = memo(function TrBody({ active }: { active: boolean }) {
-  return <App active={active} />
+const TrBody = memo(function TrBody({ active, locked }: { active: boolean; locked: boolean }) {
+  return <App active={active} locked={locked} />
+})
+
+/* THE TRACKER AFTER A PICK (batch 1's second half §16 D2′; his D2318 — the approved drawings
+   docs/mock/2026-11-22-msq-b1-screens/img/f2a-*.png, f2b-*.png, f2c-*.png, drawn by draw-f.mjs f2). The Tracker keeps the
+   squadron it loaded until the next sign-in; once his own pages are another squadron's (a pick in the Schedules menu, a
+   bell tap, a Plan lowered, the member view) the page says so in one band across its top, in the band's own look with no
+   button (ui/MoveBand.tsx), its words written by state/store.ts (state/typing-hold.ts trackerCover):
+   - read only ('ro'): the Tracker in view under a light veil, nothing live — no press, no focus, no key (`inert` on its
+     host, and App's document keys off);
+   - hidden ('gone', 'member'): nothing of the Tracker shown — its bar, chart and panel — but kept: no reset, no unmount,
+     so a chart edit still unsaved is not lost; picking back brings it as it was.
+   The host wraps the Tracker always, so the cover coming or going never remounts it (its board is drawn once, imperatively,
+   by core.init). The band stands above the Tracker's column, whose height is measured to the band's foot (below). */
+function useCover(): TrkCover { return useSyncExternalStore(subscribeBands, trackerCover, trackerCover) }
+
+/* THE PICK'S QUESTION ASKED FROM ANOTHER PAGE (§16 D2′ — "never jumping to the Tracker page first"; core.js
+   onBeforeTrackerSwitch): while the Tracker asks "Save them before switching to 142?" and its tab is not the one on screen,
+   the Tracker's section shows that question alone — over the page he is on, the rest of the Tracker unseen
+   (`.trk-askonly`, tracker.css) — and Escape answers Stay, as on the Tracker's own page. */
+const TrkAskOnly = memo(function TrkAskOnly({ active }: { active: boolean }) {
+  useSyncExternalStore(core.subscribe, core.getVersion)
+  const up = !active && core.switchAsking && !!core.dlg
+  useLayoutEffect(() => {
+    const el = up ? document.getElementById(PAGE_ID) : null
+    if (!el) return
+    el.classList.add('trk-askonly')
+    /* the keys into the question, on its safe answer (Stay), so it is answered without a mouse (the design guide §2) */
+    document.getElementById('dlgCancel')?.focus()
+    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape' && core.dlg) { e.preventDefault(); core.dlgClose(false) } }
+    document.addEventListener('keydown', esc)
+    return () => { el.classList.remove('trk-askonly'); document.removeEventListener('keydown', esc) }
+  }, [up])
+  return null
 })
 
 /* THE BAND ACROSS THE CHART EDITOR WHEN HIS SQUADRON CHANGES UNDER IT (the reshape plan §3.2 A-iv "Typed work at the swap";
@@ -98,6 +131,15 @@ export function TrackerPage({ active = true }: { active?: boolean }) {
      booting; the + Add dialog reads the bridge when it opens, so the order
      does not matter. */
   useEffect(() => { wireTrackerPeople() }, [])
+  const cover = useCover()
+  const host = useRef<HTMLDivElement>(null)
+  const bandRef = useRef<HTMLDivElement>(null)
+  /* the host locked while covered (above): no press, no focus — set on the node, the cover's one switch */
+  useLayoutEffect(() => {
+    const h = host.current
+    if (!h) return
+    if (cover) h.setAttribute('inert', ''); else h.removeAttribute('inert')
+  }, [cover])
   useEffect(() => {
     if (!active) return
     const el = document.getElementById(PAGE_ID)
@@ -113,7 +155,9 @@ export function TrackerPage({ active = true }: { active?: boolean }) {
       /* whatever Raptor draws above the page section — the top bar, the
          "View as" row — measured as the section's own top edge at scroll 0,
          so a wrapped phone bar or a future extra row is never a stale number */
-      if (el) el.style.setProperty('--tr-top', Math.max(0, Math.round(el.getBoundingClientRect().top + window.scrollY)) + 'px')
+      /* …and, after a pick, the cover's band above the Tracker's column (above): the column ends at the screen's foot */
+      const band = bandRef.current ? bandRef.current.getBoundingClientRect().height : 0
+      if (el) el.style.setProperty('--tr-top', Math.max(0, Math.round(el.getBoundingClientRect().top + window.scrollY + band)) + 'px')
     }
     measure()
     window.addEventListener('resize', measure)
@@ -125,6 +169,17 @@ export function TrackerPage({ active = true }: { active?: boolean }) {
       window.removeEventListener('resize', measure)
       document.body.classList.remove('tr-on')
     }
-  }, [active])
-  return <><TrBody active={active} /><TrkMoveBand /></>
+    /* the cover coming or going changes the band above the column — measured again, and the board refitted to a box it
+       may only now have (a hidden Tracker shown again) */
+  }, [active, cover])
+  return (
+    <>
+      {cover ? <div ref={bandRef} className="trk-cover-band"><MoveBandView band={cover} testid="trk-cover-band" /></div> : null}
+      <div ref={host} className={'trk-host' + (cover ? (cover.kind === 'ro' ? ' trk-ro' : ' trk-gone') : '')} data-testid="trk-host">
+        <TrBody active={active} locked={!!cover} />
+      </div>
+      <TrkMoveBand />
+      <TrkAskOnly active={active} />
+    </>
+  )
 }

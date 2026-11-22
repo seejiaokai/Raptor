@@ -190,6 +190,14 @@ pick of a squadron he holds View of, R6's re-entry, a Plan lowered while he is t
 (`state/store.ts landOffEditSched`, run on every notify and after every `enterSquadron`). Tests:
 `src/state/edit-rights-pick.test.ts`.
 
+**The Tracker after a pick (§16 D2′, D2318 — night job 2, 23 Nov 26):** not a fifth kind but a reading of the account:
+`state/perms.ts trackerCoverKind()` asks whether the signed-in ACCOUNT (not the role in force) is an admin of the squadron
+the Tracker loaded (`trkUnitNow`) by any road — home, Plan, the master mark — when that squadron is not `pageUnit('own')`:
+yes, read only ('ro'; 'member' in the member view); no, hidden ('gone'). It offers no edit control; every Tracker write is
+still judged by the gate's 7f clause on the role in force. `ownPageIfPicked(u)` answers which squadron his own pages would
+be were `u` picked, for the pick's question about unsaved chart edits (`state/pick.ts askBeforeEntering`). Tests:
+`src/state/msq-trk-cover.test.tsx`, `src/tracker/msq-trk-pick-ask.test.tsx`.
+
 ### Settings held in memory — read from an own page (step A's second inventory, §15 D4 / §16 D4′, 22 Nov 26)
 
 `VCONF` (and `ruleNow`, which reads it) holds one squadron's Logic values: the schedule in view's. Each reader is marked

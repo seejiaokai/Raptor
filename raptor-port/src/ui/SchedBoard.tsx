@@ -37,6 +37,7 @@ import { useBoardVersion, useVersion, useUndoVersion } from './useStore'
 import { UndoPair, SyncChip, BellButton } from './topbits'
 import { globalUndoEngine } from './topstate'
 import { SaveBand } from './SaveStatus'
+import { sqnNum } from './export'
 import { OilBand } from './OilWaitSheet'
 import { clickedOutside } from './outside'
 import { wirePinch } from './pinchzoom'
@@ -552,6 +553,11 @@ export function SchedBoard() {
           <b id="sbDay">{d ? d.dow.slice(0, 3) : ''}<span className="bl">{d ? d.dow.slice(3) : ''}</span></b> <span className="mono" id="sbDate">{d ? shortYear(d.dt) : ''}</span>
           {d && d.today ? <i className="sb-today" title="today" /> : null}
           <span className="bl"> · scheduler board</span>
+          {/* THE SQUADRON IN VIEW'S NUMBER (batch 1's second half §3 item 8, the approved drawing b1-2 —
+              docs/mock/2026-11-22-msq-b1-screens/img/b1-2-d.png, -p.png): a small grey number after the day title, the
+              schedule in view's (ui/export.ts sqnNum — never a written-in "142"), shown for every squadron as drawn.
+              Inside the title, so the bar's buttons do not move; on a phone it rides the title's ellipsis. */}
+          <span className="sb-sqn">{sqnNum('schedule')}</span>
         </div>
         {/* ARROWS AT THE EDGES, AND NO SWIPE (owner, 12 Aug 26 — "remove the
             swipe for the mobile scheduler board too. Just put arrows at the

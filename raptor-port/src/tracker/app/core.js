@@ -16,7 +16,7 @@ import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { normalizeImport as normalizeFile, STUDENT_GUARD_MSG, STUDENT_CHART_MSG, sameDef, remapStudentsSyl } from './fileTransfer.js';
 import { findEvents } from './eventOrder.js';
-import { onTrackerSessionEnd, onBeforeTrackerLogout, trackerIsAdmin } from '../role.js';
+import { onTrackerSessionEnd, onBeforeTrackerLogout, onBeforeTrackerSwitch, trackerIsAdmin } from '../role.js';
 /* Raptor's one edge feel (D899) */
 import { edgePan } from '../../ui/edgescroll';
 import { getPeople, onPeople, whoami, whoamiId, getGonePeople, onGonePeople, getMedInputs, onMedInputs } from '../people.js';
@@ -96,6 +96,28 @@ onBeforeTrackerLogout(async show => {
   if (c === 'ok') await persistSyl();
   else { clearDirty(); if (arrangeMode) toggleArrange(); await loadCourse(course); refreshSyl(); renderBoard(); renderSide(); }
   return true;
+});
+/* BEFORE A PICK MOVES HIS PAGES OFF THIS TRACKER (multi-squadron batch 1's second half §16 D2′; his D2318 — the drawing
+   f2d): the same question as the logout's, its last line "Save them before switching to 142?" — asked where he is, never
+   jumping to the Tracker tab first: while it is up `switchAsking` is set and the Tracker's page seam
+   (tracker/TrackerPage.tsx) shows this question alone over whatever page he is on. Save writes them into this Tracker
+   (✓ Save changes) before the pick goes on — and where the save did not take (refused, failed), he stays; Discard reloads
+   the chart from the store, as the logout's does; Stay keeps everything and the pick does not happen. A question already
+   up (another of the Tracker's) is answered first: the pick waits. */
+export let switchAsking = false;
+onBeforeTrackerSwitch({
+  needs: () => !!sylDirty,
+  ask: async to => {
+    if (dlg) return false;
+    switchAsking = true; notify();
+    try {
+      const c = await uiChoice('You have unsaved chart edits on “' + curSylName() + '”.\n\nSave them before switching to ' + to + '?', 'Save them', 'Discard them', 'Stay');
+      if (c === 'cancel') return false;
+      if (c === 'ok') { await persistSyl(); return !sylDirty; }
+      clearDirty(); if (arrangeMode) toggleArrange(); await loadCourse(course); refreshSyl(); renderBoard(); renderSide();
+      return true;
+    } finally { switchAsking = false; notify(); }
+  },
 });
 /* bumped at every session end: a job that asks more than one question (an import) stops
    between them once its session has ended, so the next person never gets the next one

@@ -22,13 +22,13 @@ import { ClipIcon, PenIcon, UploadIcon } from './icons'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { stampChanged } from '../state/inputstamp'
-import { notify } from '../state/store'
+import { notify, heldWindowBand } from '../state/store'
 import { canEditOwn } from '../state/auth'
 import { me, isMe, mayEditInput, mayMovePlace, pageUnit, adminOfUnit } from '../state/perms'
 import { todayIso } from '../engine/editlog'
 import { UNIT } from '../engine/unitview'
-import { schedMoveBand } from '../state/typing-hold'
 import { MoveBandView } from './MoveBand'
+import { holdReadOnly } from './heldro'
 import { INPEDIT, INPEDIT_REFOUND, setInpEdit, OILASK, OILOWN, setOilAsk, setDocView } from './pops'
 import { CURPAGE, INPVIEW, revealInput, revealMedInput } from '../state/view'
 import { toastHeld } from './toast'
@@ -201,6 +201,18 @@ export function InputEditor() {
   if (open ? (!openedOn || openedOn.r !== r) : !!openedOn) setOpenedOn(open ? { r, unit: pageSqn } : null)
   const openedSqn = open && openedOn && openedOn.r === r ? openedOn.unit : pageSqn
   const held = open && openedSqn !== pageSqn
+  /* …HELD BY A PICK (batch 1's second half §16 D2; his D2323 — the drawing f7b): where his pick in the Schedules menu (or a
+     bell tap) moved the page, the band reads "This is 142's. You picked 149 — close this to go on." (state/store.ts
+     heldWindowBand) and the whole window under it is read only, every control greyed — its title strip with the ✕ (and the
+     ✕'s own question), and the band's Close, still working (ui/heldro.ts); picking 142 again gives it back as it was. Held
+     any other way (his own move at midnight) it keeps the words and the controls it had. */
+  const heldBand = held ? heldWindowBand(openedSqn) : null
+  const heldRo = !!heldBand?.ro
+  useLayoutEffect(() => {
+    const b = box.current
+    if (!heldRo || !b) return
+    return holdReadOnly((b.closest('.floatwin') as HTMLElement | null) ?? b, '.win-bar, .airpop-head, .saveband.moveband, .inped-xask-at')
+  }, [heldRo, win])
   /* OPENED FROM THE SCHEDULE IT TAKES AND KEEPS THE KEYBOARD ([WINDOWS-KEEP-KEYS], reader D2's second pass, 6 Oct 26): Tab
      used to walk on into the schedule behind the dialog, where a box saved on leaving. On the Inputs page it is a window
      the page behind still works with (D641), so it holds nothing there. Its question sheets stack on top (ui/sheetfocus.ts). */
@@ -1355,7 +1367,7 @@ export function InputEditor() {
   if (swap && swapAt.current && !swapAt.current.isConnected) setSwap(null)
   /* the band of a window held across his squadron change (above) — the Leave War windows' own band and look
      (ui/MoveBand.tsx); "Close" closes the window, nothing saved */
-  const moveBand = held ? <MoveBandView band={schedMoveBand()} onClose={close} testid="inped-moveband" closeClass="abtn" /> : null
+  const moveBand = heldBand ? <MoveBandView band={heldBand} onClose={close} testid="inped-moveband" closeClass="abtn" /> : null
   if (win) return (<>
     <FloatWin id="inputedit" title={(isNew ? 'New input' : who) + (when ? ' · ' + when : '')} testid="win-inputedit" className="inpedwin" onClose={askClose}
       mark={cxMark || undefined}>

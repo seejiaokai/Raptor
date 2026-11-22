@@ -17,6 +17,7 @@ import { createPortal } from 'react-dom'
 import './bidpicker.css'
 import { setWarWindowsProbe, warWindowGone, subscribeBands, warBand } from '../../state/typing-hold'
 import { MoveBandView } from '../../ui/MoveBand'
+import { holdReadOnly } from '../../ui/heldro'
 import { followVisible } from '../../ui/vvfollow'
 import { holdPageScroll } from '../../ui/floatwin'
 import { screenBox } from '../../ui/kbscroll'
@@ -77,6 +78,15 @@ function useMoveBand(panelRef: { current: HTMLDivElement | null }, onClose: () =
     setSlot(el)
     return () => { el.remove(); setSlot(null) }
   }, [panelRef, up])
+  /* A WINDOW OPEN AT A PICK (batch 1's second half §16 D2; his D2323 — the drawing f7a): the band reads "This is 142's. You
+     picked 149 — close this to go on." and the window under it is read only, every control greyed — its title strip with
+     the ✕ and the band's Close still working (ui/heldro.ts); picking 142 again gives the window back as it was */
+  const ro = !!band?.ro
+  useLayoutEffect(() => {
+    const panel = panelRef.current
+    if (!ro || !slot || !panel) return
+    return holdReadOnly(panel, '.bidsheet-hd, .moveband-slot')
+  }, [panelRef, ro, slot])
   if (!band || !slot) return null
   return createPortal(<MoveBandView band={band} onClose={onClose} testid="move-band" closeClass="pchip" />, slot)
 }

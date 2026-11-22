@@ -864,3 +864,11 @@ small.hint{color:var(--muted);font-size:11px}
  #showAllPanel #saSearch{width:84px !important}
 }
 }
+
+/* THE PICK'S QUESTION ASKED FROM ANOTHER PAGE (multi-squadron batch 1's second half §16 D2′, his D2318 — the drawing f2d;
+   TrackerPage.tsx TrkAskOnly): while the Tracker asks "Save them before switching to 142?" and another page is on screen,
+   its section stands over the page with nothing of it seen but the question and its shade — never the Tracker tab brought
+   to the front. The dozing section (02-shell.css .page.doze) is drawn again for it, out of the page's flow. */
+#page-tracker.trk-askonly{display:block !important;content-visibility:visible !important;position:fixed;inset:0;z-index:700;
+  visibility:hidden;pointer-events:none;overflow:hidden}
+#page-tracker.trk-askonly #dlgOverlay, #page-tracker.trk-askonly #dlgModal{visibility:visible;pointer-events:auto}

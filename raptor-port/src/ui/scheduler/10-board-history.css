@@ -112,6 +112,13 @@ body.dw-lock{overflow:hidden}
    (11 Aug 26). It says the same in 5px, and reads on desktop too. */
 .sb-today{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ok);
   margin-left:5px;vertical-align:middle}
+/* THE SQUADRON IN VIEW'S NUMBER after the day title (batch 1's second half §3 item 8 — the approved drawing b1-2,
+   docs/mock/2026-11-22-msq-b1-screens/redraw-b1.mjs b2): round 3's grey badge, the standby lines' MAIN chip recipe
+   (.sarole) in neutral grey, as Admin → Users' grey number by a name (#page-admin .acc-sqn); 7px type on a phone */
+.sb-title .sb-sqn{display:inline-block;margin-left:6px;vertical-align:middle;font-family:'Barlow Condensed','Inter Tight',sans-serif;
+  font-size:8.5px;font-weight:800;letter-spacing:.08em;line-height:normal;padding:0 5px;border-radius:3px;color:var(--ink-2);
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);font-style:normal;white-space:nowrap}
+@media (max-width:820px){ .sb-title .sb-sqn{font-size:7px;padding:0 4px} }
 /* the icon/label split every top-bar button now carries. Desktop shows both,
    so nothing here changes above 820px; the phone block hides .bl. */
 .sb-actions .bi{font-style:normal}

@@ -1,0 +1,117 @@
+/* Batch 1's second half — night job 2 (23 Nov 26), in a real browser (jsdom has no layout, no `inert`, no stacking):
+   - the board's number (§3 item 8, the drawing b1-2): beside the day title, nothing in the bar moving, never over the
+     next part of the bar on any day of the week; with 149 picked it reads 149;
+   - the Tracker after a pick (§16 D2′, his D2318 — the drawings f2a, f2c): read only under a veil (no press reaches it),
+     hidden in the member view, given back on picking back;
+   - the pick's question for unsaved chart edits asked from another page (the drawing f2d): the Tracker's question shown
+     over the page he is on, never the Tracker tab; Stay keeps him where he is, Discard lets the pick go on.
+   Saber (`ad`) is the master admin of 142, so the Schedules menu lists 142 and 149. */
+import { expect, test, type Page } from '@playwright/test'
+import { login, go } from './app'
+
+async function pick(page: Page, num: string) {
+  await page.locator('#sqnMenuBtn:visible').first().click()
+  await page.locator('#sqnMenu .sqm-row', { hasText: num }).first().click()
+}
+const shownNum = (page: Page) => page.evaluate(() => document.querySelector('#sqnMenuBtn .k, .topbar .mark .k')?.textContent?.trim())
+async function toTracker(page: Page) {
+  await go(page, 'tracker')
+  await page.waitForSelector('#page-tracker #board', { state: 'attached', timeout: 30000 })
+  await page.waitForTimeout(800)
+}
+async function toBoard(page: Page, di = 0) {
+  await go(page, 'editsched')
+  await page.waitForSelector('#page-editsched.on #eWeek .day')
+  await page.evaluate(d => (document.querySelector(`#eWeek .day:not(.peek) [data-sbday="${d}"]`) as HTMLElement).click(), di)
+  await page.waitForSelector('#schedBoard:not([hidden]) .sb-title .sb-sqn')
+}
+const band = (page: Page) => page.locator('[data-testid="trk-cover-band"]')
+
+test.describe('night job 2', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 1536, height: 864 })
+    await login(page)
+  })
+
+  test('the board\'s number: beside the day title, clear of the bar on every day, 149 once picked', async ({ page }) => {
+    await toBoard(page)
+    expect(await page.locator('#schedBoard .sb-sqn').textContent()).toBe('142')
+    for (let di = 0; di < 7; di++) {
+      /* the day by its chip, as he presses it */
+      await page.locator(`#schedBoard [data-sbtab="${di}"]`).first().click()
+      await page.waitForTimeout(150)
+      const m = await page.evaluate(() => {
+        const t = document.querySelector<HTMLElement>('#schedBoard .sb-title')!
+        const b = t.querySelector<HTMLElement>('.sb-sqn')!.getBoundingClientRect()
+        /* the next part of the bar after the title — the day chips' strip or its arrows */
+        const next = [...document.querySelectorAll<HTMLElement>('#schedBoard .sb-top > *')].filter(e => e !== t && e.getBoundingClientRect().width > 0)
+          .map(e => e.getBoundingClientRect()).filter(r => r.left >= t.getBoundingClientRect().left + 10).sort((a, c) => a.left - c.left)[0]
+        return { right: b.right, nextLeft: next ? next.left : 1e9, day: document.querySelector('#sbDay')?.textContent }
+      })
+      expect(m.right, `${m.day}: the number clear of the bar's next part`).toBeLessThanOrEqual(m.nextLeft)
+    }
+    await pick(page, '149')
+    await expect(page.locator('#schedBoard .sb-sqn')).toHaveText('149')
+  })
+
+  test('the Tracker after a pick: read only under a veil, nothing pressable; 142 again gives it back', async ({ page }) => {
+    await toTracker(page)
+    await expect(band(page)).toHaveCount(0)
+    await pick(page, '149')
+    await expect(band(page)).toContainText("This is 142's Tracker.")
+    await expect(band(page)).toContainText("Pick 142 to change it. To open 149's, sign out and in.")
+    const hit = await page.evaluate(() => {
+      const b = document.querySelector<HTMLElement>('#page-tracker #sylMenuBtn')
+      const r = b!.getBoundingClientRect()
+      const at = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
+      return { inert: (document.querySelector('.trk-host') as any).inert, onButton: !!at && (at === b || b!.contains(at)), shown: r.width > 0 }
+    })
+    expect(hit).toEqual({ inert: true, onButton: false, shown: true })
+    /* the column ends at the screen's foot, the band above it */
+    const fit = await page.evaluate(() => Math.round(document.querySelector<HTMLElement>('#page-tracker .tr-root')!.getBoundingClientRect().bottom - innerHeight))
+    expect(Math.abs(fit)).toBeLessThanOrEqual(1)
+    await pick(page, '142')
+    await expect(band(page)).toHaveCount(0)
+    expect(await page.evaluate(() => (document.querySelector('.trk-host') as any).inert)).toBe(false)
+  })
+
+  test('the member view: the Tracker hidden with its own line, and back again', async ({ page }) => {
+    await pick(page, '149')
+    await toTracker(page)
+    await expect(band(page)).toHaveCount(0)
+    await page.locator('#roleBadge').click()
+    await expect(band(page)).toContainText("This is 149's Tracker. Leave the member view to open it.")
+    expect(await page.locator('#page-tracker .tr-root').first().isVisible()).toBe(false)
+    await page.locator('#roleBadge').click()
+    await expect(band(page)).toHaveCount(0)
+    expect(await page.locator('#page-tracker .tr-root').first().isVisible()).toBe(true)
+  })
+
+  test('a pick with unsaved chart edits, from another page: asked there, Stay stays, Discard picks', async ({ page }) => {
+    await toTracker(page)
+    const t = (sel: string) => page.locator(sel + ':visible').first().click()
+    await t('#sylMenuBtn'); await t('#arrangeBtn')
+    await page.locator('#arrTools button', { hasText: '+ Test' }).first().click()
+    await page.waitForSelector('#dlgInput:visible')
+    await page.fill('#dlgInput', 'T-PICK')
+    await t('#dlgOk'); await page.waitForTimeout(300)
+    await t('#sylMenuBtn'); await t('#arrangeBtn')
+    await expect(page.locator('#page-tracker header button', { hasText: 'Save changes' }).first()).toBeVisible()
+    await go(page, 'viewsched')
+    await pick(page, '149')
+    const q = page.locator('#dlgModal')
+    await expect(q).toBeVisible()
+    await expect(page.locator('#dlgMsg')).toHaveText(/Save them before switching to 149\?/)
+    expect(await page.evaluate(() => (window as any).CURPAGE)).toBe('viewsched')
+    await page.locator('#dlgCancel').click()
+    await expect(q).toBeHidden()
+    expect(await shownNum(page)).toBe('142')
+    await pick(page, '149')
+    await expect(q).toBeVisible()
+    await page.locator('#dlgAlt').click()
+    await expect(q).toBeHidden()
+    await expect.poll(() => shownNum(page)).toBe('149')
+    await toTracker(page)
+    await expect(band(page)).toContainText("This is 142's Tracker.")
+  })
+})

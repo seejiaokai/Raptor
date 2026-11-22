@@ -21,6 +21,7 @@ import { holidayLineOn, noticeSpan, isWarNotice, postOf, isAcctNotice, type Noti
 import { PEOPLE } from '../engine/people'
 import { unreadFor, markNoticeRead } from '../state/noticeseen'
 import { trackerUndoApi, onTrackerUndo, trackerUndoVersion } from '../tracker/undo-bridge.js'
+import { trackerCover } from '../state/typing-hold'
 
 /* ---- the Sync chip (a demonstration toggle — there is no server yet; the one state for both bars) ---- */
 let FASTSYNC = false
@@ -91,7 +92,9 @@ export function bellTap(from?: HTMLElement | null): void {
    still opens its window — he is named in it or filed it, and the window judges its own edit rights by the input's
    squadron. His own account's line carries no squadron (§16 D5′). */
 export function openNotice(n: Notice): void {
-  const where = isAcctNotice(n) ? 'here' : enterForLine(n.u)
+  const where = isAcctNotice(n) ? 'here' : enterForLine(n.u, () => openNotice(n))
+  /* the Tracker's question for unsaved chart edits is up first (§16 D2′): the tap goes on once it is answered */
+  if (where === 'asked') return
   if (where === 'no' && (postOf(n) || isWarNotice(n) || ((n.what || [])[0] as any)?.k === 'oilhol')) {
     markNoticeRead(n.id); notify(); return
   }
@@ -185,7 +188,9 @@ export function globalUndoEngine(): UndoEngine {
    never downloads the chart engine. Before the Tracker has loaded there is nothing to take back: both greyed. */
 export function useTrackerUndoVersion(): number { return useSyncExternalStore(onTrackerUndo, trackerUndoVersion) }
 export function trackerUndoEngine(): UndoEngine {
-  const t: any = trackerUndoApi()
+  /* while the Tracker page wears its cover after a pick (§16 D2′, his D2318 — read only or hidden), no control is offered:
+     its Undo and Redo too (state/typing-hold.ts trackerCover) */
+  const t: any = trackerCover() ? null : trackerUndoApi()
   const cu = !!(t && t.canUndo()), cr = !!(t && t.canRedo())
   return {
     canUndo: cu,

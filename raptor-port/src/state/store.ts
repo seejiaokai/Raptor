@@ -47,8 +47,8 @@ import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit, histSnap, histRestore, schedFields } from './history'
 import { setSession as authSetSession, canEditSched, SESSION, setMe, DEFAULT_ME, setLgEdit } from './auth'
-import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUnitNow, trkUnitNow, pickStandsOn, maySchedEditPage } from './perms'
-import { holdNow, setBands, setHoldRelease, type MoveBand, type HoldKind } from './typing-hold'
+import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUnitNow, trkUnitNow, pickStandsOn, maySchedEditPage, trackerCoverKind } from './perms'
+import { holdNow, setBands, setHoldRelease, setEnteredByPick, enteredByPick, pickBand, schedMoveBand, type MoveBand, type HoldKind, type TrkCover } from './typing-hold'
 import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { endTrackerSession } from '../tracker/role.js'
@@ -489,6 +489,8 @@ export function resetSession(s: any) {
      home by the midnight check. */
   HOME_AT_ENTRY = s && s.pid ? sessionUnit(s.pid) : null
   ENTRY_TRIED = ''
+  /* a sign-in is no pick: a window held from here on reads its own words, not a pick's (state/typing-hold.ts) */
+  setEnteredByPick(false)
   enterSquadron(sessionUnit(s && s.pid))
   /* the undo list is per sign-in (13 Sep 26; D148 — "the list clears when they sign
      out"): the global undo never cleared it, so an admin signing in after a member
@@ -931,10 +933,14 @@ let ENTERING = false
 /* `holdWar` (phase 3 — the plan §3.2 A-iv "Typed work at the swap"; state/typing-hold.ts): an open Leave War window holds
    the WAR'S step only, so nothing typed in it is ever saved into the new squadron; the schedule in view and the Tracker
    still move. The war is entered once the window goes (the check below finds the war not the page's own squadron). */
-export function enterSquadron(scheduleUnit: string, holdWar = false): Entered {
+/* `byPick` (§16 D2, his D2323): the entry is his own pick in the Schedules menu or a bell tap (state/pick.ts,
+   state/belltap.ts) — recorded only when the schedule in view changes, so the re-entry the check below makes for the same
+   pick (the war held by a window) keeps it, and his midnight move or a right ended clears it */
+export function enterSquadron(scheduleUnit: string, holdWar = false, byPick = false): Entered {
   if (ENTERING) return { unit: UNIT, own: pageUnit('own', todayIso()), tracker: 'none' }
   ENTERING = true
   try {
+    if (scheduleUnit !== UNIT) setEnteredByPick(byPick)
     switchUnit(scheduleUnit)
     const own = pageUnit('own', todayIso())
     if (!holdWar) {
@@ -1035,13 +1041,39 @@ const unitNum = (u: string): string => unitById(u)?.num ?? u
    today. This can't be saved in 142's Leave War." (or "…in 142's Tracker."). Any other way the world stopped being his
    page's own (R6: a right ended mid-day — dormant) has no approved words, so it reads the app's generic "This change could
    not be saved." (the phase-2 helpers' brief, named in the report). */
-function bandWords(world: string, page: 'Leave War' | 'Tracker', pid: string, iso: string): MoveBand {
+function moveWords(world: string, page: 'Leave War' | 'Tracker', pid: string, iso: string): MoveBand {
   const home = homeOn(pid, iso)
   const was = homeOn(pid, isoDayBefore(iso))
   if (home && was && home !== was && world === was) {
     return { lead: `You are ${unitNum(home)}'s from today.`, rest: `This can't be saved in ${unitNum(world)}'s ${page}.` }
   }
-  return { lead: 'This change could not be saved.', rest: '' }
+  return null
+}
+/* (batch 1's second half §16 D2, his D2323 — the drawing f7a): a Leave War window open when HIS PICK (or a bell tap) took
+   the page to another squadron reads "This is 142's. You picked 149 — close this to go on.", its controls greyed
+   (typing-hold.ts pickBand) — in place of the generic words, which said a change had failed when nothing was tried */
+/* "You picked 149" only where the pick is what moved the window off its squadron — the squadron in view, reached by his
+   pick, is not the window's own; a right lowered under a window on the squadron he picked (R6) keeps the generic words */
+const heldByPick = (world: string): boolean => enteredByPick() && UNIT !== world
+function bandWords(world: string, page: 'Leave War' | 'Tracker', pid: string, iso: string): MoveBand {
+  return moveWords(world, page, pid, iso)
+    ?? (heldByPick(world) ? pickBand(unitNum(world), unitNum(UNIT)) : schedMoveBand())
+}
+/** the band of an Input window held across a change of squadron (ui/InputWindow.tsx): a pick's words where his pick (or
+ *  a bell tap) moved the page — `opened`, the squadron the window opened on — else the generic words, as before */
+export function heldWindowBand(opened: string): NonNullable<MoveBand> {
+  return heldByPick(opened) ? pickBand(unitNum(opened), unitNum(UNIT)) : schedMoveBand()
+}
+/* THE TRACKER AFTER A PICK (§16 D2′, his D2318 — the drawings f2a, f2b, f2c; state/perms.ts trackerCoverKind): the
+   Tracker page's own band, its words filled from the Tracker's squadron and his own pages' (pageUnit('own')). His own move
+   taking effect at midnight keeps the band drawn for it across the chart editor (D2243 Q7, above) and no cover. */
+function coverWords(): TrkCover {
+  const c = trackerCoverKind()
+  if (!c) return null
+  const b = unitNum(c.bound), o = unitNum(c.own)
+  if (c.kind === 'ro') return { kind: 'ro', lead: `This is ${b}'s Tracker.`, rest: `Pick ${b} to change it. To open ${o}'s, sign out and in.` }
+  if (c.kind === 'member') return { kind: 'member', lead: `This is ${b}'s Tracker.`, rest: 'Leave the member view to open it.' }
+  return { kind: 'gone', lead: `You can't open ${b}'s Tracker any more.`, rest: `Sign out and in to open ${o}'s.` }
 }
 function publishBands(): void {
   const m = me()
@@ -1049,7 +1081,8 @@ function publishBands(): void {
   const iso = todayIso()
   const own = pageUnit('own', iso)
   const war = lwUnitNow(), trk = trkUnitNow()
-  setBands(war && war !== own ? bandWords(war, 'Leave War', m, iso) : null, trk && trk !== own ? bandWords(trk, 'Tracker', m, iso) : null)
+  const trkMove = trk && trk !== own ? moveWords(trk, 'Tracker', m, iso) : null
+  setBands(war && war !== own ? bandWords(war, 'Leave War', m, iso) : null, trkMove, trk && trk !== own && !trkMove ? coverWords() : null)
 }
 /* a window that held the war's swap goes: the check runs again at once (typing-hold.ts warWindowGone) */
 setHoldRelease(() => notify())

@@ -16,11 +16,13 @@
    ENTERING IS NAVIGATION, NOT A COMMAND: nothing saved, the Undo list untouched (D148), by the one entry sign-in and
    midnight take (state/store.ts enterSquadron), an open Leave War window holding the war's step (state/typing-hold.ts).
    Phase 3's squadron menu routes its pick through the same entry; the pick's own question for unsaved Tracker edits
-   (§16 D2′) is the menu's and is to be asked here too once it is built (filed in the handoff). */
+   (§16 D2′) is asked here too (state/pick.ts askBeforeEntering — night job 2, 23 Nov 26), and an entry made here counts
+   as his pick for the band of a window left open (state/typing-hold.ts enteredByPick). */
 import { unseenRequests, currentAdminAccountId, waitingCount, type AccessRequest } from './accounts'
 import { bellShows } from './bellsqn'
 import { me, pageUnit, ownPageMayBe } from './perms'
 import { enterSquadron } from './store'
+import { askBeforeEntering } from './pick'
 import { holdNow } from './typing-hold'
 import { unitById } from './units'
 
@@ -38,13 +40,17 @@ export function newestBellRequest(): AccessRequest | null {
   return best
 }
 
-export type LineEntry = 'here' | 'entered' | 'no'
+export type LineEntry = 'here' | 'entered' | 'no' | 'asked'
 /** bring the page to squadron `u` for a line or request about it: 'here' — his own pages already are `u`'s (or the line
- *  names none, stored before — D56); 'entered' — `u` entered; 'no' — his own pages may not be `u`'s */
-export function enterForLine(u: string | null | undefined): LineEntry {
+ *  names none, stored before — D56); 'entered' — `u` entered; 'no' — his own pages may not be `u`'s; 'asked' — the
+ *  Tracker's question for unsaved chart edits is up first (state/pick.ts askBeforeEntering, §16 D2′ — the menu's own
+ *  question): the caller stops, and `again` runs the tap once more after Save or Discard (nothing after Stay) */
+export function enterForLine(u: string | null | undefined, again?: () => void): LineEntry {
   if (!u || u === pageUnit('own')) return 'here'
   if (!ownPageMayBe(u)) return 'no'
-  enterSquadron(u, holdNow() === 'war')
+  const ask = askBeforeEntering(u)
+  if (ask) { void ask.then(go => { if (go && again) again() }); return 'asked' }
+  enterSquadron(u, holdNow() === 'war', true)
   return pageUnit('own') === u ? 'entered' : 'no'
 }
 
@@ -52,7 +58,7 @@ export function enterForLine(u: string | null | undefined): LineEntry {
 export function openBellRequest(open: () => void, toast: (s: string) => void): boolean {
   const rq = newestBellRequest()
   if (!rq) return false
-  enterForLine(rq.unit)
+  if (enterForLine(rq.unit, () => { openBellRequest(open, toast) }) === 'asked') return true
   const here = pageUnit('own')
   const num = unitById(here)?.num ?? here
   open()

@@ -299,6 +299,29 @@ export function ownPageMayBe(u: string, iso: string = todayIso()): boolean {
   const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
   return !!acct && (acct.master === true || levelOfAccount(levelAcct(acct), u, iso) === 'admin')
 }
+/* HIS OWN PAGES' SQUADRON WERE `u` PICKED (§16 D2′ — the pick's question for unsaved Tracker edits asks it before the pick):
+   `u` where pageUnit('own') would follow the pick (ownPageMayBe), else his own squadron that day. */
+export function ownPageIfPicked(u: string, iso: string = todayIso()): string {
+  return ownPageMayBe(u, iso) ? u : myUnit(iso)
+}
+/* THE TRACKER AFTER A PICK (batch 1's second half §16 D2′; his D2318 — the drawings f2a, f2b, f2c): which cover the
+   Tracker page wears when the Tracker loaded (its bound squadron — tracker/storage.js, read through trkUnitNow) is not his
+   own pages' squadron (pageUnit('own')). Read from the ACCOUNT, not the role in force (§16 D2′): he is an admin of the
+   bound squadron today by any road — his home's admin role, a Plan of it, the master mark (levelOfAccount over levelAcct,
+   or master) — 'ro' (read only, the role in force admin) or 'member' (the member view: leaving it opens it); not an admin
+   of it any more (a Plan lowered or taken, a member) — 'gone'. Bound = own, nothing bound, nobody signed in: null. The
+   gate's 7f clause still judges every Tracker write by the role in force (trkUnitViolation, below). */
+export type TrkCoverKind = { kind: 'ro' | 'gone' | 'member'; bound: string; own: string } | null
+export function trackerCoverKind(iso: string = todayIso()): TrkCoverKind {
+  const bound = trkUnitNow()
+  if (!bound || !SESSION || !me()) return null
+  const own = pageUnit('own', iso)
+  if (bound === own) return null
+  const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
+  const adminThere = !!acct && acct.role === 'admin' && (acct.master === true || levelOfAccount(levelAcct(acct), bound, iso) === 'admin')
+  if (!adminThere) return { kind: 'gone', bound, own }
+  return { kind: roleOf() === 'admin' ? 'ro' : 'member', bound, own }
+}
 /* DOES THE PICK STILL STAND ON `iso` (the blind read's R6, its pick half — the reshape plan §19b; A-iv widened, dormant
    until P1/P3): the squadron picked (engine/unitview.ts UNIT) is one the signed-in person can read that day — his home
    there, a View or Plan of it that holds that day (units-model.ts levelFrom, the reading rule), or a master admin's

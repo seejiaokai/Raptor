@@ -66,7 +66,7 @@ function ViewTabs({ tab, setTab }) {
    listeners below must switch OFF while another tab is up: Escape on the Edit
    Schedule must not close a Tracker pop-up, and Delete in a Raptor text box
    must never reach the chart editor. */
-export default function App({ active = true }) {
+export default function App({ active = true, locked = false }) {
   useSyncExternalStore(core.subscribe, core.getVersion);
   const [tab, setTab] = useState('flow');
   const [sideZoom, setSideZoom] = useState(1);
@@ -128,20 +128,28 @@ export default function App({ active = true }) {
       core.closePop();
     };
     const unload = e => { if (core.sylDirty) { e.preventDefault(); e.returnValue = ''; } };
-    document.addEventListener('keydown', esc);
-    document.addEventListener('keydown', del);
-    document.addEventListener('keydown', undo);
-    document.addEventListener('click', clickAway);
+    /* LOCKED — the Tracker page covered after a pick (Raptor's TrackerPage.tsx; multi-squadron §16 D2′, his D2318): read
+       only or hidden, so no key reaches the chart (Delete, Undo, Escape) and no press outside closes a pop-up; the warning
+       before leaving the page with unsaved edits stays, since those edits are kept */
+    const keys = !locked;
+    if (keys) {
+      document.addEventListener('keydown', esc);
+      document.addEventListener('keydown', del);
+      document.addEventListener('keydown', undo);
+      document.addEventListener('click', clickAway);
+    }
     window.addEventListener('beforeunload', unload);
     return () => {
-      document.removeEventListener('keydown', esc);
-      document.removeEventListener('keydown', del);
-      document.removeEventListener('keydown', undo);
-      document.removeEventListener('click', clickAway);
+      if (keys) {
+        document.removeEventListener('keydown', esc);
+        document.removeEventListener('keydown', del);
+        document.removeEventListener('keydown', undo);
+        document.removeEventListener('click', clickAway);
+      }
       window.removeEventListener('beforeunload', unload);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- core.ready is a live module binding that changes when the boot ends; the page's key and click handlers must bind then
-  }, [active, core.ready]);
+  }, [active, locked, core.ready]);
 
   /* The phone's Flow / Info switch (was a class on <body>) rides the .tr-root
      div's className — never the page section above it. The section's className
