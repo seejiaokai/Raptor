@@ -27,7 +27,7 @@ import { store, HOOKS, unitSetting } from '../engine/hooks'
 import { UNIT } from '../engine/unitview'
 import { qualify, localOf } from '../storage/unitid'
 import { inputLines, isSansAvail, inputCoversDate } from '../engine/inputs'
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, sansOnP } from '../engine/people'
 import { newId } from '../engine/newid'
 import { cmdDeferEffect, type CommitResult } from '../command'
 import { commitSettingsIntent } from './people-settings-commit'
@@ -224,7 +224,8 @@ export function sansCommittedOn(iso: string, rows?: readonly any[], people: Reco
   for (const r of inputLines(rows)) {
     if (!r || !r.person || !r.sans || !isSansAvail(r.type) || !inputCoversDate(r, label)) continue
     const id = String(r.person), p = people[id]
-    if (!p || !p.san || p.archived || p.deleted || p.special || p.pers) continue
+    /* (a man SANS ON THAT DATE — D2313, engine/people.ts sansOn: an offer counts on the days he was SANS, whatever his tick today) */
+    if (!p || !sansOnP(p, iso) || p.archived || p.deleted || p.special || p.pers) continue
     const seat = p.seat === 'FCP' ? 'p' : p.seat === 'RCP' ? 'w' : null
     if (!seat) continue
     for (const act of ['f', 'o', 'a'] as const) {

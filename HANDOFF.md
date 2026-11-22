@@ -20,107 +20,18 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/fable-read-faults-4104f0 -->
-### CHAT 133 — [FABLE-READ-FAULTS], the faults Fable's reads proved, fixed red-first (22 Nov 26, started by chat 132) — verify before use
-- **Branch** `claude/fable-read-faults-4104f0`, from `main` at `8ef011c73`, `main` brought in at `a38238f9f` (the two-squadron work, pull request 806, merged meanwhile); **pull request 820** into `main`. Not merged — his "merge live" only.
-- **Fixed, each red on `main` first:** OIL F1 — a SANS posting keeps the earlier days' ALL AVAIL crowd (`leavewar/sync.ts sansSince`, `engine/publish.ts peopleAttrsNow`; Fable); Inputs F1 / F2 — a document on a shared input, a "Goes to" with an OIL answer, saved (`inputedit.tsx draftChanges`; Fable); Inputs F3 / F4 — the LATE mark (`engine/inputs.ts laterMod`, the chip's tap in `interactions.ts`); Leave War F1 — OIL leave on dates no period holds comes off his OIL (`store.ts outsideSource`, since the merge reading his own squadron's absences); the window's ✕ asks over a "Goes to" / "To"; the window follows "To" / "Goes to" changed behind it (Astra's F1).
-- **Not built:** OIL F2 — **his choice made, D2294**: the day's open OIL list opens at the first press of any of its four sign-off boxes, BEFORE the name is recorded (an OIL answer clears sign-offs already given); Later asks no more that day; the publish note names the unanswered input ("Saturday 18 Jul published and approved. Ranger's Training has no OIL answer, so nobody on it earns OIL."). To draw for him first (D1625) — beside the old drawing, `raptor-port/docs/mock/2026-11-22-oil-unanswered-publish/` (published at https://claude.ai/artifact/5gpX9R6GSwmixz2NcmFNAU, republish the same file to keep the link) — then build, its proof `fableoil-unanswered-publish.test.tsx` turned from `it.fails` to `it`. And Leave War F2 (guard taken out — it broke D327's writes); both proofs `it.fails`. Found-not-fixed and his questions: the `[FABLE-READ-FAULTS]` item's Status paragraph.
-- **Checked:** every proof and pin green (34 + 3 expected fails) after the merge; before it the whole unit suite 14,589 passed with 2 Leave War double-tap timeouts that pass alone twice; build and the code check clean (before the merge). **Reads done:** Astra (`D:\raptor-work\c133-astra-report.md`) and a fresh blind Opus reader — no fault in the fixes; their points dispositioned in the item. **OWED:** GitHub's run on the last push (read it, fix red); the walk of the running app (Opus walks, D2256) — sizing in the sheet `raptor-port/docs/handpass/2026-11-22-fable-read-faults.md` (laid down: §1 tier FULL done, the rest empty); then the sheet's close, the Walk line, his look with the preview link.
-- **The walk to run:** (1) the SANS case — a published holiday with ALL AVAIL, Rocky posted out as SANS two days later: the day reads nothing pending, the next amendment keeps his FO; (2) a shared Meeting: attach a document, Save, reopen — it is there; take it off — gone; (3) an Other: Unavailable + the OIL answer in one Save → under Unavailable on the schedule; ✕ after picking Unavailable asks; (4) the LATE chip on a late-added man's Unavailable row drops on a tap; (5) OIL leave filed for next year (no period) → the OIL tracker and My leave drop at once. Desktop 1536 and iPhone 402, pictures each.
-- **Chat 137 (22 Nov 26):** GitHub's run on `5b0388a66` read: all green. OIL F2 DRAWN in five rounds on the same link
-  (rounds in git; `draw-f2.mjs` the flow, Save, Later, publish note, the week; `draw-f3.mjs` the chosen look). His
-  rulings: D2312 (the list's lines in the fewest words; design lesson 97) and **D2297 — look A**: at the list's top the
-  pressed sign-off box itself (a copy of the board's `.sgn` pill, `mk-held`: dotted edge, no ▾, the board's text size)
-  reading the held name, beside it "waiting for your answer"; the foot (`odl-left`) "Later: Ace signs, but nobody on it
-  earns OIL."; no lead paragraph; round 6 lifts the words to the box's middle by their x-height (`draw-f3.mjs`).
-  **APPROVED, D2299 ("yes to both"):** the words as drawn, and ✕ / Escape on the list cancels the sign-off — nothing
-  signed, the next press asks again. **The build, now his:** in `ui/Shell.tsx`'s `select[data-sign]` change handler, before `setSign`: if the day has an open OIL
-  question (`leavewar/sync.ts oilOpenOn` for the day) and Later was not pressed for that day, hold the pick (revert
-  the select), open the list (`setOilList`, plain) carrying the held role + person; Save writes answers, THEN the sign;
-  Later writes the sign and marks the day asked (session memory, per day); ✕ drops the hold. Same for Edit Schedule's
-  week boxes (same handler). The publish note's tail: "<Day> <date> published and approved. <Callsign>'s <Kind> has no
-  OIL answer, so nobody on it earns OIL." The proof `fableoil-unanswered-publish.test.tsx` `it.fails` → `it`. Then walk
-  the block's five scenarios + this one at 1536 and 402, close the sheet with its Walk line, preview link to him.
-  Found while drawing (filed in the item): Switch to this plan on an unpublished day puts a row back, its input left
-  rejected. **Next chat: 138.** Next free ruling: D2300 (D2298 is chat 135's; check every branch before taking one).
-- **Chat 138 (22 Nov 26) — OIL F2 BUILT, the walk running.** It works in this branch's own folder
-  (`.claude/worktrees/fable-read-faults-4104f0`, entered with the app's worktree switch — the main folder was in use by
-  chat 134). Built red-first at `ac3e22f77`: `src/ui/oilsign.ts` (new — the sign-off's write moved from `ui/Shell.tsx`;
-  `signPick` holds the name and opens the list; `holdSave`, `holdLater`), `ui/OilDayList.tsx` (the held box, the foot),
-  `ui/pops.ts` (`OILLIST.hold`, `OILSIGN_LATER`), `leavewar/sync.ts` (`oilUnansweredLine` in `publishFlagsBids`), the
-  `.odl-held` styles; tests `ui/oilsign.test.tsx`, three in `leavewar/publishdoor.test.ts`, the proof a plain `it`; 53
-  related test files (1,401 tests) green, the build clean. `main` brought in after it (no app code came with it; the OIL
-  page was 9 bytes over its limit since D2299 — back under by the "not built" words leaving its line).
-  **Running when this was written:** three Opus walkers on the build of `ac3e22f77` — w1 (ports 4311: the SANS case, OIL
-  leave next year), w2 (4312: the document on a shared Meeting, the Other under Unavailable, the LATE chip), w3 (4313: the
-  sign-off question, nine scenarios, and the drawing check against `draw-f3.mjs`); their brief
-  `raptor-port/docs/superpowers/briefs/2026-11-22-fable-read-faults-walk-brief.md`, scripts `scripts/handpass/frf-w*.mjs`,
-  pictures `docs/img/handpass/2026-11-22-fable-read-faults/w*/`. Astra designing F2's scenarios (brief
-  `…/briefs/2026-11-22-oil-f2-scenario-brief.md`, report to `D:\raptor-work\c138-astra-scenarios.md`).
-  **Since (same day, still chat 138):** Astra's scenario report is in (`…/briefs/2026-11-22-oil-f2-scenarios-astra.md`,
-  38 scenarios, a 10-row roll-call, two claims): its F01 — a name held on one saved plan signed another after a plan
-  switch behind the list — FIXED red-first (`oilsign.ts holdStands`, the hold carries its plan); its F02 (re-picking the
-  same name raises no change event) is not a fault — the next box asks and the publish note names what is left.
-  **Walker w3 is back** (report in the chat; script `scripts/handpass/frf-w3*.mjs`): F2-a to F2-i PASS at both sizes,
-  the drawing check 0 differences over 2px (measured, the formal part list NOT made), no errors; it found (1) the list
-  still promised "Later: Ace signs" after the week changed behind it — FIXED red-first (`OilDayList.tsx`: the held box
-  is drawn only while `holdStands`); a lead, left as it is: the board stepped to Friday with Saturday held, Later signs
-  Saturday out of sight (the list's title says Saturday). Its fixture note: the "+ Input" window will not save without
-  an OIL answer, so a plain Saturday's unanswered input was filed through the developer bridge; the holiday scenario
-  (F2-h) used real controls only. NOT walked by w3: a squadron change or sign-out with the list up, a keyboard-only
-  pick, more than three inputs, the member's view. **GitHub's run on `c2b42463b` was RED in two jobs, both mine, both
-  fixed locally:** the code check (the list's function too branchy — parts moved out) and the Leave War's
-  no-`any` test (`sync.ts oilUnansweredLine`). Local commits after `c2b42463b` are NOT pushed until w1 and w2 are back
-  (a rebuild or a push mid-walk would break their build) — pushed since as `9e6e77654` (a push does not touch their
-  build). **Walker w1 is back:** S1 (the SANS case, on Hex — no callsign Rocky exists; id `rocky` is Hex) and S5 (OIL
-  leave on 3 Feb 2028, Ranger, 3 → 2 at once, delete / Undo / Redo, the member's My leave) PASS at both sizes, real
-  controls only, no errors, 158 pictures in `…/w1/`; the host opened `s1-08-al-published-desktop` and
-  `w3/draw/side-by-side-desktop`. Its one finding is FILED, not fixed (`[FABLE-READ-FAULTS]` found-not-fixed (e)): the
-  board's crew list shows a man posted out as SANS under "SANS avail" on a day before his posting date, while the ALL
-  AVAIL window there still counts him — it goes with Fable's three SANS questions (b). Leads, not filed: the person
-  window's "Thu 3 Feb · 1 Approved" for a 2028 leave shows no year; the test WebKit draws a serif font there (its own
-  font, not the app's). **The fresh blind Opus read of F2 is back** (its report is in the chat only — write its two
-  findings into the sheet's §10): (1) Save with one of two answered, then the next box asked again and that answer
-  cleared the first name — FIXED red-first at `5c44b1342` (what a Save leaves unpicked is left as Later leaves it:
-  `oilsign.ts leaveOpen`; this CHANGES what w3 walked as F2-e — the next box now signs at once — so F2-e is re-walked);
-  (2) a held press wrote the day's sign record outside any command (`signNow` read `signOf`) — FIXED red-first, same
-  commit. Its wording question, for him: an input holding ALL AVAIL is named "ALL AVAIL's Training" / "Training for 2
-  people" in the publish note, as the Undo names it. Its tidiness note (filed, not fixed): the day's head and the
-  capital-letter line are each built twice in `publishFlagsBids`; `joined` could be simpler; a space lost after
-  `inpLabel,` in sync.ts's import. **Astra's blind read is running** (report to `D:\raptor-work\c138-astra-read.md`,
-  export `D:\raptor-work\c138-read-a`). **The code check has one finding in walker w2's own script**
-  (`scripts/handpass/frf-w2.mjs:124`, a JSON copy) — fixed (structuredClone).
-  **Chat 139 (22 Nov 26) — the walk closed; READY FOR HIS LOOK.** (1) GitHub's run on `0d21c5abe` was all green.
-  (2) Walker w2's finding (f) REPRODUCED on a fresh build (`…/w2/only-s3-d/`), FIXED red-first at `e0a2a4155`
-  (`ui/InputWindow.tsx`: the window follows its record wherever it stands — the schedule's pop-up too; an id-less record
-  is not followed off the Inputs page; `inputedit.test.tsx`'s "undone from under an open dialog" now expects the window
-  to close and say so); the root (on a PC the bar stays pressable over an input's window, against D1645) stays filed
-  under [VEILED-WINDOWS-BAR]. Walker w2's third failed line, never in the handoff — the phone's "No document on file"
-  after a reload — is the test WebKit refusing to store any file (plain browser code fails the same; the app warned):
-  his iPhone checks it (the look card). (3) Re-walked on `e0a2a4155`, both sizes: `frf-w3.mjs` v4 (F2-e's expected
-  result changed) 122 PASS, 0 FAIL; the new `frf-w3-planswitch.mjs` (F2-j) PASS (its step 6 line is the script's own
-  check); `frf-w3-weekhold.mjs` and w2's S3 route PASS; pictures `…/rewalk/w3/`, `…/w2/only-s3-both/`; no errors.
-  (4) The sheet `raptor-port/docs/handpass/2026-11-22-fable-read-faults.md` closed with its Walk line; the ledger's row
-  added. (5) Pushed; GitHub's run on the push read before his look. **Next:** his look (the card in chat 139's last
-  message), then his "merge live" — `main` has moved since (pull request 822 and more), so bring `main` in first by
-  `shipping.md`'s four steps. His to answer: finding (e); the ALL AVAIL wording in the publish note; Leave War F2.
-  **`main` brought in (chat 139, after the push showed the pull request clashing and running no checks):** records only
-  (the settle script, one backlog line by hand); this branch's D2296 (the list's words, lesson 97) RENUMBERED D2312 —
-  chat 135's "fix the slide" had merged first under D2296 (D78); D2312 was past every branch's highest (D2311).
-  **His four answers (chat 139, "all as recommended", after Fable's and the agent's side by side):** D2313 → People &
-  accounts (a man counts as SANS only from his SANS date on every screen: the board's crew list follows the posting's
-  date; a hand SANS tick counts from the day it is made; a hand re-tick keeps the posting's date; a man named on an
-  earlier published day leaves it unchanged — closes finding (e) and Fable's (b)); D2314 → OIL (the publish note:
-  "Ranger's Training", "Ranger and Hex's Training", "Training for 3 people", "Training for ALL AVAIL" — the last the
-  agent's reading of "as recommended"); D2315 → Leave War (F2 waits for the database step); D2316 → OIL (a held name
-  stays held if the day changes behind the list; asked again at the database step, noted in [DB-SYNC-MODEL]). Page
-  limits raised by D2148: OIL 16450 → 16700, People & accounts 27900 → 28150. **TO BUILD, a fresh chat, on this
-  branch before "merge live" or a new one from `main` after it — his call:** D2313 (the crew list's SANS reading and
-  the hand tick's date — find the crew list builder and the hand SANS tick's writer; a red test each first) and D2314
-  (`leavewar/sync.ts oilUnansweredLine`'s names; the test in `leavewar/publishdoor.test.ts`). Both FULL-tier (the
-  published record, who counts as present).
-  **Next chat: 140.** Next free ruling: past D2316 — check every branch.
-- **Rulings:** 1 recorded → `oil.md` (D2294); the OIL page's limit 15950 → 16250 for it, by his standing word (D2148). `main` brought in again at the merge after `c160bc534` (main's fix of the ruling homes; the record clashes settled). **Chat numbers:** this chat was handed 133, which the disk-space chat also used; chats run to 136, so the next chat was 137 (now 138, above). **Next free ruling:** D2296 (chat 134 holds D2292, chat 135 D2293 and D2295 — check before taking).
+<!-- now:claude/sans-from-date-139 -->
+### CHAT 140 — SANS from its date on every screen (D2313) and the publish note's names (D2314), the rest of [FABLE-READ-FAULTS] (22 Nov 26, on Fable) — BUILT, BUG-CHECKED (FULL), waiting for his look and his "merge live" — verify before use
+- **Branch** `claude/sans-from-date-139`, cut level with `main` at `d4fd05539`. **Pull request 824** into `main` (not watched, Auto-fix off). Not merged — his "merge live" only (the four lock steps of `shipping.md`; bring `main` in first if it has moved).
+- **What is built:** SANS is a dated status on the person (`sanFrom`, `sanWas`; one read `engine/people.ts sansOn` / `sansOnP`; writers `sansStart`, `sansStop`, `sansErase`; `sansSig` for a drawing's key). Every reader of a DAY asks by that day: the ALL AVAIL crowd, what a published day keeps and compares, the SANS availability checks, the crew list, the Available crew panel, every puck drawn on a day (`engine/faceattrs.ts withDrawDay` + `personShown`), the ALL AVAIL window, the Medical page's "as of" cards, the next-week preview (a published day there draws each man as that version kept him — `keepFaceOn`, `weekctx.ts issuedDayIn`). A hand tick counts from the day it is made, on or off; a re-tick counts from its own day (the posting's days kept by the untick). The publish note names an unanswered input by who it is for (`leavewar/sync.ts oilUnansweredLine`).
+- **The bug check (FULL) is DONE:** the evidence sheet `raptor-port/docs/handpass/2026-11-22-sans-from-date.md` (roll-call 21 rows, Astra's 23 scenarios each with its disposition, two Opus walkers and a re-walker — all pass at both sizes, 927 pictures — the two blind code reads, the Walk line), its row in `docs/walk-ledger.md`. Reports: `docs/handpass/parts/sfd/` (w1, w2, r1), `docs/superpowers/briefs/2026-11-22-sans-from-date-*` (the scenario, walk and read briefs; Astra's scenarios and read; the Opus read).
+- **Found and fixed in the check, each with a test that failed first:** the ALL AVAIL window's pucks; a posting's take-back wiping SANS days held by hand; the Medical "as of" cards; View-only Sched's preview of a published next-week day; a preview already drawn not following a tick; a hand re-tick reaching back over a day published in the gap (the blind Opus read). The people-walk guard allows `sansSig`.
+- **Filed, not fixed — `[FABLE-READ-FAULTS]` in `OUTSTANDING.md`:** (g) readers still on today's tick, past dates only (the Inputs calendar's opened day, the SANS day's pucks and Highlight, the Leave War's Available counts, the "Several people" picker); (h) the pending list crediting a SANS change to a later untick's author; (i) OLDER, OIL: ALL AVAIL leaves out a man posted out as SANS who is planned with us while "+ SANS" is off (Astra's test in its report); (j) a question for him: after a hand untick, should a posting's take-back still take its earlier SANS days; (k) "no longer SANS" said of a man not SANS yet — new words, drawn for him first; (l) a member's own-row command may write any SANS dates — for the security review before the database step.
+- **To tell him / his to strike (the agent's readings):** an input holding ALL AVAIL beside named people reads "Training for ALL AVAIL"; "Undo post out" erases the posting's SANS days, an archive or a hand untick ends them and keeps the days he was SANS; the gap between a hand untick and a re-tick stays a regular's; the SANS highlight chip, who may file SANS availability and the Leave War's row stay on today's tick.
+- **Readings 2–4 shown to him with pictures** (he asked, 22 Nov): the page `raptor-port/docs/mock/2026-11-22-sans-readings/index.html` (published to him as an Artifact; its pictures taken by `scripts/handpass/sfd-explain.mjs` on the built app). Told with it: a man posted out as SANS from a date ahead cannot have SANS availability filed until that date arrives — as before this job; filing ahead would be a new change, drawn first. **He answered: "all as recommended", and "merge live" (D2327)** — the People & accounts page's limit raised 28,150 → 28,600 for it on his standing word (D2148). GitHub's run on the notes push `9dac3787f` failed once on the known phone flake `[LW-APPROVALS-PHONE-FLAKE]` (the same code was green on `87136888d`).
+- **Next:** his look on the preview link (the `vercel[bot]` comment on pull request 824), then "merge live". After the merge: remove this block; `[FABLE-READ-FAULTS]` stays open for (g)–(l), (i) first.
+- **Opening line, if a fresh chat takes over:** "Chat 141: read HANDOFF.md, the block 'CHAT 140 — SANS from its date'. Work on branch `claude/sans-from-date-139` (git fetch, then `git switch claude/sans-from-date-139`; if refused, say so). The bug check is done and the work waits for my look — carry on from 'Next'." Model: Opus, high (a merge and records); Fable only for (i), which touches OIL.
+- **Rulings:** D2327 (his answer to the three readings of D2313 — People & accounts); D2313, D2314 were recorded by chat 139. Skill note 1015 added. **Compacted** 22 Nov 26, about 16:10, after the closing report — nothing was in hand; his one question since ("what does a hand untick mean") is answered in the chat. **Next chat: 141.** **Next free ruling:** past D2327 — check every branch.
 <!-- /now -->
 <!-- now:claude/sched-right-edge-135 -->
 ### CHAT 135 — Edit Schedule's days to the window's right edge under the folded CREW tab, and a day brought to the front resting in one place ([SCHED-RIGHT-EDGE], [SCHED-OPEN-20-OFF]; D2293, D2295, D2296) — rewritten 22 Nov 26 about 03:20 UTC: BUILT, WALKED, READ; waits only for his look and his "merge live" — verify before use

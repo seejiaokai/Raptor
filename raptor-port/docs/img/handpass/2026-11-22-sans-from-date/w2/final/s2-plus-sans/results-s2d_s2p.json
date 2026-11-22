@@ -1,0 +1,340 @@
+[
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "premise",
+  "what": "clock",
+  "ok": null,
+  "note": "today Wed Jul 22 2026 09:00"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-01",
+  "what": "Sat 18 Jul: Common Programme SQN EVENT 08:00–15:00 for ALL AVAIL",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"08:00\",\"end\":\"15:00\",\"who\":\"allavail\"}",
+  "pics": "s2-01-row-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-02",
+  "what": "Sat 18 Jul published (Publish day); RECORD the ALL AVAIL count",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true} · count chip \"45\" · toast \"Saturday published and approved\"",
+  "pics": "s2-02-published-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-03",
+  "what": "ALL AVAIL window lists Hex as a regular (before the tick)",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"cls\":\"rpuck\"}",
+  "pics": "s2-03-availwin-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-04",
+  "what": "Leave War: Hex 18 Jul (expected FO…)",
+  "ok": true,
+  "note": "cell \"FO*\" · OIL tracker \"2\"",
+  "pics": "s2-04-lw-fo-desktop.png, s2-04b-oil-before-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-05",
+  "what": "Wed 22 Jul published with an ALL AVAIL item (Publish day)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true}",
+  "pics": "s2-05-wed-published-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-06",
+  "what": "Quals ✎ Edit: Hex SANS ticked by hand (today Wed 22 Jul)",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-22\"}",
+  "pics": "s2-06-quals-ticked-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-07",
+  "what": "Sat 18 Jul after the tick: no \"N pending\", Signed ORIG line and four names stand",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true} · chip \"45\"",
+  "pics": "s2-07-sat-after-tick-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-08",
+  "what": "ALL AVAIL window still lists Hex as a regular (no purple line)",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"cls\":\"rpuck\"}",
+  "pics": "s2-08-availwin-after-tick-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-08b",
+  "what": "Sat 18 Jul crew list after the tick: where Hex stands",
+  "ok": true,
+  "note": "[\"ap-grid//san=false\",\"seat//san=false\",\"crew-col//san=false\",\"crew-col//san=false\"]",
+  "pics": "s2-08b-sat-crew-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-09",
+  "what": "Leave War: Hex 18 Jul still FO after the tick (grid cell; where the grid hides his row, his OIL tracker figure against before)",
+  "ok": null,
+  "note": "cell \"NO CELL\" · OIL tracker now \"NO OIL ROW\" (before: \"2\")",
+  "pics": "s2-09-lw-after-tick-desktop.png, s2-09b-oil-after-tick-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-10",
+  "what": "a remark changed on Saturday: pending, sign-offs fall",
+  "ok": true,
+  "note": "{\"pend\":1,\"notSigned\":true,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true}",
+  "pics": "s2-10-sat-remark-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-11",
+  "what": "Sat 18 Jul AL1 published (Publish AL1)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true} · toast \"Published AL1 · 1 item on Sat only · approved by Bolt\"",
+  "pics": "s2-11-sat-al1-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-12",
+  "what": "after AL1: ALL AVAIL window — RECORD whether Hex is listed",
+  "ok": null,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"cls\":\"rpuck\"}",
+  "pics": "s2-12-availwin-after-al1-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-13",
+  "what": "after AL1: Hex 18 Jul FO still there (D142 + D2313)",
+  "ok": false,
+  "note": "cell \"NO CELL\" · OIL tracker now \"NO OIL ROW\" (before the tick \"2\")",
+  "pics": "s2-13-lw-after-al1-desktop.png, s2-13b-oil-after-al1-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-13b",
+  "what": "after AL1, SANS put on the war (⚙ → + SANS): Hex 18 Jul FO",
+  "ok": true,
+  "note": "cell \"FO*\" · OIL tracker \"2\" (before the tick \"2\")",
+  "pics": "s2-13c-plus-sans-desktop.png, s2-13d-lw-sans-on-desktop.png, s2-13e-oil-sans-on-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-14",
+  "what": "Wed 22 Jul (the tick's day): reads pending, sign-offs fallen",
+  "ok": true,
+  "note": "{\"pend\":1,\"notSigned\":true,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true} · pucks [\"seat//san=true\",\"SANS Avail/SANS AVAIL · 0 FREE/san=false\",\"SANS Avail/SANS AVAIL · 0 FREE/san=true\"]",
+  "pics": "s2-14-wed-pending-desktop.png, s2-14b-wed-crew-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "s2-15",
+  "what": "Wed 22 Jul pending list — RECORD its line for him exactly",
+  "ok": null,
+  "note": "⠿ Changes · Wednesday 22/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 11 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Hex · SANS Saber 22/7 09:00 no → yes",
+  "pics": "s2-15-wed-pendlist-desktop.png"
+ },
+ {
+  "scn": "s2",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "premise",
+  "what": "clock",
+  "ok": null,
+  "note": "today Wed Jul 22 2026 09:00"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-01",
+  "what": "Sat 18 Jul: Common Programme SQN EVENT 08:00–15:00 for ALL AVAIL",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"08:00\",\"end\":\"15:00\",\"who\":\"allavail\"}",
+  "pics": "s2-01-row-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-02",
+  "what": "Sat 18 Jul published (Publish day); RECORD the ALL AVAIL count",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true} · count chip \"45\" · toast \"Saturday published and approved\"",
+  "pics": "s2-02-published-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-03",
+  "what": "ALL AVAIL window lists Hex as a regular (before the tick)",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"cls\":\"rpuck\"}",
+  "pics": "s2-03-availwin-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-04",
+  "what": "Leave War: Hex 18 Jul (expected FO…)",
+  "ok": true,
+  "note": "cell \"FO*\" · OIL tracker \"2\"",
+  "pics": "s2-04-lw-fo-phone.png, s2-04b-oil-before-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-05",
+  "what": "Wed 22 Jul published with an ALL AVAIL item (Publish day)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true}",
+  "pics": "s2-05-wed-published-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-06",
+  "what": "Quals ✎ Edit: Hex SANS ticked by hand (today Wed 22 Jul)",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-22\"}",
+  "pics": "s2-06-quals-ticked-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-07",
+  "what": "Sat 18 Jul after the tick: no \"N pending\", Signed ORIG line and four names stand",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true} · chip \"45\"",
+  "pics": "s2-07-sat-after-tick-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-08",
+  "what": "ALL AVAIL window still lists Hex as a regular (no purple line)",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"cls\":\"rpuck\"}",
+  "pics": "s2-08-availwin-after-tick-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-08b",
+  "what": "Sat 18 Jul crew list after the tick: where Hex stands",
+  "ok": true,
+  "note": "[\"ap-grid//san=false\",\"seat//san=false\",\"crew-col//san=false\",\"crew-col//san=false\"]",
+  "pics": "s2-08b-sat-crew-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-09",
+  "what": "Leave War: Hex 18 Jul still FO after the tick (grid cell; where the grid hides his row, his OIL tracker figure against before)",
+  "ok": null,
+  "note": "cell \"NO CELL\" · OIL tracker now \"NO OIL ROW\" (before: \"2\")",
+  "pics": "s2-09-lw-after-tick-phone.png, s2-09b-oil-after-tick-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-10",
+  "what": "a remark changed on Saturday: pending, sign-offs fall",
+  "ok": true,
+  "note": "{\"pend\":1,\"notSigned\":true,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true}",
+  "pics": "s2-10-sat-remark-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-11",
+  "what": "Sat 18 Jul AL1 published (Publish AL1)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED AL1 Ace Anvil Basher Bolt\",\"approved\":true} · toast \"Published AL1 · 1 item on Sat only · approved by Bolt\"",
+  "pics": "s2-11-sat-al1-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-12",
+  "what": "after AL1: ALL AVAIL window — RECORD whether Hex is listed",
+  "ok": null,
+  "note": "{\"n\":45,\"has\":true,\"san\":false,\"cls\":\"rpuck\"}",
+  "pics": "s2-12-availwin-after-al1-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-13",
+  "what": "after AL1: Hex 18 Jul FO still there (D142 + D2313)",
+  "ok": false,
+  "note": "cell \"NO CELL\" · OIL tracker now \"NO OIL ROW\" (before the tick \"2\")",
+  "pics": "s2-13-lw-after-al1-phone.png, s2-13b-oil-after-al1-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-13b",
+  "what": "after AL1, SANS put on the war (⚙ → + SANS): Hex 18 Jul FO",
+  "ok": true,
+  "note": "cell \"FO*\" · OIL tracker \"2\" (before the tick \"2\")",
+  "pics": "s2-13c-plus-sans-phone.png, s2-13d-lw-sans-on-phone.png, s2-13e-oil-sans-on-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-14",
+  "what": "Wed 22 Jul (the tick's day): reads pending, sign-offs fallen",
+  "ok": true,
+  "note": "{\"pend\":1,\"notSigned\":true,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\",\"approved\":true} · pucks [\"seat//san=true\",\"SANS Avail/SANS AVAIL · 0 FREE/san=false\",\"SANS Avail/SANS AVAIL · 0 FREE/san=true\"]",
+  "pics": "s2-14-wed-pending-phone.png, s2-14b-wed-crew-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-15",
+  "what": "Wed 22 Jul pending list — RECORD its line for him exactly",
+  "ok": null,
+  "note": "⠿ Changes · Wednesday 22/7 Published · 1 change waiting to go out as AL1 Hide ▾ ✕ History on: Tap a gold dot on the schedule New to you 0 All changes 11 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Hex · SANS Saber 22/7 09:01 no → yes",
+  "pics": "s2-15-wed-pendlist-phone.png"
+ },
+ {
+  "scn": "s2",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

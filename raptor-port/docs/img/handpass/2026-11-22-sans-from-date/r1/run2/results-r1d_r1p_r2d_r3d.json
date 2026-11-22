@@ -1,0 +1,361 @@
+[
+ {
+  "scn": "r1",
+  "size": "desktop",
+  "id": "premise",
+  "what": "clock and man",
+  "ok": null,
+  "note": "today Mon Jul 20 2026 09:00 · {\"cs\":\"Hex\",\"seat\":\"RCP\",\"san\":false,\"sanFrom\":null}"
+ },
+ {
+  "scn": "r1",
+  "size": "desktop",
+  "id": "r1-01",
+  "what": "+ Medical: ATT C for Hex 16–24 Jul filed through the window",
+  "ok": true,
+  "note": "[{\"iid\":\"imrsipfis9cg6bx\",\"type\":\"ATT C\",\"date\":\"Jul 16\",\"endDate\":\"Jul 24\",\"people\":[{\"p\":\"rocky\",\"by\":\"stiff\",\"at\":1784509205716}]}]",
+  "pics": "r1-01-window-desktop.png, r1-01b-saved-desktop.png"
+ },
+ {
+  "scn": "r1",
+  "size": "desktop",
+  "id": "r1-02",
+  "what": "Quals ✎ Edit: Hex's SANS ticked (today Mon Jul 20 2026 09:00)",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-20\",\"sanWas\":null,\"sanTo\":null}",
+  "pics": "r1-02-quals-desktop.png"
+ },
+ {
+  "scn": "r1",
+  "size": "desktop",
+  "id": "r1-03-18jul",
+  "what": "as of 18 Jul (button \"as of 18 Jul\"): Hex's card puck has NO purple line",
+  "ok": true,
+  "note": "{\"sec\":\"medsec med-down\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"text\":\"HexCATT C16–24 Jul\"}",
+  "pics": "r1-03-18jul-card-desktop.png"
+ },
+ {
+  "scn": "r1",
+  "size": "desktop",
+  "id": "r1-03-18julv",
+  "what": "as of 18 Jul: viewer opened (true) and closed — puck unchanged after",
+  "ok": true,
+  "note": "after {\"sec\":\"medsec med-down\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"text\":\"HexCATT C16–24 Jul\"} · button \"as of 18 Jul\"",
+  "pics": "r1-03-18jul-viewer-desktop.png, r1-03-18jul-after-viewer-desktop.png"
+ },
+ {
+  "scn": "r1",
+  "size": "desktop",
+  "id": "r1-04-20jul",
+  "what": "as of 20 Jul (button \"as of 20 Jul\"): Hex's card puck HAS purple line",
+  "ok": true,
+  "note": "{\"sec\":\"medsec med-down\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"text\":\"HexCATT C16–24 Jul\"}",
+  "pics": "r1-04-20jul-card-desktop.png"
+ },
+ {
+  "scn": "r1",
+  "size": "desktop",
+  "id": "r1-04-20julv",
+  "what": "as of 20 Jul: viewer opened (true) and closed — puck unchanged after",
+  "ok": true,
+  "note": "after {\"sec\":\"medsec med-down\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"text\":\"HexCATT C16–24 Jul\"} · button \"as of 20 Jul\"",
+  "pics": "r1-04-20jul-viewer-desktop.png, r1-04-20jul-after-viewer-desktop.png"
+ },
+ {
+  "scn": "r1",
+  "size": "desktop",
+  "id": "r1-05a",
+  "what": "picked 18 Jul again before Today",
+  "ok": null,
+  "note": "button \"as of 18 Jul\" · {\"sec\":\"medsec med-down\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"text\":\"HexCATT C16–24 Jul\"}"
+ },
+ {
+  "scn": "r1",
+  "size": "desktop",
+  "id": "r1-05-today",
+  "what": "Today pressed: RECORD what the button reads and where his card is",
+  "ok": null,
+  "note": "button \"as of 13 Jul\" · app {\"clock\":\"Mon Jul 20 2026\"} · {\"card\":\"NO CARD\"}",
+  "pics": "r1-05-today-page-desktop.png"
+ },
+ {
+  "scn": "r1",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": false,
+  "note": "REQFAIL blob:http://localhost:4323/278e8591-1509-4deb-abae-57702251baa6 || REQFAIL blob:http://localhost:4323/0078bdca-c469-4ebf-91cb-9bd34cb4d41b"
+ },
+ {
+  "scn": "r1",
+  "size": "phone",
+  "id": "premise",
+  "what": "clock and man",
+  "ok": null,
+  "note": "today Mon Jul 20 2026 09:00 · {\"cs\":\"Hex\",\"seat\":\"RCP\",\"san\":false,\"sanFrom\":null}"
+ },
+ {
+  "scn": "r1",
+  "size": "phone",
+  "id": "r1-01",
+  "what": "+ Medical: ATT C for Hex 16–24 Jul filed through the window",
+  "ok": true,
+  "note": "[{\"iid\":\"imrsiphj89e9ham\",\"type\":\"ATT C\",\"date\":\"Jul 16\",\"endDate\":\"Jul 24\",\"people\":[{\"p\":\"rocky\",\"by\":\"stiff\",\"at\":1784509208324}]}]",
+  "pics": "r1-01-window-phone.png, r1-01b-saved-phone.png"
+ },
+ {
+  "scn": "r1",
+  "size": "phone",
+  "id": "r1-02",
+  "what": "Quals ✎ Edit: Hex's SANS ticked (today Mon Jul 20 2026 09:00)",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-20\",\"sanWas\":null,\"sanTo\":null}",
+  "pics": "r1-02-quals-phone.png"
+ },
+ {
+  "scn": "r1",
+  "size": "phone",
+  "id": "r1-03-18jul",
+  "what": "as of 18 Jul (button \"as of 18 Jul\"): Hex's card puck has NO purple line",
+  "ok": true,
+  "note": "{\"sec\":\"medsec med-down\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"text\":\"HexCATT C16–24 Jul\"}",
+  "pics": "r1-03-18jul-card-phone.png"
+ },
+ {
+  "scn": "r1",
+  "size": "phone",
+  "id": "r1-03-18julv",
+  "what": "as of 18 Jul: viewer opened (true) and closed — puck unchanged after",
+  "ok": true,
+  "note": "after {\"sec\":\"medsec med-down\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"text\":\"HexCATT C16–24 Jul\"} · button \"as of 18 Jul\"",
+  "pics": "r1-03-18jul-viewer-phone.png, r1-03-18jul-after-viewer-phone.png"
+ },
+ {
+  "scn": "r1",
+  "size": "phone",
+  "id": "r1-04-20jul",
+  "what": "as of 20 Jul (button \"as of 20 Jul\"): Hex's card puck HAS purple line",
+  "ok": true,
+  "note": "{\"sec\":\"medsec med-down\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"text\":\"HexCATT C16–24 Jul\"}",
+  "pics": "r1-04-20jul-card-phone.png"
+ },
+ {
+  "scn": "r1",
+  "size": "phone",
+  "id": "r1-04-20julv",
+  "what": "as of 20 Jul: viewer opened (true) and closed — puck unchanged after",
+  "ok": true,
+  "note": "after {\"sec\":\"medsec med-down\",\"san\":true,\"title\":\"Hex · C · ops wingman · SANS\",\"text\":\"HexCATT C16–24 Jul\"} · button \"as of 20 Jul\"",
+  "pics": "r1-04-20jul-viewer-phone.png, r1-04-20jul-after-viewer-phone.png"
+ },
+ {
+  "scn": "r1",
+  "size": "phone",
+  "id": "r1-05a",
+  "what": "picked 18 Jul again before Today",
+  "ok": null,
+  "note": "button \"as of 18 Jul\" · {\"sec\":\"medsec med-down\",\"san\":false,\"title\":\"Hex · C · ops wingman\",\"text\":\"HexCATT C16–24 Jul\"}"
+ },
+ {
+  "scn": "r1",
+  "size": "phone",
+  "id": "r1-05-today",
+  "what": "Today pressed: RECORD what the button reads and where his card is",
+  "ok": null,
+  "note": "button \"as of 13 Jul\" · app {\"clock\":\"Mon Jul 20 2026\"} · {\"card\":\"NO CARD\"}",
+  "pics": "r1-05-today-page-phone.png"
+ },
+ {
+  "scn": "r1",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": false,
+  "note": "REQFAIL blob:http://localhost:4323/fa0a4308-5738-4afa-8c31-ba96125f30e7 || REQFAIL blob:http://localhost:4323/023f1ccb-e5ae-4bfc-9236-4828bac8784e"
+ },
+ {
+  "scn": "r2",
+  "size": "desktop",
+  "id": "premise",
+  "what": "clock",
+  "ok": null,
+  "note": "today Wed Jul 15 2026 09:00 · week Jul 13"
+ },
+ {
+  "scn": "r2",
+  "size": "desktop",
+  "id": "r2-01",
+  "what": "next week (Jul 20): Hex on a new Ground Programme row on Mon 20 Jul",
+  "ok": true,
+  "note": "{\"n0\":3,\"ri\":3,\"armed\":\"g:0.3.+\",\"row\":{\"prog\":\"W1 GROUND\",\"who\":\"rocky\"}}",
+  "pics": "r2-01-ground-mon20-desktop.png"
+ },
+ {
+  "scn": "r2",
+  "size": "desktop",
+  "id": "r2-02",
+  "what": "back on the demo week (Jul 13); the preview's Monday shows Hex with NO purple line",
+  "ok": false,
+  "note": "[{\"head\":\"NEXT WEEK: CLICK A DAY TO LOAD IT Monday\",\"pucks\":[]},{\"head\":\"Tuesday Jul 21 4 X 1\",\"pucks\":[]},{\"head\":\"Wednesday Jul 22 2 X 2\",\"pucks\":[]},{\"head\":\"Thursday Jul 23 2\",\"pucks\":[]},{\"head\":\"Friday Jul 24 0 X 0 X 0\",\"pucks\":[]},{\"head\":\"Saturday Jul 25 0 X 0 X 0\",\"pucks\":[]},{\"head\":\"Sunday Jul 26 0 X 0 X 0\",\"pucks\":[]}]",
+  "pics": "r2-02-peek-before-desktop.png"
+ },
+ {
+  "scn": "r2",
+  "size": "desktop",
+  "id": "r2-03",
+  "what": "Quals: Hex SANS ticked",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\",\"sanWas\":null,\"sanTo\":null}",
+  "pics": "r2-03-quals-desktop.png"
+ },
+ {
+  "scn": "r2",
+  "size": "desktop",
+  "id": "r2-04",
+  "what": "Edit Schedule (no reload, no visit to next week): preview Monday shows Hex WITH the purple line",
+  "ok": false,
+  "note": "[{\"head\":\"NEXT WEEK: CLICK A DAY TO LOAD IT Monday\",\"pucks\":[]},{\"head\":\"Tuesday Jul 21 4 X 1\",\"pucks\":[]},{\"head\":\"Wednesday Jul 22 2 X 2\",\"pucks\":[]},{\"head\":\"Thursday Jul 23 2\",\"pucks\":[]},{\"head\":\"Friday Jul 24 0 X 0 X 0\",\"pucks\":[]},{\"head\":\"Saturday Jul 25 0 X 0 X 0\",\"pucks\":[]},{\"head\":\"Sunday Jul 26 0 X 0 X 0\",\"pucks\":[]}]",
+  "pics": "r2-04-peek-ticked-desktop.png"
+ },
+ {
+  "scn": "r2",
+  "size": "desktop",
+  "id": "r2-05",
+  "what": "Quals: Hex SANS unticked",
+  "ok": true,
+  "note": "{\"san\":false,\"sanFrom\":null,\"sanWas\":null,\"sanTo\":null}",
+  "pics": "r2-05-quals-desktop.png"
+ },
+ {
+  "scn": "r2",
+  "size": "desktop",
+  "id": "r2-06",
+  "what": "preview Monday: the purple line gone at once",
+  "ok": false,
+  "note": "[{\"head\":\"NEXT WEEK: CLICK A DAY TO LOAD IT Monday\",\"pucks\":[]},{\"head\":\"Tuesday Jul 21 4 X 1\",\"pucks\":[]},{\"head\":\"Wednesday Jul 22 2 X 2\",\"pucks\":[]},{\"head\":\"Thursday Jul 23 2\",\"pucks\":[]},{\"head\":\"Friday Jul 24 0 X 0 X 0\",\"pucks\":[]},{\"head\":\"Saturday Jul 25 0 X 0 X 0\",\"pucks\":[]},{\"head\":\"Sunday Jul 26 0 X 0 X 0\",\"pucks\":[]}]",
+  "pics": "r2-06-peek-unticked-desktop.png"
+ },
+ {
+  "scn": "r2",
+  "size": "desktop",
+  "id": "r2-07",
+  "what": "top bar Undo (takes back the untick): RECORD the preview",
+  "ok": null,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\"} · [{\"head\":\"NEXT WEEK: CLICK A DAY TO LOAD IT Monday\",\"pucks\":[]},{\"head\":\"Tuesday Jul 21 4 X 1\",\"pucks\":[]},{\"head\":\"Wednesday Jul 22 2 X 2\",\"pucks\":[]},{\"head\":\"Thursday Jul 23 2\",\"pucks\":[]},{\"head\":\"Friday Jul 24 0 X 0 X 0\",\"pucks\":[]},{\"head\":\"Saturday Jul 25 0 X 0 X 0\",\"pucks\":[]},{\"head\":\"Sunday Jul 26 0 X 0 X 0\",\"pucks\":[]}]",
+  "pics": "r2-07-peek-undo-desktop.png"
+ },
+ {
+  "scn": "r2",
+  "size": "desktop",
+  "id": "r2-08",
+  "what": "top bar Redo: RECORD the preview",
+  "ok": null,
+  "note": "{\"san\":false,\"sanFrom\":null} · [{\"head\":\"NEXT WEEK: CLICK A DAY TO LOAD IT Monday\",\"pucks\":[]},{\"head\":\"Tuesday Jul 21 4 X 1\",\"pucks\":[]},{\"head\":\"Wednesday Jul 22 2 X 2\",\"pucks\":[]},{\"head\":\"Thursday Jul 23 2\",\"pucks\":[]},{\"head\":\"Friday Jul 24 0 X 0 X 0\",\"pucks\":[]},{\"head\":\"Saturday Jul 25 0 X 0 X 0\",\"pucks\":[]},{\"head\":\"Sunday Jul 26 0 X 0 X 0\",\"pucks\":[]}]",
+  "pics": "r2-08-peek-redo-desktop.png"
+ },
+ {
+  "scn": "r2",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "r3",
+  "size": "desktop",
+  "id": "premise",
+  "what": "clock",
+  "ok": null,
+  "note": "today Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "r3",
+  "size": "desktop",
+  "id": "r3-01",
+  "what": "Mon 20 Jul: Hex on a new Ground Programme row",
+  "ok": true,
+  "note": "{\"n0\":3,\"ri\":3,\"armed\":\"g:0.3.+\",\"row\":{\"prog\":\"W1 GROUND\",\"who\":\"rocky\"}}",
+  "pics": "r3-01-ground-mon20-desktop.png"
+ },
+ {
+  "scn": "r3",
+  "size": "desktop",
+  "id": "r3-02",
+  "what": "Mon 20 Jul: four sign-off boxes and Publish day",
+  "ok": true,
+  "note": "{\"pend\":\"0\",\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBol\",\"approved\":true} · toast \"Monday published and approved\"",
+  "pics": "r3-02-published-desktop.png"
+ },
+ {
+  "scn": "r3",
+  "size": "desktop",
+  "id": "r3-03",
+  "what": "back on the demo week (Jul 13); Quals: Hex SANS ticked",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\",\"sanWas\":null,\"sanTo\":null}",
+  "pics": "r3-03-quals-desktop.png"
+ },
+ {
+  "scn": "r3",
+  "size": "desktop",
+  "id": "r3-04",
+  "what": "View-only Sched (admin): preview Monday 20 Jul — Hex with NO purple line (as published)",
+  "ok": false,
+  "note": "[{\"head\":\"NEXT WEEK: CLICK A DAY TO LOAD IT Monday\",\"pucks\":[]},{\"head\":\"Tuesday Jul 21 4 X 1\",\"pucks\":[]},{\"head\":\"Wednesday Jul 22 2 X 2\",\"pucks\":[]},{\"head\":\"Thursday Jul 23 2\",\"pucks\":[]},{\"head\":\"Friday Jul 24 0 X 0 X 0\",\"pucks\":[]},{\"head\":\"Saturday Jul 25 0 X 0 X 0\",\"pucks\":[]},{\"head\":\"Sunday Jul 26 0 X 0 X 0\",\"pucks\":[]}]",
+  "pics": "r3-04-view-peek-admin-desktop.png"
+ },
+ {
+  "scn": "r3",
+  "size": "desktop",
+  "id": "r3-05",
+  "what": "Edit Schedule (admin): preview Monday — Hex WITH the purple line (working copy)",
+  "ok": false,
+  "note": "[{\"head\":\"NEXT WEEK: CLICK A DAY TO LOAD IT Monday\",\"pucks\":[]},{\"head\":\"Tuesday Jul 21 4 X 1\",\"pucks\":[]},{\"head\":\"Wednesday Jul 22 2 X 2\",\"pucks\":[]},{\"head\":\"Thursday Jul 23 2\",\"pucks\":[]},{\"head\":\"Friday Jul 24 0 X 0 X 0\",\"pucks\":[]},{\"head\":\"Saturday Jul 25 0 X 0 X 0\",\"pucks\":[]},{\"head\":\"Sunday Jul 26 0 X 0 X 0\",\"pucks\":[]}]",
+  "pics": "r3-05-edit-peek-admin-desktop.png"
+ },
+ {
+  "scn": "r3",
+  "size": "desktop",
+  "id": "r3-06",
+  "what": "as Ranger, View-only Sched: preview Monday — Hex with NO purple line",
+  "ok": false,
+  "note": "week Jul 13 · [{\"head\":\"NEXT WEEK: CLICK A DAY TO LOAD IT Monday\",\"pucks\":[]},{\"head\":\"Tuesday Jul 21 4 X 1\",\"pucks\":[]},{\"head\":\"Wednesday Jul 22 2 X 2\",\"pucks\":[]},{\"head\":\"Thursday Jul 23 2\",\"pucks\":[]},{\"head\":\"Friday Jul 24 0 X 0 X 0\",\"pucks\":[]},{\"head\":\"Saturday Jul 25 0 X 0 X 0\",\"pucks\":[]},{\"head\":\"Sunday Jul 26 0 X 0 X 0\",\"pucks\":[]}]",
+  "pics": "r3-06-view-peek-ranger-desktop.png"
+ },
+ {
+  "scn": "r3",
+  "size": "desktop",
+  "id": "r3-07",
+  "what": "next week loaded (Jul 20): Edit Schedule Mon 20 Jul reads \"1 pending\"",
+  "ok": true,
+  "note": "chip \"1 pending\" · {\"head\":\"Monday Jul 20 Templates Live working cop\",\"pucks\":[{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\"},{\"san\":true,\"title\":\"Hex · C · ops wingman · SANS · Crew pairing — this pairing needs approval\"}]}",
+  "pics": "r3-07-edit-mon20-desktop.png"
+ },
+ {
+  "scn": "r3",
+  "size": "desktop",
+  "id": "r3-07b",
+  "what": "the board, Mon 20 Jul (record)",
+  "ok": null,
+  "note": "{\"pend\":\"1 pending\",\"notSigned\":true,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBol\",\"approved\":true}",
+  "pics": "r3-07b-board-mon20-desktop.png"
+ },
+ {
+  "scn": "r3",
+  "size": "desktop",
+  "id": "r3-08",
+  "what": "View-only Sched's own Mon 20 Jul (week Jul 20): Hex with NO purple line",
+  "ok": true,
+  "note": "{\"head\":\"Monday Jul 20 ORIG 4 X 2 Original — as i\",\"pucks\":[{\"san\":false,\"title\":\"Hex · C · ops wingman · Crew pairing — this pairing needs approval\"},{\"san\":false,\"title\":\"Hex · C · ops wingman · Crew pairing — this pairing needs approval\"}]}",
+  "pics": "r3-08-view-mon20-desktop.png"
+ },
+ {
+  "scn": "r3",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

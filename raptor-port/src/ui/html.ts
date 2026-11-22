@@ -2,8 +2,8 @@ import { requestOfBox } from '../engine/overlay'
 import { rowPeopleDrawn, inputRowSeveral, onCommon } from '../engine/grouprows'
 import { DAYS } from '../engine/data'
 import { noteText } from '../engine/note'
-import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
-import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
+import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew, sansOn } from '../engine/people'
+import { personShown, briefLeadShown, withFaceAttrs, withDrawDay } from '../engine/faceattrs'
 import { odOut, isOD, listedPersonal, listedUnavail, INPUTS, idsOf, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, saFlies, saAnyFlies, saTyped, saDeskFlies, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
@@ -159,7 +159,11 @@ export function withDaySnap(di:any,ver:any,fn:any){
    needing to know.
    `fn(false)`: the version no longer resolves (unpublished, undone). It runs in
    the LIVE world, so the caller must treat it as GONE and read nothing. */
-export function withChipWorld<T>(di:any,ver:any,ofw:any,fn:(ok:boolean)=>T):T{
+export function withChipWorld<T>(di:any,ver:any,ofw:any,fn0:(ok:boolean)=>T):T{
+  /* …AND THE DAY ITSELF (D2313): the window's pucks show each man as he was ON this day — a man since made SANS stands
+     in an earlier day's crowd as the regular he was, so his puck there wears no SANS line (engine/faceattrs.ts
+     withDrawDay; an issued version's own kept answer still wins inside it) */
+  const fn=(ok:boolean):T=>withDrawDay(dayIso(String(CURWEEK),+di||0),()=>fn0(ok));
   /* no version, official world: the view page's draft day (Fable F6) */
   if(!ver)return ofw?withOfficialWarn(()=>fn(true)):fn(true)
   if(!ofw)return withDaySnap(di,ver,(ok:any)=>fn(!!ok))
@@ -905,7 +909,9 @@ export function availHTML(d:any,di:any,ed:any){
   /* in edit mode an available puck is a drag source — drag it straight onto a line,
      a duty, a sim or a programme item */
   const pk=(id:any)=>`<span class="seat"${ed?` data-drag="1" data-person="${id}"`:''}>${puck(id,sev(di,id),true,chip(di,id),dsh(di,id),traceHit(di,id))}</span>`;
-  const active=(ids:any)=>ids.filter((id:any)=>!PEOPLE[id].san);
+  /* (SANS on THIS day — D2313: a man who became SANS later is one of the day's regulars, engine/people.ts sansOn) */
+  const isoD=dayIso(String(CURWEEK),+di||0);
+  const active=(ids:any)=>ids.filter((id:any)=>!sansOn(id,isoD));
   /* pilots-then-WSOs in CAT-ladder order (owner, 24 Aug 26 — the same reading
      order as the add-people picker; byCrew is the shared comparator). availByWave
      hands these back callsign-sorted; this is a display re-order only. */
@@ -919,7 +925,7 @@ export function availHTML(d:any,di:any,ed:any){
      so this panel keeps a single count — how many SANS are offering
      ANYTHING today — as a pointer to that grid, not a second listing of it. */
   /* (the schedule in view's own SANS men, on this day — multi-squadron step 3, engine/roster.ts) */
-  const sansOffering=rosterOf(UNIT,dayIso(String(CURWEEK),+di||0)).filter((id:any)=>PEOPLE[id].san&&!PEOPLE[id].archived&&sansAvailOn(id,d.dt)).length;
+  const sansOffering=rosterOf(UNIT,isoD).filter((id:any)=>sansOn(id,isoD)&&!PEOPLE[id].archived&&sansAvailOn(id,d.dt)).length;
   const allA=active(A.anyWave);
   if(AVSHUT.has(di)){
     const parts=[`${allA.length} all day`];
@@ -1756,7 +1762,9 @@ export function dayStatHTML(di:any,ed:any){
    a pure string producer, which is exactly the shape the pass requires: nothing
    inside it writes DAYS, INPUTS or PEOPLE, so the memo cannot serve a stale
    answer to validation, signing or publication — none of which run in here. */
-export function dayHTML(di:any,ed:any,vsel?:any){ return inputReadPass(()=>oilReadPass(()=>publishReadPass(()=>dayHTMLBody(di,ed,vsel)))); }   // one read of each day's comparison per paint (publish.ts publishReadPass)
+/* (inside `withDrawDay`: every puck this day draws shows the man as he was ON this day — the SANS line only from his SANS
+   date, D2313 — engine/faceattrs.ts) */
+export function dayHTML(di:any,ed:any,vsel?:any){ return withDrawDay(dayIso(String(CURWEEK),+di||0),()=>inputReadPass(()=>oilReadPass(()=>publishReadPass(()=>dayHTMLBody(di,ed,vsel))))); }   // one read of each day's comparison per paint (publish.ts publishReadPass)
 function dayHTMLBody(di:any,ed:any,vsel?:any){
   /* A QUARANTINED (unreadable / preserved / unsupported) LOADED week is read-only,
      and its days are UNAPPROVED (the seed is loaded as a placeholder), so both the

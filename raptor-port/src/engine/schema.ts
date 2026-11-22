@@ -126,6 +126,13 @@ export type Person = {
   /** His SANS tick was made by a SANS posting on its date (D283) — the tick the posting's Undo, or Archive, takes back;
    *  absent = ticked by hand — screen (`leavewar/sync.ts`). */
   sanBy?: 'po'
+  /** The first day (ISO) of the SANS he holds now — state (`engine/people.ts sansStart`: a posting's own date, a hand
+   *  tick's day). Absent on a SANS man: SANS from always (a tick older than D2313, the demo's SANS men). Every reader about
+   *  a DAY asks `sansOn(id, iso)`, never `san` alone (D2313). */
+  sanFrom?: string
+  /** Each earlier stretch of SANS that has ended, `[first day, the day it ended]` — the end day is not a SANS day; a
+   *  first day of '' is "from always" — state (`engine/people.ts sansStop`: a tick taken off by hand, an archive). */
+  sanWas?: [string, string][]
   /** The squadron his Scheduler tick was given in, and the day (ISO) — state (`state/quals-write.ts` writes them with
    *  the tick; `state/units-model.ts schedTickHolds` reads them: the tick counts there until the start of his move day,
    *  D2160). Absent on a ticked man: the squadron of his first home row, from always. */

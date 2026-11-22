@@ -158,7 +158,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
 - [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK] (done 31 Oct 26), then [LW-WEEKDAY-WORK], then the database.
 - [MULTI-SQN-DESIGN] — one app, one database, many squadrons: home squadron at account creation, view-only rights to others, transfer on posting out, a day split between squadrons (his D1695, 5 Nov 26), with detachment modes — the design answered whole 17 Nov 26 (rounds 1–7, chats 90–104); its BUILD now, in batches, before the database step (D2187, changing D2086), each batch's agreed design and mock-up shown to him before it starts (D2188); the batch plan written and red-teamed (chat 106, `raptor-port/docs/superpowers/plans/2026-11-17-multi-sqn-build-batches.md`); batch 1's page put to him, waiting for his look. **Batch 1 steps 0–4 built on `claude/multi-sqn-b1-107` (pull request 806, draft) the night of 17–18 Nov 26 and FULL-checked; NOT ready to merge: the last reads (18 Nov, 09:00–09:41, `raptor-port/docs/superpowers/briefs/2026-11-18-multi-sqn-b1-fixread2-{astra,opus,security}.md`) left open faults to fix red first — the last-admin lock and master guard skipped by person-only and home-only changes, the gate's account list read differently from the loader's (a re-keyed or colliding row), a plain admin able to suspend or demote the master, a 142 admin able to post a 149 man out or touch 149's history, the master's Archive / Restore / Delete of a 149 man acting on 142's Leave War, a new 149 man losing his post-in date, inputs not checked by squadron at the gate (`…-fixread-opus7-open.md`); and, by his D2205–D2207 (18 Nov 26) the eleven open questions as recommended (only a master changes a master; sign-in held for a pending save; four cross-squadron bell lines; holiday OIL by one's own list; "142's" dropped from the holiday warning; the code-check pull request to `main`); by his D2203 (18 Nov 26), a move to another squadron clearing every View and Plan held of others; by his D2202 (18 Nov 26), a planner's bell carrying the other squadron's admin lines, on by default, each line showing its squadron; by his D2200 (18 Nov 26), each person to choose which notifications reach his bell, a few that need action always on — a job after the multi-squadron batches, drawn first; by his D2192 and D2199 (18 Nov 26), step 1's 'admin' level for a right in another squadron kept only as "Plan" — full access to that squadron, as its own admins (D2201) — given person by person by a master admin, off by default — otherwise View only; by his D2195 (18 Nov 26), each squadron's own public-holiday list, never shared, and by his D2204 a detachment's own list, which may start as a copy of its squadron's — step 4's holidays by place undone, the Holidays form naming only its own squadron's days, no holiday bell to the other squadron; by his D2196 (18 Nov 26), only a master admin sets the time zone of a place more than one squadron sits on — the place's save refused for anyone else; by his D2197 and D2198 (18 Nov 26), a master admin's menu pick moves every page, each his to edit, his bell his primary squadron's by default; his idea of a master-set access table (per squadron, per role, per page) and of each person choosing his own notifications — answered by chat 108 with a recommendation, his ruling awaited, nothing built; then steps 5–6.**
-- [FABLE-READ-FAULTS] — seven of eight fixed, OIL F2 built (D2294, D2299), walked and re-walked on `claude/fable-read-faults-4104f0` (pull request 820, chats 133–139); his look and "merge live" owed. His answers of 22 Nov 26 (chat 139): D2313 (SANS from its date everywhere — closes (e) and (b)) and D2314 (the publish note's names) TO BUILD, a fresh chat; D2315 (Leave War F2 waits for the database step), D2316 (the held name kept) as built.
+- [FABLE-READ-FAULTS] — seven of eight fixed, OIL F2 built (D2294, D2299), walked and re-walked on `claude/fable-read-faults-4104f0` (pull request 820, chats 133–139); his look and "merge live" owed. His answers of 22 Nov 26 (chat 139): D2313 (SANS from its date everywhere — closes (e) and (b)) and D2314 (the publish note's names) BUILT 22 Nov 26 on `claude/sans-from-date-139` (chat 140, pull request 824), the bug check (FULL) and his look owed; D2315 (Leave War F2 waits for the database step), D2316 (the held name kept) as built.
 - [MSQ-MIDNIGHT-CLOCK] — at the Transfer step, a roll-call of every window and page open at a man's midnight swap (band, close with a note, or refresh), and at the database step, which clock decides "today" (each device's own today; a detachment abroad meets it first).
 - [NOTICE-UNDO-RETRACT] — every bell line retracted by the undo of what made it: unread goes, read becomes "… taken back · <who>" (his D1693, 5 Nov 26) — step 1 (the posting line) LIVE 5 Nov 26; step 2 (the input lines, the holiday's OIL line) open, his to place. — the posting line first, on `claude/postout-bell-look`; draw the new words first (D1625).
 - [TOPBAR-BAND-ANCHOR] — on a scrolled desktop page the "Not saved" band covers the page's first 36px (the old build too; not on his iPhone).
@@ -2928,4 +2928,55 @@ schedule's pop-up, and (1) its "Goes to" still shows the place the Undo just too
 there — nothing was saved", though the input is still there (`…/w2/s3-18-*`). The old place is not put back. Whether it
 is older than this job's "the window follows To / Goes to changed behind it" fix is not known. On a phone the top bar
 is covered while the window is up, so the route does not exist there.
+**Chat 140 (22 Nov 26, branch `claude/sans-from-date-139`, pull request 824):** D2313 and D2314 BUILT, each a failing test
+first — (e) and (b) closed: SANS is a dated status, the person keeping the day it starts and each stretch that ended, and
+every reader about a day asking by that day (`engine/people.ts sansOn`; tests `leavewar/sans-from-date.test.ts`); the
+publish note's names (`leavewar/publishdoor.test.ts`). Chat 139's two checks: a man posted out as SANS who earns OIL on a
+published Saturday after his posting, SANS off the Leave War — his credit shows on the OIL tracker, the Balances page lists
+him for the period and his grid cell holds it (`leavewar/sans-postout-oil.test.ts`, green on the first run: nothing to fix);
+the leave-charging rule's pilot check (`leavewar/engine/charge.ts isPilot`) reads the people the war shows — a man posted
+out as SANS keeps his row and seat, so he is read rightly; an ordinary SANS pilot hidden from the war has no figure on any
+screen while hidden, and the charge is worked out afresh on every read, never saved, so once "+ SANS" shows him he is
+read as a pilot — not a fault, nothing filed. **Found, not fixed (chat 140):** (g) readers left on today's SANS tick, each
+to be decided in the bug check's roll-call: the ALL AVAIL window's pucks, the Inputs calendar's opened day (its seat lists
+and pucks), the SANS day's pucks, the SANS highlight chip, and the Leave War's Available rows, which leave a SANS man out
+of the count on every date — a date before his SANS date then counts one fewer (`leavewar/engine/availrows.ts`); who may
+FILE SANS availability stays on today's tick on purpose (a filing asks who he is now). OWED: the bug check (FULL) — its
+sizing, walk, reads and sheet (`raptor-port/docs/handpass/2026-11-22-sans-from-date.md`, not yet laid down) — then his look.
+**(g) as it stands after the roll-call and Astra's scenario design (22 Nov 26, the sheet's §3 and §6):** FIXED in this
+job, each with a test that failed first — the ALL AVAIL window's pucks, the Medical page's "as of" cards, View-only Sched's
+next-week preview of a published day (each man as that version kept him, D186) and a preview already drawn (it now
+follows a tick). STILL OPEN, each on past dates only: the Inputs calendar's opened day (its seat lists and pucks,
+`ui/InputsCal.tsx` 1247–1253, 1420), the SANS day's pucks and the SANS calendar's Highlight list for a man whose SANS has
+ended (`ui/SansDay.tsx`, `ui/sanscal-model.ts sansRoster`), and the Leave War's Available rows
+(`leavewar/engine/availrows.ts` NO_SANS; the roster the war is handed, `leavewar/state/raptorRoster.ts`, carries no SANS
+dates) — after an UNTICK a past day he was SANS on counts him BOTH as a regular available and as committed SANS, so that
+day's "still needed" reads one fewer; the bid warning, Approvals' LOWEST AVAIL and the red-day list follow the same
+count. The fix Astra names: hand the count the stint-aware roster with his SANS dates and leave SANS men out by the date
+counted, the grid's whole-row rule kept (D321, D1692). The SANS highlight chip stays on today's tick, for his word.
+**(h) the pending list can credit a SANS change to the wrong person (Astra's scenario 12, read in the code, not walked):**
+admin A ticks a man SANS on a day that makes a published day read "SANS: no → yes"; a later untick by admin B (which no
+longer removes that difference — D2313) is then the newest SANS line, and the pending line's "who and when" names B
+(`ui/pendlist.ts qualsLine` takes the newest SANS line whatever its direction). Words only. Fix: hand `qualsLine` the
+value the day now reads and take the newest SANS line whose `to` is that value, any line as the fallback; a test through
+the pending list of a published day.
+**From the two blind code reads of 22 Nov 26 (Astra `raptor-port/docs/superpowers/briefs/2026-11-22-sans-from-date-read-astra.md`,
+the fresh Opus reader `…-read-opus.md` — each report holds its failing test), found, not fixed:**
+**(i) ALL AVAIL leaves out a man posted out as SANS who is planned with us (Astra #1; reproduced by its test, then the
+test taken out of the suite — it is older than this job, the same lines stand on `main`):** with "+ SANS" off the war, a
+man posted out as SANS and named on a day's programme is passed by the SANS check and then dropped as "posted out" by the
+war's row (`leavewar/sync.ts availableFor`, the `inSquadron` read), so the crowd a day freezes, and its OIL, lack him;
+with "+ SANS" on he counts (D27). Fix Astra names: read whether he is still ours from the saved posting, not from the
+row the display switch shapes — from a SANS posting's date the posting is not a departure for a man engaged that day;
+keep the post-in, archive, delete and clash checks. OIL: fix with a test first, before the whole-app check.
+**(j) after a hand untick, the SANS days a posting made stay when the posting is undone or moved later (Opus #2):** a
+question for him — a tick touched by hand has been the admin's own since it was built; should the posting's take-back
+still take the days before that untick? Fix if yes: tag the stretch a posting made, drop it in the take-back.
+**(k) the SANS day says "no longer SANS" of a man who is not SANS yet (Opus #3):** `ui/sanscal-model.ts sansDayGroups`;
+new words ("not yet SANS") — drawn for him first (D1625).
+**(l) a member's own-row command may write any SANS start or ended stretch (Opus #4):** the screen writes only today;
+the commit gate (`state/perms.ts`, the own-row check) does not hold `sanFrom` / `sanWas` to today — for the security
+review before the database step (D1411, `[DB-SECURITY-ROLES]`).
+**(g) gains one more reader on today's tick (Astra #3):** the input window's "Several people" picker groups and draws a
+dated input's people by today's tick (`ui/PeoplePick.tsx`) — with the Inputs calendar's opened day.
 

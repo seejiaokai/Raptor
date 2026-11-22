@@ -1910,7 +1910,8 @@ change of a posting record starts from a before-image, never none, that image th
 stands, its date and outcome the same after; a posting made up or rewritten in a browser's memory, outside every changeset,
 is never carried out (the pass also puts the postings in memory back to the saved ones before it reads which are due); that man's `Person` row in that outcome's own fields alone, its mark set —
 Overseas Sqn `archived`, `archivedBy` = posting, `archivedOn`; SANS `san`, the SANS qualification, `sanQ`, `sanBy` =
-posting; Delete `deleted`, `deletedFrom`, `archived`, `archivedBy` = delete; his `User` (suspended, or deleted with an
+posting, and the day it counts from, `sanFrom`, with the earlier stretches `sanWas` (D2313 — at the database step one
+child row a stretch of SANS, person, from, to: the app reads who was SANS on a day from them); Delete `deleted`, `deletedFrom`, `archived`, `archivedBy` = delete; his `User` (suspended, or deleted with an
 `AccessRequest` under its sign-in name, his `AccessRequestSeen` and every `UnitGrant` naming that `User`, a right he held in
 another squadron — fix read 12, fault A, 20 Nov 26: the delete drops them, and the gate refused the whole pass for them) —
 and no other person's rows; no `User` row goes while a `UnitGrant` still names it (G5), for the pass as for a person. One exception, the demo's:

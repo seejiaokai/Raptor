@@ -1223,3 +1223,38 @@ local database), but it could as well have been lost saved data.
 **Suggested improvement:** in the handoff skill's and the sheet's close: tally every walker's results file by
 pass / fail / note and name each failed line with its disposition; a report's "PASS" is never copied without that tally.
 **Principle:** A summary of a test run is not the run; count the raw results before repeating anyone's verdict.
+
+### Observation 1012: A rule that counts "from today" needs the walk's clock set — the running app's today is months past the demo week
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 140, the walk of SANS from its date (D2313); numbered past 1009–1011, which other branches hold
+**Skill:** the bug-check order's walk (`raptor-port/docs/walk-scripts.md` §1, §2)
+**Type:** open-source
+**Phase/Area:** before the walkers start — the host's own short walk, and the walkers' brief
+
+**Issue:** The change made a hand tick count "from the day it is made". The app's today in a walk is the PC's real date
+(22 Nov), months after the demo week every walk draws (13 Jul): a tick made in an unclocked browser would have left
+every demo day "before his date", and each scenario about "from today on" would have passed while proving nothing. The
+host's own short walk caught it only because the first draft of the brief was written against the unit tests' fixed
+today. The same short walk also found that the page the route starts on opens filtered (Quals on Pilots; the man was a
+WSO), which the source read had not shown.
+**Suggested improvement:** in `walk-scripts.md` §1, beside "the clock is set to a start time and left running": when a
+change reads today's date, the sizing lines say which today each scenario needs relative to the demo week, the brief
+gives the clock line and how to move it a day (`page.clock.fastForward`), and the host's short walk logs the app's own
+today before the first step.
+**Principle:** A date rule is only walked when the walk's "today" stands where the rule's boundary can be seen from both
+sides.
+
+### Observation 1015: A closing report listed the agent's own readings in words alone, in its own shorthand
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** Chat 140, the closing report of SANS from its date (D2313). Numbered past 1013 and 1014, which other open branches hold.
+**Skill:** session-handoff (the closing report) / the plain-language rule
+**Type:** open-source
+**Phase/Area:** The part of a closing report that lists choices the builder made for the owner to keep or strike
+
+**Issue:** The report listed four readings as one-line statements, two of them in the builder's own shorthand ("hand untick") and none with a picture, though each was about what a screen shows. The owner had to ask what the shorthand meant, and then ask for the readings again with pictures. Taking the pictures also surfaced a consequence the one-liner had not stated (a man posted out from a date ahead cannot be filed for until that date).
+**Suggested improvement:** In the closing-report step, each listed reading about something on screen carries a worked example (who, which days, what the screen shows) and a marked picture of the real app, taken before the report is sent; a reading is written as who presses what on which page, never with a label coined during the build. Reuse one small script that drives the built app and cuts each picture to its place (here `raptor-port/scripts/handpass/sfd-explain.mjs`).
+**Principle:** A choice put to someone to keep or strike is only decidable when it is shown as a case on the thing itself; a one-line statement in the builder's vocabulary hides both its meaning and its costs.
