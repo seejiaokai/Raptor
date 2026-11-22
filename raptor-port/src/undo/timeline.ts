@@ -500,6 +500,12 @@ function writerOf(key: string, rev: number): CommitEnvelope | undefined {
   for (let i = s.length - 1; i >= 0; i--) if (s[i].revs && s[i].revs![key] === rev) return s[i]
   return undefined
 }
+/* …and the newest envelope that wrote `key` and made the change `by` asks for (outOfBandWords' `by`, above) */
+function writerWhere(key: string, by: (env: CommitEnvelope) => boolean): CommitEnvelope | undefined {
+  const s = commandStream()
+  for (let i = s.length - 1; i >= 0; i--) if (s[i].revs && s[i].revs![key] != null && by(s[i])) return s[i]
+  return undefined
+}
 function liveRevision(key: string): number {
   const slash = key.indexOf('/')
   return revisionOf(key.slice(0, slash), key.slice(slash + 1))
@@ -813,13 +819,17 @@ function dayKeysOf(entry: UndoEntry): string[] {
    (his callsign), the app's own posting pass, or — when nothing names it — today's words. */
 const OUT_OF_BAND = 'Something else changed this after your action — it can’t be undone now.'
 /* (exported for a refusal the wiring finds by its own rule on a record another person changed — state/undo-wire.ts
-   masterRightRefusal, the fix read's A4 — so it names him by this one body) */
-export function outOfBandWords(key: string): string {
-  let a = BARRIER_BY.get(key)
-  if (!a) { const w = writerOf(key, liveRevision(key)); if (w && w.origin !== 'user' && w.origin !== 'restore') a = w.actor }
+   masterRightRefusal, the fix reads' A4 and their third round — so it names him by this one body.) `by`: where the thing
+   that blocks is one CHANGE of the record rather than its last write — the master mark set on an account whose name was
+   changed since by someone else — the newest command that wrote the record AND made that change is the one named, never
+   the row's later writer of another field; his own step in this line (origin 'user') names nobody, as here always. */
+export function outOfBandWords(key: string, by?: (env: CommitEnvelope) => boolean): string {
+  const writer = (): CommitEnvelope | undefined => (by ? writerWhere(key, by) : writerOf(key, liveRevision(key)))
+  let a = by ? undefined : BARRIER_BY.get(key)
+  if (!a) { const w = writer(); if (w && w.origin !== 'user' && w.origin !== 'restore') a = w.actor }
   if (!a) return OUT_OF_BAND
   if (a.role === 'system') {
-    const w = writerOf(key, liveRevision(key))
+    const w = writer()
     return w && w.type === 'lw.postoutRun'
       ? 'The app changed this after your action (a posting out ran) — it can’t be undone now.'
       : 'The app changed this after your action — it can’t be undone now.'

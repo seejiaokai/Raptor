@@ -1161,6 +1161,24 @@ export function requestsAfter(changes: readonly any[] | null | undefined): any[]
 /* the account an account row's image names, before a step — an unsaved seeded account (no row yet) reads as the seed */
 export const accountBefore = (id: string, image: any): any => image ?? (SEEDS_ON ? SEED.find(a => a.id === id) : null) ?? null
 
+/* NO RIGHT STANDS ON A MASTER ADMIN'S ACCOUNT AFTER A RESTORE (§15 D14 — the fix read's A1): an Undo of a right taken
+   away, or a Redo of one given, after another master admin made that man one since, would put the right back hidden under
+   "Full access" — back again the day the mark comes off; and an Undo of the mark taken off, or a Redo of it given, after
+   someone gave him a right since, would hide that right the same way. The account such a restore would leave a right
+   holding on, with that right's id, or null. The Undo refuses it naming whoever wrote what blocks it — the right, or the
+   mark (D148 — state/undo-wire.ts masterRightRefusal, the fix reads' A4 and their third round); the gate refuses the same
+   (perms.ts unitRowViolation). */
+export function masterRightLeft(list: readonly any[], rows: UnitRows): { account: string; grant: string } | null {
+  const today = todayIso()
+  for (const a of list) {
+    if (!a || a.master !== true) continue
+    const h = { id: String(a.id), pid: String(a.pid), pidFrom: a.pidFrom }
+    const g = rows.grants.find(x => x.account === a.id && grantRowHolds(h, x, today, rows))
+    if (g) return { account: String(a.id), grant: String(g.id) }
+  }
+  return null
+}
+
 /* ---- WHAT AN UNDO OR REDO MAY PUT BACK ON THE ACCOUNTS (the change-recording re-test B5, 28 Sep 26) ----
    Once the one Undo takes settings steps ([UNDO-ROSTER-SETTINGS]), an account change taken back or redone must obey the
    SAME guards the write path does — never accountsLoad's forgiving repair, which would quietly drop a duplicate or re-add
@@ -1169,20 +1187,6 @@ export const accountBefore = (id: string, image: any): any => image ?? (SEEDS_ON
    view moves and again inside the restore itself (undo/timeline.ts applyRestore). A sentence, or null.
    `next` — the accounts list the restore would leave (null: unchanged); `reqs` — the access requests it would leave. */
 /* (`rows` — the unit rows the restore would leave, when it changes any: the lock judges them, as the gate does) */
-/* NO RIGHT STANDS ON A MASTER ADMIN'S ACCOUNT AFTER A RESTORE (§15 D14 — the fix read's A1): an Undo of a right taken
-   away, or a Redo of one given, after another master admin made that man one since, would put the right back hidden under
-   "Full access" — back again the day the mark comes off. The account such a restore would leave a right holding on, or
-   null; the Undo refuses it naming who made him one (D148 — state/undo-wire.ts masterRightRefusal, the fix read's A4), and
-   the gate refuses the same (perms.ts unitRowViolation). */
-export function masterRightLeft(list: readonly any[], rows: UnitRows): string | null {
-  const today = todayIso()
-  for (const a of list) {
-    if (!a || a.master !== true) continue
-    const h = { id: String(a.id), pid: String(a.pid), pidFrom: a.pidFrom }
-    if (rows.grants.some(g => g.account === a.id && grantRowHolds(h, g, today, rows))) return String(a.id)
-  }
-  return null
-}
 export function accountsRestoreProblem(next: any[] | null, reqs: any[] | null, people: Record<string, any>, rows?: UnitRows, rowsChange = false): string | null {
   const list: any[] = next ?? ACCOUNTS_LIST
   /* at least one admin who can sign in, and one of each squadron (ADMIN_LOCK — the write path's own guard). Asked when

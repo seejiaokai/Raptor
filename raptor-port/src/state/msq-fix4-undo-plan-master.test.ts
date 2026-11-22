@@ -93,4 +93,55 @@ describe('no Undo or Redo puts a right back on a master admin\'s account (A1, §
     expect(holds(ACCT.hunter, 'u149')).toBeUndefined()
     expect(result.reason).toContain('Kestrel')
   })
+  /* THE THIRD ROUND OF READS (the Opus reader's 1 and 2, Astra's 1 — 23 Nov 26): the refusal names whoever wrote what
+     BLOCKS the step — the right given since, where the step puts the mark back; the mark set since, where it puts a right
+     back — never merely the last writer of the account's row */
+  it('D148 names Kestrel when the Undo puts the mark back over a View he gave (Opus 1)', () => {
+    signInAs('saber')
+    expect(setMaster(ACCT.kestrel, true).ok).toBe(true)
+    expect(setMaster(ACCT.hunter, true).ok).toBe(true)
+    expect(setMaster(ACCT.hunter, false).ok).toBe(true)
+    remote(KESTREL, 'grant.set', () => {
+      store.set('grant:gk1', { id: 'gk1', account: ACCT.hunter, unit: 'u149', level: 'view', from: todayIso() })
+    })
+    const u = globalUndo()
+    accountsLoad(); unitsLoad()
+    expect(u.ok).toBe(false)
+    expect(accountById(ACCT.hunter)!.master).not.toBe(true)
+    expect(u.reason).toContain('Kestrel')
+  })
+  it('a right taken away, under a mark Saber set himself, does not blame Kestrel for a name change (Opus 2)', () => {
+    signInAs('saber')
+    expect(setMaster(ACCT.kestrel, true).ok).toBe(true)
+    expect(setGrant(ACCT.hunter, 'u149', 'view', PID.hunter).ok).toBe(true)
+    expect(removeGrant(ACCT.hunter, 'u149').ok).toBe(true)
+    expect(setMaster(ACCT.hunter, true).ok).toBe(true)
+    remote(KESTREL, 'account.update', () => {
+      const key = 'account:' + ACCT.hunter
+      store.set(key, { ...store.get(key, null), name: 'hunter2' })
+    })
+    expect(globalUndo().ok).toBe(false)
+    const u = globalUndo()
+    expect(u.ok).toBe(false)
+    expect(holds(ACCT.hunter, 'u149')).toBeUndefined()
+    expect(u.reason).not.toContain('Kestrel')
+  })
+  it('names the later grant writer when Undo restores master admin (Astra 1)', () => {
+    signInAs('saber')
+    expect(setMaster(ACCT.kestrel, true).ok).toBe(true)
+    const SABER = { id: ACCT.saber, role: 'admin', personId: PID.saber, session: null } as any
+    remote(SABER, 'account.master', () => {
+      const key = 'account:' + ACCT.hunter
+      store.set(key, { ...store.get(key, null), master: true, masterFrom: todayIso(), masterAt: Date.now() })
+    })
+    expect(setMaster(ACCT.hunter, false).ok).toBe(true)
+    remote(KESTREL, 'grant.set', () => {
+      store.set('grant:ga4', { id: 'ga4', account: ACCT.hunter, unit: 'u149', level: 'view', from: todayIso() })
+    })
+    const result = globalUndo()
+    expect(result.ok).toBe(false)
+    expect(accountById(ACCT.hunter)!.master).not.toBe(true)
+    expect(holds(ACCT.hunter, 'u149')?.level).toBe('view')
+    expect(result.reason).toBe('Kestrel changed this after your action — it can’t be undone now.')
+  })
 })

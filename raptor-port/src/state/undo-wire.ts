@@ -609,17 +609,28 @@ function inputStuck(changes: Change[], entry: UndoEntry): boolean {
 /** tests only — the landing, driven with a made-up entry */
 export const _snapView = (e: UndoEntry, d: 'undo' | 'redo'): void => snapView(e, d)
 
-/* NO RIGHT LEFT ON A MASTER ADMIN'S ACCOUNT BY AN UNDO OR REDO (§15 D14 — the fix read's A1), and the refusal SAYS WHO made
-   him one (D148 — the fix read's A4): the account the restore would leave a right holding on (accounts.ts masterRightLeft,
-   over the accounts and squadron rows the restore would leave), named through the timeline's one body for "someone has
-   since changed it" (undo/timeline.ts outOfBandWords — "Kestrel changed this after your action — it can’t be undone
-   now.", today's anonymous words only where nothing names the writer). Asked only of a step that changes an account or a
+/* NO RIGHT LEFT ON A MASTER ADMIN'S ACCOUNT BY AN UNDO OR REDO (§15 D14 — the fix read's A1), and the refusal SAYS WHO wrote
+   what blocks it (D148 — the fix reads' A4 and their third round, the shape of undo/timeline.ts standingConflict: a record
+   key, named through outOfBandWords). The account the restore would leave a right holding on, and that right
+   (accounts.ts masterRightLeft, over the accounts and squadron rows the restore would leave):
+   - the step puts the RIGHT back (it writes that right's row) — what blocks it is the mark set since: the newest command
+     that set the mark on that account is named, never a later writer of another field of the row (a name changed); his
+     own step in this line names nobody ("Something else changed this…"), his other session "You changed this…";
+   - the step puts the MARK back (it writes the account's row) — what blocks it is the right given since: that right's
+     row's writer is named.
+   Today's anonymous words only where nothing names the writer. Asked only of a step that changes an account or a
    squadron row. */
 function masterRightRefusal(changes: readonly Change[]): string | null {
   const touches = changes.some(ch => ch.collection === 'settings' && (String(ch.id).startsWith(ACCOUNT_PFX) || UNIT_ROW_PREFIXES.some(p => String(ch.id).startsWith(p))))
   if (!touches) return null
-  const id = masterRightLeft(accountsAfter(changes) ?? ACCOUNTS_LIST, unitRowsAfter(changes as any))
-  return id ? outOfBandWords(`settings/${ACCOUNT_PFX}${id}`) : null
+  const left = masterRightLeft(accountsAfter(changes) ?? ACCOUNTS_LIST, unitRowsAfter(changes as any))
+  if (!left) return null
+  const acctRow = ACCOUNT_PFX + left.account
+  const writesRight = changes.some(ch => ch.collection === 'settings' && String(ch.id) === GRANT_PFX + left.grant)
+  if (!writesRight) return outOfBandWords(`settings/${GRANT_PFX}${left.grant}`)
+  const setsMark = (env: { changes: readonly Change[] }) => env.changes.some(ch => ch.collection === 'settings' && String(ch.id) === acctRow
+    && (ch.after as any)?.master === true && (ch.before as any)?.master !== true)
+  return outOfBandWords(`settings/${acctRow}`, setsMark)
 }
 
 export function installGlobalUndo(): void {

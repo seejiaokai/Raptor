@@ -2715,7 +2715,8 @@ function unitRowViolation(env: CommitEnvelope): string | null {
            the mark comes off. Units.ts setGrant and accounts.ts saveAccess refuse it at the door. A restore too (the fix
            read's A1): an Undo of a right taken away, or a Redo of one given, after another master admin made that man
            one since, put it back hidden — no right stands on a master admin's account after ANY command (§15 D14); the
-           Undo's own check refuses it first, in D148's words (accounts.ts accountsRestoreProblem) */
+           Undo's own check refuses it first, naming who wrote what blocks it (D148 — state/undo-wire.ts
+           masterRightRefusal, over accounts.ts masterRightLeft) */
         if (who.master === true && grantRowHolds(hA, n, today, after)) return `a right on a master admin's account (${id})`
         /* ITS DAY IS THE DAY IT WAS GIVEN (fix read 8, fault G — Fable's 1, the security read's SEC8-3, the fresh Opus
            read's 3): the bell's move-day test counts a grant from its `from` (notices.ts adminThen, his D2218, D2223),
