@@ -11,7 +11,10 @@ for (const [tag, m] of Object.entries(M)) {
   if (tag === 'phone') { console.log('phone', JSON.stringify(m)); continue }
   for (const st of Object.keys(m).filter(k => k.endsWith('-folded-start')).map(k => k.replace('-folded-start', ''))) {
     const a = m[`${st}-folded-start`], e = m[`${st}-folded-end`], o = m[`${st}-open-start`], u = m[`${st}-under-tab`], p = m[`${st}-arrow-presses`]
-    const home = p[0].left   // where the first press lands its day; every later press must land its own day there
+    /* the place a day has with the strip at its start; every press must land its own day there. Within 1px: at 125% a
+       scroll rests on a whole screen pixel, 0.8 of a page pixel, so a landing reads 19.2, 20 or 20.8 — before the change
+       as after it (the first press's own landing is not the measure: it can be the 20.8, and 19.2 is then 1.6 away). */
+    const home = a.days[0].left + a.weekScrollLeft
     const want = ['1', '2', '3', '4', '5', '6', '5', '4', '3', '2', '1', '0']
     const ok = p.every((x, i) => x.front === want[i] && Math.abs(x.left - home) <= 1)
     if (!ok) bad++
