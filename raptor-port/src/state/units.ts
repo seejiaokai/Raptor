@@ -19,12 +19,12 @@ import { setSchedTickAt } from '../engine/publish'
 import { PEOPLE } from '../engine/people'
 import { DEMO_149_PEOPLE } from './demoseed'
 /* the last-admin lock's words for a step's draft (accounts.ts imports this file; the call is at run time, never at load) */
-import { lockProblemFor, accountById, masterChangeProblem, signedInAccount, otherSquadronPersonProblem, adminNow } from './accounts'
+import { lockProblemFor, accountById, masterChangeProblem, signedInAccount, otherSquadronPersonProblem, adminNow, levelAcct, MASTER_ONLY_WORDS } from './accounts'
 import { lastAdminBreach, type LockWorld, type LockBreach } from './lastadmin'
 import {
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES,
   rowsFrom, placeIdOn, homeUnitOn, homeChangesIn, stintsIn, grantOn, grantHolds, datedRowsBreach, unitIn, placeIn, levelFrom, moveFrom, schedTickHolds,
-  validUnitNum, validTz, MAX_PLACE_NAME,
+  validUnitNum, validTz, MAX_PLACE_NAME, unitsAtPlace,
   type UnitRows, type Unit, type Place, type Grant, type GrantLevel, type GrantHolder, type UnitLevel, type LevelAccount, type Stint,
   type DatedBreach,
 } from './units-model'
@@ -201,11 +201,17 @@ export function putNewHome(pid: string, adderPid: string | null, named?: string)
 
 /* unit.add — a master makes a unit at a place, and names its first admin (D2184 Q10): in step 1 an existing account,
    given an 'admin' grant there (step 3 of the batch adds a new person as he would be added anywhere) */
-export function addUnit(numIn: string, placeId: string, firstAdmin?: string): UnitSave {
+/* (`place` — a place's id, or a NEW place, its name and time zone, made in the same command: "+ New place…" inside
+   "+ New squadron", one Undo step — batch 1's second half §6 item 4, D2308, R-O8b) */
+export function addUnit(numIn: string, place: string | NewPlace, firstAdmin?: string): UnitSave {
   const num = String(numIn ?? '').trim()
   if (!validUnitNum(num)) return no('Type the squadron number — letters and digits, at most 12')
   if (units().some(u => u.num === num)) return no(`Squadron ${num} is already set up`)
-  if (!placeById(placeId)) return no('Pick the place the squadron is at')
+  const np = typeof place === 'string' ? null : place
+  const npBad = np ? newPlaceProblem(np) : null
+  if (npBad) return no(npBad)
+  if (!np && !placeById(place as string)) return no('Pick the place the squadron is at')
+  const placeId = np ? newId('p') : (place as string)
   /* its first admin's Plan is a right given today (R5 — the reshape plan §4.4): said at the door in setGrant's own words,
      never the gate's reason — not between his move saved and its day, and only an admin's sign-in (PA2) */
   /* NEVER A SQUADRON WITH NO ADMIN (B6 — D2191, D2184 Q10; the reshape plan §5.2): its first admin is required, and he must
@@ -216,6 +222,9 @@ export function addUnit(numIn: string, placeId: string, firstAdmin?: string): Un
   const fa = accountById(firstAdmin)
   if (fa && homeOn(String(fa.pid), moveFrom(todayIso())) !== homeOn(String(fa.pid), todayIso())) return no('He moves squadron tomorrow — give this after the move')
   if (fa && !adminNow(fa)) return no('This change could not be saved.')
+  /* never a master admin (§15 D14): he acts in every squadron already, so Plan gives him nothing and the last-admin rule
+     would not count him (state/lastadmin.ts) — the first-admin list leaves him out; no right is ever given his account */
+  if (fa && fa.master) return no('This change could not be saved.')
   const id = newId('u'), up = newId('up'), g = newId('g')
   const draft = rowsDraft(unitRows(), {
     units: [{ id, num, kind: 'sqn' }], unitplaces: [{ id: up, unit: id, place: placeId, from: todayIso() }],
@@ -223,6 +232,7 @@ export function addUnit(numIn: string, placeId: string, firstAdmin?: string): Un
   })
   if (lockProblemFor({ rows: draft })) return no('This change could not be saved.')
   return save('unit.add', null, () => {
+    if (np) put(PLACE_PFX + placeId, { id: placeId, name: np.name.trim(), tz: np.tz })
     put(UNIT_PFX + id, { id, num, kind: 'sqn' })
     put(UNITPLACE_PFX + up, { id: up, unit: id, place: placeId, from: todayIso() })
     /* (dated the day it is given, as setGrant's: the commit gate refuses a new right not dated today — fix read 8, fault G) */
@@ -235,25 +245,70 @@ export function addUnit(numIn: string, placeId: string, firstAdmin?: string): Un
 
 /* unit.place — a unit moves: a new row from tomorrow (D2119), its past places kept; a second move typed for the same
    date replaces that date's row */
-export function moveUnit(unit: string, placeId: string): UnitSave {
+/* (`place` — a place's id, or a NEW place made in the same command: "+ New place…" in the squadron's Place list, one
+   Undo step — §6 item 2, R-O8b; by an admin of that squadron, held at the gate too) */
+export function moveUnit(unit: string, place: string | NewPlace): UnitSave {
   if (!unitById(unit)) return no('That squadron is gone')
-  if (!placeById(placeId)) return no('Pick the place the squadron is moving to')
+  const np = typeof place === 'string' ? null : place
+  const npBad = np ? newPlaceProblem(np) : null
+  if (npBad) return no(npBad)
+  if (!np && !placeById(place as string)) return no('Pick the place the squadron is moving to')
+  if (!signedInAdminOf(unit)) return no('This change could not be saved.')
+  const placeId = np ? newId('p') : (place as string)
   const from = moveFrom(todayIso())
   if (placeIdOn(unitRows(), unit, from) === placeId) return no('The squadron is already there')
   const same = unitRows().unitplaces.find(x => x.unit === unit && x.from === from)
   return save('unit.place', null, () => {
+    if (np) put(PLACE_PFX + placeId, { id: placeId, name: np.name.trim(), tz: np.tz })
     const id = same ? same.id : newId('up')
     put(UNITPLACE_PFX + id, { id, unit, place: placeId, from })
     return id
   })
 }
 
+/* A NEW PLACE, made inside the command that puts a squadron there (+ New squadron, a squadron's move) or alone by a
+   master admin — its name and time zone, the same checks as setPlace */
+export interface NewPlace { name: string; tz: string }
+function newPlaceProblem(p: NewPlace): string | null {
+  const name = String(p.name ?? '').trim()
+  if (!name || name.length > MAX_PLACE_NAME) return `Type the place's name — at most ${MAX_PLACE_NAME} characters`
+  if (!validTz(p.tz)) return 'Pick the place’s time zone'
+  return null
+}
+/* the signed-in account an admin of that squadron today — its own admin, a Plan holder, a master admin (D2299); no
+   account behind the session (a probe's or a test's) — the gate judges */
+function signedInAdminOf(unit: string): boolean {
+  const me = signedInAccount()
+  if (!me) return true
+  /* (levelOfAccount reads the role with the level: a member is no squadron's admin; a master admin is every one's) */
+  return levelOfAccount(levelAcct(me), unit, todayIso()) === 'admin'
+}
+/* WHO MAY CHANGE A PLACE (§6 item 3 — D2196, D2299, PG1; §15 D13, §16 D13′): an admin of EVERY squadron at it, today or
+   from a later day (units-model.ts unitsAtPlace), a master admin always; a place no squadron is at, and a new place on
+   its own, a master admin's. The drawn words for two (D2299); for three or more they name every one, by the same rule
+   (§9 — the agent's reading); for one, the drawn "Only an admin of 149 can change it." */
+const COUNT = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve']
+export function placeChangeProblem(placeId: string | undefined): string | null {
+  const me = signedInAccount()
+  if (!me || me.master) return null
+  if (!placeId) return MASTER_ONLY_WORDS
+  const at = unitsAtPlace(unitRows(), placeId, todayIso())
+  if (!at.length) return MASTER_ONLY_WORDS
+  if (at.every(u => signedInAdminOf(u))) return null
+  const nums = at.map(u => unitById(u)?.num ?? u).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+  if (nums.length === 1) return `Only an admin of ${nums[0]} can change it.`
+  if (nums.length === 2) return `Only an admin of both ${nums[0]} and ${nums[1]} can change the time zone: both squadrons are here.`
+  const list = `${nums.slice(0, -1).join(', ')} and ${nums[nums.length - 1]}`
+  return `Only an admin of ${list} can change the time zone: all ${COUNT[nums.length] ?? nums.length} squadrons are here.`
+}
 /* place.set — a place made, or its name or time zone changed */
 export function setPlace(p: { id?: string; name: string; tz: string }): UnitSave {
   const name = String(p.name ?? '').trim()
   if (!name || name.length > MAX_PLACE_NAME) return no(`Type the place's name — at most ${MAX_PLACE_NAME} characters`)
   if (!validTz(p.tz)) return no('Pick the place’s time zone')
   if (p.id && !placeById(p.id)) return no('That place is gone')
+  const who = placeChangeProblem(p.id)
+  if (who) return no(who)
   return save('place.set', null, () => {
     const id = p.id || newId('p')
     put(PLACE_PFX + id, { id, name, tz: p.tz })

@@ -40,7 +40,7 @@ import { UNIT, BOOT_UNIT } from '../engine/unitview'
 import { unitOf, isUnitId, split } from '../storage/unitid'
 import {
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES, validUnit, validPlace, validUnitPlace, validGrant,
-  validHome, unitIn, placeIn, placeIdOn, moveFrom, grantStart, type UnitRows, type LevelAccount, type GrantHolder,
+  validHome, unitIn, placeIn, placeIdOn, moveFrom, grantStart, unitsAtPlace, type UnitRows, type LevelAccount, type GrantHolder,
 } from './units-model'
 import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
@@ -714,8 +714,10 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
 /* THE UNITS (multi-squadron batch 1, step 1 — state/units.ts; the master mark, state/accounts.ts setMaster). The type
    says only that an admin may run it; which unit's admin is the commit gate's, read from each row (unitRowViolation) */
 Object.assign(COMMAND_OPS, {
-  'unit.add': op(T.unit, 'C', 'never', [[T.unitplace, 'C'], [T.grant, 'C']]),
-  'unit.place': op(T.unitplace, 'C'),
+  /* (…with a new place made in the same command — "+ New place…" inside the form, one Undo step: batch 1's second half
+     §6 items 2 and 4, R-O8b) */
+  'unit.add': op(T.unit, 'C', 'never', [[T.unitplace, 'C'], [T.grant, 'C'], [T.place, 'C']]),
+  'unit.place': op(T.unitplace, 'C', 'never', [[T.place, 'C']]),
   'place.set': op(T.place, 'U', 'never', [[T.place, 'C']]),
   'grant.set': op(T.grant, 'U', 'never', [[T.grant, 'C']]),
   'grant.remove': op(T.grant, 'D'),
@@ -2660,8 +2662,23 @@ function unitRowViolation(env: CommitEnvelope): string | null {
       if (!moved) for (const img of [b, n]) if (img && !adminOf(String(img.unit))) return `not an admin of ${img.unit} (${id})`
     } else if (id.startsWith(UNIT_PFX)) {
       if (!master) return `only a master admin makes or changes a unit (${id})`
-    } else if (id.startsWith(PLACE_PFX) && b != null && !master) {
-      if (!before.units.some(u => placeIdOn(before, u.id, today) === key && adminOf(u.id))) return `not an admin of a unit at that place (${id})`
+    } else if (id.startsWith(PLACE_PFX) && !master) {
+      /* A PLACE'S SQUADRONS, TODAY OR LATER (batch 1's second half §6 item 3 — D2196, D2299, PG1; §15 D13, §16 D13′): an
+         existing place changed (or removed) needs an admin of EVERY squadron at it — today or from a later day, as the rows
+         stood before the command and after it (units-model.ts unitsAtPlace, the door's one body) — and one no squadron is
+         at, a master admin. A NEW place passes only where the same command writes a squadron's place row naming it (+ New
+         squadron, a squadron's move — one command each); alone, it is a master admin's. ("Or by the admin who made it" is
+         dropped — a place row keeps no maker.) */
+      /* (an existing place is one the rows before hold — a seeded place has no stored row, so `b` alone cannot say) */
+      if (b != null || placeIn(before, key)) {
+        const at = new Set([...unitsAtPlace(before, key, today), ...unitsAtPlace(after, key, today)])
+        if (!at.size) return `a place no squadron is at, changed by one who is not a master admin (${id})`
+        for (const u of at) if (!adminOf(u)) return `not an admin of every unit at that place (${u} — ${id})`
+      } else if (n != null) {
+        const named = env.changes.some(x => x.collection === 'settings' && String(x.id).startsWith(UNITPLACE_PFX)
+          && x.op !== 'delete' && (x.after as any)?.place === key)
+        if (!named) return `a new place made alone by one who is not a master admin (${id})`
+      }
     }
   }
 

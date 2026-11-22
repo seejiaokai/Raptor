@@ -31,8 +31,11 @@ afterAll(() => { storeBackend.impl = null })
 
 describe('K1 — a squadron place row dated in the past', () => {
   it("142's plain admin back-dates 142's place to 1 Jan by a forged unit.place: refused", () => {
-    signInAs('ad2', 'a2')
+    /* (the place made by the master admin: a new place on its own is a master admin's since batch 1's second half,
+       §16 D13′ — 142's plain admin makes one only with his squadron's move onto it) */
+    signInAs('ad', 'a')
     const p = setPlace({ name: 'Det base', tz: 'Australia/Darwin' })
+    signInAs('ad2', 'a2')
     expect(p.ok).toBe(true)
     expect(placeOfOn('u142', '2026-01-05')?.id).toBe('p1')
     const r = commitSettingsIntent('unit.place', null, () => {
@@ -43,8 +46,11 @@ describe('K1 — a squadron place row dated in the past', () => {
   })
   it('…and deletes a place row in force since 2 Jul, on 10 Jul: refused', () => {
     vi.setSystemTime(new Date(2026, 6, 1, 9, 0, 0)); unitsLoad()
-    signInAs('ad2', 'a2')
+    /* (the place made by the master admin: a new place on its own is a master admin's since batch 1's second half,
+       §16 D13′ — 142's plain admin makes one only with his squadron's move onto it) */
+    signInAs('ad', 'a')
     const p = setPlace({ name: 'Det base', tz: 'Australia/Darwin' })
+    signInAs('ad2', 'a2')
     expect(moveUnit('u142', p.id!).ok).toBe(true)
     vi.setSystemTime(new Date(2026, 6, 10, 9, 0, 0)); unitsLoad()
     expect(placeOfOn('u142', '2026-07-05')?.id).toBe(p.id)
@@ -54,8 +60,11 @@ describe('K1 — a squadron place row dated in the past', () => {
     expect(r.ok, `committed; 142's place on 5 Jul now ${placeOfOn('u142', '2026-07-05')?.id}`).toBe(false)
   })
   it('(control) the honest move writes tomorrow only', () => {
-    signInAs('ad2', 'a2')
+    /* (the place made by the master admin: a new place on its own is a master admin's since batch 1's second half,
+       §16 D13′ — 142's plain admin makes one only with his squadron's move onto it) */
+    signInAs('ad', 'a')
     const p = setPlace({ name: 'Det base', tz: 'Australia/Darwin' })
+    signInAs('ad2', 'a2')
     expect(moveUnit('u142', p.id!).ok).toBe(true)
     unitsLoad()
     expect(placeOfOn('u142', '2026-07-15')?.id).toBe('p1')
