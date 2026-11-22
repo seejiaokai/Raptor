@@ -183,11 +183,13 @@ const no = (message: string): UnitSave => ({ ok: false, message })
    roster-add.ts and accounts.ts): the adder's own home unit by default (D2094), from today. Nothing when the adder has no
    home (a shared store whose rows are not made yet) — the gate's own check then has nothing to judge. Mutations only. */
 /* (PD1 — the page's squadron where the signed-in adder runs it: installed by perms.ts, which this file never imports) */
+/* (`named` — the Home squadron Add a person names, batch 1's second half §4 item 7, R-A3: it wins over both defaults; the
+   door has checked it is there and the adder's to give — roster-add.ts newHomeProblem — and the gate checks it again) */
 let NEW_HOME_UNIT: ((adderPid: string | null) => string | null) | null = null
 export function setNewHomeUnit(fn: ((adderPid: string | null) => string | null) | null): void { NEW_HOME_UNIT = fn }
-export function putNewHome(pid: string, adderPid: string | null): void {
+export function putNewHome(pid: string, adderPid: string | null, named?: string): void {
   if (!isCommitting()) throw new Error('A home is written only inside the command that makes the person')
-  const unit = (NEW_HOME_UNIT && NEW_HOME_UNIT(adderPid)) || (adderPid ? homeOn(adderPid, todayIso()) : fallbackHome())
+  const unit = named || (NEW_HOME_UNIT && NEW_HOME_UNIT(adderPid)) || (adderPid ? homeOn(adderPid, todayIso()) : fallbackHome())
   if (!unit) return
   const id = newId('h')
   /* written as the accounts write theirs — no read-back: this row rides inside ANOTHER module's command, and a world

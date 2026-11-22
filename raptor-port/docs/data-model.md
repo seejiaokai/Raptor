@@ -1878,11 +1878,21 @@ squadron are judged by whose they are:
   `LeaveBid` and `LeaveLedger` rows, never the war loaded — each a record whose id names that squadron
   (`lwx.profile` / `lwx.rec` / `lwx.ledger`, `<unit>@<local>`), so the unit rule above asks for an admin of it; a member
   writes none of them (`src/state/perms.ts`, the member's admin-only records; `src/leavewar/state/foreign.ts`). Those four
-  doors are a person's only writers of a war that is not loaded — the app's own posting pass is the other (below, the
+  doors — and the three adds, for the new man's first window only (below) — are a person's only writers of a war that
+  is not loaded — the app's own posting pass is the other (below, the
   reshape's A5); the war's other passes for it run when it is next opened. The gate
   holds them to that (job 2's security read, SEC-5, 19 Nov 26): an admin's `lwx` row is refused in any other command,
   refused for the war loaded, and its posting window obeys the master admin's posting rule as the war's own `lw.postouts`
   does — a Delete posting for a master admin never, an Overseas Sqn posting for one only by a master admin.
+  **Add a person's Home squadron (batch 1's second half §4 item 7 — R-A3):** the
+  three adds (`person.add`, `account.addNew`, `access.approveNew`) name the new man's home squadron — the page's by
+  default, any squadron the adder is an admin of (his own, one he holds Plan of, any for a master admin), the door's
+  check `src/state/roster-add.ts newHomeProblem` and the gate's `homeUnitViolation`. His home row and his first stint
+  are both that squadron's in the one command: where it is not the war loaded, his post-in is his first
+  `lwx.profile/<unit>@<pid>` in that squadron's stored war (`src/leavewar/sync.ts postInNewPerson`). The gate takes such
+  a row from an add only where the command makes that man (his people row new in it), it is new (no row before), and
+  its squadron is the one his new home names (`src/state/perms.ts newManFirstWindow`); any other `lwx` row in an add is
+  refused.
 
 **The day lock (29 Sep 26, D355, D450 — section 9):** *(8 Nov 26, his D1751: a simple mark the app holds — none of the Dataverse privileges, team or server check in this paragraph is built.)* the lock is columns of `ScheduleDay` (section 3), so it follows
 the ScheduleWeek family's row — an admin takes, releases and takes over a day (every scheduler is an admin; in

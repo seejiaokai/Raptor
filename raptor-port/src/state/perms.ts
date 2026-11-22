@@ -1816,6 +1816,16 @@ function removesOnly(c: Change): boolean {
 /* Admin → Users' doors, the only commands that write the second store (leavewar/sync.ts foreignOf's callers: Archive,
    Restore and Restore as — one type — and Delete) */
 const LWX_DOORS = new Set(['person.archive', 'person.restore', 'person.delete'])
+/* …and the three adds (batch 1's second half §4 item 7 — R-A3: the Home squadron Add a person names), which write there
+   only the FIRST window of the man the command makes, in the squadron his new home names — never another man's, never
+   a record beside it. Who may add to that squadron is homeUnitViolation's (an admin of the new man's home). */
+const LWX_ADDS = new Set(['person.add', 'account.addNew', 'access.approveNew'])
+function newManFirstWindow(env: CommitEnvelope, c: Change): boolean {
+  if (c.collection !== 'lwx.profile' || c.before != null || c.op === 'delete' || c.after == null) return false
+  const { unit, local } = split(String(c.id))
+  const made = env.changes.some(p => p.collection === 'people' && p.before == null && String(p.id) === local)
+  return made && !!unit && homeBefore(local, todayIso(), unitRowsBefore([])) === unit
+}
 function warUnitViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system') return null
@@ -1827,7 +1837,8 @@ function warUnitViolation(env: CommitEnvelope): string | null {
   const u = lwUnitNow()
   /* (a member is refused every `lwx` row by section 7 — an admin's record — and is told so there) */
   for (const c of a.role === 'admin' ? fx : []) {
-    if (!LWX_DOORS.has(env.type)) return `another squadron's stored war written outside Admin → Users' doors, through the second store (${c.collection}/${c.id})`
+    const door = LWX_DOORS.has(env.type) || (LWX_ADDS.has(env.type) && newManFirstWindow(env, c))
+    if (!door) return `another squadron's stored war written outside Admin → Users' doors, through the second store (${c.collection}/${c.id})`
     if (u && unitOf(String(c.id)) === u) return `the war loaded written through the second store (${c.collection}/${c.id})`
   }
   /* A7 — leave a war approved goes onto no day that is not that war's squadron's (the probe above) */

@@ -64,12 +64,13 @@
 import { elogNow, type LinePos } from '../engine/editlog'
 import { store } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
+import { rosterOf } from '../engine/roster'
 import { SESSION } from './auth'
-import { isAdmin, mayManageAccounts, mayManageRoster, mayRequestAccess, me, roleOf } from './perms'
+import { isAdmin, mayManageAccounts, mayManageRoster, mayRequestAccess, me, roleOf, pageUnit } from './perms'
 import { commitSettingsIntent, commitPeopleSettingsIntent, commitPeopleIntent } from './people-settings-commit'
 import {
   MAX_CS, MAX_INITIALS, SEATS, catsFor, seatLabel, tidyPerson, newPersonProblem, putNewPerson, addRosterPerson, saidOf,
-  postInProblem, type NewPerson,
+  postInProblem, newHomeProblem, type NewPerson,
 } from './roster-add'
 import { HOOKS } from '../engine/hooks'
 import { putNewHome, dropGrantsOfAccount, dropGrantRows, levelOfAccount, levelBefore, homeBefore, todayIso, homeOn, units, unitById, unitRows, grantOfOn, lockBreach, rowsDraft, putGrantLine, PLAN_MASTER_ONLY } from './units'
@@ -298,9 +299,14 @@ export function accountCallsign(a: Account | undefined): string {
    ALL AVAIL placeholders, and without an account (`keep` is the one already linked — kept
    even when he has since been ARCHIVED: posting out keeps his account, and the editor's
    picker must show who it belongs to, not a blank "Pick…" over a hidden value — Astra's
-   fix check #2; pidProblem already lets an account keep its archived person) */
-export function linkablePeople(keep?: string): string[] {
-  return Object.keys(PEOPLE).filter(id => {
+   fix check #2; pidProblem already lets an account keep its archived person).
+   BY SQUADRON (batch 1's second half §4 item 1 — O3): the page's squadron's men only (`pageUnit('own')` — his own, or
+   the one picked for a master admin or a Plan holder of it), read through rosterOf, the one walk; `keep` stays whatever
+   his squadron, for the same reason as above. */
+export function linkablePeople(keep?: string, unit: string = pageUnit('own')): string[] {
+  const ids = rosterOf(unit, todayIso())
+  if (keep && (PEOPLE as any)[keep] && !ids.includes(keep)) ids.push(keep)
+  return ids.filter(id => {
     const p = (PEOPLE as any)[id]
     return p && !p.special && (id === keep || (!p.archived && !accountOfPid(id)))
   }).sort((a, b) => String((PEOPLE as any)[a].cs).localeCompare(String((PEOPLE as any)[b].cs)))
@@ -1071,18 +1077,20 @@ export function storedAccountNamed(nameIn: any): boolean {
    rolls both back and still says why). A blank sign-in makes a roster-only person (D217 —
    someone who will not use the app): the people command alone. */
 /* `postIn` — his post-in date (D308, [ONE-DOOR]): written on the war in the same command (HOOKS.warPostIn) */
-export function addPersonAndAccount(nameIn: any, np: NewPerson, role: AccountRole, postIn?: string): string | null {
+/* `unit` — his home squadron (Add a person's "Home squadron", batch 1's second half §4 item 7 — R-A3): his home row and
+   his first stint both that squadron's, in this one command (roster-add.ts newHomeProblem; leavewar/sync.ts postInNewPerson) */
+export function addPersonAndAccount(nameIn: any, np: NewPerson, role: AccountRole, postIn?: string, unit?: string): string | null {
   const name = normName(nameIn)
-  if (!name) return addRosterPerson(np, postIn)
+  if (!name) return addRosterPerson(np, postIn, unit)
   if (!mayManageAccounts() || !mayManageRoster()) return 'Only an admin can add a person'
-  const bad = nameProblem(name) || newPersonProblem(np) || (isAccountRole(role) ? null : 'Pick member or admin')
+  const bad = newHomeProblem(unit, 'Only an admin can add a person') || nameProblem(name) || newPersonProblem(np) || (isAccountRole(role) ? null : 'Pick member or admin')
     || (postIn !== undefined ? postInProblem(postIn) : null)
   if (bad) return bad
   return saidOf(commitPeopleSettingsIntent('account.addNew', null, txn => {
     const pid = putNewPerson(np)
     /* his home unit, in the same command — the adder's own by default (D2094); written BEFORE the war's post-in, which
        finds him in the projection of the war's own squadron (the second fix read, 18 Nov 26 — Astra 4) */
-    putNewHome(pid, me())
+    putNewHome(pid, me(), unit)
     if (postIn !== undefined) HOOKS.warPostIn(txn, pid, postIn)
     writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name, role, pid, on: true, ...newAccountStamp() }])
     if (requestByName(name)) writeReqs(ACCESS_REQS.filter(r => r.name !== name))
@@ -1090,8 +1098,10 @@ export function addPersonAndAccount(nameIn: any, np: NewPerson, role: AccountRol
 }
 /* approving with New person: the person from what he gave, with the admin's corrections,
    his account, and the request answered — one command */
-export function approveRequestNew(reqId: string, np: NewPerson, role: AccountRole, postIn?: string): string | null {
+export function approveRequestNew(reqId: string, np: NewPerson, role: AccountRole, postIn?: string, unit?: string): string | null {
   if (!mayManageAccounts() || !mayManageRoster()) return 'Only an admin can approve a request'
+  const notHis = newHomeProblem(unit, 'Only an admin can approve a request')
+  if (notHis) return notHis
   const rq = ACCESS_REQS.find(r => r.id === reqId)
   if (!rq) return 'That request is gone'
   const bad = nameProblem(rq.name) || newPersonProblem(np) || (isAccountRole(role) ? null : 'Pick member or admin')
@@ -1099,7 +1109,7 @@ export function approveRequestNew(reqId: string, np: NewPerson, role: AccountRol
   if (bad) return bad
   return saidOf(commitPeopleSettingsIntent('access.approveNew', null, txn => {
     const pid = putNewPerson(np)
-    putNewHome(pid, me())   // his home unit, before the war's post-in (Astra 4) — the approving admin's own by default (D2094)
+    putNewHome(pid, me(), unit)   // his home unit, before the war's post-in (Astra 4) — the approving admin's own by default (D2094); the named one wins (§4 item 7)
     if (postIn !== undefined) HOOKS.warPostIn(txn, pid, postIn)
     writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name: rq.name, role, pid, on: true, ...newAccountStamp() }])
     writeReqs(ACCESS_REQS.filter(r => r.id !== reqId))

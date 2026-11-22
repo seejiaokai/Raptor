@@ -37,7 +37,9 @@ import {
   SEATS, catsFor, MAX_CS, MAX_INITIALS, CALLSIGN_LABEL, CS_TOO_LONG, callsignProblem, nextFreeCallsign, type NewPerson,
 } from '../state/roster-add'
 import { SESSION } from '../state/auth'
-import { me } from '../state/perms'
+import { me, pageUnit } from '../state/perms'
+import { todayIso } from '../state/units'
+import { usersListOf } from './userslist-model'
 import { notify } from '../state/store'
 import { deletePerson, effectiveToday } from '../state/person-delete'
 import { updatePersonField } from '../state/quals-write'
@@ -518,16 +520,15 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   /* the search (the agent's call on the approved page): a callsign or a sign-in name, anywhere in it; the Archived
      group opens while it holds a match */
   const q = find.trim().toLowerCase()
-  const matches = (pid: string) => {
-    if (!q) return true
-    const a = accountOfPid(pid)
-    return cs(pid).toLowerCase().includes(q) || (!!a && a.name.includes(q))
-  }
-  const everyone = Object.keys(PEOPLE).filter(id => P(id) && !P(id).special && !P(id).deleted)
-  const onRoster = everyone.filter(id => !P(id).archived)
-  const archived = everyone.filter(id => P(id).archived)
-  const rosterShown = onRoster.filter(matches).sort(byCs)
-  const archShown = archived.filter(matches).sort(byCs)
+  /* BY SQUADRON (batch 1's second half §4 item 1 — 7a, R-O4, 5b; O3): the page's squadron's people, its Plan holders and
+     its archived men; a search also finds a man of another squadron (ui/userslist-model.ts). The heading counts the
+     squadron's own people only. (How a Plan holder's or another squadron's row reads — "· also plans 149", his
+     squadron, read only — is the screens' step, phase 3, drawn first.) */
+  const unit = pageUnit('own'), today = todayIso()
+  const list = usersListOf(unit, today, q)
+  const archived = q ? usersListOf(unit, today, '').archived : list.archived
+  const rosterShown = [...list.own, ...list.planners, ...list.found].sort(byCs)
+  const archShown = list.archived
   const archOpenNow = archOpen ?? (!!q && archShown.length > 0)
   const toggle = (pid: string) => setEditing(editing === pid ? null : pid)
   return (
@@ -536,7 +537,7 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
       <Waiting />
       <hr className="adm-sep" />
       <div className="od-head">
-        <h4 className="adm-sub">People · {onRoster.length}</h4>
+        <h4 className="adm-sub">People · {list.count}</h4>
         {/* the app's line magnifier, as in every search box (owner D1127, 21 Oct 26 — never the coloured emoji) */}
         <div className="searchbox od-find"><SrchIcon /><input id="accFind" type="search" value={find} placeholder="Find a callsign or sign-in"
           aria-label="Find a callsign or sign-in" onChange={e => { setFind(e.target.value); setArchOpen(null) }} /></div>

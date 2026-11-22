@@ -28,10 +28,10 @@
 import { PEOPLE, QCHIP, deriveQuals, indexCallsigns, callsignTakenBy } from '../engine/people'
 import { newId } from '../engine/newid'
 import { CmdRefused, isCommitting } from '../command'
-import { mayManageRoster, me } from './perms'
+import { mayManageRoster, me, adminOfUnit } from './perms'
 import { HOOKS } from '../engine/hooks'
 import { commitPeopleSettingsIntent } from './people-settings-commit'
-import { putNewHome } from './units'
+import { putNewHome, unitById } from './units'
 
 /* the ONE seat list every form reads (D220) — the stored value is the seat code */
 export const SEATS: { v: 'FCP' | 'RCP' | 'GND'; l: string }[] = [
@@ -145,16 +145,27 @@ export function saidOf(r: any): string | null {
 export const postInProblem = (d: any): string | null =>
   typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d) ? null : 'Pick the post-in date'
 
-/* the admin's roster-only add — a blank sign-in on Admin → Users (D217), with his post-in date (D308) */
-export function addRosterPerson(np: NewPerson, postIn?: string): string | null {
+/* THE HOME SQUADRON AN ADD NAMES (batch 1's second half §4 item 7 — R-A3; Add a person's "Home squadron", 6c): a squadron
+   that is there, and one the adder is an admin of — his own, one he holds Plan of, any for a master admin (perms.ts
+   adminOfUnit). None named: the page's own, as before (PD1). `notHis` — the door's own words for "not yours to add to"
+   (the screen offers only his, so these are a backstop; no new words, D1625). */
+export function newHomeProblem(unit: string | undefined, notHis: string): string | null {
+  if (unit === undefined) return null
+  if (!unitById(unit)) return 'That did not save'
+  return adminOfUnit(unit) ? null : notHis
+}
+
+/* the admin's roster-only add — a blank sign-in on Admin → Users (D217), with his post-in date (D308) and his home
+   squadron (`unit`, §4 item 7 — his first stint written to that squadron's war, leavewar/sync.ts postInNewPerson) */
+export function addRosterPerson(np: NewPerson, postIn?: string, unit?: string): string | null {
   if (!mayManageRoster()) return 'Only an admin can add someone'
-  const bad = newPersonProblem(np) || (postIn !== undefined ? postInProblem(postIn) : null)
+  const bad = newHomeProblem(unit, 'Only an admin can add someone') || newPersonProblem(np) || (postIn !== undefined ? postInProblem(postIn) : null)
   if (bad) return bad
   /* the settings store enlisted too since multi-squadron batch 1, step 1: his home unit is written in the same command
      (the adder's own by default, D2094 — state/units.ts putNewHome), so a person is never made without one */
   return saidOf(commitPeopleSettingsIntent('person.add', null, txn => {
     const id = putNewPerson(np)
-    putNewHome(id, me())   // before the war's post-in, which finds him in its own squadron's projection (Astra 4)
+    putNewHome(id, me(), unit)   // before the war's post-in, which finds him in its own squadron's projection (Astra 4)
     if (postIn !== undefined) HOOKS.warPostIn(txn, id, postIn)
   }))
 }

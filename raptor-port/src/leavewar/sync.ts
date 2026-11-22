@@ -3665,8 +3665,25 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
 }
 /* A NEW PERSON'S POST-IN DATE (D308, [ONE-DOOR]) — the war half of the one add, inside its command: the war's store
    enlisted, his war identity taken from the projection (the war has not re-projected him yet), his first stint opened on
-   the date. Refused whole (the add rolls back) if the war cannot take it. */
+   the date. Refused whole (the add rolls back) if the war cannot take it.
+   HIS HOME SQUADRON'S WAR, NOT ALWAYS THE ONE LOADED (batch 1's second half §4 item 7 — R-A3): Add a person names his
+   home squadron, written just before this in the same command (state/units.ts putNewHome). When it is another squadron
+   than the war loaded, his first stint goes to THAT squadron's stored war through the second store (state/foreign.ts),
+   as Restore's does (restoreBody) — never into the war loaded, which would count a 149 man in 142's war, and never
+   lost, which the old refusal did. A new man has nothing stored there yet, so nothing is loaded first. The gate takes
+   this second-store write only for the man the command makes, and only his first window (state/perms.ts
+   warUnitViolation). */
 function postInNewPerson(txn: Txn, id: string, date: string): void {
+  const fu = foreignHome(id)
+  if (fu) {
+    const fw = foreignWar(fu)
+    txn.enlist(fw)
+    const person = foreignPerson(null, fu, id)
+    const next = person ? stintOpened(person, date) : null
+    if (!next) throw new CmdRefused(person ? 'Pick the post-in date' : 'That did not save')
+    fw.setPost(id, next)
+    return
+  }
   txn.enlist(lwStore)
   const identity = projectPeople(true).find(p => p.id === id)
   /* no identity with a war loaded means the add would lose his date in silence (the second fix read, 18 Nov 26 —
