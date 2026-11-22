@@ -27,6 +27,30 @@ const KEY = [
   ['Plan of a squadron', 'For an admin only. Full access to that squadron, every page: its schedule and publishing, its settings, its people and their sign-ins.'],
   ['Master admin', 'Full access to every squadron. Only a master admin makes a squadron, gives Plan or makes a master admin.'],
 ]
+// D2302 (22 Nov 26): the roles table, drafted by Fable from his rulings and the code, every cell proved
+// (scratchpad roles-table.md), spot-checked by the host: Edit Schedule hidden from a member (ui/Shell.tsx), View reaches
+// only View-only Sched and Logic (D2252), a member does everything in the Tracker but the flex settings (tracker page, D121, D1014)
+const TABLE = {
+  label: 'View and Plan give access to another squadron.',
+  head: ['', 'Member', 'Admin', 'View', 'Plan', 'Master admin'],
+  rows: [
+    ['Edit Schedule', '—', '✓', '—', '✓', '✓'],
+    ['View-only Sched', 'read', 'read', 'read', 'read', 'read'],
+    ['Logic', 'read', '✓', 'read', '✓', '✓'],
+    ['Inputs', '✓^1', '✓', '—', '✓', '✓'],
+    ['Quals', '✓^2', '✓', '—', '✓', '✓'],
+    ['Leave War', '✓^3', '✓', '—', '✓', '✓'],
+    ['Tracker', '✓^4', '✓', '—', '✓', '✓'],
+    ['Admin', '—', '✓^5', '—', '✓^5', '✓'],
+  ],
+  notes: [
+    'Own inputs, and duties and commitments for others while the admin allows it. Sees everyone\'s.',
+    'Own row only: not the callsign, Management or Scheduler tick.',
+    'Bids for own leave. Sees everyone\'s leave.',
+    'Everything but the flex settings.',
+    'Only a master admin makes squadrons, gives Plan or makes a master admin.',
+  ],
+}
 const SIZES = {
   d: { engine: chromium, opts: { viewport: { width: 1536, height: 864 }, deviceScaleFactor: 2 } },
   p: { engine: webkit, opts: { viewport: { width: 402, height: 874 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 } },
@@ -55,6 +79,25 @@ const CSS = `
 @media (max-width: 600px) {
   #page-admin .mqk dl { grid-template-columns: 1fr; gap: 0; }
   #page-admin .mqk dd { margin-bottom: 6px; }
+}
+/* the roles table (D2302): the field labels' small grey caps for the heads, the accent for a tick */
+#page-admin .mqk .mqt-lab, #page-admin .mqk .mqt-key { font-size: 12px; color: var(--ink-2); margin: 4px 0 6px 14px; }
+#page-admin .mqk .mqt-key { margin: 6px 0 2px 14px; color: var(--ink-3); }
+#page-admin .mqk table.mqt { border-collapse: collapse; margin-left: 14px; font-size: 12px; line-height: 1.3; }
+#page-admin .mqk table.mqt th { text-align: left; font-weight: 600; color: var(--ink-1, #e8edf2); padding: 5px 12px 5px 0; white-space: nowrap; }
+#page-admin .mqk table.mqt tr:first-child th { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3);
+  text-align: center; padding: 0 6px 6px; vertical-align: bottom; white-space: normal; }
+#page-admin .mqk table.mqt td { text-align: center; padding: 5px 6px; border-top: 1px solid var(--edge, rgba(255,255,255,.08)); white-space: nowrap; }
+#page-admin .mqk table.mqt tr + tr th { border-top: 1px solid var(--edge, rgba(255,255,255,.08)); }
+#page-admin .mqk table.mqt td.y { color: var(--accent); font-weight: 700; }
+#page-admin .mqk table.mqt td.r { color: var(--ink-2); }
+#page-admin .mqk table.mqt td.n { color: var(--ink-3); }
+#page-admin .mqk table.mqt sup { font-size: 9px; margin-left: 1px; color: var(--ink-2); font-weight: 600; }
+#page-admin .mqk ol.mqt-notes { margin: 6px 0 2px 14px; padding-left: 16px; font-size: 12px; line-height: 1.5; color: var(--ink-2); }
+@media (max-width: 600px) {
+  #page-admin .mqk table.mqt, #page-admin .mqk .mqt-lab, #page-admin .mqk .mqt-key, #page-admin .mqk ol.mqt-notes { margin-left: 0; }
+  #page-admin .mqk table.mqt th { white-space: normal; padding-right: 6px; }
+  #page-admin .mqk table.mqt td { padding: 5px 3px; }
 }
 `
 
@@ -126,19 +169,21 @@ async function shot(page, sz, file) {
     r.scrollIntoView({ block: 'center' })
   })
   await page.waitForTimeout(250)
-  const r = await page.evaluate(() => { const b = document.querySelector('#page-admin .acc-row.od-row-on').getBoundingClientRect(); return { L: b.left, T: b.top, R: b.right, B: b.bottom, W: innerWidth, H: innerHeight } })
+  // the whole opened row, in page coordinates (fullPage), so a row taller than the screen is never cut at either end
+  const r = await page.evaluate(() => { const b = document.querySelector('#page-admin .acc-row.od-row-on').getBoundingClientRect(); return { L: b.left, T: b.top + scrollY, R: b.right, B: b.bottom + scrollY, W: innerWidth } })
   const pad = sz === 'd' ? 40 : 12
   const y = Math.max(0, r.T - pad), x = sz === 'd' ? Math.max(0, r.L - pad) : 0
-  const clip = { x, y, width: sz === 'd' ? r.R - r.L + 2 * pad : r.W, height: Math.min(r.H - y, r.B - r.T + 2 * pad) }
-  if (r.B + pad > r.H) errs.push(`${file}: the row runs past the screen's foot by ${Math.round(r.B + pad - r.H)}px`)
-  await page.screenshot({ path: `${OUT}/${file}`, clip })
+  const clip = { x, y, width: sz === 'd' ? r.R - r.L + 2 * pad : r.W, height: r.B - r.T + 2 * pad }
+  // the top bar is fixed: at the page's top it paints there, never over the row
+  if (sz === 'p') { await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(200) }
+  await page.screenshot({ path: `${OUT}/${file}`, clip, fullPage: true })
   console.log('  wrote', file)
 }
 
 async function draw(sz, c) {
   const { ctx, page } = await session(sz, ...c.who)
   await toUsers(page); await openRow(page, c.open)
-  const m = await page.evaluate(({ c, KEY, PLAN_LINE }) => {
+  const m = await page.evaluate(({ c, KEY, PLAN_LINE, TABLE }) => {
     const mq = window.__mq, row = document.querySelector('#page-admin .acc-row.od-row-on'), ed = row.querySelector('.acc-edit'), two = ed.querySelector('.adm-2col')
     if (c.badge) row.querySelector('.acc-name').appendChild(mq.badge('142'))
     // Role: the short names, Master admin added (option B); the long words now live in the fold
@@ -160,8 +205,25 @@ async function draw(sz, c) {
     // the fold (D2300)
     const det = mq.el('details', 'mqk'); if (c.open_) det.open = true
     det.appendChild(mq.el('summary', null, 'What each role allows'))
-    const dl = mq.el('dl'); for (const [t, d] of KEY) { dl.appendChild(mq.el('dt', null, t)); dl.appendChild(mq.el('dd', null, d)) }
-    det.appendChild(dl); grid.after(det)
+    // D2302: the table — pages down the side, roles across; ✓ / read / —; numbered notes under it (Fable's draft, checked)
+    det.appendChild(mq.el('p', 'mqt-lab', TABLE.label))
+    const tb = mq.el('table', 'mqt'), hr = mq.el('tr')
+    for (const h of TABLE.head) hr.appendChild(mq.el('th', null, h))
+    tb.appendChild(hr)
+    for (const r of TABLE.rows) {
+      const tr = mq.el('tr'); tr.appendChild(mq.el('th', null, r[0]))
+      for (const v of r.slice(1)) {
+        const [mark, n] = v.split('^'), td = mq.el('td', mark === '✓' ? 'y' : mark === 'read' ? 'r' : 'n', mark)
+        if (n) td.appendChild(mq.el('sup', null, n))
+        tr.appendChild(td)
+      }
+      tb.appendChild(tr)
+    }
+    det.appendChild(tb)
+    det.appendChild(mq.el('p', 'mqt-key', '✓ can change · read: can see, not change · — cannot open'))
+    const ol = mq.el('ol', 'mqt-notes'); for (const t of TABLE.notes) ol.appendChild(mq.el('li', null, t))
+    det.appendChild(ol); grid.after(det)
+    if (c.open_ && tb.scrollWidth > det.clientWidth + 1) throw new Error('the table runs past the row: ' + tb.scrollWidth + ' > ' + det.clientWidth)
     if (c.grey === 'rest') mq.greyRest('.mqb-sq, details') // Ranger's own row stays 142's (D2191); 149's line is Kestrel's
     // premises: the squadron labels sit on the field labels' left edge; each squadron's buttons on one row
     const fl = ed.querySelector('.adm-2col .mfield label'), sl = grid.querySelector('label')
@@ -171,7 +233,7 @@ async function draw(sz, c) {
     const roleCut = role.scrollWidth > role.clientWidth + 1
     mq.mark(role.closest('.mfield')); mq.mark(grid); mq.mark(det)
     return { rows, roleCut, h: Math.round(ed.getBoundingClientRect().height) }
-  }, { c, KEY, PLAN_LINE })
+  }, { c, KEY, PLAN_LINE, TABLE })
   if (m.rows.some(n => n !== 1)) errs.push(`${c.f}-${sz}: a squadron's buttons ran on ${m.rows.join('/')} rows`)
   console.log(`  ${c.f}-${sz}: editor ${m.h}px, button rows ${m.rows.join('/')}, role box cut: ${m.roleCut}`)
   await shot(page, sz, `${c.f}-${sz}.png`); await ctx.close()
