@@ -15,7 +15,7 @@ import { inpMeta, baseYear, leadOf, remarksTyped, inpById } from '../engine/inpu
 import { fmt } from './inputedit'
 import { TODAY, keyToIso } from './weeknav'
 import { docGet, rowDocIds } from '../state/docs'
-import { canEditSched } from '../state/auth'
+import { canEditOwn } from '../state/auth'
 import { isMe } from '../state/perms'
 import { notify } from '../state/store'
 import { DOCVIEW, setDocView, setInpEdit } from './pops'
@@ -126,7 +126,7 @@ export function DocViewer() {
      is no input, so its foot has no "Edit input" and no "Upchit" — its papers change in its own bid window
      (leavewar/sync.ts openRequestDocs) */
   const ro = !!(v && v.readOnly)
-  const mine = r && !ro && (canEditSched() || isMe(pid))
+  const mine = r && !ro && (canEditOwn() || isMe(pid))
   const edit = () => { setDocView(null); setInpEdit(r); notify() }
   /* the pending card's own Upchit path (owner, 27 Aug 26 — "the user can
      click on their own puck and upload their document to upchit"): a seed

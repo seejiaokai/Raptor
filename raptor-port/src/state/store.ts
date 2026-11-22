@@ -47,7 +47,7 @@ import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit, histSnap, histRestore, schedFields } from './history'
 import { setSession as authSetSession, canEditSched, SESSION, setMe, DEFAULT_ME, setLgEdit } from './auth'
-import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUnitNow, trkUnitNow, pickStandsOn } from './perms'
+import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUnitNow, trkUnitNow, pickStandsOn, maySchedEditPage } from './perms'
 import { holdNow, setBands, setHoldRelease, type MoveBand, type HoldKind } from './typing-hold'
 import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
@@ -83,7 +83,16 @@ export function getVersion() { return VERSION }
    the gate (loadWeek, initStore, toggleRole, …) — deferEffect returns false and
    notify runs inline exactly as before, so behaviour is unchanged. */
 export function notify() { if (deferEffect(realNotify)) return; realNotify() }
-function realNotify() { maybeReenter(); publishBands(); VERSION++; listeners.forEach(f => f()) }
+function realNotify() { maybeReenter(); landOffEditSched(); publishBands(); VERSION++; listeners.forEach(f => f()) }
+/* THE LANDING IS A STANDING CHECK (the second-half plan §2 item 3, §15 D8; D2253): wherever the page is Edit Schedule and
+   he is not an admin of the squadron in view (perms.ts maySchedEditPage) — a pick of a squadron he holds View of, R6's
+   re-entry, a Plan lowered while he is on the page — he lands on View-only Sched. Run after every enterSquadron and on
+   every notify. The Admin page's half (refreshAccess, switchRoleView below) keeps asking the role. */
+function landOffEditSched(): void {
+  /* the squadron's question only: the role in force is an admin's (a member's landing is the role's, refreshAccess and
+     switchRoleView below; nobody signed in — a headless test — is no one's page) */
+  if (view.CURPAGE === 'editsched' && isAdmin() && !maySchedEditPage()) view.setPage('viewsched')
+}
 /* Day-to-day board navigation is view-only. Give the board a narrow repaint
    lane so a swipe does not wake every mounted store consumer (most notably
    EditWeek's seven large dayHTML calculations) while ordinary mutations still
@@ -936,6 +945,7 @@ export function enterSquadron(scheduleUnit: string, holdWar = false): Entered {
          was a member in his new squadron's war after midnight and every admin change there was refused */
       if (lwUnitNow() !== before) lwSetRole(isAdmin() ? 'admin' : 'member')
     }
+    landOffEditSched()
     return { unit: UNIT, own, tracker: rebindStorageUnit(own) as TrackerEntry }
   } finally { ENTERING = false }
 }

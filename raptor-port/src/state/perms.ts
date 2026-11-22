@@ -307,6 +307,26 @@ export function adminOfPage(kind: 'schedule' | 'own', iso: string = todayIso()):
   return levelOfAccount(levelAcct(acct), pageUnit(kind, iso), iso) === 'admin'
 }
 export const maySchedEditPage = (iso?: string): boolean => mayEditSched() && adminOfPage('schedule', iso)
+/* STEP A's FOUR KINDS OF "MAY HE EDIT" (the second-half plan §2 item 1; the inventory in docs/data-schema.md §Edit rights
+   by squadron, held by state/edit-rights-readers.test.ts):
+   - schedule — a control on the schedule in view (Edit Schedule, the board, View-only Sched, Logic, the templates, the
+     saved plans, the changes window, Admin → Squadron config — D2317, Admin → Data's clears): maySchedEditPage, read
+     through auth.ts canEditSched / lgCanEdit / HOOKS.editMode;
+   - own — a control on his own squadron's page (Inputs, Medical, SANS, Quals, the OIL list, the Leave War, the Tracker,
+     Admin → Users): mayEditOwnPage (auth.ts canEditOwn) — for a View holder his home, so a pick of 149 changes nothing
+     there; for a Plan holder or a master admin the squadron picked (pageUnit('own'));
+   - named squadron — a control acting on a squadron of its own (the Inputs, SANS and Calendar settings windows, the
+     late cut-off, the OIL list): adminOfUnit(u);
+   - role — a question about the person, not a squadron (the member-view switch, a tab's visibility): isAdmin, kept. */
+export const mayEditOwnPage = (iso?: string): boolean => mayEditSched() && adminOfPage('own', iso)
+/* AN ADMIN OF THAT SQUADRON, THE ROLE IN FORCE (D2299: its own admins, a Plan holder of it, a master admin; the member
+   view is never an admin's, D292). A session with no account behind it (a hand-made test session) answers for the
+   page's own squadron only, as adminOfPage does. */
+export function adminOfUnit(unit: string, iso: string = todayIso()): boolean {
+  if (!mayEditSched()) return false
+  const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
+  return acct ? levelOfAccount(levelAcct(acct), unit, iso) === 'admin' : unit === pageUnit('own', iso)
+}
 /* PD1 (the Plan audit — dormant until step 5): a person added by the signed-in admin is made the page's squadron's
    (Admin → Users follows the pick for a master admin or a Plan holder), else his own — handed to units.ts putNewHome,
    which imports nothing of this file */

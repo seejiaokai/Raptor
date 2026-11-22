@@ -30,8 +30,7 @@ import {
 } from '../engine/wavetpl'
 import type { WaveKind, WaveTplLine } from '../engine/wavetpl'
 import { hmOK } from '../engine/time'
-import { canEditSched, SESSION } from '../state/auth'
-import { isAdmin } from '../state/perms'
+import { canEditSched, SESSION } from '../state/auth'   // canEditSched: the schedule in view (step A — D2317: its templates follow it)
 import { WAVEEDIT, setWaveEdit } from './pops'
 import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
@@ -54,7 +53,7 @@ export function WaveTplModal() {
   /* it takes and keeps the keyboard while it is up, Escape closes it, and the keyboard goes back to the button that
      opened it ([WINDOWS-KEEP-KEYS], [BOARD-MODALS-ESCAPE] — ui/sheetfocus.ts); before the early return, as hooks must be */
   const boxRef = useRef<HTMLDivElement>(null)
-  const open = WAVEEDIT && !(SESSION && !isAdmin())
+  const open = WAVEEDIT && !(SESSION && !canEditSched())
   useSheetFocus(boxRef, !!open)
   useEscClose(boxRef, !!open, () => { setWaveEdit(false); notify() })
   /* GATE THE WHOLE EDITOR ON THE ROLE, not just the two admin-gated openers

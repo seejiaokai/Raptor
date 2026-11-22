@@ -10,7 +10,7 @@ import { validate, withOfficialWarn, versionFaceWarn } from '../engine/validate'
 import { isDraftVer } from '../engine/drafts'
 import { markEdit } from '../engine/publish'
 import { esc, afterSchedMutate, dayDisplaysOfficial, CURPAGE, DPREV } from '../state/view'
-import { isAdmin } from '../state/perms'
+import { canEditSched } from '../state/auth'   // the schedule in view (step A — D2317: its templates follow it)
 import { notify } from '../state/store'
 import { dayInfoHTML, issuedFaceVer, withChipWorld } from './html'
 import { DAYPOP, setDayPop, INSIGHTS, setInsights, INSIGHTS_ALL, setInsightsAll, AIRKEY, AIRRID, setAirKey, reKeyAir } from './pops'
@@ -109,7 +109,7 @@ function trText(g: any) { return (((g && g.traffic) || []) as any[]).join(' · '
    admin's window there had its typing boxes, ✕, Add row and Done — a change made there could not be taken back from that
    page. There everyone, an admin included, gets the plain read list a member sees. Asked by the drawing below AND by every
    write the window makes, so no route from the window writes on View-only Sched. */
-function airEditable(): boolean { return isAdmin() && CURPAGE === 'editsched' }
+function airEditable(): boolean { return canEditSched() && CURPAGE === 'editsched' }
 function airEdit() {
   if (!airEditable()) return
   const g = airGo()

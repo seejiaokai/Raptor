@@ -38,7 +38,7 @@ import { CURWEEK } from '../engine/waves'
 import { rosterOf, rosterToday } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
 import { keyToIso, mondayOf } from './weeknav'
-import { canEditSched } from '../state/auth'
+import { canEditOwn, canEditSched } from '../state/auth'
 import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff, filedWhole, byAfterLeaving, mayMovePlace, pageUnit, inputWhoProblemNow } from '../state/perms'
 import { unitById, homeOn, homeChangesOn } from '../state/units'
 import { noticeDay } from '../state/notices'
@@ -98,7 +98,7 @@ export function draftImage(rec: any | null, draft: any, people: readonly any[]):
    included (commitInput), so the image writes none either */
 function ownTakeOutOf(rec: any, next: readonly string[]): boolean {
   const mine = me()
-  if (canEditSched() || mine == null || !rec) return false
+  if (canEditOwn() || mine == null || !rec) return false
   const have = idsOf(rec).map(String), haveSet = new Set(have), nextSet = new Set(next)
   return next.every(p => haveSet.has(p)) && have.filter(p => !nextSet.has(p)).join() === String(mine)
 }
@@ -140,7 +140,7 @@ export function whoDoorRefusal(before: any | null, after: any | null): string | 
      refuses them. Except his own take-out as a member (D755 — the gate's own exception, perms.ts inputWhoProblem): asked
      unmarked, as the gate asks it. */
   const mine = me()
-  const takeOut = !canEditSched() && mine != null && before && after && holds(before, mine) && !holds(after, mine)
+  const takeOut = !canEditOwn() && mine != null && before && after && holds(before, mine) && !holds(after, mine)
     && idsOf(after).every((p: any) => holds(before, p))
   const who = inputWhoProblemNow(before, after && !takeOut ? { ...after, _save: 1 } : after)
   if (!who || who.own) return null
@@ -557,7 +557,7 @@ export const goesOf = (r: any): 'g' | 'u' | 'r' => (r && r.acc === 'u' ? 'u' : r
  *  one-person input, which is nobody's to keep from him. Filing is not a move: one he files for a member under
  *  Unavailable is the member's to pick again, as whoever files an Other picks (D1356). */
 export function markMoved(r: any) {
-  if (r && canEditSched() && !(idsOf(r).length <= 1 && isMe(leadOf(r)))) r.schedPlaced = true
+  if (r && canEditOwn() && !(idsOf(r).length <= 1 && isMe(leadOf(r)))) r.schedPlaced = true
 }
 export const draftOf = (r: any) => ({
   person: leadOf(r), type: r.type, allday: !!r.allday, half: r.half || '',
@@ -1049,7 +1049,7 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
      it is the net for a hand-made call, the same place-and-shape as
      reassignInput's own gate below. Pinned BEFORE normalize so the SANS
      aircrew check judges the person actually being written. */
-  if (!canEditSched()) {
+  if (!canEditOwn()) {
     /* [ACCOUNTS]: filed for the SIGNED-IN person (perms.ts me()); someone signed in
        without access (waiting for it, or switched off — there is no guest since D2239) is
        nobody's person and files nothing */
@@ -1179,7 +1179,7 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
 /* `opts.oil` — THE INPUT'S ONE OIL ANSWER, given with this save (owner D762; commitInput below): written on the record,
    for everyone in it. */
 export type InputSaveOpts = { sched?: boolean; oil?: Record<string, number> }
-export const schedSide = (opts?: InputSaveOpts): boolean => !!(opts && opts.sched) && canEditSched()
+export const schedSide = (opts?: InputSaveOpts): boolean => !!(opts && opts.sched) && canEditOwn()
 /* who is putting a person in, and when — the running command's own person and moment (state/inputstamp.ts) */
 const stampOf = (): { by?: string; at?: number } => { const t: any = stampPlaced({}); return { by: t.by, at: t.at } }
 export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: any, opts?: InputSaveOpts) {
@@ -1227,14 +1227,14 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
      this; it refuses the hand-made call. Editing their own row's times,
      type or remarks stays theirs (draftOf seeds person from the row, so an
      untouched person sails through). */
-  if (!canEditSched() && draft.person !== leadOf(r)) {
+  if (!canEditOwn() && draft.person !== leadOf(r)) {
     HOOKS.toast('Only a scheduler can move an input to another person', 'warn')
     return false
   }
   /* …and what a member FILED for another man stays a kind he may file for him (the group input, plan §3.13): retyping
      his Meeting for Hex into Hex's leave is refused here with its sentence — the commit gate would roll it back with
      none. His own input retypes as freely as ever (mayFileInputFor: himself, any kind). */
-  if (!canEditSched() && !isMe(draft.person) && !mayFileInputFor(draft.person, draft.type)) {
+  if (!canEditOwn() && !isMe(draft.person) && !mayFileInputFor(draft.person, draft.type)) {
     HOOKS.toast(fileForOtherRefusal(draft.type), 'warn')
     return false
   }
@@ -1301,7 +1301,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        old year, a leave moved to the same day of another year looked unchanged and kept its approval (both readers of
        the input card's check, 10 Oct 26) */
     const leaveSame = leaveKey({ ...r, person: leadOf(r) }) === leaveKey({ person: draft.person, type: draft.type, date, endDate, yr: baseYear(), allday: draft.allday, half, s, e })
-    if (r.lw && !leaveSame && !canEditSched()) delete r.lw
+    if (r.lw && !leaveSame && !canEditOwn()) delete r.lw
     /* THE EDIT WRITES THE REQUEST ALONE ([DB-READINESS] group A, phase 6 (c) — D450; plan §3 (c) §6). Its row — on the
        week on screen or on any other — is worked out from the request after this command and whenever its week is read
        (engine/overlay.ts viewOfWeek): re-made in place when the request changed (its id, its place and everything the
@@ -1335,7 +1335,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
       /* …and a member's own change of his input takes a scheduler's LATE drop off (owner D1620 — a new late change brings
          the mark back), the same day too: the drop was of the change before; a scheduler's own change keeps it. The save
          stamps the record's change time anew (stampChanged, below), which is what the commit gate checks. */
-      if (!canEditSched()) delete r.lateOff
+      if (!canEditOwn()) delete r.lateOff
     }
     /* THE TITLE FOLLOWS THE DRAFT ([INPUT-OWN-TITLE]): written where one was typed, and the key REMOVED where the box
        was put back to the kind's own name, emptied, or the kind retyped to one that takes no title — a leave never
@@ -1711,11 +1711,11 @@ export function reassignInput(iid: any, personId: any): boolean {
   /* write-path role backstop (CLAUDE.md: role checks at the write path, not
      only the render). Reassigning WHOSE day an Unavailable row is, is a
      scheduler action — the dialog's Person field and the iu: arm/drop targets
-     are already canEditSched()-gated, but this is the one write path and must
+     are already canEditOwn()-gated, but this is the one write path and must
      not depend on every future caller remembering to gate first. Distinct from
      commitInputEdit, which a member may legitimately reach to edit their OWN
      input's times/remarks. */
-  if (!canEditSched()) return false
+  if (!canEditOwn()) return false
   /* `iid` is the row's address after its `iu:` — the input's id, or `<iid>~<person>` for one man's row of an input
      that holds several (engine/keys.ts iuParts — the one parser) */
   const at = iuParts('iu:' + String(iid)) || { iid: String(iid), person: null }
@@ -2104,7 +2104,7 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
   { const seen = new Set(want); for (const p of people || []) { const id = p == null ? '' : String(p); if (id && !seen.has(id)) { seen.add(id); want.push(id) } } }
   if (rec && INPUTS.indexOf(rec) < 0) { say('That input is no longer there — nothing was saved', 'warn'); return false }
   if (!want.length) { say('Pick at least one person', 'warn'); return false }
-  const scheduler = canEditSched(), mine = me()
+  const scheduler = canEditOwn(), mine = me()
   if (!scheduler && mine == null) { say('Sign in with your own account to file an input', 'warn'); return false }
   const have: string[] = rec ? idsOf(rec).map(String) : []
   const wantSet = new Set(want), haveSet = new Set(have)

@@ -22,7 +22,7 @@
    he had filed for others goes with it (the man and an admin still change those) — state/perms.ts reads the switch
    live at every question. */
 import { useEffect, useState } from 'react'
-import { isAdmin } from '../state/perms'
+import { adminOfUnit } from '../state/perms'
 import { notify } from '../state/store'
 import { cutProblem, forgetWin, getCut, openWinFor, saveCut, winStale, winUnit } from '../state/cutoff'
 import { membersFileOf, setMembersFile, type SwitchSave } from '../state/memberfile'
@@ -38,7 +38,7 @@ export function InputsSettings({ unit }: { unit?: string } = {}) {
   useVersion()
   /* …and it goes with its page's squadron (state/cutoff.ts winStale — the fix round of 22 Nov 26): opened from 142's gear,
      it closes once the page is another squadron's (his move at midnight, a master admin's pick), nothing saved */
-  const refused = INPSET && (!isAdmin() || (unit === undefined && winStale('inputs')))
+  const refused = INPSET && (!adminOfUnit(unit ?? winUnit('inputs')) || (unit === undefined && winStale('inputs')))
   useEffect(() => { if (refused) setInpSet(false) }, [refused])
   /* THE SQUADRON IT EDITS (the reshape plan §3.2 A-ii; the host's ruling of 21 Nov 26): the page it was opened from —
      `unit` when handed in, else what its door named (state/cutoff.ts openWinFor: a calendar's gear its own squadron),

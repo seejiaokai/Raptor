@@ -171,6 +171,25 @@ sign-in card.
 cleared and both units seeded fresh, never converted; no converter is written for it. The schema stamp bump that clears
 it on the next boot is step 6's. Until then a browser that saved weeks before step 2 shows them as never saved.
 
+### Edit rights by squadron — the four kinds (batch 1's second half, step A, 22 Nov 26)
+
+Once the Schedules menu lets a person pick a squadron he holds only View of (D2252), "is he an admin?" asked of the role
+alone would offer him that squadron's edit controls. Every caller of the edit questions is one of four kinds, each with
+its own question (`src/state/perms.ts`, the block above `mayEditOwnPage`); the per-file list with each reason is
+`src/state/edit-rights-readers.test.ts`, which fails on a caller it does not list.
+
+| Kind | The question | Asked by |
+|---|---|---|
+| **schedule** — a control on the schedule in view | `canEditSched()` / `lgCanEdit()` / `HOOKS.editMode()` → `maySchedEditPage()`: the role in force AND an admin of the squadron picked | Edit Schedule, the Scheduler Board, View-only Sched's edit doors, Logic, the day / wave / duty templates and Admin → Squadron config's defaults (D2317), the saved plans, the changes window's member form, the ALL AVAIL window's earning switch, Admin → Data's "Clear old clutter…" and "Clear edit history…" (they act on the schedule in view's planning notes and change history), which page an Undo lands on, Edit Schedule's tab |
+| **own** — his own squadron's page | `canEditOwn()` → `mayEditOwnPage()`: the role in force AND an admin of `pageUnit('own')` (a View holder's home; a Plan holder's or master admin's pick) | the Inputs window and calendar, an input's documents and people picker, the OIL list raised after filing; the Quals, SANS and Inputs pages' own role checks (their writes judged by each man's squadron) |
+| **named** — a squadron of its own | `adminOfUnit(u)`: the role in force AND his level in `u` that day is admin (its own admins, a Plan holder, a master admin — D2299) | the Inputs, SANS and Calendar settings windows (stamped with the squadron they open on — `state/cutoff.ts openWinFor`), the late cut-off, the OIL list, the planning calendar's verbs (the calendar lent to them — `ui/owncal.ts`), an input of another squadron opened read only |
+| **role** — a question about the person | `isAdmin()` / `mayEditSched()` | the member-view switch and role chip, the Admin and Logic tabs, the drawer's and help page's admin parts, the bell's own reads, the bug reports' mark, who answers access requests at all |
+
+**The landing (D8):** wherever the page is Edit Schedule, the role in force an admin's and `maySchedEditPage()` false — a
+pick of a squadron he holds View of, R6's re-entry, a Plan lowered while he is there — he lands on View-only Sched
+(`state/store.ts landOffEditSched`, run on every notify and after every `enterSquadron`). Tests:
+`src/state/edit-rights-pick.test.ts`.
+
 ---
 
 ## World 1 — the scheduler

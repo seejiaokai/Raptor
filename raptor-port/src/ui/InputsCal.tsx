@@ -42,7 +42,7 @@ import { notify } from '../state/store'
 import { calNow, calUnit, writeCal } from './owncal'
 import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL, clearInpReveal, PLANREVEAL, clearPlanReveal } from '../state/view'
 import { HL_GROUPS } from './hlchips-model'
-import { canEditSched } from '../state/auth'
+import { canEditOwn } from '../state/auth'
 import { isMe, mayDeleteInput, viewerId, me, pageUnit } from '../state/perms'
 import { rosterOf } from '../engine/roster'
 import { addDays } from '../state/flyplan-model'
@@ -725,7 +725,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     const revealed=!!saved&&!itemsOn(iso,items).some(it=>it.rows.includes(saved))
     const titles = calNow().titles
     const hasRmk = !!titles[iso]
-    const sched = canEditSched()
+    const sched = canEditOwn()
     /* Enter commits by handing off to the SAME blur handler that already
        commits (rather than a second copy of the write), so there is exactly
        one place per field that decides what "commit" means. */

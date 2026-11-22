@@ -18,7 +18,7 @@ import { PEOPLE } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { LOOK_MAX, LOOK_MIN, lookaheadParse, lookaheadLabel, lookaheadRange, lookaheadOf, setLookaheadFor, type Lookahead } from '../engine/lookahead'
-import { canEditSched } from '../state/auth'
+import { canEditOwn } from '../state/auth'
 import { me, isAdmin, mayEditInput, pageUnit } from '../state/perms'
 import { todayIso } from '../engine/editlog'
 import { openWinFor } from '../state/cutoff'
@@ -214,7 +214,7 @@ export function InputsPage() {
   /* A member lands on THEIR OWN inputs (owner, 27 Aug 26) — the page is their
      paperwork first — with "Everyone" one pick away in the same filter. A
      scheduler (admin) still opens on the whole squadron. */
-  const [memberPerson, setMemberPerson] = useState(canEditSched() ? EVERYONE : (me() ?? ''))
+  const [memberPerson, setMemberPerson] = useState(canEditOwn() ? EVERYONE : (me() ?? ''))
   const [memberType, setMemberType] = useState('all')
   const [memberSearch, setMemberSearch] = useState('')
   /* the filters are the Inputs tab's alone — the SANS calendar has none (the plan §3.5; its own remembered person and

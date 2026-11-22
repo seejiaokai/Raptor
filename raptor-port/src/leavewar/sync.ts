@@ -23,7 +23,8 @@ import { inputOnDay, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, in
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
-import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, setLwPostingProbe, setFollowUpsProbe, setWarLinesOwed, setHolidayLinesOwed } from '../state/perms'
+import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, setLwPostingProbe, setFollowUpsProbe, setWarLinesOwed, setHolidayLinesOwed, pageUnit } from '../state/perms'
+import { openWinFor } from '../state/cutoff'
 import { rosterOf, homeUnitOf, unitPeople } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
 import { qualify } from '../storage/unitid'
@@ -34,7 +35,7 @@ import { UNIT_ROW_PREFIXES } from '../state/units-model'
 import { onCommit as cmdOnCommit } from '../command'
 import type { Change } from '../command/types'
 import { isBalKind, readTypedBalShape, sameSnapshot, type SnapEntry } from './engine/leaveyear'
-import { SESSION, canEditSched } from '../state/auth'
+import { SESSION, canEditOwn } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
    writers — PO-archive, restore — emit a people change too). */
 import { persistPeopleProjection, commitPeopleEdit } from '../state/people-settings-commit'
@@ -869,7 +870,7 @@ function askFiledOil(iids: string[], from: string, to: string): void {
   const open = oilOpenOn(from, to).filter(o => mine.has(o.iid))
   if (!open.length) return
   const raise = () => {
-    if (open.length > 1 && canEditSched()) {
+    if (open.length > 1 && canEditOwn()) {
       const days = open.flatMap(o => o.days).sort()
       setOilList({ from: days[0]!, to: days[days.length - 1]!, name: '', plain: true })
     } else {
@@ -4346,6 +4347,8 @@ export function manningRedDays(dates: readonly string[], verdicts: Record<string
  *  with no screen behind it) — the war imports no scheduler screen. */
 export function openDays(iso: string): void {
   if (!validIso(iso)) return
+  /* the war is his own squadron's page: the window is that squadron's, stamped as it opens (step A, R-O5) */
+  openWinFor('days', pageUnit('own'))
   setDaysWin(iso)
   raptorNotify()
 }

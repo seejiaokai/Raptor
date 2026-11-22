@@ -21,7 +21,7 @@ import { switchDraft } from './board'
 import { DRAFTSEDIT, setDraftsEdit, OILLIST } from './pops'
 import { useVersion } from './useStore'
 import { SESSION } from '../state/auth'
-import { isAdmin } from '../state/perms'
+import { canEditSched } from '../state/auth'   // the schedule in view (step A — D2317: its templates follow it)
 import { CURPAGE } from '../state/view'
 import { clickedOutside } from './outside'
 import { useSheetFocus, useEscClose } from './sheetfocus'
@@ -44,7 +44,7 @@ export function DraftsModal() {
      opened it ([BOARD-MODALS-ESCAPE], [WINDOWS-KEEP-KEYS] — ui/sheetfocus.ts); a name half typed is dropped, as Escape does in every box;
      before the early return, as hooks must be */
   const boxRef = useRef<HTMLDivElement>(null)
-  const up = !!open && !(SESSION && !isAdmin()) && CURPAGE === 'editsched'
+  const up = !!open && !(SESSION && !canEditSched()) && CURPAGE === 'editsched'
   useSheetFocus(boxRef, up)
   useEscClose(boxRef, up, () => { setNm(null); setDraftsEdit(null); notify() })
   /* self-hide for a non-admin, not just at the admin-gated opener (bug hunt,

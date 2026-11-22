@@ -306,11 +306,14 @@ export function Shell() {
      mutation path has already validated, and a second engine pass per paint is
      what blew the phone budget */
   const admin = isAdmin()
+  /* Edit Schedule is the schedule in view's (step A — the second-half plan §2 item 3): its tab, its clock and its changes
+     door only where he is an admin of the squadron picked; a View holder of 149 with 149 picked has no Edit Schedule */
+  const schedEdit = canEditSched()
   /* [UNDO-TOPBAR] (D347–D349): where the pair shows, and which history it drives */
   const pairOn = page === 'editsched' || page === 'leavewar' || page === 'inputs' || page === 'quals' || page === 'tracker'
     || ((page === 'admin' || page === 'logic') && admin)
   const eng = page === 'tracker' ? trackerUndoEngine() : globalUndoEngine()
-  const clockNew = page === 'editsched' && admin ? weekNew() : 0
+  const clockNew = page === 'editsched' && schedEdit ? weekNew() : 0
   /* the signed-in person ([ACCOUNTS], D166 (3)) — the badge names him; "View as" is gone */
   const mine = me()
   const mineCs = mine && PEOPLE[mine] ? PEOPLE[mine].cs : ''
@@ -377,7 +380,7 @@ export function Shell() {
      to two rows where the Leave War's fits one — written a frame late, the war came back 47px low: the fresh Opus read,
      F1), the role switch, the Admin badge, the sync label. Not the bar's memo list: that changes on every edit. */
   useLayoutEffect(() => syncTopbarVar(topbarRef.current),
-    [page, admin, pairOn, waiting, clockNew, mineCs, canSwitch, fastOn, saveFailed, oilTop, navFold])
+    [page, admin, schedEdit, pairOn, waiting, clockNew, mineCs, canSwitch, fastOn, saveFailed, oilTop, navFold])
   const topbar = useMemo(() => (
       /* The top bar wears a blue-tinted gradient while on Edit Schedule (owner,
          22 Aug 26) so it is unmistakable from the near-identical View-only mode
@@ -387,7 +390,7 @@ export function Shell() {
         <SqnMark />
         <nav className="nav" id="topnav">
           {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab drawn by the bar's own rule for links (`.nav a`), which a <button> would not take without restyling every tab; every test and walk finds the tabs as #topnav a[data-page] */}
-          <a data-page="editsched" data-admin="" hidden={!admin} role="button" tabIndex={0} className={page === 'editsched' ? 'on' : ''} onClick={() => nav('editsched')} onKeyDown={navKey('editsched')}>Edit Schedule</a>
+          <a data-page="editsched" data-admin="" hidden={!schedEdit} role="button" tabIndex={0} className={page === 'editsched' ? 'on' : ''} onClick={() => nav('editsched')} onKeyDown={navKey('editsched')}>Edit Schedule</a>
           {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab, as Edit Schedule's above */}
           <a data-page="viewsched" role="button" tabIndex={0} className={page === 'viewsched' ? 'on' : ''} onClick={() => nav('viewsched')} onKeyDown={navKey('viewsched')}>View-only Sched</a>
           {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab, as Edit Schedule's above */}
@@ -448,7 +451,7 @@ export function Shell() {
                 view, which would jump as the week scrolls). It opens the one changes window on the week, on New to
                 you; a second tap closes it. Admins only — a member opens the window from a day's own count (D171 (1)).
                 Edit Schedule is the admin's page, so the door is his by where it sits; isAdmin() says so outright. */}
-            {page === 'editsched' && isAdmin() ? (() => { const wn = weekNew(); return (
+            {page === 'editsched' && schedEdit ? (() => { const wn = weekNew(); return (
               <button className={'abtn chgbtn' + (chgOpen ? ' on' : '')} id="histBtn" aria-pressed={chgOpen}
                 title={wn ? `Changes — ${wn} new to you this week` : 'Changes — every change this week, and who made it'}
                 aria-label={wn ? `Changes, ${wn} new to you this week` : 'Changes'}
@@ -527,7 +530,7 @@ export function Shell() {
      29 Sep 26: "Mark all as seen" used to be an Undo step, and the undo version's bump was what repainted this bar — once
      a seen mark stopped being a step, the clock kept its stale number) */
   // eslint-disable-next-line react-hooks/exhaustive-deps -- eng is a new object every render, so its four drawn fields stand for it (its undo and redo call the live history); fastOn, bellOn and bugOn are read by the children they redraw
-  ), [page, admin, mine, mineCs, canSwitch, waiting, fastOn, uv, tuv, pairOn, eng.canUndo, eng.canRedo, eng.undoTitle, eng.redoTitle, bellOn, bugOn, oilPend, accAlert, clockNew, chgOpen, saveFailed, oilTop, navFold])
+  ), [page, admin, schedEdit, mine, mineCs, canSwitch, waiting, fastOn, uv, tuv, pairOn, eng.canUndo, eng.canRedo, eng.undoTitle, eng.redoTitle, bellOn, bugOn, oilPend, accAlert, clockNew, chgOpen, saveFailed, oilTop, navFold])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">

@@ -19,7 +19,7 @@
 import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { placeholderKind, placeholderProblem } from '../engine/inputs'
-import { canEditSched } from '../state/auth'
+import { canEditOwn } from '../state/auth'
 import { mayFileGroup } from '../state/perms'
 import { puck } from './html'
 import { edgeAutoScroll, findScroller } from './edgescroll'
@@ -85,7 +85,7 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
   const offerPh = !sansOnly
   /* the switch shows where a group may be filed — and stays while several ARE picked, so a kind that no longer allows
      it never hides what he chose */
-  const showSwitch = (mayFileGroup(type) && (!sansOnly || canEditSched())) || several
+  const showSwitch = (mayFileGroup(type) && (!sansOnly || canEditOwn())) || several
   const problem = readOnly ? null : pickProblem(people, several, type, phWhy)
   /* THE TWO PLACEHOLDERS, IN "SEVERAL PEOPLE" (D750, D753): one of them, beside the people. `phBar` — why this input
      cannot hold one ('' where it can); one already picked stays lit and can be let go whatever the bar says. */

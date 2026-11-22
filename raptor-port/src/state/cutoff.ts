@@ -17,7 +17,7 @@ import { RULE_SPEC, RULE_STD, VCONF, rulesSave } from '../engine/rules'
 import { store, unitSetting, unitSettingKey } from '../engine/hooks'
 import { UNIT } from '../engine/unitview'
 import { validate } from '../engine/validate'
-import { isAdmin, pageUnit } from './perms'
+import { adminOfUnit, pageUnit } from './perms'
 import { todayIso } from '../engine/editlog'
 import { notify } from './store'
 
@@ -70,11 +70,12 @@ function rulesOf(unit: string): Record<string, any> {
 /* THE SQUADRON EACH SETTINGS WINDOW EDITS — the Inputs calendar's, the SANS calendar's and the Calendar window. Each
    window is mounted once (ui/App.tsx) and opened by a flag (ui/pops.ts), so the door that opens it says whose it is
    here, first: a calendar's gear and the SANS day's "Calendar…" name their own page's squadron; the Logic page's doors
-   name none, so the window edits the pick, as it always did. A window forgets its squadron when it closes (each window
-   calls forgetWin), so the next opening that names none is the pick's again. */
+   name none, so the window is STAMPED with the squadron in view as it opens (step A — the second-half plan §2 item 1,
+   the red team's R-O5): a later pick never moves it to another squadron — it stays the one it opened on, or closes
+   (winStale). A window forgets its squadron when it closes (each window calls forgetWin). */
 export type CutWin = 'inputs' | 'sans' | 'days'
 const WIN_UNIT: Record<CutWin, string | null> = { inputs: null, sans: null, days: null }
-export function openWinFor(win: CutWin, unit: string | null): void { WIN_UNIT[win] = unit }
+export function openWinFor(win: CutWin, unit: string | null): void { WIN_UNIT[win] = unit ?? UNIT }
 export function winUnit(win: CutWin): string { return WIN_UNIT[win] ?? UNIT }
 export function forgetWin(win: CutWin): void { WIN_UNIT[win] = null }
 /* A WINDOW A PAGE'S DOOR OPENED IS THAT PAGE'S SQUADRON'S — AND GOES WITH IT (the fix round of 22 Nov 26, Opus's read F5,
@@ -82,8 +83,8 @@ export function forgetWin(win: CutWin): void { WIN_UNIT[win] = null }
    pick — the window was still bound to the old one, its Save written there (or refused and read as saved), and the
    Calendar window's Holidays half showed and wrote the loaded squadron's. Each window closes itself when this says so
    (no words of a held window are approved for these three — his D2243 Q7 gives the band for the Leave War's and the
-   Tracker's — so it is closed, never held). A window the Logic page's doors opened names no squadron and follows the
-   pick, as it always did. */
+   Tracker's — so it is closed, never held). A window the Logic page's doors opened carries the squadron it opened on
+   (openWinFor's stamp, step A). */
 export function winStale(win: CutWin): boolean { const u = WIN_UNIT[win]; return u != null && u !== pageUnit('own', todayIso()) }
 
 const whole = (v: unknown, lo: number, hi: number): v is number => typeof v === 'number' && Number.isInteger(v) && v >= lo && v <= hi
@@ -114,7 +115,8 @@ export function cutExample(r: CutRule, todayIso: string): { week: string; due: s
 
 export interface CutSave { ok: boolean; message?: string; changed?: boolean }
 export function saveCut(set: CutSet, r: CutRule, unit: string = UNIT): CutSave {
-  if (!isAdmin()) return { ok: false, message: 'Only an admin can change the late cut-off.' }
+  /* an admin of the squadron whose cut-off it is (step A's named kind — the second-half plan §2 item 1) */
+  if (!adminOfUnit(unit)) return { ok: false, message: 'Only an admin can change the late cut-off.' }
   const bad = cutProblem(set, r)
   if (bad) return { ok: false, message: bad }
   const k = KEYS[set]

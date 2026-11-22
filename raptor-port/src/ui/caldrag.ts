@@ -27,7 +27,7 @@ import { movePlanPuck, planMoveBlock } from '../state/plan'
 import { notify } from '../state/store'
 import { readCal, writeCal } from './owncal'
 import { setMedMove } from './pops'
-import { canEditSched } from '../state/auth'
+import { canEditOwn } from '../state/auth'   // the Inputs calendar: his own squadron's page (step A)
 import { mayEditInput } from '../state/perms'
 import { INPUTS, idsOf, inpLabel } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
@@ -82,7 +82,7 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
     /* a note holding a DELETED man does not move to a day on or after his delete (D299; state/plan.ts planMoveBlock) —
        refused whole, saying who and what to do; before that day it moves as any note. The note is the Inputs calendar's
        own squadron's (ui/owncal.ts — the reshape plan §3.2 A-ii), read and written there. */
-    const gone = canEditSched() ? readCal(() => planMoveBlock(entry.pid, toIso)) : null
+    const gone = canEditOwn() ? readCal(() => planMoveBlock(entry.pid, toIso)) : null
     if (gone) {
       const p: any = (PEOPLE as any)[gone], d = String(p.deletedFrom || ''), MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
       HOOKS.toast(`Not moved: ${p.cs} was deleted from ${+d.slice(8, 10)} ${MON[+d.slice(5, 7) - 1]} — take him off the note first`, 'warn')
@@ -91,7 +91,7 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
     let did = false
     writeCal(() => { did = movePlanPuck(entry.pid, toIso) })
     if (did) HOOKS.toast('Note moved', 'ok')
-    else if (!canEditSched()) HOOKS.toast('Only a scheduler can move planning sections', 'warn')
+    else if (!canEditOwn()) HOOKS.toast('Only a scheduler can move planning sections', 'warn')
     return did
   }
 
@@ -338,7 +338,7 @@ export function initCalDrag(root: HTMLElement, opts: {
        makes (commitChipMove: a scheduler moves anyone's, a member his own; a planning section is a scheduler's), asked
        at the press, so the gesture is never offered. A tap still opens it. */
     const row = entry.kind === 'input' ? INPUTS.find((x: any) => x.iid === entry.iid) : null
-    const fixed = entry.kind === 'puck' ? !canEditSched() : (!!row && !mayEditInput(row))
+    const fixed = entry.kind === 'puck' ? !canEditOwn() : (!!row && !mayEditInput(row))
     st = {
       entry, pointerId: e.pointerId, mouse: e.pointerType === 'mouse',
       x0: e.clientX, y0: e.clientY, armed: false, ghost: null, over: null, timer: 0, fixed,

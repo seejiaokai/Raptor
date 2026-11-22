@@ -34,7 +34,8 @@ import { CURWEEK } from '../engine/waves'
 import { DAYS } from '../engine/data'
 import { dayApproved, dayPendingItems, nextSeq } from '../engine/publish'
 import { markSeen } from '../state/changes'
-import { isMember, isAdmin } from '../state/perms'
+import { isMember } from '../state/perms'
+import { canEditSched } from '../state/auth'
 import { pendListHTML, pendKeysFor } from './pendlist'
 import { jumpToChange } from './interactions'
 import { jumpOf } from './changesjump'
@@ -148,7 +149,7 @@ export function ChangesWindow() {
   const hasOut = one ? published : outDays.length > 0
   const tab = w.tab === 'out' && !hasOut ? 'all' : w.tab
   const phone = phoneLayout()
-  const member = !isAdmin()
+  const member = !canEditSched()   // the schedule in view: a View holder reads its member form (step A)
   /* where History draws its dots and answers a tap — the edit week and the live board (D116, D338 (3)). View-only draws
      none, and neither does the board while it shows an issued version (a look wears no dots — Astra's final read FR-05,
      Fable's F3): there the hidden bar reads "Changes", not "History on" */

@@ -23,8 +23,8 @@ import { PEOPLE, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { stampChanged } from '../state/inputstamp'
 import { notify } from '../state/store'
-import { canEditSched } from '../state/auth'
-import { me, isMe, mayEditInput, mayMovePlace, pageUnit } from '../state/perms'
+import { canEditOwn } from '../state/auth'
+import { me, isMe, mayEditInput, mayMovePlace, pageUnit, adminOfUnit } from '../state/perms'
 import { todayIso } from '../engine/editlog'
 import { UNIT } from '../engine/unitview'
 import { schedMoveBand } from '../state/typing-hold'
@@ -781,7 +781,14 @@ export function InputEditor() {
      when pressed. The write path's own rule (perms.ts mayEditInput), asked before the form is drawn: he may still
      READ it (D211 — type, remarks, documents), with nothing offered that he cannot use. */
   const canAll = rows.length ? mayEditInput(r) : true
-  const readOnly = !isNew && !!r && !mayEditInput(r)
+  /* …AND AN ADMIN READS ANOTHER SQUADRON'S INPUT READ ONLY (step A — the second-half plan §2): Hunter, 142's admin with View
+     of 149, opening Osprey's input on 149's View-only Sched was offered Save and Delete, each refused at the save door.
+     Where the input's own squadron (engine/inputs.ts inputUnitOf — the squadron its save is judged in first) is one he is
+     not an admin of, and it is not his own input, nothing is offered. A leave of 142's man running into 149 stays his to
+     try — its refusal has its approved words (D2240, the save door). A member's window is unchanged (canEditOwn false). */
+  const foreign = !isNew && !!r && canEditOwn() && !(idsOf(r).length <= 1 && isMe(leadOf(r)))
+    && (() => { const u = inputUnitOf(r); return u != null && !adminOfUnit(u) })()
+  const readOnly = !isNew && !!r && (!mayEditInput(r) || foreign)
   /* WHERE IT GOES IS A SCHEDULER'S once he has moved it (his D1388): the member's window shows where it stands, picked,
      and offers neither button — as a rejected one already does (G5) */
   const goesLocked = !isNew && !!r && !mayMovePlace(r)
@@ -848,7 +855,7 @@ export function InputEditor() {
     return WIN_FIELDS.every(f => fieldSame(f, draft, saved)) && String(draft.to ?? '') === String(saved.to ?? '')
       && (!('goes' in draft) || draft.goes === saved.goes) && who.length === inIt.size && who.every(id => inIt.has(id))
   }
-  const archivedHere = win && (!isNew || ctx === 'i') && canEditSched() && ctx !== 's' && !(draft && isSansAvail(draft.type)) ? archivedOptions(pickUnit, firstDay).filter(id => !offers || offers(id)) : []
+  const archivedHere = win && (!isNew || ctx === 'i') && canEditOwn() && ctx !== 's' && !(draft && isSansAvail(draft.type)) ? archivedOptions(pickUnit, firstDay).filter(id => !offers || offers(id)) : []
   /* the first day whose OIL question nobody has answered, for the line that says so (below); '' where there is none */
   /* …asked of the input's ONE record, which carries everyone in it (the one-rule build, D756). Before it, of EVERY record
      of the entry, not of the one the window happened to be opened on (walker C's find, 10 Oct 26 — Astra's scenario 69:
@@ -887,7 +894,7 @@ export function InputEditor() {
               opening their own input never reaches this dialog at all today
               (the buttons that open it only render in an admin's edit mode),
               but the gate is repeated here anyway rather than trusted to
-              that — canEditSched() is the same check every other
+              that — canEditOwn() is the same check every other
               admin-only control in this dialog's callers already uses. */}
           {/* the upchit context comes FROM a pending card, so its person is a
               value, not a choice — the fixed-type idiom below, one row up */}
@@ -899,7 +906,7 @@ export function InputEditor() {
             : picker
             /* ON THE INPUTS PAGE: the people picker — one person from the list, or several as pucks (D656) */
             ? <PeoplePick people={ppl} several={several} type={draft.type} sansOnly={ctx === 's' || isSansAvail(draft.type)} unit={pickUnit} iso={firstDay} offers={offers}
-              lockOne={!isNew && !canEditSched()} readOnly={readOnly}
+              lockOne={!isNew && !canEditOwn()} readOnly={readOnly}
               /* THE POSTED-OUT / ARCHIVED PEOPLE, for an admin changing a SAVED input ([INPUT-LIST-AS-DAY-CARD], 10 Oct 26 —
                  Astra's scenario 57). The List's pencil offered them in its own Person list (clearing leave is filed
                  for a man who has posted out — [ARCH-STACK] step 4, H5) and the pencil is gone (D718): without this
@@ -909,7 +916,7 @@ export function InputEditor() {
               moreIds={archivedHere.length ? archivedHere : undefined}
               phWhy={phWhy}
               onChange={(p, s) => { setPpl(p); setSeveral(s); if (p.length === 1 && draft.person !== p[0]) setDraft({ ...draft, person: p[0] }) }} />
-            : canEditSched() && <label className="inped-f">
+            : canEditOwn() && <label className="inped-f">
               <span className="inped-k">Person</span>
               <select id="inpEditPerson" aria-label="Person" value={draft.person}
                 onChange={e => setDraft({ ...draft, person: e.target.value })}>
@@ -1006,7 +1013,7 @@ export function InputEditor() {
               <div className="goespick" role="group" aria-label="Goes to">
                 {([['g', 'Ground Programme'], ['u', 'Unavailable']] as const).map(([k, words]) => (
                   <button key={k} type="button" className={`goesbtn goes-${k}${(draft.goes ?? 'g') === k ? ' on' : ''}`} data-testid={`inpEdit-goes-${k}`}
-                    aria-pressed={(draft.goes ?? 'g') === k} disabled={readOnly || goesLocked || (draft.goes === 'r' && !canEditSched())} onClick={() => setDraft({ ...draft, goes: k })}>{words}</button>
+                    aria-pressed={(draft.goes ?? 'g') === k} disabled={readOnly || goesLocked || (draft.goes === 'r' && !canEditOwn())} onClick={() => setDraft({ ...draft, goes: k })}>{words}</button>
                 ))}
               </div>
               {/* …a rejected one says so and picks neither; only a scheduler moves it (G5) */}
@@ -1204,7 +1211,7 @@ export function InputEditor() {
               ? recPpl.length > 1 ? (recPpl.some(p => isSpecial(p)) ? `Date changes apply to ${howMany(recPpl)}.` : `Date changes apply to all ${recPpl.length}.`) : ''
             : isSansAvail(draft.type)
               ? 'To change its dates, delete it and add it again on the SANS calendar.'
-            : canEditSched()
+            : canEditOwn()
               ? 'The dates are changed on the Inputs page.'
               : 'The person and the dates are changed on the Inputs page.')}
         </div>}

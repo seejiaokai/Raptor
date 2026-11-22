@@ -10,8 +10,8 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { VCONF, SHIFT_HARD, RULE_SPEC, RULE_STD, KIND_LABEL, ruleFmt, ruleParse, ruleOff, kindOff, rulesOffCount, rulesCheckedOffCount, rulesSave, rulesReset } from '../engine/rules'
 import { WARN, validate, lgFired } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
-import { setLgEdit, lgCanEdit } from '../state/auth'
-import { isAdmin } from '../state/perms'
+import { setLgEdit, lgCanEdit, canEditSched } from '../state/auth'
+import { openWinFor } from '../state/cutoff'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
 import { useVersion } from './useStore'
@@ -166,7 +166,7 @@ function logicBody(LGQ: string, LGF: LgFilter) {
   if (!WARN.byDay.length) validate()
   const fired = lgFired()
   const q = LGQ.trim().toLowerCase()
-  const edit = lgCanEdit(), admin = isAdmin()
+  const edit = lgCanEdit(), admin = canEditSched()
   /* the settings are all one kind of thing — they show with All only; a filter is a question about the checks */
   const s = LGF === 'all' ? settingsHTML(q, edit, admin) : { html: '', n: 0 }
   const c = checksHTML(q, LGF, fired)
@@ -200,7 +200,7 @@ export function LogicPage() {
     return () => { observer?.disconnect(); window.removeEventListener('resize', place) }
   }, [])
 
-  const admin = isAdmin()
+  const admin = canEditSched()
   const editing = lgCanEdit()
   const b = logicBody(LGQ, LGF)
   /* THE RULE LIST IS DRAWN AGAIN ONLY WHEN ITS WORDS CHANGE ([LOGIC-REDRAW-DROPS-TYPING], 21 Oct 26). React sets a
@@ -326,7 +326,7 @@ export function LogicPage() {
       const t = e.target as HTMLElement
       const i = t.closest('[data-lgset]') as HTMLInputElement | null
       if (i) {
-        if (!isAdmin()) return
+        if (!canEditSched()) return
         if (rebuilding.current) return   // taken off the page by a rebuild, not left — the keeper carries the typing
         const k = i.dataset.lgset!, spec = RULE_SPEC[k], v = ruleParse(k, i.value)
         if (v == null || (spec.kind!=='text' && (v < spec.lo || v > spec.hi))) {
@@ -348,7 +348,7 @@ export function LogicPage() {
       }
       const c = t.closest('[data-lgkind]') as HTMLInputElement | null
       if (c) {
-        if (!isAdmin()) return
+        if (!canEditSched()) return
         const k = c.dataset.lgkind!
         SHIFT_HARD[k] = c.checked; ruleApply()   // a toggle keeps the keyboard where it is; the page puts it back after the redraw
         HOOKS.toast(`A shift against ${KIND_LABEL[k]} is now ${c.checked ? 'a Warning' : 'an Advisory'}`)
@@ -368,15 +368,16 @@ export function LogicPage() {
       /* a row's door to its calendar's settings window (D639) */
       const b = el.closest('[data-lgopen]') as HTMLElement | null
       if (b) {
-        if (!isAdmin()) return
-        if (b.dataset.lgopen === 'sans') setSansSet(true); else setInpSet(true)
+        if (!canEditSched()) return
+        /* stamped with the squadron in view as it opens (step A, R-O5) */
+        if (b.dataset.lgopen === 'sans') { openWinFor('sans', null); setSansSet(true) } else { openWinFor('inputs', null); setInpSet(true) }
         notify()
         return
       }
       /* one setting back to the squadron standard — the changed value shows changed, so no note says it (D850) */
       const r = el.closest('[data-lgreset]') as HTMLElement | null
       if (r) {
-        if (!isAdmin() || !lgCanEdit()) return
+        if (!canEditSched() || !lgCanEdit()) return
         flushRuleApply()
         /* what is half typed in this row's own box goes with the Reset (the press keeps the keyboard in the box, so its
            change never came) — the row shows its standard, not the typing (F2) */
@@ -444,7 +445,7 @@ export function LogicPage() {
           onClick={() => { finishBox(); setLgEdit(false); notify() }}>Done</button>
         <button type="button" className="abtn ghost" id="lgReset" hidden={!admin || !off}
           onClick={() => {
-            if (!isAdmin()) return
+            if (!canEditSched()) return
             flushRuleApply()   // a value still waiting is applied first, then everything is reset (F1)
             const n = rulesOffCount(); if (!n) return
             rulesReset(); ruleApply()

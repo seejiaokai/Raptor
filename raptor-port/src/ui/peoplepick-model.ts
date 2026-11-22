@@ -4,7 +4,7 @@
    nothing in them changed. */
 import { PEOPLE, isSpecial } from '../engine/people'
 import { isUpchit, needsDoc, placeholderProblem, shapeProblem } from '../engine/inputs'
-import { canEditSched } from '../state/auth'
+import { canEditOwn } from '../state/auth'
 import { mayFileGroup, mayFileInputFor, me } from '../state/perms'
 import { fileForOtherRefusal, rosterOptions } from './inputedit'
 
@@ -37,7 +37,7 @@ export const PLACEHOLDER_IDS = (): string[] => Object.keys(PEOPLE).filter(id => 
 export const PLACEHOLDER_HEADING = 'Whoever is free that day'
 
 /** may he pick someone other than himself for this kind at all? (an admin: yes; a member: a kind he may file for others) */
-export const mayPickOthers = (type: any): boolean => canEditSched() || mayFileInputFor('\u0000another', type)
+export const mayPickOthers = (type: any): boolean => canEditOwn() || mayFileInputFor('\u0000another', type)
 
 /** What is wrong with the people picked for this kind, and the one press that corrects it — or null. */
 export function pickProblem(people: readonly string[], several: boolean, type: any, phWhy?: (id: string) => string): { why: string; fix: string[]; fixLabel: string } | null {
@@ -56,16 +56,16 @@ export function pickProblem(people: readonly string[], several: boolean, type: a
     /* the one press is a MEMBER's ("File it for me only" — what he may always do); an admin is offered none: he
        picks the name it is really for from the list (Astra's scenario design, 9 Oct 26 — the admin was being offered
        to file another kind's input for HIMSELF) */
-    if (why) return { why, fix: !canEditSched() && mine != null ? [mine] : [], fixLabel: 'File it for me only' }
+    if (why) return { why, fix: !canEditOwn() && mine != null ? [mine] : [], fixLabel: 'File it for me only' }
   }
   if (several && people.length > 1 && !mayFileGroup(type)) {
-    if (canEditSched()) return {
+    if (canEditOwn()) return {
       why: `${isUpchit(type) ? 'An upchit' : needsDoc(type) ? 'A medical entry' : 'This'} is filed for one person at a time — each needs its own document`,
       fix: [people[0]], fixLabel: `Keep ${cs(people[0])} only`,
     }
     return { why: fileForOtherRefusal(type), fix: mine != null ? [mine] : [people[0]], fixLabel: 'File it for me only' }
   }
   const other = people.find(p => !isSpecial(p) && !mayFileInputFor(p, type))
-  if (other != null && !canEditSched()) return { why: fileForOtherRefusal(type), fix: mine != null ? [mine] : [], fixLabel: 'File it for me only' }
+  if (other != null && !canEditOwn()) return { why: fileForOtherRefusal(type), fix: mine != null ? [mine] : [], fixLabel: 'File it for me only' }
   return null
 }
