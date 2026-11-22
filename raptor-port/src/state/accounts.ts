@@ -76,7 +76,7 @@ import {
   postInProblem, newHomeProblem, type NewPerson,
 } from './roster-add'
 import { HOOKS } from '../engine/hooks'
-import { putNewHome, dropGrantsOfAccount, dropGrantRows, levelOfAccount, levelBefore, homeBefore, todayIso, homeOn, units, unitById, unitRows, grantOfOn, lockBreach, rowsDraft, putGrantLine, PLAN_MASTER_ONLY } from './units'
+import { putNewHome, dropGrantsOfAccount, dropGrantRows, levelOfAccount, levelBefore, homeBefore, todayIso, homeOn, units, unitById, unitRows, grantOfOn, grantRowHolds, lockBreach, rowsDraft, putGrantLine, PLAN_MASTER_ONLY } from './units'
 import { moveFrom, type UnitRows, type Grant, type GrantLevel } from './units-model'
 import type { LockBreach } from './lastadmin'
 import { noticeDay } from './notices'
@@ -1178,6 +1178,16 @@ export function accountsRestoreProblem(next: any[] | null, reqs: any[] | null, p
   if (next || rowsChange) {
     const locked = lockProblem(list, pid => people[pid], rows)
     if (locked) return locked
+    /* NO RIGHT STANDS ON A MASTER ADMIN'S ACCOUNT AFTER IT (§15 D14 — the fix read's A1): an Undo of a right taken away, or a
+       Redo of one given, after another master admin made that man one since, would put the right back hidden under "Full
+       access" — back again the day the mark comes off. Someone has since changed it (D148): refused in those words. The
+       gate refuses the same (perms.ts unitRowViolation). */
+    const r = rows ?? unitRows(), today = todayIso()
+    for (const a of list) {
+      if (!a || a.master !== true) continue
+      const h = { id: String(a.id), pid: String(a.pid), pidFrom: a.pidFrom }
+      if (r.grants.some(g => g.account === a.id && grantRowHolds(h, g, today, r))) return 'Something else changed this after your action — it can’t be undone now.'
+    }
   }
   if (next) {
     const ids = new Set<string>(), names = new Set<string>(), pids = new Set<string>()

@@ -2712,9 +2712,11 @@ function unitRowViolation(env: CommitEnvelope): string | null {
         if (n.level === 'admin' && String(who.role) !== 'admin') return `Plan on an account that is not an admin's (${id})`
         /* NO RIGHT GIVEN ON A MASTER ADMIN'S ACCOUNT (batch 1's second half, plan §15 D14 — R2-O14): he acts in every
            squadron, his row reads "Full access" with no buttons (R4), so a row given him would be hidden and come back when
-           the mark comes off. A command's own write only — a restore puts back what its step recorded (units.ts setGrant
-           and accounts.ts saveAccess refuse it at the door) */
-        if (who.master === true && env.origin !== 'restore' && grantRowHolds(hA, n, today, after)) return `a right on a master admin's account (${id})`
+           the mark comes off. Units.ts setGrant and accounts.ts saveAccess refuse it at the door. A restore too (the fix
+           read's A1): an Undo of a right taken away, or a Redo of one given, after another master admin made that man
+           one since, put it back hidden — no right stands on a master admin's account after ANY command (§15 D14); the
+           Undo's own check refuses it first, in D148's words (accounts.ts accountsRestoreProblem) */
+        if (who.master === true && grantRowHolds(hA, n, today, after)) return `a right on a master admin's account (${id})`
         /* ITS DAY IS THE DAY IT WAS GIVEN (fix read 8, fault G — Fable's 1, the security read's SEC8-3, the fresh Opus
            read's 3): the bell's move-day test counts a grant from its `from` (notices.ts adminThen, his D2218, D2223),
            and a grant with no day, or back-dated, put by a plain admin brought back a line a man's move had retired. A
