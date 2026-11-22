@@ -39,7 +39,7 @@ import { SESSION, canEditSched } from '../state/auth'
    writers — PO-archive, restore — emit a people change too). */
 import { persistPeopleProjection, commitPeopleEdit } from '../state/people-settings-commit'
 import { DAYS } from '../engine/data'
-import { PEOPLE, sansOnP, sansStart, sansStop, sansErase } from '../engine/people'
+import { PEOPLE, sansOnP, sansStart, sansStop, sansErase, setSansAhead } from '../engine/people'
 import type { Day, Sched } from '../engine/schema'
 import { SCHED, dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf, amFormatOf, unpublishBackTo } from '../engine/publish'
 import { blindDesks, dayOilBlind, dayOilWork, inputOilAmt, oilWorkWhy, type OilWork } from '../engine/oil'
@@ -2078,7 +2078,19 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
        AND SO IS A TICK MADE BY HAND (owner D2313, 22 Nov 26 — "a SANS tick made by hand counts from the day it is made, so
        earlier published days keep their crowd"): every SANS tick keeps its dates on the person (engine/people.ts sansOn),
        put on or taken off, by a posting or by hand, and this asks by the day being measured. */
-    if (sansOnP(p, iso) && !(engaged && engaged.has(id))) continue
+    const posting = postings[id]
+    /* …AND A SANS POSTING SET AHEAD IS READ BY THE DAY, WHENEVER THAT DAY IS LOOKED AT (owner D2329, 22 Nov 26 — "on 15 jul
+       hex is put to post out on 17 jul. on 18 jul … if hes planned like briefing, hes going to be counted in the all
+       avail. assuming that the timing is deconflicted"; "whenever that day is looked at" the agent's reading, told to him).
+       His SANS tick starts only when the posting RUNS on its date, so a day past the date, looked at before then, read him
+       as an ordinary man posted out: out though named, and a Saturday published on Wednesday with him named then read
+       pending, and lost him its OIL, the moment Friday came. So a day on or after a SANS posting's date that has not run
+       yet is a SANS day here already: in only if named on our programme that day, and his posting closes no window
+       (as one that has run closes none — windowFor). A day before the date is the ordinary man's, as before. */
+    const sansAhead = !!posting && outcomeOf(posting) === 'sans' && posting.to !== null
+      && posting.poDone !== addDays(posting.to, 1) && iso > posting.to
+    const sansDay = sansOnP(p, iso) || sansAhead
+    if (sansDay && !(engaged && engaged.has(id))) continue
     /* WHETHER HE IS STILL OURS THAT DAY IS READ FROM HIS SAVED POSTING, NEVER FROM THE ROW "+ SANS" SHAPES
        ([FABLE-READ-FAULTS] (i), Astra's code read #1, 22 Nov 26). The war's display row carries the posting window as the
        "+ SANS" switch lays it (store.ts windowFor, D283): off — the window stands, his old place, "posted out"; on — a SANS
@@ -2096,8 +2108,8 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
        POST-IN date — and, on a day before his tick, he counted with the switch off and not with it on. His saved posting
        holds the post-in date either way. */
     const lw0 = lwById.get(id)
-    const posting = postings[id]
-    const lw = posting ? { ...(lw0 || posting), ...windowFor(posting, true) } : lw0
+    const laid = posting ? { ...(lw0 || posting), ...windowFor(posting, true) } : lw0
+    const lw = laid && sansAhead ? { ...laid, to: null } : laid
     /* AND ON A DAY HE IS SANS AND NAMED ON OUR PROGRAMME HE IS OURS, WHATEVER HIS POSTING WINDOW ON THE WAR SAYS (the fresh
        Opus reader's F1 and F2 of this fix, 22 Nov 26; his [ALL-AVAIL-REDEF] at this function's head: "only SANS that are
        planned on the programmed on that day with us should be included"). With "+ SANS" off — how the squadron works
@@ -2119,7 +2131,7 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
        ticked SANS and named the day before his post-in date: "the sans should left out until he becomes a SANS"). So of
        the two parts set aside above only ONE still is: the END an archive wrote, replaced by the archive's own date. The
        start of his window — and his earlier stints — are read as for everyone, by the one rule, `inSquadron`. */
-    const sansWithUs = sansOnP(p, iso) && !!engaged && engaged.has(id) && !(p.archived && !p.archivedOn)
+    const sansWithUs = sansDay && !!engaged && engaged.has(id) && !(p.archived && !p.archivedOn)
     /* …AND THE SAME WRITTEN END, ONCE HE IS RESTORED, SITS ON AN EARLIER STINT (the fresh Opus reader's R1 of the D2328
        change, 22 Nov 26 — proved by d2328-read.test.ts R1a, R1b). Posted out as SANS, archived, then restored with a
        post-in date: his record is a closed stint ending the day before the SANS posting, then the new one. The days he
@@ -4048,9 +4060,32 @@ export function installPostingClock(): () => void {
   return off
 }
 
+/* A SANS POSTING SET AHEAD, FOR THE DAY'S SANS READER (owner D2329 — engine/people.ts setSansAhead): the first day of a
+   saved SANS posting that has not run yet, for the man whose Raptor body this is; null for anyone else. Worked out once
+   per change of the saved postings (the store replaces the object on every change), so the reader — asked in the checks'
+   inner loops — walks only the few postings waiting, never the roster. A posting held or not yet repainted on its date
+   still counts from its date; one taken back ("Undo post out"), moved or given another outcome is read as it now stands. */
+let AHEAD_SRC: unknown = null
+let AHEAD: Array<[string, string]> = []
+function sansAheadOf(p: unknown): string | null {
+  let po: Record<string, Person>
+  try { po = getState().postOuts } catch { return null }
+  if (po !== AHEAD_SRC) {
+    AHEAD_SRC = po
+    AHEAD = []
+    for (const id of Object.keys(po)) {
+      const w = po[id]
+      if (w && !w.gone && outcomeOf(w) === 'sans' && w.to !== null && w.poDone !== addDays(w.to, 1)) AHEAD.push([id, addDays(w.to, 1)])
+    }
+  }
+  for (const [id, from] of AHEAD) if (rosterBody(id) === p) return from
+  return null
+}
+
 export function wireLeaveWarSync(): void {
   /* a fresh wiring (a boot) tries every refused posting again (the fix read, 18 Nov 26 — Opus 1) */
   PO_REFUSED.clear(); PO_RETRIED.clear()
+  setSansAhead(sansAheadOf)
   /* [POST-OUT-OUTCOMES]: the posting's one line names his account only when he has one — the answer installed here, at
      the seam (the war never reads Raptor's accounts itself) */
   setAccountLookup(id => !!accountOfPid(id))

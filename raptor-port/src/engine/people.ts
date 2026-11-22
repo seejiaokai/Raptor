@@ -225,11 +225,21 @@ export const byCrew=(a:any,b:any)=>
    EVERY READER THAT IS ABOUT A DAY ASKS `sansOn` WITH THAT DAY — the ALL AVAIL crowd, the crew list, a puck on a day, the
    SANS availability checks, what a published day froze. Only a reader about the man as he is now (the Quals tick itself,
    who may file SANS availability, the Leave War's row — D283, D321, D1692) reads `p.san`. No date → today's tick. */
+/* A SANS POSTING SET AHEAD IS READ BY THE DAY (owner D2329, 22 Nov 26 — "on 18 jul … if hes planned like briefing, hes
+   going to be counted in the all avail"; "whenever that day is looked at" the agent's reading, told to him). His tick
+   starts only when the posting RUNS on its date (leavewar/sync.ts runPoOutcomes), so a day past the date looked at before
+   then read him as a regular — and a day published meanwhile turned pending the moment the posting ran. The posting lives
+   in the Leave War's store, so the war's link installs the answer here (leavewar/sync.ts wireLeaveWarSync): the first
+   day of a SANS posting that has not run yet, or null. A question about a DAY only — the tick as it stands today
+   (`sansOnP` with no date, `p.san`) is unchanged. */
+let SANS_AHEAD:((p:any)=>string|null)|null=null;
+export function setSansAhead(fn:((p:any)=>string|null)|null):void{SANS_AHEAD=fn;}
 export function sansOnP(p:any,iso?:any):boolean{
   if(!p)return false;
   if(!iso)return !!p.san;
   const d=String(iso);
   if(p.san&&(!p.sanFrom||d>=String(p.sanFrom)))return true;
+  if(SANS_AHEAD){const f=SANS_AHEAD(p); if(f&&d>=f)return true;}
   const was=Array.isArray(p.sanWas)?p.sanWas:[];
   return was.some((s:any)=>Array.isArray(s)&&d>=String(s[0]||'')&&d<String(s[1]||''));}
 export const sansOn=(id:any,iso?:any):boolean=>sansOnP(PEOPLE[id],iso);

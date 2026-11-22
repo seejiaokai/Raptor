@@ -151,13 +151,16 @@ describe('the "+ SANS" switch never changes who ALL AVAIL counts', () => {
     expect(off).toContain('rocky')
   })
 
-  it('a SANS posting still to come: the same answer both ways on a day past its date', () => {
+  /* CHANGED 22 Nov 26 by his D2329 ("on 18 jul … if hes planned like briefing, hes going to be counted in the all avail"):
+     a day past a SANS posting's date is read as the SANS day it will be, whenever it is looked at — he used to be out
+     until the date arrived and the posting ran */
+  it('a SANS posting still to come: on a day past its date, named with us, he is in — the same answer both ways', () => {
     onlyTheEvent(SAT); plan(SAT, 'rocky')
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()   // from Fri 17 Jul — today is Wed 15 Jul
     expect(P('rocky').san, 'the posting has not run').toBeFalsy()
     const { off, on } = crowdBothWays(SAT_ISO, SAT)
     expect(off).toEqual(on)
-    expect(off, 'not SANS until its date arrives, and posted out from it: out, as it was').not.toContain('rocky')
+    expect(off, 'SANS on Sat by the posting, named with us (D2329)').toContain('rocky')
   })
 
   it('"Undo post out": the regular he was, in, both ways', () => {
@@ -186,11 +189,90 @@ describe('left as it was: every other posting is still a departure', () => {
     expect(availableFor(TUE_ISO, WIN, DAYS[TUE] as any)).toContain('rocky')
   })
 
-  it('a SANS posting whose date was moved later, not yet run again: out on a day past the new date until it runs', () => {
+  /* CHANGED 22 Nov 26 by his D2329: a day past the new date is a SANS day already — named with us he is in; he used to be
+     out until the posting ran again */
+  it('a SANS posting whose date was moved later, not yet run again: a day past the new date reads as SANS — in if named, both ways', () => {
     onlyTheEvent(SAT); plan(SAT, 'rocky')
     expect(postOut('rocky', WED_ISO, 'sans')).toBe(true); raptorNotify()   // ran today
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()   // moved to Fri 17 Jul: its tick taken back
     expect(P('rocky').san, 'the tick the posting made is taken back').toBeFalsy()
+    const { off, on } = crowdBothWays(SAT_ISO, SAT)
+    expect(off).toEqual(on)
+    expect(off).toContain('rocky')
+  })
+})
+
+/* HIS D2329 (22 Nov 26), his own example: "on 15 jul hex is put to post out on 17 jul. on 18 jul he is planned to be on a
+   briefing … So from 15 -16 jul he should be counted in all avail assuming that he available. On 18 jul if he is not
+   planned for anything, hes not going to be counted in all avail. but if hes planned like briefing, hes going to be counted
+   in the all avail. assuming that the timing is deconflicted." Read by the day looked at, whenever it is looked at. */
+describe('D2329: a SANS posting set ahead is read by the day', () => {
+  const postedAhead = () => { expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify() }   // set Wed 15 Jul for Fri 17 Jul
+  it('Thu 16 Jul, before its date, not named: the ordinary man, in — both ways', () => {
+    onlyTheEvent(THU); postedAhead()
+    const { off, on } = crowdBothWays(THU_ISO, THU)
+    expect(off).toEqual(on)
+    expect(off).toContain('rocky')
+  })
+  it('Sat 18 Jul, not named: out — both ways', () => {
+    onlyTheEvent(SAT); postedAhead()
+    const { off, on } = crowdBothWays(SAT_ISO, SAT)
+    expect(off).toEqual(on)
+    expect(off).not.toContain('rocky')
+  })
+  it('Sat 18 Jul, named on a briefing at the event\'s own time: out, his times clash — both ways', () => {
+    onlyTheEvent(SAT); plan(SAT, 'rocky', '1000', '1100'); postedAhead()
+    const { off, on } = crowdBothWays(SAT_ISO, SAT)
+    expect(off).toEqual(on)
+    expect(off).not.toContain('rocky')
+  })
+  it('Sat 18 Jul, named on a briefing clear of the event: in, looked at on Wed — and still in once Fri arrives and the posting runs', () => {
+    onlyTheEvent(SAT); plan(SAT, 'rocky'); postedAhead()
+    expect(crowdBothWays(SAT_ISO, SAT).on).toContain('rocky')
+    vi.setSystemTime(new Date(2026, 6, 17, 9, 0, 0)); raptorNotify()       // Fri 17 Jul: the posting runs
+    expect(P('rocky').san, 'the posting has run').toBe(true)
+    const { off, on } = crowdBothWays(SAT_ISO, SAT)
+    expect(off).toEqual(on)
+    expect(off).toContain('rocky')
+  })
+  it('a Saturday published on Wed with him named stays clean when Fri arrives: no pending, the same crowd, the same OIL', () => {
+    onlyTheEvent(SAT); plan(SAT, 'rocky'); postedAhead()
+    sign(SAT); commitSetDayApproved(SAT, true); runOilPass()
+    expect(dayPendingItems(SAT).length, 'published clean').toBe(0)
+    const before = availableFor(SAT_ISO, WIN, DAYS[SAT] as any)
+    expect(before, 'his own example: counted on Sat').toContain('rocky')
+    expect(cell('rocky', SAT_ISO), 'the event\'s hours: nine start to finish, a full day of OIL').toBe('FO')
+    vi.setSystemTime(new Date(2026, 6, 17, 9, 0, 0)); raptorNotify(); runOilPass()
+    expect(P('rocky').san, 'the posting has run').toBe(true)
+    expect(JSON.stringify(dayPendingItems(SAT)), 'nothing waits on the published Saturday').toBe('[]')
+    expect(availableFor(SAT_ISO, WIN, DAYS[SAT] as any)).toEqual(before)
+    expect(cell('rocky', SAT_ISO), 'his OIL for the Saturday unchanged').toBe('FO')
+  })
+  it('the day\'s SANS reader every screen asks follows it: SANS from Fri, not Thu; today\'s tick untouched; gone with Undo post out, moved with the date', () => {
+    postedAhead()
+    expect(sansOn('rocky', THU_ISO), 'Thu: the regular he is').toBe(false)
+    expect(sansOn('rocky', FRI_ISO), 'Fri, the posting\'s date').toBe(true)
+    expect(sansOn('rocky', SAT_ISO)).toBe(true)
+    expect(P('rocky').san, 'today\'s tick: not SANS until the posting runs').toBeFalsy()
+    expect(postOut('rocky', SAT_ISO, 'sans')).toBe(true); raptorNotify()   // moved to Sat 18 Jul
+    expect(sansOn('rocky', FRI_ISO), 'moved: Fri is a regular day again').toBe(false)
+    expect(sansOn('rocky', SAT_ISO)).toBe(true)
+    expect(postOut('rocky', SAT_ISO, 'overseas')).toBe(true); raptorNotify() // another outcome
+    expect(sansOn('rocky', SAT_ISO), 'an Overseas posting makes no SANS day').toBe(false)
+    expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
+    expect(undoPostOut('rocky')).toBe(true); raptorNotify()
+    expect(sansOn('rocky', SAT_ISO), 'Undo post out: no SANS day').toBe(false)
+  })
+  it('Undo post out before Fri: Sat is the ordinary man\'s again — in when free though not named, both ways', () => {
+    onlyTheEvent(SAT); postedAhead()
+    expect(undoPostOut('rocky')).toBe(true); raptorNotify()
+    const { off, on } = crowdBothWays(SAT_ISO, SAT)
+    expect(off).toEqual(on)
+    expect(off).toContain('rocky')
+  })
+  it('an Overseas posting set ahead is still a departure: Sat out though named — both ways', () => {
+    onlyTheEvent(SAT); plan(SAT, 'rocky')
+    expect(postOut('rocky', FRI_ISO, 'overseas')).toBe(true); raptorNotify()
     const { off, on } = crowdBothWays(SAT_ISO, SAT)
     expect(off).toEqual(on)
     expect(off).not.toContain('rocky')

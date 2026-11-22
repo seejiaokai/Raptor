@@ -224,7 +224,9 @@ describe('D2313 (b) — a hand re-tick after a SANS posting keeps the posting\'s
     expect(postOut('rocky', FRI_ISO, 'sans'), 'the date moved to Friday, still to come').toBe(true)
     raptorNotify()
     expect(!!P('rocky').san, 'a posting still to come has made nobody SANS').toBe(false)
-    expect([TUE_ISO, WED_ISO, THU_ISO, FRI_ISO].map(d => sansOn('rocky', d)), 'no SANS day left behind').toEqual([false, false, false, false])
+    /* CHANGED 22 Nov 26 by his D2329: a SANS posting set ahead is read by the day, so Friday — its date — is a SANS day
+       already, before the posting runs; no earlier day is left behind */
+    expect([TUE_ISO, WED_ISO, THU_ISO, FRI_ISO].map(d => sansOn('rocky', d)), 'no SANS day left behind; Friday his posting\'s (D2329)').toEqual([false, false, false, true])
   })
 
   it('a posting taken back keeps the SANS days he held BY HAND before it', () => {
