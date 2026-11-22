@@ -678,6 +678,11 @@ export function noticeAboutHim(n: Pick<Notice, 'to' | 'iid' | 'what' | 'fu'>): b
   if (p.k === 'lw') return true
   if (p.k === 'lwback') return p.d !== 'open' && p.d !== 'close'
   if (p.k === 'po' || p.k === 'poback') return String(p.who) === String(n.to)
+  /* HIS OWN SANS AVAILABILITY TAKEN BACK (D2338 with his D2218: a line about himself stays and follows him on a move): the
+     struck line is a stored record of his own SANS days, always to him (sansunfiled.ts sansBackCovered). His live SANS-days
+     line (`sansdue`) is NOT asked here and stays false: it is never stored, but worked out from his home squadron's
+     schedule while that squadron is in view, so it goes by itself on a move (sansunfiled.ts unfiledNow). */
+  if (p.k === 'sansback') return true
   return false
 }
 /** HAS THIS LINE LEFT ITS READER'S BELL? (his D2218, 19 Nov 26: "On the day a person moves squadron the old squadron's
@@ -1002,12 +1007,20 @@ function partWords(p: NoticePart): string {
     case 'poback': return 'taken back'
     /* (the days themselves are the line's date — noticeWords; more than three are counted here) */
     case 'sansback': return 'taken back'
-    case 'sansdue': return p.days.length > SANS_DAYS_NAMED ? `Planned, no availability filed · ${p.days.length - SANS_DAYS_NAMED} more ${p.days.length - SANS_DAYS_NAMED === 1 ? 'day' : 'days'}` : 'Planned, no availability filed'
+    case 'sansdue': { const more = sansDays(p).length - SANS_DAYS_NAMED; return more > 0 ? `Planned, no availability filed · ${more} more ${more === 1 ? 'day' : 'days'}` : 'Planned, no availability filed' }
   }
 }
 /* HIS SANS DAYS, AS THE LINE'S DATE (D2338): the first three named, each month once at the end of its run of days, as the
    bell writes a run of dates — "Sat 18 Jul"; "Fri 17, Sat 18 Jul"; across two months "Fri 31 Jul, Sat 1 Aug" */
 const SANS_DAYS_NAMED = 3
+/* A SANS-DAYS LINE'S DAYS, READ AS THE APP WRITES THEM: ISO date strings only (chat 147's two code reads: a stored line
+   whose `days` was a word or a list of numbers broke the whole bell's words, and the bell has no error boundary). The
+   gate refuses such a line (state/perms.ts lineMalformed); this is the second wall, so no stored line can throw here. */
+const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/
+// any: a part read from a stored line, its fields unchecked until here
+function sansDays(p: any): string[] {
+  return p && Array.isArray(p.days) ? p.days.filter((d: unknown): d is string => typeof d === 'string' && ISO_DAY.test(d)) : []
+}
 function sansDaysWords(days: readonly string[]): string {
   const shown = days.slice(0, SANS_DAYS_NAMED)
   return shown.map((d, i) => { const w = noticeDay(d); const next = shown[i + 1]; return next && next.slice(0, 7) === d.slice(0, 7) ? w.replace(/ [A-Za-z]{3}$/, '') : w }).join(', ')
@@ -1016,7 +1029,8 @@ function sansDaysWords(days: readonly string[]): string {
  *  opens what the line opened (D1693) */
 export function sansDueOf(n: Pick<Notice, 'what'>): string | null {
   const p: any = (n.what || [])[0]
-  return p && (p.k === 'sansdue' || p.k === 'sansback') && Array.isArray(p.days) && p.days.length ? String(p.days[0]) : null
+  const days = p && (p.k === 'sansdue' || p.k === 'sansback') ? sansDays(p) : []
+  return days.length ? days[0]! : null
 }
 /* a bidding stretch said without its weekdays — "1 Apr – 30 Jun" (D1214's words) */
 function stretchWords(a: string, b: string): string {
@@ -1029,7 +1043,7 @@ function stretchWords(a: string, b: string): string {
    always the original line's own (one body: partWords). A move made before its line kept where it took the leave reads
    "LL moved" — demo data only (D56). */
 function backWords(p: NoticePart): string {
-  if (p.k === 'sansback') return partWords({ k: 'sansdue', days: p.days })
+  if (p.k === 'sansback') return partWords({ k: 'sansdue', days: sansDays(p) })
   if (p.k === 'poback') return partWords({ k: 'po', who: p.who, o: p.o, ...(p.acct ? { acct: true as const } : {}) })
   if (p.k !== 'lwback') return ''
   if (p.d === 'open' || p.d === 'close') return partWords({ k: 'lwopen', a: p.a, b: p.b, open: p.d === 'open' })
@@ -1069,9 +1083,9 @@ export function noticeWords(n: Notice): { name: string; day: string; what: strin
   }
   /* HIS SANS DAYS WITH NOTHING FILED (D2338): "Your SANS availability · Sat 18, Mon 20 Jul / Planned, no availability filed";
      nobody named — the app worked it out */
-  if (w && w.k === 'sansdue') return { name: 'Your SANS availability', day: sansDaysWords(w.days || []), what: partWords(w), who: '' }
+  if (w && w.k === 'sansdue') return { name: 'Your SANS availability', day: sansDaysWords(sansDays(w)), what: partWords(w), who: '' }
   /* …and taken back (D1699): "Your SANS availability · Sat 18 Jul / ~~Planned, no availability filed~~ · taken back · Saber" */
-  if (w && w.k === 'sansback') return { name: 'Your SANS availability', day: sansDaysWords(w.days || []), what: partWords(w), who: n.by ? cs(n.by) : '', struck: backWords(w) }
+  if (w && w.k === 'sansback') return { name: 'Your SANS availability', day: sansDaysWords(sansDays(w)), what: partWords(w), who: n.by ? cs(n.by) : '', struck: backWords(w) }
   /* (a bid it replaced on the Leave War is said after the rest, never cut by the first-two rule — M4 9.3a: "You were added ·
      replaces your LL bid") */
   const rb = (n.what || []).filter(p => p.k === 'rbid')

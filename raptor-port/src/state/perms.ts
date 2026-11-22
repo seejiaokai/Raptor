@@ -1343,7 +1343,7 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
         && !told.has(`${n.to}|${who}`)
       if (!ok) return refuse(c)
       told.add(`${n.to}|${who}`)
-    } else if (!deletes || parts.some(p => WAR_LINE_KINDS.has(String(p && p.k))) || !inputsChanged.has(String(n.iid))) return refuse(c)
+    } else if (!deletes || parts.some(p => WAR_LINE_KINDS.has(String(p && p.k)) || NEVER_STORED.has(String(p && p.k))) || !inputsChanged.has(String(n.iid))) return refuse(c)
   }
   /* THE SIGN-INS THIS PASS TAKES AWAY (fix read 12, fault A — Opus O12-2, Fable F12-1): a posted man's account whose
      outcome is Delete and whose row this pass removes — or, on the accounts' very first write, his seeded row the stored
@@ -2953,11 +2953,25 @@ const warSignedBy = (n: any, self: string | null): boolean => (Array.isArray(n?.
 })
 /* (a line with a war part — the kinds only the war's own writers write) */
 const warPart = (n: any): boolean => Array.isArray(n?.what) && n.what.some((p: any) => WAR_LINE_KINDS.has(String(p?.k)))
+/* A KIND THE APP NEVER STORES (chat 147's two code reads — D2338; docs/data-model.md §11, the Notice row): his SANS-days
+   line (`sansdue`) is only ever worked out on his bell (leavewar/sansunfiled.ts sansUnfiledLines), never written. Being no
+   war kind, a stored one was judged as an input's line, so an admin's input command — or a member's, to the admin who
+   filed for him — put "Your SANS availability · Planned, no availability filed" on a bell, reading as the app's own (no
+   name), never going. A put of a line carrying one is refused in both sections, before every door — a verified replay
+   too: no step of the app ever wrote one. */
+const NEVER_STORED = new Set(['sansdue'])
+const neverStored = (n: any): boolean => Array.isArray(n?.what) && n.what.some((p: any) => NEVER_STORED.has(String(p?.k)))
+/* (a SANS-days part's days as its writer gives them: a list of ISO date strings — notices.ts reads them so too; ISO_DAY
+   is this file's own, above) */
+const isoDays = (d: unknown): boolean => Array.isArray(d) && d.every(x => typeof x === 'string' && ISO_DAY.test(x))
 /* A LINE THAT READS AS ONE (fix read 10, fault A (d) — Fable F10-1): every line the app writes carries at least one part,
    each an object naming its kind. A line with no parts read as "about him" (noticeAboutHim) and followed a moved man;
    one whose part was null broke the bell's words. */
 const lineMalformed = (n: any): boolean => !n || typeof n !== 'object' || !Array.isArray(n.what) || !n.what.length
-  || n.what.some((p: any) => !p || typeof p !== 'object' || Array.isArray(p) || typeof p.k !== 'string')
+  || n.what.some((p: any) => !p || typeof p !== 'object' || Array.isArray(p) || typeof p.k !== 'string'
+    /* (…and a SANS-days part whose days are not a list of ISO dates — chat 147's reads: `days: 'Sat'` or `[5, 6]` broke
+       the bell's words for its reader, who could not remove the line) */
+    || ((p.k === 'sansdue' || p.k === 'sansback') && !isoDays(p.days)))
 /* A RESTORE'S FOLLOW-UP TO HIS OWN MAN (fix read 10, fault A (b)): followUpOf below judges the one about a man of another
    squadron; a follow-up on his own man's bell — a "taken back" of bidding opened, an "again" — passed by warMade alone.
    Now it too must be one the restore owes (the probe, field for field), each owed line once (`used`). */
@@ -3044,6 +3058,7 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
   let replayed: ((c: Change) => boolean) | null | undefined
   const followed = new Set<string>()
   const ownFollowed = new Set<string>()
+  const sansBacks = new Set<string>()
   for (const c of env.changes) {
     const where = `${c.collection}/${c.id}`
     if (c.collection === 'notices') {
@@ -3053,6 +3068,8 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
         if (lineRewritten(c, replayed)) return `a bell line not as the pass writes it (${where})`
         /* (fix read 10, fault A (d): a line that reads as one — before every door) */
         if (lineMalformed(c.after) && !(replayed && replayed(c))) return `a bell line that will not read (${where})`
+        /* (chat 147: a kind the app never stores — before the telling doors, a verified replay too) */
+        if (neverStored(c.after)) return `a bell line the app only works out (${where})`
       }
       for (const n of [c.before as any, c.op === 'delete' ? null : (c.after as any)]) {
         if (!n || typeof n !== 'object' || n.to == null) continue
@@ -3143,6 +3160,14 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
                me()); a posting's own line by no one, the posting acting (noticePosting)) */
             if (!warSignedBy(n, self)) return `a war line not signed as its writer signs it (${where})`
             if (!(WAR_OWED && WAR_OWED(env.changes, n)) && !restoreFollowUpOwed(env, n, replayed, ownFollowed)) return `a war line no change of the war owes (${where})`
+            /* (one struck SANS-days line a man and posting, in one command — chat 147's reads: one take-back owes one line,
+               as restoreFollowUpOwed's `used`; 25 copies rode one posting command) */
+            const sb = (n.what as any[]).find((p: any) => p && p.k === 'sansback')
+            if (sb) {
+              const key = `${String(n.to)}|${String(n.day)}`
+              if (sansBacks.has(key)) return `a war line no change of the war owes (${where})`
+              sansBacks.add(key)
+            }
           }
         }
         /* A LINE NAMING NO INPUT (fix read 10, fault A (d) — Fable F10-1): only the war's lines (above), the holiday's
@@ -3416,6 +3441,8 @@ function ownershipChecks(env: CommitEnvelope): string | null {
            opened or closed, "… taken back" are written only by an admin's war command (state/notices.ts noticeWar, the
            `lw.notice` follow-up) — a member's notice riding his own input may carry none of them */
         if (c.op === 'put' && warPart(n)) return `a notice that is not his own change's (${where})`
+        /* (chat 147: nor a kind the app never stores — before the telling door, a verified replay too) */
+        if (c.op === 'put' && neverStored(n)) return `a bell line the app only works out (${where})`
         /* (fix read 10, fault A (d): a line that reads as one, in this section too) */
         if (c.op === 'put' && lineMalformed(n)) {
           if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null

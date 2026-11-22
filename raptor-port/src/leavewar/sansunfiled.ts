@@ -119,8 +119,48 @@ export function sansLineBack(n: Notice, by: string | null, at: number): boolean 
   if (n.to !== by && hasRead(n.to, n)) noticeSansBack(n.to, by, Array.isArray(p.days) ? p.days : [], String(p.from || n.day), at)
   return true
 }
-/* WHAT THE PERMISSIONS CHECK ASKS OF SUCH A LINE (state/perms.ts, through sync.ts warLineCovered): owed only by a change of
-   that man's own posting record whose image — before or after — is a SANS posting, to the man himself, on its date */
-export function sansBackCovered(o: { who: string; day: string; o: string }, n: { to?: unknown; name?: unknown; day?: unknown }): boolean {
-  return o.o === 'sans' && String(n.to) === o.who && n.day === o.day && n.name === 'Your SANS availability'
+/* WHICH CHANGE OWES SUCH A LINE (state/perms.ts, through sync.ts warLinesOwed — chat 147's two code reads: every image of
+   any change of a posting record owed one, so an admin's command that MADE a first SANS posting wrote a "taken back" of
+   made-up days). Only a real take-back: his record's BEFORE image is a SANS posting that has RUN (poDone its date — the
+   only posting whose line his bell can have shown, sansRunFrom), and the AFTER image takes it away (Undo post out), moves
+   its date or gives it another outcome (D1710 — postOut). Its day is the before image's date. A new posting, one not yet
+   run, or a change that keeps the run SANS posting as it was (an archive or a restore leaving it) owes none. Pure. */
+type LooseRec = Record<string, unknown>
+const loose = (x: unknown): LooseRec | null => (x && typeof x === 'object' && !Array.isArray(x) ? (x as LooseRec) : null)
+export function sansBackOwed(c: { collection: string; op: string; before?: unknown; after?: unknown }): string | null {
+  if (c.collection !== 'lw.postouts') return null
+  const b = loose(c.before)
+  if (!b || b.gone || typeof b.to !== 'string' || !b.to || outcomeOf(b as { poOutcome?: unknown; poArchive?: boolean }) !== 'sans') return null
+  const day = addDays(b.to, 1)
+  if (b.poDone !== day) return null
+  /* …and the AFTER image no longer that run: gone, or its run mark (`poDone`) no longer that date — the store clears it
+     whenever the date or the outcome changes (state/store.ts setPostOut), so a move and another outcome both read so. An
+     archive by hand rewrites the record (outcome "overseas", the archive's own body) but keeps its run mark: it is no
+     take-back of the posting and owes none; neither does a restore that leaves the run as it was */
+  const a = loose(c.op === 'delete' ? null : c.after)
+  const kept = !!a && !a.gone && typeof a.to === 'string' && a.poDone === day
+  return kept ? null : day
+}
+/* WHAT THE PERMISSIONS CHECK ASKS OF SUCH A LINE (state/perms.ts, through sync.ts warLineCovered): owed only by that
+   take-back (above), to the man himself, on its date; its days as the writer gives them — a non-empty list of distinct
+   ISO dates in order, each on or after that date (the live line's days, sansUnfiledDays); and only where he had READ the
+   live line (his read record, as the restore's follow-ups ask it — sync.ts followUpsOwed's hasRead): its id as it stood
+   before this command, counting the struck lines he held then (sansUnfiledLines). One a man and posting a command is the
+   gate's own count (state/perms.ts `sansBacks`). */
+const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/
+export function sansBackCovered(o: { who: string; day: string; o: string }, n: { id?: unknown; to?: unknown; name?: unknown; day?: unknown; what?: unknown },
+  changes: ReadonlyArray<{ collection: string; id: string; op: string; before?: unknown }> = []): boolean {
+  if (o.o !== 'sans' || String(n.to) !== o.who || n.day !== o.day || n.name !== 'Your SANS availability') return false
+  const p = Array.isArray(n.what) ? loose(n.what[0]) : null
+  const days = p ? p.days : null
+  if (!Array.isArray(days) || !days.length) return false
+  for (let i = 0; i < days.length; i++) {
+    const d = days[i]
+    if (typeof d !== 'string' || !ISO_DAY.test(d) || d < o.day || (i > 0 && d <= (days[i - 1] as string))) return false
+  }
+  /* the struck lines he held before this command: every stored one of his for this date but those it newly puts */
+  const putNow = new Set(changes.filter(c => c.collection === 'notices' && c.op === 'put' && c.before == null).map(c => String(c.id)))
+  const backs = NOTICES.filter(x => x.to === o.who && x.day === o.day && (x.what || [])[0]?.k === 'sansback' && !putNow.has(String(x.id))).length
+  const at = new Date(+o.day.slice(0, 4), +o.day.slice(5, 7) - 1, +o.day.slice(8, 10)).getTime()
+  return hasRead(o.who, { id: `sansdue:${o.who}:${o.day}${backs ? `:${backs}` : ''}`, at })
 }

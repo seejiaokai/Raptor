@@ -172,7 +172,7 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncBeforeEnlist, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { sansUnfiledLines, sansLineBack, sansBackCovered } from './sansunfiled'
+import { sansUnfiledLines, sansLineBack, sansBackCovered, sansBackOwed } from './sansunfiled'
 import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
@@ -359,7 +359,7 @@ export function installAbsenceDoor(): void {
      them, so the gate compares a "taken back" or "again" line with what this restore owes, field for field */
   setFollowUpsProbe((moved, dir, notices) => followUpsOwed(moved, dir, notices, hasRead))
   /* WHICH WAR LINES A COMMAND OWES (perms.ts setWarLinesOwed — fix read 10, fault A): worked out from its own changes */
-  setWarLinesOwed((changes, n) => warLineCovered(warLinesOwed(changes), n))
+  setWarLinesOwed((changes, n) => warLineCovered(warLinesOwed(changes), n, changes))
   /* WHICH HOLIDAY LINES A COMMAND OWES (perms.ts setHolidayLinesOwed — fix read 11, fault C): from its own war changes */
   setHolidayLinesOwed((changes, n) => holidayLineCovered(holidayLinesOwed(changes), n))
   setLwDayOpenProbe((cellId: string) => {
@@ -1924,15 +1924,19 @@ export function warLinesOwed(changes: ReadonlyArray<{ collection: string; id: st
         const o = outcomeOf(r as { poOutcome?: unknown; poArchive?: boolean })
         if (!o) continue
         const day = addDays(r.to, 1)
-        out.push({ k: 'po', who: String(c.id), day, o }, { k: 'poback', who: String(c.id), day, o }, { k: 'sansback', who: String(c.id), day, o })
+        out.push({ k: 'po', who: String(c.id), day, o }, { k: 'poback', who: String(c.id), day, o })
       }
+      /* (his struck SANS-days line: only a real take-back of a run SANS posting — sansunfiled.ts, D2338, chat 147's reads) */
+      const sb = sansBackOwed(c)
+      if (sb) out.push({ k: 'sansback', who: String(c.id), day: sb, o: 'sans' })
     }
   }
   for (const [to, m] of leave) out.push({ k: 'lw', to, days: m.days, kinds: m.kinds })
   return out
 }
 /** does this owed line cover that line? — what the gate asks, line by line (state/perms.ts setWarLinesOwed) */
-export function warLineCovered(owed: readonly OwedWarLine[], n: { to?: unknown; iid?: unknown; name?: unknown; day?: unknown; what?: unknown }): boolean {
+export function warLineCovered(owed: readonly OwedWarLine[], n: { id?: unknown; to?: unknown; iid?: unknown; name?: unknown; day?: unknown; what?: unknown },
+  changes: ReadonlyArray<{ collection: string; id: string; op: string; before?: unknown }> = []): boolean {
   const w = Array.isArray(n.what) && n.what.length === 1 ? looseRec(n.what[0]) : null
   if (!w || n.iid !== '' || typeof w.k !== 'string') return false
   /* (its name and day as its writer gives them — noticeWar: warLineName and the part's first day) */
@@ -1953,7 +1957,7 @@ export function warLineCovered(owed: readonly OwedWarLine[], n: { to?: unknown; 
       return [...run(w.a, w.b), ...run(w.to, w.tb)].some(d => o.days.has(d))
     }
     if (o.k === 'lwopen') return w.a === o.a && w.b === o.b && w.open === o.open
-    if (o.k === 'sansback') return sansBackCovered(o, n)   // (sansunfiled.ts, D2338)
+    if (o.k === 'sansback') return sansBackCovered(o, n, changes)   // (sansunfiled.ts, D2338)
     return String(w.who) === o.who && String(w.o) === o.o && n.day === o.day
   })
 }

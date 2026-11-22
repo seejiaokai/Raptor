@@ -20,16 +20,22 @@ import { stashClear } from '../engine/weekstash'
 import { slotBar } from '../engine/avail'
 import { afterSchedMutate, CALMONTH, INPMODE, SANSDAYASK, clearSansDayAsk } from '../state/view'
 import { sansAvailHTML } from '../ui/palette-html'
-import { NOTICES, noticesFor, noticeWords, type Notice } from '../state/notices'
+import { NOTICES, noticesFor, noticeWords, noticeSansBack, type Notice } from '../state/notices'
+import { commit as cmdCommit, commandStream } from '../command'
+import { schedStore, resyncBeforeEnlist, schedApplyEnd } from '../state/sched-commit'
+import { peopleStore, settingsStore, finishPeopleWrite } from '../state/people-settings-commit'
+import { validate } from '../engine/validate'
+import { CURWEEK } from '../engine/waves'
+import { loadWeek } from '../state/store'
 import { markAllNoticesRead, unreadFor } from '../state/noticeseen'
 import { me, ownershipViolation } from '../state/perms'
 import { deriveActor } from '../command/actor'
 import { CURPAGE } from '../state/view'
 import { openNotice } from '../ui/topstate'
-import { initStore as lwInitStore, setPeople } from './state/store'
+import { initStore as lwInitStore, setPeople, setPostOut, lwStore } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
-import { availableFor, postOut, runPoOutcomes, undoPostOut, wireLeaveWarSync } from './sync'
+import { archivePerson, availableFor, postOut, restoreArchivedPerson, runPoOutcomes, undoPostOut, warLinesOwed, wireLeaveWarSync } from './sync'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = '', DAYS0 = '', INPUTS0 = ''
@@ -261,5 +267,113 @@ describe('D2338 (2) — the bell line taken back with its posting', () => {
     file((DAYS[SAT] as any).dt, 'rocky')
     expect(sansLines('rocky')).toEqual([])
     expect(backOf('rocky')).toEqual([])
+  })
+
+  /* THE GATE ON THE STRUCK LINE (chat 147's two code reads — the fresh Opus reader's 2, the security read's hole 1): owed only
+     by a real take-back of his RUN SANS posting, to him, on its date, its days the live line's, once a man and posting a
+     command, and only where he had read the live line. An admin's command shaped as the posting's own take-back (the
+     posting taken away), carrying a struck line it was not owed. */
+  const takeBackWith = (extra: () => void): boolean => {
+    let r: any
+    try {
+      r = cmdCommit({
+        type: 'lw.postout', scope: { module: 'people' }, meta: null,
+        apply: (txn: any) => {
+          resyncBeforeEnlist(); txn.enlist(schedStore)
+          txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
+          setPostOut('rocky', null)
+          extra()
+          validate(); finishPeopleWrite(); schedApplyEnd()
+        },
+      } as any)
+    } catch { return false }
+    return !(r && 'ok' in r && r.ok === false)
+  }
+  it('the gate: read, taken away, one struck line of his days — passes (the control)', () => {
+    ran(); hexReads()
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [SAT_ISO], FRI_ISO) })).toBe(true)
+  })
+  it('the gate: NOT read, the same line — refused (an unread line simply goes)', () => {
+    ran()
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [SAT_ISO], FRI_ISO) })).toBe(false)
+    expect(backOf('rocky')).toEqual([])
+  })
+  it('the gate: read, a day before the posting\'s date — refused', () => {
+    ran(); hexReads()
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), ['2026-07-16'], FRI_ISO) })).toBe(false)
+  })
+  it('the gate: read, days out of order or repeated — refused', () => {
+    ran(); hexReads()
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), ['2026-07-19', SAT_ISO], FRI_ISO) })).toBe(false)
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [SAT_ISO, SAT_ISO], FRI_ISO) })).toBe(false)
+  })
+  it('the gate: read, two struck lines in one take-back — refused', () => {
+    ran(); hexReads()
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [SAT_ISO], FRI_ISO); noticeSansBack('rocky', me(), [SAT_ISO], FRI_ISO) })).toBe(false)
+  })
+  it('the gate: a posting not yet run, read nothing, taken away with a struck line — refused (nothing was shown)', () => {
+    plan(SAT, 'rocky'); expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [SAT_ISO], FRI_ISO) })).toBe(false)
+  })
+  /* a stored "Planned, no availability filed" line is never the app's (the security read's hole 2): refused even where the
+     command takes the posting back for real */
+  it('the gate: a STORED SANS-days line, even inside a real take-back — refused', () => {
+    ran(); hexReads()
+    expect(takeBackWith(() => {
+      NOTICES.push({ id: 'stored-sd', to: 'rocky', by: null, at: Date.now(), iid: '', name: 'Your SANS availability', day: SAT_ISO, what: [{ k: 'sansdue', days: [SAT_ISO] }] } as any)
+    })).toBe(false)
+  })
+})
+
+/* THE OPUS READER'S MISSING TESTS (chat 147's fix round) */
+describe('D2338 — the cases the fresh Opus reader found untested', () => {
+  afterEach(() => { if (String(CURWEEK) !== '13/07/2026') loadWeek('13/07/2026') })
+
+  it('a planned day in a SAVED week not loaded is named too (Mon 20 Jul, next week)', () => {
+    plan(SAT, 'rocky')
+    expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
+    loadWeek('20/07/2026'); plan(0, 'rocky'); loadWeek('13/07/2026')
+    expect(String(CURWEEK)).toBe('13/07/2026')
+    at(2026, 7, 17); runPoOutcomes(); raptorNotify()
+    const l = sansLines('rocky')
+    expect(l.length).toBe(1)
+    const days = (l[0]!.what[0] as any).days as string[]
+    expect(days[0]).toBe(SAT_ISO)
+    expect(days, 'the day planned in the saved week, not loaded').toContain('2026-07-20')
+  })
+
+  it('archived by hand after the line showed: the line goes, never struck — and the archive owes no struck line', () => {
+    plan(SAT, 'rocky'); expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
+    at(2026, 7, 17); runPoOutcomes(); raptorNotify()
+    signInAs('hex'); expect(markAllNoticesRead()).toBe(true); signInAs('ad', 'a')
+    expect(sansLines('rocky').length).toBe(1)
+    const n0 = commandStream().length
+    expect(archivePerson('rocky').bad).toBeNull(); raptorNotify()
+    const archEnv: any = commandStream().slice(n0).find((e: any) => e.type === 'person.archive')
+    expect(archEnv, 'the archive ran as one command').toBeTruthy()
+    /* (the archive rewrites his posting record — its own outcome — but keeps its run mark: no take-back of the posting) */
+    const po = archEnv.changes.find((c: any) => c.collection === 'lw.postouts' && c.id === 'rocky')
+    expect(po && [po.before.poOutcome, po.after.poOutcome, po.after.poDone]).toEqual(['sans', 'overseas', FRI_ISO])
+    expect(warLinesOwed(archEnv.changes).filter(o => o.k === 'sansback')).toEqual([])
+    expect(sansLines('rocky')).toEqual([])
+    expect(noticesFor('rocky').filter(n => String((n.what || [])[0]?.k) === 'sansback')).toEqual([])
+    /* …and restored with a post-in date: no struck line owed by the restore either */
+    const n1 = commandStream().length
+    expect(restoreArchivedPerson('rocky', '2026-07-20')).toBe(true); raptorNotify()
+    const resEnv: any = commandStream().slice(n1).find((e: any) => e.type === 'person.restore')
+    expect(resEnv, 'the restore ran as one command').toBeTruthy()
+    expect(warLinesOwed(resEnv.changes).filter(o => o.k === 'sansback')).toEqual([])
+    expect(noticesFor('rocky').filter(n => String((n.what || [])[0]?.k) === 'sansback')).toEqual([])
+  })
+
+  it('the posting\'s date is today but its pass has not run yet: still the look-ahead words, no bell line; once it runs, the usual words and the line', () => {
+    plan(SAT, 'rocky'); expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
+    at(2026, 7, 17)
+    expect(!!P('rocky').san, 'not SANS until the pass runs').toBe(false)
+    expect(whyIn(SAT, 'rocky')).toBe(LOOK)
+    expect(sansLines('rocky')).toEqual([])
+    runPoOutcomes(); raptorNotify()
+    expect(whyIn(SAT, 'rocky')).toBe(USUAL)
+    expect(sansLines('rocky').length).toBe(1)
   })
 })
