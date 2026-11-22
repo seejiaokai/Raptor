@@ -140,6 +140,7 @@ import {
   postingProblem,
   stintClosed,
   stintOpened,
+  stintOnArchive,
   personCut,
   arrivalKept,
   restoreDateProblem,
@@ -3464,13 +3465,20 @@ export function restoreProblem(id: string, postIn: string): string | null {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(postIn ?? ''))) return 'Pick the post-in date'
   /* a man of another squadron than the war loaded: judged on his own squadron's stored window (A3), read, never loaded */
   const fu = foreignHome(id)
+  /* (…on his stint as the Restore will close it from the archive's date — store.ts stintOnArchive, Astra's read of D2338,
+     finding 3: a stint his archive could not close ends the day before it, so a post-in before that day is refused here,
+     with the store's one sentence, as for any man whose archive closed his stint) */
+  const on = typeof body.archivedOn === 'string' ? body.archivedOn : undefined
   if (fu) {
     const post = readForeign(WORLD_DOOR!(fu).backend, id).post
-    return post ? restoreDateProblem(post, postIn) : null
+    return post ? restoreDateProblem(stintOnArchive(post, on), postIn) : null
   }
   const st = getState()
   const cur = st.people.find(p => p.id === id) || st.postOuts[id]
-  return cur ? postingProblem(id, 'restore', postIn, cur) : null
+  const bad = cur ? postingProblem(id, 'restore', postIn, cur) : null
+  if (bad) return bad
+  const who = cur || projectPeople(true).find(p => p.id === id)
+  return who ? restoreDateProblem(stintOnArchive(who, on), postIn) : null
 }
 /* THE ONE BODY OF "HE'S BACK" — Restore (Admin → Users since D310), Undo post out, Restore under another callsign. ONE command over the
    people, settings and war stores ([CMDL-FINISH] C10 — a single click is a single envelope): the posting cleared, the
@@ -3492,6 +3500,9 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
      post out (no post-in date) is that war's own door, drawn only where it is loaded: never run on the wrong war */
   const fw = foreignOf(id)
   if (fw && postIn === undefined) return false
+  /* the archive's own date, taken before the command lifts it: a stint the archive could not close is closed on it here
+     (store.ts stintOnArchive — Astra's read of D2338, finding 3) */
+  const archivedOn = typeof body.archivedOn === 'string' ? body.archivedOn : undefined
   let ok = true
   let forget: string[] = []
   const r = cmdCommit({
@@ -3517,12 +3528,12 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
         if (fw) {
           /* his own squadron's stored war (A3): his saved window, or his projection there now the archive is lifted */
           const person = foreignPerson(fw.post(id), fw.unit, id)
-          const next = person ? stintOpened(person, postIn) : null
+          const next = person ? stintOpened(person, postIn, archivedOn) : null
           if (!next) throw new CmdRefused((person && restoreDateProblem(person, postIn)) || 'That did not save')
           fw.setPost(id, next)
         } else {
         const identity = getState().people.some(p => p.id === id) ? undefined : projectPeople(true).find(p => p.id === id)
-        if (!openStint(id, postIn, identity)) throw new CmdRefused(restoreProblem(id, postIn) || 'That did not save')
+        if (!openStint(id, postIn, identity, archivedOn)) throw new CmdRefused(restoreProblem(id, postIn) || 'That did not save')
         }
         enableForRestore(id)
         body.back = true

@@ -2357,13 +2357,13 @@ export function restoreDateProblem(person: Person, date: string): string | null 
  *  posted out) simply starts on `date`. Refused on or before the day his stint closed (`postingProblem(…, 'restore')`
  *  says why). `identity` — the war's picture of a man it does not show right now (archived with no window, a SANS man
  *  with Show SANS off), laid on as the delete's `frozen` is. Runs inside Restore's command (leavewar/sync.ts). */
-export function openStint(id: string, date: string, identity?: Person): boolean {
+export function openStint(id: string, date: string, identity?: Person, archivedOn?: string): boolean {
   if (state.role !== 'admin') return false
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false
   const person = state.people.find(p => p.id === id) || (identity && withStored(identity))
   if (!person || person.gone) return false
   if (postingProblem(id, 'restore', date, person)) return false
-  const next = stintOpened(person, date)
+  const next = stintOpened(person, date, archivedOn)
   if (!next) return false
   const had = state.people.some(p => p.id === id)
   const people = had ? state.people.map(p => (p.id === id ? next : p)) : [...state.people, next]
@@ -2375,7 +2375,8 @@ export function openStint(id: string, date: string, identity?: Person): boolean 
 /** RESTORE'S NEXT PERSON, PURE (A3 — `openStint` above for the war loaded, leavewar/state/foreign.ts's caller for
  *  another squadron's stored war): his new stint from `date`, or null where Restore refuses (a deleted man, a date on or
  *  before the day his stint closed — `restoreDateProblem` says why). No role check: the command's gate decides. */
-export function stintOpened(person: Person, date: string): Person | null {
+export function stintOpened(person: Person, date: string, archivedOn?: string): Person | null {
+  person = stintOnArchive(person, archivedOn)
   if (person.gone || restoreDateProblem(person, date)) return null
   const clear = { poArchive: undefined, poOutcome: undefined, poDone: undefined }
   if (person.to !== null) {
@@ -2423,6 +2424,19 @@ export function stintClosed(person: Person, today: string): { next: Person; repl
     ? { ...next, poArchive: true, poOutcome: 'overseas', poDone: addDays(next.to, 1) }
     : { ...next, poArchive: undefined, poOutcome: undefined, poDone: undefined }
   return { next, replaced: pending && pending !== 'none' ? pending : null }
+}
+/** HIS STINT AS HIS ARCHIVE LEFT IT, FOR A RESTORE (Astra's read of D2338, finding 3 — 23 Nov 26): the archive closes a
+ *  stint only where the war keeps a window for him — it shows his row, or he has a past on it (leavewar/sync.ts
+ *  archivePerson, pastOnWar). A hand-ticked SANS man with "+ SANS" off and nothing filed has neither, so his stint stayed
+ *  open: while archived he is read by the archive's date (sync.ts availableFor, round 4b's F1), but Restore dropped that
+ *  date and `stintOpened` replaced his start with the post-in date — the crowd of every day he was here lost him again
+ *  (D327). Saving a closed stint at the archive would put him back on the war as a row it never showed (setPeople's
+ *  frozen-copy rule), so the close is made here instead, at the Restore, from the archive's own date (`archivedOn`, D329)
+ *  by the archive's own rules (`stintClosed`): an arrived man's stint ends the day before it and the post-in opens or
+ *  reopens beside it; a man who never arrived keeps none; a stint already closed is left as it is. PURE. */
+export function stintOnArchive(person: Person, archivedOn?: string): Person {
+  if (!archivedOn || !/^\d{4}-\d{2}-\d{2}$/.test(archivedOn) || person.to !== null || person.gone) return person
+  return stintClosed(person, archivedOn).next
 }
 /** whether a man's saved person is a posting window worth a record (`windowRecord` below — the same test) */
 export const keepsWindow = (p: Person): boolean => p.from !== null || p.to !== null || !!(p.past && p.past.length)
