@@ -45,7 +45,7 @@ describe('an account under a waiting request\'s name answers it — only an admi
     expect(r.ok).toBe(false)
     expect(String(r.message)).toMatch(/request to join u149/)
     expect(requestByName('newb@mail'), 'the request still waits').toBeTruthy()
-    expect(signIn('newb@mail', 'x').ok === true && (signIn('newb@mail', 'x') as any).account, 'no account to sign in with').toBeFalsy()
+    expect(signIn('newb@mail', 'x').kind, 'no account to sign in with').not.toBe('ok')
   })
   it('a forged `account.update` renaming Ranger\'s sign-in onto the 149 requester\'s name is refused at the gate', () => {
     storeAccounts()
