@@ -1154,3 +1154,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The host sent the plan to Astra and a fresh Opus reader only ("an important plan's red team: two readers"), though the newer ruling D2255 (21 Nov 26) has high-risk work read by Fable beside the others, and the build's earlier plan had three readers. He had to ask "should we also ask an independent fable reviewer?". Fable, added in round 2, found the plan's shape fault (the pick laid over three things that keep their own squadron) the other two had missed.
 **Suggested improvement:** Before sending any red team or code read, list the reader rulings that apply by date and risk (how-we-work §Models and readers), newest first, and name in the brief which one sets the readers.
 **Principle:** When several rules set who reads, the newest that covers the case decides; read the list by date each time instead of from memory.
+
+### Observation 1011: A drawing helper marks every drawn part New unless the brief says which parts are approved
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 139 — drawing ten small questions (F1–F10) on the real app for the owner's look, by a helper
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** the brief handed to a drawing helper; the New / Approved marks
+
+**Issue:** The helper redrew an already-approved row design around one new line and tagged the whole row "New"; the host caught it on opening the pictures and sent four pictures back. The brief had listed what to draw but not which of the drawn parts the owner had already approved.
+**Suggested improvement:** In the method's helper-brief section, require the brief to name, per picture, the parts already approved (blue mark) and the parts new this round (pink mark); the helper's report lists the marks it used per picture.
+**Principle:** A picture that marks approved work as new asks the reviewer to decide it again; tell the drawer what is already settled, not only what to draw.
