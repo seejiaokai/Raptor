@@ -9,9 +9,9 @@ report, and you must not look for one. Report in plain text.
   the code AFTER it. Three parts:
   1. `raptor-port/src/leavewar/sync.ts` `availableFor` (search "WHETHER HE IS STILL OURS" down to `out.push(id)`): who the
      ALL AVAIL crowd counts on a day. `flewAsSans` and `sansAhead` are new since the last read.
-  2. `raptor-port/src/engine/people.ts` `sansOnP` / `setSansAhead` and `sansStop`'s new `po` mark;
-     `raptor-port/src/leavewar/sync.ts` `sansAheadOf` (installed by `wireLeaveWarSync`) and the two `sansStop(…, true)`
-     calls (archive; restore with a post-in date).
+  2. `raptor-port/src/engine/people.ts` `sansOnP` / `setSansAhead` / `sansSig`;
+     `raptor-port/src/leavewar/sync.ts` `sansAheadOf` (installed by `wireLeaveWarSync`), `savedSansRun` and the archive's
+     `sanPo` write in `archivePerson`; `raptor-port/src/engine/schema.ts` `sanPo`.
   3. `raptor-port/src/leavewar/state/store.ts` `arrivalKept` and its two callers — `forgetPersonFrom` there and
      `deleteOnForeign` in `sync.ts`: what a delete keeps of a man who never arrived.
 - Their tests: `raptor-port/src/leavewar/allavail-sans-posted.test.ts`, `d2328-read.test.ts`, `d2328-astra.test.ts`,
@@ -49,10 +49,11 @@ report, and you must not look for one. Report in plain text.
 
 ## What changed, in words
 
-1. A restored man posted out as SANS keeps the days he flew with us between his posting and his archive: a day inside
-   an ended SANS stretch marked as a posting's ('po'), begun the day after a stint's written end (the current one's or
-   an earlier one's), counts him if he is named that day. The blanket "an archive's end is replaced by the archive's
-   date" is gone.
+1. A man posted out as SANS and then archived — still archived, or restored with a later post-in date — keeps the days
+   he flew with us between his posting and his archive: the archive writes those days from his saved posting onto him
+   (`sanPo`, in `archivePerson`), and a day inside them counts him if he is SANS and named that day (`flewAsSans`). The
+   blanket "an archive's end is replaced by the archive's date" is gone. (For a Fable read, from chat 146's second
+   copy: part 1 is read as it stands at the copy's head.)
 2. A man deleted before he ever arrived keeps his post-in date as a saved record (`{ from, to: null, gone: true }`), so
    the days before it are not counted.
 3. D2329: a SANS posting saved and not yet run makes every day from its date a SANS day for every day-reader (through
