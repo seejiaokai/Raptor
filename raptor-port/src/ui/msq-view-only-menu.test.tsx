@@ -39,6 +39,9 @@ const line = () => document.querySelector('#drawerSqnLine')?.textContent
 const listRows = () => [...document.querySelectorAll<HTMLElement>('#drawerSqnList .sqm-row')].map(r =>
   `${r.querySelector('.sqm-num')!.textContent} ${r.querySelector('.sqm-lbl')!.textContent}${r.getAttribute('aria-checked') === 'true' ? ' ✓' : ''}`)
 function openDrawer() { act(() => { setDrawer(true); notify() }) }
+/* a finger's or a mouse's click counts its presses (detail 1); a keyboard's click counts none (detail 0) — the menu spares
+   only a pointer's click after the press that closed the list */
+const TAP = { detail: 1 }
 
 describe('the pages a squadron he only views offers (D2381)', () => {
   it('Ranger with View of 149: 149 picked offers View-only Sched and Help alone; 142 every page', () => {
@@ -199,10 +202,10 @@ describe('the reads\' findings', () => {
     openDrawer()
     fireEvent.click(markBtn()!)
     const shade = document.getElementById('drawer')!
-    act(() => { fireEvent.pointerDown(shade); fireEvent.click(shade) })
+    act(() => { fireEvent.pointerDown(shade); fireEvent.click(shade, TAP) })
     expect(document.querySelector('#drawerSqnList'), 'the list closed').toBeNull()
     expect(DRAWER, 'the menu still open').toBe(true)
-    act(() => { fireEvent.pointerDown(shade); fireEvent.click(shade) })
+    act(() => { fireEvent.pointerDown(shade); fireEvent.click(shade, TAP) })
     expect(DRAWER, 'a second tap closes the menu').toBe(false)
   })
   /* The fix rounds' read of 23 Nov 26 (Astra 2), a repeat of F2 above: the first fix knew the press's own click by the
@@ -221,10 +224,10 @@ describe('the reads\' findings', () => {
     try {
       act(() => { fireEvent.pointerDown(shade) })
       clock.mockReturnValue(t0 + 1000)
-      act(() => { fireEvent.pointerUp(shade); fireEvent.click(shade) })
+      act(() => { fireEvent.pointerUp(shade); fireEvent.click(shade, TAP) })
       expect(document.querySelector('#drawerSqnList'), 'the list closed').toBeNull()
       expect(DRAWER, 'the menu stays open').toBe(true)
-      act(() => { fireEvent.pointerDown(shade); fireEvent.pointerUp(shade); fireEvent.click(shade) })
+      act(() => { fireEvent.pointerDown(shade); fireEvent.pointerUp(shade); fireEvent.click(shade, TAP) })
       expect(DRAWER, 'a second press closes the menu').toBe(false)
     } finally { clock.mockRestore() }
   })
@@ -240,7 +243,7 @@ describe('the reads\' findings', () => {
     act(() => { fireEvent.pointerDown(shade); fireEvent.pointerCancel(shade) })
     expect(document.querySelector('#drawerSqnList'), 'the list closed').toBeNull()
     expect(DRAWER).toBe(true)
-    act(() => { fireEvent.pointerDown(shade); fireEvent.pointerUp(shade); fireEvent.click(shade) })
+    act(() => { fireEvent.pointerDown(shade); fireEvent.pointerUp(shade); fireEvent.click(shade, TAP) })
     expect(DRAWER, 'the next press closes the menu').toBe(false)
   })
   /* The re-walk of 23 Nov 26 (chat 151, N1): with the list open under the mark, a finger on a page line below it closed the
@@ -256,12 +259,12 @@ describe('the reads\' findings', () => {
     fireEvent.click(markBtn()!)
     const line = (p: string) => document.querySelector<HTMLElement>(`#drawerNav a[data-page="${p}"]`)!
     /* the press on Inputs; the click, after the lines moved up, on the Leave War */
-    act(() => { fireEvent.pointerDown(line('inputs')); fireEvent.pointerUp(line('leavewar')); fireEvent.click(line('leavewar')) })
+    act(() => { fireEvent.pointerDown(line('inputs')); fireEvent.pointerUp(line('leavewar')); fireEvent.click(line('leavewar'), TAP) })
     expect(document.querySelector('#drawerSqnList'), 'the list closed').toBeNull()
     expect(CURPAGE, 'no page opened').toBe('viewsched')
     expect(DRAWER, 'the menu still open').toBe(true)
     /* the list closed, a tap on a line opens it */
-    act(() => { fireEvent.pointerDown(line('inputs')); fireEvent.pointerUp(line('inputs')); fireEvent.click(line('inputs')) })
+    act(() => { fireEvent.pointerDown(line('inputs')); fireEvent.pointerUp(line('inputs')); fireEvent.click(line('inputs'), TAP) })
     expect(CURPAGE).toBe('inputs')
     expect(DRAWER).toBe(false)
   })
@@ -272,9 +275,37 @@ describe('the reads\' findings', () => {
     openDrawer()
     fireEvent.click(markBtn()!)
     const out = document.getElementById('drawerLogout')!
-    act(() => { fireEvent.pointerDown(out); fireEvent.pointerUp(out); fireEvent.click(out) })
+    act(() => { fireEvent.pointerDown(out); fireEvent.pointerUp(out); fireEvent.click(out, TAP) })
     expect(document.querySelector('#drawerSqnList'), 'the list closed').toBeNull()
     expect(DRAWER, 'still open, still signed in').toBe(true)
+  })
+  /* The read of that fix (23 Nov 26, the fresh Opus reader and Astra alike): a press that closed the list with no click of
+     its own — a right press, a finger that slid — left the note set, and the menu's click capture then swallowed the next
+     KEYBOARD click (Enter or Space on a button: a click with no press before it). Only a pointer's click is spared now.
+     Red first. */
+  it('a right press closes the list; Enter on the mark after it opens the list at once', () => {
+    give(ACCT.ranger, 'u149', 'view')
+    signInAs('ranger')
+    render(<Drawer />)
+    openDrawer()
+    fireEvent.click(markBtn()!)
+    const inputs = document.querySelector<HTMLElement>('#drawerNav a[data-page="inputs"]')!
+    act(() => { fireEvent.pointerDown(inputs, { button: 2 }); fireEvent.pointerUp(inputs, { button: 2 }) })
+    expect(document.querySelector('#drawerSqnList'), 'the list closed').toBeNull()
+    act(() => { fireEvent.click(markBtn()!, { detail: 0 }) })
+    expect(document.querySelector('#drawerSqnList'), 'Enter on the mark opens the list').not.toBeNull()
+  })
+  it('a finger that slid closes the list; Enter on Logout after it signs out at once', () => {
+    give(ACCT.ranger, 'u149', 'view')
+    signInAs('ranger')
+    render(<Drawer />)
+    openDrawer()
+    fireEvent.click(markBtn()!)
+    const help = document.querySelector<HTMLElement>('#drawerNav a[data-page="help"]')!
+    act(() => { fireEvent.pointerDown(help); fireEvent.pointerCancel(help) })
+    expect(document.querySelector('#drawerSqnList')).toBeNull()
+    act(() => { fireEvent.click(document.getElementById('drawerLogout')!, { detail: 0 }) })
+    expect(DRAWER, 'Enter on Logout acts: the menu closes').toBe(false)
   })
   it('F3 (both): Arrow Down on the mark opens the list; focus leaving the list closes it', () => {
     give(ACCT.ranger, 'u149', 'view')

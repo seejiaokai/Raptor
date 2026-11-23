@@ -96,7 +96,10 @@ export function Drawer() {
       /* the click of the press that closed the list is spared wherever it lands — on the shade (the menu stays open) or on
          a line of the menu, which the list's closing has just moved up under the finger (the re-walk of 23 Nov 26, N1: a
          tap on Inputs opened the Leave War): it opens nothing, as D2384's "a press elsewhere closes the list first" says */
-      onClickCapture={e => { if (pressClosedList()) { e.stopPropagation(); e.preventDefault() } }}
+      /* only a POINTER's click is spared: a keyboard's (Enter or Space on a button — a click with no press before it,
+         detail 0) reads the note away and acts, so a press that closed the list and never clicked (a right press, a finger
+         that slid) cannot swallow the next key (the read of that fix, 23 Nov 26, the fresh Opus reader and Astra) */
+      onClickCapture={e => { if (pressClosedList() && e.detail > 0) { e.stopPropagation(); e.preventDefault() } }}
       onClick={e => { if (clickedOutside(e, 'drawer')) close() }}>
       <div className="drawer-panel">
         <DrawerSquadron />
