@@ -88,6 +88,7 @@ describe('NP4 — the sign-up card asks what the admin asks (D214, D222, D225, D
   })
   it('D226: past 14 letters the card says so at once, and Request access refuses — nothing cut', async () => {
     await signInAs('fresh@mail')
+    await type($('#accSqn') as HTMLSelectElement, 'u142')   // it starts on "Pick…" (his D2396 (f))
     await type($('#accCs') as HTMLInputElement, 'Christopher Tan')
     expect(($('#accCs') as HTMLInputElement).value, 'the box keeps every letter').toBe('Christopher Tan')
     expect($('#accCsLong').textContent).toMatch(/at most 14 letters/)
@@ -98,6 +99,7 @@ describe('NP4 — the sign-up card asks what the admin asks (D214, D222, D225, D
   })
   it('D225: initials may be blank; the waiting screen reads what he gave', async () => {
     await signInAs('fresh@mail')
+    await type($('#accSqn') as HTMLSelectElement, 'u142')   // it starts on "Pick…" (his D2396 (f))
     await type($('#accCs') as HTMLInputElement, 'Viper')
     await act(async () => { $('#accForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })) })
     expect($('#accErr').textContent, 'a missing pick is refused with its reason').toBe('Pick pilot, WSO or personnel')
@@ -113,6 +115,7 @@ describe('NP4 — the sign-up card asks what the admin asks (D214, D222, D225, D
   })
   it('D1650 / D1656: the screen after asking is the pass, then the three steps, the read-only line, its two buttons and "Signed in as" at the foot', async () => {
     await signInAs('pass@mail')
+    await type($('#accSqn') as HTMLSelectElement, 'u142')   // it starts on "Pick…" (his D2396 (f))
     await type($('#accCs') as HTMLInputElement, 'Stranger')
     await type($('#accIni') as HTMLInputElement, 'ST')
     await type($('#accSeat') as HTMLSelectElement, 'GND')
