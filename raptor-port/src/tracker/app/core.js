@@ -1038,12 +1038,16 @@ export function pickKey(k) { const w = whoamiId(); return w ? 'who:' + w + ':' +
    its course is noted under that squadron, and is read only where the plain key names no course of the squadron being
    opened. An answer naming none falls to the first course, as it always did. */
 const placeKey = () => { const u = storageUnit(); return u ? pickKey('lastCourse@' + u) : null; };
+/* HIS CHART AND STUDENT ON A COURSE ARE PER SQUADRON TOO (the night of 24 Nov 26, the walk's F1): an Export from 142 and an
+   Import into 149 keeps the course's id, so filed by course alone a student chosen on 142's copy reopened 149's copy on him,
+   where a next mark would go on the wrong man unless he read the name. No squadron bound (a test with no door): the plain key. */
+const placePick = k => { const u = storageUnit(); return pickKey(u ? k + '@' + u : k); };
+/* this squadron's own note first (noted at every course load, below): the plain key is his latest course anywhere, and on
+   a copied course it names one of this squadron's too, which would cost him his place here (Opus's lead, the same night) */
 function lastCoursePref() {
   const here = id => !!id && COURSES.some(x => isCourseEntry(x) && x.id === id);
-  const latest = prefGet(pickKey('lastCourse'));
-  if (here(latest)) return latest;
   const k = placeKey(), noted = k ? prefGet(k) : null;
-  return here(noted) ? noted : latest;
+  return here(noted) ? noted : prefGet(pickKey('lastCourse'));
 }
 
 /* The toolbar hides on demand so the chart gets the whole column (owner phone
@@ -2244,6 +2248,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
   /* One site covers init, switchCourse, addCourse, renCourse and delCourse.
      Raw and synchronous, so unlike sSet it never flickers the save status. */
   prefSet(pickKey('lastCourse'), c);
+  { const pk = placeKey(); if (pk) prefSet(pk, c); }
   /* A ring left over from another syllabus would re-light the moment the user
      came back to it. Cleared without redrawing: every caller renders anyway. */
   searchHit = null; searchQ = ''; searchCount = 0; searchAt = 0; searchHits = [];
@@ -2290,7 +2295,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
     plan.sylId = firstSylId();
     await savePlan(); __src = sylSource(plan.sylId) || DEFAULT_SYLLABUS;
   }
-  if (whoamiId()) prefSet(pickKey('lastSyl:' + c), plan.sylId);   /* this person's chart here (F2) */
+  if (whoamiId()) prefSet(placePick('lastSyl:' + c), plan.sylId);   /* this person's chart here (F2) */
   /* THE COURSE'S PLAN NAMES THE COURSE'S CHART, NEVER ONE PERSON'S ([DB-READINESS] group A, phase 5b — the finding filed
      in phase 4). This used to save the chart on screen as the course's chart too, so that a later reload read it back;
      but the plan is one record for the whole course, so on a shared store whoever opened the course last moved everyone
@@ -2339,7 +2344,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
      (kLastStudent), then whoever is at the top. The roster is per syllabus, so
      the membership guard quietly handles remembering someone who is not on the
      syllabus being opened. */
-  const __myS = prefGet(pickKey('lastCrew:' + c));
+  const __myS = prefGet(placePick('lastCrew:' + c));
   const onRoster = id => !!id && roster.some(r => r.id === id);
   active = onRoster(__myS) ? __myS : (onRoster(__lastS2) ? __lastS2 : (roster[0] ? roster[0].id : null));
   await loadLayout();
@@ -2375,14 +2380,14 @@ async function savePlan() { await sSet(kPlan(course), JSON.stringify(plan)); }
    nobody signed in as a person (a pending account, or a test with nothing wired), when he has none yet, or when his chart has since gone. */
 function mySylOn(c) {
   if (!whoamiId() || c == null) return null;
-  const s = prefGet(pickKey('lastSyl:' + c));
+  const s = prefGet(placePick('lastSyl:' + c));
   return (s && sylSource(s)) ? s : null;
 }
 /* Open another chart on the course on screen: a signed-in person's own place; with nobody signed in as a person, the
    course's plan, as it was always kept. Runs on the chain, with the load that follows. */
 async function openSylHere(id) {
   plan.sylId = id;
-  if (whoamiId()) prefSet(pickKey('lastSyl:' + course), id);
+  if (whoamiId()) prefSet(placePick('lastSyl:' + course), id);
   else await savePlan();
 }
 async function loadStudent() {
@@ -3380,7 +3385,7 @@ function restoreSnap(u) {
 }
 function applyMarkHistData(u) {
   const s = u.who;
-  if (active !== s) { active = s; prefSet(pickKey('lastCrew:' + course), s); }
+  if (active !== s) { active = s; prefSet(placePick('lastCrew:' + course), s); }
   restoreSnap(u);
 }
 /* The snapshot that a step's reverse pushes onto the other stack: the SAME
@@ -5718,7 +5723,7 @@ export async function addStudent() {
     });
     /* the student just added is the one on screen, so it is this person's pick too —
        it never was, and the next visit reopened on the one before (Fable A13) */
-    if (active) prefSet(pickKey('lastCrew:' + course), active);
+    if (active) prefSet(placePick('lastCrew:' + course), active);
   });
 }
 export async function removeStudent(v) {
@@ -5761,7 +5766,7 @@ async function removeStudentNow(v) {
        pacing they still need on another. */
     if (!elsewhere) { delKey(kPace(c, v)); delKey(kLulls(c, v)); delete pace[v]; delete lulls[v]; }
     if (wasLastStudent) delKey(kLastStudent(c));
-    if (prefGet(pickKey('lastCrew:' + c)) === v) prefSet(pickKey('lastCrew:' + c), '');
+    if (prefGet(placePick('lastCrew:' + c)) === v) prefSet(placePick('lastCrew:' + c), '');
     if (active === v) active = roster[0] ? roster[0].id : null;
     refreshActive(); renderBoard(); renderSide();
   });
@@ -5834,7 +5839,7 @@ async function leaveRunningCoursesNow(gone) {
       }
       if (lastS && leaving.has(lastS)) delKey(kLastStudent(c));
     });
-    if (c === course && leaving.has(prefGet(pickKey('lastCrew:' + c)))) prefSet(pickKey('lastCrew:' + c), '');
+    if (c === course && leaving.has(prefGet(placePick('lastCrew:' + c)))) prefSet(placePick('lastCrew:' + c), '');
     left += leaving.size;
   }
   if (left && course) {
@@ -5933,7 +5938,7 @@ export function setActive(v, opts) {
   else go();
   /* Merely looking at someone counts. Before this, only grading was remembered,
      so picking a crew member and coming back tomorrow forgot them. */
-  prefSet(pickKey('lastCrew:' + course), v);
+  prefSet(placePick('lastCrew:' + course), v);
 }
 
 /* ---- syllabus display order (ids since 1B-ii) ---- */
@@ -7316,7 +7321,7 @@ export async function applyStudents(students, links, version) {
     /* the chart the file's course is on is the one the person bringing it in now sees there: the course's plan takes the
        file's chart, and so does HIS OWN place on that course (D376) — no one else's ([DB-READINESS] group A, phase 5b:
        his chart is no longer the course's plan, so the reload below would otherwise keep him where he was) */
-    if (whoamiId() && block.plan && block.plan.sylId && sylSource(block.plan.sylId)) prefSet(pickKey('lastSyl:' + c), block.plan.sylId);
+    if (whoamiId() && block.plan && block.plan.sylId && sylSource(block.plan.sylId)) prefSet(placePick('lastSyl:' + c), block.plan.sylId);
     /* One label per enrolment across the course (the rule renameStudent keeps):
        the name the file brought in goes onto every chart it did NOT write too,
        or the charts would disagree and findEnrolment would read two students. */

@@ -144,6 +144,66 @@ describe('an Export still running when another squadron is picked (the fix list\
   })
 })
 
+describe('a course copied between squadrons has its own remembered place in each (the fix list\'s item 6 — the walk\'s F1)', () => {
+  /* what Export on 142 and Import on 149 leave behind: the same course ids in both */
+  function copy142To149() {
+    for (const k of wb.keys('tracker')) if (k.startsWith('u142@')) wb.set('tracker', 'u149@' + k.slice('u142@'.length), wb.get('tracker', k)!)
+  }
+  const twoStudents = async () => {
+    for (const name of ['JRONE', 'JRTWO']) {
+      if (C.roster.some((r: any) => r.name === name)) continue
+      await act(async () => { const p = C.addStudent(); await untilDlg(); C.dlgClose(name); await p; await settle() })
+    }
+    return C.roster.map((r: any) => r.id) as string[]
+  }
+  const untilDlg = async () => { for (let i = 0; i < 400 && !C.dlg; i++) await tick() }
+  it('the student chosen on 142 does not move 149\'s', async () => {
+    const [a, b] = await twoStudents()
+    const copied = C.course
+    copy142To149()
+    await pick('u149')
+    await act(async () => { await C.switchCourse(copied); await settle() })
+    expect(C.roster.map((r: any) => r.id), 'the premise: the same students').toEqual(expect.arrayContaining([a, b]))
+    await act(async () => { C.setActive(a) })
+    await pick('u142')
+    await act(async () => { C.setActive(b) })
+    await pick('u149')
+    expect(C.active, '149 reopens on the student left there').toBe(a)
+    await pick('u142')
+    expect(C.active, '142 on its own').toBe(b)
+  })
+  it('the chart chosen on 142 does not move 149\'s', async () => {
+    await twoStudents()
+    const copied = C.course
+    copy142To149()
+    const ids = C.orderedSylIds() as string[]
+    const [x, y] = [ids[0]!, ids[1]!]
+    await pick('u149')
+    await act(async () => { await C.switchCourse(copied); await C.switchSyllabus(x); await settle() })
+    await pick('u142')
+    await act(async () => { await C.switchSyllabus(y); await settle() })
+    await pick('u149')
+    expect(C.curSylId(), '149 reopens on the chart left there').toBe(x)
+    await pick('u142')
+    expect(C.curSylId(), '142 on its own').toBe(y)
+  })
+  it('the course: two copied courses, each squadron keeps the one he left it on (Opus\'s lead)', async () => {
+    await act(async () => { const p = C.addCourse(); await untilDlg(); C.dlgClose('CRSTWO'); await p; await settle() })
+    const ids = C.COURSES.map((c: any) => c.id) as string[]
+    expect(ids.length).toBeGreaterThan(1)
+    const [c1, c2] = [ids[0]!, ids[1]!]
+    copy142To149()
+    await pick('u149')
+    await act(async () => { await C.switchCourse(c1); await settle() })
+    await pick('u142')
+    await act(async () => { await C.switchCourse(c2); await settle() })
+    await pick('u149')
+    expect(C.course, '149 reopens on the course left there').toBe(c1)
+    await pick('u142')
+    expect(C.course, '142 on its own').toBe(c2)
+  })
+})
+
 describe('a press under way when another squadron is picked', () => {
   for (const kind of ['mouse', 'touch']) {
     for (const press of presses) {
