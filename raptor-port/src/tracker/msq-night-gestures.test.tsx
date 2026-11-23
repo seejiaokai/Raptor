@@ -102,6 +102,48 @@ const presses: Press[] = [
   { name: 'a drawn line\'s end', set: drawnLine, on: () => $('.lend') },
 ]
 
+describe('an Export still running when another squadron is picked (the fix list\'s item 5 — Astra\'s read, finding 2)', () => {
+  const written: string[] = []
+  const handleFor = (name: string) => ({ name, createWritable: async () => ({ write: async (t: string) => { written.push(t) }, close: async () => {} }) })
+  const start = () => { C.setCopyOpt('charts', true); C.setCopyOpt('students', true); C.setCopyPickAll(true); return C.saveCopyClick() }
+  it('the save picker answered after the pick: nothing is written and nothing is reported', async () => {
+    written.length = 0
+    let answer: (h: unknown) => void = () => {}
+    ;(window as any).__pickSaveForTests = (name: string) => new Promise(r => { answer = () => r(handleFor(name)) })
+    try {
+      const p = start()
+      await tick()
+      await pick('u149')
+      await act(async () => { answer(null); await p; await settle() })
+      expect(written, 'no file holds 149\'s records under 142\'s choices').toEqual([])
+      expect(C.dlg, 'no "Exported as…" over 149').toBeFalsy()
+    } finally { delete (window as any).__pickSaveForTests }
+  })
+  it('a pick while the records are being gathered: abandoned too', async () => {
+    written.length = 0
+    ;(window as any).__pickSaveForTests = async (name: string) => handleFor(name)
+    try {
+      const p = start()
+      /* past the picker, inside the gathering of charts and students */
+      await Promise.resolve(); await Promise.resolve()
+      await act(async () => { await pickSquadron('u149'); await p; await settle() })
+      expect(written).toEqual([])
+      expect(C.dlg).toBeFalsy()
+    } finally { delete (window as any).__pickSaveForTests }
+  })
+  it('with no move, the Export still writes and reports as it did', async () => {
+    written.length = 0
+    ;(window as any).__pickSaveForTests = async (name: string) => handleFor(name)
+    try {
+      const p = start()
+      for (let i = 0; i < 200 && !C.dlg; i++) await tick()
+      expect(C.dlg?.msg).toContain('Exported as')
+      await act(async () => { C.dlgClose(true); await p })
+      expect(written.length).toBe(1)
+    } finally { delete (window as any).__pickSaveForTests }
+  })
+})
+
 describe('a press under way when another squadron is picked', () => {
   for (const kind of ['mouse', 'touch']) {
     for (const press of presses) {

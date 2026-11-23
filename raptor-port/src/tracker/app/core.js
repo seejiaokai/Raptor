@@ -7426,20 +7426,29 @@ export async function saveCopyClick() {
   const opts = { ...copyOpts };
   const name = FMT.suggestedFileName(opts, savedAt);
   let handle = null;
+  /* THE EXPORT BELONGS TO THE SESSION AND SQUADRON IT STARTED ON (the night of 24 Nov 26, Astra's read 2): the save picker
+     can stand open across a pick or his move at midnight, and the records were gathered after it, so the choices made on
+     142 wrote 149's records, perhaps called a full backup. Checked after every wait and before writing; gone, it stops. */
+  const serial = sessionSerial, door = storageUnit(), gone = () => serial !== sessionSerial || door !== storageUnit();
   /* The save picker is the Open picker's twin: Playwright cannot drive it and
      the module's exports cannot be patched, so a test hands in a fake handle
      through window.__pickSaveForTests (the smoke reads the file it wrote). */
   const pickSave = (typeof window !== 'undefined' && window.__pickSaveForTests) || null;
-  if (pickSave) { handle = await pickSave(name); if (!handle) return; }
-  else if (FS.canWriteInPlace()) { handle = await FS.pickSave(name); if (!handle) return; }
-  const text = JSON.stringify(FMT.buildFile({
-    charts: opts.charts ? await collectCharts(ids, { deleted: ids.length === orderedSylIds().length }) : null,
-    students: opts.students ? await collectStudents() : null, savedAt }), null, 2);
+  if (pickSave) { handle = await pickSave(name); if (!handle || gone()) return; }
+  else if (FS.canWriteInPlace()) { handle = await FS.pickSave(name); if (!handle || gone()) return; }
+  if (gone()) return;
+  const charts = opts.charts ? await collectCharts(ids, { deleted: ids.length === orderedSylIds().length }) : null;
+  if (gone()) return;
+  const students = opts.students ? await collectStudents() : null;
+  if (gone()) return;
+  const text = JSON.stringify(FMT.buildFile({ charts, students, savedAt }), null, 2);
   try {
     if (handle) await FS.writeTo(handle, text); else FS.downloadInstead(name, text);
   } catch (err) {
+    if (gone()) return;
     closeCopy(); setSaveStatus('copy NOT saved — ' + ((err && err.message) || err), 'err'); notify(); return;
   }
+  if (gone()) return;
   closeCopy();
   setSaveStatus('', 'ok'); notify();
   /* "A full backup" only when it IS one: every chart AND the students. A file
