@@ -56,6 +56,9 @@ case q5: unsaved home Tracker edits, then a View-only pick — no question, edit
   Sched; is the window still open? If so it must show a band and refuse a save — press Save, picture what shows.
 - c2. Ranger with View of 149, on his Inputs with a saved input's window open: pick 149 (☰ on the phone, the top bar on
   the desktop) → View-only Sched, the window held with the pick's band, Save refusing; pick 142 → the window live again.
+- c3. Hunter with Plan of 149, on his Inputs: change an input's remarks, Save, open it again; pick 149 (Full access) → the
+  window held with the pick's band, the page staying Inputs; press the top bar's Undo, then Redo → still held, Save
+  refusing; pick 142 → live again (the third fix round, `27db0c659`).
 - a2/b2. For a and b where the pick or switch could be made: the band on the held Leave War window, its Close, and the
   slow shade press (hold about a second) on the phone.
 - d. Ranger (or the person the demo world gives a bell line "confirm your OIL" or any own-page line), 149 picked: press
