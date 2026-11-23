@@ -255,6 +255,7 @@ async function runFollow() {
 async function leaveSquadron() {
   unitLeaving = true;
   ready = false;
+  { const pk = placeKey(); if (pk && course != null) prefSet(pk, course); }   /* his place on this squadron (placeKey) */
   const dropped = !!sylDirty;
   if (dropped) { sylDirty = false; undoStack = []; redoStack = []; }
   else if (undoStack.length || redoStack.length) parkedHist.set(storageUnit(), { course, syl: curSylId(), undo: undoStack, redo: redoStack });
@@ -1013,10 +1014,17 @@ function prefSet(k, v) { try { localStorage.setItem(PP + k, v); } catch (e) {} }
    rewrite OLD unprefixed keys are left as they are (D120). */
 export function pickKey(k) { const w = whoamiId(); return w ? 'who:' + w + ':' + k : k; }
 /* HIS PLACE IS PER SQUADRON TOO (his D2395): the course he was on in 142's Tracker is not a course of 149's, so a visit to
-   149 must not cost him his place on 142. Kept beside the plain key (which a place from before multi-squadron still
-   answers); an answer naming a course this squadron does not have falls to the first, as it always did. */
+   149 must not cost him his place on 142. The plain key stays his latest course, wherever it was; as he leaves a squadron
+   its course is noted under that squadron, and is read only where the plain key names no course of the squadron being
+   opened. An answer naming none falls to the first course, as it always did. */
 const placeKey = () => { const u = storageUnit(); return u ? pickKey('lastCourse@' + u) : null; };
-function lastCoursePref() { const k = placeKey(); return (k && prefGet(k)) || prefGet(pickKey('lastCourse')); }
+function lastCoursePref() {
+  const here = id => !!id && COURSES.some(x => isCourseEntry(x) && x.id === id);
+  const latest = prefGet(pickKey('lastCourse'));
+  if (here(latest)) return latest;
+  const k = placeKey(), noted = k ? prefGet(k) : null;
+  return here(noted) ? noted : latest;
+}
 
 /* The toolbar hides on demand so the chart gets the whole column (owner phone
    ask, 9 Sep 26 — "have the option to hide this bar so that the space can be
@@ -2216,7 +2224,6 @@ async function loadCourseNow(c, restoreLastSyllabus) {
   /* One site covers init, switchCourse, addCourse, renCourse and delCourse.
      Raw and synchronous, so unlike sSet it never flickers the save status. */
   prefSet(pickKey('lastCourse'), c);
-  { const pk = placeKey(); if (pk) prefSet(pk, c); }
   /* A ring left over from another syllabus would re-light the moment the user
      came back to it. Cleared without redrawing: every caller renders anyway. */
   searchHit = null; searchQ = ''; searchCount = 0; searchAt = 0; searchHits = [];

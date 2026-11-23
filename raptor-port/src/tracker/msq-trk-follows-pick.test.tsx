@@ -130,6 +130,19 @@ describe('a pick moves every read and write to the squadron picked', () => {
     expect(after).not.toEqual(before)
   })
 
+  it('his place on each squadron is kept: the course he was on in 142 comes back after a visit to 149', async () => {
+    const start = C.course
+    const add = C.addCourse(); await until(() => C.dlg); C.dlgClose('PLACE142'); await add; await C.whenLoaded()
+    const mine = C.COURSES.find((c: any) => c.name === 'PLACE142').id
+    await C.loadCourse(mine)
+    expect(C.course).toBe(mine)
+    await pick('u149')
+    expect(C.COURSES.some((c: any) => c.id === mine), 'not a course of 149\'s').toBe(false)
+    await pick('u142')
+    expect(C.course, 'back on the course he was on').toBe(mine)
+    await C.loadCourse(start)
+  })
+
   it('a reload lands on his own squadron\'s Tracker, with both squadrons as saved', async () => {
     await pick('u149')
     await editChart('F149R'); await C.saveChangesClick()
