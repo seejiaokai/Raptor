@@ -175,7 +175,7 @@ describe('D2341 — hidden on a day that stops being SANS, back once it is SANS 
     expect(INPUTS.length, 'nothing deleted').toBe(n)
     expect(sansAvailOn('rocky', dt(SAT)), 'it no longer counts').toBeNull()
     expect(inputsOn(dt(SAT)).some((r: any) => r.person === 'rocky' && r.type === 'SANS Availability'), 'the day does not show it').toBe(false)
-    expect(sansDayGroups(SAT_ISO).out.concat(sansDayGroups(SAT_ISO).p, sansDayGroups(SAT_ISO).w, sansDayGroups(SAT_ISO).other).some(e => e.id === 'rocky'), 'the SANS calendar does not list it').toBe(false)
+    expect((g => [...g.out, ...g.p, ...g.w, ...g.other])(sansDayGroups(SAT_ISO)).some(e => e.id === 'rocky'), 'the SANS calendar does not list it').toBe(false)
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
     expect(sansAvailOn('rocky', dt(SAT)), 'back, counting, nothing re-filed').toBeTruthy()
   })
