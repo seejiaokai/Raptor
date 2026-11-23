@@ -2,7 +2,7 @@
    - the board's number (§3 item 8, the drawing b1-2): beside the day title, nothing in the bar moving, never over the
      next part of the bar on any day of the week; with 149 picked it reads 149;
    - the Tracker after a pick (§16 D2′, his D2318 — the drawings f2a, f2c): read only under a veil (no press reaches it),
-     hidden in the member view, given back on picking back;
+     given back on picking back; the member view with 149 picked lands on its View-only Sched (his D2381);
    - the pick's question for unsaved chart edits asked from another page (the drawing f2d): the Tracker's question shown
      over the page he is on, never the Tracker tab; Stay keeps him where he is, Discard lets the pick go on.
    Saber (`ad`) is the master admin of 142, so the Schedules menu lists 142 and 149. */
@@ -79,16 +79,24 @@ test.describe('night job 2', () => {
     expect(await page.evaluate(() => (document.querySelector('.trk-host') as any).inert)).toBe(false)
   })
 
-  test('the member view: the Tracker hidden with its own line, and back again', async ({ page }) => {
+  /* rewritten by his D2381 (23 Nov 26): in the member view 149 is a squadron he only views, so the switch lands him on
+     its View-only Sched with that page and Help alone offered — no longer on a hidden Tracker; leaving the member view
+     keeps him there, and the Tracker opens again, whole, with no band (GitHub's run on the D2381 build, chat 151) */
+  test('the member view: 149 picked lands on its View-only Sched, and the Tracker opens again after', async ({ page }) => {
     await pick(page, '149')
     await toTracker(page)
     await expect(band(page)).toHaveCount(0)
     await page.locator('#roleBadge').click()
-    await expect(band(page)).toContainText("This is 149's Tracker. Leave the member view to open it.")
+    await page.waitForFunction(() => (window as any).CURPAGE === 'viewsched')
     expect(await page.locator('#page-tracker .tr-root').first().isVisible()).toBe(false)
+    expect(await page.locator('#topnav a[data-page]:visible').evaluateAll(as => as.map(a => (a as HTMLElement).dataset.page)))
+      .toEqual(['viewsched', 'help'])
     await page.locator('#roleBadge').click()
+    await page.waitForTimeout(400)
+    expect(await page.evaluate(() => (window as any).CURPAGE)).toBe('viewsched')
+    await toTracker(page)
     await expect(band(page)).toHaveCount(0)
-    expect(await page.locator('#page-tracker .tr-root').first().isVisible()).toBe(true)
+    await expect(page.locator('#page-tracker .tr-root').first()).toBeVisible()
   })
 
   test('a pick with unsaved chart edits, from another page: asked there, Stay stays, Discard picks', async ({ page }) => {
