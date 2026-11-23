@@ -12,6 +12,8 @@ Pictures are in `raptor-port/docs/handpass/2026-11-23-msq-b1-morning/` (this mor
 
 ---
 
+**ANSWERED 24 Nov 26 — his D2396: every open question as recommended here ((e) closed by D2395); new words drawn for him first, then built.**
+
 ## At a glance — four rounds, the ones that need you most first
 
 ### Round 1 — these change what people are told or can find
