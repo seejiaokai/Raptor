@@ -21,3 +21,17 @@ round the bell in the desktop bars is the app's own (unread lines), not a ring. 
 - 6b-820-menu-149-proposed.png · the same at 820: SQUADRON "149" "View only" ▾ (ringed); MENU with only View-only Sched and Help (ringed); ACCOUNT as today · desktop 820 × 864 · proposed
 - 7a-roles-table-today.png · Admin → Users, Ranger's opened row, "What each role allows" (as Saber): the View column reads "read" for View-only Sched and Logic, "—" for every other page · desktop 1536 × 864 · today
 - 7b-roles-table-proposed.png · the same table with Logic's View cell now "—" (ringed); View-only Sched stays "read"; Help is not a row of the table, so nothing else changes · desktop 1536 × 864 · proposed
+
+## Version B of the SQUADRON section (asked for 23 Nov 26): chips, one tap, the menu stays open
+
+Under SQUADRON, one row of the bell's Show-row chips (the same look and size: 44 × 28, 6px apart), the squadron in view
+"on"; under it one grey line naming the access in view in the Schedules menu's words. One tap on a chip picks that
+squadron; the menu stays open and its MENU list changes at once. Only for people with more than one squadron, as in A.
+Script: `k3-version-b.mjs`.
+
+- b1-menu-149-chips-proposed.png · Ranger with 149 picked: chips 142 off and 149 "on", the grey line "149 · View only" (ringed); MENU with only View-only Sched and Help (ringed); ACCOUNT as today. Pairs with A's 2b · phone 402 × 874 · proposed (B)
+- b2-menu-after-tapping-142-proposed.png · just after one tap on the 142 chip: the menu still open, 142 now "on", the line "142 · Your squadron", and every page back in MENU at once (ringed). A has no match: there it took two taps and closed the menu · phone 402 × 874 · proposed (B)
+- b3-menu-home-142-chips-proposed.png · Ranger at home on 142: chips 142 "on" and 149 off, the line "142 · Your squadron" (ringed); the full MENU as today. Pairs with A's 3b · phone 402 × 874 · proposed (B)
+- b4-menu-saber-eight-chips-proposed.png · Saber, a master admin, with eight squadrons (142, 149 and 150 to 155, made by "+ New squadron"): the chips stay one row, cut off at the menu's edge, sliding sideways, never wrapping; 142 "on", the line "142 · Your squadron" (ringed) · phone 402 × 874 · proposed (B)
+- b4b-menu-saber-eight-chips-slid-proposed.png · the same row slid to its end: 150 to 155 in view; the line still names the squadron in view · phone 402 × 874 · proposed (B)
+- b5-ranger-149-topbar-proposed.png · Ranger's top bar with 149 picked: the same as A's 1b, since the desktop still picks the squadron at the top left with "149 ▾"; only View-only Sched and Help (ringed) · desktop 1536 × 864 · proposed (B, the same as A)

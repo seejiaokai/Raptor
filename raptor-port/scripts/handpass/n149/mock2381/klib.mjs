@@ -92,9 +92,34 @@ export const addSquadronSection = (s, { num, label, open = false, rows = [] }) =
 
 /* every change of the mock taken off again — the page back to what the app drew */
 export const resetMock = s => s.page.evaluate(() => {
-  document.querySelectorAll('.mk-sqh, .mk-sqrow, .mk-sqlist').forEach(e => e.remove())
+  document.querySelectorAll('.mk-sqh, .mk-sqrow, .mk-sqlist, .mk-sqchips, .mk-sqline').forEach(e => e.remove())
   document.querySelectorAll('#drawerNav a[data-page], #topnav a[data-page]').forEach(a => { a.style.display = '' })
 })
+
+/* VERSION B (the owner asked for a better design, 23 Nov 26): under "SQUADRON", one row of chips, one per squadron he
+   can pick, in the bell's Show-row look exactly (.bl-sqns > .fchip, 6px apart, the one in view drawn "on"); the row
+   slides sideways, never wrapping, as the bell's does — here a block row the panel's width (the bell's sits inline in
+   its foot); under it one grey line in the menu's own grey line (.drawer-acct) naming the access in view in the
+   Schedules menu's words ("149 · View only"). `sqns`: [{ num, label, on }] in the Schedules menu's order. */
+export const addSquadronChips = (s, sqns) => s.page.evaluate(sqns => {
+  const panel = document.querySelector('#drawer .drawer-panel')
+  const menuH = panel.querySelector(':scope > h4')
+  const h = document.createElement('h4'); h.textContent = 'Squadron'; h.className = 'mk-sqh'
+  const row = document.createElement('span'); row.className = 'bl-sqns mk-sqchips'; row.setAttribute('role', 'group')
+  Object.assign(row.style, { display: 'flex', width: '100%' })
+  row.innerHTML = sqns.map(q => `<button type="button" class="fchip${q.on ? ' on' : ''}" aria-pressed="${q.on}">${q.num}</button>`).join('')
+  const cur = sqns.find(q => q.on)
+  const line = document.createElement('p'); line.className = 'drawer-acct mk-sqline'; line.style.margin = '8px 0 0'
+  line.textContent = `${cur.num} · ${cur.label}`
+  panel.insertBefore(h, menuH); panel.insertBefore(row, menuH); panel.insertBefore(line, menuH)
+  return [...row.querySelectorAll('.fchip')].map(b => { const r = b.getBoundingClientRect(); return `${b.textContent} ${Math.round(r.width)}x${Math.round(r.height)} @${Math.round(r.left)}` })
+}, sqns)
+/* the Schedules menu's rows (as schedRows reads them) as chips: number, grey label, whether it is the one in view */
+export const rowsToChips = rows => rows.map(h => ({
+  num: (h.match(/class="sqm-num">([^<]*)</) || [])[1],
+  label: (h.match(/class="sqm-lbl">([^<]*)</) || [])[1],
+  on: /aria-checked="true"/.test(h),
+}))
 
 /* the roles table's View cell for a page, as proposed: "—" in the dash's own look */
 export const rolesCell = (s, pageId, role, mark) => s.page.evaluate(({ pageId, role, mark }) => {
