@@ -11,7 +11,7 @@
      menu's own rows) opens under it in the menu; a pick switches and the menu stays open; under the mark the grey line
      "149 · View only". One squadron: the mark alone, no ▾, the line "142 · Your squadron".
    Red first: before the change every page was offered and the menu had no squadron at its head. */
-import { describe, it, expect, afterEach } from 'vitest'
+import { describe, it, expect, afterEach, vi } from 'vitest'
 import { render, cleanup, act, fireEvent } from '@testing-library/react'
 import { useMsqWorld, signInAs, ACCT } from '../test-support/msq-world'
 import { saveAccess } from '../state/accounts'
@@ -204,6 +204,44 @@ describe('the reads\' findings', () => {
     expect(DRAWER, 'the menu still open').toBe(true)
     act(() => { fireEvent.pointerDown(shade); fireEvent.click(shade) })
     expect(DRAWER, 'a second tap closes the menu').toBe(false)
+  })
+  /* The fix rounds' read of 23 Nov 26 (Astra 2), a repeat of F2 above: the first fix knew the press's own click by the
+     clock (700 ms), so a press held about a second closed the list AND the menu. Known by the press itself now, however
+     long it is held. Red first. */
+  it('one slow press on the surround, held a second, closes the list only; the next closes the menu', () => {
+    give(ACCT.ranger, 'u149', 'view')
+    signInAs('ranger')
+    render(<Drawer />)
+    openDrawer()
+    fireEvent.click(markBtn()!)
+    expect(document.querySelector('#drawerSqnList')).not.toBeNull()
+    const shade = document.getElementById('drawer')!
+    const t0 = Date.now()
+    const clock = vi.spyOn(Date, 'now')
+    try {
+      act(() => { fireEvent.pointerDown(shade) })
+      clock.mockReturnValue(t0 + 1000)
+      act(() => { fireEvent.pointerUp(shade); fireEvent.click(shade) })
+      expect(document.querySelector('#drawerSqnList'), 'the list closed').toBeNull()
+      expect(DRAWER, 'the menu stays open').toBe(true)
+      act(() => { fireEvent.pointerDown(shade); fireEvent.pointerUp(shade); fireEvent.click(shade) })
+      expect(DRAWER, 'a second press closes the menu').toBe(false)
+    } finally { clock.mockRestore() }
+  })
+  /* a press that closed the list but brought no click to the surround (a finger that slid: the browser cancels it) must
+     not save the menu from the NEXT press's click */
+  it('a press that closed the list and never clicked does not spare the menu from the next press', () => {
+    give(ACCT.ranger, 'u149', 'view')
+    signInAs('ranger')
+    render(<Drawer />)
+    openDrawer()
+    fireEvent.click(markBtn()!)
+    const shade = document.getElementById('drawer')!
+    act(() => { fireEvent.pointerDown(shade); fireEvent.pointerCancel(shade) })
+    expect(document.querySelector('#drawerSqnList'), 'the list closed').toBeNull()
+    expect(DRAWER).toBe(true)
+    act(() => { fireEvent.pointerDown(shade); fireEvent.pointerUp(shade); fireEvent.click(shade) })
+    expect(DRAWER, 'the next press closes the menu').toBe(false)
   })
   it('F3 (both): Arrow Down on the mark opens the list; focus leaving the list closes it', () => {
     give(ACCT.ranger, 'u149', 'view')

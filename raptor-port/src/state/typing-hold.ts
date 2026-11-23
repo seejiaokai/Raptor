@@ -100,9 +100,12 @@ export function subscribeBands(fn: () => void): () => void { subs.add(fn); retur
 let RELEASE: () => void = () => {}
 /** state/store.ts hands its notify(), so the swap held by a window runs the moment the window goes */
 export function setHoldRelease(fn: (() => void) | null): void { RELEASE = fn || (() => {}) }
-/** a war window went (its ✕, Escape, a tap outside, or the band's Close): while a band is up, the page is told once the
- *  window has gone — after the frame's own unmount, never inside it — so the war's swap runs then */
+/** a war window went (its ✕, Escape, a tap outside, or the band's Close): the page is told once the last window has
+ *  gone — after the frame's own unmount, never inside it — so whatever the window held runs then.
+ *  NOT ONLY WHILE A BAND IS UP (the fix rounds' read of 23 Nov 26 — Astra 1, the fresh Opus reader's 1): a window holds
+ *  two things, the war's swap and the landing off a page the squadron picked does not offer (state/store.ts warHeld,
+ *  D2381), and this asked only about the first — so a landing held with no band up never ran. What is waiting is the
+ *  page's to say (the release it hands over); an ordinary close, with nothing held, tells nobody. */
 export function warWindowGone(): void {
-  if (!WAR) return
   queueMicrotask(() => { if (!warWindowOpen()) RELEASE() })
 }

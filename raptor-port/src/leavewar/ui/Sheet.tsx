@@ -485,7 +485,8 @@ export function Sheet({
     const n = panelRef.current
     if (!n) return
     OPEN.push(n)
-    /* a window going lets a swap it held run (state/typing-hold.ts — only while a band is up) */
+    /* a window going lets what it held run — the war's swap, or the landing off a page no longer offered
+       (state/typing-hold.ts warWindowGone; the page decides whether anything waited) */
     return () => { const i = OPEN.lastIndexOf(n); if (i >= 0) OPEN.splice(i, 1); warWindowGone() }
   }, [panelRef])
   const moveBand = useMoveBand(panelRef, () => closeRef.current())

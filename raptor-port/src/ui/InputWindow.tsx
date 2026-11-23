@@ -24,7 +24,7 @@ import { HOOKS } from '../engine/hooks'
 import { stampChanged } from '../state/inputstamp'
 import { notify, heldWindowBand } from '../state/store'
 import { canEditOwn } from '../state/auth'
-import { me, isMe, mayEditInput, mayMovePlace, pageUnit, adminOfUnit } from '../state/perms'
+import { me, isMe, mayEditInput, mayMovePlace, pageUnit, adminOfUnit, pageOffered } from '../state/perms'
 import { todayIso } from '../engine/editlog'
 import { UNIT } from '../engine/unitview'
 import { MoveBandView } from './MoveBand'
@@ -199,12 +199,19 @@ export function InputEditor() {
      views lands on its View-only Sched) must not make his own page's window judge itself by the schedule's squadron and
      come back live (Fable's read of 23 Nov 26, finding 1) */
   const ownNow = !!r && (isNew ? !!(r._calendar || ctx === 'i' || ctx === 'up') : win)
-  const [openedOn, setOpenedOn] = useState<{ r: any; unit: string; own: boolean } | null>(null)
-  const ownPage = open && openedOn && openedOn.r === r ? openedOn.own : ownNow
+  /* …AND HELD WHEN ITS OWN PAGE IS NO LONGER OFFERED (the fix rounds' read of 23 Nov 26, the fresh Opus reader's 2 — that
+     fix's own gap): a VIEW holder's own pages never leave his squadron, so at a pick of a squadron he only views the
+     squadron above stays the same while the page under his window becomes 149's View-only Sched (D2381) — and the window
+     stood live over it, no band. A window of his own pages opened while they were offered is held for as long as the
+     squadron in view does not offer them (state/perms.ts pageOffered); his own squadron picked again gives it back. */
+  const offeredNow = pageOffered('inputs')
+  const [openedOn, setOpenedOn] = useState<{ r: any; unit: string; own: boolean; offered: boolean } | null>(null)
+  const kept = open && openedOn && openedOn.r === r ? openedOn : null
+  const ownPage = kept ? kept.own : ownNow
   const pageSqn = open ? (ownPage ? pageUnit('own', todayIso()) : UNIT) : ''
-  if (open ? (!openedOn || openedOn.r !== r) : !!openedOn) setOpenedOn(open ? { r, unit: pageSqn, own: ownNow } : null)
-  const openedSqn = open && openedOn && openedOn.r === r ? openedOn.unit : pageSqn
-  const held = open && openedSqn !== pageSqn
+  if (open ? (!openedOn || openedOn.r !== r) : !!openedOn) setOpenedOn(open ? { r, unit: pageSqn, own: ownNow, offered: offeredNow } : null)
+  const openedSqn = kept ? kept.unit : pageSqn
+  const held = open && (openedSqn !== pageSqn || (!!kept && kept.own && kept.offered && !offeredNow))
   /* …HELD BY A PICK (batch 1's second half §16 D2; his D2323 — the drawing f7b): where his pick in the Schedules menu (or a
      bell tap) moved the page, the band reads "This is 142's. You picked 149 — close this to go on." (state/store.ts
      heldWindowBand) and the whole window under it is read only, every control greyed — its title strip with the ✕ (and the

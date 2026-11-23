@@ -255,6 +255,12 @@ that did not take: he stays), Discard drops the edits, Stay makes no pick. Pinne
 149 — close this to go on." and every control under it is greyed and dead (`ui/heldro.ts` — `inert` and `data-heldro` on
 every part but the title strip with its ✕ and the band with its Close); picking back gives the window back as it was.
 Held by his own midnight move the window keeps its own words and live controls. Pinned by `ui/msq-pick-windows.test.tsx`.
+**A View holder's window too (D2381, the fix rounds' read of 23 Nov 26):** his own pages and his war stay his squadron's at
+a pick of a squadron he only views, so "the squadron under the window changed" never holds it — it is held because the
+squadron in view no longer offers its page (`state/perms.ts pageOffered`): an Input window carried over 149's View-only
+Sched (`ui/InputWindow.tsx`, a window of his own pages opened while they were offered), a Leave War window on the page
+it holds (`state/store.ts publishBands`), each with the pick's band and greyed. The Leave War page lands on View-only
+Sched when its last window goes, band or no band (`state/typing-hold.ts warWindowGone` → the store's release).
 Found by the drawing check (23 Nov 26): a Leave War window's scrim lies over the top bar, so a press on "142 ▾" lands on
 the scrim and closes the window first; on an iPhone the Input window covers the bar too. The band is met there by the
 keyboard, a bell tap from elsewhere or a window left open in another way — on a desktop the Input window on Inputs, which

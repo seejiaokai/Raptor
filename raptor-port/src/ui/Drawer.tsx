@@ -92,7 +92,8 @@ export function Drawer() {
   return (
     /* role="presentation": the shade beside the panel is nothing a screen reader should name; Escape closes the drawer */
     <div className={'drawer' + (DRAWER ? ' open' : '')} id="drawer" role="presentation"
-      onClick={e => { if (clickedOutside(e, 'drawer') && !listJustClosed()) close() }}>
+      onPointerDownCapture={pressBegins}
+      onClick={e => { const spared = pressClosedList(); if (clickedOutside(e, 'drawer') && !spared) close() }}>
       <div className="drawer-panel">
         <DrawerSquadron />
         <h4>Menu</h4>
@@ -138,10 +139,17 @@ export function Drawer() {
    - one squadron — the mark alone, no ▾ (D2132);
    - under the mark, for everyone, one grey line saying his access to the squadron in view, in the list's words
      ("149 · View only", "142 · Your squadron", "149 · Full access" — perms.ts menuSquadrons). */
-/* a press outside the open list closes the list only: its click, reaching the menu's shade a moment later, must not close
-   the menu too (the reads of 23 Nov 26, F2) */
-let LIST_CLOSED_AT = 0
-const listJustClosed = (): boolean => { const was = LIST_CLOSED_AT; LIST_CLOSED_AT = 0; return Date.now() - was < 700 }
+/* a press outside the open list closes the list only: its click, reaching the menu's shade when the press is let go, must
+   not close the menu too (the reads of 23 Nov 26, F2).
+   KNOWN BY THE PRESS ITSELF, NEVER BY THE CLOCK (the fix rounds' read of 23 Nov 26, Astra 2): the first fix gave that click
+   700 ms to arrive, so a press held a second closed the list and the menu both, and a second quick press was spared too.
+   Every press that begins anywhere in the menu clears the note first (the shade's capture handler, which runs before
+   the list's own listener on the document); the press that closes the list then sets it; and any click that reaches
+   the menu reads it and clears it — so only the click of that same press is spared, however long it was held, and a
+   press that never clicks (a finger that slid) spares nothing after it. */
+let PRESS_CLOSED_LIST = false
+const pressBegins = (): void => { PRESS_CLOSED_LIST = false }
+const pressClosedList = (): boolean => { const was = PRESS_CLOSED_LIST; PRESS_CLOSED_LIST = false; return was }
 function DrawerSquadron() {
   useVersion()
   const rows = menuSquadrons()
@@ -157,7 +165,7 @@ function DrawerSquadron() {
     if (!shown) return
     /* opened by the keys: the squadron in view takes the focus */
     if (open?.keyboard) (list.current?.querySelector<HTMLElement>('.sqm-row[aria-checked="true"]') ?? list.current?.querySelector<HTMLElement>('.sqm-row'))?.focus()
-    const outside = (e: PointerEvent) => { if (!wrap.current?.contains(e.target as Node)) { LIST_CLOSED_AT = Date.now(); setOpen(null) } }
+    const outside = (e: PointerEvent) => { if (!wrap.current?.contains(e.target as Node)) { PRESS_CLOSED_LIST = true; setOpen(null) } }
     const off = escCloses(() => list.current, () => { setOpen(null); btn.current?.focus() }, btn.current)
     document.addEventListener('pointerdown', outside)
     return () => { document.removeEventListener('pointerdown', outside); off() }

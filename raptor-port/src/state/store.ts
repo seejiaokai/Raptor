@@ -48,7 +48,7 @@ import * as view from './view'
 import { histPush, histInit, histSnap, histRestore, schedFields } from './history'
 import { setSession as authSetSession, canEditSched, SESSION, setMe, DEFAULT_ME, setLgEdit } from './auth'
 import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUnitNow, trkUnitNow, pickStandsOn, maySchedEditPage, trackerCoverKind, pageOffered, myUnit } from './perms'
-import { holdNow, setBands, setHoldRelease, setEnteredByPick, enteredByPick, pickBand, schedMoveBand, type MoveBand, type HoldKind, type TrkCover } from './typing-hold'
+import { holdNow, setBands, warBand, setHoldRelease, setEnteredByPick, enteredByPick, pickBand, schedMoveBand, type MoveBand, type HoldKind, type TrkCover } from './typing-hold'
 import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { endTrackerSession } from '../tracker/role.js'
@@ -93,8 +93,9 @@ function realNotify() { maybeReenter(); landOffEditSched(); landOnOfferedPage();
      are always his own squadron's for a View holder (perms.ts pageUnit 'own'), and landing him on 149's schedule
      instead would drop the tap. */
 let LANDED = { unit: '', page: '' }
-/* an open Leave War window holds the landing while it is up — its words and its band stay in sight (D2243, D2323); its
-   close notifies, and the landing runs then (the fresh Opus read of 23 Nov 26, F1) */
+/* an open Leave War window holds the landing while it is up — its words and its band stay in sight (D2243, D2323); once
+   the last one goes the page is told, band or no band (the release handed to typing-hold.ts, at this file's
+   setHoldRelease), and the landing runs then (the fresh Opus read of 23 Nov 26, F1; the fix rounds' read, Astra 1) */
 const warHeld = (): boolean => view.CURPAGE === 'leavewar' && holdNow() === 'war'
 function landOnOfferedPage(): void {
   const opened = view.CURPAGE !== LANDED.page && UNIT === LANDED.unit
@@ -1105,10 +1106,19 @@ function publishBands(): void {
   const own = pageUnit('own', iso)
   const war = lwUnitNow(), trk = trkUnitNow()
   const trkMove = trk && trk !== own ? moveWords(trk, 'Tracker', m, iso) : null
-  setBands(war && war !== own ? bandWords(war, 'Leave War', m, iso) : null, trkMove, trk && trk !== own && !trkMove ? coverWords() : null)
+  /* …AND A WAR WINDOW LEFT OPEN OVER A SQUADRON HE ONLY VIEWS (D2323, D2381 — the fix rounds' read of 23 Nov 26, the twin
+     of its Input-window finding): a View holder's war is his own squadron's before and after a pick, so "the war loaded
+     is not his pages' squadron" never said his window was left behind — it stood live under 149's number. While the
+     squadron in view does not offer the Leave War, a window still open on it wears the band too (a war window opens
+     only on the Leave War page, so it was open before the page stopped being offered). */
+  const warBehind = !!war && (war !== own || !pageOffered('leavewar'))
+  setBands(warBehind ? bandWords(war, 'Leave War', m, iso) : null, trkMove, trk && trk !== own && !trkMove ? coverWords() : null)
 }
-/* a window that held the war's swap goes: the check runs again at once (typing-hold.ts warWindowGone) */
-setHoldRelease(() => notify())
+/* the last war window goes (typing-hold.ts warWindowGone): the check runs again at once where the window held something —
+   the war's swap (a band was up over it), or the landing off a page the squadron in view does not offer (warHeld above:
+   a View holder's own pages and war never move at a pick, so no band says it — the fix rounds' read of 23 Nov 26,
+   Astra 1). An ordinary close holds neither and repaints nothing. */
+setHoldRelease(() => { if (warBand() || !pageOffered(view.CURPAGE)) notify() })
 /** the planning calendars kept for units left this session — cleared with the session (tests and sign-out) */
 export function forgetUnitPlans(): void { forgetKeptPlans() }
 /* the stored half of another squadron's planning calendar reads its rows from the whiteboard this app saves to (none
