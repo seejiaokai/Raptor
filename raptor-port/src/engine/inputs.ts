@@ -91,6 +91,13 @@ export function sansShownOn(inp:any,at:any):boolean{
   const iso=inputAtIso(at); if(!iso)return true;
   const ids=namedOf(inp).map((e:any)=>e.p);
   return ids.some((p:any)=>sansOnP(PEOPLE[p],iso));}
+/* ONE MAN'S FACE OF A SANS RECORD, ON A DAY (the FULL check's fresh Opus read, chat 152, F1): a record of several men shows
+   on a day while ONE is SANS, so a reader that draws one card a man asks this of each card — or the man not SANS that day
+   (his posting moved later) was still drawn on Edit Schedule's and the board's SANS Avail panels, D2341. */
+export function sansFaceShown(f:any,at:any):boolean{
+  if(!f||!isSansAvail(f.type))return true;
+  const iso=inputAtIso(at); if(!iso)return true;
+  return sansOnP(PEOPLE[f.person],iso);}
 export function sansShownAny(inp:any):boolean{
   if(!inp||!isSansAvail(inp.type))return true;
   const sp=inputSpanIso(inp); if(!sp)return true;

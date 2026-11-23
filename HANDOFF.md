@@ -52,6 +52,29 @@ the later merge keeps both (D78).
   HANDOFF.md, the sheet, `docs/handpass/parts/sud`, and copy the read brief in), start it as an Opus helper with the brief's
   focus narrowed to holes: who may write or see what of another (D1411). Then: reproduce each finding as a failing test, fix,
   narrow re-read of the fixes, push, GitHub green, sheet §17, ledger row, look card, questions.
+- **UPDATE 3 — the reads (reports kept: `docs/superpowers/briefs/2026-11-23-sans-ahead-full-read-{astra,opus}.md`; security
+  RUNNING → `D:/raptor-work/c152-read/security-report.md`):** FIXED red-first (this commit; the Opus reader's own test file
+  `src/leavewar/sans-ahead-opusread.test.ts`, 5 red before): **Opus F1 = Astra #1 (panels part)** — a shared SANS record's
+  card for the man not SANS that day still drawn on Edit Schedule's and the board's SANS Avail panels → `engine/inputs.ts
+  sansFaceShown` filters faces in `ui/html.ts sansSectionHTML`, `ui/board-html.ts sbSansPanel`; **Opus F2 = Astra #4** — the
+  save excused any day the edited record covered, for ANY man → `sansRefusal` now `&& holds(except, person)`. Touched suites:
+  661 pass. **F4 kept `it.fails`** (his question). **STILL TO FIX, red-first, in order:** (a) **Astra #5** — a man whose
+  SANS tick was taken off cannot file a PAST day he was SANS (picker offers him, save says "for SANS aircrew only"): in
+  `sansRefusal`, with dates given judge by the dates (`sansOnP` each day) and skip the `sansFiler` gate; (b) **Astra #1 rest**
+  — `sansAvailOn`/`linesOf` (one man's lookup) and a NEW frozen snapshot (`engine/publish.ts dayInputsFrozen`,
+  `frozenInputMatch`) still carry the hidden man: give them the per-man reading (an existing frozen copy untouched);
+  (c) **Astra #3 = Opus F8** — the date rule is checked only in the editor, not at the final write (`state/store.ts`
+  writeInputsBatch / `state/perms.ts`): one shared check of NEW people/days, before vs after; (d) **Astra #2** — an
+  ordinary input command can DELETE a `sansback` notice (`perms.ts ownershipViolation` checks only the after-image): refuse
+  deleting/replacing war-owed notices outside their retraction; (e) Opus F6 docs: `docs/data-model.md` §11 Notice row
+  (taken-back line now also for a posting not yet run, and for filed days); (f) Opus F7 speed (low): `wireSansBackBefore`
+  scans every input per command — measure, file if small. Then: narrow fresh-Opus re-read of the fix commits; re-walk
+  what a fix changed on screen (the two panels — a short host look); push; GitHub; sheet §17; ledger row; look card.
+- **Questions for him now (add to the list above):** (6) F4 — after the posting is put back, the "hidden" line stays on his
+  bell (untrue then) — remove it? (7) Astra #6/Opus F5/w9 R2 — the take-back line strikes "You're SANS from…" he never had
+  or never read (and today's days, not the ones he read) — strike only what he read? (8) S11 — on a published day every
+  hiding reads "2 pending" and drops the sign-offs (correct by D178; tell him). (9) w9 R1 — the reminder line appears only
+  once the week of his planned days has been edited — check whether D56 (demo weeks never stored) covers it.
 - **Running when first written:** walkers **w9** (S6–S10 hiding by cause + reader sweep, port 4399) and **w10** (S11–S14, S16, S18,
   S22, port 4400) → reports `docs/handpass/parts/sud/w9-report.md`, `w10-report.md`; the **timing helper** →
   `docs/handpass/parts/sud/timing-d2341.md` (BEFORE = `8d64b0c0d`, the parent of D2341's build `cc831de21` — not 2ea59acad).

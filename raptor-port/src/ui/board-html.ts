@@ -4,7 +4,7 @@ import { glyphSvg, REORDER_INNER } from './glyphs'
 import { DAYS } from '../engine/data'
 import { requestOfBox } from '../engine/overlay'
 import { rowPeopleDrawn, inputRowSeveral } from '../engine/grouprows'
-import { odOut, isOD, listedPersonal, listedUnavail, INPUTS, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, oilAsks, sansBadge, facesOf, facesDrawn, iuTail } from '../engine/inputs'
+import { odOut, isOD, listedPersonal, listedUnavail, INPUTS, sansFaceShown, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, oilAsks, sansBadge, facesOf, facesDrawn, iuTail } from '../engine/inputs'
 import { PEOPLE, whoId } from '../engine/people'
 import { noteText } from '../engine/note'
 import { hhmm, fmtHM, parseHM } from '../engine/time'
@@ -876,7 +876,8 @@ export function sbUnavailPanel(d:any,di:any,day?:any,ro?:any){
    shape this panel no longer draws; a card opens the input-edit dialog
    instead, so the hint now points at that. */
 export function sbSansPanel(d:any,di:any,day?:any,ro?:any){
-  const rows=(day||inputsOn(d.dt)).filter((inp:any)=>isSansAvail(inp.type)).flatMap((r:any)=>facesOf(r));
+  /* (one card a man SANS that day — engine/inputs.ts sansFaceShown, D2341; the fresh Opus read's F1, chat 152) */
+  const rows=(day||inputsOn(d.dt)).filter((inp:any)=>isSansAvail(inp.type)).flatMap((r:any)=>facesOf(r)).filter((f:any)=>sansFaceShown(f,d.dt));
   /* + Add (owner, 19 Aug 26 — SANS availability left the other panels' type
      lists, so it gets its own add HERE, "likewise"): opens the same dialog,
      locked to the SANS type and offering SANS aircrew only */

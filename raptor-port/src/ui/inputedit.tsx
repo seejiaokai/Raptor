@@ -309,7 +309,9 @@ export function sansRefusal(person: any, sans: any, from?: string, to?: string, 
   if (from && /^\d{4}-\d{2}-\d{2}$/.test(from)) {
     const last = to && /^\d{4}-\d{2}-\d{2}$/.test(to) && to > from ? to : from
     for (let d = from, n = 0; d <= last && n < 400; d = isoPlus(d, 1), n++) {
-      if (sansOnP(p, d) || (except && inputCoversDate(except, fmt(d)))) continue
+      /* (a day the entry being changed already held FOR HIM — never for another man on it: the fresh Opus read's F2,
+         chat 152 — an admin added Hex to Other's Thu 16 offer, a day before Hex's SANS date, and the save let it in) */
+      if (sansOnP(p, d) || (except && inputCoversDate(except, fmt(d)) && holds(except, person))) continue
       /* the next day he is SANS, within a year — the date the refusal names */
       let next = ''
       for (let x = isoPlus(d, 1), m = 0; m < 400; x = isoPlus(x, 1), m++) if (sansOnP(p, x)) { next = x; break }
