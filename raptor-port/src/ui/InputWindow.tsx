@@ -22,7 +22,7 @@ import { ClipIcon, PenIcon, UploadIcon } from './icons'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { stampChanged } from '../state/inputstamp'
-import { notify, heldWindowBand } from '../state/store'
+import { notify, heldWindowBand, switchRoleView } from '../state/store'
 import { canEditOwn } from '../state/auth'
 import { me, isMe, mayEditInput, mayMovePlace, pageUnit, adminOfUnit, pageOffered, heldByMemberView } from '../state/perms'
 import { todayIso } from '../engine/editlog'
@@ -240,7 +240,7 @@ export function InputEditor() {
   useLayoutEffect(() => {
     const b = box.current
     if (!heldRo || !b) return
-    return holdReadOnly((b.closest('.floatwin') as HTMLElement | null) ?? b, '.win-bar, .airpop-head, .saveband.moveband, .inped-xask-at')
+    return holdReadOnly((b.closest('.floatwin') as HTMLElement | null) ?? b, '.win-bar, .airpop-head, .saveband.moveband, .inped-xask-at, .inped-rolechip')
   }, [heldRo, win])
   /* OPENED FROM THE SCHEDULE IT TAKES AND KEEPS THE KEYBOARD ([WINDOWS-KEEP-KEYS], reader D2's second pass, 6 Oct 26): Tab
      used to walk on into the schedule behind the dialog, where a box saved on leaving. On the Inputs page it is a window
@@ -875,6 +875,23 @@ export function InputEditor() {
   const heldMv = held && heldByMemberView(openedSqn)
   if (!heldMv && roKept !== roNow) setRoKept(roNow)
   const readOnly = heldMv && roKept != null ? roKept : roNow
+  /* THE WAY BACK STAYS PRESSABLE (the night of 24 Nov 26, the walk's F3): the band says "Switch back to the admin view", but
+     this dialog's shade stands over the top bar, so the role chip could not be pressed or reached by Tab, and a press there
+     closed the window and lost his words. While so held the same chip is drawn at its own place above the shade, in the
+     dialog's Tab order — no new control to see, the chip itself lifted. Where the bar shows no chip (a phone) nothing is. */
+  const [chipAt, setChipAt] = useState<{ left: number; top: number; width: number; height: number; text: string } | null>(null)
+  const liftChip = heldMv && !win
+  useLayoutEffect(() => {
+    if (!liftChip) return
+    const read = () => {
+      const c = document.getElementById('roleBadge')
+      const b = c?.getBoundingClientRect()
+      setChipAt(c && b && b.width > 0 ? { left: b.left, top: b.top, width: b.width, height: b.height, text: c.textContent ?? '' } : null)
+    }
+    read()
+    window.addEventListener('resize', read)
+    return () => { window.removeEventListener('resize', read); setChipAt(null) }
+  }, [liftChip])
   /* WHERE IT GOES IS A SCHEDULER'S once he has moved it (his D1388): the member's window shows where it stands, picked,
      and offers neither button — as a rejected one already does (G5) */
   const goesLocked = !isNew && !!r && !mayMovePlace(r)
@@ -1002,7 +1019,8 @@ export function InputEditor() {
               moreIds={archivedHere.length ? archivedHere : undefined}
               phWhy={phWhy}
               onChange={(p, s) => { setPpl(p); setSeveral(s); if (p.length === 1 && draft.person !== p[0]) setDraft({ ...draft, person: p[0] }) }} />
-            : canEditOwn() && <label className="inped-f">
+            /* (held by the member view it keeps the line it had, as drawn — i1-desk-input-window.png; the band's lock holds it) */
+            : (canEditOwn() || heldMv) && <label className="inped-f">
               <span className="inped-k">Person</span>
               <select id="inpEditPerson" aria-label="Person" value={draft.person}
                 onChange={e => setDraft({ ...draft, person: e.target.value })}>
@@ -1297,7 +1315,7 @@ export function InputEditor() {
               ? recPpl.length > 1 ? (recPpl.some(p => isSpecial(p)) ? `Date changes apply to ${howMany(recPpl)}.` : `Date changes apply to all ${recPpl.length}.`) : ''
             : isSansAvail(draft.type)
               ? 'To change its dates, delete it and add it again on the SANS calendar.'
-            : canEditOwn()
+            : canEditOwn() || heldMv
               ? 'The dates are changed on the Inputs page.'
               : 'The person and the dates are changed on the Inputs page.')}
         </div>}
@@ -1479,6 +1497,11 @@ export function InputEditor() {
           {cxMark}
           <button className="x" id="inpEditClose" aria-label="Close" onClick={close}>✕</button>
         </div>
+        {chipAt && (
+          <button type="button" className="abtn rolechip tgl inped-rolechip" data-testid="inped-rolechip" title="Back to the admin view"
+            style={{ position: 'fixed', left: chipAt.left, top: chipAt.top, width: chipAt.width, height: chipAt.height, margin: 0 }}
+            onClick={() => switchRoleView()}>{chipAt.text}</button>
+        )}
         {moveBand}
         {inner}
       </div>
