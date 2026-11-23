@@ -156,6 +156,24 @@ the later merge keeps both (D78).
   SANS gets the reminder; proposed for every SANS man, title "SANS availability needed"). **NEXT (chat 156):** get his
   answers to Q2–Q9 if not given; record each; draw every new wording for him first (D1625: Q1's note, 2b, 2c, Q3, Q4, Q5);
   build red-first; short re-walk; a fresh Opus read; preview link; his "merge live".
+- **UPDATE 10 — CHAT 155 CLOSING, every question ANSWERED (handed to the next account):** his D2388 (Q1), D2390 (the reminder's
+  "Tap to file for availability."), D2391 (Q5 — Fable's plain take-back words A–E; the read reminder simply goes, narrowing
+  D1699 for that line), D2392 (the rest of the bell's take-back lines reworded, a job of its own: OUTSTANDING
+  [BELL-WORDS-CLEAR]), D2393 (Fable rewords what is put to him) and D2394 (the rest as recommended: 2a, 2b, 2c, Q4, Q6, Q10's
+  words; Q8, Q9 left) — ALL RECORDED; the build list is OUTSTANDING [FABLE-READ-FAULTS] (x) (1)–(4), the exact words in each
+  full row (`grep -h '^| D2394 |' .claude/decisions-full/*.md`) and Fable's page
+  `raptor-port/docs/superpowers/briefs/2026-11-23-sans-questions-fable.md`. Branch at the last push: code `c61ba8e60` GREEN on
+  GitHub; notes after it. **NEXT (chat 156):** (1) draw every new wording for him on the real screens, phone and desktop,
+  one page (D1625; Fable rewords if he asks, D2393); (2) on his OK build (x)(1)–(4) red-first; (3) short re-walk at both
+  sizes + a fresh Opus read (Astra beside it — the take-back lines touch what a man is told); (4) GitHub green, the preview
+  link, his "merge live" of pull request 825. Then [BELL-WORDS-CLEAR] as its own job.
+- **Opening line for chat 156 (the next account):** "Chat 156: First list the live chats (`ListAgents`) and say where you
+  are. Switch this chat to the branch `claude/allavail-sans-postout-141`: `git fetch origin`, `git switch
+  claude/allavail-sans-postout-141`, `git branch -u origin/claude/allavail-sans-postout-141`, `git pull --ff-only` (if refused
+  because another checkout holds it, branch a local copy from `origin/claude/allavail-sans-postout-141` with no upstream and
+  push with `git push origin HEAD:refs/heads/claude/allavail-sans-postout-141`). Read `HANDOFF.md` — the CHAT 152 part of the
+  `claude/allavail-sans-postout-141` block, UPDATE 10 — and OUTSTANDING's [FABLE-READ-FAULTS] (x); draw every new wording for
+  me first, then build it, then send me the preview link." Model: Opus, high.
 - **Opening line for chat 155:** "Chat 155: First list the live chats (`ListAgents`) and say where you are. Switch this chat to the
   branch `claude/allavail-sans-postout-141`: `git fetch origin`, `git switch claude/allavail-sans-postout-141`, `git branch -u
   origin/claude/allavail-sans-postout-141`, `git pull --ff-only` (if refused because another checkout holds it, branch a local
