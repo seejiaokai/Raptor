@@ -204,6 +204,34 @@ describe('a course copied between squadrons has its own remembered place in each
   })
 })
 
+describe('Discard from a flow that asks about unsaved edits keeps him in Edit chart layout (the fix list\'s item 8 — Opus F4)', () => {
+  const untilDlg = async () => { for (let i = 0; i < 400 && !C.dlg; i++) await tick() }
+  for (const [what, start] of [
+    ['+ Add syllabus', () => C.addSyl()],
+    ['+ Add course', () => C.addCourse()],
+    ['Rename course', () => C.renCourse()],
+  ] as [string, () => Promise<unknown>][]) {
+    it(`${what}: Discard, then cancelling the name, leaves the editor open with the edit gone`, async () => {
+      C.toggleArrange()
+      await act(async () => { const p = C.addModule('acad'); await untilDlg(); C.dlgClose('F-DROP'); await p })
+      expect(C.sylDirty, 'the premise: an unsaved edit').toBe(true)
+      await act(async () => {
+        const p = start()
+        await untilDlg()
+        expect(C.dlg.msg).toContain('unsaved flow edits')
+        C.dlgClose(true)   /* Discard */
+        for (let i = 0; i < 400 && (!C.dlg || C.dlg.msg.includes('unsaved flow edits')); i++) await tick()
+        C.dlgClose(null)   /* the name asked next, cancelled */
+        await p
+        await settle()
+      })
+      expect(C.arrangeMode, 'still in Edit chart layout').toBe(true)
+      expect(C.byid['F-DROP'], 'the discarded edit is gone').toBeFalsy()
+      expect(C.sylDirty).toBe(false)
+    })
+  }
+})
+
 describe('a press under way when another squadron is picked', () => {
   for (const kind of ['mouse', 'touch']) {
     for (const press of presses) {

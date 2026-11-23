@@ -114,8 +114,8 @@ async function saveForQuestion() {
 /* "Discard them" — the sign-out's and the pick's: the chart reloaded from the store, and the bar's words put back to its
    resting "● saved" (the chart on screen is the stored one), as a course switch puts back its own: left alone they still
    said "● unsaved flow edits — hit “Save changes”" about the edits just dropped (the re-walk of 23 Nov 26, chat 151, N2) */
-async function discardChartEdits() {
-  clearDirty(); if (arrangeMode) toggleArrange(); await loadCourse(course); refreshSyl(); renderBoard(); renderSide();
+async function discardChartEdits(keepEditor = false) {
+  clearDirty(); if (arrangeMode && !keepEditor) toggleArrange(); await loadCourse(course); refreshSyl(); renderBoard(); renderSide();
   setSaveStatus('', 'ok');
 }
 /* BEFORE A PICK TAKES THE TRACKER TO ANOTHER SQUADRON (multi-squadron batch 1's second half §16 D2′; his D2318, kept by
@@ -6063,11 +6063,12 @@ async function reconcileBuiltins() {
    course, deleting one, adding a syllabus and an import each ask something more after this door, and may stop there. The
    door only cleared the unsaved mark, so a next prompt cancelled left the dropped edits drawn, now marked saved. So it
    reloads the chart as the sign-out's and the pick's Discard do (discardChartEdits). `loadsNext` — a switch of syllabus or
-   course, which loads the other chart at once with nothing asked between — needs only the mark cleared. */
+   course, which loads the other chart at once with nothing asked between — needs only the mark cleared. He stays in Edit
+   chart layout (the night of 24 Nov 26, Opus F4): only the edits are given up, and the question may yet be cancelled. */
 async function leaveFlowEdits(what, loadsNext = false) {
   if (!sylDirty) return true;
   if (!await uiConfirm('You have unsaved flow edits on “' + curSylName() + '”.\n' + what)) return false;
-  if (loadsNext) clearDirty(); else await discardChartEdits();
+  if (loadsNext) clearDirty(); else await discardChartEdits(true);
   return true;
 }
 export async function switchSyllabus(v) {
