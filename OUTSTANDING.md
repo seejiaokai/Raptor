@@ -3110,6 +3110,16 @@ notice; measure again with many SANS postings before the database step. (2) **[S
 read it (never seen by him) is struck too, and a hiding with nothing he read still strikes "You're SANS from…" where he had
 a live line he never opened (Astra #6, the Opus read's F5, walker w9's R2): strike only what he read? Two tests kept as
 known failures in `src/leavewar/sans-review-regressions.test.ts` until he answers.
+**(x) his D2388 (23 Nov 26, chat 155 — question 1), TO BUILD on `claude/allavail-sans-postout-141`:** a run of SANS
+availability days that starts before his SANS date saves the days from his date on and leaves out the earlier ones, with
+a short note saying why (Ranger SANS from Fri 17 Jul drags Thu 16 – Sat 18: Fri 17 – Sat 18 saved). First draw the note
+for him (D1625; proposed: "Saved Fri 17 – Sat 18 Jul. Thu 16 left out: Ranger is SANS from Fri 17 Jul."), then build it
+red-first in the SANS calendar's add doors and `ui/inputedit.tsx sansRefusal` (every way of picking days alike; no SANS
+day → refused as built; a non-SANS day in the run's middle → refused as built; the final save's check unchanged), the
+test of W8-1 (`src/leavewar/sans-ahead-walk152.test.tsx`) rewritten to the new rule, a short re-walk of the six routes at
+both sizes, a fresh Opus read of the change. (2) **his D2390:** the SANS-days bell line ends "Tap to file for
+availability." (was "Tap to file.") — `state/notices.ts`, `leavewar/sansunfiled.ts`, their tests, `docs/notifications-register.md`,
+`docs/design-practices.md` lesson 99's example.
 **(v) questions for him from D2338 (chat 147; in the morning report):** (1) once he has read the line, should a day newly
 planned with nothing filed light his bell again? (as built: no — the line just grows; the builder recommends yes for a new
 day, not for a shrink; test kept `it.fails` in `opus-read-147.test.ts`); (2) a man ticked SANS by hand (not posted out),
