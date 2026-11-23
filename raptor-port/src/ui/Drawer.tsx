@@ -92,7 +92,7 @@ export function Drawer() {
   return (
     /* role="presentation": the shade beside the panel is nothing a screen reader should name; Escape closes the drawer */
     <div className={'drawer' + (DRAWER ? ' open' : '')} id="drawer" role="presentation"
-      onClick={e => { if (clickedOutside(e, 'drawer')) close() }}>
+      onClick={e => { if (clickedOutside(e, 'drawer') && !listJustClosed()) close() }}>
       <div className="drawer-panel">
         <DrawerSquadron />
         <h4>Menu</h4>
@@ -138,6 +138,10 @@ export function Drawer() {
    - one squadron — the mark alone, no ▾ (D2132);
    - under the mark, for everyone, one grey line saying his access to the squadron in view, in the list's words
      ("149 · View only", "142 · Your squadron", "149 · Full access" — perms.ts menuSquadrons). */
+/* a press outside the open list closes the list only: its click, reaching the menu's shade a moment later, must not close
+   the menu too (the reads of 23 Nov 26, F2) */
+let LIST_CLOSED_AT = 0
+const listJustClosed = (): boolean => { const was = LIST_CLOSED_AT; LIST_CLOSED_AT = 0; return Date.now() - was < 700 }
 function DrawerSquadron() {
   useVersion()
   const rows = menuSquadrons()
@@ -153,7 +157,7 @@ function DrawerSquadron() {
     if (!shown) return
     /* opened by the keys: the squadron in view takes the focus */
     if (open?.keyboard) (list.current?.querySelector<HTMLElement>('.sqm-row[aria-checked="true"]') ?? list.current?.querySelector<HTMLElement>('.sqm-row'))?.focus()
-    const outside = (e: PointerEvent) => { if (!wrap.current?.contains(e.target as Node)) setOpen(null) }
+    const outside = (e: PointerEvent) => { if (!wrap.current?.contains(e.target as Node)) { LIST_CLOSED_AT = Date.now(); setOpen(null) } }
     const off = escCloses(() => list.current, () => { setOpen(null); btn.current?.focus() }, btn.current)
     document.addEventListener('pointerdown', outside)
     return () => { document.removeEventListener('pointerdown', outside); off() }
@@ -176,11 +180,15 @@ function DrawerSquadron() {
     e.preventDefault(); items[to]!.focus()
   }
   return (
-    <div className="drawer-sqn" ref={wrap}>
+    /* the top bar's list's keys too (ui/SquadronMenu.tsx — the reads of 23 Nov 26, F3): focus leaving the list closes it,
+       Arrow Down or Up on the mark opens it on the squadron in view */
+    <div className="drawer-sqn" ref={wrap}
+      onBlur={e => { if (e.relatedTarget && !e.currentTarget.contains(e.relatedTarget as Node)) setOpen(null) }}>
       {many
         ? <button type="button" className={'sqm-btn' + (shown ? ' on' : '')} id="drawerSqnBtn" ref={btn}
           aria-haspopup="menu" aria-expanded={shown} aria-controls="drawerSqnList" aria-label={`Squadron ${num} — pick a squadron's schedule`}
-          onClick={e => setOpen(o => (o ? null : { keyboard: e.detail === 0 }))}>
+          onClick={e => setOpen(o => (o ? null : { keyboard: e.detail === 0 }))}
+          onKeyDown={e => { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); setOpen({ keyboard: true }) } }}>
           <TalonMark num={num} menu />
         </button>
         : <TalonMark num={num} />}

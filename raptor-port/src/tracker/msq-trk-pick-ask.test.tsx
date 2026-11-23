@@ -164,6 +164,18 @@ describe('the ☰ menu\'s pick (D2382–D2384) with unsaved chart edits', () => 
     expect(C.sylDirty).toBe(true)
     await C.saveChangesClick()
   })
+  /* Astra's read of 23 Nov 26, finding 1 (…/briefs/2026-11-23-msq-view-only-read-astra.md): with 149's Tracker loaded, the
+     member view makes 149 view only; his Leave War opened from the bell then was swallowed by the midnight check's
+     re-entry, which landed on View-only Sched before the page's own check saw the page move */
+  it('Astra 1: the member view on 149\'s Tracker, then his Leave War opened — 142 comes back, the Leave War open, at the first try', async () => {
+    await onHis149Tracker()
+    act(() => { switchRoleView(); notify() })
+    expect(CURPAGE).toBe('viewsched')
+    act(() => { setPage('leavewar'); notify() })
+    expect(UNIT).toBe('u142')
+    expect(CURPAGE).toBe('leavewar')
+    act(() => { switchRoleView(); notify() })
+  })
   it('a pick with nothing to ask leaves the menu open (D2384)', async () => {
     await onHis149Tracker()
     expect(C.sylDirty, 'the premise: nothing unsaved').toBe(false)

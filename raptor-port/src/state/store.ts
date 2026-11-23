@@ -93,9 +93,12 @@ function realNotify() { maybeReenter(); landOffEditSched(); landOnOfferedPage();
      are always his own squadron's for a View holder (perms.ts pageUnit 'own'), and landing him on 149's schedule
      instead would drop the tap. */
 let LANDED = { unit: '', page: '' }
+/* an open Leave War window holds the landing while it is up — its words and its band stay in sight (D2243, D2323); its
+   close notifies, and the landing runs then (the fresh Opus read of 23 Nov 26, F1) */
+const warHeld = (): boolean => view.CURPAGE === 'leavewar' && holdNow() === 'war'
 function landOnOfferedPage(): void {
   const opened = view.CURPAGE !== LANDED.page && UNIT === LANDED.unit
-  if (!pageOffered(view.CURPAGE)) {
+  if (!pageOffered(view.CURPAGE) && !warHeld()) {
     if (opened && !ENTERING) enterSquadron(myUnit(todayIso()), holdNow() === 'war', true)
     else view.setPage('viewsched')
   }
@@ -970,7 +973,7 @@ export function enterSquadron(scheduleUnit: string, holdWar = false, byPick = fa
     }
     landOffEditSched()
     /* a squadron he only views, entered on a page it does not offer, lands on its View-only Sched (D2381) */
-    if (!pageOffered(view.CURPAGE)) view.setPage('viewsched')
+    if (!pageOffered(view.CURPAGE) && !warHeld()) view.setPage('viewsched')
     return { unit: UNIT, own, tracker: rebindStorageUnit(own) as TrackerEntry }
   } finally { ENTERING = false }
 }

@@ -23,6 +23,7 @@ import { CURPAGE } from '../state/view'
 import { DRAWER, setDrawer } from './pops'
 import { Drawer } from './Drawer'
 import { ROLES_TABLE } from './rolestable'
+import { setWarWindowsProbe } from '../state/typing-hold'
 
 useMsqWorld()
 afterEach(() => { cleanup(); setDrawer(false) })
@@ -173,6 +174,47 @@ describe('the ☰ menu\'s TALON mark as the squadron drop-down (D2382–D2384)',
     fireEvent.click(markBtn()!)
     expect(listRows()).toEqual(['142 Your squadron ✓', '149 Full access'])
     expect(line()).toBe('142 · Your squadron')
+  })
+})
+
+/* THE READS OF 23 Nov 26 (docs/superpowers/briefs/2026-11-23-msq-view-only-read-{opus,astra}.md) — red first */
+describe('the reads\' findings', () => {
+  afterEach(() => { setWarWindowsProbe(null) })
+  it('Opus F1: an open Leave War window holds the landing until it closes, then View-only Sched', () => {
+    give(ACCT.hunter, 'u149', 'plan')
+    signInAs('hunter')
+    act(() => { void pickSquadron('u149') })
+    act(() => { setPage('leavewar'); notify() })
+    setWarWindowsProbe(() => 1)
+    act(() => { switchRoleView() })
+    expect(CURPAGE, 'the window and his words stay in sight').toBe('leavewar')
+    setWarWindowsProbe(() => 0)
+    act(() => { notify() })
+    expect(CURPAGE, 'the window closed: the landing runs').toBe('viewsched')
+  })
+  it('F2 (both): one tap on the surround closes the list only, the menu still open', () => {
+    give(ACCT.ranger, 'u149', 'view')
+    signInAs('ranger')
+    render(<Drawer />)
+    openDrawer()
+    fireEvent.click(markBtn()!)
+    const shade = document.getElementById('drawer')!
+    act(() => { fireEvent.pointerDown(shade); fireEvent.click(shade) })
+    expect(document.querySelector('#drawerSqnList'), 'the list closed').toBeNull()
+    expect(DRAWER, 'the menu still open').toBe(true)
+    act(() => { fireEvent.pointerDown(shade); fireEvent.click(shade) })
+    expect(DRAWER, 'a second tap closes the menu').toBe(false)
+  })
+  it('F3 (both): Arrow Down on the mark opens the list; focus leaving the list closes it', () => {
+    give(ACCT.ranger, 'u149', 'view')
+    signInAs('ranger')
+    render(<Drawer />)
+    openDrawer()
+    fireEvent.keyDown(markBtn()!, { key: 'ArrowDown' })
+    expect(document.querySelector('#drawerSqnList'), 'Arrow Down opens it').not.toBeNull()
+    const row = document.querySelector<HTMLElement>('#drawerSqnList .sqm-row')!
+    fireEvent.blur(row, { relatedTarget: document.querySelector('#drawerNav a') })
+    expect(document.querySelector('#drawerSqnList'), 'Tab out closes it').toBeNull()
   })
 })
 
