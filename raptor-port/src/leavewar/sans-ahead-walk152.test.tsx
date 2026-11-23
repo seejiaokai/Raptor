@@ -103,6 +103,26 @@ describe('W8-2 — the Highlight list offers a man posted out as SANS from a dat
   })
 })
 
+/* ASTRA #5 (the FULL check's read, chat 152): a man SANS on a past day — his tick since taken off, his SANS days kept
+   (D2313, D2327) — is offered on that day by the calendar and the picker (both ask the day), but the save refused him
+   "SANS Availability is for SANS aircrew only", asking first whether he is SANS today or posted ahead. With days given the
+   save now asks the days (D2340: filing goes by the day filed). */
+describe('Astra #5 — a past day he was SANS can still be filed for', () => {
+  it('Hex SANS Mon 13 – Wed 15 by an ended stretch, no tick today: Tue 14 is accepted, Thu 16 refused', async () => {
+    const { sansRefusal } = await import('../ui/inputedit')
+    const hex = (PEOPLE as any).rocky
+    hex.san = false; hex.sanWas = [['2026-07-13', '2026-07-16']]
+    expect(sansRefusal('rocky', { f: true }, '2026-07-14', '2026-07-14')).toBe('')
+    expect(sansRefusal('rocky', { f: true }, THU, THU)).toBe('SANS Availability is for SANS aircrew only')
+  })
+  it('left as it is: with no days given, a man neither SANS today nor posted ahead is refused', async () => {
+    const { sansRefusal } = await import('../ui/inputedit')
+    const hex = (PEOPLE as any).rocky
+    hex.san = false; hex.sanWas = [['2026-07-13', '2026-07-16']]
+    expect(sansRefusal('rocky', { f: true })).toBe('SANS Availability is for SANS aircrew only')
+  })
+})
+
 /* W10-1 (walker w10's S12x, both sizes): Saber files ONE offer for two men on Fri 17; one of them is not SANS that day.
    The opened SANS day hides him (D2341) — but the other man's line still said "Saber for 2 people", telling of the hidden
    one. The line now counts only the men the day shows. (The window a tap opens edits the whole record, so it still names

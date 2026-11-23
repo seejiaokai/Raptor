@@ -305,8 +305,12 @@ export const sansFlags = (sans: any): any => {
    in the note's form, told to him). */
 export function sansRefusal(person: any, sans: any, from?: string, to?: string, except?: any): string {
   const p = PEOPLE[person]
-  if (!sansFiler(p)) return 'SANS Availability is for SANS aircrew only'
-  if (from && /^\d{4}-\d{2}-\d{2}$/.test(from)) {
+  /* with days given the days are asked, each by sansOnP below — so a past day he was SANS (his tick since taken off, his
+     SANS days kept, D2313) is accepted (Astra's read, chat 152, #5: the calendar and the picker offered him on it, the save
+     refused him for not being SANS today); with no days, the man alone, as before */
+  const dated = !!from && /^\d{4}-\d{2}-\d{2}$/.test(from)
+  if (!p || (!dated && !sansFiler(p))) return 'SANS Availability is for SANS aircrew only'
+  if (dated && from) {
     const last = to && /^\d{4}-\d{2}-\d{2}$/.test(to) && to > from ? to : from
     for (let d = from, n = 0; d <= last && n < 400; d = isoPlus(d, 1), n++) {
       /* (a day the entry being changed already held FOR HIM — never for another man on it: the fresh Opus read's F2,

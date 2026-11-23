@@ -58,7 +58,7 @@ the later merge keeps both (D78).
   card for the man not SANS that day still drawn on Edit Schedule's and the board's SANS Avail panels → `engine/inputs.ts
   sansFaceShown` filters faces in `ui/html.ts sansSectionHTML`, `ui/board-html.ts sbSansPanel`; **Opus F2 = Astra #4** — the
   save excused any day the edited record covered, for ANY man → `sansRefusal` now `&& holds(except, person)`. Touched suites:
-  661 pass. **F4 kept `it.fails`** (his question). **STILL TO FIX, red-first, in order:** (a) **Astra #5** — a man whose
+  661 pass. **F4 kept `it.fails`** (his question). **STILL TO FIX, red-first, in order:** (a) DONE (its own commit) **Astra #5** — a man whose
   SANS tick was taken off cannot file a PAST day he was SANS (picker offers him, save says "for SANS aircrew only"): in
   `sansRefusal`, with dates given judge by the dates (`sansOnP` each day) and skip the `sansFiler` gate; (b) **Astra #1 rest**
   — `sansAvailOn`/`linesOf` (one man's lookup) and a NEW frozen snapshot (`engine/publish.ts dayInputsFrozen`,
