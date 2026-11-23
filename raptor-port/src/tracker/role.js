@@ -58,7 +58,8 @@ export async function trackerMayLogOut(show) {
    asks first, the sign-out's question with its own words: "Save them before switching to 142?", Save them / Discard them /
    Stay. Asked WHERE HE IS — never jumping to the Tracker page first (core.js raises it over any page). Raptor's pick
    (state/pick.ts, state/belltap.ts) calls trackerSwitchAsk: null — nothing to ask (no Tracker loaded, no unsaved edit),
-   the pick goes on at once; else a promise, true to go on, false to stay. core.js registers { needs, ask }. */
+   the pick goes on at once; else a promise, true to go on, false to stay. core.js registers { needs, ask }. A pick of a
+   squadron he only views asks too, where the Tracker is no longer offered (his D2388, D2381; which picks ask: state/pick.ts). */
 let beforeSwitch = null
 export function onBeforeTrackerSwitch(f) { beforeSwitch = f && typeof f.needs === 'function' && typeof f.ask === 'function' ? f : null }
 /* would trackerSwitchAsk ask — asked of nothing, showing nothing (the ☰ menu's pick closes the menu first when it will:

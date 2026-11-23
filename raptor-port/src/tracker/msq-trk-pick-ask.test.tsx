@@ -156,6 +156,87 @@ describe('the member view and back keeps a draft (D2′ (b): hidden, never reset
   })
 })
 
+/* D2388 (23 Nov 26): A PICK OF A SQUADRON HE ONLY VIEWS ASKS TOO. Hunter, on his own 142 with its Tracker holding unsaved
+   edits, holds View of 149. The pick leaves his own pages on 142, so D2318's test asked nothing, yet with 149 picked he is
+   offered only its View-only Sched and Help (D2381): the edits waited unseen. The same question, buttons and ☰ menu step
+   as D2318's. Red first: nothing was asked. The member-view switch is not a pick and asks nothing. */
+describe('a pick of a squadron he only views (D2388)', () => {
+  const Q149 = QUESTION.replace('142?', '149?')
+  async function onHis142WithViewOf149() {
+    if (UNIT !== 'u142') await pickSquadron('u142')
+    signInAs('saber')
+    expect(saveAccess(ACCT.hunter, { grants: { u149: 'view' } })).toBeNull()
+    signInAs('hunter')
+    setTrkUnitProbe(() => 'u142'); setPage('viewsched'); notify()
+    expect(UNIT).toBe('u142')
+  }
+  afterEach(() => { cleanup(); setDrawer(false) })
+  it('asks first; Stay keeps everything and makes no pick', async () => {
+    await onHis142WithViewOf149()
+    await dirty('VIEW-STAY')
+    const p = pickSquadron('u149')
+    await until(() => C.dlg)
+    expect(C.dlg.msg).toBe(Q149)
+    expect([C.dlg.ok, C.dlg.alt, C.dlg.cancelLabel]).toEqual(['Save them', 'Discard them', 'Stay'])
+    C.dlgClose(false); await p
+    expect(UNIT, 'no pick').toBe('u142')
+    expect(C.sylDirty).toBe(true)
+    expect(C.byid['VIEW-STAY']).toBeTruthy()
+    await C.saveChangesClick()
+  })
+  it('Discard them drops the edits, then picks 149', async () => {
+    await onHis142WithViewOf149()
+    await dirty('VIEW-DISCARD')
+    const p = pickSquadron('u149')
+    await until(() => C.dlg); C.dlgClose('__alt__'); await p
+    expect(UNIT).toBe('u149')
+    expect(C.sylDirty).toBe(false)
+    expect(C.byid['VIEW-DISCARD']).toBeFalsy()
+  })
+  it('Save them saves into his own 142 Tracker, then picks 149', async () => {
+    await onHis142WithViewOf149()
+    await dirty('VIEW-SAVE')
+    const p = pickSquadron('u149')
+    await until(() => C.dlg); C.dlgClose(true); await p
+    expect(C.sylDirty).toBe(false)
+    expect(await stored('VIEW-SAVE'), 'saved').toBe(true)
+    expect(UNIT).toBe('u149')
+  })
+  it('from the ☰ menu: the menu closes first, the question in sight', async () => {
+    await onHis142WithViewOf149()
+    await dirty('VIEW-MENU')
+    render(<Drawer />)
+    act(() => { setDrawer(true); notify() })
+    fireEvent.click(document.querySelector<HTMLElement>('#drawerSqnBtn')!)
+    fireEvent.click(document.querySelector<HTMLElement>('#drawerSqnList .sqm-row[data-unit="u149"]')!)
+    await until(() => C.dlg)
+    expect(C.dlg.msg).toBe(Q149)
+    expect(DRAWER, 'the menu closed').toBe(false)
+    C.dlgClose(false); await until(() => !C.dlg)
+    expect(UNIT).toBe('u142')
+    await C.saveChangesClick()
+  })
+  it('nothing unsaved: no question, the pick made at once, and the ☰ menu stays open (D2384)', async () => {
+    await onHis142WithViewOf149()
+    render(<Drawer />)
+    act(() => { setDrawer(true); notify() })
+    fireEvent.click(document.querySelector<HTMLElement>('#drawerSqnBtn')!)
+    fireEvent.click(document.querySelector<HTMLElement>('#drawerSqnList .sqm-row[data-unit="u149"]')!)
+    expect(C.dlg ?? null).toBeNull()
+    expect(UNIT).toBe('u149')
+    expect(DRAWER).toBe(true)
+  })
+  it('the member-view switch is not a pick: it asks nothing and keeps the edits', async () => {
+    await onHis149Tracker()
+    await dirty('VIEW-MEMBER')
+    act(() => { switchRoleView(); notify() })
+    expect(C.dlg ?? null, 'nothing asked').toBeNull()
+    expect(C.sylDirty).toBe(true)
+    act(() => { switchRoleView(); notify() })
+    await C.saveChangesClick()
+  })
+})
+
 /* THE ☰ MENU'S PICK WITH UNSAVED CHART EDITS (the walk of 23 Nov 26, F2 — docs/handpass/2026-11-23-msq-view-only-menu.md):
    the question is drawn under the menu's panel, so a pick there that will ask closes the menu first — as its Logout does
    before the sign-out's same question — and the question is seen and answered where he is. Red first: the menu stayed
