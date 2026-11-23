@@ -44,6 +44,14 @@ the later merge keeps both (D78).
   `docs/superpowers/briefs/2026-11-23-sans-ahead-full-read-brief.md`. NEXT: launch the three reads (Astra `codex exec -m
   gpt-6-astra -c model_reasoning_effort=high -s read-only --skip-git-repo-check -C <copy>`; Opus and security as Agent
   helpers on their copies), rebuild `dist` (lock held) and re-walk W8-1, W8-2, W10-1 at both sizes, then the reads' fixes.
+- **UPDATE 2:** `dist` rebuilt at `bde8ef0a0`; re-walker **r1 DONE** (`docs/handpass/parts/sud/r1-report.md`: 89 PASS, 0 FAIL —
+  W8-1, W8-2, W10-1 hold at both sizes; its lead = w9's R1, the reminder line missing until the week of his planned days is
+  edited/opened). Lock RELEASED. Reads RUNNING: Astra → `D:/raptor-work/c152-read/astra-report.md` (log `astra.log`), fresh
+  Opus → `D:/raptor-work/c152-read/opus-report.md`; the SECURITY read not yet started — when the copy
+  `D:/raptor-work/c152-read/security` is whole (the copy script still extracting; then remove its `raptor-port/docs/img/handpass`,
+  HANDOFF.md, the sheet, `docs/handpass/parts/sud`, and copy the read brief in), start it as an Opus helper with the brief's
+  focus narrowed to holes: who may write or see what of another (D1411). Then: reproduce each finding as a failing test, fix,
+  narrow re-read of the fixes, push, GitHub green, sheet §17, ledger row, look card, questions.
 - **Running when first written:** walkers **w9** (S6–S10 hiding by cause + reader sweep, port 4399) and **w10** (S11–S14, S16, S18,
   S22, port 4400) → reports `docs/handpass/parts/sud/w9-report.md`, `w10-report.md`; the **timing helper** →
   `docs/handpass/parts/sud/timing-d2341.md` (BEFORE = `8d64b0c0d`, the parent of D2341's build `cc831de21` — not 2ea59acad).
