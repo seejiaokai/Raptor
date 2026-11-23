@@ -62,6 +62,14 @@ export const enteredByPick = (): boolean => BY_PICK
 /** the band of a window open at a pick: `from` the number of the squadron the window belongs to, `to` the one picked */
 export const pickBand = (from: string, to: string): NonNullable<MoveBand> =>
   ({ lead: `This is ${from}'s.`, rest: `You picked ${to} — close this to go on.`, ro: true })
+/* ---- A WINDOW LEFT OPEN AT THE SWITCH TO THE MEMBER VIEW (his D2389, D2400 — the approved drawings
+   docs/mock/2026-11-24-msq-new-words/img/w1-*.png, i1-*.png) ----
+   An admin on a squadron he works by a Plan or the master mark, a Leave War or Input window open, taps his name badge: in
+   the member view his own pages go home, so the window is held (state/perms.ts heldByMemberView). It read the generic
+   "This change could not be saved." with its controls live, though nothing was tried. It says what to do, greyed exactly
+   as a pick's (`ro`), Close and ✕ still working; the switch back gives the window back as it was. */
+export const memberViewBand = (): NonNullable<MoveBand> =>
+  ({ lead: 'Member view.', rest: 'Switch back to the admin view to change this, or close it.', ro: true })
 
 /* ---- THE TRACKER AFTER A PICK (§16 D2′; his D2318 — the approved drawings f2a, f2b, f2c) ----
    The Tracker keeps the squadron it first loaded until the next sign-in (tracker/storage.js rebindStorageUnit). When the

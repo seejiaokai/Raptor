@@ -34,6 +34,8 @@ afterEach(() => cleanup())
 
 const LEAD = "This is 142's."
 const REST = 'You picked 149 — close this to go on.'
+const MV_LEAD = 'Member view.'
+const MV_REST = 'Switch back to the admin view to change this, or close it.'
 const dead = (el: Element | null) => !!el && !!el.closest('[inert]')
 const greyed = (el: Element | null) => !!el && !!el.closest('[data-heldro]')
 
@@ -152,6 +154,74 @@ describe('an open Leave War window (the drawing f7a)', () => {
     expect(screen.queryByTestId('bid-sheet')).toBeNull()
     expect(CURPAGE).toBe('viewsched')
   })
+  /* HIS D2389, D2400 — the drawings docs/mock/2026-11-24-msq-new-words/img/w1-*.png: a Leave War window left open when an
+     admin switches to the member view read "This change could not be saved." though nothing was tried, its controls live.
+     It reads "Member view." and "Switch back to the admin view to change this, or close it.", greyed as D2323's is, Close
+     and ✕ live. Red first. */
+  describe('a Leave War window left open at the switch to the member view (D2389)', () => {
+    const on149 = async () => {
+      signInAs('saber')
+      act(() => { setPage('leavewar'); void pickSquadron('u149') })
+      expect(worldUnit(), 'the premise: 149\'s war').toBe('u149')
+      render(<BidWindow />)
+      expect(screen.queryByTestId('move-band'), 'no band on 149\'s own war').toBeNull()
+      act(() => { switchRoleView() })
+    }
+    it('reads "Member view.", every control greyed and dead, ✕ and Close live', async () => {
+      await on149()
+      const band = screen.getByTestId('move-band')
+      expect(band.querySelector('b')!.textContent).toBe(MV_LEAD)
+      expect(band.querySelector('.sv-rest')!.textContent).toBe(MV_REST)
+      expect(dead(screen.getByTestId('remarks')) && greyed(screen.getByTestId('remarks'))).toBe(true)
+      expect(dead(screen.getByTestId('save')) && greyed(screen.getByTestId('save'))).toBe(true)
+      expect((screen.getByTestId('remarks') as HTMLTextAreaElement).value, 'his words stay in view').toBe('Back Sunday')
+      expect(dead(screen.getByRole('button', { name: 'Close Ranger' })), 'the ✕ works').toBe(false)
+      expect(dead(screen.getByRole('button', { name: 'Close' })), 'the band\'s Close works').toBe(false)
+    })
+    it('the switch back to the admin view gives the window back as it was', async () => {
+      await on149()
+      act(() => { switchRoleView() })
+      expect(screen.queryByTestId('move-band')).toBeNull()
+      expect(dead(screen.getByTestId('save'))).toBe(false)
+      expect(greyed(screen.getByTestId('remarks'))).toBe(false)
+    })
+    it('Close closes it', async () => {
+      await on149()
+      fireEvent.click(screen.getByRole('button', { name: 'Close' }))
+      await act(async () => { await Promise.resolve(); await Promise.resolve() })
+      expect(screen.queryByTestId('bid-sheet')).toBeNull()
+    })
+    it('(pin, D2323) in the member view, a pick that moves the page off the window still reads the pick\'s band', async () => {
+      await on149()
+      act(() => { void pickSquadron('u142') })
+      const band = screen.getByTestId('move-band')
+      expect(band.querySelector('b')!.textContent).toBe("This is 149's.")
+      expect(band.querySelector('.sv-rest')!.textContent).toBe('You picked 142 — close this to go on.')
+    })
+    it('(control) his Plan lowered while he is in the member view: switching back would not give it back, so not these words', () => {
+      signInAs('saber')
+      expect(saveAccess(ACCT.hunter, { grants: { u149: 'plan' } })).toBeNull()
+      signInAs('hunter')
+      act(() => { setPage('leavewar'); void pickSquadron('u149') })
+      render(<BidWindow />)
+      act(() => { switchRoleView() })
+      expect(screen.getByTestId('move-band').querySelector('b')!.textContent).toBe(MV_LEAD)
+      const mine = SESSION
+      setSession(sessionFor(signIn('ad', 'a')))
+      expect(setGrant(ACCT.hunter, 'u149', 'view', PID.hunter)).toMatchObject({ ok: true })
+      setSession(mine)
+      act(() => { notify() })
+      expect(screen.getByTestId('move-band').querySelector('b')!.textContent).toBe('This change could not be saved.')
+    })
+    it('(pin) an admin on his own squadron switching to the member view: no hold, no band, as today', () => {
+      signInAs('saber')
+      act(() => { setPage('leavewar'); notify() })
+      render(<BidWindow />)
+      act(() => { switchRoleView() })
+      expect(screen.queryByTestId('move-band')).toBeNull()
+      expect(dead(screen.getByTestId('save'))).toBe(false)
+    })
+  })
 })
 
 describe('an open Input window on Inputs (the drawing f7b)', () => {
@@ -177,10 +247,39 @@ describe('an open Input window on Inputs (the drawing f7b)', () => {
     await act(async () => { setInpEdit(INPUTS[0]); notify() })
     expect($('[data-testid="inped-moveband"]'), 'no band while on 149\'s Inputs').toBeNull()
     await act(async () => { switchRoleView() })
-    /* held, with the band — not a pick, so the generic band with nothing greyed, as for a Plan lowered (the control test
-       below); the gate refuses its saves */
+    /* held, with his D2389's band (below): "Member view.", greyed as a window held at a pick is */
     expect($('[data-testid="inped-moveband"]'), 'the window held, with its band').not.toBeNull()
     await act(async () => { switchRoleView() })
+  })
+  /* HIS D2389, D2400 — the drawings docs/mock/2026-11-24-msq-new-words/img/i1-*.png: an Input window left open when an admin
+     switches to the member view read "This change could not be saved." though nothing was tried, its controls live. It
+     reads "Member view." and "Switch back to the admin view to change this, or close it.", greyed as D2323's is, Close and
+     ✕ live; the switch back gives the window back. Red first. */
+  it('the member view over an Input window on 149: its words, every control greyed and dead, Close live, the switch back gives it back', async () => {
+    signInAs('saber')
+    expect(saveAccess(ACCT.hunter, { grants: { u149: 'plan' } })).toBeNull()
+    signInAs('hunter')
+    await act(async () => { await pickSquadron('u149') })
+    setPage('inputs'); setInpView('cal')
+    await act(async () => { root.render(<InputEditor />) })
+    await act(async () => { setInpEdit(INPUTS[0]); notify() })
+    await act(async () => { switchRoleView() })
+    const band = $('[data-testid="inped-moveband"]')
+    expect(band!.querySelector('b')!.textContent).toBe(MV_LEAD)
+    expect(band!.querySelector('.sv-rest')!.textContent).toBe(MV_REST)
+    /* the window keeps the form he had, as drawn — every box and Save and Delete there, greyed — not a member's plainer
+       read-only form of another man's input */
+    const box = $('.inpedbox input, .inpedbox select, .inpedbox textarea')
+    expect(dead(box) && greyed(box), 'the form greyed and dead').toBe(true)
+    expect(dead($('#inpEditSave')) && greyed($('#inpEditSave')), 'Save greyed and dead').toBe(true)
+    expect(dead($('#inpEditDel')) && greyed($('#inpEditDel')), 'Delete greyed and dead').toBe(true)
+    expect(dead(band!.querySelector('button')), 'Close works').toBe(false)
+    const before = JSON.stringify(INPUTS[0])
+    await act(async () => { $('#inpEditSave')!.click(); $('#inpEditDel')!.click() })
+    expect(JSON.stringify(INPUTS[0]), 'nothing saved or deleted').toBe(before)
+    await act(async () => { switchRoleView() })
+    expect($('[data-testid="inped-moveband"]'), 'back in the admin view: the window as it was').toBeNull()
+    expect(dead($('#inpEditSave'))).toBe(false)
   })
   /* The fix rounds' read of 23 Nov 26 (the fresh Opus reader's 2), a repeat of Fable 1 above, brought by its fix: a VIEW
      holder's own pages never leave 142, so his Inputs window, carried by the landing over 149's View-only Sched, judged

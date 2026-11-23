@@ -322,6 +322,17 @@ export function trackerCoverKind(iso: string = todayIso()): TrkCoverKind {
   if (!adminThere) return { kind: 'gone', bound, own }
   return { kind: roleOf() === 'admin' ? 'ro' : 'member', bound, own }
 }
+/* A WINDOW THE MEMBER VIEW HOLDS (his D2389, D2400; state/typing-hold.ts memberViewBand): he is an admin in the member view,
+   and the window's squadron is the one in view, not his home, and one he is an admin of by a Plan or the master mark — read
+   from the ACCOUNT, as trackerCoverKind's 'member' is — so the switch back really gives him the window: the band tells him
+   so only where that is true. A right lowered or taken meanwhile, or a window on another squadron than the one in view
+   (a pick's, D2323), is not this. */
+export function heldByMemberView(world: string, iso: string = todayIso()): boolean {
+  if (!SESSION || !me() || roleOf() === 'admin' || !mayViewAsMember()) return false
+  if (world !== UNIT || world === myUnit(iso)) return false
+  const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
+  return !!acct && acct.role === 'admin' && (acct.master === true || levelOfAccount(levelAcct(acct), world, iso) === 'admin')
+}
 /* DOES THE PICK STILL STAND ON `iso` (the blind read's R6, its pick half — the reshape plan §19b; A-iv widened, dormant
    until P1/P3): the squadron picked (engine/unitview.ts UNIT) is one the signed-in person can read that day — his home
    there, a View or Plan of it that holds that day (units-model.ts levelFrom, the reading rule), or a master admin's

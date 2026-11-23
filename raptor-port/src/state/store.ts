@@ -47,8 +47,8 @@ import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit, histSnap, histRestore, schedFields } from './history'
 import { setSession as authSetSession, canEditSched, SESSION, setMe, DEFAULT_ME, setLgEdit } from './auth'
-import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUnitNow, trkUnitNow, pickStandsOn, maySchedEditPage, trackerCoverKind, pageOffered, myUnit } from './perms'
-import { holdNow, setBands, warBand, setHoldRelease, setEnteredByPick, enteredByPick, pickBand, schedMoveBand, type MoveBand, type HoldKind, type TrkCover } from './typing-hold'
+import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUnitNow, trkUnitNow, pickStandsOn, maySchedEditPage, trackerCoverKind, pageOffered, myUnit, heldByMemberView } from './perms'
+import { holdNow, setBands, warBand, setHoldRelease, setEnteredByPick, enteredByPick, pickBand, memberViewBand, schedMoveBand, type MoveBand, type HoldKind, type TrkCover } from './typing-hold'
 import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { endTrackerSession } from '../tracker/role.js'
@@ -1079,14 +1079,18 @@ function moveWords(world: string, page: 'Leave War' | 'Tracker', pid: string, is
 /* "You picked 149" only where the pick is what moved the window off its squadron — the squadron in view, reached by his
    pick, is not the window's own; a right lowered under a window on the squadron he picked (R6) keeps the generic words */
 const heldByPick = (world: string): boolean => enteredByPick() && UNIT !== world
+/* …and his D2389: a window on the squadron in view that the switch to the member view left behind reads "Member view."
+   (typing-hold.ts memberViewBand; perms.ts heldByMemberView says when) — one body for the Leave War's and the Input's */
+const heldWords = (world: string): NonNullable<MoveBand> =>
+  heldByPick(world) ? pickBand(unitNum(world), unitNum(UNIT)) : heldByMemberView(world) ? memberViewBand() : schedMoveBand()
 function bandWords(world: string, page: 'Leave War' | 'Tracker', pid: string, iso: string): MoveBand {
-  return moveWords(world, page, pid, iso)
-    ?? (heldByPick(world) ? pickBand(unitNum(world), unitNum(UNIT)) : schedMoveBand())
+  return moveWords(world, page, pid, iso) ?? heldWords(world)
 }
 /** the band of an Input window held across a change of squadron (ui/InputWindow.tsx): a pick's words where his pick (or
- *  a bell tap) moved the page — `opened`, the squadron the window opened on — else the generic words, as before */
+ *  a bell tap) moved the page — `opened`, the squadron the window opened on — the member view's where the switch to it
+ *  did (D2389), else the generic words, as before */
 export function heldWindowBand(opened: string): NonNullable<MoveBand> {
-  return heldByPick(opened) ? pickBand(unitNum(opened), unitNum(UNIT)) : schedMoveBand()
+  return heldWords(opened)
 }
 /* THE TRACKER AFTER A PICK (§16 D2′, his D2318 — the drawings f2a, f2b, f2c; state/perms.ts trackerCoverKind): the
    Tracker page's own band, its words filled from the Tracker's squadron and his own pages' (pageUnit('own')). His own move

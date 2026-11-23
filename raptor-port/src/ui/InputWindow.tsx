@@ -24,7 +24,7 @@ import { HOOKS } from '../engine/hooks'
 import { stampChanged } from '../state/inputstamp'
 import { notify, heldWindowBand } from '../state/store'
 import { canEditOwn } from '../state/auth'
-import { me, isMe, mayEditInput, mayMovePlace, pageUnit, adminOfUnit, pageOffered } from '../state/perms'
+import { me, isMe, mayEditInput, mayMovePlace, pageUnit, adminOfUnit, pageOffered, heldByMemberView } from '../state/perms'
 import { todayIso } from '../engine/editlog'
 import { UNIT } from '../engine/unitview'
 import { MoveBandView } from './MoveBand'
@@ -865,7 +865,16 @@ export function InputEditor() {
       if (u == null) return false
       return ![u, ...inputSquadrons(r)].some(x => adminOfUnit(x))
     })()
-  const readOnly = !isNew && !!r && (!mayEditInput(r) || foreign)
+  const roNow = !isNew && !!r && (!mayEditInput(r) || foreign)
+  /* HELD BY THE SWITCH TO THE MEMBER VIEW IT KEEPS THE FORM IT HAD (his D2389, D2400 — the drawing
+     docs/mock/2026-11-24-msq-new-words/img/i1-*.png: every box, Save and Delete there, greyed by the band). The role in force
+     is a member's now, and on another man's input that would swap the form for a member's plainer read-only one under the
+     band; the switch back would swap it again. What it had before the switch is noted on each render while not so held
+     ("adjust state while rendering"); nothing can be pressed under the band, and every write above still stops on `held`. */
+  const [roKept, setRoKept] = useState<boolean | null>(null)
+  const heldMv = held && heldByMemberView(openedSqn)
+  if (!heldMv && roKept !== roNow) setRoKept(roNow)
+  const readOnly = heldMv && roKept != null ? roKept : roNow
   /* WHERE IT GOES IS A SCHEDULER'S once he has moved it (his D1388): the member's window shows where it stands, picked,
      and offers neither button — as a rejected one already does (G5) */
   const goesLocked = !isNew && !!r && !mayMovePlace(r)
