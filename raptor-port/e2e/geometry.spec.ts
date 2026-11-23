@@ -5892,6 +5892,7 @@ test('the New person fields fit the Users pane on a phone (add and approve)', as
   /* a sign-up first, so there is a request to approve */
   await page.fill('#luser', 'fits@mail'); await page.fill('#lpass', 'x')
   await page.click('#loginForm button[type=submit]'); await page.waitForSelector('#accessRequest')
+  await page.selectOption('#accSqn', { label: '142' })   // it starts on "Pick…" (his D2396 (f))
   await page.fill('#accCs', 'Fitter'); await page.selectOption('#accSeat', 'RCP'); await page.selectOption('#accCat', 'C')
   await page.click('#accSend'); await page.waitForSelector('#accessWaiting')
   await page.click('#accOut'); await page.waitForSelector('#luser')
@@ -6164,6 +6165,8 @@ const askAs = async (page: Page, user: string, cs: string, refuse = false) => {
   if (refuse) await page.evaluate(() => { (window as any).__lsRefuse = true })
   await page.fill('#luser', user); await page.fill('#lpass', 'x')
   await page.click('#loginForm button[type=submit]'); await page.waitForSelector('#accessRequest')
+  /* (the Squadron box starts on "Pick…" and the card sends nothing until it is chosen — his D2396 (f)) */
+  await page.selectOption('#accSqn', { label: '142' })
   await page.fill('#accCs', cs); await page.fill('#accIni', 'ST')
   await page.selectOption('#accSeat', 'FCP'); await page.selectOption('#accCat', 'C')
 }

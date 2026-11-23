@@ -14,10 +14,10 @@
    Red first: before this job there was no Squadrons panel and the card asked no squadron. */
 import { describe, it, expect, afterEach } from 'vitest'
 import { act, cleanup, fireEvent, render } from '@testing-library/react'
-import { useMsqWorld, signInAs, moveMan, PID, ACCT } from '../test-support/msq-world'
+import { useMsqWorld, signInAs, moveMan, mem, PID, ACCT } from '../test-support/msq-world'
 import { SquadronsPanel } from './SquadronsPanel'
 import { AccessScreen } from './AccessScreen'
-import { addUnit, units, unitRows, unitsLoad, todayIso, placeById } from '../state/units'
+import { addUnit, units, unitRows, unitsLoad, todayIso, placeById, setUnitSeeds } from '../state/units'
 import { placeIdOn, moveFrom } from '../state/units-model'
 import { saveAccess, waitingHere, ACCESS_REQS } from '../state/accounts'
 import { globalUndo } from '../undo/timeline'
@@ -189,14 +189,47 @@ describe('eight squadrons (§11)', () => {
 })
 
 describe('Request access asks the squadron (b1-5; D2094, D2111)', () => {
-  it('"Squadron" is the card\'s first choice, 142 to start; a request to 149 lands with 149, on 149\'s Waiting list, not 142\'s', async () => {
+  /* HIS D2396 (f), D2400 — the drawing docs/mock/2026-11-24-msq-new-words/img/f1-*.png, f2-*.png: the box starts on "Pick…",
+     as the two under it do, and Request access sends nothing until he has chosen, saying "Pick your squadron" in the
+     card's own error line. Kite, leaving it on 142 by not looking, asked the wrong squadron's admins. Red first. */
+  it('starts on "Pick…"; Request access with nothing chosen says "Pick your squadron" and sends nothing; choosing clears it', async () => {
+    signInAs('kite@mail')
+    const page = render(<AccessScreen />)
+    const $ = (sel: string) => page.container.querySelector(sel) as HTMLElement
+    expect(options($('#accSqn'))).toEqual(['Pick…', '142', '149'])
+    expect(($('#accSqn') as HTMLSelectElement).value).toBe('')
+    await act(async () => { fireEvent.change($('#accCs'), { target: { value: 'Kite' } }) })
+    await act(async () => { fireEvent.change($('#accSeat'), { target: { value: 'GND' } }) })
+    await act(async () => { fireEvent.submit($('#accForm')) })
+    expect($('#accErr').textContent).toBe('Pick your squadron')
+    expect(ACCESS_REQS.find(r => r.name === 'kite@mail'), 'nothing sent').toBeUndefined()
+    expect($('#accForm'), 'still on the card').toBeTruthy()
+    await act(async () => { fireEvent.change($('#accSqn'), { target: { value: 'u149' } }) })
+    expect($('#accErr').textContent, 'choosing takes the words away').toBe('')
+    await act(async () => { fireEvent.submit($('#accForm')) })
+    expect(ACCESS_REQS.find(r => r.name === 'kite@mail')?.unit).toBe('u149')
+  })
+  /* its pin: with one squadron in the app the card has no Squadron box and asks nothing more — the request goes to that
+     squadron, as it always did (the row laid straight in the memory: the store takes a unit row only by its command) */
+  it('one squadron: no Squadron box, and Request access sends straight to it', async () => {
+    setUnitSeeds(false); mem['sqn142_unit:u142'] = JSON.stringify({ id: 'u142', num: '142', kind: 'sqn' }); unitsLoad()
+    signInAs('onesqn@mail')
+    expect(units().map(u => u.num), 'the premise: one squadron').toEqual(['142'])
+    const page = render(<AccessScreen />)
+    const $ = (sel: string) => page.container.querySelector(sel) as HTMLElement
+    expect($('#accSqn')).toBeNull()
+    await act(async () => { fireEvent.change($('#accCs'), { target: { value: 'Solo' } }) })
+    await act(async () => { fireEvent.change($('#accSeat'), { target: { value: 'GND' } }) })
+    await act(async () => { fireEvent.submit($('#accForm')) })
+    expect($('#accErr')?.textContent ?? '', 'no word about a squadron').not.toContain('squadron')
+    expect(ACCESS_REQS.find(r => r.name === 'onesqn@mail')?.unit).toBe('u142')
+  })
+  it('"Squadron" is the card\'s first choice; a request to 149 lands with 149, on 149\'s Waiting list, not 142\'s', async () => {
     signInAs('joinreq@mail')
     const page = render(<AccessScreen />)
     const $ = (sel: string) => page.container.querySelector(sel) as HTMLElement
     const labels = [...page.container.querySelectorAll('#accForm label')].map(l => l.textContent)
     expect(labels[0]).toBe('Squadron')
-    expect(options($('#accSqn'))).toEqual(['142', '149'])
-    expect(($('#accSqn') as HTMLSelectElement).value).toBe('u142')
     await act(async () => { fireEvent.change($('#accSqn'), { target: { value: 'u149' } }) })
     await act(async () => { fireEvent.change($('#accCs'), { target: { value: 'Joiner' } }) })
     await act(async () => { fireEvent.change($('#accSeat'), { target: { value: 'GND' } }) })
