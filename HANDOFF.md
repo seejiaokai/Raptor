@@ -81,7 +81,25 @@ the later merge keeps both (D78).
   excepted (2 tests); S4 docs = item (e). **A product question for him (S's):** D149 lets a member tick his own SANS on
   Quals, counting from today — so he can tick himself and file before his posting date through ordinary screens; is that
   fine? (10).
-- **State at writing:** all fixes so far committed and pushed to `f95d4fab4` (GitHub running on it); 80% full — the next
+- **UPDATE 5 — CHAT 154 (23 Nov 26, main Raptor folder, local branch `chat154-allavail`, NO upstream; push with `git push
+  origin HEAD:refs/heads/claude/allavail-sans-postout-141`):** UPDATE 4's and UPDATE 3's (b)–(e) DONE, red-first, in ONE
+  commit `e64c78752`, PUSHED (GitHub running on it): S1's other-kind case; `sansAvailOn` (S2); `sansDayView` in a new
+  published copy + `frozenInputMatch` (Astra #1 rest); `sansNewDayProblem` / `perms.ts sansDayViolation` (Astra #3); 
+  `sansBackEraseViolation` (Astra #2); member's `san`/`sanFrom`/`sanWas` only as his tick writes (S3); `data-model.md` §11
+  (S4, F6). Tests: `src/leavewar/sans-ahead-security152.test.ts` (11, premises corrected — the demo already holds the other
+  man's Thu 16 offer) and Astra's `sans-review-regressions.test.ts` (7; two `it.fails` = his question (7)). (f) speed FILED
+  as OUTSTANDING [FABLE-READ-FAULTS] (w)(1); (7) filed as (w)(2) `[SANS-BACK-STRIKE-WHAT]`. Unit suite whole: 1061 files,
+  16107 pass, 9 expected fail. Code check: no new finding. RUNNING at writing: the narrow re-reads of `bde8ef0a0..e64c78752`
+  — Astra (`codex exec`, copy `D:/raptor-work/c154-reread/astra`, report → `…/astra-report.md`, log `astra.log`) and a fresh
+  blind Opus helper (copy `…/opus`); brief `docs/superpowers/briefs/2026-11-23-sans-ahead-fix-reread-brief.md`, copies made
+  by the scratchpad script (git archive of src + named docs, FIX-DIFF.patch). An Opus helper is filling sheet §17 from the
+  w8/w9/w10/r1 reports (17.13 gate counts and R12/R13's host re-look left to the host). NEXT: the re-reads' findings
+  (reproduce red, fix) → the host's short re-look of Edit Schedule's and the board's SANS Avail panels at both sizes (a
+  shared offer Ranger + Hex on Fri 17, Ranger's posting moved to Sat 18 — Hex's card only; reuse `scripts/handpass/sah-r1.mjs`
+  w101's world: `T.file`, `T.movePo`, then `T.weekCrewOf` / `T.boardCrewOf`; build under the lock, serve on a free port) →
+  push (only when no run of the branch is in progress) → GitHub green → sheet 17.13 + Walk line + ledger row → look card and
+  the preview link with questions (1)–(10).
+- **State at writing (chat 152):** all fixes so far committed and pushed to `f95d4fab4` (GitHub running on it); 80% full — the next
   chat (or this one after compaction) starts at UPDATE 4's first item, then items (b)–(f) of UPDATE 3, then the narrow
   fresh-Opus re-read of all fix commits since `bde8ef0a0`, the host's short re-look at the two SANS panels at both sizes,
   push, GitHub green, sheet §17 filled (roll-call marks from the reports w8/w9/w10/r1, the Walk line, the ledger row),
