@@ -68,8 +68,11 @@ export const pickBand = (from: string, to: string): NonNullable<MoveBand> =>
    the member view his own pages go home, so the window is held (state/perms.ts heldByMemberView). It read the generic
    "This change could not be saved." with its controls live, though nothing was tried. It says what to do, greyed exactly
    as a pick's (`ro`), Close and ✕ still working; the switch back gives the window back as it was. */
+const MEMBER_VIEW_LEAD = 'Member view.'
 export const memberViewBand = (): NonNullable<MoveBand> =>
-  ({ lead: 'Member view.', rest: 'Switch back to the admin view to change this, or close it.', ro: true })
+  ({ lead: MEMBER_VIEW_LEAD, rest: 'Switch back to the admin view to change this, or close it.', ro: true })
+/** is this band the member view's — the window under it keeps the form it had (leavewar/ui/PersonWindow.tsx) */
+export const isMemberViewBand = (b: MoveBand): boolean => !!b && b.lead === MEMBER_VIEW_LEAD
 
 /* ---- THE TRACKER AFTER A PICK (§16 D2′; his D2318 — the approved drawings f2a, f2b, f2c) ----
    The Tracker keeps the squadron it first loaded until the next sign-in (tracker/storage.js rebindStorageUnit). When the

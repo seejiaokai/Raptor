@@ -28,7 +28,8 @@
    page, so it stands over the Balances and Approvals pages too (the grid card is hidden behind those).
 
    SPEED (docs/performance.md §E): everything here is its own; the grid's rows are not handed a thing that changes with it. */
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react'
+import { isMemberViewBand, subscribeBands, warBand } from '../../state/typing-hold'
 import { FIGURES, memberToday, type Person } from '../engine'
 import type { BalKind } from '../engine/leaveyear'
 import { balanceProblem, balancesLocked, figureCtxOf, getState, leaveFiguresOf } from '../state/store'
@@ -126,11 +127,17 @@ export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
   const version = useVersion()
   const phone = usePhone()
   const pid = person.id
-  const admin = getState().role === 'admin'
+  /* HELD BY THE SWITCH TO THE MEMBER VIEW IT KEEPS THE FORM IT HAD (his D2389, D2400 — the drawing
+     docs/mock/2026-11-24-msq-new-words/img/w1-*.png: the figure boxes there, greyed by the band). This window opens for the
+     admin of this war that he still is, so his boxes stay under the band instead of turning into a member's plain figures
+     and back at the switch; nothing can be pressed under it (Sheet.tsx, ui/heldro.ts) and the commit gate judges the role
+     in force all the same. */
+  const heldMv = isMemberViewBand(useSyncExternalStore(subscribeBands, warBand, warBand))
+  const admin = heldMv || getState().role === 'admin'
   const locked = balancesLocked()
   const f = leaveFiguresOf(pid)
   /* a box only where he may type (D1203, D1242, D1220): the store's own rule, asked for a figure it would take */
-  const boxes = balanceProblem(pid, 'CCL', 0) === null
+  const boxes = heldMv || balanceProblem(pid, 'CCL', 0) === null
   const thisYear = +memberToday().slice(0, 4)
   /* the picker holds "and ahead" or a past year, never this year's number: "<this year> and ahead" is read from the app's
      today at each draw, so a window left open across midnight into a new year lists that year and ahead, as its label

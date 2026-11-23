@@ -18,8 +18,9 @@ import { setGrant } from '../state/units'
 import { pickSquadron } from '../state/pick'
 import { notify, switchRoleView } from '../state/store'
 import { UNIT } from '../engine/unitview'
-import { worldUnit } from '../leavewar/state/store'
+import { worldUnit, getState } from '../leavewar/state/store'
 import { Sheet } from '../leavewar/ui/Sheet'
+import { PersonWindow } from '../leavewar/ui/PersonWindow'
 import { InputEditor } from './InputWindow'
 import { newInputSeed, commitInputEdit, draftOf } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
@@ -184,6 +185,24 @@ describe('an open Leave War window (the drawing f7a)', () => {
       expect(screen.queryByTestId('move-band')).toBeNull()
       expect(dead(screen.getByTestId('save'))).toBe(false)
       expect(greyed(screen.getByTestId('remarks'))).toBe(false)
+    })
+    /* the drawing w1 draws the person window with its figure boxes, greyed: the member view's role would swap them for a
+       member's plain figures under the band, and the switch back swap them again. Red first. */
+    it('the person window keeps its figure boxes under the band, greyed and dead, as drawn', () => {
+      signInAs('saber')
+      act(() => { setPage('leavewar'); void pickSquadron('u149') })
+      const man = getState().people.find(p => p.id === PID.kestrel)!
+      render(<PersonWindow person={man} since={null} hasRow onClose={() => {}} onOil={() => {}} onGo={() => {}} />)
+      const boxes = () => [...document.querySelectorAll<HTMLInputElement>('[data-testid="person-window"] input')]
+      const had = boxes().length
+      expect(had, 'an admin\'s boxes').toBeGreaterThan(0)
+      act(() => { switchRoleView() })
+      expect(screen.getByTestId('move-band').querySelector('b')!.textContent).toBe(MV_LEAD)
+      expect(boxes().length, 'the same boxes under the band').toBe(had)
+      expect(boxes().every(b => dead(b) && greyed(b)), 'each greyed and dead').toBe(true)
+      act(() => { switchRoleView() })
+      expect(boxes().length, 'back in the admin view').toBe(had)
+      expect(boxes().some(b => dead(b))).toBe(false)
     })
     it('Close closes it', async () => {
       await on149()
