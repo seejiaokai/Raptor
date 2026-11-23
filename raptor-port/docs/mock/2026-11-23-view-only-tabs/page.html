@@ -1,0 +1,122 @@
+<title>View-Only Squadron Menu</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one column; the question first, then today / proposed pairs, phone pictures first. */
+:root{
+  --bg:#f4f6f8; --panel:#ffffff; --fg:#14202b; --muted:#5b6b78; --line:#d9e0e6;
+  --accent:#0e7fa6; --accent-soft:#e3f2f8; --ok:#1f7a4d;
+  --font-text:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-head:"Space Grotesk","Inter",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0d1217; --panel:#151d24; --fg:#e6edf2; --muted:#9aaab6; --line:#26323c;
+  --accent:#4cc3ea; --accent-soft:#12303c; --ok:#5fd49a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d1217; --panel:#151d24; --fg:#e6edf2; --muted:#9aaab6; --line:#26323c;
+  --accent:#4cc3ea; --accent-soft:#12303c; --ok:#5fd49a; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-text);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:26px}
+h1,h2,h3{font-family:var(--font-head);text-wrap:balance;margin:0}
+h1{font-size:25px;line-height:1.2}
+h2{font-size:18px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+h3{font-size:14px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+p{margin:0}
+.muted{color:var(--muted)}
+.now{background:var(--accent-soft);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.now .rec{color:var(--ok);font-weight:600}
+section{display:flex;flex-direction:column;gap:12px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pair.one{grid-template-columns:1fr}
+@media (max-width:560px){.pair{grid-template-columns:1fr}}
+figure{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+figure button{border:0;padding:0;background:none;cursor:zoom-in;line-height:0}
+figure img{width:100%;height:auto;display:block;border-bottom:1px solid var(--line)}
+figcaption{padding:8px 12px;display:flex;flex-direction:column;gap:2px}
+.tag{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.tag.today{color:var(--muted)} .tag.new{color:var(--accent)}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;z-index:20;
+  padding:max(12px,env(safe-area-inset-top,0px)) 12px max(12px,env(safe-area-inset-bottom,0px));overflow:auto}
+#lb img{max-width:100%;max-height:100%;object-fit:contain;cursor:zoom-out}
+#lb.big{align-items:flex-start;justify-content:flex-start}
+#lb.big img{max-width:none;max-height:none;width:200%}
+#lbclose{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:calc(12px + env(safe-area-inset-right,0px));
+  background:#fff;color:#000;border:0;border-radius:18px;padding:6px 14px;font-weight:700;cursor:pointer;z-index:21}
+</style>
+
+<div class="wrap">
+  <h1>Only view: the menu and top bar</h1>
+
+  <div class="now">
+    <p><b>Look at now:</b> is this how it should look? It shows your ruling that someone with only View of 149 gets just its View-only Sched and Help, plus the squadron line at the top of the ☰ menu.</p>
+    <p class="rec">Recommended: yes, build it as drawn.</p>
+    <p class="muted">The parts ringed in blue are new. The pictures are the real app; the new parts were drawn onto it.</p>
+  </div>
+
+  <section>
+    <h2>On the phone: the ☰ menu</h2>
+    <p>Ranger is a member of 142 and has View of 149. With 149 picked, the menu says which squadron is in view and offers only the two pages he can open.</p>
+    <div class="pair" id="s1"></div>
+    <p>Tap the squadron line and it opens in place, listing his squadrons the same way the “149 ▾” list at the top does. Picking one closes the menu.</p>
+    <div class="pair one" id="s2"></div>
+    <p>Back on his own squadron, the line reads “142 · Your squadron” and every page is there.</p>
+    <div class="pair" id="s3"></div>
+  </section>
+
+  <section>
+    <h2>On a desktop: the top bar</h2>
+    <p>The tabs shrink to View-only Sched and Help. An admin of 142 with View of 149 (Hunter, below) loses his Admin tab while 149 is picked. The squadron is still picked from “149 ▾” at the top left, as today.</p>
+    <div class="pair" id="s4"></div>
+    <div class="pair" id="s5"></div>
+  </section>
+
+  <section>
+    <h2>Who gets the squadron line</h2>
+    <ul>
+      <li>Only people who have more than one squadron, the same people who see the “▾” at the top left. Someone with one squadron sees no change:</li>
+    </ul>
+    <div class="pair" id="s6"></div>
+    <ul>
+      <li>On a desktop wide enough for the page names, there is no ☰. Picking stays at the top left, so the squadron line is a phone feature.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>The roles table</h2>
+    <p>In Admin → Users, “What each role allows” changes one cell: View no longer opens Logic.</p>
+    <div class="pair" id="s7"></div>
+  </section>
+
+  <section>
+    <h2>Not shown in a picture</h2>
+    <ul>
+      <li>If he is on, say, the Leave War when he picks 149, he lands on 149's View-only Sched.</li>
+      <li>Plan holders, master admins and 149's own admins keep every page, as today.</li>
+    </ul>
+  </section>
+</div>
+
+<div id="lb" hidden><button id="lbclose" type="button">Close</button><img id="lbimg" alt=""></div>
+
+<script>
+const S={
+ s1:[["2a-menu-149-today","today","Today: every page, and nothing says it is 149."],["2b-menu-149-proposed","new","Proposed: SQUADRON 149 · View only, then View-only Sched and Help."]],
+ s2:[["4a-menu-squadron-row-opened-proposed","new","The squadron line opened: 142 Your squadron, 149 View only (ticked)."]],
+ s3:[["3a-menu-home-142-today","today","Today, at home on 142."],["3b-menu-home-142-proposed","new","Proposed: SQUADRON 142 · Your squadron, every page as today."]],
+ s4:[["1a-ranger-149-topbar-today","today","Today: Ranger, 149 picked, seven tabs."],["1b-ranger-149-topbar-proposed","new","Proposed: View-only Sched and Help."]],
+ s5:[["1c-hunter-149-topbar-today","today","Today: Hunter, an admin of 142, 149 picked."],["1d-hunter-149-topbar-proposed","new","Proposed: his Admin tab goes too."]],
+ s6:[["5b-one-squadron-topbar-phone","today","One squadron: “142” with no ▾."],["5c-one-squadron-menu-phone","today","So his ☰ menu has no squadron line."]],
+ s7:[["7a-roles-table-today","today","Today: View reads “read” for Logic."],["7b-roles-table-proposed","new","Proposed: View's Logic cell is “—”."]]
+};
+for(const id in S){const el=document.getElementById(id);
+ S[id].forEach(([f,t,c])=>{const fig=document.createElement("figure");
+  fig.innerHTML=`<button type="button" data-src="p/${f}.png" aria-label="Open picture"><img src="p/${f}.png" alt="${c}" loading="lazy"></button><figcaption><span class="tag ${t}">${t==="new"?"Proposed":"Today"}</span><span>${c}</span></figcaption>`;
+  el.appendChild(fig)})}
+const lb=document.getElementById("lb"),li=document.getElementById("lbimg");
+document.addEventListener("click",e=>{const b=e.target.closest("button[data-src]");if(b){li.src=b.dataset.src;lb.classList.remove("big");lb.hidden=false}});
+li.addEventListener("click",()=>lb.classList.toggle("big"));
+document.getElementById("lbclose").addEventListener("click",()=>{lb.hidden=true});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")lb.hidden=true});
+</script>
