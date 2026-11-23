@@ -13,7 +13,9 @@ export { serve, stop, newPage, signIn, note, errs, facts, save, as, logout, admi
 
 SIZES.n = { engine: chromium, desk: true, opts: { viewport: { width: 820, height: 864 } } }
 const HERE = dirname(fileURLToPath(import.meta.url))
-export const PICS_ROOT = resolve(HERE, '../../../../docs/handpass/2026-11-23-msq-view-only-menu')
+/* MQ_PICS names a sub-folder for a re-walk (chat 151: `rewalk`), so the first walk's pictures — the faults' evidence —
+   are never overwritten (bug-check order §5, the re-walk) */
+export const PICS_ROOT = resolve(HERE, '../../../../docs/handpass/2026-11-23-msq-view-only-menu', process.env.MQ_PICS || '.')
 export let PICS = PICS_ROOT
 /* one run, one folder: the script's own sub-folder, emptied at its start */
 export function picsFor(name) {
