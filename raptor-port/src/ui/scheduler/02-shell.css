@@ -76,7 +76,9 @@
 }
 /* the ☰ menu's head (ui/Drawer.tsx DrawerSquadron — his D2382–D2384, the drawing d1–d5): the top bar's mark at the same
    size (09-week-responsive.css), its list in the small menu's look sitting in the menu's flow, the grey line under it */
-.drawer-sqlist{position:static;width:100%;min-width:0;margin:12px 0 0;box-sizing:border-box}
+/* two classes, so it wins over the small menu's own hung place (.sb-moremenu, 18-oil-board.css, later in the sheet) — with
+   one, the list hung 880px down, under Logout (the walk of 23 Nov 26, F1) */
+.sb-moremenu.drawer-sqlist{position:static;width:100%;min-width:0;margin:12px 0 0;box-sizing:border-box}
 .drawer-sqline{margin:8px 0 0}
 .nav{display:flex;gap:2px;margin-left:6px;flex-wrap:wrap}
 .nav a{padding:7px 13px;border-radius:10px;color:var(--ink-2);text-decoration:none;font-size:12.5px;font-weight:500;

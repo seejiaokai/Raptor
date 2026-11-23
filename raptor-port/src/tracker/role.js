@@ -61,6 +61,11 @@ export async function trackerMayLogOut(show) {
    the pick goes on at once; else a promise, true to go on, false to stay. core.js registers { needs, ask }. */
 let beforeSwitch = null
 export function onBeforeTrackerSwitch(f) { beforeSwitch = f && typeof f.needs === 'function' && typeof f.ask === 'function' ? f : null }
+/* would trackerSwitchAsk ask — asked of nothing, showing nothing (the ☰ menu's pick closes the menu first when it will:
+   ui/Drawer.tsx, through state/pick.ts pickWillAsk) */
+export function trackerSwitchNeeds() {
+  try { return !!beforeSwitch && !!beforeSwitch.needs() } catch (_) { return false }
+}
 export function trackerSwitchAsk(toNum) {
   if (!beforeSwitch) return null
   try {

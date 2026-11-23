@@ -9,7 +9,7 @@ import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent }
 import { PEOPLE } from '../engine/people'
 import { UNIT } from '../engine/unitview'
 import { isAdmin, me, mayViewAsMember, menuSquadrons, pageOffered } from '../state/perms'
-import { pickSquadron } from '../state/pick'
+import { pickSquadron, pickWillAsk } from '../state/pick'
 import { sqnNum } from './export'
 import { TalonMark } from './icons'
 import { SquadronRows } from './SquadronMenu'
@@ -158,7 +158,14 @@ function DrawerSquadron() {
     document.addEventListener('pointerdown', outside)
     return () => { document.removeEventListener('pointerdown', outside); off() }
   }, [shown, open])
-  const pick = (u: string) => { setOpen(null); btn.current?.focus(); void pickSquadron(u) }
+  /* a pick that will ask the Tracker's question about unsaved chart edits first closes the menu, as its Logout does before
+     the sign-out's same question — the question is drawn under the menu's panel (the walk of 23 Nov 26, F2); any other
+     pick leaves the menu open (D2384) */
+  const pick = (u: string) => {
+    setOpen(null)
+    if (pickWillAsk(u)) { setDrawer(false); notify() } else btn.current?.focus()
+    void pickSquadron(u)
+  }
   const move = (e: ReactKeyboardEvent) => {
     const items = [...(list.current?.querySelectorAll<HTMLButtonElement>('.sqm-row') ?? [])]
     if (!items.length) return

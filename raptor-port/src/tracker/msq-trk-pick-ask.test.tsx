@@ -13,7 +13,10 @@
    Hunter (142's admin) holds Plan of 149, picked 149 and opened the Tracker there (its squadron read by the gate's probe,
    as boot.ts installs it). Its own file so the Tracker engine boots fresh.
    Red first: before the change a pick asked nothing — it went straight through and the edits stayed behind. */
-import { describe, it, expect, beforeEach, afterAll } from 'vitest'
+import { describe, it, expect, beforeEach, afterAll, afterEach } from 'vitest'
+import { render, cleanup, act, fireEvent } from '@testing-library/react'
+import { Drawer } from '../ui/Drawer'
+import { DRAWER, setDrawer } from '../ui/pops'
 import * as core from './app/core.js'
 import { useMsqWorld, signInAs, ACCT, PID } from '../test-support/msq-world'
 import { saveAccess } from '../state/accounts'
@@ -137,5 +140,39 @@ describe('the member view and back keeps a draft (D2′ (b): hidden, never reset
     expect(C.sylDirty, 'the draft is still there').toBe(true)
     expect(C.byid['MEMBER-DRAFT']).toBeTruthy()
     await C.saveChangesClick()
+  })
+})
+
+/* THE ☰ MENU'S PICK WITH UNSAVED CHART EDITS (the walk of 23 Nov 26, F2 — docs/handpass/2026-11-23-msq-view-only-menu.md):
+   the question is drawn under the menu's panel, so a pick there that will ask closes the menu first — as its Logout does
+   before the sign-out's same question — and the question is seen and answered where he is. Red first: the menu stayed
+   open over the question. */
+describe('the ☰ menu\'s pick (D2382–D2384) with unsaved chart edits', () => {
+  afterEach(() => { cleanup(); setDrawer(false) })
+  it('closes the menu so the question is seen; Stay keeps everything', async () => {
+    await onHis149Tracker()
+    await dirty('MENU-STAY')
+    render(<Drawer />)
+    act(() => { setDrawer(true); notify() })
+    fireEvent.click(document.querySelector<HTMLElement>('#drawerSqnBtn')!)
+    fireEvent.click(document.querySelector<HTMLElement>('#drawerSqnList .sqm-row[data-unit="u142"]')!)
+    await until(() => C.dlg)
+    expect(C.dlg.msg).toBe(QUESTION)
+    expect(DRAWER, 'the menu closed, the question in sight').toBe(false)
+    C.dlgClose(false); await until(() => !C.dlg)
+    expect(UNIT, 'no pick').toBe('u149')
+    expect(C.sylDirty).toBe(true)
+    await C.saveChangesClick()
+  })
+  it('a pick with nothing to ask leaves the menu open (D2384)', async () => {
+    await onHis149Tracker()
+    expect(C.sylDirty, 'the premise: nothing unsaved').toBe(false)
+    expect(C.dlg ?? null, 'the premise: no question up').toBeNull()
+    render(<Drawer />)
+    act(() => { setDrawer(true); notify() })
+    fireEvent.click(document.querySelector<HTMLElement>('#drawerSqnBtn')!)
+    fireEvent.click(document.querySelector<HTMLElement>('#drawerSqnList .sqm-row[data-unit="u142"]')!)
+    expect(UNIT).toBe('u142')
+    expect(DRAWER).toBe(true)
   })
 })

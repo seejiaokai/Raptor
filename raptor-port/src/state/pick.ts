@@ -12,14 +12,23 @@ import { enterSquadron, notify } from './store'
 import { holdNow } from './typing-hold'
 import { pageUnit, trkUnitNow, ownPageIfPicked } from './perms'
 import { unitById } from './units'
-import { trackerSwitchAsk } from '../tracker/role.js'
+import { trackerSwitchAsk, trackerSwitchNeeds } from '../tracker/role.js'
 
+/* the pick would move his own pages off the Tracker he loaded */
+function movesTrackerAway(u: string): boolean {
+  const bound = trkUnitNow()
+  return !!bound && bound === pageUnit('own') && ownPageIfPicked(u) !== bound
+}
 /** the Tracker's question before his pages move to `u`'s: null — nothing to ask (no Tracker loaded, its squadron not his
  *  pages' now, the pick leaving his pages on it, no unsaved edit); else a promise, true to go on */
 export function askBeforeEntering(u: string): Promise<boolean> | null {
-  const bound = trkUnitNow()
-  if (!bound || bound !== pageUnit('own') || ownPageIfPicked(u) === bound) return null
+  if (!movesTrackerAway(u)) return null
   return trackerSwitchAsk(String(unitById(u)?.num ?? u))
+}
+/** would a pick of `u` ask that question first — asking nothing (the ☰ menu closes itself first when it will, so the
+ *  question is not drawn under its panel: ui/Drawer.tsx — the walk of 23 Nov 26, F2) */
+export function pickWillAsk(u: string): boolean {
+  return u !== UNIT && movesTrackerAway(u) && trackerSwitchNeeds()
 }
 
 function enterPicked(u: string): void {
