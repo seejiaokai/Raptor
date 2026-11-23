@@ -76,7 +76,6 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - A saved shared input's dates are changed in its own window, by whoever may change the input, for everyone in it at once [D681].
 
 ## Not built yet
-- On the SANS calendar a man posted out as SANS from a date ahead sees his own days before that date faded — the colour wash off, the figures dimmed, never the posting-out stripes — beside the guardrail that refuses them; his view only, gone from that date; drawn, to be built [D2343, D2346, D2340].
 - A date clicked on the Inputs or SANS calendar while a new input's window is open never looks picked while doing nothing: the click changes something the person can see, or nothing lights; what it does is his choice first (`[INP-CAL-CLICK-BEHIND-NEW]`) [D1298].
 
 ## Settled — leave as they are
@@ -155,6 +154,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - One person from an A-to-Z list by default; a switch for several shows the pucks in groups — Pilots, WSOs, SANS (a SANS man under SANS only), each A to Z, drawn compact — and a fourth, "Personnel", for ground crew, only where the roster holds ground crew [D656, D659].
 
 ### The SANS calendar
+- On the SANS calendar a man posted out as SANS from a date ahead sees his own days before that date faded — the colour wash off, the figures dimmed, never the posting-out stripes — beside the guardrail that refuses them; his view only, gone from that date; built as drawn (look A), the drawing check green [D2343, D2346, D2340].
 - The SANS flying calendar he asked for: demand from the Leave War, three colours, each man counted once with his hours, the counts for flying only; members see the day's commitments and add their own with custom times; a commitment's remarks box shows no faded placeholder words [D569, D570, D572, D617, D618].
 - Each date shows, as pilots / WSOs, how many more are still needed to fly — the Leave War's PAX required, less those it shows available, less the SANS committed to fly — and how many SANS have committed to F, O and A; the requirement and shortage colours are for flying only [D617, D581, D570].
 - The days are coloured in three steps — yellow, amber, red — set by an admin from the gear, one setting for the squadron; the date cell keeps the first mock-ups' soft wash, the still-needed pair in its colour, in lined-up columns, pilots left, WSOs right [D618, D630, D626].

@@ -11205,6 +11205,12 @@ The SANS tab of Inputs is ONE screen, `ui/SansCal.tsx`, with no Calendar | List 
 **It works nothing out.** A day's class, its required pilots and WSOs, how many more are needed and its colour are the
 ONE resolver's answer (`leavewar/sync.ts flyMonth` / `flyAnswer` → `state/flyplan-model.ts planFor`); who has committed
 is `state/flyplan.ts sansCommittedOn`. It hears BOTH stores — the scheduler's signal and the war's (`useWarFacts`).
+- **His own days before his SANS date, faded** (owner D2343, D2346 — look A, 23 Nov 26; `sanscal-model.ts
+  sansBeforeMine`): a man posted out as SANS from a date still ahead sees the days his own "+ Commitment" is greyed on
+  (D2340) with the colour wash off (`--panel-2`) and the day's contents at .38 — over every wash and the hover, never the
+  Leave War's posting-out stripes; the day still opens, a ring it wears still drawn; a screen reader hears "Before your
+  SANS date." An admin's month is unchanged; nothing fades once the posting has run or is taken back. The drawing of
+  record `docs/mock/2026-11-23-sans-before-shading/` (STYLE.A), its check `scripts/drawcheck/specs/sans-before.mjs`.
 - **A date** (`sanscal-model.ts sansCell`): its number; the sun (day flying) or the moon (night flying) — or the tag
   that takes their place: NF, or the Leave War's own short form for a public holiday (green) or an Off day (grey); the
   still-needed pair, pilots then WSOs, in the day's colour over a SOFT wash (D630 — never a deep tint or a bright

@@ -1,0 +1,277 @@
+{
+ "state": "a-phone",
+ "drawing": {
+  "script": "docs/mock/2026-11-23-sans-before-shading/draw.mjs",
+  "shot": "phone-2-proposed-A-faded"
+ },
+ "recorded": "2026-11-23T09:28:25.871Z",
+ "drawnOn": "claude/allavail-sans-postout-141 at e8ee77d53",
+ "checkout": "37ecde990",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 3,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "thu": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 174,
+    "y": 467.2,
+    "w": 54,
+    "h": 130.6
+   },
+   "ink": {
+    "x": 177,
+    "y": 471.2,
+    "w": 48,
+    "h": 120.4
+   },
+   "text": "16 – F 1 0 O 0 0 A 0 0",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.sc-day.mk-before"
+  },
+  "thu-num": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 177,
+    "y": 471.7,
+    "w": 17,
+    "h": 17
+   },
+   "ink": {
+    "x": 177,
+    "y": 471.2,
+    "w": 16.5,
+    "h": 18
+   },
+   "text": "16",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "800 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.sc-num"
+  },
+  "thu-need": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 177,
+    "y": 529.9,
+    "w": 48,
+    "h": 17
+   },
+   "ink": {
+    "x": 218.1,
+    "y": 531,
+    "w": 6.9,
+    "h": 14
+   },
+   "text": "–",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.sc-row.sc-need"
+  },
+  "mon": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 9,
+    "y": 467.2,
+    "w": 54,
+    "h": 130.6
+   },
+   "ink": {
+    "x": 12,
+    "y": 471.2,
+    "w": 48,
+    "h": 120.4
+   },
+   "text": "13 – F 0 1 O 0 0 A 0 0",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.sc-day.mk-before"
+  },
+  "fri": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 229,
+    "y": 467.2,
+    "w": 54,
+    "h": 130.6
+   },
+   "ink": {
+    "x": 232,
+    "y": 471.2,
+    "w": 48,
+    "h": 120.4
+   },
+   "text": "17 – F 0 0 O 0 0 A 0 0",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.sc-day"
+  },
+  "fri-num": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 232,
+    "y": 471.7,
+    "w": 17,
+    "h": 17
+   },
+   "ink": {
+    "x": 232,
+    "y": 471.2,
+    "w": 16.5,
+    "h": 18
+   },
+   "text": "17",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "800 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.sc-num"
+  }
+ },
+ "approved": {
+  "picture": "phone-2-proposed-A-faded.png",
+  "identical": true
+ }
+}

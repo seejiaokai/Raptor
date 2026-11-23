@@ -18,8 +18,8 @@
      apart (owner D2341, 23 Nov 26 — see below). */
 import { INPUTS, inputCoversDate, isSansAvail, isLateInput, inputOwnDueISO, cutRuleWords, namedOf } from '../engine/inputs'
 import { getCut } from '../state/cutoff'
-import { pageUnit } from '../state/perms'
-import { PEOPLE, sansOnP } from '../engine/people'   // sansOnP: was he SANS on the day asked about (D2313)
+import { isAdmin, me, pageUnit } from '../state/perms'
+import { PEOPLE, sansAheadDate, sansOnP } from '../engine/people'   // sansOnP: was he SANS on the day asked about (D2313)
 import { hhmm } from '../engine/time'
 import type { DayAnswer, Tone } from '../state/flyplan-model'
 import { sansCommittedOn, sansDateLabel, type SansCommitted } from '../state/flyplan'
@@ -59,6 +59,17 @@ export function sansMine(c: SansCommitted, id: string | null): { f: boolean; o: 
   const has = (s: { p: readonly string[]; w: readonly string[] }) => s.p.includes(id) || s.w.includes(id)
   const out = { f: has(c.f), o: has(c.o), a: has(c.a) }
   return out.f || out.o || out.a ? out : null
+}
+/** IS THIS ONE OF HIS OWN DAYS BEFORE HIS SANS DATE — faded on the month (owner D2343, D2346 — look A of the drawing,
+ *  docs/mock/2026-11-23-sans-before-shading/). A man posted out as SANS from a date ahead sees, at a glance, from when
+ *  he can commit: the days his own "+ Commitment" is greyed on (D2340 — ui/sansadd.ts maySansAdd, which asks the same
+ *  day question), and only while that date is still ahead — gone from it, as the drawing showed him. His view only: an
+ *  admin, who may file for any SANS man on those days, sees the month as it was (the agent's readings, kept by him). */
+export function sansBeforeMine(iso: string, today: string, viewer: string | null = me(), admin: boolean = isAdmin()): boolean {
+  if (admin || !viewer) return false
+  const p = PEOPLE[viewer]
+  const from = sansAheadDate(p)
+  return !!from && from > today && iso < from && !sansOnP(p, iso)
 }
 /** the SANS aircrew on the roster today, A to Z by callsign — who the Highlight list offers (the people the count
  *  itself takes: state/flyplan.ts sansCommittedOn) */

@@ -249,6 +249,8 @@ export const sansOn=(id:any,iso?:any):boolean=>sansOnP(PEOPLE[id],iso);
    filing goes by the day filed, which each day's own question, sansOnP with that day, answers). The doors that open
    before a day is known ask this (the SANS calendar's add, its people list with no day); the save asks the day. */
 export function sansFiler(p:any):boolean{return !!p&&(!!p.san||(!!SANS_AHEAD&&!!SANS_AHEAD(p)));}
+/* THE FIRST DAY OF HIS SANS POSTING NOT YET RUN, or null (owner D2343, D2346 — the SANS calendar fades his own days before it). */
+export function sansAheadDate(p:any):string|null{return p&&SANS_AHEAD?SANS_AHEAD(p):null;}
 /* IS THIS DAY SANS FOR HIM ONLY BY A POSTING NOT YET RUN — AND FROM WHAT DATE? (owner D2338, 22 Nov 26 — "Should it say no
    availability filed, await for 17 Jul for SANs availability to be filed"). The first day of that posting, or null: a day
    his tick or an ended stretch already makes SANS is not one (sansOnP's own order). He may be filed for on such a day

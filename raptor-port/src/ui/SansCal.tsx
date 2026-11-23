@@ -47,7 +47,7 @@ import { maySansAdd, openSansAdd } from './sansadd'
 import { PEOPLE } from '../engine/people'
 import { puck } from './html'
 import { HlIcon } from './icons'
-import { cutParts, dayWord, sansCell, sansMine, sansRoster, type SansCell } from './sanscal-model'
+import { cutParts, dayWord, sansBeforeMine, sansCell, sansMine, sansRoster, type SansCell } from './sanscal-model'
 import { useMedia } from './usemedia'
 import { MonthJump } from './MonthJump'
 import { useVersion } from './useStore'
@@ -353,8 +353,11 @@ export function SansCal({ lead }: { lead?: ReactNode } = {}) {
               const c = sansCell(a, facts.short, com)
               const mine = sansMine(com, hi)
               const picked = !!run && iso >= run.a && iso <= run.b
+              /* his own day before his SANS date, faded (D2343, D2346 — look A): it still opens, "+ Commitment" greyed in it */
+              const before = sansBeforeMine(iso, today)
               const cls = 'sc-day' + (c.tone !== 'none' ? ' t-' + c.tone : '') + (ci >= 5 ? ' is-we' : '') + (a.kind ? ' is-' + a.kind : '') +
-                (c.tag && c.tag.kind === 'nf' ? ' is-nf' : '') + (iso === today ? ' is-today' : '') + (picked ? ' is-picked' : '') + (iso === dayIso ? ' is-open' : '') + (mine ? ' is-hi' : '')
+                (c.tag && c.tag.kind === 'nf' ? ' is-nf' : '') + (iso === today ? ' is-today' : '') + (picked ? ' is-picked' : '') + (iso === dayIso ? ' is-open' : '') + (mine ? ' is-hi' : '') +
+                (before ? ' is-before' : '')
               const row = (k: 'f' | 'o' | 'a', letter: string) => (
                 <div className={'sc-row' + (mine && mine[k] ? ' is-mine' : '')} data-testid={`sc-${k}-${iso}`}>
                   <span className="sc-k">{letter}</span>
@@ -364,7 +367,7 @@ export function SansCal({ lead }: { lead?: ReactNode } = {}) {
               )
               return (
                 <div key={iso} className={cls} data-icday={iso} data-testid={'sc-day-' + iso} role="button" tabIndex={iso === tabAt ? 0 : -1}
-                  aria-label={say(c, a.kind, a.cls, facts, mine, hi ? PEOPLE[hi].cs : '')} aria-pressed={iso === dayIso} onKeyDown={onKey(iso)} onFocus={() => setAt(iso)}>
+                  aria-label={say(c, a.kind, a.cls, facts, mine, hi ? PEOPLE[hi].cs : '') + (before ? ' Before your SANS date.' : '')} aria-pressed={iso === dayIso} onKeyDown={onKey(iso)} onFocus={() => setAt(iso)}>
                   <div className="sc-date">
                     <span className="sc-num">{+iso.slice(8, 10)}</span>
                     {c.icon === 'day' && <span className="sc-icon c-day" data-icon="day"><SunIcon /></span>}
