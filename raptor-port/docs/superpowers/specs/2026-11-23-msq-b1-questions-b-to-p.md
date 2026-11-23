@@ -12,7 +12,7 @@ Pictures are in `raptor-port/docs/handpass/2026-11-23-msq-b1-morning/` (this mor
 
 ---
 
-**ANSWERED 24 Nov 26 — his D2396: every open question as recommended here ((e) closed by D2395); new words drawn for him first, then built.**
+**ANSWERED 24 Nov 26 — his D2396: every open question as recommended here ((e) closed by D2395); new words drawn for him first, then built. His D2400, on the drawings: (b) NOT changed — the filter keeps its one Plans tick as built; the other new words approved as drawn.**
 
 ## At a glance — four rounds, the ones that need you most first
 
@@ -110,6 +110,8 @@ phone and desktop size, before anything is built.
 ---
 
 ### (b) The filter's Role tick "Plans 142"
+
+**ANSWERED 24 Nov 26 — his D2400: "no" to the drawn change. The tick stays as built (choice A).**
 
 **Where, and who meets it.** Admin → Users, the Filter button beside the search, the Role group. Any admin.
 
