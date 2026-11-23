@@ -388,25 +388,34 @@ function accountLabel(entry: UndoEntry): string | null {
   }
   return 'an account'
 }
-/* ADMIN → USERS' ONE SAVE (batch 1's second half, plan §4 item 5; his D2326, picture 10 — "Undid: Plan of 149 given ·
-   Hunter"): a change of the role reads as a role change does ("Hunter’s role"), the mark alone as the mark's own command
-   ("the master admin mark"); otherwise each squadron line changed, in his drawn words — "<View|Plan> of <num> given",
-   "… ended" — joined, then " · " and the man. */
+/* ADMIN → USERS' ONE SAVE, AND THE MASTER ADMIN MARK'S OWN DOOR (batch 1's second half, plan §4 item 5; his D2326, picture
+   10 — "Undid: Plan of 149 given · Hunter"; his D2396 (l), (o), D2400 — the drawings docs/mock/2026-11-24-msq-new-words/
+   img/l*.png, o1-*.png): each thing the Save changed, in his drawn words, a comma between, then " · " and the man — the
+   mark in the bell's words, which say which way ("Made a master admin", "Master admin taken off"), each squadron line
+   ("<View|Plan> of <num> given", "… ended", the Plan a master admin's mark ended among them, since the one Undo brings it
+   back), "sign-in name changed". Undo should never take back something it does not name.
+   The Role box's Member or Admin picked for or from a master admin IS the mark's change (D2303), so it is not named
+   again. A role changed with no mark moved keeps today's "Hunter’s role", beside another change as well, and a sign-in
+   name changed alone keeps today's words: no drawing gives either (named in the build's report for his word). */
 function accessLabel(entry: UndoEntry): string | null {
-  if (entry.type !== 'account.access') return null
+  if (entry.type !== 'account.access' && entry.type !== 'account.master') return null
   const seeded = listOf(defaultOf('accounts'))
-  let acct = '', roleCh = false, markCh = false
+  let acct = '', roleCh = false, nameCh = false
+  let mark: boolean | null = null
   for (const ch of entry.forward) {
     if (ch.collection !== 'settings' || !ch.id.startsWith('account:')) continue
     const x: any = ch.after, id = ch.id.slice('account:'.length)
     const y: any = ch.before ?? seeded.find((z: any) => z && z.id === id)
     if (!x || !y) continue
+    /* (only the account the Save changed names the man: a first save of the seeded list writes every account's row) */
+    const markMoved = (y.master === true) !== (x.master === true)
+    if (y.role === x.role && y.name === x.name && !markMoved) continue
     acct = nameOf(x.pid) || x.name
     if (y.role !== x.role) roleCh = true
-    if ((y.master === true) !== (x.master === true)) markCh = true
+    if (y.name !== x.name) nameCh = true
+    if (markMoved) mark = x.master === true
   }
-  if (roleCh) return `${poss(acct)}role`
-  if (markCh) return 'the master admin mark'
+  if (roleCh && mark === null) return `${poss(acct)}role`
   const word = (l: unknown) => (l === 'admin' ? 'Plan' : 'View')
   const parts: string[] = []
   let who = ''
@@ -421,7 +430,10 @@ function accessLabel(entry: UndoEntry): string | null {
     else if (a && !b) parts.push(`${word(a.level)} of ${num} given`)
     else if (b && !a) parts.push(`${word(b.level)} of ${num} ended`)
   }
-  if (!parts.length) return null
+  if (mark === null && !parts.length) return null
+  if (mark !== null) parts.unshift(mark ? 'Made a master admin' : 'Master admin taken off')
+  if (nameCh) parts.push('sign-in name changed')
+  who = acct || who
   return who ? `${parts.join(', ')} · ${who}` : parts.join(', ')
 }
 

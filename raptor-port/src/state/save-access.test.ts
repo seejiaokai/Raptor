@@ -13,6 +13,7 @@ import { store } from '../engine/hooks'
 import { GRANT_PFX } from './units-model'
 import { todayIso } from './units'
 import { globalUndo, globalRedo, _timelineEntries } from '../undo/timeline'
+import { bubbleText } from '../undo/describe'
 
 const newestUndoable = () => _timelineEntries().at(-1) ?? null
 
@@ -153,5 +154,86 @@ describe('saveAccess — one Save', () => {
     signInAs('saber')
     expect(saveAccess(ACCT.hunter, { grants: { u149: 'plan' } })).toBeNull()
     expect(newestUndoable()?.label).toBe('Plan of 149 given · Hunter')
+  })
+  /* HIS D2396 (l), (o), D2400 — the drawings docs/mock/2026-11-24-msq-new-words/img/l*.png, o1-*.png. The one label feeds the
+     Undo and Redo buttons' hover ("Undo — …", "Redo — …") and the bubble ("Undid: …", "Redid: …"). Red first: it read "the
+     master admin mark", with no name and the same both ways, and a Save of two things named only one. */
+  describe('the Undo words of a master admin and of one Save that changed two things', () => {
+    const words = () => {
+      const e = newestUndoable()!
+      return { label: e.label, undid: bubbleText(e, 'undo'), redid: bubbleText(e, 'redo') }
+    }
+    const named = (label: string) => ({ label, undid: `Undid: ${label}`, redid: `Redid: ${label}` })
+    it('(l) made a master admin says so and who', () => {
+      signInAs('saber')
+      expect(saveAccess(ACCT.hunter, { master: true })).toBeNull()
+      expect(words()).toEqual(named('Made a master admin · Hunter'))
+    })
+    it('(l) taken off says so and who', () => {
+      signInAs('saber')
+      expect(saveAccess(ACCT.hunter, { master: true })).toBeNull()
+      expect(saveAccess(ACCT.hunter, { master: false })).toBeNull()
+      expect(words()).toEqual(named('Master admin taken off · Hunter'))
+    })
+    it('(l) the mark\'s own door reads the same, both ways', () => {
+      signInAs('saber')
+      expect(setMaster(ACCT.hunter, true).ok).toBe(true)
+      expect(words()).toEqual(named('Made a master admin · Hunter'))
+      expect(setMaster(ACCT.hunter, false).ok).toBe(true)
+      expect(words()).toEqual(named('Master admin taken off · Hunter'))
+    })
+    it('(o) Plan of 149 given and his sign-in changed in one Save: each named, comma between, the person last', () => {
+      signInAs('saber')
+      expect(saveAccess(ACCT.hunter, { grants: { u149: 'plan' }, name: 'hunter.m@mail' })).toBeNull()
+      expect(words()).toEqual(named('Plan of 149 given, sign-in name changed · Hunter'))
+    })
+    it('(o) made a master admin and his sign-in changed in one Save', () => {
+      signInAs('saber')
+      expect(saveAccess(ACCT.hunter, { master: true, name: 'hunter.m@mail' })).toBeNull()
+      expect(words()).toEqual(named('Made a master admin, sign-in name changed · Hunter'))
+    })
+    it('(o) master admin taken off and his sign-in changed in one Save', () => {
+      signInAs('saber')
+      expect(saveAccess(ACCT.hunter, { master: true })).toBeNull()
+      expect(saveAccess(ACCT.hunter, { master: false, name: 'hunter.m@mail' })).toBeNull()
+      expect(words()).toEqual(named('Master admin taken off, sign-in name changed · Hunter'))
+    })
+    it('(o) two squadron lines and his sign-in in one Save', () => {
+      const u150 = make150()
+      expect(saveAccess(ACCT.hunter, { grants: { u149: 'view', [u150]: 'plan' }, name: 'hunter.m@mail' })).toBeNull()
+      expect(newestUndoable()!.label).toBe('View of 149 given, Plan of 150 given, sign-in name changed · Hunter')
+    })
+    it('(o) a Plan holder made a master admin: the Plan that Save ended is named too, since one Undo brings it back', () => {
+      signInAs('saber')
+      expect(saveAccess(ACCT.hunter, { grants: { u149: 'plan' } })).toBeNull()
+      expect(saveAccess(ACCT.hunter, { master: true })).toBeNull()
+      expect(words()).toEqual(named('Made a master admin, Plan of 149 ended · Hunter'))
+      expect(globalUndo().ok).toBe(true)
+      expect(level(ACCT.hunter, 'u149'), 'the one Undo brought his Plan back').toBe('admin')
+    })
+    it('(pin) a squadron line alone keeps its drawn words, and a role alone its words of today', () => {
+      signInAs('saber')
+      expect(saveAccess(ACCT.hunter, { grants: { u149: 'view' } })).toBeNull()
+      expect(newestUndoable()!.label).toBe('View of 149 given · Hunter')
+      expect(saveAccess(ACCT.hunter, { role: 'main' })).toBeNull()
+      expect(newestUndoable()!.label).toBe('Hunter’s role')
+    })
+    it('(pin) a Save with a role change keeps today\'s words: no drawing gives a role\'s words beside another change', () => {
+      signInAs('saber')
+      expect(saveAccess(ACCT.hunter, { role: 'main', name: 'hunter.m@mail' })).toBeNull()
+      expect(newestUndoable()!.label).toBe('Hunter’s role')
+    })
+    it('(pin) a sign-in name changed alone keeps its words of today', () => {
+      signInAs('saber')
+      expect(saveAccess(ACCT.hunter, { name: 'hunter.m@mail' })).toBeNull()
+      expect(newestUndoable()!.label).toBe('a settings change')
+    })
+    it('(l) the Role box to or from Master admin is the one change: a member made one, a master admin picked Member (D2303)', () => {
+      signInAs('saber')
+      expect(saveAccess(ACCT.ranger, { role: 'admin', master: true })).toBeNull()
+      expect(newestUndoable()!.label).toBe('Made a master admin · Ranger')
+      expect(saveAccess(ACCT.ranger, { role: 'main' })).toBeNull()
+      expect(newestUndoable()!.label).toBe('Master admin taken off · Ranger')
+    })
   })
 })
