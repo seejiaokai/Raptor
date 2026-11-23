@@ -1,0 +1,179 @@
+<title>Two-Squadron New Words</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* One dark look, the app's own: its panel greys, its cyan, the system letters it uses. A single column of cases on a phone. */
+:root {
+  color-scheme: dark;
+  --bg: #0d1116; --panel: #171c23; --line: #2a313a; --fg: #eef2f6; --soft: #a9b4c0;
+  --accent: #38c6e8; --today: #f0a8a0; --new: #7ee0a4;
+  --ui: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { background: var(--bg); color: var(--fg); font: 16px/1.5 var(--ui); }
+.wrap { max-width: 980px; margin: 0 auto; display: grid; gap: 40px;
+  padding-block: 24px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1 { font-size: 27px; line-height: 1.2; margin: 0 0 8px; text-wrap: balance; }
+h2 { font-size: 21px; line-height: 1.25; margin: 0; text-wrap: balance; scroll-margin-top: 16px; }
+p { margin: 0; max-width: 65ch; }
+.soft { color: var(--soft); }
+.now { display: grid; gap: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+.now b.lead { font-size: 17px; }
+.now ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; counter-reset: q; }
+.now li { counter-increment: q; }
+.now a { display: grid; grid-template-columns: 26px 1fr; gap: 4px; padding: 9px 2px; color: var(--fg); text-decoration: none; border-top: 1px solid var(--line); }
+.now a::before { content: counter(q); color: var(--accent); font-weight: 700; }
+.now a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.rec { color: var(--new); font-weight: 600; }
+section { display: grid; gap: 14px; }
+.words { display: grid; gap: 8px; }
+.say { display: grid; grid-template-columns: 62px 1fr; gap: 8px; align-items: baseline; }
+.say > span { font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+.say.t > span { color: var(--today); }
+.say.n > span { color: var(--new); }
+.say div { min-width: 0; }
+.pics { display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .pics { grid-template-columns: 1fr 1fr; align-items: start; } }
+figure { margin: 0; display: grid; gap: 7px; min-width: 0; }
+figcaption { color: var(--soft); font-size: 14px; }
+figure button { padding: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #000; cursor: zoom-in; display: block; width: 100%; }
+figure img { display: block; width: 100%; height: auto; }
+.reply { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 6px; }
+#zoom { position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,.94); overflow: auto; padding: calc(env(safe-area-inset-top, 0px) + 54px) max(10px, env(safe-area-inset-right, 0px)) 20px max(10px, env(safe-area-inset-left, 0px)); }
+#zoom img { display: block; margin: 0 auto; max-width: none; width: min(100%, 1300px); height: auto; }
+#zoomX { position: fixed; top: calc(env(safe-area-inset-top, 0px) + 8px); right: max(10px, env(safe-area-inset-right, 0px)); background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 9px; font: 600 15px var(--ui); padding: 8px 15px; cursor: pointer; }
+</style>
+
+<main class="wrap">
+  <header class="now">
+    <div>
+      <h1>The new words, on the real screens</h1>
+      <p class="soft">Nothing in the app has changed yet. The red rings only mark where to look. Tap any picture to see it larger.</p>
+    </div>
+    <b class="lead">Six to approve. <span class="rec">I recommend approving all six.</span></b>
+    <ol>
+      <li><a href="#filter"><span>Admin → Users filter: a "Plans 149" tick finds your people who plan another squadron.</span></a></li>
+      <li><a href="#request"><span>Request access: the Squadron box starts on "Pick…".</span></a></li>
+      <li><a href="#undo-master"><span>Undo of a master admin: says which change and who.</span></a></li>
+      <li><a href="#undo-two"><span>Undo of one Save that changed two things: names both.</span></a></li>
+      <li><a href="#bell"><span>Hunter's bell: tells him when his Plan of 149 ended.</span></a></li>
+      <li><a href="#member"><span>A window left open in the member view: says what to do.</span></a></li>
+    </ol>
+  </header>
+
+  <section id="filter">
+    <h2>1. The filter on Admin → Users</h2>
+    <p class="soft">Hunter is an admin of 142 and also holds Plan of 149.</p>
+    <div class="words">
+      <div class="say t"><span>Today</span><div>142's filter has a "Plans 142" tick that finds nobody. No tick finds Hunter.</div></div>
+      <div class="say n"><span>New</span><div>One tick for each squadron somebody on the list plans. "Plans 149" finds Hunter.</div></div>
+    </div>
+    <div class="pics">
+      <figure><button><img src="img/b1-phone-plans-149-ticked.png" alt="Phone: the filter with the Plans 149 tick on" loading="lazy"></button><figcaption>Phone: the tick reads Plans 149.</figcaption></figure>
+      <figure><button><img src="img/b3-phone-finds-hunter.png" alt="Phone: the list showing only Hunter, also plans 149" loading="lazy"></button><figcaption>Phone: with it on, the list shows Hunter, "also plans 149".</figcaption></figure>
+      <figure><button><img src="img/b2-phone-two-plans-ticks.png" alt="Phone: two ticks, Plans 142 and Plans 149" loading="lazy"></button><figcaption>Phone: if someone also plans 142, each squadron gets its own tick.</figcaption></figure>
+      <figure><button><img src="img/b1-desk-plans-149-ticked.png" alt="Desktop: the filter with the Plans 149 tick on" loading="lazy"></button><figcaption>Desktop: the tick reads Plans 149.</figcaption></figure>
+      <figure><button><img src="img/b3-desk-finds-hunter.png" alt="Desktop: the list showing only Hunter, also plans 149" loading="lazy"></button><figcaption>Desktop: with it on, the list shows Hunter.</figcaption></figure>
+      <figure><button><img src="img/b2-desk-two-plans-ticks.png" alt="Desktop: two ticks, Plans 142 and Plans 149" loading="lazy"></button><figcaption>Desktop: two squadrons planned, two ticks.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="request">
+    <h2>2. Request access</h2>
+    <p class="soft">Kite is new and belongs to 149.</p>
+    <div class="words">
+      <div class="say t"><span>Today</span><div>The Squadron box already says 142. If Kite doesn't look, the request goes to 142's admins and 149's never see it.</div></div>
+      <div class="say n"><span>New</span><div>It starts on "Pick…". Pressing Request access without choosing shows "Pick your squadron", and nothing is sent.</div></div>
+    </div>
+    <div class="pics">
+      <figure><button><img src="img/f1-phone-starts-on-pick.png" alt="Phone: Request access with Squadron on Pick…" loading="lazy"></button><figcaption>Phone: how the card opens.</figcaption></figure>
+      <figure><button><img src="img/f2-phone-pick-your-squadron.png" alt="Phone: the words Pick your squadron above the button" loading="lazy"></button><figcaption>Phone: Kite pressed Request access without choosing.</figcaption></figure>
+      <figure><button><img src="img/f1-desk-starts-on-pick.png" alt="Desktop: Request access with Squadron on Pick…" loading="lazy"></button><figcaption>Desktop: how the card opens.</figcaption></figure>
+      <figure><button><img src="img/f2-desk-pick-your-squadron.png" alt="Desktop: the words Pick your squadron above the button" loading="lazy"></button><figcaption>Desktop: the same press.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="undo-master">
+    <h2>3. Undo of a master admin</h2>
+    <p class="soft">Saber makes Hunter a master admin, then presses Undo.</p>
+    <div class="words">
+      <div class="say t"><span>Today</span><div>"Undid: the master admin mark", with no name, and the same words in both directions.</div></div>
+      <div class="say n"><span>New</span><div>"Undid: Made a master admin · Hunter" or "Undid: Master admin taken off · Hunter".</div></div>
+    </div>
+    <div class="pics">
+      <figure><button><img src="img/l1-phone-undid-made.png" alt="Phone: Undid: Made a master admin · Hunter" loading="lazy"></button><figcaption>Phone: Undo of making him one.</figcaption></figure>
+      <figure><button><img src="img/l2-phone-undid-taken-off.png" alt="Phone: Undid: Master admin taken off · Hunter" loading="lazy"></button><figcaption>Phone: Undo of taking it off.</figcaption></figure>
+      <figure><button><img src="img/l1-desk-undid-made.png" alt="Desktop: Undid: Made a master admin · Hunter" loading="lazy"></button><figcaption>Desktop: Undo of making him one.</figcaption></figure>
+      <figure><button><img src="img/l2-desk-undid-taken-off.png" alt="Desktop: Undid: Master admin taken off · Hunter" loading="lazy"></button><figcaption>Desktop: Undo of taking it off.</figcaption></figure>
+      <figure><button><img src="img/l3-desk-undo-hover.png" alt="Desktop: hovering over Undo shows Undo — Made a master admin · Hunter" loading="lazy"></button><figcaption>Desktop: hovering over Undo before pressing it. Redo reads the same way.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="undo-two">
+    <h2>4. Undo of one Save that changed two things</h2>
+    <p class="soft">Saber changes Hunter's sign-in and gives him Plan of 149 in one Save. One Undo takes both back.</p>
+    <div class="words">
+      <div class="say t"><span>Today</span><div>"Undid: Plan of 149 given · Hunter". The sign-in went back too, and nothing says so.</div></div>
+      <div class="say n"><span>New</span><div>"Undid: Plan of 149 given, sign-in name changed · Hunter". It fits on one line on a phone.</div></div>
+    </div>
+    <div class="pics">
+      <figure><button><img src="img/o1-phone-undid-two.png" alt="Phone: Undid: Plan of 149 given, sign-in name changed · Hunter" loading="lazy"></button><figcaption>Phone.</figcaption></figure>
+      <figure><button><img src="img/o1-desk-undid-two.png" alt="Desktop: Undid: Plan of 149 given, sign-in name changed · Hunter" loading="lazy"></button><figcaption>Desktop.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="bell">
+    <h2>5. Hunter's bell</h2>
+    <p class="soft">Hunter holds Plan of 149. Saber makes him a master admin, which ends the Plan, and later takes master admin off. The Plan does not come back.</p>
+    <div class="words">
+      <div class="say t"><span>Today</span><div>His bell never says the Plan ended. Its last word on 149 is still "Given Plan of 149".</div></div>
+      <div class="say n"><span>New</span><div>The two master admin lines say what they mean, and a new line says "Plan of 149 ended: master admin covers every squadron · Saber". View of a squadron ends the same way, in the same words.</div></div>
+    </div>
+    <div class="pics">
+      <figure><button><img src="img/n1-phone-bell.png" alt="Phone: Hunter's bell with the three new lines" loading="lazy"></button><figcaption>Phone: newest line on top.</figcaption></figure>
+      <figure><button><img src="img/n1-desk-bell.png" alt="Desktop: Hunter's bell with the three new lines" loading="lazy"></button><figcaption>Desktop: newest line on top.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="member">
+    <h2>6. A window left open in the member view</h2>
+    <p class="soft">An admin has a Leave War or Input window open and switches to the member view.</p>
+    <div class="words">
+      <div class="say t"><span>Today</span><div>The window says "This change could not be saved." although nothing was tried.</div></div>
+      <div class="say n"><span>New</span><div>"Member view. Switch back to the admin view to change this, or close it." The window is greyed, and Close and ✕ still work.</div></div>
+    </div>
+    <div class="pics">
+      <figure><button><img src="img/w1-phone-leave-war-window.png" alt="Phone: a Leave War window with the Member view band" loading="lazy"></button><figcaption>Phone: a Leave War window.</figcaption></figure>
+      <figure><button><img src="img/i1-phone-input-window.png" alt="Phone: an Input window with the Member view band" loading="lazy"></button><figcaption>Phone: an Input window. It covers the ☰ menu on an iPhone, so you are unlikely to meet this one. It is drawn to check that it fits.</figcaption></figure>
+      <figure><button><img src="img/w1-desk-leave-war-window.png" alt="Desktop: a Leave War window with the Member view band" loading="lazy"></button><figcaption>Desktop: a Leave War window.</figcaption></figure>
+      <figure><button><img src="img/i1-desk-input-window.png" alt="Desktop: an Input window with the Member view band" loading="lazy"></button><figcaption>Desktop: an Input window.</figcaption></figure>
+    </div>
+  </section>
+
+  <div class="reply">
+    <b>What to reply in the chat</b>
+    <p class="soft">Say "approved" and these get built tonight. To change one, give its number and what you would like instead.</p>
+  </div>
+</main>
+
+<div id="zoom" hidden role="dialog" aria-modal="true" aria-label="Larger picture">
+  <button id="zoomX" type="button">Close</button>
+  <img id="zoomImg" alt="">
+</div>
+
+<script>
+(() => {
+  const zoom = document.getElementById('zoom'), big = document.getElementById('zoomImg'), x = document.getElementById('zoomX');
+  let from = null;
+  const shut = () => { zoom.hidden = true; big.removeAttribute('src'); document.body.style.overflow = ''; if (from) from.focus(); };
+  document.querySelectorAll('figure button').forEach(b => {
+    const img = b.querySelector('img');
+    b.setAttribute('aria-label', 'Larger: ' + img.alt);
+    b.addEventListener('click', () => { from = b; big.src = img.src; big.alt = img.alt; zoom.hidden = false; zoom.scrollTop = 0; document.body.style.overflow = 'hidden'; x.focus(); });
+  });
+  x.addEventListener('click', shut);
+  zoom.addEventListener('click', e => { if (e.target === zoom) shut(); });
+  addEventListener('keydown', e => { if (e.key === 'Escape' && !zoom.hidden) shut(); });
+})();
+</script>
