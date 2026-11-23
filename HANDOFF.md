@@ -21,6 +21,35 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/allavail-sans-postout-141 -->
+### CHAT 152 — the FULL bug check of the whole branch IN HAND (chat 150's (b)), written 23 Nov 26 as it runs — verify before use
+- **Where:** main Raptor folder, local branch `allavail-152` (tracks `origin/claude/allavail-sans-postout-141`; the worktree
+  `lw-balances-hover-275293` holds the branch name) — push with `git push origin HEAD:refs/heads/claude/allavail-sans-postout-141`.
+  The CHECKS LOCK is held by this chat ("chat 152 FULL check") for the walk; release it when the walk and its builds end.
+- **Done so far:** tier FULL told to him; sheet §17 laid down (`raptor-port/docs/handpass/2026-11-22-allavail-sans-posted.md`,
+  roll-call R1–R25, blanks to fill); Astra's 24 scenarios (`docs/superpowers/briefs/2026-11-23-sans-ahead-full-scenarios-astra.md`;
+  its brief `…-scenario-brief.md`); the walk brief (`…-walk-brief.md`); build of `ddd8c4a44` in `raptor-port/dist`.
+  **w8 DONE** (`docs/handpass/parts/sud/w8-report.md`: 208 PASS, 6 FAIL = one fault). **FIXED red-first, committed
+  locally (`e26b56a21`, NOT pushed):** W8-1 a run of days starting before his SANS date (drag, keys, finger) did nothing and said
+  nothing — now says the save's refusal; W8-2 the SANS Highlight list left out a man posted out as SANS ahead — now offers him.
+  Test `src/leavewar/sans-ahead-walk152.test.tsx`; the touched suites 184 pass.
+- **Running when written:** walkers **w9** (S6–S10 hiding by cause + reader sweep, port 4399) and **w10** (S11–S14, S16, S18,
+  S22, port 4400) → reports `docs/handpass/parts/sud/w9-report.md`, `w10-report.md`; the **timing helper** →
+  `docs/handpass/parts/sud/timing-d2341.md` (BEFORE = `8d64b0c0d`, the parent of D2341's build `cc831de21` — not 2ea59acad).
+- **Expected from w10 (the host's own code reading, not yet walked):** S12 — a filing shared by two men shows on a day while ONE
+  is SANS (`engine/inputs.ts sansShownOn`), and the crew lists' SANS Avail panels expand every face (`ui/html.ts
+  sansSectionHTML`, `ui/board-html.ts` ~879 `facesOf`) — so the hidden man's face likely still shows. Fix: filter faces by
+  `sansOnP(PEOPLE[f.person], iso)` there (and any other reader that expands faces of a SANS record), red-first.
+- **Next, in order:** read w9/w10/timing → host opens each deciding picture, reproduces each FAIL → fix red-first → rebuild
+  (lock held) → re-walk what the fixes touched → the reads (Astra, fresh blind Opus, security; a blind copy outside the repo
+  with HANDOFF blocks, sheet, walk reports and briefs of this round removed; brief like `2026-11-23-d2338-read-brief.md`,
+  diff `f292ab846..HEAD`) → fix → push → GitHub green → sheet §17 filled + Walk line + ledger row → his look card and questions.
+- **Questions for him so far:** (1) a run of days part before his SANS date: as built REFUSED whole (he was told "accepted, the
+  early days hidden" — D2340's reading); recommend keep the refusal, correct the reading; (2) [FABLE-READ-FAULTS] (v) 1–3; (3) the
+  Quals untick hides his filings with no bell line — keep?; (4) the greyed "+ Commitment" on a faded day says "SANS aircrew add
+  their availability here." — could name his date (new words, his call); (5) w8 S17-07: the struck read line shows today's
+  days (a newly planned Wed 22 he never saw), not the words he read — goes with (v)1.
+- **Context:** 67% at writing (the area pages loaded large). Compact at the next clean point past ~80% on this block.
+
 ### CHAT 150 — D2346's look A BUILT on `claude/allavail-sans-postout-141`; the FULL bug check of the whole branch handed to chat 152, written 23 Nov 26 — verify before use
 - **Where it started:** his "Chat 150: … My shading answer is A (D2346). Do the block's NEXT list in order, then send me the preview link." (a) done here; (b) the FULL check moved to a fresh chat at 68% of this chat's room (checklist step 3 — the start-up load of this area's pages left too little for the walk, the reads and the fixes).
 - **Shipped:** (a) look A, `d24e2406f` (pushed): `engine/people.ts sansAheadDate`, `ui/sanscal-model.ts sansBeforeMine` (the same day question `sansadd.ts maySansAdd` asks — his view only, an admin unchanged, only while the posting's date is ahead), `ui/SansCal.tsx` (`is-before` class; a screen reader hears "Before your SANS date."), `24-sans-calendar.css` (STYLE.A's values). Test `src/leavewar/sans-before.test.tsx` (6, all failed first). Drawing check `scripts/drawcheck/specs/sans-before.mjs`: the drawing recorded on a build of the code before the change (replay pixel-identical to the approved pictures; records in `docs/mock/2026-11-23-sans-before-shading/drawcheck/`), the new build 0 differences at 402 and 1536 and its pictures pixel-identical to the drawing's (`docs/img/handpass/drawcheck/sans-before/`). Records: Inputs page line moved to built; D2343, D2346 full rows; `ui-contracts.md` §The SANS calendar; file map. Pull request 825 — open when written.

@@ -338,6 +338,84 @@ rests on the older door filed as (u)(3). FILED: Astra #2 and the read-record doo
 Not walked again: the bell line's take-back gate and the crowd fixes after the walk — no screen changed (the struck line's
 words are as walked); held by their tests.
 
+## 17. Round 6 — the FULL check of the whole branch: his D2340 (filing ahead), D2341 (hidden on a day not SANS), D2342 (the bell's words), D2346 (the fade), chat 152, 23 Nov 26
+
+### 17.1 The eight answers and the tier
+**FULL.** (1) Money — YES: SANS availability hidden on a day decides who the SANS calendar counts as committed and who
+the crew list lets fly (who counts as present). (2) The published record — NO change to the published face: a published
+day's inputs are its frozen copy (`engine/inputs.ts inputsOn`'s FZ), which never asks the new check; a walk step confirms
+it. (3) Saved data — YES: a new kind of saved bell line part (`sansback`'s hidden days), and records kept but hidden by
+the day. (4) A shared drawer — YES: one reading asked by every day reader of the inputs. (5) A new gesture or mode — YES:
+"+ Commitment" opens for a man before his SANS date. (6) A new surface — NO: the fade is a look on an existing cell, the
+bell line an existing kind. (7) Roles — YES: who may be filed for (himself, an admin) goes by the day filed. (8) The warning
+list — YES: who a seat's SANS gate passes. Security read owed (D1411): who may file for whom.
+
+### 17.2 The rulings that apply — each checked against the running build
+D2340, D2341, D2342, D2343, D2346, D2338 (narrowed), D2327 (narrowed), D2313, D2329, D2328, D1693, D1699, D1710, D2194,
+D350, D655, D576, D1151, D25, D27, D327, D785, D56, D1411. Results: _(filled from the walk)_
+
+### 17.3 The roll-call — every place that reads SANS availability, or who may file it
+| # | Surface | SHOWS the new rule | The gesture USABLE | What else is PAINTED there | Proved by |
+|---|---|---|---|---|---|
+| R1 | SANS calendar — the month's committed counts, colours, still-needed pair (`state/flyplan.ts sansCommittedOn`, per man per day) | | | | |
+| R2 | SANS calendar — the Highlight ring and underlined letters for one man (`sansMine`) | | | | |
+| R3 | SANS calendar — the Highlight list of men (`sanscal-model.ts sansRoster`: today's tick only) | | | | |
+| R4 | SANS calendar — the fade on his own days before his date (D2346) | | | | |
+| R5 | SANS calendar — the opened day's list of who committed (`sansDayGroups`) | | | | |
+| R6 | SANS calendar — "+ Commitment" for himself, on a day before / from his date (`sansadd.ts maySansAdd`) | | | | |
+| R7 | SANS calendar — an admin's "+ Commitment" for him, for several SANS men (the people picker's SANS group, `peoplepick-model.ts`) | | | | |
+| R8 | SANS calendar — a drag across days, part before and part after his date | | | | |
+| R9 | The input window's save — accepted with at least one SANS day, refused with none (`inputedit.tsx`) | | | | |
+| R10 | The Inputs calendar's month and day (`InputsCal.tsx`) — MUST NOT show SANS availability at all (SANS is filed on the SANS calendar only, D576) | | | | |
+| R11 | The Inputs list (`InputsPage.tsx`) — MUST NOT list SANS availability (D576) | | | | |
+| R12 | Edit Schedule — the SANS Avail crew panel (`ui/html.ts`, `inputsOn`) | | | | |
+| R13 | The Scheduler Board — the SANS availability panel (`ui/board-html.ts`, `inputsOn`) | | | | |
+| R14 | The crew list's struck SANS man and his note (`palette-html.ts whyOf`, `avail.ts sansNoneWhy`) — the words of D2340 | | | | |
+| R15 | An armed seat's bar and the SANS gate (`avail.ts slotBar`, `sansGate`) — passes him only on a shown day | | | | |
+| R16 | ALL AVAIL's count and window — unchanged by filing or hiding (D2329) | | | | |
+| R17 | The warning list (`validate.ts`) — a SANS man seated on a day his filing is hidden | | | | |
+| R18 | His bell — the SANS-days line (D2340, D2342: from the posting's save, shrinking, gone, its tap) | | | | |
+| R19 | His bell — the hidden-days line written by the posting's take-back (D2341), read and unread | | | | |
+| R20 | An admin's bell, another squadron's people — MUST NOT (D2194) | | | | |
+| R21 | The published day's face — MUST NOT change (its frozen copy) | | | | |
+| R22 | The changes window — a hidden record's history lines stay (history, not a reader of the day) | | | | |
+| R23 | The Leave War — his row, the Post out sheet (the cause: move later, Undo post out, another outcome) | | | | |
+| R24 | Quals — the SANS untick (a cause that hides, no bell line — the question for him) | | | | |
+| R25 | Admin → Users — archive and restore (a cause that hides and returns) | | | | |
+
+### 17.4 The door check
+_(filled before the walk)_
+
+### 17.5 The five sizing lines (the order's §7.0)
+_(filled before the walk)_
+
+### 17.6 The orders walked — what the screen said and what the counts said
+_(filled from the walk)_
+
+### 17.7 The cases carried by a test
+_(filled)_
+
+### 17.8 The pictures
+_(filled)_
+
+### 17.9 The break tests
+_(filled)_
+
+### 17.10 Errors seen
+_(filled)_
+
+### 17.11 What was NOT walked, and why
+_(filled)_
+
+### 17.12 The timing promised in D2341
+_(filled from `docs/handpass/parts/sud/timing-d2341.md`)_
+
+### 17.13 The gate counts
+_(filled)_
+
+### 17.14 What the walk and the reads found, and each disposition
+_(filled)_
+
 ## 14. The Walk line
 
 **Round 5 (chat 147):** `Walk: docs/handpass/2026-11-22-allavail-sans-posted.md §16 · 3,934 pictures (46 kept here, all on his PC's D: drive) · 6 surfaces (Edit Schedule's crew list, the Scheduler Board's crew list, an armed seat, the bell, the Inputs page's SANS tab, ALL AVAIL's window) · 37 orders (Astra's 24 and R1–R4) and the plain-user round, each at a desktop's and his iPhone's size · MISSING: 0 (1 found, fixed red-first and re-walked); NOT WALKED: the page hidden across midnight (his iPhone)`
