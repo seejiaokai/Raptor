@@ -167,6 +167,15 @@ the later merge keeps both (D78).
   one page (D1625; Fable rewords if he asks, D2393); (2) on his OK build (x)(1)–(4) red-first; (3) short re-walk at both
   sizes + a fresh Opus read (Astra beside it — the take-back lines touch what a man is told); (4) GitHub green, the preview
   link, his "merge live" of pull request 825. Then [BELL-WORDS-CLEAR] as its own job.
+- **UPDATE 11 — CHAT 156 (24 Nov 26, this worktree on the branch itself; ruling numbers D2420–D2439, chat 153 holds D2400–D2419;
+  ports 4180 and 4800–4819, chat 153's 4700–4719; D2388 is used on both branches, the later merge renumbers its own):** every
+  new wording DRAWN on the real app, phone and desktop: `raptor-port/docs/mock/2026-11-24-sans-words/` (`draw.mjs`,
+  `build-page.mjs`, `img/`), published https://claude.ai/artifact/YCsLM41CkcSHXiTEpjkJwf. **His D2420:** the crew list gets NO
+  reason line (2c of D2394 taken back), Ranger's included. Put to him: the admin's version of the grey button's words has
+  nowhere to show (an admin's "+ Commitment" is never grey) — recommended left out. NOTHING BUILT YET; (x)(1)–(4) wait for his
+  OK of the page. Owed: design lesson 100 for D2420 (one fresh reader, same day); a drawing of the words under a struck name
+  while a seat is picked ("…File it on the Inputs page's SANS tab."), which his D2420 point also reaches — left as built until
+  he rules. /overnight 12 asked: the night's list put to him, nothing started until he replies.
 - **Opening line for chat 156 (the next account):** "Chat 156: First list the live chats (`ListAgents`) and say where you
   are. Switch this chat to the branch `claude/allavail-sans-postout-141`: `git fetch origin`, `git switch
   claude/allavail-sans-postout-141`, `git branch -u origin/claude/allavail-sans-postout-141`, `git pull --ff-only` (if refused

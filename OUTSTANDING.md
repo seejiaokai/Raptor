@@ -3128,7 +3128,7 @@ day → refused as built; a non-SANS day in the run's middle → refused as buil
 test of W8-1 (`src/leavewar/sans-ahead-walk152.test.tsx`) rewritten to the new rule, a short re-walk of the six routes at
 both sizes, a fresh Opus read of the change. (2) **his D2390:** the SANS-days bell line ends "Tap to file for
 availability." (was "Tap to file.") — `state/notices.ts`, `leavewar/sansunfiled.ts`, their tests, `docs/notifications-register.md`,
-`docs/design-practices.md` lesson 99's example. (3) **his D2391:** the SANS take-back lines in plain words — Fable's Q5 A–E (`raptor-port/docs/superpowers/briefs/2026-11-23-sans-questions-fable.md` and the full row), the read reminder simply going, drawn first. (4) **his D2394:** the rest as recommended — 2a, 2b, 2c, Q4, Q6, Q10 and Q1's words per its full row; Q8, Q9 left as built.
+`docs/design-practices.md` lesson 99's example. (3) **his D2391:** the SANS take-back lines in plain words — Fable's Q5 A–E (`raptor-port/docs/superpowers/briefs/2026-11-23-sans-questions-fable.md` and the full row), the read reminder simply going, drawn first. (4) **his D2394:** the rest as recommended — 2a, 2b, Q4, Q6, Q10 and Q1's words per its full row; Q8, Q9 left as built; **2c taken back by his D2420** (no reason line on the crew list).
 **(v) questions for him from D2338 (chat 147; in the morning report):** (1) once he has read the line, should a day newly
 planned with nothing filed light his bell again? (as built: no — the line just grows; the builder recommends yes for a new
 day, not for a shrink; test kept `it.fails` in `opus-read-147.test.ts`); (2) a man ticked SANS by hand (not posted out),
