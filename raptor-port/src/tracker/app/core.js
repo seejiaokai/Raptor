@@ -93,6 +93,7 @@ onBeforeTrackerLogout(async show => {
   if (show) show();
   const c = await uiChoice('You have unsaved chart edits on “' + curSylName() + '”.\n\nSave them before logging out?', 'Save them', 'Discard them', 'Stay');
   if (c === 'cancel') return false;
+  cancelGestures();
   if (c === 'ok') await persistSyl();
   else await discardChartEdits();
   return true;
@@ -120,6 +121,7 @@ onBeforeTrackerSwitch({
     try {
       const c = await uiChoice('You have unsaved chart edits on “' + curSylName() + '”.\n\nSave them before switching to ' + to + '?', 'Save them', 'Discard them', 'Stay');
       if (c === 'cancel') return false;
+      cancelGestures();
       if (c === 'ok') { await persistSyl(); return !sylDirty; }
       await discardChartEdits();
       return true;
@@ -132,6 +134,7 @@ onBeforeTrackerSwitch({
 let sessionSerial = 0;
 function endSession() {
   sessionSerial++;
+  cancelGestures();
   /* a pinch running at the sign-out ends here, laid out nowhere: its lift would otherwise mark the zoom as the next
      person's ([TRK-PINCH-MORE-EDGES] (3)) */
   if (endPinchForSession) endPinchForSession();
@@ -253,6 +256,7 @@ async function runFollow() {
 }
 /* 1. LEAVE — answers whether unsaved chart edits were dropped */
 async function leaveSquadron() {
+  cancelGestures();   /* before the draft is judged and the history parked */
   unitLeaving = true;
   ready = false;
   { const pk = placeKey(); if (pk && course != null) prefSet(pk, course); }   /* his place on this squadron (placeKey) */
@@ -3707,7 +3711,7 @@ function wireBoard() {
         const bend = ev2 => { const pt = svgPtOnChart(ev2); edgeMeta[key] = { ...(edgeMeta[key] || {}), mid: { x: Math.round(pt.x), y: Math.round(pt.y) } }; lh.setAttribute('x', (pt.x - 6).toFixed(1)); lh.setAttribute('y', (pt.y - 6).toFixed(1)); schedDragPaint(); };
         const fe = followEdge(e, bend);
         const mv = ev2 => { if (ev2.pointerId !== pid) return; fe.point(ev2); bend(ev2); };
-        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
+        const stop = () => { gestureEnded(stop); fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
         /* drawn again, not wired again (the night's code read, F1): wireBoard added a second listener to this same square
            on every release, so each later drag ran two, four, eight copies — each its own edge pan, at that many times the speed */
         const up = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); markDirty(); saveLayout(); renderBoard(); };
@@ -3721,7 +3725,7 @@ function wireBoard() {
           else { const i = undoStack.lastIndexOf(mine); if (i >= 0) undoStack.splice(i, 1); }
           notify(); renderBoard();
         };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); gestureBegan(stop); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     }
     /* drag a line end onto a blue N/E/S/W point to snap / reconnect */
@@ -3734,11 +3738,11 @@ function wireBoard() {
         const fe = followEdge(e, carry);
         /* each of the four handle drags hears its own pointer only (round two's R2): a second finger's cancel or lift is not its */
         const mv = ev2 => { if (ev2.pointerId !== pid) return; fe.point(ev2); carry(ev2); };
-        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
+        const stop = () => { gestureEnded(stop); fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
         const up = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); applyEndSnap(end, svgPtOnChart(ev2)); };
         /* a cancelled touch snaps nothing (its place can read 0,0): the end goes back where it was (F3) */
         const cancel = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); renderBoard(); };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); gestureBegan(stop); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     });
     document.querySelectorAll('#flowSvg .linehit').forEach(h => {
@@ -3776,7 +3780,7 @@ function wireBoard() {
         };
         const fe = followEdge(e, shape);
         const mv = ev2 => { if (ev2.pointerId !== pid) return; fe.point(ev2); shape(ev2); };
-        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
+        const stop = () => { gestureEnded(stop); fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
         /* a cancelled touch puts the line back as it was (F3) */
         const cancel = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); L.pts = P0.map(p => ({ x: p.x, y: p.y })); renderBoard(); };
         const up = ev2 => {
@@ -3784,7 +3788,7 @@ function wireBoard() {
           if (fingerStop === stop) fingerStop = null; stop();
           if (moved) { pushUndo(); markDirty(); saveLayout(); } renderBoard();
         };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); gestureBegan(stop); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     });
     document.querySelectorAll('#flowSvg .lend').forEach(h => {
@@ -3808,7 +3812,7 @@ function wireBoard() {
         };
         const fe = followEdge(e, carry);
         const mv = ev2 => { if (ev2.pointerId !== pid) return; fe.point(ev2); carry(ev2); };
-        const stop = () => { fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
+        const stop = () => { gestureEnded(stop); fe.stop(); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); };
         /* a cancelled touch puts the line and its end's link back as they were (F3) */
         const cancel = ev2 => { if (ev2.pointerId !== pid) return; if (fingerStop === stop) fingerStop = null; stop(); L.pts = pts0; L[key] = was; renderBoard(); };
         const up = ev2 => {
@@ -3823,13 +3827,17 @@ function wireBoard() {
           markDirty(); saveLayout(); renderBoard(); renderSide();
           flashHint(made.length ? ('Linked ' + made.join(', ')) : (sn ? 'End connected.' : 'End left loose — nothing linked yet.'));
         };
-        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); if (e.pointerType !== 'mouse') fingerStop = stop;
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); gestureBegan(stop); if (e.pointerType !== 'mouse') fingerStop = stop;
       });
     });
   } else if (svgFresh) {
     svg.addEventListener('pointerdown', e => { if (!e.target.closest('.ball')) hideDetailBubble(); });
   }
   if (arrangeMode && svgFresh) {
+    svg.addEventListener('pointerdown', e => {
+      if (unitLeaving) { e.stopPropagation(); e.preventDefault(); return; }
+      notePress();
+    }, true);
     /* arrange: pan the viewport transform, wheel to zoom */
     svg.addEventListener('pointerdown', e => {
       if (pinching) return;   /* the second finger of a pinch: no pan, no box, no line end */
@@ -3952,6 +3960,35 @@ function placeCanvasPoint(c, cx, cy, o = canvasOrigin()) { view.x = cx - o.x - c
    undo it (Astra's final read #2). The snapshot also names its chart, and is
    never laid over another. */
 let firstFinger = null, fingerStop = null;
+/* ONE CANCEL FOR EVERY PRESS UNDER WAY ON THE CHART (the night of 24 Nov 26, Astra's read 1). A drag held while another
+   squadron is picked (by the keyboard, or a question answered with the mouse still down) outlived the move: its window
+   listeners and edge pan stayed alive, and its lift changed and saved the NEXT squadron's layout. Each press that goes on
+   after its pointerdown (a ball, a group, the selection box, the four line handles) names its stop here; the chart as it
+   stood before the press is noted by the canvas's capture listener (wireBoard), before any of them runs. cancelGestures
+   stops them all and puts the chart, both Undo lists and the unsaved mark back: an unfinished press never happened. It
+   runs before the departing squadron's history is parked or its memory emptied, at a session end, and once a question
+   about the unsaved edits is answered, so what is saved or discarded is never a half-done drag. */
+const liveGestures = new Set();
+let pressSnap = null;
+function gestureBegan(stop) { liveGestures.add(stop); }
+function gestureEnded(stop) { liveGestures.delete(stop); }
+function notePress() {
+  if (liveGestures.size) return;
+  pressSnap = { syl: JSON.stringify(SYL), lay: JSON.stringify(layout), course, sylId: curSylId(),
+    undo: undoStack.slice(), redo: redoStack.slice(), dirty: sylDirty };
+}
+function cancelGestures() {
+  const live = [...liveGestures], s = pressSnap;
+  liveGestures.clear(); pressSnap = null;
+  firstFinger = null; fingerStop = null; pan = null;
+  if (!live.length) return;
+  for (const stop of live) { try { stop(); } catch (_) { /* the next one still stops */ } }
+  alignGuides = [];
+  if (!s || s.course !== course || s.sylId !== curSylId()) return;
+  SYL = JSON.parse(s.syl); byid = {}; SYL.forEach(e => byid[e.id] = e);
+  layout = JSON.parse(s.lay); loadEdgeMeta();
+  undoStack = s.undo; redoStack = s.redo; sylDirty = s.dirty; lastPush = null;
+}
 function holdFirstFinger() {
   firstFinger = { syl: JSON.stringify(SYL), lay: JSON.stringify(layout), course, sylId: curSylId(),
     undo: undoStack.slice(), redo: redoStack.slice(), dirty: sylDirty,
@@ -4511,8 +4548,9 @@ function startMarquee(e, svg) {
     const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="rgba(59,198,232,.12)" stroke="${PAL.accent}" stroke-width="0.8" stroke-dasharray="4 3"/>`;
   };
   const fe = followEdge(e, draw);
-  const off = () => { fe.stop(); svg.removeEventListener('pointermove', mv); svg.removeEventListener('pointerup', up); svg.removeEventListener('pointercancel', cancel); };
+  const off = () => { gestureEnded(stop); fe.stop(); svg.removeEventListener('pointermove', mv); svg.removeEventListener('pointerup', up); svg.removeEventListener('pointercancel', cancel); };
   const stop = () => { off(); marquee = null; const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = ''; };
+  gestureBegan(stop);
   if (e.pointerType !== 'mouse') fingerStop = stop;
   const mv = ev => { if (ev.pointerId !== pid) return; fe.point(ev); draw(ev); };
   /* a cancelled touch (a call, the system) selects nothing and leaves the selection as it was — and stops the pan, which
@@ -4536,7 +4574,8 @@ function startGroupDrag(ev) {
   groupDrag = { px: p.x, py: p.y, start, moved: false, snap: { syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }, pushed: false }; try { g.setPointerCapture(ev.pointerId); } catch (e) {}
   groupDrag.fe = followEdge(ev, moveGroup);
   g.addEventListener('pointermove', onGroupDrag); g.addEventListener('pointerup', endGroupDrag); g.addEventListener('pointercancel', endGroupDrag);
-  groupDrag.stop = () => { groupDrag.fe.stop(); g.removeEventListener('pointermove', onGroupDrag); g.removeEventListener('pointerup', endGroupDrag); g.removeEventListener('pointercancel', endGroupDrag); groupDrag = null; perfOff(); };
+  groupDrag.stop = () => { gestureEnded(groupDrag.stop); groupDrag.fe.stop(); g.removeEventListener('pointermove', onGroupDrag); g.removeEventListener('pointerup', endGroupDrag); g.removeEventListener('pointercancel', endGroupDrag); groupDrag = null; perfOff(); };
+  gestureBegan(groupDrag.stop);
   if (ev.pointerType !== 'mouse') fingerStop = groupDrag.stop;
 }
 function onGroupDrag(ev) { if (groupDrag) groupDrag.fe.point(ev); moveGroup(ev); }
@@ -4553,7 +4592,7 @@ function moveGroup(ev) {
   schedDragPaint();
 }
 function endGroupDrag(ev) {
-  if (!groupDrag) return; const g = ev.currentTarget; if (fingerStop === groupDrag.stop) fingerStop = null; groupDrag.fe.stop();
+  if (!groupDrag) return; const g = ev.currentTarget; gestureEnded(groupDrag.stop); if (fingerStop === groupDrag.stop) fingerStop = null; groupDrag.fe.stop();
   g.removeEventListener('pointermove', onGroupDrag); g.removeEventListener('pointerup', endGroupDrag); g.removeEventListener('pointercancel', endGroupDrag);
   const moved = groupDrag.moved; groupDrag = null; flushDragPaint(); perfOff(); if (moved) { saveLayout(); renderBoard(); }
 }
@@ -4564,7 +4603,8 @@ function startDrag(ev) {
   drag.fe = followEdge(ev, moveBall);
   g.addEventListener('pointermove', onDrag); g.addEventListener('pointerup', endDrag); g.addEventListener('pointercancel', endDrag);
   /* only a finger's gesture is the pinch's to stop — a mouse drag carries on (Fable F4) */
-  drag.stop = () => { drag.fe.stop(); g.removeEventListener('pointermove', onDrag); g.removeEventListener('pointerup', endDrag); g.removeEventListener('pointercancel', endDrag); drag = null; alignGuides = []; perfOff(); };
+  drag.stop = () => { gestureEnded(drag.stop); drag.fe.stop(); g.removeEventListener('pointermove', onDrag); g.removeEventListener('pointerup', endDrag); g.removeEventListener('pointercancel', endDrag); drag = null; alignGuides = []; perfOff(); };
+  gestureBegan(drag.stop);
   if (ev.pointerType !== 'mouse') fingerStop = drag.stop;
 }
 function onDrag(ev) { if (drag) drag.fe.point(ev); moveBall(ev); }
@@ -4588,7 +4628,7 @@ function drawGuides() {
   gl.innerHTML = alignGuides.map(g => g.v ? `<line x1="${g.p}" y1="0" x2="${g.p}" y2="${bd.H}" stroke="${PAL.accent}" stroke-width="0.7" stroke-dasharray="4 4"/>` : `<line x1="0" y1="${g.p}" x2="${bd.W}" y2="${g.p}" stroke="${PAL.accent}" stroke-width="0.7" stroke-dasharray="4 4"/>`).join('');
 }
 function endDrag(ev) {
-  if (!drag) return; const g = drag.g; if (fingerStop === drag.stop) fingerStop = null; drag.fe.stop();
+  if (!drag) return; const g = drag.g; gestureEnded(drag.stop); if (fingerStop === drag.stop) fingerStop = null; drag.fe.stop();
   g.removeEventListener('pointermove', onDrag); g.removeEventListener('pointerup', endDrag); g.removeEventListener('pointercancel', endDrag);
   /* wired again for the lines the drag redrew — and only those (wireOnce, [TRK-WIREBOARD-REPEAT]) */
   const moved = drag.moved; drag = null; alignGuides = []; flushDragPaint(); const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = ''; perfOff(); if (moved) { saveLayout(); wireBoard(); }
