@@ -86,6 +86,14 @@ the later merge keeps both (D78).
   fresh-Opus re-read of all fix commits since `bde8ef0a0`, the host's short re-look at the two SANS panels at both sizes,
   push, GitHub green, sheet §17 filled (roll-call marks from the reports w8/w9/w10/r1, the Walk line, the ledger row),
   the look card and the preview link with questions (1)–(10).
+- **Next chat number:** 154 (153 was named for the multi-squadron branch's next). **Opening line for the fresh chat:**
+  "Chat 154: First list the live chats (`ListAgents`) and say where you are. Switch this chat to the branch
+  `claude/allavail-sans-postout-141`: `git fetch origin`, `git switch claude/allavail-sans-postout-141`, `git branch -u
+  origin/claude/allavail-sans-postout-141`, `git pull --ff-only` (if refused because another checkout holds it, branch a local
+  copy from `origin/claude/allavail-sans-postout-141` and push with `git push origin HEAD:refs/heads/claude/allavail-sans-postout-141`).
+  Read `HANDOFF.md` — the CHAT 152 part of the `claude/allavail-sans-postout-141` block, UPDATE 4 then UPDATE 3 — and finish the
+  FULL bug check from there: the fixes in order, red-first, the re-read, the sheet, then send me the preview link with my
+  questions." Model: Opus, high.
 - **Questions for him now (add to the list above):** (6) F4 — after the posting is put back, the "hidden" line stays on his
   bell (untrue then) — remove it? (7) Astra #6/Opus F5/w9 R2 — the take-back line strikes "You're SANS from…" he never had
   or never read (and today's days, not the ones he read) — strike only what he read? (8) S11 — on a published day every
