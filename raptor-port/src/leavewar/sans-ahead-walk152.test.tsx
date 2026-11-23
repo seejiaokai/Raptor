@@ -102,3 +102,27 @@ describe('W8-2 — the Highlight list offers a man posted out as SANS from a dat
     expect(new Set(after).size).toBe(after.length)
   })
 })
+
+/* W10-1 (walker w10's S12x, both sizes): Saber files ONE offer for two men on Fri 17; one of them is not SANS that day.
+   The opened SANS day hides him (D2341) — but the other man's line still said "Saber for 2 people", telling of the hidden
+   one. The line now counts only the men the day shows. (The window a tap opens edits the whole record, so it still names
+   both — the agent's reading, told to him: hiding a man from it would let a save drop him from the record.) */
+describe('W10-1 — a shared offer\'s placed line counts only the men shown that day', () => {
+  it('two men on one offer, Hex not SANS on Fri 17: the shown man\'s line says nothing of a second', async () => {
+    const { sansDayGroups } = await import('../ui/sanscal-model')
+    const { fmt } = await import('../ui/inputedit')
+    const other = Object.keys(PEOPLE).find(id => (PEOPLE as any)[id].san && !(PEOPLE as any)[id].archived
+      && !(PEOPLE as any)[id].special && ((PEOPLE as any)[id].seat === 'FCP' || (PEOPLE as any)[id].seat === 'RCP'))!
+    expect(other, 'premise: a man SANS today').toBeTruthy()
+    const at = new Date(2026, 6, 15, 9, 0, 0).getTime()
+    const rec = { type: 'SANS Availability', date: fmt(FRI), person: other, by: 'ad', at,
+      people: [{ p: other, by: 'ad', at }, { p: 'rocky', by: 'ad', at }],
+      allday: true, s: 360, e: 1080, sans: { f: true } }
+    const g = sansDayGroups(FRI, [rec])
+    const all = [...g.p, ...g.w, ...g.other, ...g.out]
+    expect(all.map(e => e.id), 'premise: Hex (not SANS on Fri) is hidden').toEqual([other])
+    expect(all[0].placed, 'premise: a placed line is written').toBeTruthy()
+    expect(all[0].placed).not.toContain('2 people')
+    expect(all[0].placed).toContain(String((PEOPLE as any)[other].cs))
+  })
+})

@@ -147,6 +147,11 @@ export interface SansDayGroups {
 const lettersOf = (r: any): string =>
   [r.sans && r.sans.f ? 'F' : '', r.sans && r.sans.o ? 'O' : '', r.sans && r.sans.a ? 'A' : ''].filter(Boolean).join(' · ')
 
+/* A SHARED OFFER AS THE DAY SHOWS IT — its people cut to the men SANS that day (the FULL check's walk, chat 152, W10-1:
+   one offer for Ranger and Hex, Ranger's posting moved later, and Hex's line still said "Saber for 2 people", telling of
+   the hidden man, D2341). A copy made for the words, never handed on: the window a tap opens is the whole record's. */
+const shownOn = (r: any, iso: string, people: Record<string, any>): any =>
+  Array.isArray(r.people) ? { ...r, people: r.people.filter((e: any) => !e || !people[String(e.p)] || sansOnP(people[String(e.p)], iso)) } : r
 export function sansDayGroups(iso: string, rows: readonly any[] = INPUTS, people: Record<string, any> = PEOPLE): SansDayGroups {
   const out: SansDayGroups = { w: [], p: [], other: [], out: [], flyW: 0, flyP: 0, otherN: 0 }
   const com = sansCommittedOn(iso, rows, people)
@@ -170,7 +175,7 @@ export function sansDayGroups(iso: string, rows: readonly any[] = INPUTS, people
          undone"): his posting moved later or taken back, a tick taken off — not listed apart as "no longer SANS" any more,
          but not listed at all, as if deleted, back by itself once the day is SANS again (engine/inputs.ts sansShownOn) */
       if (man && !sansOnP(man, iso)) continue
-      const e: SansEntry = { r, id, letters: lettersOf(r), hours: hoursOf(r), late: lateWord(en.mod != null ? { ...r, mod: en.mod } : r), placed: placedLine(r, people) }
+      const e: SansEntry = { r, id, letters: lettersOf(r), hours: hoursOf(r), late: lateWord(en.mod != null ? { ...r, mod: en.mod } : r), placed: placedLine(shownOn(r, iso, people), people) }
       if (!counted.has(id)) {
         /* the count's own reasons, in its order (state/flyplan.ts sansCommittedOn) */
         const why = !man ? 'no longer on the roster' : man.archived || man.deleted ? 'archived'
