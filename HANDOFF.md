@@ -149,6 +149,13 @@ the later merge keeps both (D78).
   (the host's call, said in the sheet). Sheet §17.13, §17.14 (re-reads 1–3, question (f)) and §14's Round 6 Walk line DONE;
   ledger row DONE. **LEFT:** GitHub green on `c61ba8e60`; the Vercel preview Ready; his look card and the preview link with
   questions (1)–(10) and (f) — sent in chat 155's closing message if GitHub is green; then his "merge live" (pull request 825).
+- **UPDATE 9 — CHAT 155 at 91%:** GitHub GREEN on `c61ba8e60`; preview Ready; questions put to him with pictures and the
+  exact proposed words (chat 155's last messages). His answers so far: **D2388** (Q1: save the days from his SANS date, leave
+  the earlier out with a note) and **D2390** (the reminder ends "Tap to file for availability.") — RECORDED, filed to build
+  as OUTSTANDING [FABLE-READ-FAULTS] (x) (1) and (2). Q2–Q9 NOT yet answered (2b he asked: today only a man posted out as
+  SANS gets the reminder; proposed for every SANS man, title "SANS availability needed"). **NEXT (chat 156):** get his
+  answers to Q2–Q9 if not given; record each; draw every new wording for him first (D1625: Q1's note, 2b, 2c, Q3, Q4, Q5);
+  build red-first; short re-walk; a fresh Opus read; preview link; his "merge live".
 - **Opening line for chat 155:** "Chat 155: First list the live chats (`ListAgents`) and say where you are. Switch this chat to the
   branch `claude/allavail-sans-postout-141`: `git fetch origin`, `git switch claude/allavail-sans-postout-141`, `git branch -u
   origin/claude/allavail-sans-postout-141`, `git pull --ff-only` (if refused because another checkout holds it, branch a local
