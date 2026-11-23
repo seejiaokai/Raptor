@@ -243,6 +243,9 @@ async function runFollow() {
       /* eslint-disable-next-line react-doctor/async-await-in-loop -- one squadron's whole load at a time, by design */
       await readSquadron();
     }
+    /* wanted back before its memory was emptied (Fable's lead, the night of 24 Nov 26): a draft dropped on the way out goes
+       from the chart too, or it stands drawn with nothing marked unsaved, looking saved */
+    if (dropped && !moved) await loadCourse(course);
   } catch (_) {
     if (!bootError) bootError = 'The Tracker could not finish upgrading your data — the browser did not keep what was written. Reload to try again.';
   } finally {

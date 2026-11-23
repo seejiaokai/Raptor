@@ -198,6 +198,30 @@ describe('back from the member view over a held draft (fix list item 4 — the s
   })
 })
 
+describe('the same squadron wanted again before its memory is emptied (Fable\'s lead)', () => {
+  it('a draft dropped on the way out is not left drawn as if it were saved', async () => {
+    await act(async () => {
+      if (!C.arrangeMode) C.toggleArrange()
+      const p = C.addModule('acad'); await until(() => C.dlg); C.dlgClose('F-BACK'); await p
+      C.toggleArrange()
+      await settle()
+    })
+    expect(C.sylDirty).toBe(true)
+    await act(async () => {
+      S.rebindStorageUnit('u149', false)   /* a move starts, the draft dropped… */
+      for (let i = 0; i < 50 && C.ready; i++) await Promise.resolve()
+      expect(C.ready, 'the premise: it has begun leaving').toBe(false)
+      S.rebindStorageUnit('u142', false)   /* …and his pages are back on 142 before its memory goes */
+      await settle()
+    })
+    expect(S.storageUnit()).toBe('u142')
+    expect(C.sylDirty, 'nothing is marked unsaved').toBe(false)
+    expect(C.byid['F-BACK'], 'so nothing unsaved is drawn: the chart is the stored one').toBeFalsy()
+    expect(storedHas('u142', 'F-BACK')).toBe(false)
+    expect(C.saveWords().text, 'and the corner says the draft was not saved').toContain(C.NOT_SAVED)
+  })
+})
+
 describe('a pick in the member view, over a held draft', () => {
   it('its question is drawn over the page, and answers', async () => {
     await heldDraft('F-PICK1')
