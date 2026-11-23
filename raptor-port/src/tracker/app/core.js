@@ -11,7 +11,7 @@ import { DEFAULT_LAYOUTS } from '../data/layouts.js';
 import { EVENT_INFO, EVENT_INFO_BY_SYL } from '../data/eventInfo.js';
 import { shippedDetails, diffDetails, scrubBlock, mergeBlock, realFlatEdits, blockFromFlat, isDetailsTable } from './eventDetails.js';
 import { SEED_STATE, SEED_STAMP } from '../data/seedState.js';
-import { storage, flushNow, loadLatest, saveHealth, onSaveHealth, storageKept, markStorageLoaded, storageUnit } from '../storage.js';
+import { storage, flushNow, loadLatest, saveHealth, onSaveHealth, storageKept, markStorageLoaded, storageUnit, onStorageFollow, moveStorageDoor, setStorageHeld, storageHeld, pageOwnUnit } from '../storage.js';
 import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { normalizeImport as normalizeFile, STUDENT_GUARD_MSG, STUDENT_CHART_MSG, sameDef, remapStudentsSyl } from './fileTransfer.js';
@@ -78,7 +78,7 @@ const refreshCourses = notify;
    An unsaved chart edit is ASKED ABOUT before the Logout ever gets here (D129,
    onBeforeTrackerLogout above); on any other session end it is kept behind
    ✓ Save changes, never thrown away without a word. */
-onTrackerSessionEnd(() => endSession());
+onTrackerSessionEnd(() => { parkedHist.clear(); endSession(); });
 /* BEFORE the logout, not after (owner, 23 Sep 26 — D129): unsaved chart edits
    ask Save / Discard / Stay, over the Tracker tab (`show`), so the next person
    never lands on someone else's half-done chart. Save writes them (✓ Save
@@ -104,9 +104,9 @@ async function discardChartEdits() {
   clearDirty(); if (arrangeMode) toggleArrange(); await loadCourse(course); refreshSyl(); renderBoard(); renderSide();
   setSaveStatus('', 'ok');
 }
-/* BEFORE A PICK MOVES HIS PAGES OFF THIS TRACKER (multi-squadron batch 1's second half §16 D2′; his D2318 — the drawing
-   f2d): the same question as the logout's, its last line "Save them before switching to 142?" — asked where he is, never
-   jumping to the Tracker tab first: while it is up `switchAsking` is set and the Tracker's page seam
+/* BEFORE A PICK TAKES THE TRACKER TO ANOTHER SQUADRON (multi-squadron batch 1's second half §16 D2′; his D2318, kept by
+   D2395 — the drawing f2d): the same question as the logout's, its last line "Save them before switching to 142?" — asked
+   where he is, never jumping to the Tracker tab first: while it is up `switchAsking` is set and the Tracker's page seam
    (tracker/TrackerPage.tsx) shows this question alone over whatever page he is on. Save writes them into this Tracker
    (✓ Save changes) before the pick goes on — and where the save did not take (refused, failed), he stays; Discard reloads
    the chart from the store, as the logout's does; Stay keeps everything and the pick does not happen. A question already
@@ -155,6 +155,161 @@ function endSession() {
   hintFlash = null;
   searchHit = null; searchQ = ''; searchCount = 0; searchAt = 0; searchHits = [];
   notify();
+}
+
+/* ---------- THE TRACKER FOLLOWS THE SQUADRON PICKED (his D2395, 23 Nov 26 — [MSQ-TRK-FOLLOWS-PICK]) ----------
+   It replaces D2318's "keeps the squadron it opened with until sign-out". This module holds one squadron's records in
+   memory, so a move runs in a fixed order, and THE ORDER IS THE SAFETY:
+   1. LEAVE (leaveSquadron), the door still on the old squadron. The page shows "Loading…" (`ready` off: no chart, no
+      control), the session's windows and modes end, every question is answered "cancelled" and any new one too
+      (`unitLeaving`), and everything still running — the load queue, a job past its last question — runs out. A write it
+      makes lands in the OLD squadron's records, or is refused by the gate's 7f, which refuses this page's changes the
+      moment the door is not the page's own squadron. Nothing of it can reach the new one.
+   2. EMPTY (emptyForMove): every record of the old squadron out of memory.
+   3. MOVE the door (storage.js moveStorageDoor), then READ the new squadron through the one boot path (bootFromStore).
+   Picks made meanwhile are not queued: `unitWant` is the last one, and the run goes round until the door is on it.
+   HELD (`mayHold`, the door's 'held'): where the chart work open cannot be asked about — his own move at midnight (D2243,
+   its band across the chart editor) or the switch to the member view — the door stays until that work is gone
+   (followIfHeld). A right taken away is not held: the Tracker never stands on a squadron he has lost; his draft of it
+   cannot be saved by anyone, so it goes, and the corner says so in the words the app already has for a save that did not
+   take (NOT_SAVED). */
+let unitWant = null;       /* the squadron the page's own pages are on, while the door is not there yet */
+let unitRun = null;        /* the move running (its promise) */
+let unitLeaving = false;   /* from the first step of a move to the end of its read: no question may be asked */
+let firstBoot = null;      /* init's own run: a move waits for it, so the first load finishes on the door it began on */
+let landOwed = false;      /* moved while the Tracker tab was not on screen: it lands when next shown (App.jsx) */
+/* AN UNDO STEP WAITS FOR ITS SQUADRON, as the app's one Undo treats a step of a squadron no longer in view (A-v, state/
+   undo-wire.ts): each squadron's steps are put aside at the move and given back when it is entered again on the same
+   course and chart — never applied to another squadron's chart, which holds none of them. A sign-out clears them. */
+const parkedHist = new Map();
+onStorageFollow({
+  follow(to, mayHold) {
+    unitWant = to;
+    if (mayHold && (sylDirty || arrangeMode)) { setStorageHeld(true); return 'held'; }
+    setStorageHeld(false);
+    startFollow();
+    return 'moved';
+  },
+  stay() { unitWant = null; setStorageHeld(false); },
+});
+/* the chart work that held the door has gone (saved, discarded, or the editor closed with nothing left unsaved). Where his
+   pages are NOW is asked again: back from the member view they may be on this very squadron, and the door stays. */
+function followIfHeld() {
+  if (!storageHeld() || sylDirty || arrangeMode) return;
+  setStorageHeld(false);
+  const own = pageOwnUnit();
+  if (!own || own === storageUnit()) { unitWant = null; return; }
+  unitWant = own;
+  startFollow();
+}
+function startFollow() {
+  if (unitRun) return;
+  unitRun = runFollow().finally(() => {
+    unitRun = null;
+    /* a pick that came as the last run was finishing */
+    if (unitWant && unitWant !== storageUnit() && !storageHeld()) startFollow();
+  });
+}
+/** resolves once no move of squadron is running */
+export function whenUnitSettled() { return unitRun || Promise.resolve(); }
+async function runFollow() {
+  let dropped = false, moved = false, left = false;
+  try {
+    if (firstBoot) { try { await firstBoot; } catch (_) { /* a failed boot is the page's panel: the move still reads afresh */ } }
+    while (unitWant && unitWant !== storageUnit() && !storageHeld()) {
+      const to = unitWant;
+      dropped = (await leaveSquadron()) || dropped;
+      left = true;
+      if (unitWant !== to) continue;
+      emptyForMove();
+      moveStorageDoor(to);
+      moved = true;
+      /* eslint-disable-next-line react-doctor/async-await-in-loop -- one squadron's whole load at a time, by design */
+      await readSquadron();
+    }
+  } catch (_) {
+    if (!bootError) bootError = 'The Tracker could not finish upgrading your data — the browser did not keep what was written. Reload to try again.';
+  } finally {
+    unitLeaving = false;
+    if (!storageHeld()) unitWant = null;
+    if (left) {
+      /* (a pick back onto the squadron he was leaving comes here with its records untouched) */
+      if (!bootError) ready = true;
+      giveBackHist();
+      /* the corner starts clean on the squadron just read (its first read may have written its upgrade flags, which is no
+         save of his) — unless his draft could not be kept */
+      saveStat = dropped ? { text: '● ' + NOT_SAVED, cls: 'err' } : { text: '', cls: '' };
+      if (dropped) refusedLatch = true;
+      landOwed = true;
+      if (ready) {
+        /* the chart drawn here as well as by App's effect, which runs only if React saw `ready` go down: never the old
+           squadron's picture left standing in the board */
+        renderBoard(); renderSide();
+        landChart();
+      }
+      notify();
+    }
+  }
+}
+/* 1. LEAVE — answers whether unsaved chart edits were dropped */
+async function leaveSquadron() {
+  unitLeaving = true;
+  ready = false;
+  const dropped = !!sylDirty;
+  if (dropped) { sylDirty = false; undoStack = []; redoStack = []; }
+  else if (undoStack.length || redoStack.length) parkedHist.set(storageUnit(), { course, syl: curSylId(), undo: undoStack, redo: redoStack });
+  undoStack = []; redoStack = [];
+  endSession();
+  /* a press still under way on the chart ends here: its lift must not save anything into the squadron coming */
+  drag = null; groupDrag = null; marquee = null; lineDrag = null; pan = null; drawing = null;
+  for (;;) {
+    const c = loadChain;
+    await c;
+    await new Promise(r => setTimeout(r, 0));   /* a macrotask: every job that was only waiting on the store has now run out */
+    if (c === loadChain) break;
+  }
+  return dropped;
+}
+/* 2. EMPTY — nothing of the old squadron stays in memory, so none of it can be drawn or saved as the new one's */
+function emptyForMove() {
+  TRK_COMMANDS = false;
+  memEpoch++;
+  for (const k of Object.keys(mem)) { delete mem[k]; bumpMemGen(k); }
+  TRK_SIG++;
+  COURSES = []; course = null; active = null; DELCOURSES = [];
+  SYL = []; byid = {}; roster = []; marks = {}; dates = {}; plan = {}; lulls = {}; lastEdit = {}; pace = {};
+  eventInfo = {}; customDefs = {}; SYLS = []; SYL_ORDER = DEFAULT_SYL_ID_ORDER.slice(); SYL_HIDDEN = []; SYL_TOMB = {};
+  FLEX = { on: true, from: FLEX_DEFAULT_FROM.slice() };
+  layout = {}; AUTO = {}; BORROW = null; edgeMeta = {}; merges = new Set(); unmerges = new Set();
+  selEdge = null; mergeFirst = null; selBalls = new Set(); alignGuides = []; selLine = null; connectSrc = null;
+  lastPush = null; undoStack = []; redoStack = []; sylDirty = false; rosterHeld = false;
+  kbdId = null; copyPick = {}; popMsg = null; pickOwner = null; view = { x: 0, y: 0, k: 1 };
+  refusedLatch = false; saveStat = { text: '', cls: '' };
+  bootError = null;
+}
+/* 3. READ — the whole boot path, on the new door; the page is shown again by runFollow */
+async function readSquadron() {
+  const ok = await bootFromStore();
+  if (!ok) return false;
+  await trkHydrateMem();
+  /* (a first boot that failed never got this far: the move may be the first good read of this page's life) */
+  trkRegisterCommands();
+  TRK_COMMANDS = true;
+  wirePageOnce();
+  return true;
+}
+function giveBackHist() {
+  const p = parkedHist.get(storageUnit());
+  if (!p) return;
+  parkedHist.delete(storageUnit());
+  if (p.course === course && p.syl === curSylId()) { undoStack = p.undo; redoStack = p.redo; }
+}
+/** the Tracker tab came on screen: a move made while it was hidden lands the chart now. True where it landed. */
+export function landIfOwed(shown) {
+  if (!landOwed || !shown || !ready || bootError) return false;
+  landOwed = false;
+  refitAfterShow(); landChart();
+  return true;
 }
 
 export const DEFAULT_SYLLABUS = SYLLABI[DEFAULT_SYL_NAME];
@@ -296,6 +451,9 @@ let TRK_SIG = 0;
    tombstone). bumpMemGen fires wherever mem changes through trkWrite/trkDelete. */
 const memGen = new Map();
 function bumpMemGen(k) { memGen.set(k, (memGen.get(k) || 0) + 1); }
+/* bumped when the Tracker moves to another squadron (emptyForMove): a read begun on the old squadron's door, for a key this
+   copy never held, has no generation to tell it apart — it must never be mirrored into the new squadron's records */
+let memEpoch = 0;
 /* [CMDL-FINISH] §4 (GU-004) — while a gesture is open this holds the keys it
    wrote (key→value), so their storage flush can be deferred to ONE boundary
    effect. Non-null ⇒ sSet records instead of persisting inline. A key whose
@@ -388,15 +546,16 @@ function doorSet(L, k, v) {
   return run();
 }
 async function sGetOne(k) {
-  const gen = memGen.get(k);
+  const gen = memGen.get(k), epoch = memEpoch;
   try {
     const r = await storage.get(k);
     /* C2 — mirror the read into mem so a later before-image / cross-course delete
        is correct. R3-004 — but ONLY if no write/delete landed during the await
        (the gen is unchanged): otherwise the live mem is newer and must win, and a
        key deleted mid-read stays dropped rather than being resurrected. A read is
-       not a mutation, so it never bumps the gen. */
-    if (memGen.get(k) === gen && r) mem[k] = r.value;
+       not a mutation, so it never bumps the gen. (D2395: nor from a squadron the
+       Tracker has since left.) */
+    if (epoch === memEpoch && memGen.get(k) === gen && r) mem[k] = r.value;
     return r ? r.value : null;
   } catch (e) { return mem[k] ?? null; }
 }
@@ -405,12 +564,14 @@ async function sGetOne(k) {
    before-image (an un-hydrated key would emit no change on delete / no before on
    edit). Runs once in init(), after the boot loads, before TRK_COMMANDS. */
 async function trkHydrateMem() {
+  const epoch = memEpoch;
   try {
     const { keys } = await storage.list();
     /* Read together (reads only), then mirrored in key order, stopping at the first key that could not be read —
        exactly where the one-by-one loop used to stop. */
     const want = keys.filter(k => trkCollectionOf(k));
     const got = await Promise.allSettled(want.map(k => storage.get(k)));
+    if (epoch !== memEpoch) return;   /* the Tracker has moved to another squadron since these were read (D2395) */
     for (let i = 0; i < want.length; i++) {
       if (got[i].status === 'rejected') break;
       const r = got[i].value;
@@ -486,9 +647,9 @@ function trkCollectionOf(k) {
   // out through metaWrite (below), in a saved group of their own.
   return null;
 }
-/* A SAVE THE COMMAND GATE REFUSES SAYS SO (the reshape walk's W3-F4, 22 Nov 26). After a man's squadron move the Tracker
-   keeps the squadron it loaded until his next sign-in (storage.js rebindStorageUnit), and the gate refuses his changes to
-   it (state/perms.ts 7f). Every write here threw the command's answer away: a grade in an event's pop-up was refused
+/* A SAVE THE COMMAND GATE REFUSES SAYS SO (the reshape walk's W3-F4, 22 Nov 26). While the Tracker stands on a squadron
+   that is not his pages' own — held at his move's midnight for chart work, or for the moment a move takes (D2395,
+   followUnit above) — the gate refuses his changes to it (state/perms.ts 7f). Every write here threw the command's answer away: a grade in an event's pop-up was refused
    with no word, a refused Undo likewise, and "✓ Save changes" went on to clear the edit and read "● syllabus … saved"
    with nothing stored. Now every command of this page goes through `trkCommit`, and a refused one:
    - says "This change could not be saved." in the Tracker's own box — the app's generic words (the midnight band's own
@@ -851,6 +1012,11 @@ function prefSet(k, v) { try { localStorage.setItem(PP + k, v); } catch (e) {} }
    (nobody signed in as a person — a pending account, or a test with nothing wired — as before). The boot converters that
    rewrite OLD unprefixed keys are left as they are (D120). */
 export function pickKey(k) { const w = whoamiId(); return w ? 'who:' + w + ':' + k : k; }
+/* HIS PLACE IS PER SQUADRON TOO (his D2395): the course he was on in 142's Tracker is not a course of 149's, so a visit to
+   149 must not cost him his place on 142. Kept beside the plain key (which a place from before multi-squadron still
+   answers); an answer naming a course this squadron does not have falls to the first, as it always did. */
+const placeKey = () => { const u = storageUnit(); return u ? pickKey('lastCourse@' + u) : null; };
+function lastCoursePref() { const k = placeKey(); return (k && prefGet(k)) || prefGet(pickKey('lastCourse')); }
 
 /* The toolbar hides on demand so the chart gets the whole column (owner phone
    ask, 9 Sep 26 — "have the option to hide this bar so that the space can be
@@ -939,7 +1105,7 @@ export function resumeForPerson() {
   notify();
   onChain(async () => {
     const w = whoamiId();
-    const want = prefGet(pickKey('lastCourse'));
+    const want = lastCoursePref();
     const c = (want && COURSES.some(x => isCourseEntry(x) && x.id === want)) ? want : (COURSES[0] && COURSES[0].id);
     if (c) await loadCourseNow(c, true);
     pickOwner = w;
@@ -2050,6 +2216,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
   /* One site covers init, switchCourse, addCourse, renCourse and delCourse.
      Raw and synchronous, so unlike sSet it never flickers the save status. */
   prefSet(pickKey('lastCourse'), c);
+  { const pk = placeKey(); if (pk) prefSet(pk, c); }
   /* A ring left over from another syllabus would re-light the moment the user
      came back to it. Cleared without redrawing: every caller renders anyway. */
   searchHit = null; searchQ = ''; searchCount = 0; searchAt = 0; searchHits = [];
@@ -2250,6 +2417,8 @@ function _dlgOpen(shape, res) { _dlgRes = res; dlg = shape; dlgSerial++; notify(
    answer; the box writes into it through setDlgDate. Without it the dialog is as it was. */
 function _dlgShow(msg, { input = false, def = '', cancel = true, cancelLabel = 'Cancel', ok = 'OK', alt = null, list = null, listFn = null, filter = false, placeholder = '', listTitle = '', date = null } = {}) {
   const shape = { msg, input, def, cancel, cancelLabel, ok, alt, list, listFn, filter, placeholder, listTitle, date };
+  /* the Tracker is moving to another squadron (D2395): a job of the old one asks nothing more, over either */
+  if (unitLeaving) return Promise.resolve(_dlgCancelled(shape));
   return new Promise(res => {
     if (dlg || _dlgQueue.length) { _dlgQueue.push({ shape, res }); return; }
     _dlgOpen(shape, res);
@@ -6057,6 +6226,8 @@ function clearDirty() {
      it); once it is saved or discarded, the person now signed in gets their own (Astra's
      final read, F3 — the only door is an admin changing his own account's person) */
   if (ready && !bootError && whoamiId() !== pickOwner) resumeForPerson();
+  /* …and on the last squadron (D2395): the door held for this chart work goes on to the squadron his pages are on */
+  followIfHeld();
 }
 
 export async function persistSyl() {
@@ -6460,6 +6631,7 @@ export function toggleArrange() {
     if (sylDirty) setSaveStatus('unsaved flow edits — hit “Save changes”', 'saving');
   }
   notify();
+  followIfHeld();   /* the editor closed with nothing left unsaved: the door held for it moves on (D2395, D2243) */
 }
 export function fitViewClick() { if (arrangeMode) fitView(); }
 /* Escape finishes an in-progress line */
@@ -7238,9 +7410,10 @@ export async function importClick() {
      namespace cannot be patched (its exports are getters), so the smoke suite
      hands a file in through window.__pickOpenForTests instead. */
   const pick = (typeof window !== 'undefined' && window.__pickOpenForTests) || FS.pickOpen;
-  const picked = await pick();                 /* no await before this — gesture */
-  if (!picked) return;
+  /* the session as the press found it: a move to another squadron while the file picker was up ends the import (D2395) */
   const serial = sessionSerial, ended = () => serial !== sessionSerial;
+  const picked = await pick();                 /* no await before this — gesture */
+  if (!picked || ended()) return;
   /* An import reloads the chart on screen from the store, so its unsaved flow
      edits were lost — and the orange Save changes stayed lit over a chart with
      nothing left to save ([HUMAN-RETEST] Fable #3). Asked AFTER the pick: the
@@ -7404,9 +7577,10 @@ export async function saveChangesClick() { await persistSyl(); }
 /* ---------- init ---------- */
 export let ready = false;
 let initStarted = false;
+let pageWired = false;
 /* THE TEST RESET HOOK for the one-shot init ([DB-READINESS] group A, phase 5.4 — Astra R2-09 fix 5): a test that boots
    the Tracker under one policy and then another, in one module instance, lets init() run again. Never called by the app. */
-export function resetInitForTests() { initStarted = false; ready = false; bootError = null; }
+export function resetInitForTests() { initStarted = false; pageWired = false; ready = false; bootError = null; }
 /* TWO MORE TEST HOOKS ([DB-READINESS] group A, phase 5b), never called by the app:
    - a record read back from the STORE through the row door — the student list, the course list, a chart record, as the
      Tracker reads it — or null when none of it is stored (a test that used to read the one stored record by its key);
@@ -7424,11 +7598,15 @@ export async function rehydrateForTests() {
   for (const k of Object.keys(mem)) { delete mem[k]; bumpMemGen(k); }
   await trkHydrateMem();
 }
-export async function init() {
-  if (initStarted) return; initStarted = true;
-  /* WHOSE TRACKER (multi-squadron batch 1, step 4): the doorway binds the signed-in person's own squadron now, before
-     the first read — every record below is that squadron's (storage.js) */
-  markStorageLoaded();
+export function init() {
+  if (initStarted) return firstBoot || Promise.resolve();
+  initStarted = true;
+  firstBoot = bootFirst();
+  return firstBoot;
+}
+/* ONE SQUADRON'S RECORDS, FROM THE STORE INTO MEMORY — the first boot's, and every move's (D2395): each upgrade reads and
+   writes through the door as it stands. False where it failed closed (bootError set: the page shows its panel). */
+async function bootFromStore() {
   /* every stored record into the mirror FIRST ([DB-READINESS] group A, phase 5b): the row door compares each write with
      the rows this copy of the Tracker has read, and the boot's own upgrades write through it too */
   await trkHydrateMem();
@@ -7449,7 +7627,7 @@ export async function init() {
        rejections; without this the App would sit on its loading placeholder for
        good (review Fable F1). Fail closed with a message either way. */
     if (!bootError) setBootError('The Tracker could not finish upgrading your data — the browser did not keep what was written. Reload to try again.');
-    return;
+    return false;
   }
   /* Syllabus NAMES → syllabus IDS ([TRK-CSID] 1B-ii), AFTER course ids are
      settled (the student-layer keys the reset clears are v3:<courseId>:…) and
@@ -7459,7 +7637,7 @@ export async function init() {
   if (!smig) {
     loading = false;
     if (!bootError) setBootError('The Tracker could not finish upgrading your syllabus data — the browser did not keep what was written. Reload to try again.');
-    return;
+    return false;
   }
   /* Every course, not just the one about to open: an export must never meet a
      course nobody has opened since the upgrade and find stale records. (After
@@ -7471,7 +7649,7 @@ export async function init() {
      (add newly-shipped built-ins, repoint base on a shipped rename, respect a
      user relabel) and the id order — all BEFORE loadCourse reads a syllabus. */
   await loadSylCat();
-  if (bootError) { loading = false; return; }   /* loadSylCat fails closed on an invalid stored id (CSID-B07) */
+  if (bootError) { loading = false; return false; }   /* loadSylCat fails closed on an invalid stored id (CSID-B07) */
   await reconcileBuiltins();
   await loadSylOrder();
   /* After loadCourses + course-id migration, which fill COURSES with {id,name}
@@ -7483,11 +7661,18 @@ export async function init() {
      write, like the upgrades above; the deletes that come while it is open go through the commands (onGonePeople). */
   if (getGonePeople().length) await leaveRunningCoursesNow(new Set(getGonePeople()));
   const __who = whoamiId();
-  const __want = prefGet(pickKey('lastCourse'));
+  const __want = lastCoursePref();
   await loadCourse((__want && COURSES.some(c => isCourseEntry(c) && c.id === __want)) ? __want : (COURSES[0] && COURSES[0].id), true);
   pickOwner = __who;
   await loadEventInfo();
   await loadFlex();   /* the flex settings (D1006) — the defaults when none is stored */
+  return true;
+}
+async function bootFirst() {
+  /* WHOSE TRACKER (multi-squadron batch 1, step 4): the doorway binds the squadron of his own pages now, before the first
+     read — every record below is that squadron's (storage.js) */
+  markStorageLoaded();
+  if (!(await bootFromStore())) return;
   ready = true;
   /* [ARCH-STACK] phase 5: enable command routing now that every boot migration
      and load has run its raw seed/migration writes. Post-boot user edits emit the
@@ -7502,6 +7687,12 @@ export async function init() {
   /* After the first paint, so the balls exist to measure. No last mark → the
      chart's first event, the same landing a crew pick makes. */
   landChart();
+  wirePageOnce();
+}
+/* what a page life wires once, after its first good read of a squadron's records (the first boot's, or a move's) */
+function wirePageOnce() {
+  if (pageWired) return;
+  pageWired = true;
   /* Unsaved flow edits must not vanish quietly when the tab closes — the one
      kind of work that waits for the Save button. */
   if (typeof window !== 'undefined')

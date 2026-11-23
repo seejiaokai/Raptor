@@ -1,8 +1,8 @@
 /* Batch 1's second half — night job 2 (23 Nov 26), in a real browser (jsdom has no layout, no `inert`, no stacking):
    - the board's number (§3 item 8, the drawing b1-2): beside the day title, nothing in the bar moving, never over the
      next part of the bar on any day of the week; with 149 picked it reads 149;
-   - the Tracker after a pick (§16 D2′, his D2318 — the drawings f2a, f2c): read only under a veil (no press reaches it),
-     given back on picking back; the member view with 149 picked lands on its View-only Sched (his D2381);
+   - the Tracker after a pick (his D2395): it follows the squadron picked, no band and every control live; the member view
+     with 149 picked lands on its View-only Sched (his D2381);
    - the pick's question for unsaved chart edits asked from another page (the drawing f2d): the Tracker's question shown
      over the page he is on, never the Tracker tab; Stay keeps him where he is, Discard lets the pick go on.
    Saber (`ad`) is the master admin of 142, so the Schedules menu lists 142 and 149. */
@@ -58,23 +58,28 @@ test.describe('night job 2', () => {
     await expect(page.locator('#schedBoard .sb-sqn')).toHaveText('149')
   })
 
-  test('the Tracker after a pick: read only under a veil, nothing pressable; 142 again gives it back', async ({ page }) => {
+  /* rewritten by his D2395 (23 Nov 26): the Tracker follows the squadron picked — no band, nothing read only, its controls
+     live on the squadron picked, and 142 again gives 142's back */
+  test('the Tracker follows a pick: no band, every control live on 149\'s, 142 again brings 142\'s', async ({ page }) => {
     await toTracker(page)
     await expect(band(page)).toHaveCount(0)
+    const stored149 = () => page.evaluate(() => Object.keys(localStorage).filter(k => k.startsWith('raptor:tracker/u149@')).length)
     await pick(page, '149')
-    await expect(band(page)).toContainText("This is 142's Tracker.")
-    await expect(band(page)).toContainText("Pick 142 to change it. To open 149's, sign out and in.")
+    await expect.poll(stored149, { message: '149\'s Tracker has been read, under its own squadron' }).toBeGreaterThan(0)
+    await page.waitForSelector('#page-tracker #board svg', { state: 'attached' })
+    await expect(band(page)).toHaveCount(0)
     const hit = await page.evaluate(() => {
       const b = document.querySelector<HTMLElement>('#page-tracker #sylMenuBtn')
       const r = b!.getBoundingClientRect()
       const at = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
       return { inert: (document.querySelector('.trk-host') as any).inert, onButton: !!at && (at === b || b!.contains(at)), shown: r.width > 0 }
     })
-    expect(hit).toEqual({ inert: true, onButton: false, shown: true })
-    /* the column ends at the screen's foot, the band above it */
+    expect(hit).toEqual({ inert: false, onButton: true, shown: true })
+    /* the column still ends at the screen's foot */
     const fit = await page.evaluate(() => Math.round(document.querySelector<HTMLElement>('#page-tracker .tr-root')!.getBoundingClientRect().bottom - innerHeight))
     expect(Math.abs(fit)).toBeLessThanOrEqual(1)
     await pick(page, '142')
+    await page.waitForSelector('#page-tracker #board svg', { state: 'attached' })
     await expect(band(page)).toHaveCount(0)
     expect(await page.evaluate(() => (document.querySelector('.trk-host') as any).inert)).toBe(false)
   })
@@ -124,6 +129,7 @@ test.describe('night job 2', () => {
     await expect(q).toBeHidden()
     await expect.poll(() => shownNum(page)).toBe('149')
     await toTracker(page)
-    await expect(band(page)).toContainText("This is 142's Tracker.")
+    await expect(band(page), 'the Tracker follows the pick: no band (his D2395)').toHaveCount(0)
+    await expect(page.locator('#page-tracker #board svg')).toBeVisible()
   })
 })

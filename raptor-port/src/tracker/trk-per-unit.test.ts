@@ -72,16 +72,17 @@ describe('each squadron keeps a Tracker of its own (step 4)', () => {
     if (A.curSylId() === sylId) expect(A.byid[ball], '142\'s ball stays deleted').toBeFalsy()
   })
 
-  it('once loaded, the Tracker keeps its squadron — a bind to another unit is refused, never a silent switch', async () => {
+  it('once loaded, a bare bind to another unit is still refused: only the Tracker itself moves its door', async () => {
     const st: any = await import('./storage.js')
     expect(st.storageUnit()).toBe('u142')
     expect(st.bindStorageUnit('u149')).toBe(false)
     expect(st.storageUnit()).toBe('u142')
   })
 
-  /* enterSquadron's Tracker step (the reshape plan §3.2 A-iv, §14.3 — state/store.ts): it follows the page's squadron
-     only where the Tracker has not loaded; once loaded its records are in module caches, so it keeps its squadron */
-  it('the rebind follows before the first load, and keeps the squadron once loaded', async () => {
+  /* enterSquadron's Tracker step (the reshape plan §3.2 A-iv — state/store.ts). His D2395 changed its last line: once loaded
+     the door is moved by core.js, which empties its memory first (msq-trk-follows-pick.test.tsx); with no core.js
+     registered — this test's fresh storage module — nothing can, and the answer stays 'kept'. */
+  it('the rebind follows before the first load; once loaded it goes through the Tracker, never moving the door itself', async () => {
     vi.resetModules()
     const st: any = await import('./storage.js')
     st.setStorageMaker((u: string) => trackerTarget(wb, u), () => 'u142')
@@ -92,8 +93,17 @@ describe('each squadron keeps a Tracker of its own (step 4)', () => {
     expect(st.rebindStorageUnit('u149'), 'bound but not loaded: re-bound').toBe('bound')
     expect(st.storageUnit()).toBe('u149')
     st.markStorageLoaded()
-    expect(st.rebindStorageUnit('u142'), 'loaded: kept').toBe('kept')
+    expect(st.rebindStorageUnit('u142'), 'loaded, no Tracker registered: the door does not move by itself').toBe('kept')
     expect(st.storageUnit()).toBe('u149')
+    const asked: any[] = []
+    st.onStorageFollow({ follow: (u: string, h: boolean) => { asked.push([u, h]); return h ? 'held' : 'moved' }, stay: () => asked.push('stay') })
+    expect(st.rebindStorageUnit('u142'), 'loaded: the Tracker is asked').toBe('moved')
+    expect(st.rebindStorageUnit('u142', true), 'with chart work it may hold for').toBe('held')
+    expect(st.storageUnit(), 'and the door has still not moved: that is the Tracker\'s, after it empties its memory').toBe('u149')
+    expect(st.rebindStorageUnit('u149'), 'back on its own squadron').toBe('same')
+    expect(asked).toEqual([['u142', false], ['u142', true], 'stay'])
+    expect(st.moveStorageDoor('u142')).toBe(true)
+    expect(st.storageUnit()).toBe('u142')
     expect(st.rebindStorageUnit(''), 'no unit').toBe('none')
   })
 })

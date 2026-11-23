@@ -1,17 +1,11 @@
 // @vitest-environment jsdom
-/* THE TRACKER AFTER A PICK (batch 1's second half, the plan docs/superpowers/plans/2026-11-22-multi-sqn-b1-second-half.md
-   §16 D2′, §9 F2; his D2318 — the approved drawings docs/mock/2026-11-22-msq-b1-screens/img/f2a, f2b, f2c, words as
-   drawn). The Tracker keeps the squadron it first loaded (tracker/storage.js — read here through the gate's probe,
-   state/perms.ts setTrkUnitProbe, as boot.ts installs it). When his own pages (pageUnit('own')) are another squadron's:
-   (a) he is still an admin of the Tracker's squadron by any road (home, Plan, master) — read only, "This is 149's
-       Tracker. Pick 149 to change it. To open 142's, sign out and in.";
-   (b) he is not — hidden, "You can't open 149's Tracker any more. Sign out and in to open 142's.";
-   the member view — hidden, "This is 149's Tracker. Leave the member view to open it.";
-   (c) the Tracker's squadron is his pages' — nothing.
-   Read from the account, not the role in force (§16 D2′). A bell tap that enters another squadron reaches (a) as the menu
-   does. His own move at midnight keeps the band drawn for it (state/typing-hold.test.tsx) and no cover.
-   The page's cover itself (the veil, the hidden Tracker) is the browser's: e2e/msq-job2.spec.ts.
-   Red first: before the change nothing told the Tracker page any of this (trackerCover did not exist). */
+/* THE TRACKER'S COVER AFTER HIS D2395 (23 Nov 26): the Tracker follows the squadron picked, so D2318's two bands — "This is
+   142's Tracker. Pick 142 to change it. To open 149's, sign out and in." and "You can't open 149's Tracker any more. Sign
+   out and in to open 142's." — are gone (these tests pinned them until then; the move itself: tracker/msq-trk-follows-pick
+   .test.tsx). The Tracker's squadron is read here through the gate's probe, state/perms.ts setTrkUnitProbe, as boot.ts
+   installs it. What is left is the member view while the door is HELD for his unsaved chart edits: hidden, "This is 149's
+   Tracker. Leave the member view to open it." — read from the account, not the role in force. His own move at midnight
+   keeps the band drawn for it (state/typing-hold.test.tsx) and no cover. */
 import { describe, it, expect, afterEach } from 'vitest'
 import { act } from '@testing-library/react'
 import { useMsqWorld, signInAs, ACCT, PID } from '../test-support/msq-world'
@@ -22,6 +16,7 @@ import { setTrkUnitProbe, pageUnit } from './perms'
 import { notify, switchRoleView } from './store'
 import { pickSquadron } from './pick'
 import * as hold from './typing-hold'
+import { setStorageHeld } from '../tracker/storage.js'
 import { UNIT } from '../engine/unitview'
 import { openNotice } from '../ui/topstate'
 import { setPage } from './view'
@@ -29,7 +24,7 @@ import { trackerUndoEngine } from '../ui/topstate'
 import type { Notice } from './notices'
 
 useMsqWorld()
-afterEach(() => { setTrkUnitProbe(null) })
+afterEach(() => { setTrkUnitProbe(null); setStorageHeld(false) })
 
 /* the Tracker loaded on `u`'s (its doorway's bound squadron, as the gate reads it) */
 const trackerOn = (u: string) => setTrkUnitProbe(() => u)
@@ -62,7 +57,7 @@ describe('(c) the Tracker is his own pages\' squadron: nothing shown', () => {
   })
 })
 
-describe('(a) still an admin of the Tracker\'s squadron: read only, with the road back', () => {
+describe('(a) the band of a pick is gone (D2395): he is still an admin of the Tracker\'s squadron, and nothing covers it', () => {
   it('Saber, the master admin, opened it on 149 and picked 142 (the drawing f2a)', () => {
     signInAs('saber')
     act(() => { void pickSquadron('u149') })
@@ -70,8 +65,7 @@ describe('(a) still an admin of the Tracker\'s squadron: read only, with the roa
     expect(cover(), 'on 149 with 149\'s Tracker: nothing').toBeNull()
     act(() => { void pickSquadron('u142') })
     expect(UNIT).toBe('u142')
-    expect(words()).toBe("ro: This is 149's Tracker. Pick 149 to change it. To open 142's, sign out and in.")
-    /* the road back: picking 149 again gives it back */
+    expect(words(), 'no band').toBeNull()
     act(() => { void pickSquadron('u149') })
     expect(cover()).toBeNull()
   })
@@ -81,10 +75,14 @@ describe('(a) still an admin of the Tracker\'s squadron: read only, with the roa
     act(() => { void pickSquadron('u149') })
     trackerOn('u149'); act(() => { notify() })
     act(() => { void pickSquadron('u142') })
-    expect(words()).toBe("ro: This is 149's Tracker. Pick 149 to change it. To open 142's, sign out and in.")
+    expect(words(), 'no band').toBeNull()
   })
-  it('the Tracker\'s own Undo and Redo in the top bar offer nothing while it is covered', () => {
-    signInAs('saber'); trackerOn('u149'); act(() => { notify() })
+  it('the Tracker\'s own Undo and Redo in the top bar offer nothing while it is covered (the member view over held edits)', () => {
+    give(ACCT.hunter, 'plan')
+    signInAs('hunter')
+    act(() => { void pickSquadron('u149') })
+    trackerOn('u149'); setStorageHeld(true)
+    act(() => { switchRoleView(); notify() })
     expect(cover()).not.toBeNull()
     const e = trackerUndoEngine()
     expect([e.canUndo, e.canRedo]).toEqual([false, false])
@@ -95,12 +93,12 @@ describe('(a) still an admin of the Tracker\'s squadron: read only, with the roa
       what: [{ k: 'po', who: PID.osprey, o: 'none' }], u: 'u149' } as unknown as Notice
     act(() => { openNotice(n) })
     expect(UNIT).toBe('u149')
-    expect(words()).toBe("ro: This is 142's Tracker. Pick 142 to change it. To open 149's, sign out and in.")
+    expect(words(), 'no band').toBeNull()
   })
 })
 
-describe('(b) no longer an admin of it: hidden', () => {
-  it('Hunter\'s Plan of 149 lowered to View while the Tracker held 149\'s (the drawing f2b)', () => {
+describe('(b) no longer an admin of it: no band either (D2395) — the Tracker goes to his own squadron', () => {
+  it('Hunter\'s Plan of 149 lowered to View while the Tracker held 149\'s', () => {
     give(ACCT.hunter, 'plan')
     signInAs('hunter')
     act(() => { void pickSquadron('u149') })
@@ -109,16 +107,24 @@ describe('(b) no longer an admin of it: hidden', () => {
     fromAnotherDevice(() => expect(setGrant(ACCT.hunter, 'u149', 'view', PID.hunter)).toMatchObject({ ok: true }))
     act(() => { notify() })
     expect(pageUnit('own')).toBe('u142')
-    expect(words()).toBe("gone: You can't open 149's Tracker any more. Sign out and in to open 142's.")
+    expect(words(), 'no band').toBeNull()
   })
 })
 
-describe('the member view: hidden, its own line; leaving it gives the Tracker back', () => {
-  it('Hunter with Plan of 149, his Tracker on 149, taps into the member view and back (the drawing f2c)', () => {
+describe('the member view over held chart edits: hidden, its own line; leaving it gives the Tracker back', () => {
+  it('with nothing held there is nothing to cover', () => {
     give(ACCT.hunter, 'plan')
     signInAs('hunter')
     act(() => { void pickSquadron('u149') })
     trackerOn('u149'); act(() => { notify() })
+    act(() => { switchRoleView(); notify() })
+    expect(cover()).toBeNull()
+  })
+  it('Hunter with Plan of 149, his Tracker held on 149 for unsaved edits, taps into the member view and back (the drawing f2c)', () => {
+    give(ACCT.hunter, 'plan')
+    signInAs('hunter')
+    act(() => { void pickSquadron('u149') })
+    trackerOn('u149'); setStorageHeld(true); act(() => { notify() })
     act(() => { switchRoleView(); notify() })
     expect(words()).toBe("member: This is 149's Tracker. Leave the member view to open it.")
     act(() => { switchRoleView(); notify() })

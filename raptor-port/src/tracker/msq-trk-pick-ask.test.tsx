@@ -1,15 +1,16 @@
 // @vitest-environment jsdom
 /* A PICK WITH UNSAVED CHART EDITS ASKS FIRST (batch 1's second half, the plan
    docs/superpowers/plans/2026-11-22-multi-sqn-b1-second-half.md §16 D2′; his D2318 — the approved drawing
-   docs/mock/2026-11-22-msq-b1-screens/img/f2d-*.png). The Tracker keeps the squadron it loaded until the next sign-in, so a
-   pick that moves his own pages off it would leave his unsaved chart edits where they can no longer be saved. The pick asks
+   docs/mock/2026-11-22-msq-b1-screens/img/f2d-*.png; kept by his D2395, under which the Tracker follows the squadron picked
+   — that move itself is tracker/msq-trk-follows-pick.test.tsx, with the real door). A pick that takes the Tracker off the
+   squadron it is on would leave his unsaved chart edits behind. The pick asks
    the sign-out's question with its own last line — "You have unsaved chart edits on “2026”. Save them before switching to
    142?" — Save them / Discard them / Stay:
    - Stay keeps everything and makes no pick;
    - Discard drops the edits and picks;
    - Save saves them into the Tracker's own squadron (149's here), then picks.
    The bell's tap that enters another squadron asks the same (state/belltap.ts enterForLine), and goes on once answered.
-   The member view and back keeps a draft: the Tracker is hidden, never reset (D2′ (b)).
+   The member view and back keeps a draft: the Tracker is held and hidden, never reset (D2′ (b), D2395).
    Hunter (142's admin) holds Plan of 149, picked 149 and opened the Tracker there (its squadron read by the gate's probe,
    as boot.ts installs it). Its own file so the Tracker engine boots fresh.
    Red first: before the change a pick asked nothing — it went straight through and the edits stayed behind. */
@@ -25,6 +26,7 @@ import { notify, switchRoleView } from '../state/store'
 import { pickSquadron } from '../state/pick'
 import { trackerCover } from '../state/typing-hold'
 import { trackerMayLogOut } from './role.js'
+import { setStorageHeld } from './storage.js'
 import { UNIT } from '../engine/unitview'
 import { CURPAGE, setPage } from '../state/view'
 import { openNotice } from '../ui/topstate'
@@ -82,7 +84,7 @@ describe('a pick with unsaved chart edits (the drawing f2d)', () => {
     expect(trackerCover()).toBeNull()
     await C.saveChangesClick()
   })
-  it('Discard them drops the edits, then picks: the Tracker read only', async () => {
+  it('Discard them drops the edits, then picks: no band over the Tracker (D2395)', async () => {
     await onHis149Tracker()
     await dirty('PICK-DISCARD')
     const p = pickSquadron('u142')
@@ -90,7 +92,7 @@ describe('a pick with unsaved chart edits (the drawing f2d)', () => {
     expect(UNIT).toBe('u142')
     expect(C.sylDirty).toBe(false)
     expect(C.byid['PICK-DISCARD'], 'the ball is gone').toBeFalsy()
-    expect(trackerCover()?.kind).toBe('ro')
+    expect(trackerCover()).toBeNull()
     /* the re-walk of 23 Nov 26 (chat 151, N2): the bar still said "● unsaved flow edits — hit “Save changes”" about the
        edits just dropped. Red first. */
     expect(C.saveWords().text, 'the bar no longer speaks of unsaved edits').not.toMatch(/unsaved/)
@@ -112,7 +114,7 @@ describe('a pick with unsaved chart edits (the drawing f2d)', () => {
     expect(C.sylDirty).toBe(false)
     expect(await stored('PICK-SAVE'), 'saved').toBe(true)
     expect(UNIT).toBe('u142')
-    expect(trackerCover()?.kind).toBe('ro')
+    expect(trackerCover()).toBeNull()
   })
   it('nothing unsaved: no question, the pick made at once', async () => {
     await onHis149Tracker()
@@ -136,7 +138,7 @@ describe('the bell\'s tap that enters another squadron asks the same', () => {
     await until(() => UNIT === 'u149')
     expect(await stored('BELL-SAVE')).toBe(true)
     expect(CURPAGE, 'the tap landed').toBe('admin')
-    expect(trackerCover()?.kind, 'case (a): 142\'s Tracker read only').toBe('ro')
+    expect(trackerCover(), 'no band (D2395)').toBeNull()
   })
 })
 
@@ -144,11 +146,13 @@ describe('the member view and back keeps a draft (D2′ (b): hidden, never reset
   it('Hunter\'s unsaved edit on 149\'s Tracker survives the member view and back', async () => {
     await onHis149Tracker()
     await dirty('MEMBER-DRAFT')
+    setStorageHeld(true)      /* the door held for the draft, as the real follow does (msq-trk-follows-pick.test.tsx) */
     switchRoleView(); notify()
     expect(trackerCover()?.kind).toBe('member')
     expect(C.sylDirty).toBe(true)
     expect(C.byid['MEMBER-DRAFT']).toBeTruthy()
     switchRoleView(); notify()
+    setStorageHeld(false)
     expect(trackerCover()).toBeNull()
     expect(C.sylDirty, 'the draft is still there').toBe(true)
     expect(C.byid['MEMBER-DRAFT']).toBeTruthy()

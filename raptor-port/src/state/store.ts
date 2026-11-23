@@ -52,7 +52,7 @@ import { holdNow, setBands, warBand, setHoldRelease, setEnteredByPick, enteredBy
 import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { endTrackerSession } from '../tracker/role.js'
-import { rebindStorageUnit } from '../tracker/storage.js'
+import { rebindStorageUnit, storageHeld } from '../tracker/storage.js'
 import { isHydrated, hydratePlan, hydrateRolesFor, persistWb } from './persist'
 import { deferEffect, CmdRefused, setPermissionResolver, commitProjection, onPipelineBegin, deriveActor, definePermission, anyone, activeEnvelope, isCommitting } from '../command'
 /* internal wiring may raise a command as a named person (command/index.ts — commitAs stays off the public surface) */
@@ -946,10 +946,11 @@ function sessionUnit(pid: string | null | undefined): string {
    his home today, as nothing picks yet). resetSession enters at sign-in; the midnight check below enters again when his
    own move takes effect (A2) — it does NOT reset the page or clear the Undo list: his steps in the old squadron wait
    there, by their stamp (A-v).
-   THE TRACKER moves only where it has not loaded (tracker/storage.js rebindStorageUnit — §14.3: once loaded its records
-   sit in module caches that cannot be re-read in place, so it keeps its squadron until the next sign-in). The answer is
-   handed back, so a caller can tell. */
-export type TrackerEntry = 'none' | 'same' | 'later' | 'bound' | 'kept'
+   THE TRACKER FOLLOWS (his D2395 — tracker/storage.js rebindStorageUnit, tracker/app/core.js followUnit): once loaded it
+   leaves this squadron and reads the next on its own, after this returns ('moved'), or waits where chart work is open that
+   cannot be asked about — his own move at midnight or the member view ('held'; trkMayHold, below). A pick has asked
+   already (state/pick.ts). The answer is handed back, so a caller can tell. */
+export type TrackerEntry = 'none' | 'same' | 'later' | 'bound' | 'kept' | 'moved' | 'held'
 export interface Entered { unit: string; own: string; tracker: TrackerEntry }
 let ENTERING = false
 /* `holdWar` (phase 3 — the plan §3.2 A-iv "Typed work at the swap"; state/typing-hold.ts): an open Leave War window holds
@@ -976,8 +977,16 @@ export function enterSquadron(scheduleUnit: string, holdWar = false, byPick = fa
     landOffEditSched()
     /* a squadron he only views, entered on a page it does not offer, lands on its View-only Sched (D2381) */
     if (!pageOffered(view.CURPAGE) && !warHeld()) view.setPage('viewsched')
-    return { unit: UNIT, own, tracker: rebindStorageUnit(own) as TrackerEntry }
+    return { unit: UNIT, own, tracker: rebindStorageUnit(own, !byPick && trkMayHold()) as TrackerEntry }
   } finally { ENTERING = false }
+}
+/* MAY THE TRACKER WAIT ON THE SQUADRON IT IS ON, for chart work still open there (his D2395, with D2243 and D2253): his own
+   move taking effect today, whose band across the chart editor says it can't be saved; or the member view, which leaving
+   gives back. A right taken away never waits: he is no longer to be shown that squadron's chart. */
+function trkMayHold(): boolean {
+  const trk = trkUnitNow(), m = me()
+  if (!trk || !m) return false
+  return !!moveWords(trk, 'Tracker', m, todayIso()) || !!trackerCoverKind()
 }
 
 /* HIS HOME AT ENTRY — recorded by resetSession, never the pick (Opus L2); null nobody signed in (or a sign-in with no
@@ -990,8 +999,8 @@ export const homeAtEntry = (): string | null => HOME_AT_ENTRY
 let ENTRY_TRIGGER = true
 export function setEntryTrigger(on: boolean): void { ENTRY_TRIGGER = !!on }
 /* THE HOLD (state/typing-hold.ts): an open Leave War window holds the war's swap, whatever is typed in it (Astra 7,
-   Fable F9). A test may hand its own; `null` puts the app's own back. 'tracker' holds nothing of its own: the Tracker
-   cannot be re-read in place once loaded (§14.3), so it never moves under an open editor. */
+   Fable F9). A test may hand its own; `null` puts the app's own back. 'tracker' holds nothing of its own here: the
+   Tracker's chart work holds its own door (his D2395 — trkMayHold, above). */
 export type EntryHold = HoldKind
 let ENTRY_HOLD: () => EntryHold = holdNow
 export function setEntryHold(fn: (() => EntryHold) | null): void { ENTRY_HOLD = fn || holdNow }
@@ -1016,9 +1025,9 @@ function pickAfterMove(pick: string, oldHome: string, newHome: string, iso: stri
      the pick has no readable right behind it today (perms.ts pickStandsOn — a View or Plan taken away or ended while he
      is on that squadron's pages) → his home, entered again; the page's own squadron is not the Leave War's loaded one —
      a right lowered, removed or raised mid-day, or a war held by a window that has since gone — → the same pick, entered
-     again; or not the Tracker's bound one → the same pick, entered again, the Tracker moving only where it has not yet
-     loaded (tracker/storage.js rebindStorageUnit: a loaded one is kept until the next sign-in, its band saying so, and the
-     key in maybeReenter stops a second try). */
+     again; or not the Tracker's bound one → the same pick, entered again, the Tracker following it (his D2395 —
+     tracker/storage.js rebindStorageUnit; where chart work holds it, core.js moves it itself once that is gone, and the
+     key in maybeReenter stops a second try meanwhile). */
 function entryDue(): string | null {
   const m = me()
   if (!m || HOME_AT_ENTRY == null) return null
@@ -1052,9 +1061,9 @@ function maybeReenter(): void {
 }
 
 /* THE BAND (state/typing-hold.ts; D2243 Q7 — the approved drawing's words, D1478): while the world a page holds is not
-   the page's own squadron — the war under a window that held its swap, or the Tracker, which keeps the squadron it loaded
-   until the next sign-in (§14.3) — its open window or chart editor says so. Written after every check, so a surface reads
-   the band of the page as it stands. */
+   the page's own squadron — the war under a window that held its swap, or the Tracker where chart work holds it at his
+   own move (his D2395) — its open window or chart editor says so. Written after every check, so a surface reads the band
+   of the page as it stands. */
 const isoDayBefore = (iso: string): string => {
   const [y, m, d] = iso.split('-').map(Number)
   const t = new Date(y!, m! - 1, d! - 1)
@@ -1092,16 +1101,15 @@ function bandWords(world: string, page: 'Leave War' | 'Tracker', pid: string, is
 export function heldWindowBand(opened: string): NonNullable<MoveBand> {
   return heldWords(opened)
 }
-/* THE TRACKER AFTER A PICK (§16 D2′, his D2318 — the drawings f2a, f2b, f2c; state/perms.ts trackerCoverKind): the
-   Tracker page's own band, its words filled from the Tracker's squadron and his own pages' (pageUnit('own')). His own move
-   taking effect at midnight keeps the band drawn for it across the chart editor (D2243 Q7, above) and no cover. */
+/* THE TRACKER'S ONE COVER LEFT (his D2395 took away D2318's two bands; state/perms.ts trackerCoverKind): the member view
+   over his unsaved edits, only while the door is held for them — during an ordinary move the page shows its own
+   "Loading…". His own move taking effect at midnight keeps the band drawn for it across the chart editor (D2243 Q7, above)
+   and no cover. */
 function coverWords(): TrkCover {
+  if (!storageHeld()) return null
   const c = trackerCoverKind()
   if (!c) return null
-  const b = unitNum(c.bound), o = unitNum(c.own)
-  if (c.kind === 'ro') return { kind: 'ro', lead: `This is ${b}'s Tracker.`, rest: `Pick ${b} to change it. To open ${o}'s, sign out and in.` }
-  if (c.kind === 'member') return { kind: 'member', lead: `This is ${b}'s Tracker.`, rest: 'Leave the member view to open it.' }
-  return { kind: 'gone', lead: `You can't open ${b}'s Tracker any more.`, rest: `Sign out and in to open ${o}'s.` }
+  return { kind: 'member', lead: `This is ${unitNum(c.bound)}'s Tracker.`, rest: 'Leave the member view to open it.' }
 }
 function publishBands(): void {
   const m = me()

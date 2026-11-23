@@ -304,23 +304,22 @@ export function ownPageMayBe(u: string, iso: string = todayIso()): boolean {
 export function ownPageIfPicked(u: string, iso: string = todayIso()): string {
   return ownPageMayBe(u, iso) ? u : myUnit(iso)
 }
-/* THE TRACKER AFTER A PICK (batch 1's second half §16 D2′; his D2318 — the drawings f2a, f2b, f2c): which cover the
-   Tracker page wears when the Tracker loaded (its bound squadron — tracker/storage.js, read through trkUnitNow) is not his
-   own pages' squadron (pageUnit('own')). Read from the ACCOUNT, not the role in force (§16 D2′): he is an admin of the
-   bound squadron today by any road — his home's admin role, a Plan of it, the master mark (levelOfAccount over levelAcct,
-   or master) — 'ro' (read only, the role in force admin) or 'member' (the member view: leaving it opens it); not an admin
-   of it any more (a Plan lowered or taken, a member) — 'gone'. Bound = own, nothing bound, nobody signed in: null. The
-   gate's 7f clause still judges every Tracker write by the role in force (trkUnitViolation, below). */
-export type TrkCoverKind = { kind: 'ro' | 'gone' | 'member'; bound: string; own: string } | null
+/* THE TRACKER IN THE MEMBER VIEW (his D2395, which took away D2318's read-only and hidden bands; D2253): the Tracker
+   follows his own pages' squadron (tracker/app/core.js followUnit), so it stands on another (trkUnitNow — its bound
+   squadron) only where the door is held for chart work. This says whether the MEMBER VIEW is why: the role in force is a
+   member's and, read from the ACCOUNT, he is an admin of that squadron by any road — a Plan of it, the master mark, his
+   home's admin role — so leaving the member view opens it. Anything else (bound = own, nothing bound, nobody signed in, a
+   right lowered or taken): null. The gate's 7f clause still judges every Tracker write by the role in force
+   (trkUnitViolation, below). */
+export type TrkCoverKind = { kind: 'member'; bound: string; own: string } | null
 export function trackerCoverKind(iso: string = todayIso()): TrkCoverKind {
   const bound = trkUnitNow()
-  if (!bound || !SESSION || !me()) return null
+  if (!bound || !SESSION || !me() || roleOf() === 'admin') return null
   const own = pageUnit('own', iso)
   if (bound === own) return null
   const acct: any = ACCOUNTS_LIST.find(a => a.id === SESSION.user)
   const adminThere = !!acct && acct.role === 'admin' && (acct.master === true || levelOfAccount(levelAcct(acct), bound, iso) === 'admin')
-  if (!adminThere) return { kind: 'gone', bound, own }
-  return { kind: roleOf() === 'admin' ? 'ro' : 'member', bound, own }
+  return adminThere ? { kind: 'member', bound, own } : null
 }
 /* A WINDOW THE MEMBER VIEW HOLDS (his D2389, D2400; state/typing-hold.ts memberViewBand): he is an admin in the member view,
    and the window's squadron is the one in view, not his home, and one he is an admin of by a Plan or the master mark — read
@@ -2023,7 +2022,7 @@ function warUnitViolation(env: CommitEnvelope): string | null {
 }
 /* 7f. A SQUADRON'S TRACKER IS CHANGED ONLY BY ITS OWN PEOPLE (the second fix read, 18 Nov 26 — Fable's plan, still open 3).
    Each squadron keeps a Tracker of its own (D2167), but its record ids name none (`v3:<course>:<syllabus>:…` — the unit is
-   added by its storage door, tracker/storage.js, bound once to the signed-in person's own squadron), so the gate never knew
+   added by its storage door, tracker/storage.js, on the squadron of his own pages), so the gate never knew
    whose Tracker a change was to. A doorway bound to another squadron's — the console's bindStorageUnit before the Tracker
    loads, as the Leave War's swap was for H2 — let 142's people change 149's. The Tracker tells the gate which squadron's
    is open (setTrkUnitProbe, installed by boot.ts from the doorway's own bound unit; none bound, nothing asked); every
@@ -2044,14 +2043,15 @@ function trkUnitViolation(env: CommitEnvelope): string | null {
   const lv = levelInForce(a, u, todayIso(), unitRowsBefore(env.changes))
   const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
   if (!ok) return `a change to another squadron's Tracker (${u}) by one with ${lv ? `${lv} rights` : 'no rights'} there`
-  /* THE TRACKER KEPT FROM BEFORE HIS MOVE TAKES NOTHING (fix read 2 — Astra 3's F3; his D2243 Q7, "nothing typed saved into
-     either squadron"): a Tracker once loaded keeps its squadron until the next sign-in (state/typing-hold.ts), and its band
-     says "This can't be saved in 142's Tracker" — but a moved MASTER admin is an admin of 142 still, so the line above let
-     his changes into it under that band. A change by the person signed in on this page is refused while the Tracker bound
-     is not the page's own squadron today (pageUnit('own') — the very test the band is drawn by, store.ts publishBands),
-     master admins included. A Tracker he opened on purpose is the page's own squadron (the pick of a master admin or a
-     Plan holder — D2197; enterSquadron binds it), so his ordinary editing there passes. Another session's change arriving
-     here is not this page's and is not asked. */
+  /* A TRACKER THAT IS NOT THE PAGE'S OWN SQUADRON TAKES NOTHING (fix read 2 — Astra 3's F3; his D2243 Q7, "nothing typed
+     saved into either squadron"): the Tracker follows his pages (D2395), but stands on its old squadron while a move is
+     running or chart work holds it (tracker/app/core.js followUnit; the midnight band says "This can't be saved in 142's
+     Tracker") — and a moved MASTER admin is an admin of 142 still, so the line above let his changes into it under that
+     band. A change by the person signed in on this page is refused while the Tracker bound is not the page's own squadron
+     today (pageUnit('own') — the very test the band is drawn by, store.ts publishBands), master admins included: nothing
+     still running on the squadron being left can write once the pick is made. A Tracker on the page's own squadron (the
+     pick of a master admin or a Plan holder — D2197) passes. Another session's change arriving here is not this page's and
+     is not asked. */
   if (SESSION && a.id === SESSION.user && env.origin !== 'remote' && u !== pageUnit('own', todayIso()))
     return `a change to a Tracker (${u}) that is not the page's own squadron today (${pageUnit('own', todayIso())})`
   return null

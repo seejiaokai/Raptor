@@ -52,9 +52,9 @@ export async function trackerMayLogOut(show) {
   try { return (await beforeLogout(show)) !== false } catch (_) { return true }
 }
 
-/* ASK BEFORE A PICK TAKES THE TRACKER AWAY (multi-squadron batch 1's second half §16 D2′; his D2318 — the drawing f2d):
-   the Tracker keeps the squadron it loaded until the next sign-in, so a pick in the Schedules menu (or a bell tap) that
-   moves his own pages off it leaves it read only or hidden — and unsaved chart edits could no longer be saved. So the pick
+/* ASK BEFORE A PICK TAKES THE TRACKER AWAY (multi-squadron batch 1's second half §16 D2′; his D2318, kept by D2395 — the
+   drawing f2d): the Tracker follows the squadron picked, so a pick in the Schedules menu (or a bell tap) that moves his own
+   pages off it would leave unsaved chart edits behind. So the pick
    asks first, the sign-out's question with its own words: "Save them before switching to 142?", Save them / Discard them /
    Stay. Asked WHERE HE IS — never jumping to the Tracker page first (core.js raises it over any page). Raptor's pick
    (state/pick.ts, state/belltap.ts) calls trackerSwitchAsk: null — nothing to ask (no Tracker loaded, no unsaved edit),

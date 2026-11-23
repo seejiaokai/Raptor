@@ -149,12 +149,10 @@
 /* A WINDOW OPEN AT A PICK (his D2323 — the drawings f7a, f7b; ui/heldro.ts): under its band the window is read only, each
    control greyed in the app's disabled look (opacity .42, as Admin → Users' greyed controls), the words left as they are */
 [data-heldro] :is(button, input, select, textarea), :is(button, input, select, textarea)[data-heldro]{opacity:.42;cursor:default}
-/* THE TRACKER AFTER A PICK (§16 D2′, his D2318 — the drawings f2a, f2b, f2c; tracker/TrackerPage.tsx): the band across the
-   Tracker page's top, a line of its own under the top bar; read only, the page under a light veil — visible, nothing live
-   (`inert` on it); hidden, nothing of the Tracker shown — kept in memory, never unmounted */
+/* THE TRACKER'S ONE COVER LEFT (his D2395 took away D2318's read-only veil; tracker/TrackerPage.tsx): the member view over
+   his unsaved chart edits — the band across the Tracker page's top, a line of its own under the top bar; nothing of the
+   Tracker shown — kept in memory, never unmounted */
 .trk-cover-band{flex:0 0 auto}
-.trk-host.trk-ro{position:relative}
-.trk-host.trk-ro::after{content:'';position:absolute;inset:0;z-index:400;background:rgba(10,12,16,.5)}
 .trk-host.trk-gone{display:none}
 /* on the board the band is the LAST line of the board's own bar (inside .sb-top, so --sb-topH follows it), let out to
    the bar's edges past its padding; in the Medical view opened full (its column is `.inpcal` — no screen opens it so

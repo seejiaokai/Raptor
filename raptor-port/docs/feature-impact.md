@@ -824,8 +824,8 @@ stashEntries()` — a person's delete (`state/person-delete.ts stashPreflight`) 
 Each squadron's Leave War and Tracker is a whole world of its own behind its own door (`storage/adapters.ts
 leavewarAdapter(wb, unit)`, `trackerTarget(wb, unit)`); neither store knows a squadron exists. The Leave War loaded is
 the signed-in person's home unit's — `leavewar/sync.ts swapWarWorld` at every sign-in (the store's `resetSession` hook),
-re-projecting its roster, absences and OIL for that unit; the Tracker binds his unit at its first load
-(`tracker/storage.js markStorageLoaded`) and its + Add offers that unit's people only (`tracker/peoplewire.ts`). The
+re-projecting its roster, absences and OIL for that unit; the Tracker binds his own pages' unit at its first load
+(`tracker/storage.js markStorageLoaded`), follows the squadron picked from then on (his D2395 — `tracker/app/core.js`) and its + Add offers that unit's people only (`tracker/peoplewire.ts`). The
 seams: (1) a reader that needs ANOTHER squadron's war reads it from that unit's door (`sync.ts storedWorld`), never from
 the store, which holds one world; (2) *[BUILT 21 Nov 26 — the reshape's A4, his D2195: each squadron owns its own
 holiday list; step 4's overlay that laid a place's holidays onto every squadron there at read (`placeHolidaysFor`,
@@ -882,8 +882,8 @@ steps apart). **The hold and the band** (`state/typing-hold.ts`, his D2243 Q7): 
 (`leavewar/ui/Sheet.tsx` counts them) holds the WAR'S step only, so nothing typed is saved into the new squadron; while
 the war or Tracker loaded is not the page's own squadron, the window or the Tracker's chart editor carries one band in
 the failed-save band's look (`ui/MoveBand.tsx`) — "You are 149's from today. This can't be saved in 142's Leave War."
-(or "…in 142's Tracker."), one button "Close" — and closing the window lets the swap run. The Tracker, once loaded, is
-kept until the next sign-in (its records sit in module caches that cannot be re-read in place); the gate refuses his
+(or "…in 142's Tracker."), one button "Close" — and closing the window lets the swap run. The Tracker follows his pages
+(his D2395), but with the chart editor or unsaved chart edits open at his move it stays until that work is gone; the gate refuses his
 changes to it meanwhile. **The schedule side** (the walk of 21 Nov 26 — W3-F2, W3-F3; `state/typing-hold.ts` "the
 schedule side") holds no swap: each window or box remembers the squadron its page showed when it opened. The input's
 window (`ui/InputWindow.tsx`) stays with the same band and "Close", its Person list read from the squadron it opened on,

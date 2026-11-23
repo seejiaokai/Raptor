@@ -231,24 +231,25 @@ Only an admin of 149 can change it." at the panel's top (`#admCfgRo`) and every 
 arrows, the two buttons under the lists, the three template doors), each door asking again. `ui/AdminPage.tsx`
 `SquadronConfig`, `paneTitle`; pinned by `ui/msq-admin-config.test.tsx`.
 
-**The Tracker after a pick (§16 D2′, his D2318 — the drawings f2a–f2d):** the Tracker keeps the squadron it loaded until
-the next sign-in. When his own pages' squadron (`pageUnit('own')`) is not that one, the Tracker page carries one band
-across its top, in the band's own look (`ui/MoveBand.tsx`, no Close) — `state/perms.ts trackerCoverKind`, words by
-`state/store.ts`:
-- he is still an admin of it by any road (home, Plan, master): "This is 149's Tracker. Pick 149 to change it. To open
-  142's, sign out and in." — the Tracker in view under a light veil, nothing live (`inert` on `.trk-host`, its keys off,
-  its Undo and Redo in the top bar greyed);
-- he is not any more (a Plan lowered or taken): "You can't open 149's Tracker any more. Sign out and in to open 142's." —
-  nothing of the Tracker shown, kept in memory (never reset or unmounted, so an unsaved draft survives);
-- the member view: "This is 149's Tracker. Leave the member view to open it." — hidden the same way.
-The column is measured to the band's foot. His own move at midnight keeps its band across the chart editor and no cover
-(D2243 Q7). **A pick with unsaved chart edits asks first** (the drawing f2d): the menu's pick and a bell tap that enters
-another squadron (`state/pick.ts askBeforeEntering`, `state/belltap.ts enterForLine`) — only where the pick moves his own
-pages off the Tracker's squadron — ask the logout's question, its last line "Save them before switching to 142?", Save them
+**The Tracker follows the squadron picked (his D2395, replacing D2318's hold until sign-out and its two bands):** with Plan
+of 149 or as a master admin, picking 149 shows and edits 149's Tracker, and picking 142 brings 142's back, no sign-out;
+with only View it is not offered (D2381). A move (`tracker/app/core.js` — the block "THE TRACKER FOLLOWS THE SQUADRON
+PICKED") leaves the old squadron first, the page reading "Loading…": its windows and modes closed, its questions answered
+"cancelled", all it still had running run out on the OLD door; then its records leave memory, the door moves, and the new
+squadron is read through the boot's own path. Each squadron's Undo steps wait for it (given back on the same course and
+chart); his place on each squadron's Tracker is his own. Where the door stays (`tracker/storage.js` 'held'): his own move at
+midnight with the chart editor or unsaved edits open — its band across the chart editor, D2243 Q7, the door moving once
+that work is gone — and the switch to the member view over unsaved edits: nothing of the Tracker shown, kept in memory,
+one band with no Close, "This is 149's Tracker. Leave the member view to open it." (`state/perms.ts trackerCoverKind`,
+words by `state/store.ts`; the column measured to the band's foot). A right taken away is never held: the Tracker goes to
+his own squadron, a draft of the lost squadron's chart goes with the corner's "This change could not be saved."
+**A pick with unsaved chart edits asks first** (the drawing f2d): the menu's pick and a bell tap that enters
+another squadron (`state/pick.ts askBeforeEntering`, `state/belltap.ts enterForLine`) — wherever the pick takes the Tracker
+off the squadron it is on, or brings up one he only views (D2388) — ask the logout's question, its last line "Save them before switching to 142?", Save them
 / Discard them / Stay, where he is: from another page the Tracker's section shows the question alone over it
 (`.trk-askonly`), never the Tracker tab brought forward; Save saves into the Tracker's own squadron before the pick (a save
-that did not take: he stays), Discard drops the edits, Stay makes no pick. Pinned by `state/msq-trk-cover.test.tsx`,
-`tracker/msq-trk-pick-ask.test.tsx`, `e2e/msq-job2.spec.ts`.
+that did not take: he stays), Discard drops the edits, Stay makes no pick. Pinned by `tracker/msq-trk-follows-pick.test.tsx`,
+`state/msq-trk-cover.test.tsx`, `tracker/msq-trk-pick-ask.test.tsx`, `e2e/msq-job2.spec.ts`.
 
 **A window open at a pick (his D2323 — the drawings f7a, f7b):** a Leave War window or an Input window open when his pick
 (or a bell tap) moves the page to another squadron is held as at midnight, but its band reads "This is 142's. You picked

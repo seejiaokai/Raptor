@@ -49,17 +49,14 @@ const TrBody = memo(function TrBody({ active, locked }: { active: boolean; locke
   return <App active={active} locked={locked} />
 })
 
-/* THE TRACKER AFTER A PICK (batch 1's second half §16 D2′; his D2318 — the approved drawings
-   docs/mock/2026-11-22-msq-b1-screens/img/f2a-*.png, f2b-*.png, f2c-*.png, drawn by draw-f.mjs f2). The Tracker keeps the
-   squadron it loaded until the next sign-in; once his own pages are another squadron's (a pick in the Schedules menu, a
-   bell tap, a Plan lowered, the member view) the page says so in one band across its top, in the band's own look with no
-   button (ui/MoveBand.tsx), its words written by state/store.ts (state/typing-hold.ts trackerCover):
-   - read only ('ro'): the Tracker in view under a light veil, nothing live — no press, no focus, no key (`inert` on its
-     host, and App's document keys off);
-   - hidden ('gone', 'member'): nothing of the Tracker shown — its bar, chart and panel — but kept: no reset, no unmount,
-     so a chart edit still unsaved is not lost; picking back brings it as it was.
-   The host wraps the Tracker always, so the cover coming or going never remounts it (its board is drawn once, imperatively,
-   by core.init). The band stands above the Tracker's column, whose height is measured to the band's foot (below). */
+/* THE ONE COVER LEFT (his D2395, 23 Nov 26): the Tracker follows the squadron picked, so the read-only and hidden bands of
+   D2318 are gone. What is left is the switch to the member view while this Tracker holds his unsaved chart edits (the door
+   held — tracker/storage.js): the page says so in one band across its top, in the band's own look with no button
+   (ui/MoveBand.tsx), its words written by state/store.ts (state/typing-hold.ts trackerCover), and nothing of the Tracker
+   is shown — its bar, chart and panel — but kept: no reset, so the edits are not lost; leaving the member view brings them
+   back as they were. No press, focus or key reaches it (`inert` on its host, and App's document keys off).
+   The host wraps the Tracker always, so the cover coming or going never remounts it. The band stands above the Tracker's
+   column, whose height is measured to the band's foot (below). */
 function useCover(): TrkCover { return useSyncExternalStore(subscribeBands, trackerCover, trackerCover) }
 
 /* THE PICK'S QUESTION ASKED FROM ANOTHER PAGE (§16 D2′ — "never jumping to the Tracker page first"; core.js
@@ -84,10 +81,9 @@ const TrkAskOnly = memo(function TrkAskOnly({ active }: { active: boolean }) {
 
 /* THE BAND ACROSS THE CHART EDITOR WHEN HIS SQUADRON CHANGES UNDER IT (the reshape plan §3.2 A-iv "Typed work at the swap";
    his D2243 Q7, "as drawn" — docs/mock/2026-11-20-multi-sqn-reshape/page.html §7, pictures q7c-d and q7c-p, D1478).
-   The Tracker cannot be re-read in place once it has loaded (the plan §14 item 3 — its records sit in module caches of
-   app/core.js; tracker/storage.js rebindStorageUnit): at his move's midnight the schedule and the Leave War move to his
-   new squadron, and this page keeps the squadron it loaded until he signs in again, the gate's 7f refusing his changes
-   to it. So while "Edit chart layout" is open on a Tracker that is no longer his page's own squadron, one band stands
+   At his move's midnight the schedule and the Leave War move to his new squadron, and the Tracker follows them unless
+   chart work is open (his D2395 — core.js followUnit): the door then stays until that work is gone, the gate's 7f refusing
+   his changes to it. So while "Edit chart layout" is open on a Tracker that is no longer his page's own squadron, one band stands
    across the chart's top, between the editing tools and the editing hint, in the failed-save band's own look
    (ui/scheduler/17-save-status.css): "You are 149's from today. This can't be saved in 142's Tracker." — the words
    state/store.ts writes into state/typing-hold.ts — and one button, "Close", the editing row's own button look. Close
@@ -175,7 +171,7 @@ export function TrackerPage({ active = true }: { active?: boolean }) {
   return (
     <>
       {cover ? <div ref={bandRef} className="trk-cover-band"><MoveBandView band={cover} testid="trk-cover-band" /></div> : null}
-      <div ref={host} className={'trk-host' + (cover ? (cover.kind === 'ro' ? ' trk-ro' : ' trk-gone') : '')} data-testid="trk-host">
+      <div ref={host} className={'trk-host' + (cover ? ' trk-gone' : '')} data-testid="trk-host">
         <TrBody active={active} locked={!!cover} />
       </div>
       <TrkMoveBand />

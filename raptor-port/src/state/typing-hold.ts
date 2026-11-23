@@ -14,13 +14,13 @@
      142's Leave War." and one button, "Close", which closes the window and lets the swap run — 149's Leave War opens. His
      typed words stay visible under it, so he can copy them. A save the old squadron refuses after midnight is the one
      this band already names.
-   - THE TRACKER CANNOT BE RE-READ IN PLACE once it has loaded (the plan §14 item 3; tracker/storage.js rebindStorageUnit,
-     phase 2's read of its load path): it keeps the squadron it loaded until he signs in again, and the gate's 7f refuses
-     his changes to a squadron's Tracker he is no longer one of. So nothing the Tracker holds can be saved into the new
-     squadron, and it holds no swap. Its chart editor ("Edit chart layout", the one Tracker editing state the drawing
-     drew) carries the same band — "…in 142's Tracker." — while the Tracker loaded is not the page's own squadron; Close
-     leaves the editor (its edits stay unsaved, as "Done editing chart" leaves them, never saved by the band) —
-     drawn by the Tracker's page seam, tracker/TrackerPage.tsx, which reads the Tracker's own editing state itself.
+   - THE TRACKER FOLLOWS HIS PAGES (his D2395; tracker/app/core.js followUnit), but at his own move's midnight, with the
+     chart editor open or chart edits unsaved, it stays on the squadron they belong to until that work is gone, and the
+     gate's 7f refuses his changes to it. So nothing the Tracker holds can be saved into the new squadron. Its chart editor
+     ("Edit chart layout", the one Tracker editing state the drawing drew) carries the same band — "…in 142's Tracker." —
+     while the Tracker loaded is not the page's own squadron; Close leaves the editor (its edits stay unsaved, as "Done
+     editing chart" leaves them, never saved by the band) — drawn by the Tracker's page seam, tracker/TrackerPage.tsx,
+     which reads the Tracker's own editing state itself.
 
    No imports: read by the Leave War's window frame and by the Tracker's page seam (a no-import module, as the Tracker's
    people bridge is — tracker/people.js), and written by state/store.ts on every notify. */
@@ -74,13 +74,12 @@ export const memberViewBand = (): NonNullable<MoveBand> =>
 /** is this band the member view's — the window under it keeps the form it had (leavewar/ui/PersonWindow.tsx) */
 export const isMemberViewBand = (b: MoveBand): boolean => !!b && b.lead === MEMBER_VIEW_LEAD
 
-/* ---- THE TRACKER AFTER A PICK (§16 D2′; his D2318 — the approved drawings f2a, f2b, f2c) ----
-   The Tracker keeps the squadron it first loaded until the next sign-in (tracker/storage.js rebindStorageUnit). When the
-   page's own squadron is not that one, the whole Tracker page carries a band of its own, in the same look, with no Close:
-   'ro' — he may still change that Tracker (an admin of it by any road): the page shown under a light veil, read only;
-   'gone' — he may no longer open it: everything of the Tracker hidden (kept in memory, nothing reset);
-   'member' — in the member view, hidden the same way, its own words. state/perms.ts trackerCover decides which. */
-export type TrkCover = { kind: 'ro' | 'gone' | 'member'; lead: string; rest: string } | null
+/* ---- THE TRACKER'S ONE COVER LEFT (his D2395 — the read-only and hidden bands of D2318 are gone) ----
+   The Tracker follows the squadron picked. Only the switch to the member view while it holds his unsaved chart edits leaves
+   it on a squadron that is not the page's own: everything of the Tracker hidden (kept in memory, nothing reset) under one
+   band, in the same look, with no Close — "This is 149's Tracker. Leave the member view to open it."
+   (state/perms.ts trackerCoverKind). */
+export type TrkCover = { kind: 'member'; lead: string; rest: string } | null
 
 /* ---- what holds: the Leave War's open windows (leavewar/ui/Sheet.tsx registers its count) ---- */
 let warWindows: () => number = () => 0

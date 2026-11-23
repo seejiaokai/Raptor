@@ -33,22 +33,22 @@ function memoryTarget() {
   return { get: k => (m.has(k) ? m.get(k) : null), set: (k, v) => { m.set(k, v) }, remove: k => { m.delete(k) }, keys: () => [...m.keys()] }
 }
 let target = memoryTarget()   // { get(k), set(k, v), remove(k), keys() } — sync, unprefixed
-export function setStorageImpl(t) { target = t || memoryTarget(); boundUnit = null }
+export function setStorageImpl(t) { target = t || memoryTarget(); boundUnit = null; held = false }
 
 /* ONE SQUADRON'S TRACKER (multi-squadron batch 1, step 4 — the plan §3.4 "The Leave War and the Tracker — each a whole
    world per unit"). Each squadron keeps a Tracker of its own — its courses, its chart catalogue, each chart's
    definition, layout and ball details, its flex settings, its marks — never one Tracker filtered. Raptor's boot hands
    this doorway a MAKER of each unit's door (storage/adapters.ts trackerTarget(wb, unit): every key stored under its unit,
-   `u149@v3:master:syls`) and a way to ask whose squadron is signed in, and the doorway binds the signed-in person's own
-   squadron (D2132 — the Tracker stays on his own squadron whatever schedule is in view) at the moment the Tracker first
-   loads (core.js init → markStorageLoaded) — never as the page's code downloads, which a desktop does in the
-   background before anyone signs in. Nothing above
+   `u149@v3:master:syls`) and a way to ask whose squadron is signed in, and the doorway binds the squadron of his own
+   pages (state/perms.ts pageUnit('own') — his home, or a master admin's or Plan holder's pick: D2197, D2395) at the moment
+   the Tracker first loads (core.js init → markStorageLoaded) — never as the page's code downloads, which a desktop does
+   in the background before anyone signs in. Nothing above
    this line knows a squadron exists: it reads and writes `v3:master:syls` as it always has, so a deleted ball, an
    imported chart, a flex setting or a course sweep of 142's can never reach 149's records.
-   ONCE LOADED, THE TRACKER KEEPS ITS SQUADRON for the life of the page: the next person's world starts fresh because
-   signing out reloads the app (ui/logout.ts, the plan §3.4 "Signing out reloads the app") — so a bind to another unit
-   once the Tracker has loaded is refused, never a silent switch under a loaded Tracker (its records in memory are the
-   first unit's; writing them through the second's door would copy one squadron's Tracker into the other's). */
+   ONCE LOADED THE DOOR MOVES ONLY THROUGH core.js (his D2395, 23 Nov 26: the Tracker follows the squadron picked, no
+   sign-out). The records in memory are one squadron's, and writing them through another's door would copy one squadron's
+   Tracker into the other's, so core.js empties its memory first (its followUnit) and a bare bind to another unit once
+   loaded is still refused. */
 let maker = null      // unit => target — Raptor's boot
 let unitNow = null    // () => the signed-in person's own unit — Raptor's boot
 let boundUnit = null  // the unit whose door `target` is, once bound
@@ -63,30 +63,48 @@ export function bindStorageUnit(unit) {
   target = maker(unit); boundUnit = unit
   return true
 }
-/* THE TRACKER FOLLOWS THE PAGE'S SQUADRON WHERE IT CAN (the reshape plan §3.2 A-iv — state/store.ts enterSquadron's third
-   step; §14.3). Before the Tracker has loaded, nothing of any squadron's Tracker is in memory, so the doorway simply
-   follows: a unit already bound is re-bound to `unit` ('bound'), and with none bound the first load binds the page's
-   squadron itself through the whose reader (markStorageLoaded — 'later'). ONCE LOADED IT KEEPS ITS SQUADRON ('kept'):
-   the read of its load path (the reshape's step 0, 21 Nov 26) found the Tracker's records held in module-level caches of
-   app/core.js beyond its React tree — the mirror of every stored record (`mem`, `memGen`), the course, chart and student
-   lists (COURSES, SYLS, SYL, roster, marks, dates, plan, pace, lulls), the flex settings, its own Undo stacks, its command
-   store's registration, and a one-shot init that draws the flow board imperatively into #board — so a remount cannot
-   re-read it in place cleanly, and writing those records through another squadron's door would copy one squadron's
-   Tracker into the other's. So, as §14.3 provides, the Tracker moves at the next sign-in (signing out reloads the app);
-   the war and the schedule still move. Its writes after a move are refused by the gate's 7f, as today. 'none' — no maker
-   (a unit test that plugs one target in itself) or no unit. */
-export function rebindStorageUnit(unit) {
+/* THE TRACKER FOLLOWS THE PAGE'S SQUADRON (the reshape plan §3.2 A-iv — state/store.ts enterSquadron's third step; his
+   D2395, replacing D2318's "keeps the squadron it opened with until sign-out"). Before the Tracker has loaded, nothing of
+   any squadron's Tracker is in memory, so the doorway simply follows: a unit already bound is re-bound to `unit`
+   ('bound'), and with none bound the first load binds the page's squadron itself through the whose reader
+   (markStorageLoaded — 'later'). ONCE LOADED it asks core.js, which holds the records (`mem`, the course, chart and student
+   lists, the flex settings, its Undo): 'moved' — core.js is leaving this squadron and loading `unit`'s, the door moving only
+   once everything still running on this one has finished; 'held' — chart work is open that can only be answered on this
+   squadron (`mayHold`: his own move at midnight with the chart editor or unsaved edits, D2243; the member view over his
+   unsaved edits), so the door waits and core.js moves it the moment that work is gone. 'none' — no maker (a unit test
+   that plugs one target in itself) or no unit; 'kept' — loaded with no core.js registered (a test of this file alone). */
+let follower = null   // { follow(unit, mayHold) → 'moved' | 'held', stay() } — core.js
+export function onStorageFollow(f) { follower = f && typeof f.follow === 'function' && typeof f.stay === 'function' ? f : null }
+export function rebindStorageUnit(unit, mayHold = false) {
   if (!maker || !unit) return 'none'
-  if (boundUnit === unit) return 'same'
-  if (loaded) return 'kept'
+  if (boundUnit === unit) { if (follower) follower.stay(); return 'same' }
+  if (loaded) return follower ? follower.follow(unit, !!mayHold) : 'kept'
   if (boundUnit == null) return 'later'
   target = maker(unit); boundUnit = unit
   return 'bound'
 }
+/* core.js's alone, at the one safe moment of a move: its memory of the old squadron is gone and nothing of the old
+   squadron is still running. Whoever reads a squadron's roster from the door (tracker/peoplewire.ts) is told at once. */
+const doorMoved = new Set()
+export function onStorageDoorMoved(f) { doorMoved.add(f); return () => doorMoved.delete(f) }
+export function moveStorageDoor(unit) {
+  if (!maker || !unit || boundUnit === unit) return false
+  target = maker(unit); boundUnit = unit
+  for (const f of [...doorMoved]) { try { f() } catch (_) { /* a listener's fault stays its own */ } }
+  return true
+}
+/* the door is waiting on chart work of its own squadron ('held', above): only then does a Tracker stand on a squadron that
+   is not the page's own for longer than a move takes (state/store.ts publishBands) */
+let held = false
+export function setStorageHeld(on) { held = !!on }
+export const storageHeld = () => held
+/** the squadron the page's own pages are on now, as Raptor's boot answers it (null with none wired) — asked again when a
+ *  hold ends, because what the hold waited for may no longer be where his pages are */
+export function pageOwnUnit() { try { return unitNow ? unitNow() || null : null } catch (_) { return null } }
 /** the unit whose Tracker the doorway reads (null — none bound: the target handed in whole) */
 export const storageUnit = () => boundUnit
-/** core.init calls this before its first read: the signed-in person's own squadron is bound now (unless one already
- *  is), and from then on it is the one this page's Tracker reads and writes */
+/** core.init calls this before its first read: the signed-in person's own pages' squadron is bound now (unless one
+ *  already is), and from then on the door moves only through core.js (above) */
 export function markStorageLoaded() {
   if (!loaded && boundUnit == null && unitNow) { try { bindStorageUnit(unitNow()) } catch (_) { /* no session reader: the target as handed in */ } }
   loaded = true
