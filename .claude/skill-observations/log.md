@@ -1454,3 +1454,29 @@ sides.
 **Issue:** the opening line told the new chat to switch and pull in a shared working folder; the old chat had uncommitted edits written a minute earlier. Only a check of the folder's uncommitted files and their times caught the clash before anything was overwritten.
 **Suggested improvement:** the new chat's first step, before any switch or pull: list the live chats, check the working folder for uncommitted changes and their times, and message any busy chat on the same branch; the opening line says "if the folder has uncommitted changes, stop and ask".
 **Principle:** before taking over a shared working copy, prove nobody else is writing in it.
+
+### Observation 1027: a reader allowed single test files ran them while the full suite held the lock — one false failure
+
+**Status:** OPEN
+**Date:** 23 Nov 26
+**Session context:** chat 151, the FULL bug check of D2381–D2384 (multi-squadron branch): a fresh Opus fix-round reader ran beside the locked unit suite
+**Skill:** New skill candidate: reader-brief (the code-read briefs of the bug-check order §4)
+**Type:** open-source
+**Phase/Area:** the reader's brief — what it may run
+
+**Issue:** the reader's brief let it run single unit-test files to prove a claim. The host then started the whole unit suite under the PC's checks lock while that reader was still running its files. The suite ended with one timing-sensitive Leave War test failing; alone it passed three times out of three. The lock guards whole runs only, so nothing stopped the clash, and the host lost a cycle proving the failure false.
+**Suggested improvement:** a reader started while a locked run is going, or that may still be running when one starts, gets "run no tests" in its brief; or the host holds the full suite until every helper allowed to run tests has reported.
+**Principle:** anything that runs tests on the same machine counts against the "one test run at a time" rule, including a helper's small proofs.
+
+### Observation 1028: the stop-time code check reads the chat's home folder, not the copy the chat works in
+
+**Status:** OPEN
+**Date:** 23 Nov 26
+**Session context:** chat 151, working in a second copy (Raptor-msq) while the chat's home folder held another chat's branch
+**Skill:** New skill candidate: the code-check Stop hook (.claude/hooks/code-check-stop.mjs)
+**Type:** internal
+**Phase/Area:** which checkout the hook reads
+
+**Issue:** the Stop hook showed him "24 new problems in the code this branch changes". The count was for the home folder's branch (the SANS chat's, with work in progress), not this chat's branch. Run by hand, both copies read zero. He asked whether it would be fixed automatically — a false alarm that cost his attention.
+**Suggested improvement:** the hook names the branch and folder it read in its line ("Code check on allavail-152: …"), or reads the copy the chat last committed in.
+**Principle:** an automatic check's message names what it checked, so a reader can tell whose result it is.
