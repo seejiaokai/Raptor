@@ -49,7 +49,7 @@
  * --marks lists the rulings' back-marks, their drift since the base, and which short lines are extracts (D390).
  * --reads [--verbose] prints what a chat reads, in tokens, by kind of job — docsize-reads.mjs (D1735; a report, never a gate).
  * The closing report copies the `Docs:` and `docsize:` lines this prints (bug-check-order §9). */
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, existsSync, readdirSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execFileSync } from 'node:child_process'
@@ -478,8 +478,58 @@ const PAGE_LIMITS = [
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 
 /* ---------- git plumbing ---------- */
-const git = (...args) => execFileSync('git', args, { cwd: REPO, encoding: 'utf8', maxBuffer: 64 << 20, stdio: ['ignore', 'pipe', 'ignore'] })
+/* ONE ANSWER PER QUESTION ([TURN-END-CHECK-SLOW], 24 Nov 26). This script only reads — it writes no file and runs no
+   git command that changes anything — so a git question asked again in the same run has the same answer, and is asked
+   once (the base's rulings files alone were read three times over). A failure is not kept: it is asked again. */
+const gitAsked = new Map()
+const git = (...args) => {
+  const k = args.join('\0')
+  if (!gitAsked.has(k)) gitAsked.set(k, execFileSync('git', args, { cwd: REPO, encoding: 'utf8', maxBuffer: 64 << 20, stdio: ['ignore', 'pipe', 'ignore'] }))
+  return gitAsked.get(k)
+}
 const tryGit = (...args) => { try { return git(...args) } catch { return null } }
+/* THE TREE AS IT STANDS, listed once ([TURN-END-CHECK-SLOW], 24 Nov 26). The homes check and the structure check each
+   asked the DISK about every listed file (`existsSync`, twice over): with 83,660 files in the tree that was about 20 of
+   the Stop hook's 36 seconds, against its 20-second limit — so from 19 Nov 26 the hook was cancelled at the end of
+   nearly every turn and its warning never given. git already knows which tracked files are gone from the disk, in one
+   call: `diff-files --diff-filter=D` (0.1 seconds here; `ls-files --deleted` gives the same list but asks the disk file
+   by file, 8.7 seconds). What that call does NOT list is a file a lean working copy leaves off the disk
+   (skip-worktree, "S" — his D2290): for those alone the folder is read, once a folder, and a folder that is not there
+   holds nothing. Same answers as before, file for file — wherever git's word could differ from the disk's, the disk
+   is still asked (the fresh reader's three cases, 24 Nov 26, the second reproduced as a missed failure):
+   - a name git prints in quotes (a letter outside ASCII) never matched a real path — still asked, still no;
+   - a name the folder's listing does not hold is still asked (a disk that ignores case);
+   - a name git lists as gone is still asked (a file replaced by a folder of its name is "gone" to git, there to the disk);
+   - a file git was told not to watch (assume-unchanged — a small letter in `ls-files -v`) is never listed as gone,
+     so it is asked: unasked, a home deleted from the disk passed the homes check;
+   - if git cannot say which files are gone at all, every file is asked, as before this change.
+   Not covered: a file-system monitor (`core.fsmonitor`) giving git a stale answer — not set in this project. */
+let treeListed = null
+function treeNow() {
+  if (treeListed) return treeListed
+  const lines = (...a) => (tryGit(...a) || '').split('\n').filter(Boolean)
+  const tracked = lines('ls-files'), others = lines('ls-files', '--others', '--exclude-standard')
+  const goneSaid = tryGit('diff-files', '--name-only', '--diff-filter=D')
+  const deleted = new Set((goneSaid || '').split('\n').filter(Boolean))
+  const unwatched = new Set(lines('ls-files', '-v').filter(l => /^[a-z] /.test(l)).map(l => l.slice(2)))
+  const skipped = new Set(lines('ls-files', '-t').filter(l => l.startsWith('S ')).map(l => l.slice(2)))
+  const folders = new Map()
+  const inItsFolder = f => {
+    const cut = f.lastIndexOf('/'), d = cut < 0 ? '' : f.slice(0, cut)
+    if (!folders.has(d)) {
+      let names = 'ask'
+      try { names = new Set(readdirSync(join(REPO, d))) } catch (e) { if (e && (e.code === 'ENOENT' || e.code === 'ENOTDIR')) names = null }
+      folders.set(d, names)
+    }
+    const names = folders.get(d)
+    if (names === null) return false
+    return (names !== 'ask' && names.has(f.slice(cut + 1))) || existsSync(join(REPO, f))
+  }
+  const ask = f => existsSync(join(REPO, f))
+  const onDisk = goneSaid === null ? ask
+    : f => f.startsWith('"') || deleted.has(f) || unwatched.has(f) ? ask(f) : skipped.has(f) ? inItsFolder(f) : true
+  return (treeListed = { tracked, others, skipped, onDisk })
+}
 const isCommit = ref => ref && tryGit('rev-parse', '--verify', '--quiet', `${ref}^{commit}`) !== null
 
 /* The base is what the change is measured against. CI passes the PR's base commit. Locally it is
@@ -688,14 +738,21 @@ function homes(paths, allow) {
      existing a file a lean working copy leaves off the disk: his D2290 keeps the walk pictures out of helpers' copies,
      git marks each "S" (skip-worktree), and two rulings (D340, D1575) name a home in that folder. Without this, every
      helper's copy failed the check while the main folder passed (found 22 Nov 26, [HELPER-COPIES-NO-PICTURES]). */
-  const skipped = new Set((tryGit('ls-files', '-t') || '').split('\n').filter(l => l.startsWith('S ')).map(l => l.slice(2)))
+  const { tracked, others, skipped, onDisk } = treeNow()
   const present = f => existsSync(join(REPO, f)) || skipped.has(f)
-  const all = [...(tryGit('ls-files') || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard') || '').split('\n')].filter(f => f && present(f))
+  const all = [...tracked, ...others].filter(f => skipped.has(f) || onDisk(f))
   const changed = new Set(paths)
-  const resolve = tok => {
+  /* the same token is named by many rows, and a file's name is looked up by its last part — never by reading the whole
+     list again for each row ([TURN-END-CHECK-SLOW]); a folder token still reads the list, once */
+  const byLastPart = new Map()
+  for (const f of all) { const k = f.slice(f.lastIndexOf('/') + 1); if (!byLastPart.has(k)) byLastPart.set(k, []); byLastPart.get(k).push(f) }
+  const resolved = new Map()
+  const resolve = tok => { if (!resolved.has(tok)) resolved.set(tok, resolveOnce(tok)); return resolved.get(tok) }
+  const resolveOnce = tok => {
     /* `…/x`, a bare `x.ts` and a folder `…/briefs/` are all shorthand the rows really use */
     const tail = tok.replace(/^(…|\.\.\.)\//, '').replace(/^(\.\.?\/)+/, '')
-    const bySuffix = () => all.filter(f => tail.endsWith('/') ? ('/' + f).includes('/' + tail) : (f === tail || f.endsWith('/' + tail)))
+    const bySuffix = () => tail.endsWith('/') ? all.filter(f => ('/' + f).includes('/' + tail))
+      : (byLastPart.get(tail.slice(tail.lastIndexOf('/') + 1)) || []).filter(f => f === tail || f.endsWith('/' + tail))
     if (tail !== tok.replace(/^(\.\.?\/)+/, '') || !tail.includes('/')) return bySuffix()
     for (const pre of ['', 'raptor-port/', 'raptor-port/src/', 'raptor-port/docs/', 'raptor-port/docs/superpowers/'])
       if (present(pre + tail)) return [pre + tail]
@@ -1036,7 +1093,8 @@ function skillLogNumbers() {
 }
 function structure() {
   const fails = [...guidePairing(), ...designCheckerCopies(), ...skillLogNumbers()], warns = []
-  const listed = [...new Set([...(tryGit('ls-files') || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard') || '').split('\n')])].filter(f => f && existsSync(join(REPO, f)))
+  const tree = treeNow()
+  const listed = [...new Set([...tree.tracked, ...tree.others])].filter(tree.onDisk)
   const atBase = new Set(BASE ? (tryGit('ls-tree', '-r', '--name-only', BASE) || '').split('\n').filter(Boolean) : [])
   const isNew = f => BASE && !atBase.has(f)
   const md = listed.filter(f => f.endsWith('.md'))
