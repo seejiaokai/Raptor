@@ -146,7 +146,7 @@ it('F2: one take-out cannot excuse two fresh hidden filings by Hex', () => {
   login('hex')
   const src = record('rocky')
   const copies = [0, 1].map(n => ({
-    ...JSON.parse(JSON.stringify(src)),
+    ...structuredClone(src),
     iid: 'ic155duplicate' + n,
     by: 'rocky',
     at: Date.now(),
@@ -172,7 +172,7 @@ it('F2: one take-out cannot excuse two fresh hidden filings by Hex', () => {
     INPUTS.push(...copies)
   })
   expect(
-    result.ok,
+    'ok' in result && result.ok,
     'a single removed holding was spent twice',
   ).toBe(false)
 })

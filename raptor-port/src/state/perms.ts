@@ -3372,7 +3372,10 @@ function splitSourcesOf(env: CommitEnvelope, c: InputChange): InputChange[] {
     if (s === c || s.collection !== 'inputs' || s.op !== 'put' || !s.before || !s.after) continue
     const b: any = s.before
     if (!isSansAvail(b.type) || !holds(b, p) || holds(s.after, p)) continue
-    if (b.type !== a.type || b.date !== a.date || b.yr !== a.yr || b.by !== a.by || b.at !== a.at) continue
+    /* (the first day compared as a day, not as text — a door that re-states it under the week in view writes the same day
+       another way: the fresh Opus re-read 3's F2) */
+    const sb = inputSpanIso(b), sa = inputSpanIso(a)
+    if (b.type !== a.type || !sb || !sa || sb[0] !== sa[0] || b.by !== a.by || b.at !== a.at) continue
     if (!Array.isArray(a.people) || a.people.length !== 1 || !deepEqual(mine(b), a.people[0])) continue
     out.push(s)
   }

@@ -133,9 +133,12 @@ export function sansNewDayProblem(before:any,after:any):[string,string]|null{
        walk stops at the day from which every later day is his SANS day, and never steps past a four-digit year (the
        fresh Opus re-read 2's F3, chat 155: an open-ended filing walked to 9999 and on into a made-up day) */
     const open=sansOpenFrom(PEOPLE[p]);
-    for(let d=sp[0];d<=sp[1]&&d.length===10;d=isoNext(d)){
+    /* (the fresh Opus re-read 3's F1, chat 155: the day after 31 Dec 9999 is written "+010000-01", ten letters that sort
+       before every real date — so the walk ends on its last real day, and a jump over held days that reaches the end
+       ends it too) */
+    for(let d=sp[0];d<=sp[1]&&d[0]!=='+';d=isoNext(d)){
       if(open&&d>=open)break;
-      if(had&&wsp&&d>=wsp[0]&&d<=wsp[1]){d=wsp[1];continue;}
+      if(had&&wsp&&d>=wsp[0]&&d<=wsp[1]){if(wsp[1]>=sp[1])break; d=wsp[1];continue;}
       if(!sansOnP(PEOPLE[p],d))return [String(p),d];}}
   return null;}
 export function sansShownAny(inp:any):boolean{
@@ -150,7 +153,7 @@ export function sansShownAny(inp:any):boolean{
     for(const s of (pp&&Array.isArray(pp.sanWas)?pp.sanWas:[]))if(Array.isArray(s)&&String(s[1]||'')>until)until=String(s[1]);}
   if(!until)return false;
   const last=until<sp[1]?until:sp[1];
-  for(let d=sp[0];d<=last&&d.length===10;d=isoNext(d)){if(sansShownOn(inp,d))return true;}
+  for(let d=sp[0];d<=last&&d[0]!=='+';d=isoNext(d)){if(sansShownOn(inp,d))return true;}
   return false;}
 const isoNext=(iso:string):string=>{const t=new Date(Date.UTC(+iso.slice(0,4),+iso.slice(5,7)-1,+iso.slice(8,10)+1)); return t.toISOString().slice(0,10);};
 /* WHOSE AN INPUT IS — ONE UNIT'S, ON A DATE (multi-squadron batch 1, step 3; plan §3.4 "Inputs stay one list"). The list
