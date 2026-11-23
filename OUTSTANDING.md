@@ -3069,7 +3069,11 @@ new words ("not yet SANS") — drawn for him first (D1625).
 the commit gate (`state/perms.ts`, the own-row check) does not hold `sanFrom` / `sanWas` to today — for the security
 review before the database step (D1411, `[DB-SECURITY-ROLES]`). **And `sanPo`** (Fable's round-4b read, item 5, 22 Nov
 26): the stretch of a SANS posting's days kept at an archive is a field on the person that decides who ALL AVAIL counts —
-the same gate should hold it; its reach is small (it counts only on a day he is also SANS and named).
+the same gate should hold it; its reach is small (it counts only on a day he is also SANS and named). **FIXED 23 Nov 26
+(chat 154, the SANS-ahead round's security read, S3) for `san`, `sanFrom` and `sanWas`:** a member's own-row command changes
+them only as his Quals tick writes them, today, or as the verified replay of his Undo / Redo (`state/perms.ts`, the
+member's `case 'people'`; test `src/leavewar/sans-ahead-security152.test.ts`). **`sanPo` still open**, for the security
+review before the database step.
 **(s) a SANS posting dated before the day he was ticked SANS by hand (Fable's round-4b read, F2, 22 Nov 26; filed by chat
 147, not fixed — rare, and the fix needs a new saved stretch):** Wed 15 Jul an admin ticks Hex SANS on Quals; the same
 day he is posted out as SANS from Mon 13 Jul (runs at once). The posting keeps the tick's later start, so Tue 14 Jul is not
@@ -3085,7 +3089,9 @@ reaches it (a Delete posting's date is always after his post-in date); bring the
 **(u) from D2338's code reads (chat 147, 23 Nov 26), filed, not fixed:** (1) **Astra #2 — an admin's ordinary command can
 erase a saved bell line of his own man**, the struck "taken back" SANS line included (`state/perms.ts adminOwnerViolation`,
 the notice delete path checks only that he owns the man) — the security reader found the same and calls it older, true
-of every kind; for the security review before the database step (D1411, `[DB-SECURITY-ROLES]`). (2) **Astra #5 — his SANS
+of every kind; for the security review before the database step (D1411, `[DB-SECURITY-ROLES]`). **The `sansback` line
+FIXED 23 Nov 26 (chat 154, Astra's read #2 of the SANS-ahead round):** deleted only by a command changing that man's own
+posting, or a verified replay (`state/perms.ts sansBackEraseViolation`); every other kind still open as said. (2) **Astra #5 — his SANS
 days line goes while he views another squadron's schedule** (`leavewar/sansunfiled.ts unfiledNow` answers nothing when the
 squadron in view is not his home one — the builder's reading, so it never shows something wrong); it comes back when he
 returns to his own. Fix if wanted: read his home squadron's weeks and inputs by unit. With `[MULTI-SQN-DESIGN]`.
@@ -3095,6 +3101,15 @@ record is written only by its owner through `notices.seen`); the SANS take-back 
 it stood before the command, `53ffa626e`…`f292ab846`). (4) **A bare write of a read record outside any command** is refused
 now for `noticeseen:` only (`state/people-settings-commit.ts`, `f292ab846`); the other own-row seen records — `seen:`,
 `apprseen:`, `lwseen:`, `reqseen:` — keep that door. Both for the security review before the database step (D1411).
+**(w) from the SANS-ahead round's FULL check (chats 152–154, 23 Nov 26), filed, not fixed:** (1) **Speed (the fresh Opus
+read's F7, low):** at the start of every person's command `leavewar/sansunfiled.ts wireSansBackBefore` works out, for each
+man with a SANS posting saved, his live line's days and his shown filed days (each a scan of the inputs) — a handful of men
+today; the round's timing (`raptor-port/docs/handpass/parts/sud/timing-d2341.md`) found no difference a person would
+notice; measure again with many SANS postings before the database step. (2) **[SANS-BACK-STRIKE-WHAT] — his question
+(7):** the take-back line strikes his live line's days as they are when the posting changes — a day newly planned since he
+read it (never seen by him) is struck too, and a hiding with nothing he read still strikes "You're SANS from…" where he had
+a live line he never opened (Astra #6, the Opus read's F5, walker w9's R2): strike only what he read? Two tests kept as
+known failures in `src/leavewar/sans-review-regressions.test.ts` until he answers.
 **(v) questions for him from D2338 (chat 147; in the morning report):** (1) once he has read the line, should a day newly
 planned with nothing filed light his bell again? (as built: no — the line just grows; the builder recommends yes for a new
 day, not for a shrink; test kept `it.fails` in `opus-read-147.test.ts`); (2) a man ticked SANS by hand (not posted out),

@@ -98,6 +98,37 @@ export function sansFaceShown(f:any,at:any):boolean{
   if(!f||!isSansAvail(f.type))return true;
   const iso=inputAtIso(at); if(!iso)return true;
   return sansOnP(PEOPLE[f.person],iso);}
+/* …AND THE RECORD AS THAT DAY SHOWS IT (Astra's read #1, chat 152): a SANS record with only its men SANS that day — the
+   record itself when every man is, or it is not SANS availability. A new published copy freezes this (engine/publish.ts
+   dayInputsFrozen) and the "changed since issue?" comparison reads the live side through it (frozenInputMatch), so a
+   day issued while Hex was hidden holds only the other man, and Hex hidden after issue reads as that record's change.
+   A copy, never a write — the stored record keeps everyone, so a hidden man comes back by himself; a copy already
+   frozen keeps what it went out with (D44). */
+export function sansDayView(inp:any,at:any):any{
+  if(!inp||!isSansAvail(inp.type))return inp;
+  const iso=inputAtIso(at); if(!iso)return inp;
+  const ppl=Array.isArray(inp.people)?inp.people:null; if(!ppl)return inp;
+  const kept=ppl.filter((e:any)=>!e||isPh(e.p)||sansOnP(PEOPLE[e.p],iso));
+  if(kept.length===ppl.length)return inp;
+  const out:any={...inp,people:kept};
+  if(kept.length&&!kept.some((e:any)=>e&&String(e.p)===String(inp.person))){const n=kept.find((e:any)=>e&&!isPh(e.p)); if(n)out.person=n.p;}
+  return out;}
+/* THE DAYS A CHANGE FILES SOMEONE FOR THAT ARE NOT HIS SANS DAYS (Astra's read #3 = the fresh Opus read's F8, chat 152 —
+   D2340: "for days from its date", held at the final save as well as in the windows, D200). Before against after: a man
+   new to a SANS record is asked every day of it; a man already in it, only the days it newly covers — so a record one of
+   whose days a later posting change hid still saves as it stands (D2341), and a record of another kind turned into SANS
+   availability is asked whole. The first such [person, day], or null. */
+export function sansNewDayProblem(before:any,after:any):[string,string]|null{
+  if(!after||!isSansAvail(after.type))return null;
+  const sp=inputSpanIso(after); if(!sp)return null;
+  const was=before&&isSansAvail(before.type)?before:null, wsp=was?inputSpanIso(was):null;
+  for(const p of namedOf(after).map((e:any)=>e.p)){
+    if(p==null||p===''||isPh(p))continue;
+    const had=!!was&&holds(was,p);
+    for(let d=sp[0],n=0;d<=sp[1]&&n<400;d=isoNext(d),n++){
+      if(had&&wsp&&d>=wsp[0]&&d<=wsp[1])continue;
+      if(!sansOnP(PEOPLE[p],d))return [String(p),d];}}
+  return null;}
 export function sansShownAny(inp:any):boolean{
   if(!inp||!isSansAvail(inp.type))return true;
   const sp=inputSpanIso(inp); if(!sp)return true;
@@ -329,7 +360,8 @@ export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:
   if(!frozen||dt==null)return {diffs:[],same:[]};
   const W:any[]=[], N:any[]=[];
   Object.keys(frozen).forEach((id:any)=>{const w=frozen[id]; if(w&&!isUpchit(w.type))W.push({id,r:w,k:inpDetailKey(w)});});
-  inputsFor(UNIT,dt).forEach((x:any)=>{ if(inputCoversDate(x,dt)&&!isUpchit(x.type))N.push({id:inpId(x),r:x,k:inpDetailKey(x)}); });   // the unit in view's day's own (multi-squadron step 3)
+  /* the live side as the day shows it — a SANS record with only its men SANS that day (sansDayView; Astra's read #1) */
+  inputsFor(UNIT,dt).forEach((x:any)=>{ if(inputCoversDate(x,dt)&&!isUpchit(x.type)){const v=sansDayView(x,dt); N.push({id:inpId(x),r:v,k:inpDetailKey(v)});} });   // the unit in view's day's own (multi-squadron step 3)
   const out:any[]=[], same:any[]=[];
   /* 1 — the same record, unchanged */
   for(let i=W.length-1;i>=0;i--){const j=N.findIndex((n:any)=>n.id===W[i].id);
@@ -1132,6 +1164,10 @@ export function sansAvailOn(id:any,dt:any){
   /* the RECORD, found by who is IN it ([ALL-AVAIL-AS-MEMBER] step 1 — namedOf, above): what is handed back is the input's
      own window, letters and remark — the same for everyone an admin files one offer for (D658) — and its callers hold it
      as the record it is (state/demosans.test.ts: "one span record answers for BOTH covered days"). */
+  /* one MAN's lookup, so his own SANS day is asked too (D2341; Astra's read #1 and the security read's S2, chat 152): a
+     shared record shows on a day while ONE of its men is SANS, so without this the man hidden that day was answered "yes,
+     he has availability"; a published (frozen) face keeps what it went out with (D44) and is not asked */
+  if(!inputsFrozenOn(dt)){const iso=inputAtIso(dt); if(iso&&!sansOnP(PEOPLE[id],iso))return null;}
   return inputsOn(dt).find((x:any)=>isSansAvail(x.type)&&namedOf(x).some((e:any)=>e.p===id))||null;
 }
 /* the record's one offered window in minutes, [s,e]. AM/PM are the same

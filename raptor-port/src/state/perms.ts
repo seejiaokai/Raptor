@@ -26,7 +26,7 @@
    replaced did (stated per question), so no headless test changes meaning. */
 import { SESSION, ME, setEffectiveRole } from './auth'
 import { store, unitSetting } from '../engine/hooks'
-import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld, placeOf, namedOf, placeholderOf, inputSpanIso, inputSquadrons, inputUnitOf } from '../engine/inputs'
+import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld, placeOf, namedOf, placeholderOf, inputSpanIso, inputSquadrons, inputUnitOf, sansNewDayProblem } from '../engine/inputs'
 import { dayNamedIds } from '../engine/publish'
 import { dayIso } from '../engine/verid'
 import { deriveActor } from '../command/actor'
@@ -35,7 +35,7 @@ import { voidedOil } from '../engine/oil'
    made only when a command is judged, never as the module loads) */
 import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, levelAcct, readAccounts, adminsOf, type Account } from './accounts'
 import { unitRowsBefore, unitRowsAfter, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach, lockBreach, everOfBefore } from './units'
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, sansStart, sansStop } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
 import { unitOf, isUnitId, split } from '../storage/unitid'
 import {
@@ -3341,6 +3341,38 @@ function withLanding(saved: unknown, mem: unknown): unknown {
    149's stored line was overwritten. A person's command of that type is refused outright. */
 const RETIRED_TYPES = new Set(['sched.load'])
 
+/* SANS AVAILABILITY ONLY ON HIS SANS DAYS, AT THE FINAL SAVE (owner D2340 — Astra's read #3 = the fresh Opus read's F8,
+   chat 152): the windows refuse a day before his SANS date (ui/inputedit.tsx sansRefusal), and this holds the same rule
+   for every command and every role — a hand-made batch, a paste, an admin's save — before against after
+   (engine/inputs.ts sansNewDayProblem), so a stored record a later posting change hid still saves as it stands. His Undo
+   or Redo, the step the timeline vouches for, puts back what it took (the record's days hide again by themselves). */
+function sansDayViolation(env: CommitEnvelope): string | null {
+  for (const c of env.changes) {
+    if (c.collection !== 'inputs' || c.op !== 'put' || !c.after) continue
+    const bad = sansNewDayProblem(c.before, c.after)
+    if (!bad) continue
+    if (env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) continue
+    return `SANS availability for ${bad[0]} on ${bad[1]}, not one of his SANS days (inputs/${c.id})`
+  }
+  return null
+}
+/* HIS "SANS AVAILABILITY HIDDEN" LINE IS TAKEN AWAY ONLY WITH THE POSTING THAT OWED IT (Astra's read #2, chat 152 — D2341,
+   D2338): the line (`sansback`) is written only by a change of his SANS posting (the checks above: minted by the war's
+   writer, owed by this command's own posting change), but a delete has no after-image, so an ordinary input command of
+   an admin's took it off his bell. A delete of one passes only in a command that changes that man's own posting (the
+   sheet's "Undo post out" and a posting moved or given another outcome — leavewar/sync.ts retractPostingLines) or as the
+   verified replay of a step (his Undo / Redo of the posting command that wrote it). A rewrite is lineRewritten's. */
+function sansBackEraseViolation(env: CommitEnvelope): string | null {
+  for (const c of env.changes) {
+    if (c.collection !== 'notices' || c.op !== 'delete') continue
+    const b: any = c.before
+    if (!b || !Array.isArray(b.what) || !b.what.some((p: any) => p && p.k === 'sansback')) continue
+    if (env.changes.some(x => x.collection === 'lw.postouts' && String(x.id) === String(b.to))) continue
+    if (env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) continue
+    return `his SANS-days line taken away by no change of his posting (notices/${c.id})`
+  }
+  return null
+}
 export function ownershipViolation(env: CommitEnvelope): string | null {
   if (env.origin === 'user' && RETIRED_TYPES.has(env.type)) return `a retired command type (${env.type}) — no door raises it`
   const stored = storedRowViolation(env)
@@ -3376,6 +3408,10 @@ function ownershipChecks(env: CommitEnvelope): string | null {
   if (homeBad) return homeBad
   const inputBad = inputUnitViolation(env)
   if (inputBad) return inputBad
+  const sansDayBad = sansDayViolation(env)
+  if (sansDayBad) return sansDayBad
+  const sansBackBad = sansBackEraseViolation(env)
+  if (sansBackBad) return sansBackBad
   /* WHEN A PERSON LAST OPENED HIS OWN WINDOW (M5a — the security read's finding 4): his own row, by its one command,
      for an ADMIN too — an admin who changed a man's leave could otherwise set that man's moment to now and wipe the dots
      that tell him (§11: "C R U own" for every role) */
@@ -3479,6 +3515,23 @@ function ownershipChecks(env: CommitEnvelope): string | null {
            his to make, so an absent side reads as an empty person */
         const b: any = c.before ?? {}, n: any = c.op === 'delete' ? {} : (c.after ?? {})
         for (const [what, read] of OWN_ROW_ADMIN_ONLY) if (read(b) !== read(n)) return `${what} (${where})`
+        /* HIS SANS DAYS CHANGE ONLY AS HIS QUALS TICK WRITES THEM — TODAY (the security read's S3, chat 152; D2313: "a tick by
+           hand counts from the day it is made", state/quals-write.ts). Since D2340 / D2341 his SANS days decide which days
+           he may be filed for and which of his filings show, so a hand-made own-row command setting `sanFrom` back to
+           1 Jan, or an ended stretch (`sanWas`) over last week, let him file days before his SANS date and bring hidden
+           ones back. The one change allowed is the tick's own: put on from today, or taken off today — worked out from the
+           before-image here; his Undo / Redo of a tick, the step the timeline vouches for, puts back what it took. */
+        const sanSig = (p: any) => JSON.stringify([!!p?.san, p?.sanFrom ?? null, p?.sanWas ?? null])
+        if (sanSig(b) !== sanSig(n)) {
+          const want: any = { san: b.san, sanFrom: b.sanFrom, sanWas: Array.isArray(b.sanWas) ? b.sanWas.map((s: any) => Array.isArray(s) ? s.slice() : s) : b.sanWas }
+          if (want.sanFrom === undefined) delete want.sanFrom
+          if (want.sanWas === undefined) delete want.sanWas
+          if (!!n.san !== !!b.san) { if (n.san) sansStart(want, todayIso()); else sansStop(want, todayIso()) }
+          if (sanSig(want) !== sanSig(n)) {
+            if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
+            if (!(replayed && replayed(c))) return `his SANS days (${where})`
+          }
+        }
         break
       }
       case 'lw.cell': {

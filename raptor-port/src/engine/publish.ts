@@ -8,7 +8,7 @@ import { logEdit } from './editlog'
 import { ridKey, posKey, ridWriteKey, ensureRowIds, RID_BOOK_VERSION } from './rowids'
 import { canonicalDiff, canonicalUnits, digest } from './canonical'
 import type { DeltaEntry, PendUnit } from './canonical'
-import { isOD, INPUTS, inputsOnDay, inputsOnFirstDay, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson, idsOf, namedOf, goesOnProg } from './inputs'
+import { isOD, INPUTS, inputsOnDay, inputsOnFirstDay, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson, idsOf, namedOf, goesOnProg, sansDayView } from './inputs'
 import { CURWEEK, isStandalone } from './waves'
 import { groundOrder } from './order'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
@@ -577,7 +577,9 @@ export function dayInputsFrozen(di:any):any{di=+di;
   const dt=(DAYS[di]||{}).dt, out:any={};
   if(dt==null)return out;
   /* the schedule in view's own requests only: a version of 142's day freezes no 149 filing (multi-squadron step 3) */
-  inputsOnDay(UNIT,dayIso(CURWEEK,di)).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))out[inpId(inp)]=JSON.parse(JSON.stringify(inp)); });
+  /* …a SANS record as the day shows it: only its men SANS that day (Astra's read #1, chat 152 — D2341) */
+  const iso=dayIso(CURWEEK,di);
+  inputsOnDay(UNIT,iso).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))out[inpId(inp)]=JSON.parse(JSON.stringify(sansDayView(inp,iso))); });
   return out;}
 /* ---- Phase 2: the FILING FINGERPRINT (P2-R3-01 / P2-R4-01) ------------------
    The publication delta has a fourth axis — input filings — that day content
