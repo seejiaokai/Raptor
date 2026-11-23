@@ -75,7 +75,7 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - Always "master admin", on screen and to him, never "master" alone; where a master admin may act for a squadron, so may an admin with Plan of it, both named [D2240, D2241, D2201].
 
 ## Admin → Users — the one door
-- His direction, built as proposed: one door — Admin → Users shows each person's whole state, sign-in and roster, and carries every action on him but the dated posting, whose sheets stay on the Leave War [D309, D310].
+- His direction, built as proposed: one door — Admin → Users shows each person's whole state, sign-in and roster, and carries every action on him but the dated posting, whose sheets stay on the Leave War — until [PLAN-AHEAD-ACTIVE] makes it their main door too, one sheet [D309, D310, D2345].
 - One row a person, A to Z, a search box; a Sign-in dot and a Roster dot — green on, red off, grey no sign-in; a tap opens his sign-in, role and the buttons for his state — never the signed-in admin's own row, which another admin changes ("Your own row can't be opened"); the list never reorders itself [D322, D310].
 - An archived row opens his callsign box — a rename, "Restore as …" when a roster man holds his callsign — a Post in date opening on today, Restore and Delete [D322, D295, D310, D308].
 - His row shows a posting waiting and "posted out <date>" once a posting out has run and left him on the roster [D326, D322].
