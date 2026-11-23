@@ -50,13 +50,23 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   <h1>Only view: the menu and top bar</h1>
 
   <div class="now">
-    <p><b>Look at now:</b> is this how it should look? It shows your ruling that someone with only View of 149 gets just its View-only Sched and Help, plus the squadron line at the top of the ☰ menu.</p>
-    <p class="rec">Recommended: yes, build it as drawn.</p>
-    <p class="muted">The parts ringed in blue are new. The pictures are the real app; the new parts were drawn onto it.</p>
+    <p><b>Look at now:</b> which squadron switch should go at the top of the ☰ menu, A or B? Both carry out your ruling: someone with only View of 149 gets just its View-only Sched and Help.</p>
+    <p class="rec">Recommended: B, the chips. One tap switches, the menu stays open with the right pages at once, and each squadron number shows once.</p>
+    <p class="muted">The parts ringed in blue are new. The pictures are the real app with the new parts drawn on.</p>
   </div>
 
   <section>
-    <h2>On the phone: the ☰ menu</h2>
+    <h2>B (recommended): chips, one tap</h2>
+    <p>A row of squadron buttons, the same ones as the bell's Show row, with the one you're in lit. A grey line under them says where you are. One tap switches. The menu stays open and its pages change at once, so he then taps the page he wants.</p>
+    <div class="pair" id="b1"></div>
+    <p>A master admin with many squadrons gets one row that slides sideways, as in the bell.</p>
+    <div class="pair" id="b2"></div>
+    <p class="muted">The second picture in the first pair is shown after a tap. The real pick was made from the top bar, because the drawn chips can't pick yet.</p>
+  </section>
+
+  <section>
+    <h2>A: one line that opens a list</h2>
+    <p class="muted">The first drawing. It works, but switching takes two taps, and "149" shows twice once the line is open.</p>
     <p>Ranger is a member of 142 and has View of 149. With 149 picked, the menu says which squadron is in view and offers only the two pages he can open.</p>
     <div class="pair" id="s1"></div>
     <p>Tap the squadron line and it opens in place, listing his squadrons the same way the “149 ▾” list at the top does. Picking one closes the menu.</p>
@@ -102,6 +112,8 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 <script>
 const S={
+ b1:[["b1-menu-149-chips-proposed","new","B: 149 picked. Chips 142 and 149, “149 · View only”, then View-only Sched and Help."],["b2-menu-after-tapping-142-proposed","new","B: one tap on 142. The menu stays open, “142 · Your squadron”, every page back."]],
+ b2:[["b4-menu-saber-eight-chips-proposed","new","B: Saber with eight squadrons. One row, cut at the edge."],["b4b-menu-saber-eight-chips-slid-proposed","new","B: the same row slid to its end."]],
  s1:[["2a-menu-149-today","today","Today: every page, and nothing says it is 149."],["2b-menu-149-proposed","new","Proposed: SQUADRON 149 · View only, then View-only Sched and Help."]],
  s2:[["4a-menu-squadron-row-opened-proposed","new","The squadron line opened: 142 Your squadron, 149 View only (ticked)."]],
  s3:[["3a-menu-home-142-today","today","Today, at home on 142."],["3b-menu-home-142-proposed","new","Proposed: SQUADRON 142 · Your squadron, every page as today."]],
