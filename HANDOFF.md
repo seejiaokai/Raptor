@@ -32,7 +32,19 @@ the later merge keeps both (D78).
   locally (`e26b56a21`, NOT pushed):** W8-1 a run of days starting before his SANS date (drag, keys, finger) did nothing and said
   nothing — now says the save's refusal; W8-2 the SANS Highlight list left out a man posted out as SANS ahead — now offers him.
   Test `src/leavewar/sans-ahead-walk152.test.tsx`; the touched suites 184 pass.
-- **Running when written:** walkers **w9** (S6–S10 hiding by cause + reader sweep, port 4399) and **w10** (S11–S14, S16, S18,
+- **UPDATE (later the same chat):** w9 DONE (702 PASS, 0 FAIL; leads R1–R5 in its report: R1 the reminder line appears only
+  once the week holding his planned days is edited — to check; R2 = w10's: the take-back line strikes "You're SANS from…" he
+  never had; R3/R4 archive drops SANS and reaches back a day — older), w10 DONE (555 PASS; W10-1 FIXED red-first `bde8ef0a0`:
+  a shared offer's "for 2 people" counted the hidden man — the window it opens still names both, reading told to him; S11:
+  every hiding cause on a published day makes the working copy read "2 pending" and drops the sign-offs, the face unchanged —
+  correct by D178, tell him; leads: the hidden line stays after the posting is put back (untrue), its tap opens Mon 20 not
+  Sat 18). Timing DONE: no difference a person would notice (`docs/handpass/parts/sud/timing-d2341.md`). PUSHED `bde8ef0a0`
+  (GitHub running). Blind read copies being made at `D:/raptor-work/c152-read/{astra,opus,security}` (script in this chat's
+  scratchpad: `git archive HEAD`, FIX-DIFF.patch, the handoff/sheet/walk reports/this round's briefs removed); the read brief
+  `docs/superpowers/briefs/2026-11-23-sans-ahead-full-read-brief.md`. NEXT: launch the three reads (Astra `codex exec -m
+  gpt-6-astra -c model_reasoning_effort=high -s read-only --skip-git-repo-check -C <copy>`; Opus and security as Agent
+  helpers on their copies), rebuild `dist` (lock held) and re-walk W8-1, W8-2, W10-1 at both sizes, then the reads' fixes.
+- **Running when first written:** walkers **w9** (S6–S10 hiding by cause + reader sweep, port 4399) and **w10** (S11–S14, S16, S18,
   S22, port 4400) → reports `docs/handpass/parts/sud/w9-report.md`, `w10-report.md`; the **timing helper** →
   `docs/handpass/parts/sud/timing-d2341.md` (BEFORE = `8d64b0c0d`, the parent of D2341's build `cc831de21` — not 2ea59acad).
 - **Expected from w10 (the host's own code reading, not yet walked):** S12 — a filing shared by two men shows on a day while ONE
