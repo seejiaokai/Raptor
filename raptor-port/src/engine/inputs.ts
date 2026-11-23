@@ -3,7 +3,7 @@ import { hhmm, hm24 } from './time'
 import { CURWEEK } from './waves'
 import { newId } from './newid'
 import { mintOrd } from '../command/ord'
-import { PEOPLE, isSpecial, sansOnP } from './people'
+import { PEOPLE, isSpecial, sansOnP, sansOpenFrom } from './people'
 import { UNIT } from './unitview'
 import { homeUnitOf, homeHandle, needDay, rosterToday, type HomeHandle } from './roster'
 /* A STABLE ADDRESS FOR ONE INPUT (owner, 10 Aug 26 — editing an input's times
@@ -129,15 +129,28 @@ export function sansNewDayProblem(before:any,after:any):[string,string]|null{
     if(p==null||p===''||isPh(p))continue;
     const had=!!was&&holds(was,p);
     /* every NEW day is asked, however far on: the days he already had are stepped over in one jump, and no count limit
-       reads the rest as approved (Astra's fix re-read #3, chat 154 — a long record stretched past his untick saved) */
-    for(let d=sp[0];d<=sp[1];d=isoNext(d)){
+       reads the rest as approved (Astra's fix re-read #3, chat 154 — a long record stretched past his untick saved); the
+       walk stops at the day from which every later day is his SANS day, and never steps past a four-digit year (the
+       fresh Opus re-read 2's F3, chat 155: an open-ended filing walked to 9999 and on into a made-up day) */
+    const open=sansOpenFrom(PEOPLE[p]);
+    for(let d=sp[0];d<=sp[1]&&d.length===10;d=isoNext(d)){
+      if(open&&d>=open)break;
       if(had&&wsp&&d>=wsp[0]&&d<=wsp[1]){d=wsp[1];continue;}
       if(!sansOnP(PEOPLE[p],d))return [String(p),d];}}
   return null;}
 export function sansShownAny(inp:any):boolean{
   if(!inp||!isSansAvail(inp.type))return true;
   const sp=inputSpanIso(inp); if(!sp)return true;
-  for(let d=sp[0],n=0;d<=sp[1]&&n<400;d=isoNext(d),n++){if(sansShownOn(inp,d))return true;}
+  /* (the fresh Opus re-read 2, chat 155: a long record whose shown days all fell after its 400th read as hidden on every
+     list) — a man SANS from some day on, with no end, shows it from that day if the record reaches it; the rest is
+     walked to the end of his last ended stretch, past which no day can be SANS for anyone in it */
+  const ids=namedOf(inp).map((e:any)=>e.p).filter((p:any)=>p!=null&&p!==''&&!isPh(p));
+  let until='';
+  for(const p of ids){const pp=PEOPLE[p]; const o=sansOpenFrom(pp); if(o&&o<=sp[1])return true;
+    for(const s of (pp&&Array.isArray(pp.sanWas)?pp.sanWas:[]))if(Array.isArray(s)&&String(s[1]||'')>until)until=String(s[1]);}
+  if(!until)return false;
+  const last=until<sp[1]?until:sp[1];
+  for(let d=sp[0];d<=last&&d.length===10;d=isoNext(d)){if(sansShownOn(inp,d))return true;}
   return false;}
 const isoNext=(iso:string):string=>{const t=new Date(Date.UTC(+iso.slice(0,4),+iso.slice(5,7)-1,+iso.slice(8,10)+1)); return t.toISOString().slice(0,10);};
 /* WHOSE AN INPUT IS — ONE UNIT'S, ON A DATE (multi-squadron batch 1, step 3; plan §3.4 "Inputs stay one list"). The list

@@ -6,7 +6,7 @@ import { ownershipViolation } from '../state/perms'
 import { deriveActor } from '../command/actor'
 import { PEOPLE, indexCallsigns, sansOnP } from '../engine/people'
 import {
-  INPUTS, holds, inputCoversDate, idsOf, sansAvailOn, inputSpanIso, sansNewDayProblem,
+  INPUTS, holds, inputCoversDate, idsOf, sansAvailOn, inputSpanIso, sansNewDayProblem, sansShownAny,
 } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import {
@@ -260,4 +260,13 @@ it('R4b: a split-off row adding a day, or another man, is still refused', () => 
   expect(ownershipViolation(env(kept)), 'premise: the plain split passes').toBeNull()
   expect(ownershipViolation(env({ ...kept, date: 'Jul 16' }))).toMatch(/not one of his SANS days/)
   expect(ownershipViolation(env({ ...kept, people: [{ ...his, p: 'drift' }] }))).toBeTruthy()
+})
+
+/* (the fresh Opus re-read 2, chat 155 — the same 400-day limit in the lists' own question): a long record whose shown days
+   all fall after its 400th still shows on the lists; one with no SANS day of his at all does not */
+it('R6: a long record shown only after its 400th day still shows on the lists', () => {
+  const long = { type: 'SANS Availability', people: [{ p: 'rocky' }], person: 'rocky', date: '2025-01-01', endDate: '2026-12-31', allday: true, sans: { f: true } }
+  expect(sansShownAny(long), 'premise: Hex is SANS on none of its days yet').toBe(false)
+  posting('rocky')
+  expect(sansShownAny(long)).toBe(true)
 })

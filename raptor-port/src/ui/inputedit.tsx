@@ -20,7 +20,7 @@ import { acceptInput } from '../engine/slots'
 import { iuParts } from '../engine/keys'
 import { ownInputOf, toPeople, putPerson, takePerson, swapPerson, pieceOf } from '../engine/inputown'
 import { DAYS } from '../engine/data'
-import { PEOPLE, isSpecial, sansFiler, sansOnP } from '../engine/people'
+import { PEOPLE, isSpecial, sansFiler, sansOnP, sansOpenFrom } from '../engine/people'
 import { isoDayWords } from '../engine/weekstash'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
@@ -318,7 +318,11 @@ export function sansRefusal(person: any, sans: any, from?: string, to?: string, 
        him are now stepped over in one jump, and no limit reads the rest as approved (a day's question is a few lookups,
        so even years of new days are walked in a moment). */
     const kept = except && isSansAvail(except.type) && holds(except, person) ? inputSpanIso(except) : null
-    for (let d = from; d <= last; d = isoPlus(d, 1)) {
+    /* …and it stops at the day from which every later day is his SANS day, never stepping past a four-digit year (the
+       fresh Opus re-read 2's F3, chat 155: an open-ended filing walked on to 9999 and refused a made-up day) */
+    const open = sansOpenFrom(p)
+    for (let d = from; d <= last && d.length === 10; d = isoPlus(d, 1)) {
+      if (open && d >= open) break
       if (kept && d >= kept[0] && d <= kept[1]) { d = kept[1]; continue }
       /* (a day the entry being changed already held FOR HIM — never for another man on it: the fresh Opus read's F2,
          chat 152 — an admin added Hex to Other's Thu 16 offer, a day before Hex's SANS date, and the save let it in) */

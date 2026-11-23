@@ -2228,7 +2228,8 @@ function deletedPersonViolation(env: CommitEnvelope): string | null {
    record is a ticked person's alone; it stands unchanged, or is absent (the plain reading: his first squadron, while he
    has never moved), or names the squadron he is in TODAY, from today (state/quals-write.ts writes it so). The Undo of an
    untick puts back the record its step took away: the timeline's own restore of his own step (REPLAY answers only then —
-   it vouches for no person's row image by image) may write an earlier day, never a later one, with the squadron he was
+   this check asks only that a replay is under way, not whether it vouches for the row — which since chat 155 it can, image
+   for image, for the member's own SANS days) may write an earlier day, never a later one, with the squadron he was
    in on that day — a record of a squadron he has left since holds nothing by the reading rule. */
 function schedRecordViolation(env: CommitEnvelope): string | null {
   const a = env.actor
@@ -3350,23 +3351,43 @@ const RETIRED_TYPES = new Set(['sched.load'])
    keeps his past part of a shared offer as a record of its own (engine/inputown.ts ownInputOf — D299), a new row with no
    before-image, so the check above read his days in it as new and, Hex being hidden that day (D2341), refused the delete.
    Such a row is judged against the record it came from: one of this command's own SANS records whose before held him
-   and whose after no longer does — so only days or people that record did not already hold are asked. */
-function splitSourceOf(env: CommitEnvelope, c: { before?: unknown; after?: unknown }): unknown {
-  if (c.before != null || !c.after) return c.before
+   and whose after no longer does — so only days or people that record did not already hold are asked. A delete may take
+   him out of several shared records at once (the fresh Opus re-read 2's F4, chat 155), so EVERY such record is a
+   candidate, and the row passes where any one of them already held all of it. */
+/* …and a candidate must BE that record's copy (Astra's fix re-read 2, #2, chat 155: two fresh records of a member's own,
+   each "borrowing" the one offer he took himself out of, both saved): the copy the delete makes (engine/inputown.ts
+   ownInputOf) keeps the record's kind, first day, filing stamp (`by`, `at`) and his own entry as they were — only its id,
+   its end, its printed till and its change stamps move — and each record vouches for one copy only (`used`). */
+type InputChange = CommitEnvelope['changes'][number]
+function splitSourcesOf(env: CommitEnvelope, c: InputChange): InputChange[] {
+  if (c.before != null || !c.after) return []
   const ids = namedOf(c.after).map((e: any) => String(e.p))
-  if (ids.length !== 1) return c.before
+  if (ids.length !== 1) return []
   const p = ids[0]
+  // any: an input record is untyped (a verbatim port, src/engine/inputs.ts)
+  const a: any = c.after
+  const mine = (r: any) => (Array.isArray(r.people) ? r.people : []).find((e: any) => e && String(e.p) === p)
+  const out: InputChange[] = []
   for (const s of env.changes) {
     if (s === c || s.collection !== 'inputs' || s.op !== 'put' || !s.before || !s.after) continue
-    if (!isSansAvail((s.before as any).type) || !holds(s.before, p) || holds(s.after, p)) continue
-    return s.before
+    const b: any = s.before
+    if (!isSansAvail(b.type) || !holds(b, p) || holds(s.after, p)) continue
+    if (b.type !== a.type || b.date !== a.date || b.yr !== a.yr || b.by !== a.by || b.at !== a.at) continue
+    if (!Array.isArray(a.people) || a.people.length !== 1 || !deepEqual(mine(b), a.people[0])) continue
+    out.push(s)
   }
-  return c.before
+  return out
 }
 function sansDayViolation(env: CommitEnvelope): string | null {
+  const used = new Set<InputChange>()
   for (const c of env.changes) {
     if (c.collection !== 'inputs' || c.op !== 'put' || !c.after) continue
-    const bad = sansNewDayProblem(splitSourceOf(env, c), c.after)
+    let bad = sansNewDayProblem(c.before, c.after)
+    if (bad) for (const s of splitSourcesOf(env, c)) {
+      if (used.has(s)) continue
+      const b = sansNewDayProblem(s.before, c.after)
+      if (!b) { used.add(s); bad = null; break }
+    }
     if (!bad) continue
     if (env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) continue
     return `SANS availability for ${bad[0]} on ${bad[1]}, not one of his SANS days (inputs/${c.id})`

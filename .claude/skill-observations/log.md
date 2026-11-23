@@ -1311,3 +1311,16 @@ sides.
 **Issue:** A script replaced the first occurrence of a three-line block; the same three lines stood in an earlier function (a restore) as well as the intended one (the posting change), so the new step was wired into the wrong function. The new tests caught it only because they exercised the intended path; nothing failed loudly.
 **Suggested improvement:** A scripted replacement asserts the anchor occurs exactly once (count, not includes) and anchors on a line unique to the target function — its signature — before the block; the edit tool's own uniqueness check is the default.
 **Principle:** An edit keyed on repeated boilerplate must prove the anchor is unique before it writes; "found" is not "found once".
+
+### Observation 1027: An exemption added to a security gate to cure a false refusal needs its own negative test in the same change
+
+**Status:** OPEN
+**Date:** 2026-11-23
+**Session context:** Chat 155, fixing a re-read's findings on the SANS-ahead branch (numbered past 1026, held on another branch)
+**Skill:** New skill candidate: fixing reviewer findings (bug-check order §4 "What to do with what they hand back")
+**Type:** open-source
+**Phase/Area:** Fix, then re-walk what the fixes touched
+
+**Issue:** Two of the five findings were the gate refusing something legitimate (an Undo of yesterday's own change; a delete's split-off record). Each cure was an allowance in the gate. The reviewer's tests proved only the allowed path now passes; nothing proved the allowance could not be used for more (a forged restore, a split that adds days or people). The host added those negative tests by hand.
+**Suggested improvement:** In the order's "what to do with what they hand back": a finding cured by loosening a check (an exemption, an allowance, a vouch) lands with at least one negative test that the loosened check still refuses its nearest misuse, and the re-read brief names the allowance as its first question.
+**Principle:** Every exemption carved into a permission check is a new door; prove the door is only as wide as the case that needed it.

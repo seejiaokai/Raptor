@@ -249,6 +249,12 @@ export const sansOn=(id:any,iso?:any):boolean=>sansOnP(PEOPLE[id],iso);
    filing goes by the day filed, which each day's own question, sansOnP with that day, answers). The doors that open
    before a day is known ask this (the SANS calendar's add, its people list with no day); the save asks the day. */
 export function sansFiler(p:any):boolean{return !!p&&(!!p.san||(!!SANS_AHEAD&&!!SANS_AHEAD(p)));}
+/* THE DAY FROM WHICH EVERY LATER DAY IS SANS FOR HIM, or null — his tick with no end (from its date), or a SANS posting
+   saved ahead (from its date), the earlier (chat 155, the fresh Opus re-read 2's F3): a walk over a filing's days asks
+   sansOnP of each, and stops here, every day on being his — so an "until further notice" filing is not walked to 9999. */
+export function sansOpenFrom(p:any):string|null{if(!p)return null;
+  const a=p.san?String(p.sanFrom||'0000-01-01'):null, b=SANS_AHEAD?SANS_AHEAD(p):null;
+  return a&&b?(a<b?a:b):(a||b||null);}
 /* THE FIRST DAY OF HIS SANS POSTING NOT YET RUN, or null (owner D2343, D2346 — the SANS calendar fades his own days before it). */
 export function sansAheadDate(p:any):string|null{return p&&SANS_AHEAD?SANS_AHEAD(p):null;}
 /* IS THIS DAY SANS FOR HIM ONLY BY A POSTING NOT YET RUN — AND FROM WHAT DATE? (owner D2338, 22 Nov 26 — "Should it say no
