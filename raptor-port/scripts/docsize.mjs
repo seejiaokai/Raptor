@@ -202,7 +202,7 @@ const FILES = [
      filed two open items ([CSS-SCOPE-GUARD], [ASK-PAGE-CHECK]) and added open points to [CHECK-TOOLS-HARDEN],
      [RULE-FILE-LESSONS] and [START-CONTEXT-AUDIT]; none is finished. An open item is never trimmed to fit (D141, D29).
      About 60 lines above what it holds, as before. */
-  ['OUTSTANDING.md',                     1, 2910],   // 2830 -> 2910 (22 Nov 26, chat 132): a tripwire (D141) — batch 1 merged (pull request 806) and three new open items ([FABLE-READ-FAULTS], [MSQ-MIDNIGHT-CLOCK], [SCHED-RIGHT-EDGE]); the archive pass of batch 1's finished items is owed at the next handoff, then this comes back down
+  ['OUTSTANDING.md',                     1, 3030],   // 2910 -> 3030 (24 Nov 26, the settings health-check chat): a tripwire (D141) — the file stood at 2,982 lines on `main`, 72 over, merged with code while the size check was deferred (D29), so no docs-only change could pass; plus the 31 lines of [TURN-END-CHECK-SLOW], every line open work; the archive pass of the finished items is still owed, then this comes back down. Before: 2830 -> 2910 (22 Nov 26, chat 132): a tripwire (D141) — batch 1 merged (pull request 806) and three new open items ([FABLE-READ-FAULTS], [MSQ-MIDNIGHT-CLOCK], [SCHED-RIGHT-EDGE]); the archive pass of batch 1's finished items is owed at the next handoff, then this comes back down
   /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
      and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
      (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only
