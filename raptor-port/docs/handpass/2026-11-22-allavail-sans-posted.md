@@ -553,7 +553,13 @@ about 11 ms (paired), about 1 ms of script time at full speed, and did not grow 
 phone, a posting set ahead, the Inputs calendar tab and the Leave War.
 
 ### 17.13 The gate counts
-_(filled)_
+- **His PC, chat 155, on `a2a814564`:** the whole unit suite, under the checks lock — 1063 files, 16119 pass, 9 expected
+  fail (the known failures kept on purpose for his questions), 21 skipped; the code check: no new finding.
+- **GitHub's run on `a2a814564`:** green — "every gate passed": the build, the original's 728 passed and 0 failed, the unit
+  shards, the browser shards (117, 138, 200, 204, 204, 204 and 300 passed), the Tracker's suite, the rule and document checks;
+  the secrets scan and the Docs guard green.
+- **His PC, chat 155, on `90d9a6f60` (re-read 2's fixes):** the touched suites — 105 files, 1465 pass, 4 expected fail;
+  GitHub's run on it: see the closing report.
 
 ### 17.14 What the walk and the reads found, and each disposition
 Reads: Astra `docs/superpowers/briefs/2026-11-23-sans-ahead-full-read-astra.md`, the fresh Opus reader `…-full-read-opus.md`,
@@ -591,6 +597,21 @@ the security reader `…-full-read-security.md`.
 - **w10's lead** — the "hidden" line's tap opens Mon 20, not Sat 18 — a lead, not fixed.
 - **Opus F3** — a run of days part before his date is refused whole, though he was told "accepted, the early days hidden" —
   question (1).
+- **Re-read 1 of the fixes (chat 154; Astra `…-fix-reread-astra.md`, fresh Opus `…-fix-reread-opus.md`) — all FIXED
+  red-first in chat 155 (`a2a814564`; `sans-c154-reread.test.ts`, `sans-reread154-opus.test.ts`):** an issued face dropped
+  a SANS card once the man's posting moved (Astra #2 = Opus R1); a member's Undo / Redo of yesterday's own SANS tick refused
+  (Astra #1; a forged restore still refused, R1c); a filing checked only for its first 400 days, the rest read as approved
+  (Astra #3); deleting a man whose part of a shared offer was hidden refused (Astra #4); one posting move read 2 pending on
+  the published day (the Opus open check, D109, D113). The host's re-look of the issued board at both sizes: 22 PASS, no
+  errors (`scripts/handpass/sah-h155.mjs`; pictures `docs/img/handpass/2026-11-23-sans-ahead/h155/`).
+- **Re-read 2 (chat 155; `D:/raptor-work/c155-reread/`) — all FIXED red-first (`90d9a6f60`; 9 tests,
+  `sans-c155-astra.test.ts`, `sans-reread155-opus.test.ts`):** the delete's allowance judged a man in TWO shared offers
+  against the wrong one (both readers); one take-out excused two fresh hidden filings of a member's (Astra #2); the walk ran
+  past 9999 and an open-ended filing was walked ~2.9 million days (both); a long record shown only after its 400th day was
+  hidden on the lists (Astra #3, the Opus note). **Left as is:** the per-man list of hidden days in his bell line stops at
+  400 days ahead — words only, its writer and the gate's check share the one list.
+- **To tell him (not a fault, D2340):** extending a shared offer by a day one of its men is hidden on is refused, so a
+  hidden man blocks extending the other man's offer until he is taken out (question (f)).
 - **Recorded, no disposition given here:** Saber's drag over 16–18 offers no Ranger and says nothing why (w8 s4s); the
   security reader's question — his own Quals tick (D149) makes him SANS from today, so he can file before his posting date.
 - **Leads left as recorded:** the input window's calendar marks 13 Jul as today (D1383, the demo week); LATE on every filing
@@ -602,6 +623,8 @@ the security reader `…-full-read-security.md`.
   goes with (7); (6) Opus F4; (7) Astra #6; (8) w10 S11; (9) w9 R1.
 
 ## 14. The Walk line
+
+**Round 6 (chats 152–155):** `Walk: docs/handpass/2026-11-22-allavail-sans-posted.md §17 · 5,448 pictures (146 kept here plus the host's 5 re-look pictures, all on his PC's D: drive) · 25 places in the roll-call (§17.3) · Astra's 24 scenarios and the plain-user round, each at a desktop's and his iPhone's size — 1,624 steps PASS (w8, w9, w10, r1, the host's two re-looks), 10 FAIL = 2 faults, both fixed red-first and re-walked · MISSING: 0 · read by Astra, a fresh Opus reader and a security reader, then two narrow re-reads of the fixes by Astra and a fresh Opus reader, every finding fixed red-first; NOT WALKED: the page hidden across midnight (his iPhone)`
 
 **Round 5 (chat 147):** `Walk: docs/handpass/2026-11-22-allavail-sans-posted.md §16 · 3,934 pictures (46 kept here, all on his PC's D: drive) · 6 surfaces (Edit Schedule's crew list, the Scheduler Board's crew list, an armed seat, the bell, the Inputs page's SANS tab, ALL AVAIL's window) · 37 orders (Astra's 24 and R1–R4) and the plain-user round, each at a desktop's and his iPhone's size · MISSING: 0 (1 found, fixed red-first and re-walked); NOT WALKED: the page hidden across midnight (his iPhone)`
 
