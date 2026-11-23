@@ -61,7 +61,7 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - Either way: the admin adds him first — defence mail, the puck (callsign) it belongs to, member or admin — and his first sign-in has that access; or he signs in on no list and asks with "Request access", and an admin approves, sets member or admin and links him to a puck; until then he sees only the waiting screen [D204, D2239].
 - Request access and Admin → Users' New person — a brand-new person and his account in one step — ask the same [D214, D224, D204, D322, D2239].
 - Waiting, he sees only the waiting screen until his squadron's admin approves him; no guest view, switch or button into it (to be removed) [D2239, D204].
-- Every member sees a medical input's type, remarks and documents, as today — the database brief's "the person and admins only" set aside [D211, D1536, D1537]; a View holder sees another squadron's in full on its View-only Sched [D2387, D211].
+- Every member sees a medical input's type, remarks and documents, as today — the database brief's "the person and admins only" set aside [D211, D1536, D1537]; a View holder, another squadron's on its View-only Sched [D2387, D211].
 - A new request notifies the admins beyond the Admin tab's count [D216, D204, D2239]. Each admin's bell is his own [D227, D216].
 - Initials are asked, never required — sign-up and New person alike [D225, D214]. The callsign/name stays at 14 letters — never quietly cut [D226].
 - The field that names a person reads "Callsign/Name"; on the sign-up card only, "Displayed callsign/name" [D219, D222]. The seat reads "Pilot" and "WSO" [D220].
@@ -150,7 +150,7 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - A person's opened row: Role, then one line per squadron — "142 Home squadron", "149 None · View · Plan" — a master admin's "Full access"; a member's Plan greyed, "Plan is for admins only." [D2303, D2306].
 - "+ New squadron": number, place, first admin picked from existing admins and given Plan, its last admin till it has its own [D2308, D2298].
 - Plan ended without a move — taken, made a member, master admin off — takes that squadron's lines off his bell at once; archived or posted overseas, View and Plan end; suspended, they stay [D2310, D2311].
-- Squadron config follows the squadron in view, only its admin changing it; a View holder never reaches it [D2317, D2381]; the Tracker keeps its squadron until sign-out, read only or hidden after a pick, unsaved chart changes asked first [D2318].
+- Squadron config follows the squadron in view, only its admin changing it; a View holder never reaches it [D2317, D2381]; the Tracker keeps its squadron until sign-out, read only or hidden after a pick, unsaved chart changes asked first [D2318], a pick of a View-only squadron too [D2388, D2318].
 - His own account's lines read as drawn, no squadron mark [D2319, D2309]; no sign-in, no access to give [D2320]; many squadrons on a phone: the bell's Show buttons one sliding row [D2321].
 - A shared computer's next sign-in reloads once the save lands, his name kept [D2322, D2205]; a window open at a pick is greyed and says so [D2323].
 - A request is answered only by its squadron's admins [D2324], a bell tap moving him there [D2325]; an Undo of access reads "Undid: Plan of 149 given · Hunter" [D2326].
