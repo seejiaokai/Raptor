@@ -16,7 +16,7 @@ Pictures are in `raptor-port/docs/handpass/2026-11-23-msq-b1-morning/` (this mor
 
 ### Round 1 — these change what people are told or can find
 
-- **(e) The Tracker's band sends people the wrong way.** "To open 149's, sign out and in." does not work unless 149 is
+- **(e) — CLOSED 23 Nov 26 by his D2395: the Tracker follows the squadron picked, so this band goes.** ~~The Tracker's band sends people the wrong way.~~ "To open 149's, sign out and in." does not work unless 149 is
   his own squadron. Recommended: add "and pick 149 before the Tracker" when it is not. New words: drawn for you first.
   Picture: `fable/q-e-tracker-band-hunter.png`
 - **(b) The filter's "Plans" tick misses your own people who plan another squadron.** On 142's list it reads
