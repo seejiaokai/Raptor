@@ -23,14 +23,20 @@ import { PEOPLE, nameToId } from '../engine/people'
 import { getState } from '../leavewar/state/store'
 import { readForeign } from '../leavewar/state/foreign'
 import { effectiveToday } from '../state/person-delete'
+import { pickSquadron } from '../state/pick'
+import { notify } from '../state/store'
+import { UNIT } from '../engine/unitview'
+import { useVersion } from './useStore'
 
 useMsqWorld()
 afterEach(() => cleanup())
 
 const P = (pid: string): any => (PEOPLE as any)[pid]
 const count = (u: string) => usersListOf(u, todayIso(), '').count
-function panel() {
-  const page = render(<UsersPanel shown />)
+/* the page redraws on the store's version, as AdminPage does around it */
+function Live(p: { shown: boolean }) { useVersion(); return <UsersPanel shown={p.shown} /> }
+function panel(shown = true) {
+  const page = render(<Live shown={shown} />)
   const $ = (sel: string) => page.container.querySelector(sel) as HTMLElement | null
   const $$ = (sel: string) => [...page.container.querySelectorAll<HTMLElement>(sel)]
   const btn = () => $('#accFilter') as HTMLButtonElement
@@ -193,6 +199,59 @@ describe('a master admin\'s Squadron group and the grouped list (D2270, D2335 �
     expect(p.btn().textContent).toBe('Filter · 2')
     expect(p.heads()).toEqual([`142 · ${count('u142')}`, `149 · ${count('u149')}`])
     expect(p.line()).toBe(`Showing ${p.rows().length} of ${p.rows().length} · Clear`)
+  })
+})
+
+/* (j), his D2396: a pick means "show me this squadron", so it takes the Squadron ticks off and Admin → Users shows the
+   squadron just picked; the Seat, CAT and Role ticks and the search stay, the count beside "People" as built. Red first:
+   Saber on 142 with 142 ticked picked 149, and the list stayed 142's under a top bar reading 149. */
+describe('a pick and the Squadron ticks (j)', () => {
+  const pick = async (u: string) => { await act(async () => { await pickSquadron(u) }) }
+  it('Saber ticks 142, picks 149: the tick is off and the list is 149\'s', async () => {
+    signInAs('saber')
+    const p = panel()
+    await p.tick('sqn:u142')
+    await pick('u149')
+    expect(UNIT).toBe('u149')
+    expect(p.btn().textContent, 'nothing left ticked').toBe('Filter')
+    expect(p.line()).toBeNull()
+    expect(p.heads(), 'one squadron again: no group heading').toEqual([])
+    expect(p.rows()).toContain(PID.kestrel)
+    expect(p.rows()).not.toContain(PID.hunter)
+    expect(p.$('.od-head h4.adm-sub')!.textContent).toBe(`People · ${count('u149')}`)
+    await p.openPanel()
+    expect(p.chips('sqn'), 'no chip left ticked').toEqual(['142', '149'])
+  })
+  it('both squadrons ticked, then a pick: grouped no more', async () => {
+    signInAs('saber')
+    const p = panel()
+    await p.tick('sqn:u142'); await p.tick('sqn:u149')
+    await pick('u149')
+    expect(p.heads()).toEqual([])
+    expect(p.btn().textContent).toBe('Filter')
+  })
+  it('the Seat, CAT and Role ticks and the search survive a pick; only the Squadron tick goes', async () => {
+    signInAs('saber')
+    const p = panel()
+    await p.openPanel()
+    const firstCat = p.$('#accFilterPanel [data-fgroup="cat"] .fchip')!.dataset.ftick!
+    await p.tick('seat:Pilots'); await p.tick(firstCat); await p.tick('role:member'); await p.tick('sqn:u142')
+    await act(async () => { fireEvent.change(p.$('#accFind')!, { target: { value: 'a' } }) })
+    expect(p.btn().textContent).toBe('Filter · 4')
+    await pick('u149')
+    expect(p.btn().textContent, 'Seat, CAT and Role stay').toBe('Filter · 3')
+    const on = (k: string) => p.$(`#accFilterPanel [data-ftick="${k}"]`)!.getAttribute('aria-pressed')
+    expect(on('seat:Pilots')).toBe('true'); expect(on(firstCat)).toBe('true'); expect(on('role:member')).toBe('true')
+    expect(on('sqn:u142')).toBe('false')
+    expect((p.$('#accFind') as HTMLInputElement).value, 'the search stays').toBe('a')
+  })
+  it('no pick, no change: a tick stays while the page is redrawn', async () => {
+    signInAs('saber')
+    const p = panel()
+    await p.tick('sqn:u149')
+    await act(async () => { notify() })
+    expect(p.btn().textContent).toBe('Filter · 1')
+    expect(p.heads()).toEqual([`149 · ${count('u149')}`])
   })
 })
 

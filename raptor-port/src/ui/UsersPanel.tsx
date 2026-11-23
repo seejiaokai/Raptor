@@ -546,6 +546,8 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   const [home, setHome] = useState<string | null>(null)
   /* the filter's ticks (D2335 — ui/usersfilter-model.ts); kept while the page is open, as the search is */
   const [filt, setFilt] = useState<UsersFilter>(NO_FILTER)
+  /* the squadron the Squadron ticks were set on: (j), below */
+  const [ticksOn, setTicksOn] = useState(() => pageUnit('own'))
   const addRef = useRef<HTMLDivElement>(null)
   const csRef = useRef<HTMLInputElement>(null)
 
@@ -593,6 +595,12 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   /* THE FILTER (D2335, D2307) AND A MASTER ADMIN'S SQUADRONS (D2270): the rows a tick keeps, A to Z, never reordered
      (D322); a master admin's Squadron ticks group the list under each squadron's heading (ui/usersfilter-model.ts) */
   const unit = pageUnit('own'), today = todayIso()
+  /* A PICK CLEARS THE SQUADRON TICKS ((j), his D2396): a pick means "show me this squadron", so the page must not need a
+     second step to obey. Seat, CAT, Role and the search stay. Set while drawing, so no frame shows the old squadron's list. */
+  if (unit !== ticksOn) {
+    setTicksOn(unit)
+    if (filt.sqn.length) setFilt({ ...filt, sqn: [] })
+  }
   const master = actorIsMaster()
   const view = usersView(unit, today, q, filt, master)
   const archShown = view.archived
