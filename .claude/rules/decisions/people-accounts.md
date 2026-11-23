@@ -61,7 +61,7 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - Either way: the admin adds him first — defence mail, the puck (callsign) it belongs to, member or admin — and his first sign-in has that access; or he signs in on no list and asks with "Request access", and an admin approves, sets member or admin and links him to a puck; until then he sees only the waiting screen [D204, D2239].
 - Request access and Admin → Users' New person — a brand-new person and his account in one step — ask the same [D214, D224, D204, D322, D2239].
 - Waiting, he sees only the waiting screen until his squadron's admin approves him; no guest view, switch or button into it (to be removed) [D2239, D204].
-- Every member sees a medical input's type, remarks and documents, as today — the database brief's "the person and admins only" set aside [D211, D1536, D1537].
+- Every member sees a medical input's type, remarks and documents, as today — the database brief's "the person and admins only" set aside [D211, D1536, D1537]; a View holder sees another squadron's in full on its View-only Sched [D2387, D211].
 - A new request notifies the admins beyond the Admin tab's count [D216, D204, D2239]. Each admin's bell is his own [D227, D216].
 - Initials are asked, never required — sign-up and New person alike [D225, D214]. The callsign/name stays at 14 letters — never quietly cut [D226].
 - The field that names a person reads "Callsign/Name"; on the sign-up card only, "Displayed callsign/name" [D219, D222]. The seat reads "Pilot" and "WSO" [D220].

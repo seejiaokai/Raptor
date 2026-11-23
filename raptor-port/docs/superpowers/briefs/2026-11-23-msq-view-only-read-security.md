@@ -20,6 +20,6 @@ security question (is hiding the only guard?).
 **Notes, not findings:**
 1. `viewOnlyPick()` is false when the pick is not readable at all; safety then rests on maybeReenter sending him home
    first (it does, before the landing). Hardening: treat an unreadable pick as offering View-only Sched and Help only.
-2. On 149's View-only Sched a View holder sees 149's people's medical inputs in full detail — `mayReadMedicalOf`, by
+2. (Answered 23 Nov 26 by his D2387: keep it.) On 149's View-only Sched a View holder sees 149's people's medical inputs in full detail — `mayReadMedicalOf`, by
    role (D211), unchanged by this diff, D2191's "View follows the pick on the schedule pages". A product question for
    him if he wants it otherwise.

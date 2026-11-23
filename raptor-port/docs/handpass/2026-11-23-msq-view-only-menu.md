@@ -131,7 +131,7 @@ On the finished feature (`cd94a4e8e`), each blind to the walk and to the others,
   up); F2 one shade tap closed list and menu — fixed; F3 Arrow Down and Tab out in the ☰ list — fixed. All red first,
   `d3bbc5e65`.
 - **Security** (`-read-security.md`, D1411): no findings; two notes — an unreadable pick leans on the re-entry (a
-  hardening, filed); a View holder sees 149's medical inputs on its View-only Sched by D211 (a question for him).
+  hardening, filed); a View holder sees 149's medical inputs on its View-only Sched by D211 — his answer, D2387: keep it.
 - **Fable** (`-read-fable.md`, his D2385): one new fault — an input window left open through the landing came back
   editable — fixed red first, `a12b083c4`; the landing's memory cleared at sign-in.
 
