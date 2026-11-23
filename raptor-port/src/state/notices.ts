@@ -105,10 +105,11 @@ export type NoticePart =
      a line to the man himself, about no input (`iid` is ''), `name` his callsign, `day` the day it took effect. `c` what
      changed; `u` the squadron it names (a role at home, a View or a Plan), `num` that squadron's number as it was written
      (a line about "+ New squadron" still says 150 once the squadron is undone — D7′); `why` where the app itself did it,
-     with no one's name: `moved` (`mv` the squadron he moved to) or `archived`. One body says what a change owes, for the
+     with no one's name: `moved` (`mv` the squadron he moved to) or `archived`; `master`, a View or Plan that being made a
+     master admin ended, is signed by whoever made him one (D2396 (n)). One body says what a change owes, for the
      writer and the gate alike (state/acctlines.ts accessParts); the line carries no squadron stamp of its own (D5), so
      neither the bell's switch, the grey mark nor the rights rule touches it, and a move keeps it. */
-  | { k: 'acct'; c: AcctChange; u?: string; num?: string; why?: 'moved' | 'archived'; mv?: string }
+  | { k: 'acct'; c: AcctChange; u?: string; num?: string; why?: 'moved' | 'archived' | 'master'; mv?: string }
 
 /** what changed on his account: made an admin of his squadron or a member, suspended or enabled, given or losing View or
  *  Plan of another squadron, made or unmade a master admin */
@@ -1128,7 +1129,10 @@ function partWords(p: NoticePart): string {
    "Made a member: you moved to 149" */
 function acctWords(p: Extract<NoticePart, { k: 'acct' }>): string {
   const n = p.num ?? ''
-  const why = p.why === 'moved' ? `: you moved to ${p.mv ?? ''}` : p.why === 'archived' ? ': archived' : ''
+  /* (his D2396 (n): a View or Plan that being made a master admin ended — "Plan of 149 ended: master admin covers every
+     squadron", signed by who did it) */
+  const why = p.why === 'moved' ? `: you moved to ${p.mv ?? ''}` : p.why === 'archived' ? ': archived'
+    : p.why === 'master' ? ': master admin covers every squadron' : ''
   switch (p.c) {
     case 'admin': return `Made an admin of ${n}`
     case 'member': return 'Made a member' + why
@@ -1138,8 +1142,8 @@ function acctWords(p: Extract<NoticePart, { k: 'acct' }>): string {
     case 'viewEnd': return `View of ${n} ended` + why
     case 'plan': return `Given Plan of ${n}: full access to ${n}`
     case 'planEnd': return `Plan of ${n} ended` + why
-    case 'master': return 'Made a master admin'
-    case 'masterEnd': return 'Master admin taken off'
+    case 'master': return 'Made a master admin: full access to every squadron'
+    case 'masterEnd': return 'Master admin taken off: full access to every squadron ended'
   }
   return ''
 }

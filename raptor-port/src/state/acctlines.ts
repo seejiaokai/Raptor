@@ -51,20 +51,31 @@ export function accessIn(a: Account | null | undefined, rows: UnitRows, iso: str
 
 /** WHAT A CHANGE OF HIS ACCESS OWES HIM, part by part (D2319's words, notices.ts acctWords): the master mark; his role at
  *  home, while his home stays (a move is told on its day — tellMoves); his sign-in; each other squadron's level, in the
- *  squadrons' order. Made a master admin, the Plan rows his Save drops tell nothing — "Full access" covers them (§4 item
- *  5). Plan lowered to View says both: Plan ended, then View given. `why` — the app's own reason for a right that ended
- *  (an archive), said in place of a name. A sign-in re-linked to another man owes nothing: neither man's access changed
- *  as he holds it (the agent's reading, told to him). */
+ *  squadrons' order. Plan lowered to View says both: Plan ended, then View given. `why` — the app's own reason for a
+ *  right that ended (an archive), said in place of a name. A sign-in re-linked to another man owes nothing: neither man's
+ *  access changed as he holds it (the agent's reading, told to him).
+ *  MADE A MASTER ADMIN (his D2396 (n), D2400 — the drawing docs/mock/2026-11-24-msq-new-words/img/n1-*.png): each View and
+ *  Plan his Save ends is said on a line of its own, "Plan of 149 ended: master admin covers every squadron · Saber",
+ *  signed by whoever did it (acctByApp) — until now it told nothing, and his bell's last word on 149 stayed "Given Plan of
+ *  149". Written BEFORE the mark's line: the bell lists lines of the same moment last written first, so the mark stands
+ *  on top with the squadrons under it in their order, as drawn. Taken off, nothing comes back. */
 export function accessParts(b: AccessNow | null, a: AccessNow | null, why?: 'archived'): AcctPart[] {
   if (!b || !a || b.pid !== a.pid) return []
   const out: AcctPart[] = []
-  if (!b.master && a.master) out.push({ k: 'acct', c: 'master' })
+  const madeMaster = !b.master && a.master
+  if (madeMaster) {
+    const num = (u: string): string => a.nums.get(u) ?? b.nums.get(u) ?? ''
+    const held = [...b.lv.keys()].filter(u => !a.lv.has(u))
+    held.sort((x, y) => num(y).localeCompare(num(x), undefined, { numeric: true }) || (x < y ? 1 : -1))
+    for (const u of held) out.push({ k: 'acct', c: b.lv.get(u) === 'admin' ? 'planEnd' : 'viewEnd', u, num: num(u), why: 'master' })
+    out.push({ k: 'acct', c: 'master' })
+  }
   if (b.master && !a.master) out.push({ k: 'acct', c: 'masterEnd' })
   if (b.home && b.home === a.home && b.admin !== a.admin) {
     out.push(a.admin ? { k: 'acct', c: 'admin', u: a.home!, num: a.nums.get(a.home!) ?? b.nums.get(a.home!) ?? '' } : { k: 'acct', c: 'member' })
   }
   if (b.on !== a.on) out.push({ k: 'acct', c: a.on ? 'on' : 'off' })
-  if (!(a.master && !b.master)) {
+  if (!madeMaster) {
     const ids = [...new Set([...b.lv.keys(), ...a.lv.keys()])]
     const num = (u: string): string => a.nums.get(u) ?? b.nums.get(u) ?? ''
     ids.sort((x, y) => num(x).localeCompare(num(y), undefined, { numeric: true }) || (x < y ? -1 : 1))
@@ -94,9 +105,10 @@ export function movedParts(b: AccessNow | null, a: AccessNow | null): AcctPart[]
   return out
 }
 /** WHO SIGNS IT: the person who made the change — but the app, with no name, where the app did it: a right an archive
- *  ended, a move's, and a suspension an Overseas posting made (D2319: "Suspended" with no name) */
+ *  ended, a move's, and a suspension an Overseas posting made (D2319: "Suspended" with no name). A right the mark ended is
+ *  the person's who made him a master admin (D2396 (n): "… · Saber"). */
 export const acctByApp = (p: AcctPart, after: Pick<Account, 'offBy'> | null | undefined): boolean =>
-  !!p.why || (p.c === 'off' && after?.offBy === 'po')
+  (!!p.why && p.why !== 'master') || (p.c === 'off' && after?.offBy === 'po')
 /** the day a move's line names and its fixed id (D11): a second load, or a second browser, finds it and writes nothing */
 export const movedLineId = (accountId: string, day: string, p: AcctPart): string => `acct:mv:${accountId}:${day}:${p.c}:${p.u ?? ''}`
 

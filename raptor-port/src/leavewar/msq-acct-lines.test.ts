@@ -11,9 +11,9 @@
    Red first on 12dd61875. The world: test-support/msq-world.ts — Wed 15 Jul 26. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { archivePerson, runPoArchive } from './sync'
-import { setGrant, removeGrant, addUnit, places, todayIso, unitById } from '../state/units'
+import { setGrant, removeGrant, addUnit, places, todayIso, unitById, grantOfOn } from '../state/units'
 import { NOTICES, noticesFor, noticeWords, noticeAccount, type Notice } from '../state/notices'
-import { saveAccess, updateAccount, ACCOUNTS_LIST } from '../state/accounts'
+import { saveAccess, updateAccount, setMaster, accountById, levelAcct, ACCOUNTS_LIST } from '../state/accounts'
 import { commitSettingsIntent } from '../state/people-settings-commit'
 import { noticeSeenLoad, NOTICESEEN_PFX } from '../state/noticeseen'
 import { HOOKS, store } from '../engine/hooks'
@@ -81,17 +81,65 @@ describe('each change of access tells the man himself, in the drawn words', () =
     expect(updateAccount(ACCT.ranger, { on: true })).toBeNull()
     expect(acct()).toEqual([`${R} · Suspended · Saber`, `${R} · Enabled · Saber`])
   })
-  it('made a master admin: that alone — the Plan the Save drops tells nothing; the mark off: "Master admin taken off"', () => {
+  /* HIS D2396 (n), D2400 — the drawing docs/mock/2026-11-24-msq-new-words/img/n1-*.png: until now the Plan the Save dropped
+     told nothing, so his bell's last word on 149 stayed "Given Plan of 149", no longer true. Red first. */
+  it('made a master admin with a Plan: two lines, the mark first, each signed by who did it; the mark off: its own line, the Plan not back', () => {
     signInAs('saber')
     expect(setGrant(ACCT.hunter, 'u149', 'admin', H).ok).toBe(true)
     NOTICES.length = 0
     on(15, 10)
     expect(saveAccess(ACCT.hunter, { master: true })).toBeNull()
-    expect(acct()).toEqual([`${H} · Made a master admin · Saber`])
+    const signed = (n: any) => { const w = noticeWords(n); return `${w.what} · ${w.who}` }
+    expect(noticesFor(H).map(signed), 'as his bell lists them, newest first').toEqual([
+      'Made a master admin: full access to every squadron · Saber',
+      'Plan of 149 ended: master admin covers every squadron · Saber',
+    ])
     NOTICES.length = 0
     on(15, 11)
     expect(saveAccess(ACCT.hunter, { master: false })).toBeNull()
-    expect(acct()).toEqual([`${H} · Master admin taken off · Saber`])
+    expect(noticesFor(H).map(signed)).toEqual(['Master admin taken off: full access to every squadron ended · Saber'])
+    expect(grantOfOn(levelAcct(accountById(ACCT.hunter)!), 'u149'), 'the ended Plan never comes back by itself').toBeUndefined()
+  })
+  it('made a master admin with a View, and with no right at all: the View ends in the same words; with none, one line', () => {
+    signInAs('saber')
+    expect(setGrant(ACCT.hunter, 'u149', 'view', H).ok).toBe(true)
+    NOTICES.length = 0
+    on(15, 10)
+    expect(saveAccess(ACCT.hunter, { master: true })).toBeNull()
+    expect(bell('hunter')).toEqual([
+      'Made a master admin: full access to every squadron',
+      'View of 149 ended: master admin covers every squadron',
+    ])
+    NOTICES.length = 0
+    on(15, 11)
+    expect(saveAccess(ACCT.ranger, { role: 'admin', master: true })).toBeNull()
+    expect(bell('ranger').filter(w => /master admin/i.test(w))).toEqual(['Made a master admin: full access to every squadron'])
+  })
+  it('by the mark\'s own door too: the Plan\'s line is owed and the gate lets it through', () => {
+    signInAs('saber')
+    expect(setGrant(ACCT.hunter, 'u149', 'admin', H).ok).toBe(true)
+    NOTICES.length = 0
+    on(15, 10)
+    expect(setMaster(ACCT.hunter, true).ok).toBe(true)
+    expect(bell('hunter')).toEqual([
+      'Made a master admin: full access to every squadron',
+      'Plan of 149 ended: master admin covers every squadron',
+    ])
+  })
+  it('an Undo of the step he had read tells him the opposite: the mark off and the Plan given back', () => {
+    signInAs('saber')
+    expect(setGrant(ACCT.hunter, 'u149', 'admin', H).ok).toBe(true)
+    NOTICES.length = 0
+    on(15, 10)
+    expect(saveAccess(ACCT.hunter, { master: true })).toBeNull()
+    on(15, 11)
+    hasReadAll('hunter')
+    on(15, 12)
+    expect(globalUndo().ok).toBe(true)
+    expect(bell('hunter')).toEqual(expect.arrayContaining([
+      'Master admin taken off: full access to every squadron ended',
+      'Given Plan of 149: full access to 149',
+    ]))
   })
   it('archived: "Suspended · Saber", and each right it ended said by the app — "View of 149 ended: archived"', () => {
     signInAs('saber')
@@ -249,8 +297,10 @@ describe('the words', () => {
     expect(w({ c: 'viewEnd', num: '149' })).toBe('View of 149 ended · Saber')
     expect(w({ c: 'plan', num: '149' })).toBe('Given Plan of 149: full access to 149 · Saber')
     expect(w({ c: 'planEnd', num: '149' })).toBe('Plan of 149 ended · Saber')
-    expect(w({ c: 'master' })).toBe('Made a master admin · Saber')
-    expect(w({ c: 'masterEnd' })).toBe('Master admin taken off · Saber')
+    expect(w({ c: 'master' })).toBe('Made a master admin: full access to every squadron · Saber')
+    expect(w({ c: 'masterEnd' })).toBe('Master admin taken off: full access to every squadron ended · Saber')
+    expect(w({ c: 'planEnd', num: '149', why: 'master' })).toBe('Plan of 149 ended: master admin covers every squadron · Saber')
+    expect(w({ c: 'viewEnd', num: '150', why: 'master' })).toBe('View of 150 ended: master admin covers every squadron · Saber')
     expect(w({ c: 'viewEnd', num: '149', why: 'moved', mv: '150' }, null)).toBe('View of 149 ended: you moved to 150')
     expect(w({ c: 'planEnd', num: '149', why: 'archived' }, null)).toBe('Plan of 149 ended: archived')
     expect(w({ c: 'member', why: 'moved', mv: '149' }, null)).toBe('Made a member: you moved to 149')
