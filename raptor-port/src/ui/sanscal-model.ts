@@ -13,8 +13,9 @@
      in three groups — WSOs to fly, pilots to fly, and those who offered only OFT or AMT. A man stands in ONE group:
      if any filing of his for the day offers flying he is "to fly", and every filing of his is listed with him — so a
      group's head-count is people, and equals the figure the date shows. A commitment of a man the count leaves out
-     (no longer SANS, archived, not aircrew) is listed apart with the reason: the SANS calendar has no List (D620), so
-     this window is the only place such a record can be reached and removed. */
+     (archived, not aircrew) is listed apart with the reason: the SANS calendar has no List (D620), so this window is
+     the only place such a record can be reached and removed. One of a man no longer SANS that day is HIDDEN, not listed
+     apart (owner D2341, 23 Nov 26 — see below). */
 import { INPUTS, inputCoversDate, isSansAvail, isLateInput, inputOwnDueISO, cutRuleWords, namedOf } from '../engine/inputs'
 import { getCut } from '../state/cutoff'
 import { pageUnit } from '../state/perms'

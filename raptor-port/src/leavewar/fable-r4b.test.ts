@@ -134,15 +134,16 @@ describe('FABLE 2: a SANS posting dated before a hand tick', () => {
   })
 })
 
-/* OBSERVATION (passes — it records what the app does, for his word): with a SANS posting set ahead, a day past its date
-   reads him as SANS at once, so a flying seat there asks for his SANS availability — and none can be filed for him until
-   the posting runs, because filing goes by who is SANS today (D2327). */
-describe('FABLE 3 (as built): SANS availability for a man whose SANS posting is set ahead', () => {
-  it('posting Fri set Wed: Sat reads SANS, a flying seat finds no availability filed, and filing it is refused', () => {
+/* OBSERVATION, answered by his D2340 (23 Nov 26, narrowing D2327): with a SANS posting set ahead, a day past its date reads
+   him as SANS at once, so a flying seat there asks for his SANS availability — and it may now be filed ahead, from the save,
+   for days from the posting's date (filing goes by the day filed); a day before the date is still refused. */
+describe('FABLE 3 (D2340): SANS availability for a man whose SANS posting is set ahead', () => {
+  it('posting Fri set Wed: Sat reads SANS, a flying seat finds no availability filed, and filing it for Sat is allowed; Thu refused', () => {
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
     expect(sansOn('rocky', SAT_ISO)).toBe(true)
     expect(sansGate('rocky', (DAYS[SAT] as any).dt, 'fly', 600, 660, SAT_ISO).status).toBe('none')
-    expect(sansRefusal('rocky', { f: true })).toBe('SANS Availability is for SANS aircrew only')
+    expect(sansRefusal('rocky', { f: true }, SAT_ISO)).toBe('')
+    expect(sansRefusal('rocky', { f: true }, THU_ISO)).toBe('Hex is SANS from Fri 17 Jul: file SANS availability for days from then')
   })
 })
 

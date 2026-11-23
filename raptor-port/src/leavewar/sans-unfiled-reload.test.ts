@@ -38,7 +38,7 @@ describe('D2338 — the struck line after a reload', () => {
     signInAs('ad', 'a')
     expect(postOut('rocky', THU_ISO, 'sans')).toBe(true); raptorNotify()
     vi.setSystemTime(new Date(2026, 6, 16, 9, 0, 0)); runPoOutcomes(); raptorNotify()
-    expect(live().map(n => noticeWords(n).day), 'Thursday, planned and unfiled').toEqual(['Thu 16 Jul'])
+    expect(live().map(n => (n.what[0] as any).days), 'Thursday, planned and unfiled').toEqual([[THU_ISO]])
     signInAs('hex'); expect(markAllNoticesRead()).toBe(true); signInAs('ad', 'a')
     expect(undoPostOut('rocky')).toBe(true); raptorNotify()
     expect(struck().length).toBe(1)
@@ -48,7 +48,8 @@ describe('D2338 — the struck line after a reload', () => {
     app = await boot(be)
     signInAs('ad', 'a')
     expect(struck().length, 'the struck line is saved, once').toBe(1)
-    expect(noticeWords(struck()[0]!)).toEqual({ name: 'Your SANS availability', day: 'Thu 16 Jul', struck: 'Planned, no availability filed', what: 'taken back', who: 'Saber' })
+    /* (his D2342 words; D2341's shape: the first sentence struck as the name) */
+    expect(noticeWords(struck()[0]!)).toEqual({ name: 'You\'re SANS from Thu 16 Jul.', nameStruck: true, day: '', struck: 'You\'re planned on Thu 16 Jul with nothing filed.', what: 'taken back', who: 'Saber' })
     expect(live()).toEqual([])
 
     /* the same SANS posting made again: the struck line and one new line, unread */

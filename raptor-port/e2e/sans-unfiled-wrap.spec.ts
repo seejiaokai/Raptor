@@ -12,7 +12,8 @@ import { go } from './app'
 const HEX = 'rocky'
 const FRI = 4
 const KEY = `s:${FRI}.oft.0.+`
-const NOTE = "SANS from Fri 17 Jul: no availability filed. It can be filed from that day on the Inputs page's SANS tab."
+/* (his D2340, 23 Nov 26: the note's words now name where to file it, filing ahead being allowed) */
+const NOTE = "SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab."
 const WIDTHS = [402, 375, 320]
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
 

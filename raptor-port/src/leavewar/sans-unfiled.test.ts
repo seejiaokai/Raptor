@@ -45,7 +45,8 @@ const FRI = 4, SAT = 5, FRI_ISO = '2026-07-17', SAT_ISO = '2026-07-18'
 const at = (y: number, m: number, d: number) => vi.setSystemTime(new Date(y, m - 1, d, 9, 0, 0))
 /* (the writing guide §1b: a colon, not a dash, joins the opening name and its fact; the place named as the screen names it —
    the Inputs page's tab reads "SANS"; the coordinator's correction of 23 Nov 26) */
-const LOOK = 'SANS from Fri 17 Jul: no availability filed. It can be filed from that day on the Inputs page\'s SANS tab.'
+/* (his D2340, 23 Nov 26: filing ahead is allowed, so the note names where to file it, no longer "from that day") */
+const LOOK = 'SANS from Fri 17 Jul: no availability filed. File it on the Inputs page\'s SANS tab.'
 const USUAL = 'SANS — no availability filed for today'
 /* his line in a day's crew list, the SANS section, nothing armed — the reason he is struck with (the puck's data-why) */
 const whyIn = (di: number, id: string): string | null => {
@@ -134,20 +135,24 @@ describe('D2338 (1) — the crew list on a look-ahead day says when SANS availab
   })
 })
 
-describe('D2338 (2) — on the posting\'s date his bell lists the planned days with nothing filed', () => {
+/* (his D2340, 23 Nov 26, narrowing D2338: the line comes when the posting is SAVED, not on its date; his D2342's words) */
+const DUE_SAT = { name: 'You\'re SANS from Fri 17 Jul.', day: '', what: 'You\'re planned on Sat 18 Jul with nothing filed. Tap to file.', who: '' }
+describe('D2338 (2) — his bell lists the planned days with nothing filed (from the save, D2340)', () => {
   it('on Fri 17 Jul, Sat 18 planned and unfiled: one line to him, naming the day', () => {
     plan(SAT, 'rocky')
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
     at(2026, 7, 17); runPoOutcomes(); raptorNotify()
     const ls = sansLines('rocky')
     expect(ls.length).toBe(1)
-    expect(noticeWords(ls[0]!)).toEqual({ name: 'Your SANS availability', day: 'Sat 18 Jul', what: 'Planned, no availability filed', who: '' })
+    expect(noticeWords(ls[0]!)).toEqual(DUE_SAT)
   })
 
-  it('nothing on Wed 15 Jul, before the date: he cannot file yet (D2327)', () => {
+  it('on Wed 15 Jul, before the date: the line is there from the save — he may file ahead (D2340, narrowing D2327)', () => {
     plan(SAT, 'rocky')
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
-    expect(sansLines('rocky')).toEqual([])
+    const ls = sansLines('rocky')
+    expect(ls.length).toBe(1)
+    expect(noticeWords(ls[0]!)).toEqual(DUE_SAT)
   })
 
   it('nothing on an admin\'s own bell — the man himself only', () => {
@@ -179,7 +184,7 @@ describe('D2338 (2) — on the posting\'s date his bell lists the planned days w
     plan(SAT, 'rocky'); plan(FRI, 'rocky')
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
     at(2026, 7, 17); runPoOutcomes(); raptorNotify()
-    expect(noticeWords(sansLines('rocky')[0]!).day).toBe('Fri 17, Sat 18 Jul')
+    expect(noticeWords(sansLines('rocky')[0]!).what).toBe('You\'re planned on Fri 17, Sat 18 Jul with nothing filed. Tap to file.')
   })
 
   it('a tap opens the SANS calendar at the first of the days, that day open', () => {
@@ -203,7 +208,9 @@ describe('D2338 (2) — the bell line taken back with its posting', () => {
   const ran = () => { plan(SAT, 'rocky'); expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify(); at(2026, 7, 17); runPoOutcomes(); raptorNotify(); expect(sansLines('rocky').length).toBe(1) }
   /* (a kind not built yet, so read as a plain string) */
   const backOf = (pid: string) => noticesFor(pid).filter(n => String((n.what || [])[0]?.k) === 'sansback').map(n => noticeWords(n))
-  const STRUCK = { name: 'Your SANS availability', day: 'Sat 18 Jul', struck: 'Planned, no availability filed', what: 'taken back', who: 'Saber' }
+  /* (his D2341/D2342: the first sentence struck as the name, the days sentence struck without "Tap to file"; nothing filed, so
+     nothing hidden and no third sentence) */
+  const STRUCK = { name: 'You\'re SANS from Fri 17 Jul.', nameStruck: true, day: '', struck: 'You\'re planned on Sat 18 Jul with nothing filed.', what: 'taken back', who: 'Saber' }
 
   it('unread, then "Undo post out": the line simply goes', () => {
     ran()
@@ -366,14 +373,17 @@ describe('D2338 — the cases the fresh Opus reader found untested', () => {
     expect(noticesFor('rocky').filter(n => String((n.what || [])[0]?.k) === 'sansback')).toEqual([])
   })
 
-  it('the posting\'s date is today but its pass has not run yet: still the look-ahead words, no bell line; once it runs, the usual words and the line', () => {
+  it('the posting\'s date is today but its pass has not run yet: still the look-ahead words, the line from the save; once it runs, the usual words and the same line', () => {
     plan(SAT, 'rocky'); expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
     at(2026, 7, 17)
     expect(!!P('rocky').san, 'not SANS until the pass runs').toBe(false)
     expect(whyIn(SAT, 'rocky')).toBe(LOOK)
-    expect(sansLines('rocky')).toEqual([])
+    const before = sansLines('rocky')
+    expect(before.length, 'the line from the save (D2340)').toBe(1)
     runPoOutcomes(); raptorNotify()
     expect(whyIn(SAT, 'rocky')).toBe(USUAL)
-    expect(sansLines('rocky').length).toBe(1)
+    const after = sansLines('rocky')
+    expect(after.length).toBe(1)
+    expect(after[0]!.id, 'the same line, not news again').toBe(before[0]!.id)
   })
 })
