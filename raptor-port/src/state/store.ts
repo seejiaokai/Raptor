@@ -1070,7 +1070,12 @@ function maybeReenter(): void {
   const to = entryDue()
   if (to == null) return
   const held = ENTRY_HOLD() === 'war'
-  const key = `${todayIso()}|${to}|${lwUnitNow() ?? ''}|${trkUnitNow() ?? ''}|${me() ?? ''}|${held ? 'held' : ''}`
+  /* the page's own squadron is part of the try: back from the member view over a held draft the door has not moved, so
+     without it the key matched the last try, and the Leave War stayed on his home under the squadron picked, its Approve
+     writing there (the night's security read, F1). Whether the Tracker may hold is too: a right lowered during the hold
+     must release it (trkMayHold). */
+  const iso = todayIso()
+  const key = `${iso}|${to}|${pageUnit('own', iso)}|${lwUnitNow() ?? ''}|${trkUnitNow() ?? ''}|${me() ?? ''}|${held ? 'held' : ''}|${trkMayHold() ? 'mayhold' : ''}`
   if (key === ENTRY_TRIED) return
   ENTRY_TRIED = key
   const m = me()

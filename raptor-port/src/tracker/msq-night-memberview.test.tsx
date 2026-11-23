@@ -18,7 +18,7 @@ import { trackerTarget } from '../storage/adapters'
 import { saveAccess } from '../state/accounts'
 import { SESSION } from '../state/auth'
 import { todayIso } from '../state/units'
-import { pageUnit, setTrkUnitProbe } from '../state/perms'
+import { lwUnitNow, pageUnit, setTrkUnitProbe } from '../state/perms'
 import { notify, switchRoleView } from '../state/store'
 import { CURPAGE, setPage } from '../state/view'
 import { pickSquadron } from '../state/pick'
@@ -173,6 +173,28 @@ describe('Logout in the member view, over a held draft', () => {
     await act(async () => { C.dlgClose('__alt__'); expect(await out).toBe(true); await settle() })
     expect(SESSION).toBeNull()
     expect(storedHas('u149', 'F-OUT3')).toBe(false)
+  })
+})
+
+describe('back from the member view over a held draft (fix list item 4 — the security read\'s F1)', () => {
+  it('the Leave War comes back to the squadron picked, not left on his home under 149\'s number', async () => {
+    await heldDraft('F-WAR1')
+    expect(lwUnitNow(), 'in the member view the war is his own').toBe('u142')
+    await act(async () => { notify(); await settle() })   /* anything that repaints, as moving a week does */
+    await act(async () => { switchRoleView(); await settle() })
+    expect(UNIT).toBe('u149')
+    expect(lwUnitNow(), 'the Leave War loaded is 149\'s').toBe('u149')
+    expect(S.storageUnit()).toBe('u149')
+    expect(C.byid['F-WAR1'], 'the draft came back with him').toBeTruthy()
+    await act(async () => { await C.saveChangesClick(); await settle() })
+    expect(storedHas('u149', 'F-WAR1')).toBe(true)
+    /* the fix list's third lead: saved, the next switch to the member view takes the door home */
+    await act(async () => { switchRoleView(); await settle() })
+    expect(lwUnitNow()).toBe('u142')
+    expect(S.storageUnit(), 'nothing left to hold: the Tracker goes with his pages').toBe('u142')
+    await act(async () => { switchRoleView(); await settle() })
+    expect(S.storageUnit()).toBe('u149')
+    expect(lwUnitNow()).toBe('u149')
   })
 })
 
