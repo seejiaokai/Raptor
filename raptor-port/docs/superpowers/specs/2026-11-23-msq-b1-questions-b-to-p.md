@@ -23,9 +23,10 @@ Pictures are in `raptor-port/docs/handpass/2026-11-23-msq-b1-morning/` (this mor
   "Plans 142" and finds nobody; Hunter, who "also plans 149", is found by no tick. Recommended: one tick for each
   squadron somebody on the list plans, so the tick finds exactly the rows that say "also plans …". Drawn for you first.
   Pictures: `fable/q-b-plans-142-ticked.png`, `fable/q-b-hunter-row-also-plans-149.png`
-- **(n) A man made master admin and then taken off it is never told his Plan of 149 has gone.** Recommended: the two
-  bell lines say what they mean — "… full access to every squadron" and "… full access to every squadron ended". New
-  words: drawn for you first. Picture: `fable/q-n-hunter-bell-today.png`
+- **(n) A man made master admin and then taken off it is never told his Plan of 149 has gone.** Recommended: his bell
+  says so on the day it goes — a new line, "Plan of 149 ended: master admin covers every squadron · Saber" — and the
+  two master admin lines say what they mean. New words: drawn for you first. Pictures: `fable/q-n-today.png`,
+  `fable/q-n-after.png`
 - **(f) Request access starts on 142, so a newcomer who does not look asks the wrong squadron.** Recommended: start on
   "Pick…", as Seat and CAT already do. New words: drawn for you first. Picture: `q-f-request-access-starts-on-142.png`
 
@@ -148,44 +149,46 @@ morning's).
 
 ### (n) Hunter's bell when he is made a master admin and later taken off
 
-**Where, and who meets it.** A person's own bell. Example: Hunter holds Plan of 149. Saber makes him a master admin,
-and some time later an admin again.
+**What happens to Hunter.** Hunter is an admin of 142 and Saber has given him Plan of 149. Saber then makes him a
+master admin. A master admin already has every squadron, so the app quietly removes his separate Plan of 149 at that
+moment. Later Saber takes master admin off. The Plan of 149 does not come back: Hunter is left with 142 only.
 
-**What happens today.** A master admin has full access to every squadron, so when Hunter is made one, his separate
-Plan of 149 is removed — it would be a hidden extra otherwise. When the master admin role comes off, the Plan does not
-come back. Hunter's bell reads, newest first:
+**Why it matters.** His bell never tells him. The last thing it says about 149 is "Given Plan of 149", which is no
+longer true. He finds out when 149 is missing from his "142 ▾" menu.
 
-> Master admin taken off · Saber
-> Made a master admin · Saber
-> Given Plan of 149: full access to 149 · Saber
+**See it.** Two pictures of Hunter's bell, newest line on top, the changed lines ringed in red:
+- today: `fable/q-n-today.png`
+- after the fix: `fable/q-n-after.png` (a mock-up: the app's own bell with the new words put in for the picture)
 
-Nothing says Plan of 149 has ended. The last thing the bell told him about 149 is that he was given it. He will find
-out when 149 is missing from his "142 ▾" menu.
+**The fix — three lines, the exact words.**
 
-Saber, for his part, can see it: when he sets Hunter's Role back to Admin, the row shows "149 None · View · Plan" with
-None lit before he saves, and he can give Plan again in the same Save.
-
-This morning's recommendation was to leave it. That leaves a man misinformed about his own access, which your rule on
-bell lines is there to prevent (he is told whenever View or Plan is given or ended).
-
-**The choice.**
-- A — leave it.
-- B (recommended) — the two master admin lines say what they mean, in the same shape as the Plan line:
+When Saber makes him a master admin, the bell gets two lines where today it gets one:
 
 > Made a master admin: full access to every squadron · Saber
+> Plan of 149 ended: master admin covers every squadron · Saber
+
+When Saber takes it off:
+
 > Master admin taken off: full access to every squadron ended · Saber
 
-  If Saber gives Plan of 149 back in the same Save, the usual "Given Plan of 149: full access to 149 · Saber" follows.
-- C — put his old Plan back by itself when master admin comes off. Not recommended: access coming back that nobody gave
-  is the surprise the night's reads asked to close.
+If he held View of a squadron, it ends the same way and is said the same way: "View of 150 ended: master admin covers
+every squadron · Saber".
 
-**Why B.** Always true, whatever he held before. It tells him at the moment it matters, and it needs no new kind of
-line.
+**The choice.**
+- A — leave it as it is.
+- B — only reword the two master admin lines (last night's recommendation). Withdrawn: "full access to every squadron
+  ended" still lets Hunter think he is back to what he had before, Plan of 149 included.
+- C (recommended) — the three lines above. The Plan is said to have ended on the day it ends, in the words the bell
+  already uses for a Plan that ends ("Plan of 149 ended: archived"). The bell's last word on 149 is then true.
 
-**What it costs.** Two longer lines; on an iPhone the second may wrap. **New words: drawn for you first.**
+Putting his old Plan back by itself when master admin comes off is not offered: access nobody gave would come back.
 
-**Pictures.** `fable/q-n-hunter-bell-today.png` (his bell tonight); `fable/q-n-row-admin-picked-again.png` (what Saber
-sees before saving: 149 back on None); `q-n-hunter-bell-master-and-back.png` (this morning's, on a phone).
+**What it costs.** One more line on the day he is made a master admin, and the lines are longer: each takes two rows
+in the bell, as the "after" picture shows. Nothing else about the bell changes.
+
+**For Saber, unchanged.** When he sets Hunter's Role back to Admin, the row shows "149 None · View · Plan" with None
+lit before he saves (`fable/q-n-row-admin-picked-again.png`), and he can give Plan again in the same Save; Hunter's
+bell then says "Given Plan of 149: full access to 149 · Saber" as usual.
 
 ---
 
@@ -448,8 +451,10 @@ day's name.
 - **(m)** was "show 'This change could not be saved.'". Now "no message". Those words are the generic failed-save
   words; D1667 gives a refusal of one change the grey "Blocked:" note. And since the night's R1 fix the case is not
   reachable by one person in one browser (not reproduced tonight — read from the code, not pressed).
-- **(n)** was "leave it". Now "say it in the two master admin lines". D2251 has a person told whenever View or Plan is
-  given or ended; today his bell's last word on 149 is "Given Plan of 149", which is no longer true.
+- **(n)** was "leave it", then "say it in the two master admin lines". Now those two lines and a third, "Plan of 149
+  ended: master admin covers every squadron", on the day he is made a master admin (the host’s suggestion, checked
+  against the code: that Save is where his Plan is removed, and today it tells him nothing of it). D2251 has a person
+  told whenever View or Plan is given or ended; today his bell’s last word on 149 is "Given Plan of 149", no longer true.
 - **(j)**, first half: "the heading keeps the page's own count" is withdrawn. As built the heading counts the squadrons
   listed, which matches the approved drawing (nfc: "People · 71", both ticked); the morning's version would have put
   142's count over 149's people. The second half (ticks clear at a pick) stands, now for the Squadron ticks only.
