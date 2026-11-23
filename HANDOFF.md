@@ -70,6 +70,22 @@ the later merge keeps both (D78).
   (taken-back line now also for a posting not yet run, and for filed days); (f) Opus F7 speed (low): `wireSansBackBefore`
   scans every input per command — measure, file if small. Then: narrow fresh-Opus re-read of the fix commits; re-walk
   what a fix changed on screen (the two panels — a short host look); push; GitHub; sheet §17; ledger row; look card.
+- **UPDATE 4 — the SECURITY read is in** (`docs/superpowers/briefs/2026-11-23-sans-ahead-full-read-security.md`; its test
+  file `raptor-port/src/leavewar/sans-ahead-security152.test.ts` is given in full at the report's foot — NOT in `src/`, so
+  GitHub stays green; copy it in to start). On `f95d4fab4` its 8 tests: **6 FAIL, 2 pass**. FIRST look at why its three S1
+  tests still fail after the `holds(except, person)` fix (perhaps another door — `reassignInput`, `commitInputEdit` moving a
+  one-man record — or the retype of another kind: add `isSansAvail(except.type)` to the exemption); then S2 `sansAvailOn`
+  (= Astra #1 rest, item (b) above); then **S3 (new, MEDIUM)**: a member's own-row command may write his own `sanFrom` /
+  `sanWas` (`state/perms.ts`, `case 'people'` guards only `OWN_ROW_ADMIN_ONLY`) — backdating his SANS lets him file days
+  before his posting date and change past counts: allow only what the Quals tick writes today, his own Undo/Redo's replay
+  excepted (2 tests); S4 docs = item (e). **A product question for him (S's):** D149 lets a member tick his own SANS on
+  Quals, counting from today — so he can tick himself and file before his posting date through ordinary screens; is that
+  fine? (10).
+- **State at writing:** all fixes so far committed and pushed to `f95d4fab4` (GitHub running on it); 80% full — the next
+  chat (or this one after compaction) starts at UPDATE 4's first item, then items (b)–(f) of UPDATE 3, then the narrow
+  fresh-Opus re-read of all fix commits since `bde8ef0a0`, the host's short re-look at the two SANS panels at both sizes,
+  push, GitHub green, sheet §17 filled (roll-call marks from the reports w8/w9/w10/r1, the Walk line, the ledger row),
+  the look card and the preview link with questions (1)–(10).
 - **Questions for him now (add to the list above):** (6) F4 — after the posting is put back, the "hidden" line stays on his
   bell (untrue then) — remove it? (7) Astra #6/Opus F5/w9 R2 — the take-back line strikes "You're SANS from…" he never had
   or never read (and today's days, not the ones he read) — strike only what he read? (8) S11 — on a published day every
