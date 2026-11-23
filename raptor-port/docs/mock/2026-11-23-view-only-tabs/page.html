@@ -50,10 +50,19 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   <h1>Only view: the menu and top bar</h1>
 
   <div class="now">
-    <p><b>Look at now:</b> which squadron switch should go at the top of the ☰ menu, A or B? Both carry out your ruling: someone with only View of 149 gets just its View-only Sched and Help.</p>
-    <p class="rec">Recommended: B, the chips. One tap switches, the menu stays open with the right pages at once, and each squadron number shows once.</p>
-    <p class="muted">The parts ringed in blue are new. The pictures are the real app with the new parts drawn on.</p>
+    <p><b>Look at now:</b> version C, your idea. The TALON mark sits at the top of the ☰ menu, with the squadron buttons under it. Shall I build C?</p>
+    <p class="rec">Recommended: C. It matches the top bar, needs no heading, and switches in one tap.</p>
+    <p class="muted">C's pictures are clean, exactly as the app would look. In the older A and B pictures further down, the blue boxes only mark what is new; they are not part of the design.</p>
   </div>
+
+  <section>
+    <h2>C (recommended): the TALON mark, then the buttons</h2>
+    <p>The menu opens with the same TALON mark as the top left of the screen, its small number saying which squadron you are in. Under it are the squadron buttons and a grey line saying what you can do there. One tap switches, and the pages change at once.</p>
+    <div class="pair" id="c1"></div>
+    <div class="pair" id="c2"></div>
+    <p>B, the same buttons under a “SQUADRON” heading, without its blue boxes, for a fair comparison:</p>
+    <div class="pair one" id="c3"></div>
+  </section>
 
   <section>
     <h2>B (recommended): chips, one tap</h2>
@@ -112,6 +121,9 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 <script>
 const S={
+ c1:[["c1-menu-149-proposed","new","C: 149 picked. TALON reads 149, the buttons, “149 · View only”, then View-only Sched and Help."],["c2-menu-home-142-proposed","new","C: on 142. TALON reads 142, “142 · Your squadron”, every page."]],
+ c2:[["c3-menu-saber-eight-proposed","new","C: Saber with eight squadrons. The buttons slide sideways."],["c4-menu-one-squadron-proposed","new","C: one squadron only. The mark alone, no buttons."]],
+ c3:[["c5-menu-149-version-b-unringed","new","B without its blue boxes, for comparison."]],
  b1:[["b1-menu-149-chips-proposed","new","B: 149 picked. Chips 142 and 149, “149 · View only”, then View-only Sched and Help."],["b2-menu-after-tapping-142-proposed","new","B: one tap on 142. The menu stays open, “142 · Your squadron”, every page back."]],
  b2:[["b4-menu-saber-eight-chips-proposed","new","B: Saber with eight squadrons. One row, cut at the edge."],["b4b-menu-saber-eight-chips-slid-proposed","new","B: the same row slid to its end."]],
  s1:[["2a-menu-149-today","today","Today: every page, and nothing says it is 149."],["2b-menu-149-proposed","new","Proposed: SQUADRON 149 · View only, then View-only Sched and Help."]],

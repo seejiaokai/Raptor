@@ -1427,3 +1427,17 @@ sides.
 **Issue:** Two phases were built and handed off while the pull request clashed with `main`, so GitHub never ran it; on the developer's PC only the unit tests ran. The first real run found 35 browser-test failures from phase 1's permission change (a test-only shortcut that sets the role in force stopped opening edit controls). Each handoff's "Gates" line said "Not run: browser tests", which read as a small gap, not as "this phase has never been checked in a browser".
 **Suggested improvement:** In the handoff skill's gates line, when the pull request ran no checks (clashing, stacked or not opened), say so as its own line ("GitHub's run has never passed on this branch — N phases unchecked in a browser") and make the next chat's first step bringing `main` in and getting one green run before building more; in the bug-check order's gates step, a phase that changes permissions runs the browser tests of the pages it guards locally before it is called done.
 **Principle:** A check that did not run is not a pass; a handoff must name an absent check as loudly as a failed one, and the next builder settles it before stacking more work on top.
+
+
+### Observation 1025: Mock-up "new part" rings were read as part of the design
+
+**Status:** OPEN
+**Date:** 23 Nov 26
+**Session context:** chat 149 — drawing D2381's View-only top bar and ☰ menu for the owner on his iPhone (numbered past 1024, held on another branch)
+**Skill:** impeccable
+**Type:** open-source
+**Phase/Area:** mock-ups put to a non-designer for approval
+
+**Issue:** Each proposed picture had a 2px accent-coloured ring drawn around every new part, to show what changed. The owner, looking on his phone, asked whether it "would look nicer without that blue cyan outer box" — he took the marker for part of the proposed look. A redraw with clean pictures was needed.
+**Suggested improvement:** In the mock-up guidance, show each proposed screen clean first, exactly as it would ship; put any change markers on a second, separate copy labelled as markers (or say in words what is new). Never let the only proposed picture carry annotation in the product's own accent colour.
+**Principle:** An annotation drawn in the product's own visual language is read as product; the picture a person approves must be the thing itself, with the explanation kept outside it.
