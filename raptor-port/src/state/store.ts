@@ -468,6 +468,7 @@ export function resetSession(s: any) {
   authSetSession(s)
   view.bumpNav()                  // a session change invalidates a pending day-template-apply confirm (P2-REV2-07)
   view.setPage('viewsched')
+  LANDED = { unit: '', page: '' } // the landing's last page and squadron are the person's who signed in (Fable's read, 23 Nov 26)
   view.setBoardDay(null)          // also disarms a slot armed on the outgoing session's day
   view.selDrop()                  // SELID, SELSEEN, SELPREV, PFOCUS, WFOCUS, DWOPEN
   view.clearOtherHL()             // HLSET, SEARCH (and SELID again — harmless)

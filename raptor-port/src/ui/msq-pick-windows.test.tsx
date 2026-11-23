@@ -16,7 +16,7 @@ import { saveAccess, signIn, sessionFor } from '../state/accounts'
 import { setSession, SESSION } from '../state/auth'
 import { setGrant } from '../state/units'
 import { pickSquadron } from '../state/pick'
-import { notify } from '../state/store'
+import { notify, switchRoleView } from '../state/store'
 import { UNIT } from '../engine/unitview'
 import { worldUnit } from '../leavewar/state/store'
 import { Sheet } from '../leavewar/ui/Sheet'
@@ -108,6 +108,24 @@ describe('an open Input window on Inputs (the drawing f7b)', () => {
     await act(async () => { root.render(<InputEditor />) })
     await act(async () => { setInpEdit({ ...newInputSeed('2026-07-20'), remarks: 'PICKF7B' }); notify() })
   }
+  /* Fable's read of 23 Nov 26, finding 1 (docs/superpowers/briefs/2026-11-23-msq-view-only-read-fable.md): an existing
+     input's window opened on Inputs, then the page landed on View-only Sched (D2381) — the window judged its squadron by
+     the page now in view (149's schedule) and came back live over it. Red first. */
+  it('Fable 1: an input window opened on 149\'s Inputs stays held through the member view\'s landing on View-only Sched', async () => {
+    signInAs('saber')
+    expect(saveAccess(ACCT.hunter, { grants: { u149: 'plan' } })).toBeNull()
+    signInAs('hunter')
+    await act(async () => { await pickSquadron('u149') })
+    setPage('inputs'); setInpView('cal')
+    await act(async () => { root.render(<InputEditor />) })
+    await act(async () => { setInpEdit(INPUTS[0]); notify() })
+    expect($('[data-testid="inped-moveband"]'), 'no band while on 149\'s Inputs').toBeNull()
+    await act(async () => { switchRoleView() })
+    /* held, with the band — not a pick, so the generic band with nothing greyed, as for a Plan lowered (the control test
+       below); the gate refuses its saves */
+    expect($('[data-testid="inped-moveband"]'), 'the window held, with its band').not.toBeNull()
+    await act(async () => { switchRoleView() })
+  })
   it('picking 149: the band\'s words, every control greyed and dead, Add saves nothing; ✕ and Close live; 142 gives it back', async () => {
     signInAs('saber')
     await openNew()

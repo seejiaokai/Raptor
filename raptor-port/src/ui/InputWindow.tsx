@@ -195,10 +195,14 @@ export function InputEditor() {
      own window) or the schedule in view's; once that page shows another (his own move taking effect at midnight) the
      window stays as it stood, its Person list still the squadron it opened on, with the band across its top and "Close",
      and its Add, Save, Delete and "Take me out" do nothing. */
-  const ownPage = !!r && (isNew ? !!(r._calendar || ctx === 'i' || ctx === 'up') : win)
+  /* the kind of page it was OPENED on is kept with it: a landing that moves the page under it (D2381 — a squadron he only
+     views lands on its View-only Sched) must not make his own page's window judge itself by the schedule's squadron and
+     come back live (Fable's read of 23 Nov 26, finding 1) */
+  const ownNow = !!r && (isNew ? !!(r._calendar || ctx === 'i' || ctx === 'up') : win)
+  const [openedOn, setOpenedOn] = useState<{ r: any; unit: string; own: boolean } | null>(null)
+  const ownPage = open && openedOn && openedOn.r === r ? openedOn.own : ownNow
   const pageSqn = open ? (ownPage ? pageUnit('own', todayIso()) : UNIT) : ''
-  const [openedOn, setOpenedOn] = useState<{ r: any; unit: string } | null>(null)
-  if (open ? (!openedOn || openedOn.r !== r) : !!openedOn) setOpenedOn(open ? { r, unit: pageSqn } : null)
+  if (open ? (!openedOn || openedOn.r !== r) : !!openedOn) setOpenedOn(open ? { r, unit: pageSqn, own: ownNow } : null)
   const openedSqn = open && openedOn && openedOn.r === r ? openedOn.unit : pageSqn
   const held = open && openedSqn !== pageSqn
   /* …HELD BY A PICK (batch 1's second half §16 D2; his D2323 — the drawing f7b): where his pick in the Schedules menu (or a
