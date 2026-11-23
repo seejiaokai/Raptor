@@ -5821,16 +5821,22 @@ async function reconcileBuiltins() {
    that chart from storage. Switching SYLLABUS asked before doing so; switching
    or adding a COURSE did not, so the edits vanished without a word and the
    unsaved flag stayed lit over a chart that had nothing unsaved. Every route
-   that loads another chart asks through this one door. */
-async function leaveFlowEdits(what) {
+   that loads another chart asks through this one door.
+   ITS "DISCARD" REALLY DROPS THEM ([TRK-LEAVEFLOW-DISCARD], chat 151's fresh reader, 23 Nov 26): adding or renaming a
+   course, deleting one, adding a syllabus and an import each ask something more after this door, and may stop there. The
+   door only cleared the unsaved mark, so a next prompt cancelled left the dropped edits drawn, now marked saved. So it
+   reloads the chart as the sign-out's and the pick's Discard do (discardChartEdits). `loadsNext` — a switch of syllabus or
+   course, which loads the other chart at once with nothing asked between — needs only the mark cleared. */
+async function leaveFlowEdits(what, loadsNext = false) {
   if (!sylDirty) return true;
   if (!await uiConfirm('You have unsaved flow edits on “' + curSylName() + '”.\n' + what)) return false;
-  clearDirty(); return true;
+  if (loadsNext) clearDirty(); else await discardChartEdits();
+  return true;
 }
 export async function switchSyllabus(v) {
   /* v is a syllabus ID (the dropdown's option value since 1B-ii). */
   const nm = sylName(v) || v;
-  if (!await leaveFlowEdits('Discard them and switch to “' + nm + '”?')) { refreshSyl(); return; }
+  if (!await leaveFlowEdits('Discard them and switch to “' + nm + '”?', true)) { refreshSyl(); return; }
   /* the id flip rides the chain with the load: kMarks/kDates key on curSylId(),
      so a flip landing inside a roster write's tail re-keyed its saves */
   await onChain(async () => { await openSylHere(v); await loadCourseNow(course); });
@@ -5915,7 +5921,7 @@ export async function switchCourse(v) {
   const nm = courseName(v) || v;
   /* refreshCourses on refusal: the dropdown already shows the new name, and
      only a re-render puts the current course back into it. */
-  if (!await leaveFlowEdits('Discard them and switch to course “' + nm + '”?')) { refreshCourses(); return; }
+  if (!await leaveFlowEdits('Discard them and switch to course “' + nm + '”?', true)) { refreshCourses(); return; }
   /* Picking a different course is like opening the app on it, so it does
      restore that course's last-marked syllabus. Picking a syllabus does not. */
   await loadCourse(v, true); refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();

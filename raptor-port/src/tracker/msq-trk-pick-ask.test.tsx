@@ -237,6 +237,36 @@ describe('a pick of a squadron he only views (D2388)', () => {
   })
 })
 
+/* [TRK-LEAVEFLOW-DISCARD] (23 Nov 26): "Discard them and …?" cleared the unsaved mark and reloaded nothing, so a next
+   prompt cancelled left the dropped edits drawn, now marked saved. Red first: the ball stayed on the chart. */
+describe('the Tracker\'s other Discard really drops the edits', () => {
+  const nextQ = async (re: RegExp) => { await until(() => C.dlg && re.test(C.dlg.msg)) }
+  async function discardThenCancel(start: () => Promise<unknown>, first: RegExp, then: RegExp, name: string) {
+    setTrkUnitProbe(() => 'u142'); setPage('viewsched'); notify()
+    await dirty(name)
+    const p = start()
+    await nextQ(first); C.dlgClose(true)
+    await nextQ(then); C.dlgClose(C.dlg.input ? null : false)
+    await p
+    expect(C.byid[name], 'the dropped ball is off the chart').toBeFalsy()
+    expect(C.sylDirty).toBe(false)
+    expect(C.saveWords().text, 'the bar no longer speaks of unsaved edits').not.toMatch(/unsaved/)
+    expect(await stored(name), 'and it never reached the store').toBe(false)
+  }
+  it('"…add a course?", the name then cancelled', () => discardThenCancel(() => C.addCourse(), /add a course\?/, /New course name/, 'LF-ADD'))
+  it('"…rename the course?", the name then cancelled', () => discardThenCancel(() => C.renCourse(), /rename the course\?/, /^Rename course/, 'LF-REN'))
+  it('"…add a new syllabus?", the name then cancelled', () => discardThenCancel(() => C.addSyl(), /add a new syllabus\?/, /Name for the new \(empty\)/, 'LF-SYL'))
+  it('answering Cancel to the Discard keeps the edits', async () => {
+    setTrkUnitProbe(() => 'u142'); setPage('viewsched'); notify()
+    await dirty('LF-KEEP')
+    const p = C.addCourse()
+    await nextQ(/add a course\?/); C.dlgClose(false); await p
+    expect(C.byid['LF-KEEP']).toBeTruthy()
+    expect(C.sylDirty).toBe(true)
+    await C.saveChangesClick()
+  })
+})
+
 /* THE ☰ MENU'S PICK WITH UNSAVED CHART EDITS (the walk of 23 Nov 26, F2 — docs/handpass/2026-11-23-msq-view-only-menu.md):
    the question is drawn under the menu's panel, so a pick there that will ask closes the menu first — as its Logout does
    before the sign-out's same question — and the question is seen and answered where he is. Red first: the menu stayed
