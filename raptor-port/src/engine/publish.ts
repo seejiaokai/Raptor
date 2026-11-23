@@ -8,7 +8,7 @@ import { logEdit } from './editlog'
 import { ridKey, posKey, ridWriteKey, ensureRowIds, RID_BOOK_VERSION } from './rowids'
 import { canonicalDiff, canonicalUnits, digest } from './canonical'
 import type { DeltaEntry, PendUnit } from './canonical'
-import { isOD, INPUTS, inputsOnDay, inputsOnFirstDay, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson, idsOf, namedOf, goesOnProg, sansDayView } from './inputs'
+import { isOD, INPUTS, inputsOnDay, inputsOnFirstDay, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson, idsOf, namedOf, goesOnProg, sansDayView, isSansAvail } from './inputs'
 import { CURWEEK, isStandalone } from './waves'
 import { groundOrder } from './order'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
@@ -822,10 +822,20 @@ export function dayPeopleAttrs(d:any,inp?:any,iso?:any):any{const out:any={};
    flew keeps his puck"); on or after it he is taken off the working copy, and THAT seat is the one change (D109, D113 —
    one pending change, not a second "posted out" line). The ONE function the pending count (warnDelta) and the pending
    list (ui/pendlist.ts) both read, so the two always agree. */
-export function peopleAttrsNow(pa:any,iso?:any):any{const out:any={};
+/* `snap` (the version the record came from, where the caller has it): ONE ACT, ONE CHANGE (D109, D113 — the fresh Opus
+   re-read's open check, chat 154): a man on the issued day ONLY through SANS availability, whose day has since stopped
+   being SANS (his posting moved later — D2341), is hidden from that availability, and the availability's own line says
+   so; his "SANS yes → no" is that same act, so it is not compared a second time. A man named on the day keeps it. */
+export function peopleAttrsNow(pa:any,iso?:any,snap?:any):any{const out:any={};
+  let named:any=null;
+  const onlySansAvail=(id:any)=>{ if(!snap)return false;
+    if(named==null)named=dayPeopleAttrs(snap.d,null,iso); if(named[id])return false;
+    const recs=Object.values(snap.inp||{}).filter((r:any)=>r&&namedOf(r).some((e:any)=>e&&String(e.p)===String(id)));
+    return recs.length>0&&recs.every((r:any)=>isSansAvail(r.type)); };
   Object.keys(pa||{}).forEach((id:any)=>{ const p=(PEOPLE as any)[id];
     if(p&&p.deleted){ out[id]=pa[id]??null; return; }
     const a:any=attrsOf(p,iso);
+    if(a&&pa[id]&&pa[id].san===true&&a.san===false&&onlySansAvail(id))a.san=true;
     /* a crowd-only man was kept with no "posted out" (dayPeopleAttrs, D327): it is not compared for him */
     /* (the SANS tick needs no such exception since D2313: it is read on the day's own date for everyone — attrsOf — so a
        man who became SANS after the day, named on it or behind a crowd, reads as the version kept him. Fable's OIL read
@@ -879,7 +889,7 @@ function warnDelta(di:any):DeltaEntry[]{di=+di;
   /* the PRINTED value only (D186): the version keeps every setting since D2005, but a change of one it does not print
      never reads pending by itself — the day is judged by the one it kept */
   const pa=snap.pa?stableJson(snap.pa):'', rv=cmpRv?stableJson({briefLead:snap.rv.briefLead}):'';
-  const paNow=snap.pa?stableJson(peopleAttrsNow(snap.pa,dayIso(CURWEEK,di))):'', rvNow=cmpRv?stableJson(faceRuleVals(snap.d)):'';
+  const paNow=snap.pa?stableJson(peopleAttrsNow(snap.pa,dayIso(CURWEEK,di),snap)):'', rvNow=cmpRv?stableJson(faceRuleVals(snap.d)):'';
   const was=storedWarnKey(snap.w)+'\n'+pa+'\n'+rv, k=liveWarnKey(now)+'\n'+paNow+'\n'+rvNow;
   return k===was?[]:[{addr:`warn:${di}`,kind:'warn',from:fp(was),to:fp(k)}];}
 /* ---- A WARNING HIDDEN ON A PUBLISHED DAY WAITS FOR THE NEXT AMENDMENT ([WARN-HIDE-KEPT], owner D471, 1 Oct 26 — "2. Waits")

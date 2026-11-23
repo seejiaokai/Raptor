@@ -96,6 +96,9 @@ export function sansShownOn(inp:any,at:any):boolean{
    (his posting moved later) was still drawn on Edit Schedule's and the board's SANS Avail panels, D2341. */
 export function sansFaceShown(f:any,at:any):boolean{
   if(!f||!isSansAvail(f.type))return true;
+  /* an issued face is its frozen copy — already the day's own view (sansDayView) — so it keeps every card it went out
+     with, never asking today's postings (D44, D178; chat 154's re-reads: Astra #2 = the fresh Opus R1) */
+  if(inputsFrozenOn(at))return true;
   const iso=inputAtIso(at); if(!iso)return true;
   return sansOnP(PEOPLE[f.person],iso);}
 /* …AND THE RECORD AS THAT DAY SHOWS IT (Astra's read #1, chat 152): a SANS record with only its men SANS that day — the
@@ -125,8 +128,10 @@ export function sansNewDayProblem(before:any,after:any):[string,string]|null{
   for(const p of namedOf(after).map((e:any)=>e.p)){
     if(p==null||p===''||isPh(p))continue;
     const had=!!was&&holds(was,p);
-    for(let d=sp[0],n=0;d<=sp[1]&&n<400;d=isoNext(d),n++){
-      if(had&&wsp&&d>=wsp[0]&&d<=wsp[1])continue;
+    /* every NEW day is asked, however far on: the days he already had are stepped over in one jump, and no count limit
+       reads the rest as approved (Astra's fix re-read #3, chat 154 — a long record stretched past his untick saved) */
+    for(let d=sp[0];d<=sp[1];d=isoNext(d)){
+      if(had&&wsp&&d>=wsp[0]&&d<=wsp[1]){d=wsp[1];continue;}
       if(!sansOnP(PEOPLE[p],d))return [String(p),d];}}
   return null;}
 export function sansShownAny(inp:any):boolean{

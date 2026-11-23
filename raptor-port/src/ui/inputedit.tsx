@@ -312,7 +312,14 @@ export function sansRefusal(person: any, sans: any, from?: string, to?: string, 
   if (!p || (!dated && !sansFiler(p))) return 'SANS Availability is for SANS aircrew only'
   if (dated && from) {
     const last = to && /^\d{4}-\d{2}-\d{2}$/.test(to) && to > from ? to : from
-    for (let d = from, n = 0; d <= last && n < 400; d = isoPlus(d, 1), n++) {
+    /* EVERY NEW DAY IS ASKED, HOWEVER FAR ON (Astra's fix re-read #3, chat 154): the walk used to stop after 400 days
+       counted from the record's start, the days it already held included, and read the rest as approved — so a two-year
+       filing stretched by two days past his SANS untick saved them. The days the record being changed already held for
+       him are now stepped over in one jump, and no limit reads the rest as approved (a day's question is a few lookups,
+       so even years of new days are walked in a moment). */
+    const kept = except && isSansAvail(except.type) && holds(except, person) ? inputSpanIso(except) : null
+    for (let d = from; d <= last; d = isoPlus(d, 1)) {
+      if (kept && d >= kept[0] && d <= kept[1]) { d = kept[1]; continue }
       /* (a day the entry being changed already held FOR HIM — never for another man on it: the fresh Opus read's F2,
          chat 152 — an admin added Hex to Other's Thu 16 offer, a day before Hex's SANS date, and the save let it in) */
       /* …and only a SANS availability record (the security read's S1, chat 152: a Personal record of his covering the day

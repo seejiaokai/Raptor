@@ -3346,10 +3346,27 @@ const RETIRED_TYPES = new Set(['sched.load'])
    for every command and every role — a hand-made batch, a paste, an admin's save — before against after
    (engine/inputs.ts sansNewDayProblem), so a stored record a later posting change hid still saves as it stands. His Undo
    or Redo, the step the timeline vouches for, puts back what it took (the record's days hide again by themselves). */
+/* A MAN'S OWN PART OF A SHARED RECORD, SPLIT OFF IN THE SAME COMMAND (Astra's fix re-read #4, chat 154): deleting Hex
+   keeps his past part of a shared offer as a record of its own (engine/inputown.ts ownInputOf — D299), a new row with no
+   before-image, so the check above read his days in it as new and, Hex being hidden that day (D2341), refused the delete.
+   Such a row is judged against the record it came from: one of this command's own SANS records whose before held him
+   and whose after no longer does — so only days or people that record did not already hold are asked. */
+function splitSourceOf(env: CommitEnvelope, c: { before?: unknown; after?: unknown }): unknown {
+  if (c.before != null || !c.after) return c.before
+  const ids = namedOf(c.after).map((e: any) => String(e.p))
+  if (ids.length !== 1) return c.before
+  const p = ids[0]
+  for (const s of env.changes) {
+    if (s === c || s.collection !== 'inputs' || s.op !== 'put' || !s.before || !s.after) continue
+    if (!isSansAvail((s.before as any).type) || !holds(s.before, p) || holds(s.after, p)) continue
+    return s.before
+  }
+  return c.before
+}
 function sansDayViolation(env: CommitEnvelope): string | null {
   for (const c of env.changes) {
     if (c.collection !== 'inputs' || c.op !== 'put' || !c.after) continue
-    const bad = sansNewDayProblem(c.before, c.after)
+    const bad = sansNewDayProblem(splitSourceOf(env, c), c.after)
     if (!bad) continue
     if (env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) continue
     return `SANS availability for ${bad[0]} on ${bad[1]}, not one of his SANS days (inputs/${c.id})`

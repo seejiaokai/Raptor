@@ -347,7 +347,7 @@ function faceWords(di: number): Words & { rows?: CrowdRow[] } {
   gone.forEach((x: any) => rows.push({ where: named(x, reword(x.msg || x.code || 'A warning')), from: '', to: 'cleared', keys: [] }))
   /* the men as their pucks draw them */
   if (snap && snap.pa) {
-    const nowPa: any = peopleAttrsNow(snap.pa, dayIso(String(CURWEEK), +di))
+    const nowPa: any = peopleAttrsNow(snap.pa, dayIso(String(CURWEEK), +di), snap)
     Object.keys(snap.pa).forEach((id: any) => {
       const o = snap.pa[id], n = nowPa[id]; if (!o) return
       /* a man deleted from the roster outright: his puck has nothing left to draw */
