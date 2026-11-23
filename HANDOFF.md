@@ -21,6 +21,22 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/allavail-sans-postout-141 -->
+### THE NIGHT OF 24 NOV 26 — chat 156 (/overnight 12; his "go" about 07:40 on his PC's clock; no new job after 18:50, report by 19:50)
+- After a compaction: re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time, read from the clock (`date`).
+- **Compactions so far:** one just before his "go" (24 Nov 26, about 07:35).
+- **His selection, in order (all four, "go" = the recommended jobs and answers):**
+  1. **Build the new SANS words** — OUTSTANDING [FABLE-READ-FAULTS] (x) (1)–(4), exact words in the full rows of D2388, D2390, D2391, D2394, D2420, D2421 and the drawings `raptor-port/docs/mock/2026-11-24-sans-words/` (published https://claude.ai/artifact/YCsLM41CkcSHXiTEpjkJwf). Branch: this one, pull request 825. Check: each fix a test that fails first; touched tests; short re-walk at both sizes; Astra plus a fresh, blind Opus read (a security read too if the permission gate changes); GitHub green; preview Ready. About 5 h.
+  2. **Draw the bell's other take-back lines** — [BELL-WORDS-CLEAR], Fable rewording (his word, D2421). One page; nothing in the app changes. About 2 h.
+  3. **Draw the ALL AVAIL window with just the available people, and the amendment-colour highlight** — [ALL-AVAIL-WINDOW-FLAGS]. Page only. About 1.5 h.
+  4. **Draw taking a person out of an ALL AVAIL crowd by hand** — [ALL-AVAIL-REMOVE-BY-HAND]. Page only. About 1.5 h; the first to drop if the shared PC runs slow.
+  Also for his morning look: a drawing of the words under a struck name while a seat is picked ("…File it on the Inputs page's SANS tab."), which his D2420 point reaches; left as built until he rules.
+- **Branches:** job 1 on `claude/allavail-sans-postout-141`. Jobs 2–4 on `claude/allavail-drawings-156`, cut from job 1's last commit once job 1 is done, pushed with no pull request, so the drawings never restart pull request 825's checks.
+- **His answers:** build the words as drawn; the admin's version of the grey button's words left out; Fable rewords the bell lines — all D2421. **Low** (fewest helpers, one after another).
+- **Alongside chat 153** (`claude/msq-b1-screens-135`, pull request 826, running tonight): it holds rulings D2400–D2419, I hold D2420–D2439; its ports 4700–4719, mine 4180 and 4800–4819; one full check at a time through the checks lock; neither merges. It stays out of the SANS lines in the notices file and the bell row; this chat stays out of the input window, the pick file, the store, the Tracker and Admin → Users, and messages it first if that changes.
+- **Nothing merges tonight; no "auto merge live" was given.** No hook, setting, skill or working guide is changed.
+- **Owed by this chat:** design lesson 100 for D2420 (one fresh reader, named in the closing report) — a line of the design guide, so its lesson goes in only as his standing exception allows (D941, D1417); up to four similar places named; a skill-log note (a questions page's wording for a second role is checked that the role can reach it).
+- **Step in hand:** job 1, starting.
+- **Questions waiting for him:** none yet.
 ### CHAT 152 — the FULL bug check of the whole branch IN HAND (chat 150's (b)), written 23 Nov 26 as it runs — verify before use
 - **Where:** main Raptor folder, local branch `allavail-152` (tracks `origin/claude/allavail-sans-postout-141`; the worktree
   `lw-balances-hover-275293` holds the branch name) — push with `git push origin HEAD:refs/heads/claude/allavail-sans-postout-141`.

@@ -238,6 +238,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OVERNIGHT-RETRY-TRIAL] — the next /overnight night tries the keep-retrying setting (D885).
 - [CI-FAIL-PICTURES] — GitHub's browser-test jobs keep no pictures of a failure — his call.
 - [CHECK-TOOLS-HARDEN] — small hardening of the checking tools — his word.
+- [TURN-END-CHECK-SLOW] — the turn-end backlog check is cancelled at its 20-second limit on most turns since 19 Nov 26 (the pull request's check still runs); the turn-end code check holds a turn about 43 seconds; the lessons written into the superpowers skills are read by no chat, for the next skill review — (a) is timed first, then his word for its fix (found 24 Nov 26).
 - [CSS-SCOPE-GUARD] — a rule begun at `body`, `html` or `:root` inside a page's wrapper fails the stylesheet check — small, no look from him.
 - [ASK-PAGE-CHECK] — a script run on a mock-up or questions page before it is published to him: codes, ruling numbers and record words, and one "look at now" list — small, no look from him.
 - [READER-COMPACT-HANDOFF] — a blind reader that compacts is pasted the host's handoff — a hook change, his word.
@@ -3137,4 +3138,34 @@ shows only as a desktop hover title with no seat armed, so a phone shows the str
 reads D2338 as wanting it on screen): show it in the SANS Avail rows without arming? A new look — drawn first.
 **(g) gains one more reader on today's tick (Astra #3):** the input window's "Several people" picker groups and draws a
 dated input's people by today's tick (`ui/PeoplePick.tsx`) — with the Inputs calendar's opened day.
+
+### [TURN-END-CHECK-SLOW] The turn-end backlog check is cancelled at its limit on most turns; the turn-end code check's wait; skill lessons no chat reads (found 24 Nov 26 by the settings health-check chat, his "Do both")
+
+**Status:** filed, not fixed. Measured from the transcripts of the 50 most recently used chats (all touched 21–23 Nov 26,
+their content back to 23 Sep; about 790 prompts). Nothing here was run to time it — a hook is run by hand only on his word.
+
+**(a) The backlog guard is cancelled at its limit — the fault.** `.claude/hooks/backlog-guard.sh` (the Stop hook; its
+limit, 20 seconds, is in `.claude/settings.json`) runs `raptor-port/scripts/docsize.mjs --inventory`. Recorded 547 times:
+546 cancelled at its limit (about 20.7 seconds each), one cancelled otherwise, none recorded as a failure — a pass that
+prints nothing is not recorded, so the passes are unseen. By day: 19 Nov 28, 20 Nov 7, 21 Nov 128, 22 Nov 266, 23 Nov 95,
+none earlier in those chats; in the main folder (315) and four worktrees alike. **What it costs:** most turns end with a
+wait of about 20 seconds, and a cancelled hook blocks nothing, so the turn-end warning of a lost or misfiled record
+(D29, D30, D140) is not given; the Docs guard still runs the same check on every pull request and every push to `main`,
+so nothing lost can merge unseen. **Cause not found.** To do, in order: time the command in the main folder and in a
+worktree; find what changed about 19 Nov 26 (the tree holds 83,660 tracked files; the lean-copy wiring of 22 Nov 26
+touched the check, after the first timeouts); make the check fast again, or raise its limit if it cannot be — never
+drop it. A hook or its setting changes only on his "merge live" (`.claude/rules/shipping.md`).
+
+**(b) The code check at a turn's end holds the turn** (`.claude/hooks/code-check-stop.mjs`, D1539, limit 200 seconds):
+105 recorded runs, typically 43 seconds, 125 at the slow tenth, 162 at worst. It only reports a count and blocks
+nothing; running it in the background, or skipping it when the changed files are those of its last run, would give the
+wait back. His call — D1539 set where it runs.
+
+**(c) For the next skill-notes review: the lessons written into the superpowers skills are read by no chat.** Six
+reviews (23 Sep – 20 Nov 26; `.claude/skills/SUPERPOWERS-VENDORED.md`, changes 3 to 8) added lessons to 11 of the 14
+skills. Opened through the Skill tool since install: nine never, `test-driven-development` once and
+`systematic-debugging` twice, all in September. In the 50 chats: none opened, and of their files only
+`brainstorming/mockups-on-the-real-app.md` was read, in 3 chats — the one file the project guide's map names. The
+question for the review: move those lessons into the guides chats do read (the project guide's map, the bug-check
+order, `raptor-port/docs/walk-scripts.md`), or make each skill open when its work starts.
 
