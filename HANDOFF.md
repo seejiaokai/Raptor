@@ -120,6 +120,28 @@ the later merge keeps both (D78).
   suites + whole unit suite (lock), push (no run in progress), GitHub green, a narrow re-read of THOSE fixes only if (b) or (d)
   changed a permission (D1411 — one fresh Opus, Astra beside it), sheet 17.13 + 17.14's new rows + the Walk line in §14 +
   the ledger row (`docs/walk-ledger.md`), the look card (§11, 3–5 lines) and the preview link with questions (1)–(10) and (f).
+- **UPDATE 7 — CHAT 155 (23 Nov 26, main Raptor folder, local branch `chat155-allavail`, NO upstream; push with `git push
+  origin HEAD:refs/heads/claude/allavail-sans-postout-141`):** UPDATE 6's (a)–(e) DONE red-first, PUSHED `a2a814564` (GitHub
+  GREEN; unit suite whole 1063 files, 16119 pass, 9 expected fail): (a) `sansFaceShown` keeps an issued face's cards; (b)
+  `verifiedReplay` vouches for a `people` row (+ forged-restore test R1c); (c) no 400-day cap read as approval; (d) the
+  delete's split row judged against its source; (e) one posting move = 1 pending (`peopleAttrsNow(pa, iso, snap)`, 4
+  callers) — test file `src/leavewar/sans-c154-reread.test.ts` (Astra's + host's R1c, R3b, R4b, R5, R6). (f) still to tell
+  him. The host's re-look of the ISSUED board after Hex's posting moved (`scripts/handpass/sah-h155.mjs`, 22 PASS both sizes,
+  no errors; pictures `docs/img/handpass/2026-11-23-sans-ahead/h155/`): working Sat 18 Ranger only, 1 pending; the issued
+  version Ranger + Hex. **Re-read 2** of `a2a814564` (brief `…-fix-reread2-brief.md`; copies `D:/raptor-work/c155-reread/`;
+  reports there: `astra-report.md`, the Opus one in this chat — Opus: F4 (a delete with Hex in TWO shared offers judged
+  against the wrong one), F3 (the walk past 9999 / an open-ended filing walked ~2.9M days); Astra: the same two, #2 (one
+  take-out excused two fresh hidden filings of a member's), #3 (`sansShownAny` 400-day cut hid a long record)) — ALL FIXED
+  red-first (9 tests: `sans-c155-astra.test.ts`, `sans-reread155-opus.test.ts`), PUSHED `90d9a6f60` (GitHub running):
+  `splitSourcesOf` exact copy + each source once; `engine/people.ts sansOpenFrom` stops the walks; `sansShownAny`. Touched
+  suites 105 files, 1465 pass. Left as is (sheet): `leavewar/sansunfiled.ts sansFiledShown`'s 400-day list — words of his
+  bell line only, writer and check share it. Skill note 1027 logged. **NEXT:** (1) re-read 3 of `a2a814564..90d9a6f60` (the
+  split check is a permission — D1411: Astra + a fresh Opus, blind; brief like `…-reread2-brief.md`, copy script = chat 155's
+  `mkcopy.sh`: `git archive HEAD raptor-port/src raptor-port/docs/data-model.md .claude/decisions-full <brief>`, diff into
+  `FIX-DIFF.patch`); (2) its fixes, if any; (3) GitHub green on the last push; (4) sheet 17.13 (GitHub's run on `a2a814564`:
+  the original's 728 passed; unit shards 1100/1144/1321/1505 …; browser 117/138/200/204×3/300 — read whole from the run) +
+  17.14's rows for chat 154/155's re-reads + the Walk line in §14 + the ledger row; (5) the look card and the preview link
+  with questions (1)–(10) and (f). Context at writing: 76%.
 - **Opening line for chat 155:** "Chat 155: First list the live chats (`ListAgents`) and say where you are. Switch this chat to the
   branch `claude/allavail-sans-postout-141`: `git fetch origin`, `git switch claude/allavail-sans-postout-141`, `git branch -u
   origin/claude/allavail-sans-postout-141`, `git pull --ff-only` (if refused because another checkout holds it, branch a local
