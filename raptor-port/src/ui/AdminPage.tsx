@@ -321,7 +321,7 @@ export function AdminPage() {
             {/* ---- Squadrons — each squadron and its place, the places and their time zones, "+ New squadron" for a
                 master admin (ui/SquadronsPanel.tsx) ---- */}
             <section className={'adm-panel' + (cat === 'squadrons' ? ' on' : '')} id="admSquadrons">
-              <SquadronsPanel />
+              <SquadronsPanel shown={cat === 'squadrons' && (drilled || !HOOKS.isPhone())} />
             </section>
             {/* ---- Squadron configuration — front doors to the two template
                 editors. The modals are App-level siblings (App.tsx), so they

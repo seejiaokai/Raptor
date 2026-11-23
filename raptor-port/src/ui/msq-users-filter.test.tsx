@@ -255,6 +255,69 @@ describe('a pick and the Squadron ticks (j)', () => {
   })
 })
 
+/* (p), his D2396: Escape closes an opened row exactly as Cancel does: nothing saved, no question, the keys back on the row.
+   An open Filter panel closes first. Red first: Escape did nothing on an opened row. */
+describe('Escape on an opened row (p)', () => {
+  const esc = async () => { await act(async () => { fireEvent.keyDown(document.activeElement ?? document.body, { key: 'Escape' }) }) }
+  const openRow = async (p: ReturnType<typeof panel>, pid: string) => {
+    await act(async () => { fireEvent.click(p.$(`[data-person="${pid}"] .acc-tap`)!) })
+    expect(p.$(`[data-person="${pid}"] .acc-edit`), 'the premise: his row is open').not.toBeNull()
+  }
+  it('with the keys in the sign-in box: the row closes, nothing saved, the keys back on his row', async () => {
+    signInAs('saber')
+    const p = panel()
+    await openRow(p, PID.hunter)
+    const was = accountOfPid(PID.hunter)!.name
+    const box = p.$('#accEdName') as HTMLInputElement
+    box.focus()
+    await act(async () => { fireEvent.change(box, { target: { value: 'typed@mail' } }) })
+    await esc()
+    expect(p.$('.acc-edit'), 'the row closed').toBeNull()
+    expect(accountOfPid(PID.hunter)!.name, 'nothing saved').toBe(was)
+    expect(document.activeElement, 'the keys back on his row').toBe(p.$(`[data-person="${PID.hunter}"] .acc-tap`))
+    await openRow(p, PID.hunter)
+    expect((p.$('#accEdName') as HTMLInputElement).value, 'it opens on what is saved').toBe(was)
+  })
+  it('the Filter panel open over it closes first; the next Escape closes the row', async () => {
+    signInAs('saber')
+    const p = panel()
+    await openRow(p, PID.hunter)
+    await p.openPanel()
+    await esc()
+    expect(p.$('#accFilterPanel'), 'the Filter closed first').toBeNull()
+    expect(p.$('.acc-edit'), 'the row still open').not.toBeNull()
+    await esc()
+    expect(p.$('.acc-edit'), 'then the row').toBeNull()
+  })
+  it('the Filter opened first and a row opened from the keys: the Filter still answers first', async () => {
+    signInAs('saber')
+    const p = panel()
+    await p.openPanel()
+    await openRow(p, PID.hunter)
+    await esc()
+    expect(p.$('#accFilterPanel'), 'the Filter closed first').toBeNull()
+    expect(p.$('.acc-edit'), 'the row still open').not.toBeNull()
+  })
+  it('an armed Delete goes with it, as Cancel takes it', async () => {
+    signInAs('saber')
+    const p = panel()
+    await openRow(p, PID.hunter)
+    await act(async () => { fireEvent.click(p.$('#accEdDel')!) })
+    expect(p.$('#accEdDelNote')).not.toBeNull()
+    await esc()
+    expect(p.$('.acc-edit')).toBeNull()
+    await openRow(p, PID.hunter)
+    expect(p.$('#accEdDelNote'), 'disarmed').toBeNull()
+  })
+  it('Users not on his screen: an opened row takes no Escape', async () => {
+    signInAs('saber')
+    const p = panel(false)
+    await openRow(p, PID.hunter)
+    await esc()
+    expect(p.$('.acc-edit'), 'still open behind the page in view').not.toBeNull()
+  })
+})
+
 describe('Add a person\'s Home squadron (§4 item 7 — picture b1-7)', () => {
   it('Hunter, an admin of 142 alone: no Home squadron box', () => {
     signInAs('hunter')

@@ -22,7 +22,7 @@
    ONE SHEET MAY NAME WHERE THE KEYS LAND (`first`): the OIL question puts them on its first answer (K7) — picking an
    answer answers nothing until the sheet's right-hand button is pressed, so nothing is one key-press from being done by
    accident. Every other sheet still lands on its box. */
-import { useEffect, type RefObject } from 'react'
+import { useEffect, useRef, type RefObject } from 'react'
 import { TIME_TXT } from '../engine/slots'
 
 const sheets: HTMLElement[] = []
@@ -256,6 +256,28 @@ export function useEscWindow(box: RefObject<HTMLElement | null>, open: boolean |
     return () => { off(); keysBack(back, el) }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- on opening and closing only: re-joining the list on a repaint would make this window the newest over a menu opened after it; `close` and `box` are the window's own, fixed for its life
   }, [open])
+}
+
+/* AN OPENED ROW ON AN ADMIN LIST ((p), his D2396 — Admin → Users and Admin → Squadrons): Escape closes it as its Cancel does,
+   and the keys go to the row's own button, which is drawn afresh as the row closes. `key` — the open row, null when none
+   or when it is not on his screen; `row` finds it on the page; `over` — a panel's name in this list (escToTop) that answers
+   first even when it was opened before the row. */
+export function useEscRow(key: string | null, row: (key: string) => HTMLElement | null, close: () => void, over?: string): void {
+  const closing = useRef<string | null>(null)
+  useEffect(() => {
+    if (!key) return
+    const off = escCloses(() => row(key), () => { closing.current = key; close() })
+    if (over) escToTop(over)
+    return off
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- on the row's opening and closing only: `row` and `close` are the page's own and read nothing that changes, and joining the list again on a redraw would put it above a menu opened after it
+  }, [key])
+  useEffect(() => {
+    const k = closing.current
+    if (key || !k) return
+    closing.current = null
+    keysBack(() => row(k)?.querySelector<HTMLElement>('.acc-tap') ?? null)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- after the row's closing only, as above
+  }, [key])
 }
 
 /* A small menu hung from a button (board.ts popMenu, interactions.ts openStoresMenu): Escape takes it away, unhooking its

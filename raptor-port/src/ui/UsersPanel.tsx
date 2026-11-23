@@ -43,7 +43,8 @@ import { SESSION } from '../state/auth'
 import { me, pageUnit, adminOfUnit } from '../state/perms'
 import { todayIso, homeOn, unitById } from '../state/units'
 import { usersView, addHomeChoices, NO_FILTER, type UsersFilter } from './usersfilter-model'
-import { UsersFilterBox, ShowingLine } from './UsersFilter'
+import { UsersFilterBox, ShowingLine, FILTER_ESC } from './UsersFilter'
+import { useEscRow } from './sheetfocus'
 import { notify } from '../state/store'
 import { deletePerson, effectiveToday } from '../state/person-delete'
 import { updatePersonField } from '../state/quals-write'
@@ -606,6 +607,13 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   const archShown = view.archived
   const archOpenNow = archOpen ?? (!!q && archShown.length > 0)
   const toggle = (pid: string) => setEditing(editing === pid ? null : pid)
+  /* ESCAPE CLOSES THE OPENED ROW AS ITS CANCEL DOES ((p), his D2396): nothing saved, no question, the keys back on the row;
+     an open Filter panel answers first. Only while the row is on his screen: Users chosen, the row not hidden by a tick
+     or the search. */
+  const rowInView = !!editing && (view.groups.some(g => g.rows.includes(editing)) || (archOpenNow && archShown.includes(editing)))
+  useEscRow(p.shown && rowInView ? editing : null,
+    pid => document.querySelector<HTMLElement>(`.acc-row[data-person="${CSS.escape(pid)}"]`),
+    () => setEditing(null), FILTER_ESC)
   const homes = addHomeChoices(unit)
   const row = (pid: string) => <PersonRow key={pid + (editing === pid ? ':e' : '')} pid={pid} open={editing === pid} ringed={ringPid === pid}
     onToggle={() => toggle(pid)} onClose={() => setEditing(null)} />

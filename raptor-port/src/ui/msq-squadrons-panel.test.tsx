@@ -17,7 +17,7 @@ import { act, cleanup, fireEvent, render } from '@testing-library/react'
 import { useMsqWorld, signInAs, moveMan, mem, PID, ACCT } from '../test-support/msq-world'
 import { SquadronsPanel } from './SquadronsPanel'
 import { AccessScreen } from './AccessScreen'
-import { addUnit, units, unitRows, unitsLoad, todayIso, placeById, setUnitSeeds } from '../state/units'
+import { addUnit, units, unitRows, unitsLoad, todayIso, placeById, placeOfOn, setUnitSeeds } from '../state/units'
 import { placeIdOn, moveFrom } from '../state/units-model'
 import { saveAccess, waitingHere, ACCESS_REQS } from '../state/accounts'
 import { globalUndo } from '../undo/timeline'
@@ -54,6 +54,43 @@ describe('the page — every admin (b1-3)', () => {
   it('Saber, the master admin, sees "+ New squadron"', () => {
     signInAs('saber')
     expect(panel().$('#sqNew')?.textContent).toBe('+ New squadron')
+  })
+})
+
+/* (p), his D2396: "The rows on Admin → Squadrons, which open the same way, get the same" — Escape closes an opened
+   squadron's or place's row as its Cancel does, the keys back on the row. Red first: Escape did nothing. */
+describe('Escape on an opened row (p)', () => {
+  const esc = async () => { await act(async () => { fireEvent.keyDown(document.activeElement ?? document.body, { key: 'Escape' }) }) }
+  it('a squadron\'s row: closes, nothing moved, the keys back on the row', async () => {
+    signInAs('saber')
+    const p = panel()
+    await p.click('#sqList [data-unit="u149"] .acc-tap')
+    expect(p.$('#sqPlace'), 'the premise: its row is open').not.toBeNull()
+    const was = placeOfOn('u149', todayIso())?.id
+    await esc()
+    expect(p.$('#sqPlace'), 'the row closed').toBeNull()
+    expect(placeOfOn('u149', todayIso())?.id).toBe(was)
+    expect(document.activeElement).toBe(p.$('#sqList [data-unit="u149"] .acc-tap'))
+  })
+  it('a place\'s row: closes, its name unchanged', async () => {
+    signInAs('saber')
+    const p = panel()
+    await p.click('#sqPlaces [data-place] .acc-tap')
+    const box = p.$('#plName') as HTMLInputElement
+    const was = box.value
+    box.focus()
+    await p.set('#plName', 'Typed name')
+    await esc()
+    expect(p.$('#plName'), 'the row closed').toBeNull()
+    expect(p.places()[0]).toContain(was)
+    expect(document.activeElement).toBe(p.$('#sqPlaces [data-place] .acc-tap'))
+  })
+  it('the Squadrons page not on his screen: an opened row takes no Escape', async () => {
+    signInAs('saber')
+    const page = render(<SquadronsPanel shown={false} />)
+    await act(async () => { fireEvent.click(page.container.querySelector('#sqList [data-unit="u149"] .acc-tap')!) })
+    await esc()
+    expect(page.container.querySelector('#sqPlace'), 'still open behind the page in view').not.toBeNull()
   })
 })
 

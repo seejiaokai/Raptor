@@ -20,6 +20,7 @@
      squadron's row then wears the app's just-added mark for its six seconds (D850, D876 — Users' acc-ring). */
 import { useEffect, useState } from 'react'
 import { HOOKS } from '../engine/hooks'
+import { useEscRow } from './sheetfocus'
 import { notify } from '../state/store'
 import { addUnit, moveUnit, setPlace, placeChangeProblem, mayMoveUnit, placeById, placeOfOn, places, todayIso, type UnitSave, type NewPlace } from '../state/units'
 import { accountById } from '../state/accounts'
@@ -160,7 +161,7 @@ function PlaceEditor(p: { id: string; onClose: () => void }) {
 }
 
 type Open = { kind: 'unit' | 'place'; id: string } | { kind: 'new' } | null
-export function SquadronsPanel() {
+export function SquadronsPanel({ shown = true }: { shown?: boolean } = {}) {
   useVersion()
   const today = todayIso()
   const [open, setOpen] = useState<Open>(null)
@@ -178,6 +179,13 @@ export function SquadronsPanel() {
   const isOpen = (kind: 'unit' | 'place', id: string) => !!open && open.kind === kind && open.id === id
   const toggle = (kind: 'unit' | 'place', id: string) => setOpen(isOpen(kind, id) ? null : { kind, id })
   const close = () => setOpen(null)
+  /* ESCAPE CLOSES AN OPENED ROW AS ITS CANCEL DOES ((p), his D2396: "The rows on Admin → Squadrons, which open the same way,
+     get the same"), while this page is on his screen. "+ New squadron" is a form of typed words, not a row: it is left. */
+  const rowKey = shown && open && open.kind !== 'new' ? `${open.kind}:${open.id}` : null
+  useEscRow(rowKey, k => {
+    const [kind, id] = [k.slice(0, k.indexOf(':')), k.slice(k.indexOf(':') + 1)]
+    return document.querySelector<HTMLElement>(`.acc-row[data-${kind}="${CSS.escape(id)}"]`)
+  }, close)
   return (
     <>
       <h4 className="adm-sub">Squadrons · {sq.length}</h4>

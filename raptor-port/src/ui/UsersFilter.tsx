@@ -19,6 +19,8 @@ import {
 } from './usersfilter-model'
 import { numOf, byNum } from './useraccess-model'
 
+/* the panel's name in the Escape list: an opened row on the page asks it to answer first ((p), his D2396) */
+export const FILTER_ESC = 'accFilterPanel'
 function Funnel() {
   return (
     <svg className="od-funnel" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2"
@@ -51,7 +53,7 @@ export function UsersFilterBox(p: { f: UsersFilter; onChange: (f: UsersFilter) =
   useEffect(() => {
     if (!open) return
     const outside = (e: Event) => { if (!wrap.current?.contains(e.target as Node)) setOpen(false) }
-    const off = escCloses(() => panel.current, () => { setOpen(false); btn.current?.focus() }, btn.current)
+    const off = escCloses(() => panel.current, () => { setOpen(false); btn.current?.focus() }, btn.current, { id: FILTER_ESC })
     document.addEventListener('pointerdown', outside)
     return () => { document.removeEventListener('pointerdown', outside); off() }
   }, [open])
