@@ -27,13 +27,16 @@ a step whose premise a fix consumed is walked again with a fresh premise.
    is drawn in front; every answer (Stay, Discard them, Save them) then works.
 3. A Leave War window open when the page would land elsewhere (the member-view switch, or a pick of a squadron he only
    views) now holds the page: the Leave War stays, with the window and its words in sight, until the window is closed —
-   then the page lands on View-only Sched.
-4. With the ☰ list open, the first tap outside the menu (on the shade) closes only the list; the menu stays open; a second
-   tap outside closes the menu.
+   then the page lands on View-only Sched, whoever he is (a View holder too: the second fix round). While it waits, the
+   window wears the band "This is 142's. You picked 149 — close this to go on." (his D2323), its controls greyed, ✕ and
+   Close live; the band's Close lands him; picking 142 again gives the window back live.
+4. With the ☰ list open, the first press outside the menu (on the shade) closes only the list — a quick tap and a press
+   held about a second alike; the menu stays open; a second press outside closes the menu.
 5. Keys in the ☰ list: Arrow Down (and Arrow Up) on the mark opens the list; Tab out of the list closes it — as the top
    bar's "149 ▾" list does.
-6. An input window (Inputs page) left open when the page lands on View-only Sched stays held — a band over it, its
-   saves refused — not editable.
+6. An input window (Inputs page) left open when the page lands on View-only Sched stays held — a band over it, Save
+   greyed and refusing, Close live — not editable; a View holder's pick of 149 shows the pick's band ("This is 142's. You
+   picked 149 — close this to go on."); picking 142 again gives the window back live.
 7. Signing out and in again starts with no leftover landing (sign out while 149 is picked, sign in as another person).
 
 **Re-run (into `rewalk`):** `dc1-drawing.mjs` (the drawing check — d2 and d4 must now match within about 2px; d1, d3, d5
@@ -51,6 +54,10 @@ case q5: unsaved home Tracker edits, then a View-only pick — no question, edit
   pick 149) — if the shade covers the Schedules button, say so and picture it.
 - c. Hunter with Plan of 149, on 149's Inputs, an existing input's window open: switch to the member view → View-only
   Sched; is the window still open? If so it must show a band and refuse a save — press Save, picture what shows.
+- c2. Ranger with View of 149, on his Inputs with a saved input's window open: pick 149 (☰ on the phone, the top bar on
+  the desktop) → View-only Sched, the window held with the pick's band, Save refusing; pick 142 → the window live again.
+- a2/b2. For a and b where the pick or switch could be made: the band on the held Leave War window, its Close, and the
+  slow shade press (hold about a second) on the phone.
 - d. Ranger (or the person the demo world gives a bell line "confirm your OIL" or any own-page line), 149 picked: press
   that bell line → 142 back in view, the page and window it names opened on the right row, no band.
 - e. Saber or Hunter with an access request waiting in the bell (make one through the app's controls if the world has
