@@ -1441,3 +1441,16 @@ sides.
 **Issue:** Each proposed picture had a 2px accent-coloured ring drawn around every new part, to show what changed. The owner, looking on his phone, asked whether it "would look nicer without that blue cyan outer box" — he took the marker for part of the proposed look. A redraw with clean pictures was needed.
 **Suggested improvement:** In the mock-up guidance, show each proposed screen clean first, exactly as it would ship; put any change markers on a second, separate copy labelled as markers (or say in words what is new). Never let the only proposed picture carry annotation in the product's own accent colour.
 **Principle:** An annotation drawn in the product's own visual language is read as product; the picture a person approves must be the thing itself, with the explanation kept outside it.
+
+### Observation 1026: A fresh chat opened on the same task while the old chat still worked in the same folder
+
+**Status:** OPEN
+**Date:** 23 Nov 26
+**Session context:** chat 150, opened with the handoff's opening line while chat 149 (82% full) was still busy in the same working folder on the same job
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the opening line, and the new chat's first step
+
+**Issue:** the opening line told the new chat to switch and pull in a shared working folder; the old chat had uncommitted edits written a minute earlier. Only a check of the folder's uncommitted files and their times caught the clash before anything was overwritten.
+**Suggested improvement:** the new chat's first step, before any switch or pull: list the live chats, check the working folder for uncommitted changes and their times, and message any busy chat on the same branch; the opening line says "if the folder has uncommitted changes, stop and ask".
+**Principle:** before taking over a shared working copy, prove nobody else is writing in it.
