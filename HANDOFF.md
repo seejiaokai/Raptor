@@ -99,6 +99,34 @@ the later merge keeps both (D78).
   w101's world: `T.file`, `T.movePo`, then `T.weekCrewOf` / `T.boardCrewOf`; build under the lock, serve on a free port) →
   push (only when no run of the branch is in progress) → GitHub green → sheet 17.13 + Walk line + ledger row → look card and
   the preview link with questions (1)–(10).
+- **UPDATE 6 — CHAT 154 at 81%, handing off (23 Nov 26).** DONE since UPDATE 5: GitHub's run on `e64c78752` (read it
+  first); sheet §17 FILLED by an Opus helper from w8/w9/w10/r1 (checked by the host only in its R12/R13 rows — read 17.2–17.14
+  over once; its two items with no disposition: Saber's drag over 16–18 offers no Ranger and says nothing (w8 s4s) — put it
+  with question (1); the security reader's D149 question = question (10)); 17.13 (gate counts) still blank. Walk counts the
+  helper gave: w8 208/6 FAIL, w9 702/0, w10 555/4, r1 89/0 — 1,554 PASS, 10 FAIL (two faults, both fixed and re-walked);
+  146 pictures kept, 5,448 on D:. The host's panel re-look DONE: `scripts/handpass/sah-h154.mjs` (runs from raptor-port/,
+  `W2_URL=http://localhost:4180/ W2_OUT=D:/raptor-work/c154-look/run2 ONLY=h-d,h-p`), 48 PASS both sizes, no errors — Edit
+  Schedule's day SANS Avail section and the board's panel draw only Hex on Fri 17 while Ranger's posting is moved to Sat 18;
+  both again once moved back; host opened the deciding pictures. **The narrow re-reads are IN, findings NOT yet reproduced:**
+  Astra `docs/superpowers/briefs/2026-11-23-sans-ahead-fix-reread-astra.md` (4 faults, 5 failing tests in its foot) and the
+  fresh Opus `…-fix-reread-opus.md` (+ its test `…-fix-reread-opus.test.ts.txt`). **NEXT for chat 155, in order, each
+  red-first:** (a) R1 = Astra #2 — a published face drops a SANS card (`engine/inputs.ts sansFaceShown`: `if(inputsFrozenOn(at))
+  return true;`); (b) Astra #1 — a member's SANS tick's Undo / Redo the NEXT day refused (`undo/timeline.ts verifiedReplay`
+  lacks `people`; add it with its exact-image checks + a forged-restore negative test); (c) Astra #3 — both filing checks
+  approve the tail after day 400 (`sansRefusal`, `sansNewDayProblem`: refuse or check past 400); (d) Astra #4 — the final
+  gate blocks deleting a person whose hidden part of a shared offer it must keep (read its report §4); (e) the Opus reader's
+  one check: a day published with both men, then Hex hidden — does it read 2 pending for one move (`dayPeopleAttrs`)? (D109,
+  D113); (f) to tell him: extending a shared offer is refused while one of its men is hidden that day. Then the touched
+  suites + whole unit suite (lock), push (no run in progress), GitHub green, a narrow re-read of THOSE fixes only if (b) or (d)
+  changed a permission (D1411 — one fresh Opus, Astra beside it), sheet 17.13 + 17.14's new rows + the Walk line in §14 +
+  the ledger row (`docs/walk-ledger.md`), the look card (§11, 3–5 lines) and the preview link with questions (1)–(10) and (f).
+- **Opening line for chat 155:** "Chat 155: First list the live chats (`ListAgents`) and say where you are. Switch this chat to the
+  branch `claude/allavail-sans-postout-141`: `git fetch origin`, `git switch claude/allavail-sans-postout-141`, `git branch -u
+  origin/claude/allavail-sans-postout-141`, `git pull --ff-only` (if refused because another checkout holds it, branch a local
+  copy from `origin/claude/allavail-sans-postout-141` with no upstream and push with `git push origin
+  HEAD:refs/heads/claude/allavail-sans-postout-141`). Read `HANDOFF.md` — the CHAT 152 part of the
+  `claude/allavail-sans-postout-141` block, UPDATE 6 then UPDATE 5 — and finish the FULL bug check from there: the re-reads'
+  findings in order, red-first, the sheet, then send me the preview link with my questions." Model: Opus, high.
 - **State at writing (chat 152):** all fixes so far committed and pushed to `f95d4fab4` (GitHub running on it); 80% full — the next
   chat (or this one after compaction) starts at UPDATE 4's first item, then items (b)–(f) of UPDATE 3, then the narrow
   fresh-Opus re-read of all fix commits since `bde8ef0a0`, the host's short re-look at the two SANS panels at both sizes,

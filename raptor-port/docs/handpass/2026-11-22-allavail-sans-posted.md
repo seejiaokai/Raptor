@@ -352,69 +352,254 @@ list — YES: who a seat's SANS gate passes. Security read owed (D1411): who may
 
 ### 17.2 The rulings that apply — each checked against the running build
 D2340, D2341, D2342, D2343, D2346, D2338 (narrowed), D2327 (narrowed), D2313, D2329, D2328, D1693, D1699, D1710, D2194,
-D350, D655, D576, D1151, D25, D27, D327, D785, D56, D1411. Results: _(filled from the walk)_
+D350, D655, D576, D1151, D25, D27, D327, D785, D56, D1411. Results:
+- **D2340** (filed ahead, by the day filed) — PASS after the fixes: w8 S1-03, S1-05, S2-01, S2-02, S2-03 (refused), S3-01–S3-04,
+  S4-01, S4-06, S23-01–06; the six run-across-the-date routes FAILed in w8 (s4-02–s4-05 both sizes) and PASS in r1 w81-01–w81-05.
+- **D2341** (hidden on a day not SANS) — PASS after the fixes: w9 S6–S10 every reader, both sizes; w10 S12 (s12-05…s12-14), S13,
+  S14, S18, S22; the shared line's "for 2 people" FAILed (w10 s12x-05) and PASSes in r1 w101-06; the schedule's SANS panels for a
+  shared offer — tests (§17.3 R12, R13).
+- **D2342** (the bell's words) — PASS: w8 S15-02, S15-05, S17-01, S17-03, S17m-01, S17m-02; w10 s161u-05 … s164r-05.
+- **D2343, D2346** (the fade beside the guardrail) — PASS: w8 S1-01, S1-02, S2-00, S19-01–S19-07, S20-01–S20-06, S21-00–S21-03.
+- **D2338** (narrowed) — PASS: the look-ahead words on Edit Schedule's and the board's crew lists (w8 PU-16, PU-17); the bell
+  line from the save (w8 S15-02).
+- **D2327** (narrowed) — PASS after the fix: the Highlight list now offers a man posted out as SANS ahead (r1 w82-01, w82-05);
+  w8 S19-02, S19-07 had no such man to pick.
+- **D2313** (SANS from its date, every screen) — PASS: w9 the crew lists and seats day by day (s6-B-week-17 … s9-E-board-23);
+  w8 S21-00–S21-03.
+- **D2329** (a posting ahead read by the day; ALL AVAIL) — RECORDED as expected: ALL AVAIL follows his dated status, never the
+  hidden offer (w9 *-aa-* rows, its R5; w10 s11-06c … s11-24c).
+- **D2328** (the post-in date) — PASS: w9 s10-10 (restored with post-in Wed 22).
+- **D1693, D1699, D1710** (a bell line taken back) — PASS on the built rule: an unread line simply goes (w10 s161u-08, s161r-08);
+  a read one struck, "taken back · Saber" (w8 S17-07–S17-09; w10 s162u-08, s164u-08). Two readings for him: questions (6), (7).
+- **D2194** (no bell line to the wrong people) — PASS for an admin's bell (w8 S15-01, S15-09); another squadron's people not walked.
+- **D350** (what Undo does not take back) — PASS: the posting comes back by its sheet's "Undo post out" (w9 s7-05, w8 PU-11); the
+  Quals tick by the top bar's Undo / Redo (w9 s9-09, s9-10).
+- **D655** (who files for whom) — PASS: w8 S23-01–S23-06 (a member files his own only; the shared offer read only for him).
+- **D576** (SANS filed on the SANS calendar only) — PASS: w8 S5 (no SANS Availability in "+ Input"'s Type list, four doors);
+  w9 *-inputs (no Inputs list row).
+- **D1151** (the notifications register) — not walked: a document.
+- **D25, D27** (OIL; ALL AVAIL a scheduling count) — RECORDED: the crowd that earns OIL follows his dated status (w9 R5;
+  w10 s11-*c); no OIL figure was read in this round.
+- **D327** (an archived man) — PASS / RECORDED: w9 s10-08–s10-10b; w10 s11-23, s11-24 (out of the crowd, 39); w9 R3, R4 older.
+- **D785** (a scheduler is an admin) — PASS: every walker's scheduler was Saber, an admin.
+- **D56** (stored demo data) — applied to w9 R1, the reminder line's lead: question (9).
+- **D1411** (a security read) — done: `docs/superpowers/briefs/2026-11-23-sans-ahead-full-read-security.md` (S1–S4, §17.14).
 
 ### 17.3 The roll-call — every place that reads SANS availability, or who may file it
 | # | Surface | SHOWS the new rule | The gesture USABLE | What else is PAINTED there | Proved by |
 |---|---|---|---|---|---|
-| R1 | SANS calendar — the month's committed counts, colours, still-needed pair (`state/flyplan.ts sansCommittedOn`, per man per day) | | | | |
-| R2 | SANS calendar — the Highlight ring and underlined letters for one man (`sansMine`) | | | | |
-| R3 | SANS calendar — the Highlight list of men (`sanscal-model.ts sansRoster`: today's tick only) | | | | |
-| R4 | SANS calendar — the fade on his own days before his date (D2346) | | | | |
-| R5 | SANS calendar — the opened day's list of who committed (`sansDayGroups`) | | | | |
-| R6 | SANS calendar — "+ Commitment" for himself, on a day before / from his date (`sansadd.ts maySansAdd`) | | | | |
-| R7 | SANS calendar — an admin's "+ Commitment" for him, for several SANS men (the people picker's SANS group, `peoplepick-model.ts`) | | | | |
-| R8 | SANS calendar — a drag across days, part before and part after his date | | | | |
-| R9 | The input window's save — accepted with at least one SANS day, refused with none (`inputedit.tsx`) | | | | |
-| R10 | The Inputs calendar's month and day (`InputsCal.tsx`) — MUST NOT show SANS availability at all (SANS is filed on the SANS calendar only, D576) | | | | |
-| R11 | The Inputs list (`InputsPage.tsx`) — MUST NOT list SANS availability (D576) | | | | |
-| R12 | Edit Schedule — the SANS Avail crew panel (`ui/html.ts`, `inputsOn`) | | | | |
-| R13 | The Scheduler Board — the SANS availability panel (`ui/board-html.ts`, `inputsOn`) | | | | |
-| R14 | The crew list's struck SANS man and his note (`palette-html.ts whyOf`, `avail.ts sansNoneWhy`) — the words of D2340 | | | | |
-| R15 | An armed seat's bar and the SANS gate (`avail.ts slotBar`, `sansGate`) — passes him only on a shown day | | | | |
-| R16 | ALL AVAIL's count and window — unchanged by filing or hiding (D2329) | | | | |
-| R17 | The warning list (`validate.ts`) — a SANS man seated on a day his filing is hidden | | | | |
-| R18 | His bell — the SANS-days line (D2340, D2342: from the posting's save, shrinking, gone, its tap) | | | | |
-| R19 | His bell — the hidden-days line written by the posting's take-back (D2341), read and unread | | | | |
-| R20 | An admin's bell, another squadron's people — MUST NOT (D2194) | | | | |
-| R21 | The published day's face — MUST NOT change (its frozen copy) | | | | |
-| R22 | The changes window — a hidden record's history lines stay (history, not a reader of the day) | | | | |
-| R23 | The Leave War — his row, the Post out sheet (the cause: move later, Undo post out, another outcome) | | | | |
-| R24 | Quals — the SANS untick (a cause that hides, no bell line — the question for him) | | | | |
-| R25 | Admin → Users — archive and restore (a cause that hides and returns) | | | | |
+| R1 | SANS calendar — the month's committed counts, colours, still-needed pair (`state/flyplan.ts sansCommittedOn`, per man per day) | YES — a hidden man's letters leave the count (F/O/A 1 0 → 0 0) and come back | YES — filings by "+ Commitment" and a drag add to it | YES — the other men's figures and the still-needed pair as before | w8 S1-04, PU-14; w9 s6-A/B/C-month-*, s9-*-month-*; w10 s12-05b … s12-13b; r1 w101-06, w101-09 |
+| R2 | SANS calendar — the Highlight ring and underlined letters for one man (`sansMine`) | YES — rings exactly his filed days (18, 20), Hex's (21) | YES — picked from the list, cleared by No highlight | YES — Zulu (SANS today) still picks | r1 w82-03, w82-04, w82-05, w82-06; w8 S19-07 |
+| R3 | SANS calendar — the Highlight list of men (`sanscal-model.ts sansRoster`: today's tick only) | YES after the fix — Ranger and Hex offered before their dates (w8 had no such man: W8-2) | YES | YES — every man SANS today still listed, nobody twice (14 entries) | r1 w82-01, w82-05; `sans-ahead-walk152.test.tsx` |
+| R4 | SANS calendar — the fade on his own days before his date (D2346) | YES — his own 1–16 faded (no wash, figures .38, no stripes, "Before your SANS date."); Saber's unfaded | YES — the faded day still opens; "+ Commitment" greyed there | YES — the figures read the same for him as for Saber | w8 S1-01, S2-00, S19-01–S19-07, S20-01–S20-06, S21-00–S21-03; `sans-before.test.tsx` |
+| R5 | SANS calendar — the opened day's list of who committed (`sansDayGroups`) | YES — a hidden offer absent from every group; a shared offer shows the other man only, his line "Saber for Hex" after the fix | YES — a line opens its window (w10 s12x-06, r1 w101-07) | YES — "SANS committed to fly" agrees with the month | w8 S1-04; w9 s6-B-day-17 … s9-E-day-23; w10 s12-07a, s13-04-*, s14-08a, s18a-05; r1 w101-06 |
+| R6 | SANS calendar — "+ Commitment" for himself, on a day before / from his date (`sansadd.ts maySansAdd`) | YES — greyed before his date, offered from it | YES — saved as his, no Person box | NO — because the greyed button's reason reads "SANS aircrew add their availability here.", not his date: question (4) | w8 S1-02, S1-03, S19-06-16/17/20, S20-03, S20-04, S23-02 |
+| R7 | SANS calendar — an admin's "+ Commitment" for him, for several SANS men (the people picker's SANS group, `peoplepick-model.ts`) | YES — Ranger offered from 17, Hex from 20, never before | YES — saved for one man and for two | YES — the picker's groups (Ranger under Pilots, Hex under WSOs) | w8 S2-01, S2-02, S3-02–S3-04, S5-saber-17, S5-saber-20; r1 w82-02-* |
+| R8 | SANS calendar — a drag across days, part before and part after his date | YES after the fix — refused whole with "Ranger is SANS from Fri 17 Jul: file SANS availability for days from then" (w8: silent, W8-1) | YES — a drag 17→20 saves | NO — because Saber's drag over 16–18 offers no Ranger and says nothing (w8 s4s, RECORDED) | w8 s4-01–s4-08 (FAIL s4-02–s4-05); r1 w81-01–w81-05; `sans-ahead-walk152.test.tsx` |
+| R9 | The input window's save — accepted with at least one SANS day, refused with none (`inputedit.tsx`) | YES — as built, refused if ANY day is before his date (question (1)); the final save now refuses for every role (Astra #3) | YES — a refusal keeps the window and what was typed | YES — an overlapping second offer refused, the first unchanged | w8 S2-03, S3-01, S3-01b, S4-06; w10 s13-06, s13-09, s13-10; `sans-review-regressions.test.ts` |
+| R10 | The Inputs calendar's month and day (`InputsCal.tsx`) — MUST NOT show SANS availability at all (SANS is filed on the SANS calendar only, D576) | YES — must not, because D576: the day draws his Appointment only ("1 drawn") | YES — "+ Input" offers no SANS Availability | YES — his ordinary input shown once, hidden or not | w10 s14-06b, s14-08b, s14-10b; w8 S5-ranger-cal, S5-saber-cal |
+| R11 | The Inputs list (`InputsPage.tsx`) — MUST NOT list SANS availability (D576) | YES — must not: no row for a SANS filing at any stage | YES — "+ Input" offers no SANS Availability | YES — his ordinary inputs listed | w9 s6-A/B/C-inputs … s10-C-inputs; w8 S5-ranger-list, S5-saber-list |
+| R12 | Edit Schedule — the SANS Avail crew panel (`ui/html.ts`, `inputsOn`) | YES — one man's hidden offer: not under SANS Avail; a shared offer with one man hidden: FIXED (Opus F1, Astra #1) | NO — because no gesture: a panel | YES — the other man stays under SANS Avail | w9 s6-B-week-17 … s9-E-week-23; w10 s12-07c, s14-08d; `sans-ahead-opusread.test.ts`, `sans-ahead-security152.test.ts`; host re-look, chat 154: PASS at both sizes on the live day (`scripts/handpass/sah-h154.mjs`, D:/raptor-work/c154-look/run2, h-04/h-06/h-08 weekpanel); the published face NOT yet — re-read R1 = Astra's re-read #2, open |
+| R13 | The Scheduler Board — the SANS availability panel (`ui/board-html.ts`, `inputsOn`) | YES — as R12 (Opus F1, Security S2) | NO — because no gesture: a panel | YES — the other man stays | w9 s6-B-board-17 … s9-E-board-23; w10 s12-07d; `sans-ahead-opusread.test.ts`, `sans-ahead-security152.test.ts`; host re-look, chat 154: PASS at both sizes on the live day (h-04/h-06/h-08 boardpanel); the published face NOT yet — as R12 |
+| R14 | The crew list's struck SANS man and his note (`palette-html.ts whyOf`, `avail.ts sansNoneWhy`) — the words of D2340 | YES — "SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab."; gone once filed; hidden, an ordinary pilot | YES — he can be picked as any man | YES — the badge "F/O/A" while shown | w8 PU-15, PU-16, PU-17; w9 *-week-*, *-board-* |
+| R15 | An armed seat's bar and the SANS gate (`avail.ts slotBar`, `sansGate`) — passes him only on a shown day | YES — "SANS — not offering Fly", "SANS — available 09:00–10:00 only" while shown; nothing while hidden; back after | YES — out of his hours he still lands, with a warning (as built before) | YES — the seat's other men unchanged | w9 s6-A/B/C-seat*, s7-*-seat*, s8-*-seat*, s9-*-seatAB1, s10-*-seatAB1; w10 s12-05e … s12-13e, s22-04-* … s22-12 |
+| R16 | ALL AVAIL's count and window — unchanged by filing or hiding (D2329) | YES — membership follows his dated status, never the hidden offer (44 / 45 / 44) | YES — the window opens from its count | YES — the count changes only with the posting itself (40 → 39 off the manpower or archived) | w9 *-aa-* (RECORDED, its R5); w10 s11-06c … s11-24c (RECORDED) |
+| R17 | The warning list (`validate.ts`) — a SANS man seated on a day his filing is hidden | YES — no warning rests on a hidden offer; the same warnings before and after | YES — a warning opens as before | YES — his demo flights' own warnings unchanged | w9 *-warn (RECORDED, its R6); w10 s22-05, s22-08, s22-11 |
+| R18 | His bell — the SANS-days line (D2340, D2342: from the posting's save, shrinking, gone, its tap) | YES — "You're SANS from Fri 17 Jul. You're planned on Sat 18, Mon 20, Thu 23 Jul with nothing filed. Tap to file.", shrinking, gone, "and 2 more" | YES — its tap opens the SANS calendar on the first day | NO — because the line comes only once the week of his planned days has been saved (w9 R1, r1's lead): question (9) | w8 S15-01–S15-09, S17-01–S17-05, S17m-01–03, S20-05; w10 s162u-05/06; `sans-ahead.test.ts`, `sans-unfiled.test.ts` |
+| R19 | His bell — the hidden-days line written by the posting's take-back (D2341), read and unread | YES — "Your SANS availability for Fri 17, Sat 18, Sun 19 Jul is hidden while you're not SANS those days." | YES — its tap opens the SANS calendar (Mon 20 not Sat 18 in w10 v4 — a lead) | NO — because it strikes a line he never read, today's days not the ones he read (question (7)), and stays once the day is SANS again (question (6)) | w8 S17-07–S17-09; w9 s6-B-bell, s8-B-bell, s8b-B-bell; w10 s161u-08 … s164r-10, s18a-07, s18a-12; `sans-review-regressions.test.ts`, `sans-ahead-opusread.test.ts` |
+| R20 | An admin's bell, another squadron's people — MUST NOT (D2194) | YES — must not: Saber's bell holds no line of Ranger's | NO — because nothing to press | YES — Saber's own lines as before | w8 S15-01, S15-09; `sans-unfiled.test.ts`; another squadron's people NOT WALKED — one squadron in play, no test named |
+| R21 | The published day's face — MUST NOT change (its frozen copy) | YES — must not: View-only Sched unchanged by all five causes; a NEW copy published while hidden now drops the hidden man (Astra #1) | YES — "Publish AL1" works while hidden | NO — because the working copy reads "2 pending", "Not yet signed" (correct by D178: question (8)) | w10 s11-06b … s11-24b, s11-06d … s11-25; `sans-ahead-security152.test.ts` |
+| R22 | The changes window — a hidden record's history lines stay (history, not a reader of the day) | YES — the filings listed as inputs, "added" and "deleted" | YES — it opens as before | YES | w8 PU-19 (RECORDED); a hidden record's lines NOT WALKED on a hidden day — not recorded |
+| R23 | The Leave War — his row, the Post out sheet (the cause: move later, Undo post out, another outcome) | YES — each cause hides and its reverse brings back the one record | YES — the PO-from date box, "Undo post out (PO)", the "✓ SANS" chip tapped off and on | YES — the sheet's line "On 20 Jul: becomes SANS." / "off the manpower, nothing else"; no PO on his row after the undo | w9 s6-04, s6-05, s7-05, s7-05b, s8-05, s8-06, s8b-06, s8b-07; w8 PU-10-*, PU-11, PU-12, S21-01–S21-03; w10 s12-06, s11-05, s11-09, s11-13 |
+| R24 | Quals — the SANS untick (a cause that hides, no bell line — the question for him) | YES — 20, 21, 23 hidden, 18 kept; Undo / Redo; a re-tick from 23 brings back 23 only | YES — ✎ Edit, the cell, Done | NO — because no bell line tells him (as built): question (3) | w9 s9-08–s9-12, s9-D-bell; w10 s11-19–s11-22 |
+| R25 | Admin → Users — archive and restore (a cause that hides and returns) | YES — absent while archived | YES — Archive; Post in → Restore | NO — because after the restore he is not SANS, so the days stay hidden, and the archive reaches back to Sat 18 (w9 R3, R4 — older, outside this change) | w9 s10-08–s10-10b, s10-C-*; w10 s11-23, s11-24 |
 
 ### 17.4 The door check
-_(filled before the walk)_
+Every action the data allows, and its control:
+- He files his own from his date: the SANS day's "+ Commitment" (w8 S1-03), a drag across days (S4-01), the keys from a day,
+  Shift + arrows, Enter (desktop; r1 w81-03, w81-04), the bell's tap then "+ Commitment" (S15-04).
+- An admin files for him, or for several: "+ Commitment"'s Person box (S2-01), Several people (S3-02), a drag (s4s-01).
+- A day before his date: refused at every door — "+ Commitment" greyed on the faded day (S1-02, S19-06-16); a drag or keys
+  over it, refused with words after the W8-1 fix (r1 w81-01–w81-04; silent in w8); the window's start moved back (S2-03,
+  S4-06); Saber's drag over 16–18 offers no Ranger, no words (s4s, RECORDED).
+- Edit or delete a filing: opened from a day it shows (w10 s13-06; w8 PU-09); a member opens another man's, read only (S23-05,
+  S23-06).
+- No door by design: the Inputs page's "+ Input" (D576 — w8 S5, four doors); a member for another man (S23-02).
 
 ### 17.5 The five sizing lines (the order's §7.0)
-_(filled before the walk)_
+1. **The type of change:** A (the hiding — one shared reading of the day), C (filing ahead — "+ Commitment" opens before his
+   date), G (saved data — the take-back's hidden days, the publish path), H (who may file for whom), with E (the fade) and F
+   (the bell's words).
+2. **What only a walk could find here:** that every reader of SANS availability (§17.3) is wired to the one reading through
+   the real controls — the posting's own sheet, Quals, Admin → Users, a drag, the keys, the bell's tap — at both sizes; that
+   a refused gesture says why; the fade at midnight with the page open.
+3. **What the ledger says:** this branch's rounds found 0 (chat 141) and 1 (chat 147) faults in the change; round 5's three
+   Opus walkers cost about 1.5M.
+4. **The walk chosen:** three walkers side by side on `ddd8c4a44` (code `d24e2406f`), under the host's hold of the checks lock
+   — w8 filing ahead, the fade, the reminder line (S1–S5, S15, S17, S19–S21, S23 and the plain-user round); w9 the hiding
+   cause by cause with Astra's reader sweep (S6–S10); w10 hiding across publication, shared filings, edits, the take-back
+   line (S11–S14, S16, S18, S22); desktop Chromium 1536×864 and his iPhone's WebKit 402×874 by touch, the clock Wed 15 Jul 26
+   09:00; S24 (timing) a helper of its own; then r1, the re-walk of the three walk fixes on `bde8ef0a0`.
+5. **After the walk:** its row in `docs/walk-ledger.md` — to add.
 
 ### 17.6 The orders walked — what the screen said and what the counts said
-_(filled from the walk)_
+Reports: `docs/handpass/parts/sud/w8-report.md`, `w9-report.md`, `w10-report.md`, `r1-report.md`. Every answer the same at both
+sizes unless said.
+- **S1** Ranger files 17 and 20 for himself — saved as his; 16 faded, "+ Commitment" greyed; the month's F 0 0 → 1 0. PASS.
+- **S2** Saber files him on 17 and 20 — saved; a draft moved to 16 refused "Ranger is SANS from Fri 17 Jul: file SANS
+  availability for days from then", nothing saved. PASS.
+- **S3** Several people, different dates — moved to 17 refused naming Hex's 20; Hex taken out, saved for Ranger alone; the
+  picker offers Hex from 20 only. PASS.
+- **S4** a run across his date — the window's changed start refused with words (PASS); drag and keys, both ways: no window,
+  nothing saved, no words — **6 FAIL** (W8-1); after the fix the amber note, nothing saved (r1, 6 routes PASS).
+- **S5** the Inputs doors — no SANS Availability in "+ Input" (four doors); a man with no SANS status: "+ Commitment" greyed.
+  PASS.
+- **S6** posting moved 17 → 20 — 17, 18, 19 hidden on every reader, 20 and 21 kept; moved back, all five back, one record.
+  PASS.
+- **S7** "Undo post out" — 17 and 20 hidden, the seats' SANS reasons gone; posted again, all back. PASS.
+- **S8, S8b** the "✓ SANS" chip tapped off (before and after the posting ran) — hidden; tapped on, back. PASS (the control
+  RECORDED).
+- **S9** Quals untick on Mon 20 — 20, 21, 23 hidden, 18 kept; Undo, Redo; a re-tick from 23 brings 23 only; no bell line. PASS.
+- **S10** archive on Mon 20, restore Wed 22 — hidden while archived; after the restore not SANS, so still hidden (R3); Sat 18
+  reached back (R4). PASS / RECORDED.
+- **S11** every cause after Fri 17 published — the published face unchanged (PASS); the working copy "2 pending", "Not yet
+  signed", "1 input change" (RECORDED: question (8)); AL1 published while hidden drops his SANS mark, ALL AVAIL 39.
+- **S12** a shared offer, one man hidden — five stages × six readers PASS; the line's "Saber for 2 people" and its window
+  naming Ranger — **4 FAIL** (W10-1); after the fix "Saber for Hex" (r1 PASS); the window still names both (the agent's
+  reading, told to him).
+- **S13** an offer partly hidden, edited from Mon 20 — saved, its dates kept; back, each day shows it once with the edit; a
+  second offer on 20 refused. PASS.
+- **S14** others' ordinary inputs — Ranger's Appointment and Hex's offer untouched by the hiding. PASS.
+- **S15** the early bell — the line from the save, its tap on Sat 18, shrinking as he files, gone; Saber's bell none. PASS.
+- **S16** read and unread take-backs, before and after the posting ran — unread goes; read struck "taken back · Saber"; the
+  hidden sentence names 18, never 20. PASS; the struck heading of a line never had and the tap to Mon 20 RECORDED.
+- **S17** longer lists — "and 2 more"; a newly planned day keeps the read line read (RECORDED); the take-back strikes today's
+  words (RECORDED: question (5)); across months each month once. PASS.
+- **S18** hide and return, reloads and sign-out — hidden, back with its first details, one record; the "hidden" line stays
+  after the return (RECORDED: question (6)). PASS.
+- **S19** the fade is his own — his 1–16 faded, Saber's none, the figures the same. PASS.
+- **S20** midnight with the page open — the fade gone at 00:00 with no reload; "+ Commitment" opens on 17. PASS.
+- **S21** the date moved earlier, later, undone — the fade follows each. PASS (the other-tab case not walked).
+- **S22** a restored offer's hours and activities — the seats' reasons as before; hidden, none; back, the same warnings.
+  PASS.
+- **S23** permissions — a member files his own only; the shared offer read only for him. PASS.
+- **The plain-user round** (w8; r1 for each fix) — the bell, the SANS day, the commitment window, the posting sheet, each
+  opened and closed every way; the SANS month, both crew lists, View-only Sched and the changes window show the result. PASS
+  (the tap outside the SANS day and the sheet RECORDED).
+- **Counts:** w8 249 rows — 208 PASS, 6 FAIL, 20 RECORDED, 10 NOTE, 5 NOT WALKED; w9 876 — 702 PASS, 0 FAIL, 118 RECORDED, 50
+  NOTE, 6 NOT WALKED; w10 615 judged — 555 PASS, 4 FAIL, 56 RECORDED (37 notes besides); r1 105 — 89 PASS, 0 FAIL, 4
+  RECORDED, 10 NOTE, 2 NOT WALKED. In all: 1,554 PASS, 10 FAIL (two faults, both fixed and re-walked), 198 RECORDED, 13 NOT
+  WALKED.
 
 ### 17.7 The cases carried by a test
-_(filled)_
+Each calls the app's writers and readers directly; none stands in for a walked route.
+- `src/leavewar/sans-ahead.test.ts` (19) — D2340: filed ahead by him and by an admin, a day or run before his date refused,
+  the people lists, the bell line from the save, its words, shrinking; D2341: hidden not deleted and back, the take-back, its gate.
+- `src/leavewar/sans-before.test.tsx` (6) — D2346: the fade, his own only, gone from the date and with the posting.
+- `src/leavewar/sans-unfiled.test.ts` (30), `sans-unfiled-reload.test.ts` (1) — D2338: the look-ahead words, the bell line,
+  nothing on an admin's bell, the take-back read and unread, the permissions gate, the struck line after a reload.
+- `src/leavewar/sans-ahead-walk152.test.tsx` — W8-1 (a run before his date says why), W8-2 (the Highlight list), a past SANS
+  stretch accepted, W10-1 (the shared line names only the shown man).
+- `src/leavewar/sans-ahead-opusread.test.ts` — Opus F1 (no card for the hidden man), F2a–F2c (another man's entry excuses
+  nothing; the window; the swap), his own entry kept; F4 kept failing on purpose (`it.fails`, question (6)).
+- `src/leavewar/sans-ahead-security152.test.ts` — S1 (another man's offer, a record of another kind), S2 (the board's and the
+  week's SANS panels, one man's lookup), S3 (his own-row back-dating refused; his own Quals tick and its Undo / Redo pass), a
+  new frozen copy holds only the shown man.
+- `src/leavewar/sans-review-regressions.test.ts` — Astra #1 (a shared Saturday), #3 (the final save), #4 (a newly added man),
+  #5 (a past SANS day), #2 (a take-back not erasable by an input command); #6 kept failing on purpose (two `it.fails`,
+  question (7)).
+- Earlier rounds, unchanged: `allavail-sans-posted.test.ts`, `sans-from-date.test.ts`.
 
 ### 17.8 The pictures
-_(filled)_
+146 deciding pictures in the repo under `docs/img/handpass/2026-11-23-sans-ahead/` — `w8/` 40, `w9/` 44, `w10/` 39, `r1/` 23;
+the bulk on his PC under `D:\raptor-work\c152-walk\` — 5,448 pictures (w8 988, w9 2,372, w10 1,850, r1 238), every phone tap
+pictured within about 100 ms in each run's `taps/`. Named in the reports' tables: w8 304, w9 2,196 (its cited folders), w10
+778, r1 125.
 
 ### 17.9 The break tests
-_(filled)_
+- w8 — runs across his date both ways, by mouse, keys and a held finger, as him and as Saber; a draft's date moved before it;
+  a two-man draft moved before one man's date; the date moved earlier, later, undone; midnight with the page open.
+- w9 — every hiding cause and its reverse, each read on ten readers; Undo and Redo of the untick; a re-tick leaving a gap;
+  archive then restore.
+- w10 — a shared offer through five stages; an edit while partly hidden, then a second overlapping offer; reloads and a
+  sign-out while hidden; every cause after publication; seats inside and outside his hours.
+- r1 — the six W8-1 routes; Highlight before and after filings; the shared line in three states.
+- The fixes: each built red-first, its test failing before the fix (§17.7, §17.14).
 
 ### 17.10 Errors seen
-_(filled)_
+None: no console error, page error, failed request or 4xx in any cited run of w8, w9, w10 or r1. The walkers' own script
+mistakes are named in each report and re-run (w10's S12x clean-up pressed under an open window after its last step — the
+script's, not the app's).
 
 ### 17.11 What was NOT walked, and why
-_(filled)_
+- The page backgrounded across midnight (S20) — a test browser keeps a background tab "visible"; the page open across
+  midnight was walked.
+- The posting changed while Ranger's calendar stays open in another tab (S21) — two tabs do not share live changes; walked
+  signing in as each in turn.
+- The SANS day's pull-up bar on the phone (PU-06), and every finger drag in WebKit — WebKit gives no finger drag; the drags ran
+  in Chromium at the phone's size; his iPhone's own hold and drag is a look for his card.
+- The keys on the phone — no Shift + arrows there.
+- His bell while archived (S10) — an archived man cannot sign in.
+- His bell between the Quals untick and Undo (S9) — reading it signs out, which clears the Undo list (D148); read after Redo.
+- S11's amendment published while hidden — after the last cause (archive) only; S11's restore after the archive — w9's S10.
+- Another squadron's people (R20); a hidden record's history lines on a hidden day (R22).
+- Nothing in Edge or on a real iPhone.
 
 ### 17.12 The timing promised in D2341
-_(filled from `docs/handpass/parts/sud/timing-d2341.md`)_
+No difference a person would notice (`docs/handpass/parts/sud/timing-d2341.md`): desktop Chromium at 4× CPU slow-down, the
+build before the hiding against the branch head, interleaved fresh runs, in the demo world (6 SANS records) and a stress world
+(34 records, every SANS man every day of July and August). No measure slower beyond its spread; the board's day step leans
+about 11 ms (paired), about 1 ms of script time at full speed, and did not grow with 5½ times the records. Not timed: the
+phone, a posting set ahead, the Inputs calendar tab and the Leave War.
 
 ### 17.13 The gate counts
 _(filled)_
 
 ### 17.14 What the walk and the reads found, and each disposition
-_(filled)_
+Reads: Astra `docs/superpowers/briefs/2026-11-23-sans-ahead-full-read-astra.md`, the fresh Opus reader `…-full-read-opus.md`,
+the security reader `…-full-read-security.md`.
+- **w8 F1 (W8-1)** — a run of days starting before his SANS date did nothing and said nothing (6 routes) — FIXED red-first
+  (`sans-ahead-walk152.test.tsx`); re-walked by r1 at both sizes, PASS.
+- **w8's second (W8-2)** — the SANS Highlight list left out a man posted out as SANS ahead — FIXED red-first (the same file);
+  re-walked by r1, PASS.
+- **w10 W10-1** — a shared offer's "for 2 people" counted the hidden man — FIXED red-first (`bde8ef0a0`); re-walked by r1, PASS.
+  The window it opens still names both men — the agent's reading, told to him.
+- **Opus F1 = Astra #1, the panels part** — a shared offer's hidden man still drawn on Edit Schedule's and the board's SANS
+  Avail panels — FIXED red-first (`sans-ahead-opusread.test.ts`). **Astra #1, the rest** — one man's lookup (`sansAvailOn`), a
+  NEW published copy of the day and the "changed since issue" comparison held the hidden man — FIXED red-first
+  (`sans-ahead-security152.test.ts`, `sans-review-regressions.test.ts`). **Security S2** — the same as Astra #1, fixed.
+- **Opus F2 = Astra #4** — the save excused a day for ANY man in the record being edited — FIXED red-first. **Security S1** —
+  the same, and a record of another kind excused it — FIXED red-first.
+- **Astra #5** — a past day a man was SANS, his tick since taken off, could not be filed — FIXED red-first.
+- **Astra #3 = Opus F8** — the SANS-date rule checked only in the windows, not at the final save — FIXED red-first: the final
+  save now refuses a new day that is not one of his SANS days, for every role.
+- **Astra #2** — an ordinary input command could delete his "SANS availability hidden" bell line — FIXED red-first.
+- **Security S3** — a member's own-row command could back-date his SANS days — FIXED red-first; his own Quals tick and its
+  Undo / Redo still work (test).
+- **Security S4, Opus F6** — the permissions table in `docs/data-model.md` §11 out of date — FIXED (the document).
+- **Opus F4** — after the posting is put back, the "hidden" bell line stays, untrue then (also w10 S18) — kept as a
+  known-failing test; QUESTION for him (6).
+- **Astra #6 = Opus F5 = w9 R2** (and w10 S16, S18) — the take-back line strikes "You're SANS from…" he never read, and
+  today's days, not the ones he read — QUESTION for him (7); two known-failing tests.
+- **Opus F7** — speed: the start-of-command note scans inputs per SANS-posted man — FILED (`OUTSTANDING.md`
+  [FABLE-READ-FAULTS] (w)(1)); the timing found no difference a person would notice (§17.12).
+- **w10 S11** — on a published day every hiding cause makes the working copy read "2 pending" and drops the sign-offs; the
+  face unchanged — correct by D178; to tell him (question 8).
+- **w9 R1, r1's lead** — the reminder line appears only once the week of his planned days has been edited or opened —
+  QUESTION (9): check whether D56 (demo weeks never stored) covers it.
+- **w9 R3, R4** — an archive drops his SANS status for good, and reaches back to Sat 18 — older, outside this change.
+- **w10's lead** — the "hidden" line's tap opens Mon 20, not Sat 18 — a lead, not fixed.
+- **Opus F3** — a run of days part before his date is refused whole, though he was told "accepted, the early days hidden" —
+  question (1).
+- **Recorded, no disposition given here:** Saber's drag over 16–18 offers no Ranger and says nothing why (w8 s4s); the
+  security reader's question — his own Quals tick (D149) makes him SANS from today, so he can file before his posting date.
+- **Leads left as recorded:** the input window's calendar marks 13 Jul as today (D1383, the demo week); LATE on every filing
+  made on 15 Jul (the cut-off as set); a SANS man still placed outside his offered hours with a warning (as built before this
+  branch, w10 S22).
+- **The questions for him:** (1) the run part before his date refused whole — D2340's reading; (2) [FABLE-READ-FAULTS] (v)
+  1–3; (3) the Quals untick hides his filings with no bell line — keep?; (4) the greyed "+ Commitment" on a faded day says
+  "SANS aircrew add their availability here." — could name his date; (5) w8 S17-07: the struck read line shows today's days —
+  goes with (7); (6) Opus F4; (7) Astra #6; (8) w10 S11; (9) w9 R1.
 
 ## 14. The Walk line
 
