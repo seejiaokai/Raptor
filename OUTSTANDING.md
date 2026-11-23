@@ -178,12 +178,14 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [TRK-COPIES-TIDY] — the code reads' tidiness notes on [TRK-KEPT-COPIES] (D489), filed not fixed.
 - [TRK-NO-TYPED-STUDENT] — no Tracker student can be added by a typed name (his D1931, 8 Nov 26): + Add loses its "Or type a callsign" box and adds nothing when the search matches nobody or nobody is on the roster; drawn for him first (D1625). Today it still adds a typed name, linked to nobody.
 - [TRK-DOWN-DAYS-CANCELLED] — a cancelled medical input still counts toward a student's down days; left open for his look when the down days were built (18 Oct 26), carried by no item since.
+- [TRK-LEAVEFLOW-DISCARD] — the Tracker's "Discard them and add (or rename) a course?" clears the unsaved mark without reloading the chart; a cancelled next prompt leaves the dropped edits drawn as saved (found 23 Nov 26, older).
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
 - [MSQ-PLAN-AUDIT] — a dedicated check of everything built and planned for an admin with Plan of a squadron left out or let in wrongly, faults fixed before the reshape build; his D2242 (20 Nov 26).
 - [MSQ-FABLE-REVIEW] — Fable reviews what it has not read: the kinds of sign-in together first (who edits, who only views, is each guarded), then the areas ranked by risk; his D2259 (21 Nov 26).
 - [MSQ-FIXREAD17-OPEN] — fix read 17's, the core read's and the full review's 35 faults, all reproduced red, in seven cause families; his shape question first, then the fixes and one combined fix read (20 Nov 26).
+- [MSQ-TOPBAR-LIST-KEYS] — the desktop top bar's "149 ▾" opened by the keys leaves the focus on the button, and Shift+Tab out leaves it open (older, found 23 Nov 26); with the readers' tidiness notes on D2381–D2384.
 - [ROLE-BOX-CUT-IPHONE] — on an iPhone, Admin → Users' Role box cuts "Admin — schedules and manages" off mid-word (found 22 Nov 26); fixed with batch 1's second half
 - [ACCOUNT-STATUS-TOLD] — a person told on his own bell when his account status changes (D2251); drawn first
 - [MSQ-FIXREAD10-LEFT] — what fix read 10 left: F (a bell line dated minutes ahead hidden for those minutes once a right is removed — for the database step, the server's clock), a war line's content field not checked, the GitHub browser-test flakes (the date calendar's glide; the Leave War phone's pinned dates row), a bell walk owed after fix read 13 (20 Nov 26); the code check cannot compare against main until pull request 817 merges (cause found 20 Nov 26); a remote-edit Undo note for the database step.
@@ -308,6 +310,15 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [MSQ-TOPBAR-LIST-KEYS] The top bar's squadron list by the keys, and D2381–D2384's tidiness notes (23 Nov 26, chat 151) — OPEN
+**What it is:** the re-walk of D2381–D2384 (N4): on a desktop, Enter, Space or an arrow on "149 ▾" opens the list but the focus stays on the button (`ui/SquadronMenu.tsx`'s own note: the ticked row takes it — likely its focus step runs while the list is still unplaced, `visibility: hidden`); Shift+Tab out to the page's start leaves the list open. Older than D2381 (step B); the ☰ list does both right. Pictures `raptor-port/docs/handpass/2026-11-23-msq-view-only-menu/rewalk/r-keys2-d/Enter-01.png`, `r-keys-d/ArrowDown-01-after.png`.
+**Also, the readers' tidiness notes (D489, filed not fixed):** the ☰ list repeats the top bar's open, outside-press, Escape and key handling (share them); the spare note is a module variable two components share (a ref held by the menu); the landing on View-only Sched done in two places, and "something waits on a window's close" worked out twice; the war band now stays up while a View-only squadron is picked (its readers BidPicker, Matrix, BalancesPage read it as "the midnight band"); the input window's "opened on" rules inside a 1,500-line function; `pageOffered` recomputes the squadron list per call; the access line wears `drawer-acct`. Reports beside `raptor-port/docs/superpowers/briefs/2026-11-23-msq-view-only-*-opus.md`, `-astra.md`.
+**Where:** People & accounts; `raptor-port/src/ui/SquadronMenu.tsx`, `ui/Drawer.tsx`, `ui/InputWindow.tsx`, `state/store.ts`.
+
+### [TRK-LEAVEFLOW-DISCARD] The Tracker's other Discard leaves dropped edits drawn (23 Nov 26, chat 151) — OPEN
+**What it is:** the fresh Opus reader of the walk fixes (outside its change): `leaveFlowEdits` ("Discard them and add a course?", "…rename the course?") clears the unsaved mark without reloading the chart; if the next prompt is then cancelled, `addCourse` and `renCourse` return early, so the dropped edits stay drawn, now marked saved, and the bar can keep "● unsaved flow edits". Older. The pick's and the sign-out's Discard were fixed together (`discardChartEdits`, `c2bcdb990`).
+**To do:** red first — the same reload as `discardChartEdits`. **Where:** Tracker; `raptor-port/src/tracker/app/core.js`.
 
 ### [ROLE-BOX-CUT-IPHONE] Admin → Users' Role box cuts its words off on an iPhone (22 Nov 26, chat 137) — OPEN
 **What it is:** today's app, a person's opened row on Admin → Users at an iPhone's width (402): the Role box is half the row wide and shows "Admin — schedule…", the rest of "Admin — schedules and manages" cut off. Seen in the redrawn approved picture `raptor-port/docs/mock/2026-11-22-msq-b1-screens/img/p1a-p.png`; found by the host opening a helper's picture, confirmed by chat 137's fresh reader.

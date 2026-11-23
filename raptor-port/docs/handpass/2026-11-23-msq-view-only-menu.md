@@ -79,19 +79,47 @@ the menu's foot (another stylesheet's rule won) — `v0/02-list.png`, `p1/s3-03-
 Tracker's unsaved-edits question drawn under the ☰ menu on the phone — `t1-p/s28-01-ask.png`, `t2/stay-02-after-shade.png`.
 Both fixed in `cd94a4e8e` (F2 red first in `tracker/msq-trk-pick-ask.test.tsx`).
 
-The re-walk (chat 151): (to be filled)
+The re-walk (chat 151, an Opus walker on the 20:11 build with every read fix in; brief
+`docs/superpowers/briefs/2026-11-23-msq-view-only-rewalk-brief.md`, report `docs/handpass/parts/n151/rewalk.md`,
+pictures `rewalk/`): 708 pictures, 36 runs, no console errors. Fixes 1–5 and 7 PASS — the list under the mark, the grey
+line and the pages pushed down 98 points (`rewalk/r-shade-p/p-02-list-open.png`); the Tracker question in front with the
+menu closed (`r-t2/stay-01-asked.png`); a Leave War window holding the page with D2323's band, each close landing on
+View-only Sched (`r-war-d/b-ranger-own-02-held.png`, `r-war-p/…`); the first press outside closing only the list, quick
+or held; Arrow Down / Up and Tab out; sign out and in. Fix 6 PASS for a pick (c2, c3: band, greyed, held through Undo
+and Redo — `r-inputs-d/c3-05-after-undo.png`). New cases d (a bell line with 149 picked) and e (an access request) PASS
+on both sizes. Found:
+- **N1** — with the list open, a tap on a menu line below it landed on another line (the list closed at the touch and
+  the lines moved up under the finger): a tap on Inputs opened the Leave War, Logout seemed dead
+  (`r-under-p/inputs-01-list-open.png`, `inputs-03-after.png`). Fixed red first, `c2bcdb990` — such a press closes the
+  list only (D2384); its read found the spare could swallow a keyboard click after a press with no click — fixed red
+  first, `a385c40f9`. Re-walked in a real browser on the rebuilt app: `rewalk2/r-under-p/` and `rewalk3/` — 9 of 9 and the
+  shade 24 of 24 (`rewalk2/r-under-p/inputs-03-after.png`: the menu open, View-only Sched, nothing else opened).
+- **N2** — after "Discard them" the Tracker's bar still said "● unsaved flow edits" (the first walk's lead f). Fixed red
+  first, `c2bcdb990` (both Discard answers, the pick's and the sign-out's); re-walked on the phone: the bar clear
+  (`rewalk2/r-t2/`).
+- **N3** — an input window left open through the member-view switch shows the generic band "This change could not be
+  saved.", not greyed; its saves are refused (read back: nothing written). This is the departure named at chat 150 (the
+  Fable-1 fix: "not a pick: nothing greyed, the gate refuses its saves") — the re-walk brief overstated it. A question
+  for him (below), not a fault.
+- **N4** — the desktop top bar's "149 ▾" opened by the keys leaves the focus on the button (the ticked row should take
+  it), and Shift+Tab out leaves it open. Older than this change (the list's focus code is from step B, untouched here):
+  filed, `OUTSTANDING.md` [MSQ-TOPBAR-LIST-KEYS].
+Not walkable, named: the day window's shade covers the pick and the switch (its typed words safe); a held input window
+covers the top bar on the phone, so 142 cannot be picked with it open — Close is the way (D2323).
 
 ## 7. The plain-user round (§7.0a)
 
 First walk: Ranger (View 149) and Hunter (Plan 149), desktop and phone — each squadron picked and back, every offered page
 opened, ☰ and its list opened and closed, the bell and a line in it, Logout; `u1-d/` (49 pictures), `u1-p/` (132). All
-as expected but F1. Re-walk: (to be filled)
+as expected but F1. Re-walk: the same round on both sizes, PASS (`rewalk/u1-*` re-run inside the scripts' own rounds).
 
 ## 8. The drawing check (d1–d5)
 
 First walk (`dc1/`): the drawing's own record re-made on the build is pixel-identical to d1–d5; the build's head
 measured part by part: d1, d3, d5 within 2 px, same colours and words; d2 and d4 (the list open) off only through F1.
-Re-walk: (to be filled)
+Re-walk (`rewalk/r-dc1/`): all five records pixel-identical to d1–d5; d2 and d4 (the list open) now match within
+2 px; left as is, no visible effect: the head button's letter spacing (−0.065px drawn, normal built) and d5's mark box
+width (97 drawn, 307 built, no fill or edge).
 
 ## 9. The reads
 
@@ -107,9 +135,28 @@ On the finished feature (`cd94a4e8e`), each blind to the walk and to the others,
 - **Fable** (`-read-fable.md`, his D2385): one new fault — an input window left open through the landing came back
   editable — fixed red first, `a12b083c4`; the landing's memory cleared at sign-in.
 
-The fix rounds (`cd94a4e8e`, `d3bbc5e65`, `a12b083c4`), one round, brief
-`docs/superpowers/briefs/2026-11-23-msq-view-only-fixread-brief.md`: (to be filled)
+The fix rounds (chat 151), each read by Astra and a fresh Opus reader, blind to each other and to the walk; every finding
+reproduced by the host with a test failing on the code read; repeats fixed by Fable (D2233, D2385), new faults by Opus:
+1. `cd94a4e8e`, `d3bbc5e65`, `a12b083c4` (brief `-fixread-brief.md`; `-fixread-astra.md`, `-fixread-opus.md`): three
+   repeats — the landing never ran when a View holder closed his Leave War window (both readers); a View holder's input
+   window came over View-only Sched live (Opus); a slow press on the shade closed list and menu (Astra). Fable fixed all
+   three red first, `e9791020e`, and a twin: the View holder's Leave War window now wears D2323's band while it waits.
+2. `e9791020e` (`-fixread2-*`): Astra none; Opus one repeat — a held input window came back live after an Undo. Fable
+   fixed it red first, `27db0c659`, and a twin (another input asked for over the held window).
+3. `27db0c659` (`-fixread3-*`): none from either — the last read round on the read fixes.
+4. The walk's fixes `c2bcdb990` (`-fixread4-*`): both readers the same one — a press with no click left the spare set and
+   swallowed the next keyboard click; fixed red first, `a385c40f9` (a one-line guard: only a pointer's click is spared),
+   re-walked in a real browser. That round carries the rest: the guard is covered by its two tests and the walk.
+Filed, not fixed (`OUTSTANDING.md`): the Tracker's other Discard (`leaveFlowEdits`, before adding or renaming a course)
+leaves the dropped edits drawn if the next prompt is cancelled — older; the readers' tidiness notes.
+
+The checks on the last code (`a385c40f9`): the whole unit suite under the lock on `e9791020e` — 1,081 of 1,082 files, the one a timing slip from a reader's test run beside it (3 of 3 alone; GitHub green on `8fa4d401b`); the
+touched files after each later fix; the type check; the code check, no new finding; the rewritten browser test; GitHub's
+run on the pushed head `873f75523` (see the closing report).
 
 ## 10. Walk line
 
-(to be filled)
+Walk: docs/handpass/2026-11-23-msq-view-only-menu/ · 391 + 708 + 59 pictures (the walk, the re-walk, the re-walks of N1
+and N2) · 11 surfaces · 28 scenarios (25 walked, 3 not walkable here — a right changed from another sign-in) + 7 question
+cases + 9 new (a–g, c2, c3) · 2 plain-user rounds × 2 sizes · drawing check d1–d5 matched · open: 0 faults (N3 a
+question for him, N4 older and filed)
