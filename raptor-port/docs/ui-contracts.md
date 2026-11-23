@@ -7195,7 +7195,7 @@ phone): tick chips in Edit Schedule's chip look (`.fchip`, "✓ " on a ticked on
 (the CATs held on the list), Role (Member — a sign-in that is not an admin's; Admin — an admin not a master admin;
 "Plans 149" — the page's squadron's number: a man of another squadron holding Plan of it; Master admin) and, for a master
 admin alone, Squadron (a chip per squadron, D2321) — and "Clear all". Several ticks in a group mean any of them; the
-groups combine; a man with no sign-in holds no role. The button lit (the app's primary button, dark on blue) with its
+groups combine; a man with no sign-in holds no role. The button lit (pale blue with blue words, the app's switched-on look, as tall as the search box — D2401) with its
 count, "Filter · 2" — every squadron ticked counts one; the line over the list "Showing 1 of 61 · Clear" (the rows shown
 of those the list shows with no Seat, CAT or Role tick), Clear taking every tick off. Rows are only hidden, A to Z kept
 (D322); the Archived fold's rows and count follow the ticks too. The panel closes on a press outside it and on Escape,

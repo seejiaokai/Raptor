@@ -81,7 +81,7 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - His row shows a posting waiting and "posted out <date>" once a posting out has run and left him on the roster [D326, D322].
 - An archived row says how and when, one line [D329].
 - No control moves a sign-in to another person, for now [D2266].
-- One squadron at a time; a filter button by the search opens tick boxes — seat, CAT, role ("Plans 149", master admin among them) — any tick of a group, groups combined, lit dark on blue with its count; a master admin may tick "All squadrons", grouped; built as drawn 22 Nov [D2270, D2335, D2306, D2307].
+- One squadron at a time; a filter button by the search opens tick boxes — seat, CAT, role ("Plans 149", master admin among them) — any tick of a group, groups combined, lit pale blue with its count, as tall as the search box, Inputs' phone button lit the same; a master admin may tick "All squadrons", grouped; built as drawn 22 Nov [D2270, D2335, D2306, D2307, D2401].
 - Quals keeps quals, CAT, flight and initials; its ✕ archive, Archived list, Restore, Restore as and the rename moved to Admin → Users (an archived man renamed by an admin on his archived row, no longer on Quals); Quals' "+ Add person" is a button to Admin → Users; renaming a roster man stays on Quals [D310, D322, D224, D295, D286].
 
 ## Quals
