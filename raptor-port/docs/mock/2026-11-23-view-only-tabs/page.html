@@ -44,62 +44,42 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 #lb.big img{max-width:none;max-height:none;width:200%}
 #lbclose{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:calc(12px + env(safe-area-inset-right,0px));
   background:#fff;color:#000;border:0;border-radius:18px;padding:6px 14px;font-weight:700;cursor:pointer;z-index:21}
+a{color:var(--accent)}
 </style>
 
 <div class="wrap">
   <h1>Only view: the menu and top bar</h1>
 
   <div class="now">
-    <p><b>Look at now:</b> version C, your idea. The TALON mark sits at the top of the ☰ menu, with the squadron buttons under it. Shall I build C?</p>
-    <p class="rec">Recommended: C. It matches the top bar, needs no heading, and switches in one tap.</p>
-    <p class="muted">C's pictures are clean, exactly as the app would look. In the older A and B pictures further down, the blue boxes only mark what is new; they are not part of the design.</p>
+    <p><b>Look at now: version D, your drop-down.</b> The ☰ menu opens with the TALON mark, reading “149 ▾”. Tap it and your squadrons drop down right under it. Pick one and you switch. A grey line under the mark says your access there.</p>
+    <p><b>1. Shall I build D?</b> <a href="#d">Its pictures</a></p>
+    <p class="rec">Recommended: yes. It works like the “149 ▾” at the top of the screen, so there is nothing new to learn.</p>
+    <p><b>2. With only one squadron, keep the grey line (“142 · Your squadron”)?</b> <a href="#one">Its picture</a></p>
+    <p class="rec">Recommended: yes. Every menu then looks the same, and it always states your access, as you asked.</p>
+    <p class="muted">These pictures are clean: exactly as the app would look, with no marking boxes. Versions A, B and C are set aside by your answer and kept in the project.</p>
   </div>
 
-  <section>
-    <h2>C (recommended): the TALON mark, then the buttons</h2>
-    <p>The menu opens with the same TALON mark as the top left of the screen, its small number saying which squadron you are in. Under it are the squadron buttons and a grey line saying what you can do there. One tap switches, and the pages change at once.</p>
-    <div class="pair" id="c1"></div>
-    <div class="pair" id="c2"></div>
-    <p>B, the same buttons under a “SQUADRON” heading, without its blue boxes, for a fair comparison:</p>
-    <div class="pair one" id="c3"></div>
+  <section id="d">
+    <h2>D: the TALON mark as a drop-down</h2>
+    <p>Ranger is a member of 142 and has View of 149. With 149 picked, the menu opens with the mark reading “149 ▾”. Under it, a grey line says “149 · View only”, and he is offered only the two pages he can open.</p>
+    <div class="pair" id="d1"></div>
+    <p>After picking 142 in that list, the list closes but the menu stays open. The mark reads “142 ▾”, the grey line “142 · Your squadron”, and every page is back. He then taps the page he wants.</p>
+    <div class="pair one" id="d2"></div>
+    <p>Saber, a master admin with eight squadrons, sees all eight in the list. The menu scrolls if the list pushes the pages past the bottom of the screen.</p>
+    <div class="pair one" id="d3"></div>
   </section>
 
-  <section>
-    <h2>B (recommended): chips, one tap</h2>
-    <p>A row of squadron buttons, the same ones as the bell's Show row, with the one you're in lit. A grey line under them says where you are. One tap switches. The menu stays open and its pages change at once, so he then taps the page he wants.</p>
-    <div class="pair" id="b1"></div>
-    <p>A master admin with many squadrons gets one row that slides sideways, as in the bell.</p>
-    <div class="pair" id="b2"></div>
-    <p class="muted">The second picture in the first pair is shown after a tap. The real pick was made from the top bar, because the drawn chips can't pick yet.</p>
-  </section>
-
-  <section>
-    <h2>A: one line that opens a list</h2>
-    <p class="muted">The first drawing. It works, but switching takes two taps, and "149" shows twice once the line is open.</p>
-    <p>Ranger is a member of 142 and has View of 149. With 149 picked, the menu says which squadron is in view and offers only the two pages he can open.</p>
-    <div class="pair" id="s1"></div>
-    <p>Tap the squadron line and it opens in place, listing his squadrons the same way the “149 ▾” list at the top does. Picking one closes the menu.</p>
-    <div class="pair one" id="s2"></div>
-    <p>Back on his own squadron, the line reads “142 · Your squadron” and every page is there.</p>
-    <div class="pair" id="s3"></div>
+  <section id="one">
+    <h2>Someone with one squadron</h2>
+    <p>The mark has no ▾, because there is nothing to pick. The grey line still says his access.</p>
+    <div class="pair" id="d4"></div>
   </section>
 
   <section>
     <h2>On a desktop: the top bar</h2>
-    <p>The tabs shrink to View-only Sched and Help. An admin of 142 with View of 149 (Hunter, below) loses his Admin tab while 149 is picked. The squadron is still picked from “149 ▾” at the top left, as today.</p>
+    <p>The tabs shrink to View-only Sched and Help. An admin of 142 with View of 149 (Hunter, below) loses his Admin tab while 149 is picked. The squadron is still picked from “149 ▾” at the top left, as today. On a desktop wide enough for the page names there is no ☰, so the menu's drop-down is a phone feature.</p>
     <div class="pair" id="s4"></div>
     <div class="pair" id="s5"></div>
-  </section>
-
-  <section>
-    <h2>Who gets the squadron line</h2>
-    <ul>
-      <li>Only people who have more than one squadron, the same people who see the “▾” at the top left. Someone with one squadron sees no change:</li>
-    </ul>
-    <div class="pair" id="s6"></div>
-    <ul>
-      <li>On a desktop wide enough for the page names, there is no ☰. Picking stays at the top left, so the squadron line is a phone feature.</li>
-    </ul>
   </section>
 
   <section>
@@ -121,17 +101,12 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 <script>
 const S={
- c1:[["c1-menu-149-proposed","new","C: 149 picked. TALON reads 149, the buttons, “149 · View only”, then View-only Sched and Help."],["c2-menu-home-142-proposed","new","C: on 142. TALON reads 142, “142 · Your squadron”, every page."]],
- c2:[["c3-menu-saber-eight-proposed","new","C: Saber with eight squadrons. The buttons slide sideways."],["c4-menu-one-squadron-proposed","new","C: one squadron only. The mark alone, no buttons."]],
- c3:[["c5-menu-149-version-b-unringed","new","B without its blue boxes, for comparison."]],
- b1:[["b1-menu-149-chips-proposed","new","B: 149 picked. Chips 142 and 149, “149 · View only”, then View-only Sched and Help."],["b2-menu-after-tapping-142-proposed","new","B: one tap on 142. The menu stays open, “142 · Your squadron”, every page back."]],
- b2:[["b4-menu-saber-eight-chips-proposed","new","B: Saber with eight squadrons. One row, cut at the edge."],["b4b-menu-saber-eight-chips-slid-proposed","new","B: the same row slid to its end."]],
- s1:[["2a-menu-149-today","today","Today: every page, and nothing says it is 149."],["2b-menu-149-proposed","new","Proposed: SQUADRON 149 · View only, then View-only Sched and Help."]],
- s2:[["4a-menu-squadron-row-opened-proposed","new","The squadron line opened: 142 Your squadron, 149 View only (ticked)."]],
- s3:[["3a-menu-home-142-today","today","Today, at home on 142."],["3b-menu-home-142-proposed","new","Proposed: SQUADRON 142 · Your squadron, every page as today."]],
+ d1:[["d1-menu-149-closed-proposed","new","149 picked: “149 ▾”, “149 · View only”, then View-only Sched and Help."],["d2-menu-149-open-proposed","new","One tap on the mark: 142 “Your squadron”, 149 ticked “View only”."]],
+ d2:[["d3-menu-after-picking-142-proposed","new","Just after picking 142: “142 ▾”, “142 · Your squadron”, every page back."]],
+ d3:[["d4-menu-saber-eight-open-proposed","new","Saber, eight squadrons, the list open."]],
+ d4:[["5b-one-squadron-topbar-phone","today","His top bar: “142” with no ▾, as today."],["d5-menu-one-squadron-proposed","new","His menu: the mark alone, “142 · Your squadron”."]],
  s4:[["1a-ranger-149-topbar-today","today","Today: Ranger, 149 picked, seven tabs."],["1b-ranger-149-topbar-proposed","new","Proposed: View-only Sched and Help."]],
  s5:[["1c-hunter-149-topbar-today","today","Today: Hunter, an admin of 142, 149 picked."],["1d-hunter-149-topbar-proposed","new","Proposed: his Admin tab goes too."]],
- s6:[["5b-one-squadron-topbar-phone","today","One squadron: “142” with no ▾."],["5c-one-squadron-menu-phone","today","So his ☰ menu has no squadron line."]],
  s7:[["7a-roles-table-today","today","Today: View reads “read” for Logic."],["7b-roles-table-proposed","new","Proposed: View's Logic cell is “—”."]]
 };
 for(const id in S){const el=document.getElementById(id);

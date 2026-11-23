@@ -48,3 +48,17 @@ look. Script: `k4-version-c.mjs`.
 - c3-menu-saber-eight-proposed.png · Saber, a master admin, with eight squadrons (142, 149, 150 to 155): the TALON mark reading 142, the chips in one row cut off at the menu's edge, sliding sideways, never wrapping; 142 "on", the line "142 · Your squadron"; MENU and ACCOUNT as today · phone 402 × 874 · proposed (C)
 - c4-menu-one-squadron-proposed.png · Ranger before he had View, one squadron: the TALON mark alone reading 142, no chips and no grey line; MENU and ACCOUNT as today · phone 402 × 874 · proposed (C)
 - c5-menu-149-version-b-unringed.png · version B's b1 again with no rings, to set beside c1: SQUADRON, the chips 142 off and 149 "on", the grey line "149 · View only"; MENU with only View-only Sched and Help; ACCOUNT as today · phone 402 × 874 · proposed (B, for comparison)
+
+## Version D of the ☰ menu (his D2382 and D2383, 23 Nov 26): the TALON mark as the squadron drop-down, the access under it
+
+The menu opens with the top bar's own mark and its ▾ ("149 ▾"), in the bar's own button look; a tap opens the Schedules
+menu's rows right under it, inside the menu (tick, number, grey label); a pick switches the squadron and the menu stays
+open (the agent's reading). Under the mark one grey line says the access to the squadron in view ("149 · View only").
+No chips, no "SQUADRON" label. One squadron: the mark alone, no ▾, the grey line still shown (the agent's reading of
+D2383, put to him). No rings. Script: `k5-version-d.mjs`.
+
+- d1-menu-149-closed-proposed.png · Ranger with 149 picked, the drop-down closed: "149 ▾", the grey line "149 · View only"; MENU with only View-only Sched and Help; ACCOUNT as today · phone 402 × 874 · proposed (D)
+- d2-menu-149-open-proposed.png · the same after one tap on the mark: the list open under it, 142 "Your squadron", 149 ticked "View only"; the mark in its pressed look; the grey line and MENU under the list · phone 402 × 874 · proposed (D)
+- d3-menu-after-picking-142-proposed.png · just after picking 142 there: the list closed, the menu still open, "142 ▾", "142 · Your squadron", every page back · phone 402 × 874 · proposed (D)
+- d4-menu-saber-eight-open-proposed.png · Saber, a master admin, with eight squadrons (142, 149, 150 to 155), the list open: eight rows, 142 ticked "Your squadron", the rest "Full access"; the grey line "142 · Your squadron"; MENU and ACCOUNT under them · phone 402 × 874 · proposed (D)
+- d5-menu-one-squadron-proposed.png · Ranger with one squadron: the mark alone ("142", no ▾), the grey line "142 · Your squadron"; MENU and ACCOUNT as today · phone 402 × 874 · proposed (D)
