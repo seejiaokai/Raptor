@@ -17,7 +17,8 @@ import { rosterOf } from '../engine/roster'
 import { notify } from '../state/store'
 import { flyAnswer } from '../leavewar/sync'
 import { todayIso } from '../engine/editlog'
-import { fmt } from './inputedit'
+import { fmt, sansRefusal } from './inputedit'
+import { HOOKS } from '../engine/hooks'
 import { setInpEdit } from './pops'
 
 const TYPE = 'SANS Availability'
@@ -31,7 +32,18 @@ export const maySansAdd = (iso?: string): boolean => isAdmin() || isSans(me(), i
 
 export function openSansAdd(from: string, until?: string): boolean {
   const [iso, end] = until && until < from ? [until, from] : [from, until]
-  if (!maySansAdd(iso)) return false
+  if (!maySansAdd(iso)) {
+    /* A SANS MAN WHOSE SANS STARTS LATER THAN THE RUN HE PICKED IS TOLD WHY, never met with nothing (the FULL check's
+       walk, chat 152, W8-1: Ranger, posted out as SANS from Fri 17 Jul, dragged Thu 16 → Sat 18 and no window opened and
+       nothing was said). The words are the save's own refusal (ui/inputedit.tsx sansRefusal), so the calendar and the
+       window never differ. A man who is not SANS at all is offered no add on this calendar, so his stays silent. */
+    const mine = me()
+    if (!isAdmin() && mine && sansFiler(PEOPLE[mine])) {
+      const why = sansRefusal(mine, { f: true }, iso, end || iso)
+      if (why) HOOKS.toast(why, 'warn')
+    }
+    return false
+  }
   const mine = me()
   const who = isSans(mine, iso) ? mine
     /* (a SANS man of the page's own squadron — the SANS calendar stays on his own, D2132; the reshape plan §3.2 A-ii) */

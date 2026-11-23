@@ -19,7 +19,7 @@
 import { INPUTS, inputCoversDate, isSansAvail, isLateInput, inputOwnDueISO, cutRuleWords, namedOf } from '../engine/inputs'
 import { getCut } from '../state/cutoff'
 import { isAdmin, me, pageUnit } from '../state/perms'
-import { PEOPLE, sansAheadDate, sansOnP } from '../engine/people'   // sansOnP: was he SANS on the day asked about (D2313)
+import { PEOPLE, sansAheadDate, sansFiler, sansOnP } from '../engine/people'   // sansOnP: was he SANS on the day asked about (D2313)
 import { hhmm } from '../engine/time'
 import type { DayAnswer, Tone } from '../state/flyplan-model'
 import { sansCommittedOn, sansDateLabel, type SansCommitted } from '../state/flyplan'
@@ -72,10 +72,12 @@ export function sansBeforeMine(iso: string, today: string, viewer: string | null
   return !!from && from > today && iso < from && !sansOnP(p, iso)
 }
 /** the SANS aircrew on the roster today, A to Z by callsign — who the Highlight list offers (the people the count
- *  itself takes: state/flyplan.ts sansCommittedOn) */
+ *  itself takes: state/flyplan.ts sansCommittedOn) — and a man posted out as SANS from a date ahead, who may have
+ *  commitments filed from the moment his posting is saved (owner D2340; the FULL check's walk, chat 152, W8-2: he could
+ *  not be picked to see them) */
 export function sansRoster(people: Record<string, any> = PEOPLE): string[] {
   return Object.keys(people)
-    .filter(id => { const p = people[id]; return !!p && p.san && !p.archived && !p.deleted && !p.special && !p.pers && (p.seat === 'FCP' || p.seat === 'RCP') })
+    .filter(id => { const p = people[id]; return !!p && sansFiler(p) && !p.archived && !p.deleted && !p.special && !p.pers && (p.seat === 'FCP' || p.seat === 'RCP') })
     .sort((a, b) => String(people[a].cs).localeCompare(String(people[b].cs)))
 }
 
