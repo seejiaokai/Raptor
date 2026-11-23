@@ -248,6 +248,8 @@ export function AdminPage() {
   /* a man to bring into view and ring on Users (a bell's posting line — [POSTOUT-RUN-NOTICE]): `seq` the tap, `on` while his
      row wears the just-added mark — its six seconds */
   const [ring, setRing] = useState<{ seq: number; pid: string; on: boolean } | null>(null)
+  /* this category's page is on his screen: chosen, and on a phone drilled in */
+  const onScreen = (c: string): boolean => cat === c && (drilled || !HOOKS.isPhone())
   const admin = isAdmin()
   /* THE ONE CONSUMER of "open Admin → Users" (state/view.ts ADMINOPEN — Fable F2, Astra 4):
      keyed on its `seq`, so it works whether this page was just mounted or was already up
@@ -316,12 +318,12 @@ export function AdminPage() {
             <section className={'adm-panel' + (cat === 'users' ? ' on' : '')} id="admUsers">
               {/* `shown`: the waiting list is on his screen — Users chosen, and on a phone
                   drilled in (the category list alone does not count — D216, D227) */}
-              <UsersPanel shown={cat === 'users' && (drilled || !HOOKS.isPhone())} openNew={openNew} ring={ring} />
+              <UsersPanel shown={onScreen('users')} openNew={openNew} ring={ring} />
             </section>
             {/* ---- Squadrons — each squadron and its place, the places and their time zones, "+ New squadron" for a
                 master admin (ui/SquadronsPanel.tsx) ---- */}
             <section className={'adm-panel' + (cat === 'squadrons' ? ' on' : '')} id="admSquadrons">
-              <SquadronsPanel shown={cat === 'squadrons' && (drilled || !HOOKS.isPhone())} />
+              <SquadronsPanel shown={onScreen('squadrons')} />
             </section>
             {/* ---- Squadron configuration — front doors to the two template
                 editors. The modals are App-level siblings (App.tsx), so they

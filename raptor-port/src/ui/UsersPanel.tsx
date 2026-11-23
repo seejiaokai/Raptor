@@ -42,7 +42,7 @@ import {
 import { SESSION } from '../state/auth'
 import { me, pageUnit, adminOfUnit } from '../state/perms'
 import { todayIso, homeOn, unitById } from '../state/units'
-import { usersView, addHomeChoices, NO_FILTER, type UsersFilter } from './usersfilter-model'
+import { usersView, addHomeChoices, NO_FILTER, type UsersFilter, type UsersView } from './usersfilter-model'
 import { UsersFilterBox, ShowingLine, FILTER_ESC } from './UsersFilter'
 import { useEscRow } from './sheetfocus'
 import { notify } from '../state/store'
@@ -533,6 +533,22 @@ function useRingLanding(ring: Ring, setFind: (v: string) => void, setArchOpen: (
    `openNew` — a non-zero, changing value brings the add form into view with its callsign box ready (Quals'
    "+ Add person", through the Admin page — state/view.ts ADMINOPEN);
    `ring` — a man to bring into view, ringed while `on` (a bell's posting line — [POSTOUT-RUN-NOTICE]) */
+/* THE FILTER'S TICKS. A PICK CLEARS THE SQUADRON TICKS ((j), his D2396): a pick means "show me this squadron", so the page
+   must not need a second step to obey. Seat, CAT, Role and the search stay. Set while drawing, so no frame shows the old
+   squadron's list. */
+function useUsersFilter(unit: string): [UsersFilter, (f: UsersFilter) => void] {
+  const [filt, setFilt] = useState<UsersFilter>(NO_FILTER)
+  const [ticksOn, setTicksOn] = useState(unit)
+  if (unit !== ticksOn) {
+    setTicksOn(unit)
+    if (filt.sqn.length) setFilt({ ...filt, sqn: [] })
+  }
+  return [filt, setFilt]
+}
+/* is this man's row on the list as it is drawn: not hidden by a tick or the search, his Archived fold open */
+const rowInView = (v: UsersView, pid: string | null, archOpen: boolean): boolean =>
+  !!pid && (v.groups.some(g => g.rows.includes(pid)) || (archOpen && v.archived.includes(pid)))
+
 export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring } = {}) {
   const [editing, setEditing] = useState<string | null>(null)
   const [find, setFind] = useState('')
@@ -546,9 +562,7 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   /* Add a person's Home squadron (§4 item 7 — picture b1-7): null is the page's own, whichever squadron that is now */
   const [home, setHome] = useState<string | null>(null)
   /* the filter's ticks (D2335 — ui/usersfilter-model.ts); kept while the page is open, as the search is */
-  const [filt, setFilt] = useState<UsersFilter>(NO_FILTER)
-  /* the squadron the Squadron ticks were set on: (j), below */
-  const [ticksOn, setTicksOn] = useState(() => pageUnit('own'))
+  const [filt, setFilt] = useUsersFilter(pageUnit('own'))
   const addRef = useRef<HTMLDivElement>(null)
   const csRef = useRef<HTMLInputElement>(null)
 
@@ -596,12 +610,6 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   /* THE FILTER (D2335, D2307) AND A MASTER ADMIN'S SQUADRONS (D2270): the rows a tick keeps, A to Z, never reordered
      (D322); a master admin's Squadron ticks group the list under each squadron's heading (ui/usersfilter-model.ts) */
   const unit = pageUnit('own'), today = todayIso()
-  /* A PICK CLEARS THE SQUADRON TICKS ((j), his D2396): a pick means "show me this squadron", so the page must not need a
-     second step to obey. Seat, CAT, Role and the search stay. Set while drawing, so no frame shows the old squadron's list. */
-  if (unit !== ticksOn) {
-    setTicksOn(unit)
-    if (filt.sqn.length) setFilt({ ...filt, sqn: [] })
-  }
   const master = actorIsMaster()
   const view = usersView(unit, today, q, filt, master)
   const archShown = view.archived
@@ -610,8 +618,7 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   /* ESCAPE CLOSES THE OPENED ROW AS ITS CANCEL DOES ((p), his D2396): nothing saved, no question, the keys back on the row;
      an open Filter panel answers first. Only while the row is on his screen: Users chosen, the row not hidden by a tick
      or the search. */
-  const rowInView = !!editing && (view.groups.some(g => g.rows.includes(editing)) || (archOpenNow && archShown.includes(editing)))
-  useEscRow(p.shown && rowInView ? editing : null,
+  useEscRow(p.shown && rowInView(view, editing, archOpenNow) ? editing : null,
     pid => document.querySelector<HTMLElement>(`.acc-row[data-person="${CSS.escape(pid)}"]`),
     () => setEditing(null), FILTER_ESC)
   const homes = addHomeChoices(unit)
