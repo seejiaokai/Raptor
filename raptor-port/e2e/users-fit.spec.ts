@@ -92,6 +92,65 @@ test('[ROLE-BOX-CUT-IPHONE] at 402: every Role choice and every squadron line fi
    line `margin: -2px 0 2px`, and the fold `margin: 4px 0 12px` — so from the last grey line's foot to "▸ What each role
    allows" is 2 + 4 = 6px (the lines' foot and the fold's top meet in one 4px), and from the Role box's foot to the first
    line 12px, as before. Ranger, a member, opened by Saber: his 149 line ends in "Plan is for admins only." (D2306). */
+/* HIS D2401 (24 Nov 26 — the drawing docs/mock/2026-11-24-msq-new-words/filter-look/): a filter that is on looks switched
+   on, in the app's own recipe (.fchip.on, the Logic page's filter): pale blue, blue words and funnel, blue border; on
+   Admin → Users as tall as the search box beside it, on or off. No glow. Red first: 30 high, solid blue when on. */
+const FILTER_ON = { bg: 'rgba(59, 198, 232, 0.16)', border: 'rgba(59, 198, 232, 0.6)' }
+const lookOf = (page: Page, sel: string) => page.evaluate(s => {
+  const e = document.querySelector<HTMLElement>(s)!
+  const c = getComputedStyle(e)
+  const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()
+  const probe = document.createElement('i'); probe.style.color = accent; document.body.appendChild(probe)
+  const blue = getComputedStyle(probe).color; probe.remove()
+  return { h: Math.round(e.getBoundingClientRect().height), bg: c.backgroundColor, border: c.borderTopColor, color: c.color, blue, shadow: c.boxShadow,
+    icon: getComputedStyle(e.querySelector('svg')!).stroke, text: (e.textContent || '').trim() }
+}, sel)
+for (const [w, h, tag] of [[1536, 864, 'desktop'], [402, 874, 'phone']] as const) {
+  test(`D2401: Admin → Users' Filter is as tall as the search box, on or off, and lit in the chips' look (${tag})`, async ({ page }) => {
+    await page.setViewportSize({ width: w, height: h })
+    await login(page)
+    await users(page)
+    const search = () => page.evaluate(() => Math.round(document.querySelector<HTMLElement>('#page-admin .od-find')!.getBoundingClientRect().height))
+    expect(await search()).toBe(36)
+    expect((await lookOf(page, '#accFilter')).h, 'off').toBe(36)
+    await page.locator('#accFilter').click()
+    await page.locator('#accFilterPanel [data-ftick="seat:Pilots"]').click()
+    await page.keyboard.press('Escape')
+    await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
+    await page.mouse.move(0, 0)
+    const on = await lookOf(page, '#accFilter')
+    expect(on.text).toBe('Filter · 1')
+    expect(on.h, 'on').toBe(36)
+    expect(on.bg).toBe(FILTER_ON.bg)
+    expect(on.border).toBe(FILTER_ON.border)
+    expect(on.color, 'blue words').toBe(on.blue)
+    expect(on.icon, 'a blue funnel').toBe(on.blue)
+    expect(on.shadow, 'nothing glows').toBe('none')
+  })
+}
+test('D2401: the Inputs filter button on a phone is lit the same while a filter is set, its small number kept', async ({ page }) => {
+  await page.setViewportSize({ width: 402, height: 874 })
+  await login(page)
+  await page.evaluate(() => (window as any).go('inputs'))
+  await page.waitForSelector('#inFiltersBtn')
+  if (await page.locator('#inListBtn[aria-pressed="false"]').count()) await page.locator('#inListBtn').click()
+  const off = await lookOf(page, '#inFiltersBtn')
+  expect(off.bg).not.toBe(FILTER_ON.bg)
+  await page.locator('#inFiltersBtn').click()
+  await page.locator('#inFSearch').fill('a')
+  await page.locator('#inFiltersBtn').click()
+  await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
+  await page.mouse.move(0, 0)
+  const on = await lookOf(page, '#inFiltersBtn')
+  expect(on.bg).toBe(FILTER_ON.bg)
+  expect(on.border).toBe(FILTER_ON.border)
+  expect(on.color).toBe(on.blue)
+  expect(on.icon).toBe(on.blue)
+  expect(on.shadow).toBe('none')
+  expect(on.h, 'its height does not change').toBe(off.h)
+  expect(await page.locator('#inFiltersBtn .inputs-filter-count').textContent()).toBe('1')
+})
+
 for (const [w, h, tag] of [[1536, 864, 'desktop'], [402, 874, 'phone']] as const) {
   test(`the roles fold sits 6px under the last squadron line's grey line, as drawn (${tag})`, async ({ page }) => {
     await page.setViewportSize({ width: w, height: h })

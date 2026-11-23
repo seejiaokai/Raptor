@@ -2,8 +2,10 @@
    docs/mock/2026-11-22-msq-b1-screens/redraw-pieces.mjs `filterBtn`, pictures nfa, nfb, nfc, nfd; f5c-p for eight
    squadrons; D2306 the Role tick "Plans 149"). What each tick keeps, the count and the line's words:
    ui/usersfilter-model.ts.
-   - The button: the app's own .abtn with a line funnel in the search box's stroke, "Filter", lit dark on blue with its
-     count ("Filter · 2") while anything is ticked (the lit look is the app's own primary button, as drawn).
+   - The button: the app's own .abtn with a line funnel in the search box's stroke, "Filter", as tall as the search box
+     beside it, on or off; while anything is ticked it looks switched on, in the app's own recipe (.fchip.on, the Logic
+     page's filter): pale blue, blue words and funnel, blue border, with its count ("Filter · 2") (his D2401, narrowing
+     D2335's primary look, which read as a button to press; the drawing docs/mock/2026-11-24-msq-new-words/filter-look/).
    - The panel, under the button over the list: a group a row of tick chips in Edit Schedule's chip look (.fchip / .on,
      "✓ " on a ticked one) — Seat, CAT, Role, and Squadron for a master admin; "Clear all" at its foot.
    - A click-open popup closes on a press outside it (the standing rule, 4 Sep 26) and on Escape, the keys back on the
@@ -57,7 +59,7 @@ export function UsersFilterBox(p: { f: UsersFilter; onChange: (f: UsersFilter) =
   const sqns = units().map(u => u.id).sort(byNum)
   return (
     <div className="od-fwrap" ref={wrap}>
-      <button type="button" className={'abtn od-fbtn' + (n ? ' primary' : '')} id="accFilter" ref={btn}
+      <button type="button" className={'abtn od-fbtn' + (n ? ' on' : '')} id="accFilter" ref={btn}
         aria-haspopup="true" aria-expanded={open} aria-controls="accFilterPanel" onClick={() => setOpen(o => !o)}>
         <Funnel />{n ? `Filter · ${n}` : 'Filter'}
       </button>

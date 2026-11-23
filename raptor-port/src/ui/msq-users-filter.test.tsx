@@ -68,7 +68,9 @@ describe('the Filter button and its panel (D2335, D2307 — pictures nfa, nfb, n
     await p.tick('seat:Pilots')
     await p.tick('role:admin')
     expect(p.btn().textContent).toBe('Filter · 2')
-    expect(p.btn().className).toContain('primary')
+    /* his D2401: the app's own "on" look (.fchip.on, the Logic filter's), never the primary button's */
+    expect(p.btn().classList.contains('on')).toBe(true)
+    expect(p.btn().className).not.toContain('primary')
     expect(p.chips('seat')).toEqual(['✓ Pilots', 'WSOs', 'Personnel'])
     expect(p.$('#accFilterPanel [data-ftick="seat:Pilots"]')!.getAttribute('aria-pressed')).toBe('true')
     expect(p.rows()).toEqual([PID.hunter])
