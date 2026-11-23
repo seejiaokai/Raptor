@@ -151,14 +151,16 @@ describe('R9 — a line of another squadron', () => {
     expect(CURPAGE).toBe('viewsched')
     expect(ADMINOPEN).toBeNull()
   })
-  it('a View holder on 149\'s schedule tapping a 142 line: his own pages are already 142\'s — nothing re-entered', () => {
+  /* rewritten by his D2381 (23 Nov 26): 149 he only views offers no Admin, so opening his own Admin page from the bell
+     brings 142 back into view, the page opened (store.ts landOnOfferedPage) */
+  it('a View holder on 149\'s schedule tapping a 142 line: his own pages are 142\'s — 142 comes back, Admin opened at the line', () => {
     givePlan(ACCT.hunter, 'u149', 'view')
     signInAs('hunter')
     enterSquadron('u149', false)
     expect(UNIT).toBe('u149')
     expect(pageUnit('own')).toBe('u142')
     openNotice(line(PID.hunter, 'u142', { k: 'po', who: PID.ranger, o: 'none' }))
-    expect(UNIT).toBe('u149')
+    expect(UNIT).toBe('u142')
     expect(CURPAGE).toBe('admin')
     expect(ADMINOPEN?.person).toBe(PID.ranger)
   })

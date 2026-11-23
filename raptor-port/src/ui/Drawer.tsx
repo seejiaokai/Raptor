@@ -5,9 +5,14 @@
    (#drawerRole — D292, 27 Sep 26, [POST-OUT-OUTCOMES]; the old role toggle's successor). Open/close is
    the DRAWER flag in pops.ts; every action closes the drawer, as the
    reference's handlers all end with classList.remove('open'). */
-import { useEffect } from 'react'
+import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { PEOPLE } from '../engine/people'
-import { isAdmin, me, mayViewAsMember } from '../state/perms'
+import { UNIT } from '../engine/unitview'
+import { isAdmin, me, mayViewAsMember, menuSquadrons, pageOffered } from '../state/perms'
+import { pickSquadron } from '../state/pick'
+import { sqnNum } from './export'
+import { TalonMark } from './icons'
+import { SquadronRows } from './SquadronMenu'
 import { canEditSched } from '../state/auth'
 import { waitingCount } from '../state/accounts'
 import { CURPAGE } from '../state/view'
@@ -89,13 +94,15 @@ export function Drawer() {
     <div className={'drawer' + (DRAWER ? ' open' : '')} id="drawer" role="presentation"
       onClick={e => { if (clickedOutside(e, 'drawer')) close() }}>
       <div className="drawer-panel">
+        <DrawerSquadron />
         <h4>Menu</h4>
         {/* role="button" + tabIndex + Enter/Space, same reason as the topbar nav
             in Shell.tsx (design critique, 15 Aug 26 — a hrefless <a> is not in the
             tab order and has no button role, so a keyboard user could not reach
             these). Tag stays <a> so `#drawerNav a[data-page]` selectors hold. */}
         <nav className="drawer-nav" id="drawerNav">
-          {items.filter(i => i[2]).map(([p, label]) => {
+          {/* a squadron he only views picked: its View-only Sched and Help alone (his D2381 — perms.ts pageOffered) */}
+          {items.filter(i => i[2] && pageOffered(i[0])).map(([p, label]) => {
             const go = () => { setPage(p); setDrawer(false); notify() }
             // eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab of the phone's menu, drawn by its rule for links (`.drawer-nav a`) as the top bar's tabs are; tests and walks find them as #drawerNav a[data-page]
             return <a key={p} data-page={p} role="button" tabIndex={0} className={p === CURPAGE ? 'on' : ''}
@@ -118,6 +125,62 @@ export function Drawer() {
         <div className="drawer-row"><button className="abtn" id="drawerLogout"
           onClick={() => { setDrawer(false); void logOut() }}>Logout</button></div>
       </div>
+    </div>
+  )
+}
+
+/* THE MENU'S HEAD: THE TALON MARK AS THE SQUADRON DROP-DOWN (his D2382, D2383, D2384 — version D as drawn,
+   docs/mock/2026-11-23-view-only-tabs/d1–d5). The top bar's own mark, its number the schedule in view's:
+   - two squadrons or more — a button reading "149 ▾", in the top bar's button look (.sqm-btn, its soft box while open);
+     a tap opens the Schedules menu's own rows (SquadronRows) right under it, inside the menu, not hung over it; a pick
+     switches the squadron through the menu's one act (state/pick.ts pickSquadron) — the list closes, the menu STAYS
+     open, its pages changed at once; Escape or a press elsewhere closes the list first, the menu still open;
+   - one squadron — the mark alone, no ▾ (D2132);
+   - under the mark, for everyone, one grey line saying his access to the squadron in view, in the list's words
+     ("149 · View only", "142 · Your squadron", "149 · Full access" — perms.ts menuSquadrons). */
+function DrawerSquadron() {
+  useVersion()
+  const rows = menuSquadrons()
+  const num = sqnNum('schedule')
+  const many = rows.length > 1
+  const cur = rows.find(r => r.id === UNIT)
+  const [open, setOpen] = useState<null | { keyboard: boolean }>(null)
+  const wrap = useRef<HTMLDivElement>(null), btn = useRef<HTMLButtonElement>(null), list = useRef<HTMLDivElement>(null)
+  /* the menu closed, or a right taken away so one squadron is left: the list closes with it */
+  if (open && (!many || !DRAWER)) setOpen(null)
+  const shown = many && DRAWER && !!open
+  useEffect(() => {
+    if (!shown) return
+    /* opened by the keys: the squadron in view takes the focus */
+    if (open?.keyboard) (list.current?.querySelector<HTMLElement>('.sqm-row[aria-checked="true"]') ?? list.current?.querySelector<HTMLElement>('.sqm-row'))?.focus()
+    const outside = (e: PointerEvent) => { if (!wrap.current?.contains(e.target as Node)) setOpen(null) }
+    const off = escCloses(() => list.current, () => { setOpen(null); btn.current?.focus() }, btn.current)
+    document.addEventListener('pointerdown', outside)
+    return () => { document.removeEventListener('pointerdown', outside); off() }
+  }, [shown, open])
+  const pick = (u: string) => { setOpen(null); btn.current?.focus(); void pickSquadron(u) }
+  const move = (e: ReactKeyboardEvent) => {
+    const items = [...(list.current?.querySelectorAll<HTMLButtonElement>('.sqm-row') ?? [])]
+    if (!items.length) return
+    const i = items.indexOf(document.activeElement as HTMLButtonElement)
+    const to = e.key === 'ArrowDown' ? (i + 1) % items.length : e.key === 'ArrowUp' ? (i - 1 + items.length) % items.length
+      : e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : -1
+    if (to < 0) return
+    e.preventDefault(); items[to]!.focus()
+  }
+  return (
+    <div className="drawer-sqn" ref={wrap}>
+      {many
+        ? <button type="button" className={'sqm-btn' + (shown ? ' on' : '')} id="drawerSqnBtn" ref={btn}
+          aria-haspopup="menu" aria-expanded={shown} aria-controls="drawerSqnList" aria-label={`Squadron ${num} — pick a squadron's schedule`}
+          onClick={e => setOpen(o => (o ? null : { keyboard: e.detail === 0 }))}>
+          <TalonMark num={num} menu />
+        </button>
+        : <TalonMark num={num} />}
+      {shown && <div className="sb-moremenu drawer-sqlist" id="drawerSqnList" role="menu" aria-label="Schedules" ref={list} onKeyDown={move}>
+        <SquadronRows rows={rows} pick={pick} />
+      </div>}
+      {cur && <p className="drawer-acct drawer-sqline" id="drawerSqnLine">{cur.num} · {cur.label}</p>}
     </div>
   )
 }

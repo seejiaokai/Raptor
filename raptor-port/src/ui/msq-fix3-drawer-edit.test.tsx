@@ -17,7 +17,8 @@ afterEach(() => { setDrawer(false); cleanup() })
 const pages = (c: HTMLElement) => [...c.querySelectorAll<HTMLElement>('#drawerNav a[data-page]')].map(a => a.dataset.page)
 
 describe('the ☰ menu\'s Edit Schedule follows the squadron picked, as the top bar does (F1)', () => {
-  it('Hunter with View of 149, 149 picked: no Edit Schedule; Admin still his; 142 picked again: Edit Schedule back', () => {
+  /* rewritten by his D2381 (23 Nov 26): with 149 he only views picked, Admin goes too — View-only Sched and Help alone */
+  it('Hunter with View of 149, 149 picked: no Edit Schedule, no Admin (D2381); 142 picked again: Edit Schedule back', () => {
     signInAs('saber')
     expect(saveAccess(ACCT.hunter, { grants: { u149: 'view' } })).toBeNull()
     signInAs('hunter')
@@ -25,7 +26,7 @@ describe('the ☰ menu\'s Edit Schedule follows the squadron picked, as the top 
     const { container } = render(<Drawer />)
     expect(pages(container)).not.toContain('editsched')
     expect(pages(container)).toContain('viewsched')
-    expect(pages(container)).toContain('admin')
+    expect(pages(container)).not.toContain('admin')
     act(() => { enterSquadron('u142'); notify() })
     expect(pages(container)).toContain('editsched')
   })

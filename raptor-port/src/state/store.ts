@@ -47,7 +47,7 @@ import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit, histSnap, histRestore, schedFields } from './history'
 import { setSession as authSetSession, canEditSched, SESSION, setMe, DEFAULT_ME, setLgEdit } from './auth'
-import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUnitNow, trkUnitNow, pickStandsOn, maySchedEditPage, trackerCoverKind } from './perms'
+import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUnitNow, trkUnitNow, pickStandsOn, maySchedEditPage, trackerCoverKind, pageOffered, myUnit } from './perms'
 import { holdNow, setBands, setHoldRelease, setEnteredByPick, enteredByPick, pickBand, schedMoveBand, type MoveBand, type HoldKind, type TrkCover } from './typing-hold'
 import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
@@ -83,7 +83,24 @@ export function getVersion() { return VERSION }
    the gate (loadWeek, initStore, toggleRole, …) — deferEffect returns false and
    notify runs inline exactly as before, so behaviour is unchanged. */
 export function notify() { if (deferEffect(realNotify)) return; realNotify() }
-function realNotify() { maybeReenter(); landOffEditSched(); publishBands(); VERSION++; listeners.forEach(f => f()) }
+function realNotify() { maybeReenter(); landOffEditSched(); landOnOfferedPage(); publishBands(); VERSION++; listeners.forEach(f => f()) }
+/* THE PAGES A SQUADRON HE ONLY VIEWS OFFERS (his D2381 — its View-only Sched and Help alone; perms.ts viewOnlyPick,
+   pageOffered), a standing check on every notify, beside the Edit Schedule landing above:
+   - the squadron in view moved, or his rights did, under a page it does not offer (a pick — enterSquadron below lands
+     the pick itself; a Plan lowered; the member view switched on) → its View-only Sched;
+   - he opened one of his own pages from elsewhere — a bell line, a link, the OIL list, "Check my quals" — while it was
+     picked (the page moved, the squadron did not) → his own squadron comes back into view, the page opened: those pages
+     are always his own squadron's for a View holder (perms.ts pageUnit 'own'), and landing him on 149's schedule
+     instead would drop the tap. */
+let LANDED = { unit: '', page: '' }
+function landOnOfferedPage(): void {
+  const opened = view.CURPAGE !== LANDED.page && UNIT === LANDED.unit
+  if (!pageOffered(view.CURPAGE)) {
+    if (opened && !ENTERING) enterSquadron(myUnit(todayIso()), holdNow() === 'war', true)
+    else view.setPage('viewsched')
+  }
+  LANDED = { unit: UNIT, page: view.CURPAGE }
+}
 /* THE LANDING IS A STANDING CHECK (the second-half plan §2 item 3, §15 D8; D2253): wherever the page is Edit Schedule and
    he is not an admin of the squadron in view (perms.ts maySchedEditPage) — a pick of a squadron he holds View of, R6's
    re-entry, a Plan lowered while he is on the page — he lands on View-only Sched. Run after every enterSquadron and on
@@ -952,6 +969,8 @@ export function enterSquadron(scheduleUnit: string, holdWar = false, byPick = fa
       if (lwUnitNow() !== before) lwSetRole(isAdmin() ? 'admin' : 'member')
     }
     landOffEditSched()
+    /* a squadron he only views, entered on a page it does not offer, lands on its View-only Sched (D2381) */
+    if (!pageOffered(view.CURPAGE)) view.setPage('viewsched')
     return { unit: UNIT, own, tracker: rebindStorageUnit(own) as TrackerEntry }
   } finally { ENTERING = false }
 }

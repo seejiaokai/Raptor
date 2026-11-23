@@ -35,7 +35,8 @@ const row = (page: RolePage, name: string, cells: string) => {
 export const ROLES_TABLE = [
   row('editsched', 'Edit Schedule', '— ✓ — ✓ ✓'),
   row('viewsched', 'View-only Sched', 'read read read read read'),
-  row('logic', 'Logic', 'read ✓ read ✓ ✓'),
+  /* View no longer opens Logic: with a squadron he only views picked, its View-only Sched and Help alone (his D2381) */
+  row('logic', 'Logic', 'read ✓ — ✓ ✓'),
   row('inputs', 'Inputs', '✓^1 ✓ — ✓ ✓'),
   row('quals', 'Quals', '✓^2 ✓ — ✓ ✓'),
   row('leavewar', 'Leave War', '✓^3 ✓ — ✓ ✓'),

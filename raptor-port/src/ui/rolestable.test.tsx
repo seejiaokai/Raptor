@@ -23,7 +23,7 @@ import { addUnit, placeOfOn, homeOn, todayIso } from '../state/units'
 import { canEditSched, canEditOwn } from '../state/auth'
 import {
   pageUnit, isAdmin, me, roleOf, allows, T, mayFileInputFor, mayEditQualsOf, mayManageAccounts, mayRenameCallsign,
-  mayTickManagement, mayTickScheduler, mayDecideBids, mayEditSettings, type Who,
+  mayTickManagement, mayTickScheduler, mayDecideBids, mayEditSettings, pageOffered, type Who,
 } from '../state/perms'
 import { pickSquadron } from '../state/pick'
 import { notify } from '../state/store'
@@ -58,6 +58,9 @@ const onPage = (p: string): void => { act(() => { setPage(p); notify() }) }
 function answer(page: RolePage, sq: string): Mark {
   const sched = pageUnit('schedule') === sq, own = pageUnit('own') === sq
   const who: Who = roleOf()
+  /* a squadron he only views picked: the top bar and the ☰ menu offer its View-only Sched and Help alone, and a page it
+     does not offer is landed off (his D2381 — perms.ts pageOffered, store.ts landOnOfferedPage) */
+  if (!pageOffered(page)) return 'no'
   switch (page) {
     /* the top bar shows Edit Schedule's tab to whoever may edit the schedule in view (Shell.tsx `hidden={!schedEdit}`);
        an admin who may not is landed on View-only Sched (store.ts landOffEditSched); its controls are edit mode */
@@ -81,13 +84,9 @@ function answer(page: RolePage, sq: string): Mark {
 }
 
 /* DRAWN CELLS THE APP ANSWERS OTHERWISE — put to him, never changed here to pass (D2305) */
-const KNOWN: { page: RolePage; role: TableRole; drawn: Mark; app: Mark; why: string }[] = [
-  {
-    page: 'admin', role: 'view', drawn: 'no', app: 'read',
-    why: 'an admin of 142 holding View of 149, with 149 picked, still has his Admin tab (he is 142\'s admin); Admin → Users '
-      + 'stays 142\'s, but Admin → Squadron config follows the schedule in view (D2317) and shows 149\'s defaults, read only',
-  },
-]
+/* (none since his D2381, 23 Nov 26: the one there was — an admin of 142 holding View of 149, with 149 picked, still had
+   his Admin tab — answered by it: with 149 picked he is offered its View-only Sched and Help alone) */
+const KNOWN: { page: RolePage; role: TableRole; drawn: Mark; app: Mark; why: string }[] = []
 
 describe('every cell of the table is the app\'s own answer (D200, D2302)', () => {
   for (const role of TABLE_ROLES) {
@@ -164,7 +163,8 @@ describe('the fold on a person\'s opened row (picture k2)', () => {
     const drawn = [
       ['Edit Schedule', '—', '✓', '—', '✓', '✓'],
       ['View-only Sched', 'read', 'read', 'read', 'read', 'read'],
-      ['Logic', 'read', '✓', 'read', '✓', '✓'],
+      /* View's cell redrawn "—" by his D2381 (docs/mock/2026-11-23-view-only-tabs/7b) */
+      ['Logic', 'read', '✓', '—', '✓', '✓'],
       ['Inputs', '✓1', '✓', '—', '✓', '✓'],
       ['Quals', '✓2', '✓', '—', '✓', '✓'],
       ['Leave War', '✓3', '✓', '—', '✓', '✓'],

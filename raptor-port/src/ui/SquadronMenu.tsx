@@ -84,15 +84,21 @@ export function SquadronMenu({ num }: { num: string }) {
       {shown && <div className={'sb-moremenu sqm-panel' + (phone ? ' sheet' : '')} id="sqnMenu" role="menu" aria-label="Schedules"
         ref={panel} onKeyDown={move} style={at ? (phone ? { top: at.top } : { left: at.left, top: at.top }) : { visibility: 'hidden' }}>
         <h5 className="sqm-head">Schedules</h5>
-        {rows.map(r => (
-          <button key={r.id} type="button" className="sb-moreitem sqm-row" role="menuitemradio" aria-checked={r.id === UNIT}
-            data-unit={r.id} onClick={() => pick(r.id)}>
-            <span className="bi">{r.id === UNIT ? CHECK : null}</span>
-            <span className="sqm-num">{r.num}</span>
-            <span className="sqm-lbl">{r.label}</span>
-          </button>
-        ))}
+        <SquadronRows rows={rows} pick={pick} />
       </div>}
     </span>
   )
+}
+
+/* THE LIST'S ROWS — one body for the top bar's list above and the ☰ menu's (ui/Drawer.tsx DrawerSquadron, his D2382):
+   a tick on the squadron in view, its number, its short grey label */
+export function SquadronRows({ rows, pick }: { rows: ReturnType<typeof menuSquadrons>; pick: (u: string) => void }) {
+  return <>{rows.map(r => (
+    <button key={r.id} type="button" className="sb-moreitem sqm-row" role="menuitemradio" aria-checked={r.id === UNIT}
+      data-unit={r.id} onClick={() => pick(r.id)}>
+      <span className="bi">{r.id === UNIT ? CHECK : null}</span>
+      <span className="sqm-num">{r.num}</span>
+      <span className="sqm-lbl">{r.label}</span>
+    </button>
+  ))}</>
 }

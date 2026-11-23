@@ -10,7 +10,7 @@ import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
 import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon } from './icons'
-import { isAdmin, me, mayViewAsMember } from '../state/perms'
+import { isAdmin, me, mayViewAsMember, viewOnlyPick } from '../state/perms'
 import { toggleChanges } from './changesopen'
 import { weekNew } from './changesmodel'
 import { CHGWIN } from '../state/view'
@@ -288,6 +288,8 @@ export function Shell() {
   /* Edit Schedule is the schedule in view's (step A — the second-half plan §2 item 3): its tab, its clock and its changes
      door only where he is an admin of the squadron picked; a View holder of 149 with 149 picked has no Edit Schedule */
   const schedEdit = canEditSched()
+  /* a squadron he only views is picked (his D2381): its View-only Sched and Help alone (perms.ts viewOnlyPick) */
+  const viewOnly = viewOnlyPick()
   /* [UNDO-TOPBAR] (D347–D349): where the pair shows, and which history it drives */
   const pairOn = page === 'editsched' || page === 'leavewar' || page === 'inputs' || page === 'quals' || page === 'tracker'
     || ((page === 'admin' || page === 'logic') && admin)
@@ -360,7 +362,7 @@ export function Shell() {
      to two rows where the Leave War's fits one — written a frame late, the war came back 47px low: the fresh Opus read,
      F1), the role switch, the Admin badge, the sync label. Not the bar's memo list: that changes on every edit. */
   useLayoutEffect(() => syncTopbarVar(topbarRef.current),
-    [page, admin, schedEdit, pairOn, waiting, clockNew, mineCs, canSwitch, fastOn, saveFailed, oilTop, navFold])
+    [page, admin, schedEdit, viewOnly, pairOn, waiting, clockNew, mineCs, canSwitch, fastOn, saveFailed, oilTop, navFold])
   const topbar = useMemo(() => (
       /* The top bar wears a blue-tinted gradient while on Edit Schedule (owner,
          22 Aug 26) so it is unmistakable from the near-identical View-only mode
@@ -374,19 +376,19 @@ export function Shell() {
           {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab, as Edit Schedule's above */}
           <a data-page="viewsched" role="button" tabIndex={0} className={page === 'viewsched' ? 'on' : ''} onClick={() => nav('viewsched')} onKeyDown={navKey('viewsched')}>View-only Sched</a>
           {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab, as Edit Schedule's above */}
-          <a data-page="inputs" role="button" tabIndex={0} className={page === 'inputs' ? 'on' : ''} onClick={() => nav('inputs')} onKeyDown={navKey('inputs')}>Inputs</a>
+          <a data-page="inputs" hidden={viewOnly} role="button" tabIndex={0} className={page === 'inputs' ? 'on' : ''} onClick={() => nav('inputs')} onKeyDown={navKey('inputs')}>Inputs</a>
           {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab, as Edit Schedule's above */}
-          <a data-page="quals" role="button" tabIndex={0} className={page === 'quals' ? 'on' : ''} onClick={() => nav('quals')} onKeyDown={navKey('quals')}>Quals</a>
+          <a data-page="quals" hidden={viewOnly} role="button" tabIndex={0} className={page === 'quals' ? 'on' : ''} onClick={() => nav('quals')} onKeyDown={navKey('quals')}>Quals</a>
           {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab, as Edit Schedule's above */}
-          <a data-page="logic" role="button" tabIndex={0} className={page === 'logic' ? 'on' : ''} onClick={() => nav('logic')} onKeyDown={navKey('logic')}>Logic</a>
+          <a data-page="logic" hidden={viewOnly} role="button" tabIndex={0} className={page === 'logic' ? 'on' : ''} onClick={() => nav('logic')} onKeyDown={navKey('logic')}>Logic</a>
           {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab, as Edit Schedule's above */}
-          <a data-page="leavewar" role="button" tabIndex={0} className={page === 'leavewar' ? 'on' : ''} onClick={() => nav('leavewar')} onKeyDown={navKey('leavewar')}>Leave War</a>
+          <a data-page="leavewar" hidden={viewOnly} role="button" tabIndex={0} className={page === 'leavewar' ? 'on' : ''} onClick={() => nav('leavewar')} onKeyDown={navKey('leavewar')}>Leave War</a>
           {/* the OCU progress Tracker (7 Sep 26) — a work tab for everyone,
               after Leave War; everyone edits there, only its File menu
               (Import / Export) is the admin's (owner's second word, 7 Sep 26 —
               tracker/role.js, written from resetSession) */}
           {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab, as Edit Schedule's above */}
-          <a data-page="tracker" role="button" tabIndex={0} className={page === 'tracker' ? 'on' : ''} onClick={() => nav('tracker')} onKeyDown={navKey('tracker')}>Tracker</a>
+          <a data-page="tracker" hidden={viewOnly} role="button" tabIndex={0} className={page === 'tracker' ? 'on' : ''} onClick={() => nav('tracker')} onKeyDown={navKey('tracker')}>Tracker</a>
           {/* Help is for EVERYONE (owner, 25 Aug 26 — "allows anyone to type
               in Bug reports") — after the work tabs, before the admin-only
               tools tab */}
@@ -396,7 +398,7 @@ export function Shell() {
               tab after the work tabs; hidden for a member like the Edit tab,
               but the PAGE is the gate, not this attribute (AdminPage.tsx) */}
           {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab, as Edit Schedule's above */}
-          <a data-page="admin" data-admin="" hidden={!admin} role="button" tabIndex={0} className={page === 'admin' ? 'on' : ''} onClick={() => nav('admin')} onKeyDown={navKey('admin')}
+          <a data-page="admin" data-admin="" hidden={!admin || viewOnly} role="button" tabIndex={0} className={page === 'admin' ? 'on' : ''} onClick={() => nav('admin')} onKeyDown={navKey('admin')}
             aria-label={waiting ? `Admin — ${waiting} waiting for access` : undefined}>Admin{waiting > 0 && <span className="navbadge" id="admWaitBadge">{waiting}</span>}</a>
         </nav>
         <SaveStatus />
@@ -510,7 +512,7 @@ export function Shell() {
      29 Sep 26: "Mark all as seen" used to be an Undo step, and the undo version's bump was what repainted this bar — once
      a seen mark stopped being a step, the clock kept its stale number) */
   // eslint-disable-next-line react-hooks/exhaustive-deps -- eng is a new object every render, so its four drawn fields stand for it (its undo and redo call the live history); fastOn, bellOn and bugOn are read by the children they redraw
-  ), [page, admin, schedEdit, mine, mineCs, canSwitch, waiting, fastOn, uv, tuv, pairOn, eng.canUndo, eng.canRedo, eng.undoTitle, eng.redoTitle, bellOn, bugOn, oilPend, accAlert, clockNew, chgOpen, saveFailed, oilTop, navFold])
+  ), [page, admin, schedEdit, viewOnly, mine, mineCs, canSwitch, waiting, fastOn, uv, tuv, pairOn, eng.canUndo, eng.canRedo, eng.undoTitle, eng.redoTitle, bellOn, bugOn, oilPend, accAlert, clockNew, chgOpen, saveFailed, oilTop, navFold])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">

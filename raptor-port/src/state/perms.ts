@@ -369,6 +369,16 @@ export function menuSquadrons(iso: string = todayIso()): { id: string; num: stri
         : 'View only',
   }))
 }
+/* A SQUADRON HE ONLY VIEWS IS PICKED (his D2381, "View only and help"): the squadron in view is one the Schedules menu
+   labels "View only" — a View of it, or a Plan of it or the master mark while he is in the member view (D2253). Then its
+   View-only Sched and Help alone are offered: the top bar's tabs and the ☰ menu (pageOffered), and state/store.ts's
+   standing check lands him there or brings his own squadron back (landOnOfferedPage). Nobody signed in: false. */
+export const VIEW_ONLY_PAGES: readonly string[] = ['viewsched', 'help']
+export function viewOnlyPick(iso: string = todayIso()): boolean {
+  if (!SESSION || !me()) return false
+  return menuSquadrons(iso).find(r => r.id === UNIT)?.label === 'View only'
+}
+export const pageOffered = (page: string): boolean => VIEW_ONLY_PAGES.includes(page) || !viewOnlyPick()
 /* AN ADMIN OF THE PAGE'S SQUADRON (the Plan audit's PE1 as the blind read's R5 rewrote it): the role in force is admin AND
    his level in the page's squadron that day is admin — so a View holder picking another squadron is never offered its
    edit controls, and the member view is never an admin's (O3). mayEditSched keeps its body for its ~160 other readers;

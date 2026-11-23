@@ -153,13 +153,14 @@ describe('a 142 plain admin with View of 149 picks 149 — his Inputs calendar s
     expect(u.ok, JSON.stringify(u.reason)).toBe(true)
     expect([kept('u142', id)?.text, savedRow('u142', `pp:${id}`)?.text], 'the note as it was, stored and cached — never deleted').toEqual(['Range day', 'Range day'])
     expect(notesShown(), 'and on the screen').toEqual(['Range day'])
+    /* rewritten by his D2381 (23 Nov 26): 149 he only views offers no Inputs page, so the Undo's landing on his Inputs
+       brings 142 back into view (store.ts landOnOfferedPage) — the note 142's all along, now on the calendar loaded */
+    expect(UNIT, 'the Undo landing on his Inputs brought 142 back').toBe('u142')
     const r = await press('redo')
     expect(r.ok, JSON.stringify(r.reason)).toBe(true)
-    expect([kept('u142', id)?.text, savedRow('u142', `pp:${id}`)?.text]).toEqual(['Range day — moved', 'Range day — moved'])
-    expect(notesShown()).toEqual(['Range day — moved'])
-    expect(loaded(id), "149's calendar still never holds it").toBeNull()
-    switchUnit('u142')
+    expect(savedRow('u142', `pp:${id}`)?.text).toBe('Range day — moved')
     expect(loaded(id)?.text, 'back on 142, the calendar loaded holds it').toBe('Range day — moved')
+    expect(notesShown()).toEqual(['Range day — moved'])
   })
 
   it('a day title edited there is 142’s title; its Undo puts the title back', async () => {

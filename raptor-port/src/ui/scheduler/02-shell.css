@@ -74,6 +74,10 @@
   .sb-moreitem.sqm-row{font-size:15px}
   .sqm-lbl{font-size:13px}
 }
+/* the ☰ menu's head (ui/Drawer.tsx DrawerSquadron — his D2382–D2384, the drawing d1–d5): the top bar's mark at the same
+   size (09-week-responsive.css), its list in the small menu's look sitting in the menu's flow, the grey line under it */
+.drawer-sqlist{position:static;width:100%;min-width:0;margin:12px 0 0;box-sizing:border-box}
+.drawer-sqline{margin:8px 0 0}
 .nav{display:flex;gap:2px;margin-left:6px;flex-wrap:wrap}
 .nav a{padding:7px 13px;border-radius:10px;color:var(--ink-2);text-decoration:none;font-size:12.5px;font-weight:500;
   white-space:nowrap;border:1px solid transparent;cursor:pointer}
