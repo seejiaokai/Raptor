@@ -934,7 +934,9 @@ doorway has no path to them, nor to the browser's storage at all, since [TRK-STA
 nothing plugged in, only in a unit test that never runs the boot, it keeps its records in memory. Nothing stored changes
 or is read differently: the running app always had the whiteboard plugged in (`src/boot.ts`, before the app is drawn). `ocuLocal:*` holds this browser's
 last course and crew member — a view preference, written straight to
-localStorage (NOT through the whiteboard), kept outside the shared prefix by design.
+localStorage (NOT through the whiteboard), kept outside the shared prefix by design. Since the Tracker follows the squadron
+picked (his D2395) his last course is kept per squadron too, `ocuLocal:who:<id>:lastCourse@<unit>`, beside the plain
+`…:lastCourse`, so a visit to 149's Tracker does not cost him his place on 142's.
 
 ### Containers
 
