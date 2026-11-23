@@ -205,11 +205,29 @@ export function InputEditor() {
      stood live over it, no band. A window of his own pages opened while they were offered is held for as long as the
      squadron in view does not offer them (state/perms.ts pageOffered); his own squadron picked again gives it back. */
   const offeredNow = pageOffered('inputs')
-  const [openedOn, setOpenedOn] = useState<{ r: any; unit: string; own: boolean; offered: boolean } | null>(null)
-  const kept = open && openedOn && openedOn.r === r ? openedOn : null
+  /* THE NOTE STAYS FOR AS LONG AS THE WINDOW SHOWS THE SAME INPUT — judged by the input's id, never by the object (the
+     second fix round's fresh Opus read of 23 Nov 26; the third time a held window came back live, D2233). The note used
+     to be taken afresh whenever the record became a new object, and an Undo, a Redo and a refused command all put the
+     list back as new objects, which the window follows (below, "the record behind the window"): the fresh note read the
+     squadron in view NOW and whether the page is offered NOW, so a window held at a pick stood live again over the
+     squadron he had picked — Save and the rest working. A new input has no id yet and is never followed, so it is still
+     known by its seed object. A fresh note is taken only when a different input is opened or the window closes.
+     …AND NOT FOR THE ONE PAINT ANOTHER INPUT IS ASKED FOR (`was`): over unsaved work the window keeps the first input
+     and puts it back ("one editor at a time", below), but for that paint the other one IS its record — the note was
+     taken afresh for it and again for the first, and the hold was lost the same way. The note it had is kept aside until
+     the other input is taken up for good (the seed step drops it), and comes back with the first. */
+  type Opened = { key: unknown; unit: string; own: boolean; offered: boolean }
+  const [openedOn, setOpenedOn] = useState<(Opened & { was: Opened | null }) | null>(null)
+  const openKey: unknown = !r ? null : (isNew || r.iid == null) ? r : String(r.iid)
+  const kept = open && openedOn && openedOn.key === openKey ? openedOn : null
   const ownPage = kept ? kept.own : ownNow
   const pageSqn = open ? (ownPage ? pageUnit('own', todayIso()) : UNIT) : ''
-  if (open ? (!openedOn || openedOn.r !== r) : !!openedOn) setOpenedOn(open ? { r, unit: pageSqn, own: ownNow, offered: offeredNow } : null)
+  if (!open) { if (openedOn) setOpenedOn(null) }
+  else if (!openedOn) setOpenedOn({ key: openKey, unit: pageSqn, own: ownNow, offered: offeredNow, was: null })
+  else if (!kept) {
+    const { was, ...had } = openedOn
+    setOpenedOn(was && was.key === openKey ? { ...was, was: null } : { key: openKey, unit: pageSqn, own: ownNow, offered: offeredNow, was: had })
+  }
   const openedSqn = kept ? kept.unit : pageSqn
   const held = open && (openedSqn !== pageSqn || (!!kept && kept.own && kept.offered && !offeredNow))
   /* …HELD BY A PICK (batch 1's second half §16 D2; his D2323 — the drawing f7b): where his pick in the Schedules menu (or a
@@ -346,6 +364,8 @@ export function InputEditor() {
     }
     swapOk.current = false
     shown.current = r
+    /* this record is the window's own now: the note kept aside for the input before it (above, `was`) goes */
+    setOpenedOn(o => (o && o.was ? { ...o, was: null } : o))
     base.current = r ? draftOf(r) : null
     madeOver.current = {}
     setClash([]); setSwap(null); setEscAsk(false)   // the unsaved question goes with the record it asked about (the code read of 3 Nov 26, F-A4)
