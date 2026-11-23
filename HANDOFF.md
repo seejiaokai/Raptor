@@ -142,6 +142,13 @@ the later merge keeps both (D78).
   the original's 728 passed; unit shards 1100/1144/1321/1505 …; browser 117/138/200/204×3/300 — read whole from the run) +
   17.14's rows for chat 154/155's re-reads + the Walk line in §14 + the ledger row; (5) the look card and the preview link
   with questions (1)–(10) and (f). Context at writing: 76%.
+- **UPDATE 8 — CHAT 155, the FULL check's work DONE (82%):** re-read 3 of `a2a814564..90d9a6f60` (both readers, blind):
+  the same two faults — the walk past 31 Dec 9999 (the length guard let "+010000-01" through) and the split copy matched by
+  its first day's text — FIXED red-first, PUSHED `c61ba8e60` (10 tests `sans-reread3-{opus,astra}.test.ts`; GitHub's run on
+  `90d9a6f60` had failed at the build on two lines of Astra's re-read-2 test file — fixed in the same commit). No fourth read
+  (the host's call, said in the sheet). Sheet §17.13, §17.14 (re-reads 1–3, question (f)) and §14's Round 6 Walk line DONE;
+  ledger row DONE. **LEFT:** GitHub green on `c61ba8e60`; the Vercel preview Ready; his look card and the preview link with
+  questions (1)–(10) and (f) — sent in chat 155's closing message if GitHub is green; then his "merge live" (pull request 825).
 - **Opening line for chat 155:** "Chat 155: First list the live chats (`ListAgents`) and say where you are. Switch this chat to the
   branch `claude/allavail-sans-postout-141`: `git fetch origin`, `git switch claude/allavail-sans-postout-141`, `git branch -u
   origin/claude/allavail-sans-postout-141`, `git pull --ff-only` (if refused because another checkout holds it, branch a local

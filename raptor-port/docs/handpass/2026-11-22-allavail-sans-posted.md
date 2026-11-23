@@ -559,7 +559,9 @@ phone, a posting set ahead, the Inputs calendar tab and the Leave War.
   shards, the browser shards (117, 138, 200, 204, 204, 204 and 300 passed), the Tracker's suite, the rule and document checks;
   the secrets scan and the Docs guard green.
 - **His PC, chat 155, on `90d9a6f60` (re-read 2's fixes):** the touched suites — 105 files, 1465 pass, 4 expected fail;
-  GitHub's run on it: see the closing report.
+  GitHub's run on it FAILED at the build (two lines of a reader's test file) — fixed in `c61ba8e60`, with re-read 3's
+  fixes: the SANS suites 32 files, 383 pass; the build and the code check pass on his PC; GitHub's run on `c61ba8e60`: see
+  the closing report.
 
 ### 17.14 What the walk and the reads found, and each disposition
 Reads: Astra `docs/superpowers/briefs/2026-11-23-sans-ahead-full-read-astra.md`, the fresh Opus reader `…-full-read-opus.md`,
@@ -610,6 +612,13 @@ the security reader `…-full-read-security.md`.
   past 9999 and an open-ended filing was walked ~2.9 million days (both); a long record shown only after its 400th day was
   hidden on the lists (Astra #3, the Opus note). **Left as is:** the per-man list of hidden days in his bell line stops at
   400 days ahead — words only, its writer and the gate's check share the one list.
+- **Re-read 3 (chat 155; `D:/raptor-work/c155-reread3/`) — both readers found the same two, FIXED red-first (`c61ba8e60`;
+  10 tests, `sans-reread3-opus.test.ts`, `sans-reread3-astra.test.ts`):** the day after 31 Dec 9999 slipped the walk's
+  guard, so a record running to 9999 could not be edited, nor its man deleted, once his tick came off (a from-always man's
+  save looped); a door that re-states a split copy's first day under the year on screen missed its own source. No fourth
+  read: these fixes touch only where a walk over days ends and how one first day is compared, each pinned by both readers'
+  own tests (the host's call). GitHub's run on `90d9a6f60` had failed at the build — two lines of a reader's test file,
+  fixed.
 - **To tell him (not a fault, D2340):** extending a shared offer by a day one of its men is hidden on is refused, so a
   hidden man blocks extending the other man's offer until he is taken out (question (f)).
 - **Recorded, no disposition given here:** Saber's drag over 16–18 offers no Ranger and says nothing why (w8 s4s); the
@@ -624,7 +633,7 @@ the security reader `…-full-read-security.md`.
 
 ## 14. The Walk line
 
-**Round 6 (chats 152–155):** `Walk: docs/handpass/2026-11-22-allavail-sans-posted.md §17 · 5,448 pictures (146 kept here plus the host's 5 re-look pictures, all on his PC's D: drive) · 25 places in the roll-call (§17.3) · Astra's 24 scenarios and the plain-user round, each at a desktop's and his iPhone's size — 1,624 steps PASS (w8, w9, w10, r1, the host's two re-looks), 10 FAIL = 2 faults, both fixed red-first and re-walked · MISSING: 0 · read by Astra, a fresh Opus reader and a security reader, then two narrow re-reads of the fixes by Astra and a fresh Opus reader, every finding fixed red-first; NOT WALKED: the page hidden across midnight (his iPhone)`
+**Round 6 (chats 152–155):** `Walk: docs/handpass/2026-11-22-allavail-sans-posted.md §17 · 5,448 pictures (146 kept here plus the host's 5 re-look pictures, all on his PC's D: drive) · 25 places in the roll-call (§17.3) · Astra's 24 scenarios and the plain-user round, each at a desktop's and his iPhone's size — 1,624 steps PASS (w8, w9, w10, r1, the host's two re-looks), 10 FAIL = 2 faults, both fixed red-first and re-walked · MISSING: 0 · read by Astra, a fresh Opus reader and a security reader, then three narrow re-reads of the fixes by Astra and a fresh Opus reader, every finding fixed red-first; NOT WALKED: the page hidden across midnight (his iPhone)`
 
 **Round 5 (chat 147):** `Walk: docs/handpass/2026-11-22-allavail-sans-posted.md §16 · 3,934 pictures (46 kept here, all on his PC's D: drive) · 6 surfaces (Edit Schedule's crew list, the Scheduler Board's crew list, an armed seat, the bell, the Inputs page's SANS tab, ALL AVAIL's window) · 37 orders (Astra's 24 and R1–R4) and the plain-user round, each at a desktop's and his iPhone's size · MISSING: 0 (1 found, fixed red-first and re-walked); NOT WALKED: the page hidden across midnight (his iPhone)`
 
