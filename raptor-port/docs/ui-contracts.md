@@ -7174,7 +7174,7 @@ rename alone goes through its own door, one command too). Pinned by `ui/msq-user
 under the squadron lines of every opened row, closed, in the Logic page's "How it works" fold look — 6px under a line's
 grey reason, as `draw-roles.mjs` drew it (the lines' foot 4px, their grey line's 2px; it sat 6px lower until the night
 fix job, 23 Nov 26 — `e2e/users-fit.spec.ts`). Inside: "View and Plan
-give access to another squadron."; the grid — Edit Schedule, View-only Sched, Logic, Inputs, Quals, Leave War, Tracker,
+give access to another squadron."; (its View column to change with D2381, 23 Nov 26 — View-only Sched and Help alone; backlog item MULTI-SQN-VIEW-ONLY-TABS) the grid — Edit Schedule, View-only Sched, Logic, Inputs, Quals, Leave War, Tracker,
 Admin down the side; Member, Admin, View, Plan, Master admin across; ✓, "read" or —, notes 1–4 on Member's Inputs, Quals,
 Leave War and Tracker ticks and 5 on Admin's and Plan's Admin ticks; "✓ can change · read: can see, not change · —
 cannot open"; the five notes, as drawn. The cells and words are ONE table, `ui/rolestable.ts`; `ui/rolestable.test.tsx`

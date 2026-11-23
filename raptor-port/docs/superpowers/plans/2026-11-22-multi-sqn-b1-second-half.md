@@ -30,7 +30,8 @@ are the spec;** D2306's five wordings change the drawn text. Paths are under `ra
   (D56). Undo steps back one's own changes only, never cleared as a shortcut (D148); a change made with one press is one
   Undo step — except what D350 keeps out of Undo in this build: adding a person, archive, Restore, delete, a posting
   (red team R-A9). A move counts from the next day (D2119) and ends every View and Plan (D2203). View reaches only the other
-  squadron's View-only Sched and Logic, read only (D2252, D2191). Plan is a master admin's to give (D2199) and gives full
+  squadron's View-only Sched and Logic, read only (D2252, D2191) — narrowed 23 Nov 26 by D2381: with that squadron
+  picked he is offered its View-only Sched and Help alone, no Logic (backlog item MULTI-SQN-VIEW-ONLY-TABS). Plan is a master admin's to give (D2199) and gives full
   access (D2201, D2211); a master admin's and a Plan holder's every page follows the pick (D2197, D2241). In the member
   view a master admin or Plan holder is a member of his own squadron holding View of what he could edit (D2253). "An
   admin of 149" covers 149's own admins, a Plan holder of it and a master admin (D2336). The right design, not the
