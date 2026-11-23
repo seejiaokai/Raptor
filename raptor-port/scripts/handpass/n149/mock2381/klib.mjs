@@ -92,7 +92,7 @@ export const addSquadronSection = (s, { num, label, open = false, rows = [] }) =
 
 /* every change of the mock taken off again — the page back to what the app drew */
 export const resetMock = s => s.page.evaluate(() => {
-  document.querySelectorAll('.mk-sqh, .mk-sqrow, .mk-sqlist, .mk-sqchips, .mk-sqline').forEach(e => e.remove())
+  document.querySelectorAll('.mk-sqh, .mk-sqrow, .mk-sqlist, .mk-sqchips, .mk-sqline, .mk-talon').forEach(e => e.remove())
   document.querySelectorAll('#drawerNav a[data-page], #topnav a[data-page]').forEach(a => { a.style.display = '' })
 })
 
@@ -101,19 +101,45 @@ export const resetMock = s => s.page.evaluate(() => {
    slides sideways, never wrapping, as the bell's does — here a block row the panel's width (the bell's sits inline in
    its foot); under it one grey line in the menu's own grey line (.drawer-acct) naming the access in view in the
    Schedules menu's words ("149 · View only"). `sqns`: [{ num, label, on }] in the Schedules menu's order. */
-export const addSquadronChips = (s, sqns) => s.page.evaluate(sqns => {
+/* version C passes { head: false, top: '14px' }: no "SQUADRON" label, the row a little under the TALON mark */
+export const addSquadronChips = (s, sqns, { head = true, top = '0' } = {}) => s.page.evaluate(({ sqns, head, top }) => {
   const panel = document.querySelector('#drawer .drawer-panel')
   const menuH = panel.querySelector(':scope > h4')
   const h = document.createElement('h4'); h.textContent = 'Squadron'; h.className = 'mk-sqh'
   const row = document.createElement('span'); row.className = 'bl-sqns mk-sqchips'; row.setAttribute('role', 'group')
-  Object.assign(row.style, { display: 'flex', width: '100%' })
+  Object.assign(row.style, { display: 'flex', width: '100%', marginTop: top })
   row.innerHTML = sqns.map(q => `<button type="button" class="fchip${q.on ? ' on' : ''}" aria-pressed="${q.on}">${q.num}</button>`).join('')
   const cur = sqns.find(q => q.on)
   const line = document.createElement('p'); line.className = 'drawer-acct mk-sqline'; line.style.margin = '8px 0 0'
   line.textContent = `${cur.num} · ${cur.label}`
-  panel.insertBefore(h, menuH); panel.insertBefore(row, menuH); panel.insertBefore(line, menuH)
+  if (head) panel.insertBefore(h, menuH)
+  panel.insertBefore(row, menuH); panel.insertBefore(line, menuH)
   return [...row.querySelectorAll('.fchip')].map(b => { const r = b.getBoundingClientRect(); return `${b.textContent} ${Math.round(r.width)}x${Math.round(r.height)} @${Math.round(r.left)}` })
-}, sqns)
+}, { sqns, head, top })
+/* VERSION C (his idea after his look, 23 Nov 26): the menu opens with the TALON mark — the top bar's own mark, cloned
+   from the bar as it is drawn there (claw, "TALON", the small squadron number above it) and given the bar's computed
+   sizes and colours inline (the phone's mark is sized by rules that only reach inside the top bar); not a button here,
+   so no ▾. Put first in the panel. */
+export const addTalonMark = s => s.page.evaluate(() => {
+  const src = [...document.querySelectorAll('.topbar .mark')].find(e => e.getBoundingClientRect().width > 0)
+  const panel = document.querySelector('#drawer .drawer-panel')
+  const clone = src.cloneNode(true)
+  const PROPS = ['display', 'flex-direction', 'align-items', 'gap', 'row-gap', 'column-gap', 'font-family', 'font-size', 'font-weight', 'letter-spacing',
+    'line-height', 'text-transform', 'color', 'white-space', 'width', 'height', 'min-width', 'fill', 'flex']
+  const walk = (a, b) => {
+    const cs = getComputedStyle(a)
+    for (const p of PROPS) b.style.setProperty(p, cs.getPropertyValue(p))
+    for (let i = 0; i < a.children.length; i++) walk(a.children[i], b.children[i])
+  }
+  walk(src, clone)
+  const wrap = document.createElement('div'); wrap.className = 'mk-talon'
+  clone.classList.remove('menu'); clone.removeAttribute('id')
+  if (clone.tagName === 'SPAN') clone.style.display = 'flex'
+  wrap.appendChild(clone)
+  panel.insertBefore(wrap, panel.firstChild)
+  const r = src.getBoundingClientRect(), c = clone.getBoundingClientRect()
+  return { bar: `${Math.round(r.width)}x${Math.round(r.height)}`, menu: `${Math.round(c.width)}x${Math.round(c.height)}`, num: clone.textContent }
+})
 /* the Schedules menu's rows (as schedRows reads them) as chips: number, grey label, whether it is the one in view */
 export const rowsToChips = rows => rows.map(h => ({
   num: (h.match(/class="sqm-num">([^<]*)</) || [])[1],

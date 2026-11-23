@@ -35,3 +35,16 @@ Script: `k3-version-b.mjs`.
 - b4-menu-saber-eight-chips-proposed.png · Saber, a master admin, with eight squadrons (142, 149 and 150 to 155, made by "+ New squadron"): the chips stay one row, cut off at the menu's edge, sliding sideways, never wrapping; 142 "on", the line "142 · Your squadron" (ringed) · phone 402 × 874 · proposed (B)
 - b4b-menu-saber-eight-chips-slid-proposed.png · the same row slid to its end: 150 to 155 in view; the line still names the squadron in view · phone 402 × 874 · proposed (B)
 - b5-ranger-149-topbar-proposed.png · Ranger's top bar with 149 picked: the same as A's 1b, since the desktop still picks the squadron at the top left with "149 ▾"; only View-only Sched and Help (ringed) · desktop 1536 × 864 · proposed (B, the same as A)
+
+## Version C of the ☰ menu (his idea after his look, 23 Nov 26): the TALON mark, then B's chips
+
+The menu opens with the top bar's own TALON mark (the claw, "TALON", the squadron number above it), the same size and
+colours as at the top left of his phone; right under it B's chips and grey line, with no "SQUADRON" label; then MENU and
+ACCOUNT as today. One squadron: the mark alone. **No rings on these pictures:** each is clean, as the built app would
+look. Script: `k4-version-c.mjs`.
+
+- c1-menu-149-proposed.png · Ranger with 149 picked: the TALON mark reading 149, the chips 142 off and 149 "on", the grey line "149 · View only"; MENU with only View-only Sched and Help; ACCOUNT as today · phone 402 × 874 · proposed (C)
+- c2-menu-home-142-proposed.png · Ranger on 142: the TALON mark reading 142, the chips 142 "on" and 149 off, the grey line "142 · Your squadron"; the full MENU and ACCOUNT as today · phone 402 × 874 · proposed (C)
+- c3-menu-saber-eight-proposed.png · Saber, a master admin, with eight squadrons (142, 149, 150 to 155): the TALON mark reading 142, the chips in one row cut off at the menu's edge, sliding sideways, never wrapping; 142 "on", the line "142 · Your squadron"; MENU and ACCOUNT as today · phone 402 × 874 · proposed (C)
+- c4-menu-one-squadron-proposed.png · Ranger before he had View, one squadron: the TALON mark alone reading 142, no chips and no grey line; MENU and ACCOUNT as today · phone 402 × 874 · proposed (C)
+- c5-menu-149-version-b-unringed.png · version B's b1 again with no rings, to set beside c1: SQUADRON, the chips 142 off and 149 "on", the grey line "149 · View only"; MENU with only View-only Sched and Help; ACCOUNT as today · phone 402 × 874 · proposed (B, for comparison)
