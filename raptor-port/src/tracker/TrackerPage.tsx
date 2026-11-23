@@ -70,6 +70,8 @@ const TrkAskOnly = memo(function TrkAskOnly({ active }: { active: boolean }) {
     const el = up ? document.getElementById(PAGE_ID) : null
     if (!el) return
     el.classList.add('trk-askonly')
+    /* (a child's layout effect runs before the page's: the cover's lock comes off first, or the focus below would not land) */
+    el.querySelector('.trk-host')?.removeAttribute('inert')
     /* the keys into the question, on its safe answer (Stay), so it is answered without a mouse (the design guide §2) */
     document.getElementById('dlgCancel')?.focus()
     const esc = (e: KeyboardEvent) => { if (e.key === 'Escape' && core.dlg) { e.preventDefault(); core.dlgClose(false) } }
@@ -128,14 +130,19 @@ export function TrackerPage({ active = true }: { active?: boolean }) {
      does not matter. */
   useEffect(() => { wireTrackerPeople() }, [])
   const cover = useCover()
+  /* WHILE THE TRACKER ASKS ITS QUESTION OVER ANOTHER PAGE the cover steps aside, or the question stands inside a hidden,
+     locked host at no size and every later pick waits on it unseen (the walk of 24 Nov 26, F2; Fable F2). `.trk-askonly`
+     still shows nothing of the Tracker but the question. */
+  const asking = useSyncExternalStore(core.subscribe, () => core.switchAsking && !!core.dlg, () => false)
+  const covered = !!cover && !asking
   const host = useRef<HTMLDivElement>(null)
   const bandRef = useRef<HTMLDivElement>(null)
   /* the host locked while covered (above): no press, no focus — set on the node, the cover's one switch */
   useLayoutEffect(() => {
     const h = host.current
     if (!h) return
-    if (cover) h.setAttribute('inert', ''); else h.removeAttribute('inert')
-  }, [cover])
+    if (covered) h.setAttribute('inert', ''); else h.removeAttribute('inert')
+  }, [covered])
   useEffect(() => {
     if (!active) return
     const el = document.getElementById(PAGE_ID)
@@ -171,7 +178,7 @@ export function TrackerPage({ active = true }: { active?: boolean }) {
   return (
     <>
       {cover ? <div ref={bandRef} className="trk-cover-band"><MoveBandView band={cover} testid="trk-cover-band" /></div> : null}
-      <div ref={host} className={'trk-host' + (cover ? ' trk-gone' : '')} data-testid="trk-host">
+      <div ref={host} className={'trk-host' + (covered ? ' trk-gone' : '')} data-testid="trk-host">
         <TrBody active={active} locked={!!cover} />
       </div>
       <TrkMoveBand />

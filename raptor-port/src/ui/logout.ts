@@ -18,6 +18,7 @@ import { resetSession, notify, setPage } from '../state/store'
 import { trackerMayLogOut } from '../tracker/role.js'
 import { flushSaves, saveWaiting, onSavesLanded } from '../storage/savewait'
 import { SESSION } from '../state/auth'
+import { pageOffered } from '../state/perms'
 import { noteKeptName } from './signinhold'
 
 let reloadPage: () => void = () => { window.location.reload() }
@@ -25,7 +26,10 @@ let reloadPage: () => void = () => { window.location.reload() }
 export function setReloadSeam(fn: () => void): () => void { const prev = reloadPage; reloadPage = fn; return prev }
 
 export async function logOut(): Promise<boolean> {
-  const go = await trackerMayLogOut(() => { setPage('tracker'); notify() })
+  /* the Tracker tab comes forward for its question only where it is offered: in the member view over a draft held on
+     another squadron, opening it would count as opening one of his own pages and move the Tracker off that draft
+     (state/store.ts landOnOfferedPage); the question is then asked over the page he is on (core.js) */
+  const go = await trackerMayLogOut(() => { if (pageOffered('tracker')) { setPage('tracker'); notify() } })
   if (!go) return false
   resetSession(null); notify()
   await flushSaves()

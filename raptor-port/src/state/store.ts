@@ -51,7 +51,7 @@ import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce, pageUnit, lwUn
 import { holdNow, setBands, warBand, setHoldRelease, setEnteredByPick, enteredByPick, pickBand, memberViewBand, schedMoveBand, type MoveBand, type HoldKind, type TrkCover } from './typing-hold'
 import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
-import { endTrackerSession } from '../tracker/role.js'
+import { endTrackerSession, trackerSwitchAsk } from '../tracker/role.js'
 import { rebindStorageUnit, storageHeld } from '../tracker/storage.js'
 import { isHydrated, hydratePlan, hydrateRolesFor, persistWb } from './persist'
 import { deferEffect, CmdRefused, setPermissionResolver, commitProjection, onPipelineBegin, deriveActor, definePermission, anyone, activeEnvelope, isCommitting } from '../command'
@@ -100,10 +100,28 @@ const warHeld = (): boolean => view.CURPAGE === 'leavewar' && holdNow() === 'war
 function landOnOfferedPage(): void {
   const opened = view.CURPAGE !== LANDED.page && UNIT === LANDED.unit
   if (!pageOffered(view.CURPAGE) && !warHeld()) {
-    if (opened && !ENTERING) enterSquadron(myUnit(todayIso()), holdNow() === 'war', true)
+    if (opened && !ENTERING) landOnOwnPage()
     else view.setPage('viewsched')
   }
   LANDED = { unit: UNIT, page: view.CURPAGE }
+}
+/* HIS OWN SQUADRON COMES BACK FOR THE PAGE HE OPENED — but where the Tracker is held on the squadron in view for his
+   unsaved chart edits (the member view), entering would drop them, so it asks first, the pick's own question over the page
+   he is on (his D2318, D2388; the night of 24 Nov 26, Opus F1, Fable F1). He stays where he was until he answers: Save or
+   Discard opens the page he tapped; Stay, or a Save the gate refuses, leaves him there with the draft. */
+function landOnOwnPage(): void {
+  const home = myUnit(todayIso())
+  const trk = trkUnitNow()
+  const asked = storageHeld() && trk && trk !== home ? trackerSwitchAsk(String(unitById(home)?.num ?? home)) : null
+  if (!asked) { enterSquadron(home, holdNow() === 'war', true); return }
+  const want = view.CURPAGE
+  view.setPage(pageOffered(LANDED.page) ? LANDED.page : 'viewsched')
+  void asked.then(go => {
+    if (!go) return
+    enterSquadron(home, holdNow() === 'war', true)
+    view.setPage(want)
+    notify()
+  })
 }
 /* THE LANDING IS A STANDING CHECK (the second-half plan §2 item 3, §15 D8; D2253): wherever the page is Edit Schedule and
    he is not an admin of the squadron in view (perms.ts maySchedEditPage) — a pick of a squadron he holds View of, R6's
@@ -1056,7 +1074,11 @@ function maybeReenter(): void {
   if (key === ENTRY_TRIED) return
   ENTRY_TRIED = key
   const m = me()
+  /* a re-entry that keeps the squadron in view leaves the page to the two landings run next in this same notify: its own
+     landing would swallow a page he has just opened, the tap landOnOfferedPage is there to answer (the night's Opus F1) */
+  const unitWas = UNIT, pageWas = view.CURPAGE
   enterSquadron(to, held)
+  if (UNIT === unitWas && view.CURPAGE !== pageWas) view.setPage(pageWas)
   if (m) HOME_AT_ENTRY = sessionUnit(m)
 }
 

@@ -91,13 +91,26 @@ onBeforeTrackerLogout(async show => {
   if (dlg) { if (show) show(); return false; }
   if (!sylDirty) return true;
   if (show) show();
-  const c = await uiChoice('You have unsaved chart edits on “' + curSylName() + '”.\n\nSave them before logging out?', 'Save them', 'Discard them', 'Stay');
-  if (c === 'cancel') return false;
-  cancelGestures();
-  if (c === 'ok') await persistSyl();
-  else await discardChartEdits();
-  return true;
+  /* asked over the page he is on where the Tracker cannot come forward: in the member view it is hidden, held on another
+     squadron for these edits (the night of 24 Nov 26, Opus F1). A Save that did not take keeps him here, with the draft. */
+  switchAsking = true; notify();
+  try {
+    const c = await uiChoice('You have unsaved chart edits on “' + curSylName() + '”.\n\nSave them before logging out?', 'Save them', 'Discard them', 'Stay');
+    if (c === 'cancel') return false;
+    cancelGestures();
+    if (c === 'ok') return await saveForQuestion();
+    await discardChartEdits();
+    return true;
+  } finally { switchAsking = false; notify(); }
 });
+/* "Save them" in either question. A refusal is said here, in the app's own words, and waited for: raised from inside the
+   save it would outlive the question and stand unseen inside a hidden Tracker, where it blocked every later pick (the
+   walk's F2, Opus F3). In the member view the gate always refuses: the door is not his page's squadron. */
+async function saveForQuestion() {
+  const ok = await trkQuietly(() => persistSyl());
+  if (!ok) await uiAlert(NOT_SAVED);
+  return !!ok && !sylDirty;
+}
 /* "Discard them" — the sign-out's and the pick's: the chart reloaded from the store, and the bar's words put back to its
    resting "● saved" (the chart on screen is the stored one), as a course switch puts back its own: left alone they still
    said "● unsaved flow edits — hit “Save changes”" about the edits just dropped (the re-walk of 23 Nov 26, chat 151, N2) */
@@ -122,7 +135,7 @@ onBeforeTrackerSwitch({
       const c = await uiChoice('You have unsaved chart edits on “' + curSylName() + '”.\n\nSave them before switching to ' + to + '?', 'Save them', 'Discard them', 'Stay');
       if (c === 'cancel') return false;
       cancelGestures();
-      if (c === 'ok') { await persistSyl(); return !sylDirty; }
+      if (c === 'ok') return await saveForQuestion();
       await discardChartEdits();
       return true;
     } finally { switchAsking = false; notify(); }
