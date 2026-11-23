@@ -93,7 +93,11 @@ export function Drawer() {
     /* role="presentation": the shade beside the panel is nothing a screen reader should name; Escape closes the drawer */
     <div className={'drawer' + (DRAWER ? ' open' : '')} id="drawer" role="presentation"
       onPointerDownCapture={pressBegins}
-      onClick={e => { const spared = pressClosedList(); if (clickedOutside(e, 'drawer') && !spared) close() }}>
+      /* the click of the press that closed the list is spared wherever it lands — on the shade (the menu stays open) or on
+         a line of the menu, which the list's closing has just moved up under the finger (the re-walk of 23 Nov 26, N1: a
+         tap on Inputs opened the Leave War): it opens nothing, as D2384's "a press elsewhere closes the list first" says */
+      onClickCapture={e => { if (pressClosedList()) { e.stopPropagation(); e.preventDefault() } }}
+      onClick={e => { if (clickedOutside(e, 'drawer')) close() }}>
       <div className="drawer-panel">
         <DrawerSquadron />
         <h4>Menu</h4>
@@ -145,8 +149,9 @@ export function Drawer() {
    700 ms to arrive, so a press held a second closed the list and the menu both, and a second quick press was spared too.
    Every press that begins anywhere in the menu clears the note first (the shade's capture handler, which runs before
    the list's own listener on the document); the press that closes the list then sets it; and any click that reaches
-   the menu reads it and clears it — so only the click of that same press is spared, however long it was held, and a
-   press that never clicks (a finger that slid) spares nothing after it. */
+   the menu reads it and clears it (the menu's click capture) — so only the click of that same press is spared, however
+   long it was held, wherever in the menu it lands, and a press that never clicks (a finger that slid) spares nothing
+   after it. */
 let PRESS_CLOSED_LIST = false
 const pressBegins = (): void => { PRESS_CLOSED_LIST = false }
 const pressClosedList = (): boolean => { const was = PRESS_CLOSED_LIST; PRESS_CLOSED_LIST = false; return was }

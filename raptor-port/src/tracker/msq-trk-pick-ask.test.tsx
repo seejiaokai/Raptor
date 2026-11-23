@@ -24,6 +24,7 @@ import { setTrkUnitProbe } from '../state/perms'
 import { notify, switchRoleView } from '../state/store'
 import { pickSquadron } from '../state/pick'
 import { trackerCover } from '../state/typing-hold'
+import { trackerMayLogOut } from './role.js'
 import { UNIT } from '../engine/unitview'
 import { CURPAGE, setPage } from '../state/view'
 import { openNotice } from '../ui/topstate'
@@ -90,6 +91,18 @@ describe('a pick with unsaved chart edits (the drawing f2d)', () => {
     expect(C.sylDirty).toBe(false)
     expect(C.byid['PICK-DISCARD'], 'the ball is gone').toBeFalsy()
     expect(trackerCover()?.kind).toBe('ro')
+    /* the re-walk of 23 Nov 26 (chat 151, N2): the bar still said "● unsaved flow edits — hit “Save changes”" about the
+       edits just dropped. Red first. */
+    expect(C.saveWords().text, 'the bar no longer speaks of unsaved edits').not.toMatch(/unsaved/)
+  })
+  it('the sign-out\'s own "Discard them" puts the bar\'s words back too (its twin, N2)', async () => {
+    await onHis149Tracker()
+    await dirty('LOGOUT-DISCARD')
+    const p = trackerMayLogOut()
+    await until(() => C.dlg); C.dlgClose('__alt__')
+    expect(await p, 'the sign-out goes on').toBe(true)
+    expect(C.sylDirty).toBe(false)
+    expect(C.saveWords().text, 'the bar no longer speaks of unsaved edits').not.toMatch(/unsaved/)
   })
   it('Save them saves into 149\'s Tracker, then picks', async () => {
     await onHis149Tracker()

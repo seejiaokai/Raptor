@@ -243,6 +243,39 @@ describe('the reads\' findings', () => {
     act(() => { fireEvent.pointerDown(shade); fireEvent.pointerUp(shade); fireEvent.click(shade) })
     expect(DRAWER, 'the next press closes the menu').toBe(false)
   })
+  /* The re-walk of 23 Nov 26 (chat 151, N1): with the list open under the mark, a finger on a page line below it closed the
+     list at the touch, every line moved up ~98 points, and the click landed on the line that slid under the finger — a tap
+     on Inputs opened the Leave War; Help and Logout seemed dead. By D2384 that press closes the list first, the menu still
+     open: its click opens nothing, wherever it lands. Red first. */
+  it('a press on a page line below the open list closes the list only — no page opens, the menu stays open', () => {
+    give(ACCT.ranger, 'u149', 'view')
+    signInAs('ranger')
+    act(() => { setPage('viewsched'); notify() })
+    render(<Drawer />)
+    openDrawer()
+    fireEvent.click(markBtn()!)
+    const line = (p: string) => document.querySelector<HTMLElement>(`#drawerNav a[data-page="${p}"]`)!
+    /* the press on Inputs; the click, after the lines moved up, on the Leave War */
+    act(() => { fireEvent.pointerDown(line('inputs')); fireEvent.pointerUp(line('leavewar')); fireEvent.click(line('leavewar')) })
+    expect(document.querySelector('#drawerSqnList'), 'the list closed').toBeNull()
+    expect(CURPAGE, 'no page opened').toBe('viewsched')
+    expect(DRAWER, 'the menu still open').toBe(true)
+    /* the list closed, a tap on a line opens it */
+    act(() => { fireEvent.pointerDown(line('inputs')); fireEvent.pointerUp(line('inputs')); fireEvent.click(line('inputs')) })
+    expect(CURPAGE).toBe('inputs')
+    expect(DRAWER).toBe(false)
+  })
+  it('the same for Logout: a press on it with the list open closes the list only', () => {
+    give(ACCT.ranger, 'u149', 'view')
+    signInAs('ranger')
+    render(<Drawer />)
+    openDrawer()
+    fireEvent.click(markBtn()!)
+    const out = document.getElementById('drawerLogout')!
+    act(() => { fireEvent.pointerDown(out); fireEvent.pointerUp(out); fireEvent.click(out) })
+    expect(document.querySelector('#drawerSqnList'), 'the list closed').toBeNull()
+    expect(DRAWER, 'still open, still signed in').toBe(true)
+  })
   it('F3 (both): Arrow Down on the mark opens the list; focus leaving the list closes it', () => {
     give(ACCT.ranger, 'u149', 'view')
     signInAs('ranger')

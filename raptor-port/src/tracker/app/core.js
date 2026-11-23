@@ -94,9 +94,16 @@ onBeforeTrackerLogout(async show => {
   const c = await uiChoice('You have unsaved chart edits on “' + curSylName() + '”.\n\nSave them before logging out?', 'Save them', 'Discard them', 'Stay');
   if (c === 'cancel') return false;
   if (c === 'ok') await persistSyl();
-  else { clearDirty(); if (arrangeMode) toggleArrange(); await loadCourse(course); refreshSyl(); renderBoard(); renderSide(); }
+  else await discardChartEdits();
   return true;
 });
+/* "Discard them" — the sign-out's and the pick's: the chart reloaded from the store, and the bar's words put back to its
+   resting "● saved" (the chart on screen is the stored one), as a course switch puts back its own: left alone they still
+   said "● unsaved flow edits — hit “Save changes”" about the edits just dropped (the re-walk of 23 Nov 26, chat 151, N2) */
+async function discardChartEdits() {
+  clearDirty(); if (arrangeMode) toggleArrange(); await loadCourse(course); refreshSyl(); renderBoard(); renderSide();
+  setSaveStatus('', 'ok');
+}
 /* BEFORE A PICK MOVES HIS PAGES OFF THIS TRACKER (multi-squadron batch 1's second half §16 D2′; his D2318 — the drawing
    f2d): the same question as the logout's, its last line "Save them before switching to 142?" — asked where he is, never
    jumping to the Tracker tab first: while it is up `switchAsking` is set and the Tracker's page seam
@@ -114,7 +121,7 @@ onBeforeTrackerSwitch({
       const c = await uiChoice('You have unsaved chart edits on “' + curSylName() + '”.\n\nSave them before switching to ' + to + '?', 'Save them', 'Discard them', 'Stay');
       if (c === 'cancel') return false;
       if (c === 'ok') { await persistSyl(); return !sylDirty; }
-      clearDirty(); if (arrangeMode) toggleArrange(); await loadCourse(course); refreshSyl(); renderBoard(); renderSide();
+      await discardChartEdits();
       return true;
     } finally { switchAsking = false; notify(); }
   },
