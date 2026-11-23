@@ -235,7 +235,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OVERNIGHT-RETRY-TRIAL] — the next /overnight night tries the keep-retrying setting (D885).
 - [CI-FAIL-PICTURES] — GitHub's browser-test jobs keep no pictures of a failure — his call.
 - [CHECK-TOOLS-HARDEN] — small hardening of the checking tools — his word.
-- [TURN-END-CHECK-SLOW] — the turn-end backlog check is cancelled at its 20-second limit on most turns since 19 Nov 26 (the pull request's check still runs); the turn-end code check holds a turn about 43 seconds; the lessons written into the superpowers skills are read by no chat, for the next skill review — (a) is timed first, then his word for its fix (found 24 Nov 26).
+- [TURN-END-CHECK-SLOW] — the turn-end backlog check was cancelled at its 20-second limit on most turns from 19 Nov 26: (a) its cause found and fixed 24 Nov 26 (36 seconds to 5), waiting for his "merge live"; left for his word: (b) the turn-end code check holds a turn about 43 seconds, (c) the lessons written into the superpowers skills are read by no chat, for the next skill review, (d) nothing says when a turn-end check is cancelled.
 - [CSS-SCOPE-GUARD] — a rule begun at `body`, `html` or `:root` inside a page's wrapper fails the stylesheet check — small, no look from him.
 - [ASK-PAGE-CHECK] — a script run on a mock-up or questions page before it is published to him: codes, ruling numbers and record words, and one "look at now" list — small, no look from him.
 - [READER-COMPACT-HANDOFF] — a blind reader that compacts is pasted the host's handoff — a hook change, his word.
@@ -2993,10 +2993,17 @@ prints nothing is not recorded, so the passes are unseen. By day: 19 Nov 28, 20 
 none earlier in those chats; in the main folder (315) and four worktrees alike. **What it costs:** most turns end with a
 wait of about 20 seconds, and a cancelled hook blocks nothing, so the turn-end warning of a lost or misfiled record
 (D29, D30, D140) is not given; the Docs guard still runs the same check on every pull request and every push to `main`,
-so nothing lost can merge unseen. **Cause not found.** To do, in order: time the command in the main folder and in a
-worktree; find what changed about 19 Nov 26 (the tree holds 83,660 tracked files; the lean-copy wiring of 22 Nov 26
-touched the check, after the first timeouts); make the check fast again, or raise its limit if it cannot be — never
-drop it. A hook or its setting changes only on his "merge live" (`.claude/rules/shipping.md`).
+so nothing lost can merge unseen. **Cause found and fixed 24 Nov 26 (his "Yes"; the fix waits for his "merge live"):**
+timed at 36–38 seconds in a worktree and 55–57 in the main folder — the homes check and the structure check each asked
+the disk about every listed file, and the tree grew from 37,373 files (15 Oct) to 80,632 (19 Nov) and 83,660. Now the
+tree is listed once from git (`docsize.mjs treeNow`) and each git question asked once: 5 seconds, the same output as the
+old check in five situations (as it stands, a tracked document gone, a lean copy, and the fresh reader's two). On a busy
+PC it took up to 16, so the hook's limit is 60 seconds (`.claude/settings.json`). **Left:** (d) below; and an open chat's
+own copy keeps the old, slow check until it brings `main` in.
+
+**(d) Nothing says when a turn-end check is cancelled at its limit.** It was cancelled for five days before a count of
+the transcripts found it. The tree grows by about 1,500 files a day, and what is left of the check's time is git
+listing it. A guard for it — the hook timing itself and saying so past half its limit — is a change to a hook: his word.
 
 **(b) The code check at a turn's end holds the turn** (`.claude/hooks/code-check-stop.mjs`, D1539, limit 200 seconds):
 105 recorded runs, typically 43 seconds, 125 at the slow tenth, 162 at worst. It only reports a count and blocks
