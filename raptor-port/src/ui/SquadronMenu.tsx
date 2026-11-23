@@ -28,6 +28,9 @@ export function SquadronMenu({ num }: { num: string }) {
   const [phone, setPhone] = useState(() => window.innerWidth <= PHONE)
   const [at, setAt] = useState<{ left: number; top: number } | null>(null)
   const wrap = useRef<HTMLSpanElement>(null), btn = useRef<HTMLButtonElement>(null), panel = useRef<HTMLDivElement>(null)
+  /* a Tab is under way: the focus leaving now with nowhere to land is the keys going past the page's start, not the window
+     losing the focus ([MSQ-TOPBAR-LIST-KEYS]) */
+  const tabbing = useRef(false)
   const many = rows.length > 1
   const shown = many && !!open
   useEffect(() => {
@@ -45,13 +48,15 @@ export function SquadronMenu({ num }: { num: string }) {
     const foot = bar ? bar.bottom : (mark ? mark.bottom : 0)
     setAt({ left: Math.round(mark?.left ?? 0), top: Math.round(phone ? foot : foot + 12) })
   }, [shown, phone])
-  /* opened by the keys: the row in view takes the focus */
+  /* opened by the keys: the row in view takes the focus — once the list is placed, for until then it is drawn hidden and a
+     browser will not focus a hidden row: the focus stayed on the button ([MSQ-TOPBAR-LIST-KEYS], the re-walk of 23 Nov 26) */
+  const placed = !!at
   useLayoutEffect(() => {
-    if (!shown || !open?.keyboard) return
+    if (!shown || !placed || !open?.keyboard) return
     const items = panel.current?.querySelectorAll<HTMLButtonElement>('.sqm-row')
     const cur = panel.current?.querySelector<HTMLButtonElement>('.sqm-row[aria-checked="true"]')
     ;(cur ?? items?.[0])?.focus()
-  }, [shown, open])
+  }, [shown, placed, open])
   useEffect(() => {
     if (!shown) return
     const outside = (e: PointerEvent) => { if (!wrap.current?.contains(e.target as Node)) setOpen(null) }
@@ -73,7 +78,12 @@ export function SquadronMenu({ num }: { num: string }) {
   }
   return (
     <span className="sqm-wrap" ref={wrap}
-      onBlur={e => { if (e.relatedTarget && !e.currentTarget.contains(e.relatedTarget as Node)) setOpen(null) }}>
+      onKeyDown={e => { tabbing.current = e.key === 'Tab' }} onKeyUp={() => { tabbing.current = false }}
+      onBlur={e => {
+        const out = e.relatedTarget ? !e.currentTarget.contains(e.relatedTarget as Node) : tabbing.current
+        tabbing.current = false
+        if (out) setOpen(null)
+      }}>
       <button type="button" className={'sqm-btn' + (shown ? ' on' : '')} id="sqnMenuBtn" ref={btn}
         aria-haspopup="menu" aria-expanded={shown} aria-controls="sqnMenu" aria-label={`Squadron ${num} — pick a squadron's schedule`}
         onClick={e => toggle(e.detail === 0)}

@@ -137,4 +137,58 @@ describe('its keys', () => {
     expect(document.querySelector('#sqnMenu')).toBeNull()
     expect(UNIT).toBe('u142')
   })
+  /* [MSQ-TOPBAR-LIST-KEYS] (the re-walk of 23 Nov 26, N4): the list is hidden until it is placed, and a real browser will
+     not focus a hidden row, so opened from the keys the focus stayed on the button. jsdom focuses it anyway, so the test
+     reads what a browser reads: was the list still hidden when the row was asked to take the focus? Red first: 'hidden'. */
+  it('opened by Enter, Space or an arrow: the ticked row is asked to take the focus only once the list is placed', () => {
+    signInAs('saber')
+    const { container } = render(<SqnMark />)
+    const real = HTMLElement.prototype.focus
+    const seen: string[] = []
+    HTMLElement.prototype.focus = function (this: HTMLElement, o?: FocusOptions) {
+      if (this.classList.contains('sqm-row')) seen.push(this.closest<HTMLElement>('#sqnMenu')!.style.visibility)
+      real.call(this, o)
+    }
+    try {
+      for (const open of [() => fireEvent.click(btn(container)!), () => fireEvent.keyDown(btn(container)!, { key: 'ArrowDown' }), () => fireEvent.keyDown(btn(container)!, { key: 'ArrowUp' })]) {
+        seen.length = 0
+        btn(container)!.focus()
+        open()
+        expect(seen.length, 'a row was asked to take the focus').toBeGreaterThan(0)
+        expect(seen, 'never while the list is still hidden').not.toContain('hidden')
+        expect(document.activeElement).toBe(document.querySelector('#sqnMenu .sqm-row[aria-checked="true"]'))
+        fireEvent.keyDown(document.activeElement!, { key: 'Escape' })
+      }
+    } finally { HTMLElement.prototype.focus = real }
+  })
+  it('Shift+Tab out past the page\'s start closes the list (the focus goes nowhere in the page)', () => {
+    signInAs('saber')
+    const { container } = render(<SqnMark />)
+    btn(container)!.focus()
+    fireEvent.keyDown(btn(container)!, { key: 'ArrowDown' })
+    const row = document.querySelector<HTMLElement>('#sqnMenu .sqm-row[aria-checked="true"]')!
+    fireEvent.keyDown(row, { key: 'Tab', shiftKey: true })
+    act(() => { row.blur() })
+    expect(document.querySelector('#sqnMenu'), 'the list closed').toBeNull()
+  })
+  it('the window losing the focus, with no Tab pressed, leaves the list open', () => {
+    signInAs('saber')
+    const { container } = render(<SqnMark />)
+    btn(container)!.focus()
+    fireEvent.keyDown(btn(container)!, { key: 'ArrowDown' })
+    const row = document.querySelector<HTMLElement>('#sqnMenu .sqm-row[aria-checked="true"]')!
+    act(() => { row.blur() })
+    expect(document.querySelector('#sqnMenu'), 'still open').not.toBeNull()
+  })
+  it('a Tab finished inside the list, then the window losing the focus: still open', () => {
+    signInAs('saber')
+    const { container } = render(<SqnMark />)
+    btn(container)!.focus()
+    fireEvent.keyDown(btn(container)!, { key: 'ArrowDown' })
+    const row = document.querySelector<HTMLElement>('#sqnMenu .sqm-row[aria-checked="true"]')!
+    fireEvent.keyDown(row, { key: 'Tab' })
+    fireEvent.keyUp(row, { key: 'Tab' })
+    act(() => { row.blur() })
+    expect(document.querySelector('#sqnMenu')).not.toBeNull()
+  })
 })
