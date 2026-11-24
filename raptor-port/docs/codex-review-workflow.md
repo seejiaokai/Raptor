@@ -18,7 +18,7 @@ of the affected snapshot. Reviewers do not edit the code they are inspecting.
 
 This addendum applies only when working in Codex. It does not change Claude's hooks, skills or standing checking order. It does not approve the Rally design or answer its product questions. D496's temporary model arrangement still expires Monday 5 Oct 2026 at 19:00 Asia/Singapore; this addendum does not extend it.
 
-**Plan the evidence before running it.** Use the standing order's eight questions and NONE / LOOK / WALK / FULL tiers. The independent scenario designer names the affected surfaces, roles, meaningful action orders and downstream results before the browser walk. Each required claim gets a named check; each omission gets a reason. Keep model independence, fresh final inspection, review limits and owed Claude reads.
+**Plan the evidence before running it.** Use the standing order's eight questions and NONE / LOOK / WALK / FULL tiers. The independent scenario designers — Astra and a fresh, blind Fable, each blind to the other (D2443) — name the affected surfaces, roles, meaningful action orders and downstream results before the browser walk. Each required claim gets a named check; each omission gets a reason. Keep model independence, fresh final inspection, review limits and owed Claude reads.
 
 **Keep the gates.** Changes to timing rules, warnings, saved data, published records, permissions or earned leave retain the applicable FULL checks and required gates. Small line counts do not lower consequence. Follow the existing PC lock and frozen-build rules. Run focused checks while fixing; do not repeat completed broad gates without a relevant change, failure or unresolved concern.
 
