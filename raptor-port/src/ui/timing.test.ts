@@ -59,6 +59,18 @@ describe('where the app wires it', () => {
     expect(main).toMatch(/if \(timingOn\(\)\)[^\n]*import\('\.\/ui\/timingwindow'\)/)
     for (const f of ['../main.tsx', 'Shell.tsx', 'App.tsx', 'Login.tsx', '../state/view.ts']) expect(src(f), f).not.toMatch(/from '(\.\/|\.\.\/ui\/|\.\/ui\/)(TimingReadout|timingwindow)'/)
   })
+  /* THE WALK OF 24 NOV 26 (chat 164, W1): the readout imported React and the app's movable window itself, and the
+     bundler, to share them with it, split the app's OWN first download from 15 files into 19 — for everyone, switch or
+     not. So the readout's files take React and the window from the app as they are handed them, and import nothing
+     the app's download holds; and they write no JSX, which brings React's own JSX file in with it. */
+  it('the readout imports nothing the app\'s first download holds — it is handed React and the window — so the app\'s own files split as before', () => {
+    const code = (f: string) => src(f).replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:])\/\/.*$/gm, '$1')
+    for (const f of ['timingwindow.tsx', 'TimingReadout.tsx']) {
+      const runtime = [...code(f).matchAll(/^import\s+(?!type\b)[^'"]*['"]([^'"]+)['"]/gm)].map(m => m[1])
+      expect(runtime.filter(p => !['./TimingReadout', './timingtext', './timing.css'].includes(p)), f).toEqual([])
+      expect(code(f), f + ': JSX').not.toMatch(/<\/[A-Za-z]|\/>/)
+    }
+  })
   it('the sign-in is marked only once the name and password are accepted', () => {
     const login = src('Login.tsx')
     const bad = login.indexOf("if (r.kind === 'bad')")

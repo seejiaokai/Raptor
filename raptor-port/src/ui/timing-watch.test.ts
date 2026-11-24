@@ -151,5 +151,46 @@ describe('F2: the window\'s own download arriving late changes nothing', () => {
   })
 })
 
+/* THE PRESS'S OWN MOMENT (the walk of 24 Nov 26, chat 164, W5): at 4× slow-down a tap on View-only Sched waited 0.86 s
+   before the app heard it — the computer was still busy — and the row left that wait out. On the slow office computer
+   that wait is what he sits through. */
+describe('timed from the press as the browser received it, not from when the app got to it', () => {
+  const press = (type: 'click' | 'keydown', stamp: number, then: () => void) => {
+    const b = document.createElement('button'); document.body.appendChild(b)
+    b.addEventListener(type, then)
+    const e = type === 'click' ? new MouseEvent('click', { bubbles: true }) : new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })
+    Object.defineProperty(e, 'timeStamp', { value: stamp })
+    b.dispatchEvent(e)
+  }
+  it('a page asked for by a tap the app heard late: the wait before it heard counts', () => {
+    section('viewsched'); section('inputs', false)
+    at(1000); press('click', 400, () => timingMark({ kind: 'page', page: 'inputs', t: 1000 }))
+    at(1100); show('inputs'); step(); at(1120); step(); at(1140); step()
+    expect(rows()).toEqual(['inputs first 740'])
+  })
+  it('the sign-in, pressed by Enter, the same', () => {
+    const week = () => { const s = section('viewsched'); const w = document.createElement('div'); w.id = 'vWeek'; const d = document.createElement('div'); d.className = 'day'; w.appendChild(d); s.appendChild(w) }
+    at(1000); press('keydown', 300, () => timingMark({ kind: 'signin', t: 1000 }))
+    at(1500); week(); step(); at(1520); step(); at(1540); step()
+    expect(signins()).toEqual([1240])
+  })
+  it('a page change made after the press was answered (a timer, a landing) is timed from its own mark', async () => {
+    section('viewsched'); section('inputs', false)
+    at(1000); press('click', 400, () => {})
+    await new Promise(r => setTimeout(r, 0))
+    timingMark({ kind: 'page', page: 'inputs', t: 1000 })
+    at(1100); show('inputs'); step(); at(1120); step(); at(1140); step()
+    expect(rows()).toEqual(['inputs first 140'])
+  })
+  it('a stamp on another clock (after the mark, or more than a minute before it) is not used', () => {
+    section('viewsched'); section('inputs', false); section('quals', false)
+    at(1000); press('click', 5000, () => timingMark({ kind: 'page', page: 'inputs', t: 1000 }))
+    at(1100); show('inputs'); step(3)
+    at(100_000); press('click', 30_000, () => timingMark({ kind: 'page', page: 'quals', t: 100_000 }))
+    at(100_100); show('quals'); step(3)
+    expect(rows()).toEqual(['inputs first 100', 'quals first 100'])
+  })
+})
+
 /* the sign-in's landing window closes with the task that made the sign-in mark (a timer of 0 in the app) */
 function await0() { flushLandingForTest() }

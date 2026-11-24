@@ -55,6 +55,32 @@ The approved mock-up: https://claude.ai/artifact/7bgefju2mwrGJzc2ACSExS (its wor
 
 ## The five sizing lines (§7.0)
 
+Written by the host (Opus, chat 164) before the walk, 24 Nov 26.
+
+1. **The type of change:** B (a new window and its corner button), C (a new mode — the `?timing` switch — and its
+   controls: ✕, Copy all, the corner button, the drag) and A-like (one stopwatch read by one window; the marks sit in
+   three shared places — the start, the sign-in, `setPage`). Not D (nothing drawn in several places), not G (nothing
+   saved), not H (the same for every role).
+2. **What only a walk could find here:** (a) that the app WITHOUT the switch downloads, draws and does nothing new —
+   only the built bundle shows how the files split; (b) whether each figure agrees with an outside stopwatch on the
+   real build at 4× — the tests run a hand-stepped clock, never real frames, a real claw or a real download;
+   (c) the window over every other layer (z 410 against the board 400, the drawer 440, a dialog 470, the bands), its
+   presses hit-tested; (d) Escape and the keyboard with a window that is open all session; (e) the late download,
+   a failed download, Retry's reload and a hidden tab — real browser events. The unit tests already carry the
+   stopwatch's logic order by order (`timing-watch.test.ts`, 14 cases) and every word (`timingtext.test.ts`).
+3. **What the ledger says:** B walks found a fault on 4 of 5, C on 8 of 15 (the wide ones). No earlier walk was of a
+   readout that measures; the nearest is a hidden debugging switch (`?kbdebug`), never walked as its own change.
+4. **The walk chosen:** the host alone, by scripts (`scripts/handpass/timing-walk*.mjs`), on the built app served by
+   the script's own small server (compressed, answering "unchanged" to a repeat ask, as Vercel does), real Chromium:
+   desktop 1366×768, a browser STARTED at 125% (his PC, the guide's §7), a phone 390×844 with touch, a short screen
+   1024×600 and 320×568; WebKit for "not given by Safari". One world is enough — nothing is saved, every scenario starts
+   in a fresh browser. Not fanned out to helpers: almost every scenario needs the developer protocol (a slowed CPU, a
+   held or refused download, a hidden tab) timed to a press, and the host holds the code. 26 scenarios (W1–W26 below);
+   the plain-user round is W26. Carried by a test, each named below: the stopwatch's repeated orders (two pages in a
+   row, a second sign-in) — the walk drives each distinct route once. What only his look can show: Safari on a real
+   iPhone, Firefox, Edge, and the office computer itself.
+5. **After the walk:** its row in `docs/walk-ledger.md` — below, at the close.
+
 ## The orders walked
 
 ## Cases carried by a test
@@ -68,8 +94,45 @@ Designed blind to each other, 24 Nov 26, on the first build (`81f62f830`): the b
 page credited with another's download, F7 "zoom", F9 a hidden tab) — fixed red-first in `146111e63` (`timing-watch.test.ts`,
 `TimingReadout.test.tsx`; F1 and F5 put back by hand and seen red). Still open, for his look: what Copy all shows
 when the browser refuses to copy (both readers — something new he would see, so a mock-up first, D1625).
-**The combined walk list is still to be written** from the two lists (the next chat), deduplicated, each EXPECTED line
-with its source, sized by §7.0.
+**The combined walk list** (chat 164; F = Fable's S-number, A = Astra's number). Sources: D2481 (the switch: nothing
+without it, nothing saved, nothing about a person), D2483 (the window and its approved words — the mock-up), the plan's
+§How it was measured (the end of a page's time: the page on, no claw, two frames — the host's reading of what the
+readout must agree with, not a ruling), the fix commit `146111e63` (the stopwatch's intended behaviour for F1–F9 — the
+host's reading), D641/D1523/D2112 (the movable windows: the page behind usable, clear of the failed-save band, Escape
+closes what opened last), D1631–D1638 (a page's failed download and Retry). An EXPECTED with no source is RECORD.
+
+| # | Scenario | From | EXPECTED (source) |
+|---|---|---|---|
+| W1 | No switch: the app's first download, every request through a whole session, nothing drawn | F2, A1 | no readout file asked for, no `#timingRoot`, the first download the same files as `main`'s build (D2481; "as on `main`") |
+| W2 | The switch's spellings: `?timing`, `?x&timing`, `?timing=1`, `?TIMING`, `?timings`, `#timing`, `?timing=false` | A29 | on for the first three, off for the next three (the switch's own test); `=false`: RECORD |
+| W3 | Nothing saved, nothing about a person: storage before and after a session with the switch, against one without; Copy all read whole as admin and as member | F3, A26 | the same keys as without the switch; the window back at its corner after a reload; no name, callsign or role in the copy (D2481) |
+| W4 | The window: open bottom-right on a computer, folded bottom-left on a phone; ✕ folds to "Timing N s"; the button reopens it; drag; 30+ pages; 1024×600, 320×568; the title's second line whole | F18, A23 | as the mock-up (D2483); ✕ and Copy all always on screen; the list keeps 30 |
+| W5 | Every figure against an outside stopwatch, 4× CPU: sign-in → week, the nine pages first and again, Leave War and Tracker first with the claw | F1, F4, A2, A16, A18 | each within 0.2 s or 15% of the outside time (the host's reading of the plan's end); Leave War/Tracker "first time · downloaded about 137/123 KB", the row only after the claw has gone |
+| W6 | Sign in, tap Inputs before the week is drawn, wait 30 s, back to View-only Sched | F5 | the sign-in row stays "not yet" (fix F3) |
+| W7 | Retry's reopen: Leave War's file refused, the card, Retry, sign in → lands on the Leave War | F6, A4 | `?timing` kept; the Leave War timed from the press; no week time later; its next visit "opened before" (fix F3; D1635) |
+| W8 | The window's own file held 8 s; sign in and open two pages meanwhile; typing as it arrives | F7, A6, A25 | the rows their real times, nothing near 8 s added; the caret stays in the box being typed in (fix F2, F5) |
+| W9 | Typing at once on a computer: name, Tab, password, Enter without a click | F8 | signed in; the caret was in Username (Login's standing rule; fix F5) |
+| W10 | The Leave War fetched in the background (desktop, 2 s idle), then Inputs first, then Leave War | F9, A9 | Inputs "first time" with no "downloaded"; Leave War: RECORD |
+| W11 | A page left before it is drawn; A→B→A at once; a tap on the page already open | F10, A7, A27 | no row for the abandoned visit; B's row B's own; the page already open no row (fix F3) |
+| W12 | A failed download: the card, Retry with the file still refused; the window over the card | F11, A3, A5 | no row for the card (fix F1b); the card's Retry not covered; the window usable (D1631–D1638) |
+| W13 | Sign out with a save waiting (`?savefail&timing`), 30 s, sign in again | F12, A8 | no row holding the signed-out wait; the band and its Retry not covered (fix F4; D1523) |
+| W14 | A cleared first visit, a reload, a return in a new tab: the kept-files rows against the browser's own list | F13, A10 | 0 kept on the cleared visit; the counts the browser's own (D2483) |
+| W15 | WebKit (Safari's engine): every row and Copy all | F14, A12, A20 | "not given by Safari" where it gives nothing; never blank, 0, "undefined", "NaN" (D2483) |
+| W16 | His 125% display; a phone: Copy all's display lines | F15, A11 | "Display scale 125%" and "Screen in its own pixels" — never "zoom" (fix F7) |
+| W17 | A wrong password; the ask-for-access screen; then a good sign-in | F16, A17 | no row from the wrong press; the access screen leaves "not yet"; the good sign-in its own time |
+| W18 | Does the window slow what it measures: five passes open, folded, and without the switch | F17, A19 | RECORD the three medians beside each other (no figure ruled) |
+| W19 | Escape, the window open: a cell being typed in, a seat picked, ALL AVAIL opened after it, the drawer, a question, the board, an input's window, a Leave War sheet | F19, A24 | what opened last answers, one Escape one thing; with nothing else open it folds the window (D2112) |
+| W20 | Over and under the other layers: drawer, a day's bubble, a question, the board, ALL AVAIL with Changes, the failed-save band, a note | F20, A22 | drawer and question over the window and its button; the board under it; each window's ✕ reachable; the band never covered (D641, D1523) — every press hit-tested |
+| W21 | The Leave War's blocking sheets and the Tracker's windows with the window open | F21, A21 | every picker and question inside them drawn and pressable above its sheet, as with the window folded ("as on `main`") |
+| W22 | Copy all: pasted; refused by the browser; again after a new page | F22, A14 | the paste the window's rows word for word plus the developer's lines; "Copied" only for a copy that went in; refused: RECORD (his question) |
+| W23 | Every door to a page, as the admin and as a member: top bar, ☰ drawer, keyboard, the bell, Check my quals, OIL list, Leave War ↔ Inputs, Undo to another page, the Admin door, the member-view switch; the browser's Back | F23, F24, A15 | one row a door, named as the app names the page; Back: RECORD |
+| W24 | A hidden tab: tap Edit Schedule and switch tab at once; `?timing` loaded in a background tab | F25 | no row near the hidden time (fix F9); background load: RECORD |
+| W25 | Long use: the freeze rows and the window's size line follow without a page change | F26, A13 | the figures move within a second of the change ("changed soon", the readout's own rule) |
+| W26 | The plain-user round, the window open: sign in, look at the week, make and undo a change on Edit Schedule, file an input, open each window and close it by each of its ways, sign out | §7.0a | the app as without the switch; every window closes by its ✕, Escape and a tap outside as it does today |
+
+Set aside, each with its reason: A28's two-minute give-up — carried by the code's one constant, a wait that long is
+not a figure anyone reads; A30 (download time as a row of its own) — a design question, not a fault: the approved
+words carry sizes only (D2483), recorded for his look.
 
 ## The pictures
 

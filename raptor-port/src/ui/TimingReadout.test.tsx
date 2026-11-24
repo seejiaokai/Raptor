@@ -2,11 +2,16 @@
 /* THE TIMING WINDOW ([APP-SPEED] step 1 — owner D2481, D2483): one of the app's movable windows, as its mock-up of
    24 Nov 26 shows it — Copy all, which reads "Copied" for two seconds; the ✕ folds it to a corner button carrying the
    newest page's time, which opens it again; open at the start on a computer, folded on a phone. */
+import * as React from 'react'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { TimingReadout } from './TimingReadout'
+import { FloatWin } from './FloatWindow'
+import { makeTimingReadout } from './TimingReadout'
 import { copyText, type TimingView } from './timingtext'
+
+/* handed React and the app's window, as main.tsx hands them (TimingReadout.tsx's head) */
+const TimingReadout = makeTimingReadout({ React, FloatWin })
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 

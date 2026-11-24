@@ -3,12 +3,23 @@
    (TimingReadout.tsx) nor its styles, reaches a browser. It takes the stopwatch's finished results (ui/timing.ts — the
    window times nothing itself, so arriving late changes no figure: Fable's and Astra's scenario designs, 24 Nov 26, F2),
    reads the app's files and the computer at each drawing, and draws the window in a root of its own, outside the app's
-   tree, so it never re-draws a page. It shows nothing about any person and writes nothing to storage. */
-import { createRoot } from 'react-dom/client'
-import { phoneLayout } from './floatwin'
-import { FREEZES, timingSink, type TimingEvent } from './timing'
-import { TimingReadout } from './TimingReadout'
+   tree, so it never re-draws a page. It shows nothing about any person and writes nothing to storage.
+   Written without JSX, and importing nothing the app's first download holds (TimingReadout.tsx's head). */
+import type { createRoot as createRootT } from 'react-dom/client'
+import type { phoneLayout as phoneLayoutT } from './floatwin'
+import type { FREEZES as FREEZEST, timingSink as timingSinkT, TimingEvent } from './timing'
+import { makeTimingReadout, type ReadoutParts } from './TimingReadout'
 import { browserOf, type Files, type PageRow, type TimingView } from './timingtext'
+
+/** Everything this file and the window need from the app, handed over by main.tsx — never imported: an import of any
+ *  of them split the app's own first download from 15 files into 19 (the walk of 24 Nov 26, W1; TimingReadout.tsx's
+ *  head). */
+export type TimingParts = ReadoutParts & {
+  createRoot: typeof createRootT
+  phoneLayout: typeof phoneLayoutT
+  FREEZES: typeof FREEZEST
+  timingSink: typeof timingSinkT
+}
 
 const PAGE_NAMES: Record<string, string> = {
   viewsched: 'View-only Sched', editsched: 'Edit Schedule', inputs: 'Inputs', quals: 'Quals', logic: 'Logic',
@@ -69,11 +80,13 @@ function siteAnswered(): number | null {
   const nav = typeof performance !== 'undefined' && performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined : undefined
   return nav && nav.responseStart > 0 ? nav.responseStart : null
 }
+/** the freeze counter, handed over with the rest (startTimingReadout) */
+let F: TimingParts['FREEZES'] = { supported: false, n: 0, total: 0, max: 0, onChange: null }
 function readNow(): TimingView {
   const nav = navigator as Navigator & { deviceMemory?: number }
   return {
     site: siteAnswered(), app: M.app, first: M.first, signin: M.signin, pages: M.pages,
-    freezes: { supported: FREEZES.supported, n: FREEZES.n, total: FREEZES.total, max: FREEZES.max },
+    freezes: { supported: F.supported, n: F.n, total: F.total, max: F.max },
     files: filesNow(),
     env: {
       browser: browserOf(navigator.userAgent),
@@ -98,8 +111,11 @@ async function copyOut(text: string): Promise<boolean> {
   try { return document.execCommand('copy') } catch { return false } finally { ta.remove(); was?.focus?.({ preventScroll: true }) }
 }
 
-/** Called once by main.tsx, behind the switch: take the results, keep the figures current, draw the window. */
-export function startTimingReadout(): void {
+/** Called once by main.tsx, behind the switch, with the app's own parts: take the results, keep the figures current,
+ *  draw the window. */
+export function startTimingReadout(parts: TimingParts): void {
+  const { createRoot, phoneLayout, FREEZES, timingSink } = parts
+  F = FREEZES
   timingSink(take)
   /* a freeze, a file arriving, a resize: each re-draws the window at most twice a second — never on every one, which
      would itself cost time; so the figures it shows stay current without a page change (Astra's read, 8) */
@@ -112,7 +128,7 @@ export function startTimingReadout(): void {
     const host = document.createElement('div')
     host.id = 'timingRoot'
     document.body.appendChild(host)
-    createRoot(host).render(<TimingReadout read={readNow} subscribe={subscribe} version={() => version} startOpen={!phoneLayout()} copy={copyOut} now={() => new Date()} />)
+    createRoot(host).render(parts.React.createElement(makeTimingReadout(parts), { read: readNow, subscribe, version: () => version, startOpen: !phoneLayout(), copy: copyOut, now: () => new Date() }))
   }, 0)
   if (M.first) mount(); else afterFirst = mount
 }

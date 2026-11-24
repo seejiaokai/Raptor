@@ -116,19 +116,33 @@ function timePage(page: string, from: number): void {
   })
 }
 
+/* THE PRESS'S OWN MOMENT (the walk of 24 Nov 26, chat 164, W5): a press made while the computer is still busy waits
+   before the app hears it — at 4× slow-down a tap on View-only Sched waited 0.86 s — and on the slow office computer
+   that wait is part of what he sits through. So a sign-in or a page asked for while a press (a click, a key) is being
+   answered is timed from the press as the browser received it — the event's own time stamp, on the same clock as the
+   marks — not from the moment the app got to it. Held for the task that answers the press only; a stamp that is not on
+   this clock (after the mark, or more than a minute before it) is not used. */
+let pressT: number | null = null
+function heard(e: Event): void {
+  pressT = e.timeStamp
+  setTimeout(() => { pressT = null }, 0)
+}
+const fromPress = (t: number): number => (pressT != null && pressT <= t && t - pressT < 60_000 ? pressT : t)
+
 /** Note a moment — nothing at all without the switch. */
 export function timingMark(m: TimingMark): void {
   if (!ON) return
   markTap?.(m)
   if (m.kind === 'boot' || m.kind === 'first') { emit(m); return }
+  const t = fromPress(m.t)
   if (m.kind === 'signin') {
     pageGen++                                  // a page wait from before (a sign-out's own move) ends here (F4)
     const gen = ++signinGen
-    signinT = m.t
+    signinT = t
     landing = true
     setTimeout(() => { landing = false }, 0)   // a page asked for in the same task is where the sign-in lands
     emit({ kind: 'signin', ms: null })
-    watch(m.t, weekState, () => gen === signinGen, ms => emit({ kind: 'signin', ms }))
+    watch(t, weekState, () => gen === signinGen, ms => emit({ kind: 'signin', ms }))
     return
   }
   /* a page asked for */
@@ -139,7 +153,7 @@ export function timingMark(m: TimingMark): void {
     return
   }
   signinGen++                                  // left before the week was drawn: the sign-in is never timed (F3)
-  timePage(m.page, m.t)
+  timePage(m.page, t)
 }
 
 /* a hidden tab draws no frames: every wait across it is dropped (F9) */
@@ -148,6 +162,9 @@ function arm(): void {
   if (armed || typeof document === 'undefined') return
   armed = true
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') { pageGen++; signinGen++ } })
+  /* first in line for every press (the capture phase, on the window), so its stamp is held before any handler marks */
+  addEventListener('click', heard, true)
+  addEventListener('keydown', heard, true)
 }
 if (ON) arm()
 

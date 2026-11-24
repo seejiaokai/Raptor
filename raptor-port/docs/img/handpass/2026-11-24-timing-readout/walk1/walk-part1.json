@@ -1,0 +1,137 @@
+[
+ {
+  "id": "W1a",
+  "v": "PASS",
+  "note": "requests naming \"timing\" in a whole session without the switch: 0 (of 24 requests)"
+ },
+ {
+  "id": "W1b",
+  "v": "PASS",
+  "note": "#timingRoot false, a window or button false"
+ },
+ {
+  "id": "W1c",
+  "v": "PASS",
+  "note": "errors: none"
+ },
+ {
+  "id": "W1d",
+  "v": "FAIL",
+  "note": "first download before the sign-in card: main 15 files, branch 19; only on main: —; only on the branch: /assets/FloatWindow.js, /assets/jsx-runtime.js, /assets/sched-commit.js, /assets/undo.js"
+ },
+ {
+  "id": "W2 ?timing",
+  "v": "PASS",
+  "note": "window drawn: true (open true)"
+ },
+ {
+  "id": "W2 ?x=1&timing",
+  "v": "PASS",
+  "note": "window drawn: true (open true)"
+ },
+ {
+  "id": "W2 ?timing=1",
+  "v": "PASS",
+  "note": "window drawn: true (open true)"
+ },
+ {
+  "id": "W2 ?TIMING",
+  "v": "PASS",
+  "note": "window drawn: false (open false)"
+ },
+ {
+  "id": "W2 ?timings",
+  "v": "PASS",
+  "note": "window drawn: false (open false)"
+ },
+ {
+  "id": "W2 #timing",
+  "v": "PASS",
+  "note": "window drawn: false (open false)"
+ },
+ {
+  "id": "W2 ?timing=false",
+  "v": "RECORD",
+  "note": "window drawn: true (open true)"
+ },
+ {
+  "id": "W5-start",
+  "v": "PASS",
+  "note": "App loaded at 0.5 s, Sign-in shown at 1.0 s, Site answered at 0.3 s"
+ },
+ {
+  "id": "W5-signin",
+  "v": "PASS",
+  "note": "readout \"took 0.9 s\", outside 0.91 s"
+ },
+ {
+  "id": "W5-leavewar-1",
+  "v": "PASS",
+  "note": "row \"Leave War, first time · downloaded 135 KB: 1.9 s\" — outside 1.92 s; claw seen 19 times (download tag present)"
+ },
+ {
+  "id": "W5-tracker-1",
+  "v": "PASS",
+  "note": "row \"Tracker, first time · downloaded 120 KB: 1.6 s\" — outside 1.67 s; claw seen 1 times (download tag present)"
+ },
+ {
+  "id": "W5-editsched-1",
+  "v": "PASS",
+  "note": "row \"Edit Schedule, first time: 1.0 s\" — outside 1.15 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-viewsched-2",
+  "v": "PASS",
+  "note": "row \"View-only Sched, opened before: 1.0 s\" — outside 1.15 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-editsched-2",
+  "v": "PASS",
+  "note": "row \"Edit Schedule, opened before: 0.8 s\" — outside 0.97 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-inputs-1",
+  "v": "PASS",
+  "note": "row \"Inputs, first time: 0.9 s\" — outside 0.89 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-quals-1",
+  "v": "PASS",
+  "note": "row \"Quals, first time: 0.3 s\" — outside 0.42 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-logic-1",
+  "v": "PASS",
+  "note": "row \"Logic, first time: 0.4 s\" — outside 0.53 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-help-1",
+  "v": "PASS",
+  "note": "row \"Help, first time: 0.2 s\" — outside 0.30 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-admin-1",
+  "v": "PASS",
+  "note": "row \"Admin, first time: 0.1 s\" — outside 0.24 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-leavewar-2",
+  "v": "FAIL",
+  "note": "row \"Leave War, opened before: 0.5 s\" — outside 0.93 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-tracker-2",
+  "v": "PASS",
+  "note": "row \"Tracker, opened before: 1.1 s\" — outside 1.25 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-viewsched-2",
+  "v": "FAIL",
+  "note": "row \"View-only Sched, opened before: 0.7 s\" — outside 0.93 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-errors",
+  "v": "PASS",
+  "note": "none"
+ }
+]

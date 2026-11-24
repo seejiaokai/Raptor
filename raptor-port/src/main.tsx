@@ -1,8 +1,11 @@
 /* FIRST, so the ?timing switch's freeze counter starts before the rest of the app's code runs (D2481 — ui/timing.ts);
    without the switch it does nothing */
-import { timingMark, timingOn, now as timingNow } from './ui/timing'
+import { FREEZES, timingMark, timingOn, timingSink, now as timingNow } from './ui/timing'
+import * as React from 'react'
 import { StrictMode, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
+import { FloatWin } from './ui/FloatWindow'
+import { phoneLayout } from './ui/floatwin'
 import './ui/scheduler.css'
 import { setToast } from './state/store'
 import { HOOKS } from './engine/hooks'
@@ -40,7 +43,9 @@ async function boot(): Promise<void> {
   /* the ?timing readout's mark (D2481): the app's code has loaded and starts; and the readout itself, a download of its
      own, fetched ONLY behind the switch — without it, no part of the readout reaches the browser */
   timingMark({ kind: 'boot', t: timingNow() })
-  if (timingOn()) void import('./ui/timingwindow').then(m => m.startTimingReadout()).catch(() => { /* a readout that cannot load costs the app nothing */ })
+  /* handed the app's own parts, never importing them: an import split the app's own first download (the walk of 24 Nov
+     26, W1 — ui/TimingReadout.tsx's head) */
+  if (timingOn()) void import('./ui/timingwindow').then(m => m.startTimingReadout({ React, FloatWin, createRoot, phoneLayout, FREEZES, timingSink })).catch(() => { /* a readout that cannot load costs the app nothing */ })
   setToast(toast)
   HOOKS.toastBatch = toastBatch   // one press, one message — only the publish command opens one ([AMEND-SMALL-SEEN] 1)
   const { postman } = await bootApp(chooseBackend(), bootPolicyFrom(import.meta.env as any))
