@@ -1,0 +1,28 @@
+/* THE TIMING WINDOW (ui/TimingReadout.tsx — owner D2481, D2483): downloaded with it, only behind `?timing`, so none of
+   this reaches the app's first download. The window is the app's own (.floatwin, 22-float-windows.css); these are its
+   place and its rows, as the mock-up of 24 Nov 26 draws them. */
+
+/* a computer: the bottom-right corner, 360px wide, until it is dragged (floatwin.ts then writes its place inline) */
+.floatwin.timingwin{width:360px}
+.floatwin.timingwin:not([data-placed]){top:auto;bottom:16px}
+/* the title's second line wraps rather than being cut: "This computer only" is the line that must be read */
+.floatwin.timingwin .win-ttl{white-space:normal}
+
+.timingwin .tm-body{font-size:12px;color:var(--ink-2)}
+.timingwin .tm-h{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:10px 0 4px}
+.timingwin .tm-body>div:first-child .tm-h{margin-top:0}
+.timingwin .tm-r{display:flex;justify-content:space-between;gap:12px;padding:3px 0;border-top:1px solid var(--edge)}
+.timingwin .tm-r b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.timingwin .tm-r i{font-style:normal;color:var(--ink-3);margin-left:6px}
+/* the sign-in is a length on its own clock, not a fourth point on the start-up's: set apart */
+.timingwin .tm-r.tm-gap{margin-top:8px;border-top:1px dashed var(--edge-2)}
+.timingwin .tm-empty{padding:3px 0;border-top:1px solid var(--edge);color:var(--ink-3)}
+
+/* folded: a button in the bottom-left corner, under every window (410) */
+.timing-pill{position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom, 0px));z-index:409}
+
+/* a phone: along the foot of the screen, as the mock-up draws it — not the middle every other window takes (D997) */
+@media (max-width:620px){
+  .floatwin.timingwin{width:auto}
+  .floatwin.timingwin:not([data-placed]){top:auto;bottom:12px;margin:0}
+}

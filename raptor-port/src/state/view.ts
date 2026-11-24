@@ -16,6 +16,7 @@ import { hideKey } from '../engine/warnhide'
 import { canEditSched } from './auth'
 import { me } from './perms'
 import { flagDrop } from './dropflag'
+import { timingMark, now as timingNow } from '../ui/timing'
 
 /* the repaint/gesture call sites inside these verbatim bodies route through
    the hooks — no-ops headless, mapped to the store's notify() when wired */
@@ -604,6 +605,8 @@ export function bumpNav(){ NAVGEN++ }
 export function navGen(){ return NAVGEN }
 export function setPage(p:any){
   if(p!==CURPAGE)NAVGEN++;   // a real page change invalidates a pending template-apply confirm
+  /* the ?timing readout's mark (D2481): the moment a page is asked for — nothing at all without the switch */
+  if(p!==CURPAGE)timingMark({kind:'page',page:p,t:timingNow()});
   /* a page navigation dismisses the transient "set default?" offer — it belongs
      to the drag that raised it on the page being left (31 Aug 26 bug pass). */
   SECDEFOFFER=null;

@@ -1,3 +1,6 @@
+/* FIRST, so the ?timing switch's freeze counter starts before the rest of the app's code runs (D2481 — ui/timing.ts);
+   without the switch it does nothing */
+import { timingMark, timingOn, now as timingNow } from './ui/timing'
 import { StrictMode, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import './ui/scheduler.css'
@@ -21,7 +24,11 @@ import { dismissBootClaw } from './ui/bootclaw'
 /* the loading claw (index.html, D1605) goes once the app's first screen has painted under it — an effect runs after
    that paint — never waiting for its round to finish */
 function BootClawGone(): null {
-  useEffect(dismissBootClaw, [])
+  useEffect(() => {
+    /* the ?timing readout's mark (D2481): the first screen is drawn — the sign-in card, or the week if none was asked */
+    timingMark({ kind: 'first', t: timingNow(), screen: document.getElementById('luser') ? 'signin' : 'week' })
+    dismissBootClaw()
+  }, [])
   return null
 }
 
@@ -30,6 +37,10 @@ function BootClawGone(): null {
    ever reaches, with its first admin), from the build's own settings. Everything the boot does with them is
    src/boot.ts, in the order it always ran; then the page's own wiring, the probe bridge and the render. */
 async function boot(): Promise<void> {
+  /* the ?timing readout's mark (D2481): the app's code has loaded and starts; and the readout itself, a download of its
+     own, fetched ONLY behind the switch — without it, no part of the readout reaches the browser */
+  timingMark({ kind: 'boot', t: timingNow() })
+  if (timingOn()) void import('./ui/TimingReadout').then(m => m.startTimingReadout()).catch(() => { /* a readout that cannot load costs the app nothing */ })
   setToast(toast)
   HOOKS.toastBatch = toastBatch   // one press, one message — only the publish command opens one ([AMEND-SMALL-SEEN] 1)
   const { postman } = await bootApp(chooseBackend(), bootPolicyFrom(import.meta.env as any))

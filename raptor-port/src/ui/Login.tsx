@@ -12,6 +12,7 @@ import { signIn, sessionFor } from '../state/accounts'
 import { resetSession, notify } from '../state/store'
 import { setPage } from '../state/view'
 import { takeReopen } from './pagedownload'
+import { timingMark, now as timingNow } from './timing'
 import { SaveBand, useBandUp } from './SaveStatus'
 
 export function Login() {
@@ -25,6 +26,8 @@ export function Login() {
     e.preventDefault()
     const r = signIn(user, pass)
     if (r.kind === 'bad') { setErr('Incorrect username or password.'); return }
+    /* the ?timing readout's mark (D2481): sign in pressed and accepted — nothing at all without the switch */
+    timingMark({ kind: 'signin', t: timingNow() })
     setErr('')
     /* resetSession (state/store.ts), not the bare setSession — a login must land
        the incoming session on a clean view, not whatever page/selection/preview
