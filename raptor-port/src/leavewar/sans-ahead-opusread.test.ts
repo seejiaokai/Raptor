@@ -116,22 +116,20 @@ describe('F2 — a man put on an existing offer is refused for a day before his 
   })
 })
 
-describe('F4 — the posting put back: no line still says the day is hidden (a question for him)', () => {
-  /* kept FAILING on purpose (`it.fails`) until he answers chat 152's question: as built the "hidden" line stays on his bell
-     after the posting is put back. If he says it should go, build it and turn this back into `it`. */
-  it.fails('moved to Fri 24 then back to Fri 17: Sat 18 shows again, and the bell no longer says it is hidden', () => {
+describe('F4 — the posting put back: no line still says the day is hidden (his D2394 Q6)', () => {
+  it('moved to Fri 24 then back to Fri 17: Sat 18 shows again, and the bell no longer says it is hidden', () => {
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
     expect(fileVia('rocky', SAT_ISO), toasts.join(' | ')).toBe(true)
     expect(postOut('rocky', '2026-07-24', 'sans')).toBe(true); raptorNotify()
-    expect(backLines('rocky').some(n => (noticeWords(n).more || '').includes('Sat 18 Jul')), 'premise: told it is hidden').toBe(true)
+    expect(backLines('rocky').some(n => (noticeWords(n).what || '').includes('Sat 18 Jul')), 'premise: told it is hidden').toBe(true)
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
     expect(sansAvailOn('rocky', dt(SAT)), 'premise: it shows and counts again').toBeTruthy()
-    expect(backLines('rocky').filter(n => (noticeWords(n).more || '').includes('Sat 18 Jul'))).toEqual([])
+    expect(backLines('rocky').filter(n => (noticeWords(n).what || '').includes('Sat 18 Jul'))).toEqual([])
   })
 })
 
-/* F5 reverses sans-ahead.test.ts's pinned `nameStruck: true` — run only once he rules on it */
-describe.skip('F5 — no struck words he never saw (a question for him)', () => {
+/* his D2391 answers it: the line strikes nothing (it reversed sans-ahead.test.ts's pinned `nameStruck: true`) */
+describe('F5 — no struck words he never saw (his D2391)', () => {
   it('every day filed, so never a live line: the take-back strikes nothing', () => {
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
     expect(fileVia('rocky', SAT_ISO), toasts.join(' | ')).toBe(true)

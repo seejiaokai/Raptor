@@ -184,9 +184,9 @@ describe('Independent SANS review regressions', () => {
     expect(commitNewInput(draft())).toBe(true)
   })
 
-  /* (the host, chat 154: these two are Astra's #6 = the fresh Opus read's F5 = w9's R2 — what the take-back line strikes —
-     put to him as a question, so they are kept as known failures until he answers; [SANS-BACK-STRIKE-WHAT]) */
-  it.fails('does not invent a struck reminder for hidden-only news', () => {
+  /* (Astra's #6 = the fresh Opus read's F5 = w9's R2 — what the take-back line strikes, [SANS-BACK-STRIKE-WHAT]; his D2391
+     answers it: nothing is struck, the line says plainly what changed) */
+  it('does not invent a struck reminder for hidden-only news', () => {
     posting('rocky')
     offer()
     posting('rocky', LATER)
@@ -195,7 +195,7 @@ describe('Independent SANS review regressions', () => {
     expect(noticeWords(backs()[0]!).nameStruck).not.toBe(true)
   })
 
-  it.fails('does not strike a newly added day Hex never read', () => {
+  it('does not strike a newly added day Hex never read', () => {
     plan(5)
     posting('rocky')
     login('hex')
@@ -207,7 +207,9 @@ describe('Independent SANS review regressions', () => {
     posting('rocky', LATER)
 
     expect(backs()).toHaveLength(1)
-    expect(noticeWords(backs()[0]!).struck).not.toContain('Sun 19')
+    const w = noticeWords(backs()[0]!)
+    expect(w.nameStruck).not.toBe(true)
+    expect(JSON.stringify(w)).not.toContain('Sun 19')
   })
 
   it('refuses erasing a take-back through an input command', () => {

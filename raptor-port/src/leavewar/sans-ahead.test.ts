@@ -110,12 +110,13 @@ describe('D2340 — filed ahead, from the moment his SANS posting is saved', () 
     expect(fileVia('rocky', SAT_ISO), toasts.join(' | ')).toBe(true)
   })
 
-  it('a day before his date is refused, saying from when he can be filed for; so is a run reaching back before it', () => {
+  it('a day before his date is refused, saying from when he can be filed for; a run reaching back saves from his date (D2388)', () => {
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
     expect(fileVia('rocky', '2026-07-16')).toBe(false)
     expect(toasts.pop()).toBe('Hex is SANS from Fri 17 Jul: file SANS availability for days from then')
-    expect(fileVia('rocky', '2026-07-16', SAT_ISO)).toBe(false)
     expect(sansRefusal('rocky', { f: true }, FRI_ISO, SAT_ISO), 'from his date on: fine').toBe('')
+    expect(fileVia('rocky', '2026-07-16', SAT_ISO), toasts.join(' | ')).toBe(true)
+    expect(toasts.pop()).toBe('Saved Fri 17 – Sat 18 Jul. Thu 16 Jul was left out because Hex is SANS from Fri 17 Jul.')
   })
 
   it('stays: a man who is not SANS at all, and has no SANS posting, is refused as before', () => {
@@ -133,7 +134,7 @@ describe('D2340 — filed ahead, from the moment his SANS posting is saved', () 
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
     const l = dueLines('rocky')
     expect(l.length).toBe(1)
-    expect(noticeWords(l[0]!)).toEqual({ name: 'You\'re SANS from Fri 17 Jul.', day: '', what: 'You\'re planned on Sat 18 Jul with nothing filed. Tap to file.', who: '' })
+    expect(noticeWords(l[0]!)).toEqual({ name: 'You\'re SANS from Fri 17 Jul.', day: '', what: 'You\'re planned on Sat 18 Jul with nothing filed. Tap to file for availability.', who: '' })
     expect(unreadFor('rocky'), 'his bell lights').toBe(1)
   })
 
@@ -142,9 +143,9 @@ describe('D2340 — filed ahead, from the moment his SANS posting is saved', () 
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
     const days = (dueLines('rocky')[0]!.what[0] as any).days as string[]
     expect(days).toEqual([FRI_ISO, SAT_ISO, '2026-07-19'])
-    expect(noticeWords(dueLines('rocky')[0]!).what).toBe('You\'re planned on Fri 17, Sat 18, Sun 19 Jul with nothing filed. Tap to file.')
+    expect(noticeWords(dueLines('rocky')[0]!).what).toBe('You\'re planned on Fri 17, Sat 18, Sun 19 Jul with nothing filed. Tap to file for availability.')
     const five: Notice = { ...dueLines('rocky')[0]!, what: [{ k: 'sansdue', days: [FRI_ISO, SAT_ISO, '2026-07-19', '2026-07-20', '2026-07-21'], from: FRI_ISO }] }
-    expect(noticeWords(five).what).toBe('You\'re planned on Fri 17, Sat 18, Sun 19 Jul and 2 more with nothing filed. Tap to file.')
+    expect(noticeWords(five).what).toBe('You\'re planned on Fri 17, Sat 18, Sun 19 Jul and 2 more with nothing filed. Tap to file for availability.')
   })
 
   it('read, then filed ahead: it shrinks and goes; read stays read once the posting runs', () => {
@@ -166,7 +167,6 @@ describe('D2341 — hidden on a day that stops being SANS, back once it is SANS 
     expect(fileVia('rocky', SAT_ISO), toasts.join(' | ')).toBe(true)
     expect(sansAvailOn('rocky', dt(SAT))).toBeTruthy()
   }
-  const HID = 'Your SANS availability for Sat 18 Jul is hidden while you\'re not SANS that day.'
 
   it('the posting moved to Fri 24 Jul: Sat 18 is hidden — not deleted — and comes back when it moves back', () => {
     filedAhead()
@@ -185,7 +185,7 @@ describe('D2341 — hidden on a day that stops being SANS, back once it is SANS 
     expect(postOut('rocky', '2026-07-24', 'sans')).toBe(true); raptorNotify()
     const b = backLines('rocky')
     expect(b.length).toBe(1)
-    expect(noticeWords(b[0]!)).toEqual({ name: 'You\'re SANS from Fri 17 Jul.', nameStruck: true, day: '', struck: '', what: 'taken back', who: 'Saber', more: HID })
+    expect(noticeWords(b[0]!)).toEqual({ name: 'Your SANS date moved to Fri 24 Jul.', day: '· Saber', what: 'You\'re active until then, so the SANS availability you filed for Sat 18 Jul is hidden. It comes back if you\'re SANS that day again.', who: '' })
     expect(unreadFor('rocky')).toBeGreaterThanOrEqual(1)
   })
 
@@ -195,12 +195,12 @@ describe('D2341 — hidden on a day that stops being SANS, back once it is SANS 
     expect(!!P('rocky').san).toBe(true)
     expect(undoPostOut('rocky')).toBe(true); raptorNotify()
     expect(sansAvailOn('rocky', dt(SAT))).toBeNull()
-    expect(noticeWords(backLines('rocky')[0]!).more).toBe(HID)
+    expect(noticeWords(backLines('rocky')[0]!).what).toBe('You\'re active again, so the SANS availability you filed for Sat 18 Jul is hidden. It comes back if you\'re SANS that day again.')
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify(); runPoOutcomes(); raptorNotify()
     expect(sansAvailOn('rocky', dt(SAT))).toBeTruthy()
   })
 
-  it('read his live line, then moved: ONE line — his line struck, then what was hidden', () => {
+  it('read his live line, then moved: ONE line — what changed, then what was hidden (D2391: nothing struck)', () => {
     plan(SAT, 'rocky'); plan(6, 'rocky')
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
     expect(fileVia('rocky', '2026-07-19'), toasts.join(' | ')).toBe(true)                 // Sun 19 filed; Sat 18 still owed
@@ -208,8 +208,8 @@ describe('D2341 — hidden on a day that stops being SANS, back once it is SANS 
     expect(postOut('rocky', '2026-07-24', 'sans')).toBe(true); raptorNotify()
     const b = backLines('rocky')
     expect(b.length).toBe(1)
-    expect(noticeWords(b[0]!)).toEqual({ name: 'You\'re SANS from Fri 17 Jul.', nameStruck: true, day: '', struck: 'You\'re planned on Sat 18 Jul with nothing filed.', what: 'taken back', who: 'Saber',
-      more: 'Your SANS availability for Sun 19 Jul is hidden while you\'re not SANS that day.' })
+    expect(noticeWords(b[0]!)).toEqual({ name: 'Your SANS date moved to Fri 24 Jul.', day: '· Saber', who: '',
+      what: 'You\'re active until then, so the SANS availability you filed for Sun 19 Jul is hidden. It comes back if you\'re SANS that day again.' })
   })
 
   it('moved EARLIER: nothing hidden, so an unread line simply goes and nothing is told', () => {

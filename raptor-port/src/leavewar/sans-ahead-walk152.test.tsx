@@ -2,8 +2,9 @@
    W8-1: a man posted out as SANS from Fri 17 Jul, on Wed 15, picks a run of days that starts before his date (a drag
    16→18, or the keys' Shift+arrows then Enter, either way round): NOTHING happened — no window, no words — because the
    run's first day is one he cannot be filed for and the calendar's add simply returned. His D2340 lets him file from his
-   date; a press that does nothing and says nothing is never right (the design guide §1: a refusal says why). Now the
-   save's own refusal is said: "Hex is SANS from Fri 17 Jul: file SANS availability for days from then".
+   date; a press that does nothing and says nothing is never right (the design guide §1: a refusal says why). His D2388
+   (23 Nov 26) goes further: such a run opens the window and saves from his date, the note saying which days were left
+   out (leavewar/sans-words-156.test.tsx holds the saving); only a run with no SANS day in it is still refused, in words.
    W8-2: the SANS calendar's Highlight list offered only men SANS today, so a man posted out as SANS from a date ahead —
    who may have commitments filed from the moment his posting is saved (D2340) — could not be picked to see them.
    The fixture is sans-before.test.tsx's: the demo week of Mon 13 Jul 26, today Wed 15 Jul; `rocky` is Hex ("hex"). */
@@ -55,22 +56,31 @@ beforeEach(() => {
 })
 afterEach(() => { cleanup(); setInpEdit(null); resetSession(null); vi.restoreAllMocks() })
 
-describe('W8-1 — a run of days starting before his SANS date says why, never nothing', () => {
+describe('W8-1 — a run of days starting before his SANS date (his D2388: it saves from his date)', () => {
   const WORDS = 'Hex is SANS from Fri 17 Jul: file SANS availability for days from then'
-  it('Hex drags Thu 16 → Sat 18: no window, and the refusal is said', () => {
+  it('Hex drags Thu 16 → Sat 18: the window opens on his run, nothing refused', () => {
     expect(postOut('rocky', FRI, 'sans')).toBe(true); raptorNotify()
     signInAs('hex')
     const toast = vi.spyOn(HOOKS, 'toast')
-    expect(openSansAdd(THU, SAT)).toBe(false)
-    expect(INPEDIT).toBeNull()
-    expect(toast).toHaveBeenCalledWith(WORDS, 'warn')
+    expect(openSansAdd(THU, SAT)).toBe(true)
+    expect(INPEDIT?.person).toBe('rocky')
+    expect(toast).not.toHaveBeenCalled()
   })
-  it('the same run picked the other way round (Sat 18 → Thu 16) says the same', () => {
+  it('the same run picked the other way round (Sat 18 → Thu 16) opens the same', () => {
     expect(postOut('rocky', FRI, 'sans')).toBe(true); raptorNotify()
     signInAs('hex')
     const toast = vi.spyOn(HOOKS, 'toast')
-    expect(openSansAdd(SAT, THU)).toBe(false)
-    expect(toast).toHaveBeenCalledWith(WORDS, 'warn')
+    expect(openSansAdd(SAT, THU)).toBe(true)
+    expect(INPEDIT?.person).toBe('rocky')
+    expect(toast).not.toHaveBeenCalled()
+  })
+  it('left as it is: a run with no SANS day in it is refused, and says why', () => {
+    expect(postOut('rocky', SAT, 'sans')).toBe(true); raptorNotify()
+    signInAs('hex')
+    const toast = vi.spyOn(HOOKS, 'toast')
+    expect(openSansAdd(THU, FRI)).toBe(false)
+    expect(INPEDIT).toBeNull()
+    expect(toast).toHaveBeenCalledWith(WORDS.replace('Fri 17', 'Sat 18'), 'warn')
   })
   it('left as it is: a run from his date opens the window with him in it, saying nothing', () => {
     expect(postOut('rocky', FRI, 'sans')).toBe(true); raptorNotify()

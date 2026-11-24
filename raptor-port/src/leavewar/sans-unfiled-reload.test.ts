@@ -48,8 +48,8 @@ describe('D2338 — the struck line after a reload', () => {
     app = await boot(be)
     signInAs('ad', 'a')
     expect(struck().length, 'the struck line is saved, once').toBe(1)
-    /* (his D2342 words; D2341's shape: the first sentence struck as the name) */
-    expect(noticeWords(struck()[0]!)).toEqual({ name: 'You\'re SANS from Thu 16 Jul.', nameStruck: true, day: '', struck: 'You\'re planned on Thu 16 Jul with nothing filed.', what: 'taken back', who: 'Saber' })
+    /* (his D2391: nothing struck, a plain line saying what changed) */
+    expect(noticeWords(struck()[0]!)).toEqual({ name: 'You\'re no longer posted out as SANS.', day: '· Saber', what: '', who: '' })
     expect(live()).toEqual([])
 
     /* the same SANS posting made again: the struck line and one new line, unread */

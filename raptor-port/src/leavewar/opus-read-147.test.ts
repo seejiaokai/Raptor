@@ -141,20 +141,15 @@ describe('OPUS-147 D2218 — is a line about his own SANS availability "about hi
 })
 
 /* ---- the read record across a filed-then-deleted day ---- */
-describe('OPUS-147 (observation) — once read, a later planned day adds to the same read line', () => {
-  /* (LEFT AS BUILT — the coordinator's word, chat 147's fix round: a product question for him, not a fault; the build's
-     reading keeps the id steady, so this states what it would take, and is expected to fail) */
-  it.fails('read Fri (Sat named); Sun planned unfiled after: the bell stays dark', () => {
+describe('OPUS-147 (his D2394 2a) — once read, a later planned day lights his bell again', () => {
+  it('read Fri (Sat named); Sun planned unfiled after: one line, unread', () => {
     plan(SAT, 'rocky')
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
     at(2026, 7, 17); runPoOutcomes(); raptorNotify()
     signInAs('hex'); expect(markAllNoticesRead()).toBe(true); signInAs('ad', 'a')
     plan(6, 'rocky')
-    const l = noticesFor('rocky').filter(n => kindOf(n) === 'sansdue')
-    console.log('PROBE obs: days', l.map(n => noticeWords(n).day))
+    expect(noticesFor('rocky').filter(n => kindOf(n) === 'sansdue').length).toBe(1)
     signInAs('hex')
-    console.log('PROBE obs: unread', unreadFor('rocky'))
-    /* (a product question, not a code fault: the build's own reading keeps the id steady; this fails to SHOW the state) */
     expect(unreadFor('rocky'), 'Sunday, planned after he read, lights his bell').toBe(1)
   })
 })

@@ -94,7 +94,7 @@ export const SETTINGS_KEYS = [
 /* - `noticeseen:<pid>` — what each person has read of his bell's notices, `NoticeSeen`; written ONLY by
      state/noticeseen.ts, through its one command `notices.seen` (own row only — the one-rule build's step 7). */
 /* (…'apprseen:' — each admin's own moment of opening the Leave War's Approvals, M4 8.4: state/apprseen.ts) */
-export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', 'noticeseen:', 'apprseen:', 'lwseen:', ...FLY_ROW_PREFIXES,
+export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', 'noticeseen:', 'apprseen:', 'lwseen:', 'sansplan:', ...FLY_ROW_PREFIXES,
   /* the units, places, homes and rights (state/units.ts — multi-squadron batch 1, step 1), one row each */
   ...UNIT_ROW_PREFIXES] as const
 /* EVERY UNIT'S SETTINGS, NAMED WITH ITS UNIT (multi-squadron batch 1, step 2 — engine/hooks.ts storedKey): a unit's own

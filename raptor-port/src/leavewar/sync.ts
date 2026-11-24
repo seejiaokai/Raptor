@@ -173,8 +173,8 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncBeforeEnlist, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { sansUnfiledLines, sansLineBack, sansTakeBack, sansPostedFrom, sansBackCovered, sansBackOwed, wireSansBackBefore } from './sansunfiled'
-import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
+import { sansUnfiledLines, sansLineBack, sansTakeBack, sansPostedFrom, sansBackCovered, sansBackOwed, sansUntickOwed, wireSansBackBefore, type SansBackOwed } from './sansunfiled'
+import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, noticeSansBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
 import { hasRead, forgetRead } from '../state/noticeseen'
@@ -1785,7 +1785,17 @@ export function followUpsFor(changes: ReadonlyArray<{ collection: string; op: st
   for (const c of changes) {
     if (c.collection !== 'notices') continue
     const n = (c.op === 'delete' ? c.before : c.after) as Notice | undefined
-    if (!n || typeof n !== 'object' || !isWarNotice(n)) continue
+    if (!n || typeof n !== 'object') continue
+    /* HIS "NO LONGER SANS" LINE, ITS UNTICK UNDONE (D2391's C with D1693, D1699): the one SANS line an Undo step holds (a
+       posting is no Undo step, D350). Read, its title comes back struck, "taken back · Saber"; unread, it simply goes. A
+       Redo puts the line back as it was and says no more. */
+    // any: a notice part is read by its kind, the fields differing by kind (state/notices.ts)
+    const sw: any = (n.what || [])[0]
+    if (sw && sw.k === 'sansback') {
+      if (dir === 'undo' && sw.how === 'untick' && !sw.back && !noticeLeftBell(n)) out.push({ of: n, to: String(n.to), name: n.name, day: n.day, iid: '', what: [{ k: 'sansback', days: [], how: 'untick', back: true }] })
+      continue
+    }
+    if (!isWarNotice(n)) continue
     /* (one since moved to another squadron is no longer told here of the war's own business — bidding opened or closed,
        atWarHome — but a line about his OWN leave follows him: its Undo strikes it "taken back" where he read it, its Redo
        says "again" — his D2222, 19 Nov 26; the gate lets exactly that follow-up through, state/perms.ts followUpOf) */
@@ -1871,7 +1881,8 @@ export function followUpsOwed(moved: ReadonlyArray<{ collection: string; op: str
 export type OwedWarLine =
   | { k: 'lw'; to: string; days: ReadonlySet<string>; kinds: ReadonlySet<string> }
   | { k: 'lwopen'; a: string; b: string; open: boolean }
-  | { k: 'po' | 'poback' | 'sansback'; who: string; day: string; o: string }
+  | { k: 'po' | 'poback'; who: string; day: string; o: string }
+  | ({ k: 'sansback'; who: string; o: string } & SansBackOwed)
 type LooseRec = Record<string, unknown>
 const looseRec = (x: unknown): LooseRec | null => (x && typeof x === 'object' && !Array.isArray(x) ? (x as LooseRec) : null)
 /* (the same war-approved leave on both sides: its one man, its days, its halves — whole day or its times — its kind and
@@ -1927,9 +1938,13 @@ export function warLinesOwed(changes: ReadonlyArray<{ collection: string; id: st
         const day = addDays(r.to, 1)
         out.push({ k: 'po', who: String(c.id), day, o }, { k: 'poback', who: String(c.id), day, o })
       }
-      /* (his struck SANS-days line: only a real take-back of a run SANS posting — sansunfiled.ts, D2338, chat 147's reads) */
+      /* (his SANS line: only a real change of his SANS posting — sansunfiled.ts, D2338, D2391, chat 147's reads) */
       const sb = sansBackOwed(c)
-      if (sb) out.push({ k: 'sansback', who: String(c.id), day: sb, o: 'sans' })
+      if (sb) out.push({ k: 'sansback', who: String(c.id), o: 'sans', ...sb })
+    } else if (c.collection === 'people') {
+      /* (…or his Quals SANS tick taken off — D2391's C) */
+      const sb = sansUntickOwed(c, changes)
+      if (sb) out.push({ k: 'sansback', who: String(c.id), o: 'sans', ...sb })
     }
   }
   for (const [to, m] of leave) out.push({ k: 'lw', to, days: m.days, kinds: m.kinds })
@@ -1974,7 +1989,14 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
   if (!made.length) return 0
   const by = me()
   let wrote = 0
-  commitInputs('lw.notice', () => { for (const f of made) wrote += noticeWar([f.to], by != null ? String(by) : null, f.what[0]) })
+  commitInputs('lw.notice', () => {
+    for (const f of made) {
+      const who = by != null ? String(by) : null, part = f.what[0]!
+      /* (his SANS untick's "taken back": its own writer, the line word for word as followUpsFor gives it) */
+      if (part.k === 'sansback') wrote += noticeSansBack(f.to, who, [], f.day, Date.now(), [], { how: part.how, back: true }) ? 1 : 0
+      else wrote += noticeWar([f.to], who, part)
+    }
+  })
   return wrote
 }
 

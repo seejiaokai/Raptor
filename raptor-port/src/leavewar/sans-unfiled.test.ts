@@ -136,15 +136,15 @@ describe('D2338 (1) — the crew list on a look-ahead day says when SANS availab
 })
 
 /* (his D2340, 23 Nov 26, narrowing D2338: the line comes when the posting is SAVED, not on its date; his D2342's words) */
-const DUE_SAT = { name: 'You\'re SANS from Fri 17 Jul.', day: '', what: 'You\'re planned on Sat 18 Jul with nothing filed. Tap to file.', who: '' }
+const DUE_SAT = { name: 'You\'re SANS from Fri 17 Jul.', day: '', what: 'You\'re planned on Sat 18 Jul with nothing filed. Tap to file for availability.', who: '' }
 describe('D2338 (2) — his bell lists the planned days with nothing filed (from the save, D2340)', () => {
-  it('on Fri 17 Jul, Sat 18 planned and unfiled: one line to him, naming the day', () => {
+  it('on Fri 17 Jul, Sat 18 planned and unfiled: one line to him, naming the day; his date has come, so no date in its title (D2394 over D2340, D90)', () => {
     plan(SAT, 'rocky')
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
     at(2026, 7, 17); runPoOutcomes(); raptorNotify()
     const ls = sansLines('rocky')
     expect(ls.length).toBe(1)
-    expect(noticeWords(ls[0]!)).toEqual(DUE_SAT)
+    expect(noticeWords(ls[0]!)).toEqual({ ...DUE_SAT, name: 'Your SANS availability is needed.' })
   })
 
   it('on Wed 15 Jul, before the date: the line is there from the save — he may file ahead (D2340, narrowing D2327)', () => {
@@ -184,7 +184,7 @@ describe('D2338 (2) — his bell lists the planned days with nothing filed (from
     plan(SAT, 'rocky'); plan(FRI, 'rocky')
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
     at(2026, 7, 17); runPoOutcomes(); raptorNotify()
-    expect(noticeWords(sansLines('rocky')[0]!).what).toBe('You\'re planned on Fri 17, Sat 18 Jul with nothing filed. Tap to file.')
+    expect(noticeWords(sansLines('rocky')[0]!).what).toBe('You\'re planned on Fri 17, Sat 18 Jul with nothing filed. Tap to file for availability.')
   })
 
   it('a tap opens the SANS calendar at the first of the days, that day open', () => {
@@ -200,17 +200,18 @@ describe('D2338 (2) — his bell lists the planned days with nothing filed (from
 })
 
 /* TAKEN BACK WITH THE POSTING THAT MADE IT (his standing rule — D1693, D1699, D1710; the "off the manpower" line, also worked
-   out, the same — D1696): an unread line simply goes; a read one keeps its words struck through, "taken back · <who>",
-   unread; the presser is told nothing. Filing, or a day leaving, is no take-back: the line only shrinks or goes. */
+   out, the same — D1696): an unread line simply goes. His D2391 narrows D1699 for this line alone: a read one is not struck
+   through, it goes, and he gets one plain line saying what changed, unread; the presser is told nothing. Filing, or a day
+   leaving, is no take-back: the line only shrinks or goes. */
 describe('D2338 (2) — the bell line taken back with its posting', () => {
   /* Hex reads his bell ("Mark all read", his own command), then Saber is signed in again */
   const hexReads = () => { signInAs('hex'); expect(markAllNoticesRead()).toBe(true); signInAs('ad', 'a') }
   const ran = () => { plan(SAT, 'rocky'); expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify(); at(2026, 7, 17); runPoOutcomes(); raptorNotify(); expect(sansLines('rocky').length).toBe(1) }
   /* (a kind not built yet, so read as a plain string) */
   const backOf = (pid: string) => noticesFor(pid).filter(n => String((n.what || [])[0]?.k) === 'sansback').map(n => noticeWords(n))
-  /* (his D2341/D2342: the first sentence struck as the name, the days sentence struck without "Tap to file"; nothing filed, so
-     nothing hidden and no third sentence) */
-  const STRUCK = { name: 'You\'re SANS from Fri 17 Jul.', nameStruck: true, day: '', struck: 'You\'re planned on Sat 18 Jul with nothing filed.', what: 'taken back', who: 'Saber' }
+  /* (his D2391's words; nothing filed, so nothing hidden: the title alone) */
+  const TOLD = (name: string) => ({ name, day: '· Saber', what: '', who: '' })
+  const UNDONE = TOLD('You\'re no longer posted out as SANS.')
 
   it('unread, then "Undo post out": the line simply goes', () => {
     ran()
@@ -222,40 +223,40 @@ describe('D2338 (2) — the bell line taken back with its posting', () => {
   /* (a read line's "taken back" is a STORED line, written by the posting's own take-back — leavewar/sync.ts postingLinesOf,
      retractPostingLines — and passed by the gate as owed by the posting's change: warLinesOwed, state/perms.ts
      WAR_LINE_KINDS) */
-  it('read, then "Undo post out": struck through, "taken back · Saber", unread', () => {
+  it('read, then "Undo post out": it goes, and one plain line says so, unread (D2391)', () => {
     ran(); hexReads()
     expect(undoPostOut('rocky')).toBe(true); raptorNotify()
     expect(sansLines('rocky')).toEqual([])
-    expect(backOf('rocky')).toEqual([STRUCK])
+    expect(backOf('rocky')).toEqual([UNDONE])
     expect(unreadFor('rocky'), 'unread: his bell lights').toBe(1)
   })
 
-  it('read, then the posting moved later: struck through the same way', () => {
+  it('read, then the posting moved later: the line names his new date (D2391)', () => {
     ran(); hexReads()
     expect(postOut('rocky', '2026-07-24', 'sans')).toBe(true); raptorNotify()
     expect(sansLines('rocky')).toEqual([])
-    expect(backOf('rocky')).toEqual([STRUCK])
+    expect(backOf('rocky')).toEqual([TOLD('Your SANS date moved to Fri 24 Jul.')])
   })
 
-  it('read, then the posting given another outcome after it ran: struck; Saber, who changed it, told nothing', () => {
+  it('read, then the posting given another outcome after it ran: one plain line; Saber, who changed it, told nothing', () => {
     ran(); hexReads()
     expect(postOut('rocky', FRI_ISO, 'none')).toBe(true); raptorNotify()
     expect(sansLines('rocky')).toEqual([])
-    expect(backOf('rocky')).toEqual([STRUCK])
+    expect(backOf('rocky')).toEqual([UNDONE])
     expect(backOf(me()!), 'the admin who changed it gets nothing').toEqual([])
   })
 
-  it('read, taken back, then the same SANS posting made again: the struck line and one new line, unread; a tap on the struck line opens the SANS calendar', () => {
+  it('read, taken back, then the same SANS posting made again: the plain line and one new line, unread; a tap on the plain line opens the SANS calendar', () => {
     ran(); hexReads()
     const first = sansLines('rocky')[0]!.id
     expect(undoPostOut('rocky')).toBe(true); raptorNotify()
     expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify(); runPoOutcomes(); raptorNotify()
     expect(!!P('rocky').san, 'SANS again from Friday').toBe(true)
-    expect(backOf('rocky')).toEqual([STRUCK])
+    expect(backOf('rocky')).toEqual([UNDONE])
     const again = sansLines('rocky')
     expect(again.length).toBe(1)
     expect(again[0]!.id, 'news again: not the id he read').not.toBe(first)
-    expect(unreadFor('rocky'), 'the struck line and the new one, both unread').toBe(2)
+    expect(unreadFor('rocky'), 'the plain line and the new one, both unread').toBe(2)
     const struck = noticesFor('rocky').find(n => String((n.what || [])[0]?.k) === 'sansback')!
     openNotice(struck)
     expect(CURPAGE).toBe('inputs')

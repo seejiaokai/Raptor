@@ -82,6 +82,14 @@ export function hasReadSaved(pid: string, n: Pick<Notice, 'id' | 'at'>, prior?: 
   return !!s && (n.at <= s.upto || s.ids.includes(n.id))
 }
 
+/** HIS READ RECORD ITSELF — his SANS reminder's id names the days it said, so whether he has read those days is asked of
+ *  the ids he holds (leavewar/sansunfiled.ts, D2394 2a). `seenOf` — this device's copy; `seenSavedOf` — as saved, or as it
+ *  stood before the command running (its change's before-image), as hasReadSaved asks it. */
+export function seenOf(pid: string): Readonly<Seen> { return SEEN[pid] || { upto: 0, ids: [] } }
+export function seenSavedOf(pid: string, prior?: { before: unknown }): Readonly<Seen> {
+  return readSeen(prior ? prior.before : store.get(NOTICESEEN_PFX + pid, null)) || { upto: 0, ids: [] }
+}
+
 function write(pid: string, next: Seen): boolean {
   const res = commitSettingsIntent('notices.seen', { owner: pid }, () => { store.set(NOTICESEEN_PFX + pid, next) })
   if (!(res as any).ok) { noticeSeenLoad(); return false }
@@ -94,10 +102,13 @@ export function markNoticeRead(id: string): boolean {
   const n = pid ? allNoticesFor(pid).find(x => x.id === id) : null
   if (!pid || !n || !isUnread(n, pid)) return false
   const cur = SEEN[pid] || { upto: 0, ids: [] }
-  /* an id whose notice is gone (its maker's Undo took it) can never be listed again — it leaves the record here */
+  /* an id whose notice is gone (its maker's Undo took it) can never be listed again — it leaves the record here. An earlier
+     version of his live SANS reminder stays (its id names its days, D2394 2a): it is still the record that he read it */
   const live = new Set(allNoticesFor(pid).filter(x => x.at > cur.upto).map(x => x.id))
-  return write(pid, { upto: cur.upto, ids: [...new Set([...cur.ids, id])].filter(x => live.has(x)).sort() })
+  const reminders = new Set([...live].map(reminderBase).filter(Boolean))
+  return write(pid, { upto: cur.upto, ids: [...new Set([...cur.ids, id])].filter(x => live.has(x) || reminders.has(reminderBase(x))).sort() })
 }
+const reminderBase = (id: string): string | null => (id.startsWith('sansdue:') ? id.split('~')[0]! : null)
 /** IDS OF LINES HIS OWN ACT TOOK AWAY, dropped from the read record of the person signed in (the posting sheet's Undo post out
  *  — leavewar/sync.ts retractPostingLines; the code read's 2, 5 Nov 26): a posting set again for the same date has a
  *  worked-out line with the same id, which must come back to him unread. His own row, by his own `notices.seen` command;

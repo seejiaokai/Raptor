@@ -30,7 +30,7 @@
    A NOTICE IS NEVER REWRITTEN ONCE MADE (Fable F9; D148). What a person has READ is his own record
    (state/noticeseen.ts): were reading to write to the notice, the maker's Undo of his change would be refused —
    "Ranger changed this after your action" — by the read of the very person it told. */
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, sansOnP } from '../engine/people'
 import { odOut, isOD, dateOrd, inpLabel, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned, inputSpanIso, inputSquadrons } from '../engine/inputs'
 import { homeHandle } from '../engine/roster'
 import { hhmm } from '../engine/time'
@@ -97,19 +97,23 @@ export type NoticePart =
   /* HIS SANS DAYS WITH NOTHING FILED (owner D2338, 22 Nov 26 — "on that date his bell tells him the planned days with nothing
      filed, a tap opening the SANS calendar"). About no input (`iid` is ''): `days` — the days, first first (ISO), from his
      SANS posting's date on, he is planned with us and has filed no SANS availability. Worked out by his own bell from the
-     schedule as it stands, never stored (leavewar/sansunfiled.ts), so it shrinks as he files and goes once all are. */
+     schedule as it stands, never stored (leavewar/sansunfiled.ts), so it shrinks as he files and goes once all are. `from`
+     — his SANS posting's date; none for a man ticked SANS with no posting (D2394 2b: "Your SANS availability is needed."). */
   | { k: 'sansdue'; days: string[]; from?: string }
-  /* …TAKEN BACK WITH THE POSTING THAT MADE IT (his D1693, D1699, D1710 — every line is taken back by the undo of what made
-     it): the posting taken back ("Undo post out"), or its date moved or another outcome given — run or not yet run, since
-     his line shows from the save (D2340). A stored line to him, by the admin who did it, never to that admin; its `day` the
-     posting's date (the gate matches it to the posting changed — leavewar/sansunfiled.ts sansBackCovered). `days` — what
-     his live line said, where he had READ it (else empty: an unread line simply goes), shown struck through, then "taken
-     back · <who>" (backWords); `hid` — his SANS availability the change HID, today on (owner D2341, 23 Nov 26), said
-     after it: "Your SANS availability for Sat 18 Jul is hidden while you're not SANS that day." */
-  | { k: 'sansback'; days: string[]; hid?: string[] }
+  /* …AND WHEN HIS SANS POSTING OR TICK CHANGES (his D2391, 23 Nov 26: his bell says plainly what changed and what it means,
+     NARROWING D1699 for this line alone: the reminder he read is not struck through, it simply goes). A stored line to him,
+     by the admin who did it, never to that admin; its `day` the posting's date, or the day of the untick (the gate matches
+     it to the change — leavewar/sansunfiled.ts sansBackCovered). `how` — what changed, and so the words (noticeWords):
+     `later` / `earlier` his date moved (to `to`), `undone` Undo post out, `other` another outcome, `untick` his Quals SANS
+     tick taken off. `days` — the reminder he had READ (else empty): only ever the reason a line is owed, never shown.
+     `hid` — his SANS availability the change HID, today on (D2341). `back` — this line is the "taken back" of an untick
+     line he had read, its Undo pressed (D1693, D1699). A line with no `how` was written before D2391 (demo data only). */
+  | { k: 'sansback'; days: string[]; hid?: string[]; how?: SansBackHow; to?: string; back?: true; over?: string[]; kept?: true }
 
 /** what a posting out did on its date, for the admins' bells ([POSTOUT-RUN-NOTICE]) */
 export type PoOutcome = 'overseas' | 'delete' | 'sans' | 'none'
+/** what changed of his SANS, for his bell (D2391's A–E) */
+export type SansBackHow = 'later' | 'earlier' | 'undone' | 'other' | 'untick'
 
 /** what the war did to a man's leave, for his bell (M4 9.1, 9.4a, 9.7) */
 export type LwDid = 'approved' | 'refused' | 'repend' | 'putback' | 'moved' | 'deleted' | 'added' | 'bidmoved' | 'biddel' | 'retyped'
@@ -773,6 +777,8 @@ export function noticeLive(n: Notice): boolean {
      is the follow-up's own line, not the step's, so the next Undo cannot take it; it is shown only while the line it
      repeats is held (the decision stands), and only the newest "again" of that line */
   const w: any = (n.what || [])[0]
+  /* HIS SANS LINE WHOSE "HIDDEN" WORDS ARE NO LONGER TRUE (D2394 Q6): see sansBackLeft */
+  if (w && w.k === 'sansback' && !sansBackLeft(n)) return false
   if (w && w.k === 'lw' && w.again && w.ref) {
     if (!NOTICES.some(x => x.id === w.ref)) return false
     for (const x of NOTICES) {
@@ -879,15 +885,35 @@ export function noticePostingBack(to: string, by: string | null, who: string, o:
   noteWarMade(id)
   return true
 }
-/** HIS SANS-DAYS LINE TAKEN BACK (D2338 with D1693, D1699, D1710): one line to the man who had read it, pushed INSIDE the
- *  posting's own take-back command (leavewar/sync.ts retractPostingLines → leavewar/sansunfiled.ts sansLineBack), by the
- *  admin who pressed it — never to him. `day` — the posting's date. */
-export function noticeSansBack(to: string, by: string | null, days: readonly string[], day: string, at: number = Date.now(), hid: readonly string[] = []): boolean {
+/** HIS SANS POSTING OR TICK CHANGED (D2391, with D1693, D1710): one line to him, pushed INSIDE the change's own command
+ *  (leavewar/sansunfiled.ts sansTakeBack), by the admin who did it — never to him. `day` — the posting's date, or the day
+ *  of the untick; `said` — what changed (`how`, the new date `to`, `back` for an untick's "taken back"). */
+export function noticeSansBack(to: string, by: string | null, days: readonly string[], day: string, at: number = Date.now(), hid: readonly string[] = [],
+  said: { how?: SansBackHow; to?: string; back?: true; over?: string[]; kept?: true } = {}): boolean {
   if (!here(to) || (by != null && to === by)) return false
   const id = mint(at)
-  NOTICES.push({ id, to, by, at, iid: '', name: 'Your SANS availability', day, what: [{ k: 'sansback', days: [...days], ...(hid.length ? { hid: [...hid] } : {}) }] })
+  NOTICES.push({ id, to, by, at, iid: '', name: 'Your SANS availability', day, what: [{ k: 'sansback', days: [...days], ...(hid.length ? { hid: [...hid] } : {}), ...said }] })
   noteWarMade(id)
   return true
+}
+/* THE DAYS A LINE SAYS ARE HIDDEN THAT STILL ARE (D2394 Q6): a day he is SANS on again shows and counts again by itself
+   (D2341), so the line stops naming it. Read from his record as it stands, never stored. */
+// any: a part read from a stored line, its fields unchecked until here; the engine's person record is untyped
+function sansStillHidden(to: string, p: any): string[] {
+  const person: any = PEOPLE[to]
+  return (Array.isArray(p?.hid) ? sansDays({ days: p.hid }) : []).filter(d => !sansOnP(person, d))
+}
+/* IS ANYTHING OF THIS LINE LEFT TO SAY? (D2394 Q6 — "the line with it if nothing is left"; the coordinator's reading 3: the
+   hidden sentence goes once none of its days is hidden, and the line with it unless something else is owed — a reminder
+   he had read (`days`, or `kept` from a line this one replaced).) A line a later one replaced (`over`) no longer shows.
+   A "taken back" stays. */
+function sansBackLeft(n: Notice): boolean {
+  // any: a notice part is read by its kind
+  const p: any = (n.what || [])[0]
+  if (p.back) return true
+  if (NOTICES.some(x => x.to === n.to && ((x.what || [])[0] as any)?.k === 'sansback' && (((x.what || [])[0] as any).over as unknown[] | undefined)?.includes(n.id))) return false
+  if (Array.isArray(p.hid) && p.hid.length > 0 && sansStillHidden(n.to, p).length > 0) return true
+  return !!p.how && (sansDays(p).length > 0 || !!p.kept)
 }
 /** the posting a line is about, or null — the bell's tap asks it (ui/topstate.ts openNotice) */
 export function postOf(n: Pick<Notice, 'what'>): { who: string; o: PoOutcome; acct: boolean } | null {
@@ -1007,10 +1033,10 @@ function partWords(p: NoticePart): string {
     /* a taken-back line's own words are "taken back"; what it took back is said struck through beside them (backWords) */
     case 'lwback': return 'taken back'
     case 'poback': return 'taken back'
-    /* (the days themselves are the line's date — noticeWords; more than three are counted here) */
+    /* (only an untick line's "taken back" reads so — D1693; every other SANS line has its own words: sansBackWords) */
     case 'sansback': return 'taken back'
-    /* (his own words, D2340 — the old "Planned, no availability filed" was not clear, D2342) */
-    case 'sansdue': return `You're planned on ${sansDaysWords(sansDays(p))} with nothing filed. Tap to file.`
+    /* (his own words, D2340, D2390 — the old "Planned, no availability filed" was not clear, D2342) */
+    case 'sansdue': return `You're planned on ${sansDaysWords(sansDays(p))} with nothing filed. Tap to file for availability.`
   }
 }
 /* HIS SANS DAYS, AS THE LINE'S DATE (D2338): the first three named, each month once at the end of its run of days, as the
@@ -1025,7 +1051,7 @@ function sansDays(p: any): string[] {
   return p && Array.isArray(p.days) ? p.days.filter((d: unknown): d is string => typeof d === 'string' && ISO_DAY.test(d)) : []
 }
 /* (past three, "and 2 more" after the dates, part of the list — chat 147's rewording, the agent's reading of D2342) */
-function sansDaysWords(days: readonly string[]): string {
+export function sansDaysWords(days: readonly string[]): string {
   const shown = days.slice(0, SANS_DAYS_NAMED), more = days.length - shown.length
   return shown.map((d, i) => { const w = noticeDay(d); const next = shown[i + 1]; return next && next.slice(0, 7) === d.slice(0, 7) ? w.replace(/ [A-Za-z]{3}$/, '') : w }).join(', ')
     + (more > 0 ? ` and ${more} more` : '')
@@ -1050,7 +1076,6 @@ function stretchWords(a: string, b: string): string {
    always the original line's own (one body: partWords). A move made before its line kept where it took the leave reads
    "LL moved" — demo data only (D56). */
 function backWords(p: NoticePart): string {
-  if (p.k === 'sansback') { const d = sansDays(p); return d.length ? `You're planned on ${sansDaysWords(d)} with nothing filed.` : '' }
   if (p.k === 'poback') return partWords({ k: 'po', who: p.who, o: p.o, ...(p.acct ? { acct: true as const } : {}) })
   if (p.k !== 'lwback') return ''
   if (p.d === 'open' || p.d === 'close') return partWords({ k: 'lwopen', a: p.a, b: p.b, open: p.d === 'open' })
@@ -1058,6 +1083,33 @@ function backWords(p: NoticePart): string {
     if (!p.to) return `${lwCode(p.c || '')} ${p.d === 'moved' ? 'moved' : 'bid moved'}`
   }
   return partWords({ k: 'lw', c: p.c || '', a: p.a, b: p.b, d: p.d, ...(p.w ? { w: p.w } : {}), ...(p.to ? { to: p.to, tb: p.tb } : {}) })
+}
+/* HIS SANS POSTING OR TICK CHANGED, IN HIS WORDS (D2391's A–E, as drawn: docs/mock/2026-11-24-sans-words/): a bold title,
+   who did it beside it in the bell's day style, then one sentence, which names only the days still hidden (D2394 Q6) */
+// any: a part read from a stored line, its fields unchecked until here
+function sansBackWords(n: Notice, p: any): { name: string; day: string; what: string; who: string; nameStruck?: boolean } {
+  const who = n.by ? cs(n.by) : ''
+  const title = (): string => {
+    const to = typeof p.to === 'string' && ISO_DAY.test(p.to) ? noticeDay(p.to) : ''
+    switch (p.how as SansBackHow) {
+      case 'later': case 'earlier': return `Your SANS date moved to ${to}.`
+      case 'untick': return "You're no longer SANS."
+      default: return "You're no longer posted out as SANS."
+    }
+  }
+  /* the "taken back" of an untick line he had read (D1693, D1699): its own title struck through */
+  if (p.back) return { name: title(), nameStruck: true, day: '', what: 'taken back', who }
+  const hid = sansStillHidden(n.to, p)
+  /* (a line written before D2391: the sentence it always had, or nothing) */
+  if (!p.how) return { name: n.name, day: '', what: hid.length ? `Your SANS availability for ${sansDaysWords(hid)} is hidden while you're not SANS ${hid.length === 1 ? 'that day' : 'those days'}.` : '', who }
+  const list = sansDaysWords(hid), that = hid.length === 1 ? 'that day' : 'those days'
+  const back = `It comes back if you're SANS ${that} again.`
+  const body = !hid.length ? ''
+    /* (moved earlier hides nothing by itself; a day it names here was carried from a line it replaced, and is before his date) */
+    : p.how === 'later' || p.how === 'earlier' ? `You're active until then, so the SANS availability you filed for ${list} is hidden. ${back}`
+    : p.how === 'other' ? `The SANS availability you filed for ${list} is hidden while you're not SANS ${that}.`
+    : `You're active again, so the SANS availability you filed for ${list} is hidden. ${back}`
+  return { name: title(), day: who ? `· ${who}` : '', what: body, who: '' }
 }
 /** A LINE OF THE LIST, IN THE SHORTER WORDING (D769): the input and its date; what happened — the first two things,
  *  where a save changed several — and who did it ('' where the app did). */
@@ -1088,21 +1140,15 @@ export function noticeWords(n: Notice): { name: string; day: string; what: strin
     const p: any = PEOPLE[String(w.who)]
     return { name: p && p.cs ? String(p.cs) : n.name, day: noticeDay(n.day), what: partWords(w), who: n.by ? cs(n.by) : '', struck: backWords(w) }
   }
-  /* HIS SANS DAYS WITH NOTHING FILED (D2338), IN HIS OWN WORDS (D2340, D2342 — "The wording is not clear"): one plain
-     sentence, "You're SANS from Fri 17 Jul. / You're planned on Sat 18, Mon 20 Jul with nothing filed. Tap to file.";
+  /* HIS SANS DAYS WITH NOTHING FILED (D2338), IN HIS OWN WORDS (D2340, D2342 — "The wording is not clear"; D2390): one
+     plain sentence, "You're SANS from Fri 17 Jul. / You're planned on Sat 18, Mon 20 Jul with nothing filed. Tap to file
+     for availability."; a man with no SANS date ahead, "Your SANS availability is needed." over the same (D2394 2b);
      nobody named — the app worked it out */
   if (w && w.k === 'sansdue') {
-    const from = typeof w.from === 'string' && ISO_DAY.test(w.from) ? w.from : n.day
-    return { name: `You're SANS from ${noticeDay(from)}.`, day: '', what: partWords(w), who: '' }
+    const from = typeof w.from === 'string' && ISO_DAY.test(w.from) ? w.from : ''
+    return { name: from ? `You're SANS from ${noticeDay(from)}.` : 'Your SANS availability is needed.', day: '', what: partWords(w), who: '' }
   }
-  /* …and taken back (D1699): the whole line struck — "~~You're SANS from Fri 17 Jul.~~ / ~~You're planned on Sat 18 Jul
-     with nothing filed.~~ · taken back · Saber" (the struck days only where he had read it) — then what the change hid
-     (D2341): "Your SANS availability for Sat 18 Jul is hidden while you're not SANS that day." */
-  if (w && w.k === 'sansback') {
-    const hid = Array.isArray(w.hid) ? sansDays({ days: w.hid }) : []
-    const more = hid.length ? `Your SANS availability for ${sansDaysWords(hid)} is hidden while you're not SANS ${hid.length === 1 ? 'that day' : 'those days'}.` : ''
-    return { name: `You're SANS from ${noticeDay(n.day)}.`, nameStruck: true, day: '', struck: backWords(w), what: partWords(w), who: n.by ? cs(n.by) : '', ...(more ? { more } : {}) }
-  }
+  if (w && w.k === 'sansback') return sansBackWords(n, w)
   /* (a bid it replaced on the Leave War is said after the rest, never cut by the first-two rule — M4 9.3a: "You were added ·
      replaces your LL bid") */
   const rb = (n.what || []).filter(p => p.k === 'rbid')

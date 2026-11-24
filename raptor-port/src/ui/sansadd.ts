@@ -17,7 +17,7 @@ import { rosterOf } from '../engine/roster'
 import { notify } from '../state/store'
 import { flyAnswer } from '../leavewar/sync'
 import { todayIso } from '../engine/editlog'
-import { fmt, sansRefusal } from './inputedit'
+import { fmt, sansRefusal, sansRunTrim } from './inputedit'
 import { HOOKS } from '../engine/hooks'
 import { setInpEdit } from './pops'
 
@@ -32,8 +32,12 @@ export const maySansAdd = (iso?: string): boolean => isAdmin() || isSans(me(), i
 
 export function openSansAdd(from: string, until?: string): boolean {
   const [iso, end] = until && until < from ? [until, from] : [from, until]
-  if (!maySansAdd(iso)) {
-    /* A SANS MAN WHOSE SANS STARTS LATER THAN THE RUN HE PICKED IS TOLD WHY, never met with nothing (the FULL check's
+  /* A RUN THAT REACHES HIS SANS DATE IS HIS TO FILE (his D2388, 23 Nov 26): the window opens on the run he picked, and the
+     save takes the days from his date on and says which it left out (ui/inputedit.tsx sansCut) — every way of picking
+     days comes through here or through that save. */
+  const reaches = (id: string | null | undefined): boolean => !!id && !!PEOPLE[id] && !!end && !!sansRunTrim(id, iso, end)
+  if (!maySansAdd(iso) && !reaches(me())) {
+    /* A SANS MAN WHOSE SANS STARTS LATER THAN THE WHOLE RUN HE PICKED IS TOLD WHY, never met with nothing (the FULL check's
        walk, chat 152, W8-1: Ranger, posted out as SANS from Fri 17 Jul, dragged Thu 16 → Sat 18 and no window opened and
        nothing was said). The words are the save's own refusal (ui/inputedit.tsx sansRefusal), so the calendar and the
        window never differ. A man who is not SANS at all is offered no add on this calendar, so his stays silent. */
@@ -45,9 +49,12 @@ export function openSansAdd(from: string, until?: string): boolean {
     return false
   }
   const mine = me()
-  const who = isSans(mine, iso) ? mine
+  const offered = (id: string) => !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special
+  const who = isSans(mine, iso) || reaches(mine) ? mine
     /* (a SANS man of the page's own squadron — the SANS calendar stays on his own, D2132; the reshape plan §3.2 A-ii) */
-    : rosterOf(pageUnit('own'), iso).find(id => isSans(id, iso) && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special)
+    : rosterOf(pageUnit('own'), iso).find(id => isSans(id, iso) && offered(id))
+      /* (…or, on a run no man is SANS at the start of, the first whose date it reaches — D2388) */
+      ?? rosterOf(pageUnit('own'), iso).find(id => reaches(id) && offered(id))
   const single = !end || end === iso
   setInpEdit({
     _new: true, _calendar: true, _ctx: 's', person: who, type: TYPE,
