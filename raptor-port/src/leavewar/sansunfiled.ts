@@ -145,9 +145,9 @@ export function sansUnfiledDays(pid: string): string[] {
   CACHE.set(pid, out)
   return out
 }
-// any: a day of the engine's week is untyped (a verbatim port, src/engine/data.ts)
 /* (each entry: the week, its days, who each day seats — kept — and, for a saved week, its days' labels with their year;
    null for the week on screen, whose days carry their own) */
+// any: a day of the engine's week is untyped (a verbatim port, src/engine/data.ts)
 function weeksHeld(today: string): Array<[string, any[], Held['named'], string[] | null]> {
   if (WEEKS) return WEEKS
   const cur = String(CURWEEK)
