@@ -129,6 +129,11 @@ None is decided here. The recommendation is the host's unless a designer's is na
 
 ## 3. The host's calls — technical, told to him, not asked
 
+**Narrowed the same evening by his D2611 (told to every chat by the readings-lapse chat):** a line below that words a
+note, or reads what one of his rulings covers — which reason the note names first, a bell line left unread, which
+press is refused, the adjusted words — is not settled here: it goes onto the questions page beside H1–H13, each with a
+worked example. What stays the host's is how it is built.
+
 - With two reasons to refuse, the note names the window first, then Retry at the next press; a refusal always comes
   before the Tracker's question, so he never discards chart edits only to be refused (both designers).
 - A refused bell line stays unread and its list stays open; a refused switch never runs later by itself — a fresh press
