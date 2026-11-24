@@ -1,0 +1,127 @@
+{
+ "pictures": [],
+ "cases": {
+  "phone-webkit": {
+   "log": [
+    "bundle index-DIr933hk.js",
+    "bundle index-DIr933hk.js",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"17:00\"} on 2026-07-13: new input [\"imwv5issue2stu2\"]; asked [\"document\"]; note \"\"",
+    "bundle index-DIr933hk.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwv5j464aizqfh\"]; asked []; note \"\"",
+    "bundle index-DIr933hk.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwv5jgap0j73j4\"]; asked []; note \"\"",
+    "bundle index-DIr933hk.js",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwv5jvsqs6ur7v\"]; asked []; note \"\"",
+    "bundle index-DIr933hk.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwv5k8oh5wp258\"]; asked []; note \"\"",
+    "bundle index-DIr933hk.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Sat brief\"} on 2026-07-18: new input [\"imwv5kp6z7whwoe\"]; asked [\"oil\"]; note \"\"",
+    "OIL Earn (W4) tap: locator.tap: Timeout 4000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#sc",
+    "bundle index-DIr933hk.js",
+    "bundle index-DIr933hk.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwv5mq8c672y3j\"]; asked []; note \"\"",
+    "filed {\"type\":\"LL\",\"people\":[\"rocky\"],\"from\":\"08:00\",\"to\":\"17:00\"} on 2026-07-15: new input [\"imwv5mvmh1ipscr\"]; asked [\"document\"]; note \"\"",
+    "bundle index-DIr933hk.js"
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "W2b phone-webkit ALL AVAIL start 0730 under Personal Inputs, Tab: the Common Programme row reads 07:30 at once; the caret's box holds",
+   "FAIL",
+   "{\"stored\":450,\"progHas0730\":false,\"progStarts\":[\"07:45\",\"08:00\"],\"caret\":{\"focus\":\"imwv5iezz7iai2r.end\",\"moved\":0},\"progBefore\":\"⠿ COMMON PROGRAMME Auto sort + Item To take an input off, press Reject on it in Personal Inputs below. ITEM START END ⠿ + ADD CXⓘ■✕ TRAINING ALL AVAIL 45 + ADD \"}",
+   "a-phone-webkit-W2b-after-tab.png"
+  ],
+  [
+   "W2c phone-webkit leave end 0900 typed in the Unavailable row, Tab — RECORD the other sections at once",
+   "RECORD",
+   "{\"stored\":[480,540],\"caret\":{\"focus\":\"imwv5issue2stu2.rmks\",\"moved\":0},\"before\":{\"availHasRanger\":false,\"rangerPucks\":[\"puck sm warn hard boxred\"],\"warnPucks\":12,\"warnList\":\"▸ ⚠ 21 issues · 9 warnings\"},\"after\":{\"availHasRanger\":false,\"rangerPucks\":[\"puck sm warn hard boxred\"],\"warnPucks\":12,\"warnList\":\"▸ ⚠ 18 issues · 7 warnings\"},\"availRewritten\":false}",
+   "a-phone-webkit-W2c-before.png, a-phone-webkit-W2c-after-tab.png"
+  ],
+  [
+   "W2d phone-webkit Personal Inputs folded; Ground Programme START 0915, Tab: the heading keeps its count; opened, the row reads 09:15",
+   "PASS",
+   "{\"folded\":true,\"headBefore\":\"⠿ PERSONAL INPUTS 1 input · 1 on programme ⌄\",\"headAfter\":\"⠿ PERSONAL INPUTS 1 input · 1 on programme ⌄\",\"piStart\":\"09:15\",\"caret\":{\"focus\":\"gr:2.2.end\",\"moved\":0}}",
+   "a-phone-webkit-W2d-after-tab-folded.png, a-phone-webkit-W2d-opened.png"
+  ],
+  [
+   "W2e phone-webkit \"abc\" in the input's start, Tab: a note, the box back to 08:00, the Ground Programme row 08:00",
+   "PASS",
+   "{\"note\":\"abc is not a time. Try 0900 or 09:00.\",\"box\":\"08:00\",\"ground\":\"08:00\",\"stored\":480,\"caret\":{\"focus\":\"imwv5jgap0j73j4.end\",\"moved\":0}}",
+   "a-phone-webkit-W2e-note.png"
+  ],
+  [
+   "W3 phone-webkit Ranger's row of a shared leave: 0900, 1100, \"own hours\" — his own input, Hex keeps 08:00–10:00",
+   "FAIL",
+   "{\"rowsBefore\":[{\"k\":\"imwv5jvsqs6ur7v~bane.str\",\"who\":\"LL LATE Ranger IP till 15 Jul\",\"s\":\"08:00\",\"e\":\"10:00\",\"r\":\"\"},{\"k\":\"imwv5jvsqs6ur7v~rocky.str\",\"who\":\"LL LATE C Hex C till 15 Jul\",\"s\":\"08:00\",\"e\":\"10:00\",\"r\":\"\"},{\"k\":\"imwv5jlfv8f03sm.str\",\"who\":\"OL Cobra IP till 15 Jul\",\"s\":\"\",\"e\":\"\",\"r\":\"Overseas leave — off island\"},{\"k\":\"imwv5jlfvwinkiv.str\",\"who\":\"ATT C Grit C till 17 Jul\",\"s\":\"\",\"e\":\"\",\"r\":\"Medically down\"},{\"k\":\"imwv5jlfv98fxgu.str\",\"who\":\"OD C Nomad C till 17 Jul REJECT\",\"s\":\"\",\"e\":\"\",\"r\":\"Overseas duty — exercise, off island\"},{\"k\":\"imwv5jlhcedlsfr.str\",\"who\":\"OIL C Gambit C till 15 Jul\",\"s\":\"\",\"e\":\"\",\"r\":\"\"}],\"afterFirst\":[],\"rowsAfter\":[{\"k\":\"imwv5jvsqs6ur7v~bane.str\",\"who\":\"LL LATE Ranger IP till 15 Jul\",\"s\":\"09:00\",\"e\":\"11:00\",\"r\":\"own hours\"},{\"k\":\"imwv5jvsqs6ur7v~rocky.str\",\"who\":\"LL LATE C Hex C till 15 Jul\",\"s\":\"08:00\",\"e\":\"10:00\",\"r\":\"\"},{\"k\":\"imwv5jlfv8f03sm.str\",\"who\":\"OL Cobra IP till 15 Jul\",\"s\":\"\",\"e\":\"\",\"r\":\"Overseas leave — off island\"},{\"k\":\"imwv5jlfvwinkiv.str\",\"who\":\"ATT C Grit C till 17 Jul\",\"s\":\"\",\"e\":\"\",\"r\":\"Medically down\"},{\"k\":\"imwv5jlfv98fxgu.str\",\"who\":\"OD C Nomad C till 17 Jul REJECT\",\"s\":\"\",\"e\":\"\",\"r\":\"Overseas duty — exercise, off island\"},{\"k\":\"imwv5jlhcedlsfr.str\",\"who\":\"OIL C Gambit C till 15 Jul\",\"s\":\"\",\"e\":\"\",\"r\":\"\"}],\"records\":[],\"carets\":[{\"focus\":\"imwv5jvsqs6ur7v~bane.end\",\"moved\":0},{\"focus\":\"imwv5jvsqs6ur7v~bane.rmks\",\"moved\":0},{\"focus\":\"imwv5jvsqs6ur7v~rocky.str\",\"moved\":0}]}",
+   "a-phone-webkit-W3-start-0900.png, a-phone-webkit-W3-after-three.png"
+  ],
+  [
+   "W10 phone-webkit the Tab route from the input's Ground Programme START: text boxes of the Board only, down the screen; Shift+Tab retraces",
+   "FAIL",
+   "{\"stops\":[\"2.ground:gr:2.2.str@462\",\"2.ground:gr:2.2.end@462\",\"2.ground:gr:2.2.rmks@497\",\"2.ground:gr:2.0.prog@555\",\"2.ground:gr:2.0.str@555\",\"2.ground:gr:2.0.end@555\",\"2.ground:gr:2.0.rmks@585\",\"2.ground:gr:2.1.prog@642\",\"2.ground:gr:2.1.str@642\",\"2.ground:gr:2.1.end@642\",\"2.ground:gr:2.1.rmks@672\",\"2.ground:gn:2@766\",\"2.inputs:imwv5k8oh5wp258.str@462\",\"2.inputs:imwv5k8oh5wp258.end@462\",\"2.inputs:imwv5k8oh5wp258.rmks@492\",\"2.inputs:imwv5k8oh5wp258.end@462\",\"2.inputs:imwv5k8oh5wp258.str@462\",\"2.ground:gn:2@290\",\"2.ground:gr:2.1.rmks@196\"],\"wentBackUp\":1}",
+   "a-phone-webkit-W10-route-end.png"
+  ],
+  [
+   "KEEP phone-webkit OIL Earn (W4) pressed with the caret in the input's start box",
+   "MADE",
+   "{\"before\":\"imwv5kp6z7whwoe.str@board\",\"rightAfter\":\"imwv5kp6z7whwoe.str@board\",\"settled\":\"imwv5kp6z7whwoe.str@board\"}",
+   "a-phone-webkit-KEEP-OIL.png"
+  ],
+  [
+   "KEEP phone-webkit Undo (W5 a) pressed with the caret in the input's start box",
+   "COULD NOT BE MADE",
+   "{\"before\":\"imwv5kp6z7whwoe.str@board\",\"rightAfter\":\"none\",\"settled\":\"none\"}",
+   "a-phone-webkit-KEEP-Undo.png"
+  ],
+  [
+   "KEEP phone-webkit next day (W7) pressed with the caret in the input's start box",
+   "COULD NOT BE MADE",
+   "{\"before\":\"imwv5kp6z7whwoe.str@board\",\"rightAfter\":\"none\",\"settled\":\"none\"}",
+   "a-phone-webkit-KEEP-next.png"
+  ],
+  [
+   "KEEP phone-webkit the keyboard: 40 Tabs from the box — does the route reach a button?",
+   "RECORD (a button reached)",
+   "[\"INPUT\",\"TEXTAREA\",\"BUTTON:Reject\",\"SPAN\"]",
+   ""
+  ],
+  [
+   "W11 phone-webkit signed in as Ranger (a member): no box on the schedule takes typing",
+   "PASS",
+   "{\"page\":\"viewsched\",\"board\":false,\"editable\":0,\"triedBoard\":true}",
+   "a-phone-webkit-W11-member.png"
+  ],
+  [
+   "N1b phone-webkit 60 letters in the Board's take-off box, Tab: the note's letters inside its border",
+   "FAIL",
+   "{\"note\":\"abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx\",\"box\":{\"l\":12,\"r\":390,\"w\":378,\"top\":798,\"bottom\":848},\"innerR\":373,\"inkR\":399,\"lines\":2,\"vw\":402,\"vh\":874,\"at\":\"foot\",\"boxAfter\":\"10:35\"}",
+   "a-phone-webkit-N1b.png"
+  ],
+  [
+   "N1c phone-webkit 60 letters in an input's start under Personal Inputs (Board), Tab: the note's letters inside its border",
+   "FAIL",
+   "{\"note\":\"abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx\",\"box\":{\"l\":12,\"r\":390,\"w\":378,\"top\":798,\"bottom\":848},\"innerR\":373,\"inkR\":399,\"lines\":2,\"vw\":402,\"vh\":874,\"at\":\"foot\",\"boxAfter\":\"08:00\"}",
+   "a-phone-webkit-N1c.png"
+  ],
+  [
+   "N1e phone-webkit 60 letters in an Unavailable row's start (Board), Tab: the note's letters inside its border",
+   "FAIL",
+   "{\"note\":\"abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx\",\"box\":{\"l\":12,\"r\":390,\"w\":378,\"top\":798,\"bottom\":848},\"innerR\":373,\"inkR\":399,\"lines\":2,\"vw\":402,\"vh\":874,\"at\":\"foot\",\"boxAfter\":\"08:00\"}",
+   "a-phone-webkit-N1e.png"
+  ],
+  [
+   "N1d phone-webkit 60 letters in the same input's start on the week, Tab: the note's letters inside its border",
+   "FAIL",
+   "{\"note\":\"abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx\",\"box\":{\"l\":12,\"r\":390,\"w\":378,\"top\":798,\"bottom\":848},\"innerR\":373,\"inkR\":399,\"lines\":2,\"vw\":402,\"vh\":874,\"at\":\"foot\",\"boxAfter\":\"08:00\"}",
+   "a-phone-webkit-N1d.png"
+  ],
+  [
+   "N4 phone-webkit the long note with an input's window up — RECORD where it stands",
+   "RECORD",
+   "{\"box\":{\"l\":12,\"r\":390,\"w\":378,\"top\":10,\"bottom\":60},\"innerR\":373,\"inkR\":399,\"lines\":2,\"vw\":402,\"vh\":874,\"at\":\"top\"}",
+   "a-phone-webkit-N4-window-up.png"
+  ]
+ ]
+}

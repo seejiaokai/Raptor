@@ -221,6 +221,8 @@ rather than start another walker in the night. Not walked:
 - **Astra's finding 2, the Blue/Red question put back with the caret's box held in place — not walked and not tested**
   (no question could be opened in the test browser; §16). A WebKit look on a phone is owed.
 
+The second walk (25 Nov 26, sent by the host) walked these orders and Astra's finding 2: §18.
+
 ## 14. The gate counts — Part B
 
 - Local, on the code as committed: the Board's held-section file 10 of 10; the touched suites (§4's list) 22 files,
@@ -274,3 +276,46 @@ orders of §13, the WebKit look owed for Astra's finding 2, the tidiness notes`
 GitHub's run on the commit carrying the reads' fixes, this sheet and the walk's files: read to its end by the helper
 and given in its closing report to the host (`D:/rw4/night3/notes-for-the-host.md`), not pushed here, so the run is not
 restarted by a notes push.
+
+## 18. The second walk (25 Nov 26, sent by the host)
+
+A fresh Opus walker, the orders of §13 and Astra's finding 2, on `build-fix3` (searched: it carries all three source
+changes of `ebff3189b` — it was built before that commit was made) and `main`'s `build-new3`; task B also on
+`build-fix2` (the first cut, without the Blue/Red line). Desktop Chromium 1440 × 900 and phone WebKit 402 × 874 with
+touch; task B also desktop WebKit. No page or console error on any run. The report whole, with every number:
+`parts/r4wf/walk2-report.md`; pictures and each run's facts: `../img/handpass/2026-11-25-r4-walk-faults/walk2/`;
+scripts `scripts/handpass/r4wf-w2-*.mjs`.
+
+**Astra's finding 2 — proven with the browser's own scroll anchoring switched off, not visible with it on.** The
+question raised (Blue/Red tracking on, "DS FOR RU" in a formation's Remarks), a callsign typed in the second wave with
+Tab, then a box under Personal Inputs clicked and a time typed with Tab: the flying section is rewritten with the
+question open and the caret below it. The box holding the caret moved: anchoring on — 0px on `main`, the first cut and
+the fix, in all three browsers; anchoring off (`overflow-anchor:none`) — the first cut **+85px** (desktop Chromium),
+**+117px** (phone WebKit), **+77px** (desktop WebKit), the fix 0px, `main` 0px (nothing of the day rewritten under a
+caret). Astra's own steps ("+ Line" pressed with the caret in a Ground Programme box) cannot be made: the press takes the
+caret. Whether his iPhone's Safari anchors this list was not checked.
+
+| Order | `main` desktop / phone | This branch desktop / phone |
+|---|---|---|
+| W2 (b) ALL AVAIL start under Personal Inputs → Common Programme row | FAIL / FAIL (still 08:00) | PASS / PASS (07:30 at once, first in order) |
+| W2 (c) a leave's end in Unavailable → Available crew, warning list | FAIL / FAIL (Available crew not rewritten) | PASS / PASS |
+| W2 (d) the phone's folded Personal Inputs | PASS / PASS | PASS / PASS |
+| W2 (e) "abc" refused | PASS / PASS | PASS / PASS |
+| W3 one man's row of a shared timed leave, three edits | **FAIL / FAIL** | **FAIL / FAIL** — the second and third edits saved onto the other man's leave (below) |
+| W8 the box holding the caret, at every Tab | PASS / PASS (0px) | PASS / PASS (0px) |
+| W9 a row rejected while another holds a half-typed remark | RECORD / RECORD | RECORD / RECORD — the remark on its own input only |
+| W10 the Tab route; a re-ordered day | PASS; FAIL (the old fault) | PASS; PASS |
+| W5 (a) Undo / Redo of a drag, each section once | PASS / PASS | PASS / PASS |
+| W4, W5 (a), W7 with the caret kept through the press | COULD NOT BE MADE — no person can: each press takes the caret, and the Tab route never reaches those buttons | the same |
+| W11 the member; a frozen issued version and back to live | PASS / PASS | PASS / PASS |
+| N1 (b)–(e) the long word at four more doors | PASS / FAIL (letters to 399 against 373) | PASS / PASS (372 against 373) |
+| N1 (f) template time boxes | NOT WALKED | NOT WALKED |
+| N4 the note with an input's window up | RECORD — at the top on the phone | RECORD — the same place, letters inside |
+| The week, the Inputs page, the bell after a change on the Board | the Board's row stale until closed; the rest agree | all agree; Ranger's bell the same lines as `main`'s |
+
+**W3, the one FAIL on this branch — older than this change (the same on `main`), and it hurts new data.** A leave for
+Ranger and Hex, Wed 15 Jul 08:00–10:00; on the Board's Unavailable list, Ranger's row: start 0900, Tab; end 1100, Tab;
+remarks "own hours", Tab. Expected: Ranger 09:00–11:00 "own hours" on a leave of his own, Hex unchanged. Seen: the first
+Tab gives Ranger his own leave (09:00–10:00), but his row, in the section holding the caret, keeps the shared leave's
+address, so the end and the remark go onto **Hex's** leave: once the caret leaves, Hex 08:00–11:00 "own hours", Ranger
+09:00–10:00 (`walk2/w3-fix3-phone-webkit/w3-phone-webkit-caret-left.png`). Left for the host; nothing fixed.
