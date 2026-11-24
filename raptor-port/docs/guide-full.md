@@ -247,7 +247,8 @@ barely more than one.
 - **NARROWED 5 Oct 26 by D590 — who reviews what Opus writes:** Astra reviews it, and Sol 6.1 is the second reader where
   two are required (the code reads on earned leave, published records, permissions or saved data; an important plan's red
   team; a changed working guide). Fable 5.1 is on call only — a bug Opus 5.5 cannot crack, or a big open-ended plan, on his
-  word each time. Opus 5.5 still plans and builds, and still reviews what Codex plans or builds; the writer never reviews
+  word each time (narrowed 21 and 24 Nov 26 by D2258 and D2440: the agent picks Fable itself for the work it ranks high
+  risk, other readers beside it; "on call only" holds for the rest). Opus 5.5 still plans and builds, and still reviews what Codex plans or builds; the writer never reviews
   its own work. On the first high-consequence change Opus wrote, Fable reads beside Astra and Sol, once, and the three
   reads and Fable's cost go to him (`docs/bug-check-order.md` §4). Wherever the text below says "Fable and Astra review",
   read it this way.

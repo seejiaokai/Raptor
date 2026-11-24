@@ -233,12 +233,14 @@ fixes of 3 Oct (`handpass/2026-10-05-codex-stack-check.md` §10.1); **Sol 6.1 ke
 *Since D1734 and D1770: Astra as above, standing; Sol 6.1 only on his call — where two are required and he has not called
 Sol, the fresh, blind Opus reader holds the second seat; where Astra cannot run, a fresh Opus reader takes the one-reviewer
 jobs (D903, D1770 — the agent's reading).*
+*Since D2258 and D2440 (21 and 24 Nov 26): the agent picks Fable itself for the work it ranks high risk, other readers
+beside it, with no end date; "Fable is on call only" above holds for the rest.*
 
 **Who reads the finished code now (D790, D903, D1734, D1770):** Astra is the standing reviewer (D1770, 8 Nov 26 — "Yes Astra is the standing reviewer"). Sol 6.1 is called only when he calls for him (D1734; D1743's window, when Sol was called wherever a second reader fitted, closed Mon 9 Nov 26 19:00). Beside Astra's read:
 **every job that needs a code read gets a FRESH Opus read of its finished code — a reader that did not write it and has seen
 neither the walk's report nor another reader's, given the same brief** — on the riskiest changes too (rank 2's list above): **Fable
 reads nothing unless he calls for it (D903, 15 Oct 26 — "don't include fable in anything anymore unless I call for it";
-it ends the standing Fable read of those changes D790 gave).** The chat that wrote the code never reads its own work. Every claim of either
+it ends the standing Fable read of those changes D790 gave).** *Narrowed by D2258 and D2440 (21 and 24 Nov 26): on work the agent ranks high risk a fresh, blind Fable helper reads too, beside Astra's and the fresh Opus read, on the agent's pick; for the rest D903 holds.* The chat that wrote the code never reads its own work. Every claim of either
 reader is written as a failing test before it is believed. A plan's read before a build follows the How we work page's rules for plans (D1760, D1770). A changed working guide is read by Astra every time (D1761, 8 Nov 26: "call in Astra"), with a second reader beside him — Sol 6.1 on his call, otherwise a fresh, blind Opus reader. A job that goes without
 Astra's read, or without Sol 6.1's where two are required, is still written on the one list (`OUTSTANDING.md` `[NO-ASTRA-LIST]`), and the reads owed are put to him to
 call or drop — never called by the agent on its own (D761, D1734, D1770). *How it was reached:* a blind Opus read was tried beside Fable's on two jobs

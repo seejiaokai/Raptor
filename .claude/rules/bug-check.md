@@ -54,14 +54,16 @@ Then, before you execute anything:
 - **Who they are now:** Astra is the standing reviewer, with no end date (D1770): for work Opus wrote Astra
   reviews, called without asking him each time — the rules diet's reworded steps among them, which never go on without his
   read (D1738, D1739), and every working-guide change (D1761). Sol 6.1 is called only when he calls for him; otherwise, where
-  two readers are required, the fresh, blind Opus reader keeps the second seat (the agent's reading). Fable is on call
-  only — a bug Opus cannot crack, or a big open-ended plan — on his word. What Codex wrote, Opus reads (D590, D601,
+  two readers are required, the fresh, blind Opus reader keeps the second seat (the agent's reading). Fable: the agent picks it
+  for the work it ranks high risk, other readers beside it (D2258, D2269, D2440 — the three tiers are in D2258's full
+  row); for anything else it is on call only, on his word. What Codex wrote, Opus reads (D590, D601,
   D790, D903, D1734, D1738, D1739, D1761, D1770).
 - **Beside Astra's read,** every job that needs a code read gets a fresh, blind Opus read of its finished code, never
   by the chat that wrote it; a job that went without Astra's read, or without Sol 6.1's where two are required, goes on the reads-owed list (D790, D903, D1734, D1738,
   D1739, D1761, D1770).
-- **Fable is used for nothing unless he calls for it** — the riskiest changes get no Fable read: Astra's and the fresh
-  Opus read (D903, D1770).
+- **Fable is used for the work the agent ranks high risk, and for nothing else unless he calls for it** — on that work
+  a fresh, blind Fable helper reads beside Astra's and the fresh Opus read, never in their place (D903, D1770, D2258,
+  D2440).
 
 ## What is not a finding (D56) — read this before you spend anything
 
