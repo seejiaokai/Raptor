@@ -160,6 +160,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ALL-AVAIL-WINDOW-FLAGS] — the ALL AVAIL window shows flags that have nothing to do with the event's time (his D2331, 22 Nov 26): his pick: just the available people, no flags; and (his D2333) a crowd that changed on a published day highlighted in the amendment's colour — the puck when the count fell, the person who joined in the window when it rose (hollow while waiting, solid once out; who left, and both at once, settled in the drawing); one drawing round for the window with [ALL-AVAIL-REMOVE-BY-HAND]; its design lesson owed.
 - [ALL-AVAIL-REMOVE-BY-HAND] — take a person out of an ALL AVAIL crowd by hand (his D2330, 22 Nov 26): not built; a mock-up and five points for him first.
 - [BELL-WORDS-CLEAR] — every bell line saying an earlier line no longer stands, reworded in the SANS lines' plain style (his D2392, D2393), Fable rewording, drawn first; after the SANS job.
+- [SANS-WORDS-LEFTOVERS] — five things the SANS words job's reads found and left (a raw write during a command's delivery, an admin writing another man's read record, a posting's "undone" trusting this device, the read record only growing, a phone note covering the SANS day window's ✕); filed 24 Nov 26.
 - [FABLE-READ-FAULTS] — seven of eight fixed, OIL F2 built (D2294, D2299), walked and re-walked on `claude/fable-read-faults-4104f0` (pull request 820, chats 133–139) — LIVE 22 Nov 26. His answers of 22 Nov 26 (chat 139): D2313 (SANS from its date everywhere — closes (e) and (b)) and D2314 (the publish note's names) BUILT 22 Nov 26 on `claude/sans-from-date-139` (chat 140, pull request 824) — LIVE 22 Nov 26, his "merge live", D2327; (i) ALL AVAIL leaving out a man posted out as SANS — FIXED 22 Nov 26 on `claude/allavail-sans-postout-141` (chat 141, pull request 825), its bug check (FULL) in hand, his look and "merge live" owed; (g), (h), (j), (k), (l) open; D2315 (Leave War F2 waits for the database step), D2316 (the held name kept) as built.
 - [MSQ-MIDNIGHT-CLOCK] — at the Transfer step, a roll-call of every window and page open at a man's midnight swap (band, close with a note, or refresh), and at the database step, which clock decides "today" (each device's own today; a detachment abroad meets it first).
 - [NOTICE-UNDO-RETRACT] — every bell line retracted by the undo of what made it: unread goes, read becomes "… taken back · <who>" (his D1693, 5 Nov 26) — step 1 (the posting line) LIVE 5 Nov 26; step 2 (the input lines, the holiday's OIL line) open, his to place. — the posting line first, on `claude/postout-bell-look`; draw the new words first (D1625).
@@ -2959,6 +2960,28 @@ bid) is not called undone. Drawn on the page of 24 Nov 26 (`raptor-port/docs/moc
 `claude/allavail-drawings-156`), reworded again by Fable under his D2422.
 **Also (his D2563, 24 Nov 26, chat 166):** an input's "Deleted" line is reworded in the same plain style — "Training on Wed
 15 Jul was deleted. · Saber" — drawn for him first, then built with this job.
+
+### [SANS-WORDS-LEFTOVERS] What the SANS words job's reads found and left (filed 24 Nov 26, chat 166)
+
+**What:** found by the round 1–2 blind reads and the builder on `claude/allavail-sans-postout-141` (reports
+`raptor-port/docs/superpowers/briefs/2026-11-24-sans-words-reread-{security,opus,fable}.md`), outside what that job
+fixed. (1) **A write made while a command is being delivered, or in a start-of-command hook, is saved raw and never
+judged** — the write guard asks `isCommitting()`, true then too; the read record (`noticeseen:`) has the same gap. Fix:
+for the "typed command only" rows require being inside the command's own step with the store enlisted (security
+reread, "Older" 1). (2) **His squadron's admin can rewrite a man's read record in any command** (an `account.update`
+putting `noticeseen:rocky` darkens Hex's lit reminder) — the data model §11 gives an admin only read; fix: refuse a
+change to `noticeseen:<pid>` unless it is that man's own `notices.seen`, admins as members, a verified replay apart
+("Older" 2). (3) **A posting's "undone" line to an admin still trusts this device's memory of what he read**
+(`retractPostingLines` asks `hasRead`, not the saved record) — the database step's, when read state is shared (Opus Q3,
+security "Older" 3). (4) **The read record only grows** — every day he ever read, one id per reminder base, never
+pruned; dropping days before today would bound it — with [NOTICE-RETENTION] (Opus Q2, Fable Q4). (5) **On a phone
+every passing note covers the SANS day window's date and ✕** (walk w13, picture
+`raptor-port/docs/img/handpass/2026-11-24-sans-words/w13/s19d-s19d-01-added-phone.png`) — a lead, to reproduce first.
+Two more the builder listed went with his D2560 (the planning mark removed): the prune of a past-day planning mark
+inside another admin's step, and a remote or seed origin refused by the planning gate.
+**Place:** (1) and (2) are permission holes, each a failing test first and a security read (D1411) — a job of their
+own after the SANS words job merges, or folded into it if his look reopens the gate; (3) and (4) at the database step;
+(5) reproduced on the next SANS walk.
 
 ### [FABLE-READ-FAULTS] The faults Fable's reads of 21–22 Nov found outside the two-squadron work — fix now (his D2268, 22 Nov 26)
 **What:** proved by failing tests on the night's copy (very probably live today), none fixed: **OIL F1** (MED — a man posted
