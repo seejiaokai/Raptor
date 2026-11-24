@@ -1,0 +1,47 @@
+  W19 a nothing else open: timing → timing
+  W19 b typing in the search box (its value after: "ab"): timing → timing
+  W19 c ALL AVAIL opened after, Escape twice: avail+timing → timing → timing
+  W19 c2 ALL AVAIL, then the Timing window pressed, Escape: avail+timing → avail+timing
+  W19 d the changes window: avail+changes+timing → avail+timing
+  W19 e the bell's list: avail+bell+timing → avail+timing
+  W19 f the board, Escape twice: avail+board+timing → avail+board+timing → avail+board+timing
+  W19 g an input's window: inputwin+timing → timing
+  W19 h the Leave War's Open for bidding sheet: dates+timing → timing
+RECORD W19 — ALL AVAIL put on Saturday | a nothing else open: timing → timing | b typing in the search box (its value after: "ab"): timing → timing | c ALL AVAIL opened after, Escape twice: avail+timing → timing → timing | c2 ALL AVAIL, then the Timing window pressed, Escape: avail+timing → avail+timing | d the changes window: avail+changes+timing → avail+timing | e the bell's list: avail+bell+timing → avail+timing | f the board, Escape twice: avail+board+timing → avail+board+timing → avail+board+timing | g an input's window: inputwin+timing → timing | h the Leave War's Open for bidding sheet: dates+timing → timing
+  W19-without a nothing else open: nothing → nothing
+  W19-without b typing in the search box (its value after: "ab"): nothing → nothing
+  W19-without c ALL AVAIL opened after, Escape twice: avail → nothing → nothing
+  W19-without d the changes window: changes → nothing
+  W19-without e the bell's list: bell → nothing
+  W19-without f the board, Escape twice: board → nothing → nothing
+  W19-without g an input's window: inputwin → nothing
+  W19-without h the Leave War's Open for bidding sheet: dates → nothing
+RECORD W19-without — ALL AVAIL put on Saturday | a nothing else open: nothing → nothing | b typing in the search box (its value after: "ab"): nothing → nothing | c ALL AVAIL opened after, Escape twice: avail → nothing → nothing | d the changes window: changes → nothing | e the bell's list: bell → nothing | f the board, Escape twice: board → nothing → nothing | g an input's window: inputwin → nothing | h the Leave War's Open for bidding sheet: dates → nothing
+PASS   W20-desk-board — the board open — at the Timing window's ✕: floatwin.timingwin.front > BUTTON.win-x
+PASS   W20-desk-board-folded — the corner button on the board: abtn.timing-pill > BUTTON.abtn.timing-pill; the board's Done: schedBoard > SPAN.bl (a press there is Done's: true)
+PASS   W20-desk-two-windows — ALL AVAIL's ✕ in front: availwin.front > BUTTON.win-x; the Timing window's ✕ under ALL AVAIL: availwin.front > SPAN.rpuck; pressed at 994,335, its ✕ then: floatwin.timingwin.front > BUTTON.win-x
+RECORD W20-desk-sheet — the "Open for bidding" sheet open — at the Timing window's ✕:  > DIV.sheetscrim.raised
+PASS   W20-desk-W21-month — a month in the sheet, at its middle: bidsheet.raised > BUTTON.od-m.open.past
+PASS   W20-phone-drawer — the ☰ menu open — at the Timing window's ✕: drawer > DIV#drawer.drawer.open
+PASS   W20-phone-board — the board open — at the Timing window's ✕: floatwin.timingwin.front > BUTTON.win-x
+PASS   W20-phone-board-folded — the corner button on the board: abtn.timing-pill > BUTTON.abtn.timing-pill; the board's Done: schedBoard > SPAN.bi (a press there is Done's: true)
+FAIL   W20-phone-ran — the step stopped: TimeoutError: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#timingRoot .timing-pill')[22m
+[2m    - locator resolved to <button type="button" class="abtn timing-pill">Timing 0.1 s</button>[22m
+[2m  - attem
+PASS   W23-top-bar — 1 row(s): Quals, first time: 0.1 s (want one "Quals")
+PASS   W23-keyboard — 1 row(s): Logic, first time: 0.1 s (want one "Logic")
+PASS   W23-top-bar-admin — 1 row(s): Admin, first time: 0.1 s (want one "Admin")
+PASS   W23-member-view-switch — 1 row(s): View-only Sched, opened before: 0.3 s (want one "View-only Sched")
+NOT WALKED W23-bell — no notice in the bell's list for the admin
+RECORD W23-back — Back from /?timing: now at about:blank (left the app)
+PASS   W26-change-undo — ALL AVAIL put on Saturday: the week's count shown; after Undo gone
+PASS   W26-inputwin-✕ — the input's window opened true, closed by ✕: true; the Timing window open true
+PASS   W26-inputwin-Escape — the input's window opened true, closed by Escape: true; the Timing window open true
+FAIL   W26-inputwin-a press outside — the input's window opened true, closed by a press outside: false; the Timing window open true
+FAIL   W26-ran — the step stopped: TimeoutError: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#histBtn')[22m
+[2m    - locator resolved to <button id="histBtn" class="abtn chgbtn" aria-pressed="false" aria-label="Changes" title="Changes — eve
+exit 0

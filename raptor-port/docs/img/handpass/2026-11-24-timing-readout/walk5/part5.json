@@ -1,0 +1,12 @@
+[
+ {
+  "id": "W35-a",
+  "v": "PASS",
+  "note": "calendar up true, the window opened from its button with the keys in it true; first Escape: calendar closed, window open; second Escape: window folded"
+ },
+ {
+  "id": "W35-b",
+  "v": "NOT WALKED",
+  "note": "the sheet's backdrop over the corner button (at it:  > DIV.sheetscrim.raised) — carried by TimingReadout-layers.test.tsx"
+ }
+]

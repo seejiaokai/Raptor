@@ -1,0 +1,1 @@
+PASS   W27 — band up true; 30 page rows; the window's top 93px, the top bar's foot 85px, the band 48–84px; at the band's Retry:  > BUTTON.

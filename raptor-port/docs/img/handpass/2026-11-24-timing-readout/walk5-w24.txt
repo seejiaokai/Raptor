@@ -1,0 +1,4 @@
+PASS   W24-hidden — the tab went hidden → visible (while behind: hidden); rows added: none
+PASS   W24-background-load — while behind: hidden; the tab went visible; loaded behind another tab: Site answered under 0.1 s · App loaded not timed, tab not in front · Sign-in shown not timed, tab not in front
+PASS   W24-front-load — opened in front: Site answered at 0.3 s · App loaded at 0.4 s · Sign-in shown at 0.5 s
+exit 0

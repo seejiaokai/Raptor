@@ -1,0 +1,102 @@
+[
+ {
+  "id": "W18",
+  "v": "RECORD",
+  "note": "no switch: Edit Schedule 1234 ms, View-only Sched 1199 ms (medians of 5) · open: Edit Schedule 802 ms, View-only Sched 956 ms (medians of 5) · folded: Edit Schedule 810 ms, View-only Sched 838 ms (medians of 5)"
+ },
+ {
+  "id": "W19",
+  "v": "RECORD",
+  "note": "a nothing else open: timing → nothing | b typing in the search box (its value after: \"ab\"): timing → timing | c ALL AVAIL: no \"who's available\" line on the week → — | d the changes window: changes+timing → timing | f the board, Escape twice: board+timing → board → nothing | g an input's window: no input bar in sight on the Inputs page → — | h the Leave War's Open for bidding sheet: dates+timing → timing"
+ },
+ {
+  "id": "W19-without",
+  "v": "RECORD",
+  "note": "a nothing else open: nothing → nothing | b typing in the search box (its value after: \"ab\"): nothing → nothing | c ALL AVAIL: no \"who's available\" line on the week → — | d the changes window: changes → nothing | f the board, Escape twice: board → nothing → nothing | g an input's window: no input bar in sight on the Inputs page → — | h the Leave War's Open for bidding sheet: dates → nothing"
+ },
+ {
+  "id": "W20-desk-board",
+  "v": "PASS",
+  "note": "the board open — at the Timing window's ✕: floatwin.timingwin.front > BUTTON.win-x"
+ },
+ {
+  "id": "W20-desk-board-folded",
+  "v": "FAIL",
+  "note": "the corner button on the board: abtn.timing-pill > BUTTON.abtn.timing-pill; the board's Done: schedBoard > SPAN.bl"
+ },
+ {
+  "id": "W20-desk-two-windows",
+  "v": "NOT WALKED",
+  "note": "no \"who's available\" line on Edit Schedule"
+ },
+ {
+  "id": "W20-desk-sheet",
+  "v": "RECORD",
+  "note": "the \"Open for bidding\" sheet open — at the Timing window's ✕:  > DIV.sheetscrim.raised"
+ },
+ {
+  "id": "W20-phone-drawer",
+  "v": "PASS",
+  "note": "the ☰ menu open — at the Timing window's ✕: drawer > DIV#drawer.drawer.open"
+ },
+ {
+  "id": "W20-phone-ran",
+  "v": "FAIL",
+  "note": "the step stopped: TimeoutError: page.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#topnav a[data-page=\"editsched\"]')\u001b[22m\n\u001b[2m    - locator resolved to <a class=\"\" tabindex=\"0\" data-admin=\"\" role=\"button\" data-page=\"editsched\">Edit"
+ },
+ {
+  "id": "W23-top-bar",
+  "v": "PASS",
+  "note": "1 row(s): Quals, first time: 0.1 s (want one \"Quals\")"
+ },
+ {
+  "id": "W23-keyboard",
+  "v": "PASS",
+  "note": "1 row(s): Logic, first time: 0.1 s (want one \"Logic\")"
+ },
+ {
+  "id": "W23-top-bar-admin",
+  "v": "PASS",
+  "note": "1 row(s): Admin, first time: 0.1 s (want one \"Admin\")"
+ },
+ {
+  "id": "W23-member-view-switch",
+  "v": "PASS",
+  "note": "1 row(s): View-only Sched, opened before: 0.3 s (want one \"View-only Sched\")"
+ },
+ {
+  "id": "W23-admin-ran",
+  "v": "FAIL",
+  "note": "the step stopped: TimeoutError: page.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#bell')\u001b[22m\n"
+ },
+ {
+  "id": "W23-member-drawer",
+  "v": "FAIL",
+  "note": "the member's ☰ pages: viewsched, inputs, quals, logic, leavewar, tracker, help → inputs(0 rows, undefined), quals(0 rows, undefined), logic(0 rows, undefined), leavewar(0 rows, undefined), tracker(0 rows, undefined), help(0 rows, undefined)"
+ },
+ {
+  "id": "W26-change-undo",
+  "v": "NOT WALKED",
+  "note": "no input bar in sight on the Inputs page"
+ },
+ {
+  "id": "W26-changes-✕",
+  "v": "PASS",
+  "note": "the changes window opened true, closed by ✕: true"
+ },
+ {
+  "id": "W26-changes-Escape",
+  "v": "PASS",
+  "note": "the changes window opened true, closed by Escape: true"
+ },
+ {
+  "id": "W26-signout",
+  "v": "PASS",
+  "note": "signed out to the sign-in card: true"
+ },
+ {
+  "id": "W26-errors",
+  "v": "PASS",
+  "note": "none"
+ }
+]

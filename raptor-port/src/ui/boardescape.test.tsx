@@ -15,6 +15,10 @@ import * as view from '../state/view'
 import { DAYS } from '../engine/data'
 import { setAirKey } from './pops'
 import { boardEscapeWants } from './boardescape'
+import * as React from 'react'
+import { FloatWin } from './FloatWindow'
+import { makeTimingReadout } from './TimingReadout'
+import type { TimingView } from './timingtext'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -188,6 +192,105 @@ describe('something over the board answers first', () => {
     expect(boardOpen()).toBe(true)
     await key('Escape')
     expect(boardOpen(), 'the next Escape closes the board').toBe(false)
+  })
+
+  /* THE ?timing READOUT'S WINDOW (the walk of 24 Nov 26, chat 164, W19 (f)): it opens by itself as the app starts and
+     stays up all session, so the board opened after it is the last thing opened — his D2112, Escape closes what opened
+     last. It was answering first: one Escape folded the readout, a second closed the board. The real readout, drawn
+     in a root of its own as ui/timingwindow.tsx draws it */
+  it('the ?timing window, up since the start: Escape closes the board first, then folds the window', async () => {
+    const tHost = document.createElement('div'); document.body.appendChild(tHost)
+    const tRoot = createRoot(tHost)
+    const Readout = makeTimingReadout({ React, FloatWin })
+    const tv: TimingView = { site: 300, app: 800, first: { screen: 'signin', t: 840 }, signin: null, pages: [],
+      freezes: { supported: true, n: 0, total: 0, max: 0 }, files: { supported: true, n: 1, bytes: 1, kept: 0, asked: 0 },
+      env: { browser: { name: 'Chrome', version: '131' }, cores: 4, memGB: 8, screen: '1366×768', window: '1366×657', scale: 1, openFor: 1 } }
+    try {
+      await act(async () => { tRoot.render(<Readout read={() => tv} subscribe={() => () => {}} version={() => 0} startOpen copy={async () => true} now={() => new Date()} />) })
+      expect($('.timingwin'), 'the readout is open').toBeTruthy()
+      ;(document.activeElement as HTMLElement | null)?.blur?.()
+      await openBoard(2)
+      await key('Escape')
+      expect(boardOpen(), 'the board, opened last, closes first').toBe(false)
+      expect($('.timingwin'), 'the readout stays open').toBeTruthy()
+      /* opened by itself, it is a bystander (the code reads of chat 165): Escape is its own only with the keys in it */
+      await key('Escape')
+      expect($('.timingwin'), 'the keys on nothing: the readout stays').toBeTruthy()
+      ;($('.timingwin .win-x') as HTMLElement).focus()
+      await key('Escape')
+      expect($('.timingwin'), 'the keys in it: Escape folds the readout').toBe(null)
+      expect($('.timing-pill')).toBeTruthy()
+    } finally {
+      await act(async () => { tRoot.unmount() }); tHost.remove()
+    }
+  })
+
+  /* THE CODE READS OF CHAT 165 (the fresh Opus read's F4; Astra's 1 and 6): with the readout up, (a) a picked seat put
+     down AND the readout folded on one Escape; (b) with the keys IN the readout, a sheet or panel underneath that hears
+     Escape at the page first (the Leave War's person window, the Tracker's Show All with a name half typed) closed
+     instead — one press, the wrong thing */
+  it('the ?timing window up: Escape puts a picked seat down and nothing else', async () => {
+    const tHost = document.createElement('div'); document.body.appendChild(tHost)
+    const tRoot = createRoot(tHost)
+    const Readout = makeTimingReadout({ React, FloatWin })
+    const tv: TimingView = { site: 300, app: 800, first: { screen: 'signin', t: 840 }, signin: null, pages: [],
+      freezes: { supported: true, n: 0, total: 0, max: 0 }, files: { supported: true, n: 1, bytes: 1, kept: 0, asked: 0 },
+      env: { browser: { name: 'Chrome', version: '131' }, cores: 4, memGB: 8, screen: '1366×768', window: '1366×657', scale: 1, openFor: 1 } }
+    try {
+      await act(async () => { tRoot.render(<Readout read={() => tv} subscribe={() => () => {}} version={() => 0} startOpen copy={async () => true} now={() => new Date()} />) })
+      await act(async () => { view.armSlot('d:2.0.0'); notify() })
+      expect(view.ARM, 'a seat is picked').toBeTruthy()
+      ;(document.activeElement as HTMLElement | null)?.blur?.()
+      await key('Escape')
+      expect({ seatDown: view.ARM == null, readoutOpen: !!$('.timingwin') }).toEqual({ seatDown: true, readoutOpen: true })
+    } finally {
+      await act(async () => { tRoot.unmount() }); tHost.remove()
+    }
+  })
+  it('the keys in the ?timing window: Escape folds it, and a panel listening at the page underneath never hears it', async () => {
+    const tHost = document.createElement('div'); document.body.appendChild(tHost)
+    const tRoot = createRoot(tHost)
+    const Readout = makeTimingReadout({ React, FloatWin })
+    const tv: TimingView = { site: 300, app: 800, first: { screen: 'signin', t: 840 }, signin: null, pages: [],
+      freezes: { supported: true, n: 0, total: 0, max: 0 }, files: { supported: true, n: 1, bytes: 1, kept: 0, asked: 0 },
+      env: { browser: { name: 'Chrome', version: '131' }, cores: 4, memGB: 8, screen: '1366×768', window: '1366×657', scale: 1, openFor: 1 } }
+    let heard = 0
+    /* as the Leave War's sheet (leavewar/ui/Sheet.tsx) and the Tracker (tracker/App.jsx) listen: at the page, first */
+    const panel = (e: KeyboardEvent) => { if (e.key === 'Escape') { heard++; e.preventDefault(); e.stopPropagation() } }
+    document.addEventListener('keydown', panel, true)
+    try {
+      await act(async () => { tRoot.render(<Readout read={() => tv} subscribe={() => () => {}} version={() => 0} startOpen copy={async () => true} now={() => new Date()} />) })
+      ;($('.timingwin .win-x') as HTMLElement).focus()
+      await key('Escape')
+      expect({ readoutOpen: !!$('.timingwin'), panelHeard: heard }).toEqual({ readoutOpen: false, panelHeard: 0 })
+    } finally {
+      document.removeEventListener('keydown', panel, true)
+      await act(async () => { tRoot.unmount() }); tHost.remove()
+    }
+  })
+
+  /* THE BELL'S LIST OVER THE ?timing WINDOW (the re-walk of 24 Nov 26, chat 165, W19 (e)): one Escape closed the list
+     AND folded the window — the list closed itself on the key without marking it used, and the window in front took the
+     same press (D2112: one press, one thing). Any movable window in front met the same; the readout, up all session,
+     made it the ordinary case */
+  it('the bell\'s list opened over the ?timing window: Escape closes the list only', async () => {
+    const tHost = document.createElement('div'); document.body.appendChild(tHost)
+    const tRoot = createRoot(tHost)
+    const Readout = makeTimingReadout({ React, FloatWin })
+    const tv: TimingView = { site: 300, app: 800, first: { screen: 'signin', t: 840 }, signin: null, pages: [],
+      freezes: { supported: true, n: 0, total: 0, max: 0 }, files: { supported: true, n: 1, bytes: 1, kept: 0, asked: 0 },
+      env: { browser: { name: 'Chrome', version: '131' }, cores: 4, memGB: 8, screen: '1366×768', window: '1366×657', scale: 1, openFor: 1 } }
+    try {
+      await act(async () => { tRoot.render(<Readout read={() => tv} subscribe={() => () => {}} version={() => 0} startOpen copy={async () => true} now={() => new Date()} />) })
+      ;(document.activeElement as HTMLElement | null)?.blur?.()
+      await click($('#notifyBell'))
+      expect($('.bell-list'), 'the bell\'s list is open').toBeTruthy()
+      await key('Escape')
+      expect($('.bell-list'), 'the list closed').toBe(null)
+      expect($('.timingwin'), 'the readout, opened before it, stays open').toBeTruthy()
+    } finally {
+      await act(async () => { tRoot.unmount() }); tHost.remove()
+    }
   })
 
   it('nothing is decided for a closed board, or off Edit Schedule', () => {

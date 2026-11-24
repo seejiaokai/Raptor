@@ -1,0 +1,82 @@
+[
+ {
+  "id": "W5-start",
+  "v": "PASS",
+  "note": "App loaded at 0.6 s, Sign-in shown at 1.1 s, Site answered at 0.3 s"
+ },
+ {
+  "id": "W5-signin",
+  "v": "PASS",
+  "note": "readout \"took 0.9 s\", outside 0.91 s"
+ },
+ {
+  "id": "W5-leavewar-1",
+  "v": "PASS",
+  "note": "row \"Leave War, first time · downloaded 134 KB: 1.9 s\" — outside 1.88 s; claw seen 18 times (download tag present)"
+ },
+ {
+  "id": "W5-tracker-1",
+  "v": "PASS",
+  "note": "row \"Tracker, first time · downloaded 120 KB: 2.5 s\" — outside 2.46 s; claw seen 1 times (download tag present)"
+ },
+ {
+  "id": "W5-editsched-1",
+  "v": "PASS",
+  "note": "row \"Edit Schedule, first time: 1.1 s\" — outside 1.13 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-viewsched-2",
+  "v": "PASS",
+  "note": "row \"View-only Sched, opened before: 1.1 s\" — outside 1.06 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-editsched-2",
+  "v": "PASS",
+  "note": "row \"Edit Schedule, opened before: 0.9 s\" — outside 0.92 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-inputs-1",
+  "v": "PASS",
+  "note": "row \"Inputs, first time: 0.9 s\" — outside 0.92 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-quals-1",
+  "v": "PASS",
+  "note": "row \"Quals, first time: 0.4 s\" — outside 0.41 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-logic-1",
+  "v": "PASS",
+  "note": "row \"Logic, first time: 0.5 s\" — outside 0.51 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-help-1",
+  "v": "PASS",
+  "note": "row \"Help, first time: 0.3 s\" — outside 0.29 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-admin-1",
+  "v": "PASS",
+  "note": "row \"Admin, first time: 0.4 s\" — outside 0.36 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-leavewar-2",
+  "v": "PASS",
+  "note": "row \"Leave War, opened before: 0.6 s\" — outside 0.57 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-tracker-2",
+  "v": "PASS",
+  "note": "row \"Tracker, opened before: 0.7 s\" — outside 0.67 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-viewsched-2",
+  "v": "PASS",
+  "note": "row \"View-only Sched, opened before: 0.8 s\" — outside 0.83 s; claw seen 0 times"
+ },
+ {
+  "id": "W5-errors",
+  "v": "PASS",
+  "note": "none"
+ }
+]

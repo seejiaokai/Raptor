@@ -1,0 +1,7 @@
+FAIL   W27 — band up true; 30 page rows; the window's top 12px, the top bar's foot 85px, the band 48–84px; at the band's Retry: floatwin.timingwin.front > DIV.win-bar
+PASS   W28 — the Tracker's row "first time · downloaded 120 KB: 0.4 s"; the server sent the Tracker's own files 119 KB and the Leave War's 134 KB meanwhile
+PASS   W29-leavewar — the person window up true; the Timing window opened from its button, the keys in it true; Escape: the Timing window open false, the person window still up true
+PASS   W29-leavewar-next — the next Escape (the keys back on the page): the person window up false
+PASS   W29-tracker — Show All up true; with the keys in the Timing window, Escape: the Timing window open false, Show All as it was true
+PASS   W30 — a seat picked true; one Escape: the seat put down true, the Timing window still open true
+PASS   W31 — Enter on the button: the keys in the window true; Escape folds it, the keys on the button true; Enter opens it again true; its ✕ by Enter, the keys on the button true

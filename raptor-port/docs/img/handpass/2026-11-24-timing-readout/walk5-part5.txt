@@ -1,0 +1,10 @@
+PASS   W33-desk — the Day templates box up true; at the Timing window's ✕: daytplModal > DIV#daytplModal.modal; at the box's ✕: daytplModal > BUTTON#daytplClose.x; closed by its ✕ true; the Timing window's ✕ then: floatwin.timingwin > BUTTON.win-x
+FAIL   W33-phone-ran — the step stopped: TimeoutError: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#admDayTpl')[22m
+[2m    - locator resolved to <button class="abtn" id="admDayTpl">Day templates…</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and 
+PASS   W34-desk — "Not kept" band at 0,56 1366×36; points of it under the Timing window: 0; the window 990,331 360×421
+PASS   W34-phone — "Not kept" band at 0,48 390×36; points of it under the Timing window: 0; the window 12,415 366×417 (phone)
+exit 0

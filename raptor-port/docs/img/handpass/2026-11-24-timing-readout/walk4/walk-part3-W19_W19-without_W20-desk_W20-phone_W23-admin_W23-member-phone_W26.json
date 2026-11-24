@@ -1,0 +1,102 @@
+[
+ {
+  "id": "W19",
+  "v": "RECORD",
+  "note": "ALL AVAIL put on Saturday | a nothing else open: timing → nothing | b typing in the search box (its value after: \"ab\"): timing → timing | c ALL AVAIL opened after, Escape twice: avail+timing → timing → nothing | c2 ALL AVAIL, then the Timing window pressed, Escape: avail+timing → avail | d the changes window: changes+timing → timing | f the board, Escape twice: board+timing → board → nothing | g an input's window: no input bar in sight on the Inputs page → — | h the Leave War's Open for bidding sheet: dates+timing → timing"
+ },
+ {
+  "id": "W19-without",
+  "v": "RECORD",
+  "note": "ALL AVAIL put on Saturday | a nothing else open: nothing → nothing | b typing in the search box (its value after: \"ab\"): nothing → nothing | c ALL AVAIL opened after, Escape twice: avail → nothing → nothing | d the changes window: changes → nothing | f the board, Escape twice: board → nothing → nothing | g an input's window: no input bar in sight on the Inputs page → — | h the Leave War's Open for bidding sheet: dates → nothing"
+ },
+ {
+  "id": "W20-desk-board",
+  "v": "PASS",
+  "note": "the board open — at the Timing window's ✕: floatwin.timingwin.front > BUTTON.win-x"
+ },
+ {
+  "id": "W20-desk-board-folded",
+  "v": "FAIL",
+  "note": "the corner button on the board: abtn.timing-pill > BUTTON.abtn.timing-pill; the board's Done: schedBoard > SPAN.bl"
+ },
+ {
+  "id": "W20-desk-two-windows",
+  "v": "FAIL",
+  "note": "ALL AVAIL's ✕: availwin.front > BUTTON.win-x; the Timing window's ✕: availwin.front > SPAN.rpuck"
+ },
+ {
+  "id": "W20-desk-sheet",
+  "v": "RECORD",
+  "note": "the \"Open for bidding\" sheet open — at the Timing window's ✕:  > DIV.sheetscrim.raised"
+ },
+ {
+  "id": "W20-desk-W21-month",
+  "v": "PASS",
+  "note": "a month in the sheet, at its middle: bidsheet.raised > BUTTON.od-m.open.past"
+ },
+ {
+  "id": "W20-phone-drawer",
+  "v": "PASS",
+  "note": "the ☰ menu open — at the Timing window's ✕: drawer > DIV#drawer.drawer.open"
+ },
+ {
+  "id": "W20-phone-ran",
+  "v": "FAIL",
+  "note": "the step stopped: TimeoutError: page.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#topnav a[data-page=\"editsched\"]')\u001b[22m\n\u001b[2m    - locator resolved to <a class=\"on\" tabindex=\"0\" data-admin=\"\" role=\"button\" data-page=\"editsched\">Ed"
+ },
+ {
+  "id": "W23-top-bar",
+  "v": "PASS",
+  "note": "1 row(s): Quals, first time: 0.1 s (want one \"Quals\")"
+ },
+ {
+  "id": "W23-keyboard",
+  "v": "PASS",
+  "note": "1 row(s): Logic, first time: 0.1 s (want one \"Logic\")"
+ },
+ {
+  "id": "W23-top-bar-admin",
+  "v": "PASS",
+  "note": "1 row(s): Admin, first time: 0.1 s (want one \"Admin\")"
+ },
+ {
+  "id": "W23-member-view-switch",
+  "v": "PASS",
+  "note": "1 row(s): View-only Sched, opened before: 0.3 s (want one \"View-only Sched\")"
+ },
+ {
+  "id": "W23-admin-ran",
+  "v": "FAIL",
+  "note": "the step stopped: TimeoutError: page.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#bell')\u001b[22m\n"
+ },
+ {
+  "id": "W23-member-drawer",
+  "v": "PASS",
+  "note": "the member's ☰ pages: viewsched, inputs, quals, logic, leavewar, tracker, help → inputs, quals, logic, leavewar, tracker, help"
+ },
+ {
+  "id": "W26-change-undo",
+  "v": "NOT WALKED",
+  "note": "no input bar in sight on the Inputs page"
+ },
+ {
+  "id": "W26-changes-✕",
+  "v": "PASS",
+  "note": "the changes window opened true, closed by ✕: true"
+ },
+ {
+  "id": "W26-changes-Escape",
+  "v": "PASS",
+  "note": "the changes window opened true, closed by Escape: true"
+ },
+ {
+  "id": "W26-signout",
+  "v": "PASS",
+  "note": "signed out to the sign-in card: true"
+ },
+ {
+  "id": "W26-errors",
+  "v": "PASS",
+  "note": "none"
+ }
+]

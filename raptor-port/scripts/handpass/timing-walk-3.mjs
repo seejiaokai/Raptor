@@ -1,0 +1,312 @@
+/* The ?timing readout's walk, part 3 (chat 164) — W18, W19, W20, W21, W23, W26 of the evidence sheet's combined list:
+   the window among the app's other windows, Escape, every door to a page, the plain-user round, and its own cost.
+   node scripts/handpass/timing-walk-3.mjs   (from raptor-port/, on a build already made). ONLY=W19 runs one. */
+import { serve, browserOf, fresh, DESK, PHONE, signIn, outsideTime, armOutside, openBy, readout, row, pageRows, waitRows, openWindow, topAt, pic, shotDir, judge, notWalked, saveResults, sleep, allAvailDay, inputBar } from './timing-walk-lib.mjs'
+
+const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null
+const on = id => !ONLY || ONLY.includes(id)
+const srv = await serve()
+const cr = await browserOf('chromium')
+const B = srv.base
+const secs = v => Number((/([\d.]+) s/.exec(v || '') || [])[1])
+async function scen(id, size, opts, fn) {
+  if (!on(id)) return
+  const s = await fresh(cr, size, opts)
+  const dir = shotDir(id)
+  try { await fn({ ...s, dir }) } catch (e) { judge(id + '-ran', false, 'the step stopped: ' + String(e).slice(0, 240)) }
+  if (s.errors.length) console.log(`  ${id} page errors: ${s.errors.join(' | ')}`)
+  await s.ctx.close()
+}
+const weekUp = page => page.waitForSelector('#vWeek .day', { state: 'attached', timeout: 60000 })
+const tOpen = async page => (await readout(page)).open
+/** what is open of the app's own windows and lists (each by the element that draws it, shown) */
+const shown = page => page.evaluate(() => {
+  const vis = s => [...document.querySelectorAll(s)].some(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden' })
+  return { avail: vis('.availwin:not([hidden])'), changes: vis('.chgwin:not([hidden])'), bell: vis('.bell-list, #bellList, .belllist'), board: vis('#schedBoard.open, #schedBoard:not([hidden]) .sb-line'), drawer: vis('#drawer.open'), inputwin: vis('.floatwin[data-win="inputedit"], #inpEditPop'), dates: vis('[data-testid="open-dates"]'), timing: !!document.querySelector('#timingRoot .timingwin') }
+})
+const esc = async page => { await page.keyboard.press('Escape'); await sleep(450) }
+
+/* W18 — does the window slow what it measures: Edit Schedule ↔ View-only Sched five times each way, 4× CPU */
+await scen('W18', DESK, { cpu: 1 }, async () => {})
+if (on('W18')) {
+  const med = a => { const s = [...a].sort((x, y) => x - y); return s[Math.floor(s.length / 2)] }
+  const res = {}
+  for (const [k, q, fold] of [['no switch', '', false], ['open', '?timing', false], ['folded', '?timing', true]]) {
+    const { ctx, page } = await fresh(cr, DESK, { cpu: 4 })
+    await page.goto(B + '/' + q); await signIn(page); await outsideTime(page, 'viewsched')
+    if (fold) { await page.waitForSelector('#timingRoot .timingwin'); await page.click('#timingRoot .timingwin .win-x') }
+    const t = []
+    for (let i = 0; i < 6; i++) for (const p of ['editsched', 'viewsched']) { await openBy(page, p); const ms = await outsideTime(page, p); if (i > 0) t.push([p, ms]) }
+    res[k] = { edit: med(t.filter(x => x[0] === 'editsched').map(x => x[1])), view: med(t.filter(x => x[0] === 'viewsched').map(x => x[1])) }
+    await ctx.close()
+  }
+  judge('W18', null, Object.entries(res).map(([k, v]) => `${k}: Edit Schedule ${v.edit} ms, View-only Sched ${v.view} ms (medians of 5)`).join(' · '))
+}
+
+/* W19 — Escape with the window open all session, against the same presses without the switch */
+for (const q of ['?timing', '']) {
+  const id = q ? 'W19' : 'W19-without'
+  await scen(id, DESK, {}, async ({ page, dir }) => {
+    const log = []
+    const step = async (name, before, after) => { log.push(`${name}: ${before} → ${after}`); console.log(`  ${id} ${name}: ${before} → ${after}`) }
+    const st = async () => { const s = await shown(page); return Object.entries(s).filter(([, v]) => v).map(([k]) => k).join('+') || 'nothing' }
+    await page.goto(B + '/' + q); await signIn(page); await weekUp(page); await sleep(800)
+    /* chat 165: the ALL AVAIL line the week's count needs, through the board (the premise chat 164's run missed) */
+    await allAvailDay(page); log.push('ALL AVAIL put on Saturday'); await openBy(page, 'viewsched'); await outsideTime(page, 'viewsched'); await sleep(400)
+    /* (a) nothing else open, the keys on the page */
+    await page.mouse.click(700, 140); let a = await st(); await esc(page); await step('a nothing else open', a, await st())
+    if (q) { await openWindow(page) }
+    /* (b) typing in the week's search box */
+    const sb = page.locator('#page-viewsched input[placeholder*="callsign"]').first()
+    if (await sb.count()) { await sb.click(); await page.keyboard.type('ab'); a = await st(); await esc(page); await step('b typing in the search box (its value after: "' + (await sb.inputValue()) + '")', a, await st()) }
+    if (q && !(await tOpen(page))) await openWindow(page)
+    /* (c) ALL AVAIL opened after the Timing window, then Escape twice */
+    await openBy(page, 'editsched'); await outsideTime(page, 'editsched'); await sleep(500)
+    const osn = page.locator('#eWeek [data-oilsent]:visible').first()
+    if (await osn.count()) {
+      await osn.scrollIntoViewIfNeeded(); await osn.click(); await sleep(600)
+      a = await st(); await pic(page, dir, 'avail-and-timing'); await esc(page); const b = await st(); await esc(page); await step('c ALL AVAIL opened after, Escape twice', a, b + ' → ' + await st())
+    } else await step('c ALL AVAIL', 'no "who\'s available" line on the week', '—')
+    if (q && !(await tOpen(page))) await openWindow(page)
+    /* (c2) ALL AVAIL opened, then the Timing window pressed (brought in front), Escape */
+    if (q && await osn.count()) {
+      await osn.click(); await sleep(600)
+      await page.click('#timingRoot .timingwin .win-bar', { position: { x: 60, y: 10 } }); await sleep(300)
+      a = await st(); await esc(page); await step('c2 ALL AVAIL, then the Timing window pressed, Escape', a, await st())
+      await esc(page); if (!(await tOpen(page))) await openWindow(page)
+    }
+    /* (d) the changes window */
+    if (await page.locator('#histBtn').count()) { await page.click('#histBtn'); await sleep(600); a = await st(); await esc(page); await step('d the changes window', a, await st()) }
+    if (q && !(await tOpen(page))) await openWindow(page)
+    /* (e) the bell's list */
+    if (await page.locator('#notifyBell').count()) { await page.click('#notifyBell'); await sleep(500); a = await st(); await pic(page, dir, 'bell'); await esc(page); await step('e the bell\'s list', a, await st()) }
+    if (q && !(await tOpen(page))) await openWindow(page)
+    /* (f) the Scheduler Board (opened by its probe: the board's door is not what this step is about) */
+    await page.evaluate(() => window.openScheduler && window.openScheduler(0)); await sleep(800)
+    a = await st(); await pic(page, dir, 'board-and-timing'); await esc(page); const fb = await st(); await esc(page)
+    await step('f the board, Escape twice', a, fb + ' → ' + await st())
+    if (await page.locator('#sbDone').isVisible().catch(() => false)) await page.click('#sbDone')
+    if (q && !(await tOpen(page))) await openWindow(page)
+    /* (g) an input's own window on the Inputs page */
+    await openBy(page, 'inputs'); await outsideTime(page, 'inputs'); await sleep(500)
+    const bar = await inputBar(page)
+    if (bar) { await bar.click(); await sleep(700); a = await st(); await esc(page); await step('g an input\'s window', a, await st()) }
+    else await step('g an input\'s window', 'no input bar in sight on the Inputs page', '—')
+    if (q && !(await tOpen(page))) await openWindow(page)
+    /* (h) the Leave War's "Open for bidding" sheet */
+    await openBy(page, 'leavewar'); await outsideTime(page, 'leavewar'); await sleep(800)
+    if (await page.locator('[data-testid="open-chip"]').count()) { await page.click('[data-testid="open-chip"]'); await sleep(600); a = await st(); await pic(page, dir, 'lw-sheet-and-timing'); await esc(page); await step('h the Leave War\'s Open for bidding sheet', a, await st()) }
+    else await step('h the Leave War sheet', 'no Open for bidding chip', '—')
+    judge(id, null, log.join(' | '))
+  })
+}
+
+/* W20 — over and under the other layers, each press hit-tested */
+for (const [id, size] of [['W20-desk', DESK], ['W20-phone', PHONE]]) {
+  await scen(id, size, {}, async ({ page, dir }) => {
+    const phone = size === PHONE
+    await page.goto(B + '/?timing'); await signIn(page); await weekUp(page); await sleep(600)
+    await openWindow(page)
+    await allAvailDay(page)
+    const xMid = async () => page.evaluate(() => { const x = document.querySelector('#timingRoot .timingwin .win-x'); if (!x) return null; const r = x.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2] })
+    if (phone) {
+      await page.click('#burger'); await sleep(500)
+      const m = await xMid(); const top = m ? await topAt(page, m[0], m[1]) : 'no ✕'
+      judge(id + '-drawer', !/timing|win-x/.test(top || ''), `the ☰ menu open — at the Timing window's ✕: ${top}`)
+      await pic(page, dir, 'drawer-over')
+      await page.mouse.click(380, 400); await sleep(400)
+    }
+    /* the board under the window (a phone has no top bar: its ☰ menu) */
+    await openBy(page, 'editsched', phone ? 'drawer' : 'top'); await outsideTime(page, 'editsched')
+    await page.evaluate(() => window.openScheduler && window.openScheduler(0)); await sleep(900)
+    if (!(await tOpen(page))) await openWindow(page)
+    let m = await xMid()
+    let top = m ? await topAt(page, m[0], m[1]) : null
+    judge(id + '-board', /win-x/.test(top || ''), `the board open — at the Timing window's ✕: ${top}`)
+    await pic(page, dir, 'over-the-board')
+    /* fold it on the board: the corner button over the board, the board's own controls beside it pressable */
+    await page.click('#timingRoot .timingwin .win-x'); await sleep(300)
+    const pb = (await readout(page)).pillBox
+    top = await topAt(page, pb.x + pb.w / 2, pb.y + pb.h / 2)
+    const sbDone = await page.locator('#sbDone').boundingBox().catch(() => null)
+    const doneTop = sbDone ? await topAt(page, sbDone.x + sbDone.width / 2, sbDone.y + sbDone.height / 2) : null
+    /* the Done's own words are a span inside it: a press there is Done's (chat 164's judge wanted the button itself) */
+    const doneHit = sbDone ? await page.evaluate(([x, y]) => !!document.elementFromPoint(x, y)?.closest('#sbDone'), [sbDone.x + sbDone.width / 2, sbDone.y + sbDone.height / 2]) : true
+    judge(id + '-board-folded', /timing-pill/.test(top || '') && doneHit, `the corner button on the board: ${top}; the board's Done: ${doneTop} (a press there is Done's: ${doneHit})`)
+    await pic(page, dir, 'folded-on-the-board')
+    if (sbDone) await page.click('#sbDone')
+    await page.click('#timingRoot .timing-pill'); await sleep(300)
+    /* ALL AVAIL and the Timing window: each brought in front by a press, both ✕ pressable */
+    const osn = page.locator('#eWeek [data-oilsent]:visible').first()
+    if (await osn.count()) {
+      /* a phone: the Timing window is a panel at the screen's foot, over the week — folded to reach the count, then
+         opened again from its button over ALL AVAIL (chat 164's run pressed the count through it) */
+      if (phone) await page.click('#timingRoot .timingwin .win-x')
+      await osn.scrollIntoViewIfNeeded(); await osn.click(); await sleep(600)
+      const ax = await page.evaluate(() => { const x = document.querySelector('.availwin:not([hidden]) .win-x'); if (!x) return null; const r = x.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2] })
+      const aTop = ax ? await topAt(page, ax[0], ax[1]) : null
+      if (phone) {
+        /* chat 167 (the script fault chat 165 listed): on a phone ALL AVAIL is a panel at the screen's foot, over the
+           corner button — the old order pressed the button through it. Now: the button under ALL AVAIL is recorded,
+           ALL AVAIL closed by its ✕, then the button opens the Timing window */
+        const pb = (await readout(page)).pillBox
+        const pillTop = pb ? await topAt(page, pb.x + pb.w / 2, pb.y + pb.h / 2) : null
+        await pic(page, dir, 'avail-over-the-corner-button')
+        if (ax) await page.mouse.click(ax[0], ax[1]); await sleep(500)
+        const availGone = !(await page.locator('.availwin:not([hidden])').isVisible().catch(() => false))
+        await page.click('#timingRoot .timing-pill'); await sleep(400)
+        judge(id + '-two-windows', /availwin.*win-x/.test(aTop || '') && availGone && (await tOpen(page)) === true, `ALL AVAIL's ✕ in front: ${aTop}; at the corner button while ALL AVAIL is up: ${pillTop}; ALL AVAIL closed by its ✕: ${availGone}; then the button opened the Timing window: ${await tOpen(page)}`)
+        await pic(page, dir, 'timing-after-avail-closed')
+      } else {
+        /* chat 167 (the judge rewritten after chat 165's R2 fix): the Timing window never joins the app's window order —
+           it stands behind the app's own windows, a press on it never brings it in front; its ✕ is reached once ALL
+           AVAIL is closed */
+        m = await xMid(); const tUnder = m ? await topAt(page, m[0], m[1]) : null
+        await pic(page, dir, 'avail-and-timing')
+        const seen = await page.evaluate(() => { const w = document.querySelector('#timingRoot .timingwin'); if (!w) return null; const r = w.getBoundingClientRect(); for (let y = r.top + 4; y < r.bottom; y += 8) for (let x = r.left + 4; x < r.right; x += 8) { const e = document.elementFromPoint(x, y); if (e && e.closest('.timingwin') && !e.closest('button')) return [x, y] } return null })
+        if (seen) { await page.mouse.click(seen[0], seen[1]); await sleep(300) }
+        const aTop2 = ax ? await topAt(page, ax[0], ax[1]) : null
+        const behind = await page.evaluate(() => { const t = document.querySelector('#timingRoot .timingwin'), a = document.querySelector('.availwin:not([hidden])'); return t && a ? +getComputedStyle(t).zIndex < +getComputedStyle(a).zIndex : null })
+        await pic(page, dir, 'timing-pressed-stays-behind')
+        if (ax) await page.mouse.click(ax[0], ax[1]); await sleep(500)
+        const availGone = !(await page.locator('.availwin:not([hidden])').isVisible().catch(() => false))
+        m = await xMid(); const tTop = m ? await topAt(page, m[0], m[1]) : null
+        if (m) { await page.mouse.click(m[0], m[1]); await sleep(300) }
+        const folded = (await tOpen(page)) === false
+        judge(id + '-two-windows', /availwin.*win-x/.test(aTop || '') && /availwin.*win-x/.test(aTop2 || '') && behind === true && availGone && /timingwin.*win-x/.test(tTop || '') && folded,
+          `ALL AVAIL's ✕ in front: ${aTop}; at the Timing window's ✕: ${tUnder}; a press on the Timing window at ${seen} — ALL AVAIL's ✕ still in front: ${aTop2}, the Timing window behind ALL AVAIL: ${behind}; ALL AVAIL closed by its ✕: ${availGone}; the Timing window's ✕ then: ${tTop}, pressed, folded: ${folded}`)
+        await pic(page, dir, 'timing-folded-after-avail-closed')
+      }
+    } else notWalked(id + '-two-windows', 'no "who\'s available" line on Edit Schedule')
+    /* the Leave War's blocking sheet over the window */
+    await openBy(page, phone ? 'leavewar' : 'leavewar', phone ? 'drawer' : 'top'); await outsideTime(page, 'leavewar'); await sleep(700)
+    if (!(await tOpen(page))) await openWindow(page)
+    if (await page.locator('[data-testid="open-chip"]').count()) {
+      await page.click('[data-testid="open-chip"]'); await sleep(600)
+      m = await xMid(); top = m ? await topAt(page, m[0], m[1]) : null
+      judge(id + '-sheet', null, `the "Open for bidding" sheet open — at the Timing window's ✕: ${top}`)
+      await pic(page, dir, 'lw-sheet')
+      /* W21: a month pressed inside the sheet, the window open */
+      const month = page.locator('[data-testid^="od-month-"]').first()
+      if (await month.count()) { const b = await month.boundingBox(); const mt = await topAt(page, b.x + b.width / 2, b.y + b.height / 2); judge(id + '-W21-month', !/timing/.test(mt || ''), `a month in the sheet, at its middle: ${mt}`) }
+      await page.keyboard.press('Escape')
+    }
+  })
+}
+
+/* W23 — every door to a page makes one row, named as the app names it */
+await scen('W23-admin', DESK, {}, async ({ page, dir }) => {
+  await page.goto(B + '/?timing'); await signIn(page); await outsideTime(page, 'viewsched'); await sleep(500)
+  const rowsN = async () => pageRows(await readout(page)).length
+  const door = async (name, act, want) => {
+    const n = await rowsN(); await act(); await sleep(2500)
+    const r = pageRows(await readout(page)); const added = r.slice(0, r.length - n)
+    judge('W23-' + name, added.length === 1 && added[0].label === want, `${added.length} row(s): ${added.map(x => x.label + ', ' + x.tag + ': ' + x.value).join(' | ') || 'none'} (want one "${want}")`)
+  }
+  await door('top-bar', async () => { await openBy(page, 'quals') }, 'Quals')
+  await door('keyboard', async () => { await openBy(page, 'logic', 'key') }, 'Logic')
+  await door('top-bar-admin', async () => { await openBy(page, 'admin') }, 'Admin')
+  /* the member-view switch while on Edit Schedule sends him to View-only Sched */
+  await openBy(page, 'editsched'); await outsideTime(page, 'editsched'); await sleep(400)
+  await door('member-view-switch', async () => { await armOutside(page, 'viewsched'); await page.click('#roleBadge') }, 'View-only Sched')
+  await page.click('#roleBadge'); await sleep(800)
+  /* the bell: the first notice that opens a page */
+  await page.click('#notifyBell'); await sleep(600)   // the top bar's bell (chat 164's '#bell' is no element)
+  const item = page.locator('.bell-list button, .belllist button, #bellList button, [data-testid^="bell-item"]').first()
+  if (await item.count()) { const txt = (await item.textContent() || '').slice(0, 60); const cur = await page.evaluate(() => window.CURPAGE); const n = await rowsN(); await item.click(); await sleep(2500); const now = await page.evaluate(() => window.CURPAGE); const r = pageRows(await readout(page)); judge('W23-bell', now === cur ? r.length === n : r.length === n + 1, `notice "${txt}": page ${cur} → ${now}; rows ${n} → ${r.length}${r.length > n ? ' (' + r[0].label + ')' : ''}`) }
+  else notWalked('W23-bell', 'no notice in the bell\'s list for the admin')
+  await page.keyboard.press('Escape')
+  /* the browser's Back */
+  const before = page.url()
+  await page.goBack().catch(() => {}); await sleep(2500)
+  judge('W23-back', null, `Back from ${before.replace(B, '')}: now at ${page.url() === 'about:blank' ? 'about:blank (left the app)' : page.url().replace(B, '')}`)
+})
+await scen('W23-member-phone', PHONE, {}, async ({ page }) => {
+  await page.goto(B + '/?timing'); await signIn(page, 'us'); await outsideTime(page, 'viewsched'); await sleep(500)
+  await openWindow(page)   // a phone's window starts folded: its rows are read open (chat 164's run read none)
+  const pages = await page.evaluate(() => [...document.querySelectorAll('#drawerNav a[data-page]')].map(a => a.dataset.page))
+  const names = { viewsched: 'View-only Sched', editsched: 'Edit Schedule', inputs: 'Inputs', quals: 'Quals', logic: 'Logic', leavewar: 'Leave War', tracker: 'Tracker', help: 'Help', admin: 'Admin' }
+  const got = []
+  for (const p of pages.filter(p => p !== 'viewsched')) {
+    const n = pageRows(await readout(page)).length
+    await openBy(page, p, 'drawer'); await outsideTime(page, p); await sleep(800)
+    const r = pageRows(await readout(page)); got.push(r.length === n + 1 && r[0].label === names[p] ? p : p + '(' + (r.length - n) + ' rows, ' + r[0]?.label + ')')
+  }
+  judge('W23-member-drawer', got.every(x => !x.includes('(')), `the member's ☰ pages: ${pages.join(', ')} → ${got.join(', ')}`)
+})
+
+/* W26 — the plain-user round with the window open: the week, a change and its Undo, windows opened and closed every way, sign out */
+await scen('W26', DESK, {}, async ({ page, dir, errors }) => {
+  await page.goto(B + '/?timing'); await signIn(page); await weekUp(page); await sleep(600)
+  const log = []
+  /* the week scrolls under the window */
+  const sx0 = await page.evaluate(() => { const s = document.querySelector('#page-viewsched .wk-scroll, #vWeek'); return s ? s.scrollLeft : null })
+  await page.mouse.move(400, 400); await page.mouse.wheel(0, 600); await sleep(500)
+  const sy = await page.evaluate(() => scrollY + (document.querySelector('#page-viewsched') || {}).scrollTop)
+  log.push(`the week under the window scrolled (page scroll ${sy})`)
+  /* a change and its Undo (chat 165: chat 164's drag of an input bar changed nothing, so Undo stayed greyed): ALL AVAIL
+     put on Saturday through the board, then the top bar's Undo */
+  await allAvailDay(page); await openBy(page, 'editsched'); await outsideTime(page, 'editsched'); await sleep(500)
+  const chips = () => page.locator('#eWeek [data-oilsent]:visible').count()
+  const made = await chips()
+  await page.click('#undoBtn'); await sleep(900)
+  const undone = await chips()
+  log.push(`ALL AVAIL put on Saturday: the week's count ${made ? 'shown' : 'not shown'}; after Undo ${undone ? 'still shown' : 'gone'}`)
+  judge('W26-change-undo', made > 0 && undone === 0, log.at(-1))
+  /* an input's own window on the Inputs calendar */
+  await openBy(page, 'inputs'); await outsideTime(page, 'inputs'); await sleep(600)
+  const bar = await inputBar(page)
+  if (bar) {
+    /* its window: opened, then closed by ✕, by Escape; a press outside leaves it open — a movable window closes only by
+       its ✕, Escape or its finishing button (D641; chat 165's judge wanted it closed, the script's own fault) — and it is
+       then closed by its ✕, so it no longer covers the next step */
+    for (const how of ['✕', 'Escape', 'a press outside']) {
+      await bar.click(); await sleep(700)
+      const w = page.locator('.floatwin:not(.timingwin)').first(); const up = await w.isVisible().catch(() => false)
+      /* chat 167: "a press outside" lands on an EMPTY part of the page — chat 165's point (30, 300) was a calendar day,
+         which opened that day's own window over the input's */
+      const empty = how === 'a press outside' ? await page.evaluate(() => {
+        for (let y = 70; y < 260; y += 6) for (let x = 20; x < innerWidth - 20; x += 10) {
+          const e = document.elementFromPoint(x, y)
+          if (e && e.closest('#page-inputs') && !e.closest('button, a, input, select, textarea, label, summary, [tabindex], [role=button], .floatwin, [data-day], [data-date], .cal-cell, .ib-bar, .daycell')) return [x, y]
+        }
+        return null
+      }) : null
+      if (how === '✕') await w.locator('.win-x').click().catch(() => {}); else if (how === 'Escape') await page.keyboard.press('Escape'); else if (empty) await page.mouse.click(empty[0], empty[1])
+      await sleep(500)
+      const still = await page.locator('.floatwin:not(.timingwin)').first().isVisible().catch(() => false)
+      if (how === 'a press outside') {
+        const wins = await page.locator('.floatwin:not(.timingwin):visible').count()
+        judge('W26-inputwin-press-outside-stays', !!empty && up && still && wins === 1 && await tOpen(page) !== null, `pressed at an empty point ${empty}; the input's window opened ${up}, still open after the press: ${still} (D641), windows up besides the Timing window: ${wins}; the Timing window open ${await tOpen(page)}`)
+        await pic(page, dir, 'inputwin-after-press-outside')
+        const wx = await w.locator('.win-x').boundingBox().catch(() => null)
+        const atWx = wx ? await topAt(page, wx.x + wx.width / 2, wx.y + wx.height / 2) : null
+        const err = await w.locator('.win-x').click({ timeout: 5000 }).then(() => '', e => String(e).split('\n')[0].slice(0, 160))
+        await sleep(500)
+        const gone = !(await page.locator('.floatwin:not(.timingwin)').first().isVisible().catch(() => false))
+        judge('W26-inputwin-then-✕', gone, `then closed by its ✕: ${gone}; at its ✕ (${wx ? Math.round(wx.x) + ',' + Math.round(wx.y) : 'no box'}): ${atWx}${err ? '; the press: ' + err : ''}`)
+        if (!gone) { await pic(page, dir, 'inputwin-x-not-pressed'); await page.keyboard.press('Escape'); await sleep(400) }
+      } else judge('W26-inputwin-' + how, up && !still && await tOpen(page) !== null, `the input's window opened ${up}, closed by ${how}: ${!still}; the Timing window open ${await tOpen(page)}`)
+    }
+  } else notWalked('W26-inputwin', 'no input bar in sight on the Inputs page')
+  /* the changes window on Edit Schedule: opened, closed by ✕ and by Escape */
+  await openBy(page, 'editsched'); await outsideTime(page, 'editsched'); await sleep(500)
+  for (const how of ['✕', 'Escape']) {
+    await page.click('#histBtn'); await sleep(600)
+    const up = await page.locator('.chgwin:not([hidden])').isVisible().catch(() => false)
+    if (how === '✕') await page.locator('.chgwin .win-x').click(); else await page.keyboard.press('Escape')
+    await sleep(500)
+    const still = await page.locator('.chgwin:not([hidden])').isVisible().catch(() => false)
+    judge('W26-changes-' + how, up && !still, `the changes window opened ${up}, closed by ${how}: ${!still}`)
+  }
+  await pic(page, dir, 'edit-schedule-with-window')
+  /* the Tracker, then sign out */
+  await openBy(page, 'tracker'); await outsideTime(page, 'tracker'); await sleep(800)
+  await pic(page, dir, 'tracker-with-window')
+  await page.click('#logout'); const out = await page.waitForSelector('#luser', { state: 'visible', timeout: 20000 }).then(() => true, () => false)
+  judge('W26-signout', out, `signed out to the sign-in card: ${out}`)
+  judge('W26-errors', errors.length === 0, errors.join(' | ') || 'none')
+})
+
+saveResults('walk-part3' + (ONLY ? '-' + ONLY.join('_') : ''))
+await cr.close(); await srv.close()

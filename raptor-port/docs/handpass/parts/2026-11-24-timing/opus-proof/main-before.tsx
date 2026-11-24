@@ -1,0 +1,131 @@
+/* FIRST, so the ?timing switch's freeze counter starts before the rest of the app's code runs (D2481 — ui/timing.ts);
+   without the switch it does nothing */
+import { StrictMode, useEffect } from 'react'
+import { createRoot } from 'react-dom/client'
+import './ui/scheduler.css'
+import { setToast } from './state/store'
+import { HOOKS } from './engine/hooks'
+import { toast, toastBatch } from './ui/toast'
+import { App } from './ui/App'
+import { installProbeBridge, isLocalHost } from './probe-bridge'
+import { armSaveFail, chooseBackend, guardUnload, storageRefused } from './storage/boot'
+import { watchSaves } from './storage/savewait'
+import { StoreAheadError } from './storage/schema'
+import { setSaveStatusSource, setStorageKept } from './ui/savestatus-source'
+import { setSaveHealth as trackerSaveHealth, setStorageKept as trackerStorageKept } from './tracker/storage.js'
+import { bootApp, BootConfigError } from './boot'
+import { bootPolicyFrom } from './bootpolicy'
+import { installDotRing } from './ui/dotring'
+import { installKbScroll } from './ui/kbscroll'
+import { installNoPageZoom } from './ui/nopagezoom'
+import { dismissBootClaw } from './ui/bootclaw'
+
+/* the loading claw (index.html, D1605) goes once the app's first screen has painted under it — an effect runs after
+   that paint — never waiting for its round to finish */
+function BootClawGone(): null {
+  useEffect(() => {
+    /* the ?timing readout's mark (D2481): the first screen is drawn — the sign-in card, or the week if none was asked */
+    timingMark({ kind: 'first', t: timingNow(), screen: document.getElementById('luser') ? 'signin' : 'week' })
+    dismissBootClaw()
+  }, [])
+  return null
+}
+
+/* THE COMPOSITION ROOT. It chooses the two things only a page can: the backend (storage/boot.ts chooseBackend) and
+   the boot policy ([DB-READINESS] group A, phase 5 — src/bootpolicy.ts: the demo, or a shared store that nothing demo
+   ever reaches, with its first admin), from the build's own settings. Everything the boot does with them is
+   src/boot.ts, in the order it always ran; then the page's own wiring, the probe bridge and the render. */
+async function boot(): Promise<void> {
+  /* the ?timing readout's mark (D2481): the app's code has loaded and starts; and the readout itself, a download of its
+     own, fetched ONLY behind the switch — without it, no part of the readout reaches the browser */
+  timingMark({ kind: 'boot', t: timingNow() })
+  /* handed the app's own parts, never importing them: an import split the app's own first download (the walk of 24 Nov
+     26, W1 — ui/TimingReadout.tsx's head) */
+  if (timingOn()) void import('./ui/timingwindow').then(m => m.startTimingReadout({ React, FloatWin, createRoot, phoneLayout, FREEZES, timingSink })).catch(() => { /* a readout that cannot load costs the app nothing */ })
+  setToast(toast)
+  HOOKS.toastBatch = toastBatch   // one press, one message — only the publish command opens one ([AMEND-SMALL-SEEN] 1)
+  const { postman } = await bootApp(chooseBackend(), bootPolicyFrom(import.meta.env as any))
+  /* the ?savefail test switch (D1666) starts refusing saves only now, once the boot's own writes are done */
+  armSaveFail()
+
+  /* the indicator and the unload guard hang off the postman */
+  setSaveStatusSource(postman)
+  guardUnload(postman)
+  /* and Retry on a failed page download asks it whether a save still waits, before it reloads (storage/savewait.ts) */
+  watchSaves(postman)
+  /* the Tracker's "saved" corner follows the same saver ([TRK-SAVE-FAIL-SAYS-SAVED]) — through its storage doorway, the
+     door boot.ts already plugged the whiteboard into */
+  trackerSaveHealth(postman)
+  /* a browser that refuses its storage keeps the work only while the page is open: every page says so in its "Not kept"
+     band, and the Tracker's corner stops saying "● saved" (owner D1901 — [TRK-NOSTORE-SAVED]) */
+  setStorageKept(!storageRefused())
+  trackerStorageKept(!storageRefused())
+
+  /* THE PROBE BRIDGE IS INSTALLED ON THIS PC ONLY ([ACCOUNTS], 26 Sep 26 — Astra R1-1,
+     Fable R1-3): it puts the app's data and writers (PEOPLE, INPUTS, setSlotVal, the
+     Leave War's role and viewer, publish…) on `window` for the e2e suite, the probes,
+     the Tracker smoke and the hand-pass drivers, all of which run here. On any other
+     host — the deployed app — none of it exists, so a person with the browser's
+     console open cannot sidestep who they signed in as. Nothing in the app itself
+     reads a bridge global (checked 26 Sep 26). */
+  if (isLocalHost()) installProbeBridge()
+  /* the dotted crew-rest ring's thickness on a scaled screen — before the first paint ([PUCK-DOT-ZOOM]) */
+  installDotRing()
+  /* on a phone, the box being typed in is scrolled clear of the keyboard ([KEYBOARD-SCROLL], D1048) */
+  installKbScroll()
+  /* on a phone the page itself never zooms, only the grids that pinch by themselves ([NO-PAGE-ZOOM], D1567) */
+  installNoPageZoom()
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <App />
+      <BootClawGone />
+    </StrictMode>,
+  )
+}
+
+boot().catch((err: unknown) => {
+  console.error('TALON could not load its data', err)
+  /* the message below must never sit hidden under the loading claw */
+  dismissBootClaw()
+  const root = document.getElementById('root')
+  if (!root) return
+  /* the saved data was written by a newer version of the app (storage/schema.ts): reloading fetches it */
+  if (err instanceof StoreAheadError) {
+    root.innerHTML =
+      '<div class="bootfail" role="alert" style="max-width:520px;margin:20vh auto;padding:24px;font:14px system-ui,sans-serif;color:#eee">' +
+      '<h1 style="font-size:18px;margin:0 0 8px">TALON has been updated</h1>' +
+      '<p style="margin:0 0 16px">Reload to get the latest version. Nothing was opened, so nothing can be lost.</p>' +
+      '<button id="bootRetry" type="button" style="padding:8px 14px;border-radius:10px;border:1px solid #888;background:transparent;color:inherit;cursor:pointer">Reload</button></div>'
+    document.getElementById('bootRetry')?.addEventListener('click', () => location.reload())
+    return
+  }
+  /* a shared store that has never started, on a build whose first admin is missing or incomplete (src/boot.ts): nothing
+     was written, and a reload cannot help — the setting is IT's to finish ([DB-READINESS] group A, phase 5) */
+  if (err instanceof BootConfigError) {
+    root.innerHTML =
+      '<div class="bootfail" role="alert" style="max-width:520px;margin:20vh auto;padding:24px;font:14px system-ui,sans-serif;color:#eee">' +
+      '<h1 style="font-size:18px;margin:0 0 8px">TALON is not set up yet</h1>' +
+      '<p style="margin:0 0 8px">Its first admin is not set up, so nobody could sign in. Nothing was saved.</p>' +
+      `<p style="margin:0">Pass this to whoever set TALON up: ${err.message.replace(/[<>&]/g, c => (c === '<' ? '&lt;' : c === '>' ? '&gt;' : '&amp;'))}</p></div>`
+    return
+  }
+  /* the one-time conversion found this browser's storage too full to write even one of its groups — nothing was changed
+     (storage/fold.ts StoreFullError; the group-A final read, Fable F3). Clearing the browser's data would lose what only
+     this browser holds (his Tracker charts — D464), so the screen says so first. */
+  if (err && (err as any).name === 'StoreFullError') {
+    root.innerHTML =
+      '<div class="bootfail" role="alert" style="max-width:520px;margin:20vh auto;padding:24px;font:14px system-ui,sans-serif;color:#eee">' +
+      '<h1 style="font-size:18px;margin:0 0 8px">TALON needs more room to update your saved data</h1>' +
+      '<p style="margin:0 0 8px">This browser\u2019s storage is too full to convert the data TALON has saved here. Nothing was changed.</p>' +
+      '<p style="margin:0 0 16px"><b>Do not clear this browser\u2019s data</b> \u2014 your Tracker charts are kept only here. Ask whoever looks after TALON for help.</p>' +
+      '<button id="bootRetry" type="button" style="padding:8px 14px;border-radius:10px;border:1px solid #888;background:transparent;color:inherit;cursor:pointer">Retry</button></div>'
+    document.getElementById('bootRetry')?.addEventListener('click', () => location.reload())
+    return
+  }
+  root.innerHTML =
+    '<div class="bootfail" role="alert" style="max-width:520px;margin:20vh auto;padding:24px;font:14px system-ui,sans-serif;color:#eee">' +
+    '<h1 style="font-size:18px;margin:0 0 8px">TALON could not load its data</h1>' +
+    '<p style="margin:0 0 16px">Nothing was opened, so nothing can be lost. Check the connection and try again.</p>' +
+    '<button id="bootRetry" type="button" style="padding:8px 14px;border-radius:10px;border:1px solid #888;background:transparent;color:inherit;cursor:pointer">Retry</button></div>'
+  document.getElementById('bootRetry')?.addEventListener('click', () => location.reload())
+})

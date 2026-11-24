@@ -1,0 +1,19 @@
+PASS   W7-address — after Retry's reload: /?timing
+PASS   W7-card-row — rows while the card showed: none
+PASS   W7-landing — landing row "Leave War, first time: 0.5 s", outside 515 ms; sign-in "not yet"
+PASS   W7-downloaded — the server sent the Leave War's files whole: 0 KB; the row's tag "first time"
+PASS   W7-after — sign-in "not yet"; Leave War again "opened before"
+  W7 page errors: console: Failed to load resource: net::ERR_FAILED | console: TypeError: Failed to fetch dynamically imported module: http://localhost:51300/assets/LeaveWarPage-Dozi6via.js
+PASS   W8-figures — window file released 8.4 s after the start; sign-in took 0.2 s (outside 197); Edit Schedule 0.2 s (177); Inputs 0.1 s (130)
+PASS   W8-caret — typed into the Inputs page's box while the window arrived: "abcdefghijklmno"
+PASS   W9 — caret at the start in #luser; signed in by keys alone: true
+PASS   W14-first — cleared first visit: "15 · 665 KB", kept "0 of 15" (the browser's own: 0 of 15)
+PASS   W14-reload — reload: "15 · size not given by Chrome", kept "15 of 15" (browser: 15 of 15)
+FAIL   W14-newtab — new tab: "15 · 665 KB", kept "14 of 15" (browser: 15 of 15)
+PASS   W22-paste — button "Copied"; every row of the window in the paste: true; first line "TALON timing, 24 Nov 26 16:27, this computer's clock"
+PASS   W22-back — after two seconds: "Copy all"
+PASS   W22-fresh — the second copy holds the new page: true
+PASS   W22-refused — refused both ways: the button reads "Copy all" (keyboard before BUTTON, after abtn)
+RECORD W24-hidden — the tab went never hidden; rows added: Edit Schedule 0.2 s
+FAIL   W24-background-load — the tab went (no change seen); loaded behind another tab: Site answered under 0.1 s · App loaded at 0.1 s · Sign-in shown at 0.2 s
+exit 0

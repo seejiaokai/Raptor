@@ -1,0 +1,92 @@
+[
+ {
+  "id": "W19",
+  "v": "RECORD",
+  "note": "ALL AVAIL put on Saturday | a nothing else open: timing → timing | b typing in the search box (its value after: \"ab\"): timing → timing | c ALL AVAIL opened after, Escape twice: avail+timing → timing → timing | c2 ALL AVAIL, then the Timing window pressed, Escape: avail+timing → avail | d the changes window: changes+timing → timing | e the bell's list: bell+timing → timing | f the board, Escape twice: board+timing → timing → timing | g an input's window: inputwin+timing → timing | h the Leave War's Open for bidding sheet: dates+timing → timing"
+ },
+ {
+  "id": "W20-desk-board",
+  "v": "PASS",
+  "note": "the board open — at the Timing window's ✕: floatwin.timingwin > BUTTON.win-x"
+ },
+ {
+  "id": "W20-desk-board-folded",
+  "v": "PASS",
+  "note": "the corner button on the board: abtn.timing-pill > BUTTON.abtn.timing-pill; the board's Done: schedBoard > SPAN.bl (a press there is Done's: true)"
+ },
+ {
+  "id": "W20-desk-two-windows",
+  "v": "PASS",
+  "note": "ALL AVAIL's ✕ in front: availwin.front > BUTTON.win-x; at the Timing window's ✕: availwin.front > SPAN.rpuck; a press on the Timing window at 994,335 — ALL AVAIL's ✕ still in front: availwin.front > BUTTON.win-x, the Timing window behind ALL AVAIL: true; ALL AVAIL closed by its ✕: true; the Timing window's ✕ then: floatwin.timingwin > BUTTON.win-x, pressed, folded: true"
+ },
+ {
+  "id": "W20-desk-sheet",
+  "v": "RECORD",
+  "note": "the \"Open for bidding\" sheet open — at the Timing window's ✕:  > DIV.sheetscrim.raised"
+ },
+ {
+  "id": "W20-desk-W21-month",
+  "v": "PASS",
+  "note": "a month in the sheet, at its middle: bidsheet.raised > BUTTON.od-m.open.past"
+ },
+ {
+  "id": "W20-phone-drawer",
+  "v": "PASS",
+  "note": "the ☰ menu open — at the Timing window's ✕: drawer > DIV#drawer.drawer.open"
+ },
+ {
+  "id": "W20-phone-board",
+  "v": "PASS",
+  "note": "the board open — at the Timing window's ✕: floatwin.timingwin > BUTTON.win-x"
+ },
+ {
+  "id": "W20-phone-board-folded",
+  "v": "PASS",
+  "note": "the corner button on the board: abtn.timing-pill > BUTTON.abtn.timing-pill; the board's Done: schedBoard > SPAN.bi (a press there is Done's: true)"
+ },
+ {
+  "id": "W20-phone-two-windows",
+  "v": "PASS",
+  "note": "ALL AVAIL's ✕ in front: availwin.front > BUTTON.win-x; at the corner button while ALL AVAIL is up: availwin.front > SPAN.hint; ALL AVAIL closed by its ✕: true; then the button opened the Timing window: true"
+ },
+ {
+  "id": "W20-phone-sheet",
+  "v": "RECORD",
+  "note": "the \"Open for bidding\" sheet open — at the Timing window's ✕: bidsheet.fullpage.raised > DIV.bidsheet.fullpage.raised"
+ },
+ {
+  "id": "W20-phone-W21-month",
+  "v": "PASS",
+  "note": "a month in the sheet, at its middle: bidsheet.fullpage.raised > BUTTON.od-m.open.past"
+ },
+ {
+  "id": "W26-change-undo",
+  "v": "PASS",
+  "note": "ALL AVAIL put on Saturday: the week's count shown; after Undo gone"
+ },
+ {
+  "id": "W26-inputwin-✕",
+  "v": "PASS",
+  "note": "the input's window opened true, closed by ✕: true; the Timing window open true"
+ },
+ {
+  "id": "W26-inputwin-Escape",
+  "v": "PASS",
+  "note": "the input's window opened true, closed by Escape: true; the Timing window open true"
+ },
+ {
+  "id": "W26-inputwin-press-outside-stays",
+  "v": "PASS",
+  "note": "the input's window opened true, still open after a press outside: true (D641); the Timing window open true"
+ },
+ {
+  "id": "W26-inputwin-then-✕",
+  "v": "FAIL",
+  "note": "then closed by its ✕: false"
+ },
+ {
+  "id": "W26-ran",
+  "v": "FAIL",
+  "note": "the step stopped: TimeoutError: page.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#histBtn')\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"histBtn\" class=\"abtn chgbtn\" aria-pressed=\"false\" aria-label=\"Changes\" title=\"Changes — eve"
+ }
+]

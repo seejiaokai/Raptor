@@ -1,0 +1,57 @@
+[
+ {
+  "id": "W1a",
+  "v": "PASS",
+  "note": "requests naming \"timing\" in a whole session without the switch: 0 (of 20 requests)"
+ },
+ {
+  "id": "W1b",
+  "v": "PASS",
+  "note": "#timingRoot false, a window or button false"
+ },
+ {
+  "id": "W1c",
+  "v": "PASS",
+  "note": "errors: none"
+ },
+ {
+  "id": "W1d",
+  "v": "PASS",
+  "note": "first download before the sign-in card: main 15 files, branch 15; only on main: —; only on the branch: —"
+ },
+ {
+  "id": "W2 ?timing",
+  "v": "PASS",
+  "note": "window drawn: true (open true)"
+ },
+ {
+  "id": "W2 ?x=1&timing",
+  "v": "PASS",
+  "note": "window drawn: true (open true)"
+ },
+ {
+  "id": "W2 ?timing=1",
+  "v": "PASS",
+  "note": "window drawn: true (open true)"
+ },
+ {
+  "id": "W2 ?TIMING",
+  "v": "PASS",
+  "note": "window drawn: false (open false)"
+ },
+ {
+  "id": "W2 ?timings",
+  "v": "PASS",
+  "note": "window drawn: false (open false)"
+ },
+ {
+  "id": "W2 #timing",
+  "v": "PASS",
+  "note": "window drawn: false (open false)"
+ },
+ {
+  "id": "W2 ?timing=false",
+  "v": "RECORD",
+  "note": "window drawn: true (open true)"
+ }
+]

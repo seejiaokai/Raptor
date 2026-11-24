@@ -59,12 +59,13 @@ import { placeToast } from './toast'
 /* how far the bar must be dragged for the panel to go to its other height — less is a wobble, and it stays put */
 const PULL = 40
 
-export function FloatWin({ id, title, sub, onClose, testid, className, rests, tallFirst, tools, mark, foot, children }: {
+export function FloatWin({ id, title, sub, onClose, testid, className, rests, tallFirst, tools, mark, foot, bystander, quietOpen, children }: {
   /** which window this is — its remembered place and its turn in front are kept by it; one window per id at a time */
   id: string
   title: string
-  /** a small second line under the title (who may use it, what it is showing) */
-  sub?: string
+  /** a small second line under the title (who may use it, what it is showing) — words, or words and a line of their own
+   *  (the ?timing readout's refused copy, D2485) */
+  sub?: ReactNode
   /** ✕ and Escape call this; the caller unmounts the window */
   onClose: () => void
   testid?: string
@@ -81,6 +82,17 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
   /** drawn under the window's scrolling body, outside it, so it never covers a line of it nor scrolls away — the Leave
       War day window's "↓ N more" (D1788) */
   foot?: ReactNode
+  /** A BYSTANDER — a window up all session by itself, for the developer: the ?timing readout (owner D2481, D2483).
+   *  Whatever a person opens after it is the newer, so Escape is that thing's (his D2112: Escape closes what opened
+   *  last, one press one thing). So it answers Escape ONLY WITH THE KEYS INSIDE IT — and then first of all, at the
+   *  window's capture, before a sheet or panel underneath that listens at the page (the Leave War's, the Tracker's);
+   *  the scheduler board does not count it as over the board (ui/boardescape.ts). (The walk of 24 Nov 26, chat 164,
+   *  W19 (f) — the board needed two Escapes; the code reads of chat 165 — a seat put down, the bell's list closed, a
+   *  Leave War or Tracker panel closed, each with the readout on the same press.) */
+  bystander?: boolean
+  /** with `bystander`: opened by itself, not by a press — it does not come forward or take the keyboard as it opens
+   *  (another window in front, or the caret in the sign-in card, stays where it is) */
+  quietOpen?: boolean
   children: ReactNode
 }) {
   useVersion()                                         // which window is in front is said through the app's own signal
@@ -192,8 +204,11 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
   useLayoutEffect(() => {
     const opener = document.activeElement as HTMLElement | null
     const n = el.current
-    if (forward(id)) notify()
-    if (n && !n.contains(document.activeElement)) n.focus({ preventScroll: true })
+    /* a bystander never joins the windows' order (it stands behind the app's own windows — the re-walk of chat 165,
+       W19 (c2): in front of the order yet answering Escape only with the keys in it, it left ALL AVAIL deaf); opened by
+       itself (`quietOpen`) it does not take the keys either */
+    if (!bystander && forward(id)) notify()
+    if (!quietOpen && n && !n.contains(document.activeElement)) n.focus({ preventScroll: true })
     /* a passing note already on screen moves clear of the buttons this window has just put at the foot of a phone's
        screen (D731 (1) — ui/toast.ts placeToast) */
     placeToast()
@@ -225,6 +240,24 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
   }, [])
 
   useEffect(() => {
+    /* a bystander: only with the keys inside it, and then first of all (`bystander` above). It listens on the window's
+       capture, where several of the app's own layers also close one level on Escape (Leave War's exact-days calendar,
+       Inputs' range calendar, the type legend…) and mark the key used only by stopPropagation — which never stops
+       another listener on the same spot. So: a key one of them already took (`cancelBubble`) is not the readout's, and
+       a key the readout takes reaches no other listener there (stopImmediatePropagation) — one Escape, one thing (the
+       fix read of chat 167, a fresh Opus; TimingReadout-layers.test.tsx) */
+    const onBystanderKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape' || e.defaultPrevented || e.cancelBubble || e.isComposing) return
+      const n = el.current
+      if (!n || !n.contains(document.activeElement)) return
+      e.preventDefault()
+      e.stopImmediatePropagation()
+      closeRef.current()
+    }
+    if (bystander) {
+      window.addEventListener('keydown', onBystanderKey, true)
+      return () => window.removeEventListener('keydown', onBystanderKey, true)
+    }
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape' || e.defaultPrevented || frontWin() !== id) return
       const at = document.activeElement as HTMLElement | null
@@ -242,12 +275,14 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [id])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `el` is the window's own element, fixed for its life
+  }, [id, bystander])
 
   return (
     <div
       className={'floatwin' + (className ? ' ' + className : '') + (rests ? ' rests' : '') + (sheet && tall ? ' is-tall' : '') + (frontWin() === id ? ' front' : '')}
       ref={el}
+      data-bystander={bystander ? '' : undefined}
       /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the app's own stacking order, with its own backdrop, focus and Escape rules; these windows leave the page behind them working (D641, aria-modal false), stand one over another in the order they were pressed, and close on Escape front-first through this module's own order — layered on purpose */
       role="dialog"
       aria-modal="false"
@@ -258,7 +293,12 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
       /* a press ON this window brings it forward — not one on something it draws inside ANOTHER window (a question hanging
          from a card of the opened day, ui/AskCard.tsx portal): React hands that press to this window too, and it jumped
          over the very card the question hangs from (the walk of 4 Nov 26, S3 on a phone) */
-      onPointerDownCapture={e => { if (!(e.currentTarget as HTMLElement).contains(e.target as Node)) return; if (forward(id)) notify() }}
+      onPointerDownCapture={e => {
+        if (!(e.currentTarget as HTMLElement).contains(e.target as Node)) return
+        /* a bystander: the press puts the keys in it (its Escape is then its own), the order untouched */
+        if (bystander) { const n = el.current; if (n && !n.contains(document.activeElement)) n.focus({ preventScroll: true }); return }
+        if (forward(id)) notify()
+      }}
     >
       <div className={'win-bar' + (mark ? ' has-mark' : '')} {...bar}>
         {/* the app's own six-dot grip, "drag me" (D40) */}
