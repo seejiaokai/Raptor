@@ -17,7 +17,7 @@ import { oilPendingFor, openWarAt } from '../leavewar/sync'
 import { inpById } from '../engine/inputs'
 import { setOilAsk, setInpEdit, BELLLIST, setBellList, setOilList } from './pops'
 import { me } from '../state/perms'
-import { holidayLineOn, noticeSpan, isWarNotice, postOf, isAcctNotice, type Notice } from '../state/notices'
+import { holidayLineOn, noticeSpan, isWarNotice, postOf, isAcctNotice, noticeLive, type Notice } from '../state/notices'
 import { PEOPLE } from '../engine/people'
 import { unreadFor, markNoticeRead } from '../state/noticeseen'
 import { trackerUndoApi, onTrackerUndo, trackerUndoVersion } from '../tracker/undo-bridge.js'
@@ -73,7 +73,9 @@ export function bellTap(from?: HTMLElement | null): void {
   if (oilHit) {
     const row = inpById(oilHit.iid)
     if (row) {
-      openInputOnPage(oilHit.iid, () => { HOOKS.toast('Weekend/PH work — confirm your OIL'); setOilAsk(oilHit.iid) })
+      /* (…and still his to answer once a question it waited for is answered — openInputOnPage, below) */
+      openInputOnPage(oilHit.iid, () => { HOOKS.toast('Weekend/PH work — confirm your OIL'); setOilAsk(oilHit.iid) },
+        () => { const m = me(); return !!m && oilPendingFor(m).some(h => h.iid === oilHit.iid) })
       return
     }
   }
@@ -89,8 +91,15 @@ export function bellTap(from?: HTMLElement | null): void {
    line is only read: opening his own squadron's page at it would show the wrong war, or a row not there. An input's line
    still opens its window — he is named in it or filed it, and the window judges its own edit rights by the input's
    squadron. His own account's line carries no squadron (§16 D5′). */
+/* A TAP THAT WAITED FOR THE TRACKER'S QUESTION IS JUDGED AGAIN WHEN IT GOES ON (the security read of the night's second fix
+   round, F3 — tracker/msq-bell-recheck-after-ask.test.tsx; his D2310, D2218). What the line opens was decided when he
+   pressed it, and the question can stand for as long as he likes: Hunter's Plan of 149 ended while "Save them before
+   switching to 149?" was up, the line left his bell (state/notices.ts noticeLive — the one body the list reads), and
+   Discard still opened Osprey's 149 input for a man with no right left there. The tap goes on only for a line still in
+   his bell; one that has left opens nothing and says nothing, as if it had not been there to press. */
+const stillHis = (n: Notice): boolean => n.to === me() && noticeLive(n)
 export function openNotice(n: Notice): void {
-  const where = isAcctNotice(n) ? 'here' : enterForLine(n.u, () => openNotice(n))
+  const where = isAcctNotice(n) ? 'here' : enterForLine(n.u, () => { if (stillHis(n)) openNotice(n); else notify() })
   /* the Tracker's question for unsaved chart edits is up first (§16 D2′): the tap goes on once it is answered */
   if (where === 'asked') return
   if (where === 'no' && (postOf(n) || isWarNotice(n) || ((n.what || [])[0] as any)?.k === 'oilhol')) {
@@ -137,7 +146,7 @@ export function openNotice(n: Notice): void {
   markNoticeRead(n.id)
   if (!row) { HOOKS.toast('That input is gone'); notify(); return }
   setBellList(false)
-  openInputOnPage(n.iid)
+  openInputOnPage(n.iid, undefined, () => stillHis(n))
 }
 /* AN INPUT'S WINDOW OPENS ONCE ITS PAGE IS THERE (the night of 24 Nov 26, the re-walk's B1 —
    tracker/msq-bell-input-ask.test.tsx). The Inputs page is asked for first. Where the Tracker holds unsaved chart edits on
@@ -146,9 +155,15 @@ export function openNotice(n: Notice): void {
    noted as opened on the squadron he was leaving: live over its View-only Sched after Stay, held with an untrue band
    after Discard. Nothing opens until he has answered: after Save or Discard the window opens on his own page, the input
    found afresh; after Stay, or a Save the gate refuses, none. `first` — what goes with the window (the bell's own OIL
-   question and its words), run only when it opens. */
-function openInputOnPage(iid: string, first?: () => void): void {
-  const open = () => {
+   question and its words), run only when it opens.
+   …AND ONLY IF IT IS STILL HIS TO OPEN, WHERE IT WAITED (the same read's F3): `still` — the caller's own test of what was
+   pressed (the line still in his bell; the OIL question still unanswered and his) — is asked again after the answer, and
+   never for anyone but the person who pressed. A sign-out answers the question "cancelled" today, so no road brings a
+   second person here: that half is a belt for one that might. Opened at once, nothing has had time to change. */
+function openInputOnPage(iid: string, first?: () => void, still?: () => boolean): void {
+  const who = me()
+  const open = (waited: boolean) => {
+    if (waited && (me() !== who || (still && !still()))) return
     const row = inpById(iid)
     if (!row) return
     if (first) first()
@@ -156,8 +171,8 @@ function openInputOnPage(iid: string, first?: () => void): void {
   }
   setPage('inputs'); notify()
   const ask = landingAsk()
-  if (ask) void ask.then(go => { if (go) open() })
-  else open()
+  if (ask) void ask.then(go => { if (go) open(true) })
+  else open(false)
 }
 
 /* ---- the Undo / Redo pair: its two engines ---- */
