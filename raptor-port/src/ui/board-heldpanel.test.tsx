@@ -20,6 +20,7 @@ import { DPREV, setPage, setBoardDay, PIOPEN } from '../state/view'
 import { openScheduler, closeScheduler } from './board'
 import { editingText } from './textedit'
 import { commitNewInput, draftOf, setInpField } from './inputedit'
+import type { PanelKids } from './dayswap'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 let root: Root, host: HTMLDivElement, seed: any
@@ -121,6 +122,40 @@ describe('the Board, an input’s start changed in its own box: its Ground Progr
   })
 })
 
+/* THE SECTIONS ARE MATCHED BY WHICH SECTION THEY ARE, NOT ONLY BY THEIR PLACE (Fable's scenario design, 25 Nov 26 — B1, B2,
+   B4): a change that leaves the day with as many sections but in another order or another day — a section dragged (or
+   its drag undone), the day arrow pressed with the caret in a box the arrow does not first let go, OIL Earn on a day
+   whose sections then number the same — must write nothing while the caret is on the Board, as before this change; a
+   write by place alone would draw one section twice and lose another until the caret left. */
+describe('the Board under the caret: a change of order or of day writes nothing until the caret leaves', () => {
+  const secs = () => [...host.querySelectorAll('#sbBoard > .sb-sec')].map(s => (s as HTMLElement).dataset.secmove)
+  it('a section dragged to another place while the caret is in a box: each section once, in one order', async () => {
+    const { mine } = await filed()
+    await focus(mine('str'))
+    expect(editingText(), 'the caret is in the box').toBe(true)
+    const before = secs()
+    const { moveSectionTo } = await import('../state/store')
+    await act(async () => { expect(moveSectionTo(0, 'inputs', 'ground')).toBe(true) }); await tick()
+    const now = secs()
+    expect(new Set(now).size, `no section drawn twice: ${now.join(' ')}`).toBe(now.length)
+    expect(now.slice().sort(), 'none lost').toEqual(before.slice().sort())
+    await act(async () => { (document.activeElement as HTMLElement).blur() }); await tick()
+    const after = secs()
+    expect(after.indexOf('0.inputs'), 'once the caret has left, the new order').toBeLessThan(after.indexOf('0.ground'))
+  })
+  it('the day changed under a caret in an In-time line: no section of one day drawn beside another day’s', async () => {
+    await filed()
+    const line = host.querySelector('#sbBoard [data-itline]') as HTMLElement
+    expect(line, 'the day draws an In-time line (or this test proves nothing)').toBeTruthy()
+    await focus(line)
+    expect(editingText()).toBe(true)
+    const { boardTab } = await import('./board')
+    await act(async () => { boardTab(1) }); await tick()
+    const days = new Set(secs().map(k => String(k).split('.')[0]))
+    expect([...days], `the sections are of one day: ${secs().join(' ')}`).toHaveLength(1)
+  })
+})
+
 /* the swap itself, by the panel's children: what is written, what waits, and the fallbacks that write nothing */
 describe('dayswap swapKidsAround — the board panel, section by section', () => {
   const panel = (html: string) => { const el = document.createElement('div'); el.innerHTML = html; document.body.append(el); return el }
@@ -133,17 +168,23 @@ describe('dayswap swapKidsAround — the board panel, section by section', () =>
     expect(el.children[1], 'the caret’s section is left standing').toBe(b)
     expect(el.children[2], 'an unchanged one keeps its node').toBe(c)
     expect(r.held, 'something is still owed').toBe(true)
-    expect(r.kids![0]).toBe('<div class="a">A2</div>')
-    expect(r.kids![1], 'owed, never what it last showed').not.toBe(kidsOfHTML(was)[1])
+    expect(r.kids!.html[0]).toBe('<div class="a">A2</div>')
+    expect(r.kids!.html[1], 'owed, never what it last showed').not.toBe(kidsOfHTML(was).html[1])
     el.remove()
   })
-  it('a section added or removed, a word outside any element, or nothing known before: nothing is written', async () => {
+  it('a section added or removed, a word outside any element, nothing known before, or the same number of sections but not the same ones in each place: nothing is written', async () => {
     const { swapKidsAround, kidsOfHTML } = await import('./dayswap')
-    const was = '<div>A1</div><div><input id="k"></div>'
-    const cases: Array<[string, string[] | null]> = [
-      ['<div>A2</div><div><input id="k"></div><div>new</div>', kidsOfHTML(was)],
-      ['<div>A2</div>loose<div><input id="k"></div>', kidsOfHTML(was)],
-      ['<div>A2</div><div><input id="k"></div>', null],
+    const was = '<div class="sb-sec" data-secmove="0.a">A1</div><div class="sb-sec" data-secmove="0.b"><input id="k"></div>'
+    const cases: Array<[string, PanelKids | null]> = [
+      [was.replace('A1', 'A2') + '<div class="sb-sec" data-secmove="0.c">new</div>', kidsOfHTML(was)],
+      [was.replace('A1', 'A2').replace('</div><div', '</div>loose<div'), kidsOfHTML(was)],
+      [was.replace('A1', 'A2'), null],
+      /* the two sections swapped places (a section dragged, or its drag undone) */
+      ['<div class="sb-sec" data-secmove="0.b"><input id="k"></div><div class="sb-sec" data-secmove="0.a">A2</div>', kidsOfHTML(was)],
+      /* another day's sections (the day arrow) */
+      [was.replace(/"0\./g, '"1.').replace('A1', 'A2'), kidsOfHTML(was)],
+      /* the same section, unwrapped (OIL Earn, a read-only board) */
+      ['<div class="sb-panel">A2</div><div class="sb-sec" data-secmove="0.b"><input id="k"></div>', kidsOfHTML(was)],
     ]
     for (const [next, prev] of cases) {
       const el = panel(was), first = el.children[0]

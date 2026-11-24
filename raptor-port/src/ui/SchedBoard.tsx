@@ -21,7 +21,7 @@ import { versionFaceWarn } from '../engine/validate'
 import { isDraftVer, draftVerLabel } from '../engine/drafts'
 import { withDaySnap, withVersionFlags, refreshWaveReports } from './html'
 import { glyphSvg, EYE_INNER } from './glyphs'
-import { holdingPlace, swapKidsAround, kidsOfHTML } from './dayswap'
+import { holdingPlace, swapKidsAround, kidsOfHTML, type PanelKids } from './dayswap'
 import { useSheetFocus, useEscClose, locate, pressedByKeys, menuItems, escCloses } from './sheetfocus'
 import { wireBoardEscape } from './boardescape'
 import { reconcileMissionRoleOffer } from './mission-role-offer'
@@ -375,7 +375,7 @@ export function SchedBoard() {
      budget. */
   const panelPrev = useRef<any>({})
   /* a panel written section by section under the caret: what each of its sections shows now (put, below) */
-  const panelKids = useRef<Record<string, string[]>>({})
+  const panelKids = useRef<Record<string, PanelKids>>({})
   const pendingPaint = useRef<{ di: number; nav: number } | null>(null)
   const [settledPaint, setSettledPaint] = useState(0)
   useEffect(() => {
