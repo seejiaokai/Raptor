@@ -36,7 +36,7 @@ describe('the "open the other input and lose them?" question, up at a pick (C1)'
   /* Saber, 142's Inputs: the first input open with typed words, the second asked for — the question up */
   async function asked() {
     signInAs('saber')
-    setPage('inputs'); setInpView('list')
+    setPage('inputs'); setInpView('table')
     await act(async () => { root.render(<InputEditor />) })
     const [first, other] = of142()
     expect(first && other && first.iid !== other.iid, 'the premise: two inputs of 142').toBe(true)
