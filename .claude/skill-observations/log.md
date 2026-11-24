@@ -1259,6 +1259,19 @@ sides.
 **Suggested improvement:** In the closing-report step, each listed reading about something on screen carries a worked example (who, which days, what the screen shows) and a marked picture of the real app, taken before the report is sent; a reading is written as who presses what on which page, never with a label coined during the build. Reuse one small script that drives the built app and cuts each picture to its place (here `raptor-port/scripts/handpass/sfd-explain.mjs`).
 **Principle:** A choice put to someone to keep or strike is only decidable when it is shown as a case on the thing itself; a one-line statement in the builder's vocabulary hides both its meaning and its costs.
 
+### Observation 1029: the overnight guide still says "Fable only on his word"
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** the settings health-check chat, recording his D2440 (the agent's pick of Fable for high-risk work stands, no end date). Numbered past 1028, the highest on any open branch (this branch's own log ends at 1015).
+**Skill:** overnight
+**Type:** internal
+**Phase/Area:** step listing each job's readers (the line citing D1770, D790, D903)
+
+**Issue:** the guide's line on each job's readers ends "Fable only on his word". Since D2258 (21 Nov 26) and D2440 (24 Nov 26) the agent picks Fable itself for the work it ranks high risk, other readers beside it; only outside that is Fable on his word. A night planned from the guide as written would leave Fable off a high-risk job.
+**Suggested improvement:** reword that phrase to "Fable on the agent's pick for high-risk work (D2258, D2440), otherwise only on his word", at the guide's next review.
+**Principle:** when a standing rule about who does a job changes, every guide that restates it in passing is found by searching for the old phrase, and each is corrected or given a note the same day.
+
 ### Observation 1018: A red test failed at its set-up again — the set-up call's own answer was never checked
 
 **Status:** OPEN

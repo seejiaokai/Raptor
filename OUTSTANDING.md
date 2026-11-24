@@ -238,7 +238,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OVERNIGHT-RETRY-TRIAL] — the next /overnight night tries the keep-retrying setting (D885).
 - [CI-FAIL-PICTURES] — GitHub's browser-test jobs keep no pictures of a failure — his call.
 - [CHECK-TOOLS-HARDEN] — small hardening of the checking tools — his word.
-- [TURN-END-CHECK-SLOW] — the turn-end backlog check was cancelled at its 20-second limit on most turns from 19 Nov 26: (a) its cause found and fixed 24 Nov 26 (36 seconds to 5), waiting for his "merge live"; left for his word: (b) the turn-end code check holds a turn about 43 seconds, (c) the lessons written into the superpowers skills are read by no chat, for the next skill review, (d) nothing says when a turn-end check is cancelled.
+- [TURN-END-CHECK-SLOW] — the turn-end backlog check was cancelled at its 20-second limit on most turns from 19 Nov 26: (a) its cause found and fixed 24 Nov 26 (36 seconds to 5), live that day on his "merge live" (pull request 828); left for his word: (b) the turn-end code check holds a turn about 43 seconds, (c) the lessons written into the superpowers skills are read by no chat, for the next skill review, (d) nothing says when a turn-end check is cancelled.
 - [CSS-SCOPE-GUARD] — a rule begun at `body`, `html` or `:root` inside a page's wrapper fails the stylesheet check — small, no look from him.
 - [ASK-PAGE-CHECK] — a script run on a mock-up or questions page before it is published to him: codes, ruling numbers and record words, and one "look at now" list — small, no look from him.
 - [READER-COMPACT-HANDOFF] — a blind reader that compacts is pasted the host's handoff — a hook change, his word.
@@ -2643,6 +2643,7 @@ design short form, each whole. Then options for which of them stop loading there
 | The night of 6 Nov 26, job 3 (`claude/people-quals-1106`): the three Quals touch faults, React Doctor on People, Quals, Holidays and sign-in | a fresh, blind Opus read; a security read if sign-in is touched (D790, D1411) | Astra and Sol 6.1 |
 | [LW-PIN-LAST-FRAME]'s last fix (D1870; `claude/lw-pin-last-frame`, pull request 694 — the pinned dates row held shown when the grid is shown again from a tab or another page), made after Astra's read of the job | a fresh, blind Opus read (D790), its one inferred case probed and not reproduced | Astra |
 | Multi-squadron batch 1, fix read 14 (`claude/multi-sqn-b1-107`, pull request 806, 20 Nov 26) — Astra stopped by its service after ~268k tokens; its three saved findings reproduced red; his D2232 accepts such stops for the build's fix reads (partial reads listed here) | a fresh, blind Opus reader, Fable (D2224) and the security reader (D1411) whole; Astra partial (D2232) | Astra's full report |
+| The turn-end backlog check made fast, [TURN-END-CHECK-SLOW] (a) (pull request 828, live 24 Nov 26): a change to a check's script and a hook's time limit, no app code | one fresh, blind Opus reader; old and new compared in five situations | Astra's read — **24 Nov 26: DROPPED on his word ("Drop it")** |
 | Multi-squadron batch 1, the core read (his D2237; `state/{perms,notices,units}.ts` whole at `7dbc13fd0`, 20 Nov 26, chat 124) — Astra stopped by its service after one stated finding (reproduced red, R4); fix read 17 beside it had all four whole | the fresh, blind Opus reader and the security reader (D1411) whole; Astra partial (D2232) | Astra's full report |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
@@ -3151,7 +3152,7 @@ prints nothing is not recorded, so the passes are unseen. By day: 19 Nov 28, 20 
 none earlier in those chats; in the main folder (315) and four worktrees alike. **What it costs:** most turns end with a
 wait of about 20 seconds, and a cancelled hook blocks nothing, so the turn-end warning of a lost or misfiled record
 (D29, D30, D140) is not given; the Docs guard still runs the same check on every pull request and every push to `main`,
-so nothing lost can merge unseen. **Cause found and fixed 24 Nov 26 (his "Yes"; the fix waits for his "merge live"):**
+so nothing lost can merge unseen. **Cause found and fixed 24 Nov 26 (his "Yes"; live that day on his "merge live", pull request 828):**
 timed at 36–38 seconds in a worktree and 55–57 in the main folder — the homes check and the structure check each asked
 the disk about every listed file, and the tree grew from 37,373 files (15 Oct) to 80,632 (19 Nov) and 83,660. Now the
 tree is listed once from git (`docsize.mjs treeNow`) and each git question asked once: 5 seconds, the same output as the

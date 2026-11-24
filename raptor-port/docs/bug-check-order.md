@@ -206,7 +206,7 @@ deliberately. Ranked by value for the cost:
 
 | Rank | Job | How many | Why it beats the builder alone |
 |---|---|---|---|
-| 1 | **Designing the test scenarios** (D6) — hunting for what is MISSING, not reviewing what is there | One model | It works from what was PROMISED, not from what the builder happened to build. On the OIL build, Fable's two top-ranked predictions were both real defects. |
+| 1 | **Designing the test scenarios** (D6) — hunting for what is MISSING, not reviewing what is there | One reviewer, plus a fresh, blind Fable designer on high-risk work (D2257, D2258, D2440) | It works from what was PROMISED, not from what the builder happened to build. On the OIL build, Fable's two top-ranked predictions were both real defects. |
 | 2 | **Reading the code, on high-consequence work** — money, earned entitlement, deletion, permissions, published or frozen records, persistence, live-versus-issued reads | **Both, independently, blind to each other** | Fresh reasoning catches silently wrong existing code. It found five money defects here that driving the app would probably never have surfaced. |
 | 3 | **Red-teaming the RULES before building** | One; both if conflicting rulings touch money or authority | Catches a rule that is obsolete, incomplete or self-contradictory before code hardens around it. |
 | 4 | **Attacking the method itself, after a defect escapes** | One drafts, the other attacks | Outsiders change the checking system; the builder defends the process that missed it. After escapes, not routinely. |
@@ -233,12 +233,16 @@ fixes of 3 Oct (`handpass/2026-10-05-codex-stack-check.md` §10.1); **Sol 6.1 ke
 *Since D1734 and D1770: Astra as above, standing; Sol 6.1 only on his call — where two are required and he has not called
 Sol, the fresh, blind Opus reader holds the second seat; where Astra cannot run, a fresh Opus reader takes the one-reviewer
 jobs (D903, D1770 — the agent's reading).*
+*Since D2258 and D2440 (21 and 24 Nov 26): the agent picks Fable itself for the work it ranks high risk, other readers
+beside it, with no end date; on that work a fresh, blind Fable designs scenarios beside Astra's, the host combining the
+lists (D2257); by D2441 a fresh Fable helper also reviews and adjusts the app's words; "Fable is on call only" above
+holds for the rest.*
 
 **Who reads the finished code now (D790, D903, D1734, D1770):** Astra is the standing reviewer (D1770, 8 Nov 26 — "Yes Astra is the standing reviewer"). Sol 6.1 is called only when he calls for him (D1734; D1743's window, when Sol was called wherever a second reader fitted, closed Mon 9 Nov 26 19:00). Beside Astra's read:
 **every job that needs a code read gets a FRESH Opus read of its finished code — a reader that did not write it and has seen
 neither the walk's report nor another reader's, given the same brief** — on the riskiest changes too (rank 2's list above): **Fable
 reads nothing unless he calls for it (D903, 15 Oct 26 — "don't include fable in anything anymore unless I call for it";
-it ends the standing Fable read of those changes D790 gave).** The chat that wrote the code never reads its own work. Every claim of either
+it ends the standing Fable read of those changes D790 gave).** *Narrowed by D2258 and D2440 (21 and 24 Nov 26): on work the agent ranks high risk a fresh, blind Fable helper reads too, beside Astra's and the fresh Opus read, on the agent's pick; for the rest D903 holds.* The chat that wrote the code never reads its own work. Every claim of either
 reader is written as a failing test before it is believed. A plan's read before a build follows the How we work page's rules for plans (D1760, D1770). A changed working guide is read by Astra every time (D1761, 8 Nov 26: "call in Astra"), with a second reader beside him — Sol 6.1 on his call, otherwise a fresh, blind Opus reader. A job that goes without
 Astra's read, or without Sol 6.1's where two are required, is still written on the one list (`OUTSTANDING.md` `[NO-ASTRA-LIST]`), and the reads owed are put to him to
 call or drop — never called by the agent on its own (D761, D1734, D1770). *How it was reached:* a blind Opus read was tried beside Fable's on two jobs
@@ -435,7 +439,8 @@ also checks what a check run or a document chore hands back before accepting it 
 smaller comparison to make a decision from there yourself"): a trial of a cheaper model is kept SMALL — a handful of scenarios, never a
 full share walked twice — and the AGENT decides from the comparison what that model takes, writes the decision and its reasons in the
 evidence sheet and here, and tells him; he can overrule.** His answer to each
-report was to be a new ruling (D588); until then no other build or fix leaves Opus, and haiku stays closed.
+report was to be a new ruling (D588); until then no other build or fix leaves Opus (since D2258, D2269 and D2440, high-risk work and tough screen-design
+builds go to Fable; every other build or fix stays on Opus), and haiku stays closed.
 **And confirmed for good (owner, D787, 13 Oct 26 — "Ok sonnet walk. It’s not sustainable for token usage to have opus to walk anyway."):** the
 walk’s helpers stay Sonnet 5.5; no Opus walker is started beside them, not even on one share for comparison, and no further
 walker trial is run or offered. The host still opens the pictures, reproduces every finding and may run a short look itself (§7.0).
@@ -598,7 +603,7 @@ on top of the window it used to hide behind) is walked again with a fresh premis
 **A fix is new code** (28 Sep 26). When a read's fix rewrites logic — more than a one-line guard — the fix commit gets
 its own narrow read ("is each fix right and complete, and what did it break beside it") by a fresh Opus reader that did
 not write the fix and is handed only the fix commit and the findings it answers (D790 — never the chat that wrote it; a
-further Fable read of a fix round is on his word), repeated on each round's fixes for at most about three rounds (the
+further Fable read of a fix round is the agent's pick on high-risk work, D2258, D2440, otherwise on his word), repeated on each round's fixes for at most about three rounds (the
 agent's cap, borrowed from the plan-review one, §4a); the sheet says which round was last and what carries the rest. "All
 findings fixed" is a claim about the findings, not about the fixes. **A fix that turns a refusal into a skip, a block
 or a lasting state** lists every twin path (undo AND redo, add AND remove) and every step that can sit behind the blocked
