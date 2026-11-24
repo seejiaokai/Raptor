@@ -2977,6 +2977,14 @@ the rules for recording a reading), each change read as a working-guide change i
 his "merge live"; (2) Fable plans the audit — which designs, words and surfaces, against which rulings, how a mismatch is
 reported; Opus helpers do it; Fable reviews their findings; each mismatch goes to him with when it happens, an example and
 a picture; [UNASKED-READINGS-SWEEP] folds into it. **Place:** a session of its own, started 24 Nov 26 from chat 169.
+**State (chat 173, 25 Nov 26, his D2610, D2611):** (1) the checking fix BUILT on `claude/readings-lapse-fix-fdbb3c`
+(three rounds of blind reads by Astra, a fresh Opus and Fable, each must-fix fixed, the last checked by a fresh Fable:
+`raptor-port/docs/superpowers/briefs/2026-11-2{4,5}-readings-fix-*.md`); its pull request waits for pull request 825
+to merge, then his "merge live"; the readers' "left as is" points (`…-read3-*.md`, `…-fix4-fable.md`) are small and
+filed here, not built. (2) The audit's core done and reviewed by Fable (`…-rulings-audit-*.md`); round 1 put to him on
+https://claude.ai/artifact/JijvQqMqRAULtwUkNEMkqP; round 2 (three questions) and the six wording faults' build, drawn
+first, after his answers; the rest of the audit (Leave War, Tracker, app-wide words, the old rows' readings, tests)
+only on his word.
 
 ### [SANS-INFO-LINE] A SANS man told when a scheduler puts him on anything but a flight or sim (his D2566, 24 Nov 26)
 
