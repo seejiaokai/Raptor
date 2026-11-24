@@ -1,10 +1,12 @@
-# The Tracker's held press — a reshape (plan only, nothing built) — revised after the red team's rounds 1 and 2
+# The Tracker's held press — a reshape (plan only, nothing built) — revised after the red team's three rounds
 
 24 Nov 26. For `[MSQ-NIGHT-153-OPEN]` part (3), under his D2238: where rounds of fixes keep finding faults in one place,
 the place is reshaped first, and the plan is read by three independent readers (Astra, a fresh Opus, a fresh Fable —
 each blind) before anything is built. Round 1 said the shape is right and that it must not be built as first written
 (§8). Round 2 read the revision: no reader asked for another shape; Astra asked for two gaps in the chart's protection
-to be closed first, Opus and Fable found no HIGH (§9). §3–§7 are the plan as it now stands, after both. Written from
+to be closed first, Opus and Fable found no HIGH (§9). Round 3, the last (his cap of about three), again asked for no
+other shape; its findings are folded in and the build's code reads check them — there is no fourth round (§10). §3–§7
+are the plan as it now stands, after all three. Written from
 `claude/msq-b1-screens-135` at `91b5f476e`. **Nothing was run for this plan**: every statement about today's behaviour is
 marked **[code: function]** (read there, with its callers) or **[not checked]**.
 
@@ -110,8 +112,9 @@ landing into `pushUndo` and `clearDirty`, bump the generation at a load's start 
 four lines, but a future door that reads and then changes without `pushUndo` (a selection, a pick, a tool) still
 forgets. **Fable's** — end the press at the **input doors**: the two `window` capture listeners every key and every
 press passes through before any handler runs — leaves no place for a door driven by a key or a fresh press to forget,
-present or future. (Not every act of his hand is one of those: a second mouse button sends no `pointerdown`, and a
-voice or screen-reader "click" sends neither — 3.3's belts and the waiting redraw cover those.) **Chosen: Fable's, with Opus's hardening for what no hand drives** (the load's start, the kept course-and-chart
+present or future. (Not every act of his hand is one of those: a voice or screen-reader "click" sends neither, so
+round 3 added a third door, for a `click` heard while a press is still held (3.3); a second mouse button sends no
+`pointerdown` and no `click`, and does nothing in the editor.) **Chosen: Fable's, with Opus's hardening for what no hand drives** (the load's start, the kept course-and-chart
 check). What Astra asked for — nothing read before the press is ended — it gives for free.
 
 One departure from Fable's cut: it kept a landing at the first line of `renderBoard` as the belt for no-hand events.
@@ -121,12 +124,13 @@ save, and saved from inside another command's redraw (which two readers could no
 
 Round 2 added **Fable's second cut, in part**: the owner itself hears the held pointer's lift and cancel (3.2), so a
 lift is never lost to an element — which matters more now that a held press makes redraws wait. The kinds keep their
-own move listeners (the ball's pointer capture is not re-proved).
+own move listeners (the ball's pointer capture is not re-proved). Round 3 added the owner's one look at the held
+pointer's moves, for a mouse's lift the page never heard (3.3).
 
 What the cut costs: (a) any key, not only one that does something, puts a held ball down — the one place in the app
 where it does (his question Q3); (b) a squadron pick or Logout made by his own hand with a ball held now keeps the ball
 where he held it, where today it goes back, and with a line's handle held the unsaved-edits question now appears (same
-question); (c) the tests must send real key and pointer events to prove the rule — a direct call of a
+question); (c) the tests must send real key, pointer and click events to prove the rule — a direct call of a
 function proves only a belt.
 
 ### 3.2 One owner, two ways out
@@ -139,13 +143,14 @@ pressBegin({ kind, pid, finger, el, stop, commit }) // each kind's pointerdown: 
                                                    // pan or box), before it changes anything
     answers null — the kind does nothing — while unitLeaving, !ready, a load, switch or save of the chart is under way
     (chartBusy, 3.4), or a press is still held (belt: that one is landed first; the new press is not begun);
-    notes: storageUnit(), course, curSylId(), chartGen, the layout {lay}, sylDirty;
-    listens on window, capture, for pointerup and pointercancel of pid, and on el (the ball, for a ball or a group)
-    for lostpointercapture
+    notes: storageUnit(), course, curSylId(), chartGen, the chart {syl, lay} (an Undo step needs both), sylDirty;
+    listens on window, capture, for pointerup and pointercancel of pid — and, for a mouse's or a pen's press, for
+    pointermove of pid (the lost lift, 3.3) — and on el (the ball, for a ball or a group) for lostpointercapture
 pressMoved(point)                                  // each kind's move handler, and the edge pan's carry:
                                                    // held.moved = true, held.last = point
 pressChanged()                                     // puts the press's ONE step on the list (through pushChartStep, so
-                                                   // lastPush / dropRefusedStep work) — the chart as noted at pressBegin
+                                                   // lastPush / dropRefusedStep work) — the note's { syl, lay }, both:
+                                                   // applyHistData parses both, and a step with no syl throws at Undo
 pressEnd(how, ev)                                  // THE ONLY EXIT.  how: 'land' | 'cancel'
 ```
 
@@ -154,9 +159,14 @@ pressEnd(how, ev)                                  // THE ONLY EXIT.  how: 'land
   reads only that record: never `drag`, `groupDrag`, `marquee`, **never a pick** (`applyEndSnap` takes the key the end
   captured, and does nothing if that link is no longer on the chart), never the tool or the mode.
 - **The owner hears the lift, not the kind.** Its `window` capture listeners call `pressEnd('land', ev)` on the held
-  pointer's `pointerup` and `pressEnd('cancel')` on its `pointercancel`; a `lostpointercapture` that finds the press
-  still held (after an ordinary lift it finds none — `held` is already null) is a lift that was lost: CANCEL. The kinds'
-  own `pointerup` / `pointercancel` listeners go; their move listeners stay where they are.
+  pointer's `pointerup` and `pressEnd('cancel')` on its `pointercancel`; a `lostpointercapture` **of the ball itself**
+  (`e.target === el`, the held pointer) that finds the press still held (after an ordinary lift it finds none — `held`
+  is already null) is the pointer taken away: CANCEL. One that only bubbles up from a shape inside the ball is ignored
+  — a finger is captured first by the shape it touched, and `setPointerCapture` on the ball moves the capture, which
+  would otherwise cancel every finger's drag as it began. The kinds' own `pointerup` / `pointercancel` listeners go;
+  their move listeners stay where they are. The owner's own move listener (a mouse's or pen's press only) does one
+  thing: a move of the held pointer with no button down (`!(e.buttons & 1)`) is a lift the page missed — `pressEnd('land')`
+  with no event, so it lands at the last point seen **with the button down** (3.3).
 - `stop()` — the kind's move listener off, edge pan off, the module's in-flight state cleared (`drag`, `groupDrag`, `marquee`, guides,
   the perf class). Never touches the chart, the lists or the store.
 - `commit(p, ev)` — the lift's data work: the same statements as today's pointerup body, reading `p` (the "verbatim"
@@ -170,10 +180,13 @@ pressEnd(how, ev)                                  // THE ONLY EXIT.  how: 'land
   2. the owner's three listeners off, `p.stop()`;
   3. **dead** — `p.gen !== chartGen`, or squadron, course or chart id no longer the ones noted (today's guard, kept
      beside the generation): its step is taken off if still on the list; it writes nothing and restores nothing;
-  4. `'land'` from its own pointerup → `commit(p, ev)`. From anything else: the finger hold is ended **first**, by
-     `releaseFirstFinger()` (the take-back window closes; a save already parked on the hold is made, and the landing's
-     own save is made now, never left waiting on a hold that is then dropped); then a press that never moved, and a
-     selection box always, → as `'cancel'`; a moved one → `commit(p, null)`;
+  4. `'land'`: for a finger's press the hold is ended **first**, by `releaseFirstFinger()` — **on its own lift too**
+     (the take-back window closes; a save already parked on the hold is made, and the landing's own save is made now).
+     The owner's `window` listener hears a lift before the pinch's `drop` on the board does (l.4260), so without this
+     the lift's save would park on the hold (`saveLayout` l.1277) and be made only if `drop` heard the same lift.
+     `TRK_REFUSED_N` is read **before** that release, so a parked save refused there counts. Then: from its own
+     pointerup → `commit(p, ev)`; from anything else, a press that never moved, and a selection box always, → as
+     `'cancel'`; a moved one → `commit(p, null)`;
   5. `'cancel'`: its own step removed **by identity** — if it is the newest and the Redo list is still the one its push
      emptied, both lists are put back exactly (the 60-step trim too); otherwise it is spliced out and nothing else is
      touched (the link bend's own cancel does this today, l.3759). The whole lists are never laid back. Then, **only if
@@ -186,9 +199,16 @@ pressEnd(how, ev)                                  // THE ONLY EXIT.  how: 'land
      caller asked for none (`cancelGestures`, `chartGoing` — their callers redraw, as today) or it is off screen (no
      size): then the redraw is owed and made when the board is next shown — the Tracker's page (beside `landIfOwed`) or,
      on a phone, the return to the Flow half (`App.jsx`'s `[tab]` effect, before `refitAfterShow`'s early return);
-  6. a redraw that waited (3.3) is made now;
-  7. it answers `{ step: p.step, refused }` — `refused` when `TRK_REFUSED_N` rose across `commit` (the landing's save
-     was refused: `dropRefusedStep` has taken its step off and the store has put the chart back).
+  6. a redraw that waited (3.3) is made now — **but never inside an exit whose caller asked for none**: there the debt
+     simply stays, and the caller's own redraw pays it (any redraw that runs clears it). So sign-out still draws
+     nothing, and nothing is drawn in the middle of `trkWriteRecords`, where the store's copy is already new and the
+     events on screen still old;
+  7. it answers `{ step: p.step, refused }` — `refused` when `TRK_REFUSED_N` rose across the release of step 4 and
+     `commit` (the landing's save was refused: `dropRefusedStep` has taken its step off and the store has put the chart
+     back).
+
+  Steps 2 and 6 are each in a `finally`: a `stop` or a `commit` that throws leaves no listener on and no redraw
+  waiting for good.
 - **`cancelGestures()` keeps today's unconditional clears** — `firstFinger = null; pan = null` — **before**
   `pressEnd('cancel')` with no redraw, press or no press (l.4028). It answers true where a press was ended, as today
   (`follow` reads it and redraws); its five callers do not move, and sign-out still makes no redraw of its own.
@@ -203,7 +223,7 @@ pressEnd(how, ev)                                  // THE ONLY EXIT.  how: 'land
   finger's wider note would have been laid over what the mouse had moved (§9).
 
 Deleted: `liveGestures`, `pressSnap`, `notePress` (the canvas's capture listener keeps its `unitLeaving` guard and
-gains the swallow of 3.3), `gestureBegan`, `gestureEnded`, `endPressesOnRedraw`, `endPressForStep`, `fingerStop`
+nothing else — the swallow of 3.3 is made at the window), `gestureBegan`, `gestureEnded`, `endPressesOnRedraw`, `endPressForStep`, `fingerStop`
 (`held.finger` says it), `drag.snap` / `pushed`, the seven kinds' own lift and cancel listeners, the four handles'
 private put-back code.
 
@@ -217,16 +237,18 @@ was taken from him.
 | Event | Rule | Where (once) | Why / ruling |
 |---|---|---|---|
 | The lift | LAND | the owner's `pointerup` listener on `window`, capture → `pressEnd('land', ev)` | heard whatever element the pointer is over or captured by |
+| **A lift the page missed, shown by his hand**: a mouse's or pen's move of the held pointer with no button down; or the next press (the row "any press" below) | LAND, at the last point seen with the button down — the button-less move's own point is never used | the owner's `pointermove` listener on `window`, capture (a mouse's or pen's press only); the pointerdown door | The right button's menu took the lift, or it came up in another program — how the Reorder rows already tell it (`Modals.jsx`, "(F2)", `!(ev.buttons & 1)`). They drop nothing, because where a row lands is decided where it is let go, which nobody saw; here the ball is already drawn where he left it. **One rule for a missed lift:** a button-less move or a fresh press *shows that his hand let go* — his own hand, LAND; a lost capture shows only that the browser took the pointer and says nothing of his hand — taken from him, CANCEL (below) |
 | **Any key** (a bare Shift, Ctrl, Alt, ⌘ / OS, AltGraph, CapsLock, NumLock or Fn excepted; a key already down and repeating — `e.repeat` — excepted) | LAND | **the input door**: one `keydown` listener on `window`, capture, wired once in `wirePageOnce` | covers Undo / Redo, Delete, the Font box, a tool, Done, ✓ Save changes, every button and dropdown reached by Tab, a page or tab switch, a squadron pick, Logout — and whatever is added later. **Q1, Q3** |
 | **Escape** | CANCEL, and the key does nothing else | the same listener | the Reorder windows' rule ("Escape ends the carry, not the window", `Modals.jsx`); today it does nothing. **Q3** |
-| **Any other press** — a `pointerdown` of a pointer other than the held one: a mouse anywhere; a finger off the chart; a finger on the chart while the held press is a mouse's; a **primary** touch on the chart while a finger's press is held (the device saying no finger was down — the held one's lift was lost; the test `enablePinchZoom` l.4217 already trusts) | LAND | **the input door**: one `pointerdown` listener on `window`, capture. A press that lands on the chart itself is then dropped by the canvas's capture listener, with the click that follows it: the board has just been redrawn under it. The "drop the click" flag is cleared at that pointer's own lift or cancel plus one task, so a swallowed press dragged away never eats his next real click | one press at a time, whatever the device; a lost lift heals at the next touch or press, which puts the stuck ball down and does nothing else. A second mouse *button* sends no `pointerdown` and does nothing to the drag, as today |
-| **A landing at the door whose save is refused** | the key or press is swallowed: `preventDefault()` + `stopPropagation()`, and the click after a press | the two door listeners read `pressEnd`'s `refused` | the store has already put his move back and said so; the Undo, tool or button he pressed must not then act on a chart he has not seen settle — else Ctrl+Z takes back the change before the drag as well (`handleUndoKey` runs after the door and finds no press) |
+| **Any press** — every `pointerdown` heard while a press is held, **whatever its pointer number** (the held press's own never meets `held`: the door runs before `pressBegin`): a mouse anywhere — a mouse is always the same number, so its next press after a lost lift is this case; a finger off the chart; a finger on the chart while the held press is a mouse's; a **primary** touch on the chart while a finger's press is held (the device saying no finger was down — the held one's lift was lost; the test `enablePinchZoom` l.4217 already trusts). **One exception**: a non-primary touch on the chart while a finger's press is held — the pinch's second finger (the row "A second finger on the chart" below) | LAND | **the input door**: one `pointerdown` listener on `window`, capture. A press that falls inside the board is **stopped there, at the window** (`stopPropagation()` + `preventDefault()`): the board has just been redrawn under it. Stopped at the canvas, as round 2 had it, the pinch had already counted it — its listener is a capture listener on the board, above the canvas (l.4208) — and taken a first-finger note for it. Stopped at the window it is no finger of a pinch and takes no note; and the door has the pinch forget whatever it still counts (the statements its own primary-touch branch runs, l.4217 — a stale count of the lost finger must not pair with the next one). The click that follows is dropped at the click door (next row); the "drop the click" flag is cleared at that pointer's own lift or cancel plus one task, so a swallowed press dragged away never eats his next real click | one press at a time, whatever the device; a lost lift heals at the next touch or press, which puts the stuck ball down and does nothing else. A second mouse *button* sends no `pointerdown` and does nothing to the drag, as today |
+| **A click heard while a press is still held** — no key and no `pointerdown` came before it: voice control, a screen reader, a script | LAND | **the click door**: one `click` listener on `window`, capture — the same listener that drops the click after a swallowed press. A click on the chart itself is swallowed after the landing, like a press there | Select all "clicked" by voice under a held box would be overwritten by the box at its lift, and under a group drag the next move throws (`moveGroup` l.4644 reads a start place the new balls do not have); Arrow reads its target before it reaches `pushUndo`'s belt. An ordinary click never meets this door with a press held: its own `pointerdown` has already landed it |
+| **A landing at a door whose save is refused** | the key, press or click is swallowed: `preventDefault()` + `stopPropagation()`, and the click after a press | the three door listeners read `pressEnd`'s `refused` | the store has already put his move back and said so; the Undo, tool or button he pressed must not then act on a chart he has not seen settle — else Ctrl+Z takes back the change before the drag as well (`handleUndoKey` runs after the door and finds no press) |
 | A second finger on the chart | CANCEL through the pinch's take-back | `takeBackFirstFinger` | D134 — stays as built |
 | **A redraw asked for while a press is held** | **waits** for the press to end | first line of `renderBoard` | **fault 2**: a redraw can no longer end a press at all; and someone else's mark must not drop his ball |
 | **The chart is about to be swapped or its identity changed** | CANCEL, no redraw, then `chartGen++` | `chartGoing()` (3.4), before the first change | **a press only ever writes into the chart it began on** |
 | A squadron pick, a right ending, his move at midnight, the hold, sign-out; Save / Discard on either question | CANCEL (as today) | `follow`, `leaveSquadron`, `endSession`, l.100, l.137 — unchanged | D2395, D2243, D2318, D148. Reached with a press still held only when no hand drove them (or by a direct call) |
-| **The press is taken from him**: the system cancels the touch; the lift is lost with the ball's capture; the window loses focus; the browser tab is hidden; the Tracker's page or its Flow half leaves the screen with no hand | CANCEL | the owner's `pointercancel` and `lostpointercapture` listeners; one `blur` listener on `window` (not capture, `e.target === window` — or every Tab would cancel) and one `visibilitychange`; `App.jsx`'s effect on `active` and `tab` | what the four handles, the box, the pinch and the Reorder windows already do. **Q2** |
-| Belts, for a direct call, or a "click" that no key or `pointerdown` preceded (a second mouse button, voice control, a screen reader) | LAND at the first line of `pushUndo` (before its snapshot), `doUndo`, `doRedo`, `persistSyl`, `leaveFlowEdits`, `setTool`, `toggleArrange` | seven lines | a landing whose save is refused stops `doUndo` / `doRedo` there (else `dropRefusedStep` and `step` take two); `setTool` and `toggleArrange` are the two whose own redraw would otherwise wait under the press |
+| **The press is taken from him**: the system cancels the touch; the browser takes the ball's capture away; the window loses focus; the browser tab is hidden; the Tracker's page or its Flow half leaves the screen with no hand | CANCEL | the owner's `pointercancel` listener and its `lostpointercapture` listener (the ball's own only, 3.2); one `blur` listener on `window` (not capture, `e.target === window` — or every Tab would cancel) and one `visibilitychange`; `App.jsx`'s effect on `active` and `tab` | what the four handles, the box, the pinch and the Reorder windows already do. **Q2** |
+| Belts, for a direct call — a test, or code no event drove (a "click" with no key or press before it now meets the click door) | LAND at the first line of `pushUndo` (before its snapshot), `doUndo`, `doRedo`, `persistSyl`, `leaveFlowEdits`, `setTool`, `toggleArrange` | seven lines | a landing whose save is refused stops `doUndo` / `doRedo` there (else `dropRefusedStep` and `step` take two); `setTool` and `toggleArrange` are the two whose own redraw would otherwise wait under the press |
 
 "Stay" on either question: by his hand the press has already landed at the key or press that raised the question.
 
@@ -239,8 +261,11 @@ cancelled press's step, or null — is the first line of every function that swa
 meant, *before* its first change or wait:
 `loadCourseNow` (l.2245 — before `course = c`; covers its null-course return, its wipe of the lists at l.2271, the swap
 of `plan` at l.2272 and everything after), `openSylHere` (l.2396, before `plan.sylId = id`), `emptyForMove` (l.300),
-`trkStore.restore` (l.741), the three branches of `trkWriteRecords` that swap `SYL` or `layout` (l.908, l.919, l.932 —
-not its marks-only path), and `clearDirty` (l.6331 — the history is being ended). Cancelling *before* the swap puts the
+`trkStore.restore` (l.741), `trkWriteRecords` at four points — before `course` is re-pointed when the course on
+screen has gone (l.903, `if (courseGone)`: round 3 — the l.908 call came after that assignment, leaving the press to
+be judged dead rather than cancelled), and the three branches that swap `SYL` or `layout` (l.908, l.919, l.932 — not
+its marks-only path; `customDefs`, re-read at l.904, is not something a press reads) — and `clearDirty` (l.6331 — the
+history is being ended). Cancelling *before* the swap puts the
 press's half-done change back, so a swap of the events alone cannot leave a half-moved layout to be stored later.
 
 `trkStore.restore` then lays back the lists its snapshot copied (`capture` l.740 — taken while the press was held, so
@@ -254,8 +279,11 @@ not only for the load inside it: round the `onChain` body of `switchSyllabus` (l
 `openSylHere` re-points `plan.sylId`, and with nobody signed in as a person waits on `savePlan`, before the load
 begins; a press begun in that gap would note the new chart's id over the old chart's layout and pass the identity
 check); in Delete syllabus from before `planSylSweep` (l.6653 — `plan = f.plan` follows the wait) to the end of its
-reload; in Revert from before `sweepChart` (l.6638) to the end of its `loadCourse`; round `loadCourseNow`'s body; and
-round `persistSyl`'s. A counter, so the nesting is harmless. It is the plan's own; `loading` (never reset when a load
+reload; in Revert from before `sweepChart` (l.6638) to the end of its `loadCourse`; round the whole body of Import's
+`applyCharts` (l.7127 — it stores the chart's layout at l.7151, then waits on five more writes before its
+`loadCourse` at l.7200, with course, chart and generation unchanged: a ball dragged and let go in that wait would
+store the old layout over the imported one; not reachable while the store answers at once); round `loadCourseNow`'s
+body; and round `persistSyl`'s. A counter, so the nesting is harmless. It is the plan's own; `loading` (never reset when a load
 throws, l.2254 / l.2369) is not leaned on.
 
 **The picks** need no list of places:
@@ -271,8 +299,9 @@ across an Undo as today.
 
 ### 3.5 Questions that are his
 
-Each is one decision, with a recommendation the build can go on as the agent's reading. All three readers, both
-rounds, agreed with the recommendations; round 2 asked for the wording below, which names every visible change.
+Each is one decision, with a recommendation the build can go on as the agent's reading. All three readers, in all
+three rounds, agreed with the recommendations; rounds 2 and 3 asked for the wording below, which names every visible
+change.
 
 - **Q1. Undo pressed while a ball is still being dragged.** He adds event X, drags BFM-3 half-way and, still holding,
   presses Ctrl+Z. Today BFM-3 jumps back **and X disappears**. Recommended: BFM-3 goes back to where the drag began and
@@ -296,9 +325,13 @@ rounds, agreed with the recommendations; round 2 asked for the wording below, wh
   the few that act (Undo, a tool, a squadron pick) each ended it differently — the faults above. Recommended: any key
   or other press puts it down where it is, saved, as if he had let go — then does what it does. Escape alone puts it
   back where it began. What that means on screen:
-  - **Any key at all** (a bare Shift, Ctrl or Alt excepted) puts it down. The Tracker's chart would be the one place in
-    the app where that is so: the calendar drags and the Reorder lists end on Escape only and ignore other keys. Here
-    the keys that act must end the drag, and "any key" is the rule that cannot miss one.
+  - **Any key at all** puts it down. The only keys that do not: a Shift, Ctrl, Alt, ⌘ / Windows key, AltGr, Caps Lock,
+    Num Lock or Fn pressed by itself, and a key that was already held down before the drag and is still repeating.
+    The Tracker's chart would be the one place in the app where that is so: the calendar drags and the Reorder lists
+    end on Escape only and ignore other keys. Here the keys that act must end the drag, and "any key" is the rule
+    that cannot miss one.
+  - **A selection box being drawn disappears on any key or other press, selecting nothing** — he draws it again.
+    Today a key does nothing to a box.
   - **A squadron picked, or Logout pressed, with a ball held** keeps the ball where he held it, where today it goes
     back. With a **line's handle** held, the handle is put down as an unsaved edit — so the "You have unsaved chart
     edits…" question now appears before the pick or the Logout, where today nothing was asked.
@@ -306,16 +339,21 @@ rounds, agreed with the recommendations; round 2 asked for the wording below, wh
     down mid-drag. Today that touch does nothing to it.
   - **A second press on the chart itself** — a finger beside the mouse, or the next tap after the phone lost a lift —
     puts the held ball down and does **nothing else**: that press is used up, and he presses again for what he meant.
-    With one mouse it cannot happen (a second mouse button does nothing to the drag, as today).
+    With one mouse it happens only after a let-go the page never heard (the right button's menu took it, or it came
+    up in another program): the ball is put down where he let go as soon as the mouse next moves — today it sticks
+    to the pointer. A second mouse button by itself does nothing to the drag, as today.
   - **A tap on the chart in the instant it is being saved or loaded** does nothing; he taps again. Nothing to see
     today, when both are instant; it could be felt once the database is in. Filed.
 
 Decided here, the same rule he would already expect: a selection box ended by anything but its own lift selects
-nothing, as today; a page or tab switch by his own hand puts the ball down like any other key or press; a finger on the
-chart while the *mouse* holds a ball puts the ball down (today the two carried on together); and, from step 6, **a mere
-click on a drawn line's end changes nothing** — today it re-seats the end where the click fell and lights ✓ Save
-changes, with nothing for Undo to take back; to attach a loose end he drags it, however little (§9, the agent's
-reading — his to overturn).
+nothing (what is new is only that a key now ends it — named in Q3); a page or tab switch by his own hand puts the ball
+down like any other key or press; a finger on the chart while the *mouse* holds a ball puts the ball down (today the
+two carried on together); and, from step 6, **a mere click or tap on a drawn line's end changes nothing** — today it
+re-seats the end where the click fell and lights ✓ Save changes, with nothing for Undo to take back. So that a
+finger's tap, which always carries a pixel or two of movement, is a tap here too, the end does not start to move until
+the pointer has gone **4px** from where it pressed — the Reorder rows' own measure (`Modals.jsx`); to attach a loose
+end he drags it that far or more (§9, §10; the agent's reading — his to overturn). The other six kinds keep today's
+"any movement is a move".
 
 ## 4. How every fault and every earlier fix comes out
 
@@ -327,7 +365,7 @@ reading — his to overturn).
 | 3b. A later Save lays the press's old note over newer work | the newer work's own key landed the press first; the note lives and dies with `held`, and whole lists are never laid back |
 | 4. Picks survive an Undo, a clean switch, a delete from the ball editor | pruned at the redraw each of them makes; cleared at a load |
 | 5 (found here). A drawn line's handle drag cannot be undone | its step is the note taken at `pressBegin` (step 6); a mere click on an end changes nothing, so needs no step |
-| Rows 14–17 | `chartGoing` before any change of identity, and no press begun while one is under way (`chartBusy`); interruption cancels; another press lands the old; a lift is heard by the owner, so none is lost to an element |
+| Rows 14–17 | `chartGoing` before any change of identity, and no press begun while one is under way (`chartBusy`); interruption cancels; any next press lands the old, its own pointer's included; a lift is heard by the owner, so none is lost to an element, and a mouse's missed lift is seen at its next move |
 | Astra's Export lead (`close()` pending across a squadron change) | **not in this reshape** — a file write's lifetime, not a press; no shared state; the browser cannot abort a `close()` already asked for. Stays filed. None of the three readers found the reshape makes it worse |
 
 **The night's earlier fixes in this code** — none undone:
@@ -349,9 +387,16 @@ reading — his to overturn).
 `msq-warfix-trk-refused`, `trk-pinch-edges`, `trk-chart-fps`, `trk-refusals`, `retest`, `leftovers`, `reorderdrag`,
 `tracker` (all `src/tracker/*.test.tsx`), `src/ui/edgeturn.test.ts`, the Playwright specs `e2e/geometry.spec.ts` and
 `e2e/trk-scrollbars.spec.ts`, and the Tracker smoke (`npm run smoke:tracker`). The three press files were read against
-the reshape, by the round-2 readers too (their lifts are sent with `bubbles: true` or on `window`, so the owner's
-listener hears them); the others were **not read press by press** — the suite decides, and nothing is called green
-until it has run.
+the reshape, by the round-2 and round-3 readers too (their lifts are sent with `bubbles: true` or on `window`, so the
+owner's listener hears them); the others were **not read press by press** — the suite decides, and nothing is called
+green until it has run. Two things could turn one of them red without the app being wrong, and neither is mended
+silently: (a) a test that leaves a press held from one case into the next — every file here uses one pointer number
+for everything, and the next case's first press would now put the old one down and be used up; (b) a harness whose
+mouse moves carry no `buttons` (`trk-batch-ui`, `msq-fix2-trksave`, `trk-refusals` and the mouse helper of
+`trk-pinch-edges` build them so **[code: grep]**; the three press files and `tracker` send `buttons: 1`) — under a
+held press such a move now reads as a lift the page missed. A real mouse's drag always carries the button, so for (b)
+the harness line gains `buttons: 1` and no expectation is touched. Either case is **reported to him by name, never
+edited to pass**.
 
 ## 5. The build order
 
@@ -360,14 +405,30 @@ the step, then the whole unit suite green. A test marked *(protection)* passes t
 not expected to fail first. New tests go in `src/tracker/trk-press-owner.test.tsx`, harness copied from
 `msq-night-press-undo.test.tsx`. A test of the *rule* sends a real `keydown` or `pointerdown` through `window`; a direct
 call tests a belt and says so. `drawnLine()` saves, so it is called before whatever makes the chart unsaved.
+**Two things about the test browser**, said once: (1) a `keydown` there activates nothing — every "by key" test sends
+the `keydown` through `window` (the door) **and then** makes the click or the call the key would have made; (2) the
+copied harness never mounts `App.jsx`, where Undo's, Delete's and Escape's keys are bound (`App.jsx` l.139–141, on
+`document`) — the new file binds `handleUndoKey` and the other two on `document` as `App.jsx` does, or a real Ctrl+Z
+lands the press and no Undo follows.
 
-**Step 1 — the owner, whole, no change of behaviour.**
-Before: **T0** (protection, green today): an ordinary press–move–lift for each of the seven kinds — the stored layout,
-the step count, the unsaved mark, the selection; a finger resting on empty canvas across a squadron pick, then a second
-finger — the squadron entered untouched (the unconditional clears); for each kind, the lift sent on the element and sent on
-`window` — both heard; a refused press (`unitLeaving`) on a drawn line's corner starts no pan and no box.
+**Step 1 — the owner, whole; an ordinary press does what it does today.** (It is not "no change of behaviour": two
+things change here and are tested failing-first — a lift is heard on `window` for every kind, and one press is held at
+a time.)
+Before: **T0a** (protection, green today): an ordinary press–move–lift for each of the seven kinds, the lift sent
+where today's listener hears it (on the element for a ball, a group and the box; on `window` for the four handles) —
+the stored layout, the step count, the unsaved mark, the selection, **then one Undo and one Redo** (the step carries
+the events as well as the layout); a finger resting on empty canvas across a squadron pick, then a second finger — the
+squadron entered untouched (the unconditional clears); a refused press (`unitLeaving`) on a drawn line's corner starts
+no pan and no box. **T0b** (failing today): the lift sent on `window` for a ball, a group and the box — heard (today
+their lift listeners sit on the element, l.4658, l.4628, l.4621, which a `window` event never reaches); a **finger's**
+ball lifted with the lift sent on `window` only — stored at once, by one command, without the board's own listener
+hearing it; a second press while one is held (row 17) — the first is put down, the second does not begin; a
+`lostpointercapture` that bubbles from a shape inside a held ball — the press goes on; a lift sent without `bubbles`
+on an element still on the page — heard; a lift sent on an element taken off the page — not heard, and the next press
+puts the ball down (risk 9).
 Build: `held` with its own record — **all** the finishing data in it from this step — `pressBegin` / `pressMoved`
-(the edge pan's carry too) / `pressChanged` / `pressEnd`, the owner's own lift, cancel and lost-capture listeners (a
+(the edge pan's carry too) / `pressChanged` / `pressEnd` (the finger's hold released before every landing, its own
+lift included), the owner's own lift, cancel and lost-capture listeners (a
 ball's and a group's `pointercancel` still **lands** until step 5, as today), the dead check (generation and identity
 together), `cancelGestures` with its clears, `takeBackFirstFinger` through the owner with its generation check;
 the seven kinds moved over one at a time. A redraw still only *stops* the three element kinds (a temporary third
@@ -397,12 +458,28 @@ held, Select all — all selected.
 CapsLock; Escape puts a moved ball back and closes nothing; a press by a second pointer on another ball lands the
 first, stored before the second lifts, and itself drags nothing — and the click after it is dropped, while a click
 made after that pointer has lifted elsewhere is **not**; a mouse-held, moved ball and a finger landing on another ball
-— the mouse's ball stored where it was, the finger drags nothing, a second finger then takes nothing back.
+— the mouse's ball stored where it was, the finger drags nothing, **takes no first-finger note and is no finger of a
+pinch**: a second finger then starts no zoom with it and takes nothing back, and an edit made while it rests is
+stored at once, not parked; *(protection)* a finger's ball held and a real second finger on the chart — the drag is
+taken back and the two zoom (D134).
+**A click with nothing before it**: a box held and moved, a bare `click` on Select all (no `keydown`, no
+`pointerdown`), then the box's late move and lift — all selected, the box selects nothing; the same under a held,
+moved group — the group is stored where it was, all selected, the late move throws nothing and moves nothing; a bare
+`click` on Arrow with a line's corner held and moved — the corner stored, then the arrow, two steps in that order; a
+bare click whose landing is refused — the button does not act.
 **A lost lift**: a finger's ball press moved, its lift never sent; a primary touch on empty canvas — the ball is
-stored there; then Connect's first click — its ring is drawn (no redraw left waiting). `lostpointercapture` on a held
-ball — back where it began, nothing stored.
-Build: the two listeners with their refused-landing swallow, the swallow of a press on the chart and its flag's end,
-the waiting redraw, the seven belts, every `commit` reading its own record (the link's end its captured key).
+stored there; then Connect's first click — its ring is drawn (no redraw left waiting). The same with the new press
+carrying the **same pointer number**, by touch and by mouse: a mouse's line handle moved, the lift withheld, a second
+`pointerdown` of that number on a link — the handle is stored where it was last carried, the press is used up, the
+selection is unchanged, the old press's late move and lift change nothing, and Connect's ring then draws; the same
+with the second press on a toolbar button — the handle is stored at its last carried place, **not** under the
+toolbar, and the button acts. A mouse's ball moved, then a `pointermove` of its number with `buttons: 0` at another
+place — stored where it was last carried with the button down, and later moves move nothing; *(protection)* a
+finger's move with `buttons: 0` ends nothing. `lostpointercapture` on a held ball itself — back where it began,
+nothing stored.
+Build: the three door listeners with their refused-landing swallow, the stop at the window of a press inside the
+board (the pinch told to forget its count) and the dropped click's flag, the owner's button-less-move check, the
+waiting redraw, the seven belts, every `commit` reading its own record (the link's end its captured key).
 
 **Step 3 — the chart's identity.**
 Before: **T7**: a link's bend held and moved, `loadCourse(course)` called directly, then the lift — nothing stored, no
@@ -418,13 +495,21 @@ finger on empty canvas (no press), the chart's events replaced under the same co
 save — the replacement is on screen and stored; the same across a refused command put back. **A new press in a wait**
 (a store made slow): a ball press tried between `switchSylNow`'s re-pointing and its load — it does not begin, and
 nothing is written under the new chart's key; the same inside Delete syllabus's and Revert's waits. A press tried
-while ✓ Save changes is waiting on a slow store — it does not begin. A load that throws, and a switch that throws —
-the next press still begins.
-Build: `chartGoing` at its six functions (the finger hold ended in it), `trkStore.restore`'s removal of the dead
-step, `chartBusy` round the two switches, Delete syllabus, Revert, the load and the save.
+while ✓ Save changes is waiting on a slow store — it does not begin. A press tried inside Import's replace of the
+chart on screen, on a store made slow — it does not begin, and the imported layout is what is stored. Another tab's
+change that removes the course on screen, under a held, moved ball — nothing of his is stored under the course the
+app moves to, and no step of his is left. *(protection)* A load that throws, and a switch that throws — the next
+press still begins. A waiting redraw and a `chartGoing` together: an incoming mark, then an incoming change to the
+events, both under a held ball — his ball goes back, and the board then shows the mark and the new events (the redraw that
+waited is paid by the incoming change's own redraw, not in the middle of it).
+Build: `chartGoing` at its six functions (the finger hold ended in it; `trkWriteRecords` at its four points),
+`trkStore.restore`'s removal of the dead step, `chartBusy` round the two switches, Delete syllabus, Revert, Import's
+`applyCharts`, the load and the save.
 
 **Step 4 — the picks.**
-Before: **T4** (a) Connect, + event X, click X, Undo, click another ball — no prerequisite, nothing marked unsaved;
+Before: **T4** (a) Connect, + event X, click X, Undo, click another ball — that last click adds no prerequisite and
+no Undo step (`canUndo`'s depth unchanged; the chart is already unsaved by then — + event and the Undo each mark it,
+`applyHistData` l.3375 — so "nothing marked unsaved" cannot be the test);
 (b) Connect armed, a clean switch to a chart without that ball, a click — nothing; (d) Connect armed on a ball, its
 editor opened by double-click, Delete there, a click on another ball — nothing. (c) is protection, green today and
 after: a group selected, moved, Undo — still selected; a link selected, Undo — deselected.
@@ -432,7 +517,7 @@ Build: `prunePicks`, the clear in `loadCourseNow`, `connectClick`'s check.
 
 **Step 5 — interruptions** (on Q2's answer, or its recommendation).
 Before: **T6**: a ball moved, `pointercancel` — back where it began, nothing stored, no step; `blur` on `window` — the
-same, and a later move moves nothing; a `blur` whose target is a button — nothing ends; the Tracker hidden with a press
+same, and a later move moves nothing; *(protection)* a `blur` whose target is a button — nothing ends; the Tracker hidden with a press
 held and no input event — cancelled, no redraw until shown; the same with the Flow half hidden by `tab` and shown
 again — the owed redraw is made on the return. In a browser at 402 wide (a Playwright spec beside
 `e2e/trk-scrollbars.spec.ts`): a line handle held by the mouse, the Info tab reached by keyboard — the handle lands at
@@ -446,8 +531,11 @@ an end dragged onto a ball's port (so a prerequisite is derived). For each: Undo
 **and the prerequisites** as before the press, **B still there**; Redo — as after it; a reload — the stored layout
 matches what is on screen. And a loose end **merely clicked**, a few pixels off its centre and within reach of a port:
 the stored layout, the end's attachment, the prerequisites, `canUndo()`'s answer and `sylDirty` all unchanged, and one
-Undo then takes B. Expected to fail today **[not run]**.
-Build: `pressChanged` at the corner's first move and the end's first move; the end frees its link (`L[key] = null`) at
+Undo then takes B; **the same with a move of 3px between press and lift** (a finger's tap), by touch and by mouse;
+and a move of 6px — the end follows from that move on, and its lift attaches it. Expected to fail today **[not run]**.
+Build: `pressChanged` at the corner's first move and the end's first move; **the end's first move is the first that is
+more than 4px, on screen, from where it pressed** (`Math.abs` on each axis, as the Reorder rows' `rowDown`): until
+then `pressMoved` is not called and the dot does not follow; the end frees its link (`L[key] = null`) at
 its first move, not at pointerdown; **the end's `commit` does nothing unless the press moved**, as the corner's already
 does (`if (moved)`) — after which no kind changes the chart before it has moved, and none changes it at a lift it did
 not move before. (The other fix offered — take the step before a change made only at the lift — would keep a click
@@ -478,11 +566,12 @@ Edit chart layout, on 142 and on 149 by Plan, a picture after each press and eac
 | W10 | A ball held, another page of the app and back (put down where held); on the phone the Info tab and back (the same); another window (Alt+Tab) and back (back where it began) — the two looked at side by side | yes | by second finger |
 | W11 | A ball held by one finger, a second finger on the chart (the zoom takes the drag back — D134 unchanged) | — | yes |
 | W12 | A touch cancelled by the system | — | sent by the walk script through the browser's own protocol |
-| W13 | A ball held: a bare Shift (nothing), a key already held down before the press (nothing), an arrow key (put down), Escape (back), the right mouse button (nothing, as today). A second press on the chart puts the first down and does nothing else, and no click follows — one mouse cannot make it: driven by the walk script as a finger beside the held mouse, and by a lift withheld, then a tap | yes (script) | the withheld lift, then a tap on empty canvas, then Connect — its ring shows |
+| W13 | A ball held: a bare Shift (nothing), a key already held down before the press (nothing), an arrow key (put down), Escape (back), the right mouse button (nothing, as today). A second press on the chart puts the first down and does nothing else, and no click follows — one mouse cannot make it: driven by the walk script as a finger beside the held mouse, and by a lift withheld, then a tap. **By hand, the mouse's missed lift**: a line's handle held with the left button, the right button pressed (the browser's menu opens), the left let go over the menu, the menu closed, the mouse moved — the handle is put down where he let go and no longer follows; then a click on a link selects it. **A click with nothing before it** (the script sends a bare click on Select all under a held box, then under a held group) — all selected, nothing thrown | yes (by hand and script) | the withheld lift, then a tap on empty canvas, then Connect — its ring shows; then a second finger beside the used-up tap — no zoom jump |
 | W14 | A ball held while (a) a mark is made by someone else — the drag carries on, the chart catches up at the lift; (b) someone else moves a ball on the same chart — his held ball goes back, theirs shows. This build's store does not bring another tab's change in live (`loadLatest` is empty, `storage.js` l.157), so the walk script hands the incoming record to the Tracker through the store's own door and first shows that it arrived; real two-tab delivery is a look of its own at the database step | yes (script) | — |
 | W15 | A line's handle held, a squadron picked by keyboard — the handle is put down, the unsaved-edits question appears; Stay, then Discard | keyboard | second finger on ☰ |
 | W16 | A thumb resting on the header, then on the Info half, while another finger carries a ball — the ball is put down | — | yes |
-| W17 | A drawn line's loose end clicked without moving, near a port and away from one — nothing changes, ✓ Save changes stays unlit; then dragged a little onto the port — attached, one Undo takes it back | yes | yes |
+| W17 | A drawn line's loose end clicked without moving, near a port and away from one — nothing changes, ✓ Save changes stays unlit; then dragged onto the port (more than 4px) — attached, one Undo takes it back | yes | yes — a **tap**, several times: in the test browser a tap carries no movement, so this proves the rule and not his finger (the iPhone look below) |
+| W18 | Import that replaces the chart on screen, then at once a ball dragged — the imported layout is what shows after a reload (on today's instant store this is plain use; the wait itself is a unit test) | yes | — |
 
 **What a finger on a phone cannot reach:** every keyboard path; the mouse beside a finger.
 **Looks for his iPhone** [cannot be established in the test browser]: whether iOS gives a second finger's tap to a
@@ -490,18 +579,25 @@ button while the first holds a ball (W2–W4, W9, W10 by finger); whether the Co
 picker, open under a held finger and whether opening one counts as the window losing focus; whether iOS cancels the
 first finger's touch when a second lands; a real interruption (a call); a ball carried to the left screen edge or the
 bottom bar, and a ball held still for some seconds — whether iOS takes the touch (Q2); a thumb resting off the chart
-(Q3, W16); whether a lift is ever lost now that the ball is not redrawn away under the finger.
+(Q3, W16); whether a lift is ever lost now that the ball is not redrawn away under the finger; whether a finger's
+ball drag ever goes back by itself as it begins (the capture moving from the touched shape to the ball — 3.2 ignores
+that one; any other lost capture now cancels); whether a tap on a drawn line's end stays a tap under the 4px measure,
+and whether 4px is felt as a dead spot when he means to drag it (W17); whether a press on the Syllabus or squadron
+picker still opens it after a landing the app could not save (risk 8).
 
 ## 6. What is deliberately not changed, and the risks
 
 **Not changed**
 - What an ordinary lift does, kind by kind — but for the mere click on a drawn line's end (step 6) — including one
-  oddity left: a click on a link's bend square without moving marks the chart unsaved and adds an Undo step that takes
-  back nothing. To file.
+  oddity left, in two places: a click on a link's bend square without moving marks the chart unsaved and adds an Undo
+  step that takes back nothing; and a still click on a **link's end** (the same orange dot as a drawn line's) still
+  runs `applyEndSnap`, whose same-ball branch does the same. Not mended here — `trk-refusals` drops link ends with no
+  move and relies on `applyEndSnap` running. Both to file, together.
 - The pinch and its take-back (D134), the pan of empty canvas, the chart's scroll and glide outside the editor, the edge
   pan (`followEdge`, D899), the Line tool's two clicks, the Reorder windows' drags.
 - Undo's own machinery (`step`, the restore command, `lastPush` / `dropRefusedStep`, the parked history per squadron),
-  `saveLayout`, the squadron move's order, the two questions and their words, Export, Import, `loading`.
+  `saveLayout`, the squadron move's order, the two questions and their words, Export, `loading`; Import but for the
+  `chartBusy` round `applyCharts`.
 - A finger's waiting layout save dropped by a cancel with no press held (Opus's lead of the first night): as today.
 - The rest of the Tracker, its store, the command layer, every other page.
 
@@ -514,7 +610,8 @@ between would be lost (not reachable while the store answers at once; it opens a
 1. **The doors are new global listeners.** A key pressed for something unrelated ends a drag (Q3's cost). Other
    `window` capture key listeners exist in the app — the date calendar's, the Leave War's sheets', `ui/boardescape.ts`
    **[code: grep]**; one wired earlier runs before the door, and if it stops the key the door never hears it. The press
-   then simply stays held; the belts cover the actions that matter.
+   then simply stays held; the belts cover the actions that matter. The click door is the third: it acts only while a
+   press is held, which an ordinary click never finds.
 2. **A redraw that waits** leaves the board as drawn until the press ends. A caller that redraws and then measures the
    new board, reached with no hand while a press is held, would measure the old one — none was found among the no-hand
    callers of row 15 **[not checked for all 89]**, but one acts on it: `leaveRunningCoursesNow` redraws (it waits),
@@ -533,29 +630,45 @@ between would be lost (not reachable while the store answers at once; it opens a
 6. **`blur`**: a second page taking focus during the smoke would cancel a drag in flight. The listener stays — a window
    can lose focus while its tab is still shown; if the smoke trips on it, the smoke's focus handling is mended.
 7. **Vendored plain JavaScript, no types**: nothing but the tests says a kind forgot `pressBegin`; T0 holds all seven.
-8. **A press swallowed** at the door (the second press on the chart) is not counted by the pinch either. Whether a
-   click still follows a swallowed press is **[not checked]** — W13 looks; the flag that drops it ends with that
-   pointer's lift, so it cannot outlive the press it was set for.
-9. **The owner's lift listener is on `window`.** A lift sent to an element that has left the page never reaches it
-   (Safari has done this — the pinch's own comment, l.4213): the lost-capture cancel and the next touch are what heal
-   that. A test that sends a lift without `bubbles` would not be heard either; none was found in the three press files.
-10. **A click on a drawn line's end no longer re-seats it** (step 6). If he used that to attach a loose end, he now
-   drags it. Named in 3.5 and W17.
+8. **A press swallowed** at the door (a press on the chart that put another down) is stopped at the window, so the
+   pinch never counts it (round 2's text said so while stopping it at the canvas, below the pinch's listener — wrong
+   in fact, round 3). The pinch's count lives inside `enablePinchZoom`; the door reaches it through one small function
+   the build adds there, and the finger's later lift is ignored by `drop` as "not a finger this board is counting"
+   (l.4252). Whether a click still follows a swallowed press is **[not checked]** — W13 looks; the flag that drops it
+   ends with that pointer's lift, so it cannot outlive the press it was set for. `preventDefault` on a press does
+   **not** stop a native dropdown opening in every browser **[not checked]**: after a landing the app could not save,
+   a press on the Syllabus or squadron picker may still open it. No data is at risk — the store has already put the
+   chart back, and only Undo could have taken two.
+9. **The owner's lift listener is on `window`, capture.** It hears a lift sent to any element still on the page,
+   whether or not that event bubbles; only a lift sent to an element that has **left** the page never reaches it
+   (Safari has done this — the pinch's own comment, l.4213), and the next press, the button-less move and the
+   lost-capture cancel are what heal that. T0b sends one of each (on an attached element without `bubbles`, and on a
+   detached one).
+10. **A click on a drawn line's end no longer re-seats it** (step 6), and the end does not move for the first 4px. If
+   he used the click to attach a loose end, he now drags it. Named in 3.5 and W17.
+11. **The button-less move is trusted as "he let go".** A real mouse or pen drag always carries its button; a test
+   harness may not (§4, "must stay green"). A browser that sent a held mouse's move with `buttons` 0 would end the
+   drag early, put down where it was — the Reorder rows have run on the same test since they were built.
+12. **A lift the page missed has two outcomes by design** — put down when his hand shows it (the next move or press),
+   put back when only the browser's lost capture does. On a device that sends both for one event, whichever arrives
+   first decides. An iPhone look.
 
 ## 7. Size
 
-`tracker/app/core.js` — about 38 functions touched (the seven kinds and the canvas's capture listener, `cancelGestures`,
-`holdFirstFinger`, `takeBackFirstFinger`, `renderBoard`, `pushUndo`, `doUndo`, `doRedo`, `persistSyl`, `leaveFlowEdits`,
-`setTool`, `toggleArrange`, `loadCourseNow`, `openSylHere`, `switchSyllabus`, `switchSylNow`, Delete syllabus, Revert,
-`emptyForMove`, `trkStore.restore`, `trkWriteRecords`, `clearDirty`, `connectClick`, `applyEndSnap`, `followEdge`,
-`wirePageOnce`, `landIfOwed`), about 240 lines in and 115 out (the kinds lose their lift and cancel listeners);
-`tracker/App.jsx` — two effects. Two new test files (about 700 lines of unit tests, one small Playwright spec), two
-documents.
+`tracker/app/core.js` — about 40 functions touched (the seven kinds and the canvas's capture listener, `cancelGestures`,
+`holdFirstFinger`, `takeBackFirstFinger`, `enablePinchZoom` (the one function that forgets its count), `renderBoard`,
+`pushUndo`, `doUndo`, `doRedo`, `persistSyl`, `leaveFlowEdits`, `setTool`, `toggleArrange`, `loadCourseNow`,
+`openSylHere`, `switchSyllabus`, `switchSylNow`, Delete syllabus, Revert, Import's `applyCharts`, `emptyForMove`,
+`trkStore.restore`, `trkWriteRecords`, `clearDirty`, `connectClick`, `applyEndSnap`, `followEdge`, `wirePageOnce`,
+`landIfOwed`), about 270 lines in and 115 out (the kinds lose their lift and cancel listeners); `tracker/App.jsx` —
+two effects. Two new test files (about 850 lines of unit tests, one small Playwright spec), two documents; possibly
+one line in each of up to four older test harnesses (`buttons: 1`, §4 — named to him if so).
 
-One builder: the tests, step by step, 7 h; step 1, 6 h (the owner hears the lift); step 2, 4 h; steps 3–4, 4 h; steps
-5–7, 3 h; the unit suite, the Playwright specs and the Tracker smoke between steps, 2–3 h — **about 27 hours**, before
-the reads. The walk: about 5 hours at two widths, mouse and finger, the script's incoming records for W14. (The first
-draft said 12 and 3; round 1's revision, 22 and 4.)
+One builder: the tests, step by step, 8 h; step 1, 6 h (the owner hears the lift); step 2, 5 h (three doors, the
+missed lift); steps 3–4, 4 h; steps 5–7, 3 h; the unit suite, the Playwright specs and the Tracker smoke between
+steps, 2–3 h — **about 29 hours**, before the reads. The walk: about 5½ hours at two widths, mouse and finger, the
+script's incoming records for W14 and its bare clicks for W13. (The first draft said 12 and 3; round 1's revision, 22
+and 4; round 2's, 27 and 5.)
 
 ## 8. The red team, round 1 (24 Nov 26)
 
@@ -639,3 +752,54 @@ F = Fable, with the reader's own number. None was judged false.
 | The edge pan must report movement through the owner | A | accepted | 3.2 (`pressMoved`) |
 | Step 1 must already hold all finishing data; no "stays green" claim before the suite runs | A | accepted | step 1; §4 |
 | The door is wired before the pinch's own listener; keep "the hold is ended first" | F 6 | holds as written | 3.2 step 4 |
+
+## 10. The red team, round 3 (24 Nov 26) — folded, no further round
+
+Reports: `docs/superpowers/briefs/2026-11-24-trk-press-reshape-read3-{astra,opus,fable}.md`. No reader asked for
+another shape; Astra asked for four corrections before a build, Opus and Fable found nothing that should stop one.
+Each finding was opened in the code before a verdict; duplicates are one row. A = Astra, O = Opus, F = Fable, with the
+reader's own number. None was judged false; three are accepted in part. This was the last round (his cap of about
+three): what follows is folded into §3–§7, and the build's code reads check it.
+
+| Finding | Readers | Verdict | Where the plan now answers it |
+|---|---|---|---|
+| A lost lift is not healed when the next press is the **same pointer** — a mouse always is, a touch number can be reused: the door looked only for "a pointer other than the held one". A mouse's handle then sticks to the pointer, redraws wait, and the next click's own lift re-seats the handle under the toolbar | A 2 (HIGH), O 1 (MEDIUM), F 2 (MEDIUM) | accepted **[code: every kind's move listener asks only `pointerId` — l.3847 — never the button; the Reorder rows do ask, `Modals.jsx` l.439, l.490; `core.js` has no `contextmenu` listener]**. One rule for a missed lift: his hand shows it (a button-less move, any fresh press) → LAND at the last point seen with the button down; only the browser's lost capture shows it → CANCEL, because that says nothing of his hand | 3.2 (the owner's move listener; `lostpointercapture` of the ball itself only); 3.3 (the rows "a lift the page missed" and "any press"); step 2's "a lost lift"; W13; risks 11, 12 |
+| A "click" with no key or press before it (voice control, a screen reader) passes every door: Select all under a held box is overwritten at the box's lift, and under a group drag the next move throws | A 1 (HIGH) | accepted **[code: `selectAllClick` l.6830 changes the selection and pushes nothing, so no belt sees it; `moveGroup` l.4644 reads `groupDrag.start[bid]` with no test for a ball that was not selected at the press]**. Not reachable by mouse, finger or keyboard — each sends a key or press first | 3.1; 3.3 (the click door, on `window`, capture, acting only while a press is held); step 2's "a click with nothing before it"; W13 |
+| The press swallowed on the chart is counted by the pinch all the same; risk 8 said the opposite | A 3 (MEDIUM), O 2, F (note to §9) | accepted **[code: the pinch's `pointerdown` listener is a capture listener on the board, l.4208 with l.3932, above the canvas whose capture listener was to drop the press]**. Of the two fixes, **stopped at the window**: one place decides, and nothing below hears a press that is to do nothing. The pinch is told to forget its count, or the lost finger's stale count would pair with the next finger | 3.3 ("any press"); 3.2 (Deleted); step 2's mouse-and-finger test; risk 8 |
+| T0 called "protection, green today" what fails today, and step 1 "no change of behaviour" | A 4 (MEDIUM), O 3 | accepted **[code: the ball's, the group's and the box's lift listeners are on the element — l.4658, l.4628, l.4621]** | step 1 (T0a protection, T0b failing-first; the two behaviours it does change, named) |
+| Import's replace of the chart on screen waits on the store with the chart's identity unchanged: a ball let go in that wait stores the old layout over the imported one | F 1 (MEDIUM, slow store) | accepted **[code: `applyCharts` l.7151 stores the layout, then five more waits before `loadCourse` at l.7200]**. Not reachable while the store answers at once; today's code has it too | 3.4 (`chartBusy`); step 3; W18; §6 |
+| A finger's own lift: the owner hears it before the pinch's `drop`, so the lift's save parks on the hold and is made only if `drop` hears the same lift | F 3, O (noted as benign) | accepted **[code: `saveLayout` l.1277; `drop` l.4260 is on the board, below the window]** | 3.2 step 4 (the hold released before every landing, `refused` read from before it); T0b |
+| The press's step must carry the events too, or Undo throws | F 4, O 6 | accepted **[code: `pushUndo` l.3324 pushes `{ syl, lay }`; `applyHistData` l.3375 parses both]** | 3.2 (`pressBegin`'s note, `pressChanged`); T0a's Undo and Redo |
+| A redraw that waited is paid inside exits that asked for none (sign-out; the middle of `trkWriteRecords`); a `commit` that throws | F 5 | accepted | 3.2 steps 6 and 7 (the debt stays for the caller's redraw; `finally`); step 3's last test |
+| `trkWriteRecords` re-points `course` before the place `chartGoing` was put | O 7 | accepted in part **[code: l.902–904]**: `chartGoing` is added before `course` is re-pointed (the condition is already worked out one line above). `customDefs`, re-read before any branch, is left — no press reads it and it is no part of the chart's identity | 3.4; step 3 |
+| Risk 9: a lift that does not bubble **is** heard by a capture listener on `window` if its element is on the page; only a detached element's is not | A 4, O | accepted (how the browser dispatches; nothing in the code says otherwise) | risk 9; T0b |
+| Test wording: a `keydown` activates nothing in the test browser; the harness binds no Undo key; T4 (a) cannot pass as written; two unmarked protections; a press left held between cases | F 6, O 4, O 5 | accepted **[code: `handleUndoKey` is bound in `App.jsx` l.141 only; `applyHistData` marks the chart unsaved]** | §5's opening; step 3; step 4; step 5; §4 "must stay green" |
+| A native dropdown may still open after a landing the app could not save | F 7 | accepted as a note **[not checked in a browser]** — no data at risk | risk 8; the iPhone looks |
+| A still click on a **link's** end still re-seats it, with a step that takes back nothing | O (caveat) | accepted as found-not-fixed **[code: `applyEndSnap` l.3265, its same-ball branch]** — `trk-refusals` relies on it running | §6 "not changed" |
+| A finger's tap on a drawn line's end carries a pixel of movement and would count as a drag | O (caveat), F (W17) | accepted, by a **4px** measure for that kind only — the Reorder rows' own. Without it, "a mere click changes nothing" would hold for a mouse and not for his phone | 3.5 "Decided here"; step 6 and T5; W17; risk 10 |
+| A finger's drag may get a `lostpointercapture` as it begins (the capture moving from the touched shape to the ball), which would cancel every such drag | F (iPhone look) | accepted in part: the owner heeds only the ball's own lost capture, not one bubbling from inside it. Whether iOS sends any other is a look | 3.2; T0b; the iPhone looks |
+| Q3 must name the selection box disappearing on any key, and the full list of keys that do not put a ball down | F ("Decided here" 1), A (§9 row 10) | accepted | Q3; 3.5 "Decided here" |
+| "Must stay green, unchanged" is unproven where a test leaves a press held between cases | F 6 | accepted — and the round's own fix adds a second such case: a harness whose mouse moves carry no `buttons` **[code: grep of `src/tracker/*.test.tsx`]** | §4 (reported by name, never edited to pass); risk 11; §7 |
+
+**What no plan read could check — for the build's code reads and the walk**
+
+1. The suite itself: nothing in §4's "must stay green" list has been run against this shape. The two named ways a
+   green test could turn red (a press left held between cases; a mouse move with no `buttons`) are looked for first.
+2. Every caller that asks `pressEnd` for no redraw does redraw afterwards, so a debt left by step 6 is always paid —
+   `follow`, `leaveSquadron`, the two questions' Save / Discard, each `chartGoing` site. Sign-out is the one that
+   draws nothing, by design.
+3. The door's reach into the pinch: that forgetting the count mid-press cannot leave a pinch half-begun (`start`,
+   `pinching`), and that the swallowed finger's lift really is ignored.
+4. That every kind's `commit` reads its own record and nothing else — no pick, no `drag` / `groupDrag` / `marquee`,
+   no tool — and that every one of the seven calls `pressBegin` (plain JavaScript: only T0 says so).
+5. That `chartBusy` is lowered on every way out of each operation, a throw included, and that no eighth operation
+   re-points the chart across a wait (Import was the seventh, found in round 3).
+6. On his iPhone, which no test browser shows: a second finger's tap on a button while the first holds a ball; the
+   pickers and the file picker under a held finger; whether iOS cancels the first touch when a second lands; a call
+   coming in; a ball at the left edge or the bottom bar, or held still; a thumb resting off the chart; a lost
+   capture as a drag begins, or at a lift; a tap on a drawn line's end under the 4px measure; a native picker after
+   a refused landing.
+7. A real mouse's missed lift (W13, by hand): that the browser does send button-less moves after the right button's
+   menu closes, and what the handle does until it does.
+8. Real two-tab delivery (W14) — at the database step, with the slow-store tests of step 3 run again against the real
+   store.
