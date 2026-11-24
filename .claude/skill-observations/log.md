@@ -1310,3 +1310,16 @@ sides.
 **Issue:** The guide says Low runs the fewest helpers the checks need and that Medium "means more walkers or a scenario designer inside a job". Since D2443 every WALK and FULL check has two scenario designers, Astra and a fresh Fable, on either setting, so a night run reading the guide literally could leave Fable's design out on Low. Its "Fable only on his word" (Observation 1029) is the same drift.
 **Suggested improvement:** At the guide's next review, state that both settings give every walk its two scenario designers (D2443), and that Low and Medium differ only in how many walkers run and whether helpers run at once.
 **Principle:** When a rule adds a required helper to a check, every guide that sizes or budgets that check is read for a line that now leaves it out.
+
+### Observation 1045
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** Chat 161, building the hidden timing readout from a measuring script already written in the plan (numbered past 1044, held on another branch)
+**Skill:** New skill candidate: porting a measurement into the app
+**Type:** open-source
+**Phase/Area:** turning a working measuring script into in-app instrumentation
+
+**Issue:** The plan's script waited for the loading overlay anywhere in the document; the in-app version, rewritten from memory, looked for it inside the page's own section, where it never is. Both blind scenario designers found it by reading before any walk; unit tests written by the builder had passed because they modelled the builder's assumption.
+**Suggested improvement:** When code reimplements an existing measuring script's end condition, copy its selectors and conditions verbatim, cite the script's line, and pin the condition with a test built from the real component's DOM shape (where the overlay is actually appended), not from the builder's picture of it.
+**Principle:** An instrument rebuilt from memory of a working one silently changes what it measures; carry the proven condition over word for word and test it against the real structure.
