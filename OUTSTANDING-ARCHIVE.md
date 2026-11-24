@@ -8908,3 +8908,9 @@ drawing folder — `summary.mjs`, pictures `pc-today-L1-…`, `-L2-…`. **How:*
 narrowing D275): BUILT 22 Nov 26 there, each landing a failing test first; walk and reads to come. **Place:** that job.
 **DONE 22 Nov 26:** walked and read, the page switch without its slide too (D2296); the rule on the scheduler's page
 (D2295); that job's sheet.
+
+*Moved here 2026-11-24 by backlog-archive.mjs ([VERCEL-SHIPPING-LINES]). Forward facts: `raptor-port/docs/shipping-steps.md`.*
+
+### [VERCEL-SHIPPING-LINES] Two shipping lines still say every push builds on Vercel (a reader's note, 14 Nov 26; D2032, D201)
+Since [VERCEL-SKIP-NOTES] went live (pull request 765), a push that changes only notes builds nothing on Vercel, but two lines of `.claude/rules/shipping.md` still say otherwise: "A branch push … gives him a Vercel link to look at" (§"Push" and "merge live") and "`vercel.json` at the repo root builds `raptor-port` for every push" (§The loop). Raised by the fresh Opus reader of the Vercel line on 14 Nov 26 (chat 70). **To do:** reword both to say a push that changes the app gives a link and builds, a notes-only push builds nothing; the gates-and-deploy note already carries the detail. `shipping.md` governs the agent, so the change is read as a guide change (Astra and a fresh Opus reader) and goes live only on his "merge live".
+

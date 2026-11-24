@@ -1272,6 +1272,45 @@ sides.
 **Suggested improvement:** reword that phrase to "Fable on the agent's pick for high-risk work (D2258, D2440), otherwise only on his word", at the guide's next review.
 **Principle:** when a standing rule about who does a job changes, every guide that restates it in passing is found by searching for the old phrase, and each is corrected or given a note the same day.
 
+### Observation 1040: A rule cut to a short form loses the same four kinds of thing — check for them before the readers do
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 158, the every-chat rules' tightening (D2460): the shipping rule file cut to a short form with its full wording moved whole behind it. Numbered 1040, past 1030–1039, which are left for the open branches' logs.
+**Skill:** New skill candidate: writing a short form of a rule (the rules diet's method; today in `raptor-port/docs/doc-budget.md` and the rules-diet plan)
+**Type:** open-source
+**Phase/Area:** writing the short statement that stays loaded when a rule's detail moves behind a pointer
+
+**Issue:** two blind readers of the first short form found the same losses, independently: (1) two different duties merged into the stronger one ("take the lock" and "wait until the lock is free" both became "take"); (2) the second half of a duty dropped (message the other chat — but also answer when asked, and write the promise into the handoff notes); (3) the moment to open the full text named too late (at the merge, though the rule is first needed when the job is planned); (4) a list's boundary summarised by a looser word ("a rule file" shut out files the full list lets in). A fix round then repeated kind (4) once more.
+**Suggested improvement:** before a short form goes to its readers, run four checks against the full wording, bullet by bullet: every verb kept apart from its neighbour (take / wait / none); every "and also" clause carried or pointed to; the pointer's moment is the EARLIEST one at which the rule is used, found by searching the guides for who cites the rule; every list either quoted whole or said to be partial, with both its sides named. Put the four in the rules diet's method beside "a move never rewords".
+**Principle:** shortening a rule fails in predictable places — merged verbs, dropped second clauses, late trigger moments and loosened list boundaries — so those four are checked by the writer first, and the independent readers are left the faults that are not predictable.
+
+### Observation 1041: A build already in the folder may be another branch's — check before taking pictures from it
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 159 — the guide for another squadron's schedulers; pictures of the live app were needed while another chat held the checks lock
+**Skill:** walk scripts and mock-ups (`raptor-port/docs/walk-scripts.md`; the mock-up guide)
+**Type:** open-source
+**Phase/Area:** before a picture script or walk is pointed at a build that is already on disk or already served
+
+**Issue:** the main folder's built app was a day old and the folder now stood on `main`, so the build looked usable. The folder's own branch history at the build's time showed another chat's unmerged branch had built it (69 code files different from `main`). Pictures from it would have shown work that is not live. Second, in the same job: a guide written by hand from memory of the app had one wrong and six overstated statements out of about forty-five, all in the sentences that summarised who may do what or which checks apply — the tables read out of the app's own text had none.
+**Suggested improvement:** in the walk-scripts guide's "before the first picture" steps: when a build was not made in this chat, compare its time with the folder's branch history (`git reflog --date=iso`) and the code difference from the intended branch; if it differs, wait for the lock and build. In the guide-writing notes: anything the app already states in its own words is read out of the app by script, and only the joining sentences are written by hand and sent to a fresh reader.
+**Principle:** a build on disk carries no label saying which code made it, so its source is established from the folder's history before anything is concluded or pictured from it; and a summary of rules is safest generated from the place the rules are stated, with hand-writing kept to what cannot be generated.
+
+### Observation 1042: The overnight guide's Low setting predates two scenario designers on every walk
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** Recording his D2443 (every walk's scenarios designed by Astra and a fresh, blind Fable, whatever the risk)
+**Skill:** overnight
+**Type:** internal
+**Phase/Area:** "Low or Medium?" — what each setting runs; the helper list for a job
+
+**Issue:** The guide says Low runs the fewest helpers the checks need and that Medium "means more walkers or a scenario designer inside a job". Since D2443 every WALK and FULL check has two scenario designers, Astra and a fresh Fable, on either setting, so a night run reading the guide literally could leave Fable's design out on Low. Its "Fable only on his word" (Observation 1029) is the same drift.
+**Suggested improvement:** At the guide's next review, state that both settings give every walk its two scenario designers (D2443), and that Low and Medium differ only in how many walkers run and whether helpers run at once.
+**Principle:** When a rule adds a required helper to a check, every guide that sizes or budgets that check is read for a line that now leaves it out.
+
 ### Observation 1018: A red test failed at its set-up again — the set-up call's own answer was never checked
 
 **Status:** OPEN

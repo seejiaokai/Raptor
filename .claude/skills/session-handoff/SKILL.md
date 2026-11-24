@@ -22,8 +22,8 @@ so the next chat just pulls and reads. The structure every fact follows: `.claud
 
 **The handoff is COMMITTED AND PUSHED to the chat's `claude/<name>` branch.** It reaches `main` only by
 `.claude/rules/shipping.md`'s rule: on the owner's explicit "merge live" (D60 — pushing the branch needs no
-permission) — or, where the whole pull request changes only notes (that file's "only notes" list), by itself once its
-run is green, the agent merging it by that file's steps — the file list checked, `npm run rulecheck` and the unit
+permission) — or, where the whole pull request changes only notes (the "only notes" list of `raptor-port/docs/shipping-steps.md`), by itself once its
+run is green, the agent merging it by that document's steps — the file list checked, `npm run rulecheck` and the unit
 tests that read documents run first, under the merge lock, and said in its report (D1407; a rules-diet step waits for
 his word all the same, D1737). So most sessions
 end on "pushed, PR open, awaiting merge live": hand him the Vercel preview link and say so in chat. **That is the
@@ -298,8 +298,8 @@ Same structure every time. Write "none" rather than dropping a line — stable s
   split into chats from the start when the bug-check checklist's step 3 finds too little room — a batch of three or
   more items is presumed to (13 and 17 Nov 26: the reading and the build alone filled 76% and 85%). An unattended run
   stays in one chat, saving its state at clean points and carrying on through compaction (D667, D867).
-- How a job ships is decided by the files it will change, checked against `.claude/rules/shipping.md`'s "only notes"
-  list — a size-tripwire raise changes a script and waits for "merge live".
+- How a job ships is decided by the files it will change, checked against the "only notes" list of
+  `raptor-port/docs/shipping-steps.md` — a size-tripwire raise changes a script and waits for "merge live".
 - A step that removed a field, a mark or a rule ran its area's whole suite (or searched the tests for the removed
   name) before the block says green.
 - A brief written for another chat — a side session, the next chat's helpers — names the branch and commit its

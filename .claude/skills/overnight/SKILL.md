@@ -11,7 +11,7 @@ chat (D867). Its rulings: D596, D667, D766, D869.
 
 **What the command is, and is not.** The command and his selection are his go for the night: the agent builds the
 jobs he selected, on branches, in this chat. It is NOT permission to build a job he did not select, to push to `main`, to
-merge (unless he gave "auto merge live" for the night — D1093; then by `.claude/rules/shipping.md`'s four steps;
+merge (unless he gave "auto merge live" for the night — D1093; then by the four merge steps of `raptor-port/docs/shipping-steps.md`;
 otherwise nothing merges by itself, the night's notes included — they are merged in the morning, D1980), to change his
 Claude settings, the hooks or a working guide, or to answer a product question for him. Those
 stay his, every night.

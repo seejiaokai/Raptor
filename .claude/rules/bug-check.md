@@ -45,26 +45,13 @@ Then, before you execute anything:
 
 ## When to call in Fable and Codex
 
-- §4 of the order decides it, not habit (D353: scenarios and side questions one reader — Astra, the standing reviewer, or a
-  fresh Opus reader when Astra cannot run, and on high-risk work a fresh, blind Fable designing beside Astra, D2257, D2258, D2440; a plan's red team two — who they are now, below: D590, D601, D790, D903, D1734, D1738, D1739, D1761, D1760, D1770). Its short form:
-  scenario design first — ask them what is
-  missing, not whether the code is wrong; Sol 6.1's second read of the code only on money, published records,
-  permissions or persistence, and only on his call; and never another static review when what is missing is someone running the app — that one is called
-  review pile-on.
-- **Who they are now:** Astra is the standing reviewer, with no end date (D1770): for work Opus or Fable wrote Astra
-  reviews, called without asking him each time — the rules diet's reworded steps among them, which never go on without his
-  read (D1738, D1739), and every working-guide change (D1761). Sol 6.1 is called only when he calls for him; otherwise, where
-  two readers are required, the fresh, blind Opus reader keeps the second seat (the agent's reading). Fable: the agent picks it
-  for the work it ranks high risk, other readers beside it (D2258, D2269, D2440 — the three tiers are in D2258's full
-  row); beyond that and the app's words (D2441) it is on call only, on his word. What Codex wrote, Opus reads (D590, D601,
-  D790, D903, D1734, D1738, D1739, D1761, D1770).
-- **Beside Astra's read,** every job that needs a code read gets a fresh, blind Opus read of its finished code, never
-  by the chat that wrote it; a job that went without Astra's read, or without Sol 6.1's where two are required, goes on the reads-owed list (D790, D903, D1734, D1738,
-  D1739, D1761, D1770).
-- **Fable is used for the work the agent ranks high risk — it plans, builds or reads there (D2258's high tier) — and to
-  review and adjust the words people read in the app (D2441); for nothing else unless he calls for it.** Where Fable
-  reads code, it is a fresh, blind helper beside Astra's and the fresh Opus read, never in their place (D903, D1770, D2258,
-  D2440).
+- §4 of the order decides it, not habit. Its short form: scenario design first — ask them what is missing, not whether
+  the code is wrong; Sol 6.1's second read of the code only on money, published records, permissions or persistence,
+  and only on his call; and never another static review when what is missing is someone running the app — that one is
+  called review pile-on (D353, D590, D601, D790, D903, D1734, D1738, D1739, D1761, D1770).
+- **Who builds and who reads is stated once,** in `.claude/rules/decisions/how-we-work.md` §Models and readers (D2460).
+- One line of it, for this check: where Fable reads code, it is a fresh, blind helper beside Astra's and the fresh Opus
+  read, never in their place (D903, D1770, D2258, D2440).
 
 ## What is not a finding (D56) — read this before you spend anything
 
