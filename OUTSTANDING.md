@@ -2897,6 +2897,11 @@ shortly before the item is free from dekit (D36), so he is listed, and the windo
 inside his 2-hour debrief (D38, built, pinned by `raptor-port/src/ui/availwin.test.tsx` "the owner's case"). His pick of
 plain pucks therefore goes back to him as a choice, drawn: (A) plain pucks except that debrief mark and its reason —
 recommended — or (B) no marks at all. Nothing is built before his answer; the page of 24 Nov 26 carries the correction.
+**His D2424 (24 Nov 26):** the four marks (flight brief, flight debrief, sim brief, sim debrief) never say "misses" — the
+scheduler often plans the brief earlier or the debrief after so he can attend; the words state the overlap, in the warning
+list and the window alike (one sentence body each, `engine/validate.ts`). Recommended to him, not yet answered: "OPS
+BRIEF 15:30–16:30 is inside VL BFM debrief 15:00–17:00", amber kept; Opus drafts, a fresh Fable adjusts (D2441); drawn
+first, beside question 1b's answer.
 
 His correction, from his iPhone on the live app: Monday's SODB 07:45–08:15 for ALL AVAIL — its window shows Piston in red
 with "Conflict: RU BFM (step 12:40, T/O 13:40) & STANDARDISATION MEETING 13:30–14:30", Echo and Relay with the day's
