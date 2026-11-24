@@ -381,7 +381,8 @@ export function sansRunTrim(person: any, from: string, to: string, except?: any)
 }
 /* A DRAFT OF ONE MAN'S SANS AVAILABILITY, CUT TO THE DAYS IT CAN SAVE, with the note that says so (D2388 — the words his,
    D2394 Q1: "Saved Fri 17 – Sat 18 Jul. Thu 16 Jul was left out because you're SANS from Fri 17 Jul.", "…because Ranger is
-   SANS…" for someone else; several days left out use the bell's own list of days, the agent's choice). */
+   SANS…" for someone else; several days left out are one run, said as the "Saved" half says its days, D2441: they are
+   every day from the first picked up to the day before his date, so never a broken run — sansRunTrim). */
 type SansCut = { draft: any; note: string }
 function sansCut(draft: any, except: any): SansCut | null {
   if (!draft || !isSansAvail(draft.type) || !draft.start || !draft.end) return null
@@ -392,7 +393,8 @@ function sansCut(draft: any, except: any): SansCut | null {
   const t = sansRunTrim(who, draft.start, draft.end, except)
   if (!t) return null
   const subject = isMe(who) ? "you're" : `${PEOPLE[who].cs} is`
-  const note = `Saved ${noticeRun(t.from, draft.end)}. ${sansDaysWords(t.left)} ${t.left.length === 1 ? 'was' : 'were'} left out because ${subject} SANS from ${noticeDay(t.from)}.`
+  const out = t.left.length > 1 ? noticeRun(t.left[0]!, t.left[t.left.length - 1]!) : sansDaysWords(t.left)
+  const note = `Saved ${noticeRun(t.from, draft.end)}. ${out} ${t.left.length === 1 ? 'was' : 'were'} left out because ${subject} SANS from ${noticeDay(t.from)}.`
   return { draft: { ...draft, start: t.from, end: t.from === draft.end ? '' : draft.end }, note }
 }
 /* THE NOTE IS SAID ONCE THE SAVE HAS LANDED, never before: inside a larger save (saveBatchX) that can still be refused it

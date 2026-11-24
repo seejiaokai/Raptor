@@ -12,11 +12,11 @@ import { DAYS } from '../engine/data'
 import { SCHED } from '../engine/publish'
 import { stashClear } from '../engine/weekstash'
 import { afterSchedMutate } from '../state/view'
-import { NOTICES, noticesFor, noticeWords, type Notice } from '../state/notices'
+import { NOTICES, noticeSansBack, noticesFor, noticeWords, type Notice } from '../state/notices'
 import { isUnread, markAllNoticesRead, markNoticeRead, noticeSeenLoad, unreadFor } from '../state/noticeseen'
 import { me } from '../state/perms'
 import { updatePersonField } from '../state/quals-write'
-import { commitInput, commitNewInput, draftOf, commitInputEdit, offersFor, removeInput } from '../ui/inputedit'
+import { commitInput, commitNewInput, draftOf, commitInputEdit, offersFor, removeInput, sansRunTrim } from '../ui/inputedit'
 import { pickRoster } from '../ui/peoplepick-model'
 import { INPEDIT, setInpEdit } from '../ui/pops'
 import { openSansAdd } from '../ui/sansadd'
@@ -26,7 +26,12 @@ import { _resetFloatWins } from '../ui/winorder'
 import { installGlobalUndo } from '../state/undo-wire'
 import { _resetTimeline } from '../undo/timeline'
 import { globalUndo } from '../undo'
-import { initStore as lwInitStore, setPeople, setShowSans } from './state/store'
+import { commit as cmdCommit } from '../command'
+import { schedStore, resyncBeforeEnlist, schedApplyEnd } from '../state/sched-commit'
+import { peopleStore, settingsStore, finishPeopleWrite } from '../state/people-settings-commit'
+import { validate } from '../engine/validate'
+import { sansBackOwed, sansTakeBack } from './sansunfiled'
+import { initStore as lwInitStore, lwStore, setPeople, setPostOut, setShowSans } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { postOut, runPoOutcomes, undoPostOut, wireLeaveWarSync } from './sync'
@@ -98,10 +103,24 @@ describe('D2388 — a run that starts too early saves from his date, and says wh
     expect((mine()[0] as any).date).toBe('Jul 17')
     expect(toasts).toEqual(['Saved Fri 17 – Sat 18 Jul. Thu 16 Jul was left out because Hex is SANS from Fri 17 Jul.'])
   })
-  it('two days left out are listed as the bell lists days, and "were"', () => {
+  it('two days left out are said as one run, and "were" (D2441)', () => {
     posted()
     expect(commitNewInput(draft(WED, SAT))).toBe(true)
-    expect(toasts).toEqual(['Saved Fri 17 – Sat 18 Jul. Wed 15, Thu 16 Jul were left out because Hex is SANS from Fri 17 Jul.'])
+    expect(toasts).toEqual(['Saved Fri 17 – Sat 18 Jul. Wed 15 – Thu 16 Jul were left out because Hex is SANS from Fri 17 Jul.'])
+  })
+  it('four days left out, in his own words: one run (D2441)', () => {
+    posted(); signInAs('hex')
+    expect(commitNewInput(draft('2026-07-13', SAT))).toBe(true)
+    expect(toasts).toEqual(['Saved Fri 17 – Sat 18 Jul. Mon 13 – Thu 16 Jul were left out because you\'re SANS from Fri 17 Jul.'])
+  })
+  it('a run left out across a month end names both months (D2441)', () => {
+    posted('2026-08-02')
+    expect(commitNewInput(draft('2026-07-30', '2026-08-03'))).toBe(true)
+    expect(toasts).toEqual(['Saved Sun 2 – Mon 3 Aug. Thu 30 Jul – Sat 1 Aug were left out because Hex is SANS from Sun 2 Aug.'])
+  })
+  it('the days left out are always one unbroken run, up to the day before his date', () => {
+    posted()
+    expect(sansRunTrim('rocky', '2026-07-13', SAT)).toEqual({ from: FRI, left: ['2026-07-13', '2026-07-14', WED, THU] })
   })
   it('one day left after the cut is said as one day', () => {
     posted()
@@ -486,5 +505,89 @@ describe('what the scenarios ask to hold', () => {
     posted()
     expect(writeInputsBatch(() => { INPUTS.push({ person: 'rocky', date: 'Jul 16', yr: 2026, allday: true, s: 360, e: 1080, type: 'SANS Availability', sans: { f: true }, remarks: '', by: me(), at: Date.now(), iid: 'c156-direct', ord: 99981 } as any) })).toBe(false)
     expect(mine()).toEqual([])
+  })
+})
+
+describe('a change that leaves him posted out as SANS on the same date tells him nothing', () => {
+  const RAN = { to: THU, poOutcome: 'sans', poDone: FRI }
+  it('the permissions check: a run posting whose run mark alone changed owes no line', () => {
+    expect(sansBackOwed({ collection: 'lw.postouts', op: 'put', before: RAN, after: { to: THU, poOutcome: 'sans' } })).toBeNull()
+    expect(sansBackOwed({ collection: 'lw.postouts', op: 'put', before: RAN, after: { ...RAN, label: 'x' } })).toBeNull()
+  })
+  it('stays: his date moved, or another outcome, still owes its line', () => {
+    expect(sansBackOwed({ collection: 'lw.postouts', op: 'put', before: RAN, after: { to: FRI, poOutcome: 'sans' } })).toEqual({ day: FRI, how: 'later', to: SAT })
+    expect(sansBackOwed({ collection: 'lw.postouts', op: 'put', before: RAN, after: { to: THU, poOutcome: 'none' } })).toEqual({ day: FRI, how: 'other' })
+  })
+  it('the same posting saved again, before and after it runs: no line', () => {
+    plan(SATI); posted(); hexReads()
+    posted(); expect(backs()).toEqual([])
+    at(2026, 7, 17); runPoOutcomes(); raptorNotify()
+    posted(); expect(backs()).toEqual([])
+  })
+  const tickedAndPosted = () => {
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    expect(setShowSans(true)).toBe(true); raptorNotify()
+    posted()
+  }
+  it('his hand tick taken off with the posting still ahead, nothing hidden: no "no longer SANS", the reminder stays', () => {
+    plan(SATI); tickedAndPosted(); hexReads()
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    expect(backs()).toEqual([])
+    expect(due().length).toBe(1)
+  })
+  it('the same with a day only the tick covered, filed: the line names that day alone', () => {
+    tickedAndPosted()
+    expect(commitNewInput(draft(THU, FRI))).toBe(true)
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    expect(backs().length).toBe(1)
+    expect(noticeWords(backs()[0]!).what).toContain('filed for Thu 16 Jul is hidden')
+  })
+  it('stays: the tick taken off after the posting has run, the reminder read: he is told', () => {
+    plan(SATI); posted()
+    at(2026, 7, 17); runPoOutcomes(); raptorNotify()
+    hexReads()
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    expect(noticeWords(backs()[0]!).name).toBe('You\'re no longer SANS.')
+  })
+})
+
+describe('a "moved" line always carries its new date', () => {
+  const moveWith = (extra: () => void, to: string = FRI24): boolean => {
+    let r: any
+    try {
+      r = cmdCommit({
+        type: 'lw.postout', scope: { module: 'people' }, meta: null,
+        apply: (txn: any) => {
+          resyncBeforeEnlist(); txn.enlist(schedStore)
+          txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
+          setPostOut('rocky', to, 'sans')
+          extra()
+          validate(); finishPeopleWrite(); schedApplyEnd()
+        },
+      } as any)
+    } catch { return false }
+    return !(r && 'ok' in r && r.ok === false)
+  }
+  it('the permissions check refuses a "moved" line with no date, and one with another date', () => {
+    plan(SATI); posted(); hexReads()
+    const days = (due()[0]!.what[0] as any).days as string[]
+    expect(moveWith(() => { noticeSansBack('rocky', me(), days, FRI, Date.now(), [], { how: 'later' }) })).toBe(false)
+    expect(moveWith(() => { noticeSansBack('rocky', me(), days, FRI, Date.now(), [], { how: 'later', to: SAT }) })).toBe(false)
+    expect(backs()).toEqual([])
+  })
+  it('the control: the same line with its true date passes', () => {
+    plan(SATI); posted(); hexReads()
+    const days = (due()[0]!.what[0] as any).days as string[]
+    expect(moveWith(() => { noticeSansBack('rocky', me(), days, FRI, Date.now(), [], { how: 'later', to: FRI24 }) })).toBe(true)
+  })
+  it('a take-back asked for with his posting unchanged writes nothing, and the command stands', () => {
+    plan(SATI); posted(); hexReads()
+    expect(moveWith(() => { sansTakeBack('rocky', FRI, String(me()), Date.now()) }, FRI)).toBe(true)
+    expect(backs()).toEqual([])
+  })
+  it('a posting date that is not a date owes no "moved" line', () => {
+    let owed: unknown = 'threw'
+    try { owed = sansBackOwed({ collection: 'lw.postouts', op: 'put', before: { to: THU, poOutcome: 'sans' }, after: { to: 'junk', poOutcome: 'sans' } }) } catch { /* refused */ }
+    expect((owed as any)?.how === 'later' || (owed as any)?.how === 'earlier').toBe(false)
   })
 })

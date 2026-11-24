@@ -240,7 +240,7 @@ function postingHow(pid: string, from: string): { how: SansBackHow; to?: string 
   if (now && now !== from) return { how: now > from ? 'later' : 'earlier', to: now }
   let w: ReturnType<typeof getState>['postOuts'][string] | undefined
   try { w = getState().postOuts[pid] } catch { w = undefined }
-  return { how: !now && (!w || w.gone || !w.to) ? 'undone' : 'other' }
+  return { how: !w || w.gone || !w.to ? 'undone' : 'other' }
 }
 const noted = (pid: string) => (BEFORE && BEFORE.env != null && BEFORE.env === activeEnvelope() ? BEFORE.men.get(pid) : undefined)
 /** THE ONE LINE A CHANGE OF HIS SANS OWES HIM (sync.ts takeBack, or the Quals untick — below — inside the change's own
@@ -248,17 +248,27 @@ const noted = (pid: string) => (BEFORE && BEFORE.env != null && BEFORE.env === a
  *  changed it. */
 export function sansTakeBack(pid: string, from: string | null, by: string | null, at: number): void {
   if (pid === by) return                                 // (he changed it himself: nothing to tell him)
+  if (from && sansPostedFrom(pid) === from) return       // (still posted out as SANS on that date: nothing changed for him)
   const ent = noted(pid)
   if (!ent) return
-  const read = ent.due.length ? dueRead(seenOf(pid), pid, ent.base, ent.due, ent.at) : false
+  /* HE IS STILL POSTED OUT AS SANS: a tick taken off beside a posting that stands is news only for the days the tick alone
+     covered, so a reminder he read owes no "You're no longer SANS." — it still stands, for his posting's days */
+  const stands = from === null && stillPosted(pid)
+  const read = !stands && ent.due.length ? dueRead(seenOf(pid), pid, ent.base, ent.due, ent.at) : false
   const prior = priorTold(pid, seenSavedOf(pid))
   const hid = unionDays(hiddenNow(pid, ent.filed), prior.carried)
-  if (!read && !hid.length && !prior.kept) return
+  if (!read && !hid.length && (stands || !prior.kept)) return
   noticeSansBack(pid, by, read ? ent.due : [], from ?? effectiveToday(), at, hid, {
     ...(from ? postingHow(pid, from) : { how: 'untick' as const }),
     ...(prior.over.length ? { over: prior.over } : {}),
     ...(prior.kept && !read ? { kept: true as const } : {}),
   })
+}
+/* his SANS posting still makes him SANS, today or from its date ahead (a run posting whose tick was taken off no longer does) */
+function stillPosted(pid: string): boolean {
+  const on = sansPostedFrom(pid), today = effectiveToday()
+  // any: the engine's person record is untyped (a verbatim port, src/engine/people.ts)
+  return !!on && sansOnP((PEOPLE as any)[pid], on > today ? on : today)
 }
 /* SEVERAL CHANGES BEFORE HE READS (the coordinator's reading 3, for him to confirm): ONE line, the latest. The new line names
    the lines of this kind he has not read (`over`: they stop showing, and come back if its Undo takes it away), carries
@@ -297,8 +307,7 @@ function howOfAfter(a: LooseRec | null, day: string): { how: SansBackHow; to?: s
   const on = !!a && !a.gone && typeof a.to === 'string' && !!a.to
   if (on && outcomeOf(a as { poOutcome?: unknown; poArchive?: boolean }) === 'sans') {
     const to = addDays(a!.to as string, 1)
-    if (to !== day) return { how: to > day ? 'later' : 'earlier', to }
-    return { how: 'other' }
+    return { how: to > day ? 'later' : 'earlier', to }
   }
   return { how: on ? 'other' : 'undone' }
 }
@@ -308,14 +317,18 @@ export function sansBackOwed(c: { collection: string; op: string; before?: unkno
   if (!b || b.gone || typeof b.to !== 'string' || !b.to || outcomeOf(b as { poOutcome?: unknown; poArchive?: boolean }) !== 'sans') return null
   const day = addDays(b.to, 1)
   const a = loose(c.op === 'delete' ? null : c.after)
+  /* (a posting "date" that is no date moved nothing he could be told: the line would read "moved to .") */
+  if (a && typeof a.to === 'string' && a.to && !ISO_DAY.test(a.to)) return null
+  /* STILL POSTED OUT AS SANS ON THE SAME DATE, whatever else of the record changed: nothing to tell him, and "You're no
+     longer posted out as SANS." would be untrue */
+  if (a && !a.gone && a.to === b.to && outcomeOf(a as { poOutcome?: unknown; poArchive?: boolean }) === 'sans') return null
   /* A RUN POSTING: its AFTER image no longer that run — gone, or its run mark (`poDone`) no longer that date — the store
      clears it whenever the date or the outcome changes (state/store.ts setPostOut `same`), so a move and another outcome
      both read so. An archive by hand rewrites the record (outcome "overseas", the archive's own body) but keeps its run
      mark: it is no take-back of the posting and owes none; neither does a restore that leaves the run as it was. */
   if (b.poDone === day) return !!a && !a.gone && typeof a.to === 'string' && a.poDone === day ? null : { day, ...howOfAfter(a, day) }
-  /* A POSTING NOT YET RUN (D2340): taken away, its date moved, or another outcome. Its run on its own date keeps it. */
-  const kept = !!a && !a.gone && a.to === b.to && outcomeOf(a as { poOutcome?: unknown; poArchive?: boolean }) === 'sans'
-  return kept ? null : { day, ...howOfAfter(a, day) }
+  /* A POSTING NOT YET RUN (D2340): taken away, its date moved, or another outcome. */
+  return { day, ...howOfAfter(a, day) }
 }
 /* HIS QUALS SANS TICK TAKEN OFF (D2391's C): owed by a change of his person record from SANS to not, on the day it is made
    — never by a posting's own take-back, which lifts the tick it put on and owes its own line (sansBackOwed, above). */
@@ -449,6 +462,8 @@ export function sansBackCovered(o: { who: string; day: string; o: string; how?: 
   if (p.kept !== undefined && p.kept !== true) return false
   if (!!p.kept !== (prior.kept && !days.length)) return false
   if (!days.length && !hid.length && !p.kept) return false
+  /* (a tick taken off beside a posting that stands owes only the days the tick alone covered: sansTakeBack) */
+  if (o.how === 'untick' && stillPosted(o.who) && (days.length > 0 || !hid.length)) return false
   if (!days.length) return true
   if (!sameDays(days, ent.due)) return false
   return dueRead(seen, o.who, ent.base, ent.due, ent.at)
