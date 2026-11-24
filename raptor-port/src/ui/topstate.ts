@@ -4,7 +4,7 @@
    be swapped in place while the app is being built), which now holds the four drawn parts alone — the Sync chip, the
    bell, its list and the Undo / Redo pair — and reads all of this from here. Nothing in it changed. */
 import { useSyncExternalStore } from 'react'
-import { notify, setPage } from '../state/store'
+import { notify, setPage, landingAsk } from '../state/store'
 import { bellLit, clearBell } from '../state/view'
 import { HOOKS } from '../engine/hooks'
 import { globalUndo, globalRedo, undoState } from '../undo'
@@ -73,10 +73,8 @@ export function bellTap(from?: HTMLElement | null): void {
   if (oilHit) {
     const row = inpById(oilHit.iid)
     if (row) {
-      HOOKS.toast('Weekend/PH work — confirm your OIL')
-      setOilAsk(oilHit.iid)
-      setInpEdit(row)
-      setPage('inputs'); notify(); return
+      openInputOnPage(oilHit.iid, () => { HOOKS.toast('Weekend/PH work — confirm your OIL'); setOilAsk(oilHit.iid) })
+      return
     }
   }
   /* the view's own alert, as before */
@@ -139,8 +137,27 @@ export function openNotice(n: Notice): void {
   markNoticeRead(n.id)
   if (!row) { HOOKS.toast('That input is gone'); notify(); return }
   setBellList(false)
-  setInpEdit(row)
+  openInputOnPage(n.iid)
+}
+/* AN INPUT'S WINDOW OPENS ONCE ITS PAGE IS THERE (the night of 24 Nov 26, the re-walk's B1 —
+   tracker/msq-bell-input-ask.test.tsx). The Inputs page is asked for first. Where the Tracker holds unsaved chart edits on
+   the squadron in view (the member view), that tap asks "Save them before switching to 142?" and he stays where he was
+   until he answers (state/store.ts landOnOwnPage) — and the window, opened before the page, stood under the question,
+   noted as opened on the squadron he was leaving: live over its View-only Sched after Stay, held with an untrue band
+   after Discard. Nothing opens until he has answered: after Save or Discard the window opens on his own page, the input
+   found afresh; after Stay, or a Save the gate refuses, none. `first` — what goes with the window (the bell's own OIL
+   question and its words), run only when it opens. */
+function openInputOnPage(iid: string, first?: () => void): void {
+  const open = () => {
+    const row = inpById(iid)
+    if (!row) return
+    if (first) first()
+    setInpEdit(row); notify()
+  }
   setPage('inputs'); notify()
+  const ask = landingAsk()
+  if (ask) void ask.then(go => { if (go) open() })
+  else open()
 }
 
 /* ---- the Undo / Redo pair: its two engines ---- */

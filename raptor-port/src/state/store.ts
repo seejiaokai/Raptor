@@ -116,13 +116,22 @@ function landOnOwnPage(): void {
   if (!asked) { enterSquadron(home, holdNow() === 'war', true); return }
   const want = view.CURPAGE
   view.setPage(pageOffered(LANDED.page) ? LANDED.page : 'viewsched')
-  void asked.then(go => {
-    if (!go) return
+  const done: Promise<boolean> = asked.then(go => {
+    if (LANDASK === done) LANDASK = null
+    if (!go) return false
     enterSquadron(home, holdNow() === 'war', true)
     view.setPage(want)
     notify()
+    return true
   })
+  LANDASK = done
 }
+/* …AND A TAP THAT OPENS A WINDOW ON THAT PAGE WAITS WITH IT (the night of 24 Nov 26, the re-walk's B1 — a bell line's
+   input): while the question above is up this is its answer still to come — true once Save or Discard has opened the page
+   he tapped, false after Stay or a refused Save; null with nothing asked. The window opened before the page was there
+   stood under the question, noted as opened on the squadron he was leaving (ui/topstate.ts openInputOnPage). */
+let LANDASK: Promise<boolean> | null = null
+export const landingAsk = (): Promise<boolean> | null => LANDASK
 /* THE LANDING IS A STANDING CHECK (the second-half plan §2 item 3, §15 D8; D2253): wherever the page is Edit Schedule and
    he is not an admin of the squadron in view (perms.ts maySchedEditPage) — a pick of a squadron he holds View of, R6's
    re-entry, a Plan lowered while he is on the page — he lands on View-only Sched. Run after every enterSquadron and on
