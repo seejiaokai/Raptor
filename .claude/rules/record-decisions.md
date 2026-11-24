@@ -78,6 +78,7 @@ put to him as an open question, answered from a code comment gone stale the same
   phrasing; a code comment is never evidence about today — the rulings win, and the comment is fixed in the same change.
   The three failures behind these are kept whole in `raptor-port/docs/guide-full.md` §Write his rulings down at the
   moment (D1556).
+- A word of his that what you put to him reads one way is a reading: `DECISIONS.md`, "A reading".
 
 ## Keeping the list whole, and read by relevance (D136, D137, D390) — moved whole to `raptor-port/docs/doc-budget.md` §5 (D1556)
 

@@ -24,9 +24,10 @@ draft is not authorization. (Claudex binds approval to the plan's path + SHA256 
 Implement the approved behaviour using the existing architecture. Do not invent scheduling rules,
 APIs, schemas, fields or requirements.
 
-When a material requirement is missing, contradictory, or conflicts with a documented invariant:
-stop the affected work and report **BLOCKED**, naming the decision needed. Never silently change the
-approved plan or a policy.
+When a material requirement is missing, contradictory, or conflicts with a documented invariant — a
+reading of his words among them (`DECISIONS.md`, "A reading"): stop the affected work and report **BLOCKED**, naming
+the decision needed. How the app answers the same question elsewhere goes into the question; it never settles it.
+Never silently change the approved plan or a policy.
 
 ## Inspect before editing
 
@@ -102,6 +103,7 @@ Status: READY FOR INDEPENDENT REVIEW | BLOCKED | INCOMPLETE
 Changes: files changed and a brief description
 Checks: exact commands, working directory, and PASS / FAIL / NOT RUN
 Open items: unresolved issues, blockers, or none
+Readings: each open reading met or found, with its ruling — or none
 ```
 
 Preserve any machine-readable output the installed workflow requires — this footer is in addition to

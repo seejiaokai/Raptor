@@ -54,6 +54,7 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execFileSync } from 'node:child_process'
 import * as RL from './docsize-rulings.mjs'
+import { check as readingsCheck } from './readings.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const REPO = join(ROOT, '..')
@@ -1337,7 +1338,10 @@ if (allow.size) console.log(`  declared exceptions: ${[...allow].join(', ')}\n`)
 const inv = inventory(allow)
 const hm = homes(paths, allow)
 const st = structure()
-let failures = [...inv.fails.map(f => `inventory: ${f}`), ...hm.fails.map(f => `homes: ${f}`), ...rulings(allow).map(f => `rulings: ${f}`), ...st.fails.map(f => `structure: ${f}`)]
+/* The readings (his D2567, D2610 — readings.mjs): a tag with no open mark, and a comment this branch adds that speaks
+   of a reading untagged. Run with the inventory, so the Stop hook and GitHub's run both enforce it. */
+const rd = readingsCheck({ repo: REPO, base: BASE })
+let failures = [...inv.fails.map(f => `inventory: ${f}`), ...hm.fails.map(f => `homes: ${f}`), ...rulings(allow).map(f => `rulings: ${f}`), ...st.fails.map(f => `structure: ${f}`), ...rd.fails.map(f => `readings: ${f}`)]
 for (const w of [...inv.warns, ...st.warns]) console.log(`  note: ${w}`)
 
 let docsizeLine = null
@@ -1350,6 +1354,7 @@ if (!INVENTORY_ONLY) {
 }
 
 console.log(`\n${inv.docsLine} · homes ${hm.ok ? 'OK' : 'FAIL'}`)
+console.log(rd.line)
 if (docsizeLine) console.log(docsizeLine)
 
 if (failures.length) {

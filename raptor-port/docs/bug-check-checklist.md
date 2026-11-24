@@ -45,7 +45,7 @@ next. Never from memory — the order changes.
    moved selector (what scrolls among them), a writer's "nothing happened", a listener above its own component, a
    component's second home, a storage writer, a skipped call, a dry-run save, a new kind of record, every reader of a
    changed input or setting (who counts as away, the settings a day keeps), a part drawn in several copies, a part
-   drawn inside another surface by a different owner.
+   drawn inside another surface by a different owner, a second answer to a question the app already answers.
 9. **The door check** (a new gesture or mode): every action the data allows → the control that does it, in every state
    and order (§3, §2a).
 10. **Size the walk** — open **§7.0**, **§2a** whole (its table: what must be covered for each kind of work this change
@@ -151,3 +151,5 @@ script already pictures re-runs that one step into a new folder (§5; `docs/walk
     size emulated, at neighbouring heights, some making the page's height a fraction; the window behind it scrolls by nothing; the list
     keeps the wheel at its ends; what only a real wheel shows named
     as a look for his PC.
+32. A ruled word the build had to read, or a question the app already answers elsewhere: each place's rule side by
+    side; a case on each side of every open reading, marked to show him — never a pass.

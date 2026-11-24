@@ -57,6 +57,10 @@ jobs:
       # silently kept the pictures, or one that lost a file, would show nowhere else.
       - name: The lean working copies' tests
         run: node --test raptor-port/scripts/lean-copy.test.mjs
+      # The readings check's own tests (chat 173, 24 Nov 26 — his D2567, D2610, [READINGS-LAPSE-FIX]): the gate below runs
+      # the check; these prove it still fails the 22 Nov 26 comment that left a reading unasked (a few seconds).
+      - name: The readings check's tests
+        run: node --test raptor-port/scripts/readings.test.mjs
       - name: Inventory and ceilings against the base
         env:
           DOCSGUARD_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}

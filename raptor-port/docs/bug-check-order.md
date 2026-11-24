@@ -316,7 +316,9 @@ head says so (7 Nov 26; the ready script is `[CHECK-TOOLS-HARDEN]` (g)).
 - A scenario's EXPECTED line gets the same check before it goes to a walker: each names its source — a ruling, a
   contract line, "as on `main` today" from a control run, or two surfaces of the app that must agree (the mark and the
   changes list) — and one with none, or one the host cannot settle (a
-  COUNT, a REFUSAL or a PUBLISHED-DAY state above all), is rewritten "RECORD exactly what it says". An expectation that
+  COUNT, a REFUSAL or a PUBLISHED-DAY state above all), is rewritten "RECORD exactly what it says". A ruling is a
+  source only for what its words say: an EXPECTED that rests on an open reading is written RECORD, with a case on each
+  side of it, each marked "the reading's case — shown to him", never a pass. An expectation that
   differs by surface (a window that blocks or not, a role, a size) is read from its own roll-call column, set row by
   row before the script is written; a surface walked under two roles names, for each, the records it should find — or
   says they differ, and why (17 Nov 26: a member's page holds other people's awards by design, and one "missing"
@@ -337,8 +339,10 @@ head says so (7 Nov 26; the ready script is `[CHECK-TOOLS-HARDEN]` (g)).
   deliberately failing test was swept into the builder's commit).
 - A recommended answer to a question parked for him is checked against his words in the full rows — not only that
   the question is still open.
-- A plan's brief lists the builder's own readings as targets, each to be ruled supported / contradicted / the
-  owner's to decide — and every file the plan treats by its shape (add-only, one owner, never edited) as a claim the
+- A brief — a plan's, a code reader's, a scenario designer's — lists every open reading on the rulings it names and in
+  the files changed (`npm run readings`, never from memory) as targets, each to be ruled supported / contradicted / the
+  owner's to decide, never as part of the promise; and it asks what the code or plan makes each ruled word in the
+  promise cover, so a reading nobody listed is found — and every file the plan treats by its shape (add-only, one owner, never edited) as a claim the
   red team breaks with a named commit from that file's own history (8 Nov 26: four "add-only" record files were
   disproved in minutes). Where the plan under review IS a test plan (a re-test, a walk), its red team and the scenario
   design are one round, with one brief — sent to Astra and a fresh, blind Fable, each blind to the other, as every
@@ -738,6 +742,9 @@ inside the puck, over exactly the strip the mark occupies (column 3).
   handlers of BOTH — press to bring forward, Escape, a press outside, the focus trap — each pressed in the real browser
   at a phone's size: its answer button pressed, not only seen, and Escape typed on the part and elsewhere. A unit test
   dispatches events straight at the element and passes all four (4 Nov 26: four of six finds had this one cause).
+- **A new answer to a question the app already answers about a person** (is he planned, away, counted, owed, allowed)
+  lists every place that answers it, each one's rule in a line beside the ruling's words; a difference is MISSING until
+  he rules it (§7.11 lesson 32).
 
 ---
 
@@ -1223,11 +1230,10 @@ and a seventh kind left out as doubtful, in `docs/superpowers/briefs/2026-11-10-
    (the sheet's rounds 5–7: their reads, re-reads and walks w5–w13) then judged the code against it, because the readers'
    brief restated the rule without defining the word, and the scenarios that put him on a ground row or a duty desk expected
    it to count — the reading written as the expected result. He found it by asking what there is to file for a
-   ground event. **Lesson:** where two surfaces answer the same question about a person, the roll-call sets their rules
-   side by side, and a difference is a finding until he rules it; a builder's reading of what a ruled word covers goes to
-   him with a worked example before the build is read; a readers' brief names each such reading as a reading to judge,
-   never as part of the rule; and the scenarios hold a case on each side of the reading, each marked as the reading's case to
-   show him, never as a pass (here, a SANS man on a ground row only).
+   ground event. **Lesson:** a reading is his to settle, never left in a comment (`DECISIONS.md`, "A reading"); the brief
+   lists the open ones and asks for the unlisted, and a scenario resting on one is shown to him, never passed (§4,
+   "Before a brief leaves"); the roll-call sets a second answer to one question beside the first (§6); §12's box
+   (here, a SANS man on a ground row only).
 
 ## 8. Making the checks FIND rather than CONFIRM
 
@@ -1408,6 +1414,8 @@ No other check may be substituted for an unticked box.
 
 - [ ] The eight questions answered and the tier chosen, in writing.
 - [ ] Applicable rulings listed; any clash flagged and resolved.
+- [ ] `npm run readings` shows no reading "not asked" on what this change builds or words — each already put to him
+  (`DECISIONS.md`, "A reading").
 - [ ] Roll-call complete — surfaces, doors, downstream results, roles, overlays, orders. No blanks.
 - [ ] The exact production build was driven, at both widths.
 - [ ] The fixture was created through the app's own controls.
