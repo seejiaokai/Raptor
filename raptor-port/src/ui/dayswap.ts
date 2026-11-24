@@ -213,6 +213,14 @@ export function swapKidsAround(live: Element, html: string, prev: PanelKids | nu
   })
   return { kids: { html: kids, ids }, held }
 }
+/* is a section of this panel still owed somewhere the caret is NOT? (Fable's scenario design, B3, 25 Nov 26: the caret
+   moved to another section with nothing new saved — the section it left was owed, and only the next save or the caret
+   leaving every box wrote it.) The Board asks this when the focus moves, and paints only when it is so. */
+export function owesBeside(live: Element, kids: PanelKids | null, keep: Element): boolean {
+  if (!kids) return false
+  const lk = kidsOf(live)
+  return kids.html.some((s, i) => s === OWED && !!lk[i] && lk[i] !== keep && !lk[i]!.contains(keep))
+}
 /* the canonical markup of each top-level child of a panel's string, and which block each is — what swapKidsAround
    compares, parsed, never read off the live (decorated) nodes */
 export function kidsOfHTML(html: string): PanelKids {

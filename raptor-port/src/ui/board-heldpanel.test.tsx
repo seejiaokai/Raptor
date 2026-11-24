@@ -122,6 +122,18 @@ describe('the Board, an input’s start changed in its own box: its Ground Progr
   })
   /* the section left behind is OWED, never "what it showed": once the caret is in another section, the next paint writes
      it, even though its markup has not changed since the paint that held it */
+  /* Fable's scenario design, B3: the caret clicked into another section with nothing typed — the section it left was
+     owed, and nothing painted it until the next save or the caret leaving every box */
+  it('the caret clicked into another section with nothing typed: the section it left is written at once', async () => {
+    const { ground, mine } = await filed()
+    await typeStart(mine('str'), '0900')
+    const held = mine('str')
+    const to = ground('rmks')
+    await act(async () => { (document.activeElement as HTMLElement).blur(); to.focus() }); await tick()
+    expect(document.activeElement, 'the caret is in the Ground Programme row now').toBe(to)
+    expect(mine('str') !== held, 'the Personal Inputs section it left is written, with nothing new saved').toBe(true)
+    expect(ground('rmks'), 'and the box he is in now is the same box').toBe(to)
+  })
   it('the caret moved on to another section: the section it left is written by the next paint', async () => {
     const { ground, mine } = await filed()
     await typeStart(mine('str'), '0900')
@@ -165,6 +177,26 @@ describe('the Board under the caret: a change of order or of day writes nothing 
     await act(async () => { boardTab(1) }); await tick()
     const days = new Set(secs().map(k => String(k).split('.')[0]))
     expect([...days], `the sections are of one day: ${secs().join(' ')}`).toHaveLength(1)
+  })
+  /* the fresh Opus read's finding 1 (25 Nov 26): the WEEK stepped with the same weekday kept — every section's day and
+     name are the same as before, so only the week tells them apart; the caret's section would stay last week's Monday
+     beside this week's other sections */
+  it('the week changed under a caret in an In-time line, the same weekday kept: nothing written until the caret leaves', async () => {
+    await filed()
+    const line = host.querySelector('#sbBoard [data-itline]') as HTMLElement
+    await focus(line)
+    expect(editingText()).toBe(true)
+    const notes = host.querySelector('#sbBoard > .sb-sec[data-secmove="0.notes"]')
+    expect(notes, 'the notes section is drawn (or this test proves nothing)').toBeTruthy()
+    const { boardWeekStep } = await import('./board')
+    const waves = await import('../engine/waves')
+    const week = String(waves.CURWEEK)
+    await act(async () => { boardWeekStep(1) }); await tick()
+    expect(String(waves.CURWEEK), 'the week moved').not.toBe(week)
+    expect(editingText(), 'the caret is still in the line').toBe(true)
+    expect(host.querySelector('#sbBoard > .sb-sec[data-secmove="0.notes"]'), 'no section of the new week drawn beside the old week’s').toBe(notes)
+    await act(async () => { (document.activeElement as HTMLElement).blur() }); await tick()
+    expect(host.querySelector('#sbBoard > .sb-sec[data-secmove="0.notes"]'), 'once the caret has left, the new week is drawn').not.toBe(notes)
   })
 })
 
