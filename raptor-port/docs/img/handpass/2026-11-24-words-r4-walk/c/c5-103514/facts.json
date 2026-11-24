@@ -1,0 +1,87 @@
+{
+ "pictures": [
+  {
+   "file": "c5-board-hover-desk.png",
+   "case": "C5",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "label": "Create the 2028 period",
+    "title": "Creates the 2028 Leave War period, with nothing open for bidding, and takes you to the Leave War to open its dates"
+   }
+  },
+  {
+   "file": "c5-board-press-desk.png",
+   "case": "C5",
+   "size": "desktop 1440x900 @2x",
+   "text": "The 2028 Leave War period is created. Open its dates for bidding here.",
+   "geo": {
+    "l": 511,
+    "t": 836,
+    "r": 929,
+    "b": 874,
+    "w": 417,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c5-board-after-desk.png",
+   "case": "C5",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "page": "leavewar"
+   }
+  },
+  {
+   "file": "c5-board-undo-hover-desk.png",
+   "case": "C5",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "title": "Undo — a new Leave War period",
+    "disabled": false
+   }
+  },
+  {
+   "file": "c5-second-first-press-desk.png",
+   "case": "C5",
+   "size": "desktop 1440x900 @2x",
+   "text": "The 2028 Leave War period is created. Open its dates for bidding here.",
+   "geo": {
+    "l": 511,
+    "t": 836,
+    "r": 929,
+    "b": 874,
+    "w": 417,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c5-second-board-desk.png",
+   "case": "C5",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "n2": 0
+   }
+  }
+ ],
+ "cases": {
+  "C5": {
+   "log": [
+    "picture c5-board-hover-desk.png: {\"label\":\"Create the 2028 period\",\"title\":\"Creates the 2028 Leave War period, with nothing open for bidding, and takes you to the Leave War to open its dates\"}",
+    "picture c5-board-press-desk.png: \"The 2028 Leave War period is created. Open its dates for bidding here.\"",
+    "picture c5-board-after-desk.png: {\"page\":\"leavewar\"}",
+    "picture c5-board-undo-hover-desk.png: {\"title\":\"Undo — a new Leave War period\",\"disabled\":false}",
+    "picture c5-second-first-press-desk.png: \"The 2028 Leave War period is created. Open its dates for bidding here.\"",
+    "picture c5-second-board-desk.png: {\"n2\":0}"
+   ]
+  }
+ },
+ "errors": [
+  "w2 locator.scrollIntoViewIfNeeded: Timeout 29996.317000000003ms exceeded.\nCall log:\n\u001b[2m  - attempting scroll into view action\u001b[22m\n\u001b[2m    2 × waiting for element to be stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying scroll into view action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying scroll into view action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    57 × waiting for element to be stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying scroll into view action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at C:\\Users\\User\\projects\\Raptor-words\\raptor-port\\scripts\\handpass\\wr4-c-c5.mjs:107:99"
+ ]
+}

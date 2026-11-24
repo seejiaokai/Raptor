@@ -1,0 +1,337 @@
+{
+ "pictures": [
+  {
+   "file": "c3-4sun-desk.png",
+   "case": "C3",
+   "size": "desktop 1440x900 @2x",
+   "text": "Everyone now opens on the next 4 weeks, to Sunday",
+   "geo": {
+    "l": 560,
+    "t": 836,
+    "r": 880,
+    "b": 874,
+    "w": 320,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c3-1sun-desk.png",
+   "case": "C3",
+   "size": "desktop 1440x900 @2x",
+   "text": "Everyone now opens on the next week, to Sunday",
+   "geo": {
+    "l": 568,
+    "t": 836,
+    "r": 872,
+    "b": 874,
+    "w": 305,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c3-1nosun-desk.png",
+   "case": "C3",
+   "size": "desktop 1440x900 @2x",
+   "text": "Everyone now opens on the next week",
+   "geo": {
+    "l": 598,
+    "t": 836,
+    "r": 842,
+    "b": 874,
+    "w": 244,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c3-2nosun-desk.png",
+   "case": "C3",
+   "size": "desktop 1440x900 @2x",
+   "text": "Everyone now opens on the next 2 weeks",
+   "geo": {
+    "l": 591,
+    "t": 836,
+    "r": 849,
+    "b": 874,
+    "w": 259,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c3-bad0-desk.png",
+   "case": "C3",
+   "size": "desktop 1440x900 @2x",
+   "text": "Give a number of weeks between 1 and 52",
+   "geo": {
+    "l": 587,
+    "t": 836,
+    "r": 853,
+    "b": 874,
+    "w": 266,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c3-bad53-desk.png",
+   "case": "C3",
+   "size": "desktop 1440x900 @2x",
+   "text": "Give a number of weeks between 1 and 52",
+   "geo": {
+    "l": 587,
+    "t": 836,
+    "r": 853,
+    "b": 874,
+    "w": 266,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c3-badx-desk.png",
+   "case": "C3",
+   "size": "desktop 1440x900 @2x",
+   "text": "Give a number of weeks between 1 and 52",
+   "geo": {
+    "l": 587,
+    "t": 836,
+    "r": 853,
+    "b": 874,
+    "w": 266,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c3-cancel-desk.png",
+   "case": "C3",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "before": "Next 2 weeks",
+    "after": "Next 2 weeks",
+    "reopened": {
+     "weeks": "2",
+     "sun": false
+    }
+   }
+  },
+  {
+   "file": "c3-ranger-opens-desk.png",
+   "case": "C3",
+   "size": "desktop 1440x900 @2x",
+   "text": "24 Nov → 8 Dec"
+  },
+  {
+   "file": "c3-ranger-pop-desk.png",
+   "case": "C3",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "edit": 0,
+    "cfg": 0,
+    "def": "Next 2 weeks"
+   }
+  },
+  {
+   "file": "c3-4sun-phone.png",
+   "case": "C3",
+   "size": "phone 402x874 @3x",
+   "text": "Everyone now opens on the next 4 weeks, to Sunday",
+   "geo": {
+    "l": 12,
+    "t": 810,
+    "r": 390,
+    "b": 848,
+    "w": 378,
+    "h": 38,
+    "vw": 402,
+    "vh": 874,
+    "sw": 402
+   }
+  },
+  {
+   "file": "c3-1sun-phone.png",
+   "case": "C3",
+   "size": "phone 402x874 @3x",
+   "text": "Everyone now opens on the next week, to Sunday",
+   "geo": {
+    "l": 12,
+    "t": 810,
+    "r": 390,
+    "b": 848,
+    "w": 378,
+    "h": 38,
+    "vw": 402,
+    "vh": 874,
+    "sw": 402
+   }
+  },
+  {
+   "file": "c3-1nosun-phone.png",
+   "case": "C3",
+   "size": "phone 402x874 @3x",
+   "text": "Everyone now opens on the next week",
+   "geo": {
+    "l": 12,
+    "t": 810,
+    "r": 390,
+    "b": 848,
+    "w": 378,
+    "h": 38,
+    "vw": 402,
+    "vh": 874,
+    "sw": 402
+   }
+  },
+  {
+   "file": "c3-2nosun-phone.png",
+   "case": "C3",
+   "size": "phone 402x874 @3x",
+   "text": "Everyone now opens on the next 2 weeks",
+   "geo": {
+    "l": 12,
+    "t": 810,
+    "r": 390,
+    "b": 848,
+    "w": 378,
+    "h": 38,
+    "vw": 402,
+    "vh": 874,
+    "sw": 402
+   }
+  },
+  {
+   "file": "c3-bad0-phone.png",
+   "case": "C3",
+   "size": "phone 402x874 @3x",
+   "text": "Give a number of weeks between 1 and 52",
+   "geo": {
+    "l": 12,
+    "t": 810,
+    "r": 390,
+    "b": 848,
+    "w": 378,
+    "h": 38,
+    "vw": 402,
+    "vh": 874,
+    "sw": 402
+   }
+  },
+  {
+   "file": "c3-bad53-phone.png",
+   "case": "C3",
+   "size": "phone 402x874 @3x",
+   "text": "Give a number of weeks between 1 and 52",
+   "geo": {
+    "l": 12,
+    "t": 810,
+    "r": 390,
+    "b": 848,
+    "w": 378,
+    "h": 38,
+    "vw": 402,
+    "vh": 874,
+    "sw": 402
+   }
+  },
+  {
+   "file": "c3-badx-phone.png",
+   "case": "C3",
+   "size": "phone 402x874 @3x",
+   "text": "Give a number of weeks between 1 and 52",
+   "geo": {
+    "l": 12,
+    "t": 810,
+    "r": 390,
+    "b": 848,
+    "w": 378,
+    "h": 38,
+    "vw": 402,
+    "vh": 874,
+    "sw": 402
+   }
+  },
+  {
+   "file": "c3-cancel-phone.png",
+   "case": "C3",
+   "size": "phone 402x874 @3x",
+   "text": {
+    "before": "Next 2 weeks",
+    "after": "Next 2 weeks",
+    "reopened": {
+     "weeks": "2",
+     "sun": false
+    }
+   }
+  },
+  {
+   "file": "c3-ranger-opens-phone.png",
+   "case": "C3",
+   "size": "phone 402x874 @3x",
+   "text": "24 Nov → 8 Dec"
+  },
+  {
+   "file": "c3-ranger-pop-phone.png",
+   "case": "C3",
+   "size": "phone 402x874 @3x",
+   "text": {
+    "edit": 0,
+    "cfg": 0,
+    "def": "Next 2 weeks"
+   }
+  }
+ ],
+ "cases": {
+  "C3": {
+   "log": [
+    "bundle desk: index-2uyEcUJu.js",
+    "picture c3-4sun-desk.png: \"Everyone now opens on the next 4 weeks, to Sunday\"",
+    "4sun: was {\"weeks\":\"2\",\"sun\":false}; quick button now \"Next 4 weeks, to Sunday\"; note geo {\"l\":560,\"t\":836,\"r\":880,\"b\":874,\"w\":320,\"h\":38,\"vw\":1440,\"vh\":900,\"sw\":1440}",
+    "picture c3-1sun-desk.png: \"Everyone now opens on the next week, to Sunday\"",
+    "1sun: was {\"weeks\":\"4\",\"sun\":true}; quick button now \"Next 1 week, to Sunday\"; note geo {\"l\":568,\"t\":836,\"r\":872,\"b\":874,\"w\":305,\"h\":38,\"vw\":1440,\"vh\":900,\"sw\":1440}",
+    "picture c3-1nosun-desk.png: \"Everyone now opens on the next week\"",
+    "1nosun: was {\"weeks\":\"1\",\"sun\":true}; quick button now \"Next 1 week\"; note geo {\"l\":598,\"t\":836,\"r\":842,\"b\":874,\"w\":244,\"h\":38,\"vw\":1440,\"vh\":900,\"sw\":1440}",
+    "picture c3-2nosun-desk.png: \"Everyone now opens on the next 2 weeks\"",
+    "2nosun: was {\"weeks\":\"1\",\"sun\":false}; quick button now \"Next 2 weeks\"; note geo {\"l\":591,\"t\":836,\"r\":849,\"b\":874,\"w\":259,\"h\":38,\"vw\":1440,\"vh\":900,\"sw\":1440}",
+    "picture c3-bad0-desk.png: \"Give a number of weeks between 1 and 52\"",
+    "picture c3-bad53-desk.png: \"Give a number of weeks between 1 and 52\"",
+    "picture c3-badx-desk.png: \"Give a number of weeks between 1 and 52\"",
+    "picture c3-cancel-desk.png: {\"before\":\"Next 2 weeks\",\"after\":\"Next 2 weeks\",\"reopened\":{\"weeks\":\"2\",\"sun\":false}}",
+    "picture c3-ranger-opens-desk.png: \"24 Nov → 8 Dec\"",
+    "picture c3-ranger-pop-desk.png: {\"edit\":0,\"cfg\":0,\"def\":\"Next 2 weeks\"}",
+    "bundle phone: index-2uyEcUJu.js",
+    "picture c3-4sun-phone.png: \"Everyone now opens on the next 4 weeks, to Sunday\"",
+    "4sun: was {\"weeks\":\"2\",\"sun\":false}; quick button now \"Next 4 weeks, to Sunday\"; note geo {\"l\":12,\"t\":810,\"r\":390,\"b\":848,\"w\":378,\"h\":38,\"vw\":402,\"vh\":874,\"sw\":402}",
+    "picture c3-1sun-phone.png: \"Everyone now opens on the next week, to Sunday\"",
+    "1sun: was {\"weeks\":\"4\",\"sun\":true}; quick button now \"Next 1 week, to Sunday\"; note geo {\"l\":12,\"t\":810,\"r\":390,\"b\":848,\"w\":378,\"h\":38,\"vw\":402,\"vh\":874,\"sw\":402}",
+    "picture c3-1nosun-phone.png: \"Everyone now opens on the next week\"",
+    "1nosun: was {\"weeks\":\"1\",\"sun\":true}; quick button now \"Next 1 week\"; note geo {\"l\":12,\"t\":810,\"r\":390,\"b\":848,\"w\":378,\"h\":38,\"vw\":402,\"vh\":874,\"sw\":402}",
+    "picture c3-2nosun-phone.png: \"Everyone now opens on the next 2 weeks\"",
+    "2nosun: was {\"weeks\":\"1\",\"sun\":false}; quick button now \"Next 2 weeks\"; note geo {\"l\":12,\"t\":810,\"r\":390,\"b\":848,\"w\":378,\"h\":38,\"vw\":402,\"vh\":874,\"sw\":402}",
+    "picture c3-bad0-phone.png: \"Give a number of weeks between 1 and 52\"",
+    "picture c3-bad53-phone.png: \"Give a number of weeks between 1 and 52\"",
+    "picture c3-badx-phone.png: \"Give a number of weeks between 1 and 52\"",
+    "picture c3-cancel-phone.png: {\"before\":\"Next 2 weeks\",\"after\":\"Next 2 weeks\",\"reopened\":{\"weeks\":\"2\",\"sun\":false}}",
+    "picture c3-ranger-opens-phone.png: \"24 Nov → 8 Dec\"",
+    "picture c3-ranger-pop-phone.png: {\"edit\":0,\"cfg\":0,\"def\":\"Next 2 weeks\"}"
+   ]
+  }
+ },
+ "errors": []
+}

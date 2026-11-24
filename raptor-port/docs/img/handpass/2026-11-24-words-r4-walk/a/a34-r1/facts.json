@@ -1,0 +1,403 @@
+{
+ "pictures": [
+  {
+   "file": "A3-ranger-bell-phone.png",
+   "case": "A3",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Exercise Kite Fri 17 Jul / Taken out of Unavailable, Attach changed to Training, and 1 more change · Saber",
+    "OL Thu 16 Jul / Now OL (AM), LL changed to OL · Saber",
+    "LL Tue 14 Jul / Now LL (AM), Training changed to LL · Saber",
+    "Training Mon 13 Jul / Now 00:00–12:00, LL changed to Training · Saber",
+    "LL Mon 13 Jul / Now LL (AM) · Saber",
+    "LL Wed 15 Jul / Training changed to LL, renamed — was Range brief · Saber",
+    "Training Tue 14 Jul / You were added · Saber",
+    "Range brief Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Taken out of Unavailable, Attach changed to Training, and 1 more change · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now OL (AM), LL changed to OL · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now LL (AM), Training changed to LL · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now 00:00–12:00, LL changed to Training · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now LL (AM) · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Training changed to LL, renamed — was Range brief · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "A3-ranger-bell-desk.png",
+   "case": "A3",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Exercise Kite Fri 17 Jul / Taken out of Unavailable, Attach changed to Training, and 1 more change · Saber",
+    "OL Thu 16 Jul / Now OL (AM), LL changed to OL · Saber",
+    "LL Tue 14 Jul / Now LL (AM), Training changed to LL · Saber",
+    "Training Mon 13 Jul / Now 00:00–12:00, LL changed to Training · Saber",
+    "LL Mon 13 Jul / Now LL (AM) · Saber",
+    "LL Wed 15 Jul / Training changed to LL, renamed — was Range brief · Saber",
+    "Training Tue 14 Jul / You were added · Saber",
+    "Range brief Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Taken out of Unavailable, Attach changed to Training, and 1 more change · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 269,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now OL (AM), LL changed to OL · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now LL (AM), Training changed to LL · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now 00:00–12:00, LL changed to Training · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now LL (AM) · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Training changed to LL, renamed — was Range brief · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 269,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "A4-ranger-bell-phone.png",
+   "case": "A4",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Exercise Hawk · 145 Sqn Fri 24 Jul / Renamed — was Exercise Hawk · Saber",
+    "Exercise Kite · 146 Sqn Thu 23 Jul / Renamed — was Exercise Kite · 145 Sqn · Saber",
+    "Training Wed 22 Jul / Renamed — was Brief · Saber",
+    "Sim Tue 21 Jul / Renamed — was Training · Saber",
+    "Range brief Mon 20 Jul / Renamed — was Training · Saber",
+    "Brief Wed 22 Jul / You were added · Saber",
+    "Training Tue 21 Jul / You were added · Saber",
+    "Training Mon 20 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Renamed — was Exercise Hawk · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Renamed — was Exercise Kite · 145 Sqn · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Renamed — was Brief · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Renamed — was Training · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Renamed — was Training · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "A4-ranger-bell-desk.png",
+   "case": "A4",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Exercise Hawk · 145 Sqn Fri 24 Jul / Renamed — was Exercise Hawk · Saber",
+    "Exercise Kite · 146 Sqn Thu 23 Jul / Renamed — was Exercise Kite · 145 Sqn · Saber",
+    "Training Wed 22 Jul / Renamed — was Brief · Saber",
+    "Sim Tue 21 Jul / Renamed — was Training · Saber",
+    "Range brief Mon 20 Jul / Renamed — was Training · Saber",
+    "Brief Wed 22 Jul / You were added · Saber",
+    "Training Tue 21 Jul / You were added · Saber",
+    "Training Mon 20 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Renamed — was Exercise Hawk · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Renamed — was Exercise Kite · 145 Sqn · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Renamed — was Brief · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Renamed — was Training · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Renamed — was Training · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  }
+ ],
+ "cases": {
+  "A3": {
+   "log": [
+    "bundle index-2uyEcUJu.js",
+    "filed {\"type\":\"LL\",\"span\":\"all\"} on 2026-07-13: new input [\"imwujk5sf0klsxh\"]; asked [\"document\"]; note \"\"",
+    "filed {\"type\":\"LL\",\"span\":\"all\"} on 2026-07-16: new input [\"imwujk8ervq9r93\"]; asked [\"document\"]; note \"\"",
+    "filed {\"type\":\"Attach\",\"title\":\"Exercise Kite\"} on 2026-07-17: new input [\"imwujkaco1anpos\"]; asked []; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "filed {\"people\":[\"bane\"],\"type\":\"Training\",\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwujki8x87rnr0\"]; asked []; note \"\"",
+    "filed {\"people\":[\"bane\"],\"type\":\"Training\",\"from\":\"00:00\",\"to\":\"12:00\"} on 2026-07-14: new input [\"imwujkk93tz62tv\"]; asked []; note \"\"",
+    "saved the change: asked [\"document\"]; note \"LL does not go on the Ground Programme — its row has been removed\"; window still open: false",
+    "RECORD (a) Training \"Range brief\" → LL: saved input before → after — {\"before\":{\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"],\"acc\":\"g\"},\"after\":{\"type\":\"LL\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}}",
+    "saved the change: asked []; note \"LL does not go on the Ground Programme — its row has been removed\"; window still open: false",
+    "RECORD (b) save 1: LL made AM: saved input before → after — {\"before\":{\"type\":\"LL\",\"date\":\"Jul 13\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]},\"after\":{\"type\":\"LL\",\"date\":\"Jul 13\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "RECORD (b) save 2: AM LL → Training: saved input before → after — {\"before\":{\"type\":\"LL\",\"date\":\"Jul 13\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]},\"after\":{\"type\":\"Training\",\"date\":\"Jul 13\",\"allday\":false,\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"],\"acc\":\"g\"}}",
+    "saved the change: asked [\"document\"]; note \"LL does not go on the Ground Programme — its row has been removed\"; window still open: false",
+    "RECORD (c) Training 00:00–12:00 → LL: saved input before → after — {\"before\":{\"type\":\"Training\",\"date\":\"Jul 14\",\"allday\":false,\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"],\"acc\":\"g\"},\"after\":{\"type\":\"LL\",\"date\":\"Jul 14\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}}",
+    "saved the change: asked []; note \"LL does not go on the Ground Programme — its row has been removed\"; window still open: false",
+    "RECORD (d) all-day LL → OL and AM: saved input before → after — {\"before\":{\"type\":\"LL\",\"date\":\"Jul 16\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]},\"after\":{\"type\":\"OL\",\"date\":\"Jul 16\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "RECORD (e) Attach with a \"To\" → Training: saved input before → after — {\"before\":{\"type\":\"Attach\",\"title\":\"Exercise Kite\",\"date\":\"Jul 17\",\"allday\":false,\"s\":360,\"e\":1080,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"],\"acc\":\"u\"},\"after\":{\"type\":\"Training\",\"title\":\"Exercise Kite\",\"date\":\"Jul 17\",\"allday\":false,\"s\":360,\"e\":1080,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"],\"acc\":\"g\"}}",
+    "picture A3-ranger-bell-phone.png: [\"Exercise Kite Fri 17 Jul / Taken out of Unavailable, Attach changed to Training, and 1 more change · Saber\",\"OL Thu 16 Jul / Now OL (AM), LL changed to OL · Saber\",\"LL Tue 14 Jul / Now LL (AM), Training changed to LL · Saber\",\"Training Mon 13 Jul / Now 00:00–12:00, LL changed to Training · Saber\",\"LL Mon 13 Jul / Now LL (AM) · Saber\",\"LL Wed 15 Jul / Training changed to LL, renamed — was Range brief · Saber\",\"Training Tue 14 Jul / You were added · Saber\",\"Range brief Wed 15 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"Exercise Kite Fri 17 Jul / Taken out of Unavailable, Attach changed to Training, and 1 more change · Saber\",\"OL Thu 16 Jul / Now OL (AM), LL changed to OL · Saber\",\"LL Tue 14 Jul / Now LL (AM), Training changed to LL · Saber\",\"Training Mon 13 Jul / Now 00:00–12:00, LL changed to Training · Saber\",\"LL Mon 13 Jul / Now LL (AM) · Saber\",\"LL Wed 15 Jul / Training changed to LL, renamed — was Range brief · Saber\",\"Training Tue 14 Jul / You were added · Saber\",\"Range brief Wed 15 Jul / You were added · Saber\"]",
+    "RECORD phone: (a) (RECORD) — [\"LL Wed 15 Jul / Training changed to LL, renamed — was Range brief · Saber\"]",
+    "RECORD phone: (b) both saves (RECORD) — [\"Training Mon 13 Jul / Now 00:00–12:00, LL changed to Training · Saber\",\"LL Mon 13 Jul / Now LL (AM) · Saber\"]",
+    "RECORD phone: (c) (RECORD) — [\"LL Tue 14 Jul / Now LL (AM), Training changed to LL · Saber\"]",
+    "RECORD phone: (d) (RECORD) — [\"OL Thu 16 Jul / Now OL (AM), LL changed to OL · Saber\"]",
+    "RECORD phone: (e) (RECORD) — [\"Exercise Kite Fri 17 Jul / Taken out of Unavailable, Attach changed to Training, and 1 more change · Saber\"]",
+    "picture A3-ranger-bell-desk.png: [\"Exercise Kite Fri 17 Jul / Taken out of Unavailable, Attach changed to Training, and 1 more change · Saber\",\"OL Thu 16 Jul / Now OL (AM), LL changed to OL · Saber\",\"LL Tue 14 Jul / Now LL (AM), Training changed to LL · Saber\",\"Training Mon 13 Jul / Now 00:00–12:00, LL changed to Training · Saber\",\"LL Mon 13 Jul / Now LL (AM) · Saber\",\"LL Wed 15 Jul / Training changed to LL, renamed — was Range brief · Saber\",\"Training Tue 14 Jul / You were added · Saber\",\"Range brief Wed 15 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"Exercise Kite Fri 17 Jul / Taken out of Unavailable, Attach changed to Training, and 1 more change · Saber\",\"OL Thu 16 Jul / Now OL (AM), LL changed to OL · Saber\",\"LL Tue 14 Jul / Now LL (AM), Training changed to LL · Saber\",\"Training Mon 13 Jul / Now 00:00–12:00, LL changed to Training · Saber\",\"LL Mon 13 Jul / Now LL (AM) · Saber\",\"LL Wed 15 Jul / Training changed to LL, renamed — was Range brief · Saber\",\"Training Tue 14 Jul / You were added · Saber\",\"Range brief Wed 15 Jul / You were added · Saber\"]",
+    "RECORD desk: (a) (RECORD) — [\"LL Wed 15 Jul / Training changed to LL, renamed — was Range brief · Saber\"]",
+    "RECORD desk: (b) both saves (RECORD) — [\"Training Mon 13 Jul / Now 00:00–12:00, LL changed to Training · Saber\",\"LL Mon 13 Jul / Now LL (AM) · Saber\"]",
+    "RECORD desk: (c) (RECORD) — [\"LL Tue 14 Jul / Now LL (AM), Training changed to LL · Saber\"]",
+    "RECORD desk: (d) (RECORD) — [\"OL Thu 16 Jul / Now OL (AM), LL changed to OL · Saber\"]",
+    "RECORD desk: (e) (RECORD) — [\"Exercise Kite Fri 17 Jul / Taken out of Unavailable, Attach changed to Training, and 1 more change · Saber\"]"
+   ]
+  },
+  "A4": {
+   "log": [
+    "bundle index-2uyEcUJu.js",
+    "filed {\"type\":\"Attach\",\"title\":\"Exercise Kite\"} on 2026-07-23: new input [\"imwujl9qpde5gze\"]; asked []; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "filed {\"type\":\"Attach\",\"title\":\"Exercise Hawk\"} on 2026-07-24: new input [\"imwujldv9dgmzis\"]; asked []; note \"\"",
+    "filed {\"people\":[\"bane\"],\"type\":\"Training\",\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\"} on 2026-07-20: new input [\"imwujlji5wq6pe7\"]; asked []; note \"\"",
+    "filed {\"people\":[\"bane\"],\"type\":\"Training\",\"from\":\"09:00\",\"to\":\"10:00\"} on 2026-07-21: new input [\"imwujlliaupi292\"]; asked []; note \"\"",
+    "filed {\"people\":[\"bane\"],\"type\":\"Training\",\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Brief\"} on 2026-07-22: new input [\"imwujlnh2cwkb6z\"]; asked []; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "RECORD rename \"Training\" → \"Range brief\": saved input before → after — {\"before\":{\"type\":\"Training\",\"date\":\"Jul 20\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]},\"after\":{\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 20\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "RECORD a title given (\"Sim\"): saved input before → after — {\"before\":{\"type\":\"Training\",\"date\":\"Jul 21\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]},\"after\":{\"type\":\"Training\",\"title\":\"Sim\",\"date\":\"Jul 21\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "RECORD a title taken away (\"Brief\"): saved input before → after — {\"before\":{\"type\":\"Training\",\"title\":\"Brief\",\"date\":\"Jul 22\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]},\"after\":{\"type\":\"Training\",\"date\":\"Jul 22\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "RECORD an Attach's \"To\" changed 145 Sqn → 146 Sqn: saved input before → after — {\"before\":{\"type\":\"Attach\",\"title\":\"Exercise Kite\",\"date\":\"Jul 23\",\"allday\":false,\"s\":360,\"e\":1080,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"],\"acc\":\"u\"},\"after\":{\"type\":\"Attach\",\"title\":\"Exercise Kite\",\"date\":\"Jul 23\",\"allday\":false,\"s\":360,\"e\":1080,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"],\"acc\":\"u\"}}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "RECORD an Attach given a \"To\": saved input before → after — {\"before\":{\"type\":\"Attach\",\"title\":\"Exercise Hawk\",\"date\":\"Jul 24\",\"allday\":false,\"s\":360,\"e\":1080,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"],\"acc\":\"u\"},\"after\":{\"type\":\"Attach\",\"title\":\"Exercise Hawk\",\"date\":\"Jul 24\",\"allday\":false,\"s\":360,\"e\":1080,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"],\"acc\":\"u\"}}",
+    "picture A4-ranger-bell-phone.png: [\"Exercise Hawk · 145 Sqn Fri 24 Jul / Renamed — was Exercise Hawk · Saber\",\"Exercise Kite · 146 Sqn Thu 23 Jul / Renamed — was Exercise Kite · 145 Sqn · Saber\",\"Training Wed 22 Jul / Renamed — was Brief · Saber\",\"Sim Tue 21 Jul / Renamed — was Training · Saber\",\"Range brief Mon 20 Jul / Renamed — was Training · Saber\",\"Brief Wed 22 Jul / You were added · Saber\",\"Training Tue 21 Jul / You were added · Saber\",\"Training Mon 20 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"Exercise Hawk · 145 Sqn Fri 24 Jul / Renamed — was Exercise Hawk · Saber\",\"Exercise Kite · 146 Sqn Thu 23 Jul / Renamed — was Exercise Kite · 145 Sqn · Saber\",\"Training Wed 22 Jul / Renamed — was Brief · Saber\",\"Sim Tue 21 Jul / Renamed — was Training · Saber\",\"Range brief Mon 20 Jul / Renamed — was Training · Saber\",\"Brief Wed 22 Jul / You were added · Saber\",\"Training Tue 21 Jul / You were added · Saber\",\"Training Mon 20 Jul / You were added · Saber\"]",
+    "PASS phone: rename — \"Renamed — was Training · Saber\" — [\"Range brief Mon 20 Jul / Renamed — was Training · Saber\"]",
+    "RECORD phone: title given (RECORD) — [\"Sim Tue 21 Jul / Renamed — was Training · Saber\"]",
+    "RECORD phone: title taken away (RECORD) — [\"Training Wed 22 Jul / Renamed — was Brief · Saber\"]",
+    "RECORD phone: \"To\" changed (RECORD) — [\"Exercise Kite · 146 Sqn Thu 23 Jul / Renamed — was Exercise Kite · 145 Sqn · Saber\"]",
+    "RECORD phone: \"To\" given (RECORD) — [\"Exercise Hawk · 145 Sqn Fri 24 Jul / Renamed — was Exercise Hawk · Saber\"]",
+    "picture A4-ranger-bell-desk.png: [\"Exercise Hawk · 145 Sqn Fri 24 Jul / Renamed — was Exercise Hawk · Saber\",\"Exercise Kite · 146 Sqn Thu 23 Jul / Renamed — was Exercise Kite · 145 Sqn · Saber\",\"Training Wed 22 Jul / Renamed — was Brief · Saber\",\"Sim Tue 21 Jul / Renamed — was Training · Saber\",\"Range brief Mon 20 Jul / Renamed — was Training · Saber\",\"Brief Wed 22 Jul / You were added · Saber\",\"Training Tue 21 Jul / You were added · Saber\",\"Training Mon 20 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"Exercise Hawk · 145 Sqn Fri 24 Jul / Renamed — was Exercise Hawk · Saber\",\"Exercise Kite · 146 Sqn Thu 23 Jul / Renamed — was Exercise Kite · 145 Sqn · Saber\",\"Training Wed 22 Jul / Renamed — was Brief · Saber\",\"Sim Tue 21 Jul / Renamed — was Training · Saber\",\"Range brief Mon 20 Jul / Renamed — was Training · Saber\",\"Brief Wed 22 Jul / You were added · Saber\",\"Training Tue 21 Jul / You were added · Saber\",\"Training Mon 20 Jul / You were added · Saber\"]",
+    "PASS desk: rename — \"Renamed — was Training · Saber\" — [\"Range brief Mon 20 Jul / Renamed — was Training · Saber\"]",
+    "RECORD desk: title given (RECORD) — [\"Sim Tue 21 Jul / Renamed — was Training · Saber\"]",
+    "RECORD desk: title taken away (RECORD) — [\"Training Wed 22 Jul / Renamed — was Brief · Saber\"]",
+    "RECORD desk: \"To\" changed (RECORD) — [\"Exercise Kite · 146 Sqn Thu 23 Jul / Renamed — was Exercise Kite · 145 Sqn · Saber\"]",
+    "RECORD desk: \"To\" given (RECORD) — [\"Exercise Hawk · 145 Sqn Fri 24 Jul / Renamed — was Exercise Hawk · Saber\"]"
+   ]
+  }
+ },
+ "errors": []
+}

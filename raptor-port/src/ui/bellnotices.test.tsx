@@ -325,6 +325,22 @@ describe('round 4 of the words pass: the bell (D2521)', () => {
     expect(commitInput(rec('Training · Safety'), { ...draftOf(rec('Training · Safety')), type: 'Meeting' }, [RANGER])).toBe(true)
     expect(told(RANGER)).toEqual([`Training · Safety · Wed 15 Jul — Training changed to Meeting · ${cs(SABER)}`])
   })
+  /* (walker a's A2 (iii), chat 170: a title the new kind's name swallows whatever its capitals — engine/inputs.ts
+     titleOf drops a title equal to its kind's name ignoring case — so "meeting" on a Training made a Meeting is gone
+     by the app's own rule, and nobody renamed anything) */
+  it('Q1: a Training titled "meeting" (small m) changed to a Meeting says only the kinds — the swallowed title is no rename', async () => {
+    await boot()
+    file([RANGER], WED, { title: 'meeting' }); clear()
+    expect(commitInput(rec('meeting'), { ...draftOf(rec('meeting')), type: 'Meeting' }, [RANGER])).toBe(true)
+    expect(told(RANGER)).toEqual([`Meeting · Wed 15 Jul — Training changed to Meeting · ${cs(SABER)}`])
+  })
+  /* …while a title taken away by a kind that has none still says so (the reading recorded in D2521's row) */
+  it('Q1: a Training titled "Range brief" changed to an LL still says the title went', async () => {
+    await boot()
+    file([RANGER]); clear()
+    expect(commitInput(rec(), { ...draftOf(rec()), type: 'LL' }, [RANGER])).toBe(true)
+    expect(told(RANGER)).toEqual([`LL · Wed 15 Jul — Training changed to LL, renamed — was ${TITLE} · ${cs(SABER)}`])
+  })
   it('Q1: a true rename keeps today\'s words', async () => {
     await boot()
     file([RANGER]); clear()

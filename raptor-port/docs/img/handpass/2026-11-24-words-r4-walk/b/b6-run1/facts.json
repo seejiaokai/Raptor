@@ -1,0 +1,66 @@
+{
+ "pictures": [
+  {
+   "file": "B6-0-filed-bell-phone.png",
+   "case": "B6",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) LL Mon 14 Dec / You were added · Saber"
+   ]
+  },
+  {
+   "file": "B6-a-war-cell-desk.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": "OL |  act hasc"
+  },
+  {
+   "file": "B6-a-retyped-bell-phone.png",
+   "case": "B6",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) OL Mon 14 Dec / LL changed to OL · Saber",
+    "(unread) LL Mon 14 Dec / You were added · Saber"
+   ]
+  },
+  {
+   "file": "B6-b-war-window-desk.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": "Ranger Mon 14 Dec Auto-approve ✕ No manning row is amber or red OL Whole day “Family till 14 Dec” · change it on the Inputs page till 14 Dec Document Whole day AM PM Pick a range CSE OD Grant OIL ⋯"
+  },
+  {
+   "file": "B6-c-remark-bell-phone.png",
+   "case": "B6",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) OL Mon 14 Dec / Remark changed · Saber",
+    "(unread) OL Mon 14 Dec / LL changed to OL · Saber",
+    "(unread) LL Mon 14 Dec / You were added · Saber"
+   ]
+  }
+ ],
+ "cases": {
+  "B6": {
+   "log": [
+    "bundle: index-2uyEcUJu.js",
+    "filed {\"type\":\"LL\",\"span\":\"all\",\"people\":[\"bane\"],\"remarks\":\"Family\"} on 2026-12-14: new input [\"imwujxtcdg0stf1\"]; asked [\"document\"]; note \"\"",
+    "Leave War cell after filing: LL |  act hasc",
+    "picture B6-0-filed-bell-phone.png: [\"(unread) LL Mon 14 Dec / You were added · Saber\"]",
+    "0-filed: Ranger's bell [\"(unread) LL Mon 14 Dec / You were added · Saber\"]",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "(a) input now {\"type\":\"OL\",\"date\":\"Dec 14\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Family\",\"people\":[\"bane\"]}; Leave War cell OL |  act hasc",
+    "picture B6-a-war-cell-desk.png: \"OL |  act hasc\"",
+    "picture B6-a-retyped-bell-phone.png: [\"(unread) OL Mon 14 Dec / LL changed to OL · Saber\",\"(unread) LL Mon 14 Dec / You were added · Saber\"]",
+    "a-retyped: Ranger's bell [\"(unread) OL Mon 14 Dec / LL changed to OL · Saber\",\"(unread) LL Mon 14 Dec / You were added · Saber\"]",
+    "picture B6-b-war-window-desk.png: \"Ranger Mon 14 Dec Auto-approve ✕ No manning row is amber or red OL Whole day “Family till 14 Dec” · change it on the Inputs page till 14 Dec Document Whole day AM PM Pick a range CSE OD Grant OIL ⋯\"",
+    "(b) no CCL button in the Leave War window: Ranger Mon 14 Dec Auto-approve ✕ No manning row is amber or red OL Whole day “Family till 14 Dec” · change it on the Inputs page till 14 Dec Document Whole day AM PM Pick a range CSE OD Grant OIL ⋯",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "(c) remark changed: {\"type\":\"OL\",\"date\":\"Dec 14\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Family wedding\",\"people\":[\"bane\"]}",
+    "picture B6-c-remark-bell-phone.png: [\"(unread) OL Mon 14 Dec / Remark changed · Saber\",\"(unread) OL Mon 14 Dec / LL changed to OL · Saber\",\"(unread) LL Mon 14 Dec / You were added · Saber\"]",
+    "c-remark: Ranger's bell [\"(unread) OL Mon 14 Dec / Remark changed · Saber\",\"(unread) OL Mon 14 Dec / LL changed to OL · Saber\",\"(unread) LL Mon 14 Dec / You were added · Saber\"]"
+   ]
+  }
+ },
+ "errors": []
+}
