@@ -1571,3 +1571,42 @@ sides.
 **Issue:** A page of nine questions was drawn from the night's notes, not from the app. A reviewer's edit added a false fact ("a member cannot save a chart") and the host published it unchecked. Pictures were reused from the walk and did not show the cases they sat beside. The owner said the questions were getting worse and the mistakes more, then added "clarity as well": the questions were also hard to follow.
 **Suggested improvement:** A questions page is built by a fixed routine: each case pressed on the app and read in the code; one "today" picture of exactly that case and a drawing of the proposal; recommendations checked against the rulings; then the host re-reads every sentence against the app before publishing, and marks anything unconfirmed. A reviewer's edits are checked like the first draft. Late in a long chat, hand this to a fresh chat instead.
 **Principle:** Every fact on a page put to a decision-maker is checked against the source at the time of writing, including the facts a reviewer added; notes and earlier reports are leads, not evidence.
+
+### Observation 1048: A helper was refused its report file again — closed note 915 met again; the brief asks for a short hand-back and FACT lines
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 162 (logged by chat 166 at his word): four helpers in a row were told to write their report to a scratchpad file
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2, "A helper's report"; every helper brief
+
+**Issue:** Observation 915 (ACTIONED 20 Nov 26) already said a helper's write of its own report file is refused. A later handoff note advised the opposite (have the helper write its report to a scratchpad file), and on 24 Nov 26 four helpers were refused in a row; each pasted a long report into its hand-back, and saving each reader's report into the repo meant retyping it (about 2,500 tokens each). The rule was written down but a brief template still asked for a file.
+**Suggested improvement:** Guard it in the brief template, not in prose: every helper brief ends with a fixed "Your hand-back" block — a final message of at most N words; every fact as a `FACT` line printed by a script the helper leaves in the repo (re-runnable by the host); the script's raw output saved by the script into the repo's scratch folder. Never "write your report to <file>". Astra alone writes its own report (`codex exec -o`).
+**Principle:** When a delegate cannot persist a document, have it persist a re-runnable script whose output carries the facts, and keep its prose hand-back short; a rule that a template contradicts needs the template fixed.
+
+### Observation 1049: The publishing tool reads only from the chat's own folder or scratchpad
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 162 (logged by chat 166 at his word): publishing the rebuilt questions page, which lives in another worktree
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** showing a mock-up or questions page to him as a published page
+
+**Issue:** The page and its pictures sat in the worktree the chat worked in (not the chat's own session folder). The publish tool refused them: it reads only from the chat's own working folder or its scratchpad.
+**Suggested improvement:** In the mock-up guide's publishing step: before publishing, copy the page and every picture it references into the scratchpad, keeping their relative paths, and publish from there with `files`; check each referenced path exists in the copy first.
+**Principle:** A publishing tool's reach can be narrower than the shell's; stage what you publish inside the tool's own allowed folders first, and verify the staged copy is complete.
+
+### Observation 1050: A question for him is established by a script that prints what the screen said, re-run by the host, before any recommendation is written
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 162 (logged by chat 166 at his word): the questions page rebuilt after round 1 carried facts nobody had checked
+**Skill:** New skill candidate: questions-page
+**Type:** open-source
+**Phase/Area:** before a question and its recommendation are written
+
+**Issue:** Facts behind questions (what a window says, which button saves, whether a case can happen at all) were taken from notes or a helper's prose; some were false (one question's case could not happen in today's app). Chat 162 rebuilt the page with helpers whose scripts print `FACT` lines of what the screen said, and the host re-ran each script before writing anything.
+**Suggested improvement:** The questions-page routine (Observation 1044) gains a fixed first step: each question's case is pressed by a script that prints `FACT` lines of the screen's own words and states; the host re-runs it and reads the output; only then is the question and its recommendation written. A question whose script was not re-run by the host does not go on the page.
+**Principle:** Establish the facts of a decision from a reproducible observation the presenter has re-run, before drafting the recommendation, so the recommendation cannot shape the facts.
