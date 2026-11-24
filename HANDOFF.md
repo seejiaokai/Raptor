@@ -20,14 +20,6 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/squadron-guide-159 -->
-### CHAT 159 — a guide to the app for F-16 schedulers and training appointment holders (his ask, 24 Nov 26), on Fable — MADE and fact-checked; a notes-only branch — verify before use
-- **Where:** the main Raptor folder, branch `claude/squadron-guide-159` (cut from `main`, no upstream — push with `git push -u origin claude/squadron-guide-159`). No file under `raptor-port/src`.
-- **What it is:** `raptor-port/docs/squadron-guide/` — `talon-guide.pdf`, `talon-guide.html` (one page, pictures inside) and `questions.txt` (eleven questions, each with its context), for him to send to colleagues in other squadrons so they can say what is the same, different or missing for them. Its two big tables (every Logic setting and check, coded S1–S23 and C1–C53) are read out of the Logic page's own words (`logic.json`), never typed; the hand-written parts (the pages, plan to published, standby flagging, the training page, typed words, what is built around the F-15) were fact-checked twice against the code by a fresh Opus reader, every finding taken. Ten pictures from a build of `main`, the demo data. The folder's README says how to rebuild it. By his second ask the page is in the app's look and interactive (section bar, search, pictures that open large, tables that zoom and turn into cards, a note on every row gathered into one text to copy); it is also published as a private Artifact page for him to open on his phone, named in the closing message.
-- **Not done:** no walk and no code read — nothing a person sees in the app changed. The guide is not in the app; putting it on the app's own address (so the pinned link serves it) was offered to him, his call.
-- **Next:** their answers, when he brings them, are put to him as rulings to make (`[USER-GUIDE]`, `[SINGLE-SEAT]`, the multi-squadron build) — nothing built from them without his word.
-- **Rulings:** none. **Next chat number:** 160 (157 unknown — check the open branches). **Next free ruling:** D2461 (check every branch).
-<!-- /now -->
 ## Next, in order
 
 **HIS ORDER OF WORK (D2086, 16 Nov 26, changed 17 Nov 26 by D2186–D2188):** the multi-squadron and detachment design (answered whole, chat 104) → its BUILD now, in batches, before the database step, each batch's agreed design and mock-up shown to him first (`[MULTI-SQN-DESIGN]`; D2187, D2188) → the Tracker expansion with the Tracker's small fixes. Caps and ops limits (`[CAPS-OPS-LIMITS]`) PAUSED until he calls for it (D2186).

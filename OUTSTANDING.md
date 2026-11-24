@@ -1695,7 +1695,10 @@ section folds are next touched. (Its first half — the wave show/hide toggle le
   setting and check (coded S1–S23, C1–C53, read out of the Logic page's own words), how SC MAIN, SC SPARE, AVALON
   and BB are flagged, the typed words that switch a rule on, what is built around the F-15, and eleven questions for
   them. A PDF, one HTML page and the questions as plain text: `raptor-port/docs/squadron-guide/` (its README says
-  how it is rebuilt). He sends it himself. **Next:** their answers, when they come, are put to him as rulings to
+  how it is rebuilt). By his second ask the page is in the app's look and interactive, and published for him as a
+  private Artifact page (the address is in that README). Live 24 Nov 26 on his "merge live" (pull request 835). Offered,
+  his call: the guide on the app's own address, so the group's pinned link serves it; answers gathered on the page for
+  him instead of copied into the chat. He sends it himself. **Next:** their answers, when they come, are put to him as rulings to
   make — they feed `[SINGLE-SEAT]` and the multi-squadron build; nothing is built from them without his word.
 
 ### [DB-SYNC-MODEL] How the app shares and locks once it is in the database — his idea, to be designed now, built with the adapter (29 Sep 26)

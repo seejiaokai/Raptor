@@ -15,6 +15,12 @@ tables switch between a table and cards and zoom out to fit; every row takes a "
 question an answer, kept in that browser and gathered by "My answers" into one text to copy into the group. With
 scripts off (some phones' file previews) it is the same guide, read only. The PDF is the same page printed light.
 `build.mjs --page <file>` also writes the page without its outer tags, the form an Artifact is published from.
+**Published for him as a private Artifact page** (24 Nov 26): https://claude.ai/artifact/LtccTThRBDXixJq6Mavago — to
+update it, rebuild with `--page <file>` and publish that file to the same address (from another chat, pass the address
+as the Artifact's `url`, or a second page is made). His colleagues cannot open it until he shares it from the page's
+Share menu; whether that reaches people outside his account was not known when it was made.
+**GitHub's code check reads this folder's two scripts:** run `npm run lint:changed` before a push that changes them.
+**Live 24 Nov 26** on his "merge live" (pull request 835).
 
 **How it is made — nothing in its two big tables is typed by hand:**
 - `logic.json` — the Logic page's own words and standard values (its settings, its checks with their level and their
