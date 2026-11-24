@@ -15,12 +15,7 @@ export function holdReadOnly(root: HTMLElement, live: string): () => void {
   const isLive = (e: Element) => e.matches(live)
   const apply = () => {
     /* a part locked earlier that now is, or holds, a live part (a question shown inside it): unlocked first */
-    for (const e of [...set]) {
-      if (!e.isConnected || isLive(e) || e.querySelector(live)) { unlock(e); set.delete(e) }
-      /* its own window took `inert` off it (React, as a form stops being read only — the night's security read): the hold
-         still stands, so the part stays locked */
-      else if (!e.hasAttribute('inert')) e.setAttribute('inert', '')
-    }
+    for (const e of [...set]) if (!e.isConnected || isLive(e) || e.querySelector(live)) { unlock(e); set.delete(e) }
     const walk = (node: Element) => {
       for (const c of Array.from(node.children)) {
         if (isLive(c)) continue
@@ -35,6 +30,6 @@ export function holdReadOnly(root: HTMLElement, live: string): () => void {
   const unlock = (e: Element) => { e.removeAttribute('inert'); e.removeAttribute(MARK) }
   apply()
   const watch = typeof MutationObserver === 'function' ? new MutationObserver(apply) : null
-  watch?.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ['inert'] })
+  watch?.observe(root, { childList: true, subtree: true })
   return () => { watch?.disconnect(); for (const e of set) unlock(e); set.clear() }
 }

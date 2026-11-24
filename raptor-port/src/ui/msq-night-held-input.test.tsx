@@ -5,8 +5,8 @@
    or close it." The window's shade stood over the chip, so the way back could not be pressed or reached by Tab, and a
    press there closed the window and lost his words. The chip stays pressable while so held, and the form keeps the PERSON
    line and the note it had.
-   And the security read's lead: React taking its own `inert` off a part the hold had locked left that part live under
-   the grey band (ui/heldro.ts). */
+   And the security read's lead, pressed on the real window: held by a pick, through the member view and back, nothing
+   under the band comes live (it did not reproduce; this pins it). */
 import { describe, it, expect, afterEach, beforeEach } from 'vitest'
 import { act, fireEvent } from '@testing-library/react'
 import { createRoot, type Root } from 'react-dom/client'
@@ -20,7 +20,6 @@ import { INPEDIT, setInpEdit } from './pops'
 import { setPage, setInpView, CURPAGE } from '../state/view'
 import { PEOPLE } from '../engine/people'
 import { INPUTS } from '../engine/inputs'
-import { holdReadOnly } from './heldro'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 useMsqWorld()
@@ -82,19 +81,28 @@ describe('an Input window held by the switch to the member view', () => {
   })
 })
 
-describe('the hold\'s lock (ui/heldro.ts)', () => {
-  it('a part locked by the hold stays locked when its own window takes its `inert` off', async () => {
-    const root = document.createElement('div')
-    root.innerHTML = '<div class="live">x</div><div class="form"><input id="f"></div>'
-    document.body.append(root)
-    const undo = holdReadOnly(root, '.live')
-    const form = root.querySelector('.form')!
-    expect(form.hasAttribute('inert')).toBe(true)
-    form.removeAttribute('inert')   /* as React does when the form's own read-only state turns off */
-    await new Promise(r => setTimeout(r, 0))
-    expect(form.hasAttribute('inert'), 'locked again').toBe(true)
-    undo()
-    expect(form.hasAttribute('inert'), 'the undo still frees it').toBe(false)
-    root.remove()
+describe('a window held by a pick, through the member view and back (the security read\'s lead)', () => {
+  it.each(['hunter', 'saber'] as const)('%s: its boxes and its Document button stay locked under the band', async who => {
+    const host = document.createElement('div'); document.body.append(host)
+    const root = createRoot(host)
+    signInAs('saber')
+    expect(saveAccess(ACCT.hunter, { grants: { u149: 'plan' } })).toBeNull()
+    signInAs(who)
+    setPage('inputs'); setInpView('cal')
+    await act(async () => { root.render(<InputEditor />) })
+    const other = INPUTS.find((x: any) => x.person && PEOPLE[x.person] && x.person !== 'prowler' && x.person !== 'stiff' && (x.unit == null || x.unit === 'u142'))!
+    await act(async () => { setInpEdit(other); notify() })
+    expect($('.inped-body')?.hasAttribute('inert'), 'the premise: he may change it, before the pick').toBe(false)
+    await act(async () => { await pickSquadron('u149') })
+    expect($('[data-testid="inped-moveband"]'), 'the premise: held by the pick').not.toBeNull()
+    await act(async () => { switchRoleView() })
+    await act(async () => { switchRoleView() })
+    await act(async () => { await new Promise(r => setTimeout(r, 0)) })
+    expect($('[data-testid="inped-moveband"]'), 'still held').not.toBeNull()
+    const body = $('.inped-body')!
+    expect(dead(body), 'the form is locked').toBe(true)
+    for (const el of body.querySelectorAll('input, select, textarea, button')) expect(dead(el), 'no box or button live under the band').toBe(true)
+    await act(async () => { root.unmount(); setInpEdit(null) }); host.remove()
   })
 })
+
