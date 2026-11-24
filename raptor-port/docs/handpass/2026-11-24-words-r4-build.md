@@ -249,14 +249,22 @@ None: no console error, page error or failed request in any cited run of the hos
 
 The one brief: `../superpowers/briefs/2026-11-24-words-r4-read-brief.md`. Each read an exported copy of `68ab6d1db`
 (`D:/rw4/read-copy`) from which this sheet, the two scenario lists, the scenario and walk briefs, the walkers' reports and
-scripts and the branch's handoff block were taken out. The reports stay outside the checkout (`D:/rw4/reads/`) until all
-three exist, then are saved whole beside the brief.
+scripts and the branch's handoff block were taken out. The three reports, whole, each under a head from its own run:
+`../superpowers/briefs/2026-11-24-words-r4-read-astra.md`, `…-read-opus.md`, `…-read-fable.md`. Astra 5 claims, the
+Opus reader 2, the Fable reader 3 — seven different ones; no claim of one contradicts a negative of another.
 
 | # | The claim | Who | Reproduced by the host | Against the ruling, and `main` | Disposition |
 |---|---|---|---|---|---|
 | 1 | Behind another OIL line the no-period sentence is joined ". ·" — "…earns OIL. · No Leave War period for 2028…" | Opus 1, Fable 1 (b) | YES — `leavewar/noperiod-join.test.ts`, failing first (the real note batcher and note element) | the words file's S2: "joined after another line it follows as its own sentence"; the ". ·" was so on `main` | **confirmed, pre-existing, inside this round's promise — FIXED** `b4cd80acb` (`publishFlagsBids`: the sentence folded into the join's own, nothing left after it) |
 | 2 | Alone, the note reads "Saturday published and approved · No Leave War period…", where "the page he approved shows a full stop" | Fable 1 (a) | checked against the page: its only showing of this note is the picture `s2-no-period-after.png`, which reads "… approved · No Leave War period for 2028, …" (`facts.json`); the page's text holds no "published and approved" at all | the dot-joined form IS what he approved | **false positive** — left as built; walker c's C4 (a) and the Opus reader read it the same way |
 | 3 | A kind change alone also says "Now …" when the new kind adds or drops the half ("Now LL (AM), Training changed to LL"; "Now 00:00–12:00, LL changed to Training") | Opus 2, Fable 3; walker a's A3 (b) (c) | YES on screen (walker a) | not ruled; the shape was so on `main` in the old words | **his call** — filed with the unruled wordings, `[UI-SLEEK-PASS]` round 4's leftovers (2) |
-| 4 | A name dragged from the crew list onto the seat that man already holds says nothing, where the tap says "<callsign> — already in that seat" | Fable 2 | (see below) | D2521 Q4b: "a drag onto the seat a man holds answers …, as the tap's does"; silent on `main` too | (see below) |
+| 4 | A name dragged from the crew list onto the seat that man already holds says nothing, where the tap says "<callsign> — already in that seat" | Fable 2 | YES — `ui/drag.test.tsx` "his name dragged from the crew list onto the seat he holds…", failing first (no note at all) | D2521 Q4b: "a drag onto the seat a man holds answers …, as the tap's does"; silent on `main` too | **confirmed, pre-existing, inside this round's promise — FIXED** `c3498b918` (`applyDrop`: one `same()` for the seat's own puck and the crew list's name) |
+| 5 | A real rename goes unsaid: a Training titled "Training · briefing" made a Meeting titled "Meeting · briefing" reads only "Training changed to Meeting" | Astra 1 | YES — `bellnotices.test.tsx` "…says the kind AND the rename", failing first | D2521 Q1: "Renamed — was <old title>" when the title's own words change; new with this change (`ownName` cut both names to one tail) | **confirmed, new — FIXED** `489420a0c` (`ownName` read from the record's title and "To", never cut out of the bold name) |
+| 6 | An old saved line of three parts now ends "and 1 more change" where it read two parts before | Astra 2 (the Opus and Fable readers name it as by design) | YES — the host's run h4c | the promise is that old lines still READ; they do, whole | **not a finding (D56)** — it lives only in lines already stored, which are demo data; a version stamp on every line is not built |
+| 7 | An AM leave only moved to another day says "Now Thu 16 Jul", no "(AM)" | Astra 4; walker a's A5 | YES on screen (walker a) | not ruled (D2521's "(AM)" example moves the day AND makes the half); so on `main` | **his call** — filed with the unruled wordings, (2) |
+
+**The fixes of the reads are new code (§5):** `b4cd80acb` (the publish note's join), `c3498b918` (the crew list's drag),
+`489420a0c` (`ownName`) — each more than a one-line guard, so each gets a narrow read by a fresh Opus helper handed only
+the fix commits and the claims they answer, and a re-walk of what they touch on a new frozen build.
 
 ## 14. Lessons added (§7.11)
