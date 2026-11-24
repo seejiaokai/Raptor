@@ -63,6 +63,7 @@ export function sansPostedFrom(pid: string): string | null {
    whole inputs list this file is allowed (engine/inputsfor-readers.test.ts); both readers below go through it. */
 // any: an input record is untyped (a verbatim port, src/engine/inputs.ts)
 function sansAvailRecords(): any[] {
+  // any: as above — the records are untyped
   return (INPUTS as any[]).filter(r => r && isSansAvail(r.type))
 }
 function sansFiledShown(pids: ReadonlySet<string>, today: string): Map<string, string[]> {
