@@ -1310,3 +1310,16 @@ sides.
 **Issue:** The guide says Low runs the fewest helpers the checks need and that Medium "means more walkers or a scenario designer inside a job". Since D2443 every WALK and FULL check has two scenario designers, Astra and a fresh Fable, on either setting, so a night run reading the guide literally could leave Fable's design out on Low. Its "Fable only on his word" (Observation 1029) is the same drift.
 **Suggested improvement:** At the guide's next review, state that both settings give every walk its two scenario designers (D2443), and that Low and Medium differ only in how many walkers run and whether helpers run at once.
 **Principle:** When a rule adds a required helper to a check, every guide that sizes or budgets that check is read for a line that now leaves it out.
+
+### Observation 1051: A task asked for by name was already claimed on an unmerged branch (numbered past 1049–1050 on other open branches)
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** Chat 163 — he asked to start "the bell / taken back" words job; the chat searched `main`'s rulings and backlog, told him no other chat was doing it, and was corrected by the chat that had drawn it the night before
+**Skill:** session-handoff (and the rule files `record-decisions.md`, `doc-structure.md` — "search before telling him anything is undecided")
+**Type:** open-source
+**Phase/Area:** The start of a chat — finding whether a task is already ruled on or in hand
+
+**Issue:** The search-before-you-ask rule names the rulings files, the archive and the backlog, all read from the chat's own checkout. A ruling or backlog item recorded by a parallel chat lives only on that chat's unmerged branch until its merge, so a search of the default branch finds nothing and the chat reports the task as unclaimed. Here two rulings and a backlog item two days old, and a night's finished drawing, were invisible.
+**Suggested improvement:** In the rule's "The check" list, add one line: search the open branches too — one `git grep` of the subject across every remote ref's rulings and backlog — and one transcript search of the other chats, before saying a task is unclaimed, undecided or unbuilt. The handoff file's "Before acting on a block" could carry the same line.
+**Principle:** Where parallel workers each record decisions on their own branch, "is this decided?" is a question for every open branch, not for the default one.

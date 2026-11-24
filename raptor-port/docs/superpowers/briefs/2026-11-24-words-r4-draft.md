@@ -134,3 +134,8 @@ here, and four change what goes to him.
 - **No separate cold read this round:** no wording here that carries a reason, a cost or an instruction is new — Q4a's
   and S2's are words already live elsewhere in the app; the rest are one done thing each (§1b test 11).
 - **Longer than today, marked so on his page:** Q1 (3 → 4 words), Q3 A (6 → 10), Q3 B (6 → 9), Q4c (7 → 8), S1 (9 → 10).
+
+## His answer (24 Nov 26)
+
+"All as recommended" — D2521: Q1 yes, Q2 yes, Q3 A, Q4 yes to both, the slips not objected to. The words to build are
+this file's section "After the fresh Fable's read", with Q3's real case (moved, renamed, remark changed in one save).
