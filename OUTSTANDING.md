@@ -3029,6 +3029,13 @@ step (D1411): judge the system actor's notice and own-row writes, or stop exposi
 command index; (7) **at the database step the read record is merged, never replaced** — two devices of one man each
 writing from a stale copy would drop days he read, and by D2560 those days would light his bell again (Opus reread4,
 "also older"): a line for `handover-dataverse.md` then.
+**Round 5 (24 Nov 26, chat 169 — 0 findings from all three readers):** filed here, none a fault today: (8) an admin may
+write his OWN read record inside any command type (a member only through `notices.seen`) — harms nobody; make the rule
+one sentence for both roles (`env.type === 'notices.seen'`) with the security review (security reread5 Q1, Astra's
+"older"); (9) a `remote` or `seed` change of any man's read record is not judged — nothing raises either origin today; at
+the database step, judge them or say why not (Opus reread5 Q1); (10) tidiness: the held-weeks cache comment recounts
+superseded approaches, a preview comment names the wrong signature, a test points to the wrong regression file (Astra and
+Opus reread5).
 
 ### [FABLE-READ-FAULTS] The faults Fable's reads of 21–22 Nov found outside the two-squadron work — fix now (his D2268, 22 Nov 26)
 **What:** proved by failing tests on the night's copy (very probably live today), none fixed: **OIL F1** (MED — a man posted
