@@ -2902,6 +2902,11 @@ scheduler often plans the brief earlier or the debrief after so he can attend; t
 list and the window alike (one sentence body each, `engine/validate.ts`). Recommended to him, not yet answered: "OPS
 BRIEF 15:30–16:30 is inside VL BFM debrief 15:00–17:00", amber kept; Opus drafts, a fresh Fable adjusts (D2441); drawn
 first, beside question 1b's answer.
+**HIS ANSWERS (24 Nov 26, chat 157):** question 1 — nothing at the foot, the grey line gone too (D2425, over the
+recommendation); question 1b — A, the four amber marks about the item's own time stay, every other mark goes (D2426);
+the words — "overlaps": "OPS BRIEF 15:30–16:30 overlaps VL BFM debrief 15:00–17:00" (D2427, over "is inside"). Next for
+the words: Opus drafts all four in that shape, a fresh Fable adjusts, drawn for him. Question 2 (OIL Earn's red marks):
+he asked to see its picture first.
 
 His correction, from his iPhone on the live app: Monday's SODB 07:45–08:15 for ALL AVAIL — its window shows Piston in red
 with "Conflict: RU BFM (step 12:40, T/O 13:40) & STANDARDISATION MEETING 13:30–14:30", Echo and Relay with the day's
