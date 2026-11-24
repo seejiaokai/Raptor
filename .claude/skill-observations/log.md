@@ -1428,3 +1428,16 @@ sides.
 **Issue:** Questions about edge cases (what a notification says after an undo, a reminder after a date moves) were put with the words and a picture but not with when the case arises. The owner could not judge their weight and asked; he then ruled that every question first says when it happens — who is doing what, at what point in their work, how often (his D2439).
 **Suggested improvement:** in the skill's question step, add one required line before each question: "When this happens: <who, doing what, at what point, how often>" — and a check before sending that every question has it.
 **Principle:** A decision-maker weighs an edge case by how often and when it meets real people; a question that shows only the words and the screen hides that, and invites either over-engineering or a guess.
+
+### Observation 1058: A ruling that narrows what counts voids earlier walks built on the old reading
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 174, sizing walk w14 of the SANS words (numbered past 1056–1057 on other open branches)
+**Skill:** New skill candidate: bug-check walk sizing (the bug-check order §7.0 and the walk ledger's sizing step)
+**Type:** open-source
+**Phase/Area:** sizing a re-walk after rulings changed mid-job
+
+**Issue:** Three earlier walks (over 2,000 steps) made every "planned" day for the SANS reminder with a ground-programme row. A later ruling (D2564) said a ground row never counts, and another (D2560) reversed four of their results. Their tables still read PASS, and the handoff only asked w14 for "Fable's scenarios no table of w11–w13 covers" — taken at face value, the old PASSes would have stood in for cases they no longer prove. Only the planning helper's reading of the old scripts' fixture (`planRow` makes a ground row) showed it.
+**Suggested improvement:** In the walk-sizing step, add a line: "For each ruling made since the last walk, list the earlier walks' fixtures and EXPECTED lines that rest on what it changed; those steps are void, not covered." And in a walker's brief, name each fixture helper that no longer makes what its name suggests.
+**Principle:** Evidence is only as current as the rules it was judged against; when a rule narrows what an input means, re-check how past test fixtures built that input before counting them as coverage.
