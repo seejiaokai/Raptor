@@ -3,7 +3,7 @@
    the window, its own ✕ pressable, the window usable again once it closes; W34 the "Not kept" band (a browser that
    refuses its storage — the agent's `?nostore` switch, D1901) with the Timing window open — the band never covered.
    Desktop and phone each. node scripts/handpass/timing-walk-5.mjs   (from raptor-port/, on a build already made). */
-import { serve, browserOf, fresh, DESK, PHONE, signIn, outsideTime, openBy, readout, openWindow, topAt, pic, shotDir, judge, saveResults, sleep } from './timing-walk-lib.mjs'
+import { serve, browserOf, fresh, DESK, PHONE, signIn, outsideTime, openBy, readout, openWindow, topAt, pic, shotDir, judge, notWalked, saveResults, sleep } from './timing-walk-lib.mjs'
 
 const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null
 const on = id => !ONLY || ONLY.includes(id)
@@ -66,6 +66,53 @@ for (const [id, size] of [['W34-desk', DESK], ['W34-phone', PHONE]]) {
     judge(id, !!band && covered.length === 0, `"Not kept" band ${band ? `at ${Math.round(band.x)},${Math.round(band.y)} ${Math.round(band.w)}×${Math.round(band.h)}` : 'not found'}; points of it under the Timing window: ${covered ? covered.length : '—'}${covered && covered.length ? ' (' + covered.slice(0, 4).join(' ') + ')' : ''}; the window ${win ? `${win.x},${win.y} ${win.w}×${win.h}` : 'folded'}${phone ? ' (phone)' : ''}`)
   })
 }
+
+/* W35 — one Escape, one thing, with the keys in the Timing window and one of the app's own layers open (the fix read of
+   chat 167: the Leave War's exact-days calendar closes one level on Escape at the same spot the window listens) —
+   (a) the calendar opened first, the window then opened from its corner button: Escape closes the calendar only, the
+   next Escape folds the window; (b) the window open, the calendar opened after, a press on the window: Escape folds
+   the window only, the calendar stays */
+await scen('W35', DESK, {}, async ({ page, dir }) => {
+  await page.goto(B + '/?timing'); await signIn(page); await outsideTime(page, 'viewsched')
+  await openBy(page, 'leavewar'); await outsideTime(page, 'leavewar'); await sleep(700)
+  const cal = () => page.locator('[data-testid="od-apply"]').isVisible().catch(() => false)
+  const keysIn = () => page.evaluate(() => !!document.activeElement?.closest('#timingRoot'))
+  /* (a) */
+  if (await tOpen(page)) { await page.click('#timingRoot .timingwin .win-x'); await sleep(300) }
+  await page.click('[data-testid="open-chip"]'); await sleep(500)
+  await page.click('[data-testid="od-more"]'); await sleep(400)
+  const calA = await cal()
+  await page.click('#timingRoot .timing-pill'); await sleep(400)
+  const kA = await keysIn()
+  await pic(page, dir, 'a-calendar-and-window')
+  await page.keyboard.press('Escape'); await sleep(400)
+  const a1 = { calendar: await cal(), window: await tOpen(page) }
+  await page.keyboard.press('Escape'); await sleep(400)
+  const a2 = { calendar: await cal(), window: await tOpen(page) }
+  judge('W35-a', calA && kA && !a1.calendar && a1.window === true && a2.window === false,
+    `calendar up ${calA}, the window opened from its button with the keys in it ${kA}; first Escape: calendar ${a1.calendar ? 'still up' : 'closed'}, window ${a1.window ? 'open' : 'folded'}; second Escape: window ${a2.window ? 'open' : 'folded'}`)
+  /* (b) */
+  await pic(page, dir, 'a-after-two-escapes')
+  const pb = (await readout(page)).pillBox
+  const atPill = pb ? await topAt(page, pb.x + pb.w / 2, pb.y + pb.h / 2) : 'no button'
+  const err = await page.click('#timingRoot .timing-pill', { timeout: 5000 }).then(() => '', e => String(e).split('\n').slice(0, 6).join(' / ').slice(0, 400))
+  /* walked once (chat 167): a blocking Leave War sheet lifts itself over every movable window on the page (Sheet.tsx,
+     `over`), the Timing window included, so with the window open the sheet's backdrop covers it and its button — (b)
+     cannot be reached by a press here; it is carried by TimingReadout-layers.test.tsx */
+  if (err) { notWalked('W35-b', `the sheet's backdrop over the corner button (at it: ${atPill}) — carried by TimingReadout-layers.test.tsx`); return }
+  await sleep(400)
+  await page.click('[data-testid="od-more"]'); await sleep(400)
+  const calB = await cal()
+  const body = await page.evaluate(() => { const w = document.querySelector('#timingRoot .timingwin .tm-body') || document.querySelector('#timingRoot .timingwin'); const r = w.getBoundingClientRect(); return [r.left + r.width / 2, r.top + Math.min(40, r.height / 2)] })
+  await page.mouse.click(body[0], body[1]); await sleep(300)
+  const kB = await keysIn()
+  await pic(page, dir, 'b-window-pressed-calendar-up')
+  await page.keyboard.press('Escape'); await sleep(400)
+  const b1 = { calendar: await cal(), window: await tOpen(page) }
+  judge('W35-b', calB && kB && b1.calendar && b1.window === false,
+    `calendar up ${calB}, a press on the window put the keys in it ${kB}; Escape: window ${b1.window ? 'open' : 'folded'}, calendar ${b1.calendar ? 'still up' : 'closed'}`)
+  await pic(page, dir, 'b-after-escape')
+})
 
 await cr.close(); await srv.close()
 saveResults('part5')

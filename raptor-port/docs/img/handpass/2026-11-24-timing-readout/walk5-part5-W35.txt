@@ -1,0 +1,3 @@
+PASS   W35-a — calendar up true, the window opened from its button with the keys in it true; first Escape: calendar closed, window open; second Escape: window folded
+NOT WALKED W35-b — the sheet's backdrop over the corner button (at it:  > DIV.sheetscrim.raised) — carried by TimingReadout-layers.test.tsx
+exit 0

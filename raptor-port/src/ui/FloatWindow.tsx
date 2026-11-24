@@ -239,13 +239,18 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
   }, [])
 
   useEffect(() => {
-    /* a bystander: only with the keys inside it, and then first of all (`bystander` above) */
+    /* a bystander: only with the keys inside it, and then first of all (`bystander` above). It listens on the window's
+       capture, where several of the app's own layers also close one level on Escape (Leave War's exact-days calendar,
+       Inputs' range calendar, the type legend…) and mark the key used only by stopPropagation — which never stops
+       another listener on the same spot. So: a key one of them already took (`cancelBubble`) is not the readout's, and
+       a key the readout takes reaches no other listener there (stopImmediatePropagation) — one Escape, one thing (the
+       fix read of chat 167, a fresh Opus; TimingReadout-layers.test.tsx) */
     const onBystanderKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape' || e.defaultPrevented || e.isComposing) return
+      if (e.key !== 'Escape' || e.defaultPrevented || e.cancelBubble || e.isComposing) return
       const n = el.current
       if (!n || !n.contains(document.activeElement)) return
       e.preventDefault()
-      e.stopPropagation()
+      e.stopImmediatePropagation()
       closeRef.current()
     }
     if (bystander) {

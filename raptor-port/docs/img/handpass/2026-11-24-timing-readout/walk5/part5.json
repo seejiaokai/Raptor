@@ -1,7 +1,12 @@
 [
  {
-  "id": "W33-phone",
+  "id": "W35-a",
   "v": "PASS",
-  "note": "the Day templates box up true; at the corner button: daytplModal > DIV#daytplModal.modal; at the box's ✕: daytplModal > BUTTON#daytplClose.x; closed by its ✕ true; the corner button then: abtn.timing-pill > BUTTON.abtn.timing-pill"
+  "note": "calendar up true, the window opened from its button with the keys in it true; first Escape: calendar closed, window open; second Escape: window folded"
+ },
+ {
+  "id": "W35-b",
+  "v": "NOT WALKED",
+  "note": "the sheet's backdrop over the corner button (at it:  > DIV.sheetscrim.raised) — carried by TimingReadout-layers.test.tsx"
  }
 ]

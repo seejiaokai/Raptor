@@ -24,7 +24,7 @@ The approved mock-up: https://claude.ai/artifact/7bgefju2mwrGJzc2ACSExS (its wor
 |---|---|---|---|
 | Sign-in card (desktop, phone) | has it — W4 at every size, W24 loaded in front and behind (pictured) | has it — W4 (✕, Copy all, the button, drag, at 1366, 1024×600, 390, 320) | must not cover the card: W32 PASS — its boxes and Sign in clear at 768×1024 and 800×600; at 1366 the card stands left of the window |
 | View-only Sched week (desktop, phone) | has it — W5, W26, W34 (pictured) | has it — W4; W22 Copy all | W32: the week's foot clear, open and folded (desktop); on a phone the open window is a panel over the week's foot and starts folded (W4-phone-start) — as the approved mock-up |
-| Edit Schedule week, the board open | has it — W20 desktop and phone, W19 (f) (pictured) | has it — its ✕ in front of the board; folded, the corner button on top and the board's Done still Done's (W20-board, -board-folded, both sizes) | W32 RECORD: open at the start, it stands over Edit Schedule's foot buttons Traffic and "+ In-time" (bottom right, where the approved mock-up puts it) — for his look; folded, nothing covered |
+| Edit Schedule week, the board open | has it — W20 desktop and phone, W19 (f) (pictured) | has it — its ✕ in front of the board; folded, the corner button on top and the board's Done still Done's (W20-board, -board-folded, both sizes) | W32 RECORD, corrected by chat 167 from the pictures: open at the start (bottom right, where the approved mock-up puts it), at 1366×768 it stands over the whole Aircrew list — the pilots and WSOs a scheduler drags from (`walk5/W32/03-editsched-open.png`); the two foot buttons the step named, Traffic and "+ In-time", lie behind that list anyway (`04-editsched-folded.png`) — for his look; folded, nothing covered |
 | Inputs (list, calendar) | has it — W8, W26 (pictured) | has it — W8: typing in the page's box while the window arrived, the caret kept | the page under it usable: W26, an input's window opened and closed every way, the Timing window untouched |
 | Quals · Logic · Help · Admin | has it — W5 each page timed with it open; W33 Admin (pictured) | has it — W23 top bar and keys | nothing of theirs at the window's corner in the walked pictures (W5) |
 | Leave War grid (its own pinned bars) | has it — W5, W7, W29 (pictured) | has it — W29: with the keys in it, Escape folds it, the person window stays | the "Open for bidding" sheet over the window (W20 RECORD, the sheet's own layer), a month inside it pressable (W21 PASS, desktop and phone) |
@@ -151,7 +151,7 @@ words carry sizes only (D2483), recorded for his look.
 
 ## The pictures
 
-`docs/img/handpass/2026-11-24-timing-readout/`: `walk1` 7, `walk2` 35, `walk3` 40, `walk4` 41, `walk5` 50 — 173 in all,
+`docs/img/handpass/2026-11-24-timing-readout/`: `walk1` 7, `walk2` 35, `walk3` 40, `walk4` 41, `walk5` 52 — 175 in all,
 one folder a step. The deciding ones, opened by the host: `walk5/W24/background-load.png` (loaded behind another tab:
 "not timed, tab not in front"), `walk5/W20-desk/04-timing-pressed-stays-behind.png` (ALL AVAIL over the window after a
 press on it), `walk5/W33-desk/01-box-over-the-window.png`, `walk5/W34-phone/01-not-kept-band-and-window.png`,
@@ -235,7 +235,8 @@ before, W5 every figure within 0.05 s of the outside stopwatch, W7 (no "download
 W8, W9, W14-first, W14-reload, W22, W27–W31 PASS; W19 (f) the board first, then nothing more (the readout a bystander);
 W20 desk all PASS; W23 every door one row; W26 the change and its Undo, the input's window by ✕ and Escape PASS; W32
 RECORD: open at the start, the window stands over Edit Schedule's foot buttons Traffic and "+ In-time" (bottom right,
-as the approved mock-up places it — for his look); the sign-in card clear at 768×1024 and 800×600.
+as the approved mock-up places it — for his look; corrected by chat 167 from the pictures: what it covers is the whole
+Aircrew list, those two buttons lie behind that list anyway — see roll-call A); the sign-in card clear at 768×1024 and 800×600.
 **Found by the re-walk, after the readers' fixes:**
 - R2 — W19 (c2): a press on the readout put it in front of the app's window order, yet it answered Escape only with
   the keys in it — ALL AVAIL, and the board under it, heard no Escape at all. FIXED red-first `e47e96775`
@@ -278,15 +279,16 @@ On the build of `0a6a5a304`'s app code (logs `walk5-part1.txt`, `-part2.txt`, `-
 | S5 | W20-desk-two-windows' judge assumed a press brings the Timing window forward (before R2) | judge REWRITTEN: ALL AVAIL stays in front after a press on the window (z behind), its ✕ reached once ALL AVAIL closes, then pressed — PASS (both pictured) |
 | R2 | re-walk owed (chat 165's last fix, the window outside the app's window order) | W19 RECORD: one Escape one thing — ALL AVAIL, the changes window, the bell's list, the board, an input's window, the bidding sheet each close on one Escape and the Timing window stays; with the keys in it (c2) Escape folds it and ALL AVAIL stays; with nothing else open, Escape leaves it open (the bystander rule — for his look: the combined list expected it to fold) |
 | New | the two roll-call rows no part had walked | W33 (Admin → Day templates box over the window, desktop and phone) PASS; W34 (the "Not kept" band, `?nostore`) PASS, desktop and phone |
+| F1 | **The fix read** (a fresh, blind Opus on chat 165's and 167's fix commits, in an exported copy without this sheet or the handoff; report `handpass/parts/2026-11-24-timing/opus-fix-read.md`): with the keys in the Timing window and one of the app's own layers open that closes one level on Escape at the same spot the window listens (the Leave War's exact-days calendar, Inputs' range calendar, the type legend…), one Escape closed both — those layers mark the key used only by stopPropagation, which never stops another listener at the same spot. Without `?timing` nothing changes (the reader checked every changed line of the shared window) | REPRODUCED by the host (`TimingReadout-layers.test.tsx`, both cases red on the old code); FIXED red-first: the window's Escape skips a key a layer already took and stops every other listener when it takes one (`FloatWindow.tsx`); the readout's 93 tests and the shared window's ten neighbouring files (321) green. W35 walked on the build: (a) the calendar open, the window opened from its button, Escape closes the calendar only, the next folds the window — PASS (pictured); (b) not reachable by a press — with the window open the Leave War's blocking sheet lifts itself over every movable window, the Timing window included — carried by the test |
 
 Everything else in `walk5` PASSED: W1a–d (15 files = `main`'s 15), W5 (every figure within 0.05 s), W7, W14, W20 desk
 and phone, W26, W27–W31; W32 as before (RECORD, for his look).
 
 **Closed.** No fault open. For his look: the start-up words for a tab loaded behind another (W24), Copy all when the
 browser refuses (the mock-up, D1625), W10's "first time: 0.2 s" for a page built in the background, W32 (open at the
-start, the window covers Edit Schedule's Traffic and "+ In-time"), and the Escape rule (the window folds by Escape
+start, at 1366×768 the window covers Edit Schedule's Aircrew list — chat 167's reading of the pictures; the step's two buttons lie behind that list anyway), and the Escape rule (the window folds by Escape
 only with the keys in it).
 
-**Walk:** `docs/handpass/2026-11-24-timing-readout.md` · 173 pictures (50 in the last round) · 11 surfaces · 34 orders
-(W1–W34) · MISSING: 1 — the bell door, not walked (no notice on the demo day), carried by the one shared mark; every
-fault fixed red-first (7 found by the walk, 2 by its re-walks, 9 by the two code reads, F1–F9 by the scenario designers' reading); none ruled, none filed but `[PHONE-WIN-BAND]`
+**Walk:** `docs/handpass/2026-11-24-timing-readout.md` · 175 pictures (52 in the last round) · 11 surfaces · 35 orders
+(W1–W35) · MISSING: 2 — the bell door, not walked (no notice on the demo day), carried by the one shared mark; W35 (b), not reachable by a press, carried by a test; every
+fault fixed red-first (7 found by the walk, 2 by its re-walks, 9 by the two code reads, 1 by the fix read, F1–F9 by the scenario designers' reading); none ruled, none filed but `[PHONE-WIN-BAND]`

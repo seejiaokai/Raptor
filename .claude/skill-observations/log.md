@@ -1336,3 +1336,16 @@ sides.
 **Issue:** The first outside stopwatch read performance.now() in a capture-phase pointerdown listener, then started its frame watch with a later page.evaluate. On a busy page both start late: the listener ran 0.78 s after the tap once, and the evaluate queued behind long tasks, so its end came late too. The comparison then blamed the readout for a gap that was the stopwatch's own, and hid a real fault (the readout also started at the handler, missing the same wait).
 **Suggested improvement:** In §5's "A response is timed from the press", take the start from the event's own timeStamp (the moment the browser received the press, on performance.now()'s clock), and arm the frame watch inside the page BEFORE the press, so every frame from the press on looks.
 **Principle:** Time a response from when the input arrived, not from when a busy main thread got to it, and start watching before the action, never after it returns.
+
+### Observation 1052: A Playwright-driven browser never hides a tab — walk "a tab behind another" through the browser's developer port alone
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 167, the `?timing` readout's walk, step W24 (a tab loaded or left behind another); numbered past 1050–1051 held on other open branches
+**Skill:** New skill candidate: walk-scripts (the guide `raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** browser set-up for visibility scenarios
+
+**Issue:** Three chats tried to walk "the tab behind another" with Playwright: headless, a real window placed off the screen, the second page opened as a real tab through the developer protocol, Playwright connected to a plainly started browser, its focus emulation switched off. Every time the page behind read `document.visibilityState === "visible"`, so the scenario never reached its premise and was recorded as passed or "never hidden". A Chromium started plainly with `--disable-backgrounding-occluded-windows` (so an off-screen window does not count as covered) and driven only through its developer port (no Playwright attached) hid the tab at once.
+**Suggested improvement:** In the walk-scripts guide: any scenario whose premise is a hidden page (tab switch, background load, visibilitychange) first asserts the page really went hidden, and is driven by a plain browser over its developer port (the pattern in `raptor-port/scripts/handpass/timing-walk-w24.mjs`), never by Playwright.
+**Principle:** An automation tool can keep pretending a page is in front; when a test's premise is a browser state, assert the premise was reached before judging the result, and drive the browser without the layer that fakes that state.
