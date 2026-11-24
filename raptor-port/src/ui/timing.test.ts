@@ -4,7 +4,7 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
-import { setTimingOnForTest, timingMark, timingSink, timingSwitch, type TimingMark } from './timing'
+import { setMarkTapForTest, setTimingOnForTest, timingMark, timingSink, timingSwitch, type TimingEvent, type TimingMark } from './timing'
 import { setPage } from '../state/view'
 
 afterEach(() => { setTimingOnForTest(false); setPage('viewsched') })
@@ -20,15 +20,15 @@ describe('the marks', () => {
   it('off: a mark is dropped, and a readout that arrives later is handed nothing', () => {
     setTimingOnForTest(false)
     timingMark({ kind: 'boot', t: 1 })
-    const got: TimingMark[] = []
+    const got: TimingEvent[] = []
     timingSink(m => got.push(m))
     expect(got).toEqual([])
   })
-  it('on: marks made before the readout arrives wait for it, in order; later ones go straight to it', () => {
+  it('on: results made before the readout arrives wait for it, in order; later ones go straight to it', () => {
     setTimingOnForTest(true)
     timingMark({ kind: 'boot', t: 1 })
     timingMark({ kind: 'first', t: 2, screen: 'signin' })
-    const got: TimingMark[] = []
+    const got: TimingEvent[] = []
     timingSink(m => got.push(m))
     timingMark({ kind: 'signin', t: 3 })
     expect(got.map(m => m.kind)).toEqual(['boot', 'first', 'signin'])
@@ -37,7 +37,7 @@ describe('the marks', () => {
     setPage('viewsched')
     setTimingOnForTest(true)
     const got: TimingMark[] = []
-    timingSink(m => got.push(m))
+    setMarkTapForTest(m => got.push(m))
     setPage('editsched')
     setPage('editsched')
     setPage('leavewar')
@@ -46,7 +46,7 @@ describe('the marks', () => {
   it('off, a page change marks nothing', () => {
     setTimingOnForTest(false)
     const got: TimingMark[] = []
-    timingSink(m => got.push(m))
+    setMarkTapForTest(m => got.push(m))
     setPage('editsched')
     expect(got).toEqual([])
   })

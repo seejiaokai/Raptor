@@ -3,19 +3,15 @@
    app's marks (ui/timing.ts), times each to the moment its screen is drawn, and shows them in one of the app's movable
    windows (FloatWindow.tsx) — the mock-up of 24 Nov 26 (https://claude.ai/artifact/7bgefju2mwrGJzc2ACSExS), its words
    Fable's (ui/timingtext.ts). The ✕ folds it to a corner button; open at the start on a computer, folded on a phone.
-   Its own root, outside the app's tree, so it never re-draws a page; it reads the page only to see when one is drawn.
-   It shows nothing about any person and writes nothing to storage.
-
-   HOW A TIME IS TAKEN — the same end the speed notes' scripts use (docs/superpowers/plans/2026-11-24-app-speed-plan.md
-   §How it was measured): from the mark to the second frame after the page is the one on screen and no loading claw
-   stands over it — the first frame after shows it, the second proves it was painted. The sign-in ends on the week's
-   days drawn, on the same two frames. The first screen is the moment the start-up claw is taken away (main.tsx), which
-   is when the app has drawn itself under it. */
+   Its own root, outside the app's tree, so it never re-draws a page. It TIMES nothing itself: the stopwatch is
+   ui/timing.ts, which times each moment as it happens and hands finished results here, so the window arriving late
+   changes no figure (Fable's and Astra's scenario designs, 24 Nov 26, F2). It shows nothing about any person and
+   writes nothing to storage. */
 import { useEffect, useState, useSyncExternalStore } from 'react'
 import { createRoot } from 'react-dom/client'
 import { FloatWin } from './FloatWindow'
 import { phoneLayout } from './floatwin'
-import { FREEZES, now, timingSink, type TimingMark } from './timing'
+import { FREEZES, timingSink, type TimingEvent } from './timing'
 import { browserOf, copyText, readoutSections, secs, type Files, type PageRow, type TimingView } from './timingtext'
 import './timing.css'
 
@@ -23,9 +19,6 @@ const PAGE_NAMES: Record<string, string> = {
   viewsched: 'View-only Sched', editsched: 'Edit Schedule', inputs: 'Inputs', quals: 'Quals', logic: 'Logic',
   leavewar: 'Leave War', tracker: 'Tracker', help: 'Help', admin: 'Admin',
 }
-/** a page asked for this close after a sign-in is the sign-in's own landing, timed once there, not twice */
-const SIGNIN_LANDING_MS = 50
-const GIVE_UP_MS = 120_000
 const KEEP_PAGES = 30
 
 /* ------------------------------------------------------------------------------------------------ what was measured */
@@ -33,62 +26,33 @@ const M = {
   app: null as number | null,
   first: null as TimingView['first'],
   signin: null as number | null,
-  lastSignin: -Infinity,
   pages: [] as PageRow[],
-  seen: new Set<string>(['viewsched']),
 }
 let version = 0
 const listeners = new Set<() => void>()
 function changed(): void { version++; for (const f of listeners) f() }
 const subscribe = (f: () => void) => { listeners.add(f); return () => { listeners.delete(f) } }
+/** a re-draw asked for by something that happens often (a freeze, a file arriving, a resize): at most twice a second */
+let soonPending = false
+function changedSoon(): void { if (soonPending) return; soonPending = true; setTimeout(() => { soonPending = false; changed() }, 500) }
 
-/** Watch for a condition, then two frames more: the time from `t0` to then. A newer watch of the same kind replaces it. */
-const watches: Record<string, number> = {}
-function timeUntil(kind: string, t0: number, shown: () => boolean, done: (ms: number) => void): void {
-  const id = (watches[kind] = (watches[kind] || 0) + 1)
-  const step = () => {
-    if (watches[kind] !== id) return
-    if (now() - t0 > GIVE_UP_MS) return
-    if (!shown()) { requestAnimationFrame(step); return }
-    requestAnimationFrame(() => requestAnimationFrame(() => { if (watches[kind] === id) done(now() - t0) }))
+function take(e: TimingEvent): void {
+  if (e.kind === 'boot') M.app = e.t
+  else if (e.kind === 'first') { M.first = { screen: e.screen, t: e.t }; afterFirst?.(); afterFirst = null }
+  else if (e.kind === 'signin') M.signin = e.ms
+  else {
+    const name = PAGE_NAMES[e.page]
+    if (!name) return
+    M.pages = [{ name, first: e.first, ms: e.ms, downloaded: e.downloaded }, ...M.pages].slice(0, KEEP_PAGES)
   }
-  requestAnimationFrame(step)
+  changed()
 }
-const pageShown = (p: string) => {
-  const s = document.getElementById('page-' + p)
-  return !!s && s.classList.contains('on') && !s.querySelector('.pgclaw:not(.gone)')
-}
-const weekShown = () => !!document.querySelector('#page-viewsched.on #vWeek .day')
 
-/** what came down the line for the app's own code and styles since `t0` (the page's own download) */
-function downloadedSince(t0: number): number {
-  let b = 0
-  for (const e of appFiles()) if (e.startTime >= t0) b += e.transferSize || 0
-  return b
-}
+/** the app's own code and style files — never the window's own two, which a visit without the switch would not have */
 function appFiles(): PerformanceResourceTiming[] {
   if (typeof performance === 'undefined' || !performance.getEntriesByType) return []
   return (performance.getEntriesByType('resource') as PerformanceResourceTiming[])
-    .filter(e => { try { const u = new URL(e.name); return u.origin === location.origin && /\.(js|css)$/.test(u.pathname) } catch { return false } })
-}
-
-function take(m: TimingMark): void {
-  if (m.kind === 'boot') { M.app = m.t; changed(); return }
-  if (m.kind === 'first') { M.first = { screen: m.screen, t: m.t }; changed(); afterFirst?.(); afterFirst = null; return }
-  if (m.kind === 'signin') {
-    M.lastSignin = m.t
-    timeUntil('signin', m.t, weekShown, ms => { M.signin = ms; changed() })
-    return
-  }
-  /* a page asked for */
-  const name = PAGE_NAMES[m.page]
-  if (!name || m.t - M.lastSignin < SIGNIN_LANDING_MS) return
-  const first = !M.seen.has(m.page)
-  timeUntil('page', m.t, () => pageShown(m.page), ms => {
-    M.seen.add(m.page)
-    M.pages = [{ name, first, ms, downloaded: first ? downloadedSince(m.t) : 0 }, ...M.pages].slice(0, KEEP_PAGES)
-    changed()
-  })
+    .filter(e => { try { const u = new URL(e.name); return u.origin === location.origin && /\.(js|css)$/.test(u.pathname) && !/TimingReadout/.test(u.pathname) } catch { return false } })
 }
 
 /* ------------------------------------------------------------------------------------------------- read at drawing */
@@ -120,7 +84,8 @@ function readNow(): TimingView {
       memGB: typeof nav.deviceMemory === 'number' ? nav.deviceMemory : null,
       screen: `${screen.width}×${screen.height}`,
       window: `${innerWidth}×${innerHeight}`,
-      zoom: devicePixelRatio || 1,
+      scale: devicePixelRatio || 1,
+      openFor: performance.now(),
     },
   }
 }
@@ -128,10 +93,12 @@ function readNow(): TimingView {
 /** The plain text into the clipboard; where the browser refuses that, the older way. True only when it went in. */
 async function copyOut(text: string): Promise<boolean> {
   try { await navigator.clipboard.writeText(text); return true } catch { /* the older way below */ }
+  /* the older way takes the keyboard for a moment: it is handed back where it was (Fable F8) */
+  const was = document.activeElement as HTMLElement | null
   const ta = document.createElement('textarea')
   ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0'
   document.body.appendChild(ta); ta.select()
-  try { return document.execCommand('copy') } catch { return false } finally { ta.remove() }
+  try { return document.execCommand('copy') } catch { return false } finally { ta.remove(); was?.focus?.({ preventScroll: true }) }
 }
 
 /* --------------------------------------------------------------------------------------------------------- the window */
@@ -151,11 +118,20 @@ export function TimingReadout({ read, subscribe: sub, startOpen, copy, now: cloc
     const t = setTimeout(() => setCopied(false), 2000)
     return () => clearTimeout(t)
   }, [copied])
+  /* OPENING BY ITSELF NEVER TAKES THE CARET (Fable F5): the app's windows take the keyboard as they open, right when a
+     person opened one; this one opens by itself as the app starts, while he types his name in the sign-in card. Where the
+     caret stood is put back after the window's own take (a parent's effect runs after its child's). Opened from the
+     corner button, it takes the keyboard as any window does. */
+  const [caretAtStart] = useState(() => (typeof document !== 'undefined' ? document.activeElement as HTMLElement | null : null))
+  useEffect(() => {
+    if (startOpen && caretAtStart && caretAtStart !== document.body && caretAtStart.isConnected) caretAtStart.focus({ preventScroll: true })
+  }, [startOpen, caretAtStart])   // both fixed for the window's life: once, as it first opens
   if (!open) {
     const last = view.pages[0]
     return <button type="button" className="abtn timing-pill" onClick={() => setOpen(true)}>{'Timing' + (last ? ' ' + secs(last.ms) : '')}</button>
   }
-  const onCopy = async () => { if (await copy(copyText(read(), clock()))) setCopied(true) }
+  /* each press speaks for itself: "Copied" is taken away as the press is made, and shown again only if this copy went in */
+  const onCopy = async () => { setCopied(false); if (await copy(copyText(read(), clock()))) setCopied(true) }
   return (
     <FloatWin id="timing" title="Timing" sub="This computer only. Shown because the address ends in ?timing" className="timingwin"
       onClose={() => setOpen(false)}
@@ -180,9 +156,11 @@ export function TimingReadout({ read, subscribe: sub, startOpen, copy, now: cloc
 /** Called once by main.tsx, behind the switch: take the marks, count the freezes as they come, draw the window. */
 export function startTimingReadout(): void {
   timingSink(take)
-  /* a freeze re-draws the window at most twice a second — never on every one, which would itself cost time */
-  let pending = false
-  FREEZES.onChange = () => { if (pending) return; pending = true; setTimeout(() => { pending = false; changed() }, 500) }
+  /* a freeze, a file arriving, a resize: each re-draws the window at most twice a second — never on every one, which
+     would itself cost time; so the figures it shows stay current without a page change (Astra's read, 8) */
+  FREEZES.onChange = changedSoon
+  try { new PerformanceObserver(() => changedSoon()).observe({ type: 'resource', buffered: false }) } catch { /* a browser without it: read at the next re-draw */ }
+  addEventListener('resize', changedSoon)
   /* the window is drawn only once the app's first screen is (a frame after it), so drawing it never adds to the start-up
      it reports; the marks are taken from the start all the same */
   const mount = () => setTimeout(() => {

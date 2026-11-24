@@ -12,7 +12,10 @@ export type Env = {
   memGB: number | null
   screen: string
   window: string
-  zoom: number
+  /** devicePixelRatio: the screen's own scaling and the browser's zoom together — never called "zoom" (both readers, F7) */
+  scale: number
+  /** how long the tab has been open (ms) — so a count of freezes has its span (Fable F10) */
+  openFor: number
 }
 export type PageRow = { name: string, first: boolean, ms: number, downloaded: number }
 export type TimingView = {
@@ -58,11 +61,12 @@ export function stamp(d: Date): string {
 
 export function readoutSections(v: TimingView): Section[] {
   const by = v.env.browser.name
-  const at = (ms: number | null) => (ms == null ? notGiven(by) : 'at ' + secs(ms))
+  /* a point on the start-up's clock; under a twentieth of a second it reads "under 0.1 s", never "at under 0.1 s" */
+  const atS = (ms: number) => (ms < 50 ? secs(ms) : 'at ' + secs(ms))
   const start: Row[] = [
-    { label: 'Site answered', value: at(v.site) },
-    { label: 'App loaded', value: v.app == null ? 'not yet' : 'at ' + secs(v.app) },
-    { label: 'Sign-in shown', value: !v.first ? 'not yet' : v.first.screen === 'signin' ? 'at ' + secs(v.first.t) : 'not shown' },
+    { label: 'Site answered', value: v.site == null ? notGiven(by) : atS(v.site) },
+    { label: 'App loaded', value: v.app == null ? 'not yet' : atS(v.app) },
+    { label: 'Sign-in shown', value: !v.first ? 'not yet' : v.first.screen === 'signin' ? atS(v.first.t) : 'not shown' },
     { label: 'Sign in pressed → week shown', value: v.signin == null ? 'not yet' : 'took ' + secs(v.signin), gap: true },
   ]
   const pages: Row[] = v.pages.map(p => ({
@@ -76,7 +80,8 @@ export function readoutSections(v: TimingView): Section[] {
   const computer: Row[] = [
     { label: 'Brief freezes', value: !f.supported ? notGiven(by) : f.n === 0 ? 'none' : `${f.n} · ${secs(f.total)} in all` },
     { label: 'Longest freeze', value: !f.supported ? notGiven(by) : f.n === 0 ? 'none' : secs(f.max) },
-    { label: 'App files used', value: `${v.files.n} · ${kb(v.files.bytes)}` },
+    /* a size the browser does not give is said so, never "0 KB" (Astra's read, 7) */
+    { label: 'App files used', value: v.files.n === 0 ? notGiven(by) : v.files.bytes > 0 ? `${v.files.n} · ${kb(v.files.bytes)}` : `${v.files.n} · size ${notGiven(by)}` },
     { label: 'Kept from an earlier visit', value: !v.files.supported ? notGiven(by) : `${v.files.kept} of ${v.files.n}` },
     { label: 'Processor · memory', value: `${cores} · ${mem}` },
     { label: 'Screen · browser', value: `${v.env.screen} · ${by || 'not known'}` },
@@ -89,7 +94,9 @@ export function readoutSections(v: TimingView): Section[] {
 }
 
 /** Copy all: every row in the window's own words, so it reads on its own when pasted into a chat; then, for the
- *  developer, the browser's version, the window's size and zoom, and how many kept files were asked about again. */
+ *  developer, the browser's version, how long the app had been open, the browser window's size, the display scale (the
+ *  screen's own scaling and the browser's zoom together — never called "zoom": a phone's 3 is no zoom at all), the
+ *  screen in its own pixels, and how many kept files were asked about again. Not seen in the window: for the developer. */
 export function copyText(v: TimingView, when: Date): string {
   const out = [`TALON timing, ${stamp(when)}, this computer's clock`, "This computer's speed only. Nothing about any person, nothing saved."]
   for (const s of readoutSections(v)) {
@@ -101,7 +108,11 @@ export function copyText(v: TimingView, when: Date): string {
       out.push(`  ${r.label}${r.tag ? ', ' + r.tag : ''}: ${value}`)
     }
     if (s.head === 'This computer') {
-      out.push(`  Window: ${v.env.window} at ${Math.round(v.env.zoom * 100)}% zoom`)
+      out.push(`  App open for: ${Math.max(1, Math.round(v.env.openFor / 60_000))} min`)
+      out.push(`  Browser window: ${v.env.window} page units`)
+      out.push(`  Display scale: ${Math.round(v.env.scale * 100)}% (the screen's own scaling and the browser's zoom together)`)
+      const [w, h] = v.env.screen.split('×').map(Number)
+      if (w && h) out.push(`  Screen in its own pixels: ${Math.round(w * v.env.scale)}×${Math.round(h * v.env.scale)} (if the browser's zoom is 100%)`)
       if (v.files.supported) out.push(`  Asked the site again before using a kept file: ${v.files.asked} of ${v.files.n}`)
     }
   }

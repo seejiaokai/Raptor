@@ -15,7 +15,7 @@ const VIEW: TimingView = {
   pages: [{ name: 'View-only Sched', first: false, ms: 912, downloaded: 0 }, { name: 'Edit Schedule', first: true, ms: 806, downloaded: 0 }],
   freezes: { supported: true, n: 2, total: 300, max: 200 },
   files: { supported: true, n: 14, bytes: 831_488, kept: 0, asked: 0 },
-  env: { browser: { name: 'Edge', version: '131' }, cores: 4, memGB: 8, screen: '1366×768', window: '1366×657', zoom: 1 },
+  env: { browser: { name: 'Edge', version: '131' }, cores: 4, memGB: 8, screen: '1366×768', window: '1366×657', scale: 1, openFor: 240_000 },
 }
 
 let host: HTMLDivElement, root: Root
@@ -70,6 +70,23 @@ describe('the window', () => {
     draw({ ...VIEW, pages: [] }, false)
     expect(win()).toBeNull()
     expect(pill()!.textContent).toBe('Timing')
+  })
+  it('F5: opening by itself at the start leaves the caret where it was — he types his name straight away', () => {
+    const user = document.createElement('input'); user.id = 'luser'; document.body.appendChild(user); user.focus()
+    draw(VIEW, true)
+    expect(win()).not.toBeNull()
+    expect(document.activeElement).toBe(user)
+    user.remove()
+  })
+  it('a copy that fails after one that worked takes "Copied" away at once — it never speaks for the last press', async () => {
+    let ok = true
+    draw(VIEW, true, vi.fn(async () => ok))
+    const btn = () => [...win()!.querySelectorAll('.win-tools button')].find(b => /Cop/.test(b.textContent!)) as HTMLButtonElement
+    await act(async () => { btn().click() })
+    expect(btn().textContent).toBe('Copied')
+    ok = false
+    await act(async () => { btn().click() })
+    expect(btn().textContent).toBe('Copy all')
   })
   it('a section with nothing yet says so', () => {
     draw({ ...VIEW, pages: [], signin: null }, true)

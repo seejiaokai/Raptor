@@ -14,7 +14,7 @@ const view = (over: Partial<TimingView> = {}): TimingView => ({
   ],
   freezes: { supported: true, n: 14, total: 3240, max: 610 },
   files: { supported: true, n: 14, bytes: 831_488, kept: 0, asked: 0 },
-  env: { browser: { name: 'Edge', version: '131' }, cores: 4, memGB: 8, screen: '1366×768', window: '1366×657', zoom: 1 },
+  env: { browser: { name: 'Edge', version: '131' }, cores: 4, memGB: 8, screen: '1366×768', window: '1366×657', scale: 1, openFor: 240_000 },
   ...over,
 })
 const rowsOf = (v: TimingView) => readoutSections(v).flatMap(s => s.rows.map(r => [r.label + (r.tag ? ' ' + r.tag : ''), r.value]))
@@ -111,9 +111,25 @@ describe('Copy all', () => {
     expect(t).toContain('  Sign in pressed → week shown: took 1.7 s\n')
     expect(t).toContain('\nPages opened, newest first\n  View-only Sched, opened before: 0.9 s\n  Leave War, first time · downloaded 137 KB: 1.1 s\n')
     expect(t).toContain('  Screen · browser: 1366×768 · Edge 131\n')
-    // for the developer, beside the window's rows: the browser window, its zoom and the files asked about again
-    expect(t).toContain('  Window: 1366×657 at 100% zoom\n')
+    // for the developer, beside the window's rows: how long it was open, the browser window, the display scale (never
+    // called "zoom" — both readers, F7), the screen in its own pixels, and the files asked about again
+    expect(t).toContain('  App open for: 4 min\n')
+    expect(t).toContain('  Browser window: 1366×657 page units\n')
+    expect(t).toContain('  Display scale: 100% (the screen\'s own scaling and the browser\'s zoom together)\n')
+    expect(t).toContain('  Screen in its own pixels: 1366×768 (if the browser\'s zoom is 100%)\n')
     expect(t).toContain('  Asked the site again before using a kept file: 0 of 14')
+    expect(t).not.toMatch(/\d% zoom/)
+  })
+  it('his 125% screen: the scale is named for what it is, and the screen given in its own pixels', () => {
+    const t = copyText(view({ env: { ...view().env, screen: '1536×864', scale: 1.25 } }), new Date(2026, 10, 24, 14, 5))
+    expect(t).toContain('  Display scale: 125% (the screen\'s own scaling and the browser\'s zoom together)\n')
+    expect(t).toContain('  Screen in its own pixels: 1920×1080 (if the browser\'s zoom is 100%)\n')
+  })
+  it('a start-up point under a twentieth of a second reads "under 0.1 s", never "at under 0.1 s"', () => {
+    expect(rowsOf(view({ site: 12 }))[0]).toEqual(['Site answered', 'under 0.1 s'])
+  })
+  it('a browser that gives the files but not their size says so, never "0 KB"', () => {
+    expect(rowsOf(view({ files: { supported: false, n: 14, bytes: 0, kept: 0, asked: 0 }, env: { ...view().env, browser: { name: 'Safari', version: '15' } } })).find(x => x[0] === 'App files used')![1]).toBe('14 · size not given by Safari')
   })
   it('names no person: nothing in it but page names, times, sizes and the computer', () => {
     const t = copyText(view(), new Date(2026, 10, 24, 14, 5))
