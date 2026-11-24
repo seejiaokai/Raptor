@@ -1454,3 +1454,16 @@ sides.
 **Issue:** The host took the PC's one checks lock for each walker part and re-took it within seconds of releasing it. The lock rule asks for it only for a full suite, a multi-file browser run, the Tracker smoke or a FANNED-OUT walk; one walk script at a time on a build already served needs none. Another chat's helpers lost two builds to it, about 40 minutes of waiting each, before it asked. Also: two parallel chats took the same skill-note number (1058) within minutes; a check of every branch just before appending did not prevent it, since the other branch pushed after the check.
 **Suggested improvement:** In the overnight guide's run loop: decide once, at sizing, whether the walk needs the lock (fanned out or building) and say so in the sheet; a one-at-a-time walk on a served build takes none. Where a lock is taken per part, leave at least five minutes between release and re-take. For note numbers: re-check every branch AFTER the append and before the commit, as the short form's step 3 says, not only before.
 **Principle:** Hold a shared lock only for what the rule names, and only as long as the run that needs it; a lock held "to be safe" silently costs everyone else waiting on it.
+
+### Observation 1061: A size tripwire's cure was filed as "archive the finished items" without counting them
+
+**Status:** OPEN
+**Date:** 2026-11-25
+**Session context:** chat 176 — the backlog 289 lines over its tripwire; the handoff and the opening line both named "move finished items to the archive" as the fix
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** writing the next step for a size tripwire
+
+**Issue:** two handoffs in a row (24 Nov raise of the ceiling, 25 Nov block) said the overrun would be cured by archiving finished items. A full sweep of all 198 items found only 2 finished (8 lines of 289); every other item had an open part. The owner was told a cure that could not work, and the pull request he expected to merge by itself stayed red.
+**Suggested improvement:** in the handoff skill's step for open residue: before naming "archive finished items" as a tripwire's cure, count the finished lines (one sweep or a dry-run list) and write the number; if it falls short, name the real choices — raise the tripwire with its reason, or move history out of long items — so the next chat puts the choice, not a doomed job.
+**Principle:** a remedy named in a handoff is a claim; measure that it covers the gap before handing it on.
