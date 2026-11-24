@@ -241,6 +241,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OVERNIGHT-RETRY-TRIAL] — the next /overnight night tries the keep-retrying setting (D885).
 - [CI-FAIL-PICTURES] — GitHub's browser-test jobs keep no pictures of a failure — his call.
 - [CHECK-TOOLS-HARDEN] — small hardening of the checking tools — his word.
+- [TURN-END-CHECK-SLOW] — the turn-end backlog check was cancelled at its 20-second limit on most turns from 19 Nov 26: (a) its cause found and fixed 24 Nov 26 (36 seconds to 5), live that day on his "merge live" (pull request 828); left for his word: (b) the turn-end code check holds a turn about 43 seconds, (c) the lessons written into the superpowers skills are read by no chat, for the next skill review, (d) nothing says when a turn-end check is cancelled.
 - [CSS-SCOPE-GUARD] — a rule begun at `body`, `html` or `:root` inside a page's wrapper fails the stylesheet check — small, no look from him.
 - [ASK-PAGE-CHECK] — a script run on a mock-up or questions page before it is published to him: codes, ruling numbers and record words, and one "look at now" list — small, no look from him.
 - [READER-COMPACT-HANDOFF] — a blind reader that compacts is pasted the host's handoff — a hook change, his word.
@@ -2670,6 +2671,7 @@ design short form, each whole. Then options for which of them stop loading there
 | The night of 6 Nov 26, job 3 (`claude/people-quals-1106`): the three Quals touch faults, React Doctor on People, Quals, Holidays and sign-in | a fresh, blind Opus read; a security read if sign-in is touched (D790, D1411) | Astra and Sol 6.1 |
 | [LW-PIN-LAST-FRAME]'s last fix (D1870; `claude/lw-pin-last-frame`, pull request 694 — the pinned dates row held shown when the grid is shown again from a tab or another page), made after Astra's read of the job | a fresh, blind Opus read (D790), its one inferred case probed and not reproduced | Astra |
 | Multi-squadron batch 1, fix read 14 (`claude/multi-sqn-b1-107`, pull request 806, 20 Nov 26) — Astra stopped by its service after ~268k tokens; its three saved findings reproduced red; his D2232 accepts such stops for the build's fix reads (partial reads listed here) | a fresh, blind Opus reader, Fable (D2224) and the security reader (D1411) whole; Astra partial (D2232) | Astra's full report |
+| The turn-end backlog check made fast, [TURN-END-CHECK-SLOW] (a) (pull request 828, live 24 Nov 26): a change to a check's script and a hook's time limit, no app code | one fresh, blind Opus reader; old and new compared in five situations | Astra's read — **24 Nov 26: DROPPED on his word ("Drop it")** |
 | Multi-squadron batch 1, the core read (his D2237; `state/{perms,notices,units}.ts` whole at `7dbc13fd0`, 20 Nov 26, chat 124) — Astra stopped by its service after one stated finding (reproduced red, R4); fix read 17 beside it had all four whole | the fresh, blind Opus reader and the security reader (D1411) whole; Astra partial (D2232) | Astra's full report |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
@@ -3010,4 +3012,41 @@ the commit gate (`state/perms.ts`, the own-row check) does not hold `sanFrom` / 
 review before the database step (D1411, `[DB-SECURITY-ROLES]`).
 **(g) gains one more reader on today's tick (Astra #3):** the input window's "Several people" picker groups and draws a
 dated input's people by today's tick (`ui/PeoplePick.tsx`) — with the Inputs calendar's opened day.
+
+### [TURN-END-CHECK-SLOW] The turn-end backlog check is cancelled at its limit on most turns; the turn-end code check's wait; skill lessons no chat reads (found 24 Nov 26 by the settings health-check chat, his "Do both")
+
+**Status:** filed, not fixed. Measured from the transcripts of the 50 most recently used chats (all touched 21–23 Nov 26,
+their content back to 23 Sep; about 790 prompts). Nothing here was run to time it — a hook is run by hand only on his word.
+
+**(a) The backlog guard is cancelled at its limit — the fault.** `.claude/hooks/backlog-guard.sh` (the Stop hook; its
+limit, 20 seconds, is in `.claude/settings.json`) runs `raptor-port/scripts/docsize.mjs --inventory`. Recorded 547 times:
+546 cancelled at its limit (about 20.7 seconds each), one cancelled otherwise, none recorded as a failure — a pass that
+prints nothing is not recorded, so the passes are unseen. By day: 19 Nov 28, 20 Nov 7, 21 Nov 128, 22 Nov 266, 23 Nov 95,
+none earlier in those chats; in the main folder (315) and four worktrees alike. **What it costs:** most turns end with a
+wait of about 20 seconds, and a cancelled hook blocks nothing, so the turn-end warning of a lost or misfiled record
+(D29, D30, D140) is not given; the Docs guard still runs the same check on every pull request and every push to `main`,
+so nothing lost can merge unseen. **Cause found and fixed 24 Nov 26 (his "Yes"; live that day on his "merge live", pull request 828):**
+timed at 36–38 seconds in a worktree and 55–57 in the main folder — the homes check and the structure check each asked
+the disk about every listed file, and the tree grew from 37,373 files (15 Oct) to 80,632 (19 Nov) and 83,660. Now the
+tree is listed once from git (`docsize.mjs treeNow`) and each git question asked once: 5 seconds, the same output as the
+old check in five situations (as it stands, a tracked document gone, a lean copy, and the fresh reader's two). On a busy
+PC it took up to 16, so the hook's limit is 60 seconds (`.claude/settings.json`). **Left:** (d) below; and an open chat's
+own copy keeps the old, slow check until it brings `main` in.
+
+**(d) Nothing says when a turn-end check is cancelled at its limit.** It was cancelled for five days before a count of
+the transcripts found it. The tree grows by about 1,500 files a day, and what is left of the check's time is git
+listing it. A guard for it — the hook timing itself and saying so past half its limit — is a change to a hook: his word.
+
+**(b) The code check at a turn's end holds the turn** (`.claude/hooks/code-check-stop.mjs`, D1539, limit 200 seconds):
+105 recorded runs, typically 43 seconds, 125 at the slow tenth, 162 at worst. It only reports a count and blocks
+nothing; running it in the background, or skipping it when the changed files are those of its last run, would give the
+wait back. His call — D1539 set where it runs.
+
+**(c) For the next skill-notes review: the lessons written into the superpowers skills are read by no chat.** Six
+reviews (23 Sep – 20 Nov 26; `.claude/skills/SUPERPOWERS-VENDORED.md`, changes 3 to 8) added lessons to 11 of the 14
+skills. Opened through the Skill tool since install: nine never, `test-driven-development` once and
+`systematic-debugging` twice, all in September. In the 50 chats: none opened, and of their files only
+`brainstorming/mockups-on-the-real-app.md` was read, in 3 chats — the one file the project guide's map names. The
+question for the review: move those lessons into the guides chats do read (the project guide's map, the bug-check
+order, `raptor-port/docs/walk-scripts.md`), or make each skill open when its work starts.
 
