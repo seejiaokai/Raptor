@@ -526,3 +526,9 @@ day they moved. The live list and its map: `DECISIONS.md`.
 | # | Date | His ruling, in his words where short enough | What it means | Where it lives now |
 |---|---|---|---|---|
 | D2291 | 22 Nov 26 | **SPENT 22 Nov 26 — the How we work page's limit raised 39200 → 39400 for D2290.** *"Yes, raise 200 bytes"* (22 Nov 26, to the disk-space chat — told the page every chat reads stood 7 bytes under its limit, so D2290 could not be stated without a raise or tighter wording of other rules, the latter needing two readers first; recommended the raise) | **The How we work page's size limit is raised by 200 bytes, from 39,200 to 39,400, once, to state D2290.** A one-off permission under D1932, which raises a page only on his word; it sets no standing raise. | `raptor-port/scripts/docsize.mjs` (the page's limit and its comment) |
+
+## Moved 24 Nov 26
+
+| # | Date | His ruling, in his words where short enough | What it means | Where it lives now |
+|---|---|---|---|---|
+| D2442 | 24 Nov 26 | **SPENT 24 Nov 26 — the How we work page's limit raised 41250 → 41700 for D2441 and the lines D2440 left to reconcile (pull request 830).** *"Merge live"* (24 Nov 26, to the settings health-check chat — told the rules page has a size limit only he can raise, that this change needs 450 more characters, from 41,250 to 41,700, and asked whether to merge the Fable rules with that raise; both readers of the change had found his standing word D2148 does not cover it) | **The How we work page's size limit is raised by 450 bytes, from 41,250 to 41,700, once, to state D2441 and reconcile the lines D2440 left behind.** A one-off permission under D1932, which raises a page only on his word; it sets no standing raise. | the document check's size table: the page's limit and its comment, live with pull request 830 |
