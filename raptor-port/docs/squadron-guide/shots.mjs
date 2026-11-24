@@ -71,11 +71,16 @@ const box = async (page, sel) => page.locator(sel).first().boundingBox()
   await go(page, 'tracker'); await page.waitForTimeout(3000); await k.shot(page, '10-tracker', full(DESK))
   /* the calendar opens on today's month; the demo week's inputs are in July 2026, so it is turned back to there */
   await go(page, 'inputs')
-  for (let i = 0; i < 6 && !/JULY 2026/i.test(await page.locator('#page-inputs').innerText()); i++) {
+  /* one month back a press, each waited for before the next — a chain of steps, so written as one that calls itself */
+  const atJuly = async () => /JULY 2026/i.test(await page.locator('#page-inputs').innerText())
+  const back = async left => {
+    if (left === 0 || await atJuly()) return
     await page.locator('#page-inputs button').filter({ hasText: '‹' }).first().click()
     await page.waitForTimeout(600)
+    return back(left - 1)
   }
-  if (!/JULY 2026/i.test(await page.locator('#page-inputs').innerText())) throw new Error('03-inputs: the calendar did not reach July 2026')
+  await back(6)
+  if (!await atJuly()) throw new Error('03-inputs: the calendar did not reach July 2026')
   await k.shot(page, '03-inputs', full(DESK))
   await go(page, 'quals'); await k.shot(page, '04-quals', full(DESK))
   await go(page, 'leavewar'); await page.waitForTimeout(3000); await k.shot(page, '05-leavewar', full(DESK))
