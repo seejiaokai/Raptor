@@ -1506,3 +1506,29 @@ sides.
 **Issue:** the Stop hook showed him "24 new problems in the code this branch changes". The count was for the home folder's branch (the SANS chat's, with work in progress), not this chat's branch. Run by hand, both copies read zero. He asked whether it would be fixed automatically — a false alarm that cost his attention.
 **Suggested improvement:** the hook names the branch and folder it read in its line ("Code check on allavail-152: …"), or reads the copy the chat last committed in.
 **Principle:** an automatic check's message names what it checked, so a reader can tell whose result it is.
+
+### Observation 1042: A helper's transcript file is empty here; its report lives only in its hand-back
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 153's overnight run (numbered past 1041, the highest on any branch)
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2, "A helper's report"
+
+**Issue:** The guide says a report can be recovered from the helper's transcript. On this machine every background helper's output file was empty, so a recovery script found nothing, and each report had to be saved by hand, word for word, from the hand-back message the moment it arrived.
+**Suggested improvement:** In Part 2, say: save the report from the hand-back message at once, verbatim, to the scratch folder (or the repo once the blind readers are all in); do not plan on reading it back from the transcript.
+**Principle:** When a tool's side channel is unreliable, capture the result from the one place it is certain to appear, at the moment it appears.
+
+### Observation 1043: A check lead fanned out walkers without the checks lock, until the brief made the lock a command
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 153's overnight run, the FULL walk and its two re-walks
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2, each job's brief to a helper
+
+**Issue:** The first walk's lead ran three walkers side by side without the shared checks lock, though the rules require it, while another chat used the same PC. The two later briefs named the exact take, beat and release commands, said "mandatory" and asked for the release in the report, and both leads took and released it.
+**Suggested improvement:** The overnight guide's brief list should require the lock commands written out in every walk or full-check brief, and a "lock released at" line in the helper's report, checked by the coordinator.
+**Principle:** A shared-resource rule a delegate must follow belongs in the delegate's brief as the exact commands, with proof of it asked for in the report.
