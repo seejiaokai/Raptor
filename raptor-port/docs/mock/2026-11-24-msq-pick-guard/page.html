@@ -28,6 +28,9 @@ figcaption{font-size:.85rem;color:var(--muted)}
 figcaption b{color:var(--ink)}
 .words{background:var(--panel);border:1px solid var(--edge);border-radius:8px;padding:10px 14px;font-size:.92rem;display:grid;gap:4px}
 .note{font-size:.88rem;color:var(--muted)}
+.newmark{color:var(--new);font-weight:600}
+.newline{border-left:3px solid var(--new);padding-left:10px}
+.isnew img{border-color:var(--new);border-width:2px}
 .zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:max(12px,env(safe-area-inset-top,0px)) 12px;z-index:20}
 .zoom img{max-width:100%;max-height:100%;object-fit:contain}
 </style>
@@ -41,7 +44,7 @@ figcaption b{color:var(--ink)}
   <div class="top">
     <div class="label">To answer now, newest first</div>
     <ol>
-      <li><a href="#q1">The refusal note</a>: "<b>Blocked:</b> close the open window, then pick 149." <span class="rec">Recommended: as drawn.</span></li>
+      <li><a href="#q1">The refusal note</a>: "<b>Blocked:</b> close the open window, then pick 149.", <span class="newmark">now redrawn under the control you pressed</span>. <span class="rec">Recommended: as redrawn.</span></li>
       <li><a href="#q2">The refresh note</a>: a card in the middle, one Refresh button. <span class="rec">Recommended: as drawn.</span></li>
       <li><a href="#q3">Log out with a window open</a>: refuse it too, with the same note? <span class="rec">Recommended: yes.</span></li>
       <li><a href="#q4">Undo after picking another squadron</a>: today it undoes 142's change while you are on 149. <span class="rec">Recommended: Undo reaches only the squadron you are looking at.</span></li>
@@ -51,7 +54,8 @@ figcaption b{color:var(--ink)}
 
   <section id="q1">
     <h2>1. The refusal note</h2>
-    <p>Example: an input of Drifter's is open with words typed in it, and you pick 149. Today the window greys out and says "This is 142's. You picked 149 — close this to go on." After: nothing changes and the window stays live with your words in it. The app's usual grey note appears at the foot of the screen.</p>
+    <p>Example: an input of Drifter's is open with words typed in it, and you pick 149. Today the window greys out and says "This is 142's. You picked 149 — close this to go on." After: nothing changes and the window stays live with your words in it. The app's usual grey note appears <span class="newmark">right under what you pressed</span>.</p>
+    <p class="newline"><b>New since you last looked</b>: redrawn as you asked. On a desktop the note now drops down under the control you pressed, not at the foot of the screen. On a phone it stays at the foot, near your thumb. It is a passing note that fades after a few seconds. While it shows, it covers what is under it: the Inputs tabs in the first picture, and the top edge of the open window in the second. The window's ✕ stays clear.</p>
     <div class="words">
       <div>Pick a squadron: <b>Blocked:</b> close the open window, then pick 149.</div>
       <div>Switch to the member view: <b>Blocked:</b> close the open window, then switch to the member view. (Back: "…then switch back to the admin view.")</div>
@@ -59,9 +63,11 @@ figcaption b{color:var(--ink)}
     </div>
     <div class="pair">
       <figure><img src="drawn/p1-d-today-crop.png" alt="Today: the input window greyed with the band after a pick"><figcaption><b>Today</b>: desktop, an input open, 149 picked.</figcaption></figure>
-      <figure><img src="drawn/p1-d-after-crop.png" alt="After: the window live, the grey Blocked note at the foot"><figcaption><b>After</b>: still on 142, the window live, the note at the foot.</figcaption></figure>
+      <figure class="isnew"><img src="drawn/p1b-d-after-crop.png" alt="After: the grey Blocked note just under the squadron picker"><figcaption><b>After (new)</b>: still on 142, the window live, the note under the squadron picker.</figcaption></figure>
+      <figure class="isnew"><img src="drawn/p2b-d-after-crop.png" alt="After: the note just under the role badge"><figcaption><b>After (new)</b>: the badge pressed for the member view. The note sits under the badge, touching the window's top edge.</figcaption></figure>
+      <figure class="isnew"><img src="drawn/p4b-d-after-crop.png" alt="After: the note just under the bell list"><figcaption><b>After (new), bell line</b>: the note is wider than the bell list, so it sits just under the list.</figcaption></figure>
       <figure><img src="drawn/p3-p-after-crop.png" alt="After on a phone: the note across the foot"><figcaption><b>After, phone</b>: My leave open, 149 picked from the ☰ list. The note runs across the foot.</figcaption></figure>
-      <figure><img src="drawn/p4-d-after-crop.png" alt="After: a bell line pressed, the bell list still open, the note at the foot"><figcaption><b>After, bell line</b>: the bell list stays open over the window's title, and the note sits at the foot.</figcaption></figure>
+      <figure><img src="drawn/p1-d-after-crop.png" alt="Round 1: the note at the foot of a desktop screen"><figcaption><b>Round 1, set aside</b>: the note at the foot of the screen, far from the picker.</figcaption></figure>
     </div>
     <p class="note">Words drafted by Opus and adjusted by a fresh Fable. The note says "the open window" rather than naming it: an input's title ("Drifter · 1 Jan") reads badly in a sentence, and the window is right in front of you. On a phone an input window covers the squadron control, so the note will mostly appear on a desktop.</p>
     <figure style="max-width:560px"><img src="drawn/p5-d-after-crop.png" alt="The Tracker's question at the member-view switch"><figcaption><b>Also coming, already ruled (not a question)</b>: unsaved Tracker chart edits are now asked about at the member-view switch too. Today nothing is asked there.</figcaption></figure>
