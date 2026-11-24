@@ -48,7 +48,7 @@ it works now, each rule stated once with its rulings cited after it). Both route
 the command reads each file's marker. 1. **Write the full row at the top of the table in the area's full-text file**
 (`.claude/decisions-full/<area>.md`), as step 1 says; a page holds no rows (one left on the page is moved there by
 step 3). 2. **State it on the page:** rewrite the line it changes, citing its number beside the number it changes, or
-add a bullet under the section it belongs to — at least four words, and two for each number cited, at most 600
+add a bullet under the section it belongs to (a general ruling of the rules diet, the database step, an overnight run or compaction: state it in full in `raptor-port/docs/how-we-work-when-needed.md` and cite it on the page's line for that section — D2460) — at least four words, and two for each number cited, at most 600
 characters, in ordinary letters; a ruling it replaces is marked in its full row as step 2 says, and every line citing
 that one is rewritten. 3. **Run the same command:** it writes no short line and keeps the map from the full-text file;
 until the page states every live ruling with the rulings that change it — and cites no replaced ruling and no number
