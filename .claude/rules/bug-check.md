@@ -46,7 +46,7 @@ Then, before you execute anything:
 ## When to call in Fable and Codex
 
 - §4 of the order decides it, not habit (D353: scenarios and side questions one reader — Astra, the standing reviewer, or a
-  fresh Opus reader when Astra cannot run; a plan's red team two — who they are now, below: D590, D601, D790, D903, D1734, D1738, D1739, D1761, D1760, D1770). Its short form:
+  fresh Opus reader when Astra cannot run, and on high-risk work a fresh, blind Fable designing beside Astra, D2257, D2258, D2440; a plan's red team two — who they are now, below: D590, D601, D790, D903, D1734, D1738, D1739, D1761, D1760, D1770). Its short form:
   scenario design first — ask them what is
   missing, not whether the code is wrong; Sol 6.1's second read of the code only on money, published records,
   permissions or persistence, and only on his call; and never another static review when what is missing is someone running the app — that one is called
@@ -61,8 +61,9 @@ Then, before you execute anything:
 - **Beside Astra's read,** every job that needs a code read gets a fresh, blind Opus read of its finished code, never
   by the chat that wrote it; a job that went without Astra's read, or without Sol 6.1's where two are required, goes on the reads-owed list (D790, D903, D1734, D1738,
   D1739, D1761, D1770).
-- **Fable is used for the work the agent ranks high risk, and for nothing else unless he calls for it** — on that work
-  a fresh, blind Fable helper reads beside Astra's and the fresh Opus read, never in their place (D903, D1770, D2258,
+- **Fable is used for the work the agent ranks high risk — it plans, builds or reads there (D2258's high tier) — and to
+  review and adjust the words people read in the app (D2441); for nothing else unless he calls for it.** Where Fable
+  reads, it is a fresh, blind helper beside Astra's and the fresh Opus read, never in their place (D903, D1770, D2258,
   D2440).
 
 ## What is not a finding (D56) — read this before you spend anything

@@ -93,6 +93,9 @@ wording (D809), the whole-app words pass (D808), every note, label, hint and que
 writes to him (D835), is a step not yet taken — stated on the How we work page, §Design; until then
 `../../.claude/rules/plain-language.md` governs every message to him as it stands.
 
+- **Who writes it (his D2441, 24 Nov 26):** Opus drafts every new or changed notification, bell message, note, hint,
+  warning and rule text; then one fresh Fable helper reads the job's words together and adjusts them by this guide before
+  they reach him. It never changes what a text means or what the app does: a fact it doubts goes back to the builder.
 - **Every word earns its place or goes.** What the screen already shows is a candidate to go (a hint that repeats its
   own label, a count the list makes obvious). Three ends for any note, each put to him before and after: **shortened**,
   **removed**, or **moved under one short "How this works" fold** for that page — as the two calendars have (D628, D646).
