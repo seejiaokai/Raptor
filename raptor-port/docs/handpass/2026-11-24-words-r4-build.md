@@ -195,6 +195,15 @@ Opened by the host: `host/h3-phone-bell.png` (the ruled three-change line, two r
 
 ## 8. The break tests
 
+`node scripts/handpass/breaks.mjs scripts/handpass/breaks/wr4-words.json` — **10 of 10 caught**, the tree as it was
+after (run after the last code change, `489420a0c`): one per fix — the swallowed title said as renamed again
+(`bellnotices.test.tsx`), the no-period sentence left behind the dot (`noperiod-join.test.ts`), the crew list's name on
+his own seat silent again (`drag.test.tsx`), the name's words cut out of the bold name again (`bellnotices.test.tsx`) —
+and one per wired place of the build: a kind change with no words of its own (8 tests red), the count not said (4), a
+half not said as AM / PM (3), the in-place box's old words (`audit-guards-inputs.test.tsx`), the look-ahead note's
+"the" and one-week form (`lookahead.test.ts`), the drag's note not naming the man (4). Not broken here, a real
+browser's to see: nothing — every wired place of this change is words, read by a unit test and seen in the walk.
+
 ## 9. Errors seen
 
 None: no console error, page error or failed request in any cited run of the host or the three walkers. (WebKit's
@@ -264,7 +273,10 @@ Opus reader 2, the Fable reader 3 — seven different ones; no claim of one cont
 | 7 | An AM leave only moved to another day says "Now Thu 16 Jul", no "(AM)" | Astra 4; walker a's A5 | YES on screen (walker a) | not ruled (D2521's "(AM)" example moves the day AND makes the half); so on `main` | **his call** — filed with the unruled wordings, (2) |
 
 **The fixes of the reads are new code (§5):** `b4cd80acb` (the publish note's join), `c3498b918` (the crew list's drag),
-`489420a0c` (`ownName`) — each more than a one-line guard, so each gets a narrow read by a fresh Opus helper handed only
-the fix commits and the claims they answer, and a re-walk of what they touch on a new frozen build.
+`489420a0c` (`ownName`) — each more than a one-line guard, so each got a narrow read by a fresh Opus helper handed only
+the fix commits and the claims they answer: **nothing wrong — each fix right and complete, nothing broken beside it**
+(round 1 of at most three, and the last: no finding to fix). Its report, whole: `../superpowers/briefs/2026-11-24-words-r4-read-narrow.md`
+(every shape of the publish note's join; the drag's order of checks and what the old path did; `ownName` on 13 pairs).
+The re-walk of what the three touch: walker e, on `D:/rw4/build-new3` (bundle `index-DIr933hk.js`) — §12.
 
 ## 14. Lessons added (§7.11)
