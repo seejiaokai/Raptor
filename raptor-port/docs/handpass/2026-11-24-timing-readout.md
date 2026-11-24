@@ -146,3 +146,30 @@ words carry sizes only (D2483), recorded for his look.
 ## The gate counts
 
 ## What the walk found, and each disposition
+
+Chat 164's rounds: `walk1` (the first build), `walk2` (after fixes 1–2), `walk3` (after fix 3; `walk3-part2.log`,
+`walk3-part3.log`). Commands: from `raptor-port/`, `TW_OUT=$PWD/docs/img/handpass/2026-11-24-timing-readout/walk3
+node scripts/handpass/timing-walk-2.mjs` (and `timing-walk.mjs` with `TW_MAIN=C:/t164m/dist-main`, `-3.mjs`); one step:
+`ONLY=W19`. `main`'s build for W1d: `git archive origin/main -- raptor-port ':(exclude)raptor-port/docs'` into
+`C:/t164m`, `node_modules` joined, `npx vite build --outDir C:/t164m/dist-main`.
+
+| # | Found | Disposition |
+|---|---|---|
+| 1 | W1: without the switch the app's own first download split 15 → 19 files (the readout imported React and the movable window) | FIXED red-first `ced82eaf7`; re-walked 15 = 15 |
+| 2 | W5: a press the busy computer heard late (0.86 s once at 4×) was left out of the time (also missed by both scenario designers) | FIXED red-first `ced82eaf7`; re-walked: every figure within 0.05 s of the outside stopwatch |
+| 3 | W14: a reload (each file asked again, "unchanged" — Vercel's way on a return visit) read "Kept 0 of 15", "15 · 4 KB" | FIXED red-first `ad8f1ebca`; re-walked: "15 of 15", "size not given by Chrome" |
+| 4 | W7: after Retry's reload the Leave War's first open read "downloaded 1 KB" — a file from the browser's memory, its small answer counted | OPEN — to fix: `timing.ts downloadedBetween` counts a file only when its body came down the line (`transferSize > encodedBodySize`), a test first |
+| 5 | W19 (f): the board opened AFTER the timing window — the first Escape folds the timing window, the board needs a second (D2112: what opened last answers). The board's Escape stands aside for any movable window (`boardescape.ts`) and this one is open all session | OPEN — to fix with the code read's findings; the same question for the Leave War sheet's raised layer (`Sheet.tsx`) and the phone note's place (`toast.ts`), which also answer "a window is up" while it is open |
+| 6 | W24: `?timing` opened in a tab behind another — "Sign-in shown at 36.3 s" (the browser draws nothing for a page behind another tab) | OPEN — a figure that is not this computer's speed; recommended: no start-up figure where the tab was hidden before the first screen, its words read by a fresh Fable (D2441) — for his look |
+| — | W10 RECORD: the Leave War opened after its background fetch reads "first time: 0.2 s", no download | for his look (is that the figure he wants called "first time"?) |
+| — | W2 RECORD: `?timing=false` switches it on | the switch's own rule (any value); left |
+| — | W18 RECORD: medians, Edit Schedule / View-only Sched: no switch 1234 / 1199 ms, open 802 / 956, folded 810 / 838 — the window adds no cost (the no-switch run went first, colder) | no fault |
+| — | W3: storage — the same kinds and numbers of entries with the switch as without (363 each; two runs without differ by 55 minted record numbers, so compared by kind, `timing-walk-diag4.mjs`) | PASS (the script's first judge compared names: its own fault) |
+
+**Script faults of part 3, to re-walk (the steps did not reach their premise):** W14-reload's judge used the old
+counting (compare the server's 304 answers instead); W20-phone and W23-admin stopped on a 30 s click timeout (find
+which control); W23-member read rows with the window folded (open it first); W24 — the test browser never hid the tab
+(walk it in a real window, placed off the screen); W19 (c)/(c2), W20 two windows — no `[data-oilsent]` line found on
+Edit Schedule's week; W19 (g), W26 change and Undo — no `.ib-bar` in sight on Inputs (find the calendar's tab first);
+W20-desk-board-folded's judge wanted `#sbDone` and met its inner `span.bl` (a PASS); W21 — the month selector inside
+the sheet. Everything else of W1–W26 PASSED: see the logs.

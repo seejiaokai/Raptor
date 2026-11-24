@@ -1,0 +1,40 @@
+RECORD W18 — no switch: Edit Schedule 1234 ms, View-only Sched 1199 ms (medians of 5) · open: Edit Schedule 802 ms, View-only Sched 956 ms (medians of 5) · folded: Edit Schedule 810 ms, View-only Sched 838 ms (medians of 5)
+  W19 a nothing else open: timing → nothing
+  W19 b typing in the search box (its value after: "ab"): timing → timing
+  W19 c ALL AVAIL: no "who's available" line on the week → —
+  W19 d the changes window: changes+timing → timing
+  W19 f the board, Escape twice: board+timing → board → nothing
+  W19 g an input's window: no input bar in sight on the Inputs page → —
+  W19 h the Leave War's Open for bidding sheet: dates+timing → timing
+RECORD W19 — a nothing else open: timing → nothing | b typing in the search box (its value after: "ab"): timing → timing | c ALL AVAIL: no "who's available" line on the week → — | d the changes window: changes+timing → timing | f the board, Escape twice: board+timing → board → nothing | g an input's window: no input bar in sight on the Inputs page → — | h the Leave War's Open for bidding sheet: dates+timing → timing
+  W19-without a nothing else open: nothing → nothing
+  W19-without b typing in the search box (its value after: "ab"): nothing → nothing
+  W19-without c ALL AVAIL: no "who's available" line on the week → —
+  W19-without d the changes window: changes → nothing
+  W19-without f the board, Escape twice: board → nothing → nothing
+  W19-without g an input's window: no input bar in sight on the Inputs page → —
+  W19-without h the Leave War's Open for bidding sheet: dates → nothing
+RECORD W19-without — a nothing else open: nothing → nothing | b typing in the search box (its value after: "ab"): nothing → nothing | c ALL AVAIL: no "who's available" line on the week → — | d the changes window: changes → nothing | f the board, Escape twice: board → nothing → nothing | g an input's window: no input bar in sight on the Inputs page → — | h the Leave War's Open for bidding sheet: dates → nothing
+PASS   W20-desk-board — the board open — at the Timing window's ✕: floatwin.timingwin.front > BUTTON.win-x
+FAIL   W20-desk-board-folded — the corner button on the board: abtn.timing-pill > BUTTON.abtn.timing-pill; the board's Done: schedBoard > SPAN.bl
+NOT WALKED W20-desk-two-windows — no "who's available" line on Edit Schedule
+RECORD W20-desk-sheet — the "Open for bidding" sheet open — at the Timing window's ✕:  > DIV.sheetscrim.raised
+PASS   W20-phone-drawer — the ☰ menu open — at the Timing window's ✕: drawer > DIV#drawer.drawer.open
+FAIL   W20-phone-ran — the step stopped: TimeoutError: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#topnav a[data-page="editsched"]')[22m
+[2m    - locator resolved to <a class="" tabindex="0" data-admin="" role="button" data-page="editsched">Edit
+PASS   W23-top-bar — 1 row(s): Quals, first time: 0.1 s (want one "Quals")
+PASS   W23-keyboard — 1 row(s): Logic, first time: 0.1 s (want one "Logic")
+PASS   W23-top-bar-admin — 1 row(s): Admin, first time: 0.1 s (want one "Admin")
+PASS   W23-member-view-switch — 1 row(s): View-only Sched, opened before: 0.3 s (want one "View-only Sched")
+FAIL   W23-admin-ran — the step stopped: TimeoutError: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#bell')[22m
+
+FAIL   W23-member-drawer — the member's ☰ pages: viewsched, inputs, quals, logic, leavewar, tracker, help → inputs(0 rows, undefined), quals(0 rows, undefined), logic(0 rows, undefined), leavewar(0 rows, undefined), tracker(0 rows, undefined), help(0 rows, undefined)
+NOT WALKED W26-change-undo — no input bar in sight on the Inputs page
+PASS   W26-changes-✕ — the changes window opened true, closed by ✕: true
+PASS   W26-changes-Escape — the changes window opened true, closed by Escape: true
+PASS   W26-signout — signed out to the sign-in card: true
+PASS   W26-errors — none

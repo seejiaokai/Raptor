@@ -1,0 +1,101 @@
+FAIL   W3-store-ad — local 363 keys (without 363), session 0 (0), databases raptor-docs (raptor-docs), cookie "" ("")
+PASS   W3-copy-ad — copy 931 characters; signed in as "Saber"; personal words found: none
+PASS   W3-reload-ad — after a reload the window open at x 990, y 331 (its place not kept)
+  ---- Copy all, as pasted (admin) ----
+  | TALON timing, 24 Nov 26 14:37, this computer's clock
+  | This computer's speed only. Nothing about any person, nothing saved.
+  | 
+  | Start-up, from opening the address
+  |   Site answered: at 0.3 s
+  |   App loaded: at 0.4 s
+  |   Sign-in shown: at 0.6 s
+  |   Sign in pressed → week shown: took 0.2 s
+  | 
+  | Pages opened, newest first
+  |   Leave War, first time · downloaded 134 KB: 0.5 s
+  |   Quals, first time: 0.1 s
+  |   Inputs, first time: 0.1 s
+  | 
+  | This computer
+  |   Brief freezes: 25 · 3.5 s in all
+  |   Longest freeze: 0.3 s
+  |   App files used: 17 · 799 KB
+  |   Kept from an earlier visit: 0 of 17
+  |   Processor · memory: 16 cores · 8 GB or more
+  |   Screen · browser: 1366×768 · Chrome 151
+  |   App open for: 1 min
+  |   Browser window: 1366×768 page units
+  |   Display scale: 100% (the screen's own scaling and the browser's zoom together)
+  |   Screen in its own pixels: 1366×768 (if the browser's zoom is 100%)
+  |   Asked the site again before using a kept file: 0 of 17
+FAIL   W3-store-us — local 363 keys (without 363), session 0 (0), databases raptor-docs (raptor-docs), cookie "" ("")
+PASS   W3-copy-us — copy 931 characters; signed in as "Ranger"; personal words found: none
+PASS   W3-reload-us — after a reload the window open at x 990, y 331 (its place not kept)
+PASS   W4-desk-start — open at x 990–1350, y 331–752 of 1366×768
+PASS   W4-desk-controls — ✕ 1313,349,1341,377 pressable true; Copy all 1233,349,1306,377 pressable true; window 990,331,1350,752 in 1366×768
+PASS   W4-desk-subline — "This computer only. Shown because the address ends in ?timing" cut false, box 1018,357,1226,385
+PASS   W4-desk-fold — folded to "Timing 0.1 s" (newest row 0.1 s)
+PASS   W4-desk-pill-on-top — at the corner button's middle: abtn.timing-pill > BUTTON.abtn.timing-pill
+PASS   W4-desk-reopen — reopened: true
+PASS   W4-desk-drag — window from 990,331 to 444,101
+PASS   W4-desk-30 — rows kept 30, newest "Logic"
+PASS   W4-desk-scrolls — body 595px tall showing 1024px, overflow auto
+PASS   W4-phone-start — folded "Timing" at x 12, bottom 832 of 844
+PASS   W4-phone-controls — ✕ 327,423,371,467 pressable true; Copy all 247,431,320,459 pressable true; window 12,415,378,832 in 390×844
+PASS   W4-phone-subline — "This computer only. Shown because the address ends in ?timing" cut false, box 42,439,240,467
+PASS   W4-phone-fold — folded to "Timing 0.1 s" (newest row 0.1 s)
+PASS   W4-phone-pill-on-top — at the corner button's middle: abtn.timing-pill > BUTTON.abtn.timing-pill
+PASS   W4-phone-reopen — reopened: true
+PASS   W4-phone-drag — window from 12,415 to 12,162
+PASS   W4-short-start — open at x 648–1008, y 163–584 of 1024×600
+PASS   W4-short-controls — ✕ 971,181,999,209 pressable true; Copy all 891,181,964,209 pressable true; window 648,163,1008,584 in 1024×600
+PASS   W4-short-subline — "This computer only. Shown because the address ends in ?timing" cut false, box 676,189,884,217
+PASS   W4-short-fold — folded to "Timing 0.1 s" (newest row 0.1 s)
+PASS   W4-short-pill-on-top — at the corner button's middle: abtn.timing-pill > BUTTON.abtn.timing-pill
+PASS   W4-short-reopen — reopened: true
+PASS   W4-short-drag — window from 648,163 to 238,0
+PASS   W4-small-start — folded "Timing" at x 12, bottom 556 of 568
+PASS   W4-small-controls — ✕ 257,140,301,184 pressable true; Copy all 177,148,250,176 pressable true; window 12,125,308,556 in 320×568
+PASS   W4-small-subline — "This computer only. Shown because the address ends in ?timing" cut false, box 42,149,170,191
+PASS   W4-small-fold — folded to "Timing 0.1 s" (newest row 0.1 s)
+PASS   W4-small-pill-on-top — at the corner button's middle: abtn.timing-pill > BUTTON.abtn.timing-pill
+PASS   W4-small-reopen — reopened: true
+PASS   W4-small-drag — window from 12,125 to 12,0
+PASS   W6 — the week's days in the page when Inputs was pressed (its two frames not yet run): true; sign-in row "not yet"; pages View-only Sched 2.1 s, Inputs 0.8 s
+PASS   W7-address — after Retry's reload: /?timing
+PASS   W7-card-row — rows while the card showed: none
+PASS   W7-landing — landing row "Leave War, first time · downloaded 1 KB: 0.6 s", outside 595 ms; sign-in "not yet"
+PASS   W7-after — sign-in "not yet"; Leave War again "opened before"
+  W7 page errors: console: Failed to load resource: net::ERR_FAILED | console: TypeError: Failed to fetch dynamically imported module: http://localhost:59179/assets/LeaveWarPage-CXfi4ic0.js
+PASS   W8-figures — window file released 8.5 s after the start; sign-in took 0.3 s (outside 343); Edit Schedule 0.3 s (299); Inputs 0.2 s (183)
+PASS   W8-caret — typed into the Inputs page's box while the window arrived: "abcdefghijklmno"
+PASS   W9 — caret at the start in #luser; signed in by keys alone: true
+PASS   W10-inputs — the Leave War asked for in the background before Inputs: true; Inputs "first time"
+RECORD W10-leavewar — Leave War after the background fetch: "first time: 0.2 s"
+PASS   W11-left — rows: Quals first time 0.4 s (Quals outside 389)
+RECORD W11-later — the Leave War opened later: "Leave War, first time: 2.0 s"
+RECORD W11-abA — A→B→A at once added 3 rows: Inputs opened before 0.5 s | Logic first time 0.8 s | Inputs first time 1.2 s
+PASS   W11-same — the page already open, tapped: rows 5 → 5
+PASS   W12-card — rows for the card: none
+PASS   W12-retry-free — at Retry's middle:  > BUTTON.pgfail-retry
+PASS   W12-retry-again — after Retry with the file still refused: rows 0, window open true
+  W12 page errors: console: Failed to load resource: net::ERR_FAILED | console: TypeError: Failed to fetch dynamically imported module: http://localhost:59179/assets/LeaveWarPage-CXfi4ic0.js | console: Failed to load resource: net::ERR_FAILED
+PASS   W13 — band up true; page reloaded false; rows added by the sign-in: none; sign-in took 0.2 s (outside 156)
+PASS   W13-band-free — at the band's Retry:  > BUTTON.
+PASS   W14-first — cleared first visit: "15 · 665 KB", kept "0 of 15" (the browser's own: 0 of 15)
+FAIL   W14-reload — reload: "15 · size not given by Chrome", kept "15 of 15" (browser: 0 of 15)
+PASS   W14-newtab — new tab: "15 · 665 KB", kept "14 of 15" (browser: 14 of 15)
+PASS   W15-rows — Site answered = at 0.2 s · App loaded = at 1.2 s · Sign-in shown = at 2.4 s · Sign in pressed → week shown = took 1.1 s · Inputs (first time) = 0.3 s · Brief freezes = not given by Safari · Longest freeze = not given by Safari · App files used = 15 · 665 KB · Kept from an earlier visit = 0 of 15 · Processor · memory = 8 cores · memory not given by Safari · Screen · browser = 1366×768 · Safari
+PASS   W16-125 — devicePixelRatio 1.25: Screen · browser: 1229×688 · Chrome 151 / Browser window: 1536×860 page units / Display scale: 125% (the screen's own scaling and the browser's zoom together) / Screen in its own pixels: 1536×860 (if the browser's zoom is 100%)
+PASS   W16-phone — devicePixelRatio 3: Screen · browser: 390×844 · Chrome 151 / Browser window: 390×844 page units / Display scale: 300% (the screen's own scaling and the browser's zoom together) / Screen in its own pixels: 1170×2532 (if the browser's zoom is 100%)
+PASS   W17-bad — after a wrong password: sign-in "not yet", rows 0
+PASS   W17-access — on the ask-for-access screen: sign-in "not yet", window open true; at Sign out's middle:  > BUTTON#accOut.acc-out
+PASS   W17-good — the good sign-in: "took 0.3 s", outside 303 ms
+PASS   W22-paste — button "Copied"; every row of the window in the paste: true; first line "TALON timing, 24 Nov 26 14:42, this computer's clock"
+PASS   W22-back — after two seconds: "Copy all"
+PASS   W22-fresh — the second copy holds the new page: true
+PASS   W22-refused — refused both ways: the button reads "Copy all" (keyboard before BUTTON, after abtn)
+RECORD W24-hidden — the tab went never hidden; rows added: Edit Schedule 7.2 s
+RECORD W24-background-load — loaded behind another tab: Site answered under 0.1 s · App loaded at 0.1 s · Sign-in shown at 36.3 s
+PASS   W25-freezes — before a 0.3 s stall "2 · 0.3 s in all", 1.2 s after it "4 · 0.5 s in all"
+RECORD W25-files — a file arriving with no page change: "17 · 799 KB" → "18 · 1.0 MB"
