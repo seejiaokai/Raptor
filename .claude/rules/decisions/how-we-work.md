@@ -89,6 +89,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - When he offers a different solution, or a new idea for the thing being built, while the agent is building: stop at once and answer it — what it would do, its cost, a recommendation — before building any further, never carrying on with the earlier plan past his newer idea; the build resumes only on his answer [D1613].
 - Say at once when a feature he asks for, or one being designed, cannot be done, or only differently, with a licence or the IT side, on a Power Apps code app on Dataverse; where unsure, say so and how it will be found out, never a guess given as fact [D1551].
 - Recommend the right design — intuitive, fits the workflow, the same everywhere, fewer places for a bug — never for being the easiest to build or the closest to how the app is today; an earlier ruling is not by itself a reason to keep a worse design; say its cost and which rulings it changes [D754].
+- Before fixing a fault, and always when one feature keeps breeding faults, ask whether a guard rail — the app refusing the state the faults come from and saying why — would remove them, and put it to him with its cost and the rulings it changes before patching each fault [D2404].
 - The questions the backlog keeps for him are not put until he says so; meanwhile the agent goes on with work that needs no answer or look from him [D994].
 
 ## Design (the guide: `raptor-port/docs/design-practices.md`)
