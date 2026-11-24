@@ -240,7 +240,9 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   withdrawn before anything published): the publish job is off, and every Pages trap below is history. The app is seen on VERCEL: a preview per branch (his surface — the agent's is the local `vite preview`) and the
   live app from `main`. **"Done" after "merge live" means live on Vercel** (D143): merge → `main`'s run green (on
   GitHub's machines while the repo is public, on his PC once it is private — D1086, D1530) → the Production deployment for that commit READY (`gh api repos/<owner>/<repo>/deployments?environment=Production`,
-  then its statuses) → one notification with the link. The whole loop: `.claude/rules/shipping.md`. **A wait waits for
+  then its statuses) → one notification with the link (a merge Vercel skips as all notes — "A notes-only push skips its
+  build", below — shows as Canceled, keeps the live app serving, and needs no READY and no Promote: D2032). The whole
+  loop: `.claude/rules/shipping.md`. **A wait waits for
   success, never for quiet:** "nothing queued or running" is true of a FAILED run too — wait until every run of the merge
   commit concluded `success` or `skipped`, and read a failure's step before calling it the code's (11 Nov 26: nine
   browser jobs failed downloading the test browser, and a wait script printed "ready"; the committed script:

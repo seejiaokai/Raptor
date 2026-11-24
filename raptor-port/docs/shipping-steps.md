@@ -99,10 +99,12 @@ lands on the short form, which names the section here. The rulings behind each l
   carry it the whole way without checking in: merge when the pull request's checks are green → `main`'s own run goes
   green (on GitHub's machines while the repo is public, on his PC once it is private) → Vercel reports the live app
   READY (the Production deployment for that `main` commit — `gh api repos/<owner>/<repo>/deployments?environment=Production`,
-  then its statuses) → one notification, with the link (D143). A merge of notes only normally starts no build on
-  Vercel (D2032): a confirmed skip shows as Canceled and leaves the existing app serving — check it as
-  `gates-and-deploy.md` "A notes-only push skips its build" says, and report the notes merged without waiting for a
-  new READY deployment (corrected 24 Nov 26, D201).
+  then its statuses) → one notification, with the link (D143). A merge whose every changed file Vercel
+  counts as a note — the "only notes" list, and anything under `raptor-port/docs/`, a working guide there included
+  (`raptor-port/scripts/vercel-ignore.mjs`) — normally starts no build on Vercel (D2032): a confirmed skip shows as
+  Canceled and leaves the existing app serving — check it as `gates-and-deploy.md` "A notes-only push skips its build"
+  says, and report it merged without waiting for a new READY deployment; if it builds instead, wait for READY
+  (corrected 24 Nov 26, D201).
 - His "merge live" (or "merge now") means his own look is done — never ask him about it again (D1640).
 - His look on his phone replaces the live-page look the agent used to do on GitHub Pages (gone since D59 and D343, the
   repo public again since D106, D1530): the live app sits behind his sign-in, and the agent is never given a login to

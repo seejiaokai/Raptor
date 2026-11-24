@@ -8,8 +8,8 @@ the same copy), each blind to the other.
 
 | | Before (`main`, 24 Nov 26) | After |
 |---|---|---|
-| What every chat loads at its start | 36,977 tokens | see the handoff block's last line for the figure after the fixes |
-| `.claude/rules/shipping.md` | 17,402 bytes | about 8,900 |
+| What every chat loads at its start | 36,977 tokens | 31,686 tokens (−14%) |
+| `.claude/rules/shipping.md` | 17,402 bytes | 9,464 |
 | `.claude/rules/decisions/how-we-work.md` | 41,231 bytes | about 36,200 |
 | `.claude/rules/bug-check.md` | 6,007 bytes (6,463 after pull request 830) | about 4,900 |
 | `HANDOFF.md` (read at a chat's start, not loaded by itself) | 40,393 bytes | 12,237 before this chat's own block |
@@ -43,4 +43,4 @@ the same copy), each blind to the other.
 
 ## The fix read
 
-The fixes above were read once more by a fresh Opus reader (`…-fixread-opus.md`), as the order has it for a fix round.
+The fixes above were read once more by a fresh Opus reader (`…-fixread-opus.md`), as the order has it for a fix round: no high finding, one medium, four low — what Vercel counts as notes is wider than the notes-only list (the short form, the steps and `gates-and-deploy.md` now say so, with what to do if it builds after all); the short "only notes" line names both sides as the full list does; the when-needed document's header carries the `DECISIONS.md` clause. All five taken. That round's fixes were not read again: each is the reader's own rewording, checked against `vercel-ignore.mjs` and the full list.

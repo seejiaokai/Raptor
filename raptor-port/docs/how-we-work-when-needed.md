@@ -4,8 +4,9 @@ Moved whole on 24 Nov 26 from `.claude/rules/decisions/how-we-work.md`, the gene
 (D2460): the general rules whose detail matters at one moment — a change to how the rules are kept, work on the
 database step, an unattended run, a compaction. Each keeps a short statement on the page, its rulings cited after it,
 naming its section here: **open the section before acting at that moment, never from memory.** A new ruling of one of
-these sections is stated here in full, its number beside it, and cited on the page's line for the section (`DECISIONS.md`,
-the steps for a converted area). His words and the readings he was told are in the full rows,
+these sections is stated here in full, its number beside it, and cited on the page's line for the section — that line
+reworded to state the rule itself where it binds work done outside the section's moment (`DECISIONS.md`, the steps for
+a converted area). His words and the readings he was told are in the full rows,
 `.claude/decisions-full/how-we-work.md`.
 
 ## The rules diet — how the rules are kept, loaded and shortened

@@ -16,9 +16,10 @@ checks and the deploy are in `raptor-port/docs/gates-and-deploy.md`.
   rules-diet step waits for his word all the same (D60, D1407, D1737, D1980); an unattended run's notes wait for the
   morning unless he gave "auto merge live" (D1093).
 - **Before deciding a job ships as notes only, and before merging one, open the steps** — §"Push" and "merge live" —
-  for the exact file list and the checks to run on his PC first. The rulings files can qualify; an unscoped rule file,
-  a working guide, a hook, a setting, a skill, an agent, a workflow, `AGENTS.md` and `raptor-port/CLAUDE.md` cannot
-  (D1407, D1737, D1980).
+  for the exact file list and the checks to run on his PC first. The rulings files, `HANDOFF.md`, `OUTSTANDING*.md`,
+  evidence sheets and the reference documents under `raptor-port/docs/` can qualify; an unscoped rule file, a working
+  guide, a hook, a setting, a skill, an agent, `.claude/launch.json`, anything under `.github/`, `AGENTS.md` and
+  `raptor-port/CLAUDE.md` cannot (D1407, D1737, D1980).
 - **Before every merge into `main`** — on his word, a notes-only one, an "auto merge live" run — **open the steps and
   follow the four there:** take the merge lock, check the branch is level with `main`, `gh pr merge <PR> --merge`
   (never `--auto`), release the lock (D1746).
@@ -54,8 +55,11 @@ checks and the deploy are in `raptor-port/docs/gates-and-deploy.md`.
 - Then carry it the whole way without checking in — **open the steps for how to read each:** `main`'s own run green →
   a READY Production deployment whose commit holds the merge → one notification, with the link. A green check is not
   done, and a merged pull request is not done (D143).
-- A merge of notes only normally starts no build on Vercel: confirm the skip (`raptor-port/docs/gates-and-deploy.md`,
-  "A notes-only push skips its build") and report the notes merged, without waiting for a new READY (D2032).
+- A merge whose every changed file Vercel counts as a note — the notes-only list, and anything under
+  `raptor-port/docs/`, a working guide there included (`raptor-port/scripts/vercel-ignore.mjs`) — normally starts no
+  build: `main`'s own run green as above, then confirm the skip (`raptor-port/docs/gates-and-deploy.md`, "A notes-only
+  push skips its build") and report it merged, without waiting for a new READY; if it builds instead, wait for READY
+  as above (D2032).
 - His "merge live" (or "merge now") means his own look is done — never ask him about it again (D1640). If his look
   brings a change — or bringing `main` in to settle a clash changed this branch's own app code — the fix and its
   records are pushed together and his look is asked again (D1742, D1746).
