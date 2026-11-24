@@ -220,8 +220,10 @@ runs mostly repeated each other.
 *Since D2443 (24 Nov 26 — "We should also ask fable and Astra to design the walk scenarios so that is robust"): a walk's
 scenario design is no longer one reviewer's — every walk, on a WALK or a FULL check and whatever the risk, has its
 scenarios designed by Astra and a fresh, blind Fable helper, each blind to the other, the host combining the two lists;
-where Astra cannot run, a fresh Opus reader takes Astra's seat and Fable still designs. Side questions stay with one
-reader as above.*
+where Astra cannot run, a fresh Opus reader takes Astra's seat and Fable still designs; where Fable cannot run (its
+weekly allowance spent, or the plan ended), a fresh, blind Opus designer takes Fable's seat, the walk goes ahead and is
+listed among the reads owed, `[NO-ASTRA-LIST]`, for him to call or drop (D2444, 24 Nov 26 — "Yes"). Side questions stay
+with one reader as above.*
 
 **WHO THE TWO ARE NOW (owner, D590, 5 Oct 26 — "A").** Wherever this section says "Fable", "both" or "the other
 providers" about work OPUS wrote: **Astra reviews it, and Sol 6.1 is the second reader where two are required** — the
