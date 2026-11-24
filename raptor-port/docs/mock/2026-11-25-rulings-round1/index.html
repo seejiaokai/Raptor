@@ -1,0 +1,592 @@
+<title>Rulings Check Round 1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f6f9;
+    --surface: #ffffff;
+    --surface-2: #eef2f6;
+    --line: #d5dce5;
+    --text: #17202b;
+    --muted: #55637a;
+    --accent: #0b7f96;
+    --accent-soft: #e2f3f6;
+    --rec: #0f6b4f;
+    --rec-soft: #e4f4ec;
+    --rec-line: #9fd3bd;
+    --accent-line: #8fcbd6;
+    --warn: #8a5a00;
+    --warn-soft: #fbf1dc;
+    --shot-bg: #0c1118;
+    --shadow: 0 1px 2px rgba(20, 30, 45, .08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b1220;
+      --surface: #111a2b;
+      --surface-2: #162236;
+      --line: #25344d;
+      --text: #e8edf2;
+      --muted: #9aa9bd;
+      --accent: #3fd0e6;
+      --accent-soft: #10303c;
+      --rec: #6fdcae;
+      --rec-soft: #103227;
+      --rec-line: #1f5a45;
+      --accent-line: #1f5c6b;
+      --warn: #f0c065;
+      --warn-soft: #33280f;
+      --shot-bg: #070b12;
+      --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0b1220;
+    --surface: #111a2b;
+    --surface-2: #162236;
+    --line: #25344d;
+    --text: #e8edf2;
+    --muted: #9aa9bd;
+    --accent: #3fd0e6;
+    --accent-soft: #10303c;
+    --rec: #6fdcae;
+    --rec-soft: #103227;
+    --warn: #f0c065;
+    --warn-soft: #33280f;
+    --shot-bg: #070b12;
+    --shadow: none;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, -apple-system, "SF Pro Text", "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
+  }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding-block: 24px 56px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; letter-spacing: -.01em; }
+  h2 { font-size: 20px; line-height: 1.25; margin: 44px 0 12px; letter-spacing: -.005em; }
+  h3 { font-size: 18px; line-height: 1.3; margin: 0 0 4px; }
+  h4 {
+    font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); margin: 20px 0 4px; font-weight: 600;
+  }
+  p { margin: 0 0 10px; }
+  .lede { color: var(--muted); margin-bottom: 18px; }
+  .kicker {
+    font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 6px;
+  }
+  .quote { font-style: normal; color: var(--text); background: var(--surface-2); border-radius: 4px; padding: 0 4px; }
+
+  /* What to look at now */
+  .now {
+    background: var(--surface);
+    border: 1px solid var(--accent-line);
+    border-radius: 10px;
+    padding: 16px 16px 6px;
+    box-shadow: var(--shadow);
+  }
+  .now h2 { margin: 0 0 4px; font-size: 18px; }
+  .now ol { list-style: none; margin: 10px 0 0; padding: 0; }
+  .now li { border-top: 1px solid var(--line); }
+  .now a {
+    display: grid; grid-template-columns: 28px 1fr; gap: 8px;
+    padding: 12px 0; color: inherit; text-decoration: none;
+  }
+  .now .n {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent);
+    font-weight: 700; font-size: 14px; display: grid; place-items: center; margin-top: 1px;
+  }
+  .now .q { font-weight: 600; }
+  .now .r { color: var(--rec); display: block; font-weight: 500; }
+  .how { font-size: 14px; color: var(--muted); margin: 12px 0 10px; }
+
+  /* A question */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 16px 8px;
+    margin: 0 0 18px;
+    box-shadow: var(--shadow);
+    scroll-margin-top: 12px;
+  }
+  .card .num {
+    display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
+  }
+  .rec {
+    background: var(--rec-soft);
+    border: 1px solid var(--rec-line);
+    border-radius: 8px;
+    padding: 12px 14px 4px;
+    margin: 16px 0 14px;
+  }
+  .rec h4 { color: var(--rec); margin-top: 0; }
+  .choice { margin: 0 0 10px; padding: 0; list-style: none; }
+  .choice li { padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 8px; }
+  .choice b { display: block; }
+  .cost { color: var(--warn); }
+
+  /* Pictures */
+  figure { margin: 14px 0 16px; }
+  .shot {
+    display: block; width: 100%; padding: 10px; margin: 0;
+    background: var(--shot-bg); border: 1px solid var(--line); border-radius: 8px;
+    cursor: zoom-in; text-align: center; font: inherit; color: inherit;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .shot:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .shot img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 4px; }
+  figcaption { font-size: 14px; color: var(--muted); margin-top: 6px; }
+  figcaption b { color: var(--text); font-weight: 600; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: start; }
+  .pair figure { margin: 0; }
+  .pair + figcaption, .pairnote { font-size: 14px; color: var(--muted); margin: 6px 0 16px; }
+  .zoomhint { font-size: 13px; color: var(--muted); margin: -4px 0 14px; }
+
+  /* Fixes */
+  .fix { border-top: 1px solid var(--line); padding: 16px 0 4px; }
+  .fix:first-of-type { border-top: 0; padding-top: 4px; }
+  .fix p { margin-bottom: 8px; }
+  .says, .true { display: block; }
+  .tag {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    padding: 1px 7px; border-radius: 4px; margin-right: 6px; vertical-align: 1px;
+  }
+  .tag.s { background: var(--warn-soft); color: var(--warn); }
+  .tag.t { background: var(--rec-soft); color: var(--rec); }
+
+  /* Small points */
+  details {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 0 16px; box-shadow: var(--shadow);
+  }
+  summary {
+    cursor: pointer; padding: 14px 0; font-weight: 600; list-style: none;
+    display: flex; justify-content: space-between; gap: 12px; align-items: center;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "Show"; color: var(--accent); font-weight: 600; font-size: 14px; }
+  details[open] summary::after { content: "Hide"; }
+  .small { list-style: none; margin: 0; padding: 0 0 8px; counter-reset: sp; }
+  .small li {
+    counter-increment: sp; border-top: 1px solid var(--line);
+    padding: 12px 0 12px 34px; position: relative;
+  }
+  .small li::before {
+    content: counter(sp); position: absolute; left: 0; top: 12px;
+    width: 24px; text-align: right; color: var(--muted); font-weight: 600; font-size: 14px;
+  }
+  .small .r { display: block; color: var(--rec); font-weight: 500; margin-top: 2px; }
+  .small .r.change { color: var(--warn); }
+
+  .next { list-style: none; margin: 0; padding: 0; }
+  .next li { border-top: 1px solid var(--line); padding: 10px 0; }
+  .next li:first-child { border-top: 0; }
+  .foot { font-size: 14px; color: var(--muted); margin-top: 28px; }
+
+  /* Lightbox */
+  .lb {
+    position: fixed; inset: 0; z-index: 50; display: none;
+    background: rgba(4, 8, 14, .94); overflow: auto; -webkit-overflow-scrolling: touch;
+    padding: 56px 12px 24px; cursor: zoom-out;
+  }
+  .lb.on { display: block; }
+  .lb img { display: block; margin: 0 auto; max-width: none; border-radius: 4px; }
+  .lb-close {
+    position: fixed; top: 10px; right: max(12px, env(safe-area-inset-right, 0px)); z-index: 51;
+    height: 36px; padding: 0 14px; border-radius: 18px;
+    border: 1px solid #3a4a63; background: #162236; color: #e8edf2;
+    font: 600 14px Inter, -apple-system, "Segoe UI", sans-serif; cursor: pointer;
+  }
+  .lb-close:focus-visible { outline: 2px solid #3fd0e6; outline-offset: 2px; }
+
+  @media (max-width: 380px) {
+    .pair { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="wrap">
+
+  <div class="kicker">TALON · 25 Nov 26</div>
+  <h1>Rulings check, round 1</h1>
+  <p class="lede">A builder assumed what you meant by "planned" for the SANS reminder and never asked. So the app was read against your rulings, area by area, to find every other place where an assumed time was built in. This is the first batch. Four things need your answer. Six wrong sentences will be fixed without one. Nineteen small points can go as a list.</p>
+
+  <section class="now" aria-labelledby="now-h">
+    <h2 id="now-h">What to look at now</h2>
+    <ol>
+      <li><a href="#q1"><span class="n">1</span><span><span class="q">A weekend flight published with a take-off and no landing: should it earn OIL?</span> <span class="r">Recommended: no, not until the landing is typed.</span></span></a></li>
+      <li><a href="#q2"><span class="n">2</span><span><span class="q">A man who is only on standby: should ALL AVAIL count him?</span> <span class="r">Recommended: yes, count him in.</span></span></a></li>
+      <li><a href="#q3"><span class="n">3</span><span><span class="q">A SANS man with nothing filed, put in a jet or sim: should the warning list say so?</span> <span class="r">Recommended: yes, one amber line.</span></span></a></li>
+      <li><a href="#q4"><span class="n">4</span><span><span class="q">A duty desk with a start and no end: should crew rest leave it out until the end is typed?</span> <span class="r">Recommended: yes, the same as your standby desks.</span></span></a></li>
+    </ol>
+    <p class="how">Answer in the chat, by number. "As recommended" is enough. Tap any picture to see it full size.</p>
+  </section>
+
+  <h2>The four questions</h2>
+  <p class="lede">Worst harm first. Every picture is from the live app, walked on 25 Nov on the demo week of 13 to 19 Jul. The red box marks the place.</p>
+
+  <!-- ============ 1 ============ -->
+  <article class="card" id="q1">
+    <span class="num">Question 1 · OIL</span>
+    <h3>A weekend flight published with a take-off and no landing: should it earn OIL?</h3>
+
+    <h4>When it happens</h4>
+    <p>A scheduler publishes a Saturday, Sunday or public holiday, and one flight has its take-off typed but its landing box is blank or "TBD". It is rare, a few times a year. But each time it decides how much OIL a man gets.</p>
+
+    <h4>The example</h4>
+    <p>Sat 18 Jul. Hunter is in VL's front seat. Take-off is 10:00. Nobody types a landing. The wave's in-time is 09:45. The day is signed and published.</p>
+
+    <figure>
+      <button class="shot" type="button"><img src="img/q1-01-sat-flight-no-landing.png" width="362" height="268" alt="Saturday's VL line on Edit Schedule: take-off 10:00, a dash where the landing should be, Hunter in the front seat"></button>
+      <figcaption><b>The flight as published.</b> VL on Saturday: 10:00 in the take-off box, a dash under it where the landing goes, and Hunter in the front seat.</figcaption>
+    </figure>
+
+    <h4>What the app does today</h4>
+    <p>It assumes a landing time. It adds the Logic page's flight length (1 hour) to the take-off, so 11:00, then the 2-hour debrief, so 13:00. Hunter is credited <span class="quote">half a day, AM — worked 09:45–13:00</span>. No landing was ever typed.</p>
+
+    <figure>
+      <button class="shot" type="button"><img src="img/q1-03-card-half-day.png" width="571" height="422" alt="Hunter's OIL card on the Leave War for Sat 18 Jul. The last line reads: Days, half a day, AM, worked 09:45 to 13:00"></button>
+      <figcaption><b>What Hunter got.</b> His OIL card on the Leave War for Sat 18 Jul. The marked last line reads "half a day, AM — worked 09:45–13:00". The 13:00 comes from the assumed landing.</figcaption>
+    </figure>
+
+    <p>One more effect. If an admin later changes the flight length on the Logic page, that published Saturday reads "1 pending" and its four sign-off names clear, because its OIL would now work out differently.</p>
+
+    <h4>Why this is a question</h4>
+    <p>You were asked about the assumed landing for warnings, and then for Insights and the long day. You said yes to both. OIL was never asked. The builder carried the assumed landing across to OIL without checking.</p>
+    <p>Your earlier rulings point the other way. A seat with no times gets no OIL, because the credit would be invented and not earned. A ground row with a start and no end is counted over a assumed hour but earns nobody OIL. The Logic page itself shows the split: a flight earns to the assumed landing, a sim with no end earns nothing.</p>
+
+    <figure>
+      <button class="shot" type="button"><img src="img/q1-04-logic-a-flight-setting.png" width="588" height="286" alt="The Logic page, Rows with no end time. A flight: OIL counts to the assumed landing. A sim: earns no OIL until its end is typed"></button>
+      <figcaption><b>The Logic page today.</b> Under "Rows with no end time", the marked "A flight" line says OIL counts to the assumed landing. The "A sim" line right below it says a sim "earns no OIL until its end is typed".</figcaption>
+    </figure>
+
+    <h4>The choice</h4>
+    <ul class="choice">
+      <li><b>No OIL until the landing is typed.</b> The day says which line has no landing. The scheduler types it and publishes again, and the OIL is then worked out from real times.</li>
+      <li><b>Keep it as built.</b> The flight earns up to the assumed landing. Nothing changes in the app.</li>
+    </ul>
+
+    <div class="rec">
+      <h4>Recommended</h4>
+      <p><b>No OIL until the landing is typed.</b> It matches what you ruled for every other row with a missing time, so OIL is never worked out from an assumed time. The fix for the scheduler is one box and a publish. The assumed landing stays for warnings, Insights and the long day, as you answered.</p>
+    </div>
+  </article>
+
+  <!-- ============ 2 ============ -->
+  <article class="card" id="q2">
+    <span class="num">Question 2 · OIL</span>
+    <h3>A man who is only on standby: should ALL AVAIL count him?</h3>
+
+    <h4>When it happens</h4>
+    <p>A weekend or holiday has a standby crew (SC SPARE, AVALON or BB), and a brief or event for ALL AVAIL falls inside the standby hours. That is a few times a month. On a weekday the same thing happens, but there it only changes the count, not anyone's OIL.</p>
+
+    <h4>The example</h4>
+    <p>Sat 18 Jul. Hex is on SC SPARE, 07:00 to 13:00. An OPS BRIEF for ALL AVAIL runs 09:00 to 10:00, and its OIL question was answered yes, half a day.</p>
+
+    <h4>What the app does today</h4>
+    <p>Two screens disagree about Hex. The crew list shows him free for the brief. But ALL AVAIL treats his standby as "busy" and leaves him out, so he earns no OIL from a brief he would attend.</p>
+
+    <div class="pair">
+      <figure>
+        <button class="shot" type="button"><img src="img/q7-01-crew-list-hex-free.png" width="195" height="310" alt="The crew list for the OPS BRIEF. Hex is in full colour among the WSOs, under the heading WSOs 17 free"></button>
+      </figure>
+      <figure>
+        <button class="shot" type="button"><img src="img/q7-02-allavail-window-no-hex.png" width="234" height="564" alt="The ALL AVAIL window for the OPS BRIEF. Who's available 44. WSOs 16. Hex is not in the list"></button>
+      </figure>
+    </div>
+    <p class="pairnote"><b>Left: the crew list says free.</b> Picked for the OPS BRIEF, Hex is in full colour under "WSOS · 17 FREE". <b>Right: ALL AVAIL leaves him out.</b> The same brief's window reads "Who's available 44" with "WSOS · 16". Hex is not among them.</p>
+
+    <figure>
+      <button class="shot" type="button"><img src="img/q7-03-oilearn-window-no-hex.png" width="233" height="564" alt="OIL Earn's window for the OPS BRIEF. Who earns OIL, 44 of 44. Sixteen WSOs earn. Hex is not listed"></button>
+      <figcaption><b>So he earns nothing.</b> In OIL Earn the window reads "Who earns OIL 44 of 44", each with HO for half a day. Hex is not listed. The same happened with Hex on an AVALON line typed 07:00 to 13:00.</figcaption>
+    </figure>
+
+    <h4>Why this is a question</h4>
+    <p>You have said three times that a standby man is free: he "should not be faded as they are available to be planned", "they can be doing other things during standby", and "for planning they can be planned for other thing". Each time it was about the crew list or the warnings. Nobody asked you about the ALL AVAIL count, and it was left on the old rule.</p>
+
+    <h4>The choice</h4>
+    <ul class="choice">
+      <li><b>Count him in.</b> A man who is only standing by is in the ALL AVAIL count and its window, and earns with the others.</li>
+      <li><b>Keep him out.</b> As today. Standby counts as "busy" for ALL AVAIL only.</li>
+    </ul>
+
+    <div class="rec">
+      <h4>Recommended</h4>
+      <p><b>Count him in.</b> ALL AVAIL means "who has nothing else on at that time", and by your own words standing by is not something else. The scheduler can still take any one man out by a tap in OIL Earn.</p>
+      <p class="cost"><b>The cost:</b> a weekend already published with a standby crew and an ALL AVAIL item will read pending until it is published again.</p>
+    </div>
+  </article>
+
+  <!-- ============ 3 ============ -->
+  <article class="card" id="q3">
+    <span class="num">Question 3 · the published schedule</span>
+    <h3>A SANS man with nothing filed, put in a jet or sim: should the warning list say so?</h3>
+
+    <h4>When it happens</h4>
+    <p>About monthly. A scheduler copies last week's waves forward and a SANS man comes across in a seat. Or he drags a SANS man onto a seat without picking the seat first. Or the man deletes his own filing after he was planned.</p>
+
+    <h4>The example</h4>
+    <p>Tue 14 Jul. Jester is SANS and has filed nothing for that day. The scheduler drags him into VL's front seat, take-off 14:40.</p>
+
+    <h4>What the app does today</h4>
+    <p>The crew list strikes Jester's name. That is the only sign. The warning list says nothing about him, and the day publishes.</p>
+
+    <div class="pair">
+      <figure>
+        <button class="shot" type="button"><img src="img/q8-01-crew-list-tuesday-jester-struck.png" width="278" height="594" alt="Tuesday's crew list. Under the heading SANS avail, 1 free, Jester's name is struck and dimmed"></button>
+      </figure>
+      <figure>
+        <button class="shot" type="button"><img src="img/q8-04-tuesday-published.png" width="610" height="681" alt="Tuesday after publishing. The day shows ORIG with four signed names, and the note at the foot reads Tuesday published and approved"></button>
+      </figure>
+    </div>
+    <p class="pairnote"><b>Left: the crew list.</b> Under "SANS AVAIL · 1 FREE", Jester is struck and dimmed. <b>Right: the day goes out.</b> Tuesday shows ORIG with its four names, and the note at the foot reads "Tuesday published and approved".</p>
+
+    <figure>
+      <button class="shot" type="button"><img src="img/q8-02-warning-list-nothing-about-jester.png" width="550" height="274" alt="Tuesday's warning list: 4 issues, 2 warnings. The four lines name Saint twice, Outlaw and Static. None names Jester"></button>
+      <figcaption><b>The warning list with Jester seated.</b> "4 issues · 2 warnings": Saint twice, Outlaw and Static. The same four lines as before he was seated. Nothing names Jester.</figcaption>
+    </figure>
+
+    <p>Compare a man who filed the wrong thing. If Jester had filed "OFT only", the list would speak up.</p>
+
+    <figure>
+      <button class="shot" type="button"><img src="img/q8-05-compare-oft-only-filed-list-names-him.png" width="562" height="279" alt="The same warning list after Jester files OFT only. A fifth, amber line reads: Jester, SANS: not offering Fly today. Planned on VL SAT, take-off 14:40"></button>
+      <figcaption><b>The comparison.</b> With "OFT only" filed, a fifth amber line appears: "Jester — SANS: not offering Fly today. Planned on VL SAT (T/O 14:40)". So filing something wrong is flagged, and filing nothing is not.</figcaption>
+    </figure>
+
+    <h4>Why this is a question</h4>
+    <p>The silence was a builder's choice in August, never put to you. Since then you ruled two things close to it. The man himself gets a reminder on his bell. And the crew list needs no extra words, because the strike and "0 free" already say it and a scheduler should not be told to file. Neither covers the warning list, which is the part that stays on the day and goes out with it.</p>
+
+    <h4>The choice</h4>
+    <ul class="choice">
+      <li><b>One amber line on the warning list.</b> A plain fact for the scheduler, such as "Jester has filed no SANS availability for Tue 14 Jul". It never tells him to file.</li>
+      <li><b>Keep it silent.</b> As today. The struck name in the crew list is the only sign.</li>
+    </ul>
+
+    <div class="rec">
+      <h4>Recommended</h4>
+      <p><b>One amber line,</b> the same weight as "not offering Fly today". It would cover the same seats your reminder to the man covers: a flying seat or a sim. The exact words are drawn for you before anything is built.</p>
+      <p class="cost"><b>The cost:</b> a published day that has such a man on it will read pending until it is published again. The demo weeks will show the new line in a few places.</p>
+    </div>
+  </article>
+
+  <!-- ============ 4 ============ -->
+  <article class="card" id="q4">
+    <span class="num">Question 4 · crew rest</span>
+    <h3>A duty desk with a start and no end: should crew rest leave it out until the end is typed?</h3>
+
+    <h4>When it happens</h4>
+    <p>A scheduler types a duty's START and forgets the END, or does not know it yet. That is a few times a month. It matters when the same man flies or reports early the next day.</p>
+
+    <h4>The example</h4>
+    <p>Fri 17 Jul. Ridge is on the SXO desk from 20:00. No end is typed. On Saturday he is on VL with a 07:00 in-time.</p>
+
+    <figure>
+      <button class="shot" type="button"><img src="img/q9-01-friday-sxo-start-2000-no-end.png" width="298" height="137" alt="Friday's duty block. The marked row shows start 20:00, a dash for the end, and Ridge"></button>
+      <figcaption><b>Friday's desk.</b> The marked row: 20:00 in START, a dash in END, Ridge on it.</figcaption>
+    </figure>
+
+    <h4>What the app does today</h4>
+    <p>It assumes the duty ended one hour after it started, at 21:00, and works crew rest out from that.</p>
+
+    <figure>
+      <button class="shot" type="button"><img src="img/q9-03-crew-rest-reads-friday-duty-ended-2100.png" width="550" height="81" alt="Saturday's crew rest warning: Ridge, crew rest: Friday duty ended 21:00, clear 09:00. Report 07:00: 10h rest, needs 12h"></button>
+      <figcaption><b>Saturday's warning, END blank.</b> "Ridge — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 07:00: 10h rest, needs 12h." The 21:00 was never typed by anyone.</figcaption>
+    </figure>
+
+    <figure>
+      <button class="shot" type="button"><img src="img/q9-04-compare-end-2300-typed.png" width="550" height="81" alt="The same warning with end 23:00 typed: Friday duty ended 23:00, clear 11:00. Report 07:00: 8h rest, needs 12h"></button>
+      <figcaption><b>The same line once END 23:00 is typed.</b> "Friday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h."</figcaption>
+    </figure>
+
+    <p>That assumed end can be wrong both ways. It can show a breach that is smaller or larger than the real one. Worse, if the duty really ran to 02:00 and the man reports at 10:00, the app reads him clear from 09:00 when he is not.</p>
+
+    <h4>Why this is a question</h4>
+    <p>You have answered this same case three times: for a standby shift, for a desk made from an SC shift template, and for an AVALON or BB desk whose wave flies. Each time you chose "left out of crew rest until its END is typed". The builder applied that to those three only. An ordinary duty desk was never shown to you, so it still uses the assumed one hour.</p>
+
+    <h4>The choice</h4>
+    <ul class="choice">
+      <li><b>Leave it out until the end is typed.</b> One rule for every duty desk. In the example, Ridge's Friday desk raises no crew-rest warning on Saturday until someone types its END. The empty END box is the only sign.</li>
+      <li><b>Keep the assumed one hour.</b> As today, for ordinary desks only.</li>
+    </ul>
+
+    <div class="rec">
+      <h4>Recommended</h4>
+      <p><b>Leave it out until the end is typed,</b> the same as your standby desks. One rule is easier to trust than two, and a crew-rest figure built on an hour nobody typed can read "clear" when it is not. The Logic page's crew-rest line would then say "a duty with no end time". Conflicts are not affected: a desk with no end still blocks its assumed hour for those, as your earlier answers kept it.</p>
+    </div>
+  </article>
+
+  <!-- ============ Fixes ============ -->
+  <h2>Fixes coming, no answer needed</h2>
+  <p class="lede">Six places where the screen says something that is not true under a ruling you already made. They will be fixed as a separate job. Every new sentence is drawn for you first.</p>
+
+  <section class="card">
+
+    <div class="fix">
+      <h3>OIL Earn names the wrong person as saying No</h3>
+      <p><span class="says"><span class="tag s">Screen says</span>After an admin presses "No to all": "Whoever filed this "Range brief" answered No to OIL", and on a one-man input "Ranger answered No".</span>
+      <span class="true"><span class="tag t">True</span>Ranger filed it and never answered. Saber, the admin, said No.</span></p>
+      <figure>
+        <button class="shot" type="button"><img src="img/f1-02-oilearn-window-whoever-filed-answered-no.png" width="244" height="572" alt="OIL Earn's window for Range brief. Nobody earns. The marked line at the foot begins: Whoever filed this Range brief answered No to OIL"></button>
+        <figcaption>OIL Earn's window for Range brief on Fri 17 Jul. The marked line at its foot begins "Whoever filed this "Range brief" answered No to OIL".</figcaption>
+      </figure>
+    </div>
+
+    <div class="fix">
+      <h3>The Leave War's OIL card says the OIL "follows" a change</h3>
+      <p><span class="says"><span class="tag s">Screen says</span>"Earned off the published schedule — change the schedule and the OIL follows."</span>
+      <span class="true"><span class="tag t">True</span>The OIL moves only when the day is published again.</span></p>
+      <figure>
+        <button class="shot" type="button"><img src="img/f2-01-card-oil-follows.png" width="571" height="422" alt="Hunter's OIL card on the Leave War. The marked Where it came from line reads: Earned off the published schedule, change the schedule and the OIL follows"></button>
+        <figcaption>Hunter's OIL card for Sat 18 Jul. The marked "Where it came from" line carries the sentence.</figcaption>
+      </figure>
+    </div>
+
+    <div class="fix">
+      <h3>A refused change to someone's input names the wrong people</h3>
+      <p><span class="says"><span class="tag s">Screen says</span>Hex opens a Training that Ranger filed for Ace and reads "Only Ace or an admin can change this." The Delete key says the same about deleting.</span>
+      <span class="true"><span class="tag t">True</span>Ranger, who filed it, can change it too. He is the one Hex should ask.</span></p>
+      <figure>
+        <button class="shot" type="button"><img src="img/f3-02-hex-opens-refusal-ace-or-admin.png" width="465" height="548" alt="Hex's view of the Training. It reads Placed by Ranger for Ace, and the marked line below reads Only Ace or an admin can change this"></button>
+        <figcaption>Hex's view of the input. Just above the marked line it says "Placed by Ranger for Ace". The marked line leaves Ranger out.</figcaption>
+      </figure>
+    </div>
+
+    <div class="fix">
+      <h3>The Legend and the warning headings still say "misses"</h3>
+      <p><span class="says"><span class="tag s">Screen says</span>"misses flight brief", "misses sim brief", "misses flight debrief", "misses sim debrief", in the Legend and as the small heading over those warnings.</span>
+      <span class="true"><span class="tag t">True</span>On 24 Nov you ruled the mark must never say he "misses" it. It states the overlap. The sentences were already due to change. These labels were left off that job and now join it.</span></p>
+      <figure>
+        <button class="shot" type="button"><img src="img/f4-01-legend-misses.png" width="600" height="102" alt="The end of Edit Schedule's Legend. Four marked labels read misses flight brief, misses sim brief, misses flight debrief, misses sim debrief"></button>
+        <figcaption>The end of Edit Schedule's Legend, the four labels marked.</figcaption>
+      </figure>
+    </div>
+
+    <div class="fix">
+      <h3>Hiding a warning promises it will come back when it will not</h3>
+      <p><span class="says"><span class="tag s">Screen says</span>"Warning hidden: no flag, not counted. It returns if the warning changes."</span>
+      <span class="true"><span class="tag t">True</span>By your ruling of 11 Nov, a hidden conflict stays hidden while the same man is on the same two items, even when their times move. It returns only when the man or one of the items is a different one. In the walk a sim was moved 30 minutes, the warning's words changed, and it stayed hidden.</span></p>
+      <p>You approved the old sentence in October, so the new one is drawn for you before it changes.</p>
+      <figure>
+        <button class="shot" type="button"><img src="img/f5-02-hidden-note-returns-if-warning-changes.png" width="483" height="94" alt="The passing note after hiding a warning: Warning hidden: no flag, not counted. It returns if the warning changes"></button>
+        <figcaption>The passing note right after a warning is hidden.</figcaption>
+      </figure>
+    </div>
+
+    <div class="fix">
+      <h3>The Logic page says every input closes its hours</h3>
+      <p><span class="says"><span class="tag s">Screen says</span>"Every input closes the man for the hours it covers, from the moment it is filed. One a scheduler has taken off the programme closes nothing."</span>
+      <span class="true"><span class="tag t">True</span>A cancelled input (CX) and an information-only one close nothing either. In the walk, Ranger read free the moment his Training was cancelled.</span></p>
+      <figure>
+        <button class="shot" type="button"><img src="img/f6-04-logic-every-input-closes.png" width="578" height="115" alt="The Logic page's line An input closes its hours, with the sentence marked"></button>
+        <figcaption>The Logic page's "An input closes its hours" line, the sentence marked.</figcaption>
+      </figure>
+    </div>
+
+  </section>
+
+  <!-- ============ Small points ============ -->
+  <h2>Small points: take them all as recommended?</h2>
+  <p class="lede">Nineteen low-harm points. None changes what a person gets in any case that matters. Reply "all as recommended", or name any you want to talk through.</p>
+
+  <details>
+    <summary>The nineteen points</summary>
+    <ol class="small">
+      <li>A row with no end time says "No OIL worked out" only where an admin decides OIL. A member who opens "who's available" sees only "an hour assumed".<span class="r">Leave as built. Your words were "to the admin".</span></li>
+      <li>The schedule export stamps a day "not yet signed" even when all four have signed and it is only not yet published.<span class="r change">Change it to "Working draft — not yet published" when the export work resumes. That work is on hold on your word.</span></li>
+      <li>When crew rest looks back at the day before, it uses the settings of the day being checked, not the earlier day's.<span class="r">Leave as built. It follows from "a published day is checked by the settings it was published under".</span></li>
+      <li>A master admin who files an input for the other squadron's man is told when it changes, though that squadron's admin lines are off for him by default.<span class="r">Leave as built. He filed it.</span></li>
+      <li>The SANS reminder goes to the man only. The admin sees the struck name in the crew list and gets no bell line.<span class="r">Leave as built. It follows your "Should we tell the user too" and "Yes".</span></li>
+      <li>A filer who moved squadron with his man counts as that man's admin by the role he holds on the day the input changes.<span class="r">Leave as built.</span></li>
+      <li>A master admin may switch another squadron's bell lines on, and his own off, himself.<span class="r">Nothing to decide if your approved "Show 142 149" bell buttons of 19 Nov already cover both. That drawing is being checked. You hear about it only if it does not.</span></li>
+      <li>The bell's words "LL bid changed to OL", "LL bid moved to Thu 29 Jan" and "LL bid deleted" were never shown to you.<span class="r">Leave as built. They follow the bell's other leave lines.</span></li>
+      <li>A man who is only standing by reads free in the crew list, but the day's "Aircrew tasked" figure counts him as tasked.<span class="r change">Make the day's figures read him free too, so one screen gives one answer. A small build, after question 2.</span></li>
+      <li>A man on ATT B who also has a task that day keeps the faded look. An AVALON or BB desk counts as part of that standby.<span class="r">Leave as built.</span></li>
+      <li>A man archived on Thursday is no longer offered in Monday's crew list of the same week, though Monday's ALL AVAIL count still includes him.<span class="r change">Read him by the day, as the count does. A small fix, met only when a past day is corrected.</span></li>
+      <li>A standby desk that is left out of crew rest still blocks its assumed hour for conflicts.<span class="r">Leave as built.</span></li>
+      <li>A SPARE row on a flying shift with only one seat filled counts as a jet.<span class="r">Leave as built. One seat is somebody.</span></li>
+      <li>A man on an all-day course, overseas duty or all-day meeting is flagged the moment he is seated on a row with no times, as a man on leave is.<span class="r">Leave as built.</span></li>
+      <li>Moving a sign-in that holds Plan of another squadron to a different person is for a master admin alone.<span class="r">Nothing now. No screen moves a sign-in, by your ruling of 22 Nov. It is asked if that control is ever drawn.</span></li>
+      <li>The refusal on the ✕ of a leave that runs across a man's move was drafted to open with "Not saved:". Every other refusal opens with "Blocked:".<span class="r change">"Blocked:", by your rule of 5 Nov. It is shown on its drawing before it is built.</span></li>
+      <li>The Leave War's Available rows and SANS group, and the Inputs calendar's people groups, go by who is SANS today, on every date.<span class="r change">Read by the day, as every other screen now does. It joins a fix job that is already listed.</span></li>
+      <li>On a published day with an amendment waiting, a SANS man's reminder follows the working copy. So it can name a day his own schedule does not show yet.<span class="r">Leave as built. Your two rulings of 24 Nov have it follow the plan as soon as he is planned.</span></li>
+      <li>An offer filed for two SANS men still names both in its own window on a day when one of them is not SANS. The day and its counts show only the one.<span class="r">Leave as built. Nothing is counted, and hiding him there could drop him from the offer.</span></li>
+    </ol>
+  </details>
+
+  <!-- ============ Next ============ -->
+  <h2>Next round</h2>
+  <section class="card">
+    <ul class="next">
+      <li>A sign-off that answers only some of the day's OIL questions: are the rest asked again at the next box?</li>
+      <li>A changed late cut-off: should it move the LATE marks on published days at once?</li>
+      <li>Taking a day over from another scheduler: the one-minute hand-over, "Take over anyway" and the saved plan. This one waits for the database step's drawings.</li>
+    </ul>
+    <p class="foot">Two more questions are not on this page. What a man is told when a change is undone before he read its bell line, and the four places where the app gives a count where it could give names, are on the bell job's page from another chat.</p>
+  </section>
+
+</div>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Picture, full size" hidden>
+  <button class="lb-close" id="lbClose" type="button">Close</button>
+</div>
+
+<script>
+(function () {
+  var lb = document.getElementById('lb');
+  var img = null;
+  var closeBtn = document.getElementById('lbClose');
+  var opener = null;
+
+  function open(btn) {
+    var src = btn.querySelector('img');
+    if (!src) return;
+    opener = btn;
+    img = document.createElement('img');
+    lb.appendChild(img);
+    img.src = src.getAttribute('src');
+    img.alt = src.getAttribute('alt') || '';
+    var nat = src.naturalWidth || parseInt(src.getAttribute('width'), 10) || 600;
+    var room = Math.max(200, window.innerWidth - 24);
+    // Full size at least; a small picture is enlarged to fill the screen's width, up to twice its size.
+    var w = Math.max(nat, Math.min(room, nat * 2));
+    img.style.width = w + 'px';
+    lb.hidden = false;
+    lb.classList.add('on');
+    lb.scrollTop = 0;
+    lb.scrollLeft = 0;
+    closeBtn.focus();
+  }
+  function close() {
+    lb.classList.remove('on');
+    lb.hidden = true;
+    if (img) { lb.removeChild(img); img = null; }
+    if (opener) { opener.focus(); opener = null; }
+  }
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('.shot') : null;
+    if (btn) { open(btn); return; }
+    if (lb.classList.contains('on') && (e.target === lb || e.target === closeBtn || e.target === img)) close();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && lb.classList.contains('on')) close();
+  });
+})();
+</script>
