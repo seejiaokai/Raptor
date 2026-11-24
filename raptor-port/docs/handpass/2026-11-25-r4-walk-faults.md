@@ -78,7 +78,7 @@ by `SchedBoard.tsx put`; its blocks are the day bar and one `.sb-sec` per sectio
 | Test | Before the fix | After |
 |---|---|---|
 | `src/ui/board-heldpanel.test.tsx` — the Board in the test browser: an input filed 08:00–10:00, its start typed 0900 then 0800 in its Personal Inputs box with Tab; the Ground Programme row read with the caret still on the Board (2 of 3 red on `main`'s `SchedBoard.tsx`: "expected '08:00' to be '09:00'"); the caret's own box the same node; a change put back under the caret (a direct write, not a control — the control route, Undo pressed, is Part B's) reaching both rows; `swapKidsAround`'s writes and three fallbacks | 2 failed, 1 passed | 5 passed |
-| `e2e/inputs-batch2.spec.ts` "the note's box" (3 tests) — a real Chromium on the built app: a phone 390 and 320 wide, a take-off box on Edit Schedule tapped, 60 letters typed, Tab; the note's words measured against its own border, nothing running over; a desktop's ordinary note still one line | **NOT RUN on this PC** — it builds the app, and the checks lock stayed with chat 174's walks for the whole 40-minute ceiling (two waiting loops, the second polling every 0.3 s); GitHub's run of the pull request runs it | NOT RUN — as before |
+| `e2e/inputs-batch2.spec.ts` "the note's box" (3 tests) — a real Chromium on the built app: a phone 390 and 320 wide, a take-off box on Edit Schedule tapped, 60 letters typed, Tab; the note's words measured against its own border, nothing running over; a desktop's ordinary note still one line | Part A: not run (the lock stayed with chat 174's walks for the whole 40-minute ceiling). **Part B, under the lock, 02:56 on 25 Nov: on `main`'s `toast.ts` 2 failed, 1 passed** — the words' right edge at 399.6 against the border's 361.5 (390 wide) and 291.5 (320 wide) | **3 passed**, and the whole file 20 of 20; GitHub's run of `5b524f1ab` green with them |
 | The note's box itself, in a real Chromium and WebKit, without building the app (`D:/rw4/night3/r4wf-notebox-proof.mjs`, a scratch script, not committed): the box made with `toast.ts`'s own inline style read from the file, placed as a phone places it, the 60-letter note's words measured against its inner edge at 402, 390 and 320 | words past the edge by 31, 43 and 113px, both browsers (the stand-in font is wider than the app's; the walk measured about 10px) | inside by 1–2px, both browsers; an ordinary two-line note and a one-line note: the same right edge and the same number of lines before and after |
 | The touched suites — `schedule-tab`, `dayswap`, `undo-caret`, `textcaret`; the Board's (`board`, `boardwrap`, `oilmode`, `words-r1b`, `board-stores`, `boardmenukeys`, `boardescape`, `boardkeys`, `amendretest`, `audit-b-bugs`, `audit-gesture-bubble`, `pubsweep`); the note's (`toastplace`, `toastbatch`, `toastblocked`); the two that read the source (`inputs-readers`, `perms-scan`) | — | all green: 80, 384, 29 (with the new file) and 31 tests |
 | `npx tsc -b` · `npm run lint:changed` (React Doctor) · `npm run docsize` | — | clean · no new finding · OK |
@@ -114,15 +114,62 @@ he types — the Board now keeps every section up, not only the list) · D551–
 · D739 (a time typed on a shared input's row changes the input for everyone) · D1047, D1080 (one tap then typing
 replaces a time). None is changed.
 
-## 7. The scenarios (Astra and a fresh, blind Fable, each blind to the other; the host combining) — Part B
+## 7. The scenarios (Astra and a fresh, blind Fable, each blind to the other; the host combining)
+
+The one brief: `../superpowers/briefs/2026-11-25-r4-walk-faults-scenario-brief.md`, each reading an exported copy of
+`5b524f1ab` (`D:/rw4/night3/copy-b`) with this sheet and the job's brief blanked and the change as a diff. The two lists,
+whole: `../superpowers/briefs/2026-11-25-r4-walk-faults-scenarios-astra.md` (Astra, gpt-6-astra, high; 15 scenarios
+S01–S15) and `…-scenarios-fable.md` (a fresh Fable; 13, B1–B10 and N1–N3, and a "what is missing" table). Neither saw
+the other's; neither had a handoff block pasted.
+
+**What Fable's design found before any walk — a fault in this change, fixed red-first (commit `ab9aec9fb`).** The first
+cut matched the Board's sections by place and count alone. A change leaving as many sections but in another order or of
+another day — a section dragged or its drag undone (B2), the day arrow with the caret in an In-time line (B4), OIL Earn
+on a day whose sections then number the same (B1) — wrote one section twice and lost another while the caret stayed on
+the Board. Proved by two tests that failed first ("0.inputs" drawn twice and "0.ground" lost; day 1's sections around
+day 0's waves); fixed by knowing each section by which section it is (`dayswap.ts blockId` — a section by its day and
+name) and writing nothing unless every place holds the same one, as before this change. Not a fault: Fable's B3 — the
+section the caret LEFT, with nothing new saved, catches up only at the next save or when the caret leaves every box;
+before this change the whole Board did. Kept as RECORD for the walk (W6) and filed with the leftovers (§15).
+
+**Combined** — one list, each scenario once, every EXPECTED line with its source; the presses are in the walker's brief,
+`../superpowers/briefs/2026-11-25-r4-walk-faults-walk-brief.md`: W1 the plain-user round of an input's two rows (B5,
+S06) · W2 the other rows an input stands on — shared, ALL / ALL AVAIL on the Common Programme, Unavailable with the
+warning list, a folded Personal Inputs, a refused time (B6, S05, S11) · W3 one man's row of a shared Unavailable input
+twice (S01) · W4 OIL Earn pressed with the caret in a box, a two-wave day (B1, S02) · W5 Undo / Redo with the caret in a
+box, after a section's move and after a typed time (B2, B7, S04) · W6 the caret moved to another section with nothing
+typed, RECORD (B3) · W7 leaving the day with the caret in a box (B4, S09) · W8 the box never moves (B8, S03) · W9 a row
+removed in another section, RECORD (B9) · W10 a re-ordered day and the Tab route (B10, S07, S08) · W11 frozen and
+read-only (S10) · N1 the long word at every door (N1, S13) · N2 no ordinary note moved (N2, S14) · N3 widths between a
+phone and a desktop, RECORD (N3, S13) · N4 where the note stands over windows, RECORD (S15). Set aside, with why: S12
+(a published input's OIL and its pending count) — nothing in this change touches what is saved, counted or compared;
+the same save path as `main` (§1 questions 1–3).
 
 ## 8. The orders walked, and what the screen said — Part B
 
-## 9. The cases carried by a test, each with what it proves — Part B
+## 9. The cases carried by a test, each with what it proves
+
+| Case | Test | What it proves, and how |
+|---|---|---|
+| The 320-wide phone and the desktop's ordinary one-line note | `e2e/inputs-batch2.spec.ts` "the note's box" | in Chromium on the built app, through the real take-off box, a real tap and keys |
+| A section dragged, and the day changed, under the caret | `src/ui/board-heldpanel.test.tsx` "a change of order or of day writes nothing…" | in the test browser; the drag by the store's own command, the day by the arrow's own handler — the walk presses both (W5 (a), W7) |
+| The section left behind is written by the next paint | the same file, "the caret moved on to another section…" | a paint with nothing new saved — a direct `notify()`, not a control |
+| A change put back under the caret | the same file, "the input put back under the caret…" | a direct write of the input — Undo pressed on screen is W5 (b) |
+| Every fallback that writes nothing (a section added, removed, swapped, another day's, unwrapped, loose words, nothing known) | the same file, "dayswap swapKidsAround…" | the swap called directly on a made-up panel |
 
 ## 10. The pictures — Part B
 
-## 11. The break tests and the browser test's red run — Part B
+## 11. The break tests and the browser test's red run
+
+`scripts/handpass/breaks/r4wf.json`, run by `scripts/handpass/breaks.mjs` (each line broken alone, the Board's test file
+run, the line put back): **6 of 6 caught** — (1) the whole day held again while the caret is in it (the fault); (2)
+sections matched by place alone (Fable's B1, B2, B4); (3) the caret's section written under it; (4) a held section
+remembered as what it would show, not as owed — caught by "the caret moved on to another section…", written before
+the run because none of the earlier tests could have caught it (the panel's record was dropped either way, so the
+paint after the caret left wrote it whole); (5) loose words no longer stop the write; (6) a section
+removed no longer stops the write — at first NOT caught (a section ADDED was caught through the blocks' names), so a
+removed section was added to the fallbacks' test and the break run again: caught. The note's box cannot be broken in
+the test browser (it lays nothing out): its break is the browser test's own red run on `main`'s `toast.ts` (§4).
 
 ## 12. Errors seen — Part B
 

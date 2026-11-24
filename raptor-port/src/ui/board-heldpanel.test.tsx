@@ -120,6 +120,18 @@ describe('the Board, an input’s start changed in its own box: its Ground Progr
     expect(mine('str').value, 'once the caret has left, its own row shows what is stored').toBe('08:00')
     expect(ground('str').value).toBe('08:00')
   })
+  /* the section left behind is OWED, never "what it showed": once the caret is in another section, the next paint writes
+     it, even though its markup has not changed since the paint that held it */
+  it('the caret moved on to another section: the section it left is written by the next paint', async () => {
+    const { ground, mine } = await filed()
+    await typeStart(mine('str'), '0900')
+    const held = mine('str')
+    await focus(ground('rmks'))
+    expect(editingText(), 'the caret is in the Ground Programme row now').toBe(true)
+    await act(async () => { notify() }); await tick()   // the next paint, with nothing new saved
+    expect(mine('str') !== held, 'the Personal Inputs section, left owed, is written again').toBe(true)
+    expect(mine('str').value).toBe('09:00')
+  })
 })
 
 /* THE SECTIONS ARE MATCHED BY WHICH SECTION THEY ARE, NOT ONLY BY THEIR PLACE (Fable's scenario design, 25 Nov 26 — B1, B2,
@@ -177,6 +189,8 @@ describe('dayswap swapKidsAround — the board panel, section by section', () =>
     const was = '<div class="sb-sec" data-secmove="0.a">A1</div><div class="sb-sec" data-secmove="0.b"><input id="k"></div>'
     const cases: Array<[string, PanelKids | null]> = [
       [was.replace('A1', 'A2') + '<div class="sb-sec" data-secmove="0.c">new</div>', kidsOfHTML(was)],
+      /* the last section taken away, the others in their places */
+      [was.replace('A1', 'A2'), kidsOfHTML(was + '<div class="sb-sec" data-secmove="0.c">gone</div>')],
       [was.replace('A1', 'A2').replace('</div><div', '</div>loose<div'), kidsOfHTML(was)],
       [was.replace('A1', 'A2'), null],
       /* the two sections swapped places (a section dragged, or its drag undone) */
