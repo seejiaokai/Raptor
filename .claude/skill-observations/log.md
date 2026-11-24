@@ -1610,3 +1610,16 @@ sides.
 **Issue:** Facts behind questions (what a window says, which button saves, whether a case can happen at all) were taken from notes or a helper's prose; some were false (one question's case could not happen in today's app). Chat 162 rebuilt the page with helpers whose scripts print `FACT` lines of what the screen said, and the host re-ran each script before writing anything.
 **Suggested improvement:** The questions-page routine (Observation 1044) gains a fixed first step: each question's case is pressed by a script that prints `FACT` lines of the screen's own words and states; the host re-runs it and reads the output; only then is the question and its recommendation written. A question whose script was not re-run by the host does not go on the page.
 **Principle:** Establish the facts of a decision from a reproducible observation the presenter has re-run, before drafting the recommendation, so the recommendation cannot shape the facts.
+
+### Observation 1054: A handoff's opening line tests "this folder" for another chat's changes, but the job's folder is a different one
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 171 opening from chat 166's handoff line for the guard-rail job (numbered past 1051–1053, seen on other open branches)
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the ready-to-paste opening line — the clause that sends a continuing chat to a second worktree
+
+**Issue:** The line said: if where you are shows changes you did not make, make a second worktree; otherwise work in the job's own folder. Every chat starts in the main folder, which held another chat's unsaved changes, so the clause fired by its letter — though the job's own folder, a separate worktree, had been released clean and no live chat worked in it. Followed literally it would have made a second full copy for nothing; the chat used the job's folder and named the difference to the owner.
+**Suggested improvement:** In the opening-line template for a job that lives in its own worktree, the test names that folder: "if <the job's folder> has uncommitted changes or a live chat works in it, make a second worktree; otherwise work there". The starting folder is tested only where the job is to run in it.
+**Principle:** A guard condition in a handoff must test the resource the next worker will actually use, not the place the worker happens to start.
