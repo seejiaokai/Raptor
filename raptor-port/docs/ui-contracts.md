@@ -5141,7 +5141,9 @@ ahead of "Taken off the programme" / "Back on the programme", which read wrongly
   kind) · Renamed — was Kit check (its title's own words) · Remark changed. **Where a save changed several things**
   (`noticeWords`, his D2521, 24 Nov 26): the first two, joined by a comma, then "and 1 more change" / "and N more
   changes"; each after the first in small letters unless it starts with a name or "You" ("Now Thu 16 Jul, renamed —
-  was Training, and 1 more change"); a replaced Leave War bid is said after the rest and never counted.
+  was Training, and 1 more change"); a replaced Leave War bid is said after the rest and never counted. **To change (his
+  D2600, 24 Nov 26 — not built):** the line is to say every change of the save in words, never a count; drawn for
+  him on the real app first.
 - **Who is told:** every named person in the input before or after the change, and whoever filed it — never whoever
   made the change, never the men behind ALL AVAIL / ALL, never a man archived or deleted. A leave the Leave War
   approves makes no notice (the war tells it on its own page).
