@@ -104,3 +104,44 @@ warning in `leavewar/state/store.ts` ~1015. The rules engine's warnings name the
 - Q11: the drawing he approved with D2421 showed "…and 1 more" (chat 173's handover); the SANS words job holds it.
 - Q14: D1582's "several at once by their count".
 - Every "how often" on the page is marked a guess; none was measured.
+
+## The words read (the fresh Fable reader, 25 Nov 26 — his D2441)
+
+The page's words were read and adjusted in `cnt-page.mjs` and the page regenerated from the same runs; no picture was
+redrawn or changed (22, as before). **The page's numbers changed; the Q numbers in the tables above are the draft's.**
+
+| Page now | Draft's Q | What | Recommendation |
+|---|---|---|---|
+| 1 | 2 | the delete question and the input's other sentences | name them ("Date changes apply to all 3." stays, D729 V3) |
+| 2 | 4 | the publish note's "4 inputs" | name them all |
+| 3 | 7 | deleting a grade | name them |
+| 4 | 5 | "1 day with changes still held" | name the days |
+| 5 | 11 | the SANS reminder and posting line (not on `main`) | name every day |
+| 6 | 1 | the window's title "Ace +2" | keep |
+| 7 | 3 | Undo's and the publish note's "Training for 3 people" | keep from three; Undo names two as the publish note does (new) |
+| 8 | 6 | the OIL credit bar's "+2" | keep, said to be close |
+| 9 | 9 | the load note's three counts | **keep** (the draft: name them) |
+| 10 | 8 | "(+2 more)" warnings | keep |
+| 11 | 14 | "Undid: 3 inputs" | keep |
+| 12 | 10 | "opening bidding … and 2 more" | keep |
+| 13 | 13 | holidays from a sheet | keep both |
+| 14 | 12 | the Leave War's "5 people" | keep for now, unchecked on a phone |
+
+- Order: the five recommended to change first (four with pictures, then the SANS lines), then the nine recommended
+  kept, which he may answer together ("Keep 6 to 14"); the list of counts that are the fact is put as one answer of its
+  own ("Keep the list"), no longer "kept unless you say otherwise". No question added or removed.
+- "Your earlier word" checked against each full row: D2314 (he answered "all as recommended"; the page now says so and
+  asks whether 24 Nov reopens it); D1582 (covers one input by person and kind, and several inputs by their count — NOT
+  one input of several people, which the page now calls the builder's choice); D721 / D727 (his words about the card
+  quoted; the title and the OIL credit bar said not to be part of that question); D2421 / D2342 (the "and 1 more" was in
+  the drawing he said "Go" to, never asked on its own — the agent's reading in D2342's row); D863 ("Shorten it", of the
+  load note — the draft did not name it, and it is why question 9's recommendation changed); D729 V3 ("Date changes
+  apply to all 4." approved as drawn — the draft's "name them" would have changed it unsaid); D1788, D663, D729 V4 in
+  the list.
+- Facts added from the code and the pictures: a note stays 60 ms a letter plus 1.2 s, never more than 12 s
+  (`ui/toast.ts` ~216); the ten-name title is cut inside the sixth name and loses its date (`s-title10-named`); the same
+  short name stands in the OIL question's heading and other questions (`inputWho`'s callers), not pictured; the load
+  note's three counts are of the day's pending items (`engine/drafts.ts` ~168); the SANS lines' exact words are the SANS
+  branch's (`sansDaysWords`, three days named, and the "hidden" sentence).
+- The page at 402 wide, light and dark: no sideways scroll, 15 links land (`D:/rw4/night2/page-look-words/`); about 25
+  phone screens, where the draft was about 20 — the growth is his earlier words and the costs.
