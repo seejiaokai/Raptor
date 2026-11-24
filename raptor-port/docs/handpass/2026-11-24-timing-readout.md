@@ -181,6 +181,13 @@ None in any walked session but W7's, which are the walk's own doing: W7 refuses 
 
 ## The gate counts
 
+GitHub's run (the full gate set while the project is public) on `404d3fd8f`, the last code commit: every job green —
+build, code check, docs guard, secrets scan, unit (raptor 1–6, leavewar 1–4), geometry (raptor 1–4, leavewar desktop 1–2
+and phone), tracker smoke 1–2, "checks passed". Vercel's preview build refused (the account's 100 builds a day used up).
+On his PC (chat 167): the readout's six test files 93/93, the shared window's ten neighbouring files 321/321, the build,
+`npm run docsize` OK (over by 6, deferred — D29). Chat 165's full unit suite on `a893d3ca7`: 15,996 passed, 2 failed
+(two Leave War double-tap files that pass alone, 43/43; not touched here — green on GitHub's run).
+
 ## What the walk found, and each disposition
 
 Chat 164's rounds: `walk1` (the first build), `walk2` (after fixes 1–2), `walk3` (after fix 3; its logs `walk3-part2.txt`,
