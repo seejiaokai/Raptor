@@ -41,8 +41,9 @@ itself:** its last part, "Changing this guide". Unsure whether one applies: open
    working screen stays dense (D812) · never at a cost of speed (`raptor-port/docs/performance.md` Part 1) · a visual
    change is a picture to him first, at his iPhone's size and a desktop's (D541) · whatever is put to him about a design or
    interface change comes with a picture or mock-up with the area talked about marked, never words alone — explaining what or where a thing is included (D853, D921) · pucks never wrap.
-2. **Words (the guide's §1, §1a and §1b — read whole before text is written or changed):** Opus drafts, a fresh Fable
-   helper reviews and adjusts (D2441); every word earns its place
+2. **Words (the guide's §1, §1a and §1b — read whole before text is written or changed):** notifications, bell messages,
+   notes, hints, warnings and rule text are drafted by Opus, then reviewed and adjusted by a fresh Fable helper (D2441);
+   every word earns its place
    or goes (D726). Text that only explains what the screen already makes plain — a hint beside a button that already
    waits, small print on how the app works where the answers already say what each does, a hint that reads the same on
    something opened many times a day — is named in every look and recommended for deletion, never deleted by the look:

@@ -235,7 +235,8 @@ Sol, the fresh, blind Opus reader holds the second seat; where Astra cannot run,
 jobs (D903, D1770 — the agent's reading).*
 *Since D2258 and D2440 (21 and 24 Nov 26): the agent picks Fable itself for the work it ranks high risk, other readers
 beside it, with no end date; on that work a fresh, blind Fable designs scenarios beside Astra's, the host combining the
-lists (D2257); "Fable is on call only" above holds for the rest.*
+lists (D2257); by D2441 a fresh Fable helper also reviews and adjusts the app's words; "Fable is on call only" above
+holds for the rest.*
 
 **Who reads the finished code now (D790, D903, D1734, D1770):** Astra is the standing reviewer (D1770, 8 Nov 26 — "Yes Astra is the standing reviewer"). Sol 6.1 is called only when he calls for him (D1734; D1743's window, when Sol was called wherever a second reader fitted, closed Mon 9 Nov 26 19:00). Beside Astra's read:
 **every job that needs a code read gets a FRESH Opus read of its finished code — a reader that did not write it and has seen
@@ -439,7 +440,7 @@ smaller comparison to make a decision from there yourself"): a trial of a cheape
 full share walked twice — and the AGENT decides from the comparison what that model takes, writes the decision and its reasons in the
 evidence sheet and here, and tells him; he can overrule.** His answer to each
 report was to be a new ruling (D588); until then no other build or fix leaves Opus (since D2258, D2269 and D2440, high-risk work and tough screen-design
-builds go to Fable, other tasks by D2258's tiers), and haiku stays closed.
+builds go to Fable; every other build or fix stays on Opus), and haiku stays closed.
 **And confirmed for good (owner, D787, 13 Oct 26 — "Ok sonnet walk. It’s not sustainable for token usage to have opus to walk anyway."):** the
 walk’s helpers stay Sonnet 5.5; no Opus walker is started beside them, not even on one share for comparison, and no further
 walker trial is run or offered. The host still opens the pictures, reproduces every finding and may run a short look itself (§7.0).

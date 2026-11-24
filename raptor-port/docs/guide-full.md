@@ -284,6 +284,10 @@ barely more than one.
 
 ### Delegate frugally
 
+**Model choice now follows D2258, D2440 and D2441:** Fable the high-risk work, Opus medium, a cheaper model low; Opus
+drafts the app's words and a fresh Fable helper adjusts them. A Fable helper is started with its model named. Where the
+older text below says otherwise, these win.
+
 - **Delegate frugally, by judgment.** The main session plans, reviews
   diffs and runs the gates first-hand. **SUPERSEDED for the claudex loop
   (owner, 17 Sep 26 — see §MODELS above): no haiku, no sonnet; a subagent
