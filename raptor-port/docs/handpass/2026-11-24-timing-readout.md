@@ -193,6 +193,32 @@ the build.
 | H2 | Opus: does the window slow what it measures | W18 RECORD: no added cost (above) |
 | — | Opus's smaller notes: "Sign-in shown" ends at the claw going, not two frames after; a refused sign-in starts a wait (W17: no row results); "first time" can be a page built in the background (W10, for his look) | no fault — left |
 
+**The re-walk, `walk4`** (chat 165, on the build of `a893d3ca7`; logs `walk4-part1.txt`, `-part2.txt`, `-part3a/b/c.txt`,
+`-part4a/b/c.txt`; one command: `scripts/handpass/timing-rewalk4.sh`): W1a–d PASS (15 files = `main`'s 15), W2 as
+before, W5 every figure within 0.05 s of the outside stopwatch, W7 (no "downloaded" — the server sent nothing whole),
+W8, W9, W14-first, W14-reload, W22, W27–W31 PASS; W19 (f) the board first, then nothing more (the readout a bystander);
+W20 desk all PASS; W23 every door one row; W26 the change and its Undo, the input's window by ✕ and Escape PASS; W32
+RECORD: open at the start, the window stands over Edit Schedule's foot buttons Traffic and "+ In-time" (bottom right,
+as the approved mock-up places it — for his look); the sign-in card clear at 768×1024 and 800×600.
+**Found by the re-walk, after the readers' fixes:**
+- R2 — W19 (c2): a press on the readout put it in front of the app's window order, yet it answered Escape only with
+  the keys in it — ALL AVAIL, and the board under it, heard no Escape at all. FIXED red-first `e47e96775`
+  (`TimingReadout.test.tsx`): the window never joins the order, stands behind the app's own windows (z 405), and a
+  press puts the keys in it. **Re-walk owed** (W19, W20-desk-two-windows — its judge to be rewritten: the readout now
+  stays behind ALL AVAIL; its ✕ reached once ALL AVAIL is closed or moved).
+- OPEN 7 — W14-newtab: "Kept from an earlier visit 14 of 15" where the server answered all 15 "unchanged". The cause,
+  the host's reading not yet proved: a file smaller than its answer's header (`undo-bridge-…js`, 221 bytes) — told
+  "unchanged", what came (~300 bytes) is more than its body, so `timingtext.ts filesOf` (and `timing.ts
+  downloadedBetween`, fix 4's rule) read it as sent whole. To prove with each entry's sizes printed, then fix red-first.
+- Script faults to repair, then re-walk: W5-leavewar-1's judge wanted a download, but the Leave War had already come in
+  the background (no claw seen — W10's case: RECORD it, as W10); W24 — even a real window placed off the screen never
+  hid the tab (Playwright starts Chromium with `--disable-backgrounding-occluded-windows` and
+  `--disable-renderer-backgrounding`: launch with `ignoreDefaultArgs` for both, and open the second tab with the
+  developer protocol's `Target.createTarget({ background: true })`); else his look on his own PC; W20-phone — the
+  corner button under ALL AVAIL's panel (fold order: close ALL AVAIL first); W26 — "a press outside" never closes a
+  movable window (FloatWindow.tsx: ✕, Escape or its finishing button — D641), so its judge is wrong, and the window left
+  open then covered the next step: close it by ✕ after that check.
+
 **Script faults of part 3 (chat 164), each repaired by chat 165 and re-walked in `walk4`:** W14-reload's judge used the old
 counting (compare the server's 304 answers instead); W20-phone and W23-admin stopped on a 30 s click timeout (find
 which control); W23-member read rows with the window folded (open it first); W24 — the test browser never hid the tab
