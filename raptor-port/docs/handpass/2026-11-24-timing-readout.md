@@ -50,8 +50,9 @@ The approved mock-up: https://claude.ai/artifact/7bgefju2mwrGJzc2ACSExS (its wor
 
 | What | Proved by |
 |---|---|
-| No readout file downloaded, nothing drawn | |
-| The marks do nothing | |
+| No readout file downloaded, nothing drawn | W1a/W1b (walk2): a whole session, every page, 20 requests — none names the readout; no `#timingRoot`, no window, no button; W1c no error |
+| The app's own first download the same as `main`'s | W1d: **FAILED on the first build** (19 files against `main`'s 15 — the readout's imports split the app's own files); fixed (`ced82eaf7`, the window handed React and the movable window); re-walked: 15 and 15, the same names. Pinned by `timing.test.ts` "the readout imports nothing the app's first download holds" (red before the fix) |
+| The marks do nothing | `timing.test.ts` "off: a mark is dropped…", "off, a page change marks nothing"; `timing.ts` returns on its first line without the switch; the press listeners and the freeze counter are started only with it (`arm()`, `watchFreezes()` behind `ON`) |
 
 ## The five sizing lines (§7.0)
 

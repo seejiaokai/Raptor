@@ -192,5 +192,24 @@ describe('timed from the press as the browser received it, not from when the app
   })
 })
 
+/* THE WALK OF 24 NOV 26 (chat 164, W14): a page file asked about again and told "unchanged" comes with no body and
+   only its answer's header — it was not downloaded, and must not read "downloaded 0 KB" */
+describe('what came down the line for the Leave War', () => {
+  it('counts a file that came with its body; never one the site answered "unchanged"', () => {
+    const entries = [
+      { name: 'http://x/assets/LeaveWarPage-a.js', startTime: 10, responseEnd: 60, transferSize: 300, encodedBodySize: 0 },
+      { name: 'http://x/assets/LeaveWarPage-b.css', startTime: 10, responseEnd: 60, transferSize: 5_300, encodedBodySize: 5_000 },
+    ]
+    const was = performance.getEntriesByType
+    ;(performance as any).getEntriesByType = (t: string) => (t === 'resource' ? entries : [])
+    try {
+      section('viewsched'); section('leavewar', false)
+      at(0); timingMark({ kind: 'page', page: 'leavewar', t: 0 })
+      at(100); show('leavewar'); step(3)
+      expect(got.filter(e => e.kind === 'page').map(e => e.kind === 'page' ? e.downloaded : -1)).toEqual([5_300])
+    } finally { (performance as any).getEntriesByType = was }
+  })
+})
+
 /* the sign-in's landing window closes with the task that made the sign-in mark (a timer of 0 in the app) */
 function await0() { flushLandingForTest() }

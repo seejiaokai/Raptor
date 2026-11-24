@@ -5,7 +5,27 @@
    of a second reads "under 0.1 s", never "0.0 s". Pure: no page, no clock — the readout hands it what it measured. */
 
 export type Freezes = { supported: boolean, n: number, total: number, max: number }
-export type Files = { supported: boolean, n: number, bytes: number, kept: number, asked: number }
+/** `sized`: the browser gave every file's size (false where one was asked about again and told "unchanged") */
+export type Files = { supported: boolean, n: number, bytes: number, kept: number, asked: number, sized?: boolean }
+
+/** The app's files as the browser reports them (its resource list, the window's own files left out by the caller).
+ *  A file used from the browser's memory without asking: nothing came down the line (0), its body's size known. A file
+ *  ASKED ABOUT AGAIN and told "unchanged" — as Vercel answers a return visit: Chromium gives no body (0) and only the
+ *  answer's header (about 300 bytes), under an ordinary status; it was kept, and its size is not given (the walk of
+ *  24 Nov 26, W14 — read as "0 of 15 kept, 4 KB"). An older way some browsers report it (the header and the kept body's
+ *  size, the header the smaller) is read the same. */
+export function filesOf(list: { transferSize?: number, encodedBodySize?: number }[]): Files {
+  const supported = list.length > 0 && list.every(e => typeof e.transferSize === 'number')
+  let bytes = 0, kept = 0, asked = 0, sized = true
+  for (const e of list) {
+    const t = e.transferSize || 0, b = e.encodedBodySize || 0
+    bytes += b
+    if (t === 0 && b > 0) kept++
+    else if (t > 0 && b === 0) { kept++; asked++; sized = false }
+    else if (t > 0 && t < b) { kept++; asked++ }
+  }
+  return { supported, n: list.length, bytes, kept, asked, sized }
+}
 export type Env = {
   browser: { name: string | null, version: string | null }
   cores: number | null
@@ -84,7 +104,7 @@ export function readoutSections(v: TimingView): Section[] {
     { label: 'Brief freezes', value: !f.supported ? notGiven(by) : f.n === 0 ? 'none' : `${f.n} · ${secs(f.total)} in all` },
     { label: 'Longest freeze', value: !f.supported ? notGiven(by) : f.n === 0 ? 'none' : secs(f.max) },
     /* a size the browser does not give is said so, never "0 KB" (Astra's read, 7) */
-    { label: 'App files used', value: v.files.n === 0 ? notGiven(by) : v.files.bytes > 0 ? `${v.files.n} · ${kb(v.files.bytes)}` : `${v.files.n} · size ${notGiven(by)}` },
+    { label: 'App files used', value: v.files.n === 0 ? notGiven(by) : v.files.bytes > 0 && v.files.sized !== false ? `${v.files.n} · ${kb(v.files.bytes)}` : `${v.files.n} · size ${notGiven(by)}` },
     { label: 'Kept from an earlier visit', value: !v.files.supported ? notGiven(by) : `${v.files.kept} of ${v.files.n}` },
     { label: 'Processor · memory', value: `${cores} · ${mem}` },
     { label: 'Screen · browser', value: `${v.env.screen} · ${by || 'not known'}` },

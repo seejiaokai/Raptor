@@ -47,7 +47,7 @@ export const PHONE = { viewport: { width: 390, height: 844 }, isMobile: true, ha
 /* the press's own moment, read inside the page (the guide's §5: a response is timed from the press) — the click's or
    the Enter's own time stamp, the moment the browser received it, so a press the busy page heard late is counted whole
    (the first run's lesson: a watch started by a later call from here began only once the busy page let it in) */
-const PRESS = `(() => { const w = window; w.__tw = { press: null, done: null, want: null };
+export const PRESS = `(() => { const w = window; w.__tw = { press: null, done: null, want: null };
   addEventListener('click', e => { w.__tw.press = e.timeStamp }, true);
   addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') w.__tw.press = e.timeStamp }, true);
   const ready = p => {
@@ -153,7 +153,7 @@ export async function openWindow(page) {
 }
 /** What lies on top at a point — a press there lands on it (the order's §6, a floating surface) */
 export function topAt(page, x, y) {
-  return page.evaluate(([x, y]) => { const e = document.elementFromPoint(x, y); if (!e) return null; const w = e.closest('.floatwin, .timing-pill, .drawer, .modal, [role=dialog], #schedBoard, .save-band, .ssband, header, nav'); return (w ? (w.id || w.className.toString().split(' ')[0]) : '') + ' > ' + e.tagName + (e.id ? '#' + e.id : '') + '.' + String(e.className).split(' ')[0] }, [x, y])
+  return page.evaluate(([x, y]) => { const e = document.elementFromPoint(x, y); if (!e) return null; const w = e.closest('.floatwin, .timing-pill, .drawer, .modal, [role=dialog], #schedBoard, .save-band, .ssband, header, nav'); return (w ? (w.id || w.className.toString().split(' ').join('.')) : '') + ' > ' + e.tagName + (e.id ? '#' + e.id : '') + '.' + String(e.className).split(' ').join('.') }, [x, y])
 }
 
 /* --------------------------------------------------------------------------------------------------- reporting */

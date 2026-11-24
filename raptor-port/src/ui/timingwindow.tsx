@@ -9,7 +9,7 @@ import type { createRoot as createRootT } from 'react-dom/client'
 import type { phoneLayout as phoneLayoutT } from './floatwin'
 import type { FREEZES as FREEZEST, timingSink as timingSinkT, TimingEvent } from './timing'
 import { makeTimingReadout, type ReadoutParts } from './TimingReadout'
-import { browserOf, type Files, type PageRow, type TimingView } from './timingtext'
+import { browserOf, filesOf, type Files, type PageRow, type TimingView } from './timingtext'
 
 /** Everything this file and the window need from the app, handed over by main.tsx — never imported: an import of any
  *  of them split the app's own first download from 15 files into 19 (the walk of 24 Nov 26, W1; TimingReadout.tsx's
@@ -64,18 +64,8 @@ function appFiles(): PerformanceResourceTiming[] {
   return (performance.getEntriesByType('resource') as PerformanceResourceTiming[])
     .filter(e => { try { const u = new URL(e.name); return u.origin === location.origin && /\.(js|css)$/.test(u.pathname) && !OWN_FILES.test(u.pathname) } catch { return false } })
 }
-function filesNow(): Files {
-  const all = appFiles()
-  const supported = all.length > 0 && all.every(e => typeof e.transferSize === 'number')
-  let bytes = 0, kept = 0, asked = 0
-  for (const e of all) {
-    bytes += e.encodedBodySize || e.transferSize || 0
-    /* kept and used without asking: nothing came down the line; asked again and told "unchanged": only its headers did */
-    if (e.transferSize === 0 && e.encodedBodySize > 0) kept++
-    else if (e.transferSize > 0 && e.transferSize < e.encodedBodySize) { kept++; asked++ }
-  }
-  return { supported, n: all.length, bytes, kept, asked }
-}
+/* kept, asked about again, and their sizes: timingtext.ts filesOf (a file told "unchanged" is kept, its size not given) */
+const filesNow = (): Files => filesOf(appFiles())
 function siteAnswered(): number | null {
   const nav = typeof performance !== 'undefined' && performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined : undefined
   return nav && nav.responseStart > 0 ? nav.responseStart : null

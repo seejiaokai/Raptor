@@ -96,13 +96,14 @@ function watch(t0: number, state: () => 'shown' | 'failed' | 'waiting', alive: (
 }
 
 /** what came down the line for the app's own code and styles while a page was awaited (its own download, or the
- *  background fetch of it still arriving) — never the window's own files */
+ *  background fetch of it still arriving) — never the window's own files, and never a file the site answered
+ *  "unchanged": it comes with no body, only its answer's header, and was not downloaded (the walk of 24 Nov 26, W14) */
 function downloadedBetween(t0: number, t1: number): number {
   if (typeof performance === 'undefined' || !performance.getEntriesByType) return 0
   let b = 0
   for (const e of performance.getEntriesByType('resource') as PerformanceResourceTiming[]) {
     if (!/\.(js|css)(\?|$)/.test(e.name) || /timingwindow|TimingReadout/i.test(e.name)) continue
-    if (e.responseEnd >= t0 && e.startTime <= t1) b += e.transferSize || 0
+    if (e.responseEnd >= t0 && e.startTime <= t1 && e.encodedBodySize > 0) b += e.transferSize || 0
   }
   return b
 }

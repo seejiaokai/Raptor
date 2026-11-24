@@ -1323,3 +1323,16 @@ sides.
 **Issue:** The plan's script waited for the loading overlay anywhere in the document; the in-app version, rewritten from memory, looked for it inside the page's own section, where it never is. Both blind scenario designers found it by reading before any walk; unit tests written by the builder had passed because they modelled the builder's assumption.
 **Suggested improvement:** When code reimplements an existing measuring script's end condition, copy its selectors and conditions verbatim, cite the script's line, and pin the condition with a test built from the real component's DOM shape (where the overlay is actually appended), not from the builder's picture of it.
 **Principle:** An instrument rebuilt from memory of a working one silently changes what it measures; carry the proven condition over word for word and test it against the real structure.
+
+### Observation 1046: A walk's outside stopwatch started by the test runner misses the wait a busy page imposes
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 164, the walk of the hidden ?timing readout (comparing its figures against an outside stopwatch at 4x CPU slow-down)
+**Skill:** New skill candidate: walk scripts (raptor-port/docs/walk-scripts.md §5, "A response is timed from the press")
+**Type:** open-source
+**Phase/Area:** timing a response from the press
+
+**Issue:** The first outside stopwatch read performance.now() in a capture-phase pointerdown listener, then started its frame watch with a later page.evaluate. On a busy page both start late: the listener ran 0.78 s after the tap once, and the evaluate queued behind long tasks, so its end came late too. The comparison then blamed the readout for a gap that was the stopwatch's own, and hid a real fault (the readout also started at the handler, missing the same wait).
+**Suggested improvement:** In §5's "A response is timed from the press", take the start from the event's own timeStamp (the moment the browser received the press, on performance.now()'s clock), and arm the frame watch inside the page BEFORE the press, so every frame from the press on looks.
+**Principle:** Time a response from when the input arrived, not from when a busy main thread got to it, and start watching before the action, never after it returns.

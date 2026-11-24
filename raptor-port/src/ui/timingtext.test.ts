@@ -3,7 +3,7 @@
    sign-in is a length ("took"); a figure a browser does not give says so by name, never a blank or a 0; a time under a
    twentieth of a second never reads "0.0 s". */
 import { describe, expect, it } from 'vitest'
-import { browserOf, copyText, kb, notGiven, readoutSections, secs, stamp, type TimingView } from './timingtext'
+import { browserOf, copyText, filesOf, kb, notGiven, readoutSections, secs, stamp, type TimingView } from './timingtext'
 
 const view = (over: Partial<TimingView> = {}): TimingView => ({
   site: 300, app: 812, first: { screen: 'signin', t: 840 }, signin: 1700,
@@ -134,5 +134,29 @@ describe('Copy all', () => {
   it('names no person: nothing in it but page names, times, sizes and the computer', () => {
     const t = copyText(view(), new Date(2026, 10, 24, 14, 5))
     for (const w of ['Saber', 'admin', 'Warden', '@']) expect(t).not.toContain(w)
+  })
+})
+
+/* THE WALK OF 24 NOV 26 (chat 164, W14): on a reload every file was asked about again and the site answered "unchanged"
+   — as Vercel answers a return visit — and the window read "Kept from an earlier visit: 0 of 15" and "App files used:
+   15 · 4 KB". Chromium reports such a file with no body (0) and only its answer's header (about 300 bytes), under an
+   ordinary status. Those files were kept; their size the browser does not give. */
+describe('the app\'s files, as the browser reports them', () => {
+  const e = (transferSize: number, encodedBodySize: number) => ({ transferSize, encodedBodySize })
+  it('a first visit: every file came down the line — none kept, the sizes added', () => {
+    expect(filesOf([e(230_883, 230_583), e(7782, 7482)])).toEqual({ supported: true, n: 2, bytes: 238_065, kept: 0, asked: 0, sized: true })
+  })
+  it('asked again and told "unchanged": kept, asked about, its size not given — never counted as 300 bytes', () => {
+    const f = filesOf([e(300, 0), e(300, 0), e(300, 0)])
+    expect(f).toEqual({ supported: true, n: 3, bytes: 0, kept: 3, asked: 3, sized: false })
+    const rows = rowsOf(view({ files: f, env: { ...view().env, browser: { name: 'Chrome', version: '151' } } }))
+    expect(rows.find(x => x[0] === 'App files used')![1]).toBe('3 · size not given by Chrome')
+    expect(rows.find(x => x[0] === 'Kept from an earlier visit')![1]).toBe('3 of 3')
+  })
+  it('used from the browser\'s own memory without asking: kept, its size known', () => {
+    expect(filesOf([e(0, 5000), e(400, 0)])).toEqual({ supported: true, n: 2, bytes: 5000, kept: 2, asked: 1, sized: false })
+  })
+  it('a browser that gives no sizes at all (no transfer figure) cannot tell', () => {
+    expect(filesOf([{} as any, {} as any]).supported).toBe(false)
   })
 })
