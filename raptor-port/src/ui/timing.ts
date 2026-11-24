@@ -1,7 +1,7 @@
 /* THE ?timing SWITCH AND ITS STOPWATCH (owner D2481, D2483 — [APP-SPEED] step 1, 24 Nov 26). Adding `?timing` to the
    app's address opens a window of how long the app took to start and to open each page ON THIS COMPUTER, so the slow
    office computer is measured itself, not only the 4× slowed stand-in. WITHOUT THE SWITCH NOTHING HERE RUNS: no mark is
-   kept, no watcher or listener is started, the window (ui/TimingReadout.tsx, a download of its own) is never fetched,
+   kept, no watcher or listener is started, the window (ui/timingwindow.tsx and TimingReadout.tsx, a download of its own) is never fetched,
    nothing is drawn or saved. It shows nothing about any person and writes nothing to storage. Read once, at load, like
    `?savefail` (D1666).
 
@@ -101,7 +101,7 @@ function downloadedBetween(t0: number, t1: number): number {
   if (typeof performance === 'undefined' || !performance.getEntriesByType) return 0
   let b = 0
   for (const e of performance.getEntriesByType('resource') as PerformanceResourceTiming[]) {
-    if (!/\.(js|css)(\?|$)/.test(e.name) || /TimingReadout/.test(e.name)) continue
+    if (!/\.(js|css)(\?|$)/.test(e.name) || /timingwindow|TimingReadout/i.test(e.name)) continue
     if (e.responseEnd >= t0 && e.startTime <= t1) b += e.transferSize || 0
   }
   return b

@@ -40,7 +40,7 @@ async function boot(): Promise<void> {
   /* the ?timing readout's mark (D2481): the app's code has loaded and starts; and the readout itself, a download of its
      own, fetched ONLY behind the switch — without it, no part of the readout reaches the browser */
   timingMark({ kind: 'boot', t: timingNow() })
-  if (timingOn()) void import('./ui/TimingReadout').then(m => m.startTimingReadout()).catch(() => { /* a readout that cannot load costs the app nothing */ })
+  if (timingOn()) void import('./ui/timingwindow').then(m => m.startTimingReadout()).catch(() => { /* a readout that cannot load costs the app nothing */ })
   setToast(toast)
   HOOKS.toastBatch = toastBatch   // one press, one message — only the publish command opens one ([AMEND-SMALL-SEEN] 1)
   const { postman } = await bootApp(chooseBackend(), bootPolicyFrom(import.meta.env as any))

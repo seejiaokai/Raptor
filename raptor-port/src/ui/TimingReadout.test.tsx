@@ -23,7 +23,7 @@ beforeEach(() => { host = document.createElement('div'); document.body.appendChi
 afterEach(() => { act(() => root.unmount()); host.remove(); vi.useRealTimers() })
 
 function draw(view: TimingView, startOpen: boolean, copy = vi.fn(async () => true)) {
-  act(() => root.render(<TimingReadout read={() => view} subscribe={() => () => {}} startOpen={startOpen} copy={copy} now={() => new Date(2026, 10, 24, 14, 5)} />))
+  act(() => root.render(<TimingReadout read={() => view} subscribe={() => () => {}} version={() => 0} startOpen={startOpen} copy={copy} now={() => new Date(2026, 10, 24, 14, 5)} />))
   return copy
 }
 const win = () => document.querySelector('.floatwin.timingwin')

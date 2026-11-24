@@ -56,8 +56,8 @@ describe('where the app wires it', () => {
   const src = (f: string) => readFileSync(join(__dirname, f), 'utf8')
   it('the readout is downloaded only behind the switch — never part of the app\'s first download', () => {
     const main = src('../main.tsx')
-    expect(main).toMatch(/if \(timingOn\(\)\)[^\n]*import\('\.\/ui\/TimingReadout'\)/)
-    for (const f of ['../main.tsx', 'Shell.tsx', 'App.tsx', 'Login.tsx', '../state/view.ts']) expect(src(f), f).not.toMatch(/from '\.\/TimingReadout'|from '\.\.\/ui\/TimingReadout'|from '\.\/ui\/TimingReadout'/)
+    expect(main).toMatch(/if \(timingOn\(\)\)[^\n]*import\('\.\/ui\/timingwindow'\)/)
+    for (const f of ['../main.tsx', 'Shell.tsx', 'App.tsx', 'Login.tsx', '../state/view.ts']) expect(src(f), f).not.toMatch(/from '(\.\/|\.\.\/ui\/|\.\/ui\/)(TimingReadout|timingwindow)'/)
   })
   it('the sign-in is marked only once the name and password are accepted', () => {
     const login = src('Login.tsx')

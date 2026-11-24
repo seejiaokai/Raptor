@@ -17,7 +17,8 @@ export type Env = {
   /** how long the tab has been open (ms) — so a count of freezes has its span (Fable F10) */
   openFor: number
 }
-export type PageRow = { name: string, first: boolean, ms: number, downloaded: number }
+/** `id`: the row's own number, its identity in the list (the same page opened twice is two rows) */
+export type PageRow = { id?: number, name: string, first: boolean, ms: number, downloaded: number }
 export type TimingView = {
   /** the site's first answer, from opening the address (ms), or null where the browser does not say */
   site: number | null
@@ -32,7 +33,7 @@ export type TimingView = {
   files: Files
   env: Env
 }
-export type Row = { label: string, tag?: string, value: string, gap?: boolean }
+export type Row = { key: string, label: string, tag?: string, value: string, gap?: boolean }
 export type Section = { head: string, rows: Row[], empty?: string }
 
 export function secs(ms: number): string {
@@ -63,13 +64,15 @@ export function readoutSections(v: TimingView): Section[] {
   const by = v.env.browser.name
   /* a point on the start-up's clock; under a twentieth of a second it reads "under 0.1 s", never "at under 0.1 s" */
   const atS = (ms: number) => (ms < 50 ? secs(ms) : 'at ' + secs(ms))
-  const start: Row[] = [
+  type R = Omit<Row, 'key'>
+  const start: R[] = [
     { label: 'Site answered', value: v.site == null ? notGiven(by) : atS(v.site) },
     { label: 'App loaded', value: v.app == null ? 'not yet' : atS(v.app) },
     { label: 'Sign-in shown', value: !v.first ? 'not yet' : v.first.screen === 'signin' ? atS(v.first.t) : 'not shown' },
     { label: 'Sign in pressed → week shown', value: v.signin == null ? 'not yet' : 'took ' + secs(v.signin), gap: true },
   ]
-  const pages: Row[] = v.pages.map(p => ({
+  const pages: Row[] = v.pages.map((p, i) => ({
+    key: 'p' + (p.id ?? 'n' + i),
     label: p.name,
     tag: p.first ? 'first time' + (p.downloaded > 0 ? ' · downloaded ' + kb(p.downloaded) : '') : 'opened before',
     value: secs(p.ms),
@@ -77,7 +80,7 @@ export function readoutSections(v: TimingView): Section[] {
   const f = v.freezes
   const mem = v.env.memGB == null ? 'memory ' + notGiven(by) : v.env.memGB >= 8 ? '8 GB or more' : v.env.memGB + ' GB'
   const cores = v.env.cores == null ? 'cores ' + notGiven(by) : v.env.cores + ' cores'
-  const computer: Row[] = [
+  const computer: R[] = [
     { label: 'Brief freezes', value: !f.supported ? notGiven(by) : f.n === 0 ? 'none' : `${f.n} · ${secs(f.total)} in all` },
     { label: 'Longest freeze', value: !f.supported ? notGiven(by) : f.n === 0 ? 'none' : secs(f.max) },
     /* a size the browser does not give is said so, never "0 KB" (Astra's read, 7) */
@@ -87,9 +90,9 @@ export function readoutSections(v: TimingView): Section[] {
     { label: 'Screen · browser', value: `${v.env.screen} · ${by || 'not known'}` },
   ]
   return [
-    { head: 'Start-up, from opening the address', rows: start },
+    { head: 'Start-up, from opening the address', rows: start.map(r => ({ ...r, key: r.label })) },
     { head: 'Pages opened, newest first', rows: pages, empty: pages.length ? undefined : 'No page opened yet' },
-    { head: 'This computer', rows: computer },
+    { head: 'This computer', rows: computer.map(r => ({ ...r, key: r.label })) },
   ]
 }
 
