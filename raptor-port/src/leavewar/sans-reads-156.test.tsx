@@ -44,7 +44,9 @@ const signInAs = (name: string, pass = 'x') => { resetSession(sessionFor(signIn(
 const WED = '2026-07-15', THU = '2026-07-16', FRI = '2026-07-17', SAT = '2026-07-18', SUN = '2026-07-19', MON20 = '2026-07-20', FRI24 = '2026-07-24'
 const SATI = 5, SUNI = 6
 const at = (y: number, m: number, d: number) => vi.setSystemTime(new Date(y, m - 1, d, 9, 0, 0))
-const plan = (di: number, id = 'rocky') => { (DAYS[di] as any).ground.push({ prog: 'BRIEFING', str: '1600', end: '1700', who: id }); afterSchedMutate() }
+/* (planned = in a flying seat or a sim, his D2564 of 24 Nov 26: this helper put him on a ground briefing, which the first
+   build counted and his rule does not — an OFT's rear seat now; a ground row naming no day: sans-planned-r5.test.ts) */
+const plan = (di: number, id = 'rocky') => { const d: any = DAYS[di]; d.sims = d.sims || {}; (d.sims.oft = d.sims.oft || []).push({ label: 'SIM', str: '1600', end: '1700', p: '', w: id }); afterSchedMutate() }
 const draft = (start: string, end?: string, person = 'rocky') => ({ _new: true, person, type: 'SANS Availability', start, ...(end ? { end } : {}), allday: true, s: 360, e: 1080, sans: { f: true } })
 const mine = () => INPUTS.filter((r: any) => r.type === 'SANS Availability' && idsOf(r).map(String).includes('rocky'))
 const toasts: string[] = []
@@ -539,7 +541,13 @@ describe('R2-6 — Saber posts Hex SANS, Hex reads, Saber presses Undo on the to
 
 /* R2-2 (Astra F3 = the Opus read's R1 = Fable's RE-READ 1): a held week ahead is worked out with the requests as they stand
    now (engine/overlay.ts viewOfWeek), so what it names must follow them, not only its saved copy */
-describe('R2-2 — the held weeks ahead follow the requests landed on them', () => {
+/* RE-PINNED BY HIS D2564 (24 Nov 26, round 5): each case here had a Meeting put a day in his reminder and its deleting take
+   the day out — the first build's reading of "planned", any row he was named on. A Meeting lands on the ground programme,
+   which SANS availability does not cover, so it names no day at any step: each "his reminder names it" below now reads
+   "does not", the steps kept. What the saved week holds of him (`heldNow`, the busy read — engine/avail.ts dayEngaged)
+   still follows the requests, as ALL AVAIL and the crew list need; the reminder no longer reads it. The cases that a
+   request leaves the reminder's saved weeks unread: sans-held-weeks-r5.test.tsx. */
+describe('R2-2 — the held weeks ahead follow the requests landed on them (the reminder no longer does: D2564)', () => {
   const heldNow = (pid = 'rocky'): string[] => {
     const out: string[] = []
     for (const wk of stashKeys()) (stashDays(wk)?.days || []).forEach((d: any, i: number) => { if (d && (dayEngaged(d) as Set<string>).has(pid) && !sansAvailOn(pid, d.dt)) out.push(dayIso(wk, i)) })
@@ -547,7 +555,7 @@ describe('R2-2 — the held weeks ahead follow the requests landed on them', () 
   }
   const meeting = (iso: string) => commitNewInput({ person: 'rocky', type: 'Meeting', start: iso, allday: false, sTime: '09:00', eTime: '10:00', remarks: 'RE-READ' } as any)
   afterEach(() => { loadWeek('13/07/2026'); raptorNotify() })
-  it('Astra F3: a Meeting deleted from Inputs while another week is loaded leaves his reminder; Undo and Redo follow', () => {
+  it('Astra F3: a Meeting, deleted from Inputs while another week is loaded, then Undo and Redo — never in his reminder (D2564); the saved week follows it', () => {
     ticked()
     loadWeek('27/07/2026'); raptorNotify()
     expect(commitNewInput({ ...draft('2026-07-28'), type: 'Meeting', allday: false, sTime: '16:00', eTime: '17:00', sans: null, remarks: 'R2 meeting', docIds: [] } as any, true)).toBe(true)
@@ -556,43 +564,43 @@ describe('R2-2 — the held weeks ahead follow the requests landed on them', () 
     expect(rec).toBeTruthy()
     plan(0, 'bane')
     loadWeek('13/07/2026'); raptorNotify()
-    expect(sansUnfiledDays('rocky')).toContain('2026-07-28')
+    expect(sansUnfiledDays('rocky')).not.toContain('2026-07-28')
     const blob = stashGet('27/07/2026')
     removeInput(rec); raptorNotify()
     expect(stashGet('27/07/2026')).toBe(blob)
     expect((dayEngaged(stashDays('27/07/2026')!.days[1]) as Set<string>).has('rocky')).toBe(false)
     expect(sansUnfiledDays('rocky')).not.toContain('2026-07-28')
     expect(globalUndo().ok).toBe(true); raptorNotify()
-    expect(sansUnfiledDays('rocky')).toContain('2026-07-28')
+    expect(sansUnfiledDays('rocky')).not.toContain('2026-07-28')
     expect(globalRedo().ok).toBe(true); raptorNotify()
     expect(sansUnfiledDays('rocky')).not.toContain('2026-07-28')
   })
-  it('the Opus read\'s R1: a Meeting on Wed 29 Jul (a saved week ahead) deleted — his reminder no longer lists Wed 29', () => {
+  it('the Opus read\'s R1: a Meeting on Wed 29 Jul (a saved week ahead), then deleted — his reminder never lists Wed 29 (D2564)', () => {
     loadWeek('27/07/2026'); plan(0); loadWeek('13/07/2026'); raptorNotify()
     expect(commitNewInput({ _new: true, person: 'rocky', type: 'Meeting', start: '2026-07-29', allday: true, s: 360, e: 1080 } as any)).toBe(true); raptorNotify()
     const meet = INPUTS.find((r: any) => r.type === 'Meeting' && idsOf(r).map(String).includes('rocky'))
     expect(meet).toBeTruthy()
     expect((dayEngaged(stashDays('27/07/2026')!.days[2]) as Set<string>).has('rocky')).toBe(true)
     ticked()
-    expect(sansUnfiledDays('rocky')).toContain('2026-07-29')
+    expect(sansUnfiledDays('rocky')).not.toContain('2026-07-29')
     removeInput(meet); raptorNotify()
     expect((dayEngaged(stashDays('27/07/2026')!.days[2]) as Set<string>).has('rocky')).toBe(false)
     expect(sansUnfiledDays('rocky')).not.toContain('2026-07-29')
   })
-  it('Fable 1a: a meeting filed for Hex on Thu 23 Jul, in the held week of Mon 20 Jul — his reminder names Thu 23', () => {
+  it('Fable 1a: a meeting filed for Hex on Thu 23 Jul, in the held week of Mon 20 Jul — he is busy that day, and his reminder does not name it (D2564)', () => {
     loadWeek('13/07/2026'); expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
     loadWeek('20/07/2026'); plan(1, 'bane'); loadWeek('13/07/2026'); raptorNotify()
     expect(sansUnfiledDays('rocky')).not.toContain('2026-07-23')
     expect(meeting('2026-07-23')).toBe(true); raptorNotify()
     expect(heldNow()).toContain('2026-07-23')
-    expect(sansUnfiledDays('rocky')).toContain('2026-07-23')
+    expect(sansUnfiledDays('rocky')).not.toContain('2026-07-23')
   })
-  it('Fable 1b: …and that meeting deleted — his reminder no longer names it', () => {
+  it('Fable 1b: …and that meeting deleted — his reminder names it neither before nor after (D2564)', () => {
     loadWeek('13/07/2026'); expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
     loadWeek('20/07/2026'); plan(1, 'bane'); loadWeek('13/07/2026'); raptorNotify()
     expect(meeting('2026-07-24')).toBe(true); raptorNotify()
     loadWeek('20/07/2026'); plan(2, 'bane'); loadWeek('13/07/2026'); raptorNotify()
-    expect(sansUnfiledDays('rocky')).toContain('2026-07-24')
+    expect(sansUnfiledDays('rocky')).not.toContain('2026-07-24')
     removeInput(INPUTS.find((r: any) => r.type === 'Meeting' && r.remarks === 'RE-READ')); raptorNotify()
     expect(heldNow()).not.toContain('2026-07-24')
     expect(sansUnfiledDays('rocky')).not.toContain('2026-07-24')

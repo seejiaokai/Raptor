@@ -85,6 +85,25 @@ export function dayEngaged(d:any,standbyFree?:any){const s=new Set(),add=(id:any
   (d.allhands||[]).forEach((x:any)=>{if(x.cx)return;if(x.info)return;(Array.isArray(x.who)?x.who:(x.who?[x.who]:[])).forEach((w:any)=>add(whoId(w)));more(x);});
   ['amt','oft'].forEach((k:any)=>((d.sims||{})[k]||[]).forEach((o:any)=>{if(!o.cx)more(o);}));
   return s;}
+/* WHO STANDS WHERE SANS AVAILABILITY IS ASKED, ON A DAY (owner D2564, 24 Nov 26 — "the SANS reminder counts a day as
+   planned only where he is in a flying seat or a sim (OFT, AMT) with nothing filed … never a ground programme row, a duty
+   desk or all hands"). SANS availability is filed for three things only — Fly, OFT, AMT — and two readers already asked
+   it of exactly those places: the checks (validate.ts sansChecks: the day's flying list and its `s:…amt` / `s:…oft`
+   entries, as events.ts buildDay collects them) and an armed seat (slotBar's SANS block, below: a flying key or a sim key,
+   a spare-like seat carved out). A third, the man's own reminder (leavewar/sansunfiled.ts), read dayEngaged instead —
+   every row he is busy on — on a builder's reading of "planned" that was never put to him (docs/bug-check-order.md §7.11,
+   lesson 32). This is the question as a function of the DAY alone, for a reader with no loaded week to ask the other two
+   through (a saved week held by the reminder): every man in a flying seat that is not cancelled and not exempt — the
+   checks' own test, waves.ts saExempt: an SC SPARE and a whole AVALON / BB wave stand by, unless the row flies — and
+   every man on an OFT or AMT row that is not cancelled, in a seat, as a passenger or dropped under it. Whether the row
+   has its times typed is not asked: he is in the seat either way. NOT dayEngaged, which answers "is he busy" for the crew
+   list's fade and ALL AVAIL, and is left as it is. leavewar/sans-planned-r5.test.ts holds this to the other two on the
+   same days, so the three cannot drift apart unseen. Port-only. */
+export function daySansSeats(d:any){const s=new Set(),add=(id:any)=>{if(id&&PEOPLE[id]&&!PEOPLE[id].special)s.add(id);};
+  ((d&&d.waves)||[]).forEach((w:any)=>((w&&w.formations)||[]).forEach((f:any)=>{if(!f||f.cx)return;((f.aircraft)||[]).forEach((a:any)=>{
+    if(!a||a.cx||saExempt(w,f,a))return;add(a.p);add(a.w);});}));
+  ['amt','oft'].forEach((k:any)=>(((d&&d.sims)||{})[k]||[]).forEach((o:any)=>{if(!o||o.cx)return;add(o.p);add(o.w);(o.pax||[]).forEach(add);(o.more||[]).forEach(add);}));
+  return s;}
 /* AWAY, split by whether the absence closes the DAY or only some HOURS
    (10 Aug 26, for the AM/PM half-days). Built in ONE pass because the palette
    asks about sixty people and sixty scans of the same list is the shape this

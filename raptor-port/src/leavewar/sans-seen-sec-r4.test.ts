@@ -36,7 +36,9 @@ beforeEach(() => {
 })
 const SATI = 5, SUNI = 6, SAT = '2026-07-18', SUN = '2026-07-19'
 // any: a day of the engine's week is untyped (a verbatim port, src/engine/data.ts)
-const plan = (di: number, id = 'rocky') => { (DAYS[di] as any).ground.push({ prog: 'BRIEFING', str: '1600', end: '1700', who: id }); afterSchedMutate() }
+/* (planned = in a flying seat or a sim, his D2564 of 24 Nov 26: this helper put him on a ground briefing, which the first
+   build counted and his rule does not — an OFT's rear seat now; a ground row naming no day: sans-planned-r5.test.ts) */
+const plan = (di: number, id = 'rocky') => { const d: any = DAYS[di]; d.sims = d.sims || {}; (d.sims.oft = d.sims.oft || []).push({ label: 'SIM', str: '1600', end: '1700', p: '', w: id }); afterSchedMutate() }
 const due = () => noticesFor('rocky').filter((n: Notice) => String((n.what || [])[0]?.k) === 'sansdue')
 /* Hex's device, reading his read record as saved (a reload, or his phone beside his PC) */
 const hexSees = () => { signInAs('hex'); noticeSeenLoad(); raptorNotify(); return due().filter(n => isUnread(n, 'rocky')).length }

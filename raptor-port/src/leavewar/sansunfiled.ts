@@ -9,13 +9,18 @@
    THE AGENT'S READINGS, TOLD TO HIM (D2338's row): the man himself only, never an admin's bell; not before the posting's
    date (since D2340, from the moment it is saved — below); one line naming the days. And the build's (his to change): the days are those from the posting's date on, today
    on — a day gone by is no longer one to file — of the weeks the app holds (the week loaded and the saved weeks of his own
-   squadron); "planned with us" is ALL AVAIL's own SANS read, named anywhere on that day's programme (engine/avail.ts
-   dayEngaged); the line is worked out from the schedule as it stands, never stored — the "off the manpower" line's way
+   squadron); the line is worked out from the schedule as it stands, never stored — the "off the manpower" line's way
    (leavewar/sync.ts postedLines, D1690, D1696) — so it shrinks as he files and goes once every day is filed, and goes with
    the posting if it is taken back or his SANS is taken off. Since his D2394 (23 Nov 26) it reaches every SANS man planned
    with nothing filed, however he became SANS (2b), and its id names its days, so once read it stays read while days only
    drop off, or a day he saw comes back, and lights his bell again only for a day not in it when he read it (2a as his
    D2560 of 24 Nov 26 narrowed it — readOf, below).
+   "PLANNED" IS HIS RULING NOW, NOT A READING (his D2564, 24 Nov 26): a day is in the line only where he is in a flying
+   seat or a sim (OFT, AMT) with nothing filed — the only things SANS availability covers, the same the checks and an
+   armed seat ask it of (engine/avail.ts daySansSeats). The first build read it as "named anywhere on that day's
+   programme" (dayEngaged) and said so only here, marked "his to change" and never put to him: a ground programme row, a
+   duty desk or all hands put a day in his reminder that he could file nothing for (docs/bug-check-order.md §7.11,
+   lesson 32).
 
    A NEW FILE, NOT sync.ts (the night of 22–23 Nov 26: another chat's work was changing sync.ts heavily) — the war's half
    is read only here, through its own store; the one line in sync.ts is the bell's list gaining this one. */
@@ -25,7 +30,8 @@ import { CURWEEK } from '../engine/waves'
 import { UNIT } from '../engine/unitview'
 import { stashKeys, stashDays, stashGet } from '../engine/weekstash'
 import { dayIso } from '../engine/verid'
-import { dayEngaged } from '../engine/avail'
+import { daySansSeats } from '../engine/avail'
+import { weekDatesAbs } from '../engine/weeks-data'
 import { sansAvailOn, INPUTS, isSansAvail, namedOf, inputSpanIso } from '../engine/inputs'
 import { homeUnitOf, rosterOf } from '../engine/roster'
 import { getVersion as raptorVersion } from '../state/store'
@@ -38,7 +44,7 @@ import { schedStore, resyncBeforeEnlist, schedApplyEnd } from '../state/sched-co
 import { onPipelineBegin, activeEnvelope, type Txn } from '../command'
 import type { Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
-import { landingSig } from '../engine/overlay'
+import { deletedSig } from '../engine/overlay'
 import { applyingRestore } from '../undo/timeline'
 import { setSansUndoTold } from '../state/perms'
 import { getState } from './state/store'
@@ -110,12 +116,23 @@ const CACHE = new Map<string, string[]>()
    signature the overlay keeps (landingSig), so a reading it grows is in this key by itself.
    …BUT NOT A PLAIN ROW OF THE WEEK ON SCREEN (round 3 — the Opus read's O3-2, measured: about 150 ms over 40 held weeks
    for one briefing row added): only a row a request landed tells a held week anything, so the loaded rows' part names
-   only those (engine/overlay.ts loadedSrcSig). */
+   only those (engine/overlay.ts loadedSrcSig).
+   …AND SINCE HIS D2564 (24 Nov 26, round 5 — Astra's round-4 F1, measured: 14,440 week reads, about 150 ms, for one change
+   of the week on screen over 40 held weeks) NONE OF THE REQUESTS' PARTS, NOR THE WEEK ON SCREEN: the reminder now asks
+   only who is in a flying seat or a sim (daySansSeats), and nothing the reading works out on the way puts a man in one or
+   takes him out — a request lands, moves or leaves a GROUND row only (engine/overlay.ts reconcileRequestRows,
+   landRequests → placeRequestRow), and a man's home squadron only decides whose week that row lands on. The one thing
+   worked out on read that does reach a seat is a deleted man taken off from his cutoff (overlayDeletedWeek), so the men
+   deleted stay in the key, with the squadron in view. The week on screen reached the reading only through each day's
+   LABEL, written under the year on screen ("Dec 28", or "Dec 28 2026" from a 2027 week) and read back to ask what he
+   filed; a held day is now asked by a label that always carries its year (engine/weeks-data.ts weekDatesAbs), which
+   reads the same from any week. So a change of week, a request filed or deleted, a home changed: no held week is read
+   again (leavewar/sans-planned-r5.test.ts counts the reads and holds each answer to a fresh one). */
 // any: a day of the engine's week is untyped (a verbatim port, src/engine/data.ts)
-type Held = { blob: string | null; sig: string; days: any[]; named: Map<number, ReturnType<typeof dayEngaged>> }
+type Held = { blob: string | null; sig: string; days: any[]; named: Map<number, ReturnType<typeof daySansSeats>> }
 const HELD = new Map<string, Held>()
 // any: the same engine day
-let WEEKS: Array<[string, any[], Held['named']]> | null = null
+let WEEKS: Array<[string, any[], Held['named'], string[] | null]> | null = null
 export function sansUnfiledDays(pid: string): string[] {
   const today = effectiveToday()
   let lw: unknown = null
@@ -129,11 +146,13 @@ export function sansUnfiledDays(pid: string): string[] {
   return out
 }
 // any: a day of the engine's week is untyped (a verbatim port, src/engine/data.ts)
-function weeksHeld(today: string): Array<[string, any[], Held['named']]> {
+/* (each entry: the week, its days, who each day seats — kept — and, for a saved week, its days' labels with their year;
+   null for the week on screen, whose days carry their own) */
+function weeksHeld(today: string): Array<[string, any[], Held['named'], string[] | null]> {
   if (WEEKS) return WEEKS
   const cur = String(CURWEEK)
   // any: the engine's loaded week is untyped (a verbatim port)
-  const out: Array<[string, any[], Held['named']]> = [[cur, (DAYS as any[]) || [], new Map()]]
+  const out: Array<[string, any[], Held['named'], string[] | null]> = [[cur, (DAYS as any[]) || [], new Map(), null]]
   const keep = new Set<string>()
   let sig: string | null = null
   for (const k of stashKeys()) {
@@ -141,11 +160,11 @@ function weeksHeld(today: string): Array<[string, any[], Held['named']]> {
     keep.add(k)
     const blob = stashGet(k)
     /* (worked out once a change, and only where a week ahead is held) */
-    sig ??= `${landingSig()}|${cur}|${UNIT}`
+    sig ??= `${deletedSig()}|${UNIT}`
     let h = HELD.get(k)
     /* (a saved week that cannot be read holds nothing to name — stashDays answers null) */
     if (!h || h.blob !== blob || h.sig !== sig) HELD.set(k, h = { blob, sig, days: stashDays(k)?.days || [], named: new Map() })
-    out.push([k, h.days, h.named])
+    out.push([k, h.days, h.named, weekDatesAbs(k)])
   }
   for (const k of [...HELD.keys()]) if (!keep.has(k)) HELD.delete(k)
   WEEKS = out
@@ -163,15 +182,18 @@ function unfiledNow(pid: string, today: string): string[] {
   /* every SANS day of his from today, by either cause (the walk's W11-1, 24 Nov 26): a man ticked SANS today and posted out
      as SANS from a date ahead is SANS now, by the tick — the days before his posting are his too (sansOnP, below) */
   const days: string[] = []
-  for (const [wk, list, namedBy] of weeksHeld(today)) {
+  for (const [wk, list, namedBy, labels] of weeksHeld(today)) {
     // any: the same engine day
     list.forEach((d: any, di: number) => {
       if (!d) return
       const iso = dayIso(wk, di)
       if (iso < today || !sansOnP(p, iso)) return
+      /* PLANNED = IN A FLYING SEAT OR A SIM (his D2564, 24 Nov 26): the only things SANS availability is filed for, and
+         what the checks and an armed seat ask it of — never a ground programme row, a duty desk or all hands, which the
+         first build counted by reading every row he was busy on (engine/avail.ts daySansSeats, and why) */
       let named = namedBy.get(di)
-      if (!named) namedBy.set(di, named = dayEngaged(d))
-      if (!named.has(pid) || sansAvailOn(pid, d.dt)) return
+      if (!named) namedBy.set(di, named = daySansSeats(d))
+      if (!named.has(pid) || sansAvailOn(pid, labels ? labels[di] : d.dt)) return
       days.push(iso)
     })
   }

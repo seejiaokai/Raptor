@@ -42,7 +42,9 @@ const signInAs = (name: string, pass = 'x') => { resetSession(sessionFor(signIn(
 const WED = '2026-07-15', THU = '2026-07-16', FRI = '2026-07-17', SAT = '2026-07-18', SUN = '2026-07-19', MON20 = '2026-07-20', FRI24 = '2026-07-24'
 const SATI = 5, SUNI = 6
 const at = (y: number, m: number, d: number) => vi.setSystemTime(new Date(y, m - 1, d, 9, 0, 0))
-const plan = (di: number, id = 'rocky') => { (DAYS[di] as any).ground.push({ prog: 'BRIEFING', str: '1600', end: '1700', who: id }); afterSchedMutate() }
+/* (planned = in a flying seat or a sim, his D2564 of 24 Nov 26: this helper put him on a ground briefing, which the first
+   build counted and his rule does not — an OFT's rear seat now; a ground row naming no day: sans-planned-r5.test.ts) */
+const plan = (di: number, id = 'rocky') => { const d: any = DAYS[di]; d.sims = d.sims || {}; (d.sims.oft = d.sims.oft || []).push({ label: 'SIM', str: '1600', end: '1700', p: '', w: id }); afterSchedMutate() }
 const draft = (start: string, end?: string, person = 'rocky') => ({ _new: true, person, type: 'SANS Availability', start, ...(end ? { end } : {}), allday: true, s: 360, e: 1080, sans: { f: true } })
 const mine = () => INPUTS.filter((r: any) => r.type === 'SANS Availability' && idsOf(r).map(String).includes('rocky'))
 const toasts: string[] = []
@@ -378,7 +380,7 @@ describe('D2394 Q4, D2421 — the greyed "+ Commitment" words', () => {
    it came into the line but whether he has seen it there. Each case below is kept; four change their answer, each saying
    which way and why. */
 describe('reading 1, as D2560 replaced it — lit only by a day not in the reminder when he read it', () => {
-  const unplan = (di: number, id = 'rocky') => { (DAYS[di] as any).ground = (DAYS[di] as any).ground.filter((g: any) => g.who !== id); afterSchedMutate() }
+  const unplan = (di: number, id = 'rocky') => { (DAYS[di] as any).sims.oft = (DAYS[di] as any).sims.oft.filter((g: any) => !(g.label === 'SIM' && g.w === id)); afterSchedMutate() }
   const dueDays = () => (due()[0]!.what[0] as any).days as string[]
   /* (was dark: the day had been planned before he read. He read a line that named Sun 19 alone — Sat 18 was filed — so
      Sat 18 is a day he has not seen in it: lit, by D2560's words. A filing deleted that brings back a day he DID see stays
@@ -450,7 +452,7 @@ describe('reading 1, as D2560 replaced it — lit only by a day not in the remin
 })
 
 describe('reading 2 — "the reminder had been read" means one standing now, and read', () => {
-  const unplan = (di: number) => { (DAYS[di] as any).ground = (DAYS[di] as any).ground.filter((g: any) => g.who !== 'rocky'); afterSchedMutate() }
+  const unplan = (di: number) => { (DAYS[di] as any).sims.oft = (DAYS[di] as any).sims.oft.filter((g: any) => !(g.label === 'SIM' && g.w === 'rocky')); afterSchedMutate() }
   it('a reminder that already went gives no title later', () => {
     plan(SATI); posted(); hexReads()
     unplan(SATI)

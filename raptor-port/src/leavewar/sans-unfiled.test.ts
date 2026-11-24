@@ -64,7 +64,9 @@ const wsoSeat = (di: number): string => {
   return `${di}.0.0.0.w`
 }
 /* a briefing on a day naming him — "planned with us" (D2329) */
-const plan = (di: number, id: string) => { (DAYS[di] as any).ground.push({ prog: 'BRIEFING', str: '1600', end: '1700', who: id }); afterSchedMutate() }
+/* (planned = in a flying seat or a sim, his D2564 of 24 Nov 26: this helper put him on a ground briefing, which the first
+   build counted and his rule does not — an OFT's rear seat now; a ground row naming no day: sans-planned-r5.test.ts) */
+const plan = (di: number, id: string) => { const d: any = DAYS[di]; d.sims = d.sims || {}; (d.sims.oft = d.sims.oft || []).push({ label: 'SIM', str: '1600', end: '1700', p: '', w: id }); afterSchedMutate() }
 /* his SANS availability, filed for a day */
 const file = (dt: string, id: string) => { INPUTS.push({ iid: `sa-${id}-${dt}`, person: id, date: dt, allday: true, type: 'SANS Availability', sans: { f: true }, mod: 'now' } as any); raptorNotify() }
 const sansLines = (pid: string): Notice[] => noticesFor(pid).filter(n => (n.what || [])[0]?.k === 'sansdue')
