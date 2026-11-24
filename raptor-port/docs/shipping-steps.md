@@ -8,8 +8,8 @@ lands on the short form, which names the section here. The rulings behind each l
 
 ## "Push" and "merge live"
 
-- Push a branch freely; ask before `main`. A branch push changes nothing official and gives him a Vercel link to look
-  at, so it needs no permission; `main` stays gated behind his "merge live" — "push" and "merge live" are not the same
+- Push a branch freely; ask before `main`. A branch push changes nothing official and — when it changes the app; a
+  notes-only push builds nothing (D2032) — gives him a Vercel link to look at, so it needs no permission; `main` stays gated behind his "merge live" — "push" and "merge live" are not the same
   thing (D60, D1407, D1737, D1980).
 - Nothing reaches `main` without his explicit "merge live", whatever the change that touches the app — but a pull
   request that changes only notes goes live by itself once its run is green: the agent checks the file list, merges and
@@ -77,7 +77,7 @@ lands on the short form, which names the section here. The rulings behind each l
 - Vercel is his surface, never your drive target: it sits behind his Vercel sign-in, so he can open it and your
   browser cannot (it answers with a 302 to `vercel.com/sso-api`). Your fast surface is the local
   `npm run build && npx vite preview` — the same bundle, byte for byte (`raptor-port/CLAUDE.md` §Build & verify).
-- The preview is not a gate: `vercel.json` at the repo root builds `raptor-port` for every push, untested, so a red
+- The preview is not a gate: `vercel.json` at the repo root builds `raptor-port` for every push that changes the app — a notes-only push builds nothing (D2032) — untested, so a red
   preview is still just a preview — correctness rides the gates.
 
 ## Ship once per session, at the end (10 Aug 26) — moved whole to `raptor-port/docs/archive/rule-files-2026-11-02.md` (D1556); its live points are in "The loop" and "The checks" (D1086, D1087)
