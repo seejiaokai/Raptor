@@ -389,6 +389,11 @@ export function registerPeopleSettingsCore(loaders: ModuleLoaders, moduleTypes: 
     if (!isCommitting() && FLY_ROW_PREFIXES.some(p => k.startsWith(p))) throw new Error('The flying plan is written only by its typed commands')
     if (!isCommitting() && UNIT_ROW_PREFIXES.some(p => k.startsWith(p))) throw new Error('Units, places, homes and rights are written only by their typed commands')
     if (!isCommitting() && k === 'memberfile') throw new Error('The switch for members filing for other people is written only by its typed command')
+    /* a person's read record (state/noticeseen.ts) is written only by his own `notices.seen` command (docs/data-model.md
+       §11 NoticeSeen): a bare write outside every command was SAVED as it stood, unjudged — an admin wrote his man's record
+       saying he had read a line he never read, and a take-back then left a struck line where D1710 says an unread line
+       simply goes (chat 147's security re-read, SEC2-2 (a)) */
+    if (!isCommitting() && k.startsWith('noticeseen:')) throw new Error('A read record is written only by its own command')
     if (isCommitting() || !(SETTINGS_KEYS as readonly string[]).includes(k)) { raw(key, v); return }
     commitSettings(settingsType(k), () => raw(key, v))
   })

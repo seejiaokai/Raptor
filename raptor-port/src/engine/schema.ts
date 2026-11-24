@@ -133,6 +133,11 @@ export type Person = {
   /** Each earlier stretch of SANS that has ended, `[first day, the day it ended]` — the end day is not a SANS day; a
    *  first day of '' is "from always" — state (`engine/people.ts sansStop`: a tick taken off by hand, an archive). */
   sanWas?: [string, string][]
+  /** The days a SANS POSTING had him fly with us before an archive closed his stint, `[the posting's date, the archive's
+   *  day]` (the end day not one of them) — state, written by the archive from his saved posting (leavewar/sync.ts
+   *  archivePerson); the ALL AVAIL crowd counts him on such a day when he is named and free (D327, D283, D27 — round 4b's
+   *  reads of D2328, 22 Nov 26). Kept apart from his SANS tick, which a hand change can fold or end. */
+  sanPo?: [string, string][]
   /** The squadron his Scheduler tick was given in, and the day (ISO) — state (`state/quals-write.ts` writes them with
    *  the tick; `state/units-model.ts schedTickHolds` reads them: the tick counts there until the start of his move day,
    *  D2160). Absent on a ticked man: the squadron of his first home row, from always. */

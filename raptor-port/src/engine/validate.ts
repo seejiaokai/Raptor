@@ -2050,7 +2050,7 @@ function untouchedKept(){
       const now=[...hidden()].filter((k:any)=>raised.has(k)).sort().join('\n');
       const was=(((snap.w&&snap.w.wo)||[]) as any[]).map(String).filter((k:any)=>raised.has(k)).sort().join('\n');
       if(now!==was)return;}
-    if(snap.pa&&stableJson(peopleAttrsNow(snap.pa,dayIso(String(CURWEEK),di)))!==stableJson(snap.pa))return;
+    if(snap.pa&&stableJson(peopleAttrsNow(snap.pa,dayIso(String(CURWEEK),di),snap))!==stableJson(snap.pa))return;
     if(faceRuleValsCompared(snap.d)&&snap.rv.briefLead!=null&&+snap.rv.briefLead!==+VCONF.briefLead)return;   // the brief it prints reads pending (D186)
     out.push({d,rv:snap.rv});
   });

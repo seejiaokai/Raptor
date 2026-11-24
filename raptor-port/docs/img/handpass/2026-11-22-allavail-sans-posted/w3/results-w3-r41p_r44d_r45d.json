@@ -1,0 +1,401 @@
+[
+ {
+  "scn": "r41",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "r41",
+  "size": "phone",
+  "id": "r41-01",
+  "what": "Admin → Users: New person Quokka, WSO, CAT C, Post in Fri 17 Jul, Add person (read back)",
+  "ok": true,
+  "note": "id pmrldi7976wzk5j {\"cs\":\"Quokka\",\"seat\":\"RCP\",\"san\":false} · post-in box \"Fri 17 Jul 26 ▾\" · note \"Quokka added to the roster — set flight and quals on the Quals page\" · record {\"postIn\":null,\"keys\":[]}",
+  "pics": "r41-r41-01-newperson-form-phone.png, r41-r41-01-newperson-added-phone.png"
+ },
+ {
+  "scn": "r41",
+  "size": "phone",
+  "id": "r41-02",
+  "what": "Quals: WSOs → ✎ Edit → his SANS cell (read back)",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "r41-r41-02-quals-phone.png"
+ },
+ {
+  "scn": "r41",
+  "size": "phone",
+  "id": "r41-03",
+  "what": "Thu 16 Jul board: Quokka offered in the crew list (1 copies)",
+  "ok": null,
+  "note": "",
+  "pics": "r41-03-thu-crew-phone.png"
+ },
+ {
+  "scn": "r41",
+  "size": "phone",
+  "id": "r41-04",
+  "what": "Thu 16 Jul: BRIEF 08:00–09:00 naming Quokka, SQN EVENT 10:00–17:00 for ALL AVAIL (read back)",
+  "ok": true,
+  "note": "{\"g\":{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"pmrldi7976wzk5j\",\"rid\":\"rmrldiflp0sj50v\"},\"a\":{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldiki9daiiyy\"}}",
+  "pics": "r41-04-thu-fixture-phone.png"
+ },
+ {
+  "scn": "r41",
+  "size": "phone",
+  "id": "R4-1.off",
+  "what": "Thu 16 Jul SQN EVENT window: Quokka NOT in — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"21\", window 21 people, Quokka out, pending 0",
+  "pics": "r41-r41-05-off-win-phone.png"
+ },
+ {
+  "scn": "r41",
+  "size": "phone",
+  "id": "R4-1.on",
+  "what": "Thu 16 Jul SQN EVENT window: Quokka NOT in — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"21\", window 21 people, Quokka out, pending 0",
+  "pics": "r41-r41-05-on-win-phone.png"
+ },
+ {
+  "scn": "r41",
+  "size": "phone",
+  "id": "R4-1.off2",
+  "what": "Thu 16 Jul SQN EVENT window: Quokka NOT in — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"21\", window 21 people, Quokka out, pending 0",
+  "pics": "r41-r41-05-off2-win-phone.png"
+ },
+ {
+  "scn": "r41",
+  "size": "phone",
+  "id": "R4-1.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": true,
+  "note": "in: false/false/false · chip/window: 21/21 ; 21/21 ; 21/21"
+ },
+ {
+  "scn": "r41",
+  "size": "phone",
+  "id": "R4-1.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "21/21 ; 21/21 ; 21/21"
+ },
+ {
+  "scn": "r41",
+  "size": "phone",
+  "id": "r42-01",
+  "what": "Sat 18 Jul board: Quokka offered in the crew list (1 copies)",
+  "ok": null,
+  "note": "",
+  "pics": "r41-r42-01-sat-crew-phone.png"
+ },
+ {
+  "scn": "r41",
+  "size": "phone",
+  "id": "r42-02",
+  "what": "Sat 18 Jul: BRIEF 08:00–09:00 naming Quokka, SQN EVENT 10:00–17:00 for ALL AVAIL (read back)",
+  "ok": true,
+  "note": "{\"g\":{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"pmrldi7976wzk5j\",\"rid\":\"rmrldkc5x017xt5\"},\"a\":{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldki4w2jr3i1\"}}",
+  "pics": "r41-r42-02-sat-fixture-phone.png"
+ },
+ {
+  "scn": "r41",
+  "size": "phone",
+  "id": "R4-2.off",
+  "what": "Sat 18 Jul SQN EVENT window: Quokka IN — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"46\", window 46 people, Quokka IN (purple line), pending 0",
+  "pics": "r41-r42-03-off-win-phone.png"
+ },
+ {
+  "scn": "r41",
+  "size": "phone",
+  "id": "R4-2.on",
+  "what": "Sat 18 Jul SQN EVENT window: Quokka IN — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"46\", window 46 people, Quokka IN (purple line), pending 0",
+  "pics": "r41-r42-03-on-win-phone.png"
+ },
+ {
+  "scn": "r41",
+  "size": "phone",
+  "id": "R4-2.off2",
+  "what": "Sat 18 Jul SQN EVENT window: Quokka IN — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"46\", window 46 people, Quokka IN (purple line), pending 0",
+  "pics": "r41-r42-03-off2-win-phone.png"
+ },
+ {
+  "scn": "r41",
+  "size": "phone",
+  "id": "R4-2.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": true,
+  "note": "in: true/true/true · chip/window: 46/46 ; 46/46 ; 46/46"
+ },
+ {
+  "scn": "r41",
+  "size": "phone",
+  "id": "R4-2.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "46/46 ; 46/46 ; 46/46"
+ },
+ {
+  "scn": "r41",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "r44",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "r44",
+  "size": "desktop",
+  "id": "r44-01",
+  "what": "Admin → Users: New person Kiwi, WSO, CAT C, Post in Fri 17 Jul, Add person (read back)",
+  "ok": true,
+  "note": "id pmrldi60m6g1e3i {\"cs\":\"Kiwi\",\"seat\":\"RCP\",\"san\":false} · post-in box \"Fri 17 Jul 26 ▾\" · note \"Kiwi added to the roster — set flight and quals on the Quals page\" · record {\"postIn\":null,\"keys\":[]}",
+  "pics": "r44-r44-01-newperson-form-desktop.png, r44-r44-01-newperson-added-desktop.png"
+ },
+ {
+  "scn": "r44",
+  "size": "desktop",
+  "id": "r44-01c",
+  "what": "Kiwi is not SANS (read)",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "r44",
+  "size": "desktop",
+  "id": "r44-thu-01",
+  "what": "Thu 16 Jul: SQN EVENT 10:00–17:00 for ALL AVAIL (read back)",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldiae6wazkau\"}",
+  "pics": "r44-r44-thu-01-fixture-desktop.png"
+ },
+ {
+  "scn": "r44",
+  "size": "desktop",
+  "id": "R4-4thu.off",
+  "what": "Thu 16 Jul SQN EVENT window: Kiwi NOT in — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"21\", window 21 people, Kiwi out, pending 0",
+  "pics": "r44-r44-thu-02-off-win-desktop.png"
+ },
+ {
+  "scn": "r44",
+  "size": "desktop",
+  "id": "R4-4thu.on",
+  "what": "Thu 16 Jul SQN EVENT window: Kiwi NOT in — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"21\", window 21 people, Kiwi out, pending 0",
+  "pics": "r44-r44-thu-02-on-win-desktop.png"
+ },
+ {
+  "scn": "r44",
+  "size": "desktop",
+  "id": "R4-4thu.off2",
+  "what": "Thu 16 Jul SQN EVENT window: Kiwi NOT in — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"21\", window 21 people, Kiwi out, pending 0",
+  "pics": "r44-r44-thu-02-off2-win-desktop.png"
+ },
+ {
+  "scn": "r44",
+  "size": "desktop",
+  "id": "R4-4thu.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": true,
+  "note": "in: false/false/false · chip/window: 21/21 ; 21/21 ; 21/21"
+ },
+ {
+  "scn": "r44",
+  "size": "desktop",
+  "id": "R4-4thu.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "21/21 ; 21/21 ; 21/21"
+ },
+ {
+  "scn": "r44",
+  "size": "desktop",
+  "id": "r44-sat-01",
+  "what": "Sat 18 Jul: SQN EVENT 10:00–17:00 for ALL AVAIL (read back)",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldji944xgaah\"}",
+  "pics": "r44-r44-sat-01-fixture-desktop.png"
+ },
+ {
+  "scn": "r44",
+  "size": "desktop",
+  "id": "R4-4sat.off",
+  "what": "Sat 18 Jul SQN EVENT window: Kiwi IN — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"46\", window 46 people, Kiwi IN, pending 0",
+  "pics": "r44-r44-sat-02-off-win-desktop.png"
+ },
+ {
+  "scn": "r44",
+  "size": "desktop",
+  "id": "R4-4sat.on",
+  "what": "Sat 18 Jul SQN EVENT window: Kiwi IN — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"46\", window 46 people, Kiwi IN, pending 0",
+  "pics": "r44-r44-sat-02-on-win-desktop.png"
+ },
+ {
+  "scn": "r44",
+  "size": "desktop",
+  "id": "R4-4sat.off2",
+  "what": "Sat 18 Jul SQN EVENT window: Kiwi IN — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"46\", window 46 people, Kiwi IN, pending 0",
+  "pics": "r44-r44-sat-02-off2-win-desktop.png"
+ },
+ {
+  "scn": "r44",
+  "size": "desktop",
+  "id": "R4-4sat.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": true,
+  "note": "in: true/true/true · chip/window: 46/46 ; 46/46 ; 46/46"
+ },
+ {
+  "scn": "r44",
+  "size": "desktop",
+  "id": "R4-4sat.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "46/46 ; 46/46 ; 46/46"
+ },
+ {
+  "scn": "r44",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "r45",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "r45",
+  "size": "desktop",
+  "id": "r45-01",
+  "what": "Hex posted out as SANS from Wed 15 Jul (his cell → ⋯ → Post out → SANS → Post out; read back)",
+  "ok": true,
+  "note": "line \"On 15 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "r45-r45-01-postout-open-desktop.png, r45-r45-01-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "r45",
+  "size": "desktop",
+  "id": "r45-02",
+  "what": "Sat 18 Jul: BRIEF 08:00–09:00 naming Hex, SQN EVENT 10:00–17:00 for ALL AVAIL (read back)",
+  "ok": true,
+  "note": "{\"g\":{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\",\"rid\":\"rmrldig9xj97zdn\"},\"a\":{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldin3stysf01\"}}",
+  "pics": "r45-r45-02-fixture-desktop.png"
+ },
+ {
+  "scn": "r45",
+  "size": "desktop",
+  "id": "r45-03",
+  "what": "the count before Publish: 45, Hex in the window (purple SANS line)",
+  "ok": true,
+  "note": "chip \"45\" {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"flag\":\"\",\"ttl\":\"SQN EVENTJul 18 · 10:00–17:00\",\"who\":\"Reaper,Anvil,Blade,Cinch,Cobra,Comet,Forge,Havoc,Hunter,Piston,Ranger,Saber,Sidewinder,Trident,Vandal,Warden,Ace,Drifter,Saint,Gambit,Nomad,Outlaw,Ridge,Diesel,Vapor,Recon,Talisman,Wildcard,Basher,Echo,Ledger,Quill,Relay,Scope,Static,Cinder,Rune,Cutter,Dash,Ghost,Grit,Hex,Ryder,Vector,Wisp\"}",
+  "pics": "r45-r45-03-win-desktop.png"
+ },
+ {
+  "scn": "r45",
+  "size": "desktop",
+  "id": "r45-04",
+  "what": "four sign-offs and Publish (Publish day)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true}",
+  "pics": "r45-r45-04-published-desktop.png"
+ },
+ {
+  "scn": "r45",
+  "size": "desktop",
+  "id": "r45-05",
+  "what": "Leave War: Hex's Sat 18 Jul cell after Publish reads FO*",
+  "ok": true,
+  "note": "\"FO*\"",
+  "pics": "r45-r45-05-lw-cell-desktop.png"
+ },
+ {
+  "scn": "r45",
+  "size": "desktop",
+  "id": "r45-6",
+  "what": "\"+ SANS\" on (group shown: true): Saturday 0 pending, the \"SIGNED ORIG\" line unchanged, cell FO*",
+  "ok": true,
+  "note": "pending 0 · not yet signed false · signed \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\" · cell \"FO*\"",
+  "pics": "r45-r45-6-settings-on-desktop.png, r45-r45-6-board-desktop.png, r45-r45-6-lw-cell-desktop.png"
+ },
+ {
+  "scn": "r45",
+  "size": "desktop",
+  "id": "r45-7",
+  "what": "\"+ SANS\" off (group shown: false): Saturday 0 pending, the \"SIGNED ORIG\" line unchanged, cell FO*",
+  "ok": true,
+  "note": "pending 0 · not yet signed false · signed \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\" · cell \"FO*\"",
+  "pics": "r45-r45-7-settings-off-desktop.png, r45-r45-7-board-desktop.png, r45-r45-7-lw-cell-desktop.png"
+ },
+ {
+  "scn": "r45",
+  "size": "desktop",
+  "id": "r45-8",
+  "what": "\"+ SANS\" on (group shown: true): Saturday 0 pending, the \"SIGNED ORIG\" line unchanged, cell FO*",
+  "ok": true,
+  "note": "pending 0 · not yet signed false · signed \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\" · cell \"FO*\"",
+  "pics": "r45-r45-8-settings-on-desktop.png, r45-r45-8-board-desktop.png, r45-r45-8-lw-cell-desktop.png"
+ },
+ {
+  "scn": "r45",
+  "size": "desktop",
+  "id": "r45-9",
+  "what": "\"+ SANS\" off (group shown: false): Saturday 0 pending, the \"SIGNED ORIG\" line unchanged, cell FO*",
+  "ok": true,
+  "note": "pending 0 · not yet signed false · signed \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\" · cell \"FO*\"",
+  "pics": "r45-r45-9-settings-off-desktop.png, r45-r45-9-board-desktop.png, r45-r45-9-lw-cell-desktop.png"
+ },
+ {
+  "scn": "r45",
+  "size": "desktop",
+  "id": "r45-10",
+  "what": "the count after the switches: the same, Hex in",
+  "ok": true,
+  "note": "chip \"45\" {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"flag\":\"\",\"ttl\":\"SQN EVENTJul 18 · 10:00–17:00\",\"who\":\"Reaper,Anvil,Blade,Cinch,Cobra,Comet,Forge,Havoc,Hunter,Piston,Ranger,Saber,Sidewinder,Trident,Vandal,Warden,Ace,Drifter,Saint,Gambit,Nomad,Outlaw,Ridge,Diesel,Vapor,Recon,Talisman,Wildcard,Basher,Echo,Ledger,Quill,Relay,Scope,Static,Cinder,Rune,Cutter,Dash,Ghost,Grit,Hex,Ryder,Vector,Wisp\"}",
+  "pics": "r45-r45-10-win-desktop.png"
+ },
+ {
+  "scn": "r45",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

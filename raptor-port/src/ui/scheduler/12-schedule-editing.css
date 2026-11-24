@@ -344,6 +344,18 @@ input.tm.badtm{border-color:var(--adv)}
    below the header instead of stacking one-per-line down a puck-wide column. */
 .rall.rpers .rpers-pucks{display:flex;flex-wrap:wrap;gap:4px;align-items:flex-start}
 .rsans-row{display:flex;align-items:center;gap:6px}
+/* THE PUCK'S ENTRY SHRINKS TO ITS ROW, so a printed reason wraps inside the list (D2338's walk, 23 Nov 26 — the
+   look-ahead note "SANS from Fri 17 Jul: no availability filed. It can be filed from that day on the Inputs page's SANS
+   tab." ran on as ONE line 377px wide past a 402 phone and its crew drawer, on the board and on Edit Schedule alike).
+   Both lists give every entry `flex:0 0 auto` (.sb-roster .rpuck, .eroster .rpuck): right for a column, where the
+   basis is a HEIGHT and the width comes from the column, but in this ROW the basis is the entry's WIDTH — its
+   max-content, the reason's whole length on one line — and it could never shrink. The columns' reasons never met it;
+   the old short "SANS — no availability filed for today" fitted. Shrinkable, never below the puck's own width, or a
+   long remark would lie over the puck (the blind read of 21 Oct 26, F2). Every width: a list sized to what it holds
+   (Edit Schedule's crew panel on a desktop, width:max-content) still measures the full line, so where it fits it
+   stays one line as before — only a list held narrower than the line (the phone's drawer at 78vw, the board's 320
+   panel) now wraps it. Was the desktop board's alone (10-board-history.css, D1118). */
+.rall .rsans-row>.rpuck{flex:0 1 auto;min-width:var(--puck-w)}
 /* a SIBLING of .rpuck, never nested inside it — nesting the badge into the
    puck's own flex column re-triggers the 74×74 flex-basis trap a struck
    .rpuck.no.haswhy entry already fell into once (scheduler.css, see that

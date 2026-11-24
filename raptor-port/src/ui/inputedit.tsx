@@ -20,7 +20,8 @@ import { acceptInput } from '../engine/slots'
 import { iuParts } from '../engine/keys'
 import { ownInputOf, toPeople, putPerson, takePerson, swapPerson, pieceOf } from '../engine/inputown'
 import { DAYS } from '../engine/data'
-import { PEOPLE, isSpecial } from '../engine/people'
+import { PEOPLE, isSpecial, sansFiler, sansOnP, sansOpenFrom } from '../engine/people'
+import { isoDayWords } from '../engine/weekstash'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { lockedWeekNote } from '../engine/publish'
@@ -41,12 +42,13 @@ import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
 import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff, filedWhole, byAfterLeaving, mayMovePlace, pageUnit, inputWhoProblemNow } from '../state/perms'
 import { unitById, homeOn, homeChangesOn } from '../state/units'
-import { noticeDay } from '../state/notices'
+import { noticeDay, noticeRun, sansDaysWords } from '../state/notices'
 import { isUnitId } from '../storage/unitid'
 import { INPEDIT, setInpEdit, setOilAsk, setMedMove } from './pops'
 import { OILWAIT, type OilWaitKind } from '../state/view'
 import { holdForOil } from './oilwait'
 import { RangeCal } from './RangeCal'
+import { toastIsReceipt } from './toast'
 /* The Leave War seam (sync.ts is the one crossing point, .claude/rules/seams/leave-war.md
    §Architecture): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
@@ -112,9 +114,11 @@ function ownTakeOutOf(rec: any, next: readonly string[]): boolean {
     date got him out. Each picked man the who-rule names as the one refused is set aside and the draft asked again, so a
     man is offered where adding him brings no refusal of his own; the save door still refuses the draft while that
     picked man stays in it, and he keeps his puck to be taken out (ui/PeoplePick.tsx). */
-export function offersFor(rec: any | null, draft: any, picked: readonly any[], several = false): (id: string) => boolean {
+/*  (`runTo` — the draft's last day: the picker offers a SANS man for a run that reaches his SANS date, since the save then
+    takes the days from that date on — D2388, ui/peoplepick-model.ts) */
+export function offersFor(rec: any | null, draft: any, picked: readonly any[], several = false): ((id: string) => boolean) & { runTo?: string } {
   const have = picked.map(String)
-  return (id: string) => {
+  const f = (id: string) => {
     const me0 = String(id)
     if (have.includes(me0)) return true
     const ppl = new Set(several ? [...have, me0] : [me0])
@@ -127,6 +131,7 @@ export function offersFor(rec: any | null, draft: any, picked: readonly any[], s
       ppl.delete(who.pid)
     }
   }
+  return Object.assign(f, draft && isSansAvail(draft.type) && draft.end && !several ? { runTo: String(draft.end) } : {})
 }
 /** THE SAVE DOOR'S QUESTION, before the gate: null where the save may go on, else the words it is refused in. Leave that
  *  runs across a man's move, saved by someone who may not change it, is said in his approved words (D2240, D2241 — the
@@ -292,10 +297,115 @@ export const sansFlags = (sans: any): any => {
    SAME span/time validation every other half-day type goes through — there
    is no third check here for it any more. Returns '' when the payload is
    fine to save. */
-export function sansRefusal(person: any, sans: any): string {
-  if (!PEOPLE[person]?.san) return 'SANS Availability is for SANS aircrew only'
+/* …AND IT GOES BY THE DAY FILED (owner D2340, 23 Nov 26 — "a SANS man may file SANS availability ahead, as soon as his
+   SANS posting is saved, for days from its date (narrows D2327: filing goes by the day filed)"). Until then it went by who
+   was SANS today, so a man posted out as SANS from a date ahead could be filed for by nobody until that date. Now a man
+   SANS today, or by a SANS posting saved for a date ahead (engine/people.ts sansFiler), may be filed for, on the days he is
+   SANS — every day of the filing one of his SANS days (sansOnP with that day), so a filing never holds a day it would be
+   hidden on (D2341 — engine/inputs.ts sansShownOn), save a day the entry being changed (`except`) already held: a record
+   one of whose days was hidden by a later change of his posting still saves as it stands. `from` / `to`: the filing's
+   first and last days (yyyy-mm-dd); without them only the man is asked, as before. A day before his SANS starts is refused
+   naming the day it starts — "Hex is SANS from Fri 17 Jul: file SANS availability for days from then" (the agent's words,
+   in the note's form, told to him). */
+/* …AND IN A SHARED OFFER IT SAYS WHAT TO DO (his D2394 Q10, 23 Nov 26): "Hex is SANS from Fri 24 Jul. Take him out of this
+   offer to add earlier days." `several` — the filing names more than this one man (a saved record of several says so
+   itself); a one-man filing keeps the words above. */
+export function sansRefusal(person: any, sans: any, from?: string, to?: string, except?: any, several = false): string {
+  const p = PEOPLE[person]
+  /* with days given the days are asked, each by sansOnP below — so a past day he was SANS (his tick since taken off, his
+     SANS days kept, D2313) is accepted (Astra's read, chat 152, #5: the calendar and the picker offered him on it, the save
+     refused him for not being SANS today); with no days, the man alone, as before */
+  const dated = !!from && /^\d{4}-\d{2}-\d{2}$/.test(from)
+  if (!p || (!dated && !sansFiler(p))) return 'SANS Availability is for SANS aircrew only'
+  if (dated && from) {
+    const last = to && /^\d{4}-\d{2}-\d{2}$/.test(to) && to > from ? to : from
+    /* EVERY NEW DAY IS ASKED, HOWEVER FAR ON (Astra's fix re-read #3, chat 154): the walk used to stop after 400 days
+       counted from the record's start, the days it already held included, and read the rest as approved — so a two-year
+       filing stretched by two days past his SANS untick saved them. The days the record being changed already held for
+       him are now stepped over in one jump, and no limit reads the rest as approved (a day's question is a few lookups,
+       so even years of new days are walked in a moment). */
+    const kept = except && isSansAvail(except.type) && holds(except, person) ? inputSpanIso(except) : null
+    /* …and it stops at the day from which every later day is his SANS day, never stepping past a four-digit year (the
+       fresh Opus re-read 2's F3, chat 155: an open-ended filing walked on to 9999 and refused a made-up day) */
+    const open = sansOpenFrom(p)
+    /* (the day after 31 Dec 9999 reads "+010000-01", sorting before every real date — the walk ends on its last real
+       day, and a jump over held days that reaches the end ends it too: the fresh Opus re-read 3's F1) */
+    for (let d = from; d <= last && d[0] !== '+'; d = isoPlus(d, 1)) {
+      if (open && d >= open) break
+      if (kept && d >= kept[0] && d <= kept[1]) { if (kept[1] >= last) break; d = kept[1]; continue }
+      /* (a day the entry being changed already held FOR HIM — never for another man on it: the fresh Opus read's F2,
+         chat 152 — an admin added Hex to Other's Thu 16 offer, a day before Hex's SANS date, and the save let it in) */
+      /* …and only a SANS availability record (the security read's S1, chat 152: a Personal record of his covering the day
+         was handed in as "the entry being changed" and excused the day) */
+      if (sansOnP(p, d) || (except && isSansAvail(except.type) && inputCoversDate(except, fmt(d)) && holds(except, person))) continue
+      /* the next day he is SANS, within a year — the date the refusal names */
+      const next = sansNextDay(person, d)
+      const shared = several || (!!except && isSansAvail(except.type) && idsOf(except).length > 1)
+      return !next ? 'SANS Availability is for SANS aircrew only'
+        : shared ? `${p.cs} is SANS from ${isoDayWords(next)}. Take him out of this offer to add earlier days.`
+          : `${p.cs} is SANS from ${isoDayWords(next)}: file SANS availability for days from then`
+    }
+  }
   if (!sans || !Object.keys(sans).some(k => sans[k])) return 'Tick at least one of Fly / AMT / OFT'
   return ''
+}
+const isoPlus = (iso: string, n: number): string => {
+  const t = new Date(Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10) + n))
+  return t.toISOString().slice(0, 10)
+}
+/** the next day after `iso` he is SANS, within a year, or '' — the date a refusal, or the greyed "+ Commitment", names */
+export function sansNextDay(person: any, iso: string): string {
+  const p = PEOPLE[person]
+  if (!p) return ''
+  for (let x = isoPlus(iso, 1), m = 0; m < 400 && x[0] !== '+'; x = isoPlus(x, 1), m++) if (sansOnP(p, x)) return x
+  return ''
+}
+/* A RUN THAT STARTS TOO EARLY SAVES FROM HIS DATE (his D2388, 23 Nov 26 — "why dont 1 just reject the 16 jul input and allow
+   the 17 and 18 jul input and state why"). For one man and a run of days whose first days are before his SANS date, and
+   which from that date on the save would take: that date, and the days left out. Null for anything else, which goes to
+   the save as it is and meets its refusal there — a run with no SANS day, or with a day that is not SANS in its MIDDLE
+   (the agent's readings, told to him: never split into two filings). A day the entry being changed already holds is not
+   "too early": it is his to keep or take off (sansRefusal's `except`), so such a run is not cut. */
+export function sansRunTrim(person: any, from: string, to: string, except?: any): { from: string; left: string[] } | null {
+  const p = PEOPLE[person], iso = /^\d{4}-\d{2}-\d{2}$/
+  if (!p || !iso.test(from) || !iso.test(to) || to <= from || sansOnP(p, from)) return null
+  const left: string[] = []
+  let first = ''
+  for (let d = from, m = 0; d <= to && m < 400 && d[0] !== '+'; d = isoPlus(d, 1), m++) {
+    if (sansOnP(p, d)) { first = d; break }
+    if (except && isSansAvail(except.type) && holds(except, person) && inputCoversDate(except, fmt(d))) return null
+    left.push(d)
+  }
+  if (!first || sansRefusal(person, { f: true }, first, to, except)) return null
+  return { from: first, left }
+}
+/* A DRAFT OF ONE MAN'S SANS AVAILABILITY, CUT TO THE DAYS IT CAN SAVE, with the note that says so (D2388 — the words his,
+   D2394 Q1: "Saved Fri 17 – Sat 18 Jul. Thu 16 Jul was left out because you're SANS from Fri 17 Jul.", "…because Ranger is
+   SANS…" for someone else; several days left out are one run, said as the "Saved" half says its days, D2441: they are
+   every day from the first picked up to the day before his date, so never a broken run — sansRunTrim). */
+type SansCut = { draft: any; note: string }
+function sansCut(draft: any, except: any): SansCut | null {
+  if (!draft || !isSansAvail(draft.type) || !draft.start || !draft.end) return null
+  const who = draft.person == null || draft.person === '' ? me() : draft.person
+  if (who == null) return null
+  /* (a hand-over to another man, and a record of several, are never cut: Q10's refusal is theirs) */
+  if (except && (idsOf(except).length > 1 || !holds(except, who))) return null
+  const t = sansRunTrim(who, draft.start, draft.end, except)
+  if (!t) return null
+  const subject = isMe(who) ? "you're" : `${PEOPLE[who].cs} is`
+  const out = t.left.length > 1 ? noticeRun(t.left[0]!, t.left[t.left.length - 1]!) : sansDaysWords(t.left)
+  const note = `Saved ${noticeRun(t.from, draft.end)}. ${out} ${t.left.length === 1 ? 'was' : 'were'} left out because ${subject} SANS from ${noticeDay(t.from)}.`
+  return { draft: { ...draft, start: t.from, end: t.from === draft.end ? '' : draft.end }, note }
+}
+/* THE NOTE IS SAID ONCE THE SAVE HAS LANDED, never before: inside a larger save (saveBatchX) that can still be refused it
+   waits for that save's answer, and is dropped with it. In the input's window it stands alone: the window's own "Input
+   added" would only repeat it (ui/toast.ts toastIsReceipt). */
+let SAVE_DEPTH = 0
+let CUT_NOTE: string | null = null
+function sayCut(note: string): void {
+  if (SAVE_DEPTH > 0) { CUT_NOTE = note; return }
+  HOOKS.toast(note, 'warn')
+  toastIsReceipt(note)
 }
 
 /* ONE SANS RECORD PER DAY (bug-test fix). SANS Availability is one window per
@@ -639,7 +749,7 @@ function ownPartSave(inp: any, who: any, save: (own: any) => boolean): boolean {
    open, so nothing typed is lost; on success it returns the model-ready fields.
    `except` is the row to leave out of the SANS overlap check: an edit excludes
    itself, a brand-new input excludes nothing (null). */
-export function normalizeInputDraft(draft: any, except: any):
+export function normalizeInputDraft(draft: any, except: any, several = false):
   { s: number, e: number, date: string, endDate: string | undefined, half: string } | null {
   const s = draft.allday ? 0 : parseHM(draft.sTime), e = draft.allday ? 1439 : parseHM(draft.eTime)
   if (!draft.allday && (s == null || e == null)) { HOOKS.toast('Give the input a start and end time, or tick All day', 'warn'); return null }
@@ -708,7 +818,7 @@ export function normalizeInputDraft(draft: any, except: any):
      a type that means nothing, so both are refused here, the one place every
      editor's commit passes through. */
   if (isSansAvail(draft.type)) {
-    const why = sansRefusal(draft.person, draft.sans)
+    const why = sansRefusal(draft.person, draft.sans, draft.start, draft.end, except, several)
     if (why) { HOOKS.toast(why, 'warn'); return null }
     const dup = sansOverlapRefusal(draft.person, date, endDate, except)
     if (dup) { HOOKS.toast(dup, 'warn'); return null }
@@ -1042,6 +1152,13 @@ const filedOn = (draft: any): string => (isUnitId(draft && draft.u) ? String(dra
 /* (one body with a man's delete since the sign-in kinds night, 21 Nov 26 — engine/inputs.ts settleStamp) */
 const settleStamp = (r: any, was: string | null): void => settleStampOf(r, isUnitId(was) ? String(was) : null, () => pageUnit('own', todayIso()))
 export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, entryEnd?: any, onAdded?: (row:any)=>void): boolean {
+  /* (a SANS run that starts too early saves from his date, and says so — D2388) */
+  const cut = sansCut(draft, null)
+  const ok = fileNewInput(cut ? cut.draft : draft, toGround, keepTail, entryEnd, onAdded)
+  if (ok && cut) sayCut(cut.note)
+  return ok
+}
+function fileNewInput(draft: any, toGround?: boolean, keepTail?: any, entryEnd?: any, onAdded?: (row:any)=>void): boolean {
   if (!draft) return false
   /* write-path role backstop (owner, 22 Aug 26 — a member files inputs only
      for whoever they are viewing as; the Person choice is a scheduler's).
@@ -1179,11 +1296,20 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
    passes it, wherever it was opened from (D742 reading 3). */
 /* `opts.oil` — THE INPUT'S ONE OIL ANSWER, given with this save (owner D762; commitInput below): written on the record,
    for everyone in it. */
-export type InputSaveOpts = { sched?: boolean; oil?: Record<string, number> }
+/* `opts.moved` — A DRAG OF THE WHOLE ENTRY TO OTHER DATES (ui/caldrag.ts): it says where the entry now stands, so a day it
+   cannot stand on is refused as before, never cut off it (D2388 is about a run of days being picked). */
+export type InputSaveOpts = { sched?: boolean; oil?: Record<string, number>; moved?: boolean }
 export const schedSide = (opts?: InputSaveOpts): boolean => !!(opts && opts.sched) && canEditSched()
 /* who is putting a person in, and when — the running command's own person and moment (state/inputstamp.ts) */
 const stampOf = (): { by?: string; at?: number } => { const t: any = stampPlaced({}); return { by: t.by, at: t.at } }
 export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: any, opts?: InputSaveOpts) {
+  /* (a SANS run stretched back before his date, in the input's window, saves from his date and says so — D2388) */
+  const cut = opts && (opts.moved || opts.sched) ? null : sansCut(draft, r)
+  const ok = saveInputEdit(r, cut ? cut.draft : draft, keepTail, entryEnd, opts)
+  if (ok && cut) sayCut(cut.note)
+  return ok
+}
+function saveInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: any, opts?: InputSaveOpts) {
   if (!r || !draft) return false
   const sched = schedSide(opts)
   if (INPUTS.indexOf(r) < 0) {                 // deleted or undone underneath us
@@ -1592,10 +1718,16 @@ export function saveBatchX(fn: () => boolean | void): { ok: boolean; refused: bo
   const got: { inner: boolean | void; spoke: boolean } = { inner: undefined, spoke: false }
   let done = false
   HOOKS.toast = (...a: any[]) => { got.spoke = true; return (say as any)(...a) }
-  try { done = writeInputsBatch(() => { got.inner = fn() }) } finally { HOOKS.toast = say }
+  SAVE_DEPTH++
+  /* (what a SANS save left out is taken up here whatever the save did, so a save that threw leaves no note for the next
+     one to say — Fable's Q-c) */
+  let note: string | null = null
+  try { done = writeInputsBatch(() => { got.inner = fn() }) } finally { HOOKS.toast = say; SAVE_DEPTH--; if (!SAVE_DEPTH) { note = CUT_NOTE; CUT_NOTE = null } }
   const content = got.inner !== false
   const refused = content && !done
   if (refused && !got.spoke) say(NOT_SAVED, 'blocked')
+  /* (what a SANS save left out, said now it has landed — D2388, sayCut) */
+  if (note && content && done) sayCut(note)
   return { ok: content && done, refused }
 }
 export const saveBatch = (fn: () => boolean | void): boolean => saveBatchX(fn).ok
@@ -2107,6 +2239,10 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
   if (!want.length) { say('Pick at least one person', 'warn'); return false }
   const scheduler = canEditSched(), mine = me()
   if (!scheduler && mine == null) { say('Sign in with your own account to file an input', 'warn'); return false }
+  /* ONE MAN'S SANS RUN THAT STARTS TOO EARLY saves from his date and says so (D2388), as the one-person save does. A shared
+     offer is never cut: its refusal says who to take out (D2394 Q10). */
+  const cut = want.length === 1 && !(opts && (opts.moved || opts.sched)) ? sansCut({ ...draft, person: want[0] }, rec) : null
+  if (cut) draft = { ...cut.draft, person: draft.person }
   const have: string[] = rec ? idsOf(rec).map(String) : []
   const wantSet = new Set(want), haveSet = new Set(have)
   const gone = have.filter(p => !wantSet.has(p))
@@ -2122,7 +2258,7 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
     let why = ''
     HOOKS.toast = (m: any) => { if (!why) why = String(m) }
     let n: ReturnType<typeof normalizeInputDraft>
-    try { n = normalizeInputDraft({ ...draft, person: p }, rec) } finally { HOOKS.toast = say }
+    try { n = normalizeInputDraft({ ...draft, person: p }, rec, next.length > 1) } finally { HOOKS.toast = say }
     if (!n) refused.push([p, why || 'This input could not be saved'])
     else norm.set(p, n)
   }
@@ -2180,7 +2316,9 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
       say(sharedRefusal([rec], 'change this for everyone'), 'warn'); return false
     }
   }
-  if (rec && !says && !answers && !gone.length && !added.length) return true
+  /* (a SANS filing stretched back before his date, cut back to what it was: nothing to save, but the cut is still said —
+     Fable's F3, D2388 "saying why") */
+  if (rec && !says && !answers && !gone.length && !added.length) { if (cut) sayCut(cut.note); return true }
 
   /* THE ONE COMMAND. What the doors and the absence rules say inside it is gathered, and said once afterwards. */
   const heard: string[] = []
@@ -2247,6 +2385,7 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
     return false
   }
   if (heard.length) say(heard.join(' · '), 'warn')
+  if (cut) sayCut(cut.note)
   return true
 }
 /* one man's own input, for the bodies of this file that change his part alone (engine/inputown.ts) */

@@ -1,0 +1,34 @@
+// swd-w13-report — builds walker w13's step table from the cited runs' results (read only; prints the table to stdout).
+// CITED: each size's main run folder, then any re-walk sub-folder named for the scenarios it replaces (W13_CITED as JSON overrides).
+import { readFileSync, readdirSync, existsSync } from 'node:fs'
+import path from 'node:path'
+console.log('<!-- VERSION swd-w13-report 1 -->')
+const ROOT = 'D:/raptor-work/c156-walk/w13'
+const CITED = process.env.W13_CITED ? JSON.parse(process.env.W13_CITED) : { desktop: [['run1-d', null]], phone: [['run1-p', null]] }
+const rows = []
+for (const [, list] of Object.entries(CITED)) {
+  const byScn = {}
+  for (const [dir, only] of list) {
+    const d = path.join(ROOT, dir)
+    if (!existsSync(d)) continue
+    for (const f of readdirSync(d).filter(f => /^results-.*-(desktop|phone|phone-chromium)\.json$/.test(f) && !/results-all/.test(f))) {
+      const rs = JSON.parse(readFileSync(path.join(d, f), 'utf8'))
+      if (!rs.length) continue
+      const scn = rs[0].scn
+      if (only && !only.includes(scn)) continue
+      byScn[scn] = rs.map(r => ({ ...r, dir }))
+    }
+  }
+  for (const rs of Object.values(byScn)) rows.push(...rs)
+}
+const order = s => { const m = /^(s|pu)(\d+)([a-z]*)/.exec(s); return m ? (m[1] === 'pu' ? 90000 : 0) + +m[2] * 1000 + (m[3] ? m[3].charCodeAt(0) : 0) : 99999 }
+rows.sort((a, b) => order(a.scn) - order(b.scn) || a.scn.localeCompare(b.scn) || (a.size === b.size ? 0 : a.size === 'desktop' ? -1 : 1))
+const verdict = ok => ok === true ? 'PASS' : ok === false ? 'FAIL' : ok === 'REC' ? 'RECORDED' : ok === 'NW' ? 'NOT WALKED' : 'note'
+const esc = s => String(s == null ? '' : s).replace(/\|/g, '\\|').replace(/\n/g, ' ')
+const n = k => rows.filter(r => verdict(r.ok) === k).length
+const pics = new Set(rows.flatMap(r => String(r.pics || '').split(', ').filter(Boolean)))
+console.log(`COUNTS steps ${rows.filter(r => r.ok !== null && r.ok !== undefined).length} · PASS ${n('PASS')} · FAIL ${n('FAIL')} · RECORDED ${n('RECORDED')} · NOT WALKED ${n('NOT WALKED')} · notes ${n('note')} · pictures cited ${pics.size}`)
+for (const r of rows.filter(r => r.ok === false)) console.log(`FAILROW ${r.scn} ${r.size} ${r.id} :: ${String(r.note || '').slice(0, 300)}`)
+console.log('| Step | Size | What was done | What the screen said | Result | Picture |')
+console.log('|---|---|---|---|---|---|')
+for (const r of rows) console.log(`| ${esc(['today', 'errors', 'stopped', 'ERR'].includes(r.id) ? r.scn + '.' + r.id : r.id)} | ${r.size} | ${esc(r.what)} | ${esc(String(r.note || '').slice(0, 600))} | ${verdict(r.ok)} | ${esc(r.pics ? r.dir + '/' + String(r.pics).split(', ').join(', ' + r.dir + '/') : '')} |`)

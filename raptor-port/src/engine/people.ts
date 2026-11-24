@@ -224,15 +224,50 @@ export const byCrew=(a:any,b:any)=>
    by hand counts from the day it is made (state/quals-write.ts), so a day before it reads as it did.
    EVERY READER THAT IS ABOUT A DAY ASKS `sansOn` WITH THAT DAY — the ALL AVAIL crowd, the crew list, a puck on a day, the
    SANS availability checks, what a published day froze. Only a reader about the man as he is now (the Quals tick itself,
-   who may file SANS availability, the Leave War's row — D283, D321, D1692) reads `p.san`. No date → today's tick. */
+   the Leave War's row — D283, D321, D1692) reads `p.san`; who may be filed for SANS availability goes by the day filed
+   (D2340 — sansFiler below for a door with no day yet). No date → today's tick. */
+/* A SANS POSTING SET AHEAD IS READ BY THE DAY (owner D2329, 22 Nov 26 — "on 18 jul … if hes planned like briefing, hes
+   going to be counted in the all avail"; "whenever that day is looked at" the agent's reading, told to him). His tick
+   starts only when the posting RUNS on its date (leavewar/sync.ts runPoOutcomes), so a day past the date looked at before
+   then read him as a regular — and a day published meanwhile turned pending the moment the posting ran. The posting lives
+   in the Leave War's store, so the war's link installs the answer here (leavewar/sync.ts wireLeaveWarSync): the first
+   day of a SANS posting that has not run yet, or null. A question about a DAY only — the tick as it stands today
+   (`sansOnP` with no date, `p.san`) is unchanged. */
+let SANS_AHEAD:((p:any)=>string|null)|null=null;
+export function setSansAhead(fn:((p:any)=>string|null)|null):void{SANS_AHEAD=fn;}
 export function sansOnP(p:any,iso?:any):boolean{
   if(!p)return false;
   if(!iso)return !!p.san;
   const d=String(iso);
   if(p.san&&(!p.sanFrom||d>=String(p.sanFrom)))return true;
+  if(SANS_AHEAD){const f=SANS_AHEAD(p); if(f&&d>=f)return true;}
   const was=Array.isArray(p.sanWas)?p.sanWas:[];
   return was.some((s:any)=>Array.isArray(s)&&d>=String(s[0]||'')&&d<String(s[1]||''));}
 export const sansOn=(id:any,iso?:any):boolean=>sansOnP(PEOPLE[id],iso);
+/* MAY HE BE FILED FOR SANS AVAILABILITY AT ALL — SANS today, or by a SANS posting saved for a date ahead (owner D2340,
+   23 Nov 26 — "a SANS man may file SANS availability ahead, as soon as his SANS posting is saved, for days from its date";
+   filing goes by the day filed, which each day's own question, sansOnP with that day, answers). The doors that open
+   before a day is known ask this (the SANS calendar's add, its people list with no day); the save asks the day. */
+export function sansFiler(p:any):boolean{return !!p&&(!!p.san||(!!SANS_AHEAD&&!!SANS_AHEAD(p)));}
+/* THE DAY FROM WHICH EVERY LATER DAY IS SANS FOR HIM, or null — his tick with no end (from its date), or a SANS posting
+   saved ahead (from its date), the earlier (chat 155, the fresh Opus re-read 2's F3): a walk over a filing's days asks
+   sansOnP of each, and stops here, every day on being his — so an "until further notice" filing is not walked to 9999. */
+export function sansOpenFrom(p:any):string|null{if(!p)return null;
+  const a=p.san?String(p.sanFrom||'0000-01-01'):null, b=SANS_AHEAD?SANS_AHEAD(p):null;
+  return a&&b?(a<b?a:b):(a||b||null);}
+/* THE FIRST DAY OF HIS SANS POSTING NOT YET RUN, or null (owner D2343, D2346 — the SANS calendar fades his own days before it). */
+export function sansAheadDate(p:any):string|null{return p&&SANS_AHEAD?SANS_AHEAD(p):null;}
+/* IS THIS DAY SANS FOR HIM ONLY BY A POSTING NOT YET RUN — AND FROM WHAT DATE? (owner D2338, 22 Nov 26 — "Should it say no
+   availability filed, await for 17 Jul for SANs availability to be filed"). The first day of that posting, or null: a day
+   his tick or an ended stretch already makes SANS is not one (sansOnP's own order). He may be filed for on such a day
+   from the moment the posting is saved (D2340, narrowing D2327) — the crew list says where. */
+export function sansAheadFrom(p:any,iso?:any):string|null{
+  if(!p||!iso||!SANS_AHEAD)return null;
+  const d=String(iso);
+  if(p.san&&(!p.sanFrom||d>=String(p.sanFrom)))return null;
+  const was=Array.isArray(p.sanWas)?p.sanWas:[];
+  if(was.some((s:any)=>Array.isArray(s)&&d>=String(s[0]||'')&&d<String(s[1]||'')))return null;
+  const f=SANS_AHEAD(p); return f&&d>=f?f:null;}
 const sansQ=(p:any)=>{ p.quals=p.quals||{}; p.quals.san=!!p.san; if(p.san)p.sanQ=p.sanQ||{flown:0,carry:0,missedQtrs:0}; };
 /* SANS FROM `from` ON. An earlier stretch that reaches `from` — ended on it or after it — is one stretch with this one,
    which then starts where that one did: so a tick taken off and put back the same day leaves no gap, and a hand re-tick
@@ -263,7 +298,10 @@ export function sansErase(p:any):void{ p.san=false; delete p.sanFrom; sansQ(p); 
    men who are or were SANS are in it. */
 export function sansSig():string{
   let s='';
-  for(const id in PEOPLE){ const p=PEOPLE[id]; if(p&&(p.san||p.sanWas))s+=id+(p.san?'+':'-')+(p.sanFrom||'')+(p.sanWas?JSON.stringify(p.sanWas):'')+';'; }
+  /* …and a SANS posting set ahead (D2329 — round 4b's reads, 22 Nov 26): saved, moved or taken back, it changes what a day
+     reads without touching the tick, so a preview drawn before it is drawn again */
+  for(const id in PEOPLE){ const p=PEOPLE[id]; const f=p&&SANS_AHEAD?SANS_AHEAD(p):null;
+    if(p&&(p.san||p.sanWas||f))s+=id+(p.san?'+':'-')+(p.sanFrom||'')+(p.sanWas?JSON.stringify(p.sanWas):'')+(f?'>'+f:'')+';'; }
   return s;}
 /* Proficiency status for a SANS member. Deliberately unwired: the rule is
    recorded and regression-tested so the highlighting can be switched on when

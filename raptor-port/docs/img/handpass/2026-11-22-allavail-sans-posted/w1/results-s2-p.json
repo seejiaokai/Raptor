@@ -1,0 +1,100 @@
+[
+ {
+  "run": "s2-phone",
+  "scn": "s2",
+  "size": "phone",
+  "id": "premise",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "run": "s2-phone",
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-01",
+  "what": "Event input for ALL AVAIL on Sat 18 Jul 10:00–17:00 filed, OIL answered Yes",
+  "ok": true,
+  "note": "placeholder options [\"allavail\",\"all\"] · asked: OIL: ALL AVAIL, Event ✕ This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Back Add · read from window.INPUTS: {\"iid\":\"imrldi9ezudmxuf\",\"people\":[{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1784077209899}],\"type\":\"Event\",\"s\":600,\"e\":1020,\"oil\":{\"2026-07-18\":1},\"acc\":\"g\"}",
+  "pics": "s2-phone/01-s2-01a-input-window-phone.png, s2-phone/03-s2-01c-filed-phone.png"
+ },
+ {
+  "run": "s2-phone",
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-02",
+  "what": "BRIEFING 08:00–09:00 naming Hex on the board; the input's row on the Common Programme",
+  "ok": true,
+  "note": "{\"prog\":\"BRIEFING\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\"} · rows {\"allhands\":[],\"ground\":[\"EVENT|allavail\",\"BRIEFING|rocky\"]}",
+  "pics": "s2-phone/04-s2-02-board-rows-phone.png"
+ },
+ {
+  "run": "s2-phone",
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-03",
+  "what": "Hex posted out as SANS from Wed 15 Jul",
+  "ok": true,
+  "note": "line \"On 15 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s2-phone/05-s2-03-postout-sheet-phone.png"
+ },
+ {
+  "run": "s2-phone",
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-04",
+  "what": "board, before Publish: the input row's window lists Hex (purple SANS line)",
+  "ok": true,
+  "note": "chips [{\"sent\":\"i:imrldi9ezudmxuf\",\"ver\":\"\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who is free as things stand now)\"}] · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null}",
+  "pics": "s2-phone/06-s2-04-window-before-phone.png"
+ },
+ {
+  "run": "s2-phone",
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-05",
+  "what": "published (Publish day): nothing pending, the window lists Hex",
+  "ok": true,
+  "note": "{\"pend\":0,\"pendWords\":\"\",\"head\":\"\",\"notSigned\":false,\"notPub\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\"} · chip {\"sent\":\"i:imrldi9ezudmxuf\",\"ver\":\"\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who is free as things stand now)\"} · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null}",
+  "pics": "s2-phone/07-s2-05-published-window-phone.png"
+ },
+ {
+  "run": "s2-phone",
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-06",
+  "what": "Hex's Leave War cell Sat 18 Jul reads FO",
+  "ok": true,
+  "note": "cell \"FO*\"",
+  "pics": "s2-phone/08-s2-06-lw-cell-phone.png"
+ },
+ {
+  "run": "s2-phone",
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-07",
+  "what": "\"+ SANS\" on: nothing pending, signed, same count, Hex in the input's crowd, cell FO",
+  "ok": true,
+  "note": "pending 0 · signed \"SIGNED ORIG Ace Anvil Basher Bolt\" · chip {\"sent\":\"i:imrldi9ezudmxuf\",\"ver\":\"\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who is free as things stand now)\"} · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null} · cell \"FO*\"",
+  "pics": "s2-phone/09-s2-07-sans-on-settings-phone.png, s2-phone/10-s2-07-on-editsched-sat-phone.png, s2-phone/11-s2-07-on-availwin-phone.png"
+ },
+ {
+  "run": "s2-phone",
+  "scn": "s2",
+  "size": "phone",
+  "id": "s2-08",
+  "what": "\"+ SANS\" off: nothing pending, signed, same count, Hex in the input's crowd, cell FO",
+  "ok": true,
+  "note": "pending 0 · signed \"SIGNED ORIG Ace Anvil Basher Bolt\" · chip {\"sent\":\"i:imrldi9ezudmxuf\",\"ver\":\"\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who is free as things stand now)\"} · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null} · cell \"FO*\"",
+  "pics": "s2-phone/12-s2-08-sans-off-settings-phone.png, s2-phone/13-s2-08-off-editsched-sat-phone.png, s2-phone/14-s2-08-off-availwin-phone.png"
+ },
+ {
+  "run": "s2-phone",
+  "scn": "s2",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

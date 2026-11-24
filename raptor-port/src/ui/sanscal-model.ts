@@ -13,12 +13,13 @@
      in three groups — WSOs to fly, pilots to fly, and those who offered only OFT or AMT. A man stands in ONE group:
      if any filing of his for the day offers flying he is "to fly", and every filing of his is listed with him — so a
      group's head-count is people, and equals the figure the date shows. A commitment of a man the count leaves out
-     (no longer SANS, archived, not aircrew) is listed apart with the reason: the SANS calendar has no List (D620), so
-     this window is the only place such a record can be reached and removed. */
+     (archived, not aircrew) is listed apart with the reason: the SANS calendar has no List (D620), so this window is
+     the only place such a record can be reached and removed. One of a man no longer SANS that day is HIDDEN, not listed
+     apart (owner D2341, 23 Nov 26 — see below). */
 import { INPUTS, inputCoversDate, isSansAvail, isLateInput, inputOwnDueISO, cutRuleWords, namedOf } from '../engine/inputs'
 import { getCut } from '../state/cutoff'
-import { pageUnit } from '../state/perms'
-import { PEOPLE, sansOnP } from '../engine/people'   // sansOnP: was he SANS on the day asked about (D2313)
+import { isAdmin, me, pageUnit } from '../state/perms'
+import { PEOPLE, sansAheadDate, sansFiler, sansOnP } from '../engine/people'   // sansOnP: was he SANS on the day asked about (D2313)
 import { hhmm } from '../engine/time'
 import type { DayAnswer, Tone } from '../state/flyplan-model'
 import { sansCommittedOn, sansDateLabel, type SansCommitted } from '../state/flyplan'
@@ -59,11 +60,24 @@ export function sansMine(c: SansCommitted, id: string | null): { f: boolean; o: 
   const out = { f: has(c.f), o: has(c.o), a: has(c.a) }
   return out.f || out.o || out.a ? out : null
 }
+/** IS THIS ONE OF HIS OWN DAYS BEFORE HIS SANS DATE — faded on the month (owner D2343, D2346 — look A of the drawing,
+ *  docs/mock/2026-11-23-sans-before-shading/). A man posted out as SANS from a date ahead sees, at a glance, from when
+ *  he can commit: the days his own "+ Commitment" is greyed on (D2340 — ui/sansadd.ts maySansAdd, which asks the same
+ *  day question), and only while that date is still ahead — gone from it, as the drawing showed him. His view only: an
+ *  admin, who may file for any SANS man on those days, sees the month as it was (the agent's readings, kept by him). */
+export function sansBeforeMine(iso: string, today: string, viewer: string | null = me(), admin: boolean = isAdmin()): boolean {
+  if (admin || !viewer) return false
+  const p = PEOPLE[viewer]
+  const from = sansAheadDate(p)
+  return !!from && from > today && iso < from && !sansOnP(p, iso)
+}
 /** the SANS aircrew on the roster today, A to Z by callsign — who the Highlight list offers (the people the count
- *  itself takes: state/flyplan.ts sansCommittedOn) */
+ *  itself takes: state/flyplan.ts sansCommittedOn) — and a man posted out as SANS from a date ahead, who may have
+ *  commitments filed from the moment his posting is saved (owner D2340; the FULL check's walk, chat 152, W8-2: he could
+ *  not be picked to see them) */
 export function sansRoster(people: Record<string, any> = PEOPLE): string[] {
   return Object.keys(people)
-    .filter(id => { const p = people[id]; return !!p && p.san && !p.archived && !p.deleted && !p.special && !p.pers && (p.seat === 'FCP' || p.seat === 'RCP') })
+    .filter(id => { const p = people[id]; return !!p && sansFiler(p) && !p.archived && !p.deleted && !p.special && !p.pers && (p.seat === 'FCP' || p.seat === 'RCP') })
     .sort((a, b) => String(people[a].cs).localeCompare(String(people[b].cs)))
 }
 
@@ -133,6 +147,11 @@ export interface SansDayGroups {
 const lettersOf = (r: any): string =>
   [r.sans && r.sans.f ? 'F' : '', r.sans && r.sans.o ? 'O' : '', r.sans && r.sans.a ? 'A' : ''].filter(Boolean).join(' · ')
 
+/* A SHARED OFFER AS THE DAY SHOWS IT — its people cut to the men SANS that day (the FULL check's walk, chat 152, W10-1:
+   one offer for Ranger and Hex, Ranger's posting moved later, and Hex's line still said "Saber for 2 people", telling of
+   the hidden man, D2341). A copy made for the words, never handed on: the window a tap opens is the whole record's. */
+const shownOn = (r: any, iso: string, people: Record<string, any>): any =>
+  Array.isArray(r.people) ? { ...r, people: r.people.filter((e: any) => !e || !people[String(e.p)] || sansOnP(people[String(e.p)], iso)) } : r
 export function sansDayGroups(iso: string, rows: readonly any[] = INPUTS, people: Record<string, any> = PEOPLE): SansDayGroups {
   const out: SansDayGroups = { w: [], p: [], other: [], out: [], flyW: 0, flyP: 0, otherN: 0 }
   const com = sansCommittedOn(iso, rows, people)
@@ -152,10 +171,14 @@ export function sansDayGroups(iso: string, rows: readonly any[] = INPUTS, people
     for (const en of namedOf(r)) {
       if (!en || !en.p) continue
       const id = String(en.p), man = people[id]
-      const e: SansEntry = { r, id, letters: lettersOf(r), hours: hoursOf(r), late: lateWord(en.mod != null ? { ...r, mod: en.mod } : r), placed: placedLine(r, people) }
+      /* HIDDEN ON A DAY HE IS NOT SANS (owner D2341, 23 Nov 26 — "show like it's deleted … But counts again if it's
+         undone"): his posting moved later or taken back, a tick taken off — not listed apart as "no longer SANS" any more,
+         but not listed at all, as if deleted, back by itself once the day is SANS again (engine/inputs.ts sansShownOn) */
+      if (man && !sansOnP(man, iso)) continue
+      const e: SansEntry = { r, id, letters: lettersOf(r), hours: hoursOf(r), late: lateWord(en.mod != null ? { ...r, mod: en.mod } : r), placed: placedLine(shownOn(r, iso, people), people) }
       if (!counted.has(id)) {
         /* the count's own reasons, in its order (state/flyplan.ts sansCommittedOn) */
-        const why = !man ? 'no longer on the roster' : man.archived || man.deleted ? 'archived' : !sansOnP(man, iso) ? 'no longer SANS'
+        const why = !man ? 'no longer on the roster' : man.archived || man.deleted ? 'archived'
           : man.seat !== 'FCP' && man.seat !== 'RCP' ? 'not aircrew' : 'no activity chosen'
         out.out.push({ ...e, why })
       } else if (flies.has(id)) (man.seat === 'FCP' ? out.p : out.w).push(e)

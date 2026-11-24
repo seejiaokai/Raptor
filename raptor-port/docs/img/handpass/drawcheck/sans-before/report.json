@@ -1,0 +1,1142 @@
+{
+ "spec": "SANS calendar — a man's own days before his SANS date, faded",
+ "dist": "C:\\Users\\User\\projects\\Raptor\\raptor-port\\dist",
+ "all": false,
+ "report": [
+  {
+   "state": "a-phone",
+   "title": "Hex's SANS calendar, his days before Fri 17 faded — iPhone (WebKit)",
+   "drawing": {
+    "script": "docs/mock/2026-11-23-sans-before-shading/draw.mjs",
+    "shot": "phone-2-proposed-A-faded"
+   },
+   "approved": {
+    "picture": "phone-2-proposed-A-faded.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 3",
+   "parts": [
+    {
+     "part": "thu",
+     "label": "Thu 16 Jul, a day before his date (faded)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 174,
+        "y": 467.2,
+        "w": 54,
+        "h": 130.6
+       },
+       "ink": {
+        "x": 177,
+        "y": 471.2,
+        "w": 48,
+        "h": 120.4
+       },
+       "text": "16 – F 1 0 O 0 0 A 0 0",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sc-day.mk-before"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 174,
+        "y": 467.2,
+        "w": 54,
+        "h": 130.6
+       },
+       "ink": {
+        "x": 177,
+        "y": 471.2,
+        "w": 48,
+        "h": 120.4
+       },
+       "text": "16 – F 1 0 O 0 0 A 0 0",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sc-day.is-before"
+      }
+     }
+    },
+    {
+     "part": "thu-num",
+     "label": "its date",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 177,
+        "y": 471.7,
+        "w": 17,
+        "h": 17
+       },
+       "ink": {
+        "x": 177,
+        "y": 471.2,
+        "w": 16.5,
+        "h": 18
+       },
+       "text": "16",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sc-num"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 177,
+        "y": 471.7,
+        "w": 17,
+        "h": 17
+       },
+       "ink": {
+        "x": 177,
+        "y": 471.2,
+        "w": 16.5,
+        "h": 18
+       },
+       "text": "16",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sc-num"
+      }
+     }
+    },
+    {
+     "part": "thu-need",
+     "label": "its still-needed pair",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 177,
+        "y": 529.9,
+        "w": 48,
+        "h": 17
+       },
+       "ink": {
+        "x": 218.1,
+        "y": 531,
+        "w": 6.9,
+        "h": 14
+       },
+       "text": "–",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sc-row.sc-need"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 177,
+        "y": 529.9,
+        "w": 48,
+        "h": 17
+       },
+       "ink": {
+        "x": 218.1,
+        "y": 531,
+        "w": 6.9,
+        "h": 14
+       },
+       "text": "–",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sc-row.sc-need"
+      }
+     }
+    },
+    {
+     "part": "mon",
+     "label": "Mon 13 Jul (faded)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 9,
+        "y": 467.2,
+        "w": 54,
+        "h": 130.6
+       },
+       "ink": {
+        "x": 12,
+        "y": 471.2,
+        "w": 48,
+        "h": 120.4
+       },
+       "text": "13 – F 0 1 O 0 0 A 0 0",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sc-day.mk-before"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 9,
+        "y": 467.2,
+        "w": 54,
+        "h": 130.6
+       },
+       "ink": {
+        "x": 12,
+        "y": 471.2,
+        "w": 48,
+        "h": 120.4
+       },
+       "text": "13 – F 0 1 O 0 0 A 0 0",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sc-day.is-before"
+      }
+     }
+    },
+    {
+     "part": "fri",
+     "label": "Fri 17 Jul, his SANS date (not faded)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 229,
+        "y": 467.2,
+        "w": 54,
+        "h": 130.6
+       },
+       "ink": {
+        "x": 232,
+        "y": 471.2,
+        "w": 48,
+        "h": 120.4
+       },
+       "text": "17 – F 0 0 O 0 0 A 0 0",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sc-day"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 229,
+        "y": 467.2,
+        "w": 54,
+        "h": 130.6
+       },
+       "ink": {
+        "x": 232,
+        "y": 471.2,
+        "w": 48,
+        "h": 120.4
+       },
+       "text": "17 – F 0 0 O 0 0 A 0 0",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sc-day"
+      }
+     }
+    },
+    {
+     "part": "fri-num",
+     "label": "its date",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 232,
+        "y": 471.7,
+        "w": 17,
+        "h": 17
+       },
+       "ink": {
+        "x": 232,
+        "y": 471.2,
+        "w": 16.5,
+        "h": 18
+       },
+       "text": "17",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sc-num"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 232,
+        "y": 471.7,
+        "w": 17,
+        "h": 17
+       },
+       "ink": {
+        "x": 232,
+        "y": 471.2,
+        "w": 16.5,
+        "h": 18
+       },
+       "text": "17",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sc-num"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "a-desk",
+   "title": "Hex's SANS calendar, his days before Fri 17 faded — desktop",
+   "drawing": {
+    "script": "docs/mock/2026-11-23-sans-before-shading/draw.mjs",
+    "shot": "desktop-2-proposed-A-faded"
+   },
+   "approved": {
+    "picture": "desktop-2-proposed-A-faded.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 1",
+   "parts": [
+    {
+     "part": "thu",
+     "label": "Thu 16 Jul, a day before his date (faded)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 660.6,
+        "y": 449.4,
+        "w": 214.9,
+        "h": 133.2
+       },
+       "ink": {
+        "x": 668.6,
+        "y": 455.4,
+        "w": 198.9,
+        "h": 119.3
+       },
+       "text": "16 – F 1 0 O 0 0 A 0 0",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sc-day.mk-before"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 660.6,
+        "y": 449.4,
+        "w": 214.9,
+        "h": 133.2
+       },
+       "ink": {
+        "x": 668.6,
+        "y": 455.4,
+        "w": 198.9,
+        "h": 119.3
+       },
+       "text": "16 – F 1 0 O 0 0 A 0 0",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sc-day.is-before"
+      }
+     }
+    },
+    {
+     "part": "thu-num",
+     "label": "its date",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 668.6,
+        "y": 455.4,
+        "w": 20,
+        "h": 20
+       },
+       "ink": {
+        "x": 668.6,
+        "y": 455.4,
+        "w": 15,
+        "h": 19
+       },
+       "text": "16",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sc-num"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 668.6,
+        "y": 455.4,
+        "w": 20,
+        "h": 20
+       },
+       "ink": {
+        "x": 668.6,
+        "y": 455.4,
+        "w": 15,
+        "h": 19
+       },
+       "text": "16",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sc-num"
+      }
+     }
+    },
+    {
+     "part": "thu-need",
+     "label": "its still-needed pair",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 668.6,
+        "y": 503,
+        "w": 198.9,
+        "h": 19
+       },
+       "ink": {
+        "x": 860.5,
+        "y": 502,
+        "w": 6.9,
+        "h": 19
+       },
+       "text": "–",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sc-row.sc-need"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 668.6,
+        "y": 503,
+        "w": 198.9,
+        "h": 19
+       },
+       "ink": {
+        "x": 860.5,
+        "y": 502,
+        "w": 6.9,
+        "h": 19
+       },
+       "text": "–",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sc-row.sc-need"
+      }
+     }
+    },
+    {
+     "part": "mon",
+     "label": "Mon 13 Jul (faded)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 13,
+        "y": 449.4,
+        "w": 214.8,
+        "h": 133.2
+       },
+       "ink": {
+        "x": 21,
+        "y": 455.4,
+        "w": 198.8,
+        "h": 119.3
+       },
+       "text": "13 – F 0 1 O 0 0 A 0 0",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sc-day.mk-before"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 13,
+        "y": 449.4,
+        "w": 214.8,
+        "h": 133.2
+       },
+       "ink": {
+        "x": 21,
+        "y": 455.4,
+        "w": 198.8,
+        "h": 119.3
+       },
+       "text": "13 – F 0 1 O 0 0 A 0 0",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sc-day.is-before"
+      }
+     }
+    },
+    {
+     "part": "fri",
+     "label": "Fri 17 Jul, his SANS date (not faded)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 876.4,
+        "y": 449.4,
+        "w": 214.9,
+        "h": 133.2
+       },
+       "ink": {
+        "x": 884.4,
+        "y": 455.4,
+        "w": 198.9,
+        "h": 119.3
+       },
+       "text": "17 – F 0 0 O 0 0 A 0 0",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sc-day"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 876.4,
+        "y": 449.4,
+        "w": 214.9,
+        "h": 133.2
+       },
+       "ink": {
+        "x": 884.4,
+        "y": 455.4,
+        "w": 198.9,
+        "h": 119.3
+       },
+       "text": "17 – F 0 0 O 0 0 A 0 0",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sc-day"
+      }
+     }
+    },
+    {
+     "part": "fri-num",
+     "label": "its date",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 884.4,
+        "y": 455.4,
+        "w": 20,
+        "h": 20
+       },
+       "ink": {
+        "x": 884.4,
+        "y": 455.4,
+        "w": 15,
+        "h": 19
+       },
+       "text": "17",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sc-num"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 884.4,
+        "y": 455.4,
+        "w": 20,
+        "h": 20
+       },
+       "ink": {
+        "x": 884.4,
+        "y": 455.4,
+        "w": 15,
+        "h": 19
+       },
+       "text": "17",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sc-num"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "errors": []
+}

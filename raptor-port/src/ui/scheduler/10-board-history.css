@@ -325,10 +325,8 @@ body.sbside-drag{cursor:ew-resize;user-select:none}
   #sbRoster .rpuck.no.haswhy,#sbRoster .rpuck.grounded.haswhy{flex-direction:row;flex-wrap:wrap;align-items:flex-start;column-gap:6px}
   #sbRoster .rpuck.no.haswhy .puck,#sbRoster .rpuck.grounded.haswhy .puck{flex:0 0 var(--puck-w)!important}
   #sbRoster .rpuck.haswhy .rwhy{flex:1 1 92px;min-width:0}
-  /* a SANS row holds its puck beside its badge and remark: the puck's entry shrinks to the row, so its reason wraps
-     under rather than pushing the row past the panel — never below the puck's own width, or a long remark would lie
-     over the puck (the blind read, F2) */
-  #sbRoster .rsans-row>.rpuck{flex:0 1 auto;min-width:var(--puck-w)}
+  /* a SANS row's puck entry shrinking to its row: moved to every width and both lists, 12-schedule-editing.css
+     (.rall .rsans-row>.rpuck — D2338's walk, 23 Nov 26: the phone ran a long reason past its drawer) */
 }
 /* go / line board */
 /* the board's wave blocks carry the same coloured left stripe the week's `.go`

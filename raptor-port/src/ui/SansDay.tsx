@@ -24,7 +24,7 @@ import { useState } from 'react'
 import { idsOf, inputsOnDay } from '../engine/inputs'
 import { unitPeople } from '../engine/roster'
 import { PEOPLE } from '../engine/people'
-import { isAdmin, pageUnit } from '../state/perms'
+import { isAdmin, me, pageUnit } from '../state/perms'
 import { openWinFor } from '../state/cutoff'
 import { notify } from '../state/store'
 import { sansCommittedOn } from '../state/flyplan'
@@ -35,6 +35,8 @@ import { bringForward, openBeside } from './winorder'
 import { puck } from './html'
 import { setDaysWin, setInpEdit } from './pops'
 import { maySansAdd, openSansAdd } from './sansadd'
+import { sansNextDay } from './inputedit'
+import { isoDayWords } from '../engine/weekstash'
 import { dayWord, sansDayGroups, type SansEntry } from './sanscal-model'
 import { useVersion } from './useStore'
 
@@ -74,7 +76,10 @@ export function SansDay({ iso, hi, onClose }: {
      Jul — opening Fri 17 Jul from his 142 SANS calendar got 142's flying and facts over 149's men and commitments. That
      squadron's people and inputs are still read ON the day shown. */
   const a = flyOwn(iso), facts = factsOwn(iso), u = pageUnit('own', todayIso()), com = sansCommittedOn(iso, undefined, unitPeople(u, iso)), g = sansDayGroups(iso, inputsOnDay(u, iso), unitPeople(u, iso))
-  const canAdd = maySansAdd()
+  const canAdd = maySansAdd(iso)   // (on a day he is SANS — D2340)
+  /* WHY HIS "+ COMMITMENT" IS GREY (his D2394 Q4, D2421): on his own days before his SANS date, from when he can file; a
+     member who is not SANS keeps the general words. An admin's is never grey, so he has no version. */
+  const mine = me(), hisNext = !canAdd && mine ? sansNextDay(mine, iso) : ''
   const avail = { p: facts.availP, w: facts.availW }
 
   const reqText = (s: 'p' | 'w') => a.reqFrom[s] === 'nf' ? 'NF' : a.req[s] === null ? '–' : String(a.req[s])
@@ -152,7 +157,7 @@ export function SansDay({ iso, hi, onClose }: {
               onClick={() => { openWinFor('days', pageUnit('own')); openBeside('days', 'sansday'); setDaysWin(iso); notify(); bringForward('days') }}>Calendar…</button>
           )}
         </div>
-        {!canAdd && <p className="sd-note" data-testid="sd-addwhy">SANS aircrew add their availability here.</p>}
+        {!canAdd && <p className="sd-note" data-testid="sd-addwhy">{hisNext ? `You're SANS from ${isoDayWords(hisNext)}.` : 'SANS aircrew add their availability here.'}</p>}
       </div>
       <div className="sd-list" data-testid="sd-list">
         {!any && <p className="sd-empty" data-testid="sd-empty">No commitments yet.</p>}

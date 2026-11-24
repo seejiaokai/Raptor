@@ -4,7 +4,7 @@ import { DAYS } from '../engine/data'
 import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew, sansOn } from '../engine/people'
 import { personShown, briefLeadShown, withFaceAttrs, withDrawDay } from '../engine/faceattrs'
-import { odOut, isOD, listedPersonal, listedUnavail, INPUTS, idsOf, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
+import { odOut, isOD, listedPersonal, listedUnavail, INPUTS, sansFaceShown, idsOf, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, saFlies, saAnyFlies, saTyped, saDeskFlies, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { reportingIssuesForWave,stated,REPORTING_LABEL,REPORT_WORD } from '../engine/reporting'
@@ -1016,7 +1016,8 @@ export function sansCardsHTML(rows:any[],di:any,ro?:any,wrapPk?:(inp:any,pk:stri
    explicit "nil" every single day. */
 export function sansSectionHTML(d:any,di:any,ed:any){
   if(!ed)return '';
-  const rows=inputsOn(d.dt).filter((inp:any)=>isSansAvail(inp.type)).flatMap((r:any)=>facesOf(r));
+  /* (one card a man SANS that day — engine/inputs.ts sansFaceShown, D2341; the fresh Opus read's F1, chat 152) */
+  const rows=inputsOn(d.dt).filter((inp:any)=>isSansAvail(inp.type)).flatMap((r:any)=>facesOf(r)).filter((f:any)=>sansFaceShown(f,d.dt));
   if(!rows.length)return '';
   return `<div class="sub plist one sec sec-sans"><div class="sub-h">SANS Avail</div>`
     +sansCardsHTML(rows,di,false)+`</div>`;

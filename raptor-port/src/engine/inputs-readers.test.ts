@@ -87,6 +87,7 @@ const RECORDS: Record<string, string> = {
   'ui/pendlist.ts': 'the pending list',
   'ui/pops.ts': 'a window\'s open-flag naming a request',
   'ui/sanscal-model.ts': 'the SANS day\'s list: each entry carries its record to the window that changes it',
+  'leavewar/sansunfiled.ts': 'one man\'s own SANS availability records, walked by their dates — the days still shown before and after a posting\'s change, to say which it hid (owner D2341)',
   'ui/SansCal.tsx': 'the SANS calendar',
   'ui/Shell.tsx': 'a comment only',
   'ui/textedit.ts': 'a typed box on a request',

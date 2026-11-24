@@ -1,0 +1,219 @@
+[
+ {
+  "run": "s5-phone",
+  "scn": "s5",
+  "size": "phone",
+  "id": "premise",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "run": "s5-phone",
+  "scn": "s5",
+  "size": "phone",
+  "id": "fx-01",
+  "what": "fixture: SQN EVENT 10:00–17:00 for ALL AVAIL and BRIEFING 08:00–09:00 naming Hex on Sat 18 Jul",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\"} · {\"prog\":\"BRIEFING\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\"}",
+  "pics": "s5-phone/01-s5-fx-01-rows-phone.png"
+ },
+ {
+  "run": "s5-phone",
+  "scn": "s5",
+  "size": "phone",
+  "id": "fx-02",
+  "what": "fixture: Hex posted out as SANS from Wed 15 Jul on the Leave War",
+  "ok": true,
+  "note": "line \"On 15 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s5-phone/02-s5-fx-02-postout-sheet-phone.png"
+ },
+ {
+  "run": "s5-phone",
+  "scn": "s5",
+  "size": "phone",
+  "id": "fx-03",
+  "what": "fixture: signed and published (Publish day); the window lists Hex",
+  "ok": true,
+  "note": "{\"pend\":0,\"pendWords\":\"\",\"head\":\"\",\"notSigned\":false,\"notPub\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\"} · chip {\"sent\":\"r:rmrldi5kjjwq0xb\",\"ver\":\"\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who is free as things stand now)\"} · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"SQN EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null}",
+  "pics": "s5-phone/03-s5-fx-03-published-window-phone.png"
+ },
+ {
+  "run": "s5-phone",
+  "scn": "s5",
+  "size": "phone",
+  "id": "fx-04",
+  "what": "fixture: Hex's Leave War cell Sat 18 Jul",
+  "ok": true,
+  "note": "cell \"FO*\"",
+  "pics": "s5-phone/04-s5-fx-04-lw-phone.png"
+ },
+ {
+  "run": "s5-phone",
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-01",
+  "what": "board: the BRIEFING row's ✕ — Hex named on nothing; the day reads pending and its sign-offs fall",
+  "ok": true,
+  "note": "{\"n0\":1,\"n1\":0,\"left\":false} · {\"pend\":2,\"pendWords\":\"2 pending\",\"head\":\"|2 pending\",\"notSigned\":true,\"notPub\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\"}",
+  "pics": "s5-phone/05-s5-01-briefing-off-phone.png"
+ },
+ {
+  "run": "s5-phone",
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-02",
+  "what": "board (working copy): the window no longer lists Hex",
+  "ok": true,
+  "note": "chip {\"sent\":\"r:rmrldi5kjjwq0xb\",\"ver\":\"\",\"txt\":\"44\",\"title\":\"All 44 earn a full day — tap to see each one (who is free as things stand now)\"} · window {\"n\":44,\"has\":false,\"san\":null,\"why\":null,\"col\":null,\"tabs\":[],\"head\":\"SQN EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null} · published n 45",
+  "pics": "s5-phone/06-s5-02-board-window-working-phone.png"
+ },
+ {
+  "run": "s5-phone",
+  "scn": "s5",
+  "size": "phone",
+  "id": "s7-01",
+  "what": "S7 — the Scheduler Board shows the working copy's crowd (Hex out, one fewer)",
+  "ok": true,
+  "note": "n 44 vs published 45",
+  "pics": "s5-phone/07-s5-02b-board-window-working-phone.png"
+ },
+ {
+  "run": "s5-phone",
+  "scn": "s5",
+  "size": "phone",
+  "id": "s7-02",
+  "what": "S7 — the board's look at the published version (plans menu → the issued version): the window lists Hex, the published count",
+  "ok": true,
+  "note": "menu [\"2026-07-18#0=Originalread-only — look, don't change\"] · chip {\"sent\":\"r:rmrldi5kjjwq0xb\",\"ver\":\"2026-07-18#0\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who was free when this day was issued)\"} · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"SQN EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null}",
+  "pics": "s5-phone/08-s5-03-plans-menu-phone.png, s5-phone/09-s5-04-look-published-window-phone.png"
+ },
+ {
+  "run": "s5-phone",
+  "scn": "s5",
+  "size": "phone",
+  "id": "s7-02b",
+  "what": "back to the live working copy",
+  "ok": null,
+  "note": "Live working copy\n▾",
+  "pics": "s5-phone/10-s5-05-back-live-phone.png"
+ },
+ {
+  "run": "s5-phone",
+  "scn": "s5",
+  "size": "phone",
+  "id": "s7-03",
+  "what": "S7 — View-only Sched (the published face): the window lists Hex, the published count",
+  "ok": true,
+  "note": "chip {\"sent\":\"r:rmrldi5kjjwq0xb\",\"ver\":\"2026-07-18#0\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who was free when this day was issued)\"} · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"SQN EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null}",
+  "pics": "s5-phone/11-s5-06-viewsched-window-phone.png"
+ },
+ {
+  "run": "s5-phone",
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-03",
+  "what": "\"+ SANS\" on: the working crowd has no Hex, the day still pending with sign-offs down, the Leave War cell still FO",
+  "ok": true,
+  "note": "{\"did\":\"pressed + SANS\",\"group\":true} · pending 2 \"2 pending\" notYetSigned true · chip {\"sent\":\"r:rmrldi5kjjwq0xb\",\"ver\":\"\",\"txt\":\"44\",\"title\":\"All 44 earn a full day — tap to see each one (who is free as things stand now)\"} · window {\"n\":44,\"has\":false,\"san\":null,\"why\":null,\"col\":null,\"tabs\":[],\"head\":\"SQN EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null} · cell \"FO*\"",
+  "pics": "s5-phone/12-s5-07-1-sans-on-settings-phone.png, s5-phone/13-s5-07-1-lw-cell-phone.png, s5-phone/14-s5-08-1-on-editsched-sat-phone.png, s5-phone/15-s5-08-1-on-availwin-phone.png"
+ },
+ {
+  "run": "s5-phone",
+  "scn": "s5",
+  "size": "phone",
+  "id": "s5-04",
+  "what": "\"+ SANS\" off: the working crowd has no Hex, the day still pending with sign-offs down, the Leave War cell still FO",
+  "ok": true,
+  "note": "{\"did\":\"pressed the SANS group ✕\",\"group\":false} · pending 2 \"2 pending\" notYetSigned true · chip {\"sent\":\"r:rmrldi5kjjwq0xb\",\"ver\":\"\",\"txt\":\"44\",\"title\":\"All 44 earn a full day — tap to see each one (who is free as things stand now)\"} · window {\"n\":44,\"has\":false,\"san\":null,\"why\":null,\"col\":null,\"tabs\":[],\"head\":\"SQN EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null} · cell \"FO*\"",
+  "pics": "s5-phone/16-s5-07-2-sans-off-settings-phone.png, s5-phone/17-s5-07-2-lw-cell-phone.png, s5-phone/18-s5-08-2-off-editsched-sat-phone.png, s5-phone/19-s5-08-2-off-availwin-phone.png"
+ },
+ {
+  "run": "s5-phone",
+  "scn": "s5",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "run": "s5b-phone",
+  "scn": "s5b",
+  "size": "phone",
+  "id": "fx-01",
+  "what": "fixture: SQN EVENT 10:00–17:00 for ALL AVAIL and BRIEFING 08:00–09:00 naming Hex on Sat 18 Jul",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\"} · {\"prog\":\"BRIEFING\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\"}",
+  "pics": "s5b-phone/01-s5b-fx-01-rows-phone.png"
+ },
+ {
+  "run": "s5b-phone",
+  "scn": "s5b",
+  "size": "phone",
+  "id": "fx-02",
+  "what": "fixture: Hex posted out as SANS from Wed 15 Jul on the Leave War",
+  "ok": true,
+  "note": "line \"On 15 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s5b-phone/02-s5b-fx-02-postout-sheet-phone.png"
+ },
+ {
+  "run": "s5b-phone",
+  "scn": "s5b",
+  "size": "phone",
+  "id": "fx-03",
+  "what": "fixture: signed and published (Publish day); the window lists Hex",
+  "ok": true,
+  "note": "{\"pend\":0,\"pendWords\":\"\",\"head\":\"\",\"notSigned\":false,\"notPub\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\"} · chip {\"sent\":\"r:rmrldi5srgldxp7\",\"ver\":\"\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who is free as things stand now)\"} · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"SQN EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null}",
+  "pics": "s5b-phone/03-s5b-fx-03-published-window-phone.png"
+ },
+ {
+  "run": "s5b-phone",
+  "scn": "s5b",
+  "size": "phone",
+  "id": "fx-04",
+  "what": "fixture: Hex's Leave War cell Sat 18 Jul",
+  "ok": true,
+  "note": "cell \"FO*\"",
+  "pics": "s5b-phone/04-s5b-fx-04-lw-phone.png"
+ },
+ {
+  "run": "s5b-phone",
+  "scn": "s5b",
+  "size": "phone",
+  "id": "s5b-01",
+  "what": "board: the BRIEFING row taken off — pending, sign-offs fall",
+  "ok": true,
+  "note": "before {\"pend\":0,\"pendWords\":\"\",\"head\":\"\",\"notSigned\":false,\"notPub\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\"} · {\"n0\":1,\"n1\":0,\"left\":false} · after {\"pend\":2,\"pendWords\":\"2 pending\",\"head\":\"|2 pending\",\"notSigned\":true,\"notPub\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\"}",
+  "pics": "s5b-phone/05-s5b-01-off-phone.png"
+ },
+ {
+  "run": "s5b-phone",
+  "scn": "s5b",
+  "size": "phone",
+  "id": "s5b-02",
+  "what": "RECORD — the board's Undo puts the briefing back: what the day and the sign-offs say",
+  "ok": null,
+  "note": "briefing back true · {\"pend\":0,\"pendWords\":\"\",\"head\":\"\",\"notSigned\":false,\"notPub\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\"} · sign boxes [\"cur=— name —\",\"sked=— name —\",\"plan=— name —\",\"appr=— name —\"] · chip {\"sent\":\"r:rmrldi5srgldxp7\",\"ver\":\"\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who is free as things stand now)\"} · window Hex true n 45",
+  "pics": "s5b-phone/06-s5b-02-put-back-phone.png"
+ },
+ {
+  "run": "s5b-phone",
+  "scn": "s5b",
+  "size": "phone",
+  "id": "s5b-03",
+  "what": "RECORD — Edit Schedule's Saturday after the put-back",
+  "ok": null,
+  "note": "{\"pend\":0,\"pendWords\":\"\",\"head\":\"\",\"notSigned\":false,\"notPub\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\"} · window Hex true n 45",
+  "pics": "s5b-phone/07-s5b-03-editsched-editsched-sat-phone.png, s5b-phone/08-s5b-03-editsched-availwin-phone.png"
+ },
+ {
+  "run": "s5b-phone",
+  "scn": "s5b",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

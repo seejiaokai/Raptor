@@ -113,9 +113,13 @@ export function BellList() {
             onClick={() => openNotice(n)}>
             <span className="bl-dot" aria-hidden="true" />
             <span className="bl-main">
-              <span className="bl-t"><b className="bl-name">{w.name}</b><i className="bl-day">{w.day}</i></span>
-              {/* a taken-back line: what it took back, struck through, then "taken back · Saber" (his D1699) */}
-              <span className="bl-what">{w.struck ? <><s className="bl-struck">{w.struck}</s>{' · '}</> : null}{w.what}{w.who ? ` · ${w.who}` : ''}</span>
+              {/* (his SANS untick line taken back strikes its title — it was the line's own words, D1699, D2391) */}
+              <span className="bl-t"><b className="bl-name">{w.nameStruck ? <s className="bl-struck">{w.name}</s> : w.name}</b>{w.day ? <i className="bl-day">{w.day}</i> : null}</span>
+              {/* a taken-back line: what it took back, struck through, then "taken back · Saber" (his D1699); a SANS line
+                  that is its title alone has no second line (D2391's D) */}
+              {w.struck || w.what || w.who ? <span className="bl-what">{w.struck ? <><s className="bl-struck">{w.struck}</s>{' · '}</> : null}{w.what}{w.who ? ` · ${w.who}` : ''}</span> : null}
+              {/* …and what the change hid, a sentence of its own (D2341) */}
+              {w.more ? <span className="bl-what" data-testid="bell-more-words">{w.more}</span> : null}
             </span>
             <span className="bl-ago">{noticeAge(n, now)}</span>
           </button>

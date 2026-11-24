@@ -226,10 +226,15 @@ function drainQueue(): void {
    THIS command's latched effects — the edit and its line one saved group, one change-log batch — and dropped with it if
    the command is refused. Only a person's own command (origin `user`) adopts: a projection the app runs in the same turn
    (the Leave War's sync) or a remote change never carries someone's line. */
-const beginHooks: Array<() => void> = []
-export function onPipelineBegin(fn: () => void): () => void {
-  beginHooks.push(fn)
-  return () => { const i = beginHooks.indexOf(fn); if (i >= 0) beginHooks.splice(i, 1) }
+/* …A HOOK MAY ALSO ASK FOR A RESTORE, and is handed the envelope (chat 156, the four reads of 0eaacc411 — Fable's F2 and
+   F5): an admin's Undo of a SANS tick he put on owes the man a line, judged against how things stood as the restore began
+   (leavewar/sansunfiled.ts wireSansBackBefore), and that note is taken only for a command of the module that can change a
+   posting or a tick. Origins default to a person's own commands, as before. */
+const beginHooks: Array<{ fn: (env: CommitEnvelope) => void; origins: readonly Origin[] }> = []
+export function onPipelineBegin(fn: (env: CommitEnvelope) => void, origins: readonly Origin[] = ['user']): () => void {
+  const h = { fn, origins }
+  beginHooks.push(h)
+  return () => { const i = beginHooks.indexOf(h); if (i >= 0) beginHooks.splice(i, 1) }
 }
 
 function runPipeline(cmd: Command, actor: Actor, origin: Origin, causedBy?: number): CommitResult {
@@ -242,7 +247,7 @@ function runPipeline(cmd: Command, actor: Actor, origin: Origin, causedBy?: numb
   txn.api = makeTxnApi(txn)
   active = txn
   phase = 'reducer'
-  if (origin === 'user') for (const h of beginHooks.slice()) h()
+  for (const h of beginHooks.slice()) if (h.origins.includes(origin)) h.fn(env)
   /* [CMDL-FINISH] §2.1(1) — this pipeline's causal context. INHERIT the cause it
      was raised with (a queued projection's captured causedBy); finalize replaces
      it with this pipeline's OWN seq once it emits. A no-op keeps the inherited

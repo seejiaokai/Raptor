@@ -78,15 +78,22 @@ beforeEach(() => {
 afterEach(() => { HOOKS.toast = toast; _resetTimeline(); resetSession(null) })
 
 describe('a man deleted before he ever arrived: his leftover pending bid (the item’s own case — S1-1)', () => {
-  it('the premise: deleted, he keeps no row and no posting record on the war, and his bid on a past day stays', () => {
+  /* CHANGED 22 Nov 26 (Astra's read of D2328, finding 2 — d2328-astra.test.ts): his posting record used to go too, and with it
+     his post-in date, so the ALL AVAIL crowd counted him on every day before his delete — days he was never ours (D2328,
+     D308). What is kept is his post-in date alone: no row, no end, no outcome to run, `gone`. */
+  it('the premise: deleted, he keeps no row on the war — only his post-in date — and his bid on a past day stays', () => {
     const id = addIncoming('Newby')
     expect(setCell(id, PAST, 'LL')).toBe(true)
     expect(req(id, PAST).state).toBe('pending')
+    const from = getState().postOuts[id]?.from
+    expect(from, 'a man still to arrive has a post-in date').toBeTruthy()
     expect(deletePerson(id)).toBeNull()
     raptorNotify()
     expect((PEOPLE as any)[id].deleted).toBe(true)
     expect(getState().people.find(p => p.id === id), 'no row').toBeUndefined()
-    expect(getState().postOuts[id], 'no posting record').toBeUndefined()
+    const kept = getState().postOuts[id]
+    expect(kept && { from: kept.from, to: kept.to, gone: kept.gone, out: kept.poOutcome, past: kept.past },
+      'only his post-in date is kept').toEqual({ from, to: null, gone: true, out: undefined, past: undefined })
     expect(req(id, PAST).state, 'the bid is left on the day').toBe('pending')
   })
 
