@@ -50,6 +50,24 @@ drawn there. Each cell YES / NO-because / MISSING when walked; a blank is a row 
 
 ## 4. The scenarios (Astra and a fresh, blind Fable, each blind to the other; the host combining)
 
+The one brief: `../superpowers/briefs/2026-11-24-words-r4-scenario-brief.md`. The two lists, whole:
+`../superpowers/briefs/2026-11-24-words-r4-scenarios-astra.md` (Astra, gpt-6-astra, high; read the branch at
+`a358d4b1a`) and `../superpowers/briefs/2026-11-24-words-r4-scenarios-fable.md` (a fresh Fable; 19 scenarios, B1–B12,
+N1–N3, P1, P2, L1, O1). **Blindness:** Fable saw nothing of Astra's. Astra, reading the working copy late in its run,
+saw the code comment the host added for Fable's B1 fix (it says so in its report's head) and then read the code at the
+commit; its own top candidate (R4-02, a title starting with its kind) was its own. **To combine (the next chat):** one
+list, each scenario once, each EXPECTED line checked for its source (§4 "Before a brief leaves").
+
+**Found before the walk, from the designs, each reproduced by a failing test first:**
+- Fable's B1 — a Training titled "Meeting" made a Meeting read "Training changed to Meeting, renamed — was Meeting"
+  (nothing was renamed: the bold name stayed "Meeting"). Fixed `39367445f`: "Renamed" only where the bold name itself
+  changed. Test: `bellnotices.test.tsx` "a Training titled "Meeting" changed to a Meeting…".
+- Astra's R4-02 — a Training titled "Training · Safety" made a Meeting: the same phantom at `a358d4b1a`; closed by the
+  same fix. Test: "a Training titled "Training · Safety" changed to a Meeting…".
+- Fable's predictions still to walk: B2 (b)/(c) — a kind change that adds or drops a half day may also say "Now …"
+  (the hours read as moved; "Now 00:00–12:00" beside "LL changed to Training" — so on `main` too); N2 — letters typed
+  in the input window may get "Give the input a start and end time…" where the cells say "<typed> is not a time".
+
 ## 5. The orders walked, and what the screen said
 
 ## 6. The cases carried by a test, each with what it proves

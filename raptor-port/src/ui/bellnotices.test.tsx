@@ -318,6 +318,13 @@ describe('round 4 of the words pass: the bell (D2521)', () => {
     expect(commitInput(rec('Meeting'), { ...draftOf(rec('Meeting')), type: 'Meeting' }, [RANGER])).toBe(true)
     expect(told(RANGER)).toEqual([`Meeting · Wed 15 Jul — Training changed to Meeting · ${cs(SABER)}`])
   })
+  /* (Astra's scenario R4-02, chat 168: a title that starts with its kind's name and a dot) */
+  it('Q1: a Training titled "Training · Safety" changed to a Meeting says only the kinds', async () => {
+    await boot()
+    file([RANGER], WED, { title: 'Training · Safety' }); clear()
+    expect(commitInput(rec('Training · Safety'), { ...draftOf(rec('Training · Safety')), type: 'Meeting' }, [RANGER])).toBe(true)
+    expect(told(RANGER)).toEqual([`Training · Safety · Wed 15 Jul — Training changed to Meeting · ${cs(SABER)}`])
+  })
   it('Q1: a true rename keeps today\'s words', async () => {
     await boot()
     file([RANGER]); clear()
