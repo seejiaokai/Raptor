@@ -74,7 +74,11 @@ export function BellList() {
       if (t && t.closest && (t.closest('.bell-list') || t.closest('.bellbtn'))) return
       closeBellList()
     }
-    const key = (e: KeyboardEvent) => { if (e.key === 'Escape') closeBellList() }
+    /* ONE ESCAPE, ONE THING (his D2112): the key is marked used as the list closes on it, so a movable window behind
+       it — the ?timing readout, up all session, above all — does not take the same press and close too (the re-walk of
+       24 Nov 26, chat 165, W19 (e)). What reads the list as open while the key goes down (the board, the ALL AVAIL and
+       changes windows) still reads it first, at the capture. */
+    const key = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.preventDefault(); closeBellList() } }
     document.addEventListener('pointerdown', down, true)
     document.addEventListener('keydown', key)
     return () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key) }

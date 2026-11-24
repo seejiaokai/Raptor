@@ -54,12 +54,13 @@ import { forward, gone, winBox, setWinBox, takeBeside } from './winorder'
 import { putBack, refit } from './kbscroll'
 import { useVersion } from './useStore'
 import { notify } from '../state/store'
+import { SBDAY } from '../state/view'
 import { placeToast } from './toast'
 
 /* how far the bar must be dragged for the panel to go to its other height — less is a wobble, and it stays put */
 const PULL = 40
 
-export function FloatWin({ id, title, sub, onClose, testid, className, rests, tallFirst, tools, mark, foot, children }: {
+export function FloatWin({ id, title, sub, onClose, testid, className, rests, tallFirst, tools, mark, foot, yieldsEscape, children }: {
   /** which window this is — its remembered place and its turn in front are kept by it; one window per id at a time */
   id: string
   title: string
@@ -81,6 +82,12 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
   /** drawn under the window's scrolling body, outside it, so it never covers a line of it nor scrolls away — the Leave
       War day window's "↓ N more" (D1788) */
   foot?: ReactNode
+  /** A WINDOW UP ALL SESSION BY ITSELF — the ?timing readout, opened as the app starts (owner D2481, D2483): whatever a
+   *  person opens after it is the newer, so Escape is that thing's first (his D2112: Escape closes what opened last).
+   *  The scheduler board does not count it as over the board (ui/boardescape.ts) and it stands aside while the board is
+   *  open; every other window and sheet already takes Escape before it, by the windows' own order. (The walk of
+   *  24 Nov 26, chat 164, W19 (f): the board needed two Escapes.) */
+  yieldsEscape?: boolean
   children: ReactNode
 }) {
   useVersion()                                         // which window is in front is said through the app's own signal
@@ -227,6 +234,7 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape' || e.defaultPrevented || frontWin() !== id) return
+      if (yieldsEscape && SBDAY != null) return       // the board, opened after it, answers (yieldsEscape above)
       const at = document.activeElement as HTMLElement | null
       const inWindow = !!(at && typeof at.closest === 'function' && at.closest('.floatwin'))
       /* in a box on the page behind, Escape is that box's own — a box he types in (a cell being edited puts its text
@@ -242,12 +250,13 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [id])
+  }, [id, yieldsEscape])
 
   return (
     <div
       className={'floatwin' + (className ? ' ' + className : '') + (rests ? ' rests' : '') + (sheet && tall ? ' is-tall' : '') + (frontWin() === id ? ' front' : '')}
       ref={el}
+      data-yields-esc={yieldsEscape ? '' : undefined}
       /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the app's own stacking order, with its own backdrop, focus and Escape rules; these windows leave the page behind them working (D641, aria-modal false), stand one over another in the order they were pressed, and close on Escape front-first through this module's own order — layered on purpose */
       role="dialog"
       aria-modal="false"

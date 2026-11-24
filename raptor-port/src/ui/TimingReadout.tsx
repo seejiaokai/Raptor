@@ -59,6 +59,9 @@ export function makeTimingReadout({ React, FloatWin }: ReadoutParts): (p: Readou
     return h(FloatWin, {
       id: 'timing', title: 'Timing', sub: 'This computer only. Shown because the address ends in ?timing', className: 'timingwin',
       onClose: () => setOpen(false),
+      /* up since the app started: anything opened after it answers Escape first (FloatWindow.tsx yieldsEscape — the
+         walk of 24 Nov 26, W19 (f)) */
+      yieldsEscape: true,
       tools: h('button', { type: 'button', className: 'abtn', onClick: onCopy }, copied ? 'Copied' : 'Copy all'),
       children: body,
     })

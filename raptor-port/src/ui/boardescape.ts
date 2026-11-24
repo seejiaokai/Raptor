@@ -27,8 +27,10 @@ import { closeScheduler } from './board'
 
 const TYPING = 'input, textarea, select, [contenteditable=""], [contenteditable="true"]'
 /* what can lie over the board that its own flags do not say: the small menus (+ Block, Templates, the plans selector, a
-   jet's stores — `.wavemenu`), the ⋯ menu, the bell's list, a date box's calendar, a movable window, any veiled window */
-const OVER = '.wavemenu, #sbMoreMenu, .bell-list, .dcal-layer:not(.dcal-patch), .floatwin:not([hidden]), .airpop:not([hidden])'
+   jet's stores — `.wavemenu`), the ⋯ menu, the bell's list, a date box's calendar, a movable window, any veiled window.
+   NOT the ?timing readout's window (`data-yields-esc`, FloatWindow.tsx yieldsEscape): up since the app started, it was
+   opened before the board, so the board is the newer and answers first (his D2112; the walk of 24 Nov 26, W19 (f)) */
+const OVER = '.wavemenu, #sbMoreMenu, .bell-list, .dcal-layer:not(.dcal-patch), .floatwin:not([hidden]):not([data-yields-esc]), .airpop:not([hidden])'
 
 /* something stands over the board, and Escape is its to answer */
 export function overBoard(): boolean {
