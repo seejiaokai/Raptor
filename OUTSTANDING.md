@@ -2957,6 +2957,8 @@ Since his D2423 (24 Nov 26) the word is "undone", not "taken back", wherever an 
 struck line that stays ("undone · Saber") and the change history; an act that was no Undo (an approved leave put back to a
 bid) is not called undone. Drawn on the page of 24 Nov 26 (`raptor-port/docs/mock/2026-11-24-bell-words/`, branch
 `claude/allavail-drawings-156`), reworded again by Fable under his D2422.
+**Also (his D2563, 24 Nov 26, chat 166):** an input's "Deleted" line is reworded in the same plain style — "Training on Wed
+15 Jul was deleted. · Saber" — drawn for him first, then built with this job.
 
 ### [FABLE-READ-FAULTS] The faults Fable's reads of 21–22 Nov found outside the two-squadron work — fix now (his D2268, 22 Nov 26)
 **What:** proved by failing tests on the night's copy (very probably live today), none fixed: **OIL F1** (MED — a man posted
