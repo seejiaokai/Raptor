@@ -306,3 +306,101 @@ The row for `docs/walk-ledger.md`, for the coordinator to add with the closing r
 (new words, filter and fixes, the Tracker follows the pick) · H, G, D, C, E · FULL; three Opus walkers, Astra's 60
 scenarios, 1536 and 402 · found 5 (2 new with tonight's follow, 1 in the new band, 2 older), none of one squadron's records
 crossing into another.
+
+## 15. The re-walk of the fixes
+
+Build walked: `c2e8e524c` on `claude/msq-b1-screens-135` (bundle `index-CWjpZoEC.js`), served frozen from the check lead's
+scratch folder on ports 4715–4717, all inside the checks lock (taken 09:35, released 10:29 MPST). Three Opus walkers (A:
+items 1, 5, 8; B: 2, 3, 4; C: 6, 7, 9) and the check lead. Scripts: `raptor-port/scripts/handpass/n153/rewalk/`. Pictures:
+`raptor-port/docs/handpass/2026-11-24-msq-night-check/rewalk/`; every path below is relative to `rewalk/`. 1536 is Chromium
+with a mouse. 402 is Chromium with real touch for items 1, 5 and 8, and WebKit for the rest (item 6 in both).
+
+**Result: seven of the nine pass wherever they can be reached. Item 2 fails on its bell line (B1, new with the fix). Item 7
+cannot be reached at 402.** The re-walk also found one serious fault older than tonight (C1) and three small ones.
+
+### The nine, at each width
+
+| # | The fix | 1536 | 402 |
+|---|---|---|---|
+| 1 | A drag crossing a pick: bend, ball, link end, drawn line's end, group, selection box; a question answered with the press held (Discard, Save) | **PASS** `a/sheets/ra-01-clean-d-bend.png`, `host/r1-d-group/04-after-release.png` | **PASS** `a/sheets/ra-01-clean-pc-bend.png`, `host/r1-pc-box/05-142-back.png` |
+| 2a | A held draft: a real bell line | **FAIL (B1)**: asked and draft kept, but the input's window opens first `host/now/rb-i2-d-f/f2-03-window-on-142.png` | **FAIL (B1)** the same `b/rb-i2-p-f/f2-03-window-on-142.png` |
+| 2b | A held draft: Logout, with Stay, Discard, Save | **PASS** `b/rb-i2-d/c03-save-after.png`, `b06-149-after-signin.png` | **PASS** `b/rb-i2-p/b02-asked.png` |
+| 3 | The question in the member view, "This change could not be saved.", later picks | **PASS** `b/rb-i3-hunter-d/02-question.png`, `03-save-after.png` | **PASS** `b/rb-i3-hunter-p/03-save-after.png` |
+| 4 | Top bar and Leave War the same squadron after the round trip; Approve writes to 149's war only | **PASS** `b/rb-i4-d/06-approved.png` | **PASS** `b/rb-i4-p/06-approved.png` |
+| 5 | Export with the picker open across a pick: nothing written, no message (the picker is the app's test stand-in) | **PASS** `a/sheets/ra-05-d-pick.png` | **PASS** `a/sheets/ra-05-pc-pick.png` (the pick by the keys) |
+| 6 | A copied course keeps its own student and chart per squadron | **PASS** `c/rc06-d-1/29-E-149.png` | **PASS** `c/rc06-pc-1/29-E-149.png`; WebKit `c/rc06-p-2/` |
+| 7 | A held Input window: Tab to the chip, Switch back, words kept, PERSON line as drawn, Save | **PASS** `c/rc07-d-3/04-tab-on-chip.png`, `05-after-enter.png` | **NOT REACHED**: the open form covers ☰ `c/rc07-p-3/02-phone-after-tap-at-burger.png` |
+| 8 | Discard from + Add syllabus, + Add course, Rename course keeps Edit chart layout | **PASS** `a/sheets/ra-08-d-addSyl.png` | **PASS** `a/sheets/ra-08-pc-renCourse.png` |
+| 9 | The squadron list above the Calendar window | **PASS** `c/rc09-d-1/calendar-1-list-open.png` | **PASS** for the ☰ list `c/rc09-p-1/p-02-list.png` (no Calendar window open; the fault was a desktop one) |
+
+**The plain-user round (§7.0a): PASS at both sizes** for the Tracker (`a/sheets/ra-09-d.png`, `ra-09-pc.png`, `ra-10-*.png`),
+the Leave War and the bell (`b/rb-plain-d/`, `b/rb-plain-p/`), and Inputs and the squadron list (`c/rc10-d-3/`, `c/rc10-p-3/`).
+No page error, console error or failed request in any cited run.
+
+### What the re-walk found
+
+Each was reproduced by the check lead on this build and on the two older ones still served: `fcca051f0` (before the nine
+fixes) and the build before tonight. Pictures of all three: `host/now/`, `host/fcca/`, `host/before/`. **All OPEN: this job
+fixes nothing.**
+
+**C1 · A 142 input opens live over 149, and its Save and Delete work · serious · older than tonight (the same on all three
+builds).** (1) Saber on 142, Inputs, List, All dates; open Drifter's input and type in Remarks. (2) Press Blade's row:
+"This input has unsaved changes. Open Blade's input and lose them?". (3) With that up, open the squadron list and pick 149.
+Drifter's window is rightly held, but the question stays. (4) Press **Discard and open**. Blade's 142 input opens with no
+band and every control live, while the bar says 149. (5) Save changes 142's Blade record, and the row shows in 149's list
+until the page is reopened; Delete removes it (142 goes from 46 to 45 rows). 149's saved inputs are untouched; "Keep
+editing" is safe. Pictures: `host/now/rc09d-d-h/s-3-after-save.png`, `d-2-after-delete.png`; before tonight
+`host/before/rc09d-d-h/s-3-after-save.png`. Believed cause (read, not tested): in `ui/InputWindow.tsx` the pick does not
+clear the question, and the input taken up records the squadron now in view as the one it was opened on, so it is not held.
+A version with a right lowered was not tried: for the security reader.
+
+**B1 · A bell line that opens an input acts before he answers · medium · new with fix 2 (`fcca051f0` has no such band).**
+(1) Saber files an input for Hunter on 142. (2) Hunter, with Plan of 149, picks 149, makes a chart edit, switches to the
+member view. (3) He opens the bell and presses "OL Tue 8 Dec, You were added". The question is asked, but the input's
+window has already opened under it. **Stay:** the window stays over 149's View-only Sched with Save and Delete live,
+covering the role chip until closed. **Discard:** he lands on 142 with the window saying "This is 149's. You picked 142 —
+close this to go on.", which is untrue, and the form locked. Closing it and pressing the line again gives the ordinary
+window. Nothing is lost or crossed. A Leave War line does not do this. Pictures: `host/now/rb-i2-d-f/f2-03-window-on-142.png`
+beside `host/fcca/rb-i2-d-f/f2-03-window-on-142.png`; phone `b/rb-i2-p-f/f2-03-window-on-142.png`; Stay `b/rb-i2-d/a04-stay-after.png`.
+Believed cause (read, not tested): `openNotice` in `ui/topstate.ts` opens the window before `setPage('inputs')`;
+`landOnOwnPage` in `state/store.ts` then puts the page back and asks, with the window already open and 149 as its squadron.
+
+**B2 · The refusal is cut short in the Tracker's bar · low · not comparable.** After a refused Save, back in the admin view,
+the bar reads "● Th…" at 1536 and "● This cha…" at 402 until the next save (183px of words in a 51px box). The full words
+were shown in the box at the refusal. The older builds cannot reach this press, because their refusal stayed hidden.
+Pictures: `b/rb-i2w-d/r04-bar-crop.png`, `b/rb-i2w-p/r04-bar-crop.png`.
+
+**C2 · Escape with the squadron list open over an Input window goes to the window · low · older (all three builds).** With no
+typed words, one Escape closes the window and leaves the list open. With typed words, it closes the list and also asks
+"Discard and close / Keep editing". Nothing is lost. Over the Calendar and the Admin forms one Escape closes only the list.
+Picture: `host/now/rc09c-d-h/e-2-after-one-escape.png`.
+
+**A1 · The question "Save them before switching to 149?" takes no keyboard focus · low, keys only · older (all three
+builds).** After a pick by the keys, focus stays on the squadron button behind the question: Enter opens the list over it,
+and its buttons are 16 Tabs away. A second pick there changes nothing and every answer then works. Picture:
+`host/now/ra-04/D12-01-list-over-question.png`.
+
+**Recorded, not counted as faults:** Undo of a moved ball lights Save changes though the move had saved itself; a pick then
+asks, and Discard leaves the ball right (`a/ra-06/`). A press outside does not close an Input window, at either size, and no
+ruling found says it should. WebKit draws the Tracker's three phone dropdowns cut in half (already settled, D1564, §10).
+
+### What could not be reached, and why
+
+- **Item 7 at 402:** the open form covers ☰, so the member view cannot be switched to with it open.
+- **Item 1:** a drawn line's corner handle (no drawn line in reach has one); a pinch and a touch cancelled by the system,
+  across a pick. The question during a held drag used the bend and the ball only.
+- **Item 2:** Save them from a bell line; Discard from a Leave War line.
+- **Item 5:** the real save picker (a stand-in held it open). The Export window's shade covers the squadron control, so the
+  pick was by the keys, which a phone does not have.
+- **Item 6:** the import's file was handed to the app's file box.
+- **Item 9:** the list over the Leave War's Open for bidding and day windows: their shade covers the top bar, so it cannot be opened there.
+- **Roles:** items 1, 5, 6 and 8 as Saber only; item 3 as Saber at 1536 only.
+- **The Inputs filter's Person and Type boxes;** other Leave War windows.
+- **The fix list's "test each" lead on a right lowered in an open tab** was not part of this re-walk.
+- **For his iPhone:** every gesture here ran in a test browser; real finger drags ran in Chromium, not WebKit.
+
+`Walk: 1047 pictures · 20 surfaces · 62 orders · 5 open`
+
+Counted: pictures on disk under `rewalk/`, script mistakes and repeat runs included. Orders: 39 by walker A, 10 by B and 11 by C
+as listed from their reports, 2 by the check lead. Open: C1, B1, B2, C2, A1. The check lead opened each picture named in the
+table and under the faults; the walkers opened the rest of theirs.
