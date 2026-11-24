@@ -201,7 +201,12 @@ const parkedHist = new Map();
 onStorageFollow({
   follow(to, mayHold) {
     unitWant = to;
-    if (mayHold && (sylDirty || arrangeMode)) { setStorageHeld(true); return 'held'; }
+    /* A PRESS HELD ACROSS THE HOLD ENDS HERE, as at a move (the night of 24 Nov 26, the blind Opus read's F2 —
+       msq-night-press-held.test.tsx): the Tracker is covered while held, but a drag stayed alive under the cover; its
+       lift saved the layout, the gate refused it, and "This change could not be saved." went up unseen inside the
+       hidden Tracker with Logout and every pick dead behind it. The press never happened (cancelGestures). */
+    const hadPress = cancelGestures();
+    if (mayHold && (sylDirty || arrangeMode)) { setStorageHeld(true); if (hadPress) { renderBoard(); notify(); } return 'held'; }
     setStorageHeld(false);
     startFollow();
     return 'moved';
@@ -6097,6 +6102,11 @@ async function reconcileBuiltins() {
 async function leaveFlowEdits(what, loadsNext = false) {
   if (!sylDirty) return true;
   if (!await uiConfirm('You have unsaved flow edits on “' + curSylName() + '”.\n' + what)) return false;
+  /* THE PICKS GO WITH THE EDITS (the night of 24 Nov 26, the blind Opus read's F3 — msq-night-press-held.test.tsx): the
+     night's fix 8 keeps him in Edit chart layout after the Discard, and leaving the editor was what cleared Connect's
+     first ball, the merge's first line, a half-drawn line and the selections. Left set, the next click made a ball just
+     dropped another's prerequisite. The switch of chart or course below carried the same stale picks. */
+  connectSrc = null; mergeFirst = null; drawing = null; selBalls = new Set(); selLine = null; selEdge = null;
   if (loadsNext) clearDirty(); else await discardChartEdits(true);
   return true;
 }
