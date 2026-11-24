@@ -38,7 +38,7 @@ import { RangeCal } from './RangeCal'
 import { DateBox } from './DateBox'
 import { TypeLegend } from './TypeLegend'
 import { clickedOutside } from './outside'
-import { useSheetFocus, topSheet } from './sheetfocus'
+import { useSheetFocus, topSheet, escListTop } from './sheetfocus'
 import { AskCard } from './AskCard'
 import { lastPressed } from './lastpress'
 import { rosterOptions, archivedOptions, fmt, fmtDay, unfmt, hasHalf, spanOf, spanFields, SPANS, SANS_ROWS, sansRefusal, isoOrd, ordISO, applyMedPlan, medKeptSegments, mintMedSegments, typeOptions, draftOf, normalizeInputDraft, docGate, oilGate, oilAnswered, oilUnansweredDay, oilSummary, oilDayLabel, TYPE_ALLOW, protectedInput, medPlanProtected, medicalLocked, medSegmentsProtected, placeholderRefused, placeholderWhy, commitNewInput, commitInputEdit, medAskFor, saveBatchX, saveBatch, giveBackCuts, askOilIfPending, removeInput, upchitDeleteAsk, sharedRefusal, inputWho, howMany, commitInput, WIN_FIELDS, draftChanges, fieldSame, fieldPart, fieldSay, progOf, offersFor, whoDoorRefusal, draftImage } from './inputedit'
@@ -502,6 +502,16 @@ export function InputEditor() {
       /* as a window it does not own the page: Escape typed in a box on the page BEHIND it is that box's own (a cell
          being edited puts its text back on Escape) — the shell's own rule, ui/FloatWindow.tsx */
       if (win) {
+        /* A MENU OPENED OVER IT ANSWERS FIRST (the night of 24 Nov 26, the re-walk's C2 — ui/msq-sqnlist-escape-over-input
+           .test.tsx; the design guide §2: Escape closes what opened last). With the top bar's squadron list open over this
+           window, Escape closed the WINDOW and left the list up — or, over typed words, asked "Close it and lose them?"
+           for a press meant for the list. This listener stands beside the one Escape list (ui/sheetfocus.ts), which the
+           list's menus join, and whichever was added to the page first took the key. Where that list has something up
+           that is not inside this window, the key is left to it; the next Escape is this window's. Not under one of
+           this window's own sheets (the OIL, upchit, medical or document question): those block the page, top bar
+           included, and answer first as they always did. */
+        const over = docConf || upConf || medConf || oilConf ? null : escListTop()
+        if (over && !box.current?.closest('.floatwin')?.contains(over)) return
         const a = document.activeElement as HTMLElement | null
         const mine = !!a && !!box.current && !!box.current.closest('.floatwin')?.contains(a)
         if (!mine && a && a !== document.body && (/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) || a.isContentEditable)) return

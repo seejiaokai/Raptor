@@ -212,6 +212,20 @@ export function escCloses(box: () => HTMLElement | null, close: () => void, from
     if (!escs.length) document.removeEventListener('keydown', escTop, true)
   }
 }
+/** WHAT OF THIS LIST WOULD ANSWER AN ESCAPE NOW — the box of its newest entry still on the page; null with nothing up, a
+    sheet holding the keys over it, or the entry waiting for something opened over it (escTop's own tests, asked without
+    taking the press). A window that keeps an Escape listener of its own beside this list (an input's window on the Inputs
+    page, ui/InputWindow.tsx) asks before it answers, so "what opened last" holds between the two: every entry here that
+    can stand over that window is a menu a press outside closes, so one that is up was opened after the window's last
+    press. */
+export function escListTop(): HTMLElement | null {
+  for (let i = escs.length - 1; i >= 0; i--) {
+    const e = escs[i]!, b = e.box()
+    if (!b || !b.isConnected) continue
+    return topSheet() || (e.waits && e.waits()) ? null : b
+  }
+  return null
+}
 /** The window named `id`, opened again or pressed, answers the next Escape first — "Escape closes what opened last"
     (the design guide §2) read as the one he last brought forward, as the two floating windows stand one over the other
     by the press (ui/floatwin.ts raiseWin, which calls this) */
