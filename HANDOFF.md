@@ -315,6 +315,14 @@ the later merge keeps both (D78).
 - **Opening line for a fresh chat:** "Chat 147: read HANDOFF.md, the block 'CHAT 146 (carrying chat 141)'. Work from your own copy on branch `claude/allavail-sans-postout-141` (git fetch; if the switch is refused because the main folder holds it, branch a local copy from `origin/claude/allavail-sans-postout-141` and push to that branch, as chat 146 did). Do its LEFT list in order — the Fable read first — then send me the preview link with my question." Model: Opus, high.
 - **Rulings:** D2337 this chat (D2328–D2333 chat 141). **Next chat: 147. Next free ruling:** D2338 — other branches hold D2334–D2336; check every branch. Skill note 1022. Scratch on D: `raptor-work\c146-*` (each `raptor-port\node_modules` there is a junction — unlink it before removing the folder).
 <!-- /now -->
+<!-- now:claude/readings-lapse-fix-fdbb3c -->
+### CHAT 173 — [READINGS-LAPSE-FIX] (his D2567, D2610, D2611), branch `claude/readings-lapse-fix-fdbb3c`, 24 Nov 26
+- **Cut from chat 169's branch (`claude/allavail-sans-postout-141`, e6d855310)** — it carries D2564–D2567 and lesson 32; its pull request goes after pull request 825 merges, or is brought level with `main` then. Changes no app code.
+- **Plans** (Fable, red-teamed by Astra and a fresh, blind Opus, revised; approved "as recommended", D2610): `raptor-port/docs/superpowers/plans/2026-11-24-readings-lapse-fix-plan.md` (the checking fix — being built by an Opus helper) and `…/2026-11-24-rulings-audit-plan.md` (the audit — core first). Red team: `raptor-port/docs/superpowers/briefs/2026-11-24-readings-plans-redteam-*.md`.
+- **His D2611:** every chat is told the review is running and covers notes, words and bell lines, new and old; until the fix is live, a reading of his words in new words goes to him first. Told by message to the live chats 24 Nov 26 — **a chat started later reads it here.**
+- **Audit:** step A's lists `raptor-port/docs/superpowers/briefs/2026-11-24-rulings-audit-inventory.md`; step B (Fable, the same-question pairs) running. Then the core slices (Opus), Fable's review, reproduction, his rounds.
+- **Rulings range held: D2610–D2619.** Chat 170 records the bell's "every change" ruling as D2600–D2609 (replaces D2521's count) — the audit reads it as the rule.
+<!-- /now -->
 <!-- now:claude/app-speed-160 -->
 ### CHAT 160 — ways to make the app faster: measured, nine ideas put to him, his go recorded (D2480) and filed as `[APP-SPEED]`; written 24 Nov 26, 11:35 — verify before use
 - **Where it started:** he asked, while other chats were working, for ways to improve the app's speed — less loading, or perceived; interface speed; above all on a slow computer. A thinking job: nothing in the app was changed.
