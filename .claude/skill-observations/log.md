@@ -1389,3 +1389,16 @@ sides.
 **Issue:** Questions about edge cases (what a notification says after an undo, a reminder after a date moves) were put with the words and a picture but not with when the case arises. The owner could not judge their weight and asked; he then ruled that every question first says when it happens — who is doing what, at what point in their work, how often (his D2439).
 **Suggested improvement:** in the skill's question step, add one required line before each question: "When this happens: <who, doing what, at what point, how often>" — and a check before sending that every question has it.
 **Principle:** A decision-maker weighs an edge case by how often and when it meets real people; a question that shows only the words and the screen hides that, and invites either over-engineering or a guess.
+
+### Observation 1058: A record script's all-or-nothing restore erased a helper's live edit
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 173, the readings-lapse fix — the host recorded a ruling while an Opus helper was editing DECISIONS.md in the same working copy
+**Skill:** New skill candidate: helpers-in-one-working-copy
+**Type:** open-source
+**Phase/Area:** running a record-keeping script beside a helper that writes the same files
+
+**Issue:** the host ran the rulings script while a builder helper was adding a block to DECISIONS.md. The script failed on an unrelated check and "put every file back exactly as it was" — restoring DECISIONS.md over the helper's insert. The helper reported the block done; two blind readers then found it missing.
+**Suggested improvement:** before running any script that rewrites or restores shared files, check no helper is writing in that working copy (or give the helper its own worktree); after such a run, re-check the files a running helper reported changing.
+**Principle:** a tool that restores files on failure is a writer too; two writers in one copy need the same care as two people.
