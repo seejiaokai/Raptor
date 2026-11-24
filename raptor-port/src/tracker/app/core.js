@@ -7488,7 +7488,8 @@ export async function saveCopyClick() {
   if (gone()) return;
   const text = JSON.stringify(FMT.buildFile({ charts, students, savedAt }), null, 2);
   try {
-    if (handle) await FS.writeTo(handle, text); else FS.downloadInstead(name, text);
+    /* (the writer asks too, before it writes and before it closes: gone, it aborts and the file stays as it was) */
+    if (handle) await FS.writeTo(handle, text, gone); else FS.downloadInstead(name, text);
   } catch (err) {
     if (gone()) return;
     closeCopy(); setSaveStatus('copy NOT saved — ' + ((err && err.message) || err), 'err'); notify(); return;

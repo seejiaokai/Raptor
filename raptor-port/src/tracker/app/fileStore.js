@@ -68,9 +68,19 @@ export async function ensureWritable(handle) {
    A write that fails part-way, or is silently dropped, otherwise leaves the app
    reporting success while the file on disk is stale — the worst possible
    outcome for someone relying on that file as their only copy. */
-export async function writeTo(handle, text) {
+/* …AND COMMITS NOTHING ONCE ITS EXPORT IS ABANDONED (the night of 24 Nov 26, Astra's read of the nine fixes, finding 1 —
+   msq-night-export-abort.test.tsx). The browser keeps what is written aside until close(), which puts it over the file
+   chosen. Opening the stream and writing are both waited on, and a squadron picked (or a sign-out) during either still
+   closed it: the backup he chose was overwritten by an export nobody finished, and the caller's check after it only hid
+   the message. `gone` — the export's own "no longer mine" test (core.js saveCopyClick) — is asked before the write and
+   again before the close; gone, the stream is aborted, the file stays as it was, and the answer is false. */
+export async function writeTo(handle, text, gone = null) {
   const w = await handle.createWritable();
-  await w.write(text); await w.close();
+  const drop = async () => { try { if (w.abort) await w.abort(); } catch (_) { /* nothing was committed either way */ } return false; };
+  if (gone && gone()) return drop();
+  await w.write(text);
+  if (gone && gone()) return drop();
+  await w.close();
   if (handle.getFile) {
     const onDisk = await handle.getFile();
     const wrote = new Blob([text]).size;
