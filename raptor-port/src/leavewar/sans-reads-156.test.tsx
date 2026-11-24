@@ -64,7 +64,8 @@ afterAll(() => { vi.useRealTimers(); storeBackend.impl = null })
 beforeEach(() => {
   at(2026, 7, 15)
   Object.keys(mem).forEach(k => delete mem[k])
-  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v }, keys: () => Object.keys(mem) }
+  /* (as the app's own settings door does — storage/adapters.ts settingsAdapter: a setting saved as nothing is removed) */
+  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { if (v === 'null') delete mem[k]; else mem[k] = v }, keys: () => Object.keys(mem) }
   const p0 = JSON.parse(PEOPLE0)
   for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
   Object.assign(PEOPLE, p0); indexCallsigns()
@@ -96,7 +97,11 @@ import { saveBatchX } from '../ui/inputedit'
 import { stashKeys } from '../engine/weekstash'
 import { deletePerson } from '../state/person-delete'
 
-const readElsewhere = (pid = 'rocky') => { mem[`sqn142_noticeseen:${pid}`] = JSON.stringify({ upto: 0, ids: noticesFor(pid).map(n => n.id) }); noticeSeenLoad() }
+/* (as his own "Mark all read" writes it: what he had read before is kept — state/noticeseen.ts keepReminders) */
+const readElsewhere = (pid = 'rocky') => {
+  const was = JSON.parse(mem[`sqn142_noticeseen:${pid}`] ?? 'null') as { ids?: string[] } | null
+  mem[`sqn142_noticeseen:${pid}`] = JSON.stringify({ upto: 0, ids: [...new Set([...(was?.ids ?? []), ...noticesFor(pid).map(n => n.id)])] }); noticeSeenLoad()
+}
 const dueDays = () => (due()[0]!.what[0] as any).days as string[]
 const ticked = () => {
   expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
@@ -407,5 +412,277 @@ describe('W12-1 — the same change made again: the hidden sentence on the lates
     expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
     expect(hiding().length).toBe(1)
     expect(isUnread(hiding()[0]!, 'rocky')).toBe(true)
+  })
+})
+
+/* ==== ROUND 2 OF THE BLIND READS OF f73602f9f (chat 156, 24 Nov 26 — Astra, a fresh Opus, a fresh Fable and the security
+   reader; their reports D:/raptor-work/c156-reread-*): each reader's failing case brought onto the branch, seen to fail,
+   then fixed. ==== */
+import { stashDays, stashGet } from '../engine/weekstash'
+import { dayEngaged } from '../engine/avail'
+import { dayIso } from '../engine/verid'
+import { sansUnfiledDays, sansPostedFrom as sansPostedFromR2 } from './sansunfiled'
+import { commitProjection } from '../command'
+
+const liveTitles = () => backs().map(n => noticeWords(n)).filter(w => !w.nameStruck).map(w => w.name)
+const struck = () => backs().filter(n => noticeWords(n).nameStruck)
+/* a reload as the app does it: the bell's rows read back in their saved order (state/persist.ts — by time, then id), his
+   read record from the store, the Undo list empty (session-only) */
+const reboot = () => {
+  const kept = structuredClone(NOTICES) as Notice[]
+  kept.sort((x, y) => x.at - y.at || (String(x.id) < String(y.id) ? -1 : 1))
+  NOTICES.length = 0; kept.forEach(n => NOTICES.push(n))
+  _resetTimeline(); installGlobalUndo(); noticeSeenLoad(); raptorNotify()
+}
+
+/* R2-1 (Astra F1 = the Opus read's R2 = Fable's RE-READ 2): the line Saber's Undo of a SANS tick writes is retracted by his
+   Redo — gone where Hex had not read it, struck "taken back" where he had */
+describe('R2-1 — Saber ticks Hex SANS, Hex reads, Saber Undoes (the line written), then Redoes', () => {
+  it('unread: the Redo takes the line away — Hex SANS again, no line standing, his reminder still read', () => {
+    plan(SATI)
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    readElsewhere(); expect(dueUnread()).toBe(0)
+    expect(globalUndo().ok).toBe(true); raptorNotify()
+    expect(liveTitles()).toEqual(["You're no longer SANS."])
+    expect(globalRedo().ok).toBe(true); raptorNotify()
+    expect(!!(PEOPLE as any).rocky.san).toBe(true)
+    expect(backs()).toEqual([])
+    expect(due().length).toBe(1)
+    expect(dueUnread()).toBe(0)
+  })
+  it('read: the Redo strikes it "taken back", unread; nothing else stands and his reminder stays read', () => {
+    plan(SATI)
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    readElsewhere()
+    expect(globalUndo().ok).toBe(true); raptorNotify(); readElsewhere()
+    expect(globalRedo().ok).toBe(true); raptorNotify()
+    expect(liveTitles()).toEqual([])
+    expect(struck().length).toBe(1)
+    expect(noticeWords(struck()[0]!)).toMatchObject({ name: "You're no longer SANS.", nameStruck: true, what: 'taken back' })
+    expect(isUnread(struck()[0]!, 'rocky')).toBe(true)
+    expect(due().length).toBe(1)
+    expect(dueUnread()).toBe(0)
+  })
+  it('the Opus read\'s R2: Undo, Redo, Undo again, each read — one current line, not two', () => {
+    plan(SATI)
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    readElsewhere()
+    expect(globalUndo().ok).toBe(true); raptorNotify(); readElsewhere()
+    expect(globalRedo().ok).toBe(true); raptorNotify(); readElsewhere()
+    expect(globalUndo().ok).toBe(true); raptorNotify()
+    expect(!!(PEOPLE as any).rocky.san).toBe(false)
+    expect(liveTitles()).toEqual(["You're no longer SANS."])
+  })
+  it('repeated, never read: Undo, Redo, Undo, Redo — nothing left standing', () => {
+    plan(SATI)
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    readElsewhere()
+    for (let i = 0; i < 2; i++) {
+      expect(globalUndo().ok).toBe(true); raptorNotify()
+      expect(globalRedo().ok).toBe(true); raptorNotify()
+    }
+    expect(backs()).toEqual([])
+    expect(dueUnread()).toBe(0)
+  })
+  it('after a reload the Redo\'s result holds: nothing standing', () => {
+    plan(SATI)
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    readElsewhere()
+    expect(globalUndo().ok).toBe(true); raptorNotify(); readElsewhere()
+    expect(globalRedo().ok).toBe(true); raptorNotify()
+    reboot()
+    expect(liveTitles()).toEqual([])
+    expect(dueUnread()).toBe(0)
+  })
+  it('the gate: Saber\'s ordinary command cannot take that line away', () => {
+    plan(SATI)
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    readElsewhere()
+    expect(globalUndo().ok).toBe(true); raptorNotify()
+    const line = backs()[0]!
+    let r: any
+    try {
+      r = cmdCommit({ type: 'lw.postout', scope: { module: 'people' }, meta: null,
+        apply: (txn: any) => {
+          resyncBeforeEnlist(); txn.enlist(schedStore); txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
+          const ix = NOTICES.findIndex(x => x.id === line.id); if (ix >= 0) NOTICES.splice(ix, 1)
+          validate(); finishPeopleWrite(); schedApplyEnd()
+        } } as any)
+    } catch { r = { ok: false } }
+    raptorNotify()
+    expect(r.ok).toBe(false)
+  })
+})
+
+/* R2-6 (the Opus read's R3 — not a fault): the top bar's Undo never takes a posting back (D321, D350 — "Undo post out" on the
+   posting sheet does, and tells him: test 2 above). Its case pressed Undo after posting him and took back the PLANNING made
+   before the posting: his day left the reminder, which is no take-back (D2391) — so no line is owed */
+describe('R2-6 — Saber posts Hex SANS, Hex reads, Saber presses Undo on the top bar', () => {
+  it('the posting is no step of the Undo: refused in its own words, Hex still posted, nothing told', () => {
+    plan(SATI); posted(); readElsewhere()
+    const r: any = globalUndo()
+    expect(r.ok).toBe(true)                    // (the step it takes is the planning before the posting)
+    raptorNotify()
+    expect(sansPostedFromR2('rocky')).toBe(FRI)
+    expect(due()).toEqual([])
+    expect(backs()).toEqual([])
+    const r2: any = globalUndo()
+    expect(r2.ok).toBe(false)
+    expect(String(r2.reason)).toMatch(/a posting, aren.t undone here/)
+    expect(sansPostedFromR2('rocky')).toBe(FRI)
+  })
+})
+
+/* R2-2 (Astra F3 = the Opus read's R1 = Fable's RE-READ 1): a held week ahead is worked out with the requests as they stand
+   now (engine/overlay.ts viewOfWeek), so what it names must follow them, not only its saved copy */
+describe('R2-2 — the held weeks ahead follow the requests landed on them', () => {
+  const heldNow = (pid = 'rocky'): string[] => {
+    const out: string[] = []
+    for (const wk of stashKeys()) (stashDays(wk)?.days || []).forEach((d: any, i: number) => { if (d && (dayEngaged(d) as Set<string>).has(pid) && !sansAvailOn(pid, d.dt)) out.push(dayIso(wk, i)) })
+    return out.sort()
+  }
+  const meeting = (iso: string) => commitNewInput({ person: 'rocky', type: 'Meeting', start: iso, allday: false, sTime: '09:00', eTime: '10:00', remarks: 'RE-READ' } as any)
+  afterEach(() => { loadWeek('13/07/2026'); raptorNotify() })
+  it('Astra F3: a Meeting deleted from Inputs while another week is loaded leaves his reminder; Undo and Redo follow', () => {
+    ticked()
+    loadWeek('27/07/2026'); raptorNotify()
+    expect(commitNewInput({ ...draft('2026-07-28'), type: 'Meeting', allday: false, sTime: '16:00', eTime: '17:00', sans: null, remarks: 'R2 meeting', docIds: [] } as any, true)).toBe(true)
+    raptorNotify()
+    const rec: any = INPUTS.find((r: any) => r.type === 'Meeting' && idsOf(r).map(String).includes('rocky') && r.date.includes('28'))
+    expect(rec).toBeTruthy()
+    plan(0, 'bane')
+    loadWeek('13/07/2026'); raptorNotify()
+    expect(sansUnfiledDays('rocky')).toContain('2026-07-28')
+    const blob = stashGet('27/07/2026')
+    removeInput(rec); raptorNotify()
+    expect(stashGet('27/07/2026')).toBe(blob)
+    expect((dayEngaged(stashDays('27/07/2026')!.days[1]) as Set<string>).has('rocky')).toBe(false)
+    expect(sansUnfiledDays('rocky')).not.toContain('2026-07-28')
+    expect(globalUndo().ok).toBe(true); raptorNotify()
+    expect(sansUnfiledDays('rocky')).toContain('2026-07-28')
+    expect(globalRedo().ok).toBe(true); raptorNotify()
+    expect(sansUnfiledDays('rocky')).not.toContain('2026-07-28')
+  })
+  it('the Opus read\'s R1: a Meeting on Wed 29 Jul (a saved week ahead) deleted — his reminder no longer lists Wed 29', () => {
+    loadWeek('27/07/2026'); plan(0); loadWeek('13/07/2026'); raptorNotify()
+    expect(commitNewInput({ _new: true, person: 'rocky', type: 'Meeting', start: '2026-07-29', allday: true, s: 360, e: 1080 } as any)).toBe(true); raptorNotify()
+    const meet = INPUTS.find((r: any) => r.type === 'Meeting' && idsOf(r).map(String).includes('rocky'))
+    expect(meet).toBeTruthy()
+    expect((dayEngaged(stashDays('27/07/2026')!.days[2]) as Set<string>).has('rocky')).toBe(true)
+    ticked()
+    expect(sansUnfiledDays('rocky')).toContain('2026-07-29')
+    removeInput(meet); raptorNotify()
+    expect((dayEngaged(stashDays('27/07/2026')!.days[2]) as Set<string>).has('rocky')).toBe(false)
+    expect(sansUnfiledDays('rocky')).not.toContain('2026-07-29')
+  })
+  it('Fable 1a: a meeting filed for Hex on Thu 23 Jul, in the held week of Mon 20 Jul — his reminder names Thu 23', () => {
+    loadWeek('13/07/2026'); expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    loadWeek('20/07/2026'); plan(1, 'bane'); loadWeek('13/07/2026'); raptorNotify()
+    expect(sansUnfiledDays('rocky')).not.toContain('2026-07-23')
+    expect(meeting('2026-07-23')).toBe(true); raptorNotify()
+    expect(heldNow()).toContain('2026-07-23')
+    expect(sansUnfiledDays('rocky')).toContain('2026-07-23')
+  })
+  it('Fable 1b: …and that meeting deleted — his reminder no longer names it', () => {
+    loadWeek('13/07/2026'); expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    loadWeek('20/07/2026'); plan(1, 'bane'); loadWeek('13/07/2026'); raptorNotify()
+    expect(meeting('2026-07-24')).toBe(true); raptorNotify()
+    loadWeek('20/07/2026'); plan(2, 'bane'); loadWeek('13/07/2026'); raptorNotify()
+    expect(sansUnfiledDays('rocky')).toContain('2026-07-24')
+    removeInput(INPUTS.find((r: any) => r.type === 'Meeting' && r.remarks === 'RE-READ')); raptorNotify()
+    expect(heldNow()).not.toContain('2026-07-24')
+    expect(sansUnfiledDays('rocky')).not.toContain('2026-07-24')
+  })
+  it('Fable 1c: across the New Year — Tue 12 Jan 27 filed while a December week is on screen leaves his reminder', () => {
+    at(2026, 12, 22)
+    loadWeek('13/07/2026'); expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    loadWeek('11/01/2027'); plan(1); raptorNotify()
+    loadWeek('04/01/2027'); raptorNotify()
+    expect(sansUnfiledDays('rocky')).toContain('2027-01-12')
+    loadWeek('21/12/2026'); raptorNotify()
+    expect(commitNewInput(draft('2027-01-12'))).toBe(true); raptorNotify()
+    expect(heldNow()).not.toContain('2027-01-12')
+    expect(sansUnfiledDays('rocky')).not.toContain('2027-01-12')
+  })
+})
+
+/* R2-3 (the security read's RR-SEC-1 = the Opus read's R4): the app's own projection door, called from outside any planning
+   — its label alone no longer vouches for a mark */
+describe('R2-3 — commitProjection("sans.planned") from outside any planning', () => {
+  const asTheApp = (fn: () => void) => {
+    let r: any
+    try { r = commitProjection({ type: 'sans.planned', scope: { module: 'settings' } as any, meta: null, apply: (txn: any) => { txn.enlist(settingsStore); fn() } } as any) } catch { r = { ok: false } }
+    raptorNotify()
+    return r
+  }
+  it('lights his read reminder with nothing newly planned: refused', () => {
+    plan(SATI); posted(); readElsewhere()
+    expect(dueUnread()).toBe(0)
+    expect(asTheApp(() => { store.set(`sansplan:rocky:${SAT}`, 9e12) }).ok).toBe(false)
+    expect(dueUnread()).toBe(0)
+  })
+  it('…or puts out a day newly planned since he read: refused', () => {
+    plan(SATI); posted(); readElsewhere()
+    plan(SUNI)
+    expect(dueUnread()).toBe(1)
+    expect(asTheApp(() => { store.set(`sansplan:rocky:${SUN}`, null) }).ok).toBe(false)
+    expect(dueUnread()).toBe(1)
+  })
+})
+
+/* R2-4 (Astra F2, the security read's Q2): a second Undo / Redo left a hidden filing explained by no line — the restore put
+   the original back after its unread "again" copy, and the copy lost its days to the line it stands for */
+describe('R2-4 — the hidden sentence through repeated Undo / Redo', () => {
+  const hiding = () => backs().filter(n => noticeWords(n).what.includes('is hidden'))
+  const setUp = () => {
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    expect(commitNewInput(draft(FRI, SAT))).toBe(true); raptorNotify()
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    readElsewhere()
+  }
+  it('Astra F2: an unread Redo copy keeps the explanation, cycle after cycle', () => {
+    setUp()
+    for (let cycle = 0; cycle < 2; cycle++) {
+      expect(globalUndo().ok).toBe(true)
+      expect(globalRedo().ok).toBe(true); raptorNotify()
+      expect(hiding()).toHaveLength(1)
+    }
+    reboot()
+    expect(hiding()).toHaveLength(1)
+  })
+  it('…and its counterpart, each copy read', () => {
+    setUp()
+    for (let cycle = 0; cycle < 2; cycle++) {
+      expect(globalUndo().ok).toBe(true)
+      expect(globalRedo().ok).toBe(true); raptorNotify()
+      expect(hiding()).toHaveLength(1)
+      readElsewhere()
+    }
+    reboot()
+    expect(hiding()).toHaveLength(1)
+  })
+})
+
+/* R2-5 (Astra F4 = the Opus read's R5; Fable's RE-READ 3): a man deleted by his posting's run keeps no planning marks, and a
+   row taken away is gone from the store, not kept holding nothing */
+describe('R2-5 — the planning marks of a man deleted by his posting, and of days gone by', () => {
+  it('Astra F4: posted SANS, planned Sat 18, then posted out with Delete from Fri 17 — on Fri 17 the pass runs: his rows go', () => {
+    posted(); plan(SATI)
+    expect(plans()).toHaveLength(1)
+    expect(postOut('rocky', FRI, 'delete')).toBe(true); raptorNotify()
+    at(2026, 7, 17); runPoOutcomes(); raptorNotify()
+    expect(!!(PEOPLE as any).rocky.deleted).toBe(true)
+    expect(store.keys('sansplan:rocky:')).toEqual([])
+  })
+  it('Fable RE-READ 3: his row for Sat 18 is gone from the store once the app marks Sun 19 on Sun 19', () => {
+    posted(); plan(SATI)
+    at(2026, 7, 19)
+    plan(SUNI)
+    expect(store.keys('sansplan:rocky:').sort()).toEqual([`sansplan:rocky:${SUN}`])
+  })
+  it('…and a man deleted by hand: no row of his left listed', () => {
+    posted(); plan(SATI)
+    expect(deletePerson('rocky')).toBeNull(); raptorNotify()
+    expect(store.keys('sansplan:rocky:')).toEqual([])
   })
 })

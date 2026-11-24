@@ -500,3 +500,8 @@ export function requestsSig(): string {
   for (const r of INPUTS as any[]) if (r && (isPersonal(r.type) || r.odGround)) s += `${r.iid}|${r.acc || ''}|${r.odGround ? 'o' : ''}|${r.date}|${r.endDate || ''}|${r.yr || ''}|${srcvOf(r)};`
   return s
 }
+/* the loaded week's ground rows, by the request each came from (`src`) — a request with a row there lands nowhere else
+   (weekstash.ts rowElsewhere), so a memo of another week's worked-out rows keys on it too: the peek (ui/peek.ts), and the
+   SANS reminder's weeks held (leavewar/sansunfiled.ts — moved here from the peek, round 2 of the reads of f73602f9f) */
+// any: a day of the engine's week is untyped (a verbatim port, src/engine/data.ts)
+export function loadedSrcSig(): string { return DAYS.map((d: any) => ((d && d.ground) || []).map((g: any) => (g && g.src) || '').join(',')).join('/') }

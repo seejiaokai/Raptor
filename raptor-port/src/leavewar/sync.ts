@@ -173,7 +173,7 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncBeforeEnlist, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { sansUnfiledLines, sansLineBack, sansTakeBack, sansPostedFrom, sansBackCovered, sansBackOwed, sansUntickOwed, wireSansBackBefore, type SansBackOwed } from './sansunfiled'
+import { sansUnfiledLines, sansLineBack, sansTakeBack, sansPostedFrom, sansBackCovered, sansBackOwed, sansUntickOwed, wireSansBackBefore, sansUndoToldNow, sansRetractUndoTold, type SansBackOwed } from './sansunfiled'
 import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, noticeSansBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
@@ -1998,7 +1998,12 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
      sansTakeBack, which says nothing where nothing was read or hidden). A Redo of an untick puts its own line back. */
   const unticked = dir === 'undo' ? changes.filter(c => c.collection === 'people' && c.op === 'put'
     && !!looseRec(c.after)?.san && !looseRec(c.before)?.san).map(c => String(c.id)) : []
-  if (!made.length && !unticked.length) return 0
+  /* (no posting is a step of the top bar's Undo — D321, D350: it refuses one, "Undo post out" on the posting sheet is its
+     own way back and writes its own line — so an Undo here never takes a SANS posting away) */
+  /* …AND A REDO TAKES BACK WHAT ITS STEP'S UNDO WROTE (round 2 — Astra's F1, the Opus read's R2, Fable's F2): gone where he
+     has not read it, struck "taken back" where he has (sansunfiled.ts sansUndoToldNow) */
+  const retract = dir === 'redo' ? sansUndoToldNow() : []
+  if (!made.length && !unticked.length && !retract.length) return 0
   const by = me()
   let wrote = 0
   commitInputs('lw.notice', () => {
@@ -2013,6 +2018,7 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
       sansTakeBack(pid, null, by != null ? String(by) : null, Date.now())
       wrote += NOTICES.length - had
     }
+    wrote += sansRetractUndoTold(retract, by != null ? String(by) : null)
   })
   return wrote
 }

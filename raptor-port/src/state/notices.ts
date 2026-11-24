@@ -907,16 +907,39 @@ export function setSansFiledProbe(fn: ((pid: string, iso: string) => boolean) | 
    back (its hidden sentence went, the day SANS again) and moved the same way again left two lines of the same words, the
    old one's sentence back beside the new one's; the Quals tick the same. A day a later line of his names as hidden is that
    line's to say, so an older line keeps its title alone, or goes (sansBackLeft) — "one current line". */
+/* …"LATER" BY THE BELL'S SAVED ORDER, ONE CHAIN AT A TIME (round 2 of the reads of f73602f9f — Astra's F2, the security
+   read's Q2): it was the list's order, and a restore puts a line back at the list's end — so after a second Undo and Redo
+   the original stood after its unread Redo copy, took the hidden days from it, and was itself hidden by that copy: the
+   filing was hidden and no line said so. Now a line is later by its time (the order the bell is saved and read back in —
+   state/persist.ts), the list's order only between two of one moment; a line and its Redo copies are one chain, and never
+   take days from each other; and a line no longer told — a copy whose line is gone, or a line a "taken back" names —
+   takes none. */
+// any: a part read from a stored line, its fields unchecked until here
+const sansChainOf = (x: Notice, q: any): string => (q && q.again && typeof q.ref === 'string' ? q.ref : x.id)
+// any: the same
+const sansLineOut = (x: Notice, q: any): boolean => (!!q.again && !NOTICES.some(y => y.id === q.ref)) || sansRetracted(x)
+/* (a line a later "taken back" names — an Undo's own line retracted by the Redo that followed it: sansunfiled.ts) */
+function sansRetracted(x: Notice): boolean {
+  return NOTICES.some(y => {
+    // any: a notice part is read by its kind
+    const q: any = y.to === x.to ? (y.what || [])[0] : null
+    return !!q && q.k === 'sansback' && q.back === true && q.ref === x.id
+  })
+}
+const sansLater = (x: Notice, xi: number, n: Notice, ni: number): boolean => x.at > n.at || (x.at === n.at && xi > ni)
 // any: a part read from a stored line, its fields unchecked until here; the engine's person record is untyped
 function sansStillHidden(n: Notice, p: any): string[] {
   const to = n.to, person: any = PEOPLE[to]
   const i = NOTICES.findIndex(x => x.id === n.id)
   const later = new Set<string>()
   if (i >= 0) {
-    for (let j = i + 1; j < NOTICES.length; j++) {
-      const x = NOTICES[j]!, q: any = x.to === to ? (x.what || [])[0] : null
-      if (q && q.k === 'sansback' && !q.back && Array.isArray(q.hid)) for (const d of q.hid) later.add(String(d))
-    }
+    const mine = sansChainOf(n, p)
+    NOTICES.forEach((x, j) => {
+      const q: any = x.to === to && x.id !== n.id ? (x.what || [])[0] : null
+      if (!q || q.k !== 'sansback' || q.back || !Array.isArray(q.hid)) return
+      if (sansChainOf(x, q) === mine || !sansLater(x, j, n, i) || sansLineOut(x, q)) return
+      for (const d of q.hid) later.add(String(d))
+    })
   }
   return (Array.isArray(p?.hid) ? sansDays({ days: p.hid }) : []).filter(d => !later.has(d) && !sansOnP(person, d) && (!SANS_FILED || SANS_FILED(to, d)))
 }
@@ -933,14 +956,16 @@ function sansBackLeft(n: Notice): boolean {
   if (p.again) {
     if (!NOTICES.some(x => x.id === p.ref)) return false
     const i = NOTICES.findIndex(x => x.id === n.id)
+    /* (later by the bell's saved order — sansLater, above: round 2's Astra F2) */
     if (NOTICES.some((x, j) => {
-      const q: any = j > i && x.to === n.to ? (x.what || [])[0] : null
-      return !!q && q.k === 'sansback' && q.again && q.ref === p.ref
+      const q: any = x.to === n.to && x.id !== n.id ? (x.what || [])[0] : null
+      return !!q && q.k === 'sansback' && q.again && q.ref === p.ref && sansLater(x, j, n, i)
     })) return false
   }
+  /* (…and a line a "taken back" names: an Undo's own line, retracted by the Redo after it — round 2's Astra F1) */
   if (NOTICES.some(x => {
     const q: any = x.to === n.to ? (x.what || [])[0] : null
-    return !!q && q.k === 'sansback' && ((q.over as unknown[] | undefined)?.includes(n.id) || (q.again && q.ref === n.id))
+    return !!q && q.k === 'sansback' && ((q.over as unknown[] | undefined)?.includes(n.id) || (q.again && q.ref === n.id) || (q.back === true && q.ref === n.id))
   })) return false
   if (Array.isArray(p.hid) && p.hid.length > 0 && sansStillHidden(n, p).length > 0) return true
   return !!p.how && (sansDays(p).length > 0 || !!p.kept)

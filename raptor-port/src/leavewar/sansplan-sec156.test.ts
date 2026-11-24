@@ -112,8 +112,52 @@ describe('SEC156-3 — an untick line removed by a nominal posting change', () =
       { op: 'put', collection: 'lw.postouts', id: 'rocky', after: { gone: true } },
     ] }
     const alone: any = { ...env, changes: [env.changes[0]] }
-    expect(String(ownershipViolation(alone))).toMatch(/SANS-days line taken away by no change of his posting/)
+    expect(String(ownershipViolation(alone))).toMatch(/SANS-days line taken away by no Undo or Redo of its own step/)
     /* the line is no posting's: a touch of his posting record does not let it go */
     expect(String(ownershipViolation(env))).toMatch(/SANS-days line taken away/)
+  })
+})
+
+/* ==== THE SECURITY RE-READ OF f73602f9f (chat 156, round 2 — D:/raptor-work/c156-reread-sec/security-reread.md):
+   RR-SEC-1, the planning mark vouched for by its label alone. The app's own projection door is open to any code of the
+   page, so the mark is now owed only by a person's own command that newly puts the man on that day, as it is judged. ==== */
+import { commitProjection, onCommit } from '../command'
+import { settingsStore as settingsStoreR2 } from '../state/people-settings-commit'
+const SAT_R2 = '2026-07-18'
+const asTheApp = (fn: () => void): any => {
+  try { return commitProjection({ type: 'sans.planned', scope: { module: 'settings' } as any, meta: null, apply: (txn: any) => { txn.enlist(settingsStoreR2); fn() } } as any) }
+  catch { return { ok: false } }
+}
+describe('RR-SEC-1 — the planning mark is owed by a planning, not by its label', () => {
+  it('Ranger (142 member) lights Hex\'s read reminder again with nothing newly planned: refused, nothing saved', () => {
+    readReminder()
+    signInAs('ranger')
+    expect(asTheApp(() => { store.set(`sansplan:rocky:${SAT_R2}`, Date.now() + 10 ** 9) }).ok).toBe(false)
+    expect(mem[`sqn142_sansplan:rocky:${SAT_R2}`] ?? null).not.toBe(String(Date.now() + 10 ** 9))
+    signInAs('hex'); expect(dueUnread()).toBe(0)
+  })
+  it('Kestrel (149 admin) puts out the reminder a real planning lit: refused', () => {
+    readReminder()
+    signInAs('saber'); plan(SUNI)
+    signInAs('hex'); expect(dueUnread()).toBe(1)
+    signInAs('kestrel')
+    expect(asTheApp(() => { store.set(`sansplan:rocky:${SUN}`, null); store.set(`sansplan:rocky:${SAT_R2}`, null) }).ok).toBe(false)
+    signInAs('hex'); expect(dueUnread()).toBe(1)
+  })
+  it('a subscriber of an unrelated command (Saber changing Logic) calling the door for Hex: refused', () => {
+    readReminder()
+    signInAs('saber')
+    let r: any = null
+    const off = onCommit(env => { if (env.type === 'settings.rules' && !r) r = asTheApp(() => { store.set(`sansplan:rocky:${SAT_R2}`, Date.now() + 10 ** 9) }) })
+    try { expect((commitSettingsIntent('settings.rules', null, () => { store.set('rules', { crewRest: 11 }) }) as any).ok).toBe(true) } finally { off() }
+    /* (raised while the Logic change is delivered, the door's command is queued: its answer comes when it has run) */
+    expect(r).toBeTruthy()
+    signInAs('hex'); expect(dueUnread()).toBe(0)
+  })
+  it('the real planning still marks the day: Saber puts Hex on Sun 19 — lit', () => {
+    readReminder()
+    signInAs('saber'); plan(SUNI)
+    expect(Number(mem[`sqn142_sansplan:rocky:${SUN}`])).toBeGreaterThan(0)
+    signInAs('hex'); expect(dueUnread()).toBe(1)
   })
 })

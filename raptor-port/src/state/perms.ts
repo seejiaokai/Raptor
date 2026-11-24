@@ -3162,7 +3162,9 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
                made the change (leavewar/sync.ts tellWar, tellBidding, the restore's follow-ups, retractPostingLines — each
                me()); a posting's own line by no one, the posting acting (noticePosting)) */
             if (!warSignedBy(n, self)) return `a war line not signed as its writer signs it (${where})`
-            if (!(WAR_OWED && WAR_OWED(env.changes, n)) && !restoreFollowUpOwed(env, n, replayed, ownFollowed)) return `a war line no change of the war owes (${where})`
+            if (!(WAR_OWED && WAR_OWED(env.changes, n)) && !restoreFollowUpOwed(env, n, replayed, ownFollowed)
+              /* (…or the "taken back" a Redo owes the line its step's Undo wrote — sansUndoToldOwed, below) */
+              && !(env.origin === 'restore' && SANS_UNDO_TOLD && SANS_UNDO_TOLD(env, c))) return `a war line no change of the war owes (${where})`
             /* (one struck SANS-days line a man and posting, in one command — chat 147's reads: one take-back owes one line,
                as restoreFollowUpOwed's `used`; 25 copies rode one posting command) */
             const sb = (n.what as any[]).find((p: any) => p && p.k === 'sansback')
@@ -3404,13 +3406,24 @@ function sansDayViolation(env: CommitEnvelope): string | null {
    stored; a line a later one replaces is hidden by its `over`, never deleted), so that door was used by nothing honest,
    and a hand-made posting command took his "You're no longer SANS." away with it. Now only the verified replay of a step
    (undo/timeline.ts verifiedReplay) passes. A rewrite is lineRewritten's. */
+/* …OR THE REDO THAT FOLLOWS THE UNDO WHICH WROTE IT (round 2 of the reads of f73602f9f — Astra's F1, the Opus read's R2, Fable's
+   F2): an admin's Undo of a SANS tick he put on, or of a SANS posting, tells the man (leavewar/sync.ts warNoticesReversed) —
+   a line no step holds, so the Redo after it could not take it back, and "You're no longer SANS." stood on the bell of a man
+   SANS again. The Redo now takes it back as every bell line is (D1693, D1699): gone where he had not read it, struck "taken
+   back" where he had. Only for that relationship, vouched for by the war's side (leavewar/sansunfiled.ts installs it): the
+   restore the timeline is applying right now is a Redo of that same person's step, the line is one that step's Undo wrote,
+   and the change is exactly its retraction — none installed, none passes. */
+type SansUndoToldProbe = (env: CommitEnvelope, c: Change) => boolean
+let SANS_UNDO_TOLD: SansUndoToldProbe | null = null
+export function setSansUndoTold(fn: SansUndoToldProbe | null): void { SANS_UNDO_TOLD = fn }
 function sansBackEraseViolation(env: CommitEnvelope): string | null {
   for (const c of env.changes) {
     if (c.collection !== 'notices' || c.op !== 'delete') continue
     const b: any = c.before
     if (!b || !Array.isArray(b.what) || !b.what.some((p: any) => p && p.k === 'sansback')) continue
     if (env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) continue
-    return `his SANS-days line taken away by no change of his posting (notices/${c.id})`
+    if (env.origin === 'restore' && SANS_UNDO_TOLD && SANS_UNDO_TOLD(env, c)) continue
+    return `his SANS-days line taken away by no Undo or Redo of its own step (notices/${c.id})`
   }
   return null
 }
@@ -3425,11 +3438,26 @@ function sansBackEraseViolation(env: CommitEnvelope): string | null {
    (state/people-settings-commit.ts). The replay is vouched for by the war's side (leavewar/sansunfiled.ts installs it — the
    undo's own replay check, undo/timeline.ts verifiedReplay, vouches only for its own list of rows); none installed, no
    restore of one passes. */
+/* …AND OWED BY THE PLANNING THAT CAUSED IT, NOT VOUCHED FOR BY ITS LABEL (round 2 of the reads of f73602f9f — the security
+   read's RR-SEC-1, the Opus read's R4): the app's own projection door (command/commit.ts commitProjection) is open to any
+   code of the page, so the system actor, the type and the origin are a label anyone can write — a member lit Hex's read
+   reminder with nothing planned, and another squadron's admin put out the one a real planning lit. The mark is now tied to
+   the command that caused the projection, as the bell's war lines are tied to the change that owes them (WAR_OWED): that
+   command (`causedBy`), a person's own, must newly put him on that day — a put only of those rows, newer than the row was;
+   a row taken away only for a day gone by of a man it marks, or for a man it deletes. The posting's run (`lw.postoutRun`,
+   the app's own pass) may take a man it deletes away with his rows, nothing else. Worked out by the war's side
+   (leavewar/sansunfiled.ts sansPlanOwed, the writer's own body), handed in here; none installed, no mark passes. A
+   projection called from outside any command has no cause, and one called from a subscriber of an unrelated command gets
+   that command as its cause, which owes nothing — both refused. */
+type SansPlanOwed = { put: ReadonlySet<string>; men: ReadonlySet<string>; gone: ReadonlySet<string>; today: string }
 const SANSPLAN_ID = /^sansplan:([^:]+):(\d{4}-\d{2}-\d{2})$/
 let SANSPLAN_REPLAY: ((env: CommitEnvelope, c: Change) => boolean) | null = null
 export function setSansPlanReplay(fn: ((env: CommitEnvelope, c: Change) => boolean) | null): void { SANSPLAN_REPLAY = fn }
+let SANSPLAN_OWED: ((env: CommitEnvelope) => SansPlanOwed | null) | null = null
+export function setSansPlanOwed(fn: ((env: CommitEnvelope) => SansPlanOwed | null) | null): void { SANSPLAN_OWED = fn }
 function sansPlanViolation(env: CommitEnvelope): string | null {
   const a = env.actor
+  let owed: SansPlanOwed | null | undefined
   for (const c of env.changes) {
     if (c.collection !== 'settings' || !String(c.id).startsWith('sansplan:')) continue
     if (env.origin === 'restore' && SANSPLAN_REPLAY && SANSPLAN_REPLAY(env, c)) continue
@@ -3438,6 +3466,12 @@ function sansPlanViolation(env: CommitEnvelope): string | null {
     /* (a row taken away — a day gone by, or a man deleted — is written as nothing by the settings store) */
     const m = SANSPLAN_ID.exec(String(c.id)), v = c.op === 'delete' ? null : c.after
     if (!m || (v != null && (!(PEOPLE as any)[m[1]!] || !(typeof v === 'number' && Number.isInteger(v) && v > 0)))) return `a SANS planning mark not as the app writes it (${where})`
+    if (owed === undefined) owed = SANSPLAN_OWED ? SANSPLAN_OWED(env) : null
+    const pid = m[1]!, iso = m[2]!
+    const ok = !!owed && (v == null
+      ? owed.gone.has(pid) || (owed.men.has(pid) && iso < owed.today)
+      : owed.put.has(String(c.id)) && (v as number) > (typeof c.before === 'number' ? c.before : 0))
+    if (!ok) return `a SANS planning mark no planning of his owes (${where})`
   }
   return null
 }

@@ -46,11 +46,9 @@ import { fltNoLen, fltNoLenMsg } from '../engine/validate'
 import { hideKey } from '../engine/warnhide'
 import { dayHidesIn, officialDaysOf } from '../engine/weekctx'
 import { HOOKS } from '../engine/hooks'
-import { viewOfWeek, deletedSig, requestsSig } from '../engine/overlay'
-import { DAYS } from '../engine/data'
+import { viewOfWeek, deletedSig, requestsSig, loadedSrcSig } from '../engine/overlay'
 import { shortYear } from '../engine/inputs'
-/* the loaded week's request rows (their ids and days) — the peek's landing reads them */
-const loadedSrcSig = () => DAYS.map((d: any) => ((d && d.ground) || []).map((g: any) => (g && g.src) || '').join(',')).join('/')
+/* (the loaded week's request rows, which the peek's landing reads: engine/overlay.ts loadedSrcSig) */
 
 /* a plain, non-interactive puck — the same visual identity (qual chip, RCP
    tint, SANS line) as html.ts's `puck()`, minus everything that function
