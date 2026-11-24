@@ -238,12 +238,25 @@ None: no console error, page error or failed request in any cited run of the hos
    typed; an AM leave only moved says no "(AM)".
 4. **Leads checked:** the input window's last line on the phone ("Placed by … changed by …") continues on a second row
    inside the window's own scrolling body — nothing cut (the host opened the picture). The week's Ground Programme row
-   still reading 08:00 after the Board saved 09:00 on the phone (c) — d's D4.
+   still reading 08:00 after the Board saved 09:00 on the phone (c) — walker d reproduced a stale time, but on the BOARD's own Ground Programme row, which lags one change behind the input while the Board stays open (the week's row never did); the same on `main`, a desktop and a phone; closing the Board or a reload clears it. The host opened `d/d34-r3/D4-fixed-3-after-0900-on-board-board-ground-desk.png` (08:00 drawn, the input saved as 09:00). Older, not this change's — **filed**, `[UI-SLEEK-PASS]` round 4's leftovers (4).
+6. **The re-walk (walker d, the FIXED build `D:/rw4/build-new2`, bundle `index-BNHpQA1S.js`; `parts/wr4/d-report.md`):** D1 the same script shows "…, renamed — was meeting · Saber" on the walked build and "Training changed to Meeting · Saber" on the fixed one, phone and desktop; D2 nine lines that must not have moved, all as ruled ("brief" retitled "Brief" with its kind left alone: "Renamed — was brief · Saber"); D3 the door the first walk missed — the start changed in the Scheduler Board's in-place box: Hex and Ranger each read "Now 09:00–10:00 · Saber"; the Board's pencil opens the input's own window.
 5. **Seen in passing, as before this change, not this round's:** the input's window is titled by its people, so a tap
    on "Range brief" opens "Hex +1 · 16 Jul"; the browser's own time picker turns the keys 2-5-6-0 into 9 pm and Save
    then keeps a start after its end (an input may cross midnight); pressing outside the input's window on a desktop
    does not close it (it sits beside the page by design).
 
 ## 13. The code reads (Astra and a fresh, blind Opus — the same brief; Fable beside them, high risk)
+
+The one brief: `../superpowers/briefs/2026-11-24-words-r4-read-brief.md`. Each read an exported copy of `68ab6d1db`
+(`D:/rw4/read-copy`) from which this sheet, the two scenario lists, the scenario and walk briefs, the walkers' reports and
+scripts and the branch's handoff block were taken out. The reports stay outside the checkout (`D:/rw4/reads/`) until all
+three exist, then are saved whole beside the brief.
+
+| # | The claim | Who | Reproduced by the host | Against the ruling, and `main` | Disposition |
+|---|---|---|---|---|---|
+| 1 | Behind another OIL line the no-period sentence is joined ". ·" — "…earns OIL. · No Leave War period for 2028…" | Opus 1, Fable 1 (b) | YES — `leavewar/noperiod-join.test.ts`, failing first (the real note batcher and note element) | the words file's S2: "joined after another line it follows as its own sentence"; the ". ·" was so on `main` | **confirmed, pre-existing, inside this round's promise — FIXED** `b4cd80acb` (`publishFlagsBids`: the sentence folded into the join's own, nothing left after it) |
+| 2 | Alone, the note reads "Saturday published and approved · No Leave War period…", where "the page he approved shows a full stop" | Fable 1 (a) | checked against the page: its only showing of this note is the picture `s2-no-period-after.png`, which reads "… approved · No Leave War period for 2028, …" (`facts.json`); the page's text holds no "published and approved" at all | the dot-joined form IS what he approved | **false positive** — left as built; walker c's C4 (a) and the Opus reader read it the same way |
+| 3 | A kind change alone also says "Now …" when the new kind adds or drops the half ("Now LL (AM), Training changed to LL"; "Now 00:00–12:00, LL changed to Training") | Opus 2, Fable 3; walker a's A3 (b) (c) | YES on screen (walker a) | not ruled; the shape was so on `main` in the old words | **his call** — filed with the unruled wordings, `[UI-SLEEK-PASS]` round 4's leftovers (2) |
+| 4 | A name dragged from the crew list onto the seat that man already holds says nothing, where the tap says "<callsign> — already in that seat" | Fable 2 | (see below) | D2521 Q4b: "a drag onto the seat a man holds answers …, as the tap's does"; silent on `main` too | (see below) |
 
 ## 14. Lessons added (§7.11)
