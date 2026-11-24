@@ -404,3 +404,65 @@ ruling found says it should. WebKit draws the Tracker's three phone dropdowns cu
 Counted: pictures on disk under `rewalk/`, script mistakes and repeat runs included. Orders: 39 by walker A, 10 by B and 11 by C
 as listed from their reports, 2 by the check lead. Open: C1, B1, B2, C2, A1. The check lead opened each picture named in the
 table and under the faults; the walkers opened the rest of theirs.
+
+## 16. The re-walk of the second fix round
+
+Build walked: `abc44cea3` on `claude/msq-b1-screens-135` (bundle `index-C1qBRLBg.js`), built and served on port 4730 inside
+the checks lock (taken 11:33, released 11:45 MPST). One Opus walker. Scripts: `raptor-port/scripts/handpass/n153/rewalk2/`.
+Pictures: `raptor-port/docs/handpass/2026-11-24-msq-night-check/rewalk2/`; every path below is relative to `rewalk2/`. 1536 is
+Chromium with a mouse; 402 is Chromium with real touch (the browser's own touch input). Every step is a press; the page was
+only read.
+
+**Result: every item reached passes at both widths. No new fault. C1 cannot be reached at 402, and the bell's OIL line was not
+reached.**
+
+| # | The fix | 1536 | 402 |
+|---|---|---|---|
+| 1 | C1: the question goes with a pick; Drifter's window held, read-only under its band, words kept; Blade unchanged; no 142 row in 149's list | **PASS** `w-c1-d/02-question-up.png`, `03-after-pick.png`, `06-149-list-after.png`, `07-142-list-after.png` | **NOT REACHED**: the window covers the whole screen, Blade's row and the top bar with it, so a finger can press neither the row nor the pick `w-c1-pc/02-question-up.png` |
+| 2 | B1: the "You were added" line over a held chart draft in the member view: no window under the question; Stay; Discard | **PASS** `w-b1-d/03-question.png`, `04-stay-after.png`, `08-landed.png` | **PASS** `w-b1-pc/03-question.png`, `04-stay-after.png`, `08-landed.png` |
+| 2b | B1: the bell's OIL question line | **NOT REACHED** (below) `w-b1-oil-d/00b-after-save.png` | **NOT REACHED** |
+| 3a | A ball held, Undo, released, a ball added, a pick, Save them: the ball saved on 142, not on 149 | **PASS** (Ctrl+Z) `w-t3a-d/02-held-after-undo.png`, `07-back-on-142.png` | **PASS** (Undo pressed by a second pointer with the finger down) `w-t3a-pc/07-back-on-142.png` |
+| 3b | The same with a link's end handle | **PASS** `w-t3b-d/07-back-on-142.png` | **PASS** `w-t3b-pc/07-back-on-142.png` |
+| 4 | A bend square held into the member view (Hunter, Plan of 149, an unsaved edit): no box at all after the release; Logout and a pick each ask, seen and answerable; Stay keeps him on 149 | **PASS** (the switch by Shift+Tab, Enter) `w-t4-d/03-released.png`, `04-logout-asked.png`, `05-pick-asked.png` | **PASS** (the switch by a second pointer: ☰, the role line) `w-t4-pc/03-released.png`, `04-logout-asked.png` |
+| 5 | Ball X added, Connect, X pressed, + Add course, OK, the name box cancelled, ball B pressed: no new link, nothing marked unsaved, still in the editor | **PASS** `w-t5-d/04-after-B.png` (207 links before and after) | **PASS** `w-t5-pc/04-after-B.png` |
+| 6 | Export abandoned by a pick while its file is written (the app's test stand-in for the file): nothing committed (aborted, never closed), no message; a fresh Export after it is written and told | **PASS** `w-t6-d/04-after-write-ends.png`, `05-control-export.png` | **PASS** `w-t6-pc/04-after-write-ends.png` |
+
+**The plain-user round (§7.0a): PASS at both sizes** (`w-plain-d/`, `w-plain-pc/`): a new input filed and saved, opened again,
+its remark changed and saved; Hunter's bell line with no draft opens his input at once, no question, no band; a ball added
+and saved by Save changes; a ball moved (it saves itself), Undo puts it back, saved; 142 to 149 and back with no question. No
+page error, console error or failed request in any run.
+
+### What was seen, not counted as faults
+
+- **Undo of a saved added ball:** after Save changes the Undo button is greyed ("Nothing to undo"). The Tracker's rulings make
+  an added ball undoable only before its save, so this is as ruled; the plain round took Undo on a moved ball instead.
+- **Adding ball X writes the chart's layout record at once** (its place). The Discard, the Cancel and the press on B wrote
+  nothing after it, and the links stayed as saved.
+- **Undo with a press held lights Save changes** (`w-t3a-d/02-held-after-undo.png`), already recorded in §15; Save them then
+  saved the right chart.
+- **One meeting of four people shows in both 142's and 149's lists**, in the seeded data before the walk; the held window
+  added nothing to 149's list.
+
+### What could not be reached, and why
+
+- **C1 at 402:** the input's window fills the phone screen, so with it open no finger reaches another row or the squadron
+  control (§15's item 7 met the same wall). The question was raised only through the page's own click on Blade's row, and
+  the pick was then out of reach.
+- **The bell's OIL line:** a weekend Duty filed by Saber for Hunter makes Saber answer the OIL question himself before it
+  saves ("OIL: Hunter, Duty"), so no question is left on Hunter's bell; another way to leave one (a holiday made over his
+  input) was not tried in the time.
+- **Item 6:** the Export window's shade covers the squadron control, so the pick was by the keys at both widths, which a
+  phone does not have.
+- **Items 3 and 4 at 402:** the Undo and the switch were made by a second pointer while the finger was down; a phone has no
+  Ctrl+Z.
+- **For his iPhone:** the finger here is Chromium's touch, not WebKit.
+
+`Walk: 126 pictures · 9 surfaces · 18 orders · 0 open`
+
+Counted: pictures on disk under `rewalk2/`, script mistakes and repeat runs included. Surfaces: the Inputs list and its window,
+the top bar's squadron list, the ☰ menu, the bell's list, the question box, the member view, the chart editor, the Export
+window, Logout. Orders: nine runs at each width (C1, B1, the OIL line, 3a, 3b, 4, 5, 6, the plain round). Open: none new; §15's
+B2, C2 and A1 were not part of this walk. The walker opened the pictures that decide items 1, 2, 3a, 4, 5 and 6 at 1536, and
+items 1, 2 and 6 at 402 (C1's question and pick, B1's question and landing, the held press after Undo, the release in the
+member view and Logout's question, the press on B, the Export after the release, the plain round's saved chart). The rest
+were judged by what the page read back, printed beside each check in the run logs.
