@@ -1,0 +1,165 @@
+{
+ "pictures": [
+  {
+   "file": "B1-1-bell-old-lines-phone.png",
+   "case": "B1",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "(unread) Training Wed 15 Jul / You were added · Saber",
+    "(unread) LL Tue 14 Jul / Now 00:00–12:00 am · Saber",
+    "(unread) OL Wed 15 Jul / Renamed — was LL · Saber"
+   ]
+  },
+  {
+   "file": "B1-2-tap0-phone-justafter.png",
+   "case": "B1"
+  },
+  {
+   "file": "B1-2-tap0-phone-settled.png",
+   "case": "B1"
+  },
+  {
+   "file": "B1-2-tap1-phone-justafter.png",
+   "case": "B1"
+  },
+  {
+   "file": "B1-2-tap1-phone-settled.png",
+   "case": "B1"
+  },
+  {
+   "file": "B1-2-tap2-phone-justafter.png",
+   "case": "B1"
+  },
+  {
+   "file": "B1-2-tap2-phone-settled.png",
+   "case": "B1"
+  },
+  {
+   "file": "B1-2-tap3-phone-justafter.png",
+   "case": "B1"
+  },
+  {
+   "file": "B1-2-tap3-phone-settled.png",
+   "case": "B1"
+  },
+  {
+   "file": "B1-3-bell-after-taps-phone.png",
+   "case": "B1",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(read) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "(read) Training Wed 15 Jul / You were added · Saber",
+    "(read) LL Tue 14 Jul / Now 00:00–12:00 am · Saber",
+    "(read) OL Wed 15 Jul / Renamed — was LL · Saber"
+   ]
+  },
+  {
+   "file": "B1-1-bell-old-lines-desk.png",
+   "case": "B1",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "(unread) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "(unread) Training Wed 15 Jul / You were added · Saber",
+    "(unread) LL Tue 14 Jul / Now 00:00–12:00 am · Saber",
+    "(unread) OL Wed 15 Jul / Renamed — was LL · Saber"
+   ]
+  },
+  {
+   "file": "B1-2-tap0-desk-settled.png",
+   "case": "B1"
+  },
+  {
+   "file": "B1-2-tap1-desk-settled.png",
+   "case": "B1"
+  },
+  {
+   "file": "B1-2-tap2-desk-settled.png",
+   "case": "B1"
+  },
+  {
+   "file": "B1-2-tap3-desk-settled.png",
+   "case": "B1"
+  },
+  {
+   "file": "B1-3-bell-after-taps-desk.png",
+   "case": "B1",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "(read) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "(read) Training Wed 15 Jul / You were added · Saber",
+    "(read) LL Tue 14 Jul / Now 00:00–12:00 am · Saber",
+    "(read) OL Wed 15 Jul / Renamed — was LL · Saber"
+   ]
+  },
+  {
+   "file": "B1-4-bell-new-beside-old-phone.png",
+   "case": "B1",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) Range day Wed 15 Jul / Now Wed 15 Jul, renamed — was Range brief, and 1 more change · Saber",
+    "(unread) LL Tue 14 Jul / Now LL (PM) · Saber",
+    "(unread) LL Wed 15 Jul / OL changed to LL · Saber",
+    "(unread) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "(unread) Training Wed 15 Jul / You were added · Saber",
+    "(unread) LL Tue 14 Jul / Now 00:00–12:00 am · Saber",
+    "(unread) OL Wed 15 Jul / Renamed — was LL · Saber"
+   ]
+  }
+ ],
+ "cases": {
+  "B1": {
+   "log": [
+    "OLD bundle: index-CkMVta6F.js",
+    "filed {\"type\":\"LL\",\"span\":\"all\",\"remarks\":\"Local leave\"} on 2026-07-15: new input [\"imwujgrsu2mho3d\"]; asked [\"document\"]; note \"\"",
+    "filed {\"type\":\"LL\",\"span\":\"all\",\"remarks\":\"Second leave\"} on 2026-07-14: new input [\"imwujguer3jzy9a\"]; asked [\"document\"]; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-15: new input [\"imwujh5p9eo1dzj\"]; asked []; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "OLD records after Saber: {\"ll1\":{\"type\":\"OL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]},\"ll2\":{\"type\":\"LL\",\"date\":\"Jul 14\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"Second leave\",\"people\":[\"bane\"]},\"tr\":{\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}}",
+    "phone read bundle: index-2uyEcUJu.js",
+    "phone Ranger's bell: [\"(unread) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"(unread) Training Wed 15 Jul / You were added · Saber\",\"(unread) LL Tue 14 Jul / Now 00:00–12:00 am · Saber\",\"(unread) OL Wed 15 Jul / Renamed — was LL · Saber\"]",
+    "picture B1-1-bell-old-lines-phone.png: [\"(unread) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"(unread) Training Wed 15 Jul / You were added · Saber\",\"(unread) LL Tue 14 Jul / Now 00:00–12:00 am · Saber\",\"(unread) OL Wed 15 Jul / Renamed — was LL · Saber\"]",
+    "PASS old kind line \"Renamed — was LL · Saber\" (phone)",
+    "PASS old half line \"Now 00:00–12:00 am · Saber\" (phone)",
+    "RECORD three-part (phone): [\"Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\"]",
+    "tap \"Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\" (phone): unread before true; window {\"open\":true,\"page\":\"inputs\",\"head\":\"\",\"type\":\"Training\",\"title\":\"Range brief\",\"remarks\":\"Bring water\",\"start\":\"09:00\",\"end\":\"10:00\",\"span\":[],\"calPicked\":[],\"text\":\"⠿ Hex +1 · 16 Jul ✕ PEOPLE 2 picked Several people WHOEVER IS FREE THAT DAY ALL AVAIL ALL PILOTS All Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C Outlaw C Piston IP Ranger IP Reaper IR Recon O Ridge C Saber IP Saint B Sidewinder I\"}; record now {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}; errors so far 0",
+    "  after: that line unread=false; bell {\"lit\":true,\"bellId\":\"notifyBell\",\"more\":null,\"markAll\":true,\"listOpen\":true}",
+    "tap \"You were added · Saber\" (phone): unread before true; window {\"open\":true,\"page\":\"inputs\",\"head\":\"\",\"type\":\"Training\",\"title\":\"Range brief\",\"remarks\":\"Bring water\",\"start\":\"09:00\",\"end\":\"10:00\",\"span\":[],\"calPicked\":[],\"text\":\"⠿ Hex +1 · 16 Jul ✕ PEOPLE 2 picked Several people WHOEVER IS FREE THAT DAY ALL AVAIL ALL PILOTS All Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C Outlaw C Piston IP Ranger IP Reaper IR Recon O Ridge C Saber IP Saint B Sidewinder I\"}; record now {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}; errors so far 0",
+    "  after: that line unread=false; bell {\"lit\":true,\"bellId\":\"notifyBell\",\"more\":null,\"markAll\":true,\"listOpen\":true}",
+    "tap \"Now 00:00–12:00 am · Saber\" (phone): unread before true; window {\"open\":true,\"page\":\"inputs\",\"head\":\"July 2026›\",\"type\":\"LL\",\"title\":null,\"remarks\":\"Second leave\",\"start\":\"00:00\",\"end\":\"12:00\",\"span\":[\"am\"],\"calPicked\":[\"2026-07-14\"],\"text\":\"⠿ Ranger · 14 Jul ✕ PERSON Ranger TYPE ? LL OL OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Attach Personal Appointment Duty Event OD Other DURATION ALL DAY AM PM CUSTOM DOCUMENT Document REMARKS till 14 Jul DATES July 2026 › 13 ‹ › MON TUE WED THU FRI SAT SUN 1 2 3 4 5 6 7 8 \"}; record now {\"type\":\"LL\",\"date\":\"Jul 14\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"Second leave\",\"people\":[\"bane\"]}; errors so far 0",
+    "  after: that line unread=false; bell {\"lit\":true,\"bellId\":\"notifyBell\",\"more\":null,\"markAll\":true,\"listOpen\":true}",
+    "tap \"Renamed — was LL · Saber\" (phone): unread before true; window {\"open\":true,\"page\":\"inputs\",\"head\":\"July 2026›\",\"type\":\"OL\",\"title\":null,\"remarks\":\"Local leave\",\"start\":\"06:00\",\"end\":\"18:00\",\"span\":[\"all\"],\"calPicked\":[\"2026-07-15\"],\"text\":\"⠿ Ranger · 15 Jul ✕ PERSON Ranger TYPE ? LL OL OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Attach Personal Appointment Duty Event OD Other DURATION ALL DAY AM PM CUSTOM DOCUMENT Document REMARKS till 15 Jul DATES July 2026 › 13 ‹ › MON TUE WED THU FRI SAT SUN 1 2 3 4 5 6 7 8 \"}; record now {\"type\":\"OL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]}; errors so far 0",
+    "  after: that line unread=false; bell {\"lit\":false,\"bellId\":\"notifyBell\",\"more\":null,\"markAll\":false,\"listOpen\":true}",
+    "picture B1-3-bell-after-taps-phone.png: [\"(read) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"(read) Training Wed 15 Jul / You were added · Saber\",\"(read) LL Tue 14 Jul / Now 00:00–12:00 am · Saber\",\"(read) OL Wed 15 Jul / Renamed — was LL · Saber\"]",
+    "desk read bundle: index-2uyEcUJu.js",
+    "desk Ranger's bell: [\"(unread) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"(unread) Training Wed 15 Jul / You were added · Saber\",\"(unread) LL Tue 14 Jul / Now 00:00–12:00 am · Saber\",\"(unread) OL Wed 15 Jul / Renamed — was LL · Saber\"]",
+    "picture B1-1-bell-old-lines-desk.png: [\"(unread) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"(unread) Training Wed 15 Jul / You were added · Saber\",\"(unread) LL Tue 14 Jul / Now 00:00–12:00 am · Saber\",\"(unread) OL Wed 15 Jul / Renamed — was LL · Saber\"]",
+    "PASS old kind line \"Renamed — was LL · Saber\" (desk)",
+    "PASS old half line \"Now 00:00–12:00 am · Saber\" (desk)",
+    "RECORD three-part (desk): [\"Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\"]",
+    "tap \"Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\" (desk): unread before true; window {\"open\":true,\"page\":\"inputs\",\"head\":\"\",\"type\":\"Training\",\"title\":\"Range brief\",\"remarks\":\"Bring water\",\"start\":\"09:00\",\"end\":\"10:00\",\"span\":[],\"calPicked\":[],\"text\":\"⠿ Hex +1 · 16 Jul ✕ PEOPLE 2 picked Several people WHOEVER IS FREE THAT DAY ALL AVAIL ALL PILOTS All Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C Outlaw C Piston IP Ranger IP Reaper IR Recon O Ridge C Saber IP Saint B Sidewinder I\"}; record now {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}; errors so far 0",
+    "  after: that line unread=false; bell {\"lit\":true,\"bellId\":\"notifyBell\",\"more\":null,\"markAll\":true,\"listOpen\":true}",
+    "tap \"You were added · Saber\" (desk): unread before true; window {\"open\":true,\"page\":\"inputs\",\"head\":\"\",\"type\":\"Training\",\"title\":\"Range brief\",\"remarks\":\"Bring water\",\"start\":\"09:00\",\"end\":\"10:00\",\"span\":[],\"calPicked\":[],\"text\":\"⠿ Hex +1 · 16 Jul ✕ PEOPLE 2 picked Several people WHOEVER IS FREE THAT DAY ALL AVAIL ALL PILOTS All Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C Outlaw C Piston IP Ranger IP Reaper IR Recon O Ridge C Saber IP Saint B Sidewinder I\"}; record now {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}; errors so far 0",
+    "  after: that line unread=false; bell {\"lit\":true,\"bellId\":\"notifyBell\",\"more\":null,\"markAll\":true,\"listOpen\":true}",
+    "tap \"Now 00:00–12:00 am · Saber\" (desk): unread before true; window {\"open\":true,\"page\":\"inputs\",\"head\":\"July 2026›\",\"type\":\"LL\",\"title\":null,\"remarks\":\"Second leave\",\"start\":\"00:00\",\"end\":\"12:00\",\"span\":[\"am\"],\"calPicked\":[\"2026-07-14\"],\"text\":\"⠿ Ranger · 14 Jul ✕ PERSON Ranger TYPE ? LL OL OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Attach Personal Appointment Duty Event OD Other DURATION ALL DAY AM PM CUSTOM DOCUMENT Document REMARKS till 14 Jul DATES July 2026 › 13 ‹ › MON TUE WED THU FRI SAT SUN 1 2 3 4 5 6 7 8 \"}; record now {\"type\":\"LL\",\"date\":\"Jul 14\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"Second leave\",\"people\":[\"bane\"]}; errors so far 0",
+    "  after: that line unread=false; bell {\"lit\":true,\"bellId\":\"notifyBell\",\"more\":null,\"markAll\":true,\"listOpen\":true}",
+    "tap \"Renamed — was LL · Saber\" (desk): unread before true; window {\"open\":true,\"page\":\"inputs\",\"head\":\"July 2026›\",\"type\":\"OL\",\"title\":null,\"remarks\":\"Local leave\",\"start\":\"06:00\",\"end\":\"18:00\",\"span\":[\"all\"],\"calPicked\":[\"2026-07-15\"],\"text\":\"⠿ Ranger · 15 Jul ✕ PERSON Ranger TYPE ? LL OL OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Attach Personal Appointment Duty Event OD Other DURATION ALL DAY AM PM CUSTOM DOCUMENT Document REMARKS till 15 Jul DATES July 2026 › 13 ‹ › MON TUE WED THU FRI SAT SUN 1 2 3 4 5 6 7 8 \"}; record now {\"type\":\"OL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]}; errors so far 0",
+    "  after: that line unread=false; bell {\"lit\":false,\"bellId\":\"notifyBell\",\"more\":null,\"markAll\":false,\"listOpen\":true}",
+    "picture B1-3-bell-after-taps-desk.png: [\"(read) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"(read) Training Wed 15 Jul / You were added · Saber\",\"(read) LL Tue 14 Jul / Now 00:00–12:00 am · Saber\",\"(read) OL Wed 15 Jul / Renamed — was LL · Saber\"]",
+    "NEW (Saber) bundle: index-2uyEcUJu.js",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "after the NEW changes, Ranger's bell: [\"(unread) Range day Wed 15 Jul / Now Wed 15 Jul, renamed — was Range brief, and 1 more change · Saber\",\"(unread) LL Tue 14 Jul / Now LL (PM) · Saber\",\"(unread) LL Wed 15 Jul / OL changed to LL · Saber\",\"(unread) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"(unread) Training Wed 15 Jul / You were added · Saber\",\"(unread) LL Tue 14 Jul / Now 00:00–12:00 am · Saber\",\"(unread) OL Wed 15 Jul / Renamed — was LL · Saber\"]",
+    "picture B1-4-bell-new-beside-old-phone.png: [\"(unread) Range day Wed 15 Jul / Now Wed 15 Jul, renamed — was Range brief, and 1 more change · Saber\",\"(unread) LL Tue 14 Jul / Now LL (PM) · Saber\",\"(unread) LL Wed 15 Jul / OL changed to LL · Saber\",\"(unread) Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"(unread) Training Wed 15 Jul / You were added · Saber\",\"(unread) LL Tue 14 Jul / Now 00:00–12:00 am · Saber\",\"(unread) OL Wed 15 Jul / Renamed — was LL · Saber\"]",
+    "PASS new kind line \"OL changed to LL · Saber\"",
+    "PASS new half line \"Now LL (PM) · Saber\"",
+    "RECORD new three-part: [\"Now Wed 15 Jul, renamed — was Range brief, and 1 more change · Saber\"]",
+    "old lines still there: true / true"
+   ]
+  }
+ },
+ "errors": []
+}

@@ -1,0 +1,3259 @@
+{
+ "pictures": [
+  {
+   "file": "A8-top-phone.png",
+   "case": "A8",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Advanced range safety procedures brief 1 Thu 30 Jul / Now Thu 30 Jul – Mon 3 Aug 08:00–10:00, renamed — was Training, and 1 more change · Saber",
+    "Range talk Thu 16 Jul / Now Thu 16 Jul, Ace added, and 2 more changes · Saber",
+    "Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "Filler 5 Fri 24 Jul / You were added · Saber",
+    "Filler 4 Thu 23 Jul / You were added · Saber",
+    "Filler 3 Wed 22 Jul / You were added · Saber",
+    "Filler 2 Tue 21 Jul / You were added · Saber",
+    "Filler 1 Mon 20 Jul / You were added · Saber",
+    "Training Wed 29 Jul / You were added · Saber",
+    "Training Mon 13 Jul / You were added · Saber",
+    "Training Wed 15 Jul / You were added · Saber"
+   ],
+   "m": {
+    "rows": [
+     {
+      "what": "Now Thu 30 Jul – Mon 3 Aug 08:00–10:00, renamed — was Training, and 1 more change · Saber",
+      "lines": 2,
+      "whatBox": {
+       "l": 40,
+       "t": 95,
+       "r": 347,
+       "b": 129,
+       "w": 307,
+       "h": 34
+      },
+      "ago": {
+       "l": 356,
+       "t": 59,
+       "r": 378,
+       "b": 76,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 64,
+       "r": 31,
+       "b": 71,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 51,
+       "r": 389,
+       "b": 137,
+       "w": 376,
+       "h": 86
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "Now Thu 16 Jul, Ace added, and 2 more changes · Saber",
+      "lines": 2,
+      "whatBox": {
+       "l": 40,
+       "t": 163,
+       "r": 347,
+       "b": 197,
+       "w": 307,
+       "h": 34
+      },
+      "ago": {
+       "l": 356,
+       "t": 145,
+       "r": 378,
+       "b": 162,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 150,
+       "r": 31,
+       "b": 157,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 137,
+       "r": 389,
+       "b": 205,
+       "w": 376,
+       "h": 69
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+      "lines": 2,
+      "whatBox": {
+       "l": 40,
+       "t": 232,
+       "r": 347,
+       "b": 266,
+       "w": 307,
+       "h": 34
+      },
+      "ago": {
+       "l": 356,
+       "t": 213,
+       "r": 378,
+       "b": 230,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 218,
+       "r": 31,
+       "b": 225,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 205,
+       "r": 389,
+       "b": 274,
+       "w": 376,
+       "h": 69
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 301,
+       "r": 347,
+       "b": 318,
+       "w": 307,
+       "h": 17
+      },
+      "ago": {
+       "l": 356,
+       "t": 282,
+       "r": 378,
+       "b": 299,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 287,
+       "r": 31,
+       "b": 294,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 274,
+       "r": 389,
+       "b": 326,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 352,
+       "r": 347,
+       "b": 369,
+       "w": 307,
+       "h": 17
+      },
+      "ago": {
+       "l": 356,
+       "t": 334,
+       "r": 378,
+       "b": 351,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 339,
+       "r": 31,
+       "b": 346,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 326,
+       "r": 389,
+       "b": 377,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 404,
+       "r": 347,
+       "b": 421,
+       "w": 307,
+       "h": 17
+      },
+      "ago": {
+       "l": 356,
+       "t": 385,
+       "r": 378,
+       "b": 403,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 390,
+       "r": 31,
+       "b": 397,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 377,
+       "r": 389,
+       "b": 429,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 456,
+       "r": 347,
+       "b": 473,
+       "w": 307,
+       "h": 17
+      },
+      "ago": {
+       "l": 356,
+       "t": 437,
+       "r": 378,
+       "b": 454,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 442,
+       "r": 31,
+       "b": 449,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 429,
+       "r": 389,
+       "b": 481,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 508,
+       "r": 347,
+       "b": 525,
+       "w": 307,
+       "h": 17
+      },
+      "ago": {
+       "l": 356,
+       "t": 489,
+       "r": 378,
+       "b": 506,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 494,
+       "r": 31,
+       "b": 501,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 481,
+       "r": 389,
+       "b": 533,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 560,
+       "r": 347,
+       "b": 576,
+       "w": 307,
+       "h": 17
+      },
+      "ago": {
+       "l": 356,
+       "t": 541,
+       "r": 378,
+       "b": 558,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 546,
+       "r": 31,
+       "b": 553,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 533,
+       "r": 389,
+       "b": 584,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 611,
+       "r": 347,
+       "b": 628,
+       "w": 307,
+       "h": 17
+      },
+      "ago": {
+       "l": 356,
+       "t": 592,
+       "r": 378,
+       "b": 610,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 597,
+       "r": 31,
+       "b": 604,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 584,
+       "r": 389,
+       "b": 636,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 663,
+       "r": 347,
+       "b": 680,
+       "w": 307,
+       "h": 17
+      },
+      "ago": {
+       "l": 356,
+       "t": 644,
+       "r": 378,
+       "b": 661,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 649,
+       "r": 31,
+       "b": 656,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 636,
+       "r": 389,
+       "b": 688,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     }
+    ],
+    "list": {
+     "l": 8,
+     "t": 46,
+     "r": 394,
+     "b": 566,
+     "w": 386,
+     "h": 520
+    },
+    "pageSideways": false,
+    "listSideways": false,
+    "scroller": {
+     "scrollH": 637,
+     "clientH": 474,
+     "top": 0
+    },
+    "more": {
+     "text": "↓ 4 more",
+     "free": true,
+     "box": {
+      "l": 20,
+      "t": 539,
+      "r": 70,
+      "b": 555,
+      "w": 50,
+      "h": 16
+     }
+    },
+    "markAll": {
+     "free": true,
+     "box": {
+      "l": 295,
+      "t": 536,
+      "r": 382,
+      "b": 558,
+      "w": 87,
+      "h": 22
+     }
+    },
+    "foot": {
+     "l": 13,
+     "t": 529,
+     "r": 389,
+     "b": 561,
+     "w": 376,
+     "h": 32
+    },
+    "vw": 402
+   }
+  },
+  {
+   "file": "A8-foot-phone.png",
+   "case": "A8",
+   "size": "phone 402x874 @3x",
+   "text": "the list scrolled to its foot",
+   "m2": {
+    "rows": [
+     {
+      "what": "Now Thu 30 Jul – Mon 3 Aug 08:00–10:00, renamed — was Training, and 1 more change · Saber",
+      "lines": 2,
+      "whatBox": {
+       "l": 40,
+       "t": -68,
+       "r": 347,
+       "b": -34,
+       "w": 307,
+       "h": 34
+      },
+      "ago": {
+       "l": 356,
+       "t": -104,
+       "r": 378,
+       "b": -87,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": -99,
+       "r": 31,
+       "b": -92,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": -112,
+       "r": 389,
+       "b": -26,
+       "w": 376,
+       "h": 86
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "Now Thu 16 Jul, Ace added, and 2 more changes · Saber",
+      "lines": 2,
+      "whatBox": {
+       "l": 40,
+       "t": 0,
+       "r": 347,
+       "b": 34,
+       "w": 307,
+       "h": 34
+      },
+      "ago": {
+       "l": 356,
+       "t": -18,
+       "r": 378,
+       "b": -1,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": -13,
+       "r": 31,
+       "b": -6,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": -26,
+       "r": 389,
+       "b": 42,
+       "w": 376,
+       "h": 69
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+      "lines": 2,
+      "whatBox": {
+       "l": 40,
+       "t": 69,
+       "r": 347,
+       "b": 103,
+       "w": 307,
+       "h": 34
+      },
+      "ago": {
+       "l": 356,
+       "t": 50,
+       "r": 378,
+       "b": 67,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 55,
+       "r": 31,
+       "b": 62,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 42,
+       "r": 389,
+       "b": 111,
+       "w": 376,
+       "h": 69
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 138,
+       "r": 347,
+       "b": 155,
+       "w": 307,
+       "h": 17
+      },
+      "ago": {
+       "l": 356,
+       "t": 119,
+       "r": 378,
+       "b": 136,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 124,
+       "r": 31,
+       "b": 131,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 111,
+       "r": 389,
+       "b": 163,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 189,
+       "r": 347,
+       "b": 206,
+       "w": 307,
+       "h": 17
+      },
+      "ago": {
+       "l": 356,
+       "t": 171,
+       "r": 378,
+       "b": 188,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 176,
+       "r": 31,
+       "b": 183,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 163,
+       "r": 389,
+       "b": 214,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 241,
+       "r": 347,
+       "b": 258,
+       "w": 307,
+       "h": 17
+      },
+      "ago": {
+       "l": 356,
+       "t": 222,
+       "r": 378,
+       "b": 240,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 227,
+       "r": 31,
+       "b": 234,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 214,
+       "r": 389,
+       "b": 266,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 293,
+       "r": 347,
+       "b": 310,
+       "w": 307,
+       "h": 17
+      },
+      "ago": {
+       "l": 356,
+       "t": 274,
+       "r": 378,
+       "b": 291,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 279,
+       "r": 31,
+       "b": 286,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 266,
+       "r": 389,
+       "b": 318,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 345,
+       "r": 347,
+       "b": 362,
+       "w": 307,
+       "h": 17
+      },
+      "ago": {
+       "l": 356,
+       "t": 326,
+       "r": 378,
+       "b": 343,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 331,
+       "r": 31,
+       "b": 338,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 318,
+       "r": 389,
+       "b": 370,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 397,
+       "r": 347,
+       "b": 413,
+       "w": 307,
+       "h": 17
+      },
+      "ago": {
+       "l": 356,
+       "t": 378,
+       "r": 378,
+       "b": 395,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 383,
+       "r": 31,
+       "b": 390,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 370,
+       "r": 389,
+       "b": 421,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 448,
+       "r": 347,
+       "b": 465,
+       "w": 307,
+       "h": 17
+      },
+      "ago": {
+       "l": 356,
+       "t": 429,
+       "r": 378,
+       "b": 447,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 434,
+       "r": 31,
+       "b": 441,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 421,
+       "r": 389,
+       "b": 473,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 500,
+       "r": 347,
+       "b": 517,
+       "w": 307,
+       "h": 17
+      },
+      "ago": {
+       "l": 356,
+       "t": 481,
+       "r": 378,
+       "b": 498,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 486,
+       "r": 31,
+       "b": 493,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 473,
+       "r": 389,
+       "b": 525,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     }
+    ],
+    "list": {
+     "l": 8,
+     "t": 46,
+     "r": 394,
+     "b": 566,
+     "w": 386,
+     "h": 520
+    },
+    "pageSideways": false,
+    "listSideways": false,
+    "scroller": {
+     "scrollH": 637,
+     "clientH": 474,
+     "top": 163
+    },
+    "more": null,
+    "markAll": {
+     "free": true,
+     "box": {
+      "l": 295,
+      "t": 536,
+      "r": 382,
+      "b": 558,
+      "w": 87,
+      "h": 22
+     }
+    },
+    "foot": {
+     "l": 13,
+     "t": 529,
+     "r": 389,
+     "b": 561,
+     "w": 376,
+     "h": 32
+    },
+    "vw": 402
+   }
+  },
+  {
+   "file": "A8-top-desk.png",
+   "case": "A8",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Advanced range safety procedures brief 1 Thu 30 Jul / Now Thu 30 Jul – Mon 3 Aug 08:00–10:00, renamed — was Training, and 1 more change · Saber",
+    "Range talk Thu 16 Jul / Now Thu 16 Jul, Ace added, and 2 more changes · Saber",
+    "Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "Filler 5 Fri 24 Jul / You were added · Saber",
+    "Filler 4 Thu 23 Jul / You were added · Saber",
+    "Filler 3 Wed 22 Jul / You were added · Saber",
+    "Filler 2 Tue 21 Jul / You were added · Saber",
+    "Filler 1 Mon 20 Jul / You were added · Saber",
+    "Training Wed 29 Jul / You were added · Saber",
+    "Training Mon 13 Jul / You were added · Saber",
+    "Training Wed 15 Jul / You were added · Saber"
+   ],
+   "m": {
+    "rows": [
+     {
+      "what": "Now Thu 30 Jul – Mon 3 Aug 08:00–10:00, renamed — was Training, and 1 more change · Saber",
+      "lines": 3,
+      "whatBox": {
+       "l": 799,
+       "t": 99,
+       "r": 1068,
+       "b": 149,
+       "w": 269,
+       "h": 51
+      },
+      "ago": {
+       "l": 1077,
+       "t": 63,
+       "r": 1099,
+       "b": 80,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 68,
+       "r": 790,
+       "b": 75,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 55,
+       "r": 1110,
+       "b": 157,
+       "w": 338,
+       "h": 102
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "Now Thu 16 Jul, Ace added, and 2 more changes · Saber",
+      "lines": 2,
+      "whatBox": {
+       "l": 799,
+       "t": 184,
+       "r": 1068,
+       "b": 218,
+       "w": 269,
+       "h": 34
+      },
+      "ago": {
+       "l": 1077,
+       "t": 165,
+       "r": 1099,
+       "b": 183,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 170,
+       "r": 790,
+       "b": 177,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 157,
+       "r": 1110,
+       "b": 226,
+       "w": 338,
+       "h": 69
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+      "lines": 2,
+      "whatBox": {
+       "l": 799,
+       "t": 253,
+       "r": 1068,
+       "b": 287,
+       "w": 269,
+       "h": 34
+      },
+      "ago": {
+       "l": 1077,
+       "t": 234,
+       "r": 1099,
+       "b": 251,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 239,
+       "r": 790,
+       "b": 246,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 226,
+       "r": 1110,
+       "b": 295,
+       "w": 338,
+       "h": 69
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 799,
+       "t": 322,
+       "r": 1068,
+       "b": 338,
+       "w": 269,
+       "h": 17
+      },
+      "ago": {
+       "l": 1077,
+       "t": 303,
+       "r": 1099,
+       "b": 320,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 308,
+       "r": 790,
+       "b": 315,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 295,
+       "r": 1110,
+       "b": 346,
+       "w": 338,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 799,
+       "t": 373,
+       "r": 1068,
+       "b": 390,
+       "w": 269,
+       "h": 17
+      },
+      "ago": {
+       "l": 1077,
+       "t": 354,
+       "r": 1099,
+       "b": 372,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 359,
+       "r": 790,
+       "b": 366,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 346,
+       "r": 1110,
+       "b": 398,
+       "w": 338,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 799,
+       "t": 425,
+       "r": 1068,
+       "b": 442,
+       "w": 269,
+       "h": 17
+      },
+      "ago": {
+       "l": 1077,
+       "t": 406,
+       "r": 1099,
+       "b": 423,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 411,
+       "r": 790,
+       "b": 418,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 398,
+       "r": 1110,
+       "b": 450,
+       "w": 338,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 799,
+       "t": 477,
+       "r": 1068,
+       "b": 494,
+       "w": 269,
+       "h": 17
+      },
+      "ago": {
+       "l": 1077,
+       "t": 458,
+       "r": 1099,
+       "b": 475,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 463,
+       "r": 790,
+       "b": 470,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 450,
+       "r": 1110,
+       "b": 502,
+       "w": 338,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 799,
+       "t": 529,
+       "r": 1068,
+       "b": 546,
+       "w": 269,
+       "h": 17
+      },
+      "ago": {
+       "l": 1077,
+       "t": 510,
+       "r": 1099,
+       "b": 527,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 515,
+       "r": 790,
+       "b": 522,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 502,
+       "r": 1110,
+       "b": 554,
+       "w": 338,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 799,
+       "t": 580,
+       "r": 1068,
+       "b": 597,
+       "w": 269,
+       "h": 17
+      },
+      "ago": {
+       "l": 1077,
+       "t": 562,
+       "r": 1099,
+       "b": 579,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 567,
+       "r": 790,
+       "b": 574,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 554,
+       "r": 1110,
+       "b": 605,
+       "w": 338,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 799,
+       "t": 632,
+       "r": 1068,
+       "b": 649,
+       "w": 269,
+       "h": 17
+      },
+      "ago": {
+       "l": 1077,
+       "t": 613,
+       "r": 1099,
+       "b": 631,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 618,
+       "r": 790,
+       "b": 625,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 605,
+       "r": 1110,
+       "b": 657,
+       "w": 338,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 799,
+       "t": 684,
+       "r": 1068,
+       "b": 701,
+       "w": 269,
+       "h": 17
+      },
+      "ago": {
+       "l": 1077,
+       "t": 665,
+       "r": 1099,
+       "b": 682,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 670,
+       "r": 790,
+       "b": 677,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 657,
+       "r": 1110,
+       "b": 709,
+       "w": 338,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     }
+    ],
+    "list": {
+     "l": 767,
+     "t": 50,
+     "r": 1115,
+     "b": 570,
+     "w": 348,
+     "h": 520
+    },
+    "pageSideways": false,
+    "listSideways": false,
+    "scroller": {
+     "scrollH": 654,
+     "clientH": 474,
+     "top": 0
+    },
+    "more": {
+     "text": "↓ 4 more",
+     "free": true,
+     "box": {
+      "l": 779,
+      "t": 543,
+      "r": 829,
+      "b": 559,
+      "w": 50,
+      "h": 16
+     }
+    },
+    "markAll": {
+     "free": true,
+     "box": {
+      "l": 1016,
+      "t": 540,
+      "r": 1103,
+      "b": 562,
+      "w": 87,
+      "h": 22
+     }
+    },
+    "foot": {
+     "l": 772,
+     "t": 533,
+     "r": 1110,
+     "b": 565,
+     "w": 338,
+     "h": 32
+    },
+    "vw": 1440
+   }
+  },
+  {
+   "file": "A8-foot-desk.png",
+   "case": "A8",
+   "size": "desktop 1440x900 @2x",
+   "text": "the list scrolled to its foot",
+   "m2": {
+    "rows": [
+     {
+      "what": "Now Thu 30 Jul – Mon 3 Aug 08:00–10:00, renamed — was Training, and 1 more change · Saber",
+      "lines": 3,
+      "whatBox": {
+       "l": 799,
+       "t": -81,
+       "r": 1068,
+       "b": -31,
+       "w": 269,
+       "h": 51
+      },
+      "ago": {
+       "l": 1077,
+       "t": -117,
+       "r": 1099,
+       "b": -100,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": -112,
+       "r": 790,
+       "b": -105,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": -125,
+       "r": 1110,
+       "b": -23,
+       "w": 338,
+       "h": 102
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "Now Thu 16 Jul, Ace added, and 2 more changes · Saber",
+      "lines": 2,
+      "whatBox": {
+       "l": 799,
+       "t": 4,
+       "r": 1068,
+       "b": 38,
+       "w": 269,
+       "h": 34
+      },
+      "ago": {
+       "l": 1077,
+       "t": -15,
+       "r": 1099,
+       "b": 3,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": -10,
+       "r": 790,
+       "b": -3,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": -23,
+       "r": 1110,
+       "b": 46,
+       "w": 338,
+       "h": 69
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+      "lines": 2,
+      "whatBox": {
+       "l": 799,
+       "t": 73,
+       "r": 1068,
+       "b": 107,
+       "w": 269,
+       "h": 34
+      },
+      "ago": {
+       "l": 1077,
+       "t": 54,
+       "r": 1099,
+       "b": 71,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 59,
+       "r": 790,
+       "b": 66,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 46,
+       "r": 1110,
+       "b": 115,
+       "w": 338,
+       "h": 69
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 799,
+       "t": 142,
+       "r": 1068,
+       "b": 158,
+       "w": 269,
+       "h": 17
+      },
+      "ago": {
+       "l": 1077,
+       "t": 123,
+       "r": 1099,
+       "b": 140,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 128,
+       "r": 790,
+       "b": 135,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 115,
+       "r": 1110,
+       "b": 166,
+       "w": 338,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 799,
+       "t": 193,
+       "r": 1068,
+       "b": 210,
+       "w": 269,
+       "h": 17
+      },
+      "ago": {
+       "l": 1077,
+       "t": 174,
+       "r": 1099,
+       "b": 192,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 179,
+       "r": 790,
+       "b": 186,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 166,
+       "r": 1110,
+       "b": 218,
+       "w": 338,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 799,
+       "t": 245,
+       "r": 1068,
+       "b": 262,
+       "w": 269,
+       "h": 17
+      },
+      "ago": {
+       "l": 1077,
+       "t": 226,
+       "r": 1099,
+       "b": 243,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 231,
+       "r": 790,
+       "b": 238,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 218,
+       "r": 1110,
+       "b": 270,
+       "w": 338,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 799,
+       "t": 297,
+       "r": 1068,
+       "b": 314,
+       "w": 269,
+       "h": 17
+      },
+      "ago": {
+       "l": 1077,
+       "t": 278,
+       "r": 1099,
+       "b": 295,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 283,
+       "r": 790,
+       "b": 290,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 270,
+       "r": 1110,
+       "b": 322,
+       "w": 338,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 799,
+       "t": 349,
+       "r": 1068,
+       "b": 366,
+       "w": 269,
+       "h": 17
+      },
+      "ago": {
+       "l": 1077,
+       "t": 330,
+       "r": 1099,
+       "b": 347,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 335,
+       "r": 790,
+       "b": 342,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 322,
+       "r": 1110,
+       "b": 374,
+       "w": 338,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 799,
+       "t": 400,
+       "r": 1068,
+       "b": 417,
+       "w": 269,
+       "h": 17
+      },
+      "ago": {
+       "l": 1077,
+       "t": 382,
+       "r": 1099,
+       "b": 399,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 387,
+       "r": 790,
+       "b": 394,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 374,
+       "r": 1110,
+       "b": 425,
+       "w": 338,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 799,
+       "t": 452,
+       "r": 1068,
+       "b": 469,
+       "w": 269,
+       "h": 17
+      },
+      "ago": {
+       "l": 1077,
+       "t": 433,
+       "r": 1099,
+       "b": 451,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 438,
+       "r": 790,
+       "b": 445,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 425,
+       "r": 1110,
+       "b": 477,
+       "w": 338,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 799,
+       "t": 504,
+       "r": 1068,
+       "b": 521,
+       "w": 269,
+       "h": 17
+      },
+      "ago": {
+       "l": 1077,
+       "t": 485,
+       "r": 1099,
+       "b": 502,
+       "w": 22,
+       "h": 17
+      },
+      "dot": {
+       "l": 783,
+       "t": 490,
+       "r": 790,
+       "b": 497,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 772,
+       "t": 477,
+       "r": 1110,
+       "b": 529,
+       "w": 338,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     }
+    ],
+    "list": {
+     "l": 767,
+     "t": 50,
+     "r": 1115,
+     "b": 570,
+     "w": 348,
+     "h": 520
+    },
+    "pageSideways": false,
+    "listSideways": false,
+    "scroller": {
+     "scrollH": 654,
+     "clientH": 474,
+     "top": 180
+    },
+    "more": null,
+    "markAll": {
+     "free": true,
+     "box": {
+      "l": 1016,
+      "t": 540,
+      "r": 1103,
+      "b": 562,
+      "w": 87,
+      "h": 22
+     }
+    },
+    "foot": {
+     "l": 772,
+     "t": 533,
+     "r": 1110,
+     "b": 565,
+     "w": 338,
+     "h": 32
+    },
+    "vw": 1440
+   }
+  },
+  {
+   "file": "A8-top-wk.png",
+   "case": "A8",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Advanced range safety procedures brief 1 Thu 30 Jul / Now Thu 30 Jul – Mon 3 Aug 08:00–10:00, renamed — was Training, and 1 more change · Saber",
+    "Range talk Thu 16 Jul / Now Thu 16 Jul, Ace added, and 2 more changes · Saber",
+    "Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "Filler 5 Fri 24 Jul / You were added · Saber",
+    "Filler 4 Thu 23 Jul / You were added · Saber",
+    "Filler 3 Wed 22 Jul / You were added · Saber",
+    "Filler 2 Tue 21 Jul / You were added · Saber",
+    "Filler 1 Mon 20 Jul / You were added · Saber",
+    "Training Wed 29 Jul / You were added · Saber",
+    "Training Mon 13 Jul / You were added · Saber",
+    "Training Wed 15 Jul / You were added · Saber"
+   ],
+   "m": {
+    "rows": [
+     {
+      "what": "Now Thu 30 Jul – Mon 3 Aug 08:00–10:00, renamed — was Training, and 1 more change · Saber",
+      "lines": 2,
+      "whatBox": {
+       "l": 40,
+       "t": 95,
+       "r": 348,
+       "b": 129,
+       "w": 308,
+       "h": 34
+      },
+      "ago": {
+       "l": 357,
+       "t": 59,
+       "r": 378,
+       "b": 76,
+       "w": 21,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 64,
+       "r": 31,
+       "b": 71,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 51,
+       "r": 389,
+       "b": 137,
+       "w": 376,
+       "h": 86
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "Now Thu 16 Jul, Ace added, and 2 more changes · Saber",
+      "lines": 2,
+      "whatBox": {
+       "l": 40,
+       "t": 163,
+       "r": 348,
+       "b": 197,
+       "w": 308,
+       "h": 34
+      },
+      "ago": {
+       "l": 357,
+       "t": 145,
+       "r": 378,
+       "b": 162,
+       "w": 21,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 150,
+       "r": 31,
+       "b": 157,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 137,
+       "r": 389,
+       "b": 205,
+       "w": 376,
+       "h": 69
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+      "lines": 2,
+      "whatBox": {
+       "l": 40,
+       "t": 232,
+       "r": 348,
+       "b": 266,
+       "w": 308,
+       "h": 34
+      },
+      "ago": {
+       "l": 357,
+       "t": 213,
+       "r": 378,
+       "b": 230,
+       "w": 21,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 218,
+       "r": 31,
+       "b": 225,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 205,
+       "r": 389,
+       "b": 274,
+       "w": 376,
+       "h": 69
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 301,
+       "r": 348,
+       "b": 318,
+       "w": 308,
+       "h": 17
+      },
+      "ago": {
+       "l": 357,
+       "t": 282,
+       "r": 378,
+       "b": 299,
+       "w": 21,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 287,
+       "r": 31,
+       "b": 294,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 274,
+       "r": 389,
+       "b": 326,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 352,
+       "r": 348,
+       "b": 369,
+       "w": 308,
+       "h": 17
+      },
+      "ago": {
+       "l": 357,
+       "t": 334,
+       "r": 378,
+       "b": 351,
+       "w": 21,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 339,
+       "r": 31,
+       "b": 346,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 326,
+       "r": 389,
+       "b": 377,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 404,
+       "r": 348,
+       "b": 421,
+       "w": 308,
+       "h": 17
+      },
+      "ago": {
+       "l": 357,
+       "t": 385,
+       "r": 378,
+       "b": 403,
+       "w": 21,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 390,
+       "r": 31,
+       "b": 397,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 377,
+       "r": 389,
+       "b": 429,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 456,
+       "r": 348,
+       "b": 473,
+       "w": 308,
+       "h": 17
+      },
+      "ago": {
+       "l": 357,
+       "t": 437,
+       "r": 378,
+       "b": 454,
+       "w": 21,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 442,
+       "r": 31,
+       "b": 449,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 429,
+       "r": 389,
+       "b": 481,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 508,
+       "r": 341,
+       "b": 525,
+       "w": 301,
+       "h": 17
+      },
+      "ago": {
+       "l": 350,
+       "t": 489,
+       "r": 378,
+       "b": 506,
+       "w": 28,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 494,
+       "r": 31,
+       "b": 501,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 481,
+       "r": 389,
+       "b": 533,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 560,
+       "r": 341,
+       "b": 576,
+       "w": 301,
+       "h": 17
+      },
+      "ago": {
+       "l": 350,
+       "t": 541,
+       "r": 378,
+       "b": 558,
+       "w": 28,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 546,
+       "r": 31,
+       "b": 553,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 533,
+       "r": 389,
+       "b": 584,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 611,
+       "r": 341,
+       "b": 628,
+       "w": 301,
+       "h": 17
+      },
+      "ago": {
+       "l": 350,
+       "t": 592,
+       "r": 378,
+       "b": 610,
+       "w": 28,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 597,
+       "r": 31,
+       "b": 604,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 584,
+       "r": 389,
+       "b": 636,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 663,
+       "r": 341,
+       "b": 680,
+       "w": 301,
+       "h": 17
+      },
+      "ago": {
+       "l": 350,
+       "t": 644,
+       "r": 378,
+       "b": 661,
+       "w": 28,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 649,
+       "r": 31,
+       "b": 656,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 636,
+       "r": 389,
+       "b": 688,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     }
+    ],
+    "list": {
+     "l": 8,
+     "t": 46,
+     "r": 394,
+     "b": 566,
+     "w": 386,
+     "h": 520
+    },
+    "pageSideways": false,
+    "listSideways": false,
+    "scroller": {
+     "scrollH": 637,
+     "clientH": 474,
+     "top": 0
+    },
+    "more": {
+     "text": "↓ 4 more",
+     "free": true,
+     "box": {
+      "l": 20,
+      "t": 540,
+      "r": 70,
+      "b": 554,
+      "w": 50,
+      "h": 14
+     }
+    },
+    "markAll": {
+     "free": true,
+     "box": {
+      "l": 295,
+      "t": 536,
+      "r": 382,
+      "b": 558,
+      "w": 87,
+      "h": 22
+     }
+    },
+    "foot": {
+     "l": 13,
+     "t": 529,
+     "r": 389,
+     "b": 561,
+     "w": 376,
+     "h": 32
+    },
+    "vw": 402
+   }
+  },
+  {
+   "file": "A8-foot-wk.png",
+   "case": "A8",
+   "size": "phone 402x874 @3x",
+   "text": "the list scrolled to its foot",
+   "m2": {
+    "rows": [
+     {
+      "what": "Now Thu 30 Jul – Mon 3 Aug 08:00–10:00, renamed — was Training, and 1 more change · Saber",
+      "lines": 2,
+      "whatBox": {
+       "l": 40,
+       "t": -68,
+       "r": 348,
+       "b": -34,
+       "w": 308,
+       "h": 34
+      },
+      "ago": {
+       "l": 357,
+       "t": -104,
+       "r": 378,
+       "b": -87,
+       "w": 21,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": -99,
+       "r": 31,
+       "b": -92,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": -112,
+       "r": 389,
+       "b": -26,
+       "w": 376,
+       "h": 86
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "Now Thu 16 Jul, Ace added, and 2 more changes · Saber",
+      "lines": 2,
+      "whatBox": {
+       "l": 40,
+       "t": 0,
+       "r": 348,
+       "b": 34,
+       "w": 308,
+       "h": 34
+      },
+      "ago": {
+       "l": 357,
+       "t": -18,
+       "r": 378,
+       "b": -1,
+       "w": 21,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": -13,
+       "r": 31,
+       "b": -6,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": -26,
+       "r": 389,
+       "b": 42,
+       "w": 376,
+       "h": 69
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+      "lines": 2,
+      "whatBox": {
+       "l": 40,
+       "t": 69,
+       "r": 348,
+       "b": 103,
+       "w": 308,
+       "h": 34
+      },
+      "ago": {
+       "l": 357,
+       "t": 50,
+       "r": 378,
+       "b": 67,
+       "w": 21,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 55,
+       "r": 31,
+       "b": 62,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 42,
+       "r": 389,
+       "b": 111,
+       "w": 376,
+       "h": 69
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 138,
+       "r": 348,
+       "b": 155,
+       "w": 308,
+       "h": 17
+      },
+      "ago": {
+       "l": 357,
+       "t": 119,
+       "r": 378,
+       "b": 136,
+       "w": 21,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 124,
+       "r": 31,
+       "b": 131,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 111,
+       "r": 389,
+       "b": 163,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 189,
+       "r": 348,
+       "b": 206,
+       "w": 308,
+       "h": 17
+      },
+      "ago": {
+       "l": 357,
+       "t": 171,
+       "r": 378,
+       "b": 188,
+       "w": 21,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 176,
+       "r": 31,
+       "b": 183,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 163,
+       "r": 389,
+       "b": 214,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 241,
+       "r": 348,
+       "b": 258,
+       "w": 308,
+       "h": 17
+      },
+      "ago": {
+       "l": 357,
+       "t": 222,
+       "r": 378,
+       "b": 240,
+       "w": 21,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 227,
+       "r": 31,
+       "b": 234,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 214,
+       "r": 389,
+       "b": 266,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 293,
+       "r": 348,
+       "b": 310,
+       "w": 308,
+       "h": 17
+      },
+      "ago": {
+       "l": 357,
+       "t": 274,
+       "r": 378,
+       "b": 291,
+       "w": 21,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 279,
+       "r": 31,
+       "b": 286,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 266,
+       "r": 389,
+       "b": 318,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 345,
+       "r": 341,
+       "b": 362,
+       "w": 301,
+       "h": 17
+      },
+      "ago": {
+       "l": 350,
+       "t": 326,
+       "r": 378,
+       "b": 343,
+       "w": 28,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 331,
+       "r": 31,
+       "b": 338,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 318,
+       "r": 389,
+       "b": 370,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 397,
+       "r": 341,
+       "b": 413,
+       "w": 301,
+       "h": 17
+      },
+      "ago": {
+       "l": 350,
+       "t": 378,
+       "r": 378,
+       "b": 395,
+       "w": 28,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 383,
+       "r": 31,
+       "b": 390,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 370,
+       "r": 389,
+       "b": 421,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 448,
+       "r": 341,
+       "b": 465,
+       "w": 301,
+       "h": 17
+      },
+      "ago": {
+       "l": 350,
+       "t": 429,
+       "r": 378,
+       "b": 447,
+       "w": 28,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 434,
+       "r": 31,
+       "b": 441,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 421,
+       "r": 389,
+       "b": 473,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     },
+     {
+      "what": "You were added · Saber",
+      "lines": 1,
+      "whatBox": {
+       "l": 40,
+       "t": 500,
+       "r": 341,
+       "b": 517,
+       "w": 301,
+       "h": 17
+      },
+      "ago": {
+       "l": 350,
+       "t": 481,
+       "r": 378,
+       "b": 498,
+       "w": 28,
+       "h": 17
+      },
+      "dot": {
+       "l": 24,
+       "t": 486,
+       "r": 31,
+       "b": 493,
+       "w": 7,
+       "h": 7
+      },
+      "line": {
+       "l": 13,
+       "t": 473,
+       "r": 389,
+       "b": 525,
+       "w": 376,
+       "h": 52
+      },
+      "cut": false,
+      "nameCut": false,
+      "agoOverWhat": false,
+      "agoOverName": false,
+      "agoOverDay": false,
+      "dotOverWhat": false,
+      "whatInsideLine": true
+     }
+    ],
+    "list": {
+     "l": 8,
+     "t": 46,
+     "r": 394,
+     "b": 566,
+     "w": 386,
+     "h": 520
+    },
+    "pageSideways": false,
+    "listSideways": false,
+    "scroller": {
+     "scrollH": 637,
+     "clientH": 474,
+     "top": 163
+    },
+    "more": null,
+    "markAll": {
+     "free": true,
+     "box": {
+      "l": 295,
+      "t": 536,
+      "r": 382,
+      "b": 558,
+      "w": 87,
+      "h": 22
+     }
+    },
+    "foot": {
+     "l": 13,
+     "t": 529,
+     "r": 389,
+     "b": 561,
+     "w": 376,
+     "h": 32
+    },
+    "vw": 402
+   }
+  }
+ ],
+ "cases": {
+  "A8": {
+   "log": [
+    "bundle index-2uyEcUJu.js",
+    "LONG has 40 letters",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-15: new input [\"imwujle43arri2b\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-13: new input [\"imwujlh07nrjj7s\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-29: new input [\"imwujljvgrk6loa\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Filler 1\",\"remarks\":\"Bring your kit\"} on 2026-07-20: new input [\"imwujlmpso3tzqf\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Filler 2\",\"remarks\":\"Bring your kit\"} on 2026-07-21: new input [\"imwujlpj6e0zynk\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Filler 3\",\"remarks\":\"Bring your kit\"} on 2026-07-22: new input [\"imwujlscjoscphl\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Filler 4\",\"remarks\":\"Bring your kit\"} on 2026-07-23: new input [\"imwujlv6e108df8\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Filler 5\",\"remarks\":\"Bring your kit\"} on 2026-07-24: new input [\"imwujly0ovful5s\"]; asked []; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "a after {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "c after {\"type\":\"Training\",\"title\":\"Range talk\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\",\"dj\"],\"acc\":\"g\"}",
+    "saved the change: asked [\"oil\"]; note \"\"; window still open: false",
+    "long after {\"type\":\"Training\",\"title\":\"Advanced range safety procedures brief 1\",\"date\":\"Jul 30\",\"endDate\":\"Aug 3\",\"allday\":false,\"s\":480,\"e\":600,\"cx\":false,\"remarks\":\"Bring water and a hat\",\"people\":[\"bane\",\"rocky\"]}",
+    "picture A8-top-phone.png: [\"Advanced range safety procedures brief 1 Thu 30 Jul / Now Thu 30 Jul – Mon 3 Aug 08:00–10:00, renamed — was Training, and 1 more change · Saber\",\"Range talk Thu 16 Jul / Now Thu 16 Jul, Ace added, and 2 more changes · Saber\",\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"Filler 5 Fri 24 Jul / You were added · Saber\",\"Filler 4 Thu 23 Jul / You were added · Saber\",\"Filler 3 Wed 22 Jul / You were added · Saber\",\"Filler 2 Tue 21 Jul / You were added · Saber\",\"Filler 1 Mon 20 Jul / You were added · Saber\",\"Training Wed 29 Jul / You were added · Saber\",\"Training Mon 13 Jul / You were added · Saber\",\"Training Wed 15 Jul / You were added · Saber\"]",
+    "PASS phone: A6(a)'s line 2 is two lines in its box, whole, \"· Saber\" shown — {\"lines\":2,\"box\":{\"l\":40,\"t\":232,\"r\":347,\"b\":266,\"w\":307,\"h\":34},\"cut\":false}",
+    "RECORD phone: A6(c)'s line (RECORD) and its line count — {\"what\":\"Now Thu 16 Jul, Ace added, and 2 more changes · Saber\",\"lines\":2,\"cut\":false}",
+    "RECORD phone: the longest line (RECORD its line count) — {\"what\":\"Now Thu 30 Jul – Mon 3 Aug 08:00–10:00, renamed — was Training, and 1 more change · Saber\",\"lines\":2}",
+    "RECORD phone: the 40-letter case (RECORD the whole line) — \"Advanced range safety procedures brief 1 Thu 30 Jul / Now Thu 30 Jul – Mon 3 Aug 08:00–10:00, renamed — was Training, and 1 more change · Saber\"",
+    "PASS phone: nothing cut with \"…\" or clipped — []",
+    "PASS phone: the age never overlaps the words; the dot clear of line 2 — []",
+    "PASS phone: no sideways scroll of the list or the page — {\"page\":false,\"list\":false}",
+    "PASS phone: \"Mark all read\" not covered; the \"↓ N more\" foot (RECORD its words) — {\"markAll\":{\"free\":true,\"box\":{\"l\":295,\"t\":536,\"r\":382,\"b\":558,\"w\":87,\"h\":22}},\"more\":{\"text\":\"↓ 4 more\",\"free\":true,\"box\":{\"l\":20,\"t\":539,\"r\":70,\"b\":555,\"w\":50,\"h\":16}},\"scroller\":{\"scrollH\":637,\"clientH\":474,\"top\":0},\"rows\":11}",
+    "RECORD phone: after scrolling the list to its foot — moved, foot read (RECORD) — {\"top\":163,\"more\":null,\"markAll\":{\"free\":true,\"box\":{\"l\":295,\"t\":536,\"r\":382,\"b\":558,\"w\":87,\"h\":22}}}",
+    "picture A8-foot-phone.png: \"the list scrolled to its foot\"",
+    "picture A8-top-desk.png: [\"Advanced range safety procedures brief 1 Thu 30 Jul / Now Thu 30 Jul – Mon 3 Aug 08:00–10:00, renamed — was Training, and 1 more change · Saber\",\"Range talk Thu 16 Jul / Now Thu 16 Jul, Ace added, and 2 more changes · Saber\",\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"Filler 5 Fri 24 Jul / You were added · Saber\",\"Filler 4 Thu 23 Jul / You were added · Saber\",\"Filler 3 Wed 22 Jul / You were added · Saber\",\"Filler 2 Tue 21 Jul / You were added · Saber\",\"Filler 1 Mon 20 Jul / You were added · Saber\",\"Training Wed 29 Jul / You were added · Saber\",\"Training Mon 13 Jul / You were added · Saber\",\"Training Wed 15 Jul / You were added · Saber\"]",
+    "PASS desk: A6(a)'s line 2 is two lines in its box, whole, \"· Saber\" shown — {\"lines\":2,\"box\":{\"l\":799,\"t\":253,\"r\":1068,\"b\":287,\"w\":269,\"h\":34},\"cut\":false}",
+    "RECORD desk: A6(c)'s line (RECORD) and its line count — {\"what\":\"Now Thu 16 Jul, Ace added, and 2 more changes · Saber\",\"lines\":2,\"cut\":false}",
+    "RECORD desk: the longest line (RECORD its line count) — {\"what\":\"Now Thu 30 Jul – Mon 3 Aug 08:00–10:00, renamed — was Training, and 1 more change · Saber\",\"lines\":3}",
+    "RECORD desk: the 40-letter case (RECORD the whole line) — \"Advanced range safety procedures brief 1 Thu 30 Jul / Now Thu 30 Jul – Mon 3 Aug 08:00–10:00, renamed — was Training, and 1 more change · Saber\"",
+    "PASS desk: nothing cut with \"…\" or clipped — []",
+    "PASS desk: the age never overlaps the words; the dot clear of line 2 — []",
+    "PASS desk: no sideways scroll of the list or the page — {\"page\":false,\"list\":false}",
+    "PASS desk: \"Mark all read\" not covered; the \"↓ N more\" foot (RECORD its words) — {\"markAll\":{\"free\":true,\"box\":{\"l\":1016,\"t\":540,\"r\":1103,\"b\":562,\"w\":87,\"h\":22}},\"more\":{\"text\":\"↓ 4 more\",\"free\":true,\"box\":{\"l\":779,\"t\":543,\"r\":829,\"b\":559,\"w\":50,\"h\":16}},\"scroller\":{\"scrollH\":654,\"clientH\":474,\"top\":0},\"rows\":11}",
+    "RECORD desk: after scrolling the list to its foot — moved, foot read (RECORD) — {\"top\":180,\"more\":null,\"markAll\":{\"free\":true,\"box\":{\"l\":1016,\"t\":540,\"r\":1103,\"b\":562,\"w\":87,\"h\":22}}}",
+    "picture A8-foot-desk.png: \"the list scrolled to its foot\"",
+    "webkit bundle index-2uyEcUJu.js",
+    "LONG has 40 letters",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-15: new input [\"imwujmojysp2ho8\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-13: new input [\"imwujmv08nxzj5c\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-29: new input [\"imwujn1f0j6rrpn\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Filler 1\",\"remarks\":\"Bring your kit\"} on 2026-07-20: new input [\"imwujn7u8v2e4t1\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Filler 2\",\"remarks\":\"Bring your kit\"} on 2026-07-21: new input [\"imwujnecig9fdy0\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Filler 3\",\"remarks\":\"Bring your kit\"} on 2026-07-22: new input [\"imwujnks3tcgrc5\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Filler 4\",\"remarks\":\"Bring your kit\"} on 2026-07-23: new input [\"imwujnrfka0uojb\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Filler 5\",\"remarks\":\"Bring your kit\"} on 2026-07-24: new input [\"imwujny4jr3n7dp\"]; asked []; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "a after {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "c after {\"type\":\"Training\",\"title\":\"Range talk\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\",\"dj\"],\"acc\":\"g\"}",
+    "saved the change: asked [\"oil\"]; note \"\"; window still open: false",
+    "long after {\"type\":\"Training\",\"title\":\"Advanced range safety procedures brief 1\",\"date\":\"Jul 30\",\"endDate\":\"Aug 3\",\"allday\":false,\"s\":480,\"e\":600,\"cx\":false,\"remarks\":\"Bring water and a hat\",\"people\":[\"bane\",\"rocky\"]}",
+    "picture A8-top-wk.png: [\"Advanced range safety procedures brief 1 Thu 30 Jul / Now Thu 30 Jul – Mon 3 Aug 08:00–10:00, renamed — was Training, and 1 more change · Saber\",\"Range talk Thu 16 Jul / Now Thu 16 Jul, Ace added, and 2 more changes · Saber\",\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"Filler 5 Fri 24 Jul / You were added · Saber\",\"Filler 4 Thu 23 Jul / You were added · Saber\",\"Filler 3 Wed 22 Jul / You were added · Saber\",\"Filler 2 Tue 21 Jul / You were added · Saber\",\"Filler 1 Mon 20 Jul / You were added · Saber\",\"Training Wed 29 Jul / You were added · Saber\",\"Training Mon 13 Jul / You were added · Saber\",\"Training Wed 15 Jul / You were added · Saber\"]",
+    "PASS wk: A6(a)'s line 2 is two lines in its box, whole, \"· Saber\" shown — {\"lines\":2,\"box\":{\"l\":40,\"t\":232,\"r\":348,\"b\":266,\"w\":308,\"h\":34},\"cut\":false}",
+    "RECORD wk: A6(c)'s line (RECORD) and its line count — {\"what\":\"Now Thu 16 Jul, Ace added, and 2 more changes · Saber\",\"lines\":2,\"cut\":false}",
+    "RECORD wk: the longest line (RECORD its line count) — {\"what\":\"Now Thu 30 Jul – Mon 3 Aug 08:00–10:00, renamed — was Training, and 1 more change · Saber\",\"lines\":2}",
+    "RECORD wk: the 40-letter case (RECORD the whole line) — \"Advanced range safety procedures brief 1 Thu 30 Jul / Now Thu 30 Jul – Mon 3 Aug 08:00–10:00, renamed — was Training, and 1 more change · Saber\"",
+    "PASS wk: nothing cut with \"…\" or clipped — []",
+    "PASS wk: the age never overlaps the words; the dot clear of line 2 — []",
+    "PASS wk: no sideways scroll of the list or the page — {\"page\":false,\"list\":false}",
+    "PASS wk: \"Mark all read\" not covered; the \"↓ N more\" foot (RECORD its words) — {\"markAll\":{\"free\":true,\"box\":{\"l\":295,\"t\":536,\"r\":382,\"b\":558,\"w\":87,\"h\":22}},\"more\":{\"text\":\"↓ 4 more\",\"free\":true,\"box\":{\"l\":20,\"t\":540,\"r\":70,\"b\":554,\"w\":50,\"h\":14}},\"scroller\":{\"scrollH\":637,\"clientH\":474,\"top\":0},\"rows\":11}",
+    "RECORD wk: after scrolling the list to its foot — moved, foot read (RECORD) — {\"top\":163,\"more\":null,\"markAll\":{\"free\":true,\"box\":{\"l\":295,\"t\":536,\"r\":382,\"b\":558,\"w\":87,\"h\":22}}}",
+    "picture A8-foot-wk.png: \"the list scrolled to its foot\""
+   ]
+  }
+ },
+ "errors": []
+}

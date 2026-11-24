@@ -1310,3 +1310,42 @@ sides.
 **Issue:** The guide says Low runs the fewest helpers the checks need and that Medium "means more walkers or a scenario designer inside a job". Since D2443 every WALK and FULL check has two scenario designers, Astra and a fresh Fable, on either setting, so a night run reading the guide literally could leave Fable's design out on Low. Its "Fable only on his word" (Observation 1029) is the same drift.
 **Suggested improvement:** At the guide's next review, state that both settings give every walk its two scenario designers (D2443), and that Low and Medium differ only in how many walkers run and whether helpers run at once.
 **Principle:** When a rule adds a required helper to a check, every guide that sizes or budgets that check is read for a line that now leaves it out.
+
+### Observation 1051: A task asked for by name was already claimed on an unmerged branch (numbered past 1049–1050 on other open branches)
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** Chat 163 — he asked to start "the bell / taken back" words job; the chat searched `main`'s rulings and backlog, told him no other chat was doing it, and was corrected by the chat that had drawn it the night before
+**Skill:** session-handoff (and the rule files `record-decisions.md`, `doc-structure.md` — "search before telling him anything is undecided")
+**Type:** open-source
+**Phase/Area:** The start of a chat — finding whether a task is already ruled on or in hand
+
+**Issue:** The search-before-you-ask rule names the rulings files, the archive and the backlog, all read from the chat's own checkout. A ruling or backlog item recorded by a parallel chat lives only on that chat's unmerged branch until its merge, so a search of the default branch finds nothing and the chat reports the task as unclaimed. Here two rulings and a backlog item two days old, and a night's finished drawing, were invisible.
+**Suggested improvement:** In the rule's "The check" list, add one line: search the open branches too — one `git grep` of the subject across every remote ref's rulings and backlog — and one transcript search of the other chats, before saying a task is unclaimed, undecided or unbuilt. The handoff file's "Before acting on a block" could carry the same line.
+**Principle:** Where parallel workers each record decisions on their own branch, "is this decided?" is a question for every open branch, not for the default one.
+
+### Observation 1052: Two chats opened together took the same chat number, twice in one afternoon
+
+**Status:** OPEN
+**Date:** 2026-11-24
+**Session context:** Chat 168 (opened as "chat 166"), round 4 of the words pass; the speed chat opened at the same time
+**Skill:** session-handoff (the opening line's chat number) — the same gap as Observation 951, for chat numbers
+**Type:** internal
+**Phase/Area:** the opening line's "use the next free number" and a chat's first step
+
+**Issue:** The owner opened two chats minutes apart. Both were told "166". The two-squadron chat already held 166 in its commits, so both new chats moved on, and both claimed 167 within the same minute, each from its own search of commits and handoff blocks. Neither could see the other's claim, because a claim lives only in a chat's first reply until it commits. The second clash was caught only because the owner sent a screenshot of the other chat.
+**Suggested improvement:** In the session-handoff skill's opening line and the handoff head's "Before acting on a block": a chat's number counts as taken once another open chat can see it. Read the session titles (`list_sessions` shows "… chat 166" titles) as well as commits; set this chat's title to its number as the first act (`set_session_title`), before any long read, so the next chat's search finds it.
+**Principle:** A "next free number" read from committed history is unsafe when two writers start at once: the claim has to be published where the other writer looks, before it is used.
+
+### Observation 1054: A reader's "the approved page shows…" is checked against the page before its claim is believed
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** The FULL bug check of round 4 of the words pass (chat 170): three blind code readers after the walk. (Numbered past 1053, which an open branch's log already holds.)
+**Skill:** the bug-check order (`raptor-port/docs/bug-check-order.md`)
+**Type:** open-source
+**Phase/Area:** §4 "What to do with what they hand back", item 2 (check it against the governing ruling)
+
+**Issue:** A blind reader reported that a note was wrong because "the page he approved shows" a full stop where the app prints a dot, and quoted the sentence. The approved page holds no such sentence: it shows that note only as a picture, and the picture has the dot. Two other sources (a walker's check against the picture's recorded text, another reader) read it the other way. The claim was caught only because the host opened the page and searched its text and the picture's recorded words before acting; a fix "back to the page" would have changed approved words.
+**Suggested improvement:** In §4's hand-back list, item 2, add: a claim that rests on what an approved page, picture or drawing shows is checked against that artefact itself — its text searched, its picture's recorded words read — before it is dispositioned; a reader's quotation of an approved artefact is a claim like any other. And in the readers' brief, ask for the file and line (or the picture's name) behind any "the approved page shows".
+**Principle:** A reviewer's quotation of a source is still a claim; open the source before acting on what it is said to say.

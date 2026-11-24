@@ -1,0 +1,50 @@
+{
+ "pictures": [
+  {
+   "file": "B7b-3-saber-topbar-desk.png",
+   "case": "B7b",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "(unread) Meeting Wed 15 Jul / Training changed to Meeting, remark changed · Ranger",
+    "(unread) Training Wed 15 Jul / You were added · Ranger"
+   ]
+  },
+  {
+   "file": "B7b-4-saber-board-desk.png",
+   "case": "B7b",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "(unread) Meeting Wed 15 Jul / Training changed to Meeting, remark changed · Ranger",
+    "(unread) Training Wed 15 Jul / You were added · Ranger"
+   ]
+  }
+ ],
+ "cases": {
+  "B7b": {
+   "log": [
+    "bundle: index-2uyEcUJu.js",
+    "Saber id: stiff",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 1\",\"remarks\":\"\"} on 2026-07-13: new input [\"imwujug1i0s53bi\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 2\",\"remarks\":\"\"} on 2026-07-14: new input [\"imwujui15j0i2i6\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 3\",\"remarks\":\"\"} on 2026-07-15: new input [\"imwujuk1b5fsg20\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 4\",\"remarks\":\"\"} on 2026-07-16: new input [\"imwujum13ar9gr4\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 5\",\"remarks\":\"\"} on 2026-07-17: new input [\"imwujuo0ebr0ry0\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 6\",\"remarks\":\"\"} on 2026-07-18: new input [\"imwujuqotnen02q\"]; asked [\"oil\"]; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 7\",\"remarks\":\"\"} on 2026-07-19: new input [\"imwujutdgitupla\"]; asked [\"oil\"]; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 8\",\"remarks\":\"\"} on 2026-07-20: new input [\"imwujuvccj9l4zi\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 9\",\"remarks\":\"\"} on 2026-07-21: new input [\"imwujuxbl70i1rt\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 10\",\"remarks\":\"\"} on 2026-07-22: new input [\"imwujuzbw96ovwb\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 11\",\"remarks\":\"\"} on 2026-07-23: new input [\"imwujv1amj39njj\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"14:00\",\"to\":\"15:00\",\"title\":\"Sim brief 12\",\"remarks\":\"\"} on 2026-07-24: new input [\"imwujv39xisdoec\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"stiff\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Kit\"} on 2026-07-15: new input [\"imwujv9kxtw0qqa\"]; asked []; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "Saber top bar: [\"(unread) Meeting Wed 15 Jul / Training changed to Meeting, remark changed · Ranger\",\"(unread) Training Wed 15 Jul / You were added · Ranger\"] note \"\"",
+    "picture B7b-3-saber-topbar-desk.png: [\"(unread) Meeting Wed 15 Jul / Training changed to Meeting, remark changed · Ranger\",\"(unread) Training Wed 15 Jul / You were added · Ranger\"]",
+    "Saber board bar: [\"(unread) Meeting Wed 15 Jul / Training changed to Meeting, remark changed · Ranger\",\"(unread) Training Wed 15 Jul / You were added · Ranger\"] note \"\"",
+    "same words: true",
+    "picture B7b-4-saber-board-desk.png: [\"(unread) Meeting Wed 15 Jul / Training changed to Meeting, remark changed · Ranger\",\"(unread) Training Wed 15 Jul / You were added · Ranger\"]"
+   ]
+  }
+ },
+ "errors": []
+}

@@ -31,7 +31,7 @@
    (state/noticeseen.ts): were reading to write to the notice, the maker's Undo of his change would be refused —
    "Ranger changed this after your action" — by the read of the very person it told. */
 import { PEOPLE } from '../engine/people'
-import { odOut, isOD, dateOrd, inpLabel, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned, inputSpanIso, inputSquadrons } from '../engine/inputs'
+import { odOut, isOD, dateOrd, inpLabel, isFly, titleOf, toOf, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned, inputSpanIso, inputSquadrons } from '../engine/inputs'
 import { homeHandle } from '../engine/roster'
 import { hhmm } from '../engine/time'
 import { mayEditSched } from './perms'
@@ -49,10 +49,16 @@ export type NoticePart =
   | { k: 'uncx' }                                  // brought back
   | { k: 'off' } | { k: 'on' }                     // taken off the programme / put back on it
   | { k: 'unav' } | { k: 'unavoff' }               // filed under Unavailable / taken out of it (D815)
-  | { k: 'when'; a?: string; b?: string; t?: string }   // what it is NOW: its day(s) where they moved, its hours where they did
+  /* what it is NOW: its day(s) where they moved, its hours where they did — `t` the hours as clock times; a half day
+     (his D2521 Q2, round 4 of the words pass) is `h` instead, AM or PM, said as the app says a half everywhere else
+     (D1525), with `c` its kind where its bold name is its kind ("Now LL (AM)"); a line saved before keeps its `t` */
+  | { k: 'when'; a?: string; b?: string; t?: string; h?: 'AM' | 'PM'; c?: string }
   | { k: 'add'; who: string[] }                    // others put in — ids; a placeholder is one of them
   | { k: 'rem'; who: string[] }                    // others taken out
-  | { k: 'title'; was: string }                    // renamed
+  /* ITS KIND CHANGED (his D2521 Q1): "LL changed to OL" — was "Renamed — was LL" whenever the bold name was the kind.
+     Said whenever the kind changes, title or no title; a line saved before reads as its `title` part always did */
+  | { k: 'kind'; was: string; now: string }
+  | { k: 'title'; was: string }                    // renamed — its title's own words changed (or an Attach's "To")
   | { k: 'rmk' }                                   // its remark changed
   /* …AND IT REPLACED HIS PENDING LEAVE WAR BID (the overhaul's M4, 9.3a — D1142: "a bid replaced by a clashing input"):
      one line, not two — the Inputs door's own line about the input says it ("You were added · replaces your LL bid"), and
@@ -392,6 +398,17 @@ const isoOf = (lbl: any, yr: any): string => {
 const firstDay = (r: any): string => isoOf(r.date, r.yr)
 const lastDay = (r: any): string => (r.endDate ? isoOf(r.endDate, r.yr) || firstDay(r) : firstDay(r))
 const hours = (r: any): string => (r.allday ? 'all day' : `${hhmm(r.s ?? 0)}–${hhmm(r.e ?? 0)}`) + (r.half ? ` ${r.half}` : '')
+/* an input's kind, as its bold name says it when it has no title (engine/inputs.ts inpLabel) */
+const kindOf = (r: any): string => String((r && r.type) || '')
+/* its bold name less its kind: the title's words, an Attach's "To" — '' where the name is the kind alone. A kind change
+   leaves this alone, so it never reads as a rename (his D2521 Q1) */
+const ownName = (r: any): string => {
+  /* read from the record's own title and "To" (engine/inputs.ts titleOf, toOf — the two things inpLabel adds to the
+     kind), never cut out of the bold name: a typed title that itself starts "Training · " is a title, and retyped
+     "Meeting · …" in the save that changes its kind it IS renamed (Astra's blind read of round 4, its finding 1) */
+  const k = kindOf(r), t = titleOf(k, r && r.title), to = isFly(k) ? toOf(r && r.to) : ''
+  return to ? `${t} · ${to}` : t
+}
 /* the remark as a person typed it (engine/inputs.ts remarksTyped — since D948 the date is printed from the dates, never
    written in), and a change of dates is already said as one */
 const typed = (r: any): string => remarksTyped(r.remarks, r)
@@ -421,12 +438,25 @@ export function common(b: any, a: any, him: string): NoticePart[] {
   else if (b.acc === 'r' && a.acc !== 'r') out.push({ k: 'on' })
   const days = firstDay(b) !== firstDay(a) || lastDay(b) !== lastDay(a)
   const time = hours(b) !== hours(a)
-  if (days || time) out.push({ k: 'when', ...(days ? { a: firstDay(a), b: lastDay(a) } : {}), ...(time ? { t: hours(a) } : {}) })
+  /* a half day now: AM or PM, never its clock times (his D2521 Q2) — with its kind where its bold name is its kind */
+  const half = time && !a.allday && (a.half === 'am' || a.half === 'pm') ? (a.half === 'am' ? 'AM' as const : 'PM' as const) : null
+  const at = half ? { h: half, ...(String(inpLabel(a)) === kindOf(a) ? { c: kindOf(a) } : {}) } : time ? { t: hours(a) } : {}
+  if (days || time) out.push({ k: 'when', ...(days ? { a: firstDay(a), b: lastDay(a) } : {}), ...at })
   const was = new Set([...ids(b), phOf(b)].filter(Boolean) as string[]), now = new Set([...ids(a), phOf(a)].filter(Boolean) as string[])
   const add = [...now].filter(p => !was.has(p) && p !== him), rem = [...was].filter(p => !now.has(p) && p !== him)
   if (add.length) out.push({ k: 'add', who: add })
   if (rem.length) out.push({ k: 'rem', who: rem })
-  if (inpLabel(b) !== inpLabel(a)) out.push({ k: 'title', was: String(inpLabel(b)) })
+  /* its kind, and its name (his D2521 Q1): a change of kind is said as one — "LL changed to OL", "Training changed to
+     Meeting" — and "Renamed" only when the name's own words changed: its title, or an Attach's "To". The bold name of an
+     input with no title IS its kind, so a kind change alone renamed nothing. */
+  if (kindOf(b) !== kindOf(a)) out.push({ k: 'kind', was: kindOf(b), now: kindOf(a) })
+  /* …and only where the bold name itself changed too: a Training titled "Meeting" made a Meeting still reads "Meeting"
+     (its title became its kind's own name), so nothing was renamed (the fresh Fable designer's B1, chat 168). The same
+     whatever the title's capitals — "meeting" on a Training made a Meeting: the new kind's name swallows it by the
+     app's own rule (engine/inputs.ts titleOf — a title equal to its kind's name, ignoring case, is no title), and
+     nobody touched a title (walker a's A2 (iii), chat 170) */
+  const swallowed = kindOf(b) !== kindOf(a) && !ownName(a) && ownName(b).toLowerCase() === kindOf(a).toLowerCase()
+  if (ownName(b) !== ownName(a) && String(inpLabel(b)) !== String(inpLabel(a)) && !swallowed) out.push({ k: 'title', was: String(inpLabel(b)) })
   /* …and its till-date tick turned by someone else: what the schedule prints for his remark changed (owner D953 — the
      scenario designer's 5); a flip the dates alone made is the "when" line's */
   const tick = tillTurned(b, a)
@@ -947,10 +977,14 @@ function partWords(p: NoticePart): string {
     case 'rbid': return `replaces your ${lwCode(p.c)} bid`
     case 'when': {
       const days = p.a ? (p.b && p.b !== p.a ? `${noticeDay(p.a)} – ${noticeDay(p.b)}` : noticeDay(p.a)) : ''
+      /* a half (his D2521 Q2): "Now LL (AM)"; titled, "Now AM"; the day moved as well, "Now Thu 16 Jul (AM)" */
+      const h = p.h === 'AM' || p.h === 'PM' ? p.h : ''
+      if (h) return days ? `Now ${days} (${h})` : p.c ? `Now ${p.c} (${h})` : `Now ${h}`
       return 'Now ' + [days, p.t || ''].filter(Boolean).join(' ')
     }
     case 'add': return `${names(p.who)} added`
     case 'rem': return `${names(p.who)} taken off`
+    case 'kind': return `${p.was} changed to ${p.now}`
     case 'title': return `Renamed — was ${p.was}`
     case 'rmk': return 'Remark changed'
     /* (its count is the line's own, read live: noticeWords) */
@@ -1000,8 +1034,19 @@ function backWords(p: NoticePart): string {
   }
   return partWords({ k: 'lw', c: p.c || '', a: p.a, b: p.b, d: p.d, ...(p.w ? { w: p.w } : {}), ...(p.to ? { to: p.to, tb: p.tb } : {}) })
 }
+/* WHAT ONE SAVE CHANGED, SAID (his D2521 Q3, round 4 of the words pass): the first two things, then how many more —
+   "Now Thu 16 Jul, renamed — was Training, and 1 more change"; a tap opens the input as it now stands. Each after the
+   first starts with a small letter, but a name keeps its capital — a man's ("Pike added"), a kind's ("LL changed to
+   OL") — and so does "You". (A part with no words — none the app writes — is neither said nor counted.) */
+const LOWER: ReadonlySet<string> = new Set(['del', 'cx', 'uncx', 'off', 'on', 'unav', 'unavoff', 'when', 'title', 'rmk'])
+function firstTwo(parts: readonly NoticePart[]): string {
+  const said = parts.map(p => ({ k: p.k, w: partWords(p) || '' })).filter(x => x.w)
+  const more = said.length - 2
+  return said.slice(0, 2).map((x, i) => (i && LOWER.has(x.k) ? x.w.charAt(0).toLowerCase() + x.w.slice(1) : x.w)).join(', ')
+    + (more > 0 ? `, and ${more} more change${more === 1 ? '' : 's'}` : '')
+}
 /** A LINE OF THE LIST, IN THE SHORTER WORDING (D769): the input and its date; what happened — the first two things,
- *  where a save changed several — and who did it ('' where the app did). */
+ *  where a save changed several, then how many more (D2521) — and who did it ('' where the app did). */
 export function noticeWords(n: Notice): { name: string; day: string; what: string; who: string; struck?: string } {
   /* A HOLIDAY'S LINE (D783 (6) — the picture of record, docs/mock/2026-10-12-oil-notify/*-hol-6-bell.png): the holiday
      and its date(s); how many inputs are LEFT to answer, counted now; who made it a holiday */
@@ -1032,7 +1077,7 @@ export function noticeWords(n: Notice): { name: string; day: string; what: strin
   /* (a bid it replaced on the Leave War is said after the rest, never cut by the first-two rule — M4 9.3a: "You were added ·
      replaces your LL bid") */
   const rb = (n.what || []).filter(p => p.k === 'rbid')
-  const main = (n.what || []).filter(p => p.k !== 'rbid').slice(0, 2).map(partWords).join(', ')
+  const main = firstTwo((n.what || []).filter(p => p && p.k !== 'rbid'))
   const tail = rb.length ? `replaces your ${[...new Set(rb.map(p => lwCode((p as any).c)))].join(', ')} bid` : ''
   return { name: n.name, day: noticeDay(n.day), what: main && tail ? `${main} · ${tail}` : main || tail, who: n.by ? cs(n.by) : '' }
 }

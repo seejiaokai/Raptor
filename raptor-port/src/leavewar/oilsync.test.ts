@@ -731,6 +731,8 @@ describe('publishing a day no leave war period covers says so (Codex M8 + D19)',
     } finally { HOOKS.toast = real }
     expect(said.join(' | '), 'it says which period is missing').toMatch(/2028/)
     expect(said.join(' | ')).toMatch(/no leave war period|nothing can be paid|cannot be paid/i)
+    /* round 4 (his D2521, S2): the day's warning list's own sentence, word for word */
+    expect(said).toContain('No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.')
   })
 
   it('THE CONTROL — a day a period covers says nothing about periods', () => {

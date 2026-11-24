@@ -1,0 +1,376 @@
+{
+ "pictures": [
+  {
+   "file": "c2-fly-week-desk-note.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "Saber — already in that seat",
+   "geo": {
+    "l": 626,
+    "t": 836,
+    "r": 814,
+    "b": 874,
+    "w": 188,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-duty-week-desk-note.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "Sidewinder — already in that seat",
+   "geo": {
+    "l": 612,
+    "t": 836,
+    "r": 828,
+    "b": 874,
+    "w": 217,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-ground-week-desk-note.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "Ace — already in that seat",
+   "geo": {
+    "l": 632,
+    "t": 836,
+    "r": 808,
+    "b": 874,
+    "w": 177,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-sim-week-desk-note.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "Talisman — already in that seat",
+   "geo": {
+    "l": 618,
+    "t": 836,
+    "r": 822,
+    "b": 874,
+    "w": 203,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-simPax-week-desk-note.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "Hunter — already in that seat",
+   "geo": {
+    "l": 623,
+    "t": 836,
+    "r": 817,
+    "b": 874,
+    "w": 194,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-alert-week-desk-note.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "Warden — already in that seat",
+   "geo": {
+    "l": 620,
+    "t": 836,
+    "r": 820,
+    "b": 874,
+    "w": 199,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-ground1st-week-desk-note.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "Ace — already in that seat",
+   "geo": {
+    "l": 632,
+    "t": 836,
+    "r": 808,
+    "b": 874,
+    "w": 177,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-ground2nd-week-desk-note.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "Anvil — already in that seat",
+   "geo": {
+    "l": 628,
+    "t": 836,
+    "r": 812,
+    "b": 874,
+    "w": 183,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-fly-board-desk-note.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "Saber — already in that seat",
+   "geo": {
+    "l": 626,
+    "t": 836,
+    "r": 814,
+    "b": 874,
+    "w": 188,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-duty-board-desk-note.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "Sidewinder — already in that seat",
+   "geo": {
+    "l": 612,
+    "t": 836,
+    "r": 828,
+    "b": 874,
+    "w": 217,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-ground-board-desk-note.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "Ace — already in that seat",
+   "geo": {
+    "l": 632,
+    "t": 836,
+    "r": 808,
+    "b": 874,
+    "w": 177,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-sim-board-desk-note.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "Talisman — already in that seat",
+   "geo": {
+    "l": 618,
+    "t": 836,
+    "r": 822,
+    "b": 874,
+    "w": 203,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-simPax-board-desk-note.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "Hunter — already in that seat",
+   "geo": {
+    "l": 623,
+    "t": 836,
+    "r": 817,
+    "b": 874,
+    "w": 194,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-alert-board-desk-note.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "Warden — already in that seat",
+   "geo": {
+    "l": 620,
+    "t": 836,
+    "r": 820,
+    "b": 874,
+    "w": 199,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-ground1st-board-desk-note.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "Ace — already in that seat",
+   "geo": {
+    "l": 632,
+    "t": 836,
+    "r": 808,
+    "b": 874,
+    "w": 177,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-ground2nd-board-desk-note.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "Anvil — already in that seat",
+   "geo": {
+    "l": 628,
+    "t": 836,
+    "r": 812,
+    "b": 874,
+    "w": 183,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-placeholder-tap-board-desk.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "ALL AVAIL — already in that seat",
+   "geo": {
+    "l": 615,
+    "t": 836,
+    "r": 825,
+    "b": 874,
+    "w": 211,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-placeholder-board-desk-note.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "ALL AVAIL — already in that seat",
+   "geo": {
+    "l": 615,
+    "t": 836,
+    "r": 825,
+    "b": 874,
+    "w": 211,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-placeholder-week-desk-note.png",
+   "case": "C2",
+   "size": "desktop 1440x900 @2x",
+   "text": "ALL AVAIL — already in that seat",
+   "geo": {
+    "l": 615,
+    "t": 836,
+    "r": 825,
+    "b": 874,
+    "w": 211,
+    "h": 38,
+    "vw": 1440,
+    "vh": 900,
+    "sw": 1440
+   }
+  },
+  {
+   "file": "c2-drag-note-phone.png",
+   "case": "C2",
+   "size": "phone 402x874 @3x",
+   "text": "Ranger — already in that seat",
+   "geo": {
+    "l": 12,
+    "t": 810,
+    "r": 390,
+    "b": 848,
+    "w": 378,
+    "h": 38,
+    "vw": 402,
+    "vh": 874,
+    "sw": 402
+   }
+  }
+ ],
+ "cases": {
+  "C2": {
+   "log": [
+    "bundle desk: index-2uyEcUJu.js",
+    "fixture: shaft put via g:0.0.+; the row's seats [[\"g:0.0\",[\"dj\"]],[\"g:0.0.x0\",[\"shaft\"]]]; note \"Anvil planned\"",
+    "week seats {\"fly\":{\"key\":\"0.0.0.0.p\",\"who\":[\"stiff\"]},\"duty\":{\"key\":\"d:0.0.0\",\"who\":[\"mamba\"]},\"ground\":{\"key\":\"g:0.0\",\"who\":[\"dj\"]},\"ground2\":null,\"sim\":{\"key\":\"s:0.oft.0.p\",\"who\":[\"haowen\"]},\"simPax\":{\"key\":\"s:0.amt.1.pax.0\",\"who\":[\"prowler\"]},\"alert\":{\"key\":\"a:0.1.0\",\"who\":[\"nact\"]},\"inp\":{\"key\":\"imwujxzdnk1odwc\",\"who\":[\"sufa\"]}}",
+    "picture c2-fly-week-desk-note.png: \"Saber — already in that seat\"",
+    "picture c2-duty-week-desk-note.png: \"Sidewinder — already in that seat\"",
+    "picture c2-ground-week-desk-note.png: \"Ace — already in that seat\"",
+    "picture c2-sim-week-desk-note.png: \"Talisman — already in that seat\"",
+    "picture c2-simPax-week-desk-note.png: \"Hunter — already in that seat\"",
+    "picture c2-alert-week-desk-note.png: \"Warden — already in that seat\"",
+    "picture c2-ground1st-week-desk-note.png: \"Ace — already in that seat\"",
+    "picture c2-ground2nd-week-desk-note.png: \"Anvil — already in that seat\"",
+    "board seats {\"fly\":{\"key\":\"0.0.0.0.p\",\"who\":[\"stiff\"]},\"duty\":{\"key\":\"d:0.0.0\",\"who\":[\"mamba\"]},\"ground\":{\"key\":\"g:0.0\",\"who\":[\"dj\"]},\"ground2\":null,\"sim\":{\"key\":\"s:0.oft.0.p\",\"who\":[\"haowen\"]},\"simPax\":{\"key\":\"s:0.amt.1.pax.0\",\"who\":[\"prowler\"]},\"alert\":{\"key\":\"a:0.1.0\",\"who\":[\"nact\"]},\"inp\":{\"key\":\"imwujxzdnk1odwc\",\"who\":[\"sufa\"]}}",
+    "picture c2-fly-board-desk-note.png: \"Saber — already in that seat\"",
+    "picture c2-duty-board-desk-note.png: \"Sidewinder — already in that seat\"",
+    "picture c2-ground-board-desk-note.png: \"Ace — already in that seat\"",
+    "picture c2-sim-board-desk-note.png: \"Talisman — already in that seat\"",
+    "picture c2-simPax-board-desk-note.png: \"Hunter — already in that seat\"",
+    "picture c2-alert-board-desk-note.png: \"Warden — already in that seat\"",
+    "picture c2-ground1st-board-desk-note.png: \"Ace — already in that seat\"",
+    "picture c2-ground2nd-board-desk-note.png: \"Anvil — already in that seat\"",
+    "placeholder put in s:0.amt.1.pax.8: holds \"allavail\"; note \"ALL AVAIL planned\"",
+    "picture c2-placeholder-tap-board-desk.png: \"ALL AVAIL — already in that seat\"",
+    "picture c2-placeholder-board-desk-note.png: \"ALL AVAIL — already in that seat\"",
+    "picture c2-placeholder-week-desk-note.png: \"ALL AVAIL — already in that seat\"",
+    "picture c2-drag-note-phone.png: \"Ranger — already in that seat\""
+   ]
+  }
+ },
+ "errors": []
+}

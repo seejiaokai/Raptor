@@ -1,0 +1,72 @@
+{
+ "pictures": [
+  {
+   "file": "B2-1-member-opens-sabers-training-desk.png",
+   "case": "B2",
+   "size": "desktop 1440x900 @2x",
+   "text": ""
+  },
+  {
+   "file": "B2-2-after-close-desk.png",
+   "case": "B2",
+   "size": "desktop 1440x900 @2x",
+   "text": ""
+  },
+  {
+   "file": "B2-3-member-saves-own-desk.png",
+   "case": "B2",
+   "size": "desktop 1440x900 @2x",
+   "text": ""
+  },
+  {
+   "file": "B2-3b-after-reload-desk.png",
+   "case": "B2",
+   "size": "desktop 1440x900 @2x",
+   "text": ""
+  },
+  {
+   "file": "B2-4-bell-hex-phone.png",
+   "case": "B2",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) Range brief Wed 15 Jul / Now 10:00–11:00, Training changed to Meeting, and 2 more changes · Ranger",
+    "(unread) Training Wed 15 Jul / You were added · Ranger",
+    "(unread) Training Wed 15 Jul / You were added · Saber"
+   ]
+  },
+  {
+   "file": "B2-4-bell-ad-phone.png",
+   "case": "B2",
+   "size": "phone 402x874 @3x",
+   "text": ""
+  }
+ ],
+ "cases": {
+  "B2": {
+   "log": [
+    "bundle: index-2uyEcUJu.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-15: new input [\"imwujp21k3kb42w\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"13:00\",\"to\":\"14:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-15: new input [\"imwujp87qbjlr1e\"]; asked []; note \"\"",
+    "(i) RECORD Ranger filed a Training for himself and Hex: {\"iid\":\"imwujp87qbjlr1e\",\"rec\":{\"type\":\"Training\",\"date\":\"Jul 15\",\"allday\":false,\"s\":780,\"e\":840,\"cx\":false,\"remarks\":\"Bring your kit\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}}",
+    "(ii-a) Saber's input: changes typed: [\"kind\",\"title\",\"hours\",\"remark\"]",
+    "picture B2-1-member-opens-sabers-training-desk.png: \"\"",
+    "picture B2-2-after-close-desk.png: \"\"",
+    "(ii-a) Save buttons 0; words [\"Only Saber — who filed it — or an admin can change this for everyone.\"]; after Close {\"winOpen\":0,\"note\":\"\",\"asks\":[],\"rec\":{\"type\":\"Training\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring your kit\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}}",
+    "(ii-b) his own input: changes typed: [\"kind\",\"title\",\"hours\",\"remark\"]",
+    "picture B2-3-member-saves-own-desk.png: \"\"",
+    "(ii-b) RECORD the save: {\"noteAtSave\":null,\"asked\":[],\"winOpen\":0,\"rec\":{\"type\":\"Meeting\",\"title\":\"Range brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":600,\"e\":660,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}}",
+    "PASS no \"could not be saved\" note: null",
+    "after the reload the screen shows: {\"signIn\":true,\"page\":\"viewsched\"}",
+    "picture B2-3b-after-reload-desk.png: \"\"",
+    "(ii-b) after a reload: {\"type\":\"Meeting\",\"title\":\"Range brief\",\"date\":\"Jul 15\",\"allday\":false,\"s\":600,\"e\":660,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "hex's bell: [\"(unread) Range brief Wed 15 Jul / Now 10:00–11:00, Training changed to Meeting, and 2 more changes · Ranger\",\"(unread) Training Wed 15 Jul / You were added · Ranger\",\"(unread) Training Wed 15 Jul / You were added · Saber\"]",
+    "picture B2-4-bell-hex-phone.png: [\"(unread) Range brief Wed 15 Jul / Now 10:00–11:00, Training changed to Meeting, and 2 more changes · Ranger\",\"(unread) Training Wed 15 Jul / You were added · Ranger\",\"(unread) Training Wed 15 Jul / You were added · Saber\"]",
+    "hex: line found: \"Now 10:00–11:00, Training changed to Meeting, and 2 more changes · Ranger\"",
+    "ad's bell: []",
+    "picture B2-4-bell-ad-phone.png: \"\"",
+    "ad: NO \"… more change(s) · Ranger\" line: "
+   ]
+  }
+ },
+ "errors": []
+}

@@ -1,0 +1,58 @@
+{
+ "pictures": [
+  {
+   "file": "A6g-ranger-bell-phone.png",
+   "case": "A6g",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Cancel me Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "A6g-hex-bell-phone.png",
+   "case": "A6g",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Cancel me Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  }
+ ],
+ "cases": {
+  "A6g": {
+   "log": [
+    "bundle index-2uyEcUJu.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Cancel me\"} on 2026-07-15: new input [\"imwujpw3v29j9mp\"]; asked []; note \"\"",
+    "cx buttons: [{\"k\":\"2.2\",\"mine\":false},{\"k\":\"2.0\",\"mine\":false},{\"k\":\"2.1\",\"mine\":false}]",
+    "anything cx-like on the page: [\"BUTTON.title=Undo — Cancel me for 2 people w34 in#undoBtn\",\"circle.cx=11 w0 in#viewChrome\",\"circle.cx=11 w9 in#page-editsched\",\"circle.cx=11 w9 in#schedBoard\",\"BUTTON.title=Undo — Cancel me for 2 people w34 in#sbUndo\",\"BUTTON.data-pcx=2.0 w28 in#sbBoard\",\"BUTTON.title=Cancel this item (CX) w28 in#sbBoard\",\"BUTTON.data-lcx=2.0.0.0 w28 in#sbBoard\",\"BUTTON.title=Cancel this line (CX) w28 in#sbBoard\",\"BUTTON.data-lcx=2.0.0.1 w28 in#sbBoard\",\"BUTTON.title=Cancel this line (CX) w28 in#sbBoard\",\"BUTTON.data-lcx=2.0.1.0 w28 in#sbBoard\",\"BUTTON.title=Cancel this line (CX) w28 in#sbBoard\",\"BUTTON.data-lcx=2.0.1.1 w28 in#sbBoard\",\"BUTTON.title=Cancel this line (CX) w28 in#sbBoard\",\"BUTTON.data-lcx=2.1.0.0 w28 in#sbBoard\",\"BUTTON.title=Cancel this line (CX) w28 in#sbBoard\",\"BUTTON.data-lcx=2.1.0.1 w28 in#sbBoard\",\"BUTTON.title=Cancel this line (CX) w28 in#sbBoard\",\"BUTTON.data-lcx=2.1.1.0 w28 in#sbBoard\",\"BUTTON.title=Cancel this line (CX) w28 in#sbBoard\",\"BUTTON.data-lcx=2.1.1.1 w28 in#sbBoard\",\"BUTTON.title=Cancel this line (CX) w28 in#sbBoard\",\"BUTTON.data-drcx=2.0.0 w28 in#sbBoard\",\"BUTTON.title=Cancel this duty (CX) w28 in#sbBoard\",\"BUTTON.data-drcx=2.0.1 w28 in#sbBoard\",\"BUTTON.title=Cancel this duty (CX) w28 in#sbBoard\",\"BUTTON.data-drcx=2.0.2 w28 in#sbBoard\",\"BUTTON.title=Cancel this duty (CX) w28 in#sbBoard\",\"BUTTON.data-srcx=2.amt.0 w28 in#sbBoard\"]",
+    "RECORD (g) the schedule's cancel — NOT WALKED — \"no CX button on the input's row of the Board\"",
+    "picture A6g-ranger-bell-phone.png: [\"Cancel me Wed 15 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"Cancel me Wed 15 Jul / You were added · Saber\"]",
+    "RECORD phone us: the cancel's line (RECORD) — [\"Cancel me Wed 15 Jul / You were added · Saber\"]",
+    "picture A6g-hex-bell-phone.png: [\"Cancel me Wed 15 Jul / You were added · Saber\"]",
+    "hex-bell bell: [\"Cancel me Wed 15 Jul / You were added · Saber\"]",
+    "RECORD phone hex: the cancel's line (RECORD) — [\"Cancel me Wed 15 Jul / You were added · Saber\"]"
+   ]
+  }
+ },
+ "errors": []
+}
