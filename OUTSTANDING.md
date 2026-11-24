@@ -212,10 +212,10 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [APP-FONTS-NOT-LOADED] — the app names fonts it never loads, so each device draws its own — his call.
 - [ONE-RULE-SMALL-WORDS] — ten small sentences and marks that read oddly — for the words pass; two wordings his.
 - [UI-SLEEK-PASS] — the sleeker interface (D765): the first word rounds are live; the rest page by page, on his word.
+- [APP-SPEED] — the app's speed, his go of 24 Nov 26 (D2480): a hidden timing readout for the real slow computer first, then the week drawing the days in view first with both schedule pages kept ready, then no file re-checks on repeat visits; four more ideas wait.
 - [PERF-RESIDUALS] — measured speed wins held back; two change wording or feel — his call.
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 - [CHAT66-OPEN-ROUND] — his answer to the night of 11 Nov 26's question 1 (the bell) and that night's small round of questions, put to him only when he says (D994).
-
 
 **Checks and tooling**
 - [DATECAL-GLIDE-TEST-FLAKE] — the date calendar's "a glide caught, held still, then dragged" test failed on GitHub in six runs on 17 Nov 26, each passing on re-run, in its setup's 28 quick arrow presses; first find out whether the app itself loses quick presses on a slow machine, then fix (pull request 802 waits, test-only).
@@ -1942,13 +1942,15 @@ comment says so). The earlier lists are in git history.
 **Place:** with the rules engine's next behaviour change. Found by `git grep` on 24 Sep 26 (the spring clean's red team,
 Fable finding 10, Astra finding 11).
 
+### [APP-SPEED] The app's speed: less waiting at start-up and between pages, above all on a slow computer (filed 24 Nov 26, chat 160; his go D2480)
+His go of 24 Nov 26 (D2480), in this order: (1) a hidden timing readout — a switch on the app's address, like `?savefail` — to measure the real slow computer; (2) the week drawing the days in view first, with both schedule pages kept ready (high-risk, Fable); (3) no file re-checks on repeat visits. Not built: the sign-in card shown early (no sign-in once in Power Apps). Four more ideas wait, two of them his call. The times measured that day, each step's bounds, the waiting ideas and the measuring script: `raptor-port/docs/superpowers/plans/2026-11-24-app-speed-plan.md`. **Place:** a job of its own, in a fresh chat, beside the multi-squadron build; step 1 first.
+
 ### [PERF-RESIDUALS] Speed wins measured and deferred — two are his call (filed 24 Sep 26)
 From `HANDOFF.md` §In flight (archived 24 Sep 26): several speed wins are measured and deferred — the seven
 day-strings sort, the JS-bound drop, hover-boundary repaints, the `body.dnd` decorations, the one `validate`
 call; two are the owner's call because they change wording or feel. The ledger and each one's measurement:
 `raptor-port/docs/performance.md` (Part 2; §Dead ends says what not to retry). **Place:** when a speed complaint
 or a board change comes near one of them; put the two that change wording or feel to him first.
-
 
 ### [ITFLOW-OIL-RESHOOT] Re-shoot the IT flow guide's Leave War pictures once the OIL words change (29 Sep 26)
 **Also for the next re-shoot (15 Nov 26 — D2009, found by the rules check batch 2's roll-call):** the checks "On leave + flying" and "Downchit + flying" are now named "On leave + planned" and "Downchit + planned" on the warning list, the board, Insights and the Logic page; the two captions are corrected in `raptor-port/scripts/itflow/content.mjs` (the r1-warn step and the downchit line) — the deck's Issues picture and the PDF carry the old name until the rebuild he asks for (D403).
