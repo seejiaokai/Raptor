@@ -3039,6 +3039,21 @@ one sentence for both roles (`env.type === 'notices.seen'`) with the security re
 the database step, judge them or say why not (Opus reread5 Q1); (10) tidiness: the held-weeks cache comment recounts
 superseded approaches, a preview comment names the wrong signature, a test points to the wrong regression file (Astra and
 Opus reread5).
+**Walk w14 (25 Nov 26, chat 174 — 0 faults in four walkers): cases no ruling names, for him (his D2611), with the bell-words
+job ([BELL-WORDS-CLEAR]), whose D2437 rewrites how a read line is answered.** Each has its steps and pictures in
+`raptor-port/docs/handpass/parts/swd/w14{a,b,c,d}-report.md` (pictures `docs/img/handpass/2026-11-24-sans-words/w14x/`).
+(11) The change lines pile up as titles: an older line is kept titled alone, so the same change made twice shows one title
+twice ("You're no longer SANS. · Saber" twice; two "Your SANS date moved…" lines) — w14b B7, w14c B8 (d). (12) A "no longer"
+line stays, unread, beside the reminder once he is SANS again — two lines saying opposite things (w14b B9, all four ways).
+(13) A returning SANS (untick → tick, Undo post out → post again, another outcome → SANS) brings the reminder he had read
+back UNREAD — the build's "a new SANS period is news", where D2560's words alone would leave it read (w14b B9). (14) A
+title that is no longer true stays over a shrunk body: posted again from Sat 18, "You're no longer posted out as SANS."
+over Fri 17 alone (w14c A5). (15) "It comes back if you're SANS those days again." still names days gone by (w14c A10, on
+Sun 19). (16) What a change line's tap opens: "moved to Thu 16" opens the SANS calendar on Sat 18, not Thu 16; "You're no
+longer SANS." with nothing filed opens Thu 16's day with "+ Commitment" greyed (w14c A2). (17) Saber deleting his filing
+relights the reminder and also sends "Deleted · Saber" (D2565 names only his own delete) — w14a C8c; his own Undo of his
+delete puts the reminder back to read (w14a C8a). (18) Open point 1 seen again: "no longer" lines while he is still SANS by
+the other route (w14b B1, B2).
 
 ### [FABLE-READ-FAULTS] The faults Fable's reads of 21–22 Nov found outside the two-squadron work — fix now (his D2268, 22 Nov 26)
 **What:** proved by failing tests on the night's copy (very probably live today), none fixed: **OIL F1** (MED — a man posted
