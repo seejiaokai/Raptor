@@ -1376,3 +1376,16 @@ sides.
 **Issue:** Two of the five findings were the gate refusing something legitimate (an Undo of yesterday's own change; a delete's split-off record). Each cure was an allowance in the gate. The reviewer's tests proved only the allowed path now passes; nothing proved the allowance could not be used for more (a forged restore, a split that adds days or people). The host added those negative tests by hand.
 **Suggested improvement:** In the order's "what to do with what they hand back": a finding cured by loosening a check (an exemption, an allowance, a vouch) lands with at least one negative test that the loosened check still refuses its nearest misuse, and the re-read brief names the allowance as its first question.
 **Principle:** Every exemption carved into a permission check is a new door; prove the door is only as wide as the case that needed it.
+
+### Observation 1053: A question put to the owner first says when the case happens in real life
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** the SANS words job (chats 156–157, logged by chat 166) — a bell questions page put to the owner; numbered past 1050–1052 held on other branches.
+**Skill:** brainstorming
+**Type:** open-source
+**Phase/Area:** asking questions — each question on a questions page or in chat
+
+**Issue:** Questions about edge cases (what a notification says after an undo, a reminder after a date moves) were put with the words and a picture but not with when the case arises. The owner could not judge their weight and asked; he then ruled that every question first says when it happens — who is doing what, at what point in their work, how often (his D2439).
+**Suggested improvement:** in the skill's question step, add one required line before each question: "When this happens: <who, doing what, at what point, how often>" — and a check before sending that every question has it.
+**Principle:** A decision-maker weighs an edge case by how often and when it meets real people; a question that shows only the words and the screen hides that, and invites either over-engineering or a guess.

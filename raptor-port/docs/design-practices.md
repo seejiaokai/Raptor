@@ -112,7 +112,7 @@ writes to him (D835), is a step not yet taken — stated on the How we work page
   candidate:
   1. **It says what the screen beside it already says or shows** — a hint to choose an answer beside a button that
      already waits, greyed, under the answers; a line under a heading that repeats the heading; a count the list makes
-     obvious.
+     obvious (a line not yet built: §9 lesson 100).
   2. **It explains how the app works, and he can act rightly without it** — where a credit lands, how hours are
      counted, on a question whose answers already say what each one does. Whoever needs it meets it where the result
      shows.
@@ -269,7 +269,7 @@ happened, what it means for you and what to do, in a sentence a person would say
 
 **When the aims pull apart, this order (approved by him — D836, 14 Oct 26, "All approved as recommended"; it narrows
 D806's "fewest words" and D726 by a word or two where speech reads better):** every fact first (§1a's
-protected list; a line added in a window: §9 lesson 97); then a sentence a person would say; then as short as those two allow. A sentence that reads like
+protected list; a line added in a window: §9 lesson 97; a reason under a struck name: lesson 100); then a sentence a person would say; then as short as those two allow. A sentence that reads like
 speech may be a word or two LONGER than the clipped one it replaces. It is taken when the cold reader (test 11) gets
 every fact in one reading; the change shows the words added as well as the words cut (§1a test 8); and a wording that
 ends longer than the one on screen today is marked "longer", with both word counts, where it is put to him — a longer
@@ -647,6 +647,10 @@ the lesson wins, and that rule points here. A branch that will add lessons takes
 first, as a chat does for ruling numbers, and names it in its handoff block; where two branches still meet on a number,
 the merge renumbers only the branch's own side, by script, and the closing report tells him the old and new numbers
 (D1417).*
+
+**Lesson 101 (24 Nov 26, D2431 — "perhaps he could be remove via drag and dropped on an empty space or right click? Instead of this cross").** A man is taken out of an ALL AVAIL (or ALL) crowd the way a puck already comes off a seat — dragged onto empty space or right-clicked — not by a new ✕ drawn beside him; he doubted the window had room for one. *(The agent's reading: a new way to remove something is checked first against how the app already removes the same kind of thing.)*
+
+**Lesson 100 (24 Nov 26, D2420 — "if 0 available is shown. It's already understood that none is available. No need for more words").** Edit Schedule's crew list draws no reason line under a SANS man struck for having nothing filed: the "0 free" count already says none is available, and filing is usually the man's own job, so a scheduler is not told to "File it on the Inputs page's SANS tab". *(The agent's reading: it covers a man ahead of his SANS date too; it holds for any line that only repeats what a count or a strike already shows — §1's delete test 1 applied to a line not yet built; it narrows §1b's "every fact first" for a reason line under a struck name.)*
 
 **Lesson 99 (23 Nov 26, D2342 — "The wording is not clear. Could u rephrase it for the bell").** His SANS-days bell line speaks to him in a plain sentence, what is true for him and then what to do ("You're SANS from Fri 17 Jul. You're planned on Sat 18, Mon 20 Jul with nothing filed. Tap to file for availability. [D2390]"), in place of the bold label and clipped status it was built with. *(The agent's readings: the same holds for every bell line the app works out for one person; it is §1b's voice applied to the bell; lesson 89's struck form and its "taken back · <who>" stay as they are. Read by one fresh reader, 23 Nov 26, and narrowed on its word.)*
 
