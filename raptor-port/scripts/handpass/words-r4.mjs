@@ -27,10 +27,10 @@ const log = (c, s) => { (facts.cases[c] ||= { log: [] }).log.push(s); console.lo
 const run = c => !ONLY.length || ONLY.includes(c)
 
 const SIZES = {
-  phone: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true },
+  phone: { viewport: { width: 402, height: 874 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true },
   desk: { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 },
 }
-const SIZE_SAYS = { phone: 'phone 390x844 @2x', desk: 'desktop 1440x900 @2x' }
+const SIZE_SAYS = { phone: 'phone 402x874 @3x', desk: 'desktop 1440x900 @2x' }
 const NOMOTION = '*{scroll-behavior:auto !important} *,*::before,*::after{transition:none !important;animation:none !important}'
 /* the ring on the changed words, drawn only in an "after" picture; an outline takes no room, so nothing moves */
 const RING = '.w4-chg{outline:1.5px solid #34c759;outline-offset:2px;border-radius:3px}'
@@ -203,14 +203,16 @@ async function catchToast(page, re, timeout = 6000) {
 }
 const releaseToast = page => page.evaluate(() => document.getElementById('w4-hold')?.remove())
 const toastClip = (page, pad = 40) => boxOf(page, ['#toastEl'], pad)
-async function toastPair(w, c, name, re, after, extraSels = []) {
+async function toastPair(w, c, name, re, after, extraSels = [], part = null) {
   const today = await catchToast(w.page, re)
   if (!today) { const now = await shownToast(w.page); log(c, `NOT AS DRAFTED: no note matching ${re} — the note showing: ${JSON.stringify(now)}`); if (now) await shot(w.page, c, `${name}-what-showed`, await toastClip(w.page), now, w.size); return null }
   await w.page.mouse.move(2, 2).catch(() => {})
   const clip = await boxOf(w.page, ['#toastEl', ...extraSels], 40)
   await shot(w.page, c, `${name}-today`, clip, today, w.size)
   if (after != null) {
-    const now = await swapIn(w.page, '#toastEl', `<span class="w4-chg">${esc(after)}</span>`)
+    /* only the part the case is about is swapped — what the note says before it stays as the app printed it */
+    const at = part ? today.search(part) : -1
+    const now = await swapIn(w.page, '#toastEl', `${at > 0 ? esc(today.slice(0, at)) : ''}<span class="w4-chg">${esc(after)}</span>`)
     await shot(w.page, c, `${name}-after`, await boxOf(w.page, ['#toastEl', ...extraSels], 40), now, w.size, { swappedFrom: today })
   }
   await releaseToast(w.page)
@@ -232,18 +234,27 @@ async function openBell(w) {
     return { i, name: t('.bl-name'), day: t('.bl-day'), what: t('.bl-what'), ago: t('.bl-ago') }
   }))
 }
+/* does each line's second line (what happened · who) fit on one line, or wrap? its lines counted by its height over its
+   line height, and its box's width */
+const bellFit = page => page.evaluate(() => [...document.querySelectorAll('[data-testid="bell-list"] .bl-line')].map(l => {
+  const w = l.querySelector('.bl-what'); if (!w) return null
+  const r = w.getBoundingClientRect(), cs = getComputedStyle(w)
+  const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.35
+  const lines = Math.round(r.height / lh)
+  return { what: (w.textContent || '').replace(/\s+/g, ' ').trim(), lines, fitsOneLine: lines <= 1, boxWidth: Math.round(r.width), height: Math.round(r.height), lineHeight: lh }
+}))
 const bellClip = page => boxOf(page, ['[data-testid="bell-list"]', '#notifyBell'], 10, { fullWidth: true, fromTop: true })
 /* the today picture of the list, then an after picture per variant, each swapping one line's words before " · <who>" */
 async function bellPair(w, c, lines, pick, variants) {
   const L = lines.find(pick)
   log(c, 'Ranger\'s bell, as the app prints it: ' + JSON.stringify(lines.map(l => `${l.name} ${l.day} / ${l.what}`)))
-  await shot(w.page, c, `${c}-phone-bell-today`, await bellClip(w.page), lines.map(l => `${l.name} ${l.day} / ${l.what}`), w.size, { line: L ? `${L.name} ${L.day} / ${L.what}` : null })
+  await shot(w.page, c, `${c}-phone-bell-today`, await bellClip(w.page), lines.map(l => `${l.name} ${l.day} / ${l.what}`), w.size, { line: L ? `${L.name} ${L.day} / ${L.what}` : null, fit: await bellFit(w.page) })
   if (!L) { log(c, 'NOT AS DRAFTED: no line of the drafted kind in the bell'); return null }
   for (const [tag, words] of variants) {
     const who = (/ · ([^·]+)$/.exec(L.what) || [])[1]
     const html = `<span class="w4-chg">${esc(words)}</span>${who ? ' · ' + esc(who) : ''}`
     const now = await swapIn(w.page, `[data-w4="${L.i}"] .bl-what`, html)
-    await shot(w.page, c, `${c}-phone-bell-after${tag}`, await bellClip(w.page), now, w.size, { swappedFrom: L.what })
+    await shot(w.page, c, `${c}-phone-bell-after${tag}`, await bellClip(w.page), now, w.size, { swappedFrom: L.what, fit: await bellFit(w.page) })
   }
   return L
 }
@@ -298,19 +309,7 @@ async function q3() {
   const iid = await fileInput(w, c, WED, { type: 'Training', people: [RANGER, HEX], from: '09:00', to: '10:00', title: 'Training', remarks: 'Bring your kit' })
   if (!iid) { log(c, 'NOT REACHED: Saber could not file the group input'); await w.ctx.close(); return }
   log(c, 'filed: ' + JSON.stringify(await recOf(w.page, iid)))
-  /* the CANCEL: the one door is the schedule — its row's CX, with a reason (D760); there is no cancel in the input's window */
-  await go(w.page, 'editsched')
-  await w.page.evaluate(() => window.openScheduler(2)); await w.page.waitForSelector('#schedBoard', { timeout: 8000 }); await sleep(700)
-  const ri = await w.page.evaluate(i => ((window.DAYS[2].ground) || []).findIndex(g => g && String(g.src) === String(i)), iid)
-  log(c, 'its row on Wednesday\'s Ground Programme: ' + ri)
-  const cxb = w.page.locator(`#schedBoard [data-grcx="2.${ri}"]:visible`).first()
-  if (ri < 0 || !(await cxb.count())) log(c, 'NOT REACHED: no CX button on its row')
-  else {
-    await cxb.scrollIntoViewIfNeeded(); await cxb.click(); await w.page.locator('#cxReason:visible').waitFor({ timeout: 4000 })
-    await w.page.fill('#cxReason', 'weather'); await w.page.keyboard.press('Enter'); await sleep(700)
-    log(c, 'cancelled on the schedule: note ' + JSON.stringify(await shownToast(w.page)) + '; record ' + JSON.stringify(await recOf(w.page, iid)))
-  }
-  const off = w.page.locator('#sbDone:visible, #sbClose:visible').first(); if (await off.count()) { await off.click(); await sleep(600) }
+  /* (no cancel: a cancel with a reason is only the schedule's CX, a save of its own — the coordinator's call, leave it out) */
   /* ONE save on the Inputs page: moved a day later, renamed, and its remark changed (the third change the bell's line cuts) */
   await editInput(w, c, iid, WED, async () => {
     const d = w.page.locator(`#inpEdCal [data-iso="${THU}"]`)
@@ -324,15 +323,10 @@ async function q3() {
   w = await handOver(w, 'phone', 'us')
   log(c, 'notices to Ranger in store: ' + JSON.stringify(await w.page.evaluate(r => window.NOTICES.filter(n => n.to === r).map(n => ({ name: n.name, day: n.day, what: n.what })), RANGER)))
   const lines = await openBell(w)
-  const drafted = lines.find(l => /^Cancelled — weather, Now /.test(l.what))
-  if (drafted) {
-    facts.cases[c].asDrafted = true
-    await bellPair(w, c, lines, l => l === drafted, [['-a', WORDS.q3.afterA], ['-b', WORDS.q3.afterB]])
-  } else {
-    facts.cases[c].asDrafted = false
-    log(c, 'NOT AS DRAFTED: no one line says "Cancelled — weather, Now …" — the cancel is its own save on the schedule; the move and rename are another save on the Inputs page')
-    await bellPair(w, c, lines, l => /^Now .*,/.test(l.what), [['-a', WORDS.q3.realAfterA], ['-b', WORDS.q3.realAfterB]])
-  }
+  const L = lines.find(l => /^Now .*, Renamed/.test(l.what))
+  const day = L ? (/^Now ([^,]+),/.exec(L.what) || [])[1] : 'Thu 16 Jul'
+  facts.cases[c].asPredicted = !!L
+  await bellPair(w, c, lines, l => l === L, [['-a', WORDS.q3.afterA.replace('{day}', day)], ['-b', WORDS.q3.afterB.replace('{day}', day)]])
   await w.ctx.close()
 }
 
@@ -379,30 +373,67 @@ async function q4b() {
   const w = await newPage('desk'); await signIn(w, 'ad')
   await go(w.page, 'editsched')
   await w.page.evaluate(() => window.openScheduler(0)); await w.page.waitForSelector('#schedBoard', { timeout: 8000 }); await sleep(800)
-  const seat = await w.page.evaluate(() => {
-    const s = [...document.querySelectorAll('#schedBoard [data-slot]')].find(e => { const p = e.querySelector('.puck[data-person]'); const r = e.getBoundingClientRect(); return p && r.width > 4 && !/^(all|allavail)$/.test(p.getAttribute('data-person')) && window.PEOPLE[p.getAttribute('data-person')] && !window.PEOPLE[p.getAttribute('data-person')].special })
+  const SEATKEY = '^\\d+\\.\\d+\\.\\d+\\.\\d+\\.[a-z]+$'
+  const vis = sel => w.page.evaluate(sel => { const e = [...document.querySelectorAll(sel)].find(x => x.getBoundingClientRect().width > 4); if (e) e.scrollIntoView({ block: 'center' }); return !!e }, sel)
+  const armedKey = () => w.page.evaluate(() => (window.ARM && window.ARM.key) || null)
+  /* (1) by a tap. A tap on a seat holding a REAL man does not arm it (ui/board.ts — only an empty seat, a placeholder's,
+     or the seat already armed). So: arm an EMPTY seat, press a free man's name (he is planted, the seat may stay armed),
+     then press his name again */
+  const empty = await w.page.evaluate(() => { const e = [...document.querySelectorAll('#schedBoard .sb-slot.empty[data-slot]')].find(x => x.getBoundingClientRect().width > 4); return e ? e.getAttribute('data-slot') : null })
+  log(c, 'an empty seat on Monday\'s board: ' + JSON.stringify(empty))
+  let seat = null
+  if (empty) {
+    const sl = `#schedBoard [data-slot="${empty}"]`
+    await vis(sl); await w.page.locator(sl).first().click(); await sleep(350)
+    log(c, 'armed: ' + JSON.stringify(await armedKey()))
+    const man = await w.page.evaluate(() => { const e = [...document.querySelectorAll('#sbRoster .rpuck[data-person]')].find(x => x.offsetParent && !x.classList.contains('no') && window.PEOPLE[x.getAttribute('data-person')] && !window.PEOPLE[x.getAttribute('data-person')].special); return e ? e.getAttribute('data-person') : null })
+    if (man) {
+      const nm = `#sbRoster .rpuck[data-person="${man}"]`
+      await vis(nm); await w.page.locator(nm + ':visible').first().click(); await sleep(500)
+      const holds = await w.page.evaluate(k => window.slotVal(k), empty)
+      seat = { key: empty, id: man, cs: await w.page.evaluate(i => window.PEOPLE[i].cs, man) }
+      const still = await armedKey()
+      log(c, `planted ${seat.cs}: the seat holds ${JSON.stringify(holds)}; still armed: ${JSON.stringify(still)}; note ${JSON.stringify(await shownToast(w.page))}`)
+      await sleep(4200)
+      if (still !== empty) { await vis(`#schedBoard [data-slot="${empty}"]`); await w.page.locator(`#schedBoard [data-slot="${empty}"]`).first().click({ position: { x: 4, y: 4 } }).catch(() => {}); await sleep(350); log(c, 'a tap on his seat again — armed: ' + JSON.stringify(await armedKey())) }
+      if (await armedKey() === empty) {
+        await vis(nm); await w.page.locator(nm + ':visible').first().click()
+        const t = await toastPair(w, c, 'q4b-1-tap', /already in that seat/, null)
+        if (!t) log(c, 'tap: the seat now holds ' + JSON.stringify(await w.page.evaluate(k => window.slotVal(k), empty)))
+      } else {
+        log(c, 'NOT REACHED (tap, a real man): once he is in it, his seat cannot be armed again by a tap — the placeholder route (the code\'s own comment, state/view.ts placeArmed) instead')
+        /* a placeholder in an empty seat; the seat armed again by a tap on it (a placeholder's seat arms); the same placeholder pressed */
+        const e2 = await w.page.evaluate(() => { const e = [...document.querySelectorAll('#schedBoard .sb-slot.empty[data-slot]')].find(x => x.getBoundingClientRect().width > 4); return e ? e.getAttribute('data-slot') : null })
+        const ph = await w.page.evaluate(() => { const e = [...document.querySelectorAll('#sbRoster .rpuck[data-person]')].find(x => x.offsetParent && window.PEOPLE[x.getAttribute('data-person')] && window.PEOPLE[x.getAttribute('data-person')].special); return e ? e.getAttribute('data-person') : null })
+        log(c, `an empty seat ${JSON.stringify(e2)}, a placeholder in the crew list ${JSON.stringify(ph)}`)
+        if (e2 && ph) {
+          const s2 = `#schedBoard [data-slot="${e2}"]`, pn = `#sbRoster .rpuck[data-person="${ph}"]`
+          await vis(s2); await w.page.locator(s2).first().click(); await sleep(350)
+          await vis(pn); await w.page.locator(pn + ':visible').first().click(); await sleep(500)
+          log(c, `placeholder put: the seat holds ${JSON.stringify(await w.page.evaluate(k => window.slotVal(k), e2))}; note ${JSON.stringify(await shownToast(w.page))}`)
+          await sleep(4200)
+          await vis(s2); await w.page.locator(s2 + ' .puck:visible, ' + s2).first().click(); await sleep(350)
+          log(c, 'its seat tapped — armed: ' + JSON.stringify(await armedKey()))
+          await vis(pn); await w.page.locator(pn + ':visible').first().click()
+          await toastPair(w, c, 'q4b-1-tap', /already in that seat/, null)
+        }
+      }
+    }
+  }
+  await w.page.keyboard.press('Escape'); await sleep(4500)
+  /* the drag: Ranger's own flying seat where he has one (the draft's example), else any flying seat with a real man */
+  seat = await w.page.evaluate(re => {
+    const all = [...document.querySelectorAll('#schedBoard .seat[data-slot]')]
+    const s = all.find(e => new RegExp(re).test(e.getAttribute('data-slot')) && e.querySelector('.puck[data-person="bane"]')) || all.find(e => { const p = e.querySelector('.puck[data-person]'); return p && new RegExp(re).test(e.getAttribute('data-slot')) && p.getBoundingClientRect().width > 4 && window.PEOPLE[p.getAttribute('data-person')] && !window.PEOPLE[p.getAttribute('data-person')].special })
     if (!s) return null
     const id = s.querySelector('.puck[data-person]').getAttribute('data-person')
     return { key: s.getAttribute('data-slot'), id, cs: window.PEOPLE[id].cs }
-  })
-  log(c, 'a seat with a man on it: ' + JSON.stringify(seat))
+  }, SEATKEY)
+  log(c, 'the seat for the drag: ' + JSON.stringify(seat))
   if (!seat) { log(c, 'NOT REACHED: no seated man on Monday\'s board'); await w.ctx.close(); return }
-  const slot = w.page.locator(`#schedBoard [data-slot="${seat.key}"]`).first()
-  /* (1) by a tap: arm his seat, then press his own name in the crew list */
-  await slot.scrollIntoViewIfNeeded(); await slot.click(); await sleep(350)
-  const armed = await w.page.evaluate(() => (window.ARM && window.ARM.key) || null)
-  log(c, 'armed after a tap on his seat: ' + JSON.stringify(armed) + '; note ' + JSON.stringify(await shownToast(w.page)))
-  const name = w.page.locator(`#sbRoster .rpuck[data-person="${seat.id}"]:visible`).first()
-  if (!armed) log(c, 'NOT REACHED (tap): a tap on a seat with a man on it arms nothing — see the note above')
-  else if (!(await name.count())) log(c, 'NOT REACHED (tap): his name is not in the crew list while he is seated')
-  else {
-    await name.scrollIntoViewIfNeeded(); await name.click()
-    const t = await toastPair(w, c, 'q4b-1-tap', /already in that seat/, WORDS.q4b.afterTap.replace('{name}', seat.cs))
-    if (!t) log(c, 'tap: the seat now holds ' + JSON.stringify(await w.page.evaluate(k => window.slotVal(k), seat.key)))
-  }
-  await w.page.keyboard.press('Escape'); await sleep(4500)
+  await vis(`#schedBoard .seat[data-slot="${seat.key}"]`)
   /* (2) by a drag: his puck lifted from his seat, carried off it and back, and let go on it */
-  const puck = w.page.locator(`#schedBoard [data-slot="${seat.key}"] .puck[data-person="${seat.id}"]`).first()
+  const puck = w.page.locator(`#schedBoard [data-slot="${seat.key}"] .puck[data-person="${seat.id}"]:visible`).first()
   await puck.scrollIntoViewIfNeeded(); await sleep(200)
   const a = await puck.boundingBox()
   if (!a) { log(c, 'NOT REACHED (drag): no puck box'); await w.ctx.close(); return }
@@ -437,7 +468,7 @@ async function s1() {
   if (weeks !== '4') await w.page.fill('#inLookWeeks', '4')
   if (!sun) await w.page.check('#inLookSun')
   await press(w, '#inLookSave')
-  await toastPair(w, c, 's1-lookahead', /Everyone now opens/, WORDS.s1.after, ['#inRangeBtn'])
+  await toastPair(w, c, 's1-lookahead', /Everyone now opens/, WORDS.s1.after)
   await w.ctx.close()
 }
 
@@ -455,13 +486,34 @@ async function s2() {
   if (SAT < 0) { log(c, 'NOT REACHED: no Saturday in the loaded week'); await w.ctx.close(); return }
   /* a man on the Saturday: arm an empty seat on the board, press a name in the crew list */
   await w.page.evaluate(i => window.openScheduler(i), SAT); await w.page.waitForSelector('#schedBoard', { timeout: 8000 }); await sleep(800)
-  const empty = await w.page.evaluate(() => { const e = [...document.querySelectorAll('#schedBoard [data-slot], #schedBoard [data-fill]')].find(x => x.getBoundingClientRect().width > 4 && !x.querySelector('.puck[data-person]')); return e ? (e.getAttribute('data-slot') || e.getAttribute('data-fill')) : null })
+  const findEmpty = () => w.page.evaluate(() => { const e = [...document.querySelectorAll('#schedBoard .seat[data-slot], #schedBoard [data-fill]')].find(x => x.getBoundingClientRect().width > 4 && !x.querySelector('.puck[data-person]')); return e ? (e.getAttribute('data-slot') || e.getAttribute('data-fill')) : null })
+  let empty = await findEmpty()
+  if (!empty) {
+    /* an empty new week: a ground item added by the board's own "+ Item", its times typed */
+    const add = w.page.locator(`#schedBoard [data-gradd="${SAT}"]`).first()
+    log(c, 'the Saturday is empty; "+ Item" there: ' + (await add.count()))
+    if (await add.count()) {
+      await add.scrollIntoViewIfNeeded(); await add.click(); await sleep(700)
+      for (const [f, v] of [['str', '0800'], ['end', '1600']]) {
+        const box = w.page.locator(`#schedBoard [data-txt^="gr:${SAT}."][data-txt$=".${f}"], #schedBoard [data-bfld^="gr:${SAT}."][data-bfld$=".${f}"]`).first()
+        if (await box.count()) { await box.scrollIntoViewIfNeeded(); await box.click(); const tag = await box.evaluate(e => e.tagName); if (tag === 'INPUT') await box.fill(v); else { await w.page.keyboard.press('Control+A'); await w.page.keyboard.type(v) } await w.page.keyboard.press('Tab'); await sleep(300) }
+        else log(c, 'no ' + f + ' box on the new item')
+      }
+      log(c, 'the Saturday\'s ground now: ' + JSON.stringify(await w.page.evaluate(i => window.DAYS[i].ground, SAT)))
+      empty = await findEmpty()
+    }
+  }
   log(c, 'an empty place on the Saturday: ' + JSON.stringify(empty))
   if (!empty) { log(c, 'NOT REACHED: nothing on the Saturday to put a man in'); await w.ctx.close(); return }
   const place = w.page.locator(`#schedBoard [data-slot="${empty}"], #schedBoard [data-fill="${empty}"]`).first()
   await place.scrollIntoViewIfNeeded(); await place.click(); await sleep(300)
   const man = await w.page.evaluate(() => { const e = [...document.querySelectorAll('#sbRoster .rpuck[data-person]')].find(x => x.offsetParent && !x.classList.contains('no') && window.PEOPLE[x.getAttribute('data-person')] && !window.PEOPLE[x.getAttribute('data-person')].special); return e ? e.getAttribute('data-person') : null })
-  if (man) { const n = w.page.locator(`#sbRoster .rpuck[data-person="${man}"]:visible`).first(); await n.scrollIntoViewIfNeeded(); await n.click(); await sleep(600) }
+  if (man) {
+    const n = w.page.locator(`#sbRoster .rpuck[data-person="${man}"]:visible`).first(); await n.scrollIntoViewIfNeeded(); await n.click()
+    /* (the plant itself raises a note on the same subject in other words — pictured as found, no after) */
+    await toastPair(w, c, 's2-0-plant-note', /leave war period/, null)
+    await sleep(4500)
+  }
   log(c, `put ${man} on ${empty}: the place now holds ${JSON.stringify(await w.page.evaluate(k => { try { return window.slotVal(k) } catch { return '?' } }, empty))}; note ${JSON.stringify(await shownToast(w.page))}`)
   const off = w.page.locator('#sbDone:visible, #sbClose:visible').first(); if (await off.count()) { await off.click(); await sleep(600) }
   /* sign the four and publish, on the week */
@@ -482,7 +534,7 @@ async function s2() {
   const ok = w.page.getByRole('button', { name: /^(Publish|Yes|Confirm)/ }).first()
   if (await ok.count() && await ok.isVisible().catch(() => false)) await ok.click()
   const year = '2028'
-  await toastPair(w, c, 's2-no-period', /no leave war period/, WORDS.s2.after.replace('{year}', year))
+  await toastPair(w, c, 's2-no-period', /there is no leave war period/,WORDS.s2.after.replace('{year}', year), [], /there is no leave war period/i)
   await w.ctx.close()
 }
 

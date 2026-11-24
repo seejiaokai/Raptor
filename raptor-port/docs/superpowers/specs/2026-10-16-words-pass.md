@@ -92,8 +92,26 @@ helpers, the host checking each point it uses: every passing note (331 rows, abo
 show (57) — `../briefs/2026-11-24-passing-notes-inventory.md`, `../briefs/2026-11-24-bell-lines-inventory.md`. **Left to
 other jobs:** the bell lines an Undo leaves behind (`[BELL-WORDS-CLEAR]`, D2392 — drawn by chat 156, his eight answers
 open); the four sets of words the two-squadron branch is putting to him (the Undo bubble on Admin → Users, the Tracker's
-failed save and failed switch, the way-back button on a held input window). Round 4's questions and his answers are added
-here as they are put.
+failed save and failed switch, the way-back button on a held input window).
+
+**Put to him 24 Nov 26** as a page of pictures (claude.ai artifact `1vvh8CNWWnHH5x2c9GESXx`; the page
+`raptor-port/docs/mock/2026-11-24-words-r4/index.html`, built by the script kept beside it; pictures by
+`raptor-port/scripts/handpass/words-r4.mjs` on the built app, `raptor-port/docs/img/handpass/2026-11-24-words-r4/`,
+`facts.json` holding the words read from the app for each). The words, the fresh Fable's read of them (D2441) and the
+builder's answers to its doubts: `../briefs/2026-11-24-words-r4-draft.md`, `…-words-r4-fable-adjust.md`.
+
+| Q | Proposed | His answer |
+|---|---|---|
+| 1 | The bell, an input changed to another kind: "LL changed to OL · Saber" where it says "Renamed — was LL" | open |
+| 2 | The bell, a leave made a half day: "Now LL (AM) · Saber" where it says "Now 00:00–12:00 am"; the day moved too, "Now Thu 16 Jul (AM)"; a titled input, "Now AM" | open |
+| 3 | The bell, more than two changes in one save (only the first two are said): A "…, and 1 more change" (recommended), B every change, C as today; a word after a comma in small letters | open |
+| 4 | One wording each for two messages worded two ways: "2560 is not a time. Try 0900 or 09:00." on an input's row as in a time box; "Ranger — already in that seat" by a drag as by a tap | open |
+
+Shown as fixed with the round unless he objects: "to sunday" → "the next 4 weeks, to Sunday"; the publish note for a
+day no Leave War period covers takes the warning list's own sentence; "leave war period" → "Leave War period" in three
+places; "Only a scheduler answers from this list" → "… can answer from this list" (not reachable on screen). Seen in the
+run: the bell's second line is 307 px wide at his iPhone's size — Q1 and Q2 fit one line before and after, Q3's A and B
+take two where today's takes one; a tap puts only a placeholder on a seat it holds, never a man.
 
 ## Round 1b — his notes on the preview (16 Oct 26)
 

@@ -1,12 +1,10 @@
 {
-  "_note": "The 'after' words for words-r4.mjs, seeded from docs/superpowers/briefs/2026-11-24-words-r4-draft.md (chat 163). A bell line's 'after' is its second line's words BEFORE ' · Saber' (who did it stays as the app prints it). Change a value here and re-run the script; the script is not edited. q3's realAfterA / realAfterB are the draft's own rule (A: the first two, then 'and N more change(s)'; B: every change; a word after a comma in small letters) applied to the line the app can really produce — see the report.",
+  "_note": "The 'after' words for words-r4.mjs, seeded from docs/superpowers/briefs/2026-11-24-words-r4-draft.md (chat 163). A bell line's 'after' is its second line's words BEFORE ' · Saber' (who did it stays as the app prints it). Change a value here and re-run the script; the script is not edited. q3 is the case the app can really produce (moved, renamed and its remark changed in one save — no cancel); {day} is the day the app prints. q4b's tap has only its today picture.",
   "q1": { "after": "LL changed to OL" },
   "q2": { "after": "Now LL (AM)" },
   "q3": {
-    "afterA": "Cancelled — weather, now Thu 16 Jul, and 1 more change",
-    "afterB": "Cancelled — weather, now Thu 16 Jul, renamed — was Training",
-    "realAfterA": "Now Thu 16 Jul, renamed — was Training, and 1 more change",
-    "realAfterB": "Now Thu 16 Jul, renamed — was Training, remark changed"
+    "afterA": "Now {day}, renamed — was Training, and 1 more change",
+    "afterB": "Now {day}, renamed — was Training, remark changed"
   },
   "q4a": { "after": "{typed} is not a time. Try 0900 or 09:00." },
   "q4b": { "afterTap": "{name} — already in that seat", "afterDrag": "{name} — already in that seat" },
