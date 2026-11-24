@@ -379,6 +379,9 @@ await scen('W22', DESK, {}, async ({ page, ctx, dir }) => {
   await openBy(page, 'inputs'); await outsideTime(page, 'inputs'); await sleep(500)
   const btn = '#timingRoot .timingwin .win-tools button'
   await page.click(btn)
+  /* chat 167: the copy answers a moment after the press — wait for the button's answer (up to 2 s, its own "Copied"
+     span), never read it at once (a busy computer read "Copy all" before the copy came back) */
+  await page.waitForFunction(b => /Copied/.test(document.querySelector(b)?.textContent || ''), btn, { timeout: 1900 }).catch(() => {})
   const label1 = await page.textContent(btn)
   const t1 = await page.evaluate(() => navigator.clipboard.readText())
   const r = await readout(page)
@@ -401,6 +404,15 @@ await scen('W22', DESK, {}, async ({ page, ctx, dir }) => {
   const focusAfter = await page.evaluate(() => document.activeElement && (document.activeElement.id || document.activeElement.className))
   judge('W22-refused', label3 === 'Copy all', `refused both ways: the button reads "${label3}" (keyboard before ${focusBefore}, after ${focusAfter})`)
   await pic(page, dir, 'refused')
+  /* his look (D2485, option C, chat 167): the refused copy says so under the title, drawn in sight, until the next press */
+  const said = await page.evaluate(() => { const e = document.querySelector('#timingRoot .win-ttl .tm-refused'); if (!e) return null; const r = e.getBoundingClientRect(); const at = document.elementFromPoint(r.left + 4, r.top + r.height / 2); return { text: e.textContent, seen: r.width > 0 && !!at && e.contains(at), color: getComputedStyle(e).color } })
+  const wb = (await readout(page)).win
+  await pic(page, dir, 'refused-line', { x: wb.x, y: wb.y, width: wb.w, height: 140 })
+  await page.evaluate(() => { navigator.clipboard.writeText = () => Promise.resolve() })
+  await page.click(btn); await sleep(400)
+  const after = await page.evaluate(() => !!document.querySelector('#timingRoot .win-ttl .tm-refused'))
+  judge('W22-refused-line', !!said && said.text === 'Not copied. Press again, or select the rows and copy them by hand.' && said.seen && !after && (await page.textContent(btn)) === 'Copied',
+    `the line under the title: "${said?.text}", drawn in sight ${said?.seen}, colour ${said?.color}; after a good copy: line gone ${!after}, button "${await page.textContent(btn)}"`)
 })
 
 /* W24 — a hidden tab. Chat 164's run in the headless browser never hid the tab (it went "never hidden"); chat 165 walks

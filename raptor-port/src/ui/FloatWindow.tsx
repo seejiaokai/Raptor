@@ -63,8 +63,9 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
   /** which window this is — its remembered place and its turn in front are kept by it; one window per id at a time */
   id: string
   title: string
-  /** a small second line under the title (who may use it, what it is showing) */
-  sub?: string
+  /** a small second line under the title (who may use it, what it is showing) — words, or words and a line of their own
+   *  (the ?timing readout's refused copy, D2485) */
+  sub?: ReactNode
   /** ✕ and Escape call this; the caller unmounts the window */
   onClose: () => void
   testid?: string

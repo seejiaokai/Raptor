@@ -70,6 +70,9 @@ export function kb(bytes: number): string {
   const k = bytes / 1024
   return k >= 1000 ? (k / 1024).toFixed(1) + ' MB' : Math.round(k) + ' KB'
 }
+/** a copy the browser refused, under the window's title until the next press (his look, D2485, option C) — the words a
+ *  fresh Fable's (D2441) */
+export const COPY_REFUSED = 'Not copied. Press again, or select the rows and copy them by hand.'
 /** a start-up point that waited on a tab not in front (the walk of 24 Nov 26, W24) — the words a fresh Fable's (D2441) */
 export const TAB_BEHIND = 'not timed, tab not in front'
 export function notGiven(browser: string | null): string {

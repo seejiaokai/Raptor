@@ -1,0 +1,6 @@
+PASS   W22-paste — button "Copied"; every row of the window in the paste: true; first line "TALON timing, 24 Nov 26 19:06, this computer's clock"
+PASS   W22-back — after two seconds: "Copy all"
+PASS   W22-fresh — the second copy holds the new page: true
+PASS   W22-refused — refused both ways: the button reads "Copy all" (keyboard before BUTTON, after abtn)
+PASS   W22-refused-line — the line under the title: "Not copied. Press again, or select the rows and copy them by hand.", drawn in sight true, colour rgb(229, 168, 59); after a good copy: line gone true, button "Copied"
+exit 0

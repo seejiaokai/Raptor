@@ -62,6 +62,28 @@ describe('the window', () => {
     expect(copy).toHaveBeenCalled()
     expect(btn().textContent).toBe('Copy all')
   })
+  /* his look of 24 Nov 26 (D2485, option C; the words Fable's): a refused copy says so under the title until the next
+     press — another press, a good copy, or the window folded takes it away */
+  it('a refused copy shows the line under the title until the next press; a good copy or a fold takes it away', async () => {
+    let ok = false
+    draw(VIEW, true, vi.fn(async () => ok))
+    const btn = () => [...win()!.querySelectorAll('.win-tools button')].find(b => /Cop/.test(b.textContent!)) as HTMLButtonElement
+    const line = () => win()?.querySelector('.win-ttl .tm-refused')?.textContent ?? null
+    expect(line()).toBeNull()
+    await act(async () => { btn().click() })
+    expect(line()).toBe('Not copied. Press again, or select the rows and copy them by hand.')
+    expect(btn().textContent).toBe('Copy all')
+    ok = true
+    await act(async () => { btn().click() })
+    expect(line()).toBeNull()
+    expect(btn().textContent).toBe('Copied')
+    ok = false
+    await act(async () => { btn().click() })
+    expect(line()).not.toBeNull()
+    act(() => { (win()!.querySelector('.win-x') as HTMLButtonElement).click() })
+    act(() => { pill()!.click() })
+    expect(line()).toBeNull()
+  })
   it('the ✕ folds it to the corner button with the newest page\'s time; that button opens it again', () => {
     draw(VIEW, true)
     act(() => { (win()!.querySelector('.win-x') as HTMLButtonElement).click() })

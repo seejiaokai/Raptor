@@ -10,7 +10,7 @@
    own words and styles, and it is written without JSX, which would bring React's JSX file in (timing.test.ts pins it). */
 import type * as ReactNS from 'react'
 import type { FloatWin as FloatWinT } from './FloatWindow'
-import { copyText, readoutSections, secs, type TimingView } from './timingtext'
+import { COPY_REFUSED, copyText, readoutSections, secs, type TimingView } from './timingtext'
 import './timing.css'
 
 export type ReadoutParts = { React: typeof ReactNS, FloatWin: typeof FloatWinT }
@@ -35,6 +35,8 @@ export function makeTimingReadout({ React, FloatWin }: ReadoutParts): (p: Readou
        from the corner button, it comes forward and takes the keyboard as any window does. */
     const [quiet, setQuiet] = useState(startOpen)
     const [copied, setCopied] = useState(false)
+    /* A COPY THE BROWSER REFUSED SAYS SO under the title until the next press (his look, D2485, option C; Fable's words) */
+    const [refused, setRefused] = useState(false)
     useEffect(() => {
       if (!copied) return
       const t = setTimeout(() => setCopied(false), 2000)
@@ -59,9 +61,10 @@ export function makeTimingReadout({ React, FloatWin }: ReadoutParts): (p: Readou
     }
     const onCopy = async () => {
       const mine = ++copyReq.current
-      setCopied(false)
+      setCopied(false); setRefused(false)
       const ok = await copy(copyText(read(), clock()))
-      if (ok && mine === copyReq.current) setCopied(true)
+      if (mine !== copyReq.current) return
+      if (ok) setCopied(true); else setRefused(true)
     }
     const body = h('div', { className: 'tm-body' }, readoutSections(view).map(s => h('div', { key: s.head },
       h('div', { className: 'tm-h' }, s.head),
@@ -70,8 +73,9 @@ export function makeTimingReadout({ React, FloatWin }: ReadoutParts): (p: Readou
         h('span', null, r.label, r.tag && h('i', null, r.tag)),
         h('b', null, r.value))))))
     return h(FloatWin, {
-      id: 'timing', title: 'Timing', sub: 'This computer only. Shown because the address ends in ?timing', className: 'timingwin',
-      onClose: () => { copyReq.current++; setCopied(false); foldedByPress.current = true; setOpen(false) },
+      id: 'timing', title: 'Timing', className: 'timingwin',
+      sub: ['This computer only. Shown because the address ends in ?timing', refused && h('span', { key: 'refused', className: 'tm-refused', role: 'status' }, COPY_REFUSED)],
+      onClose: () => { copyReq.current++; setCopied(false); setRefused(false); foldedByPress.current = true; setOpen(false) },
       /* up all session: Escape is its own only with the keys inside it (FloatWindow.tsx bystander — the walk of 24 Nov 26,
          W19 (f), and the code reads of chat 165) */
       bystander: true,
