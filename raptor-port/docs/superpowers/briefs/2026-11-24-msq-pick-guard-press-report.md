@@ -89,3 +89,9 @@ Re-run order, each with `d` then `402x874`: win-a, bell-a, trk-b, type-c, save-d
 - **Text boxes:** a box that did not take the typed words was filled directly (needed only for the holiday name).
 
 Scratch run data is in `raptor-port\.tmp\n166` and `raptor-port\.tmp\n166-rs`.
+
+---
+
+## The host's re-run (chat 166, 24 Nov 26)
+
+Every script re-run by the host at d and 402x874 on the same build (logs `raptor-port/.tmp/n166-host/`, not committed): 18 runs, no step failed; `trk-e3` at 402x874 stops by design ("the pick cannot be reached with the window open at this size"). The deciding facts match the report: the windows table (sum-a), the Tracker question at a pick and none at the member-view switch, the Input window over the logout question, the typed words of C, the failed save and Retry on 149 storing the 142 input, the midnight bands, the other tab never noticing, Undo and Redo of 142's step on 149. The host also opened the deciding pictures (E1, E3, E4, F3, D2).
