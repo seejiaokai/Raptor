@@ -3427,54 +3427,13 @@ function sansBackEraseViolation(env: CommitEnvelope): string | null {
   }
   return null
 }
-/* THE MARK THAT LIGHTS A SANS MAN'S REMINDER AGAIN IS THE APP'S ALONE (the four reads of 0eaacc411 — the security read's
-   SEC156-1, the Opus read's F4, Astra #1; docs/data-model.md §11, the `Setting` row): `settings/sansplan:<pid>:<iso>`
-   says when he was last newly put on that day (leavewar/sansunfiled.ts nextStamp), and his reminder lights again when it is
-   newer than what he read — so a row written by anyone else lit his bell with nothing planned, or put it out after a real
-   planning, another squadron's admin among them (the row names no squadron). A change of one passes only as the app's own
-   projection (`sans.planned`, the system actor), shaped as it writes it — `sansplan:<a man>:<a date>`, a positive whole
-   number or the row taken away — or as the verified replay of a step that holds it (an admin's Undo / Redo of his own
-   planning, the mark folded into that step). A bare write outside every command is refused before it reaches here
-   (state/people-settings-commit.ts). The replay is vouched for by the war's side (leavewar/sansunfiled.ts installs it — the
-   undo's own replay check, undo/timeline.ts verifiedReplay, vouches only for its own list of rows); none installed, no
-   restore of one passes. */
-/* …AND OWED BY THE PLANNING THAT CAUSED IT, NOT VOUCHED FOR BY ITS LABEL (round 2 of the reads of f73602f9f — the security
-   read's RR-SEC-1, the Opus read's R4): the app's own projection door (command/commit.ts commitProjection) is open to any
-   code of the page, so the system actor, the type and the origin are a label anyone can write — a member lit Hex's read
-   reminder with nothing planned, and another squadron's admin put out the one a real planning lit. The mark is now tied to
-   the command that caused the projection, as the bell's war lines are tied to the change that owes them (WAR_OWED): that
-   command (`causedBy`), a person's own, must newly put him on that day — a put only of those rows, newer than the row was;
-   a row taken away only for a day gone by of a man it marks, or for a man it deletes. The posting's run (`lw.postoutRun`,
-   the app's own pass) may take a man it deletes away with his rows, nothing else. Worked out by the war's side
-   (leavewar/sansunfiled.ts sansPlanOwed, the writer's own body), handed in here; none installed, no mark passes. A
-   projection called from outside any command has no cause, and one called from a subscriber of an unrelated command gets
-   that command as its cause, which owes nothing — both refused. */
-type SansPlanOwed = { put: ReadonlySet<string>; men: ReadonlySet<string>; gone: ReadonlySet<string>; today: string }
-const SANSPLAN_ID = /^sansplan:([^:]+):(\d{4}-\d{2}-\d{2})$/
-let SANSPLAN_REPLAY: ((env: CommitEnvelope, c: Change) => boolean) | null = null
-export function setSansPlanReplay(fn: ((env: CommitEnvelope, c: Change) => boolean) | null): void { SANSPLAN_REPLAY = fn }
-let SANSPLAN_OWED: ((env: CommitEnvelope) => SansPlanOwed | null) | null = null
-export function setSansPlanOwed(fn: ((env: CommitEnvelope) => SansPlanOwed | null) | null): void { SANSPLAN_OWED = fn }
-function sansPlanViolation(env: CommitEnvelope): string | null {
-  const a = env.actor
-  let owed: SansPlanOwed | null | undefined
-  for (const c of env.changes) {
-    if (c.collection !== 'settings' || !String(c.id).startsWith('sansplan:')) continue
-    if (env.origin === 'restore' && SANSPLAN_REPLAY && SANSPLAN_REPLAY(env, c)) continue
-    const where = `${c.collection}/${c.id}`
-    if (!a || a.role !== 'system' || env.type !== 'sans.planned' || env.origin !== 'projection') return `a SANS planning mark written only by the app (${where})`
-    /* (a row taken away — a day gone by, or a man deleted — is written as nothing by the settings store) */
-    const m = SANSPLAN_ID.exec(String(c.id)), v = c.op === 'delete' ? null : c.after
-    if (!m || (v != null && (!(PEOPLE as any)[m[1]!] || !(typeof v === 'number' && Number.isInteger(v) && v > 0)))) return `a SANS planning mark not as the app writes it (${where})`
-    if (owed === undefined) owed = SANSPLAN_OWED ? SANSPLAN_OWED(env) : null
-    const pid = m[1]!, iso = m[2]!
-    const ok = !!owed && (v == null
-      ? owed.gone.has(pid) || (owed.men.has(pid) && iso < owed.today)
-      : owed.put.has(String(c.id)) && (v as number) > (typeof c.before === 'number' ? c.before : 0))
-    if (!ok) return `a SANS planning mark no planning of his owes (${where})`
-  }
-  return null
-}
+/* NO HIDDEN PLANNING MARK, AND SO NO CHECK OF ONE (his D2560, 24 Nov 26; docs/data-model.md §11 — together, D200): a SANS
+   man's reminder once lit again by a stamp on each day he was newly put on, `settings/sansplan:<pid>:<iso>`, written by
+   a projection this gate vouched for by the command that caused it. Three rounds of blind reads found faults there —
+   round 3's: a member lit another man's reminder by naming a finished planning as his projection's cause (Astra F1), and
+   the stamp could be frozen so nobody was told again (the security read's SEC-R3-1, SEC-R3-2). The reminder now lights
+   again only for a day not in it when he read it, read from his own read record (leavewar/sansunfiled.ts readOf), which
+   only he writes (the `noticeseen:` row, below and in adminOwnerViolation). Nothing reads a `sansplan:` row any more. */
 export function ownershipViolation(env: CommitEnvelope): string | null {
   if (env.origin === 'user' && RETIRED_TYPES.has(env.type)) return `a retired command type (${env.type}) — no door raises it`
   const stored = storedRowViolation(env)
@@ -3514,8 +3473,6 @@ function ownershipChecks(env: CommitEnvelope): string | null {
   if (sansDayBad) return sansDayBad
   const sansBackBad = sansBackEraseViolation(env)
   if (sansBackBad) return sansBackBad
-  const sansPlanBad = sansPlanViolation(env)
-  if (sansPlanBad) return sansPlanBad
   /* WHEN A PERSON LAST OPENED HIS OWN WINDOW (M5a — the security read's finding 4): his own row, by its one command,
      for an ADMIN too — an admin who changed a man's leave could otherwise set that man's moment to now and wipe the dots
      that tell him (§11: "C R U own" for every role) */

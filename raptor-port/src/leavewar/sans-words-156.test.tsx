@@ -372,22 +372,31 @@ describe('D2394 Q4, D2421 — the greyed "+ Commitment" words', () => {
 
 /* THE COORDINATOR'S FIVE READINGS OF WHAT THE RULINGS LEAVE OPEN (24 Nov 26), to be put to him; and what the independent
    scenario design asks to hold */
-describe('reading 1 — "newly planned": he was put on the programme that day', () => {
+/* READING 1 IS REPLACED BY HIS OWN RULING (D2560, 24 Nov 26 — later, so it wins, D90): the reading was "newly planned: he
+   was put on the programme that day", kept by a hidden mark on each day; his ruling takes the mark away and says the
+   reminder, once read, lights again only for A DAY NOT IN IT WHEN HE READ IT. So what is asked of a day is no longer how
+   it came into the line but whether he has seen it there. Each case below is kept; four change their answer, each saying
+   which way and why. */
+describe('reading 1, as D2560 replaced it — lit only by a day not in the reminder when he read it', () => {
   const unplan = (di: number, id = 'rocky') => { (DAYS[di] as any).ground = (DAYS[di] as any).ground.filter((g: any) => g.who !== id); afterSchedMutate() }
   const dueDays = () => (due()[0]!.what[0] as any).days as string[]
-  it('a filing deleted brings its day back into the line: the bell stays dark', () => {
+  /* (was dark: the day had been planned before he read. He read a line that named Sun 19 alone — Sat 18 was filed — so
+     Sat 18 is a day he has not seen in it: lit, by D2560's words. A filing deleted that brings back a day he DID see stays
+     dark: sans-reads-156 test 3, sans-reads-r3) */
+  it('a filing deleted brings into the line a day he never saw there: lit', () => {
     plan(SATI); plan(SUNI); posted()
     expect(commitNewInput(draft(SAT))).toBe(true); hexReads()
     removeInput(mine()[0]); raptorNotify()
     expect(dueDays()).toEqual([SAT, SUN])
-    expect(dueUnread()).toBe(0)
+    expect(dueUnread()).toBe(1)
   })
-  it('the same when he was planned on that day after reading, while it was filed', () => {
+  /* (was dark, for want of a mark — he was planned while the day was filed. It is a day he has not seen: lit) */
+  it('the same when he was planned on that day after reading, while it was filed: lit', () => {
     plan(SUNI); posted(); hexReads()
     expect(commitNewInput(draft(SAT))).toBe(true); plan(SATI)
     removeInput(mine()[0]); raptorNotify()
     expect(dueDays()).toEqual([SAT, SUN])
-    expect(dueUnread()).toBe(0)
+    expect(dueUnread()).toBe(1)
   })
   it('one day replaced by another at the same count: lit', () => {
     plan(SATI); posted(); hexReads()
@@ -401,24 +410,42 @@ describe('reading 1 — "newly planned": he was put on the programme that day', 
     plan(SATI)
     expect(dueUnread()).toBe(0)
   })
-  it('a day that dropped off and is planned again: lit', () => {
+  /* (was lit: D2560's own case — "a day he already saw, taken off and put back, does not relight it") */
+  it('a day that dropped off and is planned again: he saw it — stays read, and the line lists it', () => {
     plan(SATI); posted(); hexReads()
     unplan(SATI); plan(SATI)
     expect(dueDays()).toEqual([SAT])
-    expect(dueUnread()).toBe(1)
+    expect(dueUnread()).toBe(0)
   })
-  it('loading another week: dark', () => {
+  /* (was dark both ways, by the mark. The line's days are those of the weeks the app holds — the week on screen and the
+     saved weeks — so a week brought on screen brings its days into the line: days he has not seen light it while they are
+     in it, and it is read again once they leave. Told to the host as found, not fixed: the days following the week on
+     screen is older than this job) */
+  it('loading another week that names him on days he never saw: lit while they are in the line, read again once they leave', () => {
     plan(SATI); posted(); hexReads()
-    loadWeek('20/07/2026'); raptorNotify()
-    expect(dueUnread()).toBe(0)
-    loadWeek('13/07/2026'); raptorNotify()
+    try {
+      loadWeek('20/07/2026'); raptorNotify()
+      expect(dueDays().some(d => d > SUN)).toBe(true)
+      expect(dueUnread()).toBe(1)
+    } finally { loadWeek('13/07/2026'); raptorNotify() }
+    expect(dueDays()).toEqual([SAT])
     expect(dueUnread()).toBe(0)
   })
-  it('his date moving is not a newly planned day: the reminder he read stays read', () => {
+  it('his date moving, by itself, is no news: the reminder he read stays read', () => {
+    plan(SATI); posted(); hexReads()
+    expect(postOut('rocky', SAT, 'sans')).toBe(true); raptorNotify()
+    expect(due().length).toBe(1)
+    expect(dueDays()).toEqual([SAT])
+    expect(dueUnread()).toBe(0)
+  })
+  /* (was dark: the move to Thu 16 was "not a newly planned day". Hex is on the demo's Thu 16, which the move brings into
+     the line — a day he has not seen in it, so by D2560's words it lights) */
+  it('…but a move earlier that brings in a day he is planned on and never saw: lit, by that day', () => {
     plan(SATI); posted(); hexReads()
     expect(postOut('rocky', THU, 'sans')).toBe(true); raptorNotify()
     expect(due().length).toBe(1)
-    expect(dueUnread()).toBe(0)
+    expect(dueDays()).toEqual([THU, SAT])
+    expect(dueUnread()).toBe(1)
   })
 })
 
@@ -430,11 +457,15 @@ describe('reading 2 — "the reminder had been read" means one standing now, and
     expect(postOut('rocky', FRI24, 'sans')).toBe(true); raptorNotify()
     expect(backs()).toEqual([])
   })
-  it('nor does the same day planned again, a reminder he has not read', () => {
+  /* (was "no title": the day planned again made a reminder he had not read. By D2560 a day he saw, put back, is the
+     reminder he read — so it stands, read, and his date moving past its day is told him, as for any reminder he read) */
+  it('the same day planned again is the reminder he read (D2560): his date moved past it — told', () => {
     plan(SATI); posted(); hexReads()
     unplan(SATI); plan(SATI)
+    expect(dueUnread()).toBe(0)
     expect(postOut('rocky', SUN, 'sans')).toBe(true); raptorNotify()
-    expect(backs()).toEqual([])
+    expect(backs().length).toBe(1)
+    expect(noticeWords(backs()[0]!).name).toBe('Your SANS date moved to Sun 19 Jul.')
   })
 })
 

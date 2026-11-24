@@ -83,7 +83,7 @@ export function hasReadSaved(pid: string, n: Pick<Notice, 'id' | 'at'>, prior?: 
 }
 
 /** HIS READ RECORD ITSELF — his SANS reminder's id names the days it said, so whether he has read those days is asked of
- *  the ids he holds (leavewar/sansunfiled.ts, D2394 2a). `seenOf` — this device's copy; `seenSavedOf` — as saved, or as it
+ *  the ids he holds (leavewar/sansunfiled.ts, D2394 2a as D2560 narrowed it). `seenOf` — this device's copy; `seenSavedOf` — as saved, or as it
  *  stood before the command running (its change's before-image), as hasReadSaved asks it. */
 /* (a copy: the record in memory is this device's alone, and nothing asked of it may change it — Astra #3) */
 export function seenOf(pid: string): Readonly<Seen> { const s = SEEN[pid]; return s ? { upto: s.upto, ids: [...s.ids] } : { upto: 0, ids: [] } }
@@ -111,26 +111,39 @@ export function markNoticeRead(id: string): boolean {
 /* HIS READS OF HIS OWN SANS REMINDER ARE NEVER DROPPED (the four reads of 0eaacc411 — Fable's F4, the Opus read's F2,
    Astra's older note): the reminder is worked out, never stored, and goes while every day it named is filed; a tap on
    another line, or "Mark all read", meanwhile dropped every id not listed — so a filing deleted afterwards brought back,
-   unread, a day he had read (reading 1: dark). Kept whatever stands, and folded into one id per reminder base, each day
-   with the newest mark he read (leavewar/sansunfiled.ts readOf reads it so), so the record stays small. */
+   unread, a day he had read (reading 1: dark). Kept whatever stands, and folded into one id per reminder base naming
+   every day he has seen in it (leavewar/sansunfiled.ts readOf reads it so), so the record stays small.
+   THE DAYS ARE ALL IT KEEPS (his D2560, 24 Nov 26): his reminder lights again only for a day not among them. Each day
+   once carried the hidden planning mark he had read of it (`2026-07-18.<stamp>`); the mark is gone, and a record saved in
+   that shape reads as its days (reminderDays). */
 function reminderOf(pid: string, id: string): string | null {
   const cut = id.indexOf('~'), base = cut < 0 ? '' : id.slice(0, cut)
   return base && (base === `sansdue:${pid}` || base.startsWith(`sansdue:${pid}:`)) ? base : null
 }
+const REMINDER_DAY = /^\d{4}-\d{2}-\d{2}$/
+/** THE DAYS A SANS REMINDER'S ID NAMES — what follows its `~`, a date each; anything else in it names no day (the record
+ *  is the man's own to write, so nothing in it is trusted to be as the app wrote it) */
+export function reminderDays(id: string): string[] {
+  const cut = id.indexOf('~')
+  if (cut < 0) return []
+  const out: string[] = []
+  for (const t of id.slice(cut + 1).split(',')) {
+    const d = t.split('.')[0]!
+    if (REMINDER_DAY.test(d)) out.push(d)
+  }
+  return out
+}
 function keepReminders(pid: string, ids: readonly string[]): string[] {
-  const out: string[] = [], by = new Map<string, Map<string, number>>()
+  const out: string[] = [], by = new Map<string, Set<string>>()
   for (const id of ids) {
     const base = reminderOf(pid, id)
     if (!base) { out.push(id); continue }
     let m = by.get(base)
-    if (!m) by.set(base, m = new Map())
-    for (const t of id.slice(base.length + 1).split(',')) {
-      const [d, g] = t.split('.')
-      if (d) m.set(d, Math.max(m.get(d) ?? 0, Number(g ?? 0) || 0))
-    }
+    if (!m) by.set(base, m = new Set())
+    for (const d of reminderDays(id)) m.add(d)
   }
   for (const [base, m] of by) {
-    if (m.size) out.push(`${base}~${[...m].sort(([a], [b]) => (a < b ? -1 : 1)).map(([d, g]) => (g ? `${d}.${g}` : d)).join(',')}`)
+    if (m.size) out.push(`${base}~${[...m].sort().join(',')}`)
   }
   return [...new Set(out)].sort()
 }

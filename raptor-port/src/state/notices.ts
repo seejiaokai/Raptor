@@ -918,15 +918,26 @@ export function setSansFiledProbe(fn: ((pid: string, iso: string) => boolean) | 
 const sansChainOf = (x: Notice, q: any): string => (q && q.again && typeof q.ref === 'string' ? q.ref : x.id)
 // any: the same
 const sansLineOut = (x: Notice, q: any): boolean => (!!q.again && !NOTICES.some(y => y.id === q.ref)) || sansRetracted(x)
-/* (a line a later "taken back" names — an Undo's own line retracted by the Redo that followed it: sansunfiled.ts) */
-function sansRetracted(x: Notice): boolean {
-  return NOTICES.some(y => {
+/* (sansRetracted — a line whose last word is a "taken back" — is below, with the order it is judged by) */
+const sansLater = (x: Notice, xi: number, n: Notice, ni: number): boolean => x.at > n.at || (x.at === n.at && xi > ni)
+/** IS THIS SANS LINE TAKEN BACK — the last word said of it is a "taken back" (an Undo's own line retracted by the Redo
+ *  that followed it, or an untick's line while its Undo stands). THE ONE BODY, for the bell here and for the reminder's
+ *  count of the lines that ended his SANS (leavewar/sansunfiled.ts dueBase, sansUndoToldNow) — the two each had their own,
+ *  and both read "any taken back names it" (round 3 — the Opus read's O3-1, Astra's tidiness note): an untick's line is
+ *  named by a "taken back" when its Undo runs, and the Redo then tells it "again" with that "taken back" still on his
+ *  bell, so the line, back and in force, went on reading as taken back. A newer "again" copy wins: later by the bell's
+ *  saved order (sansLater — time, then the list's order). */
+export function sansRetracted(x: Notice): boolean {
+  let last: Notice | null = null, lastAt = -1, back = false
+  NOTICES.forEach((y, j) => {
     // any: a notice part is read by its kind
     const q: any = y.to === x.to ? (y.what || [])[0] : null
-    return !!q && q.k === 'sansback' && q.back === true && q.ref === x.id
+    if (!q || q.k !== 'sansback' || q.ref !== x.id || !(q.back === true || q.again === true)) return
+    if (last && !sansLater(y, j, last, lastAt)) return
+    last = y; lastAt = j; back = q.back === true
   })
+  return back
 }
-const sansLater = (x: Notice, xi: number, n: Notice, ni: number): boolean => x.at > n.at || (x.at === n.at && xi > ni)
 // any: a part read from a stored line, its fields unchecked until here; the engine's person record is untyped
 function sansStillHidden(n: Notice, p: any): string[] {
   const to = n.to, person: any = PEOPLE[to]

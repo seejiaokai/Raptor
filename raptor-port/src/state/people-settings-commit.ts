@@ -94,7 +94,7 @@ export const SETTINGS_KEYS = [
 /* - `noticeseen:<pid>` — what each person has read of his bell's notices, `NoticeSeen`; written ONLY by
      state/noticeseen.ts, through its one command `notices.seen` (own row only — the one-rule build's step 7). */
 /* (…'apprseen:' — each admin's own moment of opening the Leave War's Approvals, M4 8.4: state/apprseen.ts) */
-export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', 'noticeseen:', 'apprseen:', 'lwseen:', 'sansplan:', ...FLY_ROW_PREFIXES,
+export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', 'noticeseen:', 'apprseen:', 'lwseen:', ...FLY_ROW_PREFIXES,
   /* the units, places, homes and rights (state/units.ts — multi-squadron batch 1, step 1), one row each */
   ...UNIT_ROW_PREFIXES] as const
 /* EVERY UNIT'S SETTINGS, NAMED WITH ITS UNIT (multi-squadron batch 1, step 2 — engine/hooks.ts storedKey): a unit's own
@@ -394,10 +394,6 @@ export function registerPeopleSettingsCore(loaders: ModuleLoaders, moduleTypes: 
        saying he had read a line he never read, and a take-back then left a struck line where D1710 says an unread line
        simply goes (chat 147's security re-read, SEC2-2 (a)) */
     if (!isCommitting() && k.startsWith('noticeseen:')) throw new Error('A read record is written only by its own command')
-    /* the mark that lights a SANS man's reminder again (leavewar/sansunfiled.ts, D2394 2a) is the app's alone — never a bare
-       write (the security read's SEC156-2, the Opus read's F4, Astra #1); inside a command, the gate's (state/perms.ts
-       sansPlanViolation) */
-    if (!isCommitting() && k.startsWith('sansplan:')) throw new Error('A SANS planning mark is written only by the app')
     if (isCommitting() || !(SETTINGS_KEYS as readonly string[]).includes(k)) { raw(key, v); return }
     commitSettings(settingsType(k), () => raw(key, v))
   })

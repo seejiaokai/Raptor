@@ -107,28 +107,32 @@ const ticked = () => {
   expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
   expect(setShowSans(true)).toBe(true); raptorNotify()
 }
-/* (a row taken away is written as nothing by the settings store — engine/hooks.ts store.set) */
+/* (every hidden planning mark the store holds — none is written since his D2560: sans-reads-r3.test.tsx) */
 const plans = (pid = 'rocky') => store.keys(`sansplan:${pid}:`).filter(k => store.get(k, null) != null).sort()
 
-/* 1. THE COUNT ROW: a stamp that only grows (Fable F1 with its Q-b, Astra #4), written by the app alone (the security
-   read's SEC156-1, SEC156-2, the Opus read's F4, Astra #1), past days and a deleted man's rows pruned (Fable F6) */
-describe('1 — a day newly planned is marked by a stamp only the app writes', () => {
-  it('Fable F1: a day planned, read, its planning undone, then planned again: lit', () => {
+/* 1. WHICH DAYS LIGHT HIS REMINDER AGAIN. These pinned the hidden "planned at" stamp of the four reads of 0eaacc411 (Fable
+   F1 with its Q-b, Astra #4; the security read's SEC156-1, SEC156-2; the Opus read's F4; Astra #1; Fable F6). HIS D2560
+   (24 Nov 26) took the stamp away, with its permission checks, and narrowed D2394 2a: once read, the reminder lights
+   again only for a day not in it when he read it — a day he saw, taken off and put back, does not. Each case is kept and
+   now pins that rule; the rule's own cases, and round 3's, are in sans-reads-r3.test.tsx. */
+describe('1 — once read, his reminder lights again only for a day he has not seen (D2560)', () => {
+  it('Fable F1\'s case: a day planned, read, its planning undone, then planned again — a day he saw: stays read', () => {
     plan(SATI); posted(); plan(SUNI); readElsewhere()
     expect(dueUnread()).toBe(0)
     expect(globalUndo().ok).toBe(true); raptorNotify()
     expect(dueDays()).toEqual([SAT])
     plan(SUNI)
     expect(dueDays()).toEqual([SAT, SUN])
-    expect(dueUnread()).toBe(1)
+    expect(dueUnread()).toBe(0)
   })
-  it('Astra #4: posted, planned on Sat 18, read; Undo; planned on Sat 18 afresh: lit', () => {
+  it('Astra #4\'s case: posted, planned on Sat 18, read; Undo; planned on Sat 18 afresh — a day he saw: stays read', () => {
     posted(); plan(SATI); readElsewhere()
     expect(dueUnread()).toBe(0)
     expect(globalUndo().ok).toBe(true); raptorNotify()
     expect(due()).toEqual([])
     plan(SATI)
-    expect(dueUnread()).toBe(1)
+    expect(dueDays()).toEqual([SAT])
+    expect(dueUnread()).toBe(0)
   })
   it('…and a Redo of the planning, after its Undo, is no news: it stays read', () => {
     plan(SATI); posted(); plan(SUNI); readElsewhere()
@@ -137,40 +141,40 @@ describe('1 — a day newly planned is marked by a stamp only the app writes', (
     expect(dueDays()).toEqual([SAT, SUN])
     expect(dueUnread()).toBe(0)
   })
-  it('Astra #1: an unrelated settings command cannot write it', () => {
+  it('a day new to him still lights it: read with Sat 18, then planned on Sun 19', () => {
     plan(SATI); posted(); readElsewhere()
-    const r: any = commitSettingsIntent('settings.rules', null, () => { store.set(`sansplan:rocky:${SAT}`, 200) })
-    expect(r.ok).toBe(false)
-    expect(dueUnread()).toBe(0)
+    plan(SUNI)
+    expect(dueUnread()).toBe(1)
   })
-  it('the Opus read\'s F4 (its control): a hand-built command of the app\'s own type is refused', () => {
+  it('Astra #1\'s case: a settings command writing the old mark\'s row lights nothing', () => {
     plan(SATI); posted(); readElsewhere()
-    let r: any
-    try {
-      r = cmdCommit({ type: 'sans.planned', scope: { module: 'settings' }, meta: null,
-        apply: (txn: any) => { txn.enlist(settingsStore); store.set(`sansplan:rocky:${SAT}`, 99) } } as any)
-    } catch { r = { ok: false } }
+    try { commitSettingsIntent('settings.rules', null, () => { store.set(`sansplan:rocky:${SAT}`, 200) }) } catch { /* refused: as good */ }
     raptorNotify()
-    expect(r.ok).toBe(false)
     expect(dueUnread()).toBe(0)
   })
-  it('the Opus read\'s F4: a bare write outside every command is refused, an admin\'s or his own', () => {
+  it('the Opus read\'s F4 (its control): a hand-built command of the old projection\'s type lights nothing', () => {
     plan(SATI); posted(); readElsewhere()
-    expect(() => store.set(`sansplan:rocky:${SAT}`, 99)).toThrow(/written only by the app/)
-    signInAs('hex')
-    expect(() => store.set(`sansplan:rocky:${SAT}`, 99)).toThrow(/written only by the app/)
+    try {
+      cmdCommit({ type: 'sans.planned', scope: { module: 'settings' }, meta: null,
+        apply: (txn: any) => { txn.enlist(settingsStore); store.set(`sansplan:rocky:${SAT}`, 99) } } as any)
+    } catch { /* refused: as good */ }
+    raptorNotify()
     expect(dueUnread()).toBe(0)
   })
-  it('Fable F6: his rows for days gone by leave when the app next marks a day for him', () => {
+  it('the Opus read\'s F4: a bare write of the old mark\'s row, an admin\'s or his own, lights nothing', () => {
+    plan(SATI); posted(); readElsewhere()
+    try { store.set(`sansplan:rocky:${SAT}`, 99) } catch { /* refused: as good */ }
+    signInAs('hex')
+    try { store.set(`sansplan:rocky:${SAT}`, 99) } catch { /* refused: as good */ }
+    raptorNotify()
+    expect(dueUnread()).toBe(0)
+  })
+  it('Fable F6\'s cases: no mark is written, so none is left for a day gone by or a man deleted', () => {
     posted(); plan(SATI)
-    expect(plans()).toEqual([`sansplan:rocky:${SAT}`])
+    expect(plans()).toEqual([])
     at(2026, 7, 19)
     plan(SUNI)
-    expect(plans()).toEqual([`sansplan:rocky:${SUN}`])
-  })
-  it('Fable F6: a deleted man\'s rows go with him', () => {
-    posted(); plan(SATI)
-    expect(plans().length).toBe(1)
+    expect(plans()).toEqual([])
     expect(deletePerson('rocky')).toBeNull(); raptorNotify()
     expect(plans()).toEqual([])
   })
@@ -606,8 +610,9 @@ describe('R2-2 — the held weeks ahead follow the requests landed on them', () 
   })
 })
 
-/* R2-3 (the security read's RR-SEC-1 = the Opus read's R4): the app's own projection door, called from outside any planning
-   — its label alone no longer vouches for a mark */
+/* R2-3 (the security read's RR-SEC-1 = the Opus read's R4): the app's own projection door, called from outside any planning.
+   It could once write the hidden planning mark; the mark is gone (his D2560), so whatever it writes there lights nothing
+   and puts nothing out */
 describe('R2-3 — commitProjection("sans.planned") from outside any planning', () => {
   const asTheApp = (fn: () => void) => {
     let r: any
@@ -615,17 +620,17 @@ describe('R2-3 — commitProjection("sans.planned") from outside any planning', 
     raptorNotify()
     return r
   }
-  it('lights his read reminder with nothing newly planned: refused', () => {
+  it('cannot light his read reminder with nothing new to him', () => {
     plan(SATI); posted(); readElsewhere()
     expect(dueUnread()).toBe(0)
-    expect(asTheApp(() => { store.set(`sansplan:rocky:${SAT}`, 9e12) }).ok).toBe(false)
+    asTheApp(() => { store.set(`sansplan:rocky:${SAT}`, 9e12) })
     expect(dueUnread()).toBe(0)
   })
-  it('…or puts out a day newly planned since he read: refused', () => {
+  it('…nor put out a day new to him since he read', () => {
     plan(SATI); posted(); readElsewhere()
     plan(SUNI)
     expect(dueUnread()).toBe(1)
-    expect(asTheApp(() => { store.set(`sansplan:rocky:${SUN}`, null) }).ok).toBe(false)
+    asTheApp(() => { store.set(`sansplan:rocky:${SUN}`, null) })
     expect(dueUnread()).toBe(1)
   })
 })
@@ -663,26 +668,29 @@ describe('R2-4 — the hidden sentence through repeated Undo / Redo', () => {
   })
 })
 
-/* R2-5 (Astra F4 = the Opus read's R5; Fable's RE-READ 3): a man deleted by his posting's run keeps no planning marks, and a
-   row taken away is gone from the store, not kept holding nothing */
-describe('R2-5 — the planning marks of a man deleted by his posting, and of days gone by', () => {
-  it('Astra F4: posted SANS, planned Sat 18, then posted out with Delete from Fri 17 — on Fri 17 the pass runs: his rows go', () => {
+/* R2-5 (Astra F4 = the Opus read's R5; Fable's RE-READ 3): a man deleted by his posting's run kept his planning marks, and a
+   row taken away stayed in the store holding nothing. No mark is written any more (his D2560), so none is left in either
+   case — the cases kept, pinning that */
+describe('R2-5 — no planning mark is left for a man deleted by his posting, or for days gone by', () => {
+  it('Astra F4\'s case: posted SANS, planned Sat 18, then posted out with Delete from Fri 17 — on Fri 17 the pass runs', () => {
     posted(); plan(SATI)
-    expect(plans()).toHaveLength(1)
     expect(postOut('rocky', FRI, 'delete')).toBe(true); raptorNotify()
     at(2026, 7, 17); runPoOutcomes(); raptorNotify()
     expect(!!(PEOPLE as any).rocky.deleted).toBe(true)
     expect(store.keys('sansplan:rocky:')).toEqual([])
+    expect(due()).toEqual([])
   })
-  it('Fable RE-READ 3: his row for Sat 18 is gone from the store once the app marks Sun 19 on Sun 19', () => {
+  it('Fable RE-READ 3\'s case: planned Sat 18, then on Sun 19 planned Sun 19 — his reminder names Sun 19 alone', () => {
     posted(); plan(SATI)
     at(2026, 7, 19)
     plan(SUNI)
-    expect(store.keys('sansplan:rocky:').sort()).toEqual([`sansplan:rocky:${SUN}`])
+    expect(store.keys('sansplan:rocky:')).toEqual([])
+    expect(dueDays()).toEqual([SUN])
   })
-  it('…and a man deleted by hand: no row of his left listed', () => {
+  it('…and a man deleted by hand: no reminder, no row', () => {
     posted(); plan(SATI)
     expect(deletePerson('rocky')).toBeNull(); raptorNotify()
     expect(store.keys('sansplan:rocky:')).toEqual([])
+    expect(due()).toEqual([])
   })
 })

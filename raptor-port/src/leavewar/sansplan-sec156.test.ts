@@ -1,7 +1,12 @@
 // @vitest-environment jsdom
 /* THE SECURITY READ OF 0eaacc411 (chat 156, 24 Nov 26 — D:/raptor-work/c156-read-sec/security-read.md), its cases brought
-   onto the branch: who may write `settings/sansplan:<pid>:<iso>` (the mark that lights a SANS man's reminder again), and
-   who may take his "You're no longer SANS." line away.
+   onto the branch: who may light a SANS man's reminder again or put it out, and who may take his "You're no longer SANS."
+   line away.
+   SINCE HIS D2560 (24 Nov 26) the first is no longer a question of who may write `settings/sansplan:<pid>:<iso>` — that
+   hidden mark is gone, with its permission checks, and nothing reads a row of it. His reminder lights again only for a
+   day not in it when he read it, by his own read record, which only he writes. Every case below is kept and now pins
+   that: whatever anyone else writes, his read reminder stays read and a lit one stays lit. Round 3's own cases:
+   sans-reads-r3.test.tsx.
    Fixture: test-support/msq-world.ts (Wed 15 Jul 26; Saber master 142, Hunter 142 admin, Ranger 142 member, Kestrel 149
    admin, Osprey 149 member) and sans-words-156's plan/post helpers. `rocky` is Hex, 142's WSO. */
 import { describe, expect, it, beforeEach } from 'vitest'
@@ -44,54 +49,64 @@ const readReminder = () => {
   hexReads(); expect(dueUnread()).toBe(0)
 }
 
-describe('SEC156-1 — another squadron\'s admin writes a 142 man\'s sansplan count', () => {
+/* a write tried through a command; refused or let through, it must change nothing of his bell */
+const tried = (fn: () => unknown): void => { try { fn() } catch { /* refused outright: as good */ } raptorNotify() }
+describe('SEC156-1 — another squadron\'s admin cannot light a 142 man\'s reminder, nor put it out', () => {
   it('the world: Hex is 142\'s, Kestrel 149\'s admin', () => {
     expect(homeOn('rocky', todayIso())).toBe('u142')
     expect(homeOn('kes9', todayIso())).toBe('u149')
   })
-  it('at the gate: Kestrel\'s command putting sansplan:rocky:… passes, though noticeseen:rocky is refused', () => {
+  it('at the gate: Kestrel\'s command writing Hex\'s read record — the one thing his reminder reads — is refused', () => {
     signInAs('kestrel')
     const env = (changes: any[]): any => ({ seq: 1, at: '', origin: 'user', scope: { module: 'settings' }, type: 'account.update', actor: deriveActor(), changes })
     const put = (id: string, after: any) => ({ op: 'put', collection: 'settings', id, before: null, after })
     expect(ownershipViolation(env([put('noticeseen:rocky', { upto: 0, ids: [] })]))).toMatch(/another squadron's man's read record/)
-    expect(ownershipViolation(env([put('sansplan:rocky:2026-07-18', 9)]))).toMatch(/written only by the app/)
   })
-  it('end to end: Kestrel lights Hex\'s read reminder again with no day newly planned', () => {
+  it('end to end: Kestrel cannot light Hex\'s read reminder again with no day new to him', () => {
     readReminder()
     signInAs('kestrel')
-    const r: any = commitSettingsIntent('account.update', null, () => { store.set('sansplan:rocky:2026-07-18', 9) })
+    tried(() => commitSettingsIntent('account.update', null, () => { store.set('sansplan:rocky:2026-07-18', 9) }))
+    const r: any = commitSettingsIntent('notices.seen', { owner: 'kes9' }, () => { store.set('noticeseen:rocky', { upto: 0, ids: [] }) })
     expect(r.ok).toBe(false)
     signInAs('hex')
     expect(dueUnread()).toBe(0)
   })
-  it('end to end: Saber newly plans Hex on Sun 19 (lit, as D2394 2a says) — Kestrel puts it out again', () => {
+  it('end to end: Saber puts Hex on Sun 19, a day new to him (lit, D2394 2a as D2560 narrowed it) — Kestrel cannot put it out', () => {
     readReminder()
     signInAs('saber'); plan(SUNI)
     signInAs('hex'); expect(dueUnread()).toBe(1)
     signInAs('kestrel')
-    const r: any = commitSettingsIntent('account.update', null, () => { store.set(`sansplan:rocky:${SUN}`, 0) })
+    tried(() => commitSettingsIntent('account.update', null, () => { store.set(`sansplan:rocky:${SUN}`, 0) }))
+    const seen = mem['sqn142_noticeseen:rocky']
+    const r: any = commitSettingsIntent('notices.seen', { owner: 'kes9' }, () => { store.set('noticeseen:rocky', { upto: 0, ids: [`sansdue:rocky~2026-07-18,${SUN}`] }) })
     expect(r.ok).toBe(false)
+    expect(mem['sqn142_noticeseen:rocky']).toBe(seen)
     signInAs('hex')
     expect(dueUnread()).toBe(1)
   })
 })
 
-describe('SEC156-2 — a bare write outside every command is saved unjudged (any role)', () => {
-  it('Ranger (a member) writes Hex\'s sansplan count from the console: no refusal, saved', () => {
+describe('SEC156-2 — a bare write outside every command (any role)', () => {
+  it('Ranger (a member) from the console: Hex\'s read record is refused, and the old mark\'s row changes nothing', () => {
     readReminder()
     signInAs('saber'); plan(SUNI)
     signInAs('ranger')
     /* the read record has the bare-write guard (chat 147, SEC2-2 (a)) … */
     expect(() => store.set('noticeseen:rocky', { upto: 0, ids: [] })).toThrow(/read record is written only by its own command/)
-    /* … the new count does not */
-    expect(() => store.set(`sansplan:rocky:${SUN}`, 0)).toThrow()
+    expect(() => store.set('noticeseen:rocky', { upto: 0, ids: [`sansdue:rocky~2026-07-18,${SUN}`] })).toThrow(/read record is written only by its own command/)
+    /* … and the mark that once lit his reminder is read by nothing */
+    tried(() => store.set(`sansplan:rocky:${SUN}`, 0))
     signInAs('hex')
     expect(dueUnread()).toBe(1)
   })
-  it('…while inside a command a member is refused, as he should be', () => {
+  it('…and inside a command a member writing Hex\'s read record is refused, as he should be', () => {
+    readReminder()
     signInAs('ranger')
-    const r: any = commitSettingsIntent('notices.seen', { owner: 'bane' }, () => { store.set('sansplan:rocky:2026-07-18', 9) })
+    const r: any = commitSettingsIntent('notices.seen', { owner: 'bane' }, () => { store.set('noticeseen:rocky', { upto: 0, ids: [] }) })
     expect(r.ok).toBe(false)
+    tried(() => commitSettingsIntent('notices.seen', { owner: 'bane' }, () => { store.set('sansplan:rocky:2026-07-18', 9) }))
+    signInAs('hex')
+    expect(dueUnread()).toBe(0)
   })
 })
 
@@ -120,7 +135,7 @@ describe('SEC156-3 — an untick line removed by a nominal posting change', () =
 
 /* ==== THE SECURITY RE-READ OF f73602f9f (chat 156, round 2 — D:/raptor-work/c156-reread-sec/security-reread.md):
    RR-SEC-1, the planning mark vouched for by its label alone. The app's own projection door is open to any code of the
-   page, so the mark is now owed only by a person's own command that newly puts the man on that day, as it is judged. ==== */
+   page; with the mark gone (his D2560) nothing it writes there reaches a reminder. ==== */
 import { commitProjection, onCommit } from '../command'
 import { settingsStore as settingsStoreR2 } from '../state/people-settings-commit'
 const SAT_R2 = '2026-07-18'
@@ -128,23 +143,22 @@ const asTheApp = (fn: () => void): any => {
   try { return commitProjection({ type: 'sans.planned', scope: { module: 'settings' } as any, meta: null, apply: (txn: any) => { txn.enlist(settingsStoreR2); fn() } } as any) }
   catch { return { ok: false } }
 }
-describe('RR-SEC-1 — the planning mark is owed by a planning, not by its label', () => {
-  it('Ranger (142 member) lights Hex\'s read reminder again with nothing newly planned: refused, nothing saved', () => {
+describe('RR-SEC-1 — the app\'s projection door reaches no reminder', () => {
+  it('Ranger (142 member) cannot light Hex\'s read reminder again with nothing new to him', () => {
     readReminder()
     signInAs('ranger')
-    expect(asTheApp(() => { store.set(`sansplan:rocky:${SAT_R2}`, Date.now() + 10 ** 9) }).ok).toBe(false)
-    expect(mem[`sqn142_sansplan:rocky:${SAT_R2}`] ?? null).not.toBe(String(Date.now() + 10 ** 9))
+    asTheApp(() => { store.set(`sansplan:rocky:${SAT_R2}`, Date.now() + 10 ** 9) }); raptorNotify()
     signInAs('hex'); expect(dueUnread()).toBe(0)
   })
-  it('Kestrel (149 admin) puts out the reminder a real planning lit: refused', () => {
+  it('Kestrel (149 admin) cannot put out the reminder a day new to him lit', () => {
     readReminder()
     signInAs('saber'); plan(SUNI)
     signInAs('hex'); expect(dueUnread()).toBe(1)
     signInAs('kestrel')
-    expect(asTheApp(() => { store.set(`sansplan:rocky:${SUN}`, null); store.set(`sansplan:rocky:${SAT_R2}`, null) }).ok).toBe(false)
+    asTheApp(() => { store.set(`sansplan:rocky:${SUN}`, null); store.set(`sansplan:rocky:${SAT_R2}`, null) }); raptorNotify()
     signInAs('hex'); expect(dueUnread()).toBe(1)
   })
-  it('a subscriber of an unrelated command (Saber changing Logic) calling the door for Hex: refused', () => {
+  it('a subscriber of an unrelated command (Saber changing Logic) calling the door for Hex: nothing lit', () => {
     readReminder()
     signInAs('saber')
     let r: any = null
@@ -152,12 +166,13 @@ describe('RR-SEC-1 — the planning mark is owed by a planning, not by its label
     try { expect((commitSettingsIntent('settings.rules', null, () => { store.set('rules', { crewRest: 11 }) }) as any).ok).toBe(true) } finally { off() }
     /* (raised while the Logic change is delivered, the door's command is queued: its answer comes when it has run) */
     expect(r).toBeTruthy()
+    raptorNotify()
     signInAs('hex'); expect(dueUnread()).toBe(0)
   })
-  it('the real planning still marks the day: Saber puts Hex on Sun 19 — lit', () => {
+  it('a real planning writes no mark, and a day new to him lights his reminder: Saber puts Hex on Sun 19', () => {
     readReminder()
     signInAs('saber'); plan(SUNI)
-    expect(Number(mem[`sqn142_sansplan:rocky:${SUN}`])).toBeGreaterThan(0)
+    expect(Object.keys(mem).filter(k => k.includes('sansplan:'))).toEqual([])
     signInAs('hex'); expect(dueUnread()).toBe(1)
   })
 })

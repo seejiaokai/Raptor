@@ -27,6 +27,7 @@ import { inputProtected } from './quarantine'
 import { rowElsewhere } from './weekstash'
 import { DAYS } from './data'
 import { rowsOf } from './rowids'
+import { homesSig } from './roster'
 
 const ROLES = ['cur', 'sked', 'plan', 'appr'] as const
 export const trimTail = (arr: any[]) => { while (arr.length && !arr[arr.length - 1]) arr.pop() }
@@ -503,5 +504,17 @@ export function requestsSig(): string {
 /* the loaded week's ground rows, by the request each came from (`src`) — a request with a row there lands nowhere else
    (weekstash.ts rowElsewhere), so a memo of another week's worked-out rows keys on it too: the peek (ui/peek.ts), and the
    SANS reminder's weeks held (leavewar/sansunfiled.ts — moved here from the peek, round 2 of the reads of f73602f9f) */
+/* ONLY THE ROWS A REQUEST LANDED (round 3 of the reads of the SANS words — the Opus read's O3-2): every row once wrote an
+   entry, an empty one where no request made it, so a plain briefing row added to or taken off the week on screen changed
+   the signature though no request's row had moved — and every memo keyed on it was thrown away (the SANS reminder read
+   all its held weeks again: about 150 ms over 40 of them). A row nobody filed lands nothing anywhere; the day each
+   request's row stands on is still kept (the `/`), since a row stands by its day (standingRow). */
 // any: a day of the engine's week is untyped (a verbatim port, src/engine/data.ts)
-export function loadedSrcSig(): string { return DAYS.map((d: any) => ((d && d.ground) || []).map((g: any) => (g && g.src) || '').join(',')).join('/') }
+export function loadedSrcSig(): string { return DAYS.map((d: any) => ((d && d.ground) || []).map((g: any) => (g && g.src) || '').filter(Boolean).join(',')).join('/') }
+/* EVERYTHING A WEEK'S WORKED-OUT ROWS ARE READ FROM BESIDE ITS OWN SAVED COPY, AS ONE SIGNATURE (round 3 — Astra's F2: "a
+   shared overlay dependency signature"): the men deleted, the requests, the loaded week's request rows — and each man's
+   home squadron by date, which decides whose week a request lands on (landingRequests → engine/inputs.ts inputOnDay). The
+   SANS reminder's weeks held kept the first three and not the fourth, so a man moved to another squadron from a date went
+   on being named on his old squadron's days past it. A reader that keeps a week's reading keys on this, so the next
+   thing the landing comes to read is added here once, for all of them. */
+export function landingSig(): string { return `${deletedSig()}|${requestsSig()}|${loadedSrcSig()}|${homesSig()}` }
