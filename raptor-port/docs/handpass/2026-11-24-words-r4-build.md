@@ -29,22 +29,22 @@ drawn there. Each cell YES / NO-because / MISSING when walked; a blank is a row 
 
 | # | Surface (where it is drawn) | Raised by | SHOW | USABLE | PAINTED |
 |---|---|---|---|---|---|
-| R1 | The bell's list, desktop (top bar, `ui/topbits.tsx` BellList) — a changed input's line | another person's save of the input | | | |
-| R2 | The bell's list, phone (the same list as a full-width panel) | the same | | | |
-| R3 | A tap on such a line → the input's own window, the line marked read | a tap | | | |
-| R4 | Undo, then Redo, of the save that wrote a new-shape line — the line goes and comes back; the permissions gate passes it | Undo / Redo | | | |
-| R5 | The input's window, its start / end time boxes (`ui/inputedit.tsx normalizeInputDraft`) | Save with a bad time | | | |
-| R6 | The Inputs list's in-place start / end cells (`ui/inputedit.tsx setInpField`) | a bad time typed in a cell | | | |
-| R7 | Edit Schedule, a puck dragged back onto its own seat — flying, duty, ground, a placeholder (`ui/drag.ts`) | a drag | | | |
-| R8 | The Scheduler Board, the same drag | a drag | | | |
-| R9 | The Inputs page's look-ahead, saved (the default window's gear) | Save | | | |
-| R10 | Publishing a weekend or holiday no Leave War period covers — Edit Schedule (`leavewar/sync.ts publishFlagsBids`), alone and joined to the publish note | Publish | | | |
-| R11 | The week's warning list, the "Create the <year> period" button's hover (`ui/html.ts`) | hover | | | |
-| R12 | The Scheduler Board's warning line, the same button's hover (`ui/board.ts`) | hover | | | |
-| R13 | "Create the <year> period" pressed: the note "The <year> Leave War period is created…" (`ui/interactions.ts`) | a press | | | |
-| R14 | Its refusal to a non-scheduler, "Only a scheduler can create a Leave War period" | a press (reachable? record) | | | |
-| R15 | The OIL day list's Save by a member, "Only a scheduler can answer from this list" (`ui/oilday.ts`) — not reachable on screen (facts.json q4c): carried by `leavewar/holnotice.test.tsx` | a test | | | |
-| R16 | The sign-off's OIL list (`ui/oilsign.ts`, the same save) | a press | | | |
+| R1 | The bell's list, desktop (top bar, `ui/topbits.tsx` BellList) — a changed input's line | another person's save of the input | YES — every ruled line (a: A1, A2, A5, A6; b: B1) | YES | the age, the unread dot, "Mark all read", "↓ N more": none over the words (A8) |
+| R2 | The bell's list, phone (the same list as a full-width panel) | the same | YES — Chromium and WebKit at 402 | YES | the same; the ruled three-change line two rows in a 307px box, whole (A8) |
+| R3 | A tap on such a line → the input's own window, the line marked read | a tap | YES (a: tap-r1; b: B1, B7) | YES — the unread count falls by one | the window is titled by its people ("Hex +1 · 16 Jul"), as before this change |
+| R4 | Undo, then Redo, of the save that wrote a new-shape line — the line goes and comes back; the permissions gate passes it | Undo / Redo | YES — as on `main` but for the words (b: B3, both builds) | YES — a member's four-change save passed the gate and a reload (b: B2) | nothing else |
+| R5 | The input's window, its start / end time boxes (`ui/inputedit.tsx normalizeInputDraft`) | Save with a bad time | NO, because its boxes are the browser's own time pickers, which cannot hold a bad time (c: C1 door 5) — the words are carried by `audit-guards-inputs.test.tsx` | — | — |
+| R6 | An input's in-place start / end boxes (`ui/inputedit.tsx setInpField`) — on Edit Schedule's row, the Scheduler Board's row, one man's row of a shared leave. The Inputs LIST has none (c: door 4; Astra's negative) | a bad time typed in a box | YES — all three rows, by Tab and by Enter, desk and phone (c: C1) | YES — the box goes back, nothing saved, no bell line; a good time then saves | the note at the foot, never over the box |
+| R7 | Edit Schedule, a puck dragged back onto its own seat — flying, duty, ground (first and second man), sim, sim passenger, alert, a placeholder (`ui/drag.ts`) | a drag | YES (c: C2) | YES — the man stays, nothing new for Undo | the landing ring. One man of an input's own row: NO, because that puck does not lift |
+| R8 | The Scheduler Board, the same drag | a drag | YES; a finger drag on the phone too | YES | the same |
+| R9 | The Inputs page's look-ahead, saved (the default window's pencil) | Save | YES — four settings, desk and phone (c: C3) | YES; a member has no pencil | nothing else |
+| R10 | Publishing a weekend or holiday no Leave War period covers — Edit Schedule (`leavewar/sync.ts publishFlagsBids`), alone and joined to the publish note | Publish | YES — the week, the Board, an amendment, the phone; no such sentence on a weekday (c: C4). Joined to an unanswered-OIL line: NOT WALKED (no door left an input unanswered in three tries) — §10 | YES | the note whole inside the phone's screen |
+| R11 | The week's warning list, the "Create the <year> period" button's hover (`ui/html.ts`) | hover | YES (c: C5) | YES | — |
+| R12 | The Scheduler Board's warning line, the same button's hover (`ui/board.ts`) | hover | YES (c: C5) | YES | — |
+| R13 | "Create the <year> period" pressed: the note "The <year> Leave War period is created…" (`ui/interactions.ts`) | a press | YES, from both lists; the Leave War opens on 2028, bidding closed | YES — once made, the button is gone | — |
+| R14 | Its refusal to a non-scheduler, "Only a scheduler can create a Leave War period" | a press | NO, because a member is drawn the warning line without the button (c: C5) — the words carried by `oilperiod-offer.test.tsx` | — | — |
+| R15 | The OIL day list's Save by a member, "Only a scheduler can answer from this list" (`ui/oilday.ts`) — not reachable on screen (facts.json q4c; c: C6 — no list, no chip, no bell line for a member): carried by `leavewar/holnotice.test.tsx` | a test | NO, because the window closes itself for a member | — | — |
+| R16 | The sign-off's OIL list (`ui/oilsign.ts`, the same save) | a press | NO, because its refusal is the same line as R15's, drawn only to a non-admin; the list's own Save as a scheduler was NOT WALKED (c could not make its fixture) — §10 | — | — |
 
 ## 3. The sizing lines (§7.0) — the host (Fable), chat 170, before any walker started
 
@@ -144,6 +144,37 @@ round's. Nothing else of either list is left out.
 
 ## 5. The orders walked, and what the screen said
 
+The walked build: `D:/rw4/build-new` — the app code of `39367445f`, bundle `index-2uyEcUJu.js`, logged in every world;
+the control, `main`'s `19637da31` (`index-CkMVta6F.js`); each served inside the test browser from its frozen folder.
+The host's own run first (`scripts/handpass/wr4-host.mjs`, 6 of 6), then three Opus walkers side by side. Their reports,
+whole: `parts/wr4/a-report.md`, `b-report.md`, `c-report.md`; **179 checks pass, none fail** (a 56, b 27, c 96).
+
+- **The ruled lines, as the screen printed them (a):** "LL changed to OL · Saber" (Ranger and Hex alike; nothing in
+  Saber's own bell); "Training changed to Meeting · Saber" for the titles "Brief", "Meeting", "Training · Safety";
+  "Renamed — was Training · Saber"; "Now LL (AM)", "Now LL (PM)", "Now all day", "Now Thu 16 Jul (AM)", "Now HL (AM)";
+  "Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber"; two changes, no "more"; four, "Now Thu 16 Jul,
+  Ace added, and 2 more changes · Saber"; "Hex taken off, Training changed to Meeting, and 1 more change · Saber" while
+  Hex reads only "You were taken off · Saber".
+- **Recorded, not ruled (a):** a Training "Range brief" → LL, "Training changed to LL, renamed — was Range brief"; an AM
+  LL → Training, "Now 00:00–12:00, LL changed to Training"; a Training 00:00–12:00 → LL (the app makes it a half),
+  "Now LL (AM), Training changed to LL"; an all-day LL → OL and AM, "Now OL (AM), LL changed to OL"; an AM leave only
+  moved, "Now Wed 22 Jul" (no "(AM)"); a title given / taken away / an Attach's "To" changed, "Renamed — was …". AM / PM
+  is offered on the twelve leave and medical kinds, a Title box on ten others — no kind has both, so "Now AM" has no
+  door. One save of the window cannot cancel an input.
+- **Doors (a, c):** the window from the Inputs list's row, the calendar's day card and Edit Schedule's pencil, the
+  in-place start box on Edit Schedule's row and a bar dragged on the Inputs calendar all write the same words.
+- **Saved lines and orders (b):** lines the OLD build saved read on the new one as they did ("Renamed — was LL · Saber",
+  "Now 00:00–12:00 am · Saber"), open their input on a tap, and stand beside new lines in the new words; an old
+  three-part line now ends "and 1 more change" (the host's run h4c). A reload, a sign-out, another week and the Leave
+  War and back leave a line as it was. Undo and Redo behave as on `main` but for the words. A member's own four-change
+  save passes the gate: "Now 10:00–11:00, Training changed to Meeting, and 2 more changes · Ranger". A replaced bid:
+  "Now Fri 11 Dec, OL changed to PL, and 1 more change · replaces your LL bid · Saber" (a Training never replaces a bid
+  in this app — only a leave or medical input does). The Leave War's copy: one line for one act.
+- **The notes (c):** "<typed> is not a time. Try 0900 or 09:00." at every in-place box, by Tab and by Enter, the box
+  put back, nothing saved, then a good time saves; "<callsign> — already in that seat" for every kind of seat on both
+  screens and by a finger on the phone; the four look-ahead notes; the publish note and the warning list's identical
+  sentence; the hover and the created-period note.
+
 ## 6. The cases carried by a test, each with what it proves
 
 - The bell's new words, old saved lines, the count of more changes, small letters and capitals:
@@ -157,15 +188,61 @@ round's. Nothing else of either list is left out.
 
 ## 7. The pictures
 
+`../img/handpass/2026-11-24-words-r4-walk/` — `host/` (6), `a/`, `b/`, `c/` (the cited runs; each report names the
+picture that decides each line), `d/` (the re-walk). The walkers' uncited first attempts are not kept in the project.
+Opened by the host: `host/h3-phone-bell.png` (the ruled three-change line, two rows, whole); `a/tap-r1/A1-tap-line-settled-phone.png`
+(the input's window after a tap on a line); `c/c6c7-103612/c7-longnote-wk.png` (the long note, §12).
+
 ## 8. The break tests
 
 ## 9. Errors seen
 
+None: no console error, page error or failed request in any cited run of the host or the three walkers. (WebKit's
+"Couldn't save that document…" on this PC is the test browser's, not the app's.)
+
 ## 10. What was NOT walked, and why
+
+- **A cancel of an input beside other changes** — no door makes one in the same save (a: A6 g); the schedule's own
+  cancel, a save of its own whose words this round did not change, was not reached by the walker's script. The words:
+  `bellnotices.test.tsx` round 4.
+- **A titled half day, "Now AM"** — no kind offers both a title and a half (a: the sweep). The words: the same test.
+- **The publish note joined to an unanswered-OIL line** — no door left an input filed with its OIL question open in
+  three tries (c: C4 b); an answered one beside it read rightly. The join: the code readers' question 6, §13.
+- **The OIL list** — a member reaches no list (c: C6); its Save as a scheduler was not driven (the fixture). Its one
+  changed line is the refusal, carried by `holnotice.test.tsx`.
+- **The Leave War's own retype of a leave** — it offers none ("change it on the Inputs page", b: B6 b).
+- **The input's window from the Scheduler Board's pencil** (a: A7 iv, the script could not press it) — walked in the
+  re-walk (d: D3).
+- **A finger's scroll of the bell's list on the phone** — the list's scroll was set directly (a: A8); the list's own
+  scrolling is not this change's.
+- **What only his iPhone shows:** how its own letters wrap the two-row line (the walk used Chromium's and WebKit's on
+  this PC) — on his look card.
 
 ## 11. The gate counts
 
 ## 12. What the walk found, and each disposition
+
+1. **A title in small letters that the new kind's name swallows read as a phantom rename** (a: A2 iii) — a Training
+   titled "meeting" made a Meeting read "Training changed to Meeting, renamed — was meeting · Saber". Confirmed by the
+   host with a failing test (`bellnotices.test.tsx`, "a Training titled "meeting" (small m)…"), new with this change
+   (the same family as Fable's B1). **Fixed** `68ab6d1db`: a title the new kind's name swallows by the app's own rule
+   (`engine/inputs.ts titleOf`, ignoring case) is no rename; a title a kind with no title box takes away still says so
+   (its own test). Re-walked: d's D1.
+2. **A 60-letter value typed in a time box runs about 10px past the note's border on the phone** (c: C7; the host
+   opened `c7-longnote-wk.png`). The note has named what was typed in the schedule's own time boxes since before this
+   change, so this is an older fault of the note's box, now also reachable from an input's row. Contrived (nobody types
+   60 letters without a space into a time box) — **filed**, `OUTSTANDING.md` `[UI-SLEEK-PASS]` round 4's leftovers; a
+   fix belongs in a real-browser test of the note's box, not in this words change.
+3. **Not faults — wordings nobody ruled, listed for a later round** (the same backlog item): "Now OL (AM), LL changed
+   to OL" names the new kind before saying it changed; "Now 00:00–12:00, LL changed to Training" says hours nobody
+   typed; an AM leave only moved says no "(AM)".
+4. **Leads checked:** the input window's last line on the phone ("Placed by … changed by …") continues on a second row
+   inside the window's own scrolling body — nothing cut (the host opened the picture). The week's Ground Programme row
+   still reading 08:00 after the Board saved 09:00 on the phone (c) — d's D4.
+5. **Seen in passing, as before this change, not this round's:** the input's window is titled by its people, so a tap
+   on "Range brief" opens "Hex +1 · 16 Jul"; the browser's own time picker turns the keys 2-5-6-0 into 9 pm and Save
+   then keeps a start after its end (an input may cross midnight); pressing outside the input's window on a desktop
+   does not close it (it sits beside the page by design).
 
 ## 13. The code reads (Astra and a fresh, blind Opus — the same brief; Fable beside them, high risk)
 
