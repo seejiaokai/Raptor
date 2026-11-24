@@ -21,7 +21,7 @@ import { versionFaceWarn } from '../engine/validate'
 import { isDraftVer, draftVerLabel } from '../engine/drafts'
 import { withDaySnap, withVersionFlags, refreshWaveReports } from './html'
 import { glyphSvg, EYE_INNER } from './glyphs'
-import { holdingPlace } from './dayswap'
+import { holdingPlace, swapKidsAround, kidsOfHTML } from './dayswap'
 import { useSheetFocus, useEscClose, locate, pressedByKeys, menuItems, escCloses } from './sheetfocus'
 import { wireBoardEscape } from './boardescape'
 import { reconcileMissionRoleOffer } from './mission-role-offer'
@@ -374,6 +374,8 @@ export function SchedBoard() {
      unrelated panel's change and keeps a board edit inside the phone
      budget. */
   const panelPrev = useRef<any>({})
+  /* a panel written section by section under the caret: what each of its sections shows now (put, below) */
+  const panelKids = useRef<Record<string, string[]>>({})
   const pendingPaint = useRef<{ di: number; nav: number } | null>(null)
   const [settledPaint, setSettledPaint] = useState(0)
   useEffect(() => {
@@ -421,7 +423,7 @@ export function SchedBoard() {
        by the setPage fix above, and this guard's ONE job is deciding
        whether the panels have a day to render, which SBDAY alone answers
        correctly. */
-    if (SBDAY == null) { panelPrev.current = {}; pendingPaint.current = null; return }
+    if (SBDAY == null) { panelPrev.current = {}; panelKids.current = {}; pendingPaint.current = null; return }
     /* WHILE A TEXT BOX HAS THE CARET, EVERY PANEL THAT DOES NOT HOLD IT IS STILL WRITTEN (W15, the Codex stack check,
        5 Oct 26; D509 — a timing warning "shows in the warning list"). The board used to write nothing at all until the
        caret left text; on the Tab route that is a whole day, and the list said "No conflicts" beside a line it should
@@ -437,10 +439,20 @@ export function SchedBoard() {
     const di = SBDAY
     const put = (el: HTMLElement, key: string, html: string) => {
       if (panelPrev.current[key] === html) return
-      /* the caret's own panel: owed, written when the caret leaves — and remembered as owed, not as what it last showed,
-         or an Undo that puts it back to that leaves the typed value on screen (the re-walk of the D994 batch, 19 Oct 26) */
-      if (caret && el.contains(caret)) { delete panelPrev.current[key]; return }
-      el.innerHTML = html; panelPrev.current[key] = html
+      /* the caret's own panel: owed, written whole when the caret leaves — and remembered as owed, not as what it last
+         showed, or an Undo that puts it back to that leaves the typed value on screen (the re-walk of the D994 batch,
+         19 Oct 26). INSIDE IT, EVERY SECTION BUT THE CARET'S IS WRITTEN NOW ([UI-SLEEK-PASS] round 4's leftovers (4),
+         25 Nov 26 — ui/dayswap.ts swapKidsAround): the board's whole day is this one panel, so an input's start typed under
+         Personal Inputs left its Ground Programme row one change behind for as long as the caret stayed on the board.
+         `panelKids` is what each of its sections now shows (an owed one marked so), for the next paint under the caret. */
+      if (caret && el.contains(caret)) {
+        const was = panelKids.current[key] || (typeof panelPrev.current[key] === 'string' ? kidsOfHTML(panelPrev.current[key]) : null)
+        const r = swapKidsAround(el, html, was, caret)
+        if (r.kids) panelKids.current[key] = r.kids; else delete panelKids.current[key]
+        if (r.held) delete panelPrev.current[key]; else panelPrev.current[key] = html
+        return
+      }
+      el.innerHTML = html; panelPrev.current[key] = html; delete panelKids.current[key]
     }
     /* with a caret, the writes above it must not move the box he is typing in */
     const set = (el: HTMLElement, key: string, html: string) => { if (caret && caret.isConnected) holdingPlace(caret, () => put(el, key, html)); else put(el, key, html) }

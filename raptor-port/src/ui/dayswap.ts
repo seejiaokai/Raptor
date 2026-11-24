@@ -178,6 +178,41 @@ export function swapDayAround(live: Element, html: string, prev: DayChunks | nul
   })
   return { chunks: shown, held }
 }
+/* THE SCHEDULER BOARD'S DAY, THE SAME HOLD AT THE GRAIN OF ITS SECTIONS ([UI-SLEEK-PASS] round 4's leftovers (4) — walker
+   c's lead, walker d's reproduction, 24 Nov 26; the same on `main`). The board draws a whole day as ONE panel, and while
+   the caret was anywhere in it the panel was not written at all: an input's start typed under Personal Inputs (0900,
+   Tab — the caret on to its End box) saved, and the Board's own Ground Programme row for it went on reading 08:00 until
+   the caret left the board, one change behind for as long as he typed on — and every other section of the day (Available
+   crew, Unavailable, the Common Programme, the duties) held the same way. The week writes every block but the caret's (swapDayAround,
+   above); this is the same for the board's panel, whose blocks are its top-level children — the day bar and one
+   section each (board.ts boardHTMLBody). Every changed section is written except the one that holds the caret, which is
+   remembered as OWED, so the paint after the caret leaves rewrites it. `prev` is the canonical markup of each child as
+   last written (null when none is known); anything that does not line up child for child — a section added or
+   removed, a word outside any element — writes nothing, as before. Hands back what is now shown, and whether anything
+   is still owed. */
+export function swapKidsAround(live: Element, html: string, prev: string[] | null, keep: Element): { kids: string[] | null; held: boolean } {
+  const tpl = document.createElement('template')
+  tpl.innerHTML = html
+  const loose = Array.from(tpl.content.childNodes).some(n => n.nodeType !== 1 && !(n.nodeType === 3 && !(n.textContent || '').trim()))
+  const nk = Array.from(tpl.content.children), lk = kidsOf(live)
+  if (loose || !prev || prev.length !== nk.length || lk.length !== nk.length) return { kids: prev, held: true }
+  let held = false
+  const kids = nk.map((n, i) => {
+    const s = n.outerHTML
+    if (s === prev[i]) return s
+    const l = lk[i]!
+    if (l === keep || l.contains(keep)) { held = true; return OWED }
+    l.replaceWith(n); return s
+  })
+  return { kids, held }
+}
+/* the canonical markup of each top-level child of a panel's string — what swapKidsAround compares, parsed, never read
+   off the live (decorated) nodes */
+export function kidsOfHTML(html: string): string[] {
+  const tpl = document.createElement('template')
+  tpl.innerHTML = html
+  return Array.from(tpl.content.children).map(c => c.outerHTML)
+}
 /* run a write that may move things above the caret, and put the page back so the box he is typing in stays where it
    was on screen (Chromium's own scroll anchoring usually has already; Safari has none) */
 export function holdingPlace(caret: Element, write: () => void): void {
