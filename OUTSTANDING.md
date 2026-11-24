@@ -219,10 +219,10 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [APP-FONTS-NOT-LOADED] — the app names fonts it never loads, so each device draws its own — his call.
 - [ONE-RULE-SMALL-WORDS] — ten small sentences and marks that read oddly — for the words pass; two wordings his.
 - [UI-SLEEK-PASS] — the sleeker interface (D765): the first word rounds are live; the rest page by page, on his word.
+- [APP-SPEED] — the app's speed, his go of 24 Nov 26 (D2480): a hidden timing readout for the real slow computer first, then the week drawing the days in view first with both schedule pages kept ready, then no file re-checks on repeat visits; four more ideas wait.
 - [PERF-RESIDUALS] — measured speed wins held back; two change wording or feel — his call.
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 - [CHAT66-OPEN-ROUND] — his answer to the night of 11 Nov 26's question 1 (the bell) and that night's small round of questions, put to him only when he says (D994).
-
 
 **Checks and tooling**
 - [DATECAL-GLIDE-TEST-FLAKE] — the date calendar's "a glide caught, held still, then dragged" test failed on GitHub in six runs on 17 Nov 26, each passing on re-run, in its setup's 28 quick arrow presses; first find out whether the app itself loses quick presses on a slow machine, then fix (pull request 802 waits, test-only).
@@ -267,7 +267,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [SKILL-FUSION-WRITING] — the writing guide applied to how the agent writes to him (D835): to draft, have read and put to him — his to place.
 - [GUIDE-MAP-ROWS] — the project guide's map has long rows that could move to its full text — his question.
 - [EVIDENCE-RECORD-SIZE] — the big machine-written records and pictures: kept or moved — his call.
-- [USER-GUIDE] — a guide for users and admins — wanted, not started, not urgent.
+- [USER-GUIDE] — a guide for users and admins — wanted, not urgent; a first piece made 24 Nov 26: the guide for F-16 schedulers and training appointment holders (`raptor-port/docs/squadron-guide/`), their answers still to come.
 
 **Database step — at the end (D473)**
 - [M365-MOVE-PLAN] — the M365 move plan, his strikes owed.
@@ -1730,6 +1730,16 @@ section folds are next touched. (Its first half — the wave show/hide toggle le
   screen is already collected in `docs/remarks-vocabulary.md` — **keep that
   file true as rules are added.** Still to gather: the day/AL publishing flow,
   the roles split, what each warning means in practice, the phone gestures.
+- **A first piece, 24 Nov 26 (chat 159, his ask):** a short guide for F-16 schedulers and training appointment
+  holders seeing the app for the first time — what it is, the pages, plan to published, the flags, every Logic
+  setting and check (coded S1–S23, C1–C53, read out of the Logic page's own words), how SC MAIN, SC SPARE, AVALON
+  and BB are flagged, the typed words that switch a rule on, what is built around the F-15, and eleven questions for
+  them. A PDF, one HTML page and the questions as plain text: `raptor-port/docs/squadron-guide/` (its README says
+  how it is rebuilt). By his second ask the page is in the app's look and interactive, and published for him as a
+  private Artifact page (the address is in that README). Live 24 Nov 26 on his "merge live" (pull request 835). Offered,
+  his call: the guide on the app's own address, so the group's pinned link serves it; answers gathered on the page for
+  him instead of copied into the chat. He sends it himself. **Next:** their answers, when they come, are put to him as rulings to
+  make — they feed `[SINGLE-SEAT]` and the multi-squadron build; nothing is built from them without his word.
 
 ### [DB-SYNC-MODEL] How the app shares and locks once it is in the database — his idea, to be designed now, built with the adapter (29 Sep 26)
 **Asked again at this step (his D2316, 22 Nov 26):** whether a sign-off name held while the day's OIL list is open should drop when another scheduler changes the day behind the list — kept as built until then (the OIL page).
@@ -1972,13 +1982,15 @@ comment says so). The earlier lists are in git history.
 **Place:** with the rules engine's next behaviour change. Found by `git grep` on 24 Sep 26 (the spring clean's red team,
 Fable finding 10, Astra finding 11).
 
+### [APP-SPEED] The app's speed: less waiting at start-up and between pages, above all on a slow computer (filed 24 Nov 26, chat 160; his go D2480)
+His go of 24 Nov 26 (D2480), in this order: (1) a hidden timing readout — a switch on the app's address, like `?savefail` — to measure the real slow computer; (2) the week drawing the days in view first, with both schedule pages kept ready (high-risk, Fable); (3) no file re-checks on repeat visits. Not built: the sign-in card shown early (no sign-in once in Power Apps). Four more ideas wait, two of them his call. The times measured that day, each step's bounds, the waiting ideas and the measuring script: `raptor-port/docs/superpowers/plans/2026-11-24-app-speed-plan.md`. **Place:** a job of its own, in a fresh chat, beside the multi-squadron build; step 1 first.
+
 ### [PERF-RESIDUALS] Speed wins measured and deferred — two are his call (filed 24 Sep 26)
 From `HANDOFF.md` §In flight (archived 24 Sep 26): several speed wins are measured and deferred — the seven
 day-strings sort, the JS-bound drop, hover-boundary repaints, the `body.dnd` decorations, the one `validate`
 call; two are the owner's call because they change wording or feel. The ledger and each one's measurement:
 `raptor-port/docs/performance.md` (Part 2; §Dead ends says what not to retry). **Place:** when a speed complaint
 or a board change comes near one of them; put the two that change wording or feel to him first.
-
 
 ### [ITFLOW-OIL-RESHOOT] Re-shoot the IT flow guide's Leave War pictures once the OIL words change (29 Sep 26)
 **Also for the next re-shoot (15 Nov 26 — D2009, found by the rules check batch 2's roll-call):** the checks "On leave + flying" and "Downchit + flying" are now named "On leave + planned" and "Downchit + planned" on the warning list, the board, Insights and the Logic page; the two captions are corrected in `raptor-port/scripts/itflow/content.mjs` (the r1-warn step and the downchit line) — the deck's Issues picture and the PDF carry the old name until the rebuild he asks for (D403).

@@ -1285,6 +1285,19 @@ sides.
 **Suggested improvement:** before a short form goes to its readers, run four checks against the full wording, bullet by bullet: every verb kept apart from its neighbour (take / wait / none); every "and also" clause carried or pointed to; the pointer's moment is the EARLIEST one at which the rule is used, found by searching the guides for who cites the rule; every list either quoted whole or said to be partial, with both its sides named. Put the four in the rules diet's method beside "a move never rewords".
 **Principle:** shortening a rule fails in predictable places — merged verbs, dropped second clauses, late trigger moments and loosened list boundaries — so those four are checked by the writer first, and the independent readers are left the faults that are not predictable.
 
+### Observation 1041: A build already in the folder may be another branch's — check before taking pictures from it
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 159 — the guide for another squadron's schedulers; pictures of the live app were needed while another chat held the checks lock
+**Skill:** walk scripts and mock-ups (`raptor-port/docs/walk-scripts.md`; the mock-up guide)
+**Type:** open-source
+**Phase/Area:** before a picture script or walk is pointed at a build that is already on disk or already served
+
+**Issue:** the main folder's built app was a day old and the folder now stood on `main`, so the build looked usable. The folder's own branch history at the build's time showed another chat's unmerged branch had built it (69 code files different from `main`). Pictures from it would have shown work that is not live. Second, in the same job: a guide written by hand from memory of the app had one wrong and six overstated statements out of about forty-five, all in the sentences that summarised who may do what or which checks apply — the tables read out of the app's own text had none.
+**Suggested improvement:** in the walk-scripts guide's "before the first picture" steps: when a build was not made in this chat, compare its time with the folder's branch history (`git reflog --date=iso`) and the code difference from the intended branch; if it differs, wait for the lock and build. In the guide-writing notes: anything the app already states in its own words is read out of the app by script, and only the joining sentences are written by hand and sent to a fresh reader.
+**Principle:** a build on disk carries no label saying which code made it, so its source is established from the folder's history before anything is concluded or pictured from it; and a summary of rules is safest generated from the place the rules are stated, with hand-writing kept to what cannot be generated.
+
 ### Observation 1004: A drawing helper's script checked button rows but not text cut off inside a select
 
 **Status:** OPEN
