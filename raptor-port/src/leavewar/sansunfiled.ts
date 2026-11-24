@@ -31,7 +31,7 @@ import { sansAvailOn, INPUTS, isSansAvail, namedOf, inputSpanIso } from '../engi
 import { homeUnitOf, rosterOf } from '../engine/roster'
 import { getVersion as raptorVersion } from '../state/store'
 import { effectiveToday } from '../state/person-delete'
-import { NOTICES, noticeSansBack, type Notice, type SansBackHow } from '../state/notices'
+import { NOTICES, noticeSansBack, setSansFiledProbe, type Notice, type SansBackHow } from '../state/notices'
 import { seenOf, seenSavedOf, NOTICESEEN_PFX } from '../state/noticeseen'
 import { me } from '../state/perms'
 import { setSansTickWatch } from '../state/quals-write'
@@ -121,7 +121,9 @@ function unfiledNow(pid: string, today: string): string[] {
   /* the days of his OWN squadron's schedule — the inputs read are the schedule in view's (engine/inputs.ts inputsOn), so a
      squadron in view other than his own answers nothing rather than something wrong */
   if (homeUnitOf(pid, today) !== UNIT) return []
-  const start = from && from > today ? from : today
+  /* every SANS day of his from today, by either cause (the walk's W11-1, 24 Nov 26): a man ticked SANS today and posted out
+     as SANS from a date ahead is SANS now, by the tick — the days before his posting are his too (sansOnP, below) */
+  const start = today
   const days: string[] = []
   for (const [wk, list] of weeksHeld()) {
     // any: the same engine day
@@ -208,13 +210,16 @@ export function sansUnfiledLines(pid: string): Notice[] {
      reads it by its id (state/noticeseen.ts). A man with no posting: his first such day's. */
   const at = midnightOf(from ?? days[0]!)
   const base = dueBase(pid), today = effectiveToday()
+  /* (his date in the title only while he is not SANS yet: one SANS today by his tick has no SANS date ahead — W11-1) */
+  // any: the engine's person record is untyped (a verbatim port, src/engine/people.ts)
+  const ahead = !!from && from > today && !sansOnP((PEOPLE as any)[pid], today)
   const ids = seenOf(pid).ids, read = readOf(ids, base)
   /* (lit again only by a day counted since he read it — never by a day dropping off, a filing deleted or a week loaded) */
   const lit = !read || days.some(d => { const g = planOf(pid, d); return g > 0 && g > (read.get(d) ?? -1) })
   const id = (!lit && ids.find(x => x.startsWith(`${base}~`))) || dueToken(pid, base, days, today)
   /* (his date in the title only while it is ahead — D2394 2b, "a man with no SANS date ahead", over D2340's older "the
      words stay the same after the date" by D90; the coordinator's reading 5, for him to confirm. The id does not change) */
-  return [{ id, to: pid, by: null, at, iid: '', name: 'Your SANS availability', day: days[0]!, what: [{ k: 'sansdue', days, ...(from && from > today ? { from } : {}) }] }]
+  return [{ id, to: pid, by: null, at, iid: '', name: 'Your SANS availability', day: days[0]!, what: [{ k: 'sansdue', days, ...(ahead ? { from } : {}) }] }]
 }
 
 /* ---- WHEN HIS SANS POSTING OR TICK CHANGES (his D2391, 23 Nov 26; D1693, D1710 — every bell line is taken back by the undo
@@ -352,9 +357,20 @@ export function sansUntickOwed(c: { collection: string; id: string; op: string; 
 type Noted = { due: string[]; filed: string[]; base: string; at: number }
 let BEFORE: { env: unknown; men: Map<string, Noted> } | null = null
 let BEFORE_WIRED = false
+/* HAS HE A SANS AVAILABILITY RECORD COVERING THIS DAY, shown or hidden (the bell's "hidden" sentence asks: state/notices.ts) */
+function sansFiledOn(pid: string, iso: string): boolean {
+  // any: an input record is untyped (a verbatim port, src/engine/inputs.ts)
+  for (const r of INPUTS as any[]) {
+    if (!r || !isSansAvail(r.type) || !(namedOf(r) as Array<{ p?: unknown }>).some(e => String(e.p) === pid)) continue
+    const sp = inputSpanIso(r)
+    if (sp && sp[0] <= iso && iso <= sp[1]) return true
+  }
+  return false
+}
 export function wireSansBackBefore(): void {
   if (BEFORE_WIRED) return
   BEFORE_WIRED = true
+  setSansFiledProbe(sansFiledOn)
   onPipelineBegin(() => {
     const men = new Map<string, Noted>()
     const today = effectiveToday()
@@ -445,11 +461,12 @@ export function sansBackCovered(o: { who: string; day: string; o: string; how?: 
   const p = Array.isArray(n.what) ? loose(n.what[0]) : null
   if (!p) return false
   /* (what it says changed is what this command changed, D2391 — and a "taken back" is only ever a restore's follow-up) */
-  if (p.back !== undefined) return false
+  if (p.back !== undefined || p.again !== undefined || p.ref !== undefined) return false
   if (p.how !== undefined && (p.how !== o.how || p.to !== o.to)) return false
-  /* (a day it carries from an earlier line may be before this posting's date: `hid` is checked exactly, below) */
+  /* (a day it carries from an earlier line may be before this posting's date, and so may a reminder's day his own tick
+     covered — W11-1: both are checked exactly, below) */
   const days = p.days, hid = p.hid === undefined ? [] : p.hid
-  if (!isoRun(days, o.day) || !isoRun(hid, '')) return false
+  if (!isoRun(days, '') || !isoRun(hid, '')) return false
   const ent = noted(o.who)
   if (!ent) return false
   /* (his read record as saved: the before-image where this command changes it) */

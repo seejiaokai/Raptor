@@ -108,7 +108,7 @@ export type NoticePart =
      tick taken off. `days` — the reminder he had READ (else empty): only ever the reason a line is owed, never shown.
      `hid` — his SANS availability the change HID, today on (D2341). `back` — this line is the "taken back" of an untick
      line he had read, its Undo pressed (D1693, D1699). A line with no `how` was written before D2391 (demo data only). */
-  | { k: 'sansback'; days: string[]; hid?: string[]; how?: SansBackHow; to?: string; back?: true; over?: string[]; kept?: true }
+  | { k: 'sansback'; days: string[]; hid?: string[]; how?: SansBackHow; to?: string; back?: true; over?: string[]; kept?: true; again?: true; ref?: string }
 
 /** what a posting out did on its date, for the admins' bells ([POSTOUT-RUN-NOTICE]) */
 export type PoOutcome = 'overseas' | 'delete' | 'sans' | 'none'
@@ -889,7 +889,7 @@ export function noticePostingBack(to: string, by: string | null, who: string, o:
  *  (leavewar/sansunfiled.ts sansTakeBack), by the admin who did it — never to him. `day` — the posting's date, or the day
  *  of the untick; `said` — what changed (`how`, the new date `to`, `back` for an untick's "taken back"). */
 export function noticeSansBack(to: string, by: string | null, days: readonly string[], day: string, at: number = Date.now(), hid: readonly string[] = [],
-  said: { how?: SansBackHow; to?: string; back?: true; over?: string[]; kept?: true } = {}): boolean {
+  said: { how?: SansBackHow; to?: string; back?: true; over?: string[]; kept?: true; again?: true; ref?: string } = {}): boolean {
   if (!here(to) || (by != null && to === by)) return false
   const id = mint(at)
   NOTICES.push({ id, to, by, at, iid: '', name: 'Your SANS availability', day, what: [{ k: 'sansback', days: [...days], ...(hid.length ? { hid: [...hid] } : {}), ...said }] })
@@ -898,10 +898,15 @@ export function noticeSansBack(to: string, by: string | null, days: readonly str
 }
 /* THE DAYS A LINE SAYS ARE HIDDEN THAT STILL ARE (D2394 Q6): a day he is SANS on again shows and counts again by itself
    (D2341), so the line stops naming it. Read from his record as it stands, never stored. */
+/* …and still filed: a filing taken away since (an Undo, a delete) is not "hidden" any more — it is gone. Asked of the war's
+   side (leavewar/sansunfiled.ts sansFiledOn, installed by its wiring), which reads the records; none installed, every day
+   named is taken as still filed. */
+let SANS_FILED: ((pid: string, iso: string) => boolean) | null = null
+export function setSansFiledProbe(fn: ((pid: string, iso: string) => boolean) | null): void { SANS_FILED = fn }
 // any: a part read from a stored line, its fields unchecked until here; the engine's person record is untyped
 function sansStillHidden(to: string, p: any): string[] {
   const person: any = PEOPLE[to]
-  return (Array.isArray(p?.hid) ? sansDays({ days: p.hid }) : []).filter(d => !sansOnP(person, d))
+  return (Array.isArray(p?.hid) ? sansDays({ days: p.hid }) : []).filter(d => !sansOnP(person, d) && (!SANS_FILED || SANS_FILED(to, d)))
 }
 /* IS ANYTHING OF THIS LINE LEFT TO SAY? (D2394 Q6 — "the line with it if nothing is left"; the coordinator's reading 3: the
    hidden sentence goes once none of its days is hidden, and the line with it unless something else is owed — a reminder
@@ -911,7 +916,12 @@ function sansBackLeft(n: Notice): boolean {
   // any: a notice part is read by its kind
   const p: any = (n.what || [])[0]
   if (p.back) return true
-  if (NOTICES.some(x => x.to === n.to && ((x.what || [])[0] as any)?.k === 'sansback' && (((x.what || [])[0] as any).over as unknown[] | undefined)?.includes(n.id))) return false
+  /* (a Redo's line tells again what its line said: it stands only while that line does, and stands in its place) */
+  if (p.again && !NOTICES.some(x => x.id === p.ref)) return false
+  if (NOTICES.some(x => {
+    const q: any = x.to === n.to ? (x.what || [])[0] : null
+    return !!q && q.k === 'sansback' && ((q.over as unknown[] | undefined)?.includes(n.id) || (q.again && q.ref === n.id))
+  })) return false
   if (Array.isArray(p.hid) && p.hid.length > 0 && sansStillHidden(n.to, p).length > 0) return true
   return !!p.how && (sansDays(p).length > 0 || !!p.kept)
 }

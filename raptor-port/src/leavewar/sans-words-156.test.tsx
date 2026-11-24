@@ -25,7 +25,7 @@ import { toast, toastBatch } from '../ui/toast'
 import { _resetFloatWins } from '../ui/winorder'
 import { installGlobalUndo } from '../state/undo-wire'
 import { _resetTimeline } from '../undo/timeline'
-import { globalUndo } from '../undo'
+import { globalRedo, globalUndo } from '../undo'
 import { commit as cmdCommit } from '../command'
 import { schedStore, resyncBeforeEnlist, schedApplyEnd } from '../state/sched-commit'
 import { peopleStore, settingsStore, finishPeopleWrite } from '../state/people-settings-commit'
@@ -589,5 +589,113 @@ describe('a "moved" line always carries its new date', () => {
     let owed: unknown = 'threw'
     try { owed = sansBackOwed({ collection: 'lw.postouts', op: 'put', before: { to: THU, poOutcome: 'sans' }, after: { to: 'junk', poOutcome: 'sans' } }) } catch { /* refused */ }
     expect((owed as any)?.how === 'later' || (owed as any)?.how === 'earlier').toBe(false)
+  })
+})
+
+/* THE WALK'S W11-1 (24 Nov 26, both sizes): a man ticked SANS today AND posted out as SANS from a date ahead is SANS now, by
+   the tick: his reminder named only the days from the posting, under the posting's date */
+describe('W11-1 — ticked SANS and posted out as SANS: every SANS day, and no date ahead in the title', () => {
+  const ticked = () => {
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    expect(setShowSans(true)).toBe(true); raptorNotify()
+  }
+  it('posted from Fri 17: Wed 15 and Thu 16 the tick covers are named, under "Your SANS availability is needed."', () => {
+    ticked(); plan(SATI); posted()
+    expect(due().length).toBe(1)
+    /* (Hex is on the demo's Wed 15 and Thu 16) */
+    expect(noticeWords(due()[0]!)).toEqual({ name: 'Your SANS availability is needed.', day: '', what: 'You\'re planned on Wed 15, Thu 16, Sat 18 Jul with nothing filed. Tap to file for availability.', who: '' })
+  })
+  it('posted from Sat 18: no "SANS from Sat 18 Jul." when the tick already covers Fri 17', () => {
+    ticked(); plan(5 - 1); posted(SAT)
+    expect(noticeWords(due()[0]!).name).toBe('Your SANS availability is needed.')
+    expect((due()[0]!.what[0] as any).days).toEqual([WED, THU, FRI])
+  })
+  it('stays: posted only, not ticked: his date in the title, his days from it', () => {
+    plan(SATI); posted()
+    expect(noticeWords(due()[0]!).name).toBe('You\'re SANS from Fri 17 Jul.')
+    expect((due()[0]!.what[0] as any).days).toEqual([SAT])
+  })
+  it('the other "SANS from" words already read his tick: the greyed button and the cut-run note', () => {
+    ticked(); posted(SAT); signInAs('hex')
+    render(<SansDay iso={THU} hi={null} onClose={() => {}} />)
+    expect(screen.queryByTestId('sd-addwhy')).toBeNull()
+    expect(sansRunTrim('rocky', WED, SAT)).toBeNull()
+  })
+})
+
+/* WHAT A WALK CANNOT STAGE (a sign-out ends the admin's Undo list, D148): Hex reads on his own device, his read record
+   written as his "Mark all read" writes it */
+describe('a change line, then Saber\'s Undo and Redo', () => {
+  const readAll = () => { mem['sqn142_noticeseen:rocky'] = JSON.stringify({ upto: 0, ids: noticesFor('rocky').map(n => n.id) }); noticeSeenLoad() }
+  const unticked = () => {
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    plan(SATI)
+    expect(commitNewInput(draft(FRI, SAT))).toBe(true)
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    expect(backs().length).toBe(1)
+  }
+  it('(a) the Quals untick\'s line, read, then Saber\'s Undo: struck, "taken back · Saber", unread', () => {
+    unticked(); readAll()
+    expect(globalUndo().ok).toBe(true); raptorNotify()
+    expect(backs().length).toBe(1)
+    expect(noticeWords(backs()[0]!)).toEqual({ name: 'You\'re no longer SANS.', nameStruck: true, day: '', what: 'taken back', who: 'Saber' })
+    expect(isUnread(backs()[0]!, 'rocky')).toBe(true)
+  })
+  it('(b) …then Saber\'s Redo: the line is told again, unread, and lights his bell', () => {
+    unticked(); readAll()
+    expect(globalUndo().ok).toBe(true); raptorNotify()
+    readAll()
+    expect(unreadFor('rocky')).toBe(0)
+    expect(globalRedo().ok).toBe(true); raptorNotify()
+    const told = backs().filter(n => !noticeWords(n).nameStruck)
+    expect(told.length).toBe(1)
+    expect(noticeWords(told[0]!).name).toBe('You\'re no longer SANS.')
+    expect(noticeWords(told[0]!).what).toContain('Fri 17, Sat 18 Jul')
+    expect(isUnread(told[0]!, 'rocky')).toBe(true)
+    expect(unreadFor('rocky')).toBeGreaterThanOrEqual(1)
+  })
+  it('(b) …and with nothing read between the Undo and the Redo, the line told again is still unread', () => {
+    unticked(); readAll()
+    expect(globalUndo().ok).toBe(true); raptorNotify()
+    expect(globalRedo().ok).toBe(true); raptorNotify()
+    const told = backs().filter(n => !noticeWords(n).nameStruck)
+    expect(told.length).toBe(1)
+    expect(noticeWords(told[0]!).name).toBe('You\'re no longer SANS.')
+    expect(isUnread(told[0]!, 'rocky')).toBe(true)
+  })
+  it('(b) …and Undo once more takes that one back too', () => {
+    unticked(); readAll()
+    expect(globalUndo().ok).toBe(true); raptorNotify()
+    expect(globalRedo().ok).toBe(true); raptorNotify()
+    readAll()
+    expect(globalUndo().ok).toBe(true); raptorNotify()
+    expect(backs().filter(n => !noticeWords(n).nameStruck)).toEqual([])
+  })
+  it('(c) the reminder he read before the untick is not made unread by the Undo alone', () => {
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    plan(SATI); readAll()
+    expect(dueUnread()).toBe(0)
+    expect(updatePersonField('rocky', { tick: 'san' })).toBeNull(); raptorNotify()
+    expect(due()).toEqual([])
+    expect(globalUndo().ok).toBe(true); raptorNotify()
+    expect(due().length).toBe(1)
+    expect(dueUnread()).toBe(0)
+  })
+  it('"Undo post out" is no Undo step (D350): its line, read, is left as it was by Saber\'s Undo', () => {
+    posted(); expect(commitNewInput(draft(FRI, SAT))).toBe(true)
+    expect(undoPostOut('rocky')).toBe(true); raptorNotify()
+    readAll()
+    const before = noticeWords(backs()[0]!)
+    expect(before.name).toBe('You\'re no longer posted out as SANS.')
+    globalUndo(); raptorNotify()
+    expect(backs().map(n => noticeWords(n).nameStruck)).not.toContain(true)
+  })
+  it('…and where that Undo took the filing away, the line no longer says it is hidden', () => {
+    posted(); expect(commitNewInput(draft(FRI, SAT))).toBe(true)
+    expect(undoPostOut('rocky')).toBe(true); raptorNotify()
+    readAll()
+    expect(globalUndo().ok).toBe(true); raptorNotify()
+    expect(mine()).toEqual([])
+    expect(backs().map(n => noticeWords(n).what).join(' ')).not.toContain('filed for')
   })
 })

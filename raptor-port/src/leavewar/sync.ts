@@ -1788,11 +1788,13 @@ export function followUpsFor(changes: ReadonlyArray<{ collection: string; op: st
     if (!n || typeof n !== 'object') continue
     /* HIS "NO LONGER SANS" LINE, ITS UNTICK UNDONE (D2391's C with D1693, D1699): the one SANS line an Undo step holds (a
        posting is no Undo step, D350). Read, its title comes back struck, "taken back · Saber"; unread, it simply goes. A
-       Redo puts the line back as it was and says no more. */
+       Redo puts the line back, and where a "taken back" stands for it tells it again: a fresh copy, unread, in its place
+       (`again`, its `ref` the line — as the war's own lines say "again", D1699; no new words). */
     // any: a notice part is read by its kind, the fields differing by kind (state/notices.ts)
     const sw: any = (n.what || [])[0]
     if (sw && sw.k === 'sansback') {
-      if (dir === 'undo' && sw.how === 'untick' && !sw.back && !noticeLeftBell(n)) out.push({ of: n, to: String(n.to), name: n.name, day: n.day, iid: '', what: [{ k: 'sansback', days: [], how: 'untick', back: true }] })
+      if (sw.how === 'untick' && !sw.back && !sw.again && !noticeLeftBell(n)) out.push({ of: n, to: String(n.to), name: n.name, day: n.day, iid: '',
+        what: [dir === 'undo' ? { k: 'sansback', days: [], how: 'untick', back: true, ref: n.id } : { ...sw, again: true, ref: n.id }] })
       continue
     }
     if (!isWarNotice(n)) continue
@@ -1845,7 +1847,7 @@ export function followUpsOwed(moved: ReadonlyArray<{ collection: string; op: str
     let last: Notice | null = null
     for (const x of notices) {
       const q = (x.what || [])[0]
-      if (x.to === n.to && q?.k === 'lw' && q.again && q.ref === n.id && (!last || !(x.at < last.at))) last = x
+      if (x.to === n.to && (q?.k === 'lw' || q?.k === 'sansback') && q.again && q.ref === n.id && (!last || !(x.at < last.at))) last = x
     }
     if (dir === 'undo') {
       if (!read(n.to, n)) continue
@@ -1854,7 +1856,7 @@ export function followUpsOwed(moved: ReadonlyArray<{ collection: string; op: str
          "taken back" he already holds still stands as what he knows (D1216); read, he is told "taken back" once more. */
       if (last && !read(n.to, last)) continue
     } else {
-      if (!notices.some(x => { const q = (x.what || [])[0]; return x.to === n.to && q?.k === 'lwback' && q.ref === n.id })) continue
+      if (!notices.some(x => { const q = (x.what || [])[0]; return x.to === n.to && ((q?.k === 'lwback' && q.ref === n.id) || (q?.k === 'sansback' && !!q.back && q.ref === n.id)) })) continue
       /* an "again" line he has not read is shown again with its line (M9): no second one beside it */
       if (last && !read(n.to, last)) continue
     }
@@ -1993,7 +1995,7 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
     for (const f of made) {
       const who = by != null ? String(by) : null, part = f.what[0]!
       /* (his SANS untick's "taken back": its own writer, the line word for word as followUpsFor gives it) */
-      if (part.k === 'sansback') wrote += noticeSansBack(f.to, who, [], f.day, Date.now(), [], { how: part.how, back: true }) ? 1 : 0
+      if (part.k === 'sansback') { const { k: _k, days, hid, ...said } = part; wrote += noticeSansBack(f.to, who, days, f.day, Date.now(), hid ?? [], said) ? 1 : 0 }
       else wrote += noticeWar([f.to], who, part)
     }
   })
