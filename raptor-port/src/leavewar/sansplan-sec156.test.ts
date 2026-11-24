@@ -4,7 +4,7 @@
    line away.
    SINCE HIS D2560 (24 Nov 26) the first is no longer a question of who may write `settings/sansplan:<pid>:<iso>` — that
    hidden mark is gone, with its permission checks, and nothing reads a row of it. His reminder lights again only for a
-   day not in it when he read it, by his own read record, which only he writes. Every case below is kept and now pins
+   day not in it when he read it, by his own read record, which only he writes (whoever runs the command, since round 4: sans-seen-sec-r4.test.ts). Every case below is kept and now pins
    that: whatever anyone else writes, his read reminder stays read and a lit one stays lit. Round 3's own cases:
    sans-reads-r3.test.tsx.
    Fixture: test-support/msq-world.ts (Wed 15 Jul 26; Saber master 142, Hunter 142 admin, Ranger 142 member, Kestrel 149
@@ -60,7 +60,9 @@ describe('SEC156-1 — another squadron\'s admin cannot light a 142 man\'s remin
     signInAs('kestrel')
     const env = (changes: any[]): any => ({ seq: 1, at: '', origin: 'user', scope: { module: 'settings' }, type: 'account.update', actor: deriveActor(), changes })
     const put = (id: string, after: any) => ({ op: 'put', collection: 'settings', id, before: null, after })
-    expect(ownershipViolation(env([put('noticeseen:rocky', { upto: 0, ids: [] })]))).toMatch(/another squadron's man's read record/)
+    /* (still refused; the reason reads "another person's" since round 4's SEC-R4-1 — a read record is its owner's alone,
+       whoever writes, asked before the admin's own-squadron check: sans-seen-sec-r4.test.ts) */
+    expect(ownershipViolation(env([put('noticeseen:rocky', { upto: 0, ids: [] })]))).toMatch(/another person's read record/)
   })
   it('end to end: Kestrel cannot light Hex\'s read reminder again with no day new to him', () => {
     readReminder()

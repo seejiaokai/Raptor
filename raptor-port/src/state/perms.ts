@@ -3025,7 +3025,8 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
   const self = a.personId == null ? null : String(a.personId)
   let today: string | null = null, rows: UnitRows | null = null
   /* HIS OWN SQUADRON'S MAN: an admin of the person's home today, over the rows before the command. The read records
-     (`seen:`, `noticeseen:`, `apprseen:`, `reqseen:`) and every bell line ask this alone — but for the one audience line
+     (`seen:`, `apprseen:`, `reqseen:` — the bell's own, `noticeseen:`, is its owner's alone since round 4's SEC-R4-1,
+     ownershipChecks) and every bell line ask this alone — but for the one audience line
      below (fix read 2 — the security read's 3: the audience half was asked of every line and all four read records, so
      once Hunter, 142's admin, held Plan of 149, 149's admin rewrote his read records and took 142's lines off his bell). */
   const ownsHome = (pid: string): boolean => {
@@ -3191,7 +3192,9 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
     const id = String(c.id)
     /* (job 2, 19 Nov 26 — the security read's SEC-1: an admin's Approvals moment, `apprseen:<pid>`, and his record of
        the access requests he has seen, `reqseen:<account>`, are read records too — 142's plain admin set 149's admin's) */
-    const pfx = id.startsWith('seen:') ? 'seen:' : id.startsWith('noticeseen:') ? 'noticeseen:' : id.startsWith('apprseen:') ? 'apprseen:' : id.startsWith('reqseen:') ? 'reqseen:' : null
+    /* (a bell's read record, `noticeseen:<pid>`, is no longer asked here: it is its owner's alone whoever writes, asked
+       of every actor before this check — ownershipChecks, round 4's SEC-R4-1 — so only an admin's own row reaches here) */
+    const pfx = id.startsWith('seen:') ? 'seen:' : id.startsWith('apprseen:') ? 'apprseen:' : id.startsWith('reqseen:') ? 'reqseen:' : null
     if (!pfx) continue
     const pid = pfx === 'reqseen:' ? String(ACCOUNTS_LIST.find(x => x.id === id.slice(pfx.length))?.pid ?? '') : id.slice(pfx.length)
     if (!pid) continue                                  // (an account with no person names no squadron to judge by)
@@ -3433,7 +3436,9 @@ function sansBackEraseViolation(env: CommitEnvelope): string | null {
    round 3's: a member lit another man's reminder by naming a finished planning as his projection's cause (Astra F1), and
    the stamp could be frozen so nobody was told again (the security read's SEC-R3-1, SEC-R3-2). The reminder now lights
    again only for a day not in it when he read it, read from his own read record (leavewar/sansunfiled.ts readOf), which
-   only he writes (the `noticeseen:` row, below and in adminOwnerViolation). Nothing reads a `sansplan:` row any more. */
+   only he writes — true of every actor only since round 4's security read (SEC-R4-1): the app's own projection and an
+   admin's command wrote it until then (the `noticeseen:` block in ownershipChecks, before every role's early return; a
+   member's own command type, below). Nothing reads a `sansplan:` row any more. */
 export function ownershipViolation(env: CommitEnvelope): string | null {
   if (env.origin === 'user' && RETIRED_TYPES.has(env.type)) return `a retired command type (${env.type}) — no door raises it`
   const stored = storedRowViolation(env)
@@ -3473,6 +3478,22 @@ function ownershipChecks(env: CommitEnvelope): string | null {
   if (sansDayBad) return sansDayBad
   const sansBackBad = sansBackEraseViolation(env)
   if (sansBackBad) return sansBackBad
+  /* A READ RECORD IS ITS OWNER'S ALONE, WHOEVER WRITES (round 4's security read, SEC-R4-1, and Astra's same case, 24 Nov
+     26; docs/data-model.md §11 NoticeSeen — together, D200): since his D2560 a man's read record alone decides whether his
+     read SANS reminder lights again. This gate asked nothing of the app's own actor, and of an admin only that the man
+     was his own squadron's — so the app's projection door (command commitProjection, open to any code of the page) wrote
+     anyone's record, and an admin's command of any type his man's: a member put another man's reminder out, read days
+     ahead for him so a later planning never told him, or emptied his record and lit it with nothing planned. Asked here,
+     before every role's early return, of every actor. The one honest writer is state/noticeseen.ts write — the person
+     signed in, his own row, by his own `notices.seen` (a tap, "Mark all read", forgetRead after his Undo post out has
+     landed); the posting pass never writes one (postingPassViolation). Another device's change and a seed are not asked:
+     each carries what was judged where it was made. */
+  for (const c of env.changes) {
+    if (c.collection !== 'settings' || !String(c.id).startsWith('noticeseen:')) continue
+    if (env.origin === 'remote' || env.origin === 'seed') continue
+    const own = !!a && (a.role === 'admin' || a.role === 'member') && a.personId != null && String(c.id) === `noticeseen:${a.personId}`
+    if (!own) return `another person's read record (${c.collection}/${c.id})`
+  }
   /* WHEN A PERSON LAST OPENED HIS OWN WINDOW (M5a — the security read's finding 4): his own row, by its one command,
      for an ADMIN too — an admin who changed a man's leave could otherwise set that man's moment to now and wipe the dots
      that tell him (§11: "C R U own" for every role) */

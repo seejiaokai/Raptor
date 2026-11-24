@@ -212,7 +212,8 @@ function endedNow(pid: string): boolean {
    relight it — the line still lists the day until he files. So the one thing kept is what he read: the reminder's id
    names the days it held, and his own read record keeps the ids he read (state/noticeseen.ts — never dropped, folded to
    one a reminder). Nothing else is stored, and nothing anyone else writes can light his bell: his read record is his
-   alone (state/perms.ts, the `noticeseen:` row).
+   alone, whoever runs the command — the app's own projection and an admin's command included, both of which wrote it
+   until round 4's security read (SEC-R4-1; state/perms.ts ownershipChecks, the `noticeseen:` block).
    THE HIDDEN "PLANNED AT" MARK IS GONE, WITH ITS PERMISSION CHECKS (the same ruling): each day he was newly put on used
    to carry a stamp, `settings/sansplan:<pid>:<iso>`, written by a projection the gate had to vouch for — where three
    rounds of blind reads found faults, round 3's among them (Astra F1: a member lit another man's reminder by naming a

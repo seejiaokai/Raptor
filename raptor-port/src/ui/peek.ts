@@ -46,9 +46,9 @@ import { fltNoLen, fltNoLenMsg } from '../engine/validate'
 import { hideKey } from '../engine/warnhide'
 import { dayHidesIn, officialDaysOf } from '../engine/weekctx'
 import { HOOKS } from '../engine/hooks'
-import { viewOfWeek, deletedSig, requestsSig, loadedSrcSig } from '../engine/overlay'
+import { viewOfWeek, landingSig } from '../engine/overlay'
 import { shortYear } from '../engine/inputs'
-/* (the loaded week's request rows, which the peek's landing reads: engine/overlay.ts loadedSrcSig) */
+/* (everything the peek's landing reads beside next week's own saved copy, as one signature: engine/overlay.ts landingSig) */
 
 /* a plain, non-interactive puck — the same visual identity (qual chip, RCP
    tint, SANS line) as html.ts's `puck()`, minus everything that function
@@ -300,13 +300,17 @@ export function peekKey(): string {
      edits to the LOADED week never touch the preview (perf-B). */
   /* …and who is deleted from when: next week is read without a deleted man from his cutoff (phase 6 (d)); and the
      requests as they stand — a request filed, edited or deleted changes the row it has there (phase 6 (c)) — and the
-     loaded week's own request rows, which a landing there reads ("its row stands on the week on screen") */
+     loaded week's own request rows, which a landing there reads ("its row stands on the week on screen") — and each
+     man's home squadron by date, which decides whose week a request lands on. All four are the ONE signature of what a
+     landing reads, engine/overlay.ts landingSig, as the SANS reminder's weeks held key on it (round 4's reads, 24 Nov 26
+     — the fresh Opus read's R4-O1, Astra's same case): the key named the first three itself and never the homes, so a
+     man moved to another squadron went on being drawn, with his request, on his old squadron's preview of next week */
   /* …and which page draws it (D1010): HOOKS.editMode(), not CURPAGE — Edit Schedule's build ahead runs under View-only
      Sched with the edit mode stood in for it */
   /* …and the Logic values it draws with (a blank B from the brief lead; the same-time line's words from the report lead
      and the debrief): changed on the Logic page, Edit Schedule's preview served the old drawing until the week was
      reloaded (the bug check of 12 Nov 26) */
-  return (HOOKS.editMode() ? 'e|' : 'v|') + CURWEEK + '|' + stashGenOf(shiftWeek(CURWEEK, 1)) + '|' + deletedSig() + '|' + requestsSig() + '|' + loadedSrcSig()
+  return (HOOKS.editMode() ? 'e|' : 'v|') + CURWEEK + '|' + stashGenOf(shiftWeek(CURWEEK, 1)) + '|' + landingSig()
     + '|' + VCONF.briefLead + '|' + VCONF.reportLead + '|' + VCONF.debrief
     /* …and who is SANS from when (D2313): a tick on Quals, or a posting run or taken back, changes the SANS line on a
        previewed day's pucks — a preview already drawn kept the old pucks until the week was reloaded (Astra's scenario
