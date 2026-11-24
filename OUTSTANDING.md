@@ -160,6 +160,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ALL-AVAIL-WINDOW-FLAGS] — the ALL AVAIL window shows flags that have nothing to do with the event's time (his D2331, 22 Nov 26): his pick: just the available people, no flags; and (his D2333) a crowd that changed on a published day highlighted in the amendment's colour — the puck when the count fell, the person who joined in the window when it rose (hollow while waiting, solid once out; who left, and both at once, settled in the drawing); one drawing round for the window with [ALL-AVAIL-REMOVE-BY-HAND]; its design lesson owed.
 - [ALL-AVAIL-REMOVE-BY-HAND] — take a person out of an ALL AVAIL crowd by hand (his D2330, 22 Nov 26): not built; a mock-up and five points for him first.
 - [BELL-WORDS-CLEAR] — every bell line saying an earlier line no longer stands, reworded in the SANS lines' plain style (his D2392, D2393), Fable rewording, drawn first; after the SANS job.
+- [UNASKED-READINGS-SWEEP] — the builders' readings marked "his to change" in code comments (11 files) checked against what was put to him; each never asked goes to him with an example (bug-check lesson 32); filed 24 Nov 26.
 - [SANS-WORDS-LEFTOVERS] — five things the SANS words job's reads found and left (a raw write during a command's delivery, an admin writing another man's read record, a posting's "undone" trusting this device, the read record only growing, a phone note covering the SANS day window's ✕); filed 24 Nov 26.
 - [FABLE-READ-FAULTS] — seven of eight fixed, OIL F2 built (D2294, D2299), walked and re-walked on `claude/fable-read-faults-4104f0` (pull request 820, chats 133–139) — LIVE 22 Nov 26. His answers of 22 Nov 26 (chat 139): D2313 (SANS from its date everywhere — closes (e) and (b)) and D2314 (the publish note's names) BUILT 22 Nov 26 on `claude/sans-from-date-139` (chat 140, pull request 824) — LIVE 22 Nov 26, his "merge live", D2327; (i) ALL AVAIL leaving out a man posted out as SANS — FIXED 22 Nov 26 on `claude/allavail-sans-postout-141` (chat 141, pull request 825), its bug check (FULL) in hand, his look and "merge live" owed; (g), (h), (j), (k), (l) open; D2315 (Leave War F2 waits for the database step), D2316 (the held name kept) as built.
 - [MSQ-MIDNIGHT-CLOCK] — at the Transfer step, a roll-call of every window and page open at a man's midnight swap (band, close with a note, or refresh), and at the database step, which clock decides "today" (each device's own today; a detachment abroad meets it first).
@@ -2960,6 +2961,19 @@ bid) is not called undone. Drawn on the page of 24 Nov 26 (`raptor-port/docs/moc
 `claude/allavail-drawings-156`), reworded again by Fable under his D2422.
 **Also (his D2563, 24 Nov 26, chat 169):** an input's "Deleted" line is reworded in the same plain style — "Training on Wed
 15 Jul was deleted. · Saber" — drawn for him first, then built with this job.
+
+### [UNASKED-READINGS-SWEEP] Builders' readings left in code comments, never put to him (filed 24 Nov 26, chat 169)
+
+**What:** on 24 Nov 26 he found that the SANS reminder counted a ground programme row, a duty desk and all hands as
+"planned", while SANS availability covers only flying and sims — a builder's reading of 22 Nov, marked "his to change"
+in a code comment and never put to him, then judged by three bug checks (reads and walks w5–w13) as if it were his rule, its ground-row scenarios expecting it (the bug-check
+order's §7.11 lesson 32). Eleven source files hold comments of that shape ("his to change"): `engine/validate.ts`,
+`leavewar/absences.ts`, `leavewar/sansunfiled.ts`, `leavewar/sync.ts`, `leavewar/ui/Matrix.tsx`,
+`leavewar/ui/SelectSheet.tsx`, `state/perms.ts`, `ui/DutyTplModal.tsx`, `ui/inputedit.tsx`, `ui/InputWindow.tsx` (and
+more may use other words). **To do:** for each reading, search the rulings' full rows and the closing reports for
+whether it was told to him; each never told goes to him in a small round, with when it happens and a worked example
+(D2439), and each answer is recorded and the comment rewritten to cite it. **Place:** a job of its own after the SANS
+words job merges; reading only until he answers.
 
 ### [SANS-WORDS-LEFTOVERS] What the SANS words job's reads found and left (filed 24 Nov 26, chat 169)
 
