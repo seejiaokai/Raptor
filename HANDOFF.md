@@ -21,6 +21,19 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/msq-b1-screens-135 -->
+### THE NIGHT OF 24–25 Nov 26 — chat 175, his "going to sleep for 8 hours, self work overnight" (23:55 MPST), Medium (the recommended one taken, he being asleep); the work his opening line names, on this branch
+- **After a compaction: re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time, read from the clock (`date`).**
+- **His hours:** 8, from 23:55 MPST 24 Nov — the report by about 07:00, the last hour kept for it. The compaction guard off for the night (`--away`), back on at the report. Nothing merges; nothing of the app is built ("build nothing until I answer" — his opening line); one notification, in the morning.
+- **The night's jobs, in order (his opening line names them; no other job is taken):**
+  1. **`main` brought in** (pull request 841, the words pass, merged 23:44 MPST): the settle step, the notifications register's row B10 by hand (chat 170's words kept, our reshape note put back), GitHub's run read. Check: GitHub's run on the merge. About 45 minutes.
+  2. **The questions page** — H1–H13 of the scenarios file §2 and every line of its §3 that words a note or reads what a ruling covers (his D2611), each with its case pressed on today's app (a script that prints what the screen says, re-run by the host), its picture, its worked example and a recommendation; the drawings owed (the Logout question at an unsaved change, the phone's way to Logout with a window open, the notes with new words) made from the approved ones; new words adjusted by a fresh Fable (D2441). In two rounds on the one page: first what Build 1 waits on, then the rest. Helpers: an Opus presser and drawer, a fresh Fable for the words; the host re-runs, composes and checks the page. Check: documents only (`npm run docsize`); the build served for pressing takes the checks lock. About 4 hours.
+  3. **Build 1's plan** (parts A, B, F of the sizing file — each part's failing tests and twin paths named) — written by a fresh Fable helper; red-teamed, one round, by Astra, a fresh, blind Opus and a different fresh Fable (D353, D1760, D1770, high risk); the findings folded in. Runs beside job 2 (it only reads code and writes its one file). Check: documents only. About 3 hours.
+- **Not tonight:** every build — Build 1 waits on his answers (H2, H3, H7, H8, H11) and his go.
+- **Reads:** job 3's red team — Astra · a fresh Opus · a fresh Fable (none ticked yet). Job 2's words — a fresh Fable (not yet).
+- **Questions waiting for him:** the page itself, when built; none besides yet.
+- **Compactions:** none yet.
+- **Allowance at the start:** weekly 62%, the Fable weekly 67%; this chat 28% full.
+
 ### CHAT 171 — the guard rail's words read, its walk scenarios designed and combined, the build sized; written 24 Nov 26, 18:50 MPST — verify before use
 - **Where it started:** his opening line (chat 166's, below): 'Pick up here' (a) and (b), then the bug-check tier and the size of the build told to him before building.
 - **Shipped:** documents only, on `claude/msq-b1-screens-135`, pull request 826 (open, mergeable, waiting for "merge live" — not before the guard's build and its check). No app code changed.
