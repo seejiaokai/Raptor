@@ -1,7 +1,8 @@
 # The rulings audit — plan (his D2567; backlog [READINGS-LAPSE-FIX] step 2, [UNASKED-READINGS-SWEEP] folded in)
 
 Written 24 Nov 26 by a fresh Fable planner. Opus helpers do the audit; Fable reviews their findings; the host reproduces
-them and puts them to him. **Reading only: nothing in the app, a drawing or a rule changes without his answer.** The
+them and puts them to him. **Approved 24 Nov 26, its core first (D2610): steps A and B, slices 1–5 and 9, the
+code-comment readings, Fable's read of every finding, the host's reproduction; low-harm questions in one list.** **Reading only: nothing in the app, a drawing or a rule changes without his answer.** The
 method fix (step 1 of the backlog item, `2026-11-24-readings-lapse-fix-plan.md`) is a separate job; this plan does not
 touch the working guides. **This audit covers the readings, designs and words made so far; the rule for a reading in a
 future drawing, wording or question is the method-fix plan's, stated there once.**

@@ -1,7 +1,7 @@
 # The readings lapse — the fix to the method (his D2567) — plan, 24 Nov 26
 
-**By:** a fresh Fable planner, for [READINGS-LAPSE-FIX] step 1. **Revised after red-team round 1 (§E). Not built, not
-approved.** The audit (step 2, with [UNASKED-READINGS-SWEEP]) is a plan of its own; §C8 says what this plan hands it.
+**By:** a fresh Fable planner, for [READINGS-LAPSE-FIX] step 1. **Revised after red-team round 1 (§E). Approved by him
+24 Nov 26 ("as recommended", D2610); not built.** The audit (step 2, with [UNASKED-READINGS-SWEEP]) is a plan of its own; §C8 says what this plan hands it.
 **Read for it:** the bug-check order's §7.11 lesson 32, §4 ("Before a brief leaves"), §6, §9, §12 and its checklist; the
 full rows D2338, D2390, D2394, D2564–D2567; the first build's comment (commit `62a898654`,
 `src/leavewar/sansunfiled.ts`); the read brief `briefs/2026-11-24-sans-words-read-brief.md` §1;
