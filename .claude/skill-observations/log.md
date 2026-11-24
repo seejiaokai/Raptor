@@ -1336,3 +1336,16 @@ sides.
 **Issue:** The owner opened two chats minutes apart. Both were told "166". The two-squadron chat already held 166 in its commits, so both new chats moved on, and both claimed 167 within the same minute, each from its own search of commits and handoff blocks. Neither could see the other's claim, because a claim lives only in a chat's first reply until it commits. The second clash was caught only because the owner sent a screenshot of the other chat.
 **Suggested improvement:** In the session-handoff skill's opening line and the handoff head's "Before acting on a block": a chat's number counts as taken once another open chat can see it. Read the session titles (`list_sessions` shows "… chat 166" titles) as well as commits; set this chat's title to its number as the first act (`set_session_title`), before any long read, so the next chat's search finds it.
 **Principle:** A "next free number" read from committed history is unsafe when two writers start at once: the claim has to be published where the other writer looks, before it is used.
+
+### Observation 1054: A reader's "the approved page shows…" is checked against the page before its claim is believed
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** The FULL bug check of round 4 of the words pass (chat 170): three blind code readers after the walk. (Numbered past 1053, which an open branch's log already holds.)
+**Skill:** the bug-check order (`raptor-port/docs/bug-check-order.md`)
+**Type:** open-source
+**Phase/Area:** §4 "What to do with what they hand back", item 2 (check it against the governing ruling)
+
+**Issue:** A blind reader reported that a note was wrong because "the page he approved shows" a full stop where the app prints a dot, and quoted the sentence. The approved page holds no such sentence: it shows that note only as a picture, and the picture has the dot. Two other sources (a walker's check against the picture's recorded text, another reader) read it the other way. The claim was caught only because the host opened the page and searched its text and the picture's recorded words before acting; a fix "back to the page" would have changed approved words.
+**Suggested improvement:** In §4's hand-back list, item 2, add: a claim that rests on what an approved page, picture or drawing shows is checked against that artefact itself — its text searched, its picture's recorded words read — before it is dispositioned; a reader's quotation of an approved artefact is a claim like any other. And in the readers' brief, ask for the file and line (or the picture's name) behind any "the approved page shows".
+**Principle:** A reviewer's quotation of a source is still a claim; open the source before acting on what it is said to say.

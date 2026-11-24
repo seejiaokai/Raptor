@@ -229,6 +229,15 @@ None: no console error, page error or failed request in any cited run of the hos
 
 ## 11. The gate counts
 
+On his PC (the touched files only — GitHub's run is the full check while the repo is public, D1086): the twenty test
+files that read the bell, the notes, the drag and the publish note, **656 of 656** on `c3498b918`; `bellnotices`,
+`bellnotices-scenarios`, `noteswords` **212 of 212** on `489420a0c`; `npx tsc -b` clean; `npm run docsize` OK
+(`OUTSTANDING.md` a few lines over its tripwire — deferred, a code change never trims, D29). GitHub: green on
+`489420a0c`, the last commit that changed the app. Its run on `4d5f037af` had failed ONE browser test twice —
+`e2e/schedule-tab.spec.ts:177`, "one finger tap after a changed box takes the caret on the Scheduler Board" (a phone's
+focus test; nothing of this change touches it) — and the same test passed on the next push with no change near it: a
+flake, named here so the next red on it is not met cold. `probes:adapted` and `perf`: within GitHub's run.
+
 ## 12. What the walk found, and each disposition
 
 1. **A title in small letters that the new kind's name swallows read as a phantom rename** (a: A2 iii) — a Training
@@ -249,6 +258,7 @@ None: no console error, page error or failed request in any cited run of the hos
    inside the window's own scrolling body — nothing cut (the host opened the picture). The week's Ground Programme row
    still reading 08:00 after the Board saved 09:00 on the phone (c) — walker d reproduced a stale time, but on the BOARD's own Ground Programme row, which lags one change behind the input while the Board stays open (the week's row never did); the same on `main`, a desktop and a phone; closing the Board or a reload clears it. The host opened `d/d34-r3/D4-fixed-3-after-0900-on-board-board-ground-desk.png` (08:00 drawn, the input saved as 09:00). Older, not this change's — **filed**, `[UI-SLEEK-PASS]` round 4's leftovers (4).
 6. **The re-walk (walker d, the FIXED build `D:/rw4/build-new2`, bundle `index-BNHpQA1S.js`; `parts/wr4/d-report.md`):** D1 the same script shows "…, renamed — was meeting · Saber" on the walked build and "Training changed to Meeting · Saber" on the fixed one, phone and desktop; D2 nine lines that must not have moved, all as ruled ("brief" retitled "Brief" with its kind left alone: "Renamed — was brief · Saber"); D3 the door the first walk missed — the start changed in the Scheduler Board's in-place box: Hex and Ranger each read "Now 09:00–10:00 · Saber"; the Board's pencil opens the input's own window.
+7. **The re-walk of the three read-fixes (walker e, the build with all four fixes `D:/rw4/build-new3`, bundle `index-DIr933hk.js`, `D:/rw4/build-new2` as its control; `parts/wr4/e-report.md`): 29 pass, none fail.** A name dragged from the crew list onto the seat he holds — "Saber — already in that seat" (a flying seat), "Sidewinder — …" (a duty desk), "Ace — …" (a ground row), "ALL AVAIL — …", on Edit Schedule and the Board, the man still there, nothing new for Undo; no note at all on the control; a name dragged onto another empty place still lands, and Undo takes it back; a finger's drag on the phone says the same. The publish note behind a ground row with no times: "Saturday 5 Feb published and approved. The ground programme has no usable times, so nobody on it earns OIL. No Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War." on a desktop and a phone ("OIL. · No Leave War period" on the control); alone, and from the Board, still the approved "Saturday published and approved · No Leave War period…"; an amendment: "Published AL1 · 1 item on Sat only · approved by Anvil · No Leave War period for 2028, …". The rename: "Training changed to Meeting, renamed — was Training · briefing · Saber"; the nine earlier lines unmoved. The host opened `e/e2-112046/e2-fixed-publish-desk.png` and `e/e1-111642/e1-fixed-duty-week-note.png`.
 5. **Seen in passing, as before this change, not this round's:** the input's window is titled by its people, so a tap
    on "Range brief" opens "Hex +1 · 16 Jul"; the browser's own time picker turns the keys 2-5-6-0 into 9 pm and Save
    then keeps a start after its end (an input may cross midnight); pressing outside the input's window on a desktop
@@ -280,3 +290,25 @@ the fix commits and the claims they answer: **nothing wrong — each fix right a
 The re-walk of what the three touch: walker e, on `D:/rw4/build-new3` (bundle `index-DIr933hk.js`) — §12.
 
 ## 14. Lessons added (§7.11)
+
+None: no fault here was one he found that a walk missed. For the method, written as a skill note (1054): a reader's
+"the page he approved shows…" is checked against the page itself before its claim is believed — the Fable reader quoted
+a full stop the approved picture does not have.
+
+## 15. The close
+
+**Walk:** round 4's build driven on the production build, served frozen inside the test browser, on a desktop (Chromium
+1440×900) and at his iPhone's size (402×874 with touch; the long line in WebKit too) — the host's own run (6 of 6),
+three Opus walkers (a the bell's words, b saved lines, roles and orders, c the notes: 179 checks pass, none fail), then
+two re-walks of the fixes (d, e: all pass, each fix shown on the build before it and the build after). Found by the
+walk: one fault, fixed. Found by the three blind reads after it: three more, fixed, each with a test that failed first;
+the fixes read again by a fresh reader (nothing wrong); 10 of 10 break tests caught. Not walked, each with its reason:
+§10. Only his iPhone can show how its own letters wrap the two-row line.
+
+**The order's §12, ticked:** the tier stated (FULL, question 3) · the roll-call with no blank cell (§2) · the rulings
+that apply checked on the running build (D2521's every line; D769's "the one who did it is never told"; D953's remark;
+D785) · the scenarios designed by Astra and a fresh, blind Fable, combined by the host (§4) · the walk before the reads
+(§5 → §13) · every finding reproduced by the host before it counted (a failing test, or the opened picture) · every
+confirmed defect with its regression test · both models and Fable read the finished code blind, asked for what is
+missing (§13) · the fixes read again and re-walked · the break tests (§8) · the gates green on the last app commit
+(§11) · his look last.
