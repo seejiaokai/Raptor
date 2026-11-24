@@ -265,10 +265,9 @@ section is owed (B3, cleared); and the paint effect's `reconcileMissionRoleOffer
 
 ## 17. The close
 
-`Walk: docs/handpass/2026-11-25-r4-walk-faults.md · 96 pictures · 4 surfaces (the passing note; the Scheduler Board's
-Ground Programme and Personal Inputs and its day panel; Edit Schedule's week; a reload) · 10 orders (N1, N2, N3, W1 1–4,
-W4, H1–H5) · MISSING: fixed — both faults, Fable's matching by place, the reads' week fault, B3; filed for the host — the
-orders of §13, the WebKit look owed for Astra's finding 2, the tidiness notes`
+`Walk: docs/handpass/2026-11-25-r4-walk-faults.md · 319 pictures (96 of the first walk and the host's run, 223 of the second walk, §18) · 4 surfaces (the passing note; the Scheduler Board's sections and its day panel; Edit Schedule's week; a reload) on a desktop 1440×900 and his iPhone's size 402×874, Chromium and WebKit, main's build beside the fix · orders walked: N1 (a)–(e), N2, N3, N4 (part), W1, W2 (b)–(e), W3, W5 (a) without a caret, W8–W11, H1–H5 · MISSING: fixed — both faults, Fable's matching by place, the reads' week fault, B3; proven by the second walk — Astra's finding 2 (the caret's box moved 77–117px on the build without its line once the browser's scroll anchoring was off, 0 with it; the line stays); could not be made by a person, so not walked — W4, W7 and W5 (a) with the caret kept through the press; not walked — N1 (f), N4's "OIL not answered" bar; FOUND, OLDER, NOT FIXED, reproduced by the host on main's build — W3: on the Board's Unavailable list one man's row of a shared leave, after its first change gives him a leave of his own, still saves his next changes (the end time, the remark) onto the OTHER man's leave until the caret leaves the section; the same on main, not made or worsened by this change; filed for a job of its own`
+
+The line above was rewritten by the host (chat 170) at 05:00 on 25 Nov 26, after the second walk (§18); the helper's own line, as it stood: 96 pictures, 10 orders (N1, N2, N3, W1 1–4, W4, H1–H5).
 
 `Docs: OUTSTANDING 191 items (+0 −0) · DECISIONS D1–D2603 · homes OK`
 `docsize: OK`
