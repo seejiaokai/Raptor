@@ -686,6 +686,13 @@ To fill from the walk: every way to file a run (R6–R9), to change a posting (R
 4. **The walk chosen:** Astra's 24 scenarios (`docs/superpowers/briefs/2026-11-24-sans-words-scenarios-astra.md`), none set aside, at desktop Chromium 1536×864 and his iPhone's WebKit 402×874 by touch, the clock Wed 15 Jul 26 09:00, by three Opus walkers one after another (Low): w11 the change lines (S1, S3, S4, S5, S9–S13), w12 the reminder (S2, S7, S14–S17, S22, S23), w13 the calendar's doors, the crew list and the plain-user round (S6, S8, S18–S21, S24). No approved part list exists for these drawings: the words are checked against the drawing page by eye and by exact text.
 5. **After the walk:** its row in `docs/walk-ledger.md` — to add.
 
+**w14 (chat 174, the night of 24–25 Nov 26), sized on the build after fix rounds 1–5 and main brought in (`f3f0e7388`, `e80742fc5`; GitHub green on `e80742fc5`):**
+1. **The type of change:** as above, plus rounds 1–5's fixes (G: who writes a read record; C/F: what counts as planned — his D2564, D2568) and main's words pass now sharing the bell (F).
+2. **What only a walk could find here:** that a real flying seat or sim, never a ground row, duty desk or all hands, lights the reminder, and that the reminder, the armed seat and the warning agree (D2564's own words); that D2560's "a day he saw" holds through cancels, deletes, moves and the clock; that the SANS lines and the words pass's lines read right side by side.
+3. **What the ledger says, and what changes it:** w11–w13 walked 2,000+ steps and found two faults (W11-1, W12-1), both fixed — but every reminder day they made was a ground row, which D2564 now says never counts, and D2560 reversed four of their results; so their reminder steps prove nothing on this build.
+4. **The walk chosen:** the plan `docs/superpowers/briefs/2026-11-25-sans-words-w14-plan.md` (a fresh Opus helper; its brief beside it): 36 scenarios — Fable's 17 not covered by w11–w13 (A1–A10 and re-walks), every fix of rounds 1–5 a person can see (B1–B11), D2564/D2568/D2565 on each side (C1–C11), the merged bell (D1–D3), the plain-user round (E) — at desktop Chromium 1536×864 and his iPhone's WebKit 402×874 by touch, by four Opus walkers one after another (Low, he being asleep): w14a C, w14b the change lines, w14c the reminder over dates, w14d the calendar's doors, the merged bell and the plain-user round; each proves its routes first. Walker brief: `docs/superpowers/briefs/2026-11-25-sans-words-w14-walker-brief.md`.
+5. **After the walk:** its row in `docs/walk-ledger.md`.
+
 ### 18.6 The orders walked
 To fill.
 
