@@ -1042,12 +1042,15 @@ const placeKey = () => { const u = storageUnit(); return u ? pickKey('lastCourse
    Import into 149 keeps the course's id, so filed by course alone a student chosen on 142's copy reopened 149's copy on him,
    where a next mark would go on the wrong man unless he read the name. No squadron bound (a test with no door): the plain key. */
 const placePick = k => { const u = storageUnit(); return pickKey(u ? k + '@' + u : k); };
-/* this squadron's own note first (noted at every course load, below): the plain key is his latest course anywhere, and on
-   a copied course it names one of this squadron's too, which would cost him his place here (Opus's lead, the same night) */
+/* the plain key is his latest course anywhere: it answers first only where that load was on this squadron (`lastCourseAt`).
+   On a copied course it would otherwise name one of this squadron's too and cost him his place here (Opus's lead, the same
+   night); from another squadron, this squadron's own note comes first. */
 function lastCoursePref() {
   const here = id => !!id && COURSES.some(x => isCourseEntry(x) && x.id === id);
+  const latest = prefGet(pickKey('lastCourse'));
   const k = placeKey(), noted = k ? prefGet(k) : null;
-  return here(noted) ? noted : prefGet(pickKey('lastCourse'));
+  if ((!k || prefGet(pickKey('lastCourseAt')) === storageUnit()) && here(latest)) return latest;
+  return here(noted) ? noted : latest;
 }
 
 /* The toolbar hides on demand so the chart gets the whole column (owner phone
@@ -2248,7 +2251,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
   /* One site covers init, switchCourse, addCourse, renCourse and delCourse.
      Raw and synchronous, so unlike sSet it never flickers the save status. */
   prefSet(pickKey('lastCourse'), c);
-  { const pk = placeKey(); if (pk) prefSet(pk, c); }
+  { const u = storageUnit(); if (u) prefSet(pickKey('lastCourseAt'), u); }
   /* A ring left over from another syllabus would re-light the moment the user
      came back to it. Cleared without redrawing: every caller renders anyway. */
   searchHit = null; searchQ = ''; searchCount = 0; searchAt = 0; searchHits = [];
