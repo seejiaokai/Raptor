@@ -260,7 +260,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [SKILL-FUSION-WRITING] — the writing guide applied to how the agent writes to him (D835): to draft, have read and put to him — his to place.
 - [GUIDE-MAP-ROWS] — the project guide's map has long rows that could move to its full text — his question.
 - [EVIDENCE-RECORD-SIZE] — the big machine-written records and pictures: kept or moved — his call.
-- [USER-GUIDE] — a guide for users and admins — wanted, not started, not urgent.
+- [USER-GUIDE] — a guide for users and admins — wanted, not urgent; a first piece made 24 Nov 26: the guide for F-16 schedulers and training appointment holders (`raptor-port/docs/squadron-guide/`), their answers still to come.
 
 **Database step — at the end (D473)**
 - [M365-MOVE-PLAN] — the M365 move plan, his strikes owed.
@@ -1690,6 +1690,13 @@ section folds are next touched. (Its first half — the wave show/hide toggle le
   screen is already collected in `docs/remarks-vocabulary.md` — **keep that
   file true as rules are added.** Still to gather: the day/AL publishing flow,
   the roles split, what each warning means in practice, the phone gestures.
+- **A first piece, 24 Nov 26 (chat 159, his ask):** a short guide for F-16 schedulers and training appointment
+  holders seeing the app for the first time — what it is, the pages, plan to published, the flags, every Logic
+  setting and check (coded S1–S23, C1–C53, read out of the Logic page's own words), how SC MAIN, SC SPARE, AVALON
+  and BB are flagged, the typed words that switch a rule on, what is built around the F-15, and eleven questions for
+  them. A PDF, one HTML page and the questions as plain text: `raptor-port/docs/squadron-guide/` (its README says
+  how it is rebuilt). He sends it himself. **Next:** their answers, when they come, are put to him as rulings to
+  make — they feed `[SINGLE-SEAT]` and the multi-squadron build; nothing is built from them without his word.
 
 ### [DB-SYNC-MODEL] How the app shares and locks once it is in the database — his idea, to be designed now, built with the adapter (29 Sep 26)
 **Asked again at this step (his D2316, 22 Nov 26):** whether a sign-off name held while the day's OIL list is open should drop when another scheduler changes the day behind the list — kept as built until then (the OIL page).
