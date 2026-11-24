@@ -139,6 +139,34 @@ describe('F9: a hidden tab', () => {
   })
 })
 
+/* THE WALK OF 24 NOV 26 (chat 164, W24): ?timing opened in a tab behind another read "Sign-in shown at 36.3 s" — the
+   browser draws nothing for a tab that is not in front, so the first screen waited for him to switch to it */
+describe('the start-up, with the tab behind another before its first screen', () => {
+  const hide = (v: 'hidden' | 'visible') => {
+    Object.defineProperty(document, 'visibilityState', { value: v, configurable: true })
+    document.dispatchEvent(new Event('visibilitychange'))
+  }
+  afterEach(() => { Object.defineProperty(document, 'visibilityState', { value: 'visible', configurable: true }) })
+  it('hidden at any moment before the first screen: the app\'s load and the first screen are handed over untimed', () => {
+    hide('hidden'); hide('visible')
+    timingMark({ kind: 'boot', t: 500 })
+    timingMark({ kind: 'first', t: 36_300, screen: 'signin' })
+    expect(got).toEqual([{ kind: 'boot', t: 500, behind: true }, { kind: 'first', t: 36_300, screen: 'signin', behind: true }])
+  })
+  it('already behind another as it loaded (opened in the background): untimed too', () => {
+    Object.defineProperty(document, 'visibilityState', { value: 'hidden', configurable: true })
+    setTimingOnForTest(true); timingSink(e => got.push(e))
+    timingMark({ kind: 'boot', t: 500 })
+    expect(got).toEqual([{ kind: 'boot', t: 500, behind: true }])
+  })
+  it('hidden only after the first screen: the start-up keeps its figures', () => {
+    timingMark({ kind: 'boot', t: 500 })
+    timingMark({ kind: 'first', t: 900, screen: 'signin' })
+    hide('hidden'); hide('visible')
+    expect(got).toEqual([{ kind: 'boot', t: 500 }, { kind: 'first', t: 900, screen: 'signin' }])
+  })
+})
+
 describe('F2: the window\'s own download arriving late changes nothing', () => {
   it('a page done before the readout takes the events is handed over with its true time', () => {
     setTimingOnForTest(true)                 // no sink yet
@@ -207,6 +235,24 @@ describe('what came down the line for the Leave War', () => {
       at(0); timingMark({ kind: 'page', page: 'leavewar', t: 0 })
       at(100); show('leavewar'); step(3)
       expect(got.filter(e => e.kind === 'page').map(e => e.kind === 'page' ? e.downloaded : -1)).toEqual([5_300])
+    } finally { (performance as any).getEntriesByType = was }
+  })
+  /* THE WALK OF 24 NOV 26 (chat 164, W7): after Retry's reload the Leave War's first open read "downloaded 1 KB". Chrome
+     reports a file it already held with its body's size all the same — "unchanged" (the header only came) or straight
+     from its memory (nothing came) — so a file counts only when what came is more than its body: the body came too */
+  it('never counts a file the browser already held — "unchanged", or from its memory — though Chrome gives its body size', () => {
+    const entries = [
+      { name: 'http://x/assets/LeaveWarPage-a.js', startTime: 10, responseEnd: 60, transferSize: 310, encodedBodySize: 41_000 },
+      { name: 'http://x/assets/LeaveWarPage-b.css', startTime: 10, responseEnd: 60, transferSize: 0, encodedBodySize: 5_000 },
+      { name: 'http://x/assets/LeaveWarPage-c.js', startTime: 10, responseEnd: 60, transferSize: 9_300, encodedBodySize: 9_000 },
+    ]
+    const was = performance.getEntriesByType
+    ;(performance as any).getEntriesByType = (t: string) => (t === 'resource' ? entries : [])
+    try {
+      section('viewsched'); section('leavewar', false)
+      at(0); timingMark({ kind: 'page', page: 'leavewar', t: 0 })
+      at(100); show('leavewar'); step(3)
+      expect(got.filter(e => e.kind === 'page').map(e => e.kind === 'page' ? e.downloaded : -1)).toEqual([9_300])
     } finally { (performance as any).getEntriesByType = was }
   })
 })

@@ -45,6 +45,8 @@ export type TimingView = {
   /** the app's code loaded and started (ms from opening the address) */
   app: number | null
   first: { screen: 'signin' | 'week', t: number } | null
+  /** the tab was not in front at some moment before the first screen: `app` and `first` are not this computer's speed */
+  behind?: boolean
   /** sign in pressed → the week drawn (ms), null before a sign-in */
   signin: number | null
   /** newest first */
@@ -63,6 +65,8 @@ export function kb(bytes: number): string {
   const k = bytes / 1024
   return k >= 1000 ? (k / 1024).toFixed(1) + ' MB' : Math.round(k) + ' KB'
 }
+/** a start-up point that waited on a tab not in front (the walk of 24 Nov 26, W24) — the words a fresh Fable's (D2441) */
+export const TAB_BEHIND = 'not timed, tab not in front'
 export function notGiven(browser: string | null): string {
   return 'not given by ' + (browser || 'this browser')
 }
@@ -87,8 +91,8 @@ export function readoutSections(v: TimingView): Section[] {
   type R = Omit<Row, 'key'>
   const start: R[] = [
     { label: 'Site answered', value: v.site == null ? notGiven(by) : atS(v.site) },
-    { label: 'App loaded', value: v.app == null ? 'not yet' : atS(v.app) },
-    { label: 'Sign-in shown', value: !v.first ? 'not yet' : v.first.screen === 'signin' ? atS(v.first.t) : 'not shown' },
+    { label: 'App loaded', value: v.app == null ? 'not yet' : v.behind ? TAB_BEHIND : atS(v.app) },
+    { label: 'Sign-in shown', value: !v.first ? 'not yet' : v.first.screen !== 'signin' ? 'not shown' : v.behind ? TAB_BEHIND : atS(v.first.t) },
     { label: 'Sign in pressed → week shown', value: v.signin == null ? 'not yet' : 'took ' + secs(v.signin), gap: true },
   ]
   const pages: Row[] = v.pages.map((p, i) => ({

@@ -33,6 +33,8 @@ const OWN_FILES = /timingwindow|TimingReadout/i
 const M = {
   app: null as number | null,
   first: null as TimingView['first'],
+  /* the tab was not in front before the first screen (the walk of 24 Nov 26, W24 — ui/timing.ts) */
+  behind: false,
   signin: null as number | null,
   pages: [] as PageRow[],
   seq: 0,
@@ -47,8 +49,8 @@ function changedSoon(): void { if (soonPending) return; soonPending = true; setT
 
 let afterFirst: (() => void) | null = null
 function take(e: TimingEvent): void {
-  if (e.kind === 'boot') M.app = e.t
-  else if (e.kind === 'first') { M.first = { screen: e.screen, t: e.t }; afterFirst?.(); afterFirst = null }
+  if (e.kind === 'boot') { M.app = e.t; if (e.behind) M.behind = true }
+  else if (e.kind === 'first') { M.first = { screen: e.screen, t: e.t }; if (e.behind) M.behind = true; afterFirst?.(); afterFirst = null }
   else if (e.kind === 'signin') M.signin = e.ms
   else {
     const name = PAGE_NAMES[e.page]
@@ -75,7 +77,7 @@ let F: TimingParts['FREEZES'] = { supported: false, n: 0, total: 0, max: 0, onCh
 function readNow(): TimingView {
   const nav = navigator as Navigator & { deviceMemory?: number }
   return {
-    site: siteAnswered(), app: M.app, first: M.first, signin: M.signin, pages: M.pages,
+    site: siteAnswered(), app: M.app, first: M.first, behind: M.behind, signin: M.signin, pages: M.pages,
     freezes: { supported: F.supported, n: F.n, total: F.total, max: F.max },
     files: filesNow(),
     env: {

@@ -3,7 +3,7 @@
    sign-in is a length ("took"); a figure a browser does not give says so by name, never a blank or a 0; a time under a
    twentieth of a second never reads "0.0 s". */
 import { describe, expect, it } from 'vitest'
-import { browserOf, copyText, filesOf, kb, notGiven, readoutSections, secs, stamp, type TimingView } from './timingtext'
+import { TAB_BEHIND, browserOf, copyText, filesOf, kb, notGiven, readoutSections, secs, stamp, type TimingView } from './timingtext'
 
 const view = (over: Partial<TimingView> = {}): TimingView => ({
   site: 300, app: 812, first: { screen: 'signin', t: 840 }, signin: 1700,
@@ -77,6 +77,15 @@ describe('the window\'s three sections, as the mock-up shows them', () => {
     expect(s[0].rows.find(r => r.label.startsWith('Sign in pressed'))!.value).toBe('not yet')
     expect(s[1].rows).toEqual([])
     expect(s[1].empty).toBe('No page opened yet')
+  })
+  /* the walk of 24 Nov 26 (chat 164, W24): opened in a tab behind another, "Sign-in shown at 36.3 s" — not this
+     computer's speed. The site's answer is the network's, which a tab not in front does not delay, and the sign-in is
+     pressed in the tab itself: both keep their figures. The words a fresh Fable's (D2441) */
+  it('a tab not in front before its first screen: the app\'s load and the first screen say why there is no figure', () => {
+    const r = rowsOf(view({ behind: true }))
+    expect(r.slice(0, 4)).toEqual([['Site answered', 'at 0.3 s'], ['App loaded', TAB_BEHIND], ['Sign-in shown', TAB_BEHIND], ['Sign in pressed → week shown', 'took 1.7 s']])
+    expect(TAB_BEHIND).toBe('not timed, tab not in front')
+    expect(copyText(view({ behind: true }), new Date(2026, 10, 24, 9, 5))).toContain('  Sign-in shown: ' + TAB_BEHIND)
   })
   it('a start that showed no sign-in card says "not shown", never a time', () => {
     const s = readoutSections(view({ first: { screen: 'week', t: 900 } }))

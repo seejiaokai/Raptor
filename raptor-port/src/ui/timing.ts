@@ -35,10 +35,11 @@ export type TimingMark =
   | { kind: 'signin', t: number }
   | { kind: 'page', t: number, page: string }
 /** What the window is handed: two points of the start-up, a sign-in's time (null: a new press withdrew the last one),
- *  and each page drawn — `downloaded`, the bytes that came down the line for it (the Leave War and the Tracker only). */
+ *  and each page drawn — `downloaded`, the bytes that came down the line for it (the Leave War and the Tracker only).
+ *  `behind`: the tab was not in front at some moment before the first screen — its start-up points are not timed. */
 export type TimingEvent =
-  | { kind: 'boot', t: number }
-  | { kind: 'first', t: number, screen: 'signin' | 'week' }
+  | { kind: 'boot', t: number, behind?: true }
+  | { kind: 'first', t: number, screen: 'signin' | 'week', behind?: true }
   | { kind: 'signin', ms: number | null }
   | { kind: 'page', page: string, first: boolean, ms: number, downloaded: number }
 
@@ -97,13 +98,15 @@ function watch(t0: number, state: () => 'shown' | 'failed' | 'waiting', alive: (
 
 /** what came down the line for the app's own code and styles while a page was awaited (its own download, or the
  *  background fetch of it still arriving) — never the window's own files, and never a file the site answered
- *  "unchanged": it comes with no body, only its answer's header, and was not downloaded (the walk of 24 Nov 26, W14) */
+ *  "unchanged": it comes with no body, only its answer's header, and was not downloaded (the walk of 24 Nov 26, W14).
+ *  Chrome gives a file it already held its body's size all the same (answered "unchanged", or taken from its memory —
+ *  W7), so a file counts only when what came down the line is more than its body: the body came with it. */
 function downloadedBetween(t0: number, t1: number): number {
   if (typeof performance === 'undefined' || !performance.getEntriesByType) return 0
   let b = 0
   for (const e of performance.getEntriesByType('resource') as PerformanceResourceTiming[]) {
     if (!/\.(js|css)(\?|$)/.test(e.name) || /timingwindow|TimingReadout/i.test(e.name)) continue
-    if (e.responseEnd >= t0 && e.startTime <= t1 && e.encodedBodySize > 0) b += e.transferSize || 0
+    if (e.responseEnd >= t0 && e.startTime <= t1 && e.encodedBodySize > 0 && (e.transferSize || 0) > e.encodedBodySize) b += e.transferSize
   }
   return b
 }
@@ -134,7 +137,11 @@ const fromPress = (t: number): number => (pressT != null && pressT <= t && t - p
 export function timingMark(m: TimingMark): void {
   if (!ON) return
   markTap?.(m)
-  if (m.kind === 'boot' || m.kind === 'first') { emit(m); return }
+  if (m.kind === 'boot' || m.kind === 'first') {
+    emit(behindBeforeFirst ? { ...m, behind: true } : m)
+    if (m.kind === 'first') firstDrawn = true
+    return
+  }
   const t = fromPress(m.t)
   if (m.kind === 'signin') {
     pageGen++                                  // a page wait from before (a sign-out's own move) ends here (F4)
@@ -157,12 +164,22 @@ export function timingMark(m: TimingMark): void {
   timePage(m.page, t)
 }
 
-/* a hidden tab draws no frames: every wait across it is dropped (F9) */
+/* a hidden tab draws no frames: every wait across it is dropped (F9). AND THE START-UP (the walk of 24 Nov 26, chat 164,
+   W24): opened in a tab behind another, the first screen waited for him to switch to it — "Sign-in shown at 36.3 s". A
+   tab not in front at any moment before the first screen gives the app's load and the first screen no figure; the
+   site's answer (the network's) and the sign-in (pressed in the tab itself) are not delayed by it and keep theirs. */
+const tabHidden = (): boolean => typeof document !== 'undefined' && document.visibilityState === 'hidden'
+let behindBeforeFirst = tabHidden()
+let firstDrawn = false
 let armed = false
 function arm(): void {
   if (armed || typeof document === 'undefined') return
   armed = true
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') { pageGen++; signinGen++ } })
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState !== 'hidden') return
+    pageGen++; signinGen++
+    if (!firstDrawn) behindBeforeFirst = true
+  })
   /* first in line for every press (the capture phase, on the window), so its stamp is held before any handler marks */
   addEventListener('click', heard, true)
   addEventListener('keydown', heard, true)
@@ -197,6 +214,7 @@ export function setTimingOnForTest(v: boolean): void {
   pageGen++; signinGen++
   signinT = null; landing = false
   seen = new Set(['viewsched'])
+  behindBeforeFirst = tabHidden(); firstDrawn = false
   if (v) arm()
 }
 /** Tests only: hand-stepped frames and clock (null: the browser's own). */
