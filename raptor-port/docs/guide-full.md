@@ -237,7 +237,8 @@ barely more than one.
 ### Models
 
 - **NARROWED since — who is called now (D1734, 7 Nov 26; D1760, D1761 and D1770, 8 Nov 26):** Astra is the standing
-  reviewer again, with no end date — each job's code read, a plan's red team, a working-guide change, a scenario design;
+  reviewer again, with no end date — each job's code read, a plan's red team, a working-guide change, a scenario design
+  (every walk's beside a fresh, blind Fable's, whatever the risk — D2443);
   first of two where two are required (D1770); a fresh, blind Opus read of finished code stays beside his on every code
   read (D790); where two readers are required, Sol 6.1 is the second only when he calls for him, otherwise the fresh, blind Opus reader — an important plan's red team
   (D1760) and a changed working guide (D1761) among them; two readers, blind to each other, on earned leave, published records,
