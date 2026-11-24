@@ -1323,3 +1323,16 @@ sides.
 **Issue:** The search-before-you-ask rule names the rulings files, the archive and the backlog, all read from the chat's own checkout. A ruling or backlog item recorded by a parallel chat lives only on that chat's unmerged branch until its merge, so a search of the default branch finds nothing and the chat reports the task as unclaimed. Here two rulings and a backlog item two days old, and a night's finished drawing, were invisible.
 **Suggested improvement:** In the rule's "The check" list, add one line: search the open branches too — one `git grep` of the subject across every remote ref's rulings and backlog — and one transcript search of the other chats, before saying a task is unclaimed, undecided or unbuilt. The handoff file's "Before acting on a block" could carry the same line.
 **Principle:** Where parallel workers each record decisions on their own branch, "is this decided?" is a question for every open branch, not for the default one.
+
+### Observation 1052: Two chats opened together took the same chat number, twice in one afternoon
+
+**Status:** OPEN
+**Date:** 2026-11-24
+**Session context:** Chat 168 (opened as "chat 166"), round 4 of the words pass; the speed chat opened at the same time
+**Skill:** session-handoff (the opening line's chat number) — the same gap as Observation 951, for chat numbers
+**Type:** internal
+**Phase/Area:** the opening line's "use the next free number" and a chat's first step
+
+**Issue:** The owner opened two chats minutes apart. Both were told "166". The two-squadron chat already held 166 in its commits, so both new chats moved on, and both claimed 167 within the same minute, each from its own search of commits and handoff blocks. Neither could see the other's claim, because a claim lives only in a chat's first reply until it commits. The second clash was caught only because the owner sent a screenshot of the other chat.
+**Suggested improvement:** In the session-handoff skill's opening line and the handoff head's "Before acting on a block": a chat's number counts as taken once another open chat can see it. Read the session titles (`list_sessions` shows "… chat 166" titles) as well as commits; set this chat's title to its number as the first act (`set_session_title`), before any long read, so the next chat's search finds it.
+**Principle:** A "next free number" read from committed history is unsafe when two writers start at once: the claim has to be published where the other writer looks, before it is used.

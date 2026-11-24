@@ -310,6 +310,14 @@ describe('round 4 of the words pass: the bell (D2521)', () => {
     expect(commitInput(rec(), { ...draftOf(rec()), type: 'Meeting' }, [RANGER])).toBe(true)
     expect(told(RANGER)).toEqual([`${TITLE} · Wed 15 Jul — Training changed to Meeting · ${cs(SABER)}`])
   })
+  /* (the fresh Fable scenario designer's B1, chat 168: a title that is the new kind's own name — the bold name reads the
+     same before and after, so nothing was renamed) */
+  it('Q1: a Training titled "Meeting" changed to a Meeting says only the kinds — never a phantom rename', async () => {
+    await boot()
+    file([RANGER], WED, { title: 'Meeting' }); clear()
+    expect(commitInput(rec('Meeting'), { ...draftOf(rec('Meeting')), type: 'Meeting' }, [RANGER])).toBe(true)
+    expect(told(RANGER)).toEqual([`Meeting · Wed 15 Jul — Training changed to Meeting · ${cs(SABER)}`])
+  })
   it('Q1: a true rename keeps today\'s words', async () => {
     await boot()
     file([RANGER]); clear()

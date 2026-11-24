@@ -447,7 +447,9 @@ export function common(b: any, a: any, him: string): NoticePart[] {
      Meeting" — and "Renamed" only when the name's own words changed: its title, or an Attach's "To". The bold name of an
      input with no title IS its kind, so a kind change alone renamed nothing. */
   if (kindOf(b) !== kindOf(a)) out.push({ k: 'kind', was: kindOf(b), now: kindOf(a) })
-  if (ownName(b) !== ownName(a)) out.push({ k: 'title', was: String(inpLabel(b)) })
+  /* …and only where the bold name itself changed too: a Training titled "Meeting" made a Meeting still reads "Meeting"
+     (its title became its kind's own name), so nothing was renamed (the fresh Fable designer's B1, chat 168) */
+  if (ownName(b) !== ownName(a) && String(inpLabel(b)) !== String(inpLabel(a))) out.push({ k: 'title', was: String(inpLabel(b)) })
   /* …and its till-date tick turned by someone else: what the schedule prints for his remark changed (owner D953 — the
      scenario designer's 5); a flip the dates alone made is the "when" line's */
   const tick = tillTurned(b, a)
