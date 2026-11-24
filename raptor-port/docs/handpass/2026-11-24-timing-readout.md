@@ -18,33 +18,34 @@ The approved mock-up: https://claude.ai/artifact/7bgefju2mwrGJzc2ACSExS (its wor
 
 ## The roll-call
 
-**A. The window (a new floating surface, z 410) and its corner button (z 409) — every surface it can stand over.**
+**A. The window (a new floating surface — z 410 when built, z 405 since chat 165's R2 fix: behind the app's own windows, never in their order) and its corner button — every surface it can stand over.** Filled by chat 167 from `walk3`–`walk5`.
 
 | Surface under it | SHOWS (window drawn, readable) | USABLE (drag, ✕, Copy all, button) | PAINTED on the same pixels |
 |---|---|---|---|
-| Sign-in card (desktop, phone) | | | |
-| View-only Sched week (desktop, phone) | | | |
-| Edit Schedule week, the board open | | | |
-| Inputs (list, calendar) | | | |
-| Quals · Logic · Help · Admin | | | |
-| Leave War grid (its own pinned bars) | | | |
-| Tracker | | | |
-| The failed-save band, the "Not kept" band | | | |
-| Another movable window (ALL AVAIL, changes, an input's window) | | | |
-| A dialog (z 470) or the ☰ drawer (z 440) | | | |
-| The week's foot scroll bar (desktop) under the corner button | | | |
+| Sign-in card (desktop, phone) | has it — W4 at every size, W24 loaded in front and behind (pictured) | has it — W4 (✕, Copy all, the button, drag, at 1366, 1024×600, 390, 320) | must not cover the card: W32 PASS — its boxes and Sign in clear at 768×1024 and 800×600; at 1366 the card stands left of the window |
+| View-only Sched week (desktop, phone) | has it — W5, W26, W34 (pictured) | has it — W4; W22 Copy all | W32: the week's foot clear, open and folded (desktop); on a phone the open window is a panel over the week's foot and starts folded (W4-phone-start) — as the approved mock-up |
+| Edit Schedule week, the board open | has it — W20 desktop and phone, W19 (f) (pictured) | has it — its ✕ in front of the board; folded, the corner button on top and the board's Done still Done's (W20-board, -board-folded, both sizes) | W32 RECORD: open at the start, it stands over Edit Schedule's foot buttons Traffic and "+ In-time" (bottom right, where the approved mock-up puts it) — for his look; folded, nothing covered |
+| Inputs (list, calendar) | has it — W8, W26 (pictured) | has it — W8: typing in the page's box while the window arrived, the caret kept | the page under it usable: W26, an input's window opened and closed every way, the Timing window untouched |
+| Quals · Logic · Help · Admin | has it — W5 each page timed with it open; W33 Admin (pictured) | has it — W23 top bar and keys | nothing of theirs at the window's corner in the walked pictures (W5) |
+| Leave War grid (its own pinned bars) | has it — W5, W7, W29 (pictured) | has it — W29: with the keys in it, Escape folds it, the person window stays | the "Open for bidding" sheet over the window (W20 RECORD, the sheet's own layer), a month inside it pressable (W21 PASS, desktop and phone) |
+| Tracker | has it — W5, W26, W28 (pictured) | has it — W29-tracker: Escape folds it, Show All as it was | nothing of the Tracker's under the corner (W26 picture) |
+| The failed-save band, the "Not kept" band | has it — W13, W27, W34 | has it | must not cover: W13 the band's Retry free (desktop); W27 PASS on a phone with 30 rows — the window's top 93 px, under the bar's foot (85 px), Retry free; W34 PASS the "Not kept" band, desktop and phone, no point of it under the window |
+| Another movable window (ALL AVAIL, changes, an input's window) | has it — W19, W20, W26 (pictured) | has it — W20-desk-two-windows: ALL AVAIL in front, the Timing window stays behind it even when pressed, its ✕ reached once ALL AVAIL closes; W20-phone: ALL AVAIL's panel over the corner button, which opens the window once ALL AVAIL is closed | must not take the app windows' place: behind every app window (W20 PASS); Escape answers the app window first (W19 c–h, W29, W30) |
+| A dialog (z 470) or the ☰ drawer (z 440) | the box and the drawer over it — W33 desktop and phone, W20-phone-drawer (pictured) | the box's ✕ on top and pressable; the window's ✕ (desktop) or corner button (phone) usable again after (W33 PASS) | must not cover a box or the drawer: W33, W20-drawer PASS |
+| The week's foot scroll bar (desktop) under the corner button | has it — W32 folded | has it | W32: nothing at the week's foot covered, folded (View-only Sched and Edit Schedule) |
 
 **B. The page mark — one row per opener of a page (every caller of `setPage`).**
 
 | Opener | Timed once, to the right page | First time / opened before right |
 |---|---|---|
-| Top bar link | | |
-| Phone ☰ drawer link | | |
-| Sign-in landing (`resetSession`) | | |
-| Sign-out | | |
-| Role switch landing (store.ts, Edit Schedule/Admin → View-only Sched) | | |
-| Page reopened after a failed download's Retry (Login.tsx `takeReopen`) | | |
-| A page left before it finished drawing | | |
+| Top bar link | has it — W5 (all nine pages, each within 0.05 s of the outside stopwatch, walk5), W23-top-bar, -top-bar-admin | has it — W5 "first time" then "opened before", walk5 |
+| Phone ☰ drawer link | has it — W23-member-drawer (walk4: one row a page, six pages) | has it — W7-after, W11 (drawer) |
+| Sign-in landing (`resetSession`) | has it — W5-signin (1.2 s against 1.25 s outside, walk5), W17-good, W13 | has it — the week's first row; W13: a second sign-in adds no row of the signed-out wait |
+| Sign-out | has it — W13: no row holds the signed-out wait; W26-signout to the sign-in card | has it — O3 (chat 165): a new sign-in starts every page as first again (`timing-watch.test.ts`) |
+| Role switch landing (store.ts, Edit Schedule/Admin → View-only Sched) | has it — W23-member-view-switch, one row "View-only Sched" | has it — "opened before" |
+| Page reopened after a failed download's Retry (Login.tsx `takeReopen`) | has it — W7-landing (walk5: 0.5 s against 0.49 s outside), no row while the card showed | has it — "first time", no "downloaded" (the server sent nothing whole — fix 4); next visit "opened before" |
+| A page left before it finished drawing | has it — W11-left: no row for the abandoned visit | has it — W11-abA RECORD (A→B→A at once: each row its own) |
+| The bell, Check my quals, OIL list, Back (W23's other doors) | MISSING: the bell not walked — no notice in the admin's bell list on the demo day (W23-bell); carried by the one mark every door shares (`setPage`; `timing.test.ts` "a page change is marked with the page asked for; staying on the same page is not") | Back: RECORD — leaves the app (about:blank), no row |
 
 **C. Without the switch — the app as before.**
 
@@ -84,7 +85,20 @@ Written by the host (Opus, chat 164) before the walk, 24 Nov 26.
 
 ## The orders walked
 
+Each W-step below is one order, walked on the built app (the combined list's EXPECTED beside it; results in "What the
+walk found"). Every order reached a result: W1–W34, walked in rounds `walk1`–`walk5`; the last round of each is the one
+that counts. Nothing here is published, saved or paid, so there is no "money" side: the downstream result is the
+readout's own figure, checked against an outside stopwatch armed in the page before each press (W5, every figure
+within 0.05 s), and against the server's own answers (W7, W14, W28).
+
 ## Cases carried by a test
+
+- The stopwatch's repeated orders (two pages in a row, a second sign-in, a page asked for twice) — `timing-watch.test.ts`
+  (each fault of F1–F9, fixes 2–4, O2, O3, OPEN 7 pinned, each seen red first).
+- Every word and figure the window shows, "not given by …", "under 0.1 s", the file counts — `timingtext.test.ts`.
+- The window's Escape, keys, Copy all and its newest press — `TimingReadout.test.tsx`, `boardescape.test.tsx`.
+- Nothing without the switch; the readout outside the app's first download — `timing.test.ts` (and W1 walked).
+- A28 (the two-minute give-up) — the code's one constant, not walked (above).
 
 ## The scenarios (Astra's and Fable's, combined)
 
@@ -137,11 +151,33 @@ words carry sizes only (D2483), recorded for his look.
 
 ## The pictures
 
+`docs/img/handpass/2026-11-24-timing-readout/`: `walk1` 7, `walk2` 35, `walk3` 40, `walk4` 41, `walk5` 50 — 173 in all,
+one folder a step. The deciding ones, opened by the host: `walk5/W24/background-load.png` (loaded behind another tab:
+"not timed, tab not in front"), `walk5/W20-desk/04-timing-pressed-stays-behind.png` (ALL AVAIL over the window after a
+press on it), `walk5/W33-desk/01-box-over-the-window.png`, `walk5/W34-phone/01-not-kept-band-and-window.png`,
+`walk5/W26/01-inputwin-after-press-outside.png` (the script's old press landed on a calendar day — its own fault).
+
 ## The break tests
+
+Each fault was pinned by a test seen to fail on the old code before its fix: fix 1 `timing.test.ts` (the first
+download); fix 2 `timing-watch.test.ts` (the press's own moment, four); fix 3 `timingtext.test.ts` (a reloaded file,
+five); faults 4, 6, O2, O3, A3 `timing-watch.test.ts`; fault 5, R1, O4, A1, A6 `boardescape.test.tsx`; A2, R2
+`TimingReadout.test.tsx`; A5 `timing.test.ts`; OPEN 7 (chat 167) `timingtext.test.ts` and `timing-watch.test.ts` —
+"a file smaller than the answer's header, told "unchanged"…", red on the old code (761 bytes counted where 461 came).
 
 ## Errors seen
 
+None in any walked session but W7's, which are the walk's own doing: W7 refuses the Leave War's file on purpose
+("Failed to fetch dynamically imported module" — the failed-download card under test). W1c, W5-errors, W26-errors: none.
+
 ## What was NOT walked, and why
+
+- Safari on a real iPhone, Firefox, Edge and the office computer itself — only his look can show them (sizing line 4);
+  WebKit stood in for Safari's words (W15).
+- W23's bell door — no notice in the admin's bell list on the demo day; the door shares the one mark every door uses.
+- A28's two-minute give-up — carried by the code's one constant (above).
+- W24 in Playwright — it keeps every page it drives "visible", so W24 is walked by its own script (a plainly started
+  Chromium, driven only through its developer port: `timing-walk-w24.mjs`), which hid the tab for real.
 
 ## The gate counts
 
@@ -226,3 +262,31 @@ which control); W23-member read rows with the window folded (open it first); W24
 Edit Schedule's week; W19 (g), W26 change and Undo — no `.ib-bar` in sight on Inputs (find the calendar's tab first);
 W20-desk-board-folded's judge wanted `#sbDone` and met its inner `span.bl` (a PASS); W21 — the month selector inside
 the sheet. Everything else of W1–W26 PASSED: see the logs.
+
+### Chat 167: OPEN 7, the script faults, the last re-walk (`walk5`)
+
+On the build of `0a6a5a304`'s app code (logs `walk5-part1.txt`, `-part2.txt`, `-w24.txt`, `-part3.txt`, `-part3-W26.txt`,
+`-part4.txt`, `-part5.txt`, `-part5-W33phone.txt`; commands `scripts/handpass/timing-rewalk5.sh`, then part 5).
+
+| # | Found | Disposition |
+|---|---|---|
+| 7 | W14-newtab "Kept 14 of 15" where the server answered all 15 "unchanged" | PROVED by `timing-walk-diag5.mjs`: Chrome reports an "unchanged" answer as the web standard's fixed 300 bytes for its header, beside the body's size (a file sent whole: body + 300); the app's `undo-bridge` file is 161 bytes compressed, so 300 > 161 read as "sent whole". FIXED red-first `0a6a5a304`: exactly 300 counts as "unchanged" in both places that count files (`timingtext.test.ts`, `timing-watch.test.ts`, each red first). W14-newtab re-walked: "15 of 15" PASS; W7-downloaded and W28 still PASS |
+| S1 | W5-leavewar-1's judge wanted a download the Leave War had already made in the background | script FIXED: the server's own answers decide; walk5 the Leave War's own download came this time (claw seen, "downloaded 134 KB: 2.3 s" against 2.27 s outside) — PASS |
+| S2 | W24: no Playwright set-up ever hid a tab (its own windows, the developer protocol's tabs, a plainly started browser it connects to, its focus emulation switched off — all "visible") | NEW script `timing-walk-w24.mjs`: a plainly started Chromium driven only through its developer port. PASS: the tab hidden then shown, no row of the hidden time (the page asked for just before is dropped — the intended rule); loaded behind another tab: "not timed, tab not in front" twice, "Site answered under 0.1 s"; the same address loaded in front: every figure given |
+| S3 | W20-phone pressed the corner button through ALL AVAIL's panel | script FIXED: ALL AVAIL over the corner button recorded, closed by its ✕, then the button opens the window — PASS |
+| S4 | W26's "press outside" judge wanted the window closed (D641 keeps it open) — and its point was a calendar day, which opened that day's own window over the input's | script FIXED: pressed at an empty spot, the window stays open (PASS), then closed by its ✕ (PASS) |
+| S5 | W20-desk-two-windows' judge assumed a press brings the Timing window forward (before R2) | judge REWRITTEN: ALL AVAIL stays in front after a press on the window (z behind), its ✕ reached once ALL AVAIL closes, then pressed — PASS (both pictured) |
+| R2 | re-walk owed (chat 165's last fix, the window outside the app's window order) | W19 RECORD: one Escape one thing — ALL AVAIL, the changes window, the bell's list, the board, an input's window, the bidding sheet each close on one Escape and the Timing window stays; with the keys in it (c2) Escape folds it and ALL AVAIL stays; with nothing else open, Escape leaves it open (the bystander rule — for his look: the combined list expected it to fold) |
+| New | the two roll-call rows no part had walked | W33 (Admin → Day templates box over the window, desktop and phone) PASS; W34 (the "Not kept" band, `?nostore`) PASS, desktop and phone |
+
+Everything else in `walk5` PASSED: W1a–d (15 files = `main`'s 15), W5 (every figure within 0.05 s), W7, W14, W20 desk
+and phone, W26, W27–W31; W32 as before (RECORD, for his look).
+
+**Closed.** No fault open. For his look: the start-up words for a tab loaded behind another (W24), Copy all when the
+browser refuses (the mock-up, D1625), W10's "first time: 0.2 s" for a page built in the background, W32 (open at the
+start, the window covers Edit Schedule's Traffic and "+ In-time"), and the Escape rule (the window folds by Escape
+only with the keys in it).
+
+**Walk:** `docs/handpass/2026-11-24-timing-readout.md` · 173 pictures (50 in the last round) · 11 surfaces · 34 orders
+(W1–W34) · MISSING: 1 — the bell door, not walked (no notice on the demo day), carried by the one shared mark; every
+fault fixed red-first (7 found by the walk, 2 by its re-walks, 9 by the two code reads, F1–F9 by the scenario designers' reading); none ruled, none filed but `[PHONE-WIN-BAND]`
