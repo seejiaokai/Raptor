@@ -213,6 +213,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ONE-RULE-SMALL-WORDS] — ten small sentences and marks that read oddly — for the words pass; two wordings his.
 - [UI-SLEEK-PASS] — the sleeker interface (D765): the first word rounds are live; the rest page by page, on his word.
 - [APP-SPEED] — the app's speed, his go of 24 Nov 26 (D2480): a hidden timing readout for the real slow computer first, then the week drawing the days in view first with both schedule pages kept ready, then no file re-checks on repeat visits; four more ideas wait.
+- [PHONE-WIN-BAND] — does a tall window of the app on a phone cover the top bar and its failed-save band, as the timing readout did — to check.
 - [PERF-RESIDUALS] — measured speed wins held back; two change wording or feel — his call.
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 - [CHAT66-OPEN-ROUND] — his answer to the night of 11 Nov 26's question 1 (the bell) and that night's small round of questions, put to him only when he says (D994).
@@ -306,6 +307,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [PHONE-WIN-BAND] A tall movable window on a phone may stand over the top bar and the failed-save band (filed 24 Nov 26, chat 165) — OPEN
+**What it is:** the timing readout's code read (Astra, chat 165) found its window, 30 rows long on a phone, standing 12px below the screen's top — over the top bar and the "Not saved" band's Retry (his D1523: a window stands clear of the band). Fixed for the readout (its height capped by the top bar's live height, `raptor-port/src/ui/timing.css`). The app's other movable windows share the phone rule it inherited (`raptor-port/src/ui/scheduler/22-float-windows.css`: the screen's height less 24px, centred) — not checked.
+**To do:** walk each movable window on a phone at its tallest with `?savefail` and the band up; where one covers the band, cap it as the readout is, red first.
+**Where:** the screens; a small job of its own or with the next phone batch. Evidence: `raptor-port/docs/handpass/2026-11-24-timing-readout.md` (A5, W27).
 
 ### [ACCOUNT-STATUS-TOLD] A person told on his own bell when his account status changes (his D2251, 21 Nov 26, chat 128) — OPEN
 **What it is:** his D2251 — "the players should be informed when their account status changes": a line on the person's own bell whenever he is made an admin or a member, suspended or enabled, given or losing View or Plan of a squadron (a move, or a change to member, ending it included — D2203, D2250), made or unmade a master admin; it names what changed and who changed it.

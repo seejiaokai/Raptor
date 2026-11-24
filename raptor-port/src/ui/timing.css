@@ -3,7 +3,9 @@
    place and its rows, as the mock-up of 24 Nov 26 draws them. */
 
 /* a computer: the bottom-right corner, 360px wide, until it is dragged (floatwin.ts then writes its place inline) */
-.floatwin.timingwin{width:360px}
+/* behind the app's own windows (410, 411 in front), over the board (400): it never takes part in their order
+   (FloatWindow.tsx bystander — the re-walk of chat 165, W19 (c2)) */
+.floatwin.timingwin{width:360px;z-index:405}
 .floatwin.timingwin:not([data-placed]){top:auto;bottom:16px}
 /* the title's second line wraps rather than being cut: "This computer only" is the line that must be read */
 .floatwin.timingwin .win-ttl{white-space:normal}

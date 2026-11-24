@@ -139,7 +139,11 @@ for (const [id, size] of [['W20-desk', DESK], ['W20-phone', PHONE]]) {
     /* ALL AVAIL and the Timing window: each brought in front by a press, both ✕ pressable */
     const osn = page.locator('#eWeek [data-oilsent]:visible').first()
     if (await osn.count()) {
+      /* a phone: the Timing window is a panel at the screen's foot, over the week — folded to reach the count, then
+         opened again from its button over ALL AVAIL (chat 164's run pressed the count through it) */
+      if (phone) await page.click('#timingRoot .timingwin .win-x')
       await osn.scrollIntoViewIfNeeded(); await osn.click(); await sleep(600)
+      if (phone) { await page.click('#timingRoot .timing-pill'); await sleep(400) }
       const ax = await page.evaluate(() => { const x = document.querySelector('.availwin:not([hidden]) .win-x'); if (!x) return null; const r = x.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2] })
       const aTop = ax ? await topAt(page, ax[0], ax[1]) : null
       m = await xMid(); const tUnder = m ? await topAt(page, m[0], m[1]) : null
@@ -219,17 +223,19 @@ await scen('W26', DESK, {}, async ({ page, dir, errors }) => {
   await page.mouse.move(400, 400); await page.mouse.wheel(0, 600); await sleep(500)
   const sy = await page.evaluate(() => scrollY + (document.querySelector('#page-viewsched') || {}).scrollTop)
   log.push(`the week under the window scrolled (page scroll ${sy})`)
-  /* a change on the Inputs calendar and its Undo */
+  /* a change and its Undo (chat 165: chat 164's drag of an input bar changed nothing, so Undo stayed greyed): ALL AVAIL
+     put on Saturday through the board, then the top bar's Undo */
+  await allAvailDay(page); await openBy(page, 'editsched'); await outsideTime(page, 'editsched'); await sleep(500)
+  const chips = () => page.locator('#eWeek [data-oilsent]:visible').count()
+  const made = await chips()
+  await page.click('#undoBtn'); await sleep(900)
+  const undone = await chips()
+  log.push(`ALL AVAIL put on Saturday: the week's count ${made ? 'shown' : 'not shown'}; after Undo ${undone ? 'still shown' : 'gone'}`)
+  judge('W26-change-undo', made > 0 && undone === 0, log.at(-1))
+  /* an input's own window on the Inputs calendar */
   await openBy(page, 'inputs'); await outsideTime(page, 'inputs'); await sleep(600)
   const bar = await inputBar(page)
   if (bar) {
-    const bb = await bar.boundingBox(); const iid = await bar.getAttribute('data-iid')
-    await page.mouse.move(bb.x + bb.width / 2, bb.y + bb.height / 2); await page.mouse.down(); await page.mouse.move(bb.x + bb.width / 2 + 120, bb.y + bb.height / 2 + 2, { steps: 8 }); await page.mouse.up(); await sleep(800)
-    const moved = await page.locator(`#page-inputs .ib-bar[data-iid="${iid}"]`).first().boundingBox()
-    await page.click('#undoBtn'); await sleep(800)
-    const back = await page.locator(`#page-inputs .ib-bar[data-iid="${iid}"]`).first().boundingBox()
-    log.push(`an input bar dragged ${Math.round(moved.x - bb.x)}px, Undo put it back to ${Math.round(back.x - bb.x)}px`)
-    judge('W26-change-undo', Math.abs(moved.x - bb.x) > 20 && Math.abs(back.x - bb.x) < 3, log.at(-1))
     /* its window: opened, then closed by ✕, by Escape, by a press outside */
     for (const how of ['✕', 'Escape', 'a press outside']) {
       await bar.click(); await sleep(700)
@@ -239,7 +245,7 @@ await scen('W26', DESK, {}, async ({ page, dir, errors }) => {
       const still = await page.locator('.floatwin:not(.timingwin)').first().isVisible().catch(() => false)
       judge('W26-inputwin-' + how, up && !still && await tOpen(page) !== null, `the input's window opened ${up}, closed by ${how}: ${!still}; the Timing window open ${await tOpen(page)}`)
     }
-  } else notWalked('W26-change-undo', 'no input bar in sight on the Inputs page')
+  } else notWalked('W26-inputwin', 'no input bar in sight on the Inputs page')
   /* the changes window on Edit Schedule: opened, closed by ✕ and by Escape */
   await openBy(page, 'editsched'); await outsideTime(page, 'editsched'); await sleep(500)
   for (const how of ['✕', 'Escape']) {

@@ -166,7 +166,34 @@ node scripts/handpass/timing-walk-2.mjs` (and `timing-walk.mjs` with `TW_MAIN=C:
 | — | W18 RECORD: medians, Edit Schedule / View-only Sched: no switch 1234 / 1199 ms, open 802 / 956, folded 810 / 838 — the window adds no cost (the no-switch run went first, colder) | no fault |
 | — | W3: storage — the same kinds and numbers of entries with the switch as without (363 each; two runs without differ by 55 minted record numbers, so compared by kind, `timing-walk-diag4.mjs`) | PASS (the script's first judge compared names: its own fault) |
 
-**Script faults of part 3, to re-walk (the steps did not reach their premise):** W14-reload's judge used the old
+### Chat 165: the code reads, the open faults, the re-walk
+
+**The code read** (bug-check order §4): Astra (GPT-6 Astra, high) and a fresh, blind Opus, one brief
+(`docs/superpowers/briefs/2026-11-24-timing-readout-code-read-brief.md`), each in an exported copy of `fcb9ec69e` with
+this sheet, the handoff block, the scenario reports and the walk scripts taken out, blind to each other. Their reports:
+`handpass/parts/2026-11-24-timing/astra-read.md`, `…/opus-read.md` (its proof tests in `…/opus-proof/`). Every claim
+was written as a test and seen to fail on the old code before its fix; the browser steps of walk part 4 checked them on
+the build.
+
+| # | Found (by) | Disposition |
+|---|---|---|
+| 4 | W7: a file the browser already held counted as "downloaded 1 KB" | FIXED red-first `23e2dddc7` (`timing-watch.test.ts`): a file counts only when what came is more than its body; W7-downloaded re-walked |
+| 6 | W24: a tab behind another — "Sign-in shown at 36.3 s" | FIXED red-first `23e2dddc7`: App loaded and Sign-in shown read "not timed, tab not in front" (a fresh Fable's words, D2441 — "Site answered" and the sign-in keep their figures); W24 re-walked in a real window — for his look |
+| 5 | W19 (f): the board needed two Escapes (also Opus F1) | FIXED red-first `52f360c58`, reshaped in `a893d3ca7` (below) |
+| R1 | Re-walk W19 (e): the bell's list and the readout closed on ONE Escape — new; any movable window in front met the same on `main` (the list closed on the key without marking it used) | FIXED red-first `52f360c58` (`topbits.tsx`, `boardescape.test.tsx`): the list marks the key used |
+| O4 | Opus F4: a seat put down AND the readout folded on one Escape | FIXED red-first `a893d3ca7` — the readout made a **bystander** (`FloatWindow.tsx`): Escape is its own only with the keys inside it, and then first, at the window's capture; opened by itself it neither comes forward nor takes the keys; W30 PASS |
+| A1, A6 | Astra: with the keys in the readout, Escape closed the Leave War person window / the Tracker's Show All underneath (they listen at the page first) | FIXED by the same change; `boardescape.test.tsx` (a page listener never hears it); W29 PASS both |
+| A2 | Astra: two Copy all presses at once — the older's "Copied" spoke for the newer, failed one | FIXED red-first `a893d3ca7` (`TimingReadout.test.tsx`) |
+| A3 | Astra: the Tracker's "downloaded" counted the Leave War's background download | FIXED red-first: a page never counts the other page's own files; W28 PASS (Tracker 120 KB, the server sent 119 KB) |
+| A4 | Astra: folded from the keys, the keys were left on nothing | FIXED red-first: they go to the corner button; W31 PASS (phone, keys alone) |
+| A5 | Astra: on a phone, with 30 rows, the window covered the top bar and the failed-save band's Retry (D1523) | REPRODUCED by W27 (window top 12 px, Retry under it); FIXED red-first (`timing.test.ts`, `timing.css` capped by the bar's live height); W27 PASS (top 93 px, the bar's foot 85 px) — whether a tall phone window of the app's own does the same is filed, `[PHONE-WIN-BAND]` |
+| O2 | Opus F2: a page the app changes while the tab is already hidden — a row of the hidden time | FIXED red-first (`timing-watch.test.ts`): no mark while hidden |
+| O3 | Opus F3: after a sign-out that could not reload, the next sign-in's Leave War read "opened before" | FIXED red-first: a sign-in starts every page as first again |
+| H1 | Opus: what the window and its button stand over — the week's foot scroll bar, the sign-in card at 768×1024 and 800×600 | walked, W32 (below) |
+| H2 | Opus: does the window slow what it measures | W18 RECORD: no added cost (above) |
+| — | Opus's smaller notes: "Sign-in shown" ends at the claw going, not two frames after; a refused sign-in starts a wait (W17: no row results); "first time" can be a page built in the background (W10, for his look) | no fault — left |
+
+**Script faults of part 3 (chat 164), each repaired by chat 165 and re-walked in `walk4`:** W14-reload's judge used the old
 counting (compare the server's 304 answers instead); W20-phone and W23-admin stopped on a 30 s click timeout (find
 which control); W23-member read rows with the window folded (open it first); W24 — the test browser never hid the tab
 (walk it in a real window, placed off the screen); W19 (c)/(c2), W20 two windows — no `[data-oilsent]` line found on

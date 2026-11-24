@@ -203,11 +203,11 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
   useLayoutEffect(() => {
     const opener = document.activeElement as HTMLElement | null
     const n = el.current
-    /* a bystander opened by itself (`quietOpen`) neither comes forward nor takes the keys: a press brings it forward */
-    if (!quietOpen) {
-      if (forward(id)) notify()
-      if (n && !n.contains(document.activeElement)) n.focus({ preventScroll: true })
-    }
+    /* a bystander never joins the windows' order (it stands behind the app's own windows — the re-walk of chat 165,
+       W19 (c2): in front of the order yet answering Escape only with the keys in it, it left ALL AVAIL deaf); opened by
+       itself (`quietOpen`) it does not take the keys either */
+    if (!bystander && forward(id)) notify()
+    if (!quietOpen && n && !n.contains(document.activeElement)) n.focus({ preventScroll: true })
     /* a passing note already on screen moves clear of the buttons this window has just put at the foot of a phone's
        screen (D731 (1) — ui/toast.ts placeToast) */
     placeToast()
@@ -287,7 +287,12 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
       /* a press ON this window brings it forward — not one on something it draws inside ANOTHER window (a question hanging
          from a card of the opened day, ui/AskCard.tsx portal): React hands that press to this window too, and it jumped
          over the very card the question hangs from (the walk of 4 Nov 26, S3 on a phone) */
-      onPointerDownCapture={e => { if (!(e.currentTarget as HTMLElement).contains(e.target as Node)) return; if (forward(id)) notify() }}
+      onPointerDownCapture={e => {
+        if (!(e.currentTarget as HTMLElement).contains(e.target as Node)) return
+        /* a bystander: the press puts the keys in it (its Escape is then its own), the order untouched */
+        if (bystander) { const n = el.current; if (n && !n.contains(document.activeElement)) n.focus({ preventScroll: true }); return }
+        if (forward(id)) notify()
+      }}
     >
       <div className={'win-bar' + (mark ? ' has-mark' : '')} {...bar}>
         {/* the app's own six-dot grip, "drag me" (D40) */}

@@ -124,6 +124,25 @@ describe('the window', () => {
     act(() => { x.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
     expect(win()).toBeNull()
   })
+  /* THE RE-WALK OF CHAT 165 (W19 (c2)): a press on the readout made it the front window of the app's own order, yet it
+     answers Escape only with the keys in it — so the window it went over (ALL AVAIL), and the board under that, heard
+     nothing: Escape dead. It never takes part in the app's window order: it stands behind the app's own windows, and
+     their Escape is theirs */
+  it('a press on it never takes the app\'s window order: the app\'s window still answers Escape', () => {
+    const otherHost = document.createElement('div'); document.body.appendChild(otherHost)
+    const otherRoot = createRoot(otherHost)
+    let otherOpen = true
+    const Other = () => <FloatWin id="other" title="Other" onClose={() => { otherOpen = false; act(() => otherRoot.render(<></>)) }}><p>x</p></FloatWin>
+    try {
+      act(() => otherRoot.render(<Other />))
+      draw(VIEW, true)
+      const bar = win()!.querySelector('.win-bar') as HTMLElement
+      act(() => { bar.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })) })
+      ;(document.activeElement as HTMLElement | null)?.blur?.()
+      act(() => { document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
+      expect({ otherClosed: !otherOpen, readoutOpen: !!win() }).toEqual({ otherClosed: true, readoutOpen: true })
+    } finally { act(() => otherRoot.unmount()); otherHost.remove() }
+  })
   it('a section with nothing yet says so', () => {
     draw({ ...VIEW, pages: [], signin: null }, true)
     expect(win()!.textContent).toContain('No page opened yet')

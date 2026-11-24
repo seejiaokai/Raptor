@@ -125,5 +125,30 @@ await scen('W31', PHONE, {}, async ({ page, dir }) => {
   judge('W31', inWin && onPill && again && onPill2, `Enter on the button: the keys in the window ${inWin}; Escape folds it, the keys on the button ${onPill}; Enter opens it again ${again}; its ✕ by Enter, the keys on the button ${onPill2}`)
 })
 
+/* W32 — what the window and its corner button stand over (the fresh Opus read's H1): the week's foot scroll bar's two
+   ends on View-only Sched and Edit Schedule, open and folded; the sign-in card's boxes and button at 768×1024, 800×600 */
+await scen('W32', DESK, {}, async ({ page, dir }) => {
+  await page.goto(B + '/?timing'); await signIn(page); await outsideTime(page, 'viewsched'); await sleep(600)
+  const ends = () => page.evaluate(() => [...document.querySelectorAll('.page.on button, .page.on [role=button]')].filter(b => { const r = b.getBoundingClientRect(); return r.width > 0 && r.bottom > innerHeight - 70 }).map(b => { const r = b.getBoundingClientRect(); const x = r.left + r.width / 2, y = r.top + r.height / 2; const top = document.elementFromPoint(x, y); return { what: (b.getAttribute('aria-label') || b.textContent || b.className).trim().slice(0, 24), x: Math.round(x), y: Math.round(y), covered: !!(top && top.closest('#timingRoot')) } }))
+  const out = []
+  for (const p of ['viewsched', 'editsched']) {
+    if (p !== 'viewsched') { await openBy(page, p); await outsideTime(page, p); await sleep(500) }
+    const open = await ends(); await pic(page, dir, p + '-open')
+    await page.click('#timingRoot .timingwin .win-x'); await sleep(300)
+    const folded = await ends(); await pic(page, dir, p + '-folded')
+    await page.click('#timingRoot .timing-pill'); await sleep(300)
+    out.push(`${p}: open — ${open.filter(x => x.covered).map(x => x.what + '@' + x.x + ',' + x.y).join(', ') || 'nothing at the foot covered'} (of ${open.length}); folded — ${folded.filter(x => x.covered).map(x => x.what + '@' + x.x + ',' + x.y).join(', ') || 'nothing covered'}`)
+  }
+  judge('W32-week-foot', null, out.join(' · '))
+  for (const [w, h] of [[768, 1024], [800, 600]]) {
+    const { ctx, page: p2 } = await fresh(cr, { viewport: { width: w, height: h } })
+    await p2.goto(B + '/?timing'); await p2.waitForSelector('#luser', { state: 'visible' }); await p2.waitForSelector('#timingRoot .timingwin, #timingRoot .timing-pill', { timeout: 30000 }); await sleep(400)
+    const cov = await p2.evaluate(() => ['#luser', '#lpass', '#loginForm button[type=submit]'].map(s => { const e = document.querySelector(s); if (!e) return s + ' missing'; const r = e.getBoundingClientRect(); const t = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return s + (t && t.closest('#timingRoot') ? ' COVERED' : ' clear') }))
+    await pic(p2, dir, `signin-${w}x${h}`)
+    judge(`W32-signin-${w}x${h}`, cov.every(x => / clear$/.test(x)), cov.join(', '))
+    await ctx.close()
+  }
+})
+
 saveResults('walk-part4' + (ONLY ? '-' + ONLY.join('_') : ''))
 await cr.close(); await srv.close()
