@@ -78,3 +78,25 @@ window, typed work lost unasked, or a person trapped. Give explicit negatives ("
 database step (D56); a scheduler who is not an admin (D785); what Builds 2 and 3 are filed to do, unless Build 1 makes
 it worse or cannot be merged without it; what only a real iPhone can show (list those separately, as looks for his
 phone).
+
+## Round 2 (added 25 Nov 26, after the fold of round 1) — for a reader of the REVISED plan
+
+The plan was revised to its first round of reads (its §15 lists every finding and what changed). You are a fresh
+reader of round 2, blind to the other two and to round 1's reports (do not open `*build1-read-astra*`, `-opus*`,
+`-fable*`; the plan's own §15 is yours to read). Everything above stands. Look hardest at what no reader has seen:
+
+- **The one check at the page door** (`state/store.ts setPage`, §4.1 and §4.5): does every road by which his own
+  squadron comes back, or another is entered, by his own press now pass it — and does it refuse anything that changes
+  nothing (a press that stays on the squadron in view), or anything a change he did not make needs (the midnight
+  move, a right ended, sign-in, sign-out, the first load)? Which callers mark something (a line read, a list closed,
+  a flag set) before they ask, and so leave a mark behind a refusal?
+- **"Counted means drawn"** (§3.1): for each row, is the predicate named really the one the window is drawn from —
+  and can any window now be on screen while its row says it is not (a door left open the other way)?
+- **Each round-1 finding marked closed in §15**: closed in the body, or only in the table?
+- **The build order (§10)**: does any step now leave the suite red or a door half-guarded; are the pins really green
+  today and the failing tests really red today?
+- **Part F, split**: are security F1 and F2 closed by the doors alone, before the root lands?
+- **New questions N7–N11 and the changed N1, N2, N4**: is any built on before he answers; is a recommended answer one
+  that cannot be built or that traps a person?
+
+Same form of finding, same severities, same "not a finding" list. Report file and final message as your prompt says.
