@@ -59,11 +59,15 @@ export function sansPostedFrom(pid: string): string | null {
    is SANS on (the days that record shows on — engine/inputs.ts sansShownOn), first first. What the posting's take-back
    compares, after the change, to say which it hid. Read from the records themselves, whatever week is loaded. */
 /* (for every man asked, in ONE pass over the records: every SANS man is asked now, D2394 2b, at the start of every command) */
+/* EVERY SANS AVAILABILITY RECORD, whatever squadron — a man's own SANS records follow him, so this is the one read of the
+   whole inputs list this file is allowed (engine/inputsfor-readers.test.ts); both readers below go through it. */
+// any: an input record is untyped (a verbatim port, src/engine/inputs.ts)
+function sansAvailRecords(): any[] {
+  return (INPUTS as any[]).filter(r => r && isSansAvail(r.type))
+}
 function sansFiledShown(pids: ReadonlySet<string>, today: string): Map<string, string[]> {
   const sets = new Map<string, Set<string>>()
-  // any: an input record is untyped (a verbatim port, src/engine/inputs.ts)
-  for (const r of INPUTS as any[]) {
-    if (!r || !isSansAvail(r.type)) continue
+  for (const r of sansAvailRecords()) {
     const sp = inputSpanIso(r)
     if (!sp) continue
     for (const e of namedOf(r) as Array<{ p?: unknown }>) {
@@ -480,9 +484,8 @@ let BEFORE: { env: unknown; men: Map<string, Noted> } | null = null
 let BEFORE_WIRED = false
 /* HAS HE A SANS AVAILABILITY RECORD COVERING THIS DAY, shown or hidden (the bell's "hidden" sentence asks: state/notices.ts) */
 function sansFiledOn(pid: string, iso: string): boolean {
-  // any: an input record is untyped (a verbatim port, src/engine/inputs.ts)
-  for (const r of INPUTS as any[]) {
-    if (!r || !isSansAvail(r.type) || !(namedOf(r) as Array<{ p?: unknown }>).some(e => String(e.p) === pid)) continue
+  for (const r of sansAvailRecords()) {
+    if (!(namedOf(r) as Array<{ p?: unknown }>).some(e => String(e.p) === pid)) continue
     const sp = inputSpanIso(r)
     if (sp && sp[0] <= iso && iso <= sp[1]) return true
   }

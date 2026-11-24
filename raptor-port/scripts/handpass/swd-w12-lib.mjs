@@ -25,7 +25,7 @@ export async function planSim(p, W, d, kind, sid, o = {}) {
   await T.gotoWeek(p, W, wkOf(d))
   const s = await T.W5.addSim(p, W, DI[d], kind, o.label || 'W12 SIM', o.a || '21:00', o.b || '21:45')
   await L.armAndPick(p, W, `[data-fill="s:${DI[d]}.${kind}.${s.ri}.+"]`, id, 'sim')
-  const row = await p.evaluate(([i, k, n]) => { const x = window.DAYS[i].sims[k][n]; return x ? JSON.parse(JSON.stringify(x)) : null }, [DI[d], kind, s.ri])
+  const row = await p.evaluate(([i, k, n]) => { const x = window.DAYS[i].sims[k][n]; return x || null }, [DI[d], kind, s.ri])
   const ok = !!row && JSON.stringify(row).includes(`"${id}"`)
   await L.closeBoard(p, W)
   need(W, sid, `an ${kind.toUpperCase()} sim row ${o.a || '21:00'}–${o.b || '21:45'} naming ${id === RANGER ? 'Ranger' : id} on ${d} Jul (read back)`, ok, L.J(row).slice(0, 200))
