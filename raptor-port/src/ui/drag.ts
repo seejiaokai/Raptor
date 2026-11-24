@@ -465,7 +465,9 @@ export function applyDrop(el: any, x: any, y: any) {
        where the puck is. */
     else {
       const seat = slotEl.matches('[data-slot]') ? slotEl : slotEl.querySelector(`[data-slot="${targetKey}"]`)
-      DRAG = null; dndOff(); landOn(seat); toast('Already in that seat'); return false
+      /* the tap's words, naming the man (his D2521 Q4b): "Ranger — already in that seat" */
+      const v = slotVal(targetKey), who = (PEOPLE[v] && PEOPLE[v].cs) || v
+      DRAG = null; dndOff(); landOn(seat); toast(`${who} — already in that seat`); return false
     }
     return done(targetKey, asks)
   }

@@ -2542,7 +2542,9 @@ export function publishFlagsBids(di: number): void {
        so it is the moment to tell him it cannot: no period holds this date, so
        there is nowhere for the credit to be written. The day's own warning list
        says the same thing and carries the way out. */
-    lines.push(`there is no leave war period for ${iso.slice(0, 4)}, so no OIL can be earned for this day — create the period on the Leave War`)
+    /* …in the day's warning list's own words (engine/validate.ts OIL_NO_PERIOD), so one message has one wording — a
+       sentence of its own after the publish note (his D2521 S2) */
+    lines.push(`No Leave War period for ${iso.slice(0, 4)}, so no OIL can be earned for this day. Create the period on the Leave War.`)
     say(); return
   }
   const said: string[] = []

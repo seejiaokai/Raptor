@@ -280,13 +280,90 @@ describe('who is told, and in what words (D755 (3), D760, D769 — the plan §4.
     expect(noticesFor(PIKE)).toHaveLength(1)
     expect(noticeWords(noticesFor(PIKE)[0]!).what).toBe('You were added')
     expect(noticesFor(RANGER)).toHaveLength(1)
-    expect(noticeWords(noticesFor(RANGER)[0]!).what, 'the first two things, in the order that matters to a reader').toBe(`Now 10:00–11:00, ${cs(PIKE)} added`)
+    /* (and how many more — his D2521 Q3: Hex taken off is the third) */
+    expect(noticeWords(noticesFor(RANGER)[0]!).what, 'the first two things, in the order that matters to a reader').toBe(`Now 10:00–11:00, ${cs(PIKE)} added, and 1 more change`)
   })
   it('a change that says nothing new tells nobody: the same save again', async () => {
     await boot()
     file([RANGER, HEX]); clear()
     commitInput(rec(), draftOf(rec()), [RANGER, HEX])
     expect(NOTICES).toHaveLength(0)
+  })
+})
+
+/* THE WORDS PASS, ROUND 4 (his D2521, 24 Nov 26 — "All as recommended"; the words: docs/superpowers/briefs/
+   2026-11-24-words-r4-draft.md §After the fresh Fable's read; the page he approved, docs/mock/2026-11-24-words-r4/) */
+describe('round 4 of the words pass: the bell (D2521)', () => {
+  /* Ranger's own leave, no title: its bold name is its kind */
+  const LEAVE = (over: any = {}) => ({ ...draftOf({ person: RANGER, type: 'LL', date: LBL[WED], yr: 2026, allday: true, s: 0, e: 1439, remarks: 'Round four leave' }), ...over })
+  const leave = () => { const l = INPUTS.filter((x: any) => x.remarks === 'Round four leave') as any[]; expect(l, 'ONE leave').toHaveLength(1); return l[0] }
+  const line = (what: any[], over: any = {}): any => ({ id: 'x', to: RANGER, by: SABER, at: 0, iid: 'x', name: 'Training', day: '2026-07-15', what, ...over })
+  it('Q1: a leave changed to another kind says "LL changed to OL" — never "Renamed"', async () => {
+    await boot()
+    expect(commitInput(null, LEAVE(), [RANGER]), 'filed').toBe(true); clear()
+    expect(commitInput(leave(), { ...draftOf(leave()), type: 'OL' }, [RANGER])).toBe(true)
+    expect(told(RANGER)).toEqual([`OL · Wed 15 Jul — LL changed to OL · ${cs(SABER)}`])
+  })
+  it('Q1: a titled input whose kind changes says the kinds, its title unchanged: "Training changed to Meeting"', async () => {
+    await boot()
+    file([RANGER]); clear()
+    expect(commitInput(rec(), { ...draftOf(rec()), type: 'Meeting' }, [RANGER])).toBe(true)
+    expect(told(RANGER)).toEqual([`${TITLE} · Wed 15 Jul — Training changed to Meeting · ${cs(SABER)}`])
+  })
+  it('Q1: a true rename keeps today\'s words', async () => {
+    await boot()
+    file([RANGER]); clear()
+    expect(commitInput(rec(), { ...draftOf(rec()), title: 'Kit check' }, [RANGER])).toBe(true)
+    expect(told(RANGER)).toEqual([`Kit check · Wed 15 Jul — Renamed — was ${TITLE} · ${cs(SABER)}`])
+  })
+  it('Q2: a leave made a morning says "Now LL (AM)"; an afternoon "Now LL (PM)"; a whole day again "Now all day"', async () => {
+    await boot()
+    expect(commitInput(null, LEAVE(), [RANGER]), 'filed').toBe(true); clear()
+    expect(commitInput(leave(), { ...draftOf(leave()), allday: false, half: 'am', sTime: '00:00', eTime: '12:00' }, [RANGER])).toBe(true)
+    expect(leave().half, 'the premise: a morning').toBe('am')
+    expect(told(RANGER)).toEqual([`LL · Wed 15 Jul — Now LL (AM) · ${cs(SABER)}`])
+    clear(); tick()
+    expect(commitInput(leave(), { ...draftOf(leave()), allday: false, half: 'pm', sTime: '12:01', eTime: '23:59' }, [RANGER])).toBe(true)
+    expect(told(RANGER)).toEqual([`LL · Wed 15 Jul — Now LL (PM) · ${cs(SABER)}`])
+    clear(); tick()
+    expect(commitInput(leave(), { ...draftOf(leave()), allday: true, half: '' }, [RANGER])).toBe(true)
+    expect(told(RANGER)).toEqual([`LL · Wed 15 Jul — Now all day · ${cs(SABER)}`])
+  })
+  it('Q2: made a morning and moved a day: "Now Thu 16 Jul (AM)"', async () => {
+    await boot()
+    expect(commitInput(null, LEAVE(), [RANGER]), 'filed').toBe(true); clear()
+    expect(commitInput(leave(), { ...draftOf(leave()), allday: false, half: 'am', sTime: '00:00', eTime: '12:00', start: '2026-07-16', end: '2026-07-16' }, [RANGER])).toBe(true)
+    expect(told(RANGER)).toEqual([`LL · Thu 16 Jul — Now Thu 16 Jul (AM) · ${cs(SABER)}`])
+  })
+  it('Q2: a titled input made a morning reads "Now AM"', () => {
+    expect(noticeWords(line([{ k: 'when', h: 'AM' }])).what).toBe('Now AM')
+  })
+  it('lines saved before round 4 still read as they always did', () => {
+    expect(noticeWords(line([{ k: 'when', t: '00:00–12:00 am' }], { name: 'LL' })).what, 'a half saved as clock times').toBe('Now 00:00–12:00 am')
+    expect(noticeWords(line([{ k: 'title', was: 'LL' }], { name: 'OL' })).what, 'a kind change saved as a rename').toBe('Renamed — was LL')
+  })
+  it('Q3: his real case — moved, renamed and its remark changed in one save: the first two, then "and 1 more change"', async () => {
+    await boot()
+    file([RANGER, HEX]); clear()
+    expect(commitInput(rec(), { ...draftOf(rec()), title: 'Kit check', remarks: 'Bring water', start: '2026-07-16', end: '2026-07-16' }, [RANGER, HEX])).toBe(true)
+    expect(told(RANGER)).toEqual([`Kit check · Thu 16 Jul — Now Thu 16 Jul, renamed — was ${TITLE}, and 1 more change · ${cs(SABER)}`])
+  })
+  it('Q3: five things — "and 3 more changes"; a name keeps its capital', async () => {
+    await boot()
+    file([RANGER, HEX]); clear()
+    expect(commitInput(rec(), { ...draftOf(rec()), sTime: '10:00', eTime: '11:00', title: 'Kit check', remarks: 'Bring water' }, [RANGER, PIKE])).toBe(true)
+    expect(noticeWords(noticesFor(RANGER)[0]!).what).toBe(`Now 10:00–11:00, ${cs(PIKE)} added, and 3 more changes`)
+  })
+  it('Q3: "You" keeps its capital; a replaced bid is said after the rest and never counted', () => {
+    expect(noticeWords(line([{ k: 'out' }, { k: 'cx' }])).what).toBe('You were taken off, cancelled')
+    expect(noticeWords(line([{ k: 'rmk' }, { k: 'in' }])).what).toBe('Remark changed, You were added')
+    expect(noticeWords(line([{ k: 'in' }, { k: 'when', t: '10:00–11:00' }, { k: 'rmk' }, { k: 'rbid', c: 'LL' }])).what)
+      .toBe('You were added, now 10:00–11:00, and 1 more change · replaces your LL bid')
+    expect(noticeWords(line([{ k: 'in' }, { k: 'rbid', c: '*LL' }])).what, 'two parts and a bid: nothing more to count').toBe('You were added · replaces your LL (AM) bid')
+  })
+  it('Q3: "Cancelled — weather, now Thu 16 Jul"; a kind change keeps its capitals', () => {
+    expect(noticeWords(line([{ k: 'cx', why: 'weather' }, { k: 'when', a: '2026-07-16', b: '2026-07-16' }])).what).toBe('Cancelled — weather, now Thu 16 Jul')
+    expect(noticeWords(line([{ k: 'when', t: '10:00–11:00' }, { k: 'kind', was: 'LL', now: 'OL' }])).what).toBe('Now 10:00–11:00, LL changed to OL')
   })
 })
 

@@ -221,7 +221,7 @@ describe('the Save — the picked answers in ONE command (D782) (ON11)', () => {
     setSession({ user: 'us', role: 'main', name: 'us' }); setMe('bane')
     expect(saveOilDay(FRI, FRI, yes([m.range])), 'a member').toBe(-1)
     expect(rec(m.range).oil).toBeUndefined()
-    expect(SAID.join(' | '), 'and it says why').toContain('Only a scheduler answers from this list')
+    expect(SAID.join(' | '), 'and it says why').toContain('Only a scheduler can answer from this list')
   })
 })
 

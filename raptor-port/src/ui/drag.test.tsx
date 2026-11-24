@@ -174,7 +174,8 @@ describe('the drop delta (5 Sep 26) — a drop says what it just broke, in the v
     /* the man already in the seat, dropped back: applyDrop refuses before any write */
     toasts = []
     await dnd($(`#eWeek .seat[data-slot="${key}"]`), $(`#eWeek .seat[data-slot="${key}"]`))
-    expect(toasts).toEqual(['Already in that seat'])
+    /* round 4 (his D2521, Q4b): the tap's words — the man named */
+    expect(toasts).toEqual([`${PEOPLE[before].cs} — already in that seat`])
     expect(slotVal(key)).toBe(before)
   })
 })
@@ -251,7 +252,7 @@ describe('applyDrop contracts (B23 / B49)', () => {
     const seat = $$('#eWeek .seat[data-slot^="d:"][data-drag]').find(s => slotVal(s.dataset.slot!))!
     toasts = []
     await dnd(seat, seat)
-    expect(toasts).toContain('Already in that seat')
+    expect(toasts).toContain(`${PEOPLE[slotVal(seat.dataset.slot!)].cs} — already in that seat`)
     expect(slotVal(seat.dataset.slot!)).toBeTruthy()
   })
 
@@ -903,7 +904,7 @@ describe('the puck ghosts wear the lift, and the seat it lands on flashes', () =
     const key = seat.dataset.slot!, before = slotVal(key)
     const mark = await dropAndPeek(seat, seat)
     expect(slotVal(key), 'sanity: nothing was written').toBe(before)
-    expect(toasts, 'the toast still says why nothing moved').toEqual(['Already in that seat'])
+    expect(toasts, 'the toast still says why nothing moved').toEqual([`${PEOPLE[before].cs} — already in that seat`])
     expect(mark, 'nothing is deferred — there is no rebuild to defer to').toBeNull()
     expect(pendingLand(), 'and none is left in the slot afterwards').toBeNull()
     const live = $(`#eWeek [data-slot="${key}"]`)

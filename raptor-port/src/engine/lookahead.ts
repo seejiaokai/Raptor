@@ -121,6 +121,12 @@ export function lookaheadLabel(cfg: Lookahead = LOOK_CFG): string {
   const w = `Next ${cfg.weeks} week${cfg.weeks === 1 ? '' : 's'}`
   return cfg.toSunday ? `${w}, to Sunday` : w
 }
+/** The note a saved look-ahead gives (his D2521 S1): "Everyone now opens on the next 4 weeks, to Sunday" — Sunday keeps
+ *  its capital; one week, "the next week". */
+export function lookaheadSavedNote(cfg: Lookahead = LOOK_CFG): string {
+  const w = cfg.weeks === 1 ? 'the next week' : `the next ${cfg.weeks} weeks`
+  return `Everyone now opens on ${w}${cfg.toSunday ? ', to Sunday' : ''}`
+}
 
 /** Persist — nothing at all while the squadron is on the standard, so a later
  *  change to that standard is picked up rather than frozen in a browser. */

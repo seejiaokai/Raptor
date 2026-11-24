@@ -736,8 +736,9 @@ export type DayRmk = Record<string, string>
 export type NoticePartRec = {
   /** in / out — HE was put in or taken out · del — deleted · cx / uncx — cancelled / brought back · off / on — taken
    *  off the programme / put back · unav / unavoff — filed under Unavailable / taken out of it (D815) · when — its
-   *  day(s) or hours moved · add / rem — others put in or taken out · title — renamed · rmk — its remark changed. */
-  k: 'del' | 'in' | 'out' | 'cx' | 'uncx' | 'off' | 'on' | 'unav' | 'unavoff' | 'when' | 'add' | 'rem' | 'title' | 'rmk'
+   *  day(s) or hours moved · add / rem — others put in or taken out · kind — its kind changed (D2521: "LL changed to
+   *  OL") · title — renamed, its title's own words changed · rmk — its remark changed. */
+  k: 'del' | 'in' | 'out' | 'cx' | 'uncx' | 'off' | 'on' | 'unav' | 'unavoff' | 'when' | 'add' | 'rem' | 'kind' | 'title' | 'rmk'
     /** oilhol — a day made a public holiday after inputs stood on it ([OIL-ASK-NOTIFY], D780): the notice is about no one
      *  input (its `iid` is ''), its `name` is the holiday's ('' where it has none of its own) and `a`..`b` the run of
      *  dates as they were when it was made. It stores no count: how many inputs still need an answer is read live. */
@@ -750,12 +751,19 @@ export type NoticePartRec = {
   /** oilhol: the squadron the line was written for (the reshape plan §19 PB4 — its count, dates, name and the list it
    *  opens are that squadron's) — store. A line saved before it reads as its reader's home squadron (D56). */
   u?: string
-  /** when: its hours NOW ("10:00–11:00", "all day"), where they moved — screen. */
+  /** when: its hours NOW ("10:00–11:00", "all day"), where they moved — screen. A line saved before D2521 may hold a
+   *  half's clock times here ("00:00–12:00 am"); it reads as it always did. */
   t?: string
+  /** when: a half day NOW, in place of `t` (D2521 Q2 — "Now LL (AM)") — screen. */
+  h?: 'AM' | 'PM'
+  /** when, with `h`: its kind, where its bold name is its kind (no title) — screen. */
+  c?: string
   /** add / rem: who — PEOPLE ids, a placeholder among them — screen. */
   who?: string[]
-  /** title: what it was called before — screen. */
+  /** title: what it was called before · kind: the kind it was — screen. */
   was?: string
+  /** kind: the kind it is now — screen. */
+  now?: string
 }
 /** A LINE OF A PERSON'S BELL — someone else changed an input he is in (the one-rule build's step 7, 12 Oct 26 — owner
  *  D755 (3), D760, D769; state/notices.ts). Made inside the command that changed the input; never rewritten. */
