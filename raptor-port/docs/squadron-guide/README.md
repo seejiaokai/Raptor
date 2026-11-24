@@ -9,6 +9,13 @@ how SC MAIN, SC SPARE, AVALON and BB are flagged (its section 7). A first piece 
 **What he sends them:** `talon-guide.pdf` (opens anywhere), `talon-guide.html` (the same guide as one page, pictures
 inside it) and `questions.txt` (the eleven questions as plain text, each with its context, to paste into a chat).
 
+**The page is in the app's own look and interactive** (his ask the same day): the app's colours, letters and claw mark; a
+pinned bar of the sections; a search and level filter over the settings and checks; every picture opens large; the big
+tables switch between a table and cards and zoom out to fit; every row takes a "Different for us" note and every
+question an answer, kept in that browser and gathered by "My answers" into one text to copy into the group. With
+scripts off (some phones' file previews) it is the same guide, read only. The PDF is the same page printed light.
+`build.mjs --page <file>` also writes the page without its outer tags, the form an Artifact is published from.
+
 **How it is made — nothing in its two big tables is typed by hand:**
 - `logic.json` — the Logic page's own words and standard values (its settings, its checks with their level and their
   "How it works", the letters on a puck), read out of `src/ui/logic-html.ts` and the engine's standard settings. Every
