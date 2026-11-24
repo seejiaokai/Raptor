@@ -2882,6 +2882,13 @@ device's clock. **Next:** the place time zone put to him with the detachments ba
 
 ### [ALL-AVAIL-WINDOW-FLAGS] The ALL AVAIL window shows flags that have nothing to do with the event's time (his D2331, 22 Nov 26, chat 141)
 
+**THE READING HIS PICK RESTED ON WAS WRONG (found by him, 24 Nov 26, chat 156):** he was told "a man whose own item
+overlaps the event is already left out, so no flag in the list can be about the event's time". Not so: a man who landed
+shortly before the item is free from dekit (D36), so he is listed, and the window marks him amber because the item falls
+inside his 2-hour debrief (D38, built, pinned by `raptor-port/src/ui/availwin.test.tsx` "the owner's case"). His pick of
+plain pucks therefore goes back to him as a choice, drawn: (A) plain pucks except that debrief mark and its reason —
+recommended — or (B) no marks at all. Nothing is built before his answer; the page of 24 Nov 26 carries the correction.
+
 His correction, from his iPhone on the live app: Monday's SODB 07:45–08:15 for ALL AVAIL — its window shows Piston in red
 with "Conflict: RU BFM (step 12:40, T/O 13:40) & STANDARDISATION MEETING 13:30–14:30", Echo and Relay with the day's
 double-turn note, Wildcard with a crew-solo note of 19:45: none touches 07:45–08:15, and he reads them as reasons about
