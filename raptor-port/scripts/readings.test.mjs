@@ -8,8 +8,9 @@
  * Run alone: node --test raptor-port/scripts/readings.test.mjs */
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { tmpdir } from 'node:os'
 import { execFileSync } from 'node:child_process'
 import { unmarkedComments, marksIn, badMarks, tagsIn, tagsWithoutMark, addedLines, check, summary, unrecordedIn, rowWarnings,
@@ -211,25 +212,76 @@ test('the listing finds untagged reading comments, old lines included', () => {
 })
 
 /* ---------- round 2 of the reads (Astra, a fresh Opus, Fable — 25 Nov 26) ---------- */
-/* D2338's row once he has answered the reading: the open mark stays, step 2's ANSWERED mark names his answer */
-const ROW_ANSWERED = ROW_OPEN.replace(' | sansunfiled.ts |', ' **— ANSWERED 25 Nov 26 BY D2564: flying seats and sims only.** | sansunfiled.ts |')
+/* D2338's row once he has answered the reading (round 3): the reading's OWN mark is rewritten in place, its text kept,
+   beside step 2's mark — only that form answers it */
+const OPEN_MARK = '**READING, OPEN (24 Nov 26, not asked): '
+const ANSWERED_MARK = '**READING, ANSWERED BY D2564 (25 Nov 26): '
+const ROW_ANSWERED = ROW_OPEN.replace(OPEN_MARK, ANSWERED_MARK)
+  .replace(' | sansunfiled.ts |', ' **— NARROWED 25 Nov 26 BY D2564: flying seats and sims only.** | sansunfiled.ts |')
 const ANSWERS = new Set(['D2564'])
 const failsA = (text, answers = ANSWERS) => unmarkedComments('raptor-port/src/a.tsx', text, allLines(text), answers)
+/* a real row of the rulings, as it stands on this branch */
+const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
+const realRow = d => readFileSync(join(REPO_ROOT, '.claude/decisions-full/scheduler.md'), 'utf8').split('\n').find(l => l.startsWith(`| ${d} |`))
+/* the open mark the rule asks for, put at the start of the row's fourth cell */
+const withOpen = row => { const cells = row.split(' | '); cells[3] = OPEN_MARK + 'one way; the other: two.** ' + cells[3]; return cells.join(' | ') }
 
-test('an answered reading leaves the list, and its tag must become ruled D<n>', () => {
+test('an answered reading leaves the list only by its own mark, and its tag must become ruled D<n>', () => {
   assert.equal(marksIn('f.md', ROW_ANSWERED).length, 0, 'not listed as open')
   const ans = answeredIn('f.md', ROW_ANSWERED)
   assert.deepEqual(ans.map(a => [a.d, a.by]), [['D2338', 'D2564']])
-  /* an ANSWERED mark dated BEFORE the reading was marked answers something else: the reading stays open */
-  const older = ROW_OPEN.replace(' | sansunfiled.ts |', ' **— ANSWERED 1 Nov 26 BY D2100: another point.** | sansunfiled.ts |')
-  assert.equal(marksIn('f.md', older).length, 1)
-  assert.deepEqual(answeredIn('f.md', older), [])
-  /* NARROWED counts as his answer too */
-  assert.equal(marksIn('f.md', ROW_OPEN.replace(' | sansunfiled.ts |', ' **— NARROWED 25 Nov 26 BY D2564: x.** | sansunfiled.ts |')).length, 0)
+  /* round 3: a row-level ANSWERED or NARROWED mark, whatever its date, answers nothing by itself */
+  for (const m of ['**— ANSWERED 25 Nov 26 BY D2564: x.**', '**— NARROWED 26 Nov 26 BY D2600: another point.**']) {
+    const row = ROW_OPEN.replace(' | sansunfiled.ts |', ` ${m} | sansunfiled.ts |`)
+    assert.equal(marksIn('f.md', row).length, 1, m)
+    assert.deepEqual(answeredIn('f.md', row), [], m)
+  }
   const tags = tagsIn('raptor-port/src/a.ts', '// planned: any row — READING D2338\n')
   const f = tagsWithoutMark(tags, marksIn('f.md', ROW_ANSWERED), ans)
   assert.equal(f.length, 1)
   assert.match(f[0], /ruled D2564/)
+})
+
+test('round 3: real rows narrowed on other points keep their reading open', () => {
+  for (const d of ['D2338', 'D2394']) {
+    const row = realRow(d)
+    assert.ok(row && /NARROWED|ANSWERED/.test(row), `${d}'s real row, with its step-2 marks`)
+    const open = withOpen(row)
+    assert.equal(marksIn('f.md', open).length, 1, `${d} stays open`)
+    assert.deepEqual(answeredIn('f.md', open), [], `${d} answered by nothing`)
+    assert.deepEqual(answersIn([['f.md', open]]), new Set(), `${d}: no ruled D<n> becomes citable`)
+    /* the tag stays good; nothing steers it to an unrelated ruling */
+    assert.deepEqual(tagsWithoutMark(tagsIn('a.ts', `// x — READING ${d}\n`), marksIn('f.md', open), answeredIn('f.md', open)), [])
+  }
+})
+
+test('round 3: two marks on one row, in either order, are each read', () => {
+  const a = OPEN_MARK + 'one way; the other: two.**', b = ANSWERED_MARK + 'flying seats and sims only.**'
+  for (const [first, second] of [[a, b], [b, a]]) {
+    const row = `| D2338 | 22 Nov 26 | "x" | **Rule.** ${first} ${second} **— NARROWED 26 Nov 26 BY D2600: other.** | home |`
+    assert.equal(marksIn('f.md', row).length, 1, 'the open one stays listed')
+    assert.deepEqual(answeredIn('f.md', row).map(x => x.by), ['D2564'], 'the answered one names its own answer, never the last mark')
+    assert.deepEqual(badMarks('f.md', row), [])
+  }
+  /* two answered readings on one row: both answers collected */
+  const two = `| D2338 | 22 Nov 26 | "x" | ${ANSWERED_MARK}x.** **READING, ANSWERED BY D2600 (26 Nov 26): y.** | home |`
+  assert.deepEqual(answeredIn('f.md', two).map(x => x.by), ['D2564', 'D2600'])
+})
+
+test('round 3: plain words in a row are never taken for a broken mark', () => {
+  /* D472's real row says "(the last reading answered, D472)" in its home cell */
+  assert.deepEqual(badMarks('f.md', realRow('D472')), [], 'D472')
+  for (const p of ['the last reading answered', 'leaves the reading open', 'a reading, open to question'])
+    assert.deepEqual(badMarks('f.md', `| D1 | 1 Jan 26 | "x" | **Rule.** ${p}. | home |`), [], p)
+})
+
+test('round 3: an old reading he answered before this system is citable, whatever its dates', () => {
+  /* D2564 answered the SANS "planned" reading on 24 Nov; the audit writes the answered mark later, dated as it likes */
+  const row = withOpen(realRow('D2338')).replace(OPEN_MARK + 'one way; the other: two.**', '**READING, ANSWERED BY D2564 (24 Nov 26): "planned" is any row of the day; the other: flying seats and sims only.**')
+  const answers = answersIn([['f.md', row]])
+  assert.deepEqual(answers, new Set(['D2564']))
+  assert.deepEqual(unmarkedComments('a.ts', '// "planned" is seats and sims, his to change no more — ruled D2564\n', new Set([1]), answers), [])
+  assert.equal(unmarkedComments('a.ts', '// "planned" is any row, his to change — ruled D2600\n', new Set([1]), answers).length, 1, 'an unrelated ruling never passes')
 })
 
 test('ruled D<n> passes only for the ruling that answered a recorded reading', () => {

@@ -5,9 +5,10 @@
  * On 22 Nov 26 a builder read what "planned" covers and left that reading in a code comment ("his to change"); it was
  * never put to him, and three bug checks judged the code against it (the bug-check order's lesson 32). A reading now has
  * a form that is read: the ruling's full row carries `**READING, OPEN (<date>, asked | not asked): …**` until he rules;
- * once he does, the row gains step 2's `**— ANSWERED <date> BY D<n>: …**` (or NARROWED) and the reading leaves the list.
- * Code built on an open reading carries `READING D<n>` in the sentence that speaks of it; a sentence about a reading he
- * has answered cites his answer, `ruled D<n>` — the ruling named by that ANSWERED mark, and no other.
+ * once he does, that mark itself is rewritten `**READING, ANSWERED BY D<n> (<date>): …**` and the reading leaves the list
+ * (a row's other ANSWERED / NARROWED marks, on other points, never close it). Code built on an open reading carries
+ * `READING D<n>` in the sentence that speaks of it; a sentence about a reading he has answered cites his answer,
+ * `ruled D<n>` — a D<n> some reading's ANSWERED BY mark names, and no other.
  *
  * `npm run readings [D<n> …] [path …]` lists every open mark and every tag under raptor-port/src, narrowed to the named
  * rulings or files, and prints `Readings open: <n> (<m> not asked)`. It also lists the comments that speak of a reading
@@ -54,17 +55,14 @@ const RULED = /\bruled\s+(D\d+)\b/gi
 const ROW = /^\|\s*(D\d+)\s*\|/
 /* the mark, with small typing variants: bold stars or none, any case, spaces round the comma and colon */
 const MARK = /(?:\*\*)?READING,\s*OPEN\s*\(([^,)]*),\s*(asked|not asked)\s*\)\s*:\s*([\s\S]*?)(?:\*\*|\s+\||$)/gi
-/* anything that tries to be one — READING then OPEN with only punctuation between — so a mark typed wrong fails */
-const MARKISH = /\bREADING\b[\s,*_:.\-–—]*\bOPEN\b/gi
-/* step 2's marks: his answer to a row's open point (DECISIONS.md, step 2) */
-const STEP2 = /\*\*—\s*(?:ANSWERED|NARROWED)\s+(\d{1,2}\s+[A-Za-z]{3}\s+\d{2,4})\s+BY\s+(D\d+)/gi
-const MONTHS = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 }
-const day = s => {
-  const m = /^(\d{1,2})\s+([A-Za-z]{3})\s+(\d{2,4})$/.exec((s || '').trim())
-  if (!m || !(m[2].toLowerCase() in MONTHS)) return null
-  const y = +m[3] < 100 ? 2000 + +m[3] : +m[3]
-  return Date.UTC(y, MONTHS[m[2].toLowerCase()], +m[1])
-}
+/* the same mark once he has ruled, rewritten in place, its text kept: `**READING, ANSWERED BY D<n> (<date>): …**`.
+   Only this form answers a reading (round 3 of the reads): a row's other step-2 marks — 500-odd NARROWED and ANSWERED
+   marks on other points — never close it, and its D<n> is the one answer `ruled D<n>` may cite for it. */
+const ANSWERED = /(?:\*\*)?READING,\s*ANSWERED\s+BY\s+(D\d+)\s*\(([^)]*)\)\s*:\s*([\s\S]*?)(?:\*\*|\s+\||$)/gi
+/* anything that tries to be either — READING then OPEN or ANSWERED, in capitals as the marks are written, with only
+   punctuation between — so a mark typed wrong fails. Capitals only: a row's prose says "the last reading answered"
+   (D472's), and plain words are never a broken mark. */
+const MARKISH = /\bREADING\b[\s,*_:.\-–—]*\b(?:OPEN|ANSWERED)\b/g
 
 /* ---------- the comment reader ---------- */
 const REGEX_AFTER = new Set('(,=:[!&|?{};+-*%<>~^'.split(''))
@@ -213,22 +211,18 @@ export function unrecordedIn(file, text, answers = new Set()) {
   return found
 }
 
-/* A row's open marks, each with whether step 2's mark answers it (an ANSWERED / NARROWED mark dated on or after it). */
+/* Every reading mark in a rulings file's rows, each read on its own, in the row's order (never "the last one wins"). */
 function rowMarks(file, text) {
   const out = []
   for (const l of text.split('\n')) {
     const r = ROW.exec(l)
     if (!r) continue
-    const step2 = [...l.matchAll(STEP2)].map(m => ({ when: day(m[1]), by: m[2] }))
-    for (const m of l.matchAll(MARK)) {
-      const when = day(m[1])
-      const ans = step2.filter(s => s.when === null || when === null || s.when >= when).pop()
-      out.push({ d: r[1], date: m[1].trim(), state: m[2].toLowerCase(), text: m[3].trim(), file, by: ans ? ans.by : null })
-    }
+    for (const m of l.matchAll(MARK)) out.push({ d: r[1], date: m[1].trim(), state: m[2].toLowerCase(), text: m[3].trim(), file, by: null })
+    for (const m of l.matchAll(ANSWERED)) out.push({ d: r[1], date: m[2].trim(), text: m[3].trim(), file, by: m[1].toUpperCase() })
   }
   return out
 }
-/* The open marks in a rulings file — those he has not answered: { d, date, state, text, file }. */
+/* The open marks in a rulings file: { d, date, state, text, file }. */
 export const marksIn = (file, text) => rowMarks(file, text).filter(m => !m.by).map(({ by, ...m }) => m)
 /* The answered ones: { d, by, file } — `by` is his answer, the one ruling `ruled D<n>` may cite for it. */
 export const answeredIn = (file, text) => rowMarks(file, text).filter(m => m.by).map(m => ({ d: m.d, by: m.by, file }))
@@ -240,8 +234,8 @@ export function badMarks(file, text) {
   for (const l of text.split('\n')) {
     const r = ROW.exec(l)
     if (!r) continue
-    const tried = [...l.matchAll(MARKISH)].length, read = [...l.matchAll(MARK)].length
-    if (tried > read) out.push(`${file}: ${r[1]}'s row holds a "READING, OPEN" mark that cannot be read — write it as \`**READING, OPEN (<date>, asked | not asked): <one way>; the other: <…>.**\` (DECISIONS.md, "A reading")`)
+    const tried = [...l.matchAll(MARKISH)].length, read = [...l.matchAll(MARK)].length + [...l.matchAll(ANSWERED)].length
+    if (tried > read) out.push(`${file}: ${r[1]}'s row holds a reading mark that cannot be read — write it as \`**READING, OPEN (<date>, asked | not asked): <one way>; the other: <…>.**\`, or once he has ruled \`**READING, ANSWERED BY D<n> (<date>): …**\` (DECISIONS.md, "A reading")`)
   }
   return out
 }
@@ -255,7 +249,7 @@ export function tagsIn(file, text) {
 export function tagsWithoutMark(tags, marks, answered = []) {
   const open = new Set(marks.map(m => m.d)), by = new Map(answered.map(a => [a.d, a.by]))
   return tags.filter(t => !open.has(t.d)).map(t => by.has(t.d)
-    ? `${t.file}:${t.line} carries READING ${t.d}, but he has answered that reading — ${by.get(t.d)} (its row's ANSWERED mark): rewrite the comment to say what he ruled and cite it, ruled ${by.get(t.d)}`
+    ? `${t.file}:${t.line} carries READING ${t.d}, but he has answered that reading — ${by.get(t.d)} (its mark reads READING, ANSWERED BY ${by.get(t.d)}): rewrite the comment to say what he ruled and cite it, ruled ${by.get(t.d)}`
     : `${t.file}:${t.line} carries READING ${t.d}, but ${t.d}'s full row carries no "READING, OPEN" mark — add the mark (DECISIONS.md, "A reading"); if the words are not about what his words cover, reword them and drop the tag`)
 }
 
@@ -341,11 +335,11 @@ export function check({ repo, base }) {
     for (const r of ci.ruled) ruled.push({ d: r.d, file: f, line: r.line })
   }
   const fails = [...tagsWithoutMark(tags, marks, answered), ...rows.flatMap(([f, t]) => badMarks(f, t)),
-    ...ruled.filter(r => !answers.has(r.d)).map(r => `${r.file}:${r.line} cites "ruled ${r.d}", but no reading's row carries "ANSWERED … BY ${r.d}" — ruled D<n> names only the ruling that answered a recorded reading: if the reading is still open, mark its row READING, OPEN and tag it READING D<n>; if the words are not about what his words cover, reword them`)]
+    ...ruled.filter(r => !answers.has(r.d)).map(r => `${r.file}:${r.line} cites "ruled ${r.d}", but no reading's mark reads "READING, ANSWERED BY ${r.d}" — ruled D<n> names only the ruling that answered a recorded reading: if the reading is still open, mark its row READING, OPEN and tag it READING D<n>; if the words are not about what his words cover, reword them`)]
   for (const [f, added] of addedLines(repo, base)) {
     if (!CODE.test(f) || !added.size) continue
     for (const u of unmarkedComments(f, read(repo, f), added, answers))
-      fails.push(`${u.file}:${u.line} — a comment this branch adds speaks of a reading ("${u.phrase}") with no READING D<n>, and no answer, in the same sentence. If it is a reading of his words, it is his to settle (DECISIONS.md, "A reading"): put it to him, mark its ruling's full row READING, OPEN and tag the sentence READING D<n> — or, where his answer is already on that row as "ANSWERED … BY D<x>", cite ruled D<x>. If the words are not about what his words cover, reword them`)
+      fails.push(`${u.file}:${u.line} — a comment this branch adds speaks of a reading ("${u.phrase}") with no READING D<n>, and no answer, in the same sentence. If it is a reading of his words, it is his to settle (DECISIONS.md, "A reading"): put it to him, mark its ruling's full row READING, OPEN and tag the sentence READING D<n> — or, where the reading's own mark already reads "READING, ANSWERED BY D<x>", cite ruled D<x>. If the words are not about what his words cover, reword them`)
   }
   return { fails, marks, tags, line: summary(marks) }
 }

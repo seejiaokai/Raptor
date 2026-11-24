@@ -63,8 +63,9 @@ into other wording: it goes to him as its own question, with a worked example an
 elsewhere — at the latest named as a reading inside the thing he is asked to approve. Until he answers, the ruling's
 full row carries `**READING, OPEN (<date>, asked | not asked): <one way>; the other: <…>.**` ("asked" once it is put
 to him), code already built on it carries `READING D<n>`, and `npm run readings` lists both. It leaves only by his
-ruling (step 2's mark); his approval of wording that only repeats the word does not settle it. A code comment that
-speaks of a reading he has answered cites his answer, `ruled D<n>` — the ruling its row's ANSWERED mark names.
+ruling: step 2's mark, and its own mark rewritten `READING, ANSWERED BY D<n> (<date>)`, its text kept; his approval of
+wording that only repeats the word does not settle it. A code comment that speaks of a reading he has answered cites
+that answer, `ruled D<n>`.
 
 **Parallel branches (owner, D78):** when several chats run at once, each reaches `main` only on his
 "merge live", ONE AT A TIME; whichever merges later merges `main` in first, and if a D-number

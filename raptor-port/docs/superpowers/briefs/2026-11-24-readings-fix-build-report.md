@@ -123,3 +123,39 @@ Checks: readings tests PASS 34/34 · docsize with DOCSGUARD_BASE=e6d855310 — r
 Open items: (1) C1's two new clauses (#1, #2) and lesson 32's word (#11) want the readers' meaning check; (2) three round-1 tests had their expected results changed, each traced to #2 or #7; (3) an old reading he answered before this system (e.g. D2564) can be cited only once the audit gives its row the open and ANSWERED marks; (4) "he has not ruled" is not caught; .html comments are not read
 Readings: none met
 ```
+
+## Round 3 fix (25 Nov 26 — the reads by a fresh Opus and Fable; Astra's to follow)
+
+Uncommitted. Files: `DECISIONS.md` (C1, one clause), `raptor-port/scripts/readings.mjs`, `raptor-port/scripts/readings.test.mjs`, `raptor-port/docs/file-map.md` (the row).
+
+| Finding | What I did |
+|---|---|
+| **M1 (Opus and Fable): any later ANSWERED or NARROWED mark on the row closed an open reading, whatever it was about, and the last mark won.** | **Reproduced first** on D2338's and D2394's real rows, given the open mark the rule asks for. Both dropped off the list, "answered" by unrelated narrowings. **Fixed as both proposed:** when he rules, the reading's own mark is rewritten in place to `**READING, ANSWERED BY D<n> (<date>): <its text>**`. Only that form counts as answered, and only its D<n> may be cited by `ruled D<n>`. Row-level ANSWERED and NARROWED marks no longer count at all. Every mark on a row is read on its own, in order, so no mark "wins". The date comparison is gone. |
+| **M1a (Opus): the date trap for readings he answered before this system** | **Closed by the same change.** No dates are compared any more; an old reading written `READING, ANSWERED BY D2564 (24 Nov 26)` is citable as `ruled D2564`, whatever date the audit puts on it. |
+| C1 | One clause, replacing round 2's two that now said otherwise: "It leaves only by his ruling: step 2's mark, and its own mark rewritten `READING, ANSWERED BY D<n> (<date>)`, its text kept; … A code comment that speaks of a reading he has answered cites that answer, `ruled D<n>`." Round 2's "("asked" once it is put to him)" stays. Meaning check owed. `DECISIONS.md` now stands at 120 lines, exactly its tripwire. |
+| Messages | The three failure messages and the unreadable-mark message now name the in-place form, `READING, ANSWERED BY D<x>`, and never a row's other marks. |
+| Found while fixing | Widening the malformed-mark search to READING + ANSWERED made **D472's real row** fail: its prose says "(the last reading answered, D472)". **Fixed:** that search now looks for capitals only, as the marks are written; a mark that reads correctly is still accepted in any case. Tested on D472's real row and three prose phrasings. Cost: a malformed mark typed in lower case is not caught. |
+
+**Tests added (red first, then green):**
+- D2338's and D2394's real rows, NARROWED marks and all, stay open with an open mark. Nothing answers them, no `ruled` citation becomes valid, and their tag stays good.
+- Two marks on one row, open and answered, in both orders: the open one stays listed, and the answered one names its own answer, never the row's last mark.
+- Two answered readings on one row: both answers are collected.
+- An old reading marked `ANSWERED BY D2564` is citable as `ruled D2564`; `ruled D2600` is not.
+- A row-level ANSWERED or NARROWED mark alone answers nothing.
+- D472's real row, and prose that mentions a reading being open or answered, never read as a broken mark.
+
+Round 2's test of the old rule was rewritten to the new one. The reports' "left as is" items are untouched.
+
+### Checks, round 3
+- `node --test raptor-port/scripts/readings.test.mjs` (repo root): the 6 tests touching the change failed first, and the D472 test failed before its fix; now **PASS 38/38**.
+- Readings part, timed: **2.4 s** against e6d855310.
+- `DOCSGUARD_BASE=e6d855310 node scripts/docsize.mjs` (raptor-port): readings part **PASS** ("Readings open: 0 (0 not asked)"). Exit 1 only on the two older line limits: `HANDOFF.md` 427/250 and `OUTSTANDING.md` 3291/3030.
+- `node scripts/docsize-selftest.mjs` (raptor-port): **PASS**, exit 0 — 355 cases.
+
+```
+Status: READY FOR INDEPENDENT REVIEW — round 3's must-fix fixed; the readings part passes against e6d855310
+Changes: as listed above (uncommitted)
+Checks: readings tests PASS 38/38 · docsize with DOCSGUARD_BASE=e6d855310 — readings PASS; HANDOFF and OUTSTANDING line limits FAIL as before · docsize-selftest PASS (355)
+Open items: (1) C1's new clause wants its meaning check; (2) DECISIONS.md is at its 120-line tripwire; (3) a malformed mark typed in lower case is not caught (the price of not failing prose); (4) the reports' "left as is" items stay for the backlog
+Readings: none met
+```
