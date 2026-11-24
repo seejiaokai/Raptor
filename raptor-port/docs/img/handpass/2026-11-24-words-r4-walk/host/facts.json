@@ -1,0 +1,217 @@
+{
+ "pictures": [
+  {
+   "file": "h1-phone-bell.png",
+   "case": "h1",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "OL Wed 15 Jul / LL changed to OL · Saber"
+   ],
+   "fit": [
+    {
+     "what": "LL changed to OL · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "h2-phone-bell.png",
+   "case": "h2",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "LL Wed 15 Jul / Now LL (AM) · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Now LL (AM) · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "h3-phone-bell.png",
+   "case": "h3",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "Training Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "h4a-phone-bell.png",
+   "case": "h4a",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "OL Wed 15 Jul / Renamed — was LL · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Renamed — was LL · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "h4b-phone-bell.png",
+   "case": "h4b",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "LL Wed 15 Jul / Now 00:00–12:00 am · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Now 00:00–12:00 am · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "h4c-phone-bell.png",
+   "case": "h4c",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "Training Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  }
+ ],
+ "cases": {
+  "h1": {
+   "log": [
+    "bundle: index-2uyEcUJu.js",
+    "filed {\"type\":\"LL\",\"span\":\"all\",\"remarks\":\"Local leave\"} on 2026-07-15: new input [\"imwuj97z6g603co\"]; asked [\"document\"]; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "after Saber's save: {\"type\":\"OL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]}",
+    "read on bundle: index-2uyEcUJu.js",
+    "notices to Ranger in store: [{\"name\":\"OL\",\"day\":\"2026-07-15\",\"what\":[{\"k\":\"kind\",\"was\":\"LL\",\"now\":\"OL\"}]}]",
+    "Ranger's bell: [\"OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "fit: [\"1 line(s), box 307px\"]",
+    "picture h1-phone-bell.png: [\"OL Wed 15 Jul / LL changed to OL · Saber\"]",
+    "PASS D2521 Q1 \"LL changed to OL · Saber\" — read: [\"LL changed to OL · Saber\"]"
+   ]
+  },
+  "h2": {
+   "log": [
+    "bundle: index-2uyEcUJu.js",
+    "filed {\"type\":\"LL\",\"span\":\"all\",\"remarks\":\"Local leave\"} on 2026-07-15: new input [\"imwuj9mbcutaqep\"]; asked [\"document\"]; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "after Saber's save: {\"type\":\"LL\",\"date\":\"Jul 15\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]}",
+    "read on bundle: index-2uyEcUJu.js",
+    "notices to Ranger in store: [{\"name\":\"LL\",\"day\":\"2026-07-15\",\"what\":[{\"k\":\"when\",\"h\":\"AM\",\"c\":\"LL\"}]}]",
+    "Ranger's bell: [\"LL Wed 15 Jul / Now LL (AM) · Saber\"]",
+    "fit: [\"1 line(s), box 307px\"]",
+    "picture h2-phone-bell.png: [\"LL Wed 15 Jul / Now LL (AM) · Saber\"]",
+    "PASS D2521 Q2 \"Now LL (AM) · Saber\" — read: [\"Now LL (AM) · Saber\"]"
+   ]
+  },
+  "h3": {
+   "log": [
+    "bundle: index-2uyEcUJu.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-15: new input [\"imwuja1a9w6jwpy\"]; asked []; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "after the one save: {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "read on bundle: index-2uyEcUJu.js",
+    "notices to Ranger in store: [{\"name\":\"Training\",\"day\":\"2026-07-15\",\"what\":[{\"k\":\"in\"}]},{\"name\":\"Range brief\",\"day\":\"2026-07-16\",\"what\":[{\"k\":\"when\",\"a\":\"2026-07-16\",\"b\":\"2026-07-16\"},{\"k\":\"title\",\"was\":\"Training\"},{\"k\":\"rmk\"}]}]",
+    "Ranger's bell: [\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"Training Wed 15 Jul / You were added · Saber\"]",
+    "fit: [\"2 line(s), box 307px\",\"1 line(s), box 307px\"]",
+    "picture h3-phone-bell.png: [\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"Training Wed 15 Jul / You were added · Saber\"]",
+    "PASS D2521 Q3 the ruled line — read: [\"Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"You were added · Saber\"]"
+   ]
+  },
+  "h4a": {
+   "log": [
+    "bundle: index-CkMVta6F.js",
+    "filed {\"type\":\"LL\",\"span\":\"all\",\"remarks\":\"Local leave\"} on 2026-07-15: new input [\"imwujac2k0tteky\"]; asked [\"document\"]; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "after Saber's save: {\"type\":\"OL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]}",
+    "read on bundle: index-2uyEcUJu.js",
+    "notices to Ranger in store: [{\"name\":\"OL\",\"day\":\"2026-07-15\",\"what\":[{\"k\":\"title\",\"was\":\"LL\"}]}]",
+    "Ranger's bell: [\"OL Wed 15 Jul / Renamed — was LL · Saber\"]",
+    "fit: [\"1 line(s), box 307px\"]",
+    "picture h4a-phone-bell.png: [\"OL Wed 15 Jul / Renamed — was LL · Saber\"]",
+    "PASS an old line (kind) reads as it did, facts q1 today — read: [\"Renamed — was LL · Saber\"]"
+   ]
+  },
+  "h4b": {
+   "log": [
+    "bundle: index-CkMVta6F.js",
+    "filed {\"type\":\"LL\",\"span\":\"all\",\"remarks\":\"Local leave\"} on 2026-07-15: new input [\"imwujaqchsc56ck\"]; asked [\"document\"]; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "after Saber's save: {\"type\":\"LL\",\"date\":\"Jul 15\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"cx\":false,\"remarks\":\"Local leave\",\"people\":[\"bane\"]}",
+    "read on bundle: index-2uyEcUJu.js",
+    "notices to Ranger in store: [{\"name\":\"LL\",\"day\":\"2026-07-15\",\"what\":[{\"k\":\"when\",\"t\":\"00:00–12:00 am\"}]}]",
+    "Ranger's bell: [\"LL Wed 15 Jul / Now 00:00–12:00 am · Saber\"]",
+    "fit: [\"1 line(s), box 307px\"]",
+    "picture h4b-phone-bell.png: [\"LL Wed 15 Jul / Now 00:00–12:00 am · Saber\"]",
+    "PASS an old line (half) reads as it did, facts q2 today — read: [\"Now 00:00–12:00 am · Saber\"]"
+   ]
+  },
+  "h4c": {
+   "log": [
+    "bundle: index-CkMVta6F.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-15: new input [\"imwujb51m4n4kf9\"]; asked []; note \"\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "after the one save: {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "read on bundle: index-2uyEcUJu.js",
+    "notices to Ranger in store: [{\"name\":\"Training\",\"day\":\"2026-07-15\",\"what\":[{\"k\":\"in\"}]},{\"name\":\"Range brief\",\"day\":\"2026-07-16\",\"what\":[{\"k\":\"when\",\"a\":\"2026-07-16\",\"b\":\"2026-07-16\"},{\"k\":\"title\",\"was\":\"Training\"},{\"k\":\"rmk\"}]}]",
+    "Ranger's bell: [\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"Training Wed 15 Jul / You were added · Saber\"]",
+    "fit: [\"2 line(s), box 307px\",\"1 line(s), box 307px\"]",
+    "picture h4c-phone-bell.png: [\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"Training Wed 15 Jul / You were added · Saber\"]",
+    "PASS RECORD: an old three-part line on the new build — read: [\"Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"You were added · Saber\"]"
+   ]
+  }
+ },
+ "errors": []
+}
