@@ -28,6 +28,7 @@ import * as core from './app/core.js'
 import { seedDemoNow } from '../state/seeds'
 import { subscribeBands, trackerBand, trackerCover, type TrkCover } from '../state/typing-hold'
 import { MoveBandView } from '../ui/MoveBand'
+import { keysBack } from '../ui/sheetfocus'
 import './tracker.css'
 
 /* The render firewall (LeaveWarPage.tsx has the measured why): every Raptor
@@ -78,6 +79,19 @@ const TrkAskOnly = memo(function TrkAskOnly({ active }: { active: boolean }) {
     document.addEventListener('keydown', esc)
     return () => { el.classList.remove('trk-askonly'); document.removeEventListener('keydown', esc) }
   }, [up])
+  /* …AND ON THE TRACKER'S OWN TAB THE QUESTION TAKES THE KEYS TOO (the night of 24 Nov 26, the re-walk's A1 —
+     tracker/msq-trk-ask-keys.test.tsx). The pick's and the Logout's question is raised from the top bar, outside the
+     Tracker's page: after a pick made by the keys they stayed on the squadron button behind the question, so Enter opened
+     the list again over it and its answers were sixteen Tabs away. The same step as above, on the same safe answer; and
+     once it is answered the keys go back to the button that raised it, where they were — if they are nowhere, or still
+     in the question as it goes (ui/sheetfocus.ts keysBack), never taken from where he has put them since. */
+  const here = active && core.switchAsking && !!core.dlg
+  useLayoutEffect(() => {
+    if (!here) return
+    const was = document.activeElement as HTMLElement | null
+    document.getElementById('dlgCancel')?.focus()
+    return () => keysBack(() => (was && was !== document.body ? was : null), document.getElementById('dlgModal'))
+  }, [here])
   return null
 })
 
