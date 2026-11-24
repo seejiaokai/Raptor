@@ -593,7 +593,7 @@ input may since have been renamed, moved or deleted; `what` what happened, as a 
 sentence): `{k:'in'}` he was put in · `{k:'out'}` he was taken out · `{k:'del'}` deleted · `{k:'cx', why?}` cancelled ·
 `{k:'uncx'}` brought back · `{k:'off'}` / `{k:'on'}` taken off the programme / put back · `{k:'unav'}` / `{k:'unavoff'}` filed under Unavailable / taken out of it (D815) · `{k:'when', a?, b?, t?}` its
 day(s) and hours as they are now · `{k:'add', who}` / `{k:'rem', who}` others (ids, a placeholder among them) put in or
-taken out · `{k:'title', was}` renamed · `{k:'rmk'}` its remark changed.
+taken out · `{k:'kind', was, now}` its kind changed (24 Nov 26, his D2521: "LL changed to OL") · `{k:'title', was}` renamed — its title's own words, or an Attach's "To" · `{k:'rmk'}` its remark changed. (A `when` part for a half day carries `h` — 'AM' or 'PM' — in place of its clock times `t`, and `c`, its kind, where its bold name is its kind (D2521). A line saved before keeps `t` and its `title` part, and reads as it always did.)
 *(19 Nov 26, fix read 6, fault C — his D2223, D2218: an input's line to someone told ONLY as its filer — named in it
 neither before nor after — also carries `fu`, the squadrons that judgement read (each named man's home on each of the
 input's days — since fix read 7, fault Q, his D2225 — or the input's own squadron where it names nobody —

@@ -5243,10 +5243,13 @@ ahead of "Taken off the programme" / "Back on the programme", which read wrongly
   one of the windows' (`ui/pops.ts BELLLIST`): closed at every sign-in and sign-out.
 - **A tap on a line** opens the input's own window and marks that line read; where the input has since been deleted it
   says "That input is gone", marks the line read and leaves the list open.
-- **The words** (one body, `state/notices.ts partWords`; where a save changed several things, the first two, joined by
-  a comma): You were added · You were taken off · Deleted · Cancelled — WX · Un-cancelled · Taken off the programme ·
-  Back on the programme · Now Thu 16 Jul 10:00–11:00 · Tally added · ALL AVAIL taken off · Renamed — was Kit check ·
-  Remark changed.
+- **The words** (one body, `state/notices.ts partWords`): You were added · You were taken off · Deleted · Cancelled — WX ·
+  Un-cancelled · Taken off the programme · Back on the programme · Now Thu 16 Jul 10:00–11:00 · Now LL (AM) (a half day,
+  titled "Now AM", moved as well "Now Thu 16 Jul (AM)") · Tally added · ALL AVAIL taken off · LL changed to OL (its
+  kind) · Renamed — was Kit check (its title's own words) · Remark changed. **Where a save changed several things**
+  (`noticeWords`, his D2521, 24 Nov 26): the first two, joined by a comma, then "and 1 more change" / "and N more
+  changes"; each after the first in small letters unless it starts with a name or "You" ("Now Thu 16 Jul, renamed —
+  was Training, and 1 more change"); a replaced Leave War bid is said after the rest and never counted.
 - **Who is told:** every named person in the input before or after the change, and whoever filed it — never whoever
   made the change, never the men behind ALL AVAIL / ALL, never a man archived or deleted. A leave the Leave War
   approves makes no notice (the war tells it on its own page).

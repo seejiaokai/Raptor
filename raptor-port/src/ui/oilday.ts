@@ -40,7 +40,7 @@ export function adminOfList(unit: string): boolean {
 export function saveOilDay(from: string, to: string, picks: Readonly<Record<string, OilPick | undefined>>, unit: string = pageUnit('own', todayIso())): number {
   /* (THE LIST'S OWN SQUADRON — R3: it saved only the reader's home squadron's answers, so the master admin answering 149's
      list from his 142 page wrote nothing; its door now asks "an admin of that squadron", the role in force) */
-  if (!adminOfList(unit)) { HOOKS.toast('Only a scheduler answers from this list', 'warn'); return -1 }
+  if (!adminOfList(unit)) { HOOKS.toast('Only a scheduler can answer from this list', 'warn')   /* (its family's words — his D2521 Q4c) */; return -1 }
   const todo = oilOpenOn(from, to, unit).filter(o => picks[o.iid] === 'y' || picks[o.iid] === 'n')
   if (!todo.length) return 0
   let n = 0

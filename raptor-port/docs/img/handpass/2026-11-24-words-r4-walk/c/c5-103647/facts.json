@@ -1,0 +1,25 @@
+{
+ "pictures": [
+  {
+   "file": "c5-ranger-desk.png",
+   "case": "C5",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "page": "editsched",
+    "mk": [],
+    "lines": [
+     "No OIL — no Leave War period covers this dateNo Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War."
+    ]
+   }
+  }
+ ],
+ "cases": {
+  "C5": {
+   "log": [
+    "Ranger: the Saturday's warning bar pressed: true",
+    "picture c5-ranger-desk.png: {\"page\":\"editsched\",\"mk\":[],\"lines\":[\"No OIL — no Leave War period covers this dateNo Leave War period for 2028, so no OIL can be earned for this day. Create the period on the Leave War.\"]}"
+   ]
+  }
+ },
+ "errors": []
+}

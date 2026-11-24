@@ -17,7 +17,7 @@ import { OilConfirm } from './OilConfirm'
 import { PEOPLE } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
-import { LOOK_MAX, LOOK_MIN, lookaheadParse, lookaheadLabel, lookaheadRange, lookaheadOf, setLookaheadFor, type Lookahead } from '../engine/lookahead'
+import { LOOK_MAX, LOOK_MIN, lookaheadParse, lookaheadLabel, lookaheadSavedNote, lookaheadRange, lookaheadOf, setLookaheadFor, type Lookahead } from '../engine/lookahead'
 import { canEditOwn } from '../state/auth'
 import { me, isAdmin, mayEditInput, pageUnit } from '../state/perms'
 import { todayIso } from '../engine/editlog'
@@ -743,7 +743,7 @@ export function InputsPage() {
                     }
                     setLookEdit(false)
                     setRange(defaultRange())
-                    HOOKS.toast(`Everyone now opens on ${lookaheadLabel(inputsLookahead()).toLowerCase()}`, 'ok')
+                    HOOKS.toast(lookaheadSavedNote(inputsLookahead()), 'ok')   /* (his D2521 S1) */
                     notify()
                   }}>Save</button>
                   <button className="abtn ghost" id="inLookCancel" onClick={() => setLookEdit(false)}>Cancel</button>

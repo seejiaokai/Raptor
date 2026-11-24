@@ -1,0 +1,13 @@
+{
+  "_note": "The 'after' words for words-r4.mjs, seeded from docs/superpowers/briefs/2026-11-24-words-r4-draft.md (chat 163). A bell line's 'after' is its second line's words BEFORE ' · Saber' (who did it stays as the app prints it). Change a value here and re-run the script; the script is not edited. q3 is the case the app can really produce (moved, renamed and its remark changed in one save — no cancel); {day} is the day the app prints. q4b's tap has only its today picture.",
+  "q1": { "after": "LL changed to OL" },
+  "q2": { "after": "Now LL (AM)" },
+  "q3": {
+    "afterA": "Now {day}, renamed — was Training, and 1 more change",
+    "afterB": "Now {day}, renamed — was Training, remark changed"
+  },
+  "q4a": { "after": "{typed} is not a time. Try 0900 or 09:00." },
+  "q4b": { "afterTap": "{name} — already in that seat", "afterDrag": "{name} — already in that seat" },
+  "s1": { "after": "Everyone now opens on the next 4 weeks, to Sunday" },
+  "s2": { "after": "No Leave War period for {year}, so no OIL can be earned for this day. Create the period on the Leave War." }
+}
