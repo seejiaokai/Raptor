@@ -112,16 +112,32 @@ the phone, three on the desktop).
 ## Found while drawing (put on the page as questions)
 
 - **Two names read like two changes:** "Sidewinder, Talisman added, Hex, Ace taken off" — the commas between names and
-  between parts are the same (question A5; recommended: "Sidewinder and Talisman added, Hex and Ace taken off").
+  between parts are the same (question 6; recommended: "Sidewinder and Talisman added, Hex and Ace taken off").
 - **"3 people added" is still a count** (`names`, three or more) — his D2600 says "never … any other count"; whether it
-  covers this is a reading, so question A4. (Also the look for other counts' job, job 2 of the night.)
+  covers this is a reading, so question 5. (Also the look for other counts' job, job 2 of the night.)
 - **A course files itself under Unavailable**, so a retype into one says "Filed under Unavailable" first — the order puts
   it before the days.
+
+## The page's words, read and adjusted (the fresh Fable read, 25 Nov 26 — his D2441)
+
+The questions are numbered 1–12 now, the two that change what gets built first. The draft's letters: A → 1, B → 2,
+A2 → 3, A3 → 4, A4 → 5, A5 → 6, A6 → 7, C → 8, D → 9, E → 10, F and G → 11 (one question: a title given and a title
+taken away are a pair, and one answer settles both — he may still split them), H → 12. What changed in substance:
+
+- The five rows are said at the very top, beside what he was told (four or five changes in two rows, six to a third).
+- Question 2 quotes his own words and marks both halves of D2601's reading as a reading; the bell's half names his
+  ruling of 24 Nov (on the SANS words job's branch, pull request 825: a read line gets a new line, an unread one goes).
+- Question 5's "named" example uses today's comma join, so it does not presume question 6's "and"; its cost is said
+  (ten names are about two rows, worked out, not drawn — a line can pass the five rows of question 1).
+- Question 7 no longer shows an invented shape for a phone message; it says the shape is drawn before it is built.
+- Question 9's recommendation changed from the draft's "LL changed to Training, 00:00–12:00" to **keep today's line**:
+  the draft's choice broke the order question 3 recommends keeping, and said so itself. All three wordings are offered.
+- "Keep it as it is today" is said to be an answer to each of questions 8–12.
 
 ## What I could not draw, and why
 
 - **The real scratch build:** the checks lock (above). The pictures are the swap fallback, named on the page's lead.
-- **A phone alert** (questions A6 and B): the app sends none yet.
-- **Three or more people added, named** (question A4): the drawing copy changes only the count of changes, not
+- **A phone alert** (questions 7 and 2): the app sends none yet.
+- **Three or more people added, named** (question 5): the drawing copy changes only the count of changes, not
   `names` — no picture; the wording is shown in words.
 
