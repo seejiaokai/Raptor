@@ -1349,3 +1349,16 @@ sides.
 **Issue:** A blind reader reported that a note was wrong because "the page he approved shows" a full stop where the app prints a dot, and quoted the sentence. The approved page holds no such sentence: it shows that note only as a picture, and the picture has the dot. Two other sources (a walker's check against the picture's recorded text, another reader) read it the other way. The claim was caught only because the host opened the page and searched its text and the picture's recorded words before acting; a fix "back to the page" would have changed approved words.
 **Suggested improvement:** In §4's hand-back list, item 2, add: a claim that rests on what an approved page, picture or drawing shows is checked against that artefact itself — its text searched, its picture's recorded words read — before it is dispositioned; a reader's quotation of an approved artefact is a claim like any other. And in the readers' brief, ask for the file and line (or the picture's name) behind any "the approved page shows".
 **Principle:** A reviewer's quotation of a source is still a claim; open the source before acting on what it is said to say.
+
+### Observation 1056: A backlog left over its size tripwire by a code change blocks every later notes-only change
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** Recording four rulings on a notes-only branch right after round 4 of the words pass merged (chat 170). (Numbered past 1055, the highest on any open branch.)
+**Skill:** the document check and the backlog's rules (`raptor-port/scripts/docsize.mjs`, `OUTSTANDING.md` §Maintaining this file, `.claude/rules/doc-structure.md`)
+**Type:** internal
+**Phase/Area:** "Never trim this file inside a code change — over budget there is deferred" (D29 rule 3)
+
+**Issue:** Round 4's code change filed four found-not-fixed lines and left the backlog two lines over its ceiling; the check reported it as deferred, correctly, and the change merged. The very next change — a notes-only one, from any chat — then failed the same check with "this change is the trim pass", before it had added a line. Recording his rulings waited while a trim was found (seven doubled blank lines, no word touched); with nothing so harmless to remove, a ruling's record would have waited on archiving a finished item, a judgement that should not be made in a hurry.
+**Suggested improvement:** When a code change leaves a file over its tripwire, the deferral is a debt with an owner: the closing report names it, and the same chat's first notes-only change after the merge is the trim pass (or it files the trim as its own backlog line). The check could also print the deferral as a line for the handoff block, so the next chat meets it told, not cold.
+**Principle:** A check that defers a failure moves it to whoever comes next; say who owes it at the moment it is deferred.
