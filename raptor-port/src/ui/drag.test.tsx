@@ -137,6 +137,19 @@ describe('generic drag & drop across the whole edit board (tfin)', () => {
     setSlotVal(key, before); await act(async () => { afterSchedMutate(); notify() })
   })
 
+  /* (the fresh, blind Fable read of round 4, its finding 2, chat 170: the tap's true twin — his NAME carried from the
+     crew list onto the seat he already holds — said nothing, where the tap says "<callsign> — already in that seat") */
+  it('his name dragged from the crew list onto the seat he holds says so, as the tap does (D2521 Q4b)', async () => {
+    const seat = $$('#eWeek .seat[data-slot^="d:"][data-drag]').find(s => slotVal(s.dataset.slot!))!
+    const key = seat.dataset.slot!, before = slotVal(key)
+    const src = $$('#eRoster .rpuck[data-person]').find(x => x.dataset.person === before)!
+    expect(src, 'his name is in the crew list').toBeTruthy()
+    toasts = []
+    await dnd(src, $(`#eWeek .seat[data-slot="${key}"]`))
+    expect(toasts).toEqual([`${PEOPLE[before].cs} — already in that seat`])
+    expect(slotVal(key)).toBe(before)
+  })
+
   it('the dnd class is cleared after every drop', () => {
     expect(document.body.classList.contains('dnd')).toBe(false)
   })
