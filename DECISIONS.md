@@ -61,10 +61,10 @@ the side that has it, writes the other side's new rows to the full-text file, li
 whoever meets it: drawing, wording, building, reading or walking.** It is never built on, drawn as settled or folded
 into other wording: it goes to him as its own question, with a worked example and how the app answers the same question
 elsewhere — at the latest named as a reading inside the thing he is asked to approve. Until he answers, the ruling's
-full row carries `**READING, OPEN (<date>, asked | not asked): <one way>; the other: <…>.**`, code already built on it
-carries `READING D<n>`, and `npm run readings` lists both. It leaves only by his ruling (step 2's mark); his approval
-of wording that only repeats the word does not settle it. A code comment that speaks of a reading he has answered cites
-his answer, `ruled D<n>`.
+full row carries `**READING, OPEN (<date>, asked | not asked): <one way>; the other: <…>.**` ("asked" once it is put
+to him), code already built on it carries `READING D<n>`, and `npm run readings` lists both. It leaves only by his
+ruling (step 2's mark); his approval of wording that only repeats the word does not settle it. A code comment that
+speaks of a reading he has answered cites his answer, `ruled D<n>` — the ruling its row's ANSWERED mark names.
 
 **Parallel branches (owner, D78):** when several chats run at once, each reaches `main` only on his
 "merge live", ONE AT A TIME; whichever merges later merges `main` in first, and if a D-number

@@ -12,7 +12,8 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
 import { execFileSync } from 'node:child_process'
-import { unmarkedComments, marksIn, badMarks, tagsIn, tagsWithoutMark, addedLines, check, summary, unrecordedIn, rowWarnings } from './readings.mjs'
+import { unmarkedComments, marksIn, badMarks, tagsIn, tagsWithoutMark, addedLines, check, summary, unrecordedIn, rowWarnings,
+  answeredIn, answersIn, listing } from './readings.mjs'
 
 /* The comment exactly as commit 62a898654 added it — not a word changed. */
 const NOV22 = `/* HIS SANS DAYS WITH NOTHING FILED — THE LINE HIS OWN BELL WORKS OUT (owner D2338, 22 Nov 26 — "Should we tell the user
@@ -58,7 +59,12 @@ test('the same comment, NOT added by the branch, blocks nothing', () => {
 
 test('a comment that speaks of a reading passes once it carries its tag', () => {
   const tagged = NOV22.replace('And the build\'s (his to change):', 'And the build\'s (his to change, READING D2338):')
-  assert.deepEqual(unmarkedComments('raptor-port/src/leavewar/sansunfiled.ts', tagged, allLines(tagged)), [])
+  /* round 2: a tag covers its own sentence only — the comment's other reading sentence still fails until tagged too */
+  const rest = unmarkedComments('raptor-port/src/leavewar/sansunfiled.ts', tagged, allLines(tagged))
+  assert.equal(rest.length, 1)
+  assert.match(rest[0].phrase, /AGENT'S READINGS/)
+  const both = tagged.replace("TOLD TO HIM (D2338's row):", "TOLD TO HIM (D2338's row, READING D2338):")
+  assert.deepEqual(unmarkedComments('raptor-port/src/leavewar/sansunfiled.ts', both, allLines(both)), [])
 })
 
 test('every free-words phrase is caught, in a line comment and a block comment', () => {
@@ -166,8 +172,11 @@ test('ordinary quoted text is still ignored', () => {
 })
 
 test('a comment that cites his answer, ruled D<n>, passes', () => {
-  assert.deepEqual(fails(`// caps stay paused until he rules — ruled D2186\nconst y = 2\n`), [])
-  assert.deepEqual(fails(`/* no longer the build's reading:\n   ruled D2564 */\n`), [])
+  /* round 2: only a ruling that answered a recorded reading counts as his answer (here both are taken to have) */
+  const ok = new Set(['D2186', 'D2564'])
+  const failsOk = t => unmarkedComments('raptor-port/src/a.tsx', t, allLines(t), ok)
+  assert.deepEqual(failsOk(`// caps stay paused until he rules — ruled D2186\nconst y = 2\n`), [])
+  assert.deepEqual(failsOk(`/* no longer the build's reading:\n   ruled D2564 */\n`), [])
   /* a bare citation is not an answer — the 22 Nov comment cites D2338 and still fails */
   assert.equal(fails(`// the agent's reading (D2338's row): any row\n`).length, 1)
 })
@@ -197,7 +206,88 @@ test('the listing finds untagged reading comments, old lines included', () => {
   assert.ok(u.length >= 2, 'the 22 Nov comment holds unrecorded readings')
   assert.ok(u.some(x => /his to change/i.test(x.phrase)))
   assert.deepEqual(unrecordedIn('a.ts', '// his to change — READING D2338\n'), [])
-  assert.deepEqual(unrecordedIn('a.ts', '// his to change — ruled D2564\n'), [])
+  assert.deepEqual(unrecordedIn('a.ts', '// his to change — ruled D2564\n', new Set(['D2564'])), [])
+  assert.equal(unrecordedIn('a.ts', '// his to change — ruled D2564\n').length, 1, 'not his answer to any recorded reading')
+})
+
+/* ---------- round 2 of the reads (Astra, a fresh Opus, Fable — 25 Nov 26) ---------- */
+/* D2338's row once he has answered the reading: the open mark stays, step 2's ANSWERED mark names his answer */
+const ROW_ANSWERED = ROW_OPEN.replace(' | sansunfiled.ts |', ' **— ANSWERED 25 Nov 26 BY D2564: flying seats and sims only.** | sansunfiled.ts |')
+const ANSWERS = new Set(['D2564'])
+const failsA = (text, answers = ANSWERS) => unmarkedComments('raptor-port/src/a.tsx', text, allLines(text), answers)
+
+test('an answered reading leaves the list, and its tag must become ruled D<n>', () => {
+  assert.equal(marksIn('f.md', ROW_ANSWERED).length, 0, 'not listed as open')
+  const ans = answeredIn('f.md', ROW_ANSWERED)
+  assert.deepEqual(ans.map(a => [a.d, a.by]), [['D2338', 'D2564']])
+  /* an ANSWERED mark dated BEFORE the reading was marked answers something else: the reading stays open */
+  const older = ROW_OPEN.replace(' | sansunfiled.ts |', ' **— ANSWERED 1 Nov 26 BY D2100: another point.** | sansunfiled.ts |')
+  assert.equal(marksIn('f.md', older).length, 1)
+  assert.deepEqual(answeredIn('f.md', older), [])
+  /* NARROWED counts as his answer too */
+  assert.equal(marksIn('f.md', ROW_OPEN.replace(' | sansunfiled.ts |', ' **— NARROWED 25 Nov 26 BY D2564: x.** | sansunfiled.ts |')).length, 0)
+  const tags = tagsIn('raptor-port/src/a.ts', '// planned: any row — READING D2338\n')
+  const f = tagsWithoutMark(tags, marksIn('f.md', ROW_ANSWERED), ans)
+  assert.equal(f.length, 1)
+  assert.match(f[0], /ruled D2564/)
+})
+
+test('ruled D<n> passes only for the ruling that answered a recorded reading', () => {
+  assert.equal(failsA(`// the agent's reading: any row — ruled D2338\n`).length, 1, 'the misread ruling itself fails')
+  assert.equal(failsA(`// the agent's reading: any row — ruled D2339\n`).length, 1, 'any other ruling fails')
+  assert.deepEqual(failsA(`// the agent's reading: any row — ruled D2564\n`), [], 'his answer passes')
+  /* the 22 Nov comment, its citation turned into "ruled D2338", still fails */
+  const turned = NOV22.replace("(D2338's row)", '(ruled D2338)')
+  assert.ok(failsA(turned).length >= 1)
+  assert.deepEqual(answersIn([['f.md', ROW_ANSWERED], ['g.md', ROW_PLAIN]]), new Set(['D2564']))
+})
+
+test('code before a comment no longer hides it — round 2 cases', () => {
+  assert.equal(failsA(`const a = <p>Don't</p> // the agent's reading: any row\n`).length, 1, 'apostrophe, then one in the comment')
+  assert.equal(failsA(`const a = <p>Don't</p>{/* his to change */}<p>won't</p>\n`).length, 1, 'comment between two apostrophes')
+  assert.equal(failsA(`const a = <p>Don't {/* the builder's reading */} won't</p>\n`).length, 1, 'inside one text run')
+  assert.equal(failsA(`const a = <p>it's the men's</p>\n// his to change: any row\n`).length, 1, 'two apostrophes in one text run')
+  assert.equal(failsA('if (x) /`/.test(s)\nconst y = 1\n// his to change: any row\n').length, 1, 'regex after an if condition')
+  assert.equal(failsA('while (go(a)) /\'/.exec(s)\n// until he rules, any row\n').length, 1, 'regex after a while condition')
+  /* still quoted text: a string right after an identifier would not be JavaScript, a tagged template still is one */
+  for (const s of [`const s = f('his to change')\n`, `const s = ["until he rules"]\n`, 'const s = css`not put to him`\n',
+    `const s = x ? 'his to change' : "the agent's reading"\n`, `const t = (a) / 2 // ok\nconst u = 'his to change'\n`])
+    assert.deepEqual(failsA(s), [], s)
+})
+
+test('a wrapped ruled + D<n> is read, and checked, across the line break', () => {
+  assert.deepEqual(failsA(`// our reading: any row counts; ruled\n// D2564\n`), [], 'a wrapped answer passes')
+  assert.equal(failsA(`// our reading: any row counts; ruled\n// D999999\n`).length, 1, 'a wrapped unknown one fails')
+})
+
+test('a tag or an answer covers its own sentence only', () => {
+  assert.equal(failsA(`// caps paused — ruled D2564.\n// the agent's reading: any row\n`).length, 1, 'a line under an answered one')
+  assert.equal(failsA(`// READING D2338 is open.\n// his to change: any row\n`).length, 1, 'a line under a tagged one')
+  assert.equal(failsA(`/* the build's reading: seats only, ruled D2564. Also his to decide: the desks */\n`).length, 1, 'two sentences in a block')
+  assert.equal(failsA(`// his to change: any row\n//\n// READING D2338\n`).length, 1, 'a blank comment line ends the sentence')
+  assert.deepEqual(failsA(`// his to change: any row of the day,\n// READING D2338\n`), [], 'one sentence across lines')
+  assert.deepEqual(failsA(`// e.g. his to change: any row — READING D2338\n`), [], 'an abbreviation inside the sentence')
+})
+
+test('round 2 phrasings are caught; look-alikes are not', () => {
+  for (const p of ['his to decide', 'his to settle', 'for him to decide', 'for him to rule', 'pending his ruling',
+    'until he decides', 'until he answers', 'not yet put to him', 'the agent\'s interpretation', 'the agents\' reading',
+    'Fable\'s reading', 'Claude\'s reading', 'the builder\'s own interpretation'])
+    assert.equal(failsA(`// ${p}: any row counts\nconst y = 2\n`).length, 1, p)
+  for (const p of ['his to rule on', 'the date is his to rule on later', 'pending his return', 'until he decided to leave',
+    'the agents list', 'Fable\'s brief'])
+    assert.deepEqual(failsA(`// ${p}\nconst y = 2\n`), [], p)
+})
+
+test('a malformed mark of any kind fails', () => {
+  const row = m => `| D2338 | 22 Nov 26 | "x" | **Rule.** ${m} | home |`
+  for (const m of ['READING, OPEN: one way; the other: two.', 'READING OPEN (25 Nov 26, not asked): one way.',
+    '**READING, OPEN** (25 Nov 26, not asked): one way.', '**READING OPEN (25 Nov 26, not asked): one way.**',
+    'READING — OPEN (25 Nov 26, maybe): one way.']) {
+    assert.equal(marksIn('f.md', row(m)).length, 0, m)
+    assert.equal(badMarks('f.md', row(m)).length, 1, m)
+  }
+  assert.deepEqual(badMarks('f.md', ROW_ANSWERED), [])
 })
 
 /* ---------- a real repo: the lines a branch adds are git's ---------- */
@@ -264,15 +354,62 @@ test('in a repo: an old comment moved or re-indented is not new; a changed one i
   } finally { rmSync(r.dir, { recursive: true, force: true }) }
 })
 
-test('in a repo: ruled D<n> must name a ruling that exists', () => {
+test('in a repo: ruled D<n> must name the ruling that answered a recorded reading', () => {
   const r = repo()
   try {
-    r.put('raptor-port/src/d.ts', '// no longer the build\'s reading — ruled D2339\nexport const d = 1\n')
-    assert.deepEqual(check({ repo: r.dir, base: r.base }).fails, [])
-    r.put('raptor-port/src/d.ts', '// no longer the build\'s reading — ruled D9999\nexport const d = 1\n')
+    r.put('.claude/decisions-full/leave-war.md', ROW_PLAIN + '\n' + ROW_ANSWERED + '\n')
+    r.put('raptor-port/src/d.ts', '// no longer the build\'s reading — ruled D2564\nexport const d = 1\n')
+    assert.deepEqual(check({ repo: r.dir, base: r.base }).fails, [], 'his answer, D2564, passes')
+    /* round 2 (Opus M2): a ruling that exists but answered no recorded reading — D2339, or the misread D2338 — fails */
+    for (const d of ['D2339', 'D2338', 'D9999']) {
+      r.put('raptor-port/src/d.ts', `// no longer the build's reading — ruled ${d}\nexport const d = 1\n`)
+      const f = check({ repo: r.dir, base: r.base }).fails
+      assert.ok(f.some(x => x.includes(d)), `${d}: ${f.join('\n')}`)
+    }
+  } finally { rmSync(r.dir, { recursive: true, force: true }) }
+})
+
+test('in a repo: the failure message never steers to citing any ruling, and offers rewording', () => {
+  const r = repo()
+  try {
+    r.put('raptor-port/src/e.ts', '// the agent\'s reading: any row\nexport const e = 1\n')
+    const f = check({ repo: r.dir, base: r.base }).fails
+    assert.equal(f.length, 1)
+    assert.match(f[0], /ANSWERED/, 'ruled D<n> only for a reading answered on its row')
+    assert.match(f[0], /reword/i, 'the honest way out for words that are not a reading')
+  } finally { rmSync(r.dir, { recursive: true, force: true }) }
+})
+
+test('in a repo: a line moved into another file is not new; a copy is', () => {
+  const r = repo()
+  try {
+    /* old.ts's comment moved whole into a new file, old.ts keeping only its code */
+    r.put('raptor-port/src/old.ts', 'export const a = 1\n')
+    r.put('raptor-port/src/moved.ts', '// his to change: an old comment the audit clears\nexport const m = 1\n')
+    assert.deepEqual(check({ repo: r.dir, base: r.base }).fails, [], 'moved')
+    /* copied: the old one still stands, so the new one is new */
+    r.put('raptor-port/src/old.ts', '// his to change: an old comment the audit clears\nexport const a = 1\n')
     const f = check({ repo: r.dir, base: r.base }).fails
     assert.equal(f.length, 1, f.join('\n'))
-    assert.match(f[0], /D9999/)
+    assert.match(f[0], /moved\.ts:1/)
+  } finally { rmSync(r.dir, { recursive: true, force: true }) }
+})
+
+test('in a repo: the whole listing shows a wrapped old comment and a wrapped citation is checked', () => {
+  const r = repo()
+  try {
+    r.put('raptor-port/src/w.ts', 'export const w = 1\n// the days are his to\n// change: an old wrapped comment\n')
+    git(r.dir, 'add', '-A'); git(r.dir, 'commit', '-q', '-m', 'old wrapped')
+    const named = listing(r.dir, ['raptor-port/src/w.ts']).join('\n')
+    assert.match(named, /w\.ts:2/, named)
+    assert.match(named, /Unrecorded readings in what was named: 1/)
+    const all = listing(r.dir, []).join('\n')
+    assert.match(all, /Unrecorded readings in src[^:]*: 2/, all)   // old.ts's and w.ts's
+    /* a wrapped "ruled ⏎ D<n>" naming no answer fails the whole-tree check */
+    r.put('raptor-port/src/x.ts', '// fine — ruled\n// D999999\nexport const x = 1\n')
+    git(r.dir, 'add', '-A'); git(r.dir, 'commit', '-q', '-m', 'x')
+    const f = check({ repo: r.dir, base: git(r.dir, 'rev-parse', 'HEAD').trim() }).fails
+    assert.ok(f.some(x => /D999999/.test(x)), f.join('\n'))
   } finally { rmSync(r.dir, { recursive: true, force: true }) }
 })
 

@@ -226,8 +226,8 @@ const FILES = [
      the three for an area still in short lines — both routes stand until the last area converts, and this file holds the
      steps every chat follows. Room, not a target; the paragraph leaves when the last area converts. */
   /* DECISIONS.md 110 -> 120 (25 Nov 26, chat 173, his D2610, [READINGS-LAPSE-FIX] plan C1): "A reading" — the one place
-     the rule is stated, beside the recording steps every role already comes here for; every pointer names it. A rulings
-     file is never trimmed (D136); room, not a target (D141). */
+     the rule is stated, beside the recording steps every role already comes here for; every pointer names it. Room,
+     not a target (D141). */
   ['DECISIONS.md',                       1,  120],   // 95 -> 96 (1 Nov 26, D1554): the map gained ONE row - the screen-design rulings' own area file
 ]
 /* THE AREA RULINGS FILES — a tripwire in UTF-8 BYTES of the whole file, frontmatter and every section included (owner,
