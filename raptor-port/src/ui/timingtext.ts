@@ -13,7 +13,12 @@ export type Files = { supported: boolean, n: number, bytes: number, kept: number
  *  ASKED ABOUT AGAIN and told "unchanged" — as Vercel answers a return visit: Chromium gives no body (0) and only the
  *  answer's header (about 300 bytes), under an ordinary status; it was kept, and its size is not given (the walk of
  *  24 Nov 26, W14 — read as "0 of 15 kept, 4 KB"). An older way some browsers report it (the header and the kept body's
- *  size, the header the smaller) is read the same. */
+ *  size, the header the smaller) is read the same. In a NEW tab Chrome gives an "unchanged" file its body's size
+ *  beside the web standard's fixed 300 for the answer's header (a file sent whole reads its body plus that 300) — so a
+ *  file smaller than 300 looked as if it came whole: "Kept 14 of 15" where the site sent nothing (chat 165's OPEN 7,
+ *  proved by chat 167's timing-walk-diag5.mjs). Exactly 300 is "unchanged" whatever the body; timing.ts
+ *  downloadedBetween keeps the same rule. */
+export const UNCHANGED_HEADER = 300
 export function filesOf(list: { transferSize?: number, encodedBodySize?: number }[]): Files {
   const supported = list.length > 0 && list.every(e => typeof e.transferSize === 'number')
   let bytes = 0, kept = 0, asked = 0, sized = true
@@ -22,7 +27,7 @@ export function filesOf(list: { transferSize?: number, encodedBodySize?: number 
     bytes += b
     if (t === 0 && b > 0) kept++
     else if (t > 0 && b === 0) { kept++; asked++; sized = false }
-    else if (t > 0 && t < b) { kept++; asked++ }
+    else if (t > 0 && (t < b || t === UNCHANGED_HEADER)) { kept++; asked++ }
   }
   return { supported, n: list.length, bytes, kept, asked, sized }
 }

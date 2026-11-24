@@ -1,0 +1,47 @@
+[
+ {
+  "id": "W26-change-undo",
+  "v": "PASS",
+  "note": "ALL AVAIL put on Saturday: the week's count shown; after Undo gone"
+ },
+ {
+  "id": "W26-inputwin-✕",
+  "v": "PASS",
+  "note": "the input's window opened true, closed by ✕: true; the Timing window open true"
+ },
+ {
+  "id": "W26-inputwin-Escape",
+  "v": "PASS",
+  "note": "the input's window opened true, closed by Escape: true; the Timing window open true"
+ },
+ {
+  "id": "W26-inputwin-press-outside-stays",
+  "v": "PASS",
+  "note": "pressed at an empty point 20,70; the input's window opened true, still open after the press: true (D641), windows up besides the Timing window: 1; the Timing window open true"
+ },
+ {
+  "id": "W26-inputwin-then-✕",
+  "v": "PASS",
+  "note": "then closed by its ✕: true; at its ✕ (1313,105): floatwin.inpedwin.front > BUTTON.win-x"
+ },
+ {
+  "id": "W26-changes-✕",
+  "v": "PASS",
+  "note": "the changes window opened true, closed by ✕: true"
+ },
+ {
+  "id": "W26-changes-Escape",
+  "v": "PASS",
+  "note": "the changes window opened true, closed by Escape: true"
+ },
+ {
+  "id": "W26-signout",
+  "v": "PASS",
+  "note": "signed out to the sign-in card: true"
+ },
+ {
+  "id": "W26-errors",
+  "v": "PASS",
+  "note": "none"
+ }
+]

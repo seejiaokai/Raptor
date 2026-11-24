@@ -1,0 +1,10 @@
+PASS   W26-change-undo — ALL AVAIL put on Saturday: the week's count shown; after Undo gone
+PASS   W26-inputwin-✕ — the input's window opened true, closed by ✕: true; the Timing window open true
+PASS   W26-inputwin-Escape — the input's window opened true, closed by Escape: true; the Timing window open true
+PASS   W26-inputwin-press-outside-stays — pressed at an empty point 20,70; the input's window opened true, still open after the press: true (D641), windows up besides the Timing window: 1; the Timing window open true
+PASS   W26-inputwin-then-✕ — then closed by its ✕: true; at its ✕ (1313,105): floatwin.inpedwin.front > BUTTON.win-x
+PASS   W26-changes-✕ — the changes window opened true, closed by ✕: true
+PASS   W26-changes-Escape — the changes window opened true, closed by Escape: true
+PASS   W26-signout — signed out to the sign-in card: true
+PASS   W26-errors — none
+exit 0

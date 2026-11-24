@@ -257,6 +257,25 @@ describe('what came down the line for the Leave War', () => {
   })
 })
 
+/* THE WALK OF 24 NOV 26 (chat 165's OPEN 7, proved by chat 167): Chrome reports a file told "unchanged" as the
+   standard's fixed 300 for its header, beside its body's size — a file whose body is under 300 looked downloaded */
+describe('what came down the line: a file smaller than its answer\'s header', () => {
+  it('a small file told "unchanged" is not downloaded; the same file sent whole is', () => {
+    const entries = [
+      { name: 'http://x/assets/LeaveWarPage-a.js', startTime: 10, responseEnd: 60, transferSize: 300, encodedBodySize: 161 },
+      { name: 'http://x/assets/LeaveWarPage-b.js', startTime: 10, responseEnd: 60, transferSize: 461, encodedBodySize: 161 },
+    ]
+    const was = performance.getEntriesByType
+    ;(performance as any).getEntriesByType = (t: string) => (t === 'resource' ? entries : [])
+    try {
+      section('viewsched'); section('leavewar', false)
+      at(0); timingMark({ kind: 'page', page: 'leavewar', t: 0 })
+      at(100); show('leavewar'); step(3)
+      expect(got.filter(e => e.kind === 'page').map(e => e.kind === 'page' ? e.downloaded : -1)).toEqual([461])
+    } finally { (performance as any).getEntriesByType = was }
+  })
+})
+
 /* THE CODE READS OF CHAT 165 (24 Nov 26), each pinned before its fix */
 describe('the code reads: a hidden tab, a new sign-in, another page\'s download', () => {
   const setVis = (v: 'hidden' | 'visible') => { Object.defineProperty(document, 'visibilityState', { value: v, configurable: true }); document.dispatchEvent(new Event('visibilitychange')) }

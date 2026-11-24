@@ -404,8 +404,12 @@ await scen('W22', DESK, {}, async ({ page, ctx, dir }) => {
 })
 
 /* W24 — a hidden tab. Chat 164's run in the headless browser never hid the tab (it went "never hidden"); chat 165 walks
-   it in a REAL browser window, placed off the screen, where a tab behind another is hidden as on his desktop. */
-if (on('W24')) {
+   it in a REAL browser window, placed off the screen, where a tab behind another is hidden as on his desktop.
+   Chat 167: that never hid it either — Playwright keeps every page it drives "visible". W24 is walked by
+   timing-walk-w24.mjs (a plainly started Chromium, driven only through its developer port); this step stays for the
+   record and is not run. */
+if (on('W24')) notWalked('W24', 'walked by timing-walk-w24.mjs — Playwright keeps every page visible (chat 167)')
+if (false) {
   const b = await chromium.launch({ headless: false, args: ['--window-position=-3200,0', '--window-size=1366,850'] })
   const ctx = await b.newContext({ ...DESK }); await ctx.addInitScript(() => { window.__vis = []; document.addEventListener('visibilitychange', () => window.__vis.push(document.visibilityState)) })
   await ctx.addInitScript(PRESS)

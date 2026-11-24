@@ -165,6 +165,15 @@ describe('the app\'s files, as the browser reports them', () => {
   it('used from the browser\'s own memory without asking: kept, its size known', () => {
     expect(filesOf([e(0, 5000), e(400, 0)])).toEqual({ supported: true, n: 2, bytes: 5000, kept: 2, asked: 1, sized: false })
   })
+  /* THE WALK OF 24 NOV 26 (chat 165, W14-newtab; proved by chat 167, timing-walk-diag5.mjs): in a new tab Chrome gives
+     an "unchanged" file its body's size AND the standard's fixed 300 for the answer's header — a file smaller than 300
+     (the app's 161-byte one) then looked as if it came whole: "Kept 14 of 15" where the site sent nothing */
+  it('a file smaller than the answer\'s header, told "unchanged": kept, not downloaded', () => {
+    expect(filesOf([e(300, 161), e(300, 230_613)])).toEqual({ supported: true, n: 2, bytes: 230_774, kept: 2, asked: 2, sized: true })
+  })
+  it('the same small file sent whole (its body and the header): downloaded', () => {
+    expect(filesOf([e(461, 161)])).toEqual({ supported: true, n: 1, bytes: 161, kept: 0, asked: 0, sized: true })
+  })
   it('a browser that gives no sizes at all (no transfer figure) cannot tell', () => {
     expect(filesOf([{} as any, {} as any]).supported).toBe(false)
   })

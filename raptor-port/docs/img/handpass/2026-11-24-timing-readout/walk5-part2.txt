@@ -1,0 +1,10 @@
+PASS   W7-address — after Retry's reload: /?timing
+PASS   W7-card-row — rows while the card showed: none
+PASS   W7-landing — landing row "Leave War, first time: 0.5 s", outside 486 ms; sign-in "not yet"
+PASS   W7-downloaded — the server sent the Leave War's files whole: 0 KB; the row's tag "first time"
+PASS   W7-after — sign-in "not yet"; Leave War again "opened before"
+  W7 page errors: console: Failed to load resource: net::ERR_FAILED | console: TypeError: Failed to fetch dynamically imported module: http://localhost:56095/assets/LeaveWarPage-CEg-4FZN.js
+PASS   W14-first — cleared first visit: "15 · 665 KB", kept "0 of 15" (the browser's own: 0 of 15)
+PASS   W14-reload — reload: "15 · size not given by Chrome", kept "15 of 15" (browser: 15 of 15)
+PASS   W14-newtab — new tab: "15 · 665 KB", kept "15 of 15" (browser: 15 of 15)
+exit 0

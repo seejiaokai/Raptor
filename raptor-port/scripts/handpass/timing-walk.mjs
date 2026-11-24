@@ -81,6 +81,10 @@ if (on('W5')) {
   const seen = new Set(['viewsched'])
   for (const p of order) {
     const before = pageRows(await readout(page)).length
+    /* chat 167 (the script fault chat 165 listed): the Leave War may already have come in the background before the
+       press (W10's case: no claw, no download) — then the download tag is not owed; the server's own answers decide */
+    const own = { leavewar: /LeaveWarPage-/, tracker: /TrackerPage-/ }[p]
+    const inBackground = !!own && srv.hits.some(h => own.test(h.p) && h.st === 200)
     const clawSeen = page.evaluate(() => new Promise(res => { let up = 0; const t = setInterval(() => { if (document.querySelector('.pgclaw:not(.gone)')) up++ }, 30); setTimeout(() => { clearInterval(t); res(up) }, 1500) }))
     await openBy(page, p)
     const out = await outsideTime(page, p)
@@ -91,7 +95,7 @@ if (on('W5')) {
     const wantTag = first ? /^first time/ : /^opened before$/
     const okName = top && top.label === NAMES[p], okTag = top && wantTag.test(top.tag), okTime = top && close(secs(top.value) * 1000, out)
     let dl = ''
-    if (first && (p === 'leavewar' || p === 'tracker')) dl = top && /downloaded (\d+) KB/.test(top.tag) ? ' (download tag present)' : ' (NO download tag)'
+    if (first && (p === 'leavewar' || p === 'tracker')) dl = top && /downloaded (\d+) KB/.test(top.tag) ? ' (download tag present)' : inBackground ? ' (no download tag — the page came in the background before the press, W10\'s case: RECORD)' : ' (NO download tag)'
     judge('W5-' + p + (first ? '-1' : '-2'), !!(okName && okTag && okTime) && !/NO download/.test(dl), `row "${top ? top.label + ', ' + top.tag + ': ' + top.value : 'none'}" — outside ${(out / 1000).toFixed(2)} s; claw seen ${claw} times${dl}`)
     if (p === 'leavewar' || p === 'tracker') await pic(page, dir, p + (first ? '-first' : '-again'))
   }

@@ -1,0 +1,7 @@
+[
+ {
+  "id": "W33-phone",
+  "v": "PASS",
+  "note": "the Day templates box up true; at the corner button: daytplModal > DIV#daytplModal.modal; at the box's ✕: daytplModal > BUTTON#daytplClose.x; closed by its ✕ true; the corner button then: abtn.timing-pill > BUTTON.abtn.timing-pill"
+ }
+]

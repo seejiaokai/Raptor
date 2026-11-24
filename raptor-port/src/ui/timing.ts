@@ -100,7 +100,11 @@ function watch(t0: number, state: () => 'shown' | 'failed' | 'waiting', alive: (
  *  background fetch of it still arriving) — never the window's own files, and never a file the site answered
  *  "unchanged": it comes with no body, only its answer's header, and was not downloaded (the walk of 24 Nov 26, W14).
  *  Chrome gives a file it already held its body's size all the same (answered "unchanged", or taken from its memory —
- *  W7), so a file counts only when what came down the line is more than its body: the body came with it. */
+ *  W7), so a file counts only when what came down the line is more than its body: the body came with it. And never
+ *  exactly 300: the web standard's fixed figure for an "unchanged" answer's header, which a file whose body is under 300
+ *  would otherwise pass (chat 165's OPEN 7, proved by chat 167; the same rule as timingtext.ts filesOf — not imported
+ *  from there, which would put the readout's words into the app's first download). */
+const UNCHANGED_HEADER = 300
 /* the OTHER page's own files (named by the bundler after the page: LeaveWarPage-…, TrackerPage-…) are never this page's:
    the Leave War's background download still arriving as the Tracker opened was counted as the Tracker's (Astra's code
    read, chat 165, 3) */
@@ -111,7 +115,7 @@ function downloadedBetween(page: string, t0: number, t1: number): number {
   for (const e of performance.getEntriesByType('resource') as PerformanceResourceTiming[]) {
     if (!/\.(js|css)(\?|$)/.test(e.name) || /timingwindow|TimingReadout/i.test(e.name)) continue
     if (OTHER_PAGE[page]?.test(e.name)) continue
-    if (e.responseEnd >= t0 && e.startTime <= t1 && e.encodedBodySize > 0 && (e.transferSize || 0) > e.encodedBodySize) b += e.transferSize
+    if (e.responseEnd >= t0 && e.startTime <= t1 && e.encodedBodySize > 0 && (e.transferSize || 0) > e.encodedBodySize && e.transferSize !== UNCHANGED_HEADER) b += e.transferSize
   }
   return b
 }

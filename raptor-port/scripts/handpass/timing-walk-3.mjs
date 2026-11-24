@@ -143,19 +143,40 @@ for (const [id, size] of [['W20-desk', DESK], ['W20-phone', PHONE]]) {
          opened again from its button over ALL AVAIL (chat 164's run pressed the count through it) */
       if (phone) await page.click('#timingRoot .timingwin .win-x')
       await osn.scrollIntoViewIfNeeded(); await osn.click(); await sleep(600)
-      if (phone) { await page.click('#timingRoot .timing-pill'); await sleep(400) }
       const ax = await page.evaluate(() => { const x = document.querySelector('.availwin:not([hidden]) .win-x'); if (!x) return null; const r = x.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2] })
       const aTop = ax ? await topAt(page, ax[0], ax[1]) : null
-      m = await xMid(); const tUnder = m ? await topAt(page, m[0], m[1]) : null
-      await pic(page, dir, 'avail-and-timing')
-      /* two windows overlap, the one opened or pressed last in front (floatwin.ts — "the one pressed last comes
-         forward"): the Timing window is brought forward by a press on a part of it in sight, then its ✕ is pressed */
-      const seen = await page.evaluate(() => { const w = document.querySelector('#timingRoot .timingwin'); if (!w) return null; const r = w.getBoundingClientRect(); for (let y = r.top + 4; y < r.bottom; y += 8) for (let x = r.left + 4; x < r.right; x += 8) { const e = document.elementFromPoint(x, y); if (e && e.closest('.timingwin') && !e.closest('button')) return [x, y] } return null })
-      if (seen) { await page.mouse.click(seen[0], seen[1]); await sleep(300) }
-      m = await xMid(); const tTop = m ? await topAt(page, m[0], m[1]) : null
-      judge(id + '-two-windows', /win-x/.test(aTop || '') && !!seen && /timingwin.*win-x/.test(tTop || ''), `ALL AVAIL's ✕ in front: ${aTop}; the Timing window's ✕ under ALL AVAIL: ${tUnder}; pressed at ${seen}, its ✕ then: ${tTop}`)
-      await pic(page, dir, 'timing-brought-forward')
-      await page.keyboard.press('Escape'); await sleep(300)
+      if (phone) {
+        /* chat 167 (the script fault chat 165 listed): on a phone ALL AVAIL is a panel at the screen's foot, over the
+           corner button — the old order pressed the button through it. Now: the button under ALL AVAIL is recorded,
+           ALL AVAIL closed by its ✕, then the button opens the Timing window */
+        const pb = (await readout(page)).pillBox
+        const pillTop = pb ? await topAt(page, pb.x + pb.w / 2, pb.y + pb.h / 2) : null
+        await pic(page, dir, 'avail-over-the-corner-button')
+        if (ax) await page.mouse.click(ax[0], ax[1]); await sleep(500)
+        const availGone = !(await page.locator('.availwin:not([hidden])').isVisible().catch(() => false))
+        await page.click('#timingRoot .timing-pill'); await sleep(400)
+        judge(id + '-two-windows', /availwin.*win-x/.test(aTop || '') && availGone && (await tOpen(page)) === true, `ALL AVAIL's ✕ in front: ${aTop}; at the corner button while ALL AVAIL is up: ${pillTop}; ALL AVAIL closed by its ✕: ${availGone}; then the button opened the Timing window: ${await tOpen(page)}`)
+        await pic(page, dir, 'timing-after-avail-closed')
+      } else {
+        /* chat 167 (the judge rewritten after chat 165's R2 fix): the Timing window never joins the app's window order —
+           it stands behind the app's own windows, a press on it never brings it in front; its ✕ is reached once ALL
+           AVAIL is closed */
+        m = await xMid(); const tUnder = m ? await topAt(page, m[0], m[1]) : null
+        await pic(page, dir, 'avail-and-timing')
+        const seen = await page.evaluate(() => { const w = document.querySelector('#timingRoot .timingwin'); if (!w) return null; const r = w.getBoundingClientRect(); for (let y = r.top + 4; y < r.bottom; y += 8) for (let x = r.left + 4; x < r.right; x += 8) { const e = document.elementFromPoint(x, y); if (e && e.closest('.timingwin') && !e.closest('button')) return [x, y] } return null })
+        if (seen) { await page.mouse.click(seen[0], seen[1]); await sleep(300) }
+        const aTop2 = ax ? await topAt(page, ax[0], ax[1]) : null
+        const behind = await page.evaluate(() => { const t = document.querySelector('#timingRoot .timingwin'), a = document.querySelector('.availwin:not([hidden])'); return t && a ? +getComputedStyle(t).zIndex < +getComputedStyle(a).zIndex : null })
+        await pic(page, dir, 'timing-pressed-stays-behind')
+        if (ax) await page.mouse.click(ax[0], ax[1]); await sleep(500)
+        const availGone = !(await page.locator('.availwin:not([hidden])').isVisible().catch(() => false))
+        m = await xMid(); const tTop = m ? await topAt(page, m[0], m[1]) : null
+        if (m) { await page.mouse.click(m[0], m[1]); await sleep(300) }
+        const folded = (await tOpen(page)) === false
+        judge(id + '-two-windows', /availwin.*win-x/.test(aTop || '') && /availwin.*win-x/.test(aTop2 || '') && behind === true && availGone && /timingwin.*win-x/.test(tTop || '') && folded,
+          `ALL AVAIL's ✕ in front: ${aTop}; at the Timing window's ✕: ${tUnder}; a press on the Timing window at ${seen} — ALL AVAIL's ✕ still in front: ${aTop2}, the Timing window behind ALL AVAIL: ${behind}; ALL AVAIL closed by its ✕: ${availGone}; the Timing window's ✕ then: ${tTop}, pressed, folded: ${folded}`)
+        await pic(page, dir, 'timing-folded-after-avail-closed')
+      }
     } else notWalked(id + '-two-windows', 'no "who\'s available" line on Edit Schedule')
     /* the Leave War's blocking sheet over the window */
     await openBy(page, phone ? 'leavewar' : 'leavewar', phone ? 'drawer' : 'top'); await outsideTime(page, 'leavewar'); await sleep(700)
@@ -236,14 +257,36 @@ await scen('W26', DESK, {}, async ({ page, dir, errors }) => {
   await openBy(page, 'inputs'); await outsideTime(page, 'inputs'); await sleep(600)
   const bar = await inputBar(page)
   if (bar) {
-    /* its window: opened, then closed by ✕, by Escape, by a press outside */
+    /* its window: opened, then closed by ✕, by Escape; a press outside leaves it open — a movable window closes only by
+       its ✕, Escape or its finishing button (D641; chat 165's judge wanted it closed, the script's own fault) — and it is
+       then closed by its ✕, so it no longer covers the next step */
     for (const how of ['✕', 'Escape', 'a press outside']) {
       await bar.click(); await sleep(700)
       const w = page.locator('.floatwin:not(.timingwin)').first(); const up = await w.isVisible().catch(() => false)
-      if (how === '✕') await w.locator('.win-x').click().catch(() => {}); else if (how === 'Escape') await page.keyboard.press('Escape'); else await page.mouse.click(30, 300)
+      /* chat 167: "a press outside" lands on an EMPTY part of the page — chat 165's point (30, 300) was a calendar day,
+         which opened that day's own window over the input's */
+      const empty = how === 'a press outside' ? await page.evaluate(() => {
+        for (let y = 70; y < 260; y += 6) for (let x = 20; x < innerWidth - 20; x += 10) {
+          const e = document.elementFromPoint(x, y)
+          if (e && e.closest('#page-inputs') && !e.closest('button, a, input, select, textarea, label, summary, [tabindex], [role=button], .floatwin, [data-day], [data-date], .cal-cell, .ib-bar, .daycell')) return [x, y]
+        }
+        return null
+      }) : null
+      if (how === '✕') await w.locator('.win-x').click().catch(() => {}); else if (how === 'Escape') await page.keyboard.press('Escape'); else if (empty) await page.mouse.click(empty[0], empty[1])
       await sleep(500)
       const still = await page.locator('.floatwin:not(.timingwin)').first().isVisible().catch(() => false)
-      judge('W26-inputwin-' + how, up && !still && await tOpen(page) !== null, `the input's window opened ${up}, closed by ${how}: ${!still}; the Timing window open ${await tOpen(page)}`)
+      if (how === 'a press outside') {
+        const wins = await page.locator('.floatwin:not(.timingwin):visible').count()
+        judge('W26-inputwin-press-outside-stays', !!empty && up && still && wins === 1 && await tOpen(page) !== null, `pressed at an empty point ${empty}; the input's window opened ${up}, still open after the press: ${still} (D641), windows up besides the Timing window: ${wins}; the Timing window open ${await tOpen(page)}`)
+        await pic(page, dir, 'inputwin-after-press-outside')
+        const wx = await w.locator('.win-x').boundingBox().catch(() => null)
+        const atWx = wx ? await topAt(page, wx.x + wx.width / 2, wx.y + wx.height / 2) : null
+        const err = await w.locator('.win-x').click({ timeout: 5000 }).then(() => '', e => String(e).split('\n')[0].slice(0, 160))
+        await sleep(500)
+        const gone = !(await page.locator('.floatwin:not(.timingwin)').first().isVisible().catch(() => false))
+        judge('W26-inputwin-then-✕', gone, `then closed by its ✕: ${gone}; at its ✕ (${wx ? Math.round(wx.x) + ',' + Math.round(wx.y) : 'no box'}): ${atWx}${err ? '; the press: ' + err : ''}`)
+        if (!gone) { await pic(page, dir, 'inputwin-x-not-pressed'); await page.keyboard.press('Escape'); await sleep(400) }
+      } else judge('W26-inputwin-' + how, up && !still && await tOpen(page) !== null, `the input's window opened ${up}, closed by ${how}: ${!still}; the Timing window open ${await tOpen(page)}`)
     }
   } else notWalked('W26-inputwin', 'no input bar in sight on the Inputs page')
   /* the changes window on Edit Schedule: opened, closed by ✕ and by Escape */

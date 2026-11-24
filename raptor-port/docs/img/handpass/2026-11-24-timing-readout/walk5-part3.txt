@@ -1,0 +1,31 @@
+  W19 a nothing else open: timing → timing
+  W19 b typing in the search box (its value after: "ab"): timing → timing
+  W19 c ALL AVAIL opened after, Escape twice: avail+timing → timing → timing
+  W19 c2 ALL AVAIL, then the Timing window pressed, Escape: avail+timing → avail
+  W19 d the changes window: changes+timing → timing
+  W19 e the bell's list: bell+timing → timing
+  W19 f the board, Escape twice: board+timing → timing → timing
+  W19 g an input's window: inputwin+timing → timing
+  W19 h the Leave War's Open for bidding sheet: dates+timing → timing
+RECORD W19 — ALL AVAIL put on Saturday | a nothing else open: timing → timing | b typing in the search box (its value after: "ab"): timing → timing | c ALL AVAIL opened after, Escape twice: avail+timing → timing → timing | c2 ALL AVAIL, then the Timing window pressed, Escape: avail+timing → avail | d the changes window: changes+timing → timing | e the bell's list: bell+timing → timing | f the board, Escape twice: board+timing → timing → timing | g an input's window: inputwin+timing → timing | h the Leave War's Open for bidding sheet: dates+timing → timing
+PASS   W20-desk-board — the board open — at the Timing window's ✕: floatwin.timingwin > BUTTON.win-x
+PASS   W20-desk-board-folded — the corner button on the board: abtn.timing-pill > BUTTON.abtn.timing-pill; the board's Done: schedBoard > SPAN.bl (a press there is Done's: true)
+PASS   W20-desk-two-windows — ALL AVAIL's ✕ in front: availwin.front > BUTTON.win-x; at the Timing window's ✕: availwin.front > SPAN.rpuck; a press on the Timing window at 994,335 — ALL AVAIL's ✕ still in front: availwin.front > BUTTON.win-x, the Timing window behind ALL AVAIL: true; ALL AVAIL closed by its ✕: true; the Timing window's ✕ then: floatwin.timingwin > BUTTON.win-x, pressed, folded: true
+RECORD W20-desk-sheet — the "Open for bidding" sheet open — at the Timing window's ✕:  > DIV.sheetscrim.raised
+PASS   W20-desk-W21-month — a month in the sheet, at its middle: bidsheet.raised > BUTTON.od-m.open.past
+PASS   W20-phone-drawer — the ☰ menu open — at the Timing window's ✕: drawer > DIV#drawer.drawer.open
+PASS   W20-phone-board — the board open — at the Timing window's ✕: floatwin.timingwin > BUTTON.win-x
+PASS   W20-phone-board-folded — the corner button on the board: abtn.timing-pill > BUTTON.abtn.timing-pill; the board's Done: schedBoard > SPAN.bi (a press there is Done's: true)
+PASS   W20-phone-two-windows — ALL AVAIL's ✕ in front: availwin.front > BUTTON.win-x; at the corner button while ALL AVAIL is up: availwin.front > SPAN.hint; ALL AVAIL closed by its ✕: true; then the button opened the Timing window: true
+RECORD W20-phone-sheet — the "Open for bidding" sheet open — at the Timing window's ✕: bidsheet.fullpage.raised > DIV.bidsheet.fullpage.raised
+PASS   W20-phone-W21-month — a month in the sheet, at its middle: bidsheet.fullpage.raised > BUTTON.od-m.open.past
+PASS   W26-change-undo — ALL AVAIL put on Saturday: the week's count shown; after Undo gone
+PASS   W26-inputwin-✕ — the input's window opened true, closed by ✕: true; the Timing window open true
+PASS   W26-inputwin-Escape — the input's window opened true, closed by Escape: true; the Timing window open true
+PASS   W26-inputwin-press-outside-stays — the input's window opened true, still open after a press outside: true (D641); the Timing window open true
+FAIL   W26-inputwin-then-✕ — then closed by its ✕: false
+FAIL   W26-ran — the step stopped: TimeoutError: page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#histBtn')[22m
+[2m    - locator resolved to <button id="histBtn" class="abtn chgbtn" aria-pressed="false" aria-label="Changes" title="Changes — eve
+exit 0
