@@ -147,8 +147,8 @@ words carry sizes only (D2483), recorded for his look.
 
 ## What the walk found, and each disposition
 
-Chat 164's rounds: `walk1` (the first build), `walk2` (after fixes 1–2), `walk3` (after fix 3; `walk3-part2.log`,
-`walk3-part3.log`). Commands: from `raptor-port/`, `TW_OUT=$PWD/docs/img/handpass/2026-11-24-timing-readout/walk3
+Chat 164's rounds: `walk1` (the first build), `walk2` (after fixes 1–2), `walk3` (after fix 3; its logs `walk3-part2.txt`,
+`walk3-part3.txt` — a script writes `.log`, which the project ignores: rename before committing). Commands: from `raptor-port/`, `TW_OUT=$PWD/docs/img/handpass/2026-11-24-timing-readout/walk3
 node scripts/handpass/timing-walk-2.mjs` (and `timing-walk.mjs` with `TW_MAIN=C:/t164m/dist-main`, `-3.mjs`); one step:
 `ONLY=W19`. `main`'s build for W1d: `git archive origin/main -- raptor-port ':(exclude)raptor-port/docs'` into
 `C:/t164m`, `node_modules` joined, `npx vite build --outDir C:/t164m/dist-main`.
