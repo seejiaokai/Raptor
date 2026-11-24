@@ -160,6 +160,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ALL-AVAIL-WINDOW-FLAGS] — the ALL AVAIL window shows flags that have nothing to do with the event's time (his D2331, 22 Nov 26): his pick: just the available people, no flags; and (his D2333) a crowd that changed on a published day highlighted in the amendment's colour — the puck when the count fell, the person who joined in the window when it rose (hollow while waiting, solid once out; who left, and both at once, settled in the drawing); one drawing round for the window with [ALL-AVAIL-REMOVE-BY-HAND]; its design lesson owed.
 - [ALL-AVAIL-REMOVE-BY-HAND] — take a person out of an ALL AVAIL crowd by hand (his D2330, 22 Nov 26): not built; a mock-up and five points for him first.
 - [BELL-WORDS-CLEAR] — every bell line saying an earlier line no longer stands, reworded in the SANS lines' plain style (his D2392, D2393), Fable rewording, drawn first; after the SANS job.
+- [READINGS-LAPSE-FIX] — Fable fixes the lapse that let a builder's reading pass as his rule through every layer (lesson 32), and plans and reviews an audit of the designs and the app's words against his rulings, Opus doing the work (his D2567); a session of its own, now.
+- [SANS-INFO-LINE] — a SANS man put by a scheduler on anything but a flight or sim is told by a bell line of its own, as soon as planned (his D2566); drawn first; after the SANS words job.
 - [UNASKED-READINGS-SWEEP] — the builders' readings marked "his to change" in code comments (11 files) checked against what was put to him; each never asked goes to him with an example (bug-check lesson 32); filed 24 Nov 26.
 - [SANS-WORDS-LEFTOVERS] — five things the SANS words job's reads found and left (a raw write during a command's delivery, an admin writing another man's read record, a posting's "undone" trusting this device, the read record only growing, a phone note covering the SANS day window's ✕); filed 24 Nov 26.
 - [FABLE-READ-FAULTS] — seven of eight fixed, OIL F2 built (D2294, D2299), walked and re-walked on `claude/fable-read-faults-4104f0` (pull request 820, chats 133–139) — LIVE 22 Nov 26. His answers of 22 Nov 26 (chat 139): D2313 (SANS from its date everywhere — closes (e) and (b)) and D2314 (the publish note's names) BUILT 22 Nov 26 on `claude/sans-from-date-139` (chat 140, pull request 824) — LIVE 22 Nov 26, his "merge live", D2327; (i) ALL AVAIL leaving out a man posted out as SANS — FIXED 22 Nov 26 on `claude/allavail-sans-postout-141` (chat 141, pull request 825), its bug check (FULL) in hand, his look and "merge live" owed; (g), (h), (j), (k), (l) open; D2315 (Leave War F2 waits for the database step), D2316 (the held name kept) as built.
@@ -2961,6 +2963,29 @@ bid) is not called undone. Drawn on the page of 24 Nov 26 (`raptor-port/docs/moc
 `claude/allavail-drawings-156`), reworded again by Fable under his D2422.
 **Also (his D2563, 24 Nov 26, chat 169):** an input's "Deleted" line is reworded in the same plain style — "Training on Wed
 15 Jul was deleted. · Saber" — drawn for him first, then built with this job.
+
+### [READINGS-LAPSE-FIX] The lapse that let a builder's reading pass as his rule — fixed by Fable, and an audit against his rulings (his D2567, 24 Nov 26)
+
+**What:** the SANS reminder counted a ground row, a duty desk and all hands as "planned" — the first build's reading of 22 Nov,
+marked "his to change" in a code comment, never put to him, then judged by three bug checks (reads and walks w5–w13) as if
+it were his rule, its ground-row scenarios expecting it. He found it by asking what there is to file for a ground event
+(the bug-check order's §7.11 lesson 32; chat 169's investigation in its closing messages of 24 Nov 26). His D2567:
+Fable reads the investigation and finds the best fix, making the rules clearer if that is what it takes; and Fable plans
+and reviews an audit of what has been designed so far and of the app's words, built and to come, against his rulings —
+Opus doing the work. **Steps:** (1) Fable: the fix to the method (the bug-check order, the readers' and walkers' briefs,
+the rules for recording a reading), each change read as a working-guide change is (Astra and a second reader) and live on
+his "merge live"; (2) Fable plans the audit — which designs, words and surfaces, against which rulings, how a mismatch is
+reported; Opus helpers do it; Fable reviews their findings; each mismatch goes to him with when it happens, an example and
+a picture; [UNASKED-READINGS-SWEEP] folds into it. **Place:** a session of its own, started 24 Nov 26 from chat 169.
+
+### [SANS-INFO-LINE] A SANS man told when a scheduler puts him on anything but a flight or sim (his D2566, 24 Nov 26)
+
+**What:** SANS men are mostly out of office and look only at the days they offered, so a ground programme row, a duty desk
+or all hands a scheduler puts him on, on another day, can pass him by. A bell line of its own, apart from the availability
+reminder, as soon as he is planned: lit for a day he has not seen, not again for one he has, a day dropping once past or
+taken off; not for a filing (which already says "You were added"). Example words: "You're on the schedule on Wed 29 Jul:
+Range brief 09:00–10:00. · Saber" — Opus drafts, a fresh Fable adjusts (D2441). **Steps:** drawn for him first (D1625),
+then built red-first, read and walked. **Place:** after the SANS words job (pull request 825).
 
 ### [UNASKED-READINGS-SWEEP] Builders' readings left in code comments, never put to him (filed 24 Nov 26, chat 169)
 
