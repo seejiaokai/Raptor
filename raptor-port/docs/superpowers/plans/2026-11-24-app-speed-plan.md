@@ -20,8 +20,23 @@ these figures: each step is measured again first, as `raptor-port/docs/performan
 
 Up to the week (desktop): script 0.9 s, style 0.4 s, layout 1.25 s — arranging the page is the largest piece; the page holds 10,748 elements on the desktop, 8,352 on the phone. The first download before the sign-in card: about 616 KB of script and 59 KB of styles compressed (2.2 MB unpacked), twelve script files; the Leave War about 137 KB more, the Tracker about 123 KB. **Two things to check first:** (a) coming back to the Leave War at 1.7 s against the 0.4 s the speed ledger recorded on 5 Sep 26 (entry 15) — slipped since, or noise; (b) Edit Schedule at 1.7 to 1.9 s against the 1.37 s of 3 Sep 26 (entry 11).
 
+**Measured again CLEANLY 24 Nov 26 (chat 161), the checks lock held, nothing else running:** the same script on the same build (`main`'s `dist`, built 10:30), 4× CPU, best of 5 fresh starts (the spread in brackets); a second set of 3 starts waited 5 s idle after sign-in before the first page (the idle warm-ups), and moved nothing beyond the spread.
+
+| | Desktop | Phone |
+|---|---|---|
+| open the app → the sign-in card | 0.80 s (0.80–0.84) | 0.81 s (0.81–0.86) |
+| sign in → the week | 1.68 s (1.68–1.94) | 1.49 s (1.49–1.81) |
+| View-only Sched → Edit Schedule, first · again | 0.81 s (0.81–1.01) · 0.99 s (0.99–1.89; 4 of 5 starts 1.57 to 1.89) | 0.45 s · 0.45 s |
+| Edit Schedule → View-only Sched | 0.94 s (0.94–2.2) | 0.43 s |
+| Inputs · Quals · Logic | 0.85 · 0.40 · 0.48 s | 0.37 · 0.22 · 0.30 s |
+| the Leave War, first open · coming back | 1.07 s · 0.49 s (0.49–0.90) | 1.47 s · 0.42 s |
+| the Tracker, first open · coming back | 1.29 s · 0.52 s (0.52–0.91) | 1.30 s · 0.35 s |
+| back to View-only Sched at the end | 0.66 s | 0.51 s |
+
+Up to the week (desktop): script 0.57 s, style 0.26 s, layout 0.79 s. **So:** the rough readings were about twice the clean ones; check (a) — coming back to the Leave War 0.49 to 0.90 s against 0.4 s (ledger 15): a little slower, not 1.7 s; check (b) — Edit Schedule 0.81 to 1.01 s, better than 1.37 s (ledger 11). **New, for step 2:** the SECOND open of Edit Schedule was the slower one in 4 of 5 desktop starts (1.57 to 1.89 s against about 0.9 s the first time) — to explain before step 2 builds.
+
 **The order (D2480):**
-1. **A hidden timing readout** — a switch on the app's address, like `?savefail` (D1666), that shows how long start-up and each page open took on the machine in hand, so the slow office computer is measured itself and the 4× stand-in is checked; it shows nothing to anyone without the switch. Opus.
+1. **A hidden timing readout** — a switch on the app's address, like `?savefail` (D1666), that shows how long start-up and each page open took on the machine in hand, so the slow office computer is measured itself and the 4× stand-in is checked; it shows nothing to anyone without the switch. Opus. **His go for its plan (D2481, chat 161):** the switch is `?timing`; without it nothing is shown or downloaded; with it a foldable card shows start-up, each page open, the times the computer was stuck busy, the downloads (and whether each came from the browser's own memory — the evidence for step 3), the computer's cores, memory, screen and browser, and a Copy button; nothing about any person; nothing saved. Mock-up first, its words read by a fresh Fable helper; a WALK.
 2. **The week draws the days in view first, the rest a moment later, and both schedule pages are kept ready** (one job; high-risk, Fable with other readers beside it — D2258): Edit Schedule is already parked ready (ledger 11); View-only Sched appears rebuilt on each return — to confirm by measurement before anything is built. Bound by the speed notes' invariants and dead ends (paint isolation on the edit week measured equal or worse; the week parked in-flow, never `display:none`), every scroll position, the foot scroll bar and the glides kept; his iPhone look before done.
 3. **No file re-checks on repeat visits** — the built files carry their content in their names, so the host can tell browsers to keep them; by Vercel's documented default a browser asks about each on every visit (NOT checked on the live site, which is behind his sign-in). A small host setting; lasts only until the hosting moves. Opus.
 
