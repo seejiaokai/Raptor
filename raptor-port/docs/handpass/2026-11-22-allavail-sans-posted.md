@@ -642,3 +642,70 @@ the security reader `…-full-read-security.md`.
 Carried by a test, not walked: the rows of §7. **What the walk found beside the change (older, filed):** (q) on the board, ALL
 AVAIL on an OFT sim's front seat — a press on its count chip arms the empty back seat instead of opening the ALL AVAIL window
 (walker w2, both sizes; one separate phone tap did open it; seen by the host in the walker's picture, not driven again).
+
+## 18. Round 7 — the new SANS words and rules: his D2388, D2390, D2391, D2394, D2420, D2421, chat 156, the night of 24 Nov 26
+
+### 18.1 The eight answers and the tier
+**FULL.** (1) Money — YES: a run cut at his SANS date decides which days he counts as committed. (2) The published record — NO: a published day's inputs stay its frozen copy, and no line here writes to a day; a walk step confirms the face. (3) Saved data — YES: a run saved in part, a new stored setting per man and day (`sansplan`), a changed shape of the stored change line. (4) A shared drawer — YES: the bell's row and the passing note. (5) A new gesture or mode — NO: no new control, though an existing drag's result changes, and it is walked door by door. (6) A new surface — NO: new lines in the existing bell. (7) Roles — YES: a Quals command now carries a bell line through the permission gate's SANS check, which is tighter. (8) The warning list — NO: the crew and warning readers are untouched (D2420). Security read owed (D1411).
+
+### 18.2 The rulings that apply
+D2388, D2390, D2391, D2394, D2420, D2421, D2340, D2341, D2342, D2338, D1693, D1699, D1710, D2194, D350, D655, D576, D56, D785, D90, D2440, D2441, D1411. **A clash named (D90):** D2394's "no SANS date ahead" title over D2340's "the line's words stay the same after the date", the later followed, put to him as a question. **D2391 over D2390's "struck form keeps the same words" and over D1699 for this one line.** Results: to fill from the walk.
+
+### 18.3 The roll-call — every place these words and rules are drawn or read
+| # | Surface | SHOWS the new rule | The gesture USABLE | What else is PAINTED there | Proved by |
+|---|---|---|---|---|---|
+| R1 | His bell — the reminder, dated title and "Your SANS availability is needed." | to walk | to walk | to walk | |
+| R2 | His bell — the change lines A to E | to walk | to walk | to walk | |
+| R3 | His bell — an Undo of a change line he read (struck, "taken back · Saber") | to walk | to walk | to walk | |
+| R4 | The bell's unread mark, top bar and the Scheduler Board's own bar | to walk | to walk | to walk | |
+| R5 | A tap on the reminder — the SANS calendar on the first day still owed | to walk | to walk | to walk | |
+| R6 | SANS calendar — a drag across his date, both directions, mouse | to walk | to walk | to walk | |
+| R7 | SANS calendar — the keys (Shift + arrows, Enter or Space) | to walk | to walk | to walk | |
+| R8 | SANS calendar — a held finger drag | to walk | to walk | to walk | |
+| R9 | The commitment window — its Dates calendar moved earlier | to walk | to walk | to walk | |
+| R10 | A shared offer — new, for two men with different dates | to walk | to walk | to walk | |
+| R11 | A shared offer — extended earlier (Q10), and a one-man filing's unchanged words | to walk | to walk | to walk | |
+| R12 | The opened day's greyed "+ Commitment" and its words, his, a non-SANS member's, an admin's | to walk | to walk | to walk | |
+| R13 | The passing note after a cut run, at both sizes, its whole text readable | to walk | to walk | to walk | |
+| R14 | The Leave War's Post out sheet — each cause (later, earlier, undone, another outcome) | to walk | to walk | to walk | |
+| R15 | Quals — the SANS tick off and on, Undo, Redo | to walk | to walk | to walk | |
+| R16 | The crew list, armed seat and hover — MUST NOT gain a line (D2420) | to walk | to walk | to walk | |
+| R17 | A reload, a sign-out and a week change — the lines, read marks and the new setting | to walk | to walk | to walk | |
+| R18 | Another person's bell and an admin's — MUST NOT carry his line | to walk | to walk | to walk | |
+| R19 | The SANS month's counts after a cut run, and Undo of it | to walk | to walk | to walk | |
+| R20 | The changes window — a cut run's history line | to walk | to walk | to walk | |
+| R21 | The published face — MUST NOT change | to walk | to walk | to walk | |
+
+### 18.4 The door check
+To fill from the walk: every way to file a run (R6–R9), to change a posting (R14), to change a tick (R15), to read a line (tap, Mark all read), each with its control.
+
+### 18.5 The five sizing lines (the order's §7.0)
+1. **The type of change:** F (the bell's words) with G (saved data: a part-saved run, the `sansplan` setting, the change line's shape), H (the SANS check of the permission gate) and C (a drag's result changes).
+2. **What only a walk could find here:** that each door really reaches the cut and says it; that the right line reaches the right person after each real sequence of postings, ticks, reads and reloads; that a long line and note read whole on his iPhone.
+3. **What the ledger says:** this branch's rounds 4 to 6 found 0, 1 and 3 faults in the change; round 6's three Opus walkers cost about 1.5M.
+4. **The walk chosen:** Astra's 24 scenarios (`docs/superpowers/briefs/2026-11-24-sans-words-scenarios-astra.md`), none set aside, at desktop Chromium 1536×864 and his iPhone's WebKit 402×874 by touch, the clock Wed 15 Jul 26 09:00, by three Opus walkers one after another (Low): w11 the change lines (S1, S3, S4, S5, S9–S13), w12 the reminder (S2, S7, S14–S17, S22, S23), w13 the calendar's doors, the crew list and the plain-user round (S6, S8, S18–S21, S24). No approved part list exists for these drawings: the words are checked against the drawing page by eye and by exact text.
+5. **After the walk:** its row in `docs/walk-ledger.md` — to add.
+
+### 18.6 The orders walked
+To fill.
+
+### 18.7 The cases carried by a test
+To fill.
+
+### 18.8 The pictures
+To fill.
+
+### 18.9 The break tests
+To fill.
+
+### 18.10 Errors seen
+To fill.
+
+### 18.11 What was NOT walked, and why
+To fill.
+
+### 18.12 The gate counts
+To fill.
+
+### 18.13 What the walk and the reads found, and each disposition
+To fill.
