@@ -2982,6 +2982,14 @@ inside another admin's step, and a remote or seed origin refused by the planning
 **Place:** (1) and (2) are permission holes, each a failing test first and a security read (D1411) — a job of their
 own after the SANS words job merges, or folded into it if his look reopens the gate; (3) and (4) at the database step;
 (5) reproduced on the next SANS walk.
+**Round 4 (24 Nov 26, chat 169):** (2) is FIXED by round 4's fix (a read record is written only by its owner, whatever
+the command — commit `264a1f3d4`). Two more filed here: (6) **the app's projection door puts any bell line on anyone's
+bell** (security reread4, SEC-R4-2, older): a forged "taken back" can retract a man's real SANS line, and the door writes
+the other own-row records (`seen:`, `apprseen:`, `lwseen:`, `reqseen:`) — for the security review before the database
+step (D1411): judge the system actor's notice and own-row writes, or stop exposing `commitProjection` from the public
+command index; (7) **at the database step the read record is merged, never replaced** — two devices of one man each
+writing from a stale copy would drop days he read, and by D2560 those days would light his bell again (Opus reread4,
+"also older"): a line for `handover-dataverse.md` then.
 
 ### [FABLE-READ-FAULTS] The faults Fable's reads of 21–22 Nov found outside the two-squadron work — fix now (his D2268, 22 Nov 26)
 **What:** proved by failing tests on the night's copy (very probably live today), none fixed: **OIL F1** (MED — a man posted
