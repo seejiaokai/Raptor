@@ -2950,7 +2950,9 @@ bold title saying what changed for him and one sentence on what it means, as D23
 "taken back" stays where a line is still crossed out: his D2391 kept it for now. A job of its own, after the SANS one.
 **HIS ANSWERS (24 Nov 26, chat 157), the page of 24 Nov:** question 1 — every line says what is true now, nothing struck,
 no "taken back" (D2437, replacing the 5 Nov struck look); question 2 — the change history's Undo lines say "undone"
-(D2438). Questions 3–8 still to put.
+(D2438). Questions 3–8 as recommended (D2561): input and holiday lines get their undone line (building work, this
+job); "You're SANS again."; "again" on a Redo's line; two lines for a Post out date moved earlier; the holiday line opens
+nothing; two changes — the first in the title, the second under it. Every question answered: the job is ready to build.
 Since his D2423 (24 Nov 26) the word is "undone", not "taken back", wherever an Undo reversed the news — new lines, a
 struck line that stays ("undone · Saber") and the change history; an act that was no Undo (an approved leave put back to a
 bid) is not called undone. Drawn on the page of 24 Nov 26 (`raptor-port/docs/mock/2026-11-24-bell-words/`, branch
