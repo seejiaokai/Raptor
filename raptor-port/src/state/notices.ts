@@ -108,7 +108,7 @@ export type NoticePart =
      tick taken off. `days` — the reminder he had READ (else empty): only ever the reason a line is owed, never shown.
      `hid` — his SANS availability the change HID, today on (D2341). `back` — this line is the "taken back" of an untick
      line he had read, its Undo pressed (D1693, D1699). A line with no `how` was written before D2391 (demo data only). */
-  | { k: 'sansback'; days: string[]; hid?: string[]; how?: SansBackHow; to?: string; back?: true; over?: string[]; kept?: true; again?: true; ref?: string }
+  | { k: 'sansback'; days: string[]; hid?: string[]; how?: SansBackHow; to?: string; back?: true; over?: string[]; kept?: true; again?: true; ref?: string; ended?: true }
 
 /** what a posting out did on its date, for the admins' bells ([POSTOUT-RUN-NOTICE]) */
 export type PoOutcome = 'overseas' | 'delete' | 'sans' | 'none'
@@ -889,7 +889,7 @@ export function noticePostingBack(to: string, by: string | null, who: string, o:
  *  (leavewar/sansunfiled.ts sansTakeBack), by the admin who did it — never to him. `day` — the posting's date, or the day
  *  of the untick; `said` — what changed (`how`, the new date `to`, `back` for an untick's "taken back"). */
 export function noticeSansBack(to: string, by: string | null, days: readonly string[], day: string, at: number = Date.now(), hid: readonly string[] = [],
-  said: { how?: SansBackHow; to?: string; back?: true; over?: string[]; kept?: true; again?: true; ref?: string } = {}): boolean {
+  said: { how?: SansBackHow; to?: string; back?: true; over?: string[]; kept?: true; again?: true; ref?: string; ended?: true } = {}): boolean {
   if (!here(to) || (by != null && to === by)) return false
   const id = mint(at)
   NOTICES.push({ id, to, by, at, iid: '', name: 'Your SANS availability', day, what: [{ k: 'sansback', days: [...days], ...(hid.length ? { hid: [...hid] } : {}), ...said }] })
@@ -903,10 +903,22 @@ export function noticeSansBack(to: string, by: string | null, days: readonly str
    named is taken as still filed. */
 let SANS_FILED: ((pid: string, iso: string) => boolean) | null = null
 export function setSansFiledProbe(fn: ((pid: string, iso: string) => boolean) | null): void { SANS_FILED = fn }
+/* …AND SAID ONCE, ON THE LATEST LINE (the second walk's W12-1, 24 Nov 26 — S22a, S22b): his date moved, the line read, moved
+   back (its hidden sentence went, the day SANS again) and moved the same way again left two lines of the same words, the
+   old one's sentence back beside the new one's; the Quals tick the same. A day a later line of his names as hidden is that
+   line's to say, so an older line keeps its title alone, or goes (sansBackLeft) — "one current line". */
 // any: a part read from a stored line, its fields unchecked until here; the engine's person record is untyped
-function sansStillHidden(to: string, p: any): string[] {
-  const person: any = PEOPLE[to]
-  return (Array.isArray(p?.hid) ? sansDays({ days: p.hid }) : []).filter(d => !sansOnP(person, d) && (!SANS_FILED || SANS_FILED(to, d)))
+function sansStillHidden(n: Notice, p: any): string[] {
+  const to = n.to, person: any = PEOPLE[to]
+  const i = NOTICES.findIndex(x => x.id === n.id)
+  const later = new Set<string>()
+  if (i >= 0) {
+    for (let j = i + 1; j < NOTICES.length; j++) {
+      const x = NOTICES[j]!, q: any = x.to === to ? (x.what || [])[0] : null
+      if (q && q.k === 'sansback' && !q.back && Array.isArray(q.hid)) for (const d of q.hid) later.add(String(d))
+    }
+  }
+  return (Array.isArray(p?.hid) ? sansDays({ days: p.hid }) : []).filter(d => !later.has(d) && !sansOnP(person, d) && (!SANS_FILED || SANS_FILED(to, d)))
 }
 /* IS ANYTHING OF THIS LINE LEFT TO SAY? (D2394 Q6 — "the line with it if nothing is left"; the coordinator's reading 3: the
    hidden sentence goes once none of its days is hidden, and the line with it unless something else is owed — a reminder
@@ -916,13 +928,21 @@ function sansBackLeft(n: Notice): boolean {
   // any: a notice part is read by its kind
   const p: any = (n.what || [])[0]
   if (p.back) return true
-  /* (a Redo's line tells again what its line said: it stands only while that line does, and stands in its place) */
-  if (p.again && !NOTICES.some(x => x.id === p.ref)) return false
+  /* (a Redo's line tells again what its line said: it stands only while that line does, and stands in its place — the
+     latest such copy alone, a later Redo's standing in an earlier one's: Astra #5) */
+  if (p.again) {
+    if (!NOTICES.some(x => x.id === p.ref)) return false
+    const i = NOTICES.findIndex(x => x.id === n.id)
+    if (NOTICES.some((x, j) => {
+      const q: any = j > i && x.to === n.to ? (x.what || [])[0] : null
+      return !!q && q.k === 'sansback' && q.again && q.ref === p.ref
+    })) return false
+  }
   if (NOTICES.some(x => {
     const q: any = x.to === n.to ? (x.what || [])[0] : null
     return !!q && q.k === 'sansback' && ((q.over as unknown[] | undefined)?.includes(n.id) || (q.again && q.ref === n.id))
   })) return false
-  if (Array.isArray(p.hid) && p.hid.length > 0 && sansStillHidden(n.to, p).length > 0) return true
+  if (Array.isArray(p.hid) && p.hid.length > 0 && sansStillHidden(n, p).length > 0) return true
   return !!p.how && (sansDays(p).length > 0 || !!p.kept)
 }
 /** the posting a line is about, or null — the bell's tap asks it (ui/topstate.ts openNotice) */
@@ -1109,7 +1129,7 @@ function sansBackWords(n: Notice, p: any): { name: string; day: string; what: st
   }
   /* the "taken back" of an untick line he had read (D1693, D1699): its own title struck through */
   if (p.back) return { name: title(), nameStruck: true, day: '', what: 'taken back', who }
-  const hid = sansStillHidden(n.to, p)
+  const hid = sansStillHidden(n, p)
   /* (a line written before D2391: the sentence it always had, or nothing) */
   if (!p.how) return { name: n.name, day: '', what: hid.length ? `Your SANS availability for ${sansDaysWords(hid)} is hidden while you're not SANS ${hid.length === 1 ? 'that day' : 'those days'}.` : '', who }
   const list = sansDaysWords(hid), that = hid.length === 1 ? 'that day' : 'those days'

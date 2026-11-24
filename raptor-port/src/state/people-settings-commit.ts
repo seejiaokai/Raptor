@@ -394,6 +394,10 @@ export function registerPeopleSettingsCore(loaders: ModuleLoaders, moduleTypes: 
        saying he had read a line he never read, and a take-back then left a struck line where D1710 says an unread line
        simply goes (chat 147's security re-read, SEC2-2 (a)) */
     if (!isCommitting() && k.startsWith('noticeseen:')) throw new Error('A read record is written only by its own command')
+    /* the mark that lights a SANS man's reminder again (leavewar/sansunfiled.ts, D2394 2a) is the app's alone — never a bare
+       write (the security read's SEC156-2, the Opus read's F4, Astra #1); inside a command, the gate's (state/perms.ts
+       sansPlanViolation) */
+    if (!isCommitting() && k.startsWith('sansplan:')) throw new Error('A SANS planning mark is written only by the app')
     if (isCommitting() || !(SETTINGS_KEYS as readonly string[]).includes(k)) { raw(key, v); return }
     commitSettings(settingsType(k), () => raw(key, v))
   })

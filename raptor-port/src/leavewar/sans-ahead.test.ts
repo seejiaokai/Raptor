@@ -236,20 +236,27 @@ describe('D2341 — hidden on a day that stops being SANS, back once it is SANS 
     } catch { return false }
     return !(r && 'ok' in r && r.ok === false)
   }
+  /* (each line says what changed, as its writer always does — the gate requires it since the four reads of 0eaacc411,
+     Astra #2: the posting moved to Thu 23 is later; to Wed 15, earlier) */
+  const LATER = { how: 'later' as const, to: '2026-07-23' }, EARLIER = { how: 'earlier' as const, to: '2026-07-15' }
   it('the gate: a hidden-days line naming exactly the day hidden — passes (the control)', () => {
     filedAhead()
-    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [], FRI_ISO, Date.now(), [SAT_ISO]) }, '2026-07-23')).toBe(true)
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [], FRI_ISO, Date.now(), [SAT_ISO], LATER) }, '2026-07-23')).toBe(true)
+  })
+  it('the gate: …the same line saying nothing of what changed — refused (Astra #2)', () => {
+    filedAhead()
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [], FRI_ISO, Date.now(), [SAT_ISO]) }, '2026-07-23')).toBe(false)
   })
   it('the gate: a hidden-days line naming a day not hidden — refused', () => {
     filedAhead()
-    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [], FRI_ISO, Date.now(), ['2026-07-25']) }, '2026-07-23')).toBe(false)
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [], FRI_ISO, Date.now(), ['2026-07-25'], LATER) }, '2026-07-23')).toBe(false)
   })
   it('the gate: a hidden-days line where the change hid nothing — refused', () => {
     filedAhead()
-    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [], FRI_ISO, Date.now(), [SAT_ISO]) }, '2026-07-15')).toBe(false)
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [], FRI_ISO, Date.now(), [SAT_ISO], EARLIER) }, '2026-07-15')).toBe(false)
   })
   it('the gate: an empty line, nothing struck and nothing hidden — refused', () => {
     filedAhead()
-    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [], FRI_ISO, Date.now(), []) }, '2026-07-23')).toBe(false)
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [], FRI_ISO, Date.now(), [], LATER) }, '2026-07-23')).toBe(false)
   })
 })

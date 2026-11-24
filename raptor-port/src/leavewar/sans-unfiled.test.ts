@@ -297,31 +297,35 @@ describe('D2338 (2) — the bell line taken back with its posting', () => {
     } catch { return false }
     return !(r && 'ok' in r && r.ok === false)
   }
+  /* (each line says what changed, as its writer always does — the gate requires it since the four reads of 0eaacc411,
+     Astra #2: the posting taken away; his Quals tick, which this hand-built command leaves on, keeps him SANS, so the line
+     does not say his SANS ended) */
+  const SAID = { how: 'undone' as const }
   it('the gate: read, taken away, one struck line of his days — passes (the control)', () => {
     ran(); hexReads()
-    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [SAT_ISO], FRI_ISO) })).toBe(true)
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [SAT_ISO], FRI_ISO, Date.now(), [], SAID) })).toBe(true)
   })
   it('the gate: NOT read, the same line — refused (an unread line simply goes)', () => {
     ran()
-    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [SAT_ISO], FRI_ISO) })).toBe(false)
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [SAT_ISO], FRI_ISO, Date.now(), [], SAID) })).toBe(false)
     expect(backOf('rocky')).toEqual([])
   })
   it('the gate: read, a day before the posting\'s date — refused', () => {
     ran(); hexReads()
-    expect(takeBackWith(() => { noticeSansBack('rocky', me(), ['2026-07-16'], FRI_ISO) })).toBe(false)
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), ['2026-07-16'], FRI_ISO, Date.now(), [], SAID) })).toBe(false)
   })
   it('the gate: read, days out of order or repeated — refused', () => {
     ran(); hexReads()
-    expect(takeBackWith(() => { noticeSansBack('rocky', me(), ['2026-07-19', SAT_ISO], FRI_ISO) })).toBe(false)
-    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [SAT_ISO, SAT_ISO], FRI_ISO) })).toBe(false)
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), ['2026-07-19', SAT_ISO], FRI_ISO, Date.now(), [], SAID) })).toBe(false)
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [SAT_ISO, SAT_ISO], FRI_ISO, Date.now(), [], SAID) })).toBe(false)
   })
   it('the gate: read, two struck lines in one take-back — refused', () => {
     ran(); hexReads()
-    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [SAT_ISO], FRI_ISO); noticeSansBack('rocky', me(), [SAT_ISO], FRI_ISO) })).toBe(false)
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [SAT_ISO], FRI_ISO, Date.now(), [], SAID); noticeSansBack('rocky', me(), [SAT_ISO], FRI_ISO, Date.now(), [], SAID) })).toBe(false)
   })
   it('the gate: a posting not yet run, read nothing, taken away with a struck line — refused (nothing was shown)', () => {
     plan(SAT, 'rocky'); expect(postOut('rocky', FRI_ISO, 'sans')).toBe(true); raptorNotify()
-    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [SAT_ISO], FRI_ISO) })).toBe(false)
+    expect(takeBackWith(() => { noticeSansBack('rocky', me(), [SAT_ISO], FRI_ISO, Date.now(), [], SAID) })).toBe(false)
   })
   /* a stored "Planned, no availability filed" line is never the app's (the security read's hole 2): refused even where the
      command takes the posting back for real */

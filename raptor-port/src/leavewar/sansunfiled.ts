@@ -2,10 +2,9 @@
    too": yes; "on that date his bell tells him the planned days with nothing filed, a tap opening the SANS calendar"; built
    without a drawing first on his D2339).
 
-   A man posted out as SANS from a date ahead can be named on our programme for days past that date before it comes (D2329),
-   and nobody can file his SANS availability until it does: who may be filed for SANS goes by who is SANS today (D2327). So
-   on the posting's date — once the posting has run and he is SANS — his bell lists the days he is planned with us and has
-   filed nothing for, a tap opening the SANS calendar on the first of them (ui/topstate.ts openNotice).
+   A man posted out as SANS from a date ahead can be named on our programme for days past that date before it comes (D2329).
+   Since D2340 he may be filed for from the moment the posting is saved, and his bell lists from then the days he is planned
+   with us and has filed nothing for, a tap opening the SANS calendar on the first of them (ui/topstate.ts openNotice).
 
    THE AGENT'S READINGS, TOLD TO HIM (D2338's row): the man himself only, never an admin's bell; not before the posting's
    date; one line naming the days. And the build's (his to change): the days are those from the posting's date on, today
@@ -24,7 +23,7 @@ import { PEOPLE, sansFiler, sansOnP } from '../engine/people'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { UNIT } from '../engine/unitview'
-import { stashKeys, stashDays } from '../engine/weekstash'
+import { stashKeys, stashDays, stashGet } from '../engine/weekstash'
 import { dayIso } from '../engine/verid'
 import { dayEngaged } from '../engine/avail'
 import { sansAvailOn, INPUTS, isSansAvail, namedOf, inputSpanIso } from '../engine/inputs'
@@ -37,6 +36,8 @@ import { me } from '../state/perms'
 import { setSansTickWatch } from '../state/quals-write'
 import { schedStore, resyncBeforeEnlist, schedApplyEnd } from '../state/sched-commit'
 import { commitProjection, onCommit, onPipelineBegin, activeEnvelope, type Txn } from '../command'
+import { applyingRestore } from '../undo/timeline'
+import { setSansPlanReplay } from '../state/perms'
 import { settingsStore } from '../state/people-settings-commit'
 import { getState } from './state/store'
 import { addDays, outcomeOf } from './engine'
@@ -79,19 +80,26 @@ function sansFiledShown(pids: ReadonlySet<string>, today: string): Map<string, s
 }
 
 /* The days, first first. Worked out once a change of the app (the store's version, the war's state, the date), never once
-   a reading: the bell asks for it on every draw, and only the one man it concerns gets past the first questions. */
+   a reading: the bell asks for it on every draw, and every SANS man is asked (D2394 2b) — the first questions turn most
+   away, and the weeks held are read once for all of them. */
 let CACHE_VER = -1, CACHE_LW: unknown = null, CACHE_DAY = ''
 const CACHE = new Map<string, string[]>()
-/* (the weeks held and who each day names, read once a change of the app whoever is asked: every SANS man is asked now, D2394 2b) */
+/* THE WEEKS HELD (the four reads of 0eaacc411 — Fable's F5, measured: every change anyone made re-read every edited week
+   held, at the start of every command): a saved week that ended before today names no day to file, so it is skipped by its
+   key and never read; a saved week ahead is read once and kept, with who each of its days names, until its saved copy
+   changes (the copy itself is the mark — engine/weekstash.ts keeps one per week). The loaded week is read afresh once a
+   change, as before. */
 // any: a day of the engine's week is untyped (a verbatim port, src/engine/data.ts)
-let WEEKS: Array<[string, any[]]> | null = null
-const ENGAGED = new Map<string, ReturnType<typeof dayEngaged>>()
+type Held = { blob: string | null; days: any[]; named: Map<number, ReturnType<typeof dayEngaged>> }
+const HELD = new Map<string, Held>()
+// any: the same engine day
+let WEEKS: Array<[string, any[], Held['named']]> | null = null
 export function sansUnfiledDays(pid: string): string[] {
   const today = effectiveToday()
   let lw: unknown = null
   try { lw = getState() } catch { lw = null }
   const ver = raptorVersion()
-  if (ver !== CACHE_VER || lw !== CACHE_LW || today !== CACHE_DAY) { CACHE.clear(); ENGAGED.clear(); WEEKS = null; CACHE_VER = ver; CACHE_LW = lw; CACHE_DAY = today }
+  if (ver !== CACHE_VER || lw !== CACHE_LW || today !== CACHE_DAY) { CACHE.clear(); WEEKS = null; CACHE_VER = ver; CACHE_LW = lw; CACHE_DAY = today }
   const hit = CACHE.get(pid)
   if (hit) return hit
   const out = unfiledNow(pid, today)
@@ -99,15 +107,22 @@ export function sansUnfiledDays(pid: string): string[] {
   return out
 }
 // any: a day of the engine's week is untyped (a verbatim port, src/engine/data.ts)
-function weeksHeld(): Array<[string, any[]]> {
+function weeksHeld(today: string): Array<[string, any[], Held['named']]> {
   if (WEEKS) return WEEKS
+  const cur = String(CURWEEK)
   // any: the engine's loaded week is untyped (a verbatim port)
-  const out: Array<[string, any[]]> = [[String(CURWEEK), (DAYS as any[]) || []]]
+  const out: Array<[string, any[], Held['named']]> = [[cur, (DAYS as any[]) || [], new Map()]]
+  const keep = new Set<string>()
   for (const k of stashKeys()) {
-    if (k === String(CURWEEK)) continue
+    if (k === cur || dayIso(k, 6) < today) continue
+    keep.add(k)
+    const blob = stashGet(k)
+    let h = HELD.get(k)
     /* (a saved week that cannot be read holds nothing to name — stashDays answers null) */
-    out.push([k, stashDays(k)?.days || []])
+    if (!h || h.blob !== blob) HELD.set(k, h = { blob, days: stashDays(k)?.days || [], named: new Map() })
+    out.push([k, h.days, h.named])
   }
+  for (const k of [...HELD.keys()]) if (!keep.has(k)) HELD.delete(k)
   WEEKS = out
   return out
 }
@@ -117,23 +132,20 @@ function unfiledNow(pid: string, today: string): string[] {
   /* EVERY SANS MAN PLANNED WITH NOTHING FILED (his D2394 2b, 23 Nov 26 — "the need is the same however he became SANS"):
      a man posted out as SANS, from the moment it is saved (D2340), and a man ticked SANS on Quals with no posting */
   if (!p || p.special || p.deleted || p.archived || !sansFiler(p)) return []
-  const from = sansPostedFrom(pid)
   /* the days of his OWN squadron's schedule — the inputs read are the schedule in view's (engine/inputs.ts inputsOn), so a
      squadron in view other than his own answers nothing rather than something wrong */
   if (homeUnitOf(pid, today) !== UNIT) return []
   /* every SANS day of his from today, by either cause (the walk's W11-1, 24 Nov 26): a man ticked SANS today and posted out
      as SANS from a date ahead is SANS now, by the tick — the days before his posting are his too (sansOnP, below) */
-  const start = today
   const days: string[] = []
-  for (const [wk, list] of weeksHeld()) {
+  for (const [wk, list, namedBy] of weeksHeld(today)) {
     // any: the same engine day
     list.forEach((d: any, di: number) => {
       if (!d) return
       const iso = dayIso(wk, di)
-      if (iso < start || !sansOnP(p, iso)) return
-      const key = `${wk}:${di}`
-      let named = ENGAGED.get(key)
-      if (!named) ENGAGED.set(key, named = dayEngaged(d))
+      if (iso < today || !sansOnP(p, iso)) return
+      let named = namedBy.get(di)
+      if (!named) namedBy.set(di, named = dayEngaged(d))
       if (!named.has(pid) || sansAvailOn(pid, d.dt)) return
       days.push(iso)
     })
@@ -147,27 +159,43 @@ const backPart = (n: Notice): any => { const p: any = (n.what || [])[0]; return 
 /* THE REMINDER'S ID BEFORE WHAT IT NAMES: the man, and how many lines have told him his SANS ended — so the same posting
    made again is NEWS, the posting line's own way (sync.ts postedLinesOf, [NOTICE-UNDO-RETRACT]). His date moving is not
    (the coordinator's reading of D2394 2a, for him to confirm: only a newly planned day lights it again), nor is the date
-   arriving, when the title changes (reading 5). */
+   arriving, when the title changes (reading 5). ONLY A LINE THAT ENDED IT (the four reads of 0eaacc411 — the Opus read's
+   F1): a posting undone, or a tick taken off, that leaves him SANS by the other cause ended nothing, and a reminder he had
+   read came back unread with nothing newly planned. So the writer marks a line `ended` only where, after the change, he has
+   no SANS day from today (endedNow, below — the gate checks it), and only those count; a Redo's copy is not another. */
 function dueBase(pid: string): string {
   const ended = NOTICES.filter(x => {
     const p = x.to === pid ? backPart(x) : null
-    return !!p && p.how !== 'later' && p.how !== 'earlier'
+    return !!p && p.ended === true && !p.again
   }).length
   return `sansdue:${pid}${ended ? `:${ended}` : ''}`
+}
+/* after the change: no SANS day of his from today, by any cause (sansFiler: his tick or a posting ahead; sansOnP: a stretch
+   still running) */
+function endedNow(pid: string): boolean {
+  // any: the engine's person record is untyped (a verbatim port, src/engine/people.ts)
+  const p: any = (PEOPLE as any)[pid]
+  return !p || (!sansFiler(p) && !sansOnP(p, effectiveToday()))
 }
 /* A DAY HE WAS NEWLY PUT ON (his D2394 2a, "a newly planned day"; the coordinator's reading 1, for him to confirm: a date
    newly in the list because he was put on the programme that day). What is on the schedule cannot say so afterwards: a day
    dropped and planned again looks as it did, a filing deleted brings a day into the list, another week loaded brings
-   its days. So the change that puts him on a day counts it, `settings/sansplan:<pid>:<iso>` = how many times (below,
-   wireSansBackBefore), and the reminder's id carries each day's count. One row a man and day, so one person's planning
-   never stands in the way of another's Undo. */
+   its days. So the change that puts him on a day marks it, `settings/sansplan:<pid>:<iso>`, and the reminder's id carries
+   each day's mark. One row a man and day, so one person's planning never stands in the way of another's Undo.
+   THE MARK IS A STAMP THAT ONLY GROWS (the four reads of 0eaacc411 — Fable's F1 and Q-b, Astra #4): it was a count + 1, and
+   the mark is part of the planning step, so an Undo took it back to what it was and a fresh planning wrote the same count
+   again, which he had already read — his bell stayed dark. Now each marking is newer than every mark before it, on this
+   device and in his own read record (nextStamp): an Undo puts back an older one (read), a Redo puts back the one he may
+   have read (no news), a fresh planning writes a newer one (lit) — and a man moved between squadrons carries no count to
+   collide with. Written only by the app's own projection, or the verified Undo / Redo of a step that holds it (state/perms.ts
+   sansPlanViolation; outside every command, never — state/people-settings-commit.ts). */
 const PLAN_PFX = 'sansplan:'
 const planKey = (pid: string, iso: string): string => `${PLAN_PFX}${pid}:${iso}`
 function planOf(pid: string, iso: string): number {
   const v: unknown = store.get(planKey(pid, iso), 0)
   return typeof v === 'number' && Number.isInteger(v) && v > 0 ? v : 0
 }
-/* WHAT HE HAS READ OF THIS REMINDER, day by day, each with its count then; null when he has read none of it */
+/* WHAT HE HAS READ OF THIS REMINDER, day by day, each with its mark then; null when he has read none of it */
 function readOf(ids: readonly string[], base: string): Map<string, number> | null {
   const pre = `${base}~`
   let out: Map<string, number> | null = null
@@ -188,9 +216,22 @@ function dueToken(pid: string, base: string, days: readonly string[], today: str
   const pre = `${PLAN_PFX}${pid}:`
   for (const k of store.keys(pre)) {
     const d = k.slice(pre.length)
-    if (d >= today && !all.has(d)) all.set(d, planOf(pid, d))
+    if (d >= today && !all.has(d) && planOf(pid, d) > 0) all.set(d, planOf(pid, d))
   }
   return `${base}~${[...all].sort(([a], [b]) => (a < b ? -1 : 1)).map(([d, g]) => (g ? `${d}.${g}` : d)).join(',')}`
+}
+/* (newer than every mark this device has written, than the day's mark as it stands, and than any mark of that day he has
+   read, under any of his reminders' bases) */
+let LAST_STAMP = 0
+function nextStamp(pid: string, iso: string): number {
+  let read = 0
+  for (const id of seenSavedOf(pid).ids) {
+    const cut = id.indexOf('~'), base = cut < 0 ? id : id.slice(0, cut)
+    if (cut < 0 || (base !== `sansdue:${pid}` && !base.startsWith(`sansdue:${pid}:`))) continue
+    for (const t of id.slice(cut + 1).split(',')) { const [d, g] = t.split('.'); if (d === iso) read = Math.max(read, Number(g ?? 0) || 0) }
+  }
+  LAST_STAMP = Math.max(Date.now(), LAST_STAMP + 1, read + 1, planOf(pid, iso) + 1)
+  return LAST_STAMP
 }
 /* IS THE REMINDER STANDING NOW ONE HE HAS READ (his D2391; the coordinator's reading 2, for him to confirm): a day it names now
    is one he read. A reminder that went earlier gives no title later, even with the same day planned again. */
@@ -259,14 +300,17 @@ export function sansTakeBack(pid: string, from: string | null, by: string | null
   /* HE IS STILL POSTED OUT AS SANS: a tick taken off beside a posting that stands is news only for the days the tick alone
      covered, so a reminder he read owes no "You're no longer SANS." — it still stands, for his posting's days */
   const stands = from === null && stillPosted(pid)
-  const read = !stands && ent.due.length ? dueRead(seenOf(pid), pid, ent.base, ent.due, ent.at) : false
-  const prior = priorTold(pid, seenSavedOf(pid))
+  /* (his read record as saved, as the gate reads it — never this device's copy in memory: Astra #3) */
+  const seen = seenSavedOf(pid)
+  const read = !stands && ent.due.length ? dueRead(seen, pid, ent.base, ent.due, ent.at) : false
+  const prior = priorTold(pid, seen)
   const hid = unionDays(hiddenNow(pid, ent.filed), prior.carried)
   if (!read && !hid.length && (stands || !prior.kept)) return
   noticeSansBack(pid, by, read ? ent.due : [], from ?? effectiveToday(), at, hid, {
     ...(from ? postingHow(pid, from) : { how: 'untick' as const }),
     ...(prior.over.length ? { over: prior.over } : {}),
     ...(prior.kept && !read ? { kept: true as const } : {}),
+    ...(endedNow(pid) ? { ended: true as const } : {}),
   })
 }
 /* his SANS posting still makes him SANS, today or from its date ahead (a run posting whose tick was taken off no longer does) */
@@ -353,7 +397,11 @@ export function sansUntickOwed(c: { collection: string; id: string; op: string; 
    hands the writer at the same moment), his filed days as they show (sansFiledShown), and his reminder's id before its
    days, with the command they belong to; the writer and the gate both read these, and the gate compares exactly. A command
    they were not noted for (no person's, or a later one) has none and owes no line. The live days come from the day's
-   cache and the filed days from one pass over the records. */
+   cache and the filed days from one pass over the records.
+   ONLY WHERE A LINE CAN BE OWED (the four reads of 0eaacc411 — Fable's F5, the Opus read's Q3): a posting and a Quals tick
+   change only in a command of the people module (Quals, Admin → Users, the posting sheets), so every other command takes
+   an empty note. AND IN A RESTORE TOO (Fable's F2): an admin's Undo of a SANS tick he put on takes the man's SANS away,
+   and owes the same line an untick does (sync.ts warNoticesReversed), judged against how things stood as it began. */
 type Noted = { due: string[]; filed: string[]; base: string; at: number }
 let BEFORE: { env: unknown; men: Map<string, Noted> } | null = null
 let BEFORE_WIRED = false
@@ -371,9 +419,22 @@ export function wireSansBackBefore(): void {
   if (BEFORE_WIRED) return
   BEFORE_WIRED = true
   setSansFiledProbe(sansFiledOn)
-  onPipelineBegin(() => {
+  /* AN UNDO OR REDO OF A STEP THAT HOLDS A PLANNING MARK (the gate's sansPlanViolation asks): only the restore the undo is
+     applying right now, of the same person's step, putting the row back exactly as the step recorded it */
+  setSansPlanReplay((env, c) => {
+    const a = applyingRestore(env)
+    if (!a || (a.entry.actor.personId ?? null) !== (env.actor?.personId ?? null)) return false
+    let w: (typeof a.changes)[number] | undefined
+    for (const x of a.changes) if (x.collection === c.collection && String(x.id) === String(c.id)) w = x
+    if (!w) return false
+    /* (a row the step made is taken away by the settings store as a write of nothing — engine/hooks.ts store.set) */
+    const after = (x: { op: string; after?: unknown }): unknown => (x.op === 'delete' ? null : x.after ?? null)
+    return after(w) === after(c)
+  })
+  onPipelineBegin(env => {
     const men = new Map<string, Noted>()
     const today = effectiveToday()
+    if (env.scope?.module !== 'people') { BEFORE = { env: activeEnvelope(), men }; return }
     try {
       /* every man a SANS posting names, and every man ticked SANS (D2394 2b, D2391's C) */
       const ids = new Set(Object.keys(getState().postOuts).filter(pid => sansPostedFrom(pid)))
@@ -390,15 +451,23 @@ export function wireSansBackBefore(): void {
       }
     } catch { /* no war loaded: no line to note */ }
     BEFORE = { env: activeEnvelope(), men }
-  })
-  /* COUNTING A DAY HE IS NEWLY PUT ON (reading 1, above): a person's change that names him on a day it did not name him on,
-     a SANS day of his from today with nothing filed. Written by the app, after the change, never by the person: an Undo
-     or a Redo counts nothing, and a day that merely comes into view (a week loaded) is no change. */
+  }, ['user', 'restore'])
+  /* MARKING A DAY HE IS NEWLY PUT ON (reading 1, above): a person's change that names him on a day it did not name him on,
+     a SANS day of his from today with nothing filed. Written by the app, after the change, never by the person, as part of
+     the change's own step: its Undo takes the mark back to the older one and its Redo puts it back — neither is news (the
+     stamp, above) — and a day that merely comes into view (a week loaded) is no change. The same step drops his marks for
+     days gone by, and a man deleted takes his with him (Fable's F6): the reminder reads none of them. */
   onCommit(env => {
     if (env.origin !== 'user') return
     const owed: Array<[string, string]> = []
+    const gone = new Set<string>()
     const today = effectiveToday()
     for (const c of env.changes) {
+      if (c.collection === 'people') {
+        const b = loose(c.before), a = loose(c.op === 'delete' ? null : c.after)
+        if (b && !b.deleted && (!a || a.deleted)) gone.add(String(c.id))
+        continue
+      }
       if (c.collection !== 'days' || c.op === 'delete' || !c.before || !c.after) continue
       const m = /@(\d\d\/\d\d\/\d{4})#(\d+)$/.exec(String(c.id))
       if (!m) continue
@@ -415,11 +484,19 @@ export function wireSansBackBefore(): void {
         owed.push([pid, iso])
       }
     }
-    if (!owed.length) return
+    const drop: string[] = []
+    for (const pid of gone) drop.push(...store.keys(`${PLAN_PFX}${pid}:`))
+    for (const pid of new Set(owed.map(([x]) => x))) {
+      if (gone.has(pid)) continue
+      const pre = `${PLAN_PFX}${pid}:`
+      for (const k of store.keys(pre)) if (k.slice(pre.length) < today) drop.push(k)
+    }
+    if (!owed.length && !drop.length) return
     // any: the settings door's scope is its own file's; a plain module name is what the command layer reads
     commitProjection({ type: 'sans.planned', scope: { module: 'settings' } as any, apply: txn => {
       txn.enlist(settingsStore)
-      for (const [pid, iso] of owed) store.set(planKey(pid, iso), planOf(pid, iso) + 1)
+      for (const k of drop) store.set(k, null)
+      for (const [pid, iso] of owed) if (!gone.has(pid)) store.set(planKey(pid, iso), nextStamp(pid, iso))
     } })
   })
   /* THE QUALS UNTICK TELLS HIM TOO (D2391's C — state/quals-write.ts, which knows nothing of the war): the scheduler store
@@ -462,7 +539,11 @@ export function sansBackCovered(o: { who: string; day: string; o: string; how?: 
   if (!p) return false
   /* (what it says changed is what this command changed, D2391 — and a "taken back" is only ever a restore's follow-up) */
   if (p.back !== undefined || p.again !== undefined || p.ref !== undefined) return false
-  if (p.how !== undefined && (p.how !== o.how || p.to !== o.to)) return false
+  /* (…and it says what changed, always: a fresh line with no `how` read in the older words, or not at all — Astra #2) */
+  if (p.how !== o.how || p.to !== o.to) return false
+  /* (…and it says it ended his SANS exactly where it did — the reminder's base counts only those: the Opus read's F1) */
+  if (p.ended !== undefined && p.ended !== true) return false
+  if (!!p.ended !== endedNow(o.who)) return false
   /* (a day it carries from an earlier line may be before this posting's date, and so may a reminder's day his own tick
      covered — W11-1: both are checked exactly, below) */
   const days = p.days, hid = p.hid === undefined ? [] : p.hid

@@ -177,7 +177,7 @@ import { sansUnfiledLines, sansLineBack, sansTakeBack, sansPostedFrom, sansBackC
 import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, noticeSansBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
-import { hasRead, forgetRead } from '../state/noticeseen'
+import { hasRead, hasReadSaved, forgetRead } from '../state/noticeseen'
 import { renameCallsign } from '../engine/slots'
 import { ELOG } from '../engine/editlog'
 import { callsignProblem, saidOf } from '../state/roster-add'
@@ -358,7 +358,9 @@ export function installAbsenceDoor(): void {
   hookForeignRun()
   /* WHAT A RESTORE'S FOLLOW-UP LINES MAY SAY (perms.ts setFollowUpsProbe — fix read 6, fault B): the one body that writes
      them, so the gate compares a "taken back" or "again" line with what this restore owes, field for field */
-  setFollowUpsProbe((moved, dir, notices) => followUpsOwed(moved, dir, notices, hasRead))
+  /* (…his read record AS SAVED, never this device's copy in memory, which can say anything — Astra #3 of the four reads of
+     0eaacc411: a read forged in memory let an Undo put a "taken back" on a man who had not read the line) */
+  setFollowUpsProbe((moved, dir, notices) => followUpsOwed(moved, dir, notices, readSaved))
   /* WHICH WAR LINES A COMMAND OWES (perms.ts setWarLinesOwed — fix read 10, fault A): worked out from its own changes */
   setWarLinesOwed((changes, n) => warLineCovered(warLinesOwed(changes), n, changes))
   /* WHICH HOLIDAY LINES A COMMAND OWES (perms.ts setHolidayLinesOwed — fix read 11, fault C): from its own war changes */
@@ -1979,7 +1981,9 @@ export function warLineCovered(owed: readonly OwedWarLine[], n: { id?: unknown; 
     return String(w.who) === o.who && String(w.o) === o.o && n.day === o.day
   })
 }
-export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; op: string; after?: unknown }>, dir: 'undo' | 'redo'): number {
+/* (whether he has read a line, by his read record as saved — what the gate asks, so the writer asks it too) */
+const readSaved = (pid: string, n: Notice): boolean => hasReadSaved(pid, n)
+export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; id?: string; op: string; before?: unknown; after?: unknown }>, dir: 'undo' | 'redo'): number {
   /* (the step's own lines: what it put — a line it deleted owes no follow-up, as before — that this restore has taken
      away (an Undo: no longer on the bell) or put back (a Redo: on it again). Run inside the restore, before any follow-up
      is written, so the bell's follow-up lines are as they stood before the command.) */
@@ -1987,8 +1991,14 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
     const id = (c.after as { id?: unknown } | null | undefined)?.id
     return NOTICES.some(x => x.id === id) === (dir === 'redo')
   })()))
-  const made = followUpsOwed(moved, dir, NOTICES, hasRead)
-  if (!made.length) return 0
+  const made = followUpsOwed(moved, dir, NOTICES, readSaved)
+  /* AN ADMIN'S UNDO OF A SANS TICK HE PUT ON (the four reads of 0eaacc411 — Fable's F2; D2391's C, D2341 "a hiding is
+     never silent"): the Undo takes the man's SANS away as an untick does, so it owes him the same line — "You're no longer
+     SANS. · Saber" — written by the same writer, inside this restore, judged by the gate as an untick's (sansunfiled.ts
+     sansTakeBack, which says nothing where nothing was read or hidden). A Redo of an untick puts its own line back. */
+  const unticked = dir === 'undo' ? changes.filter(c => c.collection === 'people' && c.op === 'put'
+    && !!looseRec(c.after)?.san && !looseRec(c.before)?.san).map(c => String(c.id)) : []
+  if (!made.length && !unticked.length) return 0
   const by = me()
   let wrote = 0
   commitInputs('lw.notice', () => {
@@ -1997,6 +2007,11 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
       /* (his SANS untick's "taken back": its own writer, the line word for word as followUpsFor gives it) */
       if (part.k === 'sansback') { const { k: _k, days, hid, ...said } = part; wrote += noticeSansBack(f.to, who, days, f.day, Date.now(), hid ?? [], said) ? 1 : 0 }
       else wrote += noticeWar([f.to], who, part)
+    }
+    for (const pid of unticked) {
+      const had = NOTICES.length
+      sansTakeBack(pid, null, by != null ? String(by) : null, Date.now())
+      wrote += NOTICES.length - had
     }
   })
   return wrote

@@ -1718,12 +1718,15 @@ export function saveBatchX(fn: () => boolean | void): { ok: boolean; refused: bo
   let done = false
   HOOKS.toast = (...a: any[]) => { got.spoke = true; return (say as any)(...a) }
   SAVE_DEPTH++
-  try { done = writeInputsBatch(() => { got.inner = fn() }) } finally { HOOKS.toast = say; SAVE_DEPTH-- }
+  /* (what a SANS save left out is taken up here whatever the save did, so a save that threw leaves no note for the next
+     one to say — Fable's Q-c) */
+  let note: string | null = null
+  try { done = writeInputsBatch(() => { got.inner = fn() }) } finally { HOOKS.toast = say; SAVE_DEPTH--; if (!SAVE_DEPTH) { note = CUT_NOTE; CUT_NOTE = null } }
   const content = got.inner !== false
   const refused = content && !done
   if (refused && !got.spoke) say(NOT_SAVED, 'blocked')
   /* (what a SANS save left out, said now it has landed — D2388, sayCut) */
-  if (!SAVE_DEPTH) { const note = CUT_NOTE; CUT_NOTE = null; if (note && content && done) sayCut(note) }
+  if (note && content && done) sayCut(note)
   return { ok: content && done, refused }
 }
 export const saveBatch = (fn: () => boolean | void): boolean => saveBatchX(fn).ok
@@ -2312,7 +2315,9 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
       say(sharedRefusal([rec], 'change this for everyone'), 'warn'); return false
     }
   }
-  if (rec && !says && !answers && !gone.length && !added.length) return true
+  /* (a SANS filing stretched back before his date, cut back to what it was: nothing to save, but the cut is still said —
+     Fable's F3, D2388 "saying why") */
+  if (rec && !says && !answers && !gone.length && !added.length) { if (cut) sayCut(cut.note); return true }
 
   /* THE ONE COMMAND. What the doors and the absence rules say inside it is gathered, and said once afterwards. */
   const heard: string[] = []

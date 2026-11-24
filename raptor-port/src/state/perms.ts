@@ -3397,20 +3397,47 @@ function sansDayViolation(env: CommitEnvelope): string | null {
   }
   return null
 }
-/* HIS "SANS AVAILABILITY HIDDEN" LINE IS TAKEN AWAY ONLY WITH THE POSTING THAT OWED IT (Astra's read #2, chat 152 — D2341,
-   D2338): the line (`sansback`) is written only by a change of his SANS posting (the checks above: minted by the war's
-   writer, owed by this command's own posting change), but a delete has no after-image, so an ordinary input command of
-   an admin's took it off his bell. A delete of one passes only in a command that changes that man's own posting (the
-   sheet's "Undo post out" and a posting moved or given another outcome — leavewar/sync.ts retractPostingLines) or as the
-   verified replay of a step (his Undo / Redo of the posting command that wrote it). A rewrite is lineRewritten's. */
+/* HIS SANS CHANGE LINE IS TAKEN AWAY ONLY BY THE UNDO OR REDO OF THE STEP THAT HOLDS IT (Astra's read #2, chat 152 — D2341,
+   D2338; narrowed by the four reads of 0eaacc411 — the security read's SEC156-3, the Opus read's F3): a delete has no
+   after-image, so an ordinary input command of an admin's took it off his bell. It used to pass in a command that changed
+   that man's posting too — but since D2391 no writer takes a stored SANS line away (the live reminder is worked out, never
+   stored; a line a later one replaces is hidden by its `over`, never deleted), so that door was used by nothing honest,
+   and a hand-made posting command took his "You're no longer SANS." away with it. Now only the verified replay of a step
+   (undo/timeline.ts verifiedReplay) passes. A rewrite is lineRewritten's. */
 function sansBackEraseViolation(env: CommitEnvelope): string | null {
   for (const c of env.changes) {
     if (c.collection !== 'notices' || c.op !== 'delete') continue
     const b: any = c.before
     if (!b || !Array.isArray(b.what) || !b.what.some((p: any) => p && p.k === 'sansback')) continue
-    if (env.changes.some(x => x.collection === 'lw.postouts' && String(x.id) === String(b.to))) continue
     if (env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) continue
     return `his SANS-days line taken away by no change of his posting (notices/${c.id})`
+  }
+  return null
+}
+/* THE MARK THAT LIGHTS A SANS MAN'S REMINDER AGAIN IS THE APP'S ALONE (the four reads of 0eaacc411 — the security read's
+   SEC156-1, the Opus read's F4, Astra #1; docs/data-model.md §11, the `Setting` row): `settings/sansplan:<pid>:<iso>`
+   says when he was last newly put on that day (leavewar/sansunfiled.ts nextStamp), and his reminder lights again when it is
+   newer than what he read — so a row written by anyone else lit his bell with nothing planned, or put it out after a real
+   planning, another squadron's admin among them (the row names no squadron). A change of one passes only as the app's own
+   projection (`sans.planned`, the system actor), shaped as it writes it — `sansplan:<a man>:<a date>`, a positive whole
+   number or the row taken away — or as the verified replay of a step that holds it (an admin's Undo / Redo of his own
+   planning, the mark folded into that step). A bare write outside every command is refused before it reaches here
+   (state/people-settings-commit.ts). The replay is vouched for by the war's side (leavewar/sansunfiled.ts installs it — the
+   undo's own replay check, undo/timeline.ts verifiedReplay, vouches only for its own list of rows); none installed, no
+   restore of one passes. */
+const SANSPLAN_ID = /^sansplan:([^:]+):(\d{4}-\d{2}-\d{2})$/
+let SANSPLAN_REPLAY: ((env: CommitEnvelope, c: Change) => boolean) | null = null
+export function setSansPlanReplay(fn: ((env: CommitEnvelope, c: Change) => boolean) | null): void { SANSPLAN_REPLAY = fn }
+function sansPlanViolation(env: CommitEnvelope): string | null {
+  const a = env.actor
+  for (const c of env.changes) {
+    if (c.collection !== 'settings' || !String(c.id).startsWith('sansplan:')) continue
+    if (env.origin === 'restore' && SANSPLAN_REPLAY && SANSPLAN_REPLAY(env, c)) continue
+    const where = `${c.collection}/${c.id}`
+    if (!a || a.role !== 'system' || env.type !== 'sans.planned' || env.origin !== 'projection') return `a SANS planning mark written only by the app (${where})`
+    /* (a row taken away — a day gone by, or a man deleted — is written as nothing by the settings store) */
+    const m = SANSPLAN_ID.exec(String(c.id)), v = c.op === 'delete' ? null : c.after
+    if (!m || (v != null && (!(PEOPLE as any)[m[1]!] || !(typeof v === 'number' && Number.isInteger(v) && v > 0)))) return `a SANS planning mark not as the app writes it (${where})`
   }
   return null
 }
@@ -3453,6 +3480,8 @@ function ownershipChecks(env: CommitEnvelope): string | null {
   if (sansDayBad) return sansDayBad
   const sansBackBad = sansBackEraseViolation(env)
   if (sansBackBad) return sansBackBad
+  const sansPlanBad = sansPlanViolation(env)
+  if (sansPlanBad) return sansPlanBad
   /* WHEN A PERSON LAST OPENED HIS OWN WINDOW (M5a — the security read's finding 4): his own row, by its one command,
      for an ADMIN too — an admin who changed a man's leave could otherwise set that man's moment to now and wipe the dots
      that tell him (§11: "C R U own" for every role) */
