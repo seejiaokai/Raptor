@@ -149,3 +149,34 @@ His ruling says "an Input, Leave War or other window". The first press settled t
    typed; the calendar's "+ Note" with words typed; a Balances figure box with a number typed and not left; on a phone
    the caret left in a day's note on Edit Schedule (the first report: the words go into 142's note) — pick 149: for
    each, kept in the box, lost, saved (into which squadron's record)?
+
+## P5 — six cases the build plan's writer found from the code, none pressed yet (added 25 Nov 26, after P1–P4 reported)
+
+The plan (`raptor-port/docs/superpowers/plans/2026-11-25-msq-pick-guard-build1.md` §8.3, N1–N6; read that table and
+§3.3, §4.1 rows 12–13, §5.2–§5.3 for where each lives in the code) names six cases from reading. Press each on
+today's app at `d` and `p`; P1–P4's scripts under `n175/` show every set-up you need (`lib.mjs`, `p2-bell-setup.mjs`
+for Hunter's Plan of 149 and the holiday, `p2-save.mjs` for the failed save, `p4-card.mjs` for the midnight move).
+
+1. **N1 — a window left open on a page he is no longer looking at.** Saber opens My leave on the Leave War, presses
+   the Inputs tab, picks 149: is the My leave window still open when he goes back to the Leave War on 142, on 149?
+   What happened to it at the pick (the first report: it is "held" with a band while in sight)? The same with the
+   Tracker's marking window or Edit chart layout open, then another tab, then the pick. A picture of what he sees on
+   Inputs at the pick (nothing of the window in sight) and of the window when he returns to its page.
+2. **N2 — his own input shown on another squadron's Inputs page.** Hunter (142's, Plan of 149), 149 picked, the
+   Inputs page: does the list (and the calendar) show his own 142 leave among 149's? Tapped: does it open live, what
+   does the bar say, do Save and Delete work and into which squadron's record?
+3. **N3 — a press that is not a bell line bringing his own squadron back.** Ranger (a member of 142 with View of
+   149), 149 picked: find a press that opens a page 149 does not offer him — "Check my quals" on the welcome-back
+   card if you can raise it, an Undo whose step lands on Inputs, any other you find — and record what the bar does.
+   Then the same with a change not saved (the failed-save stand-in) just before the press.
+4. **N4 — a holiday's bell line while he views another squadron.** Hunter as 142's admin with View (not Plan) of 149,
+   149 picked, taps the holiday's line ("… inputs need an OIL answer" / "… is now a public holiday"): what opens,
+   over which squadron's page, what the bar says, and what its Save writes and where.
+5. **N5 — the Tracker and the view switch on his own squadron.** Saber on 142 moves a ball on the chart (an unsaved
+   chart edit) and presses his badge (the member view), then back: is the edit still there each way, is Save still
+   offered and working in the member view, is anything lost?
+6. **N6 — a window held since midnight, then his own pick.** Hunter's Input window held by his move at 00:00
+   (`p4-card.mjs` / `n166/mid-e1.mjs`), then he picks another squadron from the picker: what happens to the held
+   window and its typed words?
+
+Your section name for file names is `p5`.
