@@ -2933,6 +2933,11 @@ iPhone's size and a desktop's (D1625), with these put to him, each with its pict
 of ONE item's crowd, or of every ALL AVAIL item that day; (2) a man taken out earns no OIL for that item (today, in OIL
 Earn, a scheduler can switch one man off earning while he stays in the count — D65, D762); (3) how he is put back;
 (4) on a published day the change reads pending until the next amendment (D44, D45); (5) whether ALL takes it too.
+**HIS ANSWERS (24 Nov 26, chat 157):** no ✕ — dragged off onto empty space or right-clicked, as a seat puck comes off,
+staying crossed out in the window (his own idea, D2431); that one item only (D2432); no OIL from it (D2433); on a
+published day a change waiting for the amendment, "Reaper → taken out" (D2434). Open: how he is put back (the page's
+question 8 drew the Reset arrow where the ✕ was — redraw it for the drag), where "empty space" is in a window over the
+schedule, and question 10 (ALL the same). Next: redraw that part of the page for him.
 Before the drawing: check what already exists outside OIL Earn (not checked). Place: its own job, after
 [FABLE-READ-FAULTS] (p) and (r).
 
@@ -2943,6 +2948,9 @@ Leave War's decisions, bidding opened or closed, a posting out, an input a sched
 bold title saying what changed for him and one sentence on what it means, as D2391 gives the SANS lines. Fable rewords them
 (D2393); every line drawn for him on one page first (D1625); then built red-first, tests of the words, a short walk. Whether
 "taken back" stays where a line is still crossed out: his D2391 kept it for now. A job of its own, after the SANS one.
+**HIS ANSWERS (24 Nov 26, chat 157), the page of 24 Nov:** question 1 — every line says what is true now, nothing struck,
+no "taken back" (D2437, replacing the 5 Nov struck look); question 2 — the change history's Undo lines say "undone"
+(D2438). Questions 3–8 still to put.
 Since his D2423 (24 Nov 26) the word is "undone", not "taken back", wherever an Undo reversed the news — new lines, a
 struck line that stays ("undone · Saber") and the change history; an act that was no Undo (an approved leave put back to a
 bid) is not called undone. Drawn on the page of 24 Nov 26 (`raptor-port/docs/mock/2026-11-24-bell-words/`, branch
