@@ -268,6 +268,13 @@ export function InputEditor() {
   /* Escape over unsaved work asks first (F2 of the 3 Nov 26 re-check) */
   const [escAsk, setEscAsk] = useState(false)
   const swapOk = useRef(false)
+  /* THE QUESTION IS ABOUT AN INPUT OF THE SQUADRON IT WAS ASKED ON, AND GOES WITH A PICK (the night of 24 Nov 26, the
+     re-walk's C1; his D2323 — ui/msq-pick-swap-question.test.tsx). Left up across a pick, its "Discard and open" took up
+     the other input — 142's — as the window's own with 149 in view: the note above was taken for it then, on the squadron
+     picked, so it stood live with no band and its Save and Delete changed 142's record under a bar saying 149. The
+     squadron the page showed when it asked is kept with it; once the page shows another the question is gone (below, with
+     the question whose control went) and its answer opens nothing. The window keeps the first input, held, his words in it. */
+  const swapOn = useRef('')
   /* WHO IT IS FOR (owner D654–D656; the plan §3.13). On the Inputs page the Person field is the people picker
      (ui/PeoplePick.tsx): `ppl` in the order picked, `several` its switch. The editor holds the input's ONE record,
      which carries its people (engine/inputs.ts idsOf — D756; until the one-rule build an "entry" worked out on read
@@ -352,6 +359,7 @@ export function InputEditor() {
     if (win && other && !swapOk.current && draft && base.current && (pplTouched || unsavedFields(draft, base.current))) {
       /* hung from the other input as a whole — its bar, its list row — where the press landed inside one */
       { const p = lastPressed(); swapAt.current = (p?.closest('[data-iid]') as HTMLElement | null) || p }
+      swapOn.current = pageSqn
       setSwap(r); keepDraft.current = true; setInpEdit(prev); notify()
       /* ...AND IT ASKS FROM THE FRONT (`[TITLE-CHECK-SEEN]` 4, 10 Oct 26). The press that asked for the other input landed
          on another window first — a card of the opened day — and that window took the front, as any pressed window
@@ -678,7 +686,8 @@ export function InputEditor() {
      the draft as the first and mint the rest, all one undo step */
   const doMedSave = (choices: string[], keepTail: any[]) => HOOKS.toastBatch(() => medSaveNow(choices, keepTail))
   const medSaveNow = (choices: string[], keepTail: any[]) => {
-    if (undecided()) return
+    /* (held across a pick with the medical question up — it is drawn outside the window's lock: nothing saved, as `save`) */
+    if (held || undecided()) return
     const segs = medKeptSegments(medConf.a, medConf.b, medConf.clashes, choices)
     if (!segs.length) return          // toasted; the form stays open, unwritten
     if (medSegmentsProtected({ ...draft, yr: isNew ? baseYear() : r.yr }, segs, keepTail, medConf.b, isNew ? null : r)) return medicalLocked()
@@ -832,7 +841,9 @@ export function InputEditor() {
   /* THE DELETE SPEAKS IN ONE BATCH WITH ITS RULES, as a save does (doSave): leave a give-back now covers is cut by the Leave
      War's rules inside the same command, and their warning must not be wiped out by "Input deleted" (the fresh read of
      18 Oct 26, finding 1 — D1022) */
-  const delNow = () => HOOKS.toastBatch(() => { if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } else stay() })
+  /* (…and never from a held window: the upchit's own question, drawn outside the window's lock, can be up across a pick —
+     the night of 24 Nov 26, C1's sibling doors; a belt, as every other write here stops on `held`) */
+  const delNow = () => HOOKS.toastBatch(() => { if (held) return; if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } else stay() })
   const delEntry = () => {
     if (held) return
     const n = howMany(recPpl)
@@ -1423,6 +1434,8 @@ export function InputEditor() {
   /* the control the swap's question hangs from gone with its window (the opened day closed under it): the question goes
      too — never left standing where nobody can see it, to take the next Escape ("adjust state while rendering") */
   if (swap && swapAt.current && !swapAt.current.isConnected) setSwap(null)
+  /* …and gone with a pick: it asked about an input of the squadron the page showed then (above, `swapOn`) */
+  else if (swap && swapOn.current !== pageSqn) setSwap(null)
   /* the band of a window held across his squadron change (above) — the Leave War windows' own band and look
      (ui/MoveBand.tsx); "Close" closes the window, nothing saved */
   const moveBand = heldBand ? <MoveBandView band={heldBand} onClose={close} testid="inped-moveband" closeClass="abtn" /> : null
@@ -1438,7 +1451,7 @@ export function InputEditor() {
           <AskCard at={swapAt.current} portal testid="inped-swap" label="Unsaved changes"
             question={<>This input has unsaved changes. Open {swap._new ? 'a new input' : `${inputWho(swap) || 'the other'}’s input`} and lose them?</>}>
             <button type="button" className="abtn danger" data-testid="inped-swap-go"
-              onClick={() => { const to = swap._new ? swap : (INPUTS.find((x: any) => x.iid === swap.iid) || null); swapOk.current = true; setSwap(null); setInpEdit(to); notify() }}>Discard and open</button>
+              onClick={() => { if (swapOn.current !== pageSqn) { setSwap(null); return } const to = swap._new ? swap : (INPUTS.find((x: any) => x.iid === swap.iid) || null); swapOk.current = true; setSwap(null); setInpEdit(to); notify() }}>Discard and open</button>
             <button type="button" className="abtn primary" data-testid="inped-swap-stay" autoFocus onClick={() => setSwap(null)}>Keep editing</button>
           </AskCard>
         )}
