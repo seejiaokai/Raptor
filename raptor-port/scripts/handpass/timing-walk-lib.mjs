@@ -156,6 +156,37 @@ export function topAt(page, x, y) {
   return page.evaluate(([x, y]) => { const e = document.elementFromPoint(x, y); if (!e) return null; const w = e.closest('.floatwin, .timing-pill, .drawer, .modal, [role=dialog], #schedBoard, .save-band, .ssband, header, nav'); return (w ? (w.id || w.className.toString().split(' ').join('.')) : '') + ' > ' + e.tagName + (e.id ? '#' + e.id : '') + '.' + String(e.className).split(' ').join('.') }, [x, y])
 }
 
+/* ------------------------------------------------------------------------------------------------- the fixture */
+/** An ALL AVAIL line on Saturday (day 5 of the seeded week), made through the board's own controls — the everything
+ *  day's own steps (fixture.mjs, the order's §7.1, §7.7): the demo week has none, so the week shows no "who's available"
+ *  count to open ALL AVAIL from (chat 164's W19 (c), W20 two windows — the premise missed). The Timing window is folded
+ *  while it is built (it stands over the board's corner) and opened again after. */
+export async function allAvailDay(page, di = 5) {
+  const { tap, type, put, board } = await import('./lib.mjs')
+  const wasOpen = !!(await page.$('#timingRoot .timingwin'))
+  if (wasOpen) await page.click('#timingRoot .timingwin .win-x')
+  await board(page, di)
+  await tap(page, `[data-padd="${di}"]`)
+  await type(page, `[data-bfld="ap:${di}.0.prog"]`, 'FAMILY DAY')
+  await type(page, `[data-bfld="ap:${di}.0.str"]`, '10:00')
+  await type(page, `[data-bfld="ap:${di}.0.end"]`, '14:00')
+  const got = await put(page, `[data-fill="a:${di}.0.+"]`, ['allavail'])
+  await page.click('#sbDone'); await sleep(600)
+  if (wasOpen && await page.$('#timingRoot .timing-pill')) await page.click('#timingRoot .timing-pill')
+  return got
+}
+/** The Inputs page's calendar shown and an input bar in sight: the calendar opens on the computer's own month, the demo's
+ *  inputs are in July 26 (the seeded week), so a month back at a time until one shows; null when none */
+export async function inputBar(page) {
+  if ((await page.getAttribute('#inCalBtn', 'aria-pressed').catch(() => null)) !== 'true') { await page.click('#inCalBtn'); await sleep(600) }
+  for (let i = 0; i < 8; i++) {
+    const bar = page.locator('#inpCal .ib-bar:visible').first()
+    if (await bar.count()) return bar
+    await page.click('#icPrev'); await sleep(500)
+  }
+  return null
+}
+
 /* --------------------------------------------------------------------------------------------------- reporting */
 export const results = []
 export function judge(id, ok, note) { const v = ok === null ? 'RECORD' : ok ? 'PASS' : 'FAIL'; results.push({ id, v, note }); console.log(`${v.padEnd(6)} ${id} — ${note}`) }

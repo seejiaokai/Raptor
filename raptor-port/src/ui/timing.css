@@ -24,5 +24,7 @@
 /* a phone: along the foot of the screen, as the mock-up draws it — not the middle every other window takes (D997) */
 @media (max-width:620px){
   .floatwin.timingwin{width:auto}
-  .floatwin.timingwin:not([data-placed]){top:auto;bottom:12px;margin:0}
+  /* never over the top bar and its failed-save band (his D1523; Astra's code read, chat 165, 5): its height is capped
+     by the bar's live height, the rows scrolling inside it */
+  .floatwin.timingwin:not([data-placed]){top:auto;bottom:12px;margin:0;max-height:calc(100vh - var(--topbar-h, 0px) - 20px);max-height:calc(100dvh - var(--topbar-h, 0px) - 20px)}
 }

@@ -1,7 +1,7 @@
 /* The ?timing readout's walk, part 3 (chat 164) — W18, W19, W20, W21, W23, W26 of the evidence sheet's combined list:
    the window among the app's other windows, Escape, every door to a page, the plain-user round, and its own cost.
    node scripts/handpass/timing-walk-3.mjs   (from raptor-port/, on a build already made). ONLY=W19 runs one. */
-import { serve, browserOf, fresh, DESK, PHONE, signIn, outsideTime, armOutside, openBy, readout, row, pageRows, waitRows, openWindow, topAt, pic, shotDir, judge, notWalked, saveResults, sleep } from './timing-walk-lib.mjs'
+import { serve, browserOf, fresh, DESK, PHONE, signIn, outsideTime, armOutside, openBy, readout, row, pageRows, waitRows, openWindow, topAt, pic, shotDir, judge, notWalked, saveResults, sleep, allAvailDay, inputBar } from './timing-walk-lib.mjs'
 
 const ONLY = process.env.ONLY ? process.env.ONLY.split(',') : null
 const on = id => !ONLY || ONLY.includes(id)
@@ -51,6 +51,8 @@ for (const q of ['?timing', '']) {
     const step = async (name, before, after) => { log.push(`${name}: ${before} → ${after}`); console.log(`  ${id} ${name}: ${before} → ${after}`) }
     const st = async () => { const s = await shown(page); return Object.entries(s).filter(([, v]) => v).map(([k]) => k).join('+') || 'nothing' }
     await page.goto(B + '/' + q); await signIn(page); await weekUp(page); await sleep(800)
+    /* chat 165: the ALL AVAIL line the week's count needs, through the board (the premise chat 164's run missed) */
+    await allAvailDay(page); log.push('ALL AVAIL put on Saturday'); await openBy(page, 'viewsched'); await outsideTime(page, 'viewsched'); await sleep(400)
     /* (a) nothing else open, the keys on the page */
     await page.mouse.click(700, 140); let a = await st(); await esc(page); await step('a nothing else open', a, await st())
     if (q) { await openWindow(page) }
@@ -60,7 +62,7 @@ for (const q of ['?timing', '']) {
     if (q && !(await tOpen(page))) await openWindow(page)
     /* (c) ALL AVAIL opened after the Timing window, then Escape twice */
     await openBy(page, 'editsched'); await outsideTime(page, 'editsched'); await sleep(500)
-    const osn = page.locator('#page-editsched [data-oilsent]').first()
+    const osn = page.locator('#eWeek [data-oilsent]:visible').first()
     if (await osn.count()) {
       await osn.scrollIntoViewIfNeeded(); await osn.click(); await sleep(600)
       a = await st(); await pic(page, dir, 'avail-and-timing'); await esc(page); const b = await st(); await esc(page); await step('c ALL AVAIL opened after, Escape twice', a, b + ' → ' + await st())
@@ -77,7 +79,7 @@ for (const q of ['?timing', '']) {
     if (await page.locator('#histBtn').count()) { await page.click('#histBtn'); await sleep(600); a = await st(); await esc(page); await step('d the changes window', a, await st()) }
     if (q && !(await tOpen(page))) await openWindow(page)
     /* (e) the bell's list */
-    if (await page.locator('#bell').count()) { await page.click('#bell'); await sleep(500); a = await st(); await pic(page, dir, 'bell'); await esc(page); await step('e the bell\'s list', a, await st()) }
+    if (await page.locator('#notifyBell').count()) { await page.click('#notifyBell'); await sleep(500); a = await st(); await pic(page, dir, 'bell'); await esc(page); await step('e the bell\'s list', a, await st()) }
     if (q && !(await tOpen(page))) await openWindow(page)
     /* (f) the Scheduler Board (opened by its probe: the board's door is not what this step is about) */
     await page.evaluate(() => window.openScheduler && window.openScheduler(0)); await sleep(800)
@@ -87,8 +89,8 @@ for (const q of ['?timing', '']) {
     if (q && !(await tOpen(page))) await openWindow(page)
     /* (g) an input's own window on the Inputs page */
     await openBy(page, 'inputs'); await outsideTime(page, 'inputs'); await sleep(500)
-    const bar = page.locator('#page-inputs .ib-bar').first()
-    if (await bar.count() && await bar.isVisible()) { await bar.click(); await sleep(700); a = await st(); await esc(page); await step('g an input\'s window', a, await st()) }
+    const bar = await inputBar(page)
+    if (bar) { await bar.click(); await sleep(700); a = await st(); await esc(page); await step('g an input\'s window', a, await st()) }
     else await step('g an input\'s window', 'no input bar in sight on the Inputs page', '—')
     if (q && !(await tOpen(page))) await openWindow(page)
     /* (h) the Leave War's "Open for bidding" sheet */
@@ -105,6 +107,7 @@ for (const [id, size] of [['W20-desk', DESK], ['W20-phone', PHONE]]) {
     const phone = size === PHONE
     await page.goto(B + '/?timing'); await signIn(page); await weekUp(page); await sleep(600)
     await openWindow(page)
+    await allAvailDay(page)
     const xMid = async () => page.evaluate(() => { const x = document.querySelector('#timingRoot .timingwin .win-x'); if (!x) return null; const r = x.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2] })
     if (phone) {
       await page.click('#burger'); await sleep(500)
@@ -113,8 +116,8 @@ for (const [id, size] of [['W20-desk', DESK], ['W20-phone', PHONE]]) {
       await pic(page, dir, 'drawer-over')
       await page.mouse.click(380, 400); await sleep(400)
     }
-    /* the board under the window */
-    await openBy(page, 'editsched'); await outsideTime(page, 'editsched')
+    /* the board under the window (a phone has no top bar: its ☰ menu) */
+    await openBy(page, 'editsched', phone ? 'drawer' : 'top'); await outsideTime(page, 'editsched')
     await page.evaluate(() => window.openScheduler && window.openScheduler(0)); await sleep(900)
     if (!(await tOpen(page))) await openWindow(page)
     let m = await xMid()
@@ -127,19 +130,27 @@ for (const [id, size] of [['W20-desk', DESK], ['W20-phone', PHONE]]) {
     top = await topAt(page, pb.x + pb.w / 2, pb.y + pb.h / 2)
     const sbDone = await page.locator('#sbDone').boundingBox().catch(() => null)
     const doneTop = sbDone ? await topAt(page, sbDone.x + sbDone.width / 2, sbDone.y + sbDone.height / 2) : null
-    judge(id + '-board-folded', /timing-pill/.test(top || '') && (!sbDone || /sbDone/.test(doneTop || '')), `the corner button on the board: ${top}; the board's Done: ${doneTop}`)
+    /* the Done's own words are a span inside it: a press there is Done's (chat 164's judge wanted the button itself) */
+    const doneHit = sbDone ? await page.evaluate(([x, y]) => !!document.elementFromPoint(x, y)?.closest('#sbDone'), [sbDone.x + sbDone.width / 2, sbDone.y + sbDone.height / 2]) : true
+    judge(id + '-board-folded', /timing-pill/.test(top || '') && doneHit, `the corner button on the board: ${top}; the board's Done: ${doneTop} (a press there is Done's: ${doneHit})`)
     await pic(page, dir, 'folded-on-the-board')
     if (sbDone) await page.click('#sbDone')
     await page.click('#timingRoot .timing-pill'); await sleep(300)
     /* ALL AVAIL and the Timing window: each brought in front by a press, both ✕ pressable */
-    const osn = page.locator('#page-editsched [data-oilsent]').first()
+    const osn = page.locator('#eWeek [data-oilsent]:visible').first()
     if (await osn.count()) {
       await osn.scrollIntoViewIfNeeded(); await osn.click(); await sleep(600)
       const ax = await page.evaluate(() => { const x = document.querySelector('.availwin:not([hidden]) .win-x'); if (!x) return null; const r = x.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2] })
       const aTop = ax ? await topAt(page, ax[0], ax[1]) : null
-      m = await xMid(); const tTop = m ? await topAt(page, m[0], m[1]) : null
-      judge(id + '-two-windows', /win-x/.test(aTop || '') && /win-x/.test(tTop || ''), `ALL AVAIL's ✕: ${aTop}; the Timing window's ✕: ${tTop}`)
+      m = await xMid(); const tUnder = m ? await topAt(page, m[0], m[1]) : null
       await pic(page, dir, 'avail-and-timing')
+      /* two windows overlap, the one opened or pressed last in front (floatwin.ts — "the one pressed last comes
+         forward"): the Timing window is brought forward by a press on a part of it in sight, then its ✕ is pressed */
+      const seen = await page.evaluate(() => { const w = document.querySelector('#timingRoot .timingwin'); if (!w) return null; const r = w.getBoundingClientRect(); for (let y = r.top + 4; y < r.bottom; y += 8) for (let x = r.left + 4; x < r.right; x += 8) { const e = document.elementFromPoint(x, y); if (e && e.closest('.timingwin') && !e.closest('button')) return [x, y] } return null })
+      if (seen) { await page.mouse.click(seen[0], seen[1]); await sleep(300) }
+      m = await xMid(); const tTop = m ? await topAt(page, m[0], m[1]) : null
+      judge(id + '-two-windows', /win-x/.test(aTop || '') && !!seen && /timingwin.*win-x/.test(tTop || ''), `ALL AVAIL's ✕ in front: ${aTop}; the Timing window's ✕ under ALL AVAIL: ${tUnder}; pressed at ${seen}, its ✕ then: ${tTop}`)
+      await pic(page, dir, 'timing-brought-forward')
       await page.keyboard.press('Escape'); await sleep(300)
     } else notWalked(id + '-two-windows', 'no "who\'s available" line on Edit Schedule')
     /* the Leave War's blocking sheet over the window */
@@ -151,7 +162,7 @@ for (const [id, size] of [['W20-desk', DESK], ['W20-phone', PHONE]]) {
       judge(id + '-sheet', null, `the "Open for bidding" sheet open — at the Timing window's ✕: ${top}`)
       await pic(page, dir, 'lw-sheet')
       /* W21: a month pressed inside the sheet, the window open */
-      const month = page.locator('[data-testid="open-dates"] [data-month], [data-testid="open-dates"] button[data-key]').first()
+      const month = page.locator('[data-testid^="od-month-"]').first()
       if (await month.count()) { const b = await month.boundingBox(); const mt = await topAt(page, b.x + b.width / 2, b.y + b.height / 2); judge(id + '-W21-month', !/timing/.test(mt || ''), `a month in the sheet, at its middle: ${mt}`) }
       await page.keyboard.press('Escape')
     }
@@ -175,7 +186,7 @@ await scen('W23-admin', DESK, {}, async ({ page, dir }) => {
   await door('member-view-switch', async () => { await armOutside(page, 'viewsched'); await page.click('#roleBadge') }, 'View-only Sched')
   await page.click('#roleBadge'); await sleep(800)
   /* the bell: the first notice that opens a page */
-  await page.click('#bell'); await sleep(600)
+  await page.click('#notifyBell'); await sleep(600)   // the top bar's bell (chat 164's '#bell' is no element)
   const item = page.locator('.bell-list button, .belllist button, #bellList button, [data-testid^="bell-item"]').first()
   if (await item.count()) { const txt = (await item.textContent() || '').slice(0, 60); const cur = await page.evaluate(() => window.CURPAGE); const n = await rowsN(); await item.click(); await sleep(2500); const now = await page.evaluate(() => window.CURPAGE); const r = pageRows(await readout(page)); judge('W23-bell', now === cur ? r.length === n : r.length === n + 1, `notice "${txt}": page ${cur} → ${now}; rows ${n} → ${r.length}${r.length > n ? ' (' + r[0].label + ')' : ''}`) }
   else notWalked('W23-bell', 'no notice in the bell\'s list for the admin')
@@ -187,6 +198,7 @@ await scen('W23-admin', DESK, {}, async ({ page, dir }) => {
 })
 await scen('W23-member-phone', PHONE, {}, async ({ page }) => {
   await page.goto(B + '/?timing'); await signIn(page, 'us'); await outsideTime(page, 'viewsched'); await sleep(500)
+  await openWindow(page)   // a phone's window starts folded: its rows are read open (chat 164's run read none)
   const pages = await page.evaluate(() => [...document.querySelectorAll('#drawerNav a[data-page]')].map(a => a.dataset.page))
   const names = { viewsched: 'View-only Sched', editsched: 'Edit Schedule', inputs: 'Inputs', quals: 'Quals', logic: 'Logic', leavewar: 'Leave War', tracker: 'Tracker', help: 'Help', admin: 'Admin' }
   const got = []
@@ -209,8 +221,8 @@ await scen('W26', DESK, {}, async ({ page, dir, errors }) => {
   log.push(`the week under the window scrolled (page scroll ${sy})`)
   /* a change on the Inputs calendar and its Undo */
   await openBy(page, 'inputs'); await outsideTime(page, 'inputs'); await sleep(600)
-  const bar = page.locator('#page-inputs .ib-bar').first()
-  if (await bar.count() && await bar.isVisible()) {
+  const bar = await inputBar(page)
+  if (bar) {
     const bb = await bar.boundingBox(); const iid = await bar.getAttribute('data-iid')
     await page.mouse.move(bb.x + bb.width / 2, bb.y + bb.height / 2); await page.mouse.down(); await page.mouse.move(bb.x + bb.width / 2 + 120, bb.y + bb.height / 2 + 2, { steps: 8 }); await page.mouse.up(); await sleep(800)
     const moved = await page.locator(`#page-inputs .ib-bar[data-iid="${iid}"]`).first().boundingBox()

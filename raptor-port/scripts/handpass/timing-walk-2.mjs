@@ -146,6 +146,7 @@ await scen('W7', PHONE, {}, async ({ page, ctx, dir }) => {
   await page.click('[data-testid="page-load-retry"]')
   await page.waitForSelector('#luser', { state: 'visible', timeout: 30000 })
   const url = page.url()
+  const h0 = srv.hits.length
   await signIn(page, 'ad', 'leavewar')
   const out = await outsideTime(page, 'leavewar')
   await sleep(800)
@@ -155,6 +156,11 @@ await scen('W7', PHONE, {}, async ({ page, ctx, dir }) => {
   judge('W7-address', /\?timing/.test(url), `after Retry's reload: ${url.replace(B, '')}`)
   judge('W7-card-row', atCard.length === 0, `rows while the card showed: ${atCard.map(x => x.label + ' ' + x.value).join(', ') || 'none'}`)
   judge('W7-landing', lw && lw.label === 'Leave War' && Math.abs(secs(lw.value) * 1000 - out) <= Math.max(200, out * 0.15), `landing row "${lw ? lw.label + ', ' + lw.tag + ': ' + lw.value : 'none'}", outside ${out} ms; sign-in "${row(r, 'Sign in pressed → week shown').value}"`)
+  /* chat 165, fault 4: the "downloaded" against what the SERVER sent whole for the Leave War's own files after the
+     reload — none sent: no "downloaded" at all; some: about their size */
+  const sent = srv.hits.slice(h0).filter(h => /LeaveWar[^/]*\.(js|css)$/.test(h.p) && h.st === 200).reduce((a, h) => a + h.n, 0)
+  const dl = /downloaded (\d+) KB/.exec(lw ? lw.tag : '')
+  judge('W7-downloaded', sent === 0 ? !dl : !!dl && Math.abs(Number(dl[1]) * 1024 - sent) <= Math.max(2048, sent * 0.1), `the server sent the Leave War's files whole: ${Math.round(sent / 1024)} KB; the row's tag "${lw ? lw.tag : 'none'}"`)
   await pic(page, dir, 'landed')
   await sleep(5000)
   await page.click('#burger'); await page.click('#drawerNav a[data-page="inputs"]'); await outsideTime(page, 'inputs')
@@ -292,13 +298,23 @@ await scen('W13', DESK, {}, async ({ page, dir }) => {
 /* W14 — kept files: a cleared first visit, a reload, a new tab */
 await scen('W14', DESK, {}, async ({ page, ctx, dir }) => {
   const filesRow = async p => { const r = await readout(p); return [row(r, 'App files used').value, row(r, 'Kept from an earlier visit').value] }
-  const panel = p => p.evaluate(() => { const a = performance.getEntriesByType('resource').filter(e => /\.(js|css)$/.test(new URL(e.name).pathname) && !/timingwindow/i.test(e.name)); return { n: a.length, kept: a.filter(e => e.transferSize === 0 && e.encodedBodySize > 0 || e.transferSize > 0 && e.transferSize < e.encodedBodySize).length } })
+  /* the judge (chat 165): the SERVER's own answers during that load — a file it sent whole (200) was downloaded; every
+     other app file the page used was kept (told "unchanged" — 304 — or not asked at all). Chat 164's judge counted from
+     the browser's list the old way, which is the very counting the fix changed. */
+  const panel = async (p, h0) => {
+    const n = await p.evaluate(() => performance.getEntriesByType('resource').filter(e => /\.(js|css)$/.test(new URL(e.name).pathname) && !/timingwindow|TimingReadout/i.test(e.name)).length)
+    const sent = srv.hits.slice(h0).filter(h => /\.(js|css)$/.test(h.p) && !/timingwindow|TimingReadout/i.test(h.p) && h.st === 200).length
+    return { n, kept: n - sent }
+  }
+  let h0 = srv.hits.length
   await page.goto(B + '/?timing'); await page.waitForSelector('#timingRoot .timingwin', { timeout: 60000 }); await sleep(1200)
-  const a = await filesRow(page), ap = await panel(page)
+  const a = await filesRow(page), ap = await panel(page, h0)
+  h0 = srv.hits.length
   await page.reload(); await page.waitForSelector('#timingRoot .timingwin', { timeout: 60000 }); await sleep(1200)
-  const b = await filesRow(page), bp = await panel(page)
+  const b = await filesRow(page), bp = await panel(page, h0)
+  h0 = srv.hits.length
   const p2 = await ctx.newPage(); await p2.goto(B + '/?timing'); await p2.waitForSelector('#timingRoot .timingwin', { timeout: 60000 }); await sleep(1200)
-  const c = await filesRow(p2), cp = await panel(p2)
+  const c = await filesRow(p2), cp = await panel(p2, h0)
   judge('W14-first', /^0 of /.test(a[1]) && a[1] === `${ap.kept} of ${ap.n}`, `cleared first visit: "${a[0]}", kept "${a[1]}" (the browser's own: ${ap.kept} of ${ap.n})`)
   judge('W14-reload', b[1] === `${bp.kept} of ${bp.n}`, `reload: "${b[0]}", kept "${b[1]}" (browser: ${bp.kept} of ${bp.n})`)
   judge('W14-newtab', c[1] === `${cp.kept} of ${cp.n}`, `new tab: "${c[0]}", kept "${c[1]}" (browser: ${cp.kept} of ${cp.n})`)
@@ -387,9 +403,10 @@ await scen('W22', DESK, {}, async ({ page, ctx, dir }) => {
   await pic(page, dir, 'refused')
 })
 
-/* W24 — a hidden tab (the browser's newer headless mode, where a tab behind another is hidden as on a desktop) */
+/* W24 — a hidden tab. Chat 164's run in the headless browser never hid the tab (it went "never hidden"); chat 165 walks
+   it in a REAL browser window, placed off the screen, where a tab behind another is hidden as on his desktop. */
 if (on('W24')) {
-  const b = await chromium.launch({ channel: 'chromium', headless: true })
+  const b = await chromium.launch({ headless: false, args: ['--window-position=-3200,0', '--window-size=1366,850'] })
   const ctx = await b.newContext({ ...DESK }); await ctx.addInitScript(() => { window.__vis = []; document.addEventListener('visibilitychange', () => window.__vis.push(document.visibilityState)) })
   await ctx.addInitScript(PRESS)
   const page = await ctx.newPage(); const errs = []; page.on('pageerror', e => errs.push(String(e)))
@@ -408,7 +425,10 @@ if (on('W24')) {
   const bg = await ctx.newPage(); await page.bringToFront()
   await bg.goto(B + '/?timing'); await sleep(30000); await bg.bringToFront(); await sleep(3000)
   const rb = await readout(bg)
-  judge('W24-background-load', null, `loaded behind another tab: ${rb.rows.slice(0, 3).map(x => x.label + ' ' + x.value).join(' · ')}`)
+  /* chat 165, fault 6: loaded behind another tab, the app's load and the first screen give no figure — Fable's words */
+  const bgVis = await bg.evaluate(() => window.__vis)
+  judge('W24-background-load', row(rb, 'App loaded')?.value === 'not timed, tab not in front' && row(rb, 'Sign-in shown')?.value === 'not timed, tab not in front' && /^at /.test(row(rb, 'Site answered')?.value || ''), `the tab went ${bgVis.join(' → ') || '(no change seen)'}; loaded behind another tab: ${rb.rows.slice(0, 3).map(x => x.label + ' ' + x.value).join(' · ')}`)
+  await pic(bg, shotDir('W24'), 'background-load')
   await b.close()
 }
 

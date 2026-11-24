@@ -28,9 +28,10 @@ import { closeScheduler } from './board'
 const TYPING = 'input, textarea, select, [contenteditable=""], [contenteditable="true"]'
 /* what can lie over the board that its own flags do not say: the small menus (+ Block, Templates, the plans selector, a
    jet's stores — `.wavemenu`), the ⋯ menu, the bell's list, a date box's calendar, a movable window, any veiled window.
-   NOT the ?timing readout's window (`data-yields-esc`, FloatWindow.tsx yieldsEscape): up since the app started, it was
-   opened before the board, so the board is the newer and answers first (his D2112; the walk of 24 Nov 26, W19 (f)) */
-const OVER = '.wavemenu, #sbMoreMenu, .bell-list, .dcal-layer:not(.dcal-patch), .floatwin:not([hidden]):not([data-yields-esc]), .airpop:not([hidden])'
+   NOT the ?timing readout's window (`data-bystander`, FloatWindow.tsx): up since the app started, it was opened before
+   the board, so the board is the newer and answers first (his D2112; the walk of 24 Nov 26, W19 (f)); with the keys
+   inside it, the Escape is its own (boardEscapeWants, below) */
+const OVER = '.wavemenu, #sbMoreMenu, .bell-list, .dcal-layer:not(.dcal-patch), .floatwin:not([hidden]):not([data-bystander]), .airpop:not([hidden])'
 
 /* something stands over the board, and Escape is its to answer */
 export function overBoard(): boolean {
@@ -47,6 +48,7 @@ export function boardEscapeWants(target: EventTarget | null): Want {
   if (SBDAY == null || CURPAGE !== 'editsched' || ARM || overBoard()) return ''
   const t = target as HTMLElement | null
   if (t && t.nodeType === 1 && typeof t.closest === 'function') {
+    if (t.closest('.floatwin')) return ''        // the keys inside a movable window: its Escape (the code read of chat 165)
     if (t.id === 'searchB' && t.closest('#schedBoard')) return 'leave'
     if (t.closest(TYPING) || t.isContentEditable) return ''
   }

@@ -93,6 +93,37 @@ describe('the window', () => {
     await act(async () => { btn().click() })
     expect(btn().textContent).toBe('Copy all')
   })
+  /* Astra's code read, chat 165, 2: two presses, the first still being answered — the newest failed, then the older
+     one went in: "Copied" spoke for the failed press */
+  it('two copies at once: only the newest press may say "Copied"', async () => {
+    const answers: ((v: boolean) => void)[] = []
+    draw(VIEW, true, vi.fn(() => new Promise<boolean>(r => { answers.push(r) })))
+    const btn = () => [...win()!.querySelectorAll('.win-tools button')].find(b => /Cop/.test(b.textContent!)) as HTMLButtonElement
+    await act(async () => { btn().click() })
+    await act(async () => { btn().click() })
+    await act(async () => { answers[1]!(false) })
+    await act(async () => { answers[0]!(true) })
+    expect(btn().textContent).toBe('Copy all')
+  })
+  /* Astra's code read, 4: folded by its ✕ (or Escape) with the keys in it, the keys were left on nothing — its opener,
+     the corner button, was gone while it was up */
+  it('folded by a press, the keys go to the corner button', () => {
+    draw(VIEW, false)
+    act(() => { pill()!.click() })
+    expect(win()!.contains(document.activeElement), 'opened from the button, the window takes the keys').toBe(true)
+    act(() => { (win()!.querySelector('.win-x') as HTMLButtonElement).click() })
+    expect(document.activeElement).toBe(pill())
+  })
+  /* the code reads of chat 165: opened by itself it is a bystander — Escape is its own only with the keys inside it */
+  it('opened by itself, it does not answer Escape with the keys elsewhere; with the keys in it, Escape folds it', () => {
+    draw(VIEW, true)
+    act(() => { document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
+    expect(win(), 'the keys on nothing: it stays').not.toBeNull()
+    const x = win()!.querySelector('.win-x') as HTMLButtonElement
+    x.focus()
+    act(() => { x.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
+    expect(win()).toBeNull()
+  })
   it('a section with nothing yet says so', () => {
     draw({ ...VIEW, pages: [], signin: null }, true)
     expect(win()!.textContent).toContain('No page opened yet')

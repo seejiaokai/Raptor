@@ -257,5 +257,50 @@ describe('what came down the line for the Leave War', () => {
   })
 })
 
+/* THE CODE READS OF CHAT 165 (24 Nov 26), each pinned before its fix */
+describe('the code reads: a hidden tab, a new sign-in, another page\'s download', () => {
+  const setVis = (v: 'hidden' | 'visible') => { Object.defineProperty(document, 'visibilityState', { value: v, configurable: true }); document.dispatchEvent(new Event('visibilitychange')) }
+  afterEach(() => { Object.defineProperty(document, 'visibilityState', { value: 'visible', configurable: true }) })
+  /* the fresh Opus read, F2: a page the app itself changes while the tab is ALREADY hidden (the role check at midnight)
+     was timed across the hidden spell — a row of the time the tab stayed behind another */
+  it('a page asked for while the tab is hidden gives no row', () => {
+    section('viewsched', false); section('editsched')
+    setVis('hidden')
+    at(1000); timingMark({ kind: 'page', page: 'viewsched', t: 1000 })
+    show('viewsched')
+    at(41_000); setVis('visible'); step(); at(41_020); step(); at(41_040); step()
+    expect(rows()).toEqual([])
+  })
+  /* the fresh Opus read, F3: a sign-out that could not reload (a save still waiting) draws the app again from nothing;
+     the next sign-in's first Leave War is a first build, and read "opened before" */
+  it('the first open of a page after a new sign-in reads "first time"', () => {
+    section('viewsched'); section('leavewar', false)
+    timingMark({ kind: 'signin', t: 0 }); await0()
+    at(100); timingMark({ kind: 'page', page: 'leavewar', t: 100 }); show('leavewar'); at(200); step(3)
+    at(5000); timingMark({ kind: 'page', page: 'viewsched', t: 5000 }); show('viewsched'); step(3)
+    at(9000); timingMark({ kind: 'signin', t: 9000 }); await0(); step(3)
+    at(10_000); timingMark({ kind: 'page', page: 'leavewar', t: 10_000 }); show('leavewar'); at(11_000); step(3)
+    expect(rows().filter(r => r.startsWith('leavewar'))).toEqual(['leavewar first 100', 'leavewar first 1000'])
+  })
+  /* Astra's read, 3: the Leave War's background download still arriving while the Tracker opened was counted as the
+     Tracker's — a page counts its own files, never the other page's */
+  it('the Tracker\'s download never counts the Leave War\'s files, nor the Leave War the Tracker\'s', () => {
+    const entries = [
+      { name: 'http://x/assets/LeaveWarPage-a.js', startTime: 10, responseEnd: 60, transferSize: 41_300, encodedBodySize: 41_000 },
+      { name: 'http://x/assets/TrackerPage-b.js', startTime: 10, responseEnd: 60, transferSize: 9_300, encodedBodySize: 9_000 },
+    ]
+    const was = performance.getEntriesByType
+    ;(performance as any).getEntriesByType = (t: string) => (t === 'resource' ? entries : [])
+    try {
+      section('viewsched'); section('tracker', false); section('leavewar', false)
+      at(0); timingMark({ kind: 'page', page: 'tracker', t: 0 })
+      at(100); show('tracker'); step(3)
+      at(200); timingMark({ kind: 'page', page: 'leavewar', t: 0 })
+      at(300); show('leavewar'); step(3)
+      expect(got.flatMap(e => e.kind === 'page' ? [e.page + ' ' + e.downloaded] : [])).toEqual(['tracker 9300', 'leavewar 41300'])
+    } finally { (performance as any).getEntriesByType = was }
+  })
+})
+
 /* the sign-in's landing window closes with the task that made the sign-in mark (a timer of 0 in the app) */
 function await0() { flushLandingForTest() }

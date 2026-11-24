@@ -52,6 +52,18 @@ describe('the marks', () => {
   })
 })
 
+/* ASTRA'S CODE READ, CHAT 165, 5 (and the re-walk's W27): on a phone, with 30 pages in it, the window stood 12px below
+   the screen's top — over the top bar and the failed-save band's Retry (his D1523: a window stands clear of the band).
+   The top bar's live height (--topbar-h, the band in it) caps its height, and its rows scroll inside it */
+describe('a phone: the window stands under the top bar', () => {
+  it('its height is capped by the top bar\'s live height, both ways a browser reads it', () => {
+    const css = readFileSync(join(__dirname, 'timing.css'), 'utf8')
+    const phone = css.slice(css.indexOf('@media (max-width:620px)'))
+    expect(phone).toContain('max-height:calc(100vh - var(--topbar-h, 0px) - 20px)')
+    expect(phone).toContain('max-height:calc(100dvh - var(--topbar-h, 0px) - 20px)')
+  })
+})
+
 describe('where the app wires it', () => {
   const src = (f: string) => readFileSync(join(__dirname, f), 'utf8')
   it('the readout is downloaded only behind the switch — never part of the app\'s first download', () => {

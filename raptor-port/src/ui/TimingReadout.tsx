@@ -25,31 +25,44 @@ export type ReadoutProps = {
 }
 
 export function makeTimingReadout({ React, FloatWin }: ReadoutParts): (p: ReadoutProps) => ReactNS.ReactElement {
-  const { useEffect, useState, useSyncExternalStore, createElement: h } = React
+  const { useEffect, useRef, useState, useSyncExternalStore, createElement: h } = React
   return function TimingReadout({ read, subscribe, version, startOpen, copy, now: clock }: ReadoutProps) {
     useSyncExternalStore(subscribe, version, version)
     const view = read()
     const [open, setOpen] = useState(startOpen)
+    /* OPENING BY ITSELF NEVER TAKES THE CARET NOR COMES FORWARD (Fable F5; the code reads of chat 165): opened as the app
+       starts, while he types his name in the sign-in card, it is a bystander opened quietly (FloatWindow.tsx). Opened
+       from the corner button, it comes forward and takes the keyboard as any window does. */
+    const [quiet, setQuiet] = useState(startOpen)
     const [copied, setCopied] = useState(false)
     useEffect(() => {
       if (!copied) return
       const t = setTimeout(() => setCopied(false), 2000)
       return () => clearTimeout(t)
     }, [copied])
-    /* OPENING BY ITSELF NEVER TAKES THE CARET (Fable F5): the app's windows take the keyboard as they open, right when a
-       person opened one; this one opens by itself as the app starts, while he types his name in the sign-in card. Where
-       the caret stood is put back after the window's own take (a parent's effect runs after its child's). Opened from
-       the corner button, it takes the keyboard as any window does. */
-    const [caretAtStart] = useState(() => (typeof document !== 'undefined' ? document.activeElement as HTMLElement | null : null))
+    /* EACH COPY PRESS SPEAKS FOR ITSELF, THE NEWEST ONLY (Astra's code read, chat 165, 2): two presses with the first
+       still being answered — only the newest may say "Copied", and folding the window forgets both */
+    const copyReq = useRef(0)
+    /* FOLDED BY A PRESS, THE KEYS GO TO THE CORNER BUTTON (Astra's code read, 4): the window's opener was the corner
+       button, gone while the window is up, so the keys were left on nothing */
+    const pill = useRef<HTMLButtonElement | null>(null)
+    const foldedByPress = useRef(false)
     useEffect(() => {
-      if (startOpen && caretAtStart && caretAtStart !== document.body && caretAtStart.isConnected) caretAtStart.focus({ preventScroll: true })
-    }, [startOpen, caretAtStart])   // both fixed for the window's life: once, as it first opens
+      if (open || !foldedByPress.current) return
+      foldedByPress.current = false
+      const at = document.activeElement
+      if (!at || at === document.body) pill.current?.focus({ preventScroll: true })
+    }, [open])
     if (!open) {
       const last = view.pages[0]
-      return h('button', { type: 'button', className: 'abtn timing-pill', onClick: () => setOpen(true) }, 'Timing' + (last ? ' ' + secs(last.ms) : ''))
+      return h('button', { type: 'button', className: 'abtn timing-pill', ref: pill, onClick: () => { setQuiet(false); setOpen(true) } }, 'Timing' + (last ? ' ' + secs(last.ms) : ''))
     }
-    /* each press speaks for itself: "Copied" is taken away as the press is made, and shown again only if this copy went in */
-    const onCopy = async () => { setCopied(false); if (await copy(copyText(read(), clock()))) setCopied(true) }
+    const onCopy = async () => {
+      const mine = ++copyReq.current
+      setCopied(false)
+      const ok = await copy(copyText(read(), clock()))
+      if (ok && mine === copyReq.current) setCopied(true)
+    }
     const body = h('div', { className: 'tm-body' }, readoutSections(view).map(s => h('div', { key: s.head },
       h('div', { className: 'tm-h' }, s.head),
       s.empty && h('div', { className: 'tm-empty' }, s.empty),
@@ -58,10 +71,11 @@ export function makeTimingReadout({ React, FloatWin }: ReadoutParts): (p: Readou
         h('b', null, r.value))))))
     return h(FloatWin, {
       id: 'timing', title: 'Timing', sub: 'This computer only. Shown because the address ends in ?timing', className: 'timingwin',
-      onClose: () => setOpen(false),
-      /* up since the app started: anything opened after it answers Escape first (FloatWindow.tsx yieldsEscape — the
-         walk of 24 Nov 26, W19 (f)) */
-      yieldsEscape: true,
+      onClose: () => { copyReq.current++; setCopied(false); foldedByPress.current = true; setOpen(false) },
+      /* up all session: Escape is its own only with the keys inside it (FloatWindow.tsx bystander — the walk of 24 Nov 26,
+         W19 (f), and the code reads of chat 165) */
+      bystander: true,
+      quietOpen: quiet,
       tools: h('button', { type: 'button', className: 'abtn', onClick: onCopy }, copied ? 'Copied' : 'Copy all'),
       children: body,
     })

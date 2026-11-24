@@ -101,11 +101,16 @@ function watch(t0: number, state: () => 'shown' | 'failed' | 'waiting', alive: (
  *  "unchanged": it comes with no body, only its answer's header, and was not downloaded (the walk of 24 Nov 26, W14).
  *  Chrome gives a file it already held its body's size all the same (answered "unchanged", or taken from its memory —
  *  W7), so a file counts only when what came down the line is more than its body: the body came with it. */
-function downloadedBetween(t0: number, t1: number): number {
+/* the OTHER page's own files (named by the bundler after the page: LeaveWarPage-…, TrackerPage-…) are never this page's:
+   the Leave War's background download still arriving as the Tracker opened was counted as the Tracker's (Astra's code
+   read, chat 165, 3) */
+const OTHER_PAGE: Record<string, RegExp> = { leavewar: /\/TrackerPage-/, tracker: /\/LeaveWarPage-/ }
+function downloadedBetween(page: string, t0: number, t1: number): number {
   if (typeof performance === 'undefined' || !performance.getEntriesByType) return 0
   let b = 0
   for (const e of performance.getEntriesByType('resource') as PerformanceResourceTiming[]) {
     if (!/\.(js|css)(\?|$)/.test(e.name) || /timingwindow|TimingReadout/i.test(e.name)) continue
+    if (OTHER_PAGE[page]?.test(e.name)) continue
     if (e.responseEnd >= t0 && e.startTime <= t1 && e.encodedBodySize > 0 && (e.transferSize || 0) > e.encodedBodySize) b += e.transferSize
   }
   return b
@@ -116,7 +121,7 @@ function timePage(page: string, from: number): void {
   const first = !seen.has(page)
   watch(from, () => pageState(page), () => gen === pageGen, ms => {
     seen.add(page)
-    emit({ kind: 'page', page, first, ms, downloaded: first && OWN_DOWNLOAD.has(page) ? downloadedBetween(from, from + ms) : 0 })
+    emit({ kind: 'page', page, first, ms, downloaded: first && OWN_DOWNLOAD.has(page) ? downloadedBetween(page, from, from + ms) : 0 })
   })
 }
 
@@ -143,8 +148,14 @@ export function timingMark(m: TimingMark): void {
     return
   }
   const t = fromPress(m.t)
+  /* asked for while the tab is hidden (a page the app changes by itself — the role check at midnight): a hidden tab
+     draws nothing, so the wait would hold the time it stays hidden — never timed (the fresh Opus read, chat 165, F2) */
+  if (tabHidden()) { pageGen++; signinGen++; if (m.kind === 'signin') seen = new Set(['viewsched']); return }
   if (m.kind === 'signin') {
     pageGen++                                  // a page wait from before (a sign-out's own move) ends here (F4)
+    /* a new sign-in draws every page afresh (a sign-out that could not reload — a save waiting — drew the app again from
+       nothing): each page's next open is a first one (the fresh Opus read, chat 165, F3) */
+    seen = new Set(['viewsched'])
     const gen = ++signinGen
     signinT = t
     landing = true
