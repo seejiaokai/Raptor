@@ -93,7 +93,10 @@ const FILES = [
      "what here is detail that belongs in the full text?", never "cut to a number" (D141); each short form also has a
      character cap (GUIDE_SHORT_MAX, below). */
   ['raptor-port/CLAUDE.md',              0,  340],
-  ['.claude/rules/raptor-executor.md',   0,  108],
+  /* 108 -> 110, 25 Nov 26 (chat 173, his D2610, [READINGS-LAPSE-FIX] plan C2): the builder's stop now names a reading
+     of his words, and the closing report gains a Readings line — a rule the builder must have in hand while building,
+     so it belongs in this loaded file. A tripwire, not a target (D141). */
+  ['.claude/rules/raptor-executor.md',   0,  110],
   /* 63 -> 76, 23 Sep 26 (owner, D56): data-only problems are not findings, in the always-loaded
      copy so it is in force before the order is opened. */
   /* 76 -> 78, 7 Oct 26 (owner, D608): the approved walk-sizing wording adds two lines to step 4 - sizing never
@@ -222,7 +225,10 @@ const FILES = [
   /* DECISIONS.md 96 -> 110 (7 Nov 26, D1735 — the rules diet, plan §3): the steps for an area converted to a page, beside
      the three for an area still in short lines — both routes stand until the last area converts, and this file holds the
      steps every chat follows. Room, not a target; the paragraph leaves when the last area converts. */
-  ['DECISIONS.md',                       1,  110],   // 95 -> 96 (1 Nov 26, D1554): the map gained ONE row - the screen-design rulings' own area file
+  /* DECISIONS.md 110 -> 120 (25 Nov 26, chat 173, his D2610, [READINGS-LAPSE-FIX] plan C1): "A reading" — the one place
+     the rule is stated, beside the recording steps every role already comes here for; every pointer names it. A rulings
+     file is never trimmed (D136); room, not a target (D141). */
+  ['DECISIONS.md',                       1,  120],   // 95 -> 96 (1 Nov 26, D1554): the map gained ONE row - the screen-design rulings' own area file
 ]
 /* THE AREA RULINGS FILES — a tripwire in UTF-8 BYTES of the whole file, frontmatter and every section included (owner,
    D390 narrowing D141, 28 Sep 26): since each ruling became ONE short line, a line count cannot see a file growing

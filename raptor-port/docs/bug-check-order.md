@@ -1230,10 +1230,11 @@ and a seventh kind left out as doubtful, in `docs/superpowers/briefs/2026-11-10-
    (the sheet's rounds 5–7: their reads, re-reads and walks w5–w13) then judged the code against it, because the readers'
    brief restated the rule without defining the word, and the scenarios that put him on a ground row or a duty desk expected
    it to count — the reading written as the expected result. He found it by asking what there is to file for a
-   ground event. **Lesson:** a reading is his to settle, never left in a comment (`DECISIONS.md`, "A reading"); the brief
-   lists the open ones and asks for the unlisted, and a scenario resting on one is shown to him, never passed (§4,
-   "Before a brief leaves"); the roll-call sets a second answer to one question beside the first (§6); §12's box
-   (here, a SANS man on a ground row only).
+   ground event. **Lesson:** a reading is his to settle — put to him with a worked example, never left in a comment
+   (`DECISIONS.md`, "A reading"); a brief lists the open ones as readings to judge, never as part of the rule, and asks
+   for the unlisted, and a scenario resting on one holds a case on each side, shown to him, never passed (§4, "Before a
+   brief leaves"); the roll-call sets a second answer to one question beside the first, a difference MISSING until he
+   rules it (§6); and §12 holds a box for it (here, a SANS man on a ground row only).
 
 ## 8. Making the checks FIND rather than CONFIRM
 

@@ -57,6 +57,15 @@ drops the ruling's short line; out of one, it makes the short line from the full
 `--short-text`) and prints the page lines that state the ruling, to move. During a merge, `--merge` takes a page whole from
 the side that has it, writes the other side's new rows to the full-text file, lists what the side still in short lines changed under PLACE ON THE PAGE (never written), and stops where both sides edited the same page line.
 
+**A reading — what a word of his covers, or a case his words do not name, that a person would see — is his to settle,
+whoever meets it: drawing, wording, building, reading or walking.** It is never built on, drawn as settled or folded
+into other wording: it goes to him as its own question, with a worked example and how the app answers the same question
+elsewhere — at the latest named as a reading inside the thing he is asked to approve. Until he answers, the ruling's
+full row carries `**READING, OPEN (<date>, asked | not asked): <one way>; the other: <…>.**`, code already built on it
+carries `READING D<n>`, and `npm run readings` lists both. It leaves only by his ruling (step 2's mark); his approval
+of wording that only repeats the word does not settle it. A code comment that speaks of a reading he has answered cites
+his answer, `ruled D<n>`.
+
 **Parallel branches (owner, D78):** when several chats run at once, each reaches `main` only on his
 "merge live", ONE AT A TIME; whichever merges later merges `main` in first, and if a D-number
 clashes, the later branch renumbers ITS OWN rows — never the ones already on `main`. So numbers
