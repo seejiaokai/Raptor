@@ -3461,8 +3461,11 @@ function step(from, to, dir) {
   else { renderBoard(); renderSide(); }
   notify(); return true;
 }
-export async function doUndo() { return step(undoStack, redoStack, 'undo'); }
-export async function doRedo() { return step(redoStack, undoStack, 'redo'); }
+/* (a press still held ends first, and never happened — cancelGestures, "a press never outlives its gesture"; the lists
+   are read after it, since it puts them back as they stood before the press) */
+const endPressForStep = () => { if (cancelGestures()) { renderBoard(); notify(); } };
+export async function doUndo() { endPressForStep(); return step(undoStack, redoStack, 'undo'); }
+export async function doRedo() { endPressForStep(); return step(redoStack, undoStack, 'redo'); }
 /* Ctrl/⌘+Z undoes, Ctrl+Y and Ctrl/⌘+Shift+Z redo — everywhere on the tab
    EXCEPT inside a text box (the box's own undo is what the user means there)
    and under a question dialog (the answer comes first; App.jsx binds this to
@@ -3541,6 +3544,8 @@ export function renderBoard() {
   let svgW = W, svgH = H;
   if (arrangeMode) { const cv = canvasSize(board); svgW = cv.w; svgH = cv.h; }
   else { view = { x: 0, y: 0, k: 1 }; }
+  /* a press held on a ball, a group or the box ends with the element this removes (endPressesOnRedraw) */
+  endPressesOnRedraw();
   board.innerHTML = `<div class="flowwrap"><svg id="flowSvg" width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" class="${arrangeMode ? 'arrange' : ''}">
    <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="5.5" refY="3" orient="auto-start-reverse"><path d="M0,0 L6,3 L0,6 Z" fill="#5a6172"/></marker></defs>
    <g id="viewport"><g id="bandLayer"></g><g id="edgeLayer">${buildEdges()}</g><g id="nodeLayer">${nodes}</g><g id="overlayLayer">${buildOverlay()}</g></g></svg></div>`;
@@ -3992,26 +3997,44 @@ let firstFinger = null, fingerStop = null;
    stops them all and puts the chart, both Undo lists and the unsaved mark back: an unfinished press never happened. It
    runs before the departing squadron's history is parked or its memory emptied, at a session end, and once a question
    about the unsaved edits is answered, so what is saved or discarded is never a half-done drag. */
-const liveGestures = new Set();
+/* …AND A PRESS NEVER OUTLIVES ITS GESTURE (the night of 24 Nov 26, the two reads of the nine fixes — Opus F1, Astra 2;
+   msq-night-press-undo.test.tsx). Undo or Redo pressed with the mouse still down did not end the press. A ball's, a
+   group's and the selection box's listeners sit on an element the redraw removes: their lift never came, their stop
+   stayed in the list for good, and every later press kept the first one's note. A line handle's listeners (on the window)
+   lived through the Undo. A later "Save them", or the squadron move, then cancelled that "press" and laid its old note
+   over everything done since — the chart of before the Undo was what got saved, or the Undo lists came back with the
+   undone step in them. So:
+   - Undo and Redo end every press first, as a pick does (doUndo, doRedo): it never happened, and its note is gone;
+   - a redraw ends a press whose element it removes (renderBoard — each such press names its element here): what it had
+     done stands, as at a lift, and once no press is left the note goes with it. */
+const liveGestures = new Map();
 let pressSnap = null;
-function gestureBegan(stop) { liveGestures.add(stop); }
+function gestureBegan(stop, el = null) { liveGestures.set(stop, el); }
 function gestureEnded(stop) { liveGestures.delete(stop); }
 function notePress() {
   if (liveGestures.size) return;
   pressSnap = { syl: JSON.stringify(SYL), lay: JSON.stringify(layout), course, sylId: curSylId(),
     undo: undoStack.slice(), redo: redoStack.slice(), dirty: sylDirty };
 }
+/* (true where a press was under way and has been ended — the caller redraws) */
 function cancelGestures() {
-  const live = [...liveGestures], s = pressSnap;
+  const live = [...liveGestures.keys()], s = pressSnap;
   liveGestures.clear(); pressSnap = null;
   firstFinger = null; fingerStop = null; pan = null;
-  if (!live.length) return;
+  if (!live.length) return false;
   for (const stop of live) { try { stop(); } catch (_) { /* the next one still stops */ } }
   alignGuides = [];
-  if (!s || s.course !== course || s.sylId !== curSylId()) return;
+  if (!s || s.course !== course || s.sylId !== curSylId()) return true;
   SYL = JSON.parse(s.syl); byid = {}; SYL.forEach(e => byid[e.id] = e);
   layout = JSON.parse(s.lay); loadEdgeMeta();
   undoStack = s.undo; redoStack = s.redo; sylDirty = s.dirty; lastPush = null;
+  return true;
+}
+/* the presses whose element a redraw is about to remove (renderBoard, above) */
+function endPressesOnRedraw() {
+  if (!liveGestures.size) return;
+  for (const [stop, el] of [...liveGestures]) if (el) { try { stop(); } catch (_) { /* the next one still stops */ } liveGestures.delete(stop); }
+  if (!liveGestures.size) pressSnap = null;
 }
 function holdFirstFinger() {
   firstFinger = { syl: JSON.stringify(SYL), lay: JSON.stringify(layout), course, sylId: curSylId(),
@@ -4574,7 +4597,7 @@ function startMarquee(e, svg) {
   const fe = followEdge(e, draw);
   const off = () => { gestureEnded(stop); fe.stop(); svg.removeEventListener('pointermove', mv); svg.removeEventListener('pointerup', up); svg.removeEventListener('pointercancel', cancel); };
   const stop = () => { off(); marquee = null; const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = ''; };
-  gestureBegan(stop);
+  gestureBegan(stop, svg);
   if (e.pointerType !== 'mouse') fingerStop = stop;
   const mv = ev => { if (ev.pointerId !== pid) return; fe.point(ev); draw(ev); };
   /* a cancelled touch (a call, the system) selects nothing and leaves the selection as it was — and stops the pan, which
@@ -4598,8 +4621,10 @@ function startGroupDrag(ev) {
   groupDrag = { px: p.x, py: p.y, start, moved: false, snap: { syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }, pushed: false }; try { g.setPointerCapture(ev.pointerId); } catch (e) {}
   groupDrag.fe = followEdge(ev, moveGroup);
   g.addEventListener('pointermove', onGroupDrag); g.addEventListener('pointerup', endGroupDrag); g.addEventListener('pointercancel', endGroupDrag);
-  groupDrag.stop = () => { gestureEnded(groupDrag.stop); groupDrag.fe.stop(); g.removeEventListener('pointermove', onGroupDrag); g.removeEventListener('pointerup', endGroupDrag); g.removeEventListener('pointercancel', endGroupDrag); groupDrag = null; perfOff(); };
-  gestureBegan(groupDrag.stop);
+  /* (its own press by name, so a stop run late — by a redraw, after another press began — ends this one only) */
+  const gd = groupDrag;
+  gd.stop = () => { gestureEnded(gd.stop); gd.fe.stop(); g.removeEventListener('pointermove', onGroupDrag); g.removeEventListener('pointerup', endGroupDrag); g.removeEventListener('pointercancel', endGroupDrag); if (groupDrag === gd) { groupDrag = null; perfOff(); } };
+  gestureBegan(gd.stop, g);
   if (ev.pointerType !== 'mouse') fingerStop = groupDrag.stop;
 }
 function onGroupDrag(ev) { if (groupDrag) groupDrag.fe.point(ev); moveGroup(ev); }
@@ -4627,8 +4652,9 @@ function startDrag(ev) {
   drag.fe = followEdge(ev, moveBall);
   g.addEventListener('pointermove', onDrag); g.addEventListener('pointerup', endDrag); g.addEventListener('pointercancel', endDrag);
   /* only a finger's gesture is the pinch's to stop — a mouse drag carries on (Fable F4) */
-  drag.stop = () => { gestureEnded(drag.stop); drag.fe.stop(); g.removeEventListener('pointermove', onDrag); g.removeEventListener('pointerup', endDrag); g.removeEventListener('pointercancel', endDrag); drag = null; alignGuides = []; perfOff(); };
-  gestureBegan(drag.stop);
+  const d = drag;
+  d.stop = () => { gestureEnded(d.stop); d.fe.stop(); g.removeEventListener('pointermove', onDrag); g.removeEventListener('pointerup', endDrag); g.removeEventListener('pointercancel', endDrag); if (drag === d) { drag = null; alignGuides = []; perfOff(); } };
+  gestureBegan(d.stop, g);
   if (ev.pointerType !== 'mouse') fingerStop = drag.stop;
 }
 function onDrag(ev) { if (drag) drag.fe.point(ev); moveBall(ev); }
