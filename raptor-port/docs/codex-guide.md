@@ -6,8 +6,8 @@ until 2 Nov 26 and were moved here whole, byte for byte, by `backlog-archive.mjs
 when you review, and when you build. **Read this file before any review or build.** Paths inside them are from the repo
 root.
 
-**Who does what now (D67, D590, D601).** Opus 5.5, in Claude Code, plans and builds. Codex is called as the REVIEWER:
-Astra reviews what Opus wrote — the standing reviewer again since D1770 (8 Nov 26), first of two where two are required
+**Who does what now (D67, D590, D601).** Opus 5.5, in Claude Code, plans and builds (Fable the high-risk work, and it adjusts the app's words: D2440, D2441). Codex is called as the REVIEWER:
+Astra reviews what Opus or Fable wrote — the standing reviewer again since D1770 (8 Nov 26), first of two where two are required
 (OIL, published records, permissions, saved data, an important plan, a changed working guide); a fresh, blind Opus read of
 finished code stays beside his on every code read (D790); where two are required, Sol 6.1 is the second only on his call,
 otherwise the fresh, blind Opus reader (D1760, D1761); each reads independently and never reads the other's report first. **Codex BUILDS only on his word, each time.** For a build, follow his instruction for it and the
