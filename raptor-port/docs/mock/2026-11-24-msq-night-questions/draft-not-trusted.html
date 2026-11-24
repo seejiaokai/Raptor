@@ -1,0 +1,191 @@
+<title>TALON Night Questions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: one reading column; a short answer list on top, then one card per question with its picture beside the words. */
+:root {
+  --bg: #f3f6f8; --panel: #ffffff; --fg: #121a21; --muted: #5a6875; --line: #d9e1e7;
+  --accent: #0a8fb0; --accent-soft: #e2f4f9; --mark: #e0a100; --warn: #b4442f;
+  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --body: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0c1014; --panel: #141b22; --fg: #e6edf2; --muted: #93a3b0; --line: #26313b;
+  --accent: #3cc8e8; --accent-soft: #10303a; --mark: #ffc53d; --warn: #ff8a73; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0c1014; --panel: #141b22; --fg: #e6edf2; --muted: #93a3b0; --line: #26313b;
+  --accent: #3cc8e8; --accent-soft: #10303a; --mark: #ffc53d; --warn: #ff8a73; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 48px; }
+.wrap { max-width: 860px; margin: 0 auto; display: grid; gap: 28px; }
+h1 { font-family: var(--display); font-size: 1.7rem; line-height: 1.2; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--display); font-size: 1.2rem; margin: 0; text-wrap: balance; }
+h3 { font-family: var(--display); font-size: 1rem; margin: 0; letter-spacing: .02em; color: var(--muted); text-transform: uppercase; }
+p { margin: 0; }
+.lede { color: var(--muted); max-width: 65ch; }
+.now { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 12px; }
+.now ol { margin: 0; padding-left: 1.4em; display: grid; gap: 8px; }
+.now li a { color: var(--accent); font-weight: 600; text-decoration: none; }
+.now li a:hover, .now li a:focus-visible { text-decoration: underline; }
+.rec { color: var(--muted); }
+.rec b { color: var(--fg); font-weight: 600; }
+.q { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 14px; scroll-margin-top: 12px; }
+.q .num { font-family: var(--display); color: var(--accent); font-weight: 700; }
+.q .body { display: grid; gap: 10px; min-width: 0; }
+.pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.pair.narrow { grid-template-columns: minmax(0, 1fr) minmax(0, 280px); }
+@media (max-width: 640px) { .pair, .pair.narrow { grid-template-columns: minmax(0, 1fr); } }
+.label { font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.answer { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; }
+.answer .label { color: var(--accent); }
+.words { font-family: var(--body); font-weight: 600; }
+.shot { position: relative; margin: 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); background: #0b0e12; }
+.shot img { display: block; width: 100%; height: auto; }
+.shot .ring { position: absolute; border: 3px solid var(--mark); border-radius: 10px; box-shadow: 0 0 0 2px rgba(0,0,0,.35); pointer-events: none; }
+figcaption { font-size: .86rem; color: var(--muted); padding-top: 6px; }
+ul.cases { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.nopic { font-size: .86rem; color: var(--muted); border: 1px dashed var(--line); border-radius: 8px; padding: 10px 12px; }
+.older { display: grid; gap: 14px; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+
+<div class="wrap">
+  <header style="display:grid; gap:8px">
+    <h1>Questions from the night of 24 Nov</h1>
+    <p class="lede">Nine questions from the overnight check. Nothing here has been built yet. Anything new on screen is drawn for you to see before it is built. Reply in the chat with the number and "yes", or tell me what you want instead.</p>
+  </header>
+
+  <section class="now" aria-labelledby="now-h">
+    <h2 id="now-h">Look at these now</h2>
+    <ol>
+      <li><a href="#q1">Tracker bar: refusal words cut off</a> <span class="rec">· recommended: <b>show them whole in the grey "Blocked:" note you already ruled</b></span></li>
+      <li><a href="#q2">Phone: no way back from a greyed input window</a> <span class="rec">· recommended: <b>one "Back to the admin view" button in its band</b></span></li>
+      <li><a href="#q3">What Undo says after a role change</a> <span class="rec">· recommended: <b>name everything the Undo brings back</b></span></li>
+      <li><a href="#q4">Tracker fails while switching squadrons</a> <span class="rec">· recommended: <b>new, truer words on the panel</b></span></li>
+      <li><a href="#q5">Bell line pressed, then Stay</a> <span class="rec">· recommended: <b>leave as it is</b></span></li>
+      <li><a href="#q6">Phone Inputs: Filter lit with "1" when it opens</a> <span class="rec">· recommended: <b>keep</b></span></li>
+      <li><a href="#older">Four smaller ones from earlier in the night</a> <span class="rec">· recommended: <b>a, say why · b, keep for now · c, leave for the database step · d, leave it</b></span></li>
+    </ol>
+  </section>
+
+  <article class="q" id="q1">
+    <h2><span class="num">1</span> · Tracker bar: refusal words cut off</h2>
+    <div class="pair">
+      <div class="body">
+        <p><b>What happens today.</b> Hunter has unsaved chart edits on 149's Tracker, a squadron he plans, and switches to the member view. That takes his pages back to his own squadron, 142. There he picks another squadron or logs out, the app asks about his edits, and he presses Save them. The Save is refused, because the app never saves into a Tracker other than his own pages' squadron, and a box says "This change could not be saved." That part is right. A member can save charts on his own squadron's Tracker: members and admins have the same rights there, and only the flex settings are an admin's.</p>
+        <p>Back in the admin view, the Tracker's bar repeats the same words in red beside Save changes, cut short: "This cha…" on a phone, "Th…" on a desktop. They stay like that until his next save. On a desktop the space is 51 wide and the words need 183, so widening it would wrap the bar onto more rows.</p>
+        <p><b>What you have already ruled.</b> Elsewhere in the app, a change that is refused shows as the plain grey note that opens with a bold "Blocked:" (the schedule, the Leave War, the Grades window). The Tracker's refusal does not use that look.</p>
+        <div class="answer"><span class="label">Recommended</span><p>The Tracker's refusal takes that same grey "Blocked:" note, its words whole, and the bar keeps only a small red mark beside Save changes. Drawn for you first, with the other choice beside it: the red words on a line of their own under Save changes.</p></div>
+      </div>
+      <figure class="shot" style="margin:0">
+        <img src="img/bar-cut.png" alt="The Tracker bar on a phone: red words reading 'This cha…' next to the Save changes button.">
+        <span class="ring" style="left:52%; top:24%; width:20%; height:52%"></span>
+        <figcaption style="padding:6px 10px">Phone. Marked: the cut-off words beside Save changes.</figcaption>
+      </figure>
+    </div>
+  </article>
+
+  <article class="q" id="q2">
+    <h2><span class="num">2</span> · Phone: no way back from a greyed input window</h2>
+    <div class="pair narrow">
+      <div class="body">
+        <p><b>What happens today.</b> Saber has picked 149, a squadron he plans. On 149's Inputs he types in another person's input, then switches to the member view. The input window goes grey and its band says "Switch back to the admin view to change this, or close it."</p>
+        <p>On a desktop he can do that: his name badge sits above the grey and can be pressed. A phone has no name badge, and the grey covers the ☰ menu. Close is then the only way out, and it loses the words he typed.</p>
+        <p><b>Not settled.</b> The night's check could not get into this state on an upright phone. The open window already covers ☰, so he cannot switch to the member view with it open. From reading how the app is built, it can happen where the window leaves ☰ in reach: a short input window, a phone turned on its side, or a small tablet. That has not been pressed on the app yet.</p>
+        <div class="answer"><span class="label">Recommended</span><p>Wherever the name badge is not shown, the band carries one button with the ☰ menu's own words: <span class="words">"Back to the admin view"</span>. The band should never name a way out that the screen does not give. Drawn for you first.</p></div>
+      </div>
+      <figure class="shot" style="margin:0">
+        <img src="img/phone-window.png" alt="An input window filling a phone screen, before the switch; the ☰ menu and the top bar are hidden behind it.">
+        <span class="ring" style="left:1%; top:0.5%; width:22%; height:7%"></span>
+        <figcaption style="padding:6px 10px">Phone, the window as it opens, before the switch. Marked: where ☰ sits behind it. No picture yet of the greyed window on a phone.</figcaption>
+      </figure>
+    </div>
+  </article>
+
+  <article class="q" id="q3">
+    <h2><span class="num">3</span> · What Undo says after a role change</h2>
+    <div class="pair">
+      <div class="body">
+        <p><b>What happens today.</b> Hunter is an admin of 142 who also plans 149. On Admin → Users, Saber changes Hunter's Role to Member and presses Save. That Save also ends Hunter's Plan of 149. Saber presses Undo. The bubble says only "Undid: Hunter's role", but the Plan of 149 comes back too.</p>
+        <p>On 24 Nov you approved that an Undo of two changes names both. These cases do not yet.</p>
+        <p><b>Recommended words</b> (reviewed by Fable, in the same shape as the Undo words you approved on 24 Nov):</p>
+        <ul class="cases">
+          <li>Made a member, with a sign-in name change in the same Save: <span class="words">"Undid: Made a member, sign-in name changed · Hunter"</span></li>
+          <li>Only his sign-in name changed (today "Undid: a settings change"): <span class="words">"Undid: Sign-in name changed · Hunter"</span></li>
+          <li>Made a member while he plans 149: <span class="words">"Undid: Made a member, Plan of 149 ended · Hunter"</span></li>
+          <li>All three in one Save: <span class="words">"Undid: Made a member, Plan of 149 ended, sign-in name changed · Hunter"</span></li>
+          <li>The other way, a member made an admin: <span class="words">"Undid: Made an admin of 142 · Hunter"</span></li>
+        </ul>
+        <p>Hovering on Undo or Redo shows the same words after "Undo —" or "Redo —".</p>
+        <div class="answer"><span class="label">Recommended</span><p>Use these words. Drawn in the bubble for you, then built. The longest takes two lines on a phone, as the two-change words you approved already do.</p></div>
+      </div>
+      <figure class="shot" style="margin:0">
+        <img src="img/undo-today.png" alt="Admin, Users list with Hunter's row at the top; the Undo bubble at the bottom reads 'Undid: Hunter's role'.">
+        <span class="ring" style="left:16%; top:85%; width:26%; height:10.5%"></span>
+        <figcaption style="padding:6px 10px">Desktop, Admin → Users. Marked: today's bubble, "Undid: Hunter's role".</figcaption>
+      </figure>
+    </div>
+  </article>
+
+  <article class="q" id="q4">
+    <h2><span class="num">4</span> · Tracker fails while switching squadrons</h2>
+    <div class="body">
+      <p><b>What happens today.</b> Hunter picks 149, and something fails while the Tracker is moving to 149's charts, most likely the browser failing to save. This is rare. A full-page panel then says <span class="words">"Couldn’t finish upgrading your Tracker data"</span> and under it <span class="words">"The Tracker could not finish upgrading your data — the browser did not keep what was written. Reload to try again."</span> That names a cause, an upgrade, that may not be what happened.</p>
+      <p>After a reload he lands on his own squadron and must pick 149 again (read from how the app is built, not yet pressed). Nothing saved is lost. The Undo steps the Tracker was holding for each squadron are lost.</p>
+      <div class="answer"><span class="label">Recommended</span><p>Heading <span class="words">"Couldn’t switch squadrons"</span>, line <span class="words">"The Tracker could not switch squadrons. Reload, then pick the squadron again."</span> The panel shown when the Tracker first loads keeps its own words. In one rarer case he was picking his way back to the squadron he had just left, so "switch" is a little loose there; the same words would still show. Drawn for you first.</p></div>
+      <p class="nopic">No picture yet. This panel shows only when something fails during the switch, so it will be drawn with the new words for you to see.</p>
+    </div>
+  </article>
+
+  <article class="q" id="q5">
+    <h2><span class="num">5</span> · Bell line pressed, then Stay</h2>
+    <div class="body">
+      <p><b>What happens today.</b> Hunter has unsaved chart edits and presses a line in his bell. The app first asks whether to save them. He presses Stay. Nothing opens, which is right, but the line is already marked as read.</p>
+      <div class="answer"><span class="label">Recommended</span><p>Leave it. He chose to stay, and the line is still in his bell to press again. Holding the read mark until the line really opens would be a small change with nothing new on screen. Say if you want it.</p></div>
+      <p class="nopic">No picture: nothing on screen changes apart from the line's read mark.</p>
+    </div>
+  </article>
+
+  <article class="q" id="q6">
+    <h2><span class="num">6</span> · Phone Inputs: Filter lit with "1" when it opens</h2>
+    <div class="pair narrow">
+      <div class="body">
+        <p><b>What happens today.</b> Ranger, a member, opens Inputs on his phone. It opens filtered to his own inputs, so the Filter button is lit pale blue with a "1" on it.</p>
+        <div class="answer"><span class="label">Recommended</span><p>Keep it. This is the look you approved on 24 Nov for a filter that is on. The lit button tells him the list is filtered, and Clear filters shows everyone's. The only new thing is that a member sees it lit the moment the page opens.</p></div>
+      </div>
+      <figure class="shot" style="margin:0">
+        <img src="img/filter-lit.png" alt="Phone Inputs page for Ranger: the Filter button at the right is lit with a badge reading 1.">
+        <span class="ring" style="left:88.5%; top:36.5%; width:11%; height:17.5%"></span>
+        <figcaption style="padding:6px 10px">Phone, Ranger. Marked: the lit Filter button with "1".</figcaption>
+      </figure>
+    </div>
+  </article>
+
+  <section class="q" id="older">
+    <h2><span class="num">7</span> · Four smaller ones from earlier in the night</h2>
+    <div class="older">
+      <div class="body">
+        <h3>a · Plan taken away during unsaved chart edits</h3>
+        <p>Hunter has unsaved chart edits on 149. Saber ends Hunter's Plan of 149. Hunter's Tracker goes back to 142, his edits are gone, and the bar shows "This change could not be saved.", cut short as in question 1. His bell does get the line "Plan of 149 ended", but nothing on the Tracker says why his edits went. "This change" is also loose for a whole set of edits.</p>
+        <p class="rec">Recommended: <b>say why</b>. The app's writing guide asks every refusal to give its reason, and here he loses work. Suggested words, in whichever place question 1 settles: <span class="words">"Plan of 149 ended, so your chart edits were not saved."</span> Drawn for you first, on the same page as question 1.</p>
+      </div>
+      <div class="body">
+        <h3>b · His own move at midnight during unsaved edits</h3>
+        <p>Hunter's own move to another squadron lands at midnight while he has unsaved chart edits. The Tracker stays on his old squadron and refuses his saves until he discards the edits. Once he closes the chart editor, nothing on screen says why.</p>
+        <p class="rec">Recommended: <b>keep for now</b>. It needs a move at midnight with edits open, which is very rare. A line there would be new, drawn first.</p>
+      </div>
+      <div class="body">
+        <h3>c · A right lowered in another tab</h3>
+        <p>Hunter has the Tracker open on 149 in one tab. In another tab of the same browser, Saber ends Hunter's Plan of 149. Until Hunter's tab is refreshed, it can still save marks on 149, with no message. Today the app saves in the browser, so this can only happen between two tabs on one device. It was not caused by last night's work.</p>
+        <p class="rec">Recommended: <b>leave it for the database step</b>, when every device reads the same saved data. It stays filed so it is checked then.</p>
+      </div>
+      <div class="body">
+        <h3>d · A window on his own squadron when he switches to the member view</h3>
+        <p>Saber is on 142 with one of 142's input windows open, and switches to the member view. The window stays open with no grey band. It now works with a member's rights, so he can still change only what a member may. The grey "Member view." band appears only where switching back would bring the window back as it was, and here nothing is held.</p>
+        <p class="rec">Recommended: <b>leave it</b>. The window already obeys the member's rights, so a band would only add words.</p>
+      </div>
+      <p class="nopic">No pictures yet for these four. Each needs a set-up across two tabs, a midnight change or a window open at the switch. Say which you want to see and I'll take them.</p>
+      <p class="nopic">Taken off this page, nothing to decide: the Tracker's cover in the member view, "This is 149's Tracker. Leave the member view to open it." These are the words you ruled on 22 Nov. Since the Tracker now follows the squadron picked, they show in one case only, while unsaved chart edits hold the Tracker on 149, and they are still true there.</p>
+    </div>
+  </section>
+</div>

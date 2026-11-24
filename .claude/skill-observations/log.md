@@ -1545,3 +1545,16 @@ sides.
 **Issue:** The first walk's lead ran three walkers side by side without the shared checks lock, though the rules require it, while another chat used the same PC. The two later briefs named the exact take, beat and release commands, said "mandatory" and asked for the release in the report, and both leads took and released it.
 **Suggested improvement:** The overnight guide's brief list should require the lock commands written out in every walk or full-check brief, and a "lock released at" line in the helper's report, checked by the coordinator.
 **Principle:** A shared-resource rule a delegate must follow belongs in the delegate's brief as the exact commands, with proof of it asked for in the report.
+
+### Observation 1044: A questions page went to the owner with facts nobody checked against the app
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 153, after its overnight run, at 62–72% full
+**Skill:** New skill candidate: questions-page
+**Type:** open-source
+**Phase/Area:** putting questions to a non-technical owner
+
+**Issue:** A page of nine questions was drawn from the night's notes, not from the app. A reviewer's edit added a false fact ("a member cannot save a chart") and the host published it unchecked. Pictures were reused from the walk and did not show the cases they sat beside. The owner said the questions were getting worse and the mistakes more.
+**Suggested improvement:** A questions page is built by a fixed routine: each case pressed on the app and read in the code; one "today" picture of exactly that case and a drawing of the proposal; recommendations checked against the rulings; then the host re-reads every sentence against the app before publishing, and marks anything unconfirmed. A reviewer's edits are checked like the first draft. Late in a long chat, hand this to a fresh chat instead.
+**Principle:** Every fact on a page put to a decision-maker is checked against the source at the time of writing, including the facts a reviewer added; notes and earlier reports are leads, not evidence.
