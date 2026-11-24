@@ -100,3 +100,37 @@ S2. **Publishing a weekend or holiday that no Leave War period covers.** Today, 
 - **"You are not allowed to do that" / "Only a master admin can do that":** safety nets behind buttons the screen
   already hides or greys; a later round, as a table.
 - **The dashes** (103 notes): the next rounds, area by area.
+
+## After the fresh Fable's read (24 Nov 26) — the builder's answers, and the words as they go to him
+
+Its report, whole: `2026-11-24-words-r4-fable-adjust.md`. It kept every draft and raised fifteen doubts; each is answered
+here, and four change what goes to him.
+
+- **Q1 (doubts 1, 2):** the rule is for any input, not only leave: when the KIND changes the bell says "<old> changed
+  to <new>" ("LL changed to OL", "Training changed to Meeting"), title or no title; "Renamed — was <old title>" is said
+  only when a title's own words change. A title given to an input that had none, a title taken away and an Attach's
+  "To" changed keep today's words in this round; they are listed for a later one.
+- **Q2 (doubts 3, 4, 5):** an input with no title: "Now LL (AM)"; one with a title: "Now AM"; the day moved as well:
+  "Now Thu 16 Jul (AM)". It is put to him as carrying D1525's form over to the Inputs page's bell line, not as already
+  ruled. "LL" is a word added (true: its kind, in bold above); the clock times are numbers cut, his to take.
+- **Q3 (doubts 6, 7, 8):** every part after the first starts with a small letter unless it starts with a name or "You"
+  ("Cancelled — weather, renamed — was Training"; "Un-cancelled, now 09:00–11:00"; "…, Ranger added"). The count of
+  "more changes" never counts a replaced bid, which is still said after the rest. A tap opens the input as it now
+  stands; the page does not claim it shows what changed.
+- **Q4a (doubt 9):** the value named is the box that failed, the first where both do.
+- **Q4b (doubt 10) — CHANGED:** the tap's line is one of a family of seat refusals shaped "Ranger — reason", which keep
+  their dash until the dash round (§1b test 9: relatives change together). So in this round the pair is made one by
+  giving the drag the tap's words: both read `Ranger — already in that seat`. No new words.
+- **Q4c (doubt 12):** thirteen relatives, not twelve. That another squadron's scheduler is told the same line is
+  today's wording too; left with the two-squadron words.
+- **S1 (doubt 13):** one week reads "the next week": `Everyone now opens on the next week, to Sunday`.
+- **S2 (doubts 14, 15) — CHANGED:** the day's warning list already says this in words he has: `No Leave War period for
+  2026, so no OIL can be earned for this day. Create the period on the Leave War.` (`engine/validate.ts`). The passing
+  note takes those words exactly, so one message has one wording. Joined after another line it follows as its own
+  sentence, as the unanswered-OIL line does.
+- **S3 — ADDED (doubt 15):** "leave war period" in small letters in three more places becomes "Leave War period", the
+  app's own name: `Only a scheduler can create a Leave War period`, `The 2026 Leave War period is created. Open its
+  dates for bidding here.`, and the hover of the "Create the 2026 period" button.
+- **No separate cold read this round:** no wording here that carries a reason, a cost or an instruction is new — Q4a's
+  and S2's are words already live elsewhere in the app; the rest are one done thing each (§1b test 11).
+- **Longer than today, marked so on his page:** Q1 (3 → 4 words), Q3 A (6 → 10), Q3 B (6 → 9), Q4c (7 → 8), S1 (9 → 10).
