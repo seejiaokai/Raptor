@@ -1381,7 +1381,7 @@ sides.
 
 **Status:** OPEN
 **Date:** 24 Nov 26
-**Session context:** the SANS words job (chats 156–157, logged by chat 166) — a bell questions page put to the owner; numbered past 1050–1052 held on other branches.
+**Session context:** the SANS words job (chats 156–157, logged by chat 169) — a bell questions page put to the owner; numbered past 1050–1052 held on other branches.
 **Skill:** brainstorming
 **Type:** open-source
 **Phase/Area:** asking questions — each question on a questions page or in chat
