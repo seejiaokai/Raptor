@@ -31,9 +31,10 @@ next. Never from memory — the order changes.
 6. **The rulings that apply** — listed for him in the app's words, any clash flagged and resolved (§12's second box;
    `raptor-port/CLAUDE.md`'s standing order "sweep the rules"); each checked against the running build, pass or fail;
    on FULL, swept one mark per surface (§5's table; open **§2a** whole, its "Rules and logic" row). A ruling's "left as
-   it is today" half is pinned by a test before the changed half is built (§8, its point 7). **FULL also:** the
-   scenarios designed by a reader who did not build it — open **§4** (who reads now, the finder wording, what is not a
-   finding, "before a brief leaves").
+   it is today" half is pinned by a test before the changed half is built (§8, its point 7). **WALK and FULL also:**
+   the scenarios designed by Astra and a fresh, blind Fable, each blind to the other, the host combining the lists,
+   whatever the risk (D2443) — open **§4** (who reads now, the finder wording, what is not a finding, "before a brief
+   leaves").
 7. **Build, then open the pull request into `main`** — GitHub's run is the gates while the repo is public (§5, D1086).
 8. **The roll-call** — open **§6**. **Its table** (WALK with a shared drawer, and FULL), with **§2a** opened whole
    (its table for the kind of work): name the thing; list every place the app draws it; three columns — does it SHOW,

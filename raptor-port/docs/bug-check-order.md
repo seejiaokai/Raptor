@@ -206,7 +206,7 @@ deliberately. Ranked by value for the cost:
 
 | Rank | Job | How many | Why it beats the builder alone |
 |---|---|---|---|
-| 1 | **Designing the test scenarios** (D6) — hunting for what is MISSING, not reviewing what is there | One reviewer, plus a fresh, blind Fable designer on high-risk work (D2257, D2258, D2440) | It works from what was PROMISED, not from what the builder happened to build. On the OIL build, Fable's two top-ranked predictions were both real defects. |
+| 1 | **Designing the test scenarios** (D6) — hunting for what is MISSING, not reviewing what is there | Astra and a fresh, blind Fable designer, each blind to the other, on every walk whatever the risk (D2443; D2257, D2258, D2440) | It works from what was PROMISED, not from what the builder happened to build. On the OIL build, Fable's two top-ranked predictions were both real defects. |
 | 2 | **Reading the code, on high-consequence work** — money, earned entitlement, deletion, permissions, published or frozen records, persistence, live-versus-issued reads | **Both, independently, blind to each other** | Fresh reasoning catches silently wrong existing code. It found five money defects here that driving the app would probably never have surfaced. |
 | 3 | **Red-teaming the RULES before building** | One; both if conflicting rulings touch money or authority | Catches a rule that is obsolete, incomplete or self-contradictory before code hardens around it. |
 | 4 | **Attacking the method itself, after a defect escapes** | One drafts, the other attacks | Outsiders change the checking system; the builder defends the process that missed it. After escapes, not routinely. |
@@ -217,6 +217,11 @@ run — D903, D1770; it was Fable); the
 red team of an important plan (rank 3) — BOTH; the code reads on high-consequence work (rank 2) — BOTH. Measured on
 28 Sep 26: three Fable runs cost ~1.4M Claude tokens and found the serious issues; the doubled scenario and side-question
 runs mostly repeated each other.
+*Since D2443 (24 Nov 26 — "We should also ask fable and Astra to design the walk scenarios so that is robust"): a walk's
+scenario design is no longer one reviewer's — every walk, on a WALK or a FULL check and whatever the risk, has its
+scenarios designed by Astra and a fresh, blind Fable helper, each blind to the other, the host combining the two lists;
+where Astra cannot run, a fresh Opus reader takes Astra's seat and Fable still designs. Side questions stay with one
+reader as above.*
 
 **WHO THE TWO ARE NOW (owner, D590, 5 Oct 26 — "A").** Wherever this section says "Fable", "both" or "the other
 providers" about work OPUS wrote: **Astra reviews it, and Sol 6.1 is the second reader where two are required** — the
@@ -234,8 +239,8 @@ fixes of 3 Oct (`handpass/2026-10-05-codex-stack-check.md` §10.1); **Sol 6.1 ke
 Sol, the fresh, blind Opus reader holds the second seat; where Astra cannot run, a fresh Opus reader takes the one-reviewer
 jobs (D903, D1770 — the agent's reading).*
 *Since D2258 and D2440 (21 and 24 Nov 26): the agent picks Fable itself for the work it ranks high risk, other readers
-beside it, with no end date; on that work a fresh, blind Fable designs scenarios beside Astra's, the host combining the
-lists (D2257); by D2441 a fresh Fable helper also reviews and adjusts the app's words; "Fable is on call only" above
+beside it, with no end date; by D2443 a fresh, blind Fable designs every walk's scenarios beside Astra's, whatever the
+risk, the host combining the lists (D2257); by D2441 a fresh Fable helper also reviews and adjusts the app's words; "Fable is on call only" above
 holds for the rest.*
 
 **Who reads the finished code now (D790, D903, D1734, D1770):** Astra is the standing reviewer (D1770, 8 Nov 26 — "Yes Astra is the standing reviewer"). Sol 6.1 is called only when he calls for him (D1734; D1743's window, when Sol was called wherever a second reader fitted, closed Mon 9 Nov 26 19:00). Beside Astra's read:
@@ -552,8 +557,8 @@ lived in a shared drawer and a new mode. **A cosmetic change to a shared drawer 
 |---|---|---|
 | **NONE** | Nothing. | 0 |
 | **LOOK** | The gates; one before/after picture at phone and desktop; a two-line evidence sheet. | 15–20 min |
-| **WALK** | The gates; the roll-call (if a shared drawer); the door check (if a gesture); a walk of the touched surfaces at both widths, sized by the sizing step (§7.0); the new gesture in both orders; a break test per surface; the sheet. | 1–1½ h |
-| **FULL** | Everything: the rules sweep; the other model designs the scenarios; the roll-call; the door check; a walk sized by the sizing step (§7.0); break tests; the case seeded into the demo data; **both** models read the finished code and the same brief under §4's blindness rules, and are asked for absences; re-walk what the fixes touched; the sheet with its pictures; then the owner's look. | 3–5 h of agent time |
+| **WALK** | The gates; the scenarios designed by Astra and a fresh, blind Fable (§4, D2443); the roll-call (if a shared drawer); the door check (if a gesture); a walk of the touched surfaces at both widths, sized by the sizing step (§7.0); the new gesture in both orders; a break test per surface; the sheet. | 1–1½ h |
+| **FULL** | Everything: the rules sweep; Astra and a fresh, blind Fable design the scenarios (§4, D2443); the roll-call; the door check; a walk sized by the sizing step (§7.0); break tests; the case seeded into the demo data; **both** models read the finished code and the same brief under §4's blindness rules, and are asked for absences; re-walk what the fixes touched; the sheet with its pictures; then the owner's look. | 3–5 h of agent time |
 
 The walk is the dearest part and the part whose cost varies most: what past walks of each type of change cost
 and found is in `docs/walk-ledger.md` §The figures (D607).
