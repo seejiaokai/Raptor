@@ -9,14 +9,16 @@ checks and the deploy are in `raptor-port/docs/gates-and-deploy.md`.
 ## "Push" and "merge live"
 
 - Push a branch freely; ask before `main`. A branch push changes nothing official — one that changes the app gives him
-  a Vercel link, a notes-only push builds nothing (D2032) — so "push" and "merge live" are not the same thing (D60,
+  a Vercel link, a notes-only push normally skips the build (D2032) — so "push" and "merge live" are not the same thing (D60,
   D1407, D1737, D1980).
 - Nothing reaches `main` without his explicit "merge live". The one exception: a pull request that changes only notes
   goes live by itself once its run is green — the agent checks the file list, merges and says so in its report. A
   rules-diet step waits for his word all the same (D60, D1407, D1737, D1980); an unattended run's notes wait for the
   morning unless he gave "auto merge live" (D1093).
-- **Before merging a notes-only pull request, open the steps:** what "only notes" covers — never a working guide, a
-  rule file, a hook, a setting, a skill or a workflow — and the checks to run on his PC first (D1407, D1737, D1980).
+- **Before deciding a job ships as notes only, and before merging one, open the steps** — §"Push" and "merge live" —
+  for the exact file list and the checks to run on his PC first. The rulings files can qualify; an unscoped rule file,
+  a working guide, a hook, a setting, a skill, an agent, a workflow, `AGENTS.md` and `raptor-port/CLAUDE.md` cannot
+  (D1407, D1737, D1980).
 - **Before every merge into `main`** — on his word, a notes-only one, an "auto merge live" run — **open the steps and
   follow the four there:** take the merge lock, check the branch is level with `main`, `gh pr merge <PR> --merge`
   (never `--auto`), release the lock (D1746).
@@ -49,8 +51,11 @@ checks and the deploy are in `raptor-port/docs/gates-and-deploy.md`.
 - The job's closing records are pushed before his look is asked for, written to be true once it is live. On his "merge
   live", merge at once if the run on the last pushed commit is green and the branch is level with `main`; nothing is
   pushed between his word and the merge, except bringing `main` in when the branch is behind it (D1742, D78, D1746).
-- Then carry it the whole way without checking in: `main`'s own run green → Vercel reports the live app READY → one
-  notification, with the link. A green check is not done, and a merged pull request is not done (D143).
+- Then carry it the whole way without checking in — **open the steps for how to read each:** `main`'s own run green →
+  a READY Production deployment whose commit holds the merge → one notification, with the link. A green check is not
+  done, and a merged pull request is not done (D143).
+- A merge of notes only normally starts no build on Vercel: confirm the skip (`raptor-port/docs/gates-and-deploy.md`,
+  "A notes-only push skips its build") and report the notes merged, without waiting for a new READY (D2032).
 - His "merge live" (or "merge now") means his own look is done — never ask him about it again (D1640). If his look
   brings a change — or bringing `main` in to settle a clash changed this branch's own app code — the fix and its
   records are pushed together and his look is asked again (D1742, D1746).
@@ -76,14 +81,17 @@ checks and the deploy are in `raptor-port/docs/gates-and-deploy.md`.
   only: the rule above); a red run is fixed before his look is asked for (D1086, D151).
 - Once the repo is private again the full check is back on his PC and his runner restarts — read the steps first (D89,
   D106, D1530).
-- **Before the full unit suite, any browser-test run, the Tracker smoke, a fanned-out walk or anything that builds,
-  take the checks lock** — its commands, what needs no lock and when a lock is stale are in the steps. Held: wait,
-  never start alongside. Release it the moment the run ends, pass or fail (D228).
+- **Before the full unit suite, a browser-test run of more than one file, the Tracker smoke or a fanned-out walk, open
+  the steps and take the checks lock.** Anything else that builds — even one browser-test file — waits until the lock
+  is free; one unit test file, a typecheck or one walk script on a build already served needs none. Held: wait, never
+  start alongside. Release a lock you took the moment the run ends, pass or fail; a stale lock: the steps (D228).
 - A guard refuses a full run without the lock, a build while another chat holds it, a push that would land on `main`
   and a push while that branch's checks run ([PUSH-LOCK-GUARD], D976). It is a backstop, not the rule: every rule here
   is kept by hand all the same.
 - **Before changing a file or function another open chat's branch also changes, message that chat** — what you will
-  change and what you will leave — and settle the overlap at once; the merge order and "merge live" stay his, and a
+  change and what you will leave — and settle the overlap at once; answer the same when asked, and repeat what you
+  promised in your own `HANDOFF.md` block (how to compare the branches and reach the other chat: the steps); the
+  merge order and "merge live" stay his, and a
   chat never merges for another (D302, D60, D78, D1746; notes only: D1407, D1737, D1980).
 - Docs-only changes skip the gates, not the Docs guard, and not his word: only a change of notes merges by itself; a
   rule that governs the agent, a hook, a setting, a working guide or a workflow merges only on his "merge live"

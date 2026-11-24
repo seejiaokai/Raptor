@@ -32,7 +32,6 @@ the steps for a converted area). His words and the readings he was told are in t
 - His own test tables use the short code "talon" for now; if the IT side later sets a different one for their tables, the app's table names are changed once to match theirs [D1753].
 - February 2027 is not a deadline: the M365 and database work is planned by what it needs, never squeezed to a date, and no step is rushed or its checks cut to meet one [D1745].
 - At the move: each aircraft type set by a setting, the code check every session and on every change, a medical change shown whole in the change history, words on screen kept to his design rulings, a clean copy for the PPCoE with this project kept whole [D1536, D1537].
-- React Doctor — the free code check the SWiFT kit runs — comes from the same public package store as the app's other building tools and changes nothing in the app; it runs the kit's way, its usage tracking off, sending its findings to the tool's maker for its score, and the run with every outside connection off is no longer required [D1531, D1533].
 
 ## Overnight runs
 - `/overnight` sizes the night to his hours and recommends the jobs that fit, he selects, its questions come first, then it runs unattended in one chat; its approval is its standing permission each night — his selection of the night's jobs is not recorded as a ruling, only a new decision of his is [D867, D869].

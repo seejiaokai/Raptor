@@ -49,10 +49,7 @@ Then, before you execute anything:
   the code is wrong; Sol 6.1's second read of the code only on money, published records, permissions or persistence,
   and only on his call; and never another static review when what is missing is someone running the app — that one is
   called review pile-on (D353, D590, D601, D790, D903, D1734, D1738, D1739, D1761, D1770).
-- **Who they are now is stated once,** on the general rulings page every chat loads —
-  `.claude/rules/decisions/how-we-work.md` §Models and readers (D2460): Astra the standing reviewer, the fresh, blind
-  Opus read of finished code beside his, the second seat where two readers are required, the reads-owed list, and the
-  work Fable plans, builds, reads or words. It is not repeated here.
+- **Who builds and who reads is stated once,** in `.claude/rules/decisions/how-we-work.md` §Models and readers (D2460).
 - One line of it, for this check: where Fable reads code, it is a fresh, blind helper beside Astra's and the fresh Opus
   read, never in their place (D903, D1770, D2258, D2440).
 

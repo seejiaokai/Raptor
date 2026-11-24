@@ -9,7 +9,7 @@ lands on the short form, which names the section here. The rulings behind each l
 ## "Push" and "merge live"
 
 - Push a branch freely; ask before `main`. A branch push changes nothing official and — when it changes the app; a
-  notes-only push builds nothing (D2032) — gives him a Vercel link to look at, so it needs no permission; `main` stays gated behind his "merge live" — "push" and "merge live" are not the same
+  notes-only push normally skips the build (D2032) — gives him a Vercel link to look at, so it needs no permission; `main` stays gated behind his "merge live" — "push" and "merge live" are not the same
   thing (D60, D1407, D1737, D1980).
 - Nothing reaches `main` without his explicit "merge live", whatever the change that touches the app — but a pull
   request that changes only notes goes live by itself once its run is green: the agent checks the file list, merges and
@@ -77,7 +77,7 @@ lands on the short form, which names the section here. The rulings behind each l
 - Vercel is his surface, never your drive target: it sits behind his Vercel sign-in, so he can open it and your
   browser cannot (it answers with a 302 to `vercel.com/sso-api`). Your fast surface is the local
   `npm run build && npx vite preview` — the same bundle, byte for byte (`raptor-port/CLAUDE.md` §Build & verify).
-- The preview is not a gate: `vercel.json` at the repo root builds `raptor-port` for every push that changes the app — a notes-only push builds nothing (D2032) — untested, so a red
+- The preview is not a gate: `vercel.json` at the repo root builds `raptor-port` for every push that changes the app — a notes-only push normally skips the build; a first deployment or an uncertain comparison still builds (D2032) — untested, so a red
   preview is still just a preview — correctness rides the gates.
 
 ## Ship once per session, at the end (10 Aug 26) — moved whole to `raptor-port/docs/archive/rule-files-2026-11-02.md` (D1556); its live points are in "The loop" and "The checks" (D1086, D1087)
@@ -99,7 +99,10 @@ lands on the short form, which names the section here. The rulings behind each l
   carry it the whole way without checking in: merge when the pull request's checks are green → `main`'s own run goes
   green (on GitHub's machines while the repo is public, on his PC once it is private) → Vercel reports the live app
   READY (the Production deployment for that `main` commit — `gh api repos/<owner>/<repo>/deployments?environment=Production`,
-  then its statuses) → one notification, with the link (D143).
+  then its statuses) → one notification, with the link (D143). A merge of notes only normally starts no build on
+  Vercel (D2032): a confirmed skip shows as Canceled and leaves the existing app serving — check it as
+  `gates-and-deploy.md` "A notes-only push skips its build" says, and report the notes merged without waiting for a
+  new READY deployment (corrected 24 Nov 26, D201).
 - His "merge live" (or "merge now") means his own look is done — never ask him about it again (D1640).
 - His look on his phone replaces the live-page look the agent used to do on GitHub Pages (gone since D59 and D343, the
   repo public again since D106, D1530): the live app sits behind his sign-in, and the agent is never given a login to
