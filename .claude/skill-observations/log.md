@@ -1298,6 +1298,19 @@ sides.
 **Suggested improvement:** in the walk-scripts guide's "before the first picture" steps: when a build was not made in this chat, compare its time with the folder's branch history (`git reflog --date=iso`) and the code difference from the intended branch; if it differs, wait for the lock and build. In the guide-writing notes: anything the app already states in its own words is read out of the app by script, and only the joining sentences are written by hand and sent to a fresh reader.
 **Principle:** a build on disk carries no label saying which code made it, so its source is established from the folder's history before anything is concluded or pictured from it; and a summary of rules is safest generated from the place the rules are stated, with hand-writing kept to what cannot be generated.
 
+### Observation 1042: The overnight guide's Low setting predates two scenario designers on every walk
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** Recording his D2443 (every walk's scenarios designed by Astra and a fresh, blind Fable, whatever the risk)
+**Skill:** overnight
+**Type:** internal
+**Phase/Area:** "Low or Medium?" — what each setting runs; the helper list for a job
+
+**Issue:** The guide says Low runs the fewest helpers the checks need and that Medium "means more walkers or a scenario designer inside a job". Since D2443 every WALK and FULL check has two scenario designers, Astra and a fresh Fable, on either setting, so a night run reading the guide literally could leave Fable's design out on Low. Its "Fable only on his word" (Observation 1029) is the same drift.
+**Suggested improvement:** At the guide's next review, state that both settings give every walk its two scenario designers (D2443), and that Low and Medium differ only in how many walkers run and whether helpers run at once.
+**Principle:** When a rule adds a required helper to a check, every guide that sizes or budgets that check is read for a line that now leaves it out.
+
 ### Observation 1004: A drawing helper's script checked button rows but not text cut off inside a select
 
 **Status:** OPEN
@@ -1520,7 +1533,7 @@ sides.
 **Suggested improvement:** the hook names the branch and folder it read in its line ("Code check on allavail-152: …"), or reads the copy the chat last committed in.
 **Principle:** an automatic check's message names what it checked, so a reader can tell whose result it is.
 
-### Observation 1042: A helper's transcript file is empty here; its report lives only in its hand-back
+### Observation 1047: A helper's transcript file is empty here; its report lives only in its hand-back
 
 **Status:** OPEN
 **Date:** 24 Nov 26
