@@ -341,6 +341,16 @@ describe('round 4 of the words pass: the bell (D2521)', () => {
     expect(commitInput(rec(), { ...draftOf(rec()), type: 'LL' }, [RANGER])).toBe(true)
     expect(told(RANGER)).toEqual([`LL · Wed 15 Jul — Training changed to LL, renamed — was ${TITLE} · ${cs(SABER)}`])
   })
+  /* (Astra's blind read of round 4, its finding 1, chat 170: a typed title that starts with its kind's name and a dot,
+     retyped with the NEW kind's name in the same save — a real rename, lost when both names were cut down to the same
+     tail) */
+  it('Q1: a Training titled "Training · briefing" made a Meeting titled "Meeting · briefing" says the kind AND the rename', async () => {
+    await boot()
+    file([RANGER], WED, { title: 'Training · briefing' }); clear()
+    const r = rec('Training · briefing')
+    expect(commitInput(r, { ...draftOf(r), type: 'Meeting', title: 'Meeting · briefing' }, [RANGER])).toBe(true)
+    expect(told(RANGER)).toEqual([`Meeting · briefing · Wed 15 Jul — Training changed to Meeting, renamed — was Training · briefing · ${cs(SABER)}`])
+  })
   it('Q1: a true rename keeps today\'s words', async () => {
     await boot()
     file([RANGER]); clear()

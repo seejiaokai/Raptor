@@ -31,7 +31,7 @@
    (state/noticeseen.ts): were reading to write to the notice, the maker's Undo of his change would be refused —
    "Ranger changed this after your action" — by the read of the very person it told. */
 import { PEOPLE } from '../engine/people'
-import { odOut, isOD, dateOrd, inpLabel, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned, inputSpanIso, inputSquadrons } from '../engine/inputs'
+import { odOut, isOD, dateOrd, inpLabel, isFly, titleOf, toOf, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned, inputSpanIso, inputSquadrons } from '../engine/inputs'
 import { homeHandle } from '../engine/roster'
 import { hhmm } from '../engine/time'
 import { mayEditSched } from './perms'
@@ -403,8 +403,11 @@ const kindOf = (r: any): string => String((r && r.type) || '')
 /* its bold name less its kind: the title's words, an Attach's "To" — '' where the name is the kind alone. A kind change
    leaves this alone, so it never reads as a rename (his D2521 Q1) */
 const ownName = (r: any): string => {
-  const l = String(inpLabel(r)), k = kindOf(r)
-  return l === k ? '' : l.startsWith(`${k} · `) ? l.slice(k.length) : l
+  /* read from the record's own title and "To" (engine/inputs.ts titleOf, toOf — the two things inpLabel adds to the
+     kind), never cut out of the bold name: a typed title that itself starts "Training · " is a title, and retyped
+     "Meeting · …" in the save that changes its kind it IS renamed (Astra's blind read of round 4, its finding 1) */
+  const k = kindOf(r), t = titleOf(k, r && r.title), to = isFly(k) ? toOf(r && r.to) : ''
+  return to ? `${t} · ${to}` : t
 }
 /* the remark as a person typed it (engine/inputs.ts remarksTyped — since D948 the date is printed from the dates, never
    written in), and a change of dates is already said as one */
