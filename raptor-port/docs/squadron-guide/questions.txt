@@ -1,0 +1,37 @@
+TALON: questions for F-16 schedulers and training appointment holders
+
+Read the guide first. Short answers are fine. Reply with the question number.
+Where a question names S or C codes, they are the row codes in the guide's tables.
+
+Q1. Which numbers in section 5 are different for you, and what is your value?
+Context: These are the times the checks measure with: crew rest, brief, step, dekit, debrief, tight turn, days in a row. Reply by code, for example "S6: 45 min". If a number changes by the kind of sortie or the time of day, say so.
+
+Q2. Which checks in section 6 do not apply to you, or work differently?
+Context: Reply by code, for example "C22: does not apply" or "C12: for us this is red, not amber". A check that fires when it should not is as bad as one that is missing.
+
+Q3. Which rules or directives do you look up by hand when you plan, that the app should flag for you?
+Context: This is the main one. One line a rule: who it applies to, the limit, and whether breaking it should be red (a rule broken) or amber (worth a look). The aim is that you no longer open the document: the app flags it.
+
+Q4. Which of your jets are single-seat and which are two-seat, and who may sit in the back seat of a two-seater?
+Context: Every line today has a front seat and a back seat, and several checks are about the back-seater. Single-seat lines are planned but not built yet, and their rules are not written.
+
+Q5. What decides who may fly with whom, or lead whom, in your squadron?
+Context: Today the app uses the F-15 squadron's categories (OCU, CAT A to D) and instructor qualifications to flag a pairing that is not allowed or needs approval.
+
+Q6. Which qualifications or currencies should stop or flag a person for a sortie or a duty?
+Context: Today the warnings read four: SC DAY, SC NIGHT, day refuelling and night refuelling. The SANS tick and the Scheduler tick decide who files SANS availability and who may sign a day. Each squadron can keep its own list of qualifications.
+
+Q7. How do your SC MAIN, SC SPARE, AVALON and BB differ from section 7: their hours, who may hold them, and what else a person may do while on one?
+Context: Today an SC MAIN is checked in full. SC SPARE, AVALON and BB are checked more lightly than a flying line unless they fly. Say also if you hold any other standby or duty post the app should know.
+
+Q8. How does a flying day run for you, in order, and which of those times do you print on the programme?
+Context: Today a wave's typed times run in-time, rally, brief, take-off, landing, and the app flags any typed out of that order. Step, dekit and debrief are not typed: the app works them out from take-off and landing (S6 to S8). It measures crew rest and the working day from all of these.
+
+Q9. For training: how do you track a student's or an upgrade's progress today, and what should a scheduler see about it while planning?
+Context: Today the Tracker holds each student's syllabus chart and marks, and the schedule flags crew pairings by category. Tell us what a training appointment holder checks by hand before a sortie is planned.
+
+Q10. What does your printed programme show that this one does not?
+Context: Anything: a column, a mark, a note at the foot, a colour that means something.
+
+Q11. Can you share one real week of your programme, in any format?
+Context: Seeing a real week answers most of the above faster than any list of questions.
