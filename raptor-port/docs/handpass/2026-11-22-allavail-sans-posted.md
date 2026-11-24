@@ -633,6 +633,8 @@ the security reader `…-full-read-security.md`.
 
 ## 14. The Walk line
 
+**Round 7 (chats 156, 157, 169, 174):** `Walk: docs/handpass/2026-11-22-allavail-sans-posted.md §18 · w11–w13 on 99581f03d (2,000+ steps, 2 faults, both fixed red-first) and w14 on e80742fc5 (main brought in) — 4,810 pictures (710 kept here), 21 places in the roll-call (§18.3), Astra's 24 and a fresh Fable's 24 scenarios combined (D2443), every fix of rounds 1–5 and D2564/D2568 on each side, each at a desktop's and his iPhone's size — w14: 1,015 judged steps, 662 PASS, 0 FAIL, 351 RECORDED (ruled-not-built and unruled cases, filed or put to him), 2 NOT WALKED · MISSING: 0 · read by Astra, a fresh Opus reader and the security reader in five rounds, every finding fixed red-first, round 5 0 findings; NOT WALKED: B5 (no door), B11 (no door, a test), a read line undone across a sign-in (a test), his iPhone's own finger drag (his look)`
+
 **Round 6 (chats 152–155):** `Walk: docs/handpass/2026-11-22-allavail-sans-posted.md §17 · 5,448 pictures (146 kept here plus the host's 5 re-look pictures, all on his PC's D: drive) · 25 places in the roll-call (§17.3) · Astra's 24 scenarios and the plain-user round, each at a desktop's and his iPhone's size — 1,624 steps PASS (w8, w9, w10, r1, the host's two re-looks), 10 FAIL = 2 faults, both fixed red-first and re-walked · MISSING: 0 · read by Astra, a fresh Opus reader and a security reader, then three narrow re-reads of the fixes by Astra and a fresh Opus reader, every finding fixed red-first; NOT WALKED: the page hidden across midnight (his iPhone)`
 
 **Round 5 (chat 147):** `Walk: docs/handpass/2026-11-22-allavail-sans-posted.md §16 · 3,934 pictures (46 kept here, all on his PC's D: drive) · 6 surfaces (Edit Schedule's crew list, the Scheduler Board's crew list, an armed seat, the bell, the Inputs page's SANS tab, ALL AVAIL's window) · 37 orders (Astra's 24 and R1–R4) and the plain-user round, each at a desktop's and his iPhone's size · MISSING: 0 (1 found, fixed red-first and re-walked); NOT WALKED: the page hidden across midnight (his iPhone)`
@@ -649,35 +651,35 @@ AVAIL on an OFT sim's front seat — a press on its count chip arms the empty ba
 **FULL.** (1) Money — YES: a run cut at his SANS date decides which days he counts as committed. (2) The published record — NO: a published day's inputs stay its frozen copy, and no line here writes to a day; a walk step confirms the face. (3) Saved data — YES: a run saved in part, a new stored setting per man and day (`sansplan`), a changed shape of the stored change line. (4) A shared drawer — YES: the bell's row and the passing note. (5) A new gesture or mode — NO: no new control, though an existing drag's result changes, and it is walked door by door. (6) A new surface — NO: new lines in the existing bell. (7) Roles — YES: a Quals command now carries a bell line through the permission gate's SANS check, which is tighter. (8) The warning list — NO: the crew and warning readers are untouched (D2420). Security read owed (D1411).
 
 ### 18.2 The rulings that apply
-D2388, D2390, D2391, D2394, D2420, D2421, D2340, D2341, D2342, D2338, D1693, D1699, D1710, D2194, D350, D655, D576, D56, D785, D90, D2440, D2441, D1411. **A clash named (D90):** D2394's "no SANS date ahead" title over D2340's "the line's words stay the same after the date", the later followed, put to him as a question. **D2391 over D2390's "struck form keeps the same words" and over D1699 for this one line.** Results: to fill from the walk.
+D2388, D2390, D2391, D2394, D2420, D2421, D2340, D2341, D2342, D2338, D1693, D1699, D1710, D2194, D350, D655, D576, D56, D785, D90, D2440, D2441, D1411. **A clash named (D90):** D2394's "no SANS date ahead" title over D2340's "the line's words stay the same after the date", the later followed, put to him as a question. **D2391 over D2390's "struck form keeps the same words" and over D1699 for this one line.** **Results (w14, chat 174, on `e80742fc5`, the rulings added since — D2437, D2560–D2568 — swept with them):** PASS on the running build — D2388 (w13, w14d A3, A9), D2390 (w14a C4, C5), D2391 A–E (w11; w14b B1–B4, B7; w14c A1, A5), D2394 2a as narrowed by D2560, 2b, Q1, Q6, Q10 (w14a C9, w14b B7, w14d A4 by an admin), D2420 (no reason line, every C case), D2421 (w13, w14d A6), D2560 on real seats (w14c B8 (a)–(e)), D2564 every side (w14a C1–C5, C10), D2565 (w14a C8a), D2568 (w14a C6, C7), D2562 (each line at once), D2340, D2341, D2342 (w14c A10), D1693 (an unread line simply goes), D1699 as it stands until [BELL-WORDS-CLEAR] (struck, "taken back · Saber"), D2194 (another man's bell carries none of his lines, w14b B4), D785, D56. **Ruled and not built, seen as the older look and RECORDED, never a fault:** D2437, D2423, D2438, D2561, D2563, D2566, D2600 (chat 170's, the count still shown, w14d D1). **Unruled cases met, none a fault:** four for him now (§18.13, round A), the rest filed [SANS-WORDS-LEFTOVERS] (11)–(18).
 
 ### 18.3 The roll-call — every place these words and rules are drawn or read
 | # | Surface | SHOWS the new rule | The gesture USABLE | What else is PAINTED there | Proved by |
 |---|---|---|---|---|---|
-| R1 | His bell — the reminder, dated title and "Your SANS availability is needed." | to walk | to walk | to walk | |
-| R2 | His bell — the change lines A to E | to walk | to walk | to walk | |
-| R3 | His bell — an Undo of a change line he read (struck, "taken back · Saber") | to walk | to walk | to walk | |
-| R4 | The bell's unread mark, top bar and the Scheduler Board's own bar | to walk | to walk | to walk | |
-| R5 | A tap on the reminder — the SANS calendar on the first day still owed | to walk | to walk | to walk | |
-| R6 | SANS calendar — a drag across his date, both directions, mouse | to walk | to walk | to walk | |
-| R7 | SANS calendar — the keys (Shift + arrows, Enter or Space) | to walk | to walk | to walk | |
-| R8 | SANS calendar — a held finger drag | to walk | to walk | to walk | |
-| R9 | The commitment window — its Dates calendar moved earlier | to walk | to walk | to walk | |
-| R10 | A shared offer — new, for two men with different dates | to walk | to walk | to walk | |
-| R11 | A shared offer — extended earlier (Q10), and a one-man filing's unchanged words | to walk | to walk | to walk | |
-| R12 | The opened day's greyed "+ Commitment" and its words, his, a non-SANS member's, an admin's | to walk | to walk | to walk | |
-| R13 | The passing note after a cut run, at both sizes, its whole text readable | to walk | to walk | to walk | |
-| R14 | The Leave War's Post out sheet — each cause (later, earlier, undone, another outcome) | to walk | to walk | to walk | |
-| R15 | Quals — the SANS tick off and on, Undo, Redo | to walk | to walk | to walk | |
-| R16 | The crew list, armed seat and hover — MUST NOT gain a line (D2420) | to walk | to walk | to walk | |
-| R17 | A reload, a sign-out and a week change — the lines, read marks and the new setting | to walk | to walk | to walk | |
-| R18 | Another person's bell and an admin's — MUST NOT carry his line | to walk | to walk | to walk | |
-| R19 | The SANS month's counts after a cut run, and Undo of it | to walk | to walk | to walk | |
-| R20 | The changes window — a cut run's history line | to walk | to walk | to walk | |
-| R21 | The published face — MUST NOT change | to walk | to walk | to walk | |
+| R1 | His bell — the reminder, dated title and "Your SANS availability is needed." | YES | YES (tap, Mark all read) | YES — the words pass's input lines beside it (w14d D1–D3; its place among them unruled, filed) | w12; w14a C4, C5, C9; w14c B8, B10 |
+| R2 | His bell — the change lines A to E | YES | YES | YES — older lines kept titled alone (filed (11)) | w11; w14b B1, B2, B4, B7; w14c A1, A5, A10 |
+| R3 | His bell — an Undo of a change line he read (struck, "taken back · Saber") | YES (D1699 as built; D2437 not built) | YES — an unread one simply goes | NO-because a read line undone by Saber needs his Undo across a sign-in, which a reload clears (P6 no): test-only | w14b B4; tests of round 2 |
+| R4 | The bell's unread mark, top bar and the Scheduler Board's own bar | YES | YES | YES | w14d D1, E |
+| R5 | A tap on the reminder — the SANS calendar on the first day still owed | YES | YES | YES — a change line's tap unruled, filed (16) | w14a C4; w14c B8 (c), A2 |
+| R6 | SANS calendar — a drag across his date, both directions, mouse | YES | YES | YES | w13; w14d A3, A9 |
+| R7 | SANS calendar — the keys (Shift + arrows, Enter or Space) | YES | YES | YES | w13 (unchanged since) |
+| R8 | SANS calendar — a held finger drag | YES (Chromium's fingers) | YES | NO-because WebKit's in-page touches drive no pointer events: his iPhone's drag is his look | w13 |
+| R9 | The commitment window — its Dates calendar moved earlier | YES (a new filing) | NO-because a saved one-man filing's window has no dates calendar ("delete it and add it again", as built) | YES | w14d B5 (NOT WALKED, no door), B6 |
+| R10 | A shared offer — new, for two men with different dates | YES | YES | YES | w13 s8c |
+| R11 | A shared offer — extended earlier (Q10), and a one-man filing's unchanged words | YES (an admin) | NO-because a member cannot edit a shared offer filed for him (older, D655 question filed) | YES | w13 s8a; w14d A4 |
+| R12 | The opened day's greyed "+ Commitment" and its words, his, a non-SANS member's, an admin's | YES | YES | YES | w13 s18; w14d A6 |
+| R13 | The passing note after a cut run, at both sizes, its whole text readable | YES | YES | YES — on a phone it covers the day window's date and ✕, the ✕ still closing it ([SANS-WORDS-LEFTOVERS] (5)) | w13; w14d A3, A8, E |
+| R14 | The Leave War's Post out sheet — each cause (later, earlier, undone, another outcome) | YES | YES — a posting already begun moves too (P11) | YES | w11; w14b B1, B2, B9; w14c A1, A5, B10 |
+| R15 | Quals — the SANS tick off and on, Undo, Redo | YES | YES | YES — Edit quals closes by Done, not Escape (older, filed) | w14b B1, B4, B9; w14a C9; w14d E |
+| R16 | The crew list, armed seat and hover — MUST NOT gain a line (D2420) | YES — no line, every case | YES | YES — a no-times seat does not strike him while his reminder names the day (round A, Q1) | w13 s24; w14a C1–C11 |
+| R17 | A reload, a sign-out and a week change — the lines, read marks and the new setting | YES | YES | YES | w14b B3, B7; w14c B8 (a), (e), B10 |
+| R18 | Another person's bell and an admin's — MUST NOT carry his line | YES — none | YES | YES | w12 s7; w14b B4; w14d D1 |
+| R19 | The SANS month's counts after a cut run, and Undo of it | YES | YES | YES — a Fly offer on a no-fly day counts (unruled, filed) | w13; w14d A3, A8, E |
+| R20 | The changes window — a cut run's history line | YES | YES | YES | w14d E |
+| R21 | The published face — MUST NOT change | YES — unchanged | YES | YES | w14d E |
 
 ### 18.4 The door check
-To fill from the walk: every way to file a run (R6–R9), to change a posting (R14), to change a tick (R15), to read a line (tap, Mark all read), each with its control.
+Every way to file a run: the SANS calendar's drag, keys and held finger (R6–R8), the window's Dates calendar on a new filing (R9; a saved one-man filing has none, as built); a shared offer by an admin (R10, R11). Every way to change a posting: the Post out sheet's date later and earlier, Undo post out, another outcome, a posting already begun moved (R14, P11). Every way to change a tick: Quals' tick off and on, his own and an admin's, Undo, Redo (R15). Every way to read a line: its tap, Mark all read (R1, R2). Every way to put him on a day (D2564): a cockpit seat with and without times, an OFT and an AMT box, SC MAIN and SPARE, an AVALON row flying and not, a ground row, a duty desk, all hands (w14a P1–P8). No door moves a man's squadron (P12): B11 test-only.
 
 ### 18.5 The five sizing lines (the order's §7.0)
 1. **The type of change:** F (the bell's words) with G (saved data: a part-saved run, the `sansplan` setting, the change line's shape), H (the SANS check of the permission gate) and C (a drag's result changes).
@@ -694,25 +696,25 @@ To fill from the walk: every way to file a run (R6–R9), to change a posting (R
 5. **After the walk:** its row in `docs/walk-ledger.md`.
 
 ### 18.6 The orders walked
-To fill.
+w11–w13 (chat 156, build `99581f03d`): 2,000+ steps, tables `parts/swd/w1{1,2,3}-walk.md`; their reminder steps were made on ground rows, which D2564 voids, and D2560 reversed four results — so w14 re-walked them on real seats and sims. **w14 (chat 174, build `e80742fc5`, both sizes, the clock Wed 15 Jul 26 09:00, a fresh store a scenario):** w14a C1–C11 (330 judged, 162 PASS, 168 RECORDED), w14b B1–B4, B7, B9 (282, 202, 80), w14c B8, B10, A1, A2, A5, A7, A10 (192, 138, 54), w14d B5, B6, A3, A4, A6, A8, A9, D1–D3, E (211, 160, 49, 2 NOT WALKED) — **1,015 judged steps, 662 PASS, 0 FAIL, 351 RECORDED, 2 NOT WALKED**; tables and reports `parts/swd/w14{a,b,c,d}-{walk,report}.md`, the plan `docs/superpowers/briefs/2026-11-25-sans-words-w14-plan.md`, the routes proved `parts/swd/w14-recipes.md`.
 
 ### 18.7 The cases carried by a test
-To fill.
+B11, a squadron move (no screen door): `src/leavewar/sans-reads-r3.test.tsx` "Astra F2". A read line undone across a sign-in (P6 no): round 2's tests (`2391f9dfa`). The Quals untick as a door for the line's permission check (Fable point 12): `sansplan-sec156.test.ts` (SEC156-3), `sans-seen-sec-r4.test.ts`. A trim landing wholly on his own earlier filing (point 10's second half): the unit tests of round 1. Read on one device seen on another (Fable S17): the database step's — two browser contexts are two stores.
 
 ### 18.8 The pictures
-To fill.
+710 kept, cropped, under `docs/img/handpass/2026-11-24-sans-words/w14{a,b,c,d}/` (233, 126, 125, 226); 4,810 raw on his PC's `D:/raptor-work/c174-walk/`. The host opened C7's deciding pair (the armed no-times seat unstruck; the reminder naming Sat 18) and w14a's "· Today" picture.
 
 ### 18.9 The break tests
-To fill.
+Each fix of rounds 1–5 landed with a test that failed first (the builders' reports, `…/briefs/2026-11-24-sans-words-fix{3,4,5}-build-fable.md`, and `f73602f9f`, `2391f9dfa`); no separate break-test run tonight.
 
 ### 18.10 Errors seen
-To fill.
+None: console errors, page errors, 4xx and failed requests watched on every page of every run the tables cite (w14a 43 watches, w14c 22, w14b and w14d every run). Five first-run FAILs of w14a were the walker's own script (each named in its table), re-walked.
 
 ### 18.11 What was NOT walked, and why
-To fill.
+B5 (an existing one-man filing stretched earlier): no door — the saved filing's window has no dates calendar. B11: no door (test-only, §18.7). The read-then-Undo cases: a reload clears Saber's Undo (P6). A held finger drag on his iPhone: WebKit's in-page touches drive no pointer events — his look. Read on another device: the database step. BB (C11 walked AVALON only).
 
 ### 18.12 The gate counts
-To fill.
+GitHub's run on `e80742fc5` (main brought in, D2148's limit): every check green — build, code check, docs guard, the geometry, Tracker smoke and unit groups, secrets scan; Vercel's preview Ready. On his PC: the 64 SANS and bell test files, 1,321 tests pass; the build.
 
 ### 18.13 What the walk and the reads found, and each disposition
-To fill.
+**Faults: none** in w14. The reads of rounds 1–5 and their fixes: chat 169's block and §18's briefs (round 5: 0 findings from all three readers). **For him now (round A — what counts on his reminder, against the crew list and the warning; D2611):** Q1 a seat with no times yet names the day in his reminder (D2568) but does not strike him in the crew list (w14a C7); Q2 the warning list never flags a SANS man planned with NOTHING filed — deliberate since 14 Aug 26, only "not offering" and "outside the window" raise (w14a C4–C7, C11); Q3 a Fly-only filing clears a sim day from the reminder while the crew list and the warning still flag it (w14a C5c); Q4 standby seats — SC MAIN and a flying AVALON count, SC SPARE and a non-flying AVALON do not, the three places agreeing (w14a C11). **Filed for the bell-words job:** [SANS-WORDS-LEFTOVERS] (11)–(18). **Older, outside the change, filed:** a member cannot edit a shared offer filed for him (D655's wording); Edit quals not closed by Escape; a Fly offer saves and counts on a no-fly day (D642 names only OFT and AMT); the reminder's place among the bell's lines (top of one man's list, foot of another's by its age); the week's seeded "· Today" ([LOGIN-OPENS-TODAY]).

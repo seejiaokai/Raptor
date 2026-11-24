@@ -3053,7 +3053,14 @@ Sun 19). (16) What a change line's tap opens: "moved to Thu 16" opens the SANS c
 longer SANS." with nothing filed opens Thu 16's day with "+ Commitment" greyed (w14c A2). (17) Saber deleting his filing
 relights the reminder and also sends "Deleted · Saber" (D2565 names only his own delete) — w14a C8c; his own Undo of his
 delete puts the reminder back to read (w14a C8a). (18) Open point 1 seen again: "no longer" lines while he is still SANS by
-the other route (w14b B1, B2).
+the other route (w14b B1, B2). **Older, met by w14d beside the change (not this branch's), each to check against his rulings
+before anything is built:** (19) a member cannot edit a shared SANS offer filed for him — "Only Saber — who filed it — or an
+admin can change this for everyone." — since the first shared-input build (D654/D655 era), where the Inputs page's D655 line
+says "the man himself, its filer and an admin changing or deleting it" (w14d A4, P10); (20) Quals' Edit quals is closed by
+Done but not by Escape (w14d E; the design guide's "Escape closes what opened last"); (21) a Fly offer saves and counts
+("SANS committed to fly 1") on a no-fly day, with or without the cut — D642 names only OFT and AMT for such a day (w14d
+A8); (22) the SANS reminder's place in the bell follows its age — top of Ranger's list, foot of Hex's with "9 h" (w14d D1,
+D3) — no ruling names where it sits.
 
 ### [FABLE-READ-FAULTS] The faults Fable's reads of 21–22 Nov found outside the two-squadron work — fix now (his D2268, 22 Nov 26)
 **What:** proved by failing tests on the night's copy (very probably live today), none fixed: **OIL F1** (MED — a man posted
