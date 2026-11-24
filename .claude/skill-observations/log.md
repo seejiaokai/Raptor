@@ -1272,6 +1272,19 @@ sides.
 **Suggested improvement:** reword that phrase to "Fable on the agent's pick for high-risk work (D2258, D2440), otherwise only on his word", at the guide's next review.
 **Principle:** when a standing rule about who does a job changes, every guide that restates it in passing is found by searching for the old phrase, and each is corrected or given a note the same day.
 
+### Observation 1040: A rule cut to a short form loses the same four kinds of thing — check for them before the readers do
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** chat 158, the every-chat rules' tightening (D2460): the shipping rule file cut to a short form with its full wording moved whole behind it. Numbered 1040, past 1030–1039, which are left for the open branches' logs.
+**Skill:** New skill candidate: writing a short form of a rule (the rules diet's method; today in `raptor-port/docs/doc-budget.md` and the rules-diet plan)
+**Type:** open-source
+**Phase/Area:** writing the short statement that stays loaded when a rule's detail moves behind a pointer
+
+**Issue:** two blind readers of the first short form found the same losses, independently: (1) two different duties merged into the stronger one ("take the lock" and "wait until the lock is free" both became "take"); (2) the second half of a duty dropped (message the other chat — but also answer when asked, and write the promise into the handoff notes); (3) the moment to open the full text named too late (at the merge, though the rule is first needed when the job is planned); (4) a list's boundary summarised by a looser word ("a rule file" shut out files the full list lets in). A fix round then repeated kind (4) once more.
+**Suggested improvement:** before a short form goes to its readers, run four checks against the full wording, bullet by bullet: every verb kept apart from its neighbour (take / wait / none); every "and also" clause carried or pointed to; the pointer's moment is the EARLIEST one at which the rule is used, found by searching the guides for who cites the rule; every list either quoted whole or said to be partial, with both its sides named. Put the four in the rules diet's method beside "a move never rewords".
+**Principle:** shortening a rule fails in predictable places — merged verbs, dropped second clauses, late trigger moments and loosened list boundaries — so those four are checked by the writer first, and the independent readers are left the faults that are not predictable.
+
 ### Observation 1004: A drawing helper's script checked button rows but not text cut off inside a select
 
 **Status:** OPEN

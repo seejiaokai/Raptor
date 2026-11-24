@@ -288,7 +288,9 @@ opening its code? Open its area file first — `../.claude/rules/doc-structure.m
 | **Open work — the ONE backlog** (the priority list first; a finished item leaves for its archive by script) | `../OUTSTANDING.md` (finished: `../OUTSTANDING-ARCHIVE.md`, searched) |
 | **Every source file and what it does** — edit it in the same change that adds, removes or renames a file | `docs/file-map.md` |
 | **How the gates and the deploy mislead; the checks on his PC** — read before trusting or re-running a red check | `docs/gates-and-deploy.md` |
-| **How a change ships** — the branch loop, "merge live", what "done" means (always loaded) | `../.claude/rules/shipping.md` |
+| **How a change ships** — the branch loop, "merge live", what "done" means (always loaded, the short form — D2460) | `../.claude/rules/shipping.md` |
+| **The general rulings read when needed** (D2460) — the rules diet, the platform and the database, overnight runs, compaction: moved whole from the general rulings page, whose line for each names its section; read by section, at that moment | `docs/how-we-work-when-needed.md` |
+| **The shipping steps** — the four merge steps, what "only notes" covers, merging jobs as one, the checks lock, where the preview link is: read by section, at the moment the short form names | `docs/shipping-steps.md` |
 | **Where each kind of new fact goes, and when it leaves** (always loaded; D140, D141) | `../.claude/rules/doc-structure.md`; the policy and tiers `docs/doc-budget.md` |
 | The history — how each past thing was found, fixed and shipped | `../HANDOFF-ARCHIVE.md` (a FROZEN snapshot as of 4 Sep 26; search it, never read it whole, never append to it); finished documents and passages moved out since, each unchanged: `docs/archive/` (its `README.md` lists them); then `git log` |
 | Probe → reference → port results | `docs/probe-sweep.md` |
