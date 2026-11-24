@@ -759,7 +759,8 @@ export function normalizeInputDraft(draft: any, except: any, several = false):
      turned it into `100:39`, which failed the re-parse above and so complained
      that no time had been given, when one had (audit, 12 Aug 26). */
   if (!draft.allday && (!hmOK(draft.sTime) || !hmOK(draft.eTime))) {
-    HOOKS.toast('That is not a time — try 0900 or 09:00', 'warn'); return null
+    /* the schedule's own words, naming what was typed — the first box that failed (his D2521 Q4a) */
+    HOOKS.toast(`${hmOK(draft.sTime) ? draft.eTime : draft.sTime} is not a time. Try 0900 or 09:00.`, 'warn'); return null
   }
   /* An end EARLIER than the start crosses midnight — 22:00–02:00 is a real
      absence, and a duty row, a sim box and a night sortie have all rolled that
@@ -2038,7 +2039,7 @@ export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any, 
          warning he had and was offered for the very seat he was off for,
          while the leave reappeared on the NEXT day through the midnight
          tail. Same test the schedule cells use (engine/time.ts). */
-      if (cur[k] && !hmOK(cur[k])) { HOOKS.toast('That is not a time — try 0900 or 09:00', 'warn'); return false }
+      if (cur[k] && !hmOK(cur[k])) { HOOKS.toast(`${cur[k]} is not a time. Try 0900 or 09:00.`, 'warn'); return false }   /* (his D2521 Q4a) */
     }
     if (!cur[field]) { d.allday = true; d.half = '' }      // the cell just cleared
     else {

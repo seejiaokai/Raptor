@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { storeBackend } from './hooks'
 import {
   LOOK_CFG, LOOK_MAX, LOOK_MIN, LOOK_STD,
-  lookaheadIsStandard, lookaheadLabel, lookaheadLoad, lookaheadParse,
+  lookaheadIsStandard, lookaheadLabel, lookaheadLoad, lookaheadParse, lookaheadSavedNote,
   lookaheadRange, lookaheadReset, setLookahead,
 } from './lookahead'
 
@@ -60,6 +60,11 @@ describe('the button says what it will do', () => {
     setLookahead(2, false); expect(lookaheadLabel()).toBe('Next 2 weeks')
     setLookahead(1, false); expect(lookaheadLabel()).toBe('Next 1 week')
     setLookahead(4, true); expect(lookaheadLabel()).toBe('Next 4 weeks, to Sunday')
+    /* the note a save gives (round 4, his D2521, S1): "the", and Sunday keeps its capital; one week "the next week" */
+    expect(lookaheadSavedNote()).toBe('Everyone now opens on the next 4 weeks, to Sunday')
+    setLookahead(1, false); expect(lookaheadSavedNote()).toBe('Everyone now opens on the next week')
+    setLookahead(1, true); expect(lookaheadSavedNote()).toBe('Everyone now opens on the next week, to Sunday')
+    setLookahead(3, false); expect(lookaheadSavedNote()).toBe('Everyone now opens on the next 3 weeks')
   })
 })
 

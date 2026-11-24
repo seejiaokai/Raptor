@@ -1838,11 +1838,11 @@ export function routeClick(e: MouseEvent) {
   const mkp = t.closest('[data-mkperiod]') as HTMLElement | null
   if (mkp) {
     e.stopPropagation()
-    if (!canEditSched()) { HOOKS.toast('Only a scheduler can create a leave war period', 'warn'); return }
+    if (!canEditSched()) { HOOKS.toast('Only a scheduler can create a Leave War period', 'warn')   /* (the app's name — his D2521 S3) */; return }
     const yr = String(mkp.dataset.mkperiod || '')
     const made = createOilPeriodFor(yr)
     if (made === 'created') {
-      HOOKS.toast(`The ${yr} leave war period is created. Open its dates for bidding here.`, 'ok')
+      HOOKS.toast(`The ${yr} Leave War period is created. Open its dates for bidding here.`, 'ok')
       showPeriodOf(`${yr}-01-01`)
       view.setPage('leavewar'); notify()
     } else if (made === 'overlap') {

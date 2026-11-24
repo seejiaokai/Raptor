@@ -1,0 +1,232 @@
+{
+ "pictures": [
+  {
+   "file": "B8-saber-clean-x-desk.png",
+   "case": "B8-saber",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "way": "x",
+    "dirty": false,
+    "at": null,
+    "windowOpen": 0,
+    "ask": 0,
+    "note": "",
+    "remarksNow": "Plain round",
+    "lost": null
+   }
+  },
+  {
+   "file": "B8-saber-clean-escape-desk.png",
+   "case": "B8-saber",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "way": "escape",
+    "dirty": false,
+    "at": null,
+    "windowOpen": 0,
+    "ask": 0,
+    "note": "",
+    "remarksNow": "Plain round",
+    "lost": null
+   }
+  },
+  {
+   "file": "B8-saber-clean-outside-desk.png",
+   "case": "B8-saber",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "way": "outside",
+    "dirty": false,
+    "at": {
+     "x": 20,
+     "y": 136
+    },
+    "windowOpen": 1,
+    "ask": 0,
+    "note": "",
+    "remarksNow": "Plain round",
+    "lost": null
+   }
+  },
+  {
+   "file": "B8-saber-clean-cancel-desk.png",
+   "case": "B8-saber",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "way": "cancel",
+    "dirty": false,
+    "at": null,
+    "windowOpen": 0,
+    "ask": 0,
+    "note": "",
+    "remarksNow": "Plain round",
+    "lost": null
+   }
+  },
+  {
+   "file": "B8-saber-dirty-x-desk.png",
+   "case": "B8-saber",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "way": "x",
+    "dirty": true,
+    "at": null,
+    "windowOpen": 1,
+    "ask": 1,
+    "note": "",
+    "afterDiscard": 0,
+    "remarksNow": "Plain round",
+    "lost": true
+   }
+  },
+  {
+   "file": "B8-saber-dirty-escape-desk.png",
+   "case": "B8-saber",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "way": "escape",
+    "dirty": true,
+    "at": null,
+    "windowOpen": 1,
+    "ask": 1,
+    "note": "",
+    "afterDiscard": 0,
+    "remarksNow": "Plain round",
+    "lost": true
+   }
+  },
+  {
+   "file": "B8-saber-dirty-outside-desk.png",
+   "case": "B8-saber",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "way": "outside",
+    "dirty": true,
+    "at": {
+     "x": 20,
+     "y": 136
+    },
+    "windowOpen": 1,
+    "ask": 0,
+    "note": "",
+    "remarksNow": "Plain round",
+    "lost": true
+   }
+  },
+  {
+   "file": "B8-saber-dirty-cancel-desk.png",
+   "case": "B8-saber",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "way": "cancel",
+    "dirty": true,
+    "at": null,
+    "windowOpen": 0,
+    "ask": 0,
+    "note": "",
+    "remarksNow": "Plain round",
+    "lost": true
+   }
+  },
+  {
+   "file": "B8-saber-after-undo-desk.png",
+   "case": "B8-saber",
+   "size": "desktop 1440x900 @2x",
+   "text": "Undid: Ranger’s OL"
+  },
+  {
+   "file": "B8-saber-place-inputs-list-desk.png",
+   "case": "B8-saber",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "found": true,
+    "text": "Ranger15 JulLLLATEPlain round till 15 JulBy SabernowNo document"
+   }
+  },
+  {
+   "file": "B8-saber-place-inputs-cal-desk.png",
+   "case": "B8-saber",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "found": true,
+    "text": "Ranger15 JulLLLATEPlain round till 15 JulBy SabernowNo document"
+   }
+  },
+  {
+   "file": "B8-saber-place-editsched-desk.png",
+   "case": "B8-saber",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "found": false
+   }
+  },
+  {
+   "file": "B8-saber-place-viewsched-desk.png",
+   "case": "B8-saber",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "found": false
+   }
+  },
+  {
+   "file": "B8-saber-other-bell-phone.png",
+   "case": "B8-saber",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) LL Wed 15 Jul / You were added · Saber"
+   ]
+  }
+ ],
+ "cases": {
+  "B8": {
+   "log": [
+    "bundle: index-2uyEcUJu.js",
+    "the card could not be pressed; what stands over it: <button type=\"button\" class=\"wc-today\" data-testid=\"inpEdCal-today\" aria-label=\"Go to today\" title=\"Go to today\"><span class=\"wc-pg\"><span class=\"wc-n\">13</span",
+    "the card could not be pressed; what stands over it: <button type=\"button\" class=\"wc-today\" data-testid=\"inpEdCal-today\" aria-label=\"Go to today\" title=\"Go to today\"><span class=\"wc-pg\"><span class=\"wc-n\">13</span",
+    "ERROR locator.tap: Timeout 30000ms exceeded."
+   ]
+  },
+  "B8-saber": {
+   "log": [
+    "filed {\"type\":\"LL\",\"span\":\"all\",\"people\":[\"bane\"],\"remarks\":\"Plain round\"} on 2026-07-15: new input [\"imwuk2ktaffisxu\"]; asked [\"document\"]; note \"\"",
+    "picture B8-saber-clean-x-desk.png: {\"way\":\"x\",\"dirty\":false,\"at\":null,\"windowOpen\":0,\"ask\":0,\"note\":\"\"}",
+    "without an unsaved change, x: window still open 0; the \"lose them?\" question 0; note \"\"; remark now \"Plain round\"",
+    "picture B8-saber-clean-escape-desk.png: {\"way\":\"escape\",\"dirty\":false,\"at\":null,\"windowOpen\":0,\"ask\":0,\"note\":\"\"}",
+    "without an unsaved change, escape: window still open 0; the \"lose them?\" question 0; note \"\"; remark now \"Plain round\"",
+    "picture B8-saber-clean-outside-desk.png: {\"way\":\"outside\",\"dirty\":false,\"at\":{\"x\":20,\"y\":136},\"windowOpen\":1,\"ask\":0,\"note\":\"\"}",
+    "without an unsaved change, outside: window still open 1; the \"lose them?\" question 0; note \"\"; remark now \"Plain round\"",
+    "picture B8-saber-clean-cancel-desk.png: {\"way\":\"cancel\",\"dirty\":false,\"at\":null,\"windowOpen\":0,\"ask\":0,\"note\":\"\"}",
+    "without an unsaved change, cancel: window still open 0; the \"lose them?\" question 0; note \"\"; remark now \"Plain round\"",
+    "picture B8-saber-dirty-x-desk.png: {\"way\":\"x\",\"dirty\":true,\"at\":null,\"windowOpen\":1,\"ask\":1,\"note\":\"\"}",
+    "with an unsaved change, x: window still open 1; the \"lose them?\" question 1; note \"\"; remark now \"Plain round\"",
+    "picture B8-saber-dirty-escape-desk.png: {\"way\":\"escape\",\"dirty\":true,\"at\":null,\"windowOpen\":1,\"ask\":1,\"note\":\"\"}",
+    "with an unsaved change, escape: window still open 1; the \"lose them?\" question 1; note \"\"; remark now \"Plain round\"",
+    "picture B8-saber-dirty-outside-desk.png: {\"way\":\"outside\",\"dirty\":true,\"at\":{\"x\":20,\"y\":136},\"windowOpen\":1,\"ask\":0,\"note\":\"\"}",
+    "with an unsaved change, outside: window still open 1; the \"lose them?\" question 0; note \"\"; remark now \"Plain round\"",
+    "picture B8-saber-dirty-cancel-desk.png: {\"way\":\"cancel\",\"dirty\":true,\"at\":null,\"windowOpen\":0,\"ask\":0,\"note\":\"\"}",
+    "with an unsaved change, cancel: window still open 0; the \"lose them?\" question 0; note \"\"; remark now \"Plain round\"",
+    "Save: note \"\"; record {\"type\":\"OL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Changed and saved\",\"people\":[\"bane\"]}",
+    "Undo (\"Undo — Ranger’s OL\"): note \"Undid: Ranger’s OL\"; record {\"type\":\"LL\",\"date\":\"Jul 15\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Plain round\",\"people\":[\"bane\"]}",
+    "picture B8-saber-after-undo-desk.png: \"Undid: Ranger’s OL\"",
+    "inputs-list: the input drawn by its id: {\"found\":true,\"text\":\"Ranger15 JulLLLATEPlain round till 15 JulBy SabernowNo document\"}",
+    "picture B8-saber-place-inputs-list-desk.png: {\"found\":true,\"text\":\"Ranger15 JulLLLATEPlain round till 15 JulBy SabernowNo document\"}",
+    "inputs-cal: the input drawn by its id: {\"found\":true,\"text\":\"Ranger15 JulLLLATEPlain round till 15 JulBy SabernowNo document\"}",
+    "picture B8-saber-place-inputs-cal-desk.png: {\"found\":true,\"text\":\"Ranger15 JulLLLATEPlain round till 15 JulBy SabernowNo document\"}",
+    "editsched: the input drawn by its id: {\"found\":false}",
+    "picture B8-saber-place-editsched-desk.png: {\"found\":false}",
+    "viewsched: the input drawn by its id: {\"found\":false}",
+    "picture B8-saber-place-viewsched-desk.png: {\"found\":false}",
+    "Ranger's bell after Saber's round: [\"(unread) LL Wed 15 Jul / You were added · Saber\"]",
+    "picture B8-saber-other-bell-phone.png: [\"(unread) LL Wed 15 Jul / You were added · Saber\"]"
+   ]
+  },
+  "B8-ranger": {
+   "log": [
+    "NOTE: the input window is still open after Save — the note: \"Ranger already has LL on 15 Jul — LL can't overlap it\""
+   ]
+  }
+ },
+ "errors": [
+  "B8: locator.tap: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"win-inputsday-x\"]').first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" class=\"win-x\" title=\"Close\" data-testid=\"win-inputsday-x\" aria-label=\"Close Wed 15 Jul\">✕</button>\u001b[22m\n\u001b[2m  - attempting tap action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <button type=\"button\" class=\"win-x\" title=\"Close\" data-testid=\"win"
+ ]
+}

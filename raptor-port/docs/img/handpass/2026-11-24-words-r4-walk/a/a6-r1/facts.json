@@ -1,0 +1,506 @@
+{
+ "pictures": [
+  {
+   "file": "A6-g-window-desk.png",
+   "case": "A6",
+   "size": "desktop 1440x900 @2x",
+   "text": "the window of input g"
+  },
+  {
+   "file": "A6-ranger-bell-phone.png",
+   "case": "A6",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "LL Thu 23 Jul / Now Thu 23 Jul – Mon 27 Jul · Saber",
+    "LL Thu 23 Jul / Now Thu 23 Jul – Fri 24 Jul · Saber",
+    "Training Wed 22 Jul / Remark changed · Saber",
+    "Training Tue 21 Jul / Now Tue 21 Jul, 3 people added, and 1 more change · Saber",
+    "Meeting Fri 17 Jul / Hex taken off, Training changed to Meeting, and 1 more change · Saber",
+    "Range talk Thu 16 Jul / Now Thu 16 Jul, Ace added, and 2 more changes · Saber",
+    "Range walk Fri 17 Jul / Now Fri 17 Jul, renamed — was Training · Saber",
+    "Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "Training Sun 19 Jul / You were added · Saber",
+    "LL Thu 23 Jul / You were added · Saber",
+    "Training Wed 22 Jul / You were added · Saber",
+    "Training Mon 20 Jul / You were added · Saber",
+    "Training Fri 17 Jul / You were added · Saber",
+    "Training Mon 13 Jul / You were added · Saber",
+    "Training Tue 14 Jul / You were added · Saber",
+    "Training Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Now Thu 23 Jul – Mon 27 Jul · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Thu 23 Jul – Fri 24 Jul · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Remark changed · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Tue 21 Jul, 3 people added, and 1 more change · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Hex taken off, Training changed to Meeting, and 1 more change · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Thu 16 Jul, Ace added, and 2 more changes · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Fri 17 Jul, renamed — was Training · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 300,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "A6-ranger-bell-desk.png",
+   "case": "A6",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "LL Thu 23 Jul / Now Thu 23 Jul – Mon 27 Jul · Saber",
+    "LL Thu 23 Jul / Now Thu 23 Jul – Fri 24 Jul · Saber",
+    "Training Wed 22 Jul / Remark changed · Saber",
+    "Training Tue 21 Jul / Now Tue 21 Jul, 3 people added, and 1 more change · Saber",
+    "Meeting Fri 17 Jul / Hex taken off, Training changed to Meeting, and 1 more change · Saber",
+    "Range talk Thu 16 Jul / Now Thu 16 Jul, Ace added, and 2 more changes · Saber",
+    "Range walk Fri 17 Jul / Now Fri 17 Jul, renamed — was Training · Saber",
+    "Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "Training Sun 19 Jul / You were added · Saber",
+    "LL Thu 23 Jul / You were added · Saber",
+    "Training Wed 22 Jul / You were added · Saber",
+    "Training Mon 20 Jul / You were added · Saber",
+    "Training Fri 17 Jul / You were added · Saber",
+    "Training Mon 13 Jul / You were added · Saber",
+    "Training Tue 14 Jul / You were added · Saber",
+    "Training Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Now Thu 23 Jul – Mon 27 Jul · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Thu 23 Jul – Fri 24 Jul · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Remark changed · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Tue 21 Jul, 3 people added, and 1 more change · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 269,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Hex taken off, Training changed to Meeting, and 1 more change · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 269,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Thu 16 Jul, Ace added, and 2 more changes · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 269,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Fri 17 Jul, renamed — was Training · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 269,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 269,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 262,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 262,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  },
+  {
+   "file": "A6-hex-bell-phone.png",
+   "case": "A6",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "Training Wed 22 Jul / Remark changed · Saber",
+    "Training Tue 21 Jul / Now Tue 21 Jul, 3 people added, and 1 more change · Saber",
+    "Meeting Fri 17 Jul / You were taken off · Saber",
+    "Range talk Thu 16 Jul / Now Thu 16 Jul, Ace added, and 2 more changes · Saber",
+    "Range walk Fri 17 Jul / Now Fri 17 Jul, renamed — was Training · Saber",
+    "Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+    "Training Sun 19 Jul / You were added · Saber",
+    "Training Wed 22 Jul / You were added · Saber",
+    "Training Mon 20 Jul / You were added · Saber",
+    "Training Fri 17 Jul / You were added · Saber",
+    "Training Mon 13 Jul / You were added · Saber",
+    "Training Tue 14 Jul / You were added · Saber",
+    "Training Wed 15 Jul / You were added · Saber"
+   ],
+   "fit": [
+    {
+     "what": "Remark changed · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Tue 21 Jul, 3 people added, and 1 more change · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were taken off · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Thu 16 Jul, Ace added, and 2 more changes · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Fri 17 Jul, renamed — was Training · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber",
+     "lines": 2,
+     "fitsOneLine": false,
+     "boxWidth": 307,
+     "height": 34,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 307,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 300,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 300,
+     "height": 17,
+     "lineHeight": 16.875
+    },
+    {
+     "what": "You were added · Saber",
+     "lines": 1,
+     "fitsOneLine": true,
+     "boxWidth": 300,
+     "height": 17,
+     "lineHeight": 16.875
+    }
+   ]
+  }
+ ],
+ "cases": {
+  "A6": {
+   "log": [
+    "bundle index-2uyEcUJu.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-15: new input [\"imwujja7t3wtgck\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-14: new input [\"imwujjdd93pp5gw\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-13: new input [\"imwujjg9tk0kru7\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-17: new input [\"imwujjj5231ldzn\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-20: new input [\"imwujjlyw4bnlkd\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-22: new input [\"imwujjotp1j41k4\"]; asked []; note \"\"",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\"],\"span\":\"all\"} on 2026-07-23: new input [\"imwujjrgpwjy62r\"]; asked [\"document\"]; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\",\"rocky\"],\"from\":\"09:00\",\"to\":\"10:00\",\"title\":\"Training\",\"remarks\":\"Bring your kit\"} on 2026-07-19: new input [\"imwujjv28ir9od6\"]; asked [\"oil\"]; note \"\"",
+    "made {\"a\":\"imwujja7t3wtgck\",\"b\":\"imwujjdd93pp5gw\",\"c\":\"imwujjg9tk0kru7\",\"d\":\"imwujjj5231ldzn\",\"e\":\"imwujjlyw4bnlkd\",\"f1\":\"imwujjotp1j41k4\",\"f2\":\"imwujjrgpwjy62r\",\"g\":\"imwujjv28ir9od6\"}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "a: before {\"type\":\"Training\",\"date\":\"Jul 15\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring your kit\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"} after {\"type\":\"Training\",\"title\":\"Range brief\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "b: before {\"type\":\"Training\",\"date\":\"Jul 14\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring your kit\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"} after {\"type\":\"Training\",\"title\":\"Range walk\",\"date\":\"Jul 17\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring your kit\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"}",
+    "c adds dj",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "c: before {\"type\":\"Training\",\"date\":\"Jul 13\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring your kit\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"} after {\"type\":\"Training\",\"title\":\"Range talk\",\"date\":\"Jul 16\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\",\"dj\"],\"acc\":\"g\"}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "d: before {\"type\":\"Training\",\"date\":\"Jul 17\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring your kit\",\"people\":[\"bane\",\"rocky\"],\"acc\":\"g\"} after {\"type\":\"Meeting\",\"date\":\"Jul 17\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\"],\"acc\":\"g\"}",
+    "e adds dj,shaft,slash",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "e: before {\"type\":\"Training\",\"date\":\"Jul 20\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring your kit\",\"people\":[\"bane\",\"rocky\"]} after {\"type\":\"Training\",\"date\":\"Jul 21\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\",\"dj\",\"shaft\",\"slash\"]}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "f1: before {\"type\":\"Training\",\"date\":\"Jul 22\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring your kit\",\"people\":[\"bane\",\"rocky\"]} after {\"type\":\"Training\",\"date\":\"Jul 22\",\"allday\":false,\"s\":540,\"e\":600,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\",\"rocky\"]}",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "f2: before {\"type\":\"LL\",\"date\":\"Jul 23\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]} after {\"type\":\"LL\",\"date\":\"Jul 23\",\"endDate\":\"Jul 24\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}",
+    "f2 till tick: true · till text \"till 24 Jul\"",
+    "saved the change: asked []; note \"\"; window still open: false",
+    "f2: before {\"type\":\"LL\",\"date\":\"Jul 23\",\"endDate\":\"Jul 24\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]} after {\"type\":\"LL\",\"date\":\"Jul 23\",\"endDate\":\"Jul 27\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"\",\"people\":[\"bane\"]}",
+    "RECORD (g) the window's buttons (is there a cancel?) — [\"✕\",\"Several people\",\"ALL AVAIL\",\"ALL\",\"All\",\"AceA\",\"AnvilIP\",\"BladeIP\",\"CinchIP\",\"CobraIP\",\"CometIP\",\"DieselD\",\"DrifterA\",\"ForgeIP\",\"GambitC\",\"HavocIP\",\"HunterIP\",\"NomadC\",\"OutlawC\",\"PistonIP\",\"RangerIP\",\"ReaperIR\",\"ReconO\",\"RidgeC\",\"SaberIP\",\"SaintB\",\"SidewinderIP\",\"TalismanO\",\"TorchC\",\"TridentIP\",\"VandalIP\",\"VaporD\",\"WardenIP\",\"WildcardO\",\"All\",\"BasherIW\",\"CinderB\",\"CutterC\",\"DashC\",\"EchoIW\",\"FableC\",\"GhostC\",\"GritC\",\"HexC\",\"LedgerIW\",\"QuillIW\",\"RelayIW\",\"RuneB\",\"RyderC\",\"ScopeIW\",\"StaticIW\",\"VectorC\",\"WispC\",\"BoltC\",\"JesterB\",\"KrakenD\",\"MarlinA\",\"OtterD\",\"PixelD\",\"RebelB\",\"ScribeD\",\"TallyO\",\"ZenithC\",\"ZuluO\",\"All\",\"Cotter\",\"Ratchet\",\"Widget\",\"?\",\"Document\",\"July 2026›\",\"‹\",\"›\",\"Change…\",\"Delete\",\"Cancel\",\"Save\"]",
+    "picture A6-g-window-desk.png: \"the window of input g\"",
+    "cx buttons on Edit Schedule: []",
+    "RECORD (g) the schedule's cancel — NOT WALKED — \"no cancel button found on Sun 19 Jul's ground rows\"",
+    "picture A6-ranger-bell-phone.png: [\"LL Thu 23 Jul / Now Thu 23 Jul – Mon 27 Jul · Saber\",\"LL Thu 23 Jul / Now Thu 23 Jul – Fri 24 Jul · Saber\",\"Training Wed 22 Jul / Remark changed · Saber\",\"Training Tue 21 Jul / Now Tue 21 Jul, 3 people added, and 1 more change · Saber\",\"Meeting Fri 17 Jul / Hex taken off, Training changed to Meeting, and 1 more change · Saber\",\"Range talk Thu 16 Jul / Now Thu 16 Jul, Ace added, and 2 more changes · Saber\",\"Range walk Fri 17 Jul / Now Fri 17 Jul, renamed — was Training · Saber\",\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"Training Sun 19 Jul / You were added · Saber\",\"LL Thu 23 Jul / You were added · Saber\",\"Training Wed 22 Jul / You were added · Saber\",\"Training Mon 20 Jul / You were added · Saber\",\"Training Fri 17 Jul / You were added · Saber\",\"Training Mon 13 Jul / You were added · Saber\",\"Training Tue 14 Jul / You were added · Saber\",\"Training Wed 15 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"LL Thu 23 Jul / Now Thu 23 Jul – Mon 27 Jul · Saber\",\"LL Thu 23 Jul / Now Thu 23 Jul – Fri 24 Jul · Saber\",\"Training Wed 22 Jul / Remark changed · Saber\",\"Training Tue 21 Jul / Now Tue 21 Jul, 3 people added, and 1 more change · Saber\",\"Meeting Fri 17 Jul / Hex taken off, Training changed to Meeting, and 1 more change · Saber\",\"Range talk Thu 16 Jul / Now Thu 16 Jul, Ace added, and 2 more changes · Saber\",\"Range walk Fri 17 Jul / Now Fri 17 Jul, renamed — was Training · Saber\",\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"Training Sun 19 Jul / You were added · Saber\",\"LL Thu 23 Jul / You were added · Saber\",\"Training Wed 22 Jul / You were added · Saber\",\"Training Mon 20 Jul / You were added · Saber\",\"Training Fri 17 Jul / You were added · Saber\",\"Training Mon 13 Jul / You were added · Saber\",\"Training Tue 14 Jul / You were added · Saber\",\"Training Wed 15 Jul / You were added · Saber\"]",
+    "PASS phone: (a) \"Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\" — [\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\"]",
+    "PASS phone: (b) both said, no \"more\" — \"Now Fri 17 Jul, renamed — was Training · Saber\" — [\"Range walk Fri 17 Jul / Now Fri 17 Jul, renamed — was Training · Saber\"]",
+    "PASS phone: (c) ends \"and 2 more changes · Saber\" (RECORD the whole line) — [\"Range talk Thu 16 Jul / Now Thu 16 Jul, Ace added, and 2 more changes · Saber\"]",
+    "PASS phone: (d) Ranger's whole line (RECORD); \"Training\" keeps its capital, ends \"and 1 more change\" — [\"Meeting Fri 17 Jul / Hex taken off, Training changed to Meeting, and 1 more change · Saber\"]",
+    "RECORD phone: (e) three added, day moved, remark (RECORD) — [\"Training Tue 21 Jul / Now Tue 21 Jul, 3 people added, and 1 more change · Saber\",\"Training Mon 20 Jul / You were added · Saber\"]",
+    "RECORD phone: (f) only the remark (RECORD) — [\"Training Wed 22 Jul / Remark changed · Saber\",\"Training Wed 22 Jul / You were added · Saber\"]",
+    "RECORD phone: (f) dates extended, till tick (RECORD; no \"remark\" said) — [\"LL Thu 23 Jul / Now Thu 23 Jul – Mon 27 Jul · Saber\",\"LL Thu 23 Jul / Now Thu 23 Jul – Fri 24 Jul · Saber\",\"LL Thu 23 Jul / You were added · Saber\"]",
+    "RECORD phone: (g) the schedule's cancel (RECORD) — [\"Training Sun 19 Jul / You were added · Saber\"]",
+    "picture A6-ranger-bell-desk.png: [\"LL Thu 23 Jul / Now Thu 23 Jul – Mon 27 Jul · Saber\",\"LL Thu 23 Jul / Now Thu 23 Jul – Fri 24 Jul · Saber\",\"Training Wed 22 Jul / Remark changed · Saber\",\"Training Tue 21 Jul / Now Tue 21 Jul, 3 people added, and 1 more change · Saber\",\"Meeting Fri 17 Jul / Hex taken off, Training changed to Meeting, and 1 more change · Saber\",\"Range talk Thu 16 Jul / Now Thu 16 Jul, Ace added, and 2 more changes · Saber\",\"Range walk Fri 17 Jul / Now Fri 17 Jul, renamed — was Training · Saber\",\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"Training Sun 19 Jul / You were added · Saber\",\"LL Thu 23 Jul / You were added · Saber\",\"Training Wed 22 Jul / You were added · Saber\",\"Training Mon 20 Jul / You were added · Saber\",\"Training Fri 17 Jul / You were added · Saber\",\"Training Mon 13 Jul / You were added · Saber\",\"Training Tue 14 Jul / You were added · Saber\",\"Training Wed 15 Jul / You were added · Saber\"]",
+    "ranger-bell bell: [\"LL Thu 23 Jul / Now Thu 23 Jul – Mon 27 Jul · Saber\",\"LL Thu 23 Jul / Now Thu 23 Jul – Fri 24 Jul · Saber\",\"Training Wed 22 Jul / Remark changed · Saber\",\"Training Tue 21 Jul / Now Tue 21 Jul, 3 people added, and 1 more change · Saber\",\"Meeting Fri 17 Jul / Hex taken off, Training changed to Meeting, and 1 more change · Saber\",\"Range talk Thu 16 Jul / Now Thu 16 Jul, Ace added, and 2 more changes · Saber\",\"Range walk Fri 17 Jul / Now Fri 17 Jul, renamed — was Training · Saber\",\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"Training Sun 19 Jul / You were added · Saber\",\"LL Thu 23 Jul / You were added · Saber\",\"Training Wed 22 Jul / You were added · Saber\",\"Training Mon 20 Jul / You were added · Saber\",\"Training Fri 17 Jul / You were added · Saber\",\"Training Mon 13 Jul / You were added · Saber\",\"Training Tue 14 Jul / You were added · Saber\",\"Training Wed 15 Jul / You were added · Saber\"]",
+    "PASS desk: (a) \"Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\" — [\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\"]",
+    "PASS desk: (b) both said, no \"more\" — \"Now Fri 17 Jul, renamed — was Training · Saber\" — [\"Range walk Fri 17 Jul / Now Fri 17 Jul, renamed — was Training · Saber\"]",
+    "PASS desk: (c) ends \"and 2 more changes · Saber\" (RECORD the whole line) — [\"Range talk Thu 16 Jul / Now Thu 16 Jul, Ace added, and 2 more changes · Saber\"]",
+    "PASS desk: (d) Ranger's whole line (RECORD); \"Training\" keeps its capital, ends \"and 1 more change\" — [\"Meeting Fri 17 Jul / Hex taken off, Training changed to Meeting, and 1 more change · Saber\"]",
+    "RECORD desk: (e) three added, day moved, remark (RECORD) — [\"Training Tue 21 Jul / Now Tue 21 Jul, 3 people added, and 1 more change · Saber\",\"Training Mon 20 Jul / You were added · Saber\"]",
+    "RECORD desk: (f) only the remark (RECORD) — [\"Training Wed 22 Jul / Remark changed · Saber\",\"Training Wed 22 Jul / You were added · Saber\"]",
+    "RECORD desk: (f) dates extended, till tick (RECORD; no \"remark\" said) — [\"LL Thu 23 Jul / Now Thu 23 Jul – Mon 27 Jul · Saber\",\"LL Thu 23 Jul / Now Thu 23 Jul – Fri 24 Jul · Saber\",\"LL Thu 23 Jul / You were added · Saber\"]",
+    "RECORD desk: (g) the schedule's cancel (RECORD) — [\"Training Sun 19 Jul / You were added · Saber\"]",
+    "picture A6-hex-bell-phone.png: [\"Training Wed 22 Jul / Remark changed · Saber\",\"Training Tue 21 Jul / Now Tue 21 Jul, 3 people added, and 1 more change · Saber\",\"Meeting Fri 17 Jul / You were taken off · Saber\",\"Range talk Thu 16 Jul / Now Thu 16 Jul, Ace added, and 2 more changes · Saber\",\"Range walk Fri 17 Jul / Now Fri 17 Jul, renamed — was Training · Saber\",\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"Training Sun 19 Jul / You were added · Saber\",\"Training Wed 22 Jul / You were added · Saber\",\"Training Mon 20 Jul / You were added · Saber\",\"Training Fri 17 Jul / You were added · Saber\",\"Training Mon 13 Jul / You were added · Saber\",\"Training Tue 14 Jul / You were added · Saber\",\"Training Wed 15 Jul / You were added · Saber\"]",
+    "hex-bell bell: [\"Training Wed 22 Jul / Remark changed · Saber\",\"Training Tue 21 Jul / Now Tue 21 Jul, 3 people added, and 1 more change · Saber\",\"Meeting Fri 17 Jul / You were taken off · Saber\",\"Range talk Thu 16 Jul / Now Thu 16 Jul, Ace added, and 2 more changes · Saber\",\"Range walk Fri 17 Jul / Now Fri 17 Jul, renamed — was Training · Saber\",\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"Training Sun 19 Jul / You were added · Saber\",\"Training Wed 22 Jul / You were added · Saber\",\"Training Mon 20 Jul / You were added · Saber\",\"Training Fri 17 Jul / You were added · Saber\",\"Training Mon 13 Jul / You were added · Saber\",\"Training Tue 14 Jul / You were added · Saber\",\"Training Wed 15 Jul / You were added · Saber\"]",
+    "PASS phone: (d) Hex reads only \"You were taken off · Saber\" — [\"Meeting Fri 17 Jul / You were taken off · Saber\"]",
+    "RECORD phone: Hex's whole bell (RECORD) — [\"Training Wed 22 Jul / Remark changed · Saber\",\"Training Tue 21 Jul / Now Tue 21 Jul, 3 people added, and 1 more change · Saber\",\"Meeting Fri 17 Jul / You were taken off · Saber\",\"Range talk Thu 16 Jul / Now Thu 16 Jul, Ace added, and 2 more changes · Saber\",\"Range walk Fri 17 Jul / Now Fri 17 Jul, renamed — was Training · Saber\",\"Range brief Thu 16 Jul / Now Thu 16 Jul, renamed — was Training, and 1 more change · Saber\",\"Training Sun 19 Jul / You were added · Saber\",\"Training Wed 22 Jul / You were added · Saber\",\"Training Mon 20 Jul / You were added · Saber\",\"Training Fri 17 Jul / You were added · Saber\",\"Training Mon 13 Jul / You were added · Saber\",\"Training Tue 14 Jul / You were added · Saber\",\"Training Wed 15 Jul / You were added · Saber\"]"
+   ]
+  }
+ },
+ "errors": []
+}

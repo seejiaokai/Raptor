@@ -137,6 +137,19 @@ describe('generic drag & drop across the whole edit board (tfin)', () => {
     setSlotVal(key, before); await act(async () => { afterSchedMutate(); notify() })
   })
 
+  /* (the fresh, blind Fable read of round 4, its finding 2, chat 170: the tap's true twin — his NAME carried from the
+     crew list onto the seat he already holds — said nothing, where the tap says "<callsign> — already in that seat") */
+  it('his name dragged from the crew list onto the seat he holds says so, as the tap does (D2521 Q4b)', async () => {
+    const seat = $$('#eWeek .seat[data-slot^="d:"][data-drag]').find(s => slotVal(s.dataset.slot!))!
+    const key = seat.dataset.slot!, before = slotVal(key)
+    const src = $$('#eRoster .rpuck[data-person]').find(x => x.dataset.person === before)!
+    expect(src, 'his name is in the crew list').toBeTruthy()
+    toasts = []
+    await dnd(src, $(`#eWeek .seat[data-slot="${key}"]`))
+    expect(toasts).toEqual([`${PEOPLE[before].cs} — already in that seat`])
+    expect(slotVal(key)).toBe(before)
+  })
+
   it('the dnd class is cleared after every drop', () => {
     expect(document.body.classList.contains('dnd')).toBe(false)
   })
@@ -174,7 +187,8 @@ describe('the drop delta (5 Sep 26) — a drop says what it just broke, in the v
     /* the man already in the seat, dropped back: applyDrop refuses before any write */
     toasts = []
     await dnd($(`#eWeek .seat[data-slot="${key}"]`), $(`#eWeek .seat[data-slot="${key}"]`))
-    expect(toasts).toEqual(['Already in that seat'])
+    /* round 4 (his D2521, Q4b): the tap's words — the man named */
+    expect(toasts).toEqual([`${PEOPLE[before].cs} — already in that seat`])
     expect(slotVal(key)).toBe(before)
   })
 })
@@ -251,7 +265,7 @@ describe('applyDrop contracts (B23 / B49)', () => {
     const seat = $$('#eWeek .seat[data-slot^="d:"][data-drag]').find(s => slotVal(s.dataset.slot!))!
     toasts = []
     await dnd(seat, seat)
-    expect(toasts).toContain('Already in that seat')
+    expect(toasts).toContain(`${PEOPLE[slotVal(seat.dataset.slot!)].cs} — already in that seat`)
     expect(slotVal(seat.dataset.slot!)).toBeTruthy()
   })
 
@@ -903,7 +917,7 @@ describe('the puck ghosts wear the lift, and the seat it lands on flashes', () =
     const key = seat.dataset.slot!, before = slotVal(key)
     const mark = await dropAndPeek(seat, seat)
     expect(slotVal(key), 'sanity: nothing was written').toBe(before)
-    expect(toasts, 'the toast still says why nothing moved').toEqual(['Already in that seat'])
+    expect(toasts, 'the toast still says why nothing moved').toEqual([`${PEOPLE[before].cs} — already in that seat`])
     expect(mark, 'nothing is deferred — there is no rebuild to defer to').toBeNull()
     expect(pendingLand(), 'and none is left in the slot afterwards').toBeNull()
     const live = $(`#eWeek [data-slot="${key}"]`)

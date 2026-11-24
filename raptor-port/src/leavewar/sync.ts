@@ -2676,7 +2676,8 @@ export function publishFlagsBids(di: number): void {
   const told = blind ? blind.told && { ...blind.told, ...(open ? { body: `${blind.told.body}. ${open.charAt(0).toUpperCase()}${open.slice(1)}` } : {}) }
     : open ? { head: `${WEEKDAY_NAMES[weekday(iso)]} ${dm(iso)}`, body: open } : undefined
   const joined = told && open ? (blind ? 2 : 1) : 1      // how many of `lines` the join's own sentences already say
-  const say = () => HOOKS.toast(lines.join(' · '), 'warn', told && { day: di, ...told, after: lines.slice(joined).join(' · ') })
+  /* (`body`, `after`: the no-period branch below folds its sentence into the join's own, and leaves nothing after it) */
+  const say = (body?: string, after?: string) => HOOKS.toast(lines.join(' · '), 'warn', told && { day: di, ...told, ...(body ? { body } : {}), after: after ?? lines.slice(joined).join(' · ') })
   const war = warHolding(rawState().wars, iso)
   /* amber, like the Inputs page's twin (N18, 21 Sep 26): this is a warning,
      not the face the app says "Saved" in. Both exits, because the day with
@@ -2687,8 +2688,16 @@ export function publishFlagsBids(di: number): void {
        so it is the moment to tell him it cannot: no period holds this date, so
        there is nowhere for the credit to be written. The day's own warning list
        says the same thing and carries the way out. */
-    lines.push(`there is no leave war period for ${iso.slice(0, 4)}, so no OIL can be earned for this day — create the period on the Leave War`)
-    say(); return
+    /* …in the day's warning list's own words (engine/validate.ts OIL_NO_PERIOD), so one message has one wording — a
+       sentence of its own after the publish note (his D2521 S2) */
+    const none = `No Leave War period for ${iso.slice(0, 4)}, so no OIL can be earned for this day. Create the period on the Leave War.`
+    lines.push(none)
+    /* …and where the toast carries a line's two halves for the join with the day's publish note (`told`, above), this
+       sentence is folded into them, as the unanswered line is — "…so nobody on it earns OIL. No Leave War period for
+       2028, …" — never left in `after`, which the join puts behind a dot: "…earns OIL. · No Leave War period…" (the
+       fresh, blind Opus read of round 4, its finding 1, chat 170). Its own last full stop is the join's to add. */
+    if (told) say(`${told.body}. ${none.slice(0, -1)}`, ''); else say()
+    return
   }
   const said: string[] = []
   for (const [person, sp] of Object.entries(spans)) {

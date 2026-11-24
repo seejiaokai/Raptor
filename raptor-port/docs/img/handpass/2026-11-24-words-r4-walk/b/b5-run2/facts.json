@@ -1,0 +1,51 @@
+{
+ "pictures": [
+  {
+   "file": "B5-1-open-for-bidding-desk.png",
+   "case": "B5",
+   "size": "desktop 1440x900 @2x",
+   "text": "Saber opens DEC"
+  },
+  {
+   "file": "B5-2-ranger-cell-tapped-desk.png",
+   "case": "B5",
+   "size": "desktop 1440x900 @2x",
+   "text": "Ranger Fri 11 Dec ✕ No manning row turns amber or red till 11 Dec Document Whole day AM PM Pick a range LL 11.5 OL 11.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 CSE OD ⋯"
+  },
+  {
+   "file": "B5-3-after-bid-desk.png",
+   "case": "B5",
+   "size": "desktop 1440x900 @2x",
+   "text": "LL |  act hasc"
+  },
+  {
+   "file": "B5-4-bell-phone.png",
+   "case": "B5",
+   "size": "phone 402x874 @3x",
+   "text": [
+    "(unread) PL Fri 11 Dec / Now Fri 11 Dec, OL changed to PL, and 1 more change · replaces your LL bid · Saber",
+    "(unread) OL Wed 9 Dec / You were added · Saber",
+    "(unread) Leave War 1 Dec – 31 Dec / Bidding open · Saber"
+   ]
+  }
+ ],
+ "cases": {
+  "B5": {
+   "log": [
+    "bundle: index-2uyEcUJu.js",
+    "picture B5-1-open-for-bidding-desk.png: \"Saber opens DEC\"",
+    "Ranger's cell on the bid day: 1  |  act",
+    "picture B5-2-ranger-cell-tapped-desk.png: \"Ranger Fri 11 Dec ✕ No manning row turns amber or red till 11 Dec Document Whole day AM PM Pick a range LL 11.5 OL 11.5 OIL −1 CCL 1 FCL 4 PL 0.5 EL 3 CL −1 CSE OD ⋯\"",
+    "after the LL bid: cell LL |  act hasc",
+    "picture B5-3-after-bid-desk.png: \"LL |  act hasc\"",
+    "filed {\"type\":\"OL\",\"span\":\"all\",\"people\":[\"bane\"],\"remarks\":\"Bring your kit\"} on 2026-12-09: new input [\"imwujwwgnap2tlp\"]; asked [\"document\"]; note \"\"",
+    "saved the change: asked []; note \"This replaces Ranger's LL bid on 11 Dec on the Leave War · Input updated\"; window still open: false",
+    "the save asked []; record {\"type\":\"PL\",\"date\":\"Dec 11\",\"allday\":true,\"s\":0,\"e\":1439,\"cx\":false,\"remarks\":\"Bring water\",\"people\":[\"bane\"]}",
+    "Ranger's bell: [\"(unread) PL Fri 11 Dec / Now Fri 11 Dec, OL changed to PL, and 1 more change · replaces your LL bid · Saber\",\"(unread) OL Wed 9 Dec / You were added · Saber\",\"(unread) Leave War 1 Dec – 31 Dec / Bidding open · Saber\"]",
+    "picture B5-4-bell-phone.png: [\"(unread) PL Fri 11 Dec / Now Fri 11 Dec, OL changed to PL, and 1 more change · replaces your LL bid · Saber\",\"(unread) OL Wed 9 Dec / You were added · Saber\",\"(unread) Leave War 1 Dec – 31 Dec / Bidding open · Saber\"]",
+    "RECORD the line: \"Now Fri 11 Dec, OL changed to PL, and 1 more change · replaces your LL bid · Saber\"; PASS against \"…, and 1 more change · replaces your LL bid · Saber\""
+   ]
+  }
+ },
+ "errors": []
+}
