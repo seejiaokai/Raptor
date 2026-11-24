@@ -888,6 +888,7 @@ windows (the phone carries the sheet; its body scrolls a covered box), drawn for
 ### [LOGIN-OPENS-TODAY] Signing in opens on today's date — before testing (his D1383, 26 Oct 26)
 
 **His ruling:** D1383. Not now — the demo data is what is worked on; due before the app is put out for testing.
+**With it (chat 174's walk w14a, 25 Nov 26):** the week's "· Today" after a day's date is the demo seed's own fixed mark (`engine/data.ts`, Mon 13 Jul `today:true`, carried by `drafts.ts`), not the clock — with the clock at Wed 15 the week still heads Mon 13 "· Today" (picture `D:/raptor-work/c174-walk/w14a/run1/c4-c4-i-desktop.png`); when this item is built, the mark follows the real date too.
 
 ### [LOAD-MOVES-ROW-DAY] A load of one day can move a course's row onto another published day (found 26 Oct 26 — [LW-LOAD-RELAND-RID]'s code read, F3)
 
