@@ -2917,6 +2917,10 @@ Leave War's decisions, bidding opened or closed, a posting out, an input a sched
 bold title saying what changed for him and one sentence on what it means, as D2391 gives the SANS lines. Fable rewords them
 (D2393); every line drawn for him on one page first (D1625); then built red-first, tests of the words, a short walk. Whether
 "taken back" stays where a line is still crossed out: his D2391 kept it for now. A job of its own, after the SANS one.
+Since his D2423 (24 Nov 26) the word is "undone", not "taken back", wherever an Undo reversed the news — new lines, a
+struck line that stays ("undone · Saber") and the change history; an act that was no Undo (an approved leave put back to a
+bid) is not called undone. Drawn on the page of 24 Nov 26 (`raptor-port/docs/mock/2026-11-24-bell-words/`, branch
+`claude/allavail-drawings-156`), reworded again by Fable under his D2422.
 
 ### [FABLE-READ-FAULTS] The faults Fable's reads of 21–22 Nov found outside the two-squadron work — fix now (his D2268, 22 Nov 26)
 **What:** proved by failing tests on the night's copy (very probably live today), none fixed: **OIL F1** (MED — a man posted
