@@ -3,8 +3,8 @@
         (D2576, D2578: they need no SANS availability): the crew list, the warning list and his bell's reminder all leave
         those lines alone. The "SANS — told on his bell" note is built with the SANS info line, nothing before.
    Q5 — an OFT or AMT seat with no times strikes a SANS man with nothing filed, as a flight with no times does (D2573).
-   The halves left as they are: an ordinary flight still strikes and warns; a sim with no times still leaves a man who
-   filed something plain (D2573's "unchanged"). */
+   The halves left as they are: an ordinary flight still strikes and warns; a sim with no times still leaves plain a man
+   who offered that sim (his D2585 strikes at once one whose filing does not offer it — sans-notimes-offer.test.ts). */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { INPUTS, inpId } from './inputs'
@@ -86,12 +86,13 @@ describe('D2584 Q5 — an OFT or AMT seat with no times strikes him as a flight 
       expect(slotBar(ID, `${row}.p`)).toBe(NONE)
       expect(slotBar(ID, `${row}.w`)).toBe(NONE)
     })
-    it(`${kind.toUpperCase()} with no times, something filed: left plain (nothing to hold his offer against yet)`, () => {
+    it(`${kind.toUpperCase()} with no times, that sim offered: left plain (nothing to hold his hours against yet)`, () => {
       const row = blankSim(kind)
-      fileSans({ f: true })
+      fileSans(kind === 'oft' ? { o: true } : { a: true })
       validate()
       expect(slotBar(ID, `${row}.p`)).not.toMatch(/^SANS/)
     })
+    /* (a filing that does not offer this sim — "Fly only" — is struck at once since his D2585: sans-notimes-offer.test.ts) */
   }
   it('a non-SANS man on an untimed sim is never asked', () => {
     const row = blankSim('oft')

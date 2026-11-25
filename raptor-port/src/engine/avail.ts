@@ -658,11 +658,16 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
      the same words as a timed seat, so the crew list agrees with his own reminder, which counts that seat already (D2568,
      avail.ts daySansSeats). Only 'none' is asked — a man who has filed something has no window to hold against yet, as
      before. Never a standby line (SC, AVALON, BB, flying or not — D2576, D2578: they need no SANS availability). An OFT
-     or AMT seat with no times too (owner D2584 Q5, 25 Nov 26: "as a flight with no times does"). */
+     or AMT seat with no times too (owner D2584 Q5, 25 Nov 26: "as a flight with no times does").
+     A FILING THAT DOES NOT OFFER THIS EVENT (owner D2585, 25 Nov 26 — "OFT only" on a flight, "Fly only" on an OFT): struck
+     at once with the timed seat's words, since no times are needed to know it; one who offered the event with hours stays
+     plain until the times are typed ('window' and 'ok' are not asked here). */
   if(domain&&!sansStby&&r.di>=0&&DAYS[r.di]&&(r.slotStart==null||r.slotEnd==null)&&!spareLike0(r)
-    &&sansOnP(p,dayIso(String(CURWEEK),r.di))
-    &&sansGate(id,DAYS[r.di].dt,domain,null,null,dayIso(String(CURWEEK),r.di)).status==='none')
-    return sansNoneWhy(p,dayIso(String(CURWEEK),r.di));
+    &&sansOnP(p,dayIso(String(CURWEEK),r.di))){
+    const g0=sansGate(id,DAYS[r.di].dt,domain,null,null,dayIso(String(CURWEEK),r.di));
+    if(g0.status==='none')return sansNoneWhy(p,dayIso(String(CURWEEK),r.di));
+    if(g0.status==='not-offered')return `SANS — not offering ${SANS_LABEL[domain]}`;
+  }
   /* IS HE ALREADY BUSY AT THIS HOUR?
      The SC block above asks exactly this, for a shift. Every other slot asked
      nothing at all: the picker knew "tasked somewhere today" — a faint dimming,

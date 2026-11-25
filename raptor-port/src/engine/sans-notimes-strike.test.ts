@@ -61,13 +61,13 @@ describe('D2573 — a seat on a flight with no times yet', () => {
     expect(before).toBe(NONE)
   })
 
-  it('a man who has filed something is unchanged: Fly offered, or only OFT offered, raises nothing yet', () => {
+  it('a man who offered Fly is unchanged; one who offered only OFT is struck at once (his D2585 narrows D2573)', () => {
     const { key } = blankLine()
     const fly = fileSans(ID, { f: true })
     expect(slotBar(ID, key), 'Fly offered').not.toMatch(/^SANS/)
     INPUTS.splice(INPUTS.indexOf(fly), 1)
     fileSans(ID, { o: true })
-    expect(slotBar(ID, key), 'OFT only: no times to judge against — unchanged (the mismatch words are D2575s, drawn first)').not.toMatch(/^SANS/)
+    expect(slotBar(ID, key), 'OFT only: no times needed to know he does not offer Fly (D2585)').toBe('SANS — not offering Fly')
   })
 
   it('a man who is not SANS is never asked', () => {
