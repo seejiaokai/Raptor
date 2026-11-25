@@ -67,7 +67,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - A screen with an approved drawing is built to it and checked beside it as it is built and after every fix, not only at the walk; a departure is made only on purpose, for a better design, and is named to him with its picture and its reason — never left for him to find [D1424, D1426, D1478].
 - The drawing check — a script measuring each part's place, size, colour and text alignment against the approved drawing at his iPhone's and a desktop's size, listing every difference over about 2px with marked pictures side by side — is a standing step of every build with a drawing: run as the screen is built and after every fix, red until each difference is fixed or he rules to keep it, beside the look by eye and the walk, never instead of them [D1494, D1495].
 - Differences found after the build go to him side by side, each marked, and he chooses which go back — an outright fault is fixed without asking [D1426]. Any part he approved in a drawing is drawn again from that drawing — the sole source — and checked beside it before a page goes to him, in a later mock-up round as in a build; only what a later ruling requires is added, named and shown beside it [D1478].
-- Clearing the demo data is approved whenever it is the simpler path [D22].
+- Clearing the demo data is approved whenever it is the simpler path; a rule's cost to the demo data is never a reason against it — the demo data is remade to fit the rules [D22, D2616].
 - Every two weeks a one-page scorecard: faults he found after a change went live, changes undone or redone within two weeks, merges — each beside the two weeks before; speed counts only while the first two hold [D1409].
 
 ## Secrets and the repo
