@@ -1859,3 +1859,16 @@ sides.
 **Issue:** The host wrote the page's recommendations from the pressing results while a helper was rewriting the plan's switch-point table. Two blind readers then found the page and the plan recommending opposite answers on five questions (a held window, a hidden Tracker window, an Undo, who is told, unseen windows), and the plan building one of them as if already answered.
 **Suggested improvement:** Before publishing a questions page, check each question against the plan's switch-point table (a code-to-code map: page code, plan code, the step it blocks), and either carry the plan's recommendation or change the plan in the same commit; the map goes into the plan.
 **Principle:** When two documents both recommend an answer to the same open question, one of them must be derived from the other at publish time, or they drift and the reader answers one while the builder follows the other.
+
+### Observation 1078: Parallel drawers drew one shared screen part two different ways
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** Chat 188, round 6 of a mock-up questions page: two drawer helpers ran in parallel (one for an admin page's postings, one for an "It's him" path), both ending on the same posting sheet. (Number taken past 1077, held on another branch.)
+**Skill:** brainstorming (mockups-on-the-real-app), dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** briefing parallel helpers who draw overlapping parts
+
+**Issue:** Each brief described the shared sheet in its own words; one drawer made its new "To" line a drop-down, the other a row of chips. Only the later words review caught it, and fixing it cost a second round of messages to both drawers (and one reversal when the reviewer's reason for the drop-down turned out better).
+**Suggested improvement:** When two parallel briefs touch the same screen part, name ONE owner for that part in both briefs; the other drawer copies the owner's finished picture (or waits for it), and its brief says so. Add to the parallel-dispatch checklist: "list the parts more than one helper will draw; give each a single owner".
+**Principle:** Parallel workers given overlapping scope diverge on the overlap; assign each shared piece a single owner up front rather than reconciling afterwards.
