@@ -37,18 +37,18 @@ No clash between them found.
 
 | Place the answer shows | SHOW | USABLE | PAINTED beside it |
 |---|---|---|---|
-| Edit Schedule crew panel, a flying seat with no times picked — desktop | | | |
-| Edit Schedule crew panel, the same — phone | | | |
-| Scheduler Board crew list, the same — desktop | | | |
-| Scheduler Board crew list, the same — phone | | | |
-| Crew list, no seat picked (unchanged, D2420) | | | |
-| The drag hover over the seat | | | |
-| The note after a drop or a tap-to-plan | | | |
-| The green "where can he go" rings | | | |
-| His bell's SANS reminder (must agree) | | | |
-| The warning list and his puck's marks (unchanged) | | | |
-| Standby seats with no times (unchanged) | | | |
-| A sim row with no times (unchanged, a question for him) | | | |
+| Edit Schedule crew panel, a flying seat with no times picked — desktop | YES — struck, the reason under his name, "0 free" (A: F1, F2; B: F6, F14) | YES — a tap still plants him, with the note (A: F1.3) | the other SANS men's rows and the free men (A: F2) |
+| Edit Schedule crew panel, the same — phone | YES (A: F1, F2 at 402; B: fit at 402 — every reason line inside the panel) | YES (A: F1) | the same (B: fit at 402) |
+| Scheduler Board crew list, the same — desktop | YES (A: F2, the board half; B: F13, F15) | YES (B: F13) | the same |
+| Scheduler Board crew list, the same — phone | YES (A: F2; B: fit at 402, the drawer) | YES | the same |
+| Crew list, no seat picked (unchanged, D2420) | YES — struck, no reason line (A: F2; B: the plain-user round) | YES | the "N free" count (A: F2) |
+| The drag hover over the seat | YES — his reason under the carried puck (A: F5 = A-S01, mouse and finger) | YES — the drop lands him | the amber outline on the seat (A: F5) |
+| The note after a drop or a tap-to-plan | YES with no newer warning (A: F1.6, F5.6); NO-because the drop's newest warning takes the note first — the weekend OIL line, a double turn (A: F1.2, F5.9, A-S16) — as on `main`, as built (§14) | YES | — |
+| The green "where can he go" rings | YES — no ring on any flying seat for him, a ring for a free man (A: F9 = A-S03; B: A-S09) | YES | the other places lit when he is pressed (B: A-S09) |
+| His bell's SANS reminder (must agree) | YES — the same days (B: F3, F3b, F12, F15, A-S14) | YES — a tap opens the SANS calendar | — |
+| The warning list and his puck's marks (unchanged) | YES — no new line, "2 issues · 1 warning" the OIL line and "Not published yet" (A: F16) | — | — |
+| Standby seats with no times (unchanged) | YES — nobody struck (B: F7; the test file) | YES | — |
+| A sim row with no times (unchanged, a question for him) | YES — he stays plain, as built (B: A-S14, RECORDED); his D2584 (Q5) since answers it: he is to be struck too — the next build | YES | — |
 
 ## 4. The five sizing lines
 
@@ -86,24 +86,66 @@ fit change), 14 (no keyboard route), 16 (no refusal at a box), 18 (no print), 23
 
 ## 6. The orders walked
 
+Seat first then times typed, cleared and half-typed (A: F1, F2; B: F6); times first then the man (B: A-S09); planned,
+then filed, deleted, Undo and Redo (B: A-S09, A-S17, F13); the posting saved before and after the seats were made (B: F3,
+F3b); a week changed and back, a reload (B: A-S17); moved seat to seat and swapped (A: A-S16).
+
 ## 7. Cases carried by a test
 
 | Case | Test | What it proves |
 |---|---|---|
 | No times, nothing filed → struck in the timed seat's words | `src/engine/sans-notimes-strike.test.ts` | the two cases that failed before the fix |
 | A man who filed anything, a non-SANS man, every SC / AVALON / BB seat, the warning list — unchanged | the same file | five cases; removing the fix's standby guard fails one |
+| Each place that reads the strike, on a seat with no times: the crew list armed, the drag hover, the green rings, the note after a tap-to-plan, the note after a drop | `src/ui/sans-notimes-surfaces.test.tsx` (chat 181) | five cases, each with an ordinary free pilot as its control |
 
 ## 8. The pictures
 
+2290 pictures under `docs/img/handpass/2026-11-25-sans-notimes-strike/` (A 652, B 1638), the deciding ones named in each
+report's table. The host opened `A/F1-d/F1-f1-tap-note-desktop.png` to reproduce A's three note rows (§14).
+
 ## 9. The break tests
+
+List `scripts/handpass/breaks/sans-notimes-d2573.json`, run by `scripts/handpass/breaks.mjs` on `claude/sans-leftovers-179`
+(chat 181, 25 Nov 26) — **6 of 6 caught**: (1) the strike removed — 7 tests red, both files; (2) the crew list's link cut
+— its test red; (3) the drag hover's — its test red; (4) the green rings' — its test red; (5) the tap-to-plan note's —
+its test and the drop's red (the drop in jsdom reaches the same note); (6) the drop note's — its test red. The tree was
+back as it was after the run.
 
 ## 10. Errors seen
 
+None — no console or page errors in either walker's runs (both reports).
+
 ## 11. Not walked, and why
+
+A-S10's bell part (covered by F3, F12, A-S14); F2.12 and F2.13 on a desktop (A's report, "could not reach" — the phone's
+picture covers F2.13). Nothing else.
 
 ## 12. The code reads
 
+Both blind, each on an exported copy of `3eb45f0cc` at `D:/raptor-work/c181-r1` (no handoff block of this round, no walk
+report, no sheet), the same brief (`READ-BRIEF.md` there, D56's exclusion in it), chat 181, 25 Nov 26.
+
+- **Astra** (`gpt-6-astra`, high, read-only; report `D:/raptor-work/c181-reads/astra.md`): no confirmed defect; explicit
+  negatives on every caller (both crew lists and counts, hover, rings, both notes), activated standby rows, sims and
+  extras, seat-to-seat drags, half-typed times, filed availability, precedence, dates and week changes, the bell, the
+  warning list, roles and overlays. Four "needs a run" scenarios, each covered by the walk or the new surface tests.
+- **A fresh Opus reader** (report in the chat's scratch folder, `reads/opus-d2573.md`): no defect in the change.
+  - Finding 1 — **confirmed-pre-existing, a question for him.** A SANS man who filed OFT only (or AMT only), on a
+    flight with no times: the crew list shows him plain, the warning list gives "SANS: not offering Fly today. Planned
+    on this line (no times yet)" at once; typed times strike him "SANS — not offering Fly". Reproduced by the host with
+    a probe (crew list "", the warning line as quoted, the timed seat struck). D2573's own words keep a man who filed
+    anything "unchanged", and the test pins it, so per §4's step 2 it goes to him, not fixed: recommended, strike him
+    too — "not offering Fly" needs no times. On his look card.
+  - Finding 2 — the scheduler page's "not built" for D2573: false positive at the branch head (the page already reads
+    "the flight built", written after the commit read).
+  - Observations: standby lines (SC MAIN, a flying AVALON or BB) still strike for nothing filed once timed — his D2584
+    (Q4, D2576–D2578) is the next build and takes that strike off; untimed sims — his D2584 (Q5), the next build;
+    cancelled lines — D2568 accepts them as built. Its test gaps (a landing-only line, a standby row ticked Flies, a
+    posting ahead, the "N free" count) are each walked (A: F2, F9; B: F3, F7) — no test added for them.
+
 ## 13. Gates
+
+GitHub's run on the branch's last pushed commit — §15 below records it at the close.
 
 ## 14. What the walk found, and each disposition
 
@@ -123,7 +165,9 @@ A-S14); filings, deleting them, Undo/Redo and a reload follow at once (A-S09, A-
 nobody (F7); before his date he is ordinary (F8); a shared filing counts as filed (A-S19). RECORDED: an untimed OFT or AMT
 leaves him plain (A-S14) — his question 5 on the drawings page. Not walked: A-S10's bell part (covered by F3, F12, A-S14).
 
-**Still to do (the next chat):** the break tests (§9), the two blind code reads (Astra + a fresh Opus, exported copy of
-`3eb45f0cc`), the walk ledger's row, the roll-call marks (§3) from the two reports, then close this sheet with its Walk line.
+**Closed in chat 181:** the break tests (§9), the two blind code reads (§12), the roll-call (§3), the walk ledger's row.
 
 ## 15. The Walk line
+
+`Walk: docs/handpass/2026-11-25-sans-notimes-strike.md · 2290 pictures · 12 surfaces · 6 orders · MISSING: none — the
+note order filed as built (§14), the OFT-only split a question for him (§12)`

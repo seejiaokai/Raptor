@@ -177,3 +177,16 @@ nothing until accepted again" and a rejected row's hover text "Removed from the 
 Both wait for his answer (the night of 16–17 Oct 26, question 2).
 
 *Lesson 1 (16 Oct 26, D938 — "a scheduler's working screen carries no hint on how a row is edited…") was struck by him the same day: "Disregard this lesson" (D942).*
+
+## Lesson 102, added 25 Nov 26 (chat 181)
+
+**Lesson 102 (25 Nov 26, D2581, D2582).** *His case:* the SANS leftovers page's pictures 12 and 13 — Edit Schedule's
+crew list with an AMT seat pressed; under the SANS section each man's reason ("SANS — not offering AMT") is followed by
+his small offered letter "O", which sat wherever his reason ended, so a longer reason pushed the next man's letters
+further right. He asked for one column; asked where it stands, he chose "right after the longest reason in the list"
+over "at the far right edge of each row" ("With the note"). *Other places the same improvement may apply (the agent's
+reading, suggested, never changed unasked, D852):* (1) the Scheduler Board's crew list, whose SANS section draws the
+same letters (the same build covers it); (2) the SANS calendar's opened day, where each man's offered letters follow his
+puck and remark; (3) the crew list's struck reasons for other kinds of man (leave, rest, a clash) when a short mark
+follows them. *Its reader's notes (one fresh Opus reader, 25 Nov 26):* the first line stated the general case as his
+and dropped "the SANS section"; rewritten in his rulings' words, the general case kept as the agent's reading.
