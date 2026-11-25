@@ -113,7 +113,9 @@ bar for anyone who may see more than one schedule; Admin → Squadrons; each pla
 
 Detachments, DET, Close, one man one place (batch 2) · picking the other squadron's people, the automatic ATTACH row,
 cross-squadron checks, shared waves, the grey badge, the count "2 (142) 6 (149)", OIL across both (batch 3) · Transfer
-to Sqn, Post out from Admin → Users (batch 4). **A place means nothing yet in batch 1** beyond being shown and stored:
+to Sqn, Post out from Admin → Users (batch 4 — his D2634, 25 Nov 26: Admin → Users carries every posting, post out with
+every outcome and post in, in a new interface with the Leave War's full functionality, so a SANS man the war hides is
+reached; the Leave War's sheets stay; both doors on the same rules; drawn first; his D2633 adds "It's him" there). **A place means nothing yet in batch 1** beyond being shown and stored:
 the place card's line "From tomorrow, 142 and 149 can plan each other's people" (round 7's R7D5b) promises batch 3 and
 is not shown until then.
 
