@@ -295,6 +295,10 @@ waits for the Transfer build. Fixes today's note pointing to a "▸ Archived" th
 **His D2633:** this build ships only "Someone new: add him" and "If this is him, ask 142's admin"; "It's him" comes with
 the Transfer step (batch 4). Fable's words and its twelve missing cases: `briefs/2026-11-25-msq-c6-words-fable-report.md`.
 
+**His D2635:** the folded headings are seen only by those who may give access to that squadron. **His D2636 — REMIND HIM:**
+group B (B1–B12: Logout, Undo, the refresh card) is put to him once Build 1 is built, in the first report after it;
+nothing of group B is built before his answers.
+
 **(c) The schedule's veiled dialogs — `.airpop` / `.modal`, flags in `ui/pops.ts`. Shaded.** Each row reads the
 predicate named, as a function of `ui/windrawn.ts` that the component calls.
 
