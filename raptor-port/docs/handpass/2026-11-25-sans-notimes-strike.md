@@ -52,7 +52,37 @@ No clash between them found.
 
 ## 4. The five sizing lines
 
+1. **Type:** A (a rule inside one shared calculation, the per-seat reason) with D (its answer drawn in several places,
+   each by its own code: the crew list's strike and count, the drag hover, the drop's note, the green rings).
+2. **What only a walk could find:** whether each place that reads the answer actually shows it on a seat with no times,
+   at both sizes, on Edit Schedule and the Scheduler Board; that the words fit at 402 wide; that the strike follows the
+   times typed, cleared and half-typed; that the bell and the crew list agree; that standby lines, a man who filed and the
+   warning list stay as they are. The test file carries the calculation; it does not prove any screen reads it.
+3. **The ledger:** type-A walks of the SANS gate (w11–w14 of 24–25 Nov) found their faults in the places that READ the
+   answer (the reminder's own reading of "planned", lesson 32), not in the calculation.
+4. **The walk chosen:** one Opus walker (D2256), the frozen build `D:/raptor-work/c179-build` (`index-DmZtA8E3.js`,
+   commit `3eb45f0cc`), port 4881; every scenario of both designers that the test file does not carry, combined by the
+   host (§5), phone 402×874 WebKit and desktop 1536; the plain-user round (§7.0a): Saber adds a line, plans Ranger,
+   types the times, Undo, and looks at the bell as Ranger. Carried by the test: the repeated standby seats (every MAIN and
+   SPARE of SC, AVALON, BB) beyond one of each walked.
+5. **After the walk:** its row in `docs/walk-ledger.md`.
+
 ## 5. The scenarios (Astra and a fresh Fable, blind to each other, combined by the host)
+
+Fable: 17 scenarios, 10 negatives, 2 questions (`D:/raptor-work/c179-sc-fable/scenarios.md`, to be saved under
+`docs/superpowers/briefs/2026-11-25-sans-notimes-scenarios-fable.md`); Astra: 22 (`D:/raptor-work/c179-sc-astra/scenarios.md`,
+→ `…-scenarios-astra.md`). Combined, every one walked: overlaps F1=A-S02 · F2=A-S05+A-S04 · F3=A-S11 · F4=A-S07 ·
+F5=A-S01 · F6=A-S08 · F7=A-S13 · F8=A-S10 · F9=A-S03 · F10=A-S04 · F11=A-S15 · F12=A-S12 · F13=A-S22 · F16+F17=A-S18;
+Astra's alone A-S06, A-S09, A-S14, A-S16, A-S17, A-S19, A-S20, A-S21; Fable's alone F14, F15. Two Opus walkers (A: crew
+lists, drags, rings, the board, publish, view-only — port 4881; B: the bell, filings, standby, dates, cancel, undo, reload,
+sims — port 4882), brief `D:/raptor-work/c179-walk/BRIEF.md`.
+
+**The §7.11 lessons:** apply — 2 (a drag at ordinary speed: F5/A-S01), 3 and 30 (a picture after every press, the phone
+within 100ms), 9 and 23b (the reason line measured inside its panel at 402 wide), 22 (read from the screen), 25 (every
+kind of flying seat: A-S06), 28 (proved on screen before a press), 29 (the clock past his SANS date: F8/A-S10).
+Do not apply, no part of the change: 1 (no new state surface beyond the table above), 4, 5, 10, 12, 19 (no window), 6,
+7, 13, 20, 21, 26 (no new gesture or motion), 8 (no drawing for this build), 11, 15, 17, 24, 27, 31 (no layout, bar or
+fit change), 14 (no keyboard route), 16 (no refusal at a box), 18 (no print), 23 (no tap that opens anything new).
 
 ## 6. The orders walked
 
