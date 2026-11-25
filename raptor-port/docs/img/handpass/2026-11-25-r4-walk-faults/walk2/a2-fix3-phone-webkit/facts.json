@@ -1,0 +1,41 @@
+{
+ "pictures": [],
+ "cases": {
+  "phone-webkit": {
+   "log": [
+    "bundle index-C-8yJleY.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"06:00\",\"to\":\"07:00\",\"title\":\"Upper brief\"} on 2026-07-15: new input [\"imwv5qqrr3z8md6\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"07:10\",\"to\":\"07:50\",\"title\":\"Lower brief\"} on 2026-07-15: new input [\"imwv5qug8b7s8fa\"]; asked []; note \"\"",
+    "bundle index-C-8yJleY.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwv5r78wv8ne0v\"]; asked []; note \"\""
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "W9 phone-webkit \"xyz\" half typed in the lower input's Ground Programme remarks, Reject pressed on the upper — \"xyz\" once, on the lower row",
+   "FAIL",
+   "{\"rejectAt\":1000,\"inputs\":[{\"title\":\"Upper brief\",\"acc\":\"r\",\"rej\":null,\"remarks\":\"\"},{\"title\":\"Lower brief\",\"acc\":\"g\",\"rej\":null,\"remarks\":\"xyz\"}],\"boxesHoldingXyz\":[\"gr:2.2.rmks\",\"imwv5qug8b7s8fa.rmks\"],\"groundRowsHoldingXyz\":[{\"src\":\"imwv5qug8b7s8fa\",\"prog\":\"LOWER BRIEF\",\"rmks\":\"xyz\"}]}",
+   "a2-phone-webkit-W9-typed.png, a2-phone-webkit-W9-after-reject.png, a2-phone-webkit-W9-settled.png"
+  ],
+  [
+   "W10d phone-webkit Personal Inputs dragged above the Ground Programme by its grip",
+   "PASS",
+   "{\"before\":[\"sb-panel.daybar\",\"2.notes\",\"2.prog\",\"2.waves\",\"2.duty\",\"2.sims\",\"2.ground\",\"2.inputs\",\"2.avail\",\"2.sans\",\"2.unav\"],\"after\":[\"sb-panel.daybar\",\"2.notes\",\"2.prog\",\"2.waves\",\"2.duty\",\"2.sims\",\"2.inputs\",\"2.ground\",\"2.avail\",\"2.sans\",\"2.unav\"]}",
+   "a2-phone-webkit-W10d-dragged.png"
+  ],
+  [
+   "W10d phone-webkit the re-ordered day: start 0900 and end 1130 typed with Tab — the Ground Programme row reads each at once, each section once",
+   "PASS",
+   "[{\"f\":\"str\",\"typed\":\"0900\",\"ground\":\"09:00\",\"caret\":{\"focus\":\"imwv5r78wv8ne0v.end@board\",\"moved\":0},\"once\":true,\"order\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"},{\"f\":\"end\",\"typed\":\"1130\",\"ground\":\"11:30\",\"caret\":{\"focus\":\"imwv5r78wv8ne0v.rmks@board\",\"moved\":0},\"once\":true,\"order\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"}]",
+   "a2-phone-webkit-W10d-typed.png"
+  ],
+  [
+   "W5a phone-webkit Undo three times, then Redo three times, after the drag and the two times: each section once at every step",
+   "PASS",
+   "[{\"undo\":1,\"secs\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"},{\"undo\":2,\"secs\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"},{\"undo\":3,\"secs\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.ground 2.inputs 2.avail 2.sans 2.unav\"},{\"redo\":1,\"secs\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"},{\"redo\":2,\"secs\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"},{\"redo\":3,\"secs\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"}]",
+   "a2-phone-webkit-W5a-after-undos.png, a2-phone-webkit-W5a-after-redos.png"
+  ]
+ ]
+}

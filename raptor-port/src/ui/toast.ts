@@ -177,7 +177,13 @@ export function toast(msg:any,kind:any,part?:ToastPart){
        in and the timeout's opacity='0' fades out instead of snapping. The
        blanket reduced-motion rule in scheduler.css kills it (its !important
        beats an inline style), so no JS gate is needed for this half. */
-    t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:540;pointer-events:none;background:var(--panel-2);border:1px solid var(--edge-2);color:var(--ink);padding:10px 16px;border-radius:10px;font-size:12.5px;box-shadow:0 20px 50px -20px rgba(0,0,0,.8);transition:opacity .22s ease';
+    /* overflow-wrap:anywhere — A WORD TOO LONG FOR THE BOX IS BROKEN INSIDE IT ([UI-SLEEK-PASS] round 4's leftovers (1),
+       walker c's C7, 24 Nov 26): a note names what was typed ("… is not a time"), and sixty letters with no space ran
+       about 10px past the note's border on a phone, where the box is held 12px from each side (placeToast). A box
+       breaks inside a word only where the word cannot fit, so no ordinary note's lines move; `anywhere` rather than
+       `break-word` so that on a desktop, where the box is as wide as its words, such a word cannot widen it off the
+       screen either. Pinned: e2e/inputs-batch2.spec.ts "the note's box". */
+    t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:540;pointer-events:none;background:var(--panel-2);border:1px solid var(--edge-2);color:var(--ink);padding:10px 16px;border-radius:10px;font-size:12.5px;box-shadow:0 20px 50px -20px rgba(0,0,0,.8);transition:opacity .22s ease;overflow-wrap:anywhere';
     /* the reader hears the region's copy (sayToReader, above), never this box as well */
     t.setAttribute('aria-hidden','true');document.body.appendChild(t);}
   const blocked=kind==='blocked';

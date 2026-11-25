@@ -1519,3 +1519,29 @@ sides.
 **Issue:** Met again 25 Nov 26 (chat 178's walkers were refused their report file; an earlier note says a helper's transcript can come back empty). In chat 181 both reader helpers were told to write the report file and, whether or not the write succeeded, to return the whole report word for word as their final reply: both wrote the file and returned the text, and nothing was retyped or lost. Chat 178's second candidate also stands: a scenario's EXPECTED line written with no source cost two false FAILs (an end before the start, the admin's Leave War window).
 **Suggested improvement:** Make "write it to <path>; your final reply is the same text whole, never a summary" a fixed line of every helper brief that hands back a report; and keep the bug-check order's rule that an expected line names its source or is rewritten "RECORD what it says".
 **Principle:** A hand-back has two independent channels, so one refused channel loses nothing.
+
+### Observation 1068: A walk check written while the fault stands is never proved able to PASS
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 183 — pull request 843 with main brought in; both jobs' walk scripts re-run unchanged on the merged build
+**Skill:** New skill candidate: walk scripts (the project guide `raptor-port/docs/walk-scripts.md` §4, §6)
+**Type:** open-source
+**Phase/Area:** a step's assertion; the re-walk
+
+**Issue:** An older walk script's W3 step read the store with a filter that could not see a record made by the change under test (it matched an ISO date the records do not hold), so it returned FAIL when the fault existed — rightly, by luck — and still returned FAIL once the fault was fixed. A second, dedicated script read the store properly and passed on the same build. The broken reader cost a reproduction and a look at the script before the FAIL could be set aside. Numbered past every branch's entries seen on 25 Nov 26 (1067 the highest).
+**Suggested improvement:** In the walk-scripts guide's re-walk section: a step that asserts the RIGHT behaviour while the fault still stands is run once on a control that should pass (a one-man row, the unchanged path) before it is kept; a step that has only ever returned FAIL is marked "unproved" in the script's header.
+**Principle:** A check that has never passed has not been shown to be able to; prove the passing path on a control before trusting its failure.
+
+### Observation 1069: A serial runner of browser scripts needs a time limit on each run
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 183 — a shell loop running 50 walk scripts one after another on two frozen builds
+**Skill:** New skill candidate: walk scripts (the project guide `raptor-port/docs/walk-scripts.md` §1)
+**Type:** open-source
+**Phase/Area:** the runner
+
+**Issue:** One script printed all its results and then hung closing its WebKit browser; the loop behind it stood still for 26 minutes until the process was found and stopped by hand. Its results were whole — only the exit never came.
+**Suggested improvement:** A runner loop wraps each run in a time limit (`timeout 600 node …`) and prints the exit code beside the result counts, so a hang costs one limit and shows as such; the script's `finish` closes each browser with its own short limit.
+**Principle:** In a queue of independent runs, bound each one, so a stall in teardown cannot hold the rest.

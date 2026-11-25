@@ -1,0 +1,20 @@
+{
+ "pictures": [],
+ "cases": {
+  "desk-webkit": {
+   "log": [
+    "bundle index-B9okpSpf.js",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvw0kzi7af3n8\"]; asked []; note \"\""
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "W3 desk-webkit Ranger's row of the shared leave: 0900, 1100, \"own hours\" — Ranger 09:00–11:00 \"own hours\" on an input of his own; Hex 08:00–10:00, no remark",
+   "PASS",
+   "[{\"step\":\"filed\",\"store\":[\"Ranger+Hex 480-600 \\\"\\\" [imwvw0kzi7af3n8]\"],\"screen\":[\"Ranger 08:00-10:00 \\\"\\\" [imwvw0kzi7af3n8~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvw0kzi7af3n8~rocky.str]\"]},{\"step\":\"str 0900, Tab\",\"typedIn\":\"imwvw0kzi7af3n8~bane.str\",\"store\":[\"Ranger 540-600 \\\"\\\" [imwvw0nhi65llom]\",\"Hex 480-600 \\\"\\\" [imwvw0kzi7af3n8]\"],\"screen\":[\"Ranger 09:00-10:00 \\\"\\\" [imwvw0kzi7af3n8~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvw0kzi7af3n8~rocky.str]\"],\"caret\":\"imwvw0kzi7af3n8~bane.end\"},{\"step\":\"end 1100, Tab\",\"typedIn\":\"imwvw0kzi7af3n8~bane.end\",\"store\":[\"Ranger 540-660 \\\"\\\" [imwvw0nhi65llom]\",\"Hex 480-600 \\\"\\\" [imwvw0kzi7af3n8]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"\\\" [imwvw0kzi7af3n8~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvw0kzi7af3n8~rocky.str]\"],\"caret\":\"imwvw0kzi7af3n8~bane.rmks\"},{\"step\":\"rmks own hours, Tab\",\"typedIn\":\"imwvw0kzi7af3n8~bane.rmks\",\"store\":[\"Ranger 540-660 \\\"own hours\\\" [imwvw0nhi65llom]\",\"Hex 480-600 \\\"\\\" [imwvw0kzi7af3n8]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvw0kzi7af3n8~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvw0kzi7af3n8~rocky.str]\"],\"caret\":\"imwvw0kzi7af3n8~rocky.str\"},{\"step\":\"caret left (blank space clicked)\",\"store\":[\"Ranger 540-660 \\\"own hours\\\" [imwvw0nhi65llom]\",\"Hex 480-600 \\\"\\\" [imwvw0kzi7af3n8]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvw0nhi65llom.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvw0kzi7af3n8.str]\"]}]",
+   "w3-desk-webkit-caret-still-in.png, w3-desk-webkit-caret-left.png"
+  ]
+ ]
+}
