@@ -144,6 +144,30 @@ describe('his own leave\'s words row redraws from what it saved (W1)', () => {
   })
 })
 
+/* CHAT 170'S NIGHT WALK, W3 (25 Nov 26) — the same address on the war's side: the window on one man's cell of a leave
+   filed for several keeps the leave it was opened on. Its first save gives him a leave of his own (setLeaveRemarks); the
+   window then re-read the SHARED leave by its id — now only the other man's — and drew HIS remark box from it, and its
+   next save went there too. It reads and saves his own leave now (inputedit.tsx rowInputOf). */
+describe('the window on one man\'s cell of a shared leave follows him to his own leave (chat 170\'s night walk, W3)', () => {
+  beforeEach(wired)
+  it('two saves with the window open: both on his own leave; the box shows his words, the other man keeps none', async () => {
+    const { commitInput } = await import('../../ui/inputedit')
+    const D = { type: 'LL', allday: true, half: '', start: '2026-02-10', end: '', sTime: '', eTime: '', remarks: '', sans: null, docIds: [] }
+    expect(commitInput(null, D, ['dusk', 'rocky'])).toBe(true)
+    const shared = INPUTS.find((r: any) => r.type === 'LL' && r.date === 'Feb 10' && (r.people || []).length === 2) as any
+    expect(shared).toBeTruthy()
+    render(<LeaveWords row={shared} personId="dusk" testPrefix="w" />)
+    const box = () => screen.getByTestId('w-remarks') as HTMLTextAreaElement
+    const words = () => INPUTS.filter((r: any) => r.type === 'LL' && r.date === 'Feb 10').map((r: any) => `${(r.people || []).map((e: any) => e.p).join('+')} "${r.remarks || ''}"`).sort()
+    fireEvent.change(box(), { target: { value: 'Dental' } }); fireEvent.blur(box())
+    expect(words(), 'his first save: a leave of his own').toEqual(['dusk "Dental"', 'rocky ""'])
+    expect(box().value, 'the box shows HIS words, never the other man\'s').toBe('Dental')
+    fireEvent.change(box(), { target: { value: 'Dental, then gym' } }); fireEvent.blur(box())
+    expect(words(), 'his second save reaches his own leave').toEqual(['dusk "Dental, then gym"', 'rocky ""'])
+    expect(box().value).toBe('Dental, then gym')
+  })
+})
+
 describe('the drag window leaves a leave filed on the Inputs page its own words (W4)', () => {
   beforeEach(wired)
   it('typed words go onto the bids and the war-approved leave, never the Inputs-page one', () => {
