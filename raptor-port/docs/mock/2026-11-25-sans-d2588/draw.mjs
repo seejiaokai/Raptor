@@ -37,21 +37,22 @@ const WHOSE = { also: ['#roleBadge'] }
 const SAT = '2026-07-18', SUN = '2026-07-19'
 
 /* ---------------- the words ---------------- */
-/* (a)–(d): Fable's adjusted words, exact. Q1–Q5: the host's recommended lines, in Fable's shape (bold title, quieter line). */
+/* Chat 186: every line read by a fresh Fable after his D2589 / D2590 ("changed", never "cut back"; q3's quieter line names
+   Ranger so it cannot be read as Saber) — the set is D:/raptor-work/c186-draw/words.json, used exactly. */
 const W = {
   a: ['Ranger deleted his SANS availability for Sat 18 Jul.', "He's planned on VL BFM (T/O 13:00)."],
-  b: ['Ranger cut back his SANS availability for Sat 18 Jul.', "He now offers Fly 08:00–10:00. He's planned on VL BFM (T/O 13:00)."],
-  c: ['Ranger cut back his SANS availability for Sat 18 Jul.', "He now offers OFT only. He's planned on VL BFM (T/O 13:00)."],
+  b: ['Ranger changed his SANS availability for Sat 18 Jul.', "He now offers Fly 08:00–10:00. He's planned on VL BFM (T/O 13:00)."],
+  c: ['Ranger changed his SANS availability for Sat 18 Jul.', "He now offers OFT only. He's planned on VL BFM (T/O 13:00)."],
   d: ['Ranger deleted his SANS availability for Sat 18 Jul.', "He's planned on OFT (10:00) and VL BFM (T/O 13:00)."],
   /* Q1, option B only (the recommendation, A, is no line) */
-  q1b: ['Ranger cut back his SANS availability for Sat 18 Jul.', "He now offers Fly 10:00–17:00. He's planned on VL BFM (T/O 13:00)."],
+  q1b: ['Ranger changed his SANS availability for Sat 18 Jul.', "He now offers Fly 10:00–17:00. He's planned on VL BFM (T/O 13:00)."],
   q2: ['Ranger changed his SANS availability for Sat 18 Jul.', "He now offers Fly 14:00–20:00. He's planned on VL BFM (T/O 13:00)."],
-  q3: ["Saber deleted Ranger's SANS availability for Sat 18 Jul.", "He's planned on VL BFM (T/O 13:00)."],
+  q3: ["Saber deleted Ranger's SANS availability for Sat 18 Jul.", "Ranger is planned on VL BFM (T/O 13:00)."],
   q4sat: ['Ranger deleted his SANS availability for Sat 18 Jul.', "He's planned on VL BFM (T/O 13:00)."],
   q4sun: ['Ranger deleted his SANS availability for Sun 19 Jul.', "He's planned on OFT (10:00)."],
   /* Q5: the recommendation (only what is no longer covered), and the other answer (both, as (d) names them) */
-  q5: ['Ranger cut back his SANS availability for Sat 18 Jul.', "He now offers OFT only. He's planned on VL BFM (T/O 13:00)."],
-  q5both: ['Ranger cut back his SANS availability for Sat 18 Jul.', "He now offers OFT only. He's planned on OFT (10:00) and VL BFM (T/O 13:00)."],
+  q5: ['Ranger changed his SANS availability for Sat 18 Jul.', "He now offers OFT only. He's planned on VL BFM (T/O 13:00)."],
+  q5both: ['Ranger changed his SANS availability for Sat 18 Jul.', "He now offers OFT only. He's planned on OFT (10:00) and VL BFM (T/O 13:00)."],
   /* the crew list's reasons in the words he already chose for a mismatch (D2584 Q2) */
   flyOnly: 'SANS — offered Fly only, not AMT',
   oftOnly: 'SANS — offered OFT only, not AMT',
