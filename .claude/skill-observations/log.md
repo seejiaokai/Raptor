@@ -1559,3 +1559,16 @@ sides.
 **Issue:** Two walk scripts committed with the walk's pictures copied page data out with JSON.parse(JSON.stringify(...)) inside page.evaluate. The pull request's code check (React Doctor, run on every changed file, scripts included) failed on both lines; it was found only when the run came back red, after the walk was committed and pushed.
 **Suggested improvement:** In the walk-scripts guide's "before you commit a walk" steps, run the project's changed-files lint (lint:changed) on the new scripts before the walk's commit, and give the standard disable-comment reason for an in-page JSON copy (the data leaves the page as JSON anyway).
 **Principle:** Anything committed is checked by the same gate as product code; run the gate's changed-files check on helper scripts before committing them, not only on source files.
+
+### Observation 1076: A rule that turns a silent case into a flag breaks every test that leaned on the silence
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** Chat 186, the warning list's SANS line for "nothing filed" (owner D2579): 36 older tests in 19 files failed once the seed's SANS men, planned with nothing filed, started raising the line.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** after the red-first tests go green — the full suite
+
+**Issue:** The new behaviour was built red-first and its own tests passed, but the change made a case that had always been silent raise a warning. Dozens of tests about other things (tight turns, hidden warnings, day counts, parity with the original app) had quietly depended on that silence through shared seed data. Updating their expected counts would have hidden the dependency; each had to be sorted by subject.
+**Suggested improvement:** In the skill, after green: when a change makes a previously silent case raise something, search the tests for every reader of the seed data that case touches, and sort each failing test by its subject — a test ABOUT the rule follows the new rule; a test where the case is incidental gets a named fixture that makes its premise explicit (here `coverSans`), never a bumped count.
+**Principle:** Silence is an implicit precondition. When it ends, make the precondition explicit in the tests that relied on it, instead of rewriting their numbers.
