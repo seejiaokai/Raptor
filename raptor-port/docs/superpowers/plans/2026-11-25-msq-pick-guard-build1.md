@@ -288,6 +288,11 @@ in view (D2625); the search still finds them; shown to whoever may give access t
 **His D2631 (25 Nov 26):** a master admin has a primary squadron; on Admin → Users his own squadron's people stand open and
 every other is folded under its closed heading, in "All squadrons" too (narrows D2270).
 
+**His D2632 (25 Nov 26, C6):** another squadron's archived callsign — the note names the squadron and shows seat, CAT and
+the date archived; "it's him" (that squadron's admins asked on their bell to bring him back and move him, the request
+waiting) or "someone new" (added at once, that squadron's admins asked to delete the old one if he has left). The move
+waits for the Transfer build. Fixes today's note pointing to a "▸ Archived" the page lacks. Words read by a fresh Fable.
+
 **(c) The schedule's veiled dialogs — `.airpop` / `.modal`, flags in `ui/pops.ts`. Shaded.** Each row reads the
 predicate named, as a function of `ui/windrawn.ts` that the component calls.
 
