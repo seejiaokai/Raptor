@@ -1116,7 +1116,9 @@ From today: `settings/grant:<id>`.
 
 No end is stored: a right holds while its man stays in his squadron, one holding per account, unit and day, an ended row
 kept beside any new one (D2203 — the rule, and who gives and takes, in §11's `UnitGrant` row). An `admin` grant ("Plan")
-is given or taken by a master admin alone (D2199, D2211 — built: the Plan audit's PA1), and only on an admin's account;
+is given or taken by a master admin alone (D2199, D2211 — built: the Plan audit's PA1), and only on an admin's account —
+**his D2626 (25 Nov 26), not yet built:** by that squadron's own admins too, never by a Plan holder of it, its admins told on
+the bell (filed as [MSQ-PICK-GUARD]);
 View by an admin OF that unit — at home there, by Plan of it, or a master admin (D2191, D2201, D2241).
 
 ### PersonHome

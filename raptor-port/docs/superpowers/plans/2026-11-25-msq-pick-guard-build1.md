@@ -257,6 +257,15 @@ inputs of a squadron he can still pick (a moved man still sees his old ones); a 
 view first. This replaces the A17 recommendation (a list row switching squadron first) and narrows the reshape plan's C2;
 the plan's third read reads it.
 
+**His D2625 and D2626 (25 Nov 26, C9 — "ok as recommended"):** on a squadron's Admin → Users a man of another squadron
+shows only his callsign, his squadron's grey number, seat, CAT and that squadron's access line — today Hunter (142's admin
+holding Plan of 149) on 149's page sees Ranger's sign-in mail and Role, and Save, Suspend, Archive and Delete work: a fault
+this build fixes; Kestrel's view of such a row is pressed again before building. Plan of a squadron is given and taken away
+by its own admins or a master admin, never passed on by a Plan holder, its admins told on the bell: every place that keeps
+Plan to a master admin (the access line and its greyed reason, the roles table's note, the give and take, Undo and Redo,
+the commit gate) changes, and the bell line is new; its words drawn and read by a fresh Fable first. Whether these ride
+Build 1 or a build of their own is settled in §8 with his other answers; the plan's third read reads them.
+
 **(c) The schedule's veiled dialogs — `.airpop` / `.modal`, flags in `ui/pops.ts`. Shaded.** Each row reads the
 predicate named, as a function of `ui/windrawn.ts` that the component calls.
 
