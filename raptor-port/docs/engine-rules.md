@@ -1963,7 +1963,7 @@ this one function judged right.
 timed or not — never asks a SANS man for availability: the crew list (`avail.ts slotBarNow`, `sansStby`), this
 advisory (a `day.fly` entry with `shift` is skipped) and his reminder (`daySansSeats` skips a standalone wave) all leave
 it alone (Q4, answering D2576, D2578). An OFT or AMT seat with no times strikes a man with nothing filed in the timed
-words, as a flight with no times does (Q5, with D2573); one who filed anything stays plain there. Tests:
+words, as a flight with no times does (Q5, with D2573) — its extra places too (D2586); one who filed anything stays plain there (until D2585 is built: one whose filing does not cover the event is struck "SANS — not offering …"). Tests:
 `src/engine/sans-standby-sim.test.ts`.
 
 **The `SANS_AVAIL` advisory (`validate.ts`) — amber, wears the `A` chip**
