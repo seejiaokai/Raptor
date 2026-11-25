@@ -103,6 +103,30 @@ EXPECTED lines that replace theirs: `docs/superpowers/briefs/2026-11-25-sans-sta
 
 ## 12. The code reads
 
+Both blind, each on an exported copy of `cdb605dff` at `D:/raptor-work/c182-r1` (no handoff block, walk report or sheet of
+this round), the same brief (`READ-BRIEF.md` there, D56's exclusion in it, D2579 and Q2's words named not built), chat
+182, 25 Nov 26, run beside the walk (the order's §4 table: a reader on a commit and a walker on a frozen folder together).
+
+- **Astra** (`gpt-6-astra`, high, read-only; report `docs/handpass/parts/sss-read-astra.md`): **one finding, confirmed by
+  reading** — R1 below; explicit negatives on every standby kind (built-in and from a saved template, MAIN, SPARE, B, R,
+  the Flies tick), standby desks, sim extras and passengers, one-time-typed sims, cancellation, the order of the earlier
+  and later checks, roles, read-only views; eight "needs a run" checks, each walked (§14) or carried by a test (§7).
+- **A fresh Opus reader** (report `docs/handpass/parts/sss-read-opus.md`; its proof test lived in the chat's scratch and is
+  carried into `sans-notimes-offer.test.ts`): **the same finding (its O1)** and one observation (O2); explicit negatives on the same areas plus the
+  bell, the warning list and the crew list picking out exactly the same standby rows, D2587's words from one source.
+- **R1 (both readers) — fixed red-first, `7b203d113`.** A SANS man whose filing does not offer the sim ("Fly only"),
+  planned on an OFT or AMT with no start time: the crew list struck him "SANS — not offering OFT" (D2585) but the warning
+  list said nothing, because a sim with no start puts its people in `day.blank`, which the SANS check never read; an
+  untimed flight already warns. Reproduced by the host with the reader's proof test (warnings 0, expected 1). Fixed:
+  the check now reads `day.blank`'s OFT / AMT entries with an unknown window, so only "not offering" raises, in the
+  existing words ("SANS: not offering OFT today. Planned on Sim EP-9"); nothing filed stays silent (D2579 not built).
+  Tests: `sans-notimes-offer.test.ts`, red 4 of 19 first. The fix is new code: one fresh Opus narrow read of
+  `7b203d113` (§12a). Re-walk of what it touches: §14.
+- **O2 (the Opus reader's observation) — a question for him, not a finding:** with no seat picked, a SANS man with
+  nothing filed is struck for the whole day and left out of "N free" even on a day whose only places need no filing
+  (standby, ground, desks) — the 14 Aug 26 "struck by default" rule, older than this change; the same as Fable's Q4.
+  On his look card.
+
 ## 13. Gates
 
 ## 14. What the walk found, and each disposition
