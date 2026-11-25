@@ -1,0 +1,124 @@
+[
+ {
+  "scene": "FB",
+  "size": "desktop",
+  "what": "the staged Saturday as this build reads it",
+  "v": {
+   "to": "12:45",
+   "ld": "",
+   "sxo": "0800-"
+  }
+ },
+ {
+  "scene": "FB",
+  "size": "desktop",
+  "what": "the demo week (with the staged Saturday): every start with no end, by day",
+  "v": {
+   "0": [
+    "sim (amt): BRIEF 1100",
+    "sim (amt): DEBRIEF 1230",
+    "programme row: ? 1755",
+    "programme row: ? 1830",
+    "programme row: ? 2130"
+   ],
+   "1": [
+    "sim (amt): BRIEF 1400",
+    "sim (amt): DEBRIEF 1530",
+    "ground row: ? 0500",
+    "ground row: ? 0845"
+   ],
+   "2": [
+    "sim (amt): BRIEF 1100",
+    "sim (amt): DEBRIEF 1230",
+    "ground row: ? 1400"
+   ],
+   "3": [
+    "sim (amt): BRIEF 1100",
+    "sim (amt): DEBRIEF 1230"
+   ],
+   "4": [
+    "programme row: ? 1700"
+   ],
+   "5": [
+    "flight: VL T/O 12:45",
+    "duty desk: SXO 0800",
+    "sim (amt): BRIEF 1100",
+    "sim (amt): DEBRIEF 1230"
+   ]
+  }
+ },
+ {
+  "scene": "FB",
+  "size": "desktop",
+  "what": "Saturday: empty end boxes with a start",
+  "v": [
+   "ff:5.0.0.ld (start 12:45)",
+   "dr:5.0.1.end (start 08:00)",
+   "sr:5.amt.0.end (start 11:00)",
+   "sr:5.amt.2.end (start 12:30)"
+  ]
+ },
+ {
+  "scene": "FB",
+  "size": "desktop",
+  "what": "the sign-off status line today",
+  "v": "4 to sign"
+ },
+ {
+  "scene": "FB",
+  "size": "desktop",
+  "what": "the landing after typing TBD",
+  "v": ""
+ },
+ {
+  "scene": "FB",
+  "size": "desktop",
+  "what": "the Logic line today",
+  "v": "Every input closes the man for the hours it covers, from the moment it is filed. One a scheduler has taken off the programme closes nothing."
+ },
+ {
+  "scene": "FB-F2",
+  "size": "desktop",
+  "what": "the card today",
+  "v": "Earned off the published schedule — change the schedule and the OIL follows."
+ },
+ {
+  "scene": "FB",
+  "size": "phone",
+  "what": "the staged Saturday as this build reads it",
+  "v": {
+   "to": "12:45",
+   "ld": "",
+   "sxo": "0800-"
+  }
+ },
+ {
+  "scene": "FB",
+  "size": "phone",
+  "what": "Saturday: empty end boxes with a start",
+  "v": [
+   "ff:5.0.0.ld (start 12:45)",
+   "dr:5.0.1.end (start 08:00)",
+   "sr:5.amt.0.end (start 11:00)",
+   "sr:5.amt.2.end (start 12:30)"
+  ]
+ },
+ {
+  "scene": "FB",
+  "size": "phone",
+  "what": "the sign-off status line today",
+  "v": "4 to sign"
+ },
+ {
+  "scene": "FB",
+  "size": "phone",
+  "what": "the Logic line today",
+  "v": "Every input closes the man for the hours it covers, from the moment it is filed. One a scheduler has taken off the programme closes nothing."
+ },
+ {
+  "scene": "FB-F2",
+  "size": "phone",
+  "what": "the card today",
+  "v": "Earned off the published schedule — change the schedule and the OIL follows."
+ }
+]

@@ -1,4 +1,5 @@
 <title>Rulings Check Round 2</title>
+<!-- index-fable.html: the fresh Fable reader's improved version of index.html (25 Nov 26). Built by a script from index.html; index.html is untouched. -->
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -247,69 +248,328 @@
   .small.e li::before { content: "E" counter(sp); width: 32px; text-align: left; }
   .fix figure { margin-bottom: 10px; }
   @media (max-width: 560px) { .pair.stack { grid-template-columns: 1fr; } }
+  .second { border-left: 3px solid var(--new-line); padding: 2px 0 2px 12px; margin: 14px 0; }
+  .second h4 { margin-top: 0; color: var(--new-text); }
+  .second p:last-child { margin-bottom: 4px; }
+  .shot.tall img { max-height: 520px; width: auto; }
+  .shot.crop img { width: 100%; aspect-ratio: 1143 / 560; object-fit: cover; object-position: 0 84%; }
+  details.answered { margin-top: 28px; }
+  details.answered ul { margin: 0 0 12px; padding-left: 20px; font-size: 15px; }
+  details.answered li { margin-bottom: 6px; }
 </style>
 
 <div class="wrap">
 
   <div class="kicker">TALON · 25 Nov 26</div>
   <h1>Rulings check, round 2</h1>
-  <p class="lede">The app is being read against your rulings, area by area, to find every place where a builder assumed what you meant. Your four answers from this morning are taken. What is left: the nineteen small points as one list, two questions, and <mark>the drawings of the end-time rule and the six wording fixes, with the one question and ten points they raise.</mark></p>
+  <p class="lede">The app checked against your rulings. This page was read a second time and improved: the newest things come first, four pictures now show the exact words to be built, and <mark>two questions (G, H), two points (E11, E12) and a third choice on B are added</mark>.</p>
 
   <section class="now" aria-labelledby="now-h">
     <h2 id="now-h">What to look at now</h2>
     <ol>
+      <li><a href="#qc"><span class="n">C</span><span><span class="q">The end-time rule, drawn: the red outline, the refused sign-off box and the refused Publish day.</span> <span class="r">Recommended: as drawn.</span></span></a></li>
+      <li><a href="#qg"><span class="n">G</span><span><span class="q">Should the sign-off panel say "2 end times missing" before anything is pressed, and take you to them?</span> <span class="tagnew">Added</span> <span class="r">Recommended: yes.</span></span></a></li>
+      <li><a href="#qd"><span class="n">D</span><span><span class="q">The AMT sim block's own BRIEF and DEBRIEF rows: must they have an end time too?</span> <span class="r">Recommended: no, leave these two rows out.</span></span></a></li>
+      <li><a href="#qh"><span class="n">H</span><span><span class="q">Programme and ground rows typed with only a start, such as "DINNER WITH CMD 18:30": must they have an end too?</span> <span class="tagnew">Added</span> <span class="r">Recommended: yes, one rule for every row. It costs seven end times on the demo week.</span></span></a></li>
+      <li><a href="#pe"><span class="n">E</span><span><span class="q">Twelve points the drawings raise, as one list.</span> <span class="r">Recommended: take them all as recommended.</span></span></a></li>
+      <li><a href="#qf"><span class="n">F</span><span><span class="q">The six sentences that were not true, each with its new words.</span> <span class="r">Recommended: as drawn, with the plainer wording for F5.</span></span></a></li>
+      <li><a href="#q1"><span class="n">A</span><span><span class="q">A sign-off that answers only some of the day's OIL questions: are the rest asked again at the next sign-off box?</span> <span class="r">Recommended: no, keep it as built, and add one line to the list that says so.</span></span></a></li>
+      <li><a href="#q2"><span class="n">B</span><span><span class="q">A changed late cut-off: should it move the LATE marks on published days at once?</span> <span class="r">Recommended: yes, as built. A third choice is added for you to weigh.</span></span></a></li>
       <li><a href="#points"><span class="n">19</span><span><span class="q">The nineteen small points, as one list.</span> <span class="r">Recommended: take them all as recommended.</span></span></a></li>
-      <li><a href="#q1"><span class="n">A</span><span><span class="q">A sign-off that answers only some of the day's OIL questions: are the rest asked again at the next sign-off box?</span> <span class="tagnew">New</span> <span class="r">Recommended: no, keep it as built, and add one line to the list that says so.</span></span></a></li>
-      <li><a href="#q2"><span class="n">B</span><span><span class="q">A changed late cut-off: should it move the LATE marks on published days at once?</span> <span class="tagnew">New</span> <span class="r">Recommended: yes, as built.</span></span></a></li>
-      <li><a href="#qc"><span class="n">C</span><span><span class="q">The end-time rule, drawn: the red outline, the refused sign-off box and the refused Publish day.</span> <span class="tagnew">New</span> <span class="r">Recommended: as drawn.</span></span></a></li>
-      <li><a href="#qd"><span class="n">D</span><span><span class="q">The AMT sim block's own BRIEF and DEBRIEF rows: must they have an end time too?</span> <span class="tagnew">New</span> <span class="r">Recommended: no, leave these two rows out.</span></span></a></li>
-      <li><a href="#pe"><span class="n">E</span><span><span class="q">Ten points the drawings raise, as one list.</span> <span class="tagnew">New</span> <span class="r">Recommended: take them all as recommended.</span></span></a></li>
-      <li><a href="#qf"><span class="n">F</span><span><span class="q">The six sentences that were not true, each with its new words.</span> <span class="tagnew">New</span> <span class="r">Recommended: as drawn. F4 is your own words.</span></span></a></li>
     </ol>
-    <p class="how">Answer in the chat. For the list: "small points, all as recommended", or name any point by its number. For the two questions: "question A as recommended", "question B as recommended", or say what you want. <mark>For the new items: "C as drawn", "D as recommended", "E, all as recommended" or a point by its name such as "E3", and "F as drawn" or a sentence such as "F2".</mark> Tap any picture to see it full size.</p>
+    <p class="how">Answer in the chat by letter: "C as drawn", "G yes", "D as recommended", "H as recommended", "E, all as recommended" or a point such as "E3", "F as drawn" or a sentence such as "F5 plainer", "A as recommended", "B as recommended", "small points, all as recommended". Or say what you want instead. Tap any picture to see it full size. Everything from C to F is new since round 1; the yellow <span class="tagnew">Added</span> tag marks what the second read added.</p>
   </section>
 
-  <section class="done" aria-labelledby="done-h">
-    <h2 id="done-h">Answered this morning</h2>
-    <ul>
-      <li>No day is published or signed off while an item on it has a start and no end. The empty end box is outlined red from the moment the start is typed. Drafting stays free. This replaces the two questions about a flight with no landing and a duty desk with no end.</li>
-      <li>A man who is only on standby is counted in ALL AVAIL and earns its OIL.</li>
-      <li>One amber line on the warning list for a SANS man planned in a jet or sim with nothing filed.</li>
-      <li>The Legend's labels will read "overlap flight brief", "overlap sim brief", "overlap flight debrief" and "overlap sim debrief".</li>
+  <!-- ============ Drawn for you ============ -->
+  <h2 id="drawn">Drawn for you: the end-time rule and six sentences <span class="tagnew">New</span></h2>
+  <p class="lede">The pictures are the live app on the demo week of 13 to 19 Jul, with only the new red outline or the new words drawn onto it. Nothing is built yet. Pink marks are the drawing's, not the app's. Phone pictures are at your iPhone's size.</p>
+
+  <!-- ============ C ============ -->
+  <article class="card isnew" id="qc">
+    <span class="num">C · the end-time rule, as drawn</span> <span class="tagnew">New</span>
+    <h3>The red outline on an empty end time, and what the sign-off boxes and Publish day say</h3>
+
+    <h4>The day drawn</h4>
+    <p>Sat 18 Jul on Edit Schedule, still a draft. Hunter and Ranger fly VL with a take-off of 12:45 and no landing. Ridge is on the SXO desk with a START of 08:00 and no END.</p>
+
+    <h4>1. The empty box is outlined red</h4>
+    <p>Your words: <span class="quote">"it will flag in red on the outer box around the empty timing"</span>, from the moment the start is typed and all through drafting. The red is the app's own warning red, and the shape is the thin edge the app already draws on a time box. No new colour and no new shape.</p>
+
+    <div class="pair stack">
+      <figure>
+        <button class="shot" type="button"><img src="img/endtime-01-landing-today-phone.png" width="315" height="79" alt="Today on a phone. The VL row on Edit Schedule: Hunter and Ranger, a take-off time, and under it the empty landing showing only a grey dash, ringed in pink"></button>
+        <figcaption><b>Today, on your phone.</b> Under TO / LD the empty landing is a grey dash, inside the pink ring.</figcaption>
+      </figure>
+      <figure>
+        <button class="shot" type="button"><img src="img/fable-c1-landing-phone.png" width="310" height="66" alt="Proposed on a phone. The same VL row, take-off 12:45. The empty landing box under it has a thin red outline. A pink label beside it reads no landing typed"></button>
+        <figcaption><b>Proposed.</b> Take-off 12:45, and the landing box under it outlined red. The pink label is the drawing's.</figcaption>
+      </figure>
+    </div>
+
+    <div class="pair stack">
+      <figure>
+        <button class="shot" type="button"><img src="img/fable-c2-desk-phone.png" width="212" height="145" alt="Proposed on a phone. The Duties block: SDO 08:00 to 14:00, then SXO with Ridge, start 08:00 and an empty END box outlined in red, then OPS-O 08:00 to 14:00"></button>
+        <figcaption><b>A duty desk with no END, on your phone.</b> SXO, Ridge on it, START 08:00, the END box outlined red.</figcaption>
+      </figure>
+      <figure>
+        <button class="shot" type="button"><img src="img/fable-c1-landing-desktop.png" width="293" height="72" alt="Proposed on a desktop. The VL row with Hunter and Ranger, take-off 12:45, the landing box under it outlined in red"></button>
+        <figcaption><b>The same flight on a desktop.</b></figcaption>
+      </figure>
+    </div>
+    <figure>
+      <button class="shot" type="button"><img src="img/fable-c2-desk-desktop.png" width="328" height="124" alt="Proposed on a desktop. The SXO row reads 08:00, then an empty END box outlined in red, then Ridge's puck. SDO above and OPS-O below read 08:00 and 14:00"></button>
+      <figcaption><b>The same desk on a desktop.</b> SXO's END box, outlined red, between its 08:00 start and Ridge.</figcaption>
+    </figure>
+    <p>The Scheduler Board draws the same outline on the same boxes.</p>
+
+    <h4>2. A sign-off box is refused</h4>
+    <p>Saber picks Ace in CUR CK. The name is not taken, the box stays "— name —", and the app's grey "Blocked:" note says why:</p>
+    <p><span class="quote"><b>Blocked:</b> 2 items have no end time, each outlined in red. Type the end times, then sign.</span></p>
+    <figure>
+      <button class="shot tall" type="button"><img src="img/fable-c4-sign-refused-phone.png" width="402" height="794" alt="Proposed on a phone, the whole screen. Saturday's four sign-off boxes all still read name. Under them a line reads 2 end times missing, 4 to sign. Lower down the VL row shows its landing box outlined red. At the foot the grey note reads Blocked: 2 items have no end time, each outlined in red. Type the end times, then sign"></button>
+      <figcaption><b>The refused sign-off, your whole phone screen, with the words to be built.</b> CUR CK still reads "— name —". The grey note is at the foot, ringed. This picture counts 2 items (question D taken as recommended). The red "2 end times missing" line under the boxes is question G, next: it is not part of C.</figcaption>
+    </figure>
+    <figure>
+      <button class="shot" type="button"><img src="img/fable-c4-sign-refused-desktop.png" width="786" height="699" alt="Proposed on a desktop. Saturday's sign-off boxes empty. At the foot the grey note reads on one line Blocked: 2 items have no end time, each outlined in red. Type the end times, then sign. The VL row above it shows its landing box outlined red"></button>
+      <figcaption><b>The same on a desktop.</b> The note is one line. Tap to read it full size.</figcaption>
+    </figure>
+
+    <h4>3. Publish day is refused, and says how many</h4>
+    <p>Your words: <span class="quote">"the schedule cant be published unless a time is in"</span>, and Publish says how many items have no end time.</p>
+    <p><span class="quote"><b>Blocked:</b> 4 items have no end time, each outlined in red. Saturday was not published.</span></p>
+    <figure>
+      <button class="shot" type="button"><img src="img/endtime-06-publish-refused-phone.png" width="402" height="325" alt="Proposed on a phone. Saturday's Publish day button, greyed with a lock and ringed in pink, above four empty sign-off boxes. At the foot the grey note reads Blocked: 4 items have no end time, each outlined in red. Saturday was not published"></button>
+      <figcaption><b>The refused Publish, on your phone.</b> Top: "Publish day", ringed. Foot: the note, two lines on your iPhone.</figcaption>
+    </figure>
+    <figure>
+      <button class="shot" type="button"><img src="img/endtime-07-publish-refused-desktop.png" width="628" height="247" alt="Proposed on a desktop. Saturday's Publish day button ringed in pink, the four sign-off boxes empty, 4 to sign. At the foot the grey note reads on one line Blocked: 4 items have no end time, each outlined in red. Saturday was not published"></button>
+      <figcaption><b>The same on a desktop.</b> The note is one line. Tap to read it full size.</figcaption>
+    </figure>
+    <p>A version that names each item ("VL SAT (T/O 12:45), SXO 08:00, …") was drawn too. It is not recommended: every one of those boxes is already outlined, and four names run the note to three lines on your iPhone.</p>
+    <p>The count of 4 on the two Publish pictures includes two rows of the AMT sim block. They are question D. If you take D as recommended, this day reads "2 items", as the sign-off pictures above show.</p>
+    <p>One thing to see on the whole-screen phone picture: the note says "each outlined in red", but on a phone only one of the red boxes is on screen, and the scheduler has to scroll the day to find the others. That is why question G is added.</p>
+
+    <div class="rec">
+      <h4>What stays as you ruled</h4>
+      <p>Drafting is free: only the four sign-off boxes and Publish day are refused. The warnings keep working on assumed times meanwhile. A row with no times at all is not touched.</p>
+      <p>Reply "C as drawn", or say what to change.</p>
+    </div>
+  </article>
+
+  <!-- ============ G (added by the second read) ============ -->
+  <article class="card isnew" id="qg">
+    <span class="num">Question G · the end-time rule</span> <span class="tagnew">Added</span>
+    <h3>Should the sign-off panel say what is missing before anything is pressed, and take you to it?</h3>
+
+    <h4>When it happens</h4>
+    <p>Every time a scheduler is ready to sign a day and an end time has been missed. He is on the sign-off boxes at the top of the day; the empty box may be far down the day, out of sight. On a phone that is most of the time.</p>
+
+    <h4>The example</h4>
+    <p>Saber has finished Sat 18 Jul on his phone. VL's landing and the SXO desk's END were never typed. As drawn in C, he learns it only after he picks a name: the box snaps back and a grey note shows at the foot for a few seconds. He then scrolls the whole day looking for two thin red boxes.</p>
+
+    <h4>The idea</h4>
+    <p>The line that already says "4 to sign" under the sign-off boxes says it first, in the app's red: <span class="quote">2 end times missing · 4 to sign</span>. It is there the whole time, so nothing has to be pressed to find out, and it sits beside Publish day, which is how "Publish says how many" holds even while the button is greyed. A tap on "2 end times missing" takes the day to the first empty end box, and a second tap to the next, as a tap on a warning takes you to its line. When the last end time is typed, the line goes back to "4 to sign".</p>
+
+    <figure>
+      <button class="shot" type="button"><img src="img/fable-c3-status-line-phone.png" width="379" height="236" alt="Proposed on a phone. Saturday's Publish day button, greyed, and the four empty sign-off boxes. Under them, ringed in pink, the line reads 2 end times missing in red, then 4 to sign in amber"></button>
+      <figcaption><b>On your phone.</b> The line under the four boxes, ringed: "2 end times missing" in red, then today's "4 to sign".</figcaption>
+    </figure>
+    <figure>
+      <button class="shot" type="button"><img src="img/fable-c3-status-line-desktop.png" width="554" height="170" alt="Proposed on a desktop. The sign-off panel's top right corner, ringed in pink, reads 2 end times missing in red, then 4 to sign in amber, above the four empty sign-off boxes"></button>
+      <figcaption><b>On a desktop.</b> The same line, at the panel's top right where "4 to sign" stands today.</figcaption>
+    </figure>
+
+    <h4>The choice</h4>
+    <ul class="choice">
+      <li><b>Yes: the line, and a tap that goes to the empty box.</b> The grey "Blocked:" notes of C stay for a press that is refused.</li>
+      <li><b>The line only.</b> It says the count; the scheduler finds the red boxes himself.</li>
+      <li><b>No: C as drawn, the notes only.</b></li>
     </ul>
-  </section>
 
-  <!-- ============ Small points ============ -->
-  <h2 id="points">The nineteen small points</h2>
-  <p class="lede">These were on round 1's page and are still waiting for your answer. Each is low harm. None changes what a person gets in any case that matters. Reply "small points, all as recommended", or name any point by its number to talk it through.</p>
-  <p class="how">Points 1, 5, 9 and 12 were reworded after this morning's answers; the words that changed are <mark>highlighted</mark>. Every recommendation is the same as before.</p>
+    <div class="rec">
+      <h4>Recommended</h4>
+      <p><b>Yes, with the tap.</b> This is a suggestion from the second read, not something your words settle. The screen tells him before he presses, the hand is already there, and a phone user is taken to the box instead of hunting for it.</p>
+      <p class="cost"><b>The cost:</b> a few new words on the sign-off line, and a small build for the tap. The tap is not drawn: it moves the screen, which a still picture cannot show. If you take G, point E1 (a press on the greyed Publish day) matters less, because the count is already beside the button.</p>
+    </div>
+  </article>
 
-  <section class="card pts">
-    <ol class="small">
-      <li>A row with no end time says "No OIL worked out" only where an admin decides OIL. A member who opens "who's available" sees only "an hour assumed". <mark>This now arises only while a day is being drafted, since a day with a missing end time can no longer be published.</mark><span class="r">Leave as built. Your words were "to the admin".</span></li>
-      <li>The schedule export stamps a day "not yet signed" even when all four have signed and it is only not yet published.<span class="r change">Change it to "Working draft — not yet published" when the export work resumes. That work is on hold on your word.</span></li>
-      <li>When crew rest looks back at the day before, it uses the settings of the day being checked, not the earlier day's.<span class="r">Leave as built. It follows from "a published day is checked by the settings it was published under".</span></li>
-      <li>A master admin who files an input for the other squadron's man is told when it changes, though that squadron's admin lines are off for him by default.<span class="r">Leave as built. He filed it.</span></li>
-      <li>The SANS reminder goes to the man only. The admin gets no bell line. He sees the struck name in the crew list<mark>, and by this morning's answer he will also see the new amber line on the warning list.</mark><span class="r">Leave as built. It follows your "Should we tell the user too" and "Yes".</span></li>
-      <li>A filer who moved squadron with his man counts as that man's admin by the role he holds on the day the input changes.<span class="r">Leave as built.</span></li>
-      <li>A master admin may switch another squadron's bell lines on, and his own off, himself.<span class="r">Nothing to decide if your approved "Show 142 149" bell buttons of 19 Nov already cover both. That drawing is being checked. You hear about it only if it does not.</span></li>
-      <li>The bell's words "LL bid changed to OL", "LL bid moved to Thu 29 Jan" and "LL bid deleted" were never shown to you.<span class="r">Leave as built. They follow the bell's other leave lines.</span></li>
-      <li>A man who is only standing by reads free in the crew list, but the day's "Aircrew tasked" figure counts him as tasked. <mark>This morning you answered "count him in" for ALL AVAIL.</mark><span class="r change">Make the day's figures read him free too, so one screen gives one answer. A small build.</span></li>
-      <li>A man on ATT B who also has a task that day keeps the faded look. An AVALON or BB desk counts as part of that standby.<span class="r">Leave as built.</span></li>
-      <li>A man archived on Thursday is no longer offered in Monday's crew list of the same week, though Monday's ALL AVAIL count still includes him.<span class="r change">Read him by the day, as the count does. A small fix, met only when a past day is corrected.</span></li>
-      <li>A standby desk that is left out of crew rest still blocks its assumed hour for conflicts. <mark>This now applies only while a day is being drafted, since a published day must have the desk's end typed.</mark><span class="r">Leave as built.</span></li>
-      <li>A SPARE row on a flying shift with only one seat filled counts as a jet.<span class="r">Leave as built. One seat is somebody.</span></li>
-      <li>A man on an all-day course, overseas duty or all-day meeting is flagged the moment he is seated on a row with no times, as a man on leave is.<span class="r">Leave as built.</span></li>
-      <li>Moving a sign-in that holds Plan of another squadron to a different person is for a master admin alone.<span class="r">Nothing now. No screen moves a sign-in, by your ruling of 22 Nov. It is asked if that control is ever drawn.</span></li>
-      <li>The refusal on the ✕ of a leave that runs across a man's move was drafted to open with "Not saved:". Every other refusal opens with "Blocked:".<span class="r change">"Blocked:", by your rule of 5 Nov. It is shown on its drawing before it is built.</span></li>
-      <li>The Leave War's Available rows and SANS group, and the Inputs calendar's people groups, go by who is SANS today, on every date.<span class="r change">Read by the day, as every other screen now does. It joins a fix job that is already listed.</span></li>
-      <li>On a published day with an amendment waiting, a SANS man's reminder follows the working copy. So it can name a day his own schedule does not show yet.<span class="r">Leave as built. Your two rulings of 24 Nov have it follow the plan as soon as he is planned.</span></li>
-      <li>An offer filed for two SANS men still names both in its own window on a day when one of them is not SANS. The day and its counts show only the one.<span class="r">Leave as built. Nothing is counted, and hiding him there could drop him from the offer.</span></li>
+  <!-- ============ D ============ -->
+  <article class="card isnew" id="qd">
+    <span class="num">Question D · the end-time rule</span> <span class="tagnew">New</span>
+    <h3>The AMT sim block's own BRIEF and DEBRIEF rows: must they have an end time too?</h3>
+
+    <h4>When it happens</h4>
+    <p>A scheduler puts an AMT sim block on a day. The block has three rows of its own: BRIEF, BOX and DEBRIEF. On the demo week the BRIEF and DEBRIEF rows are typed with a start and no end. It would come up on every day that carries a block typed that way. How often your real weeks do is yours to say.</p>
+
+    <h4>The example</h4>
+    <p>Sat 18 Jul carries the demo's own AMT block: BRIEF 11:00 with no end, BOX 11:30 to 12:30, DEBRIEF 12:30 with no end.</p>
+
+    <div class="pair stack">
+      <figure>
+        <button class="shot" type="button"><img src="img/amt-rows-red-phone.png" width="139" height="148" alt="On a phone. The AMT block: BRIEF with a start and an empty end box outlined red, BOX 11:30 to 12:30 with no outline, DEBRIEF with a start and an empty end box outlined red"></button>
+      </figure>
+      <figure>
+        <button class="shot" type="button"><img src="img/amt-rows-red-desktop.png" width="254" height="133" alt="On a desktop. The AMT block: BRIEF 11:00 with an empty END box outlined red, BOX 11:30 to 12:30, DEBRIEF 12:30 with an empty END box outlined red"></button>
+      </figure>
+    </div>
+    <p class="pairnote"><b>The rule read word for word.</b> First your phone, then a desktop. BRIEF and DEBRIEF each have a start and an empty END, so both are outlined red (pink tags 3 and 4). BOX has both times and is left alone.</p>
+
+    <h4>Why this is a question</h4>
+    <p>Your words were "every item must have a start and end time", and the rule as recorded lists "a sim". Read word for word, these two rows are items with no end. So a day carrying this block could not be signed or published until someone types two more times.</p>
+    <p>But the app treats a blank end on these two rows as normal. The Logic page's sim debrief check speaks of "an AMT's DEBRIEF row (AMT debrief, where that row has no end)". The app already knows when both end: the BRIEF runs until the BOX row starts, and the DEBRIEF runs for the Logic page's "AMT debrief" length (30 minutes to start). Whether you meant them when you said "every item" was never asked.</p>
+
+    <h4>The choice</h4>
+    <ul class="choice">
+      <li><b>Leave these two rows out.</b> An AMT block's own BRIEF and DEBRIEF rows get no red outline and are not counted. The BOX row, and every other sim row, follow the rule.</li>
+      <li><b>Count them, as the rule reads.</b> They are outlined red, and the day cannot be signed or published until both ends are typed.</li>
+    </ul>
+
+    <div class="rec">
+      <h4>Recommended</h4>
+      <p><b>Leave these two rows out.</b> This is a recommendation, not something your words settle. They are the sim's own brief and debrief, the app already knows when each ends (the brief when the box starts, the debrief by the Logic page's setting), and counting them would block a routine day for two times nobody types today.</p>
+      <p class="cost"><b>The cost:</b> one exception to "every item". These two rows can still go out with no end typed. The other choice costs two more times typed on every such day before it can be signed.</p>
+    </div>
+  </article>
+
+  <!-- ============ H (added by the second read) ============ -->
+  <article class="card isnew" id="qh">
+    <span class="num">Question H · the end-time rule</span> <span class="tagnew">Added</span>
+    <h3>Programme and ground rows typed with only a start: must they have an end too?</h3>
+
+    <h4>When it happens</h4>
+    <p>Whenever a scheduler types an event whose end nobody knows or cares about: a dinner, a beer call, a visit, "fly with another squadron". On the demo week as it ships that is seven rows, on four of the five working days. How often your real weeks have them is yours to say, but the demo was written from real schedules.</p>
+
+    <h4>The example</h4>
+    <p>Mon 13 Jul's Common Programme, untouched: OPS SHARING + NAV SYS BRIEF 17:55, DINNER WITH CMD 18:30 and CMD ENGAGEMENT @ CREW ROOM (ALL) 21:30 each have a start and no end. Under the rule, Monday cannot be signed or published until someone types three end times. The other four rows: Tuesday's OPS BRIEFER / EP SUP 05:00 and FLY W EXT SQN 08:45, Wednesday's NAV-SYS TRIAL PREP 14:00 and Friday's MASS DEBRIEF + BEER CALL 17:00.</p>
+
+    <figure>
+      <button class="shot crop" type="button"><img src="img/fable-h-monday-programme-phone.png" width="381" height="647" alt="On a phone. Monday's Common Programme. The last three rows, OPS SHARING + NAV SYS BRIEF 17:55, DINNER WITH CMD 18:30 and CMD ENGAGEMENT at CREW ROOM (ALL) 21:30, each have an empty END box outlined in red. The rows above have both times and no outline"></button>
+      <figcaption><b>Monday's Common Programme on your phone, the rule applied.</b> The three rows with a start and no end, each END box outlined red. Tap to see the whole block.</figcaption>
+    </figure>
+
+    <h4>Why this is a question</h4>
+    <p>Your words were "every item must have a start and end time". The pictures in C show a flight and a duty desk. Nobody showed you a dinner or a beer call, and whether you had those in mind was never asked. Today the app gives such a row an assumed hour for its conflicts, and on a weekend it earns nobody OIL and says so.</p>
+    <p>One case could not be checked here: an input a member files with a start and no end. If the Inputs page allows that, the scheduler would have to finish the member's input before he could publish.</p>
+
+    <h4>The choice</h4>
+    <ul class="choice">
+      <li><b>Yes, every row, as the rule reads.</b> One rule with no list to remember. A dinner gets a planned end, as a flight gets a planned landing.</li>
+      <li><b>Only on a weekend or holiday.</b> There a missing end costs people their OIL. On a working day these rows stay free and keep the assumed hour.</li>
+      <li><b>Never for programme and ground rows.</b> The rule is for flights, sims, duty desks and standby lines only.</li>
+    </ul>
+
+    <div class="rec">
+      <h4>Recommended</h4>
+      <p><b>Yes, every row.</b> This is a recommendation, not something your words settle. A typed end is one the scheduler chose; an assumed hour is one the app made up, and it is the made-up times your rule set out to stop. One rule is also easier to learn than a rule with a list. It differs from question D only because there the app already knows the end.</p>
+      <p class="cost"><b>The cost:</b> an end time typed on every such row before the day can be signed: seven on the demo week. A row saved in a template keeps its end, so it is typed once. The second choice costs less typing and gives the scheduler two rules to remember.</p>
+    </div>
+  </article>
+
+  <!-- ============ E ============ -->
+  <h2 id="pe">E · Points the drawings raise <span class="tagnew">New</span></h2>
+  <p class="lede">Take all as recommended? Each is a case your words do not name, with what the drawing does and why. Reply "E, all as recommended", or name any point, such as "E3", to talk it through. E11 and E12 were added by the second read.</p>
+
+  <section class="card pts isnew">
+    <ol class="small e">
+      <li><b>A press on the greyed "Publish day".</b> Until all four names are in, "Publish day" is greyed. Today a press on it does nothing, and on a phone it gives no reason. With an end time missing, the sign-off boxes are refused first, so "Publish day" would stay greyed and never get to say its count. The drawing has a press on the greyed button raise the note in C. Your words have Publish say how many. They do not say it speaks while greyed.<span class="r">Yes: a press on the greyed button raises the note whenever an end time is missing. It is the only way Publish can say it.</span></li>
+      <li><b>A day with a missing end time and an unanswered OIL question.</b> A weekend or holiday, at the first press of a sign-off box. Today that press opens the day's OIL list. Your words do not say which comes first. Not drawn.<span class="r">The end-time refusal first, and the OIL list does not open. Nothing can be signed until the end times are typed. The list then opens at the next press, as today.</span></li>
+      <li><b>A landing typed "TBD".</b> Your rule counts it as no end. What it looks like was not drawn.<span class="r">The same red outline round the box holding "TBD", counted with the rest, no words of its own.</span></li>
+      <li><b>Which screens show the red outline.</b> Drawn on Edit Schedule and the Scheduler Board, where end times are typed. Your words place it "all through drafting". They do not name the screens.<span class="r">None on View-only Sched or the next-week preview. A member reading them cannot type an end time.</span></li>
+      <li><b>An amendment on a published day.</b> A scheduler changes a published day so an item has a start and no end, then presses "Publish AL1". Your words name Publish and the four sign-off boxes. They do not name an amendment. Not drawn.<span class="r">The same refusal, ending "AL1 was not published."</span></li>
+      <li><b>Who said No to OIL (sentence F1).</b> An admin answers No on the day's OIL list for an input a member filed. The new words name nobody. Your ruling on that list has each answer stamped with who gave it, and the app does not keep that today.<span class="r">Name nobody now. Keeping who answered is filed as a job of its own, and the words can name him once it exists.</span></li>
+      <li><b>The Leave War card's other sentence (sentence F2).</b> For OIL that came from an input's Yes the card reads "Earned off a duty input that was accepted — change that input, not the schedule." Whether that OIL also waits for the day to be published again was not checked.<span class="r">Check it when F2 is built. If it waits, the sentence takes the same ending: "…change that input, then publish the day again."</span></li>
+      <li><b>With the members' switch off (sentence F3).</b> Then Ranger, who filed the input, may not change it either, so today's "Only Ace or an admin can change this." is true. That case was not tried in the running app.<span class="r">Two forms, chosen by the switch: the new one naming who filed it while the switch is on, today's while it is off. The sentence for an input of several people takes the same brackets in place of its two dashes.</span></li>
+      <li><b>Your "overlap" words beyond the Legend (sentence F4).</b> You named the Legend and the warning list's small headings. The Logic page's four check names, its key, and the words shown when a pointer rests on a flagged puck print the same four names.<span class="r">Change them all, so one flag has one name everywhere.</span></li>
+      <li><b>Which warnings get the new hiding words (sentence F5).</b> By your ruling, only a conflict between two schedule items stays hidden while the same man is on the same two items. Every other warning comes back when its words change, so today's words are true for those.<span class="r">The new words on a conflict between two schedule items only. Every other warning keeps today's words, which you approved on 14 Oct.</span></li>
+      <li><b>The Legend has no line for the red box.</b> <span class="tagnew">Added</span> Edit Schedule's Legend names every flag and ring. The red outline on an empty end box is a new mark, and a new scheduler who sees it has nowhere to look it up. Your words do not mention the Legend.<span class="r change">One Legend line: a small red box, "end time missing — needed to sign and publish". Drawn for you before it is built.</span></li>
+      <li><b>Red while he is still typing the line.</b> <span class="tagnew">Added</span> You ruled that the outline shows from the moment the start is typed. So on every new line the landing box turns red for the few seconds between typing the take-off and typing the landing. On 16 Nov you asked whether a warning that pops up before END is typed would irritate a scheduler, and chose to add none. This is an outline and not a warning line, so it is likely fine, but nobody put the two together for you.<span class="r">Leave as you ruled: the red box is where he types next, so it reads as "this one is still to do". If it annoys on the real app, the outline can wait until he leaves the line.</span></li>
     </ol>
   </section>
+
+  <!-- ============ F ============ -->
+  <article class="card isnew" id="qf">
+    <span class="num">F · six sentences that were not true</span> <span class="tagnew">New</span>
+    <h3>The six wording fixes from round 1, each drawn where it shows</h3>
+    <p>Each of these told a person something the app does not do. Only the words change. Every picture now shows the exact words to be built. Reply "F as drawn", or name one, such as "F2". F5 has two wordings to pick from.</p>
+
+    <div class="fix">
+      <p><b>F1 · OIL Earn, the ALL AVAIL window.</b> Ranger filed a "Range brief" for ALL AVAIL on a day later made a public holiday. Saber, an admin, answered No on the day's OIL list. The window then said the man who filed it had answered.</p>
+      <p><span class="says"><span class="tag s">Today</span> Whoever filed this “Range brief” answered No to OIL, so by default nobody behind it earns. Tap an unlit puck to credit a man; tap a lit one to stop his credit.</span></p>
+      <p><span class="true"><span class="tag t">New</span> The OIL answer for this “Range brief” is No, so by default nobody behind it earns. Tap an unlit puck to credit a man; tap a lit one to stop his credit.</span></p>
+      <figure>
+        <button class="shot" type="button"><img src="img/words-1-oil-earn-window-phone.png" width="398" height="170" alt="On a phone. The Range Brief window, Jul 17, 09:00 to 12:00, on its Who earns OIL tab, 0 of 42. At its foot, ringed in pink, the new line: The OIL answer for this Range brief is No, so by default nobody behind it earns. Tap an unlit puck to credit a man; tap a lit one to stop his credit"></button>
+        <figcaption><b>The window's foot line, new words,</b> ringed. The list of pucks between the tabs and the foot is cut out.</figcaption>
+      </figure>
+      <p>The words shown on a desktop when the pointer rests on a puck change the same way: "Reaper — the OIL answer for this “Range brief” is No; tap to credit him anyway", and on a man's own one-man input, "Ranger — the OIL answer for this “Sim prep” is No; tap to put him on it anyway".</p>
+    </div>
+
+    <div class="fix">
+      <p><b>F2 · the Leave War, a man's OIL card.</b> The card said the OIL follows a change to the schedule. It does not move until the day is published again.</p>
+      <p><span class="says"><span class="tag s">Today</span> Earned off the published schedule — change the schedule and the OIL follows.</span></p>
+      <p><span class="true"><span class="tag t">New</span> Earned off the published schedule. Change the schedule and publish the day again, and the OIL follows.</span></p>
+      <figure>
+        <button class="shot" type="button"><img src="img/fable-f2-oil-card-phone.png" width="394" height="450" alt="On a phone. Hunter's card for Sat 18 Jul on the Leave War. Under Where it came from, ringed in pink: Earned off the published schedule. Change the schedule and publish the day again, and the OIL follows"></button>
+        <figcaption><b>Hunter's card for Sat 18 Jul, "Where it came from", new words,</b> ringed. A member's own read-only card gets the same words.</figcaption>
+      </figure>
+    </div>
+
+    <div class="fix">
+      <p><b>F3 · an input someone else filed for a man.</b> Ranger filed a Training for Ace. Hex, another member, opens it. The line left out Ranger, who may change it too.</p>
+      <p><span class="says"><span class="tag s">Today</span> Only Ace or an admin can change this.</span></p>
+      <p><span class="true"><span class="tag t">New</span> Only Ace, Ranger (who filed it) or an admin can change this.</span></p>
+      <figure>
+        <button class="shot" type="button"><img src="img/words-3-input-read-only-line-phone.png" width="374" height="96" alt="On a phone. The foot of the input's window. Above: Placed by Ranger for Ace, 15 Jul 26, 09:00. Ringed in pink beside the Close button: Only Ace, Ranger (who filed it) or an admin can change this"></button>
+        <figcaption><b>The foot of the input's window, new words,</b> ringed, beside Close. The line above it already reads "Placed by Ranger for Ace".</figcaption>
+      </figure>
+      <p>The Delete key on the input's card says the same on a desktop: "Only Ace, Ranger (who filed it) or an admin can delete this input".</p>
+    </div>
+
+    <div class="fix">
+      <p><b>F4 · the Legend and the warning list's small headings.</b> These are your own words, decided this morning. The B and D chips stay.</p>
+      <p><span class="says"><span class="tag s">Today</span> misses flight brief · misses sim brief · misses flight debrief · misses sim debrief</span></p>
+      <p><span class="true"><span class="tag t">New</span> overlap flight brief · overlap sim brief · overlap flight debrief · overlap sim debrief</span></p>
+      <figure>
+        <button class="shot" type="button"><img src="img/words-4-legend-phone.png" width="326" height="293" alt="On a phone. Edit Schedule's Legend, colours and flags. Four entries ringed in pink: B overlap flight brief, B overlap sim brief, D overlap flight debrief, D overlap sim debrief"></button>
+        <figcaption><b>Edit Schedule's Legend on your phone, your words,</b> the four ringed. The warning list's headings take them with a capital: "Overlap flight brief".</figcaption>
+      </figure>
+      <p>Each warning's own sentence still opens "Misses VL BFM brief…". You have already ruled that it will say "overlaps", and it changes in the job that is listed for it.</p>
+    </div>
+
+    <div class="fix">
+      <p><b>F5 · hiding a conflict on the warning list.</b> Ranger's "Conflict: VL BFM (step 11:40, T/O 12:40) &amp; Sim EP-4 12:00–13:30" is hidden with its ✕. The note said it returns if the warning changes. By your ruling a hidden conflict stays hidden while the same man is on the same two items, even when their times move.</p>
+      <p><span class="says"><span class="tag s">Today</span> Warning hidden: no flag, not counted. It returns if the warning changes.</span></p>
+      <p><span class="true"><span class="tag t">New</span> Warning hidden: no flag, not counted. It returns only if the man or either item is a different one.</span></p>
+      <figure>
+        <button class="shot" type="button"><img src="img/fable-f5-note-phone.png" width="402" height="78" alt="On a phone. The passing note after the cross is pressed: Warning hidden: no flag, not counted. It returns only if the man or either item is a different one"></button>
+        <figcaption><b>The note after ✕, on your phone, the New words.</b> Two lines.</figcaption>
+      </figure>
+      <div class="second">
+        <h4>A plainer wording, added by the second read</h4>
+        <p>"Only if the man or either item is a different one" takes two readings to follow. What the scheduler needs to know is the surprise: moving the times does not bring it back.</p>
+        <p><span class="true"><span class="tag t">Plainer</span> Warning hidden: no flag, not counted. It stays hidden while the same man is on the same two items, even if their times change.</span></p>
+        <figure>
+          <button class="shot" type="button"><img src="img/fable-f5-alt-note-phone.png" width="402" height="92" alt="On a phone. The passing note reads: Warning hidden: no flag, not counted. It stays hidden while the same man is on the same two items, even if their times change"></button>
+          <figcaption><b>The plainer wording on your phone.</b> Three lines, one more than the other.</figcaption>
+        </figure>
+        <p>It says the same rule you approved. Recommended: the plainer one. Reply "F5 plainer", or "F5 as drawn" for the first.</p>
+      </div>
+      <p>The words shown on a desktop when the pointer rests on the ✕ end the same way as the note you pick.</p>
+    </div>
+
+    <div class="fix">
+      <p><b>F6 · the Logic page, "An input closes its hours".</b> The line named one case where an input closes nothing. There are three.</p>
+      <p><span class="says"><span class="tag s">Today</span> Every input closes the man for the hours it covers, from the moment it is filed. One a scheduler has taken off the programme closes nothing.</span></p>
+      <p><span class="true"><span class="tag t">New</span> Every input closes the man for the hours it covers, from the moment it is filed. It closes nothing once a scheduler takes it off the programme, cancels it (CX) or marks it information only.</span></p>
+      <figure>
+        <button class="shot" type="button"><img src="img/fable-f6-logic-line-phone.png" width="402" height="117" alt="On a phone. The Logic page's row An input closes its hours. Its explanation, ringed in pink: Every input closes the man for the hours it covers, from the moment it is filed. It closes nothing once a scheduler takes it off the programme, cancels it (CX) or marks it information only"></button>
+        <figcaption><b>The Logic page's line on your phone, new words,</b> ringed.</figcaption>
+      </figure>
+      <p>The cancelled case was seen in the app. The information-only case was read from how the app is built, by two readers now, and is still tried in the running app before this line is built.</p>
+    </div>
+  </article>
 
   <h2>The two questions</h2>
-  <p class="lede">Every picture is from the live app, walked on 25 Nov on the demo week of 13 to 19 Jul. The red box marks the place.</p>
+  <p class="lede">These two were on the page before the drawings. Every picture is the live app on 25 Nov, on the demo week of 13 to 19 Jul. The red box marks the place.</p>
 
   <!-- ============ 1 ============ -->
   <article class="card" id="q1">
@@ -399,7 +659,7 @@
       <figcaption><b>Edit Schedule after the change.</b> Two red boxes. At the top left, the Amendments panel reads "No pending changes". Under Tuesday's heading, the signed line is unchanged: "SIGNED ORIG · CUR CK Ace · SKED CK Anvil · PLANNED Anvil · APPROVED Anvil". This picture is wide, so tap it to read it.</figcaption>
     </figure>
 
-    <p>The View-only Sched page was not looked at in this walk.</p>
+    <p>View-only Sched, which is what members read, was not looked at. It should be, before this is built either way.</p>
 
     <h4>Why this is a question</h4>
     <p>Two of your rulings pull in different directions here. For the Logic page's settings you ruled that a changed setting reaches a published day only from its next amendment. Separately, you ruled that a LATE mark a scheduler drops leaves a published day at once, because it changes nobody's day (the reason you were given, and accepted). Neither says what a changed cut-off does. The first is about the settings the day's checks read, and whether the late cut-off is one of those was never asked. The second is about a scheduler dropping one mark by hand.</p>
@@ -409,6 +669,7 @@
     <ul class="choice">
       <li><b>At once, as built.</b> The LATE marks on published days follow the new cut-off straight away. Nothing reads pending and no names clear.</li>
       <li><b>From the next amendment.</b> A published day keeps the LATE marks it went out with. A changed cut-off makes the day read pending, and its marks move only when it is published again.</li>
+      <li><b>Only for inputs filed after the change.</b> <span class="tagnew">Added</span> An input is judged by the cut-off that stood when it was filed or last changed. Ranger met the deadline he was given on 25 Jun, so he never turns LATE afterwards, on a published day or a draft.</li>
     </ul>
 
     <div class="rec">
@@ -416,7 +677,40 @@
       <p><b>At once, as built.</b> This is a recommendation, not something your words settle. LATE is a mark, not a check: it closes no seat and raises no warning. It also follows the reason you accepted for a mark a scheduler drops, that it changes nobody's day, so it should cost no new signatures.</p>
       <p class="cost"><b>The cost:</b> a published day can show a LATE mark it did not go out with, or lose one, with no amendment and nobody signing for it. The other choice costs more work: every published day holding an input whose mark would change reads pending, and its four names clear until it is signed and published again.</p>
     </div>
+    <div class="second">
+      <h4>From the second read</h4>
+      <p>The first two choices both mark Ranger LATE for a deadline that did not exist when he filed. If LATE is your record of who met the deadline, the third choice is the fair one, and it also settles the published-day question, because no mark ever moves. <span class="cost">Its cost is the largest of the three: the app must keep, with each input, whether it was late when filed, which is a change to what is saved.</span> If LATE is only a planning aid for the scheduler, "at once" is fine. Which it is, is yours to say.</p>
+    </div>
   </article>
+
+  <!-- ============ Small points ============ -->
+  <h2 id="points">The nineteen small points</h2>
+  <p class="lede">These were on round 1's page and are still waiting for your answer. Each is low harm. None changes what a person gets in any case that matters. Reply "small points, all as recommended", or name any point by its number to talk it through.</p>
+  <p class="how">Five of them change something in the app, shown in amber: 2, 9, 11, 16 and 17. The other fourteen leave the app as it is. Points 1, 5, 9 and 12 were reworded after this morning's answers; the words that changed are <mark>highlighted</mark>. Every recommendation is the same as before.</p>
+
+  <section class="card pts">
+    <ol class="small">
+      <li>A row with no end time says "No OIL worked out" only where an admin decides OIL. A member who opens "who's available" sees only "an hour assumed". <mark>This now arises only while a day is being drafted, since a day with a missing end time can no longer be published.</mark><span class="r">Leave as built. Your words were "to the admin".</span></li>
+      <li>The schedule export stamps a day "not yet signed" even when all four have signed and it is only not yet published.<span class="r change">Change it to "Working draft — not yet published" when the export work resumes. That work is on hold on your word.</span></li>
+      <li>When crew rest looks back at the day before, it uses the settings of the day being checked, not the earlier day's.<span class="r">Leave as built. It follows from "a published day is checked by the settings it was published under".</span></li>
+      <li>A master admin who files an input for the other squadron's man is told when it changes, though that squadron's admin lines are off for him by default.<span class="r">Leave as built. He filed it.</span></li>
+      <li>The SANS reminder goes to the man only. The admin gets no bell line. He sees the struck name in the crew list<mark>, and by this morning's answer he will also see the new amber line on the warning list.</mark><span class="r">Leave as built. It follows your "Should we tell the user too" and "Yes".</span></li>
+      <li>A filer who moved squadron with his man counts as that man's admin by the role he holds on the day the input changes.<span class="r">Leave as built.</span></li>
+      <li>A master admin may switch another squadron's bell lines on, and his own off, himself.<span class="r">Nothing to decide if your approved "Show 142 149" bell buttons of 19 Nov already cover both. That drawing is being checked. You hear about it only if it does not.</span></li>
+      <li>The bell's words "LL bid changed to OL", "LL bid moved to Thu 29 Jan" and "LL bid deleted" were never shown to you.<span class="r">Leave as built. They follow the bell's other leave lines.</span></li>
+      <li>A man who is only standing by reads free in the crew list, but the day's "Aircrew tasked" figure counts him as tasked. <mark>This morning you answered "count him in" for ALL AVAIL.</mark><span class="r change">Make the day's figures read him free too, so one screen gives one answer. A small build.</span></li>
+      <li>A man on ATT B who also has a task that day keeps the faded look. An AVALON or BB desk counts as part of that standby.<span class="r">Leave as built.</span></li>
+      <li>A man archived on Thursday is no longer offered in Monday's crew list of the same week, though Monday's ALL AVAIL count still includes him.<span class="r change">Read him by the day, as the count does. A small fix, met only when a past day is corrected.</span></li>
+      <li>A standby desk that is left out of crew rest still blocks its assumed hour for conflicts. <mark>This now applies only while a day is being drafted, since a published day must have the desk's end typed.</mark><span class="r">Leave as built.</span></li>
+      <li>A SPARE row on a flying shift with only one seat filled counts as a jet.<span class="r">Leave as built. One seat is somebody.</span></li>
+      <li>A man on an all-day course, overseas duty or all-day meeting is flagged the moment he is seated on a row with no times, as a man on leave is.<span class="r">Leave as built.</span></li>
+      <li>Moving a sign-in that holds Plan of another squadron to a different person is for a master admin alone.<span class="r">Nothing now. No screen moves a sign-in, by your ruling of 22 Nov. It is asked if that control is ever drawn.</span></li>
+      <li>The refusal on the ✕ of a leave that runs across a man's move was drafted to open with "Not saved:". Every other refusal opens with "Blocked:".<span class="r change">"Blocked:", by your rule of 5 Nov. It is shown on its drawing before it is built.</span></li>
+      <li>The Leave War's Available rows and SANS group, and the Inputs calendar's people groups, go by who is SANS today, on every date.<span class="r change">Read by the day, as every other screen now does. It joins a fix job that is already listed.</span></li>
+      <li>On a published day with an amendment waiting, a SANS man's reminder follows the working copy. So it can name a day his own schedule does not show yet.<span class="r">Leave as built. Your two rulings of 24 Nov have it follow the plan as soon as he is planned.</span></li>
+      <li>An offer filed for two SANS men still names both in its own window on a day when one of them is not SANS. The day and its counts show only the one.<span class="r">Leave as built. Nothing is counted, and hiding him there could drop him from the offer.</span></li>
+    </ol>
+  </section>
 
   <!-- ============ Waiting ============ -->
   <h2>Waiting, nothing to answer now</h2>
@@ -426,203 +720,18 @@
     </ul>
   </section>
 
-  <!-- ============ Drawn for you ============ -->
-  <h2 id="drawn">Drawn for you: the end-time rule and six sentences <span class="tagnew">New</span></h2>
-  <p class="lede">Everything below is new on this page. The pictures are the live app on the demo week of 13 to 19 Jul, with only the new red outline or the new words drawn onto it. Nothing is built yet. The pink ring and its number mark the place. Phone pictures are at your iPhone's size.</p>
-
-  <!-- ============ C ============ -->
-  <article class="card isnew" id="qc">
-    <span class="num">C · the end-time rule, as drawn</span> <span class="tagnew">New</span>
-    <h3>The red outline on an empty end time, and what the sign-off boxes and Publish day say</h3>
-
-    <h4>The day drawn</h4>
-    <p>Sat 18 Jul on Edit Schedule, still a draft. Hunter and Ranger fly VL with a take-off of 12:45 and no landing. Ridge is on the SXO desk with a START of 08:00 and no END.</p>
-
-    <h4>1. The empty box is outlined red</h4>
-    <p>Your words: <span class="quote">"it will flag in red on the outer box around the empty timing"</span>, from the moment the start is typed and all through drafting. The red is the app's own warning red, and the shape is the thin edge the app already draws on a time box. No new colour and no new shape.</p>
-
-    <div class="pair stack">
-      <figure>
-        <button class="shot" type="button"><img src="img/endtime-01-landing-today-phone.png" width="315" height="79" alt="Today on a phone. The VL row on Edit Schedule: Hunter and Ranger, a take-off time, and under it the empty landing showing only a grey dash, ringed in pink"></button>
-      </figure>
-      <figure>
-        <button class="shot" type="button"><img src="img/endtime-02-landing-red-phone.png" width="315" height="79" alt="Proposed on a phone. The same VL row. The empty landing box now has a thin red outline"></button>
-      </figure>
-    </div>
-    <p class="pairnote"><b>A flight with no landing, on your phone.</b> First, today: under TO / LD the empty landing shows only a grey dash, inside the pink ring. Second, proposed: the landing box has the red outline. The pink tag sits over part of the 12:45 take-off above it.</p>
-
-    <figure>
-      <button class="shot" type="button"><img src="img/endtime-03-desk-end-red-phone.png" width="216" height="149" alt="Proposed on a phone. The Duties block: SDO 08:00 to 14:00, then SXO with Ridge, a start time and an empty END box outlined in red, then OPS-O 08:00 to 14:00"></button>
-      <figcaption><b>A duty desk with no END, on your phone.</b> The SXO row, Ridge on it. The empty END box under its start time is outlined red, beside the pink tag 2. The rows above and below have both times and no outline.</figcaption>
-    </figure>
-
-    <figure>
-      <button class="shot" type="button"><img src="img/endtime-04a-landing-red-desktop.png" width="368" height="82" alt="Proposed on a desktop. The VL row with Hunter and Ranger. Under the take-off time the landing box is outlined in red"></button>
-      <figcaption><b>The same flight on a desktop.</b> The landing box under the take-off, outlined red.</figcaption>
-    </figure>
-    <figure>
-      <button class="shot" type="button"><img src="img/endtime-04b-desk-end-red-desktop.png" width="332" height="128" alt="Proposed on a desktop. The SXO row reads 08:00, then an empty END box outlined in red, then Ridge's puck. SDO above and OPS-O below read 08:00 and 14:00"></button>
-      <figcaption><b>The same desk on a desktop.</b> SXO's END box, outlined red, between its 08:00 start and Ridge.</figcaption>
-    </figure>
-    <p>The Scheduler Board draws the same outline on the same boxes.</p>
-
-    <h4>2. A sign-off box is refused</h4>
-    <p>Saber picks Ace in CUR CK. The name is not taken, the box stays "— name —", and the app's grey "Blocked:" note says why:</p>
-    <p><span class="quote"><b>Blocked:</b> 4 items have no end time, each outlined in red. Type the end times, then sign.</span></p>
-    <figure>
-      <button class="shot" type="button"><img src="img/endtime-05-sign-off-refused-phone.png" width="402" height="325" alt="Proposed on a phone. Saturday's sign-off boxes, CUR CK ringed in pink and still reading name, 4 to sign. At the foot of the screen the grey note reads Blocked: 4 items have no end time, each outlined in red. Type their ends, then sign"></button>
-      <figcaption><b>The refused sign-off, on your phone.</b> Top: CUR CK, ringed, still reads "— name —" and the row still says "4 to sign". Foot: the grey note. The middle of the screen is cut out. The picture shows the earlier draft's last sentence, "Type their ends, then sign." The words to build are: "Type the end times, then sign."</figcaption>
-    </figure>
-
-    <h4>3. Publish day is refused, and says how many</h4>
-    <p>Your words: <span class="quote">"the schedule cant be published unless a time is in"</span>, and Publish says how many items have no end time.</p>
-    <p><span class="quote"><b>Blocked:</b> 4 items have no end time, each outlined in red. Saturday was not published.</span></p>
-    <figure>
-      <button class="shot" type="button"><img src="img/endtime-06-publish-refused-phone.png" width="402" height="325" alt="Proposed on a phone. Saturday's Publish day button, greyed with a lock and ringed in pink, above four empty sign-off boxes. At the foot the grey note reads Blocked: 4 items have no end time, each outlined in red. Saturday was not published"></button>
-      <figcaption><b>The refused Publish, on your phone.</b> Top: "Publish day", ringed. Foot: the note, two lines on your iPhone.</figcaption>
-    </figure>
-    <figure>
-      <button class="shot" type="button"><img src="img/endtime-07-publish-refused-desktop.png" width="628" height="247" alt="Proposed on a desktop. Saturday's Publish day button ringed in pink, the four sign-off boxes empty, 4 to sign. At the foot the grey note reads on one line Blocked: 4 items have no end time, each outlined in red. Saturday was not published"></button>
-      <figcaption><b>The same on a desktop.</b> The note is one line. Tap to read it full size.</figcaption>
-    </figure>
-    <p>A version that names each item ("VL SAT (T/O 12:45), SXO 08:00, …") was drawn too. It is not recommended: every one of those boxes is already outlined, and four names run the note to three lines on your iPhone.</p>
-    <p>The count of 4 on these pictures includes two rows of the AMT sim block. They are question D, next. If you take D as recommended, this day would read "2 items".</p>
-
-    <div class="rec">
-      <h4>What stays as you ruled</h4>
-      <p>Drafting is free: only the four sign-off boxes and Publish day are refused. The warnings keep working on assumed times meanwhile. A row with no times at all is not touched.</p>
-      <p>Reply "C as drawn", or say what to change.</p>
-    </div>
-  </article>
-
-  <!-- ============ D ============ -->
-  <article class="card isnew" id="qd">
-    <span class="num">Question D · the end-time rule</span> <span class="tagnew">New</span>
-    <h3>The AMT sim block's own BRIEF and DEBRIEF rows: must they have an end time too?</h3>
-
-    <h4>When it happens</h4>
-    <p>A scheduler puts an AMT sim block on a day. The block has three rows of its own: BRIEF, BOX and DEBRIEF. On the demo week the BRIEF and DEBRIEF rows are typed with a start and no end. It would come up on every day that carries a block typed that way. How often your real weeks do is yours to say.</p>
-
-    <h4>The example</h4>
-    <p>Sat 18 Jul carries the demo's own AMT block: BRIEF 11:00 with no end, BOX 11:30 to 12:30, DEBRIEF 12:30 with no end.</p>
-
-    <div class="pair stack">
-      <figure>
-        <button class="shot" type="button"><img src="img/amt-rows-red-phone.png" width="139" height="148" alt="On a phone. The AMT block: BRIEF with a start and an empty end box outlined red, BOX 11:30 to 12:30 with no outline, DEBRIEF with a start and an empty end box outlined red"></button>
-      </figure>
-      <figure>
-        <button class="shot" type="button"><img src="img/amt-rows-red-desktop.png" width="254" height="133" alt="On a desktop. The AMT block: BRIEF 11:00 with an empty END box outlined red, BOX 11:30 to 12:30, DEBRIEF 12:30 with an empty END box outlined red"></button>
-      </figure>
-    </div>
-    <p class="pairnote"><b>The rule read word for word.</b> First your phone, then a desktop. BRIEF and DEBRIEF each have a start and an empty END, so both are outlined red (pink tags 3 and 4). BOX has both times and is left alone.</p>
-
-    <h4>Why this is a question</h4>
-    <p>Your words were "every item must have a start and end time", and the rule as recorded lists "a sim". Read word for word, these two rows are items with no end. So a day carrying this block could not be signed or published until someone types two more times.</p>
-    <p>But the app treats a blank end on these two rows as normal. The Logic page's sim debrief check speaks of "an AMT's DEBRIEF row (AMT debrief, where that row has no end)", and the app already gives both rows their length from the Logic page's settings. Whether you meant them when you said "every item" was never asked.</p>
-
-    <h4>The choice</h4>
-    <ul class="choice">
-      <li><b>Leave these two rows out.</b> An AMT block's own BRIEF and DEBRIEF rows get no red outline and are not counted. The BOX row, and every other sim row, follow the rule.</li>
-      <li><b>Count them, as the rule reads.</b> They are outlined red, and the day cannot be signed or published until both ends are typed.</li>
+  <details class="answered">
+    <summary>Already answered this morning (nothing to do)</summary>
+  <div>
+        <ul>
+      <li>No day is published or signed off while an item on it has a start and no end. The empty end box is outlined red from the moment the start is typed. Drafting stays free. This replaces the two questions about a flight with no landing and a duty desk with no end.</li>
+      <li>A man who is only on standby is counted in ALL AVAIL and earns its OIL.</li>
+      <li>One amber line on the warning list for a SANS man planned in a jet or sim with nothing filed.</li>
+      <li>The Legend's labels will read "overlap flight brief", "overlap sim brief", "overlap flight debrief" and "overlap sim debrief".</li>
     </ul>
+  </div>
 
-    <div class="rec">
-      <h4>Recommended</h4>
-      <p><b>Leave these two rows out.</b> This is a recommendation, not something your words settle. They are the sim's own brief and debrief, their length already comes from the Logic page, and counting them would block a routine day for two times nobody types today.</p>
-      <p class="cost"><b>The cost:</b> one exception to "every item". These two rows can still go out with no end typed. The other choice costs two more times typed on every such day before it can be signed.</p>
-    </div>
-  </article>
-
-  <!-- ============ E ============ -->
-  <h2 id="pe">E · Points the drawings raise <span class="tagnew">New</span></h2>
-  <p class="lede">Take all as recommended? Each is a case your words do not name, with what the drawing does and why. Reply "E, all as recommended", or name any point, such as "E3", to talk it through.</p>
-
-  <section class="card pts isnew">
-    <ol class="small e">
-      <li><b>A press on the greyed "Publish day".</b> Until all four names are in, "Publish day" is greyed. Today a press on it does nothing, and on a phone it gives no reason. With an end time missing, the sign-off boxes are refused first, so "Publish day" would stay greyed and never get to say its count. The drawing has a press on the greyed button raise the note in C. Your words have Publish say how many. They do not say it speaks while greyed.<span class="r">Yes: a press on the greyed button raises the note whenever an end time is missing. It is the only way Publish can say it.</span></li>
-      <li><b>A day with a missing end time and an unanswered OIL question.</b> A weekend or holiday, at the first press of a sign-off box. Today that press opens the day's OIL list. Your words do not say which comes first. Not drawn.<span class="r">The end-time refusal first, and the OIL list does not open. Nothing can be signed until the end times are typed. The list then opens at the next press, as today.</span></li>
-      <li><b>A landing typed "TBD".</b> Your rule counts it as no end. What it looks like was not drawn.<span class="r">The same red outline round the box holding "TBD", counted with the rest, no words of its own.</span></li>
-      <li><b>Which screens show the red outline.</b> Drawn on Edit Schedule and the Scheduler Board, where end times are typed. Your words place it "all through drafting". They do not name the screens.<span class="r">None on View-only Sched or the next-week preview. A member reading them cannot type an end time.</span></li>
-      <li><b>An amendment on a published day.</b> A scheduler changes a published day so an item has a start and no end, then presses "Publish AL1". Your words name Publish and the four sign-off boxes. They do not name an amendment. Not drawn.<span class="r">The same refusal, ending "AL1 was not published."</span></li>
-      <li><b>Who said No to OIL (sentence F1).</b> An admin answers No on the day's OIL list for an input a member filed. The new words name nobody. Your ruling on that list has each answer stamped with who gave it, and the app does not keep that today.<span class="r">Name nobody now. Keeping who answered is filed as a job of its own, and the words can name him once it exists.</span></li>
-      <li><b>The Leave War card's other sentence (sentence F2).</b> For OIL that came from an input's Yes the card reads "Earned off a duty input that was accepted — change that input, not the schedule." Whether that OIL also waits for the day to be published again was not checked.<span class="r">Check it when F2 is built. If it waits, the sentence takes the same ending: "…change that input, then publish the day again."</span></li>
-      <li><b>With the members' switch off (sentence F3).</b> Then Ranger, who filed the input, may not change it either, so today's "Only Ace or an admin can change this." is true. That case was not walked.<span class="r">Two forms, chosen by the switch: the new one naming who filed it while the switch is on, today's while it is off. The sentence for an input of several people takes the same brackets in place of its two dashes.</span></li>
-      <li><b>Your "overlap" words beyond the Legend (sentence F4).</b> You named the Legend and the warning list's small headings. The Logic page's four check names, its key, and the words shown when a pointer rests on a flagged puck print the same four names.<span class="r">Change them all, so one flag has one name everywhere.</span></li>
-      <li><b>Which warnings get the new hiding words (sentence F5).</b> By your ruling, only a conflict between two schedule items stays hidden while the same man is on the same two items. Every other warning comes back when its words change, so today's words are true for those.<span class="r">The new words on a conflict between two schedule items only. Every other warning keeps today's words, which you approved on 14 Oct.</span></li>
-    </ol>
-  </section>
-
-  <!-- ============ F ============ -->
-  <article class="card isnew" id="qf">
-    <span class="num">F · six sentences that were not true</span> <span class="tagnew">New</span>
-    <h3>The six wording fixes from round 1, each drawn where it shows</h3>
-    <p>Each of these told a person something the app does not do. Only the words change. Reply "F as drawn", or name one, such as "F2".</p>
-
-    <div class="fix">
-      <p><b>F1 · OIL Earn, the ALL AVAIL window.</b> Ranger filed a "Range brief" for ALL AVAIL on a day later made a public holiday. Saber, an admin, answered No on the day's OIL list. The window then said the man who filed it had answered.</p>
-      <p><span class="says"><span class="tag s">Today</span> Whoever filed this “Range brief” answered No to OIL, so by default nobody behind it earns. Tap an unlit puck to credit a man; tap a lit one to stop his credit.</span></p>
-      <p><span class="true"><span class="tag t">New</span> The OIL answer for this “Range brief” is No, so by default nobody behind it earns. Tap an unlit puck to credit a man; tap a lit one to stop his credit.</span></p>
-      <figure>
-        <button class="shot" type="button"><img src="img/words-1-oil-earn-window-phone.png" width="398" height="170" alt="On a phone. The Range Brief window, Jul 17, 09:00 to 12:00, on its Who earns OIL tab, 0 of 42. At its foot, ringed in pink, the new line: The OIL answer for this Range brief is No, so by default nobody behind it earns. Tap an unlit puck to credit a man; tap a lit one to stop his credit"></button>
-        <figcaption><b>The window's foot line, new words,</b> ringed. The list of pucks between the tabs and the foot is cut out.</figcaption>
-      </figure>
-      <p>The words shown on a desktop when the pointer rests on a puck change the same way: "Reaper — the OIL answer for this “Range brief” is No; tap to credit him anyway", and on a man's own one-man input, "Ranger — the OIL answer for this “Sim prep” is No; tap to put him on it anyway".</p>
-    </div>
-
-    <div class="fix">
-      <p><b>F2 · the Leave War, a man's OIL card.</b> The card said the OIL follows a change to the schedule. It does not move until the day is published again.</p>
-      <p><span class="says"><span class="tag s">Today</span> Earned off the published schedule — change the schedule and the OIL follows.</span></p>
-      <p><span class="true"><span class="tag t">New</span> Earned off the published schedule. Change the schedule and publish the day again, and the OIL follows.</span></p>
-      <figure>
-        <button class="shot" type="button"><img src="img/words-2-leave-war-oil-card-phone.png" width="394" height="143" alt="On a phone. Hunter's card for Sat 18 Jul on the Leave War. Under Where it came from, ringed in pink, two lines of words"></button>
-        <figcaption><b>Hunter's card for Sat 18 Jul, "Where it came from",</b> ringed. The picture shows the earlier draft, "To change it, change the schedule and publish the day again." The words to build are the New line above. A member's own read-only card gets the same words.</figcaption>
-      </figure>
-    </div>
-
-    <div class="fix">
-      <p><b>F3 · an input someone else filed for a man.</b> Ranger filed a Training for Ace. Hex, another member, opens it. The line left out Ranger, who may change it too.</p>
-      <p><span class="says"><span class="tag s">Today</span> Only Ace or an admin can change this.</span></p>
-      <p><span class="true"><span class="tag t">New</span> Only Ace, Ranger (who filed it) or an admin can change this.</span></p>
-      <figure>
-        <button class="shot" type="button"><img src="img/words-3-input-read-only-line-phone.png" width="374" height="96" alt="On a phone. The foot of the input's window. Above: Placed by Ranger for Ace, 15 Jul 26, 09:00. Ringed in pink beside the Close button: Only Ace, Ranger (who filed it) or an admin can change this"></button>
-        <figcaption><b>The foot of the input's window, new words,</b> ringed, beside Close. The line above it already reads "Placed by Ranger for Ace".</figcaption>
-      </figure>
-      <p>The Delete key on the input's card says the same on a desktop: "Only Ace, Ranger (who filed it) or an admin can delete this input".</p>
-    </div>
-
-    <div class="fix">
-      <p><b>F4 · the Legend and the warning list's small headings.</b> These are your own words, decided this morning. The B and D chips stay.</p>
-      <p><span class="says"><span class="tag s">Today</span> misses flight brief · misses sim brief · misses flight debrief · misses sim debrief</span></p>
-      <p><span class="true"><span class="tag t">New</span> overlap flight brief · overlap sim brief · overlap flight debrief · overlap sim debrief</span></p>
-      <figure>
-        <button class="shot" type="button"><img src="img/words-4-legend-phone.png" width="326" height="293" alt="On a phone. Edit Schedule's Legend, colours and flags. Four entries ringed in pink: B overlap flight brief, B overlap sim brief, D overlap flight debrief, D overlap sim debrief"></button>
-        <figcaption><b>Edit Schedule's Legend on your phone, your words,</b> the four ringed. The warning list's headings take them with a capital: "Overlap flight brief".</figcaption>
-      </figure>
-      <p>Each warning's own sentence still opens "Misses VL BFM brief…". You have already ruled that it will say "overlaps", and it changes in the job that is listed for it.</p>
-    </div>
-
-    <div class="fix">
-      <p><b>F5 · hiding a conflict on the warning list.</b> Ranger's "Conflict: VL BFM (step 11:40, T/O 12:40) &amp; Sim EP-4 12:00–13:30" is hidden with its ✕. The note said it returns if the warning changes. By your ruling a hidden conflict stays hidden while the same man is on the same two items, even when their times move.</p>
-      <p><span class="says"><span class="tag s">Today</span> Warning hidden: no flag, not counted. It returns if the warning changes.</span></p>
-      <p><span class="true"><span class="tag t">New</span> Warning hidden: no flag, not counted. It returns only if the man or either item is a different one.</span></p>
-      <figure>
-        <button class="shot" type="button"><img src="img/words-5-hidden-warning-note-phone.png" width="402" height="91" alt="On a phone. The passing note after the cross is pressed, ringed in pink, two lines beginning Warning hidden: no flag, not counted"></button>
-        <figcaption><b>The note after ✕, on your phone,</b> ringed. The picture shows the earlier draft's ending, "only if another man or another item is in the clash." The words to build are the New line above: they are your ruling's own, and the app says "conflict", not "clash".</figcaption>
-      </figure>
-      <p>The words shown on a desktop when the pointer rests on the ✕ end the same way: "…it comes back only if the man or either item is a different one".</p>
-    </div>
-
-    <div class="fix">
-      <p><b>F6 · the Logic page, "An input closes its hours".</b> The line named one case where an input closes nothing. There are three.</p>
-      <p><span class="says"><span class="tag s">Today</span> Every input closes the man for the hours it covers, from the moment it is filed. One a scheduler has taken off the programme closes nothing.</span></p>
-      <p><span class="true"><span class="tag t">New</span> Every input closes the man for the hours it covers, from the moment it is filed. It closes nothing once a scheduler takes it off the programme, cancels it (CX) or marks it information only.</span></p>
-      <figure>
-        <button class="shot" type="button"><img src="img/words-6-logic-line-phone.png" width="402" height="135" alt="On a phone. The Logic page's row An input closes its hours. Its explanation, ringed in pink, runs to four lines"></button>
-        <figcaption><b>The Logic page's line on your phone,</b> ringed. The picture shows the earlier draft's second sentence, "One a scheduler has taken off the programme, cancelled (CX) or marked information only closes nothing." The words to build are the New line above, which says the same three cases in an order that reads more easily.</figcaption>
-      </figure>
-      <p>The cancelled case was seen in the app. The information-only case was read from how the app is built, not seen, so it is checked in the running app before this line is built.</p>
-    </div>
-  </article>
+  </details>
 
   <p class="foot">Two more questions are not on this page. What a man is told when a change is undone before he read its bell line, and the places where the app gives a count where it could give names, are on the bell job's page from another chat.</p>
 
