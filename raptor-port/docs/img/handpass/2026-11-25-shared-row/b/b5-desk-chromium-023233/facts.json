@@ -1,0 +1,137 @@
+{
+ "pictures": [
+  {
+   "file": "b5-a-click-desk-chromium-1-window.png",
+   "case": "B5-a-click",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "title": "Ranger · 15 Jul",
+    "people": [],
+    "personFixed": null,
+    "person": "bane",
+    "type": "LL",
+    "start": "09:00",
+    "end": "10:00",
+    "rmk": "",
+    "allday": null,
+    "text": "Ranger · 15 Jul✕PersonAceAnvilBasherBladeBoltCinchCinderCobraCometCotterCutterDashDieselDrifterEchoFableForgeGambitGhostGritHavocHexHunterJesterKrakenLedgerMarlinNomadOtterOutlawPistonPixelQuillRangerRatchetReaperRebelReconRelayRidgeRuneRyderSaberSaintScopeScribeSidewinderStaticTalismanTallyTorchTri"
+   }
+  },
+  {
+   "file": "b5-a-click-desk-chromium-2-after-delete.png",
+   "case": "B5-a-click",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "del": {
+     "confirmOffered": [],
+     "pressed": null,
+     "note": "Input deleted"
+    },
+    "after": [
+     "LL Hex 08:00-10:00 \"\" acc:- [imwvidj72jeey95]"
+    ]
+   }
+  },
+  {
+   "file": "b5-a-noblur-desk-chromium-1-window.png",
+   "case": "B5-a-noblur",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "title": "Ranger · 15 Jul",
+    "people": [],
+    "personFixed": null,
+    "person": "bane",
+    "type": "LL",
+    "start": "09:00",
+    "end": "10:00",
+    "rmk": "",
+    "allday": null,
+    "text": "Ranger · 15 Jul✕PersonAceAnvilBasherBladeBoltCinchCinderCobraCometCotterCutterDashDieselDrifterEchoFableForgeGambitGhostGritHavocHexHunterJesterKrakenLedgerMarlinNomadOtterOutlawPistonPixelQuillRangerRatchetReaperRebelReconRelayRidgeRuneRyderSaberSaintScopeScribeSidewinderStaticTalismanTallyTorchTri"
+   }
+  },
+  {
+   "file": "b5-a-noblur-desk-chromium-2-after-delete.png",
+   "case": "B5-a-noblur",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "del": {
+     "confirmOffered": [],
+     "pressed": null,
+     "note": "Input deleted"
+    },
+    "after": [
+     "LL Hex 08:00-10:00 \"\" acc:- [imwvidt3kx0av9e]"
+    ]
+   }
+  },
+  {
+   "file": "b5-a-ctl-desk-chromium-1-window.png",
+   "case": "B5-a-ctl",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "title": "Ranger · 15 Jul",
+    "people": [],
+    "personFixed": null,
+    "person": "bane",
+    "type": "LL",
+    "start": "09:00",
+    "end": "10:00",
+    "rmk": "",
+    "allday": null,
+    "text": "Ranger · 15 Jul✕PersonAceAnvilBasherBladeBoltCinchCinderCobraCometCotterCutterDashDieselDrifterEchoFableForgeGambitGhostGritHavocHexHunterJesterKrakenLedgerMarlinNomadOtterOutlawPistonPixelQuillRangerRatchetReaperRebelReconRelayRidgeRuneRyderSaberSaintScopeScribeSidewinderStaticTalismanTallyTorchTri"
+   }
+  },
+  {
+   "file": "b5-a-ctl-desk-chromium-2-after-delete.png",
+   "case": "B5-a-ctl",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "del": {
+     "confirmOffered": [],
+     "pressed": null,
+     "note": "Input deleted"
+    },
+    "after": [
+     "LL Hex 08:00-10:00 \"\" acc:- [imwvie3dehveufi]"
+    ]
+   }
+  }
+ ],
+ "cases": {
+  "B5-a-click": {
+   "log": [
+    "filed {\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"type\":\"LL\"} on 2026-07-15: new input [\"imwvidj72jeey95\"]; asked []; note \"\"",
+    "filed: [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" acc:- [imwvidj72jeey95]\"] drawn: [\"Ranger LL in 2.unav [imwvidj72jeey95~bane]\",\"Hex LL in 2.unav [imwvidj72jeey95~rocky]\"]",
+    "start 0900 Tab :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvidj72jeey95]\",\"LL Ranger 09:00-10:00 \\\"\\\" [imwvidldcav4bhl]\"] :: SCREEN [\"Ranger 09:00-10:00 \\\"\\\" [imwvidj72jeey95~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvidj72jeey95~rocky]\"] :: CARET imwvidj72jeey95~bane.end",
+    "pressed label by click: <button class=\"ntx inpedit\" data-inpedit=\"imwvidj72jeey95\" data-iuw=\"bane\" title=\"Edit this input — times, type, remarks or delete\" data-shrb=\"label\">LL</button> :: caret before imwvidj72jeey95~bane.end after DIV",
+    "picture b5-a-click-desk-chromium-1-window.png: {\"title\":\"Ranger · 15 Jul\",\"people\":[],\"personFixed\":null,\"person\":\"bane\",\"type\":\"LL\",\"start\":\"09:00\",\"end\":\"10:00\",\"rmk\":\"\",\"allday\":null,\"text\":\"Ranger · 15 Jul✕PersonAceAnvilBasherBladeBoltCinchCinderCobraCometCotterCutterDashDieselDrifterEchoFableForgeGambitGhostGritHavocHexHunterJesterKrakenLedgerMarlinNomadOtterOutlawPistonPixelQuillRangerRatchetReaperRebelReconRelayRidgeRuneRyderSaberSaintScopeScribeSidewinderStaticTalismanTallyTorchTri\"}",
+    "window: {\"title\":\"Ranger · 15 Jul\",\"people\":[],\"personFixed\":null,\"person\":\"bane\",\"type\":\"LL\",\"start\":\"09:00\",\"end\":\"10:00\",\"rmk\":\"\",\"allday\":null,\"text\":\"Ranger · 15 Jul✕PersonAceAnvilBasherBladeBoltCinchCinderCobraCometCotterCutterDashDieselDrifterEchoFableForgeGambitGhostGritHavocHexHunterJesterKrakenLedgerMarlinNomadOtterOutlawPistonPixelQuillRangerRatchetReaperRebelReconRelayRidgeRuneRyderSaberSaintScopeScribeSidewinderStaticTalismanTallyTorchTri\"} store: [\"LL Hex 08:00-10:00 \\\"\\\" acc:- [imwvidj72jeey95]\",\"LL Ranger 09:00-10:00 \\\"\\\" acc:- [imwvidldcav4bhl]\"]",
+    "picture b5-a-click-desk-chromium-2-after-delete.png: {\"del\":{\"confirmOffered\":[],\"pressed\":null,\"note\":\"Input deleted\"},\"after\":[\"LL Hex 08:00-10:00 \\\"\\\" acc:- [imwvidj72jeey95]\"]}"
+   ]
+  },
+  "B5-a-noblur": {
+   "log": [
+    "filed {\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"type\":\"LL\"} on 2026-07-15: new input [\"imwvidt3kx0av9e\"]; asked []; note \"\"",
+    "filed: [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" acc:- [imwvidt3kx0av9e]\"] drawn: [\"Ranger LL in 2.unav [imwvidt3kx0av9e~bane]\",\"Hex LL in 2.unav [imwvidt3kx0av9e~rocky]\"]",
+    "start 0900 Tab :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvidt3kx0av9e]\",\"LL Ranger 09:00-10:00 \\\"\\\" [imwvidvd87c51yd]\"] :: SCREEN [\"Ranger 09:00-10:00 \\\"\\\" [imwvidt3kx0av9e~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvidt3kx0av9e~rocky]\"] :: CARET imwvidt3kx0av9e~bane.end",
+    "pressed label by noblur: <button class=\"ntx inpedit\" data-inpedit=\"imwvidt3kx0av9e\" data-iuw=\"bane\" title=\"Edit this input — times, type, remarks or delete\" data-shrb=\"label\">LL</button> :: caret before imwvidt3kx0av9e~bane.end after DIV",
+    "picture b5-a-noblur-desk-chromium-1-window.png: {\"title\":\"Ranger · 15 Jul\",\"people\":[],\"personFixed\":null,\"person\":\"bane\",\"type\":\"LL\",\"start\":\"09:00\",\"end\":\"10:00\",\"rmk\":\"\",\"allday\":null,\"text\":\"Ranger · 15 Jul✕PersonAceAnvilBasherBladeBoltCinchCinderCobraCometCotterCutterDashDieselDrifterEchoFableForgeGambitGhostGritHavocHexHunterJesterKrakenLedgerMarlinNomadOtterOutlawPistonPixelQuillRangerRatchetReaperRebelReconRelayRidgeRuneRyderSaberSaintScopeScribeSidewinderStaticTalismanTallyTorchTri\"}",
+    "window: {\"title\":\"Ranger · 15 Jul\",\"people\":[],\"personFixed\":null,\"person\":\"bane\",\"type\":\"LL\",\"start\":\"09:00\",\"end\":\"10:00\",\"rmk\":\"\",\"allday\":null,\"text\":\"Ranger · 15 Jul✕PersonAceAnvilBasherBladeBoltCinchCinderCobraCometCotterCutterDashDieselDrifterEchoFableForgeGambitGhostGritHavocHexHunterJesterKrakenLedgerMarlinNomadOtterOutlawPistonPixelQuillRangerRatchetReaperRebelReconRelayRidgeRuneRyderSaberSaintScopeScribeSidewinderStaticTalismanTallyTorchTri\"} store: [\"LL Hex 08:00-10:00 \\\"\\\" acc:- [imwvidt3kx0av9e]\",\"LL Ranger 09:00-10:00 \\\"\\\" acc:- [imwvidvd87c51yd]\"]",
+    "picture b5-a-noblur-desk-chromium-2-after-delete.png: {\"del\":{\"confirmOffered\":[],\"pressed\":null,\"note\":\"Input deleted\"},\"after\":[\"LL Hex 08:00-10:00 \\\"\\\" acc:- [imwvidt3kx0av9e]\"]}"
+   ]
+  },
+  "B5-a-ctl": {
+   "log": [
+    "filed {\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"type\":\"LL\"} on 2026-07-15: new input [\"imwvie3dehveufi\"]; asked []; note \"\"",
+    "filed: [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" acc:- [imwvie3dehveufi]\"] drawn: [\"Ranger LL in 2.unav [imwvie3dehveufi~bane]\",\"Hex LL in 2.unav [imwvie3dehveufi~rocky]\"]",
+    "start 0900 Tab :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvie3dehveufi]\",\"LL Ranger 09:00-10:00 \\\"\\\" [imwvie5lalwvetn]\"] :: SCREEN [\"Ranger 09:00-10:00 \\\"\\\" [imwvie3dehveufi~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvie3dehveufi~rocky]\"] :: CARET imwvie3dehveufi~bane.end",
+    "clicked away (row repainted) :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvie3dehveufi]\",\"LL Ranger 09:00-10:00 \\\"\\\" [imwvie5lalwvetn]\"] :: SCREEN [\"Hex 08:00-10:00 \\\"\\\" [imwvie3dehveufi]\",\"Ranger 09:00-10:00 \\\"\\\" [imwvie5lalwvetn]\"] :: CARET BODY",
+    "pressed label by click: <button class=\"ntx inpedit\" data-inpedit=\"imwvie5lalwvetn\" title=\"Edit this input — times, type, remarks or delete\" data-shrb=\"label\">LL</button> :: caret before BODY after DIV",
+    "picture b5-a-ctl-desk-chromium-1-window.png: {\"title\":\"Ranger · 15 Jul\",\"people\":[],\"personFixed\":null,\"person\":\"bane\",\"type\":\"LL\",\"start\":\"09:00\",\"end\":\"10:00\",\"rmk\":\"\",\"allday\":null,\"text\":\"Ranger · 15 Jul✕PersonAceAnvilBasherBladeBoltCinchCinderCobraCometCotterCutterDashDieselDrifterEchoFableForgeGambitGhostGritHavocHexHunterJesterKrakenLedgerMarlinNomadOtterOutlawPistonPixelQuillRangerRatchetReaperRebelReconRelayRidgeRuneRyderSaberSaintScopeScribeSidewinderStaticTalismanTallyTorchTri\"}",
+    "window: {\"title\":\"Ranger · 15 Jul\",\"people\":[],\"personFixed\":null,\"person\":\"bane\",\"type\":\"LL\",\"start\":\"09:00\",\"end\":\"10:00\",\"rmk\":\"\",\"allday\":null,\"text\":\"Ranger · 15 Jul✕PersonAceAnvilBasherBladeBoltCinchCinderCobraCometCotterCutterDashDieselDrifterEchoFableForgeGambitGhostGritHavocHexHunterJesterKrakenLedgerMarlinNomadOtterOutlawPistonPixelQuillRangerRatchetReaperRebelReconRelayRidgeRuneRyderSaberSaintScopeScribeSidewinderStaticTalismanTallyTorchTri\"} store: [\"LL Hex 08:00-10:00 \\\"\\\" acc:- [imwvie3dehveufi]\",\"LL Ranger 09:00-10:00 \\\"\\\" acc:- [imwvie5lalwvetn]\"]",
+    "picture b5-a-ctl-desk-chromium-2-after-delete.png: {\"del\":{\"confirmOffered\":[],\"pressed\":null,\"note\":\"Input deleted\"},\"after\":[\"LL Hex 08:00-10:00 \\\"\\\" acc:- [imwvie3dehveufi]\"]}"
+   ]
+  }
+ },
+ "errors": []
+}

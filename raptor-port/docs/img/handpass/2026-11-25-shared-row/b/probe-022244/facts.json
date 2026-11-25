@@ -1,0 +1,25 @@
+{
+ "pictures": [
+  {
+   "file": "probe-desk-week-day.png",
+   "case": "P",
+   "size": "desktop 1440x900 @2x",
+   "text": "the day"
+  }
+ ],
+ "cases": {
+  "P": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvi0w5s591dbd\"]; asked []; note \"\"",
+    "iid imwvi0w5s591dbd",
+    "di 2 days [\"Monday Jul 13\",\"Tuesday Jul 14\",\"Wednesday Jul 15\",\"Thursday Jul 16\",\"Friday Jul 17\",\"Saturday Jul 18\",\"Sunday Jul 19\"]",
+    "store [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvi0w5s591dbd]\"]",
+    "rows [\"Ranger 08:00-10:00 \\\"\\\" [imwvi0w5s591dbd~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvi0w5s591dbd~rocky]\",\"OL/Cobra/IP - \\\"Overseas leave — off island\\\" [imwvi0r7rxqtsb2]\",\"ATT C/Grit/C - \\\"Medically down\\\" [imwvi0r7rzsjc5n]\",\"OD/C/Nomad - \\\"Overseas duty — exercise, off island\\\" [imwvi0r7ru5kzqo]\",\"OIL/C/Gambit - \\\"\\\" [imwvi0r8ptwjfdc]\"]",
+    "chain [\"span.t.t-s.txed.inpt[data-inp=imwvi0w5s591dbd~bane.str,data-ph=all day] w44\",\"div.pl-row[data-inprow=imwvi0w5s591dbd~bane] w521\",\"div.sub.plist.one.sec.sec-unav[] w530\",\"div.dsec[data-secmove=2.unav] w550\",\"div.day-body[] w550\",\"section.day[data-day=2] w552\"]",
+    "controls {\"signs\":[\"cur vis123\",\"sked vis123\",\"plan vis123\",\"appr vis123\"],\"beak\":[\"<button class=\\\"dbeak locked\\\" data-beak=\\\"2\\\" disabled=\\\"\\\" title=\\\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Wednesday\\\">Publish day</button>\"],\"pend\":[\"al-pend: No pending changes\",\"dpend dpendbtn dchg: 1 change\"],\"allch\":[],\"undo\":\"<button class=\\\"abtn hbtn\\\" id=\\\"undoBtn\\\" aria-label=\\\"Undo\\\" title=\\\"Undo — LL for 2 people\\\"><span class=\\\"bi\\\">↶</span><span class=\\\"bl\\\"> Undo</span></button>\"}",
+    "picture probe-desk-week-day.png: \"the day\""
+   ]
+  }
+ },
+ "errors": []
+}
