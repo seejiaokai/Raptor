@@ -19,7 +19,7 @@ YES to 3 and 7 → **FULL**; a change to who may do or see what → the security
 
 - **D2395** — the Tracker follows the squadron picked: Plan of 149 or master admin, 149 picked shows and edits 149's
   Tracker, 142 picked brings 142's back, no sign-out; View of 149 only: not offered. Unsaved chart edits asked first.
-- **D2318** (as narrowed) — "Save them before switching to 142?": Stay, Discard them, Save them. **D2388** — the same
+- **D2318** (as narrowed) — "Save them before switching to 142?": Stay, Discard them, Save them. **D2637** — the same
   question before a pick of a squadron he only views, top bar and ☰ alike; the member-view switch is not a pick.
 - **D2381** — a squadron he only views picked: its View-only Sched and Help alone.
 - **D2323** — a Leave War or Input window open at a pick: "This is 142's. You picked 149 — close this to go on.", greyed,
@@ -72,7 +72,7 @@ filled with the result in §7.
 | + New squadron, Add a person forms | must not: taken by the row's Escape | their own | — | S45 |
 | Top bar squadron list by the keys | must: focus on the ticked row; Tab and Shift+Tab out close it | arrows, Home, End, Enter | — | S46, S47 |
 | ☰ menu's squadron list | must: as the top bar; closes before a question | tap, shade | menu under it | S48 |
-| The question "Save them before switching to 149?" | must: every pick off the Tracker's squadron, View-only too (D2318, D2388) | Stay, Discard, Save, Escape | over any page | S13–S16, S48 |
+| The question "Save them before switching to 149?" | must: every pick off the Tracker's squadron, View-only too (D2318, D2637) | Stay, Discard, Save, Escape | over any page | S13–S16, S48 |
 | Tracker: chart, students, marks, Info, Failures, Show All, details, flex, pace, lulls | must: the picked squadron's only (D2395) | writes land there | — | S1, S7, S8, S10, S12, S55 |
 | Tracker: courses, syllabi, crew, reorder, restore | must: that squadron's | add, rename, delete, restore | — | S2, S11 |
 | Tracker: File → Export, Import | must: that squadron's | a pick ends an import in flight | native picker | S3–S6 |
@@ -226,7 +226,7 @@ check did not ask here; the same presses could not be run on the older build, wh
 Tracker, switches to the member view and picks 142: the list closes and nothing else happens. The question "Save them
 before switching to 142?" has opened inside the hidden Tracker, at no size, and pops up over View-only Sched whenever he
 next returns to the admin view, perhaps minutes later. Its answers work; nothing is lost or crossed. Should ask at the
-pick (D2388, D2318). Cause: the member view's cover hides the Tracker's content (`tracker/TrackerPage.tsx`, the host of
+pick (D2637, D2318). Cause: the member view's cover hides the Tracker's content (`tracker/TrackerPage.tsx`, the host of
 `useCover`), and `TrkAskOnly` shows only the section, so the question inside stays hidden; tonight's wider
 `movesTrackerAway` (`state/pick.ts`) makes this pick ask. Fix: let the question show through the cover while it is up.
 Pictures: `host/repro-now/s24d-d/01-after-dead-pick.png`, `03-stale-question.png`.

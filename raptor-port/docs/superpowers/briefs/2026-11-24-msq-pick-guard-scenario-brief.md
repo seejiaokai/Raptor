@@ -31,7 +31,7 @@ scope.
 
 Open each full row before you rely on it (the shell; the row is one long line):
 `grep -h '^| D2403 |' .claude/decisions-full/*.md .claude/rules/decisions/*.md` — and the same for D2405, D2590, D2591,
-D2592, D2593, D2594, D2595, D2318, D2323, D2389, D2395, D2388, D2381, D148, D1622, D1667, D1668. The area's page:
+D2592, D2593, D2594, D2595, D2318, D2323, D2389, D2395, D2637, D2381, D148, D1622, D1667, D1668. The area's page:
 `.claude/rules/decisions/people-accounts.md` §Many squadrons (its last lines).
 
 - **D2403** — "A pick of another squadron, and the switch to or from the member view, is refused while an Input, Leave

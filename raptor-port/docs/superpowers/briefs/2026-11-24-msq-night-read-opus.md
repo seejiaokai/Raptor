@@ -19,7 +19,7 @@ I read tonight's diff, the changed source in its surrounding code, the named rul
 **Failure, route B (more ordinary):** after steps 1 and 2 he presses Logout.
 - The logout's Save / Discard / Stay question opens, then is cancelled at once.
 - The draft is gone and he is still signed in.
-- This breaks D129, D2318 and D2388, and the cover's promise that leaving the member view brings the edits back.
+- This breaks D129, D2318 and D2637, and the cover's promise that leaving the member view brings the edits back.
 
 **Cause:**
 - `state/store.ts` `landOnOfferedPage` calls `enterSquadron(myUnit(...), holdNow() === 'war', true)` with `byPick = true`, but no question was asked on this route.

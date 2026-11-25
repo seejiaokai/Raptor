@@ -107,7 +107,7 @@ function landOnOfferedPage(): void {
 }
 /* HIS OWN SQUADRON COMES BACK FOR THE PAGE HE OPENED — but where the Tracker is held on the squadron in view for his
    unsaved chart edits (the member view), entering would drop them, so it asks first, the pick's own question over the page
-   he is on (his D2318, D2388; the night of 24 Nov 26, Opus F1, Fable F1). He stays where he was until he answers: Save or
+   he is on (his D2318, D2637; the night of 24 Nov 26, Opus F1, Fable F1). He stays where he was until he answers: Save or
    Discard opens the page he tapped; Stay, or a Save the gate refuses, leaves him there with the draft. */
 function landOnOwnPage(): void {
   const home = myUnit(todayIso())

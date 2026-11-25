@@ -361,7 +361,7 @@ The number is the priority order. Each named family means separate runs, not one
 
 **Who/device:** Hunter with Plan; D/P.  
 **Steps:** Dirty 142’s chart; switch through each picker. Separately choose Stay, Discard and Save; repeat Save with failure.  
-**EXPECTED/source:** Stay retains work on 142; Discard drops those edits before a permitted entry; successful Save saves 142 before entry. A failed Save is not success. D2318, D2388, D2395, D2594; press B.  
+**EXPECTED/source:** Stay retains work on 142; Discard drops those edits before a permitted entry; successful Save saves 142 before entry. A failed Save is not success. D2318, D2637, D2395, D2594; press B.  
 **Disproof:** Wrong-squadron save, silent discard or entry after a failed save.
 
 **33. Chart question in both view directions**
@@ -375,7 +375,7 @@ The number is the priority order. Each named family means separate runs, not one
 
 **Who/device:** Hunter with View of 149; D/P.  
 **Steps:** Dirty 142’s chart; pick 149; exercise the three answers and return home.  
-**EXPECTED/source:** The chart question still appears. Successful entry offers only foreign View and Help; returning home restores the permitted home pages and the selected save/discard outcome. D2388, D2381.  
+**EXPECTED/source:** The chart question still appears. Successful entry offers only foreign View and Help; returning home restores the permitted home pages and the selected save/discard outcome. D2637, D2381.  
 **Disproof:** View-only entry bypasses the question or exposes Tracker/admin editing.
 
 **35. A save still going**

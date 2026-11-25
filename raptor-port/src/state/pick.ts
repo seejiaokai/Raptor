@@ -7,7 +7,7 @@
    those edits. The Tracker asks "Save them before switching to 142?" — Save them, Discard them, Stay — where he is
    (tracker/role.js trackerSwitchAsk); the pick goes on only after Save or Discard. With nothing to ask the pick is made at
    once, as before.
-   A SQUADRON HE ONLY VIEWS ASKS TOO (his D2388): his own pages stay his squadron's there, but while it is picked he is
+   A SQUADRON HE ONLY VIEWS ASKS TOO (his D2637): his own pages stay his squadron's there, but while it is picked he is
    offered only its View-only Sched and Help (D2381), so the Tracker holding the edits is out of reach until he picks his
    own back. The same question, from the top bar and the ☰ menu alike. The member-view switch is not a pick: it comes
    through state/store.ts switchRoleView, never here, and asks nothing. */
@@ -20,7 +20,7 @@ import { trackerSwitchAsk, trackerSwitchNeeds } from '../tracker/role.js'
 
 /* the pick would move the Tracker off the squadron it is on — his pages leave it, or it is held there for chart work while
    his pages are elsewhere (the member view, D2395) — or bring up a squadron he only views, where the Tracker is not
-   offered (D2388, D2381). The bell's entry never reaches the last: it stops first at a squadron his own pages may not be
+   offered (D2637, D2381). The bell's entry never reaches the last: it stops first at a squadron his own pages may not be
    (state/belltap.ts enterForLine). */
 function movesTrackerAway(u: string): boolean {
   const bound = trkUnitNow()

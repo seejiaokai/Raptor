@@ -79,7 +79,7 @@ same. The question has in fact opened inside the hidden Tracker page, at zero si
 appears over View-only Sched: "Save them before switching to 142?", about a pick he may have made minutes ago. Answering it then
 does what it says (Save or Discard moves him to 142, Stay stays). Same for Hunter and for Saber. With no draft, the same pick moves at once.
 
-**Should have:** the question shows at the pick (S24: "a later pick still asks"; D2388, D2318). **Data:** nothing lost or written
+**Should have:** the question shows at the pick (S24: "a later pick still asks"; D2637, D2318). **Data:** nothing lost or written
 across, in all three answers, read back in both squadrons and after a reload.
 **Scripts:** `jb-s24.mjs`, `jb-s24c.mjs` (the clean control), `jb-s24d.mjs` (reads the hidden box).
 

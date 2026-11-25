@@ -245,7 +245,7 @@ words by `state/store.ts`; the column measured to the band's foot). A right take
 his own squadron, a draft of the lost squadron's chart goes with the corner's "This change could not be saved."
 **A pick with unsaved chart edits asks first** (the drawing f2d): the menu's pick and a bell tap that enters
 another squadron (`state/pick.ts askBeforeEntering`, `state/belltap.ts enterForLine`) — wherever the pick takes the Tracker
-off the squadron it is on, or brings up one he only views (D2388) — ask the logout's question, its last line "Save them before switching to 142?", Save them
+off the squadron it is on, or brings up one he only views (D2637) — ask the logout's question, its last line "Save them before switching to 142?", Save them
 / Discard them / Stay, where he is: from another page the Tracker's section shows the question alone over it
 (`.trk-askonly`), never the Tracker tab brought forward; Save saves into the Tracker's own squadron before the pick (a save
 that did not take: he stays), Discard drops the edits, Stay makes no pick. Pinned by `tracker/msq-trk-follows-pick.test.tsx`,

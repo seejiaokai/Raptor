@@ -160,11 +160,11 @@ describe('the member view and back keeps a draft (D2′ (b): hidden, never reset
   })
 })
 
-/* D2388 (23 Nov 26): A PICK OF A SQUADRON HE ONLY VIEWS ASKS TOO. Hunter, on his own 142 with its Tracker holding unsaved
+/* D2637 (23 Nov 26): A PICK OF A SQUADRON HE ONLY VIEWS ASKS TOO. Hunter, on his own 142 with its Tracker holding unsaved
    edits, holds View of 149. The pick leaves his own pages on 142, so D2318's test asked nothing, yet with 149 picked he is
    offered only its View-only Sched and Help (D2381): the edits waited unseen. The same question, buttons and ☰ menu step
    as D2318's. Red first: nothing was asked. The member-view switch is not a pick and asks nothing. */
-describe('a pick of a squadron he only views (D2388)', () => {
+describe('a pick of a squadron he only views (D2637)', () => {
   const Q149 = QUESTION.replace('142?', '149?')
   async function onHis142WithViewOf149() {
     if (UNIT !== 'u142') await pickSquadron('u142')

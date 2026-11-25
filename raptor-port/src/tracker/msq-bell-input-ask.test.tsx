@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 /* A BELL LINE THAT OPENS AN INPUT WAITS FOR HIS ANSWER (the night of 24 Nov 26, the re-walk's B1 —
-   docs/handpass/2026-11-24-msq-night-check.md §15; his D2318, D2388, D2323). Hunter (142's admin, Plan of 149) has unsaved
+   docs/handpass/2026-11-24-msq-night-check.md §15; his D2318, D2637, D2323). Hunter (142's admin, Plan of 149) has unsaved
    chart edits on 149's Tracker and is in the member view, the Tracker held on 149 for them. He presses a bell line about
    an input of his own on 142. The question "Save them before switching to 142?" was asked — but the input's window had
    already opened under it, noted as opened on 149's page:

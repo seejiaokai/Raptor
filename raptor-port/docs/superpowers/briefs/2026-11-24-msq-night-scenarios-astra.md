@@ -115,14 +115,14 @@ For each saved change below, check it immediately, after returning from another 
 
 - **Who / setup:** Admin or member with View of 149; leave a Tracker draft on 142, then open Inputs or Help.
 - **Press:** Pick 149 using the top bar and separately the phone menu. Exercise Save them, Discard them and Stay.
-- **EXPECTED:** The question appears over the current page; the phone menu closes first. A completed pick offers only 149’s View-only Sched and Help. D2388, D2381.
+- **EXPECTED:** The question appears over the current page; the phone menu closes first. A completed pick offers only 149’s View-only Sched and Help. D2637, D2381.
 - **Disproved by:** Missing or obscured question, a foreign Tracker offered, or wrong draft outcome on return.
 
 **S16 · The bell changes squadron · priority high · both sizes**
 
 - **Who / setup:** Admin with Plan or master admin; create an access request for the other squadron through Request access.
 - **Press:** Leave a Tracker draft. Open the request through the bell; separately try Stay, Save them and Discard them.
-- **EXPECTED:** The same safeguard applies; an accepted navigation opens the correct Users waiting list. D2318, D2325, D2388, D2395.
+- **EXPECTED:** The same safeguard applies; an accepted navigation opens the correct Users waiting list. D2318, D2325, D2637, D2395.
 - **Disproved by:** Navigation behind Stay, wrong waiting list, bypassed question or a late jump after cancellation.
 
 **S17 · Undo waiting in another squadron · priority high · both sizes**
@@ -178,7 +178,7 @@ For each saved change below, check it immediately, after returning from another 
 
 - **Who / setup:** Plan holder, then master admin; open 149’s Tracker.
 - **Press:** Switch to member view and back with a clean chart, then a draft. While held, attempt Undo/Redo and pick 142; exercise the offered answers.
-- **EXPECTED:** View switching alone asks nothing and preserves the draft. The held cover explains how to return; a later pick still asks. D2388, D2395.
+- **EXPECTED:** View switching alone asks nothing and preserves the draft. The held cover explains how to return; a later pick still asks. D2637, D2395.
 - **Disproved by:** Lost draft, foreign chart exposed, writes through the cover or wrong chart restored.
 
 **S25 · Rights changed in another tab · priority high · both sizes**
@@ -346,7 +346,7 @@ For each saved change below, check it immediately, after returning from another 
 
 - **Who / setup:** Master, Plan holder, View holder and person with only their own squadron.
 - **Press:** Open ☰ → squadron list → pick; compare the top-bar list. Repeat clean and with a Tracker draft. Close using toggle, outside press and Escape.
-- **EXPECTED:** Clean drawer picks keep it open with updated pages; dirty picks close it before asking. One-squadron access has no false dropdown. D2384, D2388.
+- **EXPECTED:** Clean drawer picks keep it open with updated pages; dirty picks close it before asking. One-squadron access has no false dropdown. D2384, D2637.
 - **Disproved by:** Different rights between menus, stale navigation or a question hidden behind the drawer.
 
 **S49 · Input form held by member view · priority high · both sizes**

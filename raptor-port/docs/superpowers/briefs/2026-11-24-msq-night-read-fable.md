@@ -21,7 +21,7 @@ I read an exported copy of `fcca051f0` (the folder `read-export`), part `review/
   - The Tracker is held on 149 and its band promises "This is 149's Tracker. Leave the member view to open it."
   - Still in the member view, he taps a bell line that opens his own Leave War or Inputs page (or any other link to one of his own pages).
   - The app brings 142 back into view, the Tracker moves to 142, and his 149 edits are dropped with no question. The Tracker's corner then reads "This change could not be saved."
-  - D2318 and D2388 require the question before unsaved chart edits are lost.
+  - D2318 and D2637 require the question before unsaved chart edits are lost.
 - **Cause:** `state/store.ts` `landOnOfferedPage` calls `enterSquadron(myUnit(todayIso()), holdNow() === 'war', true)`. With `byPick` true, `enterSquadron` passes `mayHold = false` to `rebindStorageUnit`. `core.js` `follow(to, false)` then starts the move and `leaveSquadron` drops the draft. Every other `byPick` caller asks first (`pick.ts`, `belltap.ts`); this one does not.
 - **Fix:**
   1. In `landOnOfferedPage`, before the `enterSquadron` call, compute `const u = myUnit(todayIso())`.

@@ -23,7 +23,7 @@ Read:
    the history that led here: `…/briefs/2026-11-24-msq-night-fix-list.md`, `…-fixread-opus.md`, `…-fixread-astra.md`.
 3. The promise: `.claude/rules/decisions/tracker.md` (how the Tracker works now, by his rulings) and
    `.claude/rules/seams/tracker.md` (its architecture); `.claude/rules/decisions/people-accounts.md` on the Tracker
-   following the squadron picked (D2395, D2388, D2318). A ruling's full row: `grep -h '^| D2395 |'
+   following the squadron picked (D2395, D2637, D2318). A ruling's full row: `grep -h '^| D2395 |'
    .claude/decisions-full/*.md` (the shell).
 4. The code, as the plan's claims need — `raptor-port/src/tracker/app/core.js` (never whole: grep `gestureBegan`,
    `cancelGestures`, `endPressesOnRedraw`, `endPressForStep`, `liveGestures`, `startDrag`, `startGroupDrag`, `endDrag`,

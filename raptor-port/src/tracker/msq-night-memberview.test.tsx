@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-/* THE HELD DRAFT IN THE MEMBER VIEW (the night of 24 Nov 26, the fix list's items 2 and 3; his D129, D2318, D2388). Hunter
+/* THE HELD DRAFT IN THE MEMBER VIEW (the night of 24 Nov 26, the fix list's items 2 and 3; his D129, D2318, D2637). Hunter
    (142's admin, Plan of 149) has unsaved chart edits on 149's Tracker and switches to the member view: the Tracker is
    hidden and held on 149 for them. From there
    - a tap that opens one of his own pages, or Logout, used to drop the draft with no question (Opus F1, Fable F1);

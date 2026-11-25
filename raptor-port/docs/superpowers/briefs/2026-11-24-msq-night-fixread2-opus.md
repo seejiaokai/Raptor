@@ -9,7 +9,7 @@ I read an exported copy of `abc44cea3`.
 - in `perms.ts`: `pageUnit` and `heldByMemberView`;
 - the other places that open an input's window: the OIL day list, the two in the Leave War sync code, and `inputedit.tsx`.
 
-I also read rulings D2323, D2389, D2395, D2388, D2381, D2318, D2317 and D148. I ran nothing.
+I also read rulings D2323, D2389, D2395, D2637, D2381, D2318, D2317 and D148. I ran nothing.
 
 **2. Findings**
 

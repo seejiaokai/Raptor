@@ -13,7 +13,7 @@ below).
 Folder read: `C:\Users\User\projects\Raptor-msq`, branch `claude/msq-b1-screens-135`. Read-only; nothing built, run or changed.
 No other scenario list, reader's report or hand-pass sheet was opened; no compaction happened in this run.
 
-**What I read:** the brief; the full rows of D2403, D2405, D2590–D2595, D2318, D2323, D2389, D2395, D2388, D2381, D148,
+**What I read:** the brief; the full rows of D2403, D2405, D2590–D2595, D2318, D2323, D2389, D2395, D2637, D2381, D148,
 D1622, D1667, D1668; the People & accounts page §Many squadrons; the press report; the questions page (`page.html`); the
 drawings p1b, p2b, p3-p, p4b, p5, p6, p8; `OUTSTANDING.md` [MSQ-PICK-GUARD] and [MSQ-NIGHT-153-OPEN]; the checklist's
 lessons; and today's doors in the code (`state/pick.ts`, `state/belltap.ts`, `state/store.ts` enterSquadron /
@@ -79,7 +79,7 @@ view." / "…then switch back to the admin view."; a bell line "…then press th
 | S13 A drop-down or a list that closes by a press elsewhere — Templates menu, Plans menu, the Tracker's File menu, the bell's list, the Schedules list itself, the ☰ menu | GOES; the menu closes as today (the host's reading) | GOES | GOES (the bell's list is where the line is) | GOES |
 | S14 Tracker windows — the marking window, an event's ⓘ, Show All, the flex settings, + Add (a student); Export, Legend, + Add question (shaded) | Marking window, ⓘ, Show All, flex: REFUSED-W; Export, Legend, + Add question: N/R (the shade) | the same | the same | GOES after ASKED-T where chart edits are unsaved |
 | S15 Tracker "Edit chart layout" open, no edit made; Reorder | NOT SAID (Q5) — today a pick closes the toolbar, the view switch leaves it | NOT SAID (Q5) | NOT SAID (Q5) | GOES |
-| S16 Unsaved Tracker chart edits, no window | ASKED-T "…before switching to 149?" (D2403, D2318, D2388 — a View-only squadron too) | ASKED-T "…before switching to the member view?" (D2403; drawing p5) — back: words NOT SAID (Q34) | ASKED-T, then the line opens after Save or Discard, nothing after Stay (as today) | ASKED-T "…before logging out?" (as today, D129) |
+| S16 Unsaved Tracker chart edits, no window | ASKED-T "…before switching to 149?" (D2403, D2318, D2637 — a View-only squadron too) | ASKED-T "…before switching to the member view?" (D2403; drawing p5) — back: words NOT SAID (Q34) | ASKED-T, then the line opens after Save or Discard, nothing after Stay (as today) | ASKED-T "…before logging out?" (as today, D129) |
 | S17 Admin → Users, an opened row with typing in it | REFUSED-R "Blocked: close the open row, then pick 149." (D2595) | REFUSED-R, ending as the door's (D2595) | NOT SAID by D2595 (it names the pick and the view switch only) — D2403's "same rule" suggests REFUSED-R (Q19) | ASKED (the host's reading; words NOT SAID — Q16) |
 | S18 Admin → Users, other unsaved work — a changed Role or None · View · Plan with nothing typed; the Waiting list's "Give access" form; "+ Add person" with a callsign typed; an archived man's row; "+ New squadron" | NOT SAID (Q18) — today all lost silently | NOT SAID (Q18) | NOT SAID (Q18) | NOT SAID (Q18) |
 | S19 A text box that is not a window, with typing — a day's note on Edit Schedule, Logic's search, Quals' filter, Help's bug-report box, a figure box on the Leave War's Balances, the Tracker's "Find event…" | GOES; the words stay where typed (the host's reading; press report C). P WebKit with the caret still in the box: NOT SAID (Q21) | GOES | GOES | GOES |
@@ -626,7 +626,7 @@ lifted before Retry) — name it in the evidence.
 - **EXPECTED:** refused picks and switches: the note at the screen's foot, in sight — the menu not standing over it
   (drawing p3-p shows the page and the window with the menu closed; D2384 says the menu stays open after a pick that
   goes through — RECORD which the build does on a refusal, Q24). The chart-edit pick: the menu closes first, then the
-  question (as today, D2388's row).
+  question (as today, D2637's row).
 - **Disproved by:** the note drawn under the ☰ menu's panel or shade where it cannot be read; the menu's page list
   changing to 149's though the pick was refused.
 
@@ -650,7 +650,7 @@ lifted before Retry) — name it in the evidence.
 ### 51. Unsaved chart edits — the question at a pick is exactly as today
 - **Who / device:** Saber (pick 149), Hunter with View only of 149 (pick 149), D and P, both pickers.
 - **Steps:** move a ball, unsaved; pick. Each answer in turn.
-- **EXPECTED (must stay as today — press report B; D2318, D2388, D2395):** "You have unsaved chart edits on “2026”. Save
+- **EXPECTED (must stay as today — press report B; D2318, D2637, D2395):** "You have unsaved chart edits on “2026”. Save
   them before switching to 149?" — Stay / Discard them / Save them; asked over the page he is on; Stay keeps 142 and the
   edit; Save then shows 149's Tracker (Saber) or 149's View-only Sched (the View holder); a refused Save says so and
   keeps him on 142.

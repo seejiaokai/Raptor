@@ -2,7 +2,7 @@
 
 ## Fable words review (D2441) — branch `claude/msq-b1-screens-135`, commit `c2e8e524c`, read only
 
-Nothing was edited, committed, started or run. Read: D2441, D2318, D2323, D2388, D2389, D2395, D2396, D2400, D2401 (full rows); the writing guide §1, §1a, §1b; the questions page (b)–(p); the drawn page of new words; `undo/describe.ts`, `state/acctlines.ts`, `state/notices.ts`, and the source diff `54772307c..c2e8e524c` without tests.
+Nothing was edited, committed, started or run. Read: D2441, D2318, D2323, D2637, D2389, D2395, D2396, D2400, D2401 (full rows); the writing guide §1, §1a, §1b; the questions page (b)–(p); the drawn page of new words; `undo/describe.ts`, `state/acctlines.ts`, `state/notices.ts`, and the source diff `54772307c..c2e8e524c` without tests.
 
 **Result in one line:** of the three proposed Undo wordings, two stand as drafted and one needs a capital letter; everything else new on the branch is either ruled by him or existing words moved, so I adjusted nothing there. Five facts go back to the builder.
 
@@ -30,7 +30,7 @@ Checked against the code: making a Plan holder a member does end his Plan rows i
 | Leave War or Input window held in the member view | "Member view." / "Switch back to the admin view to change this, or close it." | ruled — D2389, D2400 | keep | His choice A, as drawn. |
 | Tracker's band in the member view | "This is 149's Tracker." / "Leave the member view to open it." | moved — D2318's words, the only band D2395 left | keep | Words unchanged; the other two bands were removed, as D2395 says. |
 | Tracker question at sign-out | "You have unsaved chart edits on “…”. Save them before logging out?" — Save them / Discard them / Stay | moved (same words, code re-wrapped) | keep | Not new. |
-| Tracker question at a pick | "… Save them before switching to 149?" — Save them / Discard them / Stay | ruled — D2318, D2388 | keep | Unchanged. |
+| Tracker question at a pick | "… Save them before switching to 149?" — Save them / Discard them / Stay | ruled — D2318, D2637 | keep | Unchanged. |
 | Tracker question at a change of syllabus or course | "Discard them and switch to “…”?" / "Discard them and switch to course “…”?" | moved (only what Discard does behind it changed) | keep | Words unchanged. |
 | Input window, the name badge lifted above the shade, hover text | "Back to the admin view" | moved — the top bar badge's own hover, copied | keep | Same control, same words. |
 | Admin → Users filter button; Inputs filter button | "Filter", "Filter · 2"; "Filters" | look only — D2401 | keep | No word changed. |

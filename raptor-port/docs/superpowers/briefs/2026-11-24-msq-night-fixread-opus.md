@@ -4,7 +4,7 @@ I read an exported copy of `334353046`.
 - All of `review/fixes.diff`. I read the non-test changes closely, and of the three new test files only the held-input one.
 - The code around each change: `state/store.ts` (landing, `enterSquadron`, re-entry, bands), `state/pick.ts`, `state/belltap.ts`, the `state/perms.ts` helpers, `tracker/role.js`, `tracker/storage.js`, `tracker/TrackerPage.tsx`, `ui/logout.ts`, `ui/heldro.ts`, the `ui/InputWindow.tsx` hold and chip, `ui/SquadronMenu.tsx`, `leavewar/ui/Sheet.tsx`, the layering CSS.
 - In `tracker/app/core.js`: the move, the questions, dialogs, gestures, undo, save, Export and Import.
-- Full rows of D2395, D2388, D2389, D2396, D2400, D2318, D2323, D2381, D2317, D2243, D148.
+- Full rows of D2395, D2637, D2389, D2396, D2400, D2318, D2323, D2381, D2317, D2243, D148.
 - Not opened: the questions-page spec. Nothing was run; every finding is traced from the code.
 
 ## 2. Findings

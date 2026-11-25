@@ -24,7 +24,7 @@ screen-design rulings `.claude/rules/decisions/design.md`, and for any question 
 Tracker pages (`inputs.md`, `leave-war.md`, `tracker.md` under `.claude/rules/decisions/`). Open a ruling's full row before
 relying on its detail: `grep -h '^| D2323 |' .claude/decisions-full/*.md` (the shell). Rulings made today that change the
 ground: D2381 (View only and Help), D2382–D2384 (the ☰ menu's squadron list), D2387 (a View holder sees another
-squadron's medical inputs), D2388 (a View-only pick asks about unsaved Tracker edits), D2389 (a window held by the switch
+squadron's medical inputs), D2637 (a View-only pick asks about unsaved Tracker edits), D2389 (a window held by the switch
 to the member view reads "Member view." / "Switch back to the admin view to change this, or close it.").
 
 **For each of (b)–(h) and (j)–(p):**
