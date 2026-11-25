@@ -8914,3 +8914,17 @@ narrowing D275): BUILT 22 Nov 26 there, each landing a failing test first; walk 
 ### [VERCEL-SHIPPING-LINES] Two shipping lines still say every push builds on Vercel (a reader's note, 14 Nov 26; D2032, D201)
 Since [VERCEL-SKIP-NOTES] went live (pull request 765), a push that changes only notes builds nothing on Vercel, but two lines of `.claude/rules/shipping.md` still say otherwise: "A branch push … gives him a Vercel link to look at" (§"Push" and "merge live") and "`vercel.json` at the repo root builds `raptor-port` for every push" (§The loop). Raised by the fresh Opus reader of the Vercel line on 14 Nov 26 (chat 70). **To do:** reword both to say a push that changes the app gives a link and builds, a notes-only push builds nothing; the gates-and-deploy note already carries the detail. `shipping.md` governs the agent, so the change is read as a guide change (Astra and a fresh Opus reader) and goes live only on his "merge live".
 
+
+*Moved here 2026-11-25 by backlog-archive.mjs ([WALK-SCRIPT-UTF8]). Forward facts: `.claude/skill-observations/archive/log-2026-11-20.md`.*
+
+### [WALK-SCRIPT-UTF8] A walk script must be saved as UTF-8 (the night of 6 Nov 26)
+A walk script written partly in another letter coding (Latin-1) made the code check of changed files stop with "could not compare". **To do:** one line in `raptor-port/docs/walk-scripts.md` (a working guide, so on his word). **Place:** with the next guide changes.
+
+
+*Moved here 2026-11-25 by backlog-archive.mjs ([LW-PO-DAYS-DRAWING]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-PO-DAYS-DRAWING] What an input over a posted-out man's gone days looks like on the Leave War (the night of 6 Nov 26)
+**The case:** Diesel is posted out from Tue 29 Dec. Saber drags Diesel's Mon 28 – Wed 30 Dec on the Leave War and presses OD. One OD covering 28–30 Dec is filed and shows on the Inputs page, but the war's row shows OD on the 28th and a bare "PO" on the 29th and 30th, so it reads as if two days were skipped. Leave placed on such days does show. **Recommended:** draw whatever is filed on such a day the way leave already is there — its box over the posting hatch, counting nobody. **Alternative:** the filing skips those days and says so in the window's note. **A drawing first** (D1625), then the build in the grid's row drawing. **Drawn 6 Nov 26** (a real build with the one test changed — `MatrixRows.tsx` `outLeave` taken to any filed entry: one OD bar across 28–30 Dec over the hatch, PO tags on the gone days): https://claude.ai/artifact/NjwCh2sTrR9eda245Aq1Vh — his answer waited. Pictures: `raptor-port/docs/img/handpass/2026-11-06-lw-faults/walk/s7-*`. **Place:** his to answer.
+
+**LIVE 6 Nov 26 (pull request 646), with his D1722 and D1725: an admin's tap on a posted-out day that holds anything opens what it opens on any other day — the day's list below was the first build, replaced.** **BUILT 6 Nov 26** on `claude/lw-faults-1106` (his D1720): any filed entry draws over the hatch; an admin's tap opens the day's list; a man's own course or OD there keeps his bid window (F3). Walked at both sizes — evidence `raptor-port/docs/handpass/2026-11-06-lw-faults.md` §His D1720. Close once live.
+
