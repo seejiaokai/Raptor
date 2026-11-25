@@ -11,7 +11,7 @@
    What is NOT here is the Inputs page's own furniture — the calendar, the
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
-import { isOD, INPUTS, INPUT_TYPES, TYPE_GROUPS, TYPE_FAMILY_LABEL, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel, filingOf, landsUnavail, isOther, isFly, toOf, placeOf, inputSpanIso, inputUnitOf, settleStamp as settleStampOf } from '../engine/inputs'
+import { isOD, INPUTS, INPUT_TYPES, TYPE_GROUPS, TYPE_FAMILY_LABEL, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel, filingOf, landsUnavail, listedUnavail, isOther, isFly, toOf, placeOf, inputSpanIso, inputUnitOf, settleStamp as settleStampOf } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, upchitDeletePlan, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel, firstEndIso, firstEndOrd } from '../engine/medical'
 import { OilConfirm } from './OilConfirm'
 import { DocConfirm } from './DocConfirm'
@@ -19,6 +19,7 @@ import { docFields, rowDocIds } from '../state/docs'
 import { acceptInput } from '../engine/slots'
 import { iuParts } from '../engine/keys'
 import { ownInputOf, toPeople, putPerson, takePerson, swapPerson, pieceOf } from '../engine/inputown'
+import { rowInputOf, noteOwnOf } from '../engine/rowinput'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, sansFiler, sansOnP, sansOpenFrom } from '../engine/people'
 import { isoDayWords } from '../engine/weekstash'
@@ -719,6 +720,9 @@ export const draftOf = (r: any) => ({
    input write as every save is) */
 export function setLeaveRemarks(row: any, remarks: string, person?: any, docIds?: string[], till?: boolean): boolean {
   const withDocs = (d: any) => ({ ...d, remarks, ...(docIds ? { docIds: [...docIds] } : {}), ...(typeof till === 'boolean' ? { till } : {}) })
+  /* the window keeps the leave it was opened on across its saves — after the first gave him a leave of his own, the
+     second follows him there, never onto the others' (rowInputOf, below) */
+  if (person != null && person !== '') { row = rowInputOf(row, person); if (!row) return false }
   if (person != null && person !== '' && idsOf(row).length > 1 && holds(row, person)) {
     return ownPartSave(row, person, own => commitInputEdit(own, withDocs(draftOf(own))))
   }
@@ -733,12 +737,32 @@ export function setLeaveRemarks(row: any, remarks: string, person?: any, docIds?
    THROWS, which is what rolls the command back whole (state/store.ts runInputWrite) — the idiom commitInput's own
    body uses (`stop`). The refusal has already said why; saveBatch says so itself only where nothing did. */
 function ownPartSave(inp: any, who: any, save: (own: any) => boolean): boolean {
-  return saveBatch(() => {
+  let made: any = null
+  const ok = saveBatch(() => {
     const own = ownInputOf(inp, who)
     if (!own || !save(own)) throw new CmdRefused('one man’s part was not saved')
+    made = own
     return true
   })
+  if (ok && made && made !== inp) noteOwnOf(inp.iid, who, made.iid)
+  return ok
 }
+
+/* ONE MAN'S ROW FOLLOWS HIM TO THE INPUT OF HIS OWN (chat 170's night walk, W3 — 25 Nov 26; fixed by chat 177, pinned
+   in leavewar/sharedrow-follows.test.ts). Each door above is handed the input its row or window ADDRESSES — the box's
+   `iu:<iid>~<person>` on the Board's Unavailable list (board.ts) and the week (textedit.ts), the leave a Leave War remark
+   window was opened on (SelectSheet, ReqWords). The first change gives him an input of his own, a NEW record; the row
+   under the caret is held back from repainting and the window keeps what it was handed, so the next change came back
+   with the SHARED input's address — which no longer holds him — and was saved onto it whole: onto the OTHERS' leave
+   (Ranger's end 11:00 saved as Hex's, Ranger left at 10:00). So every cut-out is remembered here, the shared input's id
+   and the man's against the id of his own, and a door asks `rowInputOf` for the input his row stands for now: the one
+   it addresses while he is still in it; else the one cut out for him, followed as far as it was cut again; else none —
+   and a door with none saves NOTHING, never the others' input. Only a pointer, checked against the records each time,
+   so an Undo that puts him back in the shared input is followed by itself, and a stale one finds nothing; it lives
+   for the page's life and is not saved — a reload repaints every row with its own address. */
+/* (the pointer and its lookup live in engine/rowinput.ts since chat 178 — the engine's "does an armed row still exist"
+   asks it too; its doors import it from here as before) */
+export { rowInputOf }
 
 
 /* The refusals and the derivations EVERY input write shares — the edit dialog
@@ -1852,7 +1876,11 @@ export function reassignInput(iid: any, personId: any): boolean {
   /* `iid` is the row's address after its `iu:` — the input's id, or `<iid>~<person>` for one man's row of an input
      that holds several (engine/keys.ts iuParts — the one parser) */
   const at = iuParts('iu:' + String(iid)) || { iid: String(iid), person: null }
-  const r = INPUTS.find((i: any) => i.iid === at.iid)
+  /* one man's row stands for HIS input once a change on it cut one out for him — the row may still carry the shared
+     input's id (rowInputOf; the fresh Opus scenario designer's M5: the drop fell back to the shared input's lead man and
+     swapped HEX out for a gesture on Ranger's row) — and for nothing once he is out of it by another door */
+  const r0 = INPUTS.find((i: any) => i.iid === at.iid)
+  const r = at.person != null ? rowInputOf(r0, at.person) : r0
   if (!r) { HOOKS.toast('That input is no longer there — nothing was changed', 'warn'); return false }
   /* whose row it is: the man it names, else the input's one person */
   const from = at.person != null && holds(r, at.person) ? at.person : leadOf(r)
@@ -2022,6 +2050,8 @@ export function askOilIfPending(r: any, shut = false): boolean {
    describe a window that is no longer a half. */
 const halfOf = (s:number, e:number) => (s === 0 && e === 720) ? 'am' : (s === 721 && e === 1439) ? 'pm' : ''
 export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any, who?: any) {
+  /* one man's row: the input it stands for NOW — his own, once the first change cut it out (rowInputOf) */
+  inp = rowInputOf(inp, who)
   if (!inp) return false
   const d: any = draftOf(inp)
   /* the typed words only: a remark box on the schedule's Ground Programme row shows its "till <date>" (the row prints
@@ -2071,8 +2101,20 @@ export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any, 
    what "a record changed alone leaves the entry" did by itself before, said in the data (D737, D759 reading 4; told
    to him as R5). */
 function saveFromRow(inp: any, d: any, who?: any): boolean {
-  const mine = who != null && who !== '' && idsOf(inp).length > 1 && holds(inp, who) && !(isPersonal(inp.type) && inp.acc !== 'u')
+  /* ONE MAN'S PART ONLY WHERE THE ROW IS ONE MAN'S: LISTED UNDER UNAVAILABLE, by the drawing's own test (engine/inputs.ts
+     listedUnavail — ui/html.ts, ui/board-html.ts). It asked "not an activity kind left out of Unavailable", which an
+     overseas duty a scheduler sent back to Personal Inputs (D1393) also passed: its ONE line there, for everyone in it
+     (D661, D737, D739), cut the first man drawn out alone — found by chat 178 reading this save, 25 Nov 26; pinned
+     through the real doors in ui/sharedrow-buttons.test.tsx */
+  const mine = who != null && who !== '' && idsOf(inp).length > 1 && holds(inp, who) && listedUnavail(inp)
   if (!mine) return commitInputEdit(inp, d, undefined, undefined, { sched: true })
+  /* WHAT HIS ROW ALREADY SAYS, TYPED AGAIN, CUTS NOTHING (the fresh, blind Fable scenario designer's S5, 25 Nov 26 —
+     chat 178): "0800" typed over his row's 08:00 is a change to the box and none to the input, but he was first given an
+     input of his own and the unchanged time saved onto it — two leaves with the same hours, a history line, an Undo
+     step and, on a published day, a waiting change nobody made. Compared on the fields this door can change (the two
+     times, all day, the half, the remark); the caller then shows the time as saved, as after any save. */
+  const was: any = draftOf(inp)
+  if (['allday', 'sTime', 'eTime', 'half', 'remarks'].every(k => (d.allday && was.allday && (k === 'sTime' || k === 'eTime')) || String(d[k] ?? '') === String(was[k] ?? ''))) return true
   return ownPartSave(inp, who, own => commitInputEdit(own, { ...d, person: who }, undefined, undefined, { sched: true }))
 }
 /* THE NAME TYPED ON A REQUEST'S ROW IS THE INPUT'S OWN TITLE (owner D739, D740; reading R1, told to him — the plan

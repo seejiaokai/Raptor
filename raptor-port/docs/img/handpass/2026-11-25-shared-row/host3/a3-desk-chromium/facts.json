@@ -1,0 +1,13 @@
+{
+ "pictures": [],
+ "cases": {
+  "desk-chromium": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvrh99kljo8p7\"]; asked []; note \"\"",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvrhkun1a3v1n\"]; asked []; note \"\"",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvrhvhzmoodqo\"]; asked []; note \"\""
+   ]
+  }
+ },
+ "errors": []
+}

@@ -1,0 +1,159 @@
+{
+ "pictures": [
+  {
+   "file": "b5-a-click-desk-chromium-1-window.png",
+   "case": "B5-a-click",
+   "size": "desktop 1440x900 @2x",
+   "text": "no window opened"
+  },
+  {
+   "file": "b5-a-noblur-desk-chromium-1-window.png",
+   "case": "B5-a-noblur",
+   "size": "desktop 1440x900 @2x",
+   "text": "no window opened"
+  },
+  {
+   "file": "b5-a-ctl-desk-chromium-1-window.png",
+   "case": "B5-a-ctl",
+   "size": "desktop 1440x900 @2x",
+   "text": "no window opened"
+  },
+  {
+   "file": "b5-b-click-desk-chromium-0-filed.png",
+   "case": "B5-b-click",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger OD in 2.unav [imwvibs6m1q2j1n~bane]",
+    "Hex OD in 2.unav [imwvibs6m1q2j1n~rocky]"
+   ]
+  },
+  {
+   "file": "b5-b-click-desk-chromium-1-after-reject.png",
+   "case": "B5-b-click",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "after": [
+     "OD Hex 08:00-10:00 \"\" acc:- [imwvibs6m1q2j1n]",
+     "OD Ranger 09:00-10:00 \"\" acc:r [imwvibulegjoidx]"
+    ],
+    "drawn": [
+     "Hex OD in 2.unav [imwvibs6m1q2j1n]"
+    ],
+    "note": "Ranger's OD taken out of Unavailable"
+   }
+  },
+  {
+   "file": "b5-b-noblur-desk-chromium-0-filed.png",
+   "case": "B5-b-noblur",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger OD in 2.unav [imwvic0ur504mnb~bane]",
+    "Hex OD in 2.unav [imwvic0ur504mnb~rocky]"
+   ]
+  },
+  {
+   "file": "b5-b-noblur-desk-chromium-1-after-reject.png",
+   "case": "B5-b-noblur",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "after": [
+     "OD Hex 08:00-10:00 \"\" acc:- [imwvic0ur504mnb]",
+     "OD Ranger 09:00-10:00 \"\" acc:r [imwvic3dkibiv2e]"
+    ],
+    "drawn": [
+     "Hex OD in 2.unav [imwvic0ur504mnb]"
+    ],
+    "note": "Ranger's OD taken out of Unavailable"
+   }
+  },
+  {
+   "file": "b5-b-ctl-desk-chromium-0-filed.png",
+   "case": "B5-b-ctl",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger OD in 2.unav [imwvica4vmv5t1v~bane]",
+    "Hex OD in 2.unav [imwvica4vmv5t1v~rocky]"
+   ]
+  },
+  {
+   "file": "b5-b-ctl-desk-chromium-1-after-reject.png",
+   "case": "B5-b-ctl",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "after": [
+     "OD Hex 08:00-10:00 \"\" acc:- [imwvica4vmv5t1v]",
+     "OD Ranger 09:00-10:00 \"\" acc:r [imwviccgncwpjnr]"
+    ],
+    "drawn": [
+     "Hex OD in 2.unav [imwvica4vmv5t1v]"
+    ],
+    "note": "Ranger's OD taken out of Unavailable"
+   }
+  }
+ ],
+ "cases": {
+  "B5-a-click": {
+   "log": [
+    "filed {\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"type\":\"LL\"} on 2026-07-15: new input [\"imwviarp8hagr1d\"]; asked []; note \"\"",
+    "filed: [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" acc:- [imwviarp8hagr1d]\"] drawn: [\"Ranger LL in 2.unav [imwviarp8hagr1d~bane]\",\"Hex LL in 2.unav [imwviarp8hagr1d~rocky]\"]",
+    "start 0900 Tab :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwviarp8hagr1d]\",\"LL Ranger 09:00-10:00 \\\"\\\" [imwviatyq1dmk4f]\"] :: SCREEN [\"Ranger 09:00-10:00 \\\"\\\" [imwviarp8hagr1d~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwviarp8hagr1d~rocky]\"] :: CARET imwviarp8hagr1d~bane.end",
+    "pressed label by click: <button class=\"ntx inpedit\" data-inpedit=\"imwviarp8hagr1d\" data-iuw=\"bane\" title=\"Edit this input — times, type, remarks or delete\" data-shrb=\"label\">LL</button> :: caret before imwviarp8hagr1d~bane.end after DIV",
+    "picture b5-a-click-desk-chromium-1-window.png: \"no window opened\"",
+    "window: null store: [\"LL Hex 08:00-10:00 \\\"\\\" acc:- [imwviarp8hagr1d]\",\"LL Ranger 09:00-10:00 \\\"\\\" acc:- [imwviatyq1dmk4f]\"]"
+   ]
+  },
+  "B5-a-noblur": {
+   "log": [
+    "filed {\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"type\":\"LL\"} on 2026-07-15: new input [\"imwvib3vpkfzizz\"]; asked []; note \"\"",
+    "filed: [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" acc:- [imwvib3vpkfzizz]\"] drawn: [\"Ranger LL in 2.unav [imwvib3vpkfzizz~bane]\",\"Hex LL in 2.unav [imwvib3vpkfzizz~rocky]\"]",
+    "start 0900 Tab :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvib3vpkfzizz]\",\"LL Ranger 09:00-10:00 \\\"\\\" [imwvib675mvfugf]\"] :: SCREEN [\"Ranger 09:00-10:00 \\\"\\\" [imwvib3vpkfzizz~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvib3vpkfzizz~rocky]\"] :: CARET imwvib3vpkfzizz~bane.end",
+    "pressed label by noblur: <button class=\"ntx inpedit\" data-inpedit=\"imwvib3vpkfzizz\" data-iuw=\"bane\" title=\"Edit this input — times, type, remarks or delete\" data-shrb=\"label\">LL</button> :: caret before imwvib3vpkfzizz~bane.end after DIV",
+    "picture b5-a-noblur-desk-chromium-1-window.png: \"no window opened\"",
+    "window: null store: [\"LL Hex 08:00-10:00 \\\"\\\" acc:- [imwvib3vpkfzizz]\",\"LL Ranger 09:00-10:00 \\\"\\\" acc:- [imwvib675mvfugf]\"]"
+   ]
+  },
+  "B5-a-ctl": {
+   "log": [
+    "filed {\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"type\":\"LL\"} on 2026-07-15: new input [\"imwvibfv7usrl2t\"]; asked []; note \"\"",
+    "filed: [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" acc:- [imwvibfv7usrl2t]\"] drawn: [\"Ranger LL in 2.unav [imwvibfv7usrl2t~bane]\",\"Hex LL in 2.unav [imwvibfv7usrl2t~rocky]\"]",
+    "start 0900 Tab :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvibfv7usrl2t]\",\"LL Ranger 09:00-10:00 \\\"\\\" [imwvibi6ecf6ii1]\"] :: SCREEN [\"Ranger 09:00-10:00 \\\"\\\" [imwvibfv7usrl2t~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvibfv7usrl2t~rocky]\"] :: CARET imwvibfv7usrl2t~bane.end",
+    "clicked away (row repainted) :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvibfv7usrl2t]\",\"LL Ranger 09:00-10:00 \\\"\\\" [imwvibi6ecf6ii1]\"] :: SCREEN [\"Hex 08:00-10:00 \\\"\\\" [imwvibfv7usrl2t]\",\"Ranger 09:00-10:00 \\\"\\\" [imwvibi6ecf6ii1]\"] :: CARET BODY",
+    "pressed label by click: <button class=\"ntx inpedit\" data-inpedit=\"imwvibi6ecf6ii1\" title=\"Edit this input — times, type, remarks or delete\" data-shrb=\"label\">LL</button> :: caret before BODY after DIV",
+    "picture b5-a-ctl-desk-chromium-1-window.png: \"no window opened\"",
+    "window: null store: [\"LL Hex 08:00-10:00 \\\"\\\" acc:- [imwvibfv7usrl2t]\",\"LL Ranger 09:00-10:00 \\\"\\\" acc:- [imwvibi6ecf6ii1]\"]"
+   ]
+  },
+  "B5-b-click": {
+   "log": [
+    "filed {\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"type\":\"OD\"} on 2026-07-15: new input [\"imwvibs6m1q2j1n\"]; asked []; note \"\"",
+    "filed: [\"OD Ranger+Hex 08:00-10:00 \\\"\\\" acc:- [imwvibs6m1q2j1n]\"] drawn: [\"Ranger OD in 2.unav [imwvibs6m1q2j1n~bane]\",\"Hex OD in 2.unav [imwvibs6m1q2j1n~rocky]\"]",
+    "picture b5-b-click-desk-chromium-0-filed.png: [\"Ranger OD in 2.unav [imwvibs6m1q2j1n~bane]\",\"Hex OD in 2.unav [imwvibs6m1q2j1n~rocky]\"]",
+    "start 0900 Tab :: STORE [\"OD Hex 08:00-10:00 \\\"\\\" [imwvibs6m1q2j1n]\",\"OD Ranger 09:00-10:00 \\\"\\\" [imwvibulegjoidx]\"] :: SCREEN [\"Ranger 09:00-10:00 \\\"\\\" [imwvibs6m1q2j1n~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvibs6m1q2j1n~rocky]\"] :: CARET imwvibs6m1q2j1n~bane.end",
+    "pressed reject by click: <button class=\"accb undo\" data-acc=\"x\" data-accd=\"2\" data-acck=\"imwvibs6m1q2j1n\" data-iuw=\"bane\" title=\"Take it back out of Unavailable, into Personal Inputs\" data-shrb=\"reject\">Reject</button> :: caret before imwvibs6m1q2j1n~bane.end after BODY",
+    "picture b5-b-click-desk-chromium-1-after-reject.png: {\"after\":[\"OD Hex 08:00-10:00 \\\"\\\" acc:- [imwvibs6m1q2j1n]\",\"OD Ranger 09:00-10:00 \\\"\\\" acc:r [imwvibulegjoidx]\"],\"drawn\":[\"Hex OD in 2.unav [imwvibs6m1q2j1n]\"],\"note\":\"Ranger's OD taken out of Unavailable\"}"
+   ]
+  },
+  "B5-b-noblur": {
+   "log": [
+    "filed {\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"type\":\"OD\"} on 2026-07-15: new input [\"imwvic0ur504mnb\"]; asked []; note \"\"",
+    "filed: [\"OD Ranger+Hex 08:00-10:00 \\\"\\\" acc:- [imwvic0ur504mnb]\"] drawn: [\"Ranger OD in 2.unav [imwvic0ur504mnb~bane]\",\"Hex OD in 2.unav [imwvic0ur504mnb~rocky]\"]",
+    "picture b5-b-noblur-desk-chromium-0-filed.png: [\"Ranger OD in 2.unav [imwvic0ur504mnb~bane]\",\"Hex OD in 2.unav [imwvic0ur504mnb~rocky]\"]",
+    "start 0900 Tab :: STORE [\"OD Hex 08:00-10:00 \\\"\\\" [imwvic0ur504mnb]\",\"OD Ranger 09:00-10:00 \\\"\\\" [imwvic3dkibiv2e]\"] :: SCREEN [\"Ranger 09:00-10:00 \\\"\\\" [imwvic0ur504mnb~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvic0ur504mnb~rocky]\"] :: CARET imwvic0ur504mnb~bane.end",
+    "pressed reject by noblur: <button class=\"accb undo\" data-acc=\"x\" data-accd=\"2\" data-acck=\"imwvic0ur504mnb\" data-iuw=\"bane\" title=\"Take it back out of Unavailable, into Personal Inputs\" data-shrb=\"reject\">Reject</button> :: caret before imwvic0ur504mnb~bane.end after imwvic0ur504mnb~bane.end",
+    "picture b5-b-noblur-desk-chromium-1-after-reject.png: {\"after\":[\"OD Hex 08:00-10:00 \\\"\\\" acc:- [imwvic0ur504mnb]\",\"OD Ranger 09:00-10:00 \\\"\\\" acc:r [imwvic3dkibiv2e]\"],\"drawn\":[\"Hex OD in 2.unav [imwvic0ur504mnb]\"],\"note\":\"Ranger's OD taken out of Unavailable\"}"
+   ]
+  },
+  "B5-b-ctl": {
+   "log": [
+    "filed {\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"type\":\"OD\"} on 2026-07-15: new input [\"imwvica4vmv5t1v\"]; asked []; note \"\"",
+    "filed: [\"OD Ranger+Hex 08:00-10:00 \\\"\\\" acc:- [imwvica4vmv5t1v]\"] drawn: [\"Ranger OD in 2.unav [imwvica4vmv5t1v~bane]\",\"Hex OD in 2.unav [imwvica4vmv5t1v~rocky]\"]",
+    "picture b5-b-ctl-desk-chromium-0-filed.png: [\"Ranger OD in 2.unav [imwvica4vmv5t1v~bane]\",\"Hex OD in 2.unav [imwvica4vmv5t1v~rocky]\"]",
+    "start 0900 Tab :: STORE [\"OD Hex 08:00-10:00 \\\"\\\" [imwvica4vmv5t1v]\",\"OD Ranger 09:00-10:00 \\\"\\\" [imwviccgncwpjnr]\"] :: SCREEN [\"Ranger 09:00-10:00 \\\"\\\" [imwvica4vmv5t1v~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvica4vmv5t1v~rocky]\"] :: CARET imwvica4vmv5t1v~bane.end",
+    "clicked away (row repainted) :: STORE [\"OD Hex 08:00-10:00 \\\"\\\" [imwvica4vmv5t1v]\",\"OD Ranger 09:00-10:00 \\\"\\\" [imwviccgncwpjnr]\"] :: SCREEN [\"Hex 08:00-10:00 \\\"\\\" [imwvica4vmv5t1v]\",\"Ranger 09:00-10:00 \\\"\\\" [imwviccgncwpjnr]\"] :: CARET BODY",
+    "pressed reject by click: <button class=\"accb undo\" data-acc=\"x\" data-accd=\"2\" data-acck=\"imwviccgncwpjnr\" title=\"Take it back out of Unavailable, into Personal Inputs\" data-shrb=\"reject\">Reject</button> :: caret before BODY after BODY",
+    "picture b5-b-ctl-desk-chromium-1-after-reject.png: {\"after\":[\"OD Hex 08:00-10:00 \\\"\\\" acc:- [imwvica4vmv5t1v]\",\"OD Ranger 09:00-10:00 \\\"\\\" acc:r [imwviccgncwpjnr]\"],\"drawn\":[\"Hex OD in 2.unav [imwvica4vmv5t1v]\"],\"note\":\"Ranger's OD taken out of Unavailable\"}"
+   ]
+  }
+ },
+ "errors": []
+}
