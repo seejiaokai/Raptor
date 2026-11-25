@@ -1,0 +1,275 @@
+{
+ "pictures": [
+  {
+   "file": "b3-clr-end-desk-chromium-1-cleared.png",
+   "case": "B3-clr-end",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger - \"\" [imwvrmth6rqbcxc~bane]",
+    "Hex 08:00-10:00 \"\" [imwvrmth6rqbcxc~rocky]"
+   ]
+  },
+  {
+   "file": "b3-clr-end-desk-chromium-2-traversed.png",
+   "case": "B3-clr-end",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger - \"\" [imwvrmth6rqbcxc~bane]",
+    "Hex 08:00-10:00 \"\" [imwvrmth6rqbcxc~rocky]"
+   ]
+  },
+  {
+   "file": "b3-clr-end-desk-chromium-3-0930-left.png",
+   "case": "B3-clr-end",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger 09:30-23:59 \"\" [imwvrmvrp23lse3]",
+    "Hex 08:00-10:00 \"\" [imwvrmth6rqbcxc]"
+   ]
+  },
+  {
+   "file": "b3-clr-start-desk-chromium-1-cleared.png",
+   "case": "B3-clr-start",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger - \"\" [imwvrnb1hs1i1r0~bane]",
+    "Hex 08:00-10:00 \"\" [imwvrnb1hs1i1r0~rocky]"
+   ]
+  },
+  {
+   "file": "b3-clr-start-desk-chromium-2-traversed.png",
+   "case": "B3-clr-start",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger - \"\" [imwvrnb1hs1i1r0~bane]",
+    "Hex 08:00-10:00 \"\" [imwvrnb1hs1i1r0~rocky]"
+   ]
+  },
+  {
+   "file": "b3-clr-start-desk-chromium-3-0930-left.png",
+   "case": "B3-clr-start",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger 09:30-23:59 \"\" [imwvrnd8omz36sm]",
+    "Hex 08:00-10:00 \"\" [imwvrnb1hs1i1r0]"
+   ]
+  },
+  {
+   "file": "b3-ref-first-0700-desk-chromium-1-refused.png",
+   "case": "B3-ref-first-0700",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "notes": [],
+    "screen": [
+     "Ranger 08:00-07:00 \"\" [imwvrns58sj82kg~bane]",
+     "Hex 08:00-10:00 \"\" [imwvrns58sj82kg~rocky]"
+    ]
+   }
+  },
+  {
+   "file": "b3-ref-first-0700-desk-chromium-2-retyped.png",
+   "case": "B3-ref-first-0700",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "shows": "07:00",
+    "notes": [],
+    "screen": [
+     "Ranger 08:00-07:00 \"\" [imwvrnud1057j6a]",
+     "Hex 08:00-10:00 \"\" [imwvrns58sj82kg]"
+    ]
+   }
+  },
+  {
+   "file": "b3-ref-first-2570-desk-chromium-1-refused.png",
+   "case": "B3-ref-first-2570",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "notes": [
+     "2570 is not a time. Try 0900 or 09:00."
+    ],
+    "screen": [
+     "Ranger 08:00-10:00 \"\" [imwvro5dmjickrc~bane]",
+     "Hex 08:00-10:00 \"\" [imwvro5dmjickrc~rocky]"
+    ]
+   }
+  },
+  {
+   "file": "b3-ref-first-2570-desk-chromium-2-retyped.png",
+   "case": "B3-ref-first-2570",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "shows": "10:00",
+    "notes": [],
+    "screen": [
+     "Ranger 08:00-10:00 \"\" [imwvro5dmjickrc~bane]",
+     "Hex 08:00-10:00 \"\" [imwvro5dmjickrc~rocky]"
+    ]
+   }
+  },
+  {
+   "file": "b3-ref-later-desk-chromium-0830-refused.png",
+   "case": "B3-ref-later",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "notes": [],
+    "screen": [
+     "Ranger 09:00-08:30 \"\" [imwvroioqfnlpbg~bane]",
+     "Hex 08:00-10:00 \"\" [imwvroioqfnlpbg~rocky]"
+    ]
+   }
+  },
+  {
+   "file": "b3-ref-later-desk-chromium-0830-retyped.png",
+   "case": "B3-ref-later",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "shows": "08:30",
+    "notes": [],
+    "screen": [
+     "Ranger 09:00-08:30 \"\" [imwvrokvkkjpkj5]",
+     "Hex 08:00-10:00 \"\" [imwvroioqfnlpbg]"
+    ]
+   }
+  },
+  {
+   "file": "b3-ref-later-desk-chromium-2570-refused.png",
+   "case": "B3-ref-later",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "notes": [
+     "2570 is not a time. Try 0900 or 09:00."
+    ],
+    "screen": [
+     "Ranger 09:00-08:30 \"\" [imwvrokvkkjpkj5]",
+     "Hex 08:00-10:00 \"\" [imwvroioqfnlpbg]"
+    ]
+   }
+  },
+  {
+   "file": "b3-ref-later-desk-chromium-2570-retyped.png",
+   "case": "B3-ref-later",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "shows": "08:30",
+    "notes": [],
+    "screen": [
+     "Ranger 09:00-08:30 \"\" [imwvrokvkkjpkj5]",
+     "Hex 08:00-10:00 \"\" [imwvroioqfnlpbg]"
+    ]
+   }
+  },
+  {
+   "file": "b3-ref-later-desk-chromium-3-1100-left.png",
+   "case": "B3-ref-later",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger 09:00-11:00 \"\" [imwvrokvkkjpkj5]",
+    "Hex 08:00-10:00 \"\" [imwvroioqfnlpbg]"
+   ]
+  },
+  {
+   "file": "b3-same0800-desk-chromium-1-left.png",
+   "case": "B3-same0800",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "store": [
+     "LL Ranger+Hex 08:00-10:00 \"\" [imwvrp8vclbkil7]"
+    ],
+    "screen": [
+     "Ranger 08:00-10:00 \"\" [imwvrp8vclbkil7~bane]",
+     "Hex 08:00-10:00 \"\" [imwvrp8vclbkil7~rocky]"
+    ],
+    "undo": {
+     "dayChanges": "1 change",
+     "undo": "Undo — LL for 2 people",
+     "undoDisabled": false
+    }
+   }
+  }
+ ],
+ "cases": {
+  "B3-clr-end": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvrmth6rqbcxc\"]; asked []; note \"\"",
+    "filed :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc~rocky]\"] :: CARET BODY",
+    "str \"0900\" Tab :: STORE [\"LL Ranger 09:00-10:00 \\\"\\\" [imwvrmvrp23lse3]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc]\"] :: SCREEN [\"Ranger 09:00-10:00 \\\"\\\" [imwvrmth6rqbcxc~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc~rocky]\"] :: CARET imwvrmth6rqbcxc~bane.end",
+    "cleared end, Tab :: STORE [\"LL Ranger allday \\\"\\\" [imwvrmvrp23lse3]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc]\"] :: SCREEN [\"Ranger - \\\"\\\" [imwvrmth6rqbcxc~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc~rocky]\"] :: CARET imwvrmth6rqbcxc~bane.rmks",
+    "picture b3-clr-end-desk-chromium-1-cleared.png: [\"Ranger - \\\"\\\" [imwvrmth6rqbcxc~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc~rocky]\"]",
+    "Shift+Tab #1 untouched :: STORE [\"LL Ranger allday \\\"\\\" [imwvrmvrp23lse3]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc]\"] :: SCREEN [\"Ranger - \\\"\\\" [imwvrmth6rqbcxc~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc~rocky]\"] :: CARET imwvrmth6rqbcxc~bane.end",
+    "Shift+Tab #2 untouched :: STORE [\"LL Ranger allday \\\"\\\" [imwvrmvrp23lse3]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc]\"] :: SCREEN [\"Ranger - \\\"\\\" [imwvrmth6rqbcxc~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc~rocky]\"] :: CARET imwvrmth6rqbcxc~bane.str",
+    "after untouched traversal :: STORE [\"LL Ranger allday \\\"\\\" [imwvrmvrp23lse3]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc]\"] :: SCREEN [\"Ranger - \\\"\\\" [imwvrmth6rqbcxc~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc~rocky]\"] :: CARET imwvrmth6rqbcxc~bane.str",
+    "picture b3-clr-end-desk-chromium-2-traversed.png: [\"Ranger - \\\"\\\" [imwvrmth6rqbcxc~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc~rocky]\"]",
+    "start 0930 Tab :: STORE [\"LL Ranger 09:30-23:59 \\\"\\\" [imwvrmvrp23lse3]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc]\"] :: SCREEN [\"Ranger 09:30-23:59 \\\"\\\" [imwvrmth6rqbcxc~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc~rocky]\"] :: CARET imwvrmth6rqbcxc~bane.end",
+    "caret left :: STORE [\"LL Ranger 09:30-23:59 \\\"\\\" [imwvrmvrp23lse3]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc]\"] :: SCREEN [\"Ranger 09:30-23:59 \\\"\\\" [imwvrmvrp23lse3]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc]\"] :: CARET BODY",
+    "picture b3-clr-end-desk-chromium-3-0930-left.png: [\"Ranger 09:30-23:59 \\\"\\\" [imwvrmvrp23lse3]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrmth6rqbcxc]\"]"
+   ]
+  },
+  "B3-clr-start": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvrnb1hs1i1r0\"]; asked []; note \"\"",
+    "filed :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0~rocky]\"] :: CARET BODY",
+    "str \"0900\" Tab :: STORE [\"LL Ranger 09:00-10:00 \\\"\\\" [imwvrnd8omz36sm]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0]\"] :: SCREEN [\"Ranger 09:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0~rocky]\"] :: CARET imwvrnb1hs1i1r0~bane.end",
+    "cleared start, Tab :: STORE [\"LL Ranger allday \\\"\\\" [imwvrnd8omz36sm]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0]\"] :: SCREEN [\"Ranger - \\\"\\\" [imwvrnb1hs1i1r0~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0~rocky]\"] :: CARET imwvrnb1hs1i1r0~bane.end",
+    "picture b3-clr-start-desk-chromium-1-cleared.png: [\"Ranger - \\\"\\\" [imwvrnb1hs1i1r0~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0~rocky]\"]",
+    "Shift+Tab #1 untouched :: STORE [\"LL Ranger allday \\\"\\\" [imwvrnd8omz36sm]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0]\"] :: SCREEN [\"Ranger - \\\"\\\" [imwvrnb1hs1i1r0~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0~rocky]\"] :: CARET imwvrnb1hs1i1r0~bane.str",
+    "after untouched traversal :: STORE [\"LL Ranger allday \\\"\\\" [imwvrnd8omz36sm]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0]\"] :: SCREEN [\"Ranger - \\\"\\\" [imwvrnb1hs1i1r0~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0~rocky]\"] :: CARET imwvrnb1hs1i1r0~bane.str",
+    "picture b3-clr-start-desk-chromium-2-traversed.png: [\"Ranger - \\\"\\\" [imwvrnb1hs1i1r0~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0~rocky]\"]",
+    "start 0930 Tab :: STORE [\"LL Ranger 09:30-23:59 \\\"\\\" [imwvrnd8omz36sm]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0]\"] :: SCREEN [\"Ranger 09:30-23:59 \\\"\\\" [imwvrnb1hs1i1r0~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0~rocky]\"] :: CARET imwvrnb1hs1i1r0~bane.end",
+    "caret left :: STORE [\"LL Ranger 09:30-23:59 \\\"\\\" [imwvrnd8omz36sm]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0]\"] :: SCREEN [\"Ranger 09:30-23:59 \\\"\\\" [imwvrnd8omz36sm]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0]\"] :: CARET BODY",
+    "picture b3-clr-start-desk-chromium-3-0930-left.png: [\"Ranger 09:30-23:59 \\\"\\\" [imwvrnd8omz36sm]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrnb1hs1i1r0]\"]"
+   ]
+  },
+  "B3-ref-first-0700": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvrns58sj82kg\"]; asked []; note \"\"",
+    "filed :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvrns58sj82kg]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwvrns58sj82kg~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrns58sj82kg~rocky]\"] :: CARET BODY",
+    "end 0700 Tab (first change) :: STORE [\"LL Ranger 08:00-07:00 \\\"\\\" [imwvrnud1057j6a]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrns58sj82kg]\"] :: SCREEN [\"Ranger 08:00-07:00 \\\"\\\" [imwvrns58sj82kg~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrns58sj82kg~rocky]\"] :: CARET imwvrns58sj82kg~bane.rmks",
+    "picture b3-ref-first-0700-desk-chromium-1-refused.png: {\"notes\":[],\"screen\":[\"Ranger 08:00-07:00 \\\"\\\" [imwvrns58sj82kg~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrns58sj82kg~rocky]\"]}",
+    "after refusal: tapped away :: STORE [\"LL Ranger 08:00-07:00 \\\"\\\" [imwvrnud1057j6a]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrns58sj82kg]\"] :: SCREEN [\"Ranger 08:00-07:00 \\\"\\\" [imwvrnud1057j6a]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrns58sj82kg]\"] :: CARET BODY",
+    "tapped the box afresh, typed the figure it shows (07:00), Tab :: STORE [\"LL Ranger 08:00-07:00 \\\"\\\" [imwvrnud1057j6a]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrns58sj82kg]\"] :: SCREEN [\"Ranger 08:00-07:00 \\\"\\\" [imwvrnud1057j6a]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrns58sj82kg]\"] :: CARET imwvrnud1057j6a.rmks",
+    "picture b3-ref-first-0700-desk-chromium-2-retyped.png: {\"shows\":\"07:00\",\"notes\":[],\"screen\":[\"Ranger 08:00-07:00 \\\"\\\" [imwvrnud1057j6a]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrns58sj82kg]\"]}"
+   ]
+  },
+  "B3-ref-first-2570": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvro5dmjickrc\"]; asked []; note \"\"",
+    "filed :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvro5dmjickrc]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwvro5dmjickrc~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvro5dmjickrc~rocky]\"] :: CARET BODY",
+    "end 2570 Tab (first change) :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvro5dmjickrc]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwvro5dmjickrc~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvro5dmjickrc~rocky]\"] :: CARET imwvro5dmjickrc~bane.rmks",
+    "picture b3-ref-first-2570-desk-chromium-1-refused.png: {\"notes\":[\"2570 is not a time. Try 0900 or 09:00.\"],\"screen\":[\"Ranger 08:00-10:00 \\\"\\\" [imwvro5dmjickrc~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvro5dmjickrc~rocky]\"]}",
+    "after refusal: tapped away :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvro5dmjickrc]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwvro5dmjickrc~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvro5dmjickrc~rocky]\"] :: CARET BODY",
+    "tapped the box afresh, typed the figure it shows (10:00), Tab :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvro5dmjickrc]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwvro5dmjickrc~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvro5dmjickrc~rocky]\"] :: CARET imwvro5dmjickrc~bane.rmks",
+    "picture b3-ref-first-2570-desk-chromium-2-retyped.png: {\"shows\":\"10:00\",\"notes\":[],\"screen\":[\"Ranger 08:00-10:00 \\\"\\\" [imwvro5dmjickrc~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvro5dmjickrc~rocky]\"]}"
+   ]
+  },
+  "B3-ref-later": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvroioqfnlpbg\"]; asked []; note \"\"",
+    "filed :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg~rocky]\"] :: CARET BODY",
+    "str \"0900\" Tab :: STORE [\"LL Ranger 09:00-10:00 \\\"\\\" [imwvrokvkkjpkj5]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"] :: SCREEN [\"Ranger 09:00-10:00 \\\"\\\" [imwvroioqfnlpbg~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg~rocky]\"] :: CARET imwvroioqfnlpbg~bane.end",
+    "end 0830 Tab :: STORE [\"LL Ranger 09:00-08:30 \\\"\\\" [imwvrokvkkjpkj5]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"] :: SCREEN [\"Ranger 09:00-08:30 \\\"\\\" [imwvroioqfnlpbg~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg~rocky]\"] :: CARET imwvroioqfnlpbg~bane.rmks",
+    "picture b3-ref-later-desk-chromium-0830-refused.png: {\"notes\":[],\"screen\":[\"Ranger 09:00-08:30 \\\"\\\" [imwvroioqfnlpbg~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg~rocky]\"]}",
+    "after refusal: tapped away :: STORE [\"LL Ranger 09:00-08:30 \\\"\\\" [imwvrokvkkjpkj5]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"] :: SCREEN [\"Ranger 09:00-08:30 \\\"\\\" [imwvrokvkkjpkj5]\",\"Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"] :: CARET BODY",
+    "tapped the box afresh, typed the figure it shows (08:30), Tab :: STORE [\"LL Ranger 09:00-08:30 \\\"\\\" [imwvrokvkkjpkj5]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"] :: SCREEN [\"Ranger 09:00-08:30 \\\"\\\" [imwvrokvkkjpkj5]\",\"Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"] :: CARET imwvrokvkkjpkj5.rmks",
+    "picture b3-ref-later-desk-chromium-0830-retyped.png: {\"shows\":\"08:30\",\"notes\":[],\"screen\":[\"Ranger 09:00-08:30 \\\"\\\" [imwvrokvkkjpkj5]\",\"Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"]}",
+    "end 2570 Tab :: STORE [\"LL Ranger 09:00-08:30 \\\"\\\" [imwvrokvkkjpkj5]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"] :: SCREEN [\"Ranger 09:00-08:30 \\\"\\\" [imwvrokvkkjpkj5]\",\"Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"] :: CARET imwvrokvkkjpkj5.rmks",
+    "picture b3-ref-later-desk-chromium-2570-refused.png: {\"notes\":[\"2570 is not a time. Try 0900 or 09:00.\"],\"screen\":[\"Ranger 09:00-08:30 \\\"\\\" [imwvrokvkkjpkj5]\",\"Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"]}",
+    "after refusal: tapped away :: STORE [\"LL Ranger 09:00-08:30 \\\"\\\" [imwvrokvkkjpkj5]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"] :: SCREEN [\"Ranger 09:00-08:30 \\\"\\\" [imwvrokvkkjpkj5]\",\"Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"] :: CARET BODY",
+    "tapped the box afresh, typed the figure it shows (08:30), Tab :: STORE [\"LL Ranger 09:00-08:30 \\\"\\\" [imwvrokvkkjpkj5]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"] :: SCREEN [\"Ranger 09:00-08:30 \\\"\\\" [imwvrokvkkjpkj5]\",\"Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"] :: CARET imwvrokvkkjpkj5.rmks",
+    "picture b3-ref-later-desk-chromium-2570-retyped.png: {\"shows\":\"08:30\",\"notes\":[],\"screen\":[\"Ranger 09:00-08:30 \\\"\\\" [imwvrokvkkjpkj5]\",\"Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"]}",
+    "end 1100 Tab :: STORE [\"LL Ranger 09:00-11:00 \\\"\\\" [imwvrokvkkjpkj5]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"] :: SCREEN [\"Ranger 09:00-11:00 \\\"\\\" [imwvrokvkkjpkj5]\",\"Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"] :: CARET imwvrokvkkjpkj5.rmks",
+    "caret left :: STORE [\"LL Ranger 09:00-11:00 \\\"\\\" [imwvrokvkkjpkj5]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"] :: SCREEN [\"Ranger 09:00-11:00 \\\"\\\" [imwvrokvkkjpkj5]\",\"Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"] :: CARET BODY",
+    "picture b3-ref-later-desk-chromium-3-1100-left.png: [\"Ranger 09:00-11:00 \\\"\\\" [imwvrokvkkjpkj5]\",\"Hex 08:00-10:00 \\\"\\\" [imwvroioqfnlpbg]\"]"
+   ]
+  },
+  "B3-same0800": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvrp8vclbkil7\"]; asked []; note \"\"",
+    "filed :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvrp8vclbkil7]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwvrp8vclbkil7~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrp8vclbkil7~rocky]\"] :: CARET BODY",
+    "start 0800 (over 08:00) Tab :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvrp8vclbkil7]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwvrp8vclbkil7~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrp8vclbkil7~rocky]\"] :: CARET imwvrp8vclbkil7~bane.end",
+    "caret left :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvrp8vclbkil7]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwvrp8vclbkil7~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrp8vclbkil7~rocky]\"] :: CARET BODY",
+    "picture b3-same0800-desk-chromium-1-left.png: {\"store\":[\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvrp8vclbkil7]\"],\"screen\":[\"Ranger 08:00-10:00 \\\"\\\" [imwvrp8vclbkil7~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrp8vclbkil7~rocky]\"],\"undo\":{\"dayChanges\":\"1 change\",\"undo\":\"Undo — LL for 2 people\",\"undoDisabled\":false}}"
+   ]
+  }
+ },
+ "errors": []
+}

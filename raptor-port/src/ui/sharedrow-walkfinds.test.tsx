@@ -188,6 +188,26 @@ describe('finding 1 — a man cut out of a shared leave keeps his row where it s
   })
 })
 
+/* THE BREAK TESTS' ONE MISS (25 Nov 26 — break 7 of scripts/handpass/breaks/shared-row-1125.json stayed green): the week's
+   cell read the SHARED input again and no test saw it, because the save itself follows him. What that line decides is
+   what a refused time heals to — so it is asked here. */
+describe('the week: a refused time on his held row heals to HIS time', () => {
+  it('his end 1100 saved, then 2570 refused: the cell reads his 11:00, never Hex\'s 10:00', async () => {
+    expect(file('2026-07-13', ['bane', 'rocky'])).toBe(true)
+    await act(async () => { notify() })
+    const typeCell = async (f: string, v: string) => {
+      await act(async () => { cell(0, 'bane', f).focus() })
+      await act(async () => { cell(0, 'bane', f).textContent = v })
+      await act(async () => { cell(0, 'bane', f === 'rmks' ? 'str' : 'rmks').focus() })   // Tab on: saved, the row still held
+    }
+    await typeCell('str', '0900'); await typeCell('end', '1100')
+    expect(store(0)).toEqual(['Hex 480-600', 'Ranger 540-660'])
+    await typeCell('end', '2570')
+    expect(store(0), 'nothing saved').toEqual(['Hex 480-600', 'Ranger 540-660'])
+    expect((cell(0, 'bane', 'end').textContent || '').trim(), 'healed to his own 11:00').toBe('11:00')
+  })
+})
+
 describe('finding 2 — a time box never disagrees with what is saved', () => {
   it('the Board, his row of a shared leave: start 0900, then the end cleared — both boxes read empty, the leave all day', async () => {
     expect(file('2026-07-13', ['bane', 'rocky'])).toBe(true)

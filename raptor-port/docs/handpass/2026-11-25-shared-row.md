@@ -215,6 +215,16 @@ page or console error in any final run. In short:
 
 ## The break tests
 
+`scripts/handpass/breaks/shared-row-1125.json` — 28 wires, each cut once on purpose (`node scripts/handpass/breaks.mjs`, chat 181): every
+`rowInputOf` call of the boxes, Escape, Tab's refresh, the day step, the three buttons, the drop, the arm and the Leave
+War's remark and its window; the cut-out's note; the label naming its man; the sent-back duty's one line; the two lists'
+`unavailFaces`; the first man's place in the list; `noteRowCut`, `noteRowSwap`; the four sibling-box lines; the ring and
+the second tap. **27 of 28 caught at once. Break 7 stayed green** — the week's cell reading the shared input again: the
+save itself follows him, so no test saw it; what that line decides is what a refused time heals to. A test was written
+(`sharedrow-walkfinds.test.tsx` "the week: a refused time on his held row heals to HIS time") and the break run again:
+caught. **Not breakable by a unit test:** `ui/drag.ts`'s put-down of the arm after a drop on the armed row (a real drop) —
+the walk's A7 (d) and (e).
+
 ## Errors seen
 
 None: no page or console error in any walker's final run (A: 62 runs; B and C: every run), nor in the host's runs on
@@ -233,6 +243,12 @@ the fixed builds.
 - **Only his iPhone can show:** a tapped button leaving the caret in the box (the look card's step).
 
 ## The gate counts
+
+- GitHub's run on `0689cdca5` (every fix in): 25 checks passed, none failed — unit (raptor 6 shards, leavewar 4),
+  geometry (raptor 4, lw-desktop 2, lw-phone), tracker smoke 2, build, code check, docs-guard, secrets scan. Vercel
+  built nothing: "Deployment rate limited — retry in 24 hours" (its plan's limit, not a check of the code).
+- On his PC, the same code: 101 nearby unit files, 2,550 tests; `npx tsc -b`; `npm run lint:changed` — all green.
+- The closing push (this sheet, the break list, one more test) — the count is in the closing report.
 
 ## What the walk found, and each disposition
 
@@ -265,3 +281,21 @@ reproduced by the host as a failing test before it was believed.
 | — | A remark retyped with a trailing space is "not the same" and cuts him out; no OIL-wait flash on a held row after Reject or a swap | Fable (b), F5 | by reading | NOT FIXED — the reader's own "not worth a fix" and "cosmetic"; noted in `[SHARED-ROW-HELD-LEFTOVERS]` |
 
 ## Walk line
+
+`Walk: docs/handpass/2026-11-25-shared-row.md · 1,417 pictures · 9 surfaces · 33 scenarios walked by three walkers, the fixes re-walked by the host (36 results on the build 0689cdca5: 34 PASS, 2 the end-before-start rows ruled not a fault) · MISSING: 2 fixed (the dragged name, the stale start box), 3 not faults; the code reads: 4 fixed, 3 filed ([SHARED-ROW-HELD-LEFTOVERS])`
+
+**The re-walk (chat 181), on the frozen build `0689cdca5` (`.tmp/build-0689cdca5`, bundle `index-DCU_WN_H.js`), the walkers' own
+scripts, pictures `docs/img/handpass/2026-11-25-shared-row/host3/` (177):** A7 (e) the dragged name — "instead of Ranger",
+Hex untouched; A7 (d) the tapped puck then a name, desktop and phone WebKit; A7 (a) the leave's name on a phone; A1 and
+B1 the fault itself, desktop Chromium and phone WebKit — rows Ranger above Hex before, after the first Tab, after the
+caret left and after a reload; A3 and B3 a time cleared — both boxes empty; A4 and B4 three men; A6 Undo and Redo, desktop
+and phone; A12 the sent-back duty's one line; B10 a Meeting's rows; B6 the published day. No page error in any run. The
+host opened the mid-drag and the cleared-end pictures (`docs/img/handpass/2026-11-25-shared-row/look/`, cut and marked for his look).
+
+**§12's boxes:** the eight answers and the tier (FULL) — written; the rulings listed, no clash; the roll-call — no blank,
+the walk's and the reads' rows added above; the production build driven at both widths (1440 desktop, 402 phone by touch,
+Chromium and WebKit); the fixture made through the Inputs page's own window; every surface seen and operated; the walk
+sized in writing first; the downstream results read (who counts as away, the Leave War's figures, the bells, the OIL
+answer); the tests press the real boxes and buttons, the engine sweep named as engine calls; one break a wire, all red;
+the gates green; the three reads done and every finding disposed against `main`; this sheet with its pictures and what
+was not walked; his look — asked now.
