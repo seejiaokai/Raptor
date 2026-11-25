@@ -1845,3 +1845,16 @@ sides.
 **Issue:** The message named the base branch, so the first suspects were the base (a shallow copy, a moved `main`, the raw-byte cause met on 20 Nov). The real cause was in the tool's own JSON report: one part of its check was skipped for a size limit (more than 5,000 code files), and the wrapper script rightly refused a report with a skipped part — but printed the same sentence for every way of not comparing. Twenty minutes went to the tool's source before the report's `skippedCheckReasons` was read.
 **Suggested improvement:** In the wrapper script, print the skipped part's own reason when there is one, instead of the one sentence; in the gates guide's traps, a line: "compared nothing" → run the tool by hand with its JSON output and read the skipped checks and their reasons first. A count-based limit in a tool is measured against the project's growth when the tool is adopted (how many files now, how many a month).
 **Principle:** When a wrapper reports one message for several failures, read the wrapped tool's raw report before reasoning from the message; and when adopting a tool, look for its hard limits and note how far the project is from each.
+
+### Observation 1074: A questions page written beside a plan's fold drifted from the plan's own recommendations
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 176 — folding his answers into a build plan while, in parallel, composing the next round of the questions page for him
+**Skill:** New skill candidate: questions-page round (the guard rail's question pages)
+**Type:** open-source
+**Phase/Area:** composing the recommendations on a page of questions that a plan's switch points also answer
+
+**Issue:** The host wrote the page's recommendations from the pressing results while a helper was rewriting the plan's switch-point table. Two blind readers then found the page and the plan recommending opposite answers on five questions (a held window, a hidden Tracker window, an Undo, who is told, unseen windows), and the plan building one of them as if already answered.
+**Suggested improvement:** Before publishing a questions page, check each question against the plan's switch-point table (a code-to-code map: page code, plan code, the step it blocks), and either carry the plan's recommendation or change the plan in the same commit; the map goes into the plan.
+**Principle:** When two documents both recommend an answer to the same open question, one of them must be derived from the other at publish time, or they drift and the reader answers one while the builder follows the other.
