@@ -10,7 +10,8 @@ host reproduces every finding before it counts.
 
 - The project: `C:/Users/User/projects/Raptor-row` (branch `claude/shared-leave-row-177`). Run everything from
   `C:/Users/User/projects/Raptor-row/raptor-port`. Do not open or write into any other copy of the project.
-- **The build under test is frozen: `.tmp/build-FROZEN` (the message that started you gives the folder's real name).**
+- **The build under test is frozen: `.tmp/build-6c7f3aac7`** (bundle `index-BiU7Aj55.js` — print `bundleOf(page)` in
+  every run and stop if it differs). Your share is in `docs/superpowers/briefs/2026-11-25-shared-row-walk-shares.md`.
   Never build, never run `npm run build`, `vite build`, a Playwright test (`npx playwright test` builds) or any unit
   test; never edit anything under `src/`, `e2e/` or `docs/` other than your own files below; never commit, push,
   switch branch or run any git command that changes anything. The host holds the checks lock for the three of you.
