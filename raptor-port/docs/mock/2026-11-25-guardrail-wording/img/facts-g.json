@@ -1,0 +1,198 @@
+[
+ {
+  "scene": "G",
+  "size": "desktop",
+  "what": "staged Saturday",
+  "v": {
+   "vl": {
+    "to": "12:45",
+    "ld": "",
+    "p": "prowler",
+    "w": "bane"
+   },
+   "sxo": {
+    "id": "razer",
+    "str": "0800",
+    "end": ""
+   },
+   "amt": [
+    "BRIEF 1100-",
+    "BOX 1130-1230",
+    "DEBRIEF 1230-"
+   ]
+  }
+ },
+ {
+  "scene": "G",
+  "size": "desktop",
+  "what": "week: empty end boxes with a start (today)",
+  "v": [
+   "ff:5.0.0.ld (start 12:45)",
+   "dr:5.0.1.end (start 08:00)",
+   "sr:5.amt.0.end (start 11:00)",
+   "sr:5.amt.2.end (start 12:30)"
+  ]
+ },
+ {
+  "scene": "G",
+  "size": "desktop",
+  "what": "days in view",
+  "v": [
+   "4",
+   "5",
+   "6"
+  ]
+ },
+ {
+  "scene": "G3",
+  "size": "desktop",
+  "what": "Publish day before signing (today)",
+  "v": {
+   "disabled": true,
+   "title": "Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday",
+   "text": "Publish day"
+  }
+ },
+ {
+  "scene": "G3",
+  "size": "desktop",
+  "what": "a press on the greyed Publish day (today): the note says",
+  "v": "(nothing)"
+ },
+ {
+  "scene": "G4",
+  "size": "desktop",
+  "what": "CUR CK picked (today): the box reads",
+  "v": "CUR CK Ace — name — Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter Outlaw Piston Pixel Quill Ranger Ratchet Reaper Rebel Recon Relay Ridge Rune Ryder Saber Saint Scope Scribe Sidewinder Static Talisman Tally Torch Trident Vandal Vapor Vector Warden Widget Wildcard Wisp Zenith Zulu"
+ },
+ {
+  "scene": "G3",
+  "size": "desktop",
+  "what": "Publish day once the four are signed (today)",
+  "v": {
+   "disabled": false,
+   "title": "Publish Saturday — approve this day only"
+  }
+ },
+ {
+  "scene": "G3",
+  "size": "desktop",
+  "what": "Publish day pressed with a landing and an END blank (today): the note",
+  "v": "Saturday 18 Jul published and approved. The SXO desk has no usable times, so nobody on it earns OIL."
+ },
+ {
+  "scene": "G3",
+  "size": "desktop",
+  "what": "after the real publish",
+  "v": {
+   "approved": true,
+   "warn": [
+    "OIL_NO_TIMES: SXO has no usable times, so nobody on it earns OIL for this day"
+   ]
+  }
+ },
+ {
+  "scene": "G",
+  "size": "desktop",
+  "what": "board: empty end boxes with a start",
+  "v": [
+   "ff:5.0.0.ld (start 12:45)",
+   "ff:5.0.0.ld (start 12:45)",
+   "dr:5.0.1.end (start 08:00)",
+   "sr:5.amt.0.end (start 11:00)",
+   "sr:5.amt.2.end (start 12:30)"
+  ]
+ },
+ {
+  "scene": "G",
+  "size": "desktop",
+  "what": "board flight row",
+  "v": "sb-line"
+ },
+ {
+  "scene": "G",
+  "size": "phone",
+  "what": "week: empty end boxes with a start (today)",
+  "v": [
+   "ff:5.0.0.ld (start 12:45)",
+   "dr:5.0.1.end (start 08:00)",
+   "sr:5.amt.0.end (start 11:00)",
+   "sr:5.amt.2.end (start 12:30)"
+  ]
+ },
+ {
+  "scene": "G",
+  "size": "phone",
+  "what": "days in view",
+  "v": [
+   "5",
+   "6"
+  ]
+ },
+ {
+  "scene": "G3",
+  "size": "phone",
+  "what": "Publish day before signing (today)",
+  "v": {
+   "disabled": true,
+   "title": "Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday",
+   "text": "Publish day"
+  }
+ },
+ {
+  "scene": "G3",
+  "size": "phone",
+  "what": "a press on the greyed Publish day (today): the note says",
+  "v": "(nothing)"
+ },
+ {
+  "scene": "G4",
+  "size": "phone",
+  "what": "CUR CK picked (today): the box reads",
+  "v": "CUR CK Ace"
+ },
+ {
+  "scene": "G3",
+  "size": "phone",
+  "what": "Publish day once the four are signed (today)",
+  "v": {
+   "disabled": false,
+   "title": "Publish Saturday — approve this day only"
+  }
+ },
+ {
+  "scene": "G3",
+  "size": "phone",
+  "what": "Publish day pressed with a landing and an END blank (today): the note",
+  "v": "Saturday 18 Jul published and approved. The SXO desk has no usable times, so nobody on it earns OIL."
+ },
+ {
+  "scene": "G3",
+  "size": "phone",
+  "what": "after the real publish",
+  "v": {
+   "approved": true,
+   "warn": [
+    "OIL_NO_TIMES: SXO has no usable times, so nobody on it earns OIL for this day"
+   ]
+  }
+ },
+ {
+  "scene": "G",
+  "size": "phone",
+  "what": "board: empty end boxes with a start",
+  "v": [
+   "ff:5.0.0.ld (start 12:45)",
+   "ff:5.0.0.ld (start 12:45)",
+   "dr:5.0.1.end (start 08:00)",
+   "sr:5.amt.0.end (start 11:00)",
+   "sr:5.amt.2.end (start 12:30)"
+  ]
+ },
+ {
+  "scene": "G",
+  "size": "phone",
+  "what": "board flight row",
+  "v": "sb-line"
+ }
+]

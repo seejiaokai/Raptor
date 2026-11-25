@@ -1,0 +1,222 @@
+[
+ {
+  "scene": "F4",
+  "size": "desktop",
+  "what": "Legend labels today",
+  "v": [
+   "Bmisses flight brief",
+   "Bmisses sim brief",
+   "Dmisses flight debrief",
+   "Dmisses sim debrief"
+  ]
+ },
+ {
+  "scene": "F4",
+  "size": "desktop",
+  "what": "warning short names today (Monday)",
+  "v": [
+   "Misses flight brief | Misses flight briefSaber — Misses VL BFM brief 17:25–19:45: OPS SHARING + NAV SYS BRIEF 17:55–18:55✕",
+   "Misses flight brief | Misses flight briefRanger — Misses VL BFM brief 10:20–12:40: Sim EP-4 12:00–13:30✕",
+   "Misses flight brief | Misses flight briefPiston — Misses RU BFM brief 11:20–13:40: STANDARDISATION MEETING 13:30–14:30✕",
+   "Misses sim brief | Misses sim briefRanger — Misses OFT EP-4 brief 11:30–12:00: VL BFM (step 11:40, T/O 12:40)✕",
+   "Misses sim debrief | Misses sim debriefRanger — Misses OFT EP-4 debrief 13:30–14:00: VL BFM (T/O 12:40, landing 14:05)✕"
+  ]
+ },
+ {
+  "scene": "F4",
+  "size": "desktop",
+  "what": "Logic page: the checks' names and the flag key today",
+  "v": [
+   "Advisory: Misses flight brief",
+   "Advisory: Misses flight debrief",
+   "Advisory: Misses sim brief",
+   "Advisory: Misses sim debrief",
+   "BMisses flight brief",
+   "DMisses flight debrief",
+   "BMisses sim brief",
+   "DMisses sim debrief"
+  ]
+ },
+ {
+  "scene": "F4",
+  "size": "phone",
+  "what": "Legend labels today",
+  "v": [
+   "Bmisses flight brief",
+   "Bmisses sim brief",
+   "Dmisses flight debrief",
+   "Dmisses sim debrief"
+  ]
+ },
+ {
+  "scene": "F4",
+  "size": "phone",
+  "what": "warning short names today (Monday)",
+  "v": [
+   "Misses flight brief | Misses flight briefSaber — Misses VL BFM brief 17:25–19:45: OPS SHARING + NAV SYS BRIEF 17:55–18:55✕",
+   "Misses flight brief | Misses flight briefRanger — Misses VL BFM brief 10:20–12:40: Sim EP-4 12:00–13:30✕",
+   "Misses flight brief | Misses flight briefPiston — Misses RU BFM brief 11:20–13:40: STANDARDISATION MEETING 13:30–14:30✕",
+   "Misses sim brief | Misses sim briefRanger — Misses OFT EP-4 brief 11:30–12:00: VL BFM (step 11:40, T/O 12:40)✕",
+   "Misses sim debrief | Misses sim debriefRanger — Misses OFT EP-4 debrief 13:30–14:00: VL BFM (T/O 12:40, landing 14:05)✕"
+  ]
+ },
+ {
+  "scene": "F4",
+  "size": "phone",
+  "what": "Logic page: the checks' names and the flag key today",
+  "v": [
+   "Advisory: Misses flight brief",
+   "Advisory: Misses flight debrief",
+   "Advisory: Misses sim brief",
+   "Advisory: Misses sim debrief",
+   "BMisses flight brief",
+   "DMisses flight debrief",
+   "BMisses sim brief",
+   "DMisses sim debrief"
+  ]
+ },
+ {
+  "scene": "F3",
+  "size": "desktop",
+  "what": "staged: the input Ranger filed",
+  "v": [
+   {
+    "who": [
+     "Ace"
+    ],
+    "by": "Ranger"
+   }
+  ]
+ },
+ {
+  "scene": "F3",
+  "size": "desktop",
+  "what": "Hex opens it: the line (today)",
+  "v": "Only Ace or an admin can change this."
+ },
+ {
+  "scene": "F3",
+  "size": "desktop",
+  "what": "the Delete key on its card (today)",
+  "v": "Only Ace or an admin can delete this input"
+ },
+ {
+  "scene": "F3",
+  "size": "phone",
+  "what": "Hex opens it: the line (today)",
+  "v": "Only Ace or an admin can change this."
+ },
+ {
+  "scene": "f3",
+  "size": "-",
+  "what": "STOPPED",
+  "v": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#inpEditCancel')\u001b[22m\n\u001b[2m    - locator resolved to <button class=\"abtn ghost\" id=\"inpEditCancel\">Close</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n"
+ },
+ {
+  "scene": "F1",
+  "size": "desktop",
+  "what": "the day's OIL list opened by itself",
+  "v": 1
+ },
+ {
+  "scene": "F1",
+  "size": "desktop",
+  "what": "the two records after Saber's \"No to all\" (every field: is anything stamped with who answered?)",
+  "v": [
+   {
+    "type": "Training",
+    "allday": false,
+    "s": 780,
+    "e": 900,
+    "date": "Jul 17",
+    "yr": 2026,
+    "remarks": "",
+    "mod": "2026-07-15",
+    "title": "Sim prep",
+    "iid": "imrldi63zsdp2wf",
+    "by": "bane",
+    "modBy": "stiff",
+    "at": 1784077205615,
+    "modAt": 1784077212085,
+    "ord": -1024,
+    "acc": "g",
+    "oil": {
+     "2026-07-17": 0
+    }
+   },
+   {
+    "type": "Training",
+    "allday": false,
+    "s": 540,
+    "e": 720,
+    "date": "Jul 17",
+    "yr": 2026,
+    "remarks": "",
+    "mod": "2026-07-15",
+    "title": "Range brief",
+    "u": "u142",
+    "iid": "imrldi43ufp90qe",
+    "by": "bane",
+    "modBy": "stiff",
+    "at": 1784077203019,
+    "modAt": 1784077212085,
+    "ord": 0,
+    "acc": "g",
+    "oil": {
+     "2026-07-17": 0
+    }
+   }
+  ]
+ },
+ {
+  "scene": "F1",
+  "size": "desktop",
+  "what": "the ALL AVAIL window (today)",
+  "v": {
+   "hint": "Whoever filed this “Range brief” answered No to OIL, so by default nobody behind it earns. Tap an unlit puck to credit a man; tap a lit one to stop his credit.",
+   "win": "availwin front"
+  }
+ },
+ {
+  "scene": "F1",
+  "size": "desktop",
+  "what": "a man behind ALL AVAIL in the window: hover words (today)",
+  "v": "Reaper — whoever filed this “Range brief” answered No to OIL; tap to credit him anyway"
+ },
+ {
+  "scene": "F1",
+  "size": "desktop",
+  "what": "Ranger's puck on Sim prep: hover words (today)",
+  "v": "Ranger answered No for this “Sim prep” — tap to put him on it anyway"
+ },
+ {
+  "scene": "f1",
+  "size": "-",
+  "what": "STOPPED",
+  "v": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#sbOil').filter({ visible: true }).first()\u001b[22m\n"
+ },
+ {
+  "scene": "F2",
+  "size": "desktop",
+  "what": "Saturday published: the note",
+  "v": "Saturday 18 Jul published and approved. The SXO desk has no usable times, so nobody on it earns OIL."
+ },
+ {
+  "scene": "F2",
+  "size": "desktop",
+  "what": "prowler's Sat 18 box",
+  "v": "HO*"
+ },
+ {
+  "scene": "F2",
+  "size": "desktop",
+  "what": "prowler's card: \"Where it came from\" (today)",
+  "v": "Earned off the published schedule — change the schedule and the OIL follows."
+ },
+ {
+  "scene": "f2",
+  "size": "-",
+  "what": "STOPPED",
+  "v": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#logout')\u001b[22m\n\u001b[2m    - locator resolved to <button id=\"logout\" class=\"abtn ghost\">Logout</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m"
+ }
+]
