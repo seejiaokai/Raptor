@@ -649,6 +649,15 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
     if(g.status==='not-offered')return `SANS — not offering ${SANS_LABEL[domain]}`;
     if(g.status==='window')return `SANS — available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
   }
+  /* A FLYING SEAT WITH NO TIMES YET, NOTHING FILED (owner D2573, 25 Nov 26 — round A's Q1, "as recommended"): struck with
+     the same words as a timed seat, so the crew list agrees with his own reminder, which counts that seat already (D2568,
+     avail.ts daySansSeats). Only 'none' is asked — a man who has filed something has no window to hold against yet, as
+     before. Never a standby line (SC, AVALON, BB, flying or not — D2576, D2578: they need no SANS availability), and not
+     a sim row with no times, a case his ruling does not name (D2611: put to him first). */
+  if(domain==='fly'&&r.di>=0&&DAYS[r.di]&&(r.slotStart==null||r.slotEnd==null)&&!spareLike0(r)&&!r.scLine&&!r.avFly
+    &&sansOnP(p,dayIso(String(CURWEEK),r.di))
+    &&sansGate(id,DAYS[r.di].dt,'fly',null,null,dayIso(String(CURWEEK),r.di)).status==='none')
+    return sansNoneWhy(p,dayIso(String(CURWEEK),r.di));
   /* IS HE ALREADY BUSY AT THIS HOUR?
      The SC block above asks exactly this, for a shift. Every other slot asked
      nothing at all: the picker knew "tasked somewhere today" — a faint dimming,
