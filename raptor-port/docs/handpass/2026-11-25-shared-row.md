@@ -153,6 +153,31 @@ O-S15 (a member on the Board). Explicit negatives: each report's last section.
 
 ## The orders walked — what the screen said, what was saved
 
+Three Opus walkers on the frozen build `6c7f3aac7` (`.tmp/build-6c7f3aac7`, bundle `index-BiU7Aj55.js`), each in its
+own browser contexts, every fixture filed through the Inputs page's own window; what was saved read from the store
+after every step. Their tables, word for word, with every picture named: `docs/handpass/parts/shared-row-1125/`
+`walker-a.md` (the Board — 58 PASS, 10 FAIL rows, 46 recorded), `walker-b.md` (the week, the published day, the
+readers — 35 PASS, 6 FAIL rows, 30 recorded), `walker-c.md` (the Leave War — 37 PASS, 4 FAIL rows, 25 recorded). No
+page or console error in any final run. In short:
+
+| Order | Where | Screen and store |
+|---|---|---|
+| The fault itself: Ranger's start 0900, end 1100, a remark, each by Tab | Board (A1: desktop, phone Chromium, phone WebKit); week (B1: desktop Chromium and WebKit, phone both) | Ranger 09:00–11:00 "own hours" on his own leave; Hex 08:00–10:00, no remark, on the original — at every step, after the caret left, after a reload |
+| Shift+Tab back, Escape, a tap away, the day stepped | A2, A8, B2 | his own values shown and kept; nothing saved by a traversal; a time typed and the day pressed at once saved once |
+| A time cleared; a refusal then a good change; the same time typed again | A3, A5, A9, B3 | all day on his own; `2570` refused, nothing saved, the box healed to HIS time; `0800` over 08:00 cut nobody out — and the two FAILs below |
+| Three men, rows typed in turn; three men all day Mon–Wed | A4, B4 | three inputs, never a fourth; the last man alone on the original |
+| Undo and Redo between his changes | A6, B6 | one step a change; nothing ever on Hex's; the held row matched the store after each |
+| The row's buttons with the row held, and after the caret left: the leave's name then Delete, Reject, the LATE chip, his puck then a name | A7 (a)–(d) on desktop and both phones, B5 | each acted on Ranger's own input; Hex's untouched |
+| A name DRAGGED onto his puck, the row held | A7 (e), desktop | **FAIL — replaced Hex; fixed, below** |
+| Every kind that lands under Unavailable for several | A10 (seven kinds), B11 (a half; a run across the week's edge) | each gave Ranger his own input of the same kind, title, "To" and dates |
+| A shared overseas duty sent back to Personal Inputs; a shared Meeting's lines | A12, B10 | one line, one input, re-timed for both |
+| The input's window from his row, closed each way | A13, B12 | Cancel, ✕, Escape, a press outside: only the window closed, nothing saved |
+| A published and signed day | B6 | each change read pending, the four sign-offs fell and came back on Undo; the amendment went out as AL1; the member saw the issued copy before and after |
+| Who counts as away; the OIL answer; the bells; the changes window | B7, B8, B9 | Ranger away 10:00–11:00 only after his own end moved; no OIL question, the same answer carried; Hex told only of the split |
+| The Leave War's remark window: remark, document, till, in two orders; the viewer closed four ways | C1, C2 (phone and desktop, WebKit for C1) | every save on Ranger's own leave, Hex's window empty and untouched |
+| The admin's windows on a cell holding the shared leave; the day's list; a drag over it | C3, C4, C7 | the shared leave read-only there ("change it on the Inputs page"); Delete, Refuse, Approved and Move reach only his war leave |
+| His part gone while a row or window is held; a one-man leave | C5, C6, C8 | nothing saved onto the others; the one-man leave saved in place |
+
 ## The cases carried by a test, each with what it proves
 
 - `src/leavewar/sharedrow-follows.test.ts` — through the one save every door uses (`setInpField`, `setLeaveRemarks`):
@@ -170,8 +195,19 @@ O-S15 (a member on the Board). Explicit negatives: each report's last section.
   same time typed again; the roll-call as a test (every control on one man's row that names the input by its bare id
   names its man); the sent-back overseas duty's one line. 16 cases. Hand-made events in jsdom — they prove the press's
   route once it arrives, not that a real tap arrives so: the walk's A7, A9, A12, B5.
+- `src/ui/sharedrow-walkfinds.test.tsx` (chat 181) — the walk's two findings, 10 of 11 red before their fixes: the
+  Board's and the week's rows read top to bottom from the real markup before a cut-out and after the caret leaves (the
+  first man, the last — the control — a middle man of three, two cut out of four in turn; the first man's own input
+  saved before the shared one); his start box after his end is cleared and an all-day leave's end box after a start is
+  typed, on a shared row and a one-man row, Board and week. A real drag is not made here — the walk's A7 (e) is.
 
 ## The pictures
+
+- The walk: `docs/img/handpass/2026-11-25-shared-row/a/` (481 pictures, earlier attempts included), `b/` (182), `c/`
+  (446, with `_superseded/`); the final runs are the folders each walker's table names. Opened by the host: A7 (e)'s
+  three (`a/r4-a7-e-desk-chromium/001`–`003` — Hex's row under the pointer mid-drag), B6's Board after the caret left
+  (`b/b6-desk-chromium-024526/b6-desk-chromium-3-board-left.png` — the dotted outline on both rows).
+- The fixes, on the frozen build `e71bbdf30`: `docs/img/handpass/2026-11-25-shared-row/host2/`.
 
 - The host's short walk (the fault's own reproduction): `docs/img/handpass/2026-11-25-shared-row/host/` — `w3-<size>-<engine>/`
   on `f3cbe7b40` (desktop and phone, Chromium and WebKit; the host opened the desktop Chromium and the phone WebKit
@@ -181,12 +217,51 @@ O-S15 (a member on the Board). Explicit negatives: each report's last section.
 
 ## Errors seen
 
+None: no page or console error in any walker's final run (A: 62 runs; B and C: every run), nor in the host's runs on
+the fixed builds.
+
 ## What was NOT walked, and why
+
+- A real drag at a hand's quick speed, or on a phone — A7 (e) is one desktop drag in 15 steps; the phone's way (tap his
+  puck, then a name) is A7 (d). A middle man of three dragged onto is carried by the test, not walked.
+- A7 (e), A4, A8, A9, A10, A13 and B4–B12 at desktop size only, as the shares gave them; WebKit beyond A1–A7, B1, C1.
+- A member on the Board (A11): he has no door to it — his view-only schedule shows both rows with no box to type in.
+- C3's closed-day window for the admin (none exists); the decision buttons on the shared leave's own Leave War window
+  (it offers none); C4 "before Move" (no Move there); C5 on a phone; document steps in WebKit (the test WebKit keeps no file).
+- Two windows open at once on one input (Fable S12): the app has no live sync between two windows — carried by
+  `sharedrow-follows.test.ts` "taken out by another door".
+- **Only his iPhone can show:** a tapped button leaving the caret in the box (the look card's step).
 
 ## The gate counts
 
 ## What the walk found, and each disposition
 
-## The code reads (Astra and a fresh, blind Opus — the walk's chat)
+| Finding | Reproduced | Disposition |
+|---|---|---|
+| **A7 (e) — a name dragged from the crew list onto Ranger's puck while his row held the caret replaced HEX** ("Outlaw is now unavailable instead of Hex"; Hex lost his leave). The press takes the caret out, the held section repaints, and the input cut out for Ranger — always put AFTER the shared one — dropped his row below Hex's, whose row slid up under the pointer (`a/r4-a7-e-desk-chromium/002`, opened by the host) | `src/ui/sharedrow-walkfinds.test.tsx` "finding 1" — 5 cases red (the first man, a middle man of three, two of four, the week, what is saved); the last man the control | **FIXED, older than this branch:** `engine/inputown.ts ownInputOf` puts the first man's own input BEFORE the shared one; a man from the middle is drawn between his two neighbours still (`engine/rowinput.ts noteRowSlot`, `unavailFaces`, asked by the week and the Board). Nothing on the board re-orders itself (10 Aug 26; D735). Walker A's own A7 (e) steps on the fixed build: "Outlaw is now unavailable instead of Ranger", Hex untouched, his row still under Ranger's mid-drag (`host2/a7-e-desk-chromium/002`). A1's recorded row order is now Ranger above Hex throughout. **A limit, named:** a MIDDLE man's place between the others is remembered for the page's life, not saved — after a reload his row stands under the others' (nothing is under a finger then) |
+| **A3 pass 1, B3 "clear end" — his end cleared after a start: saved all day, his start box still reading 09:00** until the caret came back to it; the same on a one-man row, Board and week | "finding 2" — 5 cases red | **FIXED, older:** a saved time sets the row's OTHER time box from the input as saved (`ui/board.ts boardChange`, `ui/textedit.ts` focus-out), never the box under the caret — an all-day input given a start now shows its saved 23:59 as well. Walker A's A3 on the fixed build: PASS on desktop, phone Chromium and phone WebKit |
+| A5, B3 "an end before the start is saved, not refused" (08:00 to 07:00; no note) | the one-man control saves the same | **NOT A FAULT:** an end earlier than the start is an absence that runs past midnight — his decision of 11 Aug 26 (`ui/inputedit.tsx normalizeInputDraft`'s note: only an end EQUAL to the start is refused). The walk's expected line was the host's, with no source. Told to him by chat 178; he may ask for a warning — none asked |
+| C3-A, C3-B — the admin's Leave War window on a cell holding the shared leave: words typed in its Remarks box are saved nowhere | walker C's C3-ALL: the words ride onto a leave placed next | **NOT A FAULT:** that window is the bid for the free part of the day; the shared leave reads "change it on the Inputs page" there, and the box is the next entry's. The host's expected line was wrong |
+| B6 — "the waiting mark on both rows on the week and on neither on the Board" | the walker's own picture, opened by chat 181: both name boxes wear the dotted outline on the Board | **NOT A FAULT:** D1784 — underlined dotted on the week, the name box outlined dotted on the Board; the script looked for the week's mark on the Board |
+| A7 caret on a phone, C1 — in both test browsers a tapped button took the caret out of the box | — | **FOR HIS IPHONE (the look card):** on an iPhone a tapped button leaves the caret in the box, so "the row still held when a button is tapped" was proved by tests (`sharedrow-buttons.test.tsx`) and by a press with no blur on the desktop (B5 (b)), not by a real phone |
+
+## The code reads — Astra, a fresh, blind Opus and a fresh, blind Fable (chat 181, 25 Nov 26)
+
+Each blind to the walk's reports and to the others, each on its own exported copy of `9f9d0dd8c` (the two walk fixes
+in, joined with `main`), the same brief (`docs/superpowers/briefs/2026-11-25-shared-row-code-read-brief.md`). Their
+reports whole: `docs/handpass/parts/shared-row-1125/read-astra.md`, `read-opus.md`, `read-fable.md`. All three found
+the pointer itself sound — none could make a save or a press land on another man's input. Each claim below was
+reproduced by the host as a failing test before it was believed.
+
+| # | Finding | Who | Reproduced | Disposition |
+|---|---|---|---|---|
+| R1 | **The row-order fix was incomplete** (new in this change): a man cut out AGAIN from his own input after a second man was put into it dropped under everyone (A, X, C, B); from four men on, some orders of cuts moved a row (B, A, C gave A, C, D, B); a middle man whose two neighbours were both replaced by a dropped name ended last | Astra 1, Opus F1, Fable F1 — all three | `src/engine/rowinput-order.test.ts` — 6 cases red on `9f9d0dd8c` with exactly the orders each reader gave; `sharedrow-walkfinds.test.tsx` — the two re-cut cases red through the Board's boxes | **FIXED:** the cut-outs are remembered as one order a family (`engine/rowinput.ts noteRowCut`, `noteRowSwap`, `unavailFaces`) in place of each cut-out's two neighbours — every cut-out, the first and last man too. Every order of cuts for 3 to 6 men, each then undone a step at a time; both neighbours replaced; a name dropped on the cut-out man's own puck; a man put in later |
+| R2 | **His armed puck stayed live after its row repainted, but wore no ring**, and a second tap did not put it down (new: on `main` the arm was dropped silently instead) | Opus F2, Fable F2 | `sharedrow-buttons.test.tsx` S7b — red | **FIXED:** `engine/rowinput.ts rowKeyNow` — the ring (`ui/highlights.ts`), the second tap (`state/view.ts armSlot`) and a drop on it (`ui/drag.ts`) compare the two addresses as they stand now |
+| R3 | A request's row on the Ground Programme (a Meeting) still shows a stale other time box after its end is cleared — the same promise as the walk's second finding, one more surface (older) | Fable F3 | OPEN — reproduce red first (`[data-bfld="gr:…"]` on the Board, `[data-txt="gr:…"]` on the week) | OPEN: fix by the reader's exact steps (`board.ts boardChange`'s `reqRowText` branch, `textedit.ts`'s `rq !== 'none'` branch) |
+| R4 | The history bubble, its dot and its heading on a HELD row read the shared input's story, not his own (older; a reader, nothing saved) | Astra 2, Fable F5 (Opus: looked, filed nothing) | OPEN — reproduce red first (`ui/histbubble.ts storyOf`, the dot pass) | OPEN: resolve the row's id through `rowInputOf` in those three places; issued views untouched |
+| R5 | The Leave War remark window falls back to the SHARED leave — the others' words and documents — where his part cannot be found (new line; display only, its save is refused; Fable found no way to reach it with the window open) | Opus F4, Fable F5 | OPEN — reproduce red first (`leavewar/ui/nightwalk.test.tsx`, cut him out by a medical with the window open) | OPEN: no fallback to an input that no longer holds him |
+| R6 | Where his part cannot be found — or the shared input itself is gone while his own stands — the row's boxes save nothing and SAY nothing, the typed words left on screen; the LATE chip does nothing (older lines; rare: his part must go by another door while his row holds the caret) | Opus F3, Fable F4 | by reading; `sharedrow-follows.test.ts` "taken out by another door" pins "nothing saved" | **TO FILE, not built:** saying so is new words on screen (D1625 — drawn and shown to him first); following him where the shared input is gone is the tidy `rowInputAt` both readers name. One backlog item, with its question |
+| R7 | Tests that could pass without proving their claim: `nightwalk.test.tsx` W1's document removal sits behind `if (chipX)` and asserts `''` (older, unchanged); `sharedrow-follows.test.ts` "…and says so" never asserts what was said | Astra 3, Fable T1 | by reading | OPEN: make both unconditional |
+| — | A remark retyped with a trailing space is "not the same" and cuts him out; no OIL-wait flash on a held row after Reject or a swap | Fable (b), F5 | by reading | NOT FIXED — the reader's own "not worth a fix" and "cosmetic"; filed with R6's item |
 
 ## Walk line

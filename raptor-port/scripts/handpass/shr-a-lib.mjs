@@ -6,7 +6,7 @@ export { L }
 export const { sleep, go, bundleOf, facts } = L
 export const J = JSON.stringify
 export const SZ = process.env.SZ || 'desk', ENG = process.env.ENG || 'chromium', TAG = `${SZ}-${ENG}`
-export const EXPECT_BUNDLE = 'index-BiU7Aj55.js'
+export const EXPECT_BUNDLE = process.env.SHR_BUNDLE || 'index-BiU7Aj55.js'   // a later round's build names its own (chat 181)
 const RES = []
 export const add = (id, verdict, what, pics = []) => { RES.push({ id, tag: TAG, verdict, what, pics }); console.log('RESULT', id, TAG, '|', verdict, '|', typeof what === 'string' ? what : J(what), '|', pics.join(', ')) }
 export async function done(name) {

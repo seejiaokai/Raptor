@@ -32,7 +32,7 @@ import { commitInput } from './inputedit'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 let root: Root, host: HTMLDivElement, seed: any
-const NAME: Record<string, string> = { bane: 'Ranger', rocky: 'Hex', casper: 'Outlaw' }
+const NAME: Record<string, string> = { bane: 'Ranger', rocky: 'Hex', casper: 'Outlaw', slash: 'Blade', stiff: 'Saber' }
 const DATE = ['Jul 13', 'Jul 14']
 const leaves = (di: number) => INPUTS.filter((r: any) => r.type === 'LL' && r.date === DATE[di] && idsOf(r).some((p: string) => p in NAME)) as any[]
 const store = (di: number) => leaves(di).map(r => `${idsOf(r).map((p: string) => NAME[p] || p).join('+')} ${r.allday ? 'all day' : `${r.s}-${r.e}`}`).sort()
@@ -110,7 +110,7 @@ describe('finding 1 — a man cut out of a shared leave keeps his row where it s
     expect(boardOrder(1), 'neither neighbour takes his place').toEqual(['Hex', 'Ranger', 'Outlaw'])
   })
   it('the Board: two men cut out of four, one after the other, all four rows stay where they stood', async () => {
-    expect(file('2026-07-14', ['rocky', 'bane', 'casper', 'a'])).toBe(true)
+    expect(file('2026-07-14', ['rocky', 'bane', 'casper', 'slash'])).toBe(true)
     await act(async () => { openScheduler(1); notify() })
     const before = boardOrder(1)
     expect(before.slice(0, 3)).toEqual(['Hex', 'Ranger', 'Outlaw'])
@@ -120,6 +120,47 @@ describe('finding 1 — a man cut out of a shared leave keeps his row where it s
     await caretLeaves()
     expect(leaves(1), 'three leaves now: the shared one and two of their own').toHaveLength(3)
     expect(boardOrder(1)).toEqual(before)
+  })
+  /* THE CODE READS' FIRST FINDING (Astra 1 and the fresh Opus reader's F1, each blind, 25 Nov 26): a man cut out of the
+     middle got his own leave; a second man was then put into THAT leave; a time typed on either of the two cut him out
+     again — and the new leave was drawn where the list holds it, under everyone, the next row sliding up into its place */
+  const putInto = async (di: number, own: string, add: string) => {
+    const r = leaves(di).find(x => idsOf(x).join() === own)!
+    const hm = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`
+    await act(async () => {
+      expect(commitInput(r, { type: 'LL', allday: false, half: '', start: '2026-07-14', end: '', sTime: hm(r.s), eTime: hm(r.e), remarks: '', sans: null, docIds: [] }, [own, add]), 'the input\'s own window: a second man put in').toBe(true)
+      notify()
+    })
+  }
+  it('the Board: cut out of the middle, a second man put into his own leave, then HE is cut out again — all four rows stay', async () => {
+    expect(file('2026-07-14', ['rocky', 'bane', 'casper'])).toBe(true)
+    await act(async () => { openScheduler(1); notify() })
+    await type(ifld(1, 'bane', 'str'), '0900'); await caretLeaves()
+    await putInto(1, 'bane', 'slash')
+    expect(boardOrder(1), 'the man put in stands straight under him').toEqual(['Hex', 'Ranger', 'Blade', 'Outlaw'])
+    await type(ifld(1, 'bane', 'str'), '0930'); await caretLeaves()
+    expect(store(1)).toEqual(['Blade 540-600', 'Hex+Outlaw 480-600', 'Ranger 570-600'])
+    expect(boardOrder(1), 'Ranger does not drop under Outlaw').toEqual(['Hex', 'Ranger', 'Blade', 'Outlaw'])
+  })
+  it('the Board: the same, the SECOND man of that leave cut out — all four rows stay', async () => {
+    expect(file('2026-07-14', ['rocky', 'bane', 'casper'])).toBe(true)
+    await act(async () => { openScheduler(1); notify() })
+    await type(ifld(1, 'bane', 'str'), '0900'); await caretLeaves()
+    await putInto(1, 'bane', 'slash')
+    await type(ifld(1, 'slash', 'str'), '0930'); await caretLeaves()
+    expect(store(1)).toEqual(['Blade 570-600', 'Hex+Outlaw 480-600', 'Ranger 540-600'])
+    expect(boardOrder(1)).toEqual(['Hex', 'Ranger', 'Blade', 'Outlaw'])
+  })
+  it('the Board: three cut out of five in turn, from the inside out and from the outside in', async () => {
+    for (const [di, iso, order] of [[0, '2026-07-13', ['casper', 'bane', 'slash']], [1, '2026-07-14', ['bane', 'slash', 'casper']]] as [number, string, string[]][]) {
+      expect(file(iso, ['rocky', 'bane', 'casper', 'slash', 'stiff'])).toBe(true)
+      await act(async () => { openScheduler(di); notify() })
+      const before = boardOrder(di)
+      expect(before).toHaveLength(5)
+      for (const [i, who] of order.entries()) { await type(ifld(di, who, 'str'), `09${i + 1}0`); await caretLeaves() }
+      expect(leaves(di), 'the shared leave and three of their own').toHaveLength(4)
+      expect(boardOrder(di), `cut in the order ${order.join(', ')}`).toEqual(before)
+    }
   })
   it('the week: the first man and the middle man keep their rows too', async () => {
     expect(file('2026-07-13', ['bane', 'rocky'])).toBe(true)

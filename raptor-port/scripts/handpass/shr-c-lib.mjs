@@ -6,7 +6,7 @@ import * as L from './wr4-lib.mjs'
 import { join } from 'node:path'
 import { writeFileSync, appendFileSync, mkdirSync } from 'node:fs'
 export { L }
-export const BUNDLE = 'index-BiU7Aj55.js'
+export const BUNDLE = process.env.SHR_BUNDLE || 'index-BiU7Aj55.js'   // a later round's build names its own (chat 181)
 export const T = id => `[data-testid="${id}"]`
 export const J = JSON.stringify
 export const sleep = L.sleep
@@ -124,7 +124,7 @@ export const store = (P, pids, dates) => P.evaluate(([pids, dates]) => {
   return (window.INPUTS || []).filter(r => ((r.people || []).some(x => pids.includes(x.p)) || pids.includes(r.person)) && (!dates || dates.includes(r.date) || (r.endDate && dates.includes(r.endDate))))
     .map(r => `${(r.people && r.people.length ? r.people.map(x => nm[x.p] || x.p) : [nm[r.person] || r.person]).join('+')} ${r.type} ${r.date}${r.endDate ? '–' + r.endDate : ''} ${r.allday ? 'allday' : r.s + '-' + r.e} rmk="${r.remarks || ''}" till=${r.till ?? '-'} docs=${Object.keys(r).filter(k => /doc/i.test(k)).map(k => k + ':' + (Array.isArray(r[k]) ? r[k].length : JSON.stringify(r[k]))).join(',') || 0} [${r.iid}]`)
 }, [pids, dates])
-export const storeRaw = (P, iid) => P.evaluate(i => { const r = (window.INPUTS || []).find(x => String(x.iid) === String(i)); return r ? JSON.parse(JSON.stringify(r)) : null }, iid)
+export const storeRaw = (P, iid) => P.evaluate(i => { const r = (window.INPUTS || []).find(x => String(x.iid) === String(i)); return r ? structuredClone(r) : null }, iid)
 /* a point inside a window that holds no control (not the heading, which may be the window's handle) — a tap there leaves a box */
 export const blankIn = (P, winSel) => P.evaluate(sel => {
   const s = document.querySelector(sel); if (!s) return null

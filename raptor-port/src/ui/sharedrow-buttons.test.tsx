@@ -131,6 +131,24 @@ describe('the Scheduler Board: the buttons on Ranger\'s held row act on HIS inpu
     const timed = say((INPUTS as any[]).filter(r => r.type === 'LL' && r.date === 'Jul 13' && !r.allday && (r.s === 480 || r.s === 540)))
     expect(timed, 'Hex alone on his, nobody swapped in; the name tapped on Ranger\'s own').toEqual([`${cs} 540-600 ""`, 'Hex 480-600 ""'].sort())
   })
+  /* THE CODE READS' SECOND FINDING (the fresh Opus reader's F2 and the fresh Fable reader's F2, each blind, 25 Nov 26):
+     the arm now outlives the repaint of his row — and wore no ring after it. The row is repainted with his OWN input's
+     address, the ring was drawn by comparing that with the armed key letter for letter, so nothing on the Board was
+     ringed while the crew list still planted on his leave; a second tap on his puck did not put it down either. */
+  it('S7b — the arm keeps its ring once his row repaints with its own address, and a second tap puts it down', async () => {
+    const { iid, row } = await splitOnBoard('LL')
+    await click(row.querySelector(`[data-inpseat="${iid}~bane"]`)!)
+    const ringed = () => [...host.querySelectorAll<HTMLElement>('#sbBoard [data-inpseat].armed')].map(e => e.dataset.inpseat)
+    expect(ringed(), 'ringed on the held row').toEqual([`${iid}~bane`])
+    await act(async () => { (document.activeElement as HTMLElement)?.blur(); notify() })   // the caret leaves: his row repaints
+    await act(async () => { view.afterSchedMutate(); notify() })
+    const mineId = own('LL')!.iid as string
+    expect(host.querySelector(`#sbBoard [data-inpseat="${mineId}"]`), 'his row now carries his own input\'s address').toBeTruthy()
+    expect(armTargetExists(view.armedKey()), 'still armed').toBe(true)
+    expect(ringed(), 'the one ring, on HIS row').toEqual([mineId])
+    await click(host.querySelector(`#sbBoard [data-inpseat="${mineId}"]`)!)
+    expect(String(view.armedKey()), 'tapped again: put down').toBe('')
+  })
   it('S5 — the same time typed again cuts nothing and records nothing', async () => {
     const { str } = await onBoard('LL')
     const n = commandStream().length

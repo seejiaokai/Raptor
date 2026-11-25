@@ -26,7 +26,7 @@
    about him as a man of the crowd — stands. Put back in, his entry's `h` says the same and the stamp is dropped. */
 import { INPUTS, idsOf, entryOf, holds } from './inputs'
 import { newId } from './newid'
-import { noteRowSlot } from './rowinput'
+import { noteRowCut, noteRowSwap } from './rowinput'
 
 /* who put a person in, and when — handed in by the door (state/inputstamp.ts reads the running command) */
 export type PutStamp = { by?: string; at?: number; mod?: string }
@@ -94,6 +94,7 @@ export function swapPerson(r: any, from: any, to: any, st?: PutStamp): boolean {
   r.people = r.people.map((e: any) => (e && String(e.p) === String(from) ? entry(r, to, st) : e))
   r.leftAt = { ...(r.leftAt || {}), [String(from)]: r.hand }
   back(r, to)
+  noteRowSwap(r.iid, from, to)   // the newcomer's row is the row he took (rowinput.ts — the remembered order of a cut-out's rows)
   return true
 }
 
@@ -123,8 +124,10 @@ export function pieceOf(row: any): any {
  *  shared leave dropped below the others the moment his row repainted, and the next man's row slid up into his place —
  *  under a name being dragged onto his puck, which then replaced the OTHER man. Nothing on the board re-orders itself
  *  (owner, 10 Aug 26; D735). So: the first man's own input goes BEFORE the input, anyone else's after it — the last
- *  man's row stays as well — and a man from the middle, whom no place in the list can keep between the others, is
- *  remembered beside his neighbours for the list to draw him there (rowinput.ts noteRowSlot, unavailFaces). */
+ *  man's row stays as well, and that much a reload keeps — and EVERY cut-out is remembered with the order the rows
+ *  stood in, for the list to draw it there: a man from the middle, whom no place in the list can keep between the
+ *  others, and a man cut out again from an input that is itself drawn among another's rows (rowinput.ts noteRowCut,
+ *  unavailFaces — the code reads' first finding, all three readers, 25 Nov 26). */
 export function ownInputOf(input: any, person: any): any {
   if (!input || !holds(input, person)) return null
   if (idsOf(input).length === 1) return input
@@ -140,6 +143,6 @@ export function ownInputOf(input: any, person: any): any {
   takePerson(input, person)
   const at = (INPUTS as any[]).indexOf(input)
   if (at >= 0) (INPUTS as any[]).splice(k === 0 ? at : at + 1, 0, own); else (INPUTS as any[]).push(own)
-  if (k > 0 && k < drawn.length - 1) noteRowSlot(own.iid, input.iid, drawn[k - 1].p, drawn[k + 1].p)
+  noteRowCut(input.iid, own.iid, drawn.map((e: any) => e.p))
   return own
 }

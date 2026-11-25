@@ -7,7 +7,7 @@ import { mkdirSync, writeFileSync, appendFileSync } from 'node:fs'
 const HERE = dirname(fileURLToPath(import.meta.url))
 export const ROOT = join(HERE, '../..')
 export const TMP = join(ROOT, '.tmp/shr-b'); mkdirSync(TMP, { recursive: true })
-export const BUNDLE = 'index-BiU7Aj55.js'
+export const BUNDLE = process.env.SHR_BUNDLE || 'index-BiU7Aj55.js'   // a later round's build names its own (chat 181)
 
 export async function setup(tag) {
   const run = tag + '-' + new Date().toISOString().slice(11, 19).replace(/:/g, '')
