@@ -16,7 +16,7 @@
 //                  group's heading "142 · 60 people", no arrow, in the folded headings' own type.
 //  e5-d-primary-top-r E8's recommended way - Saber, 149 picked, no tick: 149's rows whole, 142 and 150 folded under them.
 //   node raptor-port/scripts/handpass/n176/draw-r5b-users.mjs   (ONLY=e4a-d,e4a-p,e4b-d,e4b-p,e4b2-d,e4b2-p,e4b3-d,e4b3-p,e4c,e5,e5r)
-import { run, as, W, FACT, want, wait, vis, hit, usersTab, reachPick, shot, box, words, closeAll, typeInto, linesOf, world, r5bWorld, ring, shotTall } from './draw-r5b-lib.mjs'
+import { run, as, W, FACT, want, wait, vis, hit, usersTab, reachPick, shot, box, words, closeAll, typeInto, linesOf, world, r5bWorld, ring, shotTall, barSq } from './draw-r5b-lib.mjs'
 let ARCH = null, P142 = null, COUNT = {}, CARD = {}
 const n = t => Number(String(t).replace(/\D+/g, ''))
 async function openCard(s, cs) {
@@ -48,6 +48,10 @@ async function readSources(st) {
   await run('r5b.read.hunter', 'd', async s => {
     await as(s, 'hunter'); await reachPick(s, 149, 'bar'); await usersTab(s); await wait(s, 400)
     CARD['h.Blade'] = await openCard(s, 'Blade')
+  }, { state: st })
+  if (want('e8j-d') || want('e8j-p') || want('e8j')) await run('r5b.read.saber', 'd', async s => {
+    await as(s, 'saber'); await reachPick(s, 149, 'bar'); await usersTab(s); await wait(s, 400)
+    CARD['s.Ranger'] = await openCard(s, 'Ranger')
   }, { state: st })
   FACT('r5b.sources', { counts: COUNT, people142: P142.length, blade: P142.find(p => p.cs === 'Blade')?.whole, bolt: P142.find(p => p.cs === 'Bolt')?.whole, ranger: P142.find(p => p.cs === 'Ranger')?.whole, cardsToday: Object.fromEntries(Object.entries(CARD).map(([k, v]) => [k, v.accessToday])) })
 }
@@ -172,6 +176,45 @@ try {
       const c = await box(s, '#r5bOpened'), f = await box(s, '#n176fold142')
       await shot(s, 'e4c-d-greyed', [{ x: col.x, y: f.y, w: col.w, h: c.y + c.h + 60 - f.y }, await box(s, '#n176tip')])
     }
+  }, { state: R5 })
+  /* E8, A NEW IDEA (26 Nov 26) - a way across to the man's own squadron instead of the tick.
+     e8j (d, p): Saber, 149 picked, no tick (as e5-d-primary-top-r, Hunter's row short), "▾ 142 · 60 people" opened under
+     149's people (short rows, as e4b), Ranger's row opened in e4b's shape from his REAL opened row on Saber's 149 page (his
+     149 line, Save, Cancel), and on the Save · Cancel line, at its right, a quiet text button "Edit on 142 →" in the app's
+     link look (the colour, size and weight of the row's own "What each role allows" link, read off his real row; no fill).
+     e8j2-d: what that press does - 142 picked by the top bar's own picker, Admin → Users (142's page), Ranger's real row
+     opened by a press on it, scrolled into view. Nothing drawn: the app as it is. */
+  if (want('e8j-d') || want('e8j-p') || want('e8j')) for (const sz of ['d', 'p']) if (want('e8j') || want('e8j-' + sz)) await run(`e8j.${sz}`, sz, async s => {
+    await as(s, 'saber'); await reachPick(s, 149, s.desk ? 'bar' : 'menu'); await usersTab(s); await wait(s, 500)
+    await folded(s, HEADS())
+    await s.page.evaluate(sub => { const r = [...document.querySelectorAll('[data-person="prowler"]')].find(e => e.querySelector('.acc-sub')); r.querySelector('.acc-tap')?.removeAttribute('title'); r.querySelector('.acc-sub').textContent = sub; r.querySelectorAll('.od-c, .ub').forEach(e => { e.style.visibility = 'hidden' }) }, 'Pilot · CAT IP · also plans 149')
+    const link = await s.page.evaluate(html => { const h = document.createElement('div'); h.innerHTML = html; h.style.position = 'absolute'; h.style.left = '-9999px'; document.querySelector('#page-admin').appendChild(h); const sm = h.querySelector('details.acc-roles summary'); const c = getComputedStyle(sm); const r = { color: c.color, fontSize: c.fontSize, fontWeight: c.fontWeight, fontFamily: c.fontFamily }; h.remove(); return r }, CARD['s.Ranger'].html)
+    FACT(`e8j.${sz}.linkLook`, { from: 'the row\'s own "What each role allows" link', ...link })
+    const r = await open142(s, { open: 'bane', card: CARD['s.Ranger'].html, kind: 'member' })
+    const b = await s.page.evaluate(([words, link]) => {
+      const acts = [...document.querySelectorAll('#r5bOpened .acc-edit > .acc-acts')].pop()
+      acts.style.display = 'flex'; acts.style.alignItems = 'center'
+      const t = document.createElement('button'); t.type = 'button'; t.id = 'r5bJump'; t.textContent = words
+      Object.assign(t.style, { marginLeft: 'auto', background: 'transparent', border: '0', padding: '6px 2px', cursor: 'pointer', color: link.color, fontSize: link.fontSize, fontWeight: link.fontWeight, fontFamily: link.fontFamily })
+      acts.appendChild(t)
+      return { line: [...acts.querySelectorAll('button')].map(x => x.textContent.trim()), color: getComputedStyle(t).color }
+    }, ['Edit on 142 →', link])
+    FACT(`e8j.${sz}.drawn`, { opened: r.opened, buttons: r.openedButtons, actsLine: b, top: await words(s, '.od-head'), filter: await words(s, '#accFilter'), showing: await words(s, '.od-showing, [data-testid="users-showing"]'), squadron: await barSq(s) })
+    await s.page.evaluate(() => { const c = document.querySelector('#r5bOpened'); scrollBy(0, c.getBoundingClientRect().top - (innerWidth > 700 ? 260 : 250)) }); await wait(s, 300)
+    const c = await box(s, '#r5bOpened'), col = await listCol(s)
+    await shot(s, `e8j-${sz}-jump`, [{ x: col.x, y: c.y - 110, w: col.w, h: c.h + 210 }])
+  }, { state: R5 })
+  if (want('e8j2')) await run('e8j2', 'd', async s => {
+    await as(s, 'saber'); await reachPick(s, 149, 'bar'); await usersTab(s); await wait(s, 400)
+    await reachPick(s, 142, 'bar'); await usersTab(s); await wait(s, 500)
+    await hit(s, s.page.locator('[data-person="bane"] .acc-tap').first(), 700)
+    await s.page.evaluate(() => document.querySelector('.acc-row.od-row-on').scrollIntoView({ block: 'center' })); await wait(s, 300)
+    const row = await s.page.evaluate(() => { const e = document.querySelector('.acc-row.od-row-on'); return { words: e.innerText.replace(/\s+/g, ' ').trim().slice(0, 300), buttons: [...e.querySelectorAll('button')].filter(b => b.getBoundingClientRect().width > 0 && !b.classList.contains('acc-tap')).map(b => b.textContent.trim() + (b.disabled ? ' [greyed]' : '')) } })
+    FACT('e8j2.after', { squadron: await barSq(s), head: await words(s, '.od-head .adm-sub'), row })
+    await s.page.mouse.move(1, 1)
+    await shot(s, 'e8j2-d-after', [await box(s, '.acc-row.od-row-on')])
+    /* the top bar's number, for the picture's own record */
+    FACT('e8j2.topBar', await s.page.evaluate(() => [...document.querySelectorAll('.topbar .mark, #sqnMenuBtn')].filter(e => e.getBoundingClientRect().width > 0).map(e => e.innerText.replace(/\s+/g, ' ').trim())))
   }, { state: R5 })
   /* ITEM 10 - the open group's heading, as round 1 (Saber, the squadron ticks) */
   if (want('e5')) await run('e5', 'd', async s => {
