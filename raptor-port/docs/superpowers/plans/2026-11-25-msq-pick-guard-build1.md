@@ -292,6 +292,8 @@ every other is folded under its closed heading, in "All squadrons" too (narrows 
 the date archived; "it's him" (that squadron's admins asked on their bell to bring him back and move him, the request
 waiting) or "someone new" (added at once, that squadron's admins asked to delete the old one if he has left). The move
 waits for the Transfer build. Fixes today's note pointing to a "▸ Archived" the page lacks. Words read by a fresh Fable.
+**His D2633:** this build ships only "Someone new: add him" and "If this is him, ask 142's admin"; "It's him" comes with
+the Transfer step (batch 4). Fable's words and its twelve missing cases: `briefs/2026-11-25-msq-c6-words-fable-report.md`.
 
 **(c) The schedule's veiled dialogs — `.airpop` / `.modal`, flags in `ui/pops.ts`. Shaded.** Each row reads the
 predicate named, as a function of `ui/windrawn.ts` that the component calls.

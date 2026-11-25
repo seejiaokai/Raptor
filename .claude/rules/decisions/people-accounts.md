@@ -182,7 +182,7 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - A person who moves to another squadron loses every View and Plan he held of others [D2203, D2087].
 - Only a master admin changes a master's account; a sign-in waits for the last person's pending save, drawn first [D2205].
 - The transfer: only the Leave War's Post out moves his primary squadron, on its date. Neighbouring squadrons plan each other's people as a matter of course, not only during a posting [D281, D2087, D282, D1100, D1101].
-- A callsign held by another squadron's archived man: the note names it, seat, CAT and date archived; "it's him" asks that squadron's admins on their bell to bring him back and move him, the request waiting; "someone new" adds him at once, its admins asked to delete the old one if he has left [D2632, D286].
+- A callsign held by another squadron's archived man: the note names it, seat, CAT and date archived; "it's him" asks that squadron's admins on their bell to bring him back and move him, the request waiting; "someone new" adds him at once, its admins asked to delete the old one if he has left; "it's him" waits for the Transfer build, the note till then "If this is him, ask 142's admin" [D2632, D2633, D286].
 - A community is the squadrons flying one aircraft type (F-15, F-16): callsigns unique within a community, not across the app; a guest flyer from another community is always marked — an orange corner on his puck (option A) [D288, D289, D296].
 
 - A dedicated check of all built and planned so far for an admin with Plan left out or let in wrongly, its faults fixed before the reshape build [D2242].
