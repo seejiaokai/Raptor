@@ -234,8 +234,12 @@ both close without a word at a pick and at the view switch, in the one press (pr
 
 | What | File · closes | Flag | counts |
 |---|---|---|---|
-| ALL AVAIL | `ui/AvailWindow.tsx`; ✕, Escape, a page or week change (`view.setPage`, `VIEW_RESET 'week'`) | `AVAILWIN` | window (H2) |
-| Changes, opened out — and, on a phone only, folded to its bar at the foot (a desktop draws no "Hide", so it has no folded form: pressed, P1 2) | `ui/ChangesWindow.tsx`; the same | `CHGWIN` | window; folded too (H2) |
+| ALL AVAIL | `ui/AvailWindow.tsx`; ✕, Escape, a page or week change (`view.setPage`, `VIEW_RESET 'week'`) | `AVAILWIN` | **no — closes by itself at the pick and the view switch, as today (his D2596, 25 Nov 26; this cell was "window (H2)")** |
+| Changes, opened out — and, on a phone only, folded to its bar at the foot (a desktop draws no "Hide", so it has no folded form: pressed, P1 2) | `ui/ChangesWindow.tsx`; the same | `CHGWIN` | **no — opened out and folded alike, as ALL AVAIL (D2596)** |
+
+**His D2596 (25 Nov 26, A2 on the questions page):** these two close by themselves, nothing to edit in either. The rest of
+the plan that names them as counted (§3.1's table, the tests of §3.5, the walk) is folded by the next chat with his other
+answers; until then this note wins over any line that counts them.
 
 **(c) The schedule's veiled dialogs — `.airpop` / `.modal`, flags in `ui/pops.ts`. Shaded.** Each row reads the
 predicate named, as a function of `ui/windrawn.ts` that the component calls.
