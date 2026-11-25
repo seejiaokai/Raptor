@@ -24,7 +24,7 @@ import { applyMove, sortWave, sortInTimes, sortDutyBlock, sortSims, sortGround, 
 import { HIST } from '../state/history'
 import { rlFaultAtt, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, saBadgesHTML, availHTML, quarantineNote , mkPeriod, withDaySnap, fltNoLenShown, sbPrevDay, SB_PREVDAY, boxText } from './html'
 import { onInputRow, rowMark, UNMARKED } from './reqdoor'
-import { setInpField, howMany, markMoved } from './inputedit'
+import { setInpField, howMany, markMoved, rowInputOf } from './inputedit'
 import { reqRowText } from './reqrow'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { DAYTPL_PUBLISHED_MSG } from '../engine/daytpl'
@@ -1363,7 +1363,10 @@ export function boardChange(e: Event) {
     const [tail, field] = inf.dataset.ifld!.split('.')
     /* one man's row of an input that holds several names him after the id (engine/keys.ts iuParts) */
     const at = iuParts('iu:' + tail), id = at ? at.iid : tail
-    const inp = inpById(id)
+    /* …and once a change has given him an input of his own, the row — held back from repainting while the caret is in
+       it — still carries the shared input's id: the input it stands for now is his own (inputedit.tsx rowInputOf), so a
+       refused box heals to HIS times, never the others' (chat 170's night walk, W3) */
+    const inp = rowInputOf(inpById(id), at ? at.person : null)
     if (!inp) return notify()                    // deleted or undone underneath it
     const back = () => { inf.value = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field) }
     if (RO) return back()

@@ -719,6 +719,9 @@ export const draftOf = (r: any) => ({
    input write as every save is) */
 export function setLeaveRemarks(row: any, remarks: string, person?: any, docIds?: string[], till?: boolean): boolean {
   const withDocs = (d: any) => ({ ...d, remarks, ...(docIds ? { docIds: [...docIds] } : {}), ...(typeof till === 'boolean' ? { till } : {}) })
+  /* the window keeps the leave it was opened on across its saves — after the first gave him a leave of his own, the
+     second follows him there, never onto the others' (rowInputOf, below) */
+  if (person != null && person !== '') { row = rowInputOf(row, person); if (!row) return false }
   if (person != null && person !== '' && idsOf(row).length > 1 && holds(row, person)) {
     return ownPartSave(row, person, own => commitInputEdit(own, withDocs(draftOf(own))))
   }
@@ -733,11 +736,39 @@ export function setLeaveRemarks(row: any, remarks: string, person?: any, docIds?
    THROWS, which is what rolls the command back whole (state/store.ts runInputWrite) — the idiom commitInput's own
    body uses (`stop`). The refusal has already said why; saveBatch says so itself only where nothing did. */
 function ownPartSave(inp: any, who: any, save: (own: any) => boolean): boolean {
-  return saveBatch(() => {
+  let made: any = null
+  const ok = saveBatch(() => {
     const own = ownInputOf(inp, who)
     if (!own || !save(own)) throw new CmdRefused('one man’s part was not saved')
+    made = own
     return true
   })
+  if (ok && made && made !== inp && inp.iid && made.iid) OWN_OF.set(`${inp.iid}~${who}`, made.iid)
+  return ok
+}
+
+/* ONE MAN'S ROW FOLLOWS HIM TO THE INPUT OF HIS OWN (chat 170's night walk, W3 — 25 Nov 26; fixed by chat 177, pinned
+   in leavewar/sharedrow-follows.test.ts). Each door above is handed the input its row or window ADDRESSES — the box's
+   `iu:<iid>~<person>` on the Board's Unavailable list (board.ts) and the week (textedit.ts), the leave a Leave War remark
+   window was opened on (SelectSheet, ReqWords). The first change gives him an input of his own, a NEW record; the row
+   under the caret is held back from repainting and the window keeps what it was handed, so the next change came back
+   with the SHARED input's address — which no longer holds him — and was saved onto it whole: onto the OTHERS' leave
+   (Ranger's end 11:00 saved as Hex's, Ranger left at 10:00). So every cut-out is remembered here, the shared input's id
+   and the man's against the id of his own, and a door asks `rowInputOf` for the input his row stands for now: the one
+   it addresses while he is still in it; else the one cut out for him, followed as far as it was cut again; else none —
+   and a door with none saves NOTHING, never the others' input. Only a pointer, checked against the records each time,
+   so an Undo that puts him back in the shared input is followed by itself, and a stale one finds nothing; it lives
+   for the page's life and is not saved — a reload repaints every row with its own address. */
+const OWN_OF = new Map<string, string>()
+export function rowInputOf(inp: any, who?: any): any {
+  if (!inp || who == null || who === '') return inp
+  let cur: any = inp
+  for (let hop = 0; cur && hop < 8; hop++) {
+    if (holds(cur, who)) return cur
+    const next = cur.iid ? OWN_OF.get(`${cur.iid}~${who}`) : undefined
+    cur = next ? (INPUTS as any[]).find((r: any) => r.iid === next) || null : null
+  }
+  return null
 }
 
 
@@ -2022,6 +2053,8 @@ export function askOilIfPending(r: any, shut = false): boolean {
    describe a window that is no longer a half. */
 const halfOf = (s:number, e:number) => (s === 0 && e === 720) ? 'am' : (s === 721 && e === 1439) ? 'pm' : ''
 export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any, who?: any) {
+  /* one man's row: the input it stands for NOW — his own, once the first change cut it out (rowInputOf) */
+  inp = rowInputOf(inp, who)
   if (!inp) return false
   const d: any = draftOf(inp)
   /* the typed words only: a remark box on the schedule's Ground Programme row shows its "till <date>" (the row prints

@@ -7,7 +7,7 @@ import { DAYS } from '../engine/data'
 import { txtGet, txtSet, TIME_TXT } from '../engine/slots'
 import { inpById, inpTimeText, remarksTyped } from '../engine/inputs'
 import { iuParts } from '../engine/keys'
-import { setInpField } from './inputedit'
+import { setInpField, rowInputOf } from './inputedit'
 import { reqRowText } from './reqrow'
 import { markEdit } from '../engine/publish'
 import { reconcileIssuedMarks } from '../engine/drafts'
@@ -225,7 +225,10 @@ export function routeFocusOut(e: FocusEvent) {
     const [tail, field] = ip.dataset.inp!.split('.')
     /* one man's row of an input that holds several names him after the id (engine/keys.ts iuParts) */
     const at = iuParts('iu:' + tail), id = at ? at.iid : tail, who = at ? at.person : null
-    const inp = inpById(id)
+    /* once a change has given him an input of his own, the held row still carries the shared id: the input it stands
+       for now is his own (inputedit.tsx rowInputOf — chat 170's night walk, W3), so "left as it was" and a refusal's heal
+       read HIS times, never the others' */
+    const inp = rowInputOf(inpById(id), who)
     if (!inp) return                       // deleted or undone from under the caret
     /* LEFT AS IT WAS, NOTHING IS SAVED ([HIST-PHONE-HIDE] walk, 28 Sep 26): a tap in and out of an empty "all day" cell —
        which a phone's History invites, a tap on a dotted input row to read its story — wrote times onto the record (0
