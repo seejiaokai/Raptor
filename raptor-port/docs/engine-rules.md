@@ -1989,11 +1989,18 @@ alike). `slotStart`/`slotEnd` themselves did NOT move: absences and the
 busy-at-this-hour check still judge the occupied step→dekit window)
 and `day.events`' sim entries whose key matches
 `^s:\d+\.(amt|oft)\.` (domain is the captured word, window is the event's own
-`s→e`). For each SANS person on each check, `sansGate` decides; **only
-`'not-offered'` and `'window'` raise** `add('adv','SANS_AVAIL',...)` +
-`markRing(di,id,'adv')` + `markChip(di,id,'A')`.
+`s→e`). For each SANS person on each check, `sansGate` decides; **`'not-offered'`,
+`'window'` and, since his D2579 / D2584 Q3 (25 Nov 26), `'none'` raise**
+`add('adv','SANS_AVAIL',...)` + `markRing(di,id,'adv')` + `markChip(di,id,'A')` (the amber "A", D2583).
+The words: nothing filed "SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)" — telling
+nobody to file; the mismatch says what he offered, "SANS: offered Fly only today. Planned on …" (two:
+"offered OFT and AMT only", D2584 2a, from `sansGate`'s `offered` and `sansOfferedWords`); wrong hours
+"SANS: available 08:00–10:00 only. …". A seat with no times raises 'none' and 'not-offered', never 'window'.
+The check's name: "SANS availability — not filed, or planned outside it"; the Logic page's line "A SANS man
+planned outside the event or the hours he filed, or with nothing filed." (D2584 3b). Pinned by
+`sans-warn-lines.test.ts`.
 
-**`'none' is DELIBERATELY silent here — the scoping decision, and why it is
+**SUPERSEDED by D2579 (25 Nov 26) — kept for its history: `'none' is DELIBERATELY silent here — the scoping decision, and why it is
 correct** (owner, 14 Aug 26). The owner's own example only ever describes
 planting AGAINST a filed record ("indicates A and O… planned for F →
 advisory"): a bare no-record is not that case. And practically: the seed

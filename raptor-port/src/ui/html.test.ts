@@ -502,7 +502,7 @@ describe('view-week markup parity with the reference', () => {
   it('the flags read by severity — red hard, then amber advisory, then grey', () => {
     const l = legendHTML()
     const reds = ['conflict', 'crew pairing — not authorised', 'crew rest', 'days in a row', 'qual / illegal seat']
-    const ambers = ['double turn', 'tight turn', 'advisory — shift + ground', 'crew pairing — needs approval', 'misses flight debrief', 'misses sim debrief']
+    const ambers = ['double turn', 'tight turn', 'advisory — shift, ground or SANS availability', 'crew pairing — needs approval', 'misses flight debrief', 'misses sim debrief']
     const lastRed = Math.max(...reds.map(x => l.indexOf(x)))
     const firstAmber = Math.min(...ambers.map(x => l.indexOf(x)))
     expect(reds.every(x => l.indexOf(x) > -1) && ambers.every(x => l.indexOf(x) > -1)).toBe(true)

@@ -188,7 +188,7 @@ export function lgChecks(): LgGroup<LgChk>[] {
       { id: 'notimes', sev: 'note', name: 'A seat with no times', line: () => 'Still checked against an absence covering the whole day; a part-day absence waits until the seat has times.' },
       { id: 'halfdays', sev: 'note', name: 'Half days', line: () => 'Leave and medical can be AM (to 12:00), PM (from 12:01) or all day, and a half day closes only its own half. A sortie counts from its step (Step before take-off), so AM leave still conflicts with a wave that steps before noon.' },
       { id: 'spare', sev: 'note', name: 'Standing SC SPARE', line: () => 'A man on local leave may still stand SC SPARE. Overseas leave or duty (OL, OD) or a medical code (HL, OML, ATT C, ATT B) may not: that is a warning. A row that flies has no such allowance.' },
-      { id: 'sansavail', sev: 'adv', code: 'SANS_AVAIL', line: () => 'A SANS man planned outside the event or the hours he filed. Filing nothing raises nothing.' },
+      { id: 'sansavail', sev: 'adv', code: 'SANS_AVAIL', line: () => 'A SANS man planned outside the event or the hours he filed, or with nothing filed.' },
       { id: 'late', sev: 'note', name: 'LATE', line: () => 'An input last changed after its cut-off (Inputs late cut-off) wears LATE: a mark, never a warning. Downchits never do.' },
     ] },
     { g: 'OIL', items: [

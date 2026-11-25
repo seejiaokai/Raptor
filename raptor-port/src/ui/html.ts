@@ -451,7 +451,7 @@ export function legendHTML(){
     <span><span class="qk" style="background:#F0555F">Q</span>qual / illegal seat</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">DT</span>double turn</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">TT</span>tight turn</span>
-    <span><span class="qk" style="background:#E5A83B;color:#12100a">A</span>advisory — shift + ground</span>
+    <span><span class="qk" style="background:#E5A83B;color:#12100a">A</span>advisory — shift, ground or SANS availability</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">CP</span>crew pairing — needs approval</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">B</span>misses flight brief</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">B</span>misses sim brief</span>

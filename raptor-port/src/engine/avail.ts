@@ -378,10 +378,14 @@ const SANS_KEY:any={fly:'f',oft:'o',amt:'a'};
 export const SANS_LABEL:any={fly:'Fly',oft:'OFT',amt:'AMT'};
 /* `iso`: the day being asked about — only a man who is SANS ON THAT DAY is judged (owner D2313, 22 Nov 26: a day before
    his SANS date is a regular's day, and no SANS availability is asked of it — engine/people.ts sansOn). */
+/* what he offered, as the lists say it: "Fly only", "OFT and AMT only"; '' when nothing is ticked (D2584 Q2 / 2a) */
+export function sansOfferedWords(off:any):string{const o=(off||[]);return o.length===1?`${o[0]} only`:o.length===2?`${o[0]} and ${o[1]} only`:'';}
 export function sansGate(id:any,dt:any,domain:any,s:any,e:any,iso?:any):any{
   const p=PEOPLE[id]; if(!p||!sansOnP(p,iso))return {status:'na'};
   const rec=sansAvailOn(id,dt); if(!rec)return {status:'none'};
-  if(!(rec.sans&&rec.sans[SANS_KEY[domain]]))return {status:'not-offered'};
+  /* `offered`: the events he DID tick, in the card's order, so the crew and warning lists can name them (owner D2584
+     Q2 / 2a — "SANS — offered Fly only, not OFT") */
+  if(!(rec.sans&&rec.sans[SANS_KEY[domain]]))return {status:'not-offered',offered:['fly','oft','amt'].filter((k:any)=>rec.sans&&rec.sans[SANS_KEY[k]]).map((k:any)=>SANS_LABEL[k])};
   /* an ALL-DAY offer covers every slot on the day, INCLUDING one whose window
      crosses midnight — a night sortie landing after 00:00 (slotEnd>1439), an
      SC night shift (…07:00), a small-hours take-off (slotStart<0). The day-

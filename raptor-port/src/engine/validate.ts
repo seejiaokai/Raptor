@@ -5,7 +5,7 @@ import { overlap, hm24, lgT, parseHM } from './time'
 import { collectEvents, shiftEvHard, scSeatHits, avSeatHits } from './events'
 import { reportingIssuesForDay,stated } from './reporting'
 import { HOOKS } from './hooks'
-import { sansGate, SANS_LABEL } from './avail'
+import { sansGate, SANS_LABEL, sansOfferedWords } from './avail'
 import { seedRunIn, datedRestSeed, dayHidesIn, nextMondayWorked, nextMondayDay, nextMondayHides, windowDiverges, windowFiling, windowInputs, filingDivergesAt } from './weekctx'
 import { setWorld, setFiling, clearFiling } from './world'
 import { CURWEEK, isStandalone, saExempt, saAnyFlies } from './waves'
@@ -34,7 +34,7 @@ export const WCODE:any={DOUBLE_BOOK:'Conflict',DNIF_FLY:'Downchit + planned',LEA
   PAX_CREW:'Incentive passenger — crew pairing needs approval',
   SHIFT_SOFT:'Overlaps standby',
   SC_INTIME:'Busy before a standby shift',
-  SANS_AVAIL:'SANS availability — planned outside the availability filed',
+  SANS_AVAIL:'SANS availability — not filed, or planned outside it',
   OIL_NO_TIMES:'No OIL earned — a row has no usable times',
   FLT_NO_LEN:'Flight times — take-off and landing are the same',
   SA_FLY_NO_TIME:'Standby line flies — no start or end',
@@ -1523,8 +1523,13 @@ function validateCore(){
        programme event carries no matching key, so it never reaches
        sansGate — "any ground event can also be planned" is the owner's rule
        for slotBar too, and the two must not drift apart.
-       ONLY 'not-offered' and 'window' raise. 'none' — nothing filed at all —
-       is DELIBERATELY silent here: the owner's own example only ever
+       'not-offered', 'window' AND 'none' raise (owner D2579 / D2584 Q3, 25 Nov 26 — "ok we can do it as a amber line as
+       well"): nothing filed is one amber line stating the fact and telling nobody to file, "SANS: no availability filed
+       for today. Planned on VL BFM (T/O 13:00)"; a seat with no times too, as the crew list strikes him there (D2573).
+       The mismatch line says what he DID offer (D2584 2a): "SANS: offered Fly only today. Planned on …". Every one
+       wears the amber ring and "A" (D2583). This REPLACES the old silence on 'none' kept below for its history — the
+       seed's SANS flyers with no record now raise it in a test that reads INPUTS pristine (the demo boots with their
+       records, state/demoseed.ts). The old reasoning: the owner's own example only ever
        describes planting AGAINST a filed record ("indicates A and O…
        planned for F"), and firing on a bare no-record would put this
        Advisory on every seeded SANS flyer the demo week already carries
@@ -1549,12 +1554,14 @@ function validateCore(){
     const sansIso=dayIso(String(CURWEEK),di);
     sansChecks.forEach((c:any)=>{ const p=PEOPLE[c.id]; if(!p||!sansOnP(p,sansIso))return;
       const g=sansGate(c.id,day.dt,c.domain,c.s,c.en,sansIso);
-      if(g.status!=='not-offered'&&g.status!=='window')return;
+      if(g.status!=='not-offered'&&g.status!=='window'&&g.status!=='none')return;
       /* [BLANK-LINE-SANS-WORDS]: a seat with no times yet has nothing to hold his offered window against — no clash to
          word, as the crew list (which strikes him only against a window) already says */
       if(g.status==='window'&&noWin(c.s,c.en))return;
       markRing(di,c.id,'adv','SANS_AVAIL');markChip(di,c.id,'A','SANS_AVAIL');
-      const reason=g.status==='not-offered'?`not offering ${SANS_LABEL[c.domain]} today`
+      /* D2584 Q3 / 2a — "no availability filed for today"; what he offered, "offered Fly only today" */
+      const reason=g.status==='none'?'no availability filed for today'
+        :g.status==='not-offered'?(sansOfferedWords(g.offered)?`offered ${sansOfferedWords(g.offered)} today`:`not offering ${SANS_LABEL[c.domain]} today`)
         :`available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
       /* [WARN-WORDS-STANDALONE]: "SANS: available 08:00–12:00 only. Planned on VL BFM (T/O 13:00)" */
       add('adv','SANS_AVAIL',[c.id],`SANS: ${reason}. Planned on ${c.domain==='fly'?flightTag(c.label,c.to):whatAt(rowName({label:c.label,kind:'sim'}),c.s,c.en)}`,c.key);

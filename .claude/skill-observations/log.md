@@ -1546,3 +1546,16 @@ sides.
 **Issue:** The new chat switched the main folder to the branch, then found its Write tool refused every file there ("This session is running in an isolated git worktree … edits there … may corrupt the user's primary working copy"). It put the main folder back to detached and checked the branch out in its own worktree instead. Two minutes lost, and a risk: a chat that did not test a write first could have run a build, a test or a commit in one folder while its edits landed in another.
 **Suggested improvement:** In the session-handoff skill's opening-line template, name the branch, not a folder: "check out <branch> where your file tools write (your own worktree, or the main folder if you started there); make one write first, and if it is refused, check out the branch where it is allowed". Keep any named folder as a fallback only.
 **Principle:** A handoff can say which branch the work is on, but not which folder the next session may write to — that depends on how the session was started; tell it to prove one write before switching anything.
+
+### Observation 1075: a walker's new scripts failed the pull request's code check after the walk
+
+**Status:** OPEN
+**Date:** 2026-11-25
+**Session context:** chat 185 closing the bug check of the SANS standby / untimed-sim batch (pull request 848); numbered past 1074, the highest on another open branch
+**Skill:** New skill candidate: walk-scripts (raptor-port/docs/walk-scripts.md)
+**Type:** open-source
+**Phase/Area:** writing a walk script; committing the walk
+
+**Issue:** Two walk scripts committed with the walk's pictures copied page data out with JSON.parse(JSON.stringify(...)) inside page.evaluate. The pull request's code check (React Doctor, run on every changed file, scripts included) failed on both lines; it was found only when the run came back red, after the walk was committed and pushed.
+**Suggested improvement:** In the walk-scripts guide's "before you commit a walk" steps, run the project's changed-files lint (lint:changed) on the new scripts before the walk's commit, and give the standard disable-comment reason for an in-page JSON copy (the data leaves the page as JSON anyway).
+**Principle:** Anything committed is checked by the same gate as product code; run the gate's changed-files check on helper scripts before committing them, not only on source files.
