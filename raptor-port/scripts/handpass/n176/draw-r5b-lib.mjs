@@ -55,6 +55,38 @@ export const greyLook = (s, sel) => s.page.evaluate(sel => {
   t.remove(); Object.assign(b.style, look)
   return look
 }, sel)
+/* THE ROW-FOOT PAIR (the owner, 26 Nov 26: round 1's "Add person" · "Cancel" differed in size and did not line up). The
+   app's own pair on an opened Admin → Users row - Save · Cancel, read off Ranger's real opened row on 142's page (opened,
+   measured, closed by its own Cancel) - its buttons' box metrics and type, the gap between them, and the gap above the
+   pair; footLikeRow then lays the form's foot (#n176acts) exactly so: the same metrics on "Add person" (main) and
+   "Cancel" (plain), tops and baselines on one line, the form's note one even gap above the pair. */
+const BTN_PROPS = ['height', 'minHeight', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'fontFamily', 'fontSize', 'fontWeight', 'lineHeight', 'letterSpacing', 'borderTopLeftRadius', 'borderTopRightRadius', 'borderBottomLeftRadius', 'borderBottomRightRadius', 'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth', 'boxSizing', 'verticalAlign', 'textTransform']
+export async function rowFootRef(s, hitFn) {
+  await hitFn(s, s.page.locator('[data-person="bane"] .acc-tap').first(), 700)
+  const ref = await s.page.evaluate(P => {
+    const row = document.querySelector('.acc-row.od-row-on'), sv = row.querySelector('#accEdSave'), cn = row.querySelector('#accEdCancel'), acts = sv.parentElement
+    const pick = e => { const c = getComputedStyle(e); return Object.fromEntries(P.map(p => [p, c[p]])) }
+    const prev = acts.previousElementSibling, a = acts.getBoundingClientRect(), sb = sv.getBoundingClientRect(), cb = cn.getBoundingClientRect()
+    const ac = getComputedStyle(acts)
+    return { save: pick(sv), cancel: pick(cn), acts: { display: ac.display, gap: ac.gap, alignItems: ac.alignItems },
+      /* the gap between two buttons side by side: Save and the button next to it on its line */
+      gapBetween: Math.round(sv.nextElementSibling.getBoundingClientRect().left - sb.right), gapAbove: prev ? Math.round(a.top - prev.getBoundingClientRect().bottom) : null,
+      boxes: { save: { x: Math.round(sb.left), y: Math.round(sb.top), w: Math.round(sb.width), h: Math.round(sb.height) }, cancel: { x: Math.round(cb.left), y: Math.round(cb.top), w: Math.round(cb.width), h: Math.round(cb.height) } } }
+  }, BTN_PROPS)
+  await hitFn(s, '#accEdCancel', 500)
+  return ref
+}
+export const footLikeRow = (s, ref) => s.page.evaluate(ref => {
+  const acts = document.querySelector('#n176acts'), a = acts.querySelector('#n176save'), c = acts.querySelector('#n176cancel')
+  Object.assign(a.style, ref.save); Object.assign(c.style, ref.cancel); a.style.margin = '0'; c.style.margin = '0'
+  Object.assign(acts.style, { display: 'flex', flexWrap: 'nowrap', alignItems: 'center', gap: ref.gapBetween + 'px', margin: '0' })
+  /* the gap above: what stands above the pair (the form's note) ends, then one even gap, then the pair */
+  const prev = acts.previousElementSibling; if (prev) prev.style.marginBottom = '0'
+  acts.style.marginTop = (ref.gapAbove ?? 12) + 'px'
+  const r = e => { const q = e.getBoundingClientRect(); return { x: Math.round(q.left), y: Math.round(q.top), w: Math.round(q.width), h: Math.round(q.height) } }
+  const base = e => { const sp = document.createElement('span'); sp.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline'; e.appendChild(sp); const y = Math.round(sp.getBoundingClientRect().top * 10) / 10; sp.remove(); return y }
+  return { addPerson: r(a), cancel: r(c), gapBetween: Math.round(c.getBoundingClientRect().left - a.getBoundingClientRect().right), gapAbove: prev ? Math.round(acts.getBoundingClientRect().top - prev.getBoundingClientRect().bottom) : null, baselines: { addPerson: base(a), cancel: base(c) }, type: { addPerson: getComputedStyle(a).fontSize + ' ' + getComputedStyle(a).fontWeight, cancel: getComputedStyle(c).fontSize + ' ' + getComputedStyle(c).fontWeight } }
+}, ref)
 /* a picture pair where the crop may reach below the screen: the whole screen as seen, the crop cut from the whole page */
 export async function shotTall(s, name, rect, pad = 14) {
   const { page } = s
