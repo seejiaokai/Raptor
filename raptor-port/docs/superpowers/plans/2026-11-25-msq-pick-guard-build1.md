@@ -1223,6 +1223,26 @@ row below is read again then.**
 | **The words pass**, merged (pull request 841) | in this branch | `state/notices.ts`, `ui/InputsPage.tsx` | **No word of Build 1 is taken from the words pass**; the builder searches `main` for the bell line's row before touching any line's words (the handoff's rule) — Build 1 touches none, part V adds lines of its own (§19.2, §19.4), each with a row in the notifications register |
 | The Tracker press reshape (its own plan, not built) | not built | `tracker/app/core.js` gestures | Build 1 edits `core.js` in five places only — the new read-only `TRK_WINDOWS` table, the registered `ask` (the tail), the new `onTrackerWindows` line with the asking mark beside it, the closer of the event's details (§3.1), and (N12) the one variable `App.jsx` hands its Flow chart / Info tab to; `endSession` is not touched. None is in the gesture code. If N7 is answered "the marking window refuses", `tracker/App.jsx clickAway` changes too — the reshape's own ground, settled with that plan first. Whichever is built second re-reads the other's diff of `core.js` |
 
+**`main` brought in, 25 Nov 26 evening (chat 176; to pull request 845's merge, `1993bed86`; hand-back
+`../briefs/2026-11-25-msq-q3-merge-report.md`).** The sections above were written before it; the builder re-reads each
+function named before touching it. What the merge found, for the builder and the third read — none fixed by the merge:
+- **`ui/sansadd.ts maySansAdd(iso)` and `ui/sanscal-model.ts sansBeforeMine`** ask `isAdmin()` — the role alone — and
+  were listed in `state/edit-rights-readers.test.ts` as kind "role" to keep that guard green. On a squadron he only
+  views (Hunter on 150), "+ Commitment" may then be offered to him: this is part V's C3 (D2628) and must become a
+  question of the squadron in view, the inventory's kind changed with it (§19). Pressed by no one yet.
+- **`state/notices.ts noticeLive`:** `main`'s SANS reminder line carries no squadron and `noticeAboutHim` answers false
+  for it, so the bell's squadron switch (`bellShows`) can hide a reminder about him from a man who switched his own
+  squadron's lines off — against D2198/D2202 (a line about him is never hidden). From reading, not pressed.
+- **`ui/topstate.ts openNotice`:** the SANS reminder's tap sets `askSansDay` and calls `setPage('inputs')` directly —
+  a road for the page door (§4.5) and for D2621's "its squadron into view first".
+- **Moved since this plan read them:** §18.7's `maySansAdd()` is now `maySansAdd(iso)`, `openSansAdd` has a `reaches`
+  path; §19.4's `state/quals-write.ts updatePersonField` now runs through `commitPeopleIntent` with a SANS watch;
+  §5.5's line numbers in `ui/interactions.ts`, `InputsCal.tsx` and §19.8's in `ui/html.ts`; the notifications
+  register's account line is now row B14 and "posting could not run" B15 (`main`'s B13 is the SANS reminder);
+  `ui/board.ts boardChange` (`rowInputOf`), `state/view.ts armSlot` and `leavewar/state/store.ts openStint` (a fourth
+  argument) are new on `main` and not read above.
+- **Renumbered by the merge:** this branch's D2388 is now **D2637** (`main` holds its own D2388).
+
 ---
 
 ## 10. The builds, and the build order
