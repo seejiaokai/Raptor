@@ -1,0 +1,57 @@
+/* ===== the try-out's own frame and its two new marks. Everything inside #eWeek is the app's captured look. ===== */
+html,body{height:auto;min-height:100%;overflow:auto;background:var(--bg)}
+body{margin:0;-webkit-text-size-adjust:100%}
+
+/* --- the settings strip: plainly NOT the app — a lighter sheet with a dashed foot, its own small type --- */
+.tt-strip{background:#1E242C;border-bottom:1px dashed var(--edge-2);color:var(--ink);font-size:13px}
+.tt-in{max-width:1180px;margin:0 auto;padding:14px 16px 14px;display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-start}
+.tt-head{flex:1 1 260px;min-width:0}
+.tt-head h1{margin:0;font-size:15px;font-weight:700;letter-spacing:0;color:var(--ink)}
+.tt-sub{margin:4px 0 0;color:var(--ink-2);font-size:12.5px;line-height:1.45;max-width:46ch}
+.tt-groups{flex:3 1 640px;display:flex;flex-wrap:wrap;gap:12px 22px;align-items:flex-end}
+.tt-grp{display:flex;flex-direction:column;gap:6px;min-width:0}
+.tt-lbl{font-size:11.5px;font-weight:600;color:var(--ink-2)}
+.tt-opts{display:flex;flex-wrap:wrap;gap:6px}
+.tt-opts .fchip{font-family:inherit;line-height:1.2;min-height:34px}
+.tt-opts .fchip:focus-visible,.tt-reset:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tt-reset{font-family:inherit;font-size:12px;font-weight:600;min-height:34px;padding:6px 14px;border-radius:9px;cursor:pointer;
+  background:transparent;color:var(--ink-2);border:1px solid var(--edge-2)}
+.tt-reset:hover{color:var(--ink);border-color:var(--ink-3)}
+@media (max-width:620px){
+  .tt-in{padding:12px 16px}
+  .tt-groups{gap:12px}
+  .tt-grp{flex:1 1 100%}
+  .tt-opts .fchip{flex:1 1 0;min-width:0}
+}
+
+/* --- the stage: one day, at the width the week gives it --- */
+.tt-stage{padding:16px 16px 120px}
+.tt-stage #root,.tt-stage #shell,.tt-stage .page,.tt-stage .edit-inner,.tt-stage .edit-board{display:block;position:static;height:auto;min-height:0;
+  overflow:visible;margin:0;padding:0;transform:none;width:auto;max-width:none;inset:auto}
+.tt-stage #eWeek{display:block !important;overflow:visible !important;padding:0 !important;margin:0 auto !important;width:auto !important;
+  max-width:552px;height:auto !important;transform:none !important}
+.tt-stage #eWeek section.day{width:100% !important;max-width:none !important;flex:none !important;margin:0 !important;scroll-snap-align:none}
+@media (max-width:620px){.tt-stage{padding:10px 0 120px}}
+
+/* --- the new rule's two marks (no glow: a 1px line drawn inside the box) --- */
+#eWeek .et-miss{box-shadow:inset 0 0 0 1px var(--ink-3) !important;border-radius:4px}
+#eWeek .et-miss.et-red{box-shadow:inset 0 0 0 1px var(--hard) !important}
+/* an empty time box keeps a size to carry its outline */
+#eWeek .et-miss:empty{display:inline-block;min-width:34px}
+/* …but a flying line's TO / LD box is as wide as its narrow column (32px on a phone): the outline keeps to it */
+#eWeek .form .et-miss:empty{display:block;min-width:0}
+/* the always-there count line in the sign-off panel: the app's own status words, pressable */
+.signoff button.so-state.et-count{font:inherit;font-size:10.5px;font-weight:700;background:none;border:0;padding:2px 0;margin-left:auto;
+  color:var(--adv);cursor:pointer;text-align:left;white-space:normal}
+.signoff button.so-state.et-count .et-n{color:var(--hard)}
+.signoff button.so-state.et-count:hover .et-n{text-decoration:underline;text-underline-offset:2px}
+.signoff button.so-state.et-count:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+@media (max-width:620px){.signoff button.so-state.et-count{margin-left:0;flex:0 0 100%}}
+/* a sign-off box that will be refused: the press lands on the box, not the hidden list */
+.sgn.et-block>select{pointer-events:none}
+.sgn.et-block{cursor:pointer}
+/* Publish while not signed: the app's darkened, locked button (its [disabled] look), still pressable here so a missing
+   time can be refused with its note */
+#eWeek .dbeak.et-lock{cursor:not-allowed;opacity:1;background:rgba(59,198,232,.16);color:rgba(59,198,232,.62);border-color:rgba(59,198,232,.3)}
+/* the try-out's inert app controls stay as drawn; they just do nothing here */
+#eWeek [data-et-inert]{cursor:default}
