@@ -1,0 +1,479 @@
+<title>Rulings Check Round 2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f6f9;
+    --surface: #ffffff;
+    --surface-2: #eef2f6;
+    --line: #d5dce5;
+    --text: #17202b;
+    --muted: #55637a;
+    --accent: #0b7f96;
+    --accent-soft: #e2f3f6;
+    --rec: #0f6b4f;
+    --rec-soft: #e4f4ec;
+    --rec-line: #9fd3bd;
+    --accent-line: #8fcbd6;
+    --warn: #8a5a00;
+    --warn-soft: #fbf1dc;
+    --shot-bg: #0c1118;
+    --shadow: 0 1px 2px rgba(20, 30, 45, .08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b1220;
+      --surface: #111a2b;
+      --surface-2: #162236;
+      --line: #25344d;
+      --text: #e8edf2;
+      --muted: #9aa9bd;
+      --accent: #3fd0e6;
+      --accent-soft: #10303c;
+      --rec: #6fdcae;
+      --rec-soft: #103227;
+      --rec-line: #1f5a45;
+      --accent-line: #1f5c6b;
+      --warn: #f0c065;
+      --warn-soft: #33280f;
+      --shot-bg: #070b12;
+      --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0b1220;
+    --surface: #111a2b;
+    --surface-2: #162236;
+    --line: #25344d;
+    --text: #e8edf2;
+    --muted: #9aa9bd;
+    --accent: #3fd0e6;
+    --accent-soft: #10303c;
+    --rec: #6fdcae;
+    --rec-soft: #103227;
+    --warn: #f0c065;
+    --warn-soft: #33280f;
+    --shot-bg: #070b12;
+    --shadow: none;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, -apple-system, "SF Pro Text", "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
+  }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding-block: 24px 56px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; letter-spacing: -.01em; }
+  h2 { font-size: 20px; line-height: 1.25; margin: 44px 0 12px; letter-spacing: -.005em; }
+  h3 { font-size: 18px; line-height: 1.3; margin: 0 0 4px; }
+  h4 {
+    font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); margin: 20px 0 4px; font-weight: 600;
+  }
+  p { margin: 0 0 10px; }
+  .lede { color: var(--muted); margin-bottom: 18px; }
+  .kicker {
+    font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 6px;
+  }
+  .quote { font-style: normal; color: var(--text); background: var(--surface-2); border-radius: 4px; padding: 0 4px; }
+
+  /* What to look at now */
+  .now {
+    background: var(--surface);
+    border: 1px solid var(--accent-line);
+    border-radius: 10px;
+    padding: 16px 16px 6px;
+    box-shadow: var(--shadow);
+  }
+  .now h2 { margin: 0 0 4px; font-size: 18px; }
+  .now ol { list-style: none; margin: 10px 0 0; padding: 0; }
+  .now li { border-top: 1px solid var(--line); }
+  .now a {
+    display: grid; grid-template-columns: 28px 1fr; gap: 8px;
+    padding: 12px 0; color: inherit; text-decoration: none;
+  }
+  .now .n {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent);
+    font-weight: 700; font-size: 14px; display: grid; place-items: center; margin-top: 1px;
+  }
+  .now .q { font-weight: 600; }
+  .now .r { color: var(--rec); display: block; font-weight: 500; }
+  .how { font-size: 14px; color: var(--muted); margin: 12px 0 10px; }
+
+  /* A question */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 16px 8px;
+    margin: 0 0 18px;
+    box-shadow: var(--shadow);
+    scroll-margin-top: 12px;
+  }
+  .card .num {
+    display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
+  }
+  .rec {
+    background: var(--rec-soft);
+    border: 1px solid var(--rec-line);
+    border-radius: 8px;
+    padding: 12px 14px 4px;
+    margin: 16px 0 14px;
+  }
+  .rec h4 { color: var(--rec); margin-top: 0; }
+  .choice { margin: 0 0 10px; padding: 0; list-style: none; }
+  .choice li { padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; margin-bottom: 8px; }
+  .choice b { display: block; }
+  .cost { color: var(--warn); }
+
+  /* Pictures */
+  figure { margin: 14px 0 16px; }
+  .shot {
+    display: block; width: 100%; padding: 10px; margin: 0;
+    background: var(--shot-bg); border: 1px solid var(--line); border-radius: 8px;
+    cursor: zoom-in; text-align: center; font: inherit; color: inherit;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .shot:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .shot img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 4px; }
+  figcaption { font-size: 14px; color: var(--muted); margin-top: 6px; }
+  figcaption b { color: var(--text); font-weight: 600; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: start; }
+  .pair figure { margin: 0; }
+  .pair + figcaption, .pairnote { font-size: 14px; color: var(--muted); margin: 6px 0 16px; }
+  .zoomhint { font-size: 13px; color: var(--muted); margin: -4px 0 14px; }
+
+  /* Fixes */
+  .fix { border-top: 1px solid var(--line); padding: 16px 0 4px; }
+  .fix:first-of-type { border-top: 0; padding-top: 4px; }
+  .fix p { margin-bottom: 8px; }
+  .says, .true { display: block; }
+  .tag {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    padding: 1px 7px; border-radius: 4px; margin-right: 6px; vertical-align: 1px;
+  }
+  .tag.s { background: var(--warn-soft); color: var(--warn); }
+  .tag.t { background: var(--rec-soft); color: var(--rec); }
+
+  /* Small points */
+  details {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 0 16px; box-shadow: var(--shadow);
+  }
+  summary {
+    cursor: pointer; padding: 14px 0; font-weight: 600; list-style: none;
+    display: flex; justify-content: space-between; gap: 12px; align-items: center;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "Show"; color: var(--accent); font-weight: 600; font-size: 14px; }
+  details[open] summary::after { content: "Hide"; }
+  .small { list-style: none; margin: 0; padding: 0 0 8px; counter-reset: sp; }
+  .small li {
+    counter-increment: sp; border-top: 1px solid var(--line);
+    padding: 12px 0 12px 34px; position: relative;
+  }
+  .small li::before {
+    content: counter(sp); position: absolute; left: 0; top: 12px;
+    width: 24px; text-align: right; color: var(--muted); font-weight: 600; font-size: 14px;
+  }
+  .small .r { display: block; color: var(--rec); font-weight: 500; margin-top: 2px; }
+  .small .r.change { color: var(--warn); }
+
+  .next { list-style: none; margin: 0; padding: 0; }
+  .next li { border-top: 1px solid var(--line); padding: 10px 0; }
+  .next li:first-child { border-top: 0; }
+  .foot { font-size: 14px; color: var(--muted); margin-top: 28px; }
+
+  /* Lightbox */
+  .lb {
+    position: fixed; inset: 0; z-index: 50; display: none;
+    background: rgba(4, 8, 14, .94); overflow: auto; -webkit-overflow-scrolling: touch;
+    padding: 56px 12px 24px; cursor: zoom-out;
+  }
+  .lb.on { display: block; }
+  .lb img { display: block; margin: 0 auto; max-width: none; border-radius: 4px; }
+  .lb-close {
+    position: fixed; top: 10px; right: max(12px, env(safe-area-inset-right, 0px)); z-index: 51;
+    height: 36px; padding: 0 14px; border-radius: 18px;
+    border: 1px solid #3a4a63; background: #162236; color: #e8edf2;
+    font: 600 14px Inter, -apple-system, "Segoe UI", sans-serif; cursor: pointer;
+  }
+  .lb-close:focus-visible { outline: 2px solid #3fd0e6; outline-offset: 2px; }
+
+  @media (max-width: 380px) {
+    .pair { grid-template-columns: 1fr; }
+  }
+
+  /* Round 2 */
+  :root { --new: #fff1bf; --new-text: #5c4300; --new-line: #e2c25a; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --new: #4a3a0c; --new-text: #ffe08a; --new-line: #7a611a; }
+  }
+  :root[data-theme="dark"] { --new: #4a3a0c; --new-text: #ffe08a; --new-line: #7a611a; --rec-line: #1f5a45; --accent-line: #1f5c6b; }
+  .tagnew {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    padding: 1px 7px; border-radius: 4px; background: var(--new); color: var(--new-text); vertical-align: 1px;
+  }
+  mark { background: var(--new); color: var(--new-text); border-radius: 3px; padding: 0 2px; }
+  .card.isnew { border-color: var(--new-line); }
+  .done {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px;
+    padding: 14px 16px 6px; margin-top: 14px;
+  }
+  .done h2 { margin: 0 0 6px; font-size: 16px; }
+  .done ul { margin: 0 0 8px; padding-left: 20px; font-size: 15px; }
+  .done li { margin-bottom: 6px; }
+  .card.pts { padding-top: 4px; }
+  .card.pts .small li:first-child { border-top: 0; }
+  h2[id] { scroll-margin-top: 12px; }
+</style>
+
+<div class="wrap">
+
+  <div class="kicker">TALON · 25 Nov 26</div>
+  <h1>Rulings check, round 2</h1>
+  <p class="lede">The app is being read against your rulings, area by area, to find every place where a builder assumed what you meant. Your four answers from this morning are taken. What is left: the nineteen small points as one list, and two new questions.</p>
+
+  <section class="now" aria-labelledby="now-h">
+    <h2 id="now-h">What to look at now</h2>
+    <ol>
+      <li><a href="#points"><span class="n">19</span><span><span class="q">The nineteen small points, as one list.</span> <span class="r">Recommended: take them all as recommended.</span></span></a></li>
+      <li><a href="#q1"><span class="n">A</span><span><span class="q">A sign-off that answers only some of the day's OIL questions: are the rest asked again at the next sign-off box?</span> <span class="tagnew">New</span> <span class="r">Recommended: no, keep it as built, and add one line to the list that says so.</span></span></a></li>
+      <li><a href="#q2"><span class="n">B</span><span><span class="q">A changed late cut-off: should it move the LATE marks on published days at once?</span> <span class="tagnew">New</span> <span class="r">Recommended: yes, as built.</span></span></a></li>
+    </ol>
+    <p class="how">Answer in the chat. For the list: "small points, all as recommended", or name any point by its number. For the two questions: "question A as recommended", "question B as recommended", or say what you want. Tap any picture to see it full size.</p>
+  </section>
+
+  <section class="done" aria-labelledby="done-h">
+    <h2 id="done-h">Answered this morning</h2>
+    <ul>
+      <li>No day is published or signed off while an item on it has a start and no end. The empty end box is outlined red from the moment the start is typed. Drafting stays free. This replaces the two questions about a flight with no landing and a duty desk with no end.</li>
+      <li>A man who is only on standby is counted in ALL AVAIL and earns its OIL.</li>
+      <li>One amber line on the warning list for a SANS man planned in a jet or sim with nothing filed.</li>
+      <li>The Legend's labels will read "overlap flight brief", "overlap sim brief", "overlap flight debrief" and "overlap sim debrief".</li>
+    </ul>
+  </section>
+
+  <!-- ============ Small points ============ -->
+  <h2 id="points">The nineteen small points</h2>
+  <p class="lede">These were on round 1's page and are still waiting for your answer. Each is low harm. None changes what a person gets in any case that matters. Reply "small points, all as recommended", or name any point by its number to talk it through.</p>
+  <p class="how">Four points read differently because of this morning's answers: 1, 5, 9 and 12. The words that changed are <mark>highlighted</mark>. Every recommendation is the same as before.</p>
+
+  <section class="card pts">
+    <ol class="small">
+      <li>A row with no end time says "No OIL worked out" only where an admin decides OIL. A member who opens "who's available" sees only "an hour assumed". <mark>This now arises only while a day is being drafted, since a day with a missing end time can no longer be published.</mark><span class="r">Leave as built. Your words were "to the admin".</span></li>
+      <li>The schedule export stamps a day "not yet signed" even when all four have signed and it is only not yet published.<span class="r change">Change it to "Working draft — not yet published" when the export work resumes. That work is on hold on your word.</span></li>
+      <li>When crew rest looks back at the day before, it uses the settings of the day being checked, not the earlier day's.<span class="r">Leave as built. It follows from "a published day is checked by the settings it was published under".</span></li>
+      <li>A master admin who files an input for the other squadron's man is told when it changes, though that squadron's admin lines are off for him by default.<span class="r">Leave as built. He filed it.</span></li>
+      <li>The SANS reminder goes to the man only. The admin gets no bell line. He sees the struck name in the crew list<mark>, and by this morning's answer he will also see the new amber line on the warning list.</mark><span class="r">Leave as built. It follows your "Should we tell the user too" and "Yes".</span></li>
+      <li>A filer who moved squadron with his man counts as that man's admin by the role he holds on the day the input changes.<span class="r">Leave as built.</span></li>
+      <li>A master admin may switch another squadron's bell lines on, and his own off, himself.<span class="r">Nothing to decide if your approved "Show 142 149" bell buttons of 19 Nov already cover both. That drawing is being checked. You hear about it only if it does not.</span></li>
+      <li>The bell's words "LL bid changed to OL", "LL bid moved to Thu 29 Jan" and "LL bid deleted" were never shown to you.<span class="r">Leave as built. They follow the bell's other leave lines.</span></li>
+      <li>A man who is only standing by reads free in the crew list, but the day's "Aircrew tasked" figure counts him as tasked. <mark>This morning you answered "count him in" for ALL AVAIL.</mark><span class="r change">Make the day's figures read him free too, so one screen gives one answer. A small build.</span></li>
+      <li>A man on ATT B who also has a task that day keeps the faded look. An AVALON or BB desk counts as part of that standby.<span class="r">Leave as built.</span></li>
+      <li>A man archived on Thursday is no longer offered in Monday's crew list of the same week, though Monday's ALL AVAIL count still includes him.<span class="r change">Read him by the day, as the count does. A small fix, met only when a past day is corrected.</span></li>
+      <li>A standby desk that is left out of crew rest still blocks its assumed hour for conflicts. <mark>This now applies only while a day is being drafted, since a published day must have the desk's end typed.</mark><span class="r">Leave as built.</span></li>
+      <li>A SPARE row on a flying shift with only one seat filled counts as a jet.<span class="r">Leave as built. One seat is somebody.</span></li>
+      <li>A man on an all-day course, overseas duty or all-day meeting is flagged the moment he is seated on a row with no times, as a man on leave is.<span class="r">Leave as built.</span></li>
+      <li>Moving a sign-in that holds Plan of another squadron to a different person is for a master admin alone.<span class="r">Nothing now. No screen moves a sign-in, by your ruling of 22 Nov. It is asked if that control is ever drawn.</span></li>
+      <li>The refusal on the ✕ of a leave that runs across a man's move was drafted to open with "Not saved:". Every other refusal opens with "Blocked:".<span class="r change">"Blocked:", by your rule of 5 Nov. It is shown on its drawing before it is built.</span></li>
+      <li>The Leave War's Available rows and SANS group, and the Inputs calendar's people groups, go by who is SANS today, on every date.<span class="r change">Read by the day, as every other screen now does. It joins a fix job that is already listed.</span></li>
+      <li>On a published day with an amendment waiting, a SANS man's reminder follows the working copy. So it can name a day his own schedule does not show yet.<span class="r">Leave as built. Your two rulings of 24 Nov have it follow the plan as soon as he is planned.</span></li>
+      <li>An offer filed for two SANS men still names both in its own window on a day when one of them is not SANS. The day and its counts show only the one.<span class="r">Leave as built. Nothing is counted, and hiding him there could drop him from the offer.</span></li>
+    </ol>
+  </section>
+
+  <h2>The two new questions</h2>
+  <p class="lede">Every picture is from the live app, walked on 25 Nov on the demo week of 13 to 19 Jul. The red box marks the place.</p>
+
+  <!-- ============ 1 ============ -->
+  <article class="card isnew" id="q1">
+    <span class="num">Question A · signing a day</span> <span class="tagnew">New</span>
+    <h3>A sign-off that answers only some of the day's OIL questions: are the rest asked again at the next sign-off box?</h3>
+
+    <h4>When it happens</h4>
+    <p>A scheduler signs a weekend or holiday that has two or more duty inputs with no OIL answer yet. When he picks the first sign-off name, the day's OIL list opens. He answers one row, leaves the others and presses Save. That is roughly weekly.</p>
+
+    <h4>The example</h4>
+    <p>Fri 17 Jul, made a public holiday. Three inputs have no OIL answer: Ranger's Training "Range brief", Hunter's Duty "Gate duty" and Nomad's OD. Saber picks Ace in the CUR CK box. The list opens with "3 TO ANSWER". Saber picks Yes · HO on Ranger's Range brief only, leaves the other two and presses Save.</p>
+
+    <h4>What the app does today</h4>
+    <p>Save keeps the one answer and signs Ace in. The two rows left unpicked are treated as if Saber had pressed Later.</p>
+
+    <figure>
+      <button class="shot" type="button"><img src="img/signoff-01-oil-list-one-of-three-answered.png" width="472" height="399" alt="The OIL list for Fri 17 Jul, opened by the CUR CK box. It reads CUR CK Ace waiting for your answer, 1 of 3 answered. Yes HO is picked on Ranger's Range brief. Nomad's and Hunter's rows are unpicked. The foot line reads Later: Ace signs, but nobody on them earns OIL"></button>
+      <figcaption><b>The list at the first sign-off box.</b> "CUR CK Ace waiting for your answer", "1 OF 3 ANSWERED". The two red boxes mark the "Yes · HO" picked on Ranger's Range brief, and Save. Nomad's OD and Hunter's Gate duty are left unpicked. The only line at the foot is Later's: "Later: Ace signs, but nobody on them earns OIL."</figcaption>
+    </figure>
+
+    <p>The other three boxes then ask nothing. SKED CK, PLANNED BY and APPROVED BY take their names straight in, with no list.</p>
+
+    <figure>
+      <button class="shot" type="button"><img src="img/signoff-02-sked-ck-signed-no-list.png" width="597" height="165" alt="Friday's sign-off row. CUR CK shows Ace, SKED CK shows Anvil, PLANNED BY and APPROVED BY are still empty, and the row reads 2 to sign"></button>
+      <figcaption><b>The second box.</b> The red box marks SKED CK with Anvil signed straight in. No list opened. PLANNED BY and APPROVED BY are still empty, "2 to sign".</figcaption>
+    </figure>
+
+    <p>The day publishes, and the note names the two inputs left.</p>
+
+    <figure>
+      <button class="shot" type="button"><img src="img/signoff-03-publish-note.png" width="804" height="104" alt="The passing note after publishing: Friday 17 Jul published and approved. Hunter's Gate duty and Nomad's OD have no OIL answer, so nobody on them earns OIL"></button>
+      <figcaption><b>The note after publishing,</b> marked: "Friday 17 Jul published and approved. Hunter's Gate duty and Nomad's OD have no OIL answer, so nobody on them earns OIL."</figcaption>
+    </figure>
+
+    <h4>Why this is a question</h4>
+    <p>Your words so far are about Later: "Later asks no more that day." They cover a scheduler who presses Later. They do not cover a scheduler who presses Save with a row still unpicked. The builder treated the two the same and did not ask. And nothing on the list tells the scheduler that Save will leave the unpicked rows as Later does. He learns it from the note after the day has gone out.</p>
+
+    <h4>The choice</h4>
+    <ul class="choice">
+      <li><b>Keep it as built, and say so on the list.</b> The rows left unpicked are not asked again at the other boxes. When a row is left unpicked, the list's foot says what Save will do with it, in the same few words as Later's line.</li>
+      <li><b>Ask again at each box.</b> Every sign-off box opens the list again until each row has an answer or Later is pressed.</li>
+      <li><b>Keep it as built, with no new line.</b> Nothing changes in the app.</li>
+    </ul>
+
+    <div class="rec">
+      <h4>Recommended</h4>
+      <p><b>Keep it as built, and say so on the list.</b> This is a recommendation, not something your words settle. Asking again at the next box would mean an answer given there changes what the day earns after the first name has signed, and that would clear the name just signed. The publish note already names every input left, so nothing goes out unseen.</p>
+      <p class="cost"><b>The cost:</b> one new line on the OIL list. They are new words, so the exact line is drawn for you before anything is built. As today, nobody on the unpicked inputs earns OIL.</p>
+    </div>
+  </article>
+
+  <!-- ============ 2 ============ -->
+  <article class="card isnew" id="q2">
+    <span class="num">Question B · the published schedule</span> <span class="tagnew">New</span>
+    <h3>A changed late cut-off: should it move the LATE marks on published days at once?</h3>
+
+    <h4>When it happens</h4>
+    <p>An admin changes the late cut-off behind the gear on the Inputs or SANS page while some days of the week are already published. That is roughly a few times a year.</p>
+
+    <h4>The example</h4>
+    <p>Ranger's LL for Tue 14 Jul is filed on Thu 25 Jun. The cut-off is 14 days before the week starts, so it is on time. Tuesday is signed and published. Later Saber raises the cut-off to 21 days.</p>
+
+    <figure>
+      <button class="shot" type="button"><img src="img/cutoff-01-published-tue-ranger-ll-not-late.png" width="701" height="207" alt="The Unavailable list on the published Tuesday. Ranger's LL row reads till 14 Jul with no LATE tag. The two rows under it, Quill's LL and Wisp's OIL, each carry a LATE tag"></button>
+      <figcaption><b>Before the change.</b> The Unavailable list on the published Tuesday. The marked row is Ranger's LL, "till 14 Jul", with no LATE tag. Quill's and Wisp's rows below it already carry one.</figcaption>
+    </figure>
+
+    <h4>What the app does today</h4>
+    <p>Saber types 21 and presses Save. The window's own example now reads "inputs are due by the end of Mon 22 Jun", so an input filed on 25 Jun is late.</p>
+
+    <figure>
+      <button class="shot" type="button"><img src="img/cutoff-02-inputs-cutoff-raised-to-21-days.png" width="420" height="524" alt="The Inputs calendar settings window. Under Late cut-off for inputs, Days before is picked and the Days before the week starts box holds 21. The example reads: For the week of Mon 13 Jul, inputs are due by the end of Mon 22 Jun"></button>
+      <figcaption><b>The cut-off being raised.</b> The Inputs calendar's settings, "Late cut-off for inputs". The red box marks 21 in "Days before the week starts". Under it: "For the week of Mon 13 Jul, inputs are due by the end of Mon 22 Jun."</figcaption>
+    </figure>
+
+    <p>With no other step, Ranger's LL on the published Tuesday reads LATE.</p>
+
+    <figure>
+      <button class="shot" type="button"><img src="img/cutoff-03-published-tue-ranger-ll-now-late.png" width="701" height="207" alt="The same Unavailable list after Save. Ranger's LL row now carries a LATE tag before till 14 Jul"></button>
+      <figcaption><b>After Save.</b> The same list, the same marked row. Ranger's LL now carries the LATE tag.</figcaption>
+    </figure>
+
+    <p>Nothing reads pending and nobody signs again. Tuesday keeps its four names.</p>
+
+    <figure>
+      <button class="shot" type="button"><img src="img/cutoff-04-nothing-pending-signatures-kept.png" width="1532" height="259" alt="Edit Schedule after the change. The Amendments panel reads No pending changes. Tuesday still shows Signed ORIG, CUR CK Ace, SKED CK Anvil, PLANNED Anvil, APPROVED Anvil"></button>
+      <figcaption><b>Edit Schedule after the change.</b> Two red boxes. At the top left, the Amendments panel reads "No pending changes". Under Tuesday's heading, the signed line is unchanged: "SIGNED ORIG · CUR CK Ace · SKED CK Anvil · PLANNED Anvil · APPROVED Anvil". This picture is wide, so tap it to read it.</figcaption>
+    </figure>
+
+    <p>The View-only Sched page was not looked at in this walk.</p>
+
+    <h4>Why this is a question</h4>
+    <p>Two of your rulings pull in different directions here. For the Logic page's settings you ruled that a changed setting reaches a published day only from its next amendment. Separately, you ruled that a LATE mark a scheduler drops leaves a published day at once, because it changes nobody's day (the reason you were given, and accepted). Neither says what a changed cut-off does. The first is about the settings the day's checks read, and whether the late cut-off is one of those was never asked. The second is about a scheduler dropping one mark by hand.</p>
+    <p>The Logic page already says "A changed late cut-off moves the LATE marks at once, on published days too", but that was never put to you as a question.</p>
+
+    <h4>The choice</h4>
+    <ul class="choice">
+      <li><b>At once, as built.</b> The LATE marks on published days follow the new cut-off straight away. Nothing reads pending and no names clear.</li>
+      <li><b>From the next amendment.</b> A published day keeps the LATE marks it went out with. A changed cut-off makes the day read pending, and its marks move only when it is published again.</li>
+    </ul>
+
+    <div class="rec">
+      <h4>Recommended</h4>
+      <p><b>At once, as built.</b> This is a recommendation, not something your words settle. LATE is a mark, not a check: it closes no seat and raises no warning. It also follows the reason you accepted for a mark a scheduler drops, that it changes nobody's day, so it should cost no new signatures.</p>
+      <p class="cost"><b>The cost:</b> a published day can show a LATE mark it did not go out with, or lose one, with no amendment and nobody signing for it. The other choice costs more work: every published day holding an input whose mark would change reads pending, and its four names clear until it is signed and published again.</p>
+    </div>
+  </article>
+
+  <!-- ============ Waiting ============ -->
+  <h2>Waiting, nothing to answer now</h2>
+  <section class="card">
+    <ul class="next">
+      <li>Taking a day over from another scheduler (the one-minute hand-over, "Take over anyway" and the saved plan) waits for the database step's drawings.</li>
+    </ul>
+  </section>
+
+  <!-- ============ Drawings coming ============ -->
+  <h2>Drawings coming</h2>
+  <section class="card">
+    <ul class="next">
+      <li>The red end-time guard rail: the red outline on an empty end box, and what Publish says while one is missing.</li>
+      <li>The six wording fixes from round 1. Every new sentence is drawn for you first.</li>
+    </ul>
+    <p class="foot">They will be added to this page when they are drawn. Two more questions are not on this page. What a man is told when a change is undone before he read its bell line, and the places where the app gives a count where it could give names, are on the bell job's page from another chat.</p>
+  </section>
+
+</div>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Picture, full size" hidden>
+  <button class="lb-close" id="lbClose" type="button">Close</button>
+</div>
+
+<script>
+(function () {
+  var lb = document.getElementById('lb');
+  var img = null;
+  var closeBtn = document.getElementById('lbClose');
+  var opener = null;
+
+  function open(btn) {
+    var src = btn.querySelector('img');
+    if (!src) return;
+    opener = btn;
+    img = document.createElement('img');
+    lb.appendChild(img);
+    img.src = src.getAttribute('src');
+    img.alt = src.getAttribute('alt') || '';
+    var nat = src.naturalWidth || parseInt(src.getAttribute('width'), 10) || 600;
+    var room = Math.max(200, window.innerWidth - 24);
+    // Full size at least; a small picture is enlarged to fill the screen's width, up to twice its size.
+    var w = Math.max(nat, Math.min(room, nat * 2));
+    img.style.width = w + 'px';
+    lb.hidden = false;
+    lb.classList.add('on');
+    lb.scrollTop = 0;
+    lb.scrollLeft = 0;
+    closeBtn.focus();
+  }
+  function close() {
+    lb.classList.remove('on');
+    lb.hidden = true;
+    if (img) { lb.removeChild(img); img = null; }
+    if (opener) { opener.focus(); opener = null; }
+  }
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('.shot') : null;
+    if (btn) { open(btn); return; }
+    if (lb.classList.contains('on') && (e.target === lb || e.target === closeBtn || e.target === img)) close();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && lb.classList.contains('on')) close();
+  });
+})();
+</script>
