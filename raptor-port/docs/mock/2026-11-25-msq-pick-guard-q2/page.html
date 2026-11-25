@@ -36,6 +36,8 @@ figcaption b{color:var(--ink)}
 .when{border-left:3px solid var(--accent);padding-left:10px}
 .told{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:14px 18px;display:grid;gap:8px}
 .told ul{margin:0;padding-left:1.2em;display:grid;gap:6px}
+.newq{border-left:4px solid var(--new);padding-left:12px}
+.newtag{color:var(--new);font-weight:600;font-size:.8rem;letter-spacing:.04em;text-transform:uppercase}
 .zoom{position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;padding:max(12px,env(safe-area-inset-top,0px)) 12px max(12px,env(safe-area-inset-bottom,0px));z-index:20;overflow:auto}
 .zoom img{max-width:100%;max-height:100%;object-fit:contain}
 .zoom.big{align-items:flex-start;justify-content:flex-start}
@@ -51,13 +53,23 @@ figcaption b{color:var(--ink)}
 
   <div class="top">
     <div class="label">To answer — reply "as recommended for all", or name the ones you want differently</div>
+    <p class="newq"><b>Group C — keeping squadrons apart (new today, your rule "separate squadrons, separate views").</b> Answered and taken off: A2, A5, A17.</p>
+    <ol class="newq">
+      <li><b>C1</b><span><a href="#c1">The bell's grey squadron number</a>. <span class="rec">Recommended: every line wears its squadron when two are shown.</span></span></li>
+      <li><b>C2</b><span><a href="#c2">"+ Input" on the other squadron</a>. <span class="rec">Recommended: only that squadron's men offered.</span></span></li>
+      <li><b>C3</b><span><a href="#c3">"+ Commitment" on the other squadron's SANS calendar</a>. <span class="rec">Recommended: only its own SANS aircrew offered.</span></span></li>
+      <li><b>C4</b><span><a href="#c4">The "Welcome back" card</a>. <span class="rec">Recommended: shown only on your own squadron.</span></span></li>
+      <li><b>C5</b><span><a href="#c5">Bug reports split by squadron</a>. <span class="rec">Recommended: each squadron's admins see their own; a master admin all, by squadron.</span></span></li>
+      <li><b>C6</b><span><a href="#c6">A callsign of another squadron's archived man</a>. <span class="rec">Recommended: stays taken; the note says so.</span></span></li>
+      <li><b>C7</b><span><a href="#c7">The name badge on another squadron</a>. <span class="rec">Recommended: names your role there: View or Plan.</span></span></li>
+      <li><b>C8</b><span><a href="#c8">Another squadron's planner in the sign-off boxes</a>. <span class="rec">Recommended: keep it.</span></span></li>
+      <li><b>C9</b><span><a href="#c9">Admin → Users on 149 showing a 142 man</a>. <span class="rec">Recommended: keep it.</span></span></li>
+    </ol>
     <p><b>Group A — needed before the first build (the guard itself).</b></p>
     <ol>
       <li><b>A1</b><span><a href="#a1">Four small pop-ups</a> that already close when you press the top bar. <span class="rec">Recommended: they keep closing, the pick goes through.</span></span></li>
-      <li><b>A2</b><span><a href="#a2">ALL AVAIL and Changes</a>, where nothing is typed. <span class="rec">Recommended: refused like any other window.</span></span></li>
       <li><b>A3</b><span><a href="#a3">The Scheduler Board</a> and its own bell. <span class="rec">Recommended: the board is not a window; as today.</span></span></li>
       <li><b>A4</b><span><a href="#a4">Edit mode on Logic and Quals</a>. <span class="rec">Recommended: the pick goes through and the edit mode ends.</span></span></li>
-      <li><b>A5</b><span><a href="#a5">Admin → Users</a>: what counts besides typed words in an opened row. <span class="rec">Recommended: any unsaved change in a row, Give access and + New squadron count; Add a person does not.</span></span></li>
       <li><b>A6</b><span><a href="#a6">The row's note</a>: "save or cancel the open row", not "close the open row". <span class="rec">Recommended: the new words.</span></span></li>
       <li><b>A7</b><span><a href="#a7">A window left open on a page you are no longer looking at</a>. <span class="rec">Recommended: refused, the note saying where the window is.</span></span></li>
       <li><b>A8</b><span><a href="#a8">A tap on the bell itself</a> that would change squadron. <span class="rec">Recommended: refused, "…then press the bell again."</span></span></li>
@@ -69,7 +81,6 @@ figcaption b{color:var(--ink)}
       <li><b>A14</b><span><a href="#a14">Where the note stands</a> on a tablet and a phone on its side. <span class="rec">Recommended: under the control whenever the top bar shows the squadron picker.</span></span></li>
       <li><b>A15</b><span><a href="#a15">A phone with Inputs settings open</a>: the note at the foot or at the top. <span class="rec">Recommended: at the foot, as you ruled.</span></span></li>
       <li><b>A16</b><span><a href="#a16">The ☰ menu after a refused pick</a>. <span class="rec">Recommended: it closes.</span></span></li>
-      <li><b>A17</b><span><a href="#a17">Your own input on the other squadron's Inputs page</a>. <span class="rec">Recommended: your own squadron comes into view first.</span></span></li>
       <li><b>A18</b><span><a href="#a18">"Check my quals"</a>, a button that brings your own squadron back. <span class="rec">Recommended: refused like a pick when a window is open or a change is not saved.</span></span></li>
       <li><b>A19</b><span><a href="#a19">A holiday's bell line while you view another squadron</a>. <span class="rec">Recommended: your own squadron comes into view first.</span></span></li>
       <li><b>A20</b><span><a href="#a20">The Tracker's question at the member-view switch on your own squadron</a>. <span class="rec">Recommended: asked always, as drawn.</span></span></li>
@@ -91,6 +102,130 @@ figcaption b{color:var(--ink)}
     </ol>
   </div>
 
+  <h3 class="newq">Group C — keeping squadrons apart</h3>
+
+  <div class="told newq">
+    <div class="newtag">New today</div>
+    <p><b>Found while pressing, and fixed in the build without a question</b> — each goes against a ruling you already made:</p>
+    <ul>
+      <li>A tap on the bell's OIL question opens Hunter's 142 input on 149 and saves its answer there; your A17 answer says the bell brings 142 into view first.</li>
+      <li>Undo on 149 offers to undo a 142 change; your ruling says Undo reaches only the squadron in view.</li>
+      <li>A member's bug report is lost when he logs out (C5).</li>
+    </ul>
+    <p><b>Waiting for the later builds</b> — no screen can show them yet, because no screen moves a man between squadrons or borrows one: a leave that spans a man's move (on both squadrons' lists today by your ruling), a moved man's old inputs and bell lines, his striped row on his old Leave War, a meeting naming him, his Tracker course, another squadron's sims shown on ours, and Insights' hours across two schedules. Each is put to you, drawn, when its build is designed.</p>
+  </div>
+
+  <section id="c1" class="newq">
+    <div class="newtag">New today</div>
+    <h2>C1. The bell's grey squadron number</h2>
+    <p class="when"><b>When this happens</b>: your bell shows two squadrons (both switched on under "Show") and you have one of them picked.</p>
+    <p><b>Today</b>, pressed: the grey number goes on every line that is not from your <b>home</b> squadron, whichever squadron is picked. Hunter, home 142, with 149 picked: the 149 line wears "149", and the 142 line wears nothing, so the line from the squadron he is <i>not</i> looking at is the unmarked one.</p>
+    <p class="rec">Recommended: whenever the bell shows more than one squadron, every line wears its squadron number — "142" or "149" — so nothing changes meaning when you pick. One squadron shown: no numbers, as today.</p>
+    <p class="note">The other choices: mark only the lines from the squadron not in view (the marks then swap at every pick), or leave it as today.</p>
+    <div class="pair">
+      <figure><img src="today/p6-a7-hunter-d-1-bell-on149-crop.png" alt="The bell on 149: the 149 line marked, the 142 line not"><figcaption><b>Today</b>: 149 picked (top left). The 149 line wears "149"; the 142 line (Thu 10 Dec, Saber) wears nothing.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="c2" class="newq">
+    <div class="newtag">New today</div>
+    <h2>C2. "+ Input" on the other squadron's Inputs page</h2>
+    <p class="when"><b>When this happens</b>: Hunter (142's, Plan of 149) has 149 picked and presses "+ Input" on Inputs.</p>
+    <p><b>Today</b>, pressed: the new input opens with <b>Hunter himself</b> as the Person; the list offers Hunter, then 149's ten. Saved, it becomes a <b>142</b> input (his own squadron's), with nothing said, the bar still reading 149.</p>
+    <p class="rec">Recommended: on 149's page the Person box offers only 149's men and starts empty; Hunter files his own inputs on 142, where they belong.</p>
+    <p class="note">The other choice: as today, himself first — the input is then filed on 142 from a page reading 149, and, with your A17 answer, would no longer show on the page he filed it from.</p>
+    <div class="pair">
+      <figure><img src="today/p6-a2-d-1-window-crop.png" alt="The new input window on 149 with Hunter as the person"><figcaption><b>Today</b>: "+ Input" on 149 opens with Hunter as the Person.</figcaption></figure>
+      <figure><img src="today/p6-a2-d-2-lists-crop.png" alt="149's list with Hunter's new duty at the foot"><figcaption><b>Today</b>: saved, his 142 duty (10 Dec) shows in 149's list.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="c3" class="newq">
+    <div class="newtag">New today</div>
+    <h2>C3. "+ Commitment" on the other squadron's SANS calendar</h2>
+    <p class="when"><b>When this happens</b>: Hunter, SANS aircrew of 142 with Plan of 149, has 149 picked and adds a SANS commitment on a 149 day.</p>
+    <p><b>Today</b>, pressed: the window offers <b>only Hunter</b>. Saved, it is counted on <b>142's</b> SANS calendar (F 1) and not on 149's, which still reads "No commitments yet". With Hunter not SANS aircrew, the box is empty (149 has no SANS aircrew in the demo).</p>
+    <p class="rec">Recommended: on 149's SANS calendar the window offers only 149's SANS aircrew; with none, it says so and adds nothing. Hunter adds his own on 142's.</p>
+    <p class="note">The words for "none" would be drafted and read by a fresh reader before you see them.</p>
+    <div class="pair">
+      <figure><img src="today/p6-a3-sans-d-1-window-crop.png" alt="The commitment window on 149 offering only Hunter"><figcaption><b>Today</b>: on 149, the window offers only Hunter.</figcaption></figure>
+      <figure><img src="today/p6-a3-sans-d-2-after-save-crop.png" alt="149's SANS day still with no commitments after the save"><figcaption><b>Today</b>: after Add, 149's day still reads "No commitments yet" — it went to 142.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="c4" class="newq">
+    <div class="newtag">New today</div>
+    <h2>C4. The "Welcome back" card on another squadron</h2>
+    <p class="when"><b>When this happens</b>: Hunter, back from an archive, has Plan of 149 and picks 149. The card "Welcome back, Hunter — check your quals and CAT" is on every squadron's page.</p>
+    <p><b>Today</b>, pressed: "Check my quals" opens <b>149's</b> Quals, where his row is not; nothing is ringed, the card goes, nothing is said. (For a View holder it switches to 142 without a word — A18.)</p>
+    <p class="rec">Recommended: the card shows only on his own squadron; on 149 it waits until he is back on 142, where "Check my quals" opens his own row. This also settles A18: the card never needs to switch squadron.</p>
+    <div class="pair">
+      <figure><img src="today/p6-a9-d-1-card-on149-crop.png" alt="The welcome back card on 149"><figcaption><b>Today</b>: the card on 149.</figcaption></figure>
+      <figure><img src="today/p6-a9-d-2-after-press-crop.png" alt="149's Quals after the press, his row absent"><figcaption><b>Today</b>: after "Check my quals", 149's Quals — his row is not on it.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="c5" class="newq">
+    <div class="newtag">New today</div>
+    <h2>C5. Bug reports split by squadron (your answer today)</h2>
+    <p class="when"><b>When this happens</b>: a member or an admin sends a report through Help, and an admin opens Help's list.</p>
+    <p><b>Today</b>, pressed: one list for every squadron, a report naming no squadron. Saber sent one from 149; on 142 his bell lit and the list showed it with nothing to say it was 149's.</p>
+    <p class="rec">Recommended: each squadron's admins see only their own squadron's reports, and its bell rings only them; a master admin sees them all in one list, under a heading per squadron.</p>
+    <p class="note">You said "one list, split by squadron when the admin views". The other reading: every admin sees every report, grouped under a heading per squadron. Found while pressing, a fault to fix in either case: a report a member sends is lost when he logs out, so no admin ever sees it today.</p>
+    <div class="pair">
+      <figure><img src="today/p6-a10-admin-d-1-help-on142-crop.png" alt="Help on 142 listing a report sent from 149"><figcaption><b>Today</b>: on 142, Help lists a report sent from 149, with no squadron on it.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="c6" class="newq">
+    <div class="newtag">New today</div>
+    <h2>C6. An access request whose callsign belongs to another squadron's archived man</h2>
+    <p class="when"><b>When this happens</b>: someone asks 149 for access as "Ace", and Ace is an archived man of 142.</p>
+    <p><b>Today</b>, pressed: 149's admin reads "An archived man is already Ace … restore him first (▸ Archived)" — but 149 has no such fold; Ace is in 142's. 149 can only make a new person, and then two "Ace"s exist. (A callsign 142 is using now is refused on 149: "Ranger is already taken".)</p>
+    <p class="rec">Recommended: an archived man's callsign stays taken across the app, as a live one is (callsigns are unique across squadrons — your ruling for a move); 149's note says the callsign belongs to another squadron's archived man, and to choose another callsign or ask a master admin to restore him.</p>
+    <p class="note">The note's words would be drafted and read by a fresh reader before you see them.</p>
+    <div class="pair">
+      <figure><img src="today/p6-a11-kestrel-d-1-note-crop.png" alt="The note on 149 pointing at an archive 149 does not have"><figcaption><b>Today</b>: the note on 149 points to "▸ Archived", which 149's page does not have.</figcaption></figure>
+      <figure><img src="today/p6-a11-kestrel-d-2-after-give-crop.png" alt="A second Ace added on 149"><figcaption><b>Today</b>: 149 adds a new "Ace" — the second in the app.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="c7" class="newq">
+    <div class="newtag">New today</div>
+    <h2>C7. The name badge on another squadron</h2>
+    <p class="when"><b>When this happens</b>: Hunter, 142's admin with View of 149, picks 149.</p>
+    <p><b>Today</b>, pressed: the badge at the top right reads "<b>Hunter · Admin</b>" on 149 as on 142, though on 149 he can only look.</p>
+    <p class="rec">Recommended: the badge names his role on the squadron in view: "Hunter · View" on 149, "Hunter · Plan" where he holds Plan, "Hunter · Admin" back on 142.</p>
+    <p class="note">The words "View" and "Plan" are the app's own; a fresh reader checks them before the build.</p>
+    <div class="pair">
+      <figure><img src="today/p6-a13-hunter-d-1-on149-crop.png" alt="The badge reading Hunter Admin on 149"><figcaption><b>Today</b>: View of 149, and the badge reads "Hunter · Admin".</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="c8" class="newq">
+    <div class="newtag">New today</div>
+    <h2>C8. Another squadron's planner in the sign-off boxes</h2>
+    <p class="when"><b>When this happens</b>: 149's scheduler fills SKED CK, PLANNED BY or APPROVED BY.</p>
+    <p><b>Today</b>, pressed: besides 149's own, the boxes offer Saber (a master admin) always, and Hunter (142's, Plan of 149) on days his Plan covers once he carries the Scheduler tick — your ruling of 21 Nov.</p>
+    <p class="rec">Recommended: keep it: Plan is given so he plans 149, and his name on what he planned is the true record. This is a deliberate planning of a man onto another squadron, the exception your rule makes.</p>
+    <p class="note">The other choice: only 149's own people in the boxes; a Plan holder then plans 149 but cannot sign what he planned.</p>
+    <div class="pair">
+      <figure><img src="today/p6-csignoff-plan-sched-d-2-boxes-7dec-crop.png" alt="149's sign-off boxes on 7 December"><figcaption><b>Today</b>: 149's boxes on 7 Dec. Opened, SKED CK lists Kestrel, Hunter and Saber.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="c9" class="newq">
+    <div class="newtag">New today</div>
+    <h2>C9. Admin → Users on 149 showing a 142 man</h2>
+    <p class="when"><b>When this happens</b>: 149's admin (or Hunter, or Saber) opens Admin → Users on 149.</p>
+    <p><b>Today</b>, pressed: the list holds 149's ten and also "Hunter 142 · also plans 149"; a search finds 142's men, to give them View; a man's opened row lists both squadrons.</p>
+    <p class="rec">Recommended: keep both: 149's admins see who holds Plan over their squadron, and the search is how they give View — your rulings of 17 and 22 Nov. Each 142 man shown wears "142".</p>
+    <div class="pair">
+      <figure><img src="today/p6-cusers-hunter-d-1-list-crop.png" alt="149's Users list with Hunter 142 also plans 149"><figcaption><b>Today</b>: Hunter's row on 149's list.</figcaption></figure>
+      <figure><img src="today/p6-cusers-hunter-d-2-search-crop.png" alt="A search on 149 finding Ranger of 142"><figcaption><b>Today</b>: a search on 149 finds Ranger, 142.</figcaption></figure>
+    </div>
+  </section>
+
   <h3>Group A — before the first build</h3>
 
   <section id="a1">
@@ -101,19 +236,6 @@ figcaption b{color:var(--ink)}
     <p class="note">The other choice: they refuse like every other window, so a pick needs them closed first. One exception either way: a document opened over an input window. The input window is still open underneath, so the pick is refused because of it.</p>
     <div class="pair">
       <figure><img src="today/p1-small-traffic-d-1-open-crop.png" alt="Traffic open on Edit Schedule, the top bar free above it"><figcaption><b>Today</b>: Traffic open. The top bar is free above it.</figcaption></figure>
-    </div>
-  </section>
-
-  <section id="a2">
-    <h2>A2. ALL AVAIL and the Changes window</h2>
-    <p class="when"><b>When this happens</b>: the "Who's available" window or the Changes window is open on Edit Schedule and you pick the other squadron or switch view.</p>
-    <p><b>Today</b>: each closes without a word and the pick goes through. Nothing is typed in either, so nothing is lost. On a phone Changes can be folded down to a slim bar; that closes the same way.</p>
-    <p class="rec">Recommended: they refuse like any other window. One rule a person can learn: a window you opened stays until you close it. The four pop-ups of A1 are the only ones that close themselves, as they do today at any press on the bar.</p>
-    <p class="note">The cost: one more press to close them before a pick. The other choice: they close by themselves as today.</p>
-    <div class="pair">
-      <figure class="tall"><img src="today/p1-allavail-d-1-open-crop.png" alt="The Who's available window"><figcaption><b>Today</b>: ALL AVAIL's window.</figcaption></figure>
-      <figure class="tall"><img src="today/p1-changes-open-d-1-open-crop.png" alt="The Changes window opened out"><figcaption><b>Today</b>: Changes, opened out.</figcaption></figure>
-      <figure><img src="today/p1-changes-folded-p-1-open-crop.png" alt="The Changes window folded to a bar on a phone"><figcaption><b>Today, phone</b>: Changes folded to its bar.</figcaption></figure>
     </div>
   </section>
 
@@ -139,27 +261,6 @@ figcaption b{color:var(--ink)}
     <div class="pair">
       <figure><img src="today/p1-modes-logic-d-1-mode-on-crop.png" alt="Logic in edit mode on 142"><figcaption><b>Today</b>: Logic in edit mode on 142.</figcaption></figure>
       <figure><img src="today/p1-modes-logic-d-2-after-pick-crop.png" alt="After the pick, 149's Logic also shows Done"><figcaption><b>Today</b>: after the pick, 149's Logic shows Done too.</figcaption></figure>
-    </div>
-  </section>
-
-  <section id="a5">
-    <h2>A5. Admin → Users: what counts besides typed words in an opened row</h2>
-    <p class="when"><b>When this happens</b>: an admin of two squadrons is part-way through something on Admin → Users and picks the other squadron or switches to the member view. You ruled that an opened row with typing in it refuses the pick. The page has other half-done states your ruling does not name.</p>
-    <p><b>Today</b>, pressed for each:</p>
-    <div class="words">
-      <div><b>A row opened, its Role changed, nothing typed</b>: the pick goes through and the Role is silently put back. The change is lost, nothing asked.</div>
-      <div><b>An archived man's row, his name edited</b>: the same. The edit is lost.</div>
-      <div><b>The "Give access" form with words typed</b>: the words survive a pick (the form is there again on coming back) but are lost at the member-view switch.</div>
-      <div><b>"+ New squadron" with a number typed</b>: the form stays open on 149 with the number still in it. Lost at the member-view switch.</div>
-      <div><b>"Add a person" with a name typed</b>: the name stays, and its Home squadron box changes to 149 by itself. Lost at the member-view switch.</div>
-      <div><b>A row left open while you look at another Admin section</b> (Squadrons): it is still open with its typing, out of sight. A pick from there loses the typing.</div>
-    </div>
-    <p class="rec">Recommended: any unsaved change in an opened row counts (a changed Role or name as well as typed words), and so do the Give access form and "+ New squadron" once something is typed in them. "Add a person" does not count and stays as today.</p>
-    <p class="note">Why not Add a person: it has no Cancel button, so the note could only tell you to finish adding the person or empty the boxes by hand. Its typing already survives a pick, and its Home squadron box shows the new squadron in plain sight. If you want it counted, it needs a Cancel button, which I would draw for you first. A row out of sight on another Admin section counts too; its note says where it is (A6).</p>
-    <div class="pair">
-      <figure><img src="today/p2-users-a-d-pick-1-before-crop.png" alt="Hunter's row open with Role changed to Member"><figcaption><b>Today</b>: Hunter's row open, Role changed to Member, not saved.</figcaption></figure>
-      <figure><img src="today/p2-users-c-d-pick-2-after-crop.png" alt="Add a person on 149 with the name still typed and Home squadron 149"><figcaption><b>Today</b>: after the pick, Add a person still holds the typed name, and its Home squadron now reads 149.</figcaption></figure>
-      <figure><img src="drawn/d3f-d-note-crop.png" alt="Drawn: the note for the Give access form"><figcaption><b>Drawn</b>: the Give access form with words typed, 149 picked.</figcaption></figure>
     </div>
   </section>
 
@@ -301,17 +402,6 @@ figcaption b{color:var(--ink)}
     <div class="pair">
       <figure class="tall"><img src="today/p3-menu-p-after-pick-crop.png" alt="Today: the menu still open after a pick"><figcaption><b>Today</b>: the menu still open after a pick.</figcaption></figure>
       <figure class="tall"><img src="drawn/d3a-p-note-crop.png" alt="Drawn: the menu closed, the note at the foot"><figcaption><b>Drawn</b>: the menu closed after the refusal, the note at the foot.</figcaption></figure>
-    </div>
-  </section>
-
-  <section id="a17">
-    <h2>A17. Your own input, shown on the other squadron's Inputs page</h2>
-    <p class="when"><b>When this happens</b>: Hunter is 142's and holds Plan of 149. With 149 picked, 149's Inputs page lists his own inputs among 149's, because they are about him. He taps one.</p>
-    <p><b>Today</b>: it opens live under a bar reading 149. Save changes his 142 input and Delete removes it. The same input can be reached two other ways while 149 is picked: a tap on the bell when its OIL question is unanswered, and the row's "OIL?" button. Each changes a 142 record under a bar that reads 149.</p>
-    <p class="rec">Recommended: his own squadron comes into view first, by every one of the three ways. The bar changes to 142, then the input opens. One rule: a 142 record is never changed under a bar reading 149. It is what a bell line already does.</p>
-    <p class="note">Its cost: a tap on a row of 149's list changes the squadron in view, so it is refused like a pick while a window is open or a change is not saved, and it can bring the Tracker's unsaved-edits question. One exception either way: a man who has since moved to 149 and can no longer pick 142 still answers his old 142 input where he is, or his bell could never be cleared. The second choice: it opens where he is by all three ways, as today; then the app keeps changing 142's records under a bar reading 149, by your word. The third: only the bell brings 142 into view, the list opens it where he is; two ways to one input then behave differently. The plan's two rounds of readers found the first choice the only one with no exception to the rule.</p>
-    <div class="pair">
-      <figure class="tall"><img src="today/p5-n2-p-3-opened-crop.png" alt="Today, phone: Hunter's own input open and live while the bar reads 149"><figcaption><b>Today, phone</b>: his own 8 Dec input open and live; the bar reads 149.</figcaption></figure>
     </div>
   </section>
 
