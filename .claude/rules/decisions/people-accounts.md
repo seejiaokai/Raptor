@@ -171,7 +171,7 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - A master admin's bell carries his primary squadron's lines by default, every other squadron's off, his to switch on (the agent's reading) [D2198, D2191, D227, D2199, D2250, D2201].
 - Each person chooses which notifications reach his bell, a few that need him to act always on; built after the multi-squadron batches, drawn first [D2200, D2198].
 - A master admin may give a named admin "Plan" of another squadron — on his row in Admin → Users, off by default, a master admin's alone to give, ended by his move or by his own squadron's admin making him a member: full access to it, as its own admins have, the row's line saying so in plain words, not by that comparison [D2211, D2199, D2250, D2201, D2192, D2191, D2198, D785].
-- While he holds Plan his bell carries that squadron's admin lines, on by default, his to switch off; a line from a squadron other than his primary shows which [D2202, D2198].
+- While he holds Plan his bell carries that squadron's admin lines, on by default, his to switch off; with more than one squadron shown every line wears its squadron, his home's too [D2202, D2624, D2198].
 - A person who moves to another squadron loses every View and Plan he held of others [D2203, D2087].
 - Only a master admin changes a master's account; a sign-in waits for the last person's pending save, drawn first [D2205].
 - The transfer: only the Leave War's Post out moves his primary squadron, on its date. Neighbouring squadrons plan each other's people as a matter of course, not only during a posting [D281, D2087, D282, D1100, D1101].
