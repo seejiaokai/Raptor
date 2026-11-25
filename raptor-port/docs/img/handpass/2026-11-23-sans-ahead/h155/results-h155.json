@@ -1,0 +1,198 @@
+[
+ {
+  "scn": "h",
+  "size": "desktop",
+  "id": "h-01",
+  "what": "Saber: Ranger posted out as SANS from 17 Jul (read back)",
+  "ok": true,
+  "note": "On 17 Jul: becomes SANS.",
+  "pics": "h-h-01-postout-open-desktop.png, h-h-01-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "h",
+  "size": "desktop",
+  "id": "h-02",
+  "what": "Saber: Hex posted out as SANS from 17 Jul (read back)",
+  "ok": true,
+  "note": "On 17 Jul: becomes SANS.",
+  "pics": "h-h-02-postout-open-desktop.png, h-h-02-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "h",
+  "size": "desktop",
+  "id": "h-03",
+  "what": "Saber: one shared offer for Ranger + Hex on Sat 18 (read back)",
+  "ok": true,
+  "note": "{\"iid\":\"imrldijyc6flozx\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077223556},{\\\"p\\\":\\\"rocky\\\",\\\"\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"f\":true,\"o\":true,\"a\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"} ",
+  "pics": "h-h-03-form-desktop.png, h-h-03-saved-desktop.png"
+ },
+ {
+  "scn": "h",
+  "size": "desktop",
+  "id": "h-04",
+  "what": "Saber: Sat 18 signed (four sign-offs) and published",
+  "ok": true,
+  "note": "pressed \"Publish day\"",
+  "pics": "h-h-04-desktop.png"
+ },
+ {
+  "scn": "h",
+  "size": "desktop",
+  "id": "h-05-panel",
+  "what": "the board's working Sat 18, SANS Avail panel: Ranger + Hex only",
+  "ok": true,
+  "note": "[\"Ranger\",\"Hex\"]",
+  "pics": "h-h-05-panel-clip-desktop.png, h-h-05-panel-desktop.png"
+ },
+ {
+  "scn": "h",
+  "size": "desktop",
+  "id": "h-05-pending",
+  "what": "Sat 18's pending count reads 0",
+  "ok": true,
+  "note": "read 0",
+  "pics": "h-h-05-pending-desktop.png"
+ },
+ {
+  "scn": "h",
+  "size": "desktop",
+  "id": "h-06",
+  "what": "Saber: Hex's posting moved to Fri 24 (Ranger's stays 17)",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" → \"On 24 Jul: becomes SANS.\"",
+  "pics": "h-h-06-sheet-desktop.png, h-h-06-moved-desktop.png"
+ },
+ {
+  "scn": "h",
+  "size": "desktop",
+  "id": "h-07-panel",
+  "what": "the board's working Sat 18, SANS Avail panel: Ranger only",
+  "ok": true,
+  "note": "[\"Ranger\"]",
+  "pics": "h-h-07-panel-clip-desktop.png, h-h-07-panel-desktop.png"
+ },
+ {
+  "scn": "h",
+  "size": "desktop",
+  "id": "h-07-pending",
+  "what": "Sat 18's pending count reads 1",
+  "ok": true,
+  "note": "read 1",
+  "pics": "h-h-07-pending-desktop.png"
+ },
+ {
+  "scn": "h",
+  "size": "desktop",
+  "id": "h-08",
+  "what": "the issued Sat 18 (Originalread-only — look, don't change), SANS Avail panel: Ranger AND Hex, as it went out",
+  "ok": true,
+  "note": "[\"Ranger\",\"Hex\"]",
+  "pics": "h-h-08-panel-clip-desktop.png, h-h-08-desktop.png"
+ },
+ {
+  "scn": "h",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "h",
+  "size": "phone",
+  "id": "h-01",
+  "what": "Saber: Ranger posted out as SANS from 17 Jul (read back)",
+  "ok": true,
+  "note": "On 17 Jul: becomes SANS.",
+  "pics": "h-h-01-postout-open-phone.png, h-h-01-postout-sheet-phone.png"
+ },
+ {
+  "scn": "h",
+  "size": "phone",
+  "id": "h-02",
+  "what": "Saber: Hex posted out as SANS from 17 Jul (read back)",
+  "ok": true,
+  "note": "On 17 Jul: becomes SANS.",
+  "pics": "h-h-02-postout-open-phone.png, h-h-02-postout-sheet-phone.png"
+ },
+ {
+  "scn": "h",
+  "size": "phone",
+  "id": "h-03",
+  "what": "Saber: one shared offer for Ranger + Hex on Sat 18 (read back)",
+  "ok": true,
+  "note": "{\"iid\":\"imrldja8yaazf6l\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077257634},{\\\"p\\\":\\\"rocky\\\",\\\"\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"f\":true,\"o\":true,\"a\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"} ",
+  "pics": "h-h-03-form-phone.png, h-h-03-saved-phone.png"
+ },
+ {
+  "scn": "h",
+  "size": "phone",
+  "id": "h-04",
+  "what": "Saber: Sat 18 signed (four sign-offs) and published",
+  "ok": true,
+  "note": "pressed \"Publish day\"",
+  "pics": "h-h-04-phone.png"
+ },
+ {
+  "scn": "h",
+  "size": "phone",
+  "id": "h-05-panel",
+  "what": "the board's working Sat 18, SANS Avail panel: Ranger + Hex only",
+  "ok": true,
+  "note": "[\"Ranger\",\"Hex\"]",
+  "pics": "h-h-05-panel-clip-phone.png, h-h-05-panel-phone.png"
+ },
+ {
+  "scn": "h",
+  "size": "phone",
+  "id": "h-05-pending",
+  "what": "Sat 18's pending count reads 0",
+  "ok": true,
+  "note": "read 0",
+  "pics": "h-h-05-pending-phone.png"
+ },
+ {
+  "scn": "h",
+  "size": "phone",
+  "id": "h-06",
+  "what": "Saber: Hex's posting moved to Fri 24 (Ranger's stays 17)",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" → \"On 24 Jul: becomes SANS.\"",
+  "pics": "h-h-06-sheet-phone.png, h-h-06-moved-phone.png"
+ },
+ {
+  "scn": "h",
+  "size": "phone",
+  "id": "h-07-panel",
+  "what": "the board's working Sat 18, SANS Avail panel: Ranger only",
+  "ok": true,
+  "note": "[\"Ranger\"]",
+  "pics": "h-h-07-panel-clip-phone.png, h-h-07-panel-phone.png"
+ },
+ {
+  "scn": "h",
+  "size": "phone",
+  "id": "h-07-pending",
+  "what": "Sat 18's pending count reads 1",
+  "ok": true,
+  "note": "read 1",
+  "pics": "h-h-07-pending-phone.png"
+ },
+ {
+  "scn": "h",
+  "size": "phone",
+  "id": "h-08",
+  "what": "the issued Sat 18 (Originalread-only — look, don't change), SANS Avail panel: Ranger AND Hex, as it went out",
+  "ok": true,
+  "note": "[\"Ranger\",\"Hex\"]",
+  "pics": "h-h-08-panel-clip-phone.png, h-h-08-phone.png"
+ },
+ {
+  "scn": "h",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

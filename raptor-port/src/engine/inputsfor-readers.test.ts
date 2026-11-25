@@ -42,6 +42,7 @@ const ALLOWED: Record<string, { n: number; why: string }> = {
   'ui/changesmodel.ts': { n: 2, why: 'the records of ONE group filing (by its group id) — a look-up, never a list' },
   'probe-bridge.ts': { n: 4, why: 'the developer\'s test bridge hands the browser tests the whole list' },
   'ui/sanscal-model.ts': { n: 1, why: 'the SANS day\'s model walks the records it is HANDED — ui/SansDay.tsx hands it the signed-in person\'s own squadron\'s (inputsFor(myUnit(), iso)); the default is for its tests' },
+  'leavewar/sansunfiled.ts': { n: 1, why: 'one man\'s own SANS availability (sansFiledShown: the days still shown, to say which a posting\'s change hid) — a man\'s, whatever squadron' },
   'leavewar/schedrecs.ts': { n: 1, why: 'the Leave War\'s one typed doorway to the list (warInputs)' },
   'leavewar/state/demoworld.ts': { n: 1, why: 'the Leave War demo world\'s inputs' },
   'leavewar/inputgate.ts': { n: 4, why: 'the clash rules at the inputs door: one man\'s leave against his own records (sick cuts leave, no overlap) — a man\'s, whatever squadron; and the gate\'s before-and-after snapshot of every war input\'s claim (snapshot, apply), which must see every input a command could have changed — those two were always there, missed by the old counter until C9 (a template\'s backtick swallowed them)' },

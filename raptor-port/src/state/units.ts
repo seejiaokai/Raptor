@@ -112,7 +112,19 @@ export const everOfBefore = (pid: string, unit: string, rows: UnitRows): boolean
 /* …and the engine's rosters ask the same (engine/roster.ts rosterOf, engine/inputs.ts inputsFor — multi-squadron step 3):
    the engine does not import state/, so the answer is handed to it here, once, as this module loads — both questions
    of the home handle (the reshape plan §3.2 A-i) */
-setHomeResolver({ on: (pid, iso) => homeUnitOn(unitRows(), pid, iso, fallbackHome()), changesIn: (pid, a, b) => homeChangesOn(pid, a, b) })
+/* …and a third, for a reader that keeps what it worked out from the first (engine/roster.ts homesSig — round 3 of the reads
+   of the SANS words, Astra's F2: the SANS reminder's saved weeks went on naming a man on days after his move). Every Home
+   row as it stands, and whose a man with no row is — worked out once for each set of rows (`ROWS` is built afresh by
+   every write, every Undo's reload and every change of the seeds), so asking costs nothing between changes. */
+let HOMES_SIG: { rows: UnitRows; fb: string | null; sig: string } | null = null
+function homesSignature(): string {
+  const rows = unitRows(), fb = fallbackHome()
+  if (!HOMES_SIG || HOMES_SIG.rows !== rows || HOMES_SIG.fb !== fb) {
+    HOMES_SIG = { rows, fb, sig: `${fb ?? ''}#${rows.homes.map(h => `${h.id}:${h.pid}>${h.unit}@${h.from}`).sort().join(',')}` }
+  }
+  return HOMES_SIG.sig
+}
+setHomeResolver({ on: (pid, iso) => homeUnitOn(unitRows(), pid, iso, fallbackHome()), changesIn: (pid, a, b) => homeChangesOn(pid, a, b), sig: homesSignature })
 /* …and whether a man's Scheduler tick counts in a squadron on a day (units-model.ts schedTickHolds — core line 4, D2160),
    handed to the sign-off boxes the same way */
 export const schedTickIn = (pid: string, unit: string, iso: string): boolean =>

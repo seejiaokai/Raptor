@@ -32,7 +32,7 @@
    has only ever been part of the Inputs page. Its overlay half went with this re-make — the page's scroll lock, its
    own close cross, its failed-save band, and an Escape that left the calendar "back to the list". */
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
-import { INPUTS, inputsListed, inputCoversDate, isSansAvail, sansLetters, idsOf, leadOf, isPlaceholderInput, typeMatches } from '../engine/inputs'
+import { INPUTS, inputsListed, inputCoversDate, sansShownOn, isSansAvail, sansLetters, idsOf, leadOf, isPlaceholderInput, typeMatches } from '../engine/inputs'
 import { flyAnswer, flyMonth, unitDayFacts, useWarFacts } from '../leavewar/sync'
 import { PEOPLE, QCOLOR, byCrew } from '../engine/people'
 import { hhmm } from '../engine/time'
@@ -104,7 +104,8 @@ export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSe
   /* (the page's own squadron's — the Inputs calendar stays on his own, D2132, a master admin's or Plan holder's following
      his pick, D2197: the same rows as the List and the month, ui/InputsPage.tsx inputsPageRows — every input touching that
      squadron, every input naming him; the reshape plan §3.3 C1, C2, C11) */
-  let inputs = inputsInMode(calRows(), mode).filter((r: any) => inputCoversDate(r, label))
+  /* (SANS availability hides on a day its man is not SANS — owner D2341, engine/inputs.ts sansShownOn) */
+  let inputs = inputsInMode(calRows(), mode).filter((r: any) => inputCoversDate(r, label) && sansShownOn(r, iso))
   /* one body with the List and the month (ui/inputscal-model.ts): an input passes when ANY of its people does, or its
      placeholder — it is one record with the list of its people (owner D756; the one-rule plan §4.5) */
   inputs = inputs.filter((r: any) => inputPassesPerson(f.fPerson, r))

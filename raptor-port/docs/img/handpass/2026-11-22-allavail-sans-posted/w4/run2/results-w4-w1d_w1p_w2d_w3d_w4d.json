@@ -1,0 +1,1074 @@
+[
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "w1-01",
+  "what": "Wed 15 Jul: Hex cell → ⋯ → Post out, date Fri 17 Jul, SANS, Post out (read back: the posting from Fri)",
+  "ok": true,
+  "note": "sheet line \"On 17 Jul: becomes SANS.\" · chips po-date po-overseas po-delete po-sans[on] po-transfer po-line po-confirm · Admin → Users tag \"posting out 17 Jul · SANS\" · record now {\"san\":false,\"sanFrom\":null} · war row {\"14\":\"· {act}\",\"15\":\"· {act}\",\"16\":\"PO {act pofin bx-last}\",\"17\":\"PO {gone act hasc}\",\"18\":\"PO {gone weekend act hasc}\",\"19\":\"PO {gone weekend act hasc}\",\"20\":\"PO {gone act hasc}\"} · name Hex SANSC {puck r san} [nm] [lw-sr] [role lw-chip q-c]",
+  "pics": "w1-w1-01-postout-open-desktop.png, w1-w1-01-postout-sheet-desktop.png, w1-w1-01-users-tag-desktop.png, w1-w1-01-lwrow-desktop.png, w1-w1-01-lw-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "w1-02",
+  "what": "Thu 16 Jul: Common Programme SQN EVENT 10:00–17:00 for ALL AVAIL, Hex not named (read back)",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldig5zz0j8o4\"}",
+  "pics": "w1-w1-02-thu-fixture-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-thu.off",
+  "what": "Thu 16 Jul SQN EVENT window: Hex IN — \"+ SANS\" off",
+  "ok": false,
+  "note": "SANS off (group false): chip \"21\", window 21 people, Hex out, pending 0",
+  "pics": "w1-w1-03-thu-off-win-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-thu.on",
+  "what": "Thu 16 Jul SQN EVENT window: Hex IN — \"+ SANS\" on",
+  "ok": false,
+  "note": "SANS on (group true): chip \"21\", window 21 people, Hex out, pending 0",
+  "pics": "w1-w1-03-thu-on-win-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-thu.off2",
+  "what": "Thu 16 Jul SQN EVENT window: Hex IN — \"+ SANS\" off again",
+  "ok": false,
+  "note": "SANS off (group false): chip \"21\", window 21 people, Hex out, pending 0",
+  "pics": "w1-w1-03-thu-off2-win-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-thu.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": false,
+  "note": "in: false/false/false · chip/window: 21/21 ; 21/21 ; 21/21"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-thu.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "21/21 ; 21/21 ; 21/21"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-thu-why",
+  "what": "Thu 16 Jul: what Hex already holds that day (read only) and his crew-list puck (RECORD)",
+  "ok": "REC",
+  "note": "[{\"wave\":1,\"seat\":\"RCP\",\"formation\":\"{\\\"cs\\\":\\\"RU\\\",\\\"msn\\\":\\\"BFM\\\",\\\"to\\\":\\\"16:45\\\",\\\"ld\\\":\\\"18:10\\\",\\\"rid\\\":\\\"rs130720263xd\\\"}\"}] · crew list: rpuck busy title=\"Hex — already tasked today, but you can still plan him\"",
+  "pics": "w1-w1-03x-thu-crew-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "w1-03y",
+  "what": "supplementary: Thu 16 Jul SQN EVENT 2 08:00–10:00 for ALL AVAIL, Hex not named (read back)",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT 2\",\"str\":\"08:00\",\"end\":\"10:00\",\"who\":\"allavail\",\"rid\":\"rmrldjdmoxhh6bs\"}",
+  "pics": "w1-w1-03y-thu-fixture2-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-thu-free.off",
+  "what": "supplementary: Thu 16 Jul SQN EVENT 2 08:00–10:00 window (hours he is free): Hex IN — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"40\", window 40 people, Hex IN, pending 0",
+  "pics": "w1-w1-03z-thu2-off-win-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-thu-free.on",
+  "what": "supplementary: Thu 16 Jul SQN EVENT 2 08:00–10:00 window (hours he is free): Hex IN — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"40\", window 40 people, Hex IN, pending 0",
+  "pics": "w1-w1-03z-thu2-on-win-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-thu-free.off2",
+  "what": "supplementary: Thu 16 Jul SQN EVENT 2 08:00–10:00 window (hours he is free): Hex IN — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"40\", window 40 people, Hex IN, pending 0",
+  "pics": "w1-w1-03z-thu2-off2-win-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-thu-free.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": true,
+  "note": "in: true/true/true · chip/window: 40/40 ; 40/40 ; 40/40"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-thu-free.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "40/40 ; 40/40 ; 40/40"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "w1-04",
+  "what": "Sat 18 Jul: the same event, Hex not named (read back)",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldk9w1j2731q\"}",
+  "pics": "w1-w1-04-sat-fixture-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-sat-notnamed.off",
+  "what": "Sat 18 Jul SQN EVENT window, Hex not named: Hex NOT in — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "w1-w1-05-sat-off-win-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-sat-notnamed.on",
+  "what": "Sat 18 Jul SQN EVENT window, Hex not named: Hex NOT in — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "w1-w1-05-sat-on-win-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-sat-notnamed.off2",
+  "what": "Sat 18 Jul SQN EVENT window, Hex not named: Hex NOT in — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "w1-w1-05-sat-off2-win-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-sat-notnamed.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": true,
+  "note": "in: false/false/false · chip/window: 44/44 ; 44/44 ; 44/44"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-sat-notnamed.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "44/44 ; 44/44 ; 44/44"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "w1-06a",
+  "what": "Sat 18 Jul board: Hex offered in the crew list (1 copies)",
+  "ok": null,
+  "note": "",
+  "pics": "w1-w1-06a-sat-crew-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "w1-06",
+  "what": "Sat 18 Jul: Ground Programme BRIEF 08:00–09:00 naming Hex (read back)",
+  "ok": true,
+  "note": "{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\",\"rid\":\"rmrldl5o7jpawk5\"}",
+  "pics": "w1-w1-06-sat-brief-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "w1-07",
+  "what": "Hex's puck on Saturday's BRIEF, close up: does it wear the purple SANS line? (RECORD)",
+  "ok": "REC",
+  "note": "{\"n\":2,\"found\":true,\"cls\":\"puck r sm san oilbar oilbar-fo\",\"san\":true,\"txt\":\"Hex C\",\"bR\":\"rgba(0, 0, 0, 0) 1px\",\"shadow\":\"none\",\"r\":{\"x\":516.28125,\"y\":477.15625,\"w\":74,\"h\":15},\"pic\":\"w1-w1-07-puck-close-desktop.png\"}",
+  "pics": "w1-w1-07-puck-close-desktop.png, w1-w1-07-sat-brief-row-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-sat-named.off",
+  "what": "Sat 18 Jul SQN EVENT window, Hex named on the BRIEF: Hex IN — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "w1-w1-08-sat-off-win-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-sat-named.on",
+  "what": "Sat 18 Jul SQN EVENT window, Hex named on the BRIEF: Hex IN — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "w1-w1-08-sat-on-win-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-sat-named.off2",
+  "what": "Sat 18 Jul SQN EVENT window, Hex named on the BRIEF: Hex IN — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "w1-w1-08-sat-off2-win-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-sat-named.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": true,
+  "note": "in: true/true/true · chip/window: 45/45 ; 45/45 ; 45/45"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1-sat-named.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "45/45 ; 45/45 ; 45/45"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "w1-08x",
+  "what": "Hex's puck in the window wears the purple SANS line? (RECORD)",
+  "ok": "REC",
+  "note": "true/true/true"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "PU-1",
+  "what": "ALL AVAIL window opened from the count, closed by its ✕",
+  "ok": true,
+  "note": "opened: chip \"45\", 45 people, Hex IN · after ✕: \"no window\"",
+  "pics": "w1-pu-01-win-open-desktop.png, w1-pu-02-win-closed-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "PU-2",
+  "what": "Hex's Post out sheet opened again (postout-sheet) and closed by its ✕ without a change",
+  "ok": true,
+  "note": "opened: postout-sheet · words \"Hex Fri 17 Jul ✕ PO FROM Fri 17 Jul 26 ▾ POSTING Overseas Sqn Delete ✓ SANS Transfer to Sqn On 17 Jul: becomes SANS. Undo post out (PO) Place leave or OIL here instead…\" · open after ✕: 0 · his record unchanged: true",
+  "pics": "w1-pu-03-cell17-opens-desktop.png, w1-pu-04-sheet-closed-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "PU-3",
+  "what": "Leave War grid: Hex's row around 17 Jul (RECORD what it draws from Fri 17 Jul)",
+  "ok": "REC",
+  "note": "{\"14\":\"· {act}\",\"15\":\"· {act}\",\"16\":\"PO {act pofin bx-last}\",\"17\":\"PO {gone act hasc}\",\"18\":\"PO {gone weekend act hasc}\",\"19\":\"PO {gone weekend act hasc}\",\"20\":\"PO {gone act hasc}\"} · name Hex SANSC {puck r san} [nm] [lw-sr] [role lw-chip q-c]",
+  "pics": "w1-pu-05-lwrow-desktop.png, w1-pu-05-lw-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "PU-4",
+  "what": "nothing changed by the round: Saturday pending the same, his record the same",
+  "ok": true,
+  "note": "pending before 0, after 0",
+  "pics": "w1-pu-06-sat-after-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1b-1",
+  "what": "Sat 18 Jul: four boxes signed, Publish (Publish day): 0 pending, \"SIGNED ORIG\", Hex in the window",
+  "ok": true,
+  "note": "pending 0 · not yet signed false · signed \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\" · chip \"45\" window 45 Hex IN",
+  "pics": "w1-w1b-01-win-desktop.png, w1-w1b-01-board-desktop.png, w1-w1b-01-lw-cell-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1b-1c",
+  "what": "Leave War: Hex's Sat 18 Jul cell after Publish (RECORD; expected FO*)",
+  "ok": "REC",
+  "note": "\"FO*\""
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1b-2",
+  "what": "clock moved to Fri 17 Jul 09:00, page reloaded, signed in again (the app's today; Hex's record read)",
+  "ok": true,
+  "note": "Fri Jul 17 2026 09:00 · {\"san\":true,\"sanFrom\":\"2026-07-17\"}"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1b-3",
+  "what": "after Friday arrives: still 0 pending, the same signed line, Hex still in, the same cell",
+  "ok": true,
+  "note": "pending 0 · not yet signed false · signed \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\" · chip \"45\" window 45 Hex IN (purple line) · cell \"FO*\"",
+  "pics": "w1-w1b-03-win-desktop.png, w1-w1b-03-board-desktop.png, w1-w1b-03-lw-cell-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1b-4",
+  "what": "the Leave War row after Friday arrives: does it show him SANS from Fri? (RECORD)",
+  "ok": "REC",
+  "note": "{\"14\":\"· {act}\",\"15\":\"· {act}\",\"16\":\"PO {act pofin bx-last}\",\"17\":\"PO {gone act hasc}\",\"18\":\"FO* {gone outlv weekend act hasc bx-gone}\",\"19\":\"PO {gone weekend act hasc}\",\"20\":\"PO {gone act hasc}\"} · name Hex SANSC {puck r san} [nm] [lw-sr] [role lw-chip q-c]",
+  "pics": "w1-w1b-04-lwrow-desktop.png, w1-w1b-04-lw-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1b-5",
+  "what": "\"+ SANS\" on (group shown: true): Saturday 0 pending",
+  "ok": true,
+  "note": "pending 0 · not yet signed false · signed \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\" · his Sat cell drawn on the war: true · w1-w1b-05-lw-sans-on-desktop.png · his row with SANS on: {\"14\":\"· {act}\",\"15\":\"· {act}\",\"16\":\"· {act}\",\"17\":\"· {act}\",\"18\":\"FO* {duty weekend act hasc}\",\"19\":\"· {weekend act}\",\"20\":\"· {act}\"} name Hex SANSC {puck r san} [nm] [lw-sr] [role lw-chip q-c] [w1-w1b-05-sans-on-lwrow-desktop.png, w1-w1b-05-sans-on-lw-desktop.png]",
+  "pics": "w1-w1b-05-settings-on-desktop.png, w1-w1b-05-board-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "W1b-6",
+  "what": "\"+ SANS\" off (group shown: false): Saturday 0 pending",
+  "ok": true,
+  "note": "pending 0 · not yet signed false · signed \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\"",
+  "pics": "w1-w1b-06-settings-off-desktop.png, w1-w1b-06-board-desktop.png"
+ },
+ {
+  "scn": "w1",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "w1-01",
+  "what": "Wed 15 Jul: Hex cell → ⋯ → Post out, date Fri 17 Jul, SANS, Post out (read back: the posting from Fri)",
+  "ok": true,
+  "note": "sheet line \"On 17 Jul: becomes SANS.\" · chips po-date po-overseas po-delete po-sans[on] po-transfer po-line po-confirm · Admin → Users tag \"posting out 17 Jul · SANS\" · record now {\"san\":false,\"sanFrom\":null} · war row {\"14\":\"· {act}\",\"15\":\"· {act}\",\"16\":\"PO {act pofin bx-last}\",\"17\":\"PO {gone act hasc}\",\"18\":\"PO {gone weekend act hasc}\",\"19\":\"PO {gone weekend act hasc}\",\"20\":\"PO {gone act hasc}\"} · name Hex {nm}",
+  "pics": "w1-w1-01-postout-open-phone.png, w1-w1-01-postout-sheet-phone.png, w1-w1-01-users-tag-phone.png, w1-w1-01-lwrow-phone.png, w1-w1-01-lw-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "w1-02",
+  "what": "Thu 16 Jul: Common Programme SQN EVENT 10:00–17:00 for ALL AVAIL, Hex not named (read back)",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldiq08z7acpr\"}",
+  "pics": "w1-w1-02-thu-fixture-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-thu.off",
+  "what": "Thu 16 Jul SQN EVENT window: Hex IN — \"+ SANS\" off",
+  "ok": false,
+  "note": "SANS off (group false): chip \"21\", window 21 people, Hex out, pending 0",
+  "pics": "w1-w1-03-thu-off-win-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-thu.on",
+  "what": "Thu 16 Jul SQN EVENT window: Hex IN — \"+ SANS\" on",
+  "ok": false,
+  "note": "SANS on (group true): chip \"21\", window 21 people, Hex out, pending 0",
+  "pics": "w1-w1-03-thu-on-win-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-thu.off2",
+  "what": "Thu 16 Jul SQN EVENT window: Hex IN — \"+ SANS\" off again",
+  "ok": false,
+  "note": "SANS off (group false): chip \"21\", window 21 people, Hex out, pending 0",
+  "pics": "w1-w1-03-thu-off2-win-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-thu.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": false,
+  "note": "in: false/false/false · chip/window: 21/21 ; 21/21 ; 21/21"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-thu.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "21/21 ; 21/21 ; 21/21"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-thu-why",
+  "what": "Thu 16 Jul: what Hex already holds that day (read only) and his crew-list puck (RECORD)",
+  "ok": "REC",
+  "note": "[{\"wave\":1,\"seat\":\"RCP\",\"formation\":\"{\\\"cs\\\":\\\"RU\\\",\\\"msn\\\":\\\"BFM\\\",\\\"to\\\":\\\"16:45\\\",\\\"ld\\\":\\\"18:10\\\",\\\"rid\\\":\\\"rs130720263xd\\\"}\"}] · crew list: rpuck busy title=\"Hex — already tasked today, but you can still plan him\"",
+  "pics": "w1-w1-03x-thu-crew-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "w1-03y",
+  "what": "supplementary: Thu 16 Jul SQN EVENT 2 08:00–10:00 for ALL AVAIL, Hex not named (read back)",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT 2\",\"str\":\"08:00\",\"end\":\"10:00\",\"who\":\"allavail\",\"rid\":\"rmrldkdqcqiymix\"}",
+  "pics": "w1-w1-03y-thu-fixture2-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-thu-free.off",
+  "what": "supplementary: Thu 16 Jul SQN EVENT 2 08:00–10:00 window (hours he is free): Hex IN — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"40\", window 40 people, Hex IN, pending 0",
+  "pics": "w1-w1-03z-thu2-off-win-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-thu-free.on",
+  "what": "supplementary: Thu 16 Jul SQN EVENT 2 08:00–10:00 window (hours he is free): Hex IN — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"40\", window 40 people, Hex IN, pending 0",
+  "pics": "w1-w1-03z-thu2-on-win-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-thu-free.off2",
+  "what": "supplementary: Thu 16 Jul SQN EVENT 2 08:00–10:00 window (hours he is free): Hex IN — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"40\", window 40 people, Hex IN, pending 0",
+  "pics": "w1-w1-03z-thu2-off2-win-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-thu-free.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": true,
+  "note": "in: true/true/true · chip/window: 40/40 ; 40/40 ; 40/40"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-thu-free.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "40/40 ; 40/40 ; 40/40"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "w1-04",
+  "what": "Sat 18 Jul: the same event, Hex not named (read back)",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldmcfxbwmcix\"}",
+  "pics": "w1-w1-04-sat-fixture-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-sat-notnamed.off",
+  "what": "Sat 18 Jul SQN EVENT window, Hex not named: Hex NOT in — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "w1-w1-05-sat-off-win-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-sat-notnamed.on",
+  "what": "Sat 18 Jul SQN EVENT window, Hex not named: Hex NOT in — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "w1-w1-05-sat-on-win-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-sat-notnamed.off2",
+  "what": "Sat 18 Jul SQN EVENT window, Hex not named: Hex NOT in — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "w1-w1-05-sat-off2-win-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-sat-notnamed.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": true,
+  "note": "in: false/false/false · chip/window: 44/44 ; 44/44 ; 44/44"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-sat-notnamed.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "44/44 ; 44/44 ; 44/44"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "w1-06a",
+  "what": "Sat 18 Jul board: Hex offered in the crew list (1 copies)",
+  "ok": null,
+  "note": "",
+  "pics": "w1-w1-06a-sat-crew-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "w1-06",
+  "what": "Sat 18 Jul: Ground Programme BRIEF 08:00–09:00 naming Hex (read back)",
+  "ok": true,
+  "note": "{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\",\"rid\":\"rmrldo2par0ffbg\"}",
+  "pics": "w1-w1-06-sat-brief-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "w1-07",
+  "what": "Hex's puck on Saturday's BRIEF, close up: does it wear the purple SANS line? (RECORD)",
+  "ok": "REC",
+  "note": "{\"n\":2,\"found\":true,\"cls\":\"puck r sm san oilbar oilbar-fo\",\"san\":true,\"txt\":\"Hex C\",\"bR\":\"rgba(0, 0, 0, 0) 1px\",\"shadow\":\"none\",\"r\":{\"x\":28,\"y\":467.40625,\"w\":74,\"h\":15},\"pic\":\"w1-w1-07-puck-close-phone.png\"}",
+  "pics": "w1-w1-07-puck-close-phone.png, w1-w1-07-sat-brief-row-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-sat-named.off",
+  "what": "Sat 18 Jul SQN EVENT window, Hex named on the BRIEF: Hex IN — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "w1-w1-08-sat-off-win-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-sat-named.on",
+  "what": "Sat 18 Jul SQN EVENT window, Hex named on the BRIEF: Hex IN — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "w1-w1-08-sat-on-win-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-sat-named.off2",
+  "what": "Sat 18 Jul SQN EVENT window, Hex named on the BRIEF: Hex IN — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "w1-w1-08-sat-off2-win-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-sat-named.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": true,
+  "note": "in: true/true/true · chip/window: 45/45 ; 45/45 ; 45/45"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "W1-sat-named.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "45/45 ; 45/45 ; 45/45"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "w1-08x",
+  "what": "Hex's puck in the window wears the purple SANS line? (RECORD)",
+  "ok": "REC",
+  "note": "true/true/true"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "PU-1",
+  "what": "ALL AVAIL window opened from the count, closed by its ✕",
+  "ok": true,
+  "note": "opened: chip \"45\", 45 people, Hex IN · after ✕: \"no window\"",
+  "pics": "w1-pu-01-win-open-phone.png, w1-pu-02-win-closed-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "PU-2",
+  "what": "Hex's Post out sheet opened again (postout-sheet) and closed by its ✕ without a change",
+  "ok": true,
+  "note": "opened: postout-sheet · words \"Hex Fri 17 Jul ✕ PO FROM Fri 17 Jul 26 ▾ POSTING Overseas Sqn Delete ✓ SANS Transfer to Sqn On 17 Jul: becomes SANS. Undo post out (PO) Place leave or OIL here instead…\" · open after ✕: 0 · his record unchanged: true",
+  "pics": "w1-pu-03-cell17-opens-phone.png, w1-pu-04-sheet-closed-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "PU-3",
+  "what": "Leave War grid: Hex's row around 17 Jul (RECORD what it draws from Fri 17 Jul)",
+  "ok": "REC",
+  "note": "{\"14\":\"· {act}\",\"15\":\"· {act}\",\"16\":\"PO {act pofin bx-last}\",\"17\":\"PO {gone act hasc}\",\"18\":\"PO {gone weekend act hasc}\",\"19\":\"PO {gone weekend act hasc}\",\"20\":\"PO {gone act hasc}\"} · name Hex {nm}",
+  "pics": "w1-pu-05-lwrow-phone.png, w1-pu-05-lw-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "PU-4",
+  "what": "nothing changed by the round: Saturday pending the same, his record the same",
+  "ok": true,
+  "note": "pending before 0, after 0",
+  "pics": "w1-pu-06-sat-after-phone.png"
+ },
+ {
+  "scn": "w1",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "w2",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "w2",
+  "size": "desktop",
+  "id": "w2-01",
+  "what": "Hex posted out as SANS from Fri 17 Jul (read back)",
+  "ok": true,
+  "note": "line \"On 17 Jul: becomes SANS.\" · {\"san\":false,\"sanFrom\":null}",
+  "pics": "w2-w2-01-postout-open-desktop.png, w2-w2-01-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "w2",
+  "size": "desktop",
+  "id": "w2-02",
+  "what": "Sat 18 Jul: BRIEF 10:00–11:00 naming Hex, SQN EVENT 10:00–17:00 for ALL AVAIL (read back)",
+  "ok": true,
+  "note": "{\"g\":{\"prog\":\"BRIEF\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"rocky\",\"rid\":\"rmrldiby8qgx7tp\"},\"a\":{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldieyn90pqum\"}}",
+  "pics": "w2-w2-02-fixture-desktop.png"
+ },
+ {
+  "scn": "w2",
+  "size": "desktop",
+  "id": "W2.off",
+  "what": "Sat 18 Jul SQN EVENT window, his BRIEF inside the event: Hex NOT in — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "w2-w2-03-off-win-desktop.png"
+ },
+ {
+  "scn": "w2",
+  "size": "desktop",
+  "id": "W2.on",
+  "what": "Sat 18 Jul SQN EVENT window, his BRIEF inside the event: Hex NOT in — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "w2-w2-03-on-win-desktop.png"
+ },
+ {
+  "scn": "w2",
+  "size": "desktop",
+  "id": "W2.off2",
+  "what": "Sat 18 Jul SQN EVENT window, his BRIEF inside the event: Hex NOT in — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"44\", window 44 people, Hex out, pending 0",
+  "pics": "w2-w2-03-off2-win-desktop.png"
+ },
+ {
+  "scn": "w2",
+  "size": "desktop",
+  "id": "W2.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": true,
+  "note": "in: false/false/false · chip/window: 44/44 ; 44/44 ; 44/44"
+ },
+ {
+  "scn": "w2",
+  "size": "desktop",
+  "id": "W2.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "44/44 ; 44/44 ; 44/44"
+ },
+ {
+  "scn": "w2",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "w3-01",
+  "what": "Hex posted out as SANS from Mon 13 Jul (it runs at once; read back)",
+  "ok": true,
+  "note": "line \"On 13 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-13\"}",
+  "pics": "w3-w3-01-postout-open-desktop.png, w3-w3-01-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "w3-02",
+  "what": "Tue 14 Jul: BRIEF 08:00–09:00 naming Hex, SQN EVENT 10:00–17:00 for ALL AVAIL (read back)",
+  "ok": true,
+  "note": "{\"g\":{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\",\"rid\":\"rmrldib7bmi3je6\"},\"a\":{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldiect52r8mc\"}}",
+  "pics": "w3-w3-02-fixture-desktop.png"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "W3-before",
+  "what": "Tue 14 Jul before: Hex IN the window",
+  "ok": false,
+  "note": "chip \"23\" {\"n\":23,\"has\":false,\"san\":null,\"why\":\"\",\"flag\":\"\",\"ttl\":\"SQN EVENTJul 14 · 10:00–17:00\",\"who\":\"Reaper,Anvil,Blade,Cobra,Forge,Hunter,Piston,Ranger,Saber,Sidewinder,Trident,Vandal,Jester,Nomad,Diesel,Recon,Wildcard,Ledger,Relay,Cutter,Fable,Ghost,Ryder\"}",
+  "pics": "w3-w3-03-before-win-desktop.png"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "w3-04",
+  "what": "Tue 14 Jul: four boxes signed, Publish (Publish day)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true}",
+  "pics": "w3-w3-04-published-desktop.png"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "w3-05",
+  "what": "Admin → Users: archive Hex (today, Wed)",
+  "ok": true,
+  "note": "note \"Hex archived — his sign-in is suspended\"",
+  "pics": "w3-w3-05-acc-open-desktop.png, w3-w3-05-archived-desktop.png"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "W3-archived.off",
+  "what": "Tue 14 Jul's window after the archive: Hex still IN — \"+ SANS\" off",
+  "ok": false,
+  "note": "SANS off (group false): chip \"23\", window 23 people, Hex out, pending 1",
+  "pics": "w3-w3-06-off-win-desktop.png"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "W3-archived.on",
+  "what": "Tue 14 Jul's window after the archive: Hex still IN — \"+ SANS\" on",
+  "ok": false,
+  "note": "SANS on (group true): chip \"23\", window 23 people, Hex out, pending 1",
+  "pics": "w3-w3-06-on-win-desktop.png"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "W3-archived.off2",
+  "what": "Tue 14 Jul's window after the archive: Hex still IN — \"+ SANS\" off again",
+  "ok": false,
+  "note": "SANS off (group false): chip \"23\", window 23 people, Hex out, pending 1",
+  "pics": "w3-w3-06-off2-win-desktop.png"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "W3-archived.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": false,
+  "note": "in: false/false/false · chip/window: 23/23 ; 23/23 ; 23/23"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "W3-archived.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "23/23 ; 23/23 ; 23/23"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "w3-07",
+  "what": "Admin → Users: Restore Hex with Post in Sat 18 Jul (read back)",
+  "ok": true,
+  "note": "post-in box \"Sat 18 Jul 26 ▾\" · button \"Restore\" · note \"Hex restored — he can sign in, and he'll be asked to check his quals and CAT\" · tag \"posting in 18 Jul\" · record {\"archived\":false,\"san\":false,\"sanFrom\":null}",
+  "pics": "w3-w3-07-restore-open-desktop.png, w3-w3-07-restore-date-desktop.png, w3-w3-07-restored-desktop.png"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "W3-restored.off",
+  "what": "Tue 14 Jul's window after the restore: Hex still IN — \"+ SANS\" off",
+  "ok": false,
+  "note": "SANS off (group false): chip \"23\", window 23 people, Hex out, pending 0",
+  "pics": "w3-w3-08-off-win-desktop.png"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "W3-restored.on",
+  "what": "Tue 14 Jul's window after the restore: Hex still IN — \"+ SANS\" on",
+  "ok": false,
+  "note": "SANS on (group true): chip \"23\", window 23 people, Hex out, pending 0",
+  "pics": "w3-w3-08-on-win-desktop.png"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "W3-restored.off2",
+  "what": "Tue 14 Jul's window after the restore: Hex still IN — \"+ SANS\" off again",
+  "ok": false,
+  "note": "SANS off (group false): chip \"23\", window 23 people, Hex out, pending 0",
+  "pics": "w3-w3-08-off2-win-desktop.png"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "W3-restored.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": false,
+  "note": "in: false/false/false · chip/window: 23/23 ; 23/23 ; 23/23"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "W3-restored.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "23/23 ; 23/23 ; 23/23"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "W3-unchanged",
+  "what": "the count unchanged: before / after the archive / after the restore",
+  "ok": true,
+  "note": "before \"23\"/23 · archived 23/23 ; 23/23 ; 23/23 · restored 23/23 ; 23/23 ; 23/23"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "W3-pendcount",
+  "what": "Tue 14 Jul's pending count on the board after the restore (RECORD)",
+  "ok": "REC",
+  "note": "0/0/0 · signed \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\""
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "W3-pending",
+  "what": "Tue 14 Jul's pending lines (RECORD)",
+  "ok": "REC",
+  "note": "no \"N pending\" drawn on Edit Schedule",
+  "pics": "w3-w3-09-tue-nopending-desktop.png"
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "W3-pending-x",
+  "what": "no pending line about who earns OIL or about the crowd",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "w3",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "w4",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "w4",
+  "size": "desktop",
+  "id": "w4-01",
+  "what": "Admin → Users: New person Kiwi (WSO, CAT C), Post in Fri 17 Jul, Add (read back)",
+  "ok": true,
+  "note": "id pmrldi58uo94kw9 {\"cs\":\"Kiwi\",\"seat\":\"RCP\",\"san\":false} · post-in box \"Fri 17 Jul 26 ▾\" · note \"Kiwi added to the roster — set flight and quals on the Quals page\"",
+  "pics": "w4-w4-01-newperson-form-desktop.png, w4-w4-01-newperson-added-desktop.png"
+ },
+ {
+  "scn": "w4",
+  "size": "desktop",
+  "id": "w4-02",
+  "what": "Tue 14 Jul: SQN EVENT 10:00–17:00 for ALL AVAIL (read back)",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldi8n6rt07fk\"}",
+  "pics": "w4-w4-02-fixture-desktop.png"
+ },
+ {
+  "scn": "w4",
+  "size": "desktop",
+  "id": "W4-before.off",
+  "what": "Tue 14 Jul window before the delete: Kiwi NOT in — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"23\", window 23 people, Kiwi out, pending 0",
+  "pics": "w4-w4-03-off-win-desktop.png"
+ },
+ {
+  "scn": "w4",
+  "size": "desktop",
+  "id": "W4-before.on",
+  "what": "Tue 14 Jul window before the delete: Kiwi NOT in — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"23\", window 23 people, Kiwi out, pending 0",
+  "pics": "w4-w4-03-on-win-desktop.png"
+ },
+ {
+  "scn": "w4",
+  "size": "desktop",
+  "id": "W4-before.off2",
+  "what": "Tue 14 Jul window before the delete: Kiwi NOT in — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"23\", window 23 people, Kiwi out, pending 0",
+  "pics": "w4-w4-03-off2-win-desktop.png"
+ },
+ {
+  "scn": "w4",
+  "size": "desktop",
+  "id": "W4-before.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": true,
+  "note": "in: false/false/false · chip/window: 23/23 ; 23/23 ; 23/23"
+ },
+ {
+  "scn": "w4",
+  "size": "desktop",
+  "id": "W4-before.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "23/23 ; 23/23 ; 23/23"
+ },
+ {
+  "scn": "w4",
+  "size": "desktop",
+  "id": "w4-04",
+  "what": "Admin → Users: delete Kiwi (both presses; read back)",
+  "ok": true,
+  "note": "first press: \"Tap again to delete Kiwi\" · note \"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone.\" · after: toast \"Kiwi deleted\" · record {\"deleted\":true,\"archived\":true} · rows on the list 0",
+  "pics": "w4-w4-04-acc-open-desktop.png, w4-w4-04-del-armed-desktop.png, w4-w4-04-deleted-desktop.png"
+ },
+ {
+  "scn": "w4",
+  "size": "desktop",
+  "id": "W4-after.off",
+  "what": "Tue 14 Jul window after the delete: Kiwi NOT in — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"23\", window 23 people, Kiwi out, pending 0",
+  "pics": "w4-w4-05-off-win-desktop.png"
+ },
+ {
+  "scn": "w4",
+  "size": "desktop",
+  "id": "W4-after.on",
+  "what": "Tue 14 Jul window after the delete: Kiwi NOT in — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"23\", window 23 people, Kiwi out, pending 0",
+  "pics": "w4-w4-05-on-win-desktop.png"
+ },
+ {
+  "scn": "w4",
+  "size": "desktop",
+  "id": "W4-after.off2",
+  "what": "Tue 14 Jul window after the delete: Kiwi NOT in — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"23\", window 23 people, Kiwi out, pending 0",
+  "pics": "w4-w4-05-off2-win-desktop.png"
+ },
+ {
+  "scn": "w4",
+  "size": "desktop",
+  "id": "W4-after.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": true,
+  "note": "in: false/false/false · chip/window: 23/23 ; 23/23 ; 23/23"
+ },
+ {
+  "scn": "w4",
+  "size": "desktop",
+  "id": "W4-after.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "23/23 ; 23/23 ; 23/23"
+ },
+ {
+  "scn": "w4",
+  "size": "desktop",
+  "id": "W4-unchanged",
+  "what": "the count unchanged by the delete",
+  "ok": true,
+  "note": "before 23/23 ; 23/23 ; 23/23 · after 23/23 ; 23/23 ; 23/23"
+ },
+ {
+  "scn": "w4",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

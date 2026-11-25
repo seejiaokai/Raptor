@@ -1,0 +1,12 @@
+{
+ "pictures": [],
+ "cases": {
+  "phone-webkit": {
+   "log": [
+    "filed {\"type\":\"OD\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvims2co5gix2\"]; asked []; note \"\"",
+    "filed {\"type\":\"OD\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvin9o6fp1lj1\"]; asked []; note \"\""
+   ]
+  }
+ },
+ "errors": []
+}

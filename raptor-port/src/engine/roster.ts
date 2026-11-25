@@ -25,6 +25,10 @@ import { BOOT_UNIT } from './unitview'
 export interface HomeHandle {
   on(pid: string, iso: string): string | null
   changesIn(pid: string, a: string, b: string): string[]
+  /* a third, for a reader that KEEPS an answer worked out from the first (round 3 of the reads of the SANS words —
+     Astra's F2): a string that changes whenever any person's squadron on any day may have — the Home rows themselves.
+     Left out by a bare function and the headless handle, where nobody ever moves. */
+  sig?(): string
 }
 type HomeOf = (pid: string, iso: string) => string | null
 let HOME: HomeHandle | null = null
@@ -36,6 +40,9 @@ export function setHomeResolver(h: HomeHandle | HomeOf | null): void {
 /** the handle as installed — or the headless one (every person the boot unit's, never moving) */
 export const homeHandle = (): HomeHandle => HOME ?? HEADLESS
 const HEADLESS: HomeHandle = { on: () => BOOT_UNIT, changesIn: () => [] }
+/** THE HOME ROWS' SIGNATURE — what a memo of anything read through `homeUnitOf` must also key on (engine/overlay.ts
+    landingSig: whose week a request lands on is its man's home on its first day). Empty where nobody ever moves. */
+export const homesSig = (): string => (HOME && HOME.sig ? HOME.sig() : '')
 /** the days in a..b (a excluded, b included) on which a person's squadron changes */
 export const homeChangesOf = (pid: unknown, a: string, b: string): string[] => (HOME ? HOME.changesIn(String(pid ?? ''), a, b) : [])
 

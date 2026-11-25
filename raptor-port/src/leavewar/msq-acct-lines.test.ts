@@ -19,7 +19,7 @@ import { noticeSeenLoad, NOTICESEEN_PFX } from '../state/noticeseen'
 import { HOOKS, store } from '../engine/hooks'
 import { commitProjection } from '../command'
 import { globalUndo, globalRedo } from '../undo/timeline'
-import { useMsqWorld, signInAs, ACCT, PID, on, moveMan, pastMidnight } from '../test-support/msq-world'
+import { useMsqWorld, signInAs, ACCT, PID, on, moveMan, pastMidnight, mem } from '../test-support/msq-world'
 
 useMsqWorld()
 beforeEach(() => { NOTICES.length = 0 })
@@ -29,8 +29,10 @@ const acct = (): string[] => NOTICES.filter(n => (n.what || []).some((p: any) =>
   .map(n => { const w = noticeWords(n); return `${n.to} · ${w.what}${w.who ? ` · ${w.who}` : ''}` })
 /* …on one man's bell as he sees it */
 const bell = (who: keyof typeof PID): string[] => noticesFor(PID[who]).filter(n => (n.what || []).some((p: any) => p.k === 'acct')).map(n => noticeWords(n).what)
-/* he has read everything on his bell up to now (his own read record, as his tap writes it) */
-const hasReadAll = (who: keyof typeof PID): void => { store.set(NOTICESEEN_PFX + PID[who], { upto: Date.now(), ids: [] }); noticeSeenLoad() }
+/* he has read everything on his bell up to now (his own read record, as his tap writes it) — the stored row seeded, as
+   main's tests do: a read record written outside its own command is refused since chat 147's SEC2-2 (a), and signing in as
+   him to tap would empty the Undo list these tests go on to press */
+const hasReadAll = (who: keyof typeof PID): void => { mem[`sqn142_${NOTICESEEN_PFX}${PID[who]}`] = JSON.stringify({ upto: Date.now(), ids: [] }); noticeSeenLoad() }
 const H = PID.hunter, R = PID.ranger, K = PID.kestrel
 
 describe('each change of access tells the man himself, in the drawn words', () => {

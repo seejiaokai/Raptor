@@ -2,11 +2,11 @@
    picker itself; its account of who may pick whom is there). Moved out of that file whole on the night of 6 Nov 26 (React
    Doctor's only-export-components: a file of components keeps Fast Refresh only when it exports components alone);
    nothing in them changed. */
-import { PEOPLE, isSpecial } from '../engine/people'
+import { PEOPLE, isSpecial, sansFiler, sansOnP } from '../engine/people'
 import { isUpchit, needsDoc, placeholderProblem, shapeProblem } from '../engine/inputs'
 import { canEditOwn } from '../state/auth'
 import { mayFileGroup, mayFileInputFor, me } from '../state/perms'
-import { fileForOtherRefusal, rosterOptions } from './inputedit'
+import { fileForOtherRefusal, rosterOptions, sansRunTrim } from './inputedit'
 
 export const cs = (id: any): string => (PEOPLE[id] ? String(PEOPLE[id].cs) : String(id ?? ''))
 const az = (ids: string[]) => [...ids].sort((a, b) => cs(a).localeCompare(cs(b), undefined, { sensitivity: 'base' }))
@@ -17,8 +17,14 @@ const az = (ids: string[]) => [...ids].sort((a, b) => cs(a).localeCompare(cs(b),
     the schedule; multi-squadron step 3) */
 /*  (…read on the draft's FIRST DAY, and — where the window hands in `offers` — only the men the draft with him added
     passes: one whole-draft answer, so the picker never offers whom the save refuses — the reshape plan §3.3 C6) */
-export const pickRoster = (sansOnly?: boolean, unit?: string, iso?: string, offers?: (id: string) => boolean): string[] =>
-  az(rosterOptions(unit, iso).filter(id => !PEOPLE[id].special && (!sansOnly || PEOPLE[id].san) && (!offers || offers(id))))
+/*  (…a SANS man by the draft's first day when it has one — owner D2340: a man posted out as SANS from a date ahead is
+    offered on a day from that date the moment the posting is saved; with no day yet, SANS today or by such a posting) */
+/*  (…or, for a run of days, one whose SANS date the run reaches: the save takes the days from that date on — owner D2388) */
+export const pickRoster = (sansOnly?: boolean, unit?: string, iso?: string, offers?: ((id: string) => boolean) & { runTo?: string }): string[] =>
+  az(rosterOptions(unit, iso).filter(id => !PEOPLE[id].special
+    && (!sansOnly || sansFor(id, iso) || (!!iso && !!offers?.runTo && !!sansRunTrim(id, iso, offers.runTo)))
+    && (!offers || offers(id))))
+export const sansFor = (id: string, iso?: string): boolean => (iso ? sansOnP(PEOPLE[id], iso) : sansFiler(PEOPLE[id]))
 
 /* ---- "ALL AVAIL" AND "ALL" AS A CHOICE ([INPUT-ALL-AVAIL]; owner D700, D702, D711, D712, D713 — 9 Oct 26) ------------
    His words: "Can the inputs have an all avail and all selection too? Only allowed for duty and other commitments."

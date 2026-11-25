@@ -1,7 +1,7 @@
 import { DAYS } from './data'
 import { rosterShown } from './faceattrs'
 import { DATES, inputAtIso, goesOnProg, inputLinesOn, inputReadPass, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inpLabel, shiftHardInput } from './inputs'
-import { PEOPLE, isSpecial, whoId, aarNeed, aarOK, scShiftKind, scQualOK, sansOnP } from './people'
+import { PEOPLE, isSpecial, whoId, aarNeed, aarOK, scShiftKind, scQualOK, sansOnP, sansAheadFrom } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
 import { isStandalone, scSpare, saExempt, saExemptKind, saFlies, saDeskFlies, CURWEEK } from './waves'
@@ -11,6 +11,7 @@ import { WARN, restClear, dayEvents, crossDayIfPlaced } from './validate'
 import { waveWindows, inpShow, shiftEvHard, seatIntime, scSeatHit, avSeatHit } from './events'
 import { whoArr, rowRef, rowPlaces, XKEY, sentinelSeatOK, SENTINEL_JET_BAR } from './slots'
 import { keyDay, seatRow } from './keys'
+import { isoDayWords } from './weekstash'   // a function, called only at run time, so the import loop is safe
 /* busy windows [s,e] for one person on a day (fly/duty/sim/ground) */
 export function personBusy(d:any,id:any){
   const out:any[]=[];
@@ -83,6 +84,25 @@ export function dayEngaged(d:any,standbyFree?:any){const s=new Set(),add=(id:any
   (d.ground||[]).forEach((g:any)=>{if(!g.cx&&!g.info){add(whoId(g.who));more(g);}});
   (d.allhands||[]).forEach((x:any)=>{if(x.cx)return;if(x.info)return;(Array.isArray(x.who)?x.who:(x.who?[x.who]:[])).forEach((w:any)=>add(whoId(w)));more(x);});
   ['amt','oft'].forEach((k:any)=>((d.sims||{})[k]||[]).forEach((o:any)=>{if(!o.cx)more(o);}));
+  return s;}
+/* WHO STANDS WHERE SANS AVAILABILITY IS ASKED, ON A DAY (owner D2564, 24 Nov 26 — "the SANS reminder counts a day as
+   planned only where he is in a flying seat or a sim (OFT, AMT) with nothing filed … never a ground programme row, a duty
+   desk or all hands"). SANS availability is filed for three things only — Fly, OFT, AMT — and two readers already asked
+   it of exactly those places: the checks (validate.ts sansChecks: the day's flying list and its `s:…amt` / `s:…oft`
+   entries, as events.ts buildDay collects them) and an armed seat (slotBar's SANS block, below: a flying key or a sim key,
+   a spare-like seat carved out). A third, the man's own reminder (leavewar/sansunfiled.ts), read dayEngaged instead —
+   every row he is busy on — on a builder's reading of "planned" that was never put to him (docs/bug-check-order.md §7.11,
+   lesson 32). This is the question as a function of the DAY alone, for a reader with no loaded week to ask the other two
+   through (a saved week held by the reminder): every man in a flying seat that is not cancelled and not exempt — the
+   checks' own test, waves.ts saExempt: an SC SPARE and a whole AVALON / BB wave stand by, unless the row flies — and
+   every man on an OFT or AMT row that is not cancelled, in a seat, as a passenger or dropped under it. Whether the row
+   has its times typed is not asked: he is in the seat either way. NOT dayEngaged, which answers "is he busy" for the crew
+   list's fade and ALL AVAIL, and is left as it is. leavewar/sans-planned-r5.test.ts holds this to the other two on the
+   same days, so the three cannot drift apart unseen. Port-only. */
+export function daySansSeats(d:any){const s=new Set(),add=(id:any)=>{if(id&&PEOPLE[id]&&!PEOPLE[id].special)s.add(id);};
+  ((d&&d.waves)||[]).forEach((w:any)=>((w&&w.formations)||[]).forEach((f:any)=>{if(!f||f.cx)return;((f.aircraft)||[]).forEach((a:any)=>{
+    if(!a||a.cx||saExempt(w,f,a))return;add(a.p);add(a.w);});}));
+  ['amt','oft'].forEach((k:any)=>(((d&&d.sims)||{})[k]||[]).forEach((o:any)=>{if(!o||o.cx)return;add(o.p);add(o.w);(o.pax||[]).forEach(add);(o.more||[]).forEach(add);}));
   return s;}
 /* AWAY, split by whether the absence closes the DAY or only some HOURS
    (10 Aug 26, for the AM/PM half-days). Built in ONE pass because the palette
@@ -341,6 +361,15 @@ export function slotRules(key:any){
    computes them. The record carries ONE window for every ticked event (owner
    rework, 14 Aug 26 — sansWindow reads it off the row's standard allday /
    half / s / e fields), so `off` is that same window whichever event asked. */
+/* WHY A SANS MAN WITH NOTHING FILED IS STRUCK, IN WORDS — the 'none' status said once, for the two places that print it:
+   the crew list (ui/palette-html.ts whyOf) and an armed seat's reason (slotBar below), so the words never differ by
+   screen. On a day SANS for him only by a posting not yet run (owner D2338, 22 Nov 26 — "no availability filed, await for
+   17 Jul for SANs availability to be filed"), the words name that date and where it is filed — his own words since
+   D2340 (23 Nov 26), which lets it be filed from the moment the posting is saved; from the date on, the usual words.
+   `iso`: the day looked at. */
+export function sansNoneWhy(p:any,iso:any):string{
+  const f=sansAheadFrom(p,iso);
+  return f?`SANS from ${isoDayWords(f)}: no availability filed. File it on the Inputs page's SANS tab.`:'SANS — no availability filed for today';}
 const SANS_KEY:any={fly:'f',oft:'o',amt:'a'};
 export const SANS_LABEL:any={fly:'Fly',oft:'OFT',amt:'AMT'};
 /* `iso`: the day being asked about — only a man who is SANS ON THAT DAY is judged (owner D2313, 22 Nov 26: a day before
@@ -616,7 +645,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
        slotRules' flying branch); a sim key sets no sansStart and falls back
        to the box's own start — a sim window is read AS FILED, unchanged */
     const g=sansGate(id,DAYS[r.di].dt,domain,r.sansStart!=null?r.sansStart:r.slotStart,r.slotEnd,dayIso(String(CURWEEK),r.di));
-    if(g.status==='none')return 'SANS — no availability filed for today';
+    if(g.status==='none')return sansNoneWhy(p,dayIso(String(CURWEEK),r.di));
     if(g.status==='not-offered')return `SANS — not offering ${SANS_LABEL[domain]}`;
     if(g.status==='window')return `SANS — available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
   }

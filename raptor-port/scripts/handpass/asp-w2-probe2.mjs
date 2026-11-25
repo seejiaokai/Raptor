@@ -1,0 +1,27 @@
+// asp-w2 probe 2: the sim seat with ALL AVAIL (desktop) — what the press does. Reads only.
+import * as L from './asp-w2-lib.mjs'
+const { sleep, J } = L
+console.log('asp-w2-probe2 v1')
+const sz = L.SIZES[process.env.SZ || 'd']
+const W = L.mk('probe2', sz)
+const { b, p } = await L.world(sz, W)
+await L.signIn(p, 'ad', 'a')
+await L.openBoard(p, W, 5)
+console.log('sims before', J(await p.evaluate(() => window.DAYS[5].sims)))
+await W.press(p, L.B('[data-sradd="5.oft"]'), 'sim-add')
+const si = await p.evaluate(() => window.DAYS[5].sims.oft.length - 1)
+await L.typeBox(p, W, `[data-bfld="sr:5.oft.${si}.str"]`, '10:00')
+await L.typeBox(p, W, `[data-bfld="sr:5.oft.${si}.end"]`, '17:00')
+console.log('slots', J(await p.evaluate(i => [...document.querySelectorAll(`#schedBoard [data-slot^="s:5.oft.${i}"]`)].map(e => e.dataset.slot + ' vis=' + (e.getBoundingClientRect().width > 0)), si)))
+await W.press(p, L.B(`[data-slot="s:5.oft.${si}.p"]`), 'arm')
+console.log('ARM', await p.evaluate(() => window.ARM && JSON.stringify(window.ARM)))
+const aa = p.locator('#schedBoard [data-person="allavail"]')
+console.log('allavail copies', J(await aa.evaluateAll(es => es.map(e => e.className + ' vis=' + (e.getBoundingClientRect().width > 0) + ' ' + e.getAttribute('title')))))
+await W.pic(p, 'armed')
+await W.press(p, '#schedBoard [data-person="allavail"]:visible', 'aa')
+await sleep(500)
+console.log('toast', await L.toastSaid(p))
+console.log('sim after', J(await p.evaluate(i => window.DAYS[5].sims.oft[i], si)))
+await W.pic(p, 'after')
+console.log('errors', J(W.errs))
+await b.close()

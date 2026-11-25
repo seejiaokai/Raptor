@@ -1,0 +1,359 @@
+{
+ "pictures": [
+  {
+   "file": "b6-desk-chromium-0-published.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "where": "week",
+    "tag": "ORIG",
+    "pending": "6 changes",
+    "beak": "none",
+    "alpub": "",
+    "alpubLocked": null,
+    "unpub": "Unpublish",
+    "signs": [
+     "— name —",
+     "— name —",
+     "— name —",
+     "— name —"
+    ],
+    "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+    "nys": "",
+    "undo": "Undo — publishing a day",
+    "sbUndo": "Undo — publishing a day"
+   }
+  },
+  {
+   "file": "b6-desk-chromium-1-board-open.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "where": "schedBoard",
+    "tag": "ORIG",
+    "pending": "6 changes",
+    "beak": "none",
+    "alpub": "",
+    "alpubLocked": null,
+    "unpub": "Unpublish",
+    "signs": [
+     "— name —",
+     "— name —",
+     "— name —",
+     "— name —"
+    ],
+    "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+    "nys": "",
+    "undo": "Undo — publishing a day",
+    "sbUndo": "Undo — publishing a day"
+   }
+  },
+  {
+   "file": "b6-desk-chromium-2-board-str.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "pending": "1 pending",
+    "signs": [
+     "— name —",
+     "— name —",
+     "— name —",
+     "— name —"
+    ],
+    "screen": [
+     "Ranger 09:00-10:00 \"\" [imwvrqsa40k7zob~bane.str]",
+     "Hex 08:00-10:00 \"\" [imwvrqsa40k7zob~rocky.str]"
+    ]
+   }
+  },
+  {
+   "file": "b6-desk-chromium-2-board-end.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "pending": "1 pending",
+    "signs": [
+     "— name —",
+     "— name —",
+     "— name —",
+     "— name —"
+    ],
+    "screen": [
+     "Ranger 09:00-11:00 \"\" [imwvrqsa40k7zob~bane.str]",
+     "Hex 08:00-10:00 \"\" [imwvrqsa40k7zob~rocky.str]"
+    ]
+   }
+  },
+  {
+   "file": "b6-desk-chromium-2-board-rmks.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "pending": "1 pending",
+    "signs": [
+     "— name —",
+     "— name —",
+     "— name —",
+     "— name —"
+    ],
+    "screen": [
+     "Ranger 09:00-11:00 \"own hours\" [imwvrqsa40k7zob~bane.str]",
+     "Hex 08:00-10:00 \"\" [imwvrqsa40k7zob~rocky.str]"
+    ]
+   }
+  },
+  {
+   "file": "b6-desk-chromium-3-board-left.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "pending": "1 pending",
+    "signs": [
+     "— name —",
+     "— name —",
+     "— name —",
+     "— name —"
+    ],
+    "marks": [
+     "Ranger: row[sb-arow c6r inprow] name[sbi-ty inpty ty-lv inpedit Edit this input — times, type, remarks or delete border:none none solid] puck[puck sm]",
+     "Hex: row[sb-arow c6r inprow] name[sbi-ty inpty ty-lv inpedit Edit this input — times, type, remarks or delete border:none none solid] puck[puck r sm warn hard boxred]"
+    ]
+   }
+  },
+  {
+   "file": "b6-desk-chromium-4-week-after.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "head": {
+     "where": "week",
+     "tag": "ORIG",
+     "pending": "1 pending",
+     "beak": "none",
+     "alpub": "Publish AL1",
+     "alpubLocked": true,
+     "unpub": "Unpublish",
+     "signs": [
+      "— name —",
+      "— name —",
+      "— name —",
+      "— name —"
+     ],
+     "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+     "nys": "Not yet signed",
+     "undo": "Undo — Ranger’s LL",
+     "sbUndo": "Undo — Ranger’s LL"
+    },
+    "marks": [
+     "Ranger: row[pl-row] name[ntx inpedit Edit this input — times, type, remarks or delete border:none underline dotted] puck[puck sm]",
+     "Hex: row[pl-row] name[ntx inpedit Edit this input — times, type, remarks or delete border:none underline dotted] puck[puck r sm warn hard boxred]"
+    ],
+    "screen": [
+     "Ranger 09:00-11:00 \"own hours\" [imwvrr0tlm7eept]",
+     "Hex 08:00-10:00 \"\" [imwvrqsa40k7zob]",
+     "OL/Cobra/IP - \"Overseas leave — off island\" [imwvrqndtr0w26z]",
+     "ATT C/Grit/C - \"Medically down\" [imwvrqndt42hn22]",
+     "OD/C/Nomad - \"Overseas duty — exercise, off island\" [imwvrqndtzhdzjh]",
+     "OIL/C/Gambit - \"\" [imwvrqneqymxsxj]"
+    ]
+   }
+  },
+  {
+   "file": "b6-desk-chromium-5-chg-togoout.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger · LL Saber 25/11 14:55 his own now — 09:00–11:00"
+   ]
+  },
+  {
+   "file": "b6-desk-chromium-5-chg-tapped.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "line": "Ranger · LL Saber 25/11 14:55 his own now — 09:00–11:00",
+    "landed": {
+     "tag": "DIV",
+     "cls": "pl-row chgflash",
+     "text": "LL 09:00 11:00 Ranger IP LATE own hourstill 15 Jul",
+     "row": "imwvrr0tlm7eept",
+     "puck": "bane",
+     "day": "2"
+    }
+   }
+  },
+  {
+   "file": "b6-desk-chromium-5-chg-all.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "▾ Input · Ranger · LL · 3 14:55 LL 15 Jul · remarks own hours Saber · 25/11 14:55 LL 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 25/11 14:55 LL added · 15 Jul Saber · 25/11 14:55",
+    "▾ Input · Hex · LL · 2 14:55 Ranger · LL 15 Jul · taken out Saber · 25/11 14:55 Hex, Ranger · LL added · 15 Jul Saber · 25/11 14:54",
+    "▾ The day · 5 14:54 Published — the Original Saber · 25/11 14:54 Signed · APPROVED BY · Anvil Saber · 25/11 14:54 Signed · PLANNED BY · Anvil Saber · 25/11 14:54 Signed · SKED CK · Anvil Saber · 25/11 14:54 Signed · CUR CK · Ace Saber · 25/11 14:54"
+   ]
+  },
+  {
+   "file": "b6-desk-chromium-7-after-undo.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "where": "week",
+    "tag": "ORIG",
+    "pending": "13 changes",
+    "beak": "none",
+    "alpub": "",
+    "alpubLocked": null,
+    "unpub": "Unpublish",
+    "signs": [
+     "— name —",
+     "— name —",
+     "— name —",
+     "— name —"
+    ],
+    "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+    "nys": "",
+    "undo": "Undo — publishing a day",
+    "sbUndo": "Undo — publishing a day"
+   }
+  },
+  {
+   "file": "b6-desk-chromium-8-after-redo.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "where": "week",
+    "tag": "ORIG",
+    "pending": "1 pending",
+    "beak": "none",
+    "alpub": "Publish AL1",
+    "alpubLocked": true,
+    "unpub": "Unpublish",
+    "signs": [
+     "— name —",
+     "— name —",
+     "— name —",
+     "— name —"
+    ],
+    "signed": "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+    "nys": "Not yet signed",
+    "undo": "Undo — Ranger’s LL",
+    "sbUndo": "Undo — Ranger’s LL"
+   }
+  },
+  {
+   "file": "b6-desk-chromium-8b-chg-togoout.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger · LL Saber 25/11 14:55 his own now — 09:00–11:00"
+   ]
+  },
+  {
+   "file": "b6-desk-chromium-8b-chg-tapped.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "line": "Ranger · LL Saber 25/11 14:55 his own now — 09:00–11:00",
+    "landed": {
+     "tag": "DIV",
+     "cls": "pl-row chgflash",
+     "text": "LL 09:00 11:00 Ranger IP LATE own hourstill 15 Jul",
+     "row": "imwvrr0tlm7eept",
+     "puck": "bane",
+     "day": "2"
+    }
+   }
+  },
+  {
+   "file": "b6-desk-chromium-8b-chg-all.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "▾ The day · 11 14:55 Redo — Ranger’s LL Saber · 25/11 14:55 Redo — Ranger’s LL Saber · 25/11 14:55 Redo — 2 inputs Saber · 25/11 14:55 Undo — 2 inputs Saber · 25/11 14:55 Undo — Ranger’s LL Saber · 25/11 14:55 Undo — Ranger’s LL Saber · 25/11 14:55 Published — the Original Saber · 25/11 14:54 Signed",
+    "▾ Input · Ranger · LL · 3 14:55 LL 15 Jul · remarks own hours Saber · 25/11 14:55 LL 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 25/11 14:55 LL added · 15 Jul Saber · 25/11 14:55",
+    "▾ Input · Hex · LL · 2 14:55 Ranger · LL 15 Jul · taken out Saber · 25/11 14:55 Hex, Ranger · LL added · 15 Jul Saber · 25/11 14:54"
+   ]
+  },
+  {
+   "file": "b6-desk-chromium-8c-member-us.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger 08:00-10:00 \"till 15 Jul\" [pl-row]",
+    "Hex 08:00-10:00 \"till 15 Jul\" [pl-row]"
+   ]
+  },
+  {
+   "file": "b6-desk-chromium-9-after-amendment.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "where": "week",
+    "tag": "AL1",
+    "pending": "21 changes",
+    "beak": "none",
+    "alpub": "",
+    "alpubLocked": null,
+    "unpub": "Unpublish",
+    "signs": [
+     "— name —",
+     "— name —",
+     "— name —",
+     "— name —"
+    ],
+    "signed": "SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil",
+    "nys": "",
+    "undo": "Undo — publishing an amendment",
+    "sbUndo": "Undo — publishing an amendment"
+   }
+  },
+  {
+   "file": "b6-desk-chromium-10-member-us.png",
+   "case": "B6",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger 09:00-11:00 \"own hours till 15 Jul\" [pl-row]",
+    "Hex 08:00-10:00 \"till 15 Jul\" [pl-row]"
+   ]
+  }
+ ],
+ "cases": {
+  "B6": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvrqsa40k7zob\"]; asked []; note \"\"",
+    "picture b6-desk-chromium-0-published.png: {\"where\":\"week\",\"tag\":\"ORIG\",\"pending\":\"6 changes\",\"beak\":\"none\",\"alpub\":\"\",\"alpubLocked\":null,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\",\"undo\":\"Undo — publishing a day\",\"sbUndo\":\"Undo — publishing a day\"}",
+    "published: {\"signed\":{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"},\"publish\":{\"dialog\":null,\"asked\":[],\"notes\":[\"Wednesday published and approved\"]},\"head\":{\"where\":\"week\",\"tag\":\"ORIG\",\"pending\":\"6 changes\",\"beak\":\"none\",\"alpub\":\"\",\"alpubLocked\":null,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\",\"undo\":\"Undo — publishing a day\",\"sbUndo\":\"Undo — publishing a day\"}}",
+    "picture b6-desk-chromium-1-board-open.png: {\"where\":\"schedBoard\",\"tag\":\"ORIG\",\"pending\":\"6 changes\",\"beak\":\"none\",\"alpub\":\"\",\"alpubLocked\":null,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\",\"undo\":\"Undo — publishing a day\",\"sbUndo\":\"Undo — publishing a day\"}",
+    "{\"step\":\"str 0900 Tab\",\"typedIn\":\"#schedBoard [data-ifld=\\\"imwvrqsa40k7zob~bane.str\\\"]\",\"store\":[\"LL Ranger 09:00-10:00 \\\"\\\" [imwvrr0tlm7eept]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\"],\"screen\":[\"Ranger 09:00-10:00 \\\"\\\" [imwvrqsa40k7zob~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob~rocky.str]\"],\"caret\":\"imwvrqsa40k7zob~bane.end\",\"head\":{\"where\":\"schedBoard\",\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"alpubLocked\":true,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\",\"undo\":\"Undo — 2 inputs\",\"sbUndo\":\"Undo — 2 inputs\"},\"marks\":[\"Ranger: row[sb-arow c6r inprow] name[sbi-ty inpty ty-lv inpedit Edit this input — times, type, remarks or delete border:none none solid] puck[puck sm]\",\"Hex: row[sb-arow c6r inprow] name[sbi-ty inpty ty-lv inpedit Edit this input — times, type, remarks or delete border:none none solid] puck[puck r sm warn hard boxred]\"],\"notes\":[]}",
+    "picture b6-desk-chromium-2-board-str.png: {\"pending\":\"1 pending\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"screen\":[\"Ranger 09:00-10:00 \\\"\\\" [imwvrqsa40k7zob~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob~rocky.str]\"]}",
+    "{\"step\":\"end 1100 Tab\",\"typedIn\":\"#schedBoard [data-ifld=\\\"imwvrqsa40k7zob~bane.end\\\"]\",\"store\":[\"LL Ranger 09:00-11:00 \\\"\\\" [imwvrr0tlm7eept]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"\\\" [imwvrqsa40k7zob~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob~rocky.str]\"],\"caret\":\"imwvrqsa40k7zob~bane.rmks\",\"head\":{\"where\":\"schedBoard\",\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"alpubLocked\":true,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\",\"undo\":\"Undo — Ranger’s LL\",\"sbUndo\":\"Undo — Ranger’s LL\"},\"marks\":[\"Ranger: row[sb-arow c6r inprow] name[sbi-ty inpty ty-lv inpedit Edit this input — times, type, remarks or delete border:none none solid] puck[puck sm]\",\"Hex: row[sb-arow c6r inprow] name[sbi-ty inpty ty-lv inpedit Edit this input — times, type, remarks or delete border:none none solid] puck[puck r sm warn hard boxred]\"],\"notes\":[]}",
+    "picture b6-desk-chromium-2-board-end.png: {\"pending\":\"1 pending\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"screen\":[\"Ranger 09:00-11:00 \\\"\\\" [imwvrqsa40k7zob~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob~rocky.str]\"]}",
+    "{\"step\":\"rmks own hours Tab\",\"typedIn\":\"#schedBoard [data-ifld=\\\"imwvrqsa40k7zob~bane.rmks\\\"]\",\"store\":[\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvrr0tlm7eept]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvrqsa40k7zob~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob~rocky.str]\"],\"caret\":\"imwvrqsa40k7zob~rocky.str\",\"head\":{\"where\":\"schedBoard\",\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"alpubLocked\":true,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\",\"undo\":\"Undo — Ranger’s LL\",\"sbUndo\":\"Undo — Ranger’s LL\"},\"marks\":[\"Ranger: row[sb-arow c6r inprow] name[sbi-ty inpty ty-lv inpedit Edit this input — times, type, remarks or delete border:none none solid] puck[puck sm]\",\"Hex: row[sb-arow c6r inprow] name[sbi-ty inpty ty-lv inpedit Edit this input — times, type, remarks or delete border:none none solid] puck[puck r sm warn hard boxred]\"],\"notes\":[]}",
+    "picture b6-desk-chromium-2-board-rmks.png: {\"pending\":\"1 pending\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"screen\":[\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvrqsa40k7zob~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob~rocky.str]\"]}",
+    "{\"step\":\"caret left\",\"store\":[\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvrr0tlm7eept]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvrr0tlm7eept.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob.str]\"],\"head\":{\"where\":\"schedBoard\",\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"alpubLocked\":true,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\",\"undo\":\"Undo — Ranger’s LL\",\"sbUndo\":\"Undo — Ranger’s LL\"},\"marks\":[\"Ranger: row[sb-arow c6r inprow] name[sbi-ty inpty ty-lv inpedit Edit this input — times, type, remarks or delete border:none none solid] puck[puck sm]\",\"Hex: row[sb-arow c6r inprow] name[sbi-ty inpty ty-lv inpedit Edit this input — times, type, remarks or delete border:none none solid] puck[puck r sm warn hard boxred]\"]}",
+    "picture b6-desk-chromium-3-board-left.png: {\"pending\":\"1 pending\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"marks\":[\"Ranger: row[sb-arow c6r inprow] name[sbi-ty inpty ty-lv inpedit Edit this input — times, type, remarks or delete border:none none solid] puck[puck sm]\",\"Hex: row[sb-arow c6r inprow] name[sbi-ty inpty ty-lv inpedit Edit this input — times, type, remarks or delete border:none none solid] puck[puck r sm warn hard boxred]\"]}",
+    "picture b6-desk-chromium-4-week-after.png: {\"head\":{\"where\":\"week\",\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"alpubLocked\":true,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\",\"undo\":\"Undo — Ranger’s LL\",\"sbUndo\":\"Undo — Ranger’s LL\"},\"marks\":[\"Ranger: row[pl-row] name[ntx inpedit Edit this input — times, type, remarks or delete border:none underline dotted] puck[puck sm]\",\"Hex: row[pl-row] name[ntx inpedit Edit this input — times, type, remarks or delete border:none underline dotted] puck[puck r sm warn hard boxred]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvrr0tlm7eept]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\",\"OL/Cobra/IP - \\\"Overseas leave — off island\\\" [imwvrqndtr0w26z]\",\"ATT C/Grit/C - \\\"Medically down\\\" [imwvrqndt42hn22]\",\"OD/C/Nomad - \\\"Overseas duty — exercise, off island\\\" [imwvrqndtzhdzjh]\",\"OIL/C/Gambit - \\\"\\\" [imwvrqneqymxsxj]\"]}",
+    "week after: {\"head\":{\"where\":\"week\",\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"alpubLocked\":true,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\",\"undo\":\"Undo — Ranger’s LL\",\"sbUndo\":\"Undo — Ranger’s LL\"},\"marks\":[\"Ranger: row[pl-row] name[ntx inpedit Edit this input — times, type, remarks or delete border:none underline dotted] puck[puck sm]\",\"Hex: row[pl-row] name[ntx inpedit Edit this input — times, type, remarks or delete border:none underline dotted] puck[puck r sm warn hard boxred]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvrr0tlm7eept]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\",\"OL/Cobra/IP - \\\"Overseas leave — off island\\\" [imwvrqndtr0w26z]\",\"ATT C/Grit/C - \\\"Medically down\\\" [imwvrqndt42hn22]\",\"OD/C/Nomad - \\\"Overseas duty — exercise, off island\\\" [imwvrqndtzhdzjh]\",\"OIL/C/Gambit - \\\"\\\" [imwvrqneqymxsxj]\"]}",
+    "picture b6-desk-chromium-5-chg-togoout.png: [\"Ranger · LL Saber 25/11 14:55 his own now — 09:00–11:00\"]",
+    "picture b6-desk-chromium-5-chg-tapped.png: {\"line\":\"Ranger · LL Saber 25/11 14:55 his own now — 09:00–11:00\",\"landed\":{\"tag\":\"DIV\",\"cls\":\"pl-row chgflash\",\"text\":\"LL 09:00 11:00 Ranger IP LATE own hourstill 15 Jul\",\"row\":\"imwvrr0tlm7eept\",\"puck\":\"bane\",\"day\":\"2\"}}",
+    "picture b6-desk-chromium-5-chg-all.png: [\"▾ Input · Ranger · LL · 3 14:55 LL 15 Jul · remarks own hours Saber · 25/11 14:55 LL 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 25/11 14:55 LL added · 15 Jul Saber · 25/11 14:55\",\"▾ Input · Hex · LL · 2 14:55 Ranger · LL 15 Jul · taken out Saber · 25/11 14:55 Hex, Ranger · LL added · 15 Jul Saber · 25/11 14:54\",\"▾ The day · 5 14:54 Published — the Original Saber · 25/11 14:54 Signed · APPROVED BY · Anvil Saber · 25/11 14:54 Signed · PLANNED BY · Anvil Saber · 25/11 14:54 Signed · SKED CK · Anvil Saber · 25/11 14:54 Signed · CUR CK · Ace Saber · 25/11 14:54\"]",
+    "changes window: {\"countSays\":\"1 pending\",\"opened\":{\"title\":\"Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1\",\"tabs\":[\"New to you 0\",\"All changes 10\",\"To go out · AL1 1 [on]\"],\"outHead\":\"Waiting to go out as AL1 · 1 change\",\"out\":[\"Ranger · LL Saber 25/11 14:55 his own now — 09:00–11:00\"],\"groups\":[],\"foot\":\"\"},\"pics\":[\"b6-desk-chromium-5-chg-togoout.png\",\"b6-desk-chromium-5-chg-tapped.png\",\"b6-desk-chromium-5-chg-all.png\"],\"toGoOut\":{\"title\":\"Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1\",\"tabs\":[\"New to you 0\",\"All changes 10\",\"To go out · AL1 1 [on]\"],\"outHead\":\"Waiting to go out as AL1 · 1 change\",\"out\":[\"Ranger · LL Saber 25/11 14:55 his own now — 09:00–11:00\"],\"groups\":[],\"foot\":\"\"},\"tapped\":{\"line\":\"Ranger · LL Saber 25/11 14:55 his own now — 09:00–11:00\",\"landed\":{\"tag\":\"DIV\",\"cls\":\"pl-row chgflash\",\"text\":\"LL 09:00 11:00 Ranger IP LATE own hourstill 15 Jul\",\"row\":\"imwvrr0tlm7eept\",\"puck\":\"bane\",\"day\":\"2\"}},\"all\":{\"title\":\"Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1\",\"tabs\":[\"New to you 0\",\"All changes 10 [on]\",\"To go out · AL1 1\"],\"outHead\":\"\",\"out\":[],\"groups\":[\"▾ Input · Ranger · LL · 3 14:55 LL 15 Jul · remarks own hours Saber · 25/11 14:55 LL 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 25/11 14:55 LL added · 15 Jul Saber · 25/11 14:55\",\"▾ Input · Hex · LL · 2 14:55 Ranger · LL 15 Jul · taken out Saber · 25/11 14:55 Hex, Ranger · LL added · 15 Jul Saber · 25/11 14:54\",\"▾ The day · 5 14:54 Published — the Original Saber · 25/11 14:54 Signed · APPROVED BY · Anvil Saber · 25/11 14:54 Signed · PLANNED BY · Anvil Saber · 25/11 14:54 Signed · SKED CK · Anvil Saber · 25/11 14:54 Signed · CUR CK · Ace Saber · 25/11 14:54\"],\"foot\":\"Tap a change to go to it — the window stays open.\"}}",
+    "picture b6-desk-chromium-7-after-undo.png: {\"where\":\"week\",\"tag\":\"ORIG\",\"pending\":\"13 changes\",\"beak\":\"none\",\"alpub\":\"\",\"alpubLocked\":null,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\",\"undo\":\"Undo — publishing a day\",\"sbUndo\":\"Undo — publishing a day\"}",
+    "undos: [{\"title\":\"Undo — Ranger’s LL\",\"store\":[\"LL Ranger 09:00-11:00 \\\"\\\" [imwvrr0tlm7eept]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\"],\"head\":{\"where\":\"week\",\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"alpubLocked\":true,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\",\"undo\":\"Undo — Ranger’s LL\",\"sbUndo\":\"Undo — Ranger’s LL\"},\"notes\":\"Undid: Ranger’s LL\"},{\"title\":\"Undo — Ranger’s LL\",\"store\":[\"LL Ranger 09:00-10:00 \\\"\\\" [imwvrr0tlm7eept]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\"],\"head\":{\"where\":\"week\",\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"alpubLocked\":true,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\",\"undo\":\"Undo — 2 inputs\",\"sbUndo\":\"Undo — 2 inputs\"},\"notes\":\"Undid: Ranger’s LL\"},{\"title\":\"Undo — 2 inputs\",\"store\":[\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\"],\"head\":{\"where\":\"week\",\"tag\":\"ORIG\",\"pending\":\"13 changes\",\"beak\":\"none\",\"alpub\":\"\",\"alpubLocked\":null,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\",\"undo\":\"Undo — publishing a day\",\"sbUndo\":\"Undo — publishing a day\"},\"notes\":\"Undid: 2 inputs\"}] after: {\"store\":[\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\"],\"head\":{\"where\":\"week\",\"tag\":\"ORIG\",\"pending\":\"13 changes\",\"beak\":\"none\",\"alpub\":\"\",\"alpubLocked\":null,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\",\"undo\":\"Undo — publishing a day\",\"sbUndo\":\"Undo — publishing a day\"},\"screen\":[\"Ranger 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob~rocky]\",\"OL/Cobra/IP - \\\"Overseas leave — off island\\\" [imwvrqndtr0w26z]\",\"ATT C/Grit/C - \\\"Medically down\\\" [imwvrqndt42hn22]\",\"OD/C/Nomad - \\\"Overseas duty — exercise, off island\\\" [imwvrqndtzhdzjh]\",\"OIL/C/Gambit - \\\"\\\" [imwvrqneqymxsxj]\"],\"marks\":[\"Ranger: row[pl-row] name[ntx inpedit Edit this input — times, type, remarks or delete border:none none solid] puck[puck sm]\",\"Hex: row[pl-row] name[ntx inpedit Edit this input — times, type, remarks or delete border:none none solid] puck[puck r sm warn hard boxred]\"]}",
+    "picture b6-desk-chromium-8-after-redo.png: {\"where\":\"week\",\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"alpubLocked\":true,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\",\"undo\":\"Undo — Ranger’s LL\",\"sbUndo\":\"Undo — Ranger’s LL\"}",
+    "redos: [{\"title\":\"Redo — 2 inputs\",\"store\":[\"LL Ranger 09:00-10:00 \\\"\\\" [imwvrr0tlm7eept]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\"],\"head\":{\"where\":\"week\",\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"alpubLocked\":true,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\",\"undo\":\"Undo — 2 inputs\",\"sbUndo\":\"Undo — 2 inputs\"}},{\"title\":\"Redo — Ranger’s LL\",\"store\":[\"LL Ranger 09:00-11:00 \\\"\\\" [imwvrr0tlm7eept]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\"],\"head\":{\"where\":\"week\",\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"alpubLocked\":true,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\",\"undo\":\"Undo — Ranger’s LL\",\"sbUndo\":\"Undo — Ranger’s LL\"}},{\"title\":\"Redo — Ranger’s LL\",\"store\":[\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvrr0tlm7eept]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\"],\"head\":{\"where\":\"week\",\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"alpubLocked\":true,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\",\"undo\":\"Undo — Ranger’s LL\",\"sbUndo\":\"Undo — Ranger’s LL\"}}] after: {\"store\":[\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvrr0tlm7eept]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\"],\"head\":{\"where\":\"week\",\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"alpubLocked\":true,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\",\"undo\":\"Undo — Ranger’s LL\",\"sbUndo\":\"Undo — Ranger’s LL\"},\"screen\":[\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvrr0tlm7eept]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\",\"OL/Cobra/IP - \\\"Overseas leave — off island\\\" [imwvrqndtr0w26z]\",\"ATT C/Grit/C - \\\"Medically down\\\" [imwvrqndt42hn22]\",\"OD/C/Nomad - \\\"Overseas duty — exercise, off island\\\" [imwvrqndtzhdzjh]\",\"OIL/C/Gambit - \\\"\\\" [imwvrqneqymxsxj]\"]}",
+    "picture b6-desk-chromium-8b-chg-togoout.png: [\"Ranger · LL Saber 25/11 14:55 his own now — 09:00–11:00\"]",
+    "picture b6-desk-chromium-8b-chg-tapped.png: {\"line\":\"Ranger · LL Saber 25/11 14:55 his own now — 09:00–11:00\",\"landed\":{\"tag\":\"DIV\",\"cls\":\"pl-row chgflash\",\"text\":\"LL 09:00 11:00 Ranger IP LATE own hourstill 15 Jul\",\"row\":\"imwvrr0tlm7eept\",\"puck\":\"bane\",\"day\":\"2\"}}",
+    "picture b6-desk-chromium-8b-chg-all.png: [\"▾ The day · 11 14:55 Redo — Ranger’s LL Saber · 25/11 14:55 Redo — Ranger’s LL Saber · 25/11 14:55 Redo — 2 inputs Saber · 25/11 14:55 Undo — 2 inputs Saber · 25/11 14:55 Undo — Ranger’s LL Saber · 25/11 14:55 Undo — Ranger’s LL Saber · 25/11 14:55 Published — the Original Saber · 25/11 14:54 Signed\",\"▾ Input · Ranger · LL · 3 14:55 LL 15 Jul · remarks own hours Saber · 25/11 14:55 LL 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 25/11 14:55 LL added · 15 Jul Saber · 25/11 14:55\",\"▾ Input · Hex · LL · 2 14:55 Ranger · LL 15 Jul · taken out Saber · 25/11 14:55 Hex, Ranger · LL added · 15 Jul Saber · 25/11 14:54\"]",
+    "picture b6-desk-chromium-8c-member-us.png: [\"Ranger 08:00-10:00 \\\"till 15 Jul\\\" [pl-row]\",\"Hex 08:00-10:00 \\\"till 15 Jul\\\" [pl-row]\"]",
+    "8c the day as us sees it: {\"who\":\"us\",\"head\":{\"tag\":\"ORIG\",\"pend\":\"\",\"nys\":\"\",\"sel\":\"Original — as issued\",\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"},\"rows\":[\"Ranger 08:00-10:00 \\\"till 15 Jul\\\" [pl-row]\",\"Hex 08:00-10:00 \\\"till 15 Jul\\\" [pl-row]\"],\"store\":[\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvrr0tlm7eept]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\"],\"pic\":\"b6-desk-chromium-8c-member-us.png\"}",
+    "admin again, store [\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvrr0tlm7eept]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\"] head {\"where\":\"week\",\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":\"none\",\"alpub\":\"Publish AL1\",\"alpubLocked\":true,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"Not yet signed\",\"undo\":\"Undo\",\"sbUndo\":\"Undo\"}",
+    "picture b6-desk-chromium-9-after-amendment.png: {\"where\":\"week\",\"tag\":\"AL1\",\"pending\":\"21 changes\",\"beak\":\"none\",\"alpub\":\"\",\"alpubLocked\":null,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\",\"undo\":\"Undo — publishing an amendment\",\"sbUndo\":\"Undo — publishing an amendment\"}",
+    "amendment: {\"firstTry\":{\"err\":\"greyed: Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"},\"dialog\":null,\"asked\":[],\"notes\":[\"Published AL1 · 1 item on Wed only · approved by Anvil\"]} after: {\"store\":[\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvrr0tlm7eept]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\"],\"head\":{\"where\":\"week\",\"tag\":\"AL1\",\"pending\":\"21 changes\",\"beak\":\"none\",\"alpub\":\"\",\"alpubLocked\":null,\"unpub\":\"Unpublish\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"],\"signed\":\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"nys\":\"\",\"undo\":\"Undo — publishing an amendment\",\"sbUndo\":\"Undo — publishing an amendment\"},\"screen\":[\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvrr0tlm7eept]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\",\"OL/Cobra/IP - \\\"Overseas leave — off island\\\" [imwvrqndtr0w26z]\",\"ATT C/Grit/C - \\\"Medically down\\\" [imwvrqndt42hn22]\",\"OD/C/Nomad - \\\"Overseas duty — exercise, off island\\\" [imwvrqndtzhdzjh]\",\"OIL/C/Gambit - \\\"\\\" [imwvrqneqymxsxj]\"]}",
+    "picture b6-desk-chromium-10-member-us.png: [\"Ranger 09:00-11:00 \\\"own hours till 15 Jul\\\" [pl-row]\",\"Hex 08:00-10:00 \\\"till 15 Jul\\\" [pl-row]\"]",
+    "10 the day as us sees it: {\"who\":\"us\",\"head\":{\"tag\":\"AL1\",\"pend\":\"\",\"nys\":\"\",\"sel\":\"AL1 — as issued\",\"signed\":\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\"},\"rows\":[\"Ranger 09:00-11:00 \\\"own hours till 15 Jul\\\" [pl-row]\",\"Hex 08:00-10:00 \\\"till 15 Jul\\\" [pl-row]\"],\"store\":[\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvrr0tlm7eept]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrqsa40k7zob]\"],\"pic\":\"b6-desk-chromium-10-member-us.png\"}"
+   ]
+  }
+ },
+ "errors": []
+}

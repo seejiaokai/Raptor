@@ -5,7 +5,7 @@
    bell, its list and the Undo / Redo pair — and reads all of this from here. Nothing in it changed. */
 import { useSyncExternalStore } from 'react'
 import { notify, setPage, landingAsk } from '../state/store'
-import { bellLit, clearBell } from '../state/view'
+import { bellLit, clearBell, INPVIEW, setInpView, setInpMode, setCalMonth, askSansDay } from '../state/view'
 import { HOOKS } from '../engine/hooks'
 import { globalUndo, globalRedo, undoState } from '../undo'
 import { editingText } from './textedit'
@@ -17,7 +17,7 @@ import { oilPendingFor, openWarAt } from '../leavewar/sync'
 import { inpById } from '../engine/inputs'
 import { setOilAsk, setInpEdit, BELLLIST, setBellList, setOilList } from './pops'
 import { me } from '../state/perms'
-import { holidayLineOn, noticeSpan, isWarNotice, postOf, isAcctNotice, noticeLive, type Notice } from '../state/notices'
+import { holidayLineOn, noticeSpan, isWarNotice, postOf, isAcctNotice, noticeLive, sansDueOf, type Notice } from '../state/notices'
 import { PEOPLE } from '../engine/people'
 import { unreadFor, markNoticeRead } from '../state/noticeseen'
 import { trackerUndoApi, onTrackerUndo, trackerUndoVersion } from '../tracker/undo-bridge.js'
@@ -131,6 +131,16 @@ export function openNotice(n: Notice): void {
     setBellList(false)
     openAdminUsers({ person: po.who })
     return
+  }
+  /* HIS SANS DAYS WITH NOTHING FILED (owner D2338 — "a tap opening the SANS calendar"): the Inputs page's SANS tab, at the
+     month of the first of the days, that day's window open (ui/SansCal.tsx spends the ask) — a desktop and a phone alike */
+  const due = sansDueOf(n)
+  if (due) {
+    markNoticeRead(n.id)
+    setBellList(false)
+    if (INPVIEW === 'med') setInpView('cal')
+    setInpMode('sans'); setCalMonth({ y: +due.slice(0, 4), m: +due.slice(5, 7) }); askSansDay(due)
+    setPage('inputs'); notify(); return
   }
   /* A LEAVE WAR LINE (the overhaul's M4, 9.6): the Leave War at that day — where a move took it, at its new days — his
      cell ringed; a bidding line, the stretch's first day */

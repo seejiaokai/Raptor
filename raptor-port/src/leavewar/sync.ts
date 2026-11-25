@@ -40,7 +40,7 @@ import { SESSION, canEditOwn } from '../state/auth'
    writers — PO-archive, restore — emit a people change too). */
 import { persistPeopleProjection, commitPeopleEdit } from '../state/people-settings-commit'
 import { DAYS } from '../engine/data'
-import { PEOPLE, sansOnP, sansStart, sansStop, sansErase } from '../engine/people'
+import { PEOPLE, sansOnP, sansStart, sansStop, sansErase, setSansAhead } from '../engine/people'
 import type { Day, Sched } from '../engine/schema'
 import { SCHED, dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf, amFormatOf, unpublishBackTo } from '../engine/publish'
 import { blindDesks, dayOilBlind, dayOilWork, inputOilAmt, oilWorkWhy, type OilWork } from '../engine/oil'
@@ -141,7 +141,9 @@ import {
   postingProblem,
   stintClosed,
   stintOpened,
+  stintOnArchive,
   personCut,
+  arrivalKept,
   restoreDateProblem,
   keepsWindow,
   windowFor,
@@ -173,10 +175,11 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncBeforeEnlist, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, noticeAccount, noticePostingFailed, poFailedLineId, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
+import { sansUnfiledLines, sansLineBack, sansTakeBack, sansPostedFrom, sansBackCovered, sansBackOwed, sansUntickOwed, wireSansBackBefore, sansUndoToldNow, sansRetractUndoTold, type SansBackOwed } from './sansunfiled'
+import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, noticeSansBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, noticeAccount, noticePostingFailed, poFailedLineId, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
-import { hasRead, forgetRead } from '../state/noticeseen'
+import { hasRead, hasReadSaved, forgetRead } from '../state/noticeseen'
 import { renameCallsign } from '../engine/slots'
 import { ELOG } from '../engine/editlog'
 import { callsignProblem, saidOf } from '../state/roster-add'
@@ -359,9 +362,11 @@ export function installAbsenceDoor(): void {
   hookForeignRun()
   /* WHAT A RESTORE'S FOLLOW-UP LINES MAY SAY (perms.ts setFollowUpsProbe — fix read 6, fault B): the one body that writes
      them, so the gate compares a "taken back" or "again" line with what this restore owes, field for field */
-  setFollowUpsProbe((moved, dir, notices) => followUpsOwed(moved, dir, notices, hasRead))
+  /* (…his read record AS SAVED, never this device's copy in memory, which can say anything — Astra #3 of the four reads of
+     0eaacc411: a read forged in memory let an Undo put a "taken back" on a man who had not read the line) */
+  setFollowUpsProbe((moved, dir, notices) => followUpsOwed(moved, dir, notices, readSaved))
   /* WHICH WAR LINES A COMMAND OWES (perms.ts setWarLinesOwed — fix read 10, fault A): worked out from its own changes */
-  setWarLinesOwed((changes, n) => warLineCovered(warLinesOwed(changes), n))
+  setWarLinesOwed((changes, n) => warLineCovered(warLinesOwed(changes), n, changes))
   /* WHICH HOLIDAY LINES A COMMAND OWES (perms.ts setHolidayLinesOwed — fix read 11, fault C): from its own war changes */
   setHolidayLinesOwed((changes, n) => holidayLineCovered(holidayLinesOwed(changes), n))
   setLwDayOpenProbe((cellId: string) => {
@@ -393,7 +398,7 @@ export function installAbsenceDoor(): void {
   /* M4 batch 9: a decision on a man's leave, and bidding opened or closed, tell the bell (tellWar, below) */
   setDecisionTell({ leave: warLeaveNow, decisions: tellWar, openings: tellBidding })
   /* (and the admins' line for a posting with nothing to run — postedLines, [POSTOUT-RUN-NOTICE]) */
-  setDerivedNotices(pid => [...endedLines(pid), ...postedLines(pid)])
+  setDerivedNotices(pid => [...endedLines(pid), ...postedLines(pid), ...sansUnfiledLines(pid)])
   setHolidayLeft(holidayLeft)
   setHolidaySpan(holidaySpan)
   /* WHICH DAYS CAN EARN OIL AT ALL — the schedule's blind-desk warning asks
@@ -1808,7 +1813,19 @@ export function followUpsFor(changes: ReadonlyArray<{ collection: string; op: st
   for (const c of changes) {
     if (c.collection !== 'notices') continue
     const n = (c.op === 'delete' ? c.before : c.after) as Notice | undefined
-    if (!n || typeof n !== 'object' || !isWarNotice(n)) continue
+    if (!n || typeof n !== 'object') continue
+    /* HIS "NO LONGER SANS" LINE, ITS UNTICK UNDONE (D2391's C with D1693, D1699): the one SANS line an Undo step holds (a
+       posting is no Undo step, D350). Read, its title comes back struck, "taken back · Saber"; unread, it simply goes. A
+       Redo puts the line back, and where a "taken back" stands for it tells it again: a fresh copy, unread, in its place
+       (`again`, its `ref` the line — as the war's own lines say "again", D1699; no new words). */
+    // any: a notice part is read by its kind, the fields differing by kind (state/notices.ts)
+    const sw: any = (n.what || [])[0]
+    if (sw && sw.k === 'sansback') {
+      if (sw.how === 'untick' && !sw.back && !sw.again && !noticeLeftBell(n)) out.push({ of: n, to: String(n.to), name: n.name, day: n.day, iid: '',
+        what: [dir === 'undo' ? { k: 'sansback', days: [], how: 'untick', back: true, ref: n.id } : { ...sw, again: true, ref: n.id }] })
+      continue
+    }
+    if (!isWarNotice(n)) continue
     /* (one since moved to another squadron is no longer told here of the war's own business — bidding opened or closed,
        atWarHome — but a line about his OWN leave follows him: its Undo strikes it "taken back" where he read it, its Redo
        says "again" — his D2222, 19 Nov 26; the gate lets exactly that follow-up through, state/perms.ts followUpOf) */
@@ -1858,7 +1875,7 @@ export function followUpsOwed(moved: ReadonlyArray<{ collection: string; op: str
     let last: Notice | null = null
     for (const x of notices) {
       const q = (x.what || [])[0]
-      if (x.to === n.to && q?.k === 'lw' && q.again && q.ref === n.id && (!last || !(x.at < last.at))) last = x
+      if (x.to === n.to && (q?.k === 'lw' || q?.k === 'sansback') && q.again && q.ref === n.id && (!last || !(x.at < last.at))) last = x
     }
     if (dir === 'undo') {
       if (!read(n.to, n)) continue
@@ -1867,7 +1884,7 @@ export function followUpsOwed(moved: ReadonlyArray<{ collection: string; op: str
          "taken back" he already holds still stands as what he knows (D1216); read, he is told "taken back" once more. */
       if (last && !read(n.to, last)) continue
     } else {
-      if (!notices.some(x => { const q = (x.what || [])[0]; return x.to === n.to && q?.k === 'lwback' && q.ref === n.id })) continue
+      if (!notices.some(x => { const q = (x.what || [])[0]; return x.to === n.to && ((q?.k === 'lwback' && q.ref === n.id) || (q?.k === 'sansback' && !!q.back && q.ref === n.id)) })) continue
       /* an "again" line he has not read is shown again with its line (M9): no second one beside it */
       if (last && !read(n.to, last)) continue
     }
@@ -1895,6 +1912,7 @@ export type OwedWarLine =
   | { k: 'lw'; to: string; days: ReadonlySet<string>; kinds: ReadonlySet<string> }
   | { k: 'lwopen'; a: string; b: string; open: boolean }
   | { k: 'po' | 'poback'; who: string; day: string; o: string }
+  | ({ k: 'sansback'; who: string; o: string } & SansBackOwed)
 type LooseRec = Record<string, unknown>
 const looseRec = (x: unknown): LooseRec | null => (x && typeof x === 'object' && !Array.isArray(x) ? (x as LooseRec) : null)
 /* (the same war-approved leave on both sides: its one man, its days, its halves — whole day or its times — its kind and
@@ -1950,13 +1968,21 @@ export function warLinesOwed(changes: ReadonlyArray<{ collection: string; id: st
         const day = addDays(r.to, 1)
         out.push({ k: 'po', who: String(c.id), day, o }, { k: 'poback', who: String(c.id), day, o })
       }
+      /* (his SANS line: only a real change of his SANS posting — sansunfiled.ts, D2338, D2391, chat 147's reads) */
+      const sb = sansBackOwed(c)
+      if (sb) out.push({ k: 'sansback', who: String(c.id), o: 'sans', ...sb })
+    } else if (c.collection === 'people') {
+      /* (…or his Quals SANS tick taken off — D2391's C) */
+      const sb = sansUntickOwed(c, changes)
+      if (sb) out.push({ k: 'sansback', who: String(c.id), o: 'sans', ...sb })
     }
   }
   for (const [to, m] of leave) out.push({ k: 'lw', to, days: m.days, kinds: m.kinds })
   return out
 }
 /** does this owed line cover that line? — what the gate asks, line by line (state/perms.ts setWarLinesOwed) */
-export function warLineCovered(owed: readonly OwedWarLine[], n: { to?: unknown; iid?: unknown; name?: unknown; day?: unknown; what?: unknown }): boolean {
+export function warLineCovered(owed: readonly OwedWarLine[], n: { id?: unknown; to?: unknown; iid?: unknown; name?: unknown; day?: unknown; what?: unknown },
+  changes: ReadonlyArray<{ collection: string; id: string; op: string; before?: unknown }> = []): boolean {
   const w = Array.isArray(n.what) && n.what.length === 1 ? looseRec(n.what[0]) : null
   if (!w || n.iid !== '' || typeof w.k !== 'string') return false
   /* (its name and day as its writer gives them — noticeWar: warLineName and the part's first day) */
@@ -1977,10 +2003,13 @@ export function warLineCovered(owed: readonly OwedWarLine[], n: { to?: unknown; 
       return [...run(w.a, w.b), ...run(w.to, w.tb)].some(d => o.days.has(d))
     }
     if (o.k === 'lwopen') return w.a === o.a && w.b === o.b && w.open === o.open
+    if (o.k === 'sansback') return sansBackCovered(o, n, changes)   // (sansunfiled.ts, D2338)
     return String(w.who) === o.who && String(w.o) === o.o && n.day === o.day
   })
 }
-export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; op: string; after?: unknown }>, dir: 'undo' | 'redo'): number {
+/* (whether he has read a line, by his read record as saved — what the gate asks, so the writer asks it too) */
+const readSaved = (pid: string, n: Notice): boolean => hasReadSaved(pid, n)
+export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; id?: string; op: string; before?: unknown; after?: unknown }>, dir: 'undo' | 'redo'): number {
   /* (the step's own lines: what it put — a line it deleted owes no follow-up, as before — that this restore has taken
      away (an Undo: no longer on the bell) or put back (a Redo: on it again). Run inside the restore, before any follow-up
      is written, so the bell's follow-up lines are as they stood before the command.) */
@@ -1988,11 +2017,35 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
     const id = (c.after as { id?: unknown } | null | undefined)?.id
     return NOTICES.some(x => x.id === id) === (dir === 'redo')
   })()))
-  const made = followUpsOwed(moved, dir, NOTICES, hasRead)
-  if (!made.length) return 0
+  const made = followUpsOwed(moved, dir, NOTICES, readSaved)
+  /* AN ADMIN'S UNDO OF A SANS TICK HE PUT ON (the four reads of 0eaacc411 — Fable's F2; D2391's C, D2341 "a hiding is
+     never silent"): the Undo takes the man's SANS away as an untick does, so it owes him the same line — "You're no longer
+     SANS. · Saber" — written by the same writer, inside this restore, judged by the gate as an untick's (sansunfiled.ts
+     sansTakeBack, which says nothing where nothing was read or hidden). A Redo of an untick puts its own line back. */
+  const unticked = dir === 'undo' ? changes.filter(c => c.collection === 'people' && c.op === 'put'
+    && !!looseRec(c.after)?.san && !looseRec(c.before)?.san).map(c => String(c.id)) : []
+  /* (no posting is a step of the top bar's Undo — D321, D350: it refuses one, "Undo post out" on the posting sheet is its
+     own way back and writes its own line — so an Undo here never takes a SANS posting away) */
+  /* …AND A REDO TAKES BACK WHAT ITS STEP'S UNDO WROTE (round 2 — Astra's F1, the Opus read's R2, Fable's F2): gone where he
+     has not read it, struck "taken back" where he has (sansunfiled.ts sansUndoToldNow) */
+  const retract = dir === 'redo' ? sansUndoToldNow() : []
+  if (!made.length && !unticked.length && !retract.length) return 0
   const by = me()
   let wrote = 0
-  commitInputs('lw.notice', () => { for (const f of made) wrote += noticeWar([f.to], by != null ? String(by) : null, f.what[0]) })
+  commitInputs('lw.notice', () => {
+    for (const f of made) {
+      const who = by != null ? String(by) : null, part = f.what[0]!
+      /* (his SANS untick's "taken back": its own writer, the line word for word as followUpsFor gives it) */
+      if (part.k === 'sansback') { const { k: _k, days, hid, ...said } = part; wrote += noticeSansBack(f.to, who, days, f.day, Date.now(), hid ?? [], said) ? 1 : 0 }
+      else wrote += noticeWar([f.to], who, part)
+    }
+    for (const pid of unticked) {
+      const had = NOTICES.length
+      sansTakeBack(pid, null, by != null ? String(by) : null, Date.now())
+      wrote += NOTICES.length - had
+    }
+    wrote += sansRetractUndoTold(retract, by != null ? String(by) : null)
+  })
   return wrote
 }
 /* …AND HIS OWN ACCOUNT'S LINES (batch 1's second half §16 D7′): the opposite line to a man who had read the line the Undo
@@ -2027,7 +2080,9 @@ export function acctNoticesReversed(changes: ReadonlyArray<{ collection: string;
    - never a sentinel, an archived body or ground-crew Personnel (unchanged);
    - a SANS man ONLY when he is planned on OUR programme that day — named
      anywhere on it (`dayEngaged`). He is otherwise another squadron's;
-   - not posted in, or posted out, drops him (`inSquadron`, unchanged);
+   - not posted in, or posted out, drops him (`inSquadron`) — read from his saved
+     posting, where a SANS posting that has run is no departure, whatever the
+     war's "+ SANS" switch shows ([FABLE-READ-FAULTS] (i), 22 Nov 26);
    - an away-making input — all leave, medical, overseas duty — that overlaps
      the event's window drops him, EXCEPT **ATT B**, the one type in the app
      that says "no flying, may still work" (`canWork`);
@@ -2055,6 +2110,7 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
      mint a credit the matrix hides behind its not-yet-arrived blank. The
      same inSquadron read the manning counts make. */
   const lwById = new Map(getState().people.map(p => [p.id, p]))
+  const postings = getState().postOuts
   /* computed ONCE for the whole walk, not per person: dayEngaged is a full pass
      over the day, and this loop runs sixty times per sentinel window. */
   const engaged = day ? dayEngaged(day) : null
@@ -2098,8 +2154,20 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
        available exactly as he was, so the crowd a day he flew froze at publication compares equal and that day never
        reads pending for the delete; on or after it he is out. An ARCHIVED man is read by his STINTS (D327, 28 Sep 26 —
        "shouldnt all avail crowd remain the same as per how that was published?"): in the crowd on a day he was here,
-       out from his archive on — the `inSquadron` read just below; with no war row (never here) he is out. */
-    if (p.deleted ? iso >= String(p.deletedFrom || '') : (p.archived && !lwById.get(id))) continue
+       out from his archive on — the `inSquadron` read just below. With NO war row he is read by his archive's DATE
+       (Fable's round-4b read F1, 22 Nov 26): the archive closes a stint only for a man the war shows or one with a past
+       on it, so a hand-ticked SANS man with "+ SANS" off and nothing filed has no row — and was dropped from EVERY day,
+       a published day he was named on reading pending, the display switch at the archive deciding who is owed OIL
+       (D327, D25). Before his archive he falls through as any man with no row; no archive date kept → out everywhere.
+       …AND A DELETE AFTER THAT ARCHIVE KEEPS ITS DATE (Astra's re-read of chat 147, R2): the delete read only its own
+       cutoff, so a no-row man archived on Friday and deleted on Monday, never restored, came back into Saturday's crowd —
+       the delete read as his return (D323: archived is "posted out from today"; D327: the gap stays a gap). A deleted man
+       with no war row is out from his archive's date as well (the delete keeps `archivedOn`; a Restore clears it, so one
+       still there is the archive the delete found him in); a deleted man never archived first has no such date and is
+       read by his cutoff alone, as before. */
+    const noRowArchive = p.archived && !lwById.get(id)
+    if (p.deleted ? (iso >= String(p.deletedFrom || '') || (noRowArchive && !!p.archivedOn && iso >= String(p.archivedOn)))
+      : (noRowArchive && (!p.archivedOn || iso >= String(p.archivedOn)))) continue
     /* SANS are another squadron's men until they are on our programme for the
        day. With no day blob to read (a caller that cannot supply one) they stay
        out, which is the pre-[ALL-AVAIL-REDEF] answer — fail closed. */
@@ -2112,9 +2180,86 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
        AND SO IS A TICK MADE BY HAND (owner D2313, 22 Nov 26 — "a SANS tick made by hand counts from the day it is made, so
        earlier published days keep their crowd"): every SANS tick keeps its dates on the person (engine/people.ts sansOn),
        put on or taken off, by a posting or by hand, and this asks by the day being measured. */
-    if (sansOnP(p, iso) && !(engaged && engaged.has(id))) continue
-    const lw = lwById.get(id)
-    if (lw && !inSquadron(lw, iso)) continue
+    const posting = postings[id]
+    /* …AND A SANS POSTING SET AHEAD IS READ BY THE DAY, WHENEVER THAT DAY IS LOOKED AT (owner D2329, 22 Nov 26 — "on 15 jul
+       hex is put to post out on 17 jul. on 18 jul … if hes planned like briefing, hes going to be counted in the all
+       avail. assuming that the timing is deconflicted"; "whenever that day is looked at" the agent's reading, told to him).
+       His SANS tick starts only when the posting RUNS on its date, so a day past the date, looked at before then, read him
+       as an ordinary man posted out: out though named, and a Saturday published on Wednesday with him named then read
+       pending, and lost him its OIL, the moment Friday came. So a day on or after a SANS posting's date that has not run
+       yet is a SANS day here already: in only if named on our programme that day, and his posting closes no window
+       (as one that has run closes none — windowFor). A day before the date is the ordinary man's, as before. */
+    const sansAhead = !!posting && outcomeOf(posting) === 'sans' && posting.to !== null
+      && posting.poDone !== addDays(posting.to, 1) && iso > posting.to
+    const sansDay = sansOnP(p, iso) || sansAhead
+    if (sansDay && !(engaged && engaged.has(id))) continue
+    /* WHETHER HE IS STILL OURS THAT DAY IS READ FROM HIS SAVED POSTING, NEVER FROM THE ROW "+ SANS" SHAPES
+       ([FABLE-READ-FAULTS] (i), Astra's code read #1, 22 Nov 26). The war's display row carries the posting window as the
+       "+ SANS" switch lays it (store.ts windowFor, D283): off — the window stands, his old place, "posted out"; on — a SANS
+       posting that has run lays none. This asked that row, so with the switch off a man posted out as SANS and named on
+       our programme passed the SANS check above and was then dropped here as departed: the crowd a published day froze
+       lacked him and so did its OIL (a nine-hour Saturday credited him his briefing's half day), and turning the switch on
+       afterwards made that published day read pending. A SANS posting is not a departure — he still flies with us (D283,
+       D27) — and a display switch never changes who is owed OIL (D25). So his saved posting is laid here the one way,
+       as the war lays it with SANS shown: a SANS posting that has run closes no window. Every other posting is a
+       departure from its date as before, and the post-in date, his earlier stints, his squadron stints and the archive,
+       delete and clash checks are all read as they were. */
+    /* …AND IT IS READ WHETHER OR NOT THE WAR SHOWS HIM A ROW (owner D2328, 22 Nov 26 — "they should only reflect their
+       actual status on the day itself", said of a posting in as of a posting out). With "+ SANS" off an ordinary SANS
+       man has no row on the war, and with no row nothing was asked of him: a man ticked SANS counted on days before his
+       POST-IN date — and, on a day before his tick, he counted with the switch off and not with it on. His saved posting
+       holds the post-in date either way. */
+    const lw0 = lwById.get(id)
+    const laid = posting ? { ...(lw0 || posting), ...windowFor(posting, true) } : lw0
+    const lw = laid && sansAhead ? { ...laid, to: null } : laid
+    /* AND ON A DAY HE IS SANS AND NAMED ON OUR PROGRAMME HE IS OURS, WHATEVER HIS POSTING WINDOW ON THE WAR SAYS (the fresh
+       Opus reader's F1 and F2 of this fix, 22 Nov 26; his [ALL-AVAIL-REDEF] at this function's head: "only SANS that are
+       planned on the programmed on that day with us should be included"). With "+ SANS" off — how the squadron works
+       (D1215) — an ordinary SANS man has no war row and so no window was ever asked of him; with it on he had one, and a
+       post-in date still to come dropped him: the switch changed the crowd again (F2). And an archive rewrites a SANS
+       posting that had run as an Overseas one (store.ts stintClosed), closing his window from the posting's date — so
+       archiving him took him out of the crowd of every day between the posting and the archive, and a published one of
+       those read pending and lost him his OIL (F1; D327: in the crowd on every day before his archive). So for a SANS
+       man named that day two parts of the window WERE not asked — a post-in date still to come, and the END an archive
+       wrote (the post-in date is asked again since his D2328, the same day — below; only the archive's END is still set
+       aside): his archive ends it BY ITS DATE instead (an archive with no date kept falls back to the window). His squadron
+       stints still are asked, his delete is read by date above — AND SO IS A REAL DEPARTURE: a posting with no
+       chip, or an Overseas Sqn or Delete posting still to come, closes it from its date for a SANS man as for anyone (the
+       narrow read of this fix, 22 Nov 26: with the whole window set aside he counted past such a date until the posting
+       ran, and a day published meanwhile then read pending). A SANS posting that has run is no end at all (`lw.to` is
+       null — above). Everyone else — a man not SANS that day, a SANS posting still to come — is read by the posting
+       window as before. */
+    /* AND HIS POST-IN DATE IS ASKED OF HIM AS OF ANYONE (owner D2328, 22 Nov 26, to this case shown to him — a new man
+       ticked SANS and named the day before his post-in date: "the sans should left out until he becomes a SANS"). So of
+       the two parts set aside above only ONE still is: the END an archive wrote, replaced by the archive's own date. The
+       start of his window — and his earlier stints — are read as for everyone, by the one rule, `inSquadron`. */
+    const sansWithUs = sansDay && !!engaged && engaged.has(id) && !(p.archived && !p.archivedOn)
+    /* …AND THE SAME WRITTEN END, ONCE HE IS RESTORED, SITS ON AN EARLIER STINT (the fresh Opus reader's R1 of the D2328
+       change, 22 Nov 26 — proved by d2328-read.test.ts R1a, R1b). Posted out as SANS, archived, then restored with a
+       post-in date: his record is a closed stint ending the day before the SANS posting, then the new one. The days he
+       flew with us as SANS — from the posting to the archive — fall in the gap between the two, and asking the stints
+       alone took him out of them: a published one read pending on its OIL (D283, D27, D327; D44, D45). His SANS days by
+       date tell the two gaps apart: the archive ENDED the posting's SANS stretch (sansStop), and that stretch began the
+       day after the stint's written end. On a day inside such a stretch he was ours. A real gap has no SANS day in it,
+       and a tick an admin made on the Quals page is never ended by an archive, so neither is read this way. */
+    /* …AND WHILE HE IS STILL ARCHIVED THE SAME STRETCH FOLLOWS HIS CURRENT STINT'S WRITTEN END, AND ONLY A POSTING'S STRETCH
+       COUNTS (Astra's read of the D2328 change, 22 Nov 26, findings 1 and 3 — d2328-astra.test.ts). The archive's END used
+       to be replaced by the archive's own date for any SANS man named that day; that also filled a real gap — a man posted
+       Overseas, restored to return later, ticked SANS by hand and archived again before his return counted on the days he
+       was away (D320, D323). And a stretch a hand tick made, begun the day his Overseas posting ran and later taken off,
+       has the same shape as a posting's. So the one rule now: a day between a SANS POSTING's date and the archive that
+       closed his stint, as that archive kept it, is a day he flew with us — whether he is still archived or restored. */
+    /* …AND SINCE ROUND 4B'S READS (22 Nov 26 — d2328-r4b.test.ts) THOSE DAYS ARE KEPT ON HIM BY THE ARCHIVE ITSELF, from
+       his saved posting (`sanPo`, archivePerson), never worked out from his SANS tick's stretches: a tick he held by hand
+       when the posting ran, or unticked and put back, or ticked again after a restore, left no posting's stretch, and he
+       lost those days again. */
+    const flewAsSans = (): boolean => {
+      if (!sansWithUs) return false
+      const po: unknown[] = Array.isArray(p.sanPo) ? p.sanPo : []
+      return po.some(s => Array.isArray(s) && iso >= String(s[0] || '') && iso < String(s[1] || ''))
+    }
+    const ours = !lw || inSquadron(lw, iso) || flewAsSans()
+    if (!ours) continue
     if (keptOut.has(id)) continue
     if (engaged && personBusy(day, id).some((w: [number, number]) => w[0] < win[1] && win[0] < w[1])) continue
     out.push(id)
@@ -3401,7 +3546,8 @@ function deleteOnForeign(txn: Txn, fw: ForeignWar, id: string, cutoff: string, f
   const person = foreignPerson(fw.post(id), fw.unit, id, frozen)
   if (!person || (!foreignShows(fw, id, person) && !pastOnForeign(fw, id, cutoff))) return
   const next = personCut(person, cutoff)
-  fw.setPost(id, next && keepsWindow(next) ? next : null)
+  /* a man who never arrived keeps his post-in date there too (store.ts arrivalKept — Astra's read of D2328, finding 2) */
+  fw.setPost(id, next ? (keepsWindow(next) ? next : null) : arrivalKept(person))
 }
 /* a hidden man's row is kept only when he has a past there: a war record before the cutoff, or an input (leave,
    medical, course…) that starts before it — the war derives his leave from those. One body for the delete and
@@ -3487,13 +3633,20 @@ export function restoreProblem(id: string, postIn: string): string | null {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(postIn ?? ''))) return 'Pick the post-in date'
   /* a man of another squadron than the war loaded: judged on his own squadron's stored window (A3), read, never loaded */
   const fu = foreignHome(id)
+  /* (…on his stint as the Restore will close it from the archive's date — store.ts stintOnArchive, Astra's read of D2338,
+     finding 3: a stint his archive could not close ends the day before it, so a post-in before that day is refused here,
+     with the store's one sentence, as for any man whose archive closed his stint) */
+  const on = typeof body.archivedOn === 'string' ? body.archivedOn : undefined
   if (fu) {
     const post = readForeign(WORLD_DOOR!(fu).backend, id).post
-    return post ? restoreDateProblem(post, postIn) : null
+    return post ? restoreDateProblem(stintOnArchive(post, on), postIn) : null
   }
   const st = getState()
   const cur = st.people.find(p => p.id === id) || st.postOuts[id]
-  return cur ? postingProblem(id, 'restore', postIn, cur) : null
+  const bad = cur ? postingProblem(id, 'restore', postIn, cur) : null
+  if (bad) return bad
+  const who = cur || projectPeople(true).find(p => p.id === id)
+  return who ? restoreDateProblem(stintOnArchive(who, on), postIn) : null
 }
 /* THE ONE BODY OF "HE'S BACK" — Restore (Admin → Users since D310), Undo post out, Restore under another callsign. ONE command over the
    people, settings and war stores ([CMDL-FINISH] C10 — a single click is a single envelope): the posting cleared, the
@@ -3515,6 +3668,9 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
      post out (no post-in date) is that war's own door, drawn only where it is loaded: never run on the wrong war */
   const fw = foreignOf(id)
   if (fw && postIn === undefined) return false
+  /* the archive's own date, taken before the command lifts it: a stint the archive could not close is closed on it here
+     (store.ts stintOnArchive — Astra's read of D2338, finding 3) */
+  const archivedOn = typeof body.archivedOn === 'string' ? body.archivedOn : undefined
   let ok = true
   let forget: string[] = []
   const r = cmdCommit({
@@ -3542,12 +3698,12 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
         if (fw) {
           /* his own squadron's stored war (A3): his saved window, or his projection there now the archive is lifted */
           const person = foreignPerson(fw.post(id), fw.unit, id)
-          const next = person ? stintOpened(person, postIn) : null
+          const next = person ? stintOpened(person, postIn, archivedOn) : null
           if (!next) throw new CmdRefused((person && restoreDateProblem(person, postIn)) || 'That did not save')
           fw.setPost(id, next)
         } else {
         const identity = getState().people.some(p => p.id === id) ? undefined : projectPeople(true).find(p => p.id === id)
-        if (!openStint(id, postIn, identity)) throw new CmdRefused(restoreProblem(id, postIn) || 'That did not save')
+        if (!openStint(id, postIn, identity, archivedOn)) throw new CmdRefused(restoreProblem(id, postIn) || 'That did not save')
         }
         enableForRestore(id)
         body.back = true
@@ -3784,6 +3940,13 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
       body.archivedOn = today                                           // D329: how and when — who, by his person id
       if (me() != null) body.archivedWho = me() as string; else delete body.archivedWho
       delete body.back
+      /* THE DAYS A SANS POSTING HAD HIM FLY WITH US ARE KEPT ON HIM, from his SAVED posting (round 4b's reads, 22 Nov 26 —
+         d2328-r4b.test.ts): the archive below closes his stint where the posting ended it, so the days from the posting to
+         the archive leave his stints; the crowd reads them here (availableFor `flewAsSans`). Read from the saved posting
+         and kept apart from his SANS tick, because a tick he already held by hand when the posting ran, or one unticked and
+         put back, or a hand tick after a restore, would otherwise lose them (D327, D283, D27). */
+      const ranSans = savedSansRun(fw ? (fw.post(id) ?? null) : st.postOuts[id] ?? null)
+      if (ranSans && ranSans < today) body.sanPo = (Array.isArray(body.sanPo) ? body.sanPo : []).concat([[ranSans, today]])
       if (body.sanBy === 'po') { sansStop(body, today); delete body.sanBy }   // SANS until his archive; the days he was SANS kept (D2313)
       if (fw) {
         /* store.ts closeStintOnArchive's rules, its pure half, on his own squadron's stored window */
@@ -3928,7 +4091,7 @@ function postingLinesOf(id: string): Notice[] {
      here, shown or hidden, save one that has left a moved man's bell (D2218); who is told is retractPostingLines's. */
   const stored = mine.filter(n => n.at === last && !noticeLeftBell(n))
   const derived = ownSchedulerIds().flatMap(pid => postedLines(pid)).filter(n => { const p = n.what[0]; return p?.k === 'po' && p.who === id && !noticeLeftBell(n) })
-  return [...stored, ...derived]
+  return [...stored, ...derived, ...sansUnfiledLines(id)]   // (and the man's own SANS-days line — sansunfiled.ts, D2338)
 }
 /* Returns the ids of the presser's OWN lines he had read: they leave his read record after the command (forgetRead — the
    code read's 2, 5 Nov 26), or a posting set again for the same date, whose worked-out line keeps its id, came back to him
@@ -3950,6 +4113,7 @@ function retractPostingLines(lines: readonly Notice[]): string[] {
     /* (a line the bell hides — its reader no longer holds the right that brought it, §16 D1′c — goes, and tells nobody) */
     if (!(told.has(String(n.to)) || atWarHome(n.to) || noticeAboutHim(n))) continue
     if (n.to === by) { if (by && hasRead(by, n)) forget.push(n.id); continue }
+    if (sansLineBack(n)) continue   // (the man's own SANS-days line goes; what he is told is sansTakeBack's — sansunfiled.ts, D2338, D2341)
     if (!hasRead(n.to, n) || !admins.has(n.to)) continue
     const p = n.what[0]
     if (p?.k !== 'po') continue
@@ -3970,9 +4134,12 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
     type: 'lw.postout', scope: { module: 'people' }, meta: null,
     apply: (txn: Txn) => {
       const lines = retract ? postingLinesOf(id) : []
+      /* (his SANS posting as it stood before the change — its take-back may owe him one line, D2338, D2341) */
+      const sans = retract ? sansPostedFrom(id) : null
       /* the scheduler store's starting point brought up to memory BEFORE it is enlisted, as the posting pass does (its
          notes there): only this command's own lines are its change */
-      if (lines.length) { resyncBeforeEnlist(); txn.enlist(schedStore) }
+      const tells = lines.length > 0 || !!sans
+      if (tells) { resyncBeforeEnlist(); txn.enlist(schedStore) }
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
       /* (a posting run at once, or taken back, tells him what it did to his sign-in — §7 item 6, state/acctlines.ts) */
       const was = accessWas()
@@ -3982,10 +4149,13 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
       if (!keep.suspend) enableAfterPosting(id)
       if (!keep.sans && body.sanBy === 'po') { sansErase(body); delete body.sanBy }   // the posting's SANS never was (D2313)
       if (lines.length) forget = retractPostingLines(lines)
+      /* HIS ONE LINE (sansunfiled.ts sansTakeBack): his live SANS-days line struck where he had read it, and the SANS
+         availability this change hid (owner D2341 — "show like it's deleted … But counts again if it's undone") */
+      if (sans) sansTakeBack(id, sans, me() != null ? String(me()) : null, Date.now())
       tellAccess(txn, was)
       validate()
       finishPeopleWrite()
-      if (lines.length) schedApplyEnd()
+      if (tells) schedApplyEnd()
     },
   })
   /* the command LANDED — never only its body run: a commit refused after the body put every store back, his read record
@@ -4125,9 +4295,38 @@ export function installPostingClock(): () => void {
   return off
 }
 
+/* A SANS POSTING SET AHEAD, FOR THE DAY'S SANS READER (owner D2329 — engine/people.ts setSansAhead): the first day of a
+   saved SANS posting that has not run yet, for the man whose Raptor body this is; null for anyone else. Worked out once
+   per change of the saved postings (the store replaces the object on every change), so the reader — asked in the checks'
+   inner loops — walks only the few postings waiting, never the roster. A posting held or not yet repainted on its date
+   still counts from its date; one taken back ("Undo post out"), moved or given another outcome is read as it now stands. */
+/* the first day of a saved SANS posting that has RUN, or null (the archive's `sanPo` above) */
+function savedSansRun(w: Person | null): string | null {
+  return w && !w.gone && outcomeOf(w) === 'sans' && w.to !== null && w.poDone === addDays(w.to, 1) ? addDays(w.to, 1) : null
+}
+let AHEAD_SRC: unknown = null
+let AHEAD: Array<[string, string]> = []
+function sansAheadOf(p: unknown): string | null {
+  let po: Record<string, Person>
+  try { po = getState().postOuts } catch { return null }
+  if (po !== AHEAD_SRC) {
+    AHEAD_SRC = po
+    AHEAD = []
+    for (const id of Object.keys(po)) {
+      const w = po[id]
+      if (w && !w.gone && outcomeOf(w) === 'sans' && w.to !== null && w.poDone !== addDays(w.to, 1)) AHEAD.push([id, addDays(w.to, 1)])
+    }
+  }
+  for (const [id, from] of AHEAD) if (rosterBody(id) === p) return from
+  return null
+}
+
 export function wireLeaveWarSync(): void {
   /* a fresh wiring (a boot) tries every refused posting again (the fix read, 18 Nov 26 — Opus 1) */
   PO_REFUSED.clear(); PO_RETRIED.clear(); PO_FAILED_TOLD.clear()
+  setSansAhead(sansAheadOf)
+  /* the days each man's SANS-days line named when a command began — what its struck line must keep (sansunfiled.ts) */
+  wireSansBackBefore()
   /* [POST-OUT-OUTCOMES]: the posting's one line names his account only when he has one — the answer installed here, at
      the seam (the war never reads Raptor's accounts itself) */
   setAccountLookup(id => !!accountOfPid(id))

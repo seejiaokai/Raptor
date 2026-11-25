@@ -1,0 +1,20 @@
+{
+ "pictures": [],
+ "cases": {
+  "desk-chromium": {
+   "log": [
+    "bundle index-BiU7Aj55.js",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvhsohbiciwna\"]; asked []; note \"\""
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "W3 desk-chromium Ranger's row of the shared leave: 0900, 1100, \"own hours\" — Ranger 09:00–11:00 \"own hours\" on an input of his own; Hex 08:00–10:00, no remark",
+   "PASS",
+   "[{\"step\":\"filed\",\"store\":[\"Ranger+Hex 480-600 \\\"\\\" [imwvhsohbiciwna]\"],\"screen\":[\"Ranger 08:00-10:00 \\\"\\\" [imwvhsohbiciwna~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvhsohbiciwna~rocky.str]\"]},{\"step\":\"str 0900, Tab\",\"typedIn\":\"imwvhsohbiciwna~bane.str\",\"store\":[\"Hex 480-600 \\\"\\\" [imwvhsohbiciwna]\",\"Ranger 540-600 \\\"\\\" [imwvhsqw3k1s9ex]\"],\"screen\":[\"Ranger 09:00-10:00 \\\"\\\" [imwvhsohbiciwna~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvhsohbiciwna~rocky.str]\"],\"caret\":\"imwvhsohbiciwna~bane.end\"},{\"step\":\"end 1100, Tab\",\"typedIn\":\"imwvhsohbiciwna~bane.end\",\"store\":[\"Hex 480-600 \\\"\\\" [imwvhsohbiciwna]\",\"Ranger 540-660 \\\"\\\" [imwvhsqw3k1s9ex]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"\\\" [imwvhsohbiciwna~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvhsohbiciwna~rocky.str]\"],\"caret\":\"imwvhsohbiciwna~bane.rmks\"},{\"step\":\"rmks own hours, Tab\",\"typedIn\":\"imwvhsohbiciwna~bane.rmks\",\"store\":[\"Hex 480-600 \\\"\\\" [imwvhsohbiciwna]\",\"Ranger 540-660 \\\"own hours\\\" [imwvhsqw3k1s9ex]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvhsohbiciwna~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvhsohbiciwna~rocky.str]\"],\"caret\":\"imwvhsohbiciwna~rocky.str\"},{\"step\":\"caret left (blank space clicked)\",\"store\":[\"Hex 480-600 \\\"\\\" [imwvhsohbiciwna]\",\"Ranger 540-660 \\\"own hours\\\" [imwvhsqw3k1s9ex]\"],\"screen\":[\"Hex 08:00-10:00 \\\"\\\" [imwvhsohbiciwna.str]\",\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvhsqw3k1s9ex.str]\"]}]",
+   "w3-desk-chromium-caret-still-in.png, w3-desk-chromium-caret-left.png"
+  ]
+ ]
+}

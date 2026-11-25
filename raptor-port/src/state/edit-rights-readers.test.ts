@@ -74,7 +74,11 @@ const INVENTORY: Record<string, { n: Partial<Record<keyof typeof Q, number>>; ki
   'ui/QualsPage.tsx': { n: { isAdmin: 1 }, kind: ['role'], why: 'the Quals page is pageUnit(\'own\')\'s (a View holder\'s home; a Plan holder\'s or master\'s pick, where he is an admin): the role answers it; each row\'s write is judged by its man\'s squadron (mayEditQualsOf)' },
   'ui/SansCal.tsx': { n: { isAdmin: 1 }, kind: ['role'], why: 'the SANS calendar\'s gear (its window asks adminOfUnit of its squadron)' },
   'ui/SansDay.tsx': { n: { isAdmin: 1 }, kind: ['role'], why: 'the SANS day\'s "Calendar…" door (its window asks adminOfUnit of its squadron)' },
-  'ui/sansadd.ts': { n: { isAdmin: 1 }, kind: ['role'], why: 'who may add on the SANS calendar — his own squadron\'s page; the role answers it' },
+  /* (`main` brought in, 25 Nov 26, chat 176: its SANS-ahead work added the second caller here and the one in sanscal-model.ts.
+     Listed as `main` built them — the role alone — so the merge changes no behaviour; whether another squadron's SANS
+     calendar should ask more is Build 1's part G, "+ Commitment" (D2628 C3), not decided here.) */
+  'ui/sansadd.ts': { n: { isAdmin: 2 }, kind: ['role'], why: 'who may add on the SANS calendar — his own squadron\'s page; the role answers it; and whether a SANS man whose date is still ahead is told why his pick opened nothing (D2388, D2340: an admin files for any SANS man, so he is never told)' },
+  'ui/sanscal-model.ts': { n: { isAdmin: 1 }, kind: ['role'], why: 'his own days before his SANS date faded on the month (D2343, D2346) — a question about the viewer: an admin, who may file on those days, sees the month as it was' },
   /* ---- named: a squadron of its own ---- */
   'state/cutoff.ts': { n: { adminOfUnit: 1 }, kind: ['named'], why: 'the late cut-off of the squadron named' },
   'state/roster-add.ts': { n: { adminOfUnit: 1 }, kind: ['named'], why: 'the Home squadron Add a person names: an admin of THAT squadron (batch 1\'s second half §4 item 7)' },

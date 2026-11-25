@@ -1,0 +1,328 @@
+[
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "premise",
+  "what": "Hex and the app's today",
+  "ok": true,
+  "note": "{\"cs\":\"Hex\",\"seat\":\"RCP\",\"san\":false} · today Wed Jul 15 2026 09:00 · week Jul 13,Jul 14,Jul 15,Jul 16,Jul 17,Jul 18,Jul 19"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-01",
+  "what": "Sat: Common Programme SQN EVENT 10:00–17:00 for ALL AVAIL (+ Item, typed, tapped)",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\"}",
+  "pics": "s1-phone/01-s1-01-event-row-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-02",
+  "what": "Sat: Ground Programme BRIEFING 08:00–09:00 naming Hex",
+  "ok": true,
+  "note": "{\"prog\":\"BRIEFING\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\"}",
+  "pics": "s1-phone/02-s1-02-briefing-row-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-03a",
+  "what": "the app's today before the posting",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-03",
+  "what": "Hex posted out as SANS from Wed 15 Jul (his cell → ⋯ → Post out → SANS → Post out)",
+  "ok": true,
+  "note": "line \"On 15 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s1-phone/03-s1-03-postout-sheet-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-04",
+  "what": "\"+ SANS\" is off the Leave War (no SANS group on the grid)",
+  "ok": true,
+  "note": "SANS group rows 0",
+  "pics": "s1-phone/04-s1-04-lw-no-sans-group-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-05",
+  "what": "before Publish, board: the count chip and the ALL AVAIL window list Hex with his purple SANS line",
+  "ok": true,
+  "note": "chip {\"sent\":\"r:rmrldi5lmlaas1y\",\"ver\":\"\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who is free as things stand now)\"} · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"SQN EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null} · all chips [{\"sent\":\"r:rmrldi5lmlaas1y\",\"ver\":\"\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who is free as things stand now)\"}]",
+  "pics": "s1-phone/05-s1-05-board-availwin-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-05b",
+  "what": "the window closed by its ✕",
+  "ok": true,
+  "note": "",
+  "pics": "s1-phone/06-s1-05b-win-closed-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-06",
+  "what": "OIL Earn on (now true (by day bar OIL Earn)): the window's earning half has Hex earning",
+  "ok": true,
+  "note": "chip {\"sent\":\"r:rmrldi5lmlaas1y\",\"ver\":\"\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who is free as things stand now)\"} · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17 EARN\",\"tabs\":[\"Who’s available 45\",\"Who earns OIL 45 of 45\"],\"head\":\"SQN EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":\"on\"}",
+  "pics": "s1-phone/07-s1-06-oilearn-window-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-06b",
+  "what": "OIL Earn turned off again",
+  "ok": null,
+  "note": "now false (by day bar OIL Earn)"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-07",
+  "what": "four sign-offs and Publish (Publish day)",
+  "ok": true,
+  "note": "{\"pend\":0,\"pendWords\":\"\",\"head\":\"\",\"notSigned\":false,\"notPub\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\"}",
+  "pics": "s1-phone/08-s1-07-published-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-08",
+  "what": "after Publish, board: the window still lists Hex",
+  "ok": true,
+  "note": "chip {\"sent\":\"r:rmrldi5lmlaas1y\",\"ver\":\"\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who is free as things stand now)\"} · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"SQN EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null}",
+  "pics": "s1-phone/09-s1-08-board-availwin-published-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-09",
+  "what": "Leave War: Hex's Sat 18 Jul reads FO after Publish",
+  "ok": true,
+  "note": "cell \"FO*\"",
+  "pics": "s1-phone/10-s1-09-lw-fo-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-10",
+  "what": "Edit Schedule, \"+ SANS\" off: nothing pending, signed, same count and Hex in",
+  "ok": true,
+  "note": "pending 0 \"\" · notYetSigned false · signed \"SIGNED ORIG Ace Anvil Basher Bolt\" · chip \"45\" · window n 45 Hex true purple true col \"WSOS · 17\" · base n 45 chip 45",
+  "pics": "s1-phone/11-s1-10-off-editsched-sat-phone.png, s1-phone/12-s1-10-off-availwin-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-11",
+  "what": "\"+ SANS\" on in ⚙ Settings: SANS group on the grid, Hex's Sat cell",
+  "ok": true,
+  "note": "{\"did\":\"pressed + SANS\",\"before\":false,\"after\":true} · cell \"FO*\"",
+  "pics": "s1-phone/13-s1-11-on-settings-phone.png, s1-phone/14-s1-11-lw-cell-sans-on-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-12",
+  "what": "Edit Schedule, \"+ SANS\" on: nothing pending, signed, same count and Hex in",
+  "ok": true,
+  "note": "pending 0 \"\" · notYetSigned false · signed \"SIGNED ORIG Ace Anvil Basher Bolt\" · chip \"45\" · window n 45 Hex true purple true col \"WSOS · 17\" · base n 45 chip 45",
+  "pics": "s1-phone/15-s1-12-on-editsched-sat-phone.png, s1-phone/16-s1-12-on-availwin-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-13",
+  "what": "\"+ SANS\" off again (the SANS group's ✕): Hex's Sat cell",
+  "ok": true,
+  "note": "{\"did\":\"pressed the SANS group ✕\",\"after\":false} · cell \"FO*\"",
+  "pics": "s1-phone/17-s1-13-off-settings-phone.png, s1-phone/18-s1-13-lw-cell-sans-off-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-14",
+  "what": "Edit Schedule, \"+ SANS\" off again: nothing pending, signed, same count and Hex in",
+  "ok": true,
+  "note": "pending 0 \"\" · notYetSigned false · signed \"SIGNED ORIG Ace Anvil Basher Bolt\" · chip \"45\" · window n 45 Hex true purple true col \"WSOS · 17\" · base n 45 chip 45",
+  "pics": "s1-phone/19-s1-14-off-editsched-sat-phone.png, s1-phone/20-s1-14-off-availwin-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-15",
+  "what": "to the next week, \"+ SANS\" turned on there, and back",
+  "ok": true,
+  "note": "Jul 20 → Jul 13 · {\"did\":\"pressed + SANS\",\"after\":true}",
+  "pics": "s1-phone/21-s1-15-on-away-settings-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-16",
+  "what": "back on the demo week, \"+ SANS\" on: nothing pending, signed, same count, Hex in, cell FO",
+  "ok": true,
+  "note": "pending 0 \"\" · notYetSigned false · signed \"SIGNED ORIG Ace Anvil Basher Bolt\" · chip \"45\" · window n 45 Hex true purple true col \"WSOS · 17\" · LW cell \"FO*\" · base n 45 chip 45",
+  "pics": "s1-phone/22-s1-16-back-on-editsched-sat-phone.png, s1-phone/23-s1-16-back-on-availwin-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-17",
+  "what": "\"+ SANS\" off again: nothing pending, signed, same count, Hex in, cell FO",
+  "ok": true,
+  "note": "pending 0 \"\" · notYetSigned false · signed \"SIGNED ORIG Ace Anvil Basher Bolt\" · chip \"45\" · window n 45 Hex true purple true col \"WSOS · 17\" · LW cell \"FO*\" · base n 45 chip 45",
+  "pics": "s1-phone/25-s1-17-back-off-editsched-sat-phone.png, s1-phone/26-s1-17-back-off-availwin-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "s1-17b",
+  "what": "the Leave War cell, last",
+  "ok": null,
+  "note": "FO*",
+  "pics": "s1-phone/27-s1-17b-lw-cell-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s16",
+  "size": "phone",
+  "id": "s16-01",
+  "what": "reloaded with \"+ SANS\" off: nothing pending, same count and people, cell FO",
+  "ok": true,
+  "note": "pending 0 \"\" · notYetSigned false · signed \"SIGNED ORIG Ace Anvil Basher Bolt\" · chip \"45\" · window n 45 Hex true purple true col \"WSOS · 17\" · LW cell \"FO*\" · base n 45 chip 45",
+  "pics": "s1-phone/01-s16-01-reload-off-editsched-sat-phone.png, s1-phone/02-s16-01-reload-off-availwin-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s16",
+  "size": "phone",
+  "id": "s16-01b",
+  "what": "the Leave War after the reload",
+  "ok": null,
+  "note": "SANS group rows 0",
+  "pics": "s1-phone/03-s16-01b-lw-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s16",
+  "size": "phone",
+  "id": "s16-02",
+  "what": "\"+ SANS\" on, reloaded: the SANS group is still on the war",
+  "ok": true,
+  "note": "group rows after reload 1",
+  "pics": "s1-phone/05-s16-02-lw-after-reload-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s16",
+  "size": "phone",
+  "id": "s16-03",
+  "what": "reloaded with \"+ SANS\" on: nothing pending, same count and people, cell FO",
+  "ok": true,
+  "note": "pending 0 \"\" · notYetSigned false · signed \"SIGNED ORIG Ace Anvil Basher Bolt\" · chip \"45\" · window n 45 Hex true purple true col \"WSOS · 17\" · LW cell \"FO*\" · base n 45 chip 45",
+  "pics": "s1-phone/06-s16-03-reload-on-editsched-sat-phone.png, s1-phone/07-s16-03-reload-on-availwin-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s17",
+  "size": "phone",
+  "id": "s17-01",
+  "what": "signed out and in as ad: nothing pending, same count and people, cell FO",
+  "ok": true,
+  "note": "pending 0 \"\" · notYetSigned false · signed \"SIGNED ORIG Ace Anvil Basher Bolt\" · chip \"45\" · window n 45 Hex true purple true col \"WSOS · 17\" · LW cell \"FO*\" · base n 45 chip 45",
+  "pics": "s1-phone/01-s17-01-signed-in-again-editsched-sat-phone.png, s1-phone/02-s17-01-signed-in-again-availwin-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s17",
+  "size": "phone",
+  "id": "s17-01b",
+  "what": "Leave War after signing in again",
+  "ok": null,
+  "note": "SANS group rows 1 · cell \"FO*\"",
+  "pics": "s1-phone/03-s17-01b-lw-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s20",
+  "size": "phone",
+  "id": "s20-01",
+  "what": "as the member, View-only Sched Sat: the count and the window — the same people as the admin saw",
+  "ok": true,
+  "note": "chip {\"sent\":\"r:rmrldi5lmlaas1y\",\"ver\":\"2026-07-18#0\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who was free when this day was issued)\"} · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"SQN EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null} · admin's n 45 chip 45",
+  "pics": "s1-phone/01-s20-01-member-viewsched-window-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s20",
+  "size": "phone",
+  "id": "s20-02",
+  "what": "as the member: no Edit Schedule (so no board, no OIL Earn) offered",
+  "ok": true,
+  "note": "visible \"Edit Schedule\" controls 0",
+  "pics": "s1-phone/02-s20-02-member-topbar-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s20",
+  "size": "phone",
+  "id": "s20-03",
+  "what": "as the member on the Leave War: no ⚙ Settings, no posting control on Hex's cell; his Sat cell",
+  "ok": true,
+  "note": "gear 0 · after a tap on his cell: bid-more 0 · bid-postout 0 · cell \"FO*\"",
+  "pics": "s1-phone/03-s20-03-member-hex-cell-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s20",
+  "size": "phone",
+  "id": "s20-04",
+  "what": "as the member, the OIL tracker for Hex: his figure, the 18 Jul line, no credit control",
+  "ok": true,
+  "note": "balance \"2\" · 18 Jul lines \"18 Jul | 18 Jul | 18 Jul\" · credit controls 0",
+  "pics": "s1-phone/04-s20-04-member-oil-tracker-phone.png"
+ },
+ {
+  "run": "s1-phone",
+  "scn": "s1",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

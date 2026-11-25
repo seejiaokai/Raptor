@@ -1,0 +1,191 @@
+[
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "w3-01",
+  "what": "Hex posted out as SANS from Mon 13 Jul (it runs at once; read back)",
+  "ok": true,
+  "note": "line \"On 13 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-13\"}",
+  "pics": "w3x-w3-01-postout-open-desktop.png, w3x-w3-01-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "w3-02",
+  "what": "Tue 14 Jul: BRIEF 11:00–11:30 naming Hex, SQN EVENT 12:00–14:00 for ALL AVAIL (read back; Hex's own Tue flight read: VL BFM T/O 08:40 LD 10:05)",
+  "ok": true,
+  "note": "{\"g\":{\"prog\":\"BRIEF\",\"str\":\"11:00\",\"end\":\"11:30\",\"who\":\"rocky\",\"rid\":\"rmrldibp6ibxzsc\"},\"a\":{\"prog\":\"SQN EVENT\",\"str\":\"12:00\",\"end\":\"14:00\",\"who\":\"allavail\",\"rid\":\"rmrldif4rkx1u0u\"}}",
+  "pics": "w3x-w3-02-fixture-desktop.png"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "W3-before",
+  "what": "Tue 14 Jul before: Hex IN the window",
+  "ok": true,
+  "note": "chip \"35\" {\"n\":35,\"has\":true,\"san\":true,\"why\":\"Misses VL BFM debrief 10:05–12:05: SQN EVENT 12:00–14:00\",\"flag\":\"AMBER\",\"ttl\":\"SQN EVENTJul 14 · 12:00–14:00\",\"who\":\"Reaper,Anvil,Blade,Cinch,Cobra,Forge,Havoc,Hunter,Piston,Ranger,Saber,Sidewinder,Trident,Vandal,Warden,Drifter,Jester,Gambit,Nomad,Outlaw,Diesel,Recon,Talisman,Wildcard,Basher,Echo,Ledger,Relay,Cutter,Dash,Fable,Ghost,Hex,Ryder,Vector\"}",
+  "pics": "w3x-w3-03-before-win-desktop.png"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "w3-04",
+  "what": "Tue 14 Jul: four boxes signed, Publish (Publish day)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true}",
+  "pics": "w3x-w3-04-published-desktop.png"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "w3-05",
+  "what": "Admin → Users: archive Hex (today, Wed)",
+  "ok": true,
+  "note": "note \"Hex archived — his sign-in is suspended\"",
+  "pics": "w3x-w3-05-acc-open-desktop.png, w3x-w3-05-archived-desktop.png"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "W3-archived.off",
+  "what": "Tue 14 Jul's window after the archive: Hex still IN — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"35\", window 35 people, Hex IN (purple line) \"Misses VL BFM debrief 10:05–12:05: SQN EVENT 12:00–14:00\", pending 1",
+  "pics": "w3x-w3-06-off-win-desktop.png"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "W3-archived.on",
+  "what": "Tue 14 Jul's window after the archive: Hex still IN — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"35\", window 35 people, Hex IN (purple line) \"Misses VL BFM debrief 10:05–12:05: SQN EVENT 12:00–14:00\", pending 1",
+  "pics": "w3x-w3-06-on-win-desktop.png"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "W3-archived.off2",
+  "what": "Tue 14 Jul's window after the archive: Hex still IN — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"35\", window 35 people, Hex IN (purple line) \"Misses VL BFM debrief 10:05–12:05: SQN EVENT 12:00–14:00\", pending 1",
+  "pics": "w3x-w3-06-off2-win-desktop.png"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "W3-archived.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": true,
+  "note": "in: true/true/true · chip/window: 35/35 ; 35/35 ; 35/35"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "W3-archived.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "35/35 ; 35/35 ; 35/35"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "w3-07",
+  "what": "Admin → Users: Restore Hex with Post in Sat 18 Jul (read back)",
+  "ok": true,
+  "note": "post-in box \"Sat 18 Jul 26 ▾\" · button \"Restore\" · note \"Hex restored — he can sign in, and he'll be asked to check his quals and CAT\" · tag \"posting in 18 Jul\" · record {\"archived\":false,\"san\":false,\"sanFrom\":null}",
+  "pics": "w3x-w3-07-restore-open-desktop.png, w3x-w3-07-restore-date-desktop.png, w3x-w3-07-restored-desktop.png"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "W3-restored.off",
+  "what": "Tue 14 Jul's window after the restore: Hex still IN — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"35\", window 35 people, Hex IN (purple line) \"Misses VL BFM debrief 10:05–12:05: SQN EVENT 12:00–14:00\", pending 0",
+  "pics": "w3x-w3-08-off-win-desktop.png"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "W3-restored.on",
+  "what": "Tue 14 Jul's window after the restore: Hex still IN — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"35\", window 35 people, Hex IN (purple line) \"Misses VL BFM debrief 10:05–12:05: SQN EVENT 12:00–14:00\", pending 0",
+  "pics": "w3x-w3-08-on-win-desktop.png"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "W3-restored.off2",
+  "what": "Tue 14 Jul's window after the restore: Hex still IN — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"35\", window 35 people, Hex IN (purple line) \"Misses VL BFM debrief 10:05–12:05: SQN EVENT 12:00–14:00\", pending 0",
+  "pics": "w3x-w3-08-off2-win-desktop.png"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "W3-restored.agree",
+  "what": "the three readings agree (membership, the people, the count)",
+  "ok": true,
+  "note": "in: true/true/true · chip/window: 35/35 ; 35/35 ; 35/35"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "W3-restored.count",
+  "what": "the count, each way (RECORD)",
+  "ok": "REC",
+  "note": "35/35 ; 35/35 ; 35/35"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "W3-unchanged",
+  "what": "the count unchanged: before / after the archive / after the restore",
+  "ok": true,
+  "note": "before \"35\"/35 · archived 35/35 ; 35/35 ; 35/35 · restored 35/35 ; 35/35 ; 35/35"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "W3-pendcount",
+  "what": "Tue 14 Jul's pending count on the board after the restore (RECORD)",
+  "ok": "REC",
+  "note": "0/0/0 · signed \"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\""
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "W3-pending",
+  "what": "Tue 14 Jul's pending lines (RECORD)",
+  "ok": "REC",
+  "note": "no \"N pending\" drawn on Edit Schedule",
+  "pics": "w3x-w3-09-tue-nopending-desktop.png"
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "W3-pending-x",
+  "what": "no pending line about who earns OIL or about the crowd",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "w3x",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

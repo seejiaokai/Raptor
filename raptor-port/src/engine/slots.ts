@@ -5,6 +5,7 @@ import { parseHM, hhmm, hmOK } from './time'
 import { UNIT } from './unitview'
 import { isOD, goesOnProg, INPUTS, inputsOnFirstDay, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx, holds, leadOf, isPlaceholderInput } from './inputs'
 import { shiftKeys, seatRow, iuParts } from './keys'
+import { rowInputOf } from './rowinput'
 import { inputProtected } from './quarantine'
 import { VCONF } from './rules'
 import { HOOKS } from './hooks'
@@ -441,7 +442,10 @@ export function armTargetExists(key:any){
        INPUT by iid, not a schedule row — rowRef knows nothing of that grammar,
        so it is answered here directly: the arm is live exactly as long as the
        input record it names still exists. */
-    if(k.indexOf('iu:')===0){const p=iuParts(k); return !!p&&INPUTS.some((i:any)=>i.iid===p.iid&&(!p.person||holds(i,p.person)));}
+    /* …and one man's row is live while the input it STANDS FOR exists — his own, once a change on the row cut it out
+       and the held row still names the shared one (engine/rowinput.ts; the fresh, blind Fable designer's S7, 25 Nov 26:
+       his puck tapped on the held row armed and was dropped at the next paint, with no words) */
+    if(k.indexOf('iu:')===0){const p=iuParts(k); return !!p&&INPUTS.some((i:any)=>i.iid===p.iid&&(!p.person||!!rowInputOf(i,p.person)));}
     return rowRef(k.slice(0,k.indexOf(':')),k.slice(k.indexOf(':')+1).split('.'))!=null;
   }catch(_){ return false; }}
 /* ---- board line / wave / panel controls --------------------------------

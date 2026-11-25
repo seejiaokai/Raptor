@@ -4,7 +4,8 @@ import { DAYS } from '../engine/data'
 import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew, sansOn } from '../engine/people'
 import { personShown, briefLeadShown, withFaceAttrs, withDrawDay } from '../engine/faceattrs'
-import { odOut, isOD, listedPersonal, listedUnavail, INPUTS, idsOf, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
+import { odOut, isOD, listedPersonal, listedUnavail, INPUTS, sansFaceShown, idsOf, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
+import { unavailFaces } from '../engine/rowinput'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, saFlies, saAnyFlies, saTyped, saDeskFlies, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { reportingIssuesForWave,stated,REPORTING_LABEL,REPORT_WORD } from '../engine/reporting'
@@ -1016,7 +1017,8 @@ export function sansCardsHTML(rows:any[],di:any,ro?:any,wrapPk?:(inp:any,pk:stri
    explicit "nil" every single day. */
 export function sansSectionHTML(d:any,di:any,ed:any){
   if(!ed)return '';
-  const rows=inputsOn(d.dt).filter((inp:any)=>isSansAvail(inp.type)).flatMap((r:any)=>facesOf(r));
+  /* (one card a man SANS that day — engine/inputs.ts sansFaceShown, D2341; the fresh Opus read's F1, chat 152) */
+  const rows=inputsOn(d.dt).filter((inp:any)=>isSansAvail(inp.type)).flatMap((r:any)=>facesOf(r)).filter((f:any)=>sansFaceShown(f,d.dt));
   if(!rows.length)return '';
   return `<div class="sub plist one sec sec-sans"><div class="sub-h">SANS Avail</div>`
     +sansCardsHTML(rows,di,false)+`</div>`;
@@ -1546,7 +1548,7 @@ export function lateChip(inp:any){
   const late=inp?lateMates(inp).filter((r:any)=>isLateInput(r)):[];
   if(!late.length)return '';
   const off=!late.some((r:any)=>lateShown(r));
-  return `<button class="latechip${off?' off':''}" data-lateoff="${esc(inpId(late[0]))}" aria-pressed="${off?'true':'false'}" title="${off?'LATE mark hidden here and on the week — tap to show it again':'Tap to hide this LATE mark from the board and the week (the Inputs page keeps it)'}">LATE</button>`;}
+  return `<button class="latechip${off?' off':''}" data-lateoff="${esc(inpId(late[0]))}"${iuWhoAtt(late[0])} aria-pressed="${off?'true':'false'}" title="${off?'LATE mark hidden here and on the week — tap to show it again':'Tap to hide this LATE mark from the board and the week (the Inputs page keeps it)'}">LATE</button>`;}
 /* the same mark on a row that CAME from an input — the ground row acceptInput
    builds, which carries the source input's key in `src`. This is what carries
    the mark onto the view-only page for a personal input: accepting it is the
@@ -2213,8 +2215,9 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
          filed, so the line never says "accepted" for a man who is not (state/inputgroup.ts entryLines). THE UNAVAILABLE
          LIST IS LEFT AS IT IS — a row a man (D737): every record there is a line of its own. */
       /* (…since the one-rule build an input is ONE record with its people: a line under Personal Inputs is the record's
-         faces — a puck a person; the Unavailable list a face a row — engine/inputs.ts facesOf) */
-      const lines:any[][]=acc?rows.map((r:any)=>facesDrawn(r)).filter((l:any[])=>l.length):rows.flatMap((r:any)=>facesOf(r).map((f:any)=>[f]));
+         faces — a puck a person; the Unavailable list a face a row — engine/inputs.ts facesOf, in the order
+         engine/rowinput.ts unavailFaces gives: a man cut out of a shared input keeps his row where it stood) */
+      const lines:any[][]=acc?rows.map((r:any)=>facesDrawn(r)).filter((l:any[])=>l.length):unavailFaces(rows).map((f:any)=>[f]);
       /* PERSONAL INPUTS folds to a one-line summary by default (owner, Aug 26).
          Now that activity inputs auto-land on the ground programme, this block
          is the faded audit echo, not the primary planning surface — so it folds
@@ -2384,10 +2387,20 @@ export function inpRmkCell(inp:any,ed:any,dt?:any){
     +`data-inp="${esc(iuTail(inp))}.rmks" data-ph="remarks">${esc(remarksTyped(inp.remarks, inp))}</span>${till?`<span class="rk-till">${esc(till)}</span>`:''}</span>`;
 }
 /* `att` carries an Unavailable row's waiting mark (unavPendAtt, below) onto the name — the span or the button alike */
+/* THE BUTTONS OF ONE MAN'S UNAVAILABLE ROW NAME THEIR MAN (the fresh, blind Fable scenario designer's S1, S2, S11 —
+   25 Nov 26, chat 178). The row's three text boxes carry `<iid>~<person>` (iuTail), so a change typed on them follows
+   him to the input of his own (engine/rowinput.ts); its buttons — the type label that opens the input's window, Reject,
+   the LATE chip — carried the input's bare id, and on the row held back from repainting (the caret still in its
+   section: on an iPhone a tapped button leaves it there) that id was the OTHERS' input after his first change: the
+   label opened Hex's leave from Ranger's row, Reject sent Hex's duty back, the chip hid Hex's mark. The id stays as it
+   was — every reader of it is untouched — and the man rides beside it; the press asks rowInputOf (ui/interactions.ts).
+   Only where the row is one man's: under Unavailable, of an input that holds several (a Personal Inputs line is the
+   input's one line for everyone, D661, D739). */
+export const iuWhoAtt=(inp:any):string=>inp&&inp.several&&inp.person!=null&&listedUnavail(inp)?` data-iuw="${esc(String(inp.person))}"`:'';
 export function inpEditLabel(inp:any,ed:any,txt:any,cls:any,att?:string){
   const t=esc(txt);
   if(!ed)return `<span class="${cls}"${att||''}>${t}</span>`;
-  return `<button class="${cls} inpedit" data-inpedit="${esc(inpId(inp))}"${att||''} title="Edit this input — times, type, remarks or delete">${t}</button>`;
+  return `<button class="${cls} inpedit" data-inpedit="${esc(inpId(inp))}"${iuWhoAtt(inp)}${att||''} title="Edit this input — times, type, remarks or delete">${t}</button>`;
 }
 /* THE WAITING MARK ON AN UNAVAILABLE ROW (owner D1784, 8 Nov 26 — "An input filed, changed or moved after its day was
    published wears the same waiting mark on its Unavailable row as on a Ground Programme row — its name underlined dotted
@@ -2455,6 +2468,8 @@ function grRowHTML(d:any,di:any,x:any,ri:any,ed:any):string{
 export function accCtl(di:any,inp:any){
   if(!canEditSched())return `<span class="accs"></span>`;
   const k=esc(inpId(inp));
+  /* (the id, and on one man's Unavailable row his name beside it — iuWhoAtt, above; every button below carries both) */
+  const ka=`data-acck="${k}"${iuWhoAtt(inp)}`;
   /* 'r' (removed — dormant, see engine/inputs.ts inputDormant) is NOT
      "accepted": the row was undone, so this offers Accept again, which is the
      one way back to a flagging state. Only 'g'/'u' show Reject. */
@@ -2467,11 +2482,11 @@ export function accCtl(di:any,inp:any){
      stay: they are the button's look and its route, not its words. Its hover text starts with its verb (design guide §1b). */
   if(inp.acc==='g'){
     const dj=acceptedDay(inp), other=dj>=0&&dj!==+di&&DAYS[dj]?String(DAYS[dj].dow||''):'';
-    if(other)return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="Take its row off ${esc(other)}'s ground programme">Reject · ${esc(other.slice(0,3))}</button></span>`;
+    if(other)return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" ${ka} title="Take its row off ${esc(other)}'s ground programme">Reject · ${esc(other.slice(0,3))}</button></span>`;
   }
   /* AN OVERSEAS DUTY UNDER UNAVAILABLE BY ITS KIND (no mark) takes the same Reject as one filed there (his D1393) */
-  if(isOD(inp.type)&&!odOut(inp)&&inp.acc!=='u')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="Take it back out of Unavailable, into Personal Inputs">Reject</button></span>`;
-  if(inp.acc&&inp.acc!=='r')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="${inp.acc==='u'?'Take it back out of Unavailable, into Personal Inputs':'Take its row off the ground programme'}">Reject</button></span>`;
+  if(isOD(inp.type)&&!odOut(inp)&&inp.acc!=='u')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" ${ka} title="Take it back out of Unavailable, into Personal Inputs">Reject</button></span>`;
+  if(inp.acc&&inp.acc!=='r')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" ${ka} title="${inp.acc==='u'?'Take it back out of Unavailable, into Personal Inputs':'Take its row off the ground programme'}">Reject</button></span>`;
   /* ITS ROW IS ON ANOTHER WEEK ([REQ-ORPHAN-ROW], 28 Sep 26): a request covering Sun 19 – Mon 20 Jul landed on Sunday keeps
      its one row in week 1 (D175 — one request, one row). On week 2 its card offered Accept, which made a second row; it now
      says where the row is instead. (Its filing stays this week's own, so a published Monday's count never moves by a week
@@ -2481,7 +2496,7 @@ export function accCtl(di:any,inp:any){
     if(away&&away!=='unreadable'){ const w=isoDayWords(away.iso);
       return `<span class="accs"><span class="acc-away" title="Its row is on the ground programme of ${esc(w)} — load that week to change it">On ${esc(w)}</span></span>`; }
   }
-  const b=(dest:any,lbl:any,ttl:any)=>`<button class="accb" data-acc="${dest}" data-accd="${di}" data-acck="${k}" title="${ttl}">${lbl}</button>`;
+  const b=(dest:any,lbl:any,ttl:any)=>`<button class="accb" data-acc="${dest}" data-accd="${di}" ${ka} title="${ttl}">${lbl}</button>`;
   return `<span class="accs">`
     /* an input filed for ALL AVAIL / ALL is never filed under Unavailable — that names a real person's day
        ([INPUT-ALL-AVAIL]; the door behind this is slots.ts acceptInput) */

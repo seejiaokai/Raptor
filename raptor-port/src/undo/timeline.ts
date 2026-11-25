@@ -715,7 +715,10 @@ export function verifiedReplay(env: { origin: string; type: string; causedBy?: n
      row prefixes are state/units-model.ts GRANT_PFX and state/accounts.ts ACCOUNT_PFX, spelled here as this module
      imports nothing of state/) */
   const settingsRow = (coll: string, id: string) => coll === 'settings' && (id.startsWith('grant:') || id.startsWith('account:'))
-  const replays = (coll: string, id: string) => coll === 'inputs' || coll === 'lw.cell' || coll === 'lw.balance' || coll === 'notices' || settingsRow(coll, id)
+  /* (chat 155, Astra's fix re-read #1: and a person's row — the commit gate holds a member's own SANS days to what his
+     Quals tick writes TODAY, so his Undo or Redo of yesterday's tick, putting back the days its step recorded, must be
+     vouched for here, image for image; the gate still checks every field he may not write before it asks) */
+  const replays = (coll: string, id: string) => coll === 'inputs' || coll === 'lw.cell' || coll === 'lw.balance' || coll === 'notices' || coll === 'people' || settingsRow(coll, id)
   for (const ch of a.changes) if (replays(ch.collection, String(ch.id))) want.set(`${ch.collection}/${ch.id}`, ch)
   return (c: Change): boolean => {
     const w = replays(c.collection, String(c.id)) ? want.get(`${c.collection}/${c.id}`) : undefined

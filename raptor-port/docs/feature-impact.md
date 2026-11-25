@@ -586,7 +586,7 @@ row in the walk's roll-call** (`docs/handpass/2026-09-26-accounts-new-person.md`
 
 Admin → Users (`ui/UsersPanel.tsx`) carries every action on a person. **Archive** (`leavewar/sync.ts archivePerson`, ONE command `person.archive` over the people, settings and war stores): `archived` (`archivedBy: 'admin'`), his
 account suspended, his welcome note cleared, and the war's current stint closed yesterday as a posting that has run (`store.ts closeStintOnArchive` — D323). **Restore** with a post-in date (`restoreArchivedPerson(id, postIn)` /
-`restoreArchivedAs`): the archive lifted, the account enabled whatever suspended it (D322), a NEW stint opened on the war (`store.ts openStint` — D320), `back` set on his Person (D305). What reads the result, and must repaint: every
+`restoreArchivedAs`): the archive lifted, the account enabled whatever suspended it (D322), a NEW stint opened on the war (`store.ts openStint` — D320), `back` set on his Person (D305); a stint his archive could not close (no war row, no past on it — a hand-ticked SANS man with "+ SANS" off) is closed first on the archive's own date, by the archive's rules (`store.ts stintOnArchive` — Astra's read of D2338, finding 3, 23 Nov 26: the crowd of every day he was here keeps him through the Restore, D327; no row is made for him); deleted instead, never restored, such a man is still out from his archive's date as well as the delete's (`sync.ts availableFor` — Astra's re-read, R2: the delete is not his return, D323). What reads the result, and must repaint: every
 roster surface (as Flow H); Admin → Users (the People list, the Archived group, the dots); the Leave War — the row filter `rowInWindow`, the day cell (a gap day PO; only before the first stint blank; each stint's last-day corner),
 the tap routing `postingSheetFor`, the posting sheets (an Admin archive's Post out sheet reads only; a man back's Post in sheet offers no Undo), the manning counts and ALL AVAIL through `inSquadron`; the Shell (his welcome
 note, `ui/WelcomeBack.tsx`); the App (a signed-in session whose account went off, or whose person was archived or deleted, lands on the suspended screen). **The drift seam:** a man's time in the squadron is `from`/`to` (the
@@ -1182,7 +1182,16 @@ truth: a flying spare would be standing by on one screen and flying on another. 
   "N SANS offering" count. Change what a status means, or add a fourth
   domain, and check all of them; a badge or a grey-out reader that stops
   calling `sansGate`/`sansBadge` and starts reading the record itself is a
-  new drift-seam the moment it happens. The record now carries ordinary
+  new drift-seam the moment it happens. **A fourth reader of the same
+  question (24 Nov 26, his D2564):** the SANS man's own bell reminder
+  (`leavewar/sansunfiled.ts`) lists the days he is in a flying seat or a sim
+  with nothing filed. It reads saved weeks that are not loaded, so it cannot
+  ask through `slotBar` or `validate()`; it asks `avail.ts daySansSeats`, the
+  same places as a function of the day alone. It once read `dayEngaged`
+  (every row he is busy on) and so counted ground rows, duty desks and all
+  hands — the drift this line warns of. Change which seats the gate judges
+  (a new domain, a new exempt kind) and change `daySansSeats` with it;
+  `leavewar/sans-planned-r5.test.ts` fails when the three disagree. The record now carries ordinary
   top-level `s`/`e`/`half` — the exclusion from the absence/clash machinery
   is TYPE-based (`inpShow`, `isAway`), pinned by `sansavail.test.ts`'s leak
   guard; any new consumer of input times must decide whether SANS rows

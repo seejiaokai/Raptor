@@ -8,6 +8,7 @@ import { slotVal, setSlotVal, fillSlot, lastFilled, sentinelSeatOK } from '../en
 import { slotBar, rowTwice } from '../engine/avail'
 import { WARN } from '../engine/validate'
 import { keyDay } from '../engine/keys'
+import { rowKeyNow } from '../engine/rowinput'
 import { onRosterOf } from '../engine/roster'
 import { dayIso } from '../engine/verid'
 import { CURWEEK } from '../engine/waves'
@@ -240,7 +241,7 @@ export function applyDrop(el: any, x: any, y: any) {
        calling afterSchedMutate() — reassignInput's commitInputEdit already
        ran the input funnel's full epilogue (validate, notify, ONE history
        step) and a second call here would push a second step for the one drop. */
-    if (view.armedKey() === `iu:${iid}`) view.disarmSlot()
+    if (view.armedKey() && rowKeyNow(view.armedKey()) === rowKeyNow(`iu:${iid}`)) view.disarmSlot()   // the same row, whichever address each still carries (engine/rowinput.ts)
     ROS_REOPEN = false
     DRAG = null; dndOff(); notify(); return true
   }

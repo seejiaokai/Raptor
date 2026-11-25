@@ -178,11 +178,14 @@ describe('the commitments', () => {
     expect(t('sd-row-' + a.iid).className).toContain('is-hi')
     expect(t('sd-row-' + b.iid).className).not.toContain('is-hi')
   })
-  it('a commitment the count leaves out is listed apart, with the reason', () => {
+  /* (his D2341, 23 Nov 26: a man not SANS that day has his SANS availability hidden, as if deleted — no "no longer SANS"
+     line apart any more) */
+  it('a commitment of a man not SANS that day is hidden, not listed apart', () => {
     const r = commit(member)
     show()
-    expect(t('sd-group-out').textContent).toBe('Not counted · 1')
-    expect(within(t('sd-row-' + r.iid)).getByTestId('sd-why').textContent).toBe('no longer SANS')
+    expect(q('sd-group-out')).toBeNull()
+    expect(q('sd-row-' + r.iid)).toBeNull()
+    expect(t('sd-empty')).toBeTruthy()
   })
 })
 

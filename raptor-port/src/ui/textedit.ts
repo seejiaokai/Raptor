@@ -7,7 +7,7 @@ import { DAYS } from '../engine/data'
 import { txtGet, txtSet, TIME_TXT } from '../engine/slots'
 import { inpById, inpTimeText, remarksTyped } from '../engine/inputs'
 import { iuParts } from '../engine/keys'
-import { setInpField } from './inputedit'
+import { setInpField, rowInputOf } from './inputedit'
 import { reqRowText } from './reqrow'
 import { markEdit } from '../engine/publish'
 import { reconcileIssuedMarks } from '../engine/drafts'
@@ -204,6 +204,14 @@ export function routeFocusOut(e: FocusEvent) {
     if (rq !== 'none') {
       if (rq === 'saved') txtCommit()
       const v = boxText(p); heal(tx, TIME_TXT.test(p) ? fmtTxt(v) : String(v == null ? '' : v))
+      /* …and the row's OTHER time cell says what was saved too (the fresh Fable reader's F3, 25 Nov 26 — board.ts
+         boardChange the same): a request's end cleared saves it all day, and its held start cell kept the old time */
+      const tm = rq === 'saved' ? /^(.*)\.(str|end)$/.exec(p) : null
+      if (tm) {
+        const op = `${tm[1]}.${tm[2] === 'str' ? 'end' : 'str'}`
+        const sib = [...(tx.closest('.day') || document).querySelectorAll<HTMLElement>('[data-txt]')].find(c => c.dataset.txt === op)
+        if (sib && sib.isConnected && document.activeElement !== sib) { const o = boxText(op); heal(sib, fmtTxt(o)) }
+      }
       return
     }
     /* the box left shows the time as saved ([BOARD-TAB-FOLD]'s week half, 20 Oct 26): "0610" typed and left by Tab is
@@ -225,7 +233,10 @@ export function routeFocusOut(e: FocusEvent) {
     const [tail, field] = ip.dataset.inp!.split('.')
     /* one man's row of an input that holds several names him after the id (engine/keys.ts iuParts) */
     const at = iuParts('iu:' + tail), id = at ? at.iid : tail, who = at ? at.person : null
-    const inp = inpById(id)
+    /* once a change has given him an input of his own, the held row still carries the shared id: the input it stands
+       for now is his own (inputedit.tsx rowInputOf — chat 170's night walk, W3), so "left as it was" and a refusal's heal
+       read HIS times, never the others' */
+    const inp = rowInputOf(inpById(id), who)
     if (!inp) return                       // deleted or undone from under the caret
     /* LEFT AS IT WAS, NOTHING IS SAVED ([HIST-PHONE-HIDE] walk, 28 Sep 26): a tap in and out of an empty "all day" cell —
        which a phone's History invites, a tap on a dotted input row to read its story — wrote times onto the record (0
@@ -236,7 +247,19 @@ export function routeFocusOut(e: FocusEvent) {
     /* an input's start / end left after a save reads the time as saved ([BOARD-TAB-FOLD]; the blind read's F2) — the time
        typed, folded, never read back off `inp`: one man's row of a shared input saves into a record of his own (the
        shaky-tests batch's blind read, F1, 20 Oct 26; board.ts boardChange the same) */
-    if (ok) { if (field !== 'rmks' && document.activeElement !== ip) heal(ip, fmtHM(String(ip.textContent || '').trim())); txtCommit() }
+    if (ok) {
+      if (field !== 'rmks' && document.activeElement !== ip) heal(ip, fmtHM(String(ip.textContent || '').trim()))
+      /* the row's OTHER time cell says what was saved too — an end cleared makes the input all day, a start typed on an
+         all-day input gives it an end of 23:59, and the held row went on showing the old time (the shared-row walk,
+         25 Nov 26, B3 — board.ts boardChange the same; red first in ui/sharedrow-walkfinds.test.tsx). Never the cell
+         holding the caret: its focus refresh reads the input itself */
+      if (field !== 'rmks') {
+        const other = field === 'str' ? 'end' : 'str', now = rowInputOf(inpById(id), who)
+        const sib = now && [...(ip.closest('.day') || document).querySelectorAll<HTMLElement>('[data-inp]')].find(c => c.dataset.inp === `${tail}.${other}`)
+        if (sib && sib.isConnected && document.activeElement !== sib) heal(sib, inpTimeText(now, other))
+      }
+      txtCommit()
+    }
     else heal(ip, field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field))
     return
   }
@@ -392,8 +415,12 @@ function refreshTextDestination(el: HTMLElement) {
     value = boxText(key)
     if (TIME_TXT.test(key)) value = fmtTxt(value)
   } else if (d.inp || d.ifld) {
-    const [id, field] = (d.inp || d.ifld)!.split('.')
-    const inp = inpById(id)
+    const [tail, field] = (d.inp || d.ifld)!.split('.')
+    /* one man's row names him after the id (engine/keys.ts iuParts) — looked up whole, it found nothing and the box Tab
+       landed in kept what it showed before the last save; and once a change cut out an input of his own, the box reads
+       HIS (rowInputOf — Astra's scenario S04: his end cleared, Shift+Tab back to a start still reading 09:00) */
+    const at = iuParts('iu:' + tail) || { iid: tail, person: null }
+    const inp = rowInputOf(inpById(at.iid), at.person)
     if (!inp) return
     value = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)
   } else if (d.itline) {
@@ -445,7 +472,10 @@ export function routeKeyDown(e: KeyboardEvent) {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); ic.blur() }
     else if (e.key === 'Escape') {
       const [tail, field] = ic.dataset.inp!.split('.')
-      const inp = inpById((iuParts('iu:' + tail) || { iid: tail }).iid); e.preventDefault()
+      /* his row puts back what HIS input says once a change cut it out — never the shared one's (rowInputOf; the fresh
+         Opus scenario designer's M2: the blur then saved the others' time onto his own) */
+      const at = iuParts('iu:' + tail) || { iid: tail, person: null }
+      const inp = rowInputOf(inpById(at.iid), at.person); e.preventDefault()
       if (inp) ic.textContent = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)
       ic.blur()
     }
@@ -469,7 +499,8 @@ export function routeKeyDown(e: KeyboardEvent) {
      Enter is left as it is — the input's own commit, and the remarks box's branch below. */
   if (bx && e.key === 'Escape' && (bx as any).dataset.ifld) {
     const [tail, field] = String((bx as any).dataset.ifld).split('.')
-    const inp = inpById((iuParts('iu:' + tail) || { iid: tail }).iid); e.preventDefault()
+    const at = iuParts('iu:' + tail) || { iid: tail, person: null }
+    const inp = rowInputOf(inpById(at.iid), at.person); e.preventDefault()   // his own once cut out (M3, as above)
     if (inp) (bx as any).value = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)
     bx.blur()
     return
