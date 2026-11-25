@@ -26,6 +26,7 @@ import { Matrix } from './Matrix'
 import { SelectSheet } from './SelectSheet'
 import { LeaveWords } from './ReqWords'
 import { setLeaveRemarks } from '../../ui/inputedit'
+import { docAdd, rowDocIds } from '../../state/docs'
 
 const ISNAP = JSON.stringify(INPUTS)
 const TARGET = '2026-01-30'
@@ -125,16 +126,20 @@ describe('his own leave\'s words row redraws from what it saved (W1)', () => {
   beforeEach(wired)
   it('a document removed, and a till ticked again, show at once', () => {
     const row = fileAbsence('dusk', 'LL', '2026-02-10', '2026-02-10', { lw: true, remarks: 'Bali' })
-    expect(setLeaveRemarks(row, 'Bali', 'dusk', ['doc-a'])).toBe(true)
+    const docA = docAdd(new Blob(['x'], { type: 'image/png' }) as any).id   // a REAL document: a made-up id was dropped at the save, so nothing was ever there to remove
+    expect(docA, 'the document was kept').toBeTruthy()
+    expect(setLeaveRemarks(row, 'Bali', 'dusk', [docA])).toBe(true)
     const live = () => INPUTS.find((r: any) => r.iid === row.iid)
     render(<LeaveWords row={live()} personId="dusk" testPrefix="w" />)
-    expect(screen.getByTestId('w-doc-row').textContent).toContain('doc-a'.slice(0, 0))
-    const chipX = screen.getByTestId('w-doc-row').querySelector('.docchip .docdel, button[aria-label^="Remove"], .chip-x')   // the ✕ — the chip's name is a button of its own since D1292 (it opens the file) as HTMLElement | null
-    if (chipX) {
-      fireEvent.click(chipX)
-      expect((live() as any).docIds ?? [], 'saved without it').toHaveLength(0)
-      expect(screen.getByTestId('w-doc-row').querySelector('.docchip, .chip'), 'drawn without it').toBeNull()
-    }
+    /* THE REMOVAL IS ASKED, NEVER SKIPPED (Astra's read of pull request 845, finding 3, 25 Nov 26): this stood behind
+       "if the ✕ is found" after an assertion that the row's text holds '' — with no ✕ found the test passed and proved
+       nothing about a document removed */
+    expect(rowDocIds(live()), 'the document is on his leave').toEqual([docA])
+    const chipX = screen.getByTestId('w-doc-row').querySelector('.docchip .docdel, button[aria-label^="Remove"], .chip-x') as HTMLElement | null   // the ✕ — the chip's name is a button of its own since D1292 (it opens the file)
+    expect(chipX, 'the document\'s chip wears its ✕').toBeTruthy()
+    fireEvent.click(chipX!)
+    expect(rowDocIds(live()), 'saved without it').toHaveLength(0)
+    expect(screen.getByTestId('w-doc-row').querySelector('.docchip, .chip'), 'drawn without it').toBeNull()
     const tick = screen.getByTestId('w-till') as HTMLInputElement
     const on0 = tick.checked
     fireEvent.click(tick)

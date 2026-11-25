@@ -225,6 +225,39 @@ describe('finding 2 — a time box never disagrees with what is saved', () => {
     expect((cell(0, 'bane', 'str').textContent || '').trim(), 'his start cell, the caret in his remark').toBe('')
     expect((cell(0, 'rocky', 'str').textContent || '').trim()).toBe('08:00')
   })
+  /* THE SAME PROMISE ON A REQUEST'S ROW OF THE GROUND PROGRAMME (the fresh Fable reader's F3, 25 Nov 26 — a missing call
+     site of the fix above): a Meeting's end cleared saved it all day, and its start box went on reading 08:00 */
+  const meeting = async () => {
+    expect(commitInput(null, { type: 'Meeting', allday: false, half: '', start: '2026-07-13', end: '', sTime: '08:00', eTime: '10:00', remarks: '', sans: null, docIds: [], title: 'ROWBOX' } as any, ['bane'])).toBe(true)
+    await act(async () => { notify() })
+    const inp = (INPUTS as any[]).find(r => r.type === 'Meeting' && r.date === 'Jul 13' && idsOf(r).join() === 'bane' && r.s === 480)
+    expect(inp, 'the Meeting, filed').toBeTruthy()
+    const ri = ((DAYS[0] as any).ground || []).findIndex((g: any) => g && g.src === inp.iid)
+    expect(ri, 'its row on Monday\'s Ground Programme').toBeGreaterThanOrEqual(0)
+    return { inp, ri }
+  }
+  it('the Board, a Meeting\'s row on the Ground Programme: its end cleared — the start box reads empty, the input all day', async () => {
+    const { inp, ri } = await meeting()
+    await act(async () => { openScheduler(0); notify() })
+    const box = (f: string) => host.querySelector(`#sbBoard [data-bfld="gr:0.${ri}.${f}"]`) as HTMLInputElement
+    expect([box('str').value, box('end').value]).toEqual(['08:00', '10:00'])
+    await type(box('end'), '')
+    expect((INPUTS as any[]).find(r => r.iid === inp.iid).allday, 'saved all day').toBe(true)
+    expect(box('str').value, 'its start box, the caret in its end box').toBe('')
+  })
+  it('the week, the same row: its end cleared — the start cell reads empty', async () => {
+    const { inp, ri } = await meeting()
+    const c = (f: string) => host.querySelector(`#eWeek .day[data-day="0"] [data-txt="gr:0.${ri}.${f}"]`) as HTMLElement
+    expect((c('str').textContent || '').trim()).toBe('08:00')
+    await act(async () => { c('end').focus() })
+    await act(async () => { c('end').textContent = '' })
+    /* Tab on, into another cell of the SAME row: the end is saved and the row is still held */
+    const next = [...host.querySelectorAll<HTMLElement>(`#eWeek .day[data-day="0"] [data-txt^="gr:0.${ri}."]`)].find(e => !/\.(str|end)$/.test(e.dataset.txt!))
+    expect(next, 'another cell of the row to Tab into').toBeTruthy()
+    await act(async () => { next!.focus() })
+    expect((INPUTS as any[]).find(r => r.iid === inp.iid).allday, 'saved all day').toBe(true)
+    expect((c('str').textContent || '').trim(), 'its start cell').toBe('')
+  })
   it('the week, a one-man row: the same', async () => {
     expect(file('2026-07-13', ['bane'])).toBe(true)
     await act(async () => { notify() })

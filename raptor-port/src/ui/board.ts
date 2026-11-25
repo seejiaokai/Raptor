@@ -1416,6 +1416,15 @@ export function boardChange(e: Event) {
   if (rq !== 'none') {
     f.value = boxText(p)   // a remark box holds the typed words, its date grey after it (owner D949 Q3 — html.ts reqRmkParts)
     if (rq === 'saved') notify()
+    /* …and the row's OTHER time box says what was saved too, as an Unavailable row's does (above): a request's end
+       cleared saves it all day, and the held row's start box went on reading 08:00 (the fresh Fable reader's F3,
+       25 Nov 26 — red first in ui/sharedrow-walkfinds.test.tsx). Never the box holding the caret. */
+    const tm = rq === 'saved' ? /^(.*)\.(str|end)$/.exec(p) : null
+    if (tm) {
+      const op = `${tm[1]}.${tm[2] === 'str' ? 'end' : 'str'}`
+      const sib = [...document.querySelectorAll<HTMLInputElement>('#sbBoard [data-bfld]')].find(b => b.dataset.bfld === op)
+      if (sib && sib.isConnected && document.activeElement !== sib) sib.value = boxText(op)
+    }
     return
   }
   if (txtSet(p, f.value)) {

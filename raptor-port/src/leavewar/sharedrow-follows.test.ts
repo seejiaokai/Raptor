@@ -162,6 +162,8 @@ describe('a man dropped on Ranger\'s puck of his held row replaces RANGER on his
     said = []
     expect(reassignInput(`${iid}~bane`, 'casper')).toBe(false)
     expect(said2()).toEqual(['Hex 480-600 ""'])
+    /* "…and says so" was claimed and never asked (the fresh Fable reader's T1, 25 Nov 26) */
+    expect(said.join(' | '), 'the refusal\'s words').toMatch(/no longer there/)
   })
 })
 

@@ -204,6 +204,14 @@ export function routeFocusOut(e: FocusEvent) {
     if (rq !== 'none') {
       if (rq === 'saved') txtCommit()
       const v = boxText(p); heal(tx, TIME_TXT.test(p) ? fmtTxt(v) : String(v == null ? '' : v))
+      /* …and the row's OTHER time cell says what was saved too (the fresh Fable reader's F3, 25 Nov 26 — board.ts
+         boardChange the same): a request's end cleared saves it all day, and its held start cell kept the old time */
+      const tm = rq === 'saved' ? /^(.*)\.(str|end)$/.exec(p) : null
+      if (tm) {
+        const op = `${tm[1]}.${tm[2] === 'str' ? 'end' : 'str'}`
+        const sib = [...(tx.closest('.day') || document).querySelectorAll<HTMLElement>('[data-txt]')].find(c => c.dataset.txt === op)
+        if (sib && sib.isConnected && document.activeElement !== sib) { const o = boxText(op); heal(sib, fmtTxt(o)) }
+      }
       return
     }
     /* the box left shows the time as saved ([BOARD-TAB-FOLD]'s week half, 20 Oct 26): "0610" typed and left by Tab is
