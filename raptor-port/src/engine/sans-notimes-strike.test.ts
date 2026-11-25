@@ -90,9 +90,13 @@ describe('D2573 — a seat on a flight with no times yet', () => {
     }
   })
 
-  it('the warning list is unchanged — no new line for nothing filed (that is D2579, drawn first)', () => {
+  /* was "no new line for nothing filed (that is D2579, drawn first)": D2579 / D2584 Q3 (25 Nov 26) is now built — the
+     warning list gives one amber line for him on a seat with no times too, as the crew list strikes him there */
+  it('the warning list gives one amber line for nothing filed, a seat with no times too (D2579)', () => {
     const { f } = blankLine()
     f.aircraft[0].p = ID
-    expect(validate().all.filter((w: any) => (w.who || []).includes(ID) && /SANS/.test(w.code + ' ' + w.msg))).toEqual([])
+    const lines = validate().all.filter((w: any) => (w.who || []).includes(ID) && /SANS/.test(w.code + ' ' + w.msg))
+    expect(lines.map((w: any) => [w.code, w.sev])).toEqual([['SANS_AVAIL', 'adv']])
+    expect(lines[0].msg).toMatch(/^SANS: no availability filed for today\. Planned on /)
   })
 })

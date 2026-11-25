@@ -2,7 +2,7 @@
    (`sansGate`), the picker's grey-out (`slotBar`) and the validator's advisory
    (`SANS_AVAIL`) are all judged through the ONE function `sansGate` in
    avail.ts; this file pins that they agree, and pins the deliberate scoping
-   (a bare no-record never raises a persistent advisory, only the palette's
+   (until owner D2579, 25 Nov 26, a bare no-record raised no advisory, only the palette's
    grey + toast) that keeps reference parity untouched — see
    docs/engine-rules.md §SANS availability.
    The rework: a record carries ONE window (the row's own standard allday /
@@ -18,6 +18,7 @@ import { slotBar, slotRules, sansGate } from './avail'
 import { setSlotVal } from './slots'
 import { SCHED } from './publish'
 import { collectEvents, seatIntime } from './events'
+import { coverSans } from '../testing/sanscover'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -315,13 +316,15 @@ describe('validate() — the SANS_AVAIL advisory', () => {
   const sansAvail = (id: string) => validate().all.filter((w: any) =>
     w.code === 'SANS_AVAIL' && (w.who || []).includes(id))
 
-  it('offering only O/A raises exactly one advisory: adv, A chip, "not offering Fly"', () => {
+  /* the line names what he DID offer (owner D2584 2a, 25 Nov 26 — "SANS: offered Fly only today."), which replaced
+     "not offering Fly today" wherever he ticked something */
+  it('offering only O/A raises exactly one advisory: adv, A chip, "offered OFT and AMT only"', () => {
     setSlotVal(FLY_KEY, FLY_ID)
     fileSans(FLY_ID, { o: true, a: true })
     const hits = sansAvail(FLY_ID)
     expect(hits.length).toBe(1)
     expect(hits[0].sev).toBe('adv')
-    expect(hits[0].msg).toContain('not offering Fly')
+    expect(hits[0].msg).toContain('SANS: offered OFT and AMT only today.')
     validate()
     expect(sevOf(0, FLY_ID)).toBe('adv')
     expect(chipOf(0, FLY_ID)).toBe('A')
@@ -343,21 +346,28 @@ describe('validate() — the SANS_AVAIL advisory', () => {
     expect(sansAvail(FLY_ID)).toEqual([])
   })
 
-  it('no record filed at all, planted anyway — no SANS_AVAIL (deliberate scoping)', () => {
+  /* was "no SANS_AVAIL (deliberate scoping)"; owner D2579 / D2584 Q3 (25 Nov 26) replaced that silence with one amber
+     line stating the fact and telling nobody to file */
+  it('no record filed at all, planted anyway — one amber line, "no availability filed for today"', () => {
     setSlotVal(FLY_KEY, FLY_ID)
-    expect(sansAvail(FLY_ID)).toEqual([])
+    const hits = sansAvail(FLY_ID)
+    expect(hits.length).toBe(1)
+    expect(hits[0].sev).toBe('adv')
+    expect(hits[0].msg).toMatch(/^SANS: no availability filed for today\. Planned on /)
+    validate()
+    expect(chipOf(0, FLY_ID)).toBe('A')
   })
 
   /* the sim side of the same check — day.events' `s:di.oft.ri` entries.
      Day index 2 = Jul 15, so the record has to cover that date. */
   const OFT_KEY = 's:2.oft.0.p', OFT_ID = 'ipman', OFT_DATE = 'Jul 15'
-  it('a SANS pilot planted into an OFT seat, offering only Fly: "not offering OFT"', () => {
+  it('a SANS pilot planted into an OFT seat, offering only Fly: "offered Fly only" (D2584 2a)', () => {
     setSlotVal(OFT_KEY, OFT_ID)
     fileSans(OFT_ID, { f: true }, null, OFT_DATE)
     const hits = sansAvail(OFT_ID)
     expect(hits.length).toBe(1)
     expect(hits[0].sev).toBe('adv')
-    expect(hits[0].msg).toContain('not offering OFT')
+    expect(hits[0].msg).toContain('SANS: offered Fly only today.')
   })
 })
 
@@ -393,7 +403,15 @@ describe('reference-parity guards', () => {
   it('SANS_AVAIL has a WCODE sentence', () => {
     expect(WCODE.SANS_AVAIL).toBeTruthy()
   })
-  it('the seed week raises no SANS_AVAIL — nothing fires on the reference', () => {
+  /* was "the seed week raises no SANS_AVAIL": the seed plans SANS men with nothing filed, and since owner D2579 each such
+     line raises one amber line — the parity tests file cover for them (testing/sanscover.ts), since the original has no
+     SANS check; with that cover, nothing fires */
+  it('the seed week, nothing filed: one line a planned SANS man; covered, none — nothing reaches the reference', () => {
+    const lines = validate().all.filter((w: any) => w.code === 'SANS_AVAIL')
+    expect(lines.map((w: any) => w.who.join()).sort()).toEqual(
+      ['badger', 'badger', 'cards', 'krait', 'nick', 'romeo', 'vinci', 'vinci', 'waldo', 'wrangler', 'yeti'])
+    expect(lines.every((w: any) => w.sev === 'adv' && /^SANS: no availability filed for today\. Planned on /.test(w.msg))).toBe(true)
+    coverSans()
     expect(validate().all.filter((w: any) => w.code === 'SANS_AVAIL')).toEqual([])
   })
 })

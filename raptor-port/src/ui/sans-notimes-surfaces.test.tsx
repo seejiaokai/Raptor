@@ -22,6 +22,9 @@ import { paintSelRings } from './highlights'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 const NONE = 'SANS — no availability filed for today'
+/* the note after planning him repeats the warning the plant raised (state/dropflag.ts, the plant-then-warn rule) — since
+   owner D2579 (25 Nov 26) nothing filed raises one amber line, so the note is that line, no longer the crew list's reason */
+const PLANTED = 'SANS: no availability filed for today. Planned on this line (no times yet)'
 const ID = 'ipman'          // a SANS pilot of the seed, nothing filed for Mon 13 Jul
 let host: HTMLDivElement
 let root: Root
@@ -117,7 +120,7 @@ describe('D2573 — every place that reads the strike, on a flying seat with no 
     await act(async () => { ok = placeArmed(ID) })
     expect(ok, 'he plants (a struck name still plants)').toBe(true)
     expect(slotVal(KEY)).toBe(ID)
-    expect(toasts.at(-1), 'the note').toBe(`${PEOPLE[ID].cs} — ${NONE}`)
+    expect(toasts.at(-1), 'the note').toBe(`${PEOPLE[ID].cs} — ${PLANTED}`)
     await act(async () => { setSlotVal(KEY, ''); afterSchedMutate(); notify() })
   })
 
@@ -132,7 +135,7 @@ describe('D2573 — every place that reads the strike, on a flying seat with no 
       src.dispatchEvent(Object.assign(new Event('dragend', { bubbles: true, cancelable: true }), { dataTransfer: dt }))
     })
     expect(slotVal(KEY), 'he landed').toBe(ID)
-    expect(toasts.at(-1), 'the note').toBe(`${PEOPLE[ID].cs} — ${NONE}`)
+    expect(toasts.at(-1), 'the note').toBe(`${PEOPLE[ID].cs} — ${PLANTED}`)
     await act(async () => { setSlotVal(KEY, ''); afterSchedMutate(); notify() })
   })
 })

@@ -100,13 +100,13 @@ describe('D2585 — an OFT or AMT with no times: struck at once where his filing
 describe('D2585 — the warning list agrees once he is planned on an untimed sim', () => {
   const sansWarns = (key: string) => validate().all.filter((w: any) => w.code === 'SANS_AVAIL' && (w.who || []).includes(ID) && w.key === key)
   for (const kind of ['oft', 'amt'] as const) {
-    it(`${kind.toUpperCase()} with no times, "Fly only", in the front seat: one amber line, "not offering ${kind.toUpperCase()}"`, () => {
+    it(`${kind.toUpperCase()} with no times, "Fly only", in the front seat: one amber line, "offered Fly only" (D2584 2a)`, () => {
       const row = blankSim(kind); fileSans({ f: true })
       DAYS[0].sims[kind][DAYS[0].sims[kind].length - 1].p = ID
       const hits = sansWarns(row)
       expect(hits).toHaveLength(1)
       expect(hits[0].sev).toBe('adv')
-      expect(hits[0].msg).toContain(`not offering ${kind.toUpperCase()} today`)
+      expect(hits[0].msg).toContain('SANS: offered Fly only today.')
     })
   }
   it('an extra place on an untimed OFT, "Fly only": warned too (D2586)', () => {
@@ -119,10 +119,10 @@ describe('D2585 — the warning list agrees once he is planned on an untimed sim
     const r = DAYS[0].sims.oft[DAYS[0].sims.oft.length - 1]; r.end = '13:00'; r.p = ID
     expect(sansWarns(row)).toHaveLength(1)
   })
-  it('left silent: nothing filed (D2579 not built), and OFT offered with hours while untimed', () => {
+  it('nothing filed: one amber line (D2579, a seat with no times too); OFT offered with hours while untimed: silent', () => {
     const row = blankSim('oft')
     DAYS[0].sims.oft[DAYS[0].sims.oft.length - 1].p = ID
-    expect(sansWarns(row), 'nothing filed').toHaveLength(0)
+    expect(sansWarns(row).map((w: any) => w.msg), 'nothing filed').toEqual(['SANS: no availability filed for today. Planned on Sim EP-9'])
     fileSans({ o: true }, [480, 600])
     expect(sansWarns(row), 'OFT offered 08:00–10:00, no times to hold it against').toHaveLength(0)
   })

@@ -20,6 +20,7 @@ import { DWOPEN, WARNOFF, warnMuteKey, toggleWarnOff, selDrop } from '../state/v
 import { setSession } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
 import { glyphSvg, RESET_INNER } from './glyphs'
+import { coverSans } from '../testing/sanscover'
 // This warning-hide fixture deliberately contains the four unrelated Tuesday checks.
 
 const DSNAP = JSON.stringify(DAYS)
@@ -189,3 +190,9 @@ describe('the day-info popup (ⓘ)', () => {
     expect((h.match(/ hid" data-adv="1\.\d"/g) || []).length).toBe(4)
   })
 })
+
+/* Its subject is not SANS availability, yet the seed plans SANS men (waldo among them) with nothing filed, which since
+   owner D2579 (25 Nov 26) raises an amber line and an "A" chip that outranks TT and DT: every SANS man is covered after
+   the world is reset, so the test reads the world it was written for (testing/sanscover.ts). Registered last, so it
+   runs after the reset above. */
+beforeEach(() => { coverSans(); validate() })   // the reset above validated before the cover: check again

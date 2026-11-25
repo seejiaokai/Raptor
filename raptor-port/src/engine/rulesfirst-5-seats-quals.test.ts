@@ -19,6 +19,7 @@ import { dayHTML } from '../ui/html'
 import { hydrateRoles } from '../state/mission-roles'
 import { encodeRoleId, resolveMissionRole } from './mission-role'
 import { dayIso } from './verid'
+import { coverSans } from '../testing/sanscover'
 
 const saved = { d: JSON.stringify(DAYS), i: JSON.stringify(INPUTS), book: JSON.stringify(SCHED), v: { ...VCONF }, p: JSON.stringify(PEOPLE) }
 const h = (hh: number, mm = 0) => hh * 60 + mm
@@ -249,3 +250,9 @@ describe('W61 — ground crew (Personnel): a rear seat (an incentive ride) and g
     expect(claimsOnly && fired.some((c: string) => !['DOUBLE_BOOK', 'LONGDAY', 'DAYS_RUN', 'PAX_CREW'].includes(c))).toBe(false)
   })
 })
+
+/* Its subject is not SANS availability, yet the seed plans SANS men (waldo among them) with nothing filed, which since
+   owner D2579 (25 Nov 26) raises an amber line and an "A" chip that outranks TT and DT: every SANS man is covered after
+   the world is reset, so the test reads the world it was written for (testing/sanscover.ts). Registered last, so it
+   runs after the reset above. */
+beforeEach(() => { coverSans() })

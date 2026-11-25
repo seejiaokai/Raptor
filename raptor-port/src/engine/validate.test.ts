@@ -44,7 +44,9 @@ describe('validation engine (tfin F)', () => {
 
   it('every warning has a known code', () => {
     const W = validate()
-    const bad = [...new Set(W.all.map((x: any) => x.code))].filter(c => !CODES.includes(c as string) && c !== 'SC_QUAL' && c !== 'AAR_QUAL' && c !== 'AAR_INSTR' && c !== 'SHIFT_SOFT')
+    /* SANS_AVAIL: since owner D2579 (25 Nov 26) the seed's SANS men, planned with nothing filed, raise it on this week —
+       a port code WCODE names, as the four before it are */
+    const bad = [...new Set(W.all.map((x: any) => x.code))].filter(c => !CODES.includes(c as string) && c !== 'SC_QUAL' && c !== 'AAR_QUAL' && c !== 'AAR_INSTR' && c !== 'SHIFT_SOFT' && c !== 'SANS_AVAIL')
     expect(bad, bad.join(',')).toEqual([])
   })
 

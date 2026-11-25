@@ -300,7 +300,9 @@ describe('the ALL AVAIL window says the list\'s own words, with the item\'s time
 })
 
 /* The seed week's own lines, listed in full: the parity test excises the words on both sides (the original's are the
-   old ones), so this is the positive half — every line the demo week shows, as the scheduler reads it. */
+   old ones), so this is the positive half — every line the demo week shows, as the scheduler reads it. Its eleven
+   SANS_AVAIL lines are the seed's SANS men planned with nothing filed (owner D2579), which the parity test files cover
+   for (testing/sanscover.ts) because the original has no SANS check. */
 describe('the seed week, every line (the parity test\'s positive half)', () => {
   it('reads as approved', () => {
     DAYS.splice(0, DAYS.length, ...JSON.parse(saved.d)); INPUTS.splice(0, INPUTS.length, ...JSON.parse(saved.i))
@@ -323,22 +325,33 @@ describe('the seed week, every line (the parity test\'s positive half)', () => {
       '0 LONGDAY | Long day: 12h05 (limit 12h), 10:40 → 22:45 (last landing 20:45 + 2h debrief assumed)',
       '0 LONGDAY | Long day: 12h05 (limit 12h), 10:40 → 22:45 (last landing 20:45 + 2h debrief assumed)',
       '0 CREW_SOLO | Crew solo: OCU pilot Wildcard & OCU WSO Tally on VL BFM (T/O 19:45). Only allowed under the Basic Course Syllabus.',
+      '0 SANS_AVAIL | SANS: no availability filed for today. Planned on VL BFM (T/O 19:45)',
       '1 INPUT_FLY | Conflict: VL SAT (step 13:40, T/O 14:40) & Appointment 14:00–16:00. Reason: Dental appt',
       '1 NO_BRIEF | Misses VL SAT brief 12:20–14:40: Appointment 14:00–16:00',
       '1 LONGDAY | Long day: 13h05 (limit 12h), 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed)',
       '1 CREW_REST | Crew rest: Monday landed 20:45 + 2h debrief (assumed) → ended 22:45 → clear 10:45. Report 06:00: 7h15 rest, needs 12h.',
+      '1 SANS_AVAIL | SANS: no availability filed for today. Planned on RU ACM (T/O 14:40)',
+      '1 SANS_AVAIL | SANS: no availability filed for today. Planned on RU ACM (T/O 14:40)',
       '2 TURN | Tight turn: VL ACM → VL BFM, 60 min (needs 120). VL ACM landing 12:00, VL BFM T/O 13:00',
       '2 TURN | Tight turn: VL ACM → VL BFM, 60 min (needs 120). VL ACM landing 12:00, VL BFM T/O 13:00',
       '2 INPUT_FLY | Conflict: RU BFM (T/O 13:00, landing 14:25) & OD (all day). Reason: Overseas duty — exercise, off island',
       '2 DT_SUM | 2 people are double turning: Trident, Relay',
       '2 CO_APPROVAL | CO approval needed: CAT D pilot Kraken & CAT D WSO Otter on RU ACM (T/O 10:35)',
       '2 CO_APPROVAL | CO approval needed: CAT C pilot Nomad & CAT D WSO Pixel on RU BFM (T/O 13:00)',
+      '2 SANS_AVAIL | SANS: no availability filed for today. Planned on RU ACM (T/O 10:35)',
+      '2 SANS_AVAIL | SANS: no availability filed for today. Planned on RU ACM (T/O 10:35)',
+      '2 SANS_AVAIL | SANS: no availability filed for today. Planned on VL BFM (T/O 13:00)',
+      '2 SANS_AVAIL | SANS: no availability filed for today. Planned on RU BFM (T/O 13:00)',
+      '2 SANS_AVAIL | SANS: no availability filed for today. Planned on RU BFM (T/O 13:00)',
+      '2 SANS_AVAIL | SANS: no availability filed for today. Planned on Sim EP-4 09:00–10:30',
       '3 DOUBLE_BOOK | Conflict: HQ ENGAGEMENT 08:45–16:30 & RU AD (T/O 12:45, landing 14:10)',
       '3 INPUT_FLY | Conflict: RU BFM (T/O 16:45, landing 18:10) & Appointment 17:00–18:30. Reason: Medical / PHA',
       '3 NO_BRIEF | Misses RU AD brief 10:25–12:45: HQ ENGAGEMENT 08:45–16:30',
       '3 DEBRIEF | Misses RU AD debrief 14:10–16:10: HQ ENGAGEMENT 08:45–16:30',
       '3 DEBRIEF | Misses RU BFM debrief 18:10–20:10: Appointment 17:00–18:30',
       '3 ILLEGAL_CREW | Crew not authorised: OCU pilot Wildcard & CAT D WSO Pixel on RU AD (T/O 12:45). An OCU needs an instructor in the other seat.',
+      '3 SANS_AVAIL | SANS: no availability filed for today. Planned on RU AD (T/O 12:45)',
+      '3 SANS_AVAIL | SANS: no availability filed for today. Planned on RU BFM (T/O 16:45)',
     ])
   })
 })

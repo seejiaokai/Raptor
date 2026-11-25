@@ -4,6 +4,7 @@
    reference paints. */
 import { beforeAll, describe, expect, it } from 'vitest'
 import { refWindow } from '../testing/refwin'
+import { coverSans } from '../testing/sanscover'
 import { DAYS } from '../engine/data'
 import { INPUTS, inputCoversDate, isUnavail } from '../engine/inputs'
 import { validate, CHIP_LABEL, chipText } from '../engine/validate'
@@ -31,6 +32,7 @@ let w: any
 let REFN = 0
 beforeAll(async () => {
   w = await refWindow()          // syncs the port's seed INPUTS into the reference
+  coverSans()                    // after it, so the reference never sees them (owner D2579; testing/sanscover.ts)
   // reporting text in both engines, as this helper already does for input data.
   // Untouched-seed warning parity and all 13 new checks stay pinned in engine/parity.
   DAYS.slice(0,w.eval('DAYS.length')).forEach((d:any,di:number)=>(d.waves||[]).forEach((wave:any,gi:number)=>{
@@ -485,6 +487,12 @@ describe('view-week markup parity with the reference', () => {
   const noPers = (s: string) => s.replace(
     /<span data-leg="pers">.*?<\/span>/, '')
 
+  /* The amber "A" swatch's words are the port's own since owner D2583 (25 Nov 26): "advisory — shift, ground or SANS
+     availability", the reference having no SANS check to name. The swatch stays (its letter compared); only its words
+     are excised from both sides, and they are pinned positively in the severity-order test just below. */
+  const noAWords = (s: string) => s.replace(
+    /(<span><span class="qk"[^>]*>A<\/span>)advisory — [^<]*(<\/span>)/, '$1$2')
+
   /* The legend's FLAGS are now ordered by severity (red hard → amber advisory →
      grey note) rather than the reference's order, and the whole legend collapses
      behind a summary on screen (owner, 15 Aug 26). So it is no longer byte- or
@@ -495,7 +503,7 @@ describe('view-week markup parity with the reference', () => {
      still pin correctness, and the new order is pinned just under this. */
   it('the legend carries the reference item set, order aside', () => {
     const leaves = (s: string) => (s.match(/>([^<>]+)</g) || []).map(x => x.slice(1, -1).trim()).filter(Boolean).sort()
-    const N = (s: string) => noPers(noBriefKey(noCP(noRunKey(s))))
+    const N = (s: string) => noAWords(noPers(noBriefKey(noCP(noRunKey(s)))))
     expect(leaves(N(legendHTML()))).toEqual(leaves(N(w.eval('legendHTML()'))))
   })
 

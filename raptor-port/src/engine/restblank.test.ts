@@ -27,6 +27,7 @@ import { validate, WARN, restClear, chipOf, traceOf, restIfPlaced } from './vali
 import { VCONF } from './rules'
 import { makeStandalone } from './waves'
 import { hm24 } from './time'
+import { coverSans } from '../testing/sanscover'
 
 const CREW = 'waldo'      // idle across the seed week, so planting him moves nothing else
 const MON = 0, TUE = 1
@@ -388,3 +389,9 @@ describe('THE SAME-DAY TIGHT TURN', () => {
     expect(chipOf(TUE, CREW)).toBe('DT')
   })
 })
+
+/* Its subject is not SANS availability, yet the seed plans SANS men (waldo among them) with nothing filed, which since
+   owner D2579 (25 Nov 26) raises an amber line and an "A" chip that outranks TT and DT: every SANS man is covered after
+   the world is reset, so the test reads the world it was written for (testing/sanscover.ts). Registered last, so it
+   runs after the reset above. */
+beforeEach(() => { coverSans() })

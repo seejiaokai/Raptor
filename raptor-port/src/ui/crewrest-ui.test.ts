@@ -18,6 +18,7 @@ import { dayHTML, dayWarnHTML } from './html'
 import { personWarns } from '../engine/avail'
 import { focusWarn, clearWarnFocus, setWarnFocus, toggleDayWarn, selectPerson, selDrop } from '../state/view'
 import * as view from '../state/view'
+import { coverSans } from '../testing/sanscover'
 
 const CREW = 'waldo'
 const DSNAP = JSON.stringify(DAYS)
@@ -506,3 +507,9 @@ describe('the forward trace across the week edge', () => {
     validate()
   })
 })
+
+/* Its subject is not SANS availability, yet the seed plans SANS men (waldo among them) with nothing filed, which since
+   owner D2579 (25 Nov 26) raises an amber line and an "A" chip that outranks TT and DT: every SANS man is covered after
+   the world is reset, so the test reads the world it was written for (testing/sanscover.ts). Registered last, so it
+   runs after the reset above. */
+beforeEach(() => { coverSans() })

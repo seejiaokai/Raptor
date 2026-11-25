@@ -1528,8 +1528,9 @@ function validateCore(){
        for today. Planned on VL BFM (T/O 13:00)"; a seat with no times too, as the crew list strikes him there (D2573).
        The mismatch line says what he DID offer (D2584 2a): "SANS: offered Fly only today. Planned on …". Every one
        wears the amber ring and "A" (D2583). This REPLACES the old silence on 'none' kept below for its history — the
-       seed's SANS flyers with no record now raise it in a test that reads INPUTS pristine (the demo boots with their
-       records, state/demoseed.ts). The old reasoning: the owner's own example only ever
+       seed's SANS flyers with no record now raise it in a test that reads INPUTS pristine (testing/sanscover.ts covers
+       them where SANS is not the test's subject); the demo boots with records for six of them (state/demoseed.ts), the
+       other four showing the line. The old reasoning: the owner's own example only ever
        describes planting AGAINST a filed record ("indicates A and O…
        planned for F"), and firing on a bare no-record would put this
        Advisory on every seeded SANS flyer the demo week already carries

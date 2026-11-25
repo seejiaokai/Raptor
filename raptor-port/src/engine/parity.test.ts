@@ -4,6 +4,7 @@
    assertions can — any drift in validate/collectEvents/REST/EVD shows up here. */
 import { beforeAll, describe, expect, it } from 'vitest'
 import { refWindow } from '../testing/refwin'
+import { coverSans } from '../testing/sanscover'
 import { validate, WARN, REST, EVD } from './validate'
 import { collectEvents } from './events'
 import { dayCount, makeStandalone } from './waves'
@@ -19,7 +20,9 @@ let w: any
    reference itself rather than hard-coded, so this follows it if it moves. */
 let REFN = 0
 
-beforeAll(async () => { w = await refWindow(); REFN = w.eval('DAYS.length') })
+/* the seed's SANS men are filed AFTER the reference is built, so it never sees them: the reference has no SANS check,
+   and since owner D2579 a SANS man planned with nothing filed raises a port-only amber line (testing/sanscover.ts) */
+beforeAll(async () => { w = await refWindow(); REFN = w.eval('DAYS.length'); coverSans() })
 
 const byDay = (o: any) => Object.fromEntries(
   Object.entries(JSON.parse(JSON.stringify(o))).filter(([k]) => +k < REFN))

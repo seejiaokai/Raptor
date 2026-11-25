@@ -9,6 +9,7 @@ import { validate } from '../engine/validate'
 import { medDownAsOf, pendingUpchits, upchitsWithin } from '../engine/medical'
 import { docHas } from './docs'
 import { initStore } from './store'
+import { coverSans } from '../testing/sanscover'
 
 /* the notional today, 13 Jul 26, as a dateOrd ordinal */
 const TODAY_ORD = 20260713
@@ -19,6 +20,10 @@ const seedPeople = ['nasty', 'vinci']
 const named = (list: any[]) => list.filter((w: any) => (w.who || []).some((id: string) => seedPeople.includes(id)))
 
 beforeAll(() => {
+  /* the SANS men covered first: the boot below also files the demo's six SANS records, and since owner D2579 each one
+     takes away a "nothing filed" line the pristine week raised — that is the SANS seed's doing, not this one's
+     (testing/sanscover.ts; the SANS seed's own pin is demosans.test.ts) */
+  coverSans()
   const before = validate()                 // pristine week, no boot seed
   beforeWarnCount = before.all.length
   beforeNamed = named(before.all).length
