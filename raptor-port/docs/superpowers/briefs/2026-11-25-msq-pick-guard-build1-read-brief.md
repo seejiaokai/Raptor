@@ -100,3 +100,52 @@ reader of round 2, blind to the other two and to round 1's reports (do not open 
   that cannot be built or that traps a person?
 
 Same form of finding, same severities, same "not a finding" list. Report file and final message as your prompt says.
+
+## Round 3, the last (added 25 Nov 26, chat 176, after his answers were folded in and `main` was brought in)
+
+The plan was revised again: his answers of 25 Nov (D2596–D2599, D2620–D2636 — read each full row; they are settled and
+NOT under review) are folded into its body, §17 lists them with every reading of the agent's and every clash, §18 adds
+what rides Build 1 (part G), and §19 splits out **Build 1V — separate squadrons, separate views (part V)**, a build of
+its own. `main` was brought into the branch before this read: every claim about today's code is to be checked against
+the code as it now stands, not as the plan's earlier rounds read it. You are a fresh reader, blind to the other readers
+of this round and to every earlier round's reports (do not open `*build1-read-*`, `*build1-read2-*`, nor the briefs
+`*q3-fold-*`, `*q3-merge-*`; the plan's §15 and §16 are yours to read). Everything above stands, with these changes:
+
+- **Builds 2 and 3 and group B** (Logout, Undo by squadron, the refresh card) are still not in this plan, except one
+  Undo the plan itself names (row 21 — Undo of "+ New squadron"), put to him as a question.
+- **His open questions now** are those of the questions page's round 5 —
+  `raptor-port/docs/mock/2026-11-25-msq-pick-guard-q3/page.html`, group E (E1–E9) and group D (the looks to confirm) —
+  and the plan's §8 rows still marked open. They are his: do not answer them; DO say where the plan builds on one as if
+  answered, and whether each is shaped so either answer is a small change.
+- **Three squadrons, always (his D2630):** test every case with 142, 149 and 150, and a person holding rights in several
+  (Hunter: 142's admin, Plan of 149, View of 150; Saber a master admin, home 142; Kestrel 149's admin; Mako 150's). Name
+  any rule, test or walk step that assumes "the other squadron", one of two.
+
+Look hardest at what no reader has seen:
+
+1. **Part V's permissions (D2625, D2626, D2629, D2631, D2635):** after Build 1V, can a Plan holder of 149 still give,
+   end or pass on Plan of 149 by any road — the access line, Undo or Redo of a give, a save that writes several lines
+   at once, the commit gate, a stale screen, a row opened before his own rights changed? Can anyone change anything of
+   another squadron's man but that squadron's access line from that squadron's page? Who sees the folded headings, and
+   can a View holder or a member reach them?
+2. **His D2621 (his own inputs off another squadron's Inputs page):** every road to his own 142 input while 149 or 150
+   is picked — the list, the calendar's card, "OIL?", the bell, search, a Leave War link, the Scheduler Board, Undo —
+   does each now bring 142 into view first or not offer it at all? Is a man who has moved, or who holds only View of his
+   old squadron, ever left with an input he must answer and no page that shows it?
+3. **The split:** can Build 1 be merged and used for days without Build 1V without a harmful half-state (a door
+   refused whose way out is a part-V control; a record written under the wrong squadron's bar; a bell line pointing
+   to a screen that does not exist yet)? Name the presses.
+4. **The new rows of part G:** the windows that close by themselves (D2596, D2597) — can any of them hold something
+   typed or chosen and not saved, and so lose it at a pick? "+ Add a person" counted by the guard and its Cancel; edit
+   modes ending at a pick; the fades running at a change he did not make.
+5. **Bug reports becoming saved records (§19):** whose reports does each person see, and does a report carry anything
+   of another squadron that a reader of it should not see?
+6. **Every statement about today's code**, against the code as it now is (`main` brought in). Name each that is wrong,
+   with the function.
+
+Same form of finding, same severities, same "not a finding" list. Report file and final message as your prompt says.
+
+**The security reader (his D1411)** reads this round only for holes: what one person can see or change of another
+squadron, or of another person, that the rulings do not allow — Plan given or ended, the access line, another
+squadron's rows on Admin → Users, bug reports, bell lines, the Inputs page — before and after Build 1V. Not usability,
+not wording.
