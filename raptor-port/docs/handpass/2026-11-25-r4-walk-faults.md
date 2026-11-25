@@ -265,7 +265,10 @@ section is owed (B3, cleared); and the paint effect's `reconcileMissionRoleOffer
 
 ## 17. The close
 
-`Walk: docs/handpass/2026-11-25-r4-walk-faults.md · 319 pictures (96 of the first walk and the host's run, 223 of the second walk, §18) · 4 surfaces (the passing note; the Scheduler Board's sections and its day panel; Edit Schedule's week; a reload) on a desktop 1440×900 and his iPhone's size 402×874, Chromium and WebKit, main's build beside the fix · orders walked: N1 (a)–(e), N2, N3, N4 (part), W1, W2 (b)–(e), W3, W5 (a) without a caret, W8–W11, H1–H5 · MISSING: fixed — both faults, Fable's matching by place, the reads' week fault, B3; proven by the second walk — Astra's finding 2 (the caret's box moved 77–117px on the build without its line once the browser's scroll anchoring was off, 0 with it; the line stays); could not be made by a person, so not walked — W4, W7 and W5 (a) with the caret kept through the press; not walked — N1 (f), N4's "OIL not answered" bar; FOUND, OLDER, NOT FIXED, reproduced by the host on main's build — W3: on the Board's Unavailable list one man's row of a shared leave, after its first change gives him a leave of his own, still saves his next changes (the end time, the remark) onto the OTHER man's leave until the caret leaves the section; the same on main, not made or worsened by this change; filed for a job of its own`
+`Walk: docs/handpass/2026-11-25-r4-walk-faults.md · 319 pictures (96 of the first walk and the host's run, 223 of the second walk, §18) · 4 surfaces (the passing note; the Scheduler Board's sections and its day panel; Edit Schedule's week; a reload) on a desktop 1440×900 and his iPhone's size 402×874, Chromium and WebKit, main's build beside the fix · orders walked: N1 (a)–(e), N2, N3, N4 (part), W1, W2 (b)–(e), W3, W5 (a) without a caret, W8–W11, H1–H5 · MISSING: fixed — both faults, Fable's matching by place, the reads' week fault, B3; proven by the second walk — Astra's finding 2 (the caret's box moved 77–117px on the build without its line once the browser's scroll anchoring was off, 0 with it; the line stays); could not be made by a person, so not walked — W4, W7 and W5 (a) with the caret kept through the press; not walked — N1 (f), N4's "OIL not answered" bar; FOUND, OLDER — W3: on the Board's Unavailable list one man's row of a shared leave, after its first change gives him a leave of his own, still saved his next changes (the end time, the remark) onto the OTHER man's leave until the caret left the section; the same on main then, not made or worsened by this change; FIXED SINCE by pull request 845 (live 25 Nov 26) and PASS on both builds with main brought in (§19) — not a new fault, not filed`
+
+Corrected by chat 183 on 25 Nov 26: W3's ending read "NOT FIXED … filed for a job of its own"; that job was pull
+request 845. The merge round's own `Walk:` line closes §19.
 
 The line above was rewritten by the host (chat 170) at 05:00 on 25 Nov 26, after the second walk (§18); the helper's own line, as it stood: 96 pictures, 10 orders (N1, N2, N3, W1 1–4, W4, H1–H5).
 
@@ -318,3 +321,118 @@ remarks "own hours", Tab. Expected: Ranger 09:00–11:00 "own hours" on a leave 
 Tab gives Ranger his own leave (09:00–10:00), but his row, in the section holding the caret, keeps the shared leave's
 address, so the end and the remark go onto **Hex's** leave: once the caret leaves, Hex 08:00–11:00 "own hours", Ranger
 09:00–10:00 (`walk2/w3-fix3-phone-webkit/w3-phone-webkit-caret-left.png`). Left for the host; nothing fixed.
+
+**Since fixed on `main` (chat 183, 25 Nov 26):** this W3 is the fault pull request 845 fixed (`2026-11-25-shared-row.md`;
+chat 177 took it from this walk). §19 re-walks it with `main` brought in: PASS on both builds.
+
+## 19. The merge round — `main` brought in, and the two changes walked together (chat 183, 25 Nov 26)
+
+**What changed.** `main` at `1993bed86` merged into the branch (`0ff30dbdf`, 198 commits — pull request 845's shared-row
+fix among them). Only `docs/file-map.md` and `docs/walk-ledger.md` clashed, both sides kept; `src/ui/toast.ts` merged
+by itself; no source line was written by hand. This branch's own change is as §3 and §16 left it.
+
+**The eight answers, asked again of the merged code:** unchanged — NO to 1, 2, 3, 5, 6, 7, 8 (this branch still saves
+nothing and reads no stored state; what a box saves, and onto whose input, is `main`'s code, untouched here), YES to 4.
+**Tier: WALK**, run as a re-walk of what the merge touched (the order's §5), with the scenarios where the two changes
+meet designed afresh by Astra and a fresh, blind Fable (D2443). **No further code read:** nothing was written, and what
+was missing was the two running together (the order's §4 — drive the app). No fix followed, so none is owed.
+
+**Where the two meet — the host's reading, then walked.** 845 was built and walked on a Board that held its WHOLE day
+while the caret was in it; with this branch only the caret's own section is held. On the section holding the caret
+nothing differs from `main` (one man's row keeps the shared leave's address there, and every door on it asks which
+input it stands for now — `engine/rowinput.ts`); every other section is rewritten sooner, and a section the caret has
+left is rewritten when the caret lands in another — so a row carries an out-of-date address for a shorter time, never a
+longer one. One new state follows: after a visit to another section the Unavailable rows are redrawn under the caret
+with fresh addresses (a man now alone on an input reads its bare id) — on `main` that happened only once the caret left
+the Board. X1 and X3 below walk it.
+
+**The roll-call rows added** (SHOW / USABLE / PAINTED, each walked on the merged build beside `main`'s):
+
+| # | Where the two meet | Mark |
+|---|---|---|
+| R1 | One man's row of a shared leave, the caret in it (held): its three boxes | has it — as on `main`: W3, A1–A6, A9, A10 |
+| R2 | The same row's buttons while held — the leave's name, Reject, the LATE chip, his puck then a name, a name dragged onto it | has it — A7 (a)–(e); X4, X6 |
+| R3 | The same row after the caret only VISITED another section (redrawn under the caret, fresh addresses) | has it — X1, X3, X5, X7, M8 |
+| R4 | Available crew, the Common Programme's ALL AVAIL count and its open window, while his row holds the caret | has it at once (on `main` one change behind) — M1, M9, M10 |
+| R5 | Personal Inputs (open, and its folded count) and the Ground Programme, for an input that changes section from his held row | has it at once — X4, M2, M3 |
+| R6 | The warning count and a flying puck's clash mark | has it — X3 |
+| R7 | An open Blue/Red question above his row | has it — M11 (desktop); the phone's answer tap: see the findings |
+| R8 | The passing note raised from his row (a long word) | has it — X10 |
+| R9 | A published day: the changes count, the changes window, the member's issued copy | has it — M8 |
+| R10 | OIL Earn switched on with the caret in his row | must not differ from `main`, because a mode change writes nothing under the caret (§2's B11 family) — X9: identical |
+| R11 | The week behind the Board | must not, because this branch does not change the week's paint (§2's B10) — the shared-row job's week walk stands |
+
+**The sizing lines (§7.0).** (1) Type D (one row drawn by several sections) and E (the shared paint), as §5.
+(2) What only a walk could find: a door of 845's that assumed the row stayed on screen until the caret left the Board;
+the caret crossing sections mid-change; Undo and Redo; the Tab route across a section's edge; WebKit's taps. (3) The
+ledger: D ten of ten, E four of ten. (4) Chosen: the host's own short walk first (W3, four engine-and-size pairs on each
+build); then every Board script of both jobs re-run unchanged on the merged build, one at a time; then the two
+designers' 21 scenarios combined to 19 and fanned out to two Opus walkers (D2256) on the two frozen builds, desktop
+1440×900 Chromium and his iPhone's 402×874 with touch in WebKit; none set aside (Astra's M4–M7 are walked as Fable's
+X6, X5, X7 and X10, the same presses). The §7.11 lessons that apply: 3 and 30 (a picture at the lift and settled), 16
+(after a refusal the figure shown is typed again — A5), 20 and 21 (a press that keeps the caret is his iPhone's; named
+below as his look), 25 (the row made through the Inputs page's window, as a leave, an overseas duty, a Meeting and an
+ALL AVAIL), 26 and 27 (the box under the caret measured before and after, 0px); the rest are about layout or a hidden
+page, which nothing here changes. (5) The ledger's row: added.
+
+**The builds, frozen:** merged `D:/rw4/r183/build-merged-0ff30dbdf` (`index-B9okpSpf.js`); `main`
+`D:/rw4/r183/build-main-1993bed86` (`index-DCU_WN_H.js` — the very bundle the shared-row job's last re-walk ran on).
+The fixtures were filed through the Inputs page's own window in every run; the store was read after every step.
+
+**The scenarios:** the brief `../superpowers/briefs/2026-11-25-r4-walk-faults-merge-scenario-brief.md`; Astra's list
+(M1–M11) and the fresh, blind Fable's (X1–X10) whole beside it (`…-merge-scenarios-astra.md`, `…-fable.md`), each read
+an exported copy of `0ff30dbdf` blind to the other; the combined walk, with every EXPECTED line's source:
+`…-merge-walk-brief.md`.
+
+**What was walked, and what the screen and the store said.**
+
+| Walk | On | Result |
+|---|---|---|
+| **W3** (`r4wf-w2-w3.mjs`, unchanged) — Ranger's row of the shared leave: start 0900, end 1100, "own hours", each by Tab | merged and `main`, each on desktop Chromium, desktop WebKit, phone WebKit, phone Chromium | **PASS × 8.** After each Tab the store reads Ranger alone on a leave of his own (09:00–10:00, then 09:00–11:00, then "own hours"), Hex 08:00–10:00 with no remark on the original; the same step for step on both builds. Opened by the host: the phone WebKit and desktop pictures of the merged build (`merge/w3-merged-0ff30dbdf-*/`) |
+| **The shared-row job's Board walk** (`shr-a-a1…a13.mjs`, A7 (a)–(e), unchanged) | merged, desktop Chromium and phone WebKit — 33 runs | 47 PASS, 29 RECORDED, 6 FAIL, 2 NOT WALKED, no page error. The 6 FAILs are A5's end-before-start rows on each size — saved, not refused, on any Unavailable row: his decision of 11 Aug 26, ruled not a fault in that job's sheet. NOT WALKED: A11 on the desktop (a member has no door to the Board — as that job recorded) and A8 on the phone (a desktop-only order in that job; the desktop run PASSES). One run (A7 (b), phone) printed its results and then hung closing its browser; stopped by hand, its two rows PASS |
+| **This branch's own orders** (`r4wf-w1`, `-w2-a`, `-w2-a2`, `-w2-b`, `-note`, `-secs`, `-host`, unchanged) | merged, desktop Chromium and phone WebKit; `-w1` and `-w2-a` on `main` beside it | On the merged build: the Ground Programme row follows each change at once (`-w1`, 10 of 10 at each size); the first walk's orders W2 (b)–(e), W10, W11 and the long word at four more doors PASS on the desktop, and on the phone all but the two rows named below; the re-ordered day and Undo / Redo of a drag PASS (`-w2-a2`); the box under the caret with a Blue/Red question open 0px, 7 of 7 (`-w2-b`); the note 9 of 9 at each size (`-note`); the host's run 14 PASS, 12 RECORD. On `main` beside it the two old faults still show (`-w1` 6 FAIL; W2 (b); the long word on the phone) — this branch's fixes still matter on today's `main`. **Three rows are the scripts' own, each the same on both builds:** `-w2-a`'s W3 returned FAIL because its record reader looked for an ISO date the records do not hold, so it could not see a man's own leave — it had only ever run while the fault stood; mended (one condition) and re-run: PASS on the merged desktop and phone and on `main`'s phone (`merge/r4wf-w2-a-w3fix-*/`). Its W10 on the phone counts one "went back up" where the phone scrolls the next box into view — the boxes and their order are the desktop's, which passes, and `main` reads the same. `-secs` stops with a script error after its OIL Earn step on `main` as on the merged build (its next control is not pressable in that mode on today's `main`); its Undo, Redo and day-step orders are walker A's X7 and X9 and `-w2-a`'s KEEP rows |
+| **X3, X5, X2, X8 (b), M3, M1, M11, M10, M8** (walker B, `parts/r4wf/merge-walk-b.md`) | both builds; desktop Chromium, X3 and M11 also phone WebKit | 10 PASS, 10 RECORD, 2 FAIL (X8 (b), the same on `main`), 2 COULD NOT BE MADE (M11's answer tap in the test phone), no page error. On the merged build the rows are rewritten the moment the caret is in another section, in the order Ranger, Hex, Outlaw, and every save reaches the right man (X3: three leaves, never a fourth); the ALL AVAIL count, its open window and Available crew agree at once (M1: 36 with Ranger, where `main` still reads 35 until the caret leaves); a shared Meeting stays ONE input for both men (M3); the box under the caret moved 0px with a Blue/Red question open (M11); a published day reads "1 pending", the change is Ranger's own, the member still sees the issued times (M8) |
+| **X1 (a), (a′), (b), (c), (d), X4, M2, X6, X7, X8 (a), X9, X10, M9** (walker A, `parts/r4wf/merge-walk-a.md`) | both builds; phone WebKit, X6 and M9 also desktop Chromium, X10 also 320 wide | 16 PASS, 2 RECORD, 4 FAIL (X8 (a) on both builds; X10 on `main` only — this branch's own old fault, gone on the merged build), 12 COULD NOT BE MADE in part, no page error. **X1 — the designer's top prediction (a time typed on a redrawn row after Undo put both men back on one leave) cannot be made by a person:** the app's own Undo takes the caret, on both builds, by a WebKit tap, a Chromium tap and a scripted click alike; the rest of each order, walked with a fresh tap, reached the right man alone. Reject on his held row took only HIS duty, the box moved 0px (X4); an armed puck's ring stayed on his row across the rewrite and the name replaced him, not Hex (X6, desktop — on the phone the crew list covers the other section's boxes) |
+
+**Findings, each reproduced by the host and each the same on `main` — none made or worsened by this branch; filed,
+not fixed** (`OUTSTANDING.md` `[SHARED-ROW-HELD-LEFTOVERS]` (4)–(7)):
+
+- **X8 (a)** — a shared overseas duty, nothing changed yet: 0900 typed in Ranger's Start and not left, then Reject on
+  his row pressed with the caret KEPT in the box (made only by a scripted click — a tap in either test browser takes
+  the caret first; whether his iPhone keeps it is his look): the WHOLE duty is taken out ("2 people's OD taken out of
+  Unavailable") and the typed 09:00 then lands on both men. Host's runs: `merge/r4wf-ma/host-x8a-{merged,main}-phone-webkit/`.
+- **X8 (b)** — the same on a desktop, where the click takes the caret: the first click only saves the 09:00 (Ranger cut
+  out onto his own duty); a second click is needed to reject it. Hex never touched. `merge/r4wf-mb/x8b-host-merged-desk-chromium/`.
+- **X2** — Tab from the last box of his row of a shared duty (the day's last box) drops the keyboard focus onto the page
+  where a one-man duty's row goes on to its Reject. Identical on both builds.
+- **M11, the phone** — a tap on Blue in the Blue/Red question does nothing in the test WebKit at 402 wide, caret or no
+  caret, on both builds; in phone Chromium the same tap answers it (the host's run, `merge/r4wf-mb/m11-host-merged-phone-chromium/`).
+  A lead for his iPhone, not a finding.
+
+**RECORD, both builds alike:** OIL Earn switched on with the caret in his row still lets the typed time cut him out,
+no OIL figure moved (X9, a scripted click).
+
+**Not walked, and why:** the Undo, Redo and OIL Earn presses with the caret kept, by a real tap (the test browsers take
+the caret — his iPhone only); X6's second tap on the phone (the crew list covers the box); the week's twin of X1 (this
+branch does not change the week's paint — R11); the Leave War's doors of the shared-row job (not on the Board).
+
+**Pictures:** `../img/handpass/2026-11-25-r4-walk-faults/merge/` — the host's W3 and re-walk folders, the walkers'
+`r4wf-ma/` and `r4wf-mb/`; for his look, `merge/look/1…4-*.png` (cut and ringed by `scripts/handpass/r4wf-m-look.mjs`).
+
+**The gates:** GitHub's run on the merge commit `0ff30dbdf` — all 25 checks green (unit raptor 6 and Leave War 4,
+geometry 7, the Tracker smoke 2, the build, the code check, the Docs guard, the secrets scan). Vercel built nothing:
+"Deployment rate limited — retry in 24 hours" (its daily limit, first refused about 14:00 on 25 Nov) — so no preview
+link exists yet; the walk's builds are the same code.
+
+**§12's boxes:** the eight answers and the tier, written; the rulings of §6 unchanged, with D737 and D739 for the shared
+row — no clash; the roll-call above, no blank; the production build of the merge commit driven at both widths, both
+engines; fixtures through the Inputs page's own window; every surface seen and operated; the walk sized in writing
+first; the downstream results read (who is offered in Available crew, the ALL AVAIL count, the changes count, the
+member's issued copy); the tests as §4 and §11 left them (nothing was built, so no new test and no new break); the
+gates green; the reads of §16 stand, none owed for a merge that wrote no line; this section names what was not walked;
+his look: below.
+
+`Walk: docs/handpass/2026-11-25-r4-walk-faults.md §19 · 1113 pictures of the merge round (on top of the 319 of §17) · 6 surfaces (one man's row of a shared leave on the Board's Unavailable list — its boxes, its buttons, its puck; Available crew; the Common Programme's ALL AVAIL count and its window; Personal Inputs and the Ground Programme; a published day's changes window and the member's copy; the passing note) on a desktop 1440×900 and his iPhone's size 402×874 with touch, Chromium and WebKit, main's build beside the merged build · orders walked: W3 on eight engine-and-size-and-build pairs; the shared-row job's A1–A13 and this branch's own orders re-run on the merged build; X1 (a)–(d), X2–X10, M1–M3, M8–M11 on both builds · MISSING: none of this branch's. W3 — FIXED by pull request 845 (live), PASS on both builds; it is not a new fault and is not filed. Found, the same on main, filed as [SHARED-ROW-HELD-LEFTOVERS] (4)–(7): Reject on one man's row of a still-shared duty with a time typed and not left (two forms), the Tab off the day's last box, the phone's Blue/Red answer tap (his iPhone to say). Could not be made by a person in a test browser, so his iPhone's to show: a top-bar or row button pressed with the caret kept in a box`
+
+`Docs: OUTSTANDING 197 items (+0 −0) · DECISIONS D1–D2603 · homes OK`
+`docsize: OVER by 13, deferred (D29)`

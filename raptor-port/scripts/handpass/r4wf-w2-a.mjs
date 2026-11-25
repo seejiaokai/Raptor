@@ -138,7 +138,7 @@ await order('W3', async () => {
   if (!mine) return add(`W3 ${tag}`, 'NOT WALKED', 'no Ranger row in Unavailable: ' + J(r0))
   const steps = []
   steps.push(await typeTab(`#schedBoard [data-ifld="${mine.k}"]`, '0900'))
-  const recs = () => P().evaluate(id => window.INPUTS.filter(r => String(r.iid).startsWith(id) || (r.type === 'LL' && (r.people || []).some(p => ['bane', 'rocky'].includes(p.p)) && JSON.stringify(r).includes('2026-07-15'))).map(r => ({ iid: r.iid, date: r.date, people: (r.people || []).map(p => JSON.stringify(p).slice(0, 120)), s: r.s, e: r.e, rmks: r.remarks })), iid)
+  const recs = () => P().evaluate(id => window.INPUTS.filter(r => String(r.iid).startsWith(id) || (r.type === 'LL' && (r.people || []).some(p => ['bane', 'rocky'].includes(p.p)) && (r.date === 'Jul 15' || JSON.stringify(r).includes('2026-07-15')))).map(r => ({ iid: r.iid, date: r.date, people: (r.people || []).map(p => JSON.stringify(p).slice(0, 120)), s: r.s, e: r.e, rmks: r.remarks })), iid)
   const after1 = await recs(); const r1 = await rows(); const f1 = await pic('W3-start-0900')
   const nk = r1.find(r => /Ranger/i.test(r.who))
   if (nk) { steps.push(await typeTab(`#schedBoard [data-ifld="${nk.k.replace(/\.str$/, '.end')}"]`, '1100')) }
