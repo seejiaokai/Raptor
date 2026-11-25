@@ -61,8 +61,8 @@ export const greyLook = (s, sel) => s.page.evaluate(sel => {
    pair; footLikeRow then lays the form's foot (#n176acts) exactly so: the same metrics on "Add person" (main) and
    "Cancel" (plain), tops and baselines on one line, the form's note one even gap above the pair. */
 const BTN_PROPS = ['height', 'minHeight', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'fontFamily', 'fontSize', 'fontWeight', 'lineHeight', 'letterSpacing', 'borderTopLeftRadius', 'borderTopRightRadius', 'borderBottomLeftRadius', 'borderBottomRightRadius', 'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth', 'boxSizing', 'verticalAlign', 'textTransform']
-export async function rowFootRef(s, hitFn) {
-  await hitFn(s, s.page.locator('[data-person="bane"] .acc-tap').first(), 700)
+export async function rowFootRef(s, hitFn, pid = 'bane') {   /* bane: Ranger (142's page); on 149's page Osprey, osp9 */
+  await hitFn(s, s.page.locator(`[data-person="${pid}"] .acc-tap`).first(), 700)
   const ref = await s.page.evaluate(P => {
     const row = document.querySelector('.acc-row.od-row-on'), sv = row.querySelector('#accEdSave'), cn = row.querySelector('#accEdCancel'), acts = sv.parentElement
     const pick = e => { const c = getComputedStyle(e); return Object.fromEntries(P.map(p => [p, c[p]])) }
