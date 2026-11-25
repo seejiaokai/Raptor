@@ -1,0 +1,77 @@
+[
+ {
+  "scn": "probe3",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "probe3",
+  "size": "desktop",
+  "id": "f",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "probe3",
+  "size": "desktop",
+  "id": "0",
+  "what": "board open, nothing armed",
+  "ok": "REC",
+  "note": "{\"ok\":0,\"okWeek\":0,\"sel\":[],\"armed\":null}"
+ },
+ {
+  "scn": "probe3",
+  "size": "desktop",
+  "id": "1",
+  "what": "press .rpuck (Ranger)",
+  "ok": "REC",
+  "note": "{\"ok\":4,\"okWeek\":161,\"sel\":[\"bane\",\"bane\",\"bane\",\"bane\",\"bane\"],\"armed\":null}",
+  "pics": "probe3-p3-1-desktop.png"
+ },
+ {
+  "scn": "probe3",
+  "size": "desktop",
+  "id": "2e",
+  "what": "inner",
+  "ok": "REC",
+  "note": "TimeoutError: locator.waitFor: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#schedBoard .rpuck[data-p"
+ },
+ {
+  "scn": "probe3",
+  "size": "desktop",
+  "id": "2",
+  "what": "press .rpuck .puck (Ranger)",
+  "ok": "REC",
+  "note": "{\"ok\":4,\"okWeek\":161,\"sel\":[\"bane\",\"bane\",\"bane\",\"bane\",\"bane\"],\"armed\":null}",
+  "pics": "probe3-p3-2-desktop.png"
+ },
+ {
+  "scn": "probe3",
+  "size": "desktop",
+  "id": "3",
+  "what": "press Ranger's seated puck on the week",
+  "ok": "REC",
+  "note": "{\"ok\":0,\"okWeek\":0,\"sel\":[],\"armed\":null}",
+  "pics": "probe3-p3-3-desktop.png"
+ },
+ {
+  "scn": "probe3",
+  "size": "desktop",
+  "id": "4",
+  "what": "the Sat 18 blank FCP on the week, its class",
+  "ok": "REC",
+  "note": "seat empty-slot"
+ },
+ {
+  "scn": "probe3",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

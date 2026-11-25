@@ -1,0 +1,185 @@
+[
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f5-f5.post-postout-open-phone.png, f5-f5.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.rows",
+  "what": "set-up: an OFT row on Sat 18 and an AMT row on Sun 19 through \"+\", no times typed (read back)",
+  "ok": true,
+  "note": "OFT {\"label\":\"B OFT\",\"str\":\"\",\"end\":\"\"} · AMT {\"label\":\"B AMT\",\"str\":\"\",\"end\":\"\"}"
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.oft-p",
+  "what": "untimed OFT front seat armed: Ranger struck \"SANS from Fri 17 Jul: no availability filed\" (D2584 Q5, D2586, D2587); Jester struck \"SANS — no availability filed for today\" (letter for letter a flight's, N12)",
+  "ok": true,
+  "note": "armed s:5.oft.0.p · \"SANS Avail · 0 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" printed \"SANS from Fri 17 Jul: no availability filed\" · Jester [SANS Avail, STRUCK] title \"Jester — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f5-f5-oft-p-armed-clip-phone.png, f5-f5-oft-p-sans-clip-phone.png, f5-f5-oft-p-armed-phone.png"
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.oft-w",
+  "what": "untimed OFT rear seat armed: Ranger struck \"SANS from Fri 17 Jul: no availability filed\" (D2584 Q5, D2586, D2587); Jester struck \"SANS — no availability filed for today\" (letter for letter a flight's, N12)",
+  "ok": true,
+  "note": "armed s:5.oft.0.w · \"SANS Avail · 0 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" printed \"SANS from Fri 17 Jul: no availability filed\" · Jester [SANS Avail, STRUCK] title \"Jester — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f5-f5-oft-w-armed-clip-phone.png, f5-f5-oft-w-sans-clip-phone.png, f5-f5-oft-w-armed-phone.png"
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.oft-+",
+  "what": "untimed OFT extra place (\"+ add\") armed: Ranger struck \"SANS from Fri 17 Jul: no availability filed\" (D2584 Q5, D2586, D2587); Jester struck \"SANS — no availability filed for today\" (letter for letter a flight's, N12)",
+  "ok": true,
+  "note": "armed s:5.oft.0.+ · \"SANS Avail · 0 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" printed \"SANS from Fri 17 Jul: no availability filed\" · Jester [SANS Avail, STRUCK] title \"Jester — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f5-f5-oft-x-armed-clip-phone.png, f5-f5-oft-x-sans-clip-phone.png, f5-f5-oft-x-armed-phone.png"
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.amt-p",
+  "what": "untimed AMT front seat armed: Ranger struck \"SANS from Fri 17 Jul: no availability filed\" (D2584 Q5, D2586, D2587); Jester struck \"SANS — no availability filed for today\" (letter for letter a flight's, N12)",
+  "ok": true,
+  "note": "armed s:6.amt.0.p · \"SANS Avail · 0 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" printed \"SANS from Fri 17 Jul: no availability filed\" · Jester [SANS Avail, STRUCK] title \"Jester — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f5-f5-amt-p-armed-clip-phone.png, f5-f5-amt-p-sans-clip-phone.png, f5-f5-amt-p-armed-phone.png"
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.amt-w",
+  "what": "untimed AMT rear seat armed: Ranger struck \"SANS from Fri 17 Jul: no availability filed\" (D2584 Q5, D2586, D2587); Jester struck \"SANS — no availability filed for today\" (letter for letter a flight's, N12)",
+  "ok": true,
+  "note": "armed s:6.amt.0.w · \"SANS Avail · 0 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" printed \"SANS from Fri 17 Jul: no availability filed\" · Jester [SANS Avail, STRUCK] title \"Jester — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f5-f5-amt-w-armed-clip-phone.png, f5-f5-amt-w-sans-clip-phone.png, f5-f5-amt-w-armed-phone.png"
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.amt-+",
+  "what": "untimed AMT extra place (\"+ add\") armed: Ranger struck \"SANS from Fri 17 Jul: no availability filed\" (D2584 Q5, D2586, D2587); Jester struck \"SANS — no availability filed for today\" (letter for letter a flight's, N12)",
+  "ok": true,
+  "note": "armed s:6.amt.0.+ · \"SANS Avail · 0 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" printed \"SANS from Fri 17 Jul: no availability filed\" · Jester [SANS Avail, STRUCK] title \"Jester — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f5-f5-amt-x-armed-clip-phone.png, f5-f5-amt-x-sans-clip-phone.png, f5-f5-amt-x-armed-phone.png"
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.e-oft",
+  "what": "Edit Schedule, the week's untimed OFT row picked: Ranger struck \"SANS from Fri 17 Jul: no availability filed\", Jester \"SANS — no availability filed for today\"",
+  "ok": true,
+  "note": "armed s:5.oft.0.+ ·  · armed s:5.oft.0.+ · \"SANS Avail · 0 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" printed \"SANS from Fri 17 Jul: no availability filed\" · Jester [SANS Avail, STRUCK] title \"Jester — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f5-f5-e-oft-earmed-clip-phone.png, f5-f5-e-oft-esans-clip-phone.png, f5-f5-e-oft-earmed-phone.png"
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.e-amt",
+  "what": "Edit Schedule, the week's untimed AMT row picked: Ranger struck \"SANS from Fri 17 Jul: no availability filed\", Jester \"SANS — no availability filed for today\"",
+  "ok": true,
+  "note": "armed s:6.amt.0.+ ·  · armed s:6.amt.0.+ · \"SANS Avail · 0 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" printed \"SANS from Fri 17 Jul: no availability filed\" · Jester [SANS Avail, STRUCK] title \"Jester — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f5-f5-e-amt-earmed-clip-phone.png, f5-f5-e-amt-esans-clip-phone.png, f5-f5-e-amt-earmed-phone.png"
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.amtfull",
+  "what": "set-up: the AMT row's two seats taken (Ace front, Basher rear)",
+  "ok": true,
+  "note": "\"the AMT sim has no usable times, so nobody on it earns OIL for this day\" / \"Basher planned\""
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.amt-xfull",
+  "what": "both seats taken, the AMT's first extra place (\"+\", instructor / observer) armed: Ranger struck \"SANS from Fri 17 Jul: no availability filed\", Jester \"SANS — no availability filed for today\" (D2586)",
+  "ok": true,
+  "note": "armed s:6.amt.0.x0 · \"SANS Avail · 0 free [tap did NOT arm it — script click used]\" · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" printed \"SANS from Fri 17 Jul: no availability filed\" · Jester [SANS Avail, STRUCK] title \"Jester — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f5-f5-amt-xfull-armed-clip-phone.png, f5-f5-amt-xfull-sans-clip-phone.png, f5-f5-amt-xfull-armed-phone.png"
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.note",
+  "what": "Ranger tapped into the untimed OFT front seat: the note after the drop (RECORD)",
+  "ok": "REC",
+  "note": "placed true · note \"the OFT sim has no usable times, so nobody on it earns OIL for this day\"",
+  "pics": "f5-f5-drop-oft-armed-clip-phone.png, f5-f5-drop-oft-sans-clip-phone.png, f5-f5-drop-oft-armed-phone.png, f5-f5-drop-oft-note-clip-phone.png, f5-f5-drop-oft-picked-phone.png"
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.note-told",
+  "what": "the note never says \"SANS — told on his bell\" (N10)",
+  "ok": true,
+  "note": "\"the OFT sim has no usable times, so nobody on it earns OIL for this day\""
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.warn",
+  "what": "the warning list has no amber SANS line for him (nothing filed raises none — D2579 not built) and no \"told on his bell\"",
+  "ok": true,
+  "note": "head \"▾⚠ 2 issues · 1 warning\" · 2 row(s) · Ranger's: none · SANS: none · seated: Ranger s:5.oft.0.p",
+  "pics": "f5-f5-oft-warn-clip-phone.png"
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.puck",
+  "what": "his seated puck on the untimed OFT wears no amber mark",
+  "ok": true,
+  "note": "s:5.oft.0.p",
+  "pics": "f5-f5-oft-seated-phone.png"
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.amtx",
+  "what": "set-up: Ranger tapped into the untimed AMT's extra place (Sun 19)",
+  "ok": true,
+  "note": "note \"Ranger — SANS from Fri 17 Jul: no availability filed\" · holds [\".sims.amt[0].more[0]\"]",
+  "pics": "f5-f5-drop-amtx-armed-clip-phone.png, f5-f5-drop-amtx-sans-clip-phone.png, f5-f5-drop-amtx-armed-phone.png, f5-f5-drop-amtx-note-clip-phone.png, f5-f5-drop-amtx-picked-phone.png"
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.amtx-note",
+  "what": "the note after the drop into the AMT extra place (RECORD)",
+  "ok": "REC",
+  "note": "\"Ranger — SANS from Fri 17 Jul: no availability filed\""
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "f5.bell",
+  "what": "his bell names Sat 18 and Sun 19 — an untimed sim with nothing filed counts, the extra place included (D2568, F4)",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18, Sun 19 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f5-f5-bell-phone.png"
+ },
+ {
+  "scn": "f5",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

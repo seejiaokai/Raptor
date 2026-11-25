@@ -1959,6 +1959,15 @@ strike, the printed reason (`.no.haswhy`/`.rwhy`), the green eligibility
 rings and both toasts all read `slotBar`, so grey-out was free the moment
 this one function judged right.
 
+**Standby lines and untimed sims (owner D2584, 25 Nov 26):** an SC, AVALON or BB row — MAIN or SPARE, flying or not,
+timed or not — never asks a SANS man for availability: the crew list (`avail.ts slotBarNow`, `sansStby`), this
+advisory (a `day.fly` entry with `shift` is skipped) and his reminder (`daySansSeats` skips a standalone wave) all leave
+it alone (Q4, answering D2576, D2578). An OFT or AMT seat with no times strikes a man with nothing filed in the timed
+words, as a flight with no times does (Q5, with D2573) — its extra places too (D2586). Before the times are typed, a man
+whose filing does not offer the event ("OFT only" on a flight, "Fly only" on an OFT) is struck at once, "SANS — not
+offering Fly" (or OFT, AMT), as on a timed seat; one who offered the event with hours stays plain until the times are
+typed (owner D2585, narrowing D2573). Tests: `src/engine/sans-standby-sim.test.ts`, `src/engine/sans-notimes-offer.test.ts`.
+
 **The `SANS_AVAIL` advisory (`validate.ts`) — amber, wears the `A` chip**
 (owner, 26 Aug 26 — moved off `CP`, its launch chip: `CP`'s hover says a crew
 *pairing* needs approval, which is not this man's problem; `A` is the

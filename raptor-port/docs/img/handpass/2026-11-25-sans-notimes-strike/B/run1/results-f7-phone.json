@@ -1,0 +1,238 @@
+[
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f7-f7.post-postout-open-phone.png, f7-f7.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.SC",
+  "what": "set-up: + Wave → SC on Sat 18",
+  "ok": true,
+  "note": "{\"label\":\"SC\",\"kind\":\"sc\",\"standalone\":true,\"cs\":\"SC\",\"to\":\"07:00\",\"ld\":\"13:00\",\"n\":4}"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.AVALON",
+  "what": "set-up: + Wave → AVALON on Sat 18",
+  "ok": true,
+  "note": "{\"label\":\"AVALON\",\"kind\":\"avalon\",\"standalone\":true,\"cs\":\"AV\",\"to\":\"19:00\",\"ld\":\"07:00\",\"n\":4}"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.BB",
+  "what": "set-up: + Wave → BB on Sat 18",
+  "ok": true,
+  "note": "{\"label\":\"BB\",\"kind\":\"bb\",\"standalone\":true,\"cs\":\"BB\",\"to\":\"\",\"ld\":\"\",\"n\":4}"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.shape",
+  "what": "the three standby lines as made (times; each aircraft spare?)",
+  "ok": "REC",
+  "note": "{\"SC\":[{\"to\":\"07:00\",\"ld\":\"13:00\",\"ac\":[false,false,true,true]},{\"to\":\"13:00\",\"ld\":\"19:00\",\"ac\":[false,false,true,true]}],\"AVALON\":[{\"to\":\"19:00\",\"ld\":\"07:00\",\"ac\":[false,false,true,true]}],\"BB\":[{\"to\":\"\",\"ld\":\"\",\"ac\":[false,false,true,true]}]}"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.clear",
+  "what": "set-up: every standby formation's times cleared (read back)",
+  "ok": true,
+  "note": "{\"SC\":\"-/- -/-\",\"AVALON\":\"-/-\",\"BB\":\"-/-\"}"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.SC-MAIN-p",
+  "what": "SC MAIN FCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.0.0.0.p · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, STRUCK] title \"Marlin — WSO — cannot fly front seat\" printed \"WSO — cannot fly front seat\"",
+  "pics": "f7-f7-SC-MAIN-p-armed-clip-phone.png, f7-f7-SC-MAIN-p-sans-clip-phone.png, f7-f7-SC-MAIN-p-armed-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.SC-MAIN-w",
+  "what": "SC MAIN RCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.0.0.0.w · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "f7-f7-SC-MAIN-w-armed-clip-phone.png, f7-f7-SC-MAIN-w-sans-clip-phone.png, f7-f7-SC-MAIN-w-armed-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.SC-SPARE-p",
+  "what": "SC SPARE FCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.0.0.2.p · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, STRUCK] title \"Marlin — WSO — cannot fly front seat\" printed \"WSO — cannot fly front seat\"",
+  "pics": "f7-f7-SC-SPARE-p-armed-clip-phone.png, f7-f7-SC-SPARE-p-sans-clip-phone.png, f7-f7-SC-SPARE-p-armed-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.SC-SPARE-w",
+  "what": "SC SPARE RCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.0.0.2.w · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "f7-f7-SC-SPARE-w-armed-clip-phone.png, f7-f7-SC-SPARE-w-sans-clip-phone.png, f7-f7-SC-SPARE-w-armed-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.AVALON-MAIN-p",
+  "what": "AVALON MAIN FCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.1.0.0.p · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, STRUCK] title \"Marlin — WSO — cannot fly front seat\" printed \"WSO — cannot fly front seat\"",
+  "pics": "f7-f7-AVALON-MAIN-p-armed-clip-phone.png, f7-f7-AVALON-MAIN-p-sans-clip-phone.png, f7-f7-AVALON-MAIN-p-armed-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.AVALON-MAIN-w",
+  "what": "AVALON MAIN RCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.1.0.0.w · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "f7-f7-AVALON-MAIN-w-armed-clip-phone.png, f7-f7-AVALON-MAIN-w-sans-clip-phone.png, f7-f7-AVALON-MAIN-w-armed-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.AVALON-SPARE-p",
+  "what": "AVALON SPARE FCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.1.0.2.p · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, STRUCK] title \"Marlin — WSO — cannot fly front seat\" printed \"WSO — cannot fly front seat\"",
+  "pics": "f7-f7-AVALON-SPARE-p-armed-clip-phone.png, f7-f7-AVALON-SPARE-p-sans-clip-phone.png, f7-f7-AVALON-SPARE-p-armed-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.AVALON-SPARE-w",
+  "what": "AVALON SPARE RCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.1.0.2.w · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "f7-f7-AVALON-SPARE-w-armed-clip-phone.png, f7-f7-AVALON-SPARE-w-sans-clip-phone.png, f7-f7-AVALON-SPARE-w-armed-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.BB-MAIN-p",
+  "what": "BB MAIN FCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.2.0.0.p · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, STRUCK] title \"Marlin — WSO — cannot fly front seat\" printed \"WSO — cannot fly front seat\"",
+  "pics": "f7-f7-BB-MAIN-p-armed-clip-phone.png, f7-f7-BB-MAIN-p-sans-clip-phone.png, f7-f7-BB-MAIN-p-armed-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.BB-MAIN-w",
+  "what": "BB MAIN RCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.2.0.0.w · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "f7-f7-BB-MAIN-w-armed-clip-phone.png, f7-f7-BB-MAIN-w-sans-clip-phone.png, f7-f7-BB-MAIN-w-armed-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.BB-SPARE-p",
+  "what": "BB SPARE FCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.2.0.2.p · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, STRUCK] title \"Marlin — WSO — cannot fly front seat\" printed \"WSO — cannot fly front seat\"",
+  "pics": "f7-f7-BB-SPARE-p-armed-clip-phone.png, f7-f7-BB-SPARE-p-sans-clip-phone.png, f7-f7-BB-SPARE-p-armed-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.BB-SPARE-w",
+  "what": "BB SPARE RCP armed, no times: no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.2.0.2.w · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "f7-f7-BB-SPARE-w-armed-clip-phone.png, f7-f7-BB-SPARE-w-sans-clip-phone.png, f7-f7-BB-SPARE-w-armed-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.AVALON-flies",
+  "what": "AVALON: its row 5.1.0.0 ticked FLIES",
+  "ok": "REC",
+  "note": "aria-pressed true",
+  "pics": "f7-f7-AVALON-flies-clip-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.AVALON-FLIES-p-flies",
+  "what": "AVALON FLIES FCP armed, no times (FLIES ticked): no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.1.0.0.p · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, STRUCK] title \"Marlin — WSO — cannot fly front seat\" printed \"WSO — cannot fly front seat\"",
+  "pics": "f7-f7-AVALON-FLIES-p-flies-armed-clip-phone.png, f7-f7-AVALON-FLIES-p-flies-sans-clip-phone.png, f7-f7-AVALON-FLIES-p-flies-armed-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.AVALON-FLIES-w-flies",
+  "what": "AVALON FLIES RCP armed, no times (FLIES ticked): no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.1.0.0.w · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "f7-f7-AVALON-FLIES-w-flies-armed-clip-phone.png, f7-f7-AVALON-FLIES-w-flies-sans-clip-phone.png, f7-f7-AVALON-FLIES-w-flies-armed-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.BB-flies",
+  "what": "BB: its row 5.2.0.0 ticked FLIES",
+  "ok": "REC",
+  "note": "aria-pressed true",
+  "pics": "f7-f7-BB-flies-clip-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.BB-FLIES-p-flies",
+  "what": "BB FLIES FCP armed, no times (FLIES ticked): no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.2.0.0.p · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, STRUCK] title \"Marlin — WSO — cannot fly front seat\" printed \"WSO — cannot fly front seat\"",
+  "pics": "f7-f7-BB-FLIES-p-flies-armed-clip-phone.png, f7-f7-BB-FLIES-p-flies-sans-clip-phone.png, f7-f7-BB-FLIES-p-flies-armed-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.BB-FLIES-w-flies",
+  "what": "BB FLIES RCP armed, no times (FLIES ticked): no \"no availability filed\" for Ranger, Jester or Marlin",
+  "ok": true,
+  "note": "armed 5.2.0.0.w · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Marlin [SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "f7-f7-BB-FLIES-w-flies-armed-clip-phone.png, f7-f7-BB-FLIES-w-flies-sans-clip-phone.png, f7-f7-BB-FLIES-w-flies-armed-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "f7.ctl",
+  "what": "control: SC MAIN FCP with 07:00–13:00 typed — Ranger and Jester (the known timed strike, D2576–D2578 not built: not a finding)",
+  "ok": "REC",
+  "note": "Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" · Jester [SANS Avail, STRUCK] title \"Jester — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f7-f7-SC-MAIN-timed-armed-clip-phone.png, f7-f7-SC-MAIN-timed-sans-clip-phone.png, f7-f7-SC-MAIN-timed-armed-phone.png"
+ },
+ {
+  "scn": "f7",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

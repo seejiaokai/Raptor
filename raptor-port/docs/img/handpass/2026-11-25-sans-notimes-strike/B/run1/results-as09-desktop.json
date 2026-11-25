@@ -1,0 +1,150 @@
+[
+ {
+  "scn": "as09",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "as09",
+  "size": "desktop",
+  "id": "as09.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "as09-as09.post-postout-open-desktop.png, as09-as09.post-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "as09",
+  "size": "desktop",
+  "id": "as09.l18",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "as09",
+  "size": "desktop",
+  "id": "as09.l19",
+  "what": "set-up: a new flying line on Sun (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "as09",
+  "size": "desktop",
+  "id": "as09.0",
+  "what": "nothing filed: Sat 18 blank FCP — Ranger struck \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"; his rings do not light that seat",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" · \"SANS Avail · 0 free\" · rings 5.0.0.0.p:no ring (2 lit on the board)",
+  "pics": "as09-as09-0-armed-clip-desktop.png, as09-as09-0-sans-clip-desktop.png, as09-as09-0-armed-desktop.png, as09-as09-0-rings-desktop.png"
+ },
+ {
+  "scn": "as09",
+  "size": "desktop",
+  "id": "as09.file",
+  "what": "set-up: Saber files SANS fly all day for bane on 2026-07-18",
+  "ok": true,
+  "note": "{\"iid\":\"imrldisz50u4zen\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077235249}]\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "as09-as09.file-form-desktop.png, as09-as09.file-saved-desktop.png"
+ },
+ {
+  "scn": "as09",
+  "size": "desktop",
+  "id": "as09.1",
+  "what": "Fly all day filed for Sat 18 (Inputs → SANS), back to the schedule: Sat 18 blank FCP — Ranger plain; his rings light that seat",
+  "ok": false,
+  "note": "[SANS Avail, plain] title \"Ranger\" (no reason printed) · \"SANS Avail · 1 free\" · rings 5.0.0.0.p:no ring (0 lit on the board)",
+  "pics": "as09-as09-1-armed-clip-desktop.png, as09-as09-1-sans-clip-desktop.png, as09-as09-1-armed-desktop.png, as09-as09-1-rings-desktop.png"
+ },
+ {
+  "scn": "as09",
+  "size": "desktop",
+  "id": "as09.del",
+  "what": "set-up: the filing opened from its SANS day and deleted",
+  "ok": true,
+  "note": "",
+  "pics": "as09-as09-del-open-desktop.png, as09-as09-del-deleted-desktop.png"
+ },
+ {
+  "scn": "as09",
+  "size": "desktop",
+  "id": "as09.2",
+  "what": "the filing deleted: Sat 18 blank FCP — Ranger struck \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"; his rings do not light that seat",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" · \"SANS Avail · 0 free\" · rings 5.0.0.0.p:no ring (2 lit on the board)",
+  "pics": "as09-as09-2-armed-clip-desktop.png, as09-as09-2-sans-clip-desktop.png, as09-as09-2-armed-desktop.png, as09-as09-2-rings-desktop.png"
+ },
+ {
+  "scn": "as09",
+  "size": "desktop",
+  "id": "as09.u",
+  "what": "the top bar Undo on the Inputs page",
+  "ok": "REC",
+  "note": "pressed \"Undo — Ranger’s SANS Availability\" · note \"Undid: Ranger’s SANS Availability\" · filing back true",
+  "pics": "as09-as09-undo-desktop.png"
+ },
+ {
+  "scn": "as09",
+  "size": "desktop",
+  "id": "as09.3",
+  "what": "the deletion undone: Sat 18 blank FCP — Ranger plain; his rings light that seat",
+  "ok": false,
+  "note": "[SANS Avail, plain] title \"Ranger\" (no reason printed) · \"SANS Avail · 1 free\" · rings 5.0.0.0.p:no ring (0 lit on the board)",
+  "pics": "as09-as09-3-armed-clip-desktop.png, as09-as09-3-sans-clip-desktop.png, as09-as09-3-armed-desktop.png, as09-as09-3-rings-desktop.png"
+ },
+ {
+  "scn": "as09",
+  "size": "desktop",
+  "id": "as09.r",
+  "what": "the top bar Redo on the Inputs page",
+  "ok": "REC",
+  "note": "pressed \"Redo — Ranger’s SANS Availability\" · note \"Redid: Ranger’s SANS Availability\" · filing gone true",
+  "pics": "as09-as09-redo-desktop.png"
+ },
+ {
+  "scn": "as09",
+  "size": "desktop",
+  "id": "as09.4",
+  "what": "the deletion redone: Sat 18 blank FCP — Ranger struck \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"; his rings do not light that seat",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" · \"SANS Avail · 0 free\" · rings 5.0.0.0.p:no ring (2 lit on the board)",
+  "pics": "as09-as09-4-armed-clip-desktop.png, as09-as09-4-sans-clip-desktop.png, as09-as09-4-armed-desktop.png, as09-as09-4-rings-desktop.png"
+ },
+ {
+  "scn": "as09",
+  "size": "desktop",
+  "id": "as09.file2",
+  "what": "set-up: Saber files SANS fly all day for bane on 2026-07-18",
+  "ok": true,
+  "note": "{\"iid\":\"imrldju7k2nt90l\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077283504}]\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "as09-as09.file2-form-desktop.png, as09-as09.file2-saved-desktop.png"
+ },
+ {
+  "scn": "as09",
+  "size": "desktop",
+  "id": "as09.m",
+  "what": "the filing's date changed to Sun 19 in its own window (Save)",
+  "ok": "REC",
+  "note": "saved · record now {\"date\":\"Jul 18\",\"end\":null}",
+  "pics": "as09-as09-move-open-desktop.png, as09-as09-move-form-desktop.png, as09-as09-move-added-desktop.png"
+ },
+ {
+  "scn": "as09",
+  "size": "desktop",
+  "id": "as09.5",
+  "what": "the move check",
+  "ok": "REC",
+  "note": "NOT WALKED: the filing did not land on Sun 19 alone ({\"date\":\"Jul 18\",\"end\":null})"
+ },
+ {
+  "scn": "as09",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

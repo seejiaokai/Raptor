@@ -1,0 +1,71 @@
+[
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "as19-as19.post-postout-open-desktop.png, as19-as19.post-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.line",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.file",
+  "what": "set-up: Saber files SANS fly all day for bane+cards on 2026-07-18",
+  "ok": true,
+  "note": "{\"iid\":\"imrldijk6he84kx\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077223046},{\\\"p\\\":\\\"cards\\\",\\\"\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "as19-as19.file-form-desktop.png, as19-as19.file-saved-desktop.png"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.1r",
+  "what": "one filing naming Ranger and Marlin: FCP — Ranger plain",
+  "ok": true,
+  "note": "[SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "as19-as19-1-fcp-armed-clip-desktop.png, as19-as19-1-fcp-sans-clip-desktop.png, as19-as19-1-fcp-armed-desktop.png"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "as19.1m",
+  "what": "one filing naming Ranger and Marlin: RCP — Marlin (SANS WSO) plain",
+  "ok": true,
+  "note": "[SANS Avail, plain] title \"Marlin\" (no reason printed)",
+  "pics": "as19-as19-1-rcp-armed-clip-desktop.png, as19-as19-1-rcp-sans-clip-desktop.png, as19-as19-1-rcp-armed-desktop.png"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "ERR",
+  "what": "script stopped",
+  "ok": false,
+  "note": "locator.textContent: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"sc-month\"]').first()\u001b[22m\n",
+  "pics": "as19-ERR-desktop.png"
+ },
+ {
+  "scn": "as19",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

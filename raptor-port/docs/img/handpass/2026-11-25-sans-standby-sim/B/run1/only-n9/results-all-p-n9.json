@@ -1,0 +1,115 @@
+[
+ {
+  "scn": "n9",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "n9",
+  "size": "phone",
+  "id": "n9.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "n9-n9.post-postout-open-phone.png, n9-n9.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "n9",
+  "size": "phone",
+  "id": "n9.file18",
+  "what": "set-up: Saber files SANS oft all day for bane on 2026-07-18",
+  "ok": true,
+  "note": "{\"iid\":\"imrldixp8hayuv2\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077241372}]\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"o\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "n9-n9.file18-form-phone.png, n9-n9.file18-saved-phone.png"
+ },
+ {
+  "scn": "n9",
+  "size": "phone",
+  "id": "n9.file19",
+  "what": "set-up: Saber files SANS oft all day for bane on 2026-07-19",
+  "ok": true,
+  "note": "{\"iid\":\"imrldj5m38o0w39\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077251627}]\",\"date\":\"Jul 19\",\"endDate\":null,\"sans\":{\"o\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "n9-n9.file19-form-phone.png, n9-n9.file19-saved-phone.png"
+ },
+ {
+  "scn": "n9",
+  "size": "phone",
+  "id": "n9.flight",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave) 15:30–16:30",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"T1530\",\"to\":\"15:30\",\"ld\":\"16:30\",\"n\":1}"
+ },
+ {
+  "scn": "n9",
+  "size": "phone",
+  "id": "n9.set",
+  "what": "set-up: OFT only filed for Sat 18 and Sun 19; Sat 18: Ranger on SC AM MAIN (07:00–13:00) and flight T1530 (15:30–16:30); Sun 19: Ranger in a timed AMT 10:00–11:00",
+  "ok": true,
+  "note": "notes \"Ranger planned\" / \"Ranger — SANS: not offering Fly today. Planned on T1530 (T/O 15:30)\" / \"Ranger — SANS: not offering AMT today. Planned on Sim B AMT 10:00–11:00\""
+ },
+ {
+  "scn": "n9",
+  "size": "phone",
+  "id": "n9.notes",
+  "what": "the notes of the three taps (RECORD)",
+  "ok": "REC",
+  "note": "SC \"Ranger planned\" · flight \"Ranger — SANS: not offering Fly today. Planned on T1530 (T/O 15:30)\" · AMT \"Ranger — SANS: not offering AMT today. Planned on Sim B AMT 10:00–11:00\"",
+  "pics": "n9-n9-sc-armed-clip-phone.png, n9-n9-sc-sans-clip-phone.png, n9-n9-sc-armed-phone.png, n9-n9-sc-note-clip-phone.png, n9-n9-sc-picked-phone.png, n9-n9-fl-armed-clip-phone.png, n9-n9-fl-sans-clip-phone.png, n9-n9-fl-armed-phone.png, n9-n9-fl-note-clip-phone.png, n9-n9-fl-picked-phone.png, n9-n9-amt-armed-clip-phone.png, n9-n9-amt-sans-clip-phone.png, n9-n9-amt-armed-phone.png, n9-n9-amt-note-clip-phone.png, n9-n9-amt-picked-phone.png"
+ },
+ {
+  "scn": "n9",
+  "size": "phone",
+  "id": "n9.sat-warn",
+  "what": "Sat 18 warning list: a SANS line names the T1530 flight (\"not offering Fly\"), none names the SC line (A6)",
+  "ok": true,
+  "note": "head \"▾⚠ 2 issues\" · 2 row(s) · Ranger's: Ranger — SANS: not offering Fly today. Planned on T1530 (T/O 15:30)✕ · SANS: Ranger — SANS: not offering Fly today. Planned on T1530 (T/O 15:30)✕ · seated: Ranger 5.0.0.0.p AMBER chips[A] · 5.1.0.0.p AMBER chips[A] · ? AMBER chips[A]",
+  "pics": "n9-n9-sat-warn-clip-phone.png"
+ },
+ {
+  "scn": "n9",
+  "size": "phone",
+  "id": "n9.sat-pucks",
+  "what": "his flight puck wears the amber \"A\"; his SC puck does not (N9, A6)",
+  "ok": false,
+  "note": "5.0.0.0.p AMBER chips[A] · 5.1.0.0.p AMBER chips[A] · ? AMBER chips[A]",
+  "pics": "n9-n9-sat-seated-phone.png"
+ },
+ {
+  "scn": "n9",
+  "size": "phone",
+  "id": "n9.sun",
+  "what": "Sun 19: a SANS line names the AMT (\"not offering AMT\"); his AMT puck wears the amber \"A\" (N9, timed sim)",
+  "ok": true,
+  "note": "head \"▾⚠ 2 issues\" · 2 row(s) · Ranger's: Ranger — SANS: not offering AMT today. Planned on Sim B AMT 10:00–11:00✕ · SANS: Ranger — SANS: not offering AMT today. Planned on Sim B AMT 10:00–11:00✕ · seated: Ranger s:6.amt.0.p AMBER chips[A] · ? AMBER chips[A]",
+  "pics": "n9-n9-sun-warn-clip-phone.png, n9-n9-sun-seated-phone.png"
+ },
+ {
+  "scn": "n9",
+  "size": "phone",
+  "id": "n9.sat-clear",
+  "what": "the flight removed (SC left): no SANS line on Sat 18, no amber \"A\" on his SC puck — it clears (N9, A6)",
+  "ok": true,
+  "note": "note \"Line removed — T1530, 15:30–16:30, Ranger\" · head \"▾⚠ 1 issue\" · 1 row(s) · Ranger's: none · SANS: none · seated: Ranger 5.0.0.0.p · ?",
+  "pics": "n9-n9-sat2-warn-clip-phone.png, n9-n9-sat2-seated-phone.png"
+ },
+ {
+  "scn": "n9",
+  "size": "phone",
+  "id": "n9.sun-clear",
+  "what": "the AMT removed: no SANS line on Sun 19",
+  "ok": true,
+  "note": "note \"Sim row removed — AMT · B AMT, 10:00–11:00\" · head \"▾⚠ 1 issue\" · 1 row(s) · Ranger's: none · SANS: none · seated: Ranger ?",
+  "pics": "n9-n9-sun2-warn-clip-phone.png"
+ },
+ {
+  "scn": "n9",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

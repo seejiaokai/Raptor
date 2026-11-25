@@ -57,7 +57,9 @@ const ROWS: Record<string, { put: (id?: string) => void; key: string; counts: bo
   'a flying seat': { counts: true, key: `${SATI}.0.0.0.w`, put: (id = 'rocky') => { day().waves.push({ label: 'WAVE 1', intimes: [], traffic: [], formations: [line(id)] }) } },
   'an OFT seat': { counts: true, key: `s:${SATI}.oft.0.w`, put: (id = 'rocky') => { day().sims.oft.push({ label: 'EP 1', str: '1400', end: '1500', p: '', w: id }) } },
   'an AMT box': { counts: true, key: `s:${SATI}.amt.0.w`, put: (id = 'rocky') => { day().sims.amt.push({ label: 'BOX', str: '1130', end: '1230', pax: [id] }) } },
-  'an SC MAIN seat': { counts: true, key: `${SATI}.0.0.0.w`, put: (id = 'rocky') => { day().waves.push({ label: 'SC', kind: 'sc', standalone: true, noconf: false, intimes: [], formations: [{ cs: 'SC', msn: 'AM', to: '07:00', ld: '13:00', aircraft: [{ p: '', w: id }] }] }) } },
+  /* his D2584 Q4 (25 Nov 26, answering D2576, D2578): SC MAIN, SC SPARE, AVALON and BB need no SANS availability — an SC
+     MAIN seat no longer counts for the reminder, the checks or an armed seat (it did under D2564 alone) */
+  'an SC MAIN seat': { counts: false, key: `${SATI}.0.0.0.w`, put: (id = 'rocky') => { day().waves.push({ label: 'SC', kind: 'sc', standalone: true, noconf: false, intimes: [], formations: [{ cs: 'SC', msn: 'AM', to: '07:00', ld: '13:00', aircraft: [{ p: '', w: id }] }] }) } },
   'an SC SPARE seat': { counts: false, key: `${SATI}.0.0.0.w`, put: (id = 'rocky') => { day().waves.push({ label: 'SC', kind: 'sc', standalone: true, noconf: false, intimes: [], formations: [{ cs: 'SC', msn: 'AM', to: '07:00', ld: '13:00', aircraft: [{ p: '', w: id, spare: true }] }] }) } },
   'an AVALON seat that only stands by': { counts: false, key: `${SATI}.0.0.0.w`, put: (id = 'rocky') => { day().waves.push({ label: 'AVALON', kind: 'avalon', standalone: true, noconf: true, intimes: [], formations: [{ cs: 'AV', msn: 'DAY', to: '07:00', ld: '19:00', aircraft: [{ p: '', w: id }] }] }) } },
   'a cancelled flight': { counts: false, armed: true, key: `${SATI}.0.0.0.w`, put: (id = 'rocky') => { day().waves.push({ label: 'WAVE 1', intimes: [], traffic: [], formations: [{ ...line(id), cx: true }] }) } },
@@ -105,7 +107,8 @@ describe('D2564 — one definition: the reminder, the checks and an armed seat a
       // any: the checks' day is untyped (a verbatim port, src/engine/events.ts)
       const sim = (e: any) => /^s:\d+\.(amt|oft)\./.test(String(e.key || ''))
       // any: as above
-      const checked = new Set<string>([...b.fly.map((e: any) => String(e.id)), ...b.events.filter(sim).map((e: any) => String(e.id)), ...b.blank.filter(sim).map((e: any) => String(e.id))])
+      /* the SANS check skips a standby row's entry (`shift`) — his D2584 Q4, validate.ts — so this reads what it reads */
+      const checked = new Set<string>([...b.fly.filter((e: any) => !e.shift).map((e: any) => String(e.id)), ...b.events.filter(sim).map((e: any) => String(e.id)), ...b.blank.filter(sim).map((e: any) => String(e.id))])
       expect(checked.has('rocky'), 'what the warning list reads for SANS availability').toBe(row.counts)
       expect((daySansSeats(day()) as Set<string>).has('rocky'), 'the reminder\'s definition').toBe(row.counts)
       expect(sansUnfiledDays('rocky').includes(SAT)).toBe(row.counts)

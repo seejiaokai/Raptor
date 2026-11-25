@@ -1228,6 +1228,20 @@ and a seventh kind left out as doubtful, in `docs/superpowers/briefs/2026-11-10-
    him with a worked example before the build is read; a readers' brief names each such reading as a reading to judge,
    never as part of the rule; and the scenarios hold a case on each side of the reading, each marked as the reading's case to
    show him, never as a pass (here, a SANS man on a ground row only).
+33. **A line of words matched to the brief, never read for who it speaks to (his look, the crew list's SANS reason,
+   25 Nov 26 — D2587).** A SANS man struck for a day from his posting's date, while that date was still ahead, read "SANS
+   from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab." — telling the scheduler, who reads the
+   crew list, to do the man's own job. The words were the ones of 23 Nov (D2340). On 24 Nov he asked of the line under the
+   same struck name, "Shouldn't the user be the one filing usually?" (D2420); the agent's reading, told to him, left the
+   picked-seat words, the hover and the note as built. The 25 Nov walk of D2573 pictured this line many times and passed
+   it, because its brief gave the words as the expected result; Fable's scenario list saw the sentence speaks to the
+   scheduler, but did not raise it because of that reading, and no one put it to him. **Lesson:** every line of words a
+   walk pictures is read twice — matched to the words expected, and read as its reader: who sees it, and does any
+   instruction in it ask that person to do what is theirs; a ruling that settles a point for one line lists its sibling
+   lines (the same struck name, the same reason, the hover, the note, the armed seat) in the roll-call's wording row, and
+   any left as it was is shown to him with its picture, never left to stand on a reading (lesson 32); and a walker's
+   brief carries the newest ruling on what such a line may say beside its expected words
+   (`src/leavewar/sans-unfiled.test.ts`, `src/engine/avail.ts sansNoneWhy`).
 
 ## 8. Making the checks FIND rather than CONFIRM
 

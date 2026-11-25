@@ -1,0 +1,1034 @@
+[
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f15-f15.post-postout-open-phone.png, f15-f15.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.0",
+  "what": "nothing filed: untimed OFT front seat armed — Ranger struck \"SANS from Fri 17 Jul: no availability filed\"",
+  "ok": true,
+  "note": "armed s:5.oft.0.p · \"SANS Avail · 0 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" printed \"SANS from Fri 17 Jul: no availability filed\"",
+  "pics": "f15-f15-0-armed-clip-phone.png, f15-f15-0-sans-clip-phone.png, f15-f15-0-armed-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.file",
+  "what": "set-up: Saber files SANS oft all day for bane on 2026-07-18",
+  "ok": true,
+  "note": "{\"iid\":\"imrldjkwdu8idlm\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077271437}]\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"o\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "f15-f15.file-form-phone.png, f15-f15.file-saved-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.1",
+  "what": "OFT all day filed (Inputs → SANS), back on the board, no reload: untimed OFT front seat armed — Ranger with no SANS reason",
+  "ok": true,
+  "note": "armed s:5.oft.0.p · \"SANS Avail · 1 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "f15-f15-1-armed-clip-phone.png, f15-f15-1-sans-clip-phone.png, f15-f15-1-armed-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.del",
+  "what": "set-up: the filing opened from its SANS day and deleted",
+  "ok": true,
+  "note": "",
+  "pics": "f15-f15-del-open-phone.png, f15-f15-del-deleted-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.2",
+  "what": "the filing deleted: untimed OFT front seat armed — Ranger struck \"SANS from Fri 17 Jul: no availability filed\"",
+  "ok": true,
+  "note": "armed s:5.oft.0.p · \"SANS Avail · 0 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" printed \"SANS from Fri 17 Jul: no availability filed\"",
+  "pics": "f15-f15-2-armed-clip-phone.png, f15-f15-2-sans-clip-phone.png, f15-f15-2-armed-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.u",
+  "what": "the top bar Undo on the Inputs page",
+  "ok": "REC",
+  "note": "pressed \"Undo — Ranger’s SANS Availability\" · note \"Undid: Ranger’s SANS Availability\" · filing back true",
+  "pics": "f15-f15-undo-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.3",
+  "what": "the delete undone: untimed OFT front seat armed — Ranger with no SANS reason",
+  "ok": true,
+  "note": "armed s:5.oft.0.p · \"SANS Avail · 1 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "f15-f15-3-armed-clip-phone.png, f15-f15-3-sans-clip-phone.png, f15-f15-3-armed-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.del2",
+  "what": "set-up: the filing deleted again (nothing filed)",
+  "ok": true,
+  "note": "",
+  "pics": "f15-f15-del2-open-phone.png, f15-f15-del2-deleted-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.seats",
+  "what": "set-up: Ranger on the untimed OFT (Sat 18) and on SC AM MAIN only (Sun 19)",
+  "ok": true,
+  "note": "\"the OFT sim has no usable times, so nobody on it earns OIL for this day\" / \"Ranger planned\""
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.bell1",
+  "what": "as Ranger: his reminder names Sat 18 only (never the standby-only Sun 19)",
+  "ok": true,
+  "note": "lit true · 3 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.\" || [unread] \"SANS Availability\" \"Sat 18 Jul\" \"Deleted · Saber\" || [unread] \"SANS Availability\" \"Sat 18 Jul\" \"You were added · Saber\"",
+  "pics": "f15-f15-bell1-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.tap",
+  "what": "the reminder tapped opens the SANS calendar on Sat 18 with its day window",
+  "ok": true,
+  "note": "page \"inputs\" · month \"Jul 2026\" · window \"⠿Sat 18 JulNo flying set✕FigurePilotsWSOsRequired to fly––Available2718SANS comm\"",
+  "pics": "f15-f15-tap-tapped-phone.png, f15-f15-tap-after-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.rfile",
+  "what": "set-up: Ranger files OFT, all day, for Sat 18 himself (+ Commitment)",
+  "ok": true,
+  "note": "{\"iid\":\"imrldlno5a72smu\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"bane\\\",\\\"at\\\":1784077368341}]\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"o\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"bane\"}",
+  "pics": "f15-f15-rfile-form-phone.png, f15-f15-rfile-saved-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.bell2",
+  "what": "filed: the reminder no longer names Sat 18 (and never Sun 19)",
+  "ok": true,
+  "note": "lit true · 2 line(s) · Mark all read in view · [unread] \"SANS Availability\" \"Sat 18 Jul\" \"Deleted · Saber\" || [unread] \"SANS Availability\" \"Sat 18 Jul\" \"You were added · Saber\"",
+  "pics": "f15-f15-bell2-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.filed-x",
+  "what": "Saber, the board: the untimed OFT's rear seat armed with his filing in (RECORD — he sits in the front seat)",
+  "ok": "REC",
+  "note": "armed s:5.oft.0.w · \"SANS Avail · 0 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — already on this row · not added twice\" printed \"already on this row · not added twice\"",
+  "pics": "f15-f15-filed-x-armed-clip-phone.png, f15-f15-filed-x-sans-clip-phone.png, f15-f15-filed-x-armed-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.e-filed",
+  "what": "Saber, Edit Schedule's crew panel: the week's OFT row picked (RECORD)",
+  "ok": "REC",
+  "note": "armed null · armed null · \"SANS Avail · 0 free\" · Ranger [SANS Avail, plain] title \"Ranger — already tasked today, but you can still plan him\" (no reason printed)",
+  "pics": "f15-f15-e-filed-earmed-clip-phone.png, f15-f15-e-filed-esans-clip-phone.png, f15-f15-e-filed-earmed-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.rdel",
+  "what": "set-up: Ranger deletes his own filing",
+  "ok": true,
+  "note": "",
+  "pics": "f15-f15-rdel-open-phone.png, f15-f15-rdel-deleted-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.bell3",
+  "what": "Ranger, app reopened after deleting his filing: the bell (RECORD the renewed reminder)",
+  "ok": "REC",
+  "note": "lit true · 3 line(s) · Mark all read in view · [read] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.\" || [unread] \"SANS Availability\" \"Sat 18 Jul\" \"Deleted · Saber\" || [unread] \"SANS Availability\" \"Sat 18 Jul\" \"You were added · Saber\"",
+  "pics": "f15-f15-bell3-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.bell3c",
+  "what": "the reminder names Sat 18 again, never Sun 19",
+  "ok": true,
+  "note": "lit true · 3 line(s) · Mark all read in view · [read] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.\" || [unread] \"SANS Availability\" \"Sat 18 Jul\" \"Deleted · Saber\" || [unread] \"SANS Availability\" \"Sat 18 Jul\" \"You were added · Saber\""
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "f15.final",
+  "what": "Saber after the reload: the OFT rear seat armed (RECORD)",
+  "ok": "REC",
+  "note": "armed s:5.oft.0.w · \"SANS Avail · 0 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — already on this row · not added twice\" printed \"already on this row · not added twice\"",
+  "pics": "f15-f15-final-armed-clip-phone.png, f15-f15-final-sans-clip-phone.png, f15-f15-final-armed-phone.png"
+ },
+ {
+  "scn": "f15",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "f18",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f18",
+  "size": "phone",
+  "id": "f18.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f18-f18.post-postout-open-phone.png, f18-f18.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "f18",
+  "size": "phone",
+  "id": "f18.wk1",
+  "what": "set-up: A Fri 17 SC SPARE · B Sat 18 AVALON MAIN (FLIES ticked) · C Sun 19 BB MAIN — Ranger on each",
+  "ok": true,
+  "note": "\"Ranger planned\" / \"Ranger planned\" / \"the BB shift has no usable times, so nobody on it earns OIL for this day\""
+ },
+ {
+  "scn": "f18",
+  "size": "phone",
+  "id": "f18.E",
+  "what": "set-up: a new flying line on Wed (+ Wave → Flying wave) 13:00–14:00",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 3\",\"kind\":\"\",\"standalone\":false,\"cs\":\"T13\",\"to\":\"13:00\",\"ld\":\"14:00\",\"n\":1}"
+ },
+ {
+  "scn": "f18",
+  "size": "phone",
+  "id": "f18.wk2",
+  "what": "set-up: D Tue 21 untimed AMT rear seat · E Wed 22 T13 13:00–14:00 FCP · F Fri 24 untimed OFT front seat then cancelled · G Sat 25 a new duty desk row — Ranger on each",
+  "ok": true,
+  "note": "\"Ranger — SANS from Fri 17 Jul: no availability filed\" / \"Ranger — SANS from Fri 17 Jul: no availability filed\" / \"Ranger — SANS from Fri 17 Jul: no availability filed\" / cancelled true / \"Duty has no usable times, so nobody on it earns OIL for this day\""
+ },
+ {
+  "scn": "f18",
+  "size": "phone",
+  "id": "f18.mon",
+  "what": "the demo week 2 already holds Ranger on Mon 20 (flying lines) — a saved week counts them",
+  "ok": "REC",
+  "note": "[\"WAVE 1 08:40–10:05,08:40–10:05\",\"WAVE 2 10:30–11:55\"] · Jul 20: .waves[0].formations[0].aircraft[0].p .waves[1].formations[0].aircraft[0].p | Jul 21: .sims.amt[0].w | Jul 22: .waves[2].formations[0].aircraft[0].p | Jul 23: .ground[1].more[0] | Jul 24: .sims.oft[1].p | Jul 25: .dutywaves[0].rows[1].id | Jul 26: nothing"
+ },
+ {
+  "scn": "f18",
+  "size": "phone",
+  "id": "f18.wk",
+  "what": "Edit Schedule left on week 1 (the standby week)",
+  "ok": "REC",
+  "note": "13/07/2026"
+ },
+ {
+  "scn": "f18",
+  "size": "phone",
+  "id": "f18.bell1",
+  "what": "his reminder names D and E (Tue 21, Wed 22) and the demo Mon 20 flight — never A, B, C (standby), F (cancelled) or G (duty desk)",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Mon 20, Tue 21, Wed 22 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f18-f18-bell1-phone.png"
+ },
+ {
+  "scn": "f18",
+  "size": "phone",
+  "id": "f18.tap",
+  "what": "the reminder tapped: what it opened (D2340: the first listed day)",
+  "ok": "REC",
+  "note": "page \"inputs\" · month \"Jul 2026\" · window \"⠿Mon 20 JulDay flying✕FigurePilotsWSOsRequired to fly––Available2718SANS committ\"",
+  "pics": "f18-f18-tap-tapped-phone.png, f18-f18-tap-after-phone.png"
+ },
+ {
+  "scn": "f18",
+  "size": "phone",
+  "id": "f18.hex",
+  "what": "N11: Hex (another member) signed in — no reminder about Ranger's days",
+  "ok": true,
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "f18-f18-hex-phone.png"
+ },
+ {
+  "scn": "f18",
+  "size": "phone",
+  "id": "f18.saber",
+  "what": "N11: Saber's bell carries no SANS reminder of Ranger's",
+  "ok": true,
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "f18-f18-saber-phone.png"
+ },
+ {
+  "scn": "f18",
+  "size": "phone",
+  "id": "f18.offD",
+  "what": "set-up: Saber removes the Tue 21 AMT row (D)",
+  "ok": true,
+  "note": "note \"Sim row removed — AMT · B AMT\"",
+  "pics": "f18-f18-offD-srdel-phone.png"
+ },
+ {
+  "scn": "f18",
+  "size": "phone",
+  "id": "f18.bell2",
+  "what": "D off: the reminder drops Tue 21 (Mon 20, Wed 22 Jul)",
+  "ok": true,
+  "note": "lit false · 1 line(s) · Mark all read none · [read] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Mon 20, Wed 22 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f18-f18-bell2-phone.png"
+ },
+ {
+  "scn": "f18",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f19-f19.post-postout-open-phone.png, f19-f19.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.seats",
+  "what": "set-up: Sat 18: Ranger on SC AM MAIN (standing by) and the untimed OFT front seat",
+  "ok": true,
+  "note": "\"Ranger planned\" / \"the OFT sim has no usable times, so nobody on it earns OIL for this day\""
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.bell0",
+  "what": "his bell names Sat 18 (the untimed OFT)",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f19-f19-bell0-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.cxsc",
+  "what": "his standby row cancelled (CX, WX): nothing SANS on the warning list",
+  "ok": true,
+  "note": "head \"▾⚠ 2 issues · 1 warning\" · 2 row(s) · Ranger's: none · SANS: none · seated: Ranger 5.0.0.0.p · s:5.oft.0.p",
+  "pics": "f19-f19-cxsc-cx-phone.png, f19-f19-cxsc-warn-clip-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.cxoft",
+  "what": "his untimed OFT cancelled too: nothing SANS on the warning list",
+  "ok": true,
+  "note": "head \"▾⚠ 1 issue\" · 1 row(s) · Ranger's: none · SANS: none · seated: Ranger 5.0.0.0.p · s:5.oft.0.p",
+  "pics": "f19-f19-cxoft-cx-phone.png, f19-f19-cxoft-warn-clip-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.bell1",
+  "what": "both cancelled: the bell no longer names Sat 18 (a cancelled line never counts — D2568)",
+  "ok": true,
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "f19-f19-bell1-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.cxscfly",
+  "what": "flying SC AM (B 06:30): Ranger on row 2, that row cancelled — nothing SANS on the warning list",
+  "ok": true,
+  "note": "\"Ranger planned\" · head \"▾⚠ 1 issue\" · 1 row(s) · Ranger's: none · SANS: none · seated: Ranger 5.0.0.0.p · 5.0.0.1.p · s:5.oft.0.p",
+  "pics": "f19-f19-cxscfly-warn-clip-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.bell2",
+  "what": "still no Sat 18 in his bell",
+  "ok": true,
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "f19-f19-bell2-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.f1",
+  "what": "set-up: a new flying line on Sun (+ Wave → Flying wave) 13:00–14:00",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"ONE\",\"to\":\"13:00\",\"ld\":\"14:00\",\"n\":1}"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.f2",
+  "what": "set-up: a new flying line on Sun (+ Wave → Flying wave) 15:00–16:00",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 2\",\"kind\":\"\",\"standalone\":false,\"cs\":\"TWO\",\"to\":\"15:00\",\"ld\":\"16:00\",\"n\":1}"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.a7",
+  "what": "set-up: Sun 19: Ranger on flights ONE (13:00) and TWO (15:00) and SC AM MAIN",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.a7-1",
+  "what": "ONE cancelled, TWO left: Sun 19 still named",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sun 19 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f19-f19-a7-1-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.a7-2",
+  "what": "both cancelled (SC left): Sun 19 not named",
+  "ok": true,
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "f19-f19-a7-2-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.a7-3",
+  "what": "TWO un-cancelled: Sun 19 named again",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sun 19 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f19-f19-a7-3-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.undo",
+  "what": "TWO removed by its ✕ (its occupant with it), then the board's Undo brings it back with Ranger",
+  "ok": true,
+  "note": "note \"Line removed — TWO, 15:00–16:00, Ranger\" · Undo \"Undo — a change to the schedule\" → \"Undid: a change to the schedule\" · back true",
+  "pics": "f19-f19-del2-ldel-phone.png, f19-f19-undo-undo-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.a7-5",
+  "what": "removal undone: Sun 19 named again",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sun 19 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f19-f19-a7-5-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.del3",
+  "what": "TWO removed again by its ✕",
+  "ok": "REC",
+  "note": "note \"Line removed — TWO, 15:00–16:00, Ranger\"",
+  "pics": "f19-f19-del3-ldel-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.a7-4",
+  "what": "TWO removed (ONE cancelled, SC left): Sun 19 not named",
+  "ok": true,
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "f19-f19-a7-4-phone.png"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "f19.formation",
+  "what": "A7 \"cancel a whole formation\": the board draws a CX per line only (no formation or wave CX found in probe2) — the one-line flight IS its formation, walked above",
+  "ok": "REC",
+  "note": "per-line CX only"
+ },
+ {
+  "scn": "f19",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "a20-a20.post-postout-open-phone.png, a20-a20.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.duty-list",
+  "what": "N6: the new duty desk row armed — no SANS reason for Ranger or Jester",
+  "ok": true,
+  "note": "armed d:5.0.1.+ · \"SANS Avail · 12 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed) · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "a20-a20-duty-armed-clip-phone.png, a20-a20-duty-sans-clip-phone.png, a20-a20-duty-armed-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.rows",
+  "what": "set-up: Ranger on a ground row (Fri 17), a duty desk row (Sat 18), all hands (Sun 19)",
+  "ok": true,
+  "note": "{\"prog\":\"B GROUND\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"bane\",\"rid\":\"rmrldivwi1jzb9g\"} · \"Duty has no usable times, so nobody on it earns OIL for this day\" · {\"prog\":\"B ALLHANDS\",\"str\":\"10:00\",\"end\":\"11:00\",\"who\":\"bane\",\"rid\":\"rmrldjfg4z6txrx\"}"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.block",
+  "what": "\"+ Block\" pressed on Sun 19: what it offers",
+  "ok": "REC",
+  "note": "[\"ScribeDOAM\",\"ScopeIW\",\"ScopeIW\",\"+ Block\",\"✕ Block\",\"+ Block\",\"SC Shift4 roles · SC desk\",\"AVALON4 roles · AVALON desk\",\"Empty block\"]",
+  "pics": "a20-a20-block-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.block2",
+  "what": "the block made (an AVALON desk where offered)",
+  "ok": "REC",
+  "note": "{\"label\":\"AVALON\",\"rows\":4} · [\"Duty\",\"AVALON\"]"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.blockin",
+  "what": "Ranger tapped onto the new block's first desk",
+  "ok": "REC",
+  "note": "placed true · \"Ranger planned\"",
+  "pics": "a20-a20-blockin-armed-clip-phone.png, a20-a20-blockin-sans-clip-phone.png, a20-a20-blockin-armed-phone.png, a20-a20-blockin-note-clip-phone.png, a20-a20-blockin-picked-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.bell1",
+  "what": "his bell: no SANS reminder (ground, duty desk, all hands, a standby desk never count — D2564)",
+  "ok": true,
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "a20-a20-bell1-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.bell2",
+  "what": "an SC wave added on Sun 19 and made to fly: still no reminder",
+  "ok": true,
+  "note": "lit false · 0 line(s) · Mark all read none · empty",
+  "pics": "a20-a20-bell2-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.fl",
+  "what": "set-up: a new flying line on Sun (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.ace-untimedflightFCP",
+  "what": "N1: untimed flight FCP armed — Ace (not SANS) has no SANS reason",
+  "ok": true,
+  "note": "Ace [Pilots · 28 free, plain] title \"Ace\" (no reason printed) · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" printed \"SANS from Fri 17 Jul: no availability filed\" · \"SANS Avail · 0 free\"",
+  "pics": "a20-a20-ace-untimedflightFCP-armed-clip-phone.png, a20-a20-ace-untimedflightFCP-sans-clip-phone.png, a20-a20-ace-untimedflightFCP-armed-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.ace-untimedOFTfront",
+  "what": "N1: untimed OFT front armed — Ace (not SANS) has no SANS reason",
+  "ok": true,
+  "note": "Ace [Pilots · 28 free, plain] title \"Ace\" (no reason printed) · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" printed \"SANS from Fri 17 Jul: no availability filed\" · \"SANS Avail · 0 free\"",
+  "pics": "a20-a20-ace-untimedOFTfront-armed-clip-phone.png, a20-a20-ace-untimedOFTfront-sans-clip-phone.png, a20-a20-ace-untimedOFTfront-armed-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.ace-flyingSCMAINFCP",
+  "what": "N1: flying SC MAIN FCP armed — Ace (not SANS) has no SANS reason",
+  "ok": true,
+  "note": "Ace [Pilots · 25 free, plain] title \"Ace\" (no reason printed) · Ranger [SANS Avail, STRUCK] title \"Ranger — already on B ALLHANDS 10:00–11:00\" printed \"already on B ALLHANDS 10:00–11:00\" · \"SANS Avail · 5 free\"",
+  "pics": "a20-a20-ace-flyingSCMAINFCP-armed-clip-phone.png, a20-a20-ace-flyingSCMAINFCP-sans-clip-phone.png, a20-a20-ace-flyingSCMAINFCP-armed-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.groundrow",
+  "what": "N6: the ground row's \"+ add\" armed — no SANS reason for Ranger or Jester",
+  "ok": true,
+  "note": "armed g:4.2.+ · \"SANS Avail · 10 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — already on B GROUND 10:00–11:00 · not added twice\" printed \"already on B GROUND 10:00–11:00 · not added twice\" · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "a20-a20-groundrow-armed-clip-phone.png, a20-a20-groundrow-sans-clip-phone.png, a20-a20-groundrow-armed-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "a20.allhandsrow",
+  "what": "N6: the all hands row's \"+ add\" armed — no SANS reason for Ranger or Jester",
+  "ok": true,
+  "note": "armed a:6.0.+ · \"SANS Avail · 11 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — already on B ALLHANDS 10:00–11:00 · not added twice\" printed \"already on B ALLHANDS 10:00–11:00 · not added twice\" · Jester [SANS Avail, plain] title \"Jester\" (no reason printed)",
+  "pics": "a20-a20-allhandsrow-armed-clip-phone.png, a20-a20-allhandsrow-sans-clip-phone.png, a20-a20-allhandsrow-armed-phone.png"
+ },
+ {
+  "scn": "a20",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "n57-n57.post-postout-open-phone.png, n57-n57.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.early",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave) 08:00–09:00",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"EARLY\",\"to\":\"08:00\",\"ld\":\"09:00\",\"n\":1}"
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.set",
+  "what": "set-up: Sat 18: Ranger on the EARLY flight 08:00–09:00 FCP (Ace in its RCP); an SC wave",
+  "ok": true,
+  "note": "\"Ranger — SANS from Fri 17 Jul: no availability filed\" / \"Ace planned\""
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.sb",
+  "what": "N5: SC AM MAIN FCP (07:00–13:00, standing by) armed — Ranger already busy 08:00–09:00: the reason shown (RECORD)",
+  "ok": "REC",
+  "note": "armed 5.1.0.1.p · \"SANS Avail · 5 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — on EARLY  07:00–09:30 — inside this shift\" printed \"on EARLY 07:00–09:30 — inside this shift\" · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Ace [Pilots · 24 free, STRUCK] title \"Ace — on EARLY  07:00–09:30 — inside this shift\" printed \"on EARLY 07:00–09:30 — inside this shift\"",
+  "pics": "n57-n57-sb-armed-clip-phone.png, n57-n57-sb-sans-clip-phone.png, n57-n57-sb-armed-phone.png"
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.sb-c",
+  "what": "N5: Ranger carries no SANS words there; his other reason (busy) still shows",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — on EARLY  07:00–09:30 — inside this shift\" printed \"on EARLY 07:00–09:30 — inside this shift\""
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.fly",
+  "what": "N5: the same seat with SC AM flying (B 06:30) — reasons (RECORD)",
+  "ok": "REC",
+  "note": "armed 5.1.0.1.p · \"SANS Avail · 5 free\" · Ranger [SANS Avail, STRUCK] title \"Ranger — already on EARLY  07:00–09:30\" printed \"already on EARLY 07:00–09:30\" · Jester [SANS Avail, plain] title \"Jester\" (no reason printed) · Ace [Pilots · 24 free, STRUCK] title \"Ace — already on EARLY  07:00–09:30\" printed \"already on EARLY 07:00–09:30\"",
+  "pics": "n57-n57-fly-armed-clip-phone.png, n57-n57-fly-sans-clip-phone.png, n57-n57-fly-armed-phone.png"
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.fly-c",
+  "what": "N5: no SANS words; his busy reason still shows",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — already on EARLY  07:00–09:30\" printed \"already on EARLY 07:00–09:30\""
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.in",
+  "what": "Ranger and Ace tapped onto flying SC AM rows (each also on EARLY 08:00–09:00): the notes",
+  "ok": "REC",
+  "note": "\"Ranger — Conflict: EARLY (T/O 08:00, landing 09:00) & SC AM 07:00–13:00 (+2 more)\" / \"Ace — Conflict: EARLY (T/O 08:00, landing 09:00) & SC AM 07:00–13:00 (+2 more)\"",
+  "pics": "n57-n57-in-armed-clip-phone.png, n57-n57-in-sans-clip-phone.png, n57-n57-in-armed-phone.png, n57-n57-in-note-clip-phone.png, n57-n57-in-picked-phone.png, n57-n57-ace-in-armed-clip-phone.png, n57-n57-ace-in-sans-clip-phone.png, n57-n57-ace-in-armed-phone.png, n57-n57-ace-in-note-clip-phone.png, n57-n57-ace-in-picked-phone.png"
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.warn",
+  "what": "N7: the warning list with both double-booked on a flying SC row (RECORD every row)",
+  "ok": "REC",
+  "note": "head \"▾⚠ 7 issues · 2 warnings\" · 7 row(s) · Ranger's: Ranger — Conflict: EARLY (T/O 08:00, landing 09:00) & SC AM 07:00–13:00✕ | Ranger — Misses EARLY brief 05:40–08:00: SC AM 07:00–13:00✕ | Ranger — Misses EARLY debrief 09:00–11:00: SC AM 07:00–13:00✕ · SANS: none · seated: Ranger 5.0.0.0.p AMBER chips[C] · 5.1.0.1.p AMBER chips[C] / dj 5.0.0.0.w AMBER chips[C] · 5.1.0.2.p AMBER chips[C] · Ace rows: Ace — Conflict: EARLY (T/O 08:00, landing 09:00) & SC AM 07:00–13:00✕ | Ace — Misses EARLY brief 05:40–08:00: SC AM 07:00–13:00✕ | Ace — Misses EARLY debrief 09:00–11:00: SC AM 07:00–13:00✕",
+  "pics": "n57-n57-warn-clip-phone.png"
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "n57.warn-c",
+  "what": "N7: Ranger gets the same kind of non-SANS lines as the regular Ace, and no SANS line",
+  "ok": true,
+  "note": "Ranger: Ranger — Conflict: EARLY (T/O 08:00, landing 09:00) & SC AM 07:00–13:00✕ | Ranger — Misses EARLY brief 05:40–08:00: SC AM 07:00–13:00✕ | Ranger — Misses EARLY debrief 09:00–11:00: SC AM 07:00–13:00✕ · Ace: Ace — Conflict: EARLY (T/O 08:00, landing 09:00) & SC AM 07:00–13:00✕ | Ace — Misses EARLY brief 05:40–08:00: SC AM 07:00–13:00✕ | Ace — Misses EARLY debrief 09:00–11:00: SC AM 07:00–13:00✕"
+ },
+ {
+  "scn": "n57",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "n8",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "n8",
+  "size": "phone",
+  "id": "n8.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "n8-n8.post-postout-open-phone.png, n8-n8.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "n8",
+  "size": "phone",
+  "id": "n8.file",
+  "what": "set-up: Saber files SANS fly+oft+amt all day for bane on 2026-07-18",
+  "ok": true,
+  "note": "{\"iid\":\"imrldiyrq6gt7ia\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077242758}]\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"f\":true,\"o\":true,\"a\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "n8-n8.file-form-phone.png, n8-n8.file-saved-phone.png"
+ },
+ {
+  "scn": "n8",
+  "size": "phone",
+  "id": "n8.t",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave) 13:00–14:00",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"TIMED\",\"to\":\"13:00\",\"ld\":\"14:00\",\"n\":1}"
+ },
+ {
+  "scn": "n8",
+  "size": "phone",
+  "id": "n8.u",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 2\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "n8",
+  "size": "phone",
+  "id": "n8.timedflightFCP",
+  "what": "timed flight FCP armed: Ranger (filed all day Fly+OFT+AMT) with no SANS reason",
+  "ok": true,
+  "note": "armed 5.0.0.0.p · \"SANS Avail · 1 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "n8-n8-timedflightFCP-armed-clip-phone.png, n8-n8-timedflightFCP-sans-clip-phone.png, n8-n8-timedflightFCP-armed-phone.png"
+ },
+ {
+  "scn": "n8",
+  "size": "phone",
+  "id": "n8.untimedflightFCP",
+  "what": "untimed flight FCP armed: Ranger (filed all day Fly+OFT+AMT) with no SANS reason",
+  "ok": true,
+  "note": "armed 5.1.0.0.p · \"SANS Avail · 1 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "n8-n8-untimedflightFCP-armed-clip-phone.png, n8-n8-untimedflightFCP-sans-clip-phone.png, n8-n8-untimedflightFCP-armed-phone.png"
+ },
+ {
+  "scn": "n8",
+  "size": "phone",
+  "id": "n8.untimedOFTfront",
+  "what": "untimed OFT front armed: Ranger (filed all day Fly+OFT+AMT) with no SANS reason",
+  "ok": true,
+  "note": "armed s:5.oft.0.p · \"SANS Avail · 1 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "n8-n8-untimedOFTfront-armed-clip-phone.png, n8-n8-untimedOFTfront-sans-clip-phone.png, n8-n8-untimedOFTfront-armed-phone.png"
+ },
+ {
+  "scn": "n8",
+  "size": "phone",
+  "id": "n8.untimedOFTextraplace",
+  "what": "untimed OFT extra place armed: Ranger (filed all day Fly+OFT+AMT) with no SANS reason",
+  "ok": true,
+  "note": "armed s:5.oft.0.+ · \"SANS Avail · 1 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "n8-n8-untimedOFTextraplace-armed-clip-phone.png, n8-n8-untimedOFTextraplace-sans-clip-phone.png, n8-n8-untimedOFTextraplace-armed-phone.png"
+ },
+ {
+  "scn": "n8",
+  "size": "phone",
+  "id": "n8.timedAMTfront",
+  "what": "timed AMT front armed: Ranger (filed all day Fly+OFT+AMT) with no SANS reason",
+  "ok": true,
+  "note": "armed s:5.amt.0.p · \"SANS Avail · 1 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "n8-n8-timedAMTfront-armed-clip-phone.png, n8-n8-timedAMTfront-sans-clip-phone.png, n8-n8-timedAMTfront-armed-phone.png"
+ },
+ {
+  "scn": "n8",
+  "size": "phone",
+  "id": "n8.SCMAINFCP",
+  "what": "SC MAIN FCP armed: Ranger (filed all day Fly+OFT+AMT) with no SANS reason",
+  "ok": true,
+  "note": "armed 5.2.0.0.p · \"SANS Avail · 6 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "n8-n8-SCMAINFCP-armed-clip-phone.png, n8-n8-SCMAINFCP-sans-clip-phone.png, n8-n8-SCMAINFCP-armed-phone.png"
+ },
+ {
+  "scn": "n8",
+  "size": "phone",
+  "id": "n8.warn",
+  "what": "seated on the untimed OFT and the untimed flight: no SANS line, no amber",
+  "ok": true,
+  "note": "\"the OFT sim has no usable times, so nobody on it earns OIL for this day\" / \"the WAVE 2 line and the OFT sim have no usable times, so nobody on them earns OIL for this day\" · head \"▾⚠ 2 issues · 1 warning\" · 2 row(s) · Ranger's: none · SANS: none · seated: Ranger 5.1.0.0.p · s:5.oft.0.p · ?",
+  "pics": "n8-n8-warn-clip-phone.png"
+ },
+ {
+  "scn": "n8",
+  "size": "phone",
+  "id": "n8.bell",
+  "what": "his bell: no SANS reminder",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"SANS Availability\" \"Sat 18 Jul\" \"You were added · Saber\"",
+  "pics": "n8-n8-bell-phone.png"
+ },
+ {
+  "scn": "n8",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "plain-pl.post-postout-open-phone.png, plain-pl.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.0",
+  "what": "Saber opens Edit Schedule",
+  "ok": "REC",
+  "note": "page editsched",
+  "pics": "plain-pl-0-editsched-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.line",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave) 13:00–14:00",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"PLAIN\",\"to\":\"13:00\",\"ld\":\"14:00\",\"n\":1}"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.1",
+  "what": "the board of Sat 18: + Wave → flying line PLAIN 13:00–14:00, + Wave → SC, an OFT row and an AMT row (no times)",
+  "ok": "REC",
+  "note": "{\"fl\":{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"PLAIN\",\"to\":\"13:00\",\"ld\":\"14:00\",\"n\":1},\"sc\":1,\"oft\":{\"label\":\"PL OFT\",\"str\":\"\",\"end\":\"\"},\"amt\":{\"label\":\"PL AMT\",\"str\":\"\",\"end\":\"\"}}",
+  "pics": "plain-pl-1-built-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.2",
+  "what": "crew dropped in: Ace on PLAIN, Jester (SANS, nothing filed) on the untimed OFT, Ranger on SC MAIN — the SC note carries no SANS words",
+  "ok": true,
+  "note": "\"Ace planned\" / \"the OFT sim has no usable times, so nobody on it earns OIL for this day\" / \"Ranger planned\"",
+  "pics": "plain-pl-3-jester-armed-clip-phone.png, plain-pl-3-jester-sans-clip-phone.png, plain-pl-3-jester-armed-phone.png, plain-pl-3-jester-note-clip-phone.png, plain-pl-3-jester-picked-phone.png, plain-pl-4-ranger-armed-clip-phone.png, plain-pl-4-ranger-sans-clip-phone.png, plain-pl-4-ranger-armed-phone.png, plain-pl-4-ranger-note-clip-phone.png, plain-pl-4-ranger-picked-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.2n",
+  "what": "the note when Jester dropped on the untimed OFT (RECORD)",
+  "ok": "REC",
+  "note": "\"the OFT sim has no usable times, so nobody on it earns OIL for this day\""
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.3",
+  "what": "a time typed: the AMT row's start 10:00",
+  "ok": "REC",
+  "note": "box \"10:00\" · row {\"label\":\"PL AMT\",\"str\":\"10:00\",\"end\":\"\",\"rid\":\"rmrldj7dwkbdmps\"}",
+  "pics": "plain-pl-3-time-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.4",
+  "what": "the PLAIN line cancelled (CX, WX) and restored (Un-cancel)",
+  "ok": true,
+  "note": "cancelled true → false",
+  "pics": "plain-pl-4-cx-phone.png, plain-pl-5-uncx-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.ud-sc",
+  "what": "Marlin (SANS WSO) onto SC AM MAIN row 2 RCP: dropped, the board's Undo takes it back exactly, Redo puts it back",
+  "ok": true,
+  "note": "note \"Marlin planned\" · Undo \"Undo — a change to the schedule\" → \"Undid: a change to the schedule\" · Redo → \"Redid: a change to the schedule\"",
+  "pics": "plain-ud-sc-undo-phone.png, plain-ud-sc-redo-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.ud-amt",
+  "what": "Ranger onto the untimed AMT front seat: dropped, the board's Undo takes it back exactly, Redo puts it back",
+  "ok": true,
+  "note": "note \"the AMT sim and the OFT sim have no usable times, so nobody on them earns OIL for this day\" · Undo \"Undo — a change to the schedule\" → \"Undid: a change to the schedule\" · Redo → \"Redid: a change to the schedule\"",
+  "pics": "plain-ud-amt-undo-phone.png, plain-ud-amt-redo-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.6",
+  "what": "the day's warning list (RECORD)",
+  "ok": "REC",
+  "note": "head \"▾⚠ 2 issues · 1 warning\" · 2 row(s) · Ranger's: none · SANS: none · seated: Ranger 5.1.0.0.p · s:5.amt.0.p / Jester s:5.oft.0.p",
+  "pics": "plain-pl-6-warn-clip-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.6c",
+  "what": "nothing SANS on a standby row anywhere (no SANS line naming SC; Ranger's SC puck plain)",
+  "ok": true,
+  "note": "head \"▾⚠ 2 issues · 1 warning\" · 2 row(s) · Ranger's: none · SANS: none · seated: Ranger 5.1.0.0.p · s:5.amt.0.p / Jester s:5.oft.0.p"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.7",
+  "what": "the board closed by ✓ Done",
+  "ok": "REC",
+  "note": "page editsched · board shown 0",
+  "pics": "plain-pl-7-done-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.8",
+  "what": "Edit Schedule's crew panel opened on Sat 18 (nothing picked) and closed",
+  "ok": "REC",
+  "note": "saturday · Ranger [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed\" (no reason printed)",
+  "pics": "plain-pl-8-elist-clip-phone.png, plain-pl-8-elist-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.9",
+  "what": "the Scheduler Board of Sat 18 opened again",
+  "ok": "REC",
+  "note": "SBDAY 5",
+  "pics": "plain-pl-9-board-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.10",
+  "what": "as Ranger: the bell — his SANS reminder names Sat 18 (the untimed AMT)",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "plain-pl-10-bell-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.11",
+  "what": "the reminder tapped: the SANS calendar on Sat 18 with its day window",
+  "ok": true,
+  "note": "page \"inputs\" · month \"Jul 2026\" · window \"⠿Sat 18 JulNo flying set✕FigurePilotsWSOsRequired to fly––Available2718SANS comm\"",
+  "pics": "plain-pl-11-tapped-phone.png, plain-pl-11-after-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "pl.12",
+  "what": "the day window closed by its ✕",
+  "ok": true,
+  "note": "day window shown after ✕: 0",
+  "pics": "plain-pl-12-closed-phone.png"
+ },
+ {
+  "scn": "plain",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

@@ -1,0 +1,105 @@
+[
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f3-f3.post-postout-open-desktop.png, f3-f3.post-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.line",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.seat",
+  "what": "set-up: Ranger tapped into the FCP of the new Sat line (seat tapped, then his name)",
+  "ok": true,
+  "note": "armed 5.0.0.0.p · note \"the WAVE 1 line has no usable times, so nobody on it earns OIL for this day\"",
+  "pics": "f3-f3-seat-note-clip-desktop.png, f3-f3-seat-picked-desktop.png"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.line",
+  "what": "set-up: a new flying line on Mon (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 3\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.seat",
+  "what": "set-up: Ranger tapped into the FCP of the new Mon line (seat tapped, then his name)",
+  "ok": true,
+  "note": "armed 0.2.0.0.p · note \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "f3-f3-seat-note-clip-desktop.png, f3-f3-seat-picked-desktop.png"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.0",
+  "what": "Saber leaves the schedule on another week (Mon 20 not shown) before Ranger signs in",
+  "ok": "REC",
+  "note": "Edit Schedule on week 13/07/2026"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.1",
+  "what": "Ranger's bell: \"You're SANS from Fri 17 Jul.\" \"You're planned on Sat 18, Mon 20 Jul with nothing filed. Tap to file for availability.\" (D2568: seats with no times count; each date once)",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"You're SANS from Fri 17 Jul.\" \"\" \"You're planned on Sat 18, Mon 20 Jul with nothing filed. Tap to file for availability.\"",
+  "pics": "f3-f3-bell-desktop.png"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.2",
+  "what": "the reminder tapped opens the SANS calendar on Sat 18 with its day window (D2340)",
+  "ok": true,
+  "note": "page \"inputs\" · month \"July 2026\" · window \"⠿Sat 18 JulNo flying set✕FigurePilotsWSOsRequired to fly––Available2718SANS comm\" · list closed",
+  "pics": "f3-f3-tap-tapped-desktop.png, f3-f3-tap-after-desktop.png"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.3",
+  "what": "Saber picks the RCP of the same Sat 18 flight: Ranger struck on the crew list (the two surfaces agree)",
+  "ok": true,
+  "note": "armed 5.0.0.0.w · [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "f3-f3-rcp-armed-clip-desktop.png, f3-f3-rcp-sans-clip-desktop.png, f3-f3-rcp-armed-desktop.png"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "f3.4",
+  "what": "the same on Edit Schedule's crew panel",
+  "ok": true,
+  "note": "armed 5.0.0.0.w · [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "f3-f3-ercp-earmed-clip-desktop.png, f3-f3-ercp-esans-clip-desktop.png, f3-f3-ercp-earmed-desktop.png"
+ },
+ {
+  "scn": "f3",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

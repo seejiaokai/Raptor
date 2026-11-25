@@ -1,0 +1,124 @@
+[
+ {
+  "scn": "n8",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "n8",
+  "size": "desktop",
+  "id": "n8.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "n8-n8.post-postout-open-desktop.png, n8-n8.post-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "n8",
+  "size": "desktop",
+  "id": "n8.file",
+  "what": "set-up: Saber files SANS fly+oft+amt all day for bane on 2026-07-18",
+  "ok": true,
+  "note": "{\"iid\":\"imrldidou96v3b5\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077215438}]\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"f\":true,\"o\":true,\"a\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "n8-n8.file-form-desktop.png, n8-n8.file-saved-desktop.png"
+ },
+ {
+  "scn": "n8",
+  "size": "desktop",
+  "id": "n8.t",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave) 13:00–14:00",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"TIMED\",\"to\":\"13:00\",\"ld\":\"14:00\",\"n\":1}"
+ },
+ {
+  "scn": "n8",
+  "size": "desktop",
+  "id": "n8.u",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 2\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "n8",
+  "size": "desktop",
+  "id": "n8.timedflightFCP",
+  "what": "timed flight FCP armed: Ranger (filed all day Fly+OFT+AMT) with no SANS reason",
+  "ok": true,
+  "note": "armed 5.0.0.0.p · \"SANS Avail · 1 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "n8-n8-timedflightFCP-armed-clip-desktop.png, n8-n8-timedflightFCP-sans-clip-desktop.png, n8-n8-timedflightFCP-armed-desktop.png"
+ },
+ {
+  "scn": "n8",
+  "size": "desktop",
+  "id": "n8.untimedflightFCP",
+  "what": "untimed flight FCP armed: Ranger (filed all day Fly+OFT+AMT) with no SANS reason",
+  "ok": true,
+  "note": "armed 5.1.0.0.p · \"SANS Avail · 1 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "n8-n8-untimedflightFCP-armed-clip-desktop.png, n8-n8-untimedflightFCP-sans-clip-desktop.png, n8-n8-untimedflightFCP-armed-desktop.png"
+ },
+ {
+  "scn": "n8",
+  "size": "desktop",
+  "id": "n8.untimedOFTfront",
+  "what": "untimed OFT front armed: Ranger (filed all day Fly+OFT+AMT) with no SANS reason",
+  "ok": true,
+  "note": "armed s:5.oft.0.p · \"SANS Avail · 1 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "n8-n8-untimedOFTfront-armed-clip-desktop.png, n8-n8-untimedOFTfront-sans-clip-desktop.png, n8-n8-untimedOFTfront-armed-desktop.png"
+ },
+ {
+  "scn": "n8",
+  "size": "desktop",
+  "id": "n8.untimedOFTextraplace",
+  "what": "untimed OFT extra place armed: Ranger (filed all day Fly+OFT+AMT) with no SANS reason",
+  "ok": true,
+  "note": "armed s:5.oft.0.+ · \"SANS Avail · 1 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "n8-n8-untimedOFTextraplace-armed-clip-desktop.png, n8-n8-untimedOFTextraplace-sans-clip-desktop.png, n8-n8-untimedOFTextraplace-armed-desktop.png"
+ },
+ {
+  "scn": "n8",
+  "size": "desktop",
+  "id": "n8.timedAMTfront",
+  "what": "timed AMT front armed: Ranger (filed all day Fly+OFT+AMT) with no SANS reason",
+  "ok": true,
+  "note": "armed s:5.amt.0.p · \"SANS Avail · 1 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "n8-n8-timedAMTfront-armed-clip-desktop.png, n8-n8-timedAMTfront-sans-clip-desktop.png, n8-n8-timedAMTfront-armed-desktop.png"
+ },
+ {
+  "scn": "n8",
+  "size": "desktop",
+  "id": "n8.SCMAINFCP",
+  "what": "SC MAIN FCP armed: Ranger (filed all day Fly+OFT+AMT) with no SANS reason",
+  "ok": true,
+  "note": "armed 5.2.0.0.p · \"SANS Avail · 6 free\" · Ranger [SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "n8-n8-SCMAINFCP-armed-clip-desktop.png, n8-n8-SCMAINFCP-sans-clip-desktop.png, n8-n8-SCMAINFCP-armed-desktop.png"
+ },
+ {
+  "scn": "n8",
+  "size": "desktop",
+  "id": "n8.warn",
+  "what": "seated on the untimed OFT and the untimed flight: no SANS line, no amber",
+  "ok": true,
+  "note": "\"the OFT sim has no usable times, so nobody on it earns OIL for this day\" / \"the WAVE 2 line and the OFT sim have no usable times, so nobody on them earns OIL for this day\" · head \"▸⚠ 2 issues · 1 warning\" · 2 row(s) · Ranger's: none · SANS: none · seated: Ranger 5.1.0.0.p · s:5.oft.0.p · ?",
+  "pics": "n8-n8-warn-clip-desktop.png"
+ },
+ {
+  "scn": "n8",
+  "size": "desktop",
+  "id": "n8.bell",
+  "what": "his bell: no SANS reminder",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"SANS Availability\" \"Sat 18 Jul\" \"You were added · Saber\"",
+  "pics": "n8-n8-bell-desktop.png"
+ },
+ {
+  "scn": "n8",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]
