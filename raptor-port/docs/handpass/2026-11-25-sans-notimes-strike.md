@@ -117,6 +117,13 @@ does the same (F5.9). With no newer warning the note gives his SANS reason (F1.6
 same order on `main` (chat 174's recipe P7 records the OIL note). Fable's EXPECTED line assumed the SANS note; Astra's
 A-S02 ("existing new warnings take priority") matches the app. Disposition: as built — named on his look card.
 
-**Walker B:** (pending)
+**Walker B** (report `docs/handpass/parts/sns-w1B-report.md`, pictures `…/B/`): 0 FAIL in the final runs, no console or
+page errors; three first-run FAILs were its script's (fixed, re-walked). The bell agrees with the crew list (F3, F12,
+A-S14); filings, deleting them, Undo/Redo and a reload follow at once (A-S09, A-S17); standby seats with no times strike
+nobody (F7); before his date he is ordinary (F8); a shared filing counts as filed (A-S19). RECORDED: an untimed OFT or AMT
+leaves him plain (A-S14) — his question 5 on the drawings page. Not walked: A-S10's bell part (covered by F3, F12, A-S14).
+
+**Still to do (the next chat):** the break tests (§9), the two blind code reads (Astra + a fresh Opus, exported copy of
+`3eb45f0cc`), the walk ledger's row, the roll-call marks (§3) from the two reports, then close this sheet with its Walk line.
 
 ## 15. The Walk line

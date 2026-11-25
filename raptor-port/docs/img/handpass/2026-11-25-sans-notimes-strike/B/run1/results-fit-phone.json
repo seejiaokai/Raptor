@@ -1,0 +1,71 @@
+[
+ {
+  "scn": "fit",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "fit",
+  "size": "phone",
+  "id": "fit.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "fit-fit.post-postout-open-phone.png, fit-fit.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "fit",
+  "size": "phone",
+  "id": "fit.line",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "fit",
+  "size": "phone",
+  "id": "fit.b-p",
+  "what": "board drawer, 5.0.0.0.p picked: 12 reason line(s) printed, each inside the panel (131–388 of 402)",
+  "ok": true,
+  "note": "Bolt [131–272] in · Jester [131–272] in · Kraken [131–272] in · Marlin [131–239] in · Otter [131–239] in · Pixel [131–239] in · Ranger [131–388] in · Rebel [131–272] in · Scribe [131–239] in · Tally [131–239] in · Zenith [131–272] in · Zulu [131–239] in",
+  "pics": "fit-fit-b-p-armed-clip-phone.png, fit-fit-b-p-sans-clip-phone.png, fit-fit-b-p-armed-phone.png"
+ },
+ {
+  "scn": "fit",
+  "size": "phone",
+  "id": "fit.e-p",
+  "what": "Edit Schedule crew panel, 5.0.0.0.p picked: 12 reason line(s) printed, each inside the panel (119–392 of 402)",
+  "ok": true,
+  "note": "Bolt [119–260] in · Jester [119–260] in · Kraken [119–260] in · Marlin [119–227] in · Otter [119–227] in · Pixel [119–227] in · Ranger [119–392] in · Rebel [119–260] in · Scribe [119–227] in · Tally [119–227] in · Zenith [119–260] in · Zulu [119–227] in",
+  "pics": "fit-fit-e-p-earmed-clip-phone.png, fit-fit-e-p-esans-clip-phone.png, fit-fit-e-p-earmed-phone.png"
+ },
+ {
+  "scn": "fit",
+  "size": "phone",
+  "id": "fit.b-w",
+  "what": "board drawer, 5.0.0.0.w picked: 12 reason line(s) printed, each inside the panel (131–388 of 402)",
+  "ok": true,
+  "note": "Bolt [131–272] in · Jester [131–272] in · Kraken [131–272] in · Marlin [131–272] in · Otter [131–272] in · Pixel [131–272] in · Ranger [131–388] in · Rebel [131–272] in · Scribe [131–272] in · Tally [131–272] in · Zenith [131–272] in · Zulu [131–272] in",
+  "pics": "fit-fit-b-w-armed-clip-phone.png, fit-fit-b-w-sans-clip-phone.png, fit-fit-b-w-armed-phone.png"
+ },
+ {
+  "scn": "fit",
+  "size": "phone",
+  "id": "fit.e-w",
+  "what": "Edit Schedule crew panel, 5.0.0.0.w picked: 12 reason line(s) printed, each inside the panel (119–392 of 402)",
+  "ok": true,
+  "note": "Bolt [119–260] in · Jester [119–260] in · Kraken [119–260] in · Marlin [119–260] in · Otter [119–260] in · Pixel [119–260] in · Ranger [119–392] in · Rebel [119–260] in · Scribe [119–260] in · Tally [119–260] in · Zenith [119–260] in · Zulu [119–260] in",
+  "pics": "fit-fit-e-w-earmed-clip-phone.png, fit-fit-e-w-esans-clip-phone.png, fit-fit-e-w-earmed-phone.png"
+ },
+ {
+  "scn": "fit",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

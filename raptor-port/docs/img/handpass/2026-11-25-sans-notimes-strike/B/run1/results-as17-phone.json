@@ -1,0 +1,106 @@
+[
+ {
+  "scn": "as17",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "as17",
+  "size": "phone",
+  "id": "as17.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "as17-as17.post-postout-open-phone.png, as17-as17.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "as17",
+  "size": "phone",
+  "id": "as17.line",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "as17",
+  "size": "phone",
+  "id": "as17.seat",
+  "what": "set-up: Ranger tapped into the FCP of the new Sat line (seat tapped, then his name)",
+  "ok": true,
+  "note": "armed 5.0.0.0.p · note \"the WAVE 1 line has no usable times, so nobody on it earns OIL for this day\"",
+  "pics": "as17-as17-seat5w0-note-clip-phone.png, as17-as17-seat5w0-picked-phone.png"
+ },
+ {
+  "scn": "as17",
+  "size": "phone",
+  "id": "as17.l2",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 2\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "as17",
+  "size": "phone",
+  "id": "as17.0",
+  "what": "weeks changed and back: the second blank line's FCP — Ranger struck",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "as17-as17-0-armed-clip-phone.png, as17-as17-0-sans-clip-phone.png, as17-as17-0-armed-phone.png"
+ },
+ {
+  "scn": "as17",
+  "size": "phone",
+  "id": "as17.1",
+  "what": "reloaded, signed in: both blank lines kept (no times), Ranger still in the first",
+  "ok": true,
+  "note": "{\"l1\":{\"to\":\"\",\"ld\":\"\",\"p\":\"bane\"},\"l2\":{\"to\":\"\",\"ld\":\"\",\"p\":\"\"}}",
+  "pics": "as17-as17-reloaded-phone.png"
+ },
+ {
+  "scn": "as17",
+  "size": "phone",
+  "id": "as17.2",
+  "what": "after the reload, the seat re-picked: Ranger struck with the same words",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "as17-as17-1-armed-clip-phone.png, as17-as17-1-sans-clip-phone.png, as17-as17-1-armed-phone.png"
+ },
+ {
+  "scn": "as17",
+  "size": "phone",
+  "id": "as17.file",
+  "what": "set-up: Saber files SANS fly all day for bane on 2026-07-18",
+  "ok": true,
+  "note": "{\"iid\":\"imrldjtuv9kxuwc\",\"people\":\"[{\\\"p\\\":\\\"bane\\\",\\\"by\\\":\\\"stiff\\\",\\\"at\\\":1784077283047}]\",\"date\":\"Jul 18\",\"endDate\":null,\"sans\":{\"f\":true},\"allday\":true,\"e\":1439,\"remarks\":\"\",\"by\":\"stiff\"}",
+  "pics": "as17-as17.file-form-phone.png, as17-as17.file-saved-phone.png"
+ },
+ {
+  "scn": "as17",
+  "size": "phone",
+  "id": "as17.3",
+  "what": "filing saved, reloaded: the filing kept and Ranger plain on the re-picked seat",
+  "ok": true,
+  "note": "filing kept true · [SANS Avail, plain] title \"Ranger\" (no reason printed)",
+  "pics": "as17-as17-2-armed-clip-phone.png, as17-as17-2-sans-clip-phone.png, as17-as17-2-armed-phone.png"
+ },
+ {
+  "scn": "as17",
+  "size": "phone",
+  "id": "as17.4",
+  "what": "his bell after the filing: Sat 18 not named",
+  "ok": true,
+  "note": "lit true · 1 line(s) · Mark all read in view · [unread] \"SANS Availability\" \"Sat 18 Jul\" \"You were added · Saber\"",
+  "pics": "as17-as17-bell-phone.png"
+ },
+ {
+  "scn": "as17",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

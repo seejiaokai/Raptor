@@ -1,0 +1,170 @@
+[
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "f13.post",
+  "what": "set-up: Post out → SANS from 2026-07-17",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" {\"san\":false,\"sanFrom\":null}",
+  "pics": "f13-f13.post-postout-open-phone.png, f13-f13.post-postout-sheet-phone.png"
+ },
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "f13.line",
+  "what": "set-up: a new flying line on Sat (+ Wave → Flying wave), no times typed",
+  "ok": true,
+  "note": "{\"label\":\"WAVE 1\",\"kind\":\"\",\"standalone\":false,\"cs\":\"\",\"to\":\"\",\"ld\":\"\",\"n\":1}"
+ },
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "f13.c0",
+  "what": "set-up: Ranger tapped into the blank FCP",
+  "ok": true,
+  "note": "note \"the WAVE 1 line has no usable times, so nobody on it earns OIL for this day\"",
+  "pics": "f13-f13-c-note-clip-phone.png, f13-f13-c-picked-phone.png"
+ },
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "f13.c1",
+  "what": "the board's Undo empties the seat",
+  "ok": true,
+  "note": "Undo title \"Undo — a change to the schedule\" · note \"Undid: a change to the schedule\"",
+  "pics": "f13-f13-c-undone-phone.png"
+ },
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "f13.c2",
+  "what": "after Undo, the seat picked again: the list as before (Ranger struck, same words, same count) and no stale note",
+  "ok": true,
+  "note": "before: [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" \"SANS Avail · 0 free\" · after: [SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" \"SANS Avail · 0 free\" · note now \"Undid: a change to the schedule\"",
+  "pics": "f13-f13-c1-armed-clip-phone.png, f13-f13-c1-sans-clip-phone.png, f13-f13-c1-armed-phone.png"
+ },
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "f13.c3",
+  "what": "the board's Redo puts him back",
+  "ok": true,
+  "note": "note \"Redid: a change to the schedule\"",
+  "pics": "f13-f13-c-redone-phone.png"
+ },
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "f13.a0",
+  "what": "Jester (SANS by tick) struck \"SANS — no availability filed for today\" on the blank FCP",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Jester — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f13-f13-a0-armed-clip-phone.png, f13-f13-a0-sans-clip-phone.png, f13-f13-a0-armed-phone.png"
+ },
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "f13.a-tick",
+  "what": "set-up: Quals → Edit → Jester's SANS unticked → Done",
+  "ok": true,
+  "note": "{\"san\":false,\"sanFrom\":null}",
+  "pics": "f13-f13-a-quals-phone.png"
+ },
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "f13.a1",
+  "what": "Jester no longer SANS: in his seat column, plain",
+  "ok": true,
+  "note": "[Pilots · 29 free, plain] title \"Jester\" (no reason printed)",
+  "pics": "f13-f13-a1-armed-clip-phone.png, f13-f13-a1-sans-clip-phone.png, f13-f13-a1-armed-phone.png"
+ },
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "f13.t-tick",
+  "what": "set-up: Quals → Edit → Saber's SANS ticked (no posting) → Done",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "f13-f13-t-quals-phone.png"
+ },
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "f13.t1",
+  "what": "Saber, ticked SANS by hand with nothing filed: struck \"SANS — no availability filed for today\" on the blank FCP",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Saber — SANS — no availability filed for today\" printed \"SANS — no availability filed for today\"",
+  "pics": "f13-f13-t1-armed-clip-phone.png, f13-f13-t1-sans-clip-phone.png, f13-f13-t1-armed-phone.png"
+ },
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "f13.m19",
+  "what": "set-up: Saber moves PO from (sheet opened from the 17 Jul cell) to 19 Jul",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\" → \"On 19 Jul: becomes SANS.\"  {\"san\":false,\"sanFrom\":null,\"archived\":false}",
+  "pics": "f13-f13-m19-sheet-phone.png, f13-f13-m19-moved-phone.png"
+ },
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "f13.b1",
+  "what": "posting moved to Sun 19: on Sat 18 Ranger is ordinary (his column, plain)",
+  "ok": true,
+  "note": "[Pilots · 29 free, plain] title \"Ranger\" (no reason printed)",
+  "pics": "f13-f13-m19-armed-clip-phone.png, f13-f13-m19-sans-clip-phone.png, f13-f13-m19-armed-phone.png"
+ },
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "f13.m17",
+  "what": "set-up: Saber moves PO from (sheet opened from the 19 Jul cell) to 17 Jul",
+  "ok": true,
+  "note": "\"On 19 Jul: becomes SANS.\" → \"On 17 Jul: becomes SANS.\"  {\"san\":false,\"sanFrom\":null,\"archived\":false}",
+  "pics": "f13-f13-m17-sheet-phone.png, f13-f13-m17-moved-phone.png"
+ },
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "f13.b2",
+  "what": "moved back to Fri 17: Sat 18 strikes him again with the future-start words",
+  "ok": true,
+  "note": "[SANS Avail, STRUCK] title \"Ranger — SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\" printed \"SANS from Fri 17 Jul: no availability filed. File it on the Inputs page's SANS tab.\"",
+  "pics": "f13-f13-m17-armed-clip-phone.png, f13-f13-m17-sans-clip-phone.png, f13-f13-m17-armed-phone.png"
+ },
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "f13.undo",
+  "what": "set-up: Saber presses Undo post out (posting of 2026-07-17)",
+  "ok": true,
+  "note": "\"On 17 Jul: becomes SANS.\"  {\"san\":false,\"sanFrom\":null,\"archived\":false}",
+  "pics": "f13-f13.undo-sheet-phone.png, f13-f13.undo-undone-phone.png"
+ },
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "f13.b3",
+  "what": "posting taken back (Undo post out): Ranger in his column, plain",
+  "ok": true,
+  "note": "[Pilots · 29 free, plain] title \"Ranger\" (no reason printed)",
+  "pics": "f13-f13-undone-armed-clip-phone.png, f13-f13-undone-sans-clip-phone.png, f13-f13-undone-armed-phone.png"
+ },
+ {
+  "scn": "f13",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]
