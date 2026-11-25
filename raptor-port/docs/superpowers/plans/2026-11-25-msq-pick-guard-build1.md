@@ -1529,7 +1529,7 @@ Undo waits with group B (D2636).
 | 25 | **A default built as if he had ruled it** — the third read's first lesson: the plan and the page he is answering had recommended opposite things on four points, and one test (F4) was already built on the plan's side. | Every switch point is marked **(default)** and names both answers and what each holds (§8's table); R8 lets a window close by itself only in a commit that cites his answer; a test that rests on a default says so in its name; the readings are §17's, each with its page letter |
 | 26 | **A list of what is on the page that is not the page's list.** The pinned just-saved row was read from every input, so D2621's rule held in `inputsPageRows()` and not on screen. | The pins are drawn from the page's own list and cleared at a squadron change (§5.1); F13's invariant and F17 assert on what is drawn — a desktop's rows, a phone's day groups, the month |
 | 27 | **Hiding is not refusing** (part V). A foreign row that only hides a field still sends it; a search that still matches a hidden sign-in gives it back. | The foreign row's Save sends the page squadron's line and nothing else, re-checked at Save (§19.1, V4b); the search is NQ3 |
-| 28 | **D2626 opens Plan further than he meant** — a moved admin who is a member where he stands; an Undo or Redo by one who has lost the right; two ruled steps that pass it on. | `mayGivePlanOf` reads the role in force on the rows before the command, at every door, the gate and every replay, failing closed (§19.2; V5b, V7); the two-step road is NQ1, pinned by name until he answers |
+| 28 | **D2626 opens Plan further than he meant** — a moved admin who is a member where he stands; an Undo or Redo by one who has lost the right; two ruled steps that pass it on. | `mayGivePlanOf` reads the role in force on the rows before the command, at every door, the gate and every replay, failing closed (§19.2; V5b, V7); **a replay by one who lost the right is refused whole, so no line says "taken back" while the Plan stands; the `first` mark is a master admin's "+ New squadron" alone; the re-link door asks the same rule (the security check of the fix, §20)**; the two-step road is NQ1, its three ways pinned by name until he answers |
 
 ---
 
@@ -1583,7 +1583,7 @@ folding toolbar when the foot is where it stands. Put on his look card.
 | Part | Hours | Why |
 |---|---|---|
 | Another squadron's man on Admin → Users (D2625) | 5 | was 2.5: the row's own save, re-checked at Save (1); D5's short rows and the man with no sign-in (1.5) |
-| Plan given and ended by the squadron's own admins (D2626) | 10.5 | was 6: the role in force at every door, the receiver's check, both directions of a replay, failing closed (1.5); the gate rules for the new bell lines, and the line the app writes at a move (2); the lines' taps and Hunter's home number (1) |
+| Plan given and ended by the squadron's own admins (D2626) | 13.5 | was 6: the role in force at every door, the receiver's check, both directions of a replay, failing closed (1.5); the gate rules for the new bell lines, and the line the app writes at a move (2); the lines' taps and Hunter's home number (1); **the security check of the fix (3): a replay refused whole on the `stuck` hook, each line following a row left out, and the pass after a restore (1.5); the `first` rule and the re-link door with its words (1); the doors failing closed with nobody signed in, the tests that gave Plan that way re-pointed, and V5–V7's new cases (0.5)** |
 | The folded headings (D2629, D2631, D2635) | 6 | was 4.5: the tick retired on E8's default, live people only, a fold over a changed row (1.5) |
 | The callsign note (D2632 as narrowed by D2633) | 5.5 | was 4: "Someone new" as an answer, the greyed "Add person" and its reason, the line at the add, the request's twin (1.5) |
 | The bell's number first on every line (D2624) | 1.5 | the same |
@@ -1591,9 +1591,9 @@ folding toolbar when the foot is where it stands. Put on his look card.
 | The name badge (C7) · the sign-off boxes' number (C8) | 2.5 | was 2: the badge as plain words where he only views (0.5) |
 | NQ1 and NQ3, on their recommendations | 1.5 | new |
 | The browser tests, the drawing checks and the records | 6 | was 5 |
-| **Build 1V** | **about 46** | **before the third read's fold: about 31; it adds about 15** |
+| **Build 1V** | **about 49** | **before the third read's fold: about 31; it adds about 15, and the security check of the S1 fix about 3** |
 
-**Both: about 117 hours, an estimate — about 32 more than the 85 the plan stood at before its third read.**
+**Both: about 120 hours, an estimate — about 35 more than the 85 the plan stood at before its third read (32 from that read's fold, 3 from the security check of the S1 fix).**
 The three rounds of blind reads on this plan are done; after each build
 one round on its code and its fixes — not sized here. **The round-5 page's questions, the three new ones and N14 stand before the rows they hold (§8), and
 before any step that draws something new, its drawing and words seen by him:** the hours start when step 0 can.
@@ -1623,7 +1623,9 @@ before any step that draws something new, its drawing and words seen by him:** t
   row) has still been read by no one either.
 - **New design from the third read's fold, read by no one — there is no fourth round, so the code reads carry it:**
   `mayGivePlanOf` by the role in force, at the receiver's check and at every replay (**read once more by the security
-  reader alone — §19.2**); the foreign row's own save; the gate rules for part V's bell lines and the line the app
+  reader alone — done, its findings built into §19.2; what that fold itself added — `planRestoreStuck` on the `stuck`
+  hook, the `first` rule, the re-link door, the lines that follow a row left out — is read by no one before the
+  code**); the foreign row's own save; the gate rules for part V's bell lines and the line the app
   writes at a move; `dirty` rows and the Calendar's forms; the Leave War's sheets told apart; `closeShown` inside the
   final entry; the SANS reminder's own-squadron entry; the pins' two lines; step 6b; bug reports' home and "seen"
   records; N14.
@@ -1858,6 +1860,12 @@ where it has one and an example; **an item with no letter is on no page yet.**
     top (§4.6). — **no page yet**; rides E1's drawings
 21. **The door's own refusal for Plan says the greyed line's sentence** (§19.2), and **every lead this fold drafts
     for the Undo ending is the reviser's** (§4.6). — words, on the list below
+22. **D2626's "that squadron's own admins" are its admins who can sign in** — one switched off, archived or posted
+    out gives no Plan though his session is still open (§19.2 point 5). — not put to him; no page
+23. **An Undo or Redo of a Plan change by one who has lost the right is blocked for good, in today's words, naming
+    nobody** (§19.2, the replay rule's (b)). — not put to him; no new words
+24. **The re-link door's sentence follows D2626** — "Only 149's own admins or a master admin can link it to another
+    person." (§19.2). — words, a fresh Fable's to read first
 
 **Where his answers meet each other or an older ruling — both named.**
 
@@ -2200,44 +2208,119 @@ bites, with its default.** The security reader reads §19.1 and §19.2 with the 
   line that holds Plan locked whole for anyone else); the roles table, `ui/rolestable.ts` l.52 ("Only a master admin
   makes squadrons, gives Plan or makes a master admin."); and the tests that pin it — `state/units.test.ts`,
   `state/save-access.test.ts`, `state/piece-b-tables.test.ts`, `state/reshape-plan-audit.test.ts`,
-  `ui/msq-users-row.test.tsx`, `leavewar/multi-sqn-fixread8`, `-9`, `-11`, `-12`. No bell line tells a squadron's
+  `ui/msq-users-row.test.tsx`, `leavewar/multi-sqn-fixread8`, `-9`, `-11`, `-12`. **An eighth place, found by the security check of the S1 fix
+  (F4; read on this branch):** `state/accounts.ts relinkRightsProblem` (l.563) — linking a sign-in to another person
+  drops every right it holds, so it ends Plan, and the door says "This sign-in holds a right in 149. Only a master
+  admin can link it to another person." No bell line tells a squadron's
   admins: his own account's lines exist (`state/notices.ts acctWords`: "Given Plan of 149: full access to 149", "Plan
   of 149 ended"). `main` has since changed `perms.ts` and `units.ts` — read again at step 0.
 - **After.** One new test in `state/perms.ts`, **`mayGivePlanOf(unit, actor, rows, today)`**.
   **Its definition — the security reader's S1 fix (HIGH; Fable 4 the same), read once more by that reader alone
-  before the build (the host's reading of D1411):**
-  1. a master admin — the mark holding today on the rows judged; **or**
-  2. **his home that day is `unit` *and* his level there from his home role alone is admin** — the one body
-     `state/accounts.ts adminNow` reads (K3, D2160: "the admin role, counting in the squadron he is at home in that
-     day … an admin who moved squadron is a member there until made an admin again", l.415–424), asked over his
-     account **with every grant left out**, so a Plan of `unit` never counts.
+  (the host's reading of D1411; `../briefs/2026-11-25-msq-s1-fix-security-check.md`: the definition closes S1; its
+  seven findings and two notes are built in below — §20's last rows):**
+  1. a master admin — the mark holding today on the rows judged, **and his role in force an admin's**: a master admin
+     in the member view gives nothing, as `units-model.ts levelFrom` already reads the mark (K1, D2253); **or**
+  2. **his home that day is `unit` *and* his level there from his home role alone is admin** — `levelFrom`'s **home
+     branch, with `adminRoleHolds` unchanged**, and never its grant branch. It is the one body `state/accounts.ts
+     adminNow` reads (K3, D2160: "the admin role, counting in the squadron he is at home in that day … an admin who
+     moved squadron is a member there until made an admin again", l.415–424). **`adminRoleHolds`' own `first` path
+     stays in** (`units-model.ts` l.335–339): a new squadron's named first admin, once moved in, is its own admin
+     (D2191, D2247) and gives Plan of it. "Every grant left out", as this point once read, would to the letter strip
+     that path and refuse him while `adminNow` calls him its admin — against D2626. What never counts is a Plan of
+     `unit` held from outside it.
   3. **Never** the stored `role === 'admin'` beside a home: Viper, 142's admin moved to 149, joins as a member while
      his account still stores "admin" — judged by the stored role he would give and end Plan of 149 from the move
      day. **Never** his level by a grant (a Plan holder of it).
-  4. **Judged on the rows before the command** — at the gate `w.rowsB` and `w.acctB`, so one command cannot make its
-     own actor an admin of `unit` and give Plan of it; at a door, on the signed-in account as it stands at Save.
-  5. **It fails closed:** an actor with no account, a home it cannot read, or rows not handed in — false.
+  4. **The actor is judged on the rows before the command.** At the gate these are the `before` rows
+     (`unitRowsBefore(env.changes)`) and the actor's account before the command (`acct`) that `unitRowViolation`
+     already builds for its own `adminOf` (l.2695–2709) — **never `w.rowsB` / `w.acctB`**: `worldsOf` answers null
+     for a command that changes only grant rows (l.2137–2142 — every `setGrant`, every `removeGrant`, a Save of
+     lines only), so built on it every give by a squadron's own admin would be refused at the gate, or fall back to
+     the live rows unsaid. So one command cannot make its own actor an admin of `unit` and give Plan of it. At a
+     door, on the signed-in account as it stands at Save.
+  5. **It fails closed** — false for: an actor with no account, **at the doors too** (today `units.ts notMaster()`,
+     l.172, is false with nobody signed in, so the door lets the give through and leaves it to the gate); a home it
+     cannot read; rows not handed in; **an account switched off; a man archived, deleted or a placeholder** — the
+     test `accounts.ts adminsOf` already makes of an admin who can sign in. `adminNow` reads neither `on` nor
+     archived and the gate reads the session's role, so a suspended, archived or posted-out admin of 149 whose
+     session has not yet lapsed would pass until the next repaint — and at the database step the server's gate is
+     all there is. That window stands today for every admin act; it is closed here for Plan only. **(reading):**
+     D2626's "that squadron's own admins" is taken as its admins who can sign in.
   A squadron with no admin of its own therefore has nobody but a master admin.
   **Who may hold it reads the same way** — the gate's own check on the receiver ("Plan on an account that is not an
   admin's", `perms.ts` l.2734) reads the raw stored `who.role` today; once every squadron's own admins can write Plan
   rows it reads the role in force too, or a forged give to a moved "admin" who is a member where he stands makes him
-  an admin of `unit`.
-  **Each of the seven places above asks it in place of "is he a master admin":** the two doors and `saveAccess` for
-  the squadron of the line; the gate for the squadron of the grant row, on either side.
+  an admin of `unit`. **The receiver is read on the rows and accounts after the command** — as `saveAccess` already
+  does (`adminNow(next0)`, l.891), and as that check's `who` is today (`accountImagesNow()`): Saber's one Save "make
+  Ranger an admin and give him Plan of 149" passes. The actor's "before" (point 4) never carries over to the
+  receiver.
+  **The `first` mark is a master admin's "+ New squadron" alone.** Today nothing in `perms.ts` reads it — it is read
+  only in `units-model.ts` (`validGrant` keeps it on any Plan row, l.103; `adminRoleHolds`, l.339). Harmless while
+  only a master admin writes Plan rows; once 149's own admins do, Kestrel's forged give of Plan of 149 to Hunter
+  carrying `first: true`, and Viper's moving Hunter to 149, make Hunter 149's own admin from the day he arrives — an
+  admin of 149 made at none of the places that make one (K3, K4). **So the gate refuses a grant row whose after-image
+  carries `first` unless** the command is a master admin's `unit.add` and the row is that new squadron's, for the
+  account it names — its verified replay too — **or** the row carried it before the command, same account, same
+  squadron, still Plan.
+  **Each of the eight places asks it in place of "is he a master admin":** the two doors and `saveAccess` for the
+  squadron of the line; the gate for the squadron of the grant row, on either side; **`relinkRightsProblem` for each
+  squadron the sign-in holds a Plan of that holds today** — its words then follow D2626: "This sign-in holds a right
+  in 149. Only 149's own admins or a master admin can link it to another person." `[WNS]` **(reading — the sentence
+  is this fold's, shaped on `planGreyed`; a fresh Fable reads it first, D2441)**. There is no hole there today (the
+  gate's check on the dropped Plan row asks the same rule, and the door is the stricter); left alone it would
+  disagree with the gate and with D2626.
   **A replay is asked too, in every direction (Astra 1 and Fable 3 of the third read, HIGH by two readers; security
   S4; read on this branch).** Today `restoreLeavesOut` returns early for anything but a put-back (`c.op === 'put'`,
   l.2396), its point 4 judges only a put-back whose level is Plan (l.2398), and the gate's Plan who-check excepts "a
   verified replay" on both sides (l.2821). So an Undo that **removes** a holding Plan row (the Undo of a give) and
   one that **puts back View over Plan** (the Undo of a raise) are asked only "is he an admin of 149" — which a Plan
   holder is. Kestrel, 149's own admin, gives Hunter Plan of 149; still signed in, he becomes 142's admin holding only
-  Plan of 149; he presses Undo — Hunter's Plan is ended by a Plan holder. **So:** `mayGivePlanOf` is asked of the
-  restore's maker **as he stands today** for any grant row that is Plan **on either side** of the restore — before or
-  after image, a put-back, a removal and a lowering alike — in the leave-out and in the gate; the replay's exception
-  stays for the row's *day* alone, never for who. A step it stops is refused in today's Undo words, where the change
-  itself would be (D148). **Kept, each ruled:** his own squadron's admin making him a member, the Plan row dropping
-  with it (`accountMadeMember`, D2250); a person's delete; an archive (D2311). **And it fails closed:** the restore's
-  context carries `mayPlan` in place of `master`, and *not handed in* reads as *may not* — today `ctx.master ===
-  undefined` lets a Plan row back.
+  Plan of 149; he presses Undo — Hunter's Plan is ended by a Plan holder. **So, in three parts (the second and third
+  as the security check of this fix left them — F2, F1):**
+  - **(a) Who.** `mayGivePlanOf` is asked of the restore's maker **as he stands today** for any grant row that is
+    Plan **on either side** of the restore — before or after image, a put-back, a removal and a lowering alike. The
+    replay's exception stays for the row's *day* alone, never for who: the gate's who-check loses "a verified replay
+    excepted" (l.2821).
+  - **(b) A step that fails it is refused whole — nothing written, no line struck.** Not left out row by row: a give
+    is one command that writes the grant row, Hunter's own account line and the new lines to 149's admins. The
+    timeline writes whatever the leave-out does not name (`undo/timeline.ts keptOf`, l.929) and blocks a step only
+    when nothing is left (`LEFT_EMPTY`, l.956); `undo-wire.ts acctLineLeftOut` (l.481) follows his own account's
+    line only; and the gate lets an admin's verified restore take away lines he wrote (`adminOwnerViolation`). So
+    with the row left out the step would still commit: Mako, Saber and 149's admins read the line struck "taken
+    back" while Hunter still holds Plan; the Undo of an end strikes "Plan of 149 ended" while Plan stays ended; one
+    Save that lowered Plan of 149 and gave View of 150 is half undone; and Kestrel's list shows the step undone.
+    **So the wiring gets one check, `planRestoreStuck` in `state/undo-wire.ts`, asked through the timeline's `stuck`
+    hook** — the first answer a press gives (l.1173, l.1207), before `emptiedBy` — **over the step's own recorded
+    images** (`entry.inverse` for an Undo, `entry.forward` for a Redo), never the list the hook is handed, which the
+    leave-out has already thinned. It answers in today's words, with nothing new to write: "Something else changed
+    this after your action — it can’t be undone now.", and "Press Undo again for: …" where an older step waits
+    (`sayBlocked`). An Undo and a Redo alike. **Why `stuck` and not `restoreRefusal`, the hook the reader named
+    (`masterRightRefusal`'s):** read on this branch, `restoreRefusal` is asked after `emptiedBy` (l.1180–1182,
+    l.1213–1215) and refuses on every press, so every older step of his would stay out of reach behind it — the fault
+    fix read 2 and D1263's code read took out of other steps. The reader's fix is taken — the whole step, through the
+    timeline's hook, in today's Undo words; only the hook differs. The same check also stands in `restoreRefusal`,
+    for the second ask inside the restore (l.1015), and the gate stands behind both ((a)). **(reading):** the step is
+    blocked for good, as a step out of his reach is — a right lost by a move never returns (K3); one who is made a
+    master admin later gives or ends that Plan by the row. **(reading):** D148's "says who" is not used — nobody
+    changed the same thing; his own right ended.
+  - **(c) What is kept, and the one put-back that is left out.** **Kept, each ruled — for the command itself and for
+    a replayed *removal* only, never for a put-back:** his own squadron's admin making him a member, the Plan row
+    dropping with it (`accountMadeMember`, D2250), and its Redo; a person's delete; an archive (D2311). **The Undo of
+    a make-member puts a Plan row back, so it is asked like any other:** Ranger, 142's own admin with nothing in 149,
+    makes Hunter a member and presses Undo — Hunter is an admin of 142 again and **holds no Plan of 149**. That is
+    today's rule (`restoreLeavesOut` point 4: "that step's Undo gives back the role only" — chat 129's reading, told
+    to him; the pin `piece-b-tables.test.ts` "4.") with `mayGivePlanOf` in the master admin's place: the Plan row
+    comes back only where the one pressing may give Plan of that squadron — a master admin, or 149's own admin who
+    made him a member holding Plan of 142. This is the one step (b) does not refuse: `planRestoreStuck` passes a Plan
+    row put back by a restore that also turns that account from a member back to an admin, and the one body leaves
+    the row out. **Each line then follows its row:** `acctLineLeftOut` already holds back his own account's line;
+    it is widened to the new admin kinds by their squadron and subject, so "Plan of 149 ended: made a member" is not
+    struck while Plan stays ended; and the pass that writes the opposite line after a restore
+    (`leavewar/sync.ts acctNoticesReversed`, handed the step's forward images whole at `undo-wire.ts` l.666) is
+    handed what the restore wrote — **not read to its end by this fold; V7 proves it either way.**
+  **And it fails closed:** the restore's context carries `mayPlan` in place of `master`, and *not handed in* reads as
+  *may not* — today `ctx.master === undefined` lets a Plan row back; a verified replay that puts back a row the one
+  body leaves out is refused outright by the gate, as today (l.2896).
   `lineState`: for one who may give access to the squadron but not its Plan — a Plan holder of it, **a moved admin
   not yet re-made** — the Plan button is greyed, and a line that already holds Plan is locked for him, under "Only
   149's own admins or a master admin can give or end Plan of 149." `[WNS]` (`words.mjs planGreyed`, as a fresh Fable
@@ -2248,7 +2331,8 @@ bites, with its default.** The security reader reads §19.1 and §19.2 with the 
   admins or a master admin." `[WNS]` (`rolesNote`).
   **The bell:** when Plan of a squadron is given or ended, one admin line of that squadron — "Hunter · Given Plan of
   149 · Kestrel", "Hunter · Plan of 149 ended · Kestrel" `[WNS]` (`planGivenLine`, `planEndedLine`) — written in the
-  command that changes the right, so an Undo strikes it as it strikes any line (D1693). **Who is told — E6 (default,
+  command that changes the right, so an Undo strikes it as it strikes any line (D1693) — **and only with its right:
+  a step refused whole strikes nothing, and a row left out keeps its line (the replay rule's (b) and (c), above).** **Who is told — E6 (default,
   and this plan's reading 10): everyone who already gets that squadron's admin lines — its own admins, a Plan holder
   of it (Mako), a master admin with it switched on (Saber) — never the one who pressed; the man himself keeps his own
   account's line and gets no second. And Hunter's name wears his home's grey "142"** where his home is not the line's
@@ -2280,27 +2364,56 @@ bites, with its default.** The security reader reads §19.1 and §19.2 with the 
 - **Unchanged, each a pin:** Plan only on an admin's account ("Plan is for admins only."); his own squadron's admin
   may make him a member, his Plan ending with it (D2250); the last-admin refusals (D2247); a Plan holder of 149 still
   gives View of 149 and makes 149's men admins of 149 (D2336, D2201) — **the second half is NQ1's (§8.4): with a move
-  before it, it passes Plan on in two steps; V5 pins it by name, "not covered — NQ1", until he answers**; only a master admin makes squadrons and master
+  before it, it passes Plan on in two steps; V5 pins it by name, "not covered — NQ1", until he answers — all three ways a Plan
+  holder of 149 turns a 149 man into 149's own admin: the role tick, a re-link, his Undo of a make-member**; only a master admin makes squadrons and master
   admins, and "+ New squadron" still gives its first admin Plan (D2308); a move ends Plan (D2203).
 - **Tests first.** **V5** — the doors: Kestrel gives Hunter Plan of 149, and takes it away: saved. Mako gives Hunter
   Plan of 150 — he then holds Plan of two (D2630). Hunter, holding Plan of 149, gives a second 142 admin Plan of 149:
   refused; gives him View of 149: saved. Kestrel gives Plan of 150: refused. A squadron whose only admin is a Plan
-  holder: only Saber. Saber: everything, as today. **A pin, named "not covered — NQ1":** Hunter moves Viper to 149,
-  makes him an admin of 149, and Viper gives Plan of 149 — each step saved, as built. **V5b — the moved admin
+  holder: only Saber. Saber: everything, as today. **The re-link door (the eighth place):** Hunter's sign-in holds
+  Plan of 149 — Ranger, 142's admin, links it to another person: refused, in the new words; Saber: saved, the Plan
+  dropped; Kestrel, 149's own admin holding Plan of 142: saved. A sign-in holding only View: as today (pin). **A pin,
+  named "not covered — NQ1", three cases — every way a Plan holder of 149 makes a 149 man 149's own admin (D2201,
+  D2336, D2250), each step saved, as built, the made admin then giving Plan of 149:** (i) the role tick — Hunter
+  moves Viper to 149 and makes him an admin of 149; (ii) a re-link — Hunter links another 149 admin's sign-in to a
+  149 member; (iii) an Undo — Hunter makes a 149 admin a member and presses Undo. **(ii) and (iii) are the security
+  check's, read in the code but run by no one: step V0 writes each as a test, and one that does not pass as built is
+  told to him with NQ1, not pinned.** **V5b — the moved admin
   (S1):** Viper, 142's admin, moved to 149 and not yet re-made, tries to give Hunter Plan of 149 and to end Mako's:
   the row's Plan greyed with its reason; `setGrant`, `removeGrant`, `saveAccess` each refused; re-made an admin of
-  149: all saved. **V6** — the gate: the same cases as forged commands, the refusal by name — **Viper's among them,
+  149: all saved. **With nobody signed in, each door refuses — it no longer leaves the give to the gate. The first
+  admin of a new squadron, moved into it (his `first` Plan): gives and ends Plan of it — saved. A master admin in
+  the member view: refused.** **V6** — the gate: the same cases as forged commands, the refusal by name — **Viper's among them,
   and a forged give *to* Viper while he is a member where he stands; one command that makes its actor an admin of
   149 and gives Plan of it**; a member's forged Plan row; a Plan row whose holder is a member; **a forged Plan line —
   Hunter's command carrying a "Given Plan of 149" line with no grant row changed, one with a row of another account
-  or another squadron, one unsigned, one to a reader outside 149's audience: each refused by name.** **V7** — the
-  restore: Kestrel gives, Undo, Redo — all saved while he is 149's own admin. **Kestrel then 142's admin holding only
-  Plan of 149 (moved, re-made an admin there, given Plan by Saber), still signed in: his Undo of the give is refused
-  — Hunter still holds Plan; his Undo of a raise from View is refused; his Redo of either is left out and says so**
-  (Astra 1, Fable 3, S4). Kestrel made a member: the same. A master admin whose mark was taken off mid-session: the
-  same. **The restore's context with nothing handed in: a Plan row is not put back.** Pins: Saber's Undo of Kestrel's
-  give (not his own step — D148) is refused as today; a man made a member by his own squadron's admin loses his Plan
-  row in that command, and its Undo puts both back. **V8** — the line: for Kestrel on 149 the Plan button is live on
+  or another squadron, one unsigned, one to a reader outside 149's audience: each refused by name.** **From the security check of the
+  fix:** Kestrel's give as a command that changes one grant row and nothing else — saved at the gate, the door taken
+  out of the test (point 4: no `worldsOf`); Saber's one command that makes Ranger an admin and gives him Plan of 149 —
+  saved (the receiver read after the command); a give carrying `first: true`, by Kestrel and by Saber — refused by
+  name; a row that already carried `first`, kept, and "+ New squadron" with its Undo and Redo — saved; a give by
+  149's admin switched off, by one archived and by one posted out, each on a session still open — refused; a master
+  admin's in the member view — refused; a re-link that drops a Plan row, forged by one who may not give that Plan —
+  refused. **V7** — the
+  restore: Kestrel gives, Undo, Redo — all saved while he is 149's own admin, the line to 149's admins struck and
+  written again with each. **Kestrel then 142's admin holding only Plan of 149 (moved, re-made an admin there, given
+  Plan by Saber), still signed in: his Undo of the give is refused whole — Hunter still holds Plan; Hunter's own line
+  and the lines to Mako, Saber and 149's admins all stand, none reading "taken back"; his list shows the step not
+  undone, and the next press takes the step before it. His Undo of a raise from View, of an end and of a lowering:
+  the same — "Plan of 149 ended" is never struck while Plan stays ended. His Redo of each: refused the same way, in
+  the same words, nothing left out and nothing half done. One Save that lowered Plan of 149 and gave View of 150:
+  its Undo refused whole, the View of 150 standing** (Astra 1, Fable 3, S4; the check's F2). Kestrel made a member:
+  the same. A master admin whose mark was taken off mid-session: the same. **Kestrel switched off, or archived, his
+  session still open: the same.** **The restore's context with nothing handed in: a Plan row is not put back.** **The
+  gate alone, the timeline's check taken out of the test: a verified replay that removes, lowers or puts back a Plan
+  row for one who may not give it is refused by name.** Pins: Saber's Undo of Kestrel's give (not his own step —
+  D148) is refused as today; a man made a member by his own squadron's admin loses his Plan row in that command, and
+  its Redo drops it again (kept — D2250). **Its Undo gives back the role only where the one pressing may not give
+  Plan of that squadron** — Ranger, 142's admin: Hunter an admin of 142 again with no Plan of 149, his own "Plan of
+  149 ended" line and the "ended: made a member" line to 149's admins both standing, no opposite line written —
+  **and both where he may**: Saber; Kestrel, 149's own admin holding Plan of 142 (the check's F1; the pin
+  `piece-b-tables.test.ts` "4." re-pointed from `master` to `mayPlan`, its "not asked: as before" case now "not
+  asked: left out"). **V8** — the line: for Kestrel on 149 the Plan button is live on
   an admin's row; for Hunter it is greyed, the new reason under the line; a member's row reads "Plan is for admins
   only." (pin); a man with no sign-in, "No sign-in" — one reason at a time. **V9** — the words: the refusal's and the
   roles table's read from the words table, and nowhere says "Only a master admin gives Plan". **V10** — the bell, on
@@ -2536,7 +2649,7 @@ bites, with its default.** The security reader reads §19.1 and §19.2 with the 
 |---|---|
 | A man of another squadron: found by search · listed as a Plan holder · under a folded heading | V1 · V4 · V12 |
 | Who looks: the squadron's own admin · a Plan holder of it · a master admin · one who only views it · a member | V2, V11 · V1 · V15 · V11 (pin) |
-| Plan: given · ended; by the row · by a forged command · by Undo · by Redo | V5 · V6 · V7 |
+| Plan: given · ended; by the row · by a forged command · by Undo · by Redo; ended by a re-link · put back by the Undo of a make-member | V5 · V6 · V7; V5, V6 · V7 |
 | The page's squadron: 149 · 150 · his own 142 | V1, V2 · V2 · V3 (pin) |
 | The bell: one squadron shown · two · three; his own account's line | V22 · V21 (Hunter) · V21 (Saber) · V21 |
 | Who gives Plan: 149's own admin · a Plan holder · a moved admin not yet re-made · a master admin; by the row · a forged command · Undo and Redo after the right is lost | V5 · V5 · V5b · V5 — V8 · V6 · V7 |
@@ -2556,9 +2669,9 @@ form; the Archived fold's own note for a man archived on the page's squadron.
 
 | Step | What | Tests | Waits on |
 |---|---|---|---|
-| **V0** | The pins; `main` in and `withThird()` (Build 1's step 0); Kestrel's view of a 142 man's row read from chat 176's presser | the as-is file | **each step below waits on its own drawing seen by him (D1625) and its own `[WNS]` words read (D2441) — not on every drawing of §19**; the security reader's check of `mayGivePlanOf` (§19.2) before V2 |
+| **V0** | The pins; `main` in and `withThird()` (Build 1's step 0); Kestrel's view of a 142 man's row read from chat 176's presser | the as-is file | **each step below waits on its own drawing seen by him (D1625) and its own `[WNS]` words read (D2441) — not on every drawing of §19**; the security reader's check of `mayGivePlanOf` (§19.2) — **done 25 Nov 26 and built into §19.2**; the two new NQ1 pins written here as tests |
 | **V1** | §19.1 — the row's face **and its own save** | V1–V4, V4b | Build 1's step 1b landed (the same file); **D5 answered and its row drawn — nothing else: the hiding of another squadron's sign-in name, Role and buttons does not wait for §19.3–§19.8's drawings** (security S7: until V1 lands, Hunter sees and can change Ranger's sign-in and role from 149's page) |
-| **V2** | §19.2 — `mayGivePlanOf`, the two doors, `saveAccess`, the gate, the restore's rule, the line, the words, the bell line and its register rows — **one commit: no step leaves the gate and the doors disagreeing** | V5, V5b, V6–V10; the nine re-pointed files | the new words for the refusal and the roles table; **the security reader's check of the definition; E6** (the audience and the name's number); the lines and their tap drawn; **NQ1** holds only the making of an admin by a Plan holder |
+| **V2** | §19.2 — `mayGivePlanOf`, the two doors, `saveAccess`, **the re-link door**, the gate **with its `first` rule**, the restore's rule **and `planRestoreStuck`**, the line, the words, the bell line and its register rows — **one commit: no step leaves the gate and the doors disagreeing** | V5, V5b, V6–V10; the nine re-pointed files | the new words for the refusal and the roles table; **E6** (the audience and the name's number); **the re-link door's sentence read by a fresh Fable**; the lines and their tap drawn; **NQ1** holds only the making of an admin by a Plan holder |
 | **V3** | §19.3 — the headings, live people only | V11–V15 | **E8** holds only the tick; **E9h** the fold over a changed row; **NQ3** the search's match |
 | **V4** | §19.4 — the callsign note, its bell line and the taken refusals | V16–V20 | **D8**; **V-Q2** holds only the admin-of-both case |
 | **V5** | §19.5 — the bell's number | V21, V22 | **E9i** |
@@ -2580,7 +2693,11 @@ LOW); the reports are saved whole. With them: the round-5 questions page's desig
 (`../briefs/2026-11-25-msq-q3-page-fable-review-report.md`) and the second read of its words
 (`…-msq-q3-r5b-words-fable.md`). A fifth fresh Fable folded them in (chat 187), **each claim about today's code read
 again in the file named, on this branch (`b154fff98`) — by reading; no test was written or run, and the folder pressed
-nothing.** The cap is three rounds: **this fold is read by no one but the security reader, on one definition.**
+nothing.** The cap is three rounds: **this fold is read by no one but the security reader, on one definition — done
+the same day (`../briefs/2026-11-25-msq-s1-fix-security-check.md`, saved whole): the definition closes S1; two
+MEDIUM and five LOW in the replay rule and around it, and two notes. A fresh Fable (chat 187's S1-check fold) built them into §19.2
+(chat 187), each read again in the code on this branch (`ed1258e08`) — by reading; no test written or run. They are
+the table's last nine rows.**
 
 **Every finding was taken; none was judged false.** Four were taken in part, and three more are fixed in the design
 but leave a reading for him — each for the reason in its row and under the table.
@@ -2617,12 +2734,26 @@ but leave a reading for him — each for the reason in its row and under the tab
 | The page review §6.2 | — | The plan must take the page's recommendations as defaults; E1's settings window, D5, D8, D10, E8 | Taken — each a switch point, never his ruling | §8's table; §3.2 (a); §19.1, §19.3, §19.4, §19.7 |
 | The page review §6.4–6.6 | — | Three names for 150's admin; what is not drawn; "+ Input" on 150 once offered the archived Ace and Saber | Taken | the head; §17's list to draw; §18.6, §10 step 0 |
 | The words review | — | Three wordings adjusted; what still has no words; gap 2a — the leads do not join "press Undo again" | Taken — its fix: only leads that add no step | §4.6; §17 |
+| Security S1-check F1 | MEDIUM | V7's pin "its Undo puts both back" lets 142's admin give back Plan of 149 by the Undo of a make-member | Taken — true (`restoreLeavesOut` point 4 and its pin `piece-b-tables.test.ts` "4." say the role only) | §19.2, the replay rule's (c); V7's pins |
+| Security S1-check F2 | MEDIUM | Done as a leave-out, the replay check commits half a step: the lines to 149's admins read "taken back" while the Plan stands | Taken — true (`keptOf`, `LEFT_EMPTY`, `acctLineLeftOut` covers his own line only). The preferred fix, the whole step refused; **in part as to the hook:** `stuck`, not `restoreRefusal`, which refuses on every press and is asked after the emptied-step check. The second fix is taken too, for the one put-back left out | §19.2, the replay rule's (b) and (c), the bell line; V7; §17 reading 23 |
+| Security S1-check F3 | LOW | The gate never checks the `first` mark on a Plan row; and "every grant left out" would strip the first admin's own path | Taken, both halves — true (`perms.ts` reads it nowhere; `adminRoleHolds` l.339) | §19.2 point 2 and "The `first` mark"; V5b, V6 |
+| Security S1-check F4 | LOW | An eighth place keeps Plan to a master admin: the re-link door | Taken — true (`accounts.ts relinkRightsProblem`, l.563); its new sentence a **(reading)** | §19.2 (today's list, the eight places); V5, V6; §17 reading 24 |
+| Security S1-check F5 | LOW | Point 4 named `w.rowsB` / `w.acctB`, null for a command of grant rows only | Taken — true (`worldsOf` l.2137–2142) | §19.2 point 4; V6 |
+| Security S1-check F6 | LOW | The receiver's check does not say which rows it reads | Taken — after the command (`saveAccess` l.891 does so today) | §19.2 "Who may hold it"; V6 |
+| Security S1-check F7 | LOW | Failing closed leaves out a switched-off account and an archived or deleted man; the door fails open with nobody signed in | Taken — true (`adminNow` l.419–424; `units.ts notMaster` l.172). **In part:** closed for Plan only — every other admin act keeps the same window until the session lapses | §19.2 point 5; V5b, V6, V7; §17 reading 22 |
+| Security S1-check, note 1 | — | The master admin's test should need the role in force to be an admin's | Taken | §19.2 point 1; V5b, V6 |
+| Security S1-check, note 2 | — | The NQ1 pin names one way of three | Taken — all three named; **in part:** the re-link and the Undo ways are read, not run — V0 writes each as a test first | §19.2's pins; V5; §19.11 V0 |
 
 **Taken in part, and why.** *Astra 7 (B20):* the plan cannot promise a wait that ends — the saver has none; it is a
 switch point (N14), not a fix. *Fable 5:* the list is fixed; the root's answer for the same input on the same page is
 not. *Security S2:* the rule is written; which of the app's own passes writes a move's line is left to the builder.
 *Security S7:* his ruling has the row drawn first. *Opus F-c, Fable 9, Astra 4:* each is fixed in the design, and what
-a person then sees is a reading — put to him, not built.
+a person then sees is a reading — put to him, not built. *The security check of the S1 fix:* none of its nine was
+judged false. *F2:* the reader's hook would have left his older steps out of reach, so the build uses the
+timeline's earlier one. *F7:* the window is the whole app's; only Plan is closed here. *Note 2:* two of the three
+ways are unproved until V0. **That fold takes out:** V7's "its Undo puts both back" and "his Redo of either is left
+out and says so"; point 2's "with every grant left out"; point 4's `w.rowsB` and `w.acctB`; "the seven places".
+**New:** `planRestoreStuck`; the gate's `first` rule; the re-link door's sentence; readings 22–24; V5–V7's cases.
 
 **What this fold takes out, so nothing is dropped quietly:** "Petrel"; the plan's own recommendations for N6 (refuse)
 and N12 (refuse) — each now the other answer; N9 as an open question, and step 8's wait on it; "step 6b is gone";
