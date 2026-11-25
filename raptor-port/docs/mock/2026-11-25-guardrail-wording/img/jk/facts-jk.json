@@ -1,0 +1,42 @@
+[
+ {
+  "scene": "JK",
+  "size": "desktop",
+  "what": "staged Thursday",
+  "v": {
+   "to": "",
+   "ld": "14:10",
+   "desk": [
+    "shaft",
+    "",
+    ""
+   ],
+   "oft": [
+    "",
+    "1030"
+   ]
+  }
+ },
+ {
+  "scene": "JK",
+  "size": "desktop",
+  "what": "the sign-off line today",
+  "v": "4 to sign"
+ },
+ {
+  "scene": "JK",
+  "size": "phone",
+  "what": "the sign-off line today",
+  "v": "4 to sign"
+ },
+ {
+  "scene": "JK",
+  "size": "phone",
+  "what": "View-only Sched, Thursday as drawn today",
+  "v": {
+   "chip": "DRAFT",
+   "to": "<span class=\"tox\"></span><span class=\"ntx\">14:10</span>",
+   "desk": "<span class=\"nm\"><span class=\"ntx\">SXO</span></span><span class=\"t t-s\"></span><span class=\"t t-e\"></span><div class=\"ppl one\"><span class=\"seat\" data-slot=\"d:3.0.1\"><span class=\"puck sm\" tabindex=\"0\""
+  }
+ }
+]
