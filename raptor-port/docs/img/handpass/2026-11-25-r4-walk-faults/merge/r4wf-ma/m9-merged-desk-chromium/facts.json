@@ -1,0 +1,11 @@
+{
+ "pictures": [],
+ "cases": {
+  "desk-chromium": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"]} on 2026-07-15: new input [\"imwvxl3oukp3v0z\"]; asked []; note \"\""
+   ]
+  }
+ },
+ "errors": []
+}

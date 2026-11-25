@@ -1520,19 +1520,31 @@ sides.
 **Suggested improvement:** Make "write it to <path>; your final reply is the same text whole, never a summary" a fixed line of every helper brief that hands back a report; and keep the bug-check order's rule that an expected line names its source or is rewritten "RECORD what it says".
 **Principle:** A hand-back has two independent channels, so one refused channel loses nothing.
 
-### Observation 1068: A helper's report file belongs in the session's scratch folder, not a shared work folder
+### Observation 1068: A walk check written while the fault stands is never proved able to PASS
 
 **Status:** OPEN
 **Date:** 25 Nov 26
-**Session context:** chats 179 and 181 — blind code reads and walkers writing their reports to files (numbered past 1063, held on another branch; renumbered 1064 -> 1068 at chat 182's merge of main)
-**Skill:** dispatching-parallel-agents
+**Session context:** chat 183 — pull request 843 with main brought in; both jobs' walk scripts re-run unchanged on the merged build
+**Skill:** New skill candidate: walk scripts (the project guide `raptor-port/docs/walk-scripts.md` §4, §6)
 **Type:** open-source
-**Phase/Area:** the brief's "write your report to a file" instruction
+**Phase/Area:** a step's assertion; the re-walk
 
-**Issue:** In chat 179 one subagent was refused writing its report under a shared work folder on another drive and returned the report as text instead (the walkers in the same run could write there). In chat 181 every helper told to write under the session's own scratch folder wrote its report without trouble.
-**Suggested improvement:** In the dispatching guide's brief template, name the session's scratch folder as the default place for a helper's report file; a shared work folder only where the helper is known to have write access to it, with "if the write is refused, return the whole report as text" as the fallback line.
-**Principle:** Point a helper's output at a location its sandbox is sure to allow, and give it a stated fallback, so a refused write never silently loses the report.
+**Issue:** An older walk script's W3 step read the store with a filter that could not see a record made by the change under test (it matched an ISO date the records do not hold), so it returned FAIL when the fault existed — rightly, by luck — and still returned FAIL once the fault was fixed. A second, dedicated script read the store properly and passed on the same build. The broken reader cost a reproduction and a look at the script before the FAIL could be set aside. Numbered past every branch's entries seen on 25 Nov 26 (1067 the highest).
+**Suggested improvement:** In the walk-scripts guide's re-walk section: a step that asserts the RIGHT behaviour while the fault still stands is run once on a control that should pass (a one-man row, the unchanged path) before it is kept; a step that has only ever returned FAIL is marked "unproved" in the script's header.
+**Principle:** A check that has never passed has not been shown to be able to; prove the passing path on a control before trusting its failure.
 
+### Observation 1069: A serial runner of browser scripts needs a time limit on each run
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 183 — a shell loop running 50 walk scripts one after another on two frozen builds
+**Skill:** New skill candidate: walk scripts (the project guide `raptor-port/docs/walk-scripts.md` §1)
+**Type:** open-source
+**Phase/Area:** the runner
+
+**Issue:** One script printed all its results and then hung closing its WebKit browser; the loop behind it stood still for 26 minutes until the process was found and stopped by hand. Its results were whole — only the exit never came.
+**Suggested improvement:** A runner loop wraps each run in a time limit (`timeout 600 node …`) and prints the exit code beside the result counts, so a hang costs one limit and shows as such; the script's `finish` closes each browser with its own short limit.
+**Principle:** In a queue of independent runs, bound each one, so a stall in teardown cannot hold the rest.
 
 ### Observation 1070: A handoff's opening line told the next chat to work in a folder its file tools refuse
 
@@ -1572,3 +1584,19 @@ sides.
 **Issue:** The new behaviour was built red-first and its own tests passed, but the change made a case that had always been silent raise a warning. Dozens of tests about other things (tight turns, hidden warnings, day counts, parity with the original app) had quietly depended on that silence through shared seed data. Updating their expected counts would have hidden the dependency; each had to be sorted by subject.
 **Suggested improvement:** In the skill, after green: when a change makes a previously silent case raise something, search the tests for every reader of the seed data that case touches, and sort each failing test by its subject — a test ABOUT the rule follows the new rule; a test where the case is incidental gets a named fixture that makes its premise explicit (here `coverSans`), never a bumped count.
 **Principle:** Silence is an implicit precondition. When it ends, make the precondition explicit in the tests that relied on it, instead of rewriting their numbers.
+
+### Observation 1077: A helper's report file belongs in the session's scratch folder, not a shared work folder
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chats 179 and 181 — blind code reads and walkers writing their reports to files (numbered past 1063, held on another branch; renumbered 1064 -> 1068 at chat 182's merge of main)
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** the brief's "write your report to a file" instruction
+
+**Issue:** In chat 179 one subagent was refused writing its report under a shared work folder on another drive and returned the report as text instead (the walkers in the same run could write there). In chat 181 every helper told to write under the session's own scratch folder wrote its report without trouble.
+**Suggested improvement:** In the dispatching guide's brief template, name the session's scratch folder as the default place for a helper's report file; a shared work folder only where the helper is known to have write access to it, with "if the write is refused, return the whole report as text" as the fallback line.
+**Principle:** Point a helper's output at a location its sandbox is sure to allow, and give it a stated fallback, so a refused write never silently loses the report.
+
+
+(Merge of main into claude/sans-warnlines-185, chat 186, 25 Nov 26: this entry was numbered 1068 on that branch, a number main also used; renumbered 1077.)
