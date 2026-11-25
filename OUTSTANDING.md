@@ -2986,7 +2986,14 @@ to merge, then his "merge live"; the readers' "left as is" points (`…-read3-*.
 filed here, not built. (2) The audit's core done and reviewed by Fable (`…-rulings-audit-*.md`); round 1 put to him on
 https://claude.ai/artifact/JijvQqMqRAULtwUkNEMkqP; round 2 (three questions) and the six wording faults' build, drawn
 first, after his answers; the rest of the audit (Leave War, Tracker, app-wide words, the old rows' readings, tests)
-only on his word.
+only on his word. **Chat 180, 25 Nov 26:** round 2 and the drawings ([END-TIME-GUARD] and the six sentences, words
+adjusted by a fresh Fable) are on the same page (`raptor-port/docs/mock/2026-11-25-rulings-round2/`,
+`…/2026-11-25-guardrail-wording/` with `words-reviewed.md`), waiting on his answers. Filed with it, not built: (a) the
+day's OIL list keeps no record of who answered each question, though the OIL page's D782 line says each answer is
+stamped with who gave it — a job of its own, and sentence F1 names nobody until it exists; (b) two more untrue lines,
+"You can only edit your own inputs" / "…delete your own inputs" (a member may also change one he filed), to draft and
+draw with the six; (c) five of the adjusted sentences (the sign-off refusal, the Leave War card, both hidden-warning
+lines, the Logic line) owe a cold read before they are built (`words-reviewed.md`).
 
 ### [SANS-INFO-LINE] A SANS man told when a scheduler puts him on anything but a flight or sim (his D2566, 24 Nov 26)
 
