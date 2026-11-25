@@ -1535,7 +1535,8 @@ function validateCore(){
        planting says the same — it simply never becomes a persistent
        Advisory. 'ok' and 'na' are not a problem and need no comment. */
     const sansChecks:any[]=[];
-    day.fly.forEach((e:any)=>sansChecks.push({id:e.id,domain:'fly',s:Math.min(e.report,e.step),en:e.dekit,to:e.to,label:e.label,key:e.key}));   // `to` names the line ([WARN-WORDS-STANDALONE])
+    /* never a standby line, flying or not (owner D2584 Q4, answering D2576, D2578): `shift` marks an SC / AVALON / BB row */
+    day.fly.forEach((e:any)=>!e.shift&&sansChecks.push({id:e.id,domain:'fly',s:Math.min(e.report,e.step),en:e.dekit,to:e.to,label:e.label,key:e.key}));   // `to` names the line ([WARN-WORDS-STANDALONE])
     day.events.forEach((e:any)=>{ const m=/^s:\d+\.(amt|oft)\./.exec(String(e.key||'')); if(!m)return;
       sansChecks.push({id:e.id,domain:m[1],s:e.s,en:e.e,label:e.label,key:e.key}); });
     /* (only a man SANS ON THIS DAY — D2313: a day before his SANS date asks no SANS availability of him) */
