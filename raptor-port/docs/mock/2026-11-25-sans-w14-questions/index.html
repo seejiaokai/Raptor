@@ -130,7 +130,7 @@ figcaption b { font-weight: 600; }
   <ol>
     <li><a href="#q1"><span class="n">1</span><span class="q">A seat on a flight with no times typed yet</span><span class="r">Recommended: <b>strike Ranger on the crew list too</b>, so it matches his reminder.</span></a></li>
     <li><a href="#q2"><span class="n">2</span><span class="q">The warning list when a SANS man has filed nothing</span><span class="r">Recommended: <b>keep it</b> — no SANS warning until he files.</span></a></li>
-    <li><a href="#q3"><span class="n">3</span><span class="q">A Fly-only filing on a sim day</span><span class="r">Recommended: <b>keep it</b> — the reminder goes; Saber still sees the sim flagged.</span></a></li>
+    <li><a href="#q3"><span class="n">3</span><span class="q">He offered one thing and is planned on another</span><span class="r">Recommended: <b>keep it</b> — his reminder only asks him to file; Saber sees the mismatch.</span></a></li>
     <li><a href="#q4"><span class="n">4</span><span class="q">Standby seats</span><span class="r">Recommended: <b>keep it</b> — SC MAIN counts, SC SPARE doesn't, AVALON once it flies.</span></a></li>
   </ol>
 </nav>
@@ -205,7 +205,7 @@ figcaption b { font-weight: 600; }
     <h3>What the app does today</h3>
     <ul class="today">
       <li>His reminder names <span class="day">Sat 18</span>, and the crew list strikes him.</li>
-      <li>The day's warning list shows <b>no</b> SANS warning. It warns only once he <b>has</b> filed and the seat falls outside what he offered — for example <span class="quote">“SANS: not offering fly today”</span> or <span class="quote">“SANS: available 08:00–12:00 only”</span>.</li>
+      <li>The day's warning list shows <b>no</b> SANS warning. It warns only once he <b>has</b> filed and the seat falls outside what he offered — for example <span class="quote">“SANS: not offering Fly today”</span> or <span class="quote">“SANS: available 08:00–12:00 only”</span>.</li>
       <li>It has worked this way since August.</li>
     </ul>
   </div>
@@ -237,50 +237,70 @@ figcaption b { font-weight: 600; }
 
 <!-- ───────────── Q3 ───────────── -->
 <section class="q" id="q3">
-  <h2><span class="n">3</span>A Fly-only filing on a sim day</h2>
+  <h2><span class="n">3</span>He offered one thing and is planned on another</h2>
 
   <div class="block">
-    <h3>The case</h3>
-    <p>Ranger is in the OFT sim on <span class="day">Sun 19</span>. He files SANS availability for <span class="day">Sun 19</span> with <b>Fly</b> only — not OFT.</p>
+    <h3>When this happens</h3>
+    <p>A SANS man files his own SANS availability on his phone, ticking what he offers that day: Fly, OFT or AMT. Saber plans him separately, often later. Sometimes the two don't match: he offered to fly and is planned on a sim, or he offered a sim and is planned to fly.</p>
+  </div>
+
+  <div class="block">
+    <h3>Example 1 — offered to fly, planned on a sim</h3>
+    <ul class="today">
+      <li>Saber has Ranger in the OFT sim on <span class="day">Sun 19</span>.</li>
+      <li>Ranger files SANS availability for <span class="day">Sun 19</span> and ticks <b>Fly</b> only, not OFT.</li>
+      <li><b>Ranger's bell:</b> the reminder for <span class="day">Sun 19</span> goes, because he has filed something for that day. Nothing tells him he is planned on a sim he didn't offer.</li>
+      <li><b>Saber's screen:</b> the crew list strikes Ranger for the OFT seat with <span class="quote">“SANS — not offering OFT”</span>, and the day's warning list says <span class="quote">“SANS: not offering OFT today”</span>.</li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h3>Example 2 — offered a sim, planned to fly</h3>
+    <ul class="today">
+      <li>Saber has Ranger in a seat on a <span class="day">Sat 18</span> flight.</li>
+      <li>Ranger files SANS availability for <span class="day">Sat 18</span> and ticks <b>OFT</b> only, not Fly.</li>
+      <li><b>Ranger's bell:</b> the same. The reminder for <span class="day">Sat 18</span> goes, and nothing tells him he is planned to fly.</li>
+      <li><b>Saber's screen:</b> the crew list strikes Ranger for the flying seat with <span class="quote">“SANS — not offering Fly”</span>, and the day's warning list says <span class="quote">“SANS: not offering Fly today”</span>.</li>
+    </ul>
   </div>
 
   <div class="block">
     <h3>What the app does today</h3>
-    <ul class="today">
-      <li>His reminder stops naming <span class="day">Sun 19</span>, because he has filed something for that day.</li>
-      <li>Saber's crew list and warning list still flag it: Ranger is not offering OFT that day.</li>
-    </ul>
+    <p>Both ways round it is the same. His reminder only asks whether he has filed anything for the day. Whether what he filed matches what he is planned on is shown to Saber only.</p>
   </div>
 
   <div class="figs">
     <figure>
       <span class="tag">Ranger's phone · before he files</span>
       <a class="pic" href="img/q3-bell-before.png"><img src="img/q3-bell-before.png" width="1206" height="480" alt="Ranger's bell with one unread reminder about Sun 19 Jul."></a>
-      <figcaption>Before filing: <span class="quote">“You're planned on Sun 19 Jul with nothing filed.”</span></figcaption>
+      <figcaption>Example 1, before he files: <span class="quote">“You're planned on Sun 19 Jul with nothing filed. Tap to file for availability.”</span></figcaption>
     </figure>
     <figure>
       <span class="tag">Ranger's phone · after the Fly-only filing</span>
       <a class="pic" href="img/q3-bell-after.png"><img src="img/q3-bell-after.png" width="1206" height="330" alt="Ranger's bell open and empty, reading Nothing new."></a>
-      <figcaption>After he files Fly only for <span class="day">Sun 19</span>, his bell reads <b>“Nothing new”</b>. The reminder has gone, though he still hasn't offered the sim he's planned on.</figcaption>
+      <figcaption>Example 1, after he files Fly only for <span class="day">Sun 19</span>: his bell reads <b>“Nothing new”</b>. He is still planned on the OFT sim, which he didn't offer.</figcaption>
     </figure>
     <figure>
       <span class="tag">Saber's desk · crew list, OFT seat armed, before he files</span>
       <a class="pic" href="img/q3-crew-before.png"><img src="img/q3-crew-before.png" width="974" height="282" alt="The crew list with an OFT seat armed on Sun 19. Ranger is struck through with the reason no availability filed."></a>
-      <figcaption>Before Ranger files, Saber's crew list strikes him for the OFT seat: <span class="quote">“no availability filed”</span>.</figcaption>
+      <figcaption>Example 1, before Ranger files: Saber's crew list strikes him for the OFT seat with <span class="quote">“no availability filed”</span>. After he files Fly only, the strike stays and the reason changes to <span class="quote">“SANS — not offering OFT”</span>.</figcaption>
     </figure>
   </div>
-  <p class="note">No picture was taken of Saber's screen after the Fly-only filing. From then on the app's own words for this case are <span class="quote">“SANS — not offering OFT”</span> beside Ranger's name in the crew list, and <span class="quote">“SANS: not offering OFT today”</span> in the day's warning list.</p>
+  <p class="note">No picture was taken of Saber's screen after the filing, or of example 2. The words quoted above are the app's own.</p>
 
   <div class="rec">
     <h3>Recommended — keep it</h3>
-    <p>The reminder asks him to file at all. A filing that doesn't cover the sim is shown to the scheduler, who can ask him.</p>
+    <p>The reminder has one job: get him to file. When what he filed doesn't match the plan, Saber sees it on the crew list and the warning list, and either changes the plan or asks him. Often the plan is what needs changing, not his availability.</p>
     <p>What changes: nothing.</p>
   </div>
   <div class="alt">
-    <h3>Or</h3>
-    <p>The reminder also names a day whose filing doesn't cover what he is planned on, for example <span class="quote">“…on Sun 19 (OFT) with no matching availability”</span>.</p>
+    <h3>Or — tell him too</h3>
+    <p>His bell also tells him when what he filed doesn't match what he is planned on. The line stays until he changes his availability or Saber changes the plan. Saber's screen stays as it is.</p>
+    <p>Example 1 would read: <span class="quote">“You're planned on the OFT sim on Sun 19 Jul, but you offered Fly only. Tap to change your availability.”</span></p>
+    <p>Example 2 would read: <span class="quote">“You're planned to fly on Sat 18 Jul, but you offered OFT only. Tap to change your availability.”</span></p>
+    <p>What changes: a new line on his bell, built after you approve its drawing. If you pick this, one more question follows: whether he is also told when he offered the right thing but the wrong hours.</p>
   </div>
-  <p class="answer"><span class="lbl">Your answer:</span> <b>keep as is</b> (recommended)<span class="sep">/</span>remind him about the sim too</p>
+  <p class="answer"><span class="lbl">Your answer:</span> <b>keep as is</b> (recommended)<span class="sep">/</span>tell him too</p>
 </section>
 
 <!-- ───────────── Q4 ───────────── -->
