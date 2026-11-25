@@ -164,3 +164,17 @@ Reused, not new: "also plans 149" and "posting in 14 Dec" (the app's), "also vie
   Cancel will not fit one line at 402 wide; it needs its phone drawing before a build.
 - Not drawn: "▸ View only" opened; a block row opened to end someone's access; the block for a Plan holder or a
   master admin looking; the day a posting lands.
+
+## After the words review
+(The second fresh Fable's report: `2026-11-26-msq-r6-fable-review-report.md`. Its words in `words-r6-users.mjs` are kept;
+the FACT lines above quote my first words where it changed them — the pictures now carry its words.)
+- **`u6-d-askpost-bell` redrawn (D2638).** Hunter's bell shows two squadrons (Show: 142 on, 149 on), so the new line's
+  number wears its squadron's colour and the two Show buttons wear theirs — round 5's sample colours, 142 orange,
+  149 gold — made the same way as `m6-d-itshim-bell`. The unread dot stays blue. His two account lines carry no number.
+  FACT: `142 (orange) | Cinch  Thu 26 Nov | Post him to 149? · Kestrel | now`; Show `142` orange, `149` gold.
+- **`u6-d-postout-sheet`: the "To 149 ▾" drop-down is kept**, on the host's second word (it still fits with many
+  squadrons). No chip row was made. It therefore differs from `m6-d-itshim-sheet`, which draws "To" as chips — one of
+  the two has to follow the other before he sees both.
+  FACT (as re-run with the reviewed words): `Cinch  Post out  ✕ / PO FROM Mon 14 Dec 26 ▾ / POSTING Overseas Sqn ·
+  Delete · SANS · ✓ Transfer to Sqn / TO 149 ▾ / On 14 Dec: moves to 149 with his sign-in. / Post out`.
+- Both pictures opened after the re-run. Nothing else re-made by me in this pass.

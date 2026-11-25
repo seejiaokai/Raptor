@@ -1,8 +1,8 @@
-// Stages page-r5b.html and every file it references into pub/ for publishing (chat 187), and prints the list of paths.
+// Stages page-r6.html and every file it references into pub/ for publishing (chat 188), and prints the list of paths.
 const fs = require('fs'), path = require('path');
 const q3 = process.argv[2], out = process.argv[3];
 const q2 = path.join(q3, '..', '2026-11-25-msq-pick-guard-q2');
-const html = fs.readFileSync(path.join(q3, 'page-r5b.html'), 'utf8');
+const html = fs.readFileSync(path.join(q3, 'page-r6.html'), 'utf8');
 const refs = new Set();
 for (const m of html.matchAll(/(?:src|poster)="([^"#]+)(?:#[^"]*)?"/g)) refs.add(m[1]);
 fs.rmSync(out, { recursive: true, force: true });

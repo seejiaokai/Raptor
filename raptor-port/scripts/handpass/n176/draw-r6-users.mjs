@@ -365,7 +365,7 @@ try {
       acts.appendChild(t)
       const q = e => { const x = e.getBoundingClientRect(); return { x: Math.round(x.left), y: Math.round(x.top), w: Math.round(x.width), h: Math.round(x.height) } }
       return { line: [...acts.querySelectorAll('button')].map(x => x.textContent.trim()), boxes: [...acts.querySelectorAll('button')].map(q) }
-    }, W6.askPost('142'))
+    }, W6.askPost('142', '149'))
     FACT(`${k}.drawn`, { opened: g.opened, buttons: g.openedButtons, actsLine: b, cinchTodayOn149: CARD['k.Cinch'].accessToday })
     await s.page.evaluate(() => { const c = document.querySelector('#u6opened'); scrollBy(0, c.getBoundingClientRect().top - 330) }); await wait(s, 300)
     await s.page.evaluate(() => document.activeElement?.blur())
@@ -393,7 +393,13 @@ try {
       first.before(e)
       return [...e.querySelectorAll('.bl-sqn, .bl-name, .bl-day, .bl-what, .bl-ago')].map(x => x.textContent)
     }, { L: LIST, c: { name: 'Cinch', day, what: `${W6.askBell('149')} · Kestrel`, ago: 'now', mark: '142' } })
-    FACT(`${k}.drawn`, { column: r.column, line: drawn })
+    /* his D2638 (after the words review, 26 Nov): a bell showing more than one squadron - every line's number wears its
+       squadron's colour, the same as its Show button (round 5's sample colours, as draw-r6-misc-d8); the unread dot stays */
+    const COL = { '142': '#F28C28', '149': '#D4AF37', '150': '#3B82F6' }
+    const show = await s.page.evaluate(L => [...document.querySelectorAll(L + ' [data-testid="bell-show"] button')].map(b => `${b.textContent.trim()}:${b.getAttribute('aria-pressed') === 'true' ? 'on' : 'off'}`), LIST)
+    const many = show.filter(x => /:on$/.test(x)).length > 1
+    if (many) await s.page.evaluate(([L, COL]) => { const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)).join(','); for (const m of document.querySelectorAll(L + ' .bl-sqn')) { const c = COL[m.textContent.trim()]; if (c) Object.assign(m.style, { color: c, borderColor: `rgba(${hex(c)},.6)`, background: `rgba(${hex(c)},.16)` }) } for (const b of document.querySelectorAll(L + ' [data-testid="bell-show"] button')) { const c = COL[b.textContent.trim()]; if (c) { const on = b.getAttribute('aria-pressed') === 'true'; Object.assign(b.style, { color: c, borderColor: `rgba(${hex(c)},${on ? .6 : .35})`, background: `rgba(${hex(c)},${on ? .16 : .06})` }) } } }, [LIST, COL])
+    FACT(`${k}.drawn`, { column: r.column, line: drawn, show, coloured: many, numberColour: await s.page.evaluate(() => getComputedStyle(document.querySelector('#u6line .bl-sqn')).color) })
     await wait(s, 300)
     await vring(s, await box(s, '#u6line'))
     await shot(s, k, [await box(s, LIST)], 16)

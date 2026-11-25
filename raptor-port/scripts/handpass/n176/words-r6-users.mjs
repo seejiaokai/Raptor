@@ -26,10 +26,15 @@ export const W6 = {
   postOutBtn: 'Post out…',
   sheetTitle: 'Post out',                                              // the sheet's head, after his callsign
   sheetTo: 'To',                                                       // the new line's label, beside "PO from" and "Posting" (APP)
-  transferLine: (d, n) => `On ${d}: moves to ${n} with his sign-in. His View and Plan of other squadrons end.`,   // the sheet's one line, in the shape of APP's "On 14 Dec: archived."
+  // the sheet's one line, in the shape of APP's "On 14 Dec: archived."
+  // (second fresh Fable, 26 Nov: the sentence about his rights names what he holds and shows only when he holds any -
+  //  Cinch holds none, so his sheet says the first sentence alone; a man holding View of 150 reads "… His View of 150 ends.")
+  transferLine: (d, n, held) => `On ${d}: moves to ${n} with his sign-in.` + (held ? ` His ${held} ${held.includes(' and ') ? 'end' : 'ends'}.` : ''),
   // ---- asking for a man (new - needs his word)
-  askPost: n => `Ask ${n} to post him here`,
-  askBell: n => `${n} asks you to post him there`,                     // the line his squadron's admins get; the asker's name follows, as every line's signer does
+  // (second fresh Fable, 26 Nov: the squadron is named, never "here" - this whole job exists because the squadron in view
+  //  can be mistaken; the bell line takes the shape of the other ask's line, misc's "Restore him and post him to 149?")
+  askPost: (n, to) => `Ask ${n} to post him to ${to}`,
+  askBell: n => `Post him to ${n}?`,                                   // the line his squadron's admins get; the asker's name follows, as every line's signer does
   // ---- the two captions on the picture that puts both pages side by side (the picture's words, not the app's)
   capPage: (n, who) => `${n}'s page · ${who}`,
 }

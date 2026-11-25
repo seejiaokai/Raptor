@@ -24,7 +24,8 @@
 //   node raptor-port/scripts/handpass/n176/draw-r6-misc-d8.mjs   (ONLY=a-d,a-p,asked,bell-d,bell-p,row-d,row-p,sheet)
 import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { run, as, W, W6, FACT, want, wait, vis, hit, usersTab, shot, box, words, closeAll, TMP, linesOf, greyLook, LIST, lineParts, numbersFirst, vring, union, form6, REF, pairLike, boxIn } from './draw-r6-misc-lib.mjs'
+import { execFileSync } from 'node:child_process'
+import { run, as, W, W6, FACT, want, wait, vis, hit, usersTab, shot, box, words, closeAll, TMP, linesOf, greyLook, LIST, lineParts, numbersFirst, vring, union, form6, REF, pairLike, boxIn, DRAWN } from './draw-r6-misc-lib.mjs'
 import { tapBell, go } from '../n175/p6-lib.mjs'
 const ST = resolve(TMP, 'state-e6.json'), SRC = resolve(TMP, 'e6-sources.json')
 const COL = { '142': '#F28C28', '149': '#D4AF37', '150': '#3B82F6' }
@@ -97,7 +98,25 @@ try {
     FACT('asked.note', n)
     FACT('asked.149people', { count: (await words(s, '[data-testid="acc-groups"] .acc-row[data-person] .acc-name')).length, jesterListed: (await words(s, '[data-testid="acc-groups"] .acc-row[data-person] .acc-name')).some(w => /^Jester/.test(w)) })
     await vring(s, n.box, 'note')
-    await shot(s, 'm6-d-itshim-asked', [await box(s, '.od-head'), n.box])
+    const hb = await box(s, '.od-head')
+    await shot(s, 'm6-d-itshim-asked', [hb, n.box])
+    /* THE CROP, cut (the host, after the words review): round 6 puts the "From other squadrons" block and Incoming /
+       Outgoing above "People" (the Fable drawer's u6-d-users), and this picture's list is round 5's - so the crop shows
+       only the folded form's row and the passing note, two strips of the same picture one above the other, a gap
+       between, and no list to compare. The whole-screen picture is left as drawn. */
+    {
+      const L = Math.max(0, Math.min(hb.x, n.box.x) - 14), R = Math.min(s.W, Math.max(hb.x + hb.w, n.box.x + n.box.w) + 14)
+      const a = `${TMP}/m6-asked-a.png`, b = `${TMP}/m6-asked-b.png`
+      await s.page.screenshot({ path: a, clip: { x: L, y: hb.y - 14, width: R - L, height: hb.h + 28 } })
+      /* the note's strip cut to the note and its ring alone (no row of the list beside it), set at its own place */
+      const bx = n.box.x - 10, bw = n.box.w + 20
+      await s.page.screenshot({ path: b, clip: { x: bx, y: n.box.y - 10, width: bw, height: n.box.h + 20 } })
+      /* the colour drawn behind the row: the first ancestor with a colour of its own */
+      const bg = await s.page.evaluate(() => { for (let e = document.querySelector('#page-admin .od-head'); e; e = e.parentElement) { const c = getComputedStyle(e).backgroundColor; if (!/rgba\(0, 0, 0, 0\)|transparent/.test(c)) return c } return getComputedStyle(document.body).backgroundColor })
+      const hex = '0x' + bg.match(/\d+/g).slice(0, 3).map(v => (+v).toString(16).padStart(2, '0')).join('')
+      execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', a, '-i', b, '-filter_complex', `[0]pad=iw:ih+48:0:0:color=${hex}[t];[1]pad=${(R - L) * 2}:ih:${(bx - L) * 2}:0:color=${hex}[n];[t][n]vstack`, '-update', '1', `${DRAWN}/m6-d-itshim-asked-crop.png`])
+      FACT('asked.crop', { strips: [{ x: L, y: hb.y - 14, w: R - L, h: hb.h + 28 }, { x: L, y: n.box.y - 14, w: R - L, h: n.box.h + 28 }], gap: '24px of the page\'s own colour ' + bg })
+    }
   }, { state: ST })
   /* c - the bell */
   for (const sz of ['d', 'p']) if (want('bell-' + sz)) await run(`bell.${sz}`, sz, async s => {
@@ -143,10 +162,12 @@ try {
       const ov = sh.querySelector('[data-testid="po-overseas"]'), tr = sh.querySelector('[data-testid="po-transfer"]')
       ov.classList.remove('on'); ov.textContent = 'Overseas Sqn'; ov.setAttribute('aria-pressed', 'false')
       tr.disabled = false; tr.removeAttribute('disabled'); tr.removeAttribute('title'); tr.classList.add('on'); tr.textContent = '✓ Transfer to Sqn'; tr.setAttribute('aria-pressed', 'true')
-      /* the new row "To": the same row and chips, the squadrons */
-      const outRow = sh.querySelector('.po-outcomes'); const to = outRow.cloneNode(true); to.id = 'm6to'; to.setAttribute('aria-label', W6t.toLabel)
-      to.querySelectorAll('button').forEach(b => b.remove()); to.querySelector('.lab').textContent = W6t.toLabel
-      for (const [n, on] of [['149', true], ['150', false]]) { const b = ov.cloneNode(true); b.removeAttribute('data-testid'); b.className = 'pchip' + (on ? ' on' : ''); b.textContent = (on ? '✓ ' : '') + n; b.setAttribute('aria-pressed', String(on)); to.appendChild(b) }
+      /* the new line "To 149 ▾" - drawn as the Fable drawer's u6-d-postout-sheet draws it (draw-r6-users.mjs), so one sheet
+         is drawn one way: the "PO from" line cloned, its date box's look holding the squadron (a drop-down still fits
+         many squadrons) */
+      const outRow = sh.querySelector('.po-outcomes'); const to = sh.querySelector('[data-testid="po-date"]').closest('.bidsheet-row').cloneNode(true)
+      to.id = 'm6to'; to.querySelector('.lab').textContent = W6t.toLabel
+      const bx = to.querySelector('.datebox'); bx.removeAttribute('data-testid'); bx.removeAttribute('aria-label'); bx.querySelector('.datebox-txt').textContent = '149'
       outRow.after(to)
       sh.querySelector('[data-testid="po-line"]').textContent = W6t.line
       return sh.outerHTML

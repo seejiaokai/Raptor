@@ -1,4 +1,4 @@
-// Renders page-r5b.html from the repo at an iPhone's width and checks it: no sideways scroll, no broken picture,
+// Renders page-r6.html from the repo at an iPhone's width and checks it: no sideways scroll, no broken picture,
 // no script error, the reply bar answers a press. Saves pictures of named sections for the host to open.
 const path = require('path');
 const { webkit, chromium } = require(path.join(process.argv[2], 'node_modules', 'playwright'));
@@ -17,6 +17,7 @@ const page = process.argv[3], out = process.argv[4], ids = (process.argv[5] || '
   console.log(JSON.stringify(f));
   await p.locator('#d5 button.diff').last().click();
   await p.locator('#e8 button.diff').first().click();
+  await p.locator('#n7 button.diff').first().click();
   console.log('reply:', await p.locator('#replytext').textContent());
   for (const id of ids) { const el = p.locator('#' + id); await el.scrollIntoViewIfNeeded(); await p.waitForTimeout(300); await el.screenshot({ path: path.join(out, 'chk-' + id + '.png') }); }
   console.log('errors:', JSON.stringify(errs));

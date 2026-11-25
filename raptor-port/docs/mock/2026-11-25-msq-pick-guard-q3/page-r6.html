@@ -57,6 +57,8 @@ figure.tall img{max-height:520px;width:auto;max-width:100%;justify-self:center}
 /* a wide picture cut to the part that matters: the frame hides the rest, the picture inside is drawn larger and shifted (sizes written on each one) */
 .cut{display:block;overflow:hidden;border:1px solid var(--edge);border-radius:6px;background:#0c0f13}
 .cut img{display:block;max-width:none;border:0;border-radius:0}
+figure.tall .cut img{max-height:none;max-width:none}
+figure.tall .cut{max-width:320px;width:100%;justify-self:center}
 figcaption{font-size:.94rem;color:var(--muted)}
 figcaption b{color:var(--ink)}
 /* the films of the squadron number: only the end of the top bar that holds the number, at about its real size */
@@ -76,7 +78,7 @@ p.chg,div.chg{border-left:3px solid var(--edge);padding-left:10px;font-size:.95r
 p.r6,div.r6{background:var(--r6bg);border-radius:8px;padding:10px 12px;font-size:.95rem;max-width:none}
 p.r6>b:first-child,div.r6>p>b:first-child{color:var(--r6)}
 div.r6{display:grid;gap:8px}
-section.r6{border-left:4px solid var(--r6)}
+section.r6{border-left:4px solid var(--r6);padding-left:10px}
 .r6key{display:inline-block;width:.8em;height:.8em;border-radius:3px;border:2px dashed #8B5CF6;vertical-align:-1px;margin-right:4px}
 p.chg>b:first-child,div.chg>p>b:first-child,.told.chg .label{color:var(--muted)}
 div.chg{display:grid;gap:8px}
@@ -87,6 +89,7 @@ p.was{border-left:3px solid var(--edge);padding-left:10px;font-size:.95rem;color
 .rd p{font-size:.96rem}
 .rd .eg{color:var(--muted)}
 .rd button{justify-self:end}
+.rd .ch{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .nav{display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:none;flex-wrap:wrap}
 .nav a{display:inline-flex;align-items:center;min-height:44px}
 .nav .ch{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
@@ -111,6 +114,7 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
   <div class="top" id="list">
     <p class="how"><b>To answer:</b> reply "as recommended for all". Or tap <b>Differently</b> on any item, then copy the reply from the bar at the foot and add your words.</p>
     <p class="count"><b class="tag6">Violet</b> marks what is new since round 5: a violet edge on each new item, and <span class="r6key"></span>a violet dashed ring round each new part of a picture. Everything still open is drawn as I recommend, because you said "assuming everything is as recommended". None of it is recorded as your answer until you reply. Last round's amber marks are now plain text.</p>
+    <p class="count"><b>Where I read something into your words</b>, it is a small box of its own inside its item (N3 a, N3 b…), with an example, what I would build, and its own Differently button. "As recommended for all" takes those too.</p>
     <p class="count"><b>Every "…then pick 149." on this page</b> names the squadron you pressed, whichever it is. With 142, 149 and 150, pressing 150 reads "…then pick 150.", and the same for any squadron added later. The examples use 149 only because that is the one pressed in them.</p>
     <p class="cast"><b>Saber</b> master admin, home 142 · <b>Hunter</b> 142's admin, Plan of 149, View of 150 · <b>Kestrel</b> 149's admin · <b>Mako</b> 150's admin · <b>Ranger</b> a 142 member</p>
     <details class="who"><summary>More about the examples and the pictures</summary>
@@ -119,15 +123,15 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
     </details>
     <h2 class="g">Group N: new since round 5 <span>11</span></h2>
     <ol>
-<li class="r6"><a href="#n1"><b>N1</b><span><span class="t">The bell's numbers in each squadron's colour <i class="tag6">new</i></span><span class="r">Ruled; drawn for your look.</span></span></a></li>
-<li class="r6"><a href="#n2"><b>N2</b><span><span class="t">Admin → Display: pick your own squadron colours <i class="tag6">new</i></span><span class="r">As drawn, five readings as recommended.</span></span></a></li>
-<li class="r6"><a href="#n3"><b>N3</b><span><span class="t">Who from outside plans or views 149, and who is moving <i class="tag6">new</i></span><span class="r">One block at the top; Incoming and Outgoing; the role in words.</span></span></a></li>
+<li class="r6"><a href="#n1"><b>N1</b><span><span class="t">The bell's numbers in each squadron's colour <i class="tag6">new</i></span><span class="r">Ruled; drawn for your look. One reading inside.</span></span></a></li>
+<li class="r6"><a href="#n2"><b>N2</b><span><span class="t">Admin → Display: pick your own squadron colours <i class="tag6">new</i></span><span class="r">As drawn. Five readings inside.</span></span></a></li>
+<li class="r6"><a href="#n3"><b>N3</b><span><span class="t">Who from outside plans or views 149, and who is moving <i class="tag6">new</i></span><span class="r">One block at the top, then Incoming and Outgoing. Eight readings inside.</span></span></a></li>
 <li class="r6"><a href="#n4"><b>N4</b><span><span class="t">Inside a folded squadron: no grey number on each row <i class="tag6">new</i></span><span class="r">The heading already says whose they are.</span></span></a></li>
-<li class="r6"><a href="#n5"><b>N5</b><span><span class="t">E8: the tick goes, "Edit on 142 →" takes you across <i class="tag6">new</i></span><span class="r">As drawn.</span></span></a></li>
-<li class="r6"><a href="#n6"><b>N6</b><span><span class="t">"Post out…" on Admin → Users <i class="tag6">new</i></span><span class="r">Opens the Leave War's own sheet; built with the transfer work.</span></span></a></li>
-<li class="r6"><a href="#n7"><b>N7</b><span><span class="t">"Ask 142 to post him here" <i class="tag6">needs your word</i></span><span class="r">Yes: the other squadron asks, his own admin posts him.</span></span></a></li>
-<li class="r6"><a href="#n8"><b>N8</b><span><span class="t">D2 on a phone: the fade after the menu closes (films) <i class="tag6">new</i></span><span class="r">Ruled; drawn for your look.</span></span></a></li>
-<li class="r6"><a href="#n9"><b>N9</b><span><span class="t">D8's "It's him", from start to end <i class="tag6">new</i></span><span class="r">As drawn; built with the transfer work.</span></span></a></li>
+<li class="r6"><a href="#n5"><b>N5</b><span><span class="t">E8 drawn as recommended: the tick goes, "Edit on 142 →" takes you across <i class="tag6">new</i></span><span class="r">As drawn; E8 is still yours to answer.</span></span></a></li>
+<li class="r6"><a href="#n6"><b>N6</b><span><span class="t">"Post out…" on Admin → Users <i class="tag6">new</i></span><span class="r">Opens the Leave War's own sheet; built with the transfer work. Five readings inside.</span></span></a></li>
+<li class="r6"><a href="#n7"><b>N7</b><span><span class="t">"Ask 142 to post him to 149" <i class="tag6">my idea · needs your word</i></span><span class="r">Yes: the other squadron asks, his own admin posts him.</span></span></a></li>
+<li class="r6"><a href="#n8"><b>N8</b><span><span class="t">D2 on a phone: the fade after the menu closes (films) <i class="tag6">new</i></span><span class="r">Ruled; drawn for your look. One reading inside.</span></span></a></li>
+<li class="r6"><a href="#n9"><b>N9</b><span><span class="t">D8's "It's him", from start to end <i class="tag6">new</i></span><span class="r">As drawn; built with the transfer work. Five readings inside.</span></span></a></li>
 <li class="r6"><a href="#n10"><b>N10</b><span><span class="t">D12: the person lists in the app's own drop-down <i class="tag6">new</i></span><span class="r">The app's own list in place of the browser's plain one.</span></span></a></li>
 <li class="r6"><a href="#n11"><b>N11</b><span><span class="t">D1 redrawn: the form's buttons as the app's own pair <i class="tag6">redrawn</i></span><span class="r">Your correction, applied.</span></span></a></li>
     </ol>
@@ -195,7 +199,9 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
       <figure class="tall"><img src="drawn/e3d-p-both-crop.png" alt="Phone bell with coloured squadron numbers"><figcaption><b>Drawn, phone</b>.</figcaption></figure>
       <figure><img src="drawn/e3d2-d-both-read-crop.png" alt="The same lines once read"><figcaption><b>Drawn</b>: once read, the number keeps its colour, so a read line still says whose it is.</figcaption></figure>
     </div>
-    <p><span class="rec">Ruled:</span> nothing to answer. The colours shown (142 orange, 149 gold, 150 blue) are only where each squadron starts; N2 is how each admin changes them.</p>
+    <p><span class="rec">Ruled:</span> the colours themselves need no answer. The colours shown (142 orange, 149 gold, 150 blue) are only where each squadron starts; N2 is how each admin changes them.</p>
+    <p><b>One thing I read into your answer:</b></p>
+    <div class="rd" id="n1a"><p><b>a. A man's home number wears its colour too.</b> <span class="eg">The top line of the first picture: "149 · Hunter 142 · Given Plan of 149". The first number says the line is 149's; the "142" after Hunter's name says he is a 142 man.</span> <span class="rec">I would build:</span> both wear their squadron's colour, 149 gold and 142 orange, as drawn. The other way: only the first number is coloured and the one after his name stays grey.</p><button type="button" class="diff" data-q="N1a" aria-pressed="false">Differently</button></div>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="N1" aria-pressed="false">Differently</button></p>
   </section>
 
@@ -210,13 +216,11 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
     </div>
     <p class="note">As you said, the page will grow: "Squadron colours" is its first section, and later settings join as sections of their own.</p>
     <p><b>Five things I read into your answer</b>, each drawn as I recommend:</p>
-    <ol class="readings">
-      <li><b>Your colours are yours alone.</b> Example: Hunter makes 149 green; Kestrel still sees 149 gold. <span class="rec">Recommended: yes</span>, as you said "each admin can pick their own".</li>
-      <li><b>Until you pick, each squadron starts on its own colour</b>, no two alike. Example: a new squadron 151 arrives already a colour none of the others has. <span class="rec">Recommended: yes.</span></li>
-      <li><b>"Show the mockup to the user"</b> read as the preview on the Display page: your own bell, drawn as it will look. <span class="rec">Recommended: yes.</span></li>
-      <li><b>A colour too dark or too pale to read</b> on the app's dark background. Example: Hunter drags brightness right down and 149's number would vanish. <span class="rec">Recommended: the brightness slider stops just before that point</span>, so nothing has to be refused or warned about after you choose.</li>
-      <li><b>Who sees Display's colours</b>: only those whose bell can show more than one squadron (admins, Plan holders, master admins). A member never sees it. <span class="rec">Recommended: yes.</span></li>
-    </ol>
+    <div class="rd" id="n2a"><p><b>a. Your colours are yours alone.</b> <span class="eg">Hunter makes 149 green; Kestrel still sees 149 gold.</span> <span class="rec">I would build:</span> yes, saved with each admin's own sign-in, as you said "each admin can pick their own".</p><button type="button" class="diff" data-q="N2a" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n2b"><p><b>b. Until you pick, each squadron starts on a colour of its own.</b> <span class="eg">A new squadron 151 arrives already a colour none of the others has.</span> <span class="rec">I would build:</span> yes, no two alike.</p><button type="button" class="diff" data-q="N2b" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n2c"><p><b>c. "Show the mockup to the user".</b> <span class="eg">Hunter slides 149 towards green and wants to see it before he saves.</span> <span class="rec">I would build:</span> the preview on the Display page: his own bell, drawn as it will look.</p><button type="button" class="diff" data-q="N2c" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n2d"><p><b>d. A colour too dark or too pale to read.</b> <span class="eg">Hunter drags brightness right down and 149's number would vanish into the dark background.</span> <span class="rec">I would build:</span> the brightness slider stops just before that point, so nothing has to be refused or warned about after he chooses.</p><button type="button" class="diff" data-q="N2d" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n2e"><p><b>e. Who sees the squadron colours.</b> <span class="eg">Ranger, a member, sees one squadron on his bell and has nothing to colour.</span> <span class="rec">I would build:</span> only those whose bell can show more than one squadron (admins, Plan holders, master admins) see this section.</p><button type="button" class="diff" data-q="N2e" aria-pressed="false">Differently</button></div>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="N2" aria-pressed="false">Differently</button></p>
   </section>
 
@@ -225,18 +229,20 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
     <p class="short">One block at the top, then Incoming and Outgoing, then 149's own people.</p>
     <p class="when"><b>When</b>: Kestrel, 149's admin, at his desk every few weeks, or the day a new commander asks "who else can change our schedule?". Today the answer is scattered: Hunter sits among 149's own people, and anyone who only views 149 is hidden inside the folded 142 heading.</p>
     <div class="pair">
-      <figure class="tall"><span class="cut" style="aspect-ratio:720/700"><img src="drawn/u6-p-users-crop.png" alt="Phone: From other squadrons, Incoming and Outgoing at the top of 149's page" style="width:100.00%;margin-left:-0.00%;margin-top:-0.00%"></span><figcaption><b>Drawn, phone</b>: Kestrel opens Admin → Users on 149. At the top, "From other squadrons · 4": Hunter (142), who plans 149; Saber (142), a master admin with full access; "View only · 2 people", folded. Then "Incoming · 1", Cinch joining from 142 on 14 Dec, and "Outgoing · 1", Raven leaving for 150 on 4 Jan.</figcaption></figure>
+      <figure class="tall"><span class="cut" style="aspect-ratio:720/750"><img src="drawn/u6-p-users-crop.png" alt="Phone: From other squadrons, Incoming and Outgoing at the top of 149's page" style="width:100.00%;margin-left:-0.00%;margin-top:-0.00%"></span><figcaption><b>Drawn, phone</b>: Kestrel opens Admin → Users on 149. At the top, "From other squadrons · 4": Hunter (142), who plans 149; Saber (142), a master admin with full access; "View only · 2 people", folded. Then "Incoming · 1", Cinch joining from 142 on 14 Dec, and "Outgoing · 1", Raven leaving for 150 on 4 Jan.</figcaption></figure>
       <figure><img src="drawn/u6-d-users-crop.png" alt="Desktop: the whole page with the new block, Incoming, Outgoing, People and the folded squadrons"><figcaption><b>Drawn, desktop</b>: the whole page. Under the three new groups, "People · 10" as before, then 142 and 150 folded.</figcaption></figure>
     </div>
-    <ul class="readings">
-      <li><b>Plan holders are always named</b>: they are few, and they can change 149's schedule. People with View only are one folded line with a count.</li>
-      <li><b>To end someone's access</b>, Kestrel presses his row; it opens as any short row does, with 149's None · View · Plan line. None, then Save.</li>
-      <li><b>With nobody from outside</b>, the block is one grey line: "Nobody from another squadron plans or views 142." (drawn on 142's page, in N6).</li>
-      <li><b>Incoming and Outgoing are two groups</b>, as you said. Each man's date is on the app's own amber posting tag, the one a waiting posting shows today; "to 150" is the new part.</li>
-      <li><b>The role in words</b> (your question "the personnel should also show the role it holds"): another squadron's short row adds "admin", or "master admin, full access". A member adds nothing, and a man with no sign-in has no role.</li>
-      <li><b>Squadrons in order</b>: your home squadron first, then the rest by number, on every page and list. Not visible here: from 149, the other two are 142 and 150 in either order.</li>
-    </ul>
-    <p class="note">The wording "also plans 149" is the app's own today, kept so the block, a search and the folded group all say it the same way. Not yet ruled, and drawn as I recommend: Saber's master admin row stands in the block, so the block is the whole truth even though Kestrel cannot change it.</p>
+    <p>You asked for two things: to know at one look who from outside has control or view of your schedule, and Incoming and Outgoing as two groups. Both are drawn. <b>To end someone's access</b>, Kestrel presses his row; it opens as any short row does, with 149's None · View · Plan line. None, then Save.</p>
+    <p><b>Eight things I read into your words</b>, each drawn as I recommend unless it says otherwise:</p>
+    <div class="rd" id="n3a"><p><b>a. "One look" is a block on the page you already use.</b> <span class="eg">Kestrel opens Admin → Users on 149 and the answer is the first thing on it, above "People".</span> <span class="rec">I would build:</span> a block at the top of each squadron's own page, not a new page. The search box moves down by its height; on a phone it is still on the first screen. With nobody from outside, the block is one grey line: "Nobody from another squadron plans or views 142."</p><button type="button" class="diff" data-q="N3a" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n3b"><p><b>b. Plan holders are named; people who only view are one folded line.</b> <span class="eg">Hunter can change 149's schedule, so he has a row. Bolt and Mako can only look, so they are inside "View only · 2 people" until Kestrel opens it.</span> <span class="rec">I would build:</span> as drawn. The few who can change your schedule are never hidden behind a count.</p><button type="button" class="diff" data-q="N3b" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n3c"><p><b>c. A master admin stands in the block too.</b> <span class="eg">Saber, home 142, can change 149's schedule because he is a master admin. Kestrel cannot end that.</span> <span class="rec">I would build:</span> Saber's row is in the block, reading "master admin, full access", so the block names everyone who can change 149, though Kestrel cannot change Saber's.</p><button type="button" class="diff" data-q="N3c" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n3d"><p><b>d. Hunter moves out of 149's own list.</b> <span class="eg">In round 5 Hunter, a 142 man with Plan of 149, sat among 149's ten people (E9, g).</span> <span class="rec">I would build:</span> he is in the block and in 142's folded group, and "People" lists only 149's own. This changes what E9 g said; E9 g now says the same.</p><button type="button" class="diff" data-q="N3d" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n3e"><p><b>e. The role in words.</b> <span class="eg">Your "the personnel should also show the role it holds". On 149's page, Hunter's short row reads "Pilot · CAT IP · admin · also plans 149".</span> <span class="rec">I would build:</span> another squadron's short row adds "admin", or "master admin, full access". A member adds nothing, and a man with no sign-in has no role. You earlier ruled that such a row shows no role; this puts it back as a word, never as something to change.</p><button type="button" class="diff" data-q="N3e" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n3f"><p><b>f. What Incoming and Outgoing show.</b> <span class="eg">Raven is posted from 149 to 150 on 4 Jan. Until then he is under "Outgoing", and his own row in "People" wears the same amber tag: "posting out 4 Jan · to 150".</span> <span class="rec">I would build:</span> Incoming lists men posted to this squadron and not yet arrived; Outgoing lists this squadron's men with a posting out ahead. The date is on the app's own amber posting tag, the one a waiting posting shows today; "to 150" is the new part. On the day, he leaves both groups.</p><button type="button" class="diff" data-q="N3f" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n3g"><p><b>g. Postings that are not to another squadron. Not drawn.</b> <span class="eg">Merlin is posted out to an overseas squadron on 1 Feb; Jester, archived, is restored with a post-in date next week.</span> <span class="rec">I would build:</span> Merlin is listed under Outgoing with the tag the app shows today ("posting out 1 Feb · Overseas Sqn"), and so are a posting to SANS and to Delete. Jester is listed under Incoming until his date. The other way: the two groups hold only moves between squadrons.</p><button type="button" class="diff" data-q="N3g" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n3h"><p><b>h. The order of squadrons. Cannot be seen in these pictures.</b> <span class="eg">Saber, home 142, looks at 150's page: the folded headings read 142, then 149.</span> <span class="rec">I would build:</span> wherever squadrons are listed, your home squadron first, then the rest by number. From 149 the other two are 142 and 150 either way, so no picture here shows it.</p><button type="button" class="diff" data-q="N3h" aria-pressed="false">Differently</button></div>
+    <p class="note">The wording "also plans 149" is the app's own today, kept so the block, a search and the folded group all say it the same way.</p>
     <p><span class="rec">Recommended:</span> as drawn.</p>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="N3" aria-pressed="false">Differently</button></p>
   </section>
@@ -249,48 +255,60 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
       <figure><span class="cut" style="aspect-ratio:1232/560"><img src="drawn/u6-d-folded-crop.png" alt="Desktop: 142 opened, short rows with no grey number, Blade marked admin" style="width:100.00%;margin-left:-0.00%;margin-top:-0.00%"></span><figcaption><b>Drawn</b>: sixty short rows, none wearing "142". Blade's row says "admin" (ringed). Bolt's says "also views 149".</figcaption></figure>
       <figure class="tall"><span class="cut" style="aspect-ratio:720/760"><img src="drawn/u6-p-folded-crop.png" alt="Phone: the same group" style="width:100.00%;margin-left:-0.00%;margin-top:-0.00%"></span><figcaption><b>Drawn, phone</b>.</figcaption></figure>
     </div>
-    <p class="note">The grey number still shows wherever a man of another squadron is found outside his own heading: in the block at the top, and in a search. Hunter is listed inside 142's group too: the heading says 60, so it shows all 60.</p>
+    <p class="note">The grey number still shows wherever a man of another squadron is found outside his own heading: in the block at the top, and in a search.</p>
     <p><span class="rec">Recommended:</span> as drawn.</p>
+    <div class="rd" id="n4a"><p><b>a. Someone in the block is in his squadron's group as well.</b> <span class="eg">Hunter is named in "From other squadrons". The heading says "142 · 60 people".</span> <span class="rec">I would build:</span> the group shows all 60, Hunter among them, so the count and the rows agree. He appears twice on 149's page: once in the block, once under 142.</p><button type="button" class="diff" data-q="N4a" aria-pressed="false">Differently</button></div>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="N4" aria-pressed="false">Differently</button></p>
   </section>
 
   <section id="n5" class="r6">
-    <h2>N5. E8 as recommended: the tick goes, "Edit on 142 →" takes you across <i class="tag6">new</i></h2>
+    <h2>N5. E8 drawn as recommended: the tick goes, "Edit on 142 →" takes you across <i class="tag6">new</i></h2>
     <p class="short">The squadron picked stands open, the others fold, for everyone; the link is the one way across.</p>
     <p class="when"><b>When</b>: Saber, a master admin, is working on 149's page and needs to change a 142 man's role or sign-in.</p>
+    <p>E8 is still yours to answer. This is what it looks like if you take the recommendation, now with N3's block and N4's rows.</p>
     <div class="pair">
       <figure><img src="drawn/u6-d-edit-crop.png" alt="Saber on 149, Ranger's short row opened, Edit on 142 at the right"><figcaption><b>Drawn, desktop</b>: Ranger's short row opened: his 149 line, Save and Cancel, and "Edit on 142 →" at the right. Only someone who is 142's admin sees the link.</figcaption></figure>
       <figure class="tall"><img src="drawn/u6-p-edit-crop.png" alt="Phone: the same opened row"><figcaption><b>Drawn, phone</b>.</figcaption></figure>
-      <figure><img src="drawn/e8j2-d-after-crop.png" alt="After the press: 142 picked, Ranger's full row open there"><figcaption><b>Drawn in round 5, unchanged</b>: one press picks 142 and opens Ranger's full row there. While a window is open, the guard rail refuses it as any pick.</figcaption></figure>
+      <figure><img src="drawn/e8j2-d-after-crop.png" alt="After the press: 142 picked, Ranger's full row open there"><figcaption><b>Drawn in round 5, unchanged</b>: one press picks 142 and opens Ranger's full row there. While a window is open, the guard rail refuses it as any pick. (With N6, that row would also carry "Post out…".)</figcaption></figure>
     </div>
-    <p><span class="rec">Recommended:</span> as drawn. Its words go to a second fresh Fable before the build.</p>
+    <p><span class="rec">Recommended:</span> as drawn.</p>
     <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="N5" data-say="(keep the All squadrons tick)">Keep the tick</button><button type="button" class="diff" data-q="N5" aria-pressed="false">Differently</button></span></p>
   </section>
 
   <section id="n6" class="r6">
     <h2>N6. "Post out…" on Admin → Users <i class="tag6">new</i></h2>
     <p class="short">On the man's own squadron's page; it opens the Leave War's own posting sheet.</p>
-    <p class="when"><b>When</b>: a few times a year. Cinch, a 142 pilot, is posted to 149 from 14 Dec. Hunter is 142's admin. This part is built later, with the transfer work.</p>
+    <p class="when"><b>When</b>: a few times a year. Cinch, a 142 pilot, is posted to 149 from 14 Dec. Hunter is 142's admin. You ruled that Admin → Users carries postings too; this part is built later, with the transfer work.</p>
     <div class="pair">
-      <figure><img src="drawn/u6-d-postout-crop.png" alt="Cinch's own row on 142: Post out between Save and Suspend"><figcaption><b>Drawn</b>: Cinch's row on 142: "Post out…" between Save and Suspend, the same size, on one line.</figcaption></figure>
-      <figure><img src="drawn/u6-d-postout-sheet-crop.png" alt="The posting sheet: Transfer to Sqn, To 149, from Mon 14 Dec 26"><figcaption><b>Drawn</b>: the sheet it opens: the Leave War's own posting choices, Transfer to Sqn chosen, "To 149", from Mon 14 Dec 26. Its line: "On 14 Dec: moves to 149 with his sign-in. His View and Plan of other squadrons end."</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:1000/420"><img src="drawn/u6-d-postout-crop.png" alt="Cinch's own row on 142: Post out between Save and Suspend" style="width:127.20%;margin-left:-0.00%;margin-top:-56.00%"></span><figcaption><b>Drawn</b>: Cinch's row on 142: "Post out…" between Save and Suspend, the same size, on one line.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:1184/718"><img src="drawn/u6-d-postout-sheet-crop.png" alt="The posting sheet: Transfer to Sqn, To 149, from Mon 14 Dec 26" style="width:108.45%;margin-left:-8.45%;margin-top:-58.28%"></span><figcaption><b>Drawn</b>: the sheet it opens: the Leave War's own posting choices, Transfer to Sqn chosen, "To 149", from Mon 14 Dec 26. Its line: "On 14 Dec: moves to 149 with his sign-in."</figcaption></figure>
       <figure><img src="drawn/u6-d-both-pages.png" alt="Cinch in transit: Outgoing on 142's page, Incoming on 149's"><figcaption><b>Drawn</b>: until 14 Dec he shows on both pages: Outgoing on 142's, opened to "Undo post out" and Cancel; Incoming on 149's, where Kestrel sees him coming but cannot change it.</figcaption></figure>
     </div>
-    <p class="note">"Undo post out" is inside the opened row, not on its face: a live button on a list that scrolls under a thumb is easy to press by mistake, and on a phone it did not fit. Not yet ruled, drawn as I recommend: Outgoing also lists a posting overseas, to SANS or to Delete, with the tag the app shows today.</p>
+    <p><b>Five things I read into your words</b>, each drawn as I recommend:</p>
+    <div class="rd" id="n6a"><p><b>a. Where the button is, and what it opens.</b> <span class="eg">Hunter opens Cinch's row on 142's page.</span> <span class="rec">I would build:</span> "Post out…" on a man's row on his own squadron's page only, between Save and Suspend. It opens the posting part of the Leave War's sheet: the date, the four kinds of posting, and "Post out". The leave parts of that sheet are left out here.</p><button type="button" class="diff" data-q="N6a" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n6b"><p><b>b. The new "To" line.</b> <span class="eg">Hunter presses "Transfer to Sqn". A line "To" appears under it with the other squadrons; he picks 149.</span> <span class="rec">I would build:</span> a small drop-down, as in this picture and in N9's, in the app's own drop-down look (N10). Buttons side by side, "149" and "150", would match the posting choices above them, but would wrap onto several lines once there are five or more squadrons; a drop-down still fits.</p><span class="ch"><button type="button" class="diff" data-q="N6b" data-say="(the To line as buttons)">As buttons</button><button type="button" class="diff" data-q="N6b" aria-pressed="false">Differently</button></span></div>
+    <div class="rd" id="n6c"><p><b>c. What the sheet's one line says.</b> <span class="eg">Cinch holds no View or Plan, so his line is "On 14 Dec: moves to 149 with his sign-in." Bolt, who holds View of 149, would read "On 14 Dec: moves to 150 with his sign-in. His View of 149 ends."</span> <span class="rec">I would build:</span> the second sentence only for a man who holds View or Plan of another squadron, naming what ends (you ruled that these end when he moves). The line says nothing about his leave or OIL: what happens to those at a move is settled with the transfer work.</p><button type="button" class="diff" data-q="N6c" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n6d"><p><b>d. Taking a posting back.</b> <span class="eg">142 posted Cinch by mistake. Hunter opens Cinch's row under "Outgoing" and presses "Undo post out".</span> <span class="rec">I would build:</span> the button is inside the opened row, not on its face. A live button on a list that scrolls under a thumb is easy to press by mistake, and on a phone it did not fit. "Cancel" beside it only closes the row, as on every row of this page.</p><button type="button" class="diff" data-q="N6d" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n6e"><p><b>e. Who can change a posting.</b> <span class="eg">Kestrel sees Cinch under "Incoming" on 149's page and thinks the date is wrong.</span> <span class="rec">I would build:</span> only the squadron he is leaving can change or undo it, so Kestrel's Incoming row has no buttons. He phones Hunter, or with N7 asks from the app.</p><button type="button" class="diff" data-q="N6e" aria-pressed="false">Differently</button></div>
     <p><span class="rec">Recommended:</span> as drawn.</p>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="N6" aria-pressed="false">Differently</button></p>
   </section>
 
   <section id="n7" class="r6">
-    <h2>N7. "Ask 142 to post him here" <i class="tag6">new · needs your word</i></h2>
+    <h2>N7. "Ask 142 to post him to 149" <i class="tag6">my idea · needs your word</i></h2>
     <p class="short">The squadron that wants him asks; 142's admin does the posting.</p>
-    <p class="when"><b>When</b>: Kestrel learns Cinch is coming to 149, but 142 has not posted him yet. You ruled that a man is moved by the squadron he leaves, so 149 cannot move him by itself.</p>
+    <p class="when"><b>When</b>: a few times a year. Kestrel learns Cinch is coming to 149, but 142 has not posted him yet. A man is posted out by his own squadron's admins, so 149 cannot move him by itself.</p>
+    <p>You have not asked for this. It is my idea, from the pattern you chose for an archived callsign (D8): the other squadron asks, the man's own admin acts. Without it, Kestrel phones Hunter.</p>
     <div class="pair">
-      <figure><span class="cut" style="aspect-ratio:1232/340"><img src="drawn/u6-d-askpost-crop.png" alt="Kestrel on 149: Cinch's short row opened, Ask 142 to post him here at the right" style="width:100.00%;margin-left:-0.00%;margin-top:-40.58%"></span><figcaption><b>Drawn</b>: Kestrel opens 142's Cinch on 149's page: "Ask 142 to post him here", where "Edit on 142 →" stands for someone who is 142's admin. One or the other, never both.</figcaption></figure>
-      <figure><img src="drawn/u6-d-askpost-bell-crop.png" alt="Hunter's bell: 149 asks you to post him there, Kestrel"><figcaption><b>Drawn</b>: the line 142's admins get: "Cinch · 149 asks you to post him there · Kestrel". A tap opens Cinch's row on 142, ready for "Post out…".</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:1232/340"><img src="drawn/u6-d-askpost-crop.png" alt="Kestrel on 149: Cinch's short row opened, Ask 142 to post him to 149 at the right" style="width:100.00%;margin-left:-0.00%;margin-top:-40.58%"></span><figcaption><b>Drawn</b>: Kestrel opens 142's Cinch on 149's page: "Ask 142 to post him to 149", where "Edit on 142 →" stands for someone who is 142's admin. One or the other, never both.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:672/230"><img src="drawn/u6-d-askpost-crop.png" alt="The button close up: Ask 142 to post him to 149" style="width:183.33%;margin-left:-83.33%;margin-top:-90.77%"></span><figcaption><b>The button, close up</b>.</figcaption></figure>
+      <figure><img src="drawn/u6-d-askpost-bell-crop.png" alt="Hunter's bell: Cinch, Post him to 149?, Kestrel"><figcaption><b>Drawn</b>: the line 142's admins get: "Cinch · Post him to 149? · Kestrel". (This picture still has the numbers in last round's plain look; with N1 they wear their colours, as on N9's bell.)</figcaption></figure>
     </div>
-    <p class="note">The same pattern you chose for an archived callsign (D8): the other squadron asks, the man's own admin acts. On a phone the button will not fit beside Save and Cancel; it goes on its own line, to be drawn before the build.</p>
     <p><span class="rec">Recommended:</span> yes, as drawn.</p>
+    <p><b>If yes, three things not drawn yet</b>, each drawn before it is built:</p>
+    <div class="rd" id="n7a"><p><b>a. What the bell line opens.</b> <span class="eg">Hunter taps "Cinch · Post him to 149?".</span> <span class="rec">I would build:</span> 142's Admin → Users with Cinch's row open, "Post out…" one press away. Nothing is posted until Hunter does it.</p><button type="button" class="diff" data-q="N7a" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n7b"><p><b>b. What Kestrel sees after asking.</b> <span class="eg">Kestrel presses the button and wonders whether it went.</span> <span class="rec">I would build:</span> a passing note, "Asked 142's admins to post Cinch to 149.", the same shape as N9's. Cinch appears under 149's "Incoming" only once 142 has posted him.</p><button type="button" class="diff" data-q="N7b" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n7c"><p><b>c. The button on a phone.</b> <span class="eg">On a phone the button does not fit beside Save and Cancel.</span> <span class="rec">I would build:</span> it goes on a line of its own under them.</p><button type="button" class="diff" data-q="N7c" aria-pressed="false">Differently</button></div>
     <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="N7" data-say="(no ask: 149's admin phones 142)">No ask</button><button type="button" class="diff" data-q="N7" aria-pressed="false">Differently</button></span></p>
   </section>
 
@@ -304,23 +322,30 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
       <figure><span class="film p"><video src="drawn/m6-p-fade-lm-film.mp4#t=0.001" poster="drawn/m6-p-fade-lm-poster.png" playsinline muted preload="metadata"></video></span><button type="button" class="play">Play</button><figcaption><b>Phone, less motion on</b>: white for a second, then grey, also after the menu closes.</figcaption></figure>
       <figure><img src="drawn/m6-p-fade-55.png" alt="A still from the film: the menu closed, the number 150 dimmed"><figcaption><b>A still</b>: the menu gone, 150 at its first dim.</figcaption></figure>
     </div>
-    <p class="note">A desktop is unchanged. Drawn as I recommend, not yet ruled: the same wait wherever the number is covered when the squadron changes, such as a bell line pressed on a phone whose list covers the bar.</p>
+    <p class="note">A desktop is unchanged.</p>
     <p><span class="rec">Recommended:</span> as drawn.</p>
+    <div class="rd" id="n8a"><p><b>a. Other times the number is covered. Not drawn.</b> <span class="eg">Saber, on his phone with the bell's list open over the top bar, presses a 149 line. The squadron changes behind the list.</span> <span class="rec">I would build:</span> the same wait: the two fades play once the list has closed and the number is in sight.</p><button type="button" class="diff" data-q="N8a" aria-pressed="false">Differently</button></div>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="N8" aria-pressed="false">Differently</button></p>
   </section>
 
   <section id="n9" class="r6">
     <h2>N9. D8's "It's him", from start to end <i class="tag6">new</i></h2>
-    <p class="short">Kestrel answers "It's him"; 142's admin brings Jester back and posts him to 149.</p>
+    <p class="short">Kestrel answers "It's him"; 142's admin restores Jester and posts him to 149.</p>
     <p class="when"><b>When</b>: a few times a year. Kestrel adds a pilot on 149 and types "Jester". 142 has an archived Jester, and he is the same man. This comes with the transfer work; until then only "Someone new" and "ask 142's admin", as you ruled.</p>
     <div class="pair">
-      <figure><img src="drawn/m6-d-itshim-crop.png" alt="The Add a person form: the note, It's him and Someone new side by side"><figcaption><b>Drawn</b>: the note now has two answers, "It's him" and "Someone new", the app's own pair. "Add person" stays greyed until he answers.</figcaption></figure>
-      <figure class="tall"><img src="drawn/m6-p-itshim-crop.png" alt="Phone: the same form"><figcaption><b>Drawn, phone</b>.</figcaption></figure>
-      <figure><img src="drawn/m6-d-itshim-asked-crop.png" alt="After It's him: the form shut, a passing note"><figcaption><b>Drawn</b>: after "It's him" the form folds shut, nothing added, and a passing note says 142's admins have been asked. A form left open would invite a second, wrong add.</figcaption></figure>
-      <figure><img src="drawn/m6-d-itshim-bell-crop.png" alt="Hunter's bell: Jester, Restore him and post him to 149, Kestrel"><figcaption><b>Drawn</b>: the line on Hunter's bell (142's admin): "Jester · Restore him and post him to 149? · Kestrel".</figcaption></figure>
-      <figure><img src="drawn/m6-d-itshim-row-crop.png" alt="Jester's archived row on 142 with the request and Restore and post to 149"><figcaption><b>Drawn</b>: a tap opens Jester's archived row on 142, the request above it and a new main button, "Restore and post to 149".</figcaption></figure>
-      <figure><img src="drawn/m6-d-itshim-sheet-crop.png" alt="The Leave War's posting sheet: Transfer to Sqn, To 149"><figcaption><b>Drawn</b>: the press opens the Leave War's own posting sheet, Transfer to Sqn chosen, "To 149". After that he shows in 142's Outgoing and 149's Incoming, as Cinch does in N6.</figcaption></figure>
+      <figure><img src="drawn/m6-d-itshim-crop.png" alt="The Add a person form: the note, It's him and Someone new side by side"><figcaption><b>1. Drawn</b>: the note now has two answers, "It's him" and "Someone new", the app's own pair. "Add person" stays greyed until he answers.</figcaption></figure>
+      <figure class="tall"><img src="drawn/m6-p-itshim-crop.png" alt="Phone: the same form"><figcaption><b>1. Drawn, phone</b>.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:1040/332"><img src="drawn/m6-d-itshim-asked-crop.png" alt="After It's him: the form shut, a passing note" style="width:131.73%;margin-left:-0.00%;margin-top:-94.23%"></span><figcaption><b>2. Drawn</b>: after "It's him" the form folds shut and a passing note says "Asked 142's admins to restore Jester and post him to 149. Nothing is added yet." (The list behind it is round 5's: with N3, Hunter would be in the block, not in this list.)</figcaption></figure>
+      <figure><img src="drawn/m6-d-itshim-bell-crop.png" alt="Hunter's bell: Jester, Restore him and post him to 149?, Kestrel"><figcaption><b>3. Drawn</b>: the line on Hunter's bell (142's admin): "Jester · Restore him and post him to 149? · Kestrel".</figcaption></figure>
+      <figure><img src="drawn/m6-d-itshim-row-crop.png" alt="Jester's archived row on 142 with the request and Restore and post to 149"><figcaption><b>4. Drawn</b>: a tap opens Jester's archived row on 142. Above its boxes: "Kestrel of 149 asks you to restore him and post him to 149." A new main button, "Restore and post to 149".</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:1160/706"><img src="drawn/m6-d-itshim-sheet-crop.png" alt="The Leave War's posting sheet: Transfer to Sqn, To 149" style="width:109.31%;margin-left:-0.00%;margin-top:-34.48%"></span><figcaption><b>5. Drawn</b>: the press opens the Leave War's own posting sheet, Transfer to Sqn chosen, "To 149". Its line: "Restored on 142 now. On 1 Dec: moves to 149." After "Post out" he shows in 142's Outgoing and 149's Incoming, as Cinch does in N6.</figcaption></figure>
     </div>
+    <p><b>Five things I read into your words</b>, each drawn as I recommend:</p>
+    <div class="rd" id="n9a"><p><b>a. After "It's him", the form shuts.</b> <span class="eg">Kestrel presses "It's him" with "Jester" typed and a seat half picked.</span> <span class="rec">I would build:</span> the form folds shut and empties, as its Cancel does, and the passing note says what was asked. Nothing is added to 149. A form left open would invite a second, wrong add of the same man.</p><button type="button" class="diff" data-q="N9a" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n9b"><p><b>b. The bell line.</b> <span class="eg">Hunter and Blade are 142's admins. Kestrel asks on Wed 25 Nov.</span> <span class="rec">I would build:</span> both get the line. Its day is the day Kestrel asked, since the request is about no day of the schedule. It is worded as N7's line is: the question, then who asks.</p><button type="button" class="diff" data-q="N9b" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n9c"><p><b>c. Jester's archived row gets a fourth button.</b> <span class="eg">Hunter taps the line. Jester's row opens with "Restore and post to 149", "Restore", "Delete" and "Cancel".</span> <span class="rec">I would build:</span> the new button is the row's one bright button while a request waits, and "Restore" takes the plain look. Hunter can still only restore him, or delete him. On a phone "Cancel" drops to a second line.</p><button type="button" class="diff" data-q="N9c" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n9d"><p><b>d. When he is restored.</b> <span class="eg">Hunter presses "Restore and post to 149", the sheet opens, and he closes it with ✕ without pressing "Post out".</span> <span class="rec">I would build:</span> nothing has happened: Jester is still archived. The restore and the posting are made together by the sheet's "Post out", so he is never left restored on 142 with no posting. The sheet's line says both: "Restored on 142 now. On 1 Dec: moves to 149."</p><button type="button" class="diff" data-q="N9d" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n9e"><p><b>e. While Kestrel waits. Not drawn.</b> <span class="eg">Two days later Kestrel wonders whether 142 has acted.</span> <span class="rec">I would build:</span> nothing shows on 149 until 142 posts him; then Jester is under 149's "Incoming" with his date. If 142 does nothing, Kestrel asks again or phones. The other way: a line on 149's page, "Asked 142 for Jester on 25 Nov", until it is answered.</p><button type="button" class="diff" data-q="N9e" aria-pressed="false">Differently</button></div>
     <p><span class="rec">Recommended:</span> as drawn.</p>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="N9" aria-pressed="false">Differently</button></p>
   </section>
@@ -328,17 +353,20 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
   <section id="n10" class="r6">
     <h2>N10. D12 redrawn: the person lists in the app's own drop-down <i class="tag6">new</i></h2>
     <p class="short">The app's own list, as the squadron menu draws it, in place of the browser's plain one.</p>
-    <p class="when"><b>When</b>: Hunter, planning 149's week, signs PLANNED BY; Kestrel files an input with "+ Input".</p>
+    <p class="when"><b>When</b>: every day. Hunter, planning 149's week, signs PLANNED BY; Kestrel files an input with "+ Input".</p>
     <p class="note">You were right that round 5's drawing was ugly, and it showed the app as it really is today: both boxes open the browser's own plain list (on your iPhone, the wheel at the foot of the screen). The pictures below use the app's own drop-down instead: the dark list the squadron menu already uses, with a tick on the chosen name.</p>
     <div class="pair">
-      <figure><img src="drawn/m6-d-today-plannedby-crop.png" alt="Today: the PLANNED BY box, closed"><figcaption><b>Today</b>: the PLANNED BY box. Pressed, it opens the browser's own list, which a picture cannot hold.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:740/134"><img src="drawn/m6-d-today-plannedby-crop.png" alt="Today: the PLANNED BY box, closed" style="width:199.19%;margin-left:-51.35%;margin-top:-0.00%"></span><figcaption><b>Today</b>: the PLANNED BY box. Pressed, it opens the browser's own list, which a picture cannot hold.</figcaption></figure>
       <figure><img src="drawn/m6-d-plannedby-crop.png" alt="Recommended: the app's own list under PLANNED BY: name, Kestrel, Hunter 142, Saber 142"><figcaption><b>Drawn, recommended</b>: "— name —" first, then 149's own Kestrel, then Hunter and Saber with "142" in grey at the right.</figcaption></figure>
       <figure class="tall"><img src="drawn/m6-p-plannedby-crop.png" alt="Phone: the same list"><figcaption><b>Drawn, phone</b>.</figcaption></figure>
-      <figure><img src="drawn/m6-d-plannedby-chosen-crop.png" alt="After choosing: Hunter · 142"><figcaption><b>Drawn</b>: after choosing, the box reads "Hunter · 142".</figcaption></figure>
-      <figure><img src="drawn/m6-d-person-crop.png" alt="The + Input Person list: name first, then only 149's men"><figcaption><b>Drawn, recommended</b>: "+ Input"'s Person list on 149: empty first, then only 149's ten men, as you ruled.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:740/134"><img src="drawn/m6-d-plannedby-chosen-crop.png" alt="After choosing: Hunter · 142" style="width:199.19%;margin-left:-51.35%;margin-top:-0.00%"></span><figcaption><b>Drawn</b>: after choosing, the box reads "Hunter · 142".</figcaption></figure>
+      <figure><img src="drawn/m6-d-person-crop.png" alt="The + Input Person list: name first, then only 149's men"><figcaption><b>Drawn, recommended</b>: "+ Input"'s Person list on 149: "— name —" first, then only 149's ten men, as you ruled.</figcaption></figure>
       <figure class="tall"><img src="drawn/m6-p-person-crop.png" alt="Phone: the Person list"><figcaption><b>Drawn, phone</b>.</figcaption></figure>
     </div>
-    <p><span class="rec">Recommended:</span> the app's own list in both boxes, as drawn. It also changes the boxes on your own squadron's pages, which use the same plain list today.</p>
+    <p><span class="rec">Recommended:</span> the app's own list in both boxes, as drawn. It also changes the boxes on your own squadron's pages, which use the same plain list today. It is new building work: today the browser draws these lists itself.</p>
+    <p><b>Two things I read into it:</b></p>
+    <div class="rd" id="n10a"><p><b>a. The empty first line.</b> <span class="eg">Kestrel opens "+ Input" on 149. The Person box starts empty, as you ruled, and the list's first line is "— name —", ticked.</span> <span class="rec">I would build:</span> "— name —" in both lists. It is what the sign-off boxes say today; the Person box has no empty line today.</p><button type="button" class="diff" data-q="N10a" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="n10b"><p><b>b. Where the squadron number sits.</b> <span class="eg">Hunter signs 149's PLANNED BY. In the open list his line is "Hunter", with "142" in grey at the right; the closed box then reads "Hunter · 142".</span> <span class="rec">I would build:</span> as drawn: the list lays the number as the squadron menu lays its grey word, and the box keeps round 5's "Hunter · 142".</p><button type="button" class="diff" data-q="N10b" aria-pressed="false">Differently</button></div>
     <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="N10" data-say="(keep the plain list)">Keep the plain list</button><button type="button" class="diff" data-q="N10" aria-pressed="false">Differently</button></span></p>
   </section>
 
@@ -350,7 +378,7 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
       <figure class="tall"><img src="drawn/e1b-p-form-crop.png" alt="Phone: the form"><figcaption><b>Redrawn, phone</b>.</figcaption></figure>
       <figure class="tall"><img src="drawn/e1d-p-note-crop.png" alt="Phone: Add person and Cancel one pair, the Blocked note at the foot, clear of them"><figcaption><b>Redrawn, phone</b>: a name typed and 149 pressed: the "Blocked:" note at the foot, clear of the pair.</figcaption></figure>
     </div>
-    <p class="note">D8's pictures were redrawn the same way. This is now a standing rule for every drawing.</p>
+    <p class="note">D8's pictures were redrawn the same way. Every drawing from now on measures a pair of buttons from the app.</p>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="N11" aria-pressed="false">Differently</button></p>
   </section>
 
@@ -509,7 +537,7 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
 
     <div class="rd" id="e9f"><p><b>f. Add a person, the small things.</b> <span class="eg">Kestrel adds Nova, then wants to add two more.</span> <span class="rec">I would build:</span> after a person is added the form clears and stays open for the next one. Escape does what Cancel does. The button still reads "Add person and sign-in" once a sign-in is typed, as today. A second press on "+ Add a person" with the form open closes it if it is empty and does nothing if something is typed (Cancel is the way to clear it). <a href="#d1">The pictures</a>.</p><button type="button" class="diff" data-q="E9f" aria-pressed="false">Differently</button></div>
 
-    <div class="rd" id="e9g"><p><b>g. A man's row on another squadron's page.</b> <span class="eg">Kestrel, on 149's page, sees Ranger (142).</span> <span class="rec">I would build:</span> no sign-in dot, no roster dot and no role badge on that row. Hunter, who holds Plan of 149, stays on 149's main list with "also plans 149", not under 142's heading. Typing "Ranger" in the search opens 142's heading with him under it. <a href="#d5">The pictures</a>.</p><button type="button" class="diff" data-q="E9g" aria-pressed="false">Differently</button></div>
+    <div class="rd" id="e9g"><p><b>g. A man's row on another squadron's page.</b> <span class="eg">Kestrel, on 149's page, sees Ranger (142).</span> <span class="rec">I would build:</span> no sign-in dot, no roster dot and no role badge on that row. <b class="tag6">Updated in round 6:</b> Hunter, who holds Plan of 149, now stands in the "From other squadrons" block and under 142's heading, no longer on 149's main list (N3 d), and an admin's short row says "admin" in words (N3 e). Typing "Ranger" in the search opens 142's heading with him under it. <a href="#d5">The pictures</a>.</p><button type="button" class="diff" data-q="E9g" aria-pressed="false">Differently</button></div>
 
     <div class="rd" id="e9h"><p><b>h. Folding a heading over a row you changed.</b> <span class="eg">Kestrel opens "142 · 60 people", opens Ranger, presses View, and folds the heading without saving.</span> <span class="rec">I would build:</span> the row closes as its Cancel does and the choice is dropped: one press to make again. Nothing is left changed out of sight.</p><button type="button" class="diff" data-q="E9h" aria-pressed="false">Differently</button></div>
 

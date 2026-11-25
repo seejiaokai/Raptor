@@ -57,6 +57,8 @@ figure.tall img{max-height:520px;width:auto;max-width:100%;justify-self:center}
 /* a wide picture cut to the part that matters: the frame hides the rest, the picture inside is drawn larger and shifted (sizes written on each one) */
 .cut{display:block;overflow:hidden;border:1px solid var(--edge);border-radius:6px;background:#0c0f13}
 .cut img{display:block;max-width:none;border:0;border-radius:0}
+figure.tall .cut img{max-height:none;max-width:none}
+figure.tall .cut{max-width:320px;width:100%;justify-self:center}
 figcaption{font-size:.94rem;color:var(--muted)}
 figcaption b{color:var(--ink)}
 /* the films of the squadron number: only the end of the top bar that holds the number, at about its real size */
@@ -76,7 +78,7 @@ p.chg,div.chg{border-left:3px solid var(--edge);padding-left:10px;font-size:.95r
 p.r6,div.r6{background:var(--r6bg);border-radius:8px;padding:10px 12px;font-size:.95rem;max-width:none}
 p.r6>b:first-child,div.r6>p>b:first-child{color:var(--r6)}
 div.r6{display:grid;gap:8px}
-section.r6{border-left:4px solid var(--r6)}
+section.r6{border-left:4px solid var(--r6);padding-left:10px}
 .r6key{display:inline-block;width:.8em;height:.8em;border-radius:3px;border:2px dashed #8B5CF6;vertical-align:-1px;margin-right:4px}
 p.chg>b:first-child,div.chg>p>b:first-child,.told.chg .label{color:var(--muted)}
 div.chg{display:grid;gap:8px}
@@ -87,6 +89,7 @@ p.was{border-left:3px solid var(--edge);padding-left:10px;font-size:.95rem;color
 .rd p{font-size:.96rem}
 .rd .eg{color:var(--muted)}
 .rd button{justify-self:end}
+.rd .ch{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .nav{display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:none;flex-wrap:wrap}
 .nav a{display:inline-flex;align-items:center;min-height:44px}
 .nav .ch{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
