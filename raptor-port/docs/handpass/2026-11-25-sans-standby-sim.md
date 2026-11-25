@@ -42,20 +42,20 @@ D2340's words; both recorded by him, the older tests changed to follow.
 
 | Place the answer shows | SHOW | USABLE | PAINTED beside it |
 |---|---|---|---|
-| 1. Edit Schedule crew panel, seat picked — desktop | | | |
-| 2. Edit Schedule crew panel, seat picked — phone | | | |
-| 3. Scheduler Board crew list, seat picked — desktop | | | |
-| 4. Scheduler Board crew list, seat picked — phone | | | |
-| 5. Crew list, no seat picked (D2420) | | | |
-| 6. The "N free" count | | | |
-| 7. The drag hover over a seat | | | |
-| 8. The note after a drop or a tap-to-plan | | | |
-| 9. The green "where can he go" rings | | | |
-| 10. The warning list and his puck's amber "A" | | | |
-| 11. His bell's SANS reminder (as him) | | | |
-| 12. A published day, and its next amendment | | | |
-| 13. A standby seat's other reasons (currency, busy, leave) — unchanged | | | |
-| 14. The wording row (lesson 33): every line of words above read as its reader | | | |
+| 1. Edit Schedule crew panel, seat picked — desktop | YES — the same words as the board for every kind of seat (A W1wk-d, F17, F22; B F6, F9) | YES — the week's "+" and seats arm it | the panel's other reasons (front-seat rule, crew rest) first where they apply |
+| 2. Edit Schedule crew panel, seat picked — phone | YES (A W1wk-p, F17-p; B F6, F9 phone) | YES — but one phone run of four did not arm the week's OFT "+" (A lead 4, filed `[SANS-STANDBY-WALK-LEADS]`) | every reason line inside the panel at 402 (B fit) |
+| 3. Scheduler Board crew list, seat picked — desktop | YES — standby plain; untimed OFT / AMT and extras struck; "not offering …" before times; D2587's words (A W1r, F1, F4, F17; B F5–F9) | YES | absences, the front-seat rule, crew rest and "already on" come first, unchanged (A F20) |
+| 4. Scheduler Board crew list, seat picked — phone | YES (the same runs at 402 WebKit) | YES — tap-to-plan; a tap in the middle of an empty extra place under a seated man picks the man (older, filed `[SANS-STANDBY-WALK-LEADS]` (1)) | every line inside the panel at 402 |
+| 5. Crew list, no seat picked (D2420) | YES — struck, no reason line, the reason in the hover title (A F13/F14) | YES | O2 / Fable Q4: struck all day on a standby-only day (older, his question) |
+| 6. The "N free" count | YES — equals the names drawn free at every step (6 / 0 / 0 / 0 / 6, A F13) | n/a | — |
+| 7. The drag hover over a seat | YES — standby no SANS words; the OFT the exact words (A F11, F17, W1d) | YES — desktop mouse, a finger in Chromium at phone size (WebKit drags cannot be scripted) | a carried name from the crew list scrolls the crew list, not the board, at the edge (older, filed (3)) |
+| 8. The note after a drop or a tap-to-plan | YES — standby "planned" or its own reason; the sims the SANS words; after R1's fix a "not offering" drop on an untimed sim carries the warning line, as an untimed flight's does (R1 re-walk) | YES | on a weekend an untimed sim's first drop shows the OIL note first (as on `main`, D2573's sheet §14) |
+| 9. The green "where can he go" rings | YES — every standby seat rings for Ranger with nothing filed; flights and untimed sims do not; filed, they do (A F12; B F6) | n/a | occupied seats not ringed, unchanged |
+| 10. The warning list and his puck's amber "A" | YES — never a standby line (B F10/A6, N9; A F21); after R1's fix an untimed OFT / AMT "not offering" warns, with the amber "A" on the board and the week (R1 re-walk, both sizes) | n/a | the amber "A" is per man per day, so it stands on his standby puck too (B lead 1, A F21) — a question for him |
+| 11. His bell's SANS reminder (as him) | YES — counts flights and untimed sims with nothing filed, never standby, ground, desks, all hands, a cancelled line (B F10, F15, F18, F19, A20; A F4, F17) | YES — tapped, opens the SANS calendar on the day (B F15; A plain-user round) | ends "Tap to file for availability." (D2587 keeps it) |
+| 12. A published day, and its next amendment | YES — the warning list before publishing, after, and with an amendment open names only the flight (A F21) | YES | publishing says only "Friday published and approved" — nothing for nothing filed (Fable Q5, recorded) |
+| 13. A standby seat's other reasons (currency, busy, leave) — unchanged | YES — leave, ATT C, the front-seat rule, SDO duty, crew rest, "already on" all shown as before (A F20) | n/a | no SC-currency line seen for a SANS man (recorded) |
+| 14. The wording row (lesson 33): every line of words above read as its reader | YES — every crew-list, hover and note line states a fact to the scheduler; none tells him to file; Ranger's own bell asks him to file (A §Lesson 33; B fit at 402) | n/a | — |
 
 ## 4. The five sizing lines
 
@@ -91,15 +91,53 @@ EXPECTED lines that replace theirs: `docs/superpowers/briefs/2026-11-25-sans-sta
 
 ## 6. The orders walked
 
+Walker A (`docs/handpass/parts/sss-w1A-report.md`, copied whole from `D:/raptor-work/c182-walk/A-report.md`): F1/A12, F2, F3/A11, F4/A13,
+F11/A15, F12/A16, F13+F14/A14, F16, F17/A17, F20/A19, F21/A9, F22, N1–N4, N12, the week view (W1wk) and the plain-user round,
+desktop and phone. Walker B (`docs/handpass/parts/sss-w1B-report.md`): F5/A10, F6/A1, F7/A2, F8/A3, F9/A4, F10/A5–A6, N9,
+F15/A18, F18/A8, F19/A7, A20, N1, N2, N6, N10–N12, the fit at 402 and the plain-user round, desktop and phone. Orders among
+them: filed then planned and planned then filed (F15), placed then timed then cleared (F16), standing by → flying by B → by R →
+B cleared (F6), ticked → unticked → ticked (F7), cancelled → un-cancelled, removed → Undo (F19, plain-user round), weeks
+changed (F18). The host's re-walk of R1's fix (chat 185, `scripts/handpass/sss-r1.mjs` on the frozen build
+`D:/raptor-work/c185-build`, `index-SXKkjfaJ.js`, commit `d95a37cae`): Ranger "Fly only" tapped into an untimed OFT on the
+board and an untimed AMT from Edit Schedule's week, Jester "OFT only" on an untimed flight beside them, his bell — desktop 13
+PASS, phone 13 PASS, 0 FAIL, 1 RECORDED each (a first desktop run's 2 FAILs were the script's own expectation of the note's
+words, corrected and re-run).
+
 ## 7. Cases carried by a test
+
+The repeated standby rows beyond one of each kind walked (`sans-standby-sim.test.ts`); each D2585 filing pair beyond one per
+event walked, and R1's warning on an untimed OFT / AMT (`sans-notimes-offer.test.ts`); the surfaces' agreement on one man
+(`sans-notimes-surfaces.test.tsx`); D2587's words (`leavewar/sans-ahead.test.ts`); the reminder's standby skip
+(`leavewar/sans-planned-r5.test.ts`, `sans-unfiled.test.ts`).
 
 ## 8. The pictures
 
+3,439 in `docs/img/handpass/2026-11-25-sans-standby-sim/`: walker A 1,077 (`A/`), walker B 2,298 (`B/`), the R1 re-walk 64
+(`R1/R1-d`, `R1/R1-p`). Deciding pictures opened by the host: A's three script FAILs (`A/W1r-d/W1r-w1-fl-win-FCP-desktop.png`
+— the flight's B is 06:10, so Rebel's Fly 08:00–10:00 does not cover it, the existing sortie window; `A/F4-d/F4-f4-oft-slots4oft2p-clip-desktop.png`
+— Otter, a WSO, "WSO — cannot fly front seat" before any SANS reason); the R1 re-walk's warning lists
+(`R1/R1-d/R1-r1-all-warn-clip-desktop.png`, `R1/R1-p/R1-r1-all-warn-clip-phone.png`: three amber lines, Jester's flight and
+Ranger's AMT and OFT), the board puck (`R1-r1-oft-puck-clip-desktop.png`) and the week's pucks with the note
+(`R1/R1-p/R1-r1-week-pucks-phone.png`: the amber "A" on both sims, the note "Ranger — SANS: not offering AMT today. Planned
+on Sim SS AMT U").
+
 ## 9. The break tests
+
+`scripts/handpass/breaks/sss-batch.json`, run under the checks lock (chat 185): **7 of 7 caught** — the standby skip in the
+crew list (6 tests red), in the warning list (1), in his reminder (6); D2585's "not offering" before times (7); D2584 Q5 /
+D2586's untimed sims (7); R1's read of the untimed sims (4); D2587's words (1). Every source file back as it was.
 
 ## 10. Errors seen
 
+None — no console errors, page errors or failed requests in any cited run of either walker or the R1 re-walk.
+
 ## 11. Not walked, and why
+
+- Phone drags in WebKit: cannot be scripted (`docs/walk-scripts.md` §4); F11 walked by a finger in Chromium at the phone's
+  size, every WebKit placement by tap-to-plan.
+- F22.4 on the phone (Edit Schedule tap-to-plan into the week's OFT "+"): two presses did not arm (lead 4, filed); the same
+  press is walked on the phone in W1wk-p, F17-p and F13-p and the R1 re-walk (the AMT "+").
+- The desktop's Edit Schedule crew panel has no open / close (always shown).
 
 ## 12. The code reads
 
@@ -127,8 +165,33 @@ this round), the same brief (`READ-BRIEF.md` there, D56's exclusion in it, D2579
   (standby, ground, desks) — the 14 Aug 26 "struck by default" rule, older than this change; the same as Fable's Q4.
   On his look card.
 
+### 12a. The narrow read of R1's fix
+
+A fresh Opus reader on `7b203d113` alone (chat 182): clean. Two minor notes, no action: two untimed rows with the same label
+fold into one warning line (the list's existing fold of identical lines); a row with no label reads "Sim undefined" (older,
+the same on a timed sim).
+
 ## 13. Gates
+
+GitHub's run on `cdb605dff` failed only the phone-fit browser test's two-line check (the shorter D2587 words fit one line at
+402) — fixed in `266b5e9f0`. The run on the branch head `d95a37cae` was in progress at chat 185's start; the result on the
+last pushed commit is read before his look is asked for (the handoff's line). The break tests' seven test files ran green
+before and after every break.
 
 ## 14. What the walk found, and each disposition
 
+- **R1 (the two reads; also walker A's lesson-32 disagreement):** fixed red-first (`7b203d113`), re-walked at both sizes on
+  both pages (§6) — PASS.
+- **Walker A's three FAIL rows, walker B's two:** the scripts' own expectations (§8; B's report §The table) — no app fault.
+- **The amber "A" stands on his standby puck too** (B lead 1, A F21): the chip is per man per day, as built; whether "standby
+  never warns" (D2584 Q4) should reach the chip is his question — on his look card.
+- **O2 / Fable Q4** (struck all day with no seat picked on a standby-only day) — his question, on the look card. **Fable Q3**
+  (start-only sim timed, end-only untimed) and **Q5** (publishing says nothing for nothing filed on an untimed sim) —
+  recorded as built (A F3, F21).
+- **Older leads, filed** `[SANS-STANDBY-WALK-LEADS]`: a phone tap on a sim's empty extra place under a seated man; an empty
+  first extra place; a crew-list name not scrolling the board at its edge; one phone run's week "+" not arming.
+- **Known, recorded before:** an untimed sim's first weekend drop shows the OIL note first (D2573's sheet §14, as on `main`).
+
 ## 15. The Walk line
+
+`Walk: docs/handpass/2026-11-25-sans-standby-sim.md · 3,439 pictures · 14 surfaces · 36 orders (A 19, B 16, R1 1) · MISSING: 0 — R1 fixed and re-walked; 4 older leads filed [SANS-STANDBY-WALK-LEADS]; 2 questions to him (the amber "A" on a standby puck; struck all day with no seat picked)`

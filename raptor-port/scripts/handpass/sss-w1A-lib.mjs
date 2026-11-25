@@ -30,6 +30,7 @@ export async function addSimRow(p, W, di, kind, label, str = '', end = '') {
   if (end) await L.typeBox(p, W, `[data-bfld="sr:${di}.${kind}.${ri}.end"]`, end)
   return { ri, r: await simRow(p, di, kind, ri) }
 }
+// eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- runs inside the page: the row is handed out to the walk as plain JSON, so only what the store would save is read
 export const simRow = (p, di, kind, ri) => p.evaluate(([i, k, n]) => { const x = window.DAYS[i].sims[k][n]; return x ? JSON.parse(JSON.stringify(x)) : null }, [di, kind, ri])
 /* the places of a sim row drawn on the open board (each seat's own box, and the "+" extras zone) */
 export const simZones = (p, di, kind, ri) => p.evaluate(([di, kind, ri]) => [...new Set([...document.querySelectorAll(`#schedBoard [data-slot^="s:${di}.${kind}.${ri}."], #schedBoard [data-fill^="s:${di}.${kind}.${ri}."]`)].filter(e => e.getBoundingClientRect().width > 0).map(e => e.dataset.slot ? `slot=${e.dataset.slot}` : `fill=${e.dataset.fill}`))], [di, kind, ri])

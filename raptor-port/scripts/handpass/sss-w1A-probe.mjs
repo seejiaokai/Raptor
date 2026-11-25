@@ -18,6 +18,7 @@ await run('PR', SZ, async (p, W) => {
   const menu = await Z.waveMenu ? null : null
   for (const kind of ['SC', 'AVALON', 'BB']) {
     const a = await addLine(p, W, 4, { kind })
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- runs inside the page: the wave is handed out to the probe as plain JSON, so only what the store would save is read
     const wv = await p.evaluate(([i, w]) => JSON.parse(JSON.stringify(window.DAYS[i].waves[w])), [4, a.wi])
     W.rec('wave-' + kind, `+ Wave → ${kind} on Fri 17`, a.wi >= 0, J(wv).slice(0, 1500))
     const dom = await p.evaluate(w => ({
