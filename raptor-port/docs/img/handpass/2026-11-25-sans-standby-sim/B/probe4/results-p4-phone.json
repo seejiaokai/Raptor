@@ -1,0 +1,45 @@
+[
+ {
+  "scn": "p4",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today (page clock), Saber signed in",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "p4",
+  "size": "phone",
+  "id": "try-locator.tap",
+  "what": "the extra place pressed by locator.tap",
+  "ok": "REC",
+  "note": "box {\"x\":28,\"y\":465.4375,\"width\":74,\"height\":18} · at its middle: SPAN.sb-slot empty pax {\"slot\":\"s:6.amt.0.x0\"} · ARM null · its class now \"sb-slot empty pax\"",
+  "pics": "p4-p4-locatortap-phone.png"
+ },
+ {
+  "scn": "p4",
+  "size": "phone",
+  "id": "try-touchscreen.tap at its middle",
+  "what": "the extra place pressed by touchscreen.tap at its middle",
+  "ok": "REC",
+  "note": "box {\"x\":28,\"y\":465.4375,\"width\":74,\"height\":18} · at its middle: SPAN.sb-slot empty pax {\"slot\":\"s:6.amt.0.x0\"} · ARM null · its class now \"sb-slot empty pax\"",
+  "pics": "p4-p4-touchscreentapatitsmiddle-phone.png"
+ },
+ {
+  "scn": "p4",
+  "size": "phone",
+  "id": "try-element.click()",
+  "what": "the extra place pressed by element.click()",
+  "ok": "REC",
+  "note": "box {\"x\":28,\"y\":465.4375,\"width\":74,\"height\":18} · at its middle: SPAN.sb-slot empty pax {\"slot\":\"s:6.amt.0.x0\"} · ARM s:6.amt.0.x0 · its class now \"sb-slot empty pax armed\"",
+  "pics": "p4-p4-elementclick-phone.png"
+ },
+ {
+  "scn": "p4",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]
