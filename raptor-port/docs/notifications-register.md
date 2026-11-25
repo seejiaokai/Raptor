@@ -30,6 +30,7 @@ carries his primary squadron's lines by default, every other squadron's switched
 | # | Who is told | When | What the line says | A tap | Ruled |
 |---|---|---|---|---|---|
 | B1 | each person in an input | it is deleted | *Deleted* | — | the bell (D769) |
+| B1s | the schedulers | a SANS man deletes or cuts back his SANS availability for a day he is already planned on — never a day he is not planned (his D2588, 25 Nov 26; today nobody is told: B1 tells only the people in the input, and he is its one person) | example, to be drawn and checked by Fable: *Ranger withdrew his SANS availability for Sat 18 Jul. He's planned on VL BFM (T/O 13:00).* | the day (to be drawn) | proposed — D2588, drawn first |
 | B2 | a person | he is put in an input, or one is filed for him | *You were added* | the input | D769 |
 | B3 | a person | he is taken out of an input | *You were taken off* | the input | D769 |
 | B4 | its people | an input is cancelled, or brought back | *Cancelled — reason* / *Un-cancelled* | the input | D760 |
