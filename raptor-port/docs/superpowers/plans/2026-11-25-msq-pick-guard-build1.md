@@ -272,6 +272,12 @@ A18 builds nothing for "Check my quals" if C4 keeps the card at home; A19 is D26
 full row; §8 folds them in before the third read. Found by A4: Quals still shows Done after the member-view switch — a
 fault this build fixes.
 
+**His D2628 (25 Nov 26 — "group C as recommended"):** group C as recommended, Fable's change where it made one, C6 held
+back and put to him (it clashes with D286). The bell's grey number first on every line, no colour; the fades' details
+(D2620's); "+ Add a person" a button beside Filter; on another squadron "+ Input" and "+ Commitment" offer only its own
+people, "Welcome back" only at home, the badge "View only" where he can only look; bug reports one list, each with its
+grey number; a sign-off name from another squadron with its number. Each in the ruling's full row; §8 folds them in.
+
 **(c) The schedule's veiled dialogs — `.airpop` / `.modal`, flags in `ui/pops.ts`. Shaded.** Each row reads the
 predicate named, as a function of `ui/windrawn.ts` that the component calls.
 
