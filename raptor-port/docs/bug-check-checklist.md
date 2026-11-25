@@ -151,3 +151,5 @@ script already pictures re-runs that one step into a new folder (§5; `docs/walk
     size emulated, at neighbouring heights, some making the page's height a fraction; the window behind it scrolls by nothing; the list
     keeps the wheel at its ends; what only a real wheel shows named
     as a look for his PC.
+33. Every line of words pictured is read as its reader: who sees it, and does it ask that person to do what is theirs; a
+    ruling on one line swept over its sibling lines in the same change.

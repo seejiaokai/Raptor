@@ -367,10 +367,13 @@ export function slotRules(key:any){
    screen. On a day SANS for him only by a posting not yet run (owner D2338, 22 Nov 26 — "no availability filed, await for
    17 Jul for SANs availability to be filed"), the words name that date and where it is filed — his own words since
    D2340 (23 Nov 26), which lets it be filed from the moment the posting is saved; from the date on, the usual words.
+   NEVER TELLS THE SCHEDULER TO FILE (owner D2587, 25 Nov 26 — "this sounds like we are telling the admin to file it. which
+   is incorrect"): filing is the SANS man's own job, so "File it on the Inputs page's SANS tab." went; no full stop, as the
+   usual words (a fresh Fable's check). His own bell keeps "Tap to file for availability." — it speaks to him.
    `iso`: the day looked at. */
 export function sansNoneWhy(p:any,iso:any):string{
   const f=sansAheadFrom(p,iso);
-  return f?`SANS from ${isoDayWords(f)}: no availability filed. File it on the Inputs page's SANS tab.`:'SANS — no availability filed for today';}
+  return f?`SANS from ${isoDayWords(f)}: no availability filed`:'SANS — no availability filed for today';}
 const SANS_KEY:any={fly:'f',oft:'o',amt:'a'};
 export const SANS_LABEL:any={fly:'Fly',oft:'OFT',amt:'AMT'};
 /* `iso`: the day being asked about — only a man who is SANS ON THAT DAY is judged (owner D2313, 22 Nov 26: a day before
