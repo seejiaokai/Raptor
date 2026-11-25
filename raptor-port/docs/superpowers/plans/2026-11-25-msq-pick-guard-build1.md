@@ -4,9 +4,12 @@ Written 25 Nov 26 (chat 175's night) by a fresh Fable helper from its brief,
 `../briefs/2026-11-25-msq-pick-guard-build1-plan-brief.md`; revised to its red team's two rounds (§15, §16), each folded
 in by a fresh Fable; **his answers of 25 Nov 26 folded in by a fourth fresh Fable (chat 176, brief
 `../briefs/2026-11-25-msq-q3-fold-brief.md`): §17 is the table of them, and the body now says what will be built.**
-**Status: a draft for its third and last blind read — not approved, and not to be built from until that read is folded,
-the six questions still open (§8.3) have his answers, the new looks and words are drawn and seen by him (D1625), and he
-has given his go.** It builds nothing. The rulings: D2403, D2405, D2590–D2599, D2620–D2636 (full rows in
+**Its third and last blind read — Astra, a fresh Opus, a fresh Fable and the security reader, each blind — is folded in
+by a fifth fresh Fable (chat 187, brief `../briefs/2026-11-25-msq-read3-fold-brief.md`): §20 is the table of every
+finding, and the body says what will be built. There is no fourth round (the cap is three).**
+**Status: read three times, not approved — not to be built from until the questions on the round-5 page (E1–E9, D1–D12)
+and the three new ones (NQ1–NQ3, §8.4) have his answers, the new looks and words are drawn and seen by him (D1625),
+and he has given his go.** It builds nothing. The rulings: D2403, D2405, D2590–D2599, D2620–D2636 (full rows in
 `.claude/decisions-full/`); the sizing file `2026-11-24-msq-pick-guard-build.md` (parts A–H; this plan is A, B, F, with
 G and V his answers added); today's app as pressed, `../briefs/2026-11-24-msq-pick-guard-press-report.md`, the five
 pressers of 25 Nov (`../briefs/2026-11-25-msq-pick-guard-q2-press-p1.md` to `-p5.md` — "pressed (P2 4)" cites a report
@@ -23,15 +26,21 @@ table, so a change of words moves no test. `[ruled]` = the words stand in a ruli
 answered "as recommended" (D2627, D2628). **(reading)** = the agent's own reading of a ruling or of what a person
 should see: named so it is put to him, never built as it stands; §17 lists every one. **The questions' codes:** H2, H3,
 H7, H8, H11 of the scenarios file §2, "§3" for the host's calls, and N1–N5 are **answered** (§8, §17). **Still open —
-each a switch point, shaped for either answer, none answered here: N6, N7, N9, N10, N12, and N13 (the Calendar window —
-D2597's open part).** N11 is the page's B7 and waits with group B (D2636). The page he answered numbers its questions
+each a switch point, shaped for either answer, none answered here: N6, N7, N10, N12, N13 — on the round-5 questions
+page as E5, E2, E3, E4, E1 — with E6–E9, D5, D8, D10 and NQ1–NQ3; N9 is closed (it cannot happen — §8.3).** **(default)**
+after a switch point = the round-5 page's recommendation
+(`raptor-port/docs/mock/2026-11-25-msq-pick-guard-q3/page-r5b.html`), **still unanswered by him**: it is what the build
+takes if he says "as recommended", and never his ruling until he does; the other answer is shaped beside it. §8's
+table gives each E and D code its N code, its default and its step. N11 is the page's B7 and waits with group B
+(D2636) — but for the one Undo E7 asks about. The page he answered numbers its questions
 its own way (A1–A20, B1–B12, C1–C11): the table at the head of §8. The words reads number their own items too: always
 written "words-read N7", "words3 W2".
 
 **Three squadrons, always (his D2630).** Every test world, example and walk here names 142, 149 and 150 and a person
 holding rights in several at once: **Hunter — 142's admin, Plan of 149, View of 150**; Saber — a master admin, home
-142; Ranger — 142's member, View of 149 and of 150; Kestrel — 149's own admin; Osprey — 149's member; Petrel — 150’s
-own admin (new in the test world, §10 step 0; a callsign the demo does not hold). An example that names only two is a fault of this plan.
+142; Ranger — 142's member, View of 149 and of 150; Kestrel — 149's own admin; Osprey — 149's member; **Mako — 150’s
+own admin** (new in the test world, §10 step 0 — the name the questions page and its drawings use; a test that needs a
+second Plan holder of 149 gives it to him, as the page's E6 does; the earlier revisions gave him a callsign of their own, replaced throughout). An example that names only two is a fault of this plan.
 
 ---
 
@@ -45,8 +54,9 @@ own admin (new in the test world, §10 step 0; a callsign the demo does not hold
   inside the ☰ menu (D2590, D2627 A14–A16). The window stays live with his typing; the squadron and the view stay as they were.
 - **A window that only shows things closes by itself at those same presses, and the press goes through, no note:**
   "Who's available", Changes (opened out or folded to its bar), Insights, a day opened on the SANS calendar, the Leave
-  War's day panel, a Tracker event's details (D2596, D2597). The Calendar window and the Tracker's marking window are
-  still his to answer (N13, N7).
+  War's day panel, a Tracker event's details (D2596, D2597). The Calendar window, the Tracker's marking window, its
+  Down days and Failures, and a settings window with nothing changed in it are still his to answer (E1, E2, E4 —
+  §8.3): each closes this way only on his word.
 - The same presses are refused while a change is not saved — the "Not saved" band with Retry (D2594), the note
   standing under the band — and while Admin → Users holds a change not saved: an opened row with anything changed in
   it, the Give access form, "+ New squadron", and "Add a person" once something is in it (D2595, D2598). "Add a
@@ -63,8 +73,13 @@ own admin (new in the test world, §10 step 0; a callsign the demo does not hold
   question a pick asks today (D2403; D2627 A20). A refusal always comes before that question, so he never discards
   chart edits only to be refused (D2627 A10).
 - A pick ends Logic's and Quals' edit mode: the squadron picked opens as it normally does (D2627 A4).
-- **A 142 input is never changed under a bar reading 149.** With another squadron picked, the Inputs page lists none
-  of his own inputs of a squadron whose Inputs page he can still open — Hunter's 142 duty stays on 142's page, off
+- **No press on the Inputs pages, the bell or the OIL list changes a 142 input under a bar reading 149 any more.**
+  **Two roads are left, both named to him:** a moved man's old input, answered where he is (his ruling, D2621), and
+  **Undo or Redo of a 142 step while 149 is picked** — on 149 Undo still offers a Plan holder his 142 step and lands on
+  149's Inputs page (item 3 below; Build 3, part E; Fable 7 of the third read). With another squadron picked, the
+  Inputs page lists none
+  of his own inputs of a squadron whose Inputs page he can still open — **the just-saved row pinned at the List's head
+  among them (§5.1)** — Hunter's 142 duty stays on 142's page, off
   149's list and calendar, its "OIL?" button with it (D2621); a tap on the bell for his own OIL question, a holiday's
   bell line and a card of the OIL list each bring the input's squadron into view first (D2621, D2627 A19; security F1
   and F2); and the Input window keeps the input's own squadron. A man who has moved, and whose pages can never be his
@@ -88,25 +103,29 @@ midnight, a right taken away, the Tracker failing part-way.
 2. **The Tracker's hold and its member-view cover** (`store.ts trkMayHold`, `coverWords`; `tracker/TrackerPage.tsx`)
    stay in the code. Whether his own switch still reaches the cover is N10's (§4.4); the hold at his own move at
    midnight is unchanged.
-3. **Undo still reaches another squadron's steps** (part E, Build 3 — on 149 Undo offers a 142 step today: P6 C-undo),
-   **an Undo of "+ New squadron" still drops him from the squadron it removes** (§4.1 row 21 — the page's B7), and
+3. **Undo still reaches another squadron's steps** (part E, Build 3 — on 149 Undo offers a 142 step today: P6 C-undo)
+   — **so a 142 input can still be changed under a bar reading 149 by Undo or Redo until Build 3**; and
    Logout still draws the Input window over the Tracker's question (part C, Build 2). **All of group B waits for his
-   answers after this build (D2636).**
-4. **A window held after midnight, then his own pick: N6 — nothing of it is built before his answer.**
+   answers after this build (D2636).** **An Undo of "+ New squadron" while that squadron is in view** (§4.1 row 21 — the
+   page's B7) **is E7's: refused in Build 1 while a window is open or a change is not saved (default — step 6b), or
+   left as today until group B (its other answer).**
+4. **A window held after midnight, then his own pick: E5 (N6) — the pick goes through and gives it back, as today
+   (default); nothing of it is built before his answer.**
 
 **Is that interim state safe to merge alone? Only on three conditions.**
-1. **He has been told, by name, the one door Build 1 leaves unguarded: row 21** — an Undo of "+ New squadron" while
-   that squadron is in view still changes the squadron with a window open or a change not saved. It is the page's B7,
-   which he put off with group B (D2636) without being told it is a door of this guard. **(reading)** — the host tells
-   him and takes his word, or Build 1 goes live only with the build that closes it.
-2. **No answer still open is built on its recommendation** — N6, N7, N9, N10, N12, N13: each row and step that waits
-   on one says so (§8.3, §10).
+1. **Row 21 has his answer (E7).** An Undo of "+ New squadron" while that squadron is in view changes the squadron
+   with a window open or a change not saved; he put the page's B7 off with group B (D2636) without being told it is a
+   door of this guard, and the round-5 page now tells him and asks. Refused in Build 1 (default, step 6b), or left
+   open on his word — never left open unsaid.
+2. **No answer still open is built before he gives it** — E1–E9, D5, D8, D10, NQ1–NQ3, and the readings of §17: each
+   row and step that waits on one says so (§8.3, §8.4, §10).
 3. **Every new look and word has been drawn and seen by him** (D1625) — the note's new words, the Add a person button
    and its Cancel, the fades (a short film) — and every `[WNS]` word has had its fresh Fable's read (D2441).
 
-Security F2, which `[MSQ-NIGHT-153-OPEN]` has fixed before "merge live", is closed by this build on every road (D2621,
-§5); the one place a man still changes another squadron's input from where he is — a moved man's old input — is his
-ruling, and the backlog item says so in his words. With the three conditions, Build 1 only removes ways into a held
+Security F2, which `[MSQ-NIGHT-153-OPEN]` has fixed before "merge live", is closed by this build on every road of the
+Inputs pages, the bell and the OIL list (D2621, §5); the two places a man still changes another squadron's input from
+where he is — a moved man's old input, his ruling, and Undo or Redo across a pick, Build 3's — are named in the
+backlog item, the first in his words. With the three conditions, Build 1 only removes ways into a held
 window and closes those faults; nothing a person can do today that is right stops working, and nothing new is held.
 The cost of merging it alone is two bands' worth of unreachable code for the length of one build, and the 22-test
 file that proves them by a pick is re-pointed, not deleted (§10). It must **not** be merged before its own FULL check
@@ -181,10 +200,17 @@ So:
   counts `'window'`, `'row'` or `'unsaved'`; `skip` names row ids a door leaves out — **every window that can be
   skipped has a row of its own** (§3.2 (a)), so a door leaves out exactly the window it was pressed in and still meets
   any other (two uses, both in §4.1: the held Input window's own chip, and a card pressed inside the OIL list).
-  **`closeShown()` closes every `'closes'` row that is open — and ends the two edit modes (§18.1) — called by a door only once its change is going through:
+  **`closeShown()` closes every `'closes'` row that is open — and ends the two edit modes (§18.1) — called only inside
+  the final entry, once nothing can still stop the change:
   after the guard has passed, after a save waited for has landed, after the Tracker's question is answered Save or
-  Discard and the guard has passed again, and before the entry (§4.2). A refusal, a Stay, and a change he did not make
-  close nothing.** `ui/` may import everything it must read: `ui/pops.ts`, `ui/winorder.ts`, `ui/windrawn.ts`,
+  Discard and the guard has passed again — at a pick, at the view switch, and inside `landOnOwnPage` for the page door
+  and `ownSquadronFirst` (§4.2 step 6; Astra 5 and Fable 10 of the third read: the earlier draft closed them at the
+  page door before the landing's question). A refusal, a Stay, and a change he did not make
+  close nothing.**
+  **A row may carry `dirty?: () => boolean` beside a `close`** — E1's shape (default): it refuses only while
+  `dirty()`, with its own lead, and is closed by `closeShown()` otherwise. The settings windows (`inputsset`,
+  `sansset`: anything changed since it opened) and the Calendar's two forms take it; **built only on his answer to
+  E1** — on its other answer each stays a plain `window` row and nothing else moves. `ui/` may import everything it must read: `ui/pops.ts`, `ui/winorder.ts`, `ui/windrawn.ts`,
   `state/view.ts`, `state/typing-hold.ts`, `tracker/role.js`, `storage/savewait.ts`.
 - **`src/state/guard.ts` (new, no imports).** The doors live in `state/` and may not import `ui/`, so this file is the
   seam, in the repo's own pattern (`setWarWindowsProbe`, `setSessionWorldHook`, `onBeforeTrackerSwitch`):
@@ -208,7 +234,11 @@ So:
   state is `UsersPanel`'s own (`name`, `np`, `role`, `postIn`, `home`); `SquadronsPanel.tsx NewSquadron`, `MoveEditor`,
   `PlaceEditor`. `on` is "anything differs from how it opened" in each.
   **An eighth report is a window, not typing:** the OIL question raised from a row of the Inputs list, whose state is
-  the page's own (§3.2 (e)). The Admin page unmounts when its tab is left (pressed, P2 1g: the row is closed and its
+  the page's own (§3.2 (e)). **Two more reports, found by the third read, each typed work no frame holds:**
+  `holimport` — a holiday sheet read in and not yet added (`ui/HolidaysPanel.tsx` `pv`, the panel's own state inside
+  the Calendar: Astra 3; it counts on every answer to E1 but "always close"); and `qualsnew` — words typed in Quals'
+  "Add qualification" box (`ui/QualsPage.tsx` `newQual`, added only by Add or Enter: Opus F-c — §18.1, a
+  **(reading)**). The holiday sheet is the worked case of the limit below. The Admin page unmounts when its tab is left (pressed, P2 1g: the row is closed and its
   words gone on return), so no count outlives it. **A sister hook, `useGuardCloses(id, on, close)`,** registers the
   closer of a `'closes'` window whose state is its component's — the SANS day (`ui/SansCal.tsx`'s `dayIso`) — for
   exactly as long as the component is mounted with it open. **Its known limit, said and not tested for:** a form added
@@ -232,16 +262,19 @@ So:
   again only after the answer, when `dlg` is gone (`core.js ask` clears `switchAsking` in its `finally`). Never
   loaded: nothing open.
   **And one closer:** `role.js` gains `onTrackerCloseShown(f)` / `trackerCloseShown()`; `core.js` registers a function
-  that sets `infoId` to null and redraws — the event's details, the Tracker's one `'closes'` window (D2597); its row
-  in `ui/guard.ts` is `trkinfo`, `counts: 'closes'`, `close: trackerCloseShown`. `TRK_WINDOWS` itself stays read-only.
+  that sets `infoId` to null and redraws — the event's details, the Tracker's one `'closes'` window he has ruled
+  (D2597); its row in `ui/guard.ts` is `trkinfo`, `counts: 'closes'`, `close: trackerCloseShown`. **The same closer
+  clears `pop` on E2's default and `downLog` and `failLog` on E4's** — one line each, added only on his answer.
+  `TRK_WINDOWS` itself stays read-only.
 
 ### 3.2 The windows, found in the code
 
 **The `counts` column is what is built.** A cell reads `window`, `row` or `unsaved` (it refuses), **`closes`** (it only
 shows things: it closes by itself at the press and the press goes through — D2596, D2597), or `no` (a list, a menu, a
 mode, a pop-up that already closes). Where a ruling or his answer names the row, the cell cites it. **Two kinds of
-cell are not his answer, and say so:** a cell marked **N6, N7, N12 or N13** is a question still open — the row is
-shaped for either answer and not built until he gives one; and **a cell marked (reading)** is a window the questions
+cell are not his answer, and say so:** a cell marked **E1, E2, E4 or E5 (N13, N7, N12, N6)** is a question still open
+— the row is shaped for either answer, its **default** the round-5 page's recommendation, and not built until he
+gives one; and **a cell marked (reading)** is a window the questions
 page never showed him singly — the Tracker's Show All and its side pop-ups, the Leave War's sheets that only show
 things, the board's two dialogs — held as `window` on D2403's "or other window" and D2597's own words ("none is added
 on the agent's reading"): the safe side, since a refusal loses nothing and a wrong close might. The host puts the list
@@ -264,9 +297,9 @@ over 149's View-only Sched after a pick today, and its Save writes 142's input u
 | `inputedit` | The Input window on the Inputs page | `ui/InputWindow.tsx`; `setInpEdit(r)`; Cancel / Close, Add / Save, ✕ and Escape (which ask when something is typed, D1622) | `ui/pops.ts INPEDIT` | window |
 | `inputsday` | A day opened on the Inputs calendar | `ui/InputsCal.tsx renderPop`; a day tapped; ✕, Escape. Today it stays open across a pick and shows 149's day, a half-typed "+ Note" landing on 142's (pressed, P4 4) | the calendar's own state | window |
 | `sansday` | A SANS day | `ui/SansDay.tsx`, opened from `ui/SansCal.tsx` (`dayIso`, the calendar's own state); ✕, Escape. Today a pick leaves it open (from the code: nothing clears `dayIso` at an entry — the chat-176 presser confirms) | the SANS calendar's own state | **closes** (D2597) — its closer handed over by `useGuardCloses('sansday', !!dayIso, …)` |
-| `inputsset` / `sansset` | Inputs / SANS calendar settings | `ui/InputsSettings.tsx`, `ui/SansSettings.tsx`; the gear or Logic's row; ✕, Escape, a page change (`VIEW_RESET 'page'`) | `pops.ts INPSET`, `SANSSET` | window |
-| `days` | Calendar | `ui/DaysWindow.tsx`; ✕, Escape. No box to type in; each tap believed saved at once, not yet seen on screen (D2597's row) | `pops.ts DAYSWIN` | **N13** — `window`, or `closes` with its own setter in `pops.ts`: one cell |
-| `everywd` / `holiday` | Every Monday · Add / Change a holiday | `ui/EveryWeekday.tsx`, `ui/HolidaysPanel.tsx`; opened from Calendar; ✕, Escape, their own Save | their opener's own state | window |
+| `inputsset` / `sansset` | Inputs / SANS calendar settings | `ui/InputsSettings.tsx`, `ui/SansSettings.tsx`; the gear or Logic's row; ✕, Escape, a page change (`VIEW_RESET 'page'`). **The Calendar opens beside it and it stays open** (`InputsSettings.tsx openDays`: `openBeside('days', 'inputsset')` — read on this branch; on a phone it lies under the Calendar) | `pops.ts INPSET`, `SANSSET` | window — **E1's second half (default):** `dirty` = anything changed since it opened; unchanged, it closes with the pick; changed, it refuses under its own lead (§4.6). Other answer: always `window`, as round 2 had it |
+| `days` | Calendar | `ui/DaysWindow.tsx`; ✕, Escape. Each day pressed is saved at once; **it also holds what waits for a Save — the two forms below and a holiday sheet read in (the `holimport` report, §3.1)** | `pops.ts DAYSWIN` | **E1 (N13) — default: `closes`** with its own setter in `pops.ts`, while none of its forms or its sheet holds something not saved (each of those refuses by its own row). Other answers: `window` whenever open; or `closes` always (a typed holiday name lost, as today) |
+| `everywd` / `holiday` | Every Monday · Add / Change a holiday | `ui/EveryWeekday.tsx`, `ui/HolidaysPanel.tsx`; opened from Calendar; ✕, Escape, their own Save | their opener's own state | window — **on E1's default each takes `dirty`:** a holiday with anything typed or changed; Every Monday once something in it is pressed, not as it opens with one choice lit (**(reading)** — the page's E9m). A new holiday no leave period covers, which the app keeps and saves later by itself: counted, its lead its own — read from the code, pressed before it is built (the page's E1) |
 | `oilday` | The OIL list | `ui/OilDayList.tsx`; `setOilList(…)` — by itself when a holiday is saved, from a holiday's bell line, a sign-off box, a version loaded back; Save, Later, Close, ✕, Escape | `pops.ts OILLIST` | window (D2403 names it) |
 | `lwday` | The Leave War's day panel | `leavewar/ui/DayPanel.tsx`; `openDayPanel(iso)`; ✕, Escape, `closeDayPanel()` | `leavewar/ui/daypanelopen.ts OPEN` | **closes** (D2597) — `close: closeDayPanel`. It sits on a page that stays mounted out of sight; closing it there is the same call |
 | — | The `?timing` readout (pull request 840) | a `FloatWin` with `bystander`, which never calls `forward(id)` | — | **no** — it never joins `UP`; §9 |
@@ -327,9 +360,15 @@ counts: **window**, all three. Shaded.
 (`ReqPanel.tsx`), Selected days (`SelectSheet.tsx`). Shaded: Place a bid and the four award / posting sheets
 (`BidPicker.tsx`), Settings, Open for bidding, Events and an event, the OIL tracker and its settings, a counter, a day's
 list, Remarks, Rename, a manning row, the closed note, New leave war. counts: **window**. `Sheet.tsx OPEN` is kept by
-mount, and the page stays mounted out of sight — §3.3. **(reading):** some of these sheets only show things (a day's
-list, a counter, the OIL tracker, the closed note); he ruled the day panel alone (D2597), and the war's one row does not
-tell its sheets apart, so each still refuses — the list goes to him (§17).
+mount, and the page stays mounted out of sight — §3.3. **(reading) — the page's E9b:** some of these sheets only show
+things (a day's list, a counter, the OIL tracker, the closed note); he ruled the day panel alone (D2597). **Default:
+each window he was never shown singly is checked one by one before the build; one with nothing to edit closes by
+itself, the rest refuse.** The war's one row cannot tell its sheets apart, so it is shaped for either answer now
+(Fable 1 of the third read): a sheet may be opened with `showOnly`, and `Sheet.tsx OPEN` keeps that mark and the
+sheet's own closer beside its id; two rows read the one list — `lwsheet` (`window`: any sheet open without the mark)
+and `lwshow` (`closes`: the marked ones, each closed by its own closer). **No sheet is marked until he has let E9b
+stand and the builder's list of sheets, each with what it holds, has been put to him**; unmarked, every sheet refuses
+as round 2 had it. The same check, and the same switch, for the Tracker's Show All and the board's two dialogs.
 Not through `Sheet`, their state a component's own: the Legend and the under-manned list (`Chrome.tsx`, a scrim, a tap
 outside closes), the flying working-out (`FlyRows.tsx .flywork`), an event's peek (`Matrix.tsx evPeek`), the bid
 window's own pickers — counts: **no**, lists and peeks that a press outside closes (H2 names the Legend).
@@ -339,11 +378,11 @@ window's own pickers — counts: **no**, lists and peeks that a press outside cl
 | `TRK_WINDOWS` id | What | counts |
 |---|---|---|
 | `dlg` | Any of its questions and boxes (`components/Modals.jsx DlgModal`) — "+ Add …" prompts, Export, the unsaved-edits question itself (which, raised by a pick or a landing, is drawn over another page: the `trkask` row, §3.1) | window (shaded) |
-| `pop` (+ `popMsg`) | The marking window (`components/Pop.jsx`). It has no box to type in (pressed, P3 4), and **any press outside it closes it** — `tracker/App.jsx clickAway`, a `click` listener on the document that spares only `#pop` and `.ball`. So opening the Schedules list closes it before a row can be pressed, and a press on the badge would be refused and then close, in the same press, the window the note says to close. Left behind another tab on a desktop it stays set, and the pick then closes it without a word; on a phone it closes as he leaves the Tracker (pressed, P5 N1) | **N7** — `closes` (`close` through the bridge's closer, with `infoId`) or `window`; "window" cannot be built without changing `clickAway` (§8.3) |
+| `pop` (+ `popMsg`) | The marking window (`components/Pop.jsx`). It has no box to type in (pressed, P3 4), and **any press outside it closes it** — `tracker/App.jsx clickAway`, a `click` listener on the document that spares only `#pop` and `.ball`. So opening the Schedules list closes it before a row can be pressed, and a press on the badge would be refused and then close, in the same press, the window the note says to close. Left behind another tab on a desktop it stays set, and the pick then closes it without a word; on a phone it closes as he leaves the Tracker (pressed, P5 N1) | **E2 (N7) — default: `closes`, as today** (`close` through the bridge's closer, with `infoId` — for the one-press doors, which `clickAway` does not reach first); the one thing lost is a "Done on" day picked without a grade (the page's E2). Other answer: `window` while such a day waits — it cannot be built without changing `clickAway` (§8.3) |
 | `infoId` | An event's details, opened in ⓘ mode — a bubble; it goes at a pick and at the view switch, ⓘ turning off at a pick and staying on at the switch (pressed, P1 4) | **closes** (D2597) — the `trkinfo` row (§3.1); the ⓘ mode itself as today |
 | `editId` · `sylModalOpen` · `ordMode` · `copyOpen` | The ball editor, Edit syllabus, Reorder ("Crew order": Cancel / Save order), Copy (`Modals.jsx`). Reorder's shade covers every door (pressed, P1 4) | window |
 | `flexWinOpen` · `showAllOpen` | Flex settings (`FlexSettings.jsx`: Cancel / Save), Show All (`ShowAllPanel.jsx`). Both shaded on a desktop (pressed, P1 4); neither is drawn on the phone's Tracker page as it opens | window; Show All: window **(reading)** — whether it only shows things was not put to him |
-| `downLog` · `failLog` · `lullPick` · `lullCopy` | Down days, the fail log, the two lull pop-ups (`SidePanel.jsx`). Whether a press outside closes each, as it closes `pop`, and whether each holds anything to edit: **not traced** — the builder reads each before its row is built (§14). **All four are drawn inside the Info panel, which a screen 1050 wide or less hides while its Flow chart tab shows (§3.1)** | window **(reading)**; hidden behind the Flow chart tab: **N12** |
+| `downLog` · `failLog` · `lullPick` · `lullCopy` | Down days, the fail log, the two lull pop-ups (`SidePanel.jsx`). Whether a press outside closes each, as it closes `pop`, and whether each holds anything to edit: **not traced** — the builder reads each before its row is built (§14). **All four are drawn inside the Info panel, which a screen 1050 wide or less hides while its Flow chart tab shows (§3.1)** | **E4 (N12) — default: Down days and Failures (`downLog`, `failLog`) `closes`**, wherever they stand, hidden behind the Flow chart tab or in sight — they only show things. The two lull pop-ups: **pressed before the build**; one that can hold a choice not yet saved is `window`, and behind the Flow chart tab its note names the Info tab; one that cannot is `closes`. Other answer for Down days and Failures: `window`, the note naming the Info tab |
 | `arrangeMode` | Edit chart layout. With nothing moved a pick closes it without a word; the view switch on his own squadron leaves it open (pressed, P1 4) | **no** — a mode; with edits unsaved the Tracker's question answers for it (asked at a pick and, D2627 A20, at the view switch); with nothing moved, at the view switch: **N10** |
 | `showDetails` · `toolsOpen` | Details mode, the tools set | **no** — modes |
 | — | The Legend (`Legend.jsx`), the File and course menus (`Header.jsx`): a component's own state | **no** — lists and menus |
@@ -375,6 +414,13 @@ bell and ✓ Done: pressed, P1 3), OIL Earn (`OILDAY` — it lives only on the b
 (`ui/QualsPage.tsx`'s own `qEditing`), the "Set as default?" bar (`SECDEFOFFER`), the "Not swapped" bar (`OILBAR`), the
 welcome-back card; and the one-shot hand-offs that are no window at all (`OILASK`, `OILOWN`, `INPEDIT_REFOUND`,
 `AIRRID`, `BELLAT`, `INSIGHTS_ALL`, `OILSIGN_LATER`).
+**One box inside a mode does count — Quals' "Add qualification"** (`#qNewQual`; the `qualsnew` report, `counts:
+'row'`): words typed there are saved only by Add or Enter, the page stays mounted across a pick, and the mode's end
+would otherwise either carry "LOW LEVEL", typed for 142, into 149's Quals or drop it unasked (Opus F-c; read on this
+branch: `QualsPage.tsx` l.317, l.549, l.1189). **(reading):** it is typing in no window, which he put off with group
+B's B12 (H13) — but Build 1 itself ends this mode (D2627 A4), so Build 1 must say what becomes of the box: it refuses
+while the box holds words, under a lead of its own (§4.6), and with the box empty the mode ends as ruled. The other
+answer: the mode ends and the words are cleared, nothing said. Put to him with §17's readings.
 **Logic's and Quals' edit mode end at the press (D2627 A4) — part G, §18.1.** Pressed today (P1 5): an armed slot is
 dropped by a pick; Logic's edit mode and Edit quals are not — 149's Logic and Quals open in their edit mode with "Done"
 drawn, the change already typed saved into 142's record unasked, and Quals keeps "Done" in the member view (a fault,
@@ -400,8 +446,9 @@ the pick through would leave that window behind a switch he made (what D2403 rul
 lose a bid half typed. Pressed today (P5 N1): My leave stays open behind the Inputs tab; a pick of 149 from there goes
 through with nothing said, the window greyed when he opens the Leave War under 149. **Which Tracker windows refuse
 this way** (A7's "stated in the build"): the rows of §3.2 (g) that count `window` — its questions and boxes, the ball
-editor, Edit syllabus, Reorder, Copy, Flex settings, Show All, and the four Info-panel pop-ups. Edit chart layout is a
-mode and the event's details close by themselves; the marking window is N7. The Leave War's day panel closes by itself
+editor, Edit syllabus, Reorder, Copy, Flex settings; Show All as E9b's check decides; and of the four Info-panel
+pop-ups those E4 leaves refusing — on its default none but a lull pop-up that can hold a choice. Edit chart layout is
+a mode and the event's details close by themselves; the marking window is E2's. The Leave War's day panel closes by itself
 wherever it is (D2597).
 
 **Its page is one the squadron in view no longer offers: it does not count** (D2627 A7: "unless the squadron picked no
@@ -417,12 +464,14 @@ Build 2's card replaces it (D2405). The same for a Tracker window. Not pressed b
 a page `pageOffered(where)`; a row that is open and not reachable does not count. The note's "on the Leave War" / "on
 the Tracker" is said exactly when the row's `where` is not the page shown.
 
-**Still open — N12:** a Tracker window inside the Info panel while a narrow screen shows the Flow chart (§3.1's
+**Still open — E4 (N12):** a Tracker window inside the Info panel while a narrow screen shows the Flow chart (§3.1's
 table). The page is on screen and its Info tab is drawn, so he can reach the window in one press and nothing traps
-him; but a note that says "…on the Tracker" names the page he is already looking at. Recommended: it refuses, and the
-note says where (§8.3). It is the `behind` mark the Tracker's bridge hands over (§3.1), counted or left out in the
-`trk` row's one predicate; the panel is hidden by a style rule, which jsdom does not load, so its proof is a browser
-test (§4.7). **Nothing of N12 is built until he answers: it holds the four Info-panel rows, not step 1.**
+him; but a note that says "…on the Tracker" names the page he is already looking at. **Default (the page's E4, which
+the earlier revisions' "it refuses" gives way to): Down days and Failures close by themselves, as the show-only
+windows he ruled; a lull pop-up that can hold a choice refuses, the note naming the Info tab (§8.3).** The `behind`
+mark the Tracker's bridge hands over (§3.1) is then read only for a window that refuses; the panel is hidden by a
+style rule, which jsdom does not load, so its proof is a browser
+test (§4.7). **Nothing of E4 is built until he answers: it holds the four Info-panel rows, not step 1.**
 
 ### 3.4 The tests that fail when a window is added without a row
 
@@ -438,7 +487,7 @@ not every file.
 | R5 "the doors are these, and no others" | (a) the only non-test callers of `enterSquadron(` with a third argument, of `switchRoleInForce(`, `switchRoleView(`, `pickSquadron(` and `enterForLine(` are the ones in §4.1's table — the list as it stands at step 6; step 7 adds its new `enterForLine` callers in the commit that makes them; (b) **no non-test file but `state/store.ts` calls `view.setPage` or imports `setPage` from `state/view`** — every page change by a press goes through the page door (§4.5); (c) **every non-test call of the page door is in the test's census with its kind — `last`, `then`, `answer` or `asks first` (§4.5's table)**, read from the source: nothing but a redraw and the closing of its own menu follows a `last` call; an `asks first` function's first statement is its `ownPageRefused` line. A new call site fails until it is listed with a kind | (a) **a pin** — it passes the day it is written; (b) yes — six files reach `view.setPage` directly today; (c) yes |
 | R6 "the checker fires" | the entry checker (below), fed a made-up squadron change by press: with a window open and no door's leave, it throws by name; with a leave and a window outside its `skip`, it throws; with the leave and only its skipped window, or with nothing open, it passes; a window opened in the turn of a refusal fails by name | yes |
 | R7 "the scans catch a planted window" | each scan of R1–R5, run on a made-up source string holding one thing more than its census — a second dialog in a listed file, a new `export let` in `view.ts`, a new state reset in `endSession`, a second `<OilConfirm` in a page file, a statement after a `last` call of the page door — reports it | yes |
-| R8 "a window closes by itself only on his ruling" | every row whose `counts` is `'closes'` carries a `close`, and no other row carries one; the test's own list of `'closes'` ids is exactly the six his rulings name — ALL AVAIL, Changes, Insights, `sansday`, `lwday`, `trkinfo` (D2596, D2597) — with `days` and `pop` joining only as N13 and N7 are answered. A seventh fails with "a window closes by itself only on his ruling" | yes |
+| R8 "a window closes by itself only on his ruling" | every row whose `counts` is `'closes'` carries a `close`, and no other row carries one; the test's own list of `'closes'` ids is exactly the six his rulings name — ALL AVAIL, Changes, Insights, `sansday`, `lwday`, `trkinfo` (D2596, D2597) — and **each further id joins only in the commit that cites his answer: `days` and the two settings rows (E1), `pop` (E2), `downLog`, `failLog` and a lull pop-up found to hold nothing (E4), `lwshow` and any window of E9b's list**. A row with `dirty` carries a `close` too and is in the same list. An id with no answer cited fails with "a window closes by itself only on his ruling" | yes |
 
 **And one checker that runs under every existing test**, in the pattern of the order's §8 point 1 (the global set-up
 `src/testing/marks-guard.ts` already installs one): **`state/guard.ts setEntryChecker`** — installed by the test set-ups
@@ -485,7 +534,9 @@ no table), except where marked.
 | A10 | **counted means drawn** | for every row that counts: opened by its own door, then each change he did not make that the test world can make — his right in the squadron lowered to View, the role in force changed, his move at midnight, the page changed by a landing, the board closed under its dialog — and after each: **either `whatIsOpen()` does not name the row, or the row's `sel` finds its box on the page with no `hidden` ancestor**. Duty templates under a lowered Plan is the worked case: `TPLEDIT` still true, no dialog, `whatIsOpen()` null. It cannot see a box hidden by a style rule (N12): that is the browser test's |
 | A11 | the Tracker not drawn | `pop` set, then the boot error card, then "Loading…", then the page's cover: `trackerWindowsOpen()` none in each |
 | A12 | the OIL question from a row of the Inputs list | the row's own "OIL?" button pressed, no Input window anywhere: the `oilrevise` row; its Cancel, its Save, Escape, the tab left → null |
-| A13 | a Tracker window behind the Flow chart tab | Down days opened on the Info tab, the phone layout's tab set to Flow chart: the bridge marks it `behind: 'info'`; `whatIsOpen()` as N12 decides |
+| A13 | a Tracker window behind the Flow chart tab | Down days opened on the Info tab, the phone layout's tab set to Flow chart: the bridge marks it `behind: 'info'`; `whatIsOpen()` as E4 decides — on its default null, and `closeShown()` closes it; a lull pop-up holding a choice: its row, `behind` set |
+| A16 | the Calendar's unfinished work (E1; Astra 3) | on E1's default: the Calendar open, nothing pending → `whatIsOpen()` null and `closeShown()` closes it. A holiday sheet read in, its preview waiting for Add → the `holimport` row; **Add → null; Cancel → null; an Add that fails → still the row; a file whose reading finishes after the Calendar has closed → nothing set, nothing counted; the preview left behind the Calendar's other tab → still the row**. A new holiday with a name typed → `holiday`; Every Monday opened and nothing pressed → null, one choice pressed → `everywd` (E9m). Inputs settings beside the Calendar: nothing changed → null, closed with it; a setting changed → its row. On E1's other answers: the `days` row itself, or nothing — the test's expectations are one table keyed by the answer |
+| A17 | Quals' "Add qualification" box | in edit mode, "LOW LEVEL" typed → the `qualsnew` row; Add, Enter or the box cleared → null; Done with words in the box → as today (the builder reads what Done does with them, and the test pins it) |
 | A14 | the guard is not asked on a change he did not make | a spy on `refusalAt` through his own move at midnight and a right ended, under an Input window, a Leave War window and the chart editor: never called |
 | A15 | nothing closes at a change he did not make | ALL AVAIL, Insights, a SANS day and the Leave War's day panel open, then his own move at midnight, then a right ended: a spy on `closeShown` — never called; each window is handled exactly as today (pinned beside it, P18) |
 
@@ -499,7 +550,7 @@ no table), except where marked.
 `pickSquadron`, `switchRoleView`, `enterForLine`, and the page door `store.ts setPage` (new — §4.5; with it
 `ownSquadronFirst`, the same door for a press that opens a window and no page, and the landing's second ask after the
 Tracker's question). And whatever a press would open after the page, the page door runs — never the caller (§4.5).**
-Row 21, Undo's own, is not built here (D2636).
+Row 21, Undo's own, is E7's: built as step 6b on its default, left as today on its other answer.
 
 | # | His press | Reaches | Refused by the guard? |
 |---|---|---|---|
@@ -512,6 +563,7 @@ Row 21, Undo's own, is not built here (D2636).
 | 7 | **Any bell line that opens one of his own pages while a squadron he only views is picked** — a line of his own squadron (`enterForLine` answers `'here'`); a line of a squadron his pages may never be, which answers `'no'`: a third squadron he only views, one he has left, or the squadron in view itself while he is in the member view | `openNotice` → `openInputOnPage` / `openWarAt` / `openAdminUsers` → `setPage` → `store.ts landOnOfferedPage` → `landOnOwnPage` → `enterSquadron(home, …, true)` | **Refused** — at the page door, asked by `openNotice` before anything is marked read or closed, **and the window is run by the door, so none opens behind the refusal** (§4.5). The squadron comes back through `'no'` just as through `'here'` (§15, finding 1). Today: the bar goes to 142, the window opens (pressed, P2 5) |
 | 8 | The bell itself, an access request (`topstate.ts bellTap` → `belltap.ts openBellRequest`) | `enterForLine`, then `openAdminUsers` → `setPage('admin')` | **Refused** — in `enterForLine` where the request's squadron would be entered, at the page door where Admin is not offered in the squadron in view; "…then press the bell again." `[ruled]` (D2627 A8), the bell staying lit. Today the tap enters 149 with a 142 Input window left greyed (pressed, P2 3) |
 | 9 | The bell itself, his own unanswered OIL question on an input of another squadron (`bellTap`, the `oilHit` branch) | today: **no entry asked for** — `openInputOnPage` → `setPage('inputs')`. A Plan holder or master admin gets the input live under the squadron in view, and its answer saves into 142 under a bar reading 149 (security F2 — pressed, P6 A4). A View holder with a squadron he only views picked gets his own squadron back first, by the landing, nothing checked (pressed, P2 4) | **Refused** — in `enterForLine(inputSqn(…))`, the input's own squadron brought into view before its window (D2621 `[ruled]`; §5.3), and at the page door in the View holder's case — **the window, its toast and the OIL question with it: all three are the door's `then`** |
+| 9b | **His own SANS reminder's line** — "Your SANS availability", a line his bell works out (`leavewar/sansunfiled.ts`, `k: 'sansdue'`), carrying no squadron. Hunter, SANS aircrew of 142 holding Plan of 149, 149 picked, taps it (Astra 4, Fable 2 of the third read; read on this branch) | today: `enterForLine` answers `'here'` for a line with no squadron; `openNotice` marks it read, sets the SANS tab and month, `askSansDay`, `setPage('inputs')` — and 149 offers Inputs, so the page door alone would pass it: **149's SANS calendar opens at his day**, where part G's "+ Commitment" now offers 149's SANS men and not him (§18.7). For one who only views the squadron picked, the landing brings his own back | **Refused as a line is, and his own squadron that day comes into view first:** the reminder's branch calls `enterForLine(homeOn(me(), today), again, 'line', o)` before anything is marked read, closed or set, then the page door. **(reading)** of D2621's "a bell line about such an input brings its squadron into view first" — the reminder is about no input; put to him with §17's list |
 | 10 | A card of the OIL list (`ui/OilDayList.tsx Body openInput`) | today `setInpEdit` then `setPage` (security F1) | The input's squadron and its page first, then the window, run by the page door (§5.3). **Its own door id, `'card'`, with `skip: ['oilday']` — and that `skip` goes with the press to `enterForLine`, to the page door, to the landing and to the checker**. Refused for any other window or a change not saved — a state only a change he did not make can set up after Build 1; its note ends "…then try again." `[WNS]` (words3 W4) |
 | 11 | A holiday's bell line, a squadron he only views picked — today 142's OIL list opens over 149's View-only Sched and its Save writes 142's input (`openNotice`, the `oilhol` branch: no page changes, so no landing; pressed, P5 N4) | `enterForLine` answers `'here'`; `setOilList` | **Refused** as a bell line is — his own squadron comes into view first, then the list (D2627 A19, D2621): `openNotice` hands the list to `ownSquadronFirst` (§4.5), which asks the guard, then the Tracker's question, then enters, then opens the list |
 | 12 | "Check my quals" on the welcome-back card (`ui/WelcomeBack.tsx` — drawn over every page, `Shell.tsx`) | `setPage('quals')` → the landing | **Not a door after this build:** the card is drawn only while the squadron in view is his own (D2628 C4 — §18.5), where Quals is always offered. Nothing is built for the button itself (D2627 A18, Fable's change). Pressed today (P5 N3): the bar goes back to 142 and Quals opens, the card gone, nothing said; for a Plan holder it opens 149's Quals, where his row is not (P6 A9). The rule stands for any later button of the kind: the page door refuses it (belt) |
@@ -523,7 +575,7 @@ Row 21, Undo's own, is not built here (D2636).
 | 18 | A key | — | **None exists.** No shortcut picks a squadron or switches the view (`ui/interactions.ts`, `Shell.tsx navKey`: Enter and Space press the control under the keys, which is rows 1–15). Pinned by R5 |
 | 19 | A link or the browser's Back | — | **None exists.** No page or squadron has an address (`location.hash` is read only by `ui/dragdbg.ts`, a developer's switch) |
 | 20 | Not his press: his own move at midnight, a right taken away, a held war window closing, the Tracker following once held work is gone (`store.ts maybeReenter`, `refreshAccess`; `typing-hold.ts warWindowGone`; `core.js followIfHeld`) | `enterSquadron`, `byPick` false; `view.setPage` called inside `store.ts`, never the page door | **Must not be** — "a change he did not make keeps today's handling" (D2403) until Build 2's card (D2405). Pinned (§7, P5) |
-| 21 | **Undo of "+ New squadron" while that squadron is in view** — Saber makes 150, picks it, presses Undo: 150 is gone, the bar back on 142, Admin shown, a toast only (pressed, P4 1c). A squadron change by his own press that is no pick: `maybeReenter` finds the pick stands on nothing (`perms.ts pickStandsOn`) and enters his home, `byPick` false. | `store.ts entryDue` → `enterSquadron` | **MISSING, and left so by his word: it is the page's B7 (N11), and group B waits until after Build 1 (D2636).** As today. The checker cannot see it (`byPick` false — §3.4's limit). **Its place, when he answers:** the same chain of refusals in `globalUndo` as row 13, reading the entry's `inverse` for the squadron row (`UNIT_PFX`) of the squadron in view; the shape of that read is the builder's. §1's first condition names it to him |
+| 21 | **Undo of "+ New squadron" while that squadron is in view** — Saber makes 150, picks it, presses Undo: 150 is gone, the bar back on 142, Admin shown, a toast only (pressed, P4 1c). A squadron change by his own press that is no pick: `maybeReenter` finds the pick stands on nothing (`perms.ts pickStandsOn`) and enters his home, `byPick` false. | `store.ts entryDue` → `enterSquadron` | **E7 — default: refused in Build 1 (step 6b)** while a window that counts is open, a row holds a change or a save has failed — and only then; with nothing open the Undo goes through as today. The rest of Undo waits with group B (D2636), and if he later takes B7 as recommended (the button greyed on 150, "Pick 142 to undo your changes there.") the greyed button replaces this refusal: **a piece built for the meantime**. **Its place:** the same chain of refusals in `globalUndo` as row 13, ahead of `snap(entry, 'undo')`, reading the entry's `inverse` for the squadron row (`UNIT_PFX`) of the squadron in view; the shape of that read is the builder's. The note stands under the Undo button, at the foot on a phone; its words §4.6. With a window open this Undo has not been pressed by anyone (the page's E7 says so). The checker cannot see this road (`byPick` false — §3.4's limit), so B24 is its proof. **Other answer: as today until group B — MISSING, by his word; B24 stays a pin** |
 | 22 | The Leave War's links and the board's "make a period" (`leavewar/sync.ts openInputWindow`, `openInputsPage`, `openNewPeriod`, `openWarAt`; `ui/interactions.ts`) | `setPage` | Each opens a page a squadron he only views does not offer, from a page it does not offer either — reached only through a war window held after a change he did not make, a squadron he only views picked. **The page door is their belt, and each is made safe by itself** (§4.5's table): `openInputWindow` opens its window as the door's `then`; `openWarAt` and `openNewPeriod` ask first; `openInputsPage` and "make a period" do nothing after the page. The closed note's own "Open the Inputs page" in that state: §11 risk 20 |
 | 23 | The developer's switch (`probe-bridge.ts` `w.setPage`, `setEffectiveRole`) | — | **Must not be** — not a control of the app; through the page door all the same |
 
@@ -548,11 +600,24 @@ Row 21, Undo's own, is not built here (D2636).
    end the builder reports that before this step is built (D87: wait on what is needed, never a fixed time).
    **(reading), named for him:** a press that is waiting is dropped if he presses anything else meanwhile — otherwise
    a pick could land seconds later, under his next press.
+   **A prerequisite, not yet met (Astra 7 of the third read; read on this branch):** `storage/postman.ts` answers
+   `'saving'` for as long as a send is in flight and nothing ends a send that never answers — so today "the wait ends
+   at the saver's own answer" is untrue for a connection that hangs, and the door would wait without end, against
+   D2627 A9. **N14 — a switch point, put to him because he would see it:** (default, the reviser's recommendation,
+   on no page yet) the saver itself gives up on a send that has had no answer for a set time and shows "Not saved"
+   with Retry, as a refused save does — a change to how saving behaves everywhere, with its own test and its own
+   read (saved data: D1411's reader beside the code read); the other answer: no wait is built — a press made while
+   "Saving…" shows is refused with a note of its own, against A9's letter. **The waiting door (this step, at every
+   door) is not built until one is chosen**; steps 3 to 5 are otherwise complete without it, each door then treating
+   a save in flight as today.
 4. **The Tracker's question**, where the press would take the Tracker off unsaved chart edits — at a pick as today,
    and at the view switch always, both ways (D2627 A20).
 5. **After the question is answered Save or Discard, step 2 again** — a window or a failed save may have arrived while
    it stood (§11, risk 1).
-6. **`closeShown()`** — the windows that only show things close (D2596, D2597) — **then the change.** Logic's and
+6. **`closeShown()`** — the windows that only show things close (D2596, D2597) — **then the change, the two in one
+   synchronous run inside the final entry, at every door: `enterPicked`, the view switch's own body, `enterForLine`'s
+   entering run, and `landOnOwnPage` after its second ask — never earlier** (Astra 5, Fable 10: a Stay, or a refusal
+   after the question, cannot bring back a window already closed). Logic's and
    Quals' edit mode end in the same step (D2627 A4 — §18.1). **(reading):** D2596 and D2597 name a pick and the view
    switch; a bell line, a bell tap and a card that change squadron close them the same way, on D2403's "a bell line
    that would take him to another squadron follows the same rule".
@@ -600,8 +665,8 @@ Today it is one synchronous body that asks nothing. It becomes:
    `maybeReenter`, whose entry is not "by pick", and `trkMayHold()` holds the Tracker under the member-view cover for
    an open editor — the state D2403 says his own switch must not leave. **The editor closing here is a change he would
    see that no ruling names**: today, on his own squadron, Edit chart layout stays open through the
-   switch (pressed, P1 4), and for a Plan holder on 149 it waits under the cover (from the code). **N10 — built only on
-   his answer.** *For the builder, unproved:* the `notify()` after it runs `maybeReenter` once more with `mayHold` true
+   switch (pressed, P1 4), and for a Plan holder on 149 it waits under the cover (from the code). **E3 (N10) — the
+   page's recommendation is this line (default); built only on his answer.** *For the builder, unproved:* the `notify()` after it runs `maybeReenter` once more with `mayHold` true
    while the Tracker's move is still under way; `follow`'s first call has already run `leaveSquadron` up to its first
    wait, which ends the editor (`endSession`), so the second call should find nothing to hold. Fable's reader could not
    fault this from reading; B14 pins the result, not the reasoning.
@@ -621,8 +686,9 @@ the page.** The reasons, from the code:
   `notify()`; where the page just opened is one the squadron in view does not offer (`!pageOffered(CURPAGE)`), it calls
   `landOnOwnPage`, which enters his home with `byPick` true. So "this press brings his own squadron back" is exactly
   "it changes the page to one `pageOffered` denies" — the door asks the predicate the landing itself acts on.
-- **It has no list of callers to keep.** Sixteen non-test places outside `store.ts` call `setPage` today, in twelve
-  files, six of which reach `view.setPage` directly. A door in the one function cannot be walked round, and R5 (b)
+- **It has no list of callers to keep.** Seventeen non-test places outside `store.ts` call `setPage` today, in twelve
+  files (counted again at the third read — Opus: `leavewar/sync.ts` four, `ui/topstate.ts` three with `main`'s SANS
+  reminder, one each in ten more), six of which reach `view.setPage` directly. A door in the one function cannot be walked round, and R5 (b)
   fails the day a file reaches past it.
 - **It must stand before `view.setPage`, not at the landing.** `view.setPage` itself closes things on a page change —
   ALL AVAIL, Changes, the Traffic window, the OIL question waiting on a change, the armed confirms. A check after it
@@ -652,8 +718,11 @@ is what the press opens once its page is there.
    control.
 4. A save still going (§4.2 step 3): in step 2, before the ask — `'asked'`, and the door runs itself again with the
    same `then` once the saver has answered.
-5. **`closeShown()` before `view.setPage(p)` in step 2** — the windows that only show things close as his own squadron
-   comes back (§4.2 step 6).
+5. **`closeShown()` runs inside `landOnOwnPage`, after its question and its second ask, in the run that enters his own
+   squadron — not at the door** (§4.2 step 6). The earlier draft put it before `view.setPage(p)`: in B27's state the
+   Tracker's question then stood over windows already closed, and a Stay could not give them back (Astra 5, Fable
+   10). On step 1's road — a page the squadron in view offers — nothing changes squadron and nothing is closed but
+   what `view.setPage` itself closes today.
 
 **`state/store.ts ownSquadronFirst(opts, then): PageGo` — the same door for a press that opens a window and no page**
 (the holiday's bell line: D2627 A19). Where the squadron in view is his pages' own it runs `then(false)` and answers
@@ -673,8 +742,8 @@ caller's own "is it still his to open" test (today's `still`) is asked there, as
 - **What it does after the page — a window, a question, the toast that goes with it — it hands to the door as
   `then`.** One site tests the door's answer instead, and goes on only on `'went'`.
 
-Every call site of the door, with its kind — the census R5 (c) pins (fifteen once the OIL list's card goes through
-`openInputOnPage`), and the two functions above them that set a mark:
+Every call site of the door, with its kind — the census R5 (c) pins (sixteen once the OIL list's card goes through
+`openInputOnPage`; the builder counts again after `main` is in), and the two functions above them that set a mark:
 
 | Call site | Sets before the page | Does after it | Kind |
 |---|---|---|---|
@@ -703,7 +772,8 @@ stopped by** R5 (c), by the checker's second check under every test (§3.4), and
 **`state/belltap.ts enterForLine(u, again, door = 'line', opts?)`**
 - `'here'` and `'no'` answer as today, with nothing asked: what such a tap then opens is the page door's to judge.
 - Where it would enter (`ownPageMayBe(u)`): `if (refuse(door, u, opts)) return 'refused'`, before the Tracker's
-  question. `opts` carries the pressed line, so the note hangs under it, and a door's `skip`. `again` re-runs the
+  question. **`closeShown()` is called in the run that enters, immediately before `enterSquadron`** — after the
+  question, since `again` re-runs the whole tap (§4.2 step 6). `opts` carries the pressed line, so the note hangs under it, and a door's `skip`. `again` re-runs the
   whole tap after Save or Discard, so step 5 of §4.2 needs no code here; the same `again` serves H8's wait.
 - `LineEntry` gains `'refused'`.
 
@@ -721,6 +791,15 @@ stopped by** R5 (c), by the checker's second check under every test (§3.4), and
   }, () => setOilList(…))`. On his own squadron nothing is asked and the list opens as today.
 - An input's line ends in `openInputOnPage(n.iid, undefined, () => stillHis(n), { door: 'line', ...o })`. A line that
   opens neither a page nor a list goes on exactly as today.
+- **His own SANS reminder** (§4.1 row 9b): its branch runs `enterForLine(homeOn(me(), today), again, 'line', o)`
+  first — the line has no `n.u` — and returns on `'asked'` or `'refused'`; then `ownPageRefused('inputs', …)`; only
+  then its four marks (read, the list, the SANS tab and month, `SANSDAYASK`) and the page. R5 (a) gains the caller.
+- **`lineOpens` knows every kind by name, and an unknown kind never falls through as an input's** (Opus F-g, Fable 8:
+  today `openNotice`'s last branch is `inpById(n.iid)` and its miss toasts "That input is gone" — which is what a tap
+  on part V's Plan lines would say, built as written). Part V's two new kinds are named in it in the commit that adds
+  them — the Plan lines (§19.2) and the callsign line (§19.4), each with the tap §19 gives it — and B7 and R5 gain
+  them then. **R5 (d), new:** every notice kind a non-test file writes or works out is a key of `lineOpens`' own
+  table, read from the source; a kind with no key fails with "say what a tap on this line opens".
 
 **`openBellRequest`**: `'refused'` answers true (the tap was taken), `door: 'bell'`; then `ownPageRefused('admin',
 'bell')` before `open()`. **`bellTap`'s OIL branch** sets nothing before the page — its toast and its question are
@@ -743,6 +822,9 @@ own constants, so a change of words moves no test.
 | the Give access form | "finish or cancel giving access" | `[ruled]` D2627 A6 |
 | "+ New squadron" | "save or cancel the new squadron" | `[ruled]` D2627 A6 |
 | Add a person | "add or cancel the new person" | `[WNS]` — `words.mjs addPersonNote`, as a fresh Fable left it on 25 Nov; the draft in D2598 and D2627 A6 read "add the person or cancel". Not his yet |
+| a settings window with a change (E1, default) | "save or cancel Inputs calendar settings" · "save or cancel SANS calendar settings" | `[WNS]` — the first kept by the second words review (r5b 1: the window's own title, its buttons Save and Cancel); the SANS twin is that review's gap 1b, read by no one. **Not settled:** on a phone the settings window lies under the Calendar, so the note names a window he cannot see — gap 1a, on §17's list to draw |
+| the Calendar's unfinished work (E1, default) | "save or cancel the new holiday" · "save or cancel the changed holiday" · "save or cancel “Every Monday”" · "add or cancel the sheet's holidays" · "cancel the new holiday, or add its leave period" | `[WNS]` — the page's own drafts, none drawn, none read by a second Fable; the quote marks inside a grey note would be a first. With both a holiday half done and settings changed: the Calendar's note first, it being on top **(reading — words gap 1c)** |
+| words in Quals' "Add qualification" box (§3.2 (i)) | "add or clear the new qualification" | `[WNS]` — this fold's draft, read by no one; built only if the reading stands |
 | a change not saved | "press Retry to save your changes" | `[ruled]` D2627 A13 — "changes": the app cannot tell one from several; never the band's own words "Not saved" (D2594) |
 
 | The ending — what he pressed | Words | Status |
@@ -751,11 +833,13 @@ own constants, so a change of words moves no test.
 | to the member view · back | "switch to the member view." · "switch back to the admin view." | `[ruled]` D2590 |
 | a bell line | "press this line again." | `[ruled]` D2590 |
 | a tap on a lit bell | "press the bell again." | `[ruled]` D2627 A8 — true only because the refused tap leaves the bell lit and the request unseen (B9) |
+| Undo of "+ New squadron" (E7, default — step 6b) | "press Undo again." | `[WNS]` — kept by the second words review (r5b 2): the bell's ruled sentence with the press named. **It joins only to leads that add no Undo step (that review's gap 2a — a real fault in the joining):** "save or cancel the open row, then press Undo again" is untrue if he saves — the save becomes the newest step, and "Undo again" undoes that, not "+ New squadron". So with this ending the row and form leads offer the one way that adds no step: "cancel the open row" · "cancel the new person" · "cancel giving access" · "cancel the new squadron" (drafts, `[WNS]`); "close the open window" joins as it is. **Not settled:** what a Retry that lands leaves on top of the Undo list — the builder reads it before the Retry lead is joined to this ending; Ctrl+Z gets the same words (gap 2b, said by no one yet); a window on a page out of sight, "…on the Leave War, then press Undo again." (gap 2c, not drawn) |
 | a press that is none of these — a card of the OIL list; any later button that would bring his own squadron back | "try again." | `[WNS]` (words3 W4). A button with words on it names itself, as the page's A18 showed ("…then press Check my quals again."); the card has none. No press of his reaches this ending after Build 1 (§4.1 rows 10, 12, 13) |
 
-**(reading), named for him:** he was shown each lead with "pick 149" and each ending with at least one lead; the note
-for a lead and an ending he was not shown together (an open row on Users, then a tap on the bell) is the same two
-halves joined. No road reaches "back to the admin view" with a row open — the Admin page is not drawn in the member
+**(reading), named for him — the page's E9n:** he was shown each lead with "pick 149" and each ending with at least
+one lead; the note for a lead and an ending he was not shown together (an open row on Users, then a tap on the bell)
+is the same two halves joined — **but for the Undo ending, which takes only the leads that add no step (the table
+above).** No road reaches "back to the admin view" with a row open — the Admin page is not drawn in the member
 view — so that pair is never said; a test asserts the state cannot be made (B18).
 
 **One note at a time** (D2627 A10): `GUARD_ORDER` is the window, then the open row, then Retry — and every refusal
@@ -816,7 +900,8 @@ gone with its list by the time the note is raised. So the door says, and one tab
   `placeToast`) — a note is not moved about while it is read (`toast.ts`'s own rule); if the control has gone by then,
   the foot.
 - `ui/guardnote.ts` (new): the table door → `NoteAt` — `pick` → `#sqnMenuBtn`, left, bar; `toMember` / `toAdmin` →
-  `#roleBadge`, right, bar; `line` → the pressed line (`[data-testid="bell-line-<id>"]`), inside `.bell-list`; `bell` →
+  `#roleBadge`, right, bar; `undo` (step 6b, on E7's default) → the top bar's Undo button, left, bar — the foot on a
+  phone; `line` → the pressed line (`[data-testid="bell-line-<id>"]`), inside `.bell-list`; `bell` →
   the bell on screen (`pops.ts BELLAT`, else the visible `.bellbtn` — `#sbBell` on the board), right, bar; `card` and
   `page` → the foot. It is the `setGuardSay` function. With no page (a headless test) it is
   `HOOKS.toast(words, 'blocked')`.
@@ -836,13 +921,14 @@ typed, opened by its own door, unless named. All fail first unless marked **pin*
 | B1 | a pick with a window open is refused — the bar's list | Saber on 142, the Schedules button then the row "149" clicked: `UNIT` still 142, the war's world and the Tracker's door unchanged, the window still live with its word **and still on the page**, the note's words `[ruled]`, the list closed, the keys on `#sqnMenuBtn` |
 | B2 | the ☰ menu's list | the same; and the ☰ menu closed and gone from the page (D2627 A16); a pick that goes through leaves it open, as today |
 | B3 | 149 → 142, and on to a third | Hunter with Plan, on 149, a window open, picks 142: refused, "…then pick 142."; picks 150, which he only views: refused, "…then pick 150." (D2630) |
-| B4 | every window that counts refuses, by its whole press | a loop over the rows of §3.2 whose `counts` is `window` and that are not shaded, each opened by its own door, then each door's whole sequence: B1's assertions, **and the window is still drawn after the press**. Rows of its own: the document viewer over an Input window — the viewer closes at the press, the Input window refuses (D2627 A1); a Leave War window left behind the Inputs tab — refused, the lead "close the open window on the Leave War" `[ruled]`; a Tracker window left behind a tab — "…on the Tracker" `[ruled]`; the same Leave War window once the squadron in view no longer offers its page — the pick goes through (D2627 A7); the Tracker's marking window and the Calendar, as N7 and N13 decide |
+| B4 | every window that counts refuses, by its whole press | a loop over the rows of §3.2 whose `counts` is `window` and that are not shaded, each opened by its own door, then each door's whole sequence: B1's assertions, **and the window is still drawn after the press**. Rows of its own: the document viewer over an Input window — the viewer closes at the press, the Input window refuses (D2627 A1); a Leave War window left behind the Inputs tab — refused, the lead "close the open window on the Leave War" `[ruled]`; a Tracker window left behind a tab — "…on the Tracker" `[ruled]`; the same Leave War window once the squadron in view no longer offers its page — the pick goes through (D2627 A7); the Tracker's marking window and the Calendar, as E2 and E1 decide (A16 holds the Calendar's cases) |
 | B4b | every window that only shows things closes, and the press goes through | a loop over the `'closes'` rows — ALL AVAIL, made as P1 made it (SODB's "+ add" armed, ALL AVAIL placed, its count chip pressed); Changes, opened out and, at a phone's size, folded; Insights (the door reached by the keys); a SANS day; the Leave War's day panel, in sight and behind another tab; a Tracker event's details — each opened by its own door, then each door's whole sequence (both lists, the badge both ways, `#drawerRole`, a bell line to another squadron): `UNIT` or the role changed, **no note**, the window's box gone from the page and its state clear, nothing held (D2596, D2597). With an Input window open beside it: refused, **and the show-only window still open** |
 | B5 | the view switch, both ways, both controls | the badge and `#drawerRole`; to the member view and back; an admin at home, an admin by Plan on 149, a master admin; with a window open and with a change not saved: the role in force unchanged, `CURPAGE` unchanged, the Leave War's role unchanged, the note's two endings `[ruled]`; **by `#drawerRole`: the ☰ menu closed and gone from the page after the refusal** (row 4) |
 | B6 | a bell line to another squadron | Hunter on 149, a 142 line clicked: refused; `isUnread` still true; `BELLLIST` still true; `UNIT` 149; "…then press this line again." `[ruled]`; **the note is handed the pressed line** (`line` reaches `guardnote.ts` from inside `enterForLine`: its anchor is that line, not the foot) |
 | B6b | a line of a squadron his pages may never be | Ranger (142's; View of 149 and of 150), 149 picked, a change not saved; a 150 input's line naming him: refused, `UNIT` 149, the line unread, the list open, **`INPEDIT` null, `OILASK` null, no toast but the note**. And the same line from a squadron he has since left (§15, finding 1) |
 | B6c | a line of the squadron in view, in the member view | Hunter (142's, Plan of 149), 149 picked, the member view, a change not saved; a 149 input's line: refused, `UNIT` 149 |
-| B7 | every family of line | an input's, a Leave War decision, bidding opened, a posting, a holiday's (B29) and — once `main` is in — a SANS-days line (§9): B6's assertions |
+| B7 | every family of line | an input's, a Leave War decision, bidding opened, a posting, a holiday's (B29) and a SANS-days line (§9): B6's assertions; part V's Plan lines and callsign line join in the commit that adds each (§4.5 `lineOpens`) |
+| B7b | his own SANS reminder brings his own squadron first (row 9b) | Hunter, SANS aircrew of 142: with 149 picked (Plan) and with 150 picked (View), the reminder tapped — `UNIT` 142, then Inputs on its SANS tab at the reminder's day, 142's calendar. With a window open or a change not saved: refused, **the line unread, the list open, the tab and month as they were, `SANSDAYASK` null**. With unsaved chart edits held: the Tracker's question first; **Stay → every one of those marks as it was**. On 142 already: as today |
 | B8 | a line of his own squadron from a squadron he only views | Ranger (View of 149), 149 picked, **a change not saved**, a 142 war line: refused, 149 still in view, nothing ringed on the Leave War when its tab is next opened from 142 |
 | B9 | the bell itself — an access request | refused, Admin → Users not opened, `ADMINOPEN` null, **the bell still lit and the request still unseen**, "…then press the bell again." `[ruled]` (D2627 A8), the note under the bell. And a request of his own squadron while a squadron he only views is picked, a change not saved: refused at the page door, **no "waiting for access" toast** |
 | B10 | a change not saved | the saver made to fail (the stand-in the repo's own tests use for `'failed'`): each of B1, B2, B5, B6, B9 refused with the Retry lead `[ruled]` (D2627 A13) and its door's ending; Retry lands → a fresh press goes through; **nothing happens by itself when the save lands** — `UNIT` unchanged after the timers run |
@@ -855,17 +941,17 @@ typed, opened by its own door, unless named. All fail first unless marked **pin*
 | B17 | a page tab never changes the squadron — **pin** | Ranger with 149 picked: the bar and the ☰ menu draw View-only Sched and Help alone |
 | B18 | no road to "switch back" with a row open — **pin, once step 1 exists** | in the member view the Admin page is not drawn and `useGuardWork`'s count for the row ids is 0 |
 | B19 | a window that arrives while the question stands | the Tracker's question up for a pick; the saver fails; Discard: refused with the Retry note, `UNIT` unchanged |
-| B20 | a save still going | a change made and a pick pressed in the same tick: the save is sent first, lands in 142's record, then the pick (D2627 A9); made to fail → refused with the Retry note, `UNIT` unchanged. **A save that never answers: the pick does not go through, nothing is entered, and the wait ends when the saver itself gives up and shows "Not saved" — then the Retry note; no timer of the door's own** (if the saver has no end of its own: reported before the step is built). A second press made while the first waits: the first is dropped **(reading)**. **The same at the view switch, at a bell line to another squadron (the tap runs again after the save) and at a press through the page door — Ranger on 149, a bell line of his own input inside the wait: the save lands, then 142 and the window; made to fail → refused, no window** |
+| B20 | a save still going | a change made and a pick pressed in the same tick: the save is sent first, lands in 142's record, then the pick (D2627 A9); made to fail → refused with the Retry note, `UNIT` unchanged. **A save that never answers: the pick does not go through, nothing is entered, and the wait ends when the saver itself gives up and shows "Not saved" — then the Retry note; no timer of the door's own** — **which the saver as it stands cannot give: N14, §4.2 step 3; this clause is written only once N14 is answered, on its default against the saver's own give-up**. A second press made while the first waits: the first is dropped **(reading)**. **The same at the view switch, at a bell line to another squadron (the tap runs again after the save) and at a press through the page door — Ranger on 149, a bell line of his own input inside the wait: the save lands, then 142 and the window; made to fail → refused, no window** |
 | B21 | sign-out and the next person | a refused pick, then Logout: the note is gone (`clearToast`), nothing open, `whatIsOpen()` null for the next sign-in |
 | B22 | "Check my quals" never changes squadron | Ranger (View of 149 and 150), just restored: with 149 picked, and with 150 picked, **the welcome-back card is not drawn**; back on 142 it is, and "Check my quals" opens Quals at his row, the card spent — as today. Hunter (Plan of 149), 149 picked: not drawn; in the member view with 149 picked: not drawn; Saber on 150: not drawn (D2628 C4) |
 | B23 | an Undo's landing on his own page | no button reaches it (row 13), so the door is driven as the landing drives it — `undo-wire.ts _snapView` with a step that lands on Inputs, 149 picked, a change not saved: the page and `UNIT` unchanged, **and the landing's own `then` not run**. If Ctrl+Z proves to be a road (§14): refused **before the step** — the record and the Undo list as they were — its note ending "…then try again." `[WNS]` |
-| B24 | an Undo that removes the squadron in view — **pin** | Saber makes 150, picks it, opens a window there, presses Undo: as today — 150 gone, the bar on 142 (row 21: not built, D2636). The pin is replaced, by name, when group B is answered |
+| B24 | an Undo that removes the squadron in view (E7) | **On E7's default (step 6b), fails first:** Saber makes 150, picks it, opens the Calendar there with a holiday half typed, presses Undo: refused — 150 still there and in view, the Undo list as it was, the note's lead and "…then press Undo again." `[WNS]` under the Undo button; with an opened row changed: "cancel the open row…"; with a failed save: as the builder's read of Retry decides (§4.6); **with nothing open: the Undo goes through as today** — 150 gone, the bar on 142; Redo's twin the same. **On its other answer: a pin of today** (150 gone with the window open), replaced by name when group B is answered |
 | B25 | a card of the OIL list | 142's list open on 142, nothing else: the card opens the input on Inputs, the page first. **With a change not saved, still on 142: the card opens the input all the same — nothing changes squadron there, so no door asks**. With the list standing over a squadron he only views — set up by a change he did not make, the only road left (a raw entry, named so, on the checker's allow-list): the card is **not** refused by the list it sits in — not at `enterForLine`, not at the page door, not by the checker — 142 comes into view **and the window opens**; with a second window open, or a change not saved, there: refused ("…then try again." `[WNS]`), `UNIT` 149, `INPEDIT` null |
 | B26 | nothing opens behind a refusal at the page door | each caller that opens something after the page, pressed under a refusal (a squadron he only views picked, a change not saved): a bell line of his own input; the bell's own OIL tap; a holiday's bell line (`ownSquadronFirst`); the Leave War's clash note (`openInputWindow`, driven as its button drives it). After each: `INPEDIT` null, `OILASK` null, `OILLIST` null, no toast but the note, `CURPAGE` and `UNIT` unchanged |
 | B27 | the landing's question, then a refusal | Hunter (142's, Plan of 149), the member view, 149 picked, the Tracker held there over an unsaved chart edit; he taps a bell line of his own 142 input: "Save them before switching to 142?"; the saver fails while it stands; **Discard: the Retry note, `INPEDIT` null, `UNIT` 149, the page as it was**. Stay: nothing. Save or Discard with nothing wrong: 142, the Inputs page, then the window (`tracker/msq-bell-input-ask.test.tsx` stays green unchanged) |
-| B28 | a caller that sets something before the page, refused | `openAdminUsers`, `openWarAt` and `openNewPeriod`, each pressed or driven under a refusal: `ADMINOPEN` null; no ring asked of the Leave War and its war as it was; no new-period ask pending. And a bell line of SANS days, once `main` is in: `SANSDAYASK` null, the Inputs page's tab and month as they were (§9) |
+| B28 | a caller that sets something before the page, refused | `openAdminUsers`, `openWarAt` and `openNewPeriod`, each pressed or driven under a refusal: `ADMINOPEN` null; no ring asked of the Leave War and its war as it was; no new-period ask pending. And the SANS reminder's line (B7b): `SANSDAYASK` null, the Inputs page's tab and month as they were (§9) |
 | B29 | a holiday's bell line brings its squadron into view first | Hunter (142's admin, View of 150), 150 picked, taps "… is now a public holiday": `UNIT` 142, then 142's OIL list — never the list under 150's number (D2627 A19). With a window open or a change not saved: refused, the line unread, `OILLIST` null. With unsaved chart edits held: the Tracker's question first; Stay → nothing opens. On 142 already: the list opens at once, as today |
-| B30 | when the show-only windows close, and when they do not | ALL AVAIL open, unsaved chart edits, a pick: the question; **Stay → ALL AVAIL still open**; Discard → closed, then 149. A pick refused for a failed save: still open. A save waited for, then landed: closed, then the pick. The squadron already in view picked: still open (the press is no change) |
+| B30 | when the show-only windows close, and when they do not — **at every door** | ALL AVAIL open, unsaved chart edits, a pick: the question; **Stay → ALL AVAIL still open**; Discard → closed, then 149. A pick refused for a failed save: still open. A save waited for, then landed: closed, then the pick. The squadron already in view picked: still open (the press is no change). **The same four cases run through the view switch, a bell line to another squadron, the page door (B27's state: Hunter in the member view on 149, the Tracker held, a line of his own 142 input — Stay, and Discard with the saver failing meanwhile, each leave Insights open and the edit mode on), a holiday's line (`ownSquadronFirst`) and the OIL list's card** (Astra 5, Fable 10: the pick alone did not show the page door closing them early) |
 
 **`src/ui/msq-guard-note.test.tsx`** (jsdom — which control, which words, never the geometry): the door → `NoteAt` table
 row by row; `from: 'drawer'` → the foot; `toastAt` then a plain `toast` returns to the plain place, and `toastAt`'s own
@@ -882,9 +968,10 @@ and with the Calendar open (D2627 A15; P3's cases) — and the top is never take
 of its box; with the "Not saved" band up the note stands under the band and never over Retry, the pick form on two
 lines at 402 (D2627 A13); a refusal moves neither the picker nor the badge (lesson 27); the three doors reached by Tab
 and Enter over each shaded window answer as by mouse, and over Insights the pick goes through and Insights is gone; on
-a phone, My leave, a panel window that leaves the bar free; **the squadron number's two fades (§18.4)**; **N12 — Down
-days opened on the Tracker at 1536 wide, the window narrowed to 1000: the panel's box has no size (measured, not read
-from a `hidden` mark), the picker pressed, and what N12's answer says**. Each test builds its own state and asserts it
+a phone, My leave, a panel window that leaves the bar free; **the squadron number's two fades (§18.4)**; **E4 (N12) —
+Down days opened on the Tracker at 1536 wide, the window narrowed to 1000: the panel's box has no size (measured, not
+read from a `hidden` mark), the picker pressed, and what E4's answer says — on its default the pick goes through and,
+widened again, Down days is closed**; on E7's default the Undo note under the Undo button, and at the foot at 402. Each test builds its own state and asserts it
 is there before the press (the order's §8 point 4). Every scene has three squadrons in the picker (D2630).
 
 ---
@@ -912,17 +999,38 @@ of his); its two callers are `ui/InputsPage.tsx inputsPageRows` (the List, its f
 calendar, open live under a bar reading 149, and Save, Delete and the row's "OIL?" button (`reviseOil`) write 142's
 record from there (pressed, P5 N2; P6 A2 — an input he files from 149's page shows on both lists).
 
-**After:** an input that does not touch the page's squadron is listed there only where it names him **and his own
+**After — on a page whose squadron is not his own that day, and only there** (D2621: "with another squadron
+picked"): an input that does not touch the page's squadron is listed there only where it names him **and his own
 pages can never be the squadron it belongs to** — every squadron of `inputSquadrons(r)` fails `state/perms.ts
 ownPageMayBe`. `inputsListed` gains a fourth argument, the reach test handed in by its two callers (the engine reads
-no accounts); with none handed in it lists as today, so the engine's own tests do not move.
+no accounts); with none handed in it lists as today, so the engine's own tests do not move. **The callers hand it in
+only where `pageUnit('own')` is not his home today** — on his home page the list is today's, every input naming him
+(Fable 5 of the third read: without that clause Saber, home 142 with a move to 149 saved for 1 Dec, files leave for 5
+Dec on 142's page and it is gone from the page he filed it on the moment it is saved — it belongs to 149 on its day
+and he can open 149's page; the same for anyone holding Plan of the squadron he moves to).
+
+**The just-saved row pinned at the List's head follows the same rule** (Opus F-e, HIGH; read on this branch): the
+List puts `pinned` ids on top from `INPUTS.find(…)` (`ui/InputsPage.tsx` l.282, l.326, l.499 — never through
+`inputsPageRows`), and pins are cleared by a tab, a filter, the range, "+ Input" and unmount — not by a squadron
+change; the page stays mounted across a pick. So Hunter saves his own 142 duty on 142's List with a Person filter on
+someone else — pinned — and picks 149 with nothing open: **149's List draws his 142 duty at its head, its "OIL?"
+button with it**, live before the root and born greyed under untrue words after it. **Two lines close it:** the pins
+are drawn only from the page's own list (`pins.filter(r => rows.includes(r))`, the reach test with them), and
+`setPinned([])` with `clearInpReveal()` runs where the page's squadron changes (an effect on `pageUnit('own')`).
+F17; F13 asserts on what is drawn.
 
 - Hunter (142's admin, Plan of 149, View of 150), 149 picked: his 142 inputs are off 149's List, month, opened day,
   look-ahead and filter counts — he can open 142's page, so they are there. An input naming him **and a 149 man**
   touches 149 and stays on both, as today.
 - **A man who has moved** — Ranger, 149's since his posting, no right in 142: his own pages can never be 142's, so his
   old 142 inputs stay on his page where he is, their "OIL?" button with them, and open live there (`letOpenOn`, §5.2).
-- Saber, a master admin moved 142 → 149: he can open 142's page, so his old 142 inputs are on 142's page only.
+- Saber, a master admin moved 142 → 149: he can open 142's page, so his old 142 inputs are on 142's page only —
+  **in the admin view.** `ownPageMayBe` reads the role in force (`roleOf()`, read on this branch), so in the member
+  view his pages can be no squadron but his own, and his old 142 inputs are listed on his 149 page and open live
+  there, as a moved member's do. **(reading)** — Fable 9 of the third read: the list flips with the badge. Built so,
+  because the list, the doors and the root then ask the one predicate and cannot disagree, and in the member view he
+  is a member; the other answer (the account's right decides, whatever the view) needs a second predicate in all
+  three. F15 runs in both views; put to him with §17's list.
 - **(reading), for him — his words were "a squadron he can still pick".** A man with only a View of a squadron can
   pick it, but a View never reaches its Inputs page (D2381, D2252). Read by the letter, Ranger — moved to 149, then
   given View of 142 — would see his old 142 inputs nowhere: off 149's page because he "can pick" 142, and 142's page
@@ -952,8 +1060,11 @@ not stop it — he has the right in both (the security read's opening paragraph)
   input's squadron* (`!ownPageMayBe(inputSqn)`) *and the input names him* — the moved man's old input, live where he
   is so that he can answer it (D2621 `[ruled]`; held from its first draw he could never answer it, and a tap on his
   bell goes to that question before it opens the list — round 1, Fable 3a). **An input he filed for others and is not
-  named in — N9 — is not this case:** whether its window opens live, read-only or not at all is still his to answer,
-  and the root is not built over that door until he has.
+  named in, in a squadron he has since lost his right in — N9 — needs no case: no bell line can open it.**
+  `state/notices.ts rightHolds` drops an input's line that carries its squadrons (`fu`) once none of them is his home
+  and no right of his in one began before it (read on this branch, l.870–883; the round-5 page tells him so, and its
+  presser's k4 bears it out); a line stored without `fu` is data already stored (D56). F19 pins it. **N9 is closed:
+  the root waits on §5.5 alone.**
 - **`INPUT_DOORS`** — one row for each door of §5.5 that opens a saved input: `{ id, home }` — whether that door
   brings the input's own squadron into view before the window. Every row is settled now (§5.3); the table stays so
   that a door added later must say which it is (R5 (a)).
@@ -989,7 +1100,7 @@ and the root lets it (`letOpenOn`).
 | **A bell line of an input** — `openNotice` | as today: the line's own squadron is entered first (`n.u`, D2325) | §4.5 |
 | **The bell's own OIL tap** — `ui/topstate.ts bellTap`, the `oilHit` branch; today no entry is asked for (security F2; pressed, P6 A4) | **yes** — D2621 `[ruled]`: "a bell line about such an input brings its squadron into view first" | door `'bell'`; `again` is `() => bellTap(from)` |
 | **A holiday's bell line** — `openNotice`, the `oilhol` branch | **yes** — D2627 A19 `[ruled]` | for a Plan holder or master admin the line's squadron is entered as today; for one who only views the squadron picked, `ownSquadronFirst` brings his own back first (§4.5), then the list — so the list never stands under another squadron's number |
-| **A row of the Inputs list and its "OIL" / "OIL?" button; a card of the Inputs calendar's day; the calendar's own reveal** — `ui/InputsPage.tsx openInput`, `reviseOil`; `ui/InputsCal.tsx` l.950, l.511 | **no — and none is needed** | after §5.1 a row on the page is an input that touches the page's squadron (`inputSqn` is the page's) or a moved man's old one (live where he is, D2621). F13 holds that as an invariant of the list: no row whose `inputSqn` is a squadron his pages could be, other than the page's own. The button raises a question, not a window, so the root could never have covered it: the list's rule does |
+| **A row of the Inputs list and its "OIL" / "OIL?" button; a card of the Inputs calendar's day; the calendar's own reveal** — `ui/InputsPage.tsx openInput`, `reviseOil`; `ui/InputsCal.tsx` l.950, l.511 | **no — and none is needed** | after §5.1 a row on the page — **the pinned just-saved row among them** — is an input that touches the page's squadron (`inputSqn` is the page's) or a moved man's old one (live where he is, D2621); on his home page it may also be his own input of a squadron he moves to, listed as today. F13 holds that as an invariant of **what the List and the month draw**, on every page but his home page: no row whose `inputSqn` is a squadron his pages could be, other than the page's own. The button raises a question, not a window, so the root could never have covered it: the list's rule does |
 
 ### 5.4 The reader's two leads, and the documents
 
@@ -1022,10 +1133,10 @@ it is a question for him before the root is built — never a greyed window by d
 
 | Door | File | Opens | Can the page's squadron and the input's own differ? |
 |---|---|---|---|
-| A row of the Inputs list, and its "OIL" / "OIL?" button | `ui/InputsPage.tsx` `openInput`, `reviseOil` | a saved input | **Only a moved man's old input** (§5.1) — live where he is, D2621. Today: yes, for every input naming him (pressed, P5 N2) |
+| A row of the Inputs list, and its "OIL" / "OIL?" button — **the pinned just-saved row too** | `ui/InputsPage.tsx` `openInput`, `reviseOil`; the pins (l.499) | a saved input | **Only a moved man's old input** (§5.1) — live where he is, D2621 — **once the pins are drawn from the page's own list and cleared at a squadron change (§5.1, F17); without those two lines: yes, by save-then-pick (Opus F-e)**. On his home page, his own input of a squadron he moves to: its `inputSqn` is that squadron — **the root must not grey it there: `letOpenOn` is not the answer (it has one case); the builder settles this row before step 8, and if it needs words it is a question for him**. Today: yes, for every input naming him (pressed, P5 N2) |
 | A card of the calendar's day; the calendar's own reveal | `ui/InputsCal.tsx` l.950, l.511 | a saved input | the same (`calRows`, the same list) |
 | A card of a SANS day | `ui/SansDay.tsx` `open` | a saved input | not traced — the SANS calendar reads the page's squadron (the code roll-call's "checked and found clean") |
-| A bell line | `ui/topstate.ts openInputOnPage` | a saved input | **Yes, where `enterForLine` answered `'no'`:** the moved man's own input — D2621; **an input he filed for a squadron he has since lost his right in, not naming him — N9, open** |
+| A bell line | `ui/topstate.ts openInputOnPage` | a saved input | **Yes, where `enterForLine` answered `'no'`:** the moved man's own input — D2621. An input he filed for a squadron he has since lost his right in, not naming him: **no line of it is left in his bell (N9, closed — §5.2; F19)** |
 | The bell's own OIL tap | the same | a saved input | no, after its door (§5.3); **on `'no'`** the moved man's: live where he is (D2621) |
 | A card of the OIL list | `ui/OilDayList.tsx` | a saved input | only after a change he did not make |
 | The OIL question raised after a save on the schedule | `ui/inputedit.tsx` l.1864 (l.1626, `giveBackCuts`, only re-seats the window already open — not a door) | a saved input | not traced — it is the input just saved, on the squadron in view's schedule |
@@ -1044,17 +1155,20 @@ it is a question for him before the root is built — never a greyed window by d
 | F2 | …and is refused with a window open | the same with a window open on 149: refused ("…then press the bell again." `[ruled]`), no window, no OIL question, no toast but the note | yes |
 | F2b | …and where his pages may never be the input's squadron | Ranger (View of 149 and 150), 149 picked, a change not saved, his own OIL question on an input of 150: refused at the page door, `UNIT` 149, **`INPEDIT` null, `OILASK` null, no "Weekend/PH work" toast**. Built with the page door, at step 5 | yes |
 | F3 | …and waits for the Tracker's question | unsaved chart edits on 149: the question first; Stay → nothing opens; Discard → F1. A man other than the one who pressed, or the question answered by someone else meanwhile: nothing (the existing `tracker/msq-bell-recheck-after-ask.test.tsx` stays green unchanged) | yes |
-| F4 | the root, by a door no press reaches | the test opens a 142 input under 149 by `setInpEdit` directly (said in its name: "a belt — no press reaches this"): held at once; Save, Delete, Take me out, the OIL answer and Enter in a field write nothing. **A real pick of 142 from there is refused** — the window is open (the ruled note). **The raw entry `enterSquadron('142', false, true)`, named so in the test, gives it back live** — a raw entry with a window open, so the test is on the checker's allow-list by name | yes |
+| F4 | the root, by a door no press reaches | the test opens a 142 input under 149 by `setInpEdit` directly (said in its name: "a belt — no press reaches this"): held at once; Save, Delete, Take me out, the OIL answer and Enter in a field write nothing. **A real pick of 142 from there: as E5 decides** — on its default the held window does not count, the pick goes through and the window is live again on 142, whose input it is; on its other answer the pick is refused (the ruled note). **The raw entry `enterSquadron('142', false, true)`, named so in the test, gives it back live** — a raw entry with a window open, so the test is on the checker's allow-list by name | yes |
 | F5 | the OIL list's card | as B25, from the window's side: `INPEDIT` is set only after the page is Inputs; with `enterForLine` made to answer `'refused'`: nothing opens, `INPEDIT` null; with the landing's question up (the member view, unsaved chart edits): nothing opens until it is answered | yes |
 | F7 | the just-saved row | as §5.4 | unknown — it is written to find out |
 | F8 | an input naming men of both squadrons — **pin** | opened on 142's page and on 149's: live on both (it touches both), and listed on both | no — it passes today |
 | F10 | the swap question's squadron | the existing `ui/msq-pick-swap-question.test.tsx` re-pointed (§10); the question and the note read one field | — |
 | F11 | a document chosen late | a file box's change fired on a window held by the midnight clock: `docAdd` not called, the draft's list unchanged, nothing new in the document store or the durable drawer; on a live window: as today | yes |
 | F12 | the note is taken once | the moved man's old 142 input open on his 149 page (let open there), then a second move of his at midnight to 150: held after a redraw, an Undo and a Redo — `let` was worked out when the window opened and is 149 (§15, finding 13) | pin, once step 8 exists |
-| F13 | **his own inputs are off another squadron's page (D2621)** | Hunter (142's, Plan of 149, View of 150), four inputs of his own on 142 — a duty, two OL, one with its OIL question waiting — and one naming him with a 149 man. 149 picked: `inputsPageRows()` and `calRows()` hold the shared one and none of the four; the List, the month, the opened day, the look-ahead and the Person filter's count show none; no "OIL?" button of his is drawn. 142 picked: all five. **The invariant, a loop:** for every seeded person and every squadron he can pick, no row's `inputSqn` is a squadron his pages could be other than the page's own | yes — today all four are listed (P5 N2) |
-| F14 | a moved man still sees his old inputs where he is | Ranger moved 142 → 149 (`moveMan`), no right in 142: on his 149 page his old 142 inputs are listed, the "OIL?" button drawn, the window opens **live**, its OIL answer saves; the bell's tap for it opens it where he is (`enterForLine` answers `'no'`). **Then given View of 142:** still listed on his own page (the reading of §5.1) | the first half passes today — a pin; the second fails by the letter of the ruling and is the reading's test |
-| F15 | a master admin who moved | Saber moved 142 → 149: his old 142 inputs on 142's page only; the bell's tap for one brings 142 into view first | yes |
+| F13 | **his own inputs are off another squadron's page (D2621)** | Hunter (142's, Plan of 149, View of 150), four inputs of his own on 142 — a duty, two OL, one with its OIL question waiting — and one naming him with a 149 man. 149 picked: `inputsPageRows()` and `calRows()` hold the shared one and none of the four; **the drawn List (a desktop's rows and a phone's day groups), the drawn month**, the opened day, the look-ahead and the Person filter's count show none; no "OIL?" button of his is drawn. 142 picked: all five. **The invariant, a loop over what is drawn:** for every seeded person and every squadron he can pick **other than his home that day**, no drawn row's `inputSqn` is a squadron his pages could be other than the page's own | yes — today all four are listed (P5 N2) |
+| F14 | a moved man still sees his old inputs where he is | Ranger moved 142 → 149 (`moveMan`), no right in 142: on his 149 page his old 142 inputs are listed, the "OIL?" button drawn, the window opens **live**, its OIL answer saves; the bell's tap for it opens it where he is (`enterForLine` answers `'no'`). **Then given View of 142:** still listed on his own page (the reading of §5.1) | **both halves pass today — a preservation test, named so** (Astra 7: `inputsListed` lists every input naming him whatever his View): written and seen green at step 0, and it must stay green through step 7, where the reach test read by the letter ("can still pick") would turn its second half red |
+| F15 | a master admin who moved — **in both views** | Saber moved 142 → 149. **The admin view:** his old 142 inputs on 142's page only; the bell's tap for one brings 142 into view first. **The member view:** listed on his 149 page, the window live there (the reading of §5.1) | yes |
 | F16 | a new input filed from another squadron's page shows where it belongs | Hunter on 149 files an input for a 149 man: listed on 149, not on 142. **His own cannot be filed from 149's page at all** — "+ Input" there offers 149's men only (D2628 C2, §18.6, built in the same step as the list's rule: built apart, an input he filed for himself from 149's page would vanish from the list he filed it on) | yes |
+| F17 | **the just-saved row does not follow him to another squadron** (Opus F-e) | Hunter on 142's List, a Person filter on someone else (and at a phone's size), saves his own 142 duty: pinned at the head. He picks 149 — nothing is open, the pick goes through: **149's drawn List holds no row of that duty and no "OIL?" button of his**, `pinned` empty, the reveal cleared; back on 142: listed in its own place. The same by a bell line to 149. On 142 with no pick: pinned, as today (a pin) | yes — today it is drawn at 149's head |
+| F18 | **the rule does not reach his home page** (Fable 5) | Saber, home 142, a move to 149 saved for 1 Dec, files leave for 5 Dec on 142's page: listed on 142's page after the save; with 149 picked: listed there too (it touches 149 on its day). Hunter, Plan of 149, a move to 149 saved ahead: the same | a pin today; it must stay green through step 7 |
+| F19 | **N9 cannot happen** | Hunter files an input for two 149 men while holding Plan of 149; the Plan is ended: the line about that input is in no list of his bell, lights nothing and cannot be tapped (`rightHolds`); given Plan again later: a line written before the new right began stays out | a pin — it passes today |
 
 (F6 is withdrawn as a test — §5.4. F1b and F9, written for the three answers to N2 + N8, are withdrawn with them: F13–F15 hold the answer he gave.)
 
@@ -1091,6 +1205,13 @@ Every behaviour's twins, each with a test of its own (a number in §3.5, §4.7, 
 | The six show-only windows × each door × goes through · refused beside a counted window · the Tracker's question answered Stay | B4b · B4b's last line · B30 |
 | His own input: on its own squadron's page · off another's · a moved man's, where he is · a master admin's after a move | F13 · F13 · F14 · F15 |
 | The List · the month · a day opened · the look-ahead and the filter's count · the row's "OIL?" button | F13 loops over all five |
+| His own input just saved, pinned at the List's head: on its own page · after a pick · after a bell line to another squadron; a desktop · a phone | F17 |
+| The list's rule: on another squadron's page · on his home page with a move ahead | F13 · F18 |
+| A moved master admin: the admin view · the member view | F15 |
+| A bell line of an input · of no input (his own SANS reminder); from a squadron he holds Plan of · from one he only views | B6, F1 · B7b |
+| `closeShown` and the edit modes' end at: a pick · the view switch · a bell line · the page door after its question · a holiday's line · the OIL list's card | B30 |
+| The Calendar: nothing pending · a form half done · a sheet read in · settings beside it unchanged · changed | A16 |
+| Undo of "+ New squadron": with a window open · a row changed · nothing open; Undo · Redo | B24 |
 | Edit mode: Logic · Quals; ended by a pick · the view switch · a bell line to another squadron | G1 · G2 (§18.1) |
 | Add a person: a desktop · a phone; opened by its button · by Quals' "+ Add person"; left by Add person · Cancel · Escape | G3–G6 (§18.3), e2e |
 | The fades: a pick · a bell line · his own move at midnight; none at sign-in · at a refused pick; motion on · less motion | G7–G9 (§18.4), e2e |
@@ -1133,12 +1254,38 @@ unchanged. Each pin states what today's app does **as pressed**, where a presser
 
 ---
 
-## 8. The questions — what he answered, and the six still open
+## 8. The questions — what he answered, and what is still open
 
 **He has answered every question of the brief's list and five of the N's (25 Nov 26); each answer is built where the
-table says, and nothing in the body is a recommendation any more unless it carries an open code or "(reading)".**
-The six still open are §8.3's: **none is built on its recommendation**; each row says what it holds back and how the
-code is shaped for either answer.
+table says, and nothing in the body is a recommendation any more unless it carries an open code, "(default)" or
+"(reading)".** What is still open is on the round-5 questions page (E1–E9, D1–D12 — the table below), §8.3's rows and
+§8.4's three new questions: **none is built before he answers**; each says what it holds back and how the code is
+shaped for either answer.
+
+**The round-5 page against this plan** (`raptor-port/docs/mock/2026-11-25-msq-pick-guard-q3/page-r5b.html`; its design
+review, `../briefs/2026-11-25-msq-q3-page-fable-review-report.md` §6.2; Fable 1 and Opus F-i of the third read: the
+plan and the page had recommended opposite things on E4, E5, E7 and E9b, and the plan held N9 open). **Every default
+below is the page's recommendation — unanswered: it is built only if he says "as recommended", and the other answer
+is shaped beside it.**
+
+| Page | This plan's code | Default (the page's recommendation, unanswered) | The other answer | Where it is shaped · what it holds |
+|---|---|---|---|---|
+| **E1** | N13, and the settings window | The Calendar closes by itself unless a holiday, Every Monday or a sheet of holidays is half done; a settings window beside it with nothing changed closes too, one with a change refuses, named | refuse whenever the Calendar is open; always close it; a settings window always refuses | §3.1 (`dirty`), §3.2 (a), §4.6; A16 · the `days`, `everywd`, `holiday`, `inputsset`, `sansset` rows and `holimport` — step 1 |
+| **E2** | N7 | The Tracker's marking window closes by itself, as today | refused while a "Done on" day waits — needs `clickAway` changed | §3.2 (g) · the `pop` row — step 1 |
+| **E3** | N10 | The chart editor, nothing moved, closes at the member-view switch | as today | §4.4 step 5 · step 4 |
+| **E4** | N12 | Down days and Failures close by themselves; a lull pop-up is pressed first, and one that can hold a choice refuses, the note naming the Info tab | Down days and Failures refuse, the note naming the Info tab | §3.2 (g), §3.3; A13, the e2e · the four Info-panel rows — step 1 |
+| **E5** | N6 | A window held since midnight does not count: the pick goes through and gives it back, as today | the pick is refused | §8.3 N6 (`held`) · the held half of three rows — steps 1, 3; F4 |
+| **E6** | §17 reading 10 | Told: everyone who already gets 149's admin lines — its own admins, a Plan holder of it, a master admin with it switched on — never the presser; Hunter's name wears his home "142" | 149's own admins only — a new audience, and a gate rule for it | §19.2; V10 · V2 |
+| **E7** | row 21 (N11's one Undo) | Refused in Build 1 while a window is open or a change is not saved | left as today until group B | §4.1 row 21, §4.6; B24 · step 6b |
+| **E8** | V-Q1 | The "All squadrons" tick goes: the squadron picked open with whole rows, every other folded with short rows, for everyone | (2) the tick kept, every row whole, his own squadron open; (3) the tick kept, other squadrons' rows short | §19.3; V15 · V3 |
+| **E9 a–n** | §17's readings 1, 3–13, 15, 16 | each as the page's "I would build" | each has its own Differently | §17 gives each letter its place |
+| **D5** | §19.1's opened row | Short closed rows; a press opens the one access line with Save and Cancel; a man with no sign-in opens to words | the first way (three live buttons on every row, a press taking effect at once); and, his call, "no sign-in" on the closed row | §19.1; V1 · V1 |
+| **D6** | §19.2's greyed Plan | The reason as words under the line, one at a time, the first that is true | — | §19.2; V8 |
+| **D8** | §19.4 | "Someone new" only answers the question; "Add person" does the adding, greyed until answered; 142's admins are told when the man is added | as first drawn: "Someone new: add him" adds | §19.4; V16–V19 · V4 |
+| **D10** | V-Q4 | On a squadron he only views the badge is plain words, not a switch, and the ☰ menu's "Switch to the member view" is left out | a press still switches | §19.7; V27 · V7 |
+| **D11**, **D12** | §18.7, §18.6, §19.8 | The reason as words under the greyed "+ Commitment"; "Hunter · 142" in plain letters in the sign-off boxes | — | G12; V28 |
+| D1–D4, D7, D9 | §18.3, §18.4, §19.5, §19.3, §19.6 | as drawn — what this plan builds | — | — |
+| told, not asked | N9 | it cannot happen | — | §5.2; F19 |
 
 **The plan's codes against the questions page's** (`raptor-port/docs/mock/2026-11-25-msq-pick-guard-q2/page.html`,
 version 4; a fresh Fable's "Changed in review" boxes win where shown — his "as recommended" was told to him so: D2627,
@@ -1151,8 +1298,8 @@ D2628):
 | H7 | A8 | D2627 | | H9 | B6–B8 (N11 is B7) | **after Build 1 (D2636)** |
 | H8 | A9 | D2627 | | H10 | B9–B11 | **after Build 1 (D2636)** |
 | H11 | A14–A16 | D2627 | | H12, H13 | B12 | **after Build 1 (D2636)** |
-| the §3 calls | A10–A13 | D2627 | | N6 | told, not asked | **open — it is a question (§8.3)** |
-| N1 | A7 | D2627 | | N7, N9, N10, N12, N13 | not on the page | **open — pressed by chat 176's presser, then put to him** |
+| the §3 calls | A10–A13 | D2627 | | N6 | the round-5 page's E5 | **open (§8.3)** |
+| N1 | A7 | D2627 | | N7, N10, N12, N13 · N9 | the round-5 page's E2, E3, E4, E1 · told there, not asked | **open (§8.3)** · **closed: it cannot happen** |
 | N2 + N8 | A17 | D2621 — a fourth answer, his own | | part G, part V | C1–C11 | D2624, D2625, D2628; C6: D2632, D2633 |
 | N3 | A18 | D2627, with D2628 C4 | | | | |
 | N4 | A19 | D2627 (told: D2621) | | | | |
@@ -1176,12 +1323,13 @@ D2628):
 H1, H4, H5, H6 (Logout), H9 (Undo) and H10 (the refresh card) — the page's B1 to B11 — and H12, H13 (B12) touch no line
 of Build 1, and **he answers them after Build 1 is built, the agent reminding him (D2636): the first report after
 the build puts group B to him and builds none of it** (§10's closing step). A drag in progress and typing in no window
-are not built here: a drag is put back by nothing new, and those boxes are `'no'` rows. (Pressed, for his answer when
+are not built here: a drag is put back by nothing new, and those boxes are `'no'` rows — **but for Quals' "Add
+qualification" box, which the mode's end forces a rule for (§3.2 (i), a reading).** (Pressed, for his answer when
 he gives it — P4 3: a desktop drag survives a pick by the keys; P4 4: a day's note and a Balances figure are saved into
-142's record at the pick.) **One of them is a door of this guard — B7, §4.1 row 21 — and §1's first condition has him
-told so.**
+142's record at the pick.) **One of them is a door of this guard — B7, §4.1 row 21 — and the round-5 page's E7 now
+tells him so and asks for that one Undo alone.**
 
-### 8.3 The N's — five answered, six open, one put off
+### 8.3 The N's — five answered, five open (each on the round-5 page), one closed, one put off
 
 | N | Answered — what it chose | Where it is built |
 |---|---|---|
@@ -1190,18 +1338,30 @@ told so.**
 | **N3** a press that is not a bell line bringing his own squadron back | **D2627 A18, with D2628 C4.** Refused as a pick is, its note naming it — and nothing built for "Check my quals", the card being shown only on his own squadron. The rule stands at the page door for any later button | §4.1 rows 10, 12, 13; §18.5; B22, B23, B25 |
 | **N4** a holiday's bell line while he views another squadron | **D2627 A19 (told, not asked: D2621).** Its squadron comes into view first, then the OIL list | §4.5 `ownSquadronFirst`, §5.3; B29 |
 | **N5** the Tracker's question at the view switch on his own squadron | **D2627 A20.** Asked always, both ways, as drawn 24 Nov; "Discard them" brings the chart back to its last save | §4.4; B14, B15 |
-| **N11** Undo that removes the squadron in view | **Put off with group B (D2636) — it is B7.** Not built; row 21 stays as today; §1's first condition | §4.1 row 21; B24 (a pin) |
+| **N11** Undo that removes the squadron in view | **Put off with group B (D2636) — it is B7. The one Undo that is a door of this guard is asked apart, as E7** (default: refused in Build 1) | §4.1 row 21; B24; step 6b |
 
-**Still open — none is answered here.** Chat 176's presser presses each before it is put to him.
+**Still open — none is answered here; the "Recommended" cell of each row now gives the round-5 page's recommendation
+as the default, and the plan's earlier recommendation, where it differed (N6, N12), as the other answer.**
 
 | N | The case — who presses what | Today | Recommended, and the other answer | Shaped for either | Holds back |
 |---|---|---|---|---|---|
-| **N6** | **A window held since midnight, then his own pick.** Saber, a master admin moved from 142 to 149 at 00:00, has an Input window with words typed, held by the move ("This change could not be saved." and Close); he picks 142 — or 150. (Hunter, with no right elsewhere after his move, has no picker at all: pressed, P5 N6) | Pressed (P5 N6): the pick goes through, nothing asked, and **the window comes back live on 142, his words there to edit**; 149 picked again greys it with the pick's band. On a phone ☰ lies under the window's title strip and the pick cannot be reached | Refused with the ruled words — the held window has its Close. **(reading)** of D2403's "a window is open". **Its cost, as pressed:** today that pick is the one way he gets the held window back with his words; refused, the only way on is its Close, which drops them unasked. **The other answer:** a window already held does not count — the pick goes through and gives it back, as today, until Build 2's card. The page only told him this; round 2 found it is a question | a row may carry `held?: () => boolean` — the Leave War's rows read `state/typing-hold.ts warBand()`; the Input window publishes its own `held` through a plain module beside it — and the other answer is `open() && !held()` on those rows, one line each | the `inputedit`, `inputdlg` and Leave War rows' held half — **steps 1 and 3** |
+| **N6** | **A window held since midnight, then his own pick.** Saber, a master admin moved from 142 to 149 at 00:00, has an Input window with words typed, held by the move ("This change could not be saved." and Close); he picks 142 — or 150. (Hunter, with no right elsewhere after his move, has no picker at all: pressed, P5 N6) | Pressed (P5 N6): the pick goes through, nothing asked, and **the window comes back live on 142, his words there to edit**; 149 picked again greys it with the pick's band. On a phone ☰ lies under the window's title strip and the pick cannot be reached | **Default (the page's E5): a window already held does not count — the pick goes through and gives it back, as today, until Build 2's card.** As pressed, that pick is the one way he gets the held window back with his words; refused, the only way on is its Close, which drops them unasked. On a phone the way back cannot be reached today either way (☰ under the held window) — that stays until Build 2 and group B's B5. **The other answer:** refused with the ruled words — a **(reading)** of D2403's "a window is open" | a row may carry `held?: () => boolean` — the Leave War's rows read `state/typing-hold.ts warBand()`; the Input window publishes its own `held` through a plain module beside it — and the default is `open() && !held()` on those rows, one line each; the other answer drops that clause | the `inputedit`, `inputdlg` and Leave War rows' held half — **steps 1 and 3**; F4's pick clause |
 | **N7** | **The Tracker's marking window.** Saber on 142's Tracker presses a ball — the marking window opens. He presses the Schedules button, then 149 | The press on the Schedules button closes the marking window — any press outside it does — and the pick goes through (pressed, P1 4). It has no box to type in; each tap in it believed saved at once, not yet seen on screen (D2597's row) | It closes by itself, as an event's details now do (D2597), and holds nothing typed. **"It refuses" cannot be built as the first draft wrote it (Astra):** the window is gone before the list's row is pressed, and a press on the badge would be refused and then close, in the same press, the window its note says to close; it needs the Tracker's outside-press rule changed to spare the picker, its list, the badge, ☰ and the bell — new behaviour on the Tracker's page, and the press reshape's ground (§9) | the `pop` row's `counts`: `'closes'` (its closer through the bridge) or `'window'` plus `tracker/App.jsx clickAway` | the `pop` row — step 1; B4's Tracker row |
-| **N9** | **An input he filed for others, in a squadron he has since lost his right in.** Hunter filed an input for two 149 men while he held Plan of 149; the Plan has ended; a bell line about that input is still in his bell. On 142 he presses it | It opens on his own Inputs page, judged by the rights he still has in it (from the code — `openNotice`'s own comment; not pressed) | As today on this road — the root is not applied to a window a press has just opened — until Build 2 redraws held windows and words for one can be drawn for him once. **With the root as the first draft built it** the window opens greyed under words that are untrue: "This is 149's. You picked 142 — close this to go on." if he has picked anything since signing in, else "This change could not be saved." (Opus, Fable). The other answer: it opens read-only, with new words drawn for him first (D1625). **D2621 does not settle it:** that ruling is about inputs naming him | `letOpenOn` gains a second case, or `openNotice` a refusal with words of its own — one branch | **step 8 (the root)**, with §5.5 complete |
+| **N9 — closed** | **An input he filed for others, in a squadron he has since lost his right in.** Hunter filed an input for two 149 men while he held Plan of 149; the Plan has ended | **It cannot happen:** once the Plan ends, the line about that input leaves his bell (`state/notices.ts rightHolds` — read on this branch; the round-5 page tells him so under "Told, nothing to answer") | Nothing to answer. Round 2 held it open, and step 8 waited on a question he would never be asked (Opus F-i of the third read) | no code — a pin, F19 | nothing: **step 8 waits on §5.5 alone** |
 | **N10** | **A clean chart editor at the view switch.** Hunter (Plan of 149) on 149's Tracker opens Edit chart layout, moves nothing, presses his badge | From the code as the first draft read it: the member view comes up and the Tracker waits on 149 under its cover. Pressed only on his own squadron (P1 4): the toolbar stays open in the member view | The editor closes and the Tracker goes to his own squadron's, as a pick closes it today without a word (P1 4) — D2403: nothing left held behind a switch he made. The other answer: as today | §4.4 step 5 is one line, built or not | §4.4 step 5; B14's last line — step 4 |
-| **N12** | **A Tracker window hidden behind the Flow chart tab.** Saber, on 142's Tracker at a desktop's width, opens Down days in the Info panel. He narrows the browser to half his screen (or turns a tablet upright): at 1050 wide or less the Tracker shows one half at a time, and it is showing the Flow chart — the Info panel is hidden, and Down days with it. He presses Schedules, then 149 | From the code, not pressed: the pick goes through and the Tracker's own clean-up closes the window, nothing said. Before the pick, nothing on screen shows that it is open | Refused, the note saying where — "Blocked: close the open window on the Tracker’s Info tab, then pick 149." `[WNS]` — as a window behind a tab (D2627 A7): one press on the Info tab shows him the window, so nothing traps him. The other answer: it does not count, and the pick closes it as today. **Not to be built either way: counting it under the plain note, or under "…on the Tracker"** — he is on the Tracker and sees no window (Astra, round 2) | the `behind` mark in the `trk` row's one predicate | the four Info-panel rows (`downLog`, `failLog`, `lullPick`, `lullCopy`) — step 1; A13; the browser test at a narrow width |
-| **N13** | **The Calendar window** (D2597's open part). Saber on 142's Inputs page opens Calendar, ticks nothing or taps a day's mark, presses Schedules, then 149 | From the code, to be pressed: it closes itself once its page shows another squadron, nothing said (`ui/DaysWindow.tsx`, `state/cutoff.ts winStale` — the fix round of 22 Nov; Inputs settings and SANS settings do the same today, and both have a Save, so both refuse after Build 1). No box to type in; each tap believed saved at once, not yet seen on screen | His to say once pressed and pictured — the two answers are his own two rules: it closes by itself if it only shows things and saves each tap at once; it refuses if a tap can be left half-made. Every Monday and Add a holiday, opened from it, have a Save and refuse either way | the `days` row's `counts`: `'window'` or `'closes'` | the `days` row — step 1 |
+| **N12** | **A Tracker window hidden behind the Flow chart tab.** Saber, on 142's Tracker at a desktop's width, opens Down days in the Info panel. He narrows the browser to half his screen (or turns a tablet upright): at 1050 wide or less the Tracker shows one half at a time, and it is showing the Flow chart — the Info panel is hidden, and Down days with it. He presses Schedules, then 149 | From the code, not pressed: the pick goes through and the Tracker's own clean-up closes the window, nothing said. Before the pick, nothing on screen shows that it is open | **Default (the page's E4): Down days and Failures only show things and close by themselves at the pick, as the windows he ruled (D2596, D2597); the two lull pop-ups are pressed before the build, and one that can hold a choice not yet saved refuses, the note saying where** — "Blocked: close the open window on the Tracker’s Info tab, then pick 149." `[WNS]`. **The other answer (this plan's earlier recommendation):** Down days and Failures refuse under that note too — one press on the Info tab shows him the window, so nothing traps him. **Not to be built either way: counting it under the plain note, or under "…on the Tracker"** — he is on the Tracker and sees no window (Astra, round 2) | the `behind` mark in the `trk` row's one predicate | the four Info-panel rows (`downLog`, `failLog`, `lullPick`, `lullCopy`) — step 1; A13; the browser test at a narrow width |
+| **N13** | **The Calendar window** (D2597's open part). Saber on 142's Inputs page opens Calendar, ticks nothing or taps a day's mark, presses Schedules, then 149 | From the code, to be pressed: it closes itself once its page shows another squadron, nothing said (`ui/DaysWindow.tsx`, `state/cutoff.ts winStale` — the fix round of 22 Nov; Inputs settings and SANS settings do the same today, and both have a Save, so both refuse after Build 1). No box to type in; each tap believed saved at once, not yet seen on screen | **Default (the page's E1): it closes by itself — each day pressed is already saved — unless one of its forms or a sheet of holidays read in holds something not saved, which refuses under its own note (§4.6); and a settings window beside it closes too while nothing in it has changed.** The page's own example needs the second half: the Calendar opened from Inputs settings stands beside that window, which has a Save and would refuse every pick (the design review's E1). **Other answers:** refuse whenever the Calendar is open; always close it (a typed holiday name lost, as today); a settings window always refuses. **More than one cell** (Astra 3 of the third read: round 2 called it one) | the `days` row's `counts`; `dirty` on `everywd`, `holiday`, `inputsset`, `sansset`; the `holimport` report | those rows — step 1; A16 |
+
+### 8.4 Three new questions, found by the third read — for the host to word and put to him
+
+Each is a switch point: nothing of it is built before his answer, and the recommendation is the reviser's, read by no
+second reader. Three squadrons in each (D2630).
+
+| Q | The case — who presses what, when | Today | Recommended, and what it rests on | The other answers | Shaped for either · holds |
+|---|---|---|---|---|---|
+| **NQ1** — a Plan holder passing Plan on, in two steps (security S3) | A few times a year, at a desk. Hunter (142's admin, Plan of 149) moves Viper, a 142 man, to 149 — his to do, as admin of the squadron Viper leaves. From the move day Hunter, an admin of 149 by Plan, makes Viper an admin of 149. Viper is now 149's own admin, and gives Plan of 149 to Basher, another 142 admin. Nobody who was 149's own admin was asked. (Mako, 150's admin holding Plan of 149, could do the same with a 150 man.) | It cannot happen: only a master admin gives Plan. **D2626 opens it** — each step is ruled (a move by the admin of the squadron left; D2336 / D2201, which D2626's own row keeps by name: "a Plan holder of 149 still … makes 149 men admins of 149"), and together they defeat its "never by a Plan holder of it, who cannot pass it on" | **Whoever may give Plan of 149 is who may make a man an admin of 149: its own admins or a master admin — a Plan holder no longer.** One rule for both, so the two-step road is gone and nothing new is told or watched. **Its cost:** it narrows D2336 and D2201 in a part D2626 said was unchanged, and a squadron whose only admin is a Plan holder needs a master admin to get an admin of its own (already so for Plan). Rests on D2626's purpose in his words ("so that the people on the ground can manage these") and D754 | (2) keep it, and tell 149's own admins and master admins on the bell when a man is made an admin of 149 by a Plan holder — new words, drawn first; (3) leave it as it will be built | one more caller of `mayGivePlanOf` (§19.2) at the role change and in the gate, or one more bell line · **V5 pins today's behaviour by name until he answers, so it is not read as covered** |
+| **NQ2** — "Add a person" on 149's page offering 142 and 150 as Home (Opus F-a) | Now and then. Hunter, 149 picked, opens "+ Add a person" on 149's Admin → Users. The Home squadron box reads 149 and offers 142, because he is an admin of both; Saber is offered 142, 149 and 150. He chooses 142 and adds Nova: a 142 person made under a bar reading 149, who then shows only under the folded "▸ 142" heading. The same the other way on his own 142 page, choosing 149 | As built: `ui/usersfilter-model.ts addHomeChoices(unit)` offers every squadron he is an admin of, the page's first (read on this branch) | **The form adds to the squadron in view, always; the Home squadron box goes.** To add a 142 man he picks 142 first: one press. It is D2622 applied to this form — "what belongs to a squadron is seen only on that squadron" — as D2621 applied it to inputs and D2625 to a man's row, and it is the same on every page. **Its cost:** one pick more for an admin of several squadrons; the box, built for D2197's readers, is retired | (2) the box goes only on a page that is not his own squadron's; (3) as today | `addHomeChoices` answers the page's squadron alone, or as today · **G4 does not pin the three-squadron box, and §18.3's "Stays" leaves `addHomeChoices` out, until he answers** |
+| **NQ3** — the search matching a sign-in the row hides (Opus F-b) | Rare. Kestrel, on 149's Admin → Users, types part of a defence mail — "ranger@" — into "Find a callsign or sign-in". 142's heading opens with Ranger under it. His row there shows no sign-in (D2625), but the match has told Kestrel whose sign-in that is | As built: `ui/userslist-model.ts usersListOf` matches the callsign **or** the account's sign-in name for every man, other squadrons' included (read on this branch) | **A man of another squadron is found by his callsign only; the page's own men by callsign or sign-in, as today.** What a page hides it should not give back to a guess. **Its cost:** an admin who knows only a 142 man's mail cannot find him from 149's page — he picks 142 if he may, or asks 142's admin. The search box's words stay | as today — hidden on the row, still findable | one clause in `matches` for a row that is `foreignHere` · V13's new case |
 
 ---
 
@@ -1266,7 +1426,7 @@ sized by the riskiest; D485; D1087).** Two builds on this one branch, joined in 
   a right and C5 makes bug reports saved records for the first time — risks of a different kind from the guard's, each
   wanting its own readers (the security reader on D2625 and D2626: D1411), and a fault the FULL check finds should
   point at one build; it waits on drawings and words, not on N6–N13, so it can be built while those are answered; and
-  about 31 hours added to about 54 would be one build of 85 under one set of reads (§13). **Order:** Build 1 through its
+  about 46 hours added to about 71 would be one build of 117 under one set of reads (§13). **Order:** Build 1 through its
   step 1b first — both builds edit `ui/UsersPanel.tsx`, and 1b moves and reshapes the form at its foot — then 1V may
   run beside Build 1's later steps, in this chat or a parallel one that messages first (`shipping.md`).
 - **One FULL check for the batch** with [MSQ-NIGHT-153-OPEN], after Builds 2 and 3 (D485), sized by the riskiest
@@ -1286,28 +1446,32 @@ its drawing has been seen by him** (D1625), and is checked against that drawing 
 
 | Step | What | Its tests | Waits on | Leaves the app |
 |---|---|---|---|---|
-| **0** | **`main` brought in, the third squadron, the pins and the census — no behaviour changes.** (a) `main` merged into this branch (198 commits; §9), the settle step run, the touched tests and the build green; every "today" of §18, §19 and §5 read on a file `main` changed is read again and the plan corrected where it moved. (b) **`test-support/msq-world.ts` gains the third squadron (D2630):** `withThird()` — Saber makes 150 through the real door (`state/units.ts addUnit`, a first admin of its own, Petrel, added through `addPersonAndAccount`), then, through `state/accounts.ts saveAccess` as the one who may give each right, Hunter is given Plan of 149 and View of 150, Ranger View of 149 and of 150; `SIGN`, `PID`, `ACCT` gain Petrel; 150's Leave War world is put behind the world door as 149's is. `useMsqWorld()` stays as it is (two squadrons — the existing files do not move); every new test file of these builds calls `withThird()` in its set-up, and R9 (below) fails a new test file that does not. (c) `msq-guard-asis.test.tsx` (P1–P19), green today. (d) The census: the 37 test files that press a pick or the view switch and the 13 that press a bell line (§14) are read, and each test whose set-up makes that press **with something open** is listed in the plan's own annex with what it proves, in three kinds: (a) the held window a change he did not make still raises; (b) the pick's or the member view's band — unreachable after this build; (c) what the press does. **Only kind (a) is touched here:** its set-up is re-pointed to the road that still exists (the midnight clock) — green before and after. Kinds (b) and (c) are listed by name for the step of their own door. **The list goes to him by name in the report; none is edited to pass.** Also here, reading only: the last column of §5.5 | P1–P19 (pins); R9 "every test file of the guard and of part V sets up three squadrons" (reads the source) | — | as today |
-| **1** | **Part A.** `state/guard.ts`, `ui/guard.ts` (`GUARD_ROWS` — a row for each movable window from `FLOAT_WHERE`; `whatIsOpen`, `rowReachable`, `closeShown`, `useGuardWork`, `useGuardCloses`), **`ui/windrawn.ts`** — each drawn predicate as a function there, called by its component (no component file gains an export), `winorder.ts winUp(id)`, the six Admin `useGuardWork` calls that need no new form (the Add a person report is step 1b's) and the Inputs list's `oilrevise`, the SANS calendar's closer, `core.js TRK_WINDOWS` (read only — `endSession` untouched), the `role.js` bridge with its `behind` and asking marks and its one closer. No door asks or closes yet | R1–R4, R7, R8, A1–A15; B18 (pin from here). Must stay green: `ui/pops.test.ts`, `state/view-reset.test.ts`, the Tracker's session tests (`tracker/tracker.test.tsx`), the Tracker smoke (P17); **React Doctor's count unchanged** (`npm run lint:changed`) | **N6, N7, N12, N13** — each holds only its own rows (§8.3); the rest of the table is built | as today — nothing reads the answer |
-| **1b** | **Add a person at the top, with its Cancel (§18.3)** — `ui/UsersPanel.tsx`, the Admin stylesheet; its `useGuardWork('addperson', …)` | G3–G6; A6's Add a person half; must stay green: `ui/accounts-ui`, `ui/msq-users-filter`, `ui/msq-users-row`, Quals' "+ Add person" test | **its drawing seen by him (D1625)**; the lead's words `[WNS]` | the form behind its button; nothing refuses yet |
+| **0** | **`main` brought in, the third squadron, the pins and the census — no behaviour changes.** (a) `main` merged into this branch (198 commits; §9), the settle step run, the touched tests and the build green; every "today" of §18, §19 and §5 read on a file `main` changed is read again and the plan corrected where it moved. (b) **`test-support/msq-world.ts` gains the third squadron (D2630):** `withThird()` — Saber makes 150 through the real door (`state/units.ts addUnit`, a first admin of its own, Mako, added through `addPersonAndAccount`), then, through `state/accounts.ts saveAccess` as the one who may give each right, Hunter is given Plan of 149 and View of 150, Ranger View of 149 and of 150; `SIGN`, `PID`, `ACCT` gain Mako; 150's Leave War world is put behind the world door as 149's is. `useMsqWorld()` stays as it is (two squadrons — the existing files do not move); every new test file of these builds calls `withThird()` in its set-up, and R9 (below) fails a new test file that does not. (c) `msq-guard-asis.test.tsx` (P1–P19), green today. (d) The census: the 37 test files that press a pick or the view switch and the 13 that press a bell line (§14) are read, and each test whose set-up makes that press **with something open** is listed in the plan's own annex with what it proves, in three kinds: (a) the held window a change he did not make still raises; (b) the pick's or the member view's band — unreachable after this build; (c) what the press does. **Only kind (a) is touched here:** its set-up is re-pointed to the road that still exists (the midnight clock) — green before and after. Kinds (b) and (c) are listed by name for the step of their own door. **The list goes to him by name in the report; none is edited to pass.** Also here, reading and pressing only, each reported before the step it holds: the last column of §5.5, **the home-page row among them**; **whether the saver ends a send that never answers (N14)**; **the two lull pop-ups pressed (E4), and each window he was never shown singly listed with what it holds (E9b)**; **what Quals' Done does with words left in "Add qualification"**; **what a Retry that lands leaves on top of the Undo list (§4.6)**; **150's "+ Input" Person list, where the drawer once saw the archived Ace and Saber offered — against C2 if it holds (§18.6)** | P1–P19 (pins); **F14, F18, F19 (pins, seen green here)**; R9 "every test file of the guard and of part V sets up three squadrons" (reads the source) | — | as today |
+| **1** | **Part A.** `state/guard.ts`, `ui/guard.ts` (`GUARD_ROWS` — a row for each movable window from `FLOAT_WHERE`; `whatIsOpen`, `rowReachable`, `closeShown`, `useGuardWork`, `useGuardCloses`), **`ui/windrawn.ts`** — each drawn predicate as a function there, called by its component (no component file gains an export), `winorder.ts winUp(id)`, the six Admin `useGuardWork` calls that need no new form (the Add a person report is step 1b's) and the Inputs list's `oilrevise`, the SANS calendar's closer, `core.js TRK_WINDOWS` (read only — `endSession` untouched), the `role.js` bridge with its `behind` and asking marks and its one closer. No door asks or closes yet | R1–R4, R7, R8, A1–A17; B18 (pin from here). Must stay green: `ui/pops.test.ts`, `state/view-reset.test.ts`, the Tracker's session tests (`tracker/tracker.test.tsx`), the Tracker smoke (P17); **React Doctor's count unchanged** (`npm run lint:changed`) | **E1, E2, E4, E5 (N13, N7, N12, N6), E9b and the `qualsnew` reading** — each holds only its own rows (§8, §8.3); the rest of the table is built | as today — nothing reads the answer |
+| **1b** | **Add a person at the top, with its Cancel (§18.3)** — `ui/UsersPanel.tsx`, the Admin stylesheet; its `useGuardWork('addperson', …)` | G3–G6; A6's Add a person half; must stay green: `ui/accounts-ui`, `ui/msq-users-filter`, `ui/msq-users-row`, Quals' "+ Add person" test | **its drawing seen by him (D1625)**; the lead's words `[WNS]`; **NQ2** holds only the Home squadron box; E9f the form's small things | the form behind its button; nothing refuses yet |
 | **2** | **The note's place.** `toast.ts toastAt`, `placeToast`'s anchored branch and its ✕ check at every place, `ui/guardnote.ts`, `guardWords`' two tables. No caller | `msq-guard-note.test.tsx`; must stay green: the toast's own tests | — | as today |
-| **3** | **The pick's door.** `pick.ts` — the guard, the wait for a save, `closeShown`, the edit modes' end (§18.1, with `ui/QualsPage.tsx`'s own effect); `Drawer.tsx DrawerSquadron`, `SquadronMenu.tsx` | B1–B4, B4b, B10–B13 (pick halves), B16, B19–B21, B30, G1; step 0's kind (b) files for the pick — the press becomes the raw entry (`enterSquadron(u, hold, true)`), the test **renamed to say so** ("reached by no press since D2403 — removed with the band in Build 2"); its kind (c) files — the expectation becomes the refusal, citing D2403 | **N6** | a pick refuses, waits, closes what only shows; the view switch and the bell as today |
-| **4** | **The view switch and the Tracker's question.** `store.ts switchRoleView`, `role.js`, `core.js ask`, `Drawer.tsx #drawerRole`; Quals' "Done" gone in the member view (§18.1) | B5, B14, B15, G2, the switch halves of B4b, B10–B13 and B20; step 0's kinds (b) and (c) for the switch (the tests of the Input window's own chip among them: they reach a held window by the switch, and go on the checker's allow-list by name in step 6); P3, P11 green | **N10** | the switch refuses and asks |
-| **5** | **The bell and the page door — and nothing behind a refusal.** `belltap.ts enterForLine` (with `opts`), `openBellRequest`; `store.ts setPage` — the three answers, `then`, the kept door, **the landing's second ask** — `ownSquadronFirst`, `ownPageRefused`, `ownSquadronRefused`; `topstate.ts openNotice`, `lineOpens`, the holiday's line through `ownSquadronFirst`, and `openInputOnPage` on the door's `then`; `OilDayList.tsx openInput` through `openInputOnPage` with its door `'card'` and `skip` — the window after its page, never before, in the same commit as the door; `leavewar/sync.ts openInputWindow` on `then`; the ask-first line in `openAdminUsers`, `openWarAt`, `openNewPeriod` (and in Undo, only if a road to its landing is found — row 13); `snapView` on the door's answer; the six files that reached `view.setPage` re-pointed to the page door; **the "Welcome back" card drawn only on his own squadron (§18.5)** | B6, B6b, B6c, B7–B9, B17 (pin), B22, B23, **B25–B29, F2b**, G10, the bell and page-door halves of B4b, B10–B13 and B20, R5 (b) and (c); step 0's kinds (b) and (c) for the bell; `ui/msq-bell-tap.test.ts`, `tracker/msq-bell-*.test.tsx` green unchanged where they tap with nothing open | — | every door of §4.1 but row 21, and no window behind any refusal |
+| **3** | **The pick's door.** `pick.ts` — the guard, the wait for a save, `closeShown`, the edit modes' end (§18.1, with `ui/QualsPage.tsx`'s own effect); `Drawer.tsx DrawerSquadron`, `SquadronMenu.tsx` | B1–B4, B4b, B10–B13 (pick halves), B16, B19–B21, B30, G1; step 0's kind (b) files for the pick — the press becomes the raw entry (`enterSquadron(u, hold, true)`), the test **renamed to say so** ("reached by no press since D2403 — removed with the band in Build 2"); its kind (c) files — the expectation becomes the refusal, citing D2403 | **E5 (N6)**; **N14** holds the wait for a save alone, at this door and the next two | a pick refuses, waits, closes what only shows; the view switch and the bell as today |
+| **4** | **The view switch and the Tracker's question.** `store.ts switchRoleView`, `role.js`, `core.js ask`, `Drawer.tsx #drawerRole`; Quals' "Done" gone in the member view (§18.1) | B5, B14, B15, G2, the switch halves of B4b, B10–B13 and B20; step 0's kinds (b) and (c) for the switch (the tests of the Input window's own chip among them: they reach a held window by the switch, and go on the checker's allow-list by name in step 6); P3, P11 green | **E3 (N10)** | the switch refuses and asks |
+| **5** | **The bell and the page door — and nothing behind a refusal.** `belltap.ts enterForLine` (with `opts`), `openBellRequest`; `store.ts setPage` — the three answers, `then`, the kept door, **the landing's second ask** — `ownSquadronFirst`, `ownPageRefused`, `ownSquadronRefused`; `topstate.ts openNotice`, `lineOpens`, the holiday's line through `ownSquadronFirst`, and `openInputOnPage` on the door's `then`; `OilDayList.tsx openInput` through `openInputOnPage` with its door `'card'` and `skip` — the window after its page, never before, in the same commit as the door; `leavewar/sync.ts openInputWindow` on `then`; the ask-first line in `openAdminUsers`, `openWarAt`, `openNewPeriod` (and in Undo, only if a road to its landing is found — row 13); `snapView` on the door's answer; the six files that reached `view.setPage` re-pointed to the page door; **the "Welcome back" card drawn only on his own squadron (§18.5)**; **the SANS reminder's branch, his own squadron first (row 9b); `lineOpens`' table of kinds; `closeShown` and the edit modes' end inside the landing and inside `enterForLine`'s entering run, never at the door (§4.2 step 6)** | B6, B6b, B6c, B7, **B7b**, B8, B9, B17 (pin), B22, B23, **B25–B29, F2b**, G10, the bell and page-door halves of B4b, B10–B13, B20 and **B30**, R5 (b), (c) **and (d)**; step 0's kinds (b) and (c) for the bell; `ui/msq-bell-tap.test.ts`, `tracker/msq-bell-*.test.tsx` green unchanged where they tap with nothing open | — | every door of §4.1 but row 21, and no window behind any refusal |
 | **6** | **The checker, switched on — every door now guarded.** `state/guard.ts setEntryChecker` and its two checks (§3.4), installed in the two test set-ups with `ui/guard`; called by `enterSquadron` (`byPick`) and `switchRoleInForce`; fed by every passing and every refusing `refuse()`; its allow-list by name | R5 (a) (pin, the list as it stands here), R6; **the whole suite, on GitHub's run — any test it fails is a finding about that test or about a door this plan missed, reported, never silenced** | — | all of part B but row 21 |
-| **7** | **Part F's list and doors, and what the Inputs pages offer on another squadron.** `engine/inputs.ts inputsListed` (the reach test) with `InputsPage.tsx inputsPageRows` and `InputsCal.tsx calRows`; **in the same commit, `ui/inputedit.tsx newInputSeed` and the Person list (§18.6) and `ui/sansadd.ts openSansAdd` with the greyed "+ Commitment" (§18.7)**; `state/inputsqn.ts` — `inputSqn`, `INPUT_DOORS`; `OilDayList.tsx openInput` gains its `enterForLine(inputSqn(…))` line ahead of step 5's (the card: its squadron, its page, then the window; `skip` the whole way); the bell's own OIL tap; `InputWindow.tsx DocField` (`locked`). **R5 (a)'s list gains each new `enterForLine` caller in this same commit** | F0–F3, F5, F7, F11, F13–F16, G11, G12 | **the greyed "+ Commitment" drawn and seen (D1625)**; its reason's words `[WNS]` | F1 and F2 closed on every road; nothing greyed |
-| **8** | **Part F's root.** `InputWindow.tsx` — the note takes `inputSqn` and `letOpenOn`; `held`; `swapOn`. **Not built while any row of §5.5 answers "yes" without a ruling or his answer** | F4, F8 (pin), F10, F12; **F1, F13, F14 still green**; `ui/msq-pick-swap-question`, `ui/msq-night-held-input` as their door's step left them | **N9**, §5.5 complete | a wrong-squadron input is held by any door; none is born greyed by a press |
+| **6b** | **The one Undo that changes the squadron in view (row 21) — only on E7's default.** `undo/timeline.ts globalUndo` and `globalRedo`: one more refusal in their own chain, ahead of the view-snap, by a hook in the pattern of `hooks.restoreRefusal`, asking the guard where the step's `inverse` removes (or, for Redo, the step re-makes and then leaves) the squadron in view; the `undo` door in `guardnote.ts`; the Undo ending and the leads it may join (§4.6). Built for the meantime: group B's B7 may replace it | B24 (fails first); the Undo engine's own tests green unchanged | **E7; the note's words drawn and seen (D1625)** | every door of §4.1 |
+| **7** | **Part F's list and doors, and what the Inputs pages offer on another squadron.** `engine/inputs.ts inputsListed` (the reach test) with `InputsPage.tsx inputsPageRows` and `InputsCal.tsx calRows` — **handed in only where the page's squadron is not his home that day; and the List's pins drawn from the page's own list and cleared where its squadron changes (§5.1)**; **in the same commit, `ui/inputedit.tsx newInputSeed` and the Person list (§18.6) and `ui/sansadd.ts openSansAdd` with the greyed "+ Commitment" (§18.7)**; `state/inputsqn.ts` — `inputSqn`, `INPUT_DOORS`; `OilDayList.tsx openInput` gains its `enterForLine(inputSqn(…))` line ahead of step 5's (the card: its squadron, its page, then the window; `skip` the whole way); the bell's own OIL tap; `InputWindow.tsx DocField` (`locked`). **R5 (a)'s list gains each new `enterForLine` caller in this same commit** | F0–F3, F5, F7, F11, F13, F15–F17, G11, G12; **F14, F18 and F19 still green** | **the greyed "+ Commitment" drawn and seen (D1625)**; its reason's words `[WNS]` | F1 and F2 closed on every road; nothing greyed |
+| **8** | **Part F's root.** `InputWindow.tsx` — the note takes `inputSqn` and `letOpenOn`; `held`; `swapOn`. **Not built while any row of §5.5 answers "yes" without a ruling or his answer** | F4, F8 (pin), F10, F12; **F1, F13, F14, F17, F18 still green**; `ui/msq-pick-swap-question`, `ui/msq-night-held-input` as their door's step left them | **§5.5 complete — its home-page row settled** (N9 is closed: F19); **E5** for F4's pick clause | a wrong-squadron input is held by any door; none is born greyed by a press |
 | **8b** | **The squadron number's two fades (§18.4)** — `state/store.ts enterSquadron` (the tick), `ui/icons.tsx MarkInner`, `ui/scheduler/02-shell.css` | G7–G9; the e2e's film | **the short film seen by him (D2628 C10)** | the number fades at a change |
-| **9** | **The browser tests and the records.** `e2e/msq-guard.spec.ts` (under the checks lock); `docs/file-map.md` (the new files, and chat 162's three test files and `escListTop`, still owed); `docs/ui-contracts.md` (the guard's rule, which windows close by themselves, the note's place, **the page door's two rules for a caller**, the fades); `docs/feature-impact.md` (a row "the guard rail" beside "The bell's notices" and the page-squadron section: what a new window — refusing or closing —, a new door, a new page-opening button, a new door into the Input window and a new bell line each owe it; the list's rule for another squadron's page; and the known limits of §3.1 and §3.4: a form with no frame, a squadron change that is not "by pick"); `docs/engine-rules.md` (`inputsListed`); the backlog item — **F2 closed on every road, the moved man's old inputs named as his exception (D2621), row 21 named as left open** — and the handoff | e2e (N12's narrow-width test among them); `npm run docsize` | — | — |
+| **9** | **The browser tests and the records.** `e2e/msq-guard.spec.ts` (under the checks lock); `docs/file-map.md` (the new files, and chat 162's three test files and `escListTop`, still owed); `docs/ui-contracts.md` (the guard's rule, which windows close by themselves, the note's place, **the page door's two rules for a caller**, the fades); `docs/feature-impact.md` (a row "the guard rail" beside "The bell's notices" and the page-squadron section: what a new window — refusing or closing —, a new door, a new page-opening button, a new door into the Input window and a new bell line each owe it; the list's rule for another squadron's page; and the known limits of §3.1 and §3.4: a form with no frame, a squadron change that is not "by pick"); `docs/engine-rules.md` (`inputsListed`); the backlog item — **F2 closed on every road of the Inputs pages, the bell and the OIL list; the two roads left named: the moved man's old inputs, his exception (D2621), and Undo or Redo of another squadron's step across a pick (Build 3 — Fable 7); row 21 as E7 was answered** — and the handoff | e2e (N12's narrow-width test among them); `npm run docsize` | — | — |
 | **The closing step** | **The report that says Build 1 is built reminds him of group B, in so many words: "Group B of the guard rail's questions — B1 to B12: Logout, Undo and the refresh card — is yours to answer now; none of it has been built." It puts the twelve to him on the questions page and builds none of it (his D2636).** The same line is in the handoff's next steps, so the chat after the build reads it | — | — | — |
 
-**Build 1V's steps are §19.11.** Step 6b of the earlier revisions (N11's door) is gone: row 21 waits with group B.
+**Build 1V's steps are §19.11.** Step 6b is back, for the one Undo E7 asks about and only on its default; the rest of
+Undo waits with group B (D2636).
 
 **What the FULL check then needs from Build 1** (the roll-call's rows this build adds) —
 
 - every row of §3.2 (each window × refuses, closes or neither × the page it is on × **drawn or not**), each with its
   test and **its break** (the wire cut once, a named test red — `scripts/handpass/breaks.mjs` gets a list: each
   `GUARD_ROWS` row's `open` made to answer false, **and made to answer the raw flag where the two differ**; each
-  `'closes'` row's `close` made to do nothing, and `closeShown` called at a refusal; each door's `refuse` line removed,
+  `'closes'` row's `close` made to do nothing, and `closeShown` called at a refusal **and moved back to the page door,
+  ahead of the landing's question**; the List's pins drawn from all inputs again; the reach test handed in on his home
+  page; the SANS reminder's entry line removed; each door's `refuse` line removed,
   the page door's among them; **each `then` caller of §4.5 put back to "the page, then the window" in the caller; the
   landing's second ask removed; a door's `skip` dropped at the page door**; `noteAtFoot` inverted; the list's reach
   test dropped; the checker switched off);
@@ -1317,7 +1481,12 @@ its drawing has been seen by him** (D1625), and is checked against that drawing 
 - the note: each door × each lead × each of the eight sizes × the words × **what its box lies over** (P3's table,
   pressed again on the build);
 - part F: every door of §5.5 × "is the input's squadron the page's" — walked, since only F1–F5 are tests; the Inputs
-  page of each of Hunter, Saber, Ranger and a moved man on each of the three squadrons he can pick;
+  page of each of Hunter, Saber, Ranger and a moved man on each of the three squadrons he can pick; **an input saved
+  and pinned at the List's head, then a pick, on a desktop and a phone (F17); a man with a move saved ahead, on his
+  home page (F18); a moved master admin in both views (F15)**;
+- **the Calendar on each answer he gave to E1** — nothing pending, each form half done, a sheet read in, the settings
+  window beside it changed and unchanged, on a desktop and on a phone, where the settings window lies under the
+  Calendar; **every window E9b's list let close**, each opened and a pick made;
 - part G: each piece of §18 on a desktop and on his phone's size, against its drawing (D1494);
 - the traps of §11 risk 6, each tried by presses: a template dialog under a lowered Plan; a Leave War window behind a
   tab that is then no longer offered; the Tracker's failure card at a pick; a Users row behind another section; a
@@ -1347,7 +1516,7 @@ its drawing has been seen by him** (D1625), and is checked against that drawing 
 | 12 | **The member view's hold comes back by the second entry** (§4.4 step 5). | B14 asserts the result after `whenUnitSettled()`. If it fails, the fix is in `trkMayHold` (the member-view half answering false while the entry in hand was his own press) — named here so the builder does not reach for a timer |
 | 13 | **Over-refusal.** A window he would call harmless refusing makes the app feel stuck; a bell line that moves nothing refused for nothing. | His own answer took the six windows that only show things out of the refusal (D2596, D2597); the windows he was never shown singly are listed for him (§3.2's "(reading)" cells, §17). A line that changes neither the squadron nor the page is never asked (P16). The page door asks only for a page the squadron in view does not offer — never for a tab, never on his own squadron. The note always names what to do |
 | 14 | **A press on the way to the door closes the window it would have counted.** The Tracker's marking window at the Schedules button; a bar-free window at any bar control. | Every door test presses the whole sequence on the real controls and asserts the window is still drawn after a refusal (§4.7). Which windows close this way on purpose is H2's and N7's; none is left half-way — counted, yet closed by the press that was refused |
-| 15 | **The root greys a window he has just opened, under untrue words.** | The doors and the root are built apart (§5): the doors and the list close F1 and F2 (D2621); the root is built only when §5.5 shows no press opens a window born held, and each "yes" there with no ruling behind it is his question first (N9) |
+| 15 | **The root greys a window he has just opened, under untrue words.** | The doors and the root are built apart (§5): the doors and the list close F1 and F2 (D2621); the root is built only when §5.5 shows no press opens a window born held, and each "yes" there with no ruling behind it is his question first — after the third read one row is left unsettled, his own input of a squadron he moves to, on his home page (§5.5's first row; N9 is closed) |
 | 16 | **The note lies over a control.** | Each place it can stand is tried against every window's ✕ (D2590); under the control wherever the bar shows the picker, which takes it off the Input window's Delete on a phone on its side (D2627 A14); at the foot over Inputs settings and the Calendar, where it covers none of their buttons (A15); under the "Not saved" band, never over Retry (A13). The e2e measures each |
 | 17 | **Build 1 merged with a road left open.** | §1's three conditions: row 21 named to him (it waits with group B, D2636); no open question built on its recommendation; every new look and word seen by him. F2 is closed on every road (D2621) |
 | 18 | **Something opens behind a refusal** — round 2's first HIGH: the door says no and its caller opens the Input window all the same, live under the wrong number, beside the note. | The page door runs what follows the page (`then`), in one state only — the page asked for is the page shown; the landing's second ask answers false; callers that set a mark ask first (§4.5). Held by R5 (c)'s census of every call site, by the checker's second check under every test, and by B26–B28 |
@@ -1357,6 +1526,10 @@ its drawing has been seen by him** (D1625), and is checked against that drawing 
 | 22 | **The list's rule hides an input from the one man who must answer it.** | The test is "a squadron whose Inputs page he can open", not "one he can pick" (§5.1's reading; F14's second half): a moved man given View of his old squadron still sees his old inputs. The bell still lights for an OIL question on any squadron and its tap takes him to it (F1, F14). F13's loop holds, for every seeded person on every squadron he can pick, that no input naming him is listed nowhere he can reach |
 | 23 | **Build 1 live before Build 1V.** Between the two, his rule D2622 is met on the Inputs pages and not yet on Admin → Users: Hunter, on 149's page, can still Save, Suspend, Archive and Delete a 142 man's row (P6 C-users — against D2191 and D2625). | Named here and in the backlog item; it is not made worse by Build 1. If he wants the two live together, they share the one FULL check as planned (§10) |
 | 24 | **The fade read as a fault, or missed.** A number that flashes at sign-in every morning stops meaning "it changed"; one that fades under a refused pick says the opposite of the note. | The tick is raised only where the squadron in view really changes after the app has opened (§18.4; G7, G8); "less motion" gets the steady white second, never a fade (G9). On a phone an open Input window covers the top bar, so the number cannot be seen while one is open — but a pick is refused then, so no change is hidden; a bell line taken with only a show-only window open closes it first |
+| 25 | **A default built as if he had ruled it** — the third read's first lesson: the plan and the page he is answering had recommended opposite things on four points, and one test (F4) was already built on the plan's side. | Every switch point is marked **(default)** and names both answers and what each holds (§8's table); R8 lets a window close by itself only in a commit that cites his answer; a test that rests on a default says so in its name; the readings are §17's, each with its page letter |
+| 26 | **A list of what is on the page that is not the page's list.** The pinned just-saved row was read from every input, so D2621's rule held in `inputsPageRows()` and not on screen. | The pins are drawn from the page's own list and cleared at a squadron change (§5.1); F13's invariant and F17 assert on what is drawn — a desktop's rows, a phone's day groups, the month |
+| 27 | **Hiding is not refusing** (part V). A foreign row that only hides a field still sends it; a search that still matches a hidden sign-in gives it back. | The foreign row's Save sends the page squadron's line and nothing else, re-checked at Save (§19.1, V4b); the search is NQ3 |
+| 28 | **D2626 opens Plan further than he meant** — a moved admin who is a member where he stands; an Undo or Redo by one who has lost the right; two ruled steps that pass it on. | `mayGivePlanOf` reads the role in force on the rows before the command, at every door, the gate and every replay, failing closed (§19.2; V5b, V7); the two-step road is NQ1, pinned by name until he answers |
 
 ---
 
@@ -1391,34 +1564,38 @@ folding toolbar when the foot is where it stands. Put on his look card.
 
 | Part | Hours | Why |
 |---|---|---|
-| Step 0 — `main` brought in (198 commits), the third squadron in the test world, the pins, the census of 37 + 13 test files, the last column of §5.5 | 6.5 | was 3.5: the merge and its re-reads (1.5), `withThird()` and R9 (1.5) |
-| A — the table (a row for each movable window), the function, each drawn predicate moved into `ui/windrawn.ts`, the Tracker's read-only table and bridge with its two marks, the reports, the scans by occurrence, "counted means drawn", **the six closers and `closeShown`** | 9 | was 7.5: the `'closes'` rows, two hooks, R8, A3, A15 (1.5) |
-| Add a person at the top with its Cancel (§18.3) | 2.5 | new — a form behind a button, a desktop and a phone, Quals' door landing on it |
-| The note — `toastAt`, the anchors, the foot rule, the ✕ check, the words' two tables | 2.5 | the same: his answers fix the places, they do not add any |
-| B — the pick (2.5), the view switch and the Tracker's question both ways (3), the bell and the page door with `ownSquadronFirst`: its three answers, `then`, the landing's second ask, the call sites by kind, six re-pointed files, the wait for a save at each door (7), the edit modes' end and the card at home (1.5) | 14 | was 11.5: the closers at each door and B4b, B30 (1), the holiday's line (0.5), §18.1 and §18.5 (1) |
-| The checker switched on, with its two checks | 2 | was 3: N11's door is not built (D2636) |
-| F — the list's rule on the List, the month, the day, the look-ahead and the counts (2.5); `inputSqn`, the doors' table, the card, the bell's OIL tap, the late document (3); "+ Input" and "+ Commitment" on another squadron (§18.6, §18.7 — 3) | 8.5 | was 4.5: his D2621 replaces three list doors by one rule and adds F13–F16; C2 and C3 ride |
-| F's root | 2 | the same |
-| The fades (§18.4) | 2 | new |
-| The browser tests and the records | 5 | was 4: three squadrons in every scene, the fades, the form |
-| **Build 1** | **about 54** | **before this fold: about 38.** His answers took away about 2 (N11's door; the three answers to N2 + N8 as doors) and added about 18: `main` and the third squadron (3), the windows that close (2.5), Add a person (2.5), the list's rule with C2 and C3 (6.5), the edit modes, the card and the holiday's line (1.5), the fades (2) |
+| Step 0 — `main` brought in (198 commits), the third squadron in the test world, the pins, the census of 37 + 13 test files, the last column of §5.5, **and the third read's reads and presses (the saver's end, the lull pop-ups, the list of windows for E9b, Quals' Done, Retry and the Undo list)** | 7.5 | was 6.5 before the third read: its reads and three more pins (1) |
+| A — the table (a row for each movable window), the function, each drawn predicate moved into `ui/windrawn.ts`, the Tracker's read-only table and bridge with its two marks, the reports, the scans by occurrence, "counted means drawn", the closers and `closeShown`; **`dirty` rows, the Calendar's forms and its holiday sheet, the settings windows (E1); the Leave War's sheets told apart (E9b); the Tracker's closer widened (E2, E4); Quals' box** | 13.5 | was 9: E1 (2), E9b (1.5), E2 and E4 (0.5), `qualsnew` (0.5) — **4 of these 4.5 hours only on the defaults** |
+| Add a person at the top with its Cancel (§18.3) | 3 | was 2.5: the second press's rule (0.5) |
+| The note — `toastAt`, the anchors, the foot rule, the ✕ check, the words' two tables | 3.5 | was 2.5: the new leads, the Undo button's anchor, the Undo ending's own joining (1) |
+| B — the pick (2.5), the view switch and the Tracker's question both ways (3), the bell and the page door with `ownSquadronFirst`: its three answers, `then`, the landing's second ask, the call sites by kind, six re-pointed files, the wait for a save at each door (7), the edit modes' end and the card at home (1.5); **`closeShown` moved into the final entry and B30 at every door (1), the SANS reminder's branch (1), `lineOpens`' kinds and R5 (d), Logic's waiting value flushed (0.5)** | 16.5 | was 14 |
+| The checker switched on, with its two checks | 2 | the same |
+| **Step 6b — the one Undo (E7)** | 2 | new: the read of the step, the hook, Redo's twin, the note, B24 — **only on E7's default** |
+| **The saver's own give-up (N14)** | 2 | new — **only on N14's default**; without it the wait for a save cannot be built as ruled |
+| F — the list's rule on the List, the month, the day, the look-ahead and the counts (2.5); `inputSqn`, the doors' table, the card, the bell's OIL tap, the late document (3); "+ Input" and "+ Commitment" on another squadron (§18.6, §18.7 — 3); **the pins, the home page left alone, the moved master admin in both views (2)** | 10.5 | was 8.5 |
+| F's root | 2.5 | was 2: the home-page row of §5.5 (0.5) |
+| The fades (§18.4) | 2 | the same |
+| The browser tests and the records | 6 | was 5: the Calendar's cases, the Undo note, the pinned row at two sizes |
+| **Build 1** | **about 71** | **before the third read's fold: about 54. The fold adds about 17** — about 9 for faults found (the pinned row, the SANS reminder, the closers' place, the list's home-page clause, the new reads and tests) and about 8 that are built only if he takes the page's recommendations (E1, E9b, E2, E4: 4; E7: 2; N14: 2) |
 
 **Build 1V — separate squadrons, separate views (§19).**
 
 | Part | Hours | Why |
 |---|---|---|
-| Another squadron's man on Admin → Users (D2625) | 2.5 | one predicate, the editor's two faces, the fault's tests |
-| Plan given and ended by the squadron's own admins (D2626) | 6 | two doors, the commit gate, the restore's rule, three sets of words, the bell line and its register row; nine existing test files pin "a master admin only" |
-| The folded headings (D2629, D2631, D2635) | 4.5 | the list's model, the fold, the search and the filter with it, a desktop and a phone |
-| The callsign note (D2632 as narrowed by D2633) | 4 | whose archived man, two forms, the taken refusal in three places, one bell line |
-| The bell's number first on every line (D2624) | 1.5 | |
-| Bug reports — saved, each with its squadron, who is rung (C5) | 5 | a new saved record through the command layer, the table list kept true (D473) |
-| The name badge (C7) · the sign-off boxes' number (C8) | 2 | |
-| The browser tests, the drawing checks and the records | 5 | |
-| **Build 1V** | **about 31** | all new |
+| Another squadron's man on Admin → Users (D2625) | 5 | was 2.5: the row's own save, re-checked at Save (1); D5's short rows and the man with no sign-in (1.5) |
+| Plan given and ended by the squadron's own admins (D2626) | 10.5 | was 6: the role in force at every door, the receiver's check, both directions of a replay, failing closed (1.5); the gate rules for the new bell lines, and the line the app writes at a move (2); the lines' taps and Hunter's home number (1) |
+| The folded headings (D2629, D2631, D2635) | 6 | was 4.5: the tick retired on E8's default, live people only, a fold over a changed row (1.5) |
+| The callsign note (D2632 as narrowed by D2633) | 5.5 | was 4: "Someone new" as an answer, the greyed "Add person" and its reason, the line at the add, the request's twin (1.5) |
+| The bell's number first on every line (D2624) | 1.5 | the same |
+| Bug reports — saved, each with its squadron, who is rung (C5) | 7.5 | was 5: one store for every squadron, "seen" a record of its own, neither an Undo step, the gate's three gaps and the read rule (2.5) |
+| The name badge (C7) · the sign-off boxes' number (C8) | 2.5 | was 2: the badge as plain words where he only views (0.5) |
+| NQ1 and NQ3, on their recommendations | 1.5 | new |
+| The browser tests, the drawing checks and the records | 6 | was 5 |
+| **Build 1V** | **about 46** | **before the third read's fold: about 31; it adds about 15** |
 
-**Both: about 85 hours, an estimate.** Then the third and last round of blind reads on this plan, and after each build
-one round on its code and its fixes — not sized here. **Six questions stand before the rows they hold (§8.3), and
+**Both: about 117 hours, an estimate — about 32 more than the 85 the plan stood at before its third read.**
+The three rounds of blind reads on this plan are done; after each build
+one round on its code and its fixes — not sized here. **The round-5 page's questions, the three new ones and N14 stand before the rows they hold (§8), and
 before any step that draws something new, its drawing and words seen by him:** the hours start when step 0 can.
 
 ---
@@ -1444,6 +1621,23 @@ before any step that draws something new, its drawing and words seen by him:** t
   above all D2626's gate and the restore's rule (§19.2), and bug reports as saved records (§19.6). Round 2's own new
   design (the page door's three answers and `then`; the checker's leave and its second check; `inputSqn`; the `trkask`
   row) has still been read by no one either.
+- **New design from the third read's fold, read by no one — there is no fourth round, so the code reads carry it:**
+  `mayGivePlanOf` by the role in force, at the receiver's check and at every replay (**read once more by the security
+  reader alone — §19.2**); the foreign row's own save; the gate rules for part V's bell lines and the line the app
+  writes at a move; `dirty` rows and the Calendar's forms; the Leave War's sheets told apart; `closeShown` inside the
+  final entry; the SANS reminder's own-squadron entry; the pins' two lines; step 6b; bug reports' home and "seen"
+  records; N14.
+- **Could not be settled by this fold, each named where it bites:** whether the saver has an end (N14, §4.2); the
+  root on his home page for his own input of a squadron he moves to (§5.5's first row — a window that would be born
+  greyed on the page he filed it on); what a Retry that lands leaves on top of the Undo list (§4.6); which command
+  writes "Plan of 149 ended: he moved to 150" (§19.2 — this fold's answer is the app's own pass; the builder may find
+  the line is better worked out by the bell, as the SANS reminder is); whether a 142 man can be placed on 149's
+  schedule so that the OIL question after a save opens a window born greyed once the root is in, and
+  `levelOfAccount`'s body (Fable's "not traced"); whether a signed sign-off box, and the published day, carry
+  "· 142" (the page's D12).
+- **Pressed by no one, added by the third read:** row 21 with a window open or a change not saved (the page's E7 says
+  so); the two lull pop-ups; a new holiday no leave period covers, at a pick; the settings window under the Calendar
+  on a phone; the SANS reminder tapped from another squadron; a just-saved input pinned, then a pick.
 - **Owed to him, found on the way, not questions of this plan** (the questions page's foot box and the roll-calls):
   "Mark all read" on 149 also marks 142's lines read; a waiting OIL question takes the whole tap on the bell, so its
   list and Show buttons cannot be reached until it is answered; the bell lights on 149 for his 142 OIL question
@@ -1497,103 +1691,76 @@ before any step that draws something new, its drawing and words seen by him:** t
 
 ## 15. The red team, round 1 (25 Nov 26) — the ledger
 
-Three readers read the first draft (commit `9c0d03e93`), each blind to the others, from one brief
-(`../briefs/2026-11-25-msq-pick-guard-build1-read-brief.md`): **Astra** (`…-build1-read-astra.md`, 9 findings), a fresh
-**Opus** (`…-read-opus.md`, 8) and a fresh **Fable** (`…-read-fable.md`, 10) — the three reports are saved whole
-there. A second fresh Fable folded them in, each claim checked in the code named, on `cd364c3e1`, **by reading — no
-test was written or run**. **The body now says what each finding changed; this is the ledger of what was found, what
-was done with it and where it stands. The fold's full table, with its "true in the code?" column file by file, is
-this plan as committed at `610c06eff`.**
+Three blind readers on the first draft (`9c0d03e93`) — Astra (9 findings), a fresh Opus (8), a fresh Fable (10); their
+reports are saved whole (`../briefs/2026-11-25-msq-pick-guard-build1-read-{astra,opus,fable}.md`), the fold's full
+table is this plan as committed at `610c06eff`. **The body says what each changed; one line a finding.**
 
-| # | Who · severity | The finding | Taken? | Where it stands now |
-|---|---|---|---|---|
-| 1 | Astra HIGH · Opus HIGH · Fable HIGH | The squadron still changes through `enterForLine`'s `'no'` and through the bell's own OIL tap: the page opens, the landing brings his own squadron back, nothing asked | Accepted — the check at the page door (Fable's cut), with the ask-first order (Opus) for callers that set something before the page | §4.1 rows 7–10, 13, 22; §4.5; B6b, B6c, B9, B23, F2b; R5 (b) |
-| 2 | Fable HIGH | Four flags stay set while their dialog is not drawn; the guard would refuse with nothing to close (the reviser found the same in Changes) | Accepted, and made the rule for every row | §3.1; §3.2 (b), (c); R1; A10 |
-| 3 | Astra HIGH | The Tracker's marking window is closed by the press that opens the Schedules list; a refused badge press then closes it in the same press | Narrowed — the fact taken; her fix (keep it open through the doors) changes the Tracker's page, so it is a question | N7; §4.7's whole-press rule, B4; §11 risk 14 |
-| 4 | Astra HIGH · Opus MEDIUM | A window on a page the squadron in view no longer offers refuses every door, with no Close he can reach | Accepted; since answered by him as Opus's fix (it does not count) | §3.3 (D2627 A7); A7 |
-| 5 | Astra HIGH | "Safe to merge alone" contradicts two roads left unguarded ("Check my quals", Undo); the welcome-back card is spent before a refusal could run | Accepted; the card is now shown only on his own squadron (D2628 C4), Undo's road named to him | §1's conditions; §4.1 rows 12, 13, 21; B22, B23 |
-| 6 | Astra · Opus · Fable MEDIUM | The census cannot catch a window added to a file already listed, a flag kept outside `pops.ts`, or a window drawn as a plain box | Accepted, with Opus's limit stated: a form with no frame is seen by no scan | §3.4 (R1–R4 by occurrence, R7); §11 risk 8 |
-| 7 | Astra MEDIUM | The Medical page's "as of" calendar is missing; seven components own typing, not five | Accepted | §3.1; §3.2 (h), (i); P4 |
-| 8 | Astra MEDIUM | A refused switch from the ☰ menu leaves the menu drawn | Accepted | §4.1 row 4; §4.4; B5 |
-| 9 | Astra · Opus · Fable MEDIUM | The build order leaves the suite red; the checker goes on before the bell's door; F4's "pick 142 → live again" is now refused; R5, B17, B18, F8 pass today; F6 is an argument | Accepted, all parts | §10; §3.4; F4; F6 withdrawn; the "pin" marks |
-| 10 | Astra · Opus MEDIUM · Fable LOW | Built on the agent's own reading: two lines that open nothing refused; N1 "built to refuse until he answers"; the Tracker's question at the view switch unmarked; the bell's OIL tap entering 142; N6 called "the letter"; a clean chart editor closing at the switch | Accepted; the lines that change nothing are left exactly as today; the rest became questions, since answered or still open | §4.2 step 1, P16; §8.3 |
-| 11 | Opus · Fable MEDIUM | The OIL list's card, asked like a bell line, is refused by the list it sits in; a holiday's line was refused before N4 was answered | Accepted | §4.1 rows 10, 11; §5.3; B25, B29 |
-| 12 | Opus MEDIUM · Fable | The root greys a window from the moment it opens, under words that are untrue (`store.ts heldWords`) | Accepted, with Opus's cut: the doors first, the root last and only when no press opens a window born held | §5.2, §5.5, N9; §10 steps 7, 8; §11 risk 15 |
-| 13 | Fable HIGH/MEDIUM | The root holds a window that must stay live (a posted man's OIL question); the door passes `inputUnitOf`, not what the root uses; "once" against "every draw" | Accepted; the posted man's case since ruled live (D2621) | §5.2 (`letOpenOn`, once), §5.3, F12, F14 |
-| 14 | Fable MEDIUM | R5 cannot see the largest family — any `setPage` to a page not offered | Accepted — it is the cut of finding 1 | R5 (b); §4.5 |
-| 15 | Fable MEDIUM | The question sheets' list is wider than the plan said and holds the document viewer | Accepted — the row withdrawn, rows of their own | §3.1; §3.2 (e); P10 |
-| 16 | Astra MEDIUM | Part F does not cover a document chosen late (narrowed by Astra herself and Fable: a file is stored, no squadron's record written) | Accepted | §5.4; F11 |
-| 17 | Fable LOW | The Tracker's rows read module state that may stand behind its failure card | Accepted as a belt; the page's cover added | §3.1 (the bridge); A11 |
-| 18 | Fable LOW | The wait for a save has a cost the plan did not name; the bell's door is synchronous | Accepted; the wait since ruled (D2627 A9) | §4.2 step 3; §11 risk 5 |
-| 19 | Opus LOW (six) | `noteAtFoot` cannot know the press was inside ☰; the Tracker's `dlg` must close by `dlgCancelAll()`; `toastAt` clears its own `AT`; the fall-back to the foot is never checked against a ✕; §3.2 against §8; B8 rests on H2 | Accepted, all six — the second by not touching `endSession` at all | `from`, §4.3, §4.4, §4.6; §3.1; the e2e; B8 |
-| 20, 21 | Astra's and Opus's safer cuts | Keep the Tracker's bridge read-only; deliver the guarded journeys together; one guarded opener; hold the root | Accepted (Opus's opener as the ask-first order, the page door enforcing it) | §3.1; §1; §4.5; §5; §10 |
+| # | Who · severity | The finding | Verdict · where it lives |
+|---|---|---|---|
+| 1 | all three, HIGH | The squadron still changes through `enterForLine`'s `'no'` and the bell's own OIL tap — the landing brings his own squadron back, nothing asked | Accepted · the page door: §4.1 rows 7–10, 13, 22; §4.5; R5 (b) |
+| 2 | Fable HIGH | Four flags (and Changes) stay set while nothing is drawn — the guard would refuse with nothing to close | Accepted, the rule for every row · §3.1; R1, A10 |
+| 3 | Astra HIGH | The Tracker's marking window is closed by the press that opens the Schedules list | Narrowed to a question · E2 (N7); §4.7's whole-press rule |
+| 4 | Astra HIGH · Opus MEDIUM | A window on a page no longer offered refuses every door with no Close in reach | Accepted, since ruled (D2627 A7) · §3.3; A7 |
+| 5 | Astra HIGH | "Safe to merge alone" against two unguarded roads; the welcome-back card spent before a refusal | Accepted · §1's conditions; §18.5; E7 |
+| 6 | all three, MEDIUM | The census misses a window added to a listed file, a flag outside `pops.ts`, a plain box | Accepted, a form with no frame the stated limit · §3.4 |
+| 7 | Astra MEDIUM | The Medical page's "as of" calendar missing; seven components own typing, not five | Accepted · §3.1, §3.2 (h), (i) |
+| 8 | Astra MEDIUM | A refused switch from the ☰ menu leaves the menu drawn | Accepted · §4.4; B5 |
+| 9 | all three, MEDIUM | The build order left the suite red; the checker on too early; tests that pass today | Accepted · §10; the "pin" marks; F6 withdrawn |
+| 10 | Astra · Opus MEDIUM · Fable LOW | Six points built on the agent's own reading | Accepted — lines that change nothing left as today, the rest questions · §4.2 step 1, P16; §8 |
+| 11 | Opus · Fable MEDIUM | The OIL list's card refused by its own list; a holiday's line refused before its answer | Accepted · §4.1 rows 10, 11; §5.3 |
+| 12 | Opus MEDIUM · Fable | The root greys a window from the moment it opens, under untrue words | Accepted — the doors first, the root last · §5.2, §5.5; §11 risk 15 |
+| 13 | Fable HIGH/MEDIUM | The root holds a window that must stay live; the door passes `inputUnitOf`; "once" against "every draw" | Accepted, the moved man since ruled (D2621) · §5.2, §5.3; F12, F14 |
+| 14 | Fable MEDIUM | R5 cannot see any `setPage` to a page not offered | Accepted · R5 (b) |
+| 15 | Fable MEDIUM | The question sheets' list holds the document viewer | Accepted — the row withdrawn · §3.2 (e) |
+| 16 | Astra MEDIUM | A document chosen late is stored by a held window | Accepted · §5.4; F11 |
+| 17, 18 | Fable LOW | The Tracker's rows behind its failure card; the wait for a save has a cost | Accepted · §3.1; §4.2 step 3 (now N14 too) |
+| 19 | Opus LOW (six) | `noteAtFoot` and ☰; `dlg` closed by `dlgCancelAll()`; `toastAt`'s own `AT`; the foot never checked against a ✕; two more | Accepted, all six · §4.3, §4.4, §4.6 |
+| 20, 21 | Astra's and Opus's safer cuts | A read-only Tracker bridge; the guarded journeys together; one guarded opener; hold the root | Accepted · §3.1, §4.5, §5, §10 |
 
-**Taken out by round 1, so nothing is dropped quietly:** `endSession()` walking `TRK_WINDOWS`; the one row `open() =
-!!topSheet()`; `enterForLine`'s case for a line of his own squadron; N1 built as "refuse" until he answers; F6 as a
-test; step 0's rewriting of expectations and the checker at step 3; B8's set-up on ALL AVAIL; `opts.heldChip` (now the
-general `skip`). No test of the first draft was dropped but F6.
-
-**Found sound by round 1** (the readers' explicit negatives): every non-test caller of `enterSquadron`,
-`switchRoleView`, `switchRoleInForce`, `pickSquadron`, `enterForLine`, `openBellRequest` and `switchUnit` is in §4.1; no
-key, address, link or browser Back picks or switches (all three); the first draft's statements about `pick.ts`,
-`belltap.ts`, `store.ts`, `core.js`, `savewait.ts`, `winorder.ts`, `Sheet.tsx OPEN`, `pops.ts windowOverSchedule` and
-`barfree.ts` hold (Opus, Fable); every write in the Input window stops on `held` but the document's file box (finding
-16); the Input window cannot be open and out of sight, Admin unmounts off its tab, the OIL list clears its own flag
-when refused (Opus, Fable); the saver stays "failed" through a Retry in flight (Fable); nothing was kept that lives
-only in stored data (D56 — Opus). §4.4 step 5's second entry: Fable could not fault it from reading; B14 must prove it.
+**Taken out by round 1:** `endSession()` walking `TRK_WINDOWS`; the one row `open() = !!topSheet()`; `enterForLine`'s
+case for his own squadron's line; N1 built as "refuse" before his answer; F6 as a test; step 0 rewriting expectations;
+`opts.heldChip` (now `skip`). No test dropped but F6. **Found sound:** every caller of the entry functions is in
+§4.1; no key, address, link or browser Back picks or switches; the Input window cannot be open and out of sight;
+every write in it stops on `held` but the file box; the saver stays "failed" through a Retry in flight; nothing kept
+that lives only in stored data (D56).
 
 ---
 
 ## 16. The red team, round 2 (25 Nov 26) — the ledger
 
-Three fresh readers read the plan as revised to round 1 (commit `df9a68f6a`), each blind to the others and to round
-1's reports: **Astra** (`../briefs/2026-11-25-msq-pick-guard-build1-read2-astra.md` — 1 HIGH, 4 MEDIUM), a fresh
-**Opus** (`…-read2-opus.md` — 1 HIGH, 4 MEDIUM, 6 LOW) and a fresh **Fable** (`…-read2-fable.md` — 2 HIGH, 5 MEDIUM,
-4 LOW), saved whole. A third fresh Fable folded them in, each claim checked in the code on `44f67377a`, **by reading**.
-The fold's full table is this plan as committed at `610c06eff`.
+Three fresh blind readers on the plan as revised (`df9a68f6a`) — Astra (1 HIGH, 4 MEDIUM), Opus (1 HIGH, 4 MEDIUM, 6
+LOW), Fable (2 HIGH, 5 MEDIUM, 4 LOW); reports saved whole (`…-build1-read2-{astra,opus,fable}.md`).
 
-| # | Who · severity | The finding | Taken? | Where it stands now |
-|---|---|---|---|---|
-| 1 | Opus HIGH · Fable HIGH | The page door refuses and its callers open the Input window all the same — live over 149's View-only Sched beside the "Blocked:" note, its Save writing 142's record; the same after the landing's question and from the Leave War's clash note | Accepted, whole — the door runs what follows the page; the landing's second ask answers false; callers that set a mark ask first; a census of every call site and a check under every test | §4.5; R5 (c), R7, the checker; B26–B28, F2b; §10 step 5; §11 risks 3, 11, 18 |
-| 2 | Astra HIGH · Fable HIGH · Opus LOW | N2's and N8's recommended answers could not both be built through one function: the clause keeping his own input live told the bell's door he was already where it belongs — security F2 left open. The reviser added a third road, the row's "OIL?" button | Accepted — two functions; and put to him as one question, **which he answered with a fourth answer of his own (D2621): the inputs are no longer listed there at all** | §5 (rewritten to D2621); F0, F1, F13–F15; §11 risks 19, 22 |
-| 3 | Opus MEDIUM | N8 had no other answer, and §1's conditions left it out: Build 1 could go live with F2 open | Accepted; F2 is now closed on every road | §1; §8.3 |
-| 4 | Astra · Opus MEDIUM · Fable LOW | One row for every movable window cannot leave one out or name the one open; and it counts ALL AVAIL and Changes too | Accepted — a row per id from one map | §3.2 (a); R2; A2–A4 |
-| 5 | Astra · Opus · Fable MEDIUM | A door's `skip` and the pressed line stop one call short, so the OIL list's card is refused by its own list, the checker throws on entries rightly let through, and a refused line's note falls to the foot | Accepted — a door's `opts` go with its press to every ask | §3.1; §3.4; §4.5; §5.3; B6, B25, F4, F5 |
-| 6 | Astra MEDIUM | A Tracker window in the Info panel is hidden while a narrow screen shows the Flow chart; the note would name the page he is on | Accepted as a question — N12, still open | §3.3; §8.3; A13; e2e |
-| 7 | Astra · Fable MEDIUM | A window is missing: the OIL question from a row of the Inputs list, no Input window under it | Accepted — a row of its own; R3 counts every use | §3.2 (e); R3; A12 |
-| 8 | Opus · Fable MEDIUM | N6 was built on its recommendation: the table counted a held window, taking away his one way to get it back with his words | Accepted — N6 holds its rows; the other answer shaped | §8.3 N6; §10 |
-| 9 | Fable MEDIUM | The wait for a save cannot be built at a door that answers true or false in the same tick | Accepted — the door owns what follows, so it can wait | §4.2; §4.5; B20 |
-| 10 | Fable MEDIUM | Exporting each predicate from its component's file turns the pull request's code check red (D1534, D1539) | Accepted — `ui/windrawn.ts` | §3.1; R1 |
-| 11 | Opus LOW | The checker misses a squadron change through `maybeReenter` (`byPick` false), and never fires in headless state tests | Narrowed — the set-ups import `ui/guard`; a "press in flight" mark in the Undo engine not taken: the limit is stated, and the one known road is row 21 | §3.4; §4.1 row 21 |
-| 12 | Opus · Fable LOW | Tests that could not be written as described: P5's spy; P10, P12 "never edited"; B25's second clause; P16; F4 under the checker; R5 (a) at step 7 | Accepted, all six | §7; A14; B25; F4; R5 (a) |
-| 13 | Opus LOW | The Tracker's unsaved-edits question is drawn over another page while its row says it is not open | Accepted — the `trkask` row | §3.1; A8 |
-| 14 | Opus · Fable LOW | N11's door has a place; and the checker should not wait on it | Accepted — the place recorded; the door itself now waits with group B (D2636) | §4.1 rows 13, 21 |
-| 15 | Opus LOW | The closed note's "Open the Inputs page" is refused by the sheet it is on, in the held-war state | Narrowed, not mended — the fix offered does not work (a sheet leaves the count in its effect's clean-up); he is not trapped; Build 2 removes the state | §11 risk 20 |
-| 16 | Fable LOW | Steps 4 and 5 omitted the wait for a save from "Waits on" | Accepted; since ruled | §10 |
+| # | Who · severity | The finding | Verdict · where it lives |
+|---|---|---|---|
+| 1 | Opus HIGH · Fable HIGH | The page door refuses and its callers open the Input window all the same, live beside the note | Accepted, whole — the door runs what follows the page · §4.5; R5 (c), the checker; B26–B28 |
+| 2 | Astra HIGH · Fable HIGH · Opus LOW | N2's and N8's answers could not both be built through one function — security F2 left open | Accepted — two functions; then his own fourth answer (D2621) · §5; F0, F1, F13–F15 |
+| 3 | Opus MEDIUM | Build 1 could go live with F2 open | Accepted · §1 |
+| 4 | Astra · Opus MEDIUM · Fable LOW | One row for every movable window cannot leave one out or name it | Accepted — a row per id · §3.2 (a); R2 |
+| 5 | all three, MEDIUM | A door's `skip` and the pressed line stop one call short | Accepted — `opts` travel with the press · §3.1, §3.4, §4.5, §5.3 |
+| 6 | Astra MEDIUM | A Tracker window hidden behind the Flow chart tab | A question · E4 (N12); A13 |
+| 7 | Astra · Fable MEDIUM | The OIL question from a row of the Inputs list is a window with no row | Accepted · §3.2 (e); R3, A12 |
+| 8 | Opus · Fable MEDIUM | N6 was built on its recommendation | Accepted · E5 (N6), shaped for both |
+| 9 | Fable MEDIUM | The wait for a save cannot be built at a door that answers in the same tick | Accepted — the door owns what follows · §4.2, §4.5; B20 |
+| 10 | Fable MEDIUM | Exporting a predicate from a component's file fails the pull request's check | Accepted · `ui/windrawn.ts` |
+| 11 | Opus LOW | The checker misses a change through `maybeReenter` | Narrowed — the limit stated · §3.4; row 21 |
+| 12 | Opus · Fable LOW | Six tests that could not be written as described | Accepted · §7; A14; B25; F4; R5 (a) |
+| 13 | Opus LOW | The Tracker's question is drawn over another page while its row says closed | Accepted · the `trkask` row |
+| 14 | Opus · Fable LOW | N11's door has a place | Accepted · §4.1 rows 13, 21 — now step 6b on E7 |
+| 15 | Opus LOW | The closed note's own button refused by the sheet it is on | Narrowed, not mended · §11 risk 20 |
+| 16 | Fable LOW | Steps 4 and 5 left the wait for a save out of "Waits on" | Accepted · §10 |
 
-**No finding was set aside; four were narrowed** — 3, 6, 11 and 15, each for the reason in its row. **Taken out by
-round 2:** `ownSqnOf`, one function for doors and window; the page door that answered true or false, and `bellTap`'s
-own ask-first line (its toast and question are inside the door's `then`); the one row for all movable windows;
-"exported from the component's file"; B25's second clause; P5's spy half, now A14. No test was dropped.
+**None set aside; 3, 6, 11 and 15 narrowed. Taken out by round 2:** `ownSqnOf`; a page door answering true or false;
+one row for all movable windows; "exported from the component's file"; B25's second clause; P5's spy (now A14). No
+test dropped. **Found sound:** every road by which the landing brings his own squadron back passes the page door,
+and it refuses nothing that changes nothing; no Undo is drawn on View-only Sched or Help; the refusal stands before
+the Tracker's question inside `enterForLine`; a "Not saved" that never clears is D2594, ruled with its cost told.
+(Round 2 counted sixteen `setPage` calls outside `store.ts`; with `main` in there are seventeen — §4.5.)
 
-**Found sound by round 2:** all sixteen `setPage` calls outside `store.ts` are as counted, every road by which the
-landing brings his own squadron back passes the page door, and it refuses nothing that changes nothing (Opus, Fable;
-Astra found no unlisted caller); every non-test caller of the entry functions is in §4.1, no key and no address picks
-or switches, no Undo is drawn on View-only Sched or Help (all three); the refusal stands before the Tracker's question
-inside `enterForLine` (Opus); "counted means drawn" holds for the movable windows, the pages that unmount off their
-tab, the top-level question sheets and the board's dialogs (Fable); leaving the Tracker's sign-out clean-up alone is
-the safer cut (Astra); a "Not saved" that never clears is D2594, ruled with its cost told (Fable).
-
-**What this fold (the third, chat 176) takes out, so nothing is dropped quietly:** the three answers to N2 + N8 and
-`letOpenOn`'s second case, with F1b and F9 (his D2621 is a fourth answer); step 6b and B24 as a failing test (row 21
-waits with group B — B24 is a pin of today); the ask-first line in `WelcomeBack.tsx` (the card is shown only at
-home); ALL AVAIL, Changes, Insights, a SANS day and the day panel as windows that refuse (they close — his answer,
-against the page's recommendation for the first two); the note at the top on a phone, and at the foot on a tablet and
-a phone on its side; the interim notes that stood in §3.2. **No test is dropped but F1b and F9. New:** R8, R9; A15;
-B4b, B29, B30; F13–F16; P18, P19; G1–G12 (§18); V1–V30 (§19).
-
-**The third and last round of reads** reads this fold: Astra, a fresh Opus and a fresh Fable, each blind, the security
-reader beside them on §19.1 and §19.2 (D1411). What matters most for it is in §14.
+**Taken out by the third fold (chat 176, his answers):** the three answers to N2 + N8 and `letOpenOn`'s second case,
+with F1b and F9; the ask-first line in `WelcomeBack.tsx`; ALL AVAIL, Changes, Insights, a SANS day and the day panel
+as windows that refuse; the note at the top on a phone. **New then:** R8, R9; A15; B4b, B29, B30; F13–F16; P18, P19;
+G1–G12; V1–V30. **The third round's ledger is §20.**
 
 ---
 
@@ -1619,49 +1786,94 @@ One row a ruling: what it decided, where this plan now builds it, what it narrow
 | **D2628** (group C, C6 apart) | C1 the number first, no colour; C10 the fades; C11 the Add a person button; C2, C3, C4, C5, C7, C8 | C1 §19.5 · C10 §18.4 · C11 §18.3 · C2 §18.6 · C3 §18.7 · C4 §18.5 · C5 §19.6 · C7 §19.7 · C8 §19.8 | answers D2620's and D2623's open points |
 | **D2629** | Under a squadron's own people each other squadron is one closed heading, "▸ 142 · 38 people", opening its people; the search still finds them | §19.3; V11–V15 | D2191 ("found by search") |
 | **D2630** | Every example, table, drawing, scenario and walk considers more than two squadrons and a person holding rights in several | the head of this plan; §10 step 0 (b) (`withThird()`, R9); every test of §18 and §19; the FULL check's list | a correction to how the agent works |
-| **D2631** | A master admin has a primary squadron; on Admin → Users his own squadron's people stand open, every other folded — in "All squadrons" too | §19.3; V15 — **with a clash to put to him (below)** | D2270 |
+| **D2631** | A master admin has a primary squadron; on Admin → Users his own squadron's people stand open, every other folded — in "All squadrons" too | §19.3; V15 — **with a clash put to him as E8 (below)** | D2270 |
 | **D2632**, narrowed by **D2633** | A callsign held by another squadron's archived man: the note names the squadron and shows seat, CAT and the date archived; until the Transfer build only "Someone new: add him" and "If this is him, ask 142's admin"; the live refusal names the squadron | §19.4; V16–V20; "It's him" rides the Transfer step | keeps D286 across squadrons; D288 |
 | **D2634** | Admin → Users also carries a person's postings, in an interface of its own | **not here — it rides the Transfer step (batch 4, [XFER])** (§10) | D309, D310, D2087 |
 | **D2635** | The folded headings are seen only by those who may give access to that squadron | §19.3; V11 | confirms D2629's reading |
 | **D2636** | Group B (B1–B12: Logout, Undo, the refresh card) is put to him after Build 1 is built; none of it built before | §8.2; §10's closing step; §4.1 row 21; §1's first condition | a deferral |
 
-**Every reading of the agent's in this plan — for the host to put to him; none is built as it stands.**
+**Every reading of the agent's in this plan — for the host to put to him, each as its own question with a worked
+example (his D2611); none is built as it stands.** The letter after an item is its place on the round-5 page's E9,
+where it has one and an example; **an item with no letter is on no page yet.**
 
 1. **"A squadron he can still pick" (D2621) is built as "a squadron whose Inputs page he can open"** — else a moved man
-   later given View of his old squadron would see his old inputs nowhere (§5.1).
-2. **Row 21 is a door of the guard that waits with group B** — he put B7 off without being told so (§1, §4.1).
-3. **The windows he was never shown singly still refuse:** the Tracker's Show All and its four side pop-ups, the board's
-   two dialogs, and the Leave War's sheets that only show things (a day's list, a counter, the OIL tracker, the closed
-   note) — his rule "only shows things" may fit some (§3.2).
+   later given View of his old squadron would see his old inputs nowhere (§5.1). — E9a
+2. **Row 21 is a door of the guard** — he put B7 off without being told so (§1, §4.1). — now a question, E7
+3. **The windows he was never shown singly are checked one by one: one with nothing to edit closes by itself, the
+   rest refuse** — the Tracker's Show All and its side pop-ups, the board's two dialogs, the Leave War's sheets that
+   only show things. The list, each with what it holds, goes to him before any closes (§3.2). — E9b
 4. **A bell line, a tap on the bell and a card that change squadron close the show-only windows and end the edit modes
    as a pick does** — D2596, D2597 and D2627 A4 name the pick and the view switch (§4.2, §18.1); an edit mode ended at a
-   pick is not put back when he returns.
-5. **A press that waits for a save is dropped if he presses anything else meanwhile** (§4.2).
-6. **A lead and an ending he was not shown together are the same two halves joined** (§4.6); a squadron's move and a
-   place being edited count as rows, "…on Squadrons" a draft; two rows at once are named in the table's order.
+   pick is not put back when he returns. — E9c
+5. **A press that waits for a save is dropped if he presses anything else meanwhile** (§4.2). — E9d
+6. **A lead and an ending he was not shown together are the same two halves joined** (§4.6) — but the Undo ending,
+   which joins only to leads that add no step; a squadron's move and a place being edited count as rows, "…on
+   Squadrons" a draft; two rows at once are named in the table's order. — E9n
 7. **The fades:** built at every change of the squadron in view after the app has opened, his press or not (his move at
-   midnight too); the top bar's number only, not the ☰ menu's line or the board's title (§18.4).
+   midnight too); the top bar's number only, not the ☰ menu's line or the board's title; none after the refresh card
+   (§18.4). — E9e
 8. **Add a person:** after a successful add the form clears and stays open; the button still reads "Add person and
-   sign-in" once a sign-in is typed; Escape leaves it as Cancel does (§18.3).
+   sign-in" once a sign-in is typed; Escape leaves it as Cancel does; **a second press on "+ Add a person" closes the
+   form if it is empty and does nothing if something is typed** (§18.3). — E9f
 9. **On another squadron's page a man's row shows no Sign-in or Roster dot and no role badge; a Plan holder stays on the
    main list, not under his squadron's heading; a heading opens while a search matches a man under it** (§19.1, §19.3).
-10. **Who is told when Plan of a squadron is given or ended:** whoever gets that squadron's admin lines (its own admins, a
-    Plan holder of it, a master admin with it switched on), not the giver; the man himself keeps his own account's
-    line; an ending the app makes (his move, an archive, made a member, made a master admin) is told too (§19.2).
+   — E9g
+10. **Who is told when Plan of a squadron is given or ended:** whoever gets that squadron's admin lines (its own admins,
+    a Plan holder of it, a master admin with it switched on), not the giver — E6; the man himself keeps his own
+    account's line; **an ending the app makes (his move, an archive, made a member, made a master admin) is told too,
+    the line saying why** (§19.2). — E9l
 11. **"The bell shows more than one squadron" (D2624) is read by the Show buttons switched on, not by the lines that
-    happen to be in the list** — else the column would come and go as lines arrive (§19.5).
+    happen to be in the list** — else the column would come and go as lines arrive (§19.5). — E9i
 12. **Bug reports become saved records** (they are lost at Logout because they live only in the open page); each admin's
     own look at Help is what puts his bell out; a Plan holder of the squadron is rung as its admin is; the number is
-    shown on a report whenever the app has more than one squadron (§19.6).
+    shown on a report whenever the app has more than one squadron (§19.6). — E9j. **Not on the page:** whether a
+    member's own "Your reports" wears the number (built: no — he sees only his own).
 13. **A restore refused for a taken callsign names the squadron too**, as the live refusal now does; a placeholder's
-    callsign keeps today's words (§19.4).
-14. **Four points part V waits on him for, each holding only its own piece (§19.11):** V-Q1 the "All squadrons" tick
-    (the first clash below); V-Q2 what the callsign note says to an admin of both squadrons; V-Q3 item 11 above; V-Q4
-    what a press on the name badge does on a squadron he only views — untried.
+    callsign keeps today's words (§19.4). — E9k
+14. **The four points part V waited on are now on the page:** V-Q1 is E8, V-Q3 is E9i, V-Q4 is D10; **V-Q2 — what the
+    callsign note says to an admin of both squadrons — is still undrawn and unasked** (the page's D8 says so).
+15. **A heading folded over a row he has changed closes the row as its Cancel does, the choice dropped** (§19.3, V12 —
+    found unmarked by Astra 6 and Opus F-h; the other answer: the heading does not fold while a row under it holds a
+    change). — E9h
+16. **"Every Monday" counts only once something in it is pressed**, not as it opens with one choice lit (§3.2 (a)).
+    — E9m
+17. **Words typed in Quals' "Add qualification" box refuse a pick**, under a lead of their own, though typing in no
+    window waits with group B — because Build 1 itself ends that mode (§3.2 (i), §18.1). *Worked example for the
+    host:* Saber, on 142's Quals in edit mode, types "LOW LEVEL" in Add qualification, does not press Add, and picks
+    149 — today 149's Quals opens in edit mode with "LOW LEVEL" still in the box, one press from adding it to 149.
+    I would build: the pick is refused, "Blocked: add or clear the new qualification, then pick 149." Other answer:
+    the mode ends and the words are cleared, nothing said. — **no page yet**
+18. **His own SANS reminder brings his own squadron into view first**, as a bell line about his own input does —
+    D2621 speaks of inputs, and the reminder is about none (§4.1 row 9b). *Worked example:* Hunter, SANS aircrew of
+    142 and planning 149's week, taps "Your SANS availability… Tap to file" with 149 picked — today 149's SANS
+    calendar opens at his day, where after this build "+ Commitment" offers 149's men and not him. I would build:
+    142 comes into view, then its SANS calendar at that day; refused, like any line, with a window open. — **no page
+    yet**
+19. **A moved master admin's old inputs follow the view he is in** — in the admin view on his old squadron's page
+    only, in the member view on his own page where he is, as a moved member's (§5.1). *Worked example:* Saber, moved
+    142 → 149, has an old 142 duty with its OIL question unanswered; in the admin view it is on 142's Inputs page; he
+    presses his badge — in the member view it is listed on his 149 page and answered there. Other answer: it stays
+    on 142's page whatever the view. — **no page yet**
+20. **Where a holiday half done and changed settings both stand, the note names the Calendar's first**, it being on
+    top (§4.6). — **no page yet**; rides E1's drawings
+21. **The door's own refusal for Plan says the greyed line's sentence** (§19.2), and **every lead this fold drafts
+    for the Undo ending is the reviser's** (§4.6). — words, on the list below
 
 **Where his answers meet each other or an older ruling — both named.**
 
-- **D2631 (25 Nov) against D2625 (25 Nov) and D2197 (18 Nov).** D2631: in "All squadrons" a master admin's own
+- **D2626 (25 Nov) against D2336 / D2201, which its own row keeps.** "Never by a Plan holder of it, who cannot pass
+  it on" — and "a Plan holder of 149 still … makes 149 men admins of 149": a Plan holder moves a man in, makes him an
+  admin, and that man gives Plan (security S3; Fable 4 saw the same). **NQ1 (§8.4).**
+- **D2622 (25 Nov) against the Home squadron box of "Add a person"** (built for D2197's readers): a 142 person made
+  from 149's page, under a bar reading 149 (Opus F-a). **NQ2 (§8.4).**
+- **D2625 (25 Nov) against the search as built:** the row hides a sign-in the search still matches (Opus F-b).
+  **NQ3 (§8.4).**
+- **The page's E8 against D2270 (22 Nov) and D2631 (25 Nov):** its recommendation takes the "All squadrons" tick away
+  — a thing he ruled in and spoke of the same day. Named on the page as that; built only on his word.
+- **The page's D8 against D2633's button words** ("Someone new: add him"): the recommended "Someone new" no longer
+  adds. And **the page's D5 against D2625's list of what a closed row shows:** a quiet "no sign-in" on the closed row
+  is more than his list — his call, a named button on the page.
+- **D2631 (25 Nov) against D2625 (25 Nov) and D2197 (18 Nov) — now the page's E8.** D2631: in "All squadrons" a master admin's own
   squadron stands open. D2197: Admin → Users moves to the squadron picked. D2625: on another squadron's page a man shows
   only what identifies him and that squadron's access line — and its own row says the "All squadrons" tick "is not
   settled by this". With 149 picked and the tick on, is 142 the open group, and are its rows whole (142 records
@@ -1693,7 +1905,44 @@ Nov, a fresh Fable's read under way; where that file moves, it wins over any quo
 sentence (`planGreyed`, `rolesNote`); the Plan bell lines (`planGivenLine`, `planEndedLine`, `planEndedMoved`,
 `planEndedMember`); the archived-callsign note, its buttons, its bell line and "… is already taken on 142"
 (`archivedNote`, `archivedMany`, `someoneNew`, `askAdmin`, `someoneNewLine`, `taken`).
-**Not in that file yet, each needing a draft and a fresh Fable's read (D2441):** the Plan line for an archive's and a
+**Read since by a second fresh Fable (`../briefs/2026-11-25-msq-q3-r5b-words-fable.md`) — its words, all `[WNS]`,
+drafts until he approves them:** kept — "save or cancel Inputs calendar settings", "…then press Undo again.",
+"Someone new", "Hunter · 142"; adjusted — **"A new Jester. 142's admins are told when you add him."** (every admin of
+142 is told, D2632; "when you add him" points at the button just come live), **"also views 149"** (the pair of the
+built "also plans 149"), **"No sign-in. Ask 142's admin to give him one first."** for the opened row (bare "No
+sign-in" stays as the short reason under an access line); and, new, the reason under the greyed "Add person":
+**"Answer “Is this him?” first."**
+
+**Words and looks still to draft and draw before the build (D1625) — that review's "what still has no words", the
+design review's §6.5 and this fold's own; none is built before he has seen it:**
+- **The settings note (E1):** on a phone the settings window lies under the Calendar — the note names a window he
+  cannot see: either the refusal closes an unchanged Calendar first (behaviour, the host's call) or the note gains a
+  lead ("close the Calendar, then save or cancel…"); the SANS twin; a holiday and changed settings at once (reading
+  20); the other endings ("…then switch to the member view.") and the out-of-sight form ("…Inputs calendar settings
+  on Inputs…"). **The Calendar's five notes** — none drawn, the fifth not yet pressed.
+- **The Undo note (E7):** the leads that join it (§4.6 — "cancel the open row" and its kin); after a Retry; by
+  Ctrl+Z; a window on a page out of sight; the note under the Undo button and at the foot on a phone.
+- **A man of another squadron (D5):** the recommended closed and opened rows; a suspended sign-in; a master admin of
+  142; a 142 member with a sign-in opened by Hunter and by Kestrel ("Plan is for admins only."); whether his own
+  squadron's page reads "also views 149"; more than one ("also views 149, 150"); his call — "no sign-in" on the
+  closed row.
+- **The archived callsign (D8):** archived men on several squadrons ("A new Jester. 142's and 150's admins are told
+  when you add him."); Kestrel also an admin of 142, or the archived man 149's own ("A new Jester." alone, or no
+  line); whether "If this is him, ask 142's admin" stays after the answer and how he takes the answer back; the
+  request's twin ("…when you approve him."); V-Q2's note for an admin of both squadrons; "Ranger is already taken on
+  142" under the callsign box.
+- **The sign-off box (D12):** whether a signed box and the published day carry "· 142"; what Add says with nobody
+  picked in the empty Person box; how his iPhone's VoiceOver says the dot.
+- **The Plan lines (E6, E9l):** the line on a bell showing several squadrons — "149" first, "142" after Hunter's
+  name, two grey boxes with two meanings; "Plan of 149 ended: he moved to 150" and its kin on a bell; what a tap on
+  each opens (§19.2).
+- **This fold's own drafts, read by no one:** "add or clear the new qualification"; the four "cancel…" leads for the
+  Undo ending; N14's note if it is answered "no wait".
+- **Looks:** the singular heading ("▸ 150 · 1 person"); the badge as plain words (D10) and the ☰ menu without its
+  switch; "150 has no SANS aircrew." as words under the greyed button (D11); the greyed Plan's reason on an admin's
+  opened row (D6).
+
+**Not in the words file yet, each needing a draft and a fresh Fable's read (D2441):** the Plan line for an archive's and a
 master admin's making; "…on Squadrons"; the ending "try again."; N12's lead; "switching back to the admin view?"; the
 singular heading ("▸ 150 · 1 person"); a restore's "taken on 149"; what Add says with nobody picked on another
 squadron's "+ Input"; the callsign note for an admin of both squadrons (V-Q2).
@@ -1713,15 +1962,26 @@ build is checked beside it (D1494).
   by `setSession`, and by `state/store.ts switchRoleView` (l.624) — never at a pick. Quals: the page's own state,
   `ui/QualsPage.tsx` `qEditing` and `qualsEdit` (l.304, l.316), cleared only by its Done (l.1157). Pressed (P1 5): after
   a pick 149's Logic and Quals stand in edit mode with "Done" drawn, though he never pressed Edit there; **Quals keeps
-  "Done" in the member view** — a fault. Every change made in either mode is saved as it is made.
-- **After.** The two modes are rows of `GUARD_ROWS` that stay `'no'` and carry `end()` — Logic's `setLgEdit(false)`;
+  "Done" in the member view** — a fault. Every change made in either mode is saved as it is made — **but for two the
+  third read found (read on this branch):** Quals' "Add qualification" box (`newQual`, l.317 — saved only by Add or
+  Enter: Opus F-c), and a value just typed in a Logic box, which is applied a tick later (`ui/LogicPage.tsx
+  ruleApplyLater`, l.54; `flushRuleApply`, l.63, is what Done runs: Opus F-d).
+- **After.** The two modes are rows of `GUARD_ROWS` that stay `'no'` and carry `end()` — **Logic's handed over by its
+  page (`useGuardCloses('logicedit', …)`): `flushRuleApply()` first, so a value still waiting is written to the
+  squadron it was typed for before the entry loads the next one's, then `setLgEdit(false)`** (without the flush, a
+  bell line pressed with a Logic box still focused would write 142's 13h into 149's rules);
   Quals' handed over by `useGuardCloses('qualsedit', qEditing, …)`, clearing `qEditing`, `qualsEdit` and its armed
-  delete. `closeShown()` runs each open mode's `end()` with the closers, so every door ends them in its last step
+  delete — **never `newQual`: while that box holds words its own row refuses the press (§3.2 (i), a reading), so
+  `end()` runs only with the box empty.** `closeShown()` runs each open mode's `end()` with the closers, so every door ends them in its last step
   (§4.2 step 6) — the pick, the view switch, a bell line or tap that changes squadron **(reading)**. A refusal ends
   nothing. A mode ended is not put back when he returns **(reading)**.
 - **Tests first.** **G1** — Saber changes Crew rest from 12h to 13h in 142's Logic edit mode and picks 149: 142 keeps
   13h (as today), 149 reads 12h and **opens with Edit, not Done**; the same on Quals with a tick made; picked on to
-  150, then back to 142: neither is in edit mode. A pick refused for an open window: the mode still on. **G2** — Quals
+  150, then back to 142: neither is in edit mode. A pick refused for an open window: the mode still on. **"13h" typed
+  in a Logic box and, without leaving the box, a bell line to 149 pressed: 142 reads 13h, 149 12h** (Opus F-d).
+  **"LOW LEVEL" typed in Quals' Add qualification, then a pick: refused under its own lead, the words still in the
+  box, the mode still on; the box cleared, the pick again: through, and 149's Quals opens with Edit and an empty box**
+  (Opus F-c; on the reading's other answer: through at once, the box empty). **G2** — Quals
   in edit mode, the badge pressed: no "Done" in the member view, and back in the admin view Quals shows Edit (fails
   today: P1 5); Logic at the same switch is a pin.
 - **Twins:** Logic · Quals; a pick · the view switch · a bell line. **Stays:** every change saved as it is made;
@@ -1759,20 +2019,30 @@ Escape; what each does at a change he did not make.
   opened row's Save and Cancel are. **Cancel is `resetAddForm()` and the fold shut.** Quals' "+ Add person" lands with
   the form open and the callsign box ready — no scroll to a foot. The form reports to the guard
   (`useGuardWork('addperson', …)`) once anything in it differs from how it opens; folded, or open and empty, it
-  counts for nothing. **(readings, §17 item 8):** after a successful add the form clears and stays open, for the next
-  person; the button keeps today's second wording once a sign-in is typed; Escape leaves it as Cancel does, as it
-  leaves an opened row (D2396 (p)). What a second press on the button does is the drawing's to show.
+  counts for nothing — **and "folded" is only ever Cancel's fold or an empty form's** (Opus F-h: a fold that kept its
+  typing would count for nothing, the pick would go through, and P2 1's carry — typing taken to 149, the Home
+  squadron box switched to 149 — would be back). **So the rule is fixed here, whatever the drawing shows: a second
+  press on "+ Add a person" closes the form if it is empty and does nothing if anything is typed or changed in it —
+  Cancel is the one way to clear it.** **(readings, §17 item 8 — the page's E9f):** that rule; after a successful add
+  the form clears and stays open, for the next person; the button keeps today's second wording once a sign-in is
+  typed; Escape leaves it as Cancel does, as it leaves an opened row (D2396 (p)). While it is open the button wears
+  the app's "on" look, so the form visibly belongs to it (the design review's drawing note). **The Home squadron box
+  is NQ2's (§8.4):** on its recommendation the form adds to the squadron in view and the box goes; until he answers
+  it stays as built and nothing here pins it.
 - **Tests first.** **G3** — the button stands after Filter; the form is not on the page until it is pressed; pressed,
   it is drawn above the first person's row with the callsign box focused (a desktop). **G4** — every field typed or
-  changed (callsign, seat, sign-in, role, the post-in date, the Home squadron — Saber is offered 142, 149 and 150),
-  then Cancel: the form gone; opened again: every field as a fresh form's; `whatIsOpen()` null. **G5** — Quals' "+ Add
+  changed (callsign, seat, sign-in, role, the post-in date — and the Home squadron, **as NQ2 decides: no assertion
+  about what that box offers is written before his answer**),
+  then Cancel: the form gone; **a second press on the button with a callsign typed: the form still open, the callsign
+  there, `whatIsOpen()` the `addperson` row; with nothing typed: folded;** opened again: every field as a fresh form's; `whatIsOpen()` null. **G5** — Quals' "+ Add
   person": Admin → Users, the form open and in sight. **G6** — adding is byte for byte today's call
   (`addPersonAndAccount` with the same arguments, the same notes); the existing tests that type into the form are
   re-pointed to press the button first, each named in the report. The e2e: the button's box and the form's against the
   drawing, a desktop and a phone, "Add person" and "Cancel" in sight above the phone's keys.
 - **Twins:** a desktop · a phone; opened by its button · by Quals' door; left by Add person · Cancel · Escape; one
-  squadron to offer (no Home squadron box) · three. **Stays:** the fields, each refusal's words, the note under the
-  form, `addHomeChoices`, the post-in date opening on today, the Archived fold and the list above it.
+  squadron to offer (no Home squadron box) · three (NQ2). **Stays:** the fields, each refusal's words, the note under
+  the form, the post-in date opening on today, the Archived fold and the list above it — `addHomeChoices` as NQ2
+  decides.
 
 ### 18.4 The squadron number's two fades (D2620, D2628 C10)
 
@@ -1827,7 +2097,9 @@ Escape; what each does at a change he did not make.
   own refusal for an empty Person if it has one — the builder reads it — else new words `[WNS]`. **Built in the commit
   that builds §5.1's rule** (§10 step 7).
 - **Tests first.** **G11** — Hunter on 149: each of the four doors opens with the Person box empty, its list 149's men
-  and not Hunter; an input saved for a 149 man is 149's. Saber on 150: the same with 150's men. Each of them on 142,
+  and not Hunter; an input saved for a 149 man is 149's. Saber on 150: the same with 150's men — **150's men on its
+  roster that day and nobody else: not an archived man, not Saber** (the page's drawer once saw the archived Ace and
+  Saber offered there — pressed at step 0; if it holds today it is a fault of the list this step closes). Each of them on 142,
   and Ranger anywhere (his Inputs page is always his own squadron's): himself, as today — a pin.
 - **Twins:** the four doors; a Plan holder · a master admin · a member. **Stays:** the kind it opens on (OL, D917), its
   dates, the week's and the board's own "+ Add".
@@ -1842,11 +2114,13 @@ Escape; what each does at a change he did not make.
   a new grey reason) — read again at step 0.
 - **After.** Where the page's squadron is not his own: the window opens on that squadron's first SANS man, never on
   himself, its list that squadron's SANS aircrew alone. **With none: the button is greyed, its reason "149 has no SANS
-  aircrew." `[WNS]`** (`words.mjs noSansAircrew`) where the day's own grey reason stands today; the calendar's other
+  aircrew." `[WNS]`** (`words.mjs noSansAircrew`) as words under the button, where the day's own grey reason stands
+  today — never a label shown only on mouse rest, which an iPhone never shows (the page's D11); the calendar's other
   roads to the same window — a drag across days — say that reason and open nothing.
 - **Tests first.** **G12** — Hunter, SANS aircrew of 142, on 149 with one SANS man there: the window opens on that
-  man, Hunter not offered; saved, it counts on 149's day and not on 142's. On 150 with no SANS aircrew: the button
-  greyed with its reason, the drag saying it, no window. On 142: himself, as today (a pin).
+  man, Hunter not offered; saved, it counts on 149's day and not on 142's. **Saber on 150, which has no SANS aircrew**
+  (Hunter only views 150 and never reaches its SANS calendar — asserted, a pin: Astra 7 of the third read): the
+  button greyed with its reason under it, the drag saying it, no window. On 142: himself, as today (a pin).
 - **Twins:** the day's button · a drag across days; a squadron with SANS aircrew · with none. **Stays:** every date
   rule `main` has brought (a man SANS from a day ahead), the member's own grey reason.
 
@@ -1857,8 +2131,9 @@ Escape; what each does at a change he did not make.
 His D2622, place by place, as he answered each (§17). Read on `6b4471aa3`; the tests are in
 `src/ui/msq-views.test.tsx` and `src/state/msq-views-plan.test.ts` (both `withThird()`), written first and seen
 failing unless marked a pin. **Every look and word here is drawn and seen by him before its step (D1625); the words
-marked `[WNS]` are a fresh Fable's to read first (D2441); four points wait on him — V-Q1 to V-Q4, each named where it
-bites.** The security reader reads §19.1 and §19.2 with the third read, and their code after the build (D1411).
+marked `[WNS]` are a fresh Fable's to read first (D2441); the points that wait on him are on the round-5 page — E6,
+E8 (V-Q1), E9g–l, D5, D8, D10 (V-Q4) — with NQ1 and NQ3 (§8.4) and V-Q2, still undrawn; each is named where it
+bites, with its default.** The security reader reads §19.1 and §19.2 with the third read, and their code after the build (D1411).
 
 ### 19.1 On another squadron's Admin → Users a man shows only what identifies him and that squadron's access line (D2625)
 
@@ -1871,19 +2146,43 @@ bites.** The security reader reads §19.1 and §19.2 with the third read, and th
   his sign-in name and role in the row's second line ("Ranger 142 · us · Pilot · CAT IP · Member"); `PersonEditor`
   draws the sign-in box, the Role box, `SquadronLines` (one line for every squadron) and the five buttons.
 - **After.** One predicate, `foreignHere(pid)` — his home that day is not the page's squadron (`otherSqnOf` already
-  reads it). For such a row: the second line is his seat and CAT alone; no role badge and no dots **(reading)**; the
-  opened row holds **one line — the page's squadron's, "149 None · View · Plan" — with Save and Cancel, and nothing
-  else**: no sign-in box, no Role box, no line for any other squadron, no Suspend, Archive or Delete. `SquadronLines`
-  takes the one squadron to draw. The doors (`state/accounts.ts updateAccount`, `saveAccess`, `archivePerson`,
-  `deletePerson`) are not changed: on 142's page Hunter does all of it as today. Hunter's own "· also plans 149" note
-  on 149's list stays — it is about 149 (D2400).
-- **Tests first.** **V1** — Hunter on 149 finds Ranger by search and opens his row: the callsign, the grey "142", seat
-  and CAT; the one line for 149; Save, Cancel; **no `#accEdName`, no Role box, no `#accEdOnOff`, `#accEdArchive`,
-  `#accEdDel`, no line for 142 or 150** (fails today). **V2** — the same row for Kestrel, and for Saber with 149
-  picked; and for Petrel on 150's page: one line, for 150. **V3** — pins: on 142's page Ranger's row is whole for
-  Hunter and for Saber, every button as today; Kestrel never reaches 142's page. **V4** — the line itself still
-  saves: Kestrel gives Ranger View of 149 from that row — one Undo step, the words "Saved"; and the row with its line
-  changed and not saved refuses a pick (§3.2 (h)).
+  reads it). **The row's face is D5's (default — the page's recommendation, which found the plan's opened row right
+  and the first drawing wrong):** closed, one short row — his callsign, the grey "142", seat and CAT, and in words
+  what he already holds here ("also views 149" `[WNS]`, beside the built "also plans 149"); no role badge and no dots
+  **(reading — E9g)**. **A press opens it, as every row on the page opens: one line — the page's squadron's, "149
+  None · View · Plan" — with Save and Cancel, and nothing else**: no sign-in box, no Role box, no line for any other
+  squadron, no Suspend, Archive or Delete. **A man with no sign-in opens to words in place of the line — "No sign-in.
+  Ask 142's admin to give him one first." `[WNS]` — and Cancel alone: none of today's other branch is drawn for him
+  (`#accGive`, `#accGiveName`, `#accGiveRole` — "Give sign-in" is not greyed by the row's lock today: Fable 11).**
+  `SquadronLines` takes the one squadron to draw. **The other answers to D5:** the first way — the three buttons live
+  on every closed row, a press taking effect at once, no Save (then the guard has no opened row to count, and a
+  brushed "View" on a phone gives access unseen); and, his call by D2625's own list, a quiet "no sign-in" on the
+  closed row.
+  **Hiding is not what keeps the rest safe — the Save is (Astra 2 of the third read, HIGH; read on this branch).**
+  Today the editor's Save is `accessWant(a, role, pickNow, lines, linesNow)` plus `renamed = name !== a.name`
+  (`ui/UsersPanel.tsx` l.298, l.369), `name` and `role` captured when the row opened. So: Saber renames Ranger's
+  sign-in on 142, picks 149, opens Ranger's row there, presses Undo — the rename is taken back under the open row —
+  and changes Ranger's 149 line: Save finds the captured name differs from the account's and **sends the rename
+  again with the line**, within Saber's rights, under a bar reading 149; the Undo's landing does not close an editor
+  already on Users. **A foreign row therefore has its own save:** `saveAccess(a.id, { grants: { [page's squadron]:
+  line } })` and nothing else — never `name`, `role`, `master` or another squadron's line, whatever the editor's
+  state holds — and **at Save the row is judged again**: if his home is by then the page's squadron, or the page's
+  squadron is no longer the one the row opened on, nothing is sent and the row closes with the words "This changed
+  while it was open — open it again." `[WNS]`. The doors themselves (`state/accounts.ts updateAccount`, `saveAccess`,
+  `archivePerson`, `deletePerson`) are not changed: on 142's page Hunter does all of it as today. Hunter's own
+  "· also plans 149" note on 149's list stays — it is about 149 (D2400).
+- **Tests first.** **V1** — Hunter on 149 finds Ranger by search: the short closed row; opened: the one line for
+  149; Save, Cancel; **no `#accEdName`, no Role box, no `#accEdOnOff`, `#accEdArchive`, `#accEdDel`, no line for 142
+  or 150** (fails today). **A 142 man with no sign-in, opened: the words, Cancel, and no `#accGive`, `#accGiveName`,
+  `#accGiveRole`.** A 142 member with a sign-in: Plan greyed, "Plan is for admins only." **V2** — the same row for
+  Kestrel, and for Saber with 149 picked; and for Mako on 150's page: one line, for 150. **V3** — pins: on 142's page
+  Ranger's row is whole for Hunter and for Saber, every button as today; Kestrel never reaches 142's page. **V4** —
+  the line itself still saves: Kestrel gives Ranger View of 149 from that row — one Undo step, the words "Saved"; and
+  the row with its line changed and not saved refuses a pick (§3.2 (h)). **V4b — the save sends the line alone:**
+  Astra's sequence above, for Saber and for Hunter — after Save Ranger's sign-in name is the one the Undo left, his
+  role and every other squadron's line as they were, and a spy on `saveAccess` sees one key, `grants`, holding one
+  squadron; **a row whose man's home changes while it is open** (his move lands, or an Undo of one): Save sends
+  nothing and says so.
 - **Twins:** found by search · listed as a Plan holder · under a folded heading (§19.3); Kestrel · Hunter · Saber;
   149's page · 150's. **Stays:** his whole row on his own squadron's page; D2303's lines there; D2306's "Plan is for
   admins only."; D2336's "Only an admin of 149 can give access to 149."
@@ -1904,42 +2203,114 @@ bites.** The security reader reads §19.1 and §19.2 with the third read, and th
   `ui/msq-users-row.test.tsx`, `leavewar/multi-sqn-fixread8`, `-9`, `-11`, `-12`. No bell line tells a squadron's
   admins: his own account's lines exist (`state/notices.ts acctWords`: "Given Plan of 149: full access to 149", "Plan
   of 149 ended"). `main` has since changed `perms.ts` and `units.ts` — read again at step 0.
-- **After.** One new test in `state/perms.ts`, **`mayGivePlanOf(unit, actor)`**: a master admin; or an admin whose own
-  squadron `unit` is that day (`homeOn`), in the admin role — **never one who is its admin by Plan**. A squadron with
-  no admin of its own therefore has nobody but a master admin. Each of the seven places above asks it in place of
-  "is he a master admin": the two doors and `saveAccess` for the squadron of the line; the gate for the squadron of
-  the grant row, on either side; `restoreLeavesOut` for the squadron of the row put back, judged for the restore's
-  maker **as he stands today** (Kestrel's Undo and Redo of a Plan he gave pass while he is 149's own admin, and are
-  left out once he is not). `lineState`: for one who may give access to the squadron but not its Plan — a Plan holder
-  of it — the Plan button is greyed, and a line that already holds Plan is locked for him, under "Only 149's own admins or a
-  master admin can give or end Plan of 149." `[WNS]` (`words.mjs planGreyed`, as a fresh Fable left it on 25 Nov). The
-  door's own refusal says the same sentence **(reading)**, in place of `PLAN_MASTER_ONLY`; the roles table's reads
-  "Only a master admin makes squadrons or master admins. Plan of a squadron is given by its own admins or a master
-  admin." `[WNS]` (`rolesNote`).
+- **After.** One new test in `state/perms.ts`, **`mayGivePlanOf(unit, actor, rows, today)`**.
+  **Its definition — the security reader's S1 fix (HIGH; Fable 4 the same), read once more by that reader alone
+  before the build (the host's reading of D1411):**
+  1. a master admin — the mark holding today on the rows judged; **or**
+  2. **his home that day is `unit` *and* his level there from his home role alone is admin** — the one body
+     `state/accounts.ts adminNow` reads (K3, D2160: "the admin role, counting in the squadron he is at home in that
+     day … an admin who moved squadron is a member there until made an admin again", l.415–424), asked over his
+     account **with every grant left out**, so a Plan of `unit` never counts.
+  3. **Never** the stored `role === 'admin'` beside a home: Viper, 142's admin moved to 149, joins as a member while
+     his account still stores "admin" — judged by the stored role he would give and end Plan of 149 from the move
+     day. **Never** his level by a grant (a Plan holder of it).
+  4. **Judged on the rows before the command** — at the gate `w.rowsB` and `w.acctB`, so one command cannot make its
+     own actor an admin of `unit` and give Plan of it; at a door, on the signed-in account as it stands at Save.
+  5. **It fails closed:** an actor with no account, a home it cannot read, or rows not handed in — false.
+  A squadron with no admin of its own therefore has nobody but a master admin.
+  **Who may hold it reads the same way** — the gate's own check on the receiver ("Plan on an account that is not an
+  admin's", `perms.ts` l.2734) reads the raw stored `who.role` today; once every squadron's own admins can write Plan
+  rows it reads the role in force too, or a forged give to a moved "admin" who is a member where he stands makes him
+  an admin of `unit`.
+  **Each of the seven places above asks it in place of "is he a master admin":** the two doors and `saveAccess` for
+  the squadron of the line; the gate for the squadron of the grant row, on either side.
+  **A replay is asked too, in every direction (Astra 1 and Fable 3 of the third read, HIGH by two readers; security
+  S4; read on this branch).** Today `restoreLeavesOut` returns early for anything but a put-back (`c.op === 'put'`,
+  l.2396), its point 4 judges only a put-back whose level is Plan (l.2398), and the gate's Plan who-check excepts "a
+  verified replay" on both sides (l.2821). So an Undo that **removes** a holding Plan row (the Undo of a give) and
+  one that **puts back View over Plan** (the Undo of a raise) are asked only "is he an admin of 149" — which a Plan
+  holder is. Kestrel, 149's own admin, gives Hunter Plan of 149; still signed in, he becomes 142's admin holding only
+  Plan of 149; he presses Undo — Hunter's Plan is ended by a Plan holder. **So:** `mayGivePlanOf` is asked of the
+  restore's maker **as he stands today** for any grant row that is Plan **on either side** of the restore — before or
+  after image, a put-back, a removal and a lowering alike — in the leave-out and in the gate; the replay's exception
+  stays for the row's *day* alone, never for who. A step it stops is refused in today's Undo words, where the change
+  itself would be (D148). **Kept, each ruled:** his own squadron's admin making him a member, the Plan row dropping
+  with it (`accountMadeMember`, D2250); a person's delete; an archive (D2311). **And it fails closed:** the restore's
+  context carries `mayPlan` in place of `master`, and *not handed in* reads as *may not* — today `ctx.master ===
+  undefined` lets a Plan row back.
+  `lineState`: for one who may give access to the squadron but not its Plan — a Plan holder of it, **a moved admin
+  not yet re-made** — the Plan button is greyed, and a line that already holds Plan is locked for him, under "Only
+  149's own admins or a master admin can give or end Plan of 149." `[WNS]` (`words.mjs planGreyed`, as a fresh Fable
+  left it on 25 Nov). **The reason stands as words under the line, one at a time, the first that is true (the page's
+  D6):** for a man with no sign-in, "No sign-in"; for a member, today's "Plan is for admins only."; for an admin, the
+  new sentence. The door's own refusal says the same sentence **(reading)**, in place of `PLAN_MASTER_ONLY`; the
+  roles table's reads "Only a master admin makes squadrons or master admins. Plan of a squadron is given by its own
+  admins or a master admin." `[WNS]` (`rolesNote`).
   **The bell:** when Plan of a squadron is given or ended, one admin line of that squadron — "Hunter · Given Plan of
   149 · Kestrel", "Hunter · Plan of 149 ended · Kestrel" `[WNS]` (`planGivenLine`, `planEndedLine`) — written in the
-  command that changes the right, so an Undo strikes it as it strikes any line (D1693); an ending the app makes
-  carries no name: "Plan of 149 ended: he moved to 150", "Plan of 149 ended: made a member" `[WNS]` (`planEndedMoved`,
-  `planEndedMember`; an archive's and a master admin's making are not drafted). **(reading, §17 item 10):** who sees
-  it is the bell's own rule for a squadron's admin lines; not the giver; the man himself keeps his own account's line
-  and gets no second; an ending the app makes is told too.
+  command that changes the right, so an Undo strikes it as it strikes any line (D1693). **Who is told — E6 (default,
+  and this plan's reading 10): everyone who already gets that squadron's admin lines — its own admins, a Plan holder
+  of it (Mako), a master admin with it switched on (Saber) — never the one who pressed; the man himself keeps his own
+  account's line and gets no second. And Hunter's name wears his home's grey "142"** where his home is not the line's
+  squadron, as his row does on 149's Admin → Users — on a bell showing several squadrons the line then carries two
+  grey numbers with two meanings, "149" first and "142" after his name: undrawn, drawn for him first. **The other
+  answer to E6: 149's own admins only** — a new audience, which the gate must learn too (below); not a one-line
+  switch.
+  **The gate's rule for these lines — which the plan had not written (security S2; read on this branch):**
+  `perms.ts adminOwnerViolation` admits a squadron's admin line to a reader who is not the actor's own squadron's man
+  only for the war kinds (`oilhol`, `po`, `poback`, by `lineSquadron`). As it stands every one of the new lines is
+  refused and its Save fails; loosened carelessly, any admin could put any words on another squadron's admins' bells.
+  **So each new kind carries its squadron `u` and its subject, and is admitted only where the same command changes
+  that very right:** a grant row of that account and `u`, Plan before or after, given or ended, and the line's reader
+  one of `u`'s admin audience (`accounts.ts adminsOf` — on E6's other answer, its own admins alone); signed by the
+  actor (`by`); one line a reader; never unsigned from a person. **"Plan of 149 ended: made a member"** is written by
+  142's admin in the command that makes the man a member — admitted only where that command makes that account a
+  member and drops its Plan row for `u`. **"Plan of 149 ended: he moved to 150"** has no command of the right: a move
+  writes no grant, the reading rule ends the Plan at midnight. It is the app's own line — minted by the app's pass on
+  the move's day, unsigned, admitted only as that pass (or, if the builder finds it equal in what a person sees,
+  worked out by the bell as the SANS reminder is, and never stored); **no person's command may write it.** An
+  archive's and a master admin's making: the same two shapes, their words not drafted. **(reading — E9l):** an ending
+  the app makes is told at all, with its reason.
+  **What a tap on these lines opens — unstated until the third read (Opus F-g, Fable 8):** today `openNotice`'s last
+  branch would read them as an input's and say "That input is gone". **Default, drawn for him with the lines:** the
+  tap opens that squadron's Admin → Users at the man's row — under his own squadron's heading, opened, the row ringed
+  (the landing a posting's line has, `useRingLanding`) — entering that squadron through the guard as any line does
+  (§4.5: `lineOpens` answers `'admin'`). The other answer: the line is only read. Named in `lineOpens`, B7 and R5 (d)
+  in the commit that adds the kinds.
 - **Unchanged, each a pin:** Plan only on an admin's account ("Plan is for admins only."); his own squadron's admin
   may make him a member, his Plan ending with it (D2250); the last-admin refusals (D2247); a Plan holder of 149 still
-  gives View of 149 and makes 149's men admins of 149 (D2336, D2201); only a master admin makes squadrons and master
+  gives View of 149 and makes 149's men admins of 149 (D2336, D2201) — **the second half is NQ1's (§8.4): with a move
+  before it, it passes Plan on in two steps; V5 pins it by name, "not covered — NQ1", until he answers**; only a master admin makes squadrons and master
   admins, and "+ New squadron" still gives its first admin Plan (D2308); a move ends Plan (D2203).
-- **Tests first.** **V5** — the doors: Kestrel gives Hunter Plan of 149, and takes it away: saved. Petrel gives Hunter
+- **Tests first.** **V5** — the doors: Kestrel gives Hunter Plan of 149, and takes it away: saved. Mako gives Hunter
   Plan of 150 — he then holds Plan of two (D2630). Hunter, holding Plan of 149, gives a second 142 admin Plan of 149:
   refused; gives him View of 149: saved. Kestrel gives Plan of 150: refused. A squadron whose only admin is a Plan
-  holder: only Saber. Saber: everything, as today. **V6** — the gate: the same nine cases as forged commands, the
-  refusal by name; a member's forged Plan row; a Plan row whose holder is a member. **V7** — the restore: Kestrel gives,
-  Undo, Redo — all saved; Kestrel made a member, his Redo is left out and says so; Saber's Undo of Kestrel's give
-  (not his own step — D148) is refused as today. **V8** — the line: for Kestrel on 149 the Plan button is live on an
-  admin's row; for Hunter it is greyed with its reason; a member's row reads "Plan is for admins only." (pin).
-  **V9** — the words: the refusal's and the roles table's read from the words table, and nowhere says "Only a master
-  admin gives Plan". **V10** — the bell: 149's other admins and Saber (149 switched on) each get the line, Kestrel
-  none, Hunter his own account's line once; with two squadrons shown the line wears "149" (§19.5); an Undo strikes it
-  "taken back"; the notifications register carries both rows. The nine existing files that pin "a master admin only"
-  are re-pointed case by case, each named in the report — none is deleted.
+  holder: only Saber. Saber: everything, as today. **A pin, named "not covered — NQ1":** Hunter moves Viper to 149,
+  makes him an admin of 149, and Viper gives Plan of 149 — each step saved, as built. **V5b — the moved admin
+  (S1):** Viper, 142's admin, moved to 149 and not yet re-made, tries to give Hunter Plan of 149 and to end Mako's:
+  the row's Plan greyed with its reason; `setGrant`, `removeGrant`, `saveAccess` each refused; re-made an admin of
+  149: all saved. **V6** — the gate: the same cases as forged commands, the refusal by name — **Viper's among them,
+  and a forged give *to* Viper while he is a member where he stands; one command that makes its actor an admin of
+  149 and gives Plan of it**; a member's forged Plan row; a Plan row whose holder is a member; **a forged Plan line —
+  Hunter's command carrying a "Given Plan of 149" line with no grant row changed, one with a row of another account
+  or another squadron, one unsigned, one to a reader outside 149's audience: each refused by name.** **V7** — the
+  restore: Kestrel gives, Undo, Redo — all saved while he is 149's own admin. **Kestrel then 142's admin holding only
+  Plan of 149 (moved, re-made an admin there, given Plan by Saber), still signed in: his Undo of the give is refused
+  — Hunter still holds Plan; his Undo of a raise from View is refused; his Redo of either is left out and says so**
+  (Astra 1, Fable 3, S4). Kestrel made a member: the same. A master admin whose mark was taken off mid-session: the
+  same. **The restore's context with nothing handed in: a Plan row is not put back.** Pins: Saber's Undo of Kestrel's
+  give (not his own step — D148) is refused as today; a man made a member by his own squadron's admin loses his Plan
+  row in that command, and its Undo puts both back. **V8** — the line: for Kestrel on 149 the Plan button is live on
+  an admin's row; for Hunter it is greyed, the new reason under the line; a member's row reads "Plan is for admins
+  only." (pin); a man with no sign-in, "No sign-in" — one reason at a time. **V9** — the words: the refusal's and the
+  roles table's read from the words table, and nowhere says "Only a master admin gives Plan". **V10** — the bell, on
+  E6's default: 149's other admins, Mako (Plan of 149) and Saber (149 switched on) each get the line, Kestrel none,
+  Hunter his own account's line once; Hunter's name wears "142" for each of them; with two squadrons shown the line
+  wears "149" first (§19.5); an Undo strikes it "taken back"; **a tap on it opens 149's Admin → Users at Hunter's
+  row, ringed — never "That input is gone" — and is refused like any line with a window open**; Hunter moved to 150:
+  the app's own line, no name, to the same people; the notifications register carries each row. On E6's other
+  answer: 149's own admins alone, and the gate refuses the line to anyone else. The nine existing files that pin "a
+  master admin only" are re-pointed case by case, each named in the report — none is deleted.
 - **Twins:** given · raised from View · lowered to View · taken away; the row's Save · the door called directly · a
   forged command · Undo · Redo; its own admin · a Plan holder · an admin of another squadron · a master admin · a
   member; 149 · 150. **The records it owes** (D201): `docs/data-model.md` §UnitGrant and its §11 permissions row, the
@@ -1957,22 +2328,44 @@ bites.** The security reader reads §19.1 and §19.2 with the third read, and th
   by number — "▸ 142 · 38 people", "▸ 150 · 6 people"** `[ruled]` (the shape; the singular's words `[WNS]`) — for
   whoever may give access to the squadron in view (`adminOfUnit(unit)`: its own admins, a Plan holder of it, a master
   admin — D2635). A tap opens it ("▾"), its people A to Z, each row with §19.1's face; the fold is kept while the page
-  is open, as the Archived fold's is. The search still finds them: a match stands under its squadron's heading, opened
-  while the search matches **(reading)** — today's one flat list of finds goes. The filter's ticks hide rows inside a
+  is open, as the Archived fold's is. **A folded group holds live people only — on that squadron's roster that day:
+  no archived man, no deleted man, nobody waiting for access, and so no Restore** (security S6: listed, an archived
+  142 man would offer Restore from 149's page, live for Hunter). The count on the heading counts the same people.
+  The search still finds them: a match stands under its squadron's heading, opened
+  while the search matches **(reading — E9g)** — today's one flat list of finds goes. **What the search matches for
+  a man of another squadron is NQ3's (§8.4):** on its recommendation his callsign only — today it matches his sign-in
+  name too, which his row there hides. The filter's ticks hide rows inside a
   group as they do in the list; "People · 10" still counts the squadron in view's own. A Plan holder of the squadron
-  in view stays on the main list, as today **(reading)**. **A master admin (D2631):** the squadron his page is on
+  in view stays on the main list, as today **(reading — E9g)**. **A master admin (D2631):** the squadron his page is on
   stands open and every other is folded, exactly as for anyone.
-  **V-Q1 — his "All squadrons" tick is not built until he says:** D2631 has his primary open in that view, D2197 puts
-  the page on the squadron picked, D2625 leaves the tick unsettled, and with the headings there for every master
-  admin the tick shows nothing new (§17's first clash). Until then the ticks under Filter stay as built.
+  **A heading folded over a row he has changed (reading — E9h; found unmarked by Astra 6 and Opus F-h):** default,
+  the page's "I would build" — the row closes as its Cancel does and the choice is dropped, so nothing is left
+  changed out of sight; the other answer — the heading does not fold while a row under it holds a change. Shaped for
+  either: the heading's press asks the opened row's own "anything changed", then closes it or stays.
+  **E8 (V-Q1) — the "All squadrons" tick. Default, the page's recommendation: the tick goes.** With the headings
+  there, every Admin → Users page already shows every squadron — the one picked open, its rows whole; each other one
+  closed heading, its rows short — the same for Kestrel, Hunter and Saber; to change a 150 man's sign-in or role or
+  archive him, Saber picks 150 first. **It retires D2270's tick and D2631's "in All squadrons too" — something he
+  ruled in; built only on his word, never as his ruling.** The other answers: (2) the tick kept, every row whole, his
+  own squadron open at the top — which lets a 142 record be changed under a bar reading 149 again, for a master
+  admin, and makes §19.1's own save and D2593's "a change belongs to the squadron it was made on" decide whose Undo
+  holds it (Astra: "E8 must govern saving as well as appearance"); (3) the tick kept, other squadrons' rows short.
+  **Until he answers the ticks under Filter stay as built**; on the default the filter's squadron ticks, "Filter · 1"
+  and "Showing 73 of 73" for them go with it, the tests that tick them re-pointed by name.
 - **Tests first.** **V11** — on 149's page Kestrel, Hunter and Saber each see two closed headings, 142's and 150's, in
   that order, each with its count; Ranger, who only views 149, never reaches the page (pin: the Admin tab is not offered).
-  **V12** — a tap opens 142's people, a second closes them; each row has §19.1's face; an opened row with a change,
-  its heading then closed: the row closes as its Cancel does and the guard counts nothing. **V13** — "Ranger" typed on
-  149's page: 142's heading stands open with Ranger under it, 150's closed; the search cleared: as he left them.
-  **V14** — a Seat tick hides rows inside an open group; the "Showing n of m" line counts as today. **V15** — Saber on
-  142: 142 open, 149 and 150 folded; on 150: 150 open, 142 and 149 folded. The e2e: a heading is a full-width row at
-  least 44px tall on a phone, against its drawing.
+  **V12** — a tap opens 142's people, a second closes them; each row has §19.1's face; **an archived 142 man, a
+  deleted one and a man waiting for access are not under it, the count leaves them out, and no Restore is on the
+  page**; an opened row with a change, its heading then closed — **named "the reading E9h"**: on the default the row
+  closes as its Cancel does and the guard counts nothing; opened again: the line as stored; on the other answer the
+  heading stays open and the row still counts. **V13** — "Ranger" typed on
+  149's page: 142's heading stands open with Ranger under it, 150's closed; the search cleared: as he left them;
+  **on NQ3's recommendation: a 142 man's sign-in name, or part of it, typed on 149's page finds nothing, and a 149
+  man's still finds him**. **V14** — a Seat tick hides rows inside an open group; the "Showing n of m" line counts as
+  today. **V15** — Saber on
+  142: 142 open, 149 and 150 folded; on 150: 150 open, 142 and 149 folded; **on E8's default no "All squadrons" tick
+  is drawn for anyone; on choice 2 or 3 its rows as that choice says, and V4b run with the tick on**. The e2e: a
+  heading is a full-width row at least 44px tall on a phone, against its drawing.
 - **Twins:** Kestrel · Hunter · Saber; a tap · the search; a desktop · a phone; two other squadrons · one. **Stays:**
   the list A to Z, never reordered (D322); the Waiting list and the Archived fold; D2400's "Plans 149" tick.
 
@@ -1987,28 +2380,51 @@ bites.** The security reader reads §19.1 and §19.2 with the third read, and th
 - **After.** Whose archived man it is, is read per holder (`homeOn` on the day he was archived — the builder reads how
   an archived man's squadron is kept). **On another squadron, not one the admin is also an admin of:** the note "142
   has an archived Ace: Pilot, CAT B, archived 3 Mar 26. Is this him?"; with archived holders on several squadrons,
-  "More than one archived man is called Ace. Is this one of them?" and a line for each (D2630); the one choice built
-  now, "Someone new: add him", and under it the words "If this is him, ask 142's admin" — all `[WNS]`, a fresh Fable's
-  (`…-msq-c6-words-fable-report.md`; `words.mjs`), not yet his. "Someone new" adds him as today and writes one admin
-  line to the old squadron — "Ace · Wed 25 Nov / 149 added a new Ace. Delete yours if he has left flying for good ·
-  Kestrel" `[WNS]` — whose tap opens Admin → Users at the archived row, its fold open, the row ringed (the landing
-  that exists for a posting's line, `useRingLanding`). Both forms carry it: Give access, and Add a person once the
-  callsign typed is one. **"It's him" is not built — it rides the Transfer step (D2633).** **On his own squadron:** as
-  today. **Where he is also an admin of the other squadron** (Hunter by Plan; Saber): D2632 says he decides himself
-  "on that page, as today" — but today's words point him to a fold the page he is on does not have: **V-Q2, the
-  words for that case, are his** (Fable's draft 8, and its tenth, a single look for every case, change "as today").
-  **The live refusal names the squadron:** "Ranger is already taken on 142" `[WNS]`, in both places together; a
-  restore refused for a taken callsign names it too **(reading)** — `state/roster-restore.ts` l.90, `leavewar/sync.ts`
-  l.3865, `UsersPanel.tsx` l.485.
+  "More than one archived man is called Ace. Is this one of them?" and a line for each (D2630) — each line his seat,
+  CAT and the date archived and nothing more (no sign-in, no dots, no "by": D2632, D2625); and under it the words "If
+  this is him, ask 142's admin" — all `[WNS]`, a fresh Fable's (`…-msq-c6-words-fable-report.md`; `words.mjs`), not
+  yet his.
+  **The one choice built now — D8 (default, the page's recommendation): a button "Someone new" `[WNS]` that only
+  answers the question.** The form's own "Add person" does the adding, as it always does, greyed until he has
+  answered, its reason under it — "Answer “Is this him?” first." `[WNS]`; once answered the note reads "A new Ace.
+  142's admins are told when you add him." `[WNS]`. **The old squadron's bell line is written by the command that
+  adds the man — not at the press of "Someone new"**, or Someone new, then Cancel, tells 142 of a man nobody added.
+  **The other answer, as first drawn and as D2633 quotes it: "Someone new: add him" adds at once, "Add person"
+  greyed** — it changes his quoted button words, said on the page; with it the note comes up as soon as the callsign
+  is typed, before a seat or CAT is picked, and the form has two buttons that add.
+  The line: "Ace · Wed 25 Nov / 149 added a new Ace. Delete yours if he has left flying for good · Kestrel" `[WNS]`,
+  to the old squadron's admins — every one of them (D2632). **Its gate rule (security S2 d):** the kind carries the
+  old squadron and the callsign and is admitted only where the same command adds a person with that callsign while
+  that squadron holds an archived man of it; signed by the actor; to that squadron's admin audience; with archived
+  holders on several squadrons, a line to each. **Its tap** opens that squadron's Admin → Users at the archived row,
+  its fold open, the row ringed (the landing that exists for a posting's line, `useRingLanding`) — `lineOpens`
+  answers `'admin'`, and it is in B7 and R5 (d) from the commit that adds it (Fable 8: built in a parallel chat
+  before step 5 it would have been written "mark read, close the list, open").
+  Both forms carry it: Give access — where there is no "Add person", so the note's last words need a twin, "…when
+  you approve him." `[WNS]`, undrawn — and Add a person once the callsign typed is one. **"It's him" is not built —
+  it rides the Transfer step (D2633).** **On his own squadron:** as today. **Where he is also an admin of the other
+  squadron** (Hunter by Plan; Saber): D2632 says he decides himself "on that page, as today" — but today's words
+  point him to a fold the page he is on does not have: **V-Q2, the words for that case, are his, still undrawn and
+  unasked** (Fable's draft 8, and its tenth, a single look for every case, change "as today"); nobody else is told
+  there, so the line after the answer is "A new Ace." alone.
+  **The live refusal names the squadron:** "Ranger is already taken on 142" `[WNS]`, in both places together — **and
+  it stands under the callsign box, where the archived note stands, not as the amber passing note at the screen's
+  foot** (the page's D8; its colour and look left alone); a restore refused for a taken callsign names it too
+  **(reading — E9k)** — `state/roster-restore.ts` l.90, `leavewar/sync.ts` l.3865, `UsersPanel.tsx` l.485.
 - **Unchanged:** an archived man's callsign may still go to a new person (D286); never two live men of one aircraft
   type with one callsign (D288) — `callsignTakenBy` is not touched; the request's own "Waiting for an admin".
 - **Tests first.** **V16** — "Ace" asks 149 for access, Ace archived on 142: Kestrel's form shows the note with seat,
-  CAT and date, "Someone new: add him" and the ask-his-admin words; **no "▸ Archived" in it**. **V17** — archived Aces
-  on 142 and 150: the second note, a line for each. **V18** — "Someone new": a new 149 person; 142's admins' bells
-  carry the line, Kestrel's none; its tap lands on Ace's archived row on 142's page. **V19** — Add a person on 149
-  with "Ace" typed: the same note under the callsign. **V20** — "Ranger" typed on 149 and on 150: "…already taken on
-  142"; the rename on Quals: the same words; on 142 itself: "…on 142". Pins: Ace archived on 149's own page — today's
-  note, word for word.
+  CAT and date and nothing else of him, the "Someone new" button and the ask-his-admin words; **no "▸ Archived" in
+  it**. **V17** — archived Aces on 142 and 150: the second note, a line for each. **V18** — on D8's default: "Someone
+  new" pressed — **nothing is added and no bell line written**; "Add person" live, the note's new words; **Cancel
+  then: no person, no line on 142**; pressed again and "Add person": a new 149 person; 142's admins' bells carry the
+  line — every admin of 142 — Kestrel's none; its tap lands on Ace's archived row on 142's page, ringed, and with a
+  window open is refused like any line; **the gate: the line forged with no person added, with another callsign, to
+  150's admins, unsigned — each refused by name**. On the other answer: "Someone new: add him" adds and writes the
+  line in that one command. **V19** — Add a person on 149 with "Ace" typed: the same note under the callsign, "Add
+  person" greyed with its reason until answered. **V20** — "Ranger" typed on 149 and on 150: "…already taken on
+  142", **under the callsign box**; the rename on Quals: the same words; on 142 itself: "…on 142". Pins: Ace archived
+  on 149's own page — today's note, word for word.
 - **Twins:** Give access · Add a person; one archived holder · several squadrons'; archived · live; adding · renaming.
 
 ### 19.5 The bell's squadron number, first on every line (D2624, D2628 C1)
@@ -2017,11 +2433,14 @@ bites.** The security reader reads §19.1 and §19.2 with the third read, and th
   (and none for a line about his own account); `ui/topbits.tsx BellList` (l.117) draws it after the line's first word.
   So with 149 picked Hunter's 149 lines wear "149" and his 142 lines nothing (P6 A7).
 - **After.** `lineSqnMark` answers the line's own squadron's number whenever his bell shows more than one squadron —
-  **(reading, V-Q3): "shows" is read by the Show buttons switched on** — and nothing with one; `BellList` draws it at
+  **(reading — the page's E9i, the earlier V-Q3): "shows" is read by the Show buttons switched on** — and nothing with one; `BellList` draws it at
   the very start of the line, after the unread dot, in a column of its own width, the plain grey number, no colour or
   tint; a line about his own account keeps the column's place empty (D2319).
-- **Tests first.** **V21** — Hunter, Show 142, 149 and 150 on: every squadron's line wears its own number, with 142,
-  149 or 150 picked alike; his own account's line wears none and its words start where the others' do. **V22** — one
+- **Tests first.** **V21** — **Saber, Show 142, 149 and 150 on** (three sources need one who gets all three
+  squadrons' lines; Hunter only views 150 and cannot switch its squadron lines on — Astra 7 of the third read):
+  every squadron's line wears its own number, with 142, 149 or 150 picked alike; his own account's line wears none
+  and its words start where the others' do. **Hunter: 142's and 149's lines numbered, and no squadron line of 150
+  at all.** **V22** — one
   squadron switched on: no number and no empty column; Saber, whose other squadrons start switched off: none until he
   switches one on. The e2e: the numbers' left edges in one column, against the drawing, a desktop and a phone.
 - **Stays:** the Show buttons, what lights the bell, a line's tap, "Mark all read" (its reach across squadrons is
@@ -2037,15 +2456,40 @@ bites.** The security reader reads §19.1 and §19.2 with the third read, and th
   is the squadron in view when it is sent (Saber's, sent while looking at 149, is 149's); who has seen it is kept per
   admin. Help lists every squadron's reports for every admin, newest first, each with its squadron's grey number on
   its title line, no headings. The bell rings for a new report only for that squadron's admins and a master admin, and
-  an admin's bell goes out when he has opened Help. The commit gate: anyone signed in files a report as himself;
-  nobody changes or deletes one; an admin adds only his own "seen". **(readings, §17 item 12)** — that reports become
-  saved records at all (the table list for the database step gains one: D473), each admin's own look, a Plan holder
-  rung as the squadron's admin, the number shown whenever the app has more than one squadron.
+  an admin's bell goes out when he has opened Help.
+  **Three things the third read found unsaid (Opus F-f, Fable 6), each fixed here:**
+  1. **Where it is kept: one collection for the whole app, as the accounts are — never in a store bound to the
+     squadron in view** (`rebindStorageUnit`), or a 142 admin who never loaded 149 lists none of 149's and "one list
+     for every admin" is untrue.
+  2. **"Seen" is a record of its own, one a report an admin** — never a list inside the report, which "nobody changes
+     one" forbids anyone to write.
+  3. **Neither a filing nor a "seen" is an Undo step** — as today (`state/reports.ts`: "not in the undo snapshot …
+     filing a report is not a schedule edit"). Through the command layer by default each would land on the person's
+     Undo list: Osprey files a report, presses Undo meaning his last input, and the Undo is of the report, refused by
+     the gate, his Undo stuck behind it; Kestrel opens Help and his next Undo relights his own bell.
+  **The commit gate, with the security reader's three gaps (S5):** anyone signed in files a report as himself —
+  **`pid` is the actor's own person, never null, and the callsign shown is read from it; a stored `who` is never
+  trusted** (a report with no `pid` and `who: "Saber"` would read as Saber's); **`u` is his home or a squadron he
+  holds View or Plan of that day — any squadron for a master admin** (else Osprey, a 149 member, stamps a report 142
+  and rings 142's admins with any words); **a category the form does not offer, or a text over the form's own
+  limit, is refused**; nobody changes or deletes one; an admin adds only his own "seen". **And who may read is a rule
+  of its own, in `perms.ts`'s table and `data-model.md` §11:** an admin reads every squadron's; a member reads only
+  his own — or the database step will let a member read every squadron's report text. A member's own "Your reports"
+  wears no number (he sees only his own) — a look, drawn with D9.
+  **(readings, §17 item 12 — the page's E9j)** — that reports become
+  saved records at all (the table list for the database step gains two: D473), each admin's own look, a Plan holder
+  rung as the squadron's admin, the number shown whenever the app has more than one squadron. **Told to him on the
+  page (D9), his ruling:** every admin of every squadron reads every report's words — 149's admins read what 142's
+  members wrote.
 - **Tests first.** **V23** — Osprey (149's member) sends a report, logs out; Kestrel signs in: his bell lit, Help
-  lists it with "149"; Hunter (Plan of 149) the same; a 142 admin with no right in 149: listed, his bell dark; Saber:
-  lit. **V24** — Kestrel opens Help: his bell out, Saber's still lit. **V25** — Saber sends one while looking at 150:
-  it wears "150". **V26** — the gate: a report filed as another person, a report edited, a report deleted, another
-  admin's "seen" written — each refused by name. Pin: a waiting person files nothing.
+  lists it with "149"; Hunter (Plan of 149) the same; a 142 admin with no right in 149 **who has never had 149 in
+  view**: listed, his bell dark; Saber: lit. **V24** — Kestrel opens Help: his bell out, Saber's still lit; **his
+  next Undo undoes his last schedule change, and his bell stays out.** **V25** — Saber sends one while looking at
+  150: it wears "150". **V26** — the gate: a report filed as another person, **one with no `pid`, one whose `who`
+  names another**, a report edited, a report deleted, another admin's "seen" written, **a report stamped with a
+  squadron the filer can neither view nor plan, an unknown category, an over-long text** — each refused by name;
+  **Osprey files a report and presses Undo: the step before it is undone, the report still filed**; a member's read
+  of another member's report: refused. Pin: a waiting person files nothing.
 - **Stays:** the form, its categories, "Report sent — thank you", newest first.
 
 ### 19.7 The name badge where he can only look (D2628 C7)
@@ -2054,28 +2498,37 @@ bites.** The security reader reads §19.1 and §19.2 with the third read, and th
   "Hunter · Admin" on a squadron he only views (P6 A13).
 - **After.** Where the squadron in view is one he only views (`viewOnlyPick()`): "Hunter · View only" `[ruled]`,
   "Ranger · View only" for a member, the ☰ menu's line the same; where he holds Plan, "Admin", as on his own.
-  **V-Q4: what a press on the badge does there has not been tried** (D2628's own "tried before it is drawn") — it is
-  the member-view switch for an admin today; pressed first, and put to him if the press does anything "View only"
-  makes untrue.
+  **D10 (the earlier V-Q4) — what a press on the badge does there. Tried since (the design review's e8t): on 150 both
+  views show the same two pages, and by D2628 C7 the member view's badge there reads "· View only" too — so Hunter
+  presses, nothing he can see changes, he is in the member view without knowing, picks 142 and finds Edit Schedule
+  gone. Default, the page's recommendation: on a squadron he only views the badge is plain words, not a switch, and
+  the ☰ menu's "Switch to the member view" is left out there; to see the member view he picks his own squadron
+  first.** Its cost: the badge is a switch on some squadrons and words on others. The other answer: a press still
+  switches. **For the guard:** on the default `mayViewAsMember()` answers false there, so rows 3 and 4 of §4.1 are
+  "not a change" on such a squadron (§4.2 step 1) and nothing else moves.
 - **Tests first.** **V27** — Hunter on 150 (View): "Hunter · View only", bar and ☰; on 149 (Plan) and 142: "Hunter ·
   Admin"; Ranger on 149: "Ranger · View only", on 142 "Ranger · Member"; in the member view on his own squadron:
-  "· Member", as today.
+  "· Member", as today. **On D10's default: on 150 the badge is no button (no press does anything, the keys skip
+  it), the ☰ menu has no switch line, and the role in force is unchanged after a click; on 142 and 149 it switches
+  as today. On the other answer: a press switches, a pin.**
 
 ### 19.8 The sign-off boxes: another squadron's name wears its number (D2628 C8; D2245 kept)
 
 - **Today.** `engine/publish.ts signPeople` (l.1755) offers the day's own people, then whoever `state/sign-more.ts`
   hands in — an admin holding Plan of the squadron that day and a master admin, each with the Scheduler tick; the
   boxes are built in `ui/html.ts` (l.2517). A name from another squadron reads like any other (P6 C-signoff).
-- **After.** In the box's list such a name carries its squadron's number after it, as his row does on Admin → Users;
-  how — the grey box, or the number in the option's own words where the list is the browser's own — is the drawing's
-  to settle. Who is offered does not change.
-- **Tests first.** **V28** — 149's SKED CK on a day Hunter's Plan covers: Kestrel plain, "Hunter 142", "Saber 142";
+- **After.** In the box's list such a name carries its squadron's number after it — **"Hunter · 142" `[WNS]`, in
+  plain letters with the app's own dot (the page's D12): the list is the browser's own and cannot show the grey box,
+  and "Hunter 142" reads as one callsign.** Who is offered does not change. **To check before the build, and told to
+  him:** a signed box shows what its list says, so it would read "Hunter · 142" too — whether the published day then
+  carries the number; and how his iPhone's VoiceOver says the dot.
+- **Tests first.** **V28** — 149's SKED CK on a day Hunter's Plan covers: Kestrel plain, "Hunter · 142", "Saber · 142";
   CUR CK: 149's own only, no numbers; a signed box keeps showing the name it was signed with.
 
 ### 19.9 What does not ride here
 
 **A person's postings on Admin → Users (D2634) ride the Transfer step, batch 4** — with "It's him" (D2633). The
-"All squadrons" tick waits on V-Q1.
+"All squadrons" tick waits on E8.
 
 ### 19.10 Twin paths across part V, and what must stay as today
 
@@ -2085,7 +2538,12 @@ bites.** The security reader reads §19.1 and §19.2 with the third read, and th
 | Who looks: the squadron's own admin · a Plan holder of it · a master admin · one who only views it · a member | V2, V11 · V1 · V15 · V11 (pin) |
 | Plan: given · ended; by the row · by a forged command · by Undo · by Redo | V5 · V6 · V7 |
 | The page's squadron: 149 · 150 · his own 142 | V1, V2 · V2 · V3 (pin) |
-| The bell: one squadron shown · two · three; his own account's line | V22 · V21 · V21 |
+| The bell: one squadron shown · two · three; his own account's line | V22 · V21 (Hunter) · V21 (Saber) · V21 |
+| Who gives Plan: 149's own admin · a Plan holder · a moved admin not yet re-made · a master admin; by the row · a forged command · Undo and Redo after the right is lost | V5 · V5 · V5b · V5 — V8 · V6 · V7 |
+| A foreign row's Save: the line alone · after an Undo under the open row · after his home changed | V4 · V4b · V4b |
+| A new bell line: written with its right · forged without it; tapped with nothing open · with a window open | V10, V18 · V6, V18 · V10, V18 |
+| A folded group: live men · archived, deleted and waiting men left out; a callsign searched · a sign-in searched | V12 · V12 · V13 · V13 (NQ3) |
+| A report: filed · "seen"; then Undo | V23, V24 · V24, V26 |
 | A report: a member's · an admin's · a master admin's sent from another squadron | V23 · V23 · V25 |
 | A desktop · his phone's size | the e2e, `e2e/msq-views.spec.ts`: each new look against its drawing (V29), and the drawing check script (V30, D1494) |
 
@@ -2098,15 +2556,87 @@ form; the Archived fold's own note for a man archived on the page's squadron.
 
 | Step | What | Tests | Waits on |
 |---|---|---|---|
-| **V0** | The pins; `main` in and `withThird()` (Build 1's step 0); the drawings and words seen; Kestrel's view of a 142 man's row and the badge's press read from chat 176's presser | the as-is file | **every drawing of §19 seen by him (D1625); every `[WNS]` word read (D2441); the security reader's read of §19.1, §19.2** |
-| **V1** | §19.1 — the row's face | V1–V4 | Build 1's step 1b landed (the same file) |
-| **V2** | §19.2 — `mayGivePlanOf`, the two doors, `saveAccess`, the gate, the restore's rule, the line, the words, the bell line and its register rows — **one commit: no step leaves the gate and the doors disagreeing** | V5–V10; the nine re-pointed files | the new words for the refusal and the roles table |
-| **V3** | §19.3 — the headings | V11–V15 | **V-Q1** holds only the tick |
-| **V4** | §19.4 — the callsign note and the taken refusals | V16–V20 | **V-Q2** holds only the admin-of-both case |
-| **V5** | §19.5 — the bell's number | V21, V22 | **V-Q3** |
-| **V6** | §19.6 — bug reports saved | V23–V26 | — |
-| **V7** | §19.7, §19.8 — the badge, the sign-off boxes | V27, V28 | **V-Q4** |
+| **V0** | The pins; `main` in and `withThird()` (Build 1's step 0); Kestrel's view of a 142 man's row read from chat 176's presser | the as-is file | **each step below waits on its own drawing seen by him (D1625) and its own `[WNS]` words read (D2441) — not on every drawing of §19**; the security reader's check of `mayGivePlanOf` (§19.2) before V2 |
+| **V1** | §19.1 — the row's face **and its own save** | V1–V4, V4b | Build 1's step 1b landed (the same file); **D5 answered and its row drawn — nothing else: the hiding of another squadron's sign-in name, Role and buttons does not wait for §19.3–§19.8's drawings** (security S7: until V1 lands, Hunter sees and can change Ranger's sign-in and role from 149's page) |
+| **V2** | §19.2 — `mayGivePlanOf`, the two doors, `saveAccess`, the gate, the restore's rule, the line, the words, the bell line and its register rows — **one commit: no step leaves the gate and the doors disagreeing** | V5, V5b, V6–V10; the nine re-pointed files | the new words for the refusal and the roles table; **the security reader's check of the definition; E6** (the audience and the name's number); the lines and their tap drawn; **NQ1** holds only the making of an admin by a Plan holder |
+| **V3** | §19.3 — the headings, live people only | V11–V15 | **E8** holds only the tick; **E9h** the fold over a changed row; **NQ3** the search's match |
+| **V4** | §19.4 — the callsign note, its bell line and the taken refusals | V16–V20 | **D8**; **V-Q2** holds only the admin-of-both case |
+| **V5** | §19.5 — the bell's number | V21, V22 | **E9i** |
+| **V6** | §19.6 — bug reports saved: one collection, "seen" records, no Undo step, the gate and the read rule | V23–V26 | E9j |
+| **V7** | §19.7, §19.8 — the badge, the sign-off boxes | V27, V28 | **D10**; D12's check of the signed box |
 | **V8** | The browser tests, the drawing check and the records: `ui-contracts.md` §the grey squadron mark (D2624, D2628), `notifications-register.md` (the Plan lines, the callsign line, the bug alert's reach), `data-model.md` §UnitGrant and §11, `data-schema.md` and the handover's table list (bug reports), `feature-impact.md`, `file-map.md` | V29, V30; `npm run docsize` | — |
 
 Then its code reads — Astra, a fresh blind Opus, a fresh blind Fable, and the security reader on V1 and V2 — its fixes,
 and the batch's one FULL check (§10), walked with three squadrons and Hunter's three rights (D2630).
+
+---
+
+## 20. The third read, folded (25 Nov 26)
+
+Four readers read the plan at `b09f67b12`, each blind to the others: **Astra** (`../briefs/2026-11-25-msq-pick-guard-build1-read3-astra.md`
+— 3 HIGH, one conditional; 4 MEDIUM), a fresh **Opus** (`…-read3-opus.md` — 1 HIGH, 8 more), a fresh **Fable**
+(`…-read3-fable.md` — 11 MEDIUM and LOW) and **the security reader** (`…-read3-security.md` — 1 HIGH, 2 MEDIUM, 4
+LOW); the reports are saved whole. With them: the round-5 questions page's design review
+(`../briefs/2026-11-25-msq-q3-page-fable-review-report.md`) and the second read of its words
+(`…-msq-q3-r5b-words-fable.md`). A fifth fresh Fable folded them in (chat 187), **each claim about today's code read
+again in the file named, on this branch (`b154fff98`) — by reading; no test was written or run, and the folder pressed
+nothing.** The cap is three rounds: **this fold is read by no one but the security reader, on one definition.**
+
+**Every finding was taken; none was judged false.** Four were taken in part, and three more are fixed in the design
+but leave a reading for him — each for the reason in its row and under the table.
+
+| Reader · # | Severity | The finding | Verdict | Where it lives now |
+|---|---|---|---|---|
+| Astra 1 · Fable 3 · security S4 | HIGH (two readers) · LOW | Undo and Redo can end or lower Plan after their maker lost the right to give it | Taken — true in the code (`restoreLeavesOut` judges put-backs only; the gate excepts a replay) | §19.2 (a replay asked in every direction, failing closed); V7; §11 risk 28 |
+| Astra 2 | HIGH | Hiding a foreign man's fields does not narrow what Save sends | Taken — true (`UsersPanel.tsx` Save sends the captured name) | §19.1 (the row's own save, judged again at Save); V4b; §11 risk 27 |
+| Astra 3 | HIGH if E1 is taken as recommended | The Calendar's holiday sheet read in and not yet added is missing from the guard | Taken — true (`HolidaysPanel.tsx` `pv`) | §3.1 (`holimport`, `dirty`), §3.2 (a), §8.3 N13; A16 |
+| Astra 4 · Fable 2 | MEDIUM | His own SANS reminder lands a Plan holder on another squadron's SANS calendar | Taken — true (the line carries no squadron); the fix a **(reading)** of D2621 | §4.1 row 9b, §4.5; B7b, B28; §17 reading 18 |
+| Astra 5 · Fable 10 | MEDIUM · LOW | The page door closed the show-only windows before the landing's question | Taken | §3.1, §4.2 step 6, §4.5 step 5; B30 at every door |
+| Astra 6 · Opus F-h (1) | MEDIUM | Folding a heading drops an access choice, unmarked | Taken as a switch point — now the page's E9h, its default the page's | §19.3; V12; §17 reading 15 |
+| Astra 7 | MEDIUM | Four tests cannot show what they claim: G12 and V21 (Hunter only views 150), F14 (passes today), B20 (the saver has no end) | Taken, all four — the last a new switch point | §18.7 G12; §19.5 V21; F14 named a preservation test; §4.2 step 3 (N14), B20 |
+| Opus F-a | MEDIUM | "Add a person" on 149's page files a man into 142 or 150 | Taken as a question | **NQ2** (§8.4); §18.3, G4 unpinned |
+| Opus F-b | LOW–MEDIUM | The search on another squadron's page matches the hidden sign-in | Taken as a question | **NQ3** (§8.4); §19.3, V13 |
+| Opus F-c | MEDIUM | Quals' "Add qualification" box: typed work carried to the next squadron, or lost | Taken — true; what becomes of it is a **(reading)** | §3.1 (`qualsnew`), §3.2 (i), §4.6, §18.1; A17, G1; §17 reading 17 |
+| Opus F-d | LOW | A value just typed in Logic is applied a tick late — into the next squadron | Taken | §18.1 (`flushRuleApply` first); G1 |
+| Opus F-e | HIGH | D2621 has a road left: the List's pinned just-saved row is read from every input | Taken — true (`InputsPage.tsx` l.499) | §1, §5.1, §5.3, §5.5; F13 on what is drawn, F17; §11 risk 26 |
+| Opus F-f · Fable 6 · security S5 | MEDIUM · MEDIUM · LOW | Bug reports as saved records: no home, "seen" unshaped, Undo, three gate gaps, the read rule | Taken, every part | §19.6; V23–V26 |
+| Opus F-g · Fable 8 | MEDIUM–LOW | What a tap on part V's new bell lines opens is unstated — "That input is gone" | Taken; the tap itself drawn for him | §4.5 (`lineOpens`, R5 (d)); §19.2, §19.4; V10, V18 |
+| Opus F-h (2) | MEDIUM | A folded "Add a person" form full of typing would count for nothing | Taken — the rule fixed now | §18.3; G4; §17 reading 8 |
+| Opus F-i · Fable 1 | MEDIUM | The plan and the page disagree on E4, E5, E6, E7, E9b; N9 held open; two names for 150's admin | Taken — every default is the page's, unanswered; N9 closed (true: `notices.ts rightHolds`); 150's admin is Mako | the head; §8's table, §8.3; step 6b; F4, F19; §3.2 (f), (g) |
+| Opus, in its negatives | — | Seventeen `setPage` callers, not sixteen; line numbers drifted | Taken — counted: seventeen in twelve files | §4.5; §16 |
+| Fable 4 · security S1 | MEDIUM · HIGH | `mayGivePlanOf` passes an admin moved into the squadron who is only its member there | Taken — true (`adminNow` exists for this; the gate's neighbour reads the raw role) | §19.2's definition, **read once more by the security reader alone**; V5b, V6 |
+| Fable 5 | MEDIUM | D2621 applied on his home page too — his own input vanishes where he files it | Taken — the letter of D2621 ("with another squadron picked") | §5.1; F18. **In part:** the root on that page is not settled (§5.5's first row, §14) |
+| Fable 7 | LOW–MEDIUM | §1 over-promises: Undo still changes a 142 input under 149 | Taken | §1; §10 step 9's backlog line |
+| Fable 9 | LOW | The list flips with the badge for a moved master admin | Taken as a **(reading)**, built by the role in force | §5.1; F15 in both views; §17 reading 19 |
+| Fable 11 | LOW | §19.1 forgets the man with no sign-in | Taken | §19.1; V1 |
+| Fable, "not traced" | — | Three rows of §5.5; a 142 man on 149's schedule; `levelOfAccount`'s body | Carried — not traced by this fold either | §14 |
+| security S2 | MEDIUM | The new bell lines need gate rules; a move writes no grant | Taken. **In part:** which pass writes the move's line is the builder's | §19.2, §19.4; V6, V18; §14 |
+| security S3 | MEDIUM — a question | A Plan holder can still pass Plan on, in two steps | Taken as a question | **NQ1** (§8.4); V5's named pin; §17's clashes |
+| security S6 | LOW | The folded headings must hold live people only | Taken | §19.3; V12 |
+| security S7 | LOW | Until V1 lands, another squadron's sign-in names show | Taken in part — V1 waits on its own drawing (D2625's row: "drawn before it is built"), not on the rest of §19's | §19.11 |
+| The page review §6.2 | — | The plan must take the page's recommendations as defaults; E1's settings window, D5, D8, D10, E8 | Taken — each a switch point, never his ruling | §8's table; §3.2 (a); §19.1, §19.3, §19.4, §19.7 |
+| The page review §6.4–6.6 | — | Three names for 150's admin; what is not drawn; "+ Input" on 150 once offered the archived Ace and Saber | Taken | the head; §17's list to draw; §18.6, §10 step 0 |
+| The words review | — | Three wordings adjusted; what still has no words; gap 2a — the leads do not join "press Undo again" | Taken — its fix: only leads that add no step | §4.6; §17 |
+
+**Taken in part, and why.** *Astra 7 (B20):* the plan cannot promise a wait that ends — the saver has none; it is a
+switch point (N14), not a fix. *Fable 5:* the list is fixed; the root's answer for the same input on the same page is
+not. *Security S2:* the rule is written; which of the app's own passes writes a move's line is left to the builder.
+*Security S7:* his ruling has the row drawn first. *Opus F-c, Fable 9, Astra 4:* each is fixed in the design, and what
+a person then sees is a reading — put to him, not built.
+
+**What this fold takes out, so nothing is dropped quietly:** "Petrel"; the plan's own recommendations for N6 (refuse)
+and N12 (refuse) — each now the other answer; N9 as an open question, and step 8's wait on it; "step 6b is gone";
+`closeShown()` at the page door; "V-Q1, V-Q3, V-Q4" as unasked points (they are E8, E9i, D10); "the windows he was
+never shown singly still refuse" as the build's stance (E9b: checked one by one); "Hunter 142" in the sign-off boxes;
+the callsign line written at "Someone new" (on D8's default); G4's pin of the three-squadron Home box; the round-by-
+round narration of §15 and §16. **No test is dropped. New:** R5 (d); A16, A17; B7b; F17–F19; V4b, V5b; step 6b; N14;
+NQ1–NQ3; readings 15–21; risks 25–28.
+
+**Found sound by the third read** (its readers' explicit negatives): every caller of the entry functions is in §4.1
+and every `setPage` call site outside the store in §4.5's table (Astra, Opus, Fable); ten movable-window ids, the
+plan's ten, and the show-only windows hold no box to type in (Opus, Fable); no Build 1 refusal has a part-V control
+as its only way out, and Build 1 adds no bell kind (all three); a View holder or a member never reaches Admin or the
+headings (all four); after V2, with S1's definition, a Plan holder cannot give, raise, lower or end Plan by the row,
+the doors, a forged command or his own Redo, and a multi-line Save cannot slip one line through (Opus, security);
+Undo of an access change after the maker lost his rights is refused; no bell line enters a squadron he has no right
+in (security); the planned document lock, the ownership noted once and the card's order are sound (Astra).

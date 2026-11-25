@@ -2,7 +2,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@600&display=swap">
 <style>
-/* Layout: one reading column for a phone. Top: how to answer, then every question as one tappable row (code, what it is, the recommendation in green). Each question: the recommendation in short under its heading, when it happens, today with its picture, the full recommendation, the other choice, the drawn picture, then a way back and a "Differently" button that builds the reply in the bar at the foot. */
+/* Layout: one reading column for a phone. Top: how to answer, the cast in one line, then every question as one tappable row (code, what it is, the recommendation in green). Each question: the recommendation in short under its heading, when it happens, today with its picture, the full recommendation, the other choice, then a way back and a "Differently" button that builds the reply in the bar at the foot. Amber marks only what the second review changed; everything on the page is new this round, so "new" is said once at the top and never marked. Wide desktop pictures are cut on the page itself (.cut) to the part the question is about, so the words in them are readable at a phone's width; a tap still opens the whole picture. */
 :root{
   --bg:#f4f6f8; --panel:#ffffff; --ink:#151b22; --muted:#55606e; --edge:#d6dde5; --accent:#0a6f8a; --rec:#0b6b45; --new:#8a5a0f; --newbg:#fbf3e2;
   --display:"Space Grotesk",system-ui,sans-serif; --body:"Inter",system-ui,sans-serif;
@@ -24,7 +24,8 @@ a{color:var(--accent)}
 .rec{color:var(--rec);font-weight:600}
 .top{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:14px 12px;display:grid;gap:10px}
 .top .how{font-size:1rem}
-.top .count{font-size:.9rem;color:var(--muted)}
+.top .count,.top .cast{font-size:.9rem;color:var(--muted)}
+.top .cast b{color:var(--ink)}
 .top h2.g{font-size:1rem;margin-top:8px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
 .top h2.g span{font-family:var(--body);font-weight:400;font-size:.85rem;color:var(--muted);white-space:nowrap}
 .top ol{margin:0;padding:0;list-style:none}
@@ -34,7 +35,7 @@ a{color:var(--accent)}
 .top li a>span{display:grid}
 .top li .t{font-weight:600;font-size:.95rem}
 .top li .r{color:var(--rec);font-size:.92rem}
-.top li.new a,.top li.chg a{background:var(--newbg);box-shadow:-10px 0 0 var(--newbg),10px 0 0 var(--newbg)}
+.top li.chg a{background:var(--newbg);box-shadow:-10px 0 0 var(--newbg),10px 0 0 var(--newbg)}
 .tag{font-style:normal;font-weight:600;font-size:.78rem;color:var(--new);white-space:nowrap}
 .top li.done a{opacity:.6}
 .top li.done a>b::after{content:" ✎"}
@@ -51,24 +52,42 @@ section{display:grid;gap:12px;scroll-margin-top:12px}
 figure{margin:0;display:grid;gap:6px;min-width:0}
 figure img{width:100%;border:1px solid var(--edge);border-radius:6px;cursor:zoom-in}
 figure.tall img{max-height:520px;width:auto;max-width:100%;justify-self:center}
+/* a wide picture cut to the part that matters: the frame hides the rest, the picture inside is drawn larger and shifted (sizes written on each one) */
+.cut{display:block;overflow:hidden;border:1px solid var(--edge);border-radius:6px;background:#0c0f13}
+.cut img{display:block;max-width:none;border:0;border-radius:0}
 figcaption{font-size:.94rem;color:var(--muted)}
 figcaption b{color:var(--ink)}
+/* the films of the squadron number: only the end of the top bar that holds the number, at about its real size */
+.film{display:block;overflow:hidden;border:1px solid var(--edge);border-radius:6px;background:#000}
+.film video{display:block;max-width:none;height:auto}
+.film.d{aspect-ratio:3/1}
+.film.d video{width:400%;aspect-ratio:1536/128}
+.film.p{aspect-ratio:804/230}
+.film.p video{width:100%;aspect-ratio:804/1748}
+button.play{justify-self:start}
 .words{background:var(--panel);border:1px solid var(--edge);border-radius:8px;padding:10px 12px;font-size:.95rem;display:grid;gap:8px}
 .note{font-size:.94rem;color:var(--muted)}
 .when{border-left:3px solid var(--edge);padding-left:10px}
 .told{background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:14px 14px;display:grid;gap:8px}
 .told ul{margin:0;padding-left:1.2em;display:grid;gap:6px}
-.newq>h2::after{content:" · new";font-family:var(--body);font-size:.8rem;font-weight:600;color:var(--new)}
-p.chg{background:var(--newbg);border-radius:8px;padding:10px 12px;font-size:.95rem;max-width:none}
-p.chg>b:first-child,.told.chg .label{color:var(--new)}
+p.chg,div.chg{background:var(--newbg);border-radius:8px;padding:10px 12px;font-size:.95rem;max-width:none}
+p.chg>b:first-child,div.chg>p>b:first-child,.told.chg .label{color:var(--new)}
+div.chg{display:grid;gap:8px}
 .told.chg{background:var(--newbg);border-color:transparent}
-.nav{display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:none}
+p.was{border-left:3px solid var(--edge);padding-left:10px;font-size:.95rem;color:var(--muted);max-width:none}
+/* the small readings: one short block each, its own Differently */
+.rd{background:var(--panel);border:1px solid var(--edge);border-radius:8px;padding:10px 12px;display:grid;gap:8px;scroll-margin-top:12px}
+.rd p{font-size:.96rem}
+.rd .eg{color:var(--muted)}
+.rd button{justify-self:end}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:none;flex-wrap:wrap}
 .nav a{display:inline-flex;align-items:center;min-height:44px}
+.nav .ch{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 button{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--edge);border-radius:8px;min-height:44px;padding:0 14px;cursor:pointer}
 button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-weight:600}
 .end{color:var(--muted)}
 .reply{position:fixed;left:0;right:0;bottom:0;display:flex;gap:10px;align-items:center;justify-content:space-between;background:var(--panel);border-top:1px solid var(--edge);padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));z-index:10;font-size:.92rem}
-.reply span{min-width:0;overflow-wrap:anywhere}
+.reply span{min-width:0;overflow-wrap:anywhere;max-height:4.5em;overflow:auto}
 .zoom{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:max(12px,env(safe-area-inset-top,0px)) 12px max(12px,env(safe-area-inset-bottom,0px));z-index:20;overflow:auto}
 .zoom img{max-width:100%;max-height:100%;object-fit:contain}
 .zoom.big{align-items:flex-start;justify-content:flex-start}
@@ -76,65 +95,64 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
 .zoom .x{position:fixed;top:max(10px,env(safe-area-inset-top,0px));right:10px;min-width:44px;background:#151a21;color:#e6ebf0;border-color:#445}
 </style>
 
-
-<style>figure video{width:100%;max-width:100%;height:auto;max-height:520px;border:1px solid var(--edge);border-radius:6px;background:#000}</style>
 <main>
   <header>
-    <h1>The guard rail: your answers drawn, and nine left to ask</h1>
-    <p class="lede">Nothing here is built. Every picture is the real app; "Drawn" adds only the new thing on top. This round has three squadrons, 142, 149 and 150, as you asked. Green is what I recommend.</p>
+    <h1>The guard rail: nine questions, the small readings, and your rulings drawn</h1>
+    <p class="lede">Nothing here is built. Every picture is the real app; "Drawn" adds only the new thing on top. Three squadrons, 142, 149 and 150, as you asked. Green is what I recommend.</p>
   </header>
 
   <div class="top" id="list">
-    <p class="how"><b>To answer:</b> reply "as recommended for all". Or tap <b>Differently</b> on any item, then copy the reply from the bar at the foot.</p>
-    <p class="count">All new since the last page. Your answers to groups A and C are taken off the page (kept in the project). Group B waits until after the first build, as you said.</p>
-    <details class="who"><summary>Who the examples name</summary>
-      <p>Saber is a master admin; his home squadron is 142. Hunter is 142's admin; he holds Plan of 149 (full access) and View of 150 (look only). Kestrel is 149's own admin. Mako is 150's own admin. Squadron 150 was made for these pictures with "+ New squadron", with three people of its own.</p>
-      <p>Tap a picture to enlarge it; tap again for full size. The films play when tapped.</p>
+    <p class="how"><b>To answer:</b> reply "as recommended for all". Or tap <b>Differently</b> on any item, then copy the reply from the bar at the foot and add your words.</p>
+    <p class="count">Everything on this page is new since the last one, so nothing is marked "new". <b class="tag">Amber</b> marks only what a second reviewer changed before you read it: six recommendations, each with its reason beside it.</p>
+    <p class="cast"><b>Saber</b> master admin, home 142 · <b>Hunter</b> 142's admin, Plan of 149, View of 150 · <b>Kestrel</b> 149's admin · <b>Mako</b> 150's admin · <b>Ranger</b> a 142 member</p>
+    <details class="who"><summary>More about the examples and the pictures</summary>
+      <p>Squadron 150 was made for these pictures with "+ New squadron", with three people of its own. Your answers to groups A and C are taken off the page (kept in the project). Group B waits until after the first build, as you said.</p>
+      <p>Tap a picture to see all of it; tap again for full size. Wide desktop pictures are shown cut to the part the question is about. The films play when tapped.</p>
     </details>
-    <h2 class="g">Group E: new questions <span>9</span></h2>
+    <h2 class="g">Group E: questions <span>9</span></h2>
     <ol>
-      <li class="new"><a href="#e1"><b>E1</b><span><span class="t">The Calendar window when you pick another squadron</span><span class="r">Closes by itself, unless a holiday or Every Monday is half done.</span></span></a></li>
-      <li class="new"><a href="#e2"><b>E2</b><span><span class="t">The Tracker's marking window when you pick</span><span class="r">Closes by itself, as today.</span></span></a></li>
-      <li class="new"><a href="#e3"><b>E3</b><span><span class="t">The chart editor left open at the member-view switch</span><span class="r">It closes at the switch.</span></span></a></li>
-      <li class="new"><a href="#e4"><b>E4</b><span><span class="t">A Tracker window hidden behind the Flow chart tab</span><span class="r">The ones that only show close by themselves.</span></span></a></li>
-      <li class="new"><a href="#e5"><b>E5</b><span><span class="t">An input window held since midnight, then you pick</span><span class="r">The pick goes through and gives it back, as today.</span></span></a></li>
-      <li class="new"><a href="#e6"><b>E6</b><span><span class="t">Who is told when someone is given Plan of 149</span><span class="r">149's own admins; his name wears "142".</span></span></a></li>
-      <li class="new"><a href="#e7"><b>E7</b><span><span class="t">Undo of "+ New squadron" with a window open</span><span class="r">Refused in the first build; the rest waits with group B.</span></span></a></li>
-      <li class="new"><a href="#e8"><b>E8</b><span><span class="t">A master admin's "All squadrons" with 149 picked</span><span class="r">Every row whole; his own squadron open.</span></span></a></li>
-      <li class="new"><a href="#e9"><b>E9</b><span><span class="t">What I read into your answers</span><span class="r">Ten small points; say if any is wrong.</span></span></a></li>
+      <li class="chg"><a href="#e1"><b>E1</b><span><span class="t">The Calendar window when you pick another squadron <i class="tag">changed in review</i></span><span class="r">Closes by itself unless a holiday or Every Monday is half done; an untouched settings window beside it closes too.</span></span></a></li>
+      <li><a href="#e2"><b>E2</b><span><span class="t">The Tracker's marking window when you pick</span><span class="r">Closes by itself, as today.</span></span></a></li>
+      <li><a href="#e3"><b>E3</b><span><span class="t">The chart editor left open at the member-view switch</span><span class="r">It closes at the switch.</span></span></a></li>
+      <li><a href="#e4"><b>E4</b><span><span class="t">A Tracker window hidden behind the Flow chart tab</span><span class="r">The ones that only show close by themselves.</span></span></a></li>
+      <li><a href="#e5"><b>E5</b><span><span class="t">An input window held since midnight, then you pick</span><span class="r">The pick goes through and gives it back, as today.</span></span></a></li>
+      <li class="chg"><a href="#e6"><b>E6</b><span><span class="t">Who is told when someone is given Plan of 149 <i class="tag">changed in review</i></span><span class="r">Everyone who already gets 149's admin lines; his name wears "142".</span></span></a></li>
+      <li><a href="#e7"><b>E7</b><span><span class="t">Undo of "+ New squadron" with a window open</span><span class="r">Refused in the first build; the rest waits with group B.</span></span></a></li>
+      <li class="chg"><a href="#e8"><b>E8</b><span><span class="t">A master admin's "All squadrons" tick with 149 picked <i class="tag">changed in review</i></span><span class="r">The tick goes: the squadron picked stands open, the others fold, for everyone.</span></span></a></li>
+      <li><a href="#e9"><b>E9</b><span><span class="t">Fourteen small things I read into your answers</span><span class="r">Each with an example; take them as one, or tap any.</span></span></a></li>
     </ol>
     <h2 class="g">Group D: what you ruled, drawn for your look <span>12</span></h2>
     <ol>
-      <li class="new"><a href="#d1"><b>D1</b><span><span class="t">"+ Add a person" at the top, with Cancel</span><span class="r">As drawn.</span></span></a></li>
-      <li class="new"><a href="#d2"><b>D2</b><span><span class="t">The squadron number's two fades (films)</span><span class="r">As drawn.</span></span></a></li>
-      <li class="new"><a href="#d3"><b>D3</b><span><span class="t">The bell with three squadrons</span><span class="r">As drawn.</span></span></a></li>
-      <li class="new"><a href="#d4"><b>D4</b><span><span class="t">Other squadrons folded on Admin → Users</span><span class="r">As drawn.</span></span></a></li>
-      <li class="new"><a href="#d5"><b>D5</b><span><span class="t">A man of another squadron, opened</span><span class="r">As drawn; "None" stays lit.</span></span></a></li>
-      <li class="new"><a href="#d6"><b>D6</b><span><span class="t">Plan greyed for one who may not give it</span><span class="r">The reason as words under the line.</span></span></a></li>
-      <li class="new"><a href="#d7"><b>D7</b><span><span class="t">A master admin's own squadron open</span><span class="r">As drawn.</span></span></a></li>
-      <li class="new"><a href="#d8"><b>D8</b><span><span class="t">Another squadron's archived callsign</span><span class="r">As drawn; "Add person" greyed meanwhile.</span></span></a></li>
-      <li class="new"><a href="#d9"><b>D9</b><span><span class="t">Bug reports with their squadron</span><span class="r">As drawn.</span></span></a></li>
-      <li class="new"><a href="#d10"><b>D10</b><span><span class="t">The badge reading "View only"</span><span class="r">A press still switches to the member view.</span></span></a></li>
-      <li class="new"><a href="#d11"><b>D11</b><span><span class="t">"+ Commitment" on a squadron with no SANS aircrew</span><span class="r">The reason as words beside it.</span></span></a></li>
-      <li class="new"><a href="#d12"><b>D12</b><span><span class="t">"+ Input" and the sign-off boxes on another squadron</span><span class="r">As drawn.</span></span></a></li>
+      <li><a href="#d1"><b>D1</b><span><span class="t">"+ Add a person" at the top, with Cancel</span><span class="r">As drawn.</span></span></a></li>
+      <li><a href="#d2"><b>D2</b><span><span class="t">The squadron number's two fades (films)</span><span class="r">As drawn.</span></span></a></li>
+      <li><a href="#d3"><b>D3</b><span><span class="t">The bell with three squadrons</span><span class="r">As drawn.</span></span></a></li>
+      <li><a href="#d4"><b>D4</b><span><span class="t">Other squadrons folded on Admin → Users</span><span class="r">As drawn.</span></span></a></li>
+      <li class="chg"><a href="#d5"><b>D5</b><span><span class="t">A man of another squadron, opened <i class="tag">changed in review</i></span><span class="r">Short rows; press one to open its access line, with Save and Cancel.</span></span></a></li>
+      <li><a href="#d6"><b>D6</b><span><span class="t">Plan greyed for one who may not give it</span><span class="r">The reason as words under the line.</span></span></a></li>
+      <li><a href="#d7"><b>D7</b><span><span class="t">A master admin's own squadron open</span><span class="r">As drawn.</span></span></a></li>
+      <li class="chg"><a href="#d8"><b>D8</b><span><span class="t">Another squadron's archived callsign <i class="tag">changed in review</i></span><span class="r">"Someone new" answers the question; "Add person" stays the one button that adds.</span></span></a></li>
+      <li><a href="#d9"><b>D9</b><span><span class="t">Bug reports with their squadron</span><span class="r">As drawn.</span></span></a></li>
+      <li class="chg"><a href="#d10"><b>D10</b><span><span class="t">The badge reading "View only" <i class="tag">changed in review</i></span><span class="r">Plain words there, not a switch: nothing would change.</span></span></a></li>
+      <li><a href="#d11"><b>D11</b><span><span class="t">"+ Commitment" on a squadron with no SANS aircrew</span><span class="r">Greyed, the reason as words under it.</span></span></a></li>
+      <li><a href="#d12"><b>D12</b><span><span class="t">"+ Input" and the sign-off boxes on another squadron</span><span class="r">As drawn; the number in plain letters in the boxes.</span></span></a></li>
     </ol>
     <div class="told">
       <p class="label">Told, nothing to answer</p>
       <ul>
-        <li><b>Found today and fixed in the first build</b>, each against something you already ruled: a day opened on the SANS calendar and the Leave War's day panel stay open when you pick 150 and quietly show 150's figures; 149's own admin, opening a 142 man, still sees his sign-in and role and a live Save; "+ Input" on 149 starts with Hunter himself picked.</li>
-        <li><b>A bell line about an input you filed for 149, after your Plan of 149 ended</b>: it cannot happen. When the Plan ends, 149's lines leave your bell, so there is no line left to press.</li>
-        <li><b>Bug reports are lost today at Logout or a reload, for everyone</b> (not only members, as first thought). They are kept with the first build's bug-report change.</li>
+        <li><b>Found today, each against something you already ruled.</b> Fixed in the first build: a day opened on the SANS calendar and the Leave War's day panel stay open when you pick 150 and quietly show 150's figures; "+ Input" on 149 starts with Hunter himself picked. Fixed in the build straight after it (separate squadrons, separate views): 149's own admin, opening a 142 man, still sees his sign-in and role and a live Save.</li>
+        <li><b>A bell line about an input you filed for 149, after your Plan of 149 ended</b>: it cannot happen. When the Plan ends, 149's lines leave your bell, so there is no line left to press. Pressed today.</li>
+        <li><b>Bug reports are lost today at Logout or a reload, for everyone</b> (not only members, as first thought). They are kept from the build straight after the first, with the bug-report change (D9).</li>
       </ul>
     </div>
     <details class="fold">
       <summary>Group B: 12 that wait until after the first build (Logout, Undo, the refresh card)</summary>
       <ol>
-      <li class="chg"><a href="#b1"><b>B1</b><span><span class="t">Logout while a change is not saved <i class="tag">changed in review</i></span><span class="r">"Your last changes aren't saved yet. Log out anyway?"</span></span></a></li>
+      <li><a href="#b1"><b>B1</b><span><span class="t">Logout while a change is not saved</span><span class="r">"Your last changes aren't saved yet. Log out anyway?"</span></span></a></li>
       <li><a href="#b2"><b>B2</b><span><span class="t">Logout with an input open</span><span class="r">"Log out and lose them?"</span></span></a></li>
       <li><a href="#b3"><b>B3</b><span><span class="t">Logout with an Admin → Users row open</span><span class="r">Asked, as drawn.</span></span></a></li>
-      <li class="chg"><a href="#b4"><b>B4</b><span><span class="t">Logout over a window with no question of its own <i class="tag">changed in review</i></span><span class="r">One question that names the window.</span></span></a></li>
+      <li><a href="#b4"><b>B4</b><span><span class="t">Logout over a window with no question of its own</span><span class="r">One question that names the window.</span></span></a></li>
       <li><a href="#b5"><b>B5</b><span><span class="t">Reaching Logout on a phone with a window open</span><span class="r">The top bar stays in reach above the window.</span></span></a></li>
-      <li class="chg"><a href="#b6"><b>B6</b><span><span class="t">Undo with changes waiting on two other squadrons <i class="tag">changed in review</i></span><span class="r">"Pick 142 or 149 to undo your changes there."</span></span></a></li>
+      <li><a href="#b6"><b>B6</b><span><span class="t">Undo with changes waiting on two other squadrons</span><span class="r">"Pick 142 or 149 to undo your changes there."</span></span></a></li>
       <li><a href="#b7"><b>B7</b><span><span class="t">Undo of "+ New squadron" while it is in view</span><span class="r">It waits on the squadron you made it from.</span></span></a></li>
       <li><a href="#b8"><b>B8</b><span><span class="t">The greyed Undo on a phone</span><span class="r">A tap shows the reason.</span></span></a></li>
       <li><a href="#b9"><b>B9</b><span><span class="t">The refresh card when nothing is open</span><span class="r">Shown all the same.</span></span></a></li>
@@ -145,30 +163,37 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
     </details>
   </div>
 
-  <h3>Group E: new questions</h3>
+  <h3>Group E: questions</h3>
 
-  <section id="e1" class="newq">
+  <section id="e1">
     <h2>E1. The Calendar window when you pick another squadron</h2>
+    <p class="short">Closes by itself, unless a holiday or Every Monday is half done.</p>
     <p class="when"><b>When this happens</b>: Saber is in Inputs settings → Calendar on 142, marking flying days for December. He wants to check 149's, and picks 149 with the Calendar still open. A few times a month, at the desk.</p>
     <p><b>Today</b>: a press on a day is saved at once. But the window has two small forms that wait for their own Save: "Every Monday" and "Add a holiday", which has a box to type the holiday's name. Picking 149 closes the whole window with nothing said, and a holiday name typed and not yet saved is lost.</p>
     <div class="pair">
       <figure><img src="today/k1-d-8-typed-before-pick149-crop.png" alt="Add a holiday with the name K1 Typed, 142 in view"><figcaption><b>Today</b>: a holiday name typed, not saved, 142 in view.</figcaption></figure>
       <figure><img src="today/k1-d-9-typed-after-pick149-crop.png" alt="After picking 149 the Calendar has gone"><figcaption><b>Today</b>: 149 picked. The window is gone, and the name with it.</figcaption></figure>
     </div>
-    <p><span class="rec">Recommended:</span> the Calendar closes by itself at a pick, like the windows that only show things, because each day you press is already saved. But while one of its two forms holds something not saved, the pick is refused with the grey note, as for any window with typing:</p>
+    <p><span class="rec">Recommended:</span> the Calendar closes by itself at a pick, like the windows that only show things, because each day you press is already saved. But while one of its forms holds something not saved, the pick is refused with the grey note, as for any window with typing:</p>
     <div class="words"><div>A new holiday half done: “Blocked: save or cancel the new holiday, then pick 149.”</div>
       <div>A listed holiday opened and changed: “Blocked: save or cancel the changed holiday, then pick 149.”</div>
       <div>Every Monday pressed, not saved: “Blocked: save or cancel “Every Monday”, then pick 149.”</div>
       <div>A sheet of holidays read in, not yet added: “Blocked: add or cancel the sheet's holidays, then pick 149.”</div>
-      <div>A new holiday that no leave period covers yet (today the app keeps it and saves it by itself later, so "save" would not work): “Blocked: cancel the new holiday, or add its leave period, then pick 149.”</div>
-      <div class="note">With the Calendar open on a page you are not looking at, the note names that page: Inputs, the SANS calendar or the Leave War. All these words are drafts, read by a fresh reviewer; the double quote marks inside a grey note would be a first.</div>
+      <div>A new holiday that no leave period covers yet: “Blocked: cancel the new holiday, or add its leave period, then pick 149.” Today the app keeps such a holiday and saves it by itself later, so "save" would not be true. This case is read from how the app is made, not yet pressed; it is pressed and drawn for you before it is built.</div>
+      <div class="note">With the Calendar open on a page you are not looking at, the note names that page: Inputs, the SANS calendar or the Leave War. All these words are drafts. The double quote marks inside a grey note would be a first. None of these notes is drawn yet; each is drawn on the real app before it is built.</div>
 </div>
     <p class="note">The other choices: refuse whenever the Calendar is open (one more press for nothing, most of the time); or always close it (a typed holiday name is lost, as today).</p>
-    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="E1" aria-pressed="false">Differently</button></p>
+    <div class="chg">
+      <p><b>Changed in review: the settings window beside it.</b> The Calendar opened from Inputs settings (or SANS settings) stands beside that settings window, which stays open. A settings window has a Save, so as planned it refuses a pick whenever it is open. So in the example above Saber would still get “Blocked: close the open window, then pick 149.”, close Inputs settings, and pick again. On a phone it is worse: the settings window lies under the Calendar where he cannot see it.</p>
+      <p><span class="rec">Recommended:</span> a settings window with nothing changed since it was opened closes by itself too, with the Calendar; one with a change not saved refuses, and the note names it: “Blocked: save or cancel Inputs calendar settings, then pick 149.” (a draft). It is the same rule you gave for Admin → Users: a form counts once something is changed in it.</p>
+      <p class="note">The other choice: a settings window always refuses, as planned. Then the Calendar closing by itself only helps when it was opened from the Leave War.</p>
+    </div>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="E1" data-say="(settings window always refuses)">Settings always refuses</button><button type="button" class="diff" data-q="E1" aria-pressed="false">Differently</button></span></p>
   </section>
 
-  <section id="e2" class="newq">
+  <section id="e2">
     <h2>E2. The Tracker's marking window when you pick</h2>
+    <p class="short">Closes by itself, as today.</p>
     <p class="when"><b>When this happens</b>: Saber marks a student's sortie on 142's Tracker (a press on a ball opens the marking window), then opens the squadron list to look at 149. Several times a week.</p>
     <p><b>Today</b>: every press in the marking window is saved at once (Fails +, Fails −, a grade), and there is nothing to type. The one thing that waits: a "Done on" day picked for an event not yet done, which is kept only once a grade is given. The press on the squadron list closes the marking window, and the pick goes through.</p>
     <div class="pair">
@@ -180,257 +205,353 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="E2" aria-pressed="false">Differently</button></p>
   </section>
 
-  <section id="e3" class="newq">
+  <section id="e3">
     <h2>E3. The chart editor left open at the member-view switch</h2>
+    <p class="short">It closes at the switch.</p>
     <p class="when"><b>When this happens</b>: Hunter (Plan of 149) opens "Edit chart layout" on 149's Tracker, looks, moves nothing, and presses his name badge to see the member view. Rare.</p>
     <p><b>Today</b>: nothing is asked. The member view comes up on 149, which has no Tracker tab, so the editor is out of sight. Back in the admin view, 149's Tracker still has the editor open.</p>
     <div class="pair">
-      <figure><img src="today/k5-d-1-editor-149-crop.png" alt="Edit chart layout open on 149's Tracker"><figcaption><b>Today</b>: the editor open, nothing moved.</figcaption></figure>
-      <figure><img src="today/k5-d-3b-tracker-again-crop.png" alt="Back in the admin view the editor is still open"><figcaption><b>Today</b>: back in the admin view, still open.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:600/216"><img src="today/k5-d-1-editor-149-crop.png" alt="Edit chart layout open on 149's Tracker, its row of tools showing" style="width:256.00%;margin-left:-0.00%;margin-top:-0.00%"></span><figcaption><b>Today, 1</b>: the editor open on 149 (its row of tools, "Move · Select · Connect…"), nothing moved.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:420/52"><img src="today/k5-d-2-member-view-crop.png" alt="The member view on 149: only View-only Sched and Help" style="width:360.95%;margin-left:-0.00%;margin-top:-0.00%"></span><figcaption><b>Today, 2</b>: the member view on 149. No Tracker tab, so the editor cannot be seen.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:600/216"><img src="today/k5-d-3b-tracker-again-crop.png" alt="Back in the admin view the editor is still open" style="width:256.00%;margin-left:-0.00%;margin-top:-0.00%"></span><figcaption><b>Today, 3</b>: back in the admin view, the editor still open.</figcaption></figure>
     </div>
     <p><span class="rec">Recommended:</span> the editor closes at the switch. Nothing was moved, so nothing is lost, and nothing is left open behind a switch you made. If something was moved, the question you already approved is asked (Save them / Discard them / Stay).</p>
+    <p class="note">The other choice: leave it as today.</p>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="E3" aria-pressed="false">Differently</button></p>
   </section>
 
-  <section id="e4" class="newq">
+  <section id="e4">
     <h2>E4. A Tracker window hidden behind the Flow chart tab</h2>
+    <p class="short">The ones that only show close by themselves.</p>
     <p class="when"><b>When this happens</b>: Saber opens a student's Failures in the Tracker's Info panel, then makes the browser half his screen (or turns a tablet upright). The Tracker then shows one half at a time, the Flow chart, and the Failures window is out of sight behind the Info tab. He picks 149. Rare.</p>
     <p><b>Today</b>: nothing on screen says a window is open. The pick goes through and the window is gone; it does not come back on 142.</p>
     <div class="pair">
       <figure><img src="today/k6-d-1-open-1536-crop.png" alt="Failures window open at full width"><figcaption><b>Today</b>: Failures open at full width.</figcaption></figure>
-      <figure><img src="today/k6-d-2-narrow-1000-crop.png" alt="Narrower: the Flow chart shows, the window is out of sight"><figcaption><b>Today</b>: narrower, the Flow chart shows; the window is hidden.</figcaption></figure>
+      <figure><img src="today/k6-d-2-narrow-1000-crop.png" alt="Narrower: the Flow chart shows, the window is out of sight"><figcaption><b>Today</b>: narrower, the Flow chart shows; the window is hidden behind "Info".</figcaption></figure>
     </div>
-    <p><span class="rec">Recommended:</span> the Info panel's windows that only show things (Down days, Failures) close by themselves at a pick, like the other show-only windows you approved. Its two small pop-ups for a lull are checked before the build: if one holds a choice not yet saved, the pick is refused with a note naming the Info tab, its words drawn for you first.</p>
+    <p><span class="rec">Recommended:</span> the Info panel's windows that only show things (Down days, Failures) close by themselves at a pick, like the other show-only windows you approved.</p>
+    <p class="note">Still to check before the build: the Info panel also has two small pop-ups for a lull, and I have not yet pressed them. If one can hold a choice not yet saved, a pick is refused while it does, with a note naming the Info tab, its words drawn for you first. The other choice for Down days and Failures: refuse, the note naming the Info tab (one press on "Info" shows him the window).</p>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="E4" aria-pressed="false">Differently</button></p>
   </section>
 
-  <section id="e5" class="newq">
+  <section id="e5">
     <h2>E5. An input window held since midnight, then you pick</h2>
-    <p class="when"><b>When this happens</b>: Saber has an input open with words typed when, at midnight, a change he did not make moves his home from 142 to 149. The window is greyed with "This change could not be saved." and Close. He picks 142. Very rare.</p>
+    <p class="short">The pick goes through and gives it back, as today.</p>
+    <p class="when"><b>When this happens</b>: Saber has an input open with words typed when, at midnight, a move saved for him earlier takes his home from 142 to 149. The window is held under "This change could not be saved." and Close. He picks 142. Very rare.</p>
     <p><b>Today</b>: the pick goes through, and on 142 the window comes back live with his words, so he can save them there.</p>
     <div class="pair">
-      <figure><img src="q2/today/p5-n6-saber-d-1-held-crop.png" alt="The held input window, greyed, his words in Remarks"><figcaption><b>Today</b>: held on 149, his words still in it.</figcaption></figure>
-      <figure><img src="q2/today/p5-n6-saber-d-2-after-pick-crop.png" alt="After picking 142 the window is live again"><figcaption><b>Today</b>: 142 picked; the window is live and his words can be saved.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:560/105"><img src="q2/today/p5-n6-saber-d-1-held-crop.png" alt="The top bar reading 149" style="width:548.57%;margin-left:-3.57%;margin-top:-0.89%"></span><span class="cut" style="aspect-ratio:890/860"><img src="q2/today/p5-n6-saber-d-1-held-crop.png" alt="The held input window under This change could not be saved, his words in Remarks" style="width:345.17%;margin-left:-243.82%;margin-top:-19.66%"></span><figcaption><b>Today</b>: held on 149 under "This change could not be saved.", his words still in Remarks.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:560/105"><img src="q2/today/p5-n6-saber-d-2-after-pick-crop.png" alt="The top bar reading 142" style="width:548.57%;margin-left:-3.57%;margin-top:-0.89%"></span><span class="cut" style="aspect-ratio:890/860"><img src="q2/today/p5-n6-saber-d-2-after-pick-crop.png" alt="After picking 142 the window is live again, the band gone" style="width:345.17%;margin-left:-243.82%;margin-top:-19.66%"></span><figcaption><b>Today</b>: 142 picked; the band is gone, the window is live and his words can be saved.</figcaption></figure>
     </div>
     <p><span class="rec">Recommended:</span> keep today's way for a window already held: the pick goes through and gives it back. Refusing would leave Close as his only way on, and Close drops his words without asking. The later build that replaces held windows with a card settles this for good.</p>
+    <p class="note">On a phone this way back cannot be reached today: the held window covers the ☰ button, so the only way on is Close, and his words are lost. That stays so until the later build (it is group B's question B5). The other choice: refuse the pick, as for any open window.</p>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="E5" aria-pressed="false">Differently</button></p>
   </section>
 
-  <section id="e6" class="newq">
+  <section id="e6">
     <h2>E6. Who is told when someone is given Plan of 149</h2>
+    <p class="short">Everyone who already gets 149's admin lines; his name wears "142".</p>
     <p class="when"><b>When this happens</b>: Kestrel (149's admin) gives Hunter (142's admin) Plan of 149, so Hunter can help plan 149's week. Later he ends it. A few times a year.</p>
-    <p>You ruled that 149's admins are told on their bell, and who did it. Two things are open. <b>First</b>, with three squadrons, a 149 admin reading "Hunter" may not know where Hunter is from. <b>Second</b>, Mako (150's admin) might also hold Plan of 149; is he told too?</p>
+    <p>You ruled that 149's admins are told on their bell, and who did it. Two things are open. <b>First</b>, with three squadrons, a 149 admin reading "Hunter" may not know where Hunter is from. <b>Second</b>, Mako (150's admin) might also hold Plan of 149, and Saber (a master admin) may have 149 switched on in his bell; are they told too?</p>
     <div class="pair">
-      <figure><img src="drawn/e3b-d-bell-crop.png" alt="149's bell with Given Plan of 149 and Plan of 149 ended"><figcaption><b>Drawn</b>: the two lines as worded.</figcaption></figure>
+      <figure><img src="drawn/e3b-d-bell-crop.png" alt="A bell with Given Plan of 149 and Plan of 149 ended"><figcaption><b>Drawn</b>: the two lines as worded (the top two).</figcaption></figure>
       <figure><img src="drawn/e3b2-d-bell-crop.png" alt="The same with Hunter's name wearing 142"><figcaption><b>Drawn</b>: the same, Hunter's name wearing his home "142".</figcaption></figure>
+      <figure><img src="drawn/e3b3-d-bell-crop.png" alt="Saber's bell, all three squadrons on: 149 first, then Hunter with 142"><figcaption><b>Drawn</b>: on a bell that shows several squadrons, the line wears two grey numbers: 149 first (whose line it is), and 142 after Hunter's name (where he is from).</figcaption></figure>
+      <figure class="tall"><img src="drawn/e3b3-p-bell-crop.png" alt="The same on a phone"><figcaption><b>Drawn, phone</b>.</figcaption></figure>
     </div>
-    <p><span class="rec">Recommended:</span> Hunter's name wears his home squadron's grey number, as names from another squadron do in the sign-off boxes; and only 149's own admins are told, the people who can give or end Plan of 149, not someone who only holds Plan of it. Nobody is told of his own press, as today, so Kestrel's line reaches 149's other admins.</p>
-    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="E6" aria-pressed="false">Differently</button></p>
+    <p class="note">These two pictures were made on Kestrel's own bell to show the words. Kestrel himself would not get them: nobody is told of his own press, as today. The lines under them are other lines of his, not part of this.</p>
+    <p><span class="rec">Recommended:</span> Hunter's name wears his home squadron's grey number, as his name does on 149's Admin → Users. And the line goes to everyone who already gets 149's admin lines on his bell: 149's own admins, anyone holding Plan of 149 (Mako), and a master admin with 149 switched on (Saber). Never the one who pressed.</p>
+    <p class="chg"><b>Changed in review.</b> The page first recommended "only 149's own admins, the people who can give or end it". But Saber can give and end it too, and Mako plans 149's week beside Hunter and gets every other 149 admin line. A special, smaller audience for this one line is one more rule to remember and one more place to go wrong. The first recommendation stays as the other choice below.</p>
+    <p class="note">On a bell that shows several squadrons this line carries two numbers: "149" first, saying whose line it is, and "142" after Hunter, saying where he is from. That is not drawn yet; it is drawn for you before it is built.</p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="E6" data-say="(only 149's own admins are told)">Own admins only</button><button type="button" class="diff" data-q="E6" aria-pressed="false">Differently</button></span></p>
   </section>
 
-  <section id="e7" class="newq">
+  <section id="e7">
     <h2>E7. Undo of "+ New squadron" with a window open</h2>
+    <p class="short">Refused in the first build; the rest waits with group B.</p>
     <p class="when"><b>When this happens</b>: Saber makes squadron 150, picks it, opens the Calendar there (or a save fails), then presses Undo. Only a master admin makes squadrons, so this is rare.</p>
-    <p><b>Today</b>: "Undid: adding a squadron". 150 is gone, the bar is back on 142, and nothing is asked: an open window or a change not saved goes with it.</p>
+    <p><b>Today</b>: "Undid: adding a squadron". 150 is gone, the bar is back on 142, and nothing is asked. Pressed with nothing open; with a window open or a change not saved it has not been pressed yet, and from how the app is made they go with it.</p>
     <div class="pair">
-      <figure><img src="q2/today/p4-undoc-d-1-on150-before-undo-crop.png" alt="On 150 before Undo"><figcaption><b>Today</b>: on the new squadron, before Undo.</figcaption></figure>
-      <figure><img src="q2/today/p4-undoc-d-2-after-undo-crop.png" alt="After Undo, back on 142"><figcaption><b>Today</b>: after Undo, back on 142, nothing said.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:640/148"><img src="q2/today/p4-undoc-d-1-on150-before-undo-crop.png" alt="The top bar reading 150" style="width:480.00%;margin-left:-0.00%;margin-top:-0.00%"></span><span class="cut" style="aspect-ratio:1082/148"><img src="q2/today/p4-undoc-d-1-on150-before-undo-crop.png" alt="Undo marked at the right of the top bar" style="width:283.92%;margin-left:-183.92%;margin-top:-0.00%"></span><figcaption><b>Today</b>: on the new squadron 150, Undo (marked) about to be pressed.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:640/130"><img src="q2/today/p4-undoc-d-2-after-undo-crop.png" alt="The top bar reading 142" style="width:480.00%;margin-left:-0.00%;margin-top:-0.00%"></span><span class="cut" style="aspect-ratio:900/400"><img src="q2/today/p4-undoc-d-2-after-undo-crop.png" alt="Admin, Squadrons: only 142 and 149 listed" style="width:341.33%;margin-left:-131.11%;margin-top:-16.67%"></span><span class="cut" style="aspect-ratio:420/110"><img src="q2/today/p4-undoc-d-2-after-undo-crop.png" alt="The passing note Undid: adding a squadron" style="width:731.43%;margin-left:-319.05%;margin-top:-378.57%"></span><figcaption><b>Today</b>: after Undo. Back on 142, 150 gone from the list, only a passing note.</figcaption></figure>
     </div>
     <p><b>Why it is here</b>: you put Undo off to group B, after the first build. But this one Undo changes the squadron in view, the very thing the guard stops, so the first build would leave this one way through. I should have told you that when you put group B off.</p>
-    <p><span class="rec">Recommended:</span> the first build refuses this Undo while a window is open or a change is not saved, with the grey note (its words drawn for you first). Everything else about Undo still waits for your group B answers.</p>
-    <p class="note">The other choice: leave it open until group B. Nothing else in the first build depends on it.</p>
-    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="E7" aria-pressed="false">Differently</button></p>
+    <p><span class="rec">Recommended:</span> the first build refuses this Undo while a window is open or a change is not saved, with the grey note under Undo (at the foot on a phone). A draft of its words: “Blocked: close the open window, then press Undo again.” Drawn for you before it is built. Everything else about Undo still waits for your group B answers.</p>
+    <p class="note">What follows from it: if you later take group B's B7 as recommended (on 150 this Undo is greyed and says "Pick 142 to undo your changes there."), the greyed button replaces this refusal, so this piece is built for the meantime only. The other choice: leave it open until group B. Nothing else in the first build depends on it.</p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="E7" data-say="(leave it until group B)">Leave it until group B</button><button type="button" class="diff" data-q="E7" aria-pressed="false">Differently</button></span></p>
   </section>
 
-  <section id="e8" class="newq">
-    <h2>E8. A master admin's "All squadrons" with 149 picked</h2>
+  <section id="e8">
+    <h2>E8. A master admin's "All squadrons" tick with 149 picked</h2>
+    <p class="short">The tick goes: the squadron picked stands open, the others fold, for everyone.</p>
     <p class="when"><b>When this happens</b>: Saber (home 142) has 149 picked, goes to Admin → Users and ticks "All squadrons" in Filter, to see everyone. Now and then.</p>
-    <p>You ruled that in "All squadrons" his own squadron stands open and the rest fold. You also ruled that on 149's page a 142 man shows only his name and his 149 access line. With 149 picked and the tick on, which wins?</p>
-    <p><span class="rec">Recommended:</span> in "All squadrons" Saber sees every row whole, because a master admin is an admin of every squadron. His own 142 stands open at the top, 149 and 150 folded under it, as drawn in D7. The short rows of D5 are for someone who is not an admin of that squadron.</p>
-    <p class="note">The other choice: the squadron picked (149) stands open and 142 is folded with short rows. That makes "All squadrons" look different depending on what is picked.</p>
-    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="E8" aria-pressed="false">Differently</button></p>
+    <p>You ruled that in "All squadrons" his own squadron stands open and the rest fold. You also ruled that on 149's page a 142 man shows only his name and his 149 access line, and that Admin → Users follows the squadron picked. With 149 picked and the tick on, which wins?</p>
+    <div class="pair">
+      <figure><img src="drawn/e5-d-primary-open-crop.png" alt="The foot of 142's list, then 149 and 150 folded"><figcaption><b>Drawn</b> (from D7): with the tick on. 142 open, "▸ 149 · 10 people" and "▸ 150 · 3 people" folded under it.</figcaption></figure>
+      <figure><img src="drawn/e4a-d-folded-crop.png" alt="149's people, then 142 and 150 folded"><figcaption><b>Drawn</b> (from D4): no tick. The squadron picked open, the others folded under it.</figcaption></figure>
+      <figure><img src="drawn/e5-d-primary-top-r-crop.png" alt="Saber on 149, no tick: 149 open, 142 and 150 folded"><figcaption><b>Drawn, recommended</b>: Saber on 149 with no tick. 149's people whole, except Hunter, who is 142's and shows short; 142 and 150 folded under them.</figcaption></figure>
+    </div>
+    <p><span class="rec">Recommended:</span> the "All squadrons" tick goes. Since you ruled the folded headings, every Admin → Users page already shows every squadron: the one picked open, its rows whole; each other squadron one closed heading, its rows short (name and the access line for the squadron picked). That is the same for Kestrel, Hunter and Saber. On his own 142 Saber sees 142 open and the rest hidden, as you asked. To change a 150 man's sign-in, role or archive him, Saber picks 150 first: one press.</p>
+    <div class="chg">
+      <p><b>Changed in review.</b> The page first recommended: with the tick on, Saber sees every row whole, 142 open at the top. Case: Saber, 149 picked, ticks "All squadrons", opens Ranger (142) and archives him, under a top bar reading 149. That is the fault you ruled out today for Hunter (a 142 man changed from 149's page), let back in for a master admin through the tick. And once the headings exist, the tick shows nothing new: the two pictures above are the same page.</p>
+      <p><b>Its cost:</b> it takes away a tick you ruled in on 22 Nov and spoke of today ("his sqn is still mainly opened and the rest hidden"); what you asked for still holds on his own squadron. Saber no longer sees everyone's whole row in one list.</p>
+    </div>
+    <p class="note">The other choices: (2) keep the tick, every row whole, 142 open at the top, as first recommended; (3) keep the tick, but the rows of squadrons other than the one picked stay short.</p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="E8" data-say="(choice 2: keep the tick, every row whole)">Choice 2</button><button type="button" class="diff" data-q="E8" data-say="(choice 3: keep the tick, other rows short)">Choice 3</button><button type="button" class="diff" data-q="E8" aria-pressed="false">Differently</button></span></p>
   </section>
 
-  <section id="e9" class="newq">
-    <h2>E9. What I read into your answers</h2>
-    <p>Each is how the plan understands an answer of yours where you did not say. None is built unless you let it stand.</p>
-    <div class="told"><ul>
-      <li><b>His own inputs on another squadron's page</b>: a man who moved from 142 and only holds View of 142 keeps seeing his old 142 inputs on his own page, because View does not open 142's Inputs page.</li>
-      <li><b>Windows you have not seen one by one</b> (the Tracker's Show All and its side pop-ups; the Scheduler Board's two question cards; Leave War sheets that only show figures, such as a day's list or the OIL tracker) are checked one by one before the build: those with nothing to edit close by themselves, as you ruled for the others; the rest refuse.</li>
-      <li><b>A bell line that takes you to another squadron</b> closes the show-only windows and ends edit modes, the same as a pick.</li>
-      <li><b>A pick waiting for a save to finish</b> is dropped if you press something else meanwhile.</li>
-      <li><b>The fade</b> runs at every change of squadron after the app has opened, whether you pressed or not (a move at midnight too); only the top bar's number fades.</li>
-      <li><b>Add a person</b>: after a person is added the form clears and stays open for the next one; Escape does what Cancel does.</li>
-      <li><b>On another squadron's page</b> a man's row has no sign-in or roster dot and no role badge; someone holding Plan of the squadron stays on its main list.</li>
-      <li><b>"The bell shows more than one squadron"</b> means more than one Show button switched on, so the number column does not come and go as lines arrive.</li>
-      <li><b>Bug reports</b> are kept for good (today they vanish at a reload); the number shows on them once the app has more than one squadron.</li>
-      <li><b>Restoring an archived man</b> whose callsign is now taken names the squadron too: "… is already taken on 149".</li>
-    </ul></div>
-    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="E9" aria-pressed="false">Differently</button></p>
+  <section id="e9">
+    <h2>E9. Fourteen small things I read into your answers</h2>
+    <p class="short">Take them as one, or tap Differently on any.</p>
+    <p>Each is how the plan understands an answer of yours where you did not say. None is built unless you let it stand. Each has an example, what I would build, and a button of its own. None can lose work; the worst any does is cost one press.</p>
+
+    <div class="rd" id="e9a"><p><b>a. A moved man's old inputs.</b> <span class="eg">Ranger moves from 142 to 149 and is later given View of 142. View does not open 142's Inputs page.</span> <span class="rec">I would build:</span> he keeps seeing his old 142 inputs on his own Inputs page, so he can still answer them. (Your rule takes them off his page only for a squadron whose Inputs page he can open.)</p><button type="button" class="diff" data-q="E9a" aria-pressed="false">Differently</button></div>
+
+    <div class="rd" id="e9b"><p><b>b. Windows you have not seen one by one.</b> <span class="eg">Saber has the Leave War's OIL tracker open, or the Tracker's Show All, or one of the Scheduler Board's two question cards, and picks 149.</span> <span class="rec">I would build:</span> each is checked before the build. One with nothing to edit closes by itself, as you ruled for the others; the rest refuse.</p><button type="button" class="diff" data-q="E9b" aria-pressed="false">Differently</button></div>
+
+    <div class="rd" id="e9c"><p><b>c. A bell line that takes you to another squadron.</b> <span class="eg">Saber, on 142 with "Who's available" open and Logic in edit mode, presses a 149 line in his bell.</span> <span class="rec">I would build:</span> the same as a pick: the show-only window closes and the edit mode ends. Back on 142 later, Logic is not in edit mode.</p><button type="button" class="diff" data-q="E9c" aria-pressed="false">Differently</button></div>
+
+    <div class="rd" id="e9d"><p><b>d. A pick waiting for a save to finish.</b> <span class="eg">Saber moves a puck and picks 149 while "Saving…" still shows. Before the save lands he presses Quals.</span> <span class="rec">I would build:</span> the waiting pick is dropped. He stays on 142, on Quals.</p><button type="button" class="diff" data-q="E9d" aria-pressed="false">Differently</button></div>
+
+    <div class="rd" id="e9e"><p><b>e. The fade when you did not press.</b> <span class="eg">Hunter's move to 149 lands at midnight with the app open; the bar changes from 142 to 149.</span> <span class="rec">I would build:</span> the number fades twice then too. Only the top bar's number fades, not the ☰ menu's line or the Scheduler Board's title. After the refresh card (a later build) there is no fade, because Refresh brings the sign-in screen and you ruled none at sign-in. <a href="#d2">The films</a>.</p><button type="button" class="diff" data-q="E9e" aria-pressed="false">Differently</button></div>
+
+    <div class="rd" id="e9f"><p><b>f. Add a person, the small things.</b> <span class="eg">Kestrel adds Nova, then wants to add two more.</span> <span class="rec">I would build:</span> after a person is added the form clears and stays open for the next one. Escape does what Cancel does. The button still reads "Add person and sign-in" once a sign-in is typed, as today. A second press on "+ Add a person" with the form open closes it if it is empty and does nothing if something is typed (Cancel is the way to clear it). <a href="#d1">The pictures</a>.</p><button type="button" class="diff" data-q="E9f" aria-pressed="false">Differently</button></div>
+
+    <div class="rd" id="e9g"><p><b>g. A man's row on another squadron's page.</b> <span class="eg">Kestrel, on 149's page, sees Ranger (142).</span> <span class="rec">I would build:</span> no sign-in dot, no roster dot and no role badge on that row. Hunter, who holds Plan of 149, stays on 149's main list with "also plans 149", not under 142's heading. Typing "Ranger" in the search opens 142's heading with him under it. <a href="#d5">The pictures</a>.</p><button type="button" class="diff" data-q="E9g" aria-pressed="false">Differently</button></div>
+
+    <div class="rd" id="e9h"><p><b>h. Folding a heading over a row you changed.</b> <span class="eg">Kestrel opens "142 · 60 people", opens Ranger, presses View, and folds the heading without saving.</span> <span class="rec">I would build:</span> the row closes as its Cancel does and the choice is dropped: one press to make again. Nothing is left changed out of sight.</p><button type="button" class="diff" data-q="E9h" aria-pressed="false">Differently</button></div>
+
+    <div class="rd" id="e9i"><p><b>i. "The bell shows more than one squadron".</b> <span class="eg">Saber has 142 and 149 switched on under Show, but only 142 lines happen to be in the list.</span> <span class="rec">I would build:</span> the numbers show all the same. It goes by the Show buttons switched on, so the number column does not come and go as lines arrive. <a href="#d3">The pictures</a>.</p><button type="button" class="diff" data-q="E9i" aria-pressed="false">Differently</button></div>
+
+    <div class="rd" id="e9j"><p><b>j. Bug reports.</b> <span class="eg">Ranger sends a report on 142; Mako holds Plan of 142.</span> <span class="rec">I would build:</span> reports are kept for good (today they vanish at a reload). The number shows on a report once the app has more than one squadron. Someone holding Plan of 142 is rung for a 142 report as 142's admins are. <a href="#d9">The pictures</a>.</p><button type="button" class="diff" data-q="E9j" aria-pressed="false">Differently</button></div>
+
+    <div class="rd" id="e9k"><p><b>k. Restoring an archived man whose callsign is now taken.</b> <span class="eg">Saber restores 142's archived Ace while 149 has a live Ace.</span> <span class="rec">I would build:</span> the refusal names the squadron too: "Ace is already taken on 149".</p><button type="button" class="diff" data-q="E9k" aria-pressed="false">Differently</button></div>
+
+    <div class="rd" id="e9l"><p><b>l. A Plan the app ends by itself.</b> <span class="eg">Hunter holds Plan of 149 and is moved to 150, or 142's admin makes him a member, or he is archived.</span> <span class="rec">I would build:</span> the same people are told as in E6, the line saying why: "Plan of 149 ended: he moved to 150", "Plan of 149 ended: made a member". Drafts, drawn before they are built.</p><button type="button" class="diff" data-q="E9l" aria-pressed="false">Differently</button></div>
+
+    <div class="rd" id="e9m"><p><b>m. "Every Monday" opened and left alone.</b> <span class="eg">Saber opens "Every Monday", which comes up with one choice already lit, presses nothing in it, and picks 149.</span> <span class="rec">I would build:</span> it does not count as half done until he presses something in it, so the pick goes through.</p><button type="button" class="diff" data-q="E9m" aria-pressed="false">Differently</button></div>
+
+    <div class="rd" id="e9n"><p><b>n. A note's two halves joined.</b> <span class="eg">Saber has "+ New squadron" half filled on Admin → Squadrons, is looking at Admin → Users, and presses his name badge.</span> <span class="rec">I would build:</span> the two halves you approved apart, joined: “Blocked: save or cancel the new squadron on Squadrons, then switch to the member view.” ("on Squadrons" is a draft.)</p><button type="button" class="diff" data-q="E9n" aria-pressed="false">Differently</button></div>
+
+    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="E9" data-say="(let's talk through all of them)">All differently</button></p>
   </section>
 
   <h3>Group D: what you ruled, drawn</h3>
 
-  <section id="d1" class="newq">
+  <section id="d1">
     <h2>D1. "+ Add a person" at the top, with Cancel</h2>
-    <p class="when"><b>What you ruled</b>: the button beside Filter; the form opens under it; Cancel clears it; while something is typed in it, a pick of another squadron is refused.</p>
+    <p class="short">As drawn.</p>
+    <p class="when"><b>What you ruled</b>: the button beside Filter; the form opens under it; Cancel clears it and folds it shut; while something is typed in it, a pick of another squadron is refused.</p>
     <div class="pair">
-      <figure><img src="drawn/e1t-d-today-foot-crop.png" alt="Today: the Add a person form at the foot of the list"><figcaption><b>Today</b>: the form at the very foot of the list.</figcaption></figure>
-      <figure><img src="drawn/e1a-d-button-crop.png" alt="The button beside Filter"><figcaption><b>Drawn, desktop</b>: "+ Add a person" beside Filter.</figcaption></figure>
+      <figure><img src="drawn/e1t-d-today-foot-crop.png" alt="Today: the Add a person form at the foot of the list"><figcaption><b>Today</b>: the form at the very foot of the list, under 60 people.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:480/128"><img src="drawn/e1a-d-button-crop.png" alt="The + Add a person button beside Filter" style="width:255.00%;margin-left:-125.00%;margin-top:-0.00%"></span><figcaption><b>Drawn, desktop</b>: "+ Add a person" beside Filter.</figcaption></figure>
       <figure><img src="drawn/e1b-d-form-crop.png" alt="The form open under the People row"><figcaption><b>Drawn</b>: pressed, the form opens under the row; "Add person" and "Cancel" at its foot.</figcaption></figure>
       <figure><img src="drawn/e1c-d-after-cancel-crop.png" alt="After Cancel the form is shut"><figcaption><b>Drawn</b>: after Cancel, shut and empty.</figcaption></figure>
       <figure class="tall"><img src="drawn/e1a-p-button-crop.png" alt="Phone: the button full width under the search"><figcaption><b>Drawn, phone</b>: full width under the search.</figcaption></figure>
       <figure class="tall"><img src="drawn/e1b-p-form-crop.png" alt="Phone: the form open"><figcaption><b>Drawn, phone</b>: the form open.</figcaption></figure>
-      <figure><img src="drawn/e1d-d-note-crop.png" alt="The note under the squadron picker"><figcaption><b>Drawn</b>: a name typed, 149 pressed: "Blocked: add or cancel the new person, then pick 149."</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:780/230"><img src="drawn/e1d-d-note-crop.png" alt="The grey note under the squadron picker" style="width:231.28%;margin-left:-0.00%;margin-top:-0.00%"></span><figcaption><b>Drawn</b>: a name typed, 149 pressed: "Blocked: add or cancel the new person, then pick 149."</figcaption></figure>
       <figure class="tall"><img src="drawn/e1d-p-note-crop.png" alt="Phone: the note at the foot"><figcaption><b>Drawn, phone</b>: the same note at the foot.</figcaption></figure>
     </div>
-    <p class="note">On a desktop the note covers part of the page's title "Admin" for the few seconds it shows; nothing you would press is under it.</p>
+    <p class="note">On a desktop the note covers part of the page's title "Admin" for the few seconds it shows; nothing you would press is under it. The form still has its "Home squadron" box; whether another squadron's page should offer other squadrons there is one of the questions still to come, and does not change this drawing's place, buttons or note.</p>
     <p><span class="rec">Recommended:</span> as drawn.</p>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="D1" aria-pressed="false">Differently</button></p>
   </section>
 
-  <section id="d2" class="newq">
+  <section id="d2">
     <h2>D2. The squadron number's two fades</h2>
+    <p class="short">As drawn.</p>
     <p class="when"><b>What you ruled</b>: at every change of squadron, the number dims to about a third and back, twice, in about a second; with "less motion" on, white for a second instead.</p>
-    <p><b>Drawn</b>: Saber on 142 picks 150. Tap a film to play it.</p>
+    <p><b>Drawn</b>: Saber on 142 picks 150. Each film shows only the corner of the top bar that holds the number, at about its real size. Watch the small grey number above TALON.</p>
     <div class="pair">
-      <figure><video src="drawn/e2-d.mp4" controls playsinline muted preload="metadata"></video><figcaption><b>Desktop</b>: 142 to 150.</figcaption></figure>
-      <figure><video src="drawn/e2-p.mp4" controls playsinline muted preload="metadata"></video><figcaption><b>Phone</b>.</figcaption></figure>
-      <figure><video src="drawn/e2-d-rm.mp4" controls playsinline muted preload="metadata"></video><figcaption><b>Desktop, less motion on</b>: white, then grey.</figcaption></figure>
-      <figure><video src="drawn/e2-p-rm.mp4" controls playsinline muted preload="metadata"></video><figcaption><b>Phone, less motion on</b>.</figcaption></figure>
+      <figure><span class="film d"><video src="drawn/e2-d.mp4" poster="drawn/e2-d-1-before.png" playsinline muted preload="metadata"></video></span><button type="button" class="play">Play</button><figcaption><b>Desktop</b>: 142 to 150.</figcaption></figure>
+      <figure><span class="film p"><video src="drawn/e2-p.mp4#t=0.001" poster="drawn/e2-p-poster.png" playsinline muted preload="metadata"></video></span><button type="button" class="play">Play</button><figcaption><b>Phone</b>.</figcaption></figure>
+      <figure><span class="film d"><video src="drawn/e2-d-rm.mp4" poster="drawn/e2-d-1-before.png" playsinline muted preload="metadata"></video></span><button type="button" class="play">Play</button><figcaption><b>Desktop, less motion on</b>: white, then grey.</figcaption></figure>
+      <figure><span class="film p"><video src="drawn/e2-p-rm.mp4#t=0.001" poster="drawn/e2-p-rm-poster.png" playsinline muted preload="metadata"></video></span><button type="button" class="play">Play</button><figcaption><b>Phone, less motion on</b>.</figcaption></figure>
     </div>
-    <p class="note">The number is small and already grey, so the fade is gentle. If you want it to catch the eye more, say so: it could dim further, never fully out.</p>
+    <p class="note">The number is small and already grey, so the fade is gentle. If you had to look for it, say so: it could dim further, never fully out.</p>
     <p><span class="rec">Recommended:</span> as drawn.</p>
-    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="D2" aria-pressed="false">Differently</button></p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="D2" data-say="(make the fade stronger)">Stronger</button><button type="button" class="diff" data-q="D2" aria-pressed="false">Differently</button></span></p>
   </section>
 
-  <section id="d3" class="newq">
+  <section id="d3">
     <h2>D3. The bell with three squadrons</h2>
-    <p class="when"><b>What you ruled</b>: when the bell shows more than one squadron, every line wears its number, a plain grey number first on the line, in one column. A line about your own account keeps the place empty.</p>
+    <p class="short">As drawn.</p>
+    <p class="when"><b>What you ruled</b>: when the bell shows more than one squadron, every line wears its squadron's grey number (the app's own grey number box, no colour), first on the line, in one column. A line about your own account keeps the place empty.</p>
     <div class="pair">
       <figure><img src="drawn/e3-d-bell-crop.png" alt="Saber's bell: 142, 142, 150, 149 in one column"><figcaption><b>Drawn, desktop</b>: Saber with 142, 149 and 150 switched on. Every line here is a real line.</figcaption></figure>
-      <figure class="tall"><img src="drawn/e3-p-bell-crop.png" alt="Phone bell"><figcaption><b>Drawn, phone</b>.</figcaption></figure>
-      <figure><img src="drawn/e3h-d-bell-crop.png" alt="Hunter's bell with his account lines"><figcaption><b>Drawn</b>: Hunter's bell (142 and 149); his own account lines keep the number's place empty. 150 is not there: View of a squadron never shows its bell lines, as you ruled.</figcaption></figure>
+      <figure><img src="drawn/e3-p-bell-crop.png" alt="Phone bell"><figcaption><b>Drawn, phone</b>.</figcaption></figure>
+      <figure><img src="drawn/e3h-d-bell-crop.png" alt="Hunter's bell with his account lines"><figcaption><b>Drawn</b>: Hunter's bell (142 and 149). His two own-account lines, the lower two, keep the number's place empty. 150 is not there: View of a squadron never shows its bell lines, as you ruled.</figcaption></figure>
     </div>
     <p class="note">Three of Saber's lines read alike ("Squadron Day … 1 input needs an OIL answer · Saber"); only the number tells them apart, which is what the column is for.</p>
     <p><span class="rec">Recommended:</span> as drawn.</p>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="D3" aria-pressed="false">Differently</button></p>
   </section>
 
-  <section id="d4" class="newq">
+  <section id="d4">
     <h2>D4. Other squadrons folded on Admin → Users</h2>
+    <p class="short">As drawn.</p>
     <p class="when"><b>What you ruled</b>: under a squadron's own people, each other squadron is one closed heading; seen only by those who may give access to that squadron.</p>
     <div class="pair">
       <figure><img src="drawn/e4a-d-folded-crop.png" alt="149's people, then 142 · 60 people and 150 · 3 people closed"><figcaption><b>Drawn</b>: Kestrel on 149. Under 149's people, "▸ 142 · 60 people" and "▸ 150 · 3 people".</figcaption></figure>
-      <figure class="tall"><img src="drawn/e4a-p-folded-crop.png" alt="Phone: the closed headings"><figcaption><b>Drawn, phone</b>.</figcaption></figure>
+      <figure class="tall"><img src="drawn/e4a-p-folded-crop.png" alt="Phone: the closed headings"><figcaption><b>Drawn, phone</b>. One thing in this picture is wrong and will be redrawn: Hunter's row at the top still shows his sign-in name, "Admin" and the two dots. On 149's page a 142 man shows none of those (you ruled it; see D5).</figcaption></figure>
     </div>
-    <p><span class="rec">Recommended:</span> as drawn.</p>
+    <p><span class="rec">Recommended:</span> as drawn, with Hunter's row put right.</p>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="D4" aria-pressed="false">Differently</button></p>
   </section>
 
-  <section id="d5" class="newq">
+  <section id="d5">
     <h2>D5. A man of another squadron, opened</h2>
+    <p class="short">Short rows; press one to open its access line, with Save and Cancel.</p>
     <p class="when"><b>What you ruled</b>: on 149's page a 142 man shows only his callsign, "142", seat, CAT and his 149 access line (None · View · Plan). Nothing else.</p>
+    <p><b>When this happens</b>: Kestrel wants Hunter to help plan 149's week. On 149's Admin → Users he opens "142 · 60 people" and looks for Hunter. A few times a year.</p>
     <div class="pair">
-      <figure><img src="drawn/e4t-d-today-row-crop.png" alt="Today: Ranger's row as Hunter sees it on 149, every control live"><figcaption><b>Today</b>: Hunter on 149 opening Ranger (142): sign-in, role, Save, Suspend, Archive and Delete all live. Fixed by the first build.</figcaption></figure>
-      <figure><img src="drawn/e4b-d-opened-crop.png" alt="The 142 heading opened, each row with its 149 access line"><figcaption><b>Drawn</b>: "▾ 142 · 60 people" opened; each row its access line for 149.</figcaption></figure>
-      <figure class="tall"><img src="drawn/e4b-p-opened-crop.png" alt="Phone: opened"><figcaption><b>Drawn, phone</b>.</figcaption></figure>
+      <figure><img src="drawn/e4t-d-today-row-crop.png" alt="Today: Ranger's row as Hunter sees it on 149, every control live"><figcaption><b>Today</b>: Hunter on 149 opening Ranger (142): sign-in, role, Save, Suspend, Archive and Delete all live. Fixed in the build straight after the first.</figcaption></figure>
+      <figure><img src="drawn/e4b-d-opened-crop.png" alt="The 142 heading opened, each row with its 149 access line"><figcaption><b>Drawn, the first way</b>: "▾ 142 · 60 people" opened; the access line on every row, live.</figcaption></figure>
+      <figure class="tall"><img src="drawn/e4b-p-opened-crop.png" alt="Phone: opened"><figcaption><b>Drawn, the first way, phone</b>.</figcaption></figure>
+      <figure><img src="drawn/e4b-d-opened-r-crop.png" alt="Short rows; Blade opened to the one 149 line with Save and Cancel; Bolt also views 149"><figcaption><b>Drawn, recommended</b>: short rows; Blade (a 142 admin) opened to his one 149 line, with Save and Cancel; Bolt's row says "also views 149".</figcaption></figure>
+      <figure class="tall"><img src="drawn/e4b-p-opened-r-crop.png" alt="The same on a phone"><figcaption><b>Drawn, recommended, phone</b>.</figcaption></figure>
+      <figure><img src="drawn/e4b2-d-opened-crop.png" alt="Basher opened: No sign-in. Ask 142's admin to give him one first."><figcaption><b>Drawn, recommended</b>: a man with no sign-in opened: "No sign-in. Ask 142's admin to give him one first." and Cancel.</figcaption></figure>
+      <figure><img src="drawn/e4b3-d-opened-crop.png" alt="Ranger opened: Plan greyed, Plan is for admins only."><figcaption><b>Drawn, recommended</b>: a 142 member opened: Plan greyed, "Plan is for admins only."</figcaption></figure>
     </div>
-    <p class="note">Sixty lit "None" buttons in a column look heavy. They are the app's own access line, the same as on every person's row, so it reads the same everywhere; the other choice is to show "None" unlit in this list only, which makes one control look two ways.</p>
-    <p><span class="rec">Recommended:</span> as drawn, the access line the same as everywhere else.</p>
-    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="D5" aria-pressed="false">Differently</button></p>
+    <p><span class="rec">Recommended:</span> under the heading each man is one short row: callsign, "142", seat and CAT, and in words what he already holds ("also views 149", "also plans 149"). A press opens the row, as every row on this page opens: the one access line for 149, with Save and Cancel. A man with no sign-in opens to the words "No sign-in. Ask 142's admin to give him one first." in place of the buttons, since access means nothing for him until he has one.</p>
+    <div class="chg">
+      <p><b>Changed in review.</b> The page first recommended the drawing above: the three buttons live on all sixty rows, "None" lit on each. Three things go wrong with it.</p>
+      <p>1. Kestrel, scrolling sixty rows on his phone, brushes "View" on Basher. Either Basher is given View of 149 at once, with no Save and no way to see it happened, or the press waits for a Save that the drawing does not have.</p>
+      <p>2. Most of these sixty have no sign-in, and Plan is for admins only; yet the drawing offers View and Plan to all of them.</p>
+      <p>3. Sixty lit buttons in a column say nothing: almost every one reads "None".</p>
+      <p>With short rows that open, the page works one way everywhere, the guard's rule you already gave ("an opened row with a change not saved") covers it, and the list shows at a glance who holds anything. <b>Its cost:</b> one more press to give access. It is drawn for you before it is built.</p>
+    </div>
+    <p class="note">One more small choice, yours because you listed what such a row shows: most of these men have no sign-in, so Kestrel would open row after row to read "No sign-in". The closed row could carry today's quiet words "no sign-in" on its second line ("Pilot · CAT IP · no sign-in"), so he sees it without opening. Not recommended over your list unless you want it; "Add 'no sign-in'" below says so.</p>
+    <p class="note">The other choice: the first way, as drawn, each press taking effect at once.</p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="D5" data-say="(also show “no sign-in” on the closed row)">Add 'no sign-in'</button><button type="button" class="diff" data-q="D5" data-say="(the first way: buttons on every row)">The first way</button><button type="button" class="diff" data-q="D5" aria-pressed="false">Differently</button></span></p>
   </section>
 
-  <section id="d6" class="newq">
+  <section id="d6">
     <h2>D6. Plan greyed for one who may not give it</h2>
+    <p class="short">The reason as words under the line.</p>
     <p class="when"><b>What you ruled</b>: Plan of 149 is given and ended by 149's own admins or a master admin, never by someone who only holds Plan of it.</p>
-    <p><b>Example</b>: Hunter holds Plan of 149 and opens a 142 man on 149's page. He may give View of 149, but Plan is greyed.</p>
+    <p><b>Example</b>: Hunter holds Plan of 149 and, on 149's page, opens another 142 admin. He may give him View of 149, but Plan is greyed.</p>
     <div class="pair">
       <figure><img src="drawn/e4c-d-note-crop.png" alt="Plan greyed, the reason as words under the line"><figcaption><b>Drawn</b>: the reason as words under the line: "Only 149's own admins or a master admin can give or end Plan of 149."</figcaption></figure>
-      <figure><img src="drawn/e4c-d-greyed-crop.png" alt="Plan greyed with a hover label"><figcaption><b>Drawn</b>: the same reason shown only when the mouse rests on it.</figcaption></figure>
-      <figure><img src="drawn/e4d-d-roles-crop.png" alt="The roles table's note changed"><figcaption><b>Drawn</b>: the roles table's note: "Only a master admin makes squadrons or master admins. Plan of a squadron is given by its own admins or a master admin."</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:916/320"><img src="drawn/e4c-d-greyed-crop.png" alt="Plan greyed with a label that shows when the mouse rests on it" style="width:190.61%;margin-left:-90.61%;margin-top:-18.56%"></span><figcaption><b>Drawn, the other choice</b>: the same reason shown only when the mouse rests on it.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:1224/300"><img src="drawn/e4d-d-roles-crop.png" alt="The roles table's notes, note 5 changed" style="width:100.00%;margin-left:-0.00%;margin-top:-50.65%"></span><figcaption><b>Drawn</b>: the roles table's note 5: "Only a master admin makes squadrons or master admins. Plan of a squadron is given by its own admins or a master admin."</figcaption></figure>
     </div>
     <p><span class="rec">Recommended:</span> the reason as words under the line, as the app's other greyed access reasons already are. A reason shown only on mouse rest never shows on an iPhone.</p>
+    <p class="note">One reason at a time, the first that is true: for a man with no sign-in, "No sign-in"; for a member, today's "Plan is for admins only."; for an admin, the new words above. The pictures here show the reason under a man with no sign-in; they are redrawn on an admin's row.</p>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="D6" aria-pressed="false">Differently</button></p>
   </section>
 
-  <section id="d7" class="newq">
+  <section id="d7">
     <h2>D7. A master admin's own squadron open</h2>
-    <p class="when"><b>What you ruled</b>: in "All squadrons" his own squadron stands open and every other is folded.</p>
+    <p class="short">As drawn.</p>
+    <p class="when"><b>What you ruled</b>: his own squadron stands open and every other is folded.</p>
     <div class="pair">
-      <figure><img src="drawn/e5t-d-today-grouped-crop.png" alt="Today: all squadrons grouped and open"><figcaption><b>Today</b>: every squadron open.</figcaption></figure>
-      <figure><img src="drawn/e5-d-primary-open-crop.png" alt="142 open, 149 and 150 folded"><figcaption><b>Drawn</b>: Saber's 142 open; "▸ 149 · 10 people" and "▸ 150 · 3 people" closed under it.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:1224/460"><img src="drawn/e5t-d-today-grouped-crop.png" alt="Today: every squadron listed open, 73 people" style="width:100.00%;margin-left:-0.00%;margin-top:-0.00%"></span><figcaption><b>Today</b>: "All squadrons" ticked: every squadron open, 73 people in one long list.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:1224/460"><img src="drawn/e5-d-primary-top-crop.png" alt="Drawn: the top of the list, 142 open" style="width:100.00%;margin-left:-0.00%;margin-top:-0.00%"></span><figcaption><b>Drawn, the top</b>: Saber's 142 open.</figcaption></figure>
+      <figure><img src="drawn/e5-d-primary-open-crop.png" alt="The foot of 142's list, then 149 and 150 folded"><figcaption><b>Drawn, the foot</b>: under 142's last man, "▸ 149 · 10 people" and "▸ 150 · 3 people" closed.</figcaption></figure>
     </div>
+    <p class="note">This is what Saber sees on his own 142 whichever way you answer E8.</p>
     <p><span class="rec">Recommended:</span> as drawn.</p>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="D7" aria-pressed="false">Differently</button></p>
   </section>
 
-  <section id="d8" class="newq">
+  <section id="d8">
     <h2>D8. Another squadron's archived callsign</h2>
+    <p class="short">"Someone new" answers the question; "Add person" stays the one button that adds.</p>
     <p class="when"><b>What you ruled</b>: the note names the squadron and shows enough to recognise him; for now only "Someone new: add him" and "If this is him, ask 142's admin". "It's him" comes with the transfer build.</p>
     <p><b>Example</b>: Kestrel adds a new pilot on 149 and types "Jester". 142 has an archived Jester.</p>
     <div class="pair">
-      <figure><img src="drawn/e6a-d-archived-crop.png" alt="The note under the callsign box"><figcaption><b>Drawn</b>: "142 has an archived Jester: Pilot, CAT B, archived 25 Nov 26. Is this him?"</figcaption></figure>
-      <figure class="tall"><img src="drawn/e6a-p-archived-crop.png" alt="Phone"><figcaption><b>Drawn, phone</b>.</figcaption></figure>
-      <figure><img src="drawn/e6b-d-archived-many-crop.png" alt="Two archived Aces, on 142 and 150"><figcaption><b>Drawn</b>: archived men of that callsign on two squadrons, each listed.</figcaption></figure>
-      <figure><img src="drawn/e6c-d-bell-crop.png" alt="142's admin's bell line"><figcaption><b>Drawn</b>: after "Someone new", 142's admin's bell line.</figcaption></figure>
-      <figure><img src="drawn/e6d-d-today-crop.png" alt="Today's taken warning at the foot of the screen"><figcaption><b>Today</b>: a live man's callsign: "…is already taken — callsigns must be unique", at the foot of the screen.</figcaption></figure>
-      <figure><img src="drawn/e6d-d-taken-crop.png" alt="Ranger is already taken on 142"><figcaption><b>Drawn</b>: "Ranger is already taken on 142".</figcaption></figure>
+      <figure><img src="drawn/e6a-d-archived-crop.png" alt="The note under the callsign box"><figcaption><b>Drawn, the first way</b>: "142 has an archived Jester: Pilot, CAT B, archived 25 Nov 26. Is this him?"</figcaption></figure>
+      <figure class="tall"><img src="drawn/e6a-p-archived-crop.png" alt="Phone"><figcaption><b>Drawn, the first way, phone</b>.</figcaption></figure>
+      <figure><img src="drawn/e6a-d-archived-r-crop.png" alt="Someone new; Add person greyed with Answer Is this him? first."><figcaption><b>Drawn, recommended</b>: "Someone new" answers the question; "Add person" greyed, its reason under it: "Answer “Is this him?” first."</figcaption></figure>
+      <figure class="tall"><img src="drawn/e6a-p-archived-r-crop.png" alt="The same on a phone"><figcaption><b>Drawn, recommended, phone</b>.</figcaption></figure>
+      <figure><img src="drawn/e6a2-d-after-crop.png" alt="After Someone new: A new Jester. 142's admins are told when you add him."><figcaption><b>Drawn, recommended</b>: after "Someone new": "A new Jester. 142's admins are told when you add him." and "Add person" live.</figcaption></figure>
+      <figure><img src="drawn/e6b-d-archived-many-crop.png" alt="Two archived Aces, on 142 and 150"><figcaption><b>Drawn</b>: archived men of that callsign on two squadrons, each listed. To be redrawn: each should show only seat, CAT and the date, as the note above does; not "no sign-in", the two dots or who archived him.</figcaption></figure>
+      <figure><img src="drawn/e6b2-d-after-crop.png" alt="Two archived Aces answered: 142's and 150's admins are told"><figcaption><b>Drawn</b>: two squadrons, after "Someone new": "A new Ace. 142's and 150's admins are told when you add him."</figcaption></figure>
+      <figure><img src="drawn/e6c-d-bell-crop.png" alt="142's admin's bell line"><figcaption><b>Drawn</b>: once the new Jester is added, the top line on 142's admin's bell.</figcaption></figure>
+      <figure class="tall"><img src="drawn/e6d-d-today-crop.png" alt="Today's taken warning at the foot of the screen"><figcaption><b>Today</b>: a live man's callsign: "…is already taken — callsigns must be unique", at the foot of the screen.</figcaption></figure>
+      <figure class="tall"><img src="drawn/e6d-d-taken-crop.png" alt="Ranger is already taken on 142"><figcaption><b>Drawn, the first way</b>: "Ranger is already taken on 142" at the foot.</figcaption></figure>
+      <figure><img src="drawn/e6d-d-taken-r-crop.png" alt="Ranger is already taken on 142, under the callsign box"><figcaption><b>Drawn, recommended</b>: the same words under the callsign box, where the other note stands.</figcaption></figure>
     </div>
-    <p class="note">Today an archived callsign gives no warning at all: the new man goes in silently. In the drawing the form's own "Add person" stays live beside "Someone new: add him", two ways to do one thing.</p>
-    <p><span class="rec">Recommended:</span> as drawn, with the form's "Add person" greyed while the question shows, so "Someone new: add him" is the one way on.</p>
-    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="D8" aria-pressed="false">Differently</button></p>
+    <p class="note">Today an archived callsign gives no warning at all: the new man goes in silently.</p>
+    <p><span class="rec">Recommended:</span> the note as drawn, under the callsign box. Its button reads "Someone new" and only answers the question; then the form's own "Add person", greyed until he has answered (with its reason under it: "Answer “Is this him?” first."), does the adding as it always does; once answered, the note reads "A new Jester. 142's admins are told when you add him." 142's admins' bell line is sent when the man is added, not when "Someone new" is pressed. And "Ranger is already taken on 142" stands under the callsign box too, where the other note is.</p>
+    <div class="chg">
+      <p><b>Changed in review.</b> The page first recommended "Someone new: add him" as the one way on, with "Add person" greyed. Case: the note comes up as soon as "Jester" is typed, before Kestrel has picked Pilot or a CAT. He presses "Someone new: add him" and nothing can be added yet. And the form would have two buttons that add, in two places, the main one greyed. One button that adds, in the same place every time, is the app's own way.</p>
+      <p><b>Its cost:</b> it changes the words on the button from the ones you were told ("Someone new: add him"), and it is one more press.</p>
+    </div>
+    <p class="note">Not drawn yet, and drawn before it is built: what the note says to someone who is an admin of both squadrons (Saber, or Hunter adding on 149), who by your ruling decides by himself.</p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="D8" data-say="(as first drawn: “Someone new: add him” adds)">As first drawn</button><button type="button" class="diff" data-q="D8" aria-pressed="false">Differently</button></span></p>
   </section>
 
-  <section id="d9" class="newq">
+  <section id="d9">
     <h2>D9. Bug reports with their squadron</h2>
+    <p class="short">As drawn.</p>
+    <p class="when"><b>What you ruled</b>: one list for every admin, newest first, each report wearing its squadron's grey number, no headings. So 142's admins read 149's reports too.</p>
     <div class="pair">
-      <figure><img src="drawn/e7t-d-today-crop.png" alt="Today: reports with no squadron"><figcaption><b>Today</b>.</figcaption></figure>
+      <figure><img src="drawn/e7t-d-today-crop.png" alt="Today: reports with no squadron"><figcaption><b>Today</b>: Help's list; nothing says which squadron a report came from.</figcaption></figure>
       <figure><img src="drawn/e7-d-numbers-crop.png" alt="Reports wearing 150, 149 and 142"><figcaption><b>Drawn</b>: one list, newest first, each report wearing its grey number.</figcaption></figure>
     </div>
     <p><span class="rec">Recommended:</span> as drawn.</p>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="D9" aria-pressed="false">Differently</button></p>
   </section>
 
-  <section id="d10" class="newq">
+  <section id="d10">
     <h2>D10. The badge reading "View only"</h2>
-    <p class="when"><b>Example</b>: Hunter picks 150, where he can only look.</p>
+    <p class="short">Plain words there, not a switch: nothing would change.</p>
+    <p class="when"><b>What you ruled</b>: where he can only look, the badge reads "Hunter · View only" ("Ranger · View only" for a member); where he plans, it stays "Admin". What a press on it does there was left to be tried.</p>
+    <p><b>Example</b>: Hunter picks 150, where he can only look, and presses his name badge.</p>
     <div class="pair">
-      <figure><img src="drawn/e8-d-badge-crop.png" alt="Hunter · View only"><figcaption><b>Drawn</b>: "Hunter · View only".</figcaption></figure>
-      <figure class="tall"><img src="drawn/e8-p-menu-crop.png" alt="Phone menu Signed in as Hunter · View only"><figcaption><b>Drawn, phone</b>: "Signed in as Hunter · View only".</figcaption></figure>
-      <figure><img src="drawn/e8b-d-badge-149-crop.png" alt="On 149 the badge stays Admin"><figcaption><b>Drawn</b>: on 149, where he plans, it stays "Admin".</figcaption></figure>
-      <figure><img src="drawn/e8t-d-today-pressed-crop.png" alt="Today a press on the badge switches to the member view"><figcaption><b>Today</b>: a press on the badge on 150 switches him to the member view ("Hunter · Member").</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:640/148"><img src="drawn/e8-d-badge-crop.png" alt="The top bar on 150: View-only Sched and Help" style="width:476.25%;margin-left:-0.00%;margin-top:-0.00%"></span><span class="cut" style="aspect-ratio:648/148"><img src="drawn/e8-d-badge-crop.png" alt="The badge reading Hunter · View only" style="width:470.37%;margin-left:-370.37%;margin-top:-0.00%"></span><figcaption><b>Drawn</b>: on 150, "Hunter · View only".</figcaption></figure>
+      <figure><img src="drawn/e8-p-menu-crop.png" alt="Phone menu Signed in as Hunter · View only"><figcaption><b>Drawn, the first way, phone</b>: "Signed in as Hunter · View only", the switch still in the menu.</figcaption></figure>
+      <figure><img src="drawn/e8-d-badge-r-crop.png" alt="Hunter · View only as plain words"><figcaption><b>Drawn, recommended</b>: on 150 the badge is plain words, not a button.</figcaption></figure>
+      <figure class="tall"><img src="drawn/e8-p-menu-r-crop.png" alt="Phone menu without Switch to the member view"><figcaption><b>Drawn, recommended, phone</b>: the menu's Account block with no "Switch to the member view" on 150.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:648/148"><img src="drawn/e8b-d-badge-149-crop.png" alt="On 149 the badge stays Hunter · Admin" style="width:174.07%;margin-left:-74.07%;margin-top:-0.00%"></span><figcaption><b>Drawn</b>: on 149, where he plans, it stays "Admin".</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:640/148"><img src="drawn/e8t-d-today-pressed-crop.png" alt="Today after the press: still 150, still View-only Sched and Help" style="width:480.00%;margin-left:-0.00%;margin-top:-0.00%"></span><span class="cut" style="aspect-ratio:648/148"><img src="drawn/e8t-d-today-pressed-crop.png" alt="The badge now reading Hunter · Member" style="width:474.07%;margin-left:-374.07%;margin-top:-0.00%"></span><figcaption><b>Today, tried</b>: a press on the badge on 150 switches him to the member view. The same two pages; only the badge's word changes.</figcaption></figure>
     </div>
-    <p><span class="rec">Recommended:</span> as drawn, and a press on the badge still does what it does everywhere: switch to the member view and back.</p>
-    <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="D10" aria-pressed="false">Differently</button></p>
+    <p><span class="rec">Recommended:</span> the words as drawn. On a squadron he only views, the badge is plain words and not a switch, and the ☰ menu's "Switch to the member view" is left out there. To see the member view he picks his own squadron first.</p>
+    <div class="chg">
+      <p><b>Changed in review.</b> The page first recommended that a press still switches to the member view, as everywhere. Tried today: on 150 both views show the same two pages. And by your ruling the member view's badge there reads "View only" as well. So Hunter presses, sees nothing change at all, and is now in the member view without knowing. He picks 142 and finds Edit Schedule gone.</p>
+      <p><b>Its cost:</b> the badge is a switch on some squadrons and plain words on others.</p>
+    </div>
+    <p class="note">The other choice: a press still switches, as first recommended.</p>
+    <p class="nav"><a href="#list">↑ The list</a><span class="ch"><button type="button" class="diff" data-q="D10" data-say="(a press still switches)">A press still switches</button><button type="button" class="diff" data-q="D10" aria-pressed="false">Differently</button></span></p>
   </section>
 
-  <section id="d11" class="newq">
+  <section id="d11">
     <h2>D11. "+ Commitment" on a squadron with no SANS aircrew</h2>
+    <p class="short">Greyed, the reason as words under it.</p>
+    <p class="when"><b>What you ruled</b>: on another squadron's SANS calendar "+ Commitment" offers only that squadron's SANS aircrew; with none, it is greyed and says why.</p>
+    <p><b>Example</b>: Saber picks 150, opens a day on its SANS calendar. 150 has no SANS aircrew. (Hunter, who only views 150, never reaches this calendar.)</p>
     <div class="pair">
-      <figure><img src="drawn/e9t-d-today-crop.png" alt="Today"><figcaption><b>Today</b>: 150's SANS calendar, "+ Commitment" live.</figcaption></figure>
-      <figure><img src="drawn/e9-d-greyed-crop.png" alt="Greyed with its reason"><figcaption><b>Drawn</b>: greyed, "150 has no SANS aircrew."</figcaption></figure>
+      <figure><img src="drawn/e9t-d-today-crop.png" alt="Today"><figcaption><b>Today</b>: 150's SANS calendar, "+ Commitment" live with nobody to commit.</figcaption></figure>
+      <figure><img src="drawn/e9-d-greyed-crop.png" alt="Greyed with its reason"><figcaption><b>Drawn</b>: greyed, "150 has no SANS aircrew." This picture shows the reason as a label on mouse rest; it is redrawn with the words standing under the button.</figcaption></figure>
+      <figure class="tall"><img src="drawn/e9-p-greyed-crop.png" alt="The same on a phone"><figcaption><b>Drawn, phone</b>.</figcaption></figure>
     </div>
-    <p><span class="rec">Recommended:</span> greyed, and the reason shown as words beside the button, so a phone shows it too.</p>
+    <p><span class="rec">Recommended:</span> greyed, and the reason shown as words under the button, so a phone shows it too.</p>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="D11" aria-pressed="false">Differently</button></p>
   </section>
 
-  <section id="d12" class="newq">
+  <section id="d12">
     <h2>D12. "+ Input" and the sign-off boxes on another squadron</h2>
+    <p class="short">As drawn; the number in plain letters in the boxes.</p>
+    <p class="when"><b>What you ruled</b>: on another squadron's Inputs page "+ Input" starts empty and offers only that squadron's men; in the sign-off boxes a name from another squadron wears its number.</p>
+    <p><b>Example</b>: Hunter, planning 149's week, presses "+ Input" on 149's Inputs page, then signs PLANNED BY on a 149 day.</p>
     <div class="pair">
-      <figure><img src="drawn/e10t-d-today-crop.png" alt="Today: Hunter already picked"><figcaption><b>Today</b>: "+ Input" on 149 starts with Hunter picked.</figcaption></figure>
-      <figure><img src="drawn/e10-d-person-crop.png" alt="Drawn: empty, 149's men only"><figcaption><b>Drawn</b>: empty, only 149's men offered.</figcaption></figure>
-      <figure><img src="drawn/e11t-d-today-crop.png" alt="Today PLANNED BY"><figcaption><b>Today</b>: 149's PLANNED BY list.</figcaption></figure>
-      <figure><img src="drawn/e11-d-plannedby-crop.png" alt="Drawn: Hunter 142, Saber 142"><figcaption><b>Drawn</b>: names from another squadron wearing "142".</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:916/300"><img src="drawn/e10t-d-today-crop.png" alt="Today: the Person box already reads Hunter" style="width:100.00%;margin-left:-0.00%;margin-top:-0.00%"></span><figcaption><b>Today</b>: "+ Input" on 149 starts with Hunter, a 142 man, picked.</figcaption></figure>
+      <figure><img src="drawn/e10-d-person-crop.png" alt="Drawn: empty, 149's men only"><figcaption><b>Drawn</b>: the Person list shown open: empty first, then only 149's men.</figcaption></figure>
+      <figure><span class="cut" style="aspect-ratio:540/134"><img src="drawn/e11t-d-today-crop.png" alt="Today the PLANNED BY box" style="width:272.96%;margin-left:-107.41%;margin-top:-0.00%"></span><figcaption><b>Today</b>: 149's PLANNED BY box; in its list Hunter and Saber read like 149's own.</figcaption></figure>
+      <figure><img src="drawn/e11-d-plannedby-crop.png" alt="Drawn: Kestrel, Hunter 142, Saber 142"><figcaption><b>Drawn</b>: names from another squadron wearing "142". This picture shows the grey number box; in the build it is plain letters, as below.</figcaption></figure>
+      <figure><img src="drawn/e11b-d-chosen-crop.png" alt="The PLANNED BY box after choosing: Hunter · 142"><figcaption><b>Drawn</b>: after choosing, the box reads "Hunter · 142". Today a signed box shows the callsign alone, so "· 142" is new here.</figcaption></figure>
     </div>
-    <p><span class="rec">Recommended:</span> as drawn. In the sign-off boxes the number is written after the name in plain letters ("Hunter 142"), because the browser's own list cannot show the grey box.</p>
+    <p><span class="rec">Recommended:</span> as drawn. In the sign-off boxes the number is written after the name in plain letters, because the browser's own list cannot show the grey box.</p>
+    <p class="chg"><b>Changed in review, a small one.</b> Written "Hunter · 142", with the app's own dot, not "Hunter 142", which reads like one callsign. Still to check before the build: the box shows what its list says, so a signed box would read "Hunter · 142" too; whether the published day then carries the number is checked and told to you.</p>
+    <p class="note">Words still to draft and draw: what "Add" says when nobody is picked in the empty Person box.</p>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="D12" aria-pressed="false">Differently</button></p>
   </section>
 
   <div class="told"><div class="label">Found at the last page's review, still to be put to you as questions</div><ul>
-      <li>"Mark all read", pressed with 149 picked, also marks the 142 lines read. Under your rule of today it should mark only what the list is showing, and that is true today only when 142 is switched off under "Show".</li>
-      <li>While an OIL question of yours is waiting, one tap on the bell goes straight to it, so the bell's list and its "Show" buttons cannot be reached until it is answered.</li>
-</ul></div>
+      <li>"Mark all read" marks every line the list is showing. Pressed with 149 picked and both 142 and 149 switched on under "Show", it marks the 142 lines read too. Whether it should mark only the lines of the squadron picked is the question.</li>
+      <li>While an OIL question of yours is waiting, one tap on the bell goes straight to it, so the bell's list and its "Show" buttons cannot be reached until it is answered.</li></ul></div>
 
   <details class="fold" id="gb">
   <summary>Group B: 12 that wait until after the first build (Logout, Undo, the refresh card). Tap to open.</summary>
@@ -453,7 +574,7 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
       <figure><img src="q2/page/d1a-d.png" alt="Drawn: the recommended question hanging from Logout"><figcaption><b>Drawn, recommended</b>: nothing is lost, so "Log out" is a plain button.</figcaption></figure>
       <figure><img src="q2/page/d1b-d.png" alt="Drawn: the other wording, with a red discard button"><figcaption><b>Drawn, the other choice</b>: the change would be thrown away.</figcaption></figure>
     </div>
-    <p class="chg"><b>Changed in review.</b> I agree that the question must not say "lose". I would add what does happen, so "anyway" has a meaning: "Your last changes aren't saved yet. They will save when the connection is back, if this page stays open. Log out anyway?"</p>
+    <p class="was"><b>Changed at the earlier review.</b> I agree that the question must not say "lose". I would add what does happen, so "anyway" has a meaning: "Your last changes aren't saved yet. They will save when the connection is back, if this page stays open. Log out anyway?"</p>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="B1" aria-pressed="false">Differently</button></p>
   </section>
 
@@ -500,7 +621,7 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
     <div class="pair">
       <figure><img src="q2/drawn/d4d-d-logout-crop.png" alt="Drawn: the question naming Add a holiday"><figcaption><b>Drawn</b>: three windows are open; the question names the one that holds the typing.</figcaption></figure>
     </div>
-    <p class="chg"><b>Changed in review.</b> I agree. Missing beside it: Logout with "Add a person", giving access or "+ New squadron" half filled in. The same one question would name each: "“Add a person” has unsaved changes. Log out and lose them?"</p>
+    <p class="was"><b>Changed at the earlier review.</b> I agree. Missing beside it: Logout with "Add a person", giving access or "+ New squadron" half filled in. The same one question would name each: "“Add a person” has unsaved changes. Log out and lose them?"</p>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="B4" aria-pressed="false">Differently</button></p>
   </section>
 
@@ -532,7 +653,7 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
     <div class="pair">
       <figure><img src="q2/drawn/d6a-d-undo-hover-crop.png" alt="Drawn: the greyed Undo with its reason"><figcaption><b>Drawn, desktop</b>: the greyed Undo and its reason.</figcaption></figure>
     </div>
-    <p class="chg"><b>Changed in review.</b> I agree for two squadrons. With many, the reason should name only the squadron of your latest change ("Pick 142 to undo your last change there."), so the note never grows into a list.</p>
+    <p class="was"><b>Changed at the earlier review.</b> I agree for two squadrons. With many, the reason should name only the squadron of your latest change ("Pick 142 to undo your last change there."), so the note never grows into a list.</p>
     <p class="nav"><a href="#list">↑ The list</a><button type="button" class="diff" data-q="B6" aria-pressed="false">Differently</button></p>
   </section>
 
@@ -623,7 +744,7 @@ button.diff[aria-pressed="true"]{border-color:var(--new);color:var(--new);font-w
 </div>
 
 <script>
-// Pictures: tap to fit the screen; tap again for a readable size (half the picture's own pixels, pan by scrolling); tap again or Close to leave.
+// Pictures: tap to see the whole picture fitted to the screen; tap again for a readable size (half the picture's own pixels, pan by scrolling); tap again or Close to leave.
 document.addEventListener('click', function (e) {
   var z = document.querySelector('.zoom'), t = e.target;
   if (z) {
@@ -640,6 +761,15 @@ document.addEventListener('click', function (e) {
 });
 document.addEventListener('keydown', function (e) { var z = document.querySelector('.zoom'); if (z && e.key === 'Escape') z.remove(); });
 
+// The films: a tap on the film or on Play runs it from the start.
+document.addEventListener('click', function (e) {
+  var f = e.target.closest && e.target.closest('figure'); if (!f) return;
+  var v = f.querySelector('video'); if (!v) return;
+  if (e.target === v || (e.target.classList && e.target.classList.contains('play'))) {
+    try { v.currentTime = 0; var p = v.play(); if (p && p.catch) p.catch(function () {}); } catch (err) {}
+  }
+});
+
 // A link into the folded Group B opens the fold first.
 function openFor(hash) {
   if (!hash || hash.length < 2) return;
@@ -649,20 +779,29 @@ function openFor(hash) {
 window.addEventListener('hashchange', function () { openFor(location.hash); });
 openFor(location.hash);
 
-// "Differently" builds the reply. Kept on this phone only; the page reads the same if that is blocked.
-var KEY = 'guard-q5-differently', picked = [];
+// "Differently" and the named other choices build the reply. One choice a question: a second button of the same question replaces the first. Kept on this phone only; the page reads the same if that is blocked.
+var KEY = 'guard-q5b-differently', picked = [];
 try { picked = JSON.parse(localStorage.getItem(KEY) || '[]') || []; } catch (err) { picked = []; }
-function order(a, b) { var g = 'EDB'; return g.indexOf(a[0]) - g.indexOf(b[0]) || parseInt(a.slice(1), 10) - parseInt(b.slice(1), 10); }
+function qOf(k) { return k.split('|')[0]; }
+function keyOf(b) { return b.dataset.q + (b.dataset.say ? '|' + b.dataset.say : ''); }
+function parts(q) { var m = /^([A-Z])(\d+)([a-z]?)$/.exec(q) || [0, 'Z', '0', '']; return [ 'EDB'.indexOf(m[1]), parseInt(m[2], 10), m[3] ]; }
+function order(a, b) { var x = parts(qOf(a)), y = parts(qOf(b)); return x[0] - y[0] || x[1] - y[1] || (x[2] < y[2] ? -1 : x[2] > y[2] ? 1 : 0); }
 function show() {
   picked.sort(order);
-  document.querySelectorAll('button.diff').forEach(function (b) { b.setAttribute('aria-pressed', picked.indexOf(b.dataset.q) >= 0 ? 'true' : 'false'); });
-  document.querySelectorAll('.top li').forEach(function (li) { var a = li.querySelector('a'); li.classList.toggle('done', picked.indexOf(a.getAttribute('href').slice(1).toUpperCase()) >= 0); });
-  document.getElementById('replytext').textContent = picked.length ? 'As recommended for all, except ' + picked.join(', ') + ': ' : 'As recommended for all.';
+  document.querySelectorAll('button.diff').forEach(function (b) { b.setAttribute('aria-pressed', picked.indexOf(keyOf(b)) >= 0 ? 'true' : 'false'); });
+  document.querySelectorAll('.top li').forEach(function (li) {
+    var a = li.querySelector('a'); if (!a) return;   // the "Told" box's rows are not links
+    var code = a.getAttribute('href').slice(1).toUpperCase();
+    li.classList.toggle('done', picked.some(function (k) { var q = qOf(k); return q === code || q.replace(/[a-z]$/, '') === code; }));
+  });
+  var said = picked.map(function (k) { var p = k.split('|'); return p[0] + (p[1] ? ' ' + p[1] : ''); });
+  document.getElementById('replytext').textContent = picked.length ? 'As recommended for all, except ' + said.join(', ') + ': ' : 'As recommended for all.';
 }
 document.addEventListener('click', function (e) {
   var b = e.target.closest && e.target.closest('button.diff'); if (!b) return;
-  var q = b.dataset.q, at = picked.indexOf(q);
-  if (at >= 0) picked.splice(at, 1); else picked.push(q);
+  var k = keyOf(b), had = picked.indexOf(k) >= 0;
+  picked = picked.filter(function (p) { return qOf(p) !== b.dataset.q; });
+  if (!had) picked.push(k);
   try { localStorage.setItem(KEY, JSON.stringify(picked)); } catch (err) {}
   show();
 });

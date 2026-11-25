@@ -31,4 +31,15 @@ export const W = {
   askAdmin: n => `If this is him, ask ${n}'s admin`,
   someoneNewLine: (n, who) => `${n} added a new ${who}. Delete yours if he has left flying for good`,
   taken: (who, n) => `${who} is already taken on ${n}`,
+  // ---- round 5 (chat 187, 25 Nov 26): settled by a second fresh Fable (briefs/2026-11-25-msq-q3-r5b-words-fable.md),
+  // copied from the redraw brief's "Words" section exactly; the keys above stay as the first way's pictures drew them
+  alsoViews: n => `also views ${n}`,                                   // item 2: a View holder's closed row "Pilot · CAT IP · also views 149"
+  noSignInOpened: n => `No sign-in. Ask ${n}'s admin to give him one first.`,   // item 2: a no-sign-in man opened (Cancel only)
+  plannedByName: (who, n) => `${who} · ${n}`,                          // item 5: "Hunter · 142", "Saber · 142" in the browser's list
+  someoneNewR5: 'Someone new',                                         // items 6 and 8: the button answering "Is this him?"
+  answerFirst: 'Answer “Is this him?” first.',               // item 8: under the greyed "Add person"
+  newOneTold: (who, n) => `A new ${who}. ${n}'s admins are told when you add him.`,   // item 8 (e6a2)
+  newOneToldTwo: (who, a, b) => `A new ${who}. ${a}'s and ${b}'s admins are told when you add him.`,   // item 6 (e6b2)
+  // item 6: each archived man one line in e6a's note's shape (item 6's own words), the question left to the line above
+  archivedLine: (n, who, seat, cat, date) => `${n} has an archived ${who}: ${seat}, CAT ${cat}, archived ${date}.`,
 }
