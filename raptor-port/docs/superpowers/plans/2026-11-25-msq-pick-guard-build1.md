@@ -246,6 +246,12 @@ a SANS day, the Leave War's day panel and a Tracker event's details (their rows 
 the Tracker's marking window stay as written until he answers, once each is pressed and pictured. The same folding note
 applies.
 
+**His D2598, D2599, D2620 (25 Nov 26):** A5 answered — on Admin → Users an opened row with any change not saved counts
+(a Role or a name as well as typing), and so do Give access, "+ New squadron" and "Add a person" once something is in them;
+"Add a person" gets a Cancel that clears all of it (D2598). "Add a person" moves to the top of the page (D2599). The
+squadron number at the top left flashes twice, fading, whenever the squadron changes (D2620). All three are drawn and
+shown to him before they are built; the next chat folds them into the Admin → Users rows and §8.
+
 **(c) The schedule's veiled dialogs — `.airpop` / `.modal`, flags in `ui/pops.ts`. Shaded.** Each row reads the
 predicate named, as a function of `ui/windrawn.ts` that the component calls.
 
