@@ -1402,3 +1402,16 @@ sides.
 **Issue:** the host ran the rulings script while a builder helper was adding a block to DECISIONS.md. The script failed on an unrelated check and "put every file back exactly as it was" — restoring DECISIONS.md over the helper's insert. The helper reported the block done; two blind readers then found it missing.
 **Suggested improvement:** before running any script that rewrites or restores shared files, check no helper is writing in that working copy (or give the helper its own worktree); after such a run, re-check the files a running helper reported changing.
 **Principle:** a tool that restores files on failure is a writer too; two writers in one copy need the same care as two people.
+
+### Observation 1063: A shared working folder switched branch under the host and its helpers
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 180, [READINGS-LAPSE-FIX] round 2 and drawings (numbered past 1061–1062 on other branches)
+**Skill:** New skill candidate: session-start (where a chat works)
+**Type:** open-source
+**Phase/Area:** choosing a working copy at the start of a chat; briefing helpers
+
+**Issue:** the chat started in the main checkout, switched it to its job's branch tip on a detached HEAD, and briefed two helpers to write there. Minutes later another chat switched the same checkout to its own branch. The helpers' new files survived only because they were untracked; the sources they read vanished mid-job (one helper read them out of git by commit), and the host had to move to the job's own worktree and copy the helpers' output across.
+**Suggested improvement:** a chat whose job has its own branch works in that branch's own worktree from its first write, never in a checkout other chats start in; every helper's brief names that worktree as its only place to read and write.
+**Principle:** a working copy shared by several live sessions is not a place to do work, only a place to start from; give each job its own copy before the first write.
