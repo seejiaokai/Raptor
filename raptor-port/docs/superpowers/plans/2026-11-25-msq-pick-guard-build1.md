@@ -285,6 +285,9 @@ in view (D2625); the search still finds them; shown to whoever may give access t
 **His D2630 (25 Nov 26):** every example, drawing, scenario and walk of this build considers more than two squadrons
 (142, 149, 150 — the demo's third made with "+ New squadron" first) and a person holding rights in several at once.
 
+**His D2631 (25 Nov 26):** a master admin has a primary squadron; on Admin → Users his own squadron's people stand open and
+every other is folded under its closed heading, in "All squadrons" too (narrows D2270).
+
 **(c) The schedule's veiled dialogs — `.airpop` / `.modal`, flags in `ui/pops.ts`. Shaded.** Each row reads the
 predicate named, as a function of `ui/windrawn.ts` that the component calls.
 
