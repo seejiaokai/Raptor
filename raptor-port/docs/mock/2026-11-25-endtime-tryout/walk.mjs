@@ -37,6 +37,23 @@ async function run(name, phone) {
     const top = Math.max(0, b.y - pad)
     await p.screenshot({ path: join(OUT, `${name}-${file}.png`), clip: { x: 0, y: top, width: vp.width, height: Math.min(vp.height - top, b.height + pad * 2) } })
   }
+  /* the amendment mark on a time: its waiting / issued attributes, the underline the app's rule draws, and the try-out's
+     invisible "00:00" that carries that line across an emptied box */
+  const mark = key => p.evaluate(k => {
+    const e = document.querySelector(`[data-txt="${k}"]`), cs = getComputedStyle(e), af = getComputedStyle(e, '::after')
+    return { text: e.textContent, aln: e.getAttribute('data-aln'), alc: e.getAttribute('data-alc'), miss: e.classList.contains('et-miss'), red: e.classList.contains('et-red'),
+      line: cs.textDecorationLine, style: cs.textDecorationStyle, after: af.content }
+  }, key)
+  /* a close-up of the SXO desk with the rows either side, across the day only */
+  const rowsShot = async file => {
+    const box = p.locator('[data-txt="dr:3.0.1.end"]'); await box.scrollIntoViewIfNeeded(); await p.mouse.move(1, 1); await p.waitForTimeout(250)
+    const r = await box.evaluate(e => {
+      const row = e.closest('.pl-row'), a = row.previousElementSibling, b = row.nextElementSibling, day = e.closest('section.day').getBoundingClientRect()
+      const top = (a && a.classList.contains('pl-row') ? a : row).getBoundingClientRect().top, bot = (b && b.classList.contains('pl-row') ? b : row).getBoundingClientRect().bottom
+      return { x: day.left, w: day.width, y: top, h: bot - top }
+    })
+    await p.screenshot({ path: join(OUT, `${file}-${name}.png`), clip: { x: Math.max(0, r.x), y: Math.max(0, r.y - 2), width: Math.min(r.w, p.viewportSize().width), height: r.h + 4 } })
+  }
   const sign = async (k, v) => { await p.locator(`select[data-sign="${k}"]`).scrollIntoViewIfNeeded(); await p.selectOption(`select[data-sign="${k}"]`, v); await p.waitForTimeout(60) }
 
   // 1. drafting
@@ -95,10 +112,17 @@ async function run(name, phone) {
   ok(await p.locator('.dpend').innerText().then(t => t.replace(/\s/g, ' ') === '1 pending') && await p.locator('.nysmark').innerText() === 'Not yet signed', '"1 pending" and "Not yet signed" show')
   await shot('9-amend-pending', '.day-head', 4)
   await shot('10-amend-emptied', '[data-txt="dr:3.0.1.end"]', 50)
+  let m = await mark('dr:3.0.1.end')
+  ok(m.miss && m.red && m.aln === '1', 'step 1: the emptied END keeps its red outline AND wears the waiting AL1 mark')
+  ok(m.line === 'underline' && m.style === 'dotted' && m.after === '"00:00"', `step 1: the app's dotted underline runs across the empty box (${m.line} ${m.style} ${m.after})`)
+  await rowsShot('amend-1-emptied')
   await press('[data-et-publish]'); await p.waitForTimeout(250)
   ok((await note()) === 'Blocked: 1 item is missing a time, outlined in red. Thursday was not published.', 'Publish AL1 refused: ' + await note())
   await typeIn('dr:3.0.1.end', '15:00')
   s = await st(); ok(s.n === 0, 'filled again')
+  m = await mark('dr:3.0.1.end')
+  ok(m.text === '15:00' && !m.miss && m.aln === '1' && m.line === 'underline' && m.style === 'dotted' && m.after === 'none', 'step 2: a new time typed: the outline goes, the dotted waiting mark stays under 15:00')
+  await rowsShot('amend-2-retyped')
   await sign('cur', 'Anvil'); await sign('sked', 'Basher'); await sign('plan', 'Basher'); await sign('appr', 'Cinch')
   ok(await p.locator('.nysmark').innerText() === 'Not yet published', '"Not yet published" once signed')
   await press('[data-et-publish]'); await p.waitForTimeout(250)
@@ -106,6 +130,9 @@ async function run(name, phone) {
   ok(await p.locator('.dhver .verchip[data-alc="1"]').count() === 1 && await p.locator('[data-txt="dr:3.0.1.end"][data-alc="1"]').count() === 1, 'AL1 tag, and the changed END wears the AL1 mark')
   await shot('11-al1', '.day-head', 4)
   await shot('12-al1-mark', '[data-txt="dr:3.0.1.end"]', 50)
+  m = await mark('dr:3.0.1.end')
+  ok(m.alc === '1' && !m.aln && m.line === 'underline' && m.style === 'solid', 'step 3: AL1 published: the mark goes solid with its AL1 tag')
+  await rowsShot('amend-3-published')
 
   // 6. the switches
   await press('#ttReset'); await p.waitForTimeout(100)
@@ -122,6 +149,7 @@ async function run(name, phone) {
   await press('[data-et-publish]'); await p.waitForTimeout(150)
   await press('[data-txt="ff:3.0.0.to"]'); await p.waitForTimeout(150); await p.keyboard.press('Backspace'); await p.keyboard.press('Enter'); await p.waitForTimeout(100)
   s = await st(); ok(s.pub && s.n === 1 && s.grey === 1 && s.red === 0, '(c) grey until signing: the emptied take-off is grey')
+  m = await mark('ff:3.0.0.to'); ok(m.aln === '1' && m.style === 'dotted' && m.after === '"00:00"', '(c) …and wears the waiting mark under its grey outline')
   await press('[data-et-sgn="cur"]'); await p.waitForTimeout(150)
   s = await st(); ok(s.red === 1, '(c) …and red once a sign-off is pressed')
   await shot('14-grey-until-signing', '[data-txt="ff:3.0.0.to"]', 60)

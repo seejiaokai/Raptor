@@ -38,9 +38,14 @@ const grab = async (name) => {
   console.log(name, html.length)
 }
 
-/* the stylesheets, whole, in document order */
-const css = await page.evaluate(() => [...document.styleSheets].map(s => { try { return [...s.cssRules].map(r => r.cssText).join('\n') } catch (e) { return '' } }).join('\n'))
+/* the stylesheets, whole, in document order — their own text as served, never re-serialised from cssRules: the browser
+   writes a shorthand holding var() back out as empty longhands ("text-decoration-line: ;"), which silently dropped the
+   amendment underlines (dotted while waiting, solid once out) and a dozen borders from the first capture (26 Nov 26).
+   CSS_ONLY=1 stops here, after refreshing app.css. */
+const css = await page.evaluate(async () => (await Promise.all([...document.querySelectorAll('link[rel="stylesheet"], style')].map(async n =>
+  n.tagName === 'STYLE' ? n.textContent : (await fetch(n.href)).text()))).join('\n'))
 writeFileSync(join(OUT, 'app.css'), css)
+if (process.env.CSS_ONLY) { console.log('app.css', css.length); await browser.close(); process.exit(0) }
 const frame = await page.evaluate(() => {
   const p = document.querySelector('#page-editsched'), ib = p.querySelector('.edit-inner'), eb = p.querySelector('.edit-board')
   return { page: p.className, inner: ib.className, board: eb.className, week: document.querySelector('#eWeek').className,

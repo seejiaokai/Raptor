@@ -40,6 +40,15 @@ body{margin:0;-webkit-text-size-adjust:100%}
 #eWeek .et-miss:empty{display:inline-block;min-width:34px}
 /* …but a flying line's TO / LD box is as wide as its narrow column (32px on a phone): the outline keeps to it */
 #eWeek .form .et-miss:empty{display:block;min-width:0}
+/* A TIME EMPTIED ON A PUBLISHED DAY keeps the app's waiting mark — the dotted underline in the next AL's colour that the
+   app's own rule (04-pucks-sections.css, `#eWeek :is(span,…)[data-aln]`) puts under a changed time. In the app that
+   underline is a text line, so in an empty box it runs only under the faint "—" (about three dots, measured on the real
+   app). Here an invisible "00:00" is laid over the dash, so the same rule's line runs the width a time takes, at the
+   very place it sits under a typed time: typing one in moves nothing. */
+#eWeek .txed[data-aln]:empty::after{content:'00:00';color:transparent;margin-left:-1ch;white-space:pre;pointer-events:none}
+/* …and while that box is outlined as missing, the outline steps 3px out to the left and below, so the dotted line sits
+   inside it rather than on its edge; the negative margins keep the row and the time's place exactly as they were */
+#eWeek .et-miss[data-aln]:empty{padding-left:3px;margin-left:-3px;padding-bottom:3px;margin-bottom:-3px}
 /* the always-there count line in the sign-off panel: the app's own status words, pressable */
 .signoff button.so-state.et-count{font:inherit;font-size:10.5px;font-weight:700;background:none;border:0;padding:2px 0;margin-left:auto;
   color:var(--adv);cursor:pointer;text-align:left;white-space:normal}
