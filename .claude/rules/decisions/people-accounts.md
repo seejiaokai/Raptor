@@ -140,6 +140,7 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - The chip reads "Delete", not "Fully delete" [D298, D285, D310, D322].
 
 ## Many squadrons and aircraft types — not built yet
+- Every example, table, drawing, scenario and walk of this work considers more than two squadrons — 142, 149, 150 — and one person holding rights in several at once [D2630].
 - One app for every squadron and aircraft type (F-15, F-16, F-35), each squadron configuring it inside the app, an aircraft-type setting carrying its rules [D1100, D1101].
 - Detachments and squadrons sharing people come at the end, after the F-15 app's faults are fixed; work before then avoids what would have to be redone [D1100, D1101].
 - Deployed separately for each aircraft type, each with its own database; the squadrons of one type, detachments included, share that type's database [D1101, D1100].

@@ -282,6 +282,9 @@ grey number; a sign-off name from another squadron with its number. Each in the 
 closed heading ("▸ 142 · 38 people") opening its people grouped, each row offering only the access line for the squadron
 in view (D2625); the search still finds them; shown to whoever may give access there. Drawn first.
 
+**His D2630 (25 Nov 26):** every example, drawing, scenario and walk of this build considers more than two squadrons
+(142, 149, 150 — the demo's third made with "+ New squadron" first) and a person holding rights in several at once.
+
 **(c) The schedule's veiled dialogs — `.airpop` / `.modal`, flags in `ui/pops.ts`. Shaded.** Each row reads the
 predicate named, as a function of `ui/windrawn.ts` that the component calls.
 
