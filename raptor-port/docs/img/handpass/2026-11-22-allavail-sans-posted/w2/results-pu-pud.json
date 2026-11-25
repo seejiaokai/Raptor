@@ -1,0 +1,270 @@
+[
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-01a",
+  "what": "Leave War: Hex's Thu 16 Jul → ⋯ → Post out opens the posting part of the sheet",
+  "ok": true,
+  "note": "",
+  "pics": "pu-01a-postout-open-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-01b",
+  "what": "closed by its ✕",
+  "ok": true,
+  "note": "",
+  "pics": "pu-01b-closed-x-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-01c",
+  "what": "closed by Escape",
+  "ok": true,
+  "note": "",
+  "pics": "pu-01c-closed-esc-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-01d",
+  "what": "a click outside it (the grid's CS/Name corner at 30,80) — RECORD whether it closes",
+  "ok": "REC",
+  "note": "closed",
+  "pics": "pu-01d-outside-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-02",
+  "what": "posted out as SANS from Thu 16 Jul (a future date)",
+  "ok": null,
+  "note": "line \"On 16 Jul: becomes SANS.\" · {\"san\":false,\"sanFrom\":null}",
+  "pics": "pu-pu-02-postout-open-desktop.png, pu-pu-02-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-02c",
+  "what": "\"Undo post out\" on the same sheet takes the posting back",
+  "ok": true,
+  "note": "cell before \"PO\" · after {\"san\":false,\"archived\":false} · note \"\"",
+  "pics": "pu-02b-lw-after-desktop.png, pu-02c-undo-shown-desktop.png, pu-02d-after-undo-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-03a",
+  "what": "⚙ Settings opens",
+  "ok": true,
+  "note": "",
+  "pics": "pu-03a-settings-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-03b",
+  "what": "\"+ SANS\" adds the SANS group",
+  "ok": true,
+  "note": "SANS shown · counted 11 ✕",
+  "pics": "pu-03b-sans-on-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-03c",
+  "what": "the SANS group's ✕ takes it off",
+  "ok": true,
+  "note": "",
+  "pics": "pu-03c-sans-off-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-03d",
+  "what": "closed by its ✕",
+  "ok": true,
+  "note": "",
+  "pics": "pu-03d-closed-x-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-03e",
+  "what": "closed by Escape",
+  "ok": true,
+  "note": "",
+  "pics": "pu-03e-closed-esc-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-03f",
+  "what": "a click outside it (244,222) closes it",
+  "ok": true,
+  "note": "",
+  "pics": "pu-03f-outside-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-04",
+  "what": "Hex posted out as SANS from Wed 15 Jul",
+  "ok": true,
+  "note": "line \"On 15 Jul: becomes SANS.\"",
+  "pics": "pu-pu-04-postout-open-desktop.png, pu-pu-04-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-05",
+  "what": "Saturday: BRIEF 08:00–09:00 naming Hex, SQN EVENT 10:00–17:00 for ALL AVAIL",
+  "ok": true,
+  "note": "",
+  "pics": "pu-05-fixture-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-06",
+  "what": "the count chip (\"45\") opens the ALL AVAIL window; Hex in it with the purple SANS line",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"flag\":\"\",\"ttl\":\"SQN EVENTJul 18 · 10:00–17:00\",\"who\":\"Reaper,Anvil,Blade,Cinch,Cobra,Comet,Forge,Havoc,Hunter,Piston,Ranger,Saber,Sidewinder,Trident,Vandal,Warden,Ace,Drifter,Saint,Gambit,Nomad,Outlaw,Ridge,Diesel,Vapor,Recon,Talisman,Wildcard,Basher,Echo,Ledger,Quill,Relay,Scope,Static,Cinder,Rune,Cutter,Dash,Ghost,Grit,Hex,Ryder,Vector,Wisp\"} · window box {\"x\":1308,\"y\":114,\"width\":212,\"height\":540}",
+  "pics": "pu-06-win-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-06b",
+  "what": "dragged by its grip 300 left and 120 down: the window follows",
+  "ok": true,
+  "note": "before {\"x\":1308,\"y\":114,\"width\":212,\"height\":540} after {\"x\":1002,\"y\":226,\"width\":212,\"height\":540}",
+  "pics": "pu-06b-dragged-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-06c",
+  "what": "closed by its ✕",
+  "ok": true,
+  "note": "",
+  "pics": "pu-06c-closed-x-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-06d",
+  "what": "reopened, closed by Escape",
+  "ok": true,
+  "note": "",
+  "pics": "pu-06d-closed-esc-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-07",
+  "what": "OIL Earn on: the window (\"45\") still lists Hex — RECORD its earning half",
+  "ok": true,
+  "note": "{\"has\":true,\"switch\":true,\"tabs\":[\"Who’s available 45\",\"Who earns OIL 45 of 45\"]} · {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"flag\":\"\",\"ttl\":\"SQN EVENTJul 18 · 10:00–17:00\",\"who\":\"Reaper,Anvil,Blade,Cinch,Cobra,Comet,Forge,Havoc,Hunter,Piston,Ranger,Saber,Sidewinder,Trident,Vandal,Warden,Ace,Drifter,Saint,Gambit,Nomad,Outlaw,Ridge,Diesel,Vapor,Recon,Talisman,Wildcard,Basher,Echo,Ledger,Quill,Relay,Scope,Static,Cinder,Rune,Cutter,Dash,Ghost,Grit,Hex,Ryder,Vector,Wisp\"}",
+  "pics": "pu-07-oil-earn-on-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-07b",
+  "what": "OIL Earn off again",
+  "ok": null,
+  "note": "",
+  "pics": "pu-07b-oil-earn-off-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-08",
+  "what": "the board: Hex's copies (crew list and rows) and the count chip \"45\" (RECORD)",
+  "ok": "REC",
+  "note": "[{\"where\":\"row\",\"san\":true},{\"where\":\"SANS Avail\",\"san\":true}]",
+  "pics": "pu-08-board-crew-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-08b",
+  "what": "Saturday signed and published (Publish day)",
+  "ok": null,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true}",
+  "pics": "pu-08b-published-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-09",
+  "what": "the bell (RECORD)",
+  "ok": "REC",
+  "note": "HexWed 15 Jul Posted out · now SANS now Mark all read",
+  "pics": "pu-09-bell-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-10",
+  "what": "the changes window (the clock on Edit Schedule) (RECORD)",
+  "ok": "REC",
+  "note": "⠿ Changes · week of 13/7 18 changes this week ✕ New to you 0 All changes 18 To go out 0 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who Nothing new to you this week. ✓ Mark all as seen",
+  "pics": "pu-10-changes-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-11",
+  "what": "the OIL tracker's figure for Hex (RECORD)",
+  "ok": "REC",
+  "note": "2",
+  "pics": "pu-11-oil-tracker-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-12",
+  "what": "the Balances page's OIL for Hex (RECORD)",
+  "ok": "REC",
+  "note": "2 ›",
+  "pics": "pu-12-balances-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-13",
+  "what": "Hex's Leave War cell for Sat 18 Jul after Publish",
+  "ok": true,
+  "note": "\"FO*\"",
+  "pics": "pu-13-lw-cell-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "pu-14",
+  "what": "member (us): View-only Sched's Saturday count (\"45\") — Hex in the published crowd",
+  "ok": true,
+  "note": "{\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"flag\":\"\",\"ttl\":\"SQN EVENTJul 18 · 10:00–17:00\",\"who\":\"Reaper,Anvil,Blade,Cinch,Cobra,Comet,Forge,Havoc,Hunter,Piston,Ranger,Saber,Sidewinder,Trident,Vandal,Warden,Ace,Drifter,Saint,Gambit,Nomad,Outlaw,Ridge,Diesel,Vapor,Recon,Talisman,Wildcard,Basher,Echo,Ledger,Quill,Relay,Scope,Static,Cinder,Rune,Cutter,Dash,Ghost,Grit,Hex,Ryder,Vector,Wisp\"}",
+  "pics": "pu-14-member-view-desktop.png"
+ },
+ {
+  "scn": "pu",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

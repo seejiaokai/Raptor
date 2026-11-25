@@ -10,7 +10,7 @@
 import { beforeEach, afterEach, describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import { storeBackend, store } from '../engine/hooks'
+import { storeBackend } from '../engine/hooks'
 import { hasPermission } from '../command/permissions'
 import { registerPeopleSettingsCommandLayer } from './people-settings-wire'
 import { settingsStore, commitSettingsIntent } from './people-settings-commit'
@@ -73,11 +73,13 @@ describe('a rollback or an undo still rebuilds each module from what is stored',
   it('the bell\'s read marks are read again — a row stored raw is seen only after the rebuild', () => {
     const n = { id: 'n-wire', at: 5 }
     expect(hasRead('pw', n)).toBe(false)
-    store.set(NOTICESEEN_PFX + 'pw', { upto: 10, ids: [] })   // a row key: written raw, no load
+    /* a row key: written raw, no load — straight into the stored copy, since a read record is written through store.set
+       only inside its own command now (chat 147's security re-read, SEC2-2 (a): state/people-settings-commit.ts) */
+    mem['sqn142_' + NOTICESEEN_PFX + 'pw'] = JSON.stringify({ upto: 10, ids: [] })
     expect(hasRead('pw', n)).toBe(false)
     viaUndoWrite()
     expect(hasRead('pw', n)).toBe(true)
-    store.set(NOTICESEEN_PFX + 'pw', null)
+    delete mem['sqn142_' + NOTICESEEN_PFX + 'pw']
     viaRollback()
     expect(hasRead('pw', n)).toBe(false)
   })

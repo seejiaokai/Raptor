@@ -1,0 +1,20 @@
+{
+ "pictures": [],
+ "cases": {
+  "phone-chromium": {
+   "log": [
+    "bundle index-CHEKfrl-.js",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvh05dfwqc78q\"]; asked []; note \"\""
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "W3 phone-chromium Ranger's row of the shared leave: 0900, 1100, \"own hours\" — Ranger 09:00–11:00 \"own hours\" on an input of his own; Hex 08:00–10:00, no remark",
+   "PASS",
+   "[{\"step\":\"filed\",\"store\":[\"Ranger+Hex 480-600 \\\"\\\" [imwvh05dfwqc78q]\"],\"screen\":[\"Ranger 08:00-10:00 \\\"\\\" [imwvh05dfwqc78q~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvh05dfwqc78q~rocky.str]\"]},{\"step\":\"str 0900, Tab\",\"typedIn\":\"imwvh05dfwqc78q~bane.str\",\"store\":[\"Hex 480-600 \\\"\\\" [imwvh05dfwqc78q]\",\"Ranger 540-600 \\\"\\\" [imwvh087tc727g5]\"],\"screen\":[\"Ranger 09:00-10:00 \\\"\\\" [imwvh05dfwqc78q~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvh05dfwqc78q~rocky.str]\"],\"caret\":\"imwvh05dfwqc78q~bane.end\"},{\"step\":\"end 1100, Tab\",\"typedIn\":\"imwvh05dfwqc78q~bane.end\",\"store\":[\"Hex 480-600 \\\"\\\" [imwvh05dfwqc78q]\",\"Ranger 540-660 \\\"\\\" [imwvh087tc727g5]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"\\\" [imwvh05dfwqc78q~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvh05dfwqc78q~rocky.str]\"],\"caret\":\"imwvh05dfwqc78q~bane.rmks\"},{\"step\":\"rmks own hours, Tab\",\"typedIn\":\"imwvh05dfwqc78q~bane.rmks\",\"store\":[\"Hex 480-600 \\\"\\\" [imwvh05dfwqc78q]\",\"Ranger 540-660 \\\"own hours\\\" [imwvh087tc727g5]\"],\"screen\":[\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvh05dfwqc78q~bane.str]\",\"Hex 08:00-10:00 \\\"\\\" [imwvh05dfwqc78q~rocky.str]\"],\"caret\":\"imwvh05dfwqc78q~rocky.str\"},{\"step\":\"caret left (blank space clicked)\",\"store\":[\"Hex 480-600 \\\"\\\" [imwvh05dfwqc78q]\",\"Ranger 540-660 \\\"own hours\\\" [imwvh087tc727g5]\"],\"screen\":[\"Hex 08:00-10:00 \\\"\\\" [imwvh05dfwqc78q.str]\",\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvh087tc727g5.str]\"]}]",
+   "w3-phone-chromium-caret-still-in.png, w3-phone-chromium-caret-left.png"
+  ]
+ ]
+}

@@ -9,7 +9,7 @@
    a sentinel opens into real pucks, the figure rides each puck, and the green
    bar is emitted on the issued schedule and on no other day. What it LOOKS
    like painted is the live-view pass in the running app. */
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, onTestFinished } from 'vitest'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
@@ -915,7 +915,13 @@ describe('the pictures round: the day switch, a tap that cannot earn, the phone 
   /* THE CODE READ'S FINDING 1 (Astra and Sol 6.1, blind to each other, 8 Nov 26; reproduced on the running build, both
      sizes, and on main's): a SANS availability card is drawn by the week's card grid, not by the input panels, so the
      wrap above never reached it — in OIL Earn a tap on its man picked him blue and said nothing. */
-  const sansOffer = () => { setInpEdit(null); return request({ type: 'SANS Availability', allday: true, s: 0, e: 1439, sans: { f: true } }) }
+  /* (his D2341, 23 Nov 26: SANS availability shows only on a day its man is SANS — so the offer's man is made SANS for the
+     test, and put back after it; Fable (plasma) is not SANS in the demo, and his offer is now hidden as if deleted) */
+  const sansOffer = () => {
+    const p: any = (PEOPLE as any).plasma, was = p.san
+    p.san = true; onTestFinished(() => { p.san = was })
+    setInpEdit(null); return request({ type: 'SANS Availability', allday: true, s: 0, e: 1439, sans: { f: true } })
+  }
   const sansPuck = (who: string) => $$(`#sbBoard .sansav .sanscard .puck[data-person="${who}"]`)[0]
 
   it('D1783, D65 — a man’s SANS availability picks nothing in the mode and says why', async () => {

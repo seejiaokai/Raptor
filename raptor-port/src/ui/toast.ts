@@ -24,6 +24,11 @@ export let toastT:any=null;
    publishFlagsBids pass one. */
 export type ToastPart={day:number|string,head:string,body:string,after?:string};
 let BATCH:Array<{msg:string,kind:any,part?:ToastPart}>|null=null;
+/* A NOTE THAT ALREADY SAYS THE SAVE HAPPENED (his D2388, the drawing docs/mock/2026-11-24-sans-words/ — "Saved Fri 17 – Sat 18
+   Jul. Thu 16 Jul was left out…", alone): the input's window adds its own plain "Input added" to whatever a save said, and
+   here that would only repeat it. Such a note is named here; a plain ('ok') note after it in the same batch is not said. */
+let RECEIPTS:string[]=[];
+export function toastIsReceipt(msg:string):void{ if(BATCH)RECEIPTS.push(msg) }
 /** how many notes the batch that is open has been handed so far — 0 where none is open. The input's window asks it
  *  (ui/inputedit.tsx `saidSaved`): a save that said something of its own keeps "Input added" beside it, in the one note. */
 export function toastHeld():number{ return BATCH?BATCH.filter(m=>m.msg).length:0 }
@@ -32,16 +37,17 @@ const RANK=(k:any)=>k==='hard'?3:k==='warn'||k==='blocked'?2:1;
 const sentence=(s:string)=>s.charAt(0).toUpperCase()+s.slice(1)+'.';
 export function toastBatch<T>(fn:()=>T):T{
   if(BATCH)return fn();
-  BATCH=[];
+  BATCH=[]; RECEIPTS=[];
   let out:T, ok=false;
   try{ out=fn(); ok=true; }
   finally{
-    const got=BATCH; BATCH=null;
+    const got=BATCH, receipts=RECEIPTS; BATCH=null; RECEIPTS=[];
     if(ok&&got.length){
       const said:string[]=[]; let kind:any=undefined;
       /* `last` — the part of the note said last, while that note still stands whole at the end of `said` */
       let last:ToastPart|null=null;
       for(const m of got){
+        if(m.kind==='ok'&&said.some(x=>receipts.some(r=>x.includes(r))))continue;
         if(RANK(m.kind)>RANK(kind))kind=m.kind;
         // eslint-disable-next-line react-doctor/js-set-map-lookups -- a batch says a few notes, and the last one said is rewritten in place when the next merges into it: a Set beside it would have to follow that rewrite
         if(!m.msg||said.includes(m.msg))continue;

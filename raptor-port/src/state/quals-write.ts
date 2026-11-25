@@ -25,7 +25,7 @@ import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 import { mayEditQualsOf, mayRenameCallsign, mayTickManagement, mayTickScheduler } from './perms'
 import { MGMT_KEY, SCHED_KEY } from '../engine/qualcols'
-import { commitPeopleEdit } from './people-settings-commit'
+import { commitPeopleIntent, PEOPLE_TYPES } from './people-settings-commit'
 import { otherSquadronPersonProblem, masterChangeProblem } from './accounts'
 import { homeOn, todayIso } from './units'
 
@@ -41,6 +41,14 @@ const AAR_I_KEYS = ['daar', 'naar']
 /* the AAR instructor rung (owner, 10 Aug 26): blank → ✓ → I → blank on an instructor
    pilot's DAAR / NAAR — offered only where legal, so the cycle never strands */
 export const qualI = (p: any, k: string) => !!(p && AAR_I_KEYS.indexOf(k) >= 0 && p.seat === 'FCP' && isInstrPilot(p.q))
+
+/* AN ADMIN'S UNTICK OF A MAN'S SANS TELLS HIS BELL (his D2391's C, 23 Nov 26: "You're no longer SANS. · Saber"). The line is
+   the war's business (leavewar/sansunfiled.ts, which installs this, so this file imports nothing of the war): `begin`
+   asks, before the tick moves, whether a line may be owed, and brings the bell's store into this one command if so;
+   `end` writes it once the tick has moved. */
+export type SansTickWatch = { begin: (pid: string, txn: any) => boolean; end: (pid: string) => void }
+let SANS_WATCH: SansTickWatch | null = null
+export function setSansTickWatch(w: SansTickWatch | null): void { SANS_WATCH = w }
 
 export const OWN_ROW_ONLY = 'You can only edit your own row'
 export const RENAME_ADMIN_ONLY = 'Only an admin can change a callsign'
@@ -61,9 +69,10 @@ export function updatePersonField(pid: string, op: QualsOp): string | null {
   if ('tick' in op && op.tick === MGMT_KEY && !mayTickManagement()) { HOOKS.toast(MGMT_ADMIN_ONLY, 'warn'); return MGMT_ADMIN_ONLY }   // D1510
   if ('tick' in op && op.tick === SCHED_KEY && !mayTickScheduler()) { HOOKS.toast(SCHED_ADMIN_ONLY, 'warn'); return SCHED_ADMIN_ONLY }   // D1651
   let refused: string | null = null
-  const r: any = commitPeopleEdit(() => {
+  const r: any = commitPeopleIntent(PEOPLE_TYPES.edit, { owner: pid }, (txn: any) => {
     if ('tick' in op) {
       const k = op.tick
+      const told = k === 'san' && !!p.quals.san && !!SANS_WATCH && SANS_WATCH.begin(pid, txn)
       const cur = p.quals[k]
       const canI = qualI(p, k) && (k === 'daar' || p.quals.daar === 'I')
       const next = canI ? (!cur ? true : cur === true ? 'I' : false) : !cur
@@ -101,6 +110,7 @@ export function updatePersonField(pid: string, op: QualsOp): string | null {
       if (k === 'daar' && next === true && p.quals.naar === 'I') { p.quals.naar = true; HOOKS.toast(`${p.cs} — NAAR instructor mark removed too, it cannot stand without DAAR's`) }
       if (k === 'scDay' && !next && p.quals.scNight) { p.quals.scNight = false; HOOKS.toast(`${p.cs} — SC NIGHT removed too, it cannot stand without SC DAY`) }
       validate()
+      if (told) SANS_WATCH!.end(pid)
     } else if ('cat' in op) {
       p.q = op.cat; deriveQuals(p); validate()
     } else if ('initials' in op) {
@@ -114,7 +124,7 @@ export function updatePersonField(pid: string, op: QualsOp): string | null {
       if (!renameCallsign(pid, want)) { refused = want && want !== was ? `${want} is already taken — callsigns must be unique` : ''; return }
       validate()
     }
-  }, { owner: pid })
+  })
   if (refused != null) { if (refused) HOOKS.toast(refused); return refused || 'unchanged' }
   if (r && r.ok === false) {
     /* "your own row" only when that IS the reason — the gate, or the one-person-writes-

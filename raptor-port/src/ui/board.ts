@@ -24,7 +24,7 @@ import { applyMove, sortWave, sortInTimes, sortDutyBlock, sortSims, sortGround, 
 import { HIST } from '../state/history'
 import { rlFaultAtt, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, saBadgesHTML, availHTML, quarantineNote , mkPeriod, withDaySnap, fltNoLenShown, sbPrevDay, SB_PREVDAY, boxText } from './html'
 import { onInputRow, rowMark, UNMARKED } from './reqdoor'
-import { setInpField, howMany, markMoved } from './inputedit'
+import { setInpField, howMany, markMoved, rowInputOf } from './inputedit'
 import { reqRowText } from './reqrow'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { DAYTPL_PUBLISHED_MSG } from '../engine/daytpl'
@@ -1363,7 +1363,10 @@ export function boardChange(e: Event) {
     const [tail, field] = inf.dataset.ifld!.split('.')
     /* one man's row of an input that holds several names him after the id (engine/keys.ts iuParts) */
     const at = iuParts('iu:' + tail), id = at ? at.iid : tail
-    const inp = inpById(id)
+    /* …and once a change has given him an input of his own, the row — held back from repainting while the caret is in
+       it — still carries the shared input's id: the input it stands for now is his own (inputedit.tsx rowInputOf), so a
+       refused box heals to HIS times, never the others' (chat 170's night walk, W3) */
+    const inp = rowInputOf(inpById(id), at ? at.person : null)
     if (!inp) return notify()                    // deleted or undone underneath it
     const back = () => { inf.value = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field) }
     if (RO) return back()
@@ -1373,7 +1376,20 @@ export function boardChange(e: Event) {
        (hhmm of what was typed; an emptied box, all day, reads empty) — never read back off `inp`: one man's row of an input
        that holds several saves into a record of his own, cut out of this one, so `inp` still holds the old shared time
        (the shaky-tests batch's blind read, F1, 20 Oct 26) */
-    if (setInpField(inp, field as any, inf.value, at ? at.person : null)) { notify(); if (field !== 'rmks' && inf.isConnected && document.activeElement !== inf) inf.value = fmtHM(String(inf.value).trim()) }
+    if (setInpField(inp, field as any, inf.value, at ? at.person : null)) {
+      notify(); if (field !== 'rmks' && inf.isConnected && document.activeElement !== inf) inf.value = fmtHM(String(inf.value).trim())
+      /* THE OTHER TIME BOX OF THE ROW SAYS WHAT WAS SAVED TOO (the shared-row walk, 25 Nov 26 — walker A's A3, walker B's
+         B3; red first in ui/sharedrow-walkfinds.test.tsx). One time typed can change the other: an end cleared makes the
+         input all day, a start typed on an all-day input gives it an end of 23:59 — and the row, held back from
+         repainting, went on showing the old start (09:00 on a leave saved all day) until the caret came back to it. Not
+         the box holding the caret: its own focus refresh reads the input (board.ts, the focus-in), and a rewrite under
+         the caret would lose the place being typed. */
+      if (field !== 'rmks') {
+        const other = field === 'str' ? 'end' : 'str', now = rowInputOf(inpById(id), at ? at.person : null)
+        const sib = now && [...(inf.closest('.sb-pb') || document).querySelectorAll<HTMLInputElement>('[data-ifld]')].find(b => b.dataset.ifld === `${tail}.${other}`)
+        if (sib && sib.isConnected && document.activeElement !== sib) sib.value = inpTimeText(now, other)
+      }
+    }
     else back()
     return
   }
@@ -1400,6 +1416,15 @@ export function boardChange(e: Event) {
   if (rq !== 'none') {
     f.value = boxText(p)   // a remark box holds the typed words, its date grey after it (owner D949 Q3 — html.ts reqRmkParts)
     if (rq === 'saved') notify()
+    /* …and the row's OTHER time box says what was saved too, as an Unavailable row's does (above): a request's end
+       cleared saves it all day, and the held row's start box went on reading 08:00 (the fresh Fable reader's F3,
+       25 Nov 26 — red first in ui/sharedrow-walkfinds.test.tsx). Never the box holding the caret. */
+    const tm = rq === 'saved' ? /^(.*)\.(str|end)$/.exec(p) : null
+    if (tm) {
+      const op = `${tm[1]}.${tm[2] === 'str' ? 'end' : 'str'}`
+      const sib = [...document.querySelectorAll<HTMLInputElement>('#sbBoard [data-bfld]')].find(b => b.dataset.bfld === op)
+      if (sib && sib.isConnected && document.activeElement !== sib) sib.value = boxText(op)
+    }
     return
   }
   if (txtSet(p, f.value)) {
@@ -2097,7 +2122,10 @@ export function boardTab(n: number) {
       if (ae.dataset.bfld != null) want = boxText(ae.dataset.bfld)
       else {
         const [tail, field] = ae.dataset.ifld.split('.')
-        const inp = inpById((iuParts('iu:' + tail) || { iid: tail }).iid)
+        /* his held row is compared with HIS input once a change cut it out (rowInputOf — the fresh Opus scenario
+           designer's M4: compared with the others', an untouched box fired a change nobody typed) */
+        const at = iuParts('iu:' + tail) || { iid: tail, person: null }
+        const inp = rowInputOf(inpById(at.iid), at.person)
         if (inp) want = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)   // the box's typed words (D948)
       }
       /* a TIME box SHOWS fmtHM(model) — a legacy compact '0900' reads '09:00' —

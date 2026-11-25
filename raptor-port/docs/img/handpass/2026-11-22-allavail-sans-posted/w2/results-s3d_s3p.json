@@ -1,0 +1,176 @@
+[
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-01",
+  "what": "Admin → Users: New person Quokka, WSO, post-in Fri 17 Jul, Add person",
+  "ok": true,
+  "note": "id pmrldi5ojucz49e {\"cs\":\"Quokka\",\"seat\":\"RCP\",\"san\":false} · post-in box BUTTON:button value \"Fri 17 Jul 26 ▾\" · note \"Quokka added to the roster — set flight and quals on the Quals page\"",
+  "pics": "s3-s3-01-newperson-form-desktop.png, s3-s3-01-newperson-added-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-02",
+  "what": "Quals: SANS ticked for Quokka by hand",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s3-s3-02-quals-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-03",
+  "what": "Thu 16 Jul board: Quokka offered in the crew list (1 copies)",
+  "ok": null,
+  "note": "",
+  "pics": "s3-03-crew-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-04",
+  "what": "Thu 16 Jul: BRIEF 08:00–09:00 naming Quokka, SQN EVENT 10:00–17:00 for ALL AVAIL",
+  "ok": true,
+  "note": "{\"g\":{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"pmrldi5ojucz49e\",\"rid\":\"rmrldid29z39l7s\"},\"a\":{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldigtdas8b8k\"}}",
+  "pics": "s3-04-fixture-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-05.off",
+  "what": "Quokka in the crowd? — \"+ SANS\" off (RECORD)",
+  "ok": "REC",
+  "note": "chip \"22\", window 22 people, Quokka IN",
+  "pics": "s3-s3-05-off-win-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-05.on",
+  "what": "Quokka in the crowd? — \"+ SANS\" on (RECORD)",
+  "ok": "REC",
+  "note": "chip \"22\", window 22 people, Quokka IN",
+  "pics": "s3-s3-05-on-win-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-05.off2",
+  "what": "Quokka in the crowd? — \"+ SANS\" off again (RECORD)",
+  "ok": "REC",
+  "note": "chip \"22\", window 22 people, Quokka IN",
+  "pics": "s3-s3-05-off2-win-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-05x",
+  "what": "the same answer in both switch positions",
+  "ok": true,
+  "note": "true/true/true"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-01",
+  "what": "Admin → Users: New person Quokka, WSO, post-in Fri 17 Jul, Add person",
+  "ok": true,
+  "note": "id pmrldi7eihapzht {\"cs\":\"Quokka\",\"seat\":\"RCP\",\"san\":false} · post-in box BUTTON:button value \"Fri 17 Jul 26 ▾\" · note \"Quokka added to the roster — set flight and quals on the Quals page\"",
+  "pics": "s3-s3-01-newperson-form-phone.png, s3-s3-01-newperson-added-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-02",
+  "what": "Quals: SANS ticked for Quokka by hand",
+  "ok": true,
+  "note": "{\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s3-s3-02-quals-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-03",
+  "what": "Thu 16 Jul board: Quokka offered in the crew list (1 copies)",
+  "ok": null,
+  "note": "",
+  "pics": "s3-03-crew-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-04",
+  "what": "Thu 16 Jul: BRIEF 08:00–09:00 naming Quokka, SQN EVENT 10:00–17:00 for ALL AVAIL",
+  "ok": true,
+  "note": "{\"g\":{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"pmrldi7eihapzht\",\"rid\":\"rmrldifkmb26x63\"},\"a\":{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\",\"rid\":\"rmrldikls7jplf8\"}}",
+  "pics": "s3-04-fixture-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-05.off",
+  "what": "Quokka in the crowd? — \"+ SANS\" off (RECORD)",
+  "ok": "REC",
+  "note": "chip \"22\", window 22 people, Quokka IN",
+  "pics": "s3-s3-05-off-win-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-05.on",
+  "what": "Quokka in the crowd? — \"+ SANS\" on (RECORD)",
+  "ok": "REC",
+  "note": "chip \"22\", window 22 people, Quokka IN",
+  "pics": "s3-s3-05-on-win-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-05.off2",
+  "what": "Quokka in the crowd? — \"+ SANS\" off again (RECORD)",
+  "ok": "REC",
+  "note": "chip \"22\", window 22 people, Quokka IN",
+  "pics": "s3-s3-05-off2-win-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-05x",
+  "what": "the same answer in both switch positions",
+  "ok": true,
+  "note": "true/true/true"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

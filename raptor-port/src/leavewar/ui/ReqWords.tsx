@@ -14,7 +14,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { remarksTyped, tillShown } from '../../engine/inputs'
-import { setLeaveRemarks } from '../../ui/inputedit'
+import { setLeaveRemarks, rowInputOf } from '../../ui/inputedit'
 import { inputDates, type WarInput } from '../absences'
 import { DocField, inputById, requestDocRow, rowDocIds, tillOfISO, usePlanVersion } from '../sync'
 import { TILL_DEFAULT, type ReqDraft } from './reqdraft'
@@ -193,7 +193,10 @@ export function LeaveWords({ row, personId, testPrefix = 'bid', onRefused, flush
      nothing above redraws this row — it listens to the Inputs' own change signal and reads the input afresh by its id; a
      document removed or a till ticked again then shows at once, not only after the window is opened again */
   usePlanVersion()
-  row = (row && inputById(row.iid)) || row
+  /* …and once his first save has given him a leave of his own out of a shared one, the window reads HIS leave — never
+     the shared one it was opened on, which now holds only the others and their words (inputedit.tsx rowInputOf; chat
+     170's night walk, W3, the same address on the Board's row) */
+  row = (row && (rowInputOf(inputById(row.iid), personId) || inputById(row.iid))) || row
   const typed = remarksTyped(row?.remarks, row)
   const docIds = rowDocIds(row)
   const [edit, setEdit] = useState<string | null>(null)

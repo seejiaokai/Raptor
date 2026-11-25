@@ -1,0 +1,78 @@
+{
+ "pictures": [
+  {
+   "file": "b1-desk-chromium-0-filed.png",
+   "case": "B1",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger 08:00-10:00 \"\" [imwvrltl2s002pr~bane]",
+    "Hex 08:00-10:00 \"\" [imwvrltl2s002pr~rocky]"
+   ]
+  },
+  {
+   "file": "b1-desk-chromium-1-str.png",
+   "case": "B1",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger 09:00-10:00 \"\" [imwvrltl2s002pr~bane]",
+    "Hex 08:00-10:00 \"\" [imwvrltl2s002pr~rocky]"
+   ]
+  },
+  {
+   "file": "b1-desk-chromium-2-end.png",
+   "case": "B1",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger 09:00-11:00 \"\" [imwvrltl2s002pr~bane]",
+    "Hex 08:00-10:00 \"\" [imwvrltl2s002pr~rocky]"
+   ]
+  },
+  {
+   "file": "b1-desk-chromium-3-rmks.png",
+   "case": "B1",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger 09:00-11:00 \"own hours\" [imwvrltl2s002pr~bane]",
+    "Hex 08:00-10:00 \"\" [imwvrltl2s002pr~rocky]"
+   ]
+  },
+  {
+   "file": "b1-desk-chromium-4-left.png",
+   "case": "B1",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger 09:00-11:00 \"own hours\" [imwvrlvwkka8rzc]",
+    "Hex 08:00-10:00 \"\" [imwvrltl2s002pr]"
+   ]
+  },
+  {
+   "file": "b1-desk-chromium-5-reload.png",
+   "case": "B1",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger 09:00-11:00 \"own hours\" [imwvrlvwkka8rzc]",
+    "Hex 08:00-10:00 \"\" [imwvrltl2s002pr]"
+   ]
+  }
+ ],
+ "cases": {
+  "B1": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvrltl2s002pr\"]; asked []; note \"\"",
+    "filed :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvrltl2s002pr]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwvrltl2s002pr~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrltl2s002pr~rocky]\"] :: CARET BODY",
+    "picture b1-desk-chromium-0-filed.png: [\"Ranger 08:00-10:00 \\\"\\\" [imwvrltl2s002pr~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrltl2s002pr~rocky]\"]",
+    "str 0900, Tab (typed in imwvrltl2s002pr~bane.str) :: STORE [\"LL Ranger 09:00-10:00 \\\"\\\" [imwvrlvwkka8rzc]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrltl2s002pr]\"] :: SCREEN [\"Ranger 09:00-10:00 \\\"\\\" [imwvrltl2s002pr~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrltl2s002pr~rocky]\"] :: CARET imwvrltl2s002pr~bane.end",
+    "picture b1-desk-chromium-1-str.png: [\"Ranger 09:00-10:00 \\\"\\\" [imwvrltl2s002pr~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrltl2s002pr~rocky]\"]",
+    "end 1100, Tab (typed in imwvrltl2s002pr~bane.end) :: STORE [\"LL Ranger 09:00-11:00 \\\"\\\" [imwvrlvwkka8rzc]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrltl2s002pr]\"] :: SCREEN [\"Ranger 09:00-11:00 \\\"\\\" [imwvrltl2s002pr~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrltl2s002pr~rocky]\"] :: CARET imwvrltl2s002pr~bane.rmks",
+    "picture b1-desk-chromium-2-end.png: [\"Ranger 09:00-11:00 \\\"\\\" [imwvrltl2s002pr~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrltl2s002pr~rocky]\"]",
+    "rmks own hours, Tab (typed in imwvrltl2s002pr~bane.rmks) :: STORE [\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvrlvwkka8rzc]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrltl2s002pr]\"] :: SCREEN [\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvrltl2s002pr~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrltl2s002pr~rocky]\"] :: CARET imwvrltl2s002pr~rocky.str",
+    "picture b1-desk-chromium-3-rmks.png: [\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvrltl2s002pr~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrltl2s002pr~rocky]\"]",
+    "caret left (pressed DIV.dsec) :: STORE [\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvrlvwkka8rzc]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrltl2s002pr]\"] :: SCREEN [\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvrlvwkka8rzc]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrltl2s002pr]\"] :: CARET BODY",
+    "picture b1-desk-chromium-4-left.png: [\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvrlvwkka8rzc]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrltl2s002pr]\"]",
+    "after reload :: STORE [\"LL Ranger 09:00-11:00 \\\"own hours\\\" [imwvrlvwkka8rzc]\",\"LL Hex 08:00-10:00 \\\"\\\" [imwvrltl2s002pr]\"] :: SCREEN [\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvrlvwkka8rzc]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrltl2s002pr]\"] :: CARET BODY",
+    "picture b1-desk-chromium-5-reload.png: [\"Ranger 09:00-11:00 \\\"own hours\\\" [imwvrlvwkka8rzc]\",\"Hex 08:00-10:00 \\\"\\\" [imwvrltl2s002pr]\"]"
+   ]
+  }
+ },
+ "errors": []
+}

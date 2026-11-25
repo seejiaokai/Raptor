@@ -11,27 +11,50 @@
    day still takes OFT and AMT): nothing is ticked, and he chooses. A run of days starts with Fly whatever lies inside
    it. */
 import { defaultAllday } from '../engine/inputs'
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, sansFiler, sansOnP } from '../engine/people'
 import { isAdmin, me, pageUnit } from '../state/perms'
 import { rosterOf } from '../engine/roster'
 import { notify } from '../state/store'
 import { flyAnswer } from '../leavewar/sync'
 import { todayIso } from '../engine/editlog'
-import { fmt } from './inputedit'
+import { fmt, sansRefusal, sansRunTrim } from './inputedit'
+import { HOOKS } from '../engine/hooks'
 import { setInpEdit } from './pops'
 
 const TYPE = 'SANS Availability'
-const isSans = (id: string | null | undefined): boolean => !!id && !!PEOPLE[id] && !!PEOPLE[id].san
+/* (a SANS man — SANS today, or by a SANS posting saved for a date ahead: he may be filed for from the moment it is saved,
+   owner D2340, 23 Nov 26; until then SANS today only, D2327). With a day, SANS on that day: his own "+ Commitment" opens
+   only on a day he can be filed for, so it never seeds a filing the save would refuse. */
+const isSans = (id: string | null | undefined, iso?: string): boolean =>
+  !!id && !!PEOPLE[id] && (iso ? sansOnP(PEOPLE[id], iso) : sansFiler(PEOPLE[id]))
 
-export const maySansAdd = (): boolean => isAdmin() || isSans(me())
+export const maySansAdd = (iso?: string): boolean => isAdmin() || isSans(me(), iso)
 
 export function openSansAdd(from: string, until?: string): boolean {
-  if (!maySansAdd()) return false
   const [iso, end] = until && until < from ? [until, from] : [from, until]
+  /* A RUN THAT REACHES HIS SANS DATE IS HIS TO FILE (his D2388, 23 Nov 26): the window opens on the run he picked, and the
+     save takes the days from his date on and says which it left out (ui/inputedit.tsx sansCut) — every way of picking
+     days comes through here or through that save. */
+  const reaches = (id: string | null | undefined): boolean => !!id && !!PEOPLE[id] && !!end && !!sansRunTrim(id, iso, end)
+  if (!maySansAdd(iso) && !reaches(me())) {
+    /* A SANS MAN WHOSE SANS STARTS LATER THAN THE WHOLE RUN HE PICKED IS TOLD WHY, never met with nothing (the FULL check's
+       walk, chat 152, W8-1: Ranger, posted out as SANS from Fri 17 Jul, dragged Thu 16 → Sat 18 and no window opened and
+       nothing was said). The words are the save's own refusal (ui/inputedit.tsx sansRefusal), so the calendar and the
+       window never differ. A man who is not SANS at all is offered no add on this calendar, so his stays silent. */
+    const mine = me()
+    if (!isAdmin() && mine && sansFiler(PEOPLE[mine])) {
+      const why = sansRefusal(mine, { f: true }, iso, end || iso)
+      if (why) HOOKS.toast(why, 'warn')
+    }
+    return false
+  }
   const mine = me()
-  const who = isSans(mine) ? mine
+  const offered = (id: string) => !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special
+  const who = isSans(mine, iso) || reaches(mine) ? mine
     /* (a SANS man of the page's own squadron — the SANS calendar stays on his own, D2132; the reshape plan §3.2 A-ii) */
-    : rosterOf(pageUnit('own'), iso).find(id => PEOPLE[id].san && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special)
+    : rosterOf(pageUnit('own'), iso).find(id => isSans(id, iso) && offered(id))
+      /* (…or, on a run no man is SANS at the start of, the first whose date it reaches — D2388) */
+      ?? rosterOf(pageUnit('own'), iso).find(id => reaches(id) && offered(id))
   const single = !end || end === iso
   setInpEdit({
     _new: true, _calendar: true, _ctx: 's', person: who, type: TYPE,

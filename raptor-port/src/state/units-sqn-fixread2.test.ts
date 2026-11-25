@@ -297,7 +297,10 @@ describe("still open 2, his D2194 — an admin's bell lines and read records are
     expect(ownershipViolation(env([put('notices', 'n1', line('osp9'))]))).toMatch(/bell line of another squadron's man/)
     expect(ownershipViolation(env([{ op: 'delete', collection: 'notices', id: 'n1', before: line('osp9'), after: null }]))).toMatch(/bell line of another squadron's man/)
     expect(ownershipViolation(env([put('settings', 'seen:osp9', { pid: 'osp9', ids: [] })]))).toMatch(/another squadron's man's read record/)
-    expect(ownershipViolation(env([put('settings', 'noticeseen:osp9', { pid: 'osp9', ids: [] })]))).toMatch(/another squadron's man's read record/)
+    /* (his bell's read record: still refused, and since round 4's SEC-R4-1 for his own squadron's man too — a read record
+       is its owner's alone, whoever writes; leavewar/sans-seen-sec-r4.test.ts) */
+    expect(ownershipViolation(env([put('settings', 'noticeseen:osp9', { pid: 'osp9', ids: [] })]))).toMatch(/another person's read record/)
+    expect(ownershipViolation(env([put('settings', 'noticeseen:bane', { pid: 'bane', ids: [] })]))).toMatch(/another person's read record/)
   })
   it('…while his own squadron’s man, the holiday line (which reaches every squadron at the place) and the master pass', () => {
     signInAs('ad2', 'a2')

@@ -5,6 +5,7 @@ import { PEOPLE } from '../engine/people'
 import { keyDay, iuParts } from '../engine/keys'
 import { ridKey, ensureRowIds } from '../engine/rowids'
 import { slotVal, setSlotVal, fillSlot, lastFilled, armTargetExists, sentinelSeatOK } from '../engine/slots'
+import { rowKeyNow } from '../engine/rowinput'
 import { popReorderedDay } from '../engine/reorder'
 import { slotBar, personCount, rowTwice } from '../engine/avail'
 import { validate, WARN, officialWarn, versionFaceWarn, workingWarn, clashItem } from '../engine/validate'
@@ -98,6 +99,12 @@ export function setCalMonth(v:{y:number,m:number}|null){ CALMONTH=v }
    and no count changes — so it is view state of this sitting, saved nowhere, and gone at a sign-in or sign-out. */
 export let SANSHL:string|null=null
 export function setSansHl(v:string|null){ SANSHL=v }
+/* A DAY THE SANS CALENDAR IS ASKED TO OPEN (owner D2338, 22 Nov 26 — his bell's line of SANS days with nothing filed, "a tap
+   opening the SANS calendar"): the first of those days, spent by the calendar the moment it opens that day's window
+   (ui/SansCal.tsx). View state of this sitting, as the highlight above — saved nowhere. */
+export let SANSDAYASK:string|null=null
+export function askSansDay(iso:string){ SANSDAYASK=/^\d{4}-\d{2}-\d{2}$/.test(iso)?iso:null }
+export function clearSansDayAsk(){ SANSDAYASK=null }
 export let INPREVEAL:{iid:string,iso:string,mode:'member'|'sans'}|null=null
 export function clearInpReveal(){ INPREVEAL=null }
 /* A PLANNING NOTE (OR A DAY TITLE) CHANGED BY UNDO OR REDO — the day it is on, for the Inputs calendar to bring an OPEN
@@ -1309,7 +1316,7 @@ export function armSlot(key:any,el?:any){
   /* a previewing day is read-only; preview markup emits no armable surfaces,
      but a stale element from the pre-preview render must not arm a live key */
   if(DPREV.has(keyDay(base)))return
-  if(ARM&&ARM.key===key){disarmSlot();return;}   // tapping it again puts it down
+  if(ARM&&(ARM.key===key||rowKeyNow(ARM.key)===rowKeyNow(key))){disarmSlot();return;}   // tapping it again puts it down — the same row, whichever address it now carries (engine/rowinput.ts rowKeyNow)
   ARM={key,di:keyDay(base),title:slotTitle(base)};
   ARM_ROW=armedRowKey();
   paintArm(); renderRosters();

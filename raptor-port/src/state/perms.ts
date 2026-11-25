@@ -26,7 +26,7 @@
    replaced did (stated per question), so no headless test changes meaning. */
 import { SESSION, ME, setEffectiveRole } from './auth'
 import { store, unitSetting } from '../engine/hooks'
-import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld, placeOf, namedOf, placeholderOf, inputSpanIso, inputSquadrons, inputUnitOf } from '../engine/inputs'
+import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld, placeOf, namedOf, placeholderOf, inputSpanIso, inputSquadrons, inputUnitOf, sansNewDayProblem } from '../engine/inputs'
 import { dayNamedIds } from '../engine/publish'
 import { dayIso } from '../engine/verid'
 import { deriveActor } from '../command/actor'
@@ -35,7 +35,7 @@ import { voidedOil } from '../engine/oil'
    made only when a command is judged, never as the module loads) */
 import { seedAccounts, ACCOUNTS_LIST, isMasterAccount, accountBefore, levelAcct, readAccounts, adminsOf, type Account } from './accounts'
 import { unitRowsBefore, unitRowsAfter, levelBefore, homeBefore, homeChangesBefore, todayIso, homeOn, levelOfAccount, setNewHomeUnit, grantBefore, grantRowHolds, datedBreach, lockBreach, everOfBefore } from './units'
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, sansStart, sansStop } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
 import { unitOf, isUnitId, split } from '../storage/unitid'
 import {
@@ -929,7 +929,7 @@ const STAMP_AHEAD_MS = 5_000
 /* the kinds of a bell line only a Leave War command of an admin's writes (state/notices.ts NoticeWhat: `lw`, `lwopen`,
    `lwback`) — a member's notice carries none (the notices case below); nor a posting's line (`po`, [POSTOUT-RUN-NOTICE] —
    written only by the posting pass, the app's own act) */
-const WAR_LINE_KINDS = new Set(['lw', 'lwopen', 'lwback', 'oilhol', 'po', 'poback'])
+const WAR_LINE_KINDS = new Set(['lw', 'lwopen', 'lwback', 'oilhol', 'po', 'poback', 'sansback'])   // (sansback: D2338's struck SANS-days line, by the posting's take-back)
 const placedOf = (r: any): string => `${r?.placedBy ?? ''}|${r?.placedAt ?? ''}`
 /* the halves a request's code takes — "*LL" the morning, "LL*" the afternoon, "LL" both (the war's notation, read here
    without reaching into the war's engine) */
@@ -1343,7 +1343,7 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
         && !told.has(`${n.to}|${who}`)
       if (!ok) return refuse(c)
       told.add(`${n.to}|${who}`)
-    } else if (!deletes || parts.some(p => WAR_LINE_KINDS.has(String(p && p.k))) || !inputsChanged.has(String(n.iid))) return refuse(c)
+    } else if (!deletes || parts.some(p => WAR_LINE_KINDS.has(String(p && p.k)) || NEVER_STORED.has(String(p && p.k))) || !inputsChanged.has(String(n.iid))) return refuse(c)
   }
   /* THE SIGN-INS THIS PASS TAKES AWAY (fix read 12, fault A — Opus O12-2, Fable F12-1): a posted man's account whose
      outcome is Delete and whose row this pass removes — or, on the accounts' very first write, his seeded row the stored
@@ -2228,7 +2228,8 @@ function deletedPersonViolation(env: CommitEnvelope): string | null {
    record is a ticked person's alone; it stands unchanged, or is absent (the plain reading: his first squadron, while he
    has never moved), or names the squadron he is in TODAY, from today (state/quals-write.ts writes it so). The Undo of an
    untick puts back the record its step took away: the timeline's own restore of his own step (REPLAY answers only then —
-   it vouches for no person's row image by image) may write an earlier day, never a later one, with the squadron he was
+   this check asks only that a replay is under way, not whether it vouches for the row — which since chat 155 it can, image
+   for image, for the member's own SANS days) may write an earlier day, never a later one, with the squadron he was
    in on that day — a record of a squadron he has left since holds nothing by the reading rule. */
 function schedRecordViolation(env: CommitEnvelope): string | null {
   const a = env.actor
@@ -2953,11 +2954,27 @@ const warSignedBy = (n: any, self: string | null): boolean => (Array.isArray(n?.
 })
 /* (a line with a war part — the kinds only the war's own writers write) */
 const warPart = (n: any): boolean => Array.isArray(n?.what) && n.what.some((p: any) => WAR_LINE_KINDS.has(String(p?.k)))
+/* A KIND THE APP NEVER STORES (chat 147's two code reads — D2338; docs/data-model.md §11, the Notice row): his SANS-days
+   line (`sansdue`) is only ever worked out on his bell (leavewar/sansunfiled.ts sansUnfiledLines), never written. Being no
+   war kind, a stored one was judged as an input's line, so an admin's input command — or a member's, to the admin who
+   filed for him — put "Your SANS availability · Planned, no availability filed" on a bell, reading as the app's own (no
+   name), never going. A put of a line carrying one is refused in both sections, before every door — a verified replay
+   too: no step of the app ever wrote one. */
+const NEVER_STORED = new Set(['sansdue'])
+const neverStored = (n: any): boolean => Array.isArray(n?.what) && n.what.some((p: any) => NEVER_STORED.has(String(p?.k)))
+/* (a SANS-days part's days as its writer gives them: a list of ISO date strings — notices.ts reads them so too; ISO_DAY
+   is this file's own, above) */
+const isoDays = (d: unknown): boolean => Array.isArray(d) && d.every(x => typeof x === 'string' && ISO_DAY.test(x))
 /* A LINE THAT READS AS ONE (fix read 10, fault A (d) — Fable F10-1): every line the app writes carries at least one part,
    each an object naming its kind. A line with no parts read as "about him" (noticeAboutHim) and followed a moved man;
    one whose part was null broke the bell's words. */
 const lineMalformed = (n: any): boolean => !n || typeof n !== 'object' || !Array.isArray(n.what) || !n.what.length
-  || n.what.some((p: any) => !p || typeof p !== 'object' || Array.isArray(p) || typeof p.k !== 'string')
+  || n.what.some((p: any) => !p || typeof p !== 'object' || Array.isArray(p) || typeof p.k !== 'string'
+    /* (…and a SANS-days part whose days are not a list of ISO dates — chat 147's reads: `days: 'Sat'` or `[5, 6]` broke
+       the bell's words for its reader, who could not remove the line) */
+    || ((p.k === 'sansdue' || p.k === 'sansback') && !isoDays(p.days))
+    /* (…and a taken-back line's hidden days the same — D2341) */
+    || (p.k === 'sansback' && p.hid !== undefined && !isoDays(p.hid)))
 /* A RESTORE'S FOLLOW-UP TO HIS OWN MAN (fix read 10, fault A (b)): followUpOf below judges the one about a man of another
    squadron; a follow-up on his own man's bell — a "taken back" of bidding opened, an "again" — passed by warMade alone.
    Now it too must be one the restore owes (the probe, field for field), each owed line once (`used`). */
@@ -3008,7 +3025,8 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
   const self = a.personId == null ? null : String(a.personId)
   let today: string | null = null, rows: UnitRows | null = null
   /* HIS OWN SQUADRON'S MAN: an admin of the person's home today, over the rows before the command. The read records
-     (`seen:`, `noticeseen:`, `apprseen:`, `reqseen:`) and every bell line ask this alone — but for the one audience line
+     (`seen:`, `apprseen:`, `reqseen:` — the bell's own, `noticeseen:`, is its owner's alone since round 4's SEC-R4-1,
+     ownershipChecks) and every bell line ask this alone — but for the one audience line
      below (fix read 2 — the security read's 3: the audience half was asked of every line and all four read records, so
      once Hunter, 142's admin, held Plan of 149, 149's admin rewrote his read records and took 142's lines off his bell). */
   const ownsHome = (pid: string): boolean => {
@@ -3044,6 +3062,7 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
   let replayed: ((c: Change) => boolean) | null | undefined
   const followed = new Set<string>()
   const ownFollowed = new Set<string>()
+  const sansBacks = new Set<string>()
   for (const c of env.changes) {
     const where = `${c.collection}/${c.id}`
     if (c.collection === 'notices') {
@@ -3053,6 +3072,8 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
         if (lineRewritten(c, replayed)) return `a bell line not as the pass writes it (${where})`
         /* (fix read 10, fault A (d): a line that reads as one — before every door) */
         if (lineMalformed(c.after) && !(replayed && replayed(c))) return `a bell line that will not read (${where})`
+        /* (chat 147: a kind the app never stores — before the telling doors, a verified replay too) */
+        if (neverStored(c.after)) return `a bell line the app only works out (${where})`
       }
       for (const n of [c.before as any, c.op === 'delete' ? null : (c.after as any)]) {
         if (!n || typeof n !== 'object' || n.to == null) continue
@@ -3142,7 +3163,17 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
                made the change (leavewar/sync.ts tellWar, tellBidding, the restore's follow-ups, retractPostingLines — each
                me()); a posting's own line by no one, the posting acting (noticePosting)) */
             if (!warSignedBy(n, self)) return `a war line not signed as its writer signs it (${where})`
-            if (!(WAR_OWED && WAR_OWED(env.changes, n)) && !restoreFollowUpOwed(env, n, replayed, ownFollowed)) return `a war line no change of the war owes (${where})`
+            if (!(WAR_OWED && WAR_OWED(env.changes, n)) && !restoreFollowUpOwed(env, n, replayed, ownFollowed)
+              /* (…or the "taken back" a Redo owes the line its step's Undo wrote — sansUndoToldOwed, below) */
+              && !(env.origin === 'restore' && SANS_UNDO_TOLD && SANS_UNDO_TOLD(env, c))) return `a war line no change of the war owes (${where})`
+            /* (one struck SANS-days line a man and posting, in one command — chat 147's reads: one take-back owes one line,
+               as restoreFollowUpOwed's `used`; 25 copies rode one posting command) */
+            const sb = (n.what as any[]).find((p: any) => p && p.k === 'sansback')
+            if (sb) {
+              const key = `${String(n.to)}|${String(n.day)}`
+              if (sansBacks.has(key)) return `a war line no change of the war owes (${where})`
+              sansBacks.add(key)
+            }
           }
         }
         /* A LINE NAMING NO INPUT (fix read 10, fault A (d) — Fable F10-1): only the war's lines (above), the holiday's
@@ -3161,7 +3192,9 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
     const id = String(c.id)
     /* (job 2, 19 Nov 26 — the security read's SEC-1: an admin's Approvals moment, `apprseen:<pid>`, and his record of
        the access requests he has seen, `reqseen:<account>`, are read records too — 142's plain admin set 149's admin's) */
-    const pfx = id.startsWith('seen:') ? 'seen:' : id.startsWith('noticeseen:') ? 'noticeseen:' : id.startsWith('apprseen:') ? 'apprseen:' : id.startsWith('reqseen:') ? 'reqseen:' : null
+    /* (a bell's read record, `noticeseen:<pid>`, is no longer asked here: it is its owner's alone whoever writes, asked
+       of every actor before this check — ownershipChecks, round 4's SEC-R4-1 — so only an admin's own row reaches here) */
+    const pfx = id.startsWith('seen:') ? 'seen:' : id.startsWith('apprseen:') ? 'apprseen:' : id.startsWith('reqseen:') ? 'reqseen:' : null
     if (!pfx) continue
     const pid = pfx === 'reqseen:' ? String(ACCOUNTS_LIST.find(x => x.id === id.slice(pfx.length))?.pid ?? '') : id.slice(pfx.length)
     if (!pid) continue                                  // (an account with no person names no squadron to judge by)
@@ -3314,6 +3347,98 @@ function withLanding(saved: unknown, mem: unknown): unknown {
    149's stored line was overwritten. A person's command of that type is refused outright. */
 const RETIRED_TYPES = new Set(['sched.load'])
 
+/* SANS AVAILABILITY ONLY ON HIS SANS DAYS, AT THE FINAL SAVE (owner D2340 — Astra's read #3 = the fresh Opus read's F8,
+   chat 152): the windows refuse a day before his SANS date (ui/inputedit.tsx sansRefusal), and this holds the same rule
+   for every command and every role — a hand-made batch, a paste, an admin's save — before against after
+   (engine/inputs.ts sansNewDayProblem), so a stored record a later posting change hid still saves as it stands. His Undo
+   or Redo, the step the timeline vouches for, puts back what it took (the record's days hide again by themselves). */
+/* A MAN'S OWN PART OF A SHARED RECORD, SPLIT OFF IN THE SAME COMMAND (Astra's fix re-read #4, chat 154): deleting Hex
+   keeps his past part of a shared offer as a record of its own (engine/inputown.ts ownInputOf — D299), a new row with no
+   before-image, so the check above read his days in it as new and, Hex being hidden that day (D2341), refused the delete.
+   Such a row is judged against the record it came from: one of this command's own SANS records whose before held him
+   and whose after no longer does — so only days or people that record did not already hold are asked. A delete may take
+   him out of several shared records at once (the fresh Opus re-read 2's F4, chat 155), so EVERY such record is a
+   candidate, and the row passes where any one of them already held all of it. */
+/* …and a candidate must BE that record's copy (Astra's fix re-read 2, #2, chat 155: two fresh records of a member's own,
+   each "borrowing" the one offer he took himself out of, both saved): the copy the delete makes (engine/inputown.ts
+   ownInputOf) keeps the record's kind, first day, filing stamp (`by`, `at`) and his own entry as they were — only its id,
+   its end, its printed till and its change stamps move — and each record vouches for one copy only (`used`). */
+type InputChange = CommitEnvelope['changes'][number]
+function splitSourcesOf(env: CommitEnvelope, c: InputChange): InputChange[] {
+  if (c.before != null || !c.after) return []
+  const ids = namedOf(c.after).map((e: any) => String(e.p))
+  if (ids.length !== 1) return []
+  const p = ids[0]
+  // any: an input record is untyped (a verbatim port, src/engine/inputs.ts)
+  const a: any = c.after
+  const mine = (r: any) => (Array.isArray(r.people) ? r.people : []).find((e: any) => e && String(e.p) === p)
+  const out: InputChange[] = []
+  for (const s of env.changes) {
+    if (s === c || s.collection !== 'inputs' || s.op !== 'put' || !s.before || !s.after) continue
+    const b: any = s.before
+    if (!isSansAvail(b.type) || !holds(b, p) || holds(s.after, p)) continue
+    /* (the first day compared as a day, not as text — a door that re-states it under the week in view writes the same day
+       another way: the fresh Opus re-read 3's F2) */
+    const sb = inputSpanIso(b), sa = inputSpanIso(a)
+    if (b.type !== a.type || !sb || !sa || sb[0] !== sa[0] || b.by !== a.by || b.at !== a.at) continue
+    if (!Array.isArray(a.people) || a.people.length !== 1 || !deepEqual(mine(b), a.people[0])) continue
+    out.push(s)
+  }
+  return out
+}
+function sansDayViolation(env: CommitEnvelope): string | null {
+  const used = new Set<InputChange>()
+  for (const c of env.changes) {
+    if (c.collection !== 'inputs' || c.op !== 'put' || !c.after) continue
+    let bad = sansNewDayProblem(c.before, c.after)
+    if (bad) for (const s of splitSourcesOf(env, c)) {
+      if (used.has(s)) continue
+      const b = sansNewDayProblem(s.before, c.after)
+      if (!b) { used.add(s); bad = null; break }
+    }
+    if (!bad) continue
+    if (env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) continue
+    return `SANS availability for ${bad[0]} on ${bad[1]}, not one of his SANS days (inputs/${c.id})`
+  }
+  return null
+}
+/* HIS SANS CHANGE LINE IS TAKEN AWAY ONLY BY THE UNDO OR REDO OF THE STEP THAT HOLDS IT (Astra's read #2, chat 152 — D2341,
+   D2338; narrowed by the four reads of 0eaacc411 — the security read's SEC156-3, the Opus read's F3): a delete has no
+   after-image, so an ordinary input command of an admin's took it off his bell. It used to pass in a command that changed
+   that man's posting too — but since D2391 no writer takes a stored SANS line away (the live reminder is worked out, never
+   stored; a line a later one replaces is hidden by its `over`, never deleted), so that door was used by nothing honest,
+   and a hand-made posting command took his "You're no longer SANS." away with it. Now only the verified replay of a step
+   (undo/timeline.ts verifiedReplay) passes. A rewrite is lineRewritten's. */
+/* …OR THE REDO THAT FOLLOWS THE UNDO WHICH WROTE IT (round 2 of the reads of f73602f9f — Astra's F1, the Opus read's R2, Fable's
+   F2): an admin's Undo of a SANS tick he put on, or of a SANS posting, tells the man (leavewar/sync.ts warNoticesReversed) —
+   a line no step holds, so the Redo after it could not take it back, and "You're no longer SANS." stood on the bell of a man
+   SANS again. The Redo now takes it back as every bell line is (D1693, D1699): gone where he had not read it, struck "taken
+   back" where he had. Only for that relationship, vouched for by the war's side (leavewar/sansunfiled.ts installs it): the
+   restore the timeline is applying right now is a Redo of that same person's step, the line is one that step's Undo wrote,
+   and the change is exactly its retraction — none installed, none passes. */
+type SansUndoToldProbe = (env: CommitEnvelope, c: Change) => boolean
+let SANS_UNDO_TOLD: SansUndoToldProbe | null = null
+export function setSansUndoTold(fn: SansUndoToldProbe | null): void { SANS_UNDO_TOLD = fn }
+function sansBackEraseViolation(env: CommitEnvelope): string | null {
+  for (const c of env.changes) {
+    if (c.collection !== 'notices' || c.op !== 'delete') continue
+    const b: any = c.before
+    if (!b || !Array.isArray(b.what) || !b.what.some((p: any) => p && p.k === 'sansback')) continue
+    if (env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) continue
+    if (env.origin === 'restore' && SANS_UNDO_TOLD && SANS_UNDO_TOLD(env, c)) continue
+    return `his SANS-days line taken away by no Undo or Redo of its own step (notices/${c.id})`
+  }
+  return null
+}
+/* NO HIDDEN PLANNING MARK, AND SO NO CHECK OF ONE (his D2560, 24 Nov 26; docs/data-model.md §11 — together, D200): a SANS
+   man's reminder once lit again by a stamp on each day he was newly put on, `settings/sansplan:<pid>:<iso>`, written by
+   a projection this gate vouched for by the command that caused it. Three rounds of blind reads found faults there —
+   round 3's: a member lit another man's reminder by naming a finished planning as his projection's cause (Astra F1), and
+   the stamp could be frozen so nobody was told again (the security read's SEC-R3-1, SEC-R3-2). The reminder now lights
+   again only for a day not in it when he read it, read from his own read record (leavewar/sansunfiled.ts readOf), which
+   only he writes — true of every actor only since round 4's security read (SEC-R4-1): the app's own projection and an
+   admin's command wrote it until then (the `noticeseen:` block in ownershipChecks, before every role's early return; a
+   member's own command type, below). Nothing reads a `sansplan:` row any more. */
 export function ownershipViolation(env: CommitEnvelope): string | null {
   if (env.origin === 'user' && RETIRED_TYPES.has(env.type)) return `a retired command type (${env.type}) — no door raises it`
   const stored = storedRowViolation(env)
@@ -3349,6 +3474,26 @@ function ownershipChecks(env: CommitEnvelope): string | null {
   if (homeBad) return homeBad
   const inputBad = inputUnitViolation(env)
   if (inputBad) return inputBad
+  const sansDayBad = sansDayViolation(env)
+  if (sansDayBad) return sansDayBad
+  const sansBackBad = sansBackEraseViolation(env)
+  if (sansBackBad) return sansBackBad
+  /* A READ RECORD IS ITS OWNER'S ALONE, WHOEVER WRITES (round 4's security read, SEC-R4-1, and Astra's same case, 24 Nov
+     26; docs/data-model.md §11 NoticeSeen — together, D200): since his D2560 a man's read record alone decides whether his
+     read SANS reminder lights again. This gate asked nothing of the app's own actor, and of an admin only that the man
+     was his own squadron's — so the app's projection door (command commitProjection, open to any code of the page) wrote
+     anyone's record, and an admin's command of any type his man's: a member put another man's reminder out, read days
+     ahead for him so a later planning never told him, or emptied his record and lit it with nothing planned. Asked here,
+     before every role's early return, of every actor. The one honest writer is state/noticeseen.ts write — the person
+     signed in, his own row, by his own `notices.seen` (a tap, "Mark all read", forgetRead after his Undo post out has
+     landed); the posting pass never writes one (postingPassViolation). Another device's change and a seed are not asked:
+     each carries what was judged where it was made. */
+  for (const c of env.changes) {
+    if (c.collection !== 'settings' || !String(c.id).startsWith('noticeseen:')) continue
+    if (env.origin === 'remote' || env.origin === 'seed') continue
+    const own = !!a && (a.role === 'admin' || a.role === 'member') && a.personId != null && String(c.id) === `noticeseen:${a.personId}`
+    if (!own) return `another person's read record (${c.collection}/${c.id})`
+  }
   /* WHEN A PERSON LAST OPENED HIS OWN WINDOW (M5a — the security read's finding 4): his own row, by its one command,
      for an ADMIN too — an admin who changed a man's leave could otherwise set that man's moment to now and wipe the dots
      that tell him (§11: "C R U own" for every role) */
@@ -3416,6 +3561,8 @@ function ownershipChecks(env: CommitEnvelope): string | null {
            opened or closed, "… taken back" are written only by an admin's war command (state/notices.ts noticeWar, the
            `lw.notice` follow-up) — a member's notice riding his own input may carry none of them */
         if (c.op === 'put' && warPart(n)) return `a notice that is not his own change's (${where})`
+        /* (chat 147: nor a kind the app never stores — before the telling door, a verified replay too) */
+        if (c.op === 'put' && neverStored(n)) return `a bell line the app only works out (${where})`
         /* (fix read 10, fault A (d): a line that reads as one, in this section too) */
         if (c.op === 'put' && lineMalformed(n)) {
           if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
@@ -3450,6 +3597,23 @@ function ownershipChecks(env: CommitEnvelope): string | null {
            his to make, so an absent side reads as an empty person */
         const b: any = c.before ?? {}, n: any = c.op === 'delete' ? {} : (c.after ?? {})
         for (const [what, read] of OWN_ROW_ADMIN_ONLY) if (read(b) !== read(n)) return `${what} (${where})`
+        /* HIS SANS DAYS CHANGE ONLY AS HIS QUALS TICK WRITES THEM — TODAY (the security read's S3, chat 152; D2313: "a tick by
+           hand counts from the day it is made", state/quals-write.ts). Since D2340 / D2341 his SANS days decide which days
+           he may be filed for and which of his filings show, so a hand-made own-row command setting `sanFrom` back to
+           1 Jan, or an ended stretch (`sanWas`) over last week, let him file days before his SANS date and bring hidden
+           ones back. The one change allowed is the tick's own: put on from today, or taken off today — worked out from the
+           before-image here; his Undo / Redo of a tick, the step the timeline vouches for, puts back what it took. */
+        const sanSig = (p: any) => JSON.stringify([!!p?.san, p?.sanFrom ?? null, p?.sanWas ?? null])
+        if (sanSig(b) !== sanSig(n)) {
+          const want: any = { san: b.san, sanFrom: b.sanFrom, sanWas: Array.isArray(b.sanWas) ? b.sanWas.map((s: any) => Array.isArray(s) ? s.slice() : s) : b.sanWas }
+          if (want.sanFrom === undefined) delete want.sanFrom
+          if (want.sanWas === undefined) delete want.sanWas
+          if (!!n.san !== !!b.san) { if (n.san) sansStart(want, todayIso()); else sansStop(want, todayIso()) }
+          if (sanSig(want) !== sanSig(n)) {
+            if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
+            if (!(replayed && replayed(c))) return `his SANS days (${where})`
+          }
+        }
         break
       }
       case 'lw.cell': {

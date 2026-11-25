@@ -7,6 +7,7 @@ import { isMe } from '../state/perms'
 import { slotBar } from '../engine/avail'
 import { inputReadPass } from '../engine/inputs'
 import { slotVal } from '../engine/slots'
+import { rowKeyNow } from '../engine/rowinput'
 import { WARN } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 import { isNewFlag, NEWFLAGS } from '../state/dropflag'
@@ -162,8 +163,11 @@ export function paintArm(){
      ARM.key for a grammar this attribute was never meant to speak. The SAME
      iid renders on every day a multi-day filing covers, so all of them ring
      together — there is no single "its" day to prefer. */
+  /* …compared as the two addresses stand NOW (engine/rowinput.ts rowKeyNow): armed on one man's held row, the key names
+     the shared input, and the row repaints with his own input's address — the ring stays on it */
+  const armedNow=rowKeyNow(ARM.key);
   document.querySelectorAll('[data-inpseat]').forEach((el:any)=>{
-    if('iu:'+el.dataset.inpseat===ARM.key)el.classList.add('armed');});
+    if(rowKeyNow('iu:'+el.dataset.inpseat)===armedNow)el.classList.add('armed');});
 }
 /* THE JUST-ADDED BLUE BOX (owner, 14 Aug 26 — "everytime I add a new row block
    or wave there will be a blue box around the new thing for around 6 seconds").

@@ -4,8 +4,9 @@ import { glyphSvg, REORDER_INNER } from './glyphs'
 import { DAYS } from '../engine/data'
 import { requestOfBox } from '../engine/overlay'
 import { rowPeopleDrawn, inputRowSeveral } from '../engine/grouprows'
-import { odOut, isOD, listedPersonal, listedUnavail, INPUTS, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, oilAsks, sansBadge, facesOf, facesDrawn, iuTail } from '../engine/inputs'
+import { odOut, isOD, listedPersonal, listedUnavail, INPUTS, sansFaceShown, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, oilAsks, sansBadge, facesOf, facesDrawn, iuTail } from '../engine/inputs'
 import { PEOPLE, whoId } from '../engine/people'
+import { unavailFaces } from '../engine/rowinput'
 import { noteText } from '../engine/note'
 import { hhmm, fmtHM, parseHM } from '../engine/time'
 import { sevOf, chipOf } from '../engine/validate'
@@ -852,7 +853,9 @@ export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
    editable as the ones above since the owner asked for both (10 Aug 26). */
 export function sbUnavailPanel(d:any,di:any,day?:any,ro?:any){
   // SANS Availability is an offer, not an absence — it reads isUnavail (no Accept controls) but does not belong in this panel
-  const rows=(day||inputsOn(d.dt)).filter((inp:any)=>listedUnavail(inp)).flatMap((r:any)=>facesOf(r));
+  /* a row a man, in the order they stand — a man cut out of a shared input keeps his row where it stood
+     (engine/rowinput.ts unavailFaces; the week's list asks the same, ui/html.ts) */
+  const rows=unavailFaces((day||inputsOn(d.dt)).filter((inp:any)=>listedUnavail(inp)));
   /* + Add stays here (owner, Aug 26; reworked 19 Aug 26): the dialog now
      offers only leave/medical/OD types and carries a DATE RANGE, whose till
      date lands in remarks the way the Inputs page's calendar writes it */
@@ -876,7 +879,8 @@ export function sbUnavailPanel(d:any,di:any,day?:any,ro?:any){
    shape this panel no longer draws; a card opens the input-edit dialog
    instead, so the hint now points at that. */
 export function sbSansPanel(d:any,di:any,day?:any,ro?:any){
-  const rows=(day||inputsOn(d.dt)).filter((inp:any)=>isSansAvail(inp.type)).flatMap((r:any)=>facesOf(r));
+  /* (one card a man SANS that day — engine/inputs.ts sansFaceShown, D2341; the fresh Opus read's F1, chat 152) */
+  const rows=(day||inputsOn(d.dt)).filter((inp:any)=>isSansAvail(inp.type)).flatMap((r:any)=>facesOf(r)).filter((f:any)=>sansFaceShown(f,d.dt));
   /* + Add (owner, 19 Aug 26 — SANS availability left the other panels' type
      lists, so it gets its own add HERE, "likewise"): opens the same dialog,
      locked to the SANS type and offering SANS aircrew only */

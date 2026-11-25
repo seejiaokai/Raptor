@@ -72,6 +72,24 @@ export function hasRead(pid: string, n: Pick<Notice, 'id' | 'at'>): boolean {
   const s = SEEN[pid]
   return !!s && (n.at <= s.upto || s.ids.includes(n.id))
 }
+/** HAS HE READ IT, BY HIS READ RECORD AS SAVED — never this device's copy in memory (chat 147's security re-read, SEC2-2):
+ *  the permissions check's question of a struck SANS-days line (leavewar/sansunfiled.ts sansBackCovered). The copy in
+ *  memory says what this device was told; the saved row says what he did. `prior`, where the command running changes
+ *  his record, is that record as it stood before the command (its change's before-image) — a command writing his record
+ *  cannot vouch for itself; otherwise the stored row. */
+export function hasReadSaved(pid: string, n: Pick<Notice, 'id' | 'at'>, prior?: { before: unknown }): boolean {
+  const s = readSeen(prior ? prior.before : store.get(NOTICESEEN_PFX + pid, null))
+  return !!s && (n.at <= s.upto || s.ids.includes(n.id))
+}
+
+/** HIS READ RECORD ITSELF — his SANS reminder's id names the days it said, so whether he has read those days is asked of
+ *  the ids he holds (leavewar/sansunfiled.ts, D2394 2a as D2560 narrowed it). `seenOf` — this device's copy; `seenSavedOf` — as saved, or as it
+ *  stood before the command running (its change's before-image), as hasReadSaved asks it. */
+/* (a copy: the record in memory is this device's alone, and nothing asked of it may change it — Astra #3) */
+export function seenOf(pid: string): Readonly<Seen> { const s = SEEN[pid]; return s ? { upto: s.upto, ids: [...s.ids] } : { upto: 0, ids: [] } }
+export function seenSavedOf(pid: string, prior?: { before: unknown }): Readonly<Seen> {
+  return readSeen(prior ? prior.before : store.get(NOTICESEEN_PFX + pid, null)) || { upto: 0, ids: [] }
+}
 
 function write(pid: string, next: Seen): boolean {
   const res = commitSettingsIntent('notices.seen', { owner: pid }, () => { store.set(NOTICESEEN_PFX + pid, next) })
@@ -85,9 +103,49 @@ export function markNoticeRead(id: string): boolean {
   const n = pid ? allNoticesFor(pid).find(x => x.id === id) : null
   if (!pid || !n || !isUnread(n, pid)) return false
   const cur = SEEN[pid] || { upto: 0, ids: [] }
-  /* an id whose notice is gone (its maker's Undo took it) can never be listed again — it leaves the record here */
+  /* an id whose notice is gone (its maker's Undo took it) can never be listed again — it leaves the record here. His SANS
+     reminder's stay (its id names its days, D2394 2a): they are the record that he read it, whether or not it stands now */
   const live = new Set(allNoticesFor(pid).filter(x => x.at > cur.upto).map(x => x.id))
-  return write(pid, { upto: cur.upto, ids: [...new Set([...cur.ids, id])].filter(x => live.has(x)).sort() })
+  return write(pid, { upto: cur.upto, ids: keepReminders(pid, [...new Set([...cur.ids, id])].filter(x => live.has(x) || !!reminderOf(pid, x))) })
+}
+/* HIS READS OF HIS OWN SANS REMINDER ARE NEVER DROPPED (the four reads of 0eaacc411 — Fable's F4, the Opus read's F2,
+   Astra's older note): the reminder is worked out, never stored, and goes while every day it named is filed; a tap on
+   another line, or "Mark all read", meanwhile dropped every id not listed — so a filing deleted afterwards brought back,
+   unread, a day he had read (reading 1: dark). Kept whatever stands, and folded into one id per reminder base naming
+   every day he has seen in it (leavewar/sansunfiled.ts readOf reads it so), so the record stays small.
+   THE DAYS ARE ALL IT KEEPS (his D2560, 24 Nov 26): his reminder lights again only for a day not among them. Each day
+   once carried the hidden planning mark he had read of it (`2026-07-18.<stamp>`); the mark is gone, and a record saved in
+   that shape reads as its days (reminderDays). */
+function reminderOf(pid: string, id: string): string | null {
+  const cut = id.indexOf('~'), base = cut < 0 ? '' : id.slice(0, cut)
+  return base && (base === `sansdue:${pid}` || base.startsWith(`sansdue:${pid}:`)) ? base : null
+}
+const REMINDER_DAY = /^\d{4}-\d{2}-\d{2}$/
+/** THE DAYS A SANS REMINDER'S ID NAMES — what follows its `~`, a date each; anything else in it names no day (the record
+ *  is the man's own to write, so nothing in it is trusted to be as the app wrote it) */
+export function reminderDays(id: string): string[] {
+  const cut = id.indexOf('~')
+  if (cut < 0) return []
+  const out: string[] = []
+  for (const t of id.slice(cut + 1).split(',')) {
+    const d = t.split('.')[0]!
+    if (REMINDER_DAY.test(d)) out.push(d)
+  }
+  return out
+}
+function keepReminders(pid: string, ids: readonly string[]): string[] {
+  const out: string[] = [], by = new Map<string, Set<string>>()
+  for (const id of ids) {
+    const base = reminderOf(pid, id)
+    if (!base) { out.push(id); continue }
+    let m = by.get(base)
+    if (!m) by.set(base, m = new Set())
+    for (const d of reminderDays(id)) m.add(d)
+  }
+  for (const [base, m] of by) {
+    if (m.size) out.push(`${base}~${[...m].sort().join(',')}`)
+  }
+  return [...new Set(out)].sort()
 }
 /** IDS OF LINES HIS OWN ACT TOOK AWAY, dropped from the read record of the person signed in (the posting sheet's Undo post out
  *  — leavewar/sync.ts retractPostingLines; the code read's 2, 5 Nov 26): a posting set again for the same date has a
@@ -112,5 +170,7 @@ export function markAllNoticesRead(): boolean {
      took every notice of his, and such a line came back already read when an input on it needed an answer again. What
      he read before stays read. */
   const had = new Set(cur.ids)
-  return write(pid, { upto: cur.upto, ids: allNoticesFor(pid).filter(x => x.at > cur.upto && (noticeLive(x) || had.has(x.id))).map(x => x.id).sort() })
+  /* (…and his SANS reminder's reads, whether or not it stands — keepReminders, above) */
+  const shown = allNoticesFor(pid).filter(x => x.at > cur.upto && (noticeLive(x) || had.has(x.id))).map(x => x.id)
+  return write(pid, { upto: cur.upto, ids: keepReminders(pid, [...shown, ...cur.ids.filter(x => !!reminderOf(pid, x))]) })
 }

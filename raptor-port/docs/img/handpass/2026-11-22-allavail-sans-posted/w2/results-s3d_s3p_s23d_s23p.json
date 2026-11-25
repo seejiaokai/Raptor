@@ -1,0 +1,282 @@
+[
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "s3-01",
+  "what": "Admin → Users: New person Kestrel, WSO, post-in Fri 17 Jul, Add person",
+  "ok": false,
+  "note": "id null null · post-in box BUTTON:button value \"Fri 17 Jul 26 ▾\" · note \"Kestrel is already taken — callsigns must be unique\"",
+  "pics": "s3-s3-01-newperson-form-desktop.png, s3-s3-01-newperson-added-desktop.png"
+ },
+ {
+  "scn": "s3",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "s3-01",
+  "what": "Admin → Users: New person Kestrel, WSO, post-in Fri 17 Jul, Add person",
+  "ok": false,
+  "note": "id null null · post-in box BUTTON:button value \"Fri 17 Jul 26 ▾\" · note \"Kestrel is already taken — callsigns must be unique\"",
+  "pics": "s3-s3-01-newperson-form-phone.png, s3-s3-01-newperson-added-phone.png"
+ },
+ {
+  "scn": "s3",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-01",
+  "what": "Hex posted out as SANS from Wed 15 Jul",
+  "ok": true,
+  "note": "line \"On 15 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s23-s23-01-postout-open-desktop.png, s23-s23-01-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-02",
+  "what": "Saturday: BRIEF 08:00–09:00 naming Hex; ALL AVAIL on the SDO desk 10:00–17:00 (armed d:5.0.0.+), on OFT session EP-9's front seat (armed s:5.oft.0.p) and on OFT session EP-10's back seat (armed s:5.oft.1.w), each 10:00–17:00",
+  "ok": true,
+  "note": "{\"brief\":{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\",\"rid\":\"rmrldif5y6t7yrl\"},\"duty\":{\"role\":\"SDO\",\"str\":\"10:00\",\"end\":\"17:00\",\"more\":[\"allavail\"],\"rid\":\"rs130720265x1\"},\"sim\":{\"label\":\"EP-9\",\"str\":\"10:00\",\"end\":\"17:00\",\"p\":\"allavail\",\"rid\":\"rmrldim55zf4r0w\"},\"sim2\":{\"label\":\"EP-10\",\"str\":\"10:00\",\"end\":\"17:00\",\"w\":\"allavail\",\"rid\":\"rmrldipwl9dje2g\"}}",
+  "pics": "s23-02-fixture-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-03d.off",
+  "what": "the SDO desk's count door: its window lists Hex — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s23-s23-03-r0-off-win-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-03d.on",
+  "what": "the SDO desk's count door: its window lists Hex — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s23-s23-03-r0-on-win-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-03d.off2",
+  "what": "the SDO desk's count door: its window lists Hex — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s23-s23-03-r0-off2-win-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-03s.off",
+  "what": "OFT EP-9 (front seat)'s count door: a press on it opens its window listing Hex — \"+ SANS\" off",
+  "ok": false,
+  "note": "SANS off: chip \"45\", window \"no window\"; at the chip's middle stands \"sb-slot empty slot=s:5.oft.0.w\"; the press armed s:5.oft.0.w",
+  "pics": "s23-s23-03-r2-off-win-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-03s.on",
+  "what": "OFT EP-9 (front seat)'s count door: a press on it opens its window listing Hex — \"+ SANS\" on",
+  "ok": false,
+  "note": "SANS on: chip \"45\", window \"no window\"; at the chip's middle stands \"sb-slot empty slot=s:5.oft.0.w\"; the press armed s:5.oft.0.w",
+  "pics": "s23-s23-03-r2-on-win-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-03s.off2",
+  "what": "OFT EP-9 (front seat)'s count door: a press on it opens its window listing Hex — \"+ SANS\" off again",
+  "ok": false,
+  "note": "SANS off: chip \"45\", window \"no window\"; at the chip's middle stands \"sb-slot empty slot=s:5.oft.0.w\"; the press armed s:5.oft.0.w",
+  "pics": "s23-s23-03-r2-off2-win-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-03t.off",
+  "what": "OFT EP-10 (back seat)'s count door: its window lists Hex — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s23-s23-03-r1-off-win-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-03t.on",
+  "what": "OFT EP-10 (back seat)'s count door: its window lists Hex — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s23-s23-03-r1-on-win-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "s23-03t.off2",
+  "what": "OFT EP-10 (back seat)'s count door: its window lists Hex — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s23-s23-03-r1-off2-win-desktop.png"
+ },
+ {
+  "scn": "s23",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23-01",
+  "what": "Hex posted out as SANS from Wed 15 Jul",
+  "ok": true,
+  "note": "line \"On 15 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s23-s23-01-postout-open-phone.png, s23-s23-01-postout-sheet-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23-02",
+  "what": "Saturday: BRIEF 08:00–09:00 naming Hex; ALL AVAIL on the SDO desk 10:00–17:00 (armed d:5.0.0.+), on OFT session EP-9's front seat (armed s:5.oft.0.p) and on OFT session EP-10's back seat (armed s:5.oft.1.w), each 10:00–17:00",
+  "ok": true,
+  "note": "{\"brief\":{\"prog\":\"BRIEF\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\",\"rid\":\"rmrldisz92tkwh5\"},\"duty\":{\"role\":\"SDO\",\"str\":\"10:00\",\"end\":\"17:00\",\"more\":[\"allavail\"],\"rid\":\"rs130720265x1\"},\"sim\":{\"label\":\"EP-9\",\"str\":\"10:00\",\"end\":\"17:00\",\"p\":\"allavail\",\"rid\":\"rmrldj77kpuvnjw\"},\"sim2\":{\"label\":\"EP-10\",\"str\":\"10:00\",\"end\":\"17:00\",\"w\":\"allavail\",\"rid\":\"rmrldjgdclx94in\"}}",
+  "pics": "s23-02-fixture-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23-03d.off",
+  "what": "the SDO desk's count door: its window lists Hex — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s23-s23-03-r0-off-win-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23-03d.on",
+  "what": "the SDO desk's count door: its window lists Hex — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s23-s23-03-r0-on-win-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23-03d.off2",
+  "what": "the SDO desk's count door: its window lists Hex — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s23-s23-03-r0-off2-win-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23-03s.off",
+  "what": "OFT EP-9 (front seat)'s count door: a press on it opens its window listing Hex — \"+ SANS\" off",
+  "ok": false,
+  "note": "SANS off: chip \"45\", window \"no window\"; at the chip's middle stands \"sb-slot empty slot=s:5.oft.0.w\"; the press armed s:5.oft.0.w",
+  "pics": "s23-s23-03-r2-off-win-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23-03s.on",
+  "what": "OFT EP-9 (front seat)'s count door: a press on it opens its window listing Hex — \"+ SANS\" on",
+  "ok": false,
+  "note": "SANS on: chip \"45\", window \"no window\"; at the chip's middle stands \"sb-slot empty slot=s:5.oft.0.w\"; the press armed s:5.oft.0.w",
+  "pics": "s23-s23-03-r2-on-win-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23-03s.off2",
+  "what": "OFT EP-9 (front seat)'s count door: a press on it opens its window listing Hex — \"+ SANS\" off again",
+  "ok": false,
+  "note": "SANS off: chip \"45\", window \"no window\"; at the chip's middle stands \"sb-slot empty slot=s:5.oft.0.w\"; the press armed s:5.oft.0.w",
+  "pics": "s23-s23-03-r2-off2-win-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23-03t.off",
+  "what": "OFT EP-10 (back seat)'s count door: its window lists Hex — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s23-s23-03-r1-off-win-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23-03t.on",
+  "what": "OFT EP-10 (back seat)'s count door: its window lists Hex — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s23-s23-03-r1-on-win-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "s23-03t.off2",
+  "what": "OFT EP-10 (back seat)'s count door: its window lists Hex — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"45\", window 45 people, Hex IN (purple line), pending 0",
+  "pics": "s23-s23-03-r1-off2-win-phone.png"
+ },
+ {
+  "scn": "s23",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

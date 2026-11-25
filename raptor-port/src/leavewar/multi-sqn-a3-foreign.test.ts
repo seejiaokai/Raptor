@@ -150,14 +150,19 @@ describe('A3 — the master deletes a 149 man with 142’s war loaded', () => {
     expect(p.gone).toBe(true)
     expect(dump('u142')).toBe(was142)
   })
-  it('4b. a 149 man who never arrived: his stored profile goes', () => {
+  /* CHANGED 22 Nov 26 (Astra's read of D2328, finding 2): his stored posting used to go whole, and with it his post-in date,
+     so the ALL AVAIL crowd counted him before it (D2328, D308); only that date is kept now — no end, no outcome, `gone` —
+     the same as on the war loaded (deletednorow.test.ts) */
+  it('4b. a 149 man who never arrived: his stored posting keeps only his post-in date', () => {
     kestrel()
     expect(addRosterPerson({ cs: 'Newby', ini: 'NB', seat: 'FCP', cat: 'D' } as any, '2026-12-01')).toBeNull()
     const id = pidOf('Newby')
     expect(profile('u149', id)?.post?.from).toBe('2026-12-01')
     saber()
     expect(deletePerson(id)).toBeNull()
-    expect(profile('u149', id)).toBeNull()
+    const post = profile('u149', id)?.post
+    expect(post && { from: post.from, to: post.to, gone: post.gone, out: post.poOutcome, past: post.past })
+      .toEqual({ from: '2026-12-01', to: null, gone: true, out: undefined, past: undefined })
   })
 })
 

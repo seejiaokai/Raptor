@@ -1,0 +1,134 @@
+[
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "today",
+  "what": "the app's today",
+  "ok": null,
+  "note": "Wed Jul 15 2026 09:00"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-01",
+  "what": "Hex posted out as SANS from Mon 13 Jul (a past date)",
+  "ok": true,
+  "note": "line \"On 13 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-13\"}",
+  "pics": "s13-s13-01-postout-open-desktop.png, s13-s13-01-postout-sheet-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-02",
+  "what": "Tue 14 Jul: BRIEF 11:00–11:30 naming Hex, SQN EVENT 12:00–14:00 for ALL AVAIL (Hex flies VL 08:40–10:05 that day); its window before Publish",
+  "ok": true,
+  "note": "{\"g\":{\"prog\":\"BRIEF\",\"str\":\"11:00\",\"end\":\"11:30\",\"who\":\"rocky\",\"rid\":\"rmrldif5k3unzrw\"},\"a\":{\"prog\":\"SQN EVENT\",\"str\":\"12:00\",\"end\":\"14:00\",\"who\":\"allavail\",\"rid\":\"rmrldik72w99t5e\"}} chip \"35\" {\"n\":35,\"has\":true,\"san\":true,\"why\":\"Misses VL BFM debrief 10:05–12:05: SQN EVENT 12:00–14:00\",\"flag\":\"AMBER\",\"ttl\":\"SQN EVENTJul 14 · 12:00–14:00\",\"who\":\"Reaper,Anvil,Blade,Cinch,Cobra,Forge,Havoc,Hunter,Piston,Ranger,Saber,Sidewinder,Trident,Vandal,Warden,Drifter,Jester,Gambit,Nomad,Outlaw,Diesel,Recon,Talisman,Wildcard,Basher,Echo,Ledger,Relay,Cutter,Dash,Fable,Ghost,Hex,Ryder,Vector\"}",
+  "pics": "s13-02-tue-win-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-03",
+  "what": "Tue 14 Jul signed and published (Publish day)",
+  "ok": true,
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\",\"approved\":true}",
+  "pics": "s13-03-tue-published-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-04",
+  "what": "Thu 16 Jul: the same two items, not published (Hex flies RU 16:45 that day); its window before the archive",
+  "ok": true,
+  "note": "chip \"33\" {\"n\":33,\"has\":true,\"san\":true,\"why\":\"\",\"flag\":\"\",\"ttl\":\"SQN EVENTJul 16 · 12:00–14:00\",\"who\":\"Reaper,Cinch,Cobra,Comet,Forge,Havoc,Hunter,Piston,Ranger,Saber,Sidewinder,Trident,Vandal,Warden,Drifter,Outlaw,Zenith,Vapor,Recon,Talisman,Echo,Ledger,Quill,Relay,Cinder,Rune,Cutter,Dash,Fable,Ghost,Hex,Ryder,Wisp\"}",
+  "pics": "s13-04-thu-win-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-05",
+  "what": "Hex archived on Admin → Users (his row → Archive)",
+  "ok": true,
+  "note": "note \"Hex archived — his sign-in is suspended\"",
+  "pics": "s13-s13-05-acc-open-desktop.png, s13-s13-05-archived-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-06.off",
+  "what": "Tue 14 Jul's crowd after the archive: Hex still IN — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"35\", window 35 people, Hex IN (purple line) \"Misses VL BFM debrief 10:05–12:05: SQN EVENT 12:00–14:00\", pending 1",
+  "pics": "s13-s13-06-tue-off-win-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-06.on",
+  "what": "Tue 14 Jul's crowd after the archive: Hex still IN — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"35\", window 35 people, Hex IN (purple line) \"Misses VL BFM debrief 10:05–12:05: SQN EVENT 12:00–14:00\", pending 1",
+  "pics": "s13-s13-06-tue-on-win-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-06.off2",
+  "what": "Tue 14 Jul's crowd after the archive: Hex still IN — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"35\", window 35 people, Hex IN (purple line) \"Misses VL BFM debrief 10:05–12:05: SQN EVENT 12:00–14:00\", pending 1",
+  "pics": "s13-s13-06-tue-off2-win-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-07.off",
+  "what": "Thu 16 Jul's crowd after the archive: Hex NOT in — \"+ SANS\" off",
+  "ok": true,
+  "note": "SANS off (group false): chip \"32\", window 32 people, Hex out, pending 0",
+  "pics": "s13-s13-07-thu-off-win-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-07.on",
+  "what": "Thu 16 Jul's crowd after the archive: Hex NOT in — \"+ SANS\" on",
+  "ok": true,
+  "note": "SANS on (group true): chip \"32\", window 32 people, Hex out, pending 0",
+  "pics": "s13-s13-07-thu-on-win-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-07.off2",
+  "what": "Thu 16 Jul's crowd after the archive: Hex NOT in — \"+ SANS\" off again",
+  "ok": true,
+  "note": "SANS off (group false): chip \"32\", window 32 people, Hex out, pending 0",
+  "pics": "s13-s13-07-thu-off2-win-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-08",
+  "what": "Tue 14 Jul's pending count and lines after the archive (RECORD)",
+  "ok": "REC",
+  "note": "{\"pend\":0,\"notSigned\":false,\"signed\":\"\",\"approved\":true} · lines: ⠿ Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 15 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Hex · posted out Saber 15/7 09:01 no → yes",
+  "pics": "s13-08-tue-pending-desktop.png"
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "s13-08x",
+  "what": "no Tue pending line is about the event's crowd or OIL",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "scn": "s13",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

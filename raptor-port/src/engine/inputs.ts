@@ -3,7 +3,7 @@ import { hhmm, hm24 } from './time'
 import { CURWEEK } from './waves'
 import { newId } from './newid'
 import { mintOrd } from '../command/ord'
-import { PEOPLE, isSpecial } from './people'
+import { PEOPLE, isSpecial, sansOnP, sansOpenFrom } from './people'
 import { UNIT } from './unitview'
 import { homeUnitOf, homeHandle, needDay, rosterToday, type HomeHandle } from './roster'
 /* A STABLE ADDRESS FOR ONE INPUT (owner, 10 Aug 26 — editing an input's times
@@ -76,7 +76,86 @@ export function inputsOn(dt:any):any[]{
   if(FZ){const k=dateOrd(dt); const f=k!=null?FZ.get(k):undefined; if(f)return f;}
   /* the schedule in view's own (multi-squadron step 3): a frozen face above is already its unit's issued copy */
   const at=inputAtIso(dt);
-  return INPUTS.filter((inp:any)=>inputCoversDate(inp,dt)&&inputBelongs(inp,UNIT,at));}
+  return INPUTS.filter((inp:any)=>inputCoversDate(inp,dt)&&inputBelongs(inp,UNIT,at)&&sansShownOn(inp,at));}
+/* SANS AVAILABILITY SHOWS AND COUNTS ONLY ON A DAY HE IS SANS (owner D2341, 23 Nov 26 — "Is there a way to show like it's
+   deleted instead of faded? But counts again if it's undone"). Filed for a day that has stopped being one of his SANS days —
+   his SANS posting moved later, taken back or given another outcome; a tick taken off — the record is HIDDEN on that day,
+   on every screen and in every count, as if deleted; nothing is deleted, so once the day is SANS again (the posting moved
+   back) it shows and counts again by itself, with nothing to re-file and nothing for an Undo to do. A reading, never a
+   write. Asked by every day reader of the live list below (inputsOn, inputsOnDay, inputsFor), the SANS calendar's day
+   (ui/sanscal-model.ts) and its month (ui/InputsCal.tsx); a published face is its frozen copy and never asks (FZ above).
+   A record of several people is shown on the day while ONE of them is SANS that day; a day no calendar can read is not
+   judged. sansShownAny: the record shows at all — some day of it is a SANS day — the lists of records ask it. */
+export function sansShownOn(inp:any,at:any):boolean{
+  if(!inp||!isSansAvail(inp.type))return true;
+  const iso=inputAtIso(at); if(!iso)return true;
+  const ids=namedOf(inp).map((e:any)=>e.p);
+  return ids.some((p:any)=>sansOnP(PEOPLE[p],iso));}
+/* ONE MAN'S FACE OF A SANS RECORD, ON A DAY (the FULL check's fresh Opus read, chat 152, F1): a record of several men shows
+   on a day while ONE is SANS, so a reader that draws one card a man asks this of each card — or the man not SANS that day
+   (his posting moved later) was still drawn on Edit Schedule's and the board's SANS Avail panels, D2341. */
+export function sansFaceShown(f:any,at:any):boolean{
+  if(!f||!isSansAvail(f.type))return true;
+  /* an issued face is its frozen copy — already the day's own view (sansDayView) — so it keeps every card it went out
+     with, never asking today's postings (D44, D178; chat 154's re-reads: Astra #2 = the fresh Opus R1) */
+  if(inputsFrozenOn(at))return true;
+  const iso=inputAtIso(at); if(!iso)return true;
+  return sansOnP(PEOPLE[f.person],iso);}
+/* …AND THE RECORD AS THAT DAY SHOWS IT (Astra's read #1, chat 152): a SANS record with only its men SANS that day — the
+   record itself when every man is, or it is not SANS availability. A new published copy freezes this (engine/publish.ts
+   dayInputsFrozen) and the "changed since issue?" comparison reads the live side through it (frozenInputMatch), so a
+   day issued while Hex was hidden holds only the other man, and Hex hidden after issue reads as that record's change.
+   A copy, never a write — the stored record keeps everyone, so a hidden man comes back by himself; a copy already
+   frozen keeps what it went out with (D44). */
+export function sansDayView(inp:any,at:any):any{
+  if(!inp||!isSansAvail(inp.type))return inp;
+  const iso=inputAtIso(at); if(!iso)return inp;
+  const ppl=Array.isArray(inp.people)?inp.people:null; if(!ppl)return inp;
+  const kept=ppl.filter((e:any)=>!e||isPh(e.p)||sansOnP(PEOPLE[e.p],iso));
+  if(kept.length===ppl.length)return inp;
+  const out:any={...inp,people:kept};
+  if(kept.length&&!kept.some((e:any)=>e&&String(e.p)===String(inp.person))){const n=kept.find((e:any)=>e&&!isPh(e.p)); if(n)out.person=n.p;}
+  return out;}
+/* THE DAYS A CHANGE FILES SOMEONE FOR THAT ARE NOT HIS SANS DAYS (Astra's read #3 = the fresh Opus read's F8, chat 152 —
+   D2340: "for days from its date", held at the final save as well as in the windows, D200). Before against after: a man
+   new to a SANS record is asked every day of it; a man already in it, only the days it newly covers — so a record one of
+   whose days a later posting change hid still saves as it stands (D2341), and a record of another kind turned into SANS
+   availability is asked whole. The first such [person, day], or null. */
+export function sansNewDayProblem(before:any,after:any):[string,string]|null{
+  if(!after||!isSansAvail(after.type))return null;
+  const sp=inputSpanIso(after); if(!sp)return null;
+  const was=before&&isSansAvail(before.type)?before:null, wsp=was?inputSpanIso(was):null;
+  for(const p of namedOf(after).map((e:any)=>e.p)){
+    if(p==null||p===''||isPh(p))continue;
+    const had=!!was&&holds(was,p);
+    /* every NEW day is asked, however far on: the days he already had are stepped over in one jump, and no count limit
+       reads the rest as approved (Astra's fix re-read #3, chat 154 — a long record stretched past his untick saved); the
+       walk stops at the day from which every later day is his SANS day, and never steps past a four-digit year (the
+       fresh Opus re-read 2's F3, chat 155: an open-ended filing walked to 9999 and on into a made-up day) */
+    const open=sansOpenFrom(PEOPLE[p]);
+    /* (the fresh Opus re-read 3's F1, chat 155: the day after 31 Dec 9999 is written "+010000-01", ten letters that sort
+       before every real date — so the walk ends on its last real day, and a jump over held days that reaches the end
+       ends it too) */
+    for(let d=sp[0];d<=sp[1]&&d[0]!=='+';d=isoNext(d)){
+      if(open&&d>=open)break;
+      if(had&&wsp&&d>=wsp[0]&&d<=wsp[1]){if(wsp[1]>=sp[1])break; d=wsp[1];continue;}
+      if(!sansOnP(PEOPLE[p],d))return [String(p),d];}}
+  return null;}
+export function sansShownAny(inp:any):boolean{
+  if(!inp||!isSansAvail(inp.type))return true;
+  const sp=inputSpanIso(inp); if(!sp)return true;
+  /* (the fresh Opus re-read 2, chat 155: a long record whose shown days all fell after its 400th read as hidden on every
+     list) — a man SANS from some day on, with no end, shows it from that day if the record reaches it; the rest is
+     walked to the end of his last ended stretch, past which no day can be SANS for anyone in it */
+  const ids=namedOf(inp).map((e:any)=>e.p).filter((p:any)=>p!=null&&p!==''&&!isPh(p));
+  let until='';
+  for(const p of ids){const pp=PEOPLE[p]; const o=sansOpenFrom(pp); if(o&&o<=sp[1])return true;
+    for(const s of (pp&&Array.isArray(pp.sanWas)?pp.sanWas:[]))if(Array.isArray(s)&&String(s[1]||'')>until)until=String(s[1]);}
+  if(!until)return false;
+  const last=until<sp[1]?until:sp[1];
+  for(let d=sp[0];d<=last&&d[0]!=='+';d=isoNext(d)){if(sansShownOn(inp,d))return true;}
+  return false;}
+const isoNext=(iso:string):string=>{const t=new Date(Date.UTC(+iso.slice(0,4),+iso.slice(5,7)-1,+iso.slice(8,10)+1)); return t.toISOString().slice(0,10);};
 /* WHOSE AN INPUT IS — ONE UNIT'S, ON A DATE (multi-squadron batch 1, step 3; plan §3.4 "Inputs stay one list"). The list
    stays ONE (one authoritative record each, the community's — storage/keyowner.ts); what changes is the reader: every
    reader that chooses a set of inputs asks inputsFor(unit, date) — the schedule in view's (UNIT) for a schedule surface,
@@ -121,7 +200,7 @@ export function inputTouches(r:any,unit:any):boolean{return !!r&&inputSquadrons(
 export function inputBelongs(r:any,unit:any,at?:any):boolean{if(!r)return false;
   return inputOnDay(r,unit,inputAtIso(at)||inputAtIso(r.date,r.yr)||rosterToday());}
 /* a squadron's inputs on one day (a day reader), and every input touching it (a list reader) */
-export function inputsOnDay(unit:any,iso:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputOnDay(r,unit,iso));}
+export function inputsOnDay(unit:any,iso:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputOnDay(r,unit,iso)&&sansShownOn(r,iso));}
 export function inputsTouching(unit:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputTouches(r,unit));}
 /* his own Inputs page: every input touching his squadron, and every input naming him wherever it sits (C2) */
 export function inputsListed(unit:any,pid:any,list?:any):any[]{const p=String(pid??''); return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&(inputTouches(r,unit)||(p!==''&&holds(r,p))));}
@@ -129,7 +208,7 @@ export function inputsListed(unit:any,pid:any,list?:any):any[]{const p=String(pi
    an input's accepted mark or lands it asks the first day, never "touches"; state/store.ts landingInputs). The contract
    step (phase 3) took inputsFor's no-day form: a day reader names its day (inputsFor(unit, at) / inputsOnDay). */
 export function inputsOnFirstDay(unit:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputBelongs(r,unit));}
-export function inputsFor(unit:any,at:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputBelongs(r,unit,at));}
+export function inputsFor(unit:any,at:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputBelongs(r,unit,at)&&sansShownOn(r,at));}
 /* the one unit a saved input is read as — whose people its window offers: the squadron of its first day, through the
    same body (its first named man's, else its stamp, else its filer's) */
 export function inputUnitOf(r:any):string|null{if(!r)return null; const sp=inputSpanIso(r); const iso=sp?sp[0]:rosterToday(); const named=namedOf(r);
@@ -302,7 +381,8 @@ export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:
   if(!frozen||dt==null)return {diffs:[],same:[]};
   const W:any[]=[], N:any[]=[];
   Object.keys(frozen).forEach((id:any)=>{const w=frozen[id]; if(w&&!isUpchit(w.type))W.push({id,r:w,k:inpDetailKey(w)});});
-  inputsFor(UNIT,dt).forEach((x:any)=>{ if(inputCoversDate(x,dt)&&!isUpchit(x.type))N.push({id:inpId(x),r:x,k:inpDetailKey(x)}); });   // the unit in view's day's own (multi-squadron step 3)
+  /* the live side as the day shows it — a SANS record with only its men SANS that day (sansDayView; Astra's read #1) */
+  inputsFor(UNIT,dt).forEach((x:any)=>{ if(inputCoversDate(x,dt)&&!isUpchit(x.type)){const v=sansDayView(x,dt); N.push({id:inpId(x),r:v,k:inpDetailKey(v)});} });   // the unit in view's day's own (multi-squadron step 3)
   const out:any[]=[], same:any[]=[];
   /* 1 — the same record, unchanged */
   for(let i=W.length-1;i>=0;i--){const j=N.findIndex((n:any)=>n.id===W[i].id);
@@ -1105,6 +1185,10 @@ export function sansAvailOn(id:any,dt:any){
   /* the RECORD, found by who is IN it ([ALL-AVAIL-AS-MEMBER] step 1 — namedOf, above): what is handed back is the input's
      own window, letters and remark — the same for everyone an admin files one offer for (D658) — and its callers hold it
      as the record it is (state/demosans.test.ts: "one span record answers for BOTH covered days"). */
+  /* one MAN's lookup, so his own SANS day is asked too (D2341; Astra's read #1 and the security read's S2, chat 152): a
+     shared record shows on a day while ONE of its men is SANS, so without this the man hidden that day was answered "yes,
+     he has availability"; a published (frozen) face keeps what it went out with (D44) and is not asked */
+  if(!inputsFrozenOn(dt)){const iso=inputAtIso(dt); if(iso&&!sansOnP(PEOPLE[id],iso))return null;}
   return inputsOn(dt).find((x:any)=>isSansAvail(x.type)&&namedOf(x).some((e:any)=>e.p===id))||null;
 }
 /* the record's one offered window in minutes, [s,e]. AM/PM are the same

@@ -1215,6 +1215,19 @@ and a seventh kind left out as doubtful, in `docs/superpowers/briefs/2026-11-10-
    fraction, and the window behind it must scroll by nothing; a list that scrolls inside it keeps the wheel at its ends on a
    desktop as on a phone; what only a real wheel shows is named as a look for his PC
    (`docs/handpass/2026-11-11-bal-scroll-stuck.md`).
+32. **A builder's reading of one ruled word, left in a code comment (his question, the SANS reminder, 24 Nov 26).** His
+   rulings say the reminder lists the days a SANS man is "planned" with nothing filed. The first build (22 Nov 26) read
+   "planned" as named on any row of the day — the ground programme, a duty desk, all hands — while the scheduler's own
+   check of the same question (the crew list's strike, the warning list) reads only flying seats and sims, the only things
+   SANS availability covers. The reading was marked "his to change" in a code comment and never put to him; three bug checks
+   (the sheet's rounds 5–7: their reads, re-reads and walks w5–w13) then judged the code against it, because the readers'
+   brief restated the rule without defining the word, and the scenarios that put him on a ground row or a duty desk expected
+   it to count — the reading written as the expected result. He found it by asking what there is to file for a
+   ground event. **Lesson:** where two surfaces answer the same question about a person, the roll-call sets their rules
+   side by side, and a difference is a finding until he rules it; a builder's reading of what a ruled word covers goes to
+   him with a worked example before the build is read; a readers' brief names each such reading as a reading to judge,
+   never as part of the rule; and the scenarios hold a case on each side of the reading, each marked as the reading's case to
+   show him, never as a pass (here, a SANS man on a ground row only).
 
 ## 8. Making the checks FIND rather than CONFIRM
 

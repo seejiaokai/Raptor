@@ -5,7 +5,7 @@ import { PEOPLE, SPECIALS, scQualOK, sansOn } from '../engine/people'
 import { withDrawDay } from '../engine/faceattrs'
 import { inputLinesOn, inputReadPass, isAway, offWord, awayAllDay, canWork, sansBadge, sansAvailOn } from '../engine/inputs'
 import { hm24 } from '../engine/time'
-import { dayTasked, dayOff, dayStandby, slotBar, slotRules } from '../engine/avail'
+import { dayTasked, dayOff, dayStandby, slotBar, slotRules, sansNoneWhy } from '../engine/avail'
 import { esc, ARM, ROSDAY, slotTitle } from '../state/view'
 import { puck, puckMarks } from './html'
 import { rosterOf } from '../engine/roster'
@@ -51,7 +51,9 @@ const groundedType=(id:any,di:any)=>{
 function whyOf(id:any,di:any,armKey:any,off:any,rules:any,grounded:any){
   return armKey?slotBar(id,armKey,rules)
     :((off&&off.has(id)&&!grounded)?offReason(id,di)
-      :((di>=0&&DAYS[di]&&sansDay(id,di)&&!sansAvailOn(id,DAYS[di].dt))?'SANS — no availability filed for today':''));
+      /* (the words are slotBar's own for nothing filed — on a day SANS for him only by a posting not yet run they name the
+         posting's date and where to file, D2338: engine/avail.ts sansNoneWhy) */
+      :((di>=0&&DAYS[di]&&sansDay(id,di)&&!sansAvailOn(id,DAYS[di].dt))?sansNoneWhy(PEOPLE[id],dayIso(String(CURWEEK),+di||0)):''));
 }
 export function rosterPuck(id:any,di:any,armKey:any,eng:any,off:any,sby:any,rules:any,hideWhy?:any){
   const grounded=!armKey&&!!(off&&off.has(id))&&groundedOnly(id,di);

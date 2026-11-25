@@ -171,7 +171,8 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
     kind: 'move', lead: `Moving ${label} to ${fmtDay(d.start)}`, iid: String(r.iid),
     same: x => idsOf(x).map(String).join(',') === people && x.date === date0 && (x.endDate || '') === end0,
     make: (x, oil) => {
-      const ok = whole ? commitInput(x, d, idsOf(x), oil ? { oil } : undefined) : commitInputEdit(x, d, undefined, undefined, oil ? { oil } : undefined)
+      /* (`moved`: the whole entry dragged to other dates is refused a day it cannot stand on, never cut — D2388) */
+      const ok = whole ? commitInput(x, d, idsOf(x), { moved: true, ...(oil ? { oil } : {}) }) : commitInputEdit(x, d, undefined, undefined, { moved: true, ...(oil ? { oil } : {}) })
       if (ok) HOOKS.toast('Moved to ' + fmtDay(d.start), 'ok')
       return !!ok
     },

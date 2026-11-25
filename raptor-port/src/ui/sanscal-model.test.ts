@@ -108,11 +108,14 @@ describe('a day opened on the SANS calendar', () => {
     expect(sansDayGroups(WED, rows, PEOPLE).p.map(e => e.id)).toEqual(['p1'])
     expect(sansDayGroups(WED, rows, PEOPLE).w).toEqual([])
   })
-  it('a commitment of a man the count leaves out is still listed — apart, saying why — so it can be reached and removed', () => {
+  /* (his D2341, 23 Nov 26: SANS availability shows and counts only on a day he is SANS — a man no longer SANS has his filing
+     HIDDEN, as if deleted, back by itself once he is SANS again; the old "no longer SANS" apart-line is gone. An archived
+     man's is still listed apart, so it can be reached and removed) */
+  it('a commitment of a man no longer SANS is hidden; an archived man\'s is still listed apart, saying why', () => {
     const rows = [row('was'), row('gone')]
     const g = sansDayGroups(WED, rows, PEOPLE)
     expect(g.p).toEqual([]); expect(g.w).toEqual([])
-    expect(g.out.map(e => [e.id, e.why])).toEqual([['was', 'no longer SANS'], ['gone', 'archived']])
+    expect(g.out.map(e => [e.id, e.why])).toEqual([['gone', 'archived']])
   })
   /* AN INPUT IS ONE RECORD WITH THE LIST OF ITS PEOPLE (owner D756, 11 Oct 26; D658: an admin files SANS availability
      for several SANS people at once): the day still lists a line a PERSON, each carrying the one record — the window a
@@ -121,8 +124,9 @@ describe('a day opened on the SANS calendar', () => {
     const rec: any = { ...row(''), by: 'ad', people: [{ p: 'w1', by: 'ad' }, { p: 'p1', by: 'ad' }, { p: 'was', by: 'ad' }] }
     delete rec.person
     const g = sansDayGroups(WED, [rec], PEOPLE)
-    expect([g.w.map(e => e.id), g.p.map(e => e.id), g.out.map(e => [e.id, e.why])]).toEqual([['w1'], ['p1'], [['was', 'no longer SANS']]])
-    expect([g.w[0].r, g.p[0].r, g.out[0].r].every(r => r === rec), 'every line is the same record').toBe(true)
+    /* ('was', no longer SANS, is hidden — D2341) */
+    expect([g.w.map(e => e.id), g.p.map(e => e.id), g.out.map(e => [e.id, e.why])]).toEqual([['w1'], ['p1'], []])
+    expect([g.w[0].r, g.p[0].r].every(r => r === rec), 'every line is the same record').toBe(true)
     expect([g.flyW, g.flyP]).toEqual([1, 1])
   })
   it('a one-person record in the OLD shape and one in the new are the same one line', () => {

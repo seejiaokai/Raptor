@@ -1,0 +1,219 @@
+[
+ {
+  "run": "s6-desktop",
+  "scn": "s6",
+  "size": "desktop",
+  "id": "fx-01",
+  "what": "fixture: SQN EVENT 10:00–17:00 for ALL AVAIL and BRIEFING 08:00–09:00 naming Hex on Sat 18 Jul",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\"} · {\"prog\":\"BRIEFING\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\"}",
+  "pics": "s6-desktop/01-s6-fx-01-rows-desktop.png"
+ },
+ {
+  "run": "s6-desktop",
+  "scn": "s6",
+  "size": "desktop",
+  "id": "fx-02",
+  "what": "fixture: Hex posted out as SANS from Wed 15 Jul on the Leave War",
+  "ok": true,
+  "note": "line \"On 15 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s6-desktop/02-s6-fx-02-postout-sheet-desktop.png"
+ },
+ {
+  "run": "s6-desktop",
+  "scn": "s6",
+  "size": "desktop",
+  "id": "fx-03",
+  "what": "fixture: signed and published (Publish day); the window lists Hex",
+  "ok": true,
+  "note": "{\"pend\":0,\"pendWords\":\"\",\"head\":\"\",\"notSigned\":false,\"notPub\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\"} · chip {\"sent\":\"r:rmrldi5j8u8bp8y\",\"ver\":\"\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who is free as things stand now)\"} · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"SQN EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null}",
+  "pics": "s6-desktop/03-s6-fx-03-published-window-desktop.png"
+ },
+ {
+  "run": "s6-desktop",
+  "scn": "s6",
+  "size": "desktop",
+  "id": "fx-04",
+  "what": "fixture: Hex's Leave War cell Sat 18 Jul",
+  "ok": true,
+  "note": "cell \"FO*\"",
+  "pics": "s6-desktop/04-s6-fx-04-lw-desktop.png"
+ },
+ {
+  "run": "s6-desktop",
+  "scn": "s6",
+  "size": "desktop",
+  "id": "s6-01a",
+  "what": "OIL Earn (now true): Hex's earning on the event switched off; he stays in the who-is-available half",
+  "ok": true,
+  "note": "seat on → off · avail tab Hex true n 45 (published 45) · chip {\"sent\":\"r:rmrldi5j8u8bp8y\",\"ver\":\"\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who is free as things stand now)\"}",
+  "pics": "s6-desktop/05-s6-earn-before-desktop.png, s6-desktop/06-s6-earn-after-desktop.png, s6-desktop/07-s6-avail-tab-desktop.png"
+ },
+ {
+  "run": "s6-desktop",
+  "scn": "s6",
+  "size": "desktop",
+  "id": "s6-01b",
+  "what": "the amendment published (Publish AL1)",
+  "ok": true,
+  "note": "before {\"pend\":1,\"pendWords\":\"1 pending\",\"head\":\"|1 pending\",\"notSigned\":true,\"notPub\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\"} · after {\"pend\":0,\"pendWords\":\"\",\"head\":\"\",\"notSigned\":false,\"notPub\":false,\"signed\":\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\"}",
+  "pics": "s6-desktop/08-s6-01b-al-published-desktop.png"
+ },
+ {
+  "run": "s6-desktop",
+  "scn": "s6",
+  "size": "desktop",
+  "id": "s6-01c",
+  "what": "RECORD — Hex's Leave War cell Sat 18 Jul after the amendment with his event earning off",
+  "ok": null,
+  "note": "cell \"HO*\"",
+  "pics": "s6-desktop/09-s6-01c-lw-cell-desktop.png"
+ },
+ {
+  "run": "s6-desktop",
+  "scn": "s6",
+  "size": "desktop",
+  "id": "s6-01d",
+  "what": "\"+ SANS\" on: Hex in the window, same count, nothing pending",
+  "ok": true,
+  "note": "pending 0 · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"SQN EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null}",
+  "pics": "s6-desktop/10-s6-01d-sans-on-settings-desktop.png, s6-desktop/11-s6-01e-on-editsched-sat-desktop.png, s6-desktop/12-s6-01e-on-availwin-desktop.png"
+ },
+ {
+  "run": "s6-desktop",
+  "scn": "s6",
+  "size": "desktop",
+  "id": "s6-01e",
+  "what": "\"+ SANS\" off: Hex in the window, same count, nothing pending",
+  "ok": true,
+  "note": "pending 0 · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"SQN EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null}",
+  "pics": "s6-desktop/13-s6-01d-sans-off-settings-desktop.png, s6-desktop/14-s6-01e-off-editsched-sat-desktop.png, s6-desktop/15-s6-01e-off-availwin-desktop.png"
+ },
+ {
+  "run": "s6-desktop",
+  "scn": "s6",
+  "size": "desktop",
+  "id": "s6-02a",
+  "what": "OIL Earn (now true): Hex's earning on the event switched on; he stays in the who-is-available half",
+  "ok": true,
+  "note": "seat off → on · avail tab Hex true n 45 (published 45) · chip {\"sent\":\"r:rmrldi5j8u8bp8y\",\"ver\":\"\",\"txt\":\"44 of 45 earn\",\"title\":\"Some of these men earn OIL and some do not — tap to see each one (who is free as things stand now)\"}",
+  "pics": "s6-desktop/16-s6-earn-before-desktop.png, s6-desktop/17-s6-earn-after-desktop.png, s6-desktop/18-s6-avail-tab-desktop.png"
+ },
+ {
+  "run": "s6-desktop",
+  "scn": "s6",
+  "size": "desktop",
+  "id": "s6-02b",
+  "what": "the amendment published (Publish AL2)",
+  "ok": true,
+  "note": "before {\"pend\":1,\"pendWords\":\"1 pending\",\"head\":\"|1 pending\",\"notSigned\":true,\"notPub\":false,\"signed\":\"SIGNED AL1 CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\"} · after {\"pend\":0,\"pendWords\":\"\",\"head\":\"\",\"notSigned\":false,\"notPub\":false,\"signed\":\"SIGNED AL2 CUR CKAce SKED CKAnvil PLANNEDBasher APPROVEDBolt\"}",
+  "pics": "s6-desktop/19-s6-02b-al-published-desktop.png"
+ },
+ {
+  "run": "s6-desktop",
+  "scn": "s6",
+  "size": "desktop",
+  "id": "s6-02c",
+  "what": "RECORD — Hex's Leave War cell Sat 18 Jul after the amendment with his event earning on",
+  "ok": null,
+  "note": "cell \"FO*\"",
+  "pics": "s6-desktop/20-s6-02c-lw-cell-desktop.png"
+ },
+ {
+  "run": "s6-desktop",
+  "scn": "s6",
+  "size": "desktop",
+  "id": "s6-02d",
+  "what": "\"+ SANS\" on: Hex in the window, same count, nothing pending",
+  "ok": true,
+  "note": "pending 0 · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"SQN EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null}",
+  "pics": "s6-desktop/21-s6-02d-sans-on-settings-desktop.png, s6-desktop/22-s6-02e-on-editsched-sat-desktop.png, s6-desktop/23-s6-02e-on-availwin-desktop.png"
+ },
+ {
+  "run": "s6-desktop",
+  "scn": "s6",
+  "size": "desktop",
+  "id": "s6-02e",
+  "what": "\"+ SANS\" off: Hex in the window, same count, nothing pending",
+  "ok": true,
+  "note": "pending 0 · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"SQN EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null}",
+  "pics": "s6-desktop/24-s6-02d-sans-off-settings-desktop.png, s6-desktop/25-s6-02e-off-editsched-sat-desktop.png, s6-desktop/26-s6-02e-off-availwin-desktop.png"
+ },
+ {
+  "run": "s6-desktop",
+  "scn": "s6",
+  "size": "desktop",
+  "id": "s6-03",
+  "what": "RECORD — Hex's cell through the three publications (published → earning off → earning on)",
+  "ok": null,
+  "note": "FO* → HO* → FO*"
+ },
+ {
+  "run": "s6-desktop",
+  "scn": "s6",
+  "size": "desktop",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "run": "s6-phone",
+  "scn": "s6",
+  "size": "phone",
+  "id": "fx-01",
+  "what": "fixture: SQN EVENT 10:00–17:00 for ALL AVAIL and BRIEFING 08:00–09:00 naming Hex on Sat 18 Jul",
+  "ok": true,
+  "note": "{\"prog\":\"SQN EVENT\",\"str\":\"10:00\",\"end\":\"17:00\",\"who\":\"allavail\"} · {\"prog\":\"BRIEFING\",\"str\":\"08:00\",\"end\":\"09:00\",\"who\":\"rocky\"}",
+  "pics": "s6-phone/01-s6-fx-01-rows-phone.png"
+ },
+ {
+  "run": "s6-phone",
+  "scn": "s6",
+  "size": "phone",
+  "id": "fx-02",
+  "what": "fixture: Hex posted out as SANS from Wed 15 Jul on the Leave War",
+  "ok": true,
+  "note": "line \"On 15 Jul: becomes SANS.\" · {\"san\":true,\"sanFrom\":\"2026-07-15\"}",
+  "pics": "s6-phone/02-s6-fx-02-postout-sheet-phone.png"
+ },
+ {
+  "run": "s6-phone",
+  "scn": "s6",
+  "size": "phone",
+  "id": "fx-03",
+  "what": "fixture: signed and published (Publish day); the window lists Hex",
+  "ok": true,
+  "note": "{\"pend\":0,\"pendWords\":\"\",\"head\":\"\",\"notSigned\":false,\"notPub\":false,\"signed\":\"SIGNED ORIG Ace Anvil Basher Bolt\"} · chip {\"sent\":\"r:rmrldi5pgmooyq1\",\"ver\":\"\",\"txt\":\"45\",\"title\":\"All 45 earn a full day — tap to see each one (who is free as things stand now)\"} · window {\"n\":45,\"has\":true,\"san\":true,\"why\":\"\",\"col\":\"WSOS · 17\",\"tabs\":[],\"head\":\"SQN EVENT Jul 18 · 10:00–17:00\",\"earnSeat\":null}",
+  "pics": "s6-phone/03-s6-fx-03-published-window-phone.png"
+ },
+ {
+  "run": "s6-phone",
+  "scn": "s6",
+  "size": "phone",
+  "id": "fx-04",
+  "what": "fixture: Hex's Leave War cell Sat 18 Jul",
+  "ok": true,
+  "note": "cell \"FO*\"",
+  "pics": "s6-phone/04-s6-fx-04-lw-phone.png"
+ },
+ {
+  "run": "s6-phone",
+  "scn": "s6",
+  "size": "phone",
+  "id": "ERR",
+  "what": "script stopped",
+  "ok": false,
+  "note": "locator.waitFor: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#sbMoreOil:visible').first() to be visible\u001b[22m\n",
+  "pics": "s6-phone/05-s6-ERR-phone.png"
+ },
+ {
+  "run": "s6-phone",
+  "scn": "s6",
+  "size": "phone",
+  "id": "errors",
+  "what": "console / page errors / failed requests",
+  "ok": true,
+  "note": ""
+ }
+]

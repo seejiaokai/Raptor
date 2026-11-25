@@ -1349,3 +1349,173 @@ sides.
 **Issue:** A blind reader reported that a note was wrong because "the page he approved shows" a full stop where the app prints a dot, and quoted the sentence. The approved page holds no such sentence: it shows that note only as a picture, and the picture has the dot. Two other sources (a walker's check against the picture's recorded text, another reader) read it the other way. The claim was caught only because the host opened the page and searched its text and the picture's recorded words before acting; a fix "back to the page" would have changed approved words.
 **Suggested improvement:** In §4's hand-back list, item 2, add: a claim that rests on what an approved page, picture or drawing shows is checked against that artefact itself — its text searched, its picture's recorded words read — before it is dispositioned; a reader's quotation of an approved artefact is a claim like any other. And in the readers' brief, ask for the file and line (or the picture's name) behind any "the approved page shows".
 **Principle:** A reviewer's quotation of a source is still a claim; open the source before acting on what it is said to say.
+
+### Observation 1018: A red test failed at its set-up again — the set-up call's own answer was never checked
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** Chat 141, the third fix of [FABLE-READ-FAULTS] (i) (ALL AVAIL and a man posted out as SANS). Numbered past 1016 and 1017, which other open branches hold. Cites the closed Observation 979.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** RED — verify the test fails for the right reason
+
+**Issue:** Two new tests for a reader's finding went red at once, and looked like proof of the finding. They were red because the action that sets the case up (posting a man out) had refused and returned false — the man had no row on the screen the action works from — so the case never existed. The skill's "Read the red" step (from Observation 979) was not applied: the red was accepted from its colour. It was caught only because the same tests stayed red after the repair.
+**Suggested improvement:** In the RED step, make the read-back a line of the test, not a judgement: every set-up call that can refuse has its answer asserted in the test (`expect(postOut(...)).toBe(true)`), and the state it should have made is asserted before the claim. Then a broken set-up fails on its own line, with its own message, and cannot pass for the fault. Keep the second proof used here for a fix of new logic: take the repair out, see the claim's own assertion fail, put it back.
+**Principle:** A set-up step that can say no must be asked whether it said yes, inside the test; a rule to "check the red" that relies on reading the failure is skipped exactly when the red is expected.
+
+### Observation 1019: A fix written from readers' findings set aside more than the findings named
+
+**Status:** OPEN
+**Date:** 2026-11-22
+**Session context:** Chat 141, the second fix of the same fault, written from two blind reads (an archive after a posting; a date still to come). Numbered past 1016 and 1017, which other open branches hold.
+**Skill:** receiving-code-review (and test-driven-development)
+**Type:** open-source
+**Phase/Area:** Turning a review finding into a fix — what is tested before the fix is written
+
+**Issue:** The two findings were each about one date the check should not ask. The fix stopped asking the whole record for that kind of man, so three other dates that must still end his membership stopped counting. Every test written for the fix passed, because each one tested a case the fix was meant to open; none tested a case it was meant to leave shut. A narrow read of the fix found it, and a third fix followed.
+**Suggested improvement:** When a fix relaxes a check, list first every other thing that check refuses, and write one "still refused" test for each beside the "now allowed" tests, before the fix. In the review-response step: name the smallest condition the finding needs relaxed, and say in the commit what stays asked.
+**Principle:** A fix that opens a door is tested from both sides: what must now pass, and everything that passed through the old check's other reasons for saying no.
+
+
+### Observation 1022: Reader copies made without the recipe again — the export of pictures met a third time
+
+**Status:** OPEN
+**Date:** 22 Nov 26
+**Session context:** chat 146, round 4b of the ALL AVAIL bug check (two blind readers, each on an exported copy); numbered past 1021, which another open branch holds
+**Skill:** New skill candidate: blind-reader-copies (the codex-guide recipe for exported copies); cites the closed Observation 977
+**Type:** open-source
+**Phase/Area:** making the readers' copies
+
+**Issue:** The copies were made by hand from an earlier chat's handoff line (`git archive <head> | tar -x`), not from the codex guide's recipe, which already carries the excludes (Observation 977, actioned). The export of every walk picture ran past five minutes for the first copy and was stopped; the Git Bash `mklink /J` failed again. The recipe being written down did not stop it, because nothing in the act of exporting points at it.
+**Suggested improvement:** A guard inside the action, as the short form asks for a trap met again: a small script in the repo (`raptor-port/scripts/reader-copies.mjs <head> <base> <dir…>`) that makes each copy with the excludes, writes the change's patch and the brief beside it, makes the package junction in PowerShell and prints the size — and the codex guide's recipe and every read brief template name the script instead of the commands.
+**Principle:** A recipe that a reader must remember to open loses to a command copied from a handoff; put the safe way in the one command people actually run.
+
+### Observation 1024: A replace-the-first-match edit landed in a look-alike block of another function
+
+**Status:** OPEN
+**Date:** 23 Nov 26
+**Session context:** chat 148, wiring a new step into the posting command's body in a 4,700-line file (another branch holds note 1023)
+**Skill:** New skill candidate: safe-scripted-edits
+**Type:** open-source
+**Phase/Area:** editing code by script when the edit tool's exact match is impractical
+
+**Issue:** A script replaced the first occurrence of a three-line block; the same three lines stood in an earlier function (a restore) as well as the intended one (the posting change), so the new step was wired into the wrong function. The new tests caught it only because they exercised the intended path; nothing failed loudly.
+**Suggested improvement:** A scripted replacement asserts the anchor occurs exactly once (count, not includes) and anchors on a line unique to the target function — its signature — before the block; the edit tool's own uniqueness check is the default.
+**Principle:** An edit keyed on repeated boilerplate must prove the anchor is unique before it writes; "found" is not "found once".
+
+### Observation 1027: An exemption added to a security gate to cure a false refusal needs its own negative test in the same change
+
+**Status:** OPEN
+**Date:** 2026-11-23
+**Session context:** Chat 155, fixing a re-read's findings on the SANS-ahead branch (numbered past 1026, held on another branch)
+**Skill:** New skill candidate: fixing reviewer findings (bug-check order §4 "What to do with what they hand back")
+**Type:** open-source
+**Phase/Area:** Fix, then re-walk what the fixes touched
+
+**Issue:** Two of the five findings were the gate refusing something legitimate (an Undo of yesterday's own change; a delete's split-off record). Each cure was an allowance in the gate. The reviewer's tests proved only the allowed path now passes; nothing proved the allowance could not be used for more (a forged restore, a split that adds days or people). The host added those negative tests by hand.
+**Suggested improvement:** In the order's "what to do with what they hand back": a finding cured by loosening a check (an exemption, an allowance, a vouch) lands with at least one negative test that the loosened check still refuses its nearest misuse, and the re-read brief names the allowance as its first question.
+**Principle:** Every exemption carved into a permission check is a new door; prove the door is only as wide as the case that needed it.
+
+### Observation 1053: A question put to the owner first says when the case happens in real life
+
+**Status:** OPEN
+**Date:** 24 Nov 26
+**Session context:** the SANS words job (chats 156–157, logged by chat 169) — a bell questions page put to the owner; numbered past 1050–1052 held on other branches.
+**Skill:** brainstorming
+**Type:** open-source
+**Phase/Area:** asking questions — each question on a questions page or in chat
+
+**Issue:** Questions about edge cases (what a notification says after an undo, a reminder after a date moves) were put with the words and a picture but not with when the case arises. The owner could not judge their weight and asked; he then ruled that every question first says when it happens — who is doing what, at what point in their work, how often (his D2439).
+**Suggested improvement:** in the skill's question step, add one required line before each question: "When this happens: <who, doing what, at what point, how often>" — and a check before sending that every question has it.
+**Principle:** A decision-maker weighs an edge case by how often and when it meets real people; a question that shows only the words and the screen hides that, and invites either over-engineering or a guess.
+
+### Observation 1059: A ruling that narrows what counts voids earlier walks built on the old reading
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 174, sizing walk w14 of the SANS words (first written as 1058; chat 173's branch took 1058 at the same time — renumbered here, its commit message says 1058)
+**Skill:** New skill candidate: bug-check walk sizing (the bug-check order §7.0 and the walk ledger's sizing step)
+**Type:** open-source
+**Phase/Area:** sizing a re-walk after rulings changed mid-job
+
+**Issue:** Three earlier walks (over 2,000 steps) made every "planned" day for the SANS reminder with a ground-programme row. A later ruling (D2564) said a ground row never counts, and another (D2560) reversed four of their results. Their tables still read PASS, and the handoff only asked w14 for "Fable's scenarios no table of w11–w13 covers" — taken at face value, the old PASSes would have stood in for cases they no longer prove. Only the planning helper's reading of the old scripts' fixture (`planRow` makes a ground row) showed it.
+**Suggested improvement:** In the walk-sizing step, add a line: "For each ruling made since the last walk, list the earlier walks' fixtures and EXPECTED lines that rest on what it changed; those steps are void, not covered." And in a walker's brief, name each fixture helper that no longer makes what its name suggests.
+**Principle:** Evidence is only as current as the rules it was judged against; when a rule narrows what an input means, re-check how past test fixtures built that input before counting them as coverage.
+
+### Observation 1060: A sequential walk held the shared checks lock it did not need, for hours
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 174, an unattended night of four Opus walkers one after another on a build already served
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** the checks lock between and during walk parts
+
+**Issue:** The host took the PC's one checks lock for each walker part and re-took it within seconds of releasing it. The lock rule asks for it only for a full suite, a multi-file browser run, the Tracker smoke or a FANNED-OUT walk; one walk script at a time on a build already served needs none. Another chat's helpers lost two builds to it, about 40 minutes of waiting each, before it asked. Also: two parallel chats took the same skill-note number (1058) within minutes; a check of every branch just before appending did not prevent it, since the other branch pushed after the check.
+**Suggested improvement:** In the overnight guide's run loop: decide once, at sizing, whether the walk needs the lock (fanned out or building) and say so in the sheet; a one-at-a-time walk on a served build takes none. Where a lock is taken per part, leave at least five minutes between release and re-take. For note numbers: re-check every branch AFTER the append and before the commit, as the short form's step 3 says, not only before.
+**Principle:** Hold a shared lock only for what the rule names, and only as long as the run that needs it; a lock held "to be safe" silently costs everyone else waiting on it.
+
+### Observation 1061: A size tripwire's cure was filed as "archive the finished items" without counting them
+
+**Status:** OPEN
+**Date:** 2026-11-25
+**Session context:** chat 176 — the backlog 289 lines over its tripwire; the handoff and the opening line both named "move finished items to the archive" as the fix
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** writing the next step for a size tripwire
+
+**Issue:** two handoffs in a row (24 Nov raise of the ceiling, 25 Nov block) said the overrun would be cured by archiving finished items. A full sweep of all 198 items found only 2 finished (8 lines of 289); every other item had an open part. The owner was told a cure that could not work, and the pull request he expected to merge by itself stayed red.
+**Suggested improvement:** in the handoff skill's step for open residue: before naming "archive finished items" as a tripwire's cure, count the finished lines (one sweep or a dry-run list) and write the number; if it falls short, name the real choices — raise the tripwire with its reason, or move history out of long items — so the next chat puts the choice, not a doomed job.
+**Principle:** a remedy named in a handoff is a claim; measure that it covers the gap before handing it on.
+
+### Observation 1062: a save that replaces the record its own door addresses leaves the door holding the old address
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 177 — fixing chat 170's night-walk fault: one man's row of a shared leave saved its second change onto the other man's leave (numbered past 1061, held on another branch)
+**Skill:** New skill candidate: none — the bug-check order's roll-call (`raptor-port/docs/bug-check-order.md` §6)
+**Type:** open-source
+**Phase/Area:** §6, the rows by kind of change
+
+**Issue:** A save that cuts one person out of a shared record makes a NEW record for him. Three doors kept the old record's address across their next save — a row held from repainting while the caret is in it, a week cell, and a window that keeps the record it was opened on — so the next save went to the old record, which now belonged to the others. Every earlier check passed because each tested one save. The roll-call already has a row for a dry-run save's holders, but none for a save that REPLACES the record its own door addresses.
+**Suggested improvement:** Add to §6's rows by kind of change: "A save that replaces, splits or re-ids the record its door addresses lists every holder of that address across the NEXT save — a held row, a kept window, a cached id — each with a test that saves twice in a row through it."
+**Principle:** When a write can change which record a thing is, every caller holding the old identity must be tested with a second write, not only the first.
+
+### Observation 1065: A fix that keeps an order was proved for the cases the builder thought of; three blind readers each broke it within minutes
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 181 — the FULL bug check of pull request 845 (one man's row of a shared leave), the fixes after the walk and the three blind code reads (numbered past 1063 and 1064, which another open branch holds)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** the red-first test of a fix whose claim is "for every order / every state"
+
+**Issue:** A fix for "a row keeps its place when its man is cut out" remembered each cut-out's two neighbours. Its tests covered the first, the last and a middle man and two cuts of four, all green; all three blind code readers then found orders that moved a row (a third cut, a man cut out twice, both neighbours replaced). One reader proved it by sweeping every order of cuts for 3 to 6 men — a ten-line test the builder could have written first.
+**Suggested improvement:** In the TDD guide's "red first" step, add: where the claim holds "for any order" or "for any sequence", the first test is a sweep over every order of a small set (and each undone), not hand-picked cases; hand-picked cases come after, as the doors' tests.
+**Principle:** A claim quantified over orders or sequences is tested by enumerating a small space whole, before any reader is asked.
+
+### Observation 1066: A walk script that hard-codes the name of the build it was written for cannot serve the re-walk
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 181 — the FULL bug check of pull request 845 (one man's row of a shared leave), the fixes after the walk and the three blind code reads
+**Skill:** New skill candidate: walk-scripts (the project's docs/walk-scripts.md)
+**Type:** open-source
+**Phase/Area:** writing a walker's helper file
+
+**Issue:** Three walkers' helper files each held the frozen build's bundle name as a constant and refused any other build. The re-walk after the fixes — the same scripts on a new build — needed each edited first.
+**Suggested improvement:** In the walker's brief and the walk-scripts guide: the build's name and folder come from the environment with the round's values as defaults, and the guard prints both names when they differ.
+**Principle:** A check that pins a script to one artefact takes the artefact's identity as an input, so the next round re-uses the script unchanged.
+
+### Observation 1067: A helper's report: ask for the file AND the whole text as the reply
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 181 — the FULL bug check of pull request 845 (one man's row of a shared leave), the fixes after the walk and the three blind code reads
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** the brief's "what to hand back"
+
+**Issue:** Met again 25 Nov 26 (chat 178's walkers were refused their report file; an earlier note says a helper's transcript can come back empty). In chat 181 both reader helpers were told to write the report file and, whether or not the write succeeded, to return the whole report word for word as their final reply: both wrote the file and returned the text, and nothing was retyped or lost. Chat 178's second candidate also stands: a scenario's EXPECTED line written with no source cost two false FAILs (an end before the start, the admin's Leave War window).
+**Suggested improvement:** Make "write it to <path>; your final reply is the same text whole, never a summary" a fixed line of every helper brief that hands back a report; and keep the bug-check order's rule that an expected line names its source or is rewritten "RECORD what it says".
+**Principle:** A hand-back has two independent channels, so one refused channel loses nothing.
