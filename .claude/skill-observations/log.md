@@ -1532,3 +1532,17 @@ sides.
 **Issue:** In chat 179 one subagent was refused writing its report under a shared work folder on another drive and returned the report as text instead (the walkers in the same run could write there). In chat 181 every helper told to write under the session's own scratch folder wrote its report without trouble.
 **Suggested improvement:** In the dispatching guide's brief template, name the session's scratch folder as the default place for a helper's report file; a shared work folder only where the helper is known to have write access to it, with "if the write is refused, return the whole report as text" as the fallback line.
 **Principle:** Point a helper's output at a location its sandbox is sure to allow, and give it a stated fallback, so a refused write never silently loses the report.
+
+
+### Observation 1070: A handoff's opening line told the next chat to work in a folder its file tools refuse
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 182, the SANS leftovers — the opening line said "In the main Raptor folder, switch to claude/sans-leftovers-179"; the chat started in its own worktree (numbered past 1069, held on another branch)
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the opening line's "where to work" sentence
+
+**Issue:** The new chat switched the main folder to the branch, then found its Write tool refused every file there ("This session is running in an isolated git worktree … edits there … may corrupt the user's primary working copy"). It put the main folder back to detached and checked the branch out in its own worktree instead. Two minutes lost, and a risk: a chat that did not test a write first could have run a build, a test or a commit in one folder while its edits landed in another.
+**Suggested improvement:** In the session-handoff skill's opening-line template, name the branch, not a folder: "check out <branch> where your file tools write (your own worktree, or the main folder if you started there); make one write first, and if it is refused, check out the branch where it is allowed". Keep any named folder as a fallback only.
+**Principle:** A handoff can say which branch the work is on, but not which folder the next session may write to — that depends on how the session was started; tell it to prove one write before switching anything.
