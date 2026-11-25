@@ -26,6 +26,7 @@
    about him as a man of the crowd — stands. Put back in, his entry's `h` says the same and the stamp is dropped. */
 import { INPUTS, idsOf, entryOf, holds } from './inputs'
 import { newId } from './newid'
+import { noteRowSlot } from './rowinput'
 
 /* who put a person in, and when — handed in by the door (state/inputstamp.ts reads the running command) */
 export type PutStamp = { by?: string; at?: number; mod?: string }
@@ -112,20 +113,33 @@ export function pieceOf(row: any): any {
 
 /** ONE MAN'S OWN INPUT. Where he is the only one in it, the input itself. Where it holds others too: a NEW record —
  *  a new id, every field of the input copied, his own entry its one person, `by` and `at` the input's — put straight
- *  after the input in the list, with him taken out of the original. The caller then changes what it was handed: his
+ *  beside the input in the list, with him taken out of the original. The caller then changes what it was handed: his
  *  dates, his times, his remark, his absence (the plan §4.6 — a time typed on his own Unavailable row, sick leave
- *  cutting his part of a shared leave, a posting's trim of his dates). Null where he is not in it. */
+ *  cutting his part of a shared leave, a posting's trim of his dates). Null where he is not in it.
+ *
+ *  WHERE IT IS PUT — HIS ROW STAYS WHERE IT STOOD (the shared-row walk, 25 Nov 26, walker A's A7(e); red first in
+ *  ui/sharedrow-walkfinds.test.tsx). The Unavailable list is a row a man, the records in the list's order and each
+ *  record's people in theirs (inputs.ts facesOf). The new record was always put AFTER the input, so the FIRST man of a
+ *  shared leave dropped below the others the moment his row repainted, and the next man's row slid up into his place —
+ *  under a name being dragged onto his puck, which then replaced the OTHER man. Nothing on the board re-orders itself
+ *  (owner, 10 Aug 26; D735). So: the first man's own input goes BEFORE the input, anyone else's after it — the last
+ *  man's row stays as well — and a man from the middle, whom no place in the list can keep between the others, is
+ *  remembered beside his neighbours for the list to draw him there (rowinput.ts noteRowSlot, unavailFaces). */
 export function ownInputOf(input: any, person: any): any {
   if (!input || !holds(input, person)) return null
   if (idsOf(input).length === 1) return input
   toPeople(input)
   const his = entryOf(input, person)
+  /* his place among the people the list draws a row for (facesOf: everyone named, a placeholder too) */
+  const drawn: any[] = input.people.filter((e: any) => e && e.p != null && e.p !== '')
+  const k = drawn.findIndex((e: any) => String(e.p) === String(person))
   const own: any = JSON.parse(JSON.stringify(input))
   own.iid = newId('i')
   delete own.ord
   own.people = [JSON.parse(JSON.stringify(his))]
   takePerson(input, person)
   const at = (INPUTS as any[]).indexOf(input)
-  if (at >= 0) (INPUTS as any[]).splice(at + 1, 0, own); else (INPUTS as any[]).push(own)
+  if (at >= 0) (INPUTS as any[]).splice(k === 0 ? at : at + 1, 0, own); else (INPUTS as any[]).push(own)
+  if (k > 0 && k < drawn.length - 1) noteRowSlot(own.iid, input.iid, drawn[k - 1].p, drawn[k + 1].p)
   return own
 }

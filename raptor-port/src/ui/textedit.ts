@@ -239,7 +239,19 @@ export function routeFocusOut(e: FocusEvent) {
     /* an input's start / end left after a save reads the time as saved ([BOARD-TAB-FOLD]; the blind read's F2) — the time
        typed, folded, never read back off `inp`: one man's row of a shared input saves into a record of his own (the
        shaky-tests batch's blind read, F1, 20 Oct 26; board.ts boardChange the same) */
-    if (ok) { if (field !== 'rmks' && document.activeElement !== ip) heal(ip, fmtHM(String(ip.textContent || '').trim())); txtCommit() }
+    if (ok) {
+      if (field !== 'rmks' && document.activeElement !== ip) heal(ip, fmtHM(String(ip.textContent || '').trim()))
+      /* the row's OTHER time cell says what was saved too — an end cleared makes the input all day, a start typed on an
+         all-day input gives it an end of 23:59, and the held row went on showing the old time (the shared-row walk,
+         25 Nov 26, B3 — board.ts boardChange the same; red first in ui/sharedrow-walkfinds.test.tsx). Never the cell
+         holding the caret: its focus refresh reads the input itself */
+      if (field !== 'rmks') {
+        const other = field === 'str' ? 'end' : 'str', now = rowInputOf(inpById(id), who)
+        const sib = now && [...(ip.closest('.day') || document).querySelectorAll<HTMLElement>('[data-inp]')].find(c => c.dataset.inp === `${tail}.${other}`)
+        if (sib && sib.isConnected && document.activeElement !== sib) heal(sib, inpTimeText(now, other))
+      }
+      txtCommit()
+    }
     else heal(ip, field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field))
     return
   }

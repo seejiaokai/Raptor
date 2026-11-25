@@ -1376,7 +1376,20 @@ export function boardChange(e: Event) {
        (hhmm of what was typed; an emptied box, all day, reads empty) — never read back off `inp`: one man's row of an input
        that holds several saves into a record of his own, cut out of this one, so `inp` still holds the old shared time
        (the shaky-tests batch's blind read, F1, 20 Oct 26) */
-    if (setInpField(inp, field as any, inf.value, at ? at.person : null)) { notify(); if (field !== 'rmks' && inf.isConnected && document.activeElement !== inf) inf.value = fmtHM(String(inf.value).trim()) }
+    if (setInpField(inp, field as any, inf.value, at ? at.person : null)) {
+      notify(); if (field !== 'rmks' && inf.isConnected && document.activeElement !== inf) inf.value = fmtHM(String(inf.value).trim())
+      /* THE OTHER TIME BOX OF THE ROW SAYS WHAT WAS SAVED TOO (the shared-row walk, 25 Nov 26 — walker A's A3, walker B's
+         B3; red first in ui/sharedrow-walkfinds.test.tsx). One time typed can change the other: an end cleared makes the
+         input all day, a start typed on an all-day input gives it an end of 23:59 — and the row, held back from
+         repainting, went on showing the old start (09:00 on a leave saved all day) until the caret came back to it. Not
+         the box holding the caret: its own focus refresh reads the input (board.ts, the focus-in), and a rewrite under
+         the caret would lose the place being typed. */
+      if (field !== 'rmks') {
+        const other = field === 'str' ? 'end' : 'str', now = rowInputOf(inpById(id), at ? at.person : null)
+        const sib = now && [...(inf.closest('.sb-pb') || document).querySelectorAll<HTMLInputElement>('[data-ifld]')].find(b => b.dataset.ifld === `${tail}.${other}`)
+        if (sib && sib.isConnected && document.activeElement !== sib) sib.value = inpTimeText(now, other)
+      }
+    }
     else back()
     return
   }

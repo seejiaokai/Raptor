@@ -50,6 +50,26 @@ him"). The rulings pages for these surfaces: `COPY/.claude/rules/decisions/sched
 `oil.md`; the contracts: `raptor-port/docs/ui-contracts.md` (search "own part", "Unavailable"),
 `raptor-port/docs/feature-impact.md`.
 
+**Two more changes ride in the same commit, both to the same rows (added 25 Nov 26, before any reader was sent):**
+- **A row keeps its place when its man is cut out.** The promise: "nothing on the board re-orders itself while a
+  scheduler types: Auto sort and Sort all, by start time, are the only reorderers" (`scheduler.md`, §Board behaviour;
+  D735's row: "It keeps 'nothing on the board re-orders itself' (10 Aug 26)"). The fault: the input cut out for one man
+  was always put AFTER the shared one in the list, so the FIRST man's row dropped below the others' once his held row
+  repainted — the next man's row slid up into his place, and a name dragged onto his puck at that moment replaced the
+  other man. The fix: `src/engine/inputown.ts ownInputOf` puts the first man's own input BEFORE the shared one, anyone
+  else's after it, and notes a man cut out from the MIDDLE beside his two neighbours (`src/engine/rowinput.ts
+  noteRowSlot` — a page-life pointer, not saved); `unavailFaces` there is the one answer to "the Unavailable list's
+  rows, top to bottom", asked by the week (`src/ui/html.ts`, `inGrp`) and the Board (`src/ui/board-html.ts
+  sbUnavailPanel`). The host's reading, a question for you: after a reload the middle man's row may stand under the
+  others' (nothing is under a finger then).
+- **The row's other time box says what was saved.** The promise: "clearing a time means all day"
+  (`raptor-port/docs/ui-contracts.md`); a box never shows a time the input does not hold (the host's reading). The
+  fault: his end cleared after a start of 09:00 saved the input all day, and his start box went on reading 09:00 until
+  the caret came back to it — a one-man row too. The fix: after a saved time, `src/ui/board.ts boardChange` and
+  `src/ui/textedit.ts` (the focus-out's `data-inp` branch) set the row's OTHER time box from the input as saved, never
+  the box holding the caret.
+- Their tests: `src/ui/sharedrow-walkfinds.test.tsx`.
+
 ## Your job
 
 Do not merely review the changed code. Starting from the user promise and the applicable rulings, enumerate every
@@ -82,6 +102,12 @@ Check the code against the rulings and contracts named above. In particular:
   input deleted) × each event that can arrive (each box, each button, Escape, Tab, the day step, a drop, Undo, Redo,
   a reload, another page and back). Can a pointer ever lead a save or a press onto an input that is not his, or
   onto a stale one? Can two men's pointers cross?
+- **The list's order.** Every caller of `ownInputOf` (a box typed on his row, the Leave War's remark, a medical cutting
+  his part of a shared leave — `src/leavewar/inputgate.ts` — a posting's trim) and every reader of the order of the
+  inputs list or of the Unavailable rows: what moved for each, and where a row can still change place by itself — a
+  man cut out twice, two men cut out in turn, Undo and Redo, a published day's issued copy, a day the shared input is
+  not on, a placeholder (ALL AVAIL) among the people. Any place that draws the Unavailable rows and does NOT ask
+  `unavailFaces`. And the sibling box: can it ever be set from an input that is not his, or under a caret?
 - **Roles and the published day:** is the permission gate asked of the input the change now lands on? Does anything
   change silently on a published day?
 - The tests: for every condition or early return around an assertion, could the test pass without proving its claim?

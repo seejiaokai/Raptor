@@ -5,6 +5,7 @@ import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew, sansOn } from '../engine/people'
 import { personShown, briefLeadShown, withFaceAttrs, withDrawDay } from '../engine/faceattrs'
 import { odOut, isOD, listedPersonal, listedUnavail, INPUTS, sansFaceShown, idsOf, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
+import { unavailFaces } from '../engine/rowinput'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, saFlies, saAnyFlies, saTyped, saDeskFlies, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { reportingIssuesForWave,stated,REPORTING_LABEL,REPORT_WORD } from '../engine/reporting'
@@ -2214,8 +2215,9 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
          filed, so the line never says "accepted" for a man who is not (state/inputgroup.ts entryLines). THE UNAVAILABLE
          LIST IS LEFT AS IT IS — a row a man (D737): every record there is a line of its own. */
       /* (…since the one-rule build an input is ONE record with its people: a line under Personal Inputs is the record's
-         faces — a puck a person; the Unavailable list a face a row — engine/inputs.ts facesOf) */
-      const lines:any[][]=acc?rows.map((r:any)=>facesDrawn(r)).filter((l:any[])=>l.length):rows.flatMap((r:any)=>facesOf(r).map((f:any)=>[f]));
+         faces — a puck a person; the Unavailable list a face a row — engine/inputs.ts facesOf, in the order
+         engine/rowinput.ts unavailFaces gives: a man cut out of a shared input keeps his row where it stood) */
+      const lines:any[][]=acc?rows.map((r:any)=>facesDrawn(r)).filter((l:any[])=>l.length):unavailFaces(rows).map((f:any)=>[f]);
       /* PERSONAL INPUTS folds to a one-line summary by default (owner, Aug 26).
          Now that activity inputs auto-land on the ground programme, this block
          is the faded audit echo, not the primary planning surface — so it folds
