@@ -100,6 +100,6 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - The scheduler's (the one calendar, names at the time, the keys, a flash): D796, D797, D800, D824, D1012, D1020, D1589, D1081, D1412, D1038.
 - The scheduler's page no longer loads through the performance guide or the ripple map, so a Tracker job that opens only the Tracker's own files does not have it (the sign-out file and a Tracker mock-up still load it): it is opened before changing what the line above governs, or how a time reads (its §Settled: every time 08:00) [D1949].
 - People and accounts' (a deleted man, one database): D299, D300, D1105, D1101, D292.
-- People and accounts' — the Tracker follows the squadron picked, with no sign-out: D2395 (replacing D2318's hold until sign-out); unsaved chart edits asked about first, at the switch to the member view too: D2318, D2403, D2596, D2594, and before a pick of a squadron he only views too: D2388.
+- People and accounts' — the Tracker follows the squadron picked, with no sign-out: D2395 (replacing D2318's hold until sign-out); unsaved chart edits asked about first, at the switch to the member view too: D2318, D2403, D2596, D2597, D2594, and before a pick of a squadron he only views too: D2388.
 - The IT flow guide's (the Tracker in full, checked in the app): D414.
 - How we work's (privacy, the one table, React Doctor, strict checks, the lock, the graph, pinned cells, stored data, the public repo): D62, D63, D1587, D473, D1534, D1537, D228, D774, D1281, D487, D56, D106, D1530.

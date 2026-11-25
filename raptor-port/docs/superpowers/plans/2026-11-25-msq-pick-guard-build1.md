@@ -219,12 +219,12 @@ over 149's View-only Sched after a pick today, and its Save writes 142's input u
 |---|---|---|---|---|
 | `inputedit` | The Input window on the Inputs page | `ui/InputWindow.tsx`; `setInpEdit(r)`; Cancel / Close, Add / Save, ✕ and Escape (which ask when something is typed, D1622) | `ui/pops.ts INPEDIT` | window |
 | `inputsday` | A day opened on the Inputs calendar | `ui/InputsCal.tsx renderPop`; a day tapped; ✕, Escape. Today it stays open across a pick and shows 149's day, a half-typed "+ Note" landing on 142's (pressed, P4 4) | the calendar's own state | window |
-| `sansday` | A SANS day | `ui/SansDay.tsx`; ✕, Escape | the SANS calendar's own state | window |
+| `sansday` | A SANS day | `ui/SansDay.tsx`; ✕, Escape | the SANS calendar's own state | **no — only shows things; closes by itself at the pick and the view switch (his D2597, 25 Nov 26; this cell was "window")** |
 | `inputsset` / `sansset` | Inputs / SANS calendar settings | `ui/InputsSettings.tsx`, `ui/SansSettings.tsx`; the gear or Logic's row; ✕, Escape, a page change (`VIEW_RESET 'page'`) | `pops.ts INPSET`, `SANSSET` | window |
 | `days` | Calendar | `ui/DaysWindow.tsx`; ✕, Escape | `pops.ts DAYSWIN` | window |
 | `everywd` / `holiday` | Every Monday · Add / Change a holiday | `ui/EveryWeekday.tsx`, `ui/HolidaysPanel.tsx`; opened from Calendar; ✕, Escape, their own Save | their opener's own state | window |
 | `oilday` | The OIL list | `ui/OilDayList.tsx`; `setOilList(…)` — by itself when a holiday is saved, from a holiday's bell line, a sign-off box, a version loaded back; Save, Later, Close, ✕, Escape | `pops.ts OILLIST` | window (D2403 names it) |
-| `lwday` | The Leave War's day panel | `leavewar/ui/DayPanel.tsx`; `openDayPanel(iso)`; ✕, Escape | `leavewar/ui/daypanelopen.ts OPEN` | window; `where: 'leavewar'` |
+| `lwday` | The Leave War's day panel | `leavewar/ui/DayPanel.tsx`; `openDayPanel(iso)`; ✕, Escape | `leavewar/ui/daypanelopen.ts OPEN` | **no — only shows things; closes by itself (D2597; this cell was "window; `where: 'leavewar'`")** |
 | — | The `?timing` readout (pull request 840) | a `FloatWin` with `bystander`, which never calls `forward(id)` | — | **no** — it never joins `UP`; §9 |
 
 **(b) The two older movable windows — `ui/floatwin.ts useFloatWin` directly; flags in `state/view.ts`.** Each keeps a
@@ -241,13 +241,18 @@ both close without a word at a pick and at the view switch, in the one press (pr
 the plan that names them as counted (§3.1's table, the tests of §3.5, the walk) is folded by the next chat with his other
 answers; until then this note wins over any line that counts them.
 
+**His D2597 (25 Nov 26, "Yes, all four"):** four more that only show things close by themselves the same way — Insights,
+a SANS day, the Leave War's day panel and a Tracker event's details (their rows in (a), (c) and the Tracker's table below marked). Calendar and
+the Tracker's marking window stay as written until he answers, once each is pressed and pictured. The same folding note
+applies.
+
 **(c) The schedule's veiled dialogs — `.airpop` / `.modal`, flags in `ui/pops.ts`. Shaded.** Each row reads the
 predicate named, as a function of `ui/windrawn.ts` that the component calls.
 
 | What | File | Flag · drawn when | counts |
 |---|---|---|---|
 | The Input dialog opened from the week or the board — row id `inputdlg` | `ui/InputWindow.tsx` (its second return, `CURPAGE !== 'inputs'`; a press on its veil closes it unasked). Mounted at the top level, so it is never set and out of sight (Opus's check) | `INPEDIT` · the component's `open` | window |
-| Insights | `ui/Modals.tsx InsightsModal` | `INSIGHTS` · the predicate its `useSheetFocus` is given | window |
+| Insights | `ui/Modals.tsx InsightsModal` | `INSIGHTS` · the predicate its `useSheetFocus` is given | **no — only shows things; closes by itself (D2597; this cell was "window")** |
 | Duty templates · Flying waves · Day templates · Plans | `ui/DutyTplModal.tsx`, `WaveTplModal.tsx`, `DayTplModal.tsx`, `DraftsModal.tsx` | `TPLEDIT`, `WAVEEDIT`, `DAYTPLEDIT`, `DRAFTSEDIT` · each file's own `open` / `up` (the flag **and** `canEditSched()`; Plans also Edit Schedule) | window |
 | The board's cancel-reason box · Sort all | `ui/SchedBoard.tsx CxDialog`, `SortAllDialog` (always mounted, shown by dropping `hidden`). Their shade covers every door, the board's own bell and ✓ Done included (pressed, P1 3) | `ui/board.ts CXT`, `SORTALL` · the `open` each hands to `useSheetFocus` — `CXT != null`, `SORTALL != null` (l.880, l.974) — not the page query `pops.ts windowOverSchedule` uses, which a hidden board could still match (not traced: A10 answers it) | window (H2) |
 
@@ -298,7 +303,7 @@ window's own pickers — counts: **no**, lists and peeks that a press outside cl
 |---|---|---|
 | `dlg` | Any of its questions and boxes (`components/Modals.jsx DlgModal`) — "+ Add …" prompts, Export, the unsaved-edits question itself (which, raised by a pick or a landing, is drawn over another page: the `trkask` row, §3.1) | window (shaded) |
 | `pop` (+ `popMsg`) | The marking window (`components/Pop.jsx`). It has no box to type in (pressed, P3 4), and **any press outside it closes it** — `tracker/App.jsx clickAway`, a `click` listener on the document that spares only `#pop` and `.ball`. So opening the Schedules list closes it before a row can be pressed, and a press on the badge is refused and then closes, in the same press, the window the note says to close. Left behind another tab on a desktop it stays set, and the pick then closes it without a word; on a phone it closes as he leaves the Tracker (pressed, P5 N1) | **N7** — the first draft's "window" cannot be built as written |
-| `infoId` | An event's details, opened in ⓘ mode — a bubble; it goes at a pick and at the view switch, ⓘ turning off at a pick and staying on at the switch (pressed, P1 4) | **N7** |
+| `infoId` | An event's details, opened in ⓘ mode — a bubble; it goes at a pick and at the view switch, ⓘ turning off at a pick and staying on at the switch (pressed, P1 4) | **no — closes by itself, as today (D2597; this cell was "N7", whose marking-window half stays open)** |
 | `editId` · `sylModalOpen` · `ordMode` · `copyOpen` | The ball editor, Edit syllabus, Reorder ("Crew order": Cancel / Save order), Copy (`Modals.jsx`). Reorder's shade covers every door (pressed, P1 4) | window |
 | `flexWinOpen` · `showAllOpen` | Flex settings (`FlexSettings.jsx`: Cancel / Save), Show All (`ShowAllPanel.jsx`). Both shaded on a desktop (pressed, P1 4); neither is drawn on the phone's Tracker page as it opens | window (Show All: H2) |
 | `downLog` · `failLog` · `lullPick` · `lullCopy` | Down days, the fail log, the two lull pop-ups (`SidePanel.jsx`). Whether a press outside closes each, as it closes `pop`: **not traced** — the builder reads each before its row is built (§14). **All four are drawn inside the Info panel, which a screen 1050 wide or less hides while its Flow chart tab shows (§3.1)** | window; hidden behind the Flow chart tab: **N12** |
