@@ -107,4 +107,16 @@ fit change), 14 (no keyboard route), 16 (no refusal at a box), 18 (no print), 23
 
 ## 14. What the walk found, and each disposition
 
+**Walker A** (report `docs/handpass/parts/sns-w1A-report.md`, pictures `docs/img/handpass/2026-11-25-sans-notimes-strike/A/`,
+652 pictures, no console or page errors): every promise of D2573 PASSED at both sizes — the strike, the reason under the
+name, the "N free" count, the drag hover, the green rings, the bell agreeing. Three FAIL rows, one cause, **not a fault of
+this change (host reproduced from `A/F1-d/F1-f1-tap-note-desktop.png`, opened):** the note after a drop or tap shows the
+NEWEST warning that drop raised — on a weekend blank line the first man placed raises "the … line has no usable times, so
+nobody on it earns OIL for this day", which takes the note (F1.2, A-S16 S16.1); on a weekday a newer double-turn warning
+does the same (F5.9). With no newer warning the note gives his SANS reason (F1.6, F5.6, and a timed Sat 18 control). The
+same order on `main` (chat 174's recipe P7 records the OIL note). Fable's EXPECTED line assumed the SANS note; Astra's
+A-S02 ("existing new warnings take priority") matches the app. Disposition: as built — named on his look card.
+
+**Walker B:** (pending)
+
 ## 15. The Walk line
