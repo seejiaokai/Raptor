@@ -143,6 +143,28 @@ describe('one man\'s row of a shared leave, typed in three times with the row he
   })
 })
 
+/* THE PUCK ON HIS HELD ROW (the fresh Opus scenario designer's M5, 25 Nov 26): a man dropped on Ranger's puck — the row's
+   `data-inpseat`, `<shared>~bane` — once Ranger had a leave of his own took HEX's place: "whose row it is" fell back to
+   the shared leave's lead man, now Hex. D755: a man dropped on the only man's puck replaces him — Ranger, on his own. */
+describe('a man dropped on Ranger\'s puck of his held row replaces RANGER on his own leave (M5)', () => {
+  it('Outlaw dropped after the split: Outlaw 09:00–10:00, Hex keeps his leave', async () => {
+    const { reassignInput } = await import('../ui/inputedit')
+    const iid = shared()
+    expect(setInpField(byId(iid), 'str', '0900', 'bane')).toBe(true)
+    reassignInput(`${iid}~bane`, 'casper')
+    expect(said2(), 'Hex is never swapped out by a gesture on Ranger\'s row').toEqual(['Hex 480-600 ""', 'Outlaw 540-600 ""'])
+  })
+  it('taken out by another door meanwhile: the drop changes nothing, and says so', async () => {
+    const { reassignInput } = await import('../ui/inputedit')
+    const iid = shared()
+    const r = byId(iid)
+    expect(commitInput(r, draftOf(r), ['rocky'])).toBe(true)
+    said = []
+    expect(reassignInput(`${iid}~bane`, 'casper')).toBe(false)
+    expect(said2()).toEqual(['Hex 480-600 ""'])
+  })
+})
+
 describe('the Leave War\'s remark on one man\'s cell, saved twice with the window open (the same address)', () => {
   it('Ranger\'s remark, then changed: both on Ranger\'s own leave; Hex\'s leave keeps no remark', () => {
     const iid = shared()

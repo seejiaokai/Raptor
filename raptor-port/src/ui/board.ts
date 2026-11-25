@@ -2100,7 +2100,10 @@ export function boardTab(n: number) {
       if (ae.dataset.bfld != null) want = boxText(ae.dataset.bfld)
       else {
         const [tail, field] = ae.dataset.ifld.split('.')
-        const inp = inpById((iuParts('iu:' + tail) || { iid: tail }).iid)
+        /* his held row is compared with HIS input once a change cut it out (rowInputOf — the fresh Opus scenario
+           designer's M4: compared with the others', an untouched box fired a change nobody typed) */
+        const at = iuParts('iu:' + tail) || { iid: tail, person: null }
+        const inp = rowInputOf(inpById(at.iid), at.person)
         if (inp) want = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)   // the box's typed words (D948)
       }
       /* a TIME box SHOWS fmtHM(model) — a legacy compact '0900' reads '09:00' —

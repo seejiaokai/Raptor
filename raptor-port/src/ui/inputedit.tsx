@@ -1883,7 +1883,11 @@ export function reassignInput(iid: any, personId: any): boolean {
   /* `iid` is the row's address after its `iu:` — the input's id, or `<iid>~<person>` for one man's row of an input
      that holds several (engine/keys.ts iuParts — the one parser) */
   const at = iuParts('iu:' + String(iid)) || { iid: String(iid), person: null }
-  const r = INPUTS.find((i: any) => i.iid === at.iid)
+  /* one man's row stands for HIS input once a change on it cut one out for him — the row may still carry the shared
+     input's id (rowInputOf; the fresh Opus scenario designer's M5: the drop fell back to the shared input's lead man and
+     swapped HEX out for a gesture on Ranger's row) — and for nothing once he is out of it by another door */
+  const r0 = INPUTS.find((i: any) => i.iid === at.iid)
+  const r = at.person != null ? rowInputOf(r0, at.person) : r0
   if (!r) { HOOKS.toast('That input is no longer there — nothing was changed', 'warn'); return false }
   /* whose row it is: the man it names, else the input's one person */
   const from = at.person != null && holds(r, at.person) ? at.person : leadOf(r)

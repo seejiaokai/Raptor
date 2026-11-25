@@ -395,8 +395,12 @@ function refreshTextDestination(el: HTMLElement) {
     value = boxText(key)
     if (TIME_TXT.test(key)) value = fmtTxt(value)
   } else if (d.inp || d.ifld) {
-    const [id, field] = (d.inp || d.ifld)!.split('.')
-    const inp = inpById(id)
+    const [tail, field] = (d.inp || d.ifld)!.split('.')
+    /* one man's row names him after the id (engine/keys.ts iuParts) — looked up whole, it found nothing and the box Tab
+       landed in kept what it showed before the last save; and once a change cut out an input of his own, the box reads
+       HIS (rowInputOf — Astra's scenario S04: his end cleared, Shift+Tab back to a start still reading 09:00) */
+    const at = iuParts('iu:' + tail) || { iid: tail, person: null }
+    const inp = rowInputOf(inpById(at.iid), at.person)
     if (!inp) return
     value = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)
   } else if (d.itline) {
@@ -448,7 +452,10 @@ export function routeKeyDown(e: KeyboardEvent) {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); ic.blur() }
     else if (e.key === 'Escape') {
       const [tail, field] = ic.dataset.inp!.split('.')
-      const inp = inpById((iuParts('iu:' + tail) || { iid: tail }).iid); e.preventDefault()
+      /* his row puts back what HIS input says once a change cut it out — never the shared one's (rowInputOf; the fresh
+         Opus scenario designer's M2: the blur then saved the others' time onto his own) */
+      const at = iuParts('iu:' + tail) || { iid: tail, person: null }
+      const inp = rowInputOf(inpById(at.iid), at.person); e.preventDefault()
       if (inp) ic.textContent = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)
       ic.blur()
     }
@@ -472,7 +479,8 @@ export function routeKeyDown(e: KeyboardEvent) {
      Enter is left as it is — the input's own commit, and the remarks box's branch below. */
   if (bx && e.key === 'Escape' && (bx as any).dataset.ifld) {
     const [tail, field] = String((bx as any).dataset.ifld).split('.')
-    const inp = inpById((iuParts('iu:' + tail) || { iid: tail }).iid); e.preventDefault()
+    const at = iuParts('iu:' + tail) || { iid: tail, person: null }
+    const inp = rowInputOf(inpById(at.iid), at.person); e.preventDefault()   // his own once cut out (M3, as above)
     if (inp) (bx as any).value = field === 'rmks' ? remarksTyped(inp.remarks, inp) : inpTimeText(inp, field)
     bx.blur()
     return

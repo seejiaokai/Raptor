@@ -1454,3 +1454,16 @@ sides.
 **Issue:** The host took the PC's one checks lock for each walker part and re-took it within seconds of releasing it. The lock rule asks for it only for a full suite, a multi-file browser run, the Tracker smoke or a FANNED-OUT walk; one walk script at a time on a build already served needs none. Another chat's helpers lost two builds to it, about 40 minutes of waiting each, before it asked. Also: two parallel chats took the same skill-note number (1058) within minutes; a check of every branch just before appending did not prevent it, since the other branch pushed after the check.
 **Suggested improvement:** In the overnight guide's run loop: decide once, at sizing, whether the walk needs the lock (fanned out or building) and say so in the sheet; a one-at-a-time walk on a served build takes none. Where a lock is taken per part, leave at least five minutes between release and re-take. For note numbers: re-check every branch AFTER the append and before the commit, as the short form's step 3 says, not only before.
 **Principle:** Hold a shared lock only for what the rule names, and only as long as the run that needs it; a lock held "to be safe" silently costs everyone else waiting on it.
+
+### Observation 1062: a save that replaces the record its own door addresses leaves the door holding the old address
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 177 — fixing chat 170's night-walk fault: one man's row of a shared leave saved its second change onto the other man's leave (numbered past 1061, held on another branch)
+**Skill:** New skill candidate: none — the bug-check order's roll-call (`raptor-port/docs/bug-check-order.md` §6)
+**Type:** open-source
+**Phase/Area:** §6, the rows by kind of change
+
+**Issue:** A save that cuts one person out of a shared record makes a NEW record for him. Three doors kept the old record's address across their next save — a row held from repainting while the caret is in it, a week cell, and a window that keeps the record it was opened on — so the next save went to the old record, which now belonged to the others. Every earlier check passed because each tested one save. The roll-call already has a row for a dry-run save's holders, but none for a save that REPLACES the record its own door addresses.
+**Suggested improvement:** Add to §6's rows by kind of change: "A save that replaces, splits or re-ids the record its door addresses lists every holder of that address across the NEXT save — a held row, a kept window, a cached id — each with a test that saves twice in a row through it."
+**Principle:** When a write can change which record a thing is, every caller holding the old identity must be tested with a second write, not only the first.
