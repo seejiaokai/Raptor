@@ -278,6 +278,10 @@ back and put to him (it clashes with D286). The bell's grey number first on ever
 people, "Welcome back" only at home, the badge "View only" where he can only look; bug reports one list, each with its
 grey number; a sign-off name from another squadron with its number. Each in the ruling's full row; §8 folds them in.
 
+**His D2629 (25 Nov 26 — "folded"):** on a squadron's Admin → Users, under its own people, each other squadron is one
+closed heading ("▸ 142 · 38 people") opening its people grouped, each row offering only the access line for the squadron
+in view (D2625); the search still finds them; shown to whoever may give access there. Drawn first.
+
 **(c) The schedule's veiled dialogs — `.airpop` / `.modal`, flags in `ui/pops.ts`. Shaded.** Each row reads the
 predicate named, as a function of `ui/windrawn.ts` that the component calls.
 
