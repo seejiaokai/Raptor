@@ -2803,6 +2803,11 @@ the pair was never blank at once and all-day was a one-way trip. The AM/PM
 label is DERIVED on commit — a window that lands exactly on a half gets it,
 anything else drops it — so a printed "(AM)" can never describe a window that
 is no longer a half.
+*(Since 25 Nov 26 — the shared-row walk, A3 and B3: a saved time also sets the row's OTHER time box from the input as
+saved, on the Board (`ui/board.ts boardChange`) and the week (`ui/textedit.ts`, the focus-out) — the row under the
+caret is held back from repainting, so an end cleared after a start of 09:00 left the start box reading 09:00 on an
+input saved all day, and a start typed on an all-day input left its end box empty over a saved 23:59. Never the box
+holding the caret: its own focus refresh reads the input. `ui/sharedrow-walkfinds.test.tsx`.)*
 
 **Every input carries `iid`**, minted at creation (`mintInpIds` at boot,
 `add()` on the Inputs page) and never changed. The cells cannot be addressed
@@ -2814,7 +2819,11 @@ that then minted a different one.
 *(As of the one-rule build, 12 Oct 26 — D756, D759 reading 4: an input of several people is ONE record with ONE `iid`,
 where it was a record and an id a man. One man's part split out of it — a box typed on his own Unavailable row, sick
 leave cutting his share of a leave — is a NEW record with a NEW `iid` (`engine/inputown.ts ownInputOf`), put straight
-after the original, which keeps its own. The Inputs page's `add()` went with the List's own form on 10 Oct 26 (D729):
+after the original, which keeps its own — since 25 Nov 26 BEFORE it where he was the first man of the input, so his
+row on the Unavailable list stays where it stood, and a man cut out from the middle is drawn between his two
+neighbours still (`engine/rowinput.ts unavailFaces`, the one order of that list's rows, asked by the week and the
+Board; a page-life pointer, not saved): nothing on the board re-orders itself (10 Aug 26, D735 — the shared-row walk's
+A7(e): the next man's row slid up under a name being dragged onto his puck). The Inputs page's `add()` went with the List's own form on 10 Oct 26 (D729):
 a new input is made, given its id and unshifted by `ui/inputedit.tsx commitNewInput`.)*
 
 **What is left behind the type label** — still a `<button>` via `inpEditLabel`

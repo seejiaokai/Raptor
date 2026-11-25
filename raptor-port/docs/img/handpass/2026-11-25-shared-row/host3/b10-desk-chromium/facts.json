@@ -1,0 +1,79 @@
+{
+ "pictures": [
+  {
+   "file": "b10a-desk-0-pi.png",
+   "case": "B10-a",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "imwvrq1icjctdgf~rocky.str in 2.inputs"
+   ]
+  },
+  {
+   "file": "b10a-desk-1-after.png",
+   "case": "B10-a",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "after": [
+     "Meeting Ranger+Hex 09:00-10:00 \"\" acc:g [imwvrq1icjctdgf]"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "file": "b10b-desk-0-ground.png",
+   "case": "B10-b",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "before": "08:00"
+   }
+  },
+  {
+   "file": "b10b-desk-1-after.png",
+   "case": "B10-b",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "left": [
+     "Meeting Ranger+Hex 09:00-10:00 \"\" acc:g [imwvrq9ygy7z7vg]"
+    ],
+    "shownNow": "09:00",
+    "note": ""
+   }
+  },
+  {
+   "file": "b10c-desk-left.png",
+   "case": "B10-c",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "LL Ranger 09:00-11:00 \"own\" acc:- [imwvrqi84aoec45]"
+   ]
+  }
+ ],
+ "cases": {
+  "B10-a": {
+   "log": [
+    "filed {\"type\":\"Meeting\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Sync\"} on 2026-07-15: new input [\"imwvrq1icjctdgf\"]; asked []; note \"\"",
+    "filed [\"Meeting Ranger+Hex 08:00-10:00 \\\"\\\" acc:g [imwvrq1icjctdgf]\"]",
+    "PI shown true lines [\"imwvrq1icjctdgf~rocky.str in 2.inputs\"]",
+    "picture b10a-desk-0-pi.png: [\"imwvrq1icjctdgf~rocky.str in 2.inputs\"]",
+    "picture b10a-desk-1-after.png: {\"after\":[\"Meeting Ranger+Hex 09:00-10:00 \\\"\\\" acc:g [imwvrq1icjctdgf]\"],\"note\":\"\"}"
+   ]
+  },
+  "B10-b": {
+   "log": [
+    "filed {\"type\":\"Meeting\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Sync\"} on 2026-07-15: new input [\"imwvrq9ygy7z7vg\"]; asked []; note \"\"",
+    "filed [\"Meeting Ranger+Hex 08:00-10:00 \\\"\\\" acc:g [imwvrq9ygy7z7vg]\"]",
+    "accept buttons [\"x:Reject\"]",
+    "accepted: note \"\" store [\"Meeting Ranger+Hex 08:00-10:00 \\\"\\\" acc:g [imwvrq9ygy7z7vg]\"] ground key gr:2.2",
+    "picture b10b-desk-0-ground.png: {\"before\":\"08:00\"}",
+    "picture b10b-desk-1-after.png: {\"left\":[\"Meeting Ranger+Hex 09:00-10:00 \\\"\\\" acc:g [imwvrq9ygy7z7vg]\"],\"shownNow\":\"09:00\",\"note\":\"\"}"
+   ]
+  },
+  "B10-c": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvrqi84aoec45\"]; asked [\"document\"]; note \"\"",
+    "picture b10c-desk-left.png: [\"LL Ranger 09:00-11:00 \\\"own\\\" acc:- [imwvrqi84aoec45]\"]"
+   ]
+  }
+ },
+ "errors": []
+}

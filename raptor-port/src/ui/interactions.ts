@@ -32,6 +32,7 @@ import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
 import { menuEscape, menuKeys, menuFirst } from './sheetfocus'
 import { oilPutBackWatch, oilNeedSaid } from './oilputback'
 import { iuParts } from '../engine/keys'
+import { rowInputOf } from '../engine/rowinput'
 import { howMany, reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt, commitInputEdit, draftOf, dryRun, oilGate, saveBatchX, inputWho, markMoved, protectedInput } from './inputedit'
 import { oilWaitThen, holdForOil } from './oilwait'
 import { openAvailWinFrom } from './availopen'
@@ -1043,9 +1044,12 @@ export function routeClick(e: MouseEvent) {
   if (ab) {
     e.stopPropagation()
     if (!canEditSched()) { HOOKS.toast('Only a scheduler can accept inputs', 'warn'); return }
-    const di = +ab.dataset.accd!, k = ab.dataset.acck!, dest = ab.dataset.acc!
-    const inp = INPUTS.find((x: any) => inpId(x) === k)
+    const di = +ab.dataset.accd!, dest = ab.dataset.acc!
+    /* one man's Unavailable row names him (html.ts iuWhoAtt): the input it stands for NOW — his own once a change on the
+       held row cut it out, never the others' (engine/rowinput.ts; Fable's S2) — and everything below goes by ITS id */
+    const inp = rowInputOf(INPUTS.find((x: any) => inpId(x) === ab.dataset.acck!), ab.dataset.iuw)
     if (!inp) { HOOKS.toast('That input is no longer there', 'warn'); return }
+    const k = inpId(inp)
     /* A REQUEST THAT RUNS INTO A READ-ONLY WEEK is refused before anything is asked or tried, in that week's own words, in
        the grey note (D1785, D1667–D1669 — the final code read, 8 Nov 26: Sol 6.1 S3, the fresh Opus reader F3). The
        engine refuses it too (engine/slots.ts acceptInput, unacceptInput), but before any write, so the store's backstop
@@ -1245,7 +1249,8 @@ export function routeClick(e: MouseEvent) {
     e.stopPropagation()
     if (!canEditSched()) { HOOKS.toast('Only a scheduler can change the LATE marks', 'warn'); return }
     const id = ltg.getAttribute('data-lateoff')
-    const inp = INPUTS.find((x: any) => inpId(x) === id)
+    /* his own input once a change on the held row cut it out (html.ts iuWhoAtt; Fable's S11: the chip hid HEX's mark) */
+    const inp = rowInputOf(INPUTS.find((x: any) => inpId(x) === id), ltg.dataset.iuw)
     if (inp) {
       /* THE ONE ROW'S MARK IS EVERYONE'S ON IT (the plan §4.5): a shared input's chip stands for every late record of
          it (ui/html.ts lateMates), so the tap hides it — or brings it back — for all of them alike */
@@ -1384,7 +1389,10 @@ export function routeClick(e: MouseEvent) {
   if (ib) {
     e.stopPropagation()
     if (!canEditSched()) { HOOKS.toast('Only a scheduler can edit inputs from here', 'warn'); return }
-    const inp = INPUTS.find((x: any) => inpId(x) === ib.dataset.inpedit!)
+    /* his own input once a change on the held row cut it out (html.ts iuWhoAtt; Fable's S1: the label on Ranger's row
+       opened HEX's leave, and its Delete would have deleted it) — while he is still in the shared one, the whole input
+       as before (D748) */
+    const inp = rowInputOf(INPUTS.find((x: any) => inpId(x) === ib.dataset.inpedit!), ib.dataset.iuw)
     if (!inp) { HOOKS.toast('That input is no longer there', 'warn'); return }
     setInpEdit(inp)
     notify()

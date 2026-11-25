@@ -1467,3 +1467,55 @@ sides.
 **Issue:** two handoffs in a row (24 Nov raise of the ceiling, 25 Nov block) said the overrun would be cured by archiving finished items. A full sweep of all 198 items found only 2 finished (8 lines of 289); every other item had an open part. The owner was told a cure that could not work, and the pull request he expected to merge by itself stayed red.
 **Suggested improvement:** in the handoff skill's step for open residue: before naming "archive finished items" as a tripwire's cure, count the finished lines (one sweep or a dry-run list) and write the number; if it falls short, name the real choices — raise the tripwire with its reason, or move history out of long items — so the next chat puts the choice, not a doomed job.
 **Principle:** a remedy named in a handoff is a claim; measure that it covers the gap before handing it on.
+
+### Observation 1062: a save that replaces the record its own door addresses leaves the door holding the old address
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 177 — fixing chat 170's night-walk fault: one man's row of a shared leave saved its second change onto the other man's leave (numbered past 1061, held on another branch)
+**Skill:** New skill candidate: none — the bug-check order's roll-call (`raptor-port/docs/bug-check-order.md` §6)
+**Type:** open-source
+**Phase/Area:** §6, the rows by kind of change
+
+**Issue:** A save that cuts one person out of a shared record makes a NEW record for him. Three doors kept the old record's address across their next save — a row held from repainting while the caret is in it, a week cell, and a window that keeps the record it was opened on — so the next save went to the old record, which now belonged to the others. Every earlier check passed because each tested one save. The roll-call already has a row for a dry-run save's holders, but none for a save that REPLACES the record its own door addresses.
+**Suggested improvement:** Add to §6's rows by kind of change: "A save that replaces, splits or re-ids the record its door addresses lists every holder of that address across the NEXT save — a held row, a kept window, a cached id — each with a test that saves twice in a row through it."
+**Principle:** When a write can change which record a thing is, every caller holding the old identity must be tested with a second write, not only the first.
+
+### Observation 1065: A fix that keeps an order was proved for the cases the builder thought of; three blind readers each broke it within minutes
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 181 — the FULL bug check of pull request 845 (one man's row of a shared leave), the fixes after the walk and the three blind code reads (numbered past 1063 and 1064, which another open branch holds)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** the red-first test of a fix whose claim is "for every order / every state"
+
+**Issue:** A fix for "a row keeps its place when its man is cut out" remembered each cut-out's two neighbours. Its tests covered the first, the last and a middle man and two cuts of four, all green; all three blind code readers then found orders that moved a row (a third cut, a man cut out twice, both neighbours replaced). One reader proved it by sweeping every order of cuts for 3 to 6 men — a ten-line test the builder could have written first.
+**Suggested improvement:** In the TDD guide's "red first" step, add: where the claim holds "for any order" or "for any sequence", the first test is a sweep over every order of a small set (and each undone), not hand-picked cases; hand-picked cases come after, as the doors' tests.
+**Principle:** A claim quantified over orders or sequences is tested by enumerating a small space whole, before any reader is asked.
+
+### Observation 1066: A walk script that hard-codes the name of the build it was written for cannot serve the re-walk
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 181 — the FULL bug check of pull request 845 (one man's row of a shared leave), the fixes after the walk and the three blind code reads
+**Skill:** New skill candidate: walk-scripts (the project's docs/walk-scripts.md)
+**Type:** open-source
+**Phase/Area:** writing a walker's helper file
+
+**Issue:** Three walkers' helper files each held the frozen build's bundle name as a constant and refused any other build. The re-walk after the fixes — the same scripts on a new build — needed each edited first.
+**Suggested improvement:** In the walker's brief and the walk-scripts guide: the build's name and folder come from the environment with the round's values as defaults, and the guard prints both names when they differ.
+**Principle:** A check that pins a script to one artefact takes the artefact's identity as an input, so the next round re-uses the script unchanged.
+
+### Observation 1067: A helper's report: ask for the file AND the whole text as the reply
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chat 181 — the FULL bug check of pull request 845 (one man's row of a shared leave), the fixes after the walk and the three blind code reads
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** the brief's "what to hand back"
+
+**Issue:** Met again 25 Nov 26 (chat 178's walkers were refused their report file; an earlier note says a helper's transcript can come back empty). In chat 181 both reader helpers were told to write the report file and, whether or not the write succeeded, to return the whole report word for word as their final reply: both wrote the file and returned the text, and nothing was retyped or lost. Chat 178's second candidate also stands: a scenario's EXPECTED line written with no source cost two false FAILs (an end before the start, the admin's Leave War window).
+**Suggested improvement:** Make "write it to <path>; your final reply is the same text whole, never a summary" a fixed line of every helper brief that hands back a report; and keep the bug-check order's rule that an expected line names its source or is rewritten "RECORD what it says".
+**Principle:** A hand-back has two independent channels, so one refused channel loses nothing.

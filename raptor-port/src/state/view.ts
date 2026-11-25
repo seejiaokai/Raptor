@@ -5,6 +5,7 @@ import { PEOPLE } from '../engine/people'
 import { keyDay, iuParts } from '../engine/keys'
 import { ridKey, ensureRowIds } from '../engine/rowids'
 import { slotVal, setSlotVal, fillSlot, lastFilled, armTargetExists, sentinelSeatOK } from '../engine/slots'
+import { rowKeyNow } from '../engine/rowinput'
 import { popReorderedDay } from '../engine/reorder'
 import { slotBar, personCount, rowTwice } from '../engine/avail'
 import { validate, WARN, officialWarn, versionFaceWarn, workingWarn, clashItem } from '../engine/validate'
@@ -1315,7 +1316,7 @@ export function armSlot(key:any,el?:any){
   /* a previewing day is read-only; preview markup emits no armable surfaces,
      but a stale element from the pre-preview render must not arm a live key */
   if(DPREV.has(keyDay(base)))return
-  if(ARM&&ARM.key===key){disarmSlot();return;}   // tapping it again puts it down
+  if(ARM&&(ARM.key===key||rowKeyNow(ARM.key)===rowKeyNow(key))){disarmSlot();return;}   // tapping it again puts it down — the same row, whichever address it now carries (engine/rowinput.ts rowKeyNow)
   ARM={key,di:keyDay(base),title:slotTitle(base)};
   ARM_ROW=armedRowKey();
   paintArm(); renderRosters();

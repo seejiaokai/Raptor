@@ -1,0 +1,56 @@
+{
+ "pictures": [
+  {
+   "file": "b10a-desk-0-pi.png",
+   "case": "B10-a",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "imwviytowab8aeu~rocky.str in 2.inputs"
+   ]
+  },
+  {
+   "file": "b10a-desk-1-after.png",
+   "case": "B10-a",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "after": [
+     "Meeting Ranger+Hex 09:00-10:00 \"\" acc:g [imwviytowab8aeu]"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "file": "b10c-desk-left.png",
+   "case": "B10-c",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "LL Ranger 09:00-11:00 \"own\" acc:- [imwviz9afe26r7p]"
+   ]
+  }
+ ],
+ "cases": {
+  "B10-a": {
+   "log": [
+    "filed {\"type\":\"Meeting\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Sync\"} on 2026-07-15: new input [\"imwviytowab8aeu\"]; asked []; note \"\"",
+    "filed [\"Meeting Ranger+Hex 08:00-10:00 \\\"\\\" acc:g [imwviytowab8aeu]\"]",
+    "PI shown true lines [\"imwviytowab8aeu~rocky.str in 2.inputs\"]",
+    "picture b10a-desk-0-pi.png: [\"imwviytowab8aeu~rocky.str in 2.inputs\"]",
+    "picture b10a-desk-1-after.png: {\"after\":[\"Meeting Ranger+Hex 09:00-10:00 \\\"\\\" acc:g [imwviytowab8aeu]\"],\"note\":\"\"}"
+   ]
+  },
+  "B10-b": {
+   "log": [
+    "filed {\"type\":\"Meeting\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Sync\"} on 2026-07-15: new input [\"imwviz2ea00miom\"]; asked []; note \"\"",
+    "filed [\"Meeting Ranger+Hex 08:00-10:00 \\\"\\\" acc:g [imwviz2ea00miom]\"]",
+    "accept buttons [\"x:Reject\"]"
+   ]
+  },
+  "B10-c": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwviz9afe26r7p\"]; asked [\"document\"]; note \"\"",
+    "picture b10c-desk-left.png: [\"LL Ranger 09:00-11:00 \\\"own\\\" acc:- [imwviz9afe26r7p]\"]"
+   ]
+  }
+ },
+ "errors": []
+}

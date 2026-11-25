@@ -1,0 +1,201 @@
+{
+ "pictures": [
+  {
+   "file": "b3-clr-end-desk-chromium-1-cleared.png",
+   "case": "B3-clr-end",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger 09:00- \"\" [imwvifi2s0jovy6~bane]",
+    "Hex 08:00-10:00 \"\" [imwvifi2s0jovy6~rocky]"
+   ]
+  },
+  {
+   "file": "b3-clr-end-desk-chromium-2-traversed.png",
+   "case": "B3-clr-end",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger - \"\" [imwvifi2s0jovy6~bane]",
+    "Hex 08:00-10:00 \"\" [imwvifi2s0jovy6~rocky]"
+   ]
+  },
+  {
+   "file": "b3-clr-end-desk-chromium-3-0930-left.png",
+   "case": "B3-clr-end",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Hex 08:00-10:00 \"\" [imwvifi2s0jovy6]",
+    "Ranger 09:30-23:59 \"\" [imwvifk9oegunrh]"
+   ]
+  },
+  {
+   "file": "b3-clr-start-desk-chromium-1-cleared.png",
+   "case": "B3-clr-start",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger - \"\" [imwvifzlrkhxz0w~bane]",
+    "Hex 08:00-10:00 \"\" [imwvifzlrkhxz0w~rocky]"
+   ]
+  },
+  {
+   "file": "b3-clr-start-desk-chromium-2-traversed.png",
+   "case": "B3-clr-start",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Ranger - \"\" [imwvifzlrkhxz0w~bane]",
+    "Hex 08:00-10:00 \"\" [imwvifzlrkhxz0w~rocky]"
+   ]
+  },
+  {
+   "file": "b3-clr-start-desk-chromium-3-0930-left.png",
+   "case": "B3-clr-start",
+   "size": "desktop 1440x900 @2x",
+   "text": [
+    "Hex 08:00-10:00 \"\" [imwvifzlrkhxz0w]",
+    "Ranger 09:30-23:59 \"\" [imwvig1th9qagp1]"
+   ]
+  },
+  {
+   "file": "b3-ref-first-0700-desk-chromium-1-refused.png",
+   "case": "B3-ref-first-0700",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "notes": [],
+    "screen": [
+     "Ranger 08:00-07:00 \"\" [imwviggqezpbusk~bane]",
+     "Hex 08:00-10:00 \"\" [imwviggqezpbusk~rocky]"
+    ]
+   }
+  },
+  {
+   "file": "b3-ref-first-2570-desk-chromium-1-refused.png",
+   "case": "B3-ref-first-2570",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "notes": [
+     "2570 is not a time. Try 0900 or 09:00."
+    ],
+    "screen": [
+     "Ranger 08:00-10:00 \"\" [imwviheki0ylloy~bane]",
+     "Hex 08:00-10:00 \"\" [imwviheki0ylloy~rocky]"
+    ]
+   }
+  },
+  {
+   "file": "b3-ref-first-2570-desk-chromium-2-retyped.png",
+   "case": "B3-ref-first-2570",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "shows": "10:00",
+    "notes": [],
+    "screen": [
+     "Ranger 08:00-10:00 \"\" [imwviheki0ylloy~bane]",
+     "Hex 08:00-10:00 \"\" [imwviheki0ylloy~rocky]"
+    ]
+   }
+  },
+  {
+   "file": "b3-ref-later-desk-chromium-0830-refused.png",
+   "case": "B3-ref-later",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "notes": [],
+    "screen": [
+     "Ranger 09:00-08:30 \"\" [imwvihrzrul377l~bane]",
+     "Hex 08:00-10:00 \"\" [imwvihrzrul377l~rocky]"
+    ]
+   }
+  },
+  {
+   "file": "b3-same0800-desk-chromium-1-left.png",
+   "case": "B3-same0800",
+   "size": "desktop 1440x900 @2x",
+   "text": {
+    "store": [
+     "LL Ranger+Hex 08:00-10:00 \"\" [imwviit0k37gknt]"
+    ],
+    "screen": [
+     "Ranger 08:00-10:00 \"\" [imwviit0k37gknt~bane]",
+     "Hex 08:00-10:00 \"\" [imwviit0k37gknt~rocky]"
+    ],
+    "undo": {
+     "dayChanges": "1 change",
+     "undo": "Undo — LL for 2 people",
+     "undoDisabled": false
+    }
+   }
+  }
+ ],
+ "cases": {
+  "B3-clr-end": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvifi2s0jovy6\"]; asked []; note \"\"",
+    "filed :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6~rocky]\"] :: CARET BODY",
+    "str \"0900\" Tab :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6]\",\"LL Ranger 09:00-10:00 \\\"\\\" [imwvifk9oegunrh]\"] :: SCREEN [\"Ranger 09:00-10:00 \\\"\\\" [imwvifi2s0jovy6~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6~rocky]\"] :: CARET imwvifi2s0jovy6~bane.end",
+    "cleared end, Tab :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6]\",\"LL Ranger allday \\\"\\\" [imwvifk9oegunrh]\"] :: SCREEN [\"Ranger 09:00- \\\"\\\" [imwvifi2s0jovy6~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6~rocky]\"] :: CARET imwvifi2s0jovy6~bane.rmks",
+    "picture b3-clr-end-desk-chromium-1-cleared.png: [\"Ranger 09:00- \\\"\\\" [imwvifi2s0jovy6~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6~rocky]\"]",
+    "Shift+Tab #1 untouched :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6]\",\"LL Ranger allday \\\"\\\" [imwvifk9oegunrh]\"] :: SCREEN [\"Ranger 09:00- \\\"\\\" [imwvifi2s0jovy6~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6~rocky]\"] :: CARET imwvifi2s0jovy6~bane.end",
+    "Shift+Tab #2 untouched :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6]\",\"LL Ranger allday \\\"\\\" [imwvifk9oegunrh]\"] :: SCREEN [\"Ranger - \\\"\\\" [imwvifi2s0jovy6~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6~rocky]\"] :: CARET imwvifi2s0jovy6~bane.str",
+    "after untouched traversal :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6]\",\"LL Ranger allday \\\"\\\" [imwvifk9oegunrh]\"] :: SCREEN [\"Ranger - \\\"\\\" [imwvifi2s0jovy6~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6~rocky]\"] :: CARET imwvifi2s0jovy6~bane.str",
+    "picture b3-clr-end-desk-chromium-2-traversed.png: [\"Ranger - \\\"\\\" [imwvifi2s0jovy6~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6~rocky]\"]",
+    "start 0930 Tab :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6]\",\"LL Ranger 09:30-23:59 \\\"\\\" [imwvifk9oegunrh]\"] :: SCREEN [\"Ranger 09:30-23:59 \\\"\\\" [imwvifi2s0jovy6~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6~rocky]\"] :: CARET imwvifi2s0jovy6~bane.end",
+    "caret left :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6]\",\"LL Ranger 09:30-23:59 \\\"\\\" [imwvifk9oegunrh]\"] :: SCREEN [\"Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6]\",\"Ranger 09:30-23:59 \\\"\\\" [imwvifk9oegunrh]\"] :: CARET BODY",
+    "picture b3-clr-end-desk-chromium-3-0930-left.png: [\"Hex 08:00-10:00 \\\"\\\" [imwvifi2s0jovy6]\",\"Ranger 09:30-23:59 \\\"\\\" [imwvifk9oegunrh]\"]"
+   ]
+  },
+  "B3-clr-start": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvifzlrkhxz0w\"]; asked []; note \"\"",
+    "filed :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvifzlrkhxz0w]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwvifzlrkhxz0w~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvifzlrkhxz0w~rocky]\"] :: CARET BODY",
+    "str \"0900\" Tab :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvifzlrkhxz0w]\",\"LL Ranger 09:00-10:00 \\\"\\\" [imwvig1th9qagp1]\"] :: SCREEN [\"Ranger 09:00-10:00 \\\"\\\" [imwvifzlrkhxz0w~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvifzlrkhxz0w~rocky]\"] :: CARET imwvifzlrkhxz0w~bane.end",
+    "cleared start, Tab :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvifzlrkhxz0w]\",\"LL Ranger allday \\\"\\\" [imwvig1th9qagp1]\"] :: SCREEN [\"Ranger - \\\"\\\" [imwvifzlrkhxz0w~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvifzlrkhxz0w~rocky]\"] :: CARET imwvifzlrkhxz0w~bane.end",
+    "picture b3-clr-start-desk-chromium-1-cleared.png: [\"Ranger - \\\"\\\" [imwvifzlrkhxz0w~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvifzlrkhxz0w~rocky]\"]",
+    "Shift+Tab #1 untouched :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvifzlrkhxz0w]\",\"LL Ranger allday \\\"\\\" [imwvig1th9qagp1]\"] :: SCREEN [\"Ranger - \\\"\\\" [imwvifzlrkhxz0w~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvifzlrkhxz0w~rocky]\"] :: CARET imwvifzlrkhxz0w~bane.str",
+    "after untouched traversal :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvifzlrkhxz0w]\",\"LL Ranger allday \\\"\\\" [imwvig1th9qagp1]\"] :: SCREEN [\"Ranger - \\\"\\\" [imwvifzlrkhxz0w~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvifzlrkhxz0w~rocky]\"] :: CARET imwvifzlrkhxz0w~bane.str",
+    "picture b3-clr-start-desk-chromium-2-traversed.png: [\"Ranger - \\\"\\\" [imwvifzlrkhxz0w~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvifzlrkhxz0w~rocky]\"]",
+    "start 0930 Tab :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvifzlrkhxz0w]\",\"LL Ranger 09:30-23:59 \\\"\\\" [imwvig1th9qagp1]\"] :: SCREEN [\"Ranger 09:30-23:59 \\\"\\\" [imwvifzlrkhxz0w~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvifzlrkhxz0w~rocky]\"] :: CARET imwvifzlrkhxz0w~bane.end",
+    "caret left :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvifzlrkhxz0w]\",\"LL Ranger 09:30-23:59 \\\"\\\" [imwvig1th9qagp1]\"] :: SCREEN [\"Hex 08:00-10:00 \\\"\\\" [imwvifzlrkhxz0w]\",\"Ranger 09:30-23:59 \\\"\\\" [imwvig1th9qagp1]\"] :: CARET BODY",
+    "picture b3-clr-start-desk-chromium-3-0930-left.png: [\"Hex 08:00-10:00 \\\"\\\" [imwvifzlrkhxz0w]\",\"Ranger 09:30-23:59 \\\"\\\" [imwvig1th9qagp1]\"]"
+   ]
+  },
+  "B3-ref-first-0700": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwviggqezpbusk\"]; asked []; note \"\"",
+    "filed :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwviggqezpbusk]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwviggqezpbusk~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwviggqezpbusk~rocky]\"] :: CARET BODY",
+    "end 0700 Tab (first change) :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwviggqezpbusk]\",\"LL Ranger 08:00-07:00 \\\"\\\" [imwvigiwuwzonum]\"] :: SCREEN [\"Ranger 08:00-07:00 \\\"\\\" [imwviggqezpbusk~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwviggqezpbusk~rocky]\"] :: CARET imwviggqezpbusk~bane.rmks",
+    "picture b3-ref-first-0700-desk-chromium-1-refused.png: {\"notes\":[],\"screen\":[\"Ranger 08:00-07:00 \\\"\\\" [imwviggqezpbusk~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwviggqezpbusk~rocky]\"]}",
+    "after refusal: tapped away :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwviggqezpbusk]\",\"LL Ranger 08:00-07:00 \\\"\\\" [imwvigiwuwzonum]\"] :: SCREEN [\"Hex 08:00-10:00 \\\"\\\" [imwviggqezpbusk]\",\"Ranger 08:00-07:00 \\\"\\\" [imwvigiwuwzonum]\"] :: CARET BODY"
+   ]
+  },
+  "B3-ref-first-2570": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwviheki0ylloy\"]; asked []; note \"\"",
+    "filed :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwviheki0ylloy]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwviheki0ylloy~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwviheki0ylloy~rocky]\"] :: CARET BODY",
+    "end 2570 Tab (first change) :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwviheki0ylloy]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwviheki0ylloy~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwviheki0ylloy~rocky]\"] :: CARET imwviheki0ylloy~bane.rmks",
+    "picture b3-ref-first-2570-desk-chromium-1-refused.png: {\"notes\":[\"2570 is not a time. Try 0900 or 09:00.\"],\"screen\":[\"Ranger 08:00-10:00 \\\"\\\" [imwviheki0ylloy~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwviheki0ylloy~rocky]\"]}",
+    "after refusal: tapped away :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwviheki0ylloy]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwviheki0ylloy~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwviheki0ylloy~rocky]\"] :: CARET BODY",
+    "tapped the box afresh, typed the figure it shows (10:00), Tab :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwviheki0ylloy]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwviheki0ylloy~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwviheki0ylloy~rocky]\"] :: CARET imwviheki0ylloy~bane.rmks",
+    "picture b3-ref-first-2570-desk-chromium-2-retyped.png: {\"shows\":\"10:00\",\"notes\":[],\"screen\":[\"Ranger 08:00-10:00 \\\"\\\" [imwviheki0ylloy~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwviheki0ylloy~rocky]\"]}"
+   ]
+  },
+  "B3-ref-later": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvihrzrul377l\"]; asked []; note \"\"",
+    "filed :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwvihrzrul377l]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwvihrzrul377l~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvihrzrul377l~rocky]\"] :: CARET BODY",
+    "str \"0900\" Tab :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvihrzrul377l]\",\"LL Ranger 09:00-10:00 \\\"\\\" [imwvihu8joicvkc]\"] :: SCREEN [\"Ranger 09:00-10:00 \\\"\\\" [imwvihrzrul377l~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvihrzrul377l~rocky]\"] :: CARET imwvihrzrul377l~bane.end",
+    "end 0830 Tab :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvihrzrul377l]\",\"LL Ranger 09:00-08:30 \\\"\\\" [imwvihu8joicvkc]\"] :: SCREEN [\"Ranger 09:00-08:30 \\\"\\\" [imwvihrzrul377l~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvihrzrul377l~rocky]\"] :: CARET imwvihrzrul377l~bane.rmks",
+    "picture b3-ref-later-desk-chromium-0830-refused.png: {\"notes\":[],\"screen\":[\"Ranger 09:00-08:30 \\\"\\\" [imwvihrzrul377l~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwvihrzrul377l~rocky]\"]}",
+    "after refusal: tapped away :: STORE [\"LL Hex 08:00-10:00 \\\"\\\" [imwvihrzrul377l]\",\"LL Ranger 09:00-08:30 \\\"\\\" [imwvihu8joicvkc]\"] :: SCREEN [\"Hex 08:00-10:00 \\\"\\\" [imwvihrzrul377l]\",\"Ranger 09:00-08:30 \\\"\\\" [imwvihu8joicvkc]\"] :: CARET BODY"
+   ]
+  },
+  "B3-same0800": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwviit0k37gknt\"]; asked []; note \"\"",
+    "filed :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwviit0k37gknt]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwviit0k37gknt~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwviit0k37gknt~rocky]\"] :: CARET BODY",
+    "start 0800 (over 08:00) Tab :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwviit0k37gknt]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwviit0k37gknt~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwviit0k37gknt~rocky]\"] :: CARET imwviit0k37gknt~bane.end",
+    "caret left :: STORE [\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwviit0k37gknt]\"] :: SCREEN [\"Ranger 08:00-10:00 \\\"\\\" [imwviit0k37gknt~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwviit0k37gknt~rocky]\"] :: CARET BODY",
+    "picture b3-same0800-desk-chromium-1-left.png: {\"store\":[\"LL Ranger+Hex 08:00-10:00 \\\"\\\" [imwviit0k37gknt]\"],\"screen\":[\"Ranger 08:00-10:00 \\\"\\\" [imwviit0k37gknt~bane]\",\"Hex 08:00-10:00 \\\"\\\" [imwviit0k37gknt~rocky]\"],\"undo\":{\"dayChanges\":\"1 change\",\"undo\":\"Undo — LL for 2 people\",\"undoDisabled\":false}}"
+   ]
+  }
+ },
+ "errors": []
+}
