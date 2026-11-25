@@ -266,6 +266,12 @@ Plan to a master admin (the access line and its greyed reason, the roles table's
 the commit gate) changes, and the bell line is new; its words drawn and read by a fresh Fable first. Whether these ride
 Build 1 or a build of their own is settled in §8 with his other answers; the plan's third read reads them.
 
+**His D2627 (25 Nov 26 — "all group A as recommended"):** group A of the questions page, version 4, as recommended, Fable's
+change where it made one (A7 names which Tracker windows refuse; A9 waits only until the save lands or "Not saved" shows;
+A18 builds nothing for "Check my quals" if C4 keeps the card at home; A19 is D2621's). Each answer is listed in the ruling's
+full row; §8 folds them in before the third read. Found by A4: Quals still shows Done after the member-view switch — a
+fault this build fixes.
+
 **(c) The schedule's veiled dialogs — `.airpop` / `.modal`, flags in `ui/pops.ts`. Shaded.** Each row reads the
 predicate named, as a function of `ui/windrawn.ts` that the component calls.
 

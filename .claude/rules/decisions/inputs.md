@@ -196,7 +196,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - One row on the schedule, the changes window, the Unavailable list: D661, D662, D663, D736.
 - What an input is filed for — ALL, ALL AVAIL, Event, Personal, its title: D702, D711, D713, D714, D716, D717, D778.
 - A cancelled input's look on its card, the list and the month's bar: D767.
-- The small choices of these pages, answered "yes to all": D731, D762.
+- The small choices of these pages, answered "yes to all": D731, D762, D2627.
 - The scheduler's other rulings that reach these pages: D189, D660, D682, D753, D762.
 - The late mark: the scheduler's Settled section, the cut-off itself on this page.
 - OIL asked and answered on these pages: D781, D782, D783, D793, D470.
