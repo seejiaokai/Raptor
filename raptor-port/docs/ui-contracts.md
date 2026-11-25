@@ -5281,7 +5281,7 @@ ahead of "Taken off the programme" / "Back on the programme", which read wrongly
   squadron's number after its name, in the grey badge already approved for another squadron's line (the role chip's
   recipe in neutral grey, as Admin → Users' `.acc-sqn`; 6px after the name, the date 7px after it); his home's lines
   none, and never his own account's lines ("Given Plan of 149: full access to 149 · Saber" — §15 D5, D2319). A line
-  stored before lines carried their squadron reads as his home's: no mark (D56). **His D2628 (25 Nov 26), not yet built: the number first on every line, in one column, grey, no colour — narrowed by his D2638 (26 Nov 26, not yet built): the number wears its squadron's colour, as its Show button does, the unread dot staying blue. His D2624 (25 Nov 26), not yet built:
+  stored before lines carried their squadron reads as his home's: no mark (D56). **His D2628 (25 Nov 26), not yet built: the number first on every line, in one column, grey, no colour — narrowed by his D2638 (26 Nov 26, not yet built): the number wears its squadron's colour, as its Show button does, the unread dot staying blue; each admin picks his own colours on a new Admin page, Display (his D2639, 26 Nov 26, not yet built, drawn first). His D2624 (25 Nov 26), not yet built:
   whenever the bell shows more than one squadron, every line of a squadron wears its number, his home's too ("142"),
   whichever is picked; his own account's lines still none — filed under [MSQ-PICK-GUARD].** Built: `state/belltap.ts
   lineSqnMark`, `scheduler/02-shell.css .bl-sqn`. Pins: `ui/msq-bell-show.test.tsx`.
