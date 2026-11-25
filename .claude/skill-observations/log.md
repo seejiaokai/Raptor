@@ -1467,3 +1467,16 @@ sides.
 **Issue:** two handoffs in a row (24 Nov raise of the ceiling, 25 Nov block) said the overrun would be cured by archiving finished items. A full sweep of all 198 items found only 2 finished (8 lines of 289); every other item had an open part. The owner was told a cure that could not work, and the pull request he expected to merge by itself stayed red.
 **Suggested improvement:** in the handoff skill's step for open residue: before naming "archive finished items" as a tripwire's cure, count the finished lines (one sweep or a dry-run list) and write the number; if it falls short, name the real choices — raise the tripwire with its reason, or move history out of long items — so the next chat puts the choice, not a doomed job.
 **Principle:** a remedy named in a handoff is a claim; measure that it covers the gap before handing it on.
+
+### Observation 1064: A helper's report file belongs in the session's scratch folder, not a shared work folder
+
+**Status:** OPEN
+**Date:** 25 Nov 26
+**Session context:** chats 179 and 181 — blind code reads and walkers writing their reports to files (numbered past 1063, held on another branch)
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** the brief's "write your report to a file" instruction
+
+**Issue:** In chat 179 one subagent was refused writing its report under a shared work folder on another drive and returned the report as text instead (the walkers in the same run could write there). In chat 181 every helper told to write under the session's own scratch folder wrote its report without trouble.
+**Suggested improvement:** In the dispatching guide's brief template, name the session's scratch folder as the default place for a helper's report file; a shared work folder only where the helper is known to have write access to it, with "if the write is refused, return the whole report as text" as the fallback line.
+**Principle:** Point a helper's output at a location its sandbox is sure to allow, and give it a stated fallback, so a refused write never silently loses the report.
