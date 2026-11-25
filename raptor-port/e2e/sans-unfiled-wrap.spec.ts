@@ -126,7 +126,9 @@ test.describe('the look-ahead SANS note on a phone (D2338, the walk\'s fit-02 / 
       expect(b!.right, `${W}: the board — the reason's right edge inside the screen ${JSON.stringify(b)}`).toBeLessThanOrEqual(W)
       expect(b!.right, `${W}: the board — inside its drawer ${JSON.stringify(b)}`).toBeLessThanOrEqual(b!.drawerRight + 1)
       expect(b!.scrollW, `${W}: the board's drawer never wider inside than it is`).toBeLessThanOrEqual(b!.clientW + 1)
-      expect(b!.lines, `${W}: the board — it wraps`).toBeGreaterThanOrEqual(2)
+      /* (D2587 shortened the words: at 402 they now fit one line, so the fit above is the test — the two-line check went
+         with the long sentence it was written for) */
+      expect(b!.lines, `${W}: the board — drawn`).toBeGreaterThanOrEqual(1)
       const bc = await oldAndNew(page, '#schedBoard', '.sb-roster')
       expect(notHex(bc.now.notes), `${W}: the board — every other reason where it was`).toEqual(notHex(bc.old.notes))
       expect(bc.now.drawer, `${W}: the board — the list as wide as it was`).toBe(bc.old.drawer)
@@ -138,7 +140,7 @@ test.describe('the look-ahead SANS note on a phone (D2338, the walk\'s fit-02 / 
       expect(e!.right, `${W}: Edit Schedule — the reason's right edge inside the screen ${JSON.stringify(e)}`).toBeLessThanOrEqual(W)
       expect(e!.right, `${W}: Edit Schedule — inside its drawer ${JSON.stringify(e)}`).toBeLessThanOrEqual(e!.drawerRight + 1)
       expect(e!.scrollW, `${W}: Edit Schedule's drawer never wider inside than it is ${JSON.stringify(e)}`).toBeLessThanOrEqual(e!.clientW + 1)
-      expect(e!.lines, `${W}: Edit Schedule — it wraps`).toBeGreaterThanOrEqual(2)
+      expect(e!.lines, `${W}: Edit Schedule — drawn`).toBeGreaterThanOrEqual(1)
       const ec = await oldAndNew(page, '.eroster', '.ros-body')
       expect(notHex(ec.now.notes), `${W}: Edit Schedule — every other reason where it was`).toEqual(notHex(ec.old.notes))
       expect(ec.now.drawer, `${W}: Edit Schedule — the drawer as wide as it was`).toBe(ec.old.drawer)
