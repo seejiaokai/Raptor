@@ -92,6 +92,47 @@ describe('D2585 — an OFT or AMT with no times: struck at once where his filing
   })
 })
 
+/* THE WARNING LIST AGREES (the bug check's two blind reads, chat 182 — Astra and a fresh Opus, the same finding): once he is
+   planned on an untimed OFT or AMT whose event his filing does not offer, the warning list raises the same amber line it
+   raises for a timed sim ("SANS: not offering OFT today. Planned on …"), as it already does for an untimed flight — the
+   crew list's strike and the warning list never drift apart. Nothing filed stays silent (D2579, not built); an offer of
+   the sim with hours raises nothing while there are no times. */
+describe('D2585 — the warning list agrees once he is planned on an untimed sim', () => {
+  const sansWarns = (key: string) => validate().all.filter((w: any) => w.code === 'SANS_AVAIL' && (w.who || []).includes(ID) && w.key === key)
+  for (const kind of ['oft', 'amt'] as const) {
+    it(`${kind.toUpperCase()} with no times, "Fly only", in the front seat: one amber line, "not offering ${kind.toUpperCase()}"`, () => {
+      const row = blankSim(kind); fileSans({ f: true })
+      DAYS[0].sims[kind][DAYS[0].sims[kind].length - 1].p = ID
+      const hits = sansWarns(row)
+      expect(hits).toHaveLength(1)
+      expect(hits[0].sev).toBe('adv')
+      expect(hits[0].msg).toContain(`not offering ${kind.toUpperCase()} today`)
+    })
+  }
+  it('an extra place on an untimed OFT, "Fly only": warned too (D2586)', () => {
+    const row = blankSim('oft'); fileSans({ f: true })
+    DAYS[0].sims.oft[DAYS[0].sims.oft.length - 1].more = [ID]
+    expect(sansWarns(row)).toHaveLength(1)
+  })
+  it('an OFT with its end typed and no start, "Fly only": warned', () => {
+    const row = blankSim('oft'); fileSans({ f: true })
+    const r = DAYS[0].sims.oft[DAYS[0].sims.oft.length - 1]; r.end = '13:00'; r.p = ID
+    expect(sansWarns(row)).toHaveLength(1)
+  })
+  it('left silent: nothing filed (D2579 not built), and OFT offered with hours while untimed', () => {
+    const row = blankSim('oft')
+    DAYS[0].sims.oft[DAYS[0].sims.oft.length - 1].p = ID
+    expect(sansWarns(row), 'nothing filed').toHaveLength(0)
+    fileSans({ o: true }, [480, 600])
+    expect(sansWarns(row), 'OFT offered 08:00–10:00, no times to hold it against').toHaveLength(0)
+  })
+  it('left silent: a cancelled untimed OFT', () => {
+    const row = blankSim('oft'); fileSans({ f: true })
+    const r = DAYS[0].sims.oft[DAYS[0].sims.oft.length - 1]; r.p = ID; r.cx = 'WX'
+    expect(sansWarns(row)).toHaveLength(0)
+  })
+})
+
 describe('D2585 — left as they are', () => {
   it('a standby line never asks (D2584 Q4): an SC MAIN with no times, "OFT only" — plain', () => {
     const w: any = makeStandalone('sc'); w.formations = [w.formations[0]]

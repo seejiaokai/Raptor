@@ -1539,6 +1539,12 @@ function validateCore(){
     day.fly.forEach((e:any)=>!e.shift&&sansChecks.push({id:e.id,domain:'fly',s:Math.min(e.report,e.step),en:e.dekit,to:e.to,label:e.label,key:e.key}));   // `to` names the line ([WARN-WORDS-STANDALONE])
     day.events.forEach((e:any)=>{ const m=/^s:\d+\.(amt|oft)\./.exec(String(e.key||'')); if(!m)return;
       sansChecks.push({id:e.id,domain:m[1],s:e.s,en:e.e,label:e.label,key:e.key}); });
+    /* AN OFT OR AMT WITH NO START YET (owner D2585, 25 Nov 26 — found by the bug check's two blind reads, chat 182): its people
+       sit in `blank`, not `events`, so the crew list struck a man whose filing does not offer the sim while this list said
+       nothing. Checked with an unknown window (NaN — `noWin` drops a 'window' answer, 'none' never raises): only 'not
+       offering …' warns, as for an untimed flight. */
+    (day.blank||[]).forEach((e:any)=>{ const m=/^s:\d+\.(amt|oft)\.\d+$/.exec(String(e.key||'')); if(!m||e.kind!=='sim')return;
+      sansChecks.push({id:e.id,domain:m[1],s:NaN,en:NaN,label:e.label,key:e.key}); });
     /* (only a man SANS ON THIS DAY — D2313: a day before his SANS date asks no SANS availability of him) */
     const sansIso=dayIso(String(CURWEEK),di);
     sansChecks.forEach((c:any)=>{ const p=PEOPLE[c.id]; if(!p||!sansOnP(p,sansIso))return;
