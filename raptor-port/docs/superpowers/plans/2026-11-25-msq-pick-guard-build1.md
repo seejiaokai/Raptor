@@ -252,6 +252,11 @@ applies.
 squadron number at the top left flashes twice, fading, whenever the squadron changes (D2620). All three are drawn and
 shown to him before they are built; the next chat folds them into the Admin → Users rows and §8.
 
+**His D2621 (25 Nov 26, A17 — "yeah new option"):** with another squadron picked, the Inputs page no longer lists his own
+inputs of a squadron he can still pick (a moved man still sees his old ones); a bell line about one brings its squadron into
+view first. This replaces the A17 recommendation (a list row switching squadron first) and narrows the reshape plan's C2;
+the plan's third read reads it.
+
 **(c) The schedule's veiled dialogs — `.airpop` / `.modal`, flags in `ui/pops.ts`. Shaded.** Each row reads the
 predicate named, as a function of `ui/windrawn.ts` that the component calls.
 
