@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AL colours try-out</title>
+<style>
+/* ===== the app's own stylesheets, captured whole from the running build (capture.mjs) ===== */
+/*APPCSS*/
+</style>
+<style>
+/*LOOKSCSS*/
+</style>
+<style>
+/*PAGECSS*/
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <filter id="alx-deutan" color-interpolation-filters="linearRGB"><feColorMatrix type="matrix" values="0.367322 0.860646 -0.227968 0 0  0.280085 0.672501 0.047413 0 0  -0.011820 0.042940 0.968881 0 0  0 0 0 1 0"/></filter>
+</defs></svg>
+
+<div class="pg pg-top" id="top">
+  <h1>Amendment marks: colour instead of the “AL1” words</h1>
+  <p class="pg-lede">Your idea, tried on a real Monday with four amendments. Play with it in the try-out below, then answer the four questions. My short answer: yes to dropping the little “AL” words, with two small things kept so nobody is left guessing.</p>
+  <ol class="pg-now" aria-label="What to look at now">
+    <li><span class="n">1</span><span class="q">Changed times, names, areas and remarks: colour instead of the “AL1” words?</span><span class="r"><b>Recommend: yes, colour plus a thin line under the words, and one small “Changed in” line per day.</b> Colour alone loses too much. <a href="#q1">Question 1</a></span></li>
+    <li><span class="n">2</span><span class="q">A changed puck: recolour it?</span><span class="r"><b>Recommend: no. Keep its colours and give it a small coloured tab on the corner, with no words.</b> <a href="#q2">Question 2</a></span></li>
+    <li><span class="n">3</span><span class="q">Which seven colours?</span><span class="r"><b>Recommend: lemon, periwinkle, mint, orange, lilac, sage, teal.</b> Today’s AL1 is the app’s own cyan and today’s AL4 is the colour of ordinary text. <a href="#q3">Question 3</a></span></li>
+    <li><span class="n">4</span><span class="q">Can the AL chip go completely?</span><span class="r"><b>Recommend: its words can go, the mark cannot.</b> The day’s own “AL3” tag at the top stays. <a href="#q4">Question 4</a></span></li>
+  </ol>
+  <p class="pg-jump">Below: <a href="#tryout">the try-out</a> · <a href="#colours">the colours measured</a> · <a href="#pictures">pictures of the real app</a> · <a href="#questions">the four questions</a></p>
+</div>
+
+<section id="tryout" aria-labelledby="ttTitle">
+<div class="tt-strip">
+  <div class="tt-in">
+    <div class="tt-title"><h2 id="ttTitle">Try-out settings</h2><span>Not part of the app. They change how the amendment marks are drawn on the day below.</span>
+      <button type="button" class="tt-more" id="ttMore" aria-expanded="false">More</button></div>
+    <div class="tt-grp" role="radiogroup" aria-labelledby="ttL1"><span class="tt-lbl" id="ttL1">Screen</span>
+      <div class="tt-opts">
+        <button type="button" class="fchip" role="radio" data-set="surf" data-val="edit">Edit Schedule</button>
+        <button type="button" class="fchip" role="radio" data-set="surf" data-val="view">View Schedule</button>
+        <button type="button" class="fchip" role="radio" data-set="surf" data-val="board">Scheduler Board</button>
+      </div></div>
+    <div class="tt-grp" role="radiogroup" aria-labelledby="ttL2"><span class="tt-lbl" id="ttL2">Look</span>
+      <div class="tt-opts">
+        <button type="button" class="fchip" role="radio" data-set="look" data-val="a">Today</button>
+        <button type="button" class="fchip" role="radio" data-set="look" data-val="b">Colour only, no chips</button>
+        <button type="button" class="fchip" role="radio" data-set="look" data-val="c">My recommendation</button>
+      </div></div>
+    <div class="tt-grp tt-x" role="radiogroup" aria-labelledby="ttL3"><span class="tt-lbl" id="ttL3">A changed puck wears</span>
+      <div class="tt-opts">
+        <button type="button" class="fchip" role="radio" data-set="puck" data-val="chip">Today’s chip</button>
+        <button type="button" class="fchip" role="radio" data-set="puck" data-val="tab">Small tab</button>
+        <button type="button" class="fchip" role="radio" data-set="puck" data-val="num">Number only</button>
+        <button type="button" class="fchip" role="radio" data-set="puck" data-val="name">Name in colour</button>
+        <button type="button" class="fchip" role="radio" data-set="puck" data-val="none">Nothing</button>
+      </div></div>
+    <div class="tt-grp tt-x" role="radiogroup" aria-labelledby="ttL4"><span class="tt-lbl" id="ttL4">Colours</span>
+      <div class="tt-opts">
+        <button type="button" class="fchip" role="radio" data-set="pal" data-val="today">Today’s</button>
+        <button type="button" class="fchip" role="radio" data-set="pal" data-val="new">Proposed</button>
+      </div></div>
+    <div class="tt-grp tt-x"><span class="tt-lbl" id="ttL5">Tap one to try another colour</span>
+      <div class="tt-swatches" role="group" aria-labelledby="ttL5">
+        <button type="button" class="tt-sw" data-n="1">AL1</button><button type="button" class="tt-sw" data-n="2">AL2</button><button type="button" class="tt-sw" data-n="3">AL3</button><button type="button" class="tt-sw" data-n="4">AL4</button><button type="button" class="tt-sw" data-n="5">AL5</button><button type="button" class="tt-sw" data-n="6">AL6</button><button type="button" class="tt-sw" data-n="7">AL7+</button>
+      </div></div>
+    <div class="tt-grp tt-x" role="radiogroup" aria-labelledby="ttL6"><span class="tt-lbl" id="ttL6">Colour-blind view</span>
+      <div class="tt-opts">
+        <button type="button" class="fchip" role="radio" data-set="cb" data-val="off">Off</button>
+        <button type="button" class="fchip" role="radio" data-set="cb" data-val="on">Red-green</button>
+      </div></div>
+    <div class="tt-grp tt-x" role="radiogroup" aria-labelledby="ttL7"><span class="tt-lbl" id="ttL7">The newest change</span>
+      <div class="tt-opts">
+        <button type="button" class="fchip" role="radio" data-set="st" data-val="waiting">AL4 still waiting</button>
+        <button type="button" class="fchip" role="radio" data-set="st" data-val="out">All four out</button>
+      </div></div>
+    <button type="button" class="tt-reset tt-x" id="ttReset" title="Put these settings back to how they started">Reset</button>
+    <div class="tt-cands" id="ttCands" role="group" aria-label="Colours to choose from"><span class="tt-lbl" id="ttCandLbl"></span></div>
+    <p class="tt-note" id="ttNote" role="status"></p>
+  </div>
+</div>
+<p class="tt-cap">One real Monday, copied from the running app after publishing it and amending it four times. AL1 moved SODB and a take-off, AL2 renamed the MET brief, AL3 moved the weapons sync, AL4 changed three pucks, a time and a name. Its buttons do nothing here; it scrolls.</p>
+<div class="tt-stage" id="ttStage">
+<!--SURFACES-->
+</div>
+</section>
+
+<div class="pg">
+
+<h2 class="pg-h" id="colours">The colours, measured</h2>
+<p class="pg-sub">Each box below is a changed time as it would look on Edit Schedule’s and View Schedule’s panels, whose colour I read off the running app. The number is how strongly the letters stand out from that panel: 4.5 is the usual minimum for small letters, 7 is comfortable, white is about 16.</p>
+
+<p class="pg-swl">Today’s seven</p>
+<!--SW:today-->
+<p class="pg-swl">Proposed seven</p>
+<!--SW:new-->
+
+<h3>What is wrong with today’s seven</h3>
+<div class="pg-scroll"><!--T:spent:today--></div>
+<h3>The proposed seven, checked the same way</h3>
+<div class="pg-scroll"><!--T:spent:new--></div>
+<p class="pg-sub">The “difference” figures are a standard score for how far apart two colours look. Under about 10, people mix them up at a glance; 20 and above is clearly different.</p>
+
+<h3>Telling one amendment from another</h3>
+<div class="pg-scroll"><!--T:pairs--></div>
+<p>What this says in plain words:</p>
+<ul>
+  <li><b>For most people, today’s colours and the proposed ones are about equally easy to tell apart.</b> The gain from the new set is that none of them is a colour the app already uses for something else.</li>
+  <li><b>For a red-green colour-blind reader, no set of seven bright colours works.</b> Their eyes sort bright colours along one line, from yellow to blue, so only three or four can be told apart safely. Today AL2 and AL3 look the same to them. In the proposed set the first three stay clearly apart and the fourth is passable.</li>
+  <li><b>So colour can carry the first three amendments for everyone, and after that the number has to be findable somewhere.</b> That is why my recommendation keeps one “Changed in” line per day, and why the order matters: the safest colours go to AL1, AL2 and AL3, which a day reaches most often.</li>
+</ul>
+<p class="pg-sub">How the same boxes look to the two common kinds of red-green colour-blindness (simulated):</p>
+<!--SW:cvd-->
+
+<h2 class="pg-h" id="pictures">Pictures of the real app</h2>
+<p class="pg-sub">Each row is one screen of the running app in three looks. Picture <b>a</b> is the app exactly as it draws itself today. Pictures <b>b</b> and <b>c</b> are the same real screen with only the amendment marks redrawn; in <b>c</b> the “Changed in” line under the signed line is new. Edit Schedule and the Scheduler Board are shown with AL4 still waiting; View Schedule with all four out. Tap a picture to open it full size.</p>
+<!--SHOTS-->
+
+<h2 class="pg-h" id="questions">The four questions</h2>
+
+<div class="pg-card pg-q" id="q1">
+<h3>Question 1. Changed times, names, areas and remarks: colour instead of the “AL1” words?</h3>
+<dl>
+<dt>When it happens</dt><dd>Every time anyone opens a published day that has since been amended. A member on his phone checking what moved since he last looked; a scheduler checking his own amendment after it goes out. Daily, for everyone.</dd>
+<dt>Example</dt><dd>Monday 13 Jul. AL1 moved SODB to 18:00–20:00. AL2 renamed the MET brief. AL3 moved WPNS &amp; TACTICS SYNC to 17:00–20:00. AL4 moves OCU PROGRESS REVIEW to 15:00 and is still waiting. Today each of those wears a coloured line and a tiny “AL1”, “AL2”, “AL3” under or beside it. See pictures 1a to 3c, or the try-out.</dd>
+<dt>Choices and their costs</dt><dd>
+<p><b>A. Today.</b> A line and the small “ALn” words. Costs: every changed time grows its row by a line; the words are about 7 points tall and hard to read on a phone; on the Scheduler Board a whole box is outlined, and an AL1 box looks exactly like the box you are typing in.</p>
+<p><b>B. Colour only.</b> The changed words simply turn the amendment’s colour. Cleanest. Costs: a change still waiting looks the same as one already out; a red-green colour-blind reader, and anyone reading a black-and-white print, sees no mark at all; you must remember which colour is which amendment; and with today’s colours AL4 is white, the same as unchanged words, so it vanishes (picture 2b: 15:00 and INTEL + THREAT UPDATE).</p>
+<p><b>C. Colour, a thin line under the words, and one “Changed in” line per day.</b> The words take the colour, a thin line stays under them (solid once out, dotted while waiting), the small “ALn” words go, and each amended day gets one line under its signed line: “Changed in AL1 AL2 AL3 AL4 waiting”, each drawn in its colour. Costs: that one extra line on an amended day, about the height of the signed line; the number is no longer beside each change (on a desktop, resting the pointer on a change still says “Changed at AL1”).</p>
+</dd>
+<dt>Recommendation</dt><dd><span class="pg-rec">C.</span> It gives you what you asked for, the words in colour and no “AL” clutter, and the line under the words keeps three things colour alone would lose: waiting against out, the colour-blind reader, and a black-and-white print. Rows get shorter, because the tag no longer needs a line of its own under a time.</dd>
+<dt>What it changes of your earlier decisions</dt><dd>You decided that times, areas and remarks keep their marks (the line, the box and the small ALn words) when the puck’s ring was taken off. They would keep a mark, but lose the words and, on the Scheduler Board, the box. The fix that put the “AL1” under a time on a phone, because it was cut off beside it, would no longer be needed. A waiting input’s dotted name on the Unavailable list stays dotted and also takes the colour.</dd>
+</dl>
+</div>
+
+<div class="pg-card pg-q" id="q2">
+<h3>Question 2. A changed puck: recolour it?</h3>
+<dl>
+<dt>When it happens</dt><dd>Whenever an amendment swaps a person: the most common amendment there is.</dd>
+<dt>Example</dt><dd>AL2 put Hunter on WPNS &amp; TACTICS SYNC in place of Trident. Today Hunter’s puck wears a small “AL2” chip on its corner.</dd>
+<dt>Why not the puck itself</dt><dd>
+<p>A puck’s colours are already full. Olive means pilot, dark green WSO, white ground crew; the small box means his CAT; a red, amber or grey edge is a warning; purple is “this is you” or SANS. Paint the puck in the amendment’s colour and one of those is gone:</p>
+<!--PUCKS-->
+</dd>
+<dt>Choices and their costs</dt><dd>
+<p><b>A. Today’s chip</b>, “AL4” on the corner. Cost: the words are tiny and it covers the top of the CAT box.</p>
+<p><b>B. The callsign in the amendment’s colour.</b> Cost: coloured letters on olive or green are hard to read, and on a white ground-crew puck most of them cannot be read at all (figures below); the callsign is the one thing on a puck that must always be readable.</p>
+<!--T:puckname-->
+<p><b>C. A small tab on the corner, no words.</b> Today’s chip with its words taken out and about a third of the size, in the amendment’s colour: filled once out, an empty ring while waiting. Cost: no number on the puck; the day’s “Changed in” line gives it.</p>
+<p><b>D. The chip with only its number</b>, “4” instead of “AL4”. Cost: still a tiny number to read, and numbers stay on pucks when they have gone from everything else.</p>
+<p><b>E. Nothing on the puck.</b> Cost: a swapped person, the change people most need to see, would be the one change with no mark.</p>
+</dd>
+<dt>Recommendation</dt><dd><span class="pg-rec">C, the small tab.</span> It keeps your rule that a changed puck wears a tag and never a ring, keeps filled for out and hollow for waiting, and leaves every colour on the puck meaning what it means now. Try all five under “A changed puck wears”.</dd>
+<dt>What it changes of your earlier decisions</dt><dd>Nothing in substance: a changed puck is still marked by its tag alone, filled once out, hollow while waiting, never a ring. The tag loses its words and its dots (at that size a plain ring reads better than a dotted one). The marks planned for a changed ALL AVAIL crowd would use the same tab.</dd>
+</dl>
+</div>
+
+<div class="pg-card pg-q" id="q3">
+<h3>Question 3. Which seven colours?</h3>
+<dl>
+<dt>When it happens</dt><dd>On every amended day. A colour is picked once and then seen daily by everyone.</dd>
+<dt>Example</dt><dd>On the Scheduler Board today an AL1 time box is outlined in the app’s own cyan, so it looks like the box you are typing in. AL4 is white, the colour of every unchanged word. AL2’s yellow sits close to the amber of an advisory, AL3’s green close to the green that means fine.</dd>
+<dt>Choices and their costs</dt><dd>
+<p><b>A. Keep today’s seven.</b> Cost: the clashes in the table above, and colour-only words are not possible while AL4 is white.</p>
+<p><b>B. The proposed seven:</b> AL1 lemon, AL2 periwinkle, AL3 mint, AL4 orange, AL5 lilac, AL6 sage, AL7 and later teal. None is a colour the app already spends; all are bright enough for small letters on every panel I measured; the first three are the three a colour-blind reader can still tell apart. Costs: people who know today’s colours relearn them once; orange sits between the warning red and the advisory amber, nearer amber than I would like (it is a word’s colour here, never a ring or a box); sage and teal are quieter than the rest, and are the two a day will rarely reach.</p>
+<p><b>C. Your own mix.</b> Tap any AL swatch in the try-out and pick from the short list.</p>
+</dd>
+<dt>Recommendation</dt><dd><span class="pg-rec">B.</span> If you would rather keep AL1 cyan because people know it, the cost is that an AL1 mark and a pressable or focused thing stay the same colour.</dd>
+<dt>What it changes of your earlier decisions</dt><dd>It replaces the seven AL colours, pink among them, which matches your “no pink” for the kinds of entry (my reading: you said that about the Leave War’s kinds, not about amendments). AL8 and later would still share AL7’s colour, as you decided; without a number on each mark, two late amendments on one day could then only be told apart from the day’s “Changed in” line. The ORIG tag stays without a colour.</dd>
+</dl>
+</div>
+
+<div class="pg-card pg-q" id="q4">
+<h3>Question 4. Can the AL chip go completely?</h3>
+<dl>
+<dt>When it happens</dt><dd>The same moments as question 1: anyone reading an amended day.</dd>
+<dt>Example</dt><dd>Sidewinder is put on STANDARDISATION MEETING in AL4, which is still waiting. Today his puck wears a hollow dotted “AL4”.</dd>
+<dt>What is lost if it goes with nothing in its place</dt><dd>
+<ul>
+<li><b>Which amendment.</b> The number is the only thing that says AL2 rather than AL3 to someone who has not learnt the colours, or cannot see them.</li>
+<li><b>Waiting or out.</b> Hollow against filled is the only sign that a change has not gone out yet.</li>
+<li><b>That a puck changed at all</b>, since a puck cannot change colour (question 2).</li>
+<li><b>The colour-blind reader, a screen reader and a black-and-white print</b> get nothing from colour.</li>
+</ul></dd>
+<dt>What has to replace it</dt><dd>
+<ul>
+<li>The puck’s small tab (question 2) and the thin line under changed words (question 1): these keep “changed” and “waiting or out” without any words.</li>
+<li>One “Changed in” line per amended day: this keeps the number, once, instead of on every mark.</li>
+<li>The day’s own tag at the top, “AL3”, stays as it is. It is the day’s version, not a mark on a change.</li>
+<li>The words a screen reader speaks, and the words shown when the pointer rests on a change (“Changed at AL1”, “Edited, goes out as AL4”), stay. On the week’s changed words they would need adding; the board’s boxes and the pucks already have them.</li>
+<li>A printed or exported schedule keeps today’s small “ALn” words, because paper is often black and white.</li>
+</ul></dd>
+<dt>Recommendation</dt><dd><span class="pg-rec">Take the words off; keep the mark.</span> Removing the chip completely, with colour as the only sign, is not safe: it fails for a waiting change, for a puck, and for anyone who cannot see the colours.</dd>
+<dt>What it changes of your earlier decisions</dt><dd>The same two as questions 1 and 2. Nothing changes about what counts as an amendment, how days are numbered, or the ORIG tag.</dd>
+</dl>
+</div>
+
+<p class="pg-foot">Not checked: how many amendments a real day reaches (the demo week has none until I made these four, so “a day rarely passes AL3” is my assumption); whether your ground crew and SANS people are screened for colour vision as aircrew are; a real iPhone (the phone pictures are Safari’s engine at your iPhone’s size on the PC); the colours on a printed page.</p>
+</div>
+
+<script>
+/*LOOKSJS*/
+</script>
+<script>
+/*TRYJS*/
+</script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+/* The page's own frame: the settings strip, the stage that holds the captured day, and the written analysis under it.
+   Everything inside .tt-surf is the app's captured look; the amendment looks are src/looks.css. */
+:root{--pg-sheet:#1E242C;--pg-line:#39424D;--pg-ink:#F1F4F7;--pg-ink2:#B6C0CB;--pg-ink3:#8A96A3;--pg-bg:#0B0D10;--pg-card:#14181D;--pg-rec:#57C97A}
+html,body{height:auto;min-height:100%;overflow:visible;background:var(--pg-bg)}
+html{-webkit-user-select:text;user-select:text;scroll-behavior:smooth;scroll-padding-top:120px}
+body{margin:0;padding:0 0 80px;font-size:14px;line-height:1.5;color:var(--pg-ink);-webkit-text-size-adjust:100%}
+
+/* ---- the top: what to look at now ---- */
+.pg{max-width:1080px;margin:0 auto;padding:0 16px}
+.pg-top{padding-top:22px;padding-bottom:18px}
+.pg-top h1{margin:0 0 4px;font-size:22px;line-height:1.2;font-weight:800;letter-spacing:-.01em;text-wrap:balance}
+.pg-top .pg-lede{margin:0 0 14px;color:var(--pg-ink2);max-width:68ch}
+.pg-now{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.pg-now li{background:var(--pg-card);border:1px solid var(--edge);border-radius:10px;padding:10px 12px;display:grid;grid-template-columns:auto 1fr;gap:2px 10px}
+.pg-now .n{grid-row:span 2;font:800 13px/22px 'Barlow Condensed','Inter Tight',sans-serif;width:22px;height:22px;border-radius:50%;background:var(--pg-ink);color:#0B0D10;text-align:center}
+.pg-now .q{font-weight:700}
+.pg-now .r{color:var(--pg-ink2)}
+.pg-now .r b{color:var(--pg-rec);font-weight:700}
+.pg-now a{white-space:nowrap}
+.pg-jump{margin:12px 0 0;color:var(--pg-ink2)}
+
+/* ---- the settings strip: plainly not the app (a lighter sheet, a dashed foot), stays in reach while the day scrolls ---- */
+.tt-strip{position:sticky;top:0;z-index:900;background:var(--pg-sheet);border-top:1px dashed var(--pg-line);border-bottom:1px dashed var(--pg-line);font-size:13px}
+.tt-in{max-width:1500px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px 22px;align-items:flex-end}
+.tt-title{flex:0 0 100%;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.tt-title h2{margin:0;font-size:14px;font-weight:700}
+.tt-title span{color:var(--pg-ink2);font-size:12px}
+.tt-grp{display:flex;flex-direction:column;gap:4px;min-width:0}
+.tt-lbl{font-size:11px;font-weight:600;color:var(--pg-ink2)}
+.tt-opts{display:flex;flex-wrap:wrap;gap:5px}
+.tt-opts .fchip,.tt-more,.tt-reset{font-family:inherit;line-height:1.2;min-height:34px}
+.tt-opts .fchip:focus-visible,.tt-more:focus-visible,.tt-reset:focus-visible,.tt-sw:focus-visible,.tt-cand:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tt-more,.tt-reset{font-size:12px;font-weight:600;padding:6px 12px;border-radius:9px;cursor:pointer;background:transparent;color:var(--pg-ink2);border:1px solid var(--pg-line)}
+.tt-more{display:none}
+.tt-swatches{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.tt-sw{font:800 10px/1 'Barlow Condensed','Inter Tight',sans-serif;letter-spacing:.03em;min-width:34px;height:34px;border-radius:9px;border:2px solid transparent;color:#08131b;cursor:pointer;padding:0 4px}
+.tt-sw[aria-pressed="true"]{border-color:var(--pg-ink);box-shadow:0 0 0 2px var(--pg-sheet) inset}
+.tt-cands{flex:0 0 100%;display:none;gap:5px;flex-wrap:wrap;align-items:center;padding-top:2px}
+.tt-cands.on{display:flex}
+.tt-cands .tt-lbl{margin-right:4px}
+.tt-cand{width:34px;height:34px;border-radius:50%;border:2px solid var(--pg-sheet);box-shadow:0 0 0 1px var(--pg-line);cursor:pointer;padding:0}
+.tt-note{flex:0 0 100%;margin:0;color:var(--adv);font-size:12px;min-height:0}
+.tt-note:empty{display:none}
+@media (max-width:760px){
+  .tt-in{padding:8px 12px;gap:8px 12px}
+  .tt-title span{display:none}
+  .tt-grp{flex:1 1 100%;flex-direction:row;align-items:center;gap:8px}
+  .tt-lbl{flex:0 0 76px;line-height:1.2}
+  .tt-opts{flex:1 1 0;min-width:0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .tt-opts::-webkit-scrollbar{display:none}
+  .tt-opts .fchip{flex:1 0 auto;padding:6px 9px;font-size:11.5px;white-space:nowrap}
+  .tt-more{display:inline-block;margin-left:auto}
+  .tt-title{align-items:center}
+  .tt-strip:not(.open) .tt-x{display:none}
+  .tt-swatches{flex:1 1 100%}
+  .tt-sw{flex:1 1 0;min-width:0}
+}
+
+/* ---- the stage ---- */
+.tt-cap{max-width:1500px;margin:0 auto;padding:8px 16px;color:var(--pg-ink3);font-size:12px}
+.tt-stage{position:relative;background:var(--bg);border-bottom:1px dashed var(--pg-line)}
+.tt-stage.cb{filter:url(#alx-deutan)}
+.tt-surf{display:none}
+.tt-surf.on{display:block}
+/* the captured boxes are for looking at: nothing in them can be pressed or typed in */
+.tt-surf :is(button,select,input,textarea,a,[role="button"],[tabindex]){pointer-events:none}
+/* Edit Schedule and View-only Sched: the one day, in the page's own flow, at the width the week gives a day */
+.tt-surf:not([data-surf="board"]) :is(#root,#shell,.page,.edit-inner,.edit-board){display:block !important;position:static !important;height:auto !important;min-height:0 !important;
+  overflow:visible !important;margin:0 !important;padding:0 !important;transform:none !important;width:auto !important;max-width:none !important;animation:none !important}
+.tt-surf:not([data-surf="board"]) .week{display:block !important;overflow:visible !important;padding:14px 16px 40px !important;margin:0 auto !important;max-width:652px;height:auto !important}
+.tt-surf:not([data-surf="board"]) .week section.day{width:100% !important;max-width:none !important;flex:none !important;margin:0 !important}
+@media (max-width:760px){.tt-surf:not([data-surf="board"]) .week{padding:8px 0 30px !important}}
+/* the Scheduler Board is a full-screen surface with lists that scroll inside it: it gets a screen-high window */
+.tt-surf[data-surf="board"]{position:relative;height:min(80vh,900px);overflow:hidden;scroll-margin-top:var(--tt-strip-h,120px)}
+.tt-surf[data-surf="board"] #root{position:absolute;inset:0}
+.tt-surf[data-surf="board"] .schedboard{z-index:1}
+
+/* ---- the written part ---- */
+.pg h2.pg-h{margin:44px 0 6px;font-size:19px;font-weight:800;letter-spacing:-.01em;text-wrap:balance}
+.pg h3{margin:26px 0 6px;font-size:15px;font-weight:700}
+.pg p,.pg li{max-width:72ch}
+.pg p{margin:6px 0}
+.pg .pg-sub{color:var(--pg-ink2)}
+.pg ul{margin:6px 0;padding-left:20px}
+.pg-card{background:var(--pg-card);border:1px solid var(--edge);border-radius:12px;padding:14px 16px;margin:12px 0}
+.pg-card>h3:first-child{margin-top:0}
+.pg-q dl{margin:0;display:grid;grid-template-columns:minmax(96px,150px) minmax(0,1fr);gap:8px 14px}
+.pg-q dt{color:var(--pg-ink3);font-weight:600;font-size:12.5px;padding-top:1px}
+.pg-q dd{margin:0;min-width:0}
+.pg-q dd p:first-child{margin-top:0}
+.pg-rec{color:var(--pg-rec);font-weight:700}
+@media (max-width:620px){.pg-q dl{grid-template-columns:minmax(0,1fr);gap:2px}.pg-q dt{margin-top:10px}}
+.pg-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0;max-width:100%}
+table.pg-t{border-collapse:collapse;font-size:12.5px;min-width:560px}
+.pg-t th,.pg-t td{padding:6px 9px;border-bottom:1px solid var(--edge);text-align:left;vertical-align:middle;white-space:nowrap}
+.pg-t th{color:var(--pg-ink3);font-weight:600;font-size:11.5px}
+.pg-t td.num{font-family:'JetBrains Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums;text-align:right}
+.pg-t td.wrap{white-space:normal;min-width:190px}
+.pg-t .bad{color:#FBB4B9;font-weight:700}
+.pg-t .ok{color:var(--pg-ink)}
+.pg-dot{display:inline-block;width:22px;height:22px;border-radius:6px;vertical-align:middle;box-shadow:0 0 0 1px rgba(255,255,255,.14)}
+.pg-dot.s{width:16px;height:16px;border-radius:4px}
+.pg-smp{display:inline-block;padding:4px 8px;border-radius:5px;font:400 11px/1.3 'JetBrains Mono',ui-monospace,monospace;margin-right:4px}
+.pg-smp u{text-underline-offset:3px;text-decoration-thickness:1px}
+.pg-sw{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin:8px 0}
+.pg-sw>div{border-radius:8px;padding:8px 6px 7px;text-align:center;font:400 11px/1.3 'JetBrains Mono',ui-monospace,monospace;min-width:0}
+.pg-sw b{display:block;font:800 10px/1 'Barlow Condensed','Inter Tight',sans-serif;letter-spacing:.06em;margin-bottom:5px;opacity:.9}
+.pg-sw i{display:block;font-style:normal;font-size:9.5px;margin-top:4px;color:var(--pg-ink3);overflow:hidden;text-overflow:ellipsis}
+.pg-swl{margin:14px 0 0;font-size:12.5px;color:var(--pg-ink2);font-weight:600}
+@media (max-width:620px){.pg-sw{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.pg-pucks{display:flex;flex-wrap:wrap;gap:14px 26px;align-items:flex-start;margin:10px 0}
+.pg-pucks figure{margin:0}
+.pg-pucks figcaption{font-size:12px;color:var(--pg-ink2);margin-top:6px;max-width:30ch}
+.pg-pucks .row{display:flex;gap:10px;align-items:center;padding:10px 12px;background:#1A1F2A;border-radius:8px}
+.pg-shots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0 4px}
+.pg-shots figure{margin:0;min-width:0}
+.pg-shots img{display:block;width:100%;height:auto;border-radius:8px;border:1px solid var(--edge)}
+.pg-shots figcaption{font-size:12px;color:var(--pg-ink2);margin-top:5px}
+.pg-shots figcaption b{color:var(--pg-ink)}
+.pg-shots.ph{max-width:900px}
+@media (max-width:620px){.pg-shots{grid-template-columns:repeat(3,78%);overflow-x:auto;margin:10px -16px 4px;padding:0 16px;scroll-snap-type:x mandatory}.pg-shots figure{scroll-snap-align:center}}
+.pg-foot{margin-top:40px;color:var(--pg-ink3);font-size:12.5px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}

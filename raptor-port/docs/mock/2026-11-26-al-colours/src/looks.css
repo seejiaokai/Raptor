@@ -1,0 +1,54 @@
+/* The looks tried on the amendment marks. PROPOSED styles, none of them the app's: they are laid over the app's own
+   markup (the real app in shoot.mjs, the captured day in the try-out) by classes on a root element:
+     .alx-b      colour only: the changed words take the amendment's colour; no "ALn" words, no line, no box
+     .alx-c      the recommendation: colour AND a thin line under the words (solid once out, dotted while waiting),
+                 no "ALn" words; a time box on the board is underlined, never boxed
+     .alx-pk-*   what a changed puck wears: chip (today's, the app's own rule) · tab · num · name · none
+   The colours themselves come from the [data-alc]/[data-aln] rules looks.js writes. */
+
+/* every amendment mark that is not a puck's seat, the day's own version tag or the amendments panel */
+.alx-b :is([data-alc],[data-aln]):not(.seat):not(.verchip):not(.alx-k):not(.alpanel *),
+.alx-c :is([data-alc],[data-aln]):not(.seat):not(.verchip):not(.alx-k):not(.alpanel *){
+  color:var(--alc) !important;-webkit-text-fill-color:var(--alc);outline:none !important}
+.alx-b :is([data-alc],[data-aln]):not(.seat):not(.verchip):not(.alx-k):not(.alpanel *)::after,
+.alx-c :is([data-alc],[data-aln]):not(.seat):not(.verchip):not(.alx-k):not(.alpanel *)::after{content:none !important}
+.alx-b :is([data-alc],[data-aln]):not(.seat):not(.verchip):not(.alx-k):not(.alpanel *){text-decoration:none !important}
+
+/* the recommendation's line: under the words, in the same colour */
+.alx-c [data-alc]:not(.seat):not(.verchip):not(.alx-k):not(.alpanel *):not(input):not(textarea){
+  text-decoration:underline solid var(--alc) !important;text-decoration-thickness:1px !important;text-underline-offset:3px !important}
+.alx-c [data-aln]:not(.seat):not(.verchip):not(.alx-k):not(.alpanel *):not(input):not(textarea){
+  text-decoration:underline dotted var(--alc) !important;text-decoration-thickness:1.5px !important;text-underline-offset:3px !important}
+/* a box on the board cannot underline its own words: the box's foot carries the line instead (drawn inside the box, so
+   nothing moves) */
+.alx-c :is(input,textarea)[data-alc]{box-shadow:inset 0 -2px 0 var(--alc) !important}
+.alx-c :is(input,textarea)[data-aln]{background-image:repeating-linear-gradient(90deg,var(--alc) 0 3px,transparent 3px 6px) !important;
+  background-size:100% 2px !important;background-repeat:no-repeat !important;background-position:0 100% !important}
+
+/* ---- a changed puck ---- */
+:is(.alx-pk-tab,.alx-pk-num,.alx-pk-name,.alx-pk-none) .seat:is([data-alc],[data-aln])::after{content:none !important}
+/* tab: today's chip with its words taken out — the same corner, a third of the size; solid once out, hollow while waiting.
+   The dark hairline keeps a pale tab apart from a pale role chip (a line, not a glow). */
+.alx-pk-tab .seat[data-alc]::after{content:'' !important;position:absolute;top:-3px;right:-3px;z-index:4;width:12px;height:7px;padding:0 !important;
+  border:0 !important;border-radius:2.5px;background:var(--alc) !important;box-shadow:0 0 0 1.5px #0B0D10;pointer-events:none}
+.alx-pk-tab .seat[data-aln]::after{content:'' !important;position:absolute;top:-3px;right:-3px;z-index:4;width:12px;height:7px;padding:0 !important;
+  box-sizing:border-box;border:1.5px solid var(--alc) !important;border-radius:2.5px;background:#0B0D10 !important;box-shadow:0 0 0 1.5px #0B0D10;pointer-events:none}
+/* (the hollow tab is a plain ring: dots are noise at this size) */
+/* num: today's chip saying only its number */
+.alx-pk-num .seat[data-alc]::after{content:attr(data-alc) !important;position:absolute;top:-5px;right:-3px;z-index:4;
+  font:800 7.5px/1 'Barlow Condensed','Inter Tight',sans-serif;padding:1px 3px;border-radius:4px;background:var(--alc);color:#08131b;pointer-events:none}
+.alx-pk-num .seat[data-aln]::after{content:attr(data-aln) !important;position:absolute;top:-5px;right:-3px;z-index:4;
+  font:800 7.5px/1 'Barlow Condensed','Inter Tight',sans-serif;padding:0 2.5px;border-radius:4px;background:var(--panel);color:var(--alc);border:1px dotted var(--alc);pointer-events:none}
+/* name: the callsign takes the colour (what "text colour only" means on a puck) */
+.alx-pk-name .seat:is([data-alc],[data-aln]) .puck .nm{color:var(--alc) !important;-webkit-text-fill-color:var(--alc)}
+
+/* ---- the key (NEW, the recommendation only): one line a day, under the day's signed line, built by looks.js from the
+   amendments that day really shows. Each entry is drawn exactly as its marks are. ---- */
+.alx-key{display:none}
+.alx-c .alx-key{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;padding:5px 12px 6px;
+  font:700 10px/1.2 'Barlow Condensed','Inter Tight',sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+.alx-key .alx-k{color:var(--alc);letter-spacing:.05em;text-decoration:underline solid var(--alc);text-decoration-thickness:1px;text-underline-offset:3px;white-space:nowrap}
+.alx-key .alx-k.w{text-decoration-style:dotted;text-decoration-thickness:1.5px}
+.alx-key .alx-k::after{content:none !important}
+.alx-key .alx-k.w::after{content:' waiting' !important;display:inline !important;margin:0 !important;font:inherit !important;letter-spacing:.05em;vertical-align:baseline !important}
+#schedBoard .alx-key{padding-left:0}

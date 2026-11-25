@@ -1,0 +1,276 @@
+[
+ {
+  "surface": "View-only Sched",
+  "st": "waiting",
+  "size": "desktop",
+  "marks": {
+   "day tag | #182222 | 10px/800 | Barlow Condensed": 1,
+   "day tag | #161A1F | 10px/800 | Barlow Condensed": 1,
+   "text | #1A1F2A | 11px/400 | JetBrains Mono": 5,
+   "text | #1A1F2A | 12px/400 | Inter Tight": 1,
+   "puck | #6E6A2E |  | ": 2,
+   "text | #181C21 | 11px/400 | JetBrains Mono": 2,
+   "text | #181C21 | 10px/400 | Inter Tight": 1,
+   "puck | #1F6E52 |  | ": 1
+  },
+  "plainText": {
+   "rgb(241, 244, 247)": 10,
+   "rgb(251, 250, 240)": 32,
+   "rgb(255, 255, 255)": 4,
+   "rgb(234, 251, 243)": 17,
+   "rgb(182, 192, 203)": 25
+  }
+ },
+ {
+  "surface": "Edit Schedule",
+  "st": "waiting",
+  "size": "desktop",
+  "marks": {
+   "day tag | #182222 | 10px/800 | Barlow Condensed": 1,
+   "day tag | #161A1F | 10px/800 | Barlow Condensed": 1,
+   "text | #1A1F2A | 11px/400 | JetBrains Mono": 6,
+   "text | #1A1F2A | 12px/400 | Inter Tight": 2,
+   "puck | #6E6A2E |  | ": 5,
+   "text | #181C21 | 11px/400 | JetBrains Mono": 2,
+   "text | #181C21 | 10px/400 | Inter Tight": 1,
+   "puck | #1F6E52 |  | ": 1,
+   "text | #1D1A20 | 11px/400 | JetBrains Mono": 1
+  },
+  "plainText": {
+   "rgb(242, 214, 153)": 10,
+   "rgb(241, 244, 247)": 23,
+   "rgb(138, 150, 163)": 74,
+   "rgb(182, 192, 203)": 97,
+   "rgb(251, 250, 240)": 50,
+   "rgb(255, 255, 255)": 4,
+   "rgb(234, 251, 243)": 30,
+   "rgb(251, 180, 185)": 1,
+   "rgb(87, 201, 122)": 2
+  }
+ },
+ {
+  "surface": "Scheduler Board",
+  "st": "waiting",
+  "size": "desktop",
+  "marks": {
+   "day tag | #14181D | 10px/800 | Barlow Condensed": 2,
+   "box | #0B0D10 | 11px/400 | JetBrains Mono": 12,
+   "box | #0B0D10 | 11px/400 | Inter Tight": 3,
+   "puck | #6E6A2E |  | ": 5,
+   "puck | #1F6E52 |  | ": 1
+  },
+  "plainText": {
+   "rgb(251, 250, 240)": 83,
+   "rgb(255, 255, 255)": 5,
+   "rgb(234, 251, 243)": 54,
+   "rgb(223, 246, 231)": 2,
+   "rgb(24, 32, 44)": 3
+  }
+ },
+ {
+  "surface": "View-only Sched",
+  "st": "waiting",
+  "size": "phone",
+  "marks": {
+   "day tag | #182222 | 10px/800 | Barlow Condensed": 1,
+   "day tag | #161A1F | 10px/800 | Barlow Condensed": 1,
+   "text | #1A1F2A | 10px/400 | JetBrains Mono": 5,
+   "text | #1A1F2A | 11px/400 | Inter Tight": 1,
+   "puck | #6E6A2E |  | ": 2,
+   "text | #181C21 | 9px/400 | JetBrains Mono": 2,
+   "text | #181C21 | 8.5px/400 | Inter Tight": 1,
+   "puck | #1F6E52 |  | ": 1
+  },
+  "plainText": {
+   "rgb(241, 244, 247)": 10,
+   "rgb(251, 250, 240)": 32,
+   "rgb(255, 255, 255)": 4,
+   "rgb(234, 251, 243)": 17,
+   "rgb(182, 192, 203)": 25
+  }
+ },
+ {
+  "surface": "Edit Schedule",
+  "st": "waiting",
+  "size": "phone",
+  "marks": {
+   "day tag | #182222 | 10px/800 | Barlow Condensed": 1,
+   "day tag | #161A1F | 10px/800 | Barlow Condensed": 1,
+   "text | #1A1F2A | 10px/400 | JetBrains Mono": 6,
+   "text | #1A1F2A | 11px/400 | Inter Tight": 2,
+   "puck | #6E6A2E |  | ": 5,
+   "text | #181C21 | 9px/400 | JetBrains Mono": 2,
+   "text | #181C21 | 8.5px/400 | Inter Tight": 1,
+   "puck | #1F6E52 |  | ": 1,
+   "text | #1D1A20 | 9px/400 | JetBrains Mono": 1
+  },
+  "plainText": {
+   "rgb(242, 214, 153)": 10,
+   "rgb(241, 244, 247)": 23,
+   "rgb(138, 150, 163)": 74,
+   "rgb(182, 192, 203)": 97,
+   "rgb(251, 250, 240)": 50,
+   "rgb(255, 255, 255)": 4,
+   "rgb(234, 251, 243)": 30,
+   "rgb(251, 180, 185)": 1,
+   "rgb(87, 201, 122)": 2
+  }
+ },
+ {
+  "surface": "Scheduler Board",
+  "st": "waiting",
+  "size": "phone",
+  "marks": {
+   "day tag | #14181D | 10px/800 | Barlow Condensed": 2,
+   "box | #0B0D10 | 11px/400 | JetBrains Mono": 12,
+   "box | #0B0D10 | 11px/400 | Inter Tight": 3,
+   "puck | #6E6A2E |  | ": 5,
+   "puck | #1F6E52 |  | ": 1
+  },
+  "plainText": {
+   "rgb(251, 250, 240)": 83,
+   "rgb(255, 255, 255)": 5,
+   "rgb(234, 251, 243)": 54,
+   "rgb(223, 246, 231)": 2,
+   "rgb(24, 32, 44)": 3
+  }
+ },
+ {
+  "surface": "View-only Sched",
+  "st": "out",
+  "size": "desktop",
+  "marks": {
+   "day tag | #182222 | 10px/800 | Barlow Condensed": 1,
+   "day tag | #161A1F | 10px/800 | Barlow Condensed": 1,
+   "text | #1A1F2A | 11px/400 | JetBrains Mono": 6,
+   "text | #1A1F2A | 12px/400 | Inter Tight": 2,
+   "puck | #6E6A2E |  | ": 5,
+   "text | #181C21 | 11px/400 | JetBrains Mono": 2,
+   "text | #181C21 | 10px/400 | Inter Tight": 1,
+   "puck | #1F6E52 |  | ": 1,
+   "text | #1D1A20 | 11px/400 | JetBrains Mono": 1
+  },
+  "plainText": {
+   "rgb(241, 244, 247)": 10,
+   "rgb(251, 250, 240)": 29,
+   "rgb(255, 255, 255)": 4,
+   "rgb(234, 251, 243)": 17,
+   "rgb(182, 192, 203)": 25
+  }
+ },
+ {
+  "surface": "Edit Schedule",
+  "st": "out",
+  "size": "desktop",
+  "marks": {
+   "day tag | #182222 | 10px/800 | Barlow Condensed": 1,
+   "day tag | #161A1F | 10px/800 | Barlow Condensed": 1,
+   "text | #1A1F2A | 11px/400 | JetBrains Mono": 6,
+   "text | #1A1F2A | 12px/400 | Inter Tight": 2,
+   "puck | #6E6A2E |  | ": 5,
+   "text | #181C21 | 11px/400 | JetBrains Mono": 2,
+   "text | #181C21 | 10px/400 | Inter Tight": 1,
+   "puck | #1F6E52 |  | ": 1,
+   "text | #1D1A20 | 11px/400 | JetBrains Mono": 1
+  },
+  "plainText": {
+   "rgb(242, 214, 153)": 10,
+   "rgb(241, 244, 247)": 23,
+   "rgb(138, 150, 163)": 74,
+   "rgb(182, 192, 203)": 97,
+   "rgb(251, 250, 240)": 50,
+   "rgb(255, 255, 255)": 4,
+   "rgb(234, 251, 243)": 30,
+   "rgb(251, 180, 185)": 1,
+   "rgb(87, 201, 122)": 2
+  }
+ },
+ {
+  "surface": "Scheduler Board",
+  "st": "out",
+  "size": "desktop",
+  "marks": {
+   "day tag | #14181D | 10px/800 | Barlow Condensed": 2,
+   "box | #0B0D10 | 11px/400 | JetBrains Mono": 12,
+   "box | #0B0D10 | 11px/400 | Inter Tight": 3,
+   "puck | #6E6A2E |  | ": 5,
+   "puck | #1F6E52 |  | ": 1
+  },
+  "plainText": {
+   "rgb(251, 250, 240)": 83,
+   "rgb(255, 255, 255)": 5,
+   "rgb(234, 251, 243)": 54,
+   "rgb(223, 246, 231)": 2,
+   "rgb(24, 32, 44)": 3
+  }
+ },
+ {
+  "surface": "View-only Sched",
+  "st": "out",
+  "size": "phone",
+  "marks": {
+   "day tag | #182222 | 10px/800 | Barlow Condensed": 1,
+   "day tag | #161A1F | 10px/800 | Barlow Condensed": 1,
+   "text | #1A1F2A | 10px/400 | JetBrains Mono": 6,
+   "text | #1A1F2A | 11px/400 | Inter Tight": 2,
+   "puck | #6E6A2E |  | ": 5,
+   "text | #181C21 | 9px/400 | JetBrains Mono": 2,
+   "text | #181C21 | 8.5px/400 | Inter Tight": 1,
+   "puck | #1F6E52 |  | ": 1,
+   "text | #1D1A20 | 9px/400 | JetBrains Mono": 1
+  },
+  "plainText": {
+   "rgb(241, 244, 247)": 10,
+   "rgb(251, 250, 240)": 29,
+   "rgb(255, 255, 255)": 4,
+   "rgb(234, 251, 243)": 17,
+   "rgb(182, 192, 203)": 25
+  }
+ },
+ {
+  "surface": "Edit Schedule",
+  "st": "out",
+  "size": "phone",
+  "marks": {
+   "day tag | #182222 | 10px/800 | Barlow Condensed": 1,
+   "day tag | #161A1F | 10px/800 | Barlow Condensed": 1,
+   "text | #1A1F2A | 10px/400 | JetBrains Mono": 6,
+   "text | #1A1F2A | 11px/400 | Inter Tight": 2,
+   "puck | #6E6A2E |  | ": 5,
+   "text | #181C21 | 9px/400 | JetBrains Mono": 2,
+   "text | #181C21 | 8.5px/400 | Inter Tight": 1,
+   "puck | #1F6E52 |  | ": 1,
+   "text | #1D1A20 | 9px/400 | JetBrains Mono": 1
+  },
+  "plainText": {
+   "rgb(242, 214, 153)": 10,
+   "rgb(241, 244, 247)": 23,
+   "rgb(138, 150, 163)": 74,
+   "rgb(182, 192, 203)": 97,
+   "rgb(251, 250, 240)": 50,
+   "rgb(255, 255, 255)": 4,
+   "rgb(234, 251, 243)": 30,
+   "rgb(251, 180, 185)": 1,
+   "rgb(87, 201, 122)": 2
+  }
+ },
+ {
+  "surface": "Scheduler Board",
+  "st": "out",
+  "size": "phone",
+  "marks": {
+   "day tag | #14181D | 10px/800 | Barlow Condensed": 2,
+   "box | #0B0D10 | 11px/400 | JetBrains Mono": 12,
+   "box | #0B0D10 | 11px/400 | Inter Tight": 3,
+   "puck | #6E6A2E |  | ": 5,
+   "puck | #1F6E52 |  | ": 1
+  },
+  "plainText": {
+   "rgb(251, 250, 240)": 83,
+   "rgb(255, 255, 255)": 5,
+   "rgb(234, 251, 243)": 54,
+   "rgb(223, 246, 231)": 2,
+   "rgb(24, 32, 44)": 3
+  }
+ }
+]

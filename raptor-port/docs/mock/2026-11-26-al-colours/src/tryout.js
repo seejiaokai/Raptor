@@ -1,0 +1,47 @@
+/* The try-out's own script: it only shows one captured surface at a time and sets the look's classes and colours on it
+   (src/looks.js). No app script runs on this page. */
+(() => {
+  const A = window.ALX, $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)]
+  const stage = $('#ttStage'), strip = $('.tt-strip'), note = $('#ttNote'), cands = $('#ttCands')
+  /* the short list a tapped swatch may be given: the proposed seven, today's seven, and three more near-misses */
+  const CANDS = [...A.NEW.slice(1), ...A.TODAY.slice(1), '#B5F03C', '#FFB37A', '#7CCBFF']
+  const START = { surf: 'edit', look: 'a', puck: 'chip', pal: 'today', cb: 'off', st: 'waiting' }
+  const PRESET = { a: { puck: 'chip', pal: 'today' }, b: { puck: 'name', pal: 'today' }, c: { puck: 'tab', pal: 'new' } }
+  let S = { ...START }, custom = null, picking = 0
+
+  const list = () => custom || (S.pal === 'new' ? A.NEW : A.TODAY)
+  function paint() {
+    $$('.tt-surf').forEach(e => e.classList.toggle('on', e.dataset.surf === S.surf && e.dataset.st === S.st))
+    const on = $('.tt-surf.on')
+    A.palette(list())
+    A.look(stage, { look: S.look, puck: S.puck })
+    $$('.tt-surf .alx-key').forEach(k => k.remove())
+    if (S.look === 'c' && on) A.key(on)
+    stage.classList.toggle('cb', S.cb === 'on')
+    $$('[data-set]').forEach(b => { const v = b.dataset.set === 'pal' ? (custom ? '' : S.pal) : S[b.dataset.set]; const is = v === b.dataset.val; b.classList.toggle('on', is); b.setAttribute('aria-checked', is ? 'true' : 'false') })
+    $$('.tt-sw').forEach(b => { const n = +b.dataset.n; b.style.background = list()[n]; b.setAttribute('aria-pressed', picking === n ? 'true' : 'false'); b.title = 'AL' + n + (n === 7 ? ' and later' : '') + ': ' + (A.NAMES[list()[n]] || list()[n]) + '. Tap to try another colour.' })
+    cands.classList.toggle('on', !!picking)
+    if (picking) $('#ttCandLbl').textContent = 'AL' + picking + (picking === 7 ? '+' : '') + ' becomes'
+    note.textContent = S.surf === 'view' && S.st === 'waiting' ? 'View-only Sched never shows a change that is still waiting, so AL4 is not on it yet. Choose "All four out" to see it there.' : ''
+    /* the board's own height figures were measured on the screen it was captured from: give it this window's */
+    const b = on && on.querySelector('.schedboard')
+    if (b) on.style.height = Math.max(420, Math.min(900, innerHeight - strip.offsetHeight - 10)) + 'px'
+    document.documentElement.style.setProperty('--tt-strip-h', strip.offsetHeight + 'px')
+    if (b) { const top = b.querySelector('.sb-top'); b.style.setProperty('--sb-boardH', on.clientHeight + 'px'); if (top) b.style.setProperty('--sb-topH', top.offsetHeight + 'px') }
+  }
+  strip.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return
+    if (b.dataset.set) {
+      S[b.dataset.set] = b.dataset.val
+      if (b.dataset.set === 'look') { Object.assign(S, PRESET[b.dataset.val]); custom = null; picking = 0 }
+      if (b.dataset.set === 'pal') { custom = null; picking = 0 }
+    } else if (b.classList.contains('tt-sw')) { picking = picking === +b.dataset.n ? 0 : +b.dataset.n }
+    else if (b.classList.contains('tt-cand')) { custom = [...list()]; custom[picking] = b.dataset.c; picking = 0 }
+    else if (b.id === 'ttMore') { const o = strip.classList.toggle('open'); b.textContent = o ? 'Fewer' : 'More'; b.setAttribute('aria-expanded', o ? 'true' : 'false') }
+    else if (b.id === 'ttReset') { S = { ...START }; custom = null; picking = 0 }
+    paint()
+  })
+  cands.insertAdjacentHTML('beforeend', CANDS.map(c => `<button type="button" class="tt-cand" data-c="${c}" style="background:${c}" title="${A.NAMES[c] || c}" aria-label="${A.NAMES[c] || c}"></button>`).join(''))
+  window.addEventListener('resize', paint)
+  paint()
+})()

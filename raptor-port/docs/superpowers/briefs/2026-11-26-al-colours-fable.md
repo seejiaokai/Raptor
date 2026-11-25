@@ -1,0 +1,161 @@
+# AL colours — a fresh Fable design helper's report (26 Nov 26)
+
+His ask: "what if my AL just changes the text colour. No need to indicate the AL text there. This includes changing the
+puck colours … find the most suitable colours … distinctly different between each AL … see if I totally remove the AL
+chip is ok." Then: "Create mock up for this."
+
+The page for him: `raptor-port/docs/mock/2026-11-26-al-colours/index.html` (pictures in `img/`). Not committed, not
+published. Design skill used: impeccable (colorize, critique), on top of `design-practices.md` head, §0, §4, §9.
+
+## What was made
+
+- **A try-out he can play with**, built the end-time try-out's way: one real staged Monday captured from the running
+  build as Edit Schedule, View-only Sched and the Scheduler Board (markup + the app's stylesheets whole, no app script),
+  with a "Try-out settings" strip: Screen · Look (Today / Colour only, no chips / My recommendation) · A changed puck
+  wears (today's chip / small tab / number only / name in colour / nothing) · Colours (today's / proposed, and each AL's
+  swatch can be tapped and given another colour from a short list) · Colour-blind view (off / red-green) · The newest
+  change (AL4 still waiting / all four out) · Reset.
+- **The static analysis under it**: swatches on the measured panel colour with contrast, both palettes checked against
+  the colours the app already spends, the hardest pair to tell apart (ordinary sight and red-green), colour-blind
+  simulations, 18 pictures of the REAL app (3 screens × phone 402 WebKit / desktop 1536 Chromium × looks a, b, c), and
+  four questions in his format.
+- **The staged day** (through the app's own writes, sign-off boxes and publish buttons): Monday 13 Jul published, then
+  AL1 (SODB 18:00–20:00, VL take-off, a duty desk's holder), AL2 (MET NOTAM BRIEF renamed, its start, a flight remark, a
+  programme puck), AL3 (WPNS & TACTICS SYNC 17:00–20:00, RU landing, a WSO), AL4 (OCU PROGRESS REVIEW 15:00, INTEL +
+  THREAT UPDATE, VL night take-off, three pucks) — captured with AL4 waiting and with AL4 out.
+
+Scripts, all in the mock's folder: `stage.mjs` → `capture.mjs` → `shoot.mjs` → `build.mjs` (`--tables` prints the
+figures below) → `test.mjs` (both widths, presses every setting, fails on a setting that changes nothing, a page error,
+a broken picture or a sideways scroll: last run "no problems"). `colour.mjs` is the arithmetic; `search.mjs`,
+`extend.mjs`, `probe.mjs`, `probe2.mjs` are how the sequence was found. They use the 25 Nov kit
+(`docs/mock/2026-11-25-guardrail-wording/kit.mjs`), read only.
+
+## Measurements
+
+### Backgrounds and letters, read off the running app (`capture/measured.json`)
+
+| Where an amendment mark sits | Colour behind it | Letters |
+|---|---|---|
+| Week (Edit Schedule, View-only Sched): programme and flying panels | `#1A1F2A` (the lightest) | JetBrains Mono 11px desktop / 10px phone; names Inter Tight 12 / 11px; regular weight |
+| Week: duty / sim panels | `#181C21`, `#1D1A20` | 11px desktop, 9px and 8.5px phone |
+| Scheduler Board: every box | `#0B0D10` | 11px, both sizes |
+| Day's version tag | `#14181D`–`#182222` | 10px/800 dark letters on the AL colour |
+| Pucks | pilot `#6E6A2E`, WSO `#1F6E52`, ground crew `#FFFFFF` | callsign cream `#FBFAF0` / `#EAFBF3` / dark `#18202C` |
+
+Identical markup at 1536 and 402 (the stylesheets do the rest), so one capture serves both widths.
+
+### Contrast (WCAG) and nearest colour the app already spends (CIEDE2000)
+
+Spent colours checked: cyan `#3BC6E8` (accent, focus, CAT C), red `#F0555F`, amber `#E5A83B`, green `#57C97A`, purple
+`#B24DEA`, CAT D blue `#3673DD`, text `#F1F4F7` / `#B6C0CB`, day-note yellow `#F2D699`.
+
+| | Today | on week | on board | nearest spent (ΔE00) | Proposed | on week | on board | nearest spent (ΔE00) |
+|---|---|---|---|---|---|---|---|---|
+| AL1 | `#3BC6E8` cyan | 8.2 | 9.7 | **accent, 0.0** | `#FFE815` lemon | 13.2 | 15.6 | day-note yellow 15.9 (amber 20) |
+| AL2 | `#E5C24A` yellow | 9.5 | 11.3 | **amber 9.6** | `#8FA6FF` periwinkle | 7.1 | 8.4 | grey text 15.4 |
+| AL3 | `#3DE86B` green | 10.2 | 12.0 | **green 8.9** | `#4FEBC8` mint | 11.0 | 13.0 | green 14.4 |
+| AL4 | `#FFFFFF` white | 16.5 | 19.5 | **white text 2.9** | `#FF9548` orange | 7.6 | 8.9 | amber 14.0 |
+| AL5 | `#B388FF` purple | 6.2 | 7.3 | SANS purple 13.8 | `#EDC4FF` lilac | 10.9 | 12.9 | grey text 18.1 |
+| AL6 | `#FF7FC4` pink | 7.1 | 8.4 | red 21.3 | `#9FB07A` sage | 7.0 | 8.3 | green 14.7 |
+| AL7+ | `#E5872B` dark orange | 6.2 | 7.3 | amber 12.1 | `#6FB0B2` teal | 6.7 | 7.9 | cyan 11.8 |
+
+Every proposed colour clears 4.5:1 on every measured background (lowest 6.7); none is nearer than 11.8 to a spent colour.
+
+### Pairwise difference: normal sight / worst of normal, deuteranopia, protanopia (Machado 2009, full strength)
+
+Today:
+
+| | AL1 | AL2 | AL3 | AL4 | AL5 | AL6 | AL7+ |
+|---|---|---|---|---|---|---|---|
+| AL1 | - | 47/47 | 42/42 | 28/21 | 33/9 | 59/10 | 49/49 |
+| AL2 | | - | 31/**5** | 29/28 | 64/58 | 58/35 | 22/9 |
+| AL3 | | | - | 31/25 | 56/53 | 84/31 | 53/10 |
+| AL4 | | | | - | 36/34 | 33/19 | 36/34 |
+| AL5 | | | | | - | 20/14 | 51/51 |
+| AL6 | | | | | | - | 43/34 |
+
+Proposed:
+
+| | AL1 | AL2 | AL3 | AL4 | AL5 | AL6 | AL7+ |
+|---|---|---|---|---|---|---|---|
+| AL1 | - | 64/62 | 36/29 | 33/13 | 60/48 | 25/23 | 41/41 |
+| AL2 | | - | 40/27 | 47/47 | 21/14 | 47/43 | 25/17 |
+| AL3 | | | - | 52/25 | 42/16 | 23/18 | 19/15 |
+| AL4 | | | | - | 41/41 | 34/**10** | 42/36 |
+| AL5 | | | | | - | 49/35 | 33/15 |
+| AL6 | | | | | | - | 22/22 |
+
+Minimum pairwise difference:
+
+| Among | Today, normal | Today, red-green | Proposed, normal | Proposed, red-green |
+|---|---|---|---|---|
+| first 2 | 46.6 | 49.8 | 63.8 | 62.3 |
+| first 3 | 31.3 | **5.1** (AL2/AL3) | 36.2 | 26.8 |
+| first 4 | 27.5 | 5.1 | 32.8 | 12.9 (AL1/AL4) |
+| all 7 | 20.4 (AL5/AL6) | 5.1 | 19.0 (AL3/AL7+) | 9.8 (AL4/AL6) |
+
+Honest reading: for ordinary sight the proposed seven are NOT more distinct than today's (19.0 against 20.4 across all
+seven; better for the first four). The gain is (1) none collides with a colour that already means something, (2) AL4
+is no longer the colour of unchanged words, (3) the order puts the three colour-blind-safe colours first. A search over
+bright colours (`search.mjs`) could not do better than about 23 for three, 15 for four and 8 for seven under red-green
+simulation: bright colours collapse onto one yellow-to-blue line. Seven colour-blind-safe text colours do not exist.
+
+### A callsign in the AL colour, on a puck (contrast)
+
+| | pilot olive | WSO green | ground-crew white |
+|---|---|---|---|
+| lemon | 4.5 | 4.9 | 1.2 |
+| periwinkle | 2.4 | 2.7 | 2.3 |
+| mint | 3.7 | 4.1 | 1.5 |
+| orange | 2.6 | 2.8 | 2.2 |
+| today's callsign | 5.3 | 5.7 | 16.4 |
+
+## Recommendation
+
+1. **Text marks: colour + a thin line under the words + one "Changed in" line per day** (look C). The words take the
+   AL colour; the line is solid once out, dotted while waiting; the small "ALn" words go; a Scheduler Board box is
+   underlined at its foot, never boxed. Each amended day gets one key line under its signed line ("Changed in AL1 AL2
+   AL3 AL4 waiting"), each entry drawn as its marks are. Colour alone (look B) loses waiting-against-out, the
+   colour-blind reader, a black-and-white print, and — with today's colours — AL4 entirely.
+2. **Pucks: never recoloured.** A small corner tab, today's chip with its words out and about a third the size: filled
+   once out, a plain hollow ring while waiting (dots are noise at 12×7px). Keeps D92/D93 (a tag alone, never a ring).
+   A coloured callsign fails contrast on every puck but lemon-on-olive.
+3. **Colours:** lemon, periwinkle, mint, orange, lilac, sage, teal, in that order; AL8+ keep sharing AL7's.
+4. **The chip cannot go completely:** its words can; the mark (tab, line) and the day's own ALn tag stay; hover and
+   screen-reader words stay (and need adding to the week's changed words); print keeps today's small "ALn" words.
+
+Critique findings worth his eye, all on the page: today's AL1 box on the board is the focus cyan exactly; AL2 sits
+9.6 from advisory amber and AL3 8.9 from the "fine" green; AL4 is 2.9 from ordinary text; AL6 is pink.
+
+## Rulings this would change (for the host to record on his answer — none recorded by me)
+
+- D92/D93 "times, areas and remarks keep their marks": they keep a mark but lose the ALn words and, on the board, the
+  outline. The puck's tag loses its words and its dotted edge; "tag alone, solid out, hollow waiting, never a ring" holds.
+- `[AMEND-SMALL-SEEN]` 4 (the tag on its own line under a time) becomes unnecessary.
+- D362 (AL8+ share AL7's colour, "the tag's number telling them apart"): with no number on each mark, only the key and
+  the hover words tell AL7 from AL8. Put to him on the page.
+- D1784 (waiting Unavailable row: dotted name / dotted box) keeps dotted, gains the colour; the board's name box would
+  be underlined, not outlined.
+- D2333/D2429/D2430 (ALL AVAIL crowd marks, not built) would use the same tab.
+- The AL colours themselves (the publish module's fixed list and the stylesheet's matching rules), the Legend if it
+  names them, `ui-contracts.md` §Amendment marks on screen, `design-practices.md` §4's table row.
+- Lesson 52 ("no pink") was said of the Leave War's kinds; reading it onto AL6 is mine, said so on the page.
+- New things he would see, drawn here first (D1625): the "Changed in" key line, the tab, the foot-line on a board box.
+
+## Could not check
+
+- **How many ALs a real day gets:** the demo week has no amendments at all until staged; "a day rarely passes AL3" is my
+  assumption, stated on the page.
+- **Colour vision in his squadron:** aircrew are screened; whether ground crew and SANS are, I do not know.
+- **A real iPhone:** phone pictures and the phone test are WebKit at 402×874 on the PC, not iOS with Apple's font.
+  The colour-blind switch uses an SVG colour filter; it worked in WebKit here, untested on iOS Safari itself.
+- **Print:** nothing was printed; the print recommendation is reasoning, not a test.
+- **Screen reader:** not run. Board boxes and seats carry "Changed at ALn" hover words in the captured markup; I did not
+  confirm the week's text marks do.
+- **The Legend / other places that list AL colours** (ALPanel's tags, History, the plans menu's version list, exports):
+  not roll-called; the looks leave the amendments panel's own tags untouched.
+- **The phone pictures of Edit Schedule and the board in look C** do not include the key line (it sits above the
+  Common Programme, out of the crop); View Schedule's phone picture and the try-out show it.
+- **Artifact rules:** the page is one HTML file (821 KB) with relative `img/` pictures, no outside scripts or fonts;
+  always dark (it is a picture of a dark app). I did not publish it or load the artifact skills; the host publishes.
+- `docs/file-map.md` has no row for the new mock folder; left for the host (I was told not to commit).
