@@ -11,7 +11,7 @@
    The harness is msq-night-gestures.test.tsx's. */
 import { describe, it, expect, beforeAll, beforeEach, afterAll } from 'vitest'
 import { act } from '@testing-library/react'
-import { switchRoleView } from '../state/store'
+import { switchRoleViewRaw } from '../state/store'
 import { isAdmin } from '../state/perms'
 import { useMsqWorld, signInAs, ACCT } from '../test-support/msq-world'
 import * as core from './app/core.js'
@@ -106,7 +106,13 @@ const presses: Press[] = [
 const recordsOf = (unit: string): Record<string, unknown> =>
   Object.fromEntries(wb.keys('tracker').filter(k => k.startsWith(unit + '@')).sort().map(k => [k, wb.get('tracker', k)]))
 
-describe('a drag held through the switch to the member view (F2)', () => {
+/* REACHED BY NO PRESS SINCE HIS D2654 E3 (the guard rail's step K5, 27 Nov 26): Hunter's own switch to the member view now
+   enters his pages' squadron by his own press, so the Tracker follows them to 142 and Edit chart layout, nothing moved,
+   closes — it is no longer held on 149 under the member view's cover. On a fast machine the Tracker's move had not
+   finished by the premise's check and the old set-up still passed; on GitHub's it had (u142). The held state is made by
+   the raw switch (state/store.ts switchRoleViewRaw — the switch as it was, asking nothing), named so; every assertion as
+   before: what a held press does stays worth holding, a change he did not make (his move at midnight) can still leave it. */
+describe('a drag held through the switch to the member view (F2) — reached by no press since D2654 E3 (step K5), by the raw switch', () => {
   for (const press of presses.filter(p => /drawn line|a ball|group/.test(p.name))) {
     it(`${press.name}: its lift raises no unseen box and saves nothing`, async () => {
       await pick('u149')
@@ -119,7 +125,7 @@ describe('a drag held through the switch to the member view (F2)', () => {
         el.dispatchEvent(ptr('pointerdown', 200, 200, 'mouse'))
         el.dispatchEvent(ptr('pointermove', 260, 240, 'mouse')); window.dispatchEvent(ptr('pointermove', 260, 240, 'mouse'))
       })
-      await act(async () => { switchRoleView(); await tick() })
+      await act(async () => { switchRoleViewRaw(); await tick() })
       expect(isAdmin(), 'the premise: the member view').toBe(false)
       expect(S.storageUnit(), 'the premise: the Tracker held on 149').toBe('u149')
       await act(async () => {
@@ -128,7 +134,7 @@ describe('a drag held through the switch to the member view (F2)', () => {
       })
       expect(C.dlg ?? null, 'no box goes up inside the hidden Tracker').toBeNull()
       expect(recordsOf('u149'), '149\'s saved records untouched').toEqual(was149)
-      await act(async () => { switchRoleView(); await settle() })
+      await act(async () => { switchRoleViewRaw(); await settle() })
       expect(C.dlg ?? null).toBeNull()
       expect(C.sylDirty, 'the unfinished press left nothing unsaved').toBe(false)
       if (C.arrangeMode) C.toggleArrange()

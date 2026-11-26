@@ -1989,3 +1989,17 @@ sides.
 **Issue:** A shared test-helper file was created as a component-type file (markup extension) holding only helper exports. The static code check reads such a file as a component file and reported one finding per export (54). No step had run that check, because it could not run in the working copy at the time and the remote run was read only for the three findings someone named, so the file's shape went through a build, a review and a merge unseen.
 **Suggested improvement:** In the builder's brief template, list the static code check beside the tests and the build as a required check of every step, with "could not run" reported as NOT RUN and carried in the handoff as owed until it runs. In the orchestrator's review of any NEW file, ask what kind of file its extension declares and whether the checks treat that kind differently.
 **Principle:** A check that cannot run is a debt to record and repay at the first chance, not a check passed; and a new file's type is a decision the linters read, so pick it by what the file exports.
+
+
+### Observation 1097: A census test that counts call sites fails far from the change, so the step's re-run missed it
+
+**Status:** OPEN
+**Date:** 2026-11-27
+**Session context:** multi-squadron section 1 (the guard rail), step K5 — the view switch's door; numbered past 1095–1096 on other branches
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** The builder's brief — its list of checks; the orchestrator's re-run of "the touched files"
+
+**Issue:** The step added two calls of a role question to a store file. A test elsewhere counts, per file, how often each role question is asked, and fails on a count it does not list. Neither the builder's batches ("the touched and census files") nor the orchestrator's own re-run of the touched files included that test, because it lives in no file the step touched. It went red on the shared batch branch and another section found it.
+**Suggested improvement:** In a builder's brief template, beside "the touched files", name the repo's census tests — the ones that read the source and count call sites or callers of a guarded function (here: the role-question readers, the settings readers, the roll-call) — as a standing batch of every step that adds or moves such a call. In the orchestrator's review, grep the diff for the guarded function names and run each census test that lists them.
+**Principle:** A test that reads the source to count call sites belongs to the functions it counts, not to the file it sits in; choose re-runs by what the diff calls, not only by which files it touched.
