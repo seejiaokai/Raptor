@@ -20,7 +20,8 @@ and only once (1) its own mock-up page has been seen by him (D2657, D1625), (2) 
 fresh Fable's read (D2441), and (3) each question still open against one of its steps (§8.4, §8.5) is answered or that
 step's piece is left out, as its "waits on" cell says. Before this fold the status read: "not approved — not to be
 built from until the questions on the round-5 page and NQ1–NQ3 have his answers, the new looks and words are drawn and
-seen by him, and he has given his go"; NQ1–NQ3 and N14 are still unanswered.** It builds nothing. The rulings: D2403, D2405, D2590–D2599, D2620–D2657 (full rows in
+seen by him, and he has given his go". **His go for all four sections, 26 Nov 26 (D2729–D2732), answers NQ1–NQ3,
+N14, V-Q2 and §17's readings 17–24 — see "Still open" below (the coordinator, chat 193).** It builds nothing. The rulings: D2403, D2405, D2590–D2599, D2620–D2657 (full rows in
 `.claude/decisions-full/`); the sizing file `2026-11-24-msq-pick-guard-build.md` (parts A–H; this plan is A, B, F, with
 G and V his answers added); today's app as pressed, `../briefs/2026-11-24-msq-pick-guard-press-report.md`, the five
 pressers of 25 Nov (`../briefs/2026-11-25-msq-pick-guard-q2-press-p1.md` to `-p5.md` — "pressed (P2 4)" cites a report
@@ -46,8 +47,14 @@ only as the record of what was not taken: it is not built. A place this fold did
 places that carry most weight are reworded, the replaced words struck through.** A "(default)" on N14 or on NQ1–NQ3 is
 still unanswered and never his ruling. **One exception, found by the fold's red team (§24, Astra 2): the page's E9j
 never asked whether each admin's own look at Help puts out his own bell only — that clause of §17's reading 12 is
-still open, a hold on the bell section's bug-report step (§19.6, §21.3).** **Still open, none answered here: NQ1–NQ3 (§8.4), N14 (§4.2), V-Q2, §17's
-readings 17–24, §5.5's home-page row, and §8.5's list — each a switch point that holds only its own rows.** §8's
+still open, a hold on the bell section's bug-report step (§19.6, §21.3)** — ~~answered~~ **answered 26 Nov 26: D2731
+Q5, each admin's own look puts out only his own bell.** **Answered 26 Nov 26 by his go for the four sections:
+NQ2, N14 and readings 17–20 (D2729 Q1, Q9, Q2, Q3, Q7, Q8 — the core's step 0 folded them, see §21.1); NQ1, NQ3,
+V-Q2 and readings 22–24 (D2730 Q8, Q9, Q3, Q10–Q12 — Admin → Users' step 0 folds them); §19.13's readings (D2731 — the
+bell's step 0 folds them). Reading 21 is words: a fresh Fable's read (D2441), in Admin → Users' U2.** **Still open: §5.5's home-page row (holds the core's K10), E9b's
+list of windows (the core's K0 lists them; one needing his word comes to the coordinator), and §8.5's list — each a
+switch point that holds only its own rows.** ~~Still open, none answered here: NQ1–NQ3 (§8.4), N14 (§4.2), V-Q2,
+§17's readings 17–24, §5.5's home-page row, and §8.5's list.~~ §8's
 table gives each E and D code its N code, his answer and its step. N11 is the page's B7 and waits with group B
 (D2636) — but for the one Undo E7 asked about, now answered: refused in Build 1 (D2654). The page he answered numbers its questions
 its own way (A1–A20, B1–B12, C1–C11): the table at the head of §8. The words reads number their own items too: always
@@ -3525,6 +3532,8 @@ live" — as D2657 rules.** What it needs that `main` does not hold, and how it 
 |---|---|---|
 | `ui/UsersPanel.tsx` | the core (K1's reports, K2's top row and form) · Admin → Users (all of it) · later, the Transfer step | **The core, through K2;** then Admin → Users owns it. K2 builds the top row once and the Users section leaves it where it is |
 | `test-support/msq-world.ts` | the core (K0: `withThird()`) · read by all | the core's K0; nobody else edits it — a section that needs a new man in the world asks the coordinator. **The posting sheet does not use it: its own set-up (§21.4)** |
+| `storage/postman.ts`, `storage/savewait.ts` | the core alone (K4a, the saver's end — N14, D2729 Q9; added by the coordinator, chat 193, 26 Nov 26: on no other section's list, and no live branch changes them) | the core; read by the security reader with K4a |
+| `ui/usersfilter-model.ts` `addHomeChoices` | the core's K2a stops calling it (D2729 Q1: no Home squadron box) · Admin → Users owns the file | Admin → Users keeps or removes the helper; the core never edits the file |
 | `ui/guard.ts`, `ui/guardnote.ts`, the roll-call test | the core · a row or a lead appended by the bell (Display) and, if its check finds one missing, by Admin → Users | the core through K3; after that an append, one row a commit |
 | `ui/topstate.ts` (`lineOpens`), tests B7 and R5 | the core (K6) · Admin → Users (a kind for each new line; "Edit on 142 →" in R5 (a)) | the core through K6 (K4 for the link); then appends |
 | `state/belltap.ts` | the core (`enterForLine`, `openBellRequest`) · the bell (`lineSqnMark`) | the core's K6; different functions |
