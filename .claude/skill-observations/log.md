@@ -1558,3 +1558,16 @@ sides.
 **Issue:** The next free chat number was taken from the merged handoff file only. Parallel chats' blocks live on their own unmerged branches, so the merged file named a number four behind; one of the "free" numbers was already a live session's title.
 **Suggested improvement:** In the session-handoff skill, before writing "Next chat number", take the highest of: the merged handoff, every remote branch's commit subjects (`git log --all --since=7.days --format=%s | grep -o '^Chat [0-9]*'`) and the open session titles (list_sessions); a new chat re-checks the same three before naming itself.
 **Principle:** A counter shared by parallel workers must be read from every place they write, not from the one that is merged.
+
+### Observation 1085: A helper agent may be refused writing its report to a file
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 196, S4 bug check — two blind code-reader helpers (Opus, Fable) and a drawing-check helper (numbered past 1084, the highest on another open branch)
+**Skill:** New skill candidate: reader and walker briefs (the bug-check order's section 4 briefs)
+**Type:** open-source
+**Phase/Area:** a reader brief naming where the helper writes its report
+
+**Issue:** Both code-reader helpers were told to write their whole report to a scratch file; the file tool refused each, saying subagents should return findings as text. Each returned the report in its final message, which the host saved by hand. The drawing-check helper wrote its report file without trouble, so the refusal is not constant.
+**Suggested improvement:** A reader brief asks for the report both ways — written to the named file where the tool allows it, and returned whole in the final message — and the host saves the returned copy when the file is missing. The working note that says helper reports are written to a file gets the same line.
+**Principle:** When a delegated worker's output must survive, ask for it on two channels and check which one arrived, since a tool can refuse one of them without warning.
