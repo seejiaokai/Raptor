@@ -69,6 +69,12 @@ Everything was staged through the Inputs page's own window: List, "+ Input", "Se
    - The page could not scroll the three rows up under the heading (the page was at its foot), so the 1x desktop pictures include the rows above for context.
    - The close-ups show only the days, with the rows named by tags. The tag names are labels on the picture, not app words.
 
+## Frame 4 — "Change for Cutter only" (chat 191, 26 Nov 26; script v1.1)
+His ask, a second button beside "Change for all 3 people". Run with `--only 4`, desktop (Chromium 1x) and phone (WebKit 3x), against http://127.0.0.1:4173/ (bundle `index-B9okpSpf.js`, the same app code as this branch).
+- **4a, drawn** (`g4-two-buttons-proposed-*`): frame 2's proposal, plus a clone of the "Change for all 3 people" button reading "Change for Cutter only". Desktop: both on one row (156px beside 158px, the line 28px tall). Phone: the second button takes a line of its own (the line 28 → 64px).
+- **4b, real staging, the window cloned** (`g4-after-press-proposed-*`): after the press, staged as Cutter on an LL of his own, 29–31 Jul, beside Ghost's and Dash's group LL of the same days (both filed through the Inputs page's window). Cutter's own leave's window, opened for real on the Inputs page ("Cutter · 29 Jul → 31 Jul"), is cloned over the war; its lists' picked values are put back on the clone (a copy of the markup had lost them: PERSON read "Ace"). No tap on Cutter's box, so the war's own window, which still has today's words, is not behind it.
+- Words: "Change for Cutter only", kept by a fresh Fable as the pair of "Change for all 3 people" (his "Change Cutter's only" left "Cutter's what?" open). Fable's catch, put to him as question 9: a split at the press leaves Cutter split when nothing is changed.
+
 ## New words (for Fable's adjustment)
 - "Cutter, Ghost, Dash" on the whole-day held line, after its LL box.
 - "The afternoon is LL · Cutter, Ghost, Dash" (replacing ", filed on the Inputs page — change that there.").

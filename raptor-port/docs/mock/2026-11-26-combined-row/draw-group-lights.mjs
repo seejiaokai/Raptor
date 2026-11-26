@@ -18,10 +18,10 @@
 import { createRequire } from 'node:module'
 import { mkdirSync } from 'node:fs'
 import path from 'node:path'
-const VERSION = 'draw-group-lights v1.0 (26 Nov 26)'
+const VERSION = 'draw-group-lights v1.1 (26 Nov 26, chat 191: frame 4, "Change for Cutter only")'
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d }
 const SIZE = arg('size', 'd'), URL = arg('url', 'http://127.0.0.1:4173/'), IMG = path.resolve(arg('img', 'docs/mock/2026-11-26-combined-row/img'))
-const ONLY = arg('only', '1,2,3').split(',')
+const ONLY = arg('only', '1,2,3,4').split(',')
 const PHONE = SIZE === 'p'
 /* --detail: the desktop drawn at 3x (the same layout, its pixels three times finer) and each picture cut to the days in
    question, the rows named by a tag — a close-up beside the true-size 1x picture, never instead of it */
@@ -39,9 +39,13 @@ const SPECS = {
   ll: { type: 'LL', people: MEN, from: '2026-07-15', to: '2026-07-17' },
   llpm: { type: 'LL', people: MEN, from: '2026-07-22', to: '2026-07-22', span: 'pm' },
   oilam: { type: 'OIL', people: ['riddler'], from: '2026-07-22', to: '2026-07-22', span: 'am' },
+  /* frame 4's "after the press": Cutter on a leave of his own beside Ghost's and Dash's group leave, the same days */
+  llgd: { type: 'LL', people: ['riddler', 'spaceman'], from: '2026-07-29', to: '2026-07-31' },
+  llc: { type: 'LL', people: ['psy'], from: '2026-07-29', to: '2026-07-31' },
 }
-/* the drafted words (for the fresh Fable's adjustment, D2441) */
-const W = { names: 'Cutter, Ghost, Dash', all3: 'Change for all 3 people', count: '3·LL', halfNote: 'The afternoon is LL · Cutter, Ghost, Dash' }
+const IIDS = {}
+/* the drafted words (for the fresh Fable's adjustment, D2441; "Change for Cutter only" kept by a fresh Fable, chat 191) */
+const W = { names: 'Cutter, Ghost, Dash', all3: 'Change for all 3 people', one: 'Change for Cutter only', count: '3·LL', halfNote: 'The afternoon is LL · Cutter, Ghost, Dash' }
 const CYAN = 'rgb(59, 198, 232)'
 
 /* ---------------- driving ---------------- */
@@ -144,18 +148,19 @@ async function warJuly(p) {
   await press(p, p.locator('button:visible').filter({ hasText: /^JUL$/ }).first()); await sleep(1200)
 }
 const cellSel = (id, d) => `[data-testid="cell-${id}-2026-07-${d}"]`
-async function centre(p, id, d) {
+async function centre(p, id, d, headDay = '15') {
   await p.evaluate(s => document.querySelector(s)?.scrollIntoView({ block: 'center', inline: 'center' }), cellSel(id, d)); await sleep(500)
   /* then the page scrolled (as the war's own jump scrolls it, cellring.ts) so the CAT C heading and Cutter's row stand just
      under the grid's frozen date heading — the dates and the three rows in one short picture */
-  const moved = await p.evaluate(() => {
+  /* headDay: the day whose frozen date heading and Cutter's box set the scroll (frames 1-3 keep the 15th, frame 4b the 29th) */
+  const moved = await p.evaluate(headDay => {
     /* the frozen heading is a fixed copy of the table's own (the original scrolls away with the page, a third copy stands
        far to the right): the one ON screen is the one seen */
     const onScreen = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.top >= 0 && r.bottom <= innerHeight && r.left >= 0 && r.right <= innerWidth }
-    const head = [...document.querySelectorAll('th[data-d="2026-07-15"]')].find(onScreen); const row = document.querySelector('[data-testid="cell-psy-2026-07-15"]').closest('tr')
+    const head = [...document.querySelectorAll(`th[data-d="2026-07-${headDay}"]`)].find(onScreen); const row = document.querySelector(`[data-testid="cell-psy-2026-07-${headDay}"]`).closest('tr')
     const by = row.getBoundingClientRect().top - head.getBoundingClientRect().bottom - 26
     window.scrollBy(0, by); return Math.round(by)
-  }); await sleep(400)
+  }, headDay); await sleep(400)
   return moved
 }
 /* what each of the three men's boxes holds on the given days: its boxes' words, places and sizes */
@@ -327,6 +332,63 @@ async function f3(p) {
   await shot(p, 'g3-half-tap-proposed-boxring'); await unmark(p)
 }
 
+/* Chat 191: his "Change Cutter's only" beside "Change for all 3 people" (the words a fresh Fable kept as the pair
+   "Change for Cutter only", D2441). 4a: the tap, both buttons on the held line. 4b: after the press, Cutter's own leave
+   (staged as a leave of his own beside Ghost's and Dash's, the same days, 29-31 Jul) with its own window, the Inputs
+   page's real one cloned, over the war; Ghost and Dash unlit, untouched. */
+async function f4(p) {
+  await warJuly(p); await centre(p, 'riddler', '16')
+  await press(p, cellSel('psy', '15')); await sleep(1000)
+  const lit = await light(p, ['riddler', 'spaceman'], ['15', '16', '17'])
+  if (!lit.every(l => l.shadow && l.shadow.includes(CYAN) && l.sameBox)) throw new Error('the ring did not paint, or moved a box')
+  const hl = await heldLine(p, W.names, W.all3); fact(4, 'the held line with the first button', hl)
+  const two = await p.evaluate(words => {
+    const line = [...document.querySelectorAll('.bidsheet [data-testid="bid-heldday"]')].find(e => e.getBoundingClientRect().width > 0)
+    const first = line.querySelector('.dcr-newbtn'); const b = first.cloneNode(true); b.querySelector('span').textContent = words
+    b.classList.remove('dcr-newbtn'); b.classList.add('dcr-onebtn'); line.appendChild(b)
+    const r = b.getBoundingClientRect(), fr = first.getBoundingClientRect(), lr = line.getBoundingClientRect()
+    return { btnW: Math.round(r.width), btnH: Math.round(r.height), firstW: Math.round(fr.width), lineH: Math.round(lr.height), sameRow: Math.abs(r.top - fr.top) < 2, fitsLine: r.right <= lr.right + 0.5, lineW: Math.round(lr.width) }
+  }, W.one)
+  fact(4, 'the second button', two)
+  await picRows(p, ...R12); await picWin(p)
+  await tags(p, [['.bidsheet [data-testid="bid-heldday"]', '4a'], ['.dcr-onebtn', 'New', 'r'], [cellSel('riddler', '17'), '2a', 'r'], [cellSel('spaceman', '17'), '2a', 'r']])
+  await shot(p, 'g4-two-buttons-proposed'); await unmark(p)
+  /* 4b: Cutter's own leave's window, opened for real on the Inputs page, then laid over the war */
+  await reset(p)
+  await toPage(p, 'Inputs'); await sleep(500)
+  if (await p.locator('#inMemberMode:visible').count()) await press(p, '#inMemberMode')
+  await press(p, '#inCalBtn'); await sleep(600)
+  for (let i = 0; i < 8 && !/JUL\w* 2026/i.test(await p.locator('[data-testid="ic-mon"]:visible').first().innerText()); i++) { await press(p, '#icPrev'); await sleep(350) }
+  await press(p, `[data-testid="ib-bar-${IIDS.llc}"]:visible`); await sleep(900)
+  if (!(await p.locator('[data-testid="win-inputedit"]:visible').count())) {
+    await press(p, p.locator(':is(button,[role=button],div):visible').filter({ hasText: /^Cutter\b/ }).last()); await sleep(900)
+  }
+  const win = await p.evaluate(() => { const w = [...document.querySelectorAll('[data-testid="win-inputedit"]')].find(e => e.getBoundingClientRect().width > 0); if (!w) return null; return { html: w.outerHTML, sel: [...w.querySelectorAll('select')].map(s => s.value), text: w.innerText.replace(/\s+/g, ' ').slice(0, 200) } })
+  fact(4, "Cutter's own leave's window (Inputs page)", win && win.text)
+  if (!win) throw new Error("the input's own window did not open")
+  /* its title names its people (the PERSON picker below lists the whole squadron, so only the title is read) */
+  if (!/^\W*Cutter · 29 Jul/.test(win.text)) throw new Error("premise: the window opened is not Cutter's own leave")
+  await p.keyboard.press('Escape'); await sleep(500)
+  if (await p.locator('[data-testid="win-inputedit"]:visible').count()) await press(p, '#inpEditClose').catch(() => {})
+  await warJuly(p); await centre(p, 'riddler', '30', '29')
+  const cells = await readCells(p, ['29', '30', '31']); fact(4, 'after: the three men 29-31 Jul', cells)
+  for (const id of MEN) if (!cells[id].every(c => c && c.boxes.some(b => b.t === 'LL'))) throw new Error('premise: ' + CS[id] + ' has no LL 29-31')
+  /* no tap on Cutter's box here: the war's own window would sit behind with today's "change it on the Inputs page" line */
+  const put = await p.evaluate(([html, sel]) => {
+    const host = document.createElement('div'); host.innerHTML = html; const w = host.firstElementChild; w.classList.add('dcr-clonewin')
+    document.getElementById('root').appendChild(w)
+    /* a copy of a window's markup loses each list's picked value (PERSON read "Ace"): put the real window's back */
+    w.querySelectorAll('select').forEach((s, i) => { s.value = sel[i] })
+    const r = w.getBoundingClientRect(); return { box: [r.left, r.top, r.width, r.height].map(Math.round), sel: [...w.querySelectorAll('select')].map(s => s.value) }
+  }, [win.html, win.sel])
+  fact(4, 'the window put over the war', put)
+  await picRows(p, ...(DETAIL ? ['28', '31'] : ['27', '31']))
+  await p.evaluate(() => document.querySelector('.dcr-clonewin').setAttribute('data-dcr-pic', ''))
+  /* on a phone the window covers the screen, as the app's windows do there: the row names would float over it */
+  await tags(p, [['.dcr-clonewin', '4b'], ...(PHONE ? [] : MEN.map(id => [cellSel(id, '31'), CS[id], 'r']))])
+  await shot(p, 'g4-after-press-proposed'); await unmark(p)
+}
+
 /* ---------------- run ---------------- */
 const engine = PHONE ? PW.webkit : PW.chromium
 const browser = await engine.launch()
@@ -342,10 +404,10 @@ try {
   await signIn(p, true)
   for (const [k, spec] of Object.entries(SPECS)) {
     const r = await fileInput(p, spec)
-    fact('stage', k, { ...r.rec, asked: r.asked })
+    fact('stage', k, { ...r.rec, asked: r.asked }); IIDS[k] = r.iid
     if (JSON.stringify([...r.rec.people].sort()) !== JSON.stringify([...spec.people].sort()) || r.rec.type !== spec.type) throw new Error('staged wrong: ' + k)
   }
-  const FR = { 1: f1, 2: f2, 3: f3 }
+  const FR = { 1: f1, 2: f2, 3: f3, 4: f4 }
   for (const n of ONLY) {
     try { await reset(p); console.log('--- frame', n); await FR[n](p) } catch (e) { failed.push(n + ': ' + e.message.split('\n')[0]); console.log('FRAME FAILED', n, e.message.split('\n')[0]); await p.screenshot({ path: path.join(IMG, `gfail-${n}-${PHONE ? 'phone' : 'desktop'}.png`) }).catch(() => {}) }
   }

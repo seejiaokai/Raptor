@@ -1558,3 +1558,16 @@ sides.
 **Issue:** The next free chat number was taken from the merged handoff file only. Parallel chats' blocks live on their own unmerged branches, so the merged file named a number four behind; one of the "free" numbers was already a live session's title.
 **Suggested improvement:** In the session-handoff skill, before writing "Next chat number", take the highest of: the merged handoff, every remote branch's commit subjects (`git log --all --since=7.days --format=%s | grep -o '^Chat [0-9]*'`) and the open session titles (list_sessions); a new chat re-checks the same three before naming itself.
 **Principle:** A counter shared by parallel workers must be read from every place they write, not from the one that is merged.
+
+### Observation 1092: A window copied for a mock-up loses what its lists show
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 191, drawing "Change for Cutter only" on the Leave War; a real input window opened on the Inputs page was copied by its markup and laid over the war (numbered past 1091, held by another open branch's log)
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** drawing a proposed state by cloning a real window
+
+**Issue:** the copied window showed its PERSON list reading the first name in the squadron ("Ace") instead of the man the window was for (Cutter): a copy of an element's markup keeps each option list but not which entry is picked (the picked value is live state, not markup), and the same holds for typed text and ticks. The script's own premise check passed, since it read the original window's text; only looking at the picture caught it.
+**Suggested improvement:** in the guide's section on cloning a real element, add: when a window is copied by its markup, read every list's, box's and tick's live value from the original before closing it and set them on the copy; then read the copy's values back and assert them, not the original's.
+**Principle:** A copy of an interface element made from its markup drops its live state; a mock-up that copies one must carry the state across and check the copy, not the source.
