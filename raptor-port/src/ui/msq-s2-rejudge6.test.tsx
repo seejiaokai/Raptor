@@ -424,15 +424,21 @@ describe('§38 — an archived row whose post-in date he picked, across midnight
     expect(csOf(PID.osprey), 'as the callsign he typed').toBe('Typedname')
     expect(p.noEditor(), 'the row closed by its own press').toBe(true)
   })
-  it('pin: his date picked, then picked back to the day the box opened on: untouched again — midnight closes the row with the note, as an untouched box does', async () => {
+  /* (the two pins below re-pointed in U1's seventh round, by name — they read "…untouched again — midnight closes the row
+     with the note, as an untouched box does" and "…the date left untouched — midnight closes the row with the note, once
+     (msq-s2-rejudge4.test.tsx §19)". An untouched box now rolls forward with the clock on a draw, the copy's date with it,
+     and the row is judged after — the clock alone never closes it (the fresh Opus 2's finding 2 of the sixth read;
+     msq-s2-rejudge7.test.tsx §40). A date picked back to the day the box opened on is untouched again, so it rolls too.) */
+  it('pin: his date picked, then picked back to the day the box opened on: untouched again — midnight rolls the box to the new day, as an untouched box does; the row stays open with his callsign, no note', async () => {
     const p = await kestrelPicksADate()
     await p.pickDate('2026-07-15')
     expect(p.postIn(), 'premise: back on the date the box opened on').toBe('2026-07-15')
     on(16); reload()
     await redraw()
-    closedWithNote(p, PID.osprey)
+    expect({ open: !!p.$('#accArCs'), box: p.box(), date: p.postIn(), notes: anyRowNote(), counted: workOn('archrow') })
+      .toEqual({ open: true, box: 'Typedname', date: '2026-07-16', notes: 0, counted: true })
   })
-  it('pin: the date left untouched — midnight closes the row with the note, once (msq-s2-rejudge4.test.tsx §19)', async () => {
+  it('pin: the date left untouched — midnight rolls the box to the new day; the row stays open with his callsign, counted, no note (msq-s2-rejudge4.test.tsx §19)', async () => {
     signInAs('kestrel')
     expect(archivePerson(PID.osprey).bad).toBeFalsy()
     reload()
@@ -442,7 +448,8 @@ describe('§38 — an archived row whose post-in date he picked, across midnight
     vi.mocked(HOOKS.toast).mockClear()
     on(16); reload()
     await redraw()
-    closedWithNote(p, PID.osprey)
+    expect({ open: !!p.$('#accArCs'), box: p.box(), date: p.postIn(), notes: anyRowNote(), counted: workOn('archrow') })
+      .toEqual({ open: true, box: 'Typedname', date: '2026-07-16', notes: 0, counted: true })
   })
 })
 

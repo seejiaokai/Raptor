@@ -365,7 +365,8 @@ const underArchived = (f: ArchField) => {
 const ARCH_CASES = ARCH_FIELDS.flatMap(f => ARCH_BTNS.map(b => ({ f, b, name: `${f.name} — ${b.name}` })))
 
 describe('§19 — the archived man\'s row: its copy, field by field', () => {
-  it.each(named(ARCH_FIELDS))('%s, and the page redraws: the row closes with the note, once', async (_, f) => {
+  /* (the midnight field is re-pointed below, by name, since U1's seventh round — msq-s2-rejudge7.test.tsx §40) */
+  it.each(named(ARCH_FIELDS.filter(f => !f.midnight)))('%s, and the page redraws: the row closes with the note, once', async (_, f) => {
     const p = await kestrelOpensArchived()
     underArchived(f)
     const was = stored(PID.osprey, ACCT.osprey)
@@ -373,6 +374,24 @@ describe('§19 — the archived man\'s row: its copy, field by field', () => {
     closedWithNote(p, PID.osprey)
     await redraw()
     expect(anyRowNote(), 'and not again').toBe(1)
+    expect(stored(PID.osprey, ACCT.osprey), 'nothing of his was written by the row').toBe(was)
+  })
+  /* (re-pointed in U1's seventh round, by name — was "the date rolls past midnight (the post-in box would open on the new
+     day), and the page redraws: the row closes with the note, once". The box he left untouched now rolls forward with the
+     clock on a draw — the copy's date and the box both become the new day — and the row is judged after it, so the clock
+     alone no longer closes it (the fresh Opus 2's finding 2 of the sixth read; msq-s2-rejudge7.test.tsx §40). A press with
+     nothing redrawn is still strict: the cases below.) */
+  it('the date rolls past midnight (the post-in box would open on the new day), and the page redraws: the row stays open, the untouched box rolled to the new day, his callsign kept — no note, nothing written', async () => {
+    const p = await kestrelOpensArchived()
+    underArchived(ARCH_FIELDS.find(f => f.midnight)!)
+    const was = stored(PID.osprey, ACCT.osprey)
+    await redraw()
+    expect({
+      open: !!p.$('#accArCs'), box: (p.$('#accArCs') as HTMLInputElement | null)?.value ?? null,
+      date: p.$('#accArPostIn')?.getAttribute('data-value') ?? null, notes: anyRowNote(),
+    }).toEqual({ open: true, box: 'Typedname', date: '2026-07-16', notes: 0 })
+    await redraw()
+    expect(anyRowNote(), 'and not later').toBe(0)
     expect(stored(PID.osprey, ACCT.osprey), 'nothing of his was written by the row').toBe(was)
   })
   it.each(named(ARCH_CASES))('%s, with NOTHING redrawn: nothing is written; the note; the row closes', async (_, { f, b }) => {
