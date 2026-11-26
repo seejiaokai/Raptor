@@ -15,6 +15,18 @@
    changed while it was open, so nothing was saved. Open it again.", once — but a man DELETED under his open row closes it
    with no note (he cannot be opened again). A row's own writes raise no note. The open short
    row shows the line he holds today and sends only a pick that differs from it.
+   SINCE THE THIRD FIX ROUND (the brief …-u1fix3-brief.md; its own tests are msq-s2-rejudge3.test.tsx):
+   - §9 gains "a pick put back by hand is let go" (the security read 1 of this round's read), two cases and a pin, and §8 a
+     pin beside its short-row test. No test of this file was re-pointed or weakened by that round.
+   - The rule's "the open short row follows the line and stays open" holds WHILE HE STAYS ON THE PAGE'S LIST: every §9 test
+     keeps the man on the list by a search, so each still stands as written. A Plan holder listed only for his Plan
+     leaves the list when it goes, and his row then closes with the note (msq-s2-rejudge3 §14).
+   - §10's three tests of "the squadron in view held again" — the pin "Hunter (View of 150 only) picks 150 … the row stays
+     open, no note" and the two "survives his View-only pick of 150; then …" — cover a state THE APP CANNOT REACH TODAY:
+     they draw the list alone, and in the app a View-only pick takes the Admin page away with the row (msq-s2-rejudge3
+     §12, "silent, as the app stands"). They are kept: the page's own rule is theirs to hold, and a later step that keeps
+     the Admin page across such a pick would reach it. §10's "lowers Hunter's Plan of 149 to View" likewise draws the list
+     alone; what the app does there is msq-s2-rejudge3 §12's first test.
    The world: three squadrons (withThird — his D2630), Wed 15 Jul 26, 09:00. Hunter — 142's admin, Plan of 149, View of
    150; Saber — master admin, home 142; Ranger — 142's member, View of 149 and of 150; Kestrel — 149's admin; Osprey —
    149's member; Mako — 150's own admin. */
@@ -570,6 +582,24 @@ describe('§8 — a redraw of the row\'s own editor judges the row again', () =>
     expect(spy.calls).toEqual([])
     closedWithNote(p, PID.ranger)
   })
+  /* (the third round: a press of the line the row shows him holding now lets a pick go, and with no pick held that draws
+     nothing — so the press itself asks, and this press goes on closing the row as every press of a line did) */
+  it('pin: the same, the line pressed being the one the row shows him holding (View) — a press that changes nothing in the row still closes it with the note, and nothing is sent', async () => {
+    signInAs('saber')
+    expect(moveMan(PID.ranger, 'u149')).toMatchObject({ ok: true })
+    signInAs('kestrel')
+    const p = panel()
+    await p.find(csOf(PID.ranger))
+    await p.open(PID.ranger)
+    expect(p.pressed('u149'), 'premise: his short row is open, View showing').toBe('view')
+    vi.mocked(HOOKS.toast).mockClear()
+    on(16); reload()
+    expect(homeOn(PID.ranger, todayIso())).toBe('u149')
+    spy.calls.length = 0
+    await p.pickLine('u149', 'view')
+    expect(spy.calls).toEqual([])
+    closedWithNote(p, PID.ranger)
+  })
   it('the archived row: typing in its callsign box after his move landed with no redraw closes it with the note', async () => {
     signInAs('saber')
     expect(moveMan(PID.osprey, 'u142')).toMatchObject({ ok: true })
@@ -704,6 +734,63 @@ describe('§9 — the open short row reads his line on every draw and holds only
     expect(level(ACCT.mako, 'u149')).toBe('view')
     expect(p.noEditor(), 'the row closed').toBe(true)
     expect(anyRowNote(), 'no note').toBe(0)
+  })
+  /* A PICK PUT BACK BY HAND IS LET GO (the third fix round — the security read 1 of chat 205's second read). The row "holds
+     only what the admin picked", but a pick was never let go again: View pressed and then the line he holds pressed again
+     left a row that read as untouched while still holding that line as a pick. When another admin then changed his line,
+     the row turned, with no press, into a change back to the old line, and its Save undid the other admin's act. Pressing
+     the line he holds at that moment lets the pick go, so the row is the untouched row it reads as. */
+  const followsUnmarkedAndSendsNothing = async (p: Panel, acct: string, holds: 'view' | 'none') => {
+    expect(p.$('.acc-edit[data-short="1"]'), 'premise: the row is still open').not.toBeNull()
+    expect.soft(p.pressed('u149'), 'the row shows the line he holds today').toBe(holds)
+    expect.soft(p.$('.acc-edit')!.hasAttribute('data-unsaved'), 'nothing is marked as not saved — he chose no change').toBe(false)
+    spy.calls.length = 0
+    await p.press('#accEdSave')
+    reload()
+    expect.soft(spy.calls, 'Save sends nothing — he chose no change').toEqual([])
+    expect(lineHeld(acct, 'u149'), 'the other admin\'s change stands').toBe(holds)
+  }
+  it('Kestrel has Mako\'s short row open (None); he presses View, then None again — the row reads as untouched; Saber then gives Mako View of 149 (the security read 1): the row shows View, unmarked, and its Save sends nothing — Mako keeps the View', async () => {
+    const p = await kestrelOpens(PID.mako, 'Mako')
+    expect(p.pressed('u149'), 'premise: None showing — he holds nothing of 149').toBe('none')
+    await p.pickLine('u149', 'view')
+    expect(p.$('.acc-edit')!.getAttribute('data-unsaved'), 'premise: View picked is marked as not saved').toBe('true')
+    await p.pickLine('u149', 'none')
+    expect(p.pressed('u149'), 'premise: put back — None showing').toBe('none')
+    expect(p.$('.acc-edit')!.hasAttribute('data-unsaved'), 'premise: put back — the row reads as untouched, no mark').toBe(false)
+    expect(asOther('saber', () => saveAccess(ACCT.mako, { grants: { u149: 'view' } })), 'setup: Saber gives Mako View of 149').toBeNull()
+    reload()
+    await redraw()
+    expect(level(ACCT.mako, 'u149'), 'premise: Mako views 149 now').toBe('view')
+    await followsUnmarkedAndSendsNothing(p, ACCT.mako, 'view')
+  })
+  it('two master admins: Kestrel presses View then Plan again on Hunter\'s row (Plan of 149); Saber lowers Hunter to View (the security read 1, its worse face): the row shows View, unmarked, and its Save does not give the Plan back', async () => {
+    signInAs('saber')
+    expect(saveAccess(ACCT.kestrel, { master: true }), 'setup: Saber makes Kestrel a master admin').toBeNull()
+    reload()
+    /* (found by the search, so his row stays on the list when he no longer plans 149) */
+    const p = await kestrelOpens(PID.hunter, 'Hunter')
+    expect(pageUnit('own'), 'premise: 149\'s page').toBe('u149')
+    expect(p.pressed('u149'), 'premise: Plan showing').toBe('plan')
+    await p.pickLine('u149', 'view')
+    await p.pickLine('u149', 'plan')
+    expect(p.$('.acc-edit')!.hasAttribute('data-unsaved'), 'premise: put back — no mark').toBe(false)
+    expect(asOther('saber', () => saveAccess(ACCT.hunter, { grants: { u149: 'view' } })), 'setup: Saber lowers Hunter\'s Plan of 149 to View').toBeNull()
+    reload()
+    await redraw()
+    expect(level(ACCT.hunter, 'u149'), 'premise: Hunter views 149 now').toBe('view')
+    await followsUnmarkedAndSendsNothing(p, ACCT.hunter, 'view')
+  })
+  it('pin: a pick put back and then made again is a pick: Kestrel presses View, None, View for Mako and saves — one call, 149\'s line alone', async () => {
+    const p = await kestrelOpens(PID.mako, 'Mako')
+    await p.pickLine('u149', 'view')
+    await p.pickLine('u149', 'none')
+    await p.pickLine('u149', 'view')
+    expect(p.$('.acc-edit')!.getAttribute('data-unsaved'), 'marked as not saved').toBe('true')
+    spy.calls.length = 0
+    await p.press('#accEdSave')
+    expect(spy.calls).toEqual([[ACCT.mako, { grants: { u149: 'view' } }]])
+    expect(level(ACCT.mako, 'u149')).toBe('view')
   })
 })
 
