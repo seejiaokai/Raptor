@@ -279,3 +279,19 @@ a reading was built.
   l.52). Neither holds U2's builder.
 - **B6's readings and B7–B9:** stand as written; U2 is built in ordered passes by one Opus builder at a time (the rule,
   doors, gate and replay; the lines; the screen), one commit at the end, the four readers and the security reader on it.
+
+## (E) Question 22 answered — "22 as recommended" (27 Nov 26; D2816, D2817, the coordinator's records, both narrowing D2806)
+
+U2's builder builds choice A of both, not the stand-ins of part (D):
+- **D2816 — the last-admin note where the squadron named has no admin of its own:** "Kestrel is 151's last admin. Only a
+  master admin can make another." — for anyone who is not a master admin (a master admin still reads "Make another admin
+  of 151 first."); wherever the refusal came through the squadron's Plan holder (`state/lastadmin.ts`, the "none at home
+  but a Plan holder" branch), in the dated form too, and through Archive's words (`leavewar/sync.ts archiveLockWords`).
+  Where the squadron HAS admins of its own, D2806's words stand ("…Only 149's own admins or a master admin can make
+  another."). `lockWords` must also stop treating a Plan holder of the named squadron as one who can "make another".
+- **D2817 — note 5 under "What each role allows":** "Only a master admin makes squadrons or master admins. Only a
+  squadron's own admins or a master admin can give Plan of it or make its admins." (`ui/rolestable.ts`; the words table
+  `scripts/handpass/n176/words.mjs rolesNote` is the older approved form it replaces).
+- He was told plainly, before answering, that by question 13 a new squadron's first admin holding it by Plan can make
+  no admin of it — only a master admin can, until it has one of its own. That stands as the rule U2 builds.
+Pictures to build to and check beside: `raptor-port/docs/mock/2026-11-25-msq-pick-guard-q3/drawn/q22a-A-*`, `q22b-A-*`.

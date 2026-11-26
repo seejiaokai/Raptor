@@ -1,7 +1,9 @@
 # Admin → Users — question 22 for the one questions page, two parts (chat 205, 27 Nov 26)
 
 Drafted by a fresh Fable (U2's planning read), reviewed and adjusted by a second fresh Fable (D2441), facts checked
-against the code. Two decisions, each answered by itself (22A, 22B). Pictures:
+against the code. Two decisions, each answered by itself (22A, 22B). **ANSWERED 27 Nov 26: "22 as recommended" — D2816 (22A: choice A)
+and D2817 (22B: choice A), the coordinator's records; he was told plainly that a new squadron's first admin, holding it
+by Plan, can make no admin of it, and did not say otherwise. Built with U2; the cards are off the page (version 29).** Pictures:
 `raptor-port/docs/mock/2026-11-25-msq-pick-guard-q3/drawn/q22-*`. Neither holds U2's builder (choice B's words, already
 approved, are built meanwhile).
 
