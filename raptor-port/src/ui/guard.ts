@@ -20,7 +20,9 @@
    OIL question, a holiday sheet read in, Quals' "Add qualification" (each a `useGuardWork` report); the Calendar family
    in his E1 shape (D2654: the Calendar and an unchanged settings window close at the press, a half-done form refuses);
    the two edit modes' end() (D2627 A4, §18.1); the Leave War's two show-only sheets (D2740). K1c, the third: the Tracker's
-   windows, read on its bridge (tracker/role.js) from its own table, tracker/app/core.js TRK_WINDOWS. No door
+   windows, read on its bridge (tracker/role.js) from its own table, tracker/app/core.js TRK_WINDOWS. K3: what a refusal
+   says — the two tables of words, guardWords, below — read by ui/guardnote.ts, which raises it by the control pressed
+   (loaded by the shell, never from here). No door
    asks yet, so the app still behaves as before. Plain modules only — no component is imported, so the test world and
    the test set-ups can load it. */
 import { useEffect, useLayoutEffect, useRef } from 'react'
@@ -30,7 +32,9 @@ import { LGEDIT, setLgEdit } from '../state/auth'
 import { pageOffered } from '../state/perms'
 import { saveRefused } from '../storage/savewait'
 import { closeDayPanel } from '../leavewar/ui/daypanelopen'
-import { winUp } from './winorder'
+import { winUp, winAbove } from './winorder'
+import { phoneLayout } from './floatwin'
+import { unitById } from '../state/units'
 import { availDrawn, chgDrawn, inputDlgDrawn, insightsDrawn, dutyTplDrawn, waveTplDrawn, dayTplDrawn, draftsDrawn, cxDrawn, sortAllDrawn, medMoveDrawn, oilWaitDrawn } from './windrawn'
 import { closeAvailWin } from './availopen'
 import { closeChanges } from './changesopen'
@@ -309,16 +313,39 @@ export function closeShown(): void {
 }
 
 /* TYPED WORK THAT LIVES INSIDE A COMPONENT (Admin's rows and forms — no module flag exists; K1b's reports): the id counts
-   while `on`, and React's own unmount is the leave, so no way out can miss it */
+   while `on`, and React's own unmount is the leave, so no way out can miss it.
+   …AND WHAT THE NOTE MUST SAY OF IT (K3 — the third argument, `say`): a short value the reporting component hands over with
+   its report, kept beside the count and cleared with it, read by the note's words only (guardLead, below). Exactly two
+   components hand one over, each the only place the fact lives: the holiday form ('new' | 'changed' | 'noleave' — a new one
+   refused because no leave period covers it and kept waiting) and "Every <weekday>" (the window's own title, "Every
+   Tuesday"). Never read from the page's markup. */
 const WORK = new Map<GuardRowId, number>()
+const SAYS = new Map<GuardRowId, string>()
 export const workOn = (id: GuardRowId): boolean => (WORK.get(id) ?? 0) > 0
-export function useGuardWork(id: GuardRowId, on: boolean): void {
+/** what the component reporting `id` said of it, while it counts */
+export const workSay = (id: GuardRowId): string | undefined => (workOn(id) ? SAYS.get(id) : undefined)
+export function useGuardWork(id: GuardRowId, on: boolean, say?: string): void {
   useEffect(() => {
     if (!on) return
     WORK.set(id, (WORK.get(id) ?? 0) + 1)
-    return () => { const n = (WORK.get(id) ?? 1) - 1; if (n > 0) WORK.set(id, n); else WORK.delete(id) }
-  }, [id, on])
+    if (say !== undefined) SAYS.set(id, say)
+    return () => { const n = (WORK.get(id) ?? 1) - 1; if (n > 0) WORK.set(id, n); else { WORK.delete(id); SAYS.delete(id) } }
+  }, [id, on, say])
 }
+/* WHICH ADMIN SECTION IS IN SIGHT (the orchestrator's review of K3): his "save or cancel the open row on Users" (D2627 A6)
+   is said while a Users row is open and another section shows. The section is the Admin page's own state, which hands
+   the Users list only `shown` (in sight: chosen, and on a phone drilled in), so the list reports it here, in the family of
+   useGuardWork — kept while it is mounted, gone with it. Read by the note's words only. */
+const SECTIONS = new Map<string, boolean>()
+export function useGuardSection(id: 'users', shown: boolean): void {
+  useEffect(() => {
+    SECTIONS.set(id, shown)
+    return () => { SECTIONS.delete(id) }
+  }, [id, shown])
+}
+/** Admin → Users is mounted and not the section in sight */
+export const usersOutOfSight = (): boolean => SECTIONS.get('users') === false
+
 /* THE CLOSER OF A 'closes' WINDOW WHOSE STATE IS ITS COMPONENT'S OWN (the SANS day — ui/SansCal.tsx's dayIso): handed
    over for exactly as long as the component is mounted with it open; the latest closer is used, so it never closes
    over a render that has passed */
@@ -332,6 +359,161 @@ export function useGuardCloses(id: GuardRowId, on: boolean, close: () => void): 
     return () => { if (CLOSERS.get(id) === f) CLOSERS.delete(id) }
   }, [id, on])
 }
+
+/* WHAT THE NOTE SAYS (K3 — the plan §4.6; the words table of docs/superpowers/briefs/2026-11-26-msq-s1-k3-brief.md, which
+   replaces §4.6's "Status" column). "Blocked: " + a lead + ", then " + an ending. EVERY WORD BELOW IS HIS RULING'S OR WAS
+   SHOWN TO HIM ON A DRAWING (lesson 32: a builder's reading never passes as his rule) — a lead or ending he has not seen is
+   never drafted here: a state with no words of its own takes the plain lead, and is listed in the step's report under
+   "Words owed". The tests read every lead and ending from these two tables, so a change of words moves no test. */
+export const GUARD_LEADS = {
+  window: 'close the open window',                                           // D2590
+  windowOnLeaveWar: 'close the open window on the Leave War',                // D2627 A7
+  windowOnTracker: 'close the open window on the Tracker',                   // D2627 A7
+  row: 'save or cancel the open row',                                        // D2627 A6
+  rowOnUsers: 'save or cancel the open row on Users',                        // D2627 A6
+  giveAccess: 'finish or cancel giving access',                              // D2627 A6
+  newSquadron: 'save or cancel the new squadron',                            // D2627 A6
+  addPerson: 'add or cancel the new person',                                 // D2655 D1, seen again (D2729)
+  newQual: 'add or clear the new qualification',                             // D2729 Q2
+  holidayNew: 'save or cancel the new holiday',                              // D2729 (the section page, group 4)
+  holidayChanged: 'save or cancel the changed holiday',                      // D2729
+  holidayNoLeave: 'cancel the new holiday, or create its leave period',      // D2729
+  /* the open window's own weekday, in the curly quote marks — "Every Monday", "Every Tuesday" … (D2729) */
+  everyWeekday: (title: string): string => `save or cancel “${title}”`,
+  sheetHolidays: 'add or cancel the sheet’s holidays',                       // D2729
+  inputsSettings: 'save or cancel Inputs calendar settings',                 // D2729 Q3
+  inputsSettingsUnderCal: 'close the Calendar, save or cancel Inputs calendar settings',   // D2729 Q3
+  sansSettings: 'save or cancel SANS calendar settings',                     // D2741 (card 9)
+  sansSettingsUnderCal: 'close the Calendar, save or cancel SANS calendar settings',       // D2741 (card 9)
+  retry: 'press Retry to save your changes',                                 // D2627 A13
+} as const
+export type GuardLeadKey = keyof typeof GUARD_LEADS
+/* the ending — what he pressed. Left open to K8's "press Undo again." and D2627 A18's "try again." / a button naming itself:
+   no press reaches them until K4–K6 (and K8) say which, so neither is built here */
+export const GUARD_ENDINGS = {
+  pick: (num: string): string => `pick ${num}.`,                            // D2590
+  toMember: 'switch to the member view.',                                    // D2590
+  toAdmin: 'switch back to the admin view.',                                 // D2590
+  line: 'press this line again.',                                            // D2590
+  bell: 'press the bell again.',                                             // D2627 A8
+} as const
+export type GuardDoor = keyof typeof GUARD_ENDINGS
+
+/* THE CONTROLS EACH LEAD NAMES — beside the words, by the selectors the app already has (no new mark on any component):
+   on a phone the note never stands over a control its words point to (§4.6's first paragraph; ui/toast.ts placeNote).
+   "close the open window" names the window's ✕, which ui/toast.ts NOTE_X already keeps the note off at every place; a
+   window on a page out of sight names nothing on screen */
+const T = (id: string) => `[data-testid="${id}"]`
+const ROW_NAMES: Partial<Record<GuardRowId, string>> = {
+  userrow: '#accEdSave, #accEdCancel',
+  archrow: '#accArSave, #accArCancel',
+  sqnmove: '#sqMoveSave, #sqMoveCancel',
+  placeedit: '#plSave, #plCancel',
+}
+const LEAD_NAMES: Record<Exclude<GuardLeadKey, 'row' | 'rowOnUsers'>, string> = {
+  window: '', windowOnLeaveWar: '', windowOnTracker: '',
+  giveAccess: '#apvGo, #apvCancel',
+  newSquadron: '#sqNewSave, #sqNewCancel',
+  addPerson: '#accAdd, #accAddCancel',
+  newQual: '#qAddQualBtn',
+  holidayNew: `${T('hol-save')}, ${T('hol-save-more')}, ${T('hol-cancel')}`,
+  holidayChanged: `${T('hol-save')}, ${T('hol-cancel')}`,
+  /* "create its leave period": the waiting form's "Create the 2028 leave period" (or, for a run inside a year,
+     "Add a leave period for …") */
+  holidayNoLeave: `${T('hol-cancel')}, ${T('hol-wait-create')}, ${T('hol-wait-period')}`,
+  everyWeekday: `${T('every-save')}, ${T('every-cancel')}`,
+  sheetHolidays: `${T('hol-pv-add')}, ${T('hol-pv-cancel')}`,
+  inputsSettings: `${T('iset-save')}, ${T('iset-cancel')}`,
+  inputsSettingsUnderCal: `${T('win-days-x')}, ${T('iset-save')}, ${T('iset-cancel')}`,
+  sansSettings: `${T('sset-save')}, ${T('sset-cancel')}`,
+  sansSettingsUnderCal: `${T('win-days-x')}, ${T('sset-save')}, ${T('sset-cancel')}`,
+  retry: '.savestat.failed button',
+}
+
+/* "LYING UNDER THE CALENDAR" (D2729 Q3, D2741) is asked of the Calendar's own full-screen rule, never a second width test of
+   the guard's: the windows' shell lays every window across the screen on a phone (ui/floatwin.ts phoneLayout — the
+   stylesheet's 22-float-windows.css `@media (max-width:620px)`), and the Calendar's month then fills it; the settings window
+   is under it when the Calendar was brought forward after it (ui/winorder.ts — the order of the windows up). On a desktop,
+   where both stand in sight, never. */
+export const calendarOver = (id: 'inputsset' | 'sansset'): boolean => phoneLayout() && winUp('days') && winAbove('days', id)
+/* A TRACKER WINDOW BEHIND THE PHONE'S FLOW CHART TAB (his D2654 E4 — the bridge's `behind: 'info'`, K1c). Carried to the
+   words so the Info tab's lead, which he has not seen ("…on the Tracker’s Info tab" — question 19 to him), is a one-line
+   change on his answer; until then such a window takes his A7 words, "…on the Tracker", true there */
+export const trackerBehindInfo = (): boolean =>
+  trackerWindowsOpen().some(w => w.counts === 'window' && w.behind === 'info' && !(w.id === 'dlg' && trackerAsking()))
+
+/** what the words read beyond the row — each live by default, handed in by a test to name a state directly */
+export type GuardWordsAt = {
+  /** the page shown (state/view.ts CURPAGE) */
+  page?: string
+  /** what the reporting component said of the row (workSay) */
+  say?: string
+  /** the settings window lies under the Calendar (calendarOver) */
+  underCal?: boolean
+  /** Admin → Users is not the section shown (usersOutOfSight — the Users list's own report of its `shown`) */
+  usersOut?: boolean
+  /** a Tracker window behind the phone's Flow chart tab (trackerBehindInfo) */
+  trkBehindInfo?: boolean
+}
+const live = (row: GuardRow, at: GuardWordsAt): Required<Omit<GuardWordsAt, 'say'>> & { say?: string } => ({
+  page: at.page ?? CURPAGE,
+  say: 'say' in at ? at.say : workSay(row.id),
+  underCal: at.underCal ?? ((row.id === 'inputsset' || row.id === 'sansset') && calendarOver(row.id)),
+  usersOut: at.usersOut ?? ((row.id === 'userrow' || row.id === 'archrow') && usersOutOfSight()),
+  trkBehindInfo: at.trkBehindInfo ?? (row.id === 'trk' && trackerBehindInfo()),
+})
+/** which lead a refusing row takes, and the words of it */
+export function guardLead(row: GuardRow, at: GuardWordsAt = {}): { key: GuardLeadKey; words: string; names: string } {
+  const c = live(row, at)
+  const k = (key: GuardLeadKey, words: string = GUARD_LEADS[key] as string, names?: string) =>
+    ({ key, words, names: names ?? ROW_NAMES[row.id] ?? (key === 'row' || key === 'rowOnUsers' ? '' : LEAD_NAMES[key]) })
+  switch (row.id) {
+    case 'unsaved': return k('retry')
+    case 'userrow': case 'archrow': return k(c.usersOut ? 'rowOnUsers' : 'row')
+    /* a squadron's move or a place, with Users showing: "…on Squadrons" was reviewed, never drawn for him — the plain lead */
+    case 'sqnmove': case 'placeedit': return k('row')
+    case 'giveaccess': return k('giveAccess')
+    case 'newsqn': return k('newSquadron')
+    case 'addperson': return k('addPerson')
+    case 'qualsnew': return k('newQual')
+    case 'holiday': return k(c.say === 'noleave' ? 'holidayNoLeave' : c.say === 'changed' ? 'holidayChanged' : 'holidayNew')
+    /* (the window's own title, as it reports it; "Every Monday" — its first ruled words — only if none was handed over) */
+    case 'everywd': return k('everyWeekday', GUARD_LEADS.everyWeekday(c.say || 'Every Monday'))
+    case 'holimport': return k('sheetHolidays')
+    case 'inputsset': return k(c.underCal ? 'inputsSettingsUnderCal' : 'inputsSettings')
+    case 'sansset': return k(c.underCal ? 'sansSettingsUnderCal' : 'sansSettings')
+    /* the Tracker's unsaved-edits question is drawn over whatever page he is on — in sight wherever he is: never "on the
+       Tracker" (its being called a window is question 21 to him) */
+    case 'trkask': return k('window')
+  }
+  /* a window on a page out of sight (D2627 A7 — §3.3: exactly when the row's page is not the page shown); a Tracker window
+     behind its Flow chart tab takes the Tracker's words too, until he has seen the Info tab's */
+  if (row.id === 'lwsheet' && row.where !== c.page) return k('windowOnLeaveWar')
+  if (row.id === 'trk' && (row.where !== c.page || c.trkBehindInfo)) return k('windowOnTracker')
+  /* any other row on a page out of sight has no words of its own: the plain lead (listed under "Words owed") */
+  return k(row.counts === 'row' ? 'row' : 'window')
+}
+/** the ending for a door — null for a door with no ruled ending yet (K8's Undo, a card, the page door: K4–K8 say which) */
+export function guardEnding(door: string, to: string): string | null {
+  switch (door) {
+    case 'pick': { const num = unitById(to)?.num; return num ? GUARD_ENDINGS.pick(String(num)) : null }
+    case 'toMember': return GUARD_ENDINGS.toMember
+    case 'toAdmin': return GUARD_ENDINGS.toAdmin
+    case 'line': return GUARD_ENDINGS.line
+    case 'bell': return GUARD_ENDINGS.bell
+    default: return null
+  }
+}
+/** the whole note: "Blocked: <lead>, then <ending>" — null where the door has no ending of his yet */
+/*  (the reason is the row's own — `unsaved` is the Retry row — so the row decides the lead; the reason is taken as the seam
+    hands it over, the plan's shape) */
+export function guardWords(_reason: GuardRefusal['reason'], row: GuardRow, door: string, to: string, at: GuardWordsAt = {}): string | null {
+  const end = guardEnding(door, to)
+  if (!end) return null
+  return `Blocked: ${guardLead(row, at).words}, then ${end}`
+}
+/** a row of the table by its id (the note's way from the seam's refusal back to the row) */
+export const guardRow = (id: string): GuardRow | undefined => BY_ID.get(id as GuardRowId)
 
 /* INSTALLED INTO THE SEAM AS THIS FILE LOADS — the doors' one way to ask (no door asks yet: K4–K6) */
 export const guardAsk = (_door: string, _to: string, opts: GuardOpts): GuardRefusal | null => {

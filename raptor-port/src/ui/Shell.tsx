@@ -76,6 +76,7 @@ import { OilBar, useOilBarTop } from './OilWaitSheet'
 import { bugAlert } from '../state/reports'
 import { UndoPair, SyncChip, BellButton, BellList, SqnMark } from './topbits'
 import { globalUndoEngine, trackerUndoEngine, useTrackerUndoVersion, fastSync } from './topstate'
+import './guardnote'   // the guard's note (K3): installs the seam's one way to say a refusal as the app loads
 
 /* THE WEEK BANNER IS GONE (owner, 15 Sep 26 — item 2). First the week-STATUS
    text went (each day wears its own green issued-version tag / dashed DRAFT tag);

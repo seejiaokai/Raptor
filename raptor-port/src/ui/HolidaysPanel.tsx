@@ -302,13 +302,15 @@ export function HolidayForm({ line, year, onClose }: {
   const from = range ? range.from : ''
   const [err, setErr] = useState('')
   const [saved, setSaved] = useState('')
-  /* refused because no leave period covers its first day: it is kept, and saved by itself once one does */
-  const [waiting, setWaiting] = useState(false)
   /* ANYTHING TYPED OR CHANGED in it since it opened (or since "Save and add another" saved what it held): the guard
      counts the form then, and the Calendar stays open for it (ui/guard.ts — his D2654 E1); a holiday refused because no
      leave period covers it is still held here, waiting, so it still counts */
   const [touched, setTouched] = useState(false)
-  useGuardWork('holiday', touched)
+  /* refused because no leave period covers its first day: it is kept, and saved by itself once one does */
+  const [waiting, setWaiting] = useState(false)
+  /* …and what the guard's note says of it (ui/guard.ts guardLead — K3): a new one, a changed one, or a new one kept waiting
+     for a leave period ("cancel the new holiday, or create its leave period" — D2729) */
+  useGuardWork('holiday', touched, line ? 'changed' : waiting ? 'noleave' : 'new')
   /* any edit takes the last complaint — and the last "Saved" note — down: they were about what the form held then. And
      it ends a wait: what is saved by itself is only ever what the form held when he pressed Save */
   const edit = () => { setErr(''); setSaved(''); setWaiting(false); setTouched(true) }
