@@ -14,7 +14,8 @@
    one Undo step; the door and the commit gate judge each part again. */
 import type { AccessLine } from '../state/accounts'
 import { units, homeOn, todayIso } from '../state/units'
-import { numOf, byNum, lineState, type RolePick } from './useraccess-model'
+import { numOf, lineState, type RolePick } from './useraccess-model'
+import { inSquadronOrder } from '../state/perms'
 import { ROLES_TABLE, ROLES_LABEL, ROLES_KEY, ROLES_NOTES, TABLE_ROLES, ROLE_HEADS, MARK_WORD } from './rolestable'
 
 export function RoleBox(p: { id: string; value: RolePick; disabled?: boolean; masterOff?: boolean; onChange: (v: RolePick) => void }) {
@@ -36,7 +37,9 @@ export function SquadronLines(p: {
   onPick: (unit: string, v: AccessLine) => void; only?: string
 }) {
   const home = homeOn(p.pid, todayIso())
-  const all = p.only ? [p.only] : units().map(u => u.id).sort(byNum)
+  /* (the signed-in person's home first, then by number — the one order, his D2730 Q1; `home` above is the opened man's,
+     which only marks his "Home squadron" line) */
+  const all = p.only ? [p.only] : inSquadronOrder(units().map(u => u.id))
   return (
     <div className="acc-sq" data-testid="acc-sq">
       {all.map(u => {

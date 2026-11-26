@@ -40,7 +40,8 @@ import { UNIT, BOOT_UNIT } from '../engine/unitview'
 import { unitOf, isUnitId, split } from '../storage/unitid'
 import {
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES, validUnit, validPlace, validUnitPlace, validGrant,
-  validHome, unitIn, placeIn, placeIdOn, moveFrom, grantStart, unitsAtPlace, type UnitRows, type LevelAccount, type GrantHolder,
+  validHome, unitIn, placeIn, placeIdOn, moveFrom, grantStart, unitsAtPlace, squadronOrder, type UnitRows, type LevelAccount,
+  type GrantHolder,
 } from './units-model'
 import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
@@ -344,7 +345,8 @@ export function pickStandsOn(iso: string): boolean {
    above, one body (§15 D9): his home that day; each squadron a View or Plan of his holds that day (units-model.ts
    levelFrom, read from the ACCOUNT'S own role, so a Plan holder or master admin in the member view keeps them — "View
    only", D2253); every squadron in the store for a master admin. Nobody signed in, or a sign-in with no person: the boot
-   unit only. By number; a squadron undone away is in none. */
+   unit only. In the one order (his D2730 Q1 — inSquadronOrder below): his home first, then by number; a squadron undone
+   away is in none. */
 export function readableUnits(iso: string = todayIso()): string[] {
   if (!SESSION) return [BOOT_UNIT]
   const m = me()
@@ -358,9 +360,22 @@ export function readableUnits(iso: string = todayIso()): string[] {
   }
   /* (a home the store does not list still reads as his, as before this reader) */
   if (home && !out.includes(home)) out.unshift(home)
-  /* by number (the store keeps its rows by id, in no order a person reads): 142, 149, 150 … */
-  const numOf = (id: string) => String(storeUnitById(id)?.num ?? id)
-  return out.sort((a, b) => numOf(a).localeCompare(numOf(b), undefined, { numeric: true }))
+  /* (the store keeps its rows by id, in no order a person reads) */
+  return inSquadronOrder(out, iso)
+}
+/* HIS HOME SQUADRON ON `iso`, FOR ORDERING A LIST (his D2730 Q1 — "his" is the signed-in person's home that day): read as
+   every page reads it, homeOn(me(), iso). Nobody signed in, a person waiting, or no home: null, so a list stays by number.
+   Unlike myUnit it never falls back to the boot unit, which would stand first a squadron that is nobody's home. */
+export function myHomeOn(iso: string = todayIso()): string | null {
+  if (!SESSION) return null
+  const m = me()
+  return m ? homeOn(m, iso) : null
+}
+/* A LIST OF SQUADRON IDS IN THE ONE ORDER (his D2730 Q1: "home squadron first, then the rest by number, in every list of
+   squadrons — one order everywhere"): units-model.ts squadronOrder with his home that day (myHomeOn) and each id's number
+   from the store. A list of squadron ids a screen draws calls this, never a sort of its own. */
+export function inSquadronOrder(ids: readonly string[], iso: string = todayIso()): string[] {
+  return squadronOrder(ids, myHomeOn(iso), id => id, id => String(storeUnitById(id)?.num ?? id))
 }
 /* THE SCHEDULES MENU'S ROWS (M1/M2 — his D2301): each squadron he may read, its number and its short grey label — "Your
    squadron" his home that day; "Full access" where the role in force is admin and he is admin there by a Plan or the

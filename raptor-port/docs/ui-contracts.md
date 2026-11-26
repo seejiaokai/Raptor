@@ -202,7 +202,7 @@ Whoever may read two squadrons or more (`state/perms.ts readableUnits` — his h
 holds that day, every squadron for a master admin; the account's own role, so the member view keeps them) has the top
 bar's squadron number as a button: "142 ▾", nothing about the mark moving, a pale fill round it while open or under the
 pointer. One squadron: the plain mark, no ▾ (D2132). Its list (`ui/SquadronMenu.tsx`, in the app's own small menu's look,
-`.sb-moremenu`): "SCHEDULES", then a row per squadron by number — a tick on the one in view, the number, and a short grey
+`.sb-moremenu`): "SCHEDULES", then a row per squadron, his home first then by number (D2730 Q1) — a tick on the one in view, the number, and a short grey
 label at the right: "Your squadron" (his home), "Full access" (a Plan or the master mark while the role in force is
 admin), "View only" (a View, or any other squadron in the member view — D2253). Rows 38 high on a desktop and a phone
 alike (D2304). A desktop hangs it 12px under the bar at the mark's left; a phone opens a sheet from the bar's foot, the
@@ -273,7 +273,7 @@ floats, leaves the menu free.
 D2336; the drawings `docs/mock/2026-11-22-msq-b1-screens/img/b1-3`, `b1-4`, `b1-9`, `b1-10`, `p7`): a tile on the Admin
 rail for every admin, after Users — "Squadrons", grey line "Places", the line map pin (`ui/icons.tsx MapPinIcon`, never
 Users' people). Built from Users' own parts (`.acc-list`, `.acc-row.od-row`, `.acc-edit`, `.adm-2col`, `.mfield`, `.abtn`):
-"Squadrons · N", a row per squadron by number, its grey line its place today and its people ("Home base · 61 people" —
+"Squadrons · N", a row per squadron, his home first then by number (D2730 Q1), its grey line its place today and its people ("Home base · 61 people" —
 the count Users' "People · N" reads, `ui/userslist-model.ts`); then, for a master admin only, "+ New squadron"; then
 "Places · N", a row per place A to Z, its grey line the squadrons at it — today or from a later day, a move saved for
 tomorrow counting (`state/units-model.ts unitsAtPlace`) — and its time zone for today ("142 · 149 · Perth · GMT+8",
@@ -7184,7 +7184,7 @@ of shows no row for him (`leavewar/engine/people.ts` — `inSquadron`, `beforeFi
 **A person's access, by squadron (since 22 Nov 26 — batch 1's second half §4 items 3–5; his D2303, design B, pictures
 rB1–rB4; D2305, D2306, D2320, D2336; built chat 149):** the opened row's Role box reads Member, Admin, Master admin
 ("Master admin" greyed for anyone but a master admin; a new sign-in's box Member or Admin). Under Sign-in and Role, one
-line per squadron by number, the number in the field labels' look (`ui/UserAccess.tsx`): his home "142 Home squadron";
+line per squadron, the signed-in person's home first then by number (D2730 Q1), the number in the field labels' look (`ui/UserAccess.tsx`): his home "142 Home squadron";
 every other "149 None · View · Plan" (the editor's segmented buttons); Master admin held or picked, "Full access" with no
 buttons. A line not his to change is greyed with one grey line under it: no sign-in, "Give him a sign-in first to give
 access."; not an admin of that squadron, "Only an admin of 149 can give access to 149."; Plan on a member (or Member

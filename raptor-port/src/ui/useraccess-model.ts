@@ -5,10 +5,10 @@ import { ACCOUNTS_LIST, levelAcct, isAdminAccount, type Account, type AccountRol
 import { units, unitById, grantOfOn, homeOn, todayIso } from '../state/units'
 import { adminOfUnit } from '../state/perms'
 import { SESSION } from '../state/auth'
+import { squadronOrder } from '../state/units-model'
 
 export type RolePick = AccountRole | 'master'
 export const numOf = (u: string): string => String(unitById(u)?.num ?? u)
-export const byNum = (a: string, b: string) => numOf(a).localeCompare(numOf(b), undefined, { numeric: true })
 const actor = (): Account | undefined => (SESSION ? ACCOUNTS_LIST.find(a => a.id === SESSION.user) : undefined)
 export const actorIsMaster = (): boolean => actor()?.master === true
 
@@ -27,11 +27,13 @@ export function accessLinesOf(a: Account | undefined, pid: string, iso: string =
   return out
 }
 
-/* "· also plans 149" — the squadrons other than his home that his account holds Plan of today, by number */
+/* "· also plans 149" — the squadrons other than his home that his account holds Plan of today, by number: numbers inside
+   a sentence, kept by number as state/units.ts's sentence is — the one order with no home (units-model.ts squadronOrder),
+   never a sort of its own */
 export function alsoPlansOf(a: Account | undefined, pid: string, iso: string = todayIso()): string | null {
   if (!a || a.master) return null
   const home = homeOn(pid, iso)
-  const us = units().map(u => u.id).filter(u => u !== home && grantOfOn(levelAcct(a), u, iso)?.level === 'admin').sort(byNum)
+  const us = squadronOrder(units().map(u => u.id).filter(u => u !== home && grantOfOn(levelAcct(a), u, iso)?.level === 'admin'), null, u => u, numOf)
   return us.length ? `also plans ${us.map(numOf).join(', ')}` : null
 }
 
