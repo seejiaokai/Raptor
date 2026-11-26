@@ -43,6 +43,7 @@ import type { DayWhatIf } from '../engine/whatif'
 import { DayLine } from './DayLine'
 import { dayLineCode } from './daylinecode'
 import { DutyButtons, GrantOilButton, LeaveButtons } from './LeaveButtons'
+import { isPhoneWidth, keepCellAboveSheet } from './cellinsight'
 import { bidHeldWhy, openInputDocs, sayOnWar, dutyFiledNote } from '../sync'
 import { warBand } from '../../state/typing-hold'
 import { PlacedLine } from './PlacedLine'
@@ -756,6 +757,13 @@ export function BidPicker({
      pressed again opens the day's sheet afresh with its leave buttons (Q3: two presses, as every sheet — no change to
      Sheet.tsx) */
   const posting: 'Post out' | 'Post in' | null = onPostOut && poOpen ? 'Post out' : onPostIn && piOpen ? 'Post in' : null
+  /* …and on a phone the day stays in sight as the sheet becomes the posting (his D1290, as when the window opened): the
+     posting's sheet is taller than the leave's and rose over the day it was opened from, so a press on that day — his Q3's
+     first press — landed on the sheet (chat 196's find, the browser test's phone case). Once, as it opens. */
+  useLayoutEffect(() => {
+    if (posting && isPhoneWidth()) keepCellAboveSheet(personId, date)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [posting])
   /* the day's own leave, lit (round 3's change 7, his Q6): its button wears the ring — never on a free half beside leave
      filed on the Inputs page, where the leave named is the other half's */
   /* …and a REFUSED bid's leave wears it too (his D1355): the window says which leave was refused, as an approved leave's

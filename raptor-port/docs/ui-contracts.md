@@ -12220,7 +12220,11 @@ Duration → Which leave → Also (the admin's +OIL · PO · PI). On an empty da
 - **Approval carries them** (7.2, `sync.ts doorApprove` / `doorDecideApproved`): onto the leave on the Inputs page and back
   at a put-back; a run joins only days with the same words, tick and documents; a join keeps every paper; a request that
   carries its own unticked till joins only a leave showing the same (one with none takes its neighbour's — D953).
-- **On a phone** a window opening over a low cell first scrolls the cell just above the window (5.7, `Matrix.tsx`).
+- **On a phone** a window opening over a low cell first scrolls the cell just above the window (5.7, `Matrix.tsx`) — and
+  again, once, as the window becomes a posting (Post out or Post in from its ⋯): the posting's sheet is taller than the
+  leave's and rose over the day it was opened from, so his D2732 Q3 press on that day landed on the sheet (chat 196, 26 Nov
+  26; one body, `cellinsight.ts keepCellAboveSheet`, called by both; pinned by `msq-s4-posting.test.tsx` PT10 and the
+  phone case of `e2e/msq-s4-posting-leavewar.spec.ts`).
 
 **The Inputs page, the same night (7.4 — D1150, D1179):** the input window draws its Document row for every kind; a NEW leave
 (or one retyped into leave) with none asks "No document — <callsign>, <kind>" / "Attach the approval from the leave app now,

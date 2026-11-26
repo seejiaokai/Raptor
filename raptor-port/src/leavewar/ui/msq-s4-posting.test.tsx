@@ -6,7 +6,7 @@
    pinned by po.test, pi.test, postout-date-delete.test and leavewar/postout-*.test, kept green.
    Three squadrons (D2630): its own world, msq-s4-world.ts — 150 and its one admin Mako made through the real doors. */
 import { fireEvent, render, screen, within } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { pickDate } from '../../ui/datecal-testkit'
 import { getState } from '../state/store'
 import { Matrix } from './Matrix'
@@ -145,6 +145,40 @@ describe('PT7 — Post in in the same shape (D2653: "Cinch  Post in")', () => {
     fireEvent.click(go)
     expect(cinch().from).toBe(DAY)
   })
+})
+
+describe('PT10 — on a phone the day stays in sight as the sheet becomes the posting (D1290; chat 196\'s find)', () => {
+  /* The browser test's phone Q3 case found it: the one-day window scrolls the tapped day just above itself as it opens
+     (D1290), but Post out's sheet is taller than the leave's, so it rose over the very day it was opened from — a press
+     on that day then landed on the sheet. jsdom lays nothing out, so the heights are given: the day's foot at 378, the
+     leave's sheet from 385 (clear of the day — no scroll as it opens), the posting's from 332 (over it). */
+  for (const [act, btn] of [['Post out', 'bid-postout'], ['Post in', 'bid-postin']] as const) {
+    it(`${act}: the page scrolls the day back just above the sheet`, () => {
+      /* jsdom has no matchMedia: a phone's width is given once the day's sheet is open (the grid's own phone layout —
+         its rolling window of months — is not this test's; nothing else asked matches, so the pointer stays fine) */
+      const phoneWidth = () => vi.stubGlobal('matchMedia', (q: string) => ({ matches: q === '(max-width: 700px)', media: q, onchange: null, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {}, dispatchEvent: () => false }) as MediaQueryList)
+      const mm = { mockRestore: () => vi.unstubAllGlobals() }
+      const rect = (top: number, bottom: number) => ({ top, bottom, height: bottom - top, left: 0, right: 390, width: 390, x: 0, y: top, toJSON() {} }) as DOMRect
+      const jsdomRect = Element.prototype.getBoundingClientRect
+      const gbr = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+        const tid = this.getAttribute('data-testid')
+        if (tid === `cell-${PID.cinch}-${DAY}`) return rect(360, 378)
+        if (tid === 'bid-picker') return this.querySelector('.po-form') ? rect(332, 650) : rect(385, 650)
+        return jsdomRect.call(this)   // every other box as jsdom draws it (all zero), so the grid's own measuring is unchanged
+      })
+      const scroll = vi.spyOn(window, 'scrollBy').mockImplementation(() => {})
+      try {
+        signInAs('hunter')
+        render(<div id="page-leavewar" className="page on"><Matrix /></div>)   // the app's page box, where the day is looked for
+        fireEvent.click(screen.getByTestId(`cell-${PID.cinch}-${DAY}`))
+        phoneWidth()
+        expect(scroll, 'the leave\'s sheet leaves the day clear: nothing moves').not.toHaveBeenCalled()
+        fireEvent.click(more(btn))
+        expect(head(sheetOf('bid-picker')).querySelector('.po-act')!.textContent).toBe(act)
+        expect(scroll, 'the day brought back above the posting\'s sheet: its foot 378, the sheet from 332, 8 to spare').toHaveBeenCalledWith(0, 54)
+      } finally { mm.mockRestore(); gbr.mockRestore(); scroll.mockRestore() }
+    })
+  }
 })
 
 describe('PT8 — an existing posting\'s sheet, the drag sheet\'s posting: the same shape (D2732 Q1 design A, Q2)', () => {

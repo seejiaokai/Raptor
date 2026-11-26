@@ -59,6 +59,7 @@ import { warInputs, type WarInput } from '../absences'
 import { ReorderIcon } from '../../ui/icons'
 import { landingScroll, leftTheLanding, reanchorPlan } from './reanchor'
 import { warBand } from '../../state/typing-hold'
+import { keepCellAboveSheet } from './cellinsight'
 import './matrix.css'
 
 /* THE BID WINDOW HELD UNDER THE MIDNIGHT BAND (his D2243 Q7: "His typed words stay visible"; the reshape plan §3.2 A-iv).
@@ -2351,15 +2352,11 @@ export function Matrix() {
   useLayoutEffect(() => { if (hbar) syncHbar() }, [hbar])
   /* ON A PHONE THE TAPPED CELL STAYS IN SIGHT (red-team fix A5, the phone half — M3 5.7): a bid window opening over the
      cell tapped first scrolls the page so the cell sits just above the window's top edge. Only as it opens (Undo leaves
-     the grid where it is — D672); a cell already clear of it does not move; the desktop's window blocks nothing (D641). */
+     the grid where it is — D672); a cell already clear of it does not move; the desktop's window blocks nothing (D641).
+     The body is `cellinsight.ts`, shared with the posting's opening (BidPicker). */
   useLayoutEffect(() => {
     if (!open || !phone) return
-    const cell = document.querySelector<HTMLElement>(`#page-leavewar [data-testid="cell-${open.id}-${open.date}"]`)
-    const sheet = document.querySelector<HTMLElement>('[data-testid="bid-picker"]')
-    if (!cell || !sheet) return
-    const c = cell.getBoundingClientRect(), w = sheet.getBoundingClientRect()
-    if (!c.height || !w.height || c.bottom <= w.top - 4) return
-    window.scrollBy(0, c.bottom - w.top + 8)
+    keepCellAboveSheet(open.id, open.date)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open?.id, open?.date])
 
