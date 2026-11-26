@@ -129,7 +129,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Leave War**
 - [SANS-CHIP-ON-SANS] — the Post out sheet offers the "SANS" chip to a man already SANS; D2163: not offered for him (small fix, no answer needed; the next Leave War batch).
-- [MSQ-S4-WALK-OLDER] — what the posting sheet's walk (26 Nov 26, chat 201) met that is the same on `main`: the choices and buttons move when a line grows or a warning comes, a master admin offered "Delete Saber?", one tap outside closing the card and the sheet, mixed focus rings, and smaller ones — the move a question for him with pictures (D994), the rest small fixes.
+- [MSQ-S4-WALK-OLDER] — what the posting sheet's walk (26 Nov 26, chat 201) met that is the same on `main`: the choices and buttons move when a line grows or a warning comes, a master admin offered "Delete Saber?", one tap outside closing the card and the sheet, mixed focus rings, and smaller ones — the move answered (A, room kept for the longest line — D2809, on the batch branch), built on the next Leave War batch, the rest small fixes.
 - [LW-FOUR-ITEMS-LEFTOVERS] — what the four Leave War items (pull request 801, live 17 Nov 26) left for him: five like-for-like suggestions and three departures from the drawings — questions kept until he says (D994), pictures first.
 - [MSQ-FIXREAD4-OPEN] — fix read 4's claims 1–4 done (19 Nov 26, chat 111: `ebbd4aea6`, `5b8357f92`; his question answered by D2218); claim 5, the month landing on a desktop, done in its own session (chat 112, `claude/lw-monthjump-click` to `44426c5c0`, merged in); a fresh read of the claims 1–4 fixes and of claim 5's last commit still owed, before pull request 806 merges.
 - [LW-APPROVALS-PHONE-FLAKE] — a Leave War phone browser test ("the grid shown again after Approvals…") fails about 2 runs in 6 under load, alone 4/4, the same before and after the month-jump fix — a test to steady (19 Nov 26, chat 109).
@@ -3342,7 +3342,9 @@ foot, so a longer line or a warning makes it grow upward: on a phone choosing De
 choices rise 16.6 px; on a desktop the last-admin or master-admin amber line lifts them 26.6 px (43.3 at 520 wide), and
 a refusal's reason appearing under "Post out" lifts the button 43 px. Lesson 27 and his rule of 2 Sep 26 (a control
 tapped again and again must not move). `main`: 16.6 / 31.6 / 48 px. A fix changes how the sheet sits (its top held
-still, or room kept for the longest line) — drawn for him first, a question with pictures (D994, D1625).
+still, or room kept for the longest line) — drawn for him first, a question with pictures (D994, D1625). **His answer
+(26 Nov 26, question 17): A — the sheet keeps room for its longest line, so nothing moves; D2809 (recorded on the batch
+branch) — build on the next Leave War batch.** Not built in pull request 852.
 
 **(b) A master admin is offered "Delete Saber?"** On Saber's own day, Post out with Delete chosen says "Saber is a
 master admin, so he can't be deleted", yet "Post out" still raises the card; its Delete then refuses, "You can't delete
