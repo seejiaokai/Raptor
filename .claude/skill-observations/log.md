@@ -1963,3 +1963,16 @@ sides.
 **Issue:** The one Read of a mock-up picture matched the `paths:` of the screen-design rulings, the scheduler rulings and the interface guide's loader, and all three were loaded whole — about 40,000 tokens, 7% of the window, for one picture. The scheduler's page was not needed for the job at all.
 **Suggested improvement:** An orchestrating chat does not open drawings or source files itself when a helper will be held to them anyway: the builder's brief names the drawings, and the orchestrator reviews the diff and the helper's own account of each departure. Where it must look, it asks a helper to describe the picture, or looks only after the area's rules are already loaded for another reason. Worth checking whether the scheduler rulings' `paths:` should match `docs/mock/**` at all.
 **Principle:** Path-triggered context is charged to whoever opens the file. A coordinator that only needs a conclusion about a file should have a worker open it.
+
+### Observation 1088: An orchestrating chat that opens source files loads every area's rule pages and fills itself
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 198, the Fable orchestrator of the multi-squadron guard rail (section S1): briefing Opus builders, reviewing their diffs, landing steps. Numbered past 1085–1087, which other open branches hold.
+**Skill:** New skill candidate: orchestrating builders from one chat (subagent-driven-development is the nearest)
+**Type:** open-source
+**Phase/Area:** the orchestrator's review step; what the orchestrator reads itself
+
+**Issue:** The orchestrator reviewed a builder's work by opening three new source files and two pictures with the Read tool. Each first read of a file in a new area loaded that area's whole rule page into the chat by itself (four pages, tens of thousands of tokens each), so the chat went from 43% to 74% full across one small step and one review, and had to hand off after landing a single pass. The same review done through `git diff` in the shell loads nothing.
+**Suggested improvement:** In an orchestrator's brief and in the skill: the orchestrator reviews by `git diff` and by running tests, and reads a builder's report file — it opens a source file or a picture with the file tool only when the diff cannot answer, knowing each new area costs its rule page. Builders, whose context is spent once and thrown away, do the reading of source. Measure the chat's fullness after the first review, not at 80%.
+**Principle:** Where reading a file has a side cost (rules, context or hooks that load with it), the long-lived coordinating context should take the cheapest view that answers its question, and leave the expensive reading to short-lived workers.

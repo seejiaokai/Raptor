@@ -17,6 +17,7 @@ import { DAYPOP, setDayPop, INSIGHTS, setInsights, INSIGHTS_ALL, setInsightsAll,
 import { useVersion } from './useStore'
 import { clickedOutside } from './outside'
 import { useSheetFocus, useEscClose, useEscWindow } from './sheetfocus'
+import { insightsDrawn } from './windrawn'
 import { useBarFree } from './barfree'
 import { insightsHTML } from './insights-html'
 
@@ -219,7 +220,7 @@ export function InsightsModal() {
   const boxRef = useRef<HTMLDivElement>(null)
   useSheetFocus(boxRef, !!INSIGHTS)
   useEscClose(boxRef, !!INSIGHTS, () => { setInsights(false); notify() })
-  if (!INSIGHTS) return <div className="modal" id="insightModal" hidden />
+  if (!insightsDrawn()) return <div className="modal" id="insightModal" hidden />   // INSIGHTS — the one predicate the guard reads too (ui/windrawn.ts)
   const close = () => { setInsights(false); notify() }
   return (
     <div className="modal" id="insightModal" role="presentation" onClick={e => { if (clickedOutside(e, 'insightModal')) close() }}>

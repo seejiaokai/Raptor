@@ -53,6 +53,7 @@ import { MonthJump } from './MonthJump'
 import { useVersion } from './useStore'
 import { KEYBOARD_MIN, screenBox } from './kbscroll'
 import { frontWin } from './floatwin'
+import { useGuardCloses } from './guard'
 
 /* THE PAGE'S SQUADRON AND ITS COLOURS — one place the page and its tests read (the reshape plan §3.2 A-ii): the SANS
    calendar is an own page — his own squadron's whatever schedule he picks (D2132), a master admin's or a Plan holder's
@@ -162,6 +163,9 @@ export function SansCal({ lead }: { lead?: ReactNode } = {}) {
   const shown = useRef<typeof INPREVEAL>(null)
   const spendReveal = () => { if (shown.current && INPREVEAL === shown.current) clearInpReveal(); shown.current = null }
   const showDay = (iso: string | null) => { if (shown.current && iso !== shown.current.iso) spendReveal(); setDayIso(iso) }
+  /* the SANS day only shows things, so a pick or the view switch closes it by itself (his D2597): its state is this
+     calendar's own, so its closer — the day's own ✕ — is handed to the guard for as long as a day is open (ui/guard.ts) */
+  useGuardCloses('sansday', !!dayIso, () => showDay(null))
   const reveal = INPREVEAL
   useLayoutEffect(() => {
     if (!reveal || reveal.mode !== 'sans') return

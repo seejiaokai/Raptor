@@ -1431,6 +1431,12 @@ second reader. Three squadrons in each (D2630).
 
 ### 8.5 Round 6 — group N answered, and what is still open (26 Nov 26)
 
+**Struck 26 Nov 26 by the coordinator (chat 193), answered by his go for the sections:** NQ1, NQ3, readings 22–24,
+V-Q2, the Plan lines' tap, the two Outgoing/Incoming readings, the 375-px jump row and "home squadron first" (D2730 —
+Admin → Users' step 0 folded them at the end of §21.2); NQ2, N14 and readings 17–20 (D2729, folded in §21.1); E9b's
+list (D2740), the SANS settings note (D2741), the save's give-up (D2742, filed with the database step). Where a row
+below still reads open for one of these, this line wins.
+
 **Group N — new since round 5; each answered "as recommended" (D2652, D2653) on his own rulings of the same day.**
 Where a row says "Transfer step", nothing of it is built in this batch (D2652's own row; D2634).
 
@@ -3417,6 +3423,9 @@ on the one questions page). Where this block and the two above differ, this bloc
   cancel SANS calendar settings, then pick 149." One rule for both settings windows, read from the Calendar's own
   full-screen rule (the Q3 row above). **The phone note is drawn on the real app beside the approved Inputs one and
   shown on the questions page before the step that words it (K3) builds it (D1625) — the coordinator's word.**
+  **Drawn and seen (26 Nov 26): the questions page's card 9, his "9 looks right, build it" (on D2741's row) — K3
+  builds it as drawn, `../../mock/2026-11-25-msq-pick-guard-q3/drawn/s1-cal-sanssettings-alt-p-crop.png` (phone) and
+  `s1-cal-sanssettings-d-crop.png` (desktop).**
 - **D2742 — K4a's give-up is not built.** The wait for a save at the pick, the view switch and a bell line is built
   in K4, K5 and K6, each door's own step: the door waits on the saver's own answer, then goes ahead or is refused
   with the Retry note. The saver giving up after a set time is filed with the database step, `[MSQ-SAVE-GIVEUP-DB]`
@@ -3678,6 +3687,7 @@ live" — as D2657 rules.** What it needs that `main` does not hold, and how it 
 | `state/undo-wire.ts`, `undo/timeline.ts` | the core (`snapView`; K8's hook) · Admin → Users (`planRestoreStuck` on the `stuck` hook) · **the bell (`timeline.ts NOT_STEPS` only — one name a kind)** | different functions and hooks; the core's K8 first if both are ready, else whoever is second brings the branch in |
 | `leavewar/sync.ts` | the core (`openInputWindow`) · Admin → Users (the restore's refusal, the pass after a restore) | the core's K6; different functions |
 | `state/notices.ts` | Admin → Users (new kinds and words) · read by the core and the bell | Admin → Users alone |
+| **the one squadron order — home first, then by number (D2730 Q1, "in every list")** | Admin → Users writes the ONE order function in `state/units-model.ts`; the lists that call it: the Schedules and ☰ menus (`state/perms.ts` `menuSquadrons`, `readableUnits`) and Admin → Squadrons (`ui/squadrons-model.ts`) — Admin → Users; the bell's Show row (`state/bellsqn.ts`) and Display's list — the bell | **Admin → Users writes the function first, as its own small commit ahead of U1, merged into the batch branch at once** (the coordinator's call, 26 Nov 26), so the bell and the core can call it; each list is re-pointed by the section named, and its test asserts the order. The core changes no list |
 | `ui/topbits.tsx` | the bell (`BellList`) · read by the core (the note's anchor) | the bell alone — and the contract of §21.3 with Admin → Users |
 | **`leavewar/ui/BidPicker.tsx`** | the posting sheet (its posting rows, the existing posting's sheet) · **the core (K1: a `showOnly` word on the `<Sheet …>` call of "Your OIL award" and of "Leave filed on the Inputs page" / "OIL the app credited", if E9b's answer lets them close — the red team's Opus 2)** | **The posting sheet, which ships first from `main`;** the core adds its marks after the batch branch has brought `main` in — different lines, one word each. If the core reaches K1 first it adds them and the posting sheet's merge is met by the batch branch as any other. The posting sheet never removes or renames those two sheets |
 | `ui/UsersPanel.tsx` — the core's later lines | the core's K1 and K2b add `useGuardWork` calls after Admin → Users has started | one call a line, added by the core; the Users section brings the batch branch in and keeps them — it never removes a report |

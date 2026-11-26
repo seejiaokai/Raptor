@@ -23,6 +23,7 @@ import { withDaySnap, withVersionFlags, refreshWaveReports } from './html'
 import { glyphSvg, EYE_INNER } from './glyphs'
 import { holdingPlace, swapKidsAround, kidsOfHTML, owesBeside, type PanelKids } from './dayswap'
 import { useSheetFocus, useEscClose, locate, pressedByKeys, menuItems, escCloses } from './sheetfocus'
+import { cxDrawn, sortAllDrawn } from './windrawn'
 import { wireBoardEscape } from './boardescape'
 import { reconcileMissionRoleOffer } from './mission-role-offer'
 import { notify } from '../state/store'
@@ -904,7 +905,7 @@ export function CxDialog() {
   const addRef = useRef<HTMLInputElement>(null)
   const [editing, setEditing] = useState(false)
   const [armReset, setArmReset] = useState(false)
-  const open = CXT != null
+  const open = cxDrawn()   // CXT != null — the one predicate the guard reads too (ui/windrawn.ts)
   const on = open && !!CXT.o.cx
   const what = open ? (CXT.label || 'this line') : ''
   const canEdit = canEditSched()
@@ -998,8 +999,8 @@ export function CxDialog() {
 export function SortAllDialog() {
   useVersion()
   const di = SORTALL
-  const open = di != null
-  const d = open ? DAYS[di] : null
+  const open = sortAllDrawn()   // SORTALL != null — the one predicate the guard reads too (ui/windrawn.ts)
+  const d = open && di != null ? DAYS[di] : null
   const close = () => cancelSortAll()
   /* the dialog takes the keyboard when it opens and keeps it (RF2 — ui/sheetfocus.ts) — and Escape closes it, as Cancel, ✕
      and a press outside do (owner D1646, 5 Nov 26 — [BOARD-KEYS-LEFT] (5); heard before the board's own Escape, which waits

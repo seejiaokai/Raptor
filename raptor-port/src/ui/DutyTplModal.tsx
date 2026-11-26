@@ -13,13 +13,12 @@ import {
 import type { DutyWave } from '../engine/dutytpl'
 
 import { hmOK } from '../engine/time'
-import { TPLEDIT, setTplEdit } from './pops'
+import { setTplEdit } from './pops'
 import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
-import { SESSION } from '../state/auth'
-import { canEditSched } from '../state/auth'   // the schedule in view (step A — D2317: its templates follow it)
 import { clickedOutside } from './outside'
 import { useSheetFocus, useEscClose } from './sheetfocus'
+import { dutyTplDrawn } from './windrawn'
 
 /* what each "For wave" answer DOES, in the app's own words — instruction, not
    apology (owner, 25 Aug 26). Kept beside the control so a change to the rule
@@ -44,7 +43,7 @@ export function DutyTplModal() {
   /* it takes and keeps the keyboard while it is up, Escape closes it, and the keyboard goes back to the button that
      opened it ([BOARD-MODALS-ESCAPE], [WINDOWS-KEEP-KEYS] — ui/sheetfocus.ts); before the early return, as hooks must be */
   const boxRef = useRef<HTMLDivElement>(null)
-  const open = TPLEDIT && !(SESSION && !canEditSched())
+  const open = dutyTplDrawn()   // TPLEDIT && !(SESSION && !canEditSched()) — the one predicate the guard reads too (ui/windrawn.ts)
   useSheetFocus(boxRef, open)
   useEscClose(boxRef, open, () => { setTplEdit(false); notify() })
   /* self-hide for a non-admin, not just at the admin-gated opener (bug hunt,

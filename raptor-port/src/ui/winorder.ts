@@ -32,6 +32,10 @@ export function forward(id: string): boolean {
 export function bringForward(id: string): void {
   if (UP.includes(id) && forward(id)) notify()
 }
+/** IS THIS MOVABLE WINDOW UP? — read only (the guard rail's table, ui/guard.ts — plan §3.2 (a)). A FloatWin joins the
+ *  order in its own layout effect and leaves it as it unmounts, so for this frame "up" is "drawn"; a bystander window
+ *  (the speed readout) never joins, so it is never counted. */
+export const winUp = (id: string): boolean => UP.includes(id)
 export function gone(id: string): boolean {
   const i = UP.indexOf(id)
   if (i >= 0) UP.splice(i, 1)

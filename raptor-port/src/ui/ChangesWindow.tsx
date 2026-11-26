@@ -24,6 +24,7 @@ import { useFloatWin, phoneLayout, frontWin, makeEscWaits, openKey, BOARD_BAR } 
 import { useEscWindow } from './sheetfocus'
 import { forward, gone } from './winorder'
 import { closeChanges } from './changesopen'
+import { chgDrawn } from './windrawn'
 import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
 import { notify } from '../state/store'
@@ -34,7 +35,6 @@ import { CURWEEK } from '../engine/waves'
 import { DAYS } from '../engine/data'
 import { dayApproved, dayPendingItems, nextSeq } from '../engine/publish'
 import { markSeen } from '../state/changes'
-import { isMember } from '../state/perms'
 import { canEditSched } from '../state/auth'
 import { pendListHTML, pendKeysFor } from './pendlist'
 import { jumpToChange } from './interactions'
@@ -130,11 +130,11 @@ export function ChangesWindow() {
   /* ESCAPE CLOSES IT WHEN IT WAS THE LAST THING OPENED OR PRESSED (his D2112, 17 Nov 26, [CHGWIN-ESCAPE]): as the ALL AVAIL
      window does (AvailWindow.tsx) — the phone's slim bar too, which is the same window hidden; History goes with it, as by
      its ✕. Over the board the board waits for it (boardescape.ts overBoard). */
-  const chgUp = !!w && isMember()
+  const chgUp = chgDrawn()   // !!CHGWIN && isMember() — the one predicate the guard reads too (ui/windrawn.ts)
   useEscWindow(el, chgUp ? openKey('chg') : false, closeChanges, { id: 'chg', makeWaits: makeEscWaits })
   /* every way out hands "in front" back (the code reads of 17 Nov 26, C and E — AvailWindow.tsx) */
   useEffect(() => { if (!chgUp) return; return () => { if (gone('chg')) notify() } }, [chgUp])
-  if (!w || !isMember()) return <div className="chgwin" hidden />
+  if (!chgUp || !w) return <div className="chgwin" hidden />
 
   const days = weekDates(CURWEEK)
   const one = w.day !== 'week' && days.includes(w.day)
