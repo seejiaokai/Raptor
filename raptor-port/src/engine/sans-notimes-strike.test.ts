@@ -67,7 +67,7 @@ describe('D2573 — a seat on a flight with no times yet', () => {
     expect(slotBar(ID, key), 'Fly offered').not.toMatch(/^SANS/)
     INPUTS.splice(INPUTS.indexOf(fly), 1)
     fileSans(ID, { o: true })
-    expect(slotBar(ID, key), 'OFT only: no times needed to know he does not offer Fly (D2585)').toBe('SANS — not offering Fly')
+    expect(slotBar(ID, key), 'OFT only: no times needed to know he does not offer Fly (D2585)').toBe('SANS — offered OFT only, not Fly')
   })
 
   it('a man who is not SANS is never asked', () => {

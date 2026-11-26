@@ -366,6 +366,24 @@ input.tm.badtm{border-color:var(--adv)}
    same clipped, muted look as .rsans-b beside it; min-width:0 is required for
    the ellipsis to actually clip inside a flex row rather than pushing it wide. */
 .rsans-r{font-size:8.5px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1 1 auto}
+/* ONE COLUMN FOR THE F / O / A LETTERS (owner D2581 / D2582, 25 Nov 26 — straight after the widest reason, never at the
+   row's right edge; drawn, docs/mock/2026-11-25-sans-d2588/ scene `col`): the section is a grid of three columns — the
+   puck with its reason, the letters, the remarks — and every row takes the section's columns (subgrid), so the letters
+   start at one place on every row. The first column is as wide as the widest puck-and-reason, and still shrinks to the
+   puck's own width in a list held narrower than that line, the reason wrapping inside it as the rule above wants
+   (D2338's walk). The row gap is the section's old flex gap. */
+.rall.rsans{display:grid;grid-template-columns:minmax(var(--puck-w),max-content) auto minmax(0,1fr);column-gap:6px;row-gap:4px;align-items:center}
+.rall.rsans>.rh2{grid-column:1/-1}
+.rall.rsans>.rsans-row{display:grid;grid-column:1/-1;grid-template-columns:subgrid;align-items:center;min-width:0}
+.rall.rsans .rsans-row>.rpuck{grid-column:1;min-width:var(--puck-w)}
+.rall.rsans .rsans-row>.rsans-b{grid-column:2}
+.rall.rsans .rsans-row>.rsans-r{grid-column:3}
+/* HIS HOURS NEVER CUT (owner D2750 / D2751, 26 Nov 26 — approved as drawn): with a place picked the letters keep the
+   column and the hours stand on the next line under them, in the badge's own font, left-aligned with the letters; they
+   may wrap again rather than be cut (the drawing had 3px to spare on a desktop; his iPhone draws wider). */
+.rsans-b.rsans-b2{white-space:normal;overflow:visible;text-overflow:clip}
+.rsans-b2>.rsans-l{display:block;white-space:nowrap}
+.rsans-b2>.rsans-h{display:block;overflow-wrap:anywhere}
 
 /* ---- SANS AVAILABILITY CARD GRID (owner rework, 14 Aug 26) ---------------
    Shared by the week's SANS group (.sec-sans, ui/html.ts's sansSectionHTML)

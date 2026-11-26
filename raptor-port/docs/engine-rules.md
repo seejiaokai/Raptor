@@ -1952,7 +1952,9 @@ reach `day.fly`/`day.events` (`saExempt` / the standalone skip), so the
 advisory below never raises against them — before the carve-out `slotBar`
 greyed them while the warning list stayed silent, the exact picker-vs-validator
 drift this gate exists to avoid. The three printed reasons: `SANS — no availability filed
-for today`, `SANS — not offering Fly` (or OFT/AMT), `SANS — available
+for today`, `SANS — offered OFT only, not Fly` (what he offered, then the event armed — owner D2584 Q2, answering
+D2575; two offered "SANS — offered OFT and AMT only, not Fly"; a record that ticks nothing keeps `SANS — not offering
+Fly`; `avail.ts sansNotOfferedWhy`, pinned by `sans-offered-crew.test.ts`), `SANS — available
 08:00–12:00 only` (domain-free since the one-window rework — the window is
 the record's, not the event's). Nothing else in `slotBar` needed to change — the palette's
 strike, the printed reason (`.no.haswhy`/`.rwhy`), the green eligibility

@@ -285,9 +285,19 @@ export function sansAvailHTML(di:any,armKey:any,eng:any,off:any,sby:any,arules:a
      column is barred for one structural cause (e.g. every WSO); here eleven
      different people can each be barred for a different SANS record, or none
      at all, and folding those into one line would just be wrong. */
+  /* ONE COLUMN FOR THE LETTERS (owner D2581 / D2582, 25 Nov 26 — "With the note": straight after the widest reason, never
+     at the row's right edge): the section is a grid whose rows share its three columns (the puck with its reason, the
+     letters, the remarks — 12-schedule-editing.css, `.rall.rsans`), so every man's letters start at one place.
+     HIS HOURS NEVER CUT (owner D2750 / D2751, 26 Nov 26 — drawn, approved "as drawn"): with a place picked, where the
+     reasons widen the first column, the badge's hours (or AM / PM) stand on a line of their own under the letters, and
+     may wrap again rather than be cut (the drawing had 3px to spare on a desktop; his iPhone draws wider); with none
+     picked the badge reads as before, "A · 08:00–10:00". Splitting AM / PM as the hours are is the builder's reading. */
   return `<div class="rall rsans"><div class="rh2">SANS Avail · ${free} free</div>`
     +ids.map(([id]:any)=>{
-      const badge=sansBadge(id,d.dt);
+      const badge=sansBadge(id,d.dt), cut=armKey?badge.indexOf(' · '):-1;
+      const badgeHTML=!badge?'':cut>0
+        ?`<span class="rsans-b rsans-b2"><span class="rsans-l">${esc(badge.slice(0,cut))}</span><span class="rsans-h">${esc(badge.slice(cut+3))}</span></span>`
+        :`<span class="rsans-b">${esc(badge)}</span>`;
       /* the record's own remarks, ellipsized (owner, 14 Aug 26) — a sibling of
          the badge, same reasoning as .rsans-b's own comment: never nested
          inside .rpuck, or a struck .rpuck.no.haswhy column would fight it for
@@ -296,7 +306,7 @@ export function sansAvailHTML(di:any,armKey:any,eng:any,off:any,sby:any,arules:a
          row a gap nobody asked for. */
       const rec=sansAvailOn(id,d.dt), rmk=rec&&String(rec.remarks||'').trim();
       return `<div class="rsans-row">${rosterPuck(id,di,armKey,eng,off,sby,arules)}`
-        +(badge?`<span class="rsans-b">${esc(badge)}</span>`:'')
+        +badgeHTML
         +(rmk?`<span class="rsans-r" title="${esc(rmk)}">${esc(rmk)}</span>`:'')+`</div>`;
     }).join('')+`</div>`;
 }

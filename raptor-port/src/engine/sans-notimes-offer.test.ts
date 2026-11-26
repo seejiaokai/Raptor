@@ -43,13 +43,13 @@ const blankSim = (kind: 'oft' | 'amt') => {
 }
 
 describe('D2585 — a flight with no times: struck at once where his filing does not offer Fly', () => {
-  it('"OFT only": SANS — not offering Fly', () => {
+  it('"OFT only": SANS — offered OFT only, not Fly', () => {
     const key = blankLine(); fileSans({ o: true })
-    expect(slotBar(ID, key)).toBe('SANS — not offering Fly')
+    expect(slotBar(ID, key)).toBe('SANS — offered OFT only, not Fly')
   })
-  it('"OFT and AMT": SANS — not offering Fly', () => {
+  it('"OFT and AMT": SANS — offered OFT and AMT only, not Fly', () => {
     const key = blankLine(); fileSans({ o: true, a: true })
-    expect(slotBar(ID, key)).toBe('SANS — not offering Fly')
+    expect(slotBar(ID, key)).toBe('SANS — offered OFT and AMT only, not Fly')
   })
   it('Fly offered with hours: plain until the times are typed', () => {
     const key = blankLine(); fileSans({ f: true }, [480, 600])
@@ -63,24 +63,24 @@ describe('D2585 — a flight with no times: struck at once where his filing does
     const key = blankLine(); fileSans({ o: true })
     const before = slotBar(ID, key)
     const f = DAYS[0].waves[DAYS[0].waves.length - 1].formations[0]; f.to = '13:00'; f.ld = '14:00'; validate()
-    expect(slotBar(ID, key)).toBe('SANS — not offering Fly')
-    expect(before).toBe('SANS — not offering Fly')
+    expect(slotBar(ID, key)).toBe('SANS — offered OFT only, not Fly')
+    expect(before).toBe('SANS — offered OFT only, not Fly')
   })
 })
 
 describe('D2585 — an OFT or AMT with no times: struck at once where his filing does not offer that sim', () => {
-  it('OFT, "Fly only": SANS — not offering OFT, front and rear', () => {
+  it('OFT, "Fly only": SANS — offered Fly only, not OFT, front and rear', () => {
     const row = blankSim('oft'); fileSans({ f: true })
-    expect(slotBar(ID, `${row}.p`)).toBe('SANS — not offering OFT')
-    expect(slotBar(ID, `${row}.w`)).toBe('SANS — not offering OFT')
+    expect(slotBar(ID, `${row}.p`)).toBe('SANS — offered Fly only, not OFT')
+    expect(slotBar(ID, `${row}.w`)).toBe('SANS — offered Fly only, not OFT')
   })
-  it('OFT, "AMT only": SANS — not offering OFT', () => {
+  it('OFT, "AMT only": SANS — offered AMT only, not OFT', () => {
     const row = blankSim('oft'); fileSans({ a: true })
-    expect(slotBar(ID, `${row}.p`)).toBe('SANS — not offering OFT')
+    expect(slotBar(ID, `${row}.p`)).toBe('SANS — offered AMT only, not OFT')
   })
-  it('AMT, "Fly and OFT": SANS — not offering AMT', () => {
+  it('AMT, "Fly and OFT": SANS — offered Fly and OFT only, not AMT', () => {
     const row = blankSim('amt'); fileSans({ f: true, o: true })
-    expect(slotBar(ID, `${row}.p`)).toBe('SANS — not offering AMT')
+    expect(slotBar(ID, `${row}.p`)).toBe('SANS — offered Fly and OFT only, not AMT')
   })
   it('OFT offered with hours: plain until the times are typed', () => {
     const row = blankSim('oft'); fileSans({ o: true }, [480, 600])
@@ -88,7 +88,7 @@ describe('D2585 — an OFT or AMT with no times: struck at once where his filing
   })
   it("a sim's extra place strikes as its seats do (D2586): OFT, \"Fly only\"", () => {
     const row = blankSim('oft'); fileSans({ f: true })
-    expect(slotBar(ID, `${row}.+`)).toBe('SANS — not offering OFT')
+    expect(slotBar(ID, `${row}.+`)).toBe('SANS — offered Fly only, not OFT')
   })
 })
 

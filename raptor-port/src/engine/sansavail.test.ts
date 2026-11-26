@@ -167,7 +167,7 @@ describe('slotBar — the SANS gate, picker side (avail.ts)', () => {
   })
   it('a flying seat: record filed, Fly not ticked', () => {
     fileSans(FLY_ID, { o: true })
-    expect(slotBar(FLY_ID, FLY_KEY)).toBe('SANS — not offering Fly')
+    expect(slotBar(FLY_ID, FLY_KEY)).toBe('SANS — offered OFT only, not Fly')
   })
   it('a flying seat: the window is narrower than the sortie', () => {
     const r = slotRules(FLY_KEY)
@@ -184,7 +184,7 @@ describe('slotBar — the SANS gate, picker side (avail.ts)', () => {
      grey them either — the drift-seam the four absence blocks already avoid. */
   it('a spare-like (AVALON) seat: NOT greyed for SANS, even with a non-offering record', () => {
     fileSans(FLY_ID, { o: true })                        // record filed, Fly not offered
-    expect(slotBar(FLY_ID, FLY_KEY)).toBe('SANS — not offering Fly')   // a normal seat greys
+    expect(slotBar(FLY_ID, FLY_KEY)).toBe('SANS — offered OFT only, not Fly')   // a normal seat greys
     const spare = { ...slotRules(FLY_KEY), avJet: true }
     expect(slotBar(FLY_ID, FLY_KEY, spare)).not.toMatch(/^SANS/)       // the AVALON seat does not
   })
@@ -197,7 +197,7 @@ describe('slotBar — the SANS gate, picker side (avail.ts)', () => {
   })
   it('an OFT seat: record filed, OFT not ticked', () => {
     fileSans(OFT_ID, { a: true }, null, OFT_DATE)
-    expect(slotBar(OFT_ID, OFT_KEY)).toBe('SANS — not offering OFT')
+    expect(slotBar(OFT_ID, OFT_KEY)).toBe('SANS — offered AMT only, not OFT')
   })
   it('an OFT seat: the window is narrower than the box', () => {
     const r = slotRules(OFT_KEY)
@@ -218,7 +218,7 @@ describe('slotBar — the SANS gate, picker side (avail.ts)', () => {
   })
   it('an AMT seat: record filed, AMT not ticked', () => {
     fileSans(AMT_ID, { f: true })
-    expect(slotBar(AMT_ID, AMT_KEY)).toBe('SANS — not offering AMT')
+    expect(slotBar(AMT_ID, AMT_KEY)).toBe('SANS — offered Fly only, not AMT')
   })
   it('an AMT seat: the window is narrower than the box', () => {
     const r = slotRules(AMT_KEY)

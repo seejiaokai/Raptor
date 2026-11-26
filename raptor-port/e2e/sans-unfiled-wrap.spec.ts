@@ -177,3 +177,91 @@ test.describe('the look-ahead SANS note on a desktop: unchanged (D2338)', () => 
     expect(errs).toEqual([])
   })
 })
+
+/* HIS D2581 / D2582 (25 Nov 26) and D2750 / D2751 (26 Nov 26) — the crew list's SANS section, as drawn
+   (docs/mock/2026-11-25-sans-d2588/, scene `col`; pictures col-new-*, col-nopick-*, col-wrap-*): the F / O / A letters of
+   what each SANS man offered stand in ONE column, straight after the widest reason; with a place picked his offered hours
+   stand on a line of their own under his letter, never cut; with none picked the badge reads "O · 08:00–10:00" whole.
+   jsdom has no layout, so the drawing's own measurements live here, on the Scheduler Board's crew list with Friday's
+   EXT SQN OFT row armed, at a desktop's 1536 and his iPhone's 402: every badge's left edge within 0.5px of the others,
+   every badge right of every puck-and-reason (the column stands after the widest reason), nothing cut, the hours'
+   left edge on the letter's, the list never running sideways. The reasons read his D2584 Q2 words. The five filings
+   are put straight into the app's inputs (this file proves the layout, not the filing; the walk files through the
+   Inputs page). */
+const COL_FRI = 4
+const COL_KEY = `s:${COL_FRI}.oft.0.+`
+/* Friday's filings: Bolt Fly only, Rebel AMT only, Kraken Fly and AMT, Jester OFT 08:00–10:00 (D2750's own case: his
+   hours), Zenith OFT all day */
+async function fileFriday(page: Page) {
+  await page.evaluate(() => {
+    const w = window as any
+    const add = (person: string, sans: any, s?: number, e?: number) => w.INPUTS.unshift({ person, date: 'Jul 17', allday: s == null,
+      ...(s == null ? {} : { s, e }), type: 'SANS Availability', sans, iid: 'e2e-col-' + person, mod: '2026-06-20' })
+    add('yeti', { f: true }); add('romeo', { a: true }); add('krait', { f: true, a: true })
+    add('ipman', { o: true }, 480, 600); add('vinci', { o: true })
+    w.afterSchedMutate(); w.renderEditWeek()
+  })
+}
+async function openBoard(page: Page) {
+  await go(page, 'editsched')
+  await tap(page, `#eWeek [data-sbday="${COL_FRI}"]`)
+  await page.waitForSelector('#schedBoard'); await sleep(700)
+}
+/* the SANS section as drawn: each row's letters (text, left edge, cut), its puck-and-reason's right edge, its reason */
+const read = (page: Page) => page.evaluate(() => {
+  const sec = [...document.querySelectorAll('#schedBoard .rall.rsans')].find(x => x.getBoundingClientRect().width > 0) as HTMLElement
+  if (!sec) return null
+  const cut = (e: Element) => [e, ...e.querySelectorAll('*')].some(x => (x as HTMLElement).scrollWidth > (x as HTMLElement).clientWidth + 0.5)
+  const rows = [...sec.querySelectorAll('.rsans-row')].map(r => {
+    const pk = r.querySelector('.rpuck') as HTMLElement, b = r.querySelector('.rsans-b') as HTMLElement | null, w = r.querySelector('.rwhy')
+    const l = b && b.querySelector('.rsans-l'), h = b && b.querySelector('.rsans-h')
+    const txt = (e: Element | null) => e ? (e.textContent || '').replace(/\s+/g, ' ').trim() : ''
+    const rng = (e: Element | null) => { if (!e || !e.firstChild) return null; const x = document.createRange(); x.selectNodeContents(e); return [...x.getClientRects()][0] || null }
+    return { id: pk.dataset.person, why: w && w.getBoundingClientRect().width > 0 ? txt(w) : '', letters: txt(b),
+      l: txt(l), h: txt(h), lLeft: rng(l)?.left ?? null, hLeft: rng(h)?.left ?? null, hTop: rng(h)?.top ?? null, lBottom: rng(l)?.bottom ?? null,
+      bLeft: b ? b.getBoundingClientRect().left : null, pkRight: pk.getBoundingClientRect().right, cut: b ? cut(b) : false }
+  })
+  return { rows, spill: sec.scrollWidth - sec.clientWidth }
+})
+
+for (const [name, vp] of [['desktop', { width: 1536, height: 1000 }], ['phone', { width: 402, height: 874 }]] as const) {
+  test.describe(`the SANS section's letters and hours — ${name}`, () => {
+    test.use({ viewport: vp, ...(name === 'phone' ? { hasTouch: true, isMobile: true } : {}) })
+
+    test('no place picked: Jester\'s badge whole on one line, "O · 08:00–10:00"', async ({ page }) => {
+      await signIn(page); await fileFriday(page); await openBoard(page)
+      const s = await read(page)
+      const j = s!.rows.find(r => r.id === 'ipman')!
+      expect(j.letters).toBe('O · 08:00–10:00')
+      expect(j.h, 'not split with nothing picked').toBe('')
+      expect(j.cut, 'not cut').toBe(false)
+    })
+
+    test('a place picked: the letters in one column after the widest reason, Jester\'s hours under his letter, nothing cut', async ({ page }) => {
+      await signIn(page); await fileFriday(page); await openBoard(page)
+      await tap(page, `#schedBoard [data-fill="${COL_KEY}"]:visible`); await sleep(500)
+      expect(await page.evaluate(() => (window as any).ARM && (window as any).ARM.key)).toBe(COL_KEY)
+      const s = await read(page)
+      expect(s, 'the SANS section is drawn').not.toBeNull()
+      const by = (id: string) => s!.rows.find(r => r.id === id)!
+      /* his D2584 Q2 words */
+      expect(by('yeti').why).toBe('SANS — offered Fly only, not OFT')
+      expect(by('romeo').why).toBe('SANS — offered AMT only, not OFT')
+      expect(by('krait').why).toBe('SANS — offered Fly and AMT only, not OFT')
+      /* D2581 / D2582: one column, straight after the widest reason */
+      const withB = s!.rows.filter(r => r.bLeft != null)
+      expect(withB.length, 'five men wear letters').toBeGreaterThanOrEqual(5)
+      const lefts = withB.map(r => r.bLeft!)
+      expect(Math.max(...lefts) - Math.min(...lefts), `the letters' left edges ${JSON.stringify(lefts)}`).toBeLessThanOrEqual(0.5)
+      const widest = Math.max(...s!.rows.map(r => r.pkRight))
+      expect(Math.min(...lefts), 'the column stands after every puck and its reason').toBeGreaterThanOrEqual(widest - 0.5)
+      /* D2750 / D2751: Jester's hours on a second line under his letter, whole */
+      const j = by('ipman')
+      expect([j.l, j.h]).toEqual(['O', '08:00–10:00'])
+      expect(Math.abs(j.hLeft! - j.lLeft!), 'the hours start under the letter').toBeLessThanOrEqual(0.5)
+      expect(j.hTop!, 'on the next line').toBeGreaterThanOrEqual(j.lBottom! - 0.5)
+      expect(s!.rows.filter(r => r.cut).map(r => r.id), 'no badge cut').toEqual([])
+      expect(s!.spill, 'the list never runs sideways').toBeLessThanOrEqual(1)
+    })
+  })
+}

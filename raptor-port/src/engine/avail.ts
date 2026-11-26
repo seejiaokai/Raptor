@@ -380,6 +380,10 @@ export const SANS_LABEL:any={fly:'Fly',oft:'OFT',amt:'AMT'};
    his SANS date is a regular's day, and no SANS availability is asked of it — engine/people.ts sansOn). */
 /* what he offered, as the lists say it: "Fly only", "OFT and AMT only"; '' when nothing is ticked (D2584 Q2 / 2a) */
 export function sansOfferedWords(off:any):string{const o=(off||[]);return o.length===1?`${o[0]} only`:o.length===2?`${o[0]} and ${o[1]} only`:'';}
+/* the crew list's reason for a filing that misses the event armed (owner D2584 Q2, answering D2575 — "SANS — offered Fly
+   only, not OFT", two offered "SANS — offered OFT and AMT only, not Fly", Fable's words kept as drafted); a record that
+   ticks nothing has nothing to name and keeps "SANS — not offering OFT". One body for a timed and an untimed seat. */
+export function sansNotOfferedWhy(g:any,domain:any):string{const w=sansOfferedWords(g&&g.offered);return w?`SANS — offered ${w}, not ${SANS_LABEL[domain]}`:`SANS — not offering ${SANS_LABEL[domain]}`;}
 export function sansGate(id:any,dt:any,domain:any,s:any,e:any,iso?:any):any{
   const p=PEOPLE[id]; if(!p||!sansOnP(p,iso))return {status:'na'};
   const rec=sansAvailOn(id,dt); if(!rec)return {status:'none'};
@@ -658,7 +662,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
        to the box's own start — a sim window is read AS FILED, unchanged */
     const g=sansGate(id,DAYS[r.di].dt,domain,r.sansStart!=null?r.sansStart:r.slotStart,r.slotEnd,dayIso(String(CURWEEK),r.di));
     if(g.status==='none')return sansNoneWhy(p,dayIso(String(CURWEEK),r.di));
-    if(g.status==='not-offered')return `SANS — not offering ${SANS_LABEL[domain]}`;
+    if(g.status==='not-offered')return sansNotOfferedWhy(g,domain);
     if(g.status==='window')return `SANS — available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
   }
   /* A FLYING SEAT WITH NO TIMES YET, NOTHING FILED (owner D2573, 25 Nov 26 — round A's Q1, "as recommended"): struck with
@@ -673,7 +677,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
     &&sansOnP(p,dayIso(String(CURWEEK),r.di))){
     const g0=sansGate(id,DAYS[r.di].dt,domain,null,null,dayIso(String(CURWEEK),r.di));
     if(g0.status==='none')return sansNoneWhy(p,dayIso(String(CURWEEK),r.di));
-    if(g0.status==='not-offered')return `SANS — not offering ${SANS_LABEL[domain]}`;
+    if(g0.status==='not-offered')return sansNotOfferedWhy(g0,domain);
   }
   /* IS HE ALREADY BUSY AT THIS HOUR?
      The SC block above asks exactly this, for a shift. Every other slot asked
