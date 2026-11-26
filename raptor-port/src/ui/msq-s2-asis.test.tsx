@@ -150,13 +150,17 @@ describe('2. View given and ended by an admin of the squadron (D2336, D2306)', (
     act(() => { globalUndo() })
     expect(level(ACCT.ranger, 'u149')).toBe('view')
   })
-  it('pin: one who may not — Mako, 150\'s admin, nothing in 149: the 149 line greyed "Only an admin of 149 can give access to 149.", and the door says the same', async () => {
+  /* RE-POINTED AT U1 (26 Nov 26), by the rule U1 builds — his D2625, D2655 D5: on 150's page a 142 man's row opens to
+     150's line alone, so 149's greyed line is no longer drawn there (it stood here as built at U0). What stays a pin: the
+     door refuses one who may not, in the same words — "Only an admin of 149 can give access to 149." (D2336). The greyed
+     line in those words is still drawn where a 149 line is drawn for one who may not give it: msq-users-row.test.tsx R5
+     (Hunter's own squadron's page, 149 not his to give). */
+  it('pin: one who may not — Mako, 150\'s admin, nothing in 149: on 150\'s page Ranger\'s row shows 150\'s line alone (U1), and the door refuses 149 "Only an admin of 149 can give access to 149."', async () => {
     signInAs('mako')
     const p = panel()
     await p.find('ranger')
     await p.open(ranger())
-    const l149 = p.lines().find(l => l.n === '149')
-    expect(l149).toEqual({ n: '149', what: 'None(off) View*(off) Plan(off)', note: 'Only an admin of 149 can give access to 149.' })
+    expect(p.lines().map(l => l.n), 'one line, 150\'s (U1 — D2625)').toEqual(['150'])
     expect(saveAccess(ACCT.ranger, { grants: { u149: 'none' } })).toBe('Only an admin of 149 can give access to 149.')
     expect(level(ACCT.ranger, 'u149'), 'nothing changed').toBe('view')
   })

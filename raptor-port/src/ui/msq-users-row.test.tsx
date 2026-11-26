@@ -75,18 +75,18 @@ describe('R1 — a master admin opens a 142 admin', () => {
 })
 
 describe('R2, R3 — another squadron\'s admin opens a 142 member found by search', () => {
-  it('Kestrel finds Ranger: "142" by his name, the rest of his row greyed; View his to give, Plan greyed "Plan is for admins only."', async () => {
+  /* (re-pointed at section 2's U1, 26 Nov 26 — his D2625, D2655 D5: the rest of his row is no longer drawn greyed but not
+     drawn at all — the short row opens to the page's squadron's one line, Save and Cancel; the line itself, and its Save,
+     as before. The full rule: msq-s2-row.test.tsx) */
+  it('Kestrel finds Ranger: "142" by his name, the rest of his row not drawn; View his to give, Plan greyed "Plan is for admins only."', async () => {
     signInAs('kestrel')
     const p = panel()
     await p.find('ranger')
     expect(p.$(`[data-testid="sqn-${PID.ranger}"]`)?.textContent).toBe('142')
     await p.open(PID.ranger)
-    expect((p.$('#accEdName') as HTMLInputElement).disabled).toBe(true)
-    expect((p.$('#accEdRole') as HTMLSelectElement).disabled).toBe(true)
-    for (const id of ['#accEdOnOff', '#accEdArchive', '#accEdDel']) expect((p.$(id) as HTMLButtonElement).disabled, id).toBe(true)
+    for (const id of ['#accEdName', '#accEdRole', '#accEdOnOff', '#accEdArchive', '#accEdDel']) expect(p.$(id), id).toBeNull()
     expect((p.$('#accEdSave') as HTMLButtonElement).disabled).toBe(false)
     expect(p.lines()).toEqual([
-      { n: '142', what: 'Home squadron', note: null },
       { n: '149', what: 'None* View Plan(off)', note: 'Plan is for admins only.' },
     ])
     await p.pick('u149', 'view')
@@ -108,7 +108,8 @@ describe('R5 — a line not his to give', () => {
     const p = panel()
     await p.find('hunter')
     await p.open(PID.hunter)
-    expect(p.lines()[1]).toEqual({ n: '149', what: 'None* View Plan(off)', note: 'Only a master admin gives Plan.' })
+    /* (re-pointed at U1: on 149's page a 142 man's row opens to 149's line alone — D2625, D2655 D5; the line as before) */
+    expect(p.lines()).toEqual([{ n: '149', what: 'None* View Plan(off)', note: 'Only a master admin gives Plan.' }])
   })
 })
 

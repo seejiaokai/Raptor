@@ -28,13 +28,15 @@ export function RoleBox(p: { id: string; value: RolePick; disabled?: boolean; ma
 }
 
 const WORD: Record<AccessLine, string> = { none: 'None', view: 'View', plan: 'Plan' }
-/* the squadron lines under Sign-in and Role */
+/* the squadron lines under Sign-in and Role. `only` — the one squadron to draw: another squadron's man on this squadron's
+   page shows this page's squadron's line alone (his D2625, D2655 D5 — UsersPanel's short row); each line's state is
+   lineState's, unchanged */
 export function SquadronLines(p: {
   pid: string; hasSignIn: boolean; rolePick: RolePick; now: Record<string, AccessLine>; pick: Record<string, AccessLine>
-  onPick: (unit: string, v: AccessLine) => void
+  onPick: (unit: string, v: AccessLine) => void; only?: string
 }) {
   const home = homeOn(p.pid, todayIso())
-  const all = units().map(u => u.id).sort(byNum)
+  const all = p.only ? [p.only] : units().map(u => u.id).sort(byNum)
   return (
     <div className="acc-sq" data-testid="acc-sq">
       {all.map(u => {

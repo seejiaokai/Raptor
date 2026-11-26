@@ -1,7 +1,7 @@
 /* ADMIN → USERS — A PERSON'S ACCESS, THE READS BEHIND HIS OPENED ROW (pure reads, no screen; ui/UserAccess.tsx draws them —
    his D2303 design B, D2306, D2320, D2336, D2211; pictures rB1–rB4, p2a, p2b). Kept apart from the screen file so it
    hands out screen parts alone (the code check's only-export-components). */
-import { ACCOUNTS_LIST, levelAcct, type Account, type AccountRole, type AccessLine } from '../state/accounts'
+import { ACCOUNTS_LIST, levelAcct, isAdminAccount, type Account, type AccountRole, type AccessLine } from '../state/accounts'
 import { units, unitById, grantOfOn, homeOn, todayIso } from '../state/units'
 import { adminOfUnit } from '../state/perms'
 import { SESSION } from '../state/auth'
@@ -34,6 +34,33 @@ export function alsoPlansOf(a: Account | undefined, pid: string, iso: string = t
   const us = units().map(u => u.id).filter(u => u !== home && grantOfOn(levelAcct(a), u, iso)?.level === 'admin').sort(byNum)
   return us.length ? `also plans ${us.map(numOf).join(', ')}` : null
 }
+
+/* ANOTHER SQUADRON'S MAN ON THIS SQUADRON'S PAGE — HIS SHORT ROW'S SECOND LINE (his D2625, D2652 N3 e, D2655 D5; the plan
+   §19.1 with §21.2's step-0 block; the drawings docs/mock/2026-11-25-msq-pick-guard-q3/drawn/u6-*-folded, s2-16, s2-17).
+   The words are the reviewed drawings' own (scripts/handpass/n176/words-r6-users.mjs W6.roleAdmin, W6.roleMaster,
+   W6.alsoPlans, W6.alsoViews; words.mjs noSignInOpened), never this file's.
+   - his role in words after seat and CAT: "admin", or "master admin, full access"; a member adds nothing, and a man with
+     no sign-in has no role;
+   - what he already holds of the page's squadron: "also plans 149" (as built), "also views 149"; a master admin nothing
+     more (his role already says full access). */
+export function shortRoleOf(a: Account | undefined): string | null {
+  if (!a) return null
+  if (a.master) return 'master admin, full access'
+  return isAdminAccount(a) ? 'admin' : null
+}
+export function holdsHereOf(a: Account | undefined, unit: string, iso: string = todayIso()): string | null {
+  if (!a || a.master) return null
+  const g = grantOfOn(levelAcct(a), unit, iso)
+  const n = numOf(unit)
+  return g?.level === 'admin' ? `also plans ${n}` : g?.level === 'view' ? `also views ${n}` : null
+}
+/* a man with no sign-in, his short row opened: these words in place of the line, Cancel alone ("142's admin" — his own
+   squadron's) */
+export const noSignInWords = (homeNum: string): string => `No sign-in. Ask ${homeNum}'s admin to give him one first.`
+/* the passing note when the short row was judged again at Save and found changed (his D2730 Q13 — these words exactly,
+   the callsign from the row) */
+export const changedWhileOpenWords = (callsign: string): string =>
+  `${callsign}’s row changed while it was open, so nothing was saved. Open it again.`
 
 /* why a line's buttons (or its Plan alone) are greyed — the words under it — or the line Plan picked carries */
 /* (`rolePick` — the role picked in his row's box, not yet saved: a form's value, never the signed-in person's authority) */
