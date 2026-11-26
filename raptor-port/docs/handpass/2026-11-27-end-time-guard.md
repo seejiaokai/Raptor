@@ -322,6 +322,50 @@ does not move the turn on. On the phone the count line is still a small target (
 
 **Lock:** taken 06:56:44, released 06:59:22 (27 Nov 26, this PC's clock); two builds, served on 4252, stopped.
 
+## The re-walk of the second fixes (27 Nov 26, morning)
+
+A fresh Opus that wrote none of the fixes, on ONE production build of `c746c456f` served at `127.0.0.1:4253`, under the
+checks lock. It read this sheet's re-walk and second-fixes sections, not the code. Nothing was fixed. D = desktop 1536
+Chromium (mouse); P = iPhone 402 WebKit, touch (taps). Every state was made through the app's own controls in a fresh
+world (the fresh demo address, no reload judged); every picture is named `RW2-…` (85 pictures). Scripts (the re-walk's
+`c58.mjs` and `ct2.mjs`, renamed and extended, and W4's `c44.mjs` for the plain-user pass) and their outputs: the
+scratchpad's `walk/RW/RW2/`; logs `walk/logs/RW2-*`.
+
+**Counts: 12 PASS · 1 FAIL** (13 lines below).
+
+| # | Item | Result | What the screen showed | Pictures |
+|---|---|---|---|---|
+| 1 | N1, published Thursday, P: every row kind's END emptied, grey then red | PASS | Signed, Publish day, five ENDs emptied: "5 items missing a time · 4 to sign". Desk, OFT, ground and Common Programme END 15 × 34 at x83 (ground and Common Programme x163) — START's 15px and START's place; the flight's landing 10.3 × 27 at x104 like its take-off. Grey, then red after a refused sign press, the sizes the same. The dotted "goes out as AL1" mark sits inside the outline. The AMT row with nobody stays plain, as ruled. Row heights unchanged (41, 49, 125) | RW2-N1-P-pub-{desk,oft,ground,cprog,flight}-{grey,red} (the desk: `RW2-N1-P-pub-desk-red.png`; the re-walk's before: `RW-C58-P-pub-desk-red.png`) |
+| 2 | N1, published Thursday, D | PASS | Every END 17 × 44 beside its 17px START, top edges level, no shift left; the landing 13.8 = 13.8. Grey and red alike | RW2-N1-D-pub-{…}-{grey,red} (`RW2-N1-D-pub-desk-red.png`) |
+| 3 | N1, draft Thursday, P and D | PASS | As before the fix: P 15 = 15 on every kind, the landing 10.3 = 10.3; D 17 = 17 | RW2-N1-{P,D}-draft-{…}-{grey,red} |
+| 4 | N1, a typed changed END on the published day keeps its amendment mark, P and D | PASS | The desk END typed 16:00 after the refusal: P 11px, D 17px, as before; the dotted underline and tint in the AL colour, "Edited — goes out as AL1". Both pictures are byte-identical to the re-walk's of the same step on the build before the fix | `RW2-N1-P-pub-desk-typed.png`, `RW2-N1-D-pub-desk-typed.png` (beside `RW-C58-{P,D}-pub-desk-typed.png`) |
+| 5 | N2, D: the count line's turn | PASS | Four ENDs empty. Tap 1 → Common Programme END; tap 2 → desk END; desk typed 16:00 and left ("3 items…"); tap 3 → OFT END (goes on, not back); tap 4 → ground END; tap 5 → Common Programme END (wraps). Each box in the middle of the screen with the caret (423–441 of 864) | RW2-N2-D-{1-tap1,2-tap2,3-tap3-goes-on,4-tap4,5-wrapped} |
+| 6 | N2, P | PASS | The same order; the caret at 429–444 of 874 each time | RW2-N2-P-{…} |
+| 7 | N3, a time typed and the line tapped at its middle, without leaving the box, D and P | PASS | Typing 17:00 in the Common Programme END, one tap: saved, "2 items missing a time", the caret in the OFT END | `RW2-N3-D-a-tap-mid-while-typing.png`, `RW2-N3-P-a-tap-mid-while-typing.png` |
+| 8 | N3, "2 items" → "1 item", the tap at the words' far right (2px in), D and P, twice each (a second fresh world) | PASS | Typing 10:30 in the OFT END, one tap: saved, "1 item missing a time", the caret in the ground END. D: the words right-aligned, their right end stays at 951; P: the line spans the width (20–358), the words 20–169 → 20–164 | `RW2-N3-P-b-tap-right-2to1.png`, `RW2-N3-D-b-tap-right-2to1.png`, `RW2-N3-{D,P}-d-tap-right-2to1.png` |
+| 9 | N3, "1 item" → none, the far right, D and P | PASS | Typing 12:30 in the last empty box, one tap: saved, the line plain words "4 to sign"; no box left to go to, nothing focused | `RW2-N3-{D,P}-c-tap-right-1to0.png` |
+| 10 | N3, "2 items" → "1 item", the tap at the words' far LEFT, P | PASS | Saved, "1 item…", the caret in the ground END (the line's left end stays at 20) | `RW2-N3-P-d-tap-left-2to1.png` |
+| 11 | N3, "2 items" → "1 item", the click at the words' far LEFT (on the red "2"), D | **FAIL (N4)** | Below | `RW2-N3-D-d-line-before-left-press.png`, `RW2-N3-D-d-tap-left-2to1.png` |
+| 12 | Plain-user pass, D: the day's sign-off and publish | PASS | Desk END emptied → CUR CK refused ("Blocked: 1 item is missing a time, outlined in red…"), nothing signed, the box red; typed back → "4 to sign", red gone; the four signed → "Signed — this day can be published"; Publish day → "Thursday published and approved", ORIG. On the published day the desk END emptied → grey, "1 item missing a time · 4 to sign", Publish AL1 greyed; pressed → "Blocked: 1 item is missing a time, outlined in red. AL1 was not published.", the box red, still ORIG. Typed, signed → "Published AL1 · 1 item on Thu only · approved by Bolt" | RW2-PU-D-{1-sign-refused-red,2-all-signed,3-published,4-publishAL-refused,4b-box-red,5-AL1-published} |
+| 13 | Plain-user pass, P | PASS | The same words and results at each step, by touch | RW2-PU-P-{…} (`RW2-PU-P-4-publishAL-refused.png`) |
+
+**N4 — on the desktop, a click on the count's number while typing is still lost when the words get shorter.** Steps:
+Edit Schedule, desktop, two ENDs empty ("2 items missing a time · 4 to sign"); click the line (the caret goes to the
+first); type 10:30 without leaving the box; click the line on the red "2" (2px in from the words' left end). Expected:
+the time saved and the caret in the next empty box (D2854, as N3's fix says). Seen: the time is saved ("1 item missing a
+time"), but nothing has focus — a second click is needed, as N3 was. Cause as seen on screen: on the desktop the line's
+words sit right-aligned, so when "2 items" becomes "1 item" the line's left end moves 4px right (805 → 809); a click in
+that strip lands on nothing after the redraw. The phone is not touched by it (its line spans the full width). Small: a
+4px strip, but it is the count itself, the red part a scheduler aims at; a larger drop in the count's width ("10 items"
+→ "9 items") would widen the strip (the walker's reading; not walked). Seen twice, each from a fresh world. Pictures:
+`RW2-N3-D-d-line-before-left-press.png` (the yellow dot, drawn only for the picture, marks where the click lands),
+`RW2-N3-D-d-tap-left-2to1.png` (after: no caret anywhere).
+
+**Errors:** none — every run's error list empty (desktop Chromium, phone WebKit).
+
+**Lock:** taken 07:03:41, released 07:11:06 (27 Nov 26, this PC's clock); one build of `c746c456f`, served on 4253,
+stopped.
+
 ## Observations — not faults of this change, or his to judge
 
 - **O1** The refusal note (like every note in the app — the control showed an ordinary plan note doing the same) stays
@@ -388,4 +432,6 @@ Taken 03:19, released 05:09 (27 Nov 26, this PC's clock); the preview server on 
 
 Walk (first walk): docs/handpass/2026-11-27-end-time-guard.md · 1269 pictures · 40 surfaces · 82 orders · MISSING: 0 fixed / 0 ruled / 1 to file (the count-line tap)
 
-Walk: docs/handpass/2026-11-27-end-time-guard.md · 1664 pictures (388 the re-walk's) · 40 surfaces · 82 orders + 44 re-walked · MISSING: 1 fixed (the count-line tap, built and walked) / 0 ruled / 0 to file · open: N1, N2, N3 (the re-walk)
+Walk (after the re-walk): docs/handpass/2026-11-27-end-time-guard.md · 1664 pictures (388 the re-walk's) · 40 surfaces · 82 orders + 44 re-walked · MISSING: 1 fixed (the count-line tap, built and walked) / 0 ruled / 0 to file · open: N1, N2, N3 (the re-walk)
+
+Walk: docs/handpass/2026-11-27-end-time-guard.md · 1749 pictures (388 the re-walk's, 85 the second re-walk's) · 40 surfaces · 82 orders + 44 re-walked + 13 re-walked again · MISSING: 1 fixed (the count-line tap, built and walked) / 0 ruled / 0 to file · N1, N2, N3 pass · open: N4 (a desktop click on the count's number while typing, the second re-walk)
