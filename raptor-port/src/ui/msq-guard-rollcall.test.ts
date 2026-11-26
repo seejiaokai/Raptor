@@ -11,13 +11,15 @@
 
    K1a (the first of the three passes of part A, chat 198) writes R1, R2, R8 and R7's planted cases for R1's and R2's
    scans. K1b (the second) writes R3 (every frame counted, per file, outside the Tracker), its planted cases in R7, the
-   reports' half of R1 and R8's additions on his answers. R4 (the Tracker's list) is K1c's — `TO_COME` below names it,
-   with the pass that owes it; K1c's last test proves the list empty. */
+   reports' half of R1 and R8's additions on his answers. K1c (the third) writes R4 — the Tracker's list, and its frames,
+   which R3 leaves to it — R7's planted cases for R4, R1's and R8's Tracker additions, and the last test, which proves that
+   `TO_COME` holds nothing a pass of K1 owes. */
 import { describe, it, expect } from 'vitest'
 import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, basename } from 'node:path'
 import { withThird } from '../test-support/msq-world'
-import { GUARD_ROWS, GUARD_ORDER, FLOAT_WHERE, type GuardRow } from './guard'
+import { GUARD_ROWS, GUARD_ORDER, FLOAT_WHERE, trackerWindowUp, TRACKER_SHOWS, type GuardRow } from './guard'
+import { trackerAsking } from '../tracker/role.js'
 import * as DRAWN from './windrawn'
 import { forward, gone, _resetFloatWins } from './winorder'
 import { saveRefused } from '../storage/savewait'
@@ -68,10 +70,9 @@ describe('R9 — every test file of the guard and of part V sets up three squadr
 /* ---- WHAT A LATER PASS OF PART A OWES (K1a's list — the brief's "One explicit list, TO_COME") ----
    Each row id, flag or test that K1b or K1c adds, with the pass that owes it, so that R1's "every flag has a row" and
    A2's "a row with no entry in the map fails" hold now for everything else. K1c's last test proves the list empty. */
-export const TO_COME: { what: string; pass: 'K1c' | 'K2b' | 'after S2\'s U1 fix merges'; why: string }[] = [
-  { what: 'R4', pass: 'K1c', why: 'the Tracker\'s list is whole — TRK_WINDOWS is K1c\'s' },
-  { what: 'rows trk, trkask, trkinfo; trkinfo in R8\'s ruled list (D2597)', pass: 'K1c', why: 'the Tracker\'s bridge' },
-  { what: 'R3 for src/tracker/', pass: 'K1c', why: 'the Tracker\'s frames are R4\'s, counted with its list' },
+/* (K1c, the last pass of part A, built R4, the Tracker's rows and the Tracker's frames — held in R4's own census, below —
+   and took them off; what is left is owed by a later step by name) */
+export const TO_COME: { what: string; pass: 'K2b' | 'after S2\'s U1 fix merges'; why: string }[] = [
   { what: 'row addperson ("Add a person" — useGuardWork(\'addperson\', …))', pass: 'K2b', why: 'the form\'s report, after K1 (§21.1)' },
   { what: 'the short row\'s report — UsersPanel.tsx ForeignEditor (its `unsaved`, `data-unsaved` on the row), counted with the opened row', pass: 'after S2\'s U1 fix merges', why: 'the Admin → Users section\'s editor, not in this branch yet (the orchestrator, chat 204)' },
 ]
@@ -141,6 +142,9 @@ const ALLOWED_OPEN: Record<string, (() => boolean)[]> = {
   'ui/windrawn.ts': Object.values(DRAWN) as (() => boolean)[],
   'storage/savewait.ts': [saveRefused],
   'state/guard.ts': [warSheetOpen, warShowOpen],
+  /* K1c: the Tracker's bridge (tracker/role.js) — what its own table says is open, read through ui/guard.ts's three
+     readers of it (the last test of R1 reads that they read the bridge) */
+  'tracker/role.js': [trackerWindowUp, trackerAsking, ...Object.values(TRACKER_SHOWS)],
 }
 /* a component's report (ui/guard.ts useGuardWork) or a closer it hands over (useGuardCloses): the call, in its frame */
 const reportsIn = (src: string, hook: 'useGuardWork' | 'useGuardCloses'): string[] =>
@@ -221,6 +225,15 @@ describe('R1 — every flag has a row, and every row reads what its window is dr
       if (r.counts === 'no') expect(r.why, `${r.id}: a "no" row says why`).toBeTruthy()
       else expect(r.sel, `${r.id}: its box's selector`).toBeTruthy()
     }
+  })
+  it('(K1c) the Tracker\'s rows read its bridge: ui/guard.ts takes what is open from tracker/role.js, never from core.js, and each Tracker row\'s open() is one of those readers', () => {
+    const src = read('ui/guard.ts')
+    expect(/import\s*\{[^}]*\btrackerWindowsOpen\b[^}]*\btrackerAsking\b[^}]*\}\s*from\s*'\.\.\/tracker\/role\.js'/.test(src), 'ui/guard.ts imports the bridge').toBe(true)
+    expect(/from\s*'[^']*tracker\/app\//.test(src), 'ui/guard.ts never imports the Tracker\'s engine').toBe(false)
+    const bridge = ALLOWED_OPEN['tracker/role.js']!
+    const trkRows = GUARD_ROWS.filter(r => r.id.startsWith('trk'))
+    expect(trkRows.map(r => r.id).sort()).toEqual(['trk', 'trkask', 'trkdown', 'trkfail', 'trkinfo', 'trkpop'])
+    for (const r of trkRows) expect(bridge.includes(r.open), `${r.id} reads the Tracker's bridge`).toBe(true)
   })
 })
 
@@ -359,6 +372,11 @@ const RULED_CLOSES: Record<string, string> = {
   inputsset: 'D2654 E1 — an unchanged settings window beside the Calendar closes too',
   sansset: 'D2654 E1 — an unchanged settings window beside the Calendar closes too',
   lwshow: 'D2740 — of the Leave War\'s windows a leave filed on Inputs and an OIL award close by themselves',
+  /* K1c, the Tracker — one row a window, each with the ruling that lets it */
+  trkinfo: 'D2597 — a Tracker event\'s details (the ⓘ bubble) only shows things',
+  trkpop: 'D2654 E2 — the Tracker\'s marking window closes, as today',
+  trkdown: 'D2654 E4 — the Info panel\'s Down days close by themselves, in sight or behind the Flow chart tab',
+  trkfail: 'D2654 E4 — the Info panel\'s Failures close by themselves, in sight or behind the Flow chart tab',
 }
 export function closesProblems(rows: readonly Pick<GuardRow, 'id' | 'counts' | 'close'>[], ruled: Record<string, string>): string[] {
   const out: string[] = []
@@ -414,6 +432,174 @@ describe('R7 — the scans catch a planted window', () => {
     /* (a refusing row given a closer — K1a planted it on `days`, which closes by itself since K1b on his D2654 E1) */
     const withCloser = GUARD_ROWS.map(r => r.id === 'everywd' ? { ...r, close: () => {} } : r)
     expect(closesProblems(withCloser, RULED_CLOSES)).toEqual(['everywd: only a "closes" row carries a closer'])
-    expect(closesProblems(GUARD_ROWS, { ...RULED_CLOSES, trkinfo: 'D2597' })).toEqual(['trkinfo: ruled to close by itself, but no "closes" row'])
+    /* (K1a planted this as `trkinfo`, which K1c builds: a made-up id stands in) */
+    expect(closesProblems(GUARD_ROWS, { ...RULED_CLOSES, trknew: 'D2597' })).toEqual(['trknew: ruled to close by itself, but no "closes" row'])
+  })
+  it('R4\'s scans (K1c): a new state reset in endSession, a second window drawn in Modals.jsx, an Info-panel window without its mark, a window of the table no frame draws and a closing state with no row are each reported', () => {
+    const core = read(TRK_CORE)
+    const reset = core.replace('  sessionSerial++;\n', '  sessionSerial++;\n  newWin = null;\n')
+    expect(reset, 'the premise: planted').not.toBe(core)
+    expect(unlistedResets(reset)).toEqual(['newWin'])
+    const files = TRK_FILES()
+    expect(trkFrameProblems({ ...files, 'tracker/components/Modals.jsx': files['tracker/components/Modals.jsx'] + '\nconst X = () => <div className="modal" id="newModal" />\n' }, TRK_FRAMES, trkTable(core)))
+      .toEqual(['tracker/components/Modals.jsx: 9 frame(s), the census maps 8 — give the new one an id in core.js TRK_WINDOWS, or name it here with its reason'])
+    const unmarked = core.replace(`{ id: 'lullCopy', open: () => !!lullCopy, counts: 'window', panel: 'info' }`, `{ id: 'lullCopy', open: () => !!lullCopy, counts: 'window' }`)
+    expect(unmarked, 'the premise: planted').not.toBe(core)
+    expect(trkFrameProblems(files, TRK_FRAMES, trkTable(unmarked))).toEqual(['tracker/components/SidePanel.jsx #2: lullCopy is drawn in the Info panel and carries no panel: \'info\''])
+    const added = core.replace(`  { id: 'arrangeMode',`, `  { id: 'newBox', open: () => false, counts: 'window' },\n  { id: 'arrangeMode',`)
+    expect(trkFrameProblems(files, TRK_FRAMES, trkTable(added))).toEqual(['newBox: a window of TRK_WINDOWS no frame the census maps draws'])
+    const closing = core.replace(`{ id: 'editId', open: () => editId != null, counts: 'window' }`, `{ id: 'editId', open: () => editId != null, counts: 'closes' }`)
+    expect(trkClosesProblems(trkTable(closing))).toEqual(['editId: a Tracker window that closes by itself has no row of its own in ui/guard.ts with his ruling'])
+  })
+})
+
+/* ---- R4 — THE TRACKER'S LIST IS WHOLE (§3.4; K1c) ----
+   The Tracker's windows are module state in tracker/app/core.js, read by ui/guard.ts on the bridge (tracker/role.js) from
+   one read-only table, TRK_WINDOWS. Read from the source: (a) every module-level name endSession()'s body resets is an id of
+   the table, or in this test's own list of what is not a window, with its reason — and an id it ends without naming
+   (its questions, the bubble) is ended there by the call named; (b) every frame drawn under src/tracker/ — R3's marks, and
+   the Tracker's own `.pop`, `.lullcal` and the Show All panel — is counted per file and mapped to an id (R3's census leaves
+   src/tracker/ out: the Tracker's frames are held here, with its list); (c) each id drawn inside SidePanel.jsx — the Info
+   panel — carries `panel: 'info'`, and no other does; (d) each window of the table is drawn by a frame the census maps,
+   but the bubble, which core.js draws itself; (e) each id that closes by itself has its row in ui/guard.ts (R8 cites the
+   ruling). */
+const TRK_CORE = 'tracker/app/core.js'
+type TrkWin = { id: string; counts: string; panel?: string }
+/** the table, read from core.js's source: each `{ id: '…', open: …, counts: '…'(, panel: '…')? }` line of TRK_WINDOWS */
+export function trkTable(src: string): TrkWin[] {
+  const at = src.indexOf('export const TRK_WINDOWS = Object.freeze([')
+  if (at < 0) return []
+  const body = src.slice(at, src.indexOf(']);', at))
+  return [...body.matchAll(/\{ id: '(\w+)', open: [^\n]*?, counts: '(\w+)'(?:, panel: '(\w+)')? \}/g)].map(m => ({ id: m[1]!, counts: m[2]!, ...(m[3] ? { panel: m[3] } : {}) }))
+}
+/** the names endSession()'s body assigns (`name = …`, `name++`), its comments left out */
+export function endSessionResets(src: string): string[] {
+  const at = src.indexOf('function endSession() {')
+  if (at < 0) return ['(no endSession() found)']
+  let i = src.indexOf('{', at), depth = 0, end = i
+  for (; end < src.length; end++) { if (src[end] === '{') depth++; else if (src[end] === '}' && --depth === 0) break }
+  const body = src.slice(i + 1, end).replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '')
+  return [...new Set([...body.matchAll(/(?<![\w$.])([A-Za-z_$][\w$]*)\s*(?:=(?![=>])|\+\+|--)/g)].map(m => m[1]!))]
+}
+/* THE STATES endSession() RESETS THAT ARE NO WINDOW, each with its reason */
+const NOT_A_TRK_WINDOW: Record<string, string> = {
+  sessionSerial: 'the session\'s own counter — a job of the last session stops at its next question',
+  undoStack: 'the chart editor\'s Undo list — the person leaving\'s', redoStack: 'its Redo list',
+  popDoneDate: 'the marking window\'s "Done on" day — part of `pop`', popFailDate: 'its "Failed on" day — part of `pop`',
+  popMsg: 'its one line of refusal — part of `pop`, cleared with it',
+  kbdShown: 'the keyboard\'s ring on the chart', popByKey: 'the marking window opened from the keyboard — part of `pop`',
+  infoByKey: 'the details editor opened from the keyboard — part of `infoId`', kbdCame: 'where the keyboard came from on the chart',
+  saveStat: 'the bar\'s save words', arrangeFlips: 'a counter of Edit chart layout\'s turns',
+  connectSrc: 'Edit chart layout\'s half-made link — inside the mode', drawing: 'its line being drawn — inside the mode',
+  selBalls: 'its selection — inside the mode', tool: 'its tool', view: 'its canvas\'s pan and zoom',
+  hintFlash: 'a passing hint line over the chart', searchHit: 'the search\'s ring', searchQ: 'the search\'s words',
+  searchCount: 'the search\'s count', searchAt: 'the search\'s place', searchHits: 'the search\'s finds',
+}
+/* the ids endSession() ends without naming them, and the call it ends each by */
+const ENDED_BY_CALL: Record<string, string> = { dlg: 'dlgCancelAll()', bubble: 'hideDetailBubble()' }
+export const unlistedResets = (src: string): string[] => {
+  const ids = new Set(trkTable(src).map(w => w.id))
+  return endSessionResets(src).filter(n => !ids.has(n) && !(n in NOT_A_TRK_WINDOW))
+}
+/* the frame marks of the Tracker: R3's, and the Tracker's own pop-up classes */
+const TRK_FRAME_RE = new RegExp(FRAME_RE.source + '|className="pop"|className="lullcal|id="showAllPanel"', 'g')
+const trkFramesIn = (src: string): string[] => [...src.matchAll(TRK_FRAME_RE)].map(m => m[0].trim().replace(/\($/, ''))
+/* THE TRACKER'S FRAMES, per file, in source order: `trk <id>` — drawn from that TRK_WINDOWS state; `no <reason>` */
+const TRK_FRAMES: Record<string, string[]> = {
+  'tracker/components/FlexSettings.jsx': ['trk flexWinOpen', 'trk flexWinOpen'],
+  'tracker/components/Legend.jsx': ['no the Legend — a list, a press outside closes it (§3.2 (g))'],
+  'tracker/components/Modals.jsx': ['trk dlg', 'trk dlg', 'trk dlg', 'trk editId', 'trk infoId', 'trk sylModalOpen', 'trk ordMode', 'trk copyOpen'],
+  'tracker/components/Pop.jsx': ['trk pop', 'trk pop'],
+  'tracker/components/ShowAllPanel.jsx': ['trk showAllOpen'],
+  'tracker/components/SidePanel.jsx': ['trk lullPick', 'trk lullCopy', 'trk failLog', 'trk downLog', 'trk downLog'],
+}
+const PANEL_FILE = 'tracker/components/SidePanel.jsx'
+/* drawn by core.js itself, never by a component: the bubble's one element on the page body (showDetailBubble) */
+const DRAWN_BY_CORE = ['bubble']
+export function trkFrameProblems(files: Record<string, string>, census: Record<string, string[]>, table: TrkWin[]): string[] {
+  const out: string[] = []
+  const byId = new Map(table.map(w => [w.id, w]))
+  const drawn = new Set<string>()
+  for (const [f, src] of Object.entries(files)) {
+    const got = trkFramesIn(src)
+    if (!got.length) { if (f in census) out.push(`${f}: the census names a file with no frame`); continue }
+    const want = census[f]
+    if (!want) { out.push(`${f}: ${got.length} frame(s) no census entry maps — give each an id in core.js TRK_WINDOWS, or name it here with its reason`); continue }
+    if (want.length !== got.length) { out.push(`${f}: ${got.length} frame(s), the census maps ${want.length} — give the new one an id in core.js TRK_WINDOWS, or name it here with its reason`); continue }
+    want.forEach((w, i) => {
+      const [kind, ...rest] = w.split(' ')
+      const what = rest.join(' ')
+      if (kind === 'trk') {
+        const win = byId.get(what)
+        if (!win) { out.push(`${f} #${i + 1} (${got[i]}): "${what}" is no id of TRK_WINDOWS`); return }
+        drawn.add(what)
+        if (f === PANEL_FILE && win.panel !== 'info') out.push(`${f} #${i + 1}: ${what} is drawn in the Info panel and carries no panel: 'info'`)
+        if (f !== PANEL_FILE && win.panel === 'info') out.push(`${f} #${i + 1}: ${what} carries panel: 'info' but is drawn outside the Info panel`)
+      } else if (kind !== 'no' || !what) out.push(`${f} #${i + 1} (${got[i]}): "${w}" is neither an id nor a reason`)
+    })
+  }
+  for (const f of Object.keys(census)) if (!(f in files)) out.push(`${f}: the census names a file that is gone`)
+  /* (read only once every file maps: a file whose count moved maps none of its frames) */
+  if (!out.length) for (const w of table) if (w.counts !== 'no' && !drawn.has(w.id) && !DRAWN_BY_CORE.includes(w.id)) out.push(`${w.id}: a window of TRK_WINDOWS no frame the census maps draws`)
+  return out
+}
+/* each TRK_WINDOWS state that closes by itself, and its row in ui/guard.ts (R8's list cites the ruling) */
+const TRK_CLOSE_ROW: Record<string, string> = { bubble: 'trkinfo', pop: 'trkpop', downLog: 'trkdown', failLog: 'trkfail' }
+export function trkClosesProblems(table: TrkWin[]): string[] {
+  const out: string[] = []
+  for (const w of table) {
+    const rowId = TRK_CLOSE_ROW[w.id]
+    if (w.counts === 'closes' && !(rowId && GUARD_ROWS.some(r => r.id === rowId && r.counts === 'closes') && rowId in RULED_CLOSES))
+      out.push(`${w.id}: a Tracker window that closes by itself has no row of its own in ui/guard.ts with his ruling`)
+    if (w.counts !== 'closes' && rowId) out.push(`${w.id}: has a closing row but its table counts it '${w.counts}'`)
+  }
+  for (const id of Object.keys(TRK_CLOSE_ROW)) if (!table.some(w => w.id === id)) out.push(`${id}: a closing row for a state the table no longer has`)
+  return out
+}
+const TRK_FILES = (): Record<string, string> => Object.fromEntries(srcFiles(join(SRC, 'tracker'))
+  .map(f => [f.slice(SRC.length + 1).replace(/\\/g, '/'), readFileSync(f, 'utf8')] as const))
+
+describe('R4 — the Tracker\'s list is whole (K1c)', () => {
+  it('the table is read from core.js: one id each, every count a known one; its modes are Edit chart layout, Details mode and the tools set', () => {
+    const t = trkTable(read(TRK_CORE))
+    expect(t.length, 'TRK_WINDOWS read from the source').toBeGreaterThan(10)
+    expect(new Set(t.map(w => w.id)).size).toBe(t.length)
+    for (const w of t) expect(['window', 'closes', 'no'], w.id).toContain(w.counts)
+    expect(t.filter(w => w.counts === 'no').map(w => w.id)).toEqual(['arrangeMode', 'showDetails', 'toolsOpen'])
+  })
+  it('every module-level name endSession() resets is an id of TRK_WINDOWS or named in this test\'s list with its reason; an id ended by a call is ended there by that call', () => {
+    const core = read(TRK_CORE)
+    expect(unlistedResets(core), 'a state endSession() resets that is neither a TRK_WINDOWS id nor named here as no window — give it an id in core.js TRK_WINDOWS, or name it here with its reason').toEqual([])
+    const resets = endSessionResets(core)
+    expect(Object.keys(NOT_A_TRK_WINDOW).filter(n => !resets.includes(n)), 'a name in the list endSession() no longer resets').toEqual([])
+    const lets = new Set([...core.matchAll(/(?:^|;[ \t]*)(?:export )?let ([^;\n]+)/gm)].flatMap(m => [...m[1]!.matchAll(/(?:^|,)\s*([A-Za-z_$][\w$]*)\s*(?==|,|$)/g)].map(x => x[1]!)))
+    expect(resets.filter(n => !lets.has(n)), 'each is a module-level `let`').toEqual([])
+    const t = trkTable(core)
+    for (const w of t) {
+      if (resets.includes(w.id)) continue
+      expect(ENDED_BY_CALL[w.id], `${w.id}: endSession() neither resets it by name nor names the call that ends it`).toBeTruthy()
+      expect(core.slice(core.indexOf('function endSession() {'), core.indexOf('function endSession() {') + 3000)).toContain(ENDED_BY_CALL[w.id]!)
+    }
+  })
+  it('every frame under src/tracker/ is counted per file and mapped to a TRK_WINDOWS id or a reason; the Info panel\'s ids carry panel: \'info\', no other does; every window of the table is drawn', () => {
+    expect(trkFrameProblems(TRK_FILES(), TRK_FRAMES, trkTable(read(TRK_CORE)))).toEqual([])
+    expect(trkTable(read(TRK_CORE)).filter(w => w.panel === 'info').map(w => w.id).sort()).toEqual(['downLog', 'failLog', 'lullCopy', 'lullPick'])
+  })
+  it('R3 and R4 between them read every source file: the files R3\'s census leaves out are exactly src/tracker/\'s, which R4 reads', () => {
+    const all = srcFiles(SRC).map(f => f.slice(SRC.length + 1).replace(/\\/g, '/'))
+    const r3 = new Set(Object.keys(SRC_NOT_TRACKER())), r4 = new Set(Object.keys(TRK_FILES()))
+    expect(all.filter(f => !r3.has(f) && !r4.has(f))).toEqual([])
+    expect([...r4].every(f => f.startsWith('tracker/') && !r3.has(f))).toBe(true)
+  })
+  it('each Tracker window that closes by itself has its own row in ui/guard.ts, and R8\'s list cites his ruling for it', () => {
+    expect(trkClosesProblems(trkTable(read(TRK_CORE)))).toEqual([])
+    expect(trkTable(read(TRK_CORE)).filter(w => w.counts === 'closes').map(w => w.id)).toEqual(['pop', 'bubble', 'downLog', 'failLog'])
+  })
+})
+
+describe('TO_COME — what is left is owed by a later step, by name, never by a pass of K1', () => {
+  it('every entry names K2b or "after S2\'s U1 fix merges" — none names K1a, K1b or K1c', () => {
+    expect(TO_COME.filter(t => !['K2b', 'after S2\'s U1 fix merges'].includes(t.pass) || /\bK1[abc]?\b/.test(t.pass)).map(t => t.what)).toEqual([])
+    expect(TO_COME.map(t => t.pass).sort()).toEqual(['K2b', 'after S2\'s U1 fix merges'])
   })
 })

@@ -16,7 +16,7 @@ import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { normalizeImport as normalizeFile, STUDENT_GUARD_MSG, STUDENT_CHART_MSG, sameDef, remapStudentsSyl } from './fileTransfer.js';
 import { findEvents } from './eventOrder.js';
-import { onTrackerSessionEnd, onBeforeTrackerLogout, onBeforeTrackerSwitch, trackerIsAdmin } from '../role.js';
+import { onTrackerSessionEnd, onBeforeTrackerLogout, onBeforeTrackerSwitch, trackerIsAdmin, onTrackerWindows, onTrackerAsking, onTrackerCloseShown } from '../role.js';
 /* Raptor's one edge feel (D899) */
 import { edgePan } from '../../ui/edgescroll';
 import { getPeople, onPeople, whoami, whoamiId, getGonePeople, onGonePeople, getMedInputs, onMedInputs } from '../people.js';
@@ -140,6 +140,71 @@ onBeforeTrackerSwitch({
       return true;
     } finally { switchAsking = false; notify(); }
   },
+});
+/* THE GUARD RAIL'S VIEW OF THIS TRACKER'S WINDOWS (the guard rail's plan, docs/superpowers/plans/
+   2026-11-25-msq-pick-guard-build1.md §3.1 "The Tracker's windows", §3.2 (g) — K1c). Raptor's guard asks "is anything
+   open?" before a pick, the member-view switch or a bell line changes the squadron or the view (his D2403); it cannot
+   import this file, so the answer crosses on role.js. ONE READ-ONLY TABLE, each window state of this module with what it
+   counts — 'window' refuses the press; 'closes' only shows things and is closed at the press (his D2596, D2597, D2654);
+   'no' is a mode, in the table so the list is whole — and `panel: 'info'` on the four the Info panel draws
+   (components/SidePanel.jsx), which a screen 1050 wide or less hides while its Flow chart tab shows (tracker.css). Each
+   `open` reads the very state its component draws from. endSession() below is left as it is: it does more than null these
+   (it answers every waiting question, ends the gestures and the Undo lists); the roll-call (ui/msq-guard-rollcall.test.ts
+   R4) ties every state it resets to an id here, or to its own list of what is not a window.
+   - `bubble`: an event's details — the ⓘ bubble the Details mode and the Info panel's chips raise (one element on the page
+     body, showDetailBubble) — closes by itself (his D2597: "a Tracker event's details (the ⓘ bubble, which already goes at
+     a pick)").
+   - `infoId` is NOT that: it is "✎ Edit details" — the event info editor (components/Modals.jsx InfoModal), with boxes to
+     type in and its own Save and Cancel — so it refuses, as every window with a box to type in does (his D2403).
+   - `pop`: the marking window closes, as today (his D2654 E2). `downLog`, `failLog`: Down days and Failures close by
+     themselves, in sight or behind the Flow chart tab (D2654 E4). `lullPick`, `lullCopy`: the two lull pop-ups hold a choice
+     not yet saved — a first day picked, students ticked — so they refuse (D2654 E4).
+   - Show All refuses (it was never put to him singly, and a refusal loses nothing); its inline editor holds typing. */
+export const TRK_WINDOWS = Object.freeze([
+  { id: 'dlg', open: () => !!dlg, counts: 'window' },
+  { id: 'pop', open: () => !!pop, counts: 'closes' },
+  { id: 'bubble', open: () => detailBubbleShown(), counts: 'closes' },
+  { id: 'infoId', open: () => infoId != null, counts: 'window' },
+  { id: 'editId', open: () => editId != null, counts: 'window' },
+  { id: 'sylModalOpen', open: () => !!sylModalOpen, counts: 'window' },
+  { id: 'ordMode', open: () => !!ordMode, counts: 'window' },
+  { id: 'copyOpen', open: () => !!copyOpen, counts: 'window' },
+  { id: 'flexWinOpen', open: () => !!flexWinOpen, counts: 'window' },
+  { id: 'showAllOpen', open: () => !!showAllOpen, counts: 'window' },
+  { id: 'downLog', open: () => !!downLog, counts: 'closes', panel: 'info' },
+  { id: 'failLog', open: () => !!failLog, counts: 'closes', panel: 'info' },
+  { id: 'lullPick', open: () => !!lullPick, counts: 'window', panel: 'info' },
+  { id: 'lullCopy', open: () => !!lullCopy, counts: 'window', panel: 'info' },
+  { id: 'arrangeMode', open: () => !!arrangeMode, counts: 'no' },
+  { id: 'showDetails', open: () => !!showDetails, counts: 'no' },
+  { id: 'toolsOpen', open: () => !!toolsOpen, counts: 'no' },
+]);
+/* which half the phone layout shows — App.jsx hands its Flow chart / Info tab here as it changes (N12) */
+let tabShown = 'flow';
+export function setTabShown(t) { tabShown = t === 'info' ? 'info' : 'flow'; }
+/* the stylesheet's own width for the phone layout (tracker.css `@media(max-width:1050px)`), read the same way */
+function phoneLayout() {
+  try { return typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(max-width:1050px)').matches; } catch (_) { return false; }
+}
+/* NONE UNLESS THE TRACKER IS DRAWN — App.jsx's three gates: the boot error card and "Loading…" draw no window, and with no
+   course only the question box (DlgModal) is drawn. A panel window sits behind the Info tab while the phone layout shows the
+   Flow chart: drawn, and hidden by the style rule. */
+onTrackerWindows(() => {
+  if (!ready || bootError) return [];
+  const noCourse = !COURSES.length;
+  const behind = tabShown === 'flow' && phoneLayout() ? 'info' : null;
+  return TRK_WINDOWS
+    .filter(w => w.counts !== 'no' && (!noCourse || w.id === 'dlg') && w.open())
+    .map(w => ({ id: w.id, counts: w.counts, behind: w.panel === 'info' ? behind : null }));
+});
+onTrackerAsking(() => switchAsking && !!dlg);
+/* THE ONE CLOSER of the windows that only show things — each by its own way of closing, as a press outside or ✕ closes it;
+   `id` one of them, or none for all. A door calls it only once its change is going through (ui/guard.ts closeShown). */
+onTrackerCloseShown(id => {
+  if ((!id || id === 'bubble') && detailBubbleShown()) hideDetailBubble();
+  if ((!id || id === 'pop') && pop) closePop();
+  if ((!id || id === 'downLog') && downLog) closeDownLog();
+  if ((!id || id === 'failLog') && failLog) closeFailLog();
 });
 /* bumped at every session end: a job that asks more than one question (an import) stops
    between them once its session has ended, so the next person never gets the next one
@@ -5566,6 +5631,8 @@ function settleLastFlown(s) {
    hides it when the phone switches half and when the Tracker tab goes off
    screen; the session end hides it at a logout ([HUMAN-RETEST] w3-F1). */
 export function hideDetailBubble() { const b = document.getElementById('detailBubble'); if (b) b.style.display = 'none'; }
+/* the bubble is up — its one element on the page body, shown by showDetailBubble (the guard's `bubble`, TRK_WINDOWS) */
+function detailBubbleShown() { if (typeof document === 'undefined') return false; const b = document.getElementById('detailBubble'); return !!b && b.style.display === 'block'; }
 function showDetailBubble(id, anchorEl, html) {
   let b = document.getElementById('detailBubble');
   if (!b) { b = document.createElement('div'); b.id = 'detailBubble'; document.body.appendChild(b); }

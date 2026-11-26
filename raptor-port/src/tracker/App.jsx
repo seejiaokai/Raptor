@@ -101,6 +101,9 @@ export default function App({ active = true, locked = false }) {
      Info tab the board is display:none, so scrolling to a found event would be
      measuring a hidden element and would land nowhere. */
   useEffect(() => { core.setTabSink(setTab); return () => core.setTabSink(null); }, []);
+  /* …and the guard rail reads it too: a window of the Info panel sits behind the Flow chart tab on the phone layout
+     (core.js TRK_WINDOWS, `behind: 'info'`) */
+  useEffect(() => { core.setTabShown(tab); }, [tab]);
 
   /* The details bubble belongs to the chart that raised it: gone when the
      phone switches to its other half, and when the Tracker tab leaves the

@@ -19,7 +19,8 @@
    second: the windows and typed work whose state is a component's own — Admin's six rows and forms, the Inputs list's
    OIL question, a holiday sheet read in, Quals' "Add qualification" (each a `useGuardWork` report); the Calendar family
    in his E1 shape (D2654: the Calendar and an unchanged settings window close at the press, a half-done form refuses);
-   the two edit modes' end() (D2627 A4, §18.1); the Leave War's two show-only sheets (D2740). K1c the Tracker. No door
+   the two edit modes' end() (D2627 A4, §18.1); the Leave War's two show-only sheets (D2740). K1c, the third: the Tracker's
+   windows, read on its bridge (tracker/role.js) from its own table, tracker/app/core.js TRK_WINDOWS. No door
    asks yet, so the app still behaves as before. Plain modules only — no component is imported, so the test world and
    the test set-ups can load it. */
 import { useEffect, useLayoutEffect, useRef } from 'react'
@@ -35,6 +36,8 @@ import { closeAvailWin } from './availopen'
 import { closeChanges } from './changesopen'
 import { setInsights, setDaysWin, setInpSet, setSansSet, AIRKEY, DAYPOP, WEEKCAL, DOCVIEW, BELLLIST, DRAWER } from './pops'
 import { notify } from '../state/store'
+import { trackerCover } from '../state/typing-hold'
+import { trackerWindowsOpen, trackerAsking, trackerCloseShown } from '../tracker/role.js'
 
 /* what a row is: a window that refuses, a row being edited (Admin's — K1b), a change not saved, a window that only
    shows things and closes by itself, or 'no' — a list, a menu, a mode, a window that already closes at the press, in
@@ -66,6 +69,7 @@ export type GuardRowId =
   | 'airpop' | 'daypop' | 'weekcal' | 'docview'
   | 'medmove' | 'oilwait'
   | 'lwsheet' | 'lwshow'
+  | 'trk' | 'trkask' | 'trkinfo' | 'trkpop' | 'trkdown' | 'trkfail'
   | 'oilrevise' | 'holimport' | 'qualsnew'
   | 'userrow' | 'archrow' | 'giveaccess' | 'newsqn' | 'sqnmove' | 'placeedit'
   | 'belllist' | 'sqnlist' | 'drawer' | 'insmenu' | 'boardmenus' | 'datecal' | 'medcal' | 'icpick'
@@ -106,6 +110,20 @@ export type GuardRow = {
   /* a 'no' row only — a mode (§18.1): how closeShown() ends it at a door's last step, a refusal ending nothing */
   end?: () => void
 }
+
+/* THE TRACKER'S WINDOWS, READ ON ITS BRIDGE (§3.1 "The Tracker's windows", §3.2 (g) — K1c): the Tracker is a third app
+   with its own store that this file may not import (tracker/role.js's head), so tracker/app/core.js hands over what is open
+   from its read-only table TRK_WINDOWS. `trk` — a window of it that refuses is open, the page's own cover not up
+   (state/typing-hold.ts trackerCover: in the member view, while it holds his unsaved chart edits, nothing of the Tracker
+   is shown or can be reached), its question box left out while that box is the unsaved-edits question, which is
+   `trkask`'s: drawn over whatever page he is on (TrackerPage.tsx TrkAskOnly), so neither the page nor the cover gates it.
+   Each window that only shows things is a row of its own, closed by the bridge's one closer by its id, so R8's list names
+   each with his ruling. Exported for the roll-call (R1: a row's open() reads the Tracker's bridge). */
+export const trackerWindowUp = (): boolean =>
+  !trackerCover() && trackerWindowsOpen().some(w => w.counts === 'window' && !(w.id === 'dlg' && trackerAsking()))
+const trkShows = (id: string) => (): boolean => trackerWindowsOpen().some(w => w.id === id)
+export const TRACKER_SHOWS = { bubble: trkShows('bubble'), pop: trkShows('pop'), downLog: trkShows('downLog'), failLog: trkShows('failLog') } as const
+const trkClose = (id: keyof typeof TRACKER_SHOWS) => (): void => { trackerCloseShown(id) }
 
 /* THE CLOSERS A COMPONENT HANDS OVER, for a 'closes' window whose state is its own (useGuardCloses, below) */
 const CLOSERS = new Map<GuardRowId, () => void>()
@@ -182,6 +200,16 @@ export const GUARD_ROWS: readonly GuardRow[] = [
      among them) refuses, as before */
   { id: 'lwsheet', name: 'a Leave War window', frame: 'leavewar/ui/Sheet.tsx', where: 'leavewar', open: warSheetOpen, sel: '.bidsheet', counts: 'window' },
   { id: 'lwshow', name: 'a Leave War window', frame: 'leavewar/ui/Sheet.tsx', where: 'leavewar', open: warShowOpen, sel: '.bidsheet', counts: 'closes', close: closeWarShown },
+  /* (g) the Tracker (K1c): its windows that refuse, its unsaved-edits question, and the four that only show things — an
+     event's details, the ⓘ bubble (D2597); the marking window (D2654 E2); Down days and Failures, in sight or behind the
+     phone's Flow chart tab (D2654 E4). Its modes (Edit chart layout, Details mode, the tools set) are 'no' in its own
+     table, never counted here */
+  { id: 'trk', name: 'a Tracker window', frame: 'tracker/App.jsx', where: 'tracker', open: trackerWindowUp, sel: '#page-tracker .modal, #trkFlexWin, #showAllPanel, #lullCal, #lullCopy', counts: 'window' },
+  { id: 'trkask', name: 'the Tracker\'s question', frame: 'tracker/TrackerPage.tsx', where: 'any', open: trackerAsking, sel: '#dlgModal', counts: 'window' },
+  { id: 'trkinfo', name: 'an event\'s details', frame: 'tracker/app/core.js', where: 'tracker', open: TRACKER_SHOWS.bubble, sel: '#detailBubble[style*="display: block"]', counts: 'closes', close: trkClose('bubble') },
+  { id: 'trkpop', name: 'the marking window', frame: 'tracker/components/Pop.jsx', where: 'tracker', open: TRACKER_SHOWS.pop, sel: '#pop', counts: 'closes', close: trkClose('pop') },
+  { id: 'trkdown', name: 'Down days', frame: 'tracker/components/SidePanel.jsx', where: 'tracker', open: TRACKER_SHOWS.downLog, sel: '#downLog', counts: 'closes', close: trkClose('downLog') },
+  { id: 'trkfail', name: 'Failures', frame: 'tracker/components/SidePanel.jsx', where: 'tracker', open: TRACKER_SHOWS.failLog, sel: '#failLog', counts: 'closes', close: trkClose('failLog') },
   /* (i) lists, menus and modes */
   no('belllist', 'the bell\'s list', 'ui/topbits.tsx', 'a list — a press outside closes it', () => BELLLIST, ['BELLLIST']),
   no('sqnlist', 'the Schedules list', 'ui/SquadronMenu.tsx', 'a list — the component\'s own state; the pick is pressed in it'),
@@ -225,12 +253,13 @@ export const GUARD_ROWS: readonly GuardRow[] = [
    (one reason at a time — window, row, Retry: D2627), then the change not saved, which a window open beside it outranks
    (A4). */
 export const GUARD_ORDER: readonly GuardRowId[] = [
+  'trkask',
   'medmove', 'oilwait', 'oilrevise',
   'inputedit', 'inputdlg',
   'holiday', 'everywd', 'holimport', 'days', 'inputsset', 'sansset', 'inputsday', 'oilday',
   'dutytpl', 'wavetpl', 'daytpl', 'drafts', 'cxdlg', 'sortall',
-  'lwsheet',
-  'avail', 'chg', 'insights', 'sansday', 'lwday', 'lwshow',
+  'lwsheet', 'trk',
+  'avail', 'chg', 'insights', 'sansday', 'lwday', 'lwshow', 'trkinfo', 'trkpop', 'trkdown', 'trkfail',
   'userrow', 'archrow', 'giveaccess', 'newsqn', 'sqnmove', 'placeedit', 'qualsnew',
   'airpop', 'daypop', 'weekcal', 'docview',
   'belllist', 'sqnlist', 'drawer', 'insmenu', 'boardmenus', 'datecal', 'medcal', 'icpick',

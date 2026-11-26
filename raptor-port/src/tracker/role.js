@@ -74,3 +74,28 @@ export function trackerSwitchAsk(toNum) {
     return Promise.resolve(beforeSwitch.ask(String(toNum))).then(v => v !== false, () => true)
   } catch (_) { return null }
 }
+
+/* THE GUARD RAIL'S VIEW OF THE TRACKER'S WINDOWS (the guard rail's plan, docs/superpowers/plans/
+   2026-11-25-msq-pick-guard-build1.md §3.1 "The Tracker's windows" — K1c): Raptor's guard (ui/guard.ts) answers "is anything
+   open?" for a pick, the member-view switch and a bell line (his D2403, D2596, D2597). The Tracker's windows are known only
+   inside core.js, which Raptor must not import (the head of this file), so core.js hands three answers over here, as it
+   hands its switch question (above): what is open — each window state of its read-only table TRK_WINDOWS that is open, with
+   whether it counts and whether it sits behind the phone's Flow chart tab (`behind: 'info'`); whether its unsaved-edits
+   question is up (`trackerAsking`, the `trkask` row: drawn over whatever page he is on); and one closer for the windows
+   that only show things (his D2597, D2654 E2, E4) — one by its id, or all of them. Never loaded: nothing open, nothing to
+   close, no question. */
+let windowsFn = null
+export function onTrackerWindows(f) { windowsFn = typeof f === 'function' ? f : null }
+/** each Tracker window open now — `{ id, counts, behind }` — or none while the Tracker is not loaded or not drawn */
+export function trackerWindowsOpen() {
+  if (!windowsFn) return []
+  try { const w = windowsFn(); return Array.isArray(w) ? w : [] } catch (_) { return [] }
+}
+let askingFn = null
+export function onTrackerAsking(f) { askingFn = typeof f === 'function' ? f : null }
+/** the Tracker's unsaved-edits question is up — asked by a pick or a sign-out, over whatever page he is on */
+export function trackerAsking() { if (!askingFn) return false; try { return !!askingFn() } catch (_) { return false } }
+let closeShownFn = null
+export function onTrackerCloseShown(f) { closeShownFn = typeof f === 'function' ? f : null }
+/** closes a Tracker window that only shows things, by its id — or, with none, every one open */
+export function trackerCloseShown(id) { if (!closeShownFn) return; try { closeShownFn(id) } catch (_) { /* never stops a door */ } }
