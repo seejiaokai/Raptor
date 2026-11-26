@@ -822,7 +822,8 @@ in its twin if the save redrew it. **The day still catches up at that Tab:** it 
 moment everything held for the caret was redrawn (a line's worked-out area time after a typed take-off), so the route
 carries that redraw through itself — the store's "look again", flushed at once — BEFORE the caret goes back. After was
 not enough: the week writes all but the caret's block, but the board holds its whole day panel for a caret inside it
-(Astra's and Sol's reads, 6 Oct 26, the same finding apart). Pins: `e2e/schedule-tab.spec.ts` "D597 …" (three; the
+(Astra's and Sol's reads, 6 Oct 26, the same finding apart). *(Since 25 Nov 26 the board too writes all but the caret's
+section — below; the route's catch-up is kept for the section the caret is in.)* Pins: `e2e/schedule-tab.spec.ts` "D597 …" (three; the
 phone board's catch-up among them), `ui/schedule-tab.test.tsx` (the week, and Flying dragged to the foot of the day).
 
 **While the caret is in a text box, everything that does not hold it keeps up (the Codex stack check, 6 Oct 26 — W15,
@@ -831,7 +832,11 @@ route that is a whole day. Now, after each commit: on the WEEK every changed blo
 one block (a `.dsec` section, the day head, the sign-off strip, the warnings box) that contains the caret
 (`dayswap.ts swapDayAround` — it hands back chunks that still describe what is on screen, so the ordinary paint writes
 the held block when the caret leaves; a change needing the whole day replaced waits whole); on the BOARD every panel
-but the caret's own (`SchedBoard.tsx`). So the day's warning list and count (D509), "N pending", "Not yet signed" and
+but the caret's own (`SchedBoard.tsx`), and inside the day's own panel every section but the caret's — the day bar and
+each section are its blocks (since 25 Nov 26 — `dayswap.ts swapKidsAround`; `[UI-SLEEK-PASS]` round 4's leftovers (4):
+an input's start typed under Personal Inputs, the caret Tabbed on to its End box, left the Board's own Ground Programme
+row one change behind — every other section of the day was held the same way; pin
+`ui/board-heldpanel.test.tsx`). So the day's warning list and count (D509), "N pending", "Not yet signed" and
 the sign-off strip are current while he types on. **Held by design until the caret leaves its section:** the puck rings
 and marks inside that section. Inside the held block the wave header's In-time / Rally clock is corrected in place —
 text nodes only, no new markup (`html.ts refreshWaveReports`; `waveHeadTail` is the one body for the builder and the

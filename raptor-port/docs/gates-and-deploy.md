@@ -709,6 +709,11 @@ and ride along with the next real change or the merge; the merge itself earns on
   — retry in 24 hours" and gets through only when an older one ages out. On the morning of 8 Nov 26 the repo had made 144
   in 24 hours, and the production build of a notes merge on `main` was refused, so the live app did not update. A merge
   is live only when the Production deployment for its own commit is Ready: check it, never assume.
+- **A merge the limit refused is not retried, and Vercel does not build a commit it has already tried** (26 Nov 26,
+  chat 189 — pull requests 843 and 849): a branch pushed at `main`'s own commit got no build; an EMPTY commit on that
+  branch built at once (Ready in about 3 minutes, between other chats' builds). Check its tree is `origin/main`'s, then
+  he presses Promote to Production on that build's own page (the Vercel status link on the commit), on his PC; "Ready ·
+  Production · Current" there, and a new Production deployment for that commit on GitHub, prove it.
 - **A build the Ignored Build Step cancels still counts toward that limit,** so skipping notes-only pushes that way does
   not lower the count; a branch with automatic deployments turned off (`git.deploymentEnabled`) makes no build at all.
 - **A notes-only push skips its build (13 Nov 26, D2032, [VERCEL-SKIP-NOTES]):** `vercel.json`'s `ignoreCommand` runs

@@ -1,0 +1,33 @@
+{
+ "pictures": [],
+ "cases": {
+  "phone-webkit": {
+   "log": [
+    "bundle index-BZt7HLBD.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"05:00\",\"to\":\"06:00\",\"title\":\"Early brief\"} on 2026-07-13: new input [\"imwv5m0kqxt2en8\"]; asked []; note \"\"",
+    "Ranger flies Monday wave 1, formation 1, line 2; take-off 12:40; input imwv5m0kqxt2en8"
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "B0 phone-webkit the question raised by \"DS FOR RU\" in the first formation's Remarks",
+   "PASS",
+   "{\"questions\":1}",
+   "b-phone-webkit-b0-question.png"
+  ],
+  [
+   "B3 phone-webkit anchoring on: a callsign typed in wave 2 (caret left in the flying section: true), Ranger's END clicked, then a time and Tab — END and REMARKS hold",
+   "PASS",
+   "{\"byClick\":{\"rewritten\":false,\"moved\":0,\"scroll\":[5878,5878],\"q\":[-3828,-3828],\"focusIsBox\":true},\"byTab\":{\"rewritten\":true,\"moved\":0,\"scroll\":[5878,5878],\"q\":[-3828,-3828,1],\"focusIsBox\":true}}",
+   "b-phone-webkit-B3-after-click.png, b-phone-webkit-B3-after-tab.png"
+  ],
+  [
+   "B3b phone-webkit anchoring on: a callsign typed in wave 2 (caret left in the flying section: true), Ranger's END clicked, then a time and Tab — END and REMARKS hold",
+   "PASS",
+   "{\"byClick\":{\"rewritten\":false,\"moved\":0,\"scroll\":[5878,5878],\"q\":[-3828,-3828],\"focusIsBox\":true},\"byTab\":{\"rewritten\":true,\"moved\":0,\"scroll\":[5878,5878],\"q\":[-3828,-3828,1],\"focusIsBox\":true}}",
+   "b-phone-webkit-B3b-after-click.png, b-phone-webkit-B3b-after-tab.png"
+  ]
+ ]
+}

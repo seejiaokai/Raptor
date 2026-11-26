@@ -27,7 +27,7 @@ import { storeBackend, HOOKS } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { INPUTS } from '../engine/inputs'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
-import { accountsLoad, signIn, sessionFor, ACCOUNTS_LIST, isAdminAccount } from '../state/accounts'
+import { accountsLoad, signIn, sessionFor, ACCOUNTS_LIST, isAdminAccount, addPersonAndAccount, accountByName, saveAccess } from '../state/accounts'
 import { setSession, SESSION } from '../state/auth'
 import { installGlobalUndo } from '../state/undo-wire'
 import { _resetTimeline } from '../undo/timeline'
@@ -36,7 +36,7 @@ import { initStore as lwInitStore, setPeople, lwHistInit } from '../leavewar/sta
 import { memoryBackend, type StorageBackend } from '../leavewar/state/storage'
 import { projectPeople } from '../leavewar/state/raptorRoster'
 import { wireLeaveWarSync, setWarWorldDoor, installPostingClock } from '../leavewar/sync'
-import { setUnitSeeds, unitsLoad, setHome, homeOn, todayIso, type UnitSave } from '../state/units'
+import { setUnitSeeds, unitsLoad, setHome, homeOn, todayIso, addUnit, type UnitSave } from '../state/units'
 import { settleWorld } from './world'
 
 /* the memory store behind the app's storage, emptied each test */
@@ -51,9 +51,16 @@ export const SIGN = {
   ranger: ['us', 'us'],    // 142's member (person `bane`)
   kestrel: ['ad9', 'a9'],  // 149's admin (person `kes9`)
   osprey: ['us9', 'us9'],  // 149's member (person `osp9`)
+  /* 150's own admin — made by withThird() only (an admin-added account takes any password); in a two-squadron world
+     this name has no account and signs in as a stranger */
+  mako: ['mako', 'x'],
 } as const
-export const PID = { saber: 'stiff', hunter: 'prowler', ranger: 'bane', kestrel: 'kes9', osprey: 'osp9' } as const
-export const ACCT = { saber: 'acad', hunter: 'acad2', ranger: 'acus', kestrel: 'acad9', osprey: 'acus9' } as const
+const PID5 = { saber: 'stiff', hunter: 'prowler', ranger: 'bane', kestrel: 'kes9', osprey: 'osp9' } as const
+const ACCT5 = { saber: 'acad', hunter: 'acad2', ranger: 'acus', kestrel: 'acad9', osprey: 'acus9' } as const
+/* (Mako's person and account ids are made by the real doors, so they are known only once withThird() has run: '' until
+   then, filled in each test by its set-up) */
+export const PID: typeof PID5 & { mako: string } = { ...PID5, mako: '' }
+export const ACCT: typeof ACCT5 & { mako: string } = { ...ACCT5, mako: '' }
 export type Who = keyof typeof SIGN
 
 export function signInAs(who: Who | string, pass?: string) {
@@ -164,4 +171,60 @@ export function useMsqWorld(): void {
     vi.restoreAllMocks()
   })
   afterAll(() => { vi.useRealTimers(); storeBackend.impl = null; setWarWorldDoor(null) })
+}
+
+/* ---- THE THIRD SQUADRON (his D2630 — the guard rail's plan, docs/superpowers/plans/2026-11-25-msq-pick-guard-build1.md,
+   the head's "Three squadrons, always" and §10 step 0 (b)) ----
+   `withThird()` — the world above, then, each test, before the test's own set-up, everything made through the REAL doors
+   (no right is written into the store by hand):
+   - Mon 13 Jul: Saber (master admin) adds Mako, an admin, through Admin → Users' door (accounts.ts addPersonAndAccount —
+     his home is the adder's, 142, as every add's is); makes squadron 150 at the demo's one place through "+ New
+     squadron"'s door (units.ts addUnit), Mako its first admin; and moves Mako to 150 (units.ts setHome), counting from
+     Tue 14 Jul — so from the 14th Mako is 150's own admin (his first Plan of 150 counts at home there, units-model.ts
+     adminRoleHolds), and on the 13th and before he reads as 142's;
+   - Tue 14 Jul, through Admin → Users' one Save (accounts.ts saveAccess), each right by one who may give it: Saber (Plan
+     is a master admin's to give) gives Hunter Plan of 149; Kestrel (149's own admin) gives Ranger View of 149; Mako
+     (150's own admin) gives Hunter View of 150 and Ranger View of 150;
+   - then the clock back to Wed 15 Jul 09:00, nobody signed in, the Undo list empty, the baselines settled.
+   So: Hunter — 142's admin, Plan of 149, View of 150; Saber — master admin, home 142; Ranger — 142's member, View of 149
+   and of 150; Kestrel — 149's admin; Osprey — 149's member; Mako — 150's own admin. `third.u150` is 150's id (made by
+   the door, so known only once the set-up has run); `PID.mako`, `ACCT.mako` are filled the same way. 150's Leave War
+   world sits behind the world door as 149's does. The set-up's rights leave their lines on the bells of Hunter and Ranger,
+   as any right given does (a test that reads a bell reads them too).
+   Called INSTEAD of useMsqWorld(), at the top of a test file; useMsqWorld() itself stays the two squadrons. Every test
+   file of the guard rail and of the Admin → Users and bell sections calls it (ui/msq-guard-rollcall.test.ts, R9). */
+export const third = { u150: '' }
+export function withThird(): void {
+  useMsqWorld()
+  beforeEach(() => {
+    on(13)
+    signInAs('saber')
+    const add = addPersonAndAccount('mako', { cs: 'Mako', ini: 'MK', seat: 'FCP', cat: 'C' }, 'admin')
+    if (add) throw new Error(`withThird: Mako not added — ${add}`)
+    const mako = accountByName('mako')
+    if (!mako) throw new Error('withThird: Mako added but no account found')
+    PID.mako = String(mako.pid); ACCT.mako = mako.id
+    const made = addUnit('150', 'p1', mako.id)
+    if (!made.ok) throw new Error(`withThird: 150 not made — ${JSON.stringify(made)}`)
+    third.u150 = String(made.id)
+    if (!worlds[third.u150]) worlds[third.u150] = memoryBackend()
+    unitsLoad()
+    const mv = moveMan(PID.mako, third.u150)
+    if (!mv.ok) throw new Error(`withThird: Mako not moved to 150 — ${JSON.stringify(mv)}`)
+    on(14); unitsLoad(); accountsLoad()
+    const give = (who: Who, acct: string, unit: string, line: 'view' | 'plan') => {
+      signInAs(who)
+      const bad = saveAccess(acct, { grants: { [unit]: line } })
+      if (bad) throw new Error(`withThird: ${who} could not give ${line} of ${unit} to ${acct} — ${bad}`)
+    }
+    give('saber', ACCT.hunter, 'u149', 'plan')
+    give('kestrel', ACCT.ranger, 'u149', 'view')
+    give('mako', ACCT.hunter, third.u150, 'view')
+    give('mako', ACCT.ranger, third.u150, 'view')
+    on(15); unitsLoad(); accountsLoad()
+    signOut()
+    _resetTimeline(); lwHistInit(); installGlobalUndo()
+    settleWorld()
+    raptorNotify()
+  })
 }

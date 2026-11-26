@@ -5907,6 +5907,8 @@ test('the New person fields fit the Users pane on a phone (add and approve)', as
     }).filter(Boolean)
     return { bad, scrollX: document.documentElement.scrollWidth > window.innerWidth }
   }, root)
+  /* the add form is folded behind "+ Add a person" (the guard rail's K2a — D2652 N13 i): opened first */
+  await page.click('#accAddOpen')
   await page.fill('#accAddName', 'fits2@mail')
   expect(await fits('#accAddBlock'), 'the add form').toEqual({ bad: [], scrollX: false })
   /* [ONE-DOOR] (D309, D322): the People list — its search, dots and role — and an opened row fit the pane too */

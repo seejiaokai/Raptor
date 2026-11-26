@@ -1,0 +1,14 @@
+{
+ "pictures": [],
+ "cases": {
+  "desk-chromium": {
+   "log": [
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvw656v1hdyyq\"]; asked []; note \"\"",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvw6icxy322d4\"]; asked []; note \"\"",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\",\"rocky\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvw6vfao9j5bj\"]; asked []; note \"\"",
+    "filed {\"type\":\"LL\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\"} on 2026-07-15: new input [\"imwvw7g4nk5381g\"]; asked [\"document\"]; note \"\""
+   ]
+  }
+ },
+ "errors": []
+}

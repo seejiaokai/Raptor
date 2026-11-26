@@ -50,6 +50,17 @@ tr.back-hl > td.qname::after{box-shadow:inset 0 2px 0 #3cc6e6,inset 0 -2px 0 #3c
    right edge on the button's, 380px wide on a desktop and the row's full width on a phone, over the list; each group a
    label over a row of the app's .fchip chips; the line over the list in the notes' grey, its Clear the accent, underlined */
 #page-admin .od-findrow{display:flex;gap:8px;align-items:center;position:relative;min-width:0}
+/* THE PAGE'S TOP ROW (the guard rail's K2a — his D2652 N13 i, D2726, D2729 Q10; the drawings s3-8-d-column and
+   s1-add2-a-d in docs/mock/2026-11-25-msq-pick-guard-q3/drawn/): the search, Filter and "+ Add a person" one row at the
+   very top of Admin → Users, 8px apart as the search and Filter already are; the search takes what the buttons leave, so
+   while the form is open (the opener off the page) it widens into the opener's place. "+ Add a person" is the app's .abtn,
+   as tall as Filter beside it (36). The Filter panel still hangs from the search's own row (.od-findrow). */
+#page-admin .od-top{display:flex;gap:8px;align-items:center;margin:0 0 12px;min-width:0}
+#page-admin .od-top .od-findrow{flex:1 1 auto}
+#page-admin .od-top .od-find{flex:1 1 auto;margin-left:0}
+#page-admin .od-addbtn{flex:0 0 auto;height:36px;box-sizing:border-box;white-space:nowrap}
+/* (the form under the top row takes only the page's own looks — .adm-sub's heading, .adm-2col's fields, .acc-note's
+   note, and .acc-acts for Add person · Cancel, the opened row's pair, so the same size by the same rule: lesson 103) */
 #page-admin .od-fwrap{flex:0 0 auto}
 /* as tall as the search box beside it, on or off; "on" is the app's own recipe, .fchip.on and .lgbar .abtn.on (his D2401) */
 #page-admin .od-fbtn{white-space:nowrap;display:inline-flex;align-items:center;height:36px;box-sizing:border-box}
@@ -96,6 +107,10 @@ tr.back-hl > td.qname::after{box-shadow:inset 0 2px 0 #3cc6e6,inset 0 -2px 0 #3c
   #page-admin .od-findrow .od-find{flex:1 1 auto}
   #page-admin .od-fpanel{left:0;width:auto}
   #page-admin .od-head{flex-wrap:wrap}
+  /* the top row on a phone: the search and Filter one row, "+ Add a person" full width under them (drawing s2-10-p) */
+  #page-admin .od-top{flex-wrap:wrap}
+  #page-admin .od-top .od-findrow{flex:1 1 100%}
+  #page-admin .od-addbtn{flex:1 1 100%}
   #page-admin .od-rc{display:none}
   #page-admin .od-rw{display:inline}
   #page-admin .od-c{flex-basis:46px}

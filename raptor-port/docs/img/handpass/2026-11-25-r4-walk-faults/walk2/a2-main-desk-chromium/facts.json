@@ -1,0 +1,41 @@
+{
+ "pictures": [],
+ "cases": {
+  "desk-chromium": {
+   "log": [
+    "bundle index-DIr933hk.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"06:00\",\"to\":\"07:00\",\"title\":\"Upper brief\"} on 2026-07-15: new input [\"imwv5qng6xne360\"]; asked []; note \"\"",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"07:10\",\"to\":\"07:50\",\"title\":\"Lower brief\"} on 2026-07-15: new input [\"imwv5qpilc0530x\"]; asked []; note \"\"",
+    "bundle index-DIr933hk.js",
+    "filed {\"type\":\"Training\",\"people\":[\"bane\"],\"from\":\"08:00\",\"to\":\"10:00\",\"title\":\"Range brief\"} on 2026-07-15: new input [\"imwv5qxv4odswza\"]; asked []; note \"\""
+   ]
+  }
+ },
+ "errors": [],
+ "results": [
+  [
+   "W9 desk-chromium \"xyz\" half typed in the lower input's Ground Programme remarks, Reject pressed on the upper — \"xyz\" once, on the lower row",
+   "FAIL",
+   "{\"rejectAt\":833,\"inputs\":[{\"title\":\"Upper brief\",\"acc\":\"r\",\"rej\":null,\"remarks\":\"\"},{\"title\":\"Lower brief\",\"acc\":\"g\",\"rej\":null,\"remarks\":\"xyz\"}],\"boxesHoldingXyz\":[\"gr:2.2.rmks\",\"imwv5qpilc0530x.rmks\"],\"groundRowsHoldingXyz\":[{\"src\":\"imwv5qpilc0530x\",\"prog\":\"LOWER BRIEF\",\"rmks\":\"xyz\"}]}",
+   "a2-desk-chromium-W9-typed.png, a2-desk-chromium-W9-after-reject.png, a2-desk-chromium-W9-settled.png"
+  ],
+  [
+   "W10d desk-chromium Personal Inputs dragged above the Ground Programme by its grip",
+   "PASS",
+   "{\"before\":[\"sb-panel.daybar\",\"2.notes\",\"2.prog\",\"2.waves\",\"2.duty\",\"2.sims\",\"2.ground\",\"2.inputs\",\"2.avail\",\"2.sans\",\"2.unav\"],\"after\":[\"sb-panel.daybar\",\"2.notes\",\"2.prog\",\"2.waves\",\"2.duty\",\"2.sims\",\"2.inputs\",\"2.ground\",\"2.avail\",\"2.sans\",\"2.unav\"]}",
+   "a2-desk-chromium-W10d-dragged.png"
+  ],
+  [
+   "W10d desk-chromium the re-ordered day: start 0900 and end 1130 typed with Tab — the Ground Programme row reads each at once, each section once",
+   "FAIL",
+   "[{\"f\":\"str\",\"typed\":\"0900\",\"ground\":\"08:00\",\"caret\":{\"focus\":\"imwv5qxv4odswza.end@board\",\"moved\":0},\"once\":true,\"order\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"},{\"f\":\"end\",\"typed\":\"1130\",\"ground\":\"10:00\",\"caret\":{\"focus\":\"imwv5qxv4odswza.rmks@board\",\"moved\":0},\"once\":true,\"order\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"}]",
+   "a2-desk-chromium-W10d-typed.png"
+  ],
+  [
+   "W5a desk-chromium Undo three times, then Redo three times, after the drag and the two times: each section once at every step",
+   "PASS",
+   "[{\"undo\":1,\"secs\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"},{\"undo\":2,\"secs\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"},{\"undo\":3,\"secs\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.ground 2.inputs 2.avail 2.sans 2.unav\"},{\"redo\":1,\"secs\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"},{\"redo\":2,\"secs\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"},{\"redo\":3,\"secs\":\"sb-panel.daybar 2.notes 2.prog 2.waves 2.duty 2.sims 2.inputs 2.ground 2.avail 2.sans 2.unav\"}]",
+   "a2-desk-chromium-W5a-after-undos.png, a2-desk-chromium-W5a-after-redos.png"
+  ]
+ ]
+}
