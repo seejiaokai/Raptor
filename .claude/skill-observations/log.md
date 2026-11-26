@@ -1443,3 +1443,16 @@ sides.
 **Issue:** `git grep` over every remote ref failed with "Argument list too long" (about 150 branches), so the first search found nothing; a loop of `git show <ref>:<file>` per branch found lessons up to 147 on another branch. The fresh reader, searching fewer branches, then advised renumbering to 102, a number already taken there.
 **Suggested improvement:** One small script that takes a file and a heading pattern, loops `git show` over every ref (never one `git grep` with all refs as arguments), and prints the highest number and which branch holds it; the lesson, ruling and skill-note steps call it, and a reader's brief names the number already checked so it does not re-advise.
 **Principle:** A search that fails on too many arguments must fail loudly, not read as "none found"; numbering checks across many branches belong in one tested script, not retyped per chat.
+
+### Observation 1083: Answers to follow-up questions skipped the pre-send check
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** Chat 192 taking his answers on the rulings audit's round-2 page
+**Skill:** New skill candidate: answering-his-follow-ups (D2140's check applied to chat replies)
+**Type:** open-source
+**Phase/Area:** replying in chat to "is this still applicable?" / "shouldn't X be able to…?"
+
+**Issue:** Taking over a questions page another chat wrote, the agent summarised it for him and changed one recommendation (H) to match a try-out's default without saying the page recommended otherwise, and passed the try-out builder's defaults off as recommendations. Then it answered three follow-ups from one area file and a code grep each, never searching the rulings on main and the open branches (this branch was 97 commits behind main; two other branches held about 120 newer rulings). He noticed: "seems like u are making errors", and asked for an Opus and a Fable check.
+**Suggested improvement:** Before re-presenting a page someone else wrote, or answering any follow-up that recommends something: (1) search every rulings source by subject, including main and every open branch of that area; (2) never change a page's recommendation in a summary without naming the change and why; (3) mark a builder's default as the builder's, not as a recommendation; (4) when the branch is far behind main, bring main in (or read main's rulings) before answering.
+**Principle:** A chat reply that recommends something is "put to him" as much as a page is, and needs the same check; a summary must not quietly change what the source it summarises says.
