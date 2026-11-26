@@ -1431,6 +1431,12 @@ second reader. Three squadrons in each (D2630).
 
 ### 8.5 Round 6 — group N answered, and what is still open (26 Nov 26)
 
+**Struck 26 Nov 26 by the coordinator (chat 193), answered by his go for the sections:** NQ1, NQ3, readings 22–24,
+V-Q2, the Plan lines' tap, the two Outgoing/Incoming readings, the 375-px jump row and "home squadron first" (D2730 —
+Admin → Users' step 0 folded them at the end of §21.2); NQ2, N14 and readings 17–20 (D2729, folded in §21.1); E9b's
+list (D2740), the SANS settings note (D2741), the save's give-up (D2742, filed with the database step). Where a row
+below still reads open for one of these, this line wins.
+
 **Group N — new since round 5; each answered "as recommended" (D2652, D2653) on his own rulings of the same day.**
 Where a row says "Transfer step", nothing of it is built in this batch (D2652's own row; D2634).
 
@@ -2368,6 +2374,8 @@ Display (D2638–D2640, D2649, D2652) — and part V is now built by two section
 
 ### 19.1 On another squadron's Admin → Users a man shows only what identifies him and that squadron's access line (D2625)
 
+**Read with §21.2’s block “Step 0 — this part read against his answers” (chat 199, D2730), which wins wherever the two differ.**
+
 - **Today.** `ui/UsersPanel.tsx`: `otherSqnOf(pid)` gives the grey number for a man whose home is not the page's;
   `rowLocks(pid, a)` — `rest = !home || adminOfUnit(home)` — decides what of his row the signed-in admin may change,
   **by the admin's right in the man's own squadron, wherever the row is drawn.** So for Kestrel (149's own admin) a
@@ -2436,6 +2444,8 @@ Display (D2638–D2640, D2649, D2652) — and part V is now built by two section
   admins only."; D2336's "Only an admin of 149 can give access to 149."
 
 ### 19.2 Plan of a squadron is given and ended by that squadron's own admins or a master admin (D2626) — a permission change
+
+**Read with §21.2’s block “Step 0 — this part read against his answers” (chat 199, D2730), which wins wherever the two differ.**
 
 - **Today — every place that keeps Plan to a master admin** (found by a search for the rule's name, PA1, and its
   words): `state/units.ts PLAN_MASTER_ONLY` ("Only a master admin gives Plan or makes a master admin.", l.158) and its
@@ -2673,6 +2683,8 @@ Display (D2638–D2640, D2649, D2652) — and part V is now built by two section
 
 ### 19.3 The folded headings of other squadrons (D2629, D2631, D2635)
 
+**Read with §21.2’s block “Step 0 — this part read against his answers” (chat 199, D2730), which wins wherever the two differ.**
+
 **Round 6 changed this part in four ways (D2652, D2654 — narrowing D2629, D2631 and D2270), each built as below
 and winning over the older words under it:** (1) the folded headings stand **at the page's foot, after "From other
 squadrons"**, no longer straight under the squadron's own people (D2652 N13 c, narrowing D2629's "under its own
@@ -2743,6 +2755,8 @@ page's whole order, its one search, the folding groups and the jumps are §19.12
   the list A to Z, never reordered (D322); the Waiting list and the Archived fold; D2400's "Plans 149" tick.
 
 ### 19.4 A callsign held by another squadron's archived man (D2632 as narrowed by D2633)
+
+**Read with §21.2’s block “Step 0 — this part read against his answers” (chat 199, D2730), which wins wherever the two differ.**
 
 - **Today.** `ui/UsersPanel.tsx archivedNote(r)` asks `engine/people.ts archivedHolders(cs)`, which walks every person
   of every squadron, and says "An archived man is already Ace — this makes a new person. If it is him, restore him
@@ -2965,6 +2979,8 @@ Then its code reads — Astra, a fresh blind Opus, a fresh blind Fable, and the 
 and the batch's one FULL check (§10), walked with three squadrons and Hunter's three rights (D2630).
 
 ### 19.12 Admin → Users across squadrons: the page's order, its one search, the folds, the block, Outgoing and Incoming, and the jumps (D2641, D2643, D2647, D2650, D2651, D2652)
+
+**Read with §21.2’s block “Step 0 — this part read against his answers” (chat 199, D2730), which wins wherever the two differ.**
 
 His D2641: Admin → Users is designed for work across many squadrons — at one look a squadron's admins see who from
 outside holds View or Plan of theirs, and people are moved between squadrons there. This is the page that holds it;
@@ -3492,6 +3508,63 @@ group, in place.
   forged command, Undo, Redo × who presses (§19.10's twins); the callsign note's cases; each new bell line tapped with
   nothing open and with a window open.
 
+**Step 0 — this part read against his answers, and D2730 folded (chat 199, the Fable orchestrator, 26 Nov 26; his D2728).**
+Read: §21's head and rules, this section, §21.5, §21.6, §19.1–§19.4, §19.10–§19.12, §8.4 and §8.5; the section page's
+source (`raptor-port/scripts/handpass/n191/page/body-s2.html`), its drawers' report (`…-msq-s2-draw-report.md`) and its
+words review (`…-msq-sections-words-review.md` §2); the full rows of D2730, D2728, D2658, D2652 and D2643; the People &
+accounts page. Ten facts were read in the code by a fresh helper (named below where one decides something); each
+"today" is read again by the step that builds on it. **Where this block and an older line of §19 or of the table
+above differ, this block wins**; §19.1–§19.4 and §19.12 carry a pointer at their heads.
+
+| His answer (D2730) | The hold it lifts | What is built — and what of the older text it replaces | Step |
+|---|---|---|---|
+| **Q1** — home squadron first in every list of squadrons | U3's "by number until he answers" | The folded headings stand his home squadron first, then the rest by number — "his" being the signed-in person's home that day; **V11's Mako case is written** (150 before 142 on 149's page). The other lists on this section's files take the same order in the same step: the opened row's lines and the filter's ticks (`ui/useraccess-model.ts byNum`, `ui/usersfilter-model.ts byNum`). **Not this section's files — told to the coordinator, who places them:** the Schedules menu and the ☰ menu (`perms.ts menuSquadrons`, sorted in `readableUnits`), the bell's Show row (`state/bellsqn.ts bellSquadrons`), Display's list, Admin → Squadrons (`ui/squadrons-model.ts`), the access screen's list (nobody's home yet: by number). Today each sorts by itself — seven copies of one sort; **this section writes the one order once** (`state/units-model.ts`, a function of the squadrons and a home) and the other sections call it, never a second copy | U3 |
+| **Q2** — a narrow phone: each jump as wide as its words | U6's "a rule and a drawing for 375 px, a two-figure count and a missing group" | The phone's jump buttons share the row equally while every label with its count fits its share (his own phone: nothing changes); where one does not fit, each button is as wide as its own words, the counts kept (`s2-11-p-375-words`); **where even that overruns the row, the counts leave the buttons and the headings keep them — the page's own note under Q2, told to him there and not drawn; named again at his look.** Decided by what fits, measured — never by a screen width. A group not on the page has no button and the rest share the row (three: `s2-09`; two: `s2-08`) | U6 |
+| **Q3** — an admin of both squadrons and an archived callsign (V-Q2) | U7's "V-Q2 holds the admin-of-both case" | For one who may act as an admin of the archived man's squadron (its own admin, a Plan holder of it, a master admin) the note ends in a link, **"If this is him, restore him on 142 →"**, beside "Someone new" (`s2-30`). Pressed: the form shuts as its Cancel does, what was typed dropped, 142 is picked and its Admin → Users opens with "▸ Archived" open at the man's row, ringed. **It is a pick** — the pick's own door (the core's K4), on R5 (a)'s list from the commit that adds it; refused for another reason (a failed save waiting on Retry), the form stays as it was, nothing dropped. After "Someone new" the line reads "A new Jester." alone and no bell line is written to a squadron he is himself an admin of. **Both forms carry it** — Q3's words are of the note, which is one part in Add a person and in Give access; on Give access the link shuts the opened request, which stays waiting. **Archived holders on several squadrons, he an admin of some:** each squadron's line ends its own way — the link where he is its admin, "ask 150's admin" where he is not — and only the squadrons he is not an admin of are told: two ruled cases side by side, not drawn, named at his look. **The Give access twin's words are settled by the words review:** "A new Jester. 142's admins are told when you add him." on both forms (no "…when you approve him."); its button "Add person and give access" greyed until answered (`s2-29`) | U7; the link after K4 |
+| **Q4** — a tap on a Plan line | U2's "the Plan lines' tap" (§8.5) | The tap — a "Given" line and an "ended" line alike (the page's group 8 sends both to Q4) — picks that squadron and opens its Admin → Users at the man's row in the landing ring: **in "From other squadrons" where he stands in it (`s2-34`), "View only" opened for him if he is under it; if he is by then the squadron's own, in People; otherwise under his own squadron's folded heading, opened for him.** **Replaces §19.2's "under his own squadron's heading"** for a man the block holds. A man with no row on that page (archived, deleted): the line opens nothing and stays as the record, as a deleted man's posting line does (D1691). `lineOpens` answers `'admin'`; B7, R5 (d) | U2's kinds; the tap after K6 |
+| **Q5** — Outgoing and Incoming now | U5's "which postings before the Transfer step" | **Outgoing:** every man of the squadron's own whose row wears the app's "posting out <date>" tag for a day ahead — Overseas Sqn, SANS, auto delete, **and a posting with no outcome chosen** ("posting out 14 Oct" alone: it too is a posting the app makes today — `leavewar/sync.ts postingPendingTag`). **Incoming:** every man of the squadron's own whose row wears "posting in <date>" — restored or added with a post-in date ahead. Each leaves his group on the day ("posted out …" is not Outgoing). Each keeps his tag in People too. A move between squadrons joins the day the Transfer step can make one | U5 |
+| **Q6** — a press on an Outgoing row | U5's reading | It opens his own row as People opens it; **one opened row a page** — opening him in one place closes him in the other. An Incoming row the same: in this build it is the squadron's own man's row (the page asked of Outgoing; the same row, so the same answer — named at his look) | U5 |
+| **Q7** — a leaving man while searching | U5's reading | He shows in People and in Outgoing | U4, U5 |
+| **Q8** — a Plan holder makes no admin (NQ1) | U2's "NQ1 holds the making of an admin by a Plan holder" — **the rule; its look is held, below** | Whoever may give Plan of a squadron is who may make a man its admin: `mayGivePlanOf(unit, …)` is asked wherever a command leaves a man an admin in force of `unit` who was not one before it — the Role choice (on his row, in Add a person, in Give access), a re-link, an Undo or Redo — at the doors and at the gate (`homeUnitViolation` today admits any admin of the man's squadron, a Plan holder among them). Point 5's fail-closed list (Q10) covers it too. **V5's three "not covered — NQ1" cases:** U0 writes each as built, named "changes at U2 — D2730 Q8", one that does not pass as built told to the coordinator; U2 turns each into a refusal. **Narrows D2336 and D2201, and the clause D2626's row kept by name** — D201's sweep in U2's records: the People & accounts page's lines, `data-model.md` §11, the roles table | U0 (pins), U2 |
+| **Q9** — another squadron's sign-in is not searched (NQ3) | U3's and U4's NQ3 | A man who is `foreignHere` is matched by his callsign only, in every group he stands in; the page's own men by callsign or sign-in, as today; the search box's words stay. V13's and V35's clause | U3, U4 |
+| **Q10** — only admins who can still sign in give Plan (reading 22) | U2's reading 22 | Point 5 of `mayGivePlanOf` as §19.2 wrote it — his now, not a reading | U2 |
+| **Q11** — an Undo or Redo by one who lost the right (reading 23) | U2's reading 23 | Blocked for good, in Undo's words today, naming nobody (`undo/timeline.ts outOfBandWords`, as `masterRightRefusal` already answers) — §19.2's (b), his now | U2 |
+| **Q12** — the refused re-link's words (reading 24) | U2's reading 24 | "This sign-in holds a right in 149. Only 149's own admins or a master admin can link it to another person." — final. No control links a sign-in today (D2266): the door and its tests only | U2 |
+| **Q13** — the note when a row changed under him | U1's `[WNS]` | "<Callsign>’s row changed while it was open, so nothing was saved. Open it again." — the app's passing note at the screen's foot; **the row closes** (the page; the drawer's "the row stays open under it" is not built). Replaces §19.1's "This changed while it was open — open it again." | U1 |
+
+**Seen on the section page and so no longer owed (D2730: "every screen as its page drew it"):** the empty "From other
+squadrons" — its heading with no count, its jump reading 0 and still working; Hunter's own row in the block wearing
+"you", never opened (his own row, D322); Saber's row there, "master admin, full access"; "▸ View only · 2 people" and
+"▸ 142 · 1 person" in the singular; the Plan button greyed with its reason on two lines on a phone; "Ace is already
+taken on 149" for a refused restore, in today's place (E9k); the Filter panel without its squadron ticks; the left
+column with the jumps under "Users" (the "Display" card after "Data" is the bell's — finding 3); the film (the pressed
+jump lit at the press, the run about 0.6 s, the heading white about a second); a master admin's page. Every word of
+the page was read by a fresh Fable before he saw it (the words review), so none of them is `[WNS]` any more.
+
+**Still held after this read — each put to him on the one questions page (D2739), or left out and said:**
+1. **Q8's look.** His answer gives the rule; what a Plan holder then sees was never drawn or worded (D1625, D2441):
+   the Role choice "Admin" where he may no longer pick it, its reason under it, and the door's refusal sentence —
+   today's nearest words say the opposite ("Only a master admin or an admin of 150 can make another."). **Question
+   10** (the page's own numbers: the guard rail took 9). Until answered, U2 lands without Q8's clause and V5's three cases stay pins; the clause then lands whole —
+   the doors, the gate and the row together — as U2b.
+2. **A Plan holder's Undo of his own "made a member".** By Q8 it would make a man an admin again, so it is refused —
+   a mistaken press is then put right only by one of that squadron's own admins or a master admin (there is always
+   one: a Plan holder cannot make its last own admin a member, D2247). The other way, his own step's Undo let
+   through, is a real choice and his. **Question 11.** Built with U2b.
+3. **A Plan ended by an archive or an overseas posting (D2311), or by "a master admin's making" (§19.2).** E9l rules
+   that such an ending is told; only "he moved to 150" and "made a member" were worded and drawn. **Question 12.**
+   Until answered these endings write no line to the squadron's admins, as today, and U2's report says so.
+
+**What can start now, and what waits.** U0 and U1: now (K0 and K2a have landed). U2: now, without the lines' tap
+(K6), without Q8's clause (question 10) and without item 3's lines. U3, U4, U5, U6: in that order after U1, on the
+same file; U3 without "Edit on 142 →" (K4). U7: without its link (K4) and its line's tap (K6). Appended when the
+core's steps land: V4c and V11b and the two links (K4), the three taps (K6). **Also this section's:**
+`addHomeChoices` (`ui/usersfilter-model.ts`), which nothing calls since K2a, is removed in U3 with the comment in
+`UsersPanel.tsx` that names it; on the closed page "WAITING FOR ACCESS" stands 6 nearer the top row than `s2-10`
+draws it (chat 198's measure) — put right in U4 and measured by the drawing check. **The test world:** the plan's
+Viper, Blade and Basher are not in `test-support/msq-world.ts` (the core's file); a test uses the world's own men
+through `moveMan` and `acrossMove`, and a man it truly lacks is asked of the coordinator.
+
 ### 21.3 The bell, its colours and the Display page (§19.5–§19.8, §19.13)
 
 **Who:** Opus, high. **When:** **once the core's K6 (old 5 — the bell and the page door) has landed** — it edits the
@@ -3614,6 +3687,7 @@ live" — as D2657 rules.** What it needs that `main` does not hold, and how it 
 | `state/undo-wire.ts`, `undo/timeline.ts` | the core (`snapView`; K8's hook) · Admin → Users (`planRestoreStuck` on the `stuck` hook) · **the bell (`timeline.ts NOT_STEPS` only — one name a kind)** | different functions and hooks; the core's K8 first if both are ready, else whoever is second brings the branch in |
 | `leavewar/sync.ts` | the core (`openInputWindow`) · Admin → Users (the restore's refusal, the pass after a restore) | the core's K6; different functions |
 | `state/notices.ts` | Admin → Users (new kinds and words) · read by the core and the bell | Admin → Users alone |
+| **the one squadron order — home first, then by number (D2730 Q1, "in every list")** | Admin → Users writes the ONE order function in `state/units-model.ts`; the lists that call it: the Schedules and ☰ menus (`state/perms.ts` `menuSquadrons`, `readableUnits`) and Admin → Squadrons (`ui/squadrons-model.ts`) — Admin → Users; the bell's Show row (`state/bellsqn.ts`) and Display's list — the bell | **Admin → Users writes the function first, as its own small commit ahead of U1, merged into the batch branch at once** (the coordinator's call, 26 Nov 26), so the bell and the core can call it; each list is re-pointed by the section named, and its test asserts the order. The core changes no list |
 | `ui/topbits.tsx` | the bell (`BellList`) · read by the core (the note's anchor) | the bell alone — and the contract of §21.3 with Admin → Users |
 | **`leavewar/ui/BidPicker.tsx`** | the posting sheet (its posting rows, the existing posting's sheet) · **the core (K1: a `showOnly` word on the `<Sheet …>` call of "Your OIL award" and of "Leave filed on the Inputs page" / "OIL the app credited", if E9b's answer lets them close — the red team's Opus 2)** | **The posting sheet, which ships first from `main`;** the core adds its marks after the batch branch has brought `main` in — different lines, one word each. If the core reaches K1 first it adds them and the posting sheet's merge is met by the batch branch as any other. The posting sheet never removes or renames those two sheets |
 | `ui/UsersPanel.tsx` — the core's later lines | the core's K1 and K2b add `useGuardWork` calls after Admin → Users has started | one call a line, added by the core; the Users section brings the batch branch in and keeps them — it never removes a report |

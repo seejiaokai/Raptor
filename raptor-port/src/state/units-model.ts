@@ -372,3 +372,21 @@ export function levelFrom(acct: LevelAccount | null | undefined, unit: string, i
 
 /* the date a move counts from: the next day's start (D2119) — a move typed today never rewrites today */
 export const moveFrom = (today: string): string => addDays(today, 1)
+
+/* THE ONE ORDER OF SQUADRONS (his D2730 Q1: "home squadron first, then the rest by number, in every list of squadrons —
+   one order everywhere"). Every list of squadrons the app draws calls this, so no list keeps a sort of its own that could
+   drift from the others. Numbers compare as numbers, exactly as the sorts it replaces did (9 < 142 < 249 < 1000); a home
+   that is not in the list, or none, leaves it plain by number; equal numbers keep the order they came in (a stable
+   sort). Generic over what a caller holds — bare unit ids, Unit rows, { id, num } rows — through `idOf` and `numOf`, so
+   none needs a second copy of the comparison. `bySquadronOrder` is the comparator, for a caller that sorts in place;
+   `squadronOrder` returns a new array and never changes the one it is given. */
+export function bySquadronOrder<T>(home: string | null | undefined, idOf: (x: T) => string, numOf: (x: T) => string): (a: T, b: T) => number {
+  return (a, b) => {
+    const ah = home ? idOf(a) === home : false, bh = home ? idOf(b) === home : false
+    if (ah !== bh) return ah ? -1 : 1
+    return String(numOf(a)).localeCompare(String(numOf(b)), undefined, { numeric: true })
+  }
+}
+export function squadronOrder<T>(items: readonly T[], home: string | null | undefined, idOf: (x: T) => string, numOf: (x: T) => string): T[] {
+  return [...items].sort(bySquadronOrder(home, idOf, numOf))
+}
