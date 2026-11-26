@@ -214,7 +214,8 @@ const read = (page: Page) => page.evaluate(() => {
   const cut = (e: Element) => [e, ...e.querySelectorAll('*')].some(x => (x as HTMLElement).scrollWidth > (x as HTMLElement).clientWidth + 0.5)
   const rows = [...sec.querySelectorAll('.rsans-row')].map(r => {
     const pk = r.querySelector('.rpuck') as HTMLElement, b = r.querySelector('.rsans-b') as HTMLElement | null, w = r.querySelector('.rwhy')
-    const l = b && b.querySelector('.rsans-l'), h = b && b.querySelector('.rsans-h')
+    /* the hours: under the letter, inside the badge or (since chat 207) the row's own second line — found in the row */
+    const l = b && b.querySelector('.rsans-l'), h = r.querySelector('.rsans-h')
     const txt = (e: Element | null) => e ? (e.textContent || '').replace(/\s+/g, ' ').trim() : ''
     const rng = (e: Element | null) => { if (!e || !e.firstChild) return null; const x = document.createRange(); x.selectNodeContents(e); return [...x.getClientRects()][0] || null }
     /* what he is drawn as — his name's puck (at least the puck width) and his reason's words, not the box the grid gives
@@ -227,7 +228,10 @@ const read = (page: Page) => page.evaluate(() => {
     const drawnRight = Math.max(pr.left + Math.min(own, pr.width), wr ? wr.right : 0)
     return { id: pk.dataset.person, why: w && w.getBoundingClientRect().width > 0 ? txt(w) : '', letters: txt(b),
       l: txt(l), h: txt(h), lLeft: rng(l)?.left ?? null, hLeft: rng(h)?.left ?? null, hTop: rng(h)?.top ?? null, lBottom: rng(l)?.bottom ?? null,
-      bLeft: b ? b.getBoundingClientRect().left : null, pkRight: pr.right, drawnRight, cut: b ? cut(b) : false }
+      bLeft: b ? b.getBoundingClientRect().left : null, pkRight: pr.right, drawnRight, cut: b ? cut(b) : false,
+      /* how many lines his reason is drawn on (walker B, chat 207 — F1: one man's hours under his letter widened the letters'
+         column and wrapped the widest reason on the desktop Board) */
+      whyLines: w && w.getBoundingClientRect().width > 0 && w.firstChild ? (() => { const x = document.createRange(); x.selectNodeContents(w); return new Set([...x.getClientRects()].map(q => Math.round(q.top))).size })() : 0 }
   })
   return { rows, spill: sec.scrollWidth - sec.clientWidth }
 })
@@ -273,6 +277,9 @@ for (const [name, vp] of [['desktop', { width: 1536, height: 1000 }], ['phone', 
       expect(j.hTop!, 'on the next line').toBeGreaterThanOrEqual(j.lBottom! - 0.5)
       expect(s!.rows.filter(r => r.cut).map(r => r.id), 'no badge cut').toEqual([])
       expect(s!.spill, 'the list never runs sideways').toBeLessThanOrEqual(1)
+      /* as drawn, every reason on one line on a desktop, though a man's hours stand under his letter (walker B's F1, chat 207:
+         the hours widened the letters' column and the widest reason wrapped) */
+      if (name === 'desktop') expect(s!.rows.filter(r => r.whyLines > 1).map(r => `${r.id}: ${r.why}`), 'no reason wrapped').toEqual([])
     })
   })
 }

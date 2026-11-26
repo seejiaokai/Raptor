@@ -385,6 +385,11 @@ input.tm.badtm{border-color:var(--adv)}
    column and the hours stand on the next line under them, in the badge's own font, left-aligned with the letters; they
    may wrap again rather than be cut (the drawing had 3px to spare on a desktop; his iPhone draws wider). */
 .rsans-b.rsans-b2{white-space:normal;overflow:visible;text-overflow:clip}
+/* …and a badge with hours under its letter spans the letters' column and the free one after it, so his hours never widen
+   the letters' column: the column is the letters' own, and the widest reason keeps its one line, as drawn (walker B's F1,
+   chat 207 — one man's "08:00–10:00" pushed the column 3px left and wrapped "…only, not AMT"; e2e/sans-unfiled-wrap.spec.ts
+   "no reason wrapped"). A row that also has remarks keeps them in their own column, the badge in the letters' alone. */
+.rall.rsans .rsans-row>.rsans-b.rsans-b2:not(:has(~ .rsans-r)){grid-column:2/-1}
 .rsans-b2>.rsans-l{display:block;white-space:nowrap}
 .rsans-b2>.rsans-h{display:block;overflow-wrap:anywhere}
 
