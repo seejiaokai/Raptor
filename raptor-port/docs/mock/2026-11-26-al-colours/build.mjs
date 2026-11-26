@@ -58,7 +58,8 @@ const SURF = [['edit', 'Edit Schedule'], ['view', 'View Schedule'], ['board', 'S
 const LOOK = { a: 'today', b: 'colour only, no chips, today’s colours', c: 'my recommendation, proposed colours' }
 const shots = SURF.map(([k, title], n) => `<h3>${n + 1}. ${title}</h3>` + ['phone', 'desktop'].map(sz => `<div class="pg-shots${sz === 'phone' ? ' ph' : ''}">${['a', 'b', 'c'].map(l => { const f = `img/${k}-${l}-${sz}.png`
   if (!existsSync(join(HERE, f))) throw new Error('missing picture ' + f)
-  return `<figure><a href="${f}"><img src="${f}" loading="lazy" alt="${title} on a ${sz}: ${LOOK[l]}"></a><figcaption><b>${n + 1}${l}</b> ${sz === 'phone' ? 'iPhone' : 'Desktop'}: ${LOOK[l]}</figcaption></figure>` }).join('')}</div>`).join('')).join('')
+  /* target="_blank": a plain link replaced the whole page with the picture, and on his iPhone there was no way back (26 Nov 26) */
+  return `<figure><a href="${f}" target="_blank" rel="noopener"><img src="${f}" loading="lazy" alt="${title} on a ${sz}: ${LOOK[l]}"></a><figcaption><b>${n + 1}${l}</b> ${sz === 'phone' ? 'iPhone' : 'Desktop'}: ${LOOK[l]}</figcaption></figure>` }).join('')}</div>`).join('')).join('')
 
 /* ---- the captured surfaces ---- */
 const clean = h => h.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/ contenteditable="true"/g, '').replace(/ tabindex="0"/g, '')
