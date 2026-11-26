@@ -1937,3 +1937,29 @@ sides.
 **Issue:** The brief said "you are the latest Fable, high thinking, as orchestrator", but the chat it started ran on a different, weaker model. Nothing in the start step set the model, and nothing in the brief told the new chat to check which model it was. The new chat noticed only because its own system text names its model; it stopped before reading anything and asked, and the owner switched it by hand.
 **Suggested improvement:** In the handoff / start-a-chat steps: (1) the starter passes the model in the call that starts the chat, where the call takes one; (2) every brief that names a model ends its first paragraph with "first check which model you are; if it differs from the one named here, say so and wait before reading or building anything".
 **Principle:** A role assigned in words is not a setting. When a brief depends on which model or tool runs it, the started worker verifies that fact first, before spending anything, and the starter sets it mechanically where it can.
+
+### Observation 1086: A helper's report held hostage by a shared lock it only needed for its last step
+
+**Status:** OPEN
+**Date:** 2026-11-26
+**Session context:** Chat 199, the multi-squadron build's section 2 orchestrator (Admin → Users); three Opus helpers started at once, each told to run `npm run build` under the checks lock at the end. (Numbered past 1085, the highest on any open branch.)
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** Writing a helper's brief — the verification step
+
+**Issue:** Another chat held the machine's one checks lock for the whole afternoon. Two builders had finished their work in ten minutes but sat for 35–45 minutes waiting for the lock before reporting, and a drawing helper whose whole run needed the lock produced no pictures. The orchestrator learned the work was done only by looking at the working tree itself.
+**Suggested improvement:** In a brief, any step that needs a shared lock comes AFTER the report is written and handed back: "write the report and reply first; then try the locked check for at most N minutes and add its result as a last line, or say NOT RUN". A job that cannot start without the lock (a served build, a drawing run) checks the lock before anything else and returns at once if it is held, so the orchestrator can queue it instead of spending a helper on waiting.
+**Principle:** A helper's findings should never queue behind a resource only its final check needs. Report first, then wait — and a job that needs the scarce resource from its first step tests for it before doing anything else.
+
+### Observation 1087: Opening one picture loaded three whole rule files into the orchestrator's context
+
+**Status:** OPEN
+**Date:** 2026-11-26
+**Session context:** Chat 199, the same session; the orchestrator opened one approved drawing (a PNG under `raptor-port/docs/mock/`) with the Read tool to know the layout its builders would be held to.
+**Skill:** New skill candidate: orchestrator-context-budget
+**Type:** internal
+**Phase/Area:** What an orchestrator reads itself and what it sends a helper to read
+
+**Issue:** The one Read of a mock-up picture matched the `paths:` of the screen-design rulings, the scheduler rulings and the interface guide's loader, and all three were loaded whole — about 40,000 tokens, 7% of the window, for one picture. The scheduler's page was not needed for the job at all.
+**Suggested improvement:** An orchestrating chat does not open drawings or source files itself when a helper will be held to them anyway: the builder's brief names the drawings, and the orchestrator reviews the diff and the helper's own account of each departure. Where it must look, it asks a helper to describe the picture, or looks only after the area's rules are already loaded for another reason. Worth checking whether the scheduler rulings' `paths:` should match `docs/mock/**` at all.
+**Principle:** Path-triggered context is charged to whoever opens the file. A coordinator that only needs a conclusion about a file should have a worker open it.
