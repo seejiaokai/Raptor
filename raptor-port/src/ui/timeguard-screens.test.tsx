@@ -14,7 +14,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { DAYS } from '../engine/data'
-import { SCHED } from '../engine/publish'
+import { SCHED, protectedWeek } from '../engine/publish'
 import { txtSet } from '../engine/slots'
 import * as view from '../state/view'
 import { HOOKS } from '../engine/hooks'
@@ -129,6 +129,26 @@ describe('the sign-off box refuses without opening its list (the try-out)', () =
     expect(sgn().getAttribute('role')).toBe('button')
     expect(sgn().getAttribute('aria-disabled')).toBe('true')
     expect(sgn().tabIndex).toBe(0)
+  })
+  /* the Fable-seat read's F3: a refusing box on a protected week skipped the quarantine's own first word. The week draws
+     no sign-off box on a protected week (html.ts dayUnsupportedHTML); the board's sign-off bar is still drawn, and there
+     a press said the time note. */
+  it('on a protected week the board\'s sign-off box is not locked for the time, and a press says no time note (the Fable-seat read, F3)', async () => {
+    await edit('dr:3.0.0.end', '')
+    const amV = SCHED.amV, cur = SCHED.cur
+    try {
+      await act(async () => { SCHED.amV = undefined; SCHED.cur = { ...(SCHED.cur || {}), 0: (SCHED.cur || {})[0] ?? 'orig' }; notify() })
+      expect(protectedWeek()).toBe(true)
+      expect($$('#eWeek .sgn'), 'the week draws none').toEqual([])
+      await act(async () => { openScheduler(THU) })
+      const sgn = $$('#schedBoard .sgn')[0]!
+      expect(sgn, 'the board draws its bar').toBeTruthy()
+      expect(sgn.classList.contains('tg-block'), 'not drawn as refusing for the time').toBe(false)
+      await click(sgn); await key(sgn, 'Enter')
+      expect(blocked().filter(m => /missing a time/.test(m))).toEqual([])
+    } finally {
+      await act(async () => { closeScheduler(); SCHED.amV = amV; SCHED.cur = cur; notify() })
+    }
   })
   it('Enter or Space on the box says the note', async () => {
     await edit('dr:3.0.0.end', '')

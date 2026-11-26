@@ -2538,7 +2538,9 @@ export function signoffHTML(di:any,full:any){
      disabled and out of the tab order (Windows F4, the iPhone's form arrows and a screen reader's double tap open a select
      a mouse catch cannot stop — the fresh Opus red-team read, 2b), the pill a button for the keys (interactions.ts
      routeClick / routeOpenKey say the note: state/timeguard.ts). */
-  const gaps=timeGapsOf(+di).items, blockAt=gaps?' role="button" tabindex="0" aria-disabled="true"':'';
+  /* Not on a protected week: the quarantine keeps its own first word, as at every other sign and publish door (the
+     Fable-seat code read, F3 — the board still draws this bar there). */
+  const gaps=timeGapsOf(+di).items, lock=!!gaps&&!protectedWeek(), blockAt=lock?' role="button" tabindex="0" aria-disabled="true"':'';
   /* …and the status line says how many items are missing a time, before "N to sign" (D2854); on the board, with no names
      of the boxes still to sign until the last time is typed, so it stays one line on a phone (D2734). The week keeps the
      stale-appointment words after it, as built (the plan's Q21). Once all four show (an older saved week, Q-W3) the line
@@ -2553,9 +2555,9 @@ export function signoffHTML(di:any,full:any){
          value; it re-renders on every reflow, the same path that used to move
          the `selected` attribute. */
       const shown=v&&PEOPLE[v]?PEOPLE[v].cs:(ids.length?'— name —':'— none appointed —');
-      return `<label class="sgn ${v?'on':''}${sch?' sch':''}${gaps?' tg-block':''}" title="${esc(lbl)}${sch?' — appointed schedulers only':''}${v&&PEOPLE[v]?' — '+esc(PEOPLE[v].name||PEOPLE[v].cs):''}"${blockAt}>`
+      return `<label class="sgn ${v?'on':''}${sch?' sch':''}${lock?' tg-block':''}" title="${esc(lbl)}${sch?' — appointed schedulers only':''}${v&&PEOPLE[v]?' — '+esc(PEOPLE[v].name||PEOPLE[v].cs):''}"${blockAt}>`
         +`<span class="k">${esc(lbl)}</span><span class="v">${esc(shown)}</span>`
-        +`<select data-sign="${k}" data-signday="${di}" aria-label="${esc(lbl)} — ${esc((DAYS[di]||{}).dow||'')}"${gaps?' disabled tabindex="-1"':''}>`
+        +`<select data-sign="${k}" data-signday="${di}" aria-label="${esc(lbl)} — ${esc((DAYS[di]||{}).dow||'')}"${lock?' disabled tabindex="-1"':''}>`
         +`<option value="">${ids.length?'— name —':'— none appointed —'}</option>`
         +ids.map((id:any)=>`<option value="${id}"${id===v?' selected':''}>${esc(PEOPLE[id].cs)}</option>`).join('')
         +`</select></label>`;}).join('')

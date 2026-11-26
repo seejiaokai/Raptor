@@ -944,7 +944,7 @@ export function routeOpenKey(e: KeyboardEvent) {
   if (!t || typeof t.closest !== 'function') return
   /* [END-TIME-GUARD] the same press by the keys on a sign-off box that is refusing (routeClick, below) */
   const tgs = t.closest('.sgn.tg-block') as HTMLElement | null
-  if (tgs) {
+  if (tgs && !protectedWeek()) {   // the quarantine keeps its own first word (the Fable-seat read, F3)
     e.preventDefault()
     if (!canEditSched() || view.CURPAGE !== 'editsched') return
     const sel = tgs.querySelector('select[data-signday]') as HTMLSelectElement | null
@@ -1518,7 +1518,7 @@ export function routeClick(e: MouseEvent) {
   /* [END-TIME-GUARD] A SIGN-OFF BOX PRESSED WHILE AN ITEM ON THE DAY IS MISSING A TIME (his D2612, D2854): the box took the
      press (its list is shut — html.ts signoffHTML), and the note says why; nothing is written. Week and board alike. */
   const tgs = t.closest('.sgn.tg-block') as HTMLElement | null
-  if (tgs) {
+  if (tgs && !protectedWeek()) {   // the quarantine keeps its own first word (the Fable-seat read, F3)
     e.preventDefault(); e.stopPropagation()
     if (!canEditSched() || view.CURPAGE !== 'editsched') return
     const sel = tgs.querySelector('select[data-signday]') as HTMLSelectElement | null
