@@ -56,7 +56,7 @@ async function drawWindow(line, rowFig, never) {
     const cs = getComputedStyle(cfLine)
     const el = document.createElement('div')
     el.textContent = line
-    el.style.cssText = `font-size:${cs.fontSize};color:${never ? '#F2C879' : cs.color};font-family:${cs.fontFamily};margin-top:4px;white-space:${line.length > 45 ? 'normal' : 'nowrap'};grid-column:1/-1`
+    el.style.cssText = `font-size:${cs.fontSize};color:${never ? '#F2C879' : cs.color};font-family:${cs.fontFamily};margin-top:4px;white-space:${line.includes('\n') ? 'pre-line' : line.length > 45 ? 'normal' : 'nowrap'};grid-column:1/-1`
     tile.appendChild(el)
     if (never) {
       for (const id of ['pw-LVE', 'pw-LVE-cf']) { const b = pw.querySelector(`[data-testid="${id}"]`); if (b) { b.value = ''; b.style.border = '1px dashed rgba(242,200,121,.8)' } }
