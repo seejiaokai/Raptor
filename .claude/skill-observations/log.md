@@ -1950,3 +1950,16 @@ sides.
 **Issue:** The orchestrator reviewed a builder's work by opening three new source files and two pictures with the Read tool. Each first read of a file in a new area loaded that area's whole rule page into the chat by itself (four pages, tens of thousands of tokens each), so the chat went from 43% to 74% full across one small step and one review, and had to hand off after landing a single pass. The same review done through `git diff` in the shell loads nothing.
 **Suggested improvement:** In an orchestrator's brief and in the skill: the orchestrator reviews by `git diff` and by running tests, and reads a builder's report file — it opens a source file or a picture with the file tool only when the diff cannot answer, knowing each new area costs its rule page. Builders, whose context is spent once and thrown away, do the reading of source. Measure the chat's fullness after the first review, not at 80%.
 **Principle:** Where reading a file has a side cost (rules, context or hooks that load with it), the long-lived coordinating context should take the cheapest view that answers its question, and leave the expensive reading to short-lived workers.
+
+### Observation 1089: Parallel chats each took the next free number of a shared counter and clashed
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** chat 202, the multi-squadron coordinator, taking over from chat 193
+**Skill:** New skill candidate: coordinating parallel section chats
+**Type:** open-source
+**Phase/Area:** shared counters across parallel chats (question numbers on one shared page, chat numbers)
+
+**Issue:** Two counters shared by many chats clashed on the same day. On the one questions page, one chat published its three questions as 10-12 while another was drawing its own three as 10-12 (each read "last used: 9"). And two chats both called themselves 202, each having read the next chat number from a different branch's notes.
+**Suggested improvement:** The coordinator hands out blocks of each shared counter in advance (e.g. question numbers 13-15 to one chat, 16-18 to the next), the same way ruling-number ranges are already handed out; a chat that needs a number outside its block asks the coordinator. For chat numbers, the next free number is kept in one place every chat reads (not per branch).
+**Principle:** Any counter that several parallel workers draw from by "read the highest, add one" will collide; give each worker a pre-assigned range, or one owner who issues numbers.
