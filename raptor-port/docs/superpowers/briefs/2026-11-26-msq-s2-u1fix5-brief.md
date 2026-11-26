@@ -133,4 +133,38 @@ End with a ten-line summary.
 
 ## Addendum — the fresh Fable reader's cases
 
-(Added by the orchestrator when it reports.)
+Its report: `…/s2-chat205/fixread4/fable/report.md`, proofs `zz-fable-proof-0…3.test.tsx` there (0 and 3 pass — its
+soundness checks; 1 and 2 hold the failing cases, re-run by the orchestrator: `host-rerun-zz-fable-proof-1.txt`, `-2`).
+The main rule holds. Its findings, by this brief's numbers:
+
+- **Fix 3 (its finding 1 — the same as Opus 1 and Astra 2):** its step-by-step fix is in its report; add the same test
+  with a Filter tick that hides him (A1, A2 and the tick).
+- **Fix 4 (its findings 4 and 5):** B1 is Opus 3 again. **New — B2:** the archived row's report compares the box as
+  typed, so a callsign typed with a space after it still reports work after Save name saved it: compare the box
+  TRIMMED, as every other reading of it does. B2 a lasting test.
+- **Fix 5 (its finding 6 = Astra 3):** its test C1; its fix form (the landing hook says it closed the row in this
+  draw, and the judging is handed nothing for that draw) is one way — choose the one that holds both proofs.
+- **Fix 6, widened (seen by it in reading too):** the short row's Save pressed after the man was made a master admin
+  OR lost his sign-in with nothing redrawn — closes without sending and without a word. Test both first.
+- **Fix 7 (its finding 7):** its tests E1 (the man's account handed in as a prop and read as `p.a.name`) and E2 (a
+  reader of the man planted inside `rowLocks`) show the two roads §20 does not see. Build its three steps: pin each
+  editor's props exactly; run the same name check on `rowLocks`, `SquadronLines` and `lineState`, each with its own
+  short allowed list; reword §20's comment to what it covers.
+- **Fix 8 — NEW (its finding 2): a short row he put away, whose man then leaves the list, is held and comes back OPEN
+  with no press — and its Save sends the old pick.** Saber gives Mako Plan of 149, opens Mako's short row, picks View
+  (to lower it), hides the row by his own search (or leaves Users for another Admin card), presses Undo: Mako is off
+  149's list. Found again by search, the row is drawn open, View picked, "not saved" — and Save GIVES View to a man who
+  holds nothing. The rule: an open row "is never left held to come back open with no press"; "brought back, it is
+  closed". Cause and fix as its report gives them (the page remembers his search, ticks and fold at the last draw the
+  row was on the page, and while the row is out of sight asks whether its man would still be on the list as it stood
+  then; where not, the row closes — with NO note, since it was not on the page at the last draw). Its D1, D1b and D2 as
+  lasting tests; D0 a pin. Check the same for a whole row and an archived row put away (their copy should already close
+  them — pin it).
+- **Fix 9 — NEW (its finding 3; the core's line in this file — the orchestrator tells chat 204 that S2 carries it):**
+  the "Give access" form's report to the leave-guard (`useGuardWork('giveaccess', …)` in the waiting-requests part)
+  stays on after its form is gone — the request answered on the man's own row, or by another admin — because the open
+  form's state is never cleared when its request leaves the list. Count only a form whose request is still waiting
+  (its fix: read the waiting list first, `live = !!open && reqs.some(r => r.id === open.id)`). B3 and B3b lasting
+  tests in an `msq-s2-*` file. Change nothing else of that part.
+- **For the walk, no change:** what is typed in a whole row is now the page's, so every key redraws the whole list —
+  say in your report if any test or what you see suggests it is slow.
