@@ -210,6 +210,95 @@ board were walked broadly (C36, C53, C57, C58, C75, C76, C81); F3 is one route o
 - **Edit Schedule's count line tap (D2854) — built:** on the phone each tap brought the next empty box to the middle of
   the screen with the caret, in page order, round again after the last. Picture: `FIX-count-tap-P-second.png`.
 
+## The re-walk (27 Nov 26, morning)
+
+A fresh Opus, on ONE production build of `4235a08d1` (the fixer's last commit) served at `127.0.0.1:4251`, under the
+checks lock. It read the sheet above and the fixer's report, not the code reads. Nothing was fixed. Devices as the
+first walk: D = desktop 1536 Chromium; P = iPhone 402 WebKit, touch; PC = Chromium at iPhone size with real touch, for
+the drags WebKit's driver cannot make. Every state was made through the app's own controls; every picture is named
+`RW-…` (388 pictures). Scripts and logs: the scratchpad's `walk/RW/` and `walk/logs/RW-*`.
+
+**Counts: 36 PASS · 3 FAIL · 4 FOR HIM · 1 NOT WALKED** (44 lines below).
+
+### 1–6: the fixes, and what they touched
+
+| # | Item | Result | What the screen showed | Pictures |
+|---|---|---|---|---|
+| 1 | C57 (first walk's F1), P | PASS | Four ENDs refused red, note up at 798–848 of 874. A red ground END scrolled to the foot and tapped: caret in it at 429–444, the note where it was, at ~100 ms and settled. A red sim END tapped just under the top bar: caret in it at 62–77, the bar ends at 49, nothing scrolled. A flick to the foot and back: every outline still red. The keyboard-up case still needs his iPhone | RW-C57-P-foot-tap-lift, RW-C57-P-foot-tap-settled, RW-C57-P-top-tap-settled, RW-C57-P-after-flick |
+| 2 | C58 (first walk's F2), draft day, P and D | PASS | Phone: an outlined END (grey, then red) is 15px tall like its START on a desk, OFT, ground and Common Programme row, the outlines not overlapping (0.5px apart), row heights unchanged (41, 49); a flight's landing 10.3px like its take-off; a typed END 11px as before. Desktop: 17px = 17px on every kind | RW-C58-P-draft-{desk,oft,ground,cprog,flight}-{grey,red}, RW-C58-D-draft-desk-red |
+| 3 | C62 (first walk's F3), D and P | PASS | Refused on the working copy → + Alt Plan → END typed in Plan B → Plan A: A's box red, count 1 | RW-C62-D-a-6-back-on-A, RW-C62-P-a-6-back-on-A |
+| 4 | Desk rows, delete + Undo (board), D, P, PC | PASS | SXO and OPS-O ENDs red. SDO above them deleted: both still red one place up, on board and week; Undo → back in place, red. A red row itself deleted: only the other red; Undo → it comes back red | RW-ROWS-D-A1-board-after-delete, RW-ROWS-D-A4-board-deleted-red-row-back, RW-ROWS-P-A1-… |
+| 5 | Desk rows, Auto sort + Undo, D, P, PC | PASS | SDO given START 23:00, Auto sort: the two red rows move up a place each and stay red, board and week; Undo → back, red | RW-ROWS-D-A6-board-after-sort, RW-ROWS-D-A6-week-after-sort |
+| 6 | Desk rows, drag + Undo, D (mouse), PC (finger) | PASS | The last desk row dragged by its grip to the top: red followed both rows; Undo → back. Not made in WebKit (its driver cannot drag) | RW-ROWS-D-A8-board-after-drag, RW-ROWS-PC-A8-board-after-drag |
+| 7 | Other row kinds, delete + Undo, D, P, PC | PASS | A red END below, the row above deleted on the board: ground (row above deleted), OFT, Common Programme, and a flight landing in wave 2 with wave 1 deleted (✕ Wave): each moved box still red at its new place, every other red row still red; Undo → all back | RW-ROWS-D-{B1,C1,E1,F1}-board-…-after-delete |
+| 8 | A wave dragged on the week, + Undo, D, PC | PASS | Six items red; wave 2 dragged above wave 1 by its grip: the red landing moved with its line, every other red kept; Undo → back | RW-ROWS-D-D1-week-after-wave-drag, RW-ROWS-PC-D1-… |
+| 9 | Plans: + Alt Plan, then Undo, D and P | PASS; Plan B grey FOR HIM (R3) | Plan B, the new live copy, starts grey (built as the plan's R3 recommendation); Undo → back on the working copy, still red | RW-C62-D-a-2-planB-live, RW-C62-D-a-3-undo-altplan |
+| 10 | Plans: switching, then Undo, D and P | PASS | B typed and complete → A: red. Undo takes the switch back (B, 14:00, "4 to sign"); A again: red | RW-C62-D-a-7-undo-switch |
+| 11 | Manage plans → Delete, then Undo, both ways, D and P | PASS | On A (red), B deleted: A becomes the working copy, still red; Undo → A and B back, A red; a press → refused, red. And Astra's 2: refused on B, A deleted: the working copy still red; Undo → B red; switch to A and back: red. An END typed then Undone comes back grey (R3, as C54) | RW-C62-D-a-9-after-delete-B, RW-C62-D-a-10-undo-delete, RW-C62-D-b-4-after-delete-A, RW-C62-D-b-5-undo-delete, RW-C62-D-b-9-undo-typing |
+| 12 | Count line tap (D2854): order, wrapping, D and P | PASS | Four empty boxes. The line is a button, drawn as the words were ("4 items missing a time · 4 to sign", 9.5px, the count red). Five taps: Common Programme END, desk END, OFT END, ground END, then the first again — page order; each box in the middle of the screen with the caret (D 423–440 of 864; P 429–444 of 874). A box typed after the tap went to it drops out of the turn | RW-CT-D-1-first-tap, RW-CT-D-5-wrapped, RW-CT-P-1-first-tap, RW-CT-P-5-wrapped |
+| 13 | Count line tap after a box was skipped, D and P | **FAIL (N2)** | Below | RW-CT2-D-N2-tap3, RW-CT2-P-N2-tap3 |
+| 14 | Count line tapped while typing in a box, D and P | **FAIL (N3)** | Below | RW-CT2-D-N3-tap-while-typing, RW-CT2-P-N3-tap-while-typing |
+| 15 | Count line: keys, and back to words at zero, D (keys), D and P | PASS | Tab from APPROVED BY lands on the line; Enter goes to the next box. Every time typed: the line is plain words again, "4 to sign" | RW-CT-D-9-all-typed, RW-CT-P-9-all-typed |
+| 16 | The board's line stays words (Q19), D and P | PASS (tap FOR HIM, Q19) | "2 items missing a time · 4 to sign", plain words; a click does nothing. On the phone a tap on the middle of the words lands on a sign box and shows the sign note, as the first walk found (O3); on the week the tap now reaches the line itself | RW-CT-D-10-board-line, RW-CT-P-10-board-line |
+| 17 | The phone week's outlined END on every row kind, on a PUBLISHED day; desktop too | **FAIL (N1)** | Below. On a draft day every kind passes (item 2); an AMT row with nobody stays plain, as ruled | RW-C58-P-pub-{desk,oft,ground,cprog,flight}-{grey,red}, RW-C58-D-pub-desk-red |
+| 18 | A protected week's board sign box (the code reads' F3) | NOT WALKED (missing door) | No control makes a protected week: it comes only from a stored week the app cannot read, or one filed under the wrong week. Carried by the fixer's test (`ui/timeguard-screens.test.tsx`, "on a protected week the board's sign-off box is not locked…" — it draws the bar on a protected week and presses it; it proves the guard, not a screen route) | — |
+
+### 7: the first walk's scenarios on the surfaces these files draw — re-run with the first walk's own scripts
+
+All as the first walk found, on D and P where the first walk walked both; the board's sign bar 151px at 402 throughout.
+
+| Id | Result | What the screen showed |
+|---|---|---|
+| C27, C28, C31 | PASS | "3 items missing a time · 4 to sign" (week, board); names back at zero; after CUR CK "3 to sign · SKED CK, PLANNED BY, APPROVED BY"; pills, Publish and the bar unmoved, the line one line |
+| C29 | PASS | "12 items missing a time · 4 to sign" one line at 402 (scrollWidth 338 = 338); 12 → 3 → 1 → 0 |
+| C30 | FOR HIM (Q-W1) | "1 item missing a time · 4 to sign" |
+| C32 | PASS | Two signed, a desk END cleared: names dropped, "1 item missing a time · 4 to sign", grey |
+| C33 | PASS (week, now built); board FOR HIM (Q19) | Week: a tap on the count goes to the first empty box, a second tap to the next. Board as item 16 |
+| C34 | FOR HIM (Q21, Q-W4, Q-W6) | As the first walk; the line, now a button, has no hover words |
+| C35, C36, C37 | PASS | Each sign box refused by click and by touch, the one- and three-item words, nothing signed, every outlined box red; once typed, a name can be chosen |
+| C38 | PASS | Enter and Space one note; arrows, Alt+ArrowDown, F4 nothing; held Enter one note; Tab after APPROVED BY now reaches the count line, then on; Publish refuses on Enter and Space; board the same |
+| C40, C41, C42 | PASS | "… Thursday was not published." week and board, D and P, nothing published, no history line; no gap → no note; time refusal first, then signatures, then ORIG |
+| C43 | PASS | Each row kind's END emptied drops the four names, "1 item missing a time · 4 to sign"; Undo brings time and names back |
+| C44 | PASS | Published day: "… AL1 was not published.", View-only unchanged; typed, signed → AL1 published |
+| C52, C56 | PASS | Typed boxes leave red at once, 3 → 2 → 1; one note at a time, the words switching to the Publish form; the note covers no sign box or Publish |
+| C54 | FOR HIM (R3) | A box emptied after the refusal grey until the next press |
+| C55 | FOR HIM (R4) | Red kept across View-only, week 2, the board, drawn at the first frame; grey after reload and sign-out |
+| C59, C60, C63 | PASS | Undo / Redo as before (the refusal no step); a loaded version clears the outline and count |
+| C64 | PASS (O1) | No outline or count on View-only, admin or member; the note rides across for its seconds, as before |
+| C76 | PASS | Swipes and the board's day arrows across Sunday/Monday: red only on Sunday |
+
+### The new findings (each reproduced from a fresh world)
+
+**N1 — on a published day the outlined empty END is bigger than its START (phone and desktop).** Steps: Thursday,
+sign the four, Publish day; empty a desk (or OFT, ground, Common Programme) END; or a flight landing. Expected: the box
+and its pair one height (his lessons 42, 43 — the same expectation as C58). Seen: the emptied END on a published day
+carries the amendment's "Edited — goes out as AL1" mark, whose room (3px below and 3px left, the dotted mark inside)
+adds to the outline: phone 18 × 37px against START's 15 × 34px, the flight's landing 13.3px against 10.3px; desktop
+20 × 47px against 17 × 44px, shifted 3px left. Grey and red alike. A typed changed END on the same day is 11px (no outline,
+nothing seen), so the older mark's room is made seen by the outline, as F2 was. Re-seen in a second fresh world.
+Pictures: `RW-C58-P-pub-desk-red.png`, `RW-C58-P-pub-desk-grey.png`, `RW-C58-D-pub-desk-red.png` (the draft day beside
+it: `RW-C58-P-draft-desk-red.png`).
+
+**N2 — after a skipped box, the count tap goes back to it rather than on.** Steps: Edit Schedule, four ENDs empty; tap
+the line (→ the Common Programme END), tap again (→ the desk END), type the desk END and leave it; tap the line.
+Expected: the next empty box after the one the last tap went to — the OFT END (D2854 "each empty box in turn"; the
+fixer's own description, "each tap brings the next empty box"). Seen: the Common Programme END again, the first of the
+turn. A plain run (tap, type, tap, type) goes in order; only a box skipped earlier is gone back to first. Small; D and
+P alike. Pictures: `RW-CT2-D-N2-tap3.png`, `RW-CT2-P-N2-tap3.png`.
+
+**N3 — a tap on the count line while typing in a box is lost.** Steps: Edit Schedule, empty ENDs; tap the line (caret in
+the first empty box); type a time without leaving the box; tap the line. Expected: the time saved and the caret in the
+next empty box. Seen: the time is saved (the count falls by one), but the caret goes nowhere — nothing has focus — and a
+second tap is needed. D (click) and P (tap) alike, twice each. Pictures: `RW-CT2-D-N3-tap-while-typing.png`,
+`RW-CT2-P-N3-tap-while-typing.png`.
+
+**Observations (not faults):** the week's count line is 12px tall on the phone, 4px under the last sign box — a small
+target for a finger (his iPhone owed); on the board at 402 a tap on the count words still lands on a sign box (O3).
+Errors: none — every run's error list empty (desktop Chromium, phone WebKit, phone-size Chromium).
+
+**Lock:** taken 06:16:50, released 06:30:19 (27 Nov 26, this PC's clock); the build made once (06:17), served on 4251,
+stopped. Two phone picture retakes (wider crops, same results) ran 06:31–06:33 on the same build, no build.
+
 ## Observations — not faults of this change, or his to judge
 
 - **O1** The refusal note (like every note in the app — the control showed an ordinary plan note doing the same) stays
@@ -274,4 +363,6 @@ walk; no app code changed since.
 
 Taken 03:19, released 05:09 (27 Nov 26, this PC's clock); the preview server on 4247 stopped with it.
 
-Walk: docs/handpass/2026-11-27-end-time-guard.md · 1269 pictures · 40 surfaces · 82 orders · MISSING: 0 fixed / 0 ruled / 1 to file (the count-line tap)
+Walk (first walk): docs/handpass/2026-11-27-end-time-guard.md · 1269 pictures · 40 surfaces · 82 orders · MISSING: 0 fixed / 0 ruled / 1 to file (the count-line tap)
+
+Walk: docs/handpass/2026-11-27-end-time-guard.md · 1664 pictures (388 the re-walk's) · 40 surfaces · 82 orders + 44 re-walked · MISSING: 1 fixed (the count-line tap, built and walked) / 0 ruled / 0 to file · open: N1, N2, N3 (the re-walk)
