@@ -1430,3 +1430,16 @@ sides.
 **Suggested improvement:** Add to the mock-up guide's interactive section: (1) never add style elements or stylesheets from script on a page that will be published — keep all CSS fixed in the page and change only classes and CSS variables (`element.style.setProperty`); (2) picture links open with `target="_blank"`; (3) the page's test asserts both (no `createElement('style')`, every picture link has a target).
 
 **Principle:** A local test does not reproduce the host's security policy: anything that depends on the page being served (styles injected by script, navigation inside a framed viewer) must be ruled out by construction and checked by a test, because the local run will pass.
+
+### Observation 1082: Searching every branch for the next free lesson number
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** Chat 192 writing D2729 as a design-guide lesson
+**Skill:** New skill candidate: next-free-number (lessons, rulings, skill notes)
+**Type:** open-source
+**Phase/Area:** taking a number before writing a numbered entry
+
+**Issue:** `git grep` over every remote ref failed with "Argument list too long" (about 150 branches), so the first search found nothing; a loop of `git show <ref>:<file>` per branch found lessons up to 147 on another branch. The fresh reader, searching fewer branches, then advised renumbering to 102, a number already taken there.
+**Suggested improvement:** One small script that takes a file and a heading pattern, loops `git show` over every ref (never one `git grep` with all refs as arguments), and prints the highest number and which branch holds it; the lesson, ruling and skill-note steps call it, and a reader's brief names the number already checked so it does not re-advise.
+**Principle:** A search that fails on too many arguments must fail loudly, not read as "none found"; numbering checks across many branches belong in one tested script, not retyped per chat.
