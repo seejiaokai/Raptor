@@ -291,8 +291,18 @@ describe('§12 — the whole app: the Admin page taken away under an open row sa
     nothingSaved(ACCT.osprey)
     expect(anyRowNote(), 'his own leaving: no note').toBe(0)
   })
-  it('silent: the switch to the member view (his name badge) with the row open on a squadron he works by his Plan: his own pages go home and the Admin page goes — no note', async () => {
+  /* (re-pointed since the core's K5, by name — was "silent: the switch to the member view (his name badge) with the row
+     open on a squadron he works by his Plan: his own pages go home and the Admin page goes — no note"; with his rename
+     typed the switch is now refused (D2403, D2590), so the open row is first put back as it opened) */
+  it('the switch to the member view (his name badge) from 149\'s Admin → Users: refused while the row holds his typing (K5); with the row open and his typing put back, his own pages go home and the Admin page goes — no note', async () => {
     await hunterOn149()
+    await pressApp('#roleBadge', 'his name badge')
+    expect(isAdmin(), 'K5: the switch is refused — still the admin view').toBe(true)
+    expect(blockedNote(), 'K5: the grey note').toBe('Blocked: save or cancel the open row, then switch to the member view.')
+    expect(($('#accEdName') as HTMLInputElement | null)?.value, 'K5: the row still open with his typing').toBe('typed@mail')
+    nothingSaved(ACCT.osprey)
+    expect(anyRowNote(), 'K5: no "row changed" note').toBe(0)
+    await putTypingBack(ACCT.osprey)
     await pressApp('#roleBadge', 'his name badge')
     expect(isAdmin(), 'the member view is on').toBe(false)
     expect(pageUnit('own'), 'premise: in the member view his own pages are his home\'s').toBe('u142')
