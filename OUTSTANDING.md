@@ -2999,7 +2999,7 @@ only on his word. **Chat 180, 25 Nov 26:** round 2 and the drawings ([END-TIME-G
 adjusted by a fresh Fable) are on the same page (`raptor-port/docs/mock/2026-11-25-rulings-round2/`,
 `…/2026-11-25-guardrail-wording/` with `words-reviewed.md`), waiting on his answers. Filed with it, not built: (a) the
 day's OIL list keeps no record of who answered each question, though the OIL page's D782 line says each answer is
-stamped with who gave it — a job of its own, and sentence F1 names nobody until it exists; (b) two more untrue lines,
+stamped with who gave it — his D2802 (26 Nov 26): F1 names nobody, who answered is neither kept nor told to the member, a job of its own only on his word; (b) two more untrue lines,
 "You can only edit your own inputs" / "…delete your own inputs" (a member may also change one he filed), to draft and
 draw with the six; (c) five of the adjusted sentences (the sign-off refusal, the Leave War card, both hidden-warning
 lines, the Logic line) owe a cold read before they are built (`words-reviewed.md`); (d) his D2617 (a changed late
