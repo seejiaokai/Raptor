@@ -245,3 +245,42 @@ try-out: the waiting mark is no longer a dotted edge round the box.
 
 AL5 to AL7 on the real screen (the staged day stops at AL4); a real iPhone; print. The clearance figures are
 Chromium at 1536 and WebKit at 402 on the PC. `docs/file-map.md` still has no row for the folder. Nothing committed.
+
+## Round 3 (26 Nov 26): underline only the latest, and the puck's mark
+
+**His idea, and his answer.** "The latest AL will have the underline ... the old AL 1-3 will just have colours." Three
+choices were built into the try-out's new "Underline" setting: every AL; latest only (waiting counts); latest out +
+waiting. I recommended the third; **he picked it ("choice 3 is better i guess")**. It is now the try-out's default, the
+recommended look's behaviour and how every picture of the recommendation is drawn (all re-shot). The page marks the line
+in "What to look at now" as answered and does not ask it again. "Newest" is per day.
+
+How it is built: `ALX.underline(day, mode)` in `src/looks.js` gives the class `alx-nl` to each mark of an older
+amendment on its day (and `alx-old` to an older puck's seat); `src/looks.css` leaves such a mark its colour alone.
+Classes only; no style from script.
+
+**Measured, colour alone against unchanged words** (ordinary / red-green / lightness difference in black and white):
+
+| | from white words | from grey times | from faint grey |
+|---|---|---|---|
+| AL1 lemon | 32 / 31 / 2 | 40 / 40 / 16 | 46 / 45 / 32 |
+| AL2 pink | 26 / 15 / 21 | 24 / 4 / 3 | 27 / 12 / 13 |
+| AL3 ice | 21 / 1 / 4 | 22 / 9 / 14 | 29 / 21 / 30 |
+| AL4 clay | 25 / 23 / 23 | 24 / 23 / 5 | 26 / 26 / 11 |
+| AL5 sky | 19 / 20 / 16 | 13 / 13 / 3 | 18 / 18 / 19 |
+| AL6 sage | 27 / 26 / 27 | 26 / 24 / 8 | 27 / 26 / 8 |
+| AL7+ lilac | 22 / 20 / 17 | 15 / 13 / 1 | 20 / 18 / 17 |
+
+Ordinary sight: every older tint is still told from unchanged words (weakest: a sky time 13, a lilac time 15).
+**A real problem, put to him plainly as a point with a fix, his pick not changed:** a red-green reader cannot tell an
+ice name from a white name (1) or a pink time from a grey time (4), so for him older changes vanish from the row.
+Fix offered: a personal "Underline every amendment" switch. Black and white loses nearly all of it; print keeps the
+small ALn words (already said under question 4).
+
+**The puck's mark (his next question: "what about the number chips if i choose that?").** Three choices in the try-out's
+puck setting, pictured on the sims (AL1, AL3 and waiting AL4 pucks) on Edit Schedule and View-only Sched, both sizes:
+A a number on every AL; B a number on the newest out and on waiting ones, a plain tab on older; C nothing on older
+(a puck changed in AL1 then looks unchanged). Recommended: B, now the recommended look's puck mark; it replaces my
+round-1 suggestion of a plain tab on every changed puck. Open for him.
+
+`test.mjs` now also checks, at both widths: which amendments draw a line for each Underline choice on each screen and
+state, and what an older, the newest and a waiting puck wear for each puck choice.

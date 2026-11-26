@@ -131,3 +131,4 @@ table.pg-t{border-collapse:collapse;font-size:12.5px;min-width:560px}
 .pg-alike th{white-space:normal;text-align:right;vertical-align:bottom}
 .pg-alike th:first-child{text-align:left}
 .pg-alike td.wrap{min-width:210px}
+.pg-now .n.done{width:auto;padding:0 8px;border-radius:11px;background:transparent;color:var(--pg-ink2);border:1px solid var(--pg-line);font-size:11px;letter-spacing:.06em;text-transform:uppercase;line-height:20px}

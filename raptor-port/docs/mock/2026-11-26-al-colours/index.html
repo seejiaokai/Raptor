@@ -87,9 +87,9 @@ html :is([data-alc="7"],[data-aln="7"]){--alc:var(--alx7,#E5872B)}
    came within 2px of the stores chips, the next row's edge and the row a block's label sits on, so 1px it is; the waiting
    line is the same line dotted (1px, not 1.5). Nothing is given extra room, so no row, marked or not, moves. test.mjs
    and shoot.mjs measure the gap under every line (src/measure.js): at least 2px to anything drawn, and never cut off. */
-.alx-c [data-alc]:not(.seat):not(.verchip):not(.alx-k):not(.alpanel *):not(input):not(textarea):not(.rmkcell):not(.sb-rcell){
+.alx-c [data-alc]:not(.seat):not(.verchip):not(.alx-k):not(.alpanel *):not(input):not(textarea):not(.rmkcell):not(.sb-rcell):not(.alx-nl){
   text-decoration:underline solid var(--alc) !important;text-decoration-thickness:1px !important;text-underline-offset:0 !important;text-decoration-skip-ink:none !important}
-.alx-c [data-aln]:not(.seat):not(.verchip):not(.alx-k):not(.alpanel *):not(input):not(textarea):not(.rmkcell):not(.sb-rcell){
+.alx-c [data-aln]:not(.seat):not(.verchip):not(.alx-k):not(.alpanel *):not(input):not(textarea):not(.rmkcell):not(.sb-rcell):not(.alx-nl){
   text-decoration:underline dotted var(--alc) !important;text-decoration-thickness:1px !important;text-underline-offset:0 !important;text-decoration-skip-ink:none !important}
 /* A JET WHOSE STORES CHANGED (the remark cell carries that mark): the remark's own words did not change, so they keep their
    colour and get no line; the stores chips take the amendment's colour instead - their own 1px edge solid once out, dotted
@@ -97,10 +97,14 @@ html :is([data-alc="7"],[data-aln="7"]){--alc:var(--alx7,#E5872B)}
 .alx-b :is(.rmkcell,.sb-rcell):is([data-alc],[data-aln]) :is(.stchip,.stcfg),.alx-c :is(.rmkcell,.sb-rcell):is([data-alc],[data-aln]) :is(.stchip,.stcfg){
   color:var(--alc) !important;border-color:var(--alc) !important}
 .alx-c :is(.rmkcell,.sb-rcell)[data-aln] :is(.stchip,.stcfg){border-style:dotted !important}
+/* UNDERLINE ONLY THE LATEST (round 3, his idea): looks.js gives the class alx-nl ("no line") to every mark of an older
+   amendment on its day; the two line rules above and the board box's line below leave such a mark its colour alone.
+   A puck's tab and a stores chip's colour are not lines and stay. */
+.alx-c .alx-nl:not(input):not(textarea){text-decoration:none !important}
 /* a box on the board cannot underline its own words: a line is drawn INSIDE the box, under the words, 4px up from the
    box's foot and 6px in from its sides, so it never lies on the box's own edge (a picture laid in the box: nothing moves) */
 .alx-c :is(input,textarea):is([data-alc],[data-aln]){background-repeat:no-repeat !important;background-size:calc(100% - 12px) 1.5px !important;background-position:6px calc(100% - 4px) !important}
-.alx-c :is(input,textarea)[data-alc]{background-image:linear-gradient(var(--alc),var(--alc)) !important}
+.alx-c :is(input,textarea)[data-alc]:not(.alx-nl){background-image:linear-gradient(var(--alc),var(--alc)) !important}
 .alx-c :is(input,textarea)[data-aln]{background-image:repeating-linear-gradient(90deg,var(--alc) 0 2px,transparent 2px 4px) !important}
 
 /* ---- THE MISSING-TIME OUTLINE beside the amendment marks. The outline itself is the 25 Nov end-time try-out's own
@@ -122,18 +126,20 @@ html :is([data-alc="7"],[data-aln="7"]){--alc:var(--alx7,#E5872B)}
 html .et-off :is(#eWeek,.week,#schedBoard) .et-miss{box-shadow:none !important}
 
 /* ---- a changed puck ---- */
-:is(.alx-pk-tab,.alx-pk-num,.alx-pk-name,.alx-pk-none) .seat:is([data-alc],[data-aln])::after{content:none !important}
+/* mix (round 3, with his pick, latest out + waiting): the newest amendment out and the waiting ones wear their number,
+   older ones the plain tab. new: the same, but older ones wear nothing. looks.js marks an older puck's seat alx-old. */
+:is(.alx-pk-tab,.alx-pk-num,.alx-pk-mix,.alx-pk-new,.alx-pk-name,.alx-pk-none) .seat:is([data-alc],[data-aln])::after{content:none !important}
 /* tab: today's chip with its words taken out — the same corner, a third of the size; solid once out, hollow while waiting.
    The dark hairline keeps a pale tab apart from a pale role chip (a line, not a glow). */
-.alx-pk-tab .seat[data-alc]::after{content:'' !important;position:absolute;top:-3px;right:-3px;z-index:4;width:12px;height:7px;padding:0 !important;
+.alx-pk-tab .seat[data-alc]::after,.alx-pk-mix .seat.alx-old[data-alc]::after{content:'' !important;position:absolute;top:-3px;right:-3px;z-index:4;width:12px;height:7px;padding:0 !important;
   border:0 !important;border-radius:2.5px;background:var(--alc) !important;box-shadow:0 0 0 1.5px #0B0D10;pointer-events:none}
 .alx-pk-tab .seat[data-aln]::after{content:'' !important;position:absolute;top:-3px;right:-3px;z-index:4;width:12px;height:7px;padding:0 !important;
   box-sizing:border-box;border:1.5px solid var(--alc) !important;border-radius:2.5px;background:#0B0D10 !important;box-shadow:0 0 0 1.5px #0B0D10;pointer-events:none}
 /* (the hollow tab is a plain ring: dots are noise at this size) */
 /* num: today's chip saying only its number */
-.alx-pk-num .seat[data-alc]::after{content:attr(data-alc) !important;position:absolute;top:-5px;right:-3px;z-index:4;
+.alx-pk-num .seat[data-alc]::after,:is(.alx-pk-mix,.alx-pk-new) .seat[data-alc]:not(.alx-old)::after{content:attr(data-alc) !important;position:absolute;top:-5px;right:-3px;z-index:4;
   font:800 7.5px/1 'Barlow Condensed','Inter Tight',sans-serif;padding:1px 3px;border-radius:4px;background:var(--alc);color:#08131b;pointer-events:none}
-.alx-pk-num .seat[data-aln]::after{content:attr(data-aln) !important;position:absolute;top:-5px;right:-3px;z-index:4;
+.alx-pk-num .seat[data-aln]::after,:is(.alx-pk-mix,.alx-pk-new) .seat[data-aln]::after{content:attr(data-aln) !important;position:absolute;top:-5px;right:-3px;z-index:4;
   font:800 7.5px/1 'Barlow Condensed','Inter Tight',sans-serif;padding:0 2.5px;border-radius:4px;background:var(--panel);color:var(--alc);border:1px dotted var(--alc);pointer-events:none}
 /* name: the callsign takes the colour (what "text colour only" means on a puck) */
 .alx-pk-name .seat:is([data-alc],[data-aln]) .puck .nm{color:var(--alc) !important;-webkit-text-fill-color:var(--alc)}
@@ -146,6 +152,7 @@ html .et-off :is(#eWeek,.week,#schedBoard) .et-miss{box-shadow:none !important}
 .alx-key .alx-k{color:var(--alc);letter-spacing:.05em;text-decoration:underline solid var(--alc);text-decoration-thickness:1px;text-underline-offset:0;white-space:nowrap}
 .alx-key .alx-k.w{text-decoration-style:dotted}
 .alx-key .alx-k::after{content:none !important}
+.alx-key .alx-k.alx-nl{text-decoration:none}
 .alx-key .alx-k.w::after{content:' waiting' !important;display:inline !important;margin:0 !important;font:inherit !important;letter-spacing:.05em;vertical-align:baseline !important}
 #schedBoard .alx-key{padding-left:0}
 
@@ -284,6 +291,7 @@ table.pg-t{border-collapse:collapse;font-size:12.5px;min-width:560px}
 .pg-alike th{white-space:normal;text-align:right;vertical-align:bottom}
 .pg-alike th:first-child{text-align:left}
 .pg-alike td.wrap{min-width:210px}
+.pg-now .n.done{width:auto;padding:0 8px;border-radius:11px;background:transparent;color:var(--pg-ink2);border:1px solid var(--pg-line);font-size:11px;letter-spacing:.06em;text-transform:uppercase;line-height:20px}
 
 </style>
 </head>
@@ -294,17 +302,19 @@ table.pg-t{border-collapse:collapse;font-size:12.5px;min-width:560px}
 
 <div class="pg pg-top" id="top">
   <h1>Amendment marks: colour instead of the “AL1” words</h1>
-  <p class="pg-lede">Your idea, tried on a real Monday with four amendments. Play with it in the try-out below, then answer the questions. My short answer: yes to dropping the little “AL” words, with two small things kept so nobody is left guessing. The three lines marked <b class="pg-new">new</b> answer what you asked after the first page; everything else is as it was, except the colours.</p>
+  <p class="pg-lede">Your idea, tried on a real Monday with four amendments. Play with it in the try-out below, then answer the questions. My short answer: yes to dropping the little “AL” words, with two small things kept so nobody is left guessing. The lines marked <b class="pg-new">new</b> answer what you asked after the first page, newest first; everything else is as it was, except the colours.</p>
   <ol class="pg-now" aria-label="What to look at now">
+    <li><span class="n new">new</span><span class="q">With only the latest underlined, what does a changed puck wear?</span><span class="r"><b>Recommend: the newest amendment out and anything waiting keep a small number; older amendments keep a plain tab in their colour.</b> A puck cannot go “colour only”, and with no mark at all an older swap would look unchanged. <a href="#puckmark">The puck’s mark</a></span></li>
+    <li><span class="n done">done</span><span class="q">Underline only the latest change?</span><span class="r"><b>Answered: you picked “Latest out + waiting”.</b> It is now how the try-out and every picture of my recommendation are drawn. One point for you about colour-blind readers, with a fix. <a href="#latest">Underline the latest</a></span></li>
     <li><span class="n new">new</span><span class="q">Amendment colours that look like a section’s own colour (green on Duties, blue on blue, orange by red)</span><span class="r"><b>Recommend: a new seven: lemon, pink, ice, clay, sky, sage, lilac.</b> You were right: three of my first four sat on a section’s colour. One point is yours to call: pink for AL2. <a href="#alike">Look-alikes</a></span></li>
     <li><span class="n new">new</span><span class="q">The missing-time outline beside the amendment marks</span><span class="r"><b>Recommend: the outline stays red, on the box’s edge; the amendment’s dotted line sits inside it.</b> View Schedule shows no outline. <a href="#missing">Missing-time rule</a></span></li>
     <li><span class="n new">new</span><span class="q">The line touching the chips and rows under it, and how the sims look</span><span class="r"><b>Recommend: the line pulled up tight under the letters. Nothing now comes within 2px of it, and no row moves.</b> <a href="#clear">The line</a> · <a href="#sims">The sims</a></span></li>
     <li><span class="n">1</span><span class="q">Changed times, names, areas and remarks: colour instead of the “AL1” words?</span><span class="r"><b>Recommend: yes, colour plus a thin line under the words, and one small “Changed in” line per day.</b> Colour alone loses too much. <a href="#q1">Question 1</a></span></li>
-    <li><span class="n">2</span><span class="q">A changed puck: recolour it?</span><span class="r"><b>Recommend: no. Keep its colours and give it a small coloured tab on the corner, with no words.</b> <a href="#q2">Question 2</a></span></li>
+    <li><span class="n">2</span><span class="q">A changed puck: recolour it?</span><span class="r"><b>Recommend: no. Keep its colours and mark it on the corner.</b> Which corner mark is the new question above. <a href="#q2">Question 2</a></span></li>
     <li><span class="n">3</span><span class="q">Which seven colours?</span><span class="r"><b>Recommend: the new seven above.</b> Today’s AL1 is the app’s own cyan and today’s AL4 is the colour of ordinary text. <a href="#q3">Question 3</a></span></li>
     <li><span class="n">4</span><span class="q">Can the AL chip go completely?</span><span class="r"><b>Recommend: its words can go, the mark cannot.</b> The day’s own “AL3” tag at the top stays. <a href="#q4">Question 4</a></span></li>
   </ol>
-  <p class="pg-jump">Below: <a href="#tryout">the try-out</a> · <a href="#colours">the colours measured</a> · <a href="#pictures">pictures of the real app</a> · <a href="#clear">the line and what is under it</a> · <a href="#sims">the sims</a> · <a href="#missing">the missing-time rule</a> · <a href="#alike">look-alikes</a> · <a href="#questions">the four questions</a></p>
+  <p class="pg-jump">Below: <a href="#tryout">the try-out</a> · <a href="#colours">the colours measured</a> · <a href="#pictures">pictures of the real app</a> · <a href="#puckmark">the puck’s mark</a> · <a href="#latest">underline only the latest</a> · <a href="#clear">the line and what is under it</a> · <a href="#sims">the sims</a> · <a href="#missing">the missing-time rule</a> · <a href="#alike">look-alikes</a> · <a href="#questions">the four questions</a></p>
 </div>
 
 <section id="tryout" aria-labelledby="ttTitle">
@@ -324,11 +334,19 @@ table.pg-t{border-collapse:collapse;font-size:12.5px;min-width:560px}
         <button type="button" class="fchip" role="radio" data-set="look" data-val="b">Colour only, no chips</button>
         <button type="button" class="fchip" role="radio" data-set="look" data-val="c">My recommendation</button>
       </div></div>
+    <div class="tt-grp" role="radiogroup" aria-labelledby="ttL9"><span class="tt-lbl" id="ttL9">Underline</span>
+      <div class="tt-opts">
+        <button type="button" class="fchip" role="radio" data-set="ul" data-val="all">Every AL</button>
+        <button type="button" class="fchip" role="radio" data-set="ul" data-val="2">Latest only</button>
+        <button type="button" class="fchip" role="radio" data-set="ul" data-val="3">Latest out + waiting (your pick)</button>
+      </div></div>
     <div class="tt-grp tt-x" role="radiogroup" aria-labelledby="ttL3"><span class="tt-lbl" id="ttL3">A changed puck wears</span>
       <div class="tt-opts">
         <button type="button" class="fchip" role="radio" data-set="puck" data-val="chip">Today’s chip</button>
         <button type="button" class="fchip" role="radio" data-set="puck" data-val="tab">Small tab</button>
-        <button type="button" class="fchip" role="radio" data-set="puck" data-val="num">Number only</button>
+        <button type="button" class="fchip" role="radio" data-set="puck" data-val="mix">Number on the newest, tab on older</button>
+        <button type="button" class="fchip" role="radio" data-set="puck" data-val="num">Number on every AL</button>
+        <button type="button" class="fchip" role="radio" data-set="puck" data-val="new">Number on the newest, nothing on older</button>
         <button type="button" class="fchip" role="radio" data-set="puck" data-val="name">Name in colour</button>
         <button type="button" class="fchip" role="radio" data-set="puck" data-val="none">Nothing</button>
       </div></div>
@@ -816,6 +834,48 @@ table.pg-t{border-collapse:collapse;font-size:12.5px;min-width:560px}
 <p class="pg-sub">Each row is one screen of the running app in three looks. Picture <b>a</b> is the app exactly as it draws itself today. Pictures <b>b</b> and <b>c</b> are the same real screen with only the amendment marks redrawn; in <b>c</b> the “Changed in” line under the signed line is new. Edit Schedule and the Scheduler Board are shown with AL4 still waiting; View Schedule with all four out. Tap a picture to open it full size.</p>
 <h3>1. Edit Schedule</h3><div class="pg-shots ph"><figure><a href="img/edit-a-phone.png" target="_blank" rel="noopener"><img src="img/edit-a-phone.png" loading="lazy" alt="Edit Schedule on a phone: today"></a><figcaption><b>1a</b> iPhone: today</figcaption></figure><figure><a href="img/edit-b-phone.png" target="_blank" rel="noopener"><img src="img/edit-b-phone.png" loading="lazy" alt="Edit Schedule on a phone: colour only, no chips, today’s colours"></a><figcaption><b>1b</b> iPhone: colour only, no chips, today’s colours</figcaption></figure><figure><a href="img/edit-c-phone.png" target="_blank" rel="noopener"><img src="img/edit-c-phone.png" loading="lazy" alt="Edit Schedule on a phone: my recommendation, proposed colours"></a><figcaption><b>1c</b> iPhone: my recommendation, proposed colours</figcaption></figure></div><div class="pg-shots"><figure><a href="img/edit-a-desktop.png" target="_blank" rel="noopener"><img src="img/edit-a-desktop.png" loading="lazy" alt="Edit Schedule on a desktop: today"></a><figcaption><b>1a</b> Desktop: today</figcaption></figure><figure><a href="img/edit-b-desktop.png" target="_blank" rel="noopener"><img src="img/edit-b-desktop.png" loading="lazy" alt="Edit Schedule on a desktop: colour only, no chips, today’s colours"></a><figcaption><b>1b</b> Desktop: colour only, no chips, today’s colours</figcaption></figure><figure><a href="img/edit-c-desktop.png" target="_blank" rel="noopener"><img src="img/edit-c-desktop.png" loading="lazy" alt="Edit Schedule on a desktop: my recommendation, proposed colours"></a><figcaption><b>1c</b> Desktop: my recommendation, proposed colours</figcaption></figure></div><h3>2. View Schedule</h3><div class="pg-shots ph"><figure><a href="img/view-a-phone.png" target="_blank" rel="noopener"><img src="img/view-a-phone.png" loading="lazy" alt="View Schedule on a phone: today"></a><figcaption><b>2a</b> iPhone: today</figcaption></figure><figure><a href="img/view-b-phone.png" target="_blank" rel="noopener"><img src="img/view-b-phone.png" loading="lazy" alt="View Schedule on a phone: colour only, no chips, today’s colours"></a><figcaption><b>2b</b> iPhone: colour only, no chips, today’s colours</figcaption></figure><figure><a href="img/view-c-phone.png" target="_blank" rel="noopener"><img src="img/view-c-phone.png" loading="lazy" alt="View Schedule on a phone: my recommendation, proposed colours"></a><figcaption><b>2c</b> iPhone: my recommendation, proposed colours</figcaption></figure></div><div class="pg-shots"><figure><a href="img/view-a-desktop.png" target="_blank" rel="noopener"><img src="img/view-a-desktop.png" loading="lazy" alt="View Schedule on a desktop: today"></a><figcaption><b>2a</b> Desktop: today</figcaption></figure><figure><a href="img/view-b-desktop.png" target="_blank" rel="noopener"><img src="img/view-b-desktop.png" loading="lazy" alt="View Schedule on a desktop: colour only, no chips, today’s colours"></a><figcaption><b>2b</b> Desktop: colour only, no chips, today’s colours</figcaption></figure><figure><a href="img/view-c-desktop.png" target="_blank" rel="noopener"><img src="img/view-c-desktop.png" loading="lazy" alt="View Schedule on a desktop: my recommendation, proposed colours"></a><figcaption><b>2c</b> Desktop: my recommendation, proposed colours</figcaption></figure></div><h3>3. Scheduler Board</h3><div class="pg-shots ph"><figure><a href="img/board-a-phone.png" target="_blank" rel="noopener"><img src="img/board-a-phone.png" loading="lazy" alt="Scheduler Board on a phone: today"></a><figcaption><b>3a</b> iPhone: today</figcaption></figure><figure><a href="img/board-b-phone.png" target="_blank" rel="noopener"><img src="img/board-b-phone.png" loading="lazy" alt="Scheduler Board on a phone: colour only, no chips, today’s colours"></a><figcaption><b>3b</b> iPhone: colour only, no chips, today’s colours</figcaption></figure><figure><a href="img/board-c-phone.png" target="_blank" rel="noopener"><img src="img/board-c-phone.png" loading="lazy" alt="Scheduler Board on a phone: my recommendation, proposed colours"></a><figcaption><b>3c</b> iPhone: my recommendation, proposed colours</figcaption></figure></div><div class="pg-shots"><figure><a href="img/board-a-desktop.png" target="_blank" rel="noopener"><img src="img/board-a-desktop.png" loading="lazy" alt="Scheduler Board on a desktop: today"></a><figcaption><b>3a</b> Desktop: today</figcaption></figure><figure><a href="img/board-b-desktop.png" target="_blank" rel="noopener"><img src="img/board-b-desktop.png" loading="lazy" alt="Scheduler Board on a desktop: colour only, no chips, today’s colours"></a><figcaption><b>3b</b> Desktop: colour only, no chips, today’s colours</figcaption></figure><figure><a href="img/board-c-desktop.png" target="_blank" rel="noopener"><img src="img/board-c-desktop.png" loading="lazy" alt="Scheduler Board on a desktop: my recommendation, proposed colours"></a><figcaption><b>3c</b> Desktop: my recommendation, proposed colours</figcaption></figure></div>
 
+<h2 class="pg-h" id="puckmark">With only the latest underlined, what does a changed puck wear?</h2>
+<p>You asked what happens to the number chips under your pick. A puck cannot go “colour only” as words do: its own colour says pilot, WSO or ground crew. So its corner mark has to do the job. Try the three under “A changed puck wears” in the try-out.</p>
+<div class="pg-card pg-q">
+<dl>
+<dt>When it happens</dt><dd>Whenever an amendment swaps a person, on a day that has more than one amendment. A swap is the most common amendment there is.</dd>
+<dt>Example</dt><dd>Monday’s sims: one crew seat was changed in AL1, another in AL3 (the newest that is out), and a third is waiting for AL4.</dd>
+<dt>Choices and their costs</dt><dd>
+<p><b>A. Every amendment keeps its number</b>: “1”, “3”, and a hollow “4” while waiting. Cost: pucks do not follow your pick; an old change is marked as loudly as the newest, and every changed puck carries a tiny number that covers the corner of its CAT box.</p>
+<p><b>B. The newest amendment out and anything waiting keep the number; older ones keep a small plain tab in their colour.</b> Cost: two sizes of mark on one day; an older puck’s amendment is told by its tab’s colour and the day’s “Changed in” line, not by a number.</p>
+<p><b>C. Older amendments’ pucks lose the mark entirely.</b> Cost: a puck changed in AL1 looks exactly like one that never changed. Changed words at least keep their colour; a puck would keep nothing, so the change people most need to see would be the only one that disappears.</p>
+</dd>
+<dt>Recommendation</dt><dd><span class="pg-rec">B.</span> It is your pick carried onto pucks: the number does for a puck what the line does for words, marking only what is new, while the plain tab does what colour does for older words, saying “this changed, earlier”. It keeps your rule that a changed puck wears a tag, filled once out and hollow while waiting, and never a ring.</dd>
+<dt>What it changes of your earlier decisions</dt><dd>A changed puck is still marked by its tag alone. Today the tag says “AL4”; here it says “4” on the newest and nothing on older ones. This replaces my earlier suggestion (a plain tab on every changed puck), which gave pucks no way to show which change is newest.</dd>
+</dl>
+</div>
+<h3>Pictures of the real app: the sims, AL4 waiting</h3>
+<p class="pg-sub">View Schedule does not show a change that is still waiting, so there AL3 is the newest.</p>
+<p class="pg-swl">Edit Schedule</p><div class="pg-shots ph"><figure><a href="img/pk-a-edit-phone.png" target="_blank" rel="noopener"><img src="img/pk-a-edit-phone.png" loading="lazy" alt="Edit Schedule on a phone: A. A number on every amendment"></a><figcaption>iPhone: <b>A. A number on every amendment</b></figcaption></figure><figure><a href="img/pk-b-edit-phone.png" target="_blank" rel="noopener"><img src="img/pk-b-edit-phone.png" loading="lazy" alt="Edit Schedule on a phone: B. Number on the newest and the waiting, plain tab on older"></a><figcaption>iPhone: <b>B. Number on the newest and the waiting, plain tab on older</b></figcaption></figure><figure><a href="img/pk-c-edit-phone.png" target="_blank" rel="noopener"><img src="img/pk-c-edit-phone.png" loading="lazy" alt="Edit Schedule on a phone: C. Nothing on older amendments"></a><figcaption>iPhone: <b>C. Nothing on older amendments</b></figcaption></figure></div><div class="pg-shots"><figure><a href="img/pk-a-edit-desktop.png" target="_blank" rel="noopener"><img src="img/pk-a-edit-desktop.png" loading="lazy" alt="Edit Schedule on a desktop: A. A number on every amendment"></a><figcaption>Desktop: <b>A. A number on every amendment</b></figcaption></figure><figure><a href="img/pk-b-edit-desktop.png" target="_blank" rel="noopener"><img src="img/pk-b-edit-desktop.png" loading="lazy" alt="Edit Schedule on a desktop: B. Number on the newest and the waiting, plain tab on older"></a><figcaption>Desktop: <b>B. Number on the newest and the waiting, plain tab on older</b></figcaption></figure><figure><a href="img/pk-c-edit-desktop.png" target="_blank" rel="noopener"><img src="img/pk-c-edit-desktop.png" loading="lazy" alt="Edit Schedule on a desktop: C. Nothing on older amendments"></a><figcaption>Desktop: <b>C. Nothing on older amendments</b></figcaption></figure></div><p class="pg-swl">View Schedule</p><div class="pg-shots ph"><figure><a href="img/pk-a-view-phone.png" target="_blank" rel="noopener"><img src="img/pk-a-view-phone.png" loading="lazy" alt="View Schedule on a phone: A. A number on every amendment"></a><figcaption>iPhone: <b>A. A number on every amendment</b></figcaption></figure><figure><a href="img/pk-b-view-phone.png" target="_blank" rel="noopener"><img src="img/pk-b-view-phone.png" loading="lazy" alt="View Schedule on a phone: B. Number on the newest and the waiting, plain tab on older"></a><figcaption>iPhone: <b>B. Number on the newest and the waiting, plain tab on older</b></figcaption></figure><figure><a href="img/pk-c-view-phone.png" target="_blank" rel="noopener"><img src="img/pk-c-view-phone.png" loading="lazy" alt="View Schedule on a phone: C. Nothing on older amendments"></a><figcaption>iPhone: <b>C. Nothing on older amendments</b></figcaption></figure></div><div class="pg-shots"><figure><a href="img/pk-a-view-desktop.png" target="_blank" rel="noopener"><img src="img/pk-a-view-desktop.png" loading="lazy" alt="View Schedule on a desktop: A. A number on every amendment"></a><figcaption>Desktop: <b>A. A number on every amendment</b></figcaption></figure><figure><a href="img/pk-b-view-desktop.png" target="_blank" rel="noopener"><img src="img/pk-b-view-desktop.png" loading="lazy" alt="View Schedule on a desktop: B. Number on the newest and the waiting, plain tab on older"></a><figcaption>Desktop: <b>B. Number on the newest and the waiting, plain tab on older</b></figcaption></figure><figure><a href="img/pk-c-view-desktop.png" target="_blank" rel="noopener"><img src="img/pk-c-view-desktop.png" loading="lazy" alt="View Schedule on a desktop: C. Nothing on older amendments"></a><figcaption>Desktop: <b>C. Nothing on older amendments</b></figcaption></figure></div>
+
+<h2 class="pg-h" id="latest">Underline only the latest change (answered)</h2>
+<p><b>You picked “Latest out + waiting”:</b> the newest amendment that is out keeps its solid line, anything waiting keeps its dotted line, and older amendments keep their colour only. The try-out now starts that way and every picture of my recommendation on this page is drawn that way. The other two choices are still in the try-out’s “Underline” setting to compare. “Newest” is worked out day by day, since each day has its own AL numbering.</p>
+<div class="pg-card pg-q">
+<dl>
+<dt>What your pick gives</dt><dd>The newest change stands out and the older ones go quiet. Edit Schedule and View Schedule always line the same published amendment, so a scheduler and his members see the same thing. (With “Latest only”, the published AL3 would lose its line on Edit Schedule the moment a scheduler started AL4, while View Schedule still lined it.)</dd>
+<dt>Can the older ones still be told from unchanged words?</dt><dd>
+<p><b>For ordinary sight: yes</b>, at both sizes. The weakest are a changed <em>time</em> in sky (13 from the grey that times are written in) and in lilac (15); everything else is 18 or more. Quieter than a lined change, which is the point.</p>
+<div class="pg-scroll"><table class="pg-t pg-alike"><thead><tr><th>Amendment</th><th>from white words (names)<br>ordinary / red-green / black-and-white</th><th>from grey words (times)<br>ordinary / red-green / black-and-white</th><th>from faint grey words<br>ordinary / red-green / black-and-white</th></tr></thead><tbody><tr><td><span class="pg-dot s" style="background:#F8F337"></span> <b>AL1</b> Lemon</td><td class="num ok">32 / <span class="">31</span> / <span class="bad">2</span></td><td class="num ok">40 / <span class="">40</span> / <span class="">16</span></td><td class="num ok">46 / <span class="">45</span> / <span class="">32</span></td></tr><tr><td><span class="pg-dot s" style="background:#FF95D9"></span> <b>AL2</b> Pink</td><td class="num ok">26 / <span class="">15</span> / <span class="">21</span></td><td class="num ok">24 / <span class="bad">4</span> / <span class="bad">3</span></td><td class="num ok">27 / <span class="">12</span> / <span class="">13</span></td></tr><tr><td><span class="pg-dot s" style="background:#9DF7F0"></span> <b>AL3</b> Ice</td><td class="num ok">21 / <span class="bad">1</span> / <span class="bad">4</span></td><td class="num ok">22 / <span class="bad">9</span> / <span class="">14</span></td><td class="num ok">29 / <span class="">21</span> / <span class="">30</span></td></tr><tr><td><span class="pg-dot s" style="background:#D9A88C"></span> <b>AL4</b> Clay</td><td class="num ok">25 / <span class="">23</span> / <span class="">23</span></td><td class="num ok">24 / <span class="">23</span> / <span class="bad">5</span></td><td class="num ok">26 / <span class="">26</span> / <span class="">11</span></td></tr><tr><td><span class="pg-dot s" style="background:#A9C8FF"></span> <b>AL5</b> Sky</td><td class="num ok">19 / <span class="">20</span> / <span class="">16</span></td><td class="num ok">13 / <span class="">13</span> / <span class="bad">3</span></td><td class="num ok">18 / <span class="">18</span> / <span class="">19</span></td></tr><tr><td><span class="pg-dot s" style="background:#9FB07A"></span> <b>AL6</b> Sage</td><td class="num ok">27 / <span class="">26</span> / <span class="">27</span></td><td class="num ok">26 / <span class="">24</span> / <span class="bad">8</span></td><td class="num ok">27 / <span class="">26</span> / <span class="bad">8</span></td></tr><tr><td><span class="pg-dot s" style="background:#D9B3FF"></span> <b>AL7+</b> Lilac</td><td class="num ok">22 / <span class="">20</span> / <span class="">17</span></td><td class="num ok">15 / <span class="">13</span> / <span class="bad">1</span></td><td class="num ok">20 / <span class="">18</span> / <span class="">17</span></td></tr></tbody></table></div>
+<p class="pg-sub">Each cell: how far the amendment’s colour is from that kind of unchanged word, for ordinary sight, for a red-green colour-blind reader, and in black and white (difference in lightness). Under about 10 they look alike.</p>
+</dd>
+<dt>A point for you: colour-blind readers</dt><dd>
+<p><b>A red-green colour-blind reader loses some older changes completely.</b> A name changed in AL3 (ice) looks the same to him as an unchanged white name (1 apart), and a time changed in AL2 (pink) the same as an unchanged grey time (4 apart). When every amendment was lined, the line still told him something had changed; now, for older amendments, nothing on the row does. The day’s “Changed in” line and the changes window still list them.</p>
+<p><b>A fix that keeps your pick:</b> a switch of the person’s own, “Underline every amendment”, for anyone who needs it. It is the try-out’s “Every AL” choice, kept as a personal setting; everyone else sees your pick. No colour change fixes this: to these readers every pale tint sits on white or on grey.</p>
+</dd>
+<dt>In black and white</dt><dd>Nearly all of it goes: lemon and ice print as white words; pink, clay, sky and lilac as the grey of the times. A printed or exported schedule should keep today’s small “ALn” words, as question 4 already says.</dd>
+<dt>What it changes of your earlier decisions</dt><dd>You decided that changed times, areas and remarks keep their marks. Older amendments keep a mark (the colour) but a weaker one.</dd>
+</dl>
+</div>
+<h3>Pictures of the real app</h3>
+<h3>The Common Programme</h3><p class="pg-swl">Edit Schedule, AL4 still waiting: the three choices</p><div class="pg-shots ph"><figure><a href="img/ul-prog-edit-1w-phone.png" target="_blank" rel="noopener"><img src="img/ul-prog-edit-1w-phone.png" loading="lazy" alt="Every AL lined, on a phone"></a><figcaption>iPhone: <b>Every AL lined</b></figcaption></figure><figure><a href="img/ul-prog-edit-2w-phone.png" target="_blank" rel="noopener"><img src="img/ul-prog-edit-2w-phone.png" loading="lazy" alt="Latest only: just the waiting changes, on a phone"></a><figcaption>iPhone: <b>Latest only: just the waiting changes</b></figcaption></figure><figure><a href="img/ul-prog-edit-3w-phone.png" target="_blank" rel="noopener"><img src="img/ul-prog-edit-3w-phone.png" loading="lazy" alt="Your pick: AL3 solid, AL4 dotted, on a phone"></a><figcaption>iPhone: <b>Your pick: AL3 solid, AL4 dotted</b></figcaption></figure></div><div class="pg-shots"><figure><a href="img/ul-prog-edit-1w-desktop.png" target="_blank" rel="noopener"><img src="img/ul-prog-edit-1w-desktop.png" loading="lazy" alt="Every AL lined, on a desktop"></a><figcaption>Desktop: <b>Every AL lined</b></figcaption></figure><figure><a href="img/ul-prog-edit-2w-desktop.png" target="_blank" rel="noopener"><img src="img/ul-prog-edit-2w-desktop.png" loading="lazy" alt="Latest only: just the waiting changes, on a desktop"></a><figcaption>Desktop: <b>Latest only: just the waiting changes</b></figcaption></figure><figure><a href="img/ul-prog-edit-3w-desktop.png" target="_blank" rel="noopener"><img src="img/ul-prog-edit-3w-desktop.png" loading="lazy" alt="Your pick: AL3 solid, AL4 dotted, on a desktop"></a><figcaption>Desktop: <b>Your pick: AL3 solid, AL4 dotted</b></figcaption></figure></div><p class="pg-swl">Your pick on View Schedule while AL4 waits (AL3 is the newest it shows), then on both screens with all four out</p><div class="pg-shots ph"><figure><a href="img/ul-prog-view-w-phone.png" target="_blank" rel="noopener"><img src="img/ul-prog-view-w-phone.png" loading="lazy" alt="View Schedule, AL4 waiting: AL3 lined, on a phone"></a><figcaption>iPhone: <b>View Schedule, AL4 waiting: AL3 lined</b></figcaption></figure><figure><a href="img/ul-prog-edit-out-phone.png" target="_blank" rel="noopener"><img src="img/ul-prog-edit-out-phone.png" loading="lazy" alt="Edit Schedule, all out: AL4 lined, on a phone"></a><figcaption>iPhone: <b>Edit Schedule, all out: AL4 lined</b></figcaption></figure><figure><a href="img/ul-prog-view-out-phone.png" target="_blank" rel="noopener"><img src="img/ul-prog-view-out-phone.png" loading="lazy" alt="View Schedule, all out: AL4 lined, on a phone"></a><figcaption>iPhone: <b>View Schedule, all out: AL4 lined</b></figcaption></figure></div><div class="pg-shots"><figure><a href="img/ul-prog-view-w-desktop.png" target="_blank" rel="noopener"><img src="img/ul-prog-view-w-desktop.png" loading="lazy" alt="View Schedule, AL4 waiting: AL3 lined, on a desktop"></a><figcaption>Desktop: <b>View Schedule, AL4 waiting: AL3 lined</b></figcaption></figure><figure><a href="img/ul-prog-edit-out-desktop.png" target="_blank" rel="noopener"><img src="img/ul-prog-edit-out-desktop.png" loading="lazy" alt="Edit Schedule, all out: AL4 lined, on a desktop"></a><figcaption>Desktop: <b>Edit Schedule, all out: AL4 lined</b></figcaption></figure><figure><a href="img/ul-prog-view-out-desktop.png" target="_blank" rel="noopener"><img src="img/ul-prog-view-out-desktop.png" loading="lazy" alt="View Schedule, all out: AL4 lined, on a desktop"></a><figcaption>Desktop: <b>View Schedule, all out: AL4 lined</b></figcaption></figure></div><h3>Duties</h3><p class="pg-swl">Edit Schedule, AL4 still waiting: the three choices</p><div class="pg-shots ph"><figure><a href="img/ul-dutysec-edit-1w-phone.png" target="_blank" rel="noopener"><img src="img/ul-dutysec-edit-1w-phone.png" loading="lazy" alt="Every AL lined, on a phone"></a><figcaption>iPhone: <b>Every AL lined</b></figcaption></figure><figure><a href="img/ul-dutysec-edit-2w-phone.png" target="_blank" rel="noopener"><img src="img/ul-dutysec-edit-2w-phone.png" loading="lazy" alt="Latest only: just the waiting changes, on a phone"></a><figcaption>iPhone: <b>Latest only: just the waiting changes</b></figcaption></figure><figure><a href="img/ul-dutysec-edit-3w-phone.png" target="_blank" rel="noopener"><img src="img/ul-dutysec-edit-3w-phone.png" loading="lazy" alt="Your pick: AL3 solid, AL4 dotted, on a phone"></a><figcaption>iPhone: <b>Your pick: AL3 solid, AL4 dotted</b></figcaption></figure></div><div class="pg-shots"><figure><a href="img/ul-dutysec-edit-1w-desktop.png" target="_blank" rel="noopener"><img src="img/ul-dutysec-edit-1w-desktop.png" loading="lazy" alt="Every AL lined, on a desktop"></a><figcaption>Desktop: <b>Every AL lined</b></figcaption></figure><figure><a href="img/ul-dutysec-edit-2w-desktop.png" target="_blank" rel="noopener"><img src="img/ul-dutysec-edit-2w-desktop.png" loading="lazy" alt="Latest only: just the waiting changes, on a desktop"></a><figcaption>Desktop: <b>Latest only: just the waiting changes</b></figcaption></figure><figure><a href="img/ul-dutysec-edit-3w-desktop.png" target="_blank" rel="noopener"><img src="img/ul-dutysec-edit-3w-desktop.png" loading="lazy" alt="Your pick: AL3 solid, AL4 dotted, on a desktop"></a><figcaption>Desktop: <b>Your pick: AL3 solid, AL4 dotted</b></figcaption></figure></div><p class="pg-swl">Your pick on View Schedule while AL4 waits (AL3 is the newest it shows), then on both screens with all four out</p><div class="pg-shots ph"><figure><a href="img/ul-dutysec-view-w-phone.png" target="_blank" rel="noopener"><img src="img/ul-dutysec-view-w-phone.png" loading="lazy" alt="View Schedule, AL4 waiting: AL3 lined, on a phone"></a><figcaption>iPhone: <b>View Schedule, AL4 waiting: AL3 lined</b></figcaption></figure><figure><a href="img/ul-dutysec-edit-out-phone.png" target="_blank" rel="noopener"><img src="img/ul-dutysec-edit-out-phone.png" loading="lazy" alt="Edit Schedule, all out: AL4 lined, on a phone"></a><figcaption>iPhone: <b>Edit Schedule, all out: AL4 lined</b></figcaption></figure><figure><a href="img/ul-dutysec-view-out-phone.png" target="_blank" rel="noopener"><img src="img/ul-dutysec-view-out-phone.png" loading="lazy" alt="View Schedule, all out: AL4 lined, on a phone"></a><figcaption>iPhone: <b>View Schedule, all out: AL4 lined</b></figcaption></figure></div><div class="pg-shots"><figure><a href="img/ul-dutysec-view-w-desktop.png" target="_blank" rel="noopener"><img src="img/ul-dutysec-view-w-desktop.png" loading="lazy" alt="View Schedule, AL4 waiting: AL3 lined, on a desktop"></a><figcaption>Desktop: <b>View Schedule, AL4 waiting: AL3 lined</b></figcaption></figure><figure><a href="img/ul-dutysec-edit-out-desktop.png" target="_blank" rel="noopener"><img src="img/ul-dutysec-edit-out-desktop.png" loading="lazy" alt="Edit Schedule, all out: AL4 lined, on a desktop"></a><figcaption>Desktop: <b>Edit Schedule, all out: AL4 lined</b></figcaption></figure><figure><a href="img/ul-dutysec-view-out-desktop.png" target="_blank" rel="noopener"><img src="img/ul-dutysec-view-out-desktop.png" loading="lazy" alt="View Schedule, all out: AL4 lined, on a desktop"></a><figcaption>Desktop: <b>View Schedule, all out: AL4 lined</b></figcaption></figure></div>
+
+
+
 <h2 class="pg-h" id="clear">The line, and what sits under it</h2>
 <p>You liked the line but it touched things: on Edit Schedule the line under “1B: BFM-7” ran into the TPOD and 2 TKS chips, and 15:15’s sat on its row’s edge. I staged an amendment in every tight place I could find (list under the table) and measured, under every line, how far it is from the nearest thing below it.</p>
 <div class="pg-card pg-q">
@@ -926,7 +986,7 @@ table.pg-t{border-collapse:collapse;font-size:12.5px;min-width:560px}
 <p><b>D. The chip with only its number</b>, “4” instead of “AL4”. Cost: still a tiny number to read, and numbers stay on pucks when they have gone from everything else.</p>
 <p><b>E. Nothing on the puck.</b> Cost: a swapped person, the change people most need to see, would be the one change with no mark.</p>
 </dd>
-<dt>Recommendation</dt><dd><span class="pg-rec">C, the small tab.</span> It keeps your rule that a changed puck wears a tag and never a ring, keeps filled for out and hollow for waiting, and leaves every colour on the puck meaning what it means now. Try all five under “A changed puck wears”.</dd>
+<dt>Recommendation</dt><dd><span class="pg-rec">C, the small tab</span> (since your pick to underline only the latest, with a number on the newest: see <a href="#puckmark">the puck’s mark</a>). It keeps your rule that a changed puck wears a tag and never a ring, keeps filled for out and hollow for waiting, and leaves every colour on the puck meaning what it means now. Try all five under “A changed puck wears”.</dd>
 <dt>What it changes of your earlier decisions</dt><dd>Nothing in substance: a changed puck is still marked by its tag alone, filled once out, hollow while waiting, never a ring. The tag loses its words and its dots (at that size a plain ring reads better than a dotted one). The marks planned for a changed ALL AVAIL crowd would use the same tab.</dd>
 </dl>
 </div>
@@ -978,7 +1038,10 @@ table.pg-t{border-collapse:collapse;font-size:12.5px;min-width:560px}
 /* The looks' small script, shared by the pictures of the real app (shoot.mjs injects it) and the try-out page.
    ALX.palette(list)  writes the colour of each amendment (list[1]..list[7]; 8 and later take the 7th, as the app does)
    ALX.look(root, {look, puck})  sets the look's classes on a root element
-   ALX.key(day)  adds the recommendation's key line under a day's signed line, from the marks that day shows */
+   ALX.key(day)  adds the recommendation's key line under a day's signed line, from the marks that day shows
+   ALX.underline(day, mode)  which marks keep their line on that day: 'all' every amendment's; '2' only the newest change
+     (the waiting ones if any wait, else the newest amendment out); '3' the newest amendment out and anything waiting.
+     "Newest" is the day's own (each day has its own AL track). It only sets the class alx-nl; looks.css does the rest. */
 window.ALX = (() => {
   const TODAY = ['', '#3BC6E8', '#E5C24A', '#3DE86B', '#FFFFFF', '#B388FF', '#FF7FC4', '#E5872B']
   /* round 2: every one clear of the schedule's own section, puck and warning colours (search2.mjs); round 1's periwinkle,
@@ -994,7 +1057,7 @@ window.ALX = (() => {
     for (let n = 1; n <= 7; n++) root.setProperty('--alx' + n, list[n])
   }
   function look(root, { look = 'a', puck = 'chip' } = {}) {
-    root.classList.remove('alx-b', 'alx-c', 'alx-pk-chip', 'alx-pk-tab', 'alx-pk-num', 'alx-pk-name', 'alx-pk-none')
+    root.classList.remove('alx-b', 'alx-c', 'alx-pk-chip', 'alx-pk-tab', 'alx-pk-num', 'alx-pk-mix', 'alx-pk-new', 'alx-pk-name', 'alx-pk-none')
     if (look !== 'a') root.classList.add('alx-' + look)
     root.classList.add('alx-pk-' + puck)
   }
@@ -1012,7 +1075,21 @@ window.ALX = (() => {
     if (after) after.insertAdjacentElement('afterend', k)
     return k
   }
-  return { TODAY, NEW, NAMES, palette, look, key }
+  function underline(day, mode = 'all') {
+    if (!day) return
+    day.querySelectorAll('.alx-nl, .alx-old').forEach(e => e.classList.remove('alx-nl', 'alx-old'))
+    const out = [...day.querySelectorAll('[data-alc]:not(.verchip):not(.alx-k):not(.alpanel *)')].map(e => +e.getAttribute('data-alc'))
+    const top = Math.max(0, ...out), waiting = !!day.querySelector('[data-aln]:not(.alpanel *)')
+    /* a puck changed in an amendment older than the day's newest one out: the puck marks "mix" and "new" read this */
+    day.querySelectorAll('.seat[data-alc]:not(.alpanel *)').forEach(e => { if (+e.getAttribute('data-alc') < top) e.classList.add('alx-old') })
+    if (mode === 'all') return
+    day.querySelectorAll('[data-alc]:not(.verchip):not(.seat):not(.alpanel *)').forEach(e => {
+      if (e.classList.contains('alx-k') && e.classList.contains('w')) return   // the key's entry for the waiting amendment
+      const n = +e.getAttribute('data-alc')
+      if (n < top || (mode === '2' && waiting)) e.classList.add('alx-nl')
+    })
+  }
+  return { TODAY, NEW, NAMES, palette, look, key, underline }
 })()
 
 </script>
@@ -1024,8 +1101,8 @@ window.ALX = (() => {
   const stage = $('#ttStage'), strip = $('.tt-strip'), note = $('#ttNote'), cands = $('#ttCands')
   /* the short list a tapped swatch may be given: the proposed seven, today's seven, and three more near-misses */
   const CANDS = [...A.NEW.slice(1), ...A.TODAY.slice(1), '#8FA6FF', '#4FEBC8', '#FF9548', '#19AFFE', '#E6A3A7']
-  const START = { surf: 'edit', look: 'a', puck: 'chip', pal: 'today', cb: 'off', st: 'waiting', miss: 'red' }
-  const PRESET = { a: { puck: 'chip', pal: 'today' }, b: { puck: 'name', pal: 'today' }, c: { puck: 'tab', pal: 'new' } }
+  const START = { surf: 'edit', look: 'a', puck: 'chip', pal: 'today', cb: 'off', st: 'waiting', miss: 'red', ul: '3' }
+  const PRESET = { a: { puck: 'chip', pal: 'today' }, b: { puck: 'name', pal: 'today' }, c: { puck: 'mix', pal: 'new' } }
   let S = { ...START }, custom = null, picking = 0
 
   const list = () => custom || (S.pal === 'new' ? A.NEW : A.TODAY)
@@ -1036,6 +1113,8 @@ window.ALX = (() => {
     A.look(stage, { look: S.look, puck: S.puck })
     $$('.tt-surf .alx-key').forEach(k => k.remove())
     if (S.look === 'c' && on) A.key(on)
+    /* which amendments keep their line (his idea: only the latest): worked out for the day on show */
+    $$('.tt-surf').forEach(s => { if (s === on) A.underline(s, S.look === 'c' ? S.ul : 'all') })
     stage.classList.toggle('cb', S.cb === 'on')
     /* the missing-time outline: every empty time box of a duty desk on the captured day (the 1st wave's SXO END, emptied on
        the published day and still waiting) is given the end-time rule's class; classes only, never a style from script */
@@ -1059,6 +1138,8 @@ window.ALX = (() => {
       S[b.dataset.set] = b.dataset.val
       if (b.dataset.set === 'look') { Object.assign(S, PRESET[b.dataset.val]); custom = null; picking = 0 }
       if (b.dataset.set === 'pal') { custom = null; picking = 0 }
+      /* the Underline setting belongs to the recommendation's look: choosing it shows that look */
+      if (b.dataset.set === 'ul' && S.look !== 'c') { S.look = 'c'; Object.assign(S, PRESET.c); custom = null; picking = 0 }
     } else if (b.classList.contains('tt-sw')) { picking = picking === +b.dataset.n ? 0 : +b.dataset.n }
     else if (b.classList.contains('tt-cand')) { custom = [...list()]; custom[picking] = b.dataset.c; picking = 0 }
     else if (b.id === 'ttMore') { const o = strip.classList.toggle('open'); b.textContent = o ? 'Fewer' : 'More'; b.setAttribute('aria-expanded', o ? 'true' : 'false') }

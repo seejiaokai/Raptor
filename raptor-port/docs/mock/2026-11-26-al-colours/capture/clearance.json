@@ -72,7 +72,7 @@
     "place": "flying line: callsign, mission, times",
     "state": "out",
     "gap": 11.8,
-    "to": ".txed",
+    "to": "txed",
     "cut": null
    },
    {
@@ -367,7 +367,7 @@
     "place": "flying line: callsign, mission, times",
     "state": "out",
     "gap": 5.8,
-    "to": ".txed",
+    "to": "txed",
     "cut": null
    },
    {
@@ -3104,34 +3104,6 @@
    {
     "place": "Common Programme, time",
     "state": "out",
-    "gap": 31.3,
-    "to": "ah-row",
-    "cut": null
-   },
-   {
-    "place": "Common Programme, time",
-    "state": "out",
-    "gap": 31.3,
-    "to": "ah-row",
-    "cut": null
-   },
-   {
-    "place": "Common Programme, name",
-    "state": "out",
-    "gap": 30.3,
-    "to": "ah-row",
-    "cut": null
-   },
-   {
-    "place": "Common Programme, time",
-    "state": "out",
-    "gap": 46.3,
-    "to": "ah-row",
-    "cut": null
-   },
-   {
-    "place": "Common Programme, time",
-    "state": "out",
     "gap": 46.3,
     "to": "ah-row",
     "cut": null
@@ -3174,48 +3146,6 @@
    {
     "place": "flying line: callsign, mission, times",
     "state": "out",
-    "gap": 5.8,
-    "to": ".txed",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times",
-    "state": "out",
-    "gap": 44.5,
-    "to": "form-area",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times",
-    "state": "out",
-    "gap": 5.8,
-    "to": "ntx.txed",
-    "cut": null
-   },
-   {
-    "place": "flight remark (over its stores chips)",
-    "state": "out",
-    "gap": 3.5,
-    "to": "stchip.on",
-    "cut": null
-   },
-   {
-    "place": "area",
-    "state": "out",
-    "gap": 7.2,
-    "to": "the line at the foot of form",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times",
-    "state": "out",
-    "gap": 47.1,
-    "to": "form-area",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times",
-    "state": "out",
     "gap": 47.8,
     "to": "form-area",
     "cut": null
@@ -3228,31 +3158,10 @@
     "cut": null
    },
    {
-    "place": "area time",
-    "state": "out",
-    "gap": 7.2,
-    "to": "the line at the foot of go.",
-    "cut": 7.2
-   },
-   {
-    "place": "wave label",
-    "state": "out",
-    "gap": 10,
-    "to": "the line at the foot of go-tab",
-    "cut": null
-   },
-   {
     "place": "flying line: callsign, mission, times",
     "state": "waiting",
     "gap": 5.8,
     "to": "ntx.txed",
-    "cut": null
-   },
-   {
-    "place": "flight remark (over its stores chips)",
-    "state": "out",
-    "gap": 3.5,
-    "to": "stchip.on",
     "cut": null
    },
    {
@@ -3271,30 +3180,9 @@
    },
    {
     "place": "duty desk, time",
-    "state": "out",
-    "gap": 23,
-    "to": "pl-row",
-    "cut": null
-   },
-   {
-    "place": "duty desk, time",
-    "state": "out",
-    "gap": 23,
-    "to": "pl-row",
-    "cut": null
-   },
-   {
-    "place": "duty desk, time",
     "state": "waiting",
     "gap": 22.5,
     "to": "pl-row",
-    "cut": null
-   },
-   {
-    "place": "duty desk, name",
-    "state": "out",
-    "gap": 30,
-    "to": "ntx.txed",
     "cut": null
    },
    {
@@ -3334,37 +3222,9 @@
    },
    {
     "place": "sim: AMT block, time",
-    "state": "out",
-    "gap": 80,
-    "to": "pl-row",
-    "cut": null
-   },
-   {
-    "place": "sim: AMT block, remark",
-    "state": "out",
-    "gap": 81,
-    "to": "pl-row",
-    "cut": null
-   },
-   {
-    "place": "sim: AMT block, time",
     "state": "waiting",
     "gap": 15,
     "to": "pl-sub",
-    "cut": null
-   },
-   {
-    "place": "sim: OFT / SIMS row, time",
-    "state": "out",
-    "gap": 23,
-    "to": "pl-row",
-    "cut": null
-   },
-   {
-    "place": "sim: OFT / SIMS row, time",
-    "state": "out",
-    "gap": 23,
-    "to": "pl-row",
     "cut": null
    },
    {
@@ -3408,13 +3268,6 @@
     "gap": 24,
     "to": "pl-row",
     "cut": null
-   },
-   {
-    "place": "Ground Programme, time",
-    "state": "out",
-    "gap": 23,
-    "to": "pl-row",
-    "cut": null
    }
   ]
  },
@@ -3424,30 +3277,6 @@
   "st": "missing-time scene 3",
   "look": "c",
   "rows": [
-   {
-    "place": "Common Programme, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "Common Programme, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "Common Programme, name (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "Common Programme, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
    {
     "place": "Common Programme, time (board box)",
     "state": "out",
@@ -3498,81 +3327,7 @@
     "to": "its own box’s foot"
    },
    {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
     "place": "flight remark (over its stores chips) (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "area",
-    "state": "out",
-    "gap": 7.2,
-    "to": "sb-line",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flight remark (over its stores chips) (board box)",
-    "state": "waiting",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "area time",
-    "state": "out",
-    "gap": 7.2,
-    "to": "the line at the foot of sb-go",
-    "cut": 7.2
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
     "state": "waiting",
     "gap": 4,
     "to": "its own box’s foot"
@@ -3584,8 +3339,8 @@
     "to": "its own box’s foot"
    },
    {
-    "place": "flight remark (over its stores chips) (board box)",
-    "state": "out",
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
     "gap": 4,
     "to": "its own box’s foot"
    },
@@ -3610,25 +3365,7 @@
    },
    {
     "place": "duty desk, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "duty desk, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "duty desk, time (board box)",
     "state": "waiting",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "duty desk, name (board box)",
-    "state": "out",
     "gap": 4,
     "to": "its own box’s foot"
    },
@@ -3664,31 +3401,7 @@
    },
    {
     "place": "sim: AMT block, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "sim: AMT block, remark (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "sim: AMT block, time (board box)",
     "state": "waiting",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "sim: OFT / SIMS row, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "sim: OFT / SIMS row, time (board box)",
-    "state": "out",
     "gap": 4,
     "to": "its own box’s foot"
    },
@@ -3727,12 +3440,6 @@
     "state": "out",
     "gap": 4,
     "to": "its own box’s foot"
-   },
-   {
-    "place": "Ground Programme, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
    }
   ]
  },
@@ -3742,34 +3449,6 @@
   "st": "missing-time scene 4",
   "look": "c",
   "rows": [
-   {
-    "place": "Common Programme, time",
-    "state": "out",
-    "gap": 31.3,
-    "to": "ah-row",
-    "cut": null
-   },
-   {
-    "place": "Common Programme, time",
-    "state": "out",
-    "gap": 31.3,
-    "to": "ah-row",
-    "cut": null
-   },
-   {
-    "place": "Common Programme, name",
-    "state": "out",
-    "gap": 30.3,
-    "to": "ah-row",
-    "cut": null
-   },
-   {
-    "place": "Common Programme, time",
-    "state": "out",
-    "gap": 46.3,
-    "to": "ah-row",
-    "cut": null
-   },
    {
     "place": "Common Programme, time",
     "state": "out",
@@ -3815,48 +3494,6 @@
    {
     "place": "flying line: callsign, mission, times",
     "state": "out",
-    "gap": 5.8,
-    "to": ".txed",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times",
-    "state": "out",
-    "gap": 44.5,
-    "to": "form-area",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times",
-    "state": "out",
-    "gap": 5.8,
-    "to": "ntx.txed",
-    "cut": null
-   },
-   {
-    "place": "flight remark (over its stores chips)",
-    "state": "out",
-    "gap": 3.5,
-    "to": "stchip.on",
-    "cut": null
-   },
-   {
-    "place": "area",
-    "state": "out",
-    "gap": 7.2,
-    "to": "the line at the foot of form",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times",
-    "state": "out",
-    "gap": 47.1,
-    "to": "form-area",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times",
-    "state": "out",
     "gap": 47.8,
     "to": "form-area",
     "cut": null
@@ -3869,31 +3506,10 @@
     "cut": null
    },
    {
-    "place": "area time",
-    "state": "out",
-    "gap": 7.2,
-    "to": "the line at the foot of go.",
-    "cut": 7.2
-   },
-   {
-    "place": "wave label",
-    "state": "out",
-    "gap": 10,
-    "to": "the line at the foot of go-tab",
-    "cut": null
-   },
-   {
     "place": "flying line: callsign, mission, times",
     "state": "waiting",
     "gap": 5.8,
     "to": "ntx.txed",
-    "cut": null
-   },
-   {
-    "place": "flight remark (over its stores chips)",
-    "state": "out",
-    "gap": 3.5,
-    "to": "stchip.on",
     "cut": null
    },
    {
@@ -3912,30 +3528,9 @@
    },
    {
     "place": "duty desk, time",
-    "state": "out",
-    "gap": 23,
-    "to": "pl-row",
-    "cut": null
-   },
-   {
-    "place": "duty desk, time",
-    "state": "out",
-    "gap": 23,
-    "to": "pl-row",
-    "cut": null
-   },
-   {
-    "place": "duty desk, time",
     "state": "waiting",
     "gap": 22.5,
     "to": "pl-row",
-    "cut": null
-   },
-   {
-    "place": "duty desk, name",
-    "state": "out",
-    "gap": 30,
-    "to": "ntx.txed",
     "cut": null
    },
    {
@@ -3975,37 +3570,9 @@
    },
    {
     "place": "sim: AMT block, time",
-    "state": "out",
-    "gap": 80,
-    "to": "pl-row",
-    "cut": null
-   },
-   {
-    "place": "sim: AMT block, remark",
-    "state": "out",
-    "gap": 81,
-    "to": "pl-row",
-    "cut": null
-   },
-   {
-    "place": "sim: AMT block, time",
     "state": "waiting",
     "gap": 15,
     "to": "pl-sub",
-    "cut": null
-   },
-   {
-    "place": "sim: OFT / SIMS row, time",
-    "state": "out",
-    "gap": 23,
-    "to": "pl-row",
-    "cut": null
-   },
-   {
-    "place": "sim: OFT / SIMS row, time",
-    "state": "out",
-    "gap": 23,
-    "to": "pl-row",
     "cut": null
    },
    {
@@ -4049,13 +3616,6 @@
     "gap": 24,
     "to": "pl-row",
     "cut": null
-   },
-   {
-    "place": "Ground Programme, time",
-    "state": "out",
-    "gap": 23,
-    "to": "pl-row",
-    "cut": null
    }
   ]
  },
@@ -4065,30 +3625,6 @@
   "st": "missing-time scene 4",
   "look": "c",
   "rows": [
-   {
-    "place": "Common Programme, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "Common Programme, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "Common Programme, name (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "Common Programme, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
    {
     "place": "Common Programme, time (board box)",
     "state": "out",
@@ -4139,81 +3675,7 @@
     "to": "its own box’s foot"
    },
    {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
     "place": "flight remark (over its stores chips) (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "area",
-    "state": "out",
-    "gap": 7.2,
-    "to": "sb-line",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flight remark (over its stores chips) (board box)",
-    "state": "waiting",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "area time",
-    "state": "out",
-    "gap": 7.2,
-    "to": "the line at the foot of sb-go",
-    "cut": 7.2
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
     "state": "waiting",
     "gap": 4,
     "to": "its own box’s foot"
@@ -4225,8 +3687,8 @@
     "to": "its own box’s foot"
    },
    {
-    "place": "flight remark (over its stores chips) (board box)",
-    "state": "out",
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
     "gap": 4,
     "to": "its own box’s foot"
    },
@@ -4251,25 +3713,7 @@
    },
    {
     "place": "duty desk, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "duty desk, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "duty desk, time (board box)",
     "state": "waiting",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "duty desk, name (board box)",
-    "state": "out",
     "gap": 4,
     "to": "its own box’s foot"
    },
@@ -4305,31 +3749,7 @@
    },
    {
     "place": "sim: AMT block, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "sim: AMT block, remark (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "sim: AMT block, time (board box)",
     "state": "waiting",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "sim: OFT / SIMS row, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "sim: OFT / SIMS row, time (board box)",
-    "state": "out",
     "gap": 4,
     "to": "its own box’s foot"
    },
@@ -4365,12 +3785,6 @@
    },
    {
     "place": "Ground Programme, remark (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "Ground Programme, time (board box)",
     "state": "out",
     "gap": 4,
     "to": "its own box’s foot"
@@ -4450,7 +3864,7 @@
     "place": "flying line: callsign, mission, times",
     "state": "out",
     "gap": 9.3,
-    "to": ".txed",
+    "to": "txed",
     "cut": null
    },
    {
@@ -4737,7 +4151,7 @@
    {
     "place": "in-time line",
     "state": "out",
-    "gap": 3,
+    "gap": 5,
     "to": "cols.formcols",
     "cut": null
    },
@@ -4745,7 +4159,7 @@
     "place": "flying line: callsign, mission, times",
     "state": "out",
     "gap": 3.3,
-    "to": ".txed",
+    "to": "txed",
     "cut": null
    },
    {
@@ -7494,34 +6908,6 @@
     "cut": null
    },
    {
-    "place": "Common Programme, name",
-    "state": "out",
-    "gap": 29.1,
-    "to": "ah-row",
-    "cut": null
-   },
-   {
-    "place": "Common Programme, time",
-    "state": "out",
-    "gap": 11.5,
-    "to": "t.txed",
-    "cut": null
-   },
-   {
-    "place": "Common Programme, time",
-    "state": "out",
-    "gap": 11.5,
-    "to": "t.txed",
-    "cut": null
-   },
-   {
-    "place": "Common Programme, time",
-    "state": "out",
-    "gap": 11.5,
-    "to": "ah-row",
-    "cut": null
-   },
-   {
     "place": "Common Programme, time",
     "state": "waiting",
     "gap": 18.4,
@@ -7552,48 +6938,6 @@
    {
     "place": "flying line: callsign, mission, times",
     "state": "out",
-    "gap": 3.3,
-    "to": ".txed",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times",
-    "state": "out",
-    "gap": 72.9,
-    "to": "form-area",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times",
-    "state": "out",
-    "gap": 3.3,
-    "to": "ntx.txed",
-    "cut": null
-   },
-   {
-    "place": "flight remark (over its stores chips)",
-    "state": "out",
-    "gap": 2.3,
-    "to": "stchip.on",
-    "cut": null
-   },
-   {
-    "place": "area",
-    "state": "out",
-    "gap": 6.1,
-    "to": "the line at the foot of form",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times",
-    "state": "out",
-    "gap": 82,
-    "to": "form-area",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times",
-    "state": "out",
     "gap": 82.9,
     "to": "form-area",
     "cut": null
@@ -7606,31 +6950,10 @@
     "cut": null
    },
    {
-    "place": "area time",
-    "state": "out",
-    "gap": 6.1,
-    "to": "the line at the foot of go.",
-    "cut": 6.1
-   },
-   {
-    "place": "wave label",
-    "state": "out",
-    "gap": 10.5,
-    "to": "the line at the foot of go-tab",
-    "cut": null
-   },
-   {
     "place": "flying line: callsign, mission, times",
     "state": "waiting",
     "gap": 3.3,
     "to": "ntx.txed",
-    "cut": null
-   },
-   {
-    "place": "flight remark (over its stores chips)",
-    "state": "out",
-    "gap": 2.3,
-    "to": "stchip.on",
     "cut": null
    },
    {
@@ -7649,30 +6972,9 @@
    },
    {
     "place": "duty desk, time",
-    "state": "out",
-    "gap": 7.5,
-    "to": "t.t-e",
-    "cut": null
-   },
-   {
-    "place": "duty desk, time",
-    "state": "out",
-    "gap": 7.5,
-    "to": "pl-row",
-    "cut": null
-   },
-   {
-    "place": "duty desk, time",
     "state": "waiting",
     "gap": 7,
     "to": "pl-row",
-    "cut": null
-   },
-   {
-    "place": "duty desk, name",
-    "state": "out",
-    "gap": 14.4,
-    "to": "ntx.txed",
     "cut": null
    },
    {
@@ -7712,37 +7014,9 @@
    },
    {
     "place": "sim: AMT block, time",
-    "state": "out",
-    "gap": 33,
-    "to": "t.t-e",
-    "cut": null
-   },
-   {
-    "place": "sim: AMT block, remark",
-    "state": "out",
-    "gap": 64.4,
-    "to": "pl-row",
-    "cut": 1.5
-   },
-   {
-    "place": "sim: AMT block, time",
     "state": "waiting",
     "gap": 27,
     "to": "pl-sub",
-    "cut": null
-   },
-   {
-    "place": "sim: OFT / SIMS row, time",
-    "state": "out",
-    "gap": 7.5,
-    "to": "t.t-e",
-    "cut": null
-   },
-   {
-    "place": "sim: OFT / SIMS row, time",
-    "state": "out",
-    "gap": 7.5,
-    "to": "pl-row",
     "cut": null
    },
    {
@@ -7786,13 +7060,6 @@
     "gap": 13.4,
     "to": "pl-row",
     "cut": 1.5
-   },
-   {
-    "place": "Ground Programme, time",
-    "state": "out",
-    "gap": 7.5,
-    "to": "t.t-e",
-    "cut": null
    }
   ]
  },
@@ -7802,30 +7069,6 @@
   "st": "missing-time scene 3",
   "look": "c",
   "rows": [
-   {
-    "place": "Common Programme, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "Common Programme, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "Common Programme, name (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "Common Programme, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
    {
     "place": "Common Programme, time (board box)",
     "state": "out",
@@ -7876,81 +7119,7 @@
     "to": "its own box’s foot"
    },
    {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
     "place": "flight remark (over its stores chips) (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "area",
-    "state": "out",
-    "gap": 7.1,
-    "to": "sb-line",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flight remark (over its stores chips) (board box)",
-    "state": "waiting",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "area time",
-    "state": "out",
-    "gap": 7.1,
-    "to": "the line at the foot of sb-go",
-    "cut": 7.1
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
     "state": "waiting",
     "gap": 4,
     "to": "its own box’s foot"
@@ -7962,8 +7131,8 @@
     "to": "its own box’s foot"
    },
    {
-    "place": "flight remark (over its stores chips) (board box)",
-    "state": "out",
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
     "gap": 4,
     "to": "its own box’s foot"
    },
@@ -7988,25 +7157,7 @@
    },
    {
     "place": "duty desk, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "duty desk, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "duty desk, time (board box)",
     "state": "waiting",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "duty desk, name (board box)",
-    "state": "out",
     "gap": 4,
     "to": "its own box’s foot"
    },
@@ -8042,31 +7193,7 @@
    },
    {
     "place": "sim: AMT block, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "sim: AMT block, remark (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "sim: AMT block, time (board box)",
     "state": "waiting",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "sim: OFT / SIMS row, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "sim: OFT / SIMS row, time (board box)",
-    "state": "out",
     "gap": 4,
     "to": "its own box’s foot"
    },
@@ -8105,12 +7232,6 @@
     "state": "out",
     "gap": 4,
     "to": "its own box’s foot"
-   },
-   {
-    "place": "Ground Programme, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
    }
   ]
  },
@@ -8120,34 +7241,6 @@
   "st": "missing-time scene 4",
   "look": "c",
   "rows": [
-   {
-    "place": "Common Programme, time",
-    "state": "out",
-    "gap": 11.5,
-    "to": "t.txed",
-    "cut": null
-   },
-   {
-    "place": "Common Programme, time",
-    "state": "out",
-    "gap": 11.5,
-    "to": "ah-row",
-    "cut": null
-   },
-   {
-    "place": "Common Programme, name",
-    "state": "out",
-    "gap": 29.1,
-    "to": "ah-row",
-    "cut": null
-   },
-   {
-    "place": "Common Programme, time",
-    "state": "out",
-    "gap": 11.5,
-    "to": "t.txed",
-    "cut": null
-   },
    {
     "place": "Common Programme, time",
     "state": "out",
@@ -8193,48 +7286,6 @@
    {
     "place": "flying line: callsign, mission, times",
     "state": "out",
-    "gap": 3.3,
-    "to": ".txed",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times",
-    "state": "out",
-    "gap": 72.9,
-    "to": "form-area",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times",
-    "state": "out",
-    "gap": 3.3,
-    "to": "ntx.txed",
-    "cut": null
-   },
-   {
-    "place": "flight remark (over its stores chips)",
-    "state": "out",
-    "gap": 2.3,
-    "to": "stchip.on",
-    "cut": null
-   },
-   {
-    "place": "area",
-    "state": "out",
-    "gap": 6.1,
-    "to": "the line at the foot of form",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times",
-    "state": "out",
-    "gap": 82,
-    "to": "form-area",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times",
-    "state": "out",
     "gap": 82.9,
     "to": "form-area",
     "cut": null
@@ -8247,31 +7298,10 @@
     "cut": null
    },
    {
-    "place": "area time",
-    "state": "out",
-    "gap": 6.1,
-    "to": "the line at the foot of go.",
-    "cut": 6.1
-   },
-   {
-    "place": "wave label",
-    "state": "out",
-    "gap": 10.5,
-    "to": "the line at the foot of go-tab",
-    "cut": null
-   },
-   {
     "place": "flying line: callsign, mission, times",
     "state": "waiting",
     "gap": 3.3,
     "to": "ntx.txed",
-    "cut": null
-   },
-   {
-    "place": "flight remark (over its stores chips)",
-    "state": "out",
-    "gap": 2.3,
-    "to": "stchip.on",
     "cut": null
    },
    {
@@ -8290,30 +7320,9 @@
    },
    {
     "place": "duty desk, time",
-    "state": "out",
-    "gap": 7.5,
-    "to": "t.t-e",
-    "cut": null
-   },
-   {
-    "place": "duty desk, time",
-    "state": "out",
-    "gap": 7.5,
-    "to": "pl-row",
-    "cut": null
-   },
-   {
-    "place": "duty desk, time",
     "state": "waiting",
     "gap": 7,
     "to": "pl-row",
-    "cut": null
-   },
-   {
-    "place": "duty desk, name",
-    "state": "out",
-    "gap": 14.4,
-    "to": "ntx.txed",
     "cut": null
    },
    {
@@ -8353,37 +7362,9 @@
    },
    {
     "place": "sim: AMT block, time",
-    "state": "out",
-    "gap": 33,
-    "to": "t.t-e",
-    "cut": null
-   },
-   {
-    "place": "sim: AMT block, remark",
-    "state": "out",
-    "gap": 64.4,
-    "to": "pl-row",
-    "cut": 1.5
-   },
-   {
-    "place": "sim: AMT block, time",
     "state": "waiting",
     "gap": 27,
     "to": "pl-sub",
-    "cut": null
-   },
-   {
-    "place": "sim: OFT / SIMS row, time",
-    "state": "out",
-    "gap": 7.5,
-    "to": "t.t-e",
-    "cut": null
-   },
-   {
-    "place": "sim: OFT / SIMS row, time",
-    "state": "out",
-    "gap": 7.5,
-    "to": "pl-row",
     "cut": null
    },
    {
@@ -8427,13 +7408,6 @@
     "gap": 13.4,
     "to": "pl-row",
     "cut": 1.5
-   },
-   {
-    "place": "Ground Programme, time",
-    "state": "out",
-    "gap": 7.5,
-    "to": "t.t-e",
-    "cut": null
    }
   ]
  },
@@ -8443,30 +7417,6 @@
   "st": "missing-time scene 4",
   "look": "c",
   "rows": [
-   {
-    "place": "Common Programme, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "Common Programme, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "Common Programme, name (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "Common Programme, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
    {
     "place": "Common Programme, time (board box)",
     "state": "out",
@@ -8517,81 +7467,7 @@
     "to": "its own box’s foot"
    },
    {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
     "place": "flight remark (over its stores chips) (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "area",
-    "state": "out",
-    "gap": 7.1,
-    "to": "sb-line",
-    "cut": null
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "flight remark (over its stores chips) (board box)",
-    "state": "waiting",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "area time",
-    "state": "out",
-    "gap": 7.1,
-    "to": "the line at the foot of sb-go",
-    "cut": 7.1
-   },
-   {
-    "place": "flying line: callsign, mission, times (board box)",
     "state": "waiting",
     "gap": 4,
     "to": "its own box’s foot"
@@ -8603,8 +7479,8 @@
     "to": "its own box’s foot"
    },
    {
-    "place": "flight remark (over its stores chips) (board box)",
-    "state": "out",
+    "place": "flying line: callsign, mission, times (board box)",
+    "state": "waiting",
     "gap": 4,
     "to": "its own box’s foot"
    },
@@ -8629,25 +7505,7 @@
    },
    {
     "place": "duty desk, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "duty desk, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "duty desk, time (board box)",
     "state": "waiting",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "duty desk, name (board box)",
-    "state": "out",
     "gap": 4,
     "to": "its own box’s foot"
    },
@@ -8683,31 +7541,7 @@
    },
    {
     "place": "sim: AMT block, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "sim: AMT block, remark (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "sim: AMT block, time (board box)",
     "state": "waiting",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "sim: OFT / SIMS row, time (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "sim: OFT / SIMS row, time (board box)",
-    "state": "out",
     "gap": 4,
     "to": "its own box’s foot"
    },
@@ -8743,12 +7577,6 @@
    },
    {
     "place": "Ground Programme, remark (board box)",
-    "state": "out",
-    "gap": 4,
-    "to": "its own box’s foot"
-   },
-   {
-    "place": "Ground Programme, time (board box)",
     "state": "out",
     "gap": 4,
     "to": "its own box’s foot"

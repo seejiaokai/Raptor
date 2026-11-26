@@ -31,9 +31,9 @@ html :is([data-alc="7"],[data-aln="7"]){--alc:var(--alx7,#E5872B)}
    came within 2px of the stores chips, the next row's edge and the row a block's label sits on, so 1px it is; the waiting
    line is the same line dotted (1px, not 1.5). Nothing is given extra room, so no row, marked or not, moves. test.mjs
    and shoot.mjs measure the gap under every line (src/measure.js): at least 2px to anything drawn, and never cut off. */
-.alx-c [data-alc]:not(.seat):not(.verchip):not(.alx-k):not(.alpanel *):not(input):not(textarea):not(.rmkcell):not(.sb-rcell){
+.alx-c [data-alc]:not(.seat):not(.verchip):not(.alx-k):not(.alpanel *):not(input):not(textarea):not(.rmkcell):not(.sb-rcell):not(.alx-nl){
   text-decoration:underline solid var(--alc) !important;text-decoration-thickness:1px !important;text-underline-offset:0 !important;text-decoration-skip-ink:none !important}
-.alx-c [data-aln]:not(.seat):not(.verchip):not(.alx-k):not(.alpanel *):not(input):not(textarea):not(.rmkcell):not(.sb-rcell){
+.alx-c [data-aln]:not(.seat):not(.verchip):not(.alx-k):not(.alpanel *):not(input):not(textarea):not(.rmkcell):not(.sb-rcell):not(.alx-nl){
   text-decoration:underline dotted var(--alc) !important;text-decoration-thickness:1px !important;text-underline-offset:0 !important;text-decoration-skip-ink:none !important}
 /* A JET WHOSE STORES CHANGED (the remark cell carries that mark): the remark's own words did not change, so they keep their
    colour and get no line; the stores chips take the amendment's colour instead - their own 1px edge solid once out, dotted
@@ -41,10 +41,14 @@ html :is([data-alc="7"],[data-aln="7"]){--alc:var(--alx7,#E5872B)}
 .alx-b :is(.rmkcell,.sb-rcell):is([data-alc],[data-aln]) :is(.stchip,.stcfg),.alx-c :is(.rmkcell,.sb-rcell):is([data-alc],[data-aln]) :is(.stchip,.stcfg){
   color:var(--alc) !important;border-color:var(--alc) !important}
 .alx-c :is(.rmkcell,.sb-rcell)[data-aln] :is(.stchip,.stcfg){border-style:dotted !important}
+/* UNDERLINE ONLY THE LATEST (round 3, his idea): looks.js gives the class alx-nl ("no line") to every mark of an older
+   amendment on its day; the two line rules above and the board box's line below leave such a mark its colour alone.
+   A puck's tab and a stores chip's colour are not lines and stay. */
+.alx-c .alx-nl:not(input):not(textarea){text-decoration:none !important}
 /* a box on the board cannot underline its own words: a line is drawn INSIDE the box, under the words, 4px up from the
    box's foot and 6px in from its sides, so it never lies on the box's own edge (a picture laid in the box: nothing moves) */
 .alx-c :is(input,textarea):is([data-alc],[data-aln]){background-repeat:no-repeat !important;background-size:calc(100% - 12px) 1.5px !important;background-position:6px calc(100% - 4px) !important}
-.alx-c :is(input,textarea)[data-alc]{background-image:linear-gradient(var(--alc),var(--alc)) !important}
+.alx-c :is(input,textarea)[data-alc]:not(.alx-nl){background-image:linear-gradient(var(--alc),var(--alc)) !important}
 .alx-c :is(input,textarea)[data-aln]{background-image:repeating-linear-gradient(90deg,var(--alc) 0 2px,transparent 2px 4px) !important}
 
 /* ---- THE MISSING-TIME OUTLINE beside the amendment marks. The outline itself is the 25 Nov end-time try-out's own
@@ -66,18 +70,20 @@ html :is([data-alc="7"],[data-aln="7"]){--alc:var(--alx7,#E5872B)}
 html .et-off :is(#eWeek,.week,#schedBoard) .et-miss{box-shadow:none !important}
 
 /* ---- a changed puck ---- */
-:is(.alx-pk-tab,.alx-pk-num,.alx-pk-name,.alx-pk-none) .seat:is([data-alc],[data-aln])::after{content:none !important}
+/* mix (round 3, with his pick, latest out + waiting): the newest amendment out and the waiting ones wear their number,
+   older ones the plain tab. new: the same, but older ones wear nothing. looks.js marks an older puck's seat alx-old. */
+:is(.alx-pk-tab,.alx-pk-num,.alx-pk-mix,.alx-pk-new,.alx-pk-name,.alx-pk-none) .seat:is([data-alc],[data-aln])::after{content:none !important}
 /* tab: today's chip with its words taken out — the same corner, a third of the size; solid once out, hollow while waiting.
    The dark hairline keeps a pale tab apart from a pale role chip (a line, not a glow). */
-.alx-pk-tab .seat[data-alc]::after{content:'' !important;position:absolute;top:-3px;right:-3px;z-index:4;width:12px;height:7px;padding:0 !important;
+.alx-pk-tab .seat[data-alc]::after,.alx-pk-mix .seat.alx-old[data-alc]::after{content:'' !important;position:absolute;top:-3px;right:-3px;z-index:4;width:12px;height:7px;padding:0 !important;
   border:0 !important;border-radius:2.5px;background:var(--alc) !important;box-shadow:0 0 0 1.5px #0B0D10;pointer-events:none}
 .alx-pk-tab .seat[data-aln]::after{content:'' !important;position:absolute;top:-3px;right:-3px;z-index:4;width:12px;height:7px;padding:0 !important;
   box-sizing:border-box;border:1.5px solid var(--alc) !important;border-radius:2.5px;background:#0B0D10 !important;box-shadow:0 0 0 1.5px #0B0D10;pointer-events:none}
 /* (the hollow tab is a plain ring: dots are noise at this size) */
 /* num: today's chip saying only its number */
-.alx-pk-num .seat[data-alc]::after{content:attr(data-alc) !important;position:absolute;top:-5px;right:-3px;z-index:4;
+.alx-pk-num .seat[data-alc]::after,:is(.alx-pk-mix,.alx-pk-new) .seat[data-alc]:not(.alx-old)::after{content:attr(data-alc) !important;position:absolute;top:-5px;right:-3px;z-index:4;
   font:800 7.5px/1 'Barlow Condensed','Inter Tight',sans-serif;padding:1px 3px;border-radius:4px;background:var(--alc);color:#08131b;pointer-events:none}
-.alx-pk-num .seat[data-aln]::after{content:attr(data-aln) !important;position:absolute;top:-5px;right:-3px;z-index:4;
+.alx-pk-num .seat[data-aln]::after,:is(.alx-pk-mix,.alx-pk-new) .seat[data-aln]::after{content:attr(data-aln) !important;position:absolute;top:-5px;right:-3px;z-index:4;
   font:800 7.5px/1 'Barlow Condensed','Inter Tight',sans-serif;padding:0 2.5px;border-radius:4px;background:var(--panel);color:var(--alc);border:1px dotted var(--alc);pointer-events:none}
 /* name: the callsign takes the colour (what "text colour only" means on a puck) */
 .alx-pk-name .seat:is([data-alc],[data-aln]) .puck .nm{color:var(--alc) !important;-webkit-text-fill-color:var(--alc)}
@@ -90,5 +96,6 @@ html .et-off :is(#eWeek,.week,#schedBoard) .et-miss{box-shadow:none !important}
 .alx-key .alx-k{color:var(--alc);letter-spacing:.05em;text-decoration:underline solid var(--alc);text-decoration-thickness:1px;text-underline-offset:0;white-space:nowrap}
 .alx-key .alx-k.w{text-decoration-style:dotted}
 .alx-key .alx-k::after{content:none !important}
+.alx-key .alx-k.alx-nl{text-decoration:none}
 .alx-key .alx-k.w::after{content:' waiting' !important;display:inline !important;margin:0 !important;font:inherit !important;letter-spacing:.05em;vertical-align:baseline !important}
 #schedBoard .alx-key{padding-left:0}

@@ -1,7 +1,10 @@
 /* The looks' small script, shared by the pictures of the real app (shoot.mjs injects it) and the try-out page.
    ALX.palette(list)  writes the colour of each amendment (list[1]..list[7]; 8 and later take the 7th, as the app does)
    ALX.look(root, {look, puck})  sets the look's classes on a root element
-   ALX.key(day)  adds the recommendation's key line under a day's signed line, from the marks that day shows */
+   ALX.key(day)  adds the recommendation's key line under a day's signed line, from the marks that day shows
+   ALX.underline(day, mode)  which marks keep their line on that day: 'all' every amendment's; '2' only the newest change
+     (the waiting ones if any wait, else the newest amendment out); '3' the newest amendment out and anything waiting.
+     "Newest" is the day's own (each day has its own AL track). It only sets the class alx-nl; looks.css does the rest. */
 window.ALX = (() => {
   const TODAY = ['', '#3BC6E8', '#E5C24A', '#3DE86B', '#FFFFFF', '#B388FF', '#FF7FC4', '#E5872B']
   /* round 2: every one clear of the schedule's own section, puck and warning colours (search2.mjs); round 1's periwinkle,
@@ -17,7 +20,7 @@ window.ALX = (() => {
     for (let n = 1; n <= 7; n++) root.setProperty('--alx' + n, list[n])
   }
   function look(root, { look = 'a', puck = 'chip' } = {}) {
-    root.classList.remove('alx-b', 'alx-c', 'alx-pk-chip', 'alx-pk-tab', 'alx-pk-num', 'alx-pk-name', 'alx-pk-none')
+    root.classList.remove('alx-b', 'alx-c', 'alx-pk-chip', 'alx-pk-tab', 'alx-pk-num', 'alx-pk-mix', 'alx-pk-new', 'alx-pk-name', 'alx-pk-none')
     if (look !== 'a') root.classList.add('alx-' + look)
     root.classList.add('alx-pk-' + puck)
   }
@@ -35,5 +38,19 @@ window.ALX = (() => {
     if (after) after.insertAdjacentElement('afterend', k)
     return k
   }
-  return { TODAY, NEW, NAMES, palette, look, key }
+  function underline(day, mode = 'all') {
+    if (!day) return
+    day.querySelectorAll('.alx-nl, .alx-old').forEach(e => e.classList.remove('alx-nl', 'alx-old'))
+    const out = [...day.querySelectorAll('[data-alc]:not(.verchip):not(.alx-k):not(.alpanel *)')].map(e => +e.getAttribute('data-alc'))
+    const top = Math.max(0, ...out), waiting = !!day.querySelector('[data-aln]:not(.alpanel *)')
+    /* a puck changed in an amendment older than the day's newest one out: the puck marks "mix" and "new" read this */
+    day.querySelectorAll('.seat[data-alc]:not(.alpanel *)').forEach(e => { if (+e.getAttribute('data-alc') < top) e.classList.add('alx-old') })
+    if (mode === 'all') return
+    day.querySelectorAll('[data-alc]:not(.verchip):not(.seat):not(.alpanel *)').forEach(e => {
+      if (e.classList.contains('alx-k') && e.classList.contains('w')) return   // the key's entry for the waiting amendment
+      const n = +e.getAttribute('data-alc')
+      if (n < top || (mode === '2' && waiting)) e.classList.add('alx-nl')
+    })
+  }
+  return { TODAY, NEW, NAMES, palette, look, key, underline }
 })()

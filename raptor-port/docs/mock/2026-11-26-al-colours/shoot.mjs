@@ -19,22 +19,23 @@ const HERE = dirname(fileURLToPath(import.meta.url))
 const IMG = join(HERE, 'img')
 const CSS = readFileSync(join(HERE, 'src/looks.css'), 'utf8'), JS = readFileSync(join(HERE, 'src/looks.js'), 'utf8'), MJS = readFileSync(join(HERE, 'src/measure.js'), 'utf8')
 const DI = 0
-const ONLY = process.env.ONLY || ''   // "main", "close", "like", "miss" or "measure": one part only
+const ONLY = process.env.ONLY || ''   // "main", "close", "like", "miss", "ul" or "measure": one part only
 const clearance = []
 
-async function setLook(p, look, root) {
-  await p.evaluate(([look, root, CSS, JS, MJS]) => {
+async function setLook(p, look, root, ul = '3', puck = 'mix') {
+  await p.evaluate(([look, root, CSS, JS, MJS, ul, puck]) => {
     if (!document.getElementById('alx-css')) { const s = document.createElement('style'); s.id = 'alx-css'; s.textContent = CSS; document.head.appendChild(s) }
     if (!window.ALX) (0, eval)(JS)
     if (!window.ALXmeasure) (0, eval)(MJS)
     const A = window.ALX
     for (let n = 1; n <= 7; n++) document.documentElement.style.removeProperty('--alx' + n)
     document.querySelectorAll('.alx-key').forEach(k => k.remove())
+    document.querySelectorAll('.alx-nl, .alx-old').forEach(e => e.classList.remove('alx-nl', 'alx-old'))
     if (look === 'a') return A.look(document.documentElement, { look: 'a', puck: 'chip' })
     if (look === 'b') return A.look(document.documentElement, { look: 'b', puck: 'name' })
     /* r1: the recommendation's look in the FIRST round's colours (periwinkle, mint, orange...), for the look-alikes pictures */
-    A.palette(look === 'r1' ? ['', '#FFE815', '#8FA6FF', '#4FEBC8', '#FF9548', '#EDC4FF', '#9FB07A', '#6FB0B2'] : A.NEW); A.look(document.documentElement, { look: 'c', puck: 'tab' }); const r = document.querySelector(root); if (r) A.key(r)
-  }, [look, root, CSS, JS, MJS])
+    A.palette(look === 'r1' ? ['', '#FFE815', '#8FA6FF', '#4FEBC8', '#FF9548', '#EDC4FF', '#9FB07A', '#6FB0B2'] : A.NEW); A.look(document.documentElement, { look: 'c', puck }); const r = document.querySelector(root); if (r) { A.key(r); A.underline(r, ul) }
+  }, [look, root, CSS, JS, MJS, ul, puck])
   await K.wait(p, 250)
 }
 /* ---- whole screens ---- */
@@ -102,14 +103,20 @@ async function outline(p, red) {
 const open = async (key, st) => { const w = await K.world(key, join(K.STATE, `alc-${st}.json`)); await K.signIn(w.p); return w }
 const toView = async p => { await p.evaluate(di => { const d = document.querySelector(`#vWeek .day[data-day="${di}"]`); d && d.scrollIntoView({ block: 'start', inline: 'start' }); window.scrollTo(0, 0) }, DI); await K.wait(p, 600) }
 const EDIT = `#eWeek .day[data-day="${DI}"]`, VIEW = `#vWeek .day[data-day="${DI}"]`, BOARD = '#schedBoard'
-const measure = async (p, sz, surface, st, root) => { for (const look of ['a', 'c']) { await setLook(p, look, root); clearance.push({ surface, size: sz.name, st, look, rows: await p.evaluate(r => window.ALXmeasure(r), root) }) } }
+const measure = async (p, sz, surface, st, root) => { for (const look of ['a', 'c']) { await setLook(p, look, root, 'all'); clearance.push({ surface, size: sz.name, st, look, rows: await p.evaluate(r => window.ALXmeasure(r), root) }) } }
 
 for (const key of ['d', 'p']) {
   /* Edit Schedule and the board: AL4 waiting */
   let w = await open(key, 'waiting'), p = w.p, sz = w.sz
+  /* underline only the latest (round 3): View-only Sched while AL4 waits (it shows AL3 as the newest), then Edit Schedule both ways */
+  const UL = ['prog', 'dutysec'], PK = [['a', 'num'], ['b', 'mix'], ['c', 'new']]   // the puck question: number on every AL / on the newest, tab on older / on the newest only
+  if (!ONLY || ONLY === 'ul') { await toView(p); await tall(p, sz); for (const part of UL) { await setLook(p, 'c', VIEW, '3'); await closeUp(p, sz, `ul-${part}-view-w`, VIEW, part) }
+    for (const [l, puck] of PK) { await setLook(p, 'c', VIEW, '3', puck); await closeUp(p, sz, `pk-${l}-view`, VIEW, 'simsec') } await setLook(p, 'a', VIEW); await p.setViewportSize(sz.opts.viewport) }
   await K.weekDay(p, sz, DI); await K.neutral(p)
   if (!ONLY || ONLY === 'main') await three(p, sz, 'edit', EDIT, `[data-txt="dn:${DI}.0"]`)
   await tall(p, sz)
+  if (!ONLY || ONLY === 'ul') { for (const ul of ['all', '2', '3']) for (const part of UL) { await setLook(p, 'c', EDIT, ul); await closeUp(p, sz, `ul-${part}-edit-${ul === 'all' ? '1' : ul}w`, EDIT, part) }
+    for (const [l, puck] of PK) { await setLook(p, 'c', EDIT, '3', puck); await closeUp(p, sz, `pk-${l}-edit`, EDIT, 'simsec') } }
   if (!ONLY || ONLY === 'measure') await measure(p, sz, 'Edit Schedule', 'AL4 waiting', EDIT)
   if (!ONLY || ONLY === 'close') for (const part of ['sims', 'fly']) for (const look of ['a', 'c']) { await setLook(p, look, EDIT); await closeUp(p, sz, `${part}-edit-${look}`, EDIT, part) }
   /* the look-alikes: each section of the day in the first round's colours beside this round's */
@@ -130,10 +137,12 @@ for (const key of ['d', 'p']) {
   if (!ONLY || ONLY === 'measure') await measure(p, sz, 'View-only Sched', 'all out', VIEW)
   if (!ONLY || ONLY === 'close') for (const part of ['sims', 'fly']) for (const look of ['a', 'c']) { await setLook(p, look, VIEW); await closeUp(p, sz, `${part}-view-${look}`, VIEW, part) }
   if (!ONLY || ONLY === 'miss') { await setLook(p, 'c', VIEW); await closeUp(p, sz, 'miss-5-view', VIEW, 'duty') }
+  if (!ONLY || ONLY === 'ul') for (const part of ['prog', 'dutysec']) { await setLook(p, 'c', VIEW, '3'); await closeUp(p, sz, `ul-${part}-view-out`, VIEW, part) }
   await p.setViewportSize(sz.opts.viewport); await setLook(p, 'a', VIEW)
   await K.weekDay(p, sz, DI); await K.neutral(p); await tall(p, sz)
   if (!ONLY || ONLY === 'measure') await measure(p, sz, 'Edit Schedule', 'all out', EDIT)
   if (!ONLY || ONLY === 'miss') { await setLook(p, 'c', EDIT); await closeUp(p, sz, 'miss-5-edit', EDIT, 'duty') }
+  if (!ONLY || ONLY === 'ul') for (const part of ['prog', 'dutysec']) { await setLook(p, 'c', EDIT, '3'); await closeUp(p, sz, `ul-${part}-edit-out`, EDIT, part) }
   await p.setViewportSize(sz.opts.viewport)
   await K.board(p, sz, DI); await K.neutral(p); await tall(p, sz)
   if (!ONLY || ONLY === 'measure') await measure(p, sz, 'Scheduler Board', 'all out', BOARD)

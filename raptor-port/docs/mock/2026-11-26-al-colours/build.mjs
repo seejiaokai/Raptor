@@ -6,7 +6,7 @@
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
-import { contrast, de00, sim } from './colour.mjs'
+import { contrast, de00, sim, lab } from './colour.mjs'
 import { SCHED } from './sched.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
@@ -68,6 +68,14 @@ function alikeFix() {
 const clash = () => { const row = (nm, c) => `${nm} ${f0(de00(c, RED))} for ordinary sight and ${f0(cbOnly(c, RED))} for a red-green reader`
   return `Measured against the outline’s red: ${row('AL4’s clay is', NEW[3])} (my first page’s orange was ${f0(de00(R1[3], RED))} and ${f0(cbOnly(R1[3], RED))}, so no better). For ordinary sight that is clearly two colours. For a red-green reader it is close, so colour alone would not do. Shape does the work: the outline is a closed box on the box’s own edge, the amendment’s mark a dotted line inside it, under where the time goes. For comparison, ${row('AL1’s lemon is', NEW[0])}, ${row('AL2’s pink', NEW[1])}.` }
 
+/* ---- colour alone (round 3: only the latest amendment keeps its line): each new colour against the ordinary words ---- */
+const WORDS = [['#F1F4F7', 'white words (names)'], ['#B6C0CB', 'grey words (times)'], ['#8A96A3', 'faint grey words']]
+const grey = h => { const L = lab(h)[0]; return L }
+function plainRows() { return NEW.map((c, i) => ({ i, c, w: WORDS.map(([t]) => [de00(c, t), cbOnly(c, t), Math.abs(grey(c) - grey(t))]) })) }
+function plainTable() {
+  return `<table class="pg-t pg-alike"><thead><tr><th>Amendment</th>${WORDS.map(w => `<th>from ${w[1]}<br>ordinary / red-green / black-and-white</th>`).join('')}</tr></thead><tbody>${plainRows().map(r =>
+    `<tr><td>${dot(r.c, ' s')} <b>${al(r.i)}</b> ${NAME[r.c]}</td>${r.w.map(([d, q, l]) => `<td class="num ${d < CLOSE ? 'bad' : 'ok'}">${f0(d)} / <span class="${q < 10 ? 'bad' : ''}">${f0(q)}</span> / <span class="${l < 10 ? 'bad' : ''}">${f0(l)}</span></td>`).join('')}</tr>`).join('')}</tbody></table>`
+}
 /* ---- the clearance table (capture/clearance.json, written by shoot.mjs from the real app) ---- */
 const CLEAR = JSON.parse(read('capture/clearance.json'))
 function clearRows() {
@@ -118,6 +126,12 @@ const miss = SCENES.map(([n, words, surfs]) => `<h3>Scene ${n}</h3><p class="pg-
   fig(`img/miss-${n}-${s}-${sz}.png`, `Scene ${n}, ${SN[s]} on a ${sz}`, `${dev(sz)}: <b>${SN[s]}</b>${s === 'view' ? (n === '1' ? ', which shows no outline' : '') : ''}`)))).join('')).join('')
 const ALIKE = [['prog', 'The Common Programme. Its stripe and heading are blue-violet: on my first page AL2 was periwinkle, almost the same colour.'], ['dutysec', 'Duties. Green stripe, heading and block labels: my first page’s AL3 mint sat beside them.'],
   ['simsec', 'Sims. Purple headings and labels.'], ['ground', 'Ground Programme and Personal Inputs. Amber and orange stripes: my first page’s AL4 was orange.']]
+const LATEST = [['prog', 'The Common Programme'], ['dutysec', 'Duties']]
+const lfig = (part, tag, sz, cap) => fig(`img/ul-${part}-${tag}-${sz}.png`, `${cap}, on a ${sz}`, `${dev(sz)}: <b>${cap}</b>`)
+const latest = LATEST.map(([part, title]) => `<h3>${title}</h3><p class="pg-swl">Edit Schedule, AL4 still waiting: the three choices</p>` + ['phone', 'desktop'].map(sz => grid(sz, [lfig(part, 'edit-1w', sz, 'Every AL lined'), lfig(part, 'edit-2w', sz, 'Latest only: just the waiting changes'), lfig(part, 'edit-3w', sz, 'Your pick: AL3 solid, AL4 dotted')])).join('')
+  + `<p class="pg-swl">Your pick on View Schedule while AL4 waits (AL3 is the newest it shows), then on both screens with all four out</p>` + ['phone', 'desktop'].map(sz => grid(sz, [lfig(part, 'view-w', sz, 'View Schedule, AL4 waiting: AL3 lined'), lfig(part, 'edit-out', sz, 'Edit Schedule, all out: AL4 lined'), lfig(part, 'view-out', sz, 'View Schedule, all out: AL4 lined')])).join('')).join('')
+const PKC = [['a', 'A. A number on every amendment'], ['b', 'B. Number on the newest and the waiting, plain tab on older'], ['c', 'C. Nothing on older amendments']]
+const puckmark = [['edit', 'Edit Schedule'], ['view', 'View Schedule']].map(([s, title]) => `<p class="pg-swl">${title}</p>` + ['phone', 'desktop'].map(sz => grid(sz, PKC.map(([l, cap]) => fig(`img/pk-${l}-${s}-${sz}.png`, `${title} on a ${sz}: ${cap}`, `${dev(sz)}: <b>${cap}</b>`)))).join('')).join('')
 const alike = ALIKE.map(([part, words]) => `<p class="pg-swl">${words}</p>` + ['phone', 'desktop'].map(sz => grid(sz, [['r1', 'first page’s colours'], ['c', 'the new colours']].map(([l, w]) =>
   fig(`img/like-${part}-${l}-${sz}.png`, `${words} ${w}, on a ${sz}`, `${dev(sz)}: <b>${w}</b>`)))).join('')).join('')
 
@@ -131,8 +145,8 @@ const js = p => read(p).replace(/<\/script/gi, '<\\/script')
 const PUT = { '<!--SURFACES-->': () => surfaces, '<!--SW:today-->': () => swatch(TODAY), '<!--SW:new-->': () => swatch(NEW), '<!--SW:cvd-->': () => cvd,
   '<!--T:spent:today-->': () => spentTable(TODAY), '<!--T:spent:new-->': () => spentTable(NEW), '<!--T:pairs-->': pairsTable, '<!--T:puckname-->': () => puckName, '<!--PUCKS-->': () => pucks,
   '<!--SHOTS-->': () => shots, '<!--T:clear-->': clearTable, '<!--T:clash-->': clash, '<!--P:fly-->': () => pairs('fly'), '<!--P:sims-->': () => pairs('sims'), '<!--P:miss-->': () => miss, '<!--P:alike-->': () => alike,
-  '<!--T:alike:today-->': () => alikeTable(TODAY, 'Today’s seven'), '<!--T:alike:r1-->': () => alikeTable(R1, 'My first page’s seven'), '<!--T:alike:new-->': () => alikeTable(NEW, 'The new seven'), '<!--T:alikefix-->': alikeFix }
-let out = read('src/frame.html').replace('<!--ROUND2-->', () => read('src/round2.html'))
+  '<!--T:alike:today-->': () => alikeTable(TODAY, 'Today’s seven'), '<!--T:alike:r1-->': () => alikeTable(R1, 'My first page’s seven'), '<!--T:alike:new-->': () => alikeTable(NEW, 'The new seven'), '<!--T:alikefix-->': alikeFix, '<!--T:plain-->': plainTable, '<!--P:latest-->': () => latest, '<!--P:puckmark-->': () => puckmark }
+let out = read('src/frame.html').replace('<!--ROUND3-->', () => read('src/round3.html')).replace('<!--ROUND2-->', () => read('src/round2.html'))
   .replace('/*APPCSS*/', () => css).replace('/*LOOKSCSS*/', () => read('src/looks.css')).replace('/*PAGECSS*/', () => read('src/page.css'))
 for (const [k, fn] of Object.entries(PUT)) { if (!out.includes(k)) throw new Error('the frame has no place for ' + k); out = out.split(k).join(fn()) }
 out = out.replace('/*LOOKSJS*/', () => js('src/looks.js')).replace('/*TRYJS*/', () => js('src/tryout.js'))
@@ -149,6 +163,7 @@ if (process.argv.includes('--tables')) {
     console.log('under ' + CLOSE + ': ' + (flagged(list).map(x => `${al(x.i)} ${NAME[x.c]} ${f1(x.d)} ${x.what}`).join(' ; ') || 'none'))
     console.log('vs outline red: ' + list.map((c, i) => `${al(i)} ${f0(de00(c, RED))}/${f0(cbOnly(c, RED))}`).join('  '))
   }
+  console.log('\ncolour alone: from white / grey / faint words: ordinary, red-green, lightness'); for (const r of plainRows()) console.log(al(r.i), NAME[r.c], r.w.map(x => x.map(f0).join('/')).join('  '))
   console.log('\ncallsign on pucks'); NEW.forEach((c, i) => console.log(al(i), PUCKS.map(p => p[1] + ' ' + f1(contrast(c, p[0]))).join(' | ')))
   console.log('\n| Where the line is | Today | Recommendation | Tightest spot |\n|---|---|---|---|')
   for (const r of clearRows()) console.log(`| ${r.place} | ${g(r.a.gap)}${r.a.cut < 0 ? ' (cut off)' : ''} | ${g(r.c.gap)} | ${r.c.at || ''} |`)

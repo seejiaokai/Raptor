@@ -40,7 +40,7 @@ for (const [name, eng, opts] of SIZES) {
   await step('All four out', 'st', 'out', null)
   await step('Colour-blind', 'cb', 'on', 'edit-c-cb')
   await press('cb', 'off'); await press('st', 'waiting')
-  await step('Number only', 'puck', 'num', null)
+  await step('Small tab', 'puck', 'tab', null)   // (the first changed puck is a waiting one: it wears its number in both number looks)
   await step('Today’s colours', 'pal', 'today', null)
   await step('View Schedule', 'surf', 'view', 'view-mix')
   await step('Scheduler Board', 'surf', 'board', null)
@@ -59,6 +59,29 @@ for (const [name, eng, opts] of SIZES) {
   if (mRed === 'none' || mGrey === 'none' || mRed === mGrey || mOff !== 'none') problems.push(`${name}: the missing-time outline setting is wrong (red ${mRed} | grey ${mGrey} | off ${mOff})`)
   await p.evaluate(() => document.querySelector('.tt-surf.on .et-miss').scrollIntoView({ block: 'center' })); await p.waitForTimeout(300); await p.screenshot({ path: join(OUT, `miss-edit-${name}.png`) })
   await press('surf', 'view'); if (await missOf() !== 'none') problems.push(name + ': View Schedule shows a missing-time outline')
+  /* UNDERLINE ONLY THE LATEST: which amendments still draw a line (words: the underline; a board box: its inside line),
+     per screen and state. "2": waiting only while anything waits, else the newest out. "3": the newest out, and waiting. */
+  const lined = () => p.evaluate(() => { const s = document.querySelector('.tt-surf.on'), out = new Set(), wait = new Set()
+    for (const e of s.querySelectorAll('[data-alc]:not(.seat):not(.verchip):not(.alx-k):not(.rmkcell):not(.sb-rcell), [data-aln]:not(.seat):not(.rmkcell):not(.sb-rcell)')) { if (!e.getBoundingClientRect().width || e.closest('.alpanel')) continue
+      const cs = getComputedStyle(e), has = /INPUT|TEXTAREA/.test(e.tagName) ? cs.backgroundImage !== 'none' : cs.textDecorationLine.includes('underline')
+      if (has) (e.hasAttribute('data-aln') ? wait : out).add(+(e.getAttribute('data-aln') || e.getAttribute('data-alc'))) }
+    return [...out].sort().join(',') + ' | ' + [...wait].sort().join(',') })
+  await press('look', 'c')
+  for (const [surf, st, ul, want] of [['edit', 'waiting', 'all', '1,2,3 | 4'], ['edit', 'waiting', '2', ' | 4'], ['edit', 'waiting', '3', '3 | 4'], ['board', 'waiting', '2', ' | 4'], ['board', 'waiting', '3', '3 | 4'], ['view', 'waiting', '2', '3 | '], ['view', 'waiting', '3', '3 | '],
+    ['edit', 'out', '2', '4 | '], ['edit', 'out', '3', '4 | '], ['view', 'out', '2', '4 | '], ['board', 'out', '3', '4 | '], ['view', 'out', 'all', '1,2,3,4 | ']]) {
+    await press('st', st); await press('surf', surf); await press('ul', ul); const got = await lined()
+    if (got !== want) problems.push(`${name}: Underline "${ul}" on ${surf}, ${st}: lines on [${got}], expected [${want}]`)
+    if (surf === 'edit' && st === 'waiting' && ul !== 'all') { await p.evaluate(() => document.querySelector('.tt-surf.on .sec-duty').scrollIntoView({ block: 'center' })); await p.waitForTimeout(250); await p.screenshot({ path: join(OUT, `ul-${ul}-${name}.png`) }) } }
+  /* THE PUCK'S MARK under his pick, on Edit Schedule with AL4 waiting: what an older puck (AL1/AL2), the newest out (AL3) and a
+     waiting one (AL4) wear, for each choice. "tab" is the wordless tab, a digit the number, "none" nothing. */
+  await press('st', 'waiting'); await press('surf', 'edit'); await press('ul', '3')
+  const wears = () => p.evaluate(() => { const s = document.querySelector('.tt-surf.on'), of = sel => { const e = s.querySelector(sel); if (!e) return 'missing'; const c = getComputedStyle(e, '::after').content; return c === 'none' ? 'none' : c === '""' ? 'tab' : c.replace(/"/g, '') }
+    return [of('.seat[data-alc="1"], .seat[data-alc="2"]'), of('.seat[data-alc="3"]'), of('.seat[data-aln="4"]')].join(' ') })
+  for (const [puck, want] of [['mix', 'tab 3 4'], ['num', /^[12] 3 4$/], ['new', 'none 3 4'], ['tab', 'tab tab tab']]) { await press('puck', puck); const got = await wears()
+    if (typeof want === 'string' ? got !== want : !want.test(got)) problems.push(`${name}: puck mark "${puck}" wears [${got}], expected ${want}`)
+    if (puck !== 'tab') { await p.evaluate(() => document.querySelector('.tt-surf.on .sec-sim').scrollIntoView({ block: 'center' })); await p.waitForTimeout(250); await p.screenshot({ path: join(OUT, `puck-${puck}-${name}.png`) }) } }
+  await press('puck', 'mix')
+  await press('ul', 'all')
   /* THE CLEARANCE: under every line the recommendation draws, on each screen and in each state, at least 2px to the nearest
      thing below it, and never cut off (src/measure.js, loaded here for the test only; it is not part of the page) */
   await p.addScriptTag({ content: readFileSync(join(HERE, 'src/measure.js'), 'utf8') })

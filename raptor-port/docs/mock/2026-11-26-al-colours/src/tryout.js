@@ -5,8 +5,8 @@
   const stage = $('#ttStage'), strip = $('.tt-strip'), note = $('#ttNote'), cands = $('#ttCands')
   /* the short list a tapped swatch may be given: the proposed seven, today's seven, and three more near-misses */
   const CANDS = [...A.NEW.slice(1), ...A.TODAY.slice(1), '#8FA6FF', '#4FEBC8', '#FF9548', '#19AFFE', '#E6A3A7']
-  const START = { surf: 'edit', look: 'a', puck: 'chip', pal: 'today', cb: 'off', st: 'waiting', miss: 'red' }
-  const PRESET = { a: { puck: 'chip', pal: 'today' }, b: { puck: 'name', pal: 'today' }, c: { puck: 'tab', pal: 'new' } }
+  const START = { surf: 'edit', look: 'a', puck: 'chip', pal: 'today', cb: 'off', st: 'waiting', miss: 'red', ul: '3' }
+  const PRESET = { a: { puck: 'chip', pal: 'today' }, b: { puck: 'name', pal: 'today' }, c: { puck: 'mix', pal: 'new' } }
   let S = { ...START }, custom = null, picking = 0
 
   const list = () => custom || (S.pal === 'new' ? A.NEW : A.TODAY)
@@ -17,6 +17,8 @@
     A.look(stage, { look: S.look, puck: S.puck })
     $$('.tt-surf .alx-key').forEach(k => k.remove())
     if (S.look === 'c' && on) A.key(on)
+    /* which amendments keep their line (his idea: only the latest): worked out for the day on show */
+    $$('.tt-surf').forEach(s => { if (s === on) A.underline(s, S.look === 'c' ? S.ul : 'all') })
     stage.classList.toggle('cb', S.cb === 'on')
     /* the missing-time outline: every empty time box of a duty desk on the captured day (the 1st wave's SXO END, emptied on
        the published day and still waiting) is given the end-time rule's class; classes only, never a style from script */
@@ -40,6 +42,8 @@
       S[b.dataset.set] = b.dataset.val
       if (b.dataset.set === 'look') { Object.assign(S, PRESET[b.dataset.val]); custom = null; picking = 0 }
       if (b.dataset.set === 'pal') { custom = null; picking = 0 }
+      /* the Underline setting belongs to the recommendation's look: choosing it shows that look */
+      if (b.dataset.set === 'ul' && S.look !== 'c') { S.look = 'c'; Object.assign(S, PRESET.c); custom = null; picking = 0 }
     } else if (b.classList.contains('tt-sw')) { picking = picking === +b.dataset.n ? 0 : +b.dataset.n }
     else if (b.classList.contains('tt-cand')) { custom = [...list()]; custom[picking] = b.dataset.c; picking = 0 }
     else if (b.id === 'ttMore') { const o = strip.classList.toggle('open'); b.textContent = o ? 'Fewer' : 'More'; b.setAttribute('aria-expanded', o ? 'true' : 'false') }
