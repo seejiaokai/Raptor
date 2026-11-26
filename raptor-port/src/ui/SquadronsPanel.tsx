@@ -28,7 +28,7 @@ import { PEOPLE } from '../engine/people'
 import { actorIsMaster } from './useraccess-model'
 import { squadronRows, placeRows, tzChoices, firstAdminChoices, newSqnNote, NUM_EXAMPLE, NEW_PLACE } from './squadrons-model'
 import { useVersion } from './useStore'
-import { useGuardWork } from './guard'
+import { useGuardSection, useGuardWork } from './guard'
 
 /* a door's answer said: refused — its words in the warning toast, the form kept; saved — the toast's words if any, then
    `then`. A save the command queued (a commit in flight) is answered when it lands. */
@@ -174,6 +174,10 @@ export function SquadronsPanel({ shown = true }: { shown?: boolean } = {}) {
   useVersion()
   const today = todayIso()
   const [open, setOpen] = useState<Open>(null)
+  /* WHETHER THIS SECTION IS IN SIGHT (the guard's note — his "…on Squadrons", D2814, said while "+ New squadron", a
+     squadron's row or a place's row here is unfinished and another Admin section shows): the Admin page's own `shown`,
+     handed on as it is */
+  useGuardSection('squadrons', shown)
   /* the squadron just made, wearing the just-added mark for its six seconds */
   const [ring, setRing] = useState<string | null>(null)
   useEffect(() => {

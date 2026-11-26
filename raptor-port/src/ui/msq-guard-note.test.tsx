@@ -24,7 +24,7 @@ import { act } from '@testing-library/react'
 import { withThird, third } from '../test-support/msq-world'
 import { setPage } from '../state/view'
 import { setDaysWin, setOilList, setBellList } from './pops'
-import { whatIsOpen, guardWords, guardLead, GUARD_LEADS, GUARD_ENDINGS, workSay, calendarOver, trackerBehindInfo, usersOutOfSight, type GuardWordsAt } from './guard'
+import { whatIsOpen, guardWords, guardLead, guardRow, GUARD_LEADS, GUARD_ENDINGS, workSay, calendarOver, trackerBehindInfo, usersOutOfSight, squadronsOutOfSight, type GuardWordsAt } from './guard'
 import { refuse } from '../state/guard'
 import { toast, toastAt, placeToast, placeNote, noteAtFoot, clearToast, NOTE_X, type NoteBox, type NotePlaceIn } from './toast'
 import { noteAtFor, guardSay } from './guardnote'
@@ -236,11 +236,11 @@ describe('two at once — named one at a time, in GUARD_ORDER (D2627 A10; D2729 
   })
 })
 
-describe('Words owed — each state with no words of his yet, pinned to the plain words it says today', () => {
-  it('a Tracker window behind the phone\'s Flow chart tab (a lull pop-up holding a choice): "…on the Tracker" — the Info tab\'s lead waits for him', async () => {
-    /* WAITS FOR HIM (question 19): "close the open window on the Tracker’s Info tab" — the reviewed draft, never drawn.
-       Built with his A7 words, true there; the `behind` mark reaches the words (trackerBehindInfo), so his answer is a
-       one-line change in ui/guard.ts guardLead */
+describe('Words owed — each state with no words of his yet, pinned to the plain words it says today; and the five he answered on 26 Nov (D2813, D2814), step K3b', () => {
+  it('a Tracker window behind the phone\'s Flow chart tab (a lull pop-up holding a choice): "…on the Tracker’s Info tab" (D2813); in sight "close the open window"; on another page "…on the Tracker" (D2627 A7) — behind the tab there too, the Info tab\'s', async () => {
+    /* HIS ANSWER TO QUESTION 19 (D2813, 26 Nov 26): the note names the tab. Was pinned to "…on the Tracker" until he
+       answered. Where both are true — he is on another page and the window is behind the Flow chart tab — the Info tab's
+       words are said: they still name the Tracker (the orchestrator's reading of D2813, not his rule) */
     phoneWidth()
     await app('hunter')
     await goTracker()
@@ -250,10 +250,20 @@ describe('Words owed — each state with no words of his yet, pinned to the plai
     await press($('#viewtabs [data-view="flow"]'), 'the Flow chart tab')
     expect(trkOpen('lullPick'), 'the premise: behind the Info tab').toMatchObject({ counts: 'window', behind: 'info' })
     expect(trackerBehindInfo()).toBe(true)
-    saysEvery(GUARD_LEADS.windowOnTracker, 'trk')
+    saysEvery(GUARD_LEADS.windowOnTrackerInfo, 'trk')
     await press($('#viewtabs [data-view="info"]'), 'the Info tab again')
     expect(trackerBehindInfo(), 'in sight again').toBe(false)
     saysEvery(GUARD_LEADS.window, 'trk')
+    /* on another page, the window not behind a tab: his A7 words */
+    await doing(() => setPage('inputs'))
+    expect(trackerBehindInfo(), 'the premise: not behind the tab').toBe(false)
+    saysEvery(GUARD_LEADS.windowOnTracker, 'trk')
+    /* back, behind the Flow chart tab, then another page: both true — the Info tab's words */
+    await doing(() => setPage('tracker'))
+    await press($('#viewtabs [data-view="flow"]'), 'the Flow chart tab again')
+    await doing(() => setPage('inputs'))
+    expect(trackerBehindInfo(), 'the premise: behind the tab, the page left').toBe(true)
+    saysEvery(GUARD_LEADS.windowOnTrackerInfo, 'trk')
   })
   it('the Tracker\'s unsaved-edits question: "close the open window", never "…on the Tracker" — and no press reaches a door while it stands', async () => {
     /* WAITS FOR HIM (question 21): the note calls a question a "window" though its buttons read Stay, Discard them, Save
@@ -281,22 +291,66 @@ describe('Words owed — each state with no words of his yet, pinned to the plai
     await settle()
     expect(C.dlg, 'a press on its shade is Stay: the question gone, nothing else pressed').toBeFalsy()
   })
-  it('a squadron\'s move or a place being edited, the Users section showing: "save or cancel the open row" — "…on Squadrons" waits for him', async () => {
-    /* WAITS FOR HIM (question 20): "save or cancel the open row on Squadrons" — reviewed, never drawn */
+  it('a squadron\'s move or a place being edited, the Users section showing: "save or cancel the open row on Squadrons" (D2814); back on Squadrons: the plain lead', async () => {
+    /* HIS ANSWER TO QUESTION 20 (D2814, 26 Nov 26). Was pinned to the plain "save or cancel the open row" until he
+       answered. A place's own row takes the open row's words: the words review's reading 1 (a place's row is a row of the
+       Squadrons section), not his rule */
     await app('hunter')
     await OPEN.sqnmove!.open()
     await goAdmin('Users')
+    saysEvery(GUARD_LEADS.rowOnSquadrons, 'sqnmove')
+    await goAdmin('Squadrons')
     saysEvery(GUARD_LEADS.row, 'sqnmove')
     await guardTeardown(); await app('hunter')
     await OPEN.placeedit!.open()
     await goAdmin('Users')
+    saysEvery(GUARD_LEADS.rowOnSquadrons, 'placeedit')
+    await goAdmin('Squadrons')
     saysEvery(GUARD_LEADS.row, 'placeedit')
   })
-  it('"+ New squadron" typed, the Users section showing: "save or cancel the new squadron" (no "on …")', async () => {
+  it('"+ New squadron" typed, the Users section showing: "save or cancel the new squadron on Squadrons" (D2814); back on Squadrons: the plain lead', async () => {
+    /* was pinned to "save or cancel the new squadron" (no "on …") until he answered question 20 */
     await app('hunter')
     await OPEN.newsqn!.open()
     await goAdmin('Users')
+    saysEvery(GUARD_LEADS.newSquadronOnSquadrons, 'newsqn')
+    await goAdmin('Squadrons')
     saysEvery(GUARD_LEADS.newSquadron, 'newsqn')
+  })
+  it('the Squadrons section\'s report: in sight on Squadrons, out of sight on Users, nothing once Admin unmounts — and then the plain leads, never "on Squadrons"', async () => {
+    await app('hunter')
+    await goAdmin('Squadrons')
+    expect(squadronsOutOfSight(), 'Squadrons shown').toBe(false)
+    await goAdmin('Users')
+    expect(squadronsOutOfSight(), 'Users shown').toBe(true)
+    await doing(() => setPage('help'))
+    expect(squadronsOutOfSight(), 'Admin left: nothing reported').toBe(false)
+    expect(guardLead(guardRow('newsqn')!).words).toBe(GUARD_LEADS.newSquadron)
+    expect(guardLead(guardRow('sqnmove')!).words).toBe(GUARD_LEADS.row)
+    expect(guardLead(guardRow('placeedit')!).words).toBe(GUARD_LEADS.row)
+    expect(guardLead(guardRow('addperson')!).words).toBe(GUARD_LEADS.addPerson)
+    expect(guardLead(guardRow('giveaccess')!).words).toBe(GUARD_LEADS.giveAccess)
+  })
+  it('the five sentences he saw, letter for letter (D2813, D2814): the table\'s leads joined to the pick of 149', () => {
+    const pick = (lead: string) => `Blocked: ${lead}, then ${GUARD_ENDINGS.pick('149')}`
+    expect(pick(GUARD_LEADS.windowOnTrackerInfo)).toBe('Blocked: close the open window on the Tracker’s Info tab, then pick 149.')
+    expect(pick(GUARD_LEADS.newSquadronOnSquadrons)).toBe('Blocked: save or cancel the new squadron on Squadrons, then pick 149.')
+    expect(pick(GUARD_LEADS.rowOnSquadrons)).toBe('Blocked: save or cancel the open row on Squadrons, then pick 149.')
+    expect(pick(GUARD_LEADS.addPersonOnUsers)).toBe('Blocked: add or cancel the new person on Users, then pick 149.')
+    expect(pick(GUARD_LEADS.giveAccessOnUsers)).toBe('Blocked: finish or cancel giving access on Users, then pick 149.')
+  })
+  it('each new lead names the controls its plain lead names', async () => {
+    const at = { usersOut: true, squadronsOut: true }
+    for (const id of ['newsqn', 'sqnmove', 'placeedit', 'addperson', 'giveaccess'] as const) {
+      const r = guardRow(id)!
+      const plain = guardLead(r, { usersOut: false, squadronsOut: false })
+      const named = guardLead(r, at)
+      expect(named.key, id).not.toBe(plain.key)
+      expect(named.names, id).toBe(plain.names)
+      expect(named.names, `${id} names its own controls`).not.toBe('')
+    }
+    const trk = guardRow('trk')!
+    expect(guardLead(trk, { trkBehindInfo: true }).names).toBe('')
   })
   it('the Users section\'s report (the review round): in sight on Users, out of sight on Squadrons, nothing once Admin unmounts', async () => {
     await app('hunter')
@@ -323,18 +377,20 @@ describe('Words owed — each state with no words of his yet, pinned to the plai
     await goAdmin('Squadrons')
     saysEvery(GUARD_LEADS.rowOnUsers, 'archrow')
   })
-  it('Add a person typed, or Give access changed, then the Squadrons section shown: still refused, with no "on Users" — none ruled for them', async () => {
-    /* WAITS FOR HIM (question 22, "any row left on a page out of sight"): his "…on Users" (D2627 A6) is ruled for an open
-       row; for the two forms nothing is ruled or drawn — "add or cancel the new person on Users", "finish or cancel giving
-       access on Users" would be drafts. Built with their own plain leads, though the section shown is now read live
-       (the review round) */
+  it('Add a person typed, or Give access changed, then the Squadrons section shown: "…on Users" (D2814); back on Users: the plain leads', async () => {
+    /* HIS ANSWER TO QUESTION 20 (D2814, 26 Nov 26). Was pinned to their plain leads, with no "on Users", until he
+       answered */
     await app('hunter')
     await OPEN.addperson!.open()
     await goAdmin('Squadrons')
+    saysEvery(GUARD_LEADS.addPersonOnUsers, 'addperson')
+    await goAdmin('Users')
     saysEvery(GUARD_LEADS.addPerson, 'addperson')
     await guardTeardown(); await app('hunter')
     await OPEN.giveaccess!.open()
     await goAdmin('Squadrons')
+    saysEvery(GUARD_LEADS.giveAccessOnUsers, 'giveaccess')
+    await goAdmin('Users')
     saysEvery(GUARD_LEADS.giveAccess, 'giveaccess')
   })
   it('every row whose page is a page (not drawn over every page) — each opened, then the Help tab: none still counts but the Leave War\'s and the Tracker\'s, which have their words', async () => {

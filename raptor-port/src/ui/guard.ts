@@ -333,11 +333,13 @@ export function useGuardWork(id: GuardRowId, on: boolean, say?: string): void {
   }, [id, on, say])
 }
 /* WHICH ADMIN SECTION IS IN SIGHT (the orchestrator's review of K3): his "save or cancel the open row on Users" (D2627 A6)
-   is said while a Users row is open and another section shows. The section is the Admin page's own state, which hands
-   the Users list only `shown` (in sight: chosen, and on a phone drilled in), so the list reports it here, in the family of
-   useGuardWork — kept while it is mounted, gone with it. Read by the note's words only. */
+   is said while a Users row is open and another section shows; since his D2814 (step K3b) the section is named for
+   "Add a person" and Give access on Users, and for "+ New squadron", a squadron's row and a place's row on Squadrons, each
+   only while its section is not the one showing. The section is the Admin page's own state, which hands each list only
+   `shown` (in sight: chosen, and on a phone drilled in), so the list reports it here, in the family of useGuardWork —
+   kept while it is mounted, gone with it. Read by the note's words only. */
 const SECTIONS = new Map<string, boolean>()
-export function useGuardSection(id: 'users', shown: boolean): void {
+export function useGuardSection(id: 'users' | 'squadrons', shown: boolean): void {
   useEffect(() => {
     SECTIONS.set(id, shown)
     return () => { SECTIONS.delete(id) }
@@ -345,6 +347,8 @@ export function useGuardSection(id: 'users', shown: boolean): void {
 }
 /** Admin → Users is mounted and not the section in sight */
 export const usersOutOfSight = (): boolean => SECTIONS.get('users') === false
+/** Admin → Squadrons is mounted and not the section in sight (D2814) */
+export const squadronsOutOfSight = (): boolean => SECTIONS.get('squadrons') === false
 
 /* THE CLOSER OF A 'closes' WINDOW WHOSE STATE IS ITS COMPONENT'S OWN (the SANS day — ui/SansCal.tsx's dayIso): handed
    over for exactly as long as the component is mounted with it open; the latest closer is used, so it never closes
@@ -369,11 +373,16 @@ export const GUARD_LEADS = {
   window: 'close the open window',                                           // D2590
   windowOnLeaveWar: 'close the open window on the Leave War',                // D2627 A7
   windowOnTracker: 'close the open window on the Tracker',                   // D2627 A7
+  windowOnTrackerInfo: 'close the open window on the Tracker’s Info tab',    // D2813
   row: 'save or cancel the open row',                                        // D2627 A6
   rowOnUsers: 'save or cancel the open row on Users',                        // D2627 A6
+  rowOnSquadrons: 'save or cancel the open row on Squadrons',                // D2814
   giveAccess: 'finish or cancel giving access',                              // D2627 A6
+  giveAccessOnUsers: 'finish or cancel giving access on Users',              // D2814
   newSquadron: 'save or cancel the new squadron',                            // D2627 A6
+  newSquadronOnSquadrons: 'save or cancel the new squadron on Squadrons',    // D2814
   addPerson: 'add or cancel the new person',                                 // D2655 D1, seen again (D2729)
+  addPersonOnUsers: 'add or cancel the new person on Users',                 // D2814
   newQual: 'add or clear the new qualification',                             // D2729 Q2
   holidayNew: 'save or cancel the new holiday',                              // D2729 (the section page, group 4)
   holidayChanged: 'save or cancel the changed holiday',                      // D2729
@@ -410,11 +419,16 @@ const ROW_NAMES: Partial<Record<GuardRowId, string>> = {
   sqnmove: '#sqMoveSave, #sqMoveCancel',
   placeedit: '#plSave, #plCancel',
 }
-const LEAD_NAMES: Record<Exclude<GuardLeadKey, 'row' | 'rowOnUsers'>, string> = {
-  window: '', windowOnLeaveWar: '', windowOnTracker: '',
+/* (a lead naming the section — D2814 — names the same controls as the plain lead of its state, as "…the open row on Users"
+   does through ROW_NAMES: never the section's own button) */
+const LEAD_NAMES: Record<Exclude<GuardLeadKey, 'row' | 'rowOnUsers' | 'rowOnSquadrons'>, string> = {
+  window: '', windowOnLeaveWar: '', windowOnTracker: '', windowOnTrackerInfo: '',
   giveAccess: '#apvGo, #apvCancel',
+  giveAccessOnUsers: '#apvGo, #apvCancel',
   newSquadron: '#sqNewSave, #sqNewCancel',
+  newSquadronOnSquadrons: '#sqNewSave, #sqNewCancel',
   addPerson: '#accAdd, #accAddCancel',
+  addPersonOnUsers: '#accAdd, #accAddCancel',
   newQual: '#qAddQualBtn',
   holidayNew: `${T('hol-save')}, ${T('hol-save-more')}, ${T('hol-cancel')}`,
   holidayChanged: `${T('hol-save')}, ${T('hol-cancel')}`,
@@ -437,8 +451,7 @@ const LEAD_NAMES: Record<Exclude<GuardLeadKey, 'row' | 'rowOnUsers'>, string> = 
    where both stand in sight, never. */
 export const calendarOver = (id: 'inputsset' | 'sansset'): boolean => phoneLayout() && winUp('days') && winAbove('days', id)
 /* A TRACKER WINDOW BEHIND THE PHONE'S FLOW CHART TAB (his D2654 E4 — the bridge's `behind: 'info'`, K1c). Carried to the
-   words so the Info tab's lead, which he has not seen ("…on the Tracker’s Info tab" — question 19 to him), is a one-line
-   change on his answer; until then such a window takes his A7 words, "…on the Tracker", true there */
+   words: such a window takes his "…on the Tracker’s Info tab" (D2813, his answer to question 19) */
 export const trackerBehindInfo = (): boolean =>
   trackerWindowsOpen().some(w => w.counts === 'window' && w.behind === 'info' && !(w.id === 'dlg' && trackerAsking()))
 
@@ -452,6 +465,8 @@ export type GuardWordsAt = {
   underCal?: boolean
   /** Admin → Users is not the section shown (usersOutOfSight — the Users list's own report of its `shown`) */
   usersOut?: boolean
+  /** Admin → Squadrons is not the section shown (squadronsOutOfSight — the Squadrons list's own report of its `shown`) */
+  squadronsOut?: boolean
   /** a Tracker window behind the phone's Flow chart tab (trackerBehindInfo) */
   trkBehindInfo?: boolean
 }
@@ -459,22 +474,25 @@ const live = (row: GuardRow, at: GuardWordsAt): Required<Omit<GuardWordsAt, 'say
   page: at.page ?? CURPAGE,
   say: 'say' in at ? at.say : workSay(row.id),
   underCal: at.underCal ?? ((row.id === 'inputsset' || row.id === 'sansset') && calendarOver(row.id)),
-  usersOut: at.usersOut ?? ((row.id === 'userrow' || row.id === 'archrow') && usersOutOfSight()),
+  usersOut: at.usersOut ?? ((row.id === 'userrow' || row.id === 'archrow' || row.id === 'addperson' || row.id === 'giveaccess') && usersOutOfSight()),
+  squadronsOut: at.squadronsOut ?? ((row.id === 'newsqn' || row.id === 'sqnmove' || row.id === 'placeedit') && squadronsOutOfSight()),
   trkBehindInfo: at.trkBehindInfo ?? (row.id === 'trk' && trackerBehindInfo()),
 })
 /** which lead a refusing row takes, and the words of it */
 export function guardLead(row: GuardRow, at: GuardWordsAt = {}): { key: GuardLeadKey; words: string; names: string } {
   const c = live(row, at)
   const k = (key: GuardLeadKey, words: string = GUARD_LEADS[key] as string, names?: string) =>
-    ({ key, words, names: names ?? ROW_NAMES[row.id] ?? (key === 'row' || key === 'rowOnUsers' ? '' : LEAD_NAMES[key]) })
+    ({ key, words, names: names ?? ROW_NAMES[row.id] ?? (key === 'row' || key === 'rowOnUsers' || key === 'rowOnSquadrons' ? '' : LEAD_NAMES[key]) })
   switch (row.id) {
     case 'unsaved': return k('retry')
     case 'userrow': case 'archrow': return k(c.usersOut ? 'rowOnUsers' : 'row')
-    /* a squadron's move or a place, with Users showing: "…on Squadrons" was reviewed, never drawn for him — the plain lead */
-    case 'sqnmove': case 'placeedit': return k('row')
-    case 'giveaccess': return k('giveAccess')
-    case 'newsqn': return k('newSquadron')
-    case 'addperson': return k('addPerson')
+    /* Admin's unfinished work with its section not the one showing names the section (D2814); in sight, the plain lead.
+       A place's own row takes the open row's words — the words review's reading 1 (a place's row is a row of the
+       Squadrons section), not his rule */
+    case 'sqnmove': case 'placeedit': return k(c.squadronsOut ? 'rowOnSquadrons' : 'row')
+    case 'giveaccess': return k(c.usersOut ? 'giveAccessOnUsers' : 'giveAccess')
+    case 'newsqn': return k(c.squadronsOut ? 'newSquadronOnSquadrons' : 'newSquadron')
+    case 'addperson': return k(c.usersOut ? 'addPersonOnUsers' : 'addPerson')
     case 'qualsnew': return k('newQual')
     case 'holiday': return k(c.say === 'noleave' ? 'holidayNoLeave' : c.say === 'changed' ? 'holidayChanged' : 'holidayNew')
     /* (the window's own title, as it reports it; "Every Monday" — its first ruled words — only if none was handed over) */
@@ -487,9 +505,11 @@ export function guardLead(row: GuardRow, at: GuardWordsAt = {}): { key: GuardLea
     case 'trkask': return k('window')
   }
   /* a window on a page out of sight (D2627 A7 — §3.3: exactly when the row's page is not the page shown); a Tracker window
-     behind its Flow chart tab takes the Tracker's words too, until he has seen the Info tab's */
+     behind its Flow chart tab takes the Info tab's words (D2813) — on another page too, where both are true: they still
+     name the Tracker (the orchestrator's reading of D2813, and the words review's, not his rule) */
   if (row.id === 'lwsheet' && row.where !== c.page) return k('windowOnLeaveWar')
-  if (row.id === 'trk' && (row.where !== c.page || c.trkBehindInfo)) return k('windowOnTracker')
+  if (row.id === 'trk' && c.trkBehindInfo) return k('windowOnTrackerInfo')
+  if (row.id === 'trk' && row.where !== c.page) return k('windowOnTracker')
   /* any other row on a page out of sight has no words of its own: the plain lead (listed under "Words owed") */
   return k(row.counts === 'row' ? 'row' : 'window')
 }
