@@ -300,6 +300,14 @@ function otherSqnOf(pid: string): string | null {
    page's squadron. Every rule of the short row hangs on this one predicate and on nothing else — what his row shows,
    what it opens to, and the judging again at its Save. */
 const foreignHere = (pid: string): boolean => otherSqnOf(pid) !== null
+/* AN OPEN ROW, AS IT WAS JUDGED AT THE PRESS THAT OPENED IT (U1's fix — the Opus read's F1 and F2, the security read's A1–
+   A7, chat 199): the squadron whose page it opened on, and whether it opened short (another squadron's man there) or
+   whole. Held for every open row — a whole row too, which U1 held as nothing and so never judged again. */
+type OpenedOn = { unit: string; short: boolean }
+/* THE ROW CHANGED UNDER IT (his D2730 Q13): his home today, or the page's squadron, is no longer what the row opened on.
+   Asked at the head of each of the whole row's writes (the belt — a move landing as the date rolls redraws nothing) and
+   by the page on every draw. */
+const rowChanged = (pid: string, on: OpenedOn): boolean => pageUnit('own') !== on.unit || foreignHere(pid) !== on.short
 
 /* THE SHORT ROW'S SECOND LINE — seat and CAT, his role in words, what he already holds of the page's squadron, "you" on
    the signed-in admin's own (ui/useraccess-model.ts shortRoleOf, holdsHereOf). No sign-in name, no posting tag, no held
@@ -382,7 +390,7 @@ function rowLocks(pid: string, a: Account | undefined): { rest: boolean; roleLoc
 
 /* ONE ROW PER PERSON ON THE ROSTER (D309, D310). Tap it for his sign-in, his role and his state's buttons — never your
    own row (another admin changes it). A row with an account keeps `data-acct` (the account's id) beside `data-person`. */
-function PersonRow(p: { pid: string; open: boolean; openOn?: string | null; ringed?: boolean; onToggle: () => void; onClose: () => void }) {
+function PersonRow(p: { pid: string; open: boolean; openOn?: OpenedOn | null; ringed?: boolean; onToggle: () => void; onClose: () => void }) {
   const person = P(p.pid)
   const a = accountOfPid(p.pid)
   const own = (a && isOwnAccount(a)) || (me() != null && p.pid === me())
@@ -391,28 +399,32 @@ function PersonRow(p: { pid: string; open: boolean; openOn?: string | null; ring
   const held = postingHeldNote(p.pid)
   const roleWord = roleWordOf(a)
   const other = otherSqnOf(p.pid)
-  /* ANOTHER SQUADRON'S MAN HERE: the short row (ForeignEditor, above). Whether an OPENED row is short is decided once, at
-     the press that opens it, and held by the page with the squadron it opened on (`openOn` — UsersPanel's editOn; held
-     there, not here, because a pick can draw this row afresh in another group), so a move or a pick under the open row
-     never swaps it for the whole row; its Save judges it again. A closed row reads it afresh on every draw. */
+  /* ANOTHER SQUADRON'S MAN HERE: the short row (ForeignEditor, above). An OPENED row is drawn as it was judged at the
+     press that opened it, held by the page with the squadron it opened on (`openOn` — UsersPanel's editOn; held there,
+     not here, because a pick can draw this row afresh in another group). The page judges it again on every draw and
+     closes it the moment that judgement changes (UsersPanel's useOpenRowJudged — U1's fix, the two reads of chat 199), so
+     an open row is never swapped for the other kind and never carried onto another squadron's page. A closed row reads
+     it afresh on every draw. */
   const openOn = p.open ? p.openOn ?? null : null
-  const short = p.open ? openOn !== null : foreignHere(p.pid)
+  const short = p.open ? !!openOn?.short : foreignHere(p.pid)
   return (
     <div className={'acc-row od-row' + (p.open ? ' od-row-on' : '') + (p.ringed ? ' acc-ring' : '')} data-person={p.pid} {...(a ? { 'data-acct': a.id } : {})}>
       <button className="acc-main acc-tap" disabled={!!own} onClick={p.onToggle}
         title={own ? 'Your own account — another admin can change it' : `Change ${callsign}`}>
         <span className="acc-name">{callsign}{other && <span className="acc-sqn" data-testid={`sqn-${p.pid}`}>{other}</span>}</span>
         {short
-          ? <ShortSub pid={p.pid} a={a} person={person} unit={openOn ?? pageUnit('own')} own={!!own} />
+          ? <ShortSub pid={p.pid} a={a} person={person} unit={openOn?.unit ?? pageUnit('own')} own={!!own} />
           : <PersonSub pid={p.pid} a={a} person={person} roleWord={roleWord} own={!!own} />}
       </button>
       {/* (no dots and no role badge on the short row — D2654 E9g, D2655 D5) */}
       {!short && <Dots pid={p.pid} a={a} archived={false} />}
       {!short && <span className="od-rc">{a && <span className={'ub ' + a.role}>{roleWord}</span>}</span>}
       {!short && held && <span className="acc-held" data-testid={`acc-held-${a ? a.id : p.pid}`}>{held}</span>}
-      {p.open && !own && (openOn !== null
-        ? <ForeignEditor pid={p.pid} a={a} callsign={callsign} unit={openOn} onClose={p.onClose} />
-        : <PersonEditor pid={p.pid} a={a} callsign={callsign} onClose={p.onClose} />)}
+      {/* (never PersonEditor for another squadron's man here, by any route: the page closes a row whose judgement changed
+          before it is drawn again, and the second term holds it even for a draw the page did not judge) */}
+      {p.open && !own && openOn && (openOn.short
+        ? <ForeignEditor pid={p.pid} a={a} callsign={callsign} unit={openOn.unit} onClose={p.onClose} />
+        : !foreignHere(p.pid) && <PersonEditor pid={p.pid} a={a} callsign={callsign} unit={openOn.unit} onClose={p.onClose} />)}
     </div>
   )
 }
@@ -420,8 +432,18 @@ function PersonRow(p: { pid: string; open: boolean; openOn?: string | null; ring
 /* HIS OPEN ROW'S EDITOR — his sign-in, his role and his state's buttons. A piece of its own (React Doctor
    no-high-complexity-react-function, 8 Nov 26) holding what is typed: the row is drawn afresh each time it opens or
    closes (its key changes with the editor), so what is typed starts from his saved values every time, as before. */
-function PersonEditor(p: { pid: string; a: Account | undefined; callsign: string; onClose: () => void }) {
+function PersonEditor(p: { pid: string; a: Account | undefined; callsign: string; unit: string; onClose: () => void }) {
   const { a, callsign } = p
+  /* THE BELT, AT THE HEAD OF EVERY WRITE THIS ROW MAKES — Save, Suspend / Enable, Give sign-in, Archive, Delete (U1's fix):
+     the page closes a row whose judgement changed when it next draws, but his move landing as the date rolls past its
+     day redraws nothing, so each press asks again first. He is now another squadron's man here, or the page's squadron
+     is not the one the row opened on: nothing is sent, the row closes, and the short row's own passing note says so
+     (his D2730 Q13). True when the press may go on. */
+  const stillHis = (): boolean => {
+    if (!rowChanged(p.pid, { unit: p.unit, short: false })) return true
+    HOOKS.toast(changedWhileOpenWords(callsign), 'warn'); p.onClose()
+    return false
+  }
   const [name, setName] = useState(a ? a.name : '')
   /* THE ROLE HIS ACCOUNT GIVES TODAY, as his row's badge reads it (roleWordOf — accounts.ts adminNow), never the stored
      role alone (the sign-in re-walk, 22 Nov 26): an admin who moved squadron is a member of the one he joined (K3, D2160)
@@ -439,7 +461,7 @@ function PersonEditor(p: { pid: string; a: Account | undefined; callsign: string
   /* the delete's first tap arms it; Cancel, closing the editor or another row disarms it (the editor unmounts) */
   const [armDel, setArmDel] = useState(false)
   const save = () => {
-    if (!a) return
+    if (!a || !stillHis()) return
     /* the role, the mark, every squadron's line AND his sign-in in ONE command (accounts.ts saveAccess — one Undo step;
        every part checked before anything is written — the final reads, R4: the rename ran after as a second command, so
        a refused rename left the access saved); a rename alone through its own door, one command as before */
@@ -450,10 +472,12 @@ function PersonEditor(p: { pid: string; a: Account | undefined; callsign: string
     if (done(bad, 'Saved')) p.onClose()
   }
   const archive = () => {
+    if (!stillHis()) return
     const r = archivePerson(p.pid)
     if (done(r.bad, r.said)) p.onClose()
   }
   const del = () => {
+    if (!stillHis()) return
     if (!armDel) { setArmDel(true); return }
     if (done(deletePerson(p.pid), `${callsign} deleted`)) p.onClose()
   }
@@ -478,6 +502,7 @@ function PersonEditor(p: { pid: string; a: Account | undefined; callsign: string
               <button className="abtn primary" id="accEdSave" onClick={save}>Save</button>
               {/* D285: "Suspend" / "Enable" — a man away is suspended, and enabled when he is back */}
               <button className="abtn" id="accEdOnOff" disabled={!rest} onClick={() => {
+                if (!stillHis()) return
                 const enabling = !a.on
                 if (done(updateAccount(a.id, { on: !a.on }), a.on ? `${callsign} suspended` : `${callsign} can sign in again`)) {
                   /* D284, D307: enabling his account is one of the "he's back" acts — the Quals prompt to check his quals */
@@ -487,6 +512,7 @@ function PersonEditor(p: { pid: string; a: Account | undefined; callsign: string
               }}>{a.on ? 'Suspend' : 'Enable'}</button>
             </>
           : <button className="abtn primary" id="accGive" onClick={() => {
+              if (!stillHis()) return
               if (done(addAccount(name, p.pid, role === 'master' ? 'admin' : role), `${callsign} can sign in now`)) p.onClose()
             }}>Give sign-in</button>}
         {/* D310, D322, D323: Archive — one tap; it also suspends his sign-in; on the war "posted out from today" */}
@@ -622,14 +648,35 @@ function useUsersFilter(unit: string): [UsersFilter, (f: UsersFilter) => void] {
   }
   return [filt, setFilt]
 }
+/* AN OPEN ROW IS JUDGED AGAIN ON EVERY DRAW (U1's fix — the two reads of chat 199: a row opened whole stayed the whole
+   editor across a pick or his move landing; a short row held across a pick showed the old squadron's line). Set while
+   drawing, as useUsersFilter clears its ticks, so no frame draws the row as it was: where the open row's judgement now
+   differs from the one it opened with — whole, but he is now another squadron's man here; short, but the page's squadron
+   is no longer the one it opened on, or he is now the page's own man — the row closes and nothing typed is carried over
+   (its editor unmounts). Closed because the signed-in admin picked another squadron: no note, his own act. Closed with
+   the page's squadron unchanged (a move landed, an Undo, another's change): the short row's passing note (his D2730
+   Q13), once — raised after the draw, not in it, so a draw run twice (React's strict mode) never says it twice. */
+function useOpenRowJudged(editing: string | null, editOn: OpenedOn | null, close: () => void): void {
+  const [note, setNote] = useState<{ seq: number; callsign: string } | null>(null)
+  if (editing && editOn && rowChanged(editing, editOn)) {
+    close()
+    if (pageUnit('own') === editOn.unit) setNote({ seq: (note?.seq ?? 0) + 1, callsign: cs(editing) })
+  }
+  useEffect(() => {
+    if (note) HOOKS.toast(changedWhileOpenWords(note.callsign), 'warn')
+  }, [note])
+}
 /* is this man's row on the list as it is drawn: not hidden by a tick or the search, his Archived fold open */
 const rowInView = (v: UsersView, pid: string | null, archOpen: boolean): boolean =>
   !!pid && (v.groups.some(g => g.rows.includes(pid)) || (archOpen && v.archived.includes(pid)))
 
 export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring } = {}) {
   const [editing, setEditing] = useState<string | null>(null)
-  /* the squadron an opened short row opened on (null: the whole row) — set with `editing` by `toggle` */
-  const [editOn, setEditOn] = useState<string | null>(null)
+  /* the squadron the open row opened on and whether it opened short or whole — set with `editing` by `toggle`, for every
+     row (useOpenRowJudged) */
+  const [editOn, setEditOn] = useState<OpenedOn | null>(null)
+  const closeRow = () => { setEditing(null); setEditOn(null) }
+  useOpenRowJudged(editing, editOn, closeRow)
   const [find, setFind] = useState('')
   /* the Archived group's fold: his own tap, or — while he has not tapped since the search changed — open exactly when
      the search matches someone archived (the walk's design, Fable R7: the tap used to do nothing while a search matched) */
@@ -719,19 +766,19 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   const archOpenNow = archOpen ?? (!!q && archShown.length > 0)
   /* (opening a row also holds whether it opens short — another squadron's man here — and on which squadron: PersonRow) */
   const toggle = (pid: string) => {
-    if (editing === pid) { setEditing(null); return }
+    if (editing === pid) { closeRow(); return }
     setEditing(pid)
-    setEditOn(foreignHere(pid) ? pageUnit('own') : null)
+    setEditOn({ unit: pageUnit('own'), short: foreignHere(pid) })
   }
   /* ESCAPE CLOSES THE OPENED ROW AS ITS CANCEL DOES ((p), his D2396): nothing saved, no question, the keys back on the row;
      an open Filter panel answers first. Only while the row is on his screen: Users chosen, the row not hidden by a tick
      or the search. */
   useEscRow(p.shown && rowInView(view, editing, archOpenNow) ? editing : null,
     pid => document.querySelector<HTMLElement>(`.acc-row[data-person="${CSS.escape(pid)}"]`),
-    () => setEditing(null), FILTER_ESC)
+    closeRow, FILTER_ESC)
   const row = (pid: string) => <PersonRow key={pid + (editing === pid ? ':e' : '')} pid={pid} open={editing === pid}
     openOn={editing === pid ? editOn : null} ringed={ringPid === pid}
-    onToggle={() => toggle(pid)} onClose={() => setEditing(null)} />
+    onToggle={() => toggle(pid)} onClose={closeRow} />
   const nobody = !view.groups.some(g => g.rows.length)
   return (
     <>
@@ -807,7 +854,7 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
             <div className="acc-list od-list" id="accArchList">
               <Cols />
               {archShown.map(pid => <ArchivedRow key={pid + (editing === pid ? ':e' : '')} pid={pid} open={editing === pid} ringed={ringPid === pid}
-                onToggle={() => toggle(pid)} onClose={() => setEditing(null)} />)}
+                onToggle={() => toggle(pid)} onClose={closeRow} />)}
             </div>
           )}
         </div>

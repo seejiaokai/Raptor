@@ -280,6 +280,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [USER-GUIDE] — a guide for users and admins — wanted, not urgent; a first piece made 24 Nov 26: the guide for F-16 schedulers and training appointment holders (`raptor-port/docs/squadron-guide/`), their answers still to come.
 
 **Database step — at the end (D473)**
+- [MSQ-S2-NO-HOME-ROW] — on Admin → Users a man whose home squadron the app cannot read gets the whole, unlocked row (cannot happen in today's store): closed before this step, the words for "no squadron" put to him first; pinned as built in the section's tests.
 - [M365-MOVE-PLAN] — the M365 move plan, his strikes owed.
 - [CODE-APPS-RESEARCH] — the 19 Nov 26 research on Power Apps code apps set against the move plan: new commands, three things blocked inside Power Apps (tested: blocked; the phone zoom guard too), his documents choice awaited, the test account's environment type, and two saves at once (a change counter and a half-save repair, built into the one adapter); folded into the plan at the database step.
 - [AIRCRAFT-TYPE-SETTING] — each deployment set to its aircraft type by a setting, one code base (D1536); at the database step or hand-over.
@@ -324,6 +325,12 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [MSQ-S2-NO-HOME-ROW] A man whose home squadron the app cannot read gets the whole, unlocked row on Admin → Users — close before the database step (found 26 Nov 26, the security read of the multi-squadron build's step U1; filed by chat 205) — OPEN
+**What it is:** on Admin → Users, "another squadron's man" is decided by asking for his home squadron; where the app cannot read one, the page treats him as its own man — the whole row, every control unlocked, and the account door lets the write through. It cannot happen in today's store (a man with no home on record reads as 142's), and no control leaves a man without one; it is how a shared store could read.
+**To do, before the database step:** decide it closed — a man with no readable home is another squadron's man on every page (the short row) and his row's controls are locked. The words a person then sees — a man with no sign-in and no squadron cannot read "Ask 142's admin…" — are drawn and put to him first (D1625). The doors' own pass for a man with no home is decided with it.
+**Its test:** kept as an as-built pin in the section's tests (`raptor-port/src/ui/msq-s2-*.test.tsx`), named "… — closes before the database step (`[MSQ-S2-NO-HOME-ROW]`)"; the reader's proof and the exact fix: `raptor-port/docs/superpowers/briefs/2026-11-26-msq-s2-u1fix-report.md` and the plan's §21.2, "After U1's reads".
+**Where:** People & accounts (Admin → Users across squadrons); the database step.
 
 ### [MSQ-SAVE-GIVEUP-DB] A save that never answers gives up after a set time — with the database step (his D2742, 26 Nov 26, chat 193) — OPEN
 **What it is:** his D2729 Q9 ruled that a save that never answers stops waiting and shows "Not saved" with Retry, and a squadron pick is then refused with the Retry note. The guard rail's chat 194 found that in today's app a save cannot hang (it is written in the browser at once); only the shared database can leave one waiting. His D2742: the guard rail builds the wait for a save at the pick, the member-view switch and a bell line now (its step K4a); the give-up after a set time (about 20 seconds, the app's own figure for a network wait — the guard rail chat's number, not his) waits for this step.

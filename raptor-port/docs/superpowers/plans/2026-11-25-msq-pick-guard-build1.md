@@ -3474,7 +3474,7 @@ group, in place.
 | **U0** | V0 | The pins (`msq-s2-asis.test.tsx`); NQ1's three ways written as tests | the core's K0 (`withThird()`) |
 | **U1** | V1 | §19.1 — another squadron's man: the short row, the role in words, no grey number inside his group, the one access line with Save and Cancel, the no-sign-in words, **the row's own save**, and the row reporting its unsaved change. **Not here: "Edit on 142 →" (U3) and the refusal at a pick (V4c)** | the core's K2a; its row drawn; the row's report is counted once the core's K1 has landed (a one-line call the core adds in this file — §21.5). **Nothing else — this is the step that stops a 142 record being changed from 149's page (security S7; §11 risk 23)** |
 | **U2** | V2 | §19.2 — Plan given and ended by the squadron's own admins: `mayGivePlanOf`, the doors, the gate, the replay rule, the lines — one commit | the lines drawn with their two coloured numbers; the refusal's and the re-link door's sentences read by a fresh Fable; **the core's K6** for the lines' tap (`lineOpens`); **NQ1** holds only the making of an admin by a Plan holder; the Plan lines' tap is on §8.5's list; **readings 22 ("own admins" as admins who can sign in — the fail-closed clause for a switched-off, archived or posted-out admin), 23 (a replay by one who lost the right blocked for good) and 24 (the re-link door's sentence) each hold their own clause — permission rules: answered, or that clause left out and said** |
-| **U3** | V3 | §19.3 — the folded squadrons at the page's foot, live people only, the tick retired (D2654 E8), "Edit on 142 →" (D2652 N5) | **the core's K4** (the pick's door) for the link, with its tests V11b; **NQ3** the search's match; **"home squadron first" — everywhere or here only — holds the headings' order (§19.3): by number until he answers** |
+| **U3** | V3 | §19.3 — the folded squadrons at the page's foot, live people only, the tick retired (D2654 E8), "Edit on 142 →" (D2652 N5); **the Archived fold kept to the page's own squadron's men — the security read of U1, finding B: a master admin's Squadron tick brings another squadron's archived men into the fold whole (Restore, Delete); its as-built pin in the section's tests, named "… — changes at U3", turns into this rule's test here** | **the core's K4** (the pick's door) for the link, with its tests V11b; **NQ3** the search's match; **"home squadron first" — everywhere or here only — holds the headings' order (§19.3): by number until he answers** |
 | **U4** | V9 (part) | §19.12 — the one search over every group; the order; the three folding headings; "People" not folding | its drawings ("Nobody matches."); **NQ3** |
 | **U5** | V9 (part) | §19.12 — "From other squadrons" with "View only" folded; Outgoing and Incoming | the empty block and the opened rows drawn; **the readings of §19.12 — which postings the two groups show before the Transfer step, what a press on an Outgoing row opens, a man of the squadron's own shown in two groups while searching, one opened row a page — each answered, or that piece left out (D2611)** |
 | **U6** | V9 (part) | §19.12 — the jumps: Admin's left column made to stay put and its list under "Users"; the phone's pinned rows | the jump's film; the rule and drawing for 375 px, a two-figure count and a missing group (D2652); **finding 3 settled with the bell section** |
@@ -3564,6 +3564,19 @@ core's steps land: V4c and V11b and the two links (K4), the three taps (K6). **A
 draws it (chat 198's measure) — put right in U4 and measured by the drawing check. **The test world:** the plan's
 Viper, Blade and Basher are not in `test-support/msq-world.ts` (the core's file); a test uses the world's own men
 through `moveMan` and `acrossMove`, and a man it truly lacks is asked of the coordinator.
+
+**After U1's reads (chat 205, 26 Nov 26).** The fresh blind Opus read and the security read of U1 (15112a2ac) proved
+that a row was judged once, at opening: a row opened whole stayed the whole editor after a squadron pick or after the
+man's move landed. **The rule now, built as U1's fix before U1 merges:** the page holds, for every open row, the
+squadron it opened on and whether it opened whole or short; on every draw the row is judged again and, where the
+judgement has changed, it closes with nothing typed carried — silently at his own pick, with the Q13 note where it
+changed under him with no pick; every write the whole row can make (Save, Suspend / Enable, Give sign-in, Archive,
+Delete) judges the row first and refuses with the Q13 note. This replaces row Q13's unstated "an opened short row
+stays drawn across a pick until Save or Cancel". **Finding B** (another squadron's archived men in the Archived fold
+by a master admin's Squadron tick) is U3's — written into U3's row above. **Finding C** (a man with no readable
+home gets the whole row) cannot arise in today's store: pinned as built and filed, `[MSQ-S2-NO-HOME-ROW]`, closed
+before the database step. **The three questions of "Still held" above are numbered 13, 14 and 15 on the one
+questions page** (chat 200 took 10–12): read "Question 10 / 11 / 12" above as 13 / 14 / 15.
 
 ### 21.3 The bell, its colours and the Display page (§19.5–§19.8, §19.13)
 

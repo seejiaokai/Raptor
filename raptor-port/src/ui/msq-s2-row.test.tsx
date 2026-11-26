@@ -278,7 +278,9 @@ describe('V4b — the save sends the line alone, and judges the row again', () =
   it('Saber: rename on 142, pick 149, open his short row, Undo, change his 149 line, Save', async () => { await renameUndoSave('saber') })
   it('Hunter: the same', async () => { await renameUndoSave('hunter') })
 
-  it('his move lands while the row is open: Save sends nothing, the row closes, the note names him', async () => {
+  /* (re-pointed by U1's fix, chat 205's brief: the row is judged again on every draw, so it closes as the move lands —
+     U1 held it open, short, until its Save) */
+  it('his move lands while the row is open: the row closes as the move lands, the note names him, nothing sent', async () => {
     signInAs('saber')
     await pick('u149')
     const p = panel()
@@ -290,15 +292,34 @@ describe('V4b — the save sends the line alone, and judges the row again', () =
     expect(moveMan(PID.ranger, 'u149'), 'setup: Ranger moved to 149').toMatchObject({ ok: true })
     on(16); reload()
     expect(homeOn(PID.ranger, todayIso()), 'the move day: he is 149\'s').toBe('u149')
+    spy.calls.length = 0
     await act(async () => { notify() })
-    expect(p.$('#accEdName'), 'the row stays the short row it opened as').toBeNull()
+    expect(p.$('.acc-edit'), 'the row closed as the move landed').toBeNull()
+    expect(p.$('#accEdName'), 'never swapped for the whole row').toBeNull()
+    expect(HOOKS.toast).toHaveBeenLastCalledWith(`${cs}’s row changed while it was open, so nothing was saved. Open it again.`, 'warn')
+    expect(spy.calls, 'nothing sent').toEqual([])
+    /* (149 is his own squadron now — he is its member, so no 149 line is his to read; the spy above holds that nothing
+       was sent) */
+  })
+  /* THE CHECK AT THE SHORT ROW'S SAVE STAYS: his move landing as the date rolls redraws nothing, so the row still stands
+     when Save is pressed — the Save judges it again itself */
+  it('his move lands with no redraw while the row is open: Save sends nothing, the row closes, the note names him', async () => {
+    signInAs('saber')
+    await pick('u149')
+    const p = panel()
+    const cs = String(P(PID.ranger).cs)
+    await p.find(cs)
+    await p.open(PID.ranger)
+    await p.pickLine('u149', 'none')
+    expect(moveMan(PID.ranger, 'u149'), 'setup: Ranger moved to 149').toMatchObject({ ok: true })
+    on(16); reload()
+    expect(homeOn(PID.ranger, todayIso()), 'the move day: he is 149\'s').toBe('u149')
+    expect(p.$('#accEdSave'), 'premise: nothing redrew — the short row still stands').not.toBeNull()
     spy.calls.length = 0
     await p.press('#accEdSave')
     expect(spy.calls, 'nothing sent').toEqual([])
     expect(p.$('.acc-edit'), 'the row closed').toBeNull()
     expect(HOOKS.toast).toHaveBeenLastCalledWith(`${cs}’s row changed while it was open, so nothing was saved. Open it again.`, 'warn')
-    /* (149 is his own squadron now — he is its member, so no 149 line is his to read; the spy above holds that nothing
-       was sent) */
   })
   /* "…or an Undo of one" (the brief's V4b): the app's own Undo cannot bring a man home under an open row — once his move
      has landed its Undo is refused for good ("Something else changed this after your action — it can't be undone now.",
@@ -324,7 +345,9 @@ describe('V4b — the save sends the line alone, and judges the row again', () =
     await p.press('#accEdSave')
     expect(spy.calls, 'one key, grants, holding one squadron').toEqual([[accountOfPid(PID.osprey)!.id, { grants: { u149: 'view' } }]])
   })
-  it('the page\'s squadron changes while the row is open (150 picked): Save sends nothing, the row closes, the note names him', async () => {
+  /* (re-pointed by U1's fix, chat 205's brief: the row closes at the pick itself, and with no note — the pick was the
+     signed-in admin's own act; U1 held it open on 150's page until its Save refused) */
+  it('the page\'s squadron changes while the row is open (150 picked): closed at the pick, no note, nothing sent', async () => {
     signInAs('saber')
     await pick('u149')
     const p = panel()
@@ -332,16 +355,15 @@ describe('V4b — the save sends the line alone, and judges the row again', () =
     await p.find(cs)
     await p.open(PID.ranger)
     await p.pickLine('u149', 'none')
+    spy.calls.length = 0
     await pick(third.u150)
     /* (the pick's refusal of an opened row with a change not saved is the core's K1/K4 — not built here, so the pick
-       lands; he is still found by the search on 150's page, his row still open) */
-    expect(p.rowOf(PID.ranger)?.querySelector('.acc-edit'), 'premise: his row still open on 150\'s page').not.toBeNull()
-    expect(p.$('#accEdName'), 'the short row it opened as').toBeNull()
-    spy.calls.length = 0
-    await p.press('#accEdSave')
+       lands; he is still found by the search on 150's page) */
+    expect(p.rowOf(PID.ranger), 'premise: he is still on 150\'s page').not.toBeNull()
+    expect(p.rowOf(PID.ranger)!.querySelector('.acc-edit'), 'his row closed at the pick').toBeNull()
+    expect(vi.mocked(HOOKS.toast).mock.calls.filter(c => c[0] === `${cs}’s row changed while it was open, so nothing was saved. Open it again.`),
+      'no note: the pick was his own').toEqual([])
     expect(spy.calls, 'nothing sent').toEqual([])
-    expect(HOOKS.toast).toHaveBeenLastCalledWith(`${cs}’s row changed while it was open, so nothing was saved. Open it again.`, 'warn')
-    expect(p.$('.acc-edit'), 'the row closed').toBeNull()
     expect(level(ACCT.ranger, 'u149'), 'nothing saved').toBe('view')
   })
 })
