@@ -16,7 +16,10 @@
    wide the search grows are the browser's to measure (the e2e of step K12), not this file's. */
 import { describe, it, expect, afterEach } from 'vitest'
 import { render, act, fireEvent, cleanup } from '@testing-library/react'
-import { withThird, third, signInAs, worlds } from '../test-support/msq-world'
+import { withThird, third, signInAs, worlds, PID } from '../test-support/msq-world'
+import { INPUTS } from '../engine/inputs'
+import { NOTICES } from '../state/notices'
+import { setBellSquadron } from '../state/bellsqn'
 import { App } from './App'
 import { HOOKS } from '../engine/hooks'
 import { UNIT } from '../engine/unitview'
@@ -440,7 +443,42 @@ describe('G1 — a pick ends Logic\'s and Quals\' edit mode (D2627 A4)', () => {
     expect(($('#qNewQual') as HTMLInputElement).value, 'an empty box').toBe('')
   })
 
-  it.todo('G1\'s bell-line sentence — "13h" typed in a Logic box and, without leaving it, a bell line to 149 pressed: 142 reads 13h, 149 12h (§18.1, Opus F-d) — the bell\'s door is step K6\'s')
+  /* G1's bell-line sentence (§18.1, Opus F-d) — step K6's, the bell's door: a line's entering run ends the modes as a pick
+     does (state/belltap.ts enterForLine → closeShown), the typed box kept in 142's record. Saber, 149's lines switched on in
+     his bell (a master admin's other squadrons are off by default — D2198), presses the bell, then a line of a 149 input. */
+  it('"13h" typed in a Logic box and, without leaving it, a bell line to 149 pressed: 149 reads 12h and opens with Edit, not Done; back on 142 it reads 13h, not in edit mode', async () => {
+    await onPage('logic')
+    expect(setBellSquadron('u149', true), 'the premise: 149\'s lines on his bell').toBe(true)
+    await press($('#lgEdit'), 'Logic\'s ✎ Edit')
+    const box = $('input[data-lgset="crewRest"]') as HTMLInputElement
+    expect(box, 'Crew rest\'s box').not.toBeNull()
+    expect(VCONF.crewRest, 'the premise: 12h').toBe(720)
+    await act(async () => { box.focus(); box.value = ruleFmt('crewRest', 780); fireEvent.change(box) })
+    const inp = INPUTS.find((r: any) => r.person && (PEOPLE as any)[r.person] && homeOn(String(r.person), todayIso()) === 'u149') as any
+    expect(inp, 'the premise: an input of 149').toBeTruthy()
+    const n: any = { id: 'g1bell', to: PID.saber, by: null, at: Date.now(), iid: String(inp.iid), name: 'x', day: '2026-07-15', what: [{ k: 'in' }], u: 'u149' }
+    NOTICES.push(n)
+    try {
+      await press($('#notifyBell'), 'the bell')
+      await press($(`[data-testid="bell-line-${n.id}"]`), 'the 149 line')
+      expect(UNIT, 'the line went through').toBe('u149')
+      expect({ rest: VCONF.crewRest, mode: !!LGEDIT }, '149').toEqual({ rest: 720, mode: false })
+      /* (a beat later too: nothing still waiting lands on 149's rules) */
+      await act(async () => { await new Promise(r => setTimeout(r, 5)) })
+      expect(VCONF.crewRest, '149, a beat later').toBe(720)
+      /* the line opened the input's own window on 149's Inputs; shut by its ✕, so the pick back is not refused for it */
+      expect($('[data-testid="win-inputedit-x"]'), 'the premise: the input\'s window').not.toBeNull()
+      await press($('[data-testid="win-inputedit-x"]'), 'the window\'s ✕')
+      await act(async () => { setPage('logic'); notify() })
+      await settle()
+      expect({ edit: shown('#lgEdit'), done: shown('#lgDone') }, '149\'s Logic opens with Edit').toEqual({ edit: true, done: false })
+      await pickBy('u142')
+      expect({ rest: VCONF.crewRest, edit: shown('#lgEdit'), done: shown('#lgDone'), mode: !!LGEDIT }, 'back on 142').toEqual({ rest: 780, edit: true, done: false, mode: false })
+    } finally {
+      NOTICES.splice(NOTICES.indexOf(n), 1)
+      setBellSquadron('u149', false)
+    }
+  })
 })
 
 /* G2 — THE VIEW SWITCH ENDS QUALS' EDIT MODE TOO (the plan §18.1; his D2627 A4) — step K5, written first and seen failing on
@@ -490,5 +528,47 @@ describe('G2 — the switch to the member view ends Quals\' edit mode (D2627 A4)
     expect({ admin: isAdmin(), mode: !!LGEDIT }, 'the member view, the mode ended').toEqual({ admin: false, mode: false })
     await badge()
     expect({ admin: isAdmin(), edit: shown('#lgEdit'), done: shown('#lgDone'), mode: !!LGEDIT }).toEqual({ admin: true, edit: true, done: false, mode: false })
+  })
+})
+
+/* G10 — THE "WELCOME BACK" CARD ONLY ON HIS OWN SQUADRON (the plan §18.5; his D2628 C4, D2627 A18) — step K6, written first
+   and seen failing on the code as it stood (the card was drawn whatever the squadron in view). Hunter — 142's admin, Plan
+   of 149 — just restored: his `back` mark set as Admin → Users' Restore leaves it (leavewar/sync.ts restoreBody), he then
+   signs in with 149 picked. Every pick is the bar's whole press: the Schedules button, then the row. */
+describe('G10 — the "Welcome back" card only on his own squadron (D2628 C4)', () => {
+  async function restoredOn149() {
+    ;(PEOPLE as any)[PID.hunter].back = { at: 1 }
+    signInAs('hunter')
+    page = render(<App />)
+    await settle()
+    await pickBy('u149')
+    expect(UNIT, 'the premise: 149 picked').toBe('u149')
+  }
+  async function pickBy(u: string) {
+    await press($('#sqnMenuBtn'), 'the Schedules button')
+    await press($(`#sqnMenu .sqm-row[data-unit="${u}"]`), `the row of ${u}`)
+  }
+  afterEach(() => { delete (PEOPLE as any)[PID.hunter].back })
+
+  it('Hunter restored while 149 is picked: no card, his mark still set; he picks 142: the card; "Check my quals": 142\'s Quals at his row, ringed, the card spent', async () => {
+    await restoredOn149()
+    expect($('#welcomeBack'), '149 picked: no card').toBeNull()
+    expect((PEOPLE as any)[PID.hunter].back, 'his mark waits').toBeTruthy()
+    await pickBy('u142')
+    expect($('#welcomeBack'), 'on 142: the card').not.toBeNull()
+    await press($('#welcomeCheck'), 'Check my quals')
+    expect([UNIT, CURPAGE], '142\'s Quals').toEqual(['u142', 'quals'])
+    expect($$('#qtbl tr.back-hl td.qname').map(x => x.dataset.person), 'his row ringed').toEqual([PID.hunter])
+    expect((PEOPLE as any)[PID.hunter].back, 'the card spent').toBeFalsy()
+    expect($('#welcomeBack'), 'gone').toBeNull()
+  })
+  it('(pin, today\'s too) "Later" on 142: the card spent, the page and the squadron unchanged', async () => {
+    await restoredOn149()
+    await pickBy('u142')
+    const was = CURPAGE
+    await press($('#welcomeLater'), 'Later')
+    expect([UNIT, CURPAGE], 'nothing moved').toEqual(['u142', was])
+    expect((PEOPLE as any)[PID.hunter].back, 'the card spent').toBeFalsy()
+    expect($('#welcomeBack'), 'gone').toBeNull()
   })
 })

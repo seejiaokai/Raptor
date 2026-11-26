@@ -170,7 +170,9 @@ import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection,
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
 import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, masterChangeProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount, adminLineAudience, endRightsOfArchived } from '../state/accounts'
 import { accessWas, tellAccess, writeMoveLines, acctFollowUps } from '../state/acctlines'
-import { markBack, clearBack, CURPAGE, setPage } from '../state/view'
+import { markBack, clearBack, CURPAGE } from '../state/view'
+/* every page change by a press goes through the page door (step K6 — the guard rail's plan §4.5, R5 (b)) */
+import { setPage, ownPageRefused } from '../state/store'
 import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
@@ -1779,6 +1781,9 @@ function postedLinesOf(pid: string, posts: Readonly<Record<string, Person>>, u: 
  *  (LeaveWarPage.tsx). A man with no row on the grid (a SANS man while SANS is off the war — B12) is shown his person
  *  window instead. Approvals is left (the bell is another way out of it). */
 export function openWarAt(iso: string, personId?: string | null): void {
+  /* (asks first, step K6 — the plan §4.5: it selects the war, puts Approvals and Balances away and asks for the ring
+     before the page; refused by the page door, none of it is done) */
+  if (ownPageRefused('leavewar')) return
   const war = warHolding(rawState().wars, iso)
   if (war && war.period.id !== rawState().currentId) selectWar(war.period.id)
   setApprMode('off')
@@ -4840,9 +4845,13 @@ export function replacedCarry(personId: string, n: { remarks?: string; docIds?: 
 export function openInputWindow(iid: string): boolean {
   const row = warInputs().find(r => String(r.iid) === String(iid))
   if (!row) return false
-  if (CURPAGE !== 'inputs') setPage('inputs')
-  setInpEdit(row)
-  raptorNotify()
+  /* THE WINDOW ON THE PAGE DOOR'S `then` (step K6 — the plan §4.5): it opens only once Inputs is the page shown, the
+     input found afresh, so none opens behind a refusal; the tap was taken, whatever the door answers */
+  setPage('inputs', {}, () => {
+    const now = warInputs().find(r => String(r.iid) === String(iid))
+    if (now) setInpEdit(now)
+    raptorNotify()
+  })
   return true
 }
 
@@ -4864,6 +4873,8 @@ export function openInputsPage(): void {
  *  front — the sheet is the war's, drawn on its page — and the scheduler's screens are told. The sheet still checks
  *  everything itself (a name, an admin, no overlap): the ask grants nothing. */
 export function openNewPeriod(from: string, to: string): void {
+  /* (asks first, step K6 — the plan §4.5: the new-period ask is left before the page; refused, it is not left) */
+  if (ownPageRefused('leavewar')) return
   if (!validIso(from) || !validIso(to) || to < from) return
   askNewWar({ from, to })
   if (CURPAGE !== 'leavewar') setPage('leavewar')

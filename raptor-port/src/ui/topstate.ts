@@ -4,13 +4,14 @@
    be swapped in place while the app is being built), which now holds the four drawn parts alone — the Sync chip, the
    bell, its list and the Undo / Redo pair — and reads all of this from here. Nothing in it changed. */
 import { useSyncExternalStore } from 'react'
-import { notify, setPage, landingAsk } from '../state/store'
+import { notify, setPage, ownPageRefused, ownSquadronRefused, ownSquadronFirst, type PageOpts } from '../state/store'
 import { bellLit, clearBell, INPVIEW, setInpView, setInpMode, setCalMonth, askSansDay } from '../state/view'
 import { HOOKS } from '../engine/hooks'
 import { globalUndo, globalRedo, undoState } from '../undo'
 import { editingText } from './textedit'
 import { oilUndoBoundary } from './oilmode'
-import { bellAccessAlert, openBellRequest, enterForLine } from '../state/belltap'
+import { bellAccessAlert, openBellRequest, enterForLine, type LineEntry } from '../state/belltap'
+import { homeOn, todayIso } from '../state/units'
 import { bugAlert, unseenReports } from '../state/reports'
 import { openAdminUsers } from './adminopen'
 import { oilPendingFor, openWarAt } from '../leavewar/sync'
@@ -73,9 +74,13 @@ export function bellTap(from?: HTMLElement | null): void {
   if (oilHit) {
     const row = inpById(oilHit.iid)
     if (row) {
-      /* (…and still his to answer once a question it waited for is answered — openInputOnPage, below) */
+      /* (…and still his to answer once a question it waited for is answered — openInputOnPage, below). THE BELL'S OIL TAP
+         THROUGH THE PAGE DOOR (step K6 — the plan §4.1 row 9, §4.5; F2b): it sets nothing before the page, so it asks
+         nothing itself; the window, its toast and the OIL question are all the door's `then`, so none opens behind a
+         refusal. Part F's own line ahead of it — `enterForLine(inputSqn(row, pageUnit('own')), …, 'bell', o)`, the
+         input's own squadron brought into view first (D2621) — is step K9's (§10 step 7), not built here. */
       openInputOnPage(oilHit.iid, () => { HOOKS.toast('Weekend/PH work — confirm your OIL'); setOilAsk(oilHit.iid) },
-        () => { const m = me(); return !!m && oilPendingFor(m).some(h => h.iid === oilHit.iid) })
+        () => { const m = me(); return !!m && oilPendingFor(m).some(h => h.iid === oilHit.iid) }, { door: 'bell' })
       return
     }
   }
@@ -98,23 +103,78 @@ export function bellTap(from?: HTMLElement | null): void {
    Discard still opened Osprey's 149 input for a man with no right left there. The tap goes on only for a line still in
    his bell; one that has left opens nothing and says nothing, as if it had not been there to press. */
 const stillHis = (n: Notice): boolean => n.to === me() && noticeLive(n)
+/* WHAT A TAP ON EACH KIND OF LINE OPENS (step K6 — the plan §4.5 `lineOpens`; Opus F-g, Fable 8): every kind a line is
+   written or worked out with (state/notices.ts NoticePart) is a key here, by name — the page the tap will open, or null
+   for one that opens no page: his own account's line (only read), a holiday's (the OIL list, no page — its own branch,
+   below), a posting or Leave War line of a squadron his pages may never be, a posting whose man has no row left, an input
+   since deleted. The roll-call reads the kinds from the source (R5 (d)): a kind with no key fails there with "say what a
+   tap on this line opens", and in the app it is only read — never taken for an input's line, whose miss would say "That
+   input is gone". */
+type Opens = (n: Notice, where: LineEntry) => string | null
+const inputLine: Opens = n => (inpById(n.iid) ? 'inputs' : null)
+const postLine: Opens = (n, where) => {
+  if (where === 'no') return null
+  const p: any = (PEOPLE as any)[postOf(n)!.who]
+  return !p || p.deleted || p.special ? null : 'admin'
+}
+const warLine: Opens = (_n, where) => (where === 'no' ? null : 'leavewar')
+const sansLine: Opens = n => (sansDueOf(n) ? 'inputs' : null)
+export const LINE_KINDS: Record<string, Opens> = {
+  /* an input's line, whatever its first part says (state/notices.ts noticeParts) */
+  del: inputLine, in: inputLine, out: inputLine, cx: inputLine, uncx: inputLine, off: inputLine, on: inputLine,
+  unav: inputLine, unavoff: inputLine, when: inputLine, add: inputLine, rem: inputLine, kind: inputLine, title: inputLine,
+  rmk: inputLine, rbid: inputLine,
+  oilhol: () => null,
+  lw: warLine, lwopen: warLine, lwback: warLine,
+  po: postLine, poback: postLine, pofail: postLine,
+  sansdue: sansLine, sansback: sansLine,
+  acct: () => null,
+}
+const kindOf = (n: Notice): string => String(((n.what || [])[0] as any)?.k ?? '')
+/** the page a tap on `n` will open, or null (none, or a kind the table does not know) */
+export function lineOpens(n: Notice, where: LineEntry): string | null {
+  if (isAcctNotice(n)) return null
+  const f = LINE_KINDS[kindOf(n)]
+  return f ? f(n, where) : null
+}
+/* A TAP ON A LINE THROUGH THE DOORS (step K6 — the plan §4.1 rows 6, 7, 9b, 11, §4.2, §4.5; his D2403, D2590, D2627 A11,
+   A19, D2621, D2729 Q7): the line's squadron is entered first where his own pages may be its (state/belltap.ts
+   enterForLine, door 'line' — refused, or waiting for the Tracker's question or a save, it stops here); then, before
+   anything is marked read or closed, the page the tap will open is asked of the page door — refused, the line stays
+   unread, the list open, nothing said but the note under the line (D2627 A11). A holiday's line asks the same with no
+   page and hands its list to ownSquadronFirst, so his own squadron comes into view before it (D2627 A19). HIS OWN SANS
+   REMINDER carries no squadron: his own squadron that day is its squadron (row 9b, D2729 Q7 — "his own SANS reminder
+   brings his own squadron into view first"), entered before the tab and month are set. A line that enters nothing and
+   opens neither a page nor a list goes on exactly as today (P16). */
 export function openNotice(n: Notice): void {
-  const where = isAcctNotice(n) ? 'here' : enterForLine(n.u, () => { if (stillHis(n)) openNotice(n); else notify() })
-  /* the Tracker's question for unsaved chart edits is up first (§16 D2′): the tap goes on once it is answered */
-  if (where === 'asked') return
-  if (where === 'no' && (postOf(n) || isWarNotice(n) || ((n.what || [])[0] as any)?.k === 'oilhol')) {
+  const o = { line: n.id }
+  const again = () => { if (stillHis(n)) openNotice(n); else notify() }
+  const mine = me()
+  const u = sansDueOf(n) && !n.u && mine ? homeOn(mine, todayIso()) : n.u
+  const where = isAcctNotice(n) ? 'here' : enterForLine(u, again, 'line', o)
+  /* the Tracker's question for unsaved chart edits is up first (§16 D2′), or a save still going: the tap goes on once it
+     is answered; refused: the note under the line, nothing else */
+  if (where === 'asked' || where === 'refused') return
+  if (!isAcctNotice(n) && !LINE_KINDS[kindOf(n)]) { markNoticeRead(n.id); notify(); return }
+  const page = lineOpens(n, where)
+  if (page && ownPageRefused(page, 'line', o, again)) return
+  if (where === 'no' && (postOf(n) || isWarNotice(n) || kindOf(n) === 'oilhol')) {
     markNoticeRead(n.id); notify(); return
   }
   /* a holiday's line opens the ONE list for its dates ([OIL-ASK-NOTIFY], owner D783 (6): "a tap opening the list") — it
      is about no single input, so it is asked before any input is looked for (Fable's read of the plan, A6) */
   const hol: any = (n.what || [])[0]
   if (hol && hol.k === 'oilhol') {
+    if (ownSquadronRefused('line', o, again)) return
     markNoticeRead(n.id)
     setBellList(false)
     /* (for the days that are a holiday NOW — a holiday shortened since its notice was made opens the list for what is
        left of it: state/notices.ts noticeSpan) */
     const span = noticeSpan(n) || { a: String(hol.a), b: String(hol.b || hol.a) }
-    setOilList({ from: span.a, to: span.b, name: span.name != null ? span.name : n.name, fresh: false, unit: span.u })
+    ownSquadronFirst({ door: 'line', ...o }, () => {
+      setOilList({ from: span.a, to: span.b, name: span.name != null ? span.name : n.name, fresh: false, unit: span.u })
+      notify()
+    })
     notify(); return
   }
   /* HIS OWN ACCOUNT'S LINE (batch 1's second half §7 item 6 — his D2309: "a tap on it opens nothing"; nobody opens his
@@ -140,7 +200,7 @@ export function openNotice(n: Notice): void {
     setBellList(false)
     if (INPVIEW === 'med') setInpView('cal')
     setInpMode('sans'); setCalMonth({ y: +due.slice(0, 4), m: +due.slice(5, 7) }); askSansDay(due)
-    setPage('inputs'); notify(); return
+    setPage('inputs', { door: 'line', ...o }); notify(); return
   }
   /* A LEAVE WAR LINE (the overhaul's M4, 9.6): the Leave War at that day — where a move took it, at its new days — his
      cell ringed; a bidding line, the stretch's first day */
@@ -156,7 +216,7 @@ export function openNotice(n: Notice): void {
   markNoticeRead(n.id)
   if (!row) { HOOKS.toast('That input is gone'); notify(); return }
   setBellList(false)
-  openInputOnPage(n.iid, undefined, () => stillHis(n))
+  openInputOnPage(n.iid, undefined, () => stillHis(n), { door: 'line', ...o })
 }
 /* AN INPUT'S WINDOW OPENS ONCE ITS PAGE IS THERE (the night of 24 Nov 26, the re-walk's B1 —
    tracker/msq-bell-input-ask.test.tsx). The Inputs page is asked for first. Where the Tracker holds unsaved chart edits on
@@ -169,20 +229,20 @@ export function openNotice(n: Notice): void {
    …AND ONLY IF IT IS STILL HIS TO OPEN, WHERE IT WAITED (the same read's F3): `still` — the caller's own test of what was
    pressed (the line still in his bell; the OIL question still unanswered and his) — is asked again after the answer, and
    never for anyone but the person who pressed. A sign-out answers the question "cancelled" today, so no road brings a
-   second person here: that half is a belt for one that might. Opened at once, nothing has had time to change. */
-function openInputOnPage(iid: string, first?: () => void, still?: () => boolean): void {
+   second person here: that half is a belt for one that might. Opened at once, nothing has had time to change.
+   …AND THE PAGE DOOR RUNS IT (step K6 — the plan §4.5's table, `then`): the whole open is the door's `then`, so it runs
+   only once the page asked for is the page shown — never behind a refusal at the door, nor after a Stay or a refusal at
+   the landing's second ask. `opts` — the door it was pressed by ('line' with its line, 'bell', 'card' with its `skip`),
+   carried to the door and the landing. Exported for the OIL list's card (ui/OilDayList.tsx). */
+export function openInputOnPage(iid: string, first?: () => void, still?: () => boolean, opts: PageOpts = {}): void {
   const who = me()
-  const open = (waited: boolean) => {
+  setPage('inputs', opts, waited => {
     if (waited && (me() !== who || (still && !still()))) return
     const row = inpById(iid)
     if (!row) return
     if (first) first()
     setInpEdit(row); notify()
-  }
-  setPage('inputs'); notify()
-  const ask = landingAsk()
-  if (ask) void ask.then(go => { if (go) open(true) })
-  else open(false)
+  })
 }
 
 /* ---- the Undo / Redo pair: its two engines ---- */
