@@ -61,6 +61,12 @@ tr.back-hl > td.qname::after{box-shadow:inset 0 2px 0 #3cc6e6,inset 0 -2px 0 #3c
 #page-admin .od-addbtn{flex:0 0 auto;height:36px;box-sizing:border-box;white-space:nowrap}
 /* (the form under the top row takes only the page's own looks — .adm-sub's heading, .adm-2col's fields, .acc-note's
    note, and .acc-acts for Add person · Cancel, the opened row's pair, so the same size by the same rule: lesson 103) */
+/* …spaced as the drawing s1-add2-a draws it (D1494, D1495 — the presser's measures, 26 Nov 26): the heading and fields
+   2 nearer the top row than the row's own 12 (the closed page keeps the 12 — this is the open form's alone), and the
+   note under the fields 10 further from the Sign-in box than .acc-note's -2 puts it (29.5 below on a desktop, 31 on a
+   phone), so Add person · Cancel land where drawn; the pair's own size and gap are the opened row's, untouched */
+#page-admin .od-add{margin-top:-2px}
+#page-admin .od-add .adm-note.acc-note{margin-top:8px}
 #page-admin .od-fwrap{flex:0 0 auto}
 /* as tall as the search box beside it, on or off; "on" is the app's own recipe, .fchip.on and .lgbar .abtn.on (his D2401) */
 #page-admin .od-fbtn{white-space:nowrap;display:inline-flex;align-items:center;height:36px;box-sizing:border-box}

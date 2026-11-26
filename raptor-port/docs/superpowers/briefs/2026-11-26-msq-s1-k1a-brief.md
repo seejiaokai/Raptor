@@ -29,9 +29,10 @@ the Read tool's offset and limit):
 **What his answers decided (D2654, D2729) — build these, not the plan's older "default / other answer" wording:**
 the six windows that only show things close by themselves (ALL AVAIL, Changes, Insights, a SANS day, the Leave War's
 day panel, a Tracker event's details — the last is K1c's); Traffic, Jump to a date, a day's ⓘ and the document viewer
-close themselves as today (`'no'` rows); a held Input window is given back (E5 — nothing of it here); **the Leave
-War's sheets all refuse** — E9b's five windows are with him as a question, so the war has ONE row (`lwsheet`,
-`window`, `warWindowOpen()`) and no `showOnly` mark and no `lwshow` row in this pass; the board's two dialogs refuse.
+close themselves as today (`'no'` rows); a held Input window is given back (E5 — nothing of it here); **of the Leave
+War's sheets two close by themselves (his D2740 — §21.1's block "His three answers of 26 Nov 26") and every other
+refuses — but the `showOnly` mark, `leavewar/ui/Sheet.tsx` and the `lwshow` row are K1b's**: in this pass the war has
+ONE row (`lwsheet`, `window`, `warWindowOpen()`), every sheet refusing; the board's two dialogs refuse.
 
 ## K1a — what is built
 

@@ -3394,6 +3394,25 @@ them:
 - **§9's "message pull request 843's chat first" no longer applies:** 843 is merged and `main` is in; `toast.ts`
   gained only `overflow-wrap`, `placeToast` untouched; the board's two boxes moved to `SchedBoard.tsx` l.907 and l.1001.
 
+**His three answers of 26 Nov 26, folded (chat 198, the Fable orchestrator; D2740, D2741, D2742 — "all as recommended",
+on the one questions page). Where this block and the two above differ, this block wins.**
+- **D2740 — E9b's list is answered.** Two Leave War windows that only show things close by themselves at a pick, the
+  member-view switch and another squadron's bell line: **a leave filed on the Inputs page** (the sheet that also reads
+  "OIL the app credited") and **an OIL award** — each `<Sheet …>` call takes the one-word `showOnly` mark (§21.5), and
+  the war gains its second row, `lwshow` (`closes`), beside `lwsheet`; R8's list gains `lwshow`, citing D2740.
+  **"Open for bidding", a person's window and "OIL TRACKER" refuse for everyone**, with the plain note. Every other
+  sheet refuses, as before. Built in K1 (the pass that works on `leavewar/ui/Sheet.tsx`).
+- **D2741 — the SANS settings window under the Calendar on a phone** takes the same lead as Inputs': "Blocked: close
+  the Calendar, save or cancel SANS calendar settings, then pick 149."; on a desktop the plain "Blocked: save or
+  cancel SANS calendar settings, then pick 149." One rule for both settings windows, read from the Calendar's own
+  full-screen rule (the Q3 row above). **The phone note is drawn on the real app beside the approved Inputs one and
+  shown on the questions page before the step that words it (K3) builds it (D1625) — the coordinator's word.**
+- **D2742 — K4a's give-up is not built.** The wait for a save at the pick, the view switch and a bell line is built
+  in K4, K5 and K6, each door's own step: the door waits on the saver's own answer, then goes ahead or is refused
+  with the Retry note. The saver giving up after a set time is filed with the database step, `[MSQ-SAVE-GIVEUP-DB]`
+  (`OUTSTANDING.md`), its tests the three of the Q9 row above. **K4a is struck from the table's order; nothing of
+  `storage/postman.ts` changes in this build**, and B20 proves the door's wait ends with the stores the app ships.
+
 - **The files it changes.** New: `state/guard.ts`, `ui/guard.ts`, `ui/windrawn.ts`, `ui/guardnote.ts`,
   `state/inputsqn.ts`, the test files `src/ui/msq-guard-*.test.tsx`, `src/ui/msq-guard-rollcall.test.ts`,
   `e2e/msq-guard.spec.ts`. Changed: `test-support/msq-world.ts`; `state/store.ts`, `state/pick.ts`,
