@@ -2,7 +2,7 @@
 
 Branch `claude/lw-postin-build-5d49de`, pull request 857 (draft). His rulings built: D2747 (leave before his post-in date never
 deducted), D2746 ("Not typed"), D2749 and D2812 (the one line), D2810 ("Official bal"); D2745 kept as is (nothing to build).
-Pictures: `docs/img/handpass/2026-11-27-lw-postin-build/`.
+Pictures: `docs/img/handpass/2026-11-27-lw-postin-build/` (`a/` the desktop walker, `b/` the phone walker).
 
 ## The eight answers and the tier
 1. Money — YES: the leave balance is a figure a man relies on (what he is owed in days), and D2747 changes what comes off it.
@@ -18,36 +18,69 @@ Pictures: `docs/img/handpass/2026-11-27-lw-postin-build/`.
 **Tier: FULL** (1, 3).
 
 ## The rulings swept (the app's words), pass or fail on the running build
-(to fill during the walk)
+| Ruling | What the running build must show | Result |
+|---|---|---|
+| D2747 | a leave before his post-in date drawn on the grid, never off his balance; days away the same; from the post-in date it comes off | PASS — a s1.1–s1.13, s2, s3, s5; b B6 |
+| D2747 with D1541 | a day after his posting-out date still comes off | PASS — a s5.1 |
+| D2746 | never typed: "Not typed" in amber where War bal stands, the boxes empty with the dashed amber edge, never 0; read only an amber "–" | PASS after two fixes — a s7.0, s8.4–s8.9; b B1, B2, B7–B9 (FAULT 1 and 2 fixed, re-walked) |
+| D2746 | the below-zero question waits for a figure; a typed 0 still asks | PASS — a s6.1–s6.5; b B4, B5 |
+| D2746 (grid beside the name) | not built — drawn for him as question 23 (D1625) | RECORD — a s8.6, b B4 ("0", "−1") |
+| D2749, D2812 | "Only leave after post-in is deducted." once where a box is drawn — under the LVE box, once above the Balances rows; none locked for a member, none on another man's window, none in Days taken | PASS — a s8.1, s8.3, s8.7–s8.11; b B1c, B2, B8, B9 |
+| D2810 | "Official bal" / OFFICIAL BAL, no "App bal" shown, hovered or read aloud | PASS — a s8.2, s8.4; b B1b, B7, B8 |
+| D2745 | today's order kept: leave first, then the figure; a slip corrected by typing again | PASS — a s1.1, s1.8 (no build) |
+| D1249, D1486 | "No grade" amber in his own row | RECORD — grey in a member's read-only view (a lead outside this change, filed) |
 
 ## The roll-call
 | Surface | SHOWS (Official bal / the line / Not typed / D2747 figure) | USABLE (type, save, refuse) | PAINTED there besides |
 |---|---|---|---|
-| Person window, desktop, admin | | | |
-| Person window, phone 402, admin | | | |
-| Person window, member own, unlocked | | | |
-| Person window, member own, locked | | | |
-| Person window, member, another man's | | | |
-| Balances page, desktop, admin | | | |
-| Balances page, phone 402, admin | | | |
-| Balances page, member unlocked / locked | | | |
-| Balances page, Days taken view | | | |
-| Grid figure beside the name | | | |
-| My leave | | | |
-| Approvals' LVE BAL | | | |
-| One-day bid window: leave buttons' "left", below-zero question | | | |
-| Drag window: below-zero question | | | |
-| Change history line of a typed figure; Undo / Redo | | | |
-| Grades window (shares the figure box) | | | |
+| Person window, desktop, admin | has it — a s1, s8.4, s8.5c | has it — a s7 | the tile's "N taken" leaves out leave before the post-in date |
+| Person window, phone 402, admin | has it — b B2 (after FAULT 2's fix) | has it — b B3, B5 | — |
+| Person window, member own, unlocked | has it — a s8.8, b B8h | has it — b B8i | — |
+| Person window, member own, locked | the line must not, because he cannot type — a s8.11, b B9e | read only | padlock |
+| Person window, member, another man's | the line must not; amber "–", "Not typed" — a s8.9, b B8j | read only | small tiles show "–" only (parked with (a)) |
+| Balances page, desktop, admin | has it — a s8.1, s8.2, s8.5, s9 | has it — a s1, s7 | — |
+| Balances page, phone 402 and 375, admin | has it — b B1, B7 (after FAULT 1's fix) | has it — b B5 | — |
+| Balances page, member unlocked / locked | has it / the line must not when locked — a s8.7, s8.11; b B8, B9 | own row only | "Locked by admin" |
+| Balances page, Days taken view | the line must not, because nothing is typed there — a s8.3 | — | still counts leave before the post-in date (parked (d)) |
+| Grid figure beside the name | D2747 figure has it — a s1.6; "Not typed" MISSING by design: question 23 | — | second line counts leave before the post-in date (a s1.6r) |
+| My leave | D2747 figure has it (same engine); "Not typed" MISSING by design: question 23 | — | "-1" with a hyphen (filed) |
+| Approvals' LVE BAL | D2747 figure has it — a s4.2, s5.3; "Not typed" MISSING by design: question 23 | — | — |
+| One-day bid window: leave buttons' "left", below-zero question | question waits — a s6.1, s6.2; b B4, B5; "left" MISSING by design: question 23 | has it | — |
+| Drag window: below-zero question | has it — a s6.3–s6.5 | has it | — |
+| Change history line of a typed figure; Undo / Redo | Undo / Redo has it — a s7.3, s7.4, s1.10, s1.11; history line held by a test (not reachable on the walk, a s7.6) | — | — |
+| Grades window (shares the figure box) | must not change — the box's new props are off there; the Grades window's tests green | — | — |
 
 ## The five sizing lines (§7.0)
-(to fill)
+1. **Type:** A (one shared calculation — what comes off the balance), D (a mark drawn in several places — "Not typed", the
+   empty dashed boxes, the line), E (the Balances columns, the person window's tile), F (new words), G (Undo / Redo and the
+   history line of a first figure).
+2. **What only a walk could find:** the places that draw the figure each by their own code (the Balances page, the person
+   window at two sizes, member read only); "Not typed" fitting its column at 375 and 402 and on the desktop; the drawing
+   check against `q16-final-*`; posting in, moving the post-in date, posting out and Restore through the app's own sheets
+   in both orders; the below-zero question in both windows. The engine's cases are held by tests (the table below).
+3. **The ledger:** type A walks have found unwired readers more than wrong sums; type D walks find a place never wired; type E
+   walks find spills at a phone's width — all three met here (two faults, both type D / E).
+4. **The walk chosen:** two Opus walkers in parallel on one frozen build, from the two scenario lists combined — a =
+   desktop 1536 at 1.25, admin and member, ten groups (his example both orders, the post-in date moved with Undo / Redo, a
+   leave across the date, halves, away twice, the hidden SANS man, posting out, pending through Approve, the below-zero
+   question in both windows, the first figure and its Undo, the looks by role and lock, the drawing check); b = phone 402
+   (and 375 for fit), admin and member, ten groups (the looks, "Not typed" fit, the refusal, the below-zero question, his
+   example, the drawing check). A picture after each tap on the phone.
+5. **After the walk:** its row added to `docs/walk-ledger.md`.
 
 ## Scenarios (Astra and a fresh, blind Opus in Fable's seat — D2443, D2819)
-(to fill)
+Astra 28, the fresh Opus 19, each blind to the other (the reports kept outside the checkout). Both found the same two
+faults before the walk — a man away twice, his older gap's leave deducted; a hidden SANS man counted without his post-in
+date — both fixed red first before the walk, then walked (a s3, s4). Their other points: walk scenarios (combined into the
+two walkers' lists above) or his choices, parked (the handoff's (a)–(f)).
 
 ## Orders walked
-(to fill)
+- His example both orders: leave first then the figure (a s1.1, b B6), the figure first then the leave (a s1.2).
+- The post-in date moved after typing, both directions, Undo and Redo (a s1.7–s1.13).
+- Away twice: post out, Restore, post out, Restore, reload (a s3).
+- Hidden SANS: shown, hidden, shown again (a s4).
+- Pending bids before the post-in date, then Approve (a s5.2–s5.4).
+- Never typed → carried typed first (refused) → 0 → Undo → Redo → 24 and carried 2 (a s7; b B3, B5).
 
 ## The cases carried by a test
 | Case | Test | What it proves |
@@ -56,32 +89,74 @@ Pictures: `docs/img/handpass/2026-11-27-lw-postin-build/`.
 | A bid before the post-in date never pending | same | Pending 0, War bal 24 |
 | A half day before / after | same | 24 / 23.5 |
 | A leave across the date | same | only its days from the date (21), "3 taken" |
-| A gap before the current stint; an earlier stint | same | not deducted / deducted |
+| A gap before the current stint; an earlier stint; away twice, either gap, a deleted leave | same | not deducted / deducted / nothing given back |
 | A day after a posting out | same | still deducted (D1541) |
 | A post-in date moved before a typed snapshot | same | still 24 |
+| A post-in in the next year, leave in the old year | same | 24 |
+| A pilot's 15-day run across the post-in date | same | only its days from the date, weekends with them: 8 of 15 |
+| A hidden SANS man counted with his stored posting | `src/leavewar/state/postin-hidden.test.ts` | his post-in date still applies |
 | Never typed, typed 0, an old opening | `leaveyear.test.ts` "D2746 — …" | `notTyped` |
-| The below-zero question waits | `src/leavewar/ui/belowzero.test.ts` | `goesBelow` false when not typed |
+| The below-zero question waits | `src/leavewar/ui/belowzero.test.ts`, `state/balanceafter.test.ts` | `goesBelow` false when not typed |
 | Person window: label, line by role and lock, Not typed, 0 saves, carried forward refused | `src/leavewar/ui/personwindow.test.tsx` "[LW-POSTIN-BALANCE] …" | the window |
 | Balances page: heading (two lines on a phone), the line once, Not typed, a figure saves, member's dash | `src/leavewar/ui/balances.test.tsx` "[LW-POSTIN-BALANCE] …" | the page |
 | A first figure's history line | `src/leavewar/m5a-readers.test.ts` | "LVE balance →" with no "from" |
 
 ## Pictures
-(to fill)
+Opened by the host, each cropped to what decides it: FAULT 1 `b/01-bal-admin-402-nt-zoom.png` (before) and
+`b/only-B1_B2/01-bal-admin-402-nt-zoom.png` (after); FAULT 2 `b/02c-pw-buzzard-402-crop.png` (before) and
+`b/only-B1_B2/02c-pw-buzzard-402-crop.png` (after); the desktop drawing differences `a/only-s9/s9-drawcheck-bal-side-by-side.png`
+(before) and `a/only-s8,s9/s9-cmp-bal.png`, `a/only-s8,s9/s9-cmp-pw.png` (after — the War bal column and OIL back in their
+drawn places, the person window's line in its drawn place; the remaining marked areas are the rows' different people and
+figures). Every walked step's picture is in `a/` (91) and `b/` (68), named in `walk-a` / `walk-b` order by step.
 
 ## Break tests
-(to fill)
+- Carried forward typed into an empty Official bal: refused, nothing saved, still "Not typed" (a s7.1, b B3).
+- 0 typed is a typed figure, not "never typed" (a s6.0, s7.2; b B5).
+- One drag over five rows mixing never-typed and typed-0 men: the question names only the typed one (a s6.5).
+- "+ SANS" off and on: no figure moves (a s4.4).
+- A reload after the away-twice sequence: the figure stays (a s3.7).
 
 ## Errors seen
-(to fill)
+None — no console error, page error or failed request in any run of either walker.
 
 ## What was NOT walked, and why
-(to fill)
+- The change history line (a s7.6): the changes window opens on the loaded week and its › did not reach the typing day's
+  week in 30 presses — held by `m5a-readers.test.ts`.
+- Deleting an old-gap leave (Astra 3), the 15-day pilot run (Astra 12, Opus SC9), a post-in in the next year (Astra 19):
+  held by engine tests (above); the walk's own posting doors already walked in s1–s5.
+- Pending of each small kind (Astra 4), 1 Jan with the page open (Astra 18), ranges across periods (Astra 17), editing the
+  leave on the Inputs page (Astra 16), Restore as / Undo post out (Astra 15), a SANS posting rather than the Quals tick
+  (Astra 14), lock changing mid-edit (Astra 22), every person-window opener (Astra 24), OIL beside it (Astra 27): the
+  same engine and the same box reached by another door; none changes what this build changed — sized out (§7.0, line 4).
+- The phone's pinch on Balances, WebKit (Chromium phone emulation only — an iPhone's own letters may run wider): "Not
+  typed" now wraps to two lines inside its column, so a wider font grows the row, not the column.
+- The drag window's below-zero question on the phone (walked on the desktop, a s6.3–s6.5).
 
 ## Gate counts
-(to fill)
+- The whole Leave War unit run under the lock: 5,359 passed, 5 failed — each fixed (they leaned on an untyped balance
+  asking below zero, now typing a figure first), then green file by file; GitHub's run on `1759fce23`: every check green
+  but Vercel ("rate limited — retry in 24 hours", too many builds across the chats, not this change).
+- After the walk's fixes: `balances.test.tsx` 75 passed, `personwindow.test.tsx` 51 passed, `leaveyear.test.ts` 43 passed;
+  the code check: no new finding.
 
 ## The code reads
-(to fill)
+(running when written — Astra and a fresh, blind Opus, same brief)
 
 ## What the walk found, and each disposition
-(to fill)
+| Found | By | Disposition |
+|---|---|---|
+| A man away twice: his older gap's leave deducted | both scenario designers | FIXED red first (`11ae74d9b`), walked PASS (a s3) |
+| A hidden SANS man counted without his post-in date | both scenario designers | FIXED red first (`11ae74d9b`), walked PASS (a s4) |
+| FAULT 1 — "Not typed" ran over the phone's OIL column | walker b | FIXED (`1759fce23`): two lines; re-walked PASS (`b/only-B1_B2/`) |
+| FAULT 2 — the person window's empty boxes had no dashed amber edge | walker b | FIXED (`1759fce23`); re-walked PASS (b, and a s8.5c, s10) |
+| The War bal column 26px wider than drawn, OIL and OTHER LEAVE pushed right | walker a, the drawing check | FIXED (`ded008f08`): "Not typed" on two lines at every width; re-checked against the drawing |
+| The person window's line 2.4px higher than drawn | walker a and b, the drawing check | FIXED (`ded008f08`); re-checked: 0 regions |
+| "Type the Official bal first" — new words | both designers, walkers | put to him on question 23; a fresh Fable kept the words |
+| The refusal tag covers "till 31 Dec" and the line's top on a phone | walker b (B3d) | filed — a small look point |
+| 36 of 53 demo rows show five empty amber boxes | walker b (B1d) | for his look — the demo types the small kinds for few men |
+| Grid's second line, Days taken count leave before the post-in date; the tile's "N taken" does not | walker a (s1.6r), both designers | parked for him (d) |
+| A hidden SANS man signed in has no My leave and no Balances row | walker a (s4.3) | filed — outside this change |
+| "No grade" grey in a member's read-only view | walker a (s8 lead) | filed — to read against D1249 |
+| My leave prints "-1" with a hyphen | walker b | filed — outside this change |
+
+Walk: (to fill once the code reads close)

@@ -240,9 +240,9 @@ describe('D2746 — which balances were never typed', () => {
 /* D2747 (question 12 A, 26 Nov 26): a leave on a day before his post-in date still shows on the grid but never comes off
    his balance — his old squadron's leave, already in the figure typed from the official leave app; a man back from
    overseas the same, his days away not coming off. Only leave on or after his post-in date is deducted. "Before his
-   post-in date" is before his CURRENT stint and outside every earlier one (people.ts beforeFirstStint / gapBeforeCurrent —
-   the plan's step 2): an earlier stint's days were his leave here and still count; a day after a posting out is untouched
-   (D1541). */
+   post-in date" is before his CURRENT stint and outside every earlier one (leaveyear.ts beforePostIn — the plan's step 2,
+   every gap, not only the last): an earlier stint's days were his leave here and still count; a day after a posting out
+   is untouched (D1541). */
 describe('D2747 — leave before his post-in date is never deducted', () => {
   /* his example: posted in Mon 7 Dec 2026, a leave on Wed 2 Dec, 24 typed from the official leave app */
   const man = (o: Partial<Person> = {}) => ({ id: PID, seat: 'wso', from: '2026-12-07', to: null, ...o }) as Person
@@ -317,5 +317,19 @@ describe('D2747 — leave before his post-in date is never deducted', () => {
     const snap = snapshotOf(days, 'LVE')
     expect(at({ person: man({ from: '2026-11-30' }), typed: lve(24, 0, '2026-12-08', snap), days }).kinds.LVE.app).toBe(24)
     expect(at({ person: man({ from: '2026-12-07' }), typed: lve(24, 0, '2026-12-08', snap), days }).kinds.LVE.app).toBe(24)
+  })
+  it('a post-in in the next year: a leave in the old year before it is not deducted (Astra 19, 27 Nov 26)', () => {
+    const days = approved(new Map(), 'LL', '2026-12-29')
+    const f = at({ person: man({ from: '2027-01-04' }), typed: lve(24, 0, '2027-01-05'), days, today: '2027-01-10' }).kinds.LVE
+    expect([f.app, f.war]).toEqual([24, 24])
+  })
+  it('a pilot\'s 15-day run across his post-in date: only its days from the date count, its weekends with them (the reading parked for him, (f))', () => {
+    const pilot = man({ seat: 'pilot' } as Partial<Person>)
+    const days = approved(new Map(), 'LL', '2026-11-30', '2026-12-14')
+    const whole = at({ person: man({ seat: 'pilot', from: null } as Partial<Person>), typed: lve(30, 0, '2026-11-01'), days }).kinds.LVE.app
+    const f = at({ person: pilot, typed: lve(30, 0, '2026-11-01'), days }).kinds.LVE
+    /* the run, here always, charges all 15 days; from Mon 7 Dec only Mon 7 – Mon 14 Dec, the weekend 12–13 Dec included: 8 */
+    expect(whole).toBe(15)
+    expect(f.app).toBe(22)
   })
 })
