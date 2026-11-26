@@ -71,7 +71,7 @@ export type GuardRowId =
   | 'lwsheet' | 'lwshow'
   | 'trk' | 'trkask' | 'trkinfo' | 'trkpop' | 'trkdown' | 'trkfail'
   | 'oilrevise' | 'holimport' | 'qualsnew'
-  | 'userrow' | 'archrow' | 'giveaccess' | 'newsqn' | 'sqnmove' | 'placeedit'
+  | 'userrow' | 'archrow' | 'giveaccess' | 'addperson' | 'newsqn' | 'sqnmove' | 'placeedit'
   | 'belllist' | 'sqnlist' | 'drawer' | 'insmenu' | 'boardmenus' | 'datecal' | 'medcal' | 'icpick'
   | 'board' | 'oilearn' | 'arm' | 'restarm' | 'unpubarm' | 'lgedit' | 'qedit' | 'secdef' | 'oilbar' | 'welcome'
   | 'unsaved'
@@ -191,6 +191,9 @@ export const GUARD_ROWS: readonly GuardRow[] = [
   { id: 'userrow', name: 'the open row', frame: 'ui/UsersPanel.tsx', where: 'admin', open: () => workOn('userrow'), sel: '[data-editing]', counts: 'row', report: true },
   { id: 'archrow', name: 'the open row', frame: 'ui/UsersPanel.tsx', where: 'admin', open: () => workOn('archrow'), sel: '[data-restoring]', counts: 'row', report: true },
   { id: 'giveaccess', name: 'Give access', frame: 'ui/UsersPanel.tsx', where: 'admin', open: () => workOn('giveaccess'), sel: '[data-approving]', counts: 'row', report: true },
+  /* "Add a person" (K2b — §18.3, D2598): the form under the page's top row, counted while it is open and anything in it
+     differs from how a fresh form opens; Cancel and Escape empty it as they fold it, so a fold never hides typing */
+  { id: 'addperson', name: 'Add a person', frame: 'ui/UsersPanel.tsx', where: 'admin', open: () => workOn('addperson'), sel: '#accAddBlock', counts: 'row', report: true },
   { id: 'newsqn', name: 'the new squadron', frame: 'ui/SquadronsPanel.tsx', where: 'admin', open: () => workOn('newsqn'), sel: '[data-new-sqn]', counts: 'row', report: true },
   { id: 'sqnmove', name: 'the open row', frame: 'ui/SquadronsPanel.tsx', where: 'admin', open: () => workOn('sqnmove'), sel: '[data-moving]', counts: 'row', report: true },
   { id: 'placeedit', name: 'the open row', frame: 'ui/SquadronsPanel.tsx', where: 'admin', open: () => workOn('placeedit'), sel: '[data-placing]', counts: 'row', report: true },
@@ -260,7 +263,7 @@ export const GUARD_ORDER: readonly GuardRowId[] = [
   'dutytpl', 'wavetpl', 'daytpl', 'drafts', 'cxdlg', 'sortall',
   'lwsheet', 'trk',
   'avail', 'chg', 'insights', 'sansday', 'lwday', 'lwshow', 'trkinfo', 'trkpop', 'trkdown', 'trkfail',
-  'userrow', 'archrow', 'giveaccess', 'newsqn', 'sqnmove', 'placeedit', 'qualsnew',
+  'userrow', 'archrow', 'giveaccess', 'addperson', 'newsqn', 'sqnmove', 'placeedit', 'qualsnew',
   'airpop', 'daypop', 'weekcal', 'docview',
   'belllist', 'sqnlist', 'drawer', 'insmenu', 'boardmenus', 'datecal', 'medcal', 'icpick',
   'board', 'oilearn', 'arm', 'restarm', 'unpubarm', 'lgedit', 'qedit', 'secdef', 'oilbar', 'welcome',

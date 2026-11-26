@@ -71,9 +71,9 @@ describe('R9 — every test file of the guard and of part V sets up three squadr
    Each row id, flag or test that K1b or K1c adds, with the pass that owes it, so that R1's "every flag has a row" and
    A2's "a row with no entry in the map fails" hold now for everything else. K1c's last test proves the list empty. */
 /* (K1c, the last pass of part A, built R4, the Tracker's rows and the Tracker's frames — held in R4's own census, below —
-   and took them off; what is left is owed by a later step by name) */
-export const TO_COME: { what: string; pass: 'K2b' | 'after S2\'s U1 fix merges'; why: string }[] = [
-  { what: 'row addperson ("Add a person" — useGuardWork(\'addperson\', …))', pass: 'K2b', why: 'the form\'s report, after K1 (§21.1)' },
+   and took them off; what is left is owed by a later step by name. K2b built the row addperson — the "Add a person"
+   form's report, held by R1 and R3 like every other — and took it off) */
+export const TO_COME: { what: string; pass: 'after S2\'s U1 fix merges'; why: string }[] = [
   { what: 'the short row\'s report — UsersPanel.tsx ForeignEditor (its `unsaved`, `data-unsaved` on the row), counted with the opened row', pass: 'after S2\'s U1 fix merges', why: 'the Admin → Users section\'s editor, not in this branch yet (the orchestrator, chat 204)' },
 ]
 
@@ -314,7 +314,7 @@ const FRAMES: Record<string, string[]> = {
   'ui/SquadronMenu.tsx': ['row sqnlist'],
   'ui/UpchitConfirm.tsx': rep(6, OWN),
   'ui/UsersFilter.tsx': ['no the filter\'s tick boxes on Admin → Users — a list a press outside closes'],
-  'ui/UsersPanel.tsx': ['no the "Add a person" form\'s Escape — its report is step K2b\'s (TO_COME)'],
+  'ui/UsersPanel.tsx': ['in addperson'],
   'ui/WaveTplModal.tsx': rep(4, 'row wavetpl'),
   'ui/WeekCal.tsx': rep(8, 'row weekcal'),
   'ui/barfree.ts': [DEF],
@@ -598,8 +598,8 @@ describe('R4 — the Tracker\'s list is whole (K1c)', () => {
 })
 
 describe('TO_COME — what is left is owed by a later step, by name, never by a pass of K1', () => {
-  it('every entry names K2b or "after S2\'s U1 fix merges" — none names K1a, K1b or K1c', () => {
-    expect(TO_COME.filter(t => !['K2b', 'after S2\'s U1 fix merges'].includes(t.pass) || /\bK1[abc]?\b/.test(t.pass)).map(t => t.what)).toEqual([])
-    expect(TO_COME.map(t => t.pass).sort()).toEqual(['K2b', 'after S2\'s U1 fix merges'])
+  it('only the short row\'s report is left, owed "after S2\'s U1 fix merges" — none names K1a, K1b, K1c or K2b', () => {
+    expect(TO_COME.filter(t => t.pass !== 'after S2\'s U1 fix merges' || /\bK(1[abc]?|2b)\b/.test(t.pass)).map(t => t.what)).toEqual([])
+    expect(TO_COME.map(t => t.pass)).toEqual(['after S2\'s U1 fix merges'])
   })
 })
