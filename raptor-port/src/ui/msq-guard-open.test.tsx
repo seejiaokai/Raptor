@@ -56,8 +56,8 @@ import { setStorageMaker, storageUnit } from '../tracker/storage.js'
 import { Whiteboard } from '../storage/whiteboard'
 import { trackerTarget } from '../storage/adapters'
 /* the openers and helpers, shared with ui/msq-guard-note.test.tsx (K3 — moved whole, nothing changed) */
-import { openHolidayNoLeave } from './msq-guard-testkit'
-import { $, C, MM, OPEN,type Opener, SHEET, TRK_OPENERS, TRK_WB, app, asSaber, bootTrkProbe, chartEdit, doing, drawnBox, escape, ev0, goAdmin, goInputsCal, goLeaveWar, goTracker, guardTeardown, linkedStudent, medicalClash, named, openAddForm, openAddPerson, openArchRow, openBoard, openGiveAccess, openHolImport, openLeaveFiled, openOilRevise, openOwnAward, openQualsNew, openTrkAsk, openUserRow, otherMan, ownInput, phoneWidth, press, ptr, readSheet, rosterMan, row, saver, sel, settle, tap, tid, topPick, trkDo, trkOpen, typeIn, warAsRanger, x } from './msq-guard-testkit'
+import { openHolidayNoLeave } from '../test-support/msq-guard-testkit'
+import { $, C, MM, OPEN,type Opener, SHEET, TRK_OPENERS, TRK_WB, app, asSaber, bootTrkProbe, chartEdit, doing, drawnBox, escape, ev0, goAdmin, goInputsCal, goLeaveWar, goTracker, guardTeardown, linkedStudent, medicalClash, named, openAddForm, openAddPerson, openArchRow, openBoard, openGiveAccess, openHolImport, openLeaveFiled, openOilRevise, openOwnAward, openQualsNew, openTrkAsk, openUserRow, otherMan, ownInput, phoneWidth, press, ptr, readSheet, rosterMan, row, saver, sel, settle, tap, tid, topPick, trkDo, trkOpen, typeIn, warAsRanger, x } from '../test-support/msq-guard-testkit'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 withThird()

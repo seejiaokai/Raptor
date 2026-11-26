@@ -1096,6 +1096,28 @@ function useNoteAsPageGoes(pid: string | null, on: OpenedOn | null, drawn: boole
     if (o && takenAwayUnder(o)) HOOKS.toast(changedWhileOpenWords(cs(o.pid)), 'warn')
   }, [])
 }
+/* THE FORM'S REPORT TO THE GUARD (D2598, §18.3; ui/guard.ts's `addperson` row): counted while the form is open and
+   anything in it differs from how a fresh form opens — each value the one resetAddForm and the first draw set, the
+   post-in date the one it last opened fresh on (never today's, which moves at midnight under an untouched form).
+   Folded counts nothing: only Cancel and Escape fold it, and both empty it first. (A plain function, out of
+   UsersPanel, so the component's own control flow stays small — the code check, 26 Nov 26.) */
+function addFormDiffers(name: string, np: NewPerson, role: AccountRole, postIn: string, postIn0: string): boolean {
+  return name !== '' || JSON.stringify(np) !== JSON.stringify(BLANK) || role !== 'main' || postIn !== postIn0
+}
+/* A NEW REQUEST OPENS THE ADD FORM WHILE DRAWING (React's own pattern for state that follows a prop — the code check,
+   26 Nov 26): a non-zero `openNew` not yet seen opens it, so the very render that draws the form is the one the page's
+   focus effect runs after; a form Cancel folded stays folded until `openNew` changes again. The focus request is a
+   ref, never written during a render, so it is set in an effect keyed on the request. (A hook of its own, out of
+   UsersPanel, for the same reason addFormDiffers is.) */
+function useOpenRequest(openNew: number | undefined, setAdding: (v: boolean) => void, wantFocus: React.MutableRefObject<number>): void {
+  const [seen, setSeen] = useState(0)
+  const req = openNew ?? 0
+  if (req !== seen) {
+    setSeen(req)
+    if (req) setAdding(true)
+  }
+  useEffect(() => { if (openNew) wantFocus.current = openNew }, [openNew, wantFocus])
+}
 /* is this man's row on the list as it is drawn: not hidden by a tick or the search, his Archived fold open */
 const rowInView = (v: UsersView, pid: string | null, archOpen: boolean): boolean =>
   !!pid && (v.groups.some(g => g.rows.includes(pid)) || (archOpen && v.archived.includes(pid)))
@@ -1167,7 +1189,8 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   /* …the form opened for it at the top of the page (D2628 C11), so the scroll only brings the top into sight — no scroll
      to a foot. The opener's own press asks the same focus (-1: any value but 0). */
   const wantFocus = useRef(0)
-  useEffect(() => { if (p.openNew) { wantFocus.current = p.openNew; setAdding(true) } }, [p.openNew])
+  /* (useOpenRequest, above: declared before the focus effect, so its own effect runs first in the same commit) */
+  useOpenRequest(p.openNew, setAdding, wantFocus)
   useEffect(() => {
     if (!wantFocus.current || !csRef.current) return
     wantFocus.current = 0
@@ -1182,11 +1205,8 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
 
   const hasName = !!name.trim()
   const resetAddForm = () => { const t = effectiveToday(); setName(''); setNp(BLANK); setRole('main'); setPostIn0(t); setPostIn(t) }
-  /* THE FORM'S REPORT TO THE GUARD (D2598, §18.3; ui/guard.ts's `addperson` row): counted while the form is open and
-     anything in it differs from how a fresh form opens — each value the one resetAddForm and the first draw set, the
-     post-in date the one it last opened fresh on (never today's, which moves at midnight under an untouched form).
-     Folded counts nothing: only Cancel and Escape fold it, and both empty it first. */
-  useGuardWork('addperson', adding && (name !== '' || JSON.stringify(np) !== JSON.stringify(BLANK) || role !== 'main' || postIn !== postIn0))
+  /* the form's report to the guard — addFormDiffers, above */
+  useGuardWork('addperson', adding && addFormDiffers(name, np, role, postIn, postIn0))
   /* …AND WHETHER THIS SECTION IS IN SIGHT (the guard's note — his "save or cancel the open row on Users", D2627 A6, said
      while a row here is open and another Admin section shows): the Admin page's own `shown`, handed on as it is */
   useGuardSection('users', !!p.shown)

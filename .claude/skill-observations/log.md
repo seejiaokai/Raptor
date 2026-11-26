@@ -2017,3 +2017,15 @@ Met again 26 Nov 26: section chat S2 (chat 205) — started by the coordinator f
 **Suggested improvement:** In the skill's section on what a helper returns, add: ask for the report AS THE FINAL REPLY (the host saves it), and for proofs or data as files of the kind the helper may write (test files, outputs) in a named hand-back folder; never brief a helper to bypass a refused write by another route — say "if your file tool declines, put the whole report in your reply".
 **Principle:** Design a helper's hand-back around what its tools allow by default; an instruction to work around a refusal is itself likely to be refused, and costs the whole launch.
 
+### Observation 1094: A check that could not run locally hid a file-shape finding until it could
+
+**Status:** OPEN
+**Date:** 26 Nov 26
+**Session context:** Multi-squadron section 1 (the guard rail), chat 204: fixing three code-check findings named by the coordinator, the local run then reported 57 (numbered past 1092 and 1093, taken on other branches).
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** The builder's brief — its list of checks; the orchestrator's review of a new file
+
+**Issue:** A shared test-helper file was created as a component-type file (markup extension) holding only helper exports. The static code check reads such a file as a component file and reported one finding per export (54). No step had run that check, because it could not run in the working copy at the time and the remote run was read only for the three findings someone named, so the file's shape went through a build, a review and a merge unseen.
+**Suggested improvement:** In the builder's brief template, list the static code check beside the tests and the build as a required check of every step, with "could not run" reported as NOT RUN and carried in the handoff as owed until it runs. In the orchestrator's review of any NEW file, ask what kind of file its extension declares and whether the checks treat that kind differently.
+**Principle:** A check that cannot run is a debt to record and repay at the first chance, not a check passed; and a new file's type is a decision the linters read, so pick it by what the file exports.
