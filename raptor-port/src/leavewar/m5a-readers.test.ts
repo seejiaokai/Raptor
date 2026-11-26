@@ -16,7 +16,7 @@ import { ELOG } from '../engine/editlog'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
 import { accountsLoad, signIn, sessionFor } from '../state/accounts'
 import { installGlobalUndo } from '../state/undo-wire'
-import { globalUndo } from '../undo'
+import { globalRedo, globalUndo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import { NOTICES } from '../state/notices'
 import { noticeSeenLoad } from '../state/noticeseen'
@@ -184,6 +184,14 @@ describe('the change history: a typed figure, a grade, the grades list, the lock
     expect(saveTypedFigure('bane', 'LVE', 20)).toBeNull()
     expect(rawState().balances.bane?.LVE).toMatchObject({ amount: 20, cf: 0 })
     expect(lines().map(r => r.lbl)).toEqual(['Leave War · Ranger · LVE balance →'])
+    /* Undo puts him back to never typed, Redo to 20 incl. 0 (Astra's read, F2) */
+    globalUndo()
+    expect(leaveFiguresOf('bane').kinds.LVE.notTyped).toBe(true)
+    globalRedo()
+    expect(rawState().balances.bane?.LVE).toMatchObject({ amount: 20, cf: 0 })
+    /* the next 1 Jan: his 20 carried forward whole, his grade's 33 added — 53 incl. 20, never 33 incl. 0 */
+    setMemberTodayForTests('2029-01-02')
+    expect([leaveFiguresOf('bane').kinds.LVE.app, leaveFiguresOf('bane').kinds.LVE.cf]).toEqual([53, 20])
   })
   it('a change of the carried-forward part alone is its own line, and its Undo says so', () => {
     expect(setTypedBalance('bane', 'LVE', 18, 2)).toBe(true)

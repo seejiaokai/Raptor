@@ -140,7 +140,16 @@ None — no console error, page error or failed request in any run of either wal
   the code check: no new finding.
 
 ## The code reads
-(running when written — Astra and a fresh, blind Opus, same brief)
+Astra and a fresh, blind Opus, one brief, each blind to the other and to the walk; their reports whole, with the scenario
+designers' and walkers': `docs/handpass/parts/lw-postin-1127/` (`read-astra.md`, `read-opus.md`, `scen-*.md`, `walk-*.md`).
+| Finding | Readers | Disposition |
+|---|---|---|
+| R1 — a first Official bal typed into the empty box took its carried-forward part from the figure counted underneath "Not typed": a man with a grade and two 1 Jans behind him typed 20 and it saved 20 incl. 20, wiped as carried-forward days on the next 1 Jan, with an extra "carried fwd → 20" history line | both (Opus F1, Astra F2) | REPRODUCED red (`m5a-readers.test.ts`, saved `cf: 20`), FIXED in the one save door both screens use (`9657b6b77`); the test also holds Undo, Redo and the next 1 Jan (53 incl. 20); re-walked the first-figure steps on the rebuilt app — desktop s7 6 PASS (`a/only-s7/`), phone B3 and B5 9 PASS (`b/only-B3_B5/`) |
+| R2 — the five smaller kinds (CCL, FCL, PL, EL, CL) never show the words "Not typed": an empty dashed box where they can be typed, an amber "–" where not, and the person window's small tile's War bal line a "–" while a leave is pending | Astra F1 | NOT BUILT — his to rule: question 11's approved drawing shows the LVE tile only, and the words in a small kind's place are a new look, drawn first (D1625); the build gives them the narrow places' look question 23 recommends. Parked with (a), filed on the backlog item |
+| Q — Days taken still counts a leave before the post-in date (the plan's step 2: "to confirm at the build") | Opus Q1 | parked for him (d) |
+| Q — "Type the Official bal first" not word-reviewed or drawn | Opus Q2 | a fresh Fable kept the words; put to him on question 23 |
+| Tidiness (filed, not fixed): the post-in check's head comment said "the gap right before"; two doc comments back to back on the per-kind figures; whether a balance is typed worked out twice; the "Not typed" look repeated across two screens; the bid picker's own result type without `notTyped` | both | the head comment corrected (a stale comment is a wrong fact, `9657b6b77`); the rest filed on the backlog item |
+Both readers' negatives: the post-in rule in every order, the figure cache's key, every reader of the figures, both below-zero doors, the history and Undo, the permission gate, "Official bal" everywhere, the time zone — nothing.
 
 ## What the walk found, and each disposition
 | Found | By | Disposition |
@@ -159,4 +168,4 @@ None — no console error, page error or failed request in any run of either wal
 | "No grade" grey in a member's read-only view | walker a (s8 lead) | filed — to read against D1249 |
 | My leave prints "-1" with a hyphen | walker b | filed — outside this change |
 
-Walk: (to fill once the code reads close)
+Walk: FULL — two Opus walkers on one frozen build, desktop 1536 at 1.25 (70 checks: 62 PASS, 0 FAIL of the app, 7 RECORD, 1 NOT WALKED, held by a test) and phone 402 / 375 (73 lines: 49 PASS, 9 FAIL from 2 faults, 15 RECORD); 4 faults (2 on the phone, 2 drawing differences) fixed and re-walked PASS; after the code reads' one fix, the first-figure steps re-walked on the rebuilt app at both sizes, 15 PASS; pictures `docs/img/handpass/2026-11-27-lw-postin-build/` (a, b and their re-walk folders).
