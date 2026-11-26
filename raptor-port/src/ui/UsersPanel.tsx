@@ -9,7 +9,7 @@
    (docs/mock/one-door.html) is the design of record, with the agent's own calls on it — Archive one tap; Restore turns
    the sign-in on whatever suspended it; no Enable on an archived row; renaming a man ON the roster stays on Quals
    (D218), an archived man is renamed here (D295); A to Z with a search box; nothing reorders itself. D323: Archive is
-   "posted out from today" on the Leave War, his past kept. The foot's form makes a NEW person only (a man already on
+   "posted out from today" on the Leave War, his past kept. The add form makes a NEW person only (a man already on
    the roster gets his sign-in on his own row), with his post-in date (D308).
 
    Before it ([ACCOUNTS], [ACCOUNTS-NEW-PERSON], 26 Sep 26): D166 (1) accounts — a sign-in name (which stands for the
@@ -42,9 +42,9 @@ import {
 import { SESSION } from '../state/auth'
 import { me, pageUnit, adminOfUnit } from '../state/perms'
 import { todayIso, homeOn, unitById } from '../state/units'
-import { usersView, addHomeChoices, NO_FILTER, type UsersFilter, type UsersView } from './usersfilter-model'
+import { usersView, NO_FILTER, type UsersFilter, type UsersView } from './usersfilter-model'
 import { UsersFilterBox, ShowingLine, FILTER_ESC } from './UsersFilter'
-import { useEscRow } from './sheetfocus'
+import { useEscRow, escCloses, escToTop, keysBack } from './sheetfocus'
 import { notify } from '../state/store'
 import { deletePerson, effectiveToday } from '../state/person-delete'
 import { updatePersonField } from '../state/quals-write'
@@ -530,7 +530,7 @@ function useRingLanding(ring: Ring, setFind: (v: string) => void, setArchOpen: (
 }
 
 /* `shown` — this list is on the admin's screen (the Admin page decides: Users chosen, and on a phone drilled in);
-   `openNew` — a non-zero, changing value brings the add form into view with its callsign box ready (Quals'
+   `openNew` — a non-zero, changing value opens the add form with its callsign box ready (Quals'
    "+ Add person", through the Admin page — state/view.ts ADMINOPEN);
    `ring` — a man to bring into view, ringed while `on` (a bell's posting line — [POSTOUT-RUN-NOTICE]) */
 /* THE FILTER'S TICKS. A PICK CLEARS THE SQUADRON TICKS ((j), his D2396): a pick means "show me this squadron", so the page
@@ -559,12 +559,19 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   const [np, setNp] = useState<NewPerson>(BLANK)
   const [role, setRole] = useState<AccountRole>('main')
   const [postIn, setPostIn] = useState(effectiveToday)
-  /* Add a person's Home squadron (§4 item 7 — picture b1-7): null is the page's own, whichever squadron that is now */
-  const [home, setHome] = useState<string | null>(null)
+  /* (Add a person's Home squadron box is gone — his D2729 Q1, 26 Nov 26: a new man always joins the squadron in view, for
+     every admin on every page; ui/usersfilter-model.ts addHomeChoices stays there, the Admin → Users section's to keep
+     or remove) */
+  /* ADD A PERSON OPENS IN PLACE, UNDER THE PAGE'S TOP ROW (his D2599, D2628, D2655, D2652 N13 i): folded until "+ Add a
+     person" is pressed. While it is open the opener is NOT on the page — never two add buttons on screen at once (his
+     D2726, D2729 Q10). Only Cancel or Escape folds it, and both empty it first (resetAddForm), so a fold never keeps
+     typing a later step would have to count (the plan's Opus F-h); an add empties it and leaves it open for the next man. */
+  const [adding, setAdding] = useState(false)
   /* the filter's ticks (D2335 — ui/usersfilter-model.ts); kept while the page is open, as the search is */
   const [filt, setFilt] = useUsersFilter(pageUnit('own'))
   const addRef = useRef<HTMLDivElement>(null)
   const csRef = useRef<HTMLInputElement>(null)
+  const openRef = useRef<HTMLButtonElement>(null)
 
   /* D216, D227 — the list has been on this admin's screen: his bell goes out */
   useEffect(() => {
@@ -576,12 +583,14 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   })
   /* Quals' "+ Add person" (D217): the form in view, the callsign box ready — after the render that drew it (the walk,
      26 Sep 26: a focus asked on a timer landed before the real browser had drawn the box) */
+  /* …the form opened for it at the top of the page (D2628 C11), so the scroll only brings the top into sight — no scroll
+     to a foot. The opener's own press asks the same focus (-1: any value but 0). */
   const wantFocus = useRef(0)
-  useEffect(() => { if (p.openNew) wantFocus.current = p.openNew }, [p.openNew])
+  useEffect(() => { if (p.openNew) { wantFocus.current = p.openNew; setAdding(true) } }, [p.openNew])
   useEffect(() => {
     if (!wantFocus.current || !csRef.current) return
     wantFocus.current = 0
-    addRef.current?.scrollIntoView?.({ block: 'center' })
+    addRef.current?.scrollIntoView?.({ block: 'nearest' })
     if (!HOOKS.isPhone()) csRef.current.focus()
   })
 
@@ -589,17 +598,32 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   const ringPid = useRingLanding(p.ring, setFind, setArchOpen)
 
   const hasName = !!name.trim()
-  const resetAddForm = () => { setName(''); setNp(BLANK); setRole('main'); setPostIn(effectiveToday()); setHome(null) }
+  const resetAddForm = () => { setName(''); setNp(BLANK); setRole('main'); setPostIn(effectiveToday()) }
   const add = () => {
     const nm = name.trim().toLowerCase()
     const who = np.cs.trim()
     const ok = hasName ? `${who} added — ${nm} can sign in now` : `${who} added to the roster — set flight and quals on the Quals page`
-    /* the Home squadron picked carries through the whole add — his home row and his first stint, that squadron's
-       (accounts.ts addPersonAndAccount → roster-add.ts newHomeProblem, leavewar/sync.ts postInNewPerson); none picked,
-       the page's own (PD1) */
-    const picked = home && addHomeChoices(pageUnit('own')).includes(home) ? home : undefined
-    if (done(addPersonAndAccount(name, np, role, postIn, picked), ok)) resetAddForm()
+    /* no home named: the door makes him the page's own squadron's — his home row and his first stint (accounts.ts
+       addPersonAndAccount, PD1) — the squadron in view, always (D2729 Q1). Today's call otherwise, argument for argument. */
+    if (done(addPersonAndAccount(name, np, role, postIn), ok)) resetAddForm()
   }
+  /* Cancel, and Escape as it leaves an opened row ((p), his D2396): the form emptied and folded, the opener back with the
+     keys on it (the design guide §2 — the keys go back to the button that opened it) */
+  const addShutting = useRef(false)
+  const shutAdd = () => { resetAddForm(); setAdding(false); addShutting.current = true }
+  useEffect(() => {
+    /* only while it is on his screen (Users chosen), as the opened row's Escape; an open Filter panel answers first */
+    if (!adding || !p.shown) return
+    const off = escCloses(() => addRef.current, shutAdd, null, { id: 'accAddBlock' })
+    escToTop(FILTER_ESC)
+    return off
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- on the form's opening and closing only: shutAdd calls setters alone
+  }, [adding, p.shown])
+  useEffect(() => {
+    if (adding || !addShutting.current) return
+    addShutting.current = false
+    keysBack(() => openRef.current)
+  }, [adding])
   /* the search (the agent's call on the approved page): a callsign or a sign-in name, anywhere in it; the Archived
      group opens while it holds a match */
   const q = find.trim().toLowerCase()
@@ -621,17 +645,16 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
   useEscRow(p.shown && rowInView(view, editing, archOpenNow) ? editing : null,
     pid => document.querySelector<HTMLElement>(`.acc-row[data-person="${CSS.escape(pid)}"]`),
     () => setEditing(null), FILTER_ESC)
-  const homes = addHomeChoices(unit)
   const row = (pid: string) => <PersonRow key={pid + (editing === pid ? ':e' : '')} pid={pid} open={editing === pid} ringed={ringPid === pid}
     onToggle={() => toggle(pid)} onClose={() => setEditing(null)} />
   const nobody = !view.groups.some(g => g.rows.length)
   return (
     <>
-      <h4 className="adm-sub">Waiting for access</h4>
-      <Waiting />
-      <hr className="adm-sep" />
-      <div className="od-head">
-        <h4 className="adm-sub">People · {view.people}</h4>
+      {/* THE PAGE'S TOP ROW (his D2652 N13 i — the drawings s3-8-d-column, s2-10-p-waiting): the search, Filter and
+          "+ Add a person" one row at the very top, above "Waiting for access", so an admin never scrolls down to add
+          people (D2599); on a phone the search and Filter one row, the button full width under them (postout.css). The
+          search still filters what it filtered beside "People" (the Admin → Users section makes it filter every group). */}
+      <div className="od-top" id="accTop">
         {/* the search and, beside it, the Filter button and its panel (D2335 — picture nfa) */}
         <div className="od-findrow">
           {/* the app's line magnifier, as in every search box (owner D1127, 21 Oct 26 — never the coloured emoji) */}
@@ -639,6 +662,42 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
             aria-label="Find a callsign or sign-in" onChange={e => { setFind(e.target.value); setArchOpen(null) }} /></div>
           <UsersFilterBox f={filt} onChange={setFilt} unit={unit} master={master} cats={view.cats} />
         </div>
+        {/* not on the page while the form is open — the search widens into its place (D2726, D2729 Q10) */}
+        {!adding && <button type="button" className="abtn od-addbtn" id="accAddOpen" ref={openRef}
+          onClick={() => { wantFocus.current = -1; setAdding(true) }}>+ Add a person</button>}
+      </div>
+      {adding && (
+        <>
+          <div id="accAddBlock" className="od-add" ref={addRef}>
+            {/* "ADD A PERSON" — the page's own section heading (.adm-sub draws it in capitals), as "Waiting for access" */}
+            <h4 className="adm-sub">Add a person</h4>
+            <PersonFields idp="accAdd" np={np} onChange={setNp} csRef={csRef} />
+            <div className="adm-2col">
+              <div className="mfield"><label htmlFor="accAddName">Sign-in (defence mail)</label>
+                <input id="accAddName" maxLength={MAX_SIGNIN} value={name} onChange={e => setName(e.target.value)}
+                  placeholder="blank if he won't use the app" /></div>
+              <PostInField id="accAddPostIn" value={postIn} onChange={setPostIn} />
+            </div>
+            {/* no account without a sign-in, so no role */}
+            {hasName && <div className="mfield"><label htmlFor="accAddRole">Role</label>
+              <RoleSelect id="accAddRole" value={role} onChange={setRole} /></div>}
+            {/* the note above the pair, as drawn (s1-add2-a); its words his (D2655 D1) */}
+            <p className="adm-note acc-note" id="accAddNote">Makes his Quals row, and his sign-in if you give one. The Leave War counts him from the post-in date.</p>
+            {/* ONE PAIR (D2644, lesson 103): the same row of buttons and the same two buttons as an opened row's Save and
+                Cancel — so the same size and aligned by the app's own rules, never a width of its own */}
+            <div className="acc-acts">
+              <button className="abtn primary" id="accAdd" onClick={add}>{hasName ? 'Add person and sign-in' : 'Add person'}</button>
+              <button className="abtn" id="accAddCancel" onClick={shutAdd}>Cancel</button>
+            </div>
+          </div>
+          <hr className="adm-sep" />
+        </>
+      )}
+      <h4 className="adm-sub">Waiting for access</h4>
+      <Waiting />
+      <hr className="adm-sep" />
+      <div className="od-head">
+        <h4 className="adm-sub">People · {view.people}</h4>
       </div>
       {view.line && <ShowingLine words={view.line} onClear={() => setFilt(NO_FILTER)} />}
       <div data-testid="acc-groups">
@@ -668,33 +727,7 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring }
           )}
         </div>
       )}
-      <hr className="adm-sep" />
-      <div id="accAddBlock" ref={addRef}>
-        <h4 className="adm-sub">Add a person</h4>
-        {/* "Home squadron" first (§4 item 7 — picture b1-7): the squadrons he is an admin of, the page's own picked to
-            start; with one squadron to offer there is nothing to choose, so no box (as the Schedules menu, D2132) */}
-        {homes.length > 1 && (
-          <div className="adm-2col">
-            <div className="mfield"><label htmlFor="accAddHome">Home squadron</label>
-              <select id="accAddHome" value={home && homes.includes(home) ? home : unit} onChange={e => setHome(e.target.value)}>
-                {homes.map(u => <option key={u} value={u}>{unitById(u)?.num ?? u}</option>)}
-              </select></div>
-          </div>
-        )}
-        <PersonFields idp="accAdd" np={np} onChange={setNp} csRef={csRef} />
-        <div className="adm-2col">
-          <div className="mfield"><label htmlFor="accAddName">Sign-in (defence mail)</label>
-            <input id="accAddName" maxLength={MAX_SIGNIN} value={name} onChange={e => setName(e.target.value)}
-              placeholder="blank if he won't use the app" /></div>
-          <PostInField id="accAddPostIn" value={postIn} onChange={setPostIn} />
-        </div>
-        {/* no account without a sign-in, so no role */}
-        {hasName && <div className="mfield"><label htmlFor="accAddRole">Role</label>
-          <RoleSelect id="accAddRole" value={role} onChange={setRole} /></div>}
-        <button className="abtn primary" id="accAdd" style={{ width: '100%' }} onClick={add}>
-          {hasName ? 'Add person and sign-in' : 'Add person'}</button>
-        <p className="adm-note" id="accAddNote">Makes his Quals row, and his sign-in if you give one. The Leave War counts him from the post-in date.</p>
-      </div>
+      {/* (the "Add a person" block that stood here, at the page's foot, now opens under the top row — D2652 N13 i) */}
       {/* (the "Guest view" switch that stood here, under its own rule, is removed with the guest view — his D2239,
           20 Nov 26: a person waiting sees only the waiting screen until an admin of his squadron approves him) */}
     </>

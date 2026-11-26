@@ -282,6 +282,8 @@ describe('D309 / D308 — Give access · Refuse; the post-in date on every door 
 
   it('Add a person asks the post-in date, opening on today', async () => {
     await users()
+    /* the form opens under the page's top row on "+ Add a person" (the guard rail's K2a — D2652 N13 i, D2729 Q10) */
+    await click($('#accAddOpen'))
     expect(boxValue($('#accAddPostIn'))).toBe(effectiveToday())
     expect($('#accAddNote').textContent).toBe('Makes his Quals row, and his sign-in if you give one. The Leave War counts him from the post-in date.')
   })

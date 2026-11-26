@@ -10,7 +10,8 @@
      the list; Clear (and the panel's "Clear all") take every tick off.
    - A master admin ticking more than the page's squadron: each squadron's people under its own heading, A to Z, the
      other squadrons' people wearing their grey number.
-   - Add a person's "Home squadron": the squadrons he is an admin of, the page's own first; one squadron, no box.
+   - Add a person's "Home squadron": the squadrons he is an admin of, the page's own first; one squadron, no box — CHANGED
+     by the guard rail's K2a (his D2729 Q1): no box for anyone; a new man joins the squadron in view (the last describe).
    Red first: before the change Admin → Users had no Filter button, no grouped list and no Home squadron box. */
 import { describe, it, expect, afterEach } from 'vitest'
 import { act, cleanup, fireEvent, render } from '@testing-library/react'
@@ -318,26 +319,32 @@ describe('Escape on an opened row (p)', () => {
   })
 })
 
-describe('Add a person\'s Home squadron (§4 item 7 — picture b1-7)', () => {
-  it('Hunter, an admin of 142 alone: no Home squadron box', () => {
+/* CHANGED BY THE GUARD RAIL'S K2a (his D2729 Q1, 26 Nov 26 — over §4 item 7's box, picture b1-7): Add a person has no
+   Home squadron box, on any page, for anyone; a new man joins the squadron in view. Each test below keeps its case — an
+   admin of one squadron, a master admin, a Plan holder, an add on 142's page — and now asserts the new rule; the form is
+   opened first by "+ Add a person" (the top row, D2652 N13 i). The three squadrons' cases: ui/msq-guard-g.test.tsx G4. */
+describe('Add a person: no Home squadron box — a new man joins the squadron in view (D2729 Q1)', () => {
+  const openAdd = async (p: ReturnType<typeof panel>) => { await act(async () => { fireEvent.click(p.$('#accAddOpen')!) }) }
+  it('Hunter, an admin of 142 alone: no Home squadron box', async () => {
     signInAs('hunter')
     const p = panel()
+    await openAdd(p)
+    expect(p.$('#accAddBlock'), 'the form is open').not.toBeNull()
     expect(p.$('#accAddHome')).toBeNull()
   })
-  it('Saber: "Home squadron" first in the form, 142 then 149, the page\'s own picked', () => {
+  it('Saber, an admin of every squadron: no Home squadron box; the form starts on Callsign/Name', async () => {
     signInAs('saber')
     const p = panel()
-    const box = p.$('#accAddHome') as HTMLSelectElement
-    expect(box).not.toBeNull()
-    expect([...box.options].map(o => o.textContent)).toEqual(['142', '149'])
-    expect(box.value).toBe('u142')
+    await openAdd(p)
+    expect(p.$('#accAddHome')).toBeNull()
     const labels = p.$$('#accAddBlock .mfield label').map(l => l.textContent)
-    expect(labels[0]).toBe('Home squadron')
+    expect(labels).not.toContain('Home squadron')
+    expect(labels[0]).toBe('Callsign/Name')
   })
-  it('Saber, on 142\'s page, adds WASP to 149 on screen: his home is 149, his post-in in 149\'s war only', async () => {
+  it('Saber, on 142\'s page, adds WASP: his home is 142, the squadron in view, his post-in in 142\'s war', async () => {
     signInAs('saber')
     const p = panel()
-    await act(async () => { fireEvent.change(p.$('#accAddHome')!, { target: { value: 'u149' } }) })
+    await openAdd(p)
     await act(async () => { fireEvent.change(p.$('#accAddCs')!, { target: { value: 'WASP' } }) })
     await act(async () => { fireEvent.change(p.$('#accAddSeat')!, { target: { value: 'FCP' } }) })
     await act(async () => { fireEvent.change(p.$('#accAddCat')!, { target: { value: 'B' } }) })
@@ -345,17 +352,17 @@ describe('Add a person\'s Home squadron (§4 item 7 — picture b1-7)', () => {
     await act(async () => { fireEvent.click(p.$('#accAdd')!) })
     const pid = nameToId('WASP')!
     expect(pid, 'WASP made').toBeTruthy()
-    expect(homeOn(pid, todayIso())).toBe('u149')
-    expect(getState().people.some(x => x.id === pid), 'not in 142\'s war loaded').toBe(false)
-    const post: any = readForeign(worlds.u149!, pid).post
-    expect(post?.from).toBe(effectiveToday())
-    expect((p.$('#accAddHome') as HTMLSelectElement).value, 'the form starts again on the page\'s own').toBe('u142')
+    expect(homeOn(pid, todayIso())).toBe('u142')
+    expect((getState().people.find(x => x.id === pid) as any)?.from, 'his post-in in 142\'s war, loaded').toBe(effectiveToday())
+    expect(readForeign(worlds.u149!, pid).post, 'nothing in 149\'s war').toBeFalsy()
+    expect(p.$('#accAddHome'), 'the form, open again for the next man, still has no box').toBeNull()
   })
-  it('Hunter holding Plan of 149: 142 and 149 offered', () => {
+  it('Hunter holding Plan of 149: still no Home squadron box', async () => {
     signInAs('saber')
     expect(saveAccess(ACCT.hunter, { grants: { u149: 'plan' } })).toBeNull()
     signInAs('hunter')
     const p = panel()
-    expect([...(p.$('#accAddHome') as HTMLSelectElement).options].map(o => o.textContent)).toEqual(['142', '149'])
+    await openAdd(p)
+    expect(p.$('#accAddHome')).toBeNull()
   })
 })

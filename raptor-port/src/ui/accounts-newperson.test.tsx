@@ -41,6 +41,9 @@ const csOf = (cs: string) => Object.keys(PEOPLE).find(k => (PEOPLE as any)[k].cs
 const drop = (...css: string[]) => { for (const cs of css) { const id = csOf(cs); if (id) delete (PEOPLE as any)[id]; delete (ID_BY_CS as any)[cs.toLowerCase()] } }
 const clearRequests = async () => { await signInAs('ad', 'a'); for (const r of ACCESS_REQS.slice()) declineRequest(r.id) }
 const optTexts = (sel: string) => [...(document.querySelector(sel) as HTMLSelectElement).options].map(o => o.textContent)
+/* Admin → Users' add form opens under the page's top row when "+ Add a person" is pressed (the guard rail's K2a — his
+   D2652 N13 i, D2726, D2729 Q10); one App runs through this file, so a form an earlier test left open is used as it is */
+const openAdd = async () => { if (!$('#accAddBlock')) await click($('#accAddOpen')) }
 
 const mem: Record<string, string> = {}
 const toasts: string[] = []
@@ -292,6 +295,7 @@ describe('NP1 — adding on Admin → Users: New person with an account, or alon
   it('a blank sign-in makes a roster-only person: no Role, "Add person"', async () => {
     await signInAs('ad', 'a')
     await act(async () => { setPage('admin'); notify() })
+    await openAdd()
     expect($('#accModeRoster'), 'no On the roster half on the add form').toBeFalsy()
     expect($('#accAddRole'), 'no account, no role').toBeFalsy()
     expect($('#accAdd').textContent).toBe('Add person')
@@ -305,6 +309,7 @@ describe('NP1 — adding on Admin → Users: New person with an account, or alon
   it('with a sign-in: "Add person and sign-in", Role shown; refused halves leave nothing', async () => {
     await signInAs('ad', 'a')
     await act(async () => { setPage('admin'); notify() })
+    await openAdd()
     await type($('#accAddName') as HTMLInputElement, 'hex')
     expect($('#accAdd').textContent).toBe('Add person and sign-in')
     expect($('#accAddRole')).toBeTruthy()
@@ -323,6 +328,7 @@ describe('NP1 — adding on Admin → Users: New person with an account, or alon
   it('an add clears the WHOLE form — nothing half-typed comes back (Astra read #1)', async () => {
     await signInAs('ad', 'a')
     await act(async () => { setPage('admin'); notify() })
+    await openAdd()
     await type($('#accAddName') as HTMLInputElement, 'gecko@mail')
     await type($('#accAddRole') as HTMLSelectElement, 'admin')
     await type($('#accAddCs') as HTMLInputElement, 'Gecko')
@@ -351,6 +357,7 @@ describe('NP4 — a CAT never rides through Personnel (26 Aug 26; Astra read #2)
   it('Admin → Users New person: Pilot + CAT C → Personnel → WSO shows CAT "Pick…"', async () => {
     await signInAs('ad', 'a')
     await act(async () => { setPage('admin'); notify() })
+    await openAdd()
     await type($('#accAddSeat') as HTMLSelectElement, 'FCP'); await type($('#accAddCat') as HTMLSelectElement, 'C')
     await type($('#accAddSeat') as HTMLSelectElement, 'GND')
     expect(($('#accAddCat') as HTMLSelectElement).disabled, 'personnel: "None — personnel"').toBe(true)
@@ -382,6 +389,7 @@ describe('NP7 — the words (D219, D220)', () => {
     expect($('#apvPid').getAttribute('aria-label')).toBe('The callsign or name this account belongs to')
     expect($('label[for="apvPid"]').textContent).toBe('Callsign/Name')
     await click($('#apvCancel'))
+    await openAdd()
     expect($('label[for="accAddCs"]').textContent).toBe('Callsign/Name')
     expect(optTexts('#accAddSeat')).toEqual(['Pick…', 'Pilot', 'WSO', 'Personnel (ground crew)'])
     expect(document.body.innerHTML).not.toMatch(/\((FCP|RCP)\)/)

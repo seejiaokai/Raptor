@@ -77,6 +77,9 @@ describe('a posting line\'s tap lands on his row (D1547)', () => {
     await act(async () => { setPage('admin'); notify() })
     const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!
     const typeIn = async (sel: string, v: string) => { const el = $(sel) as HTMLInputElement; expect(el, sel).toBeTruthy(); await act(async () => { set.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true })) }) }
+    /* the form opens under the page's top row on "+ Add a person" (the guard rail's K2a — D2652 N13 i, D2729 Q10); a
+       form left open by an earlier test is used as it is */
+    if (!$('#accAddBlock')) await act(async () => { ($('#accAddOpen') as HTMLElement).click() })
     await typeIn('#accAddName', 'newman@mail')
     await act(async () => { openAdminUsers({ person: 'bane' }) })
     expect(row('bane')!.classList.contains('acc-ring')).toBe(true)
